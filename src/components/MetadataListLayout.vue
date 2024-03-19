@@ -1,26 +1,18 @@
 <template>
-  <v-container class="fill-height pa-0"
-               id="MetadataListLayoutComponent" fluid>
+  <v-container class="fill-height pa-0" id="MetadataListLayoutComponent" fluid>
     <v-row v-if="mapLayout" class="fill-height">
       <v-col class="py-0 pr-2 flex-column" cols="4">
         <v-row no-gutters>
-          <v-col
-            id="metadataListLayoutFiltering_map"
-            ref="metadataListLayoutFiltering"
-          >
+          <v-col id="metadataListLayoutFiltering_map" ref="metadataListLayoutFiltering">
             <slot name="filterKeywords" />
           </v-col>
         </v-row>
 
         <v-row no-gutters>
-          <v-col
-            class="pt-4 "
-            :style="
-              useDynamicHeight
-                ? `height: calc(100vh - ${keywordHeight}px);`
-                : ''
-            "
-          >
+          <v-col class="pt-4 " :style="useDynamicHeight
+              ? `height: calc(100vh - ${keywordHeight}px);`
+              : ''
+            ">
             <slot name="filterMap" />
           </v-col>
         </v-row>
@@ -28,30 +20,17 @@
 
       <v-col class="py-0 pl-2" cols="8">
         <v-row ref="controlPanel">
-          <v-col
-            class="hidden-xs"
-            id="controlPanel"
-            key="controlPanel"
-            cols="12"
-          >
+          <v-col class="controlPanel hidden-xs" key="controlPanel" cols="12">
             <slot name="controlPanel" />
           </v-col>
         </v-row>
 
         <v-row class="mt-2">
-          <v-col
-            cols="12"
-            id="metadataListScroll_mapLayout"
-            ref="metadataListScroll"
-            class="mapLayoutContainers"
-            v-on:scroll="onScroll()"
-            :class="useDynamicHeight ? 'listScroll' : ''"
-            :style="
-              useDynamicHeight
+          <v-col cols="12" id="metadataListScroll_mapLayout" ref="metadataListScroll" class="mapLayoutContainers"
+            v-on:scroll="onScroll()" :class="useDynamicHeight ? 'listScroll' : ''" :style="useDynamicHeight
                 ? `height: calc(100vh - ${filteringComponentsHeight}px);`
                 : ''
-            "
-          >
+              ">
             <slot name="metadataListPlaceholder" />
 
             <slot name="metadataListLayout" />
@@ -60,17 +39,8 @@
       </v-col>
     </v-row>
 
-    <v-row
-      v-if="!mapLayout"
-      id="metadataListLayoutFiltering_no_map"
-      ref="metadataListLayoutFiltering"
-      no-gutters
-    >
-      <v-col
-        class="hidden-sm-and-up pb-2"
-        cols="12"
-        key="controlPanel_smallscreen"
-      >
+    <v-row v-if="!mapLayout" id="metadataListLayoutFiltering_no_map" ref="metadataListLayoutFiltering" no-gutters>
+      <v-col class="hidden-sm-and-up pb-2" cols="12" key="controlPanel_smallscreen">
         <slot name="controlPanel" />
       </v-col>
 
@@ -82,31 +52,18 @@
         <slot name="controlPanel" />
       </v-col>
 
-      <v-col
-        v-if="showMapFilter && mapFilteringPossible"
-        cols="12"
-        :style="
-          minMapHeight ? `min-height: ${minMapHeight}px;` : 'height: 100%;'
-        "
-        key="filterMap"
-      >
+      <v-col v-if="showMapFilter && mapFilteringPossible" cols="12" :style="minMapHeight ? `min-height: ${minMapHeight}px;` : 'height: 100%;'
+        " key="filterMap">
         <slot name="filterMap" />
       </v-col>
     </v-row>
 
     <v-row v-if="!mapLayout" class="" no-gutters>
-      <v-col
-        ref="metadataListScroll"
-        id="metadataListScroll_no_mapLayout"
-        class="noMapLayoutContainers mt-2 mb-4"
-        v-on:scroll="onScroll()"
-        :class="useDynamicHeight ? 'listScroll' : ''"
-        :style="
-          useDynamicHeight
+      <v-col ref="metadataListScroll" id="metadataListScroll_no_mapLayout" class="noMapLayoutContainers mt-2 mb-4"
+        v-on:scroll="onScroll()" :class="useDynamicHeight ? 'listScroll' : ''" :style="useDynamicHeight
             ? `height: calc(100vh - ${filteringComponentsHeight}px);`
             : ''
-        "
-      >
+          ">
         <slot name="metadataListPlaceholder" />
 
         <slot name="metadataListLayout" />
@@ -221,11 +178,11 @@ export default {
   scroll-behavior: smooth;
 }
 
-.noMapLayoutContainers > .container {
+.noMapLayoutContainers>.container {
   padding: 16px 4px 0px 4px;
 }
 
-.mapLayoutContainers > .container {
+.mapLayoutContainers>.container {
   padding: 0px 4px 0px 4px;
 }
 </style>
