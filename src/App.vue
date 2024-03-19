@@ -144,11 +144,12 @@ import '@/../node_modules/skeleton-placeholder/dist/bone.min.css';
 
 import { ENVIDAT_SHOW_COOKIE_BANNER } from '@/factories/metadataConsts';
 import { getImage } from '@/factories/imageFactory';
+import { defineAsyncComponent } from 'vue';
 
-const GenericFullScreenModal = () => import('@/components/Layouts/GenericFullScreenModal.vue');
-const ConfirmTextCard = () => import('@/components/Cards/ConfirmTextCard.vue');
-const TextBanner = () => import('@/components/Layouts/TextBanner.vue');
-const NotificationCard = () => import('@/components/Cards/NotificationCard.vue');
+const GenericFullScreenModal = () => defineAsyncComponent(import('@/components/Layouts/GenericFullScreenModal.vue'));
+const ConfirmTextCard = () => defineAsyncComponent(import('@/components/Cards/ConfirmTextCard.vue'));
+const TextBanner = () => defineAsyncComponent(import('@/components/Layouts/TextBanner.vue'));
+const NotificationCard = () => defineAsyncComponent(import('@/components/Cards/NotificationCard.vue'));
 
 export default {
   name: 'App',
