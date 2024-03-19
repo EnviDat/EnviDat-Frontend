@@ -28,6 +28,14 @@ export const FilledAndClearable = {
   },
 };
 
+export const Readonly = {
+  args: {
+    ...FilledAndClearable.args,
+    readOnlyFields: ['date'],
+    readOnlyExplanation: 'THIS IS READONLY!!',
+  },
+};
+
 export const WithMinDate = {
   args: {
     ...FilledAndClearable.args,
