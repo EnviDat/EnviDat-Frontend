@@ -6,6 +6,7 @@
 
       <v-img
         :src="signInPic"
+        cover
         :max-height="$vuetify.display.mdAndUp ? '700' : '100'"
         :style="$vuetify.display.mdAndUp
           ? 'border-bottom-left-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 0;'
@@ -38,7 +39,8 @@
         <form v-if="!signedIn"
               class="enviDatForm pl-2">
           <v-row id="emailRow"
-                 align="center">
+                 align="start">
+
             <v-col cols="12" md="9">
               <v-text-field
                 v-model="email"
@@ -76,15 +78,15 @@
           <v-row
             v-hide="!email || !emailAddressIsValid"
             id="tokenRow"
-            align="center"
+            align="start"
             justify="space-between"
-            class="pt-4"
+            class="pt-2"
           >
-            <v-col cols="12" md="4" class="flex-grow-0 text-h6">
+            <v-col cols="12" md="4" class="flex-grow-0 text-h6 ">
               {{ requestTokenText }}
             </v-col>
 
-            <v-col cols="12" md="5" class="pt-0">
+            <v-col cols="12" md="5" >
               <v-text-field
                 v-model="key"
                 :error-messages="backendErrors.key"
