@@ -59,7 +59,7 @@ export const TagChips = () => ({
 
       <v-col>
         <tag-chip-author name="Autor tag closeable"
-                         :is-closeable="true"/>
+                         closeable />
       </v-col>
 
       <v-col>

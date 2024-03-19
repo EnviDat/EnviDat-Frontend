@@ -45,6 +45,7 @@ import {
   METADATA_STATE_INVISILBE,
   METADATA_STATE_VISILBE,
 } from '@/factories/metadataConsts';
+import { mdiEye, mdiEyeOff, mdiPlaylistEdit } from '@mdi/js';
 
 export default {
   name: 'MetadataStateChip',
@@ -73,9 +74,9 @@ export default {
     iconMap: {
       type: Object,
       default: () => ({
-        [METADATA_STATE_DRAFT]: 'edit_note',
-        [METADATA_STATE_INVISILBE]: 'visibility_off',
-        [METADATA_STATE_VISILBE]: 'visibility',
+        [METADATA_STATE_DRAFT]: mdiPlaylistEdit,
+        [METADATA_STATE_INVISILBE]: mdiEye,
+        [METADATA_STATE_VISILBE]: mdiEyeOff,
       }),
     },
     showOnHover: {

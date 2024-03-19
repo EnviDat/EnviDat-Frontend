@@ -42,7 +42,7 @@
               v-if="item"
               :name="item"
               :isSmall="true"
-              :isCloseable="userTagsCloseable"
+              :closable="userTagsCloseable"
               @closeClicked="catchCloseClicked"
             />
           </template>

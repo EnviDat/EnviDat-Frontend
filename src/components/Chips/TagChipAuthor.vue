@@ -9,8 +9,8 @@
           @click.stop="clicked"
           :draggable="draggable"
           :small="isSmall"
-          close-icon="close"
-          :close="isCloseable"
+          :close-icon="mdiClose"
+          :closeable="closeable"
           @click:close="$emit('closeClicked', authorName)"
           >
 
@@ -47,7 +47,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import {mdiTimerSand, mdiAccountCircle} from '@mdi/js';
+import { mdiTimerSand, mdiAccountCircle, mdiClose } from '@mdi/js';
 
 export default {
   props: {
@@ -64,7 +64,7 @@ export default {
       type: Boolean,
       default: false,
     },
-    isCloseable: Boolean,
+    closeable: Boolean,
     draggable: {
       type: Boolean,
       default: undefined,
@@ -73,6 +73,7 @@ export default {
   data: ()=>({
     mdiTimerSand,
     mdiAccountCircle,
+    mdiClose,
   }),
   computed: {
     authorIsDead() {

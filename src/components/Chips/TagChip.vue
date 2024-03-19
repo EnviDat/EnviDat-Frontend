@@ -8,9 +8,9 @@
     :color="highlighted ? 'primary' : color"
     :style="{ height: $vuetify.display.xs ? '15px' : '' }"
     :small="isSmall"
-    close-icon="close"
+    :close-icon="mdiClose"
     @click.stop="clicked"
-    :close="closeable"
+    :closable="closeable"
     @click:close="$emit('clickedClose', name)"
   >
     {{ name }}
@@ -30,6 +30,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import { mdiClose } from '@mdi/js';
 
 export default {
   props: {
@@ -60,5 +61,8 @@ export default {
     //   this.$emit('clickedClose', this.name);
     // },
   },
+  data: () => ({
+    mdiClose,
+  }),
 };
 </script>
