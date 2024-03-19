@@ -1,11 +1,20 @@
-import vuetify from '../src/plugins/vuetify';
+import * as components from 'vuetify/components'
+import * as directives from 'vuetify/directives'
+import 'vuetify/styles';
+import { createVuetify } from 'vuetify';
+import config from '@/plugins/vuetifyConfig.js';
+
 import { envidatViewportParameters } from '~/stories/js/envidatViewports';
 import { setup } from '@storybook/vue3';
 import { withVuetifyTheme } from './withVuetifyTheme.decorator';
 
 setup((app) => {
   // Registers your app's plugins into Storybook
-  app.use(vuetify)
+  app.use(createVuetify({
+    components,
+    directives,
+    ...config,
+  }))
 });
 
 // read more: https://storybook.js.org/docs/react/writing-stories/naming-components-and-hierarchy
