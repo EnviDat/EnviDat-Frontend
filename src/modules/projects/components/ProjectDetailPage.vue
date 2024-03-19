@@ -308,7 +308,7 @@ export default {
 
       const stringPins = convertArrayToUrlString(this.selectedPins);
 
-      this.mixinMethods_additiveChangeRoute(this.$route.path, undefined, undefined,
+      this.$router.options.additiveChangeRoute(this.$route, this.$router, this.$route.path, undefined, undefined,
         undefined, stringPins, undefined);
     },
     catchMetadataClicked(datasetname) {

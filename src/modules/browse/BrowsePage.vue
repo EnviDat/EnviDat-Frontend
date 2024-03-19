@@ -181,7 +181,7 @@ export default {
 
         const stringTags = convertArrayToUrlString(newTags);
 
-        this.mixinMethods_additiveChangeRoute(BROWSE_PATH, undefined,
+        this.$router.options.additiveChangeRoute(this.$route, this.$router, BROWSE_PATH, undefined,
             stringTags, undefined, undefined, this.isAuthorSearch);
       }
     },
@@ -193,7 +193,7 @@ export default {
       const newTags = this.selectedTagNames.filter(tag => tag !== tagId);
       const stringTags = convertArrayToUrlString(newTags);
 
-      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, undefined,
+      this.$router.options.additiveChangeRoute(this.$route, this.$router, BROWSE_PATH, undefined,
           stringTags, undefined, undefined, this.isAuthorSearch);
     },
     catchTagCleared() {
@@ -206,7 +206,7 @@ export default {
 
       const stringPins = convertArrayToUrlString(this.selectedPins);
 
-      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, undefined, undefined,
+      this.$router.options.additiveChangeRoute(this.$route, this.$router, BROWSE_PATH, undefined, undefined,
           undefined, stringPins,
           this.isAuthorSearch);
     },
@@ -346,12 +346,12 @@ export default {
       });
     },
     catchSearchClicked(search) {
-      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search,
+      this.$router.options.additiveChangeRoute(this.$route, this.$router, BROWSE_PATH, search,
           undefined, this.mode, undefined,
           this.isAuthorSearch);
     },
     catchSearchCleared() {
-      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, '',
+      this.$router.options.additiveChangeRoute(this.$route, this.$router, BROWSE_PATH, '',
           undefined, this.mode, undefined,
           this.isAuthorSearch);
     },
@@ -359,7 +359,7 @@ export default {
       this.oldIsAuthorSearch = this.isAuthorSearch;
       const newIsAuthorSearchParameter = this.isAuthorSearch ? 'false' : 'true';
 
-      this.mixinMethods_additiveChangeRoute(BROWSE_PATH,
+      this.$router.options.additiveChangeRoute(this.$route, this.$router, BROWSE_PATH,
           this.currentSearchTerm,
           undefined, undefined, undefined,
           newIsAuthorSearchParameter);

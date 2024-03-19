@@ -21,7 +21,6 @@ import { initAxios } from '@/init';
 
 import vuetify from '@/plugins/vuetify';
 import router from '@/router';
-import globalMethods from '@/factories/globalMethods';
 
 const app = createApp(App);
 
@@ -32,5 +31,4 @@ app
   .use(router)
   .use(store)
   //  .use(InfiniteLoading)
-  .mixin(globalMethods)
   .mount('#app');

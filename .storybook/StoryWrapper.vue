@@ -7,13 +7,11 @@
 </template>
 
 <script>
-import globalMethods from '../src/factories/globalMethods';
 
 export default {
   props: {
     themeName: String,
   },
-  mixins: [globalMethods],
 };
 </script>
 

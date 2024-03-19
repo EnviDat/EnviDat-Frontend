@@ -371,7 +371,7 @@ export default {
       }
 
       const stringTags = convertArrayToUrlString([cardType]);
-      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, '', stringTags);
+      this.$router.options.additiveChangeRoute(this.$route, this.$router, BROWSE_PATH, '', stringTags);
     },
     catchModeClicked(mode) {
       this.$router.push({

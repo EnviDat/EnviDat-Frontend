@@ -302,11 +302,11 @@ export default {
       this.$router.push({ name: item.pageName });
     },
     catchSearchClicked(search) {
-      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search);
+      this.$router.options.additiveChangeRoute(this.$route, this.$router, BROWSE_PATH, search);
     },
     catchSearchCleared() {
       // the search parameter needs to be '' to clear it
-      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, '');
+      this.$router.options.additiveChangeRoute(this.$route, this.$router, BROWSE_PATH, '');
     },
     catchModeClose() {
       this.$router.push({

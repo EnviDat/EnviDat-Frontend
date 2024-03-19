@@ -142,4 +142,47 @@ export default createRouter({
 
     return false;
   },
+  /**
+   * Changes the route via this.$router.push();
+   * The search and tag parameter are added as query parameters.
+   * urlSubPath is added as the path.
+   *
+   * @param {Object} route
+   * @param {Object} router
+   * @param {String} basePath the path of the route
+   * @param {String} search search term
+   * @param {String} tags encoded string
+   * @param {String} mode which defines the mode for the special view
+   * @param {Array} pins array of ids for the pinned metadatas
+   * @param {String} isAuthorSearch if true the search term will only be compared against authors
+   */
+  additiveChangeRoute(route, router, basePath, search, tags, mode = undefined, pins = undefined, isAuthorSearch = undefined) {
+    const query = {};
+    Object.assign(query, route.query);
+
+    if (search !== undefined) {
+      query.search = search;
+    }
+
+    if (tags !== undefined) {
+      query.tags = tags;
+    }
+
+    if (mode !== undefined) {
+      query.mode = mode;
+    }
+
+    if (pins !== undefined) {
+      query.pins = pins;
+    }
+
+    if (isAuthorSearch !== undefined) {
+      query.isAuthorSearch = typeof isAuthorSearch !== 'string' ? isAuthorSearch.toString() : isAuthorSearch;
+    }
+
+    router.push({
+      path: basePath,
+      query,
+    });
+  },
 });
