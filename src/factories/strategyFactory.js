@@ -1,3 +1,4 @@
+import { defineAsyncComponent } from 'vue';
 import {
   OPEN_DATA_PREVIEW_IFRAME,
   OPEN_TEXT_PREVIEW,
@@ -6,9 +7,10 @@ import {
   SELECT_EDITING_RESOURCE,
 } from './eventBus';
 
-const DataPreviewIframe = () => import('@/modules/metadata/components/ResourcePreviews/DataPreviewIframe.vue');
-const ImagePreviewCard = () => import('@/modules/metadata/components/ResourcePreviews/ImagePreviewCard.vue');
-const TextPreviewCard = () => import('@/modules/metadata/components/ResourcePreviews/TextPreviewCard.vue');
+const DataPreviewIframe = defineAsyncComponent(() => import('@/modules/metadata/components/ResourcePreviews/DataPreviewIframe.vue'));
+const ImagePreviewCard = defineAsyncComponent(() => import('@/modules/metadata/components/ResourcePreviews/ImagePreviewCard.vue'));
+const TextPreviewCard = defineAsyncComponent(() => import('@/modules/metadata/components/ResourcePreviews/TextPreviewCard.vue'));
+
 
 export const localIdProperty = 'localId';
 
