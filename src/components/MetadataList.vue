@@ -1,195 +1,98 @@
 <template>
-
-  <metadata-list-layout ref="metadataListLayoutComponent"
-                        :topFilteringLayout="topFilteringLayout"
-                        :minMapHeight="minMapHeight"
-                        :useDynamicHeight="useDynamicHeight"
-                        :showMapFilter="showMapFilter"
-                        :mapFilteringPossible="mapFilteringPossible"
-                        @onScroll="onScroll" >
+  <metadata-list-layout ref="metadataListLayoutComponent" :topFilteringLayout="topFilteringLayout"
+    :minMapHeight="minMapHeight" :useDynamicHeight="useDynamicHeight" :showMapFilter="showMapFilter"
+    :mapFilteringPossible="mapFilteringPossible" @onScroll="onScroll">
 
     <template v-slot:filterKeywords>
-      <filter-keywords-view :compactLayout="$vuetify.display.smAndDown"
-                            :allTags="allTags"
-                            :selectedTagNames="selectedTagNames"
-                            :showPlaceholder="loading || updatingTags"
-                            @clickedTag="catchTagClicked"
-                            @clickedTagClose="catchTagCloseClicked"
-                            @clickedClear="catchTagCleared" />
+      <filter-keywords-view :compactLayout="$vuetify.display.smAndDown" :allTags="allTags"
+        :selectedTagNames="selectedTagNames" :showPlaceholder="loading || updatingTags" @clickedTag="catchTagClicked"
+        @clickedTagClose="catchTagCloseClicked" @clickedClear="catchTagCleared" />
     </template>
 
     <template #controlPanel>
-      <control-panel :compactLayout="true"
-                      :searchTerm="searchTerm"
-                      :showSearch="showSearch"
-                      :searchCount="searchCount"
-                      :isAuthorSearch="isAuthorSearch"
-                      :isShallow="isShallow"
-                      :mode="modeData?.name"
-                      :fixedHeight="36"
-                      :searchBarPlaceholder="searchBarPlaceholder"
-                      :loading="loading"
-                      :controlsActive="controlsActive"
-                      :enabledControls="enabledControls"
-                      @searchClick="catchSearchClicked"
-                      @searchCleared="catchSearchCleared"
-                      @controlsChanged="controlsChanged"
-                      @authorSearchClick="catchAuthorSearchClick"
-                      @shallowRealClick="catchShallowRealClick"
-                      />
+      <control-panel :compactLayout="true" :searchTerm="searchTerm" :showSearch="showSearch" :searchCount="searchCount"
+        :isAuthorSearch="isAuthorSearch" :isShallow="isShallow" :mode="modeData?.name" :fixedHeight="36"
+        :searchBarPlaceholder="searchBarPlaceholder" :loading="loading" :controlsActive="controlsActive"
+        :enabledControls="enabledControls" @searchClick="catchSearchClicked" @searchCleared="catchSearchCleared"
+        @controlsChanged="controlsChanged" @authorSearchClick="catchAuthorSearchClick"
+        @shallowRealClick="catchShallowRealClick" />
 
     </template>
 
     <template v-slot:filterMap>
-      <filter-map-view :content="listContent"
-                        :minMapHeight="minMapHeight"
-                        :pinnedIds="pinnedIds"
-                        :topLayout="mapTopLayout"
-                        :modeData="modeData"
-                        @pointClicked="catchPointClicked"
-                        @clearButtonClicked="catchClearButtonClick" />
+      <filter-map-view :content="listContent" :minMapHeight="minMapHeight" :pinnedIds="pinnedIds"
+        :topLayout="mapTopLayout" :modeData="modeData" @pointClicked="catchPointClicked"
+        @clearButtonClicked="catchClearButtonClick" />
 
     </template>
 
     <template v-slot:metadataListPlaceholder>
-      <v-container v-show="loading"
-                   class="px-0 px-sm-2"
-                    fluid >
-      <!-- don't use class with paddings here, it's being used in the MetadataListLayout component -->
+      <v-container v-show="loading" class="px-0 px-sm-2" fluid>
+        <!-- don't use class with paddings here, it's being used in the MetadataListLayout component -->
+        <v-row id="metadataListPlaceholder" ref="metadataListPlaceholder">
 
-      <v-row id="metadataListPlaceholder"
-              ref="metadataListPlaceholder" >
+          <v-col v-for="(n, index) in placeHolderAmount" :key="'placeHolder_' + index" :class="cardGridClass"
+            class="pa-2">
 
-        <v-col v-for="(n, index) in placeHolderAmount"
-                :key="'placeHolder_' + index"
-                :class="cardGridClass"
-                class="pa-2" >
-
-          <metadata-card-placeholder :dark="false" />
-        </v-col>
-      </v-row>
+            <metadata-card-placeholder :dark="false" />
+          </v-col>
+        </v-row>
       </v-container>
     </template>
 
-    <template v-slot:metadataListLayout >
-      <v-container v-if="!loading"
-                   class="px-0 px-sm-2"
-                  fluid >
-      <!-- don't use class with paddings here, it's being used in the MetadataListLayout component -->
+    <template v-slot:metadataListLayout>
+      <v-container v-if="!loading" class="px-0 px-sm-2" fluid>
+        <!-- don't use class with paddings here, it's being used in the MetadataListLayout component -->
 
-      <v-row id="metadataListLayout"
-              ref="metadataListLayout" >
+        <v-row id="metadataListLayout" ref="metadataListLayout">
 
-        <v-col v-for="(pinnedId, index) in pinnedIds"
-                :key="'pinned_' + index"
-                :class="cardGridClass"
-                class="pa-2" >
+          <v-col v-for="(pinnedId, index) in pinnedIds" :key="'pinned_' + index" :class="cardGridClass" class="pa-2">
 
-          <metadata-card class="highlighted"
-                          :id="pinnedId"
-                          :ref="pinnedId"
-                          :title="metadatasContent[pinnedId].title"
-                          :name="metadatasContent[pinnedId].name"
-                          :subtitle="metadatasContent[pinnedId].notes"
-                          :tags="!isCompactLayout ? metadatasContent[pinnedId].tags : null"
-                          :titleImg="metadatasContent[pinnedId].titleImg"
-                          :restricted="hasRestrictedResources(metadatasContent[pinnedId])"
-                          :resourceCount="metadatasContent[pinnedId].num_resources"
-                          :modeData="modeData"
-                          :flatLayout="listView"
-                          :compactLayout="isCompactLayout"
-                          :fileIconString="fileIconString"
-                          :lockedIconString="lockedIconString"
-                          :unlockedIconString="unlockedIconString"
-                          :geoJSONIcon="getGeoJSONIcon(metadatasContent[pinnedId].location)"
-                          :categoryColor="metadatasContent[pinnedId].categoryColor"
-                          :state="getMetadataState(metadatasContent[pinnedId])"
-                          :organization="metadatasContent[pinnedId].organization?.name"
-                          :organizationTooltip="metadatasContent[pinnedId].organization?.title"
-                          :showOrganizationOnHover="showOrganizationOnHover"
-                          @clickedEvent="metaDataClicked"
-                          @clickedTag="catchTagClicked" />
-        </v-col>
+            <metadata-card class="highlighted" :id="pinnedId" :ref="pinnedId" :title="metadatasContent[pinnedId].title"
+              :name="metadatasContent[pinnedId].name" :subtitle="metadatasContent[pinnedId].notes"
+              :tags="!isCompactLayout ? metadatasContent[pinnedId].tags : null"
+              :titleImg="metadatasContent[pinnedId].titleImg"
+              :restricted="hasRestrictedResources(metadatasContent[pinnedId])"
+              :resourceCount="metadatasContent[pinnedId].num_resources" :modeData="modeData" :flatLayout="listView"
+              :compactLayout="isCompactLayout" :fileIconString="fileIconString" :lockedIconString="lockedIconString"
+              :unlockedIconString="unlockedIconString" :geoJSONIcon="getGeoJSONIcon(metadatasContent[pinnedId].location)"
+              :categoryColor="metadatasContent[pinnedId].categoryColor"
+              :state="getMetadataState(metadatasContent[pinnedId])"
+              :organization="metadatasContent[pinnedId].organization?.name"
+              :organizationTooltip="metadatasContent[pinnedId].organization?.title"
+              :showOrganizationOnHover="showOrganizationOnHover" @clickedEvent="metaDataClicked"
+              @clickedTag="catchTagClicked" />
+          </v-col>
 
-        <v-col v-for="(metadata, index) in unpinnedFilteredList"
-                :key="'filtered_' + index"
-                :class="cardGridClass"
-                class="pa-2" >
+          <v-col v-for="(metadata, index) in unpinnedFilteredList" :key="'filtered_' + index" :class="cardGridClass"
+            class="pa-2">
 
-          <metadata-card :id="metadata.id"
-                          :ref="metadata.id"
-                          :title="metadata.title"
-                          :name="metadata.name"
-                          :subtitle="metadata.notes"
-                          :tags="!isCompactLayout ? metadata.tags : null"
-                          :titleImg="metadata.titleImg"
-                          :restricted="hasRestrictedResources(metadata)"
-                          :resourceCount="metadata.num_resources"
-                          :modeData="modeData"
-                          :flatLayout="listView"
-                          :compactLayout="isCompactLayout"
-                          :fileIconString="fileIconString"
-                          :lockedIconString="lockedIconString"
-                          :unlockedIconString="unlockedIconString"
-                          :geoJSONIcon="getGeoJSONIcon(metadata.location)"
-                          :categoryColor="metadata.categoryColor"
-                          :state="getMetadataState(metadata)"
-                          :organization="metadata.organization?.name"
-                          :organizationTooltip="metadata.organization?.title"
-                          :showOrganizationOnHover="showOrganizationOnHover"
-                          @organizationClicked="$emit('organizationClicked', metadata.organization)"
-                          @clickedEvent="metaDataClicked"
-                          @clickedTag="catchTagClicked"
-                          :showGenericOpenButton="!!metadata.openEvent"
-                          :openButtonTooltip="metadata.openButtonTooltip"
-                          :openButtonIcon="metadata.openButtonIcon"
-                          @openButtonClicked="catchOpenClick(metadata.openEvent, metadata.openProperty)" />
-        </v-col>
+            <metadata-card :id="metadata.id" :ref="metadata.id" :title="metadata.title" :name="metadata.name"
+              :subtitle="metadata.notes" :tags="!isCompactLayout ? metadata.tags : null" :titleImg="metadata.titleImg"
+              :restricted="hasRestrictedResources(metadata)" :resourceCount="metadata.num_resources" :modeData="modeData"
+              :flatLayout="listView" :compactLayout="isCompactLayout" :fileIconString="fileIconString"
+              :lockedIconString="lockedIconString" :unlockedIconString="unlockedIconString"
+              :geoJSONIcon="getGeoJSONIcon(metadata.location)" :categoryColor="metadata.categoryColor"
+              :state="getMetadataState(metadata)" :organization="metadata.organization?.name"
+              :organizationTooltip="metadata.organization?.title" :showOrganizationOnHover="showOrganizationOnHover"
+              @organizationClicked="$emit('organizationClicked', metadata.organization)" @clickedEvent="metaDataClicked"
+              @clickedTag="catchTagClicked" :showGenericOpenButton="!!metadata.openEvent"
+              :openButtonTooltip="metadata.openButtonTooltip" :openButtonIcon="metadata.openButtonIcon"
+              @openButtonClicked="catchOpenClick(metadata.openEvent, metadata.openProperty)" />
+          </v-col>
 
-        <v-col :class="showScrollTopButton ? 'mx-2' : ''"
-                key="infiniteLoader"
-                cols="12" >
-<!--
-          <infinite-loading spinner="waveDots"
-                            :identifier="infiniteId"
-                            :distance="preloadingDistance"
-                            @infinite="infiniteHandler"
-                            :force-use-infinite-wrapper="dynamicMainScrollClass" >
+          <v-col :class="showScrollTopButton ? 'mx-2' : ''" key="infiniteLoader" cols="12"></v-col>
 
-            <div v-slot:no-results>
-            </div>
+          <v-col v-if="!loading && contentSize <= 0" class="mx-2" key="noSearchResultsView" cols="12">
+            <no-search-results-view :categoryCards="categoryCards" @clicked="catchCategoryClicked" />
+          </v-col>
 
-            <div v-if="showScrollTopButton"
-                 v-slot:no-more>
-              <BaseRectangleButton :buttonText="scrollTopButtonText"
-                                    :isSmall="true"
-                                    :isFlat="true"
-                                    @clicked="setScrollPos(0)" />
-            </div>
-
-            <div v-if="!showScrollTopButton"
-                 v-slot:no-more>
-            </div>
-
-          </infinite-loading>
--->
-        </v-col>
-
-        <v-col v-if="!loading && contentSize <= 0"
-                class="mx-2"
-                key="noSearchResultsView"
-                cols="12" >
-          <no-search-results-view :categoryCards="categoryCards"
-                                  @clicked="catchCategoryClicked" />
-        </v-col>
-
-      </v-row>
+        </v-row>
       </v-container>
 
     </template>
 
   </metadata-list-layout>
-
 </template>
 
 <script>
@@ -212,7 +115,7 @@
 // import InfiniteLoading from 'vue-infinite-loading';
 // Vue.use(InfiniteLoading /* , { options } */);
 
-import { BROWSE_PATH} from '@/router/routeConsts';
+import { BROWSE_PATH } from '@/router/routeConsts';
 import FilterKeywordsView from '@/components/Filtering/FilterKeywordsView.vue';
 import FilterMapView from '@/components/Filtering/FilterMapView.vue';
 import ControlPanel from '@/components/Filtering/ControlPanel.vue';
@@ -230,6 +133,7 @@ import {
 import MetadataListLayout from '@/components/MetadataListLayout.vue';
 import { eventBus } from '@/factories/eventBus';
 import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
+import { getGeoJSONIcon } from '@/factories/imageFactory';
 
 // check filtering in detail https://www.npmjs.com/package/vue2-filters
 
@@ -308,7 +212,7 @@ export default {
     },
     metadatasContent: {
       type: Object,
-      default: () => {},
+      default: () => { },
     },
     categoryCards: {
       type: Array,
@@ -407,7 +311,7 @@ export default {
       eventBus.emit(event, eventProperty);
     },
     getGeoJSONIcon(location) {
-      return this.mixinMethods_getGeoJSONIcon(location?.geoJSON?.type);
+      return getGeoJSONIcon(location?.geoJSON?.type);
     },
     infiniteHandler($state) {
       const that = this;
@@ -427,7 +331,7 @@ export default {
           i = that.vIndex;
         }
 
-        for (;i < that.vIndex + that.reloadAmount && i < that.contentSize; i++) {
+        for (; i < that.vIndex + that.reloadAmount && i < that.contentSize; i++) {
           that.virtualListContent.push(that.listContent[i]);
         }
 
@@ -515,7 +419,7 @@ export default {
         const res = metadata.resources[i];
 
         if (res.restricted !== undefined
-        && (res.restricted.allowed_users !== undefined
+          && (res.restricted.allowed_users !== undefined
             || res.restricted.level !== 'public')) {
           return true;
         }
@@ -655,19 +559,18 @@ export default {
 </script>
 
 <style scoped>
-  .itemfade-enter-active,
-  .itemfade-leave-active {
-    transition: opacity 0.1s;
-    transition-timing-function: linear;
-  }
+.itemfade-enter-active,
+.itemfade-leave-active {
+  transition: opacity 0.1s;
+  transition-timing-function: linear;
+}
 
-  .itemfade-enter,
-  .itemfade-leave-to {
-    opacity: 0;
-  }
+.itemfade-enter,
+.itemfade-leave-to {
+  opacity: 0;
+}
 
-  .highlighted {
-    box-shadow: #4db6ac 0 0 5px 5px !important;
-  }
-
+.highlighted {
+  box-shadow: #4db6ac 0 0 5px 5px !important;
+}
 </style>

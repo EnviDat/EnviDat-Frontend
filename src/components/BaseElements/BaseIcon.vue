@@ -1,8 +1,18 @@
 <template>
   <div class="baseIcon" :class="classList" @click="onClick">
-    <div v-if="customIcon" role="img" :aria-label="`${icon} icon`" class="baseIconCustomIcon" :style="customIconStyle"
-      :class="{ ['bg-' + color]: true }"></div>
-    <v-icon v-else :size="large ? 'x-large' : small ? 'small' : undefined" :color="color" :icon="icon" />
+    <div
+      v-if="customIcon"
+      role="img"
+      :aria-label="`${icon} icon`"
+      class="baseIconCustomIcon"
+      :style="customIconStyle"
+      :class="{ ['bg-' + color]: true }">
+    </div>
+    <v-icon
+      v-else
+      :size="large ? 'x-large' : small ? 'small' : undefined"
+      :color="color"
+      :icon="icon" />
   </div>
 </template>
 
@@ -29,6 +39,7 @@ export default {
     rotated: { type: Boolean, default: false },
     left: { type: Boolean, default: false },
     right: { type: Boolean, default: false },
+    dark: { type: Boolean, default: false },
   },
   data: () => ({
   }),
@@ -46,6 +57,7 @@ export default {
         'large': this.large,
         'left': this.left,
         'right': this.right,
+        'dark': this.dark,
         [`text-${this.color}`]: this.color,
       }
     },
@@ -53,6 +65,7 @@ export default {
       if (typeof this.icon === 'string') {
         return getIcon(this.icon);
       }
+      debugger;
       return null;
     },
   },
@@ -94,6 +107,11 @@ export default {
 
   &.right {
     margin-left: 12px;
+  }
+
+  &.dark {
+    // Make the icon white
+    filter: brightness(0) invert(1);
   }
 }
 </style>

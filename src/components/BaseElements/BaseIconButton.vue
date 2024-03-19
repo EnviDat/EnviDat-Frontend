@@ -1,42 +1,20 @@
 <template>
   <div class="baseIconButton">
-    <v-btn
-      class="ma-0"
-      :elevation="elevated ? 5 : undefined"
-      icon
-      :variant="outlined ? 'outlined' : 'text'"
-      density="comfortable"
-      :size="large ? 'large' : small ? 'small' : undefined"
-      :color="color"
-      :href="url"
-      :class="buttonClass"
-      @click.stop="onClick"
-      v-bind="$props"
-    >
-      <base-icon 
-        :icon="icon"
-        :large="large"
-        :small="small"
-        :rotated="rotated"
-        :color="iconColor"
-      ></base-icon>
-  </v-btn>
+    <v-btn class="ma-0" :elevation="elevated ? 5 : undefined" icon :variant="outlined ? 'outlined' : 'text'"
+      density="comfortable" :size="large ? 'large' : small ? 'small' : undefined" :color="color" :href="url"
+      :class="buttonClass" @click.stop="onClick" v-bind="$props">
+      <base-icon :icon="icon" :large="large" :rotated="rotated" :color="iconColor"></base-icon>
+    </v-btn>
 
-    <v-badge
-      v-if="count > 0"
-      :overlap="!small"
-      :left="small"
-      :style="small ? 'position: relative; bottom: 10px;' : ''"
-      :content="count"
-      color="highlight"
-      :class="{ envidatBadgeBigNumber: count > 9, envidatBadge: count <= 9 }"
-      @click.stop="onClick"
-    />
+    <v-badge v-if="count > 0" :overlap="!small" :left="small" :style="small ? 'position: relative; bottom: 10px;' : ''"
+      :content="count" color="highlight" :class="{ envidatBadgeBigNumber: count > 9, envidatBadge: count <= 9 }"
+      @click.stop="onClick" />
 
   </div>
 </template>
 
-<script>/**
+<script>
+/**
  * BaseIconButton.vue creates a round button with an icon, either a custom icon or a material (material design libery) icon.
  * Similar to @class RectangleButton
  * React on the 'clicked' event or pass an @prop url to create a href-link.
@@ -68,7 +46,7 @@ import BaseIcon from './BaseIcon.vue';
 
 export default {
   name: 'BaseIconButton',
-  components: {BaseIcon},
+  components: { BaseIcon },
   props: {
     color: { type: String, default: undefined },
     tooltipText: { type: String, default: undefined },
@@ -81,10 +59,10 @@ export default {
     small: { type: Boolean, default: false },
     large: { type: Boolean, default: false },
     count: { type: Number, default: undefined },
-    outlined: {type: Boolean, default: undefined },
-    fancy: { type:Boolean, default: false },
-    glowing: { type:Boolean, default: false },
-    readonly: { type:Boolean, default: false },
+    outlined: { type: Boolean, default: undefined },
+    fancy: { type: Boolean, default: false },
+    glowing: { type: Boolean, default: false },
+    readonly: { type: Boolean, default: false },
   },
   computed: {
     buttonClass() {
@@ -96,7 +74,7 @@ export default {
   },
   methods: {
     onClick() {
-      if(this.readonly){
+      if (this.readonly) {
         return;
       }
       this.$emit('clicked');
@@ -109,20 +87,16 @@ export default {
 .fancyButton {
   background-color: #00BFAD;
   background-image:
-    linear-gradient(
-      to right bottom,
+    linear-gradient(to right bottom,
       #E2F27C,
-      #00BFAD
-    );
+      #00BFAD);
 }
 
 .fancyButton:hover {
   background-image:
-    linear-gradient(
-      to right bottom,
+    linear-gradient(to right bottom,
       #E2F27C 20%,
-      #00BFAD
-    );
+      #00BFAD);
 }
 
 .glowingButton {
@@ -144,5 +118,4 @@ export default {
     box-shadow: 0 0 10px 0 yellow;
   }
 }
-
 </style>

@@ -3,10 +3,9 @@
     <v-tooltip bottom :disabled="$vuetify.display.xsOnly || !iconTooltip">
       <template v-slot:activator="{ on }">
         <div v-on="on" class="baseIconLabelViewWrapper">
-          <div class="baseIconLabelViewIcon" :class="{dark}">
-            <BaseIcon :icon="icon" />
+          <div class="baseIconLabelViewIcon" :class="{ dark }">
+            <BaseIcon :icon="icon" :dark="dark" />
           </div>
-          
           <div class="baseIconLabelViewText" :style="textStyle">
             <a v-if="url" :href="url" target="_blank" rel="noopener noreferrer">
               {{ text ? text : url }}
@@ -41,57 +40,51 @@ import BaseIcon from './BaseIcon.vue';
  */
 
 export default {
-    name: 'BaseIconLabelView',
-    components: { BaseIcon },
-    props: {
-        icon: String,
-        iconTooltip: String,
-        text: String,
-        url: String,
-        dark: Boolean,
+  name: 'BaseIconLabelView',
+  components: { BaseIcon },
+  props: {
+    icon: String,
+    iconTooltip: String,
+    text: String,
+    url: String,
+    dark: Boolean,
+  },
+  computed: {
+    iconAlt() {
+      return this.iconTooltip ?? this.label ?? `${this.icon} + icon`;
     },
-    computed: {
-        iconAlt() {
-            return this.iconTooltip ?? this.label ?? `${this.icon} + icon`;
-        },
-        textStyle() {
-            return {
-                'font-size': this.$vuetify.display.smAndDown ? 'font-size: 0.85rem;' : undefined,
-            };
-        },
+    textStyle() {
+      return {
+        'font-size': this.$vuetify.display.smAndDown ? 'font-size: 0.85rem;' : undefined,
+      };
     },
+  },
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+$icon-size: 24px;
 
-  $icon-size: 24px;
+.baseIconLabelViewWrapper {
+  display: inline-flex;
+  align-items: center;
+}
 
-  .BaseIconLabelViewWrapper {
-    display: inline-flex;
-    align-items: center;
-  }
+.baseIconLabelViewText {
+  // TODO: Remove this once a sensible default font was chosen
+  font-family: sans-serif !important;
+}
 
-  .BaseIconLabelViewText {
-    // TODO: Remove this once a sensible default font was chosen
-    font-family: sans-serif !important;
-  }
+.baseIconLabelViewIcon {
+  height: $icon-size;
+  width: $icon-size;
+  margin-right: 12px;
 
-  .BaseIconLabelViewIcon {
-    
-    &.dark {
-      // Make the icon white
-      filter: brightness(0) invert(1);
-    }
+  img {
+    user-select: none;
+    object-fit: contain;
     height: $icon-size;
     width: $icon-size;
-    margin-right: 12px;
-    img {
-      user-select: none;
-      object-fit: contain;
-      height: $icon-size;
-      width: $icon-size;
-    }
   }
-
+}
 </style>
