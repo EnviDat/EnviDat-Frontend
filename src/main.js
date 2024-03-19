@@ -13,6 +13,7 @@
  */
 
 import { createApp } from 'vue';
+import { createPinia } from 'pinia';
 // import InfiniteLoading from 'vue-infinite-loading';
 
 import store from '@/store/store';
@@ -23,6 +24,7 @@ import vuetify from '@/plugins/vuetify';
 import router from '@/router';
 
 const app = createApp(App);
+const pinia = createPinia();
 
 initAxios(app, store);
 
@@ -30,5 +32,6 @@ app
   .use(vuetify)
   .use(router)
   .use(store)
+  .use(pinia)
   //  .use(InfiniteLoading)
   .mount('#app');
