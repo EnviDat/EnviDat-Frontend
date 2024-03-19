@@ -6,7 +6,7 @@
         dense
         outlined
         readonly
-        prepend-icon="date_range"
+        :prepend-icon="mdiCalendarRange"
         :hint="readOnlyHint(dateProperty)"
         :model-value="formatToEnviDatDate(dateField, dateProperty)"
         :error-messages="validationErrors[dateProperty]"
@@ -30,7 +30,7 @@
             ref="dateTextField"
             dense
             outlined
-            prepend-icon="date_range"
+            :prepend-icon="mdiCalendarRange"
             v-bind="props"
             :clearable="true"
             clear-icon="clear"
@@ -45,8 +45,8 @@
           ref="datePicker"
           locale="en-in"
           :color='$vuetify.theme.themes.light.colors.primary'
-          next-icon="navigate_next"
-          prev-icon="navigate_before"
+          :next-icon="mdiSkipNext"
+          :prev-icon="mdiSkipPrevious"
           :min="formatToDatePickerDate(minDate)"
           :max="formatToDatePickerDate(maxDate)"
           :value="formatToDatePickerDate(dateField)"
@@ -75,6 +75,7 @@ import {
 import { isFieldValid } from '@/factories/userEditingValidations';
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 import { useDate } from 'vuetify';
+import { mdiCalendarRange, mdiSkipNext, mdiSkipPrevious } from '@mdi/js';
 
 // eslint-disable-next-line func-names
 yup.addMethod(yup.date, 'parseDateString', function() {
@@ -270,7 +271,7 @@ export default {
       try {
         return parseDateStringToEnviDatFormat(dateString);
       } catch (e) {
-        console.log(e);
+        console.error(e);
         this.validationErrors[
           dateProperty
         ] = `Invalid date format, use ${enviDatDateFormat.toUpperCase()}`;
@@ -300,6 +301,9 @@ export default {
     },
   },
   data: () => ({
+    mdiCalendarRange,
+    mdiSkipNext,
+    mdiSkipPrevious,
     previewDate: '',
     datePickerOpen: false,
     validationErrors: {},
