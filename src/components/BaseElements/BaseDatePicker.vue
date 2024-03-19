@@ -1,19 +1,7 @@
 <template>
   <div :id="`BaseDatePicker_${dateLabel}`">
-      <v-text-field
-        v-if="isReadonly(dateProperty)"
-        :label="dateLabel"
-        dense
-        outlined
-        readonly
-        :prepend-icon="mdiCalendarRange"
-        :hint="readOnlyHint(dateProperty)"
-        :model-value="formatToEnviDatDate(dateField, dateProperty)"
-        :error-messages="validationErrors[dateProperty]"
-      />
-
       <v-menu
-        v-else
+        :disabled="readonly"
         id="dateMenu"
         key="dateMenu"
         ref="dateMenu"
@@ -30,10 +18,12 @@
             ref="dateTextField"
             dense
             outlined
+            :readonly="readonly"
+            persistent-hint
+            :hint="readOnlyExplanation"
             :prepend-icon="mdiCalendarRange"
             v-bind="props"
-            :clearable="true"
-            clear-icon="clear"
+            :clearable="!readonly"
             :model-value="formatToEnviDatDate(dateField, dateProperty)"
             @change="changedDateTextField(dateProperty, $event)"
             :error-messages="validationErrors[dateProperty]"
@@ -53,8 +43,6 @@
           :model-value="formatToDatePickerDate(dateField)"
           @click:save="changeDatePicker(dateProperty, $event)"
         >
-<!--
--->
         </v-date-picker>
       </v-menu>
   </div>
@@ -73,7 +61,7 @@ import {
 } from '@/factories/mappingFactory';
 
 import { isFieldValid } from '@/factories/userEditingValidations';
-import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+import { isFieldReadOnly } from '@/factories/globalMethods';
 import { useDate } from 'vuetify';
 import { mdiCalendarRange, mdiSkipNext, mdiSkipPrevious } from '@mdi/js';
 
@@ -126,7 +114,7 @@ export default {
     },
     readOnlyExplanation: {
       type: String,
-      default: '',
+      default: undefined,
     },
   },
   beforeMount() {
@@ -144,6 +132,9 @@ export default {
     );
   },
   computed: {
+    readonly() {
+      return isFieldReadOnly(this.$props, this.dateProperty);
+    },
     dateField: {
       get() {
         return this.previewDate || this.date;
@@ -214,12 +205,6 @@ export default {
       }
 
       return yup.object().shape(validation);
-    },
-    isReadonly(dateProperty) {
-      return isFieldReadOnly(this.$props, dateProperty);
-    },
-    readOnlyHint(dateProperty) {
-      return readOnlyHint(this.$props, dateProperty);
     },
     changeDatePicker(dateProperty, value) {
       if (dateProperty === this.dateProperty) {

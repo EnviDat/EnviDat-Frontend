@@ -10,7 +10,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import globalMethods from '@/factories/globalMethods';
 import { getSpecificApiError } from '@/factories/notificationFactory';
 
 import { getImage } from '@/factories/imageFactory';
