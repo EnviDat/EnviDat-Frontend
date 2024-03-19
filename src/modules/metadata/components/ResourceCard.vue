@@ -5,8 +5,7 @@
     class="metadataResourceCard"
     :class="isSelected ? 'highlighted' : ''"
     style="height: 100%;"
-    :loading="loadingColor"
-  >
+    :loading="loadingColor">
 
     <v-card-title class="text-h5 resourceHeadline">
       <span class="d-flex align-center">
@@ -23,31 +22,26 @@
         'pr-2': showFullDescription,
         'pb-md-3': !showFullDescription,
         'pb-md-10': showFullDescription,
-    }"
-    >
+      }">
       <v-container class="pa-0" fluid>
         <v-row no-gutters>
           <v-col
-            v-if="
-              showFullDescription ||
-                (!showFullDescription && !maxDescriptionLengthReached)
-            "
+            v-if="showFullDescription ||
+              (!showFullDescription && !maxDescriptionLengthReached)
+              "
             class="readableText resourceCardText heightAndScroll"
             :class="{
               'white--text': dark,
               'black--text': !dark,
             }"
-            :style="
-              `scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`
-            "
-          >
+            :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`
+              ">
             <div v-html="markdownText"></div>
           </v-col>
 
           <v-col
             v-if="!showFullDescription && maxDescriptionLengthReached"
-            class="readableText resourceCardText"
-          >
+            class="readableText resourceCardText">
             {{ markdownTextTruncated }}
           </v-col>
         </v-row>
@@ -64,8 +58,7 @@
               v-if="isProtected"
               text="This resource is private"
               :icon="mdiLock"
-              dark
-            />
+              dark />
 
             <base-icon-label-view
               v-if="doi"
@@ -73,8 +66,7 @@
               :icon="mdiFingerprint"
               :icon-tooltip="EDIT_METADATA_DOI_LABEL"
               dark
-              class="mb-1"
-            />
+              class="mb-1" />
 
             <base-icon-label-view
               v-if="format"
@@ -82,8 +74,7 @@
               :icon="extensionIcon"
               :icon-tooltip="formatedBytes ? 'Resource type and size' : 'Resource type'"
               dark
-              class="mb-1"
-            />
+              class="mb-1" />
 
             <base-icon-label-view
               v-if="created"
@@ -91,8 +82,7 @@
               :icon="mdiTimerPlusOutline"
               icon-tooltip="Date of resource creation"
               dark
-              class="mb-1"
-            />
+              class="mb-1" />
 
             <base-icon-label-view
               v-if="lastModified"
@@ -100,8 +90,7 @@
               :icon="mdiUpdate"
               icon-tooltip="Date of last modification"
               dark
-              class="mb-1"
-            />
+              class="mb-1" />
           </v-col>
         </v-row>
       </v-container>
@@ -109,9 +98,8 @@
 
     <v-card-actions
       class="ma-0 pa-2"
-      style="position: absolute; bottom: 0; right: 55px;"
-    >
-      <base-icon-button 
+      style="position: absolute; bottom: 0; right: 55px;">
+      <base-icon-button
         v-if="maxDescriptionLengthReached"
         :class="isProtected ? 'mr-2' : ''"
         :icon="mdiChevronDown"
@@ -119,21 +107,18 @@
         color="accent"
         outlined
         :rotated="showFullDescription"
-        :tooltipText="
-          showFullDescription
-            ? 'Hide full description'
-            : 'Show full description'
-        "
-        @clicked="showFullDescription = !showFullDescription"
-      />
+        :tooltipText="showFullDescription
+          ? 'Hide full description'
+          : 'Show full description'
+          "
+        @clicked="showFullDescription = !showFullDescription" />
     </v-card-actions>
 
     <v-container
       v-if="showGenericOpenButton && !isProtected"
       class="pa-2"
       style="position: absolute; right: 0; width: 55px;"
-      :style="`${genericOpenButtonBottom ? 'bottom: 55px;' : 'top: 0;'}`"
-    >
+      :style="`${genericOpenButtonBottom ? 'bottom: 55px;' : 'top: 0;'}`">
       <v-row>
         <v-col cols="12">
           <base-icon-button
@@ -142,16 +127,14 @@
             color="accent"
             elevated
             :tooltip-text="openButtonTooltip"
-            @clicked="$emit('openButtonClicked')"
-          />
+            @clicked="$emit('openButtonClicked')" />
         </v-col>
       </v-row>
     </v-container>
 
     <v-container
       class="pa-2"
-      style="position: absolute; bottom: 0; right: 0; width: 55px;"
-    >
+      style="position: absolute; bottom: 0; right: 0; width: 55px;">
       <v-row v-if="!isProtected">
         <v-col cols="12">
           <base-icon-button
@@ -161,8 +144,7 @@
             elevated
             :tooltip-text="isFile ? 'Download resource' : 'Open link'"
             :url="url"
-            :disabled="!downloadActive"
-          />
+            :disabled="!downloadActive" />
         </v-col>
       </v-row>
 
@@ -170,13 +152,11 @@
         <v-col>
           <div
             class="fabMenu fabPosition elevation-5 ma-2 pl-2 pt-2"
-            :class="downloadActive ? 'fabMenuHover' : 'fabMenuDisabled'"
-          >
+            :class="downloadActive ? 'fabMenuHover' : 'fabMenuDisabled'">
             <BaseIcon class="pl-1 pt-1" :icon="mdiShield"></BaseIcon>
             <div
               v-if="downloadActive"
-              class="pt-2 lockedText black--text protectedLink"
-            >
+              class="pt-2 lockedText black--text protectedLink">
               <p v-html="protectedText"></p>
             </div>
           </div>
@@ -199,9 +179,10 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
-import { renderMarkdown,stripMarkdown } from '@/factories/stringFactory';
+import { renderMarkdown, stripMarkdown } from '@/factories/stringFactory';
 import { formatBytes, formatDate } from '@/factories/metaDataFactory';
 import { EDIT_METADATA_DOI_LABEL } from '@/factories/metadataConsts';
 import { getFileIcon } from '@/factories/imageFactory';
@@ -210,6 +191,7 @@ import { mdiChevronDown, mdiDownload, mdiFingerprint, mdiLink, mdiLock, mdiShiel
 export default {
   name: 'ResourceCard',
   components: {
+    BaseIcon,
     BaseIconLabelView,
     BaseIconButton,
   },
@@ -230,9 +212,7 @@ export default {
       type: Boolean,
       default: true,
     },
-    fileSizeIcon: String,
     isProtected: Boolean,
-    fileExtensionIcon: Object,
     metadataContact: String,
     downloadActive: {
       type: Boolean,
@@ -388,7 +368,6 @@ export default {
 </script>
 
 <style scoped>
-
 .resourceHeadline {
   line-height: 1.5rem;
 }
