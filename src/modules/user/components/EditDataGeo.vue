@@ -48,9 +48,10 @@
             multiple
             accept=".geojson,.json"
             @change="triggerFileUpload"
-          ></v-file-input>
+          />
+
           <MetadataGeo
-            :genericProps="genericProps"
+            v-bind="genericProps"
             @saveGeoms="commitGeometriesToAPI"
             @undoGeoms="undoGeomEdits"
             @uploadGeomFile="triggerFilePicker"

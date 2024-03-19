@@ -67,7 +67,6 @@ export default {
     ExpandableTextLayout,
   },
   props: {
-    showPlaceholder: Boolean,
     text: {
       type: String,
       default: '',
@@ -88,6 +87,10 @@ export default {
       // this is only for testing & implementation via storybook
       type: Array,
       default: () => [],
+    },
+    showPlaceholder: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {

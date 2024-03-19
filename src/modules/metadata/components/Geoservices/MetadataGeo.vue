@@ -104,43 +104,56 @@ export default {
     BaseRectangleButton,
   },
   props: {
-    genericProps: Object,
-    editErrorMessage: String,
+    site: {
+      type: String,
+      default: undefined,
+    },
+    layerConfig: {
+      type: Object,
+      default: () => {},
+    },
+    mapHeight: {
+      type: Number,
+      default: 450,
+    },
+    editErrorMessage: {
+      type: String,
+      default: undefined,
+    },
+    error: {
+      type: String,
+      default: undefined,
+    },
+    isGcnet: {
+      type: Boolean,
+      default: false,
+    },
+    mapEditable: {
+      type: Boolean,
+      default: false,
+    },
+    mapDivId: {
+      type: String,
+      default: 'metadata-map-small',
+    },
+    saveButtonEnabled: {
+      type: Boolean,
+      default: false,
+    },
+    saveButtonInProgress: {
+      type: Boolean,
+      default: false,
+    },
+    undoButtonEnabled: {
+      type: Boolean,
+      default: false,
+    },
+    showFullscreenButton: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
-    error() {
-      return this.genericProps?.error;
-    },
-    site() {
-      return this.genericProps?.site;
-    },
-    layerConfig() {
-      return this.genericProps?.layerConfig;
-    },
-    isGcnet() {
-      return this.genericProps?.isGcnet || false;
-    },
-    mapHeight() {
-      return this.genericProps?.mapHeight || 450;
-    },
-    mapEditable() {
-      return this.genericProps?.mapEditable || false;
-    },
-    mapDivId() {
-      return this.genericProps?.mapDivId || 'metadata-map-small';
-    },
-    saveButtonEnabled() {
-      return this.genericProps?.saveButtonEnabled || false;
-    },
-    saveButtonInProgress() {
-      return this.genericProps?.saveButtonInProgress || false;
-    },
-    undoButtonEnabled() {
-      return this.genericProps?.undoButtonEnabled || false;
-    },
-    showFullscreenButton() {
-      return this.genericProps?.showFullscreenButton || false;
-    },
   },
   methods: {
     triggerGeomSave() {

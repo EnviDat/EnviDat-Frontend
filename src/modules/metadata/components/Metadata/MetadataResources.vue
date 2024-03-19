@@ -23,9 +23,10 @@
         align="center">
         <v-col class="pr-2">
           <BaseIconLabelView icon-tooltip="Data License"
-            :icon="mdiShieldSearch"
-            :text="dataLicenseTitle"
-            :url="dataLicenseUrl" />
+                             :icon="mdiShieldSearch"
+                             :text="dataLicenseTitle"
+                             :url="dataLicenseUrlField"
+                             />
         </v-col>
 
         <v-col>
@@ -85,21 +86,16 @@
           :order="res.position"
           class="pa-2">
 
-          <ResourceCard
-            v-bind="res"
-            :key="res.id"
-            :doiIcon="doiIcon"
-            :fileSizeIcon="fileSizeIcon"
-            :dateCreatedIcon="dateCreatedIcon"
-            :lastModifiedIcon="lastModifiedIcon"
-            :twoColumnLayout="twoColumnLayout"
-            :downloadActive="resourcesConfig.downloadActive"
-            :showGenericOpenButton="!!res.openEvent"
-            :genericOpenButtonBottom="true"
-            :openButtonTooltip="res.openButtonTooltip"
-            :openButtonIcon="res.openButtonIcon"
-            cardColor="primary"
-            @openButtonClicked="catchOpenClick(res.openEvent, res.openProperty)" />
+          <ResourceCard v-bind="res"
+                          :key="res.id"
+                          :twoColumnLayout="twoColumnLayout"
+                          :downloadActive="resourcesConfig.downloadActive"
+                          :showGenericOpenButton="!!res.openEvent"
+                          :genericOpenButtonBottom="true"
+                          :openButtonTooltip="res.openButtonTooltip"
+                          :openButtonIcon="res.openButtonIcon"
+                          cardColor="primary"
+                          @openButtonClicked="catchOpenClick(res.openEvent, res.openProperty)" />
         </v-col>
       </v-row>
 
@@ -161,7 +157,54 @@ export default {
   },
   props: {
     genericProps: Object,
-    showPlaceholder: Boolean,
+    doi: {
+      type: String,
+      default: undefined,
+    },
+    resources: {
+      type: Array,
+      default: undefined,
+    },
+    dates: {
+      type: Array,
+      default: undefined,
+    },
+    resourcesConfig: {
+      type: Object,
+      default: () => {},
+    },
+    twoColumnLayout: {
+      type: Boolean,
+      default: false,
+    },
+    isOnTop: {
+      type: Boolean,
+      default: false,
+    },
+    dataLicenseId: {
+      type: String,
+      default: undefined,
+    },
+    dataLicenseTitle: {
+      type: String,
+      default: undefined,
+    },
+    dataLicenseUrl: {
+      type: String,
+      default: undefined,
+    },
+    emptyTextColor: {
+      type: String,
+      default: 'red',
+    },
+    emptyText: {
+      type: String,
+      default: 'No resources found for this dataset.',
+    },
+    showPlaceholder: {
+      type: Boolean,
+      default: false,
+    },
   },
   created() {
     this.injectedComponent = null;
@@ -172,64 +215,25 @@ export default {
     eventBus.off(GCNET_INJECT_MICRO_CHARTS, this.injectComponent);
   },
   computed: {
-    doi() {
-      return this.mixinMethods_getGenericProp('doi');
-    },
-    resources() {
-      return this.mixinMethods_getGenericProp('resources');
-    },
-    dates() {
-      return this.mixinMethods_getGenericProp('dates');
-    },
     availableResources() {
       const res = this.resources;
       return res ? res.filter(r => !r.hideFromResourceList) : [];
     },
-    resourcesConfig() {
-      return this.mixinMethods_getGenericProp('resourcesConfig', {});
-    },
-    twoColumnLayout() {
-      return this.mixinMethods_getGenericProp('twoColumnLayout');
-    },
-    isOnTop() {
-      return this.mixinMethods_getGenericProp('isOnTop');
-    },
-    doiIcon() {
-      return this.mixinMethods_getGenericProp('doiIcon');
-    },
-    fileSizeIcon() {
-      return this.mixinMethods_getGenericProp('fileSizeIcon');
-    },
-    dataLicenseTitle() {
-      return this.mixinMethods_getGenericProp('dataLicenseTitle');
-    },
-    dataLicenseUrl() {
-      const licenseId = this.mixinMethods_getGenericProp('dataLicenseId');
+    dataLicenseUrlField() {
+      const licenseId = this.dataLicenseId;
       if (licenseId === WSL_DATA_LICENSE_ID) {
         const wslDataLicense = dataLicenses.filter((l) => l.id === WSL_DATA_LICENSE_ID)[0];
 
         return wslDataLicense.link;
       }
-
-      return this.mixinMethods_getGenericProp('dataLicenseUrl');
-    },
-    dateCreatedIcon() {
-      return this.mixinMethods_getGenericProp('dateCreatedIcon');
-    },
-    lastModifiedIcon() {
-      return this.mixinMethods_getGenericProp('lastModifiedIcon');
+      
+      return this.dataLicenseUrl;
     },
     scrollbarColorFront() {
       return this.$vuetify ? this.$vuetify.theme.themes.light.colors.highlight : 'auto';
     },
     scrollbarColorBack() {
       return this.$vuetify ? '#F0F0F0' : 'auto';
-    },
-    emptyText() {
-      return this.mixinMethods_getGenericProp('emptyText', 'No resources found for this dataset');
-    },
-    emptyTextColor() {
-      return this.mixinMethods_getGenericProp('emptyTextColor', 'red');
     },
   },
   methods: {

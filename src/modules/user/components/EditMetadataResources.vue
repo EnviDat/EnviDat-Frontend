@@ -15,7 +15,7 @@
 
       <v-row>
         <v-col cols="12">
-          <MetadataResources :genericProps="metadataResourcesGenericProps" />
+          <MetadataResources v-bind="metadataResourcesGenericProps" />
         </v-col>
       </v-row>
     </v-container>

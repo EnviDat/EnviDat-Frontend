@@ -342,12 +342,12 @@ export default {
       if (this.authors) {
         this.$nextTick(() => {
 
-          this.$set(components.MetadataAuthors, 'genericProps', {
+          components.MetadataAuthors.props = {
             authors: this.authors,
             authorDetailsConfig: this.authorDetailsConfig,
             authorDeadInfo: this.authorDeadInfo,
             showPlaceholder: this.showPlaceholder,
-          });
+          };
         });
       }
 
@@ -373,13 +373,13 @@ export default {
 
       this.$nextTick(() => {
 
-        this.$set(components.MetadataResources, 'genericProps', {
+        components.MetadataResources.props = {
           ...this.resources,
           dataLicenseId: license.id,
           dataLicenseTitle: license.title,
           dataLicenseUrl: license.url,
           resourcesConfig: this.resourcesConfig,
-        });
+        };
       });
 
     },
@@ -388,12 +388,13 @@ export default {
 
       this.configInfos = getConfigUrls(this.configInfos);
 
-      this.$set(components.MetadataHeader, 'genericProps', this.header);
-      this.$set(components.MetadataBody, 'genericProps', { body: this.body });
-      this.$set(components.MetadataCitation, 'genericProps', {
+      // this.$set(components.MetadataHeader, 'genericProps', this.header);
+      components.MetadataBody.props = { ...this.body };
+
+      components.MetadataCitation.props = {
         ...this.citation,
         showPlaceholder: this.showPlaceholder,
-      });
+      };
 
       this.firstCol = [
         components.MetadataBody,

@@ -110,8 +110,30 @@ import ActiveDataCredits from '@/modules/user/components/edit/ActiveDataCredits.
 export default {
   name: 'MetadataAuthors',
   props: {
-    genericProps: Object,
-    showPlaceholder: Boolean,
+    authors: {
+      type: Array,
+      default: undefined, // () => [],
+    },
+    authorDetailsConfig: {
+      type: Object,
+      default: () => {},
+    },
+    authorDeadInfo: {
+      type: Object,
+      default: () => {},
+    },
+    emptyTextColor: {
+      type: String,
+      default: 'red',
+    },
+    emptyText: {
+      type: String,
+      default: 'No authors found for this dataset.',
+    },
+    showPlaceholder: {
+      type: Boolean,
+      default: false,
+    },
   },
   mounted() {
     const options = this.options || {};
@@ -133,25 +155,10 @@ export default {
     hasEditingAuthorsSlot() {
       // correct refactoring??
       // check https://v3-migration.vuejs.org/breaking-changes/slots-unification.html#_3-x-syntax
-      return !!this.$slots.editingAuthors();
-    },
-    authors() {
-      return this.mixinMethods_getGenericProp('authors');
-    },
-    authorDetailsConfig() {
-      return this.mixinMethods_getGenericProp('authorDetailsConfig', {});
-    },
-    authorDeadInfo() {
-      return this.mixinMethods_getGenericProp('authorDeadInfo', {});
+      return Object.values(this.$slots).length > 0 && !!this.$slots.editingAuthors();
     },
     hasAuthors() {
       return this.authors?.length > 0;
-    },
-    emptyTextColor() {
-      return this.mixinMethods_getGenericProp('emptyTextColor', 'red');
-    },
-    emptyText() {
-      return this.mixinMethods_getGenericProp('emptyText', 'No authors found for this dataset.');
     },
     scrollbarColorFront() {
       return this.$vuetify ? this.$vuetify.theme.themes.light.colors.highlight : 'auto';

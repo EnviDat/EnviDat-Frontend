@@ -12,7 +12,7 @@
       </div>
     </v-card-title>
 
-    <v-card-text v-if="fundingItems"
+    <v-card-text v-if="fundingField"
                   ref="funding"
                   :style="`overflow-x: hidden; scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
                   class="pa-4 pt-0 readableText heightAndScroll" >
@@ -93,12 +93,26 @@ export default {
   components: {
   },
   props: {
-    genericProps: Object,
-    showPlaceholder: Boolean,
+    funding: {
+      type: Array,
+      default: undefined, // () => [],
+    },
+    emptyTextColor: {
+      type: String,
+      default: 'grey',
+    },
+    emptyText: {
+      type: String,
+      default: 'No information about funding available for this dataset.',
+    },
+    showPlaceholder: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
-    funding() {
-      const funding = this.mixinMethods_getGenericProp('funding');
+    fundingField() {
+      const funding = this.funding;
 
       if (funding) {
         let notAvailable = 0;
@@ -118,15 +132,9 @@ export default {
       return funding;
     },
     fundingItems() {
-      if (!this.funding) return null;
+      if (!this.fundingField) return null;
 
-      return Object.values(this.funding);
-    },
-    emptyTextColor() {
-      return this.mixinMethods_getGenericProp('emptyTextColor', 'grey');
-    },
-    emptyText() {
-      return this.mixinMethods_getGenericProp('emptyText', 'No information about funding available for this dataset.');
+      return Object.values(this.fundingField);
     },
     scrollbarColorFront() {
       return this.$vuetify ? this.$vuetify.theme.themes.light.colors.highlight : 'auto';

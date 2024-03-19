@@ -62,7 +62,6 @@ import { isObjectValidCheckAllProps } from '@/factories/userEditingValidations';
 export default {
   name: 'EditResourcePasteUrl',
   props: {
-    genericProps: Object,
   },
   computed: {},
   methods: {

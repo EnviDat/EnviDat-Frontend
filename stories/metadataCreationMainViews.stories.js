@@ -271,7 +271,7 @@ export const GenericTextareaPreviewMetadataBodyView = () => ({
       eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     mounted() {
-        this.genericPropsFilled.body.text = this.genericPropsFilled.textareaContent;
+      this.genericPropsFilled.text = this.genericPropsFilled.textareaContent;
     },
     beforeUnmount() {
       eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
@@ -280,11 +280,11 @@ export const GenericTextareaPreviewMetadataBodyView = () => ({
       editComponentsChanged(updateObj) {
         if (updateObj.data.id === this.genericProps.id) {
           this.genericProps = updateObj.data;
-          this.genericProps.body.text = this.genericProps.textareaContent;
+          this.genericProps.text = this.genericProps.textareaContent;
         }
         if (updateObj.data.id === this.genericPropsFilled.id) {
           this.genericPropsFilled = updateObj.data;
-          this.genericPropsFilled.body.text = this.genericPropsFilled.textareaContent;
+          this.genericPropsFilled.text = this.genericPropsFilled.textareaContent;
         }
       },
     },
@@ -298,9 +298,7 @@ export const GenericTextareaPreviewMetadataBodyView = () => ({
         textareaContent: '',
         subtitlePreview: 'Preview',
         showPlaceholder: false,
-        body: {
-          text: '',
-        },
+        text: '',
       },
       genericPropsFilled: {
         id: '2',
@@ -332,9 +330,7 @@ shorten users’ journey to the issue solution or whatever. Each Story should
 contribute something to the general goal of your product. `,
         subtitlePreview: 'Preview',
         showPlaceholder: false,
-        body: {
-          text: '',
-        },
+        text: '',
       },
     }),
   });

@@ -542,13 +542,13 @@ export default {
 
       this.$nextTick(() => {
 
-        this.$set(components.MetadataResources, 'genericProps', {
+        components.MetadataResources.props = {
           ...this.resources,
           dataLicenseId: license.id,
           dataLicenseTitle: license.title,
           dataLicenseUrl: license.url,
           resourcesConfig: this.resourcesConfig,
-        });
+        };
       });
 
     },
@@ -574,25 +574,26 @@ export default {
         this.setGeoServiceLayers(this.location, null);
       }
 
-      this.$set(components.MetadataHeader, 'genericProps', this.header);
-      this.$set(components.MetadataBody, 'genericProps', { body: this.body });
-      this.$set(components.MetadataCitation, 'genericProps', {
+      // components.MetadataHeader.props = this.header;
+
+      components.MetadataBody.props = { ...this.body };
+      components.MetadataCitation.props = {
         ...this.citation,
         showPlaceholder: this.showPlaceholder,
-      });
+      };
 
-      this.$set(components.MetadataPublications, 'genericProps', {
+      components.MetadataPublications.props = {
         ...this.publications,
         metadataConfig: this.metadataConfig,
-      });
+      }
 
-      this.$set(components.MetadataRelatedDatasets, 'genericProps', {
+      components.MetadataRelatedDatasets.props = {
         ...this.relatedDatasets,
-      });
+      }
 
-      this.$set(components.MetadataFunding, 'genericProps', {
+      components.MetadataFunding.props = {
         funding: this.funding,
-      });
+      }
 
       this.firstCol = [
         components.MetadataBody,

@@ -39,7 +39,7 @@
 
       <v-row >
         <v-col cols="12">
-          <MetadataAuthors :genericProps="metadataAuthorsObject" >
+          <MetadataAuthors v-bind="metadataAuthorsObject" >
             <template #editingAuthors="{ author }" >
 
               <AuthorCard v-bind="authorEditingProperties(author)"
