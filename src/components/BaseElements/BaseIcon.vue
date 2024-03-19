@@ -67,7 +67,6 @@ export default {
       if (typeof this.icon === 'string') {
         return getIcon(this.icon);
       }
-      debugger;
       return null;
     },
   },
