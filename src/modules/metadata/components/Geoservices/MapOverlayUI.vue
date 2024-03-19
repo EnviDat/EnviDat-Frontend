@@ -9,8 +9,7 @@
               icon-color="black"
               color="secondary"
               outlined
-              @clicked="triggerZoomIn"
-            />
+              @clicked="triggerZoomIn" />
           </v-col>
 
           <v-col class="px-1 flex-grow-0">
@@ -19,8 +18,7 @@
               icon-color="black"
               color="secondary"
               outlined
-              @clicked="triggerZoomOut"
-            />
+              @clicked="triggerZoomOut" />
           </v-col>
 
           <v-col class="px-2 flex-grow-0">
@@ -29,8 +27,7 @@
               icon-color="black"
               color="secondary"
               outlined
-              @clicked="triggerZoomCenter"
-            />
+              @clicked="triggerZoomCenter" />
           </v-col>
         </v-row>
       </v-col>
@@ -42,8 +39,7 @@
             <BaseIconButton
               :icon="mdiSimpleIcons"
               icon-color="red"
-              @clicked="triggerSplitEnd"
-            />
+              @clicked="triggerSplitEnd" />
           </v-col>
         </v-row>
       </v-col>
@@ -56,8 +52,7 @@
           :icon="mdiMapMarker"
           icon-color="black"
           disabled
-          @clicked="showSite = !showSite"
-        />
+          @clicked="showSite = !showSite" />
       </v-col>
     </v-row>
 
@@ -66,9 +61,8 @@
         ripple
         class="pa-0"
         style="width: 48px; height: 48px;"
-        @click="toggleBaseMap"
-      >
-        <img width="40" height="40" :src="baseMapImage" class="ma-1"  alt="toggle map tiles"/>
+        @click="toggleBaseMap">
+        <img width="40" height="40" :src="baseMapImage" class="ma-1" alt="toggle map tiles" />
       </v-card>
     </div>
   </div>
@@ -85,6 +79,7 @@ import {
   MAP_ZOOM_IN,
   MAP_ZOOM_OUT,
 } from '@/factories/eventBus';
+import { getImage } from '@/factories/imageFactory';
 import { mdiImageFilterCenterFocus, mdiMapMarker, mdiMinus, mdiPlus, mdiSimpleIcons } from '@mdi/js';
 
 
@@ -150,14 +145,8 @@ export default {
   methods: {
     loadBaseMapImages() {
       if (this.$store) {
-        this.baseMapSatelliteImg = this.mixinMethods_getWebpImage(
-          'map/baseMap-satellite-icon',
-          this.$store.state,
-        );
-        this.baseMapStreetsImg = this.mixinMethods_getWebpImage(
-          'map/baseMap-streets-icon',
-          this.$store.state,
-        );
+        this.baseMapSatelliteImg = getImage('map/baseMap-satellite-icon');
+        this.baseMapStreetsImg = getImage('map/baseMap-streets-icon');
       } else {
         // Fallback import .png
         import('@/assets/map/baseMap-satellite-icon.png').then(imgImport => {

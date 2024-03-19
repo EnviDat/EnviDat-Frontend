@@ -1,36 +1,35 @@
 <template>
   <v-container class="pa-0 ma-0"
-                tag="article"
-                fluid
-                :id="BLOG_PAGENAME" >
+    tag="article"
+    fluid
+    :id="BLOG_PAGENAME">
 
     <v-row no-gutters
-            ref="blogHeader"
-           class="py-1 py-md-4">
+      ref="blogHeader"
+      class="py-1 py-md-4">
 
       <v-col cols="12"
-             md="10"
-             offset-md="1">
+        md="10"
+        offset-md="1">
 
         <BlogHeader :title="blogHeaderTitle"
-                    :titleImage="post ? post.titleImg : blogHeaderImg"
-                    :height="$vuetify.display.smAndDown ? 100 : 150"
-                    :showCloseButton="!!showBlogPost"
-                    @clickedBack="catchClosePost"
-                    />
+          :titleImage="post ? post.titleImg : blogHeaderImg"
+          :height="$vuetify.display.smAndDown ? 100 : 150"
+          :showCloseButton="!!showBlogPost"
+          @clickedBack="catchClosePost" />
       </v-col>
 
     </v-row>
 
     <v-row no-gutters
-           id="blogSubHeader"
-           class="py-2">
+      id="blogSubHeader"
+      class="py-2">
 
       <v-col cols="12"
-             offset-md="1"
-             md="10"
-             class="text-body-1"
-             v-html="pageIntroText">
+        offset-md="1"
+        md="10"
+        class="text-body-1"
+        v-html="pageIntroText">
 
       </v-col>
 
@@ -38,47 +37,45 @@
 
 
     <v-row no-gutters
-           ref="blogBody"
-           class="py-1 py-md-4">
+      ref="blogBody"
+      class="py-1 py-md-4">
 
       <v-col v-if="showBlogPost"
-             cols="12"
-             md="10"
-             offset-md="1"
-            >
+        cols="12"
+        md="10"
+        offset-md="1">
         <BlogPost :post="post"
-                  :postContent="postContent" />
+          :postContent="postContent" />
       </v-col>
 
       <v-col v-if="!showBlogPost && loadingList"
-             class="pt-3"
-             cols="12"
-             md="10"
-             offset-md="1">
+        class="pt-3"
+        cols="12"
+        md="10"
+        offset-md="1">
         Loading the blog entries...
       </v-col>
 
       <v-col v-if="!showBlogPost && !loadingList"
-             class="pt-3"
-             cols="12"
-             md="10"
-             offset-md="1"
-             >
+        class="pt-3"
+        cols="12"
+        md="10"
+        offset-md="1">
 
         <v-row no-gutters>
           <v-col v-for="(post, index) in list"
-                 :key="index"
-                 cols="12"
-                 sm="6"
-                 md="4"
-                 class="pa-2" >
+            :key="index"
+            cols="12"
+            sm="6"
+            md="4"
+            class="pa-2">
             <BlogPostCard :postTitle="post.title"
-                          :titleCssClass="$vuetify.display.smAndDown ? 'text-h6 px-4' : undefined"
-                          :postDate="post.date"
-                          :titleImg="post.titleImg"
-                          :loadingImg="fallbackCardImg"
-                          height="200"
-                          @clicked="catchPostClick(post.postFile)"/>
+              :titleCssClass="$vuetify.display.smAndDown ? 'text-h6 px-4' : undefined"
+              :postDate="post.date"
+              :titleImg="post.titleImg"
+              :loadingImg="fallbackCardImg"
+              height="200"
+              @clicked="catchPostClick(post.postFile)" />
           </v-col>
         </v-row>
 
@@ -122,6 +119,7 @@ import {
 import BlogHeader from '@/modules/blog/components/BlogHeader.vue';
 import BlogPost from '@/modules/blog/components/BlogPost.vue';
 import BlogPostCard from '@/modules/blog/components/BlogPostCard.vue';
+import { getImage } from '@/factories/imageFactory';
 
 export default {
   name: BLOG_PAGENAME,
@@ -134,14 +132,14 @@ export default {
   created() {
     this.blogModuleLoaded = !!this.$store?.state?.blog;
 
-    this.$store?.watch((state) => state.blog,(value) => {
+    this.$store?.watch((state) => state.blog, (value) => {
       this.blogModuleLoaded = !!value;
     });
   },
   beforeMount() {
     this.$store.dispatch(`${BLOG_NAMESPACE}/${GET_BLOG_LIST}`);
 
-    this.fallbackCardImg = this.mixinMethods_getWebpImage('about/contact', this.$store.state);
+    this.fallbackCardImg = getImage('about/contact');
   },
   /**
    * @description reset the scrolling to the top,
@@ -175,10 +173,10 @@ export default {
     },
     blogHeaderImg() {
       if (this.showBlogPost) {
-        return this.mixinMethods_getWebpImage('blog/postHeader', this.$store.state);
+        return getImage('blog/postHeader');
       }
 
-      return this.mixinMethods_getWebpImage('blog/blogHeader', this.$store.state);
+      return getImage('blog/blogHeader');
     },
   },
   methods: {
@@ -208,7 +206,7 @@ export default {
     catchClosePost() {
       this.$router.push({
         path: BLOG_PATH,
-        params: { post: null},
+        params: { post: null },
       });
     },
     clearPost() {
@@ -235,6 +233,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

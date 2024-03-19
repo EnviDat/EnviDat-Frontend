@@ -5,8 +5,7 @@
         <img-and-text-layout
           :img="missionImg"
           :height="$vuetify.display.smAndDown ? 100 : 150"
-          title="Research Projects"
-        />
+          title="Research Projects" />
       </v-col>
 
       <v-col class="mt-5" cols="12" lg="10" offset-lg="1">
@@ -18,8 +17,7 @@
               cols="12"
               sm="6"
               md="4"
-              xl="3"
-            >
+              xl="3">
               <project-card-placeholder />
             </v-col>
           </v-row>
@@ -33,8 +31,7 @@
               cols="12"
               sm="6"
               md="4"
-              xl="3"
-            >
+              xl="3">
               <project-card
                 :id="project.name"
                 :title="project.title"
@@ -43,8 +40,7 @@
                 :description="project.description"
                 :subProjects="project.subProjects"
                 @cardClick="onCardClick"
-                @subprojectClick="onSubprojectClick"
-              />
+                @subprojectClick="onSubprojectClick" />
             </v-col>
           </v-row>
         </v-container>
@@ -68,7 +64,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { mapGetters,mapState } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 
 import ImgAndTextLayout from '@/components/Layouts/ImgAndTextLayout.vue';
 import {
@@ -87,6 +83,7 @@ import {
 } from '../store/projectsMutationsConsts';
 import ProjectCard from './ProjectCard.vue';
 import ProjectCardPlaceholder from './ProjectCardPlaceholder.vue';
+import { getImage } from '@/factories/imageFactory';
 
 export default {
   name: 'ProjectsPage',
@@ -133,13 +130,13 @@ export default {
       const imgPath = this.$vuetify.display.mdAndUp
         ? 'projects/mission'
         : 'about/mission_small';
-      return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
+      return getImage(imgPath);
     },
     creatorImg() {
       const imgPath = this.$vuetify.display.mdAndUp
         ? 'projects/data_creator'
         : 'projects/data_creator_small';
-      return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
+      return getImage(imgPath);
     },
   },
   methods: {

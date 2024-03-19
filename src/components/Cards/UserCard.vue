@@ -1,19 +1,19 @@
 <template>
   <v-card id="UserCard"
-          :width="width"
-          :height="height"
-          :loading="loadingColor">
+    :width="width"
+    :height="height"
+    :loading="loadingColor">
 
     <div class="cardGrid fill-height"
-          :style="`grid-template-rows: ${headerHeight}px 70px auto`">
+      :style="`grid-template-rows: ${headerHeight}px 70px auto`">
 
       <div :style="`height: ${headerHeight}px; overflow: hidden;`">
         <v-img :height="headerHeight"
-                :width="width"
-                style="border-top-left-radius: 4px; border-top-right-radius: 4px;"
-               :src="userCardBanner" />
+          :width="width"
+          style="border-top-left-radius: 4px; border-top-right-radius: 4px;"
+          :src="userCardBanner" />
 
-<!--        :src="`https://gravatar.com/avatar/${email}?s=${gravatarImageSize}&d=identicon&r=g`"
+        <!--        :src="`https://gravatar.com/avatar/${email}?s=${gravatarImageSize}&d=identicon&r=g`"
         -->
       </div>
 
@@ -21,19 +21,19 @@
         {{ userName }}
       </div>
 
-      <div class="pa-4" >
+      <div class="pa-4">
         <v-container fluid
-                      class="pa-0">
+          class="pa-0">
           <v-row no-gutters
-                 class="py-2"
-                 justify="start">
+            class="py-2"
+            justify="start">
             <v-col class="text-body-2">Datasets</v-col>
             <v-col class="text-caption">{{ datasetCount }}</v-col>
           </v-row>
 
           <v-row no-gutters
-                 class="py-2"
-                 justify="start">
+            class="py-2"
+            justify="start">
             <v-col class="text-body-2">Email</v-col>
             <v-col class="text-caption"><a :href="`mailto:${email}`">{{ email }}</a></v-col>
           </v-row>
@@ -44,11 +44,11 @@
     </div>
 
     <div style="position: absolute; right: 39.5%; border-radius: 50%;"
-          :style="`top: ${avatarTopPosition}px;`" >
+      :style="`top: ${avatarTopPosition}px;`">
       <UserAvatar :size="avatarHeight"
-                  :nameInitials="nameInitials"
-                  :emailHash="emailHash"
-                  class="elevation-5" />
+        :nameInitials="nameInitials"
+        :emailHash="emailHash"
+        class="elevation-5" />
     </div>
 
   </v-card>
@@ -68,6 +68,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 import UserAvatar from '@/components/Layouts/UserAvatar.vue';
+import { getImage } from '@/factories/imageFactory';
 
 
 export default {
@@ -106,12 +107,7 @@ export default {
       return undefined;
     },
     userCardBanner() {
-      if (this.$store) {
-        const imgPath = 'projects/data_creator';
-        return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
-      }
-
-      return '';
+      return getImage('projects/data_creator');
     },
     headerHeight() {
       return this.height >= 350 ? this.height * 0.2 : this.height * 0.4;
@@ -127,24 +123,22 @@ export default {
 </script>
 
 <style scoped>
+.cardGrid {
+  display: grid;
+  justify-content: center;
+  grid-template-columns: 100%;
+}
 
-  .cardGrid {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: 100%;
-  }
+.subGrid {
+  display: grid;
+  grid-template-columns: 30% 70%;
+  column-gap: 16px;
+  padding-right: 16px;
+  padding-left: 16px;
+}
 
-  .subGrid {
-    display: grid;
-    grid-template-columns: 30% 70%;
-    column-gap: 16px;
-    padding-right: 16px;
-    padding-left: 16px;
-  }
-
-  .subGrid div {
-    word-break: break-all;
-    align-content: end;
-  }
-
+.subGrid div {
+  word-break: break-all;
+  align-content: end;
+}
 </style>
