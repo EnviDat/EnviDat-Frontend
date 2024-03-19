@@ -106,8 +106,46 @@ export default {
     BaseRectangleButton,
   },
   props: {
-    genericProps: Object,
-    showPlaceholder: Boolean,
+    citationText: {
+      type: String,
+      default: undefined,
+    },
+    citationXmlLink: {
+      type: String,
+      default: undefined,
+    },
+    citationIsoXmlLink: {
+      type: String,
+      default: undefined,
+    },
+    citationGCMDXmlLink: {
+      type: String,
+      default: undefined,
+    },
+    citationBibtexXmlLink: {
+      type: String,
+      default: undefined,
+    },
+    citationRisXmlLink: {
+      type: String,
+      default: undefined,
+    },
+    fixedHeight: {
+      type: Boolean,
+      default: false,
+    },
+    emptyTextColor: {
+      type: String,
+      default: 'red',
+    },
+    emptyText: {
+      type: String,
+      default: 'No citation found for this dataset.',
+    },
+    showPlaceholder: {
+      type: Boolean,
+      default: false,
+    },
   },
   data: () => ({
     METADATA_CITATION_TITLE,
@@ -118,9 +156,6 @@ export default {
   computed: {
     markdownText() {
       return renderMarkdown(this.citationText, false);
-    },
-    citationText() {
-      return this.mixinMethods_getGenericProp('citationText');
     },
     citationLinks() {
       return [{
@@ -149,30 +184,6 @@ export default {
         url: this.citationRisXmlLink,
       },
       ];
-    },
-    citationXmlLink() {
-      return this.mixinMethods_getGenericProp('citationXmlLink');
-    },
-    citationIsoXmlLink() {
-      return this.mixinMethods_getGenericProp('citationIsoXmlLink');
-    },
-    citationGCMDXmlLink() {
-      return this.mixinMethods_getGenericProp('citationGCMDXmlLink');
-    },
-    citationBibtexXmlLink() {
-      return this.mixinMethods_getGenericProp('citationBibtexXmlLink');
-    },
-    citationRisXmlLink() {
-      return this.mixinMethods_getGenericProp('citationRisXmlLink');
-    },
-    fixedHeight() {
-      return this.mixinMethods_getGenericProp('fixedHeight');
-    },
-    emptyTextColor() {
-      return this.mixinMethods_getGenericProp('emptyTextColor', 'red');
-    },
-    emptyText() {
-      return this.mixinMethods_getGenericProp('emptyText', 'No citation found for this dataset.');
     },
   },
   methods: {

@@ -240,20 +240,20 @@ export const MetadataBodyViews = () => ({
   <v-row>
 
     <v-col cols="6" class="py-3">
-      <metadata-body :genericProps="genericPropsPlaceholder" />
+      <metadata-body v-bind="genericPropsPlaceholder" />
     </v-col>
 
     <v-col cols="6" class="py-3">
-      <metadata-body :genericProps="genericPropsPlaceholder"
+      <metadata-body v-bind="genericPropsPlaceholder"
                       :showPlaceholder="genericPropsPlaceholder.showPlaceholder" />
     </v-col>
 
     <v-col cols="4" class="py-3">
-      <metadata-body :genericProps="genericPropsBody" />
+      <metadata-body v-bind="genericPropsBody" />
     </v-col>
 
     <v-col cols="8" class="py-3">
-      <metadata-body :genericProps="genericPropsBodyLongDesc" />
+      <metadata-body v-bind="genericPropsBodyLongDesc" />
     </v-col>
 
   </v-row>
@@ -261,17 +261,15 @@ export const MetadataBodyViews = () => ({
   data: () => ({
     genericPropsPlaceholder: {
       showPlaceholder: true,
-      body: {
-        title: 'Description',
-      },
+      title: 'Description',
     },
     genericPropsBody: {
       showPlaceholder: false,
-      body: body1,
+      ...body1,
     },
     genericPropsBodyLongDesc: {
       showPlaceholder: false,
-      body: body2,
+      ...body2,
     },
   }),
 });
@@ -282,28 +280,28 @@ export const MetadataCitationViews = () => ({
   <v-row >
 
     <v-col cols="6" class="py-3">
-      <metadata-citation :genericProps="genericPropsPlaceholder" />
+      <metadata-citation v-bind="genericPropsPlaceholder" />
     </v-col>
 
     <v-col cols="6" class="py-3">
-      <metadata-citation :genericProps="genericPropsPlaceholder"
+      <metadata-citation v-bind="genericPropsPlaceholder"
                           :showPlaceholder="genericPropsPlaceholder.showPlaceholder" />
     </v-col>
 
     <v-col cols="4" class="py-3">
-      <metadata-citation :genericProps="genericProps1" />
+      <metadata-citation v-bind="genericProps1" />
     </v-col>
 
     <v-col cols="8" class="py-3">
-      <metadata-citation :genericProps="genericProps2" />
+      <metadata-citation v-bind="genericProps2" />
     </v-col>
 
     <v-col cols="6" class="py-3">
-      <metadata-citation :genericProps="citationGenericProps3" />
+      <metadata-citation v-bind="citationGenericProps3" />
     </v-col>
 
     <v-col cols="6" class="py-3">
-      <metadata-citation :genericProps="citationGenericProps4" />
+      <metadata-citation v-bind="citationGenericProps4" />
     </v-col>
 
   </v-row>
@@ -548,21 +546,21 @@ export const MetadataFundingViews = () => ({
   <v-row >
 
     <v-col cols="6" class="py-3">
-      <metadata-funding :genericProps="genericProp" />
+      <metadata-funding v-bind="genericProp" />
     </v-col>
 
     <v-col cols="6" class="py-3">
-      <metadata-funding :genericProps="genericPropsPlaceholder"
+      <metadata-funding v-bind="genericPropsPlaceholder"
                         :showPlaceholder="genericPropsPlaceholder.showPlaceholder" />
     </v-col>
 
     <v-col cols="4" class="py-3">
-      <metadata-funding :genericProps="genericProps2"
+      <metadata-funding v-bind="genericProps2"
                           :showPlaceholder="genericProps2.showPlaceholder"/>
     </v-col>
 
     <v-col cols="8" class="py-3">
-      <metadata-funding :genericProps="genericProps2"
+      <metadata-funding v-bind="genericProps2"
                         :showPlaceholder="genericProps2.showPlaceholder"/>
     </v-col>
 
@@ -596,7 +594,7 @@ export const MetadataAuthorsViews = () => ({
     </v-col>
 
     <v-col cols="12" md="6" class="py-3">
-      <metadata-authors :genericProps="genericPropsPlaceholder"
+      <metadata-authors v-bind="genericPropsPlaceholder"
                         :showPlaceholder="genericPropsPlaceholder.showPlaceholder" />
     </v-col>
 
@@ -605,7 +603,7 @@ export const MetadataAuthorsViews = () => ({
     </v-col>
 
     <v-col cols="12" class="py-3">
-      <metadata-authors :genericProps="genericProps5" />
+      <metadata-authors v-bind="genericProps5" />
     </v-col>
   
   </v-row>
@@ -624,7 +622,7 @@ export const MetadataAuthorsViews = () => ({
       }
 
       return {
-        genericProps: this.genericProps5,
+        ...this.genericProps5,
       };
     },
   },

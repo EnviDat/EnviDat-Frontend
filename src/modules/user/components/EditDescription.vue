@@ -46,7 +46,7 @@
                                         :hint="readOnlyHint(editingProperty)"
                                         @inputedText="catchInputedText($event)"
                                         @changedText="catchChangedText($event)">
-            <MetadataBody :genericProps="descriptionObject" />
+            <MetadataBody v-bind="descriptionObject" />
           </GenericTextareaPreviewLayout>
 
         </v-col>
@@ -150,10 +150,8 @@ export default {
     },
     descriptionObject() {
       return {
-        body: {
-          text: this.previewDescription,
-          maxTextLength: 5000,
-        },
+        text: this.previewDescription,
+        maxTextLength: 5000,
       };
     },
     validations() {
