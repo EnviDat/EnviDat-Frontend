@@ -20,7 +20,6 @@ export const ResourceCardCollection = () => ({
     components: { ResourceCard },
     template: `
     <v-row>
-
       <v-col 
         cols="3"
         class="pa-2"

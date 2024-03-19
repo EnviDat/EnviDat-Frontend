@@ -2,9 +2,13 @@
   <div class="baseIconLabelView">
     <v-tooltip bottom :disabled="$vuetify.display.xsOnly || !iconTooltip">
       <template v-slot:activator="{ on }">
-        <div v-on="on" class="baseIconLabelViewWrapper">
-          <div class="baseIconLabelViewIcon" :class="{ dark }">
-            <BaseIcon :icon="icon" :dark="dark" />
+        <div v-on="on" class="baseIconLabelViewWrapper" :class="{
+          dark,
+          'white--text': dark,
+          'black--text': !dark,
+        }">
+          <div class="baseIconLabelViewIcon">
+            <BaseIcon :icon="icon" :dark="dark" :light="light" />
           </div>
           <div class="baseIconLabelViewText" :style="textStyle">
             <a v-if="url" :href="url" target="_blank" rel="noopener noreferrer">
@@ -48,6 +52,7 @@ export default {
     text: String,
     url: String,
     dark: Boolean,
+    light: Boolean,
   },
   computed: {
     iconAlt() {
