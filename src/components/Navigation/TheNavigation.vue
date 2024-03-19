@@ -20,7 +20,7 @@
                        overlay-color="highlight"
                        mini-variant-width="60"
                        rail-width="60"
-                       width="190" >
+                       width="220" >
 
     <v-list dense >
 
@@ -28,7 +28,8 @@
                    :key="index"
                    :prepend-icon="item.icon"
                    :title="item.title"
-                   :color="item.disabled ? 'grey' : 'primary'"
+                   density='compact'
+                   :color="item.disabled ? 'grey' : item.active ? 'accent' : 'secondary'"
                    :disabled="item.disabled"
                    :class="`${item.icon === 'envidat' ? mini ? 'px-2' : 'px-3' : '' }`"
                    @click.stop="itemClick(item)" >

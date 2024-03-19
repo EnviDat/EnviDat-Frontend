@@ -19,13 +19,19 @@ import {
   SERVICE_PAGENAME,
 } from '@/router/routeConsts';
 
+import {
+  mdiEarth, mdiBookOpenPageVariant, mdiPencilRuler, mdiFileTree, mdiLibraryShelves,
+  mdiMagnify, mdiMenuRight, mdiPound, mdiInformation, mdiBookshelf, mdiAccountArrowRight,
+} from '@mdi/js';
+
 const domain = import.meta.env.VITE_DOMAIN;
+const appVersion = import.meta.env.VITE_VERSION;
 
 export const navigationItems = [
   // { title: 'Home', icon: 'envidat', toolTip: 'Back to the start page', active: false, path: LANDING_PATH, pageName: LANDING_PAGENAME },
   {
     title: 'Explore',
-    icon: 'search',
+    icon: mdiMagnify,
     toolTip: 'Explore research data',
     active: false,
     path: BROWSE_PATH,
@@ -34,7 +40,7 @@ export const navigationItems = [
   },
   {
     title: 'Projects',
-    icon: 'library_books',
+    icon: mdiLibraryShelves,
     toolTip: 'Overview of the research projects on Envidat',
     active: false,
     path: PROJECTS_PATH,
@@ -44,27 +50,16 @@ export const navigationItems = [
   },
   {
     title: 'Organizations',
-    icon: 'account_tree',
+    icon: mdiFileTree,
     toolTip: 'Overview of the different organizations',
     active: false,
     path: `${domain}/organization`,
     pageName: 'external',
     disabled: false,
   },
-/*
-  {
-    title: 'Sign In',
-    icon: 'person',
-    toolTip: 'Sign in to manage your research data',
-    active: false,
-    path: USER_SIGNIN_PATH,
-    pageName: USER_SIGNIN_PAGENAME,
-    disabled: false,
-  },
-*/
   {
     title: 'Tools & Services',
-    icon: 'design_services',
+    icon: mdiPencilRuler,
     toolTip: 'Research data tools and services',
     active: false,
     path: SERVICE_PATH,
@@ -72,8 +67,8 @@ export const navigationItems = [
     disabled: false,
   },
   {
-    title: 'Community Integration',
-    icon: 'public',
+    title: 'Integrations',
+    icon: mdiEarth,
     toolTip: 'EnviDat is integrated in the various research data platforms',
     active: false,
     path: INTEGRATION_PATH,
@@ -82,7 +77,7 @@ export const navigationItems = [
   },
   {
     title: 'Blog',
-    icon: 'auto_stories',
+    icon: mdiBookOpenPageVariant,
     toolTip: 'News and articles from the EnviDat team',
     active: false,
     path: BLOG_PATH,
@@ -91,7 +86,7 @@ export const navigationItems = [
   },
   {
     title: 'About',
-    icon: 'info',
+    icon: mdiInformation,
     toolTip: 'Information about EnviDat',
     active: false,
     path: ABOUT_PATH,
@@ -99,16 +94,25 @@ export const navigationItems = [
     disabled: false,
   },
   {
-    title: 'Menu',
-    icon: 'menu',
+    title: `Version: ${appVersion}`,
+    icon: mdiPound,
+    toolTip: `Version: ${appVersion}`,
+    active: false,
+    path: '',
+    pageName: '',
+    disabled: false,
+  },
+  {
+    // title: 'Menu',
+    icon: mdiMenuRight,
     active: false,
     disabled: false,
   },
 ];
 
 export const userMenuItems = [
-  { title: 'Dashboard', icon: 'dashboard', toolTip: 'My Dashboard', active: false, path: USER_DASHBOARD_PATH, pageName: USER_DASHBOARD_PAGENAME },
+  { title: 'Dashboard', icon: mdiBookshelf, toolTip: 'My Dashboard', active: false, path: USER_DASHBOARD_PATH, pageName: USER_DASHBOARD_PAGENAME },
   // { title: 'Create Dataset', icon: 'add_cricle_outline', toolTip: 'Create a new dataset', active: false, path: 'createDataset', pageName: 'CreateDataset' },
   // { title: 'Edit Profile', icon: 'edit', toolTip: 'Edit profile', active: false, path: 'profile', pageName: 'EditProfile' },
-  { title: 'Sign out', icon: 'logout', toolTip: 'Sign out', active: false, path: USER_SIGNOUT_PATH, pageName: '' },
+  { title: 'Sign out', icon: mdiAccountArrowRight , toolTip: 'Sign out', active: false, path: USER_SIGNOUT_PATH, pageName: '' },
 ];

@@ -24,13 +24,9 @@ import UserMenu from '@/modules/user/components/UserMenu.vue';
 import MetadataCube from '@/components/BaseElements/MetadataCube.vue';
 import TitleCard from '@/components/Cards/TitleCard.vue';
 
+import { userMenuItems } from '@/store/navigationState';
 import authorCollection from './testdata/authorCollection.json';
 
-
-const userMenuItems = [
-  { title: 'dashboard', icon: 'dashboard', toolTip: 'My Dashboard', active: false, path: 'dashboard', pageName: 'UserDashboard' },
-  { title: 'profile', icon: 'edit', toolTip: 'Edit profile', active: false, path: 'profile', pageName: 'EditProfile' },
-];
 
 export default {
   title: '7 User / User Elements',
