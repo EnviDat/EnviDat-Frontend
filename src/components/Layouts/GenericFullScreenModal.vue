@@ -44,7 +44,7 @@
                     style="overflow: auto;" >
 
           <component :is="currentComponent"
-                    v-bind="genericProps" />
+                      v-bind="genericProps" />
 
       </v-card-text>
     </v-card>
@@ -84,9 +84,15 @@ import {
   SHOW_DATA_PREVIEW_PROPERTY,
 } from '@/factories/strategyFactory';
 import { mdiClose } from '@mdi/js';
+import { defineAsyncComponent, h } from 'vue';
 
-const MetadataMapFullscreen = () => import('@/modules/metadata/components/Geoservices/MetadataMapFullscreen.vue');
-const DetailChartsList = () => import('@/modules/metadata/components/GC-Net/DetailChartsList.vue');
+const DetailChartsList = defineAsyncComponent(() =>
+  import('@/modules/metadata/components/GC-Net/DetailChartsList.vue'),
+)
+
+const MetadataMapFullscreen = defineAsyncComponent(() =>
+  import('@/modules/metadata/components/Geoservices/MetadataMapFullscreen.vue'),
+)
 
 export default {
   name: 'GenericFullScreenModal',
@@ -120,7 +126,6 @@ export default {
     },
     showGCNetModal({ currentStation, fileObjects, graphStyling, config }) {
       this.currentComponent = DetailChartsList;
-      this.modalTitle = `Sensor measurements for ${currentStation ? currentStation.name : '' } station`;
 
       this.genericProps = {
         currentStation,
@@ -128,6 +133,8 @@ export default {
         graphStyling,
         config,
       };
+
+      this.modalTitle = `Sensor measurements for ${currentStation ? currentStation.name : '' } station`;
 
       eventBus.emit(OPEN_FULLSCREEN_MODAL);
     },
@@ -168,11 +175,12 @@ export default {
       // this.modalTitle = `Fullscreen Map for ${metadataTitle}`;
       this.modalTitle = 'Fullscreen Map';
 
-      this.currentComponent = MetadataMapFullscreen;
       this.genericProps = {
         site,
         layerConfig,
       };
+
+      this.currentComponent = MetadataMapFullscreen;
 
       eventBus.emit(OPEN_FULLSCREEN_MODAL);
     },

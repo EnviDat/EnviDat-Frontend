@@ -25,7 +25,7 @@
       </v-col>
 
       <v-col v-if="mapCompareActive" cols="6">
-        <Map
+        <MapRoot
           :layer-config="layerConfig"
           :mapDivId="mapId2"
           :selectedLayerName="selectedLayer2"

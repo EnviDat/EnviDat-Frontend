@@ -153,12 +153,5 @@ export default {
 
       return str;
     },
-    mixinMethods_getGenericProp(propName, defaultValue = null) {
-      if (!this.genericProps) {
-        return defaultValue;
-      }
-
-      return this.genericProps[propName] ? this.genericProps[propName] : defaultValue;
-    },
   },
 };
