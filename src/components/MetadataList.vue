@@ -129,11 +129,11 @@ import {
   LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
 } from '@/store/metadataMutationsConsts';
 
-// import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import MetadataListLayout from '@/components/MetadataListLayout.vue';
 import { eventBus } from '@/factories/eventBus';
 import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
 import { getGeoJSONIcon } from '@/factories/imageFactory';
+import { convertArrayToUrlString } from '@/factories/stringFactory';
 
 // check filtering in detail https://www.npmjs.com/package/vue2-filters
 
@@ -370,7 +370,7 @@ export default {
         return;
       }
 
-      const stringTags = this.mixinMethods_convertArrayToUrlString([cardType]);
+      const stringTags = convertArrayToUrlString([cardType]);
       this.mixinMethods_additiveChangeRoute(BROWSE_PATH, '', stringTags);
     },
     catchModeClicked(mode) {

@@ -227,3 +227,77 @@ export function decodeArrayFromUrlString(urlString) {
   // return an empty array for the selectedTagIds
   return [];
 }
+
+export function convertUrlStringToArray(string, toUpperCase = true, toLowerCase = false) {
+  if (!string) {
+    return [];
+  }
+
+  const splits = string.split(',');
+
+  for (let i = 0; i < splits.length; i++) {
+    if (toUpperCase) {
+      splits[i] = splits[i].toUpperCase();
+    }
+
+    if (toLowerCase) {
+      splits[i] = splits[i].toLowerCase();
+    }
+  }
+
+  return splits;
+}
+
+export function convertArrayToUrlString(array, toUpperCase = true, toLowerCase = false) {
+
+  let str = '';
+  for (let i = 0; i < array.length; i++) {
+    if (toUpperCase) {
+      str += `${array[i].toUpperCase()},`;
+    }
+
+    if (toLowerCase) {
+      str += `${array[i].toLowerCase()},`;
+    }
+  }
+
+  // remove the last comma
+  str = str.substring(0, str.length - 1);
+
+  return str;
+}
+
+export function loadRouteTags(tags, selectedTagNames) {
+
+  if (tags && !(tags instanceof Array)) {
+    if (tags.includes(',')) {
+      tags = tags.split(',');
+    } else {
+      tags = [tags];
+    }
+  }
+
+  if (tags) {
+    for (let i = 0; i < tags.length; i++) {
+      tags[i] = tags[i].toUpperCase();
+    }
+
+    if (!this.areArraysIdentical(selectedTagNames, tags)) {
+      return tags;
+    }
+  }
+
+  return [];
+}
+
+export function areArraysIdentical(arr1, arr2) {
+  if (arr1.length !== arr2.length) {
+    return false;
+  }
+
+  for (let i = arr1.length; i >= 0; i--) {
+    if (arr1[i] !== arr2[i]) return false;
+  }
+
+  return true;
+}

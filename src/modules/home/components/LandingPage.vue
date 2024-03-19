@@ -221,7 +221,7 @@ import {
   GET_BLOG_LIST,
 } from '@/modules/blog/store/blogMutationsConsts';
 import LandingPageLayout from '@/modules/home/components/LandingPageLayout.vue';
-// import TheTitleScreenLayout from '@/modules/home/components/TheTitleScreenLayout.vue';
+
 import SearchBarView from '@/modules/home/components/SearchBarView.vue';
 import SloganCard from '@/modules/home/components/SloganCard.vue';
 import {
@@ -243,6 +243,7 @@ import {
 import store from '@/store/store';
 import { importStoreModule } from '@/factories/enhancementsFactory';
 import { getIcon, getImage } from '@/factories/imageFactory';
+import { convertArrayToUrlString } from '@/factories/stringFactory';
 
 // Login & Register form and animation
 // https://codepen.io/yusufbkr/pen/RPBQqg
@@ -454,7 +455,7 @@ export default {
       }
 
       const newTags = [cardType];
-      const stringTags = this.mixinMethods_convertArrayToUrlString(newTags);
+      const stringTags = convertArrayToUrlString(newTags);
 
       this.mixinMethods_additiveChangeRoute(BROWSE_PATH, '', stringTags);
     },

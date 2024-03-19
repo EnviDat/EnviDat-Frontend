@@ -114,6 +114,7 @@ import MetadataBody from './Metadata/MetadataBody.vue';
 import MetadataResources from './Metadata/MetadataResources.vue';
 import MetadataCitation from './Metadata/MetadataCitation.vue';
 import MetadataAuthors from './Metadata/MetadataAuthors.vue';
+import { convertArrayToUrlString } from '@/factories/stringFactory.js';
 
 // Might want to check https://css-tricks.com/use-cases-fixed-backgrounds-css/
 // for animations between the different parts of the Metadata
@@ -430,7 +431,7 @@ export default {
      * @param {any} tagName
      */
     catchTagClicked(tagName) {
-      const stringTags = this.mixinMethods_convertArrayToUrlString([tagName]);
+      const stringTags = convertArrayToUrlString([tagName]);
 
       const query = this.$route.query;
       query.tags = stringTags;

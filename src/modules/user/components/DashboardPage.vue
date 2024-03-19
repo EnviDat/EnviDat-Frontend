@@ -358,6 +358,8 @@ import { getPreviewDatasetFromLocalStorage } from '@/factories/userCreationFacto
 import fileIcon from '@/assets/icons/file.png';
 import { METADATA_TITLE_PROPERTY } from '@/factories/metadataConsts';
 import { mdiRefresh } from '@mdi/js';
+import { loadRouteTags } from '@/factories/stringFactory';
+import { getIcon } from '@/factories/imageFactory';
 
 export default {
   name: 'DashboardPage',
@@ -376,9 +378,9 @@ export default {
     eventBus.off(EDIT_USER_PROFILE_EVENT, this.callUserUpdateAction);
   },
   beforeMount() {
-    this.fileIconString = this.mixinMethods_getIcon('file');
+    this.fileIconString = getIcon('file');
 
-    this.loadRouteTags();
+    this.loadRouteWithTags();
 
     if (this.user) {
       this.fetchUserDatasets();
@@ -679,10 +681,10 @@ export default {
     contentFilteredByTags(value, selectedUserTagNames) {
       return value.tags && tagsIncludedInSelectedTags(value.tags, selectedUserTagNames);
     },
-    loadRouteTags() {
-      const routeTags = this.mixinMethods_loadRouteTags(this.$route.query.tags, this.selectedUserTagNames);
+    loadRouteWithTags() {
+      const routeTags = loadRouteTags(this.$route.query.tags, this.selectedUserTagNames);
 
-      if (routeTags) {
+      if (routeTags?.length > 0) {
         this.selectedUserTagNames = routeTags;
       }
     },

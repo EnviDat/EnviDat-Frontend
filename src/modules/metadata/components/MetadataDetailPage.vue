@@ -136,6 +136,7 @@ import {
 
 import { convertJSON, getFrontendDates, getFrontendJSONForStep } from '@/factories/mappingFactory';
 
+import { getIcon } from '@/factories/imageFactory';
 import MetadataHeader from './Metadata/MetadataHeader.vue';
 import MetadataBody from './Metadata/MetadataBody.vue';
 import MetadataResources from './Metadata/MetadataResources.vue';
@@ -143,6 +144,7 @@ import MetadataCitation from './Metadata/MetadataCitation.vue';
 import MetadataPublications from './Metadata/MetadataPublications.vue';
 import MetadataFunding from './Metadata/MetadataFunding.vue';
 import MetadataAuthors from './Metadata/MetadataAuthors.vue';
+import { convertArrayToUrlString } from '@/factories/stringFactory.js';
 
 // Might want to check https://css-tricks.com/use-cases-fixed-backgrounds-css/
 // for animations between the different parts of the Metadata
@@ -167,8 +169,8 @@ export default {
    * @description load all the icons once before the first component's rendering.
    */
   beforeMount() {
-    this.fileSizeIcon = this.mixinMethods_getIcon('fileSize');
-    this.fileIcon = this.mixinMethods_getIcon('file');
+    this.fileSizeIcon = getIcon('fileSize');
+    this.fileIcon = getIcon('file');
 
     window.scrollTo(0, 0);
   },
@@ -361,7 +363,7 @@ export default {
         showFullscreenButton: this.showFullscreenButton,
       };
       const { components } = this.$options;
-      
+
       components.MetadataGeo.pros = this.geoServiceConfig;
     },
     loadGeoServiceLayers(url) {
@@ -651,7 +653,7 @@ export default {
      * @param {any} tagName
      */
     catchTagClicked(tagName) {
-      const stringTags = this.mixinMethods_convertArrayToUrlString([tagName]);
+      const stringTags = convertArrayToUrlString([tagName]);
 
       const query = this.$route.query;
       query.tags = stringTags;

@@ -94,6 +94,7 @@ import {
 
 import MetadataList from '@/components/MetadataList.vue';
 import { useModeStore } from '@/modules/browse/store/modeStore';
+import { areArraysIdentical, convertArrayToUrlString, convertUrlStringToArray } from '@/factories/stringFactory';
 
 
 export default {
@@ -133,9 +134,9 @@ export default {
     loadRouteTags() {
       let tags = this.$route.query.tags || '';
 
-      if (!this.mixinMethods_areArraysIdentical(this.selectedTagNames, tags)) {
+      if (!areArraysIdentical(this.selectedTagNames, tags)) {
 
-        tags = this.mixinMethods_convertUrlStringToArray(tags);
+        tags = convertUrlStringToArray(tags);
         this.selectedTagNames = tags;
         return true;
       }
@@ -146,7 +147,7 @@ export default {
       let pins = this.$route.query.pins || '';
 
       if (pins.length > 0) {
-        pins = this.mixinMethods_convertUrlStringToArray(pins, false, true);
+        pins = convertUrlStringToArray(pins, false, true);
 
         this.selectedPins = pins;
       }
@@ -177,7 +178,7 @@ export default {
       if (!this.mixinMethods_isTagSelected(tagName)) {
         const newTags = [...this.selectedTagNames, tagName];
 
-        const stringTags = this.mixinMethods_convertArrayToUrlString(newTags);
+        const stringTags = convertArrayToUrlString(newTags);
 
         this.mixinMethods_additiveChangeRoute(BROWSE_PATH, undefined,
             stringTags, undefined, undefined, this.isAuthorSearch);
@@ -189,7 +190,7 @@ export default {
       }
 
       const newTags = this.selectedTagNames.filter(tag => tag !== tagId);
-      const stringTags = this.mixinMethods_convertArrayToUrlString(newTags);
+      const stringTags = convertArrayToUrlString(newTags);
 
       this.mixinMethods_additiveChangeRoute(BROWSE_PATH, undefined,
           stringTags, undefined, undefined, this.isAuthorSearch);
@@ -202,7 +203,7 @@ export default {
 
       this.selectedPins = pins;
 
-      const stringPins = this.mixinMethods_convertArrayToUrlString(this.selectedPins);
+      const stringPins = convertArrayToUrlString(this.selectedPins);
 
       this.mixinMethods_additiveChangeRoute(BROWSE_PATH, undefined, undefined,
           undefined, stringPins,

@@ -103,6 +103,8 @@ import {
   SET_DETAIL_PAGE_BACK_URL,
 } from '@/store/metadataMutationsConsts';
 
+import { convertArrayToUrlString, convertUrlStringToArray } from '@/factories/stringFactory';
+import { getImage } from '@/factories/imageFactory';
 import {
   GET_PROJECTS,
   PROJECTS_NAMESPACE,
@@ -111,7 +113,6 @@ import {
 import ProjectBody from './ProjectDetailViews/ProjectBody.vue';
 import ProjectHeader from './ProjectDetailViews/ProjectHeader.vue';
 import ProjectSubprojects from './ProjectDetailViews/ProjectSubprojects.vue';
-import { getImage } from '@/factories/imageFactory';
 
 export default {
   /**
@@ -295,7 +296,7 @@ export default {
       let pins = this.$route.query.pins || '';
 
       if (pins.length > 0) {
-        pins = this.mixinMethods_convertUrlStringToArray(pins, false, true);
+        pins = convertUrlStringToArray(pins, false, true);
 
         this.selectedPins = pins;
       }
@@ -304,7 +305,7 @@ export default {
 
       this.selectedPins = pins;
 
-      const stringPins = this.mixinMethods_convertArrayToUrlString(this.selectedPins);
+      const stringPins = convertArrayToUrlString(this.selectedPins);
 
       this.mixinMethods_additiveChangeRoute(this.$route.path, undefined, undefined,
         undefined, stringPins, undefined);
