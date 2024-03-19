@@ -27,13 +27,11 @@
           >{{ nameInitials }}</span
     >
 
-    <v-icon v-if="showFallbackAccountIcon"
-            color="black"
-            :small="size <= 20"
-            :large="size > 40 && size < 128"
-            :x-large="size >= 128"
-            >account_circle</v-icon
-    >
+    <base-icon v-if="showFallbackAccountIcon"
+               color="black"
+               :small="size <= 20"
+               :large="size > 40 && size < 128"
+               :icon='mdiAccountCircle' />
   </v-avatar>
 </template>
 
@@ -54,9 +52,11 @@ import jazzicons from '@metamask/jazzicon';
 import seedrandom from 'seedrandom';
 
 import { getAvataaarUrl } from '@/store/avataaars';
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
+import { mdiAccountCircle } from '@mdi/js';
 
 export default {
-  components: {},
+  components: { BaseIcon },
   props: {
     nameInitials: String,
     emailHash: String,
@@ -149,6 +149,7 @@ export default {
     gravatarNotLoaded: false,
     avataaarNotLoaded: false,
     avataaarUrl: '',
+    mdiAccountCircle,
   }),
 };
 </script>

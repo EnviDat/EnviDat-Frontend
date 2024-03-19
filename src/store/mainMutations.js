@@ -84,18 +84,16 @@ export default {
       updatedCards.push(cardInfo);
     }
 
-    this._vm.$set(state, 'categoryCards', updatedCards);
+    state.categoryCards = updatedCards;
   },
   [SET_CURRENT_PAGE](state, page) {
     state.currentPage = page;
   },
   [ADD_CARD_IMAGES](state, payload) {
-    // state.cardBGImages[payload.key] = payload.value;
-    this._vm.$set(state.cardBGImages, payload.key, payload.value);
+    state.cardBGImages[payload.key] = payload.value;
   },
   [ADD_ICON_IMAGE](state, payload) {
-    // state.cardBGImages[payload.key] = payload.value;
-    this._vm.$set(state.iconImages, payload.key, payload.value);
+    state.iconImages[payload.key] = payload.value;
   },
   [SET_CONTROLS](state, payload) {
     state.controls = payload;
@@ -149,11 +147,11 @@ export default {
     notificationObj.key = key;
 
     if (!state.notifications[key]) {
-      this._vm.$set(state.notifications, key, notificationObj);
+      state.notifications[key] = notificationObj;
     } else {
       const existingNotification = state.notifications[key];
       if (existingNotification.details !== notificationObj.details) {
-        this._vm.$set(state.notifications, key, notificationObj);
+        state.notifications[key] = notificationObj;
       }
     }
   },

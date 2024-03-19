@@ -5,7 +5,7 @@
         :disabled="disabled" :href="url" :loading="loading" :elevation="elevation" rel="noopener noreferrer"
         target="_blank" @click.stop="onClick">
 
-        <BaseIcon v-if="icon" :icon="icon" class='mr-1' />
+        <BaseIcon v-if="icon" :icon="icon" :color='iconColor' class='mr-1' />
 
         {{ buttonText }}
       </v-btn>

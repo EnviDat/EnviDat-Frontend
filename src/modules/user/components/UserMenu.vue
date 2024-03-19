@@ -12,11 +12,9 @@
         v-for="(item, i) in navItems"
         :key="i"
         @click="menuClick(item)"
+        :prepend-icon="item.icon"
+        :title="item.title"
       >
-        <v-list-item-icon>
-          <v-icon :icon="item.icon" />
-        </v-list-item-icon>
-        <v-list-item-title>{{ item.title }}</v-list-item-title>
       </v-list-item>
     </v-list>
   </v-menu>
