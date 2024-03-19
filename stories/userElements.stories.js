@@ -25,6 +25,7 @@ import MetadataCube from '@/components/BaseElements/MetadataCube.vue';
 import TitleCard from '@/components/Cards/TitleCard.vue';
 
 import { userMenuItems } from '@/store/navigationState';
+import { mdiRefresh } from '@mdi/js';
 import authorCollection from './testdata/authorCollection.json';
 
 
@@ -39,43 +40,45 @@ export default {
 export const TitleCardViews = () => ({
   components: { TitleCard },
   template: `
-    <v-row >
+    <v-row>
 
-    <v-col cols="12">
-      TitleCard empty
-    </v-col>
+      <v-col cols='12'>
+        TitleCard empty
+      </v-col>
 
-    <v-col cols="12">
-      <TitleCard title="Title only TitleCard" />
-    </v-col>
+      <v-col cols='12'>
+        <TitleCard title='Title only TitleCard' />
+      </v-col>
 
-    <v-col cols="12">
-      TitleCard with refresh icon
-    </v-col>
+      <v-col cols='12'>
+        TitleCard with refresh icon
+      </v-col>
 
-    <v-col >
-      <TitleCard title="My Datasets"
-                 icon="refresh"
-                 tooltipText="Click here to refresh"
-                 :clickCallback="() => {}" />
-    </v-col>
+      <v-col>
+        <TitleCard title='My Datasets'
+                   :icon='mdiRefresh'
+                   tooltipText='Click here to refresh'
+                   :clickCallback='() => {}' />
+      </v-col>
 
-    <v-col cols="12">
-      TitleCard with refresh icon
-    </v-col>
+      <v-col cols='12'>
+        TitleCard loading with refresh icon
+      </v-col>
 
-    <v-col >
-      <TitleCard title="My Datasets"
-                 icon="refresh"
-                 tooltipText="Click here to refresh"
-                 :loading="true"
-                 :clickCallback="() => {}" />
-    </v-col>
-
+      <v-col>
+        <TitleCard title='My Datasets'
+                   :icon='mdiRefresh'
+                   tooltipText='Click here to refresh'
+                   :loading='true'
+                   :clickCallback='() => {}' />
+      </v-col>
 
 
     </v-row>
   `,
+  data: () => ({
+    mdiRefresh,
+  }),
 });
 
 export const UserMenuViews = () => ({

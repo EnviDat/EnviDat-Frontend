@@ -88,7 +88,7 @@
          ref="userDatasets">
 
       <TitleCard title="My Datasets"
-                  icon="refresh"
+                  :icon='mdiRefresh'
                   :tooltipText="refreshButtonText"
                   :loading="userDatasetsLoading"
                   :clickCallback="catchRefreshClick" />
@@ -357,6 +357,7 @@ import { getPreviewDatasetFromLocalStorage } from '@/factories/userCreationFacto
 
 import fileIcon from '@/assets/icons/file.png';
 import { METADATA_TITLE_PROPERTY } from '@/factories/metadataConsts';
+import { mdiRefresh } from '@mdi/js';
 
 export default {
   name: 'DashboardPage',
@@ -902,6 +903,7 @@ export default {
       LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
     ],
     localDatasetUpdateCount: 0,
+    mdiRefresh,
   }),
   components: {
     MetadataList,
