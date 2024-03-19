@@ -9,14 +9,12 @@
           color="white"
           grow
           icons-and-text
-          background-color="highlight"
-        >
+          background-color="highlight">
           <v-tab
             v-for="tab in tabs"
             :key="tab.name"
             @click="catchTabClick(tab.name)"
-            class="pa-0"
-          >
+            class="pa-0">
             {{ $vuetify.display.smAndUp ? tab.name : '' }}
 
             <v-icon :icon="tab.icon" />
@@ -37,16 +35,14 @@
                   v-for="(card, index) in aboutCardInfo"
                   :key="index"
                   class="pa-3"
-                  :class="card.widthClass"
-                >
+                  :class="card.widthClass">
                   <expandable-card
                     :title="card.title"
                     :text="card.text"
                     :img="card.img"
                     :min-height="100"
                     :max-height="150"
-                    :contain="card.title === 'WSL'"
-                  />
+                    :contain="card.title === 'WSL'" />
                 </v-col>
               </v-row>
             </about-tab-layout>
@@ -59,8 +55,7 @@
               :titleImage="guidelineImg"
               :loading="guidelinesLoading"
               loadingText="Loading Guidelines..."
-              :markdownContent="guidelinesMarkdownText"
-            />
+              :markdownContent="guidelinesMarkdownText" />
           </v-tab-item>
 
           <!-- Policies -->
@@ -70,8 +65,7 @@
               :titleImage="policiesImg"
               :loading="policiesLoading"
               loadingText="Loading Policies..."
-              :markdownContent="policiesMarkdownText"
-            />
+              :markdownContent="policiesMarkdownText" />
           </v-tab-item>
 
           <!-- DMP -->
@@ -81,8 +75,7 @@
               :titleImage="dmpImg"
               :loading="dmpLoading"
               loadingText="Loading Data Management Plan infos..."
-              :markdownContent="dmpMarkdownText"
-            />
+              :markdownContent="dmpMarkdownText" />
           </v-tab-item>
         </v-tabs-items>
       </v-col>
@@ -123,6 +116,7 @@ import {
 } from '@/store/mainMutationsConsts';
 
 import AboutTabLayout from './AboutTabLayout.vue';
+import { getImage } from '@/factories/imageFactory';
 
 export default {
   name: 'AboutPage',
@@ -234,31 +228,13 @@ export default {
     aboutCardInfo() {
       const backendAboutInfos = this.config?.aboutInfo || null;
 
-      const contact = this.mixinMethods_getWebpImage(
-        'about/contact',
-        this.$store.state,
-      );
-      const handsSmall = this.mixinMethods_getWebpImage(
-        'about/hands_small',
-        this.$store.state,
-      );
-      const conceptImg = this.mixinMethods_getWebpImage(
-        'about/concept_small',
-        this.$store.state,
-      );
+      const contact = getImage('about/contact');
+      const handsSmall = getImage('about/hands_small');
+      const conceptImg = getImage('about/concept_small');
 
-      const communityImg = this.mixinMethods_getWebpImage(
-        'about/community_small',
-        this.$store.state,
-      );
-      const wslLogoImg = this.mixinMethods_getWebpImage(
-        'about/wslLogo',
-        this.$store.state,
-      );
-      const teamImg = this.mixinMethods_getWebpImage(
-        'about/team_small',
-        this.$store.state,
-      );
+      const communityImg = getImage('about/community_small');
+      const wslLogoImg = getImage('about/wslLogo');
+      const teamImg = getImage('about/team_small');
 
       const defaultWidthClass = 'col-12 col-sm-6 col-md-4 col-xl-3';
 
@@ -321,34 +297,26 @@ export default {
       );
     },
     missionImg() {
-      const imgPath = this.$vuetify.display.mdAndUp
-        ? 'about/mission'
-        : 'about/mission_small';
-      return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
+      const imgPath = this.$vuetify.display.mdAndUp ? 'about/mission' : 'about/mission_small';
+      return getImage(imgPath);
     },
     policiesMarkdownText() {
       return renderMarkdown(this.policiesMarkdown);
     },
     policiesImg() {
-      const imgPath = this.$vuetify.display.mdAndUp
-        ? 'about/policies'
-        : 'about/policies_small';
-      return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
+      const imgPath = this.$vuetify.display.mdAndUp ? 'about/policies' : 'about/policies_small';
+      return getImage(imgPath);
     },
     guidelinesMarkdownText() {
       return renderMarkdown(this.guidelinesMarkdown);
     },
     guidelineImg() {
-      const imgPath = this.$vuetify.display.mdAndUp
-        ? 'about/guidelines'
-        : 'about/guidelines_small';
-      return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
+      const imgPath = this.$vuetify.display.mdAndUp ? 'about/guidelines' : 'about/guidelines_small';
+      return getImage(imgPath);
     },
     dmpImg() {
-      const imgPath = this.$vuetify.display.mdAndUp
-        ? 'about/dmp'
-        : 'about/dmp_small';
-      return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
+      const imgPath = this.$vuetify.display.mdAndUp ? 'about/dmp' : 'about/dmp_small';
+      return getImage(imgPath);
     },
     dmpMarkdownText() {
       return renderMarkdown(this.dmpMarkdown);

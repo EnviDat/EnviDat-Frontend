@@ -1,63 +1,62 @@
 <template>
   <v-container class="pa-0 ma-0"
-                tag="article"
-                fluid
-                id="CommunityPage" >
+    tag="article"
+    fluid
+    id="CommunityPage">
 
     <v-row no-gutters
-           id="pageHeader"
-           class="py-1 py-md-4">
+      id="pageHeader"
+      class="py-1 py-md-4">
 
       <v-col cols="12"
-             offset-md="1"
-             md="10" >
+        offset-md="1"
+        md="10">
 
         <ImgAndTextLayout style="position: relative; z-index: 0;"
-                          :title="pageTitle"
-                          :img="titleImage"
-                          :height="$vuetify.display.smAndDown ? 100 : 150" />
+          :title="pageTitle"
+          :img="titleImage"
+          :height="$vuetify.display.smAndDown ? 100 : 150" />
 
       </v-col>
 
     </v-row>
 
     <v-row no-gutters
-           id="pageSubHeader"
-           class="py-2">
+      id="pageSubHeader"
+      class="py-2">
 
       <v-col cols="12"
-             offset-md="1"
-             md="10"
-             class="text-body-1"
-             v-html="pageIntroText" >
+        offset-md="1"
+        md="10"
+        class="text-body-1"
+        v-html="pageIntroText">
 
       </v-col>
 
     </v-row>
 
     <v-row no-gutters
-           id="pageBody"
-           class="py-4">
+      id="pageBody"
+      class="py-4">
 
       <v-col cols="12"
-             offset-md="1"
-             md="10" >
+        offset-md="1"
+        md="10">
 
         <TextCardListLayout :listItems="list"
-                            :smallCols="4"
-                            :loading="loadingList"
-                            :loadingImg="fallbackCardImg">
+          :smallCols="4"
+          :loading="loadingList"
+          :loadingImg="fallbackCardImg">
 
           <template #entry="{ entry, loadingImg, titleCssClass, subtitleCssClass }">
             <ImageTextCard :height="cardHeight"
-                            :title="entry.title"
-                            :text="entry.text"
-                            :image="entry.image"
-                            :loadingImg="loadingImg"
-                            :titleCssClass="titleCssClass"
-                            :subtitleCssClass="subtitleCssClass"
-                            :imageTopLayout="true"
-                        >
+              :title="entry.title"
+              :text="entry.text"
+              :image="entry.image"
+              :loadingImg="loadingImg"
+              :titleCssClass="titleCssClass"
+              :subtitleCssClass="subtitleCssClass"
+              :imageTopLayout="true">
 
             </ImageTextCard>
           </template>
@@ -98,6 +97,7 @@ import {
 import ImgAndTextLayout from '@/components/Layouts/ImgAndTextLayout.vue';
 import TextCardListLayout from '@/components/Layouts/TextCardListLayout.vue';
 import ImageTextCard from '@/components/Layouts/ImageTextCard.vue';
+import { getImage } from '@/factories/imageFactory';
 
 export default {
   name: INTEGRATION_PAGENAME,
@@ -110,8 +110,8 @@ export default {
   beforeMount() {
     this.loadCommunityList();
 
-    this.fallbackCardImg = this.mixinMethods_getWebpImage('about/contact', this.$store.state);
-    this.titleImage = this.mixinMethods_getWebpImage('integration/integration_header', this.$store.state);
+    this.fallbackCardImg = getImage('about/contact');
+    this.titleImage = getImage('integration/integration_header');
   },
   /**
    * @description reset the scrolling to the top,
@@ -153,6 +153,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

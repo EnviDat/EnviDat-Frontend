@@ -13,6 +13,7 @@
 import globalMethods from '@/factories/globalMethods';
 import { getSpecificApiError } from '@/factories/notificationFactory';
 
+import { getImage } from '@/factories/imageFactory';
 import {
   ADD_CARD_IMAGES,
   ADD_ICON_IMAGE,
@@ -77,10 +78,7 @@ export default {
 
     for (let i = 0; i < state.categoryCards.length; i++) {
       const cardInfo = state.categoryCards[i];
-      cardInfo.img = globalMethods.methods.mixinMethods_getWebpImage(
-        cardInfo.imgPath,
-        state,
-      );
+      cardInfo.img = getImage(cardInfo.imgPath);
       updatedCards.push(cardInfo);
     }
 

@@ -6,28 +6,24 @@
         cols="12"
         ref="header"
         style="z-index: 1; position: absolute; left: 0;"
-        :style="headerStyle"
-      >
+        :style="headerStyle">
         <project-header
           :title="currentProject ? currentProject.title : null"
           :titleImg="currentProject ? currentProject.image_display_url : null"
           :defaultImg="missionImg"
           :showPlaceholder="loading"
-          @clickedBack="catchBackClicked"
-        />
+          @clickedBack="catchBackClicked" />
       </v-col>
     </v-row>
 
     <v-row
       :style="`z-index: 0; position: relative; top: ${headerHeight()}px`"
-      no-gutters
-    >
+      no-gutters>
       <v-col class="pb-2 px-sm-3" cols="12" lg="10" offset-lg="1">
         <project-body
           :description="currentProject ? currentProject.description : null"
           :showPlaceholder="loading"
-          :maxTextLength="$vuetify.display.xs ? 900 : 2000"
-        />
+          :maxTextLength="$vuetify.display.xs ? 900 : 2000" />
       </v-col>
 
       <v-col
@@ -35,15 +31,13 @@
         class="pb-2 px-sm-3"
         cols="12"
         lg="10"
-        offset-lg="1"
-      >
+        offset-lg="1">
         <project-subprojects
           :subProjects="subProjects"
           :defaultImg="creatorImg"
           :showPlaceholder="loading"
           @projectClick="catchProjectClick"
-          @subprojectClick="catchSubprojectClick"
-        />
+          @subprojectClick="catchSubprojectClick" />
       </v-col>
 
       <v-col class="pb-2 px-sm-3" cols="12" lg="10" offset-lg="1">
@@ -66,8 +60,7 @@
           :showSearch="false"
           :metadatasContent="metadatasContent"
           :loading="loading"
-          @setScroll="setScrollPos"
-        />
+          @setScroll="setScrollPos" />
       </v-col>
     </v-row>
   </v-container>
@@ -87,7 +80,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { mapGetters,mapState } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 
 import {
   createTag,
@@ -118,6 +111,7 @@ import {
 import ProjectBody from './ProjectDetailViews/ProjectBody.vue';
 import ProjectHeader from './ProjectDetailViews/ProjectHeader.vue';
 import ProjectSubprojects from './ProjectDetailViews/ProjectSubprojects.vue';
+import { getImage } from '@/factories/imageFactory';
 
 export default {
   /**
@@ -221,13 +215,13 @@ export default {
       const imgPath = this.$vuetify.display.mdAndUp
         ? 'projects/data_creator'
         : 'projects/data_creator_small';
-      return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
+      return getImage(imgPath);
     },
     missionImg() {
       const imgPath = this.$vuetify.display.mdAndUp
         ? 'projects/mission'
         : 'about/mission_small';
-      return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
+      return getImage(imgPath);
     },
     allMetadataTags() {
       const projectDatasetsTags = [];
