@@ -156,7 +156,6 @@ export default {
     BaseIconCountView,
   },
   props: {
-    genericProps: Object,
     doi: {
       type: String,
       default: undefined,
