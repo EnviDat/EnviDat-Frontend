@@ -29,14 +29,6 @@ export const isFieldReadOnly = (props, property) => {
 
 export default {
   methods: {
-    mixinMethods_isTagSelected(tagName) {
-      if (!tagName || this.selectedTagNames === undefined) {
-        return false;
-      }
-
-      return this.selectedTagNames.indexOf(tagName) >= 0;
-    },
-
     /**
      * Changes the route via this.$router.push();
      * The search and tag parameter are added as query parameters.

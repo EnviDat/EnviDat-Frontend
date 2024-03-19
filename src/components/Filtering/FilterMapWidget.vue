@@ -92,6 +92,7 @@
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import FilterMapWidgetLayout from '@/components/Filtering/FilterMapWidgetLayout.vue';
 import { mdiClose, mdiEye, mdiLayers } from '@mdi/js';
+import { getIcon } from '@/factories/imageFactory';
 
 export default {
   name: 'FilterMapWidget',
@@ -122,8 +123,8 @@ export default {
     topLayout: Boolean,
   },
   beforeMount() {
-    this.pinIcon = this.mixinMethods_getIcon('marker');
-    this.multiPinIcon = this.mixinMethods_getIcon('markerMulti');
+    this.pinIcon = getIcon('marker');
+    this.multiPinIcon = getIcon('markerMulti');
   },
   computed: {
     smScreen() {

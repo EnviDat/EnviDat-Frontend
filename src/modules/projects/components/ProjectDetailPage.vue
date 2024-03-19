@@ -113,6 +113,7 @@ import {
 import ProjectBody from './ProjectDetailViews/ProjectBody.vue';
 import ProjectHeader from './ProjectDetailViews/ProjectHeader.vue';
 import ProjectSubprojects from './ProjectDetailViews/ProjectSubprojects.vue';
+import { isTagSelected } from '@/factories/metaDataFactory.js';
 
 export default {
   /**
@@ -396,7 +397,7 @@ export default {
       });
     },
     catchTagClicked(tagName) {
-      if (!this.mixinMethods_isTagSelected(tagName)) {
+      if (!isTagSelected(tagName, this.selectedTagNames)) {
         this.selectedTagNames.push(tagName);
       }
     },
@@ -405,7 +406,7 @@ export default {
         return;
       }
 
-      if (this.mixinMethods_isTagSelected(tagId)) {
+      if (isTagSelected(tagId, this.selectedTagNames)) {
         this.selectedTagNames = this.selectedTagNames.filter(
           tag => tag !== tagId,
         );

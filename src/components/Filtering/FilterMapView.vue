@@ -92,9 +92,11 @@ import marker2x from '@/assets/map/marker-icon-2x.png';
 import markerShadow from '@/assets/map/marker-shadow.png';
 import selectedMarker from '@/assets/map/selected-marker-icon.png';
 import selectedMarker2x from '@/assets/map/selected-marker-icon-2x.png';
+// HACK end
+
 import FilterMapWidget from '@/components/Filtering/FilterMapWidget.vue';
 import { createLocation } from '@/factories/metaDataFactory';
-// HACK end
+import { getIcon } from '@/factories/imageFactory';
 
 export default {
   name: 'FilterMapView',
@@ -105,10 +107,10 @@ export default {
     modeData: Object,
   },
   beforeMount() {
-    this.pinIcon = this.mixinMethods_getIcon('marker');
-    this.multiPinIcon = this.mixinMethods_getIcon('markerMulti');
-    this.polygonIcon = this.mixinMethods_getIcon('polygons');
-    this.eyeIcon = this.mixinMethods_getIcon('eye');
+    this.pinIcon = getIcon('marker');
+    this.multiPinIcon = getIcon('markerMulti');
+    this.polygonIcon = getIcon('polygons');
+    this.eyeIcon = getIcon('eye');
   },
   mounted() {
     this.setupMap();

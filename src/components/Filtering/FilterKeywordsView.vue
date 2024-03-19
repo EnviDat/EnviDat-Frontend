@@ -9,7 +9,7 @@
         <v-col v-if="filterExpanded || $vuetify.display.smAndUp" cols="12">
           <v-row>
             <v-col class="metadataInfoIcon flex-grow-0">
-              <v-icon size="24px" color="black" :icon="mdiPaletteSwatchOutline" />
+              <BaseIcon :icon="mdiPaletteSwatch" color='black' />
             </v-col>
 
             <v-col v-if="showPlaceholder" class="grow pl-0">
@@ -42,7 +42,7 @@
         >
           <v-row>
             <v-col class="metadataInfoIcon flex-grow-0">
-              <v-img :src="tagIcon" height="24" width="24" />
+              <BaseIcon :icon="mdiTagMultiple" color='black' />
             </v-col>
 
             <v-col v-if="selectedTags.length > 0" class="grow pl-0">
@@ -93,15 +93,19 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import { mdiChevronDown, mdiPaletteSwatchOutline } from '@mdi/js';
+import { mdiChevronDown, mdiPaletteSwatch, mdiTagMultiple } from '@mdi/js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import TagChip from '@/components/Chips/TagChip.vue';
 import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder.vue';
 import { createTag } from '@/factories/metadataFilterMethods';
+import { isTagSelected } from '@/factories/metaDataFactory';
+import { getIcon } from '@/factories/imageFactory';
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 export default {
   name: 'FilterKeywordsView',
   components: {
+    BaseIcon,
     BaseIconButton,
     TagChip,
     TagChipPlaceholder,
@@ -117,7 +121,8 @@ export default {
   },
   data: () => ({
     mdiChevronDown,
-    mdiPaletteSwatchOutline,
+    mdiPaletteSwatch,
+    mdiTagMultiple,
     maxSelectedTagsTextLength: 25,
     maxUnselectedTagsTextLength: 250,
     xsTextLength: 25,
@@ -133,12 +138,12 @@ export default {
         return [];
       }
 
-      return this.allTags.filter((element) => element.enabled && !this.mixinMethods_isTagSelected(element.name) );
+      return this.allTags.filter((element) => element.enabled && !isTagSelected(element.name, this.selectedTagNames) );
 /*
       const unselectedTags = [];
 
       this.allTags.forEach(element => {
-        if (element.enabled && !this.mixinMethods_isTagSelected(element.name)) {
+        if (element.enabled && !isTagSelected(element.name, this.selectedTagNames)) {
           unselectedTags.push(element);
         }
       });
@@ -189,9 +194,9 @@ export default {
       return combinedMax >= 0 ? combinedMax : 0;
     },
   },
-  beforeMount: function beforeMount() {
-    this.tagIcon = this.mixinMethods_getIcon('tag');
-    this.tagsIcon = this.mixinMethods_getIcon('tags');
+  beforeMount() {
+    this.tagIcon = getIcon('tag');
+    this.tagsIcon = getIcon('tags');
   },
   methods: {
     clearTags() {

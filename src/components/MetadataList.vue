@@ -132,7 +132,7 @@ import {
 import MetadataListLayout from '@/components/MetadataListLayout.vue';
 import { eventBus } from '@/factories/eventBus';
 import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
-import { getGeoJSONIcon } from '@/factories/imageFactory';
+import { getGeoJSONIcon, getIcon } from '@/factories/imageFactory';
 import { convertArrayToUrlString } from '@/factories/stringFactory';
 
 // check filtering in detail https://www.npmjs.com/package/vue2-filters
@@ -220,12 +220,12 @@ export default {
     },
   },
   beforeMount() {
-    this.fileIconString = this.mixinMethods_getIcon('file');
-    this.lockedIconString = this.mixinMethods_getIcon('lock2Closed');
-    this.unlockedIconString = this.mixinMethods_getIcon('lock2Open');
-    this.pinIcon = this.mixinMethods_getIcon('marker');
-    this.multiPinIcon = this.mixinMethods_getIcon('markerMulti');
-    this.polygonIcon = this.mixinMethods_getIcon('polygons');
+    this.fileIconString = getIcon('file');
+    this.lockedIconString = getIcon('lock2Closed');
+    this.unlockedIconString = getIcon('lock2Open');
+    this.pinIcon = getIcon('marker');
+    this.multiPinIcon = getIcon('markerMulti');
+    this.polygonIcon = getIcon('polygons');
   },
   mounted() {
     if (this.defaultListControls && this.defaultListControls.length) {

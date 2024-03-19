@@ -311,7 +311,12 @@ import {
 
 import { getNameInitials } from '@/factories/authorFactory';
 import { errorMessage } from '@/factories/notificationFactory';
-import { enhanceMetadatasTitleImage, getMetadataVisibilityState, getTagColor } from '@/factories/metaDataFactory';
+import {
+  enhanceMetadatasTitleImage,
+  getMetadataVisibilityState,
+  getTagColor,
+  isTagSelected,
+} from '@/factories/metaDataFactory';
 import {
   getUserOrganizationRoleMap,
   hasOrganizationRoles,
@@ -782,12 +787,12 @@ export default {
       });
     },
     catchTagClicked(tagName) {
-      if (!this.mixinMethods_isTagSelected(tagName)) {
+      if (!isTagSelected(tagName, this.selectedTagNames)) {
         this.selectedUserTagNames.push(tagName);
       }
     },
     catchOrgaTagClicked(tagName) {
-      if (!this.mixinMethods_isTagSelected(tagName)) {
+      if (!isTagSelected(tagName, this.selectedTagNames)) {
         this.selectedOrgaTagNames.push(tagName);
       }
     },

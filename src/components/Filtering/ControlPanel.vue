@@ -13,22 +13,31 @@
 
         <v-col v-if="showSearch" class="py-0 px-sm-1 flex-grow-0" id="shareSearchResult">
 
-          <BaseIconButton style="opacity: 0.8;" :icon="mdiShareVariant" iconColor="black" small tooltip-bottom
+          <BaseIconButton
+            style="opacity: 0.8;"
+            :icon="mdiShareVariant"
+            iconColor="black"
+            small
+            tooltip-bottom
             tooltip-text="Copy the url to this view to the clipboard to share it." @clicked="catchShareClick" />
 
         </v-col>
 
         <v-col v-if="showSearch && mode !== EDNA_MODE" class="py-0 ml-sm-4 flex-grow-0">
 
-          <BaseIconSwitch :active="isAuthorSearch"
-            :tooltipText="`Author search is ${isAuthorSearch ? 'active' : 'inactive'}`" :icon="mdiAccountCircle"
+          <BaseIconSwitch
+            :active="isAuthorSearch"
+            :tooltipText="`Author search is ${isAuthorSearch ? 'active' : 'inactive'}`"
+            :icon="mdiAccountCircle"
             @clicked="catchAuthorSearchClick" />
 
         </v-col>
 
         <v-col v-if="showSearch && mode === EDNA_MODE" class="py-0 ml-sm-4 shrink">
 
-          <BaseIconSwitch :active="isShallow" :tooltipText="`Type of dataset is ${isShallow ? 'Shallow' : 'Real'}`"
+          <BaseIconSwitch
+            :active="isShallow"
+            :tooltipText="`Type of dataset is ${isShallow ? 'Shallow' : 'Real'}`"
             :icon="mdiLayers" @clicked="catchShallowRealClick" />
 
         </v-col>

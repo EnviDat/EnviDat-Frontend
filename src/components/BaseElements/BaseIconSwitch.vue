@@ -7,11 +7,13 @@
             <button tabindex="0" type="button" :disabled="disabled" class="iconSwitchButton"
               :id="'iconSwitchButton' + $.uid" :class="classList" role="switch"
               :aria-describedby="'iconSwitchLabel' + $.uid" :aria-checked="active" @click="emitClick">
+
               <base-icon :icon="icon" :color="iconColor"></base-icon>
             </button>
           </div>
-          <label v-if="label" :for="'iconSwitchButton' + $.uid" class="iconSwitchLabel" :class="{ disabled }">{{ label
-          }}</label>
+          <label v-if="label" :for="'iconSwitchButton' + $.uid" class="iconSwitchLabel" :class="{ disabled }">
+            {{ label }}
+          </label>
         </div>
       </template>
       <span v-if="tooltipText">{{ tooltipText }}</span>

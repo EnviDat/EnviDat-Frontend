@@ -1438,3 +1438,11 @@ export function localSearch(searchTerm, datasets) {
 
   return foundDatasets;
 }
+
+export function isTagSelected(tagName, selectedTagNames) {
+  if (!tagName || selectedTagNames === undefined) {
+    return false;
+  }
+
+  return selectedTagNames.indexOf(tagName) >= 0;
+}
