@@ -38,7 +38,6 @@
           <!-- prettier-ignore -->
           <component :is="entry"
                      v-bind="entry.genericProps"
-                     :generic-props="entry.genericProps"
                      :show-placeholder="showPlaceholder" />
           </v-col>
         </v-row>
@@ -53,7 +52,6 @@
           <!-- prettier-ignore -->
           <component :is="entry"
                      v-bind="entry.genericProps"
-                     :generic-props="entry.genericProps"
                      :show-placeholder="showPlaceholder" />
           </v-col>
         </v-row>
@@ -363,7 +361,8 @@ export default {
         showFullscreenButton: this.showFullscreenButton,
       };
       const { components } = this.$options;
-      this.$set(components.MetadataGeo, 'genericProps', this.geoServiceConfig);
+      
+      components.MetadataGeo.pros = this.geoServiceConfig;
     },
     loadGeoServiceLayers(url) {
       this.geoServiceLayers = null;

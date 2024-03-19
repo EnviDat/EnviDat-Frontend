@@ -44,7 +44,6 @@ export default {
     ExpandableTextLayout,
   },
   props: {
-    showPlaceholder: Boolean,
     text: {
       type: String,
       default: '',
@@ -66,14 +65,15 @@ export default {
       type: Array,
       default: () => [],
     },
+    showPlaceholder: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     ...mapState(['config']),
     loading() {
       return this.isResolving || this.showPlaceholder;
-    },
-    publications() {
-      return this.mixinMethods_getGenericProp('publications');
     },
     metadataConfig() {
       return this.$store ? this.config?.metadataConfig || {} : {};
