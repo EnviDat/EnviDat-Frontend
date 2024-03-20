@@ -109,7 +109,7 @@
                                   :tooltipText="authorToolTipText"
                                   :asciiDead="asciiDead"
                                   :authorPassedInfo="authorPassedInfo"
-                                  isSmall
+                                  is-small
                                 @clicked="catchAuthorClicked(authorGivenName(author), authorLastName(author))" />
                 </v-col>
               </v-row>
@@ -279,7 +279,7 @@
                         v-bind="props"
                         align="center">
                     <v-col class="flex-grow-0 pr-2">
-                      <BaseIcon color="black" :small="$vuetify.display.xs" :icon="mdiMail"></BaseIcon>
+                      <BaseIcon color="black" :small="$vuetify.display.xs" :icon="mdiEmail"></BaseIcon>
                     </v-col>
                     <v-col>
                       <a :href="contactEmailLowerCase ? `mailto:${contactEmailLowerCase}` : ''" target="_blank">{{ contactEmailLowerCase }}</a>
@@ -452,11 +452,23 @@ import { getAuthorName, getAuthorGivenName, getAuthorLastName } from '@/factorie
 import TagChipAuthor from '@/components/Chips/TagChipAuthor.vue';
 import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip.vue';
 import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
-import {mdiChevronDown, mdiClose, mdiMail, mdiMapMarker, mdiPencil} from '@mdi/js';
+import {
+  mdiAccountCog,
+  mdiChevronDown,
+  mdiClockPlusOutline,
+  mdiClose,
+  mdiFingerprint,
+  mdiEmail,
+  mdiMapMarker,
+  mdiPencil,
+  mdiUpdate,
+} from '@mdi/js';
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 export default {
   name: 'MetadataHeader',
   components: {
+    BaseIcon,
     TagChip,
     TagChipAuthor,
     TagChipPlaceholder,
@@ -517,10 +529,14 @@ export default {
   },
   data: () => ({
     mdiClose,
-    mdiMail,
+    mdiEmail,
     mdiMapMarker,
     mdiPencil,
     mdiChevronDown,
+    mdiClockPlusOutline,
+    mdiFingerprint,
+    mdiAccountCog,
+    mdiUpdate,
     showTagsExpanded: false,
     dark: false,
     blackTopToBottom: 'rgba(80,80,80, 0.1) 0%, rgba(80,80,80, 0.9) 70%',

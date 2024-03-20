@@ -5,8 +5,8 @@
       'text-white': highlighted,
       smallChip: $vuetify.display.smAndDown,
     }"
-    :color="highlighted ? 'primary' : color"
     :style="{ height: $vuetify.display.xs ? '15px' : '' }"
+    :color="highlighted ? 'primary' : color"
     :small="isSmall"
     :close-icon="mdiClose"
     @click.stop="clicked"
