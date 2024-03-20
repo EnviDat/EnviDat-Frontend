@@ -115,7 +115,7 @@
                 <BaseStatusLabelView
                   v-if="infoObject && !errorObject"
                   :loading="chartIsLoading"
-                  :statusIcon="infoObject.icon"
+                  :status="infoObject.icon"
                   :statusColor="infoObject.icon"
                   :statusText="infoObject.title"
                   :expandedText="infoObject.message"
@@ -126,7 +126,7 @@
                 <BaseStatusLabelView
                   v-if="warningObject"
                   :loading="chartIsLoading"
-                  :statusIcon="warningObject.icon"
+                  :status="warningObject.icon"
                   :statusColor="warningObject.icon"
                   :statusText="warningObject.title"
                   :expandedText="warningObject.message"
@@ -137,7 +137,7 @@
                 <BaseStatusLabelView
                   v-if="errorObject"
                   :loading="chartIsLoading"
-                  :statusIcon="errorObject.icon"
+                  :status="errorObject.icon"
                   :statusColor="errorObject.icon"
                   :statusText="errorObject.title"
                   :expandedText="errorObject.message"

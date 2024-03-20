@@ -15,12 +15,12 @@
         </v-col>
 
         <v-col v-if="message">
-          <BaseStatusLabelView statusIcon="check" statusColor="success" :statusText="message"
+          <BaseStatusLabelView status="check" statusColor="success" :statusText="message"
             :expandedText="messageDetails" />
         </v-col>
 
         <v-col v-if="error">
-          <BaseStatusLabelView statusIcon="error" statusColor="error" :statusText="error" :expandedText="errorDetails" />
+          <BaseStatusLabelView status="error" statusColor="error" :statusText="error" :expandedText="errorDetails" />
         </v-col>
       </v-row>
 

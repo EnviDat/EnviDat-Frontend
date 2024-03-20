@@ -1,7 +1,7 @@
 <template>
   <v-container
     fluid
-    :id="`BaseStatusLabelView_${statusIcon}`"
+    :id="`BaseStatusLabelView_${status}`"
     class="pa-0"
     :style="expanded ? `border: solid 1px ${statusTextColor};` : ''"
   >
@@ -23,11 +23,10 @@
     <v-row v-show="!loading"
            no-gutters justify="start" class="align-center">
       <v-col class="flex-grow-0 px-2">
-        <v-icon :color="statusColor"
+        <BaseIcon :color="statusColor"
+                  :icon="statusIcon"
                 v-on="expandedText ? { click: () => { expanded = !expanded } } : {}"
-        >
-          {{ statusIcon }}
-        </v-icon>
+        />
       </v-col>
 
       <v-col
@@ -41,8 +40,9 @@
       <v-col v-show="showExpandIcon"
              class="flex-grow-0">
         <BaseIconButton
-          :icon="mdiArrowDownDropCircle"
+          :icon="mdiMenuDown"
           iconColor="primary"
+          outlined
           small
           :rotated="expanded"
           @clicked="expanded = !expanded"
@@ -58,7 +58,7 @@
       justify="start"
       class="align-center py-1 px-2 text-caption"
     >
-      {{ expandedText }}
+      <v-alert :icon="statusIcon" :type="status" variant="tonal">{{ expandedText }}</v-alert>
     </v-row>
     <!-- </v-expand-y-transition> -->
   </v-container>
@@ -78,14 +78,15 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
-import { mdiArrowDownDropCircle } from '@mdi/js';
+import {mdiAlertCircle, mdiCheckCircle, mdiCloseCircle, mdiInformation, mdiMenuDown} from '@mdi/js';
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 export default {
   name: 'BaseStatusLabelView',
   props: {
-    loading: Boolean,
+    loading: { type: Boolean, default: false },
     expandedText: String,
-    statusIcon: String,
+    status: String,
     statusColor: String,
     statusText: String,
     showExpandIcon: {
@@ -99,12 +100,33 @@ export default {
         this.$vuetify.theme.themes.light[this.statusColor] || this.statusColor
       );
     },
+    statusIcon() {
+      if (this.status === 'check') {
+        return mdiCheckCircle;
+      }
+      if (this.status === 'info') {
+        return mdiInformation;
+      }
+      if (this.status === 'warning') {
+        return mdiAlertCircle;
+      }
+      if (this.status === 'error') {
+        return mdiCloseCircle;
+      }
+
+      return mdiInformation;
+    },
   },
   data: () => ({
-    mdiArrowDownDropCircle,
+    mdiMenuDown,
+    mdiInformation,
+    mdiAlertCircle,
+    mdiCloseCircle,
+    mdiCheckCircle,
     expanded: false,
   }),
   components: {
+    BaseIcon,
     BaseIconButton,
   },
 };
