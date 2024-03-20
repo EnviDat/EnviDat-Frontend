@@ -14,13 +14,13 @@
         </v-col>
 
         <v-col v-if="message" >
-          <BaseStatusLabelView statusIcon="check"
+          <BaseStatusLabelView status="check"
                                statusColor="success"
                                :statusText="message"
                                :expandedText="messageDetails" />
         </v-col>
         <v-col v-if="error"  >
-          <BaseStatusLabelView statusIcon="error"
+          <BaseStatusLabelView status="error"
                                statusColor="error"
                                :statusText="error"
                                :expandedText="errorDetails" />
@@ -44,7 +44,7 @@
                         dense
                         :readonly="isReadOnly('firstName')"
                         :hint="readOnlyHint('firstName')"
-                        prepend-icon="person"
+                        :prepend-icon="mdiAccount"
                         :error-messages="validationErrors.firstName"
                         :placeholder="labels.firstName"
                         :value="firstNameField"
@@ -64,7 +64,7 @@
                         dense
                         :readonly="isReadOnly('lastName')"
                         :hint="readOnlyHint('lastName')"
-                        prepend-icon="person"
+                        :prepend-icon="mdiAccount"
                         :error-messages="validationErrors.lastName"
                         :placeholder="labels.lastName"
                         :value="lastNameField"
@@ -84,7 +84,7 @@
                         dense
                         :readonly="isReadOnly('email')"
                         :hint="readOnlyHint('email')"
-                        prepend-icon="email"
+                        :prepend-icon="mdiEmail"
                         :error-messages="validationErrors.email"
                         :placeholder="labels.email"
                         :value="emailField"
@@ -139,6 +139,7 @@ import {
 } from '@/factories/eventBus';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+import {mdiAccount, mdiEmail} from '@mdi/js';
 
 export default {
   name: 'EditUserProfile',
@@ -351,6 +352,8 @@ export default {
       lastName: false,
       email: false,
     },
+    mdiEmail,
+    mdiAccount,
   }),
   components: {
     UserCard,

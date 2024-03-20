@@ -11,6 +11,7 @@
         <v-img :height="headerHeight"
           :width="width"
           style="border-top-left-radius: 4px; border-top-right-radius: 4px;"
+           cover
           :src="userCardBanner" />
 
         <!--        :src="`https://gravatar.com/avatar/${email}?s=${gravatarImageSize}&d=identicon&r=g`"
