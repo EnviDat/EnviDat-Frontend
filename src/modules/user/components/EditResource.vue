@@ -2,16 +2,16 @@
   <v-card id="EditResource" :key="id" :loading="loadingColor" class="pa-0">
 
     <BaseIconButton class="editResourceCloseButton ma-2" :class="{ 'mx-1': $vuetify.display.smAndDown }"
-      style="position: absolute; top: 0; right: 0; z-index: 2" :icon="mdiClose" icon-color="primary" color="primary"
-      outlined tooltip-text="Cancel Resource Editing" tooltip-bottom @clicked="$emit('closeClicked')" />
+                    style="position: absolute; top: 0; right: 0; z-index: 2" :icon="mdiClose" icon-color="primary" color="primary"
+                    outlined tooltip-text="Cancel Resource Editing" tooltip-bottom @clicked="$emit('closeClicked')" />
 
 
     <div class="pa-3">
 
       <v-row>
         <v-col cols="6" class="text-h5 d-flex align-center">
-          <v-icon v-if="this.isRestrictedField" color="error" left>lock</v-icon>
-          <span>{{ labels.title }}</span>
+          <BaseIcon v-if="isDataPrivate" color="black" :icon="mdiLock" />
+          <span class="pl-2" >{{ labels.title }}</span>
         </v-col>
 
         <v-col v-if="message">
@@ -26,11 +26,11 @@
 
       <div class="pa-1">
 
-        <v-alert type="info" border="left" outlined dense icon="info">{{ labels.instructions }}</v-alert>
+        <v-alert type="info" border="left" variant="outlined" density="compact" >{{ labels.instructions }}</v-alert>
 
         <v-row id="resourceName" no-gutters class="pt-4">
           <v-col cols="12">
-            <v-text-field :label="labels.resourceName" ref="resourceName" outlined required :disabled="loading"
+            <v-text-field :label="labels.resourceName" ref="resourceName" variant="outlined"  required :disabled="loading"
               v-model="resourceNameField" :error-messages="validationErrors.name" />
 
           </v-col>
@@ -39,7 +39,7 @@
         <v-row id="description" no-gutters class="pt-2">
           <v-col cols="12">
 
-            <v-textarea :label="labels.description" outlined auto-grow :disabled="loading" v-model="descriptionField"
+            <v-textarea :label="labels.description" variant="outlined"  auto-grow :disabled="loading" v-model="descriptionField"
               :error-messages="validationErrors.description" />
 
           </v-col>
@@ -69,10 +69,10 @@
           </v-col>
 
           <v-col :class="showImagePreview ? 'pt-3 pb-4' : ''">
-            <v-textarea v-if="isLongUrl" :label="isLink ? labels.url : labels.fileName" outlined auto-grow readonly dense
+            <v-textarea v-if="isLongUrl" :label="isLink ? labels.url : labels.fileName" variant="outlined"  auto-grow readonly dense
               hide-details :disabled="loading" :value="urlField" :error-messages="validationErrors.url" />
 
-            <v-text-field v-if="!isLongUrl" :label="isLink ? labels.url : labels.fileName" outlined readonly dense
+            <v-text-field v-if="!isLongUrl" :label="isLink ? labels.url : labels.fileName" variant="outlined"  readonly dense
               hide-details :disabled="loading" :value="urlField" :error-messages="validationErrors.url" />
 
           </v-col>
@@ -83,12 +83,12 @@
           <v-col cols="12" md="6" class="pr-md-4">
 
             <v-row no-gutters>
-              <v-col class="shrink pt-2">
+              <v-col class="flex-grow-0 pt-2">
                 <BaseIcon :icon="fileFormatIcon"></BaseIcon>
               </v-col>
 
-              <v-col class="pl-2">
-                <v-text-field :label="labels.format" outlined dense hide-details="auto" :disabled="loading"
+              <v-col class="pl-4">
+                <v-text-field :label="labels.format" variant="outlined"  dense hide-details="auto" :disabled="loading"
                   @change="formatField = $event" :value="formatField" :error-messages="validationErrors.format" />
               </v-col>
             </v-row>
@@ -97,18 +97,19 @@
           <v-col id="size" cols="12" md="6" class="pt-2 pt-md-0">
 
             <v-row no-gutters>
-              <v-col class="shrink pt-2">
+              <v-col class="flex-grow-0 pt-2">
                 <BaseIcon :icon="fileSizeIcon"></BaseIcon>
               </v-col>
 
-              <v-col class="pl-2">
-                <v-text-field :label="labels.size" outlined dense hide-details="auto" :disabled="!isLink || loading"
+              <v-col class="pl-4">
+                <v-text-field :label="labels.size" variant="outlined"  dense hide-details="auto" :disabled="!isLink || loading"
                   @change="sizeField = $event" :value="isLink ? sizeField : sizeFieldText"
                   :error-messages="validationErrors.size" />
               </v-col>
-              <v-col class="pl-2">
-                <v-select :items="labels.sizeFormatList" v-model="sizeFormatField" label="File size format" outlined dense
-                  hide-details="auto" :disabled="!isLink || loading" :error-messages="validationErrors.sizeFormat" />
+              <v-col class="px-2">
+                <v-select :items="labels.sizeFormatList" v-model="sizeFormatField" label="File size format" variant="outlined"
+                          density="compact" hide-details="auto"
+                          :disabled="!isLink || loading" :error-messages="validationErrors.sizeFormat" />
               </v-col>
             </v-row>
 
@@ -119,12 +120,12 @@
         <v-row id="dates" no-gutters align="center" class="pt-3">
 
           <v-col cols="12" md="6" class="pr-md-4">
-            <v-text-field :label="labels.created" prepend-icon="date_range" outlined readonly dense hide-details
+            <v-text-field :label="labels.created" :prepend-icon="mdiCalendarRange" variant="outlined"  readonly dense hide-details
               :disabled="loading" :value="readableCreated" />
           </v-col>
 
           <v-col cols="12" md="6" class="pt-2 pt-md-0">
-            <v-text-field :label="labels.lastModified" prepend-icon="update" outlined readonly dense hide-details
+            <v-text-field :label="labels.lastModified" :prepend-icon="mdiUpdate" variant="outlined"  readonly dense hide-details
               :disabled="loading" :value="readableLastModified" />
           </v-col>
         </v-row>
@@ -160,12 +161,12 @@
 
           <v-row v-if="!editingRestrictingActive" class="py-2">
             <v-col>
-              <v-alert type="warning" icon="warning">{{ labels.editingRestrictingUnavailableInfo }}</v-alert>
+              <v-alert type="warning" >{{ labels.editingRestrictingUnavailableInfo }}</v-alert>
             </v-col>
           </v-row>
 
           <v-row no-gutters class="pt-4" justify="end">
-            <v-col class="shrink">
+            <v-col class="flex-grow-0">
               <!-- prettier-ignore -->
               <BaseRectangleButton :disabled="!saveButtonEnabled" :loading="loading" :buttonText="labels.createButtonText"
                 @clicked="saveResourceClick" />
@@ -218,7 +219,7 @@ import {
   ACCESS_LEVEL_SAMEORGANIZATION_VALUE,
   ACCESS_LEVEL_PUBLIC_VALUE,
 } from '@/factories/userEditingFactory';
-import { mdiAccount, mdiLock } from '@mdi/js';
+import {mdiAccount, mdiCalendarRange, mdiClose, mdiLock, mdiUpdate} from '@mdi/js';
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 
@@ -680,6 +681,9 @@ export default {
   data: () => ({
     mdiAccount,
     mdiLock,
+    mdiClose,
+    mdiCalendarRange,
+    mdiUpdate,
     previews: {
       name: null,
       description: null,
