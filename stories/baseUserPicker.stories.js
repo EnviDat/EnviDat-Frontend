@@ -45,84 +45,45 @@ const preSelectedAuthors3 = authorsStrings.filter(value => value.includes('B'));
 
 export default {
   title: '1 Base Elements / User Picker',
-  decorators: [],
-  parameters: {},
+  component: BaseUserPicker,
 };
 
-export const UserPickerViews = () => ({
-  components: { BaseUserPicker },
-  template: `
-  <v-col>
 
-    <v-row>
-      BaseUserPicker
-    </v-row>
-
-    <v-row class="py-3" >
-      <v-col >
-        <BaseUserPicker :users="authors" />
-      </v-col>
-    </v-row>
-
-    <v-row>
-      BaseUserPicker with preSelection
-    </v-row>
-
-    <v-row class="py-3" >
-      <v-col >
-        <BaseUserPicker :users="authors"
-                        :preSelected="preSelectedAuthor" />
-      </v-col>
-    </v-row>
-
-    <v-row>
-      BaseUserPicker as Card with multiple-pick, clearable and instructions
-    </v-row>
-
-    <v-row class="py-3" >
-      <v-col >
-        <BaseUserPicker :users="authors"
-                        :multiplePick="true"
-                        :isClearable="true"
-                        :showAsCard="true"
-                        instructions="Pick an EnviDat user to add as an author." />
-      </v-col>
-    </v-row>
-
-    <v-row>
-      BaseUserPicker with multiple-pick and clearable and with pre selection
-    </v-row>
-
-    <v-row class="py-3" >
-      <v-col >
-        <BaseUserPicker :users="authors"
-                        :multiplePick="true"
-                        :preSelected="preSelectedAuthors3"
-                        :isClearable="true" />
-      </v-col>
-    </v-row>
-
-    <v-row>
-      BaseUserPicker read only with pre selection
-    </v-row>
-
-    <v-row class="py-3" >
-      <v-col >
-        <BaseUserPicker :users="authors"
-                        :multiplePick="true"
-                        :preSelected="preSelectedAuthors3"
-                        :readonly="true"
-                        hint="Testing readonly" />
-      </v-col>
-    </v-row>
-
-  </v-col>
-  `,
-  methods: {
+export const AuthorPicking = {
+  args: {
+    users: authorsStrings,
   },
-  data: () => ({
-    authors: authorsStrings,
-    preSelectedAuthor,
-    preSelectedAuthors3,
-  }),
-});
+}
+
+export const WithPreselection = {
+  args: {
+    users: authorsStrings,
+    preSelected: preSelectedAuthor,
+  },
+}
+
+export const WithMultiplePick = {
+  args: {
+    users: authorsStrings,
+    multiplePick: true,
+    isClearable: true,
+    showAsCard: true,
+    instructions: 'Pick an EnviDat user to add as an author.',
+  },
+}
+
+export const MultiplePickPreselection = {
+  args: {
+    ...WithMultiplePick.args,
+    users: authorsStrings,
+    preSelected: preSelectedAuthors3,
+  },
+}
+
+export const MultiplePickReadonly = {
+  args: {
+    ...MultiplePickPreselection.args,
+    readonly: true,
+    hint: 'Testing readonly',
+  },
+}

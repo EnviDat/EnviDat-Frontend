@@ -66,13 +66,15 @@ for (let i = 0; i < unFormatedMetadata.length; i++) {
 
 export default {
   title: '9 Editing Metadata / Resource Views',
-  decorators: [],
-  parameters: {},
+  component: EditResource,
 };
 
 const userEditMetadataConfig = {
   editingRestrictingActive: true,
 };
+
+export const Default = {}
+
 
 export const EditResourceViews = () => ({
   components: { EditResource },
@@ -80,23 +82,11 @@ export const EditResourceViews = () => ({
     <v-container>
 
 
-      <h1>EditResource empty and with resource1</h1>
-
       <v-row class="py-3" >
-        <v-col cols="12" lg="6" xl="4">
-          <EditResource  />
-        </v-col>
-
         <v-col cols="12" lg="6" xl="4">
           <EditResource v-bind="resource1" />
         </v-col>
 
-      </v-row>
-
-
-      <h1 class="mt-5">EditResource with resource2 & resource3</h1>
-
-      <v-row class="py-3" >
 
         <v-col cols="12" lg="6" xl="4">
           <EditResource v-bind="resource2" />
@@ -105,12 +95,6 @@ export const EditResourceViews = () => ({
         <v-col cols="12" lg="6" xl="4">
           <EditResource v-bind="resource3" />
         </v-col>
-      </v-row>
-
-
-      <h1 class="mt-5">EditResource with resource4</h1>
-
-      <v-row class="py-3" >
 
         <v-col cols="12" lg="6" xl="4">
           <EditResource v-bind="resource4" />
