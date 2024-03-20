@@ -54,7 +54,7 @@ const Template = (args, { argTypes }) => ({
              class='pa-2'
              :key="card.title">
         <BaseClickCard :title="card.title"
-                       :img='card.img'
+                       :img='card.imgPath'
                        :color='card.color' />
       </v-col>
     </v-row>
