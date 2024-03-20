@@ -137,6 +137,7 @@ import {
 import { convertJSON, getFrontendDates, getFrontendJSONForStep } from '@/factories/mappingFactory';
 
 import { getIcon } from '@/factories/imageFactory';
+import { convertArrayToUrlString } from '@/factories/stringFactory';
 import MetadataHeader from './Metadata/MetadataHeader.vue';
 import MetadataBody from './Metadata/MetadataBody.vue';
 import MetadataResources from './Metadata/MetadataResources.vue';
@@ -144,7 +145,6 @@ import MetadataCitation from './Metadata/MetadataCitation.vue';
 import MetadataPublications from './Metadata/MetadataPublications.vue';
 import MetadataFunding from './Metadata/MetadataFunding.vue';
 import MetadataAuthors from './Metadata/MetadataAuthors.vue';
-import { convertArrayToUrlString } from '@/factories/stringFactory.js';
 
 // Might want to check https://css-tricks.com/use-cases-fixed-backgrounds-css/
 // for animations between the different parts of the Metadata

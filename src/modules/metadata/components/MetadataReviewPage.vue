@@ -109,12 +109,12 @@ import TwoColumnLayout from '@/components/Layouts/TwoColumnLayout.vue';
 import { convertJSON, getFrontendDates, getFrontendJSONForStep } from '@/factories/mappingFactory';
 
 import { useReviewStore } from '@/modules/metadata/store/reviewStore';
+import { convertArrayToUrlString } from '@/factories/stringFactory';
 import MetadataHeader from './Metadata/MetadataHeader.vue';
 import MetadataBody from './Metadata/MetadataBody.vue';
 import MetadataResources from './Metadata/MetadataResources.vue';
 import MetadataCitation from './Metadata/MetadataCitation.vue';
 import MetadataAuthors from './Metadata/MetadataAuthors.vue';
-import { convertArrayToUrlString } from '@/factories/stringFactory.js';
 
 // Might want to check https://css-tricks.com/use-cases-fixed-backgrounds-css/
 // for animations between the different parts of the Metadata
