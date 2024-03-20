@@ -33,7 +33,7 @@
           <div
             class="text-h6"
             style="word-break: break-word; line-height: 1!important; letter-spacing: .02em !important;"
-            :class="dark ? 'white--text' : 'black--text'"
+            :class="dark ? 'text-white' : 'text-black'"
           >
             {{ truncatedTitle }}
           </div>

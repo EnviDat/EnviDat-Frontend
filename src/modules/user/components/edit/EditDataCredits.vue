@@ -6,7 +6,7 @@
 
     <v-row no-gutters>
       <v-col cols="12"
-             :class="dark ? 'white--text' : 'black--text'" >
+             :class="dark ? 'text-white' : 'text-black'" >
         {{ instruction }}
       </v-col>
     </v-row>

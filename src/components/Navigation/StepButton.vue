@@ -5,7 +5,7 @@
         @click="catchStepClick">
 
     <div class="stepRow">
-      <div class="stepNumber readableText white--text"
+      <div class="stepNumber readableText text-white"
             :style="`background-color: ${stepNumberColor} ;`">
         {{ number }}
       </div>

@@ -3,6 +3,9 @@
     <base-icon-button
       :icon="icon"
       :count="count"
+      iconColor="grey-darken-2"
+      readonly
+      v-bind="$props"
     ></base-icon-button>
   </div>
 </template>
@@ -38,10 +41,5 @@ export default {
 };
 </script>
 
-<style>
-  .iconCountView {
-    /* line-height has to be based on the root (1rem) because of the
-      use in ex. v-card-title */
-    line-height: 1rem;
-  }
+<style scoped>
 </style>

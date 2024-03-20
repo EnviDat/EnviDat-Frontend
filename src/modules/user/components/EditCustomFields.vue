@@ -79,7 +79,7 @@
       <v-row v-if="maxCustomFieldsReached">
         <v-col cols="12">
           <div class="text-subtitle-2">
-            <span class="red--text">{{ this.maxCustomFieldsMessage }}</span>
+            <span class="text-red">{{ this.maxCustomFieldsMessage }}</span>
           </div>
         </v-col>
       </v-row>

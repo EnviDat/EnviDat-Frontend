@@ -248,7 +248,7 @@ export default {
 
       if (!this.keywordValidConcise) {
         const wordMaxHint = `Each keyword tag may not exceed ${this.keywordsListWordMax} words.`;
-        return `<span class="red--text font-italic">${wordMaxHint}</span>`;
+        return `<span class="text-red font-italic">${wordMaxHint}</span>`;
       }
 
       let hint = '';

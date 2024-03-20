@@ -39,6 +39,7 @@
 
 <script>
 
+import BaseDatePicker from './BaseDatePicker.vue';
 
 export default {
   name: 'BaseStartEndDate',
@@ -100,6 +101,7 @@ export default {
     },
   },
   components: {
+    BaseDatePicker,
   },
   data: () => ({
     labels: {

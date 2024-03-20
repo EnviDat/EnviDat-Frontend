@@ -6,7 +6,8 @@
       :aria-label="`${icon} icon`"
       class="baseIconCustomIcon"
       :style="customIconStyle"
-      :class="{ ['bg-' + color]: true }">
+      :class="{ ['bg-' + color]: true }"
+      >
     </div>
     <v-icon
       v-else
@@ -47,6 +48,7 @@ export default {
   computed: {
     customIconStyle() {
       return {
+        'background-color': this.color,
         '-webkit-mask': `url("${this.customIcon}") center/contain`,
         'mask': `url("${this.customIcon}") center/contain`,
       }

@@ -1,28 +1,41 @@
 <template>
   <div class="baseIconButton">
-    <v-btn
-      class="ma-0"
-      :elevation="elevated ? 5 : undefined"
-      icon
-      :variant="outlined ? 'outlined' : undefined"
-      density="comfortable"
-      :size="large ? 'large' : small ? 'small' : undefined"
-      :color="color"
-      :href="url"
-      :class="buttonClass"
-      @click.stop="onClick">
-      <base-icon
-        :icon="icon"
-        :large="large"
-        :rotated="rotated"
-        :color="iconColor">
-      </base-icon>
-    </v-btn>
-
-    <v-badge v-if="count > 0" :overlap="!small" :left="small" :style="small ? 'position: relative; bottom: 10px;' : ''"
-      :content="count" color="highlight" :class="{ envidatBadgeBigNumber: count > 9, envidatBadge: count <= 9 }"
-      @click.stop="onClick" />
-
+    <v-badge 
+      :model-value="count > 0"
+      :floating="small" 
+      location="bottom start"
+      :content="count" 
+      color="highlight"
+      class="envidatBadge"
+      :class="{ 
+        bigNumber: count > 9 
+      }"
+      @click.stop="onClick" 
+    >
+      <v-btn
+        class="iconButton ma-0"
+        :class="buttonClass"
+        :style="buttonStyle"
+        :elevation="elevated ? 5 : undefined"
+        icon
+        :variant="outlined ? 'outlined' : 'flat'"
+        density="comfortable"
+        :size="large ? 'large' : small ? 'small' : undefined"
+        :color="computedColor"
+        :href="url"
+        @click.stop="onClick"
+        :ripple="!readonly"
+        :aria-disabled="readonly"
+      >
+        <base-icon
+          :icon="icon"
+          :large="large"
+          :rotated="rotated"
+          :color="iconColor"
+          :small="small">
+        </base-icon>
+      </v-btn>
+    </v-badge>
   </div>
 </template>
 
@@ -62,6 +75,7 @@ export default {
   components: { BaseIcon },
   props: {
     color: { type: String, default: undefined },
+    outlineColor: { type: String, default: undefined },
     tooltipText: { type: String, default: undefined },
     tooltipBottom: { type: Boolean, default: false },
     icon: { type: String, default: undefined, required: true },
@@ -78,10 +92,25 @@ export default {
     readonly: { type: Boolean, default: false },
   },
   computed: {
+    computedColor(){
+      // Vuetify only colors the outline when the "outlined" variant is chosen
+      // Because this component can change the background color even when in "outlined mode" a switch is needed
+      if(this.outlined) {
+        return this.outlineColor ?? 'black';
+      } 
+      return this.color ?? 'transparent';
+    },
+    buttonStyle() {
+      if(this.color){
+        return `background-color: ${this.color}; background-color: rgb(var(--v-theme-${this.color})) !important;`;
+      }
+      return undefined;
+    },
     buttonClass() {
       return {
         fancyButton: this.fancy,
         glowingButton: this.glowing,
+        readonly: this.readonly,
       }
     },
   },
@@ -96,7 +125,19 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+
+.iconButton {
+  &.readonly {
+    cursor: default !important;
+
+    .v-btn__overlay {
+      opacity: 0 !important;
+    }
+  }
+}
+
+
 .fancyButton {
   background-color: #00BFAD;
   background-image:

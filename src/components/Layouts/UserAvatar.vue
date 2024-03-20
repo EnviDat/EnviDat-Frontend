@@ -21,7 +21,7 @@
     </div>
 
     <span v-if="showInitials"
-          class="white--text"
+          class="text-white"
           style="position: absolute;"
           :class="initialsTextClass"
           >{{ nameInitials }}</span

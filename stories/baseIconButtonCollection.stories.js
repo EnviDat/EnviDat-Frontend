@@ -43,11 +43,31 @@ IconOnly.args = {
   icon: mdiContentSave,
 }
 
-export const IconOnlyOutlined = Template.bind({});
-IconOnlyOutlined.args = {
+export const IconOutlined = Template.bind({});
+IconOutlined.args = {
   icon: mdiContentSave,
   outlined: true,
+  outlineColor: 'primary',
   iconColor: 'black',
+}
+
+export const IconOutlinedColored = Template.bind({});
+IconOutlinedColored.args = {
+  ...IconOutlined.args,
+  outlined: true,
+  outlineColor: 'red',
+  color: 'secondary',
+  iconColor: 'yellow',
+}
+
+export const IconOutlinedColoredAndElevated = Template.bind({});
+IconOutlinedColoredAndElevated.args = {
+  ...IconOutlined.args,
+  outlined: true,
+  elevated: true,
+  outlineColor: 'red',
+  color: 'secondary',
+  iconColor: 'yellow',
 }
 
 export const IconAndElevated = Template.bind({});
@@ -62,7 +82,7 @@ export const CustomIcon = Template.bind({});
 CustomIcon.args = {
   icon: 'file',
   outlined: true,
-  color: 'secondary',
+  color: 'white',
 }
 
 export const IconRotated = TemplateRotatable.bind({});
@@ -96,7 +116,7 @@ FancyButton.args = {
 
 export const GlowingButton = Template.bind({});
 GlowingButton.args = {
-  ...IconOnlyOutlined.args,
+  ...IconOutlined.args,
   glowing: true,
 }
 
@@ -108,6 +128,15 @@ FancyAndGlowingButton.args = {
 
 export const CountButton = Template.bind({});
 CountButton.args = {
-  ...IconOnlyOutlined.args,
+  ...IconOutlined.args,
   count: 12,
+}
+
+export const ReadonlyCountButtonSmall = Template.bind({});
+ReadonlyCountButtonSmall.args = {
+  ...IconOutlined.args,
+  outlined: false,
+  small: true,
+  count: 100,
+  readonly: true,
 }

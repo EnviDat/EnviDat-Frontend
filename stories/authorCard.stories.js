@@ -4,7 +4,7 @@ import {
  withKnobs, text, number,
 } from '@storybook/addon-knobs';
 */
-import { mdiBookOpenVariantOutline, mdiLibraryOutline, mdiCodeTags, mdiWidgetsOutline, mdiAccountVoice, mdiAccountSupervisorOutline } from '@mdi/js';
+import { mdiBookOpenVariantOutline, mdiPencil, mdiLibraryOutline, mdiCodeTags, mdiWidgetsOutline, mdiAccountVoice, mdiAccountSupervisorOutline } from '@mdi/js';
 
 import AuthorCard from '@/modules/metadata/components/AuthorCard.vue';
 import DataCreditLayout from '@/components/Layouts/DataCreditLayout.vue';
@@ -173,7 +173,7 @@ export const AuthorCardList = () => ({
         <author-card :author="authorFromCollection4"
                      :loading="true"
                      :show-generic-open-button="true"
-                     open-button-icon="edit"
+                     :open-button-icon="mdiPencil"
                      open-button-tooltip="Editing Author"
         />
       </v-col>
@@ -181,7 +181,7 @@ export const AuthorCardList = () => ({
       <v-col cols="12" md="4" pt-5 >
         <author-card :author="author2"
                      :show-generic-open-button="true"
-                     open-button-icon="edit"
+                     :open-button-icon="mdiPencil"
                      open-button-tooltip="Editing Author"
         />
       </v-col>
@@ -192,6 +192,7 @@ export const AuthorCardList = () => ({
   computed: {
   },
   data: () => ({
+    mdiPencil,
     authorFromCollection,
     authorFromCollection2,
     authorFromCollection3,

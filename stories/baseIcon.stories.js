@@ -27,6 +27,13 @@ export const EditBlackFontIcon = {
   },
 }
 
+export const CustomColorFontIcon = {
+  args: {
+    ...EditFontIcon.args,
+    color: '#FFAA00',
+  },
+}
+
 export const ErrorFontIcon = {
   args: {
     icon: mdiAccount,
@@ -36,7 +43,7 @@ export const ErrorFontIcon = {
 
 export const CustomPinIcon = {
   args: {
-    color: 'green',
+    color: '#00AAFF',
     icon: 'tag',
   },
 }

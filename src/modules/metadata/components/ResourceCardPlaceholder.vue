@@ -2,7 +2,7 @@
   <v-card
     id="ResourceCardPlaceholder"
     color="primary"
-    class="metadataResourceCard white--text"
+    class="metadataResourceCard text-white"
     style="height: 100%; min-width: 200px;"
   >
     <v-card-title>

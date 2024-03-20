@@ -101,7 +101,7 @@
       <v-row v-if="validationErrors.fundersArray" no-gutters>
         <v-col cols="12">
           <div class="text-subtitle-2">
-            <span class="red--text">{{ validationErrors.fundersArray }}</span>
+            <span class="text-red">{{ validationErrors.fundersArray }}</span>
           </div>
         </v-col>
       </v-row>

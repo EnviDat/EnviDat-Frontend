@@ -10,7 +10,7 @@
       <v-container class="fill-height" fluid>
         <v-row class="fill-height">
           <v-col cols="12">
-            <span class="text-h3 dataproducer_title white--text">{{
+            <span class="text-h3 dataproducer_title text-white">{{
               titleText
             }}</span>
           </v-col>

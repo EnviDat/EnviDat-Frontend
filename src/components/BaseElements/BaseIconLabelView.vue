@@ -4,8 +4,8 @@
       <template v-slot:activator="{ on }">
         <div v-on="on" class="baseIconLabelViewWrapper" :class="{
           dark,
-          'white--text': dark,
-          'black--text': !dark,
+          'text-white': dark,
+          'text-black': !dark,
         }">
           <div class="baseIconLabelViewIcon">
             <BaseIcon :icon="icon" :dark="dark" :light="light" />

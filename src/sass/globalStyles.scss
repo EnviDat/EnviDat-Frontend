@@ -102,13 +102,14 @@
   opacity: 0.5;
 }
 
-.envidatBadge span {
+
+.envidatBadge {
   font-size: 0.8rem !important;
+  &.bigNumber {
+    font-size: 0.7rem !important;
+  }
 }
 
-.envidatBadgeBigNumber span {
-  font-size: 0.7rem !important;
-}
 
 .envidatChip {
   height: 1.1rem !important;

@@ -39,50 +39,36 @@ export const DifferentLabelsView = () => ({
 
       <v-col cols="4">
         <base-icon-label-view iconTooltip="icon label view with alignLeft, wordBreak, label & text"
-                              label="label text: "
-                              text="somefilename.mp4"
-                              alignLeft
-                              wordBreak />
+                              text="somefilename.mp4" />
       </v-col>
 
       <v-col cols="4">
         <base-icon-label-view icon="fileAudio"
                               iconTooltip="icon label view with bold, icon, label & text"
-                              label="label text: "
-                              text="somefilename.mp4"
-                              bold />
+                              text="somefilename.mp4" />
       </v-col>
 
       <v-col cols="4">
         <base-icon-label-view icon="fileAudio"
                               iconTooltip="icon label view with alignLeft, icon, label & text"
-                              label="label text: "
-                              text="somefilelongerfilename.mp4"
-                              alignLeft />
+                              text="somefilelongerfilename.mp4" />
       </v-col>
 
       <v-col cols="4">
         <base-icon-label-view icon="fileAudio"
-                              iconTooltip="icon label view without text & usePlaceholder, alignLeft, icon, label"
-                              label="label text: "
-                              alignLeft
-                              usePlaceholder />
+                              iconTooltip="icon label view without text & usePlaceholder, alignLeft, icon, label" />
       </v-col>
 
       <v-col cols="4">
         <base-icon-label-view icon="fileAudio"
                               iconTooltip="icon label view with wordBreak, icon, label & text"
-                              label="label text: "
-                              text="somefilename.mp4"
-                              wordBreak />
+                              text="somefilename.mp4" />
       </v-col>
 
       <v-col cols="4">
         <base-icon-label-view icon="fileAudio"
                               iconTooltip="icon label view with compactLayout, icon, label & text"
-                              label="label text: "
-                              text="somefilename.mp4"
-                              compactLayout />
+                              text="somefilename.mp4" />
       </v-col>
 
       <v-col cols="4">
@@ -94,9 +80,7 @@ export const DifferentLabelsView = () => ({
       <v-col cols="4">
         <base-icon-label-view icon="fileAudio"
                               iconTooltip="icon label view with compactLayout, alignLeft, icon, text & without label text"
-                              text="somefilename.mp4"
-                              alignLeft
-                              compactLayout />
+                              text="somefilename.mp4" />
       </v-col>
 
       <v-col cols="4">

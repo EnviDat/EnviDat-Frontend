@@ -61,7 +61,7 @@
             <v-col cols="3">
               <base-rectangle-button
                 color="accent"
-                marginClass="black--text"
+                marginClass="text-black"
                 :button-text="createButtonText"
                 :disabled="createClickCallback === null"
                 @clicked="createClickCallback ? createClickCallback() : ''"
@@ -82,7 +82,7 @@
                     class="pl-4">
               <base-rectangle-button
                 color="accent"
-                marginClass="black--text"
+                marginClass="text-black"
                 :button-text="editingButtonText"
                 :disabled="editingClickCallback === null"
                 @clicked="editingClickCallback ? editingClickCallback() : ''"

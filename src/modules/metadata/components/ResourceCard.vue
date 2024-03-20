@@ -31,8 +31,8 @@
               "
             class="readableText resourceCardText heightAndScroll"
             :class="{
-              'white--text': dark,
-              'black--text': !dark,
+              'text-white': dark,
+              'text-black': !dark,
             }"
             :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`
               ">
@@ -162,7 +162,7 @@
             <BaseIcon :icon="mdiShield"></BaseIcon>
             <div
               v-if="downloadActive"
-              class="pt-2 lockedText black--text protectedLink">
+              class="pt-2 lockedText text-black protectedLink">
               <p v-html="protectedText"></p>
             </div>
           </div>

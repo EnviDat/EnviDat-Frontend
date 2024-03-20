@@ -1,8 +1,8 @@
 <template>
   <v-chip
-    class="envidatChip black--text"
+    class="envidatChip text-black"
     :class="{
-      'white--text': highlighted,
+      'text-white': highlighted,
       smallChip: $vuetify.display.smAndDown,
     }"
     :color="highlighted ? 'primary' : color"

@@ -19,7 +19,7 @@
         </v-col>
 
         <v-col>
-          <base-rectangle-button color="accent" marginClass="black--text" :button-text="editingButtonText"
+          <base-rectangle-button color="accent" marginClass="text-black" :button-text="editingButtonText"
             :disabled="editingClickCallback === null" @clicked="editingClickCallback ? editingClickCallback : ''" />
         </v-col>
       </v-row>
@@ -30,7 +30,7 @@
         </v-col>
 
         <v-col>
-          <base-rectangle-button color="accent" marginClass="black--text" :isOutlined="hasEditing"
+          <base-rectangle-button color="accent" marginClass="text-black" :isOutlined="hasEditing"
             :button-text="createButtonText" :disabled="createClickCallback === null"
             @clicked="createClickCallback ? createClickCallback : ''" />
         </v-col>

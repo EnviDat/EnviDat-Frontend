@@ -1,7 +1,7 @@
 <template>
-  <v-chip class="authorTag black--text"
+  <v-chip class="authorTag text-black"
           :class="{
-            'white--text': highlighted,
+            'text-white': highlighted,
             smallChip: $vuetify.display.smAndDown,
            }"
           :style="{ height: $vuetify.display.xs ? '15px' : '' }"

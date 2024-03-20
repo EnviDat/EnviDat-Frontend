@@ -51,7 +51,7 @@
             color="black"
             buttonText="Close"
             isSmall
-            marginClass="white--text"
+            marginClass="text-white"
             @clicked="$emit('clickedClose', $event)"
           />
         </v-col>

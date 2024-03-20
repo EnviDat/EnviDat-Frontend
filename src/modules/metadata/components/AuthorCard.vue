@@ -13,7 +13,7 @@
 
         <v-col class="grow py-0">
           <div class="authorTitle"
-               :class="dark ? 'white--text' : 'black--text'">
+               :class="dark ? 'text-white' : 'text-black'">
             {{ author.firstName }}
           </div>
         </v-col>
@@ -40,7 +40,7 @@
         <v-col class="py-0"
                cols="12">
           <div class="authorTitle"
-               :class="dark ? 'white--text' : 'black--text'">
+               :class="dark ? 'text-white' : 'text-black'">
             {{ authorIsDead ? author.lastName.replace(`(${asciiDead})`, '') : author.lastName }}
           </div>
         </v-col>
@@ -54,7 +54,7 @@
              justify="space-between">
 
         <v-col cols="6"
-               :class="dark ? 'white--text' : 'black--text'">
+               :class="dark ? 'text-white' : 'text-black'">
           {{ dataCountLabel }}
         </v-col>
 
@@ -64,6 +64,7 @@
           <BaseIconButton 
             class="ma-0"
             :icon="mdiMagnify"
+            :outline-color="dark ? 'white' : darkColor"
             :icon-color="dark ? 'white' : darkColor"
             outlined
             :color="dark ? 'white' : darkColor"
@@ -96,7 +97,7 @@
              align="center">
 
         <v-col class="grow"
-               :class="dark ? 'white--text' : 'black--text'">
+               :class="dark ? 'text-white' : 'text-black'">
           {{ dataScoreLabel }}
         </v-col>
 
@@ -105,9 +106,8 @@
             <template v-slot:activator="{ on, props }">
               <BaseIcon v-on="on"
                         v-bind="props"
-                        :class="dark ? 'white--text' : 'black--text'"
+                        :color="dark ? 'white' : 'black'"
                         :icon="mdiInformationOutline"
-                        small
               />
             </template>
 
@@ -116,11 +116,11 @@
         </v-col>
 
         <v-col class="flex-grow-0 pl-2">
-          <div :style="`background-color: ${ dark ? darkColor : whiteColor };`"
+          <div :style="`background-color: ${ dark ? whiteColor : darkColor };`"
                class="dataCreditScore elevation-5">
 
             <div :style="bigCountStyling"
-                 :class="dark ? 'white--text' : 'black--text'">
+                 :class="dark ? 'text-black' : 'text-white'">
               {{ dataCreditScore }}
             </div>
           </div>
@@ -140,7 +140,8 @@
 
           <BaseIconButton 
             :icon="infosExpanded ? mdiChevronDown : mdiChevronLeft"
-            icon-color="accent"
+            :icon-color="dark ? 'white' : darkColor"
+            :outline-color="dark ? 'white' : darkColor"
             outlined
             :color="dark ? 'white' : darkColor"
             class="ma-0 badgesIcon"
@@ -160,13 +161,13 @@
           <v-row no-gutters>
             <v-col cols="12"
                    class="authorInfoLabel py-0"
-                   :class="dark ? 'white--text' : 'black--text'">
+                   :class="dark ? 'text-white' : 'text-black'">
               {{ emailLabel }}
             </v-col>
 
             <v-col cols="12"
                    class="authorInfo py-0"
-                   :class="dark ? 'white--text' : 'black--text'">
+                   :class="dark ? 'text-white' : 'text-black'">
               <a :href="`mailto:${author.email}`">
                 {{ author.email }}
               </a>
@@ -179,13 +180,13 @@
           <v-row no-gutters>
             <v-col cols="12"
                    class="authorInfoLabel py-0"
-                   :class="dark ? 'white--text' : 'black--text'">
+                   :class="dark ? 'text-white' : 'text-black'">
               {{ idLabel }}
             </v-col>
 
             <v-col cols="12"
                    class="authorInfo py-0"
-                   :class="dark ? 'white--text' : 'black--text'">
+                   :class="dark ? 'text-white' : 'text-black'">
 
               <a v-if="(author.identifierType && author.identifierType === 'orcid') || isOrcId(author.identifier)"
                  :href="`https://orcid.org/${formatIdentifier(author.identifier)}`"
@@ -204,13 +205,13 @@
           <v-row no-gutters>
             <v-col cols="12"
                    class="authorInfoLabel py-0"
-                   :class="dark ? 'white--text' : 'black--text'">
+                   :class="dark ? 'text-white' : 'text-black'">
               {{ affiliationLabel }}
             </v-col>
 
             <v-col cols="12"
                    class="authorInfo py-0"
-                   :class="dark ? 'white--text' : 'black--text'">
+                   :class="dark ? 'text-white' : 'text-black'">
               {{ author.affiliation }}
             </v-col>
           </v-row>

@@ -6,7 +6,7 @@
 
     <v-row no-gutters>
       <v-col cols="12"
-              :class="dark ? 'white--text' : 'black--text'" >
+              :class="dark ? 'text-white' : 'text-black'" >
         {{ badgesLabel }}
       </v-col>
     </v-row>
@@ -15,7 +15,7 @@
       <v-col v-if="!hasDataCreditCounts"
               cols="12"
               class="pt-4"
-              :class="dark ? 'white--text' : 'black--text'"
+              :class="dark ? 'text-white' : 'text-black'"
               style="opacity: 0.65">
         {{ noCreditslabel }}
       </v-col>
@@ -129,12 +129,12 @@ export default {
     right: 0 !important;
   }
 
-  .dataCreditBadge.black--text > span > span {
+  .dataCreditBadge.text-black > span > span {
     color: #000 !important;
     caret-color: #000 !important;
   }
 
-  .dataCreditBadge.white--text > span > span {
+  .dataCreditBadge.text-white > span > span {
     color: #fff !important;
     caret-color: #fff !important;
   }

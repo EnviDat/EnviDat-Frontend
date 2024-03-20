@@ -18,7 +18,7 @@
         -->
       </div>
 
-      <div class="text-h6 black--text mx-auto pt-10">
+      <div class="text-h6 text-black mx-auto pt-10">
         {{ userName }}
       </div>
 
