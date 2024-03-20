@@ -15,7 +15,7 @@
       style="position: absolute; top: 0; right: 0; z-index: 2;"
       :icon="mdiClose"
       icon-color="primary"
-      color="primary"
+      outline-color="primary"
       outlined
       tooltip-text="Close metadata view"
       tooltip-bottom
@@ -38,12 +38,12 @@
     <v-container fluid class="pa-4">
       <v-row no-gutters style="position: relative; z-index: 1;">
         <v-col v-if="hasContent" cols="12" >
-          <div class="headerTitle"
+          <div class="text-h3"
                 :style="`line-height: ${$vuetify.display.xs ? '1.5rem' : ''};`"
                 :class="{ 'py-0': $vuetify.display.smAndDown,
-                          'display-2': $vuetify.display.xlOnly,
+                          'display-2': $vuetify.display.xl,
                           'text-h4': $vuetify.display.mdAndUp,
-                          'headline': $vuetify.display.smOnly,
+                          'headline': $vuetify.display.sm,
                           'subtitle-1': $vuetify.display.xs,
                         }" >
             {{ metadataTitle }}
@@ -52,7 +52,7 @@
 
         <v-col v-if="!metadataTitle && !showPlaceholder"
                 cols="12" >
-          <div class="headerTitle py-3"
+          <div class="text-h3 py-3"
                 :style="`color: ${$vuetify.theme.themes.light.colors.error}`"
                 :class="{ 'display-2': $vuetify.display.lgAndUp,
                           'text-h4': $vuetify.display.mdAndDown,
@@ -404,7 +404,7 @@
         <v-col v-if="maxTagsReached" class="px-1 flex-grow-0" >
           <base-icon-button 
             :icon="mdiChevronDown"
-            color="primary"
+            outline-color="primary"
             :icon-color="showTagsExpanded ? 'accent' : 'primary'"
             outlined
             :rotated="showTagsExpanded"
@@ -452,7 +452,7 @@ import { getAuthorName, getAuthorGivenName, getAuthorLastName } from '@/factorie
 import TagChipAuthor from '@/components/Chips/TagChipAuthor.vue';
 import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip.vue';
 import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
-import { mdiClose, mdiMail, mdiMapMarker } from '@mdi/js';
+import {mdiChevronDown, mdiClose, mdiMail, mdiMapMarker, mdiPencil} from '@mdi/js';
 
 export default {
   name: 'MetadataHeader',
@@ -519,6 +519,8 @@ export default {
     mdiClose,
     mdiMail,
     mdiMapMarker,
+    mdiPencil,
+    mdiChevronDown,
     showTagsExpanded: false,
     dark: false,
     blackTopToBottom: 'rgba(80,80,80, 0.1) 0%, rgba(80,80,80, 0.9) 70%',
