@@ -47,7 +47,7 @@
             :hint="readOnlyHint('fieldName')"
             :error-messages="validationErrors.customFieldsList[index].fieldName"
             :model-value="item.fieldName"
-            @change="notifyChange(index, 'fieldName', $event)"
+            @change="notifyChange(index, 'fieldName', $event.target.value)"
           />
         </v-col>
 
@@ -58,7 +58,7 @@
             :hint="readOnlyHint('content')"
             :error-messages="validationErrors.customFieldsList[index].content"
             :model-value="item.content"
-            @change="notifyChange(index, 'content', $event)"
+            @change="notifyChange(index, 'content', $event.target.value)"
           />
         </v-col>
 

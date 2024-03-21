@@ -14,8 +14,8 @@
             :prepend-icon="prependIcon"
             :error-messages="validationError"
             :model-value="textareaContent"
-            @input="catchInputedText($event)"
-            @change="catchChangedText($event)"
+            @input="catchInputedText($event.target.value)"
+            @change="catchChangedText($event.target.value)"
           >
           </v-textarea>
         </v-col>
@@ -47,8 +47,8 @@
           :prepend-icon="prependIcon"
           :error-messages="validationError"
           :model-value="textareaContent"
-          @input="catchInputedText($event)"
-          @change="catchChangedText($event)"
+          @input="catchInputedText($event.target.value)"
+          @change="catchChangedText($event.target.value)"
         >
         </v-textarea>
       </v-col>

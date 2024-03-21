@@ -53,7 +53,7 @@
               :model-value="item.institution"
               :error-messages="getValidationErrorMessage(INSTITUTION, index)"
               @keyup="onKeyUp"
-              @change="onChange(index, INSTITUTION, $event)"
+              @change="onChange(index, INSTITUTION, $event.target.value)"
             />
           </v-col>
 
@@ -65,7 +65,7 @@
               :model-value="item.grantNumber"
               :error-messages="getValidationErrorMessage(GRANTNUMBER, index)"
               @keyup="onKeyUp"
-              @change="onChange(index, GRANTNUMBER, $event)"
+              @change="onChange(index, GRANTNUMBER, $event.target.value)"
             />
           </v-col>
 
@@ -77,7 +77,7 @@
               :model-value="item.institutionUrl"
               :error-messages="getValidationErrorMessage(INSTITUTION_URL, index)"
               @keyup="onKeyUp"
-              @change="onChange(index, INSTITUTION_URL, $event)"
+              @change="onChange(index, INSTITUTION_URL, $event.target.value)"
             />
           </v-col>
 
