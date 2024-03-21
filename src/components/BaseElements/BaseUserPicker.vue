@@ -11,12 +11,12 @@
     </v-row>
 
     <v-row no-gutters>
-      <v-col>
+      <v-col class="pt-2">
         <v-autocomplete
           v-model="pickedUsers"
           :items="users"
           variant="outlined"
-          :dense="dense"
+          :density="dense"
           :menu-icon="mdiArrowDownDropCircleOutline"
           :readonly="readonly"
           :hint="hint"
@@ -109,8 +109,8 @@ export default {
       default: true,
     },
     dense: {
-      type: Boolean,
-      default: false,
+      type: String,
+      default: 'default',
     },
     errorMessages: {
       type: String,
