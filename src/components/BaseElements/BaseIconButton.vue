@@ -79,7 +79,7 @@ export default {
     disabled: { type: Boolean, default: false },
   },
   computed: {
-    computedColor(){
+    computedColor() {
       // Vuetify only colors the outline when the "outlined" variant is chosen
       // Because this component can change the background color even when in "outlined mode" a switch is needed
       if(this.outlined) {
