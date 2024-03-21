@@ -40,14 +40,14 @@
             :items="dataLicenses"
             item-value="id"
             item-text="title"
-            outlined
+            variant="outlined"
             hide-details
             :label="labels.dataLicense"
             :readonly="isReadOnly('dataLicenseId')"
             :hint="readOnlyHint('dataLicenseId')"
             prepend-icon="policy"
             append-icon="arrow_drop_down"
-            :value="selectedLicense"
+            :model-value="selectedLicense"
             @input="changeLicense($event)"
             :error-messages="validationErrors.dataLicense"
           />

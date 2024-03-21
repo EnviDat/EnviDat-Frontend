@@ -14,7 +14,7 @@
           readonly
           outlined
           label="Organization"
-          :value="organization"
+          :model-value="organization"
         />
       </v-col>
     </v-row>

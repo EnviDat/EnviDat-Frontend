@@ -45,7 +45,7 @@
       <v-row>
         <v-col>
 
-          <v-combobox :value="keywordsField"
+          <v-combobox :model-value="keywordsField"
                       :items="existingKeywordItems"
                       item-text="name"
                       multiple

@@ -30,12 +30,12 @@
       <v-row>
         <v-col v-if="onlyOneUserOrganziation">
 
-          <v-select :value="selectedOrganization"
+          <v-select :model-value="selectedOrganization"
                     :items="userOrganizations"
                     item-text="title"
                     item-value="id"
-                    outlined
-                    dense
+                    variant="outlined"
+                    density="compact"
                     chips
                     readonly
                     prepend-icon="home_filled"
@@ -53,12 +53,12 @@
         <v-col v-if="!onlyOneUserOrganziation">
 
           <v-select @input="setOrganization($event)"
-                    :value="organizationField"
+                    :model-value="organizationField"
                     :items="userOrganizations"
                     item-text="title"
                     item-value="id"
-                    outlined
-                    dense
+                    variant="outlined"
+                    density="compact"
                     chips
                     prepend-icon="home_filled"
                     :append-icon="isEditOrganizationReadonly ? '' : 'arrow_drop_down'"
