@@ -26,13 +26,21 @@
         </v-col>
       </v-row>
 
-      <v-card-actions
-        class="ma-0 pa-2"
-        style="position: absolute; bottom: 5px; right: 5px;"
+      <v-slide-y-transition>
+      <v-card-text
+        v-if="expanded"
+        class="pb-1 readableText"
       >
+        <div v-html="markdownText"></div>
+      </v-card-text>
+    </v-slide-y-transition>
+
+      <v-card-actions
+        :style="expanded ? undefined : 'position: absolute; right: 0; bottom: 0;'"
+      >
+        <v-spacer></v-spacer>
         <base-icon-button
           :icon="mdiChevronDown"
-          outlined
           :icon-color="expanded ? 'accent' : 'primary'"
           :rotated="expanded"
           :tooltip-text="expanded ? 'Hide info' : 'Show info'"
@@ -40,15 +48,6 @@
         />
       </v-card-actions>
     </v-container>
-
-    <v-slide-y-transition>
-      <v-card-text
-        v-if="expanded"
-        class="py-4 readableText"
-      >
-        <div v-html="markdownText"></div>
-      </v-card-text>
-    </v-slide-y-transition>
   </v-card>
 </template>
 
@@ -99,10 +98,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-
-.v-card__media img {
-  width: inherit !important;
-}
-</style>

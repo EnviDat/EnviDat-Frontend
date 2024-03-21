@@ -76,8 +76,8 @@ export default {
   props: {
     color: { type: String, default: undefined },
     outlineColor: { type: String, default: undefined },
-    tooltipText: { type: String, default: undefined },
-    tooltipBottom: { type: Boolean, default: false },
+    tooltipText: { type: String, default: undefined }, // TODO: Either add a tooltip or remove this prop
+    tooltipBottom: { type: Boolean, default: false }, // TODO: Either add a tooltip or remove this prop
     icon: { type: String, default: undefined, required: true },
     iconColor: { type: String, default: undefined },
     rotated: { type: Boolean, default: false },
