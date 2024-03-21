@@ -49,9 +49,9 @@
                       :items="existingKeywordItems"
                       item-text="name"
                       multiple
-                      outlined
-                      append-icon="arrow_drop_down"
-                      prepend-icon="style"
+                      variant="outlined"
+                      :menu-icon="mdiArrowDownDropCircleOutline"
+                      :prepend-icon="mdiPaletteSwatch"
                       :label="labels.keywordsLabel"
                       :placeholder="labels.placeholder"
                       :search-input.sync="search"
@@ -68,7 +68,7 @@
                       >
 
             <template v-slot:selection="{ item }" >
-              <TagChip  :name="item.name"
+              <TagChip  :name="item.raw.name"
                         selectable
                         closeable
                         @clickedClose="removeKeyword(item)"
@@ -77,11 +77,13 @@
             </template>
 
             <template v-slot:item="{ item }">
-              <TagChip v-if="item && item.name"
-                       :name="item.name"
-                       selectable
-                       @clicked="catchKeywordClicked"
-                       :isSmall="false" />
+              <v-list-item >
+                <TagChip v-if="item && item.value"
+                         :name="item.raw.name"
+                         selectable
+                         @clicked="catchKeywordClicked(item.raw.name)"
+                         :isSmall="false" />
+              </v-list-item>
             </template>
 
             <template v-slot:no-data>
@@ -143,6 +145,8 @@ import {
 
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+import {getIcon} from '@/factories/imageFactory';
+import {mdiArrowDownDropCircleOutline, mdiPaletteSwatch} from '@mdi/js';
 
 
 export default {
@@ -234,7 +238,7 @@ export default {
         title: this.metadataCardTitle,
         tags: this.keywordsField,
         subtitle: this.metadataCardSubtitle,
-        fileIconString: this.mixinMethods_getIcon('file'),
+        fileIconString: getIcon('file'),
       };
 
       if (this.$store) {
@@ -432,6 +436,8 @@ export default {
     },
   },
   data: () => ({
+    mdiPaletteSwatch,
+    mdiArrowDownDropCircleOutline,
     search: null,
     keywordValidConcise: true,
     keywordValidMin3Characters: true,

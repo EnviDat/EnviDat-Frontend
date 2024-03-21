@@ -110,6 +110,8 @@ import { convertJSON, getFrontendDates, getFrontendJSONForStep } from '@/factori
 
 import { useReviewStore } from '@/modules/metadata/store/reviewStore';
 import { convertArrayToUrlString } from '@/factories/stringFactory';
+import {getIcon} from '@/factories/imageFactory';
+
 import MetadataHeader from './Metadata/MetadataHeader.vue';
 import MetadataBody from './Metadata/MetadataBody.vue';
 import MetadataResources from './Metadata/MetadataResources.vue';
@@ -137,8 +139,8 @@ export default {
    * @description load all the icons once before the first component's rendering.
    */
   beforeMount() {
-    this.fileSizeIcon = this.mixinMethods_getIcon('fileSize');
-    this.fileIcon = this.mixinMethods_getIcon('file');
+    this.fileSizeIcon = getIcon('fileSize');
+    this.fileIcon = getIcon('file');
 
     window.scrollTo(0, 0);
   },

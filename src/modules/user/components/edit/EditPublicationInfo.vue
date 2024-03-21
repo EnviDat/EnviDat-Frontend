@@ -38,30 +38,29 @@
             readonly
             hint="DOI can be changed at the Dataset Publication Status"
             :error-messages="validationErrors.doi"
-            prepend-icon="fingerprint"
+            :prepend-icon="mdiFingerprint"
             @change="doiField = $event"
             @input="validateProperty('doi', $event)"
             :model-value="doiField"
-            append-icon="content_copy"  @click:append="catchClipboardCopy"
+            :append-icon="mdiContentCopy"
+            @click:append="catchClipboardCopy"
           />
-<!--
-          :hint="readOnlyHint('doi')"
--->
+
         </v-col>
 
         <v-col>
           <v-autocomplete :model-value="visibilityState"
-                          :items="[visibilityState]"
-                          outlined
-                          dense
-                          chips
+                          :items="[possibleVisibilityStates]"
+                          variant="outlined"
+                          density="compact"
                           readonly
-                          prepend-icon="remove_red_eye"
+                          :prepend-icon="mdiEye"
+                          :menu-icon="mdiArrowDownDropCircleOutline"
                           persistent-hint
                           :label="labels.visibilityState"
           >
             <template v-slot:selection="{ item }">
-              <MetadataStateChip style="font-size: 12px;" :state="item" />
+              <MetadataStateChip style="font-size: 12px;" :state="item.value" />
             </template>
           </v-autocomplete>
 
@@ -73,20 +72,14 @@
         <v-col cols="6">
           <v-text-field
             :label="labels.publisher"
-            outlined
-            dense
             readonly
             hint="Publisher can't be changed"
             :error-messages="validationErrors.publisher"
-            prepend-icon="public"
+            :prepend-icon="mdiEarth"
             @change="publisherField = $event"
             @input="validateProperty('publisher', $event)"
             :model-value="publisherField"
           />
-<!--
-          :readonly="isFieldReadOnly('publisher')"
-            :hint="readOnlyHint('publisher')"
--->
 
         </v-col>
 
@@ -97,16 +90,14 @@
               v-model="datePickerOpen"
               :close-on-content-click="true"
               transition="scale-transition"
-              :left="$vuetify?.breakpoint?.smAndDown"
-              :offset-y="$vuetify?.breakpoint?.mdAndUp"
+              :left="$vuetify?.display?.smAndDown"
+              :offset-y="$vuetify?.display?.mdAndUp"
               min-width="280px"
           >
 
             <template v-slot:activator="{ on }">
               <v-text-field
-                  dense
-                  outlined
-                  prepend-icon="date_range"
+                  :prepend-icon="mdiCalendarRange"
                   v-on="on"
                   :model-value="publicationYearField"
               />
@@ -161,7 +152,18 @@ import {
   EDIT_METADATA_PUBLICATION_YEAR_LABEL,
   PUBLICATION_STATE_PUBLISHED,
 } from '@/factories/metadataConsts';
+
 import { ckanDateFormat } from '@/factories/mappingFactory';
+import {
+  mdiEarth,
+  mdiEye,
+  mdiFingerprint,
+  mdiContentCopy,
+  mdiCalendarRange,
+  mdiArrowDownDropCircleOutline,
+} from '@mdi/js';
+
+import {possibleVisibilityStates} from '@/factories/metaDataFactory';
 
 export default {
   name: 'EditPublicationInfo',
@@ -246,18 +248,6 @@ export default {
       }
 
       return maxYears;
-    },
-    publicationStateField: {
-      get() {
-        return this.publicationState;
-      },
-      set(value) {
-        const property = 'publicationState';
-
-        if (this.validateProperty(property, value)) {
-          this.setPublicationInfo(property, value);
-        }
-      },
     },
     doiField: {
       get() {
@@ -362,6 +352,13 @@ export default {
     },
   },
   data: () => ({
+    possibleVisibilityStates,
+    mdiFingerprint,
+    mdiEarth,
+    mdiEye,
+    mdiContentCopy,
+    mdiCalendarRange,
+    mdiArrowDownDropCircleOutline,
     previewPublisher: null,
     emptyEntry: {
       institution: '',
@@ -370,7 +367,6 @@ export default {
     },
     labels: {
       cardTitle: 'Publication Information',
-      publicationState: 'Publication State',
       visibilityState: 'Dataset visibility',
       dataObjectIdentifier: EDIT_METADATA_DOI_LABEL,
       publisher: 'Publisher',
@@ -382,7 +378,6 @@ export default {
     },
     propertyValidationSuffix: 'Validation',
     validationErrors: {
-      publicationState: null,
       doi: null,
       publisher: null,
       publicationYear: null,
@@ -418,6 +413,3 @@ export default {
 </script>
 
 <style scoped></style>
-
-<script setup>
-</script>

@@ -230,6 +230,7 @@ import * as yup from 'yup';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import { isFieldValid } from '@/factories/userEditingValidations';
 import signInPic from '@/modules/user/assets/signin.jpg';
+import {getIcon} from '@/factories/imageFactory';
 
 const keyLength = 32;
 
@@ -276,7 +277,7 @@ export default {
       return this.requestSuccess ? 'Get another token' : 'Request token';
     },
     wslLogo() {
-      return this.mixinMethods_getIcon('wslLogo');
+      return getIcon('wslLogo');
     },
     yupValidations: () =>
       yup.object().shape({

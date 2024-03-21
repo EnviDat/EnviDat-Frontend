@@ -84,14 +84,14 @@
                                    :disabled="!currentStateInfos.buttonEvent || !isUserAllowedToEdit"
                                    tooltip-position="bottom"
                                    :tooltip-text="`Click to ${currentStateInfos.infoText}`"
-                                   :elevation="5"
+                                   :elevation="10"
                                    @clicked="$emit('clicked', currentStateInfos.buttonEvent)" />
 
 
             </v-row>
 
             <v-row v-if="currentStateInfos.positionIndex === index"
-                   class="pt-2"
+                   class="pt-4"
                    no-gutters
                    justify="center">
               {{ currentStateInfos.infoText }}
@@ -109,26 +109,32 @@
 
         </v-row>
 
-        <v-row class="text-body-1 errorHighlight">
-          <v-col cols="12" v-html="labels.instructions2">
-          </v-col>
+        <v-row>
+          <v-alert type="warning" >
+            <v-row class="text-body-1 errorHighlight">
+              <v-col cols="12" v-html="labels.instructions2">
+              </v-col>
+            </v-row>
+
+            <v-row class="text-body-2 pt-4 px-3">
+
+              <v-col v-for="(field, index) of metadataPublishedReadOnlyFields"
+                     cols="6"
+                     md="3"
+                     class="pa-1"
+                     :key="`${index}_${field}`">
+                {{ getReadableLabel(field) }}
+              </v-col>
+            </v-row>
+
+            <v-row class="text-body-1 pt-4">
+              <v-col cols="12" v-html="labels.instructions3">
+              </v-col>
+            </v-row>
+          </v-alert>
         </v-row>
 
-        <v-row class="text-body-2 pt-4 px-3">
 
-          <v-col v-for="(field, index) of metadataPublishedReadOnlyFields"
-                 cols="6"
-                 md="3"
-                 class="pa-1"
-                  :key="`${index}_${field}`">
-            {{ getReadableLabel(field) }}
-          </v-col>
-        </v-row>
-
-        <v-row class="text-body-1 pt-4">
-          <v-col cols="12" v-html="labels.instructions3">
-          </v-col>
-        </v-row>
 
       </v-container>
     </v-card>
@@ -143,7 +149,7 @@
    * file 'LICENSE.txt', which is part of this source code package.
    */
 
-  import {mdiArrowUp} from '@mdi/js';
+  import {mdiArrowUp, mdiEarth, mdiFingerprint, mdiNewspaper} from '@mdi/js';
   import { mapState } from 'vuex';
 
   import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
@@ -269,7 +275,7 @@
         [PUBLICATION_STATE_DRAFT, {
           chipText: 'Draft',
           infoText: 'Reserve DOI for Dataset',
-          buttonIcon: 'fingerprint',
+          buttonIcon: mdiFingerprint,
           buttonText: 'Reserve',
           buttonEvent: DOI_RESERVE,
           positionIndex: 2,
@@ -277,7 +283,7 @@
         [PUBLICATION_STATE_RESERVED, {
           chipText: 'Reserved DOI',
           infoText: 'Request Dataset Publication',
-          buttonIcon: 'newspaper',
+          buttonIcon: mdiNewspaper,
           buttonText: 'Request',
           buttonEvent: DOI_REQUEST,
           positionIndex: 4,
@@ -285,14 +291,14 @@
         [PUBLICATION_STATE_PENDING, {
           chipText: 'Publication Pending',
           infoText: 'Wait for the admin to review & approve the publication',
-          buttonIcon: 'public',
+          buttonIcon: mdiEarth,
           buttonText: 'Publish Dataset',
           positionIndex: 6,
         }],
         [PUBLICATION_STATE_PUBLISHED, {
           chipText: 'Published',
           infoText: 'Open the DOI in a new Tab',
-          buttonIcon: 'public',
+          buttonIcon: mdiEarth,
           buttonText: 'Open DOI',
           buttonEvent: 'openDoi',
           positionIndex: 6,

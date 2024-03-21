@@ -189,8 +189,6 @@ export default {
       return undefined;
     },
     maxCustomFields() {
-      return this.defaultUserEditMetadataConfig.customFieldsMax;
-/*
       let max = this.defaultUserEditMetadataConfig.customFieldsMax;
 
       if (this.$store) {
@@ -198,7 +196,6 @@ export default {
       }
 
       return max;
-*/
     },
     customFieldsProp: {
       get() {
