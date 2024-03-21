@@ -52,9 +52,7 @@
         <v-col v-if="showSearch && !hasButton" class="flex-grow-0 pa-0 hidden-xs">
           <base-icon-button
             :icon="mdiMagnify"
-            small
             color="transparent"
-            :outlined="!searchTerm"
             @clicked="clicked"
           />
         </v-col>
@@ -83,8 +81,8 @@
                 :flat="isFlat"
                 :placeholder="labelText"
                 @keyup.enter="clicked"
-                :append-icon="$vuetify.display.smAndUp ? 'clear' : ''"
-                @click:append="clearClicked"
+                :clear-icon="mdiClose"
+                on-click:clear="clearClicked"
               />
             </template>
 
@@ -122,7 +120,7 @@
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import TagChip from '@/components/Chips/TagChip.vue';
-import { mdiMagnify } from '@mdi/js';
+import {mdiClose, mdiMagnify} from '@mdi/js';
 
 export default {
   components: {
@@ -151,6 +149,7 @@ export default {
   },
   data: () => ({
     mdiMagnify,
+    mdiClose,
     searchText: '',
     lastSearch: '',
     placeHolderText: 'Enter research term, topic or author',

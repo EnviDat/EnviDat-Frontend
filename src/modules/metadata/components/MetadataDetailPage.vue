@@ -37,7 +37,7 @@
 
           <!-- prettier-ignore -->
           <component :is="entry"
-                     v-bind="entry.genericProps"
+                     v-bind="entry.props"
                      :show-placeholder="showPlaceholder" />
           </v-col>
         </v-row>
@@ -51,7 +51,7 @@
 
           <!-- prettier-ignore -->
           <component :is="entry"
-                     v-bind="entry.genericProps"
+                     v-bind="entry.props"
                      :show-placeholder="showPlaceholder" />
           </v-col>
         </v-row>

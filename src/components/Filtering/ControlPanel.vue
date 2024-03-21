@@ -17,7 +17,6 @@
             style="opacity: 0.8;"
             :icon="mdiShareVariant"
             iconColor="black"
-            small
             tooltip-bottom
             tooltip-text="Copy the url to this view to the clipboard to share it." @clicked="catchShareClick" />
 

@@ -9,12 +9,13 @@
           @click.stop="clicked"
           :draggable="draggable"
           :small="isSmall"
+          :density="isSmall ? 'compact' : 'default'"
           :close-icon="mdiClose"
           :closeable="closeable"
           @click:close="$emit('closeClicked', authorName)"
           >
 
-    <v-avatar left>
+    <v-avatar left class="pr-1">
       <v-icon size="24px" :icon="mdiAccountCircle" />
     </v-avatar>
 

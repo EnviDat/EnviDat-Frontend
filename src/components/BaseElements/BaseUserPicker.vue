@@ -15,9 +15,9 @@
         <v-autocomplete
           v-model="pickedUsers"
           :items="users"
-          outlined
+          variant="outlined"
           :dense="dense"
-          append-icon="arrow_drop_down"
+          :menu-icon="mdiArrowDownDropCircleOutline"
           :readonly="readonly"
           :hint="hint"
           :persistent-hint="!!hint"
@@ -28,7 +28,7 @@
           :search-input="search"
           :error-messages="errorMessages"
           :menu-props="menuOptions"
-          clear-icon="close"
+          :clear-icon="mdiClose"
           v-bind="$props"
           @change="catchPicks"
           @blur="$emit('blur', $event)"
@@ -39,21 +39,23 @@
 
           <template v-slot:selection="{ item }">
             <TagChipAuthor
-              v-if="item"
-              :name="item"
-              :isSmall="true"
-              :closable="userTagsCloseable"
-              @closeClicked="catchCloseClicked"
+                v-if="item.value"
+                :name="item.value"
+                :isSmall="true"
+                :closable="userTagsCloseable && !readonly"
+                @closeClicked="catchCloseClicked"
             />
           </template>
 
           <template v-slot:item="{ item }">
-            <TagChipAuthor
-              v-if="item"
-              :name="item"
-              @clicked="catchPickClicked"
-              :isSmall="true"
-            />
+            <v-list-item >
+              <TagChipAuthor
+                v-if="item"
+                :name="item.value"
+                @clicked="catchPickClicked"
+                :isSmall="true"
+              />
+            </v-list-item>
           </template>
 
           <template v-slot:no-data>
@@ -79,6 +81,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import TagChipAuthor from '@/components/Chips/TagChipAuthor.vue';
+import {mdiAccountBox, mdiArrowDownDropCircleOutline, mdiClose} from '@mdi/js';
 
 export default {
   name: 'BaseUserPicker',
@@ -99,7 +102,7 @@ export default {
     instructions: String,
     prependIcon: {
       type: String,
-      default: 'account_box',
+      default: mdiAccountBox,
     },
     userTagsCloseable: {
       type: Boolean,
@@ -212,6 +215,8 @@ export default {
   data: () => ({
     pickedUsers: [],
     search: '',
+    mdiArrowDownDropCircleOutline,
+    mdiClose,
   }),
   components: {
     TagChipAuthor,

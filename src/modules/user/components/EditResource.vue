@@ -2,7 +2,8 @@
   <v-card id="EditResource" :key="id" :loading="loadingColor" class="pa-0">
 
     <BaseIconButton class="editResourceCloseButton ma-2" :class="{ 'mx-1': $vuetify.display.smAndDown }"
-                    style="position: absolute; top: 0; right: 0; z-index: 2" :icon="mdiClose" icon-color="primary" color="primary"
+                    style="position: absolute; top: 0; right: 0; z-index: 2" :icon="mdiClose" icon-color="primary"
+                    outline-color="primary"
                     outlined tooltip-text="Cancel Resource Editing" tooltip-bottom @clicked="$emit('closeClicked')" />
 
 
@@ -135,12 +136,12 @@
         <div class="pa-1">
 
           <v-expand-transition>
-            <v-alert v-if="isDataPrivate" type="warning" icon="warning">
+            <v-alert v-if="isDataPrivate" type="warning" >
               <div v-html="openAccessDetails"></div>
             </v-alert>
           </v-expand-transition>
 
-          <BaseIconSwitch :active="isDataPrivate" :disabled="!editingRestrictingActive" :icon="mdiLock" class="mt-2"
+          <BaseIconSwitch :active="isDataPrivate" :disabled="!editingRestrictingActive" :icon="isDataPrivate ? mdiLock : mdiLockOpen" class="mt-2"
             :tooltipText="labels.dataAccessSwitchTooltip" @clicked="isDataPrivate = !isDataPrivate"
             :label="labels.dataAccessSwitchLabel" />
 
@@ -152,9 +153,9 @@
 
             <v-col cols="12" class="pt-2">
               <BaseUserPicker :users="envidatUserNameStrings" :pickerLabel="labels.restrictedAllowedUsersInfo"
-                multiplePick prependIcon="key" userTagsCloseable :placeholder="labels.allowedUsersTypingInfo"
-                :preSelected="preSelectedAllowedUsers" @removedUsers="changeAllowedUsers"
-                @pickedUsers="changeAllowedUsers" />
+                              multiplePick :prependIcon="mdiKey" userTagsCloseable :placeholder="labels.allowedUsersTypingInfo"
+                              :preSelected="preSelectedAllowedUsers" @removedUsers="changeAllowedUsers"
+                              @pickedUsers="changeAllowedUsers" />
             </v-col>
 
           </v-row>
@@ -219,7 +220,7 @@ import {
   ACCESS_LEVEL_SAMEORGANIZATION_VALUE,
   ACCESS_LEVEL_PUBLIC_VALUE,
 } from '@/factories/userEditingFactory';
-import {mdiAccount, mdiCalendarRange, mdiClose, mdiLock, mdiUpdate} from '@mdi/js';
+import {mdiAccount, mdiCalendarRange, mdiClose, mdiKey, mdiLock, mdiLockOpen, mdiUpdate} from '@mdi/js';
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 
@@ -679,8 +680,10 @@ export default {
     },
   },
   data: () => ({
+    mdiKey,
     mdiAccount,
     mdiLock,
+    mdiLockOpen,
     mdiClose,
     mdiCalendarRange,
     mdiUpdate,
