@@ -333,14 +333,14 @@ export const MetadataDetailsViews = () => ({
     </v-col>
 
     <v-col cols="6" class="py-3">
-      <metadata-details :genericProps="genericPropsPlaceholder"
+      <metadata-details v-bind="genericPropsPlaceholder"
                         :showPlaceholder="genericPropsPlaceholder.showPlaceholder"
                         :authorDeadInfo="genericPropsPlaceholder.authorDeadInfo"
       />
     </v-col>
 
     <v-col cols="6" class="py-3">
-      <metadata-details :genericProps="genericProps3" />
+      <metadata-details v-bind="genericProps3" />
     </v-col>
 
   </v-row>
@@ -368,11 +368,11 @@ export const MetadataLocationViews = () => ({
   <v-row >
 
     <v-col cols="6" class="py-3">
-      <MetadataGeo :genericProps="genericProps4" />
+      <MetadataGeo v-bind="genericProps4" />
     </v-col>
 
     <v-col cols="6" class="py-3">
-      <MetadataGeo :genericProps="genericPropsPlaceholder"
+      <MetadataGeo v-bind="genericPropsPlaceholder"
                     :showPlaceholder="genericPropsPlaceholder.showPlaceholder" />
     </v-col>
 

@@ -24,6 +24,7 @@
         <v-col class="pr-2">
           <BaseIconLabelView icon-tooltip="Data License"
                              :icon="mdiShieldSearch"
+                             icon-color="grey"
                              :text="dataLicenseTitle"
                              :url="dataLicenseUrlField"
                              />
@@ -89,7 +90,7 @@
           <ResourceCard v-bind="res"
                           :key="res.id"
                           :twoColumnLayout="twoColumnLayout"
-                          :downloadActive="resourcesConfig.downloadActive"
+                          :downloadActive="resourcesConfig?.downloadActive"
                           :showGenericOpenButton="!!res.openEvent"
                           :genericOpenButtonBottom="true"
                           :openButtonTooltip="res.openButtonTooltip"
@@ -130,6 +131,7 @@
 */
 
 import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
+import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
 import ResourceCard from '@/modules/metadata/components/ResourceCard.vue';
 import ResourceCardPlaceholder from '@/modules/metadata/components/ResourceCardPlaceholder.vue';
 
@@ -154,6 +156,7 @@ export default {
     ResourceCard,
     ResourceCardPlaceholder,
     BaseIconCountView,
+    BaseIconLabelView,
   },
   props: {
     doi: {
