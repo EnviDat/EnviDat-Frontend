@@ -96,7 +96,7 @@ export default {
       // Vuetify only colors the outline when the "outlined" variant is chosen
       // Because this component can change the background color even when in "outlined mode" a switch is needed
       if(this.outlined) {
-        return this.outlineColor ?? 'black';
+        return this.outlineColor ?? this.iconColor ?? 'primary';
       } 
       return this.color ?? 'transparent';
     },
