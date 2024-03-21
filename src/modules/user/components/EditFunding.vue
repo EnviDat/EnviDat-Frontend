@@ -69,7 +69,7 @@
             />
           </v-col>
 
-          <v-col class="grow pl-2">
+          <v-col class="flex-grow-1 pl-2">
             <v-text-field
               :label="labels.institutionUrl"
               :readonly="isFieldReadOnly(INSTITUTION_URL)"
@@ -81,7 +81,7 @@
             />
           </v-col>
 
-          <v-col class="shrink px-1">
+          <v-col class="flex-grow-0 px-1">
             <BaseIconButton
               :icon="mdiClose"
               icon-color="red"
@@ -113,6 +113,7 @@
  */
 
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
 import {
   EDITMETADATA_OBJECT_UPDATE,
@@ -311,6 +312,7 @@ export default {
   }),
   components: {
     BaseStatusLabelView,
+    BaseIconButton,
   },
 };
 </script>
