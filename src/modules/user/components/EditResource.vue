@@ -31,7 +31,8 @@
 
         <v-row id="resourceName" no-gutters class="pt-4">
           <v-col cols="12">
-            <v-text-field :label="labels.resourceName" ref="resourceName" variant="outlined"  required :disabled="loading"
+            <v-text-field
+              :label="labels.resourceName" ref="resourceName" variant="outlined"  required :disabled="loading"
               v-model="resourceNameField" :error-messages="validationErrors.name" />
 
           </v-col>
@@ -40,7 +41,9 @@
         <v-row id="description" no-gutters class="pt-2">
           <v-col cols="12">
 
-            <v-textarea :label="labels.description" variant="outlined"  auto-grow :disabled="loading" v-model="descriptionField"
+            <v-textarea
+              :label="labels.description" variant="outlined"  auto-grow :disabled="loading"
+              v-model="descriptionField"
               :error-messages="validationErrors.description" />
 
           </v-col>
@@ -70,11 +73,16 @@
           </v-col>
 
           <v-col :class="showImagePreview ? 'pt-3 pb-4' : ''">
-            <v-textarea v-if="isLongUrl" :label="isLink ? labels.url : labels.fileName" variant="outlined"  auto-grow readonly dense
+            <v-textarea
+              v-if="isLongUrl"
+              :label="isLink ? labels.url : labels.fileName"  auto-grow readonly
               hide-details :disabled="loading" :model-value="urlField" :error-messages="validationErrors.url" />
 
-            <v-text-field v-if="!isLongUrl" :label="isLink ? labels.url : labels.fileName" readonly
-              hide-details :disabled="loading" :model-value="urlField" :error-messages="validationErrors.url" />
+            <v-text-field
+              v-if="!isLongUrl"
+              :label="isLink ? labels.url : labels.fileName" readonly
+              hide-details :disabled="loading"
+              :model-value="urlField" :error-messages="validationErrors.url" />
 
           </v-col>
         </v-row>
@@ -89,8 +97,10 @@
               </v-col>
 
               <v-col class="pl-4">
-                <v-text-field :label="labels.format" variant="outlined"  dense hide-details="auto" :disabled="loading"
-                  @change="formatField = $event" :model-value="formatField" :error-messages="validationErrors.format" />
+                <v-text-field
+                  :label="labels.format" hide-details="auto" :disabled="loading"
+                  @blur="formatField = $event.target.value"
+                  :model-value="formatField" :error-messages="validationErrors.format" />
               </v-col>
             </v-row>
           </v-col>
@@ -103,14 +113,20 @@
               </v-col>
 
               <v-col class="pl-4">
-                <v-text-field :label="labels.size" variant="outlined"  dense hide-details="auto" :disabled="!isLink || loading"
-                  @change="sizeField = $event" :model-value="isLink ? sizeField : sizeFieldText"
-                  :error-messages="validationErrors.size" />
+                <v-text-field
+                  :label="labels.size" hide-details="auto" :disabled="!isLink || loading"
+                  :model-value="isLink ? sizeField : sizeFieldText"
+                  :error-messages="validationErrors.size"
+                  @blur="sizeField = $event.target.value"
+                />
               </v-col>
               <v-col class="px-2">
-                <v-select :items="labels.sizeFormatList" v-model="sizeFormatField" label="File size format" variant="outlined"
-                          density="compact" hide-details="auto"
-                          :disabled="!isLink || loading" :error-messages="validationErrors.sizeFormat" />
+                <v-select
+                  :items="labels.sizeFormatList"
+                  v-model="sizeFormatField"
+                  label="File size format" variant="outlined"
+                  density="compact" hide-details="auto"
+                  :disabled="!isLink || loading" :error-messages="validationErrors.sizeFormat" />
               </v-col>
             </v-row>
 
@@ -121,12 +137,14 @@
         <v-row id="dates" no-gutters align="center" class="pt-3">
 
           <v-col cols="12" md="6" class="pr-md-4">
-            <v-text-field :label="labels.created" :prepend-icon="mdiCalendarRange" variant="outlined"  readonly dense hide-details
+            <v-text-field
+              :label="labels.created" :prepend-icon="mdiCalendarRange" readonly hide-details
               :disabled="loading" :model-value="readableCreated" />
           </v-col>
 
           <v-col cols="12" md="6" class="pt-2 pt-md-0">
-            <v-text-field :label="labels.lastModified" :prepend-icon="mdiUpdate" variant="outlined"  readonly dense hide-details
+            <v-text-field
+              :label="labels.lastModified" :prepend-icon="mdiUpdate" readonly hide-details
               :disabled="loading" :model-value="readableLastModified" />
           </v-col>
         </v-row>
@@ -199,8 +217,6 @@ import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.v
 import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue';
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
 
-import fileSizeIcon from '@/assets/icons/fileSize.png';
-import fileIcon from '@/assets/icons/file.png';
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
@@ -210,7 +226,7 @@ import {
 import { formatDateTimeToCKANFormat } from '@/factories/mappingFactory';
 import { formatDate } from '@/factories/metaDataFactory';
 import { renderMarkdown } from '@/factories/stringFactory';
-import { getFileIcon } from '@/factories/imageFactory';
+import {getFileIcon, getIcon} from '@/factories/imageFactory';
 
 import notFoundImg from '@/modules/user/assets/imageNotFound.jpg';
 import {
@@ -723,8 +739,8 @@ export default {
       editingRestrictingUnavailableInfo: 'Editing the accessibility of resources is not available at the moment. Please contact the EnviDat team if you need to make changes.',
     },
     saveButtonEnabled: false,
-    fileSizeIcon,
-    fileIcon,
+    fileSizeIcon: getIcon('fileSize'),
+    fileIcon: getIcon('file'),
     validationErrors: {
       name: null,
       description: null,
