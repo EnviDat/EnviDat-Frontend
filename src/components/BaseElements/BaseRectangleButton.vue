@@ -1,12 +1,21 @@
 <template>
   <v-tooltip v-bind="{ tooltipPosition: true }" :disabled="$vuetify.display.smAndDown || !tooltipText">
-    <template v-slot:activator="{ props }">
-      <v-btn v-bind="props" :size="buttonSize" :class="marginClass" :color="color" :variant='buttonStyle'
-        :disabled="disabled" :href="url" :loading="loading" :elevation="elevation" rel="noopener noreferrer"
-        target="_blank" @click.stop="onClick">
-
+    <template #activator="{ props }">
+      <v-btn 
+        v-bind="props" 
+        :size="buttonSize" 
+        :class="marginClass" 
+        :color="color" 
+        :variant='buttonVariant'
+        :disabled="disabled" 
+        :href="url" 
+        :loading="loading" 
+        :elevation="elevation" 
+        rel="noopener noreferrer"
+        target="_blank" 
+        @click.stop="onClick"
+      >
         <BaseIcon v-if="icon" :icon="icon" :color='iconColor' class='mr-1' />
-
         {{ buttonText }}
       </v-btn>
     </template>
@@ -65,11 +74,11 @@ export default {
         return 'small';
       }
       if (this.isXsSmall) {
-        return 'xs-small';
+        return 'x-small';
       }
       return 'default';
     },
-    buttonStyle() {
+    buttonVariant() {
       if (this.isFlat) return 'plain';
 
       if (this.isOutlined) return 'outlined';
