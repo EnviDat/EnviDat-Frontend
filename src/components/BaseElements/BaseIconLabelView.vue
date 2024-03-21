@@ -8,7 +8,7 @@
           'text-black': !dark,
         }">
           <div class="baseIconLabelViewIcon">
-            <BaseIcon :icon="icon" :dark="dark" :light="light" />
+            <BaseIcon :icon="icon" :dark="dark" :light="light" :color="iconColor" />
           </div>
           <div class="baseIconLabelViewText" :style="textStyle">
             <a v-if="url" :href="url" target="_blank" rel="noopener noreferrer">
@@ -48,6 +48,7 @@ export default {
   components: { BaseIcon },
   props: {
     icon: String,
+    iconColor: String,
     iconTooltip: String,
     text: String,
     url: String,
