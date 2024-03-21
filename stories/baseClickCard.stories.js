@@ -37,7 +37,7 @@ const baseInfo = categoryCards[0];
 export const Basic = {
   args: {
     title: baseInfo.title,
-    img: baseInfo.img,
+    img: baseInfo.imgPath,
     color: baseInfo.color,
   },
 };
