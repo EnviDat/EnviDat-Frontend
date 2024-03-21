@@ -60,7 +60,7 @@
                    class="pa-0" >
               <v-progress-linear :color="getIndicatorColor(state)"
                                  :indeterminate="getIndicatorLoading(state)"
-                                 :value="getIndicatorValue(state)"
+                                 :model-value="getIndicatorValue(state)"
               />
               </v-col>
           </v-row>

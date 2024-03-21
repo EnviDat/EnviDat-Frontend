@@ -4,16 +4,16 @@
       <v-row>
         <v-col :cols="columns">
           <v-textarea
-              class="heightAndScroll pt-1"
+            class="heightAndScroll pt-1"
             :label="labelTextarea"
             :placeholder="placeholderTextarea"
-            outlined
+            variant="outlined"
             auto-grow
             :readonly="readonly"
             :hint="hint"
             :prepend-icon="prependIcon"
             :error-messages="validationError"
-            :value="textareaContent"
+            :model-value="textareaContent"
             @input="catchInputedText($event)"
             @change="catchChangedText($event)"
           >
@@ -45,7 +45,7 @@
           :readonly="readonly"
           :hint="hint"
           :error-messages="validationError"
-          :value="textareaContent"
+          :model-value="textareaContent"
           @input="catchInputedText($event)"
           @change="catchChangedText($event)"
         >

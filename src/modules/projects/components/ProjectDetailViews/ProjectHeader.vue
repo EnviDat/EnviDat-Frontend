@@ -16,7 +16,7 @@
       style="position: absolute; top: 0; right: 0; z-index: 2;"
       :icon="mdiClose"
       icon-color="primary"
-      color="primary"
+      outline-color="primary"
       outlined
       tooltip-text="Close project detail view"
       tooltip-bottom
@@ -50,11 +50,10 @@
     </div>
 
 
-    <div v-if="!title && showPlaceholder"
-          style="z-index: 1;"
-          class="skeleton skeleton-size-big skeleton-color-concrete skeleton-animation-shimmer" >
-      <div class="bone bone-type-multiline bone-style-steps" />
-    </div>
+    <v-skeleton-loader v-if="!title && showPlaceholder"
+                       style="z-index: 1;"
+                       :height="height - 20"
+                       type="article" color="transparent" />
 
   </v-card>
 </template>

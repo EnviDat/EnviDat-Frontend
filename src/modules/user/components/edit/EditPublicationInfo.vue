@@ -35,24 +35,22 @@
         <v-col >
           <v-text-field
             :label="labels.dataObjectIdentifier"
-            outlined
-            dense
             readonly
             hint="DOI can be changed at the Dataset Publication Status"
             :error-messages="validationErrors.doi"
             prepend-icon="fingerprint"
             @change="doiField = $event"
             @input="validateProperty('doi', $event)"
-            :value="doiField"
+            :model-value="doiField"
             append-icon="content_copy"  @click:append="catchClipboardCopy"
           />
 <!--
-          :hint="mixinMethods_readOnlyHint('doi')"
+          :hint="readOnlyHint('doi')"
 -->
         </v-col>
 
         <v-col>
-          <v-autocomplete :value="visibilityState"
+          <v-autocomplete :model-value="visibilityState"
                           :items="[visibilityState]"
                           outlined
                           dense
@@ -83,11 +81,11 @@
             prepend-icon="public"
             @change="publisherField = $event"
             @input="validateProperty('publisher', $event)"
-            :value="publisherField"
+            :model-value="publisherField"
           />
 <!--
-          :readonly="mixinMethods_isFieldReadOnly('publisher')"
-            :hint="mixinMethods_readOnlyHint('publisher')"
+          :readonly="isFieldReadOnly('publisher')"
+            :hint="readOnlyHint('publisher')"
 -->
 
         </v-col>
@@ -110,7 +108,7 @@
                   outlined
                   prepend-icon="date_range"
                   v-on="on"
-                  :value="publicationYearField"
+                  :model-value="publicationYearField"
               />
             </template>
 
@@ -121,7 +119,7 @@
                 prev-icon="skip_previous"
                 no-title
                 @click:year="saveYear"
-                :value="formatToDatePickerDate(yearWithMonths)"
+                :model-value="formatToDatePickerDate(yearWithMonths)"
             >
 
             </v-date-picker>

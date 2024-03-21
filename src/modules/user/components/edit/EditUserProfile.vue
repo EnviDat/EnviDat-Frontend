@@ -40,14 +40,12 @@
           <v-text-field ref="firstName"
                         id="firstName"
                         :label="labels.firstName"
-                        outlined
-                        dense
                         :readonly="isReadOnly('firstName')"
                         :hint="readOnlyHint('firstName')"
                         :prepend-icon="mdiAccount"
                         :error-messages="validationErrors.firstName"
                         :placeholder="labels.firstName"
-                        :value="firstNameField"
+                        :model-value="firstNameField"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('firstName', $event)"
                         @input="previewChange('firstName', $event)"
@@ -60,14 +58,12 @@
           <v-text-field ref="lastName"
                         id="lastName"
                         :label="labels.lastName"
-                        outlined
-                        dense
                         :readonly="isReadOnly('lastName')"
                         :hint="readOnlyHint('lastName')"
                         :prepend-icon="mdiAccount"
                         :error-messages="validationErrors.lastName"
                         :placeholder="labels.lastName"
-                        :value="lastNameField"
+                        :model-value="lastNameField"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('lastName', $event)"
                         @input="previewChange('lastName', $event)"
@@ -80,14 +76,12 @@
           <v-text-field ref="email"
                         id="email"
                         :label="labels.email"
-                        outlined
-                        dense
                         :readonly="isReadOnly('email')"
                         :hint="readOnlyHint('email')"
                         :prepend-icon="mdiEmail"
                         :error-messages="validationErrors.email"
                         :placeholder="labels.email"
-                        :value="emailField"
+                        :model-value="emailField"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('email', $event)"
                         @input="previewChange('email', $event)"

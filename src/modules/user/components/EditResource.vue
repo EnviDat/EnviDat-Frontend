@@ -71,10 +71,10 @@
 
           <v-col :class="showImagePreview ? 'pt-3 pb-4' : ''">
             <v-textarea v-if="isLongUrl" :label="isLink ? labels.url : labels.fileName" variant="outlined"  auto-grow readonly dense
-              hide-details :disabled="loading" :value="urlField" :error-messages="validationErrors.url" />
+              hide-details :disabled="loading" :model-value="urlField" :error-messages="validationErrors.url" />
 
-            <v-text-field v-if="!isLongUrl" :label="isLink ? labels.url : labels.fileName" variant="outlined"  readonly dense
-              hide-details :disabled="loading" :value="urlField" :error-messages="validationErrors.url" />
+            <v-text-field v-if="!isLongUrl" :label="isLink ? labels.url : labels.fileName" readonly
+              hide-details :disabled="loading" :model-value="urlField" :error-messages="validationErrors.url" />
 
           </v-col>
         </v-row>
@@ -90,7 +90,7 @@
 
               <v-col class="pl-4">
                 <v-text-field :label="labels.format" variant="outlined"  dense hide-details="auto" :disabled="loading"
-                  @change="formatField = $event" :value="formatField" :error-messages="validationErrors.format" />
+                  @change="formatField = $event" :model-value="formatField" :error-messages="validationErrors.format" />
               </v-col>
             </v-row>
           </v-col>
@@ -104,7 +104,7 @@
 
               <v-col class="pl-4">
                 <v-text-field :label="labels.size" variant="outlined"  dense hide-details="auto" :disabled="!isLink || loading"
-                  @change="sizeField = $event" :value="isLink ? sizeField : sizeFieldText"
+                  @change="sizeField = $event" :model-value="isLink ? sizeField : sizeFieldText"
                   :error-messages="validationErrors.size" />
               </v-col>
               <v-col class="px-2">
@@ -122,12 +122,12 @@
 
           <v-col cols="12" md="6" class="pr-md-4">
             <v-text-field :label="labels.created" :prepend-icon="mdiCalendarRange" variant="outlined"  readonly dense hide-details
-              :disabled="loading" :value="readableCreated" />
+              :disabled="loading" :model-value="readableCreated" />
           </v-col>
 
           <v-col cols="12" md="6" class="pt-2 pt-md-0">
             <v-text-field :label="labels.lastModified" :prepend-icon="mdiUpdate" variant="outlined"  readonly dense hide-details
-              :disabled="loading" :value="readableLastModified" />
+              :disabled="loading" :model-value="readableLastModified" />
           </v-col>
         </v-row>
 

@@ -15,7 +15,7 @@
             :id="val.label"
             :label="val.label"
             :name="val.label"
-            :value="replaceAuthorDeadInfo(val.text)"
+            :model-value="replaceAuthorDeadInfo(val.text)"
             hide-details
             readonly
           />
@@ -25,7 +25,7 @@
             :id="val.label"
             :label="val.label"
             :name="val.label"
-            :value="replaceAuthorDeadInfo(val.text)"
+            :model-value="replaceAuthorDeadInfo(val.text)"
             hide-details
             readonly
           />

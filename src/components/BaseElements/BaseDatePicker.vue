@@ -39,7 +39,6 @@
           :prev-icon="mdiSkipPrevious"
           :min="formatToDatePickerDate(minDate)"
           :max="formatToDatePickerDate(maxDate)"
-          :value="formatToDatePickerDate(dateField)"
           :model-value="formatToDatePickerDate(dateField)"
           @click:save="changeDatePicker(dateProperty, $event)"
         >

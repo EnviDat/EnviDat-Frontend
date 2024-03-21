@@ -43,12 +43,10 @@
         <v-col class="pr-2">
           <v-text-field
             :label="labels.labelFieldName"
-            outlined
-            dense
             :readonly="isReadOnly('fieldName')"
             :hint="readOnlyHint('fieldName')"
             :error-messages="validationErrors.customFieldsList[index].fieldName"
-            :value="item.fieldName"
+            :model-value="item.fieldName"
             @change="notifyChange(index, 'fieldName', $event)"
           />
         </v-col>
@@ -56,12 +54,10 @@
         <v-col class="pl-2">
           <v-text-field
             :label="labels.labelContent"
-            outlined
-            dense
             :readonly="isReadOnly('content')"
             :hint="readOnlyHint('content')"
             :error-messages="validationErrors.customFieldsList[index].content"
-            :value="item.content"
+            :model-value="item.content"
             @change="notifyChange(index, 'content', $event)"
           />
         </v-col>
@@ -193,6 +189,8 @@ export default {
       return undefined;
     },
     maxCustomFields() {
+      return this.defaultUserEditMetadataConfig.customFieldsMax;
+/*
       let max = this.defaultUserEditMetadataConfig.customFieldsMax;
 
       if (this.$store) {
@@ -200,6 +198,7 @@ export default {
       }
 
       return max;
+*/
     },
     customFieldsProp: {
       get() {

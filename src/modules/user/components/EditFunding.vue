@@ -48,11 +48,9 @@
           <v-col cols="4" class="pr-2">
             <v-text-field
               :label="labels.institution"
-              outlined
-              dense
-              :readonly="mixinMethods_isFieldReadOnly(INSTITUTION)"
-              :hint="mixinMethods_readOnlyHint(INSTITUTION)"
-              :value="item.institution"
+              :readonly="isFieldReadOnly(INSTITUTION)"
+              :hint="readOnlyHint(INSTITUTION)"
+              :model-value="item.institution"
               :error-messages="getValidationErrorMessage(INSTITUTION, index)"
               @keyup="onKeyUp"
               @change="onChange(index, INSTITUTION, $event)"
@@ -62,32 +60,28 @@
           <v-col cols="3" class="px-2">
             <v-text-field
               :label="labels.grantNumber"
-              outlined
-              dense
-              :readonly="mixinMethods_isFieldReadOnly(GRANTNUMBER)"
-              :hint="mixinMethods_readOnlyHint(GRANTNUMBER)"
-              :value="item.grantNumber"
+              :readonly="isFieldReadOnly(GRANTNUMBER)"
+              :hint="readOnlyHint(GRANTNUMBER)"
+              :model-value="item.grantNumber"
               :error-messages="getValidationErrorMessage(GRANTNUMBER, index)"
               @keyup="onKeyUp"
               @change="onChange(index, GRANTNUMBER, $event)"
             />
           </v-col>
 
-          <v-col class="grow pl-2">
+          <v-col class="flex-grow-1 pl-2">
             <v-text-field
               :label="labels.institutionUrl"
-              outlined
-              dense
-              :readonly="mixinMethods_isFieldReadOnly(INSTITUTION_URL)"
-              :hint="mixinMethods_readOnlyHint(INSTITUTION_URL)"
-              :value="item.institutionUrl"
+              :readonly="isFieldReadOnly(INSTITUTION_URL)"
+              :hint="readOnlyHint(INSTITUTION_URL)"
+              :model-value="item.institutionUrl"
               :error-messages="getValidationErrorMessage(INSTITUTION_URL, index)"
               @keyup="onKeyUp"
               @change="onChange(index, INSTITUTION_URL, $event)"
             />
           </v-col>
 
-          <v-col class="shrink px-1">
+          <v-col class="flex-grow-0 px-1">
             <BaseIconButton
               :icon="mdiClose"
               icon-color="red"
@@ -119,6 +113,7 @@
  */
 
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
 import {
   EDITMETADATA_OBJECT_UPDATE,
@@ -200,6 +195,7 @@ export default {
     },
   },
   methods: {
+    isFieldReadOnly,
     setFundersInfo(property, value) {
       const newPublicationInfo = {
         ...this.$props,
@@ -316,6 +312,7 @@ export default {
   }),
   components: {
     BaseStatusLabelView,
+    BaseIconButton,
   },
 };
 </script>

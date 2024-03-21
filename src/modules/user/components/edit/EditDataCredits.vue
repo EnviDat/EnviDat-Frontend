@@ -19,7 +19,7 @@
 
         <v-hover v-slot:default="{ hover }" >
 
-          <v-badge :value="isActive(creditName)"
+          <v-badge :model-value="isActive(creditName)"
                    class="dataCreditIcon"
                    :disabled="readOnly"
                    :overlap="!hover"
