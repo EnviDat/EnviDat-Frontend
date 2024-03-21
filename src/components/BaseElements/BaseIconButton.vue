@@ -11,6 +11,7 @@
         :size="large ? 'large' : small ? 'small' : undefined"
         :color="computedColor"
         :href="url"
+        :disabled="disabled"
         @click.stop="onClick"
       >
         <base-icon
@@ -75,6 +76,7 @@ export default {
     outlined: { type: Boolean, default: false },
     fancy: { type: Boolean, default: false },
     glowing: { type: Boolean, default: false },
+    disabled: { type: Boolean, default: false },
   },
   computed: {
     computedColor(){
@@ -86,10 +88,11 @@ export default {
       return this.color ?? 'transparent';
     },
     buttonStyle() {
-      if(this.color){
-        return `background-color: ${this.color}; background-color: rgb(var(--v-theme-${this.color})) !important;`;
-      }
-      return undefined;
+      const isNamedColor = !(this.color?.includes('#') || this.color?.includes('('))
+      const bgColorStyle = isNamedColor ? `rgb(var(--v-theme-${this.color})) !important` : this.color;
+      return {
+        'background-color': this.color ? bgColorStyle : 'none !important',
+      };
     },
     buttonClass() {
       return {
