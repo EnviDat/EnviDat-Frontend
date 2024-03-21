@@ -44,9 +44,7 @@
             :model-value="doiField"
             append-icon="content_copy"  @click:append="catchClipboardCopy"
           />
-<!--
-          :hint="readOnlyHint('doi')"
--->
+
         </v-col>
 
         <v-col>
@@ -83,10 +81,6 @@
             @input="validateProperty('publisher', $event)"
             :model-value="publisherField"
           />
-<!--
-          :readonly="isFieldReadOnly('publisher')"
-            :hint="readOnlyHint('publisher')"
--->
 
         </v-col>
 
@@ -97,8 +91,8 @@
               v-model="datePickerOpen"
               :close-on-content-click="true"
               transition="scale-transition"
-              :left="$vuetify?.breakpoint?.smAndDown"
-              :offset-y="$vuetify?.breakpoint?.mdAndUp"
+              :left="$vuetify?.display?.smAndDown"
+              :offset-y="$vuetify?.display?.mdAndUp"
               min-width="280px"
           >
 

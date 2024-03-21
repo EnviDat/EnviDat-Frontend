@@ -4,7 +4,7 @@
           :loading="loadingColor">
 
     <v-container fluid
-                 class="pa-4 fill-height">
+                 class="pa-4">
 
       <v-row>
 
@@ -35,30 +35,19 @@
                class="text-body-1">
           {{ labels.instructions }}
         </v-col>
-      </v-row>
 
-
-      <v-row no-gutters >
-        <v-col cols="12"
-               class="text-body-1">
-          {{ labels.instructions2 }}
-        </v-col>
       </v-row>
 
       <v-row>
 
-        <v-col cols="12"
-               md="8"
-               class="pb-0">
+        <v-col >
 
           <v-text-field ref="metadataTitle"
                         :id="METADATA_TITLE_PROPERTY"
                         :label="labels.labelTitle"
-                        outlined
-                        dense
                         :readonly="isReadOnly(METADATA_TITLE_PROPERTY)"
                         :hint="readOnlyHint(METADATA_TITLE_PROPERTY)"
-                        prepend-icon="import_contacts"
+                        :prepend-icon="mdiBookOpenVariantOutline"
                         :error-messages="validationErrors[METADATA_TITLE_PROPERTY]"
                         :placeholder="labels.placeholderTitle"
                         :model-value="metadataTitleField"
@@ -93,12 +82,10 @@
           <v-text-field ref="contactEmail"
                         id="contactEmail"
                         :label="labels.labelContactEmail"
-                        outlined
-                        dense
                         :error-messages="validationErrors.contactEmail"
                         :readonly="isContactPropertyReadOnly('contactEmail')"
                         :hint="contactPropertyHint('contactEmail')"
-                        prepend-icon="email"
+                        :prepend-icon="mdiEmail"
                         :placeholder="labels.placeholderContactEmail"
                         :model-value="contactEmailField"
                         @keyup="blurOnEnterKey"
@@ -145,12 +132,10 @@
           <v-text-field ref="contactGivenName"
                         id="contactGivenName"
                         :label="labels.labelContactGivenName"
-                        outlined
-                        dense
                         :error-messages="validationErrors.contactGivenName"
                         :readonly="isContactPropertyReadOnly('contactGivenName')"
                         :hint="contactPropertyHint('contactGivenName')"
-                        prepend-icon="person"
+                        :prepend-icon="mdiAccount"
                         :placeholder="labels.placeholderContactGivenName"
                         :model-value="contactGivenNameField"
                         @keyup="blurOnEnterKey"
@@ -168,12 +153,10 @@
           <v-text-field ref="contactSurname"
                         id="contactSurname"
                         :label="labels.labelContactSurname"
-                        outlined
-                        dense
                         :error-messages="validationErrors.contactSurname"
                         :readonly="isContactPropertyReadOnly('contactSurname')"
                         :hint="contactPropertyHint('contactSurname')"
-                        prepend-icon="person"
+                        :prepend-icon="mdiAccount"
                         :placeholder="labels.placeholderContactSurname"
                         :model-value="contactSurnameField"
                         @keyup="blurOnEnterKey"
@@ -195,11 +178,9 @@
             <v-text-field ref="metadataUrl"
                           :id="METADATA_URL_PROPERTY"
                           :label="labels.labelUrl"
-                          dense
-                          outlined
                           :readonly="isReadOnly(METADATA_URL_PROPERTY)"
                           :hint="readOnlyHint(METADATA_URL_PROPERTY)"
-                          prepend-icon="import_contacts"
+                          :prepend-icon="mdiBookOpenVariantOutline"
                           :error-messages="validationErrors[METADATA_URL_PROPERTY]"
                           :placeholder="labels.placeholderUrl"
                           :model-value="metadataUrlField"
@@ -274,8 +255,10 @@ import {
   METADATA_TITLE_PROPERTY,
   METADATA_URL_PROPERTY,
 } from '@/factories/metadataConsts';
+
 import { getMetadataUrlFromTitle } from '@/factories/mappingFactory';
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+import {mdiAccount, mdiBookOpenVariantOutline, mdiEmail} from '@mdi/js';
 
 
 export default {
@@ -676,6 +659,9 @@ export default {
     },
   },
   data: () => ({
+    mdiBookOpenVariantOutline,
+    mdiAccount,
+    mdiEmail,
     authorIsPicked: false,
     authorPickerTouched: false,
     previews: {

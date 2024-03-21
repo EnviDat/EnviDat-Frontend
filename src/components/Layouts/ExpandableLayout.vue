@@ -41,7 +41,7 @@
                   :icon="mdiChevronDown"
                   small
                   icon-color="black"
-                  color="secondary"
+                  outline-color="secondary"
                   outlined
                   :rotated="expanded"
                   :tooltipText="expanded ? 'Close' : 'Expand'"

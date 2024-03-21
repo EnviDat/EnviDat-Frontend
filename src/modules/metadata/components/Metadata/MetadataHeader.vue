@@ -547,7 +547,7 @@ export default {
         style += `background-image: linear-gradient(0deg, ${gradient}), url(${this.titleImg});
         filter: blur(2px);`;
       } else {
-        style += `background-color: ${this.cateoryColor};`;
+        style += `background-color: ${this.categoryColor};`;
       }
 
       return style;
