@@ -15,7 +15,8 @@
         <v-row v-on="on"
                v-bind="props"
                align="center"
-                no-gutters>
+               no-gutters
+               class="flex-nowrap">
           <v-col ><v-icon :icon="stateIcon" /></v-col>
           <v-col :class="showContent ? 'pl-1' : ''" >
             {{ showContent ? stateText : ''  }}
@@ -75,8 +76,8 @@ export default {
       type: Object,
       default: () => ({
         [METADATA_STATE_DRAFT]: mdiPlaylistEdit,
-        [METADATA_STATE_INVISILBE]: mdiEye,
-        [METADATA_STATE_VISILBE]: mdiEyeOff,
+        [METADATA_STATE_INVISILBE]: mdiEyeOff,
+        [METADATA_STATE_VISILBE]: mdiEye,
       }),
     },
     showOnHover: {
