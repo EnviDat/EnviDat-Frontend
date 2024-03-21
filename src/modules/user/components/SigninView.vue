@@ -276,7 +276,7 @@ export default {
       return this.requestSuccess ? 'Get another token' : 'Request token';
     },
     wslLogo() {
-      return this.mixinMethods_getIcon('wslLogo');
+      return getIcon('wslLogo');
     },
     yupValidations: () =>
       yup.object().shape({

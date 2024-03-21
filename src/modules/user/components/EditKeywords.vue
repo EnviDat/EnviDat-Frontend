@@ -234,7 +234,7 @@ export default {
         title: this.metadataCardTitle,
         tags: this.keywordsField,
         subtitle: this.metadataCardSubtitle,
-        fileIconString: this.mixinMethods_getIcon('file'),
+        fileIconString: getIcon('file'),
       };
 
       if (this.$store) {

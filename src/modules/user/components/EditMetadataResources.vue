@@ -37,6 +37,7 @@
  */
 import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
 import MetadataResources from '@/modules/metadata/components/Metadata/MetadataResources.vue';
+import {getIcon} from '@/factories/imageFactory';
 
 export default {
   name: 'EditMetadataResources',
@@ -58,10 +59,10 @@ export default {
     },
   },
   mounted() {
-    this.fileSizeIcon = this.mixinMethods_getIcon('fileSize') || '';
-    this.fileIcon = this.mixinMethods_getIcon('file') || '';
-    this.dateCreatedIcon = this.mixinMethods_getIcon('dateCreated') || '';
-    this.lastModifiedIcon = this.mixinMethods_getIcon('dateModified') || '';
+    this.fileSizeIcon = getIcon('fileSize') || '';
+    this.fileIcon = getIcon('file') || '';
+    this.dateCreatedIcon = getIcon('dateCreated') || '';
+    this.lastModifiedIcon = getIcon('dateModified') || '';
   },
   computed: {
     metadataResourcesGenericProps() {
