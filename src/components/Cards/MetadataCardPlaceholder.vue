@@ -1,24 +1,7 @@
 <template>
   <v-card style="height: 100%; max-height: 375px !important;" >
-    <v-img background-color="primary"
-            :height="flatLayout ? '65px' : $vuetify.display.smAndDown ? '100px' : '125px'" >
+    <v-skeleton-loader type="article" color="transparent"></v-skeleton-loader>
 
-      <v-container class="fill-height py-0"
-                    style="position: absolute;" >
-        <v-row >
-          <v-col class="py-0" cols="12" >
-            <v-row align="start" >
-              <v-col cols="12">
-                <div class="skeleton skeleton-size-big skeleton-color-concrete skeleton-animation-shimmer">
-                  <div class="bone bone-type-multiline bone-style-steps" />
-                </div>
-              </v-col>
-            </v-row>
-          </v-col>
-
-        </v-row>
-      </v-container>
-    </v-img>
 
     <v-card-text primary-title >
       <div class="skeleton skeleton-color-silver skeleton-animation-shimmer"
@@ -33,8 +16,7 @@
         <v-col v-for="n in 3"
                 :key="n"
                 class="flex-grow-0">
-          <tag-chip-placeholder py-0
-                                class="envidatChip" />
+          <TagChipPlaceholder  />
         </v-col>
       </v-row>
 

@@ -35,8 +35,12 @@
       @clicked="catchEditClicked"
     />
 
-    <v-container fluid class="pa-4">
+    <MetadataHeaderPlaceholder v-if="showPlaceholder" />
+
+    <v-container v-if="!showPlaceholder"
+                 fluid class="pa-4">
       <v-row no-gutters style="position: relative; z-index: 1;">
+
         <v-col v-if="hasContent" cols="12" >
           <div class="text-h3"
                 :style="`line-height: ${$vuetify.display.xs ? '1.5rem' : ''};`"
@@ -50,7 +54,7 @@
           </div>
         </v-col>
 
-        <v-col v-if="!metadataTitle && !showPlaceholder"
+        <v-col v-if="!hasContent"
                 cols="12" >
           <div class="text-h3 py-3"
                 :style="`color: ${$vuetify.theme.themes.light.colors.error}`"
@@ -62,12 +66,6 @@
           </div>
         </v-col>
 
-        <v-col v-if="!metadataTitle && showPlaceholder"
-                cols="12" >
-          <div class="skeleton skeleton-size-big skeleton-color-concrete skeleton-animation-shimmer" >
-            <div class="bone bone-type-text bone-style-steps" />
-          </div>
-        </v-col>
       </v-row>
 
       <v-expand-transition>
@@ -76,11 +74,11 @@
         <v-col cols="12">
 
           <!-- author list -->
-          <v-row no-gutters
+          <v-row v-if="authors"
+                 no-gutters
                   style="position: relative; z-index: 1;">
 
-            <v-col v-if="authors"
-                    cols="12"
+            <v-col cols="12"
                     class="pa-0"
                     id="authors_divier"
                     key="authors_divier" >
@@ -89,8 +87,7 @@
                                   'my-2': $vuetify.display.smAndUp }" />
             </v-col>
 
-            <v-col v-if="authors"
-                    cols="12"
+            <v-col cols="12"
                     class="py-0"
                     id="authors"
                     key="authors" >
@@ -115,33 +112,6 @@
               </v-row>
             </v-col>
 
-            <v-col v-if="!authors && showPlaceholder"
-                    cols="12"
-                    class="py-0"
-                    id="authors_placeholder"
-                    key="authors_placeholder" >
-
-              <v-row no-gutters >
-
-                <v-col cols="12"
-                        class="pa-0"
-                        id="authors_placeholder_divier"
-                        key="authors_placeholder_divier" >
-                  <v-divider :dark="dark"
-                            :class="{ 'my-1': $vuetify.display.xs,
-                                      'my-2': $vuetify.display.smAndUp }" />
-                </v-col>
-              </v-row>
-
-              <v-row no-gutters >
-                <v-col v-for="n in 5"
-                        :key="n"
-                        class="flex-grow-0 mr-1" >
-                  <tag-chip-placeholder class="headerTag" />
-                </v-col>
-              </v-row>
-
-            </v-col>
           </v-row>
 
           <!-- divier -->
@@ -159,7 +129,7 @@
           </v-row>
 
           <!-- info list row number 1 -->
-          <v-row v-if="!showPlaceholder && metadataTitle"
+          <v-row v-if="hasContent"
                   no-gutters
                   id="headerinfos"
                   key="headerinfos"
@@ -264,8 +234,10 @@
 
           </v-row>
 
-          <v-row no-gutters
-                class="pt-1"
+          <!-- info list row number 2 -->
+          <v-row v-if="hasContent"
+                 no-gutters
+                 class="pt-1"
                   justify="end">
 
             <v-col cols="12"
@@ -334,11 +306,11 @@
 
           </v-row>
 
-          <v-row no-gutters
+          <v-row v-if="tags"
+                 no-gutters
                   style="position: relative; z-index: 1;">
 
-            <v-col v-if="!showPlaceholder && tags"
-                    cols="12"
+            <v-col cols="12"
                     class="pa-0"
                     id="tags_divier"
                     key="tags_divier" >
@@ -347,8 +319,7 @@
                                   'my-2': $vuetify.display.smAndUp }" />
             </v-col>
 
-            <v-col v-if="tags"
-                    cols="12"
+            <v-col cols="12"
                     sm="9"
                     class="py-0"
                     id="tags"
@@ -372,21 +343,6 @@
                             @click.native="showTagsExpanded = !showTagsExpanded" />
                 </v-col>
               </v-row>
-            </v-col>
-
-            <v-col v-if="showPlaceholder"
-                    cols="12"
-                    class="py-0"
-                    id="tags_placeholder"
-                    key="tags_placeholder" >
-
-              <v-row no-gutters >
-                <v-col v-for="n in 5"
-                        :key="n"
-                        class="flex-grow-0 mr-1" >
-                  <tag-chip-placeholder class="headerTag" />
-                </v-col>
-              </v-row >
             </v-col>
 
           </v-row>
@@ -445,11 +401,11 @@
 */
 
 import TagChip from '@/components/Chips/TagChip.vue';
-import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder.vue';
-import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
-
-import { getAuthorName, getAuthorGivenName, getAuthorLastName } from '@/factories/authorFactory';
 import TagChipAuthor from '@/components/Chips/TagChipAuthor.vue';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
+
+import MetadataHeaderPlaceholder from '@/modules/metadata/components/Metadata/MetadataHeaderPlaceholder.vue';
 import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip.vue';
 import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
 import {
@@ -463,15 +419,16 @@ import {
   mdiPencil,
   mdiUpdate,
 } from '@mdi/js';
-import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
+
+import { getAuthorName, getAuthorGivenName, getAuthorLastName } from '@/factories/authorFactory';
 
 export default {
   name: 'MetadataHeader',
   components: {
+    MetadataHeaderPlaceholder,
     BaseIcon,
     TagChip,
     TagChipAuthor,
-    TagChipPlaceholder,
     BaseIconButton,
     MetadataOrganizationChip,
     MetadataStateChip,

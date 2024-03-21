@@ -13,11 +13,16 @@
             </v-col>
 
             <v-col v-if="showPlaceholder" class="grow pl-0">
-              <tag-chip-placeholder
-                v-for="n in 6"
-                :key="n"
-                class="envidatChip"
-              />
+              <v-row no-gutters >
+                <v-col v-for="n in 6"
+                       :key="n"
+                       class="flex-grow-0"
+                >
+                  <TagChipPlaceholder
+                      class="envidatChip"
+                  />
+                </v-col>
+              </v-row>
             </v-col>
 
             <v-col v-if="!showPlaceholder" class="grow pl-0">
