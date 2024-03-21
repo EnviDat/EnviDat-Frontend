@@ -52,8 +52,8 @@
                         :placeholder="labels.placeholderTitle"
                         :model-value="metadataTitleField"
                         @keyup="blurOnEnterKey"
-                        @input="changePropertyForPreview(METADATA_TITLE_PROPERTY, $event)"
-                        @change="notifyPropertyChange(METADATA_TITLE_PROPERTY, $event)"
+                        @input="changePropertyForPreview(METADATA_TITLE_PROPERTY, $event.target.value)"
+                        @change="notifyPropertyChange(METADATA_TITLE_PROPERTY, $event.target.value)"
           />
 
         </v-col>
@@ -99,7 +99,7 @@
                             @keyup="blurOnEnterKey"
                             @focusin="focusIn($event)"
                             @focusout="focusOut('contactEmail', $event)"
-                            @input="changePropertyForPreview('contactEmail', $event)"
+                            @input="changePropertyForPreview('contactEmail', $event.target.value)"
               />
 
             </v-col>
@@ -144,7 +144,7 @@
                             @keyup="blurOnEnterKey"
                             @focusin="focusIn($event)"
                             @focusout="focusOut('contactGivenName', $event)"
-                            @input="changePropertyForPreview('contactGivenName', $event)"
+                            @input="changePropertyForPreview('contactGivenName', $event.target.value)"
               />
 
             </v-col>
@@ -165,7 +165,7 @@
                             @keyup="blurOnEnterKey"
                             @focusin="focusIn($event)"
                             @focusout="focusOut('contactSurname', $event)"
-                            @input="changePropertyForPreview('contactSurname', $event)"
+                            @input="changePropertyForPreview('contactSurname', $event.target.value)"
               />
 
             </v-col>
@@ -209,8 +209,8 @@
                           :model-value="metadataUrlField"
                           @keyup="blurOnEnterKey"
                           @click.stop
-                          @input="changePropertyForPreview(METADATA_URL_PROPERTY, $event)"
-                          @change="notifyPropertyChange(METADATA_URL_PROPERTY, $event)"
+                          @input="changePropertyForPreview(METADATA_URL_PROPERTY, $event.target.value)"
+                          @change="notifyPropertyChange(METADATA_URL_PROPERTY, $event.target.value)"
             />
           </ExpandableLayout>
 
@@ -264,8 +264,8 @@
                         :placeholder="labels.placeholderTitle"
                         :model-value="metadataTitleField"
                         @keyup="blurOnEnterKey"
-                        @input="changePropertyForPreview(METADATA_TITLE_PROPERTY, $event)"
-                        @change="notifyPropertyChange(METADATA_TITLE_PROPERTY, $event)"
+                        @input="changePropertyForPreview(METADATA_TITLE_PROPERTY, $event.target.value)"
+                        @change="notifyPropertyChange(METADATA_TITLE_PROPERTY, $event.target.value)"
           />
 
         </v-col>
@@ -296,8 +296,8 @@
                           :preSelected="preselectAuthorNames"
                           :hint="labels.authorPickHint"
                           dense
-                          @removedUsers="catchPickerAuthorChange($event, false)"
-                          @pickedUsers="catchPickerAuthorChange($event, true)"/>
+                          @removedUsers="catchPickerAuthorChange($event.target.value, false)"
+                          @pickedUsers="catchPickerAuthorChange($event.target.value, true)"/>
         </v-col>
       </v-row>
 
@@ -319,7 +319,7 @@
                         @keyup="blurOnEnterKey"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('contactEmail', $event)"
-                        @input="changePropertyForPreview('contactEmail', $event)"
+                        @input="changePropertyForPreview('contactEmail', $event.target.value)"
                         />
 
         </v-col>
@@ -339,8 +339,8 @@
                           :preSelected="preselectAuthorNames"
                           :hint="labels.authorPickHint"
                           dense
-                          @removedUsers="catchPickerAuthorChange($event, false)"
-                          @pickedUsers="catchPickerAuthorChange($event, true)"/>
+                          @removedUsers="catchPickerAuthorChange($event.target.value, false)"
+                          @pickedUsers="catchPickerAuthorChange($event.target.value, true)"/>
         </v-col>
 &ndash;&gt;
 
@@ -371,7 +371,7 @@
                         @keyup="blurOnEnterKey"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('contactGivenName', $event)"
-                        @input="changePropertyForPreview('contactGivenName', $event)"
+                        @input="changePropertyForPreview('contactGivenName', $event.target.value)"
                         />
 
         </v-col>
@@ -392,7 +392,7 @@
                         @keyup="blurOnEnterKey"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('contactSurname', $event)"
-                        @input="changePropertyForPreview('contactSurname', $event)"
+                        @input="changePropertyForPreview('contactSurname', $event.target.value)"
                         />
 
         </v-col>
@@ -416,8 +416,8 @@
                           :model-value="metadataUrlField"
                           @keyup="blurOnEnterKey"
                           @click.stop
-                          @input="changePropertyForPreview(METADATA_URL_PROPERTY, $event)"
-                          @change="notifyPropertyChange(METADATA_URL_PROPERTY, $event)"
+                          @input="changePropertyForPreview(METADATA_URL_PROPERTY, $event.target.value)"
+                          @change="notifyPropertyChange(METADATA_URL_PROPERTY, $event.target.value)"
             />
           </ExpandableLayout>
 
