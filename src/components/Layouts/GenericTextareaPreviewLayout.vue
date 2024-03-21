@@ -40,10 +40,11 @@
           class="heightAndScroll pt-1"
           :label="labelTextarea"
           :placeholder="placeholderTextarea"
-          outlined
+          variant="outlined"
           auto-grow
           :readonly="readonly"
           :hint="hint"
+          :prepend-icon="prependIcon"
           :error-messages="validationError"
           :model-value="textareaContent"
           @input="catchInputedText($event)"

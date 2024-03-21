@@ -51,7 +51,7 @@
                       multiple
                       variant="outlined"
                       :menu-icon="mdiArrowDownDropCircleOutline"
-                      :prepend-icon="mdiTagMultiple"
+                      :prepend-icon="mdiPaletteSwatch"
                       :label="labels.keywordsLabel"
                       :placeholder="labels.placeholder"
                       :search-input.sync="search"
@@ -146,7 +146,7 @@ import {
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 import {getIcon} from '@/factories/imageFactory';
-import {mdiArrowDownDropCircleOutline, mdiTagMultiple} from '@mdi/js';
+import {mdiArrowDownDropCircleOutline, mdiPaletteSwatch} from '@mdi/js';
 
 
 export default {
@@ -436,7 +436,7 @@ export default {
     },
   },
   data: () => ({
-    mdiTagMultiple,
+    mdiPaletteSwatch,
     mdiArrowDownDropCircleOutline,
     search: null,
     keywordValidConcise: true,
