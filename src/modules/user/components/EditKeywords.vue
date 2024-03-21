@@ -49,9 +49,9 @@
                       :items="existingKeywordItems"
                       item-text="name"
                       multiple
-                      outlined
-                      append-icon="arrow_drop_down"
-                      prepend-icon="style"
+                      variant="outlined"
+                      :menu-icon="mdiArrowDownDropCircleOutline"
+                      :prepend-icon="mdiTagMultiple"
                       :label="labels.keywordsLabel"
                       :placeholder="labels.placeholder"
                       :search-input.sync="search"
@@ -68,7 +68,7 @@
                       >
 
             <template v-slot:selection="{ item }" >
-              <TagChip  :name="item.name"
+              <TagChip  :name="item.raw.name"
                         selectable
                         closeable
                         @clickedClose="removeKeyword(item)"
@@ -77,11 +77,13 @@
             </template>
 
             <template v-slot:item="{ item }">
-              <TagChip v-if="item && item.name"
-                       :name="item.name"
-                       selectable
-                       @clicked="catchKeywordClicked"
-                       :isSmall="false" />
+              <v-list-item >
+                <TagChip v-if="item && item.value"
+                         :name="item.raw.name"
+                         selectable
+                         @clicked="catchKeywordClicked(item.raw.name)"
+                         :isSmall="false" />
+              </v-list-item>
             </template>
 
             <template v-slot:no-data>
@@ -143,6 +145,8 @@ import {
 
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+import {getIcon} from '@/factories/imageFactory';
+import {mdiArrowDownDropCircleOutline, mdiTagMultiple} from '@mdi/js';
 
 
 export default {
@@ -432,6 +436,8 @@ export default {
     },
   },
   data: () => ({
+    mdiTagMultiple,
+    mdiArrowDownDropCircleOutline,
     search: null,
     keywordValidConcise: true,
     keywordValidMin3Characters: true,
