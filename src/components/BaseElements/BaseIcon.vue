@@ -1,4 +1,5 @@
 <template>
+  <div class="baseIcon" :class="classList">
   <v-badge 
     :model-value="count >= 0"
     location="bottom start"
@@ -10,7 +11,6 @@
       bigNumber: count > 9 
     }"
   >
-    <div class="baseIcon" :class="classList">
       <div
         v-if="customIcon"
         role="img"
@@ -25,8 +25,8 @@
         :size="large ? 'x-large' : small ? 'small' : undefined"
         :color="color"
         :icon="icon" />
+      </v-badge>
     </div>
-  </v-badge>
 </template>
 
 <script>

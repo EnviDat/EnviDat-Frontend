@@ -67,7 +67,6 @@
             :outline-color="dark ? 'white' : darkColor"
             :icon-color="dark ? 'white' : darkColor"
             outlined
-            :color="dark ? 'white' : darkColor"
             :tooltip-text="`Search for the datasets of ${author.firstName} ${author.lastName}`"
             @clicked="catchSearchAuthor(author)"
           />
@@ -143,7 +142,6 @@
             :icon-color="dark ? 'white' : darkColor"
             :outline-color="dark ? 'white' : darkColor"
             outlined
-            :color="dark ? 'white' : darkColor"
             class="ma-0 badgesIcon"
             @clicked="infosExpanded = !infosExpanded"
           />
