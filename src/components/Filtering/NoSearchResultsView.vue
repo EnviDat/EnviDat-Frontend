@@ -20,7 +20,7 @@
           >
             <base-click-card
               :title="card.title"
-              :img="card.img"
+              :img="card.imgPath"
               :color="card.darkColor"
               :contain="card.contain"
               :disabled="card.disabled"
