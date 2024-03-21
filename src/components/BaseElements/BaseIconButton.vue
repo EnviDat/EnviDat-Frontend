@@ -1,19 +1,7 @@
 <template>
   <div class="baseIconButton">
-    <v-badge 
-      :model-value="count > 0"
-      :floating="small" 
-      location="bottom start"
-      :content="count" 
-      color="highlight"
-      class="envidatBadge"
-      :class="{ 
-        bigNumber: count > 9 
-      }"
-      @click.stop="onClick" 
-    >
       <v-btn
-        class="iconButton ma-0"
+        class="iconButton ma-0 pa-0"
         :class="buttonClass"
         :style="buttonStyle"
         :elevation="elevated ? 5 : undefined"
@@ -24,18 +12,16 @@
         :color="computedColor"
         :href="url"
         @click.stop="onClick"
-        :ripple="!readonly"
-        :aria-disabled="readonly"
       >
         <base-icon
           :icon="icon"
           :large="large"
           :rotated="rotated"
           :color="iconColor"
-          :small="small">
+          :small="small"
+          :count="count">
         </base-icon>
       </v-btn>
-    </v-badge>
   </div>
 </template>
 
@@ -89,7 +75,6 @@ export default {
     outlined: { type: Boolean, default: false },
     fancy: { type: Boolean, default: false },
     glowing: { type: Boolean, default: false },
-    readonly: { type: Boolean, default: false },
   },
   computed: {
     computedColor(){
@@ -110,34 +95,16 @@ export default {
       return {
         fancyButton: this.fancy,
         glowingButton: this.glowing,
-        readonly: this.readonly,
       }
     },
   },
   methods: {
-    onClick() {
-      if (this.readonly) {
-        return;
-      }
-      this.$emit('clicked');
-    },
+    onClick() { this.$emit('clicked'); },
   },
 };
 </script>
 
 <style scoped lang="scss">
-
-.iconButton {
-  &.readonly {
-    cursor: default !important;
-
-    .v-btn__overlay {
-      opacity: 0 !important;
-    }
-  }
-}
-
-
 .fancyButton {
   background-color: #00BFAD;
   background-image:

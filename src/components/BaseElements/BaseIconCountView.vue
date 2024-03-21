@@ -1,17 +1,16 @@
 <template>
   <div class="BaseIconCountView">
-    <base-icon-button
+    <base-icon
       :icon="icon"
       :count="count"
-      iconColor="grey-darken-2"
-      readonly
+      color="grey-darken-4"
       v-bind="$props"
-    ></base-icon-button>
+    ></base-icon>
   </div>
 </template>
 
 <script>
-import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 /**
  * BaseIconCountView.vue creates a round with an icon with a badge which shows a number
@@ -28,7 +27,7 @@ import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
  */
 export default {
   name: 'BaseIconCountView',
-  components: { BaseIconButton },
+  components: { BaseIcon },
   props: {
     iconString: String,
     icon: String,

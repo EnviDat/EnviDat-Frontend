@@ -1,20 +1,31 @@
 <template>
-  <div class="baseIcon" :class="classList" @click="onClick">
-    <div
-      v-if="customIcon"
-      role="img"
-      :aria-label="`${icon} icon`"
-      class="baseIconCustomIcon"
-      :style="customIconStyle"
-      :class="{ ['bg-' + color]: true }"
-      >
+  <v-badge 
+    :model-value="count >= 0"
+    location="bottom start"
+    :content="count" 
+    color="highlight"
+    class="envidatBadge"
+    :class="{ 
+      bigNumber: count > 9 
+    }"
+  >
+    <div class="baseIcon" :class="classList">
+      <div
+        v-if="customIcon"
+        role="img"
+        :aria-label="`${icon} icon`"
+        class="baseIconCustomIcon"
+        :style="customIconStyle"
+        :class="{ ['bg-' + color]: true }"
+        >
+      </div>
+      <v-icon
+        v-else
+        :size="large ? 'x-large' : small ? 'small' : undefined"
+        :color="color"
+        :icon="icon" />
     </div>
-    <v-icon
-      v-else
-      :size="large ? 'x-large' : small ? 'small' : undefined"
-      :color="color"
-      :icon="icon" />
-  </div>
+  </v-badge>
 </template>
 
 <script>
@@ -42,6 +53,7 @@ export default {
     right: { type: Boolean, default: false },
     dark: { type: Boolean, default: false },
     light: { type: Boolean, default: false },
+    count: { type: Number, default: undefined },
   },
   data: () => ({
   }),
