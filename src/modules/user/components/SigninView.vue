@@ -230,6 +230,7 @@ import * as yup from 'yup';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import { isFieldValid } from '@/factories/userEditingValidations';
 import signInPic from '@/modules/user/assets/signin.jpg';
+import {getIcon} from "@/factories/imageFactory.js";
 
 const keyLength = 32;
 
