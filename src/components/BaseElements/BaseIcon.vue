@@ -5,6 +5,7 @@
     :content="count" 
     color="highlight"
     class="envidatBadge"
+    :floating="small"
     :class="{ 
       bigNumber: count > 9 
     }"

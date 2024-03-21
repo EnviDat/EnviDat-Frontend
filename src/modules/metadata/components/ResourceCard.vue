@@ -110,8 +110,9 @@
         :class="isProtected ? 'mr-2' : ''"
         :icon="mdiChevronDown"
         :icon-color="showFullDescription ? 'primary' : 'accent'"
-        color="accent"
-        outlined
+        :color="showFullDescription ? 'accent' : 'black'"
+        :outlined="true"
+        outline-color="accent"
         :rotated="showFullDescription"
         :tooltipText="showFullDescription
           ? 'Hide full description'
