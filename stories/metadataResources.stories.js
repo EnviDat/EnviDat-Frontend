@@ -35,62 +35,43 @@ const resources1Dates = getFrontendDates(metadata[1].date);
 const resources2Dates = getFrontendDates(metadata[2].date);
 
 
+
 export default {
-  title: '6 Dataset Detail Views / Metadata Detail Page View',
-  decorators: [],
-  parameters: {},
+  title: '6 Dataset Detail Views / Metadata Resources Views',
+  component: MetadataResources,
 };
 
-export const MetadataResourcesViews = () => ({
-  components: { MetadataResources },
-  template: `
-  <v-row >
+export const ShowingPlaceholders = {
+  args: {
+    resources: null,
+    showPlaceholder: true,
+  }
+}
 
-    <v-col cols="12" class="py-3">
-      <MetadataResources :genericProps="genericPropsPlaceholder"
-                          :showPlaceholder="genericPropsPlaceholder.showPlaceholder" />
-    </v-col>
+export const WithResources = {
+  args: {
+    dataLicenseId: license1.id,
+    dataLicenseTitle: license1.title,
+    dataLicenseUrl: license1.url,
+    resources: resources1.resources,
+    dates: resources1Dates,
+    showPlaceholder: false,
+    doiIcon,
+    fileIcon,
+    fileSizeIcon,
+  }
+}
 
-    <v-col cols="12" class="py-3">
-      <MetadataResources :genericProps="genericProp"
-                          :showPlaceholder="genericProp.showPlaceholder" />
-    </v-col>
-
-    <v-col cols="12" class="py-3">
-      <MetadataResources :genericProps="genericProps2"
-                          :showPlaceholder="genericProps2.showPlaceholder" />
-    </v-col>
-
-  </v-row>
-  `,
-  updated() {
-  },
-  data: () => ({
-    genericProp: {
-      dataLicenseId: license1.id,
-      dataLicenseTitle: license1.title,
-      dataLicenseUrl: license1.url,
-      resources: resources1.resources,
-      dates: resources1Dates,
-      showPlaceholder: false,
-      doiIcon,
-      fileIcon,
-      fileSizeIcon,
-    },
-    genericPropsPlaceholder: {
-      resources: null,
-      showPlaceholder: true,
-    },
-    genericProps2: {
-      dataLicenseId: license2.id,
-      dataLicenseTitle: license2.title,
-      dataLicenseUrl: license2.url,
-      resources: resources2.resources,
-      dates: resources2Dates,
-      showPlaceholder: false,
-      doiIcon,
-      fileIcon,
-      fileSizeIcon,
-    },
-  }),
-});
+export const WithProtectedResources = {
+  args: {
+    dataLicenseId: license2.id,
+    dataLicenseTitle: license2.title,
+    dataLicenseUrl: license2.url,
+    resources: resources2.resources,
+    dates: resources2Dates,
+    showPlaceholder: false,
+    doiIcon,
+    fileIcon,
+    fileSizeIcon,
+  }
+}

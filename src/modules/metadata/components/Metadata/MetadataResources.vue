@@ -90,7 +90,7 @@
           <ResourceCard v-bind="res"
                           :key="res.id"
                           :twoColumnLayout="twoColumnLayout"
-                          :downloadActive="resourcesConfig.downloadActive"
+                          :downloadActive="resourcesConfig?.downloadActive"
                           :showGenericOpenButton="!!res.openEvent"
                           :genericOpenButtonBottom="true"
                           :openButtonTooltip="res.openButtonTooltip"
