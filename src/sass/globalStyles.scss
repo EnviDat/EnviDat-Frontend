@@ -145,6 +145,11 @@
   cursor: pointer !important;
 }
 
+.v-skeleton-loader > .v-skeleton-loader__chip {
+  height: 100%;
+  margin: 0;
+}
+
 .fade-enter-active,
 .fade-leave-active {
   transition-duration: 0.1s;
