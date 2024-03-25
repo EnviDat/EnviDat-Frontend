@@ -1,16 +1,16 @@
 <template>
   <div class="baseIcon" :class="classList">
-  <v-badge 
-    :model-value="count >= 0"
-    location="bottom start"
-    :content="count" 
-    color="highlight"
-    class="envidatBadge"
-    :floating="small"
-    :class="{ 
-      bigNumber: count > 9 
-    }"
-  >
+    <v-badge
+      :model-value="count >= 0"
+      location="bottom start"
+      :content="count"
+      color="highlight"
+      class="envidatBadge"
+      :floating="small"
+      :class="{
+        bigNumber: count > 9
+      }"
+    >
       <div
         v-if="customIcon"
         role="img"
@@ -26,8 +26,9 @@
         :size="large ? 'x-large' : small ? 'small' : undefined"
         :color="color"
         :icon="icon" />
-      </v-badge>
-    </div>
+
+    </v-badge>
+  </div>
 </template>
 
 <script>
