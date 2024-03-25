@@ -22,6 +22,7 @@
       </div>
       <v-icon
         v-else
+        class="baseIconFontIcon"
         :size="large ? 'x-large' : small ? 'small' : undefined"
         :color="color"
         :icon="icon" />
@@ -96,32 +97,30 @@ export default {
   align-items: center;
   justify-content: center;
   position: relative;
-
-  .v-icon {
+  
+  .baseIconCustomIcon,
+  .baseIconFontIcon {
     // The vuetify-3 default is smaller than the old one
     // To keep it consistent force it to be the same size
+    height: 24px;
+    width: 24px;
     font-size: 24px;
   }
 
-  .baseIconCustomIcon {
-    height: 100%;
-    width: 100%;
-  }
-
   &.small {
-    height: 15px;
-    width: 15px;
-
-    .v-icon {
+    .baseIconCustomIcon,
+    .baseIconFontIcon {
+      height: 15px;
+      width: 15px;
       font-size: 15px;
     }
   }
 
   &.large {
-    height: 32px;
-    width: 32px;
-
-    .v-icon {
+    .baseIconCustomIcon,
+    .baseIconFontIcon {
+      height: 32px;
+      width: 32px;
       font-size: 32px;
     }
   }
