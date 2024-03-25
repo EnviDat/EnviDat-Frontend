@@ -87,7 +87,10 @@ export default {
   name: 'BaseUserPicker',
   props: {
     users: Array,
-    preSelected: Array,
+    preSelected: {
+      type: Array,
+      default: undefined,
+    },
     multiplePick: Boolean,
     placeholder: {type: String, default: undefined},
     pickerLabel: {
@@ -167,7 +170,7 @@ export default {
           this.pickedUsers = this.preSelected[0];
         }
       } else {
-        this.pickedUsers = this.multiplePick ? [] : '';
+        this.pickedUsers = this.multiplePick ? [] : undefined;
       }
     },
     catchCloseClicked(authorName) {
@@ -184,7 +187,7 @@ export default {
           this.pickedUsers = [];
         }
       } else {
-        this.pickedUsers = '';
+        this.pickedUsers = undefined;
       }
 
       this.$emit('removedUsers', this.pickedUsers);
@@ -213,7 +216,7 @@ export default {
     },
   },
   data: () => ({
-    pickedUsers: [],
+    pickedUsers: undefined,
     search: '',
     mdiArrowDownDropCircleOutline,
     mdiClose,

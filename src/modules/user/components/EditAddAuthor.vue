@@ -17,7 +17,7 @@
       @clicked="$emit('closeClicked')" 
     />
 
-    <v-container fluid class="pa-4 fill-height">
+    <v-container fluid class="pa-4">
       <v-row>
         <v-col class="text-h5" cols="8">
           {{ titleLabel }}
@@ -58,18 +58,16 @@
           <v-text-field ref="email"
                         id="email"
                         :label="labels.labelEmail"
-                        outlined
-                        dense
                         :error-messages="validationErrors.email"
                         :readonly="isReadOnly('authors')"
                         :hint="readOnlyHint('authors')"
-                        prepend-icon="email"
+                        :prepend-icon="mdiEmail"
                         :placeholder="labels.placeholderEmail"
                         :model-value="emailField"
                         @keyup="blurOnEnterKey"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('email', $event)"
-                        @input="changeProperty('email', $event)"
+                        @input="changeProperty('email', $event.target.value)"
           />
 
         </v-col>
@@ -118,10 +116,8 @@
           <v-text-field ref="firstName"
                         id="firstName"
                         :label="labels.labelFirstName"
-                        outlined
-                        dense
                         :error-messages="validationErrors.firstName"
-                        prepend-icon="person"
+                        :prepend-icon="mdiAccount"
                         :placeholder="labels.placeholderFirstName"
                         :model-value="firstNameField"
                         :readonly="isReadOnly('authors')"
@@ -129,7 +125,7 @@
                         @keyup="blurOnEnterKey"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('firstName', $event)"
-                        @input="changeProperty('firstName', $event)"
+                        @input="changeProperty('firstName', $event.target.value)"
           />
 
         </v-col>
@@ -139,10 +135,8 @@
           <v-text-field ref="lastName"
                         id="lastName"
                         :label="labels.labelLastName"
-                        outlined
-                        dense
                         :error-messages="validationErrors.lastName"
-                        prepend-icon="person"
+                        :prepend-icon="mdiAccount"
                         :placeholder="labels.placeholderLastName"
                         :model-value="lastNameField"
                         :readonly="isReadOnly('authors')"
@@ -150,7 +144,7 @@
                         @keyup="blurOnEnterKey"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('lastName', $event)"
-                        @input="changeProperty('lastName', $event)"
+                        @input="changeProperty('lastName', $event.target.value)"
           />
 
         </v-col>
@@ -165,10 +159,8 @@
           <v-text-field ref="affiliation"
                         id="affiliation"
                         :label="labels.labelAffiliation"
-                        outlined
-                        dense
                         :error-messages="validationErrors.affiliation"
-                        prepend-icon="handshake"
+                        :prepend-icon="mdiHandshake"
                         :placeholder="labels.placeholderAffiliation"
                         :model-value="affiliationField"
                         :readonly="isReadOnly('authors')"
@@ -176,7 +168,7 @@
                         @keyup="blurOnEnterKey"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('affiliation', $event)"
-                        @input="changeProperty('affiliation', $event)"
+                        @input="changeProperty('affiliation', $event.target.value)"
           />
 
         </v-col>
@@ -186,10 +178,8 @@
           <v-text-field ref="identifier"
                         id="identifier"
                         :label="labels.labelIdentifier"
-                        outlined
-                        dense
                         :error-messages="validationErrors.identifier"
-                        prepend-icon="card_membership"
+                        :prepend-icon="mdiWalletMembership"
                         :placeholder="labels.placeholderIdentifier"
                         :model-value="identifierField"
                         :readonly="isReadOnly('authors')"
@@ -197,7 +187,7 @@
                         @keyup="blurOnEnterKey"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('identifier', $event)"
-                        @input="changeProperty('identifier', $event)"
+                        @input="changeProperty('identifier', $event.target.value)"
           />
 
         </v-col>
@@ -262,7 +252,7 @@ import {
 } from '@/factories/eventBus';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
-import { mdiClose } from '@mdi/js';
+import { mdiAccount, mdiClose, mdiEmail, mdiHandshake, mdiWalletMembership } from '@mdi/js';
 
 
 export default {
@@ -378,7 +368,7 @@ export default {
         return fullName ? [fullName] : [];
       }
 
-      return [];
+      return undefined;
     },
     fullNameUsers() {
       const localAuthors = [...this.existingAuthors];
@@ -566,7 +556,11 @@ export default {
     },
   },
   data: () => ({
+    mdiWalletMembership,
+    mdiHandshake,
     mdiClose,
+    mdiEmail,
+    mdiAccount,
     authorIsPicked: false,
     authorPickerTouched: false,
     previews: {
