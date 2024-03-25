@@ -18,6 +18,7 @@
             :model-value="replaceAuthorDeadInfo(val.text)"
             hide-details
             readonly
+            variant="outlined"
           />
 
           <v-textarea
@@ -28,6 +29,7 @@
             :model-value="replaceAuthorDeadInfo(val.text)"
             hide-details
             readonly
+            variant="outlined"
           />
         </div>
       </v-form>

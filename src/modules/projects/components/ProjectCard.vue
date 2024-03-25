@@ -75,7 +75,6 @@
               icon-color="secondary"
               :tooltip-text="`Open Subproject ${sub.title}`"
               tooltip-bottom
-              small
               @clicked="subprojectClick(sub.name)"
             />
           </v-col>

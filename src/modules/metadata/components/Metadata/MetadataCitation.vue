@@ -51,9 +51,7 @@
 
     <v-card-text v-if="showPlaceholder && !citationText"
                   class="pa-4 pt-0">
-      <div class="skeleton skeleton-size-normal skeleton-color-concrete skeleton-animation-shimmer">
-        <div class="bone bone-type-multiline bone-style-paragraph" />
-      </div>
+      <v-skeleton-loader type='paragraph' color='gray' />
     </v-card-text>
 
     <v-card-text v-if="!showPlaceholder && !citationText"
@@ -63,16 +61,11 @@
     </v-card-text>
 
     <v-card-actions v-if="showPlaceholder && !citationText"
-                    class="pa-4" >
+                    class="pa-4 pt-0" >
       <v-spacer />
-      <div class="skeleton skeleton-size-normal skeleton-color-concrete skeleton-animation-shimmer">
-        <div style="width: 128px; height: 32px;"
-              class="mx-1 bone bone-type-image bone-style-rectangle" />
-        <div style="width: 128px; height: 32px;"
-              class="mx-1 bone bone-type-image bone-style-rectangle" />
-        <div style="width: 128px; height: 32px;"
-              class="mx-1 bone bone-type-image bone-style-rectangle" />
-      </div>
+      <v-skeleton-loader type='button' color='gray' width='100' />
+      <v-skeleton-loader type='button' color='gray' width='100' />
+      <v-skeleton-loader type='button' color='gray' width='100' />
     </v-card-actions>
   </v-card>
 </template>
