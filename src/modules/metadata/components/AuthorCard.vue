@@ -22,9 +22,8 @@
                class="flex-grow-0 py-0">
 
           <v-tooltip bottom>
-            <template v-slot:activator="{ on, props }">
+            <template v-slot:activator="{ props }">
               <BaseIcon 
-                v-on="on"
                 v-bind="props"
                 :icon="mdiTimerSandComplete"
                 small
@@ -102,9 +101,8 @@
 
         <v-col class="flex-grow-0">
           <v-tooltip bottom>
-            <template v-slot:activator="{ on, props }">
-              <BaseIcon v-on="on"
-                        v-bind="props"
+            <template v-slot:activator="{ props }">
+              <BaseIcon v-bind="props"
                         :color="dark ? 'white' : 'black'"
                         :icon="mdiInformationOutline"
               />

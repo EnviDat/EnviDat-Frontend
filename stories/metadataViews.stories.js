@@ -240,12 +240,11 @@ export const MetadataBodyViews = () => ({
   <v-row>
 
     <v-col cols="6" class="py-3">
-      <metadata-body v-bind="genericPropsPlaceholder" />
+      <metadata-body  />
     </v-col>
 
     <v-col cols="6" class="py-3">
-      <metadata-body v-bind="genericPropsPlaceholder"
-                      :showPlaceholder="genericPropsPlaceholder.showPlaceholder" />
+      <metadata-body v-bind="genericPropsPlaceholder" />
     </v-col>
 
     <v-col cols="4" class="py-3">
@@ -261,7 +260,6 @@ export const MetadataBodyViews = () => ({
   data: () => ({
     genericPropsPlaceholder: {
       showPlaceholder: true,
-      title: 'Description',
     },
     genericPropsBody: {
       showPlaceholder: false,
@@ -280,12 +278,11 @@ export const MetadataCitationViews = () => ({
   <v-row >
 
     <v-col cols="6" class="py-3">
-      <metadata-citation v-bind="genericPropsPlaceholder" />
+      <metadata-citation  />
     </v-col>
 
     <v-col cols="6" class="py-3">
-      <metadata-citation v-bind="genericPropsPlaceholder"
-                          :showPlaceholder="genericPropsPlaceholder.showPlaceholder" />
+      <metadata-citation v-bind="genericPropsPlaceholder"  />
     </v-col>
 
     <v-col cols="4" class="py-3">
@@ -546,7 +543,7 @@ export const MetadataFundingViews = () => ({
   <v-row >
 
     <v-col cols="6" class="py-3">
-      <metadata-funding v-bind="genericProp" />
+      <metadata-funding />
     </v-col>
 
     <v-col cols="6" class="py-3">
@@ -594,8 +591,7 @@ export const MetadataAuthorsViews = () => ({
     </v-col>
 
     <v-col cols="12" md="6" class="py-3">
-      <metadata-authors v-bind="genericPropsPlaceholder"
-                        :showPlaceholder="genericPropsPlaceholder.showPlaceholder" />
+      <metadata-authors v-bind="genericPropsPlaceholder"  />
     </v-col>
 
     <v-col cols="12" md="6" class="py-3">

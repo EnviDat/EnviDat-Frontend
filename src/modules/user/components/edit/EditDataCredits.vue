@@ -11,46 +11,21 @@
       </v-col>
     </v-row>
 
-    <v-row no-gutters>
+    <v-row no-gutters
+            justify='start'>
 
       <v-col v-for="(creditName, index) in allDataCredits"
              :key="index"
-             class="flex-grow-0 pt-3 pt-md-4 px-md-1" >
+              class='flex-grow-0 mt-3 mt-md-4 mx-md-1'>
 
-        <v-hover v-slot:default="{ hover }" >
-
-          <v-badge :model-value="isActive(creditName)"
-                   class="dataCreditIcon"
-                   :disabled="readOnly"
-                   :overlap="!hover"
-                   style="width: 28px; height: 28px;"
-                   @click="catchCreditClick(creditName)"
-                   :color="dark ? 'white' : 'black'" >
-
-            <v-icon :color="dark ? 'black' : 'white'"
-                    size="14px"
-                    style="left: 14px; bottom: 1px;">
-              checked
-            </v-icon>
-
-            <v-tooltip bottom >
-              <template v-slot:activator="{ on, props }">
-                <v-icon v-on="on"
-                        v-bind="props"
-                        class="pa-1"
-                        :color="creditIconColor(creditName)"
-                        :disabled="readOnly"
-                        @click="catchCreditClick(creditName)" >
-                  {{ iconLookup(creditName) }}
-                </v-icon>
-              </template >
-
-              <div v-html="iconTooltip(creditName)" />
-
-            </v-tooltip>
-          </v-badge>
-        </v-hover>
-
+        <BaseIconToggleButton :active="isActive(creditName)"
+                              :icon='iconLookup(creditName)'
+                              :value='creditName'
+                              :tooltip="iconTooltip(creditName)"
+                              :disabled="readOnly"
+                              :dark="dark"
+                              @clicked="catchCreditClick"
+                              />
 
       </v-col>
     </v-row>
@@ -59,6 +34,8 @@
 
 <script>
 import { getDataCreditIcon } from '@/factories/authorFactory';
+import { mdiCheck } from '@mdi/js';
+import BaseIconToggleButton from '@/components/BaseElements/BaseIconToggleButton.vue';
 
 /**
  * @summary Component to edit the data credits of an author
@@ -149,8 +126,10 @@ export default {
     },
   },
   data: () => ({
+    mdiCheck,
   }),
   components: {
+    BaseIconToggleButton,
   },
 };
 </script>

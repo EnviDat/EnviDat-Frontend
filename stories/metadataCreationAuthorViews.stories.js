@@ -138,7 +138,7 @@ export const EditingDataCreditViews = () => ({
 
     <v-row class="py-3" >
       <v-col style="background-color: darkgrey;">
-        <EditDataCredits @creditClick="catchCreditClick(emptyAuthor, ...arguments)"
+        <EditDataCredits @creditClick="catchCreditClick(emptyAuthor, $event)"
                          :dataCredit="emptyAuthor.dataCredit"
                          authorName="Dominik Haas-Artho"
                          :dark="true"
@@ -155,7 +155,7 @@ export const EditingDataCreditViews = () => ({
         <EditDataCredits :instruction="instruction"
                          :dataCredit="author.dataCredit"
                          authorName="Dominik Haas-Artho"
-                          @creditClick="catchCreditClick(author, ...arguments)"
+                          @creditClick="catchCreditClick(author, $event)"
                          :dark="true"
                           />
       </v-col>
@@ -170,7 +170,7 @@ export const EditingDataCreditViews = () => ({
         <EditDataCredits :instruction="instruction"
                          :dataCredit="author.dataCredit"
                          authorName="Dominik Haas-Artho"
-                         @creditClick="catchCreditClick(author, ...arguments)"
+                         @creditClick="catchCreditClick(author, $event)"
         />
       </v-col>
     </v-row>

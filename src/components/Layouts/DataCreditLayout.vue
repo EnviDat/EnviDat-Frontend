@@ -28,6 +28,7 @@
       <v-hover v-slot="{ isHovering, props }" >
         <v-badge v-bind="props"
                  class="dataCreditIcon"
+                 bordered
                  :overlap="!isHovering"
                  :color="badgeColor"
                  :content="dataCreditCounts[index]"

@@ -18,36 +18,16 @@
         class="flex-grow-0 pt-3 pt-md-4 px-md-1"
         v-show="isActive(creditName)"
       >
-        <v-hover v-if="isActive(creditName)" v-slot:default="{ hover }">
-          <v-badge
-            class="dataCreditIcon"
-            :overlap="!hover"
-            :color="dark ? 'white' : 'black'"
-          >
-            <v-icon
-              :color="dark ? 'black' : 'white'"
-              size="20px"
-              style="left: 20px;"
-            >
-              checked
-            </v-icon>
 
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on, props }">
-                <v-icon
-                  v-on="on"
-                  v-bind="props"
-                  class="pa-1"
-                  :color="creditIconColor(creditName)"
-                >
-                  {{ iconLookup(creditName) }}
-                </v-icon>
-              </template>
+        <BaseIconToggleButton :active="isActive(creditName)"
+                              :icon='iconLookup(creditName)'
+                              :value='creditName'
+                              :tooltip="iconTooltip(creditName)"
+                              :dark="dark"
+                              @clicked="catchCreditClick"
+        />
 
-              <div v-html="iconTooltip(creditName)" />
-            </v-tooltip>
-          </v-badge>
-        </v-hover>
+
       </v-col>
     </v-row>
   </v-container>
@@ -55,6 +35,8 @@
 
 <script>
 import { getDataCreditIcon } from '@/factories/authorFactory';
+
+import BaseIconToggleButton from '@/components/BaseElements/BaseIconToggleButton.vue';
 
 /**
  * @summary Shows only the active data credits of an author for a dataset
@@ -138,8 +120,9 @@ export default {
       return getDataCreditIcon(creditName);
     },
   },
-  data: () => ({}),
-  components: {},
+  data: () => ({
+  }),
+  components: { BaseIconToggleButton },
 };
 </script>
 
