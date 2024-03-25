@@ -17,6 +17,7 @@
                 :open-on-click='true'
                 :close-on-click="false"
                 :close-on-content-click="false"
+                :disabled="!abstract"
                 offset-y
                 z-index="2"
             >
@@ -41,8 +42,7 @@
             <BaseIconButton 
               :icon="mdiFingerprint"
               :disabled="!doi"
-              small
-              :icon-color="doi ? '' : 'gray'"
+              :icon-color="doi ? 'primary' : 'gray'"
               :tooltip-text="`doi: ${doi}`"
               :url="doiUrl"
             />

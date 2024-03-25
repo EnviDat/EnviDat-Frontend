@@ -6,7 +6,7 @@
         :style="buttonStyle"
         :elevation="elevated ? 5 : undefined"
         icon
-        :variant="outlined ? 'outlined' : 'flat'"
+        :variant="outlined ? 'outlined' : disabled ? 'text' : 'flat'"
         density="comfortable"
         :size="large ? 'large' : small ? 'small' : undefined"
         :color="computedColor"
@@ -18,7 +18,7 @@
           :icon="icon"
           :large="large"
           :rotated="rotated"
-          :color="iconColor"
+          :color="computedIconColor"
           :small="small"
           :count="count">
         </base-icon>
@@ -84,8 +84,20 @@ export default {
       // Because this component can change the background color even when in "outlined mode" a switch is needed
       if(this.outlined) {
         return this.outlineColor ?? this.iconColor ?? 'primary';
-      } 
+      }
+
+      if (this.disabled) {
+        return 'gray';
+      }
+
       return this.color ?? 'transparent';
+    },
+    computedIconColor() {
+      if (this.disabled) {
+        return 'gray';
+      }
+
+      return this.iconColor;
     },
     buttonStyle() {
       const isNamedColor = !(this.color?.includes('#') || this.color?.includes('('))
