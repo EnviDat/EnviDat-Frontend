@@ -43,12 +43,24 @@ IconOnly.args = {
   icon: mdiContentSave,
 }
 
+export const IconOnlyDisabled = Template.bind({});
+IconOnlyDisabled.args = {
+  ...IconOnly.args,
+  disabled: true,
+}
+
 export const IconOutlined = Template.bind({});
 IconOutlined.args = {
   icon: mdiContentSave,
   outlined: true,
   outlineColor: 'primary',
   iconColor: 'black',
+}
+
+export const IconOutlinedDisabled = Template.bind({});
+IconOutlinedDisabled.args = {
+  ...IconOutlined.args,
+  disabled: true,
 }
 
 export const IconOutlinedColored = Template.bind({});
@@ -77,6 +89,13 @@ IconAndElevated.args = {
   iconColor: 'black',
   color: 'accent',
 }
+
+export const IconAndElevatedDisabled = Template.bind({});
+IconAndElevatedDisabled.args = {
+  ...IconAndElevated.args,
+  disabled: true,
+}
+
 
 export const CustomIcon = Template.bind({});
 CustomIcon.args = {

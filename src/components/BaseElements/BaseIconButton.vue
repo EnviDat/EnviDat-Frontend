@@ -100,6 +100,10 @@ export default {
       return this.iconColor;
     },
     buttonStyle() {
+      if (!this.outlined) {
+        return undefined;
+      }
+
       const isNamedColor = !(this.color?.includes('#') || this.color?.includes('('))
       const bgColorStyle = isNamedColor ? `rgb(var(--v-theme-${this.color})) !important` : this.color;
       return {
