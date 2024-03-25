@@ -143,7 +143,7 @@ export default {
       return this.mixinMethods_getGenericProp('authorDeadInfo', {});
     },
     hasAuthors() {
-      return this.authors && this.authors.length > 0;
+      return this.authors?.length > 0;
     },
     emptyTextColor() {
       return this.mixinMethods_getGenericProp('emptyTextColor', 'red');

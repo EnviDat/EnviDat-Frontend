@@ -365,6 +365,7 @@ import {
 import { formatDateTimeToCKANFormat } from '@/factories/mappingFactory';
 import { formatDate } from '@/factories/metaDataFactory';
 import { renderMarkdown } from '@/factories/stringFactory';
+import { getFileIcon } from '@/factories/imageFactory';
 
 import notFoundImg from '@/modules/user/assets/imageNotFound.jpg';
 import {
@@ -709,12 +710,7 @@ export default {
       return getValidationMetadataEditingObject(EDITMETADATA_DATA_RESOURCE);
     },
     fileFormatIcon() {
-      // isLink ? 'link' : 'insert_drive_file'
-      if (!this.$store) {
-        return this.fileIcon;
-      }
-
-      return this.mixinMethods_getIconFileExtension(this.formatField) || this.fileIcon;
+      return getFileIcon(this.formatField);
     },
   },
   methods: {

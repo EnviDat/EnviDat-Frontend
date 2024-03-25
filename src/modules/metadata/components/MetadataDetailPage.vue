@@ -492,7 +492,13 @@ export default {
 
         this.funding = createFunding(currentContent);
 
-        // authors are going to be loaded via the watch when the AuthorsMap is available
+        const authorMapSize = Object.keys(this.authorsMap).length || 0;
+
+        if (authorMapSize > 0) {
+          // if the authorMap is not loaded (direct loading of the this page) without
+          // loading the whole app first, the author loading happens via the watch when the AuthorsMap
+          this.loadAuthors(currentContent);
+        }
       }
     },
     loadAuthors(currentContent) {
