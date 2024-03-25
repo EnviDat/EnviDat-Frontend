@@ -89,7 +89,7 @@ export default {
       return this.rowLayout ? 0 : 6;
     },
     paddingSecondCol() {
-      return this.rowLayout ? '' : 'pl-md-4';
+      return this.rowLayout ? undefined : 'pl-sm-4';
     },
   },
   methods: {

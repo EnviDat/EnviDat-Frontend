@@ -3,7 +3,7 @@
           class="pa-0"
           :loading="loadingColor">
 
-    <v-container fluid class="pa-4 fill-height">
+    <v-container fluid class="pa-4">
 
       <v-row>
         <v-col cols="8" class="text-h5">
@@ -34,44 +34,38 @@
         </v-col>
       </v-row>
 
-      <v-row dense class="pt-4">
+      <v-row no-gutters
+             v-for="(item, index) in datesField"
+             :key="`${item}_${index}`"
+      >
 
-        <v-col v-for="(item, index) in datesField"
-            :key="`${item}_${index}`"
-               cols="12"
-               md="6"
-               sm="4"
-               :class="(index + 1) % 2 === 0 ? 'pl-4 pr-0' : 'px-0'"
-        >
-          <v-row no-gutters dense>
+        <v-col cols="12"
+               sm="3"
+               class="pt-2 px-sm-2 flex-grow-0">
+          <div class="text-body-1">
+            {{ item.dateType }}
+          </div>
 
-            <v-col cols="5"
-                   class="pt-2 px-sm-2 flex-grow-0">
-              <div class="text-body-1">
-                {{ item.dateType }}
-              </div>
-
-            </v-col>
-
-            <v-col cols="7" >
-
-              <BaseStartEndDate
-                  :startDate="item.dateStart"
-                  :startDateProperty="startDateProperty"
-                  :endDate="item.dateEnd"
-                  :endDateProperty="endDateProperty"
-                  :clearableEndDate="true"
-                  rowLayout
-                  @dateChange="dateChanged(index, ...arguments)"
-                  @clearClick="clearDate(index, ...arguments)"
-                  :readOnlyFields="readOnlyFields"
-                  :readOnlyExplanation="readOnlyExplanation"
-              />
-            </v-col>
-
-          </v-row>
         </v-col>
+
+        <v-col class="flex-grow-1">
+
+          <BaseStartEndDate
+              :startDate="item.dateStart"
+              :startDateProperty="startDateProperty"
+              :endDate="item.dateEnd"
+              :endDateProperty="endDateProperty"
+              :clearableEndDate="true"
+              :row-layout="$vuetify.display.xs"
+              @dateChange="dateChanged(index, ...arguments)"
+              @clearClick="clearDate(index, ...arguments)"
+              :readOnlyFields="readOnlyFields"
+              :readOnlyExplanation="readOnlyExplanation"
+          />
+        </v-col>
+
       </v-row>
+
 
     </v-container>
   </v-card>
