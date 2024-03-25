@@ -11,7 +11,7 @@
     <v-tooltip v-if="tooltip" bottom>
       <template v-slot:activator="{ on, props }">
         <div v-on="on" v-bind="props" >
-          <v-icon size="18" :icon="mdiHome" />
+          <v-icon :icon="mdiHome" />
           {{ showContent ? organizationText : '' }}
         </div>
       </template>
@@ -20,7 +20,7 @@
     </v-tooltip>
 
     <div v-if="!tooltip">
-      <v-icon size="18" :icon="mdiHome" />
+      <v-icon :icon="mdiHome" />
       {{ showContent ? organizationText : '' }}
     </div>
   </v-chip>

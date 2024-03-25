@@ -20,7 +20,7 @@ export const isFieldReadOnly = (props, property) => {
  export const readOnlyHint = (props, property) => {
   let hint = '';
 
-  if (isFieldReadOnly(property)) {
+  if (isFieldReadOnly(props, property)) {
     hint = props?.readOnlyExplanation || '';
   }
 

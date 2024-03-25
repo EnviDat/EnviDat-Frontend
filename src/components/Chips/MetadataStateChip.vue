@@ -17,7 +17,9 @@
                align="center"
                no-gutters
                class="flex-nowrap">
-          <v-col ><v-icon :icon="stateIcon" /></v-col>
+          <v-col >
+            <v-icon :icon="stateIcon" />
+          </v-col>
           <v-col :class="showContent ? 'pl-1' : ''" >
             {{ showContent ? stateText : ''  }}
           </v-col>
