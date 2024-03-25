@@ -91,8 +91,6 @@ export default {
 
 <style lang="scss" scoped>
 .baseIcon {
-  height: 24px; // Based on the old v-icon size
-  width: 24px; // Based on the old v-icon size
   display: flex;
   align-items: center;
   justify-content: center;
@@ -102,8 +100,8 @@ export default {
   .baseIconFontIcon {
     // The vuetify-3 default is smaller than the old one
     // To keep it consistent force it to be the same size
-    height: 24px;
-    width: 24px;
+    height: 24px; // Based on the old v-icon size
+    width: 24px; // Based on the old v-icon size
     font-size: 24px;
   }
 
