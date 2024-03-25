@@ -73,8 +73,8 @@
 -->
 
         <v-row v-if="modeData" no-gutters justify="end">
-          <v-col class="cardIcons flex-grow-0">
-            <base-icon-button flat small color="transparent" :disabled="true" :icon="modeEntryIcon" />
+          <v-col class="cardIcons flex-grow-0 py-1">
+            <v-img height="24" width="24" :src="modeEntryIcon" />
           </v-col>
         </v-row>
 
@@ -85,8 +85,8 @@
         </v-row>
 
         <v-row v-if="geoJSONIcon" no-gutters justify="end">
-          <v-col class="cardIcons flex-grow-0">
-            <BaseIconLabelView :icon="geoJSONIcon" />
+          <v-col class="cardIcons flex-grow-0 pt-2">
+            <base-icon-count-view icon-color="black" :icon="geoJSONIcon" />
           </v-col>
         </v-row>
       </v-container>
@@ -107,7 +107,7 @@
           </v-col>
 
           <v-col v-if="modeData" class="pl-1 flex-grow-0 cardIcons">
-            <base-icon-button flat small color="transparent" :disabled="true" :icon="modeEntryIcon" />
+            <v-img height="24" width="24" :src="modeEntryIcon" />
           </v-col>
 
           <v-col class="pl-3 flex-grow-0 cardIcons">
@@ -115,7 +115,7 @@
           </v-col>
 
           <v-col v-if="geoJSONIcon" class="pl-1 flex-grow-0 cardIcons">
-            <BaseIconLabelView :icon="geoJSONIcon" />
+            <base-icon-count-view icon-color="black" :icon="geoJSONIcon" />
           </v-col>
         </v-row>
       </v-container>
@@ -149,7 +149,6 @@
  */
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
-import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
 import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip.vue';
 import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
 import TagChip from '@/components/Chips/TagChip.vue';
@@ -408,7 +407,6 @@ export default {
   components: {
     TagChip,
     BaseIconCountView,
-    BaseIconLabelView,
     BaseIconButton,
     MetadataStateChip,
     MetadataOrganizationChip,

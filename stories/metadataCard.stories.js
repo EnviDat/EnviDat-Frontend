@@ -16,6 +16,8 @@ import { imageBgs } from '@/factories/imageFactory';
 import { enhanceMetadatasTitleImage, getMetadataVisibilityState } from '@/factories/metaDataFactory';
 import categoryCards from '@/store/categoryCards';
 
+import { getModeData } from '@/factories/modeFactory';
+import { EDNA_MODE, SWISSFL_MODE } from '@/store/metadataMutationsConsts';
 import {
   mobileLargeViewportParams,
   mobileViewportParams,
@@ -106,6 +108,12 @@ NormalCard.args = {
   titleImg: firstDataset.titleImg,
 }
 
+export const CardWithTags = Template.bind({});
+CardWithTags.args = {
+  ...NormalCard.args,
+  tags: firstDataset.tags,
+}
+
 export const CompactCard = Template.bind({});
 CompactCard.args = {
   ...NormalCard.args,
@@ -144,10 +152,18 @@ CardWithOrganization.args = {
   compactLayout: true,
 }
 
-export const CardWithTags = Template.bind({});
-CardWithTags.args = {
-  ...CardWithState.args,
-  tags: firstDataset.tags,
+
+export const CardForModeSWISSFL = Template.bind({});
+CardForModeSWISSFL.args = {
+  ...CardWithTags.args,
+  modeData: getModeData(SWISSFL_MODE),
+}
+
+export const CardForModeEDNA = Template.bind({});
+CardForModeEDNA.args = {
+  ...CardWithTags.args,
+  modeData: getModeData(EDNA_MODE),
+  compactLayout: false,
 }
 
 export const MetadataCardCollectionView = () => ({
