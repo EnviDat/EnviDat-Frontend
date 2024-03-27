@@ -32,6 +32,7 @@
 
 <script>
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import {mdiCheck, mdiPencil} from '@mdi/js';
 
 /**
  * FlipLayout.vue
@@ -64,10 +65,10 @@ export default {
   computed: {
     buttonIcon() {
       if (!this.autoButtonFlip) {
-        return 'edit';
+        return mdiPencil;
       }
 
-      return this.flipped ? 'check' : 'edit';
+      return this.flipped ? mdiCheck : mdiPencil;
     },
     buttonColor() {
       if (!this.autoButtonFlip) {
@@ -90,6 +91,8 @@ export default {
     },
   },
   data: () => ({
+    mdiPencil,
+    mdiCheck,
     flipped: false,
   }),
   components: {
