@@ -39,11 +39,12 @@
       class="ma-0 pa-2"
       :style="`position: absolute; bottom: 0px; right: ${rightPos()};`"
     >
-      <base-icon-button
+      <BaseIconButton
         :icon="mdiChevronDown"
-        :icon-color="showFullText ? 'primary' : 'accent'"
-        :color="showFullText ? 'accent' : 'transparent'"
-        :outlined="showFullText"
+        :icon-color="showFullText ? 'secondary' : 'white'"
+        :color="showFullText ? 'transparent' : 'secondary'"
+        :outlined="!!showFullText"
+        outline-color="secondary"
         :rotated="showFullText"
         :tooltip-text="showFullText ? 'Collaspe text' : 'Show full text'"
         @clicked="readMore"
