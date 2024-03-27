@@ -1,5 +1,5 @@
 import ResourceCard from '@/modules/metadata/components/ResourceCard.vue';
-import { mdiFileEyes } from '@mdi/js';
+import { mdiFileEye } from '@mdi/js';
 
 // generated with https://chat.openai.com/g/g-p5QoaO4UG-storybookvue2gpt
 export default {
@@ -30,7 +30,7 @@ export const Default = {
     showGenericOpenButton: false,
     genericOpenButtonBottom: false,
     openButtonTooltip: '',
-    openButtonIcon: mdiFileEyes,
+    openButtonIcon: mdiFileEye,
     cardColor: 'primary',
     isSelected: false,
     loading: false, 
