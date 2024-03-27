@@ -282,7 +282,14 @@ import {
   getLevelProgress,
   getDataCreditLevel, getAuthorName,
 } from '@/factories/authorFactory';
-import { mdiChevronDown, mdiChevronLeft, mdiInformationOutline, mdiMagnify, mdiTimerSandComplete } from '@mdi/js';
+import {
+  mdiChevronDown,
+  mdiChevronLeft,
+  mdiFileEye,
+  mdiInformationOutline,
+  mdiMagnify,
+  mdiTimerSandComplete,
+} from '@mdi/js';
 
 // checkout skeleton
 // https://github.com/ToxicJojo/SkeletonPlaceholder
@@ -309,7 +316,7 @@ export default {
     openButtonTooltip: String,
     openButtonIcon: {
       type: String,
-      default: 'preview',
+      default: mdiFileEye,
     },
     isSelected: {
       type: Boolean,
@@ -479,6 +486,7 @@ export default {
     },
   },
   data: () => ({
+    mdiFileEye,
     mdiInformationOutline,
     mdiTimerSandComplete,
     mdiChevronDown,
