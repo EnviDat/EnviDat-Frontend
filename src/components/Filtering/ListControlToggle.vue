@@ -2,7 +2,7 @@
   <v-row align="center" justify="end" no-gutters class="fill-height">
     <v-btn-toggle
       v-if="isEnabledControl(LISTCONTROL_MAP_ACTIVE)"
-      v-model="controlsActive"
+      :model-value="controlsActive"
       class="fill-height"
       density='compact'
       :divided='true'
@@ -21,7 +21,7 @@
     <v-btn-toggle
       v-if="isEnabledControl(LISTCONTROL_LIST_ACTIVE) ||
             isEnabledControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE)"
-      v-model="controlsActive"
+      :model-value="controlsActive"
       class="fill-height ml-2"
       density='compact'
       :divided='true'
@@ -103,9 +103,6 @@ export default {
     LISTCONTROL_MAP_ACTIVE,
     LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
   }),
-  mounted() {
-    this.controlsActive = this.controls;
-  },
   computed: {
     controlsActive: {
       get() {

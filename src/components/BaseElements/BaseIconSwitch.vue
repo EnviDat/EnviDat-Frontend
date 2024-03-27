@@ -4,11 +4,20 @@
       <template v-slot:activator="{ props }">
         <div class="d-flex" v-bind="props">
           <div class="iconSwitch">
-            <button tabindex="0" type="button" :disabled="disabled" class="iconSwitchButton"
-              :id="'iconSwitchButton' + $.uid" :class="classList" role="switch"
-              :aria-describedby="'iconSwitchLabel' + $.uid" :aria-checked="active" @click="emitClick">
+            <button
+              tabindex="0"
+              type="button"
+              :disabled="disabled"
+              class="iconSwitchButton"
+              :id="'iconSwitchButton' + $.uid" :class="classList"
+              role="switch"
+              :aria-describedby="'iconSwitchLabel' + $.uid"
+              :aria-checked="active" @click="emitClick">
 
-              <base-icon :icon="icon" :color="iconColor"></base-icon>
+              <BaseIcon
+                :icon="icon"
+                :color="iconColor"
+              />
             </button>
           </div>
           <label v-if="label" :for="'iconSwitchButton' + $.uid" class="iconSwitchLabel" :class="{ disabled }">
@@ -42,7 +51,7 @@ export default {
   name: 'BaseIconSwitch',
   components: { BaseIcon },
   props: {
-    label: { type: String, default: undefined, required: true },
+    label: { type: String, default: undefined },
     icon: { type: String, default: undefined, required: true },
     color: { type: String, default: 'primary' },
     active: { type: Boolean, default: false },

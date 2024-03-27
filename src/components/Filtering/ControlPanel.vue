@@ -5,9 +5,18 @@
       <v-row align="center" justify="space-between" no-gutters>
 
         <v-col class="py-0" cols="8" :sm="hasEnabledControls ? 8 : 10" md="8" lg="8">
-          <small-search-bar-view class="elevation-0" :compactLayout="compactLayout" :searchTerm="searchTerm"
-            :showSearch="showSearch" :showSearchCount="true" :searchCount="searchCount" :isFlat="true"
-            :fixedHeight="fixedHeight" :labelText="searchBarPlaceholder" :loading="loading" @clicked="catchSearchClicked"
+          <small-search-bar-view
+            class="elevation-0"
+            :compactLayout="compactLayout"
+            :searchTerm="searchTerm"
+            :showSearch="showSearch"
+            :showSearchCount="true"
+            :searchCount="searchCount"
+            :isFlat="true"
+            :fixedHeight="fixedHeight"
+            :labelText="searchBarPlaceholder"
+            :loading="loading"
+            @clicked="catchSearchClicked"
             @searchCleared="catchSearchCleared" />
         </v-col>
 
@@ -26,7 +35,7 @@
 
           <BaseIconSwitch
             :active="isAuthorSearch"
-            :tooltipText="`Author search is ${isAuthorSearch ? 'active' : 'inactive'}`"
+            :tooltipText="`Author search is ${isAuthorSearch ? 'active' : 'NOT active'}`"
             :icon="mdiAccountCircle"
             @clicked="catchAuthorSearchClick" />
 
