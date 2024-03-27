@@ -50,7 +50,7 @@
         </v-col>
 
         <v-col v-if="showSearch && !hasButton" class="flex-grow-0 pa-0 hidden-xs">
-          <base-icon-button
+          <BaseIconButton
             :icon="mdiMagnify"
             color="transparent"
             @clicked="clicked"
@@ -91,7 +91,7 @@
         </v-col>
 
         <v-col v-if="showSearch && hasButton" class="flex-grow-0">
-          <base-rectangle-button
+          <BaseRectangleButton
             :button-text="buttonText"
             :is-small="!compactLayout"
             :isXsSmall="compactLayout"
