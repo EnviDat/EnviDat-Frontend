@@ -26,7 +26,7 @@
       <div v-html="markdownContent"></div>
     </v-col>
 
-    <slot v-if="hasSoltConent" />
+    <slot v-if="hasSlotContent" />
   </v-row>
 </template>
 
@@ -53,10 +53,16 @@ export default {
     markdownContent: String,
   },
   computed: {
-    hasSoltConent() {
+    hasSlotContent() {
       // correct refactoring??
       // https://v3-migration.vuejs.org/breaking-changes/slots-unification.html#_3-x-syntax
-      return !!this.$slots.default() && !!this.$slots.default()[0];
+      const slotAmount = Object.values(this.$slots).length;
+      if (slotAmount > 0) {
+        const def = this.$slots.default();
+        return def?.length > 0;
+      }
+
+      return false;
     },
   },
   components: {

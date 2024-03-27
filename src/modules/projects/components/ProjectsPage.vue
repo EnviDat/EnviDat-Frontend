@@ -76,6 +76,7 @@ import {
   SET_CURRENT_PAGE,
 } from '@/store/mainMutationsConsts';
 
+import { getImage } from '@/factories/imageFactory';
 import {
   GET_PROJECTS,
   PROJECTS_NAMESPACE,
@@ -83,7 +84,6 @@ import {
 } from '../store/projectsMutationsConsts';
 import ProjectCard from './ProjectCard.vue';
 import ProjectCardPlaceholder from './ProjectCardPlaceholder.vue';
-import { getImage } from '@/factories/imageFactory';
 
 export default {
   name: 'ProjectsPage',

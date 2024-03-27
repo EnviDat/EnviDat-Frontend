@@ -115,8 +115,8 @@ import {
   SET_CURRENT_PAGE,
 } from '@/store/mainMutationsConsts';
 
-import AboutTabLayout from './AboutTabLayout.vue';
 import { getImage } from '@/factories/imageFactory';
+import AboutTabLayout from './AboutTabLayout.vue';
 
 export default {
   name: 'AboutPage',

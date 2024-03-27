@@ -105,6 +105,7 @@ import {
 
 import { convertArrayToUrlString, convertUrlStringToArray } from '@/factories/stringFactory';
 import { getImage } from '@/factories/imageFactory';
+import { isTagSelected } from '@/factories/metaDataFactory';
 import {
   GET_PROJECTS,
   PROJECTS_NAMESPACE,
@@ -113,7 +114,6 @@ import {
 import ProjectBody from './ProjectDetailViews/ProjectBody.vue';
 import ProjectHeader from './ProjectDetailViews/ProjectHeader.vue';
 import ProjectSubprojects from './ProjectDetailViews/ProjectSubprojects.vue';
-import { isTagSelected } from '@/factories/metaDataFactory.js';
 
 export default {
   /**
