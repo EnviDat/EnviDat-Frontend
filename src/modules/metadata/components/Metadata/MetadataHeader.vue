@@ -42,7 +42,7 @@
       <v-row no-gutters style="position: relative; z-index: 1;">
 
         <v-col v-if="hasContent" cols="12" >
-          <div class="text-h3"
+          <div class="text-h3 headerTitle"
                 :style="`line-height: ${$vuetify.display.xs ? '1.5rem' : ''};`"
                 :class="{ 'py-0': $vuetify.display.smAndDown,
                           'display-2': $vuetify.display.xl,

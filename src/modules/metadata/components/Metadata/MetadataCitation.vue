@@ -13,7 +13,7 @@
     </v-card-text>
 
     <v-card-actions v-if="!showPlaceholder && citationText"
-                    class="pa-4 pt-0">
+                    class="pa-4">
       <v-container class="pa-0"
                     fluid >
         <v-row justify="end"

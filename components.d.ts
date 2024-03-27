@@ -73,7 +73,6 @@ declare module 'vue' {
     TheNavigationToolbar: typeof import('./src/components/Navigation/TheNavigationToolbar.vue')['default']
     TitleCard: typeof import('./src/components/Cards/TitleCard.vue')['default']
     TitleImageHeader: typeof import('./src/components/Layouts/TitleImageHeader.vue')['default']
-    TwoColumnLayout: typeof import('./src/components/Layouts/TwoColumnLayout.vue')['default']
     UserAvatar: typeof import('./src/components/Layouts/UserAvatar.vue')['default']
     UserCard: typeof import('./src/components/Cards/UserCard.vue')['default']
     UserOrganizationInfo: typeof import('./src/components/Cards/UserOrganizationInfo.vue')['default']

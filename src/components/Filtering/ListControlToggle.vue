@@ -2,7 +2,7 @@
   <v-row align="center" justify="end" no-gutters >
     <v-btn-toggle
       v-if="isEnabledControl(LISTCONTROL_MAP_ACTIVE)"
-      v-model="controlsActive"
+      :model-value="controlsActive"
       class="fill-height"
       color="secondary"
       rounded="0"
@@ -19,7 +19,7 @@
     <v-btn-toggle
       v-if="isEnabledControl(LISTCONTROL_LIST_ACTIVE) ||
             isEnabledControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE)"
-      v-model="controlsActive"
+      :model-value="controlsActive"
       class="fill-height ml-2"
       :divided='true'
       color="secondary"
@@ -110,15 +110,19 @@ export default {
   computed: {
     controlsActive: {
       get() {
-        return this.previewControls ? this.previewControls : this.controls;
+        return this.controls;
+        // return this.previewControls ? this.previewControls : this.controls;
       },
       set(value) {
+        this.catchControlClick(value);
+/*
         if (!this.previewControls) {
           this.previewControls = [];
         }
 
         this.previewControls.push(value);
         console.log(this.previewControls);
+*/
       },
     },
   },

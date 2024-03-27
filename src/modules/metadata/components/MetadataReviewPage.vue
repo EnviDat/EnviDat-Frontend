@@ -20,42 +20,34 @@
       </v-col>
     </v-row>
 
-    <!-- prettier-ignore -->
-    <two-column-layout :style="`position: relative; top: ${headerHeight()}px;`"
-                       :first-column="firstColumn"
-                       :second-column="secondColumn"
-                       :show-placeholder="showPlaceholder" >
-
-      <template v-slot:leftColumn>
-
+    <v-row :style="`position: relative; top: ${headerHeight}px; z-index: 0;`"
+           no-gutters>
+      <v-col :class="firstColWidth" class="pt-0">
         <v-row v-for="(entry, index) in firstColumn"
-                :key="`left_${index}_${keyHash}`"
-                no-gutters >
+               :key="`left_${index}_${keyHash}`"
+               no-gutters >
           <v-col class="mb-2 px-0">
 
-          <!-- prettier-ignore -->
-          <component :is="entry"
-                     v-bind="entry.genericProps"
-                     :show-placeholder="showPlaceholder" />
+            <!-- prettier-ignore -->
+            <component :is="entry"
+                       v-bind="entry.props" />
           </v-col>
         </v-row>
-      </template>
+      </v-col>
 
-      <template v-slot:rightColumn>
+      <v-col v-if="secondColumn" class="pt-0" :class="secondColWidth">
         <v-row v-for="(entry, index) in secondColumn"
-                :key="`right_${index}_${keyHash}`"
-                no-gutters >
+               :key="`right_${index}_${keyHash}`"
+               no-gutters >
           <v-col class="mb-2 px-0">
 
-          <!-- prettier-ignore -->
-          <component :is="entry"
-                     v-bind="entry.genericProps"
-                     :show-placeholder="showPlaceholder" />
+            <!-- prettier-ignore -->
+            <component :is="entry"
+                       v-bind="entry.props" />
           </v-col>
         </v-row>
-
-      </template>
-    </two-column-layout>
+      </v-col>
+    </v-row>
 
   </v-container>
 </template>
@@ -104,19 +96,20 @@ import {
 
 import { enhanceElementsWithStrategyEvents, enhanceResourcesWithMetadataExtras } from '@/factories/strategyFactory';
 
-import TwoColumnLayout from '@/components/Layouts/TwoColumnLayout.vue';
-
 import { convertJSON, getFrontendDates, getFrontendJSONForStep } from '@/factories/mappingFactory';
 
 import { useReviewStore } from '@/modules/metadata/store/reviewStore';
 import { convertArrayToUrlString } from '@/factories/stringFactory';
 import {getIcon} from '@/factories/imageFactory';
+import {defineAsyncComponent, markRaw} from 'vue';
 
 import MetadataHeader from './Metadata/MetadataHeader.vue';
-import MetadataBody from './Metadata/MetadataBody.vue';
-import MetadataResources from './Metadata/MetadataResources.vue';
-import MetadataCitation from './Metadata/MetadataCitation.vue';
-import MetadataAuthors from './Metadata/MetadataAuthors.vue';
+
+const MetadataBody = defineAsyncComponent(() => import ('./Metadata/MetadataBody.vue'));
+const MetadataResources = defineAsyncComponent(() => import ('./Metadata/MetadataResources.vue'));
+const MetadataCitation = defineAsyncComponent(() => import ('./Metadata/MetadataCitation.vue'));
+const MetadataAuthors = defineAsyncComponent(() => import ('./Metadata/MetadataAuthors.vue'));
+
 
 // Might want to check https://css-tricks.com/use-cases-fixed-backgrounds-css/
 // for animations between the different parts of the Metadata
@@ -151,6 +144,10 @@ export default {
     this.loadMetaDataContent();
 
     window.scrollTo(0, 0);
+
+    this.$nextTick(() => {
+      this.headerHeight = this.getHeaderHeight();
+    })
   },
   /**
    * @description
@@ -206,8 +203,8 @@ export default {
       return this.$vuetify.display.mdAndUp ? this.secondCol : [];
     },
     headerStyle() {
-      let width = 82.25;
-      let margin = '0px 8.33333%';
+      let width = 82.5;
+      let margin = '0px 11.5%';
 
       if (this.$vuetify.display.mdAndDown) {
         width = 100;
@@ -215,7 +212,7 @@ export default {
       }
 
       if (this.$vuetify.display.lg) {
-        width = 82.5;
+        width = 79.75;
       }
 
       let pos = 'position: ';
@@ -237,6 +234,70 @@ export default {
 
       return this.appScrollPosition < 20;
     },
+    firstColWidth() {
+      let bindings =
+          this.secondColumn && this.secondColumn.length > 0
+              ? { 'v-col-6': true }
+              : { 'v-col-12': true };
+
+      bindings = { ...bindings, ...this.leftOrFullWidth  };
+
+      return bindings;
+    },
+    secondColWidth() {
+      let bindings =
+          this.secondColumn && this.secondColumn.length > 0
+              ? { 'v-col-6': true }
+              : {};
+
+      bindings = { ...bindings, ...this.rightOrFullWidth  };
+
+      return bindings;
+    },
+    leftOrFullWidth() {
+      return this.firstColumn && this.firstColumn.length > 0
+          ? this.halfWidthLeft
+          : this.fullWidthPadding;
+    },
+    rightOrFullWidth() {
+      return this.secondColumn && this.secondColumn.length > 0
+          ? this.halfWidthRight
+          : this.fullWidthPadding;
+    },
+    fullWidthPadding() {
+      const cssClasses = {};
+
+      if (this.$vuetify.display.mdAndUp && this.$vuetify.display.lgAndDown) {
+        cssClasses['px-2'] = true;
+      } else if (this.$vuetify.display.lgAndUp) {
+        cssClasses['px-3'] = true;
+      }
+
+      return cssClasses;
+    },
+    halfWidthLeft() {
+      const cssClasses = {
+        'v-col-lg-5': true,
+        'offset-lg-1': true,
+      };
+
+      if (this.$vuetify.display.mdAndUp) {
+        cssClasses['pr-1'] = true;
+      }
+
+      return cssClasses;
+    },
+    halfWidthRight() {
+      const cssClasses = {
+        'v-col-lg-5': true,
+      };
+
+      if (this.$vuetify.display.mdAndUp) {
+        cssClasses['pl-1'] = true;
+      }
+
+      return cssClasses;
+    },
   },
   methods: {
     reRenderComponents() {
@@ -246,13 +307,13 @@ export default {
     resize() {
       this.reRenderComponents();
     },
-    headerHeight() {
+    getHeaderHeight() {
       let height = -2;
 
       if ((this.$vuetify.display.smAndDown && this.appScrollPosition > 20)
         || this.$vuetify.display.mdAndUp ) {
         if (this.$refs && this.$refs.header) {
-          height = this.$refs.header.clientHeight;
+          height = this.$refs.header.$el.clientHeight;
         }
       }
 
@@ -336,14 +397,12 @@ export default {
       }
     },
     loadAuthors(currentContent) {
-      const { components } = this.$options;
-
       this.authors = getFullAuthorsFromDataset(this.authorsMap, currentContent);
 
       if (this.authors) {
         this.$nextTick(() => {
 
-          components.MetadataAuthors.props = {
+          this.MetadataAuthors.props = {
             authors: this.authors,
             authorDetailsConfig: this.authorDetailsConfig,
             authorDeadInfo: this.authorDeadInfo,
@@ -354,8 +413,6 @@ export default {
 
     },
     loadResources(currentContent) {
-      const { components } = this.$options;
-
       this.resources = createResources(currentContent, this.user) || {};
 
       const license = createLicense(currentContent);
@@ -372,51 +429,45 @@ export default {
         this.resources.dates = getFrontendDates(this.metadataContent.date);
       }
 
-      this.$nextTick(() => {
-
-        components.MetadataResources.props = {
-          ...this.resources,
-          dataLicenseId: license.id,
-          dataLicenseTitle: license.title,
-          dataLicenseUrl: license.url,
-          resourcesConfig: this.resourcesConfig,
-        };
-      });
+      this.MetadataResources.props = {
+        ...this.resources,
+        dataLicenseId: license.id,
+        dataLicenseTitle: license.title,
+        dataLicenseUrl: license.url,
+        resourcesConfig: this.resourcesConfig,
+      };
 
     },
     setMetadataContent() {
-      const { components } = this.$options;
-
       this.configInfos = getConfigUrls(this.configInfos);
 
-      // this.$set(components.MetadataHeader, 'genericProps', this.header);
-      components.MetadataBody.props = { ...this.body };
+      this.MetadataBody.props = { ...this.body };
 
-      components.MetadataCitation.props = {
+      this.MetadataCitation.props = {
         ...this.citation,
         showPlaceholder: this.showPlaceholder,
       };
 
       this.firstCol = [
-        components.MetadataBody,
+        this.MetadataBody,
 /*
-        components.MetadataCitation,
-        components.MetadataAuthors,
+        this.MetadataCitation,
+        this.MetadataAuthors,
 */
       ];
 
       this.secondCol = [
-        components.MetadataResources,
+        this.MetadataResources,
       ];
 
       this.singleCol = [
-        components.MetadataBody,
+        this.MetadataBody,
 /*
-        components.MetadataCitation,
+        this.MetadataCitation,
 */
-        components.MetadataResources,
+        this.MetadataResources,
 /*
-        components.MetadataAuthors,
+        this.MetadataAuthors,
 */
       ];
     },
@@ -529,13 +580,13 @@ export default {
   },
   components: {
     MetadataHeader,
-    MetadataBody,
-    MetadataResources,
-    MetadataCitation,
-    TwoColumnLayout,
-    MetadataAuthors,
   },
   data: () => ({
+    headerHeight: 0,
+    MetadataBody: markRaw(MetadataBody),
+    MetadataResources: markRaw(MetadataResources),
+    MetadataCitation: markRaw(MetadataCitation),
+    MetadataAuthors: markRaw(MetadataAuthors),
     reviewStore: useReviewStore(),
     PageBGImage: 'app_b_browsepage',
     baseStationURL: 'https://www.envidat.ch/data-files/',
@@ -564,22 +615,11 @@ export default {
 </script>
 
 <style>
-.metadata_title {
-  line-height: 1rem !important;
-}
-
-.metadataResourceCard {
-  min-height: 100px !important;
-}
 
 .metadataResourceCard .headline {
   font-size: 20px !important;
 }
 
-.resourceCardText {
-  color: rgba(255, 255, 255, 0.87) !important;
-  overflow: hidden;
-}
 
 .resourceCardText a {
   color: #ffd740;
