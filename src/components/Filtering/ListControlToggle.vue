@@ -1,18 +1,16 @@
 <template>
-  <v-row align="center" justify="end" no-gutters class="fill-height">
+  <v-row align="center" justify="end" no-gutters >
     <v-btn-toggle
       v-if="isEnabledControl(LISTCONTROL_MAP_ACTIVE)"
-      :model-value="controlsActive"
+      v-model="controlsActive"
       class="fill-height"
-      density='compact'
-      :divided='true'
-      variant='text'
+      color="secondary"
+      rounded="0"
     >
       <v-btn
         @click="catchControlClick(LISTCONTROL_MAP_ACTIVE)"
         class="controlButton"
-        :color="isActiveControl(LISTCONTROL_MAP_ACTIVE) ? 'secondary' : ''"
-        variant='text'
+        :value="LISTCONTROL_MAP_ACTIVE"
       >
         <BaseIcon :icon='mdiMap' color='grey-darken-3' />
       </v-btn>
@@ -21,17 +19,17 @@
     <v-btn-toggle
       v-if="isEnabledControl(LISTCONTROL_LIST_ACTIVE) ||
             isEnabledControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE)"
-      :model-value="controlsActive"
+      v-model="controlsActive"
       class="fill-height ml-2"
-      density='compact'
       :divided='true'
-      variant='text'
+      color="secondary"
+      rounded="0"
     >
       <v-btn
         v-if="isEnabledControl(LISTCONTROL_LIST_ACTIVE)"
         @click="catchControlClick(LISTCONTROL_LIST_ACTIVE)"
         class="controlButton"
-        :color="isActiveControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE) ? 'secondary' : ''"
+        :value="LISTCONTROL_LIST_ACTIVE"
       >
         <BaseIcon :icon='mdiViewHeadline' color='grey-darken-3' />
       </v-btn>
@@ -40,19 +38,22 @@
         v-if="isEnabledControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE)"
         @click="catchControlClick(LISTCONTROL_COMPACT_LAYOUT_ACTIVE)"
         class="controlButton"
-        :color="isActiveControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE) ? 'secondary' : ''"
+        :value="LISTCONTROL_COMPACT_LAYOUT_ACTIVE"
       >
         <BaseIcon :icon="mdiViewComfy" color="grey-darken-3" />
       </v-btn>
 
+<!--
       <v-btn
         v-if="isEnabledControl(3)"
         @click="catchControlClick(3)"
         class="controlButton"
-        :color="isActiveControl(3) ? 'highlight' : ''"
+        :active="isActiveControl(3)"
       >
         <BaseIcon :icon="mdiViewAgenda" color="grey-darken-3" />
       </v-btn>
+-->
+
     </v-btn-toggle>
   </v-row>
 </template>
@@ -98,21 +99,27 @@ export default {
     mapFilterDeactivateText: 'Deactivate Mapfiltering',
     listViewActivate: 'List view',
     listViewDeactivate: 'Grid view',
-    // controlsActive: [],
+    previewControls: null,
     LISTCONTROL_LIST_ACTIVE,
     LISTCONTROL_MAP_ACTIVE,
     LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
   }),
+  mounted() {
+    this.previewControls = this.controls;
+  },
   computed: {
     controlsActive: {
       get() {
-        return this.controls || [];
+        return this.previewControls ? this.previewControls : this.controls;
       },
-/*
       set(value) {
+        if (!this.previewControls) {
+          this.previewControls = [];
+        }
 
+        this.previewControls.push(value);
+        console.log(this.previewControls);
       },
-*/
     },
   },
 /*
