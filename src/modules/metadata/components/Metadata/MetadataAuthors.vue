@@ -156,8 +156,7 @@ export default {
       // correct refactoring??
       // check https://v3-migration.vuejs.org/breaking-changes/slots-unification.html#_3-x-syntax
       const slotAmount = Object.values(this.$slots).length;
-      const editAuthorSlot = this.$slots.editingAuthors();
-      return slotAmount > 0 && !!editAuthorSlot;
+      return slotAmount > 0 && !!this.$slots.editingAuthors();
     },
     hasAuthors() {
       return this.authors?.length > 0;
