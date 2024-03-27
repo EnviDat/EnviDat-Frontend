@@ -2,19 +2,15 @@
   <v-col cols="12" class="pa-0" style="position: relative;">
     <v-row class="text-container" align="center" justify="center">
       <v-col
-        class="text-center text headerTitle"
+        class="text-center text-md-h2 text-h4 headerTitle"
         cols="12"
-        :class="{
-          'display-3': $vuetify.display.mdAndUp,
-          'text-h4': $vuetify.display.smAndDown,
-        }"
       >
         {{ title }}
       </v-col>
     </v-row>
 
     <!-- Using img instead of parallax, because parallax has problems loading src dynamically -->
-    <v-img :height="height" :src="img" class="blurred"> </v-img>
+    <v-img :height="height" :src="img" class="blurred" cover> </v-img>
   </v-col>
 </template>
 

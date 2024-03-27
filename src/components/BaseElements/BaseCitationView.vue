@@ -21,12 +21,11 @@
                 offset-y
                 z-index="2"
             >
-              <template v-slot:activator="{ on, props }">
+              <template v-slot:activator="{ props }">
                 <BaseIcon
                   :icon="mdiInformation"
                   :icon-color="abstract ? 'primary' : 'gray'"
                   v-bind="props"
-                  v-on="on"
                 />
               </template>
 

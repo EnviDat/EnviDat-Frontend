@@ -95,10 +95,10 @@
               min-width="280px"
           >
 
-            <template v-slot:activator="{ on }">
+            <template v-slot:activator="{ props }">
               <v-text-field
                   :prepend-icon="mdiCalendarRange"
-                  v-on="on"
+                  v-bind="props"
                   :model-value="publicationYearField"
               />
             </template>

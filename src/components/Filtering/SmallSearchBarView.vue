@@ -33,9 +33,8 @@
           style="min-width: 45px; text-align: center;"
         >
           <v-tooltip bottom :disabled="$vuetify.display.xs">
-            <template v-slot:activator="{ on, props }">
+            <template v-slot:activator="{ props }">
               <tag-chip
-                v-on="on"
                 v-bind="props"
                 :style="`font-size: ${$vuetify.display.xs ? '0.65rem' : '0.8rem'} !important;`"
                 :name="searchCount ? searchCount.toString() : '0'"
@@ -65,9 +64,8 @@
             bottom
             :disabled="$vuetify.display.xs || !searchToolTipText"
           >
-            <template v-slot:activator="{ on, props }">
+            <template v-slot:activator="{ props }">
               <v-text-field
-                v-on="on"
                 v-bind="props"
                 class="envidatSmallSearch"
                 style="align-items: center;"

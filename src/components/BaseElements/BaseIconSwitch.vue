@@ -1,8 +1,8 @@
 <template>
   <div class="baseIconSwitch">
     <v-tooltip :disabled="!tooltipText" bottom>
-      <template v-slot:activator="{ on }">
-        <div class="d-flex" v-on="on">
+      <template v-slot:activator="{ props }">
+        <div class="d-flex" v-bind="props">
           <div class="iconSwitch">
             <button tabindex="0" type="button" :disabled="disabled" class="iconSwitchButton"
               :id="'iconSwitchButton' + $.uid" :class="classList" role="switch"

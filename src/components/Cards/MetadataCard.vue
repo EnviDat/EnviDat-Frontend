@@ -9,8 +9,8 @@
             </div>
 
             <v-tooltip v-if="maxTitleLengthReached && !$vuetify.display.xs" bottom>
-              <template v-slot:activator="{ on, props }">
-                <div v-on="on" v-bind="props" class="pa-4 metadataTitle mb-0" :class="titleClass">
+              <template v-slot:activator="{ props }">
+                <div v-bind="props" class="pa-4 metadataTitle mb-0" :class="titleClass">
                   {{ truncatedTitle }}
                 </div>
               </template>

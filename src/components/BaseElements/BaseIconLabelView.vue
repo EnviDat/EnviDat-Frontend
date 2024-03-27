@@ -1,8 +1,8 @@
 <template>
   <div class="baseIconLabelView">
     <v-tooltip bottom :disabled="$vuetify.display.xsOnly || !iconTooltip">
-      <template v-slot:activator="{ on }">
-        <div v-on="on" class="baseIconLabelViewWrapper" :class="{
+      <template v-slot:activator="{ props }">
+        <div v-bind="props" class="baseIconLabelViewWrapper" :class="{
           dark,
           'text-white': dark,
           'text-black': !dark,

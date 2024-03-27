@@ -11,9 +11,8 @@
     :style="!showContent ? 'font-size: 0.9rem;' : ''"
   >
     <v-tooltip bottom>
-      <template v-slot:activator="{ on, props }">
-        <v-row v-on="on"
-               v-bind="props"
+      <template v-slot:activator="{ props }">
+        <v-row v-bind="props"
                align="center"
                no-gutters
                class="flex-nowrap">

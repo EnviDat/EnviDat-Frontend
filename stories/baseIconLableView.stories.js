@@ -27,7 +27,7 @@ export const DifferentLabelsView = () => ({
 
       <v-col cols="4">
         <base-icon-label-view iconTooltip="icon label view with label & text"
-                              text="somefilename.mp4" />
+                              text="no icon label" />
       </v-col>
 
       <v-col cols="4">
