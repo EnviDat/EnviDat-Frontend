@@ -43,8 +43,8 @@
             <AuthorCard v-if="!hasEditingAuthorsSlot"
                         :author="author"
                         :authorDetailsConfig="authorDetailsConfig"
-                        :asciiDead="authorDeadInfo ? authorDeadInfo.asciiDead : ''"
-                        :authorPassedInfo="authorDeadInfo ? authorDeadInfo.authorPassedInfo : ''"
+                        :asciiDead="authorDeadInfo?.asciiDead"
+                        :authorPassedInfo="authorDeadInfo?.authorPassedInfo"
                         :showGenericOpenButton="!!author.openEvent"
                         :openButtonTooltip="author.openButtonTooltip"
                         :openButtonIcon="author.openButtonIcon"
@@ -155,7 +155,9 @@ export default {
     hasEditingAuthorsSlot() {
       // correct refactoring??
       // check https://v3-migration.vuejs.org/breaking-changes/slots-unification.html#_3-x-syntax
-      return Object.values(this.$slots).length > 0 && !!this.$slots.editingAuthors();
+      const slotAmount = Object.values(this.$slots).length;
+      const editAuthorSlot = this.$slots.editingAuthors();
+      return slotAmount > 0 && !!editAuthorSlot;
     },
     hasAuthors() {
       return this.authors?.length > 0;

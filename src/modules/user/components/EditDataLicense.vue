@@ -2,7 +2,7 @@
   <v-card id="EditDataLicense"
           class="pa-0"
           :loading="loadingColor">
-    <v-container fluid class="pa-4 fill-height">
+    <v-container fluid class="pa-4">
 
       <v-row>
         <v-col cols="8" class="text-h5">
@@ -45,8 +45,8 @@
             :label="labels.dataLicense"
             :readonly="isReadOnly('dataLicenseId')"
             :hint="readOnlyHint('dataLicenseId')"
-            prepend-icon="policy"
-            append-icon="arrow_drop_down"
+            :prepend-icon="mdiShieldSearch"
+            :menu-icon="mdiArrowDownDropCircleOutline"
             :model-value="selectedLicense"
             @input="changeLicense($event)"
             :error-messages="validationErrors.dataLicense"
@@ -58,16 +58,20 @@
         <v-col>
           <v-expansion-panels focusable>
             <v-expansion-panel>
-              <v-expansion-panel-header expand-icon="arrow_drop_down"
-              class="py-2 px-3">
+
+              <v-expansion-panel-header :expand-icon="mdiArrowDownDropCircleOutline"
+                class="py-2 px-3">
                 {{ dataSummaryClickInfo }}
               </v-expansion-panel-header>
+
               <!--              <v-expansion-panel-content>{{ this.getDataLicenseSummary }}</v-expansion-panel-content>-->
+
               <v-expansion-panel-content
                   class="pa-1 pa-md-2 licensePanel">
                 <div v-html="getDataLicenseSummary" />
               </v-expansion-panel-content>
             </v-expansion-panel>
+
           </v-expansion-panels>
         </v-col>
       </v-row>
@@ -123,6 +127,7 @@ import {
 
 import { dataLicenses } from '@/factories/dataLicense';
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+import { mdiArrowDownDropCircleOutline, mdiShieldSearch } from '@mdi/js';
 
 export default {
   name: 'EditDataLicense',
@@ -275,6 +280,8 @@ export default {
     BaseStatusLabelView,
   },
   data: () => ({
+    mdiArrowDownDropCircleOutline,
+    mdiShieldSearch,
     validationErrors: {
       dataLicense: null,
     },

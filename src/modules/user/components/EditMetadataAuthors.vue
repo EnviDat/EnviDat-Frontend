@@ -40,7 +40,7 @@
       <v-row >
         <v-col cols="12">
           <MetadataAuthors v-bind="metadataAuthorsObject" >
-            <template #editingAuthors="{ author }" >
+            <template #editingAuthors="author" >
 
               <AuthorCard v-bind="authorEditingProperties(author)"
                           @openButtonClicked="catchEditAuthorClick(author)"
@@ -51,7 +51,7 @@
                   <EditDataCredits :instruction="editDataCreditsInstruction"
                                    :dataCredit="author.dataCredit"
                                    :authorName="author.fullName"
-                                   @creditClick="catchCreditClick(author, ...arguments)"
+                                   @creditClick="catchCreditClick(author, $event)"
                                     />
 
                 </template>
@@ -216,8 +216,8 @@ export default {
       if (this.authorEditingEnabled) {
         editingProperties = {
           showGenericOpenButton: true,
-          openButtonIcon: author.isSelected ? 'close' : 'edit',
-          openButtonTooltip: author.isSelected ? 'Cancel author editing' : 'Edit Author',
+          openButtonIcon: author?.isSelected ? 'close' : 'edit',
+          openButtonTooltip: author?.isSelected ? 'Cancel author editing' : 'Edit Author',
         };
       }
 
