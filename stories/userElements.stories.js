@@ -14,6 +14,7 @@
 
 /* eslint-disable import/no-extraneous-dependencies */
 
+import {ref} from 'vue';
 import jazzicons from '@metamask/jazzicon';
 import seedrandom from 'seedrandom';
 import { getNameInitials } from '@/factories/authorFactory';
@@ -152,19 +153,31 @@ export const JazzIconsViews = () => ({
 
     </v-row>
     `,
+  setup()   {
+
+    const jazzIcon = ref(null);
+    const jazzIcon2 = ref(null);
+    const jazzIcon3 = ref(null);
+
+    return {
+      jazzIcon,
+      jazzIcon2,
+      jazzIcon3,
+    }
+  },
   mounted() {
-    this.jazzIcon(this.$refs.jazzIcon);
-    this.jazzIcon(this.$refs.jazzIcon2);
-    this.jazzIcon(this.$refs.jazzIcon3);
+    this.createIcon(this.jazzIcon);
+    this.createIcon(this.jazzIcon2);
+    this.createIcon(this.jazzIcon3);
   },
   methods: {
-    jazzIcon(ref) {
+    createIcon(el) {
 
-      if (ref) {
-        const rng = seedrandom(ref.id);
+      if (el) {
+        const rng = seedrandom(el.id);
         const randNr = rng.int32();
         const icon = jazzicons(48, randNr);
-        ref.appendChild(icon);
+        el.$el.appendChild(icon);
       }
     },
   },

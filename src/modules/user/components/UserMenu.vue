@@ -1,10 +1,13 @@
 <template>
-  <v-menu transition="slide-y-transition" bottom offset-y id="UserMenu">
-    <template v-slot:activator="{ on, props }">
-      <div v-bind="props" v-on="on">
-        <UserAvatar :size="size"
-                    :nameInitials="nameInitials"
-                    :emailHash="emailHash"/>
+  <v-menu transition="slide-y-transition" bottom offset-y id="UserMenu"
+          >
+    <template v-slot:activator="{ props }">
+      <div v-bind="props" >
+        <UserAvatar
+          style="cursor: pointer;"
+          :size="size"
+          :nameInitials="nameInitials"
+          :emailHash="emailHash"/>
       </div>
     </template>
     <v-list>
