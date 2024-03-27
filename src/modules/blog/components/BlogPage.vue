@@ -204,10 +204,7 @@ export default {
       }
     },
     catchClosePost() {
-      this.$router.push({
-        path: BLOG_PATH,
-        params: { post: null },
-      });
+      this.$router.push(BLOG_PATH);
     },
     clearPost() {
       this.$store.commit(`${BLOG_NAMESPACE}/${CLOSE_BLOG_POST}`);

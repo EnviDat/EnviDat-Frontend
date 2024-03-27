@@ -29,6 +29,8 @@ import { homeRoutes } from '@/modules/home/routes';
 import { browseRoutes } from '@/modules/browse/routes';
 import { metadataRoutes } from '@/modules/metadata/routes';
 import { projectsRoutes } from '@/modules/projects/routes';
+import { serviceRoutes } from '@/modules/services/routes';
+import { integrationRoutes } from '@/modules/integration/routes';
 import { aboutRoutes } from '@/modules/about/routes';
 
 import { userRoutes } from '@/modules/user/routes';
@@ -70,6 +72,8 @@ export default createRouter({
     ...projectsRoutes,
     ...aboutRoutes,
     ...userRoutes,
+    ...serviceRoutes,
+    ...integrationRoutes,
     ...blogRoutes,
     ...routes,
   ],
