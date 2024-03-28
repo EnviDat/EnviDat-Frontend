@@ -174,6 +174,10 @@ export default ({ mode, config }) => {
                 }
               },
             },
+            external: [
+              'react',
+              'react/jsx-runtime',
+            ],
           } : {},
           define: {
             'import.meta.env.VITE_VERSION': JSON.stringify(version),
