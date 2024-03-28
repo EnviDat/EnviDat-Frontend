@@ -11,15 +11,15 @@ stages:
 variables:
   ARTIFACT_COMPRESSION_LEVEL: "fast"
   CACHE_COMPRESSION_LEVEL: "fast"
-  npm_config_cache: '$CI_PROJECT_DIR/.npm/'
+#  npm_config_cache: '$CI_PROJECT_DIR/.npm/'
 
 
 # defined a template for the jobs with node, instead of defining a global cache for all jobs
 .node_cache:
-#  before_script:
-#    - corepack enable
-#    - corepack prepare pnpm@latest-8 --activate
-#    - pnpm config set store-dir .pnpm-store
+  before_script:
+    - corepack enable
+    - corepack prepare pnpm@latest-8 --activate
+    - pnpm config set store-dir .pnpm-store
   cache:
     # uses the pnpm-lock.yaml as key to determine if the node_modules can be used from cache
     - key:
