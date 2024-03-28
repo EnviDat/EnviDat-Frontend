@@ -126,6 +126,36 @@ export default ({ mode }) => {
                   return 'vendor_leaflet';
                 }
 */
+                if (id.includes('src/modules/about')) {
+                  return 'envidat_about';
+                }
+                if (id.includes('src/modules/blog')) {
+                  return 'envidat_blog';
+                }
+                if (id.includes('src/modules/browse')) {
+                  return 'envidat_browse';
+                }
+                if (id.includes('src/modules/home')) {
+                  return 'envidat_home';
+                }
+                if (id.includes('src/modules/integration')) {
+                  return 'envidat_integration';
+                }
+                if (id.includes('src/modules/metadata')) {
+                  return 'envidat_metadata';
+                }
+                if (id.includes('src/modules/organizations')) {
+                  return 'envidat_organizations';
+                }
+                if (id.includes('src/modules/projects')) {
+                  return 'envidat_projects';
+                }
+                if (id.includes('src/modules/services')) {
+                  return 'envidat_services';
+                }
+                if (id.includes('src/modules/user')) {
+                  return 'envidat_user';
+                }
                 if (id.includes('src/factories')) {
                   return 'envidat_factories';
                 }
