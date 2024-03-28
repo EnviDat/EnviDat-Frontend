@@ -23,7 +23,7 @@ variables:
           - package-lock.json
         prefix: "package-lock"
       paths:
-        - '.npm/'
+        - 'node_modules'
       policy: pull
 
 .trigger-rules:
@@ -125,24 +125,24 @@ install-node:
           - package-lock.json
         prefix: "package-lock"
       paths:
-        - '.npm/'
+        - 'node_modules'
       when: on_success
       policy: pull-push
       untracked: true
   script:
 #    - echo "the cache work if node_modules and .npm/ folders are available"
 #    - ls -a
-    - npm config set cache .npm/
+#    - npm config set cache .npm/
 #    - npm cache verify
     - npm ci --prefer-offline --no-audit
 #    - echo "Check afterwards how the folders are"
 #    - ls -a
-  artifacts:
-    name: "node dependencies"
-    # stores node_modules as an artifact to be used in the next jobs
-    # caching isn't always guaranteed to work
-    paths:
-      - node_modules
+#  artifacts:
+#    name: "node dependencies"
+#    # stores node_modules as an artifact to be used in the next jobs
+#    # caching isn't always guaranteed to work
+#    paths:
+#      - node_modules
 
 run-tests:
   stage: test
