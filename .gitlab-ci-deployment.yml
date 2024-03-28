@@ -3,7 +3,6 @@ deploy-chromatic:
   stage: deploy
   image: docker.io/node:20.11.1-alpine3.19
   extends:
-    - .node_cache
     - .trigger-rules
   needs:
     # needs the artifact: config and environment variables
@@ -48,7 +47,10 @@ publish-build:
 rclone-sync:
   stage: deploy
   image: docker.io/alpine:3.15
-  extends: .trigger-rules
+  rules:
+    - if: '$CI_COMMIT_REF_NAME =~ /^(main|staging)$/'
+    - if: $CI_PIPELINE_SOURCE == "web"
+      when: always
   needs:
     # needs the enviromental variables for the version number
     - set-vars
