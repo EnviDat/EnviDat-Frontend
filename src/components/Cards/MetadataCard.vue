@@ -420,7 +420,7 @@ export default {
     flatTitleLength: 120,
     descriptionLength: 280,
     compactDescriptionLength: 130,
-    flatDescriptionLength: 600,
+    flatDescriptionLength: 285,
     tagtextLength: 100,
     compactTagtextLength: 160,
     flatTagtextLength: 70,
