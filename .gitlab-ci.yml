@@ -13,13 +13,15 @@ variables:
   CACHE_COMPRESSION_LEVEL: "fast"
 #  npm_config_cache: '$CI_PROJECT_DIR/.npm/'
 
-
-# defined a template for the jobs with node, instead of defining a global cache for all jobs
-.node_cache:
+.node-defaults:
   before_script:
     - corepack enable
     - corepack prepare pnpm@latest-8 --activate
     - pnpm config set store-dir .pnpm-store
+
+
+# defined a template for the jobs with node, instead of defining a global cache for all jobs
+.node_cache:
   cache:
     # uses the pnpm-lock.yaml as key to determine if the node_modules can be used from cache
     - key:
@@ -160,7 +162,7 @@ run-tests:
   image: docker.io/node:20.11.1-alpine3.19
   extends:
     - .trigger-rules
-    - .node_cache
+    - .node-defaults
   needs:
     - modify-env
     - install-node
@@ -173,8 +175,7 @@ build-storybook:
   image: docker.io/node:20.11.1-alpine3.19
   extends:
     - .trigger-rules
-    - .node_cache
-  # image: docker.io/node:18.18.2-alpine3.17
+    - .node-defaults
   needs:
     # needs the artifact: config and environment variables
     - modify-env
@@ -195,8 +196,7 @@ build-app:
   image: docker.io/node:20.11.1-alpine3.19
   extends:
     - .trigger-rules
-    - .node_cache
-  # image: docker.io/node:18.18.2-alpine3.17
+    - .node-defaults
   needs:
     # needs the artifact: config and environment variables
     - modify-env
