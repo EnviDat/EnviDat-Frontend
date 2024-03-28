@@ -27,15 +27,22 @@
 
     <v-main>
 
-      <v-container class="pa-2 pa-sm-3 fill-height" fluid v-on:scroll="updateScroll()" id="appContainer"
-        ref="appContainer" :style="pageStyle">
+      <v-container
+        class="pa-2 pa-sm-3"
+        fluid
+        v-on:scroll="updateScroll()"
+        id="appContainer"
+        ref="appContainer"
+        :style="pageStyle" >
 
-        <v-row class="fill-height" id="mainPageRow">
-          <v-col class="mx-0 py-0" cols="12">
+        <v-row id="mainPageRow">
+          <v-col cols="12">
 
-            <transition name="fade" mode="out-in">
-              <router-view />
-            </transition>
+            <router-view v-slot="{ Component }">
+              <transition name="fade" mode="out-in">
+                <component :is="Component" />
+              </transition>
+            </router-view>
 
           </v-col>
         </v-row>
