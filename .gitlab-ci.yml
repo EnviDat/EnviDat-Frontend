@@ -11,27 +11,19 @@ stages:
 variables:
   ARTIFACT_COMPRESSION_LEVEL: "fast"
   CACHE_COMPRESSION_LEVEL: "fast"
-#  npm_config_cache: '$CI_PROJECT_DIR/.npm/'
-
-.node-defaults:
-  before_script:
-    - corepack enable
-    - corepack prepare pnpm@latest-8 --activate
-    - pnpm config set store-dir .pnpm-store
-
+  npm_config_cache: '$CI_PROJECT_DIR/.npm/'
 
 # defined a template for the jobs with node, instead of defining a global cache for all jobs
-.node_cache:
-  cache:
-    # uses the pnpm-lock.yaml as key to determine if the node_modules can be used from cache
-    - key:
-        files:
-          - pnpm-lock.yaml
-        prefix: "package-lock"
-      paths:
-        - .npm
-        - .pnpm-store
-      policy: pull
+#.node_cache:
+#  cache:
+#    # uses the package-lock.json as key to determine if the node_modules can be used from cache
+#    - key:
+#        files:
+#          - package-lock.json
+#        prefix: "package-lock"
+#      paths:
+#        - .npm
+#      policy: pull
 
 .trigger-rules:
   rules:
@@ -123,31 +115,24 @@ install-node:
   image: docker.io/node:20.11.1-alpine3.19
   extends:
     - .trigger-rules
-    - .node_cache
   cache:
     # overwrite the global caching definitions with
     # pull-push to be able to update the node_modules in the cache
     - key:
         files:
-          - pnpm-lock.yaml
+          - package-lock.json
         prefix: "package-lock"
       paths:
-        - .npm
-        - .pnpm-store
+        - .npm/
       when: on_success
       policy: pull-push
       untracked: true
-  before_script:
-    - corepack enable
-    - corepack prepare pnpm@latest-8 --activate
-    - pnpm config set store-dir .pnpm-store
   script:
     - echo "the cache work if node_modules and .npm/ folders are available"
     - ls -a
-    - pnpm install
-#    - npm config set cache .npm/
+    - npm config set cache .npm/
 #    - npm cache verify
-#    - npm ci --prefer-offline --no-audit
+    - npm ci --prefer-offline --no-audit
 #    - echo "Check afterwards how the folders are"
 #    - ls -a
   artifacts:
@@ -162,12 +147,11 @@ run-tests:
   image: docker.io/node:20.11.1-alpine3.19
   extends:
     - .trigger-rules
-    - .node-defaults
   needs:
     - modify-env
     - install-node
   script:
-    - pnpm run test
+    - npm run test
 
 
 build-storybook:
@@ -175,14 +159,13 @@ build-storybook:
   image: docker.io/node:20.11.1-alpine3.19
   extends:
     - .trigger-rules
-    - .node-defaults
   needs:
     # needs the artifact: config and environment variables
     - modify-env
     # needs the artifact: node_modules to build storybook
     - install-node
   script:
-    - pnpm run build-storybook -- -o ./storybook --loglevel error --disable-telemetry
+    - npm run build-storybook -- -o ./storybook --loglevel error --disable-telemetry
   artifacts:
     name: "storybook build"
     # keep the storybook for 7 days to be able to trigger the chromatic-deployment
@@ -196,14 +179,13 @@ build-app:
   image: docker.io/node:20.11.1-alpine3.19
   extends:
     - .trigger-rules
-    - .node-defaults
   needs:
     # needs the artifact: config and environment variables
     - modify-env
     # needs the artifact: node_modules to build the app
     - install-node
   script:
-    - pnpm run build -- --logLevel error
+    - npm run build -- --logLevel error
   artifacts:
     name: "frontend build "
     expire_in: 1 day
