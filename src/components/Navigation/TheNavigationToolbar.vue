@@ -120,7 +120,7 @@
 
         <v-progress-linear v-show="loading"
                           indeterminate
-                          style="position: absolute; left: 0; bottom: 0;"
+                          absolute
                           height="2"
                           color="primary" />
       </v-row>
