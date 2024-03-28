@@ -16,14 +16,18 @@ variables:
 
 # defined a template for the jobs with node, instead of defining a global cache for all jobs
 .node_cache:
+#  before_script:
+#    - corepack enable
+#    - corepack prepare pnpm@latest-8 --activate
+#    - pnpm config set store-dir .pnpm-store
   cache:
-    # uses the package-lock.json as key to determine if the node_modules can be used from cache
+    # uses the pnpm-lock.yaml as key to determine if the node_modules can be used from cache
     - key:
         files:
-          - package-lock.json
+          - pnpm-lock.yaml
         prefix: "package-lock"
       paths:
-        - 'node_modules'
+        - .pnpm-store
       policy: pull
 
 .trigger-rules:
@@ -122,19 +126,24 @@ install-node:
     # pull-push to be able to update the node_modules in the cache
     - key:
         files:
-          - package-lock.json
+          - pnpm-lock.yaml
         prefix: "package-lock"
       paths:
-        - 'node_modules'
+        - .pnpm-store
       when: on_success
       policy: pull-push
       untracked: true
+  before_script:
+    - corepack enable
+    - corepack prepare pnpm@latest-8 --activate
+    - pnpm config set store-dir .pnpm-store
   script:
-#    - echo "the cache work if node_modules and .npm/ folders are available"
-#    - ls -a
+    - echo "the cache work if node_modules and .npm/ folders are available"
+    - ls -a
+    - pnpm install
 #    - npm config set cache .npm/
 #    - npm cache verify
-    - npm ci --prefer-offline --no-audit
+#    - npm ci --prefer-offline --no-audit
 #    - echo "Check afterwards how the folders are"
 #    - ls -a
 #  artifacts:
@@ -154,7 +163,7 @@ run-tests:
     - modify-env
     - install-node
   script:
-    - npm run test
+    - pnpm run test
 
 
 build-storybook:
@@ -170,7 +179,7 @@ build-storybook:
     # needs the artifact: node_modules to build storybook
     - install-node
   script:
-    - npm run build-storybook -- -o ./storybook --loglevel error --disable-telemetry
+    - pnpm run build-storybook -- -o ./storybook --loglevel error --disable-telemetry
   artifacts:
     name: "storybook build"
     # keep the storybook for 7 days to be able to trigger the chromatic-deployment
@@ -192,7 +201,7 @@ build-app:
     # needs the artifact: node_modules to build the app
     - install-node
   script:
-    - npm run build -- --logLevel error
+    - pnpm run build -- --logLevel error
   artifacts:
     name: "frontend build "
     expire_in: 1 day
