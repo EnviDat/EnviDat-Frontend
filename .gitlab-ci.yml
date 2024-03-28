@@ -27,7 +27,9 @@ variables:
           - pnpm-lock.yaml
         prefix: "package-lock"
       paths:
+        - .npm
         - .pnpm-store
+        - node_modules
       policy: pull
 
 .trigger-rules:
@@ -129,7 +131,9 @@ install-node:
           - pnpm-lock.yaml
         prefix: "package-lock"
       paths:
+        - .npm
         - .pnpm-store
+        - node_modules
       when: on_success
       policy: pull-push
       untracked: true

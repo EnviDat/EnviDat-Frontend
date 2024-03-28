@@ -24,7 +24,6 @@
     "@amcharts/amcharts5": "^5.2.2",
     "@azure/msal-browser": "^2.34.0",
     "@geoman-io/leaflet-geoman-free": "^2.13.0",
-    "@mapbox/geojsonhint": "^3.1.1",
     "@metamask/jazzicon": "^2.0.0",
     "@turf/buffer": "^6.5.0",
     "@turf/centroid": "^6.5.0",
