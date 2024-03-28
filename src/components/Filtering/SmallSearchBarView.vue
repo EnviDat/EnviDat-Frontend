@@ -80,6 +80,7 @@
                 :placeholder="labelText"
                 @keyup.enter="clicked"
                 :clear-icon="mdiClose"
+                persitent-clear
                 @click:clear="clearClicked"
               />
             </template>

@@ -10,6 +10,7 @@
             :prepend-icon="mdiMagnify"
             hide-details
             clearable
+            persitent-clear
             variant='underlined'
             :label="labelText"
             @click:prepend="clicked"
