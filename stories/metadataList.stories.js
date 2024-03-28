@@ -15,11 +15,18 @@ import categoryCards from '@/store/categoryCards';
 import { enhanceMetadatasTitleImage } from '@/factories/metaDataFactory';
 import baseTags from '@/modules/metadata/store/metadataTags';
 import { getEnabledTags, getPopularTags } from '@/factories/metadataFilterMethods';
-import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
+import {
+  LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
+  LISTCONTROL_LIST_ACTIVE,
+  LISTCONTROL_MAP_ACTIVE,
+} from '@/store/metadataMutationsConsts';
+
+import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 import metadata from './js/metadata';
 
 enhanceMetadatasTitleImage(metadata, imageBgs, categoryCards);
 
+const longList = [...metadata, ...metadata, ...metadata];
 
 const popularTags = getPopularTags(metadata, undefined, 1);
 const mergedWithPopulars = [...baseTags, ...popularTags.slice(0, 15)];
@@ -28,64 +35,68 @@ const allTags = getEnabledTags(mergedWithPopulars, metadata);
 export default {
   title: '6 Dataset Detail Views / Metadata List',
   component: MetadataList,
-  decorators: [],
-  parameters: {
-    ...envidatViewportParameters,
+};
+
+
+export const EmptyMetadataList = {
+  args: {
+    categoryCards,
   },
-};
-
-const Template = (args, { argTypes }) => ({
-  components: { MetadataList },
-  props: Object.keys(argTypes),
-  template: '<MetadataList v-bind="$props" />',
-});
-
-export const EmptyMetadataList = Template.bind({});
-EmptyMetadataList.args = {
-  // added minimal props to show the no result view properly
-  categoryCards,
 }
 
 
-export const ListLoading = Template.bind({});
-ListLoading.args = {
-  ...EmptyMetadataList.args,
-  loading: true,
-  showSearch: true,
+export const ListLoading = {
+  args: {
+    ...EmptyMetadataList.args,
+    loading: true,
+    showSearch: true,
+  },
 }
 
-export const MinimalList = Template.bind({});
-MinimalList.args = {
-  ...EmptyMetadataList.args,
-  listContent: metadata,
-  showSearch: true,
-  allTags,
-};
+export const MinimalList = {
+  args: {
+    ...EmptyMetadataList.args,
+    listContent: longList,
+    showSearch: true,
+    allTags,
+  },
+}
 
-export const MobileEmptyMetadataList = Template.bind({});
-MobileEmptyMetadataList.args = { ...EmptyMetadataList.args };
+export const ListWithControls = {
+  args: {
+    ...MinimalList.args,
+    enabledControls: [
+      LISTCONTROL_LIST_ACTIVE,
+      LISTCONTROL_MAP_ACTIVE,
+      LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
+    ],
+  },
+}
+
+export const ListWithMap = {
+  args: {
+    ...ListWithControls.args,
+    defaultListControls: [LISTCONTROL_MAP_ACTIVE],
+  },
+}
+
+export const MobileEmptyMetadataList= { args: EmptyMetadataList.args };
 MobileEmptyMetadataList.parameters = mobileViewportParams;
 
-export const MobileListLoading = Template.bind({});
-MobileListLoading.args = { ... ListLoading.args };
+export const MobileListLoading= { args: ListLoading.args };
 MobileListLoading.parameters = mobileViewportParams;
 
-export const MobileMinimalListSmall = Template.bind({});
-MobileMinimalListSmall.args = { ...MinimalList.args };
+export const MobileMinimalListSmall= { args: MinimalList.args };
 MobileMinimalListSmall.parameters = mobileViewportParams;
 
-export const MobileMinimalListLarge = Template.bind({});
-MobileMinimalListLarge.args = { ...MinimalList.args };
+export const MobileMinimalListLarge = { args: MinimalList.args };
 MobileMinimalListLarge.parameters = mobileLargeViewportParams;
 
-export const TabletEmptyMetadataList = Template.bind({});
-TabletEmptyMetadataList.args = { ...EmptyMetadataList.args };
+export const TabletEmptyMetadataList = { args: EmptyMetadataList.args };
 TabletEmptyMetadataList.parameters = tabletViewportParams;
 
-export const TabletListLoading = Template.bind({});
-TabletListLoading.args = { ... ListLoading.args };
+export const TabletListLoading = { args: ListLoading.args };
 TabletListLoading.parameters = tabletViewportParams;
 
-export const TabletMinimalList = Template.bind({});
-TabletMinimalList.args = { ...MinimalList.args };
+export const TabletMinimalList = { args: MinimalList.args };
 TabletMinimalList.parameters = tabletViewportParams;

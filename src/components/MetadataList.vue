@@ -264,22 +264,22 @@ export default {
 
       if (this.isActiveControl(LISTCONTROL_LIST_ACTIVE)) {
         return {
-          'col-12': true,
-          'col-lg-6': !mapActive,
-          'col-xl-6': true,
+          'v-col-12': true,
+          'v-col-lg-6': !mapActive,
+          'v-col-xl-6': true,
         };
       }
 
       const compactLayout = this.isCompactLayout;
 
       return {
-        'col-12': true,
-        'col-sm-6': true,
-        'col-md-4': true,
-        'col-lg-3': compactLayout || !mapActive,
-        'col-lg-4': mapActive && !compactLayout,
-        'col-xl-2': !mapActive,
-        'col-xl-3': mapActive,
+        'v-col-12': true,
+        'v-col-sm-6': true,
+        'v-col-md-4': true,
+        'v-col-lg-3': compactLayout || !mapActive,
+        'v-col-lg-4': mapActive && !compactLayout,
+        'v-col-xl-2': !mapActive,
+        'v-col-xl-3': mapActive,
       };
     },
     contentSize() {

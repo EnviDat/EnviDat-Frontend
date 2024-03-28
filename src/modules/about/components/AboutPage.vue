@@ -236,7 +236,7 @@ export default {
       const wslLogoImg = getImage('about/wslLogo');
       const teamImg = getImage('about/team_small');
 
-      const defaultWidthClass = 'col-12 col-sm-6 col-md-4 col-xl-3';
+      const defaultWidthClass = 'v-col-12 v-col-sm-6 v-col-md-4 v-col-xl-3';
 
       const defaultAboutInfo = [
         {
@@ -282,7 +282,7 @@ export default {
             this.orga +
             '" style="width: 100%; height: 100%;" />',
           img: teamImg,
-          defaultWidthClass: 'col-12 col-sm-12 col-md-8',
+          defaultWidthClass: 'v-col-12 v-col-sm-12 v-col-md-8',
         },
       ];
 
