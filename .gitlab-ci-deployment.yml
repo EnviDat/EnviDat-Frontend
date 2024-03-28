@@ -3,7 +3,6 @@ deploy-chromatic:
   stage: deploy
   image: docker.io/node:20.11.1-alpine3.19
   extends:
-    - .node-defaults
     - .trigger-rules
   needs:
     # needs the artifact: config and environment variables
