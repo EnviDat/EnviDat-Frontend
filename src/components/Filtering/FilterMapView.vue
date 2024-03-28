@@ -131,7 +131,11 @@ export default {
       loadingMetadatasContent: 'metadata/loadingMetadatasContent',
     }),
     bingApiKey() {
-      return this.config?.apiKeys?.bing || null;
+      if (this.$store) {
+        return this.config?.apiKeys?.bing || null;
+      }
+
+      return null;
     },
     loading() {
       return this.loadingMetadataIds || this.loadingMetadatasContent;

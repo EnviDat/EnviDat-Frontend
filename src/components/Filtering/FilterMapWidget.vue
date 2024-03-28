@@ -28,9 +28,9 @@
       <base-icon-button
         :icon="mdiEye"
         icon-color="black"
-        color="highlight"
         :small="mdScreen"
         outlined
+        outline-color="highlight"
         :tooltip-text="focusText"
         @clicked="catchFocusClicked()"
       />
@@ -39,10 +39,12 @@
     <template v-slot:pinEnabled>
       <base-icon-button
         :count="pinNumber"
-        :icon="pinIcon"
-        color="secondary"
+        :icon="mdiMapMarker"
+        icon-color="black"
+        :color="pinEnabled ? 'secondary' : 'transparent'"
         :small="mdScreen"
         outlined
+        outline-color="highlight"
         :tooltipText="pinText"
         @clicked="catchPinClicked()"
       />
@@ -51,9 +53,11 @@
     <template v-slot:multiPinEnabled>
       <base-icon-button
         :count="multiPinNumber"
-        :icon="multiPinIcon"
-        color="secondary"
+        :icon="mdiMapMarkerMultiple"
+        icon-color="black"
+        :color="multiPinEnabled ? 'secondary' : 'transparent'"
         outlined
+        outline-color="highlight"
         :small="mdScreen"
         :tooltip-text="multiPinText"
         @clicked="catchMultipinClicked()"
@@ -65,9 +69,10 @@
         :count="polygonNumber"
         :icon="mdiLayers"
         icon-color="black"
-        color="secondary"
+        :color="polygonEnabled ? 'secondary' : 'transparent'"
         :small="mdScreen"
         outlined
+        outline-color="highlight"
         :tooltip-text="polygonText"
         @clicked="catchPolygonClicked()"
       />
@@ -91,8 +96,7 @@
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import FilterMapWidgetLayout from '@/components/Filtering/FilterMapWidgetLayout.vue';
-import { mdiClose, mdiEye, mdiLayers } from '@mdi/js';
-import { getIcon } from '@/factories/imageFactory';
+import {mdiClose, mdiEye, mdiLayers, mdiMapMarker, mdiMapMarkerMultiple} from '@mdi/js';
 
 export default {
   name: 'FilterMapWidget',
@@ -123,8 +127,6 @@ export default {
     topLayout: Boolean,
   },
   beforeMount() {
-    this.pinIcon = getIcon('marker');
-    this.multiPinIcon = getIcon('markerMulti');
   },
   computed: {
     smScreen() {
@@ -163,6 +165,8 @@ export default {
   data: () => ({
     mdiClose,
     mdiEye,
+    mdiMapMarker,
+    mdiMapMarkerMultiple,
     mdiLayers,
     filterText: 'Pinned: ',
     highlightedText: 'Select markers to pin entries to the top of the list',
