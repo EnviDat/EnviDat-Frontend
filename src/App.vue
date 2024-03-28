@@ -153,10 +153,10 @@ import { ENVIDAT_SHOW_COOKIE_BANNER } from '@/factories/metadataConsts';
 import { getImage } from '@/factories/imageFactory';
 import { defineAsyncComponent } from 'vue';
 
-const GenericFullScreenModal = () => defineAsyncComponent(import('@/components/Layouts/GenericFullScreenModal.vue'));
-const ConfirmTextCard = () => defineAsyncComponent(import('@/components/Cards/ConfirmTextCard.vue'));
-const TextBanner = () => defineAsyncComponent(import('@/components/Layouts/TextBanner.vue'));
-const NotificationCard = () => defineAsyncComponent(import('@/components/Cards/NotificationCard.vue'));
+const GenericFullScreenModal = defineAsyncComponent(() =>import('@/components/Layouts/GenericFullScreenModal.vue'));
+const ConfirmTextCard = defineAsyncComponent(() => import('@/components/Cards/ConfirmTextCard.vue'));
+const TextBanner = defineAsyncComponent(() => import('@/components/Layouts/TextBanner.vue'));
+const NotificationCard = defineAsyncComponent(() => import('@/components/Cards/NotificationCard.vue'));
 
 export default {
   name: 'App',
