@@ -1,6 +1,7 @@
 <template>
   <v-container class="fill-height pa-0" id="MetadataListLayoutComponent" fluid>
     <v-row v-if="mapLayout" class="fill-height">
+
       <v-col class="py-0 pr-2 flex-column" cols="4">
         <v-row no-gutters>
           <v-col id="metadataListLayoutFiltering_map" ref="metadataListLayoutFiltering">
@@ -59,7 +60,8 @@
     </v-row>
 
     <v-row v-if="!mapLayout" class="" no-gutters>
-      <v-col ref="metadataListScroll" id="metadataListScroll_no_mapLayout" class="noMapLayoutContainers mt-2 mb-4"
+      <v-col ref="metadataListScroll" id="metadataListScroll_no_mapLayout"
+             class="noMapLayoutContainers mt-2 mb-4"
         v-on:scroll="onScroll()" :class="useDynamicHeight ? 'listScroll' : ''" :style="useDynamicHeight
             ? `height: calc(100vh - ${filteringComponentsHeight}px);`
             : ''
