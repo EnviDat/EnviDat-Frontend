@@ -19,7 +19,6 @@
         :open="open"
         :active="active"
         item-disabled="locked"
-        dense
         activatable
         rounded
         hoverable

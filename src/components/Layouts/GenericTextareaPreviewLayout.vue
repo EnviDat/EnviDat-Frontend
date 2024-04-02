@@ -39,7 +39,6 @@
           class="heightAndScroll pt-1"
           :label="labelTextarea"
           :placeholder="placeholderTextarea"
-          variant="outlined"
           auto-grow
           :readonly="readonly"
           :hint="hint"

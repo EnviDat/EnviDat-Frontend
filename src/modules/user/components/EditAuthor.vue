@@ -35,7 +35,6 @@
 
           <v-text-field :label="labels.firstName"
                         ref="firstName"
-                        outlined
                         required
                         :disabled="loading"
                         :rules="[ v => !!v || `${labels.firstName} is required` ]"
@@ -47,7 +46,6 @@
 
           <v-text-field :label="labels.lastName"
                         ref="lastName"
-                        outlined
                         required
                         :disabled="loading"
                         :rules="[ v => !!v || `${labels.lastName} is required` ]"
@@ -60,7 +58,6 @@
         <v-col cols="12">
           <v-text-field :label="labels.email"
                         ref="email"
-                        outlined
                         required
                         :disabled="loading"
                         v-model="emailField" />
@@ -73,7 +70,6 @@
 
           <v-text-field :label="labels.affiliation"
                         ref="affiliation"
-                        outlined
                         required
                         :disabled="loading"
                         :rules="[ v => !!v || `${labels.affiliation} is required` ]"
@@ -85,7 +81,6 @@
 
           <v-text-field :label="labels.identifier"
                         ref="identifier"
-                        outlined
                         required
                         :disabled="loading"
                         v-model="identifierField"
