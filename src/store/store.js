@@ -23,7 +23,19 @@ import actions from '@/store/mainActions';
 
 import { LISTCONTROL_MAP_ACTIVE } from '@/store/metadataMutationsConsts';
 
+import { importStoreModule } from '@/factories/enhancementsFactory';
 import categoryCards from './categoryCards';
+
+const moduleImportMap = {
+  metadata: () => import('@/modules/metadata/store/metadataStore'),
+  user: () => import('@/modules/user/store/userStore'),
+  userSignIn: () => import('@/modules/user/store/userSignInStore'),
+  blog: () => import('@/modules/blog/store/blogStore'),
+  organizations: () => import('@/modules/organizations/store/organizationsStore'),
+  integration: () => import('@/modules/integration/store/integrationStore'),
+  service: () => import('@/modules/services/store/serviceStore'),
+  projects: () => import('@/modules/projects/store/projectsStore'),
+}
 
 
 /*
@@ -96,6 +108,16 @@ let store = null;
 
 try {
   store = createStore();
+  store.state.asyncLoadStoreModule = async (module) => {
+    const importFun = moduleImportMap[module];
+
+    if (!importFun) {
+      throw new Error(`Error lazyLoadStoreModule, not import defined for ${module}`);
+    }
+
+    return importStoreModule(store, module, importFun);
+  };
+
 } catch (e) {
   if (e instanceof SyntaxError) {
     // if there is an error for the initial loading

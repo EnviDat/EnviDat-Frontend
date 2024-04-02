@@ -21,11 +21,17 @@ import {
   USER_SIGNIN_PAGENAME,
   USER_SIGNIN_PATH,
 } from '@/router/routeConsts';
+import store from '@/store/store';
 
 const SigninPage = () => import('@/modules/user/components/SigninPage.vue');
 const DashboardPage = () => import('@/modules/user/components/DashboardPage.vue');
 const MetadataEditPage = () => import('@/modules/user/components/MetadataEditPage.vue');
 const MetadataCreationPage = () => import('@/modules/user/components/MetadataCreationPage.vue');
+
+const beforeEnter = async (to, from, next)=> {
+  await store.state.asyncLoadStoreModule('organization');
+  next();
+}
 
 export const userRoutes = [
   {
@@ -37,16 +43,19 @@ export const userRoutes = [
     path: USER_DASHBOARD_PATH,
     name: USER_DASHBOARD_PAGENAME,
     component: DashboardPage,
+    beforeEnter,
   },
   {
     path: METADATAEDIT_PATH,
     name: METADATAEDIT_PAGENAME,
     component: MetadataEditPage,
+    beforeEnter,
     children: [
       {
         path: `${METADATAEDIT_PATH}/:metadataid/:step?/:substep?`,
         name: METADATAEDIT_PAGENAME,
         component: MetadataEditPage,
+        beforeEnter,
       },
     ],
   },
@@ -54,11 +63,13 @@ export const userRoutes = [
     path: METADATA_CREATION_PATH,
     name: METADATA_CREATION_PAGENAME,
     component: MetadataCreationPage,
+    beforeEnter,
     children: [
       {
         path: `${METADATA_CREATION_PATH}/:step?/:substep?`,
         name: METADATA_CREATION_PAGENAME,
         component: MetadataCreationPage,
+        beforeEnter,
       },
     ],
   },

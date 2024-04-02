@@ -5,16 +5,14 @@ import {
   PROJECTS_PATH,
 } from '@/router/routeConsts';
 
-import { importStoreModule } from '@/factories/enhancementsFactory';
 import store from '@/store/store';
 
 const ProjectsPage = () => import('@/modules/projects/components/ProjectsPage.vue');
 const ProjectDetailPage = () => import('@/modules/projects/components/ProjectDetailPage.vue');
 
-const beforeEnter = (to, from, next)=> {
-  const moduleKey = 'projects';
-  const importFun = () => import('@/modules/projects/store/projectsStore');
-  importStoreModule(store, moduleKey, importFun).then(() => { next() });
+const beforeEnter = async (to, from, next)=> {
+  await store.state.asyncLoadStoreModule('projects');
+  next();
 }
 
 export const projectsRoutes = [
