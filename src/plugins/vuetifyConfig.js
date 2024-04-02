@@ -20,6 +20,10 @@ export default {
       variant: 'outlined',
       density: 'compact',
     },
+    VAlert: {
+      variant: 'flat',
+      density: 'compact',
+    },
   },
   theme: {
     variations: {
