@@ -4,20 +4,25 @@
       <v-col cols="12" md="10" offset-md="1">
         <!-- Tabs -->
         <v-tabs
-          v-model="activeTab"
+          :model-value="activeTab"
           slider-color="accent"
           color="white"
           grow
-          icons-and-text
-          background-color="highlight">
+          bg-color="highlight">
+
           <v-tab
-            v-for="tab in tabs"
+            v-for="(tab, index) in tabs"
             :key="tab.name"
+            :value="tab.name"
             @click="catchTabClick(tab.name)"
             class="pa-0">
+
             {{ $vuetify.display.smAndUp ? tab.name : '' }}
 
-            <v-icon :icon="tab.icon" />
+            <BaseIcon
+              :icon="tab.icon"
+              :color="activeTab === index ? 'white' : 'grey-darken-3'"
+              class='px-sm-3' />
           </v-tab>
         </v-tabs>
       </v-col>
@@ -25,10 +30,13 @@
 
     <v-row no-gutters ref="aboutBody" class="py-1 py-md-4">
       <v-col cols="12" md="10" offset-md="1">
-        <!-- Tab contents -->
-        <v-tabs-items v-model="activeTab">
+
+        <v-window
+          :model-value="activeTab" >
+
+
           <!-- About -->
-          <v-tab-item :key="tabs[0].name">
+          <v-window-item :key="tabs[0].name">
             <about-tab-layout title="About EnviDat" :titleImage="missionImg">
               <v-row no-gutters>
                 <v-col
@@ -46,38 +54,40 @@
                 </v-col>
               </v-row>
             </about-tab-layout>
-          </v-tab-item>
+          </v-window-item>
 
           <!-- Guidelines -->
-          <v-tab-item :key="tabs[1].name">
+          <v-window-item :key="tabs[1].name">
             <about-tab-layout
               title="Guidelines"
               :titleImage="guidelineImg"
               :loading="guidelinesLoading"
               loadingText="Loading Guidelines..."
               :markdownContent="guidelinesMarkdownText" />
-          </v-tab-item>
+          </v-window-item>
 
           <!-- Policies -->
-          <v-tab-item :key="tabs[2].name">
+          <v-window-item :key="tabs[2].name">
             <about-tab-layout
               title="Policies"
               :titleImage="policiesImg"
               :loading="policiesLoading"
               loadingText="Loading Policies..."
               :markdownContent="policiesMarkdownText" />
-          </v-tab-item>
+          </v-window-item>
 
           <!-- DMP -->
-          <v-tab-item :key="tabs[3].name">
+          <v-window-item :key="tabs[3].name">
             <about-tab-layout
               title="Data Management Plan"
               :titleImage="dmpImg"
               :loading="dmpLoading"
               loadingText="Loading Data Management Plan infos..."
               :markdownContent="dmpMarkdownText" />
-          </v-tab-item>
-        </v-tabs-items>
+          </v-window-item>
+
+        </v-window>
+
       </v-col>
     </v-row>
   </v-container>
@@ -116,7 +126,9 @@ import {
 } from '@/store/mainMutationsConsts';
 
 import { getImage } from '@/factories/imageFactory';
-import AboutTabLayout from './AboutTabLayout.vue';
+import { mdiBookOpenVariant, mdiInformation, mdiLibrary, mdiShieldCheckOutline } from '@mdi/js';
+import AboutTabLayout from '@/modules/about/components/AboutTabLayout.vue';
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 export default {
   name: 'AboutPage',
@@ -323,6 +335,7 @@ export default {
     },
   },
   components: {
+    BaseIcon,
     ExpandableCard,
     AboutTabLayout,
   },
@@ -333,19 +346,19 @@ export default {
     tabs: [
       {
         name: 'about',
-        icon: 'info',
+        icon: mdiInformation,
       },
       {
         name: 'guidelines',
-        icon: 'local_library',
+        icon: mdiLibrary,
       },
       {
         name: 'policies',
-        icon: 'policy',
+        icon: mdiShieldCheckOutline,
       },
       {
         name: 'dmp',
-        icon: 'menu_book',
+        icon: mdiBookOpenVariant,
       },
     ],
   }),
