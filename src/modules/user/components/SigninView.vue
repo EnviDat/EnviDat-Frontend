@@ -53,7 +53,7 @@
           </v-col>
 
           <v-col
-            v-hide="!email || !emailAddressIsValid"
+            v-show="email || emailAddressIsValid"
             cols="12"
             md="3"
             id="tokenButton"
@@ -78,17 +78,17 @@
         </v-row>
 
         <v-row
-          v-hide="!email || !emailAddressIsValid"
+          v-show="email || emailAddressIsValid"
           id="tokenRow"
           align="start"
           justify="space-between"
           class="pt-2"
         >
-          <v-col cols="12" md="4" class="flex-grow-0 text-h6 ">
+          <v-col cols="12" md="3" class="flex-grow-0 text-h6 ">
             {{ requestTokenText }}
           </v-col>
 
-          <v-col cols="12" md="5" >
+          <v-col cols="12" md="6" >
             <v-text-field
               v-model="key"
               :error-messages="backendErrors.key"
@@ -120,7 +120,7 @@
         <v-row v-if="wslSigninEnabled"
           id="wslEmailRow"
           align="center"
-          v-hide="!email || !emailAddressIsWsl"
+          v-show="email || emailAddressIsWsl"
         >
           <v-col cols="12" md="9"
                  class="text-h8">
