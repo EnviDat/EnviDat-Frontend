@@ -40,7 +40,6 @@
             :items="dataLicenses"
             item-value="id"
             item-text="title"
-            variant="outlined"
             hide-details
             :label="labels.dataLicense"
             :readonly="isReadOnly('dataLicenseId')"

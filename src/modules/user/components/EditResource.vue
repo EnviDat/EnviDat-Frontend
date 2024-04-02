@@ -27,12 +27,12 @@
 
       <div class="pa-1">
 
-        <v-alert type="info" border="left" variant="outlined" density="compact" >{{ labels.instructions }}</v-alert>
+        <v-alert type="info" border="left" variant="outlined" >{{ labels.instructions }}</v-alert>
 
         <v-row id="resourceName" no-gutters class="pt-4">
           <v-col cols="12">
             <v-text-field
-              :label="labels.resourceName" ref="resourceName" variant="outlined"  required :disabled="loading"
+              :label="labels.resourceName" ref="resourceName" required :disabled="loading"
               v-model="resourceNameField" :error-messages="validationErrors.name" />
 
           </v-col>
@@ -42,7 +42,7 @@
           <v-col cols="12">
 
             <v-textarea
-              :label="labels.description" variant="outlined"  auto-grow :disabled="loading"
+              :label="labels.description" auto-grow :disabled="loading"
               v-model="descriptionField"
               :error-messages="validationErrors.description" />
 
@@ -124,8 +124,8 @@
                 <v-select
                   :items="labels.sizeFormatList"
                   v-model="sizeFormatField"
-                  label="File size format" variant="outlined"
-                  density="compact" hide-details="auto"
+                  label="File size format"
+                  hide-details="auto"
                   :disabled="!isLink || loading" :error-messages="validationErrors.sizeFormat" />
               </v-col>
             </v-row>

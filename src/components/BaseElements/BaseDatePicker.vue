@@ -16,8 +16,6 @@
           <v-text-field
             :label="dateLabel"
             ref="dateTextField"
-            dense
-            outlined
             :readonly="readonly"
             persistent-hint
             :hint="readOnlyExplanation"

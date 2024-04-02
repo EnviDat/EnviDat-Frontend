@@ -34,8 +34,6 @@
                     :items="userOrganizations"
                     item-text="title"
                     item-value="id"
-                    variant="outlined"
-                    density="compact"
                     readonly
                     :prepend-icon="mdiHome"
                     :menu-icon="isEditOrganizationReadonly ? '' : mdiArrowDownDropCircleOutline"
@@ -57,8 +55,6 @@
                     :items="userOrganizations"
                     item-text="title"
                     item-value="id"
-                    variant="outlined"
-                    density="compact"
                     :prepend-icon="mdiHome"
                     :menu-icon="isEditOrganizationReadonly ? '' : mdiArrowDownDropCircleOutline"
                     :readonly="isEditOrganizationReadonly"
