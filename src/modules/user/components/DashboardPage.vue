@@ -124,7 +124,7 @@
                       :actionButtonCallback="isEditorAndAbove ? createClickCallback : null" />
 
         <NotificationCard v-if="noUserDatasetsError"
-                          :notification="noUserDatasetsError"
+                          v-bind="noUserDatasetsError"
                           :showCloseButton="false" />
 
       </div>
@@ -241,7 +241,7 @@
             class="noOrgaDatasetsGrid px-1">
 
         <NotificationCard v-if="noOrgaDatasetsError"
-                          :notification="noOrgaDatasetsError"
+                          v-bind="noOrgaDatasetsError"
                           :showCloseButton="false" />
 
         <NotFoundCard v-bind="noOrganizationsInfos"  />

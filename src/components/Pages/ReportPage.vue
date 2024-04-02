@@ -2,7 +2,7 @@
   <v-container class="fill-height pa-0" tag="article" fluid>
     <v-row no-gutters>
       <v-col cols="12" md="6" v-for="(err, index) in errors" :key="index">
-        <NotificationCard :notification="err" />
+        <NotificationCard v-bind="err" />
       </v-col>
     </v-row>
 
