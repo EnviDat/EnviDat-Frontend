@@ -14,9 +14,8 @@
           <v-row no-gutters
                   align="center">
 
-            <v-col class="flex-grow-0 px-2" >
+            <v-col class="flex-grow-0" >
               <v-btn icon
-                      class="ma-0 pt-1"
                       small
                       @click.stop="catchHomeClicked" >
                       <!-- :style="`background-color: ${ item.active ? $vuetify.theme.themes.light.colors.accent : 'transparent' }`" -->
@@ -26,7 +25,7 @@
                       alt="envidat_logo" />
               </v-btn>
             </v-col>
-            <v-col class="shrink py-0" >
+            <v-col class="flex-grow-0 py-0" >
               <div class="text-md-h5 envidatText clickable mt-1 mt-sm-0" @click.stop="catchHomeClicked">{{logoText}}</div>
             </v-col>
           </v-row>
@@ -108,7 +107,7 @@
                           small
                           @click="catchSigninClicked"
                           v-bind="props" >
-                    <v-icon :icon="mdiAccountCircleOutline" />
+                    <v-icon :icon="mdiAccountCircle" />
                   </v-btn>
                 </template>
 
@@ -131,7 +130,7 @@
 </template>
 
 <script>
-import {mdiAccountCircleOutline, mdiPencil} from '@mdi/js';
+import {mdiAccountCircle, mdiPencil} from '@mdi/js';
 import ModeView from '@/components/Layouts/ModeView.vue';
 import EnviDatLogo from '@/assets/logo/EnviDat_logo_32.png';
 import UserMenu from '@/modules/user/components/UserMenu.vue';
@@ -180,7 +179,7 @@ export default {
     },
   },
   data: () => ({
-    mdiAccountCircleOutline,
+    mdiAccountCircle,
     mdiPencil,
     EnviDatLogo,
     logoText: 'EnviDat',

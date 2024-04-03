@@ -67,7 +67,7 @@ export default {
     navItemsMenuExcluded() {
       const actives = [];
 
-      this.navigationItems.forEach((el) => {
+      this.navigationItems?.forEach((el) => {
         if (el.icon !== 'menu') {
           actives.push(el);
         }
