@@ -1,8 +1,7 @@
 <template>
   <v-chip
     class="organizationChip text--black px-2"
-    :outlined="!showContent"
-    color="black"
+    :variant="!showContent ? 'outlined' : undefined"
     style="cursor: default;"
     @mouseover="hover = true"
     @mouseleave="hover = false"
@@ -11,7 +10,7 @@
     <v-tooltip v-if="tooltip" bottom>
       <template v-slot:activator="{ props }">
         <div v-bind="props" >
-          <v-icon :icon="mdiHome" />
+          <v-icon :icon="mdiHome" color="black" />
           {{ showContent ? organizationText : '' }}
         </div>
       </template>
@@ -20,7 +19,7 @@
     </v-tooltip>
 
     <div v-if="!tooltip">
-      <v-icon :icon="mdiHome" />
+      <v-icon :icon="mdiHome" color="black" />
       {{ showContent ? organizationText : '' }}
     </div>
   </v-chip>
@@ -82,7 +81,9 @@ export default {
   height: 1.5rem;
   font-size: 0.75rem;
   max-width: 250px;
+  /*
   background-color: #e0e0e0 !important;
+  */
 }
 
 .organizationChip > .v-chip__content > div:nth-child(1) {

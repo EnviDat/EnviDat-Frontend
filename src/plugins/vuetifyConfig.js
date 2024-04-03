@@ -38,6 +38,7 @@ export default {
     VChip: {
       variant: 'flat',
       density: overallDensity,
+      color: '#e0e0e0',
     },
   },
   theme: {

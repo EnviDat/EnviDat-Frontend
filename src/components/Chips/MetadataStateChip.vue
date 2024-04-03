@@ -68,7 +68,7 @@ export default {
     colorMap: {
       type: Object,
       default: () => ({
-        [METADATA_STATE_DRAFT]: 'gray',
+        [METADATA_STATE_DRAFT]: '#e0e0e0',
         [METADATA_STATE_INVISILBE]: 'warning',
         [METADATA_STATE_VISILBE]: 'green',
       }),
