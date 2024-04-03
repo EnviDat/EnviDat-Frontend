@@ -16,7 +16,7 @@ const colors = { ...lightColorblind };
 const overallVariant = 'outlined';
 const overallDensity = 'compact';
 
-const selection = {
+const selectionStyling = {
   variant: overallVariant,
   density: overallDensity,
 };
@@ -33,13 +33,13 @@ export default {
       density: overallDensity,
     },
     VSelect: {
-      ...selection,
+      ...selectionStyling,
     },
     VAutocomplete: {
-      ...selection,
+      ...selectionStyling,
     },
     VCombobox: {
-      ...selection,
+      ...selectionStyling,
     },
     VAlert: {
       variant: 'flat',

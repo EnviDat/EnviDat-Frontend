@@ -5,12 +5,16 @@
       :model-value="controlsActive"
       class="fill-height"
       color="secondary"
+      variant="flat"
       rounded="0"
     >
       <v-btn
-        @click="catchControlClick(LISTCONTROL_MAP_ACTIVE)"
+          v-if="isEnabledControl(LISTCONTROL_MAP_ACTIVE)"
+          :active="mapActive"
+          :color="mapActive ? 'secondary' : 'white'"
+          :value="LISTCONTROL_MAP_ACTIVE"
+          @click="catchControlClick(LISTCONTROL_MAP_ACTIVE)"
         class="controlButton"
-        :value="LISTCONTROL_MAP_ACTIVE"
       >
         <BaseIcon :icon='mdiMap' color='grey-darken-3' />
       </v-btn>
@@ -21,24 +25,28 @@
             isEnabledControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE)"
       :model-value="controlsActive"
       class="fill-height ml-2"
-      :divided='true'
+      divided
       color="secondary"
       rounded="0"
     >
       <v-btn
         v-if="isEnabledControl(LISTCONTROL_LIST_ACTIVE)"
+        :active="listActive"
+        :color="listActive ? 'secondary' : 'white'"
+        :value="LISTCONTROL_LIST_ACTIVE"
         @click="catchControlClick(LISTCONTROL_LIST_ACTIVE)"
         class="controlButton"
-        :value="LISTCONTROL_LIST_ACTIVE"
       >
         <BaseIcon :icon='mdiViewHeadline' color='grey-darken-3' />
       </v-btn>
 
       <v-btn
         v-if="isEnabledControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE)"
+        :active="compactListActive"
+        :color="compactListActive ? 'secondary' : 'white'"
+        :value="LISTCONTROL_COMPACT_LAYOUT_ACTIVE"
         @click="catchControlClick(LISTCONTROL_COMPACT_LAYOUT_ACTIVE)"
         class="controlButton"
-        :value="LISTCONTROL_COMPACT_LAYOUT_ACTIVE"
       >
         <BaseIcon :icon="mdiViewComfy" color="grey-darken-3" />
       </v-btn>
@@ -87,8 +95,6 @@ export default {
   props: {
     controls: Array,
     enabledControls: Array,
-    mapEnabled: Boolean,
-    flat: Boolean,
   },
   data: () => ({
     mdiMap,
@@ -108,6 +114,15 @@ export default {
     this.previewControls = this.controls;
   },
   computed: {
+    mapActive() {
+      return this.isActiveControl(LISTCONTROL_MAP_ACTIVE);
+    },
+    listActive() {
+      return this.isActiveControl(LISTCONTROL_LIST_ACTIVE);
+    },
+    compactListActive() {
+      return this.isActiveControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE);
+    },
     controlsActive: {
       get() {
         return this.controls;

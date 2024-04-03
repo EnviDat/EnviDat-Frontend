@@ -12,7 +12,7 @@
 import { imageBgs } from '@/factories/imageFactory';
 import MetadataList from '@/components/MetadataList.vue';
 import categoryCards from '@/store/categoryCards';
-import { enhanceMetadatasTitleImage } from '@/factories/metaDataFactory';
+import {enhanceMetadatasTitleImage, enhanceTags} from '@/factories/metaDataFactory';
 import baseTags from '@/modules/metadata/store/metadataTags';
 import { getEnabledTags, getPopularTags } from '@/factories/metadataFilterMethods';
 import {
@@ -23,6 +23,8 @@ import {
 
 import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 import metadata from './js/metadata';
+
+metadata.forEach(dataset => enhanceTags(dataset, imageBgs));
 
 enhanceMetadatasTitleImage(metadata, imageBgs, categoryCards);
 
@@ -77,6 +79,20 @@ export const ListWithMap = {
   args: {
     ...ListWithControls.args,
     defaultListControls: [LISTCONTROL_MAP_ACTIVE],
+  },
+}
+
+export const CompactList = {
+  args: {
+    ...ListWithControls.args,
+    defaultListControls: [LISTCONTROL_MAP_ACTIVE, LISTCONTROL_COMPACT_LAYOUT_ACTIVE],
+  },
+}
+
+export const ListRowView = {
+  args: {
+    ...ListWithControls.args,
+    defaultListControls: [LISTCONTROL_MAP_ACTIVE, LISTCONTROL_LIST_ACTIVE],
   },
 }
 

@@ -19,7 +19,8 @@
         </v-row>
       </v-col>
 
-      <v-col class="py-0 pl-2" cols="8">
+      <v-col class="py-0 pl-2"
+             cols="8">
         <v-row ref="controlPanel">
           <v-col class="controlPanel hidden-xs" key="controlPanel" cols="12">
             <slot name="controlPanel" />
@@ -173,18 +174,18 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .listScroll {
   overflow-y: auto;
   overflow-x: hidden;
   scroll-behavior: smooth;
 }
 
-.noMapLayoutContainers>.container {
-  padding: 16px 4px 0px 4px;
+.noMapLayoutContainers > .v-container {
+  padding: 0 4px 0 4px;
 }
 
-.mapLayoutContainers>.container {
-  padding: 0px 4px 0px 4px;
+.mapLayoutContainers > .v-container {
+  padding: 0 4px 0 4px;
 }
 </style>
