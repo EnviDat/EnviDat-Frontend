@@ -33,7 +33,6 @@
         tooltip-bottom
         color="transparent"
         icon-color="secondary"
-        small
       />
     </v-col>
 
@@ -44,7 +43,6 @@
         tooltip-bottom
         color="transparent"
         icon-color="red"
-        small
         @clicked="closeCallback"
       />
     </div>
