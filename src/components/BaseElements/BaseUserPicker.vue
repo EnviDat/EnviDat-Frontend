@@ -15,8 +15,6 @@
         <v-autocomplete
           v-model="pickedUsers"
           :items="users"
-          variant="outlined"
-          :density="dense"
           :menu-icon="mdiArrowDownDropCircleOutline"
           :readonly="readonly"
           :hint="hint"
@@ -110,10 +108,6 @@ export default {
     userTagsCloseable: {
       type: Boolean,
       default: true,
-    },
-    dense: {
-      type: String,
-      default: 'default',
     },
     errorMessages: {
       type: String,

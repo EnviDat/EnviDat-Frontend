@@ -112,7 +112,6 @@
               <BaseUserPicker :users="fullNameUsers"
                               :preSelected="preselectAuthorNames"
                               :hint="labels.authorPickHint"
-                              dense="compact"
                               @removedUsers="catchPickerAuthorChange($event, false)"
                               @pickedUsers="catchPickerAuthorChange($event, true)"/>
             </v-col>

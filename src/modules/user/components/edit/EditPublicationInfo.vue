@@ -51,8 +51,6 @@
         <v-col>
           <v-autocomplete :model-value="visibilityState"
                           :items="[possibleVisibilityStates]"
-                          variant="outlined"
-                          density="compact"
                           readonly
                           :prepend-icon="mdiEye"
                           :menu-icon="mdiArrowDownDropCircleOutline"

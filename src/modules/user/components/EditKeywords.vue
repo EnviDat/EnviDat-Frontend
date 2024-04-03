@@ -49,7 +49,6 @@
                       :items="existingKeywordItems"
                       item-text="name"
                       multiple
-                      variant="outlined"
                       :menu-icon="mdiArrowDownDropCircleOutline"
                       :prepend-icon="mdiPaletteSwatch"
                       :label="labels.keywordsLabel"

@@ -16,6 +16,11 @@ const colors = { ...lightColorblind };
 const overallVariant = 'outlined';
 const overallDensity = 'compact';
 
+const selection = {
+  variant: overallVariant,
+  density: overallDensity,
+};
+
 export default {
   blueprint: md2,
   defaults: {
@@ -28,8 +33,13 @@ export default {
       density: overallDensity,
     },
     VSelect: {
-      variant: overallVariant,
-      density: overallDensity,
+      ...selection,
+    },
+    VAutocomplete: {
+      ...selection,
+    },
+    VCombobox: {
+      ...selection,
     },
     VAlert: {
       variant: 'flat',

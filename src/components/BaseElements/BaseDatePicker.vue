@@ -22,6 +22,7 @@
             :prepend-icon="mdiCalendarRange"
             v-bind="props"
             :clearable="!readonly"
+            persistent-clear
             :model-value="formatToEnviDatDate(dateField, dateProperty)"
             @change="changedDateTextField(dateProperty, $event)"
             :error-messages="validationErrors[dateProperty]"
@@ -38,7 +39,7 @@
           :min="formatToDatePickerDate(minDate)"
           :max="formatToDatePickerDate(maxDate)"
           :model-value="formatToDatePickerDate(dateField)"
-          @click:save="changeDatePicker(dateProperty, $event)"
+          @update:modelValue="changeDatePicker(dateProperty, $event)"
         >
         </v-date-picker>
       </v-menu>
@@ -135,9 +136,6 @@ export default {
     dateField: {
       get() {
         return this.previewDate || this.date;
-      },
-      set(value) {
-        this.changeDatePicker()
       },
     },
   },
