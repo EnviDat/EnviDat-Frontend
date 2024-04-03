@@ -160,7 +160,7 @@
           <div
             class="fabMenu fabPosition elevation-5 ma-2"
             :class="downloadActive ? 'fabMenuHover' : 'fabMenuDisabled'">
-            <BaseIcon :icon="mdiShield"></BaseIcon>
+            <BaseIcon :icon="mdiShield"/>
             <div
               v-if="downloadActive"
               class="pt-2 lockedText text-black protectedLink">
@@ -424,12 +424,6 @@ export default {
 
   a {
     color: rgb(var(--v-theme-primary)) !important;
-  }
-
-  .baseIcon {
-    border: 1px solid grey !important;
-    border-radius: 50%;
-    padding: 16px;
   }
 
   .lockedText {

@@ -27,7 +27,7 @@
                 >
 
       <NotificationCard v-if="editingError"
-                        :notification="editingError"
+                        v-bind="editingError"
                         :showCloseButton="true"
                         @clickedClose="showSnack = false" />
 

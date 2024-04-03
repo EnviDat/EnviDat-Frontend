@@ -50,8 +50,7 @@
 
     <v-row>
       <v-col >
-        <EditAddPublication dense
-                            @addClicked="catchAddPublication" />
+        <EditAddPublication @addClicked="catchAddPublication" />
       </v-col>
     </v-row>
 

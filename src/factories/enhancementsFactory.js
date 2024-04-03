@@ -14,17 +14,19 @@
 export const importStoreModule = async (store, moduleKey, importFunction) => {
 
   if (store.state[moduleKey]) {
-    return;
+    return store.state[moduleKey];
   }
 
-  await importFunction()
-    .then((importObject) => {
-      const module = importObject[moduleKey];
-      store.registerModule(moduleKey, module);
-      // console.log(`registered ${moduleKey}`);
-    })
-    .catch((reason) => {
-      console.error(`error registering ${moduleKey}`);
-      console.error(reason);
-    });
+  try {
+    const importObject = await importFunction();
+    const module = importObject[moduleKey];
+    store.registerModule(moduleKey, module);
+
+    return module;
+  } catch (e) {
+    console.error(`error registering ${moduleKey}`);
+    console.error(e);
+  }
+
+  return null;
 }

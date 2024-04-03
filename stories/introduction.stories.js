@@ -23,10 +23,8 @@ import metadataCards from './js/metadata';
 
 const dataset = metadataCards[0];
 export default {
-  title: '7 User / SignIn',
+  title: '3 Cards / Introduction Card',
   component: IntroductionCard,
-  decorators: [],
-  parameters: {},
 };
 
 const currentLocalDataset = {

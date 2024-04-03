@@ -3,14 +3,13 @@
     fluid
     class="pa-0"
   >
-    <v-row no-gutters
-           align="start">
+    <v-row no-gutters >
 
-      <v-col cols="2"
-              sm="auto">
-        <v-row no-gutters>
+      <v-col class='pr-4 flex-grow-0'>
+        <v-row no-gutters
+                justify="center">
           <v-col cols="12"
-                 class='pl-2 py-2'
+                 class='pl-1 py-2'
           >
             <v-menu
                 :open-on-hover='true'
@@ -37,7 +36,7 @@
           </v-col>
 
           <v-col cols="12"
-                  class="pl-1">
+                  class="pl-1 py-2">
             <BaseIconButton 
               :icon="mdiFingerprint"
               :disabled="!doi"
@@ -50,8 +49,7 @@
         </v-row>
       </v-col>
 
-      <v-col cols="10"
-             md="11" >
+      <v-col class='flex-grow-1' >
         <div v-html="citation" ></div>
       </v-col>
 

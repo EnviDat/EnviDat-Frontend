@@ -27,7 +27,7 @@
     </template>
 
     <template v-slot:metadataListPlaceholder>
-      <v-container v-show="loading" class="px-0 px-sm-2" fluid>
+      <v-container v-show="loading" class="px-0 pt-0 px-sm-1" fluid>
         <!-- don't use class with paddings here, it's being used in the MetadataListLayout component -->
         <v-row id="metadataListPlaceholder" ref="metadataListPlaceholder">
 
@@ -41,7 +41,7 @@
     </template>
 
     <template v-slot:metadataListLayout>
-      <v-container v-if="!loading" class="px-0 px-sm-2" fluid>
+      <v-container v-if="!loading" class="px-0 pt-0 px-sm-1" fluid>
         <!-- don't use class with paddings here, it's being used in the MetadataListLayout component -->
 
         <v-row id="metadataListLayout" ref="metadataListLayout">

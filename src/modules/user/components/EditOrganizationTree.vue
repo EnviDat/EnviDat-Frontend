@@ -12,7 +12,6 @@
       <v-col>
         <v-text-field
           readonly
-          outlined
           label="Organization"
           :model-value="organization"
         />

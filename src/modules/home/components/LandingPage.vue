@@ -240,8 +240,6 @@ import {
   METADATA_NAMESPACE,
   SET_DETAIL_PAGE_BACK_URL,
 } from '@/store/metadataMutationsConsts';
-import store from '@/store/store';
-import { importStoreModule } from '@/factories/enhancementsFactory';
 import { getIcon, getImage } from '@/factories/imageFactory';
 import { convertArrayToUrlString } from '@/factories/stringFactory';
 
@@ -266,15 +264,8 @@ export default {
       vm.$store.commit(SET_APP_BACKGROUND, bgimg);
     });
   },
-  beforeCreate() {
-    const importFun = () => import('@/modules/blog/store/blogStore');
-    importStoreModule(store, 'blog', importFun)
-      .then(() => {
-        this.$store.dispatch(`${BLOG_NAMESPACE}/${GET_BLOG_LIST}`);
-      });
-
-  },
   created() {
+    this.$store.dispatch(`${BLOG_NAMESPACE}/${GET_BLOG_LIST}`);
     this.blogModuleLoaded = !!this.$store?.state?.blog;
 
     this.$store?.watch((state) => state.blog, (value) => {

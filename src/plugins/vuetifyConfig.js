@@ -13,12 +13,27 @@ import { lightColorblind } from './colorThemes';
 
 const colors = { ...lightColorblind };
 
+const overallVariant = 'outlined';
+const overallDensity = 'compact';
+
 export default {
   blueprint: md2,
   defaults: {
     VTextField: {
-      variant: 'outlined',
-      density: 'compact',
+      variant: overallVariant,
+      density: overallDensity,
+    },
+    VTextarea: {
+      variant: overallVariant,
+      density: overallDensity,
+    },
+    VSelect: {
+      variant: overallVariant,
+      density: overallDensity,
+    },
+    VAlert: {
+      variant: 'flat',
+      density: overallDensity,
     },
   },
   theme: {

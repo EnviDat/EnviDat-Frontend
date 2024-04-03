@@ -5,6 +5,7 @@
       :src="notFoundImage"
       max-height="300"
       style="border-bottom-left-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 0;"
+      cover
     />
 
     <v-container fluid class="pa-4">

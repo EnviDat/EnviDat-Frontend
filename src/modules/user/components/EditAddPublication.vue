@@ -5,16 +5,13 @@
   >
 
     <v-row no-gutters
-            align="center"
-            :dense="dense">
+            align="center" >
       <v-col cols="12"
               md="auto">
         <v-text-field
             v-model="pidField"
             :label="labels.pId"
-            :dense="dense"
             :disabled="!!doiField"
-            outlined
             hide-details
             prepend-icon="account_circle"
             @input="pidChange"
@@ -33,9 +30,7 @@
         <v-text-field
             v-model="doiField"
             :label="labels.dataObjectIdentifier"
-            :dense="dense"
             :disabled="!!pidField"
-            outlined
             hide-details
             prepend-icon="fingerprint"
             @input="doiChange"
@@ -55,7 +50,7 @@
         <BaseIconButton 
           :icon="mdiPlus"
           icon-color="white"
-          :small="dense && $vuetify.display.mdAndUp"
+          :small="$vuetify.display.mdAndUp"
           @clicked="addClick"
         />
 
@@ -144,10 +139,6 @@ export default {
       default: undefined,
     },
     loading: {
-      type: Boolean,
-      default: false,
-    },
-    dense: {
       type: Boolean,
       default: false,
     },

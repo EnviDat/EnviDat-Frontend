@@ -11,7 +11,7 @@
                       top: ${35 + index * 175}px;
                       z-index: ${NotificationZIndex};`">
 
-      <notification-card v-if="notification.show" :notification="notification" :height="165"
+      <NotificationCard v-if="notification.show" v-bind="notification" :height="165"
         :showReportButton="config.errorReportingEnabled && notification.type === 'error'" :showCloseButton="true"
         @clickedClose="catchCloseClicked(notification.key)" @clickedReport="catchReportClicked(notification.key)" />
     </div>
