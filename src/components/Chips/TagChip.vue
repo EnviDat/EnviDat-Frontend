@@ -41,7 +41,7 @@ export default {
     count: Number,
     color: {
       type: String,
-      default: '#222',
+      default: '#e0e0e0',
     },
     isSmall: {
       type: Boolean,
@@ -50,7 +50,7 @@ export default {
   },
   computed: {},
   methods: {
-    clicked: function clicked() {
+    clicked() {
       if (!this.selectable) {
         return;
       }

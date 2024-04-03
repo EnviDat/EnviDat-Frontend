@@ -35,6 +35,10 @@ export default {
       variant: 'flat',
       density: overallDensity,
     },
+    VChip: {
+      variant: 'flat',
+      density: overallDensity,
+    },
   },
   theme: {
     variations: {

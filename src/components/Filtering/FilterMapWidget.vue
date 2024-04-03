@@ -17,7 +17,6 @@
         icon-color="red"
         :color="topLayout ? 'transparent' : 'primary'"
         :outlined="!topLayout && pinnedIds.length > 0"
-        :small="mdScreen || topLayout"
         :disabled="pinnedIds.length <= 0"
         :tooltip-text="clearButtonTooltipText"
         @clicked="catchClearClicked()"
@@ -28,7 +27,6 @@
       <base-icon-button
         :icon="mdiEye"
         icon-color="black"
-        :small="mdScreen"
         outlined
         outline-color="highlight"
         :tooltip-text="focusText"
@@ -42,7 +40,6 @@
         :icon="mdiMapMarker"
         icon-color="black"
         :color="pinEnabled ? 'secondary' : 'transparent'"
-        :small="mdScreen"
         outlined
         outline-color="highlight"
         :tooltipText="pinText"
@@ -58,7 +55,6 @@
         :color="multiPinEnabled ? 'secondary' : 'transparent'"
         outlined
         outline-color="highlight"
-        :small="mdScreen"
         :tooltip-text="multiPinText"
         @clicked="catchMultipinClicked()"
       />
@@ -70,7 +66,6 @@
         :icon="mdiLayers"
         icon-color="black"
         :color="polygonEnabled ? 'secondary' : 'transparent'"
-        :small="mdScreen"
         outlined
         outline-color="highlight"
         :tooltip-text="polygonText"

@@ -18,9 +18,7 @@
                        :key="n"
                        class="flex-grow-0"
                 >
-                  <TagChipPlaceholder
-                      class="envidatChip"
-                  />
+                  <TagChipPlaceholder class="envidatChip" />
                 </v-col>
               </v-row>
             </v-col>

@@ -54,6 +54,18 @@ export const TagChips = () => ({
       </v-col>
 
       <v-col>
+        <tag-chip name="primary color" color="primary" />
+      </v-col>
+
+      <v-col>
+        <tag-chip name="secondary color" color="secondary" />
+      </v-col>
+
+      <v-col>
+        <tag-chip name="red color" color="red" />
+      </v-col>
+      
+      <v-col>
         <tag-chip-author name="Dominik Haas-Artho"  />
       </v-col>
 

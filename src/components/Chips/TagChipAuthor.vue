@@ -57,7 +57,7 @@ export default {
     highlighted: Boolean,
     color: {
       type: String,
-      default: '#222',
+      default: '#e0e0e0',
     },
     asciiDead: String,
     authorPassedInfo: String,
