@@ -24,7 +24,7 @@ publish-build:
   variables:
     GIT_STRATEGY: none
   needs:
-    # needs the enviromental variables for the version number
+    # needs the environmental variables for the version number
     - set-vars
     # make sure to wait for the tests to run correctly
     - run-tests
