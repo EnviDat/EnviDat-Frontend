@@ -45,7 +45,6 @@ build-box-app:
   image: docker.io/node:20.11.1-alpine3.19
   extends:
     - .trigger-rules
-    - .node_cache
   # image: docker.io/node:18.18.2-alpine3.17
   needs:
     # needs environment variables from the frontend in a box setup
