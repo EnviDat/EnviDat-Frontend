@@ -37,6 +37,7 @@ import {
 } from '@/factories/metadataConsts';
 
 import { enhanceMetadataWithModeExtras } from '@/factories/modeFactory';
+import categoryCards, { cardImageBgs } from '@/store/categoryCards';
 
 /**
  * Create a pseudo random integer based on a given seed using the 'seedrandom' lib.
@@ -839,7 +840,7 @@ export function convertTags(tagsStringArray, tagsEnabled) {
   return tagObjs;
 }
 
-export function getCategoryColor(categoryCards, categoryName) {
+export function getCategoryColor(categoryName) {
   for (let i = 0; i < categoryCards.length; i++) {
     const cat = categoryCards[i];
     if (cat.type === categoryName) {
@@ -850,8 +851,8 @@ export function getCategoryColor(categoryCards, categoryName) {
   return null;
 }
 
-export function getTagColor(categoryCards, tagName) {
-  if (!categoryCards || !tagName) {
+export function getTagColor(tagName) {
+  if (!tagName) {
     return '';
   }
 
@@ -867,15 +868,15 @@ export function getTagColor(categoryCards, tagName) {
   return '#e0e0e0';
 }
 
-export function enhanceTags(dataset, categoryCards) {
-  if (!dataset || !categoryCards) {
+export function enhanceTags(dataset) {
+  if (!dataset) {
     return null;
   }
 
   if (dataset.tags && dataset.tags instanceof Array) {
     for (let j = 0; j < dataset.tags.length; j++) {
       const tag = dataset.tags[j];
-      tag.color = getTagColor(categoryCards, tag.name);
+      tag.color = getTagColor(tag.name);
     }
   }
 
@@ -888,22 +889,20 @@ let tempImgValues = [];
 
 /**
  * @param {object} metadata
- * @param {object} cardBGImages it's an object of key value pairs paths to images
  *
- * @param {Array<Object>} categoryCards
  * @return {object} metadata entry enhanced with a title image based on its tags
  */
-export function enhanceTitleImg(metadata, cardBGImages, categoryCards) {
-  if (!metadata || !categoryCards) {
+export function enhanceTitleImg(metadata) {
+  if (!metadata) {
     return null;
   }
 
   /* eslint-disable no-param-reassign */
   const category = guessTagCategory(metadata.tags);
 
-  if (cardBGImages) {
+  if (cardImageBgs) {
     if (category !== lastCategory) {
-      const categoryImages = cardBGImages[category];
+      const categoryImages = cardImageBgs[category];
       tempImgKeys = Object.keys(categoryImages);
       tempImgValues = Object.values(categoryImages);
       lastCategory = category;
@@ -915,29 +914,23 @@ export function enhanceTitleImg(metadata, cardBGImages, categoryCards) {
     metadata.titleImg = randomIndex >= 0 ? tempImgValues[randomIndex] : 0;
   }
 
-  metadata.categoryColor = getCategoryColor(categoryCards, category);
+  metadata.categoryColor = getCategoryColor(category);
 
   return metadata;
 }
 
 /**
  * @param {Object} metadataEntry
- * @param {Array} cardBGImages
- * @param {Array} categoryCards
  *
  * @return {Object} metadataEntry enhanced with a title image based on the entrys tags
  */
-export function enhanceMetadataEntry(
-  metadataEntry,
-  cardBGImages,
-  categoryCards,
-) {
-  if (!metadataEntry || !cardBGImages || !categoryCards) {
+export function enhanceMetadataEntry(metadataEntry) {
+  if (!metadataEntry || !cardImageBgs) {
     return null;
   }
 
   if (!metadataEntry.titleImg) {
-    enhanceTitleImg(metadataEntry, cardBGImages, categoryCards);
+    enhanceTitleImg(metadataEntry);
   }
 
   return metadataEntry;
@@ -945,12 +938,9 @@ export function enhanceMetadataEntry(
 
 /**
  * @param {Array} metadatas
- * @param {Array} cardBGImages
- *
- * @param categoryCards
  * @return {Array} metadatas enhanced with a title image based on the metadatas tags
  */
-export function enhanceMetadatasTitleImage(metadatas, cardBGImages, categoryCards) {
+export function enhanceMetadatasTitleImage(metadatas) {
   if (metadatas === undefined) {
     return undefined;
   }
@@ -960,7 +950,7 @@ export function enhanceMetadatasTitleImage(metadatas, cardBGImages, categoryCard
       const el = metadatas[i];
 
       if (!el.titleImg) {
-        metadatas[i] = enhanceTitleImg(el, cardBGImages, categoryCards);
+        metadatas[i] = enhanceTitleImg(el);
       }
     }
   }
@@ -1378,12 +1368,14 @@ export const possibleVisibilityStates = [
 /**
  *
  * @param {object[]}datasets
- * @param cardBGImages
+ * @param cardImageBgs
  * @param categoryCards
  * @param mode
  * @returns {{}}
  */
-export function enhanceMetadatas(datasets, cardBGImages, categoryCards, mode) {
+export function enhanceMetadatas(datasets, mode) {
+
+
   if (!(datasets instanceof Array)) {
     throw new Error(`enhanceMetadatas() expects an array of datasets got ${typeof datasets}`);
   }
@@ -1392,10 +1384,10 @@ export function enhanceMetadatas(datasets, cardBGImages, categoryCards, mode) {
 
   for (let i = 0; i < datasets.length; i++) {
     let dataset = datasets[i];
-    dataset = enhanceMetadataEntry(dataset, cardBGImages, categoryCards);
+    dataset = enhanceMetadataEntry(dataset);
     dataset = enhanceMetadataWithModeExtras(mode, dataset);
 
-    dataset = enhanceTags(dataset, categoryCards);
+    dataset = enhanceTags(dataset);
 
     dataset.location = createLocation(dataset);
 

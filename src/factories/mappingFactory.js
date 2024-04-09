@@ -703,7 +703,7 @@ function formatDatesForFrontend(dates) {
   return formattedDates;
 }
 
-function populateEditingMain(commit, categoryCards, snakeCaseJSON) {
+function populateEditingMain(commit, snakeCaseJSON) {
 
   const dataObject = {};
 
@@ -721,7 +721,7 @@ function populateEditingMain(commit, categoryCards, snakeCaseJSON) {
   dataObject.descriptionData = descriptionData;
 
   stepKey = EDITMETADATA_KEYWORDS;
-  const enhanceDataset = enhanceTags(snakeCaseJSON, categoryCards);
+  const enhanceDataset = enhanceTags(snakeCaseJSON);
   const keywordsData = getFrontendJSONForStep(stepKey, enhanceDataset);
 
   const enhancedKeywords = {
@@ -893,11 +893,11 @@ function populateEditingPublicationInfo(commit, metadataRecord, snakeCaseJSON) {
   return dataObject;
 }
 
-export function populateEditingComponents(commit, metadataRecord, categoryCards) {
+export function populateEditingComponents(commit, metadataRecord) {
 
   const snakeCaseJSON = convertJSON(metadataRecord, false);
 
-  const { headerData, keywordsData } = populateEditingMain(commit, categoryCards, snakeCaseJSON);
+  const { headerData, keywordsData } = populateEditingMain(commit, snakeCaseJSON);
 
   const { authors } = populateEditingAuthors(commit, snakeCaseJSON);
 

@@ -11,21 +11,13 @@
 
 import BaseClickCard from '@/components/BaseElements/BaseClickCard.vue';
 import categoryCards from '@/store/categoryCards';
-import { getImages } from '@/factories/imageFactory';
+
 import {
   mobileLargeViewportParams,
   mobileViewportParams,
   tabletViewportParams,
 } from './js/envidatViewports';
 
-const images = getImages();
-
-for (let i = 0; i < categoryCards.length; i++) {
-  const cardInfo = categoryCards[i];
-  const imageKey = cardInfo.imgPath;
-
-  cardInfo.img = images[imageKey];
-}
 
 export default {
   title: '3 Cards / Click Cards',
@@ -55,7 +47,9 @@ const Template = (args, { argTypes }) => ({
              :key="card.title">
         <BaseClickCard :title="card.title"
                        :img='card.imgPath'
-                       :color='card.color' />
+                       :color='card.color'
+                       :contain='card.contain'
+        />
       </v-col>
     </v-row>
   `,

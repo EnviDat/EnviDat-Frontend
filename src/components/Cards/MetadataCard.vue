@@ -80,7 +80,7 @@
 
         <v-row no-gutters justify="end">
           <v-col class="cardIcons flex-grow-0">
-            <base-icon-count-view :count="resourceAmount" :icon="fileIconString" />
+            <base-icon-count-view :count="resourceAmount" icon="file" />
           </v-col>
         </v-row>
 
@@ -111,7 +111,7 @@
           </v-col>
 
           <v-col class="pl-3 flex-grow-0 cardIcons">
-            <base-icon-count-view :count="resourceAmount" :icon="fileIconString" />
+            <base-icon-count-view :count="resourceAmount" icon="file" />
           </v-col>
 
           <v-col v-if="geoJSONIcon" class="pl-1 flex-grow-0 cardIcons">
@@ -192,9 +192,6 @@ export default {
     resourceCount: Number,
     flatLayout: Boolean,
     compactLayout: Boolean,
-    fileIconString: String,
-    lockedIconString: String,
-    unlockedIconString: String,
     geoJSONIcon: String,
     categoryColor: String,
     modeData: Object,

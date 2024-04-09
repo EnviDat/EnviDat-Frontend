@@ -30,3 +30,26 @@ export const importStoreModule = async (store, moduleKey, importFunction) => {
 
   return null;
 }
+
+/**
+ * Checks to see if the browser can render webp
+ * @returns {boolean} ```true``` if the browser supports webp rendering
+ */
+export const checkWebpSupport = () => {
+  if (import.meta.env.MODE === 'test') {
+    // don't execute canvas test of webp support because in test (unit-testing)
+    // the document isn't available because it's running on node (vitest)
+    return false;
+  }
+
+  const elem = document.createElement('canvas');
+
+  if (!(elem.getContext && elem.getContext('2d'))) {
+    return false;
+  }
+
+  const isWebpSupported = elem.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+  elem.remove();
+
+  return isWebpSupported;
+};

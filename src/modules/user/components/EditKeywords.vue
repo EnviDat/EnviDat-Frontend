@@ -134,7 +134,6 @@ import { EDIT_METADATA_KEYWORDS_TITLE } from '@/factories/metadataConsts';
 import MetadataCard from '@/components/Cards/MetadataCard.vue';
 import TagChip from '@/components/Chips/TagChip.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
-import catCards from '@/store/categoryCards';
 
 import { enhanceTitleImg, getTagColor } from '@/factories/metaDataFactory';
 import {
@@ -241,8 +240,7 @@ export default {
       };
 
       if (this.$store) {
-        const { categoryCards, cardBGImages } = this.$store.getters;
-        enhanceTitleImg(previewEntry, cardBGImages, categoryCards);
+        enhanceTitleImg(previewEntry);
       }
 
       return previewEntry;
@@ -313,7 +311,7 @@ export default {
       // Use pickedKeyword to create pickedKeywordObj
       const pickedKeywordObj = {
         name: pickedKeyword.toUpperCase().trim(),
-        color: getTagColor(catCards, pickedKeyword),
+        color: getTagColor(pickedKeyword),
       };
 
       // Assign selectedKeywords to keywords concatenated with pickedKeywordObj
@@ -343,7 +341,7 @@ export default {
             valuesArray[i] = {
               name: valuesArray[i].toUpperCase()
                   .trim(),
-              color: getTagColor(catCards, valuesArray[i]),
+              color: getTagColor(valuesArray[i]),
             };
           }
         }

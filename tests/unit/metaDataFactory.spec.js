@@ -17,7 +17,6 @@ import {
 } from '@/factories/metaDataFactory';
 
 
-import categoryCards from '@/store/categoryCards';
 import packagelist from '@/../stories/testdata/packagelist.json';
 
 // const metadatasContent = {};
@@ -243,7 +242,7 @@ describe('metaDataFactory - enhanceTags', () => {
   it('with dataset', () => {
     const dataset = packagelist.result[6];
 
-    const enhancedDataset = enhanceTags(dataset, categoryCards);
+    const enhancedDataset = enhanceTags(dataset);
 
     expect(enhancedDataset).toBeDefined();
 
@@ -268,7 +267,7 @@ describe('metaDataFactory - enhanceTitleImg', () => {
 
     for (let i = 0; i < datasets.length; i++) {
       const dataset = datasets[i];
-      const enhancedDataset = enhanceTitleImg(dataset, null, categoryCards);
+      const enhancedDataset = enhanceTitleImg(dataset);
 
       expect(enhancedDataset).toBeDefined();
       expect(enhancedDataset).not.toBe('');
@@ -281,7 +280,7 @@ describe('metaDataFactory - enhanceTitleImg', () => {
   // it('with dataset but no background images', () => {
   //   const dataset = packagelist.result[6];
 
-  //   const enhancedDataset = enhanceTitleImg(dataset, null, categoryCards);
+  //   const enhancedDataset = enhanceTitleImg(dataset);
 
   //   expect(enhancedDataset).toBeDefined();
   //   expect(enhancedDataset).not.toBe('');

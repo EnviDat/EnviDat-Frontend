@@ -145,8 +145,8 @@ export default {
   methods: {
     loadBaseMapImages() {
       if (this.$store) {
-        this.baseMapSatelliteImg = getImage('map/baseMap-satellite-icon');
-        this.baseMapStreetsImg = getImage('map/baseMap-streets-icon');
+        this.baseMapSatelliteImg = getImage('baseMap-satellite-icon');
+        this.baseMapStreetsImg = getImage('baseMap-streets-icon');
       } else {
         // Fallback import .png
         import('@/assets/map/baseMap-satellite-icon.png').then(imgImport => {

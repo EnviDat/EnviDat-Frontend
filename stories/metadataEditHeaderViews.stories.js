@@ -21,7 +21,6 @@ import {
   extractAuthorsMap,
 } from '@/factories/authorFactory';
 
-import categoryCards from '@/store/categoryCards';
 import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 import metadataset from './js/metadata';
 
@@ -30,7 +29,7 @@ const tagsFromDatasets = getPopularTags(metadataset, '', 1);
 
 for (let i = 0; i < tagsFromDatasets.length; i++) {
   const tag = tagsFromDatasets[i];
-  tag.color = getTagColor(categoryCards, tag.name);
+  tag.color = getTagColor(tag.name);
 }
 
 const metadataCards = [];

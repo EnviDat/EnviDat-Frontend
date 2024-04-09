@@ -110,8 +110,8 @@ export default {
   beforeMount() {
     this.loadCommunityList();
 
-    this.fallbackCardImg = getImage('about/contact');
-    this.titleImage = getImage('integration/integration_header');
+    this.fallbackCardImg = getImage('contact');
+    this.titleImage = getImage('integration_header');
   },
   /**
    * @description reset the scrolling to the top,

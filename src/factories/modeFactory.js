@@ -158,14 +158,14 @@ let tempModeData = null;
 /**
  *
  * @param {string} mode
- * @param {object} metdataEntry
+ * @param {object} metadataEntry
  * @returns {*}
  */
-export function enhanceMetadataWithModeExtras(mode, metdataEntry) {
-  if (!mode || !metdataEntry) return metdataEntry;
+export function enhanceMetadataWithModeExtras(mode, metadataEntry) {
+  if (!mode || !metadataEntry) return metadataEntry;
 
-  if (typeof metdataEntry.extras === 'object'
-    && metdataEntry.extras instanceof Array) {
+  if (typeof metadataEntry.extras === 'object'
+    && metadataEntry.extras instanceof Array) {
 
     if (!tempModeData || (tempModeData && tempModeData.name !== mode)) {
       tempModeData = getModeData(mode);
@@ -173,22 +173,22 @@ export function enhanceMetadataWithModeExtras(mode, metdataEntry) {
 
     const key = tempModeData.extrasKey;
 
-    for (let i = 0; i < metdataEntry.extras.length; i++) {
-      const extra = metdataEntry.extras[i];
+    for (let i = 0; i < metadataEntry.extras.length; i++) {
+      const extra = metadataEntry.extras[i];
 
       if (extra.key === key) {
-        metdataEntry[key] = extra.value;
+        metadataEntry[key] = extra.value;
 
         const extraTag = createTag(extra.value.toUpperCase());
-        const tagIndex = metdataEntry.tags.findIndex(t => t.name === extraTag.name);
+        const tagIndex = metadataEntry.tags.findIndex(t => t.name === extraTag.name);
 
         if (tagIndex < 0) {
-          metdataEntry.tags.push(extraTag);
+          metadataEntry.tags.push(extraTag);
         }
       }
     }
   }
 
-  return metdataEntry;
+  return metadataEntry;
 }
 

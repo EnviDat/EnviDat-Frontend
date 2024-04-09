@@ -41,7 +41,6 @@ import {
   ACTION_SEARCH_METADATA,
 } from '@/store/metadataMutationsConsts';
 
-import catCards from '@/store/categoryCards';
 
 import {
   tagsIncludedInSelectedTags,
@@ -131,7 +130,7 @@ function getKeywordObjects(arr) {
   for (let i = 0; i < arr.length; i++) {
     arr[i] = {
               name: arr[i],
-              color: getTagColor(catCards, arr[i]),
+              color: getTagColor(arr[i]),
             };
   }
   return arr;

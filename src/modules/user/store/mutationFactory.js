@@ -119,11 +119,9 @@ export function enhanceMetadataFromCategories(store, metadatas) {
     datasets = [datasets];
   }
 
-  const { cardBGImages, categoryCards } = store.getters;
+  datasets.forEach(dataset => enhanceTags(dataset));
 
-  datasets.forEach(dataset => enhanceTags(dataset, categoryCards));
-
-  const enhanced = enhanceMetadatasTitleImage(datasets, cardBGImages, categoryCards);
+  const enhanced = enhanceMetadatasTitleImage(datasets);
   return isArrayInput ? enhanced : enhanced[0];
 }
 

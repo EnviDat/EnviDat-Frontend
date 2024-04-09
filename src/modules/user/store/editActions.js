@@ -97,8 +97,6 @@ export default {
 
     commit(METADATA_EDITING_PATCH_DATASET_OBJECT, stepKey);
 
-    const categoryCards = this.state.categoryCards;
-
     const actionUrl = ACTION_METADATA_EDITING_PATCH_DATASET();
     const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
@@ -118,7 +116,7 @@ export default {
           // details: `Changes saved ${stepKey} data for ${id}`,
         });
 
-        populateEditingComponents(commit, response.data.result, categoryCards);
+        populateEditingComponents(commit, response.data.result);
       })
       .catch((reason) => {
         commit(METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR, {
@@ -162,7 +160,6 @@ export default {
     commit(METADATA_EDITING_PATCH_DATASET_OBJECT, stepKey);
 
     const apiKey = this.state.userSignIn.user?.apikey || null;
-    const categoryCards = this.state.categoryCards;
 
     const actionUrl = ACTION_METADATA_EDITING_PATCH_DATASET_ORGANIZATION();
     const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
@@ -186,7 +183,7 @@ export default {
         });
 
         if (response?.data?.result) {
-          populateEditingComponents(commit, response.data.result, categoryCards);
+          populateEditingComponents(commit, response.data.result);
         }
       })
       .catch((reason) => {

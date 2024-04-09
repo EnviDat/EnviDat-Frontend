@@ -551,10 +551,8 @@ export default {
       if (this.currentEditingContent
         && this.authorsMap && Object.keys(this.authorsMap).length > 0) {
 
-        const { categoryCards } = this.$store.getters;
-
         // re-trigger the populate of the data when the authorsMap is loaded for author enhancement
-        populateEditingComponents(this.$store.commit, this.currentEditingContent, categoryCards);
+        populateEditingComponents(this.$store.commit, this.currentEditingContent);
       }
     },
     userLoading() {

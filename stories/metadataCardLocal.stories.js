@@ -11,16 +11,15 @@
 
 import MetadataCardLocal from '@/components/Cards/MetadataCardLocal.vue';
 
-import { imageBgs } from '@/factories/imageFactory';
 import { enhanceMetadatasTitleImage } from '@/factories/metaDataFactory';
-import categoryCards from '@/store/categoryCards';
+
 import { METADATA_STATE_DRAFT } from '@/factories/metadataConsts';
 import fileIcon from '../src/assets/icons/file.png';
 
 // metadata gets enhanced in the storybook config
 import metadataCards from './js/metadata';
 
-enhanceMetadatasTitleImage(metadataCards, imageBgs, categoryCards);
+enhanceMetadatasTitleImage(metadataCards);
 
 export default {
   title: '3 Cards / Metadata Cards',

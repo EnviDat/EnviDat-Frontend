@@ -402,7 +402,6 @@ export default {
   computed: {
     ...mapState([
       'config',
-      'categoryCards',
     ]),
     ...mapState(USER_SIGNIN_NAMESPACE, [
       'user',
@@ -653,7 +652,7 @@ export default {
         flatLayout: true,
       };
 
-      enhanceMetadatasTitleImage([localDataset], undefined, this.categoryCards);
+      enhanceMetadatasTitleImage([localDataset]);
 
       return localDataset;
     },
@@ -672,7 +671,7 @@ export default {
 
       for (let j = 0; j < tags.length; j++) {
         const tag = tags[j];
-        tag.color = getTagColor(this.categoryCards, tag.name);
+        tag.color = getTagColor(tag.name);
       }
 
       tags = tags.slice(0, maxTagAmount);

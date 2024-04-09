@@ -12,9 +12,7 @@
 import MetadataCard from '@/components/Cards/MetadataCard.vue';
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
 
-import { imageBgs } from '@/factories/imageFactory';
 import { enhanceMetadatasTitleImage, getMetadataVisibilityState } from '@/factories/metaDataFactory';
-import categoryCards from '@/store/categoryCards';
 
 import { getModeData } from '@/factories/modeFactory';
 import { EDNA_MODE, SWISSFL_MODE } from '@/store/metadataMutationsConsts';
@@ -34,7 +32,7 @@ import polygonIcon from '../src/assets/icons/polygons.png';
 // metadata gets enhance in the storybook config
 import metadataCards from './js/metadata';
 
-enhanceMetadatasTitleImage(metadataCards, imageBgs, categoryCards);
+enhanceMetadatasTitleImage(metadataCards);
 
 const methods = {
   hasRestrictedResources(metadata) {

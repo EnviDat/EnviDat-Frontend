@@ -242,6 +242,7 @@ import {
 } from '@/store/metadataMutationsConsts';
 import { getIcon, getImage } from '@/factories/imageFactory';
 import { convertArrayToUrlString } from '@/factories/stringFactory';
+import categoryCards, { getCardImage } from '@/store/categoryCards';
 
 // Login & Register form and animation
 // https://codepen.io/yusufbkr/pen/RPBQqg
@@ -275,7 +276,7 @@ export default {
   beforeMount() {
 
     this.fileIconString = getIcon('file');
-    this.fallbackCardImg = getImage('about/contact');
+    this.fallbackCardImg = getImage('contact');
   },
   mounted() {
     window.scrollTo(0, 0);
@@ -286,7 +287,7 @@ export default {
     this.stopParticles();
   },
   computed: {
-    ...mapState(['categoryCards', 'config', 'loadingConfig']),
+    ...mapState(['config', 'loadingConfig']),
     ...mapGetters(METADATA_NAMESPACE, [
       'loadingMetadatasContent',
       'metadatasContentSize',
@@ -347,13 +348,13 @@ export default {
       return this.effectsConfig.decemberWishes;
     },
     winterHolidayImage() {
-      return getImage('cards/slogan/holidays_winter');
+      return getCardImage('holidays_winter');
     },
     newYearWishes() {
       return this.effectsConfig.newYearWishes || '';
     },
     newYearImage() {
-      return getImage('cards/slogan/new_year');
+      return getCardImage('new_year');
     },
     effectsConfig() {
       return this.config?.effectsConfig || {};
@@ -519,6 +520,7 @@ export default {
     BlogPostCard,
   },
   data: () => ({
+    categoryCards,
     blogModuleLoaded: false,
     PageBGImage: 'app_b_landingpage',
     MobileBGImage: 'app_b_browsepage',

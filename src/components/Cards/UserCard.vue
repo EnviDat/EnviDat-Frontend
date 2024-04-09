@@ -108,7 +108,7 @@ export default {
       return undefined;
     },
     userCardBanner() {
-      return getImage('projects/data_creator');
+      return getImage('data_creator');
     },
     headerHeight() {
       return this.height >= 350 ? this.height * 0.2 : this.height * 0.4;

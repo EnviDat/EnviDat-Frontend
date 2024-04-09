@@ -651,10 +651,7 @@ export default {
         authors: this.authors,
       };
 
-      if (this.$store) {
-        const { categoryCards, cardBGImages } = this.$store.getters;
-        enhanceTitleImg(previewEntry, cardBGImages, categoryCards);
-      }
+      enhanceTitleImg(previewEntry);
 
       return previewEntry;
     },

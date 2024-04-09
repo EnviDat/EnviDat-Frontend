@@ -189,7 +189,6 @@ import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.v
 import {addStartEndDateUrl, hasData} from '@/factories/chartFactory';
 import { eventBus, GCNET_PREPARE_DETAIL_CHARTS } from '@/factories/eventBus';
 import { mdiChartBar, mdiDownload } from '@mdi/js';
-import { getImages } from '@/factories/imageFactory';
 
 export default {
   name: 'MicroChart',
@@ -217,9 +216,6 @@ export default {
   components: {
     BaseIconButton,
     BaseStatusLabelView,
-  },
-  beforeMount() {
-    this.logoImgs = getImages('logo/');
   },
   mounted() {
     let that = this;
@@ -294,9 +290,6 @@ export default {
     },
   },
   methods: {
-    lazyImage() {
-      return this.imageError ? '' : this.logoImgs['./EnviDat_logo_64.png'];
-    },
     imageLoadError() {
       this.imageLoading = false;
       this.imageError = true;

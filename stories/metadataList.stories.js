@@ -9,9 +9,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { imageBgs } from '@/factories/imageFactory';
 import MetadataList from '@/components/MetadataList.vue';
-import categoryCards from '@/store/categoryCards';
 import {enhanceMetadatasTitleImage, enhanceTags} from '@/factories/metaDataFactory';
 import baseTags from '@/modules/metadata/store/metadataTags';
 import { getEnabledTags, getPopularTags } from '@/factories/metadataFilterMethods';
@@ -24,9 +22,9 @@ import {
 import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 import metadata from './js/metadata';
 
-metadata.forEach(dataset => enhanceTags(dataset, imageBgs));
+metadata.forEach(dataset => enhanceTags(dataset));
 
-enhanceMetadatasTitleImage(metadata, imageBgs, categoryCards);
+enhanceMetadatasTitleImage(metadata);
 
 const longList = [...metadata, ...metadata, ...metadata];
 
@@ -41,9 +39,7 @@ export default {
 
 
 export const EmptyMetadataList = {
-  args: {
-    categoryCards,
-  },
+  args: {},
 }
 
 

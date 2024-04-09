@@ -96,6 +96,7 @@ import MetadataList from '@/components/MetadataList.vue';
 import { useModeStore } from '@/modules/browse/store/modeStore';
 import { areArraysIdentical, convertArrayToUrlString, convertUrlStringToArray } from '@/factories/stringFactory';
 import { isTagSelected } from '@/factories/metaDataFactory';
+import categoryCards from '@/store/categoryCards';
 
 
 export default {
@@ -376,7 +377,6 @@ export default {
   computed: {
     ...mapState([
       'config',
-      'categoryCards',
     ]),
     ...mapGetters({
       metadatasContent: `${METADATA_NAMESPACE}/metadatasContent`,
@@ -514,6 +514,7 @@ export default {
     MetadataList,
   },
   data: () => ({
+    categoryCards,
     EDNA_MODE,
     modeStore: useModeStore(),
     modeContent: null,

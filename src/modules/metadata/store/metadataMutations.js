@@ -55,7 +55,7 @@ import { METADATA_KEYWORDS_TITLE } from '@/factories/metadataConsts';
 import { extractAuthorsMap } from '@/factories/authorFactory';
 import { solrResultToCKANJSON } from '@/factories/apiFactory';
 import { enhanceMetadatas } from '@/factories/metaDataFactory';
-import { imageBgs } from '@/factories/imageFactory';
+
 
 
 export default {
@@ -81,8 +81,7 @@ export default {
       }
     }
 
-    const categoryCards = this.state.categoryCards;
-    state.searchedMetadatasContent = enhanceMetadatas(convertedPayload, imageBgs, categoryCards, mode);
+    state.searchedMetadatasContent = enhanceMetadatas(convertedPayload, mode);
 
     state.searchingMetadatasContentOK = true;
     state.searchingMetadatasContent = false;
@@ -108,8 +107,7 @@ export default {
   [LOAD_METADATA_CONTENT_BY_ID_SUCCESS](state, payload) {
     state.loadingCurrentMetadataContent = false;
 
-    const categoryCards = this.state.categoryCards;
-    const enhancedPayload = enhanceMetadatas([payload], imageBgs, categoryCards);
+    const enhancedPayload = enhanceMetadatas([payload]);
 
     state.currentMetadataContent = Object.values(enhancedPayload)[0];
   },
@@ -130,9 +128,7 @@ export default {
   },
   [BULK_LOAD_METADATAS_CONTENT_SUCCESS](state, payload) {
 
-    const categoryCards = this.state.categoryCards;
-
-    state.metadatasContent = enhanceMetadatas(payload, imageBgs, categoryCards);
+    state.metadatasContent = enhanceMetadatas(payload);
 
     state.authorsMap = extractAuthorsMap(payload);
 

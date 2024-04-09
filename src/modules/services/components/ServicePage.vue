@@ -111,9 +111,8 @@ export default {
   beforeMount() {
     this.loadServiceList();
 
-    this.fallbackCardImg = getImage('about/contact');
-    this.titleImage = getImage('service/service_header');
-    this.missingCardImage = getImage('service/imageNotFound');
+    this.fallbackCardImg = getImage('contact');
+    this.titleImage = getImage('service_header');
   },
   /**
    * @description reset the scrolling to the top,
@@ -158,7 +157,6 @@ export default {
     fallbackCardImg: null,
     titleImage: null,
     SERVICE_PAGENAME,
-    missingCardImage: null,
   }),
 };
 </script>

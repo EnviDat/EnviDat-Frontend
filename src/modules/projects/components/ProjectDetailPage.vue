@@ -215,14 +215,14 @@ export default {
     },
     creatorImg() {
       const imgPath = this.$vuetify.display.mdAndUp
-        ? 'projects/data_creator'
-        : 'projects/data_creator_small';
+        ? 'data_creator'
+        : 'data_creator_small';
       return getImage(imgPath);
     },
     missionImg() {
       const imgPath = this.$vuetify.display.mdAndUp
-        ? 'projects/mission'
-        : 'about/mission_small';
+        ? 'mission'
+        : 'mission_small';
       return getImage(imgPath);
     },
     allMetadataTags() {

@@ -12,10 +12,8 @@
 
 import { getSpecificApiError } from '@/factories/notificationFactory';
 
-import { getImage } from '@/factories/imageFactory';
+import categoryCards, { getCardImage } from '@/store/categoryCards';
 import {
-  ADD_CARD_IMAGES,
-  ADD_ICON_IMAGE,
   ADD_USER_NOTIFICATION,
   CHECK_FRONTEND_VERSION,
   HIDE_NOTIFICATIONS,
@@ -35,7 +33,7 @@ import {
   UPDATE_CATEGORYCARD_IMAGES,
 } from './mainMutationsConsts';
 
-function disablingCategoryCards(config, categoryCards) {
+function disablingCategoryCards(config) {
   if (!categoryCards) {
     return;
   }
@@ -77,7 +75,7 @@ export default {
 
     for (let i = 0; i < state.categoryCards.length; i++) {
       const cardInfo = state.categoryCards[i];
-      cardInfo.img = getImage(cardInfo.imgPath);
+      cardInfo.img = getCardImage(cardInfo.imgPath);
       updatedCards.push(cardInfo);
     }
 
@@ -85,12 +83,6 @@ export default {
   },
   [SET_CURRENT_PAGE](state, page) {
     state.currentPage = page;
-  },
-  [ADD_CARD_IMAGES](state, payload) {
-    state.cardBGImages[payload.key] = payload.value;
-  },
-  [ADD_ICON_IMAGE](state, payload) {
-    state.iconImages[payload.key] = payload.value;
   },
   [SET_CONTROLS](state, payload) {
     state.controls = payload;

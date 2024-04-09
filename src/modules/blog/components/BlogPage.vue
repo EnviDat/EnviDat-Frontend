@@ -139,7 +139,7 @@ export default {
   beforeMount() {
     this.$store.dispatch(`${BLOG_NAMESPACE}/${GET_BLOG_LIST}`);
 
-    this.fallbackCardImg = getImage('about/contact');
+    this.fallbackCardImg = getImage('contact');
   },
   /**
    * @description reset the scrolling to the top,
@@ -173,10 +173,10 @@ export default {
     },
     blogHeaderImg() {
       if (this.showBlogPost) {
-        return getImage('blog/postHeader');
+        return getImage('postHeader');
       }
 
-      return getImage('blog/blogHeader');
+      return getImage('blogHeader');
     },
   },
   methods: {

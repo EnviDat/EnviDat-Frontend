@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia';
-import mainStore from '@/store/store';
 import mainCategoryTags from '@/modules/metadata/store/metadataTags';
 
 import {
@@ -10,7 +9,6 @@ import {
 } from '@/factories/modeFactory';
 
 import { enhanceMetadatas, localSearch } from '@/factories/metaDataFactory';
-import categoryCards from '@/store/categoryCards';
 import { getEnabledTags, getPopularTags, tagsIncludedInSelectedTags } from '@/factories/metadataFilterMethods';
 import { EDNA_MODE } from '@/store/metadataMutationsConsts';
 
@@ -161,7 +159,7 @@ export const useModeStore = defineStore(MODE_STORE, {
       if (index >= 0) {
         if (mode === EDNA_MODE) {
           // eDNA shallow datasets need enhancement
-          const enhancedDatasetsDictionary = enhanceMetadatas(data, mainStore.state.cardBGImages, categoryCards, mode);
+          const enhancedDatasetsDictionary = enhanceMetadatas(data, mode);
           datasets = Object.values(enhancedDatasetsDictionary);
         }
 

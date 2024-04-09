@@ -240,13 +240,13 @@ export default {
     aboutCardInfo() {
       const backendAboutInfos = this.config?.aboutInfo || null;
 
-      const contact = getImage('about/contact');
-      const handsSmall = getImage('about/hands_small');
-      const conceptImg = getImage('about/concept_small');
+      const contact = getImage('contact');
+      const handsSmall = getImage('hands_small');
+      const conceptImg = getImage('concept_small');
 
-      const communityImg = getImage('about/community_small');
-      const wslLogoImg = getImage('about/wslLogo');
-      const teamImg = getImage('about/team_small');
+      const communityImg = getImage('community_small');
+      const wslLogoImg = getImage('wslLogo');
+      const teamImg = getImage('team_small');
 
       const defaultWidthClass = 'v-col-12 v-col-sm-6 v-col-md-4 v-col-xl-3';
 
@@ -309,25 +309,25 @@ export default {
       );
     },
     missionImg() {
-      const imgPath = this.$vuetify.display.mdAndUp ? 'about/mission' : 'about/mission_small';
+      const imgPath = this.$vuetify.display.mdAndUp ? 'mission' : 'mission_small';
       return getImage(imgPath);
     },
     policiesMarkdownText() {
       return renderMarkdown(this.policiesMarkdown);
     },
     policiesImg() {
-      const imgPath = this.$vuetify.display.mdAndUp ? 'about/policies' : 'about/policies_small';
+      const imgPath = this.$vuetify.display.mdAndUp ? 'policies' : 'policies_small';
       return getImage(imgPath);
     },
     guidelinesMarkdownText() {
       return renderMarkdown(this.guidelinesMarkdown);
     },
     guidelineImg() {
-      const imgPath = this.$vuetify.display.mdAndUp ? 'about/guidelines' : 'about/guidelines_small';
+      const imgPath = this.$vuetify.display.mdAndUp ? 'guidelines' : 'guidelines_small';
       return getImage(imgPath);
     },
     dmpImg() {
-      const imgPath = this.$vuetify.display.mdAndUp ? 'about/dmp' : 'about/dmp_small';
+      const imgPath = this.$vuetify.display.mdAndUp ? 'dmp' : 'dmp_small';
       return getImage(imgPath);
     },
     dmpMarkdownText() {

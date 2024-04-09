@@ -608,7 +608,7 @@ export default {
         return '';
       }
 
-      const bgImg = getImage(imageKey, this.$store.state);
+      const bgImg = getImage(imageKey);
       if (!bgImg) {
         return '';
       }

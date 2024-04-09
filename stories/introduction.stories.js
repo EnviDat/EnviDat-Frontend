@@ -16,7 +16,6 @@
 import IntroductionCard from '@/components/Cards/IntroductionCard.vue';
 import fileIcon from '@/assets/icons/file.png';
 import { enhanceMetadatasTitleImage } from '@/factories/metaDataFactory';
-import categoryCards from '@/store/categoryCards';
 
 import metadataCards from './js/metadata';
 
@@ -35,7 +34,7 @@ const currentLocalDataset = {
   flatLayout: true,
 };
 
-enhanceMetadatasTitleImage([currentLocalDataset], undefined, categoryCards);
+enhanceMetadatasTitleImage([currentLocalDataset]);
 
 export const IntroductionCardViews = () => ({
   components: { IntroductionCard },

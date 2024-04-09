@@ -84,7 +84,7 @@
  */
 
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
-import { getImage } from '@/factories/imageFactory';
+import { getCardImage } from '@/store/categoryCards';
 
 export default {
   name: 'SloganCard',
@@ -122,7 +122,7 @@ export default {
   components: { BaseRectangleButton },
   beforeMount() {
     if (this.$store) {
-      this.fallbackImg = getImage('cards/slogan/fingertips_small');
+      this.fallbackImg = getCardImage('cards/slogan/fingertips_small');
     } else {
       // use the import() for lazy loading a fallback incase there is not $store (storybook stories usually)
       import('@/assets/cards/slogan/fingertips_small.jpg').then(imgImport => {

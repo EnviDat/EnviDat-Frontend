@@ -102,7 +102,6 @@ import TagChip from '@/components/Chips/TagChip.vue';
 import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder.vue';
 import { createTag } from '@/factories/metadataFilterMethods';
 import { isTagSelected } from '@/factories/metaDataFactory';
-import { getIcon } from '@/factories/imageFactory';
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 export default {
@@ -131,8 +130,6 @@ export default {
     xsTextLength: 25,
     smTextLength: 50,
     mdTextLength: 65,
-    tagIcon: null,
-    tagsIcon: null,
     filterExpanded: false,
   }),
   computed: {
@@ -196,10 +193,6 @@ export default {
 
       return combinedMax >= 0 ? combinedMax : 0;
     },
-  },
-  beforeMount() {
-    this.tagIcon = getIcon('tag');
-    this.tagsIcon = getIcon('tags');
   },
   methods: {
     clearTags() {

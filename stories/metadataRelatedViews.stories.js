@@ -24,7 +24,7 @@ import { getTagColor } from '@/factories/metaDataFactory';
 import { getPopularTags } from '@/factories/metadataFilterMethods';
 
 import storyTags from '@/modules/metadata/store/metadataTags';
-import categoryCards from '@/store/categoryCards';
+
 import metadataset from './js/metadata';
 
 const unFormatedMetadataCards = metadataset;
@@ -32,22 +32,22 @@ const tagsFromDatasets = getPopularTags(metadataset, '', 1);
 
 for (let i = 0; i < tagsFromDatasets.length; i++) {
   const tag = tagsFromDatasets[i];
-  tag.color = getTagColor(categoryCards, tag.name);
+  tag.color = getTagColor(tag.name);
 }
 
 
-function getKeywordsSource(tagsSource, catCards) {
+function getKeywordsSource(tagsSource) {
 
   const keywordsArray = [...tagsSource];
 
   for (let i = 0; i < keywordsArray.length; i++) {
-    keywordsArray[i].color = getTagColor(catCards, keywordsArray[i].name);
+    keywordsArray[i].color = getTagColor(keywordsArray[i].name);
   }
 
   return keywordsArray;
 }
 
-const storyTags5 = getKeywordsSource(storyTags, categoryCards).slice(0, 5);
+const storyTags5 = getKeywordsSource(storyTags).slice(0, 5);
 
 const placeholderKeywordsGenericProps = {
   metadataCardTitle: 'A Mostly Glorious Title',
