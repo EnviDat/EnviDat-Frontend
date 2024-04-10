@@ -490,8 +490,9 @@ export default {
     async metadatasContent() {
       if (this.mode) {
         await this.loadModeDatasets();
-        await this.filterContent();
       }
+
+      await this.filterContent();
     },
     /* eslint-disable no-unused-vars */
     $route: async function watchRouteChanges(to, from) {
