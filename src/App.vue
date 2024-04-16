@@ -14,11 +14,7 @@
                 z-index: ${NotificationZIndex};`">
 
       <NotificationCard
-        v-if="notification.show"
-        :message="notification.message"
-        :details="notification.details"
-        :stack="notification.stack"
-        :type="notification.type"
+        v-bind="notification"
         :height="165"
         :showReportButton="config.errorReportingEnabled && notification.type === 'error'"
         :showCloseButton="true"
