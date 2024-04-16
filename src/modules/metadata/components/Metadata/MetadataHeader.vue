@@ -42,13 +42,11 @@
       <v-row no-gutters style="position: relative; z-index: 1;">
 
         <v-col v-if="hasContent" cols="12" >
-          <div class="text-h3 headerTitle"
-                :style="`line-height: ${$vuetify.display.xs ? '1.5rem' : ''};`"
+          <div class="headerTitle"
                 :class="{ 'py-0': $vuetify.display.smAndDown,
                           'display-2': $vuetify.display.xl,
-                          'text-h4': $vuetify.display.mdAndUp,
-                          'headline': $vuetify.display.sm,
-                          'subtitle-1': $vuetify.display.xs,
+                          'text-h3': $vuetify.display.mdAndUp,
+                          'text-h4': $vuetify.display.xs,
                         }" >
             {{ metadataTitle }}
           </div>
@@ -136,7 +134,8 @@
                   style="position: relative; z-index: 1;">
 
             <v-col cols="12"
-                  sm="3"
+                  sm="6"
+                   lg="3"
                   class="headerInfo py-1 py-sm-0" >
 
               <v-tooltip bottom>
@@ -241,7 +240,8 @@
                   justify="end">
 
             <v-col cols="12"
-                  sm="3"
+                  sm="6"
+                   lg="3"
                   class="headerInfo py-1 py-sm-0" >
 
               <v-tooltip bottom>
@@ -295,7 +295,8 @@
             </v-col>
 
             <v-col cols="12"
-                  sm="3"
+                   sm="6"
+                   lg="3"
                   class="headerInfo py-1 py-sm-0" >
 
               <MetadataOrganizationChip v-if="hasContent && organization"
