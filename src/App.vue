@@ -1,19 +1,29 @@
 <template>
-  <v-app class="application envidat-font-overwrite" :style="dynamicBackground">
+  <v-app class="application envidat-font-overwrite"
+         :style="dynamicBackground">
 
     <div v-show="showDecemberParticles" id="christmas-canvas" style="position: absolute; width: 100%; height: 100%;">
     </div>
 
     <link v-if="showDecemberParticles" rel="stylesheet" href="./particles/decemberEffects.css">
 
-    <div v-for="(notification, index) in visibleNotifications()" :key="`notification_${index}`" :style="`position: absolute;
-                  right: ${$vuetify.display.xs ? 0 : 15}px;
-                      top: ${35 + index * 175}px;
-                      z-index: ${NotificationZIndex};`">
+    <div v-for="(notification, index) in visibleNotifications()"
+         :key="`notification_${index}`" :style="`position: absolute;
+                right: ${$vuetify.display.xs ? 0 : 15}px;
+                top: ${35 + index * 175}px;
+                z-index: ${NotificationZIndex};`">
 
-      <NotificationCard v-if="notification.show" v-bind="notification" :height="165"
-        :showReportButton="config.errorReportingEnabled && notification.type === 'error'" :showCloseButton="true"
-        @clickedClose="catchCloseClicked(notification.key)" @clickedReport="catchReportClicked(notification.key)" />
+      <NotificationCard
+        v-if="notification.show"
+        :message="notification.message"
+        :details="notification.details"
+        :stack="notification.stack"
+        :type="notification.type"
+        :height="165"
+        :showReportButton="config.errorReportingEnabled && notification.type === 'error'"
+        :showCloseButton="true"
+        @clickedClose="catchCloseClicked(notification.key)"
+        @clickedReport="catchReportClicked(notification.key)" />
     </div>
 
     <TheNavigationToolbar v-if="showToolbar" ref="TheNavigationToolbar" class="envidatToolbar"
@@ -120,6 +130,7 @@ import {
   SET_APP_SCROLL_POSITION,
   TRIM_NOTIFICATIONS,
   HIDE_NOTIFICATIONS,
+  SET_APP_BACKGROUND,
 } from '@/store/mainMutationsConsts';
 
 import {
@@ -163,8 +174,15 @@ export default {
   beforeCreate() {
     // check for the backend version
     this.$store.dispatch(SET_CONFIG);
+
+    this.$store.subscribe((mutation) => {
+      if (mutation.type === SET_APP_BACKGROUND) {
+        this.appBGImage = getImage(mutation.payload);
+      }
+    });
   },
   created() {
+
     eventBus.on(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
     eventBus.on(SHOW_DIALOG, this.openGenericDialog);
     eventBus.on(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
@@ -506,7 +524,6 @@ export default {
     ),
     ...mapGetters({
       currentPage: 'currentPage',
-      appBGImage: 'appBGImage',
       outdatedVersion: 'outdatedVersion',
       newVersion: 'newVersion',
       notifications: 'notifications',
@@ -603,13 +620,9 @@ export default {
       return this.outdatedVersion && !this.reloadDialogCanceled;
     },
     dynamicBackground() {
-      const imageKey = this.appBGImage;
-      if (!imageKey) {
-        return '';
-      }
+      const bgImg = this.appBGImage;
 
-      const bgImg = getImage(imageKey);
-      if (!bgImg) {
+      if(!bgImg) {
         return '';
       }
 
@@ -672,6 +685,7 @@ export default {
   },
   /* eslint-disable object-curly-newline */
   data: () => ({
+    appBGImage: '',
     ckanDomain: process.env.VITE_API_ROOT,
     reloadDialogCanceled: false,
     showInfoDialog: false,
