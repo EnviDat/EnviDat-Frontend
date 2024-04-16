@@ -121,14 +121,7 @@ export default {
   },
   components: { BaseRectangleButton },
   beforeMount() {
-    if (this.$store) {
-      this.fallbackImg = getCardImage('cards/slogan/fingertips_small');
-    } else {
-      // use the import() for lazy loading a fallback incase there is not $store (storybook stories usually)
-      import('@/assets/cards/slogan/fingertips_small.jpg').then(imgImport => {
-        this.fallbackImg = imgImport.default;
-      });
-    }
+    this.fallbackImg = getCardImage('fingertips_small');
   },
   data: () => ({
     fallbackImg: '',
