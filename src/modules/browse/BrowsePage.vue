@@ -343,7 +343,6 @@ export default {
 
     },
     catchShallowRealClick() {
-
       this.showShallowData = !this.showShallowData;
 
 /*
@@ -496,7 +495,6 @@ export default {
         if (this.mode === EDNA_MODE) {
           const modeMetadata = this.modeStore.getModeMetadata(EDNA_MODE);
           modeMetadata.isShallow = showShallow;
-          console.log(`clicked on shallow: ${modeMetadata.isShallow}`);
 
           // reload the datasets again because there is a different behavior
           // based on the isShallow property

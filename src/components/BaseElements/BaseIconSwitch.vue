@@ -1,39 +1,41 @@
 <template>
-  <v-tooltip bottom
-              id="BaseIconSwitch" >
+  <div class="pa-2" :style="`z-index:  ${zIndex}; position: relative; background-color: white; height: 32px;`">
+    <v-tooltip bottom
+                id="BaseIconSwitch" >
 
-    <template v-slot:activator="{ on }">
+      <template v-slot:activator="{ on }">
 
-      <div v-on="on"
-           style="position: relative; width: 44px; " >
+        <div v-on="on"
+             style="position: relative; width: 44px;" >
 
-        <div class="authorSwitch"
-             :class="disabled ? '': 'authorSwitchClickable'"
-             :style="active ? 'left: -5px;' : 'left: 21px;'"
-             @click="emitClick"
-             >
-          <v-icon v-if="materialIconName"
-                  :color="active ? 'primary' : 'gray'"
-                  style="top: 0; left: 1px;">
-            {{ materialIconName }}
-          </v-icon>
+          <div class="authorSwitch"
+               :class="disabled ? '': 'authorSwitchClickable'"
+               :style="active ? 'left: -5px;' : 'left: 21px;'"
+               @click="emitClick"
+               >
+            <v-icon v-if="materialIconName"
+                    :color="active ? 'primary' : 'gray'"
+                    style="top: 0; left: 1px;">
+              {{ materialIconName }}
+            </v-icon>
+
+          </div>
+
+          <div class="authorSwitchHover"
+               :style="active ? 'left: -10px;' : 'left: 16px;'" />
+
+          <div style="width: 44px; height: 14px; border-radius: 8px;"
+               :style="`background-color: ${bgColor};`"
+                class="" />
 
         </div>
 
-        <div class="authorSwitchHover"
-             :style="active ? 'left: -10px;' : 'left: 16px;'" />
+      </template>
 
-        <div style="width: 44px; height: 14px; border-radius: 8px;"
-             :style="`background-color: ${bgColor};`"
-              class="" />
+      <span>{{ tooltipText }}</span>
 
-      </div>
-
-    </template>
-
-    <span>{{ tooltipText }}</span>
-
-  </v-tooltip>
+    </v-tooltip>
+  </div>
 </template>
 
 <script>
@@ -64,6 +66,7 @@ export default {
     },
     materialIconName: String,
     tooltipText: String,
+    zIndex: Number,
   },
   data: () => ({
     hoverBadge: false,
