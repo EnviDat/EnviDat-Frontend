@@ -1,5 +1,5 @@
 <template>
-  <div class="baseIconSwitch">
+  <div class="baseIconSwitch pa-2" :style="`z-index:  ${zIndex}; position: relative; background-color: white; height: 32px;`">
     <v-tooltip :disabled="!tooltipText" bottom>
       <template v-slot:activator="{ on }">
         <div class="d-flex" v-on="on">
