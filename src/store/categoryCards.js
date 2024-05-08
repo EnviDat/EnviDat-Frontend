@@ -70,7 +70,7 @@ export default [
   {
     title: 'Biodiversity',
     type: DIVERSITY,
-    alias: ['abundance', 'plants', 'insect', 'fungi'],
+    alias: ['abundance', 'plants', 'insect', 'fungi', 'lichens'],
     imgPath: 'cards/c_b_diversity_meadow_small',
     color: '#ede7f6',
     darkColor: '#D1C4E9',

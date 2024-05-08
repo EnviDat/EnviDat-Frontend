@@ -169,11 +169,8 @@ export default {
    * @description load all the icons once before the first component's rendering.
    */
   beforeMount() {
-    this.doiIcon = this.mixinMethods_getIcon('doi');
     this.fileSizeIcon = this.mixinMethods_getIcon('fileSize');
     this.fileIcon = this.mixinMethods_getIcon('file');
-    this.dateCreatedIcon = this.mixinMethods_getIcon('dateCreated');
-    this.lastModifiedIcon = this.mixinMethods_getIcon('dateModified');
 
     window.scrollTo(0, 0);
   },
@@ -220,8 +217,6 @@ export default {
       currentMetadataContent: `${METADATA_NAMESPACE}/currentMetadataContent`,
       detailPageBackRoute: `${METADATA_NAMESPACE}/detailPageBackRoute`,
       authorsMap: `${METADATA_NAMESPACE}/authorsMap`,
-      iconImages: 'iconImages',
-      cardBGImages: 'cardBGImages',
       appScrollPosition: 'appScrollPosition',
       asciiDead: `${METADATA_NAMESPACE}/asciiDead`,
       authorPassedInfo: `${METADATA_NAMESPACE}/authorPassedInfo`,
@@ -497,7 +492,13 @@ export default {
 
         this.funding = createFunding(currentContent);
 
-        // authors are going to be loaded via the watch when the AuthorsMap is available
+        const authorMapSize = Object.keys(this.authorsMap).length || 0;
+
+        if (authorMapSize > 0) {
+          // if the authorMap is not loaded (direct loading of the this page) without
+          // loading the whole app first, the author loading happens via the watch when the AuthorsMap
+          this.loadAuthors(currentContent);
+        }
       }
     },
     loadAuthors(currentContent) {
@@ -524,11 +525,8 @@ export default {
 
       const license = createLicense(currentContent);
 
-      this.resources.doiIcon = this.doiIcon;
       this.resources.fileSizeIcon = this.fileSizeIcon;
       this.resources.fileIcon = this.fileIcon;
-      this.resources.dateCreatedIcon = this.dateCreatedIcon;
-      this.resources.lastModifiedIcon = this.lastModifiedIcon;
 
       if (this.resources.resources) {
         this.configInfos = getConfigFiles(this.resources.resources);
@@ -872,19 +870,8 @@ export default {
     authors: null,
     amountOfResourcesToShowDetailsLeft: 4,
     notFoundBackPath: 'browse',
-    doiIcon: null,
     fileSizeIcon: null,
     fileIcon: null,
-    dateCreatedIcon: null,
-    lastModifiedIcon: null,
-    modalTitle: '',
-    gcnetModalComponent: null,
-    textPreviewComponent: null,
-    textPreviewUrl: null,
-    dataIframeComponent: null,
-    dataPreviewUrl: null,
-    fullScreenComponent: null,
-    fullScreenConfig: null,
     eventBus,
     stationsConfig: null,
     currentStation: null,

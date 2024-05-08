@@ -12,7 +12,10 @@
     </template>
 
     <v-card-title class="text-h5 resourceHeadline white--text">
-      {{ resourceName }}
+      <span class="d-flex align-center">
+        <v-icon v-if="isProtected" left>lock</v-icon>
+        {{ resourceName }}
+      </span>
     </v-card-title>
 
     <v-card-text
@@ -70,48 +73,46 @@
         <v-row v-if="!showFullDescription" no-gutters>
           <v-col class="resourceInfo">
             <base-icon-label-view
+              v-if="isProtected"
+              text="This resource is private"
+              material-icon-name="lock"
+              dark
+            />
+
+            <base-icon-label-view
               v-if="doi"
               :text="doi"
-              :label="doiIcon ? '' : 'DOI:'"
-              :icon="doiIcon"
+              material-icon-name="fingerprint"
               :icon-tooltip="EDIT_METADATA_DOI_LABEL"
-              :align-left="twoColumnLayout"
+              dark
+              class="mb-1"
             />
 
             <base-icon-label-view
               v-if="format"
-              :text="format"
-              :label="extensionIcon ? '' : 'File format:'"
+              :text="formatedBytes ? `${format} - ${formatedBytes}` : format"
               :icon="extensionIcon"
-              icon-tooltip="Format of the file"
-              :align-left="twoColumnLayout"
-            />
-
-            <base-icon-label-view
-              v-if="size"
-              :text="formatedBytes"
-              :label="fileSizeIcon ? '' : 'File size:'"
-              :icon="fileSizeIcon"
-              icon-tooltip="Filesize"
-              :align-left="twoColumnLayout"
+              :icon-tooltip="formatedBytes ? 'Resource type and size' : 'Resource type'"
+              dark
+              class="mb-1"
             />
 
             <base-icon-label-view
               v-if="created"
               :text="readableCreated"
-              :label="dateCreatedIcon ? '' : 'Created at:'"
-              :icon="dateCreatedIcon"
-              icon-tooltip="Date of file creation"
-              :align-left="twoColumnLayout"
+              material-icon-name="more_time"
+              icon-tooltip="Date of resource creation"
+              dark
+              class="mb-1"
             />
 
             <base-icon-label-view
               v-if="lastModified"
               :text="readableLastModified"
-              :label="lastModifiedIcon ? '' : 'Modified at:'"
-              :icon="lastModifiedIcon"
+              material-icon-name="update"
               icon-tooltip="Date of last modification"
-              :align-left="twoColumnLayout"
+              dark
+              class="mb-1"
             />
           </v-col>
         </v-row>
@@ -171,7 +172,7 @@
             iconColor="black"
             color="accent"
             :isElevated="true"
-            :tooltipText="isFile ? 'Download file' : 'Open link'"
+            :tooltipText="isFile ? 'Download resource' : 'Open link'"
             :url="url"
             :disabled="!downloadActive"
           />
@@ -222,6 +223,7 @@ import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
 import { renderMarkdown,stripMarkdown } from '@/factories/stringFactory';
 import { formatBytes, formatDate } from '@/factories/metaDataFactory';
 import { EDIT_METADATA_DOI_LABEL } from '@/factories/metadataConsts';
+import { getFileIcon } from '@/factories/imageFactory';
 
 export default {
   name: 'ResourceCard',
@@ -243,10 +245,7 @@ export default {
     twoColumnLayout: Boolean,
     height: String,
     dark: Boolean,
-    doiIcon: String,
     fileSizeIcon: String,
-    dateCreatedIcon: String,
-    lastModifiedIcon: String,
     isProtected: Boolean,
     fileExtensionIcon: Object,
     metadataContact: String,
@@ -344,6 +343,7 @@ export default {
 
       return formatBytes(sizeNumber);
     },
+
     isLink() {
       return (
         this.format &&
@@ -380,44 +380,7 @@ export default {
       return `Could not load the resource, please contact ${this.metadataContact} for getting access or envidat@wsl.ch for support.`;
     },
     extensionIcon() {
-      if (this.$store) {
-        if (this.audioFormats.includes(this.format)) {
-          return this.mixinMethods_getIcon('Audio');
-        }
-
-        let extIcon = this.mixinMethods_getIconFileExtension(this.format);
-
-        if (!extIcon && this.format.toLowerCase() === 'url') {
-          extIcon = this.linkIcon;
-        }
-
-        if (extIcon) {
-          return extIcon;
-        }
-
-        return this.mixinMethods_getIcon('file');
-      }
-
-      if (this.fileExtensionIcon) {
-        return this.lookupExtensionIcon;
-      }
-
-      return null;
-    },
-    lookupExtensionIcon() {
-      const lookUp = `file${this.format.toLowerCase()}`;
-      let icon = this.fileExtensionIcon[`./${lookUp}`];
-
-      if (!icon && this.audioFormats.includes(this.format)) {
-        icon = this.fileExtensionIcon['./fileAudio'];
-      }
-
-      if (!icon) {
-        icon = this.fileExtensionIcon['./file'];
-      }
-
-      // console.log(`icon ${icon}`);
-      return icon;
+      return getFileIcon(this.format);
     },
   },
   methods: {},
@@ -425,6 +388,7 @@ export default {
 </script>
 
 <style scoped>
+
 .resourceHeadline {
   line-height: 1.5rem;
 }

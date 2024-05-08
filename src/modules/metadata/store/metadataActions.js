@@ -123,7 +123,7 @@ function createSolrQuery(searchTerm) {
 
 // Returns array with strings that are both only maxWords or less and do not start with a number
 function getfilteredArray(arr, maxWords) {
-  return arr.filter(item => item.trim().split(' ').length <= maxWords && !/^\d/.test(item));
+  return arr?.filter(item => item.trim().split(' ').length <= maxWords && !/^\d/.test(item));
 }
 
 // Return array with each element converted to object with name and assigned color
@@ -264,10 +264,7 @@ export default {
         dispatch(METADATA_UPDATE_EXISTING_AUTHORS);
 
         // make sure the existingKeywords list is up-2-date
-        dispatch(METADATA_UPDATE_EXISTING_KEYWORDS, config.userEditMetadataConfig);
-
-        // for the case when loaded up on landingpage
-        return dispatch(FILTER_METADATA, { selectedTagNames: [] });
+        return dispatch(METADATA_UPDATE_EXISTING_KEYWORDS, config.userEditMetadataConfig);
       })
       .catch((reason) => {
         commit(BULK_LOAD_METADATAS_CONTENT_ERROR, reason);
@@ -387,16 +384,18 @@ export default {
 
       const tags = response.data.result;
 
-      const keywordsListWordMax = userEditMetadataConfig?.keywordsListWordMax || 2;
-      const filteredTags = getfilteredArray(tags, keywordsListWordMax);
+      if (tags) {
+        const keywordsListWordMax = userEditMetadataConfig?.keywordsListWordMax || 2;
+        const filteredTags = getfilteredArray(tags, keywordsListWordMax);
 
-      const keywordObjects = getKeywordObjects(filteredTags);
+        const keywordObjects = getKeywordObjects(filteredTags);
 
-      const mergedKeywords = existingKeywords.concat(keywordObjects);
+        const mergedKeywords = existingKeywords.concat(keywordObjects);
 
-      const sortedKeywords = sortObjectArray(mergedKeywords, 'name');
+        const sortedKeywords = sortObjectArray(mergedKeywords, 'name');
 
-      commit(METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS, sortedKeywords);
+        commit(METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS, sortedKeywords);
+      }
 
     }).catch((reason) => {
       commit(METADATA_UPDATE_EXISTING_KEYWORDS_ERROR, reason);
