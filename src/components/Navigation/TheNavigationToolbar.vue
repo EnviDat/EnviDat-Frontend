@@ -11,7 +11,7 @@
               align="center"
               justify="space-between" >
 
-        <v-col cols="4" sm="2">
+        <v-col cols="auto" sm="2">
           <v-row no-gutters>
 
             <v-col class="shrink px-2" >
@@ -27,7 +27,10 @@
               </v-btn>
             </v-col>
             <v-col class="shrink py-0" >
-              <div class="text-md-h5 envidatText clickable mt-1 mt-sm-0" @click.stop="catchHomeClicked">{{logoText}}</div>
+              <div class="text-md-h5 envidatText clickable mt-1 mt-sm-0"
+                   @click.stop="catchHomeClicked">
+                {{ showAdditionalText ? logoText : '' }}
+              </div>
             </v-col>
           </v-row>
 
@@ -75,7 +78,7 @@
 
         <v-col v-else
                class="shrink"
-               cols="4" sm="3" md="2" xl="1">
+               cols="auto" sm="3" md="2" xl="1">
 
           <v-row align="center"
                   justify="end"
@@ -92,7 +95,7 @@
                         v-on="on"
                         style="text-align: right;"
                         class="text-body-2">
-                    {{ signInText }}
+                    {{ showAdditionalText ? signInText : '' }}
                   </div>
                 </template>
 
@@ -158,6 +161,10 @@ export default {
     },
   },
   computed: {
+    showAdditionalText()  {
+      return this.$vuetify.breakpoint.xsOnly && !this.hasModeData
+          || this.$vuetify.breakpoint.smAndUp;
+    },
     compact() {
       return this.$vuetify.breakpoint.xsOnly;
     },
