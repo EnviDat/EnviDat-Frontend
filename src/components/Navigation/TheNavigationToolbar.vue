@@ -49,7 +49,7 @@
           <v-row align="center"
                   justify="end" >
 
-            <v-col style="text-align: right; ">
+            <v-col :style="`text-align: right; ${$vuetify.breakpoint.xsOnly ? 'line-height: 1rem;' : ''}`">
               {{ signedInUser.fullName }}
             </v-col>
 
