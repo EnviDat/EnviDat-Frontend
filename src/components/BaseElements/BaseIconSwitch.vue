@@ -1,8 +1,13 @@
 <template>
-  <div class="baseIconSwitch">
+  <div class="baseIconSwitch" :style="`z-index:  ${zIndex};
+                                      position: relative;
+                                      background-color: white;`">
+
     <v-tooltip :disabled="!tooltipText" bottom>
       <template v-slot:activator="{ on }">
-        <div class="d-flex" v-on="on">
+        <div style="height: 26px;"
+              class="d-flex"
+              v-on="on">
           <div class="iconSwitch">
             <button
               tabindex="0"
@@ -24,6 +29,7 @@
           <label v-if="label" :for="'iconSwitchButton' + _uid" class="iconSwitchLabel" :class="{disabled}">{{ label }}</label>
         </div>
       </template>
+
       <span v-if="tooltipText">{{ tooltipText }}</span>
     </v-tooltip>
   </div>
@@ -65,6 +71,7 @@ export default {
     },
     materialIconName: String,
     tooltipText: String,
+    zIndex: Number,
   },
   watch: {
     active: {
@@ -114,11 +121,13 @@ $slide-duration: 0.2s;
 .baseIconSwitch {
   display: flex;
   flex-wrap: nowrap;
+
   .iconSwitchLabel {
     user-select: none;
     padding-left: 12px;
     margin-top: 3px;
     cursor: pointer;
+
     &.disabled {
       cursor: default;
       color: rgba(0, 0, 0, 0.38);
@@ -130,6 +139,7 @@ $slide-duration: 0.2s;
     z-index: 0;
     min-width: $switch-length;
     min-height: $button-size;
+
     .iconSwitchButton {
       position: absolute;
       border-radius: 50%;
@@ -148,6 +158,7 @@ $slide-duration: 0.2s;
         $activeDelta: $switch-length - $button-size;
         left: $activeDelta;
         transition: left $slide-duration ease-in-out;
+
         &:before {
           margin-left: -$activeDelta;
           transition: margin-left $slide-duration ease-in-out, background-color $slide-duration;
@@ -158,6 +169,7 @@ $slide-duration: 0.2s;
         background-color: #DDD;
         cursor: not-allowed;
         box-shadow: 0 0 1px 1px rgba(33, 33, 33, 0.1);
+
         &:before {
           box-shadow: none;
         }
