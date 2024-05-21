@@ -43,7 +43,7 @@
         </v-col>
 
         <v-col v-if="showSearch && mode !== EDNA_MODE"
-               class="py-0 ml-sm-4 shrink">
+               class="ml-sm-4 shrink">
 
           <BaseIconSwitch :active="isAuthorSearch"
                           :tooltipText="`Author search is ${isAuthorSearch ? 'active' : 'inactive'}`"
@@ -53,17 +53,23 @@
         </v-col>
 
         <v-col v-if="showSearch && mode === EDNA_MODE"
-               class="py-0 ml-sm-4 shrink" >
+               class="ml-sm-4 shrink" >
 
 
            <BaseIconSwitch :active="isShallow" :zIndex="elementVisible? 6 : undefined"
-                          :tooltipText="`View: eDNA ${isShallow ? 'Samples' : 'Datasets'}`"
+                          :tooltipText="`${isShallow ? 'Samples' : 'Overview'} datasets are visible, click to switch to ${isShallow ? 'overview' : 'samples'} datasets.`"
                           materialIconName="layers"
                           @clicked="catchShallowRealClick" />
 
-          <v-overlay absolute :value="elementVisible" style="z-index: 5 !important;">
-            <div class="dialog" @click="elementVisible = !elementVisible">
-              <span>Click here to toggle views</span>
+          <v-overlay
+            absolute
+            :value="elementVisible"
+            style="z-index: 5 !important;">
+
+            <div class="dialog"
+                 :style="`left: ${ $vuetify.breakpoint.smAndDown ? '-20' : '65' }px;`"
+                 @click="elementVisible = !elementVisible">
+              <span>Toggle from overview to sample datasets:</span>
             </div>
           </v-overlay>
 
@@ -161,9 +167,10 @@ export default {
     },
     showOverlay() {
       this.elementVisible = true;
-        setTimeout(() => {
+
+      setTimeout(() => {
         this.elementVisible = false;
-      }, 5000); // 5000 milliseconds = 5 seconds
+      }, 10000); // 10000 milliseconds = 5 seconds
     },
   },
   computed: {
@@ -194,6 +201,7 @@ export default {
   font-size: 10px !important;
 }
 .dialog {
+  position: relative;
   background-color: white;
   padding: 5px;
   border-radius: 5px;
