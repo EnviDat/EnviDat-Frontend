@@ -171,26 +171,27 @@
           <v-col cols="12"
                  sm="3"
                 class="headerInfo py-1 py-sm-0" >
+            <v-tooltip v-if="contactToolTipText" bottom>
+              <template v-slot:activator="{ on }">
 
-            <v-row no-gutters
-                   align="center">
-              <v-col class="flex-grow-0 pr-2">
-                <v-tooltip v-if="contactToolTipText" bottom>
-                  <template v-slot:activator="{ on }">
-                    <div v-on="on">
-                      <v-icon class="envidatIcon"
-                        :class="$vuetify.breakpoint.xs ? 'small' : ''"
-                        color="black">manage_accounts</v-icon>
-                    </div>
-                  </template>
-                  <span>{{ contactToolTipText }}</span>
-                </v-tooltip>
-              </v-col>
-              <v-col>
-                {{ contactName }}
-              </v-col>
-            </v-row>
+                <v-row no-gutters
+                       v-on="on"
+                       align="center">
 
+                  <v-col class="flex-grow-0 pr-2">
+                    <v-icon class="envidatIcon"
+                      :class="$vuetify.breakpoint.xs ? 'small' : ''"
+                      color="black">manage_accounts</v-icon>
+                  </v-col>
+
+                  <v-col>
+                    {{ contactName }}
+                  </v-col>
+                </v-row>
+                
+              </template>
+              <span>{{ contactToolTipText }}</span>
+            </v-tooltip>
           </v-col>
 
           <v-col cols="12"
@@ -226,26 +227,25 @@
                  cols="12"
                  sm="3"
                  class="headerInfo py-1 py-sm-0" >
+            <v-tooltip v-if="createTimeToolTipText" bottom>
+              <template v-slot:activator="{ on }">
+                <v-row no-gutters
+                       v-on="on"
+                       align="center">
 
-            <v-row no-gutters
-                   align="center">
-              <v-col class="flex-grow-0 pr-2">
-                <v-tooltip v-if="createTimeToolTipText" bottom>
-                  <template v-slot:activator="{ on }">
-                    <div v-on="on">
-                      <v-icon class="envidatIcon"
-                        :class="$vuetify.breakpoint.xs ? 'small' : ''"
-                        color="black">more_time</v-icon>
-                    </div>
-                  </template>
-                  <span>{{ createTimeToolTipText }}</span>
-                </v-tooltip>
-              </v-col>
-              <v-col style="font-size: 0.9rem;">
-                {{ created }}
-              </v-col>
-            </v-row>
+                  <v-col class="flex-grow-0 pr-2">
+                    <v-icon class="envidatIcon"
+                      :class="$vuetify.breakpoint.xs ? 'small' : ''"
+                      color="black">more_time</v-icon>
+                  </v-col>
 
+                  <v-col style="font-size: 0.9rem;">
+                    {{ created }}
+                  </v-col>
+                </v-row>
+              </template>
+              <span>{{ createTimeToolTipText }}</span>
+            </v-tooltip>
           </v-col>
 
           <v-col v-if="hasContent && spatialInfo"
@@ -253,25 +253,25 @@
                  sm="3"
                  class="headerInfo py-1 py-sm-0" >
 
-            <v-row no-gutters
-                   align="center">
-              <v-col class="flex-grow-0 pr-2">
-                <v-tooltip v-if="locationToolTipText" bottom>
-                  <template v-slot:activator="{ on }">
-                    <div v-on="on">
-                      <v-icon class="envidatIcon"
-                        :class="$vuetify.breakpoint.xs ? 'small' : ''"
-                        color="black">location_pin</v-icon>
-                    </div>
-                  </template>
-                  <span>{{ locationToolTipText }}</span>
-                </v-tooltip>
-              </v-col>
-              <v-col style="font-size: 0.9rem;">
-                {{ spatialInfo }}
-              </v-col>
-            </v-row>
+            <v-tooltip v-if="locationToolTipText" bottom>
+              <template v-slot:activator="{ on }">
+                <v-row no-gutters
+                       v-on="on"
+                       align="center">
 
+                  <v-col class="flex-grow-0 pr-2">
+                    <v-icon class="envidatIcon"
+                      :class="$vuetify.breakpoint.xs ? 'small' : ''"
+                      color="black">location_pin</v-icon>
+                  </v-col>
+
+                  <v-col style="font-size: 0.9rem;">
+                    {{ spatialInfo }}
+                  </v-col>
+                </v-row>
+              </template>
+              <span>{{ locationToolTipText }}</span>
+            </v-tooltip>
           </v-col>
 
 
@@ -288,24 +288,25 @@
                  md="3"
                  class="headerInfo py-1 py-sm-0" >
 
-            <v-row no-gutters
-                   align="center">
-              <v-col class="flex-grow-0 pr-2">
-                <v-tooltip v-if="emailToolTipText" bottom>
-                  <template v-slot:activator="{ on }">
-                    <div v-on="on">
-                      <v-icon class="envidatIcon"
-                        :class="$vuetify.breakpoint.xs ? 'small' : ''"
-                        color="black">email</v-icon>
-                    </div>
-                  </template>
-                  <span>{{ emailToolTipText }}</span>
-                </v-tooltip>
-              </v-col>
-              <v-col>
-                <a :href="contactEmailLowerCase ? `mailto:${contactEmailLowerCase}` : ''" target="_blank">{{ contactEmailLowerCase }}</a>
-              </v-col>
-            </v-row>
+            <v-tooltip v-if="emailToolTipText" bottom>
+              <template v-slot:activator="{ on }">
+                <v-row no-gutters
+                       v-on="on"
+                       align="center">
+
+                  <v-col class="flex-grow-0 pr-2">
+                    <v-icon class="envidatIcon"
+                      :class="$vuetify.breakpoint.xs ? 'small' : ''"
+                      color="black">email</v-icon>
+                  </v-col>
+
+                  <v-col>
+                    <a :href="contactEmailLowerCase ? `mailto:${contactEmailLowerCase}` : ''" target="_blank">{{ contactEmailLowerCase }}</a>
+                  </v-col>
+                </v-row>
+              </template>
+              <span>{{ emailToolTipText }}</span>
+            </v-tooltip>
           </v-col>
 
           <v-col v-if="hasContent"
@@ -330,33 +331,34 @@
                  sm="3"
                  class="headerInfo py-1 py-sm-0" >
 
-            <v-row no-gutters
-                   align="center">
-              <v-col class="flex-grow-0 pr-2">
-                <v-tooltip v-if="modifyTimeToolTipText" bottom>
-                  <template v-slot:activator="{ on }">
-                    <div v-on="on">
-                      <v-icon class="envidatIcon"
-                        :class="$vuetify.breakpoint.xs ? 'small' : ''"
-                        color="black">update</v-icon>
-                    </div>
-                  </template>
+            <v-tooltip v-if="modifyTimeToolTipText" bottom>
+              <template v-slot:activator="{ on }">
+                <v-row no-gutters
+                       v-on="on"
+                       align="center">
+
+                  <v-col class="flex-grow-0 pr-2">
+                    <v-icon class="envidatIcon"
+                      :class="$vuetify.breakpoint.xs ? 'small' : ''"
+                      color="black">update</v-icon>
+                  </v-col>
+
+                  <v-col style="font-size: 0.9rem;">
+                    {{ modified }}
+                  </v-col>
+                </v-row>
+              </template>
               <span>{{ modifyTimeToolTipText }}</span>
-              </v-tooltip>
-              </v-col>
-              <v-col style="font-size: 0.9rem;">
-                {{ modified }}
-              </v-col>
-            </v-row>
+            </v-tooltip>
 
           </v-col>
 
-          <v-col v-if="hasContent"
-                 cols="12"
+          <v-col cols="12"
                  sm="3"
                  class="headerInfo py-1 py-sm-0" >
 
-            <MetadataOrganizationChip :organization="organization"
+            <MetadataOrganizationChip v-if="hasContent && organization"
+                                      :organization="organization"
                                       :tooltip="organizationTooltip" />
 
           </v-col>

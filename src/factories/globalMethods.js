@@ -9,12 +9,11 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-// eslint-disable-next-line import/no-cycle
 import {
   LOCATION_TYPE_MULTIPOINT,
   LOCATION_TYPE_POINT,
   LOCATION_TYPE_POLYGON,
-} from '@/factories/metaDataFactory';
+} from '@/factories/metadataConsts';
 
 import {
   DIVERSITY,

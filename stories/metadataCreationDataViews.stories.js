@@ -64,7 +64,6 @@ for (let i = 0; i < unFormatedMetadata.length; i++) {
   allResources.push(resources);
 }
 
-
 export default {
   title: '9 Editing Metadata / Resource Views',
   decorators: [],
@@ -75,54 +74,51 @@ const userEditMetadataConfig = {
   editingRestrictingActive: true,
 };
 
-  export const EditResourceViews = () => ({
+export const EditResourceViews = () => ({
   components: { EditResource },
   template: `
-    <v-col>
+    <v-container>
 
-      <v-row>
-        EditResource empty and with resource1
-      </v-row>
+
+      <h1>EditResource empty and with resource1</h1>
 
       <v-row class="py-3" >
-        <v-col cols="6">
+        <v-col cols="12" lg="6" xl="4">
           <EditResource  />
         </v-col>
 
-        <v-col cols="6">
+        <v-col cols="12" lg="6" xl="4">
           <EditResource v-bind="resource1" />
         </v-col>
 
       </v-row>
 
-      <v-row>
-        EditResource with resource2 & resource 3
-      </v-row>
+
+      <h1 class="mt-5">EditResource with resource2 & resource3</h1>
 
       <v-row class="py-3" >
 
-        <v-col cols="6">
+        <v-col cols="12" lg="6" xl="4">
           <EditResource v-bind="resource2" />
         </v-col>
 
-        <v-col cols="6">
+        <v-col cols="12" lg="6" xl="4">
           <EditResource v-bind="resource3" />
         </v-col>
       </v-row>
 
-      <v-row>
-        EditResource with resource 4
-      </v-row>
+
+      <h1 class="mt-5">EditResource with resource4</h1>
 
       <v-row class="py-3" >
 
-        <v-col cols="6">
+        <v-col cols="12" lg="6" xl="4">
           <EditResource v-bind="resource4" />
         </v-col>
 
       </v-row>
     
-    </v-col>
+    </v-container>
     `,
   created() {
     eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
@@ -259,7 +255,7 @@ export const EditDataAndResourcesListViews = () => ({
       </v-row>
 
       <v-row>
-        EditDataAndResources Component resourceUploadActive: true
+        EditDataAndResources Component resourceUploadActive: true && resourceEditingActive: true
       </v-row>
 
       <v-row class="py-3" >
@@ -283,11 +279,6 @@ export const EditDataAndResourcesListViews = () => ({
       eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     computed: {
-      userEditMetadataConfig() {
-        return {
-          resourceUploadActive: true,
-        };
-      },
       genericProps() {
         return {
           resources: this.resources,
@@ -308,7 +299,11 @@ export const EditDataAndResourcesListViews = () => ({
           resourcesConfig: {
             downloadActive: false,
           },
-          userEditMetadataConfig: this.userEditMetadataConfig,
+          userEditMetadataConfig: {
+            resourceUploadActive: true,
+            resourceEditingActive: true,
+            editingRestrictingActive: true,
+          },
         };
       },
     },

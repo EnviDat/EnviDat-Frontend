@@ -104,20 +104,32 @@ export default {
       vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
     });
   },
-  created() {
-    if(this.mode) {
-      this.$nextTick(async () => {
-        this.modeContent = await this.modeStore.loadModeDatasets(this.mode);
-        await this.filterContent();
-      });
-    }
-  },
-  mounted() {
+  async mounted() {
     this.oldIsAuthorSearch = this.isAuthorSearch;
+
+    if(this.mode) {
+      await this.loadModeDatasets();
+    }
 
     this.checkRouteChanges(null);
   },
   methods: {
+    /**
+     * @param {array} datasets
+     * return {object} dictionary
+     */
+    getContentDictionary(datasets) {
+      if (!datasets) return {};
+
+      const dictionary = {};
+
+      for (let i = 0; i < datasets.length; i++) {
+        const dataset = datasets[i];
+        dictionary[dataset.id] = dataset;
+      }
+
+      return dictionary;
+    },
     loadRouteTags() {
       let tags = this.$route.query.tags || '';
 
@@ -138,6 +150,17 @@ export default {
 
         this.selectedPins = pins;
       }
+    },
+    async loadModeDatasets() {
+      const datasets = await this.modeStore.loadModeDatasets(this.mode);
+
+      const contentDictionary = {};
+      for (let i = 0; i < datasets.length; i++) {
+        const dataset = datasets[i];
+        contentDictionary[dataset.id] = dataset;
+      }
+
+      this.modeContent = contentDictionary;
     },
     catchMetadataClicked(datasetname) {
       this.$store.commit(`${METADATA_NAMESPACE}/${SET_DETAIL_PAGE_BACK_URL}`, this.$route);
@@ -211,9 +234,7 @@ export default {
       if (this.mode) {
         this.filteredModeContent = this.modeStore.getFilteredDatasets(this.selectedTagNames, this.mode);
 
-        this.$nextTick(() => {
-          this.modeTags = this.modeStore.getModeKeywords(this.mode);
-        })
+        this.modeTags = this.modeStore.getModeKeywords(this.mode);
 
         return;
       }
@@ -344,20 +365,6 @@ export default {
     },
     catchShallowRealClick() {
       this.showShallowData = !this.showShallowData;
-
-/*
-      if (this.mode === EDNA_MODE) {
-        this.isShallowData = !this.isShallowData;
-        console.log(`clicked on shallow: ${this.isShallowData}`);
-        const modeMetadata = this.modeStore.getModeMetadata(EDNA_MODE);
-        modeMetadata.isShallow = this.isShallowData;
-
-        // reload the datasets again because there is a different behavior
-        // based on the isShallow property
-        this.modeStore.loadModeDatasets(EDNA_MODE);
-      }
-*/
-
     },
     // eslint-disable-next-line no-unused-vars
     catchOrganizationClicked(organization) {
@@ -423,31 +430,6 @@ export default {
 
       return this.isAuthorSearch ? this.authorSearchPlaceholderText : this.searchPlaceholderText;
     },
-    // keywordsPlaceholder() {
-    //   return this.searchingMetadatasContent || this.updatingTags;
-    // },
-    searchMetadatasContentSize() {
-      return this.searchedMetadatasContent !== undefined ? Object.keys(this.searchedMetadatasContent).length : 0;
-    },
-    mapFilterHeight() {
-      const sHeight = document.documentElement.clientHeight;
-
-      let height = this.maxMapFilterHeight;
-
-      if (sHeight < this.maxMapFilterHeight) {
-        height = sHeight - 165;
-      }
-
-      return height;
-    },
-    metadataListStyling() {
-      return {
-        xs8: this.mapFilteringPossible && this.showMapFilter,
-        xs12: this.mapFilteringPossible && !this.showMapFilter,
-        'mt-2': !this.showMapFilter,
-        // style: this.showMapFilter ? `margin-top: -${this.mapFilterHeight}px;` : '',
-      };
-    },
     mapFilteringPossible() {
       return this.$vuetify.breakpoint.smAndUp;
     },
@@ -498,19 +480,28 @@ export default {
 
           // reload the datasets again because there is a different behavior
           // based on the isShallow property
-          await this.modeStore.loadModeDatasets(EDNA_MODE);
-
-          this.$nextTick(() => {
-            this.filterContent();
-          });
+          await this.loadModeDatasets();
+          await this.filterContent();
         }
       },
     },
   },
   watch: {
+    async metadatasContent() {
+      if (this.mode) {
+        await this.loadModeDatasets();
+      }
+
+      await this.filterContent();
+    },
     /* eslint-disable no-unused-vars */
-    $route: function watchRouteChanges(to, from) {
+    $route: async function watchRouteChanges(to, from) {
       // react on changes of the route (browser back / forward click)
+
+      if (this.mode) {
+        await this.loadModeDatasets();
+      }
+
       this.checkRouteChanges(from);
     },
     isFilteringContent() {

@@ -5,9 +5,6 @@
  * @summary function factory for metadata object creation methods
  * @author Dominik Haas-Artho
  *
- * Created at     : 2019-10-23 16:07:03
- * Last modified  : 2021-09-01 13:19:14
- *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
@@ -24,7 +21,13 @@ import {
   ACCESS_LEVEL_PUBLIC_VALUE,
   getAllowedUserNamesArray,
 } from '@/factories/userEditingFactory';
+
 import {
+  LOCATION_TYPE_GEOMCOLLECTION,
+  LOCATION_TYPE_MULTIPOINT,
+  LOCATION_TYPE_MULTIPOLYGON,
+  LOCATION_TYPE_POINT,
+  LOCATION_TYPE_POLYGON,
   METADATA_STATE_DRAFT,
   METADATA_STATE_INVISILBE,
   METADATA_STATE_VISILBE,
@@ -32,7 +35,7 @@ import {
   PUBLICATION_STATE_PUBLISHED,
   PUBLICATION_STATE_RESERVED,
 } from '@/factories/metadataConsts';
-// eslint-disable-next-line import/no-cycle
+
 import { enhanceMetadataWithModeExtras } from '@/factories/modeFactory';
 
 /**
@@ -693,13 +696,6 @@ function extractGeomsFromMultiGeoms(multiGeom) {
 
   return geomArray;
 }
-
-export const LOCATION_TYPE_POINT = 'Point';
-export const LOCATION_TYPE_MULTIPOINT = 'MultiPoint';
-export const LOCATION_TYPE_POLYGON = 'Polygon';
-export const LOCATION_TYPE_MULTIPOLYGON = 'MultiPolygon';
-export const LOCATION_TYPE_GEOMCOLLECTION = 'GeometryCollection';
-export const LOCATION_TYPE_FEATCOLLECTION = 'FeatureCollection';
 
 
 /**

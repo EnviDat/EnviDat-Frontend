@@ -33,7 +33,7 @@
           </v-col>
 
           <v-col cols="12">
-            <div class="text-body-1">{{ labels.instructions }}</div>
+            <div class="text-body-1" v-html="labels.instructions"></div>
           </v-col>
         </v-row>
 
@@ -82,10 +82,12 @@
                                    :button-text="currentStateInfos.buttonText"
                                    :material-icon-name="currentStateInfos.buttonIcon"
                                    icon-color="white"
-                                   is-small
                                    :loading="loading"
                                    :url="publicationState === PUBLICATION_STATE_PUBLISHED ? doiUrl : undefined"
                                    :disabled="!currentStateInfos.buttonEvent || !isUserAllowedToEdit"
+                                   tooltip-position="bottom"
+                                   :tooltip-text="`Click to ${currentStateInfos.infoText}`"
+                                   :elevation="5"
                                    @clicked="$emit('clicked', currentStateInfos.buttonEvent)" />
 
             </v-row>
@@ -301,11 +303,11 @@
       ]),
       labels: {
         cardTitle: 'Dataset Publication Status',
-        instructions: `Have you finished uploading data & resouces and entered all the metadata as best as possible?
-          Start publishing your dataset with reserving a DOI, when that's done.
-          Request publication, it will be reviewd by admins and once approved it will be registered at DataCite.`,
+        instructions: `Ready to start publishing? <strong>Click on the 'Reserve'</strong> button, this will add a DOI to this datasets (so you could already put it a paper). But be aware the DOI is not active yet and this dataset is still private!
+          <br/><br/>Have you finished uploading data & resouces and entered all the metadata as best as possible? Yes, then <strong>click on 'Request'</strong> publication, the EnviDat Team will review the dataset and once approved the DOI will be published at DataCite.
+          And this dataset and the DOI are publicly available.`,
         instructions2: 'Please be aware once the <strong>dataset is published</strong> the following metadata information <strong>can NOT be changed anymore</strong>.',
-        instructions3: 'You can still upload newer versions of your research data, please use a <strong>clear name and desription</strong> to indicate the latest data.',
+        instructions3: 'You can still upload newer versions of your research data, please use a <strong>clear name and desription</strong> to indicate the latest version of the data.',
       },
       metadataPublishedReadOnlyFields,
       readablePublishedReadOnlyFields,

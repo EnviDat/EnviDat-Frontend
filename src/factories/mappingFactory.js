@@ -34,6 +34,7 @@ import {
   EDITMETADATA_PUBLICATION_INFO,
   EDITMETADATA_RELATED_DATASETS,
   EDITMETADATA_RELATED_PUBLICATIONS,
+  METADATA_MAIN_HEADER,
   USER_OBJECT,
 } from '@/factories/eventBus';
 
@@ -80,7 +81,44 @@ import { createAuthor } from '@/factories/authorFactory';
  * Json conversion rules from frontend to backend and vise versa
  * https://stackoverflow.com/questions/50081462/javascript-how-to-map-a-backend-entity-to-a-frontend-entity-and-the-opposite
  */
+
+/*
+    {
+      metadataTitle: dataset.title,
+        doi: dataset.doi,
+        contactName: maintainer ? getAuthorName(maintainer) : '',
+        contactEmail,
+        tags: dataset.tags,
+        titleImg: dataset.titleImg,
+        maxTags: smallScreen ? 5 : 12,
+        authors,
+        authorDeadInfo,
+        categoryColor: dataset.categoryColor,
+        organization: dataset.organization?.name || '',
+        organizationTooltip: dataset.organization?.title || '',
+        metadataState: visibility,
+        spatialInfo: dataset.spatial_info,
+        created,
+        modified,
+    };
+*/
 const JSONFrontendBackendRules = {
+  [METADATA_MAIN_HEADER]: [
+    [METADATA_TITLE_PROPERTY,'title'],
+    ['contactEmail','maintainer.email'],
+    ['firstName','maintainer.given_name'],
+    ['lastName','maintainer.name'],
+    ['doi','doi'],
+    ['tags','tags'],
+    ['authors','author'],
+    ['organization','organization.name'],
+    ['organizationTooltip','organization.title'],
+    ['spatialInfo','spatial_info'],
+    ['created','metadata_created'],
+    ['modified','metadata_modified'],
+    ['state','state'],
+    ['private','private'],
+  ],
   [EDITMETADATA_MAIN_HEADER]: [
     [METADATA_TITLE_PROPERTY,'title'],
     [METADATA_URL_PROPERTY,'name'],
@@ -380,7 +418,7 @@ export function getArrayInOtherCase(fromCaseArray, caseConversionFunc) {
   return otherCaseArray;
 }
 
-function convertPut(entity, property, v) {
+function convertPut(entity, property, value) {
   const path = property.split('.');
   const key = path.pop();
 
@@ -392,13 +430,16 @@ function convertPut(entity, property, v) {
     return entry[prop];
   }, entity);
 
-  o[key] = v;
+  o[key] = value;
 
   return entity;
 }
 
 function convertGet(entity, property) {
-  return property.split('.').reduce( (entry, b) => entry[b], entity);
+  return property.split('.').reduce((entry, key) => 
+    // Check if entry is an object and the key exists in the entry
+     (entry && typeof entry === 'object' && key in entry) ? entry[key] : undefined
+  , entity);
 }
 
 export function convertToBackendJSONWithRules(rules, data) {
@@ -671,6 +712,8 @@ function mapCustomFields(fields, frontendToBackend = true) {
 }
 
 function formatDatesForFrontend(dates) {
+  if (!dates) return [];
+
   const formattedDates = [];
 
   for (let i = 0; i < dates.length; i++) {

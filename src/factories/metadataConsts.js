@@ -88,3 +88,9 @@ export const PUBLICATION_STATE_RESERVED = 'reserved';
 export const PUBLICATION_STATE_PENDING = 'pub_pending';
 export const PUBLICATION_STATE_PUBLISHED = 'published';
 
+export const LOCATION_TYPE_POINT = 'Point';
+export const LOCATION_TYPE_MULTIPOINT = 'MultiPoint';
+export const LOCATION_TYPE_POLYGON = 'Polygon';
+export const LOCATION_TYPE_MULTIPOLYGON = 'MultiPolygon';
+export const LOCATION_TYPE_GEOMCOLLECTION = 'GeometryCollection';
+export const LOCATION_TYPE_FEATCOLLECTION = 'FeatureCollection';

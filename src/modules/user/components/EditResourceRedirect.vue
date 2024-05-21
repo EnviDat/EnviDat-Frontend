@@ -17,7 +17,7 @@
         </v-col>
 
         <v-col class="text-h5" cols="11">
-          Coming Soon!
+          Under construction!
         </v-col>
 
         <v-col class="pt-2 text-body-1"

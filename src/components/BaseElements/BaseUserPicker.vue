@@ -29,6 +29,7 @@
           :error-messages="errorMessages"
           :menu-props="menuOptions"
           clear-icon="close"
+          v-bind="$props"
           @change="catchPicks"
           @blur="$emit('blur', $event)"
         >
@@ -81,6 +82,7 @@ export default {
     users: Array,
     preSelected: Array,
     multiplePick: Boolean,
+    placeholder: {type: String, default: undefined},
     pickerLabel: {
       type: String,
       default: 'Click here to pick an EnviDat author',
@@ -126,6 +128,9 @@ export default {
   },
   computed: {
     autocompleteHint() {
+      if(this.placeholder){
+        return this.placeholder;
+      }
       if (!this.search) {
         return 'Start typing for autocompletion.';
       }

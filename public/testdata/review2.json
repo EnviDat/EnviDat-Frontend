@@ -1,0 +1,77 @@
+{
+  "help": "https://www.envidat.ch/api/3/action/help_show?name=current_package_list_with_resources",
+  "success": true,
+  "result": {
+    "groups": [],
+    "id": "1a12f430-5134-4d8a-8a1c-a89f4e954ed5",
+    "license_id": "cc-zero",
+    "license_title": "Creative Commons CCZero",
+    "license_url": "http://www.opendefinition.org/licenses/cc-zero",
+    "maintainer": "{\"affiliation\": \"Swiss Federal Research Institute WSL\", \"email\": \"review.envidat@wsl.ch\", \"given_name\": \"\", \"identifier\": \"\", \"name\": \"EnviDat\"}",
+    "metadata_created": "2024-01-23T08:03:43.660696",
+    "metadata_modified": "2024-01-23T08:08:31.294559",
+    "name": "double-blind-test",
+    "notes": "Double blind test description",
+    "num_resources": 1,
+    "num_tags": 4,
+    "relationships_as_object": [],
+    "relationships_as_subject": [],
+    "resources": [
+      {
+        "cache_last_updated": null,
+        "cache_url": null,
+        "created": "2024-01-23T08:04:15.642930",
+        "datastore_active": false,
+        "format": "CSV",
+        "hash": "",
+        "id": "c6243bdb-d3fb-43c1-9bda-a7cba62ac49e",
+        "last_modified": "2024-01-23T08:04:15.581494",
+        "metadata_modified": "2024-01-23T08:04:16.067831",
+        "mimetype": "text/csv",
+        "mimetype_inner": null,
+        "name": "Test csv file",
+        "package_id": "1a12f430-5134-4d8a-8a1c-a89f4e954ed5",
+        "position": 0,
+        "resource_type": null,
+        "size": 1098,
+        "state": "active",
+        "url": "http://localhost:5000/review/1a12f430-5134-4d8a-8a1c-a89f4e954ed5/resource/c6243bdb-d3fb-43c1-9bda-a7cba62ac49e/download/results_habitat_trees-3.csv",
+        "url_type": "upload"
+      }
+    ],
+    "state": "active",
+    "tags": [
+      {
+        "display_name": "Berliner",
+        "id": "ae8814e2-ef36-443d-9e06-49b2ee012014",
+        "name": "Berliner",
+        "state": "active",
+        "vocabulary_id": null
+      },
+      {
+        "display_name": "Bin",
+        "id": "c6d63436-4c37-426b-b693-5436a180af04",
+        "name": "Bin",
+        "state": "active",
+        "vocabulary_id": null
+      },
+      {
+        "display_name": "Ich",
+        "id": "4e76fe6c-0881-4eb0-a52e-eb4795d8041b",
+        "name": "Ich",
+        "state": "active",
+        "vocabulary_id": null
+      },
+      {
+        "display_name": "Wow",
+        "id": "49074748-61cb-4855-9187-7319aff84b28",
+        "name": "Wow",
+        "state": "active",
+        "vocabulary_id": null
+      }
+    ],
+    "title": "Double Blind Test",
+    "type": "dataset",
+    "version": "double-blind"
+  }
+}

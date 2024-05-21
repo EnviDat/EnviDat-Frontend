@@ -1,0 +1,94 @@
+{
+  "help": "https://www.envidat.ch/api/3/action/help_show?name=current_package_list_with_resources",
+  "success": true,
+  "result": {
+    "author": "[{\"affiliation\": \"WSL\", \"affiliation_02\": \"University of Bern\", \"affiliation_03\": \"Oeschger Centre for Climate Change Research (OCCR)\", \"data_credit\": [\"collection\", \"validation\", \"curation\", \"software\", \"publication\"], \"email\": \"tobias.wechsler@wsl.ch\", \"given_name\": \"Tobias\", \"identifier\": \"0000-0001-9017-5346\", \"name\": \"Wechsler\"}, {\"affiliation\": \"WSL\", \"affiliation_02\": \"\", \"affiliation_03\": \"\", \"data_credit\": [\"validation\", \"curation\"], \"email\": \"  florian.lustenberger@wsl.ch\", \"given_name\": \"Florian\", \"identifier\": \"\", \"name\": \"Lustenberger\"}, {\"affiliation\": \"BAFU\", \"affiliation_02\": \"\", \"affiliation_03\": \"\", \"data_credit\": [\"collection\", \"validation\", \"software\"], \"email\": \"andreas.inderwildi@bafu.admin.ch\", \"given_name\": \"Andreas\", \"identifier\": \"\", \"name\": \"Inderwildi\"}, {\"affiliation\": \"WSL\", \"affiliation_02\": \"ETH\", \"affiliation_03\": \"\", \"data_credit\": [\"validation\", \"curation\", \"publication\"], \"email\": \"  jacob.hirschberg(at)wsl.ch\", \"given_name\": \"Jacob\", \"identifier\": \"0000-0002-8488-0804\", \"name\": \"Hirschberg\"}, {\"affiliation\": \"University of Bern\", \"affiliation_02\": \"\", \"affiliation_03\": \"\", \"data_credit\": [\"validation\", \"curation\", \"publication\", \"supervision\"], \"email\": \"bettina.schaefli@unibe.ch\", \"given_name\": \"Bettina\", \"identifier\": \"0000-0003-1140-6244\", \"name\": \"Schaefli\"}, {\"affiliation\": \"WSL\", \"affiliation_02\": \"\", \"affiliation_03\": \"\", \"data_credit\": [\"collection\", \"validation\", \"software\", \"supervision\"], \"email\": \"MASSIMILIANO.ZAPPA@wsl.ch\", \"given_name\": \"Massimiliano\", \"identifier\": \"0000-0002-2837-8190\", \"name\": \"Zappa\"}]",
+    "author_email": null,
+    "creator_user_id": "84288e03-4dcc-463d-b15a-676d3cb1da39",
+    "date": "[{\"date\": \"2022-10-15\", \"date_type\": \"collected\", \"end_date\": \"2023-03-04\"}]",
+    "doi": "10.16904/envidat.421",
+    "funding": "[{\"grant_number\": \"\", \"institution\": \"Bundesamt f\u00fcr Umwelt\", \"institution_url\": \"https://www.bafu.admin.ch/bafu/de/home.html\"}]",
+    "id": "1c350a5c-5297-43ad-ae2f-f093b5f4bfa3",
+    "isopen": true,
+    "language": "en",
+    "license_id": "cc-by-sa",
+    "license_title": "Creative Commons Attribution Share-Alike (CC-BY-SA)",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "maintainer": "{\"affiliation\": \"WSL\", \"email\": \"tobias.wechsler@wsl.ch\", \"given_name\": \"Tobias\", \"identifier\": \"0000-0001-9017-5346\", \"name\": \"Wechsler\"}",
+    "maintainer_email": null,
+    "metadata_created": "2023-07-19T13:07:25.725184",
+    "metadata_modified": "2023-09-05T14:41:13.996574",
+    "name": "lake_cc_scenarios_ch2018",
+    "notes": "The dataset \"Lake_climate_change_scenarios_CH2018\" provides simulation-based climate change impact scenarios for perialpine lakes in Switzerland. These transient future scenarios were produced by combining the hydrologic model PREVAH with the hydrodynamic model MIKE11 to simulate daily lake water level (Lake_water_level_scenarios_CH2018.xls) and outflow scenarios (Lake_outflow_scenarios_CH2018.xls) from 1981 to 2099, using the Swiss Climate Change Scenarios CH2018. The future scenarios contain a total of 39 model members for three Representative Concentration Pathways, RCP2.6 (concerted mitigation efforts), RCP4.5 (limited climate mitigation) and RCP8.5 (no climate mitigation measures). These scenarios result from the study titled \"Lower summer lake levels in regulated perialpine lakes, caused by climate change,\" authored by Wechsler et al. in 2023.\r\n\r\nThe dataset emphasizes four specific Swiss lakes, each subject to different degrees of lake level management: an unregulated lake (Lake Walen), a semi-regulated lake (Lake Brienz), and two regulated lakes (Lake Zurich and Lake Thun).\r\n\r\nIn addition, the file (Lake_characteristics.xlsx) includes data used in the modeling process, encompassing the stage-area relation for the four lakes, stage-discharge relations for the unregulated and semi-regulated lakes, and lake level management rules for the two regulated lakes.",
+    "num_resources": 3,
+    "num_tags": 5,
+    "organization": {
+      "id": "8ca28da8-ad8f-401a-9356-0aa7fdba2604",
+      "name": "gebirgshydrologie",
+      "title": "GebirgsHydrologie",
+      "type": "organization",
+      "description": " The Research Unit investigates natural hazard processes in mountainous areas, in particular the triggering and propagation of floods, sediment transport, landslides, debris flows and rock fall. Process studies on the scale of slopes, channels and catchments form the basis for the development of simulation models and of hazard assessment procedures and for the design of countermeasures. To this end worldwide unique observation systems are developed, such as a debris flow balance and geophone systems for bedload transport. Damage and damaging processes due to frequent and extreme events are assessed as prerequisites for the risk-based and sustainable management of natural hazards.\r\n\r\nA second focus of the unit is on the estimation and prediction of snow and water resources, e.g. for hydropower production or early recognition of drought. The unit operates a snow hydrological service for federal and cantonal agencies and a drought information platform for a broad range of water users.\r\n\r\n__Further information__: https://www.wsl.ch/en/about-wsl/organization/research-units/mountain-hydrology.html",
+      "image_url": "2018-07-10-091052.004438LogoWSL.svg",
+      "created": "2016-09-02T14:17:02.029939",
+      "is_organization": true,
+      "approval_status": "approved",
+      "state": "active"
+    },
+    "owner_org": "8ca28da8-ad8f-401a-9356-0aa7fdba2604",
+    "private": false,
+    "publication": "{\"publication_year\": \"2023\", \"publisher\": \"EnviDat\"}",
+    "publication_state": "published",
+    "related_datasets": "",
+    "related_publications": "To be updated",
+    "resource_type": "dataset",
+    "resource_type_general": "dataset",
+    "spatial": "{\"type\": \"Polygon\", \"coordinates\": [[[5.95587, 45.81802],[5.95587, 47.80838],[10.49203, 47.80838],[10.49203, 45.81802],[5.95587, 45.81802]]]}",
+    "spatial_info": "Switzerland",
+    "state": "active",
+    "subtitle": "",
+    "title": "Lake_climate_change_scenarios_CH2018",
+    "type": "dataset",
+    "url": null,
+    "version": "1.0",
+    "tags": [
+      {
+        "display_name": "CLIMATE CHANGE",
+        "id": "7586fd99-56bd-4c44-ace2-14d87ec1dd9b",
+        "name": "CLIMATE CHANGE",
+        "state": "active",
+        "vocabulary_id": null
+      },
+      {
+        "display_name": "HYDROLOGIC AND HYDRODYNAMIC MODELLING",
+        "id": "5631fcfd-d8be-450f-9748-5b778cec88cb",
+        "name": "HYDROLOGIC AND HYDRODYNAMIC MODELLING",
+        "state": "active",
+        "vocabulary_id": null
+      },
+      {
+        "display_name": "LAKE LEVEL REGULATION",
+        "id": "4efb31d6-00b8-4188-8b30-697d1fa424d3",
+        "name": "LAKE LEVEL REGULATION",
+        "state": "active",
+        "vocabulary_id": null
+      },
+      {
+        "display_name": "PERIALPINE LAKES",
+        "id": "8dc1738a-27fe-4c3a-8ef8-e1c40d8cc091",
+        "name": "PERIALPINE LAKES",
+        "state": "active",
+        "vocabulary_id": null
+      },
+      {
+        "display_name": "SWITZERLAND",
+        "id": "97ac3564-bb88-46ad-9fe4-b7d606e0aa3a",
+        "name": "SWITZERLAND",
+        "state": "active",
+        "vocabulary_id": null
+      }
+    ],
+    "groups": [],
+    "relationships_as_subject": [],
+    "relationships_as_object": []
+  }
+}

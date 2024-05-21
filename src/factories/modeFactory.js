@@ -9,7 +9,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 import swissflLogo from '@/assets/modes/swissfl/logo.jpg';
-// eslint-disable-next-line import/no-cycle
 import globalMethods from '@/factories/globalMethods';
 import { createTag, tagsIncludedInSelectedTags } from '@/factories/metadataFilterMethods';
 import { swissFLExtraTags, swissFLTag } from '@/modules/metadata/store/swissForestLabTags';
