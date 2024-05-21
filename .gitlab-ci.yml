@@ -1,6 +1,6 @@
 include:
   - local: '.gitlab-ci-deployment.yml'
-  - local: '.gitlab-ci_envidat-in-a-box.yml'
+#  - local: '.gitlab-ci_envidat-in-a-box.yml'
 
 stages:
   - config
