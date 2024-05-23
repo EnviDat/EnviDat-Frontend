@@ -92,9 +92,10 @@ import marker2x from '@/assets/map/marker-icon-2x.png';
 import markerShadow from '@/assets/map/marker-shadow.png';
 import selectedMarker from '@/assets/map/selected-marker-icon.png';
 import selectedMarker2x from '@/assets/map/selected-marker-icon-2x.png';
+// HACK end
 import FilterMapWidget from '@/components/Filtering/FilterMapWidget.vue';
 import { createLocation } from '@/factories/metaDataFactory';
-// HACK end
+import {EDNA_MODE} from '@/store/metadataMutationsConsts';
 
 export default {
   name: 'FilterMapView',
@@ -284,7 +285,7 @@ export default {
       let width = 25;
       let iconClass = '';
 
-      if (modeData && modeData.icons) {
+      if (modeData && modeData.name !== EDNA_MODE && modeData.icons) {
         let extraValue = dataset[modeData.extrasKey];
 
         if (extraValue) {
@@ -454,7 +455,7 @@ export default {
 
       this.showMapElements(elements, true, checkBounds);
     },
-    focusOnLayers() {
+    focusOnLayers(zoomLevel) {
       const allLayers = [];
 
       if (this.pinEnabled) {
@@ -478,7 +479,10 @@ export default {
       if (allLayers.length > 0) {
         const feat = featureGroup(allLayers);
         const featBounds = feat.getBounds();
-        this.map.fitBounds(featBounds, { maxZoom: 8 });
+        if (!zoomLevel ) {
+          zoomLevel = 8;
+        }
+        this.map.fitBounds(featBounds, { maxZoom: zoomLevel });
       }
     },
     clearLayers(map, specificClear) {
@@ -550,6 +554,9 @@ export default {
       this.addElementsToMap(this.polygonLayerGroup, this.polygonEnabled, true);
 
       this.clusterLayer.addTo(this.map);
+      if (this.modeData && (this.hasPins || this.hasMultiPins || this.hasPolygons)) {
+        this.focusOnLayers(this.map.getZoom()-0.5);
+      }
     },
     updatePins() {
       this.clearLayers(this.map, 'pins');
