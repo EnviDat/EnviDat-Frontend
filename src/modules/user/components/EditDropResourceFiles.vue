@@ -51,14 +51,14 @@
                >
           <v-row style="align-items: center;">
             <v-col class="flex-grow-0">
-              <v-chip :color="getStateColor(state)" small>
-                {{ state.name }}
-              </v-chip>
+              <TagChip :color="getStateColor(state)"
+                       :isSmall="true"
+                        :name="state.name" />
             </v-col>
 
             <v-col v-if="index < states.length - 1"
                    class="pa-0" >
-              <v-progress-linear :color="getIndicatorColor(state)"
+              <v-progress-linear :color="getStateColor(state)"
                                  :indeterminate="getIndicatorLoading(state)"
                                  :model-value="getIndicatorValue(state)"
               />
@@ -108,6 +108,8 @@ import {
   UPLOAD_STATE_UPLOAD_STARTED,
 } from '@/factories/eventBus';
 
+import TagChip from '@/components/Chips/TagChip.vue';
+
 
 export default {
   name: 'EditDropResourceFiles',
@@ -149,24 +151,13 @@ export default {
   },
   methods: {
     getStateColor(state) {
+      if (this.currentState) {
+        return 'grey';
+      }
       const index = this.states.findIndex(((s) => s.id === state?.id));
       const currentIndex = this.states.findIndex(((s) => s.id === this.currentState?.id));
 
-      if (currentIndex >= index) {
-        return 'primary';
-      }
-
-      return 'gray';
-    },
-    getIndicatorColor(state) {
-      const index = this.states.findIndex(((s) => s.id === state?.id));
-      const currentIndex = this.states.findIndex(((s) => s.id === this.currentState?.id));
-
-      if (currentIndex >= index) {
-        return 'primary';
-      }
-
-      return 'grey';
+      return currentIndex >= index ? 'primary' : 'grey';
     },
     getIndicatorLoading(state) {
       const index = this.states.findIndex(((s) => s.id === state?.id));
@@ -245,6 +236,7 @@ export default {
   components: {
     DragDrop,
     StatusBar,
+    TagChip,
   },
 };
 </script>
