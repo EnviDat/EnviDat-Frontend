@@ -508,7 +508,6 @@ export default {
         const feat = featureGroup(allLayers);
         const featBounds = feat.getBounds();
         this.map.fitBounds(featBounds, { maxZoom: 8 });
-        // this.map.fitBounds(featBounds, {padding: [200, 200]});
 
       }
     },
