@@ -709,18 +709,23 @@ function getGeomCollectionPointArray(geometries) {
 
   let pointArray = [];
   const geomCollectionArray = [];
+  let category = '';
 
   geometries.forEach((geometry) => {
     if (geometry.type === LOCATION_TYPE_POINT) {
       pointArray = [geometry.coordinates[1], geometry.coordinates[0]];
+      category = 'isPoint';
     } else if (geometry.type === LOCATION_TYPE_POLYGON) {
       pointArray = getPolygonPointArray(geometry.coordinates);
+      category = 'isPolygon';
     } else if (geometry.type === LOCATION_TYPE_MULTIPOINT) {
       pointArray = getMultiPointArray(geometry.coordinates);
+      category = 'isMultiPoint';
     } else if (geometry.type === LOCATION_TYPE_MULTIPOLYGON) {
       pointArray = getMultiPolygonPointArray(geometry.coordinates);
+      category = 'isMultiPolygon';
     }
-    geomCollectionArray.push(pointArray);
+    geomCollectionArray.push({[category]: true, 'pointArray': pointArray});
   });
 
   return geomCollectionArray;
