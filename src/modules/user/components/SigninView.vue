@@ -343,6 +343,7 @@ export default {
     },
   },
   watch: {
+    // TODO needs immediate watch options!
     errorField() {
       if (this.errorField) {
         this.backendErrors[this.errorField] = this.errorFieldText;

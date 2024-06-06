@@ -73,7 +73,7 @@
           <v-badge :color="dark ? 'white' : darkColor"
                    overlap
                    style="position:relative; top: -20px; right: -2px;"
-                   :content="author.datasetCount">
+                   :content="author.datasetCount || 0">
           </v-badge>
 
         </v-col>

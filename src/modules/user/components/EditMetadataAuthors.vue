@@ -104,6 +104,7 @@ import {
 
 import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
 import { getAuthorName } from '@/factories/authorFactory';
+import { mdiClose, mdiPencil } from '@mdi/js';
 
 export default {
   name: 'EditMetadataAuthors',
@@ -216,7 +217,7 @@ export default {
       if (this.authorEditingEnabled) {
         editingProperties = {
           showGenericOpenButton: true,
-          openButtonIcon: author?.isSelected ? 'close' : 'edit',
+          openButtonIcon: author?.isSelected ? mdiClose : mdiPencil,
           openButtonTooltip: author?.isSelected ? 'Cancel author editing' : 'Edit Author',
         };
       }

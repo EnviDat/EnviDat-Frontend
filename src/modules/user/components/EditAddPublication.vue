@@ -4,10 +4,35 @@
                class="pa-0"
   >
 
+    <v-row>
+      <v-col cols="6"
+             class="text-h5">
+        {{ labels.title }}
+      </v-col>
+
+      <v-col v-if="message" >
+        <BaseStatusLabelView status="check"
+                             statusColor="success"
+                             :statusText="message"
+                             :expandedText="messageDetails" />
+      </v-col>
+      <v-col v-if="error"  >
+
+        <BaseStatusLabelView status="error"
+                             statusColor="error"
+                             :statusText="error"
+                             :expandedText="errorDetails" />
+      </v-col>
+
+    </v-row>
+
+
     <v-row no-gutters
             align="center" >
       <v-col cols="12"
-              md="auto">
+              md="4"
+             class='flex-grow-1'
+      >
         <v-text-field
             v-model="pidField"
             :label="labels.pId"
@@ -26,7 +51,8 @@
       </v-col>
 
       <v-col cols="12"
-             md="auto">
+             class='flex-grow-1'
+             md="4">
         <v-text-field
             v-model="doiField"
             :label="labels.dataObjectIdentifier"
@@ -49,8 +75,6 @@
              class="ma-auto ma-md-0 pl-md-4 pt-4 pt-md-0">
         <BaseIconButton 
           :icon="mdiPlus"
-          icon-color="white"
-          :small="$vuetify.display.mdAndUp"
           @clicked="addClick"
         />
 
@@ -107,6 +131,7 @@
 import { EDIT_METADATA_ADD_PUBLICATION_TITLE, EDIT_METADATA_DOI_LABEL } from '@/factories/metadataConsts';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseCitationView from '@/components/BaseElements/BaseCitationView.vue';
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 
 import {
   resolveDoiCitationObjectsViaDora,
@@ -141,6 +166,30 @@ export default {
     loading: {
       type: Boolean,
       default: false,
+    },
+    message: {
+      type: String,
+      default: '',
+    },
+    messageDetails: {
+      type: String,
+      default: null,
+    },
+    error: {
+      type: String,
+      default: '',
+    },
+    errorDetails: {
+      type: String,
+      default: null,
+    },
+    readOnlyFields: {
+      type: Array,
+      default: () => [],
+    },
+    readOnlyExplanation: {
+      type: String,
+      default: '',
     },
   },
   mounted() {
@@ -253,6 +302,7 @@ export default {
   components: {
     BaseIconButton,
     BaseCitationView,
+    BaseStatusLabelView,
   },
 };
 

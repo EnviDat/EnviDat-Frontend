@@ -11,7 +11,7 @@
     </v-row>
 
     <v-row no-gutters>
-      <v-col class="pt-2">
+      <v-col class="pt-2 tagAuthorFix">
         <v-autocomplete
           v-model="pickedUsers"
           :items="users"
@@ -221,4 +221,9 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style>
+.tagAuthorFix .v-chip__content {
+  padding: 0 12px !important;
+}
+
+</style>
