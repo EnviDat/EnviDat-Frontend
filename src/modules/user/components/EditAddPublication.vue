@@ -1,7 +1,7 @@
 <template>
   <v-container fluid
                id="EditAddPublication"
-               class="pa-0"
+               class="pa-4"
   >
 
     <v-row>
@@ -26,9 +26,16 @@
 
     </v-row>
 
+    <v-row>
+      <v-col >
+        <div class="text-subtitle-1"
+             v-html="labels.cardInstructions">
 
-    <v-row no-gutters
-            align="center" >
+        </div>
+      </v-col>
+    </v-row>
+
+    <v-row  align="center" >
       <v-col cols="12"
               md="4"
              class='flex-grow-1'
@@ -38,7 +45,7 @@
             :label="labels.pId"
             :disabled="!!doiField"
             hide-details
-            prepend-icon="account_circle"
+            :prepend-icon="mdiIdentifier"
             @input="pidChange"
         />
       </v-col>
@@ -55,10 +62,10 @@
              md="4">
         <v-text-field
             v-model="doiField"
-            :label="labels.dataObjectIdentifier"
+            :label="labels.doi"
             :disabled="!!pidField"
             hide-details
-            prepend-icon="fingerprint"
+            :prepend-icon="mdiFingerprint"
             @input="doiChange"
         />
   <!--
@@ -75,6 +82,7 @@
              class="ma-auto ma-md-0 pl-md-4 pt-4 pt-md-0">
         <BaseIconButton 
           :icon="mdiPlus"
+          outlined
           @clicked="addClick"
         />
 
@@ -137,7 +145,7 @@ import {
   resolveDoiCitationObjectsViaDora,
   resolvePidCitationObjectsViaDora,
 } from '@/factories/metaDataFactory';
-import { mdiPlus } from '@mdi/js';
+import { mdiPlus, mdiFingerprint, mdiIdentifier } from '@mdi/js';
 
 
 export default {
@@ -283,6 +291,8 @@ export default {
   },
   data: () => ({
     mdiPlus,
+    mdiFingerprint,
+    mdiIdentifier,
     isResolving: false,
     previewCitation: null,
     previewPID: null,
@@ -290,9 +300,9 @@ export default {
     editingProperty: 'relatedPublicationsText',
     labels: {
       title: EDIT_METADATA_ADD_PUBLICATION_TITLE,
-      cardInstructions: 'Add DORA permantant Id (PID) or a Data Object Identifer (DOI).',
+      cardInstructions: 'Enter a DORA permanent Id (PID) or a Data Object Identifer (DOI) the citation will be resolved by lib4RI.',
       subtitlePreview: 'Preview Publications resolved via DORA',
-      pId: 'Permant Id',
+      pId: 'Permanent Id',
       doi: EDIT_METADATA_DOI_LABEL,
     },
     validationErrors: {
