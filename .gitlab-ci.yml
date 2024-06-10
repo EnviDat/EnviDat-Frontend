@@ -13,17 +13,15 @@ variables:
   CACHE_COMPRESSION_LEVEL: "fast"
   npm_config_cache: '.npm/'
 
-# defined a template for the jobs with node, instead of defining a global cache for all jobs
-#.node_cache:
-#  cache:
-#    # uses the package-lock.json as key to determine if the node_modules can be used from cache
-#    - key:
-#        files:
-#          - package-lock.json
-#        prefix: "package-lock"
-#      paths:
-#        - .npm
-#      policy: pull
+cache:
+  - key:
+      files:
+        - package-lock.json
+      prefix: "package-lock"
+    paths:
+      - .npm/
+    when: on_success
+    policy: pull-push
 
 .trigger-rules:
   rules:
@@ -111,20 +109,19 @@ modify-env:
 install-node:
   stage: config
   image: docker.io/node:20.11.1-alpine3.19
+#  cache:
+#    # overwrite the global caching definitions with
+#    # pull-push to be able to update the node_modules in the cache
+#    - key:
+#        files:
+#          - package-lock.json
+#        prefix: "package-lock"
+#      paths:
+#        - .npm/
+#      when: on_success
+#      policy: pull-push
   extends:
     - .trigger-rules
-  cache:
-    # overwrite the global caching definitions with
-    # pull-push to be able to update the node_modules in the cache
-    - key:
-        files:
-          - package-lock.json
-        prefix: "package-lock"
-      paths:
-        - .npm/
-      when: on_success
-      policy: pull-push
-      untracked: true
   script:
     - echo "the cache work if node_modules and .npm/ folders are available"
     - ls -a
