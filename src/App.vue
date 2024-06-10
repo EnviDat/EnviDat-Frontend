@@ -608,18 +608,13 @@ export default {
     maintenanceBannerVisible() {
       if (!this.maintenanceConfig.messageActive){
         return false;
-
       }
 
       if (this.userIsOnEditPage) {
         return this.editMaintenanceBanner;
       }
 
-      if (this.currentPage !== LANDING_PAGENAME) {
-        return this.showMaintenanceBanner;
-      }
-
-      return false;
+      return this.showMaintenanceBanner;
     },
     maintenanceBannerText() {
       if (this.userIsOnEditPage) {
