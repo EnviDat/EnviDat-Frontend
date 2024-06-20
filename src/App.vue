@@ -614,7 +614,13 @@ export default {
         return this.editMaintenanceBanner;
       }
 
-      return this.showMaintenanceBanner;
+      // exclude the landing page with the banner because
+      // on the landingpage a "news" entry for maintenance can be shown!
+      if (this.currentPage !== LANDING_PAGENAME) {
+        return this.showMaintenanceBanner;
+      }
+
+      return false;
     },
     maintenanceBannerText() {
       if (this.userIsOnEditPage) {
