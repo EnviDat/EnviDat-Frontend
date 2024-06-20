@@ -7,10 +7,16 @@
  */
 
 export const WSL_DATA_LICENSE_ID = 'wsl-data';
+export const CC_BY_LICENSE_ID = 'cc-by';
+export const CC_BY_SA_LICENSE_ID = 'cc-by-sa';
+export const CC_ZERO_LICENSE_ID = 'CC0-1.0';
+export const ODBL_LICENSE_ID = 'odc-odbl';
+export const OTHER_UNDEFINED_LICENSE_ID = 'other-undefined';
+
 
 export const dataLicenses = [
   {
-    id: 'cc-by',
+    id: CC_BY_LICENSE_ID,
     title: 'Creative Commons Attribution (CC-BY 4.0)',
     summary: ` This is a human-readable summary of (and not a substitute for) the license.    
 
@@ -32,7 +38,7 @@ No warranties are given. The license may not give you all of the permissions nec
     link: 'https://creativecommons.org/licenses/by/4.0/legalcode',
   },
   {
-    id: 'cc-by-sa',
+    id: CC_BY_SA_LICENSE_ID,
     title: 'Creative Commons Attribution Share-Alike (CC-BY-SA 4.0)',
     summary: ` This is a human-readable summary of (and not a substitute for) the license.    
 
@@ -55,7 +61,7 @@ No warranties are given. The license may not give you all of the permissions nec
     link: 'https://creativecommons.org/licenses/by-sa/4.0/legalcode',
   },
   {
-    id: 'CC0-1.0',
+    id: CC_ZERO_LICENSE_ID,
     title: 'Creative Commons Zero - No Rights Reserved (CC0 1.0)',
     summary: `This is a human-readable summary of (and not a substitute for) the license.  
 
@@ -86,7 +92,7 @@ WSL reserves the right to use its research data itself or make it accessible to 
     link: 'https://www.envidat.ch/#/blog/EnviDat_WSLIntern_2022q4.md',
   },
   {
-    id: 'odc-odbl',
+    id: ODBL_LICENSE_ID,
     title: 'ODbL with Database Contents License (DbCL)',
     summary: `This is a human-readable summary of the ODbL 1.0 license. Please see the disclaimer below.  
 
@@ -108,9 +114,19 @@ WSL reserves the right to use its research data itself or make it accessible to 
     link: 'https://opendatacommons.org/licenses/odbl/1-0/',
   },
   {
-    id: 'other-undefined',
+    id: OTHER_UNDEFINED_LICENSE_ID,
     title: 'Other (Specified in the description)',
     summary: 'This is an option provide a custom license. It needs to be provided in the description. \n However we do NOT recommend to do it, unless you have a very good reason for it.',
     link: '',
   },
 ];
+
+export const availableLicensesForEditing =  [
+  CC_BY_LICENSE_ID,
+  CC_BY_SA_LICENSE_ID,
+  CC_ZERO_LICENSE_ID,
+]
+
+export function getAvailableLicensesForEditing() {
+  return dataLicenses.filter((l) => availableLicensesForEditing.includes(l.id));
+}

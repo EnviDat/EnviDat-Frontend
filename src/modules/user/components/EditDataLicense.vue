@@ -38,7 +38,7 @@
       <v-row>
         <v-col>
           <v-select
-            :items="dataLicenses"
+            :items="activeLicenses"
             item-value="id"
             item-text="title"
             outlined
@@ -122,7 +122,7 @@ import {
   isFieldValid,
 } from '@/factories/userEditingValidations';
 
-import { dataLicenses } from '@/factories/dataLicense';
+import { getAvailableLicensesForEditing } from '@/factories/dataLicense';
 
 export default {
   name: 'EditDataLicense',
@@ -212,6 +212,9 @@ export default {
     dataLicenseLinkExists() {
       return !!this.currentDataLicense?.link;
     },
+    activeLicenses() {
+      return getAvailableLicensesForEditing();
+    },
   },
   methods: {
     clearPreviews() {
@@ -222,7 +225,7 @@ export default {
         return null;
       }
 
-      const dataLicense = this.dataLicenses.filter(x => x.id === id)[0];
+      const dataLicense = this.activeLicenses.filter(x => x.id === id)[0];
 
       return dataLicense || null;
     },
@@ -274,7 +277,6 @@ export default {
         'Link for more detailed information about selected Data License:',
     },
     previewDataLicenses: null,
-    dataLicenses,
   }),
 };
 </script>
