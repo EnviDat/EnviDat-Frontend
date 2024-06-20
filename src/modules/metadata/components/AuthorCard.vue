@@ -158,10 +158,11 @@
              align="start">
 
         <v-col class="pa-1"
-               cols="6">
+               sm="6"
+               cols="12">
           <v-row no-gutters>
             <v-col cols="12"
-                   class="authorInfoLabel py-0"
+                  class="authorInfoLabel py-0"
                    :class="dark ? 'white--text' : 'black--text'">
               {{ emailLabel }}
             </v-col>
@@ -177,7 +178,10 @@
         </v-col>
 
         <v-col class="pa-1"
-               cols="6">
+               sm="6"
+               cols="12"
+               v-if="author?.identifier"
+        >
           <v-row no-gutters>
             <v-col cols="12"
                    class="authorInfoLabel py-0"
@@ -202,7 +206,10 @@
         </v-col>
 
         <v-col class="pa-1"
-               cols="6">
+               sm="6"
+               cols="12"
+               v-if="author.affiliation"
+        >
           <v-row no-gutters>
             <v-col cols="12"
                    class="authorInfoLabel py-0"
