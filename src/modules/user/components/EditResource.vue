@@ -51,7 +51,7 @@
 
       <div class="pa-1">
 
-        <v-alert type="info" border="left" outlined dense icon="info">{{ labels.instructions }}</v-alert>
+        <v-alert type="info" border="left" dense icon="info">{{ labels.instructions }}</v-alert>
 
         <v-row id="resourceName"
               no-gutters class="pt-4">
