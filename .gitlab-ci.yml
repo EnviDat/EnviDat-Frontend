@@ -13,15 +13,6 @@ variables:
   CACHE_COMPRESSION_LEVEL: "fast"
   npm_config_cache: '.npm/'
 
-cache:
-  - key:
-      files:
-        - package-lock.json
-      prefix: "package-lock"
-    paths:
-      - .npm/
-    when: on_success
-    policy: pull-push
 
 .trigger-rules:
   rules:
@@ -109,17 +100,15 @@ modify-env:
 install-node:
   stage: config
   image: docker.io/node:20.11.1-alpine3.19
-#  cache:
-#    # overwrite the global caching definitions with
-#    # pull-push to be able to update the node_modules in the cache
-#    - key:
-#        files:
-#          - package-lock.json
-#        prefix: "package-lock"
-#      paths:
-#        - .npm/
-#      when: on_success
-#      policy: pull-push
+  cache:
+    - key:
+        files:
+          - package-lock.json
+        prefix: "package-lock"
+      paths:
+        - .npm/
+      # pull-push to be able to update the node_modules in the cache
+      policy: pull-push
   extends:
     - .trigger-rules
   script:
@@ -210,7 +199,7 @@ combine-builds:
     # remove the dist folder recursively
     - rm -rf dist
     # remove the .npm/ cache folder recursively to avoid that it's getting into the build
-    - rm -rf .npm/
+    # - rm -rf .npm/
     - ls -la
   artifacts:
     name: "frontend build $CI_COMMIT_REF_NAME"
