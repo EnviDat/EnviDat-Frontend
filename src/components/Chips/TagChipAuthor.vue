@@ -3,6 +3,7 @@
           :class="{
             'white--text': highlighted,
             smallChip: $vuetify.breakpoint.smAndDown,
+            authorTagDraggable: draggable,
            }"
           :color="highlighted ? 'primary' : color"
           @click.stop="clicked"
@@ -98,6 +99,10 @@ export default {
 
   .authorTag > .v-chip__content > .v-avatar > .v-icon {
     color: rgba(0, 0, 0, 0.87) !important;
+  }
+
+  .authorTagDraggable  {
+    cursor: move !important;
   }
 
 </style>

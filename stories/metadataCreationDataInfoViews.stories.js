@@ -16,6 +16,7 @@ import {
   DATE_PROPERTY_START_DATE,
 } from '@/factories/metadataConsts';
 import { EDITMETADATA_OBJECT_UPDATE, eventBus } from '@/factories/eventBus';
+import { CC_BY_SA_LICENSE_ID } from '@/factories/dataLicense';
 import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
 
@@ -74,7 +75,7 @@ export const EditDataInfoEmpty = Template.bind({});
 export const EditDataInfoFilled = Template.bind({});
 EditDataInfoFilled.args = {
   dates: datesArrayFilled,
-  dataLicenseId: 'odc-odbl',
+  dataLicenseId: CC_BY_SA_LICENSE_ID,
 };
 
 export const MobileEditDataInfo1 = Template.bind({});

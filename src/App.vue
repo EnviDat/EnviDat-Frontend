@@ -608,13 +608,14 @@ export default {
     maintenanceBannerVisible() {
       if (!this.maintenanceConfig.messageActive){
         return false;
-
       }
 
       if (this.userIsOnEditPage) {
         return this.editMaintenanceBanner;
       }
 
+      // exclude the landing page with the banner because
+      // on the landingpage a "news" entry for maintenance can be shown!
       if (this.currentPage !== LANDING_PAGENAME) {
         return this.showMaintenanceBanner;
       }
