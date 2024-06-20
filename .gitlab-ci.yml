@@ -209,7 +209,9 @@ combine-builds:
     # - ls -l
     # remove the dist folder recursively
     - rm -rf dist
-    - ls -l
+    # remove the .npm/ cache folder recursively to avoid that it's getting into the build
+    - rm -rf .npm/
+    - ls -la
   artifacts:
     name: "frontend build $CI_COMMIT_REF_NAME"
     # stores the combined built code
