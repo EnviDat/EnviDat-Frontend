@@ -53,7 +53,7 @@
                             || (state === PUBLICATION_STATE_PUBLISHED && activeStateIndex !== index)"
                       small
                       :disabled="activeStateIndex > index"
-                      :color="activeStateIndex === index ? 'secondary' : '' "
+                      :color="activeStateIndex === index ? 'secondary' : 'grey' "
               >
                 {{ getStateText(state) }}
               </v-chip>
@@ -308,7 +308,7 @@
         [PUBLICATION_STATE_PENDING, {
           chipText: 'Publication Pending',
           infoText: 'Please make sure you reviewed the dataset before publishing it!',
-          buttonIcon: 'public',
+          buttonIcon: mdiEarth,
           buttonText: 'Publish Dataset',
           buttonEvent: DOI_PUBLISH,
           positionIndex: 6,
