@@ -65,7 +65,6 @@
         <v-col cols="12"
                 sm="6">
 
-
           <v-row>
             <v-col class="text-h6 pb-0">
               {{ labels.contactPerson }}
@@ -73,11 +72,11 @@
           </v-row>
 
 
-                <v-row>
-                  <v-col class="text-body-1">
-                    {{ labels.authorInstructions }}
-                  </v-col>
-                </v-row>
+          <v-row>
+            <v-col class="text-body-1">
+              {{ labels.authorInstructions }}
+            </v-col>
+          </v-row>
 
           <v-row dense
                  class="pt-2">
@@ -125,8 +124,7 @@
             </v-col>
           </v-row>
 
-          <v-row dense
-                 class="pt-2">
+          <v-row dense >
 
             <v-col cols="12"
                    sm="6">
@@ -912,7 +910,7 @@ export default {
       authorInstructions: 'Enter an email address or pick a user as the contact person for this dataset.',
       authorOr: '<strong>Or</strong> pick <br /> an author',
       authorOr2: '<strong>Or</strong> pick an author',
-      authorAutoComplete: 'If an author is picked the name is <strong>autocompleted</strong> otherwise please enter it!',
+      authorAutoComplete: 'If an author is picked the name is <strong>autocompleted</strong><br />otherwise please enter it!',
       placeholderTitle: 'Enter the title for your research dataset',
       placeholderUrl: 'Change the url for your dataset',
       placeholderHeaderTitle: 'Your Metadata Title',

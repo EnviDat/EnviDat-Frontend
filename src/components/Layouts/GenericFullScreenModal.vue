@@ -84,7 +84,7 @@ import {
   SHOW_DATA_PREVIEW_PROPERTY,
 } from '@/factories/strategyFactory';
 import { mdiClose } from '@mdi/js';
-import { defineAsyncComponent, h } from 'vue';
+import { defineAsyncComponent } from 'vue';
 
 const DetailChartsList = defineAsyncComponent(() =>
   import('@/modules/metadata/components/GC-Net/DetailChartsList.vue'),
