@@ -29,7 +29,7 @@ const MetadataEditPage = () => import('@/modules/user/components/MetadataEditPag
 const MetadataCreationPage = () => import('@/modules/user/components/MetadataCreationPage.vue');
 
 const beforeEnter = async (to, from, next)=> {
-  await store.state.asyncLoadStoreModule('organization');
+  await store.state.asyncLoadStoreModule('organizations');
   next();
 }
 
