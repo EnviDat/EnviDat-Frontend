@@ -11,7 +11,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import {MD5} from 'tiny-js-md5';
+import md5 from 'tiny-js-md5';
 import remark from 'remark';
 import remarkBreaks from 'remark-breaks';
 import htmlLib from 'remark-html';
@@ -96,7 +96,7 @@ export function extractBodyIntoUrl(url, body) {
 }
 
 export function md5Hash(string) {
-  return MD5(string).toString();
+  return md5(string).toString();
 }
 
 function fillMapWithArray(key, value, map) {
