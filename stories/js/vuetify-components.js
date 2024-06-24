@@ -1,8 +1,5 @@
-/*
-  Imports all vuetify components and creates a Vue component.
- */
+// Imports all vuetify components and creates a Vue component.
 import Vue from 'vue';
-import 'skeleton-placeholder/dist/bone.min.css';
 
 import { VBtn } from 'vuetify/lib/components/VBtn.vue';
 import { VTooltip } from 'vuetify/lib/components/VTooltip.vue';

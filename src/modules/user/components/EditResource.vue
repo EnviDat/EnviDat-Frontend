@@ -52,12 +52,7 @@
         <v-row id="resourceUrl" no-gutters class="pt-2">
           <v-col v-if="showImagePreview" cols="4" class="pt-3 pb-4 pr-4 flex-grow-0 flex-shrink-1">
 
-            <div v-if="loadingImagePreview" class="skeleton skeleton-animation-shimmer"
-              style="height: 100%; width: 100%; ">
-              <div style="width: 100%; min-height: 100%; " class="bone bone-type-image">
-              </div>
-            </div>
-
+            <v-skeleton-loader v-if="loadingImagePreview"  height='100%' width='100%' type="image" />
 
             <v-img v-show="!imagePreviewError" :src="urlField" ref="filePreview"
               style="max-height: 100%; max-width: 100%; cursor: pointer;" @click="catchImageClick"

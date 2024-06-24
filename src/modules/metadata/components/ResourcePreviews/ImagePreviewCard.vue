@@ -21,15 +21,7 @@
                    style="max-height: 100%; max-width: 100%; opacity: 0.25;"
                    alt="resource image could not be loaded!"/>
 
-            <div v-show="loadingImagePreview"
-                 id="curtain"
-                 class="skeleton skeleton-animation-shimmer"
-                 style="height: 100%; width: 100%; "
-            >
-              <div style="width: 100%; min-height: 100%; "
-                   class="bone bone-type-image"
-              ></div>
-            </div>
+            <v-skeleton-loader v-show="loadingImagePreview" height='100%' width='100%' type="image" />
 
             <div v-show="!loadingImagePreview && imagePreviewError"
                  id="backdrop"

@@ -8,16 +8,13 @@
     <v-row v-show="loading"
            no-gutters justify="start" class="align-center">
       <v-col class="flex-grow-0 pa-1 pt-2">
-        <div class="skeleton skeleton-animation-shimmer">
-          <div style="width: 24px; height: 24px;" class="bone bone-type-image bone-style-round"></div>
-        </div>
+        <v-skeleton-loader class='noMargin smallAvatar' height='24' type="avatar"></v-skeleton-loader>
+      </v-col >
+
+      <v-col class="flex-grow-1 pa-1 pt-2">
+        <v-skeleton-loader class='noMargin' height='24' type="heading"></v-skeleton-loader>
       </v-col>
 
-      <v-col class="px-2">
-        <div class="skeleton skeleton-animation-shimmer">
-          <div style="width: 100%; height: 15px;"  class="bone bone-type-heading" ></div>
-        </div>
-      </v-col>
     </v-row>
 
     <v-row v-show="!loading"
@@ -132,4 +129,15 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+ .noMargin > .v-skeleton-loader__bone{
+   margin: 0 !important;
+ }
+
+ .smallAvatar > .v-skeleton-loader__bone {
+   height: 24px !important;
+   width: 24px !important;
+   min-height: 24px !important;
+   min-width: 24px !important;
+ }
+</style>

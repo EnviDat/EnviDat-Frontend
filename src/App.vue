@@ -154,7 +154,6 @@ import {
 
 import TheNavigation from '@/components/Navigation/TheNavigation.vue';
 import TheNavigationToolbar from '@/components/Navigation/TheNavigationToolbar.vue';
-import '@/../node_modules/skeleton-placeholder/dist/bone.min.css';
 
 import { ENVIDAT_SHOW_COOKIE_BANNER } from '@/factories/metadataConsts';
 import { getImage } from '@/factories/imageFactory';

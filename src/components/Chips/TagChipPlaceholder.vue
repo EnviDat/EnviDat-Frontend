@@ -1,5 +1,5 @@
 <template>
-  <v-skeleton-loader type="chip" color="transparent" height="20" width="80" class="ma-1" />
+  <v-skeleton-loader type="chip" height="20" width="80" class="ma-1" />
 </template>
 <script>
 /**

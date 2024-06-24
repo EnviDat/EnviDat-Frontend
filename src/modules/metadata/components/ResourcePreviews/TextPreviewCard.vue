@@ -21,12 +21,7 @@
     </v-card-text>
 
     <v-card-text v-show="loading">
-      <div class="skeleton skeleton-animation-shimmer" style="height: 100%;">
-        <div
-          style="width: 100%; min-height: 100%; "
-          class="bone bone-type-paragrah"
-        ></div>
-      </div>
+      <v-skeleton-loader type="paragraph" />
     </v-card-text>
   </v-card>
 </template>

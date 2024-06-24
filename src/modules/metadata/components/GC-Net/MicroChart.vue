@@ -25,16 +25,8 @@
             style="border-bottom-left-radius: 4px; border-top-left-radius: 4px; cursor: pointer;"
           />
 
-          <div
-            v-show="imageLoading"
-            class="skeleton skeleton-animation-shimmer"
-            style="height: 100%;"
-          >
-            <div
-              style="width: 100%; min-height: 100%; "
-              class="bone bone-type-image"
-            ></div>
-          </div>
+          <v-skeleton-loader v-show="imageLoading" type="image"></v-skeleton-loader>
+
         </v-col>
 
         <v-col :cols="currentColumnNum" class="pa-2">
@@ -61,12 +53,9 @@
               cols="12"
               style="width: 100%"
             >
-              <div
-                class="skeleton skeleton-animation-shimmer"
-                :style="`height: ${chartHeight};`"
-              >
-                <div style="width: 100%;" class="bone bone-type-image"></div>
-              </div>
+
+              <v-skeleton-loader type="image"></v-skeleton-loader>
+
             </v-col>
 
             <v-col

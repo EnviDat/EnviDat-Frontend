@@ -43,17 +43,9 @@
         <v-window v-model="window" vertical>
           <v-window-item v-if="!subProjects && showPlaceholder" class="ma-3">
             <v-card height="150" class="pa-3">
-              <div
-                class="skeleton skeleton-size-big skeleton-color-concrete skeleton-animation-shimmer"
-              >
-                <div class="bone bone-type-heading " />
-              </div>
+              <v-skeleton-loader type="heading" />
 
-              <div
-                class="pt-4 skeleton skeleton-size-big skeleton-color-concrete skeleton-animation-shimmer"
-              >
-                <div class="bone bone-type-multiline bone-style-steps" />
-              </div>
+              <v-skeleton-loader type="paragraph" />
             </v-card>
           </v-window-item>
 

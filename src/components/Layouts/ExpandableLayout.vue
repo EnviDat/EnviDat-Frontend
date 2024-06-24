@@ -10,19 +10,12 @@
 
     <v-card-title v-if="showPlaceholder && !title"
                   class="pa-4 pt-0">
-      <div
-        class="skeleton skeleton-size-normal skeleton-color-concrete skeleton-animation-shimmer"
-        style="width: 100%;"
-      >
-        <div class="bone bone-type-heading" />
-      </div>
+      <v-skeleton-loader type="header" />
     </v-card-title>
 
     <v-card-text v-if="showPlaceholder"
                  class="pa-4 pt-0">
-      <div class="skeleton skeleton-size-normal skeleton-color-concrete skeleton-animation-shimmer" >
-        <div class="bone bone-type-multiline bone-style-paragraph" />
-      </div>
+      <v-skeleton-loader type="paragraph" />
     </v-card-text>
 
     <v-card-text v-if="statusText"
