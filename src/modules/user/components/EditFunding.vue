@@ -38,11 +38,12 @@
           <div class="text-subtitle-1">{{ labels.fundingInformation }}</div>
         </v-col>
       </v-row>
+
       <v-card flat max-height="350px" max-width="1200px" class="overflow-auto">
         <v-row
           v-for="(item, index) in previewFundersAndEmpty"
           :key="`${item}_${index}`"
-          :class="index === 0 ? 'pt-2' : 'py-0'"
+          :class="index === 0 ? 'mt-2' : 'py-0'"
           no-gutters
         >
           <v-col cols="4" class="pr-2">
