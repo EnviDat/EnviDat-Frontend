@@ -211,8 +211,9 @@ export default {
       // this lead to a UX where the user had to add a second author to then remove the first, it
       // changes want to be made
     },
-    authorEditingProperties(author) {
+    authorEditingProperties(authorObj) {
       let editingProperties = {};
+      const author = authorObj?.author ? authorObj.author : authorObj;
 
       if (this.authorEditingEnabled) {
         editingProperties = {
