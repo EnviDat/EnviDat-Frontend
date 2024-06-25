@@ -94,7 +94,7 @@ deploy-to-s3-bucket:
 
 
 manual-deploy-to-s3-bucket:
-  stage: deploy
+  stage: manual-deploy
   image: docker.io/alpine:3.15
   rules:
     - if: '$CI_PIPELINE_SOURCE == "pipeline"'
