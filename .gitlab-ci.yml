@@ -12,18 +12,19 @@ stages:
 variables:
   ARTIFACT_COMPRESSION_LEVEL: "fast"
   CACHE_COMPRESSION_LEVEL: "fast"
-  npm_config_cache: '.npm/'
+#  npm_config_cache: '.npm/'
 
-cache:
-  - key:
-      files:
-        - package-lock.json
-      prefix: "package-lock"
-    paths:
-      - .npm/
-      - node_modules/
-    # only use pull for global cache
-    policy: pull
+.caching-rules:
+  cache:
+    - key:
+        files:
+          - package-lock.json
+        prefix: "package-lock"
+      paths:
+        - .npm/
+        - node_modules/
+      # only use pull for global cache
+      policy: pull
 
 .trigger-rules:
   rules:
@@ -109,7 +110,8 @@ modify-env:
 
 install-node:
   stage: config
-  image: docker.io/node:20.11.1-alpine3.19
+  image: docker.io/node:20.15.0-alpine3.20
+  # overwrite the global caching to use push-pull policy
   cache:
     - key:
         files:
@@ -142,9 +144,10 @@ install-node:
 
 run-tests:
   stage: test
-  image: docker.io/node:20.11.1-alpine3.19
+  image: docker.io/node:20.15.0-alpine3.20
   extends:
     - .trigger-rules
+    - .caching-rules
   needs:
     - modify-env
     - install-node
@@ -154,9 +157,10 @@ run-tests:
 
 build-storybook:
   stage: build
-  image: docker.io/node:20.11.1-alpine3.19
+  image: docker.io/node:20.15.0-alpine3.20
   extends:
     - .trigger-rules
+    - .caching-rules
   needs:
     # needs the artifact: config and environment variables
     - modify-env
@@ -178,9 +182,10 @@ build-storybook:
 
 build-app:
   stage: build
-  image: docker.io/node:20.11.1-alpine3.19
+  image: docker.io/node:20.15.0-alpine3.20
   extends:
     - .trigger-rules
+    - .caching-rules
   needs:
     # needs the artifact: config and environment variables
     - modify-env
