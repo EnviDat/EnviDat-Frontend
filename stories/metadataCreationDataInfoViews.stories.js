@@ -17,7 +17,7 @@ import {
   METADATA_DATALICENSE_PROPERTY,
 } from '@/factories/metadataConsts';
 import { EDITMETADATA_OBJECT_UPDATE, eventBus } from '@/factories/eventBus';
-import { CC_BY_SA_LICENSE_ID } from '@/factories/dataLicense';
+import { CC_BY_SA_LICENSE_ID, OTHER_UNDEFINED_LICENSE_ID, WSL_DATA_LICENSE_ID } from '@/factories/dataLicense';
 import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
 
@@ -88,6 +88,26 @@ EditDataInfoReadonly.args = {
     METADATA_DATALICENSE_PROPERTY,
   ],
   readOnlyExplanation: 'Fields are readonly for testing!',
+};
+
+export const EditDataInfoReadonlyWslDataPolicy = Template.bind({});
+EditDataInfoReadonlyWslDataPolicy.args = {
+  dates: datesArrayFilled,
+  dataLicenseId: WSL_DATA_LICENSE_ID,
+  readOnlyFields: [
+    METADATA_DATALICENSE_PROPERTY,
+  ],
+  readOnlyExplanation: 'License should not be readonly be WSL DATA Policy should be possible to change',
+};
+
+export const EditDataInfoReadonlyOther = Template.bind({});
+EditDataInfoReadonlyOther.args = {
+  dates: datesArrayFilled,
+  dataLicenseId: OTHER_UNDEFINED_LICENSE_ID,
+  readOnlyFields: [
+    METADATA_DATALICENSE_PROPERTY,
+  ],
+  readOnlyExplanation: 'License should not be readonly be Other should be possible to change',
 };
 
 export const MobileEditDataInfo1 = Template.bind({});

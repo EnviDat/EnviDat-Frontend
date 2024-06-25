@@ -44,8 +44,8 @@
             outlined
             hide-details="auto"
             :label="labels.dataLicense"
-            :readonly="mixinMethods_isFieldReadOnly(METADATA_DATALICENSE_PROPERTY)"
-            :hint="mixinMethods_readOnlyHint(METADATA_DATALICENSE_PROPERTY)"
+            :readonly="isDataLicenseReadonly"
+            :hint="dataLicenseReadonlyExplanation"
             prepend-icon="policy"
             append-icon="arrow_drop_down"
             :value="selectedLicense"
@@ -122,7 +122,11 @@ import {
   isFieldValid,
 } from '@/factories/userEditingValidations';
 
-import { getAvailableLicensesForEditing } from '@/factories/dataLicense';
+import {
+  getAvailableLicensesForEditing,
+  OTHER_UNDEFINED_LICENSE_ID,
+  WSL_DATA_LICENSE_ID,
+} from '@/factories/dataLicense';
 import { EDIT_METADATA_DATALICENSE_TITLE, METADATA_DATALICENSE_PROPERTY } from '@/factories/metadataConsts';
 
 export default {
@@ -216,10 +220,18 @@ export default {
     activeLicenses() {
       return getAvailableLicensesForEditing();
     },
-    readOnlyForDataLicense() {
-      // when dataset "published" and license is "other" or "WSL DATA Policy" is choosen then changes can still be made
-      // otherwise it's readonly!
-      
+    isDataLicenseReadonly() {
+      const readonlyBecausePublished = this.readOnlyFields?.includes(METADATA_DATALICENSE_PROPERTY) || false;
+
+      if (readonlyBecausePublished) {
+        return (this.dataLicenseId !== WSL_DATA_LICENSE_ID
+                && this.dataLicenseId !== OTHER_UNDEFINED_LICENSE_ID);
+      }
+
+      return false;
+    },
+    dataLicenseReadonlyExplanation() {
+      return this.isDataLicenseReadonly ? this.readOnlyExplanation : undefined;
     },
   },
   methods: {
