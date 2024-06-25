@@ -332,6 +332,24 @@ export default {
     this.infiniteHandler();
   },
   computed: {
+    hasMetadatasContent() {
+      return this.metadatasContent ? Object.keys(this.metadatasContent)?.length > 0 : false;
+    },
+    hasPinnedContent() {
+      if (this.prePinnedIds?.length <= 0) {
+        return false;
+      }
+
+      for (let i = 0; i < this.prePinnedIds.length; i++) {
+        const pin = this.prePinnedIds[i];
+
+        if (this.metadatasContent[pin] === undefined) {
+          return false;
+        }
+      }
+
+      return true;
+    },
     showPinnedElements() {
       return !this.loading && this.showMapFilter && this.prePinnedIds?.length > 0;
     },
@@ -340,7 +358,8 @@ export default {
 
       for (let i = 0; i < this.virtualListContent.length; i++) {
         const metadata = this.virtualListContent[i];
-        if (!this.isPinned(metadata.id)) {
+
+        if (!this.prePinnedIds?.includes(metadata.id)) {
           listWithoutPins.push(metadata);
         }
       }
@@ -352,7 +371,11 @@ export default {
         return [];
       }
 
-      return this.prePinnedIds;
+      if (this.hasMetadatasContent && this.hasPinnedContent) {
+        return this.prePinnedIds
+      }
+
+      return [];
     },
     cardGridClass() {
       const mapActive = this.isActiveControl(LISTCONTROL_MAP_ACTIVE);
@@ -521,9 +544,6 @@ export default {
       }
 
       return false;
-    },
-    isPinned(id) {
-      return this.pinnedIds.includes(id);
     },
     mapFilterHeight() {
       const sHeight = document.documentElement.clientHeight;
