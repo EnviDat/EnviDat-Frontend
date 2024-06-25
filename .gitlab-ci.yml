@@ -36,7 +36,7 @@ variables:
 
 set-vars:
   stage: .pre
-  image: docker.io/alpine:3.20
+  image: alpine:3.20
   before_script:
     - >
       apk add jq yq --no-cache
@@ -65,7 +65,7 @@ set-vars:
 
 modify-env:
   stage: config
-  image: docker.io/python:3.9-alpine3.17
+  image: python:3.9-alpine3.17
   extends: .trigger-rules
   dependencies:
     - set-vars
@@ -110,7 +110,7 @@ modify-env:
 
 install-node:
   stage: config
-  image: docker.io/node:20.15.0-alpine3.20
+  image: node:20.15.0-alpine3.20
   # overwrite the global caching to use push-pull policy
   cache:
     - key:
@@ -144,7 +144,7 @@ install-node:
 
 run-tests:
   stage: test
-  image: docker.io/node:20.15.0-alpine3.20
+  image: node:20.15.0-alpine3.20
   extends:
     - .trigger-rules
     - .caching-rules
@@ -157,7 +157,7 @@ run-tests:
 
 build-storybook:
   stage: build
-  image: docker.io/node:20.15.0-alpine3.20
+  image: node:20.15.0-alpine3.20
   extends:
     - .trigger-rules
     - .caching-rules
@@ -182,7 +182,7 @@ build-storybook:
 
 build-app:
   stage: build
-  image: docker.io/node:20.15.0-alpine3.20
+  image: node:20.15.0-alpine3.20
   extends:
     - .trigger-rules
     - .caching-rules
@@ -206,7 +206,7 @@ build-app:
 
 combine-builds:
   stage: build
-  image: docker.io/alpine:3.20
+  image: alpine:3.20
   extends: .trigger-rules
   variables:
     GIT_STRATEGY: none
@@ -239,7 +239,7 @@ combine-builds:
 #tag-commit-sha:
 #  extends: .trigger-rules
 #  stage: package
-#  image: docker.io/regclient/regctl:v0.3-alpine
+#  image: regclient/regctl:v0.3-alpine
 #  variables:
 #    GIT_STRATEGY: none
 #  before_script:

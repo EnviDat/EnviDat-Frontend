@@ -1,7 +1,7 @@
 
 deploy-chromatic:
   stage: deploy
-  image: docker.io/node:20.15.0-alpine3.20
+  image: node:20.15.0-alpine3.20
   extends:
     - .trigger-rules
   needs:
@@ -18,7 +18,7 @@ deploy-chromatic:
 
 publish-build:
   stage: deploy
-  image: docker.io/alpine:3.20
+  image: alpine:3.20
   extends: .trigger-rules
   variables:
     GIT_STRATEGY: none
@@ -46,7 +46,7 @@ publish-build:
 
 deploy-to-s3-bucket:
   stage: deploy
-  image: docker.io/alpine:3.20
+  image: alpine:3.20
   extends: .trigger-rules
   needs:
     # needs the environmental variables for the version number
@@ -95,7 +95,7 @@ deploy-to-s3-bucket:
 
 manual-deploy-to-s3-bucket:
   stage: manual-deploy
-  image: docker.io/alpine:3.20
+  image: alpine:3.20
   rules:
     - if: '$CI_PIPELINE_SOURCE == "pipeline"'
       when: always
