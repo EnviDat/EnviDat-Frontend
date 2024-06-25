@@ -130,7 +130,7 @@ install-node:
     - echo "the cache work if node_modules and .npm/ folders are available"
     - ls -a
     - npm config set cache .npm/
-    - npm cache verify
+    # - npm cache verify || true
     - npm ci --prefer-offline --no-audit
 #    - echo "Check afterwards how the folders are"
 #    - ls -a
@@ -168,7 +168,7 @@ build-storybook:
     - install-node
   script:
     - npm config set cache .npm/
-    - npm cache verify
+    # - npm cache verify || true
     - npm run build-storybook -- -o ./storybook --loglevel error --disable-telemetry
   artifacts:
     name: "storybook build"
@@ -193,7 +193,7 @@ build-app:
     - install-node
   script:
     - npm config set cache .npm/
-    - npm cache verify
+    # - npm cache verify || true
     - npm run build -- --logLevel error
   artifacts:
     name: "frontend build "
