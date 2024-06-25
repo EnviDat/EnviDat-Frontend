@@ -1,7 +1,7 @@
 modify-box-env:
   when: manual
   stage: config
-  image: docker.io/python:3.9-alpine3.17
+  image: python:3.9-alpine3.17
   dependencies:
     - set-vars
   before_script:
@@ -42,10 +42,10 @@ modify-box-env:
 
 build-box-app:
   stage: build
-  image: docker.io/node:20.11.1-alpine3.19
+  image: node:20.15.0-alpine3.20
   extends:
     - .trigger-rules
-  # image: docker.io/node:18.18.2-alpine3.17
+  # image: node:18.18.2-alpine3.17
   needs:
     # needs environment variables from the frontend in a box setup
     - modify-box-env
@@ -63,7 +63,7 @@ build-box-app:
 
 combine-box-builds:
   stage: build
-  image: docker.io/alpine:3.15
+  image: alpine:3.20
   extends: .trigger-rules
   variables:
     GIT_STRATEGY: none
@@ -89,7 +89,7 @@ combine-box-builds:
 
 publish-box-build:
   stage: deploy
-  image: docker.io/alpine:3.15
+  image: alpine:3.20
   extends: .trigger-rules
   variables:
     GIT_STRATEGY: none

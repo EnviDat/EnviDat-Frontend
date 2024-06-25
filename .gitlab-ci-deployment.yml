@@ -1,7 +1,7 @@
 
 deploy-chromatic:
   stage: deploy
-  image: docker.io/node:20.11.1-alpine3.19
+  image: node:20.15.0-alpine3.20
   extends:
     - .trigger-rules
   needs:
@@ -18,7 +18,7 @@ deploy-chromatic:
 
 publish-build:
   stage: deploy
-  image: docker.io/alpine:3.15
+  image: alpine:3.20
   extends: .trigger-rules
   variables:
     GIT_STRATEGY: none
@@ -44,15 +44,12 @@ publish-build:
       "${PUBLISH_LOCATION}"
 
 
-rclone-sync:
+deploy-to-s3-bucket:
   stage: deploy
-  image: docker.io/alpine:3.15
-  rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^(main|staging)$/'
-    - if: $CI_PIPELINE_SOURCE == "web"
-      when: always
+  image: alpine:3.20
+  extends: .trigger-rules
   needs:
-    # needs the enviromental variables for the version number
+    # needs the environmental variables for the version number
     - set-vars
     # needs the published build for the app and it's storybook
     - publish-build
@@ -77,7 +74,57 @@ rclone-sync:
       if [ "${CI_COMMIT_REF_NAME}" == "develop" ]; then
         BUCKET_NAME="frontend-dev"
       fi
-      echo "Going to rclone sync to the bucket: '${BUCKET_NAME}'"
+      echo "Target for rclone sync is the bucket: '${BUCKET_NAME}'"
+  script:
+    - export PUBLISH_LOCATION="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/envidat-frontend-${CI_COMMIT_REF_NAME}/${BUILD_VERSION}/${BUILD_ZIP_NAME}"
+    - echo "Going to pull build ${BUILD_VERSION} with zip name ${BUILD_ZIP_NAME}"
+    - echo "from location ${PUBLISH_LOCATION}"
+    # - ls -l
+    - |
+      curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
+      --user "${CI_DEPLOY_USER}:${CI_DEPLOY_PASSWORD}" \
+      "${PUBLISH_LOCATION}" \
+      -o ${BUILD_ZIP_NAME}
+    # use -q for quiet to not list all the files
+    - unzip -q ${BUILD_ZIP_NAME}
+    - rm ${BUILD_ZIP_NAME}
+    - ls -l
+    - echo "going to rclone sync from ./ to switch:${BUCKET_NAME}"
+    - rclone sync ./ "switch:${BUCKET_NAME}" --verbose
+
+
+manual-deploy-to-s3-bucket:
+  stage: manual-deploy
+  image: alpine:3.20
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "pipeline"'
+      when: always
+    - when: manual
+  needs:
+    # needs the environmental variables for the version number
+    - set-vars
+  variables:
+    GIT_STRATEGY: none
+    RCLONE_CONFIG_SWITCH_TYPE: 's3'
+    RCLONE_S3_PROVIDER: 'Other'
+    RCLONE_S3_ENV_AUTH: 'true'
+  before_script:
+    - apk add curl unzip --no-cache
+    - curl -O https://downloads.rclone.org/v1.59.0/rclone-v1.59.0-linux-amd64.zip
+    - unzip rclone-v1.59.0-linux-amd64.zip
+    - cp rclone-v1.59.0-linux-amd64/rclone /usr/bin/
+    - rm rclone-v1.59.0-linux-amd64.zip
+    - rm -rf rclone-v1.59.0-linux-amd64
+    - |
+      if [ "${CI_COMMIT_REF_NAME}" == "main" ]; then
+        BUCKET_NAME="frontend"
+      else
+        BUCKET_NAME="frontend-${CI_COMMIT_REF_NAME}"
+      fi
+      if [ "${CI_COMMIT_REF_NAME}" == "develop" ]; then
+        BUCKET_NAME="frontend-dev"
+      fi
+      echo "Target for rclone sync is the bucket: '${BUCKET_NAME}'"
   script:
     - export PUBLISH_LOCATION="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/envidat-frontend-${CI_COMMIT_REF_NAME}/${BUILD_VERSION}/${BUILD_ZIP_NAME}"
     - echo "Going to pull build ${BUILD_VERSION} with zip name ${BUILD_ZIP_NAME}"

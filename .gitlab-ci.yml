@@ -7,25 +7,36 @@ stages:
   - test
   - build
   - deploy
+  - manual-deploy
 
 variables:
   ARTIFACT_COMPRESSION_LEVEL: "fast"
   CACHE_COMPRESSION_LEVEL: "fast"
-  npm_config_cache: '.npm/'
+#  npm_config_cache: '.npm/'
 
+.caching-rules:
+  cache:
+    - key:
+        files:
+          - package-lock.json
+        prefix: "package-lock"
+      paths:
+        - .npm/
+        - node_modules/
+      # only use pull for global cache
+      policy: pull
 
 .trigger-rules:
   rules:
+    - if: '$CI_PIPELINE_SOURCE == "pipeline"'
+      when: never
     - if: '$CI_COMMIT_REF_NAME =~ /^(main|staging|develop)$/'
     - if: $CI_PIPELINE_SOURCE == "web"
       when: always
 
 set-vars:
   stage: .pre
-  image: docker.io/alpine:3.15
-  rules:
-    - !reference [.trigger-rules, rules]
-    - if: $CI_COMMIT_TAG
+  image: alpine:3.20
   before_script:
     - >
       apk add jq yq --no-cache
@@ -54,7 +65,7 @@ set-vars:
 
 modify-env:
   stage: config
-  image: docker.io/python:3.9-alpine3.17
+  image: python:3.9-alpine3.17
   extends: .trigger-rules
   dependencies:
     - set-vars
@@ -99,7 +110,8 @@ modify-env:
 
 install-node:
   stage: config
-  image: docker.io/node:20.11.1-alpine3.19
+  image: node:20.15.0-alpine3.20
+  # overwrite the global caching to use push-pull policy
   cache:
     - key:
         files:
@@ -107,6 +119,7 @@ install-node:
         prefix: "package-lock"
       paths:
         - .npm/
+        - node_modules/
       # pull-push to be able to update the node_modules in the cache
       policy: pull-push
       untracked: true
@@ -117,7 +130,7 @@ install-node:
     - echo "the cache work if node_modules and .npm/ folders are available"
     - ls -a
     - npm config set cache .npm/
-#    - npm cache verify
+    # - npm cache verify || true
     - npm ci --prefer-offline --no-audit
 #    - echo "Check afterwards how the folders are"
 #    - ls -a
@@ -127,50 +140,61 @@ install-node:
     # caching isn't always guaranteed to work
     paths:
       - node_modules
+    expire_in: 1 day
 
 run-tests:
   stage: test
-  image: docker.io/node:20.11.1-alpine3.19
+  image: node:20.15.0-alpine3.20
   extends:
     - .trigger-rules
+    - .caching-rules
   needs:
     - modify-env
     - install-node
   script:
     - npm run test
-
+  retry:
+    max: 2
 
 build-storybook:
   stage: build
-  image: docker.io/node:20.11.1-alpine3.19
+  image: node:20.15.0-alpine3.20
   extends:
     - .trigger-rules
+    - .caching-rules
   needs:
     # needs the artifact: config and environment variables
     - modify-env
     # needs the artifact: node_modules to build storybook
     - install-node
   script:
+    - npm config set cache .npm/
+    - npm cache verify || true
     - npm run build-storybook -- -o ./storybook --loglevel error --disable-telemetry
   artifacts:
     name: "storybook build"
     # keep the storybook for 7 days to be able to trigger the chromatic-deployment
-    expire_in: 7 day
+    expire_in: 1 day
     # stores the storybook build as an artifact to be used in the next stages
     paths:
       - storybook
+  retry:
+    max: 2
 
 build-app:
   stage: build
-  image: docker.io/node:20.11.1-alpine3.19
+  image: node:20.15.0-alpine3.20
   extends:
     - .trigger-rules
+    - .caching-rules
   needs:
     # needs the artifact: config and environment variables
     - modify-env
     # needs the artifact: node_modules to build the app
     - install-node
   script:
+    - npm config set cache .npm/
+    # - npm cache verify || true
     - npm run build -- --logLevel error
   artifacts:
     name: "frontend build "
@@ -178,10 +202,12 @@ build-app:
     # stores the built app code
     paths:
       - dist
+  retry:
+    max: 2
 
 combine-builds:
   stage: build
-  image: docker.io/alpine:3.15
+  image: alpine:3.20
   extends: .trigger-rules
   variables:
     GIT_STRATEGY: none
@@ -205,6 +231,7 @@ combine-builds:
     - ls -la
   artifacts:
     name: "frontend build $CI_COMMIT_REF_NAME"
+    expire_in: 7 day
     # stores the combined built code
     paths:
       - ./
@@ -213,7 +240,7 @@ combine-builds:
 #tag-commit-sha:
 #  extends: .trigger-rules
 #  stage: package
-#  image: docker.io/regclient/regctl:v0.3-alpine
+#  image: regclient/regctl:v0.3-alpine
 #  variables:
 #    GIT_STRATEGY: none
 #  before_script:

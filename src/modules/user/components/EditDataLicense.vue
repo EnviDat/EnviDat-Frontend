@@ -42,10 +42,10 @@
             item-value="id"
             item-text="title"
             outlined
-            hide-details
+            hide-details="auto"
             :label="labels.dataLicense"
-            :readonly="mixinMethods_isFieldReadOnly('dataLicenseId')"
-            :hint="mixinMethods_readOnlyHint('dataLicenseId')"
+            :readonly="isDataLicenseReadonly"
+            :hint="dataLicenseReadonlyExplanation"
             prepend-icon="policy"
             append-icon="arrow_drop_down"
             :value="selectedLicense"
@@ -122,7 +122,12 @@ import {
   isFieldValid,
 } from '@/factories/userEditingValidations';
 
-import { getAvailableLicensesForEditing } from '@/factories/dataLicense';
+import {
+  getAvailableLicensesForEditing,
+  OTHER_UNDEFINED_LICENSE_ID,
+  WSL_DATA_LICENSE_ID,
+} from '@/factories/dataLicense';
+import { EDIT_METADATA_DATALICENSE_TITLE, METADATA_DATALICENSE_PROPERTY } from '@/factories/metadataConsts';
 
 export default {
   name: 'EditDataLicense',
@@ -215,6 +220,19 @@ export default {
     activeLicenses() {
       return getAvailableLicensesForEditing();
     },
+    isDataLicenseReadonly() {
+      const readonlyBecausePublished = this.readOnlyFields?.includes(METADATA_DATALICENSE_PROPERTY) || false;
+
+      if (readonlyBecausePublished) {
+        return (this.dataLicenseId !== WSL_DATA_LICENSE_ID
+                && this.dataLicenseId !== OTHER_UNDEFINED_LICENSE_ID);
+      }
+
+      return false;
+    },
+    dataLicenseReadonlyExplanation() {
+      return this.isDataLicenseReadonly ? this.readOnlyExplanation : undefined;
+    },
   },
   methods: {
     clearPreviews() {
@@ -265,11 +283,12 @@ export default {
     BaseStatusLabelView,
   },
   data: () => ({
+    METADATA_DATALICENSE_PROPERTY,
     validationErrors: {
       dataLicense: null,
     },
     labels: {
-      cardTitle: 'Data License of the Resources',
+      cardTitle: EDIT_METADATA_DATALICENSE_TITLE,
       instructionsLicense: 'Select a data license which reflects the terms of usage of your research data. CC-BY-SA is the recommend license, read the blog post about <a href="https://envidat.ch/#/blog/EnviDat_WSLIntern_2022q4.md" target="_blank">Data license</a> for more information. ',
       dataLicense: 'Click here to select a data license',
       dataLicenseSummary: 'Show a summary',

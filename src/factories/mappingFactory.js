@@ -73,7 +73,10 @@ import {
   METADATA_PUBLISHER_PROPERTY,
   METADATA_PUBLICATION_YEAR_PROPERTY,
   METADATA_TITLE_PROPERTY,
-  METADATA_URL_PROPERTY, EDIT_METADATA_PUBLISHER_LABEL,
+  METADATA_URL_PROPERTY,
+  EDIT_METADATA_PUBLISHER_LABEL,
+  METADATA_DATALICENSE_PROPERTY,
+  EDIT_METADATA_DATALICENSE_LABEL,
 } from '@/factories/metadataConsts';
 import { createAuthor } from '@/factories/authorFactory';
 
@@ -192,7 +195,7 @@ const JSONFrontendBackendRules = {
     ['dates','date'],
   ],
   [EDITMETADATA_DATA_LICENSE]: [
-    ['dataLicenseId','license_id'],
+    [METADATA_DATALICENSE_PROPERTY,'license_id'],
     ['dataLicenseTitle','license_title'],
     ['dataLicenseUrl','license_url'],
   ],
@@ -627,6 +630,7 @@ export const metadataPublishedReadOnlyFields = [
   METADATA_PUBLICATION_YEAR_PROPERTY,
   METADATA_PUBLISHER_PROPERTY,
   METADATA_DOI_PROPERTY,
+  METADATA_DATALICENSE_PROPERTY,
 ];
 
 export const readablePublishedReadOnlyFields = {
@@ -637,6 +641,7 @@ export const readablePublishedReadOnlyFields = {
   [METADATA_DOI_PROPERTY]: EDIT_METADATA_DOI_LABEL,
   [METADATA_PUBLISHER_PROPERTY]: EDIT_METADATA_PUBLISHER_LABEL,
   [METADATA_PUBLICATION_YEAR_PROPERTY]: EDIT_METADATA_PUBLICATION_YEAR_LABEL,
+  [METADATA_DATALICENSE_PROPERTY]: EDIT_METADATA_DATALICENSE_LABEL,
 };
 
 const readOnlyMappingRules = [
