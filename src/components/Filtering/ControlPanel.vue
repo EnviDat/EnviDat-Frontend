@@ -67,7 +67,7 @@
             style="z-index: 5 !important;">
 
             <div class="dialog"
-                 :style="`left: ${ $vuetify.breakpoint.smAndDown ? '-20' : '65' }px;`"
+                 :style="`left: ${ $vuetify.breakpoint.smAndDown ? '-20' : '45' }px;`"
                  @click="elementVisible = !elementVisible">
               <span>Toggle from overview to sample datasets:</span>
             </div>
