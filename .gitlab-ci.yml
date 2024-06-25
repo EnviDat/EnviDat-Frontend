@@ -14,6 +14,16 @@ variables:
   CACHE_COMPRESSION_LEVEL: "fast"
   npm_config_cache: '.npm/'
 
+cache:
+  - key:
+      files:
+        - package-lock.json
+      prefix: "package-lock"
+    paths:
+      - .npm/
+      - node_modules/
+    # only use pull for global cache
+    policy: pull
 
 .trigger-rules:
   rules:
@@ -107,6 +117,7 @@ install-node:
         prefix: "package-lock"
       paths:
         - .npm/
+        - node_modules/
       # pull-push to be able to update the node_modules in the cache
       policy: pull-push
       untracked: true
@@ -117,7 +128,7 @@ install-node:
     - echo "the cache work if node_modules and .npm/ folders are available"
     - ls -a
     - npm config set cache .npm/
-#    - npm cache verify
+    - npm cache verify
     - npm ci --prefer-offline --no-audit
 #    - echo "Check afterwards how the folders are"
 #    - ls -a
@@ -127,6 +138,7 @@ install-node:
     # caching isn't always guaranteed to work
     paths:
       - node_modules
+    expire_in: 1 day
 
 run-tests:
   stage: test
@@ -151,14 +163,18 @@ build-storybook:
     # needs the artifact: node_modules to build storybook
     - install-node
   script:
+    - npm config set cache .npm/
+    - npm cache verify
     - npm run build-storybook -- -o ./storybook --loglevel error --disable-telemetry
   artifacts:
     name: "storybook build"
     # keep the storybook for 7 days to be able to trigger the chromatic-deployment
-    expire_in: 7 day
+    expire_in: 1 day
     # stores the storybook build as an artifact to be used in the next stages
     paths:
       - storybook
+#  retry:
+#    max: 2
 
 build-app:
   stage: build
@@ -171,6 +187,8 @@ build-app:
     # needs the artifact: node_modules to build the app
     - install-node
   script:
+    - npm config set cache .npm/
+    - npm cache verify
     - npm run build -- --logLevel error
   artifacts:
     name: "frontend build "
@@ -178,6 +196,8 @@ build-app:
     # stores the built app code
     paths:
       - dist
+#  retry:
+#    max: 2
 
 combine-builds:
   stage: build
@@ -205,6 +225,7 @@ combine-builds:
     - ls -la
   artifacts:
     name: "frontend build $CI_COMMIT_REF_NAME"
+    expire_in: 7 day
     # stores the combined built code
     paths:
       - ./
