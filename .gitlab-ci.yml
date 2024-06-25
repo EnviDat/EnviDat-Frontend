@@ -153,7 +153,8 @@ run-tests:
     - install-node
   script:
     - npm run test
-
+  retry:
+    max: 2
 
 build-storybook:
   stage: build
@@ -168,7 +169,7 @@ build-storybook:
     - install-node
   script:
     - npm config set cache .npm/
-    # - npm cache verify || true
+    - npm cache verify || true
     - npm run build-storybook -- -o ./storybook --loglevel error --disable-telemetry
   artifacts:
     name: "storybook build"
@@ -177,8 +178,8 @@ build-storybook:
     # stores the storybook build as an artifact to be used in the next stages
     paths:
       - storybook
-#  retry:
-#    max: 2
+  retry:
+    max: 2
 
 build-app:
   stage: build
@@ -201,8 +202,8 @@ build-app:
     # stores the built app code
     paths:
       - dist
-#  retry:
-#    max: 2
+  retry:
+    max: 2
 
 combine-builds:
   stage: build
