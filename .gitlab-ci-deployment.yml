@@ -15,6 +15,8 @@ deploy-chromatic:
     # manually deploy the storybook build to chromatic for visual regression testing
     - npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes --storybook-build-dir ./storybook
   when: manual
+  # for manaul jobs add allow_failure so the whole pipeline won't show up as "blocked"
+  allow_failure: true
 
 publish-build:
   stage: deploy
@@ -100,6 +102,8 @@ manual-deploy-to-s3-bucket:
     - if: '$CI_PIPELINE_SOURCE == "pipeline"'
       when: always
     - when: manual
+  # for manaul jobs add allow_failure so the whole pipeline won't show up as "blocked"
+  allow_failure: true
   needs:
     # needs the environmental variables for the version number
     - set-vars
