@@ -56,10 +56,9 @@
       "showDataCreditScore": false
     },
     "resourcesConfig": {
-      "downloadActive": true
-    },
-    "ednaExternalDatasets": "https://os.zhdk.cloud.switch.ch/envicloud/edna/fw_ch_modipl_2020/metadata/metadata_fw_ch_modipl_2020.csvhttps://os.zhdk.cloud.switch.ch/envicloud/edna/fw_ch_modipl_2020/metadata/metadata_fw_ch_modipl_2020.csv"
-  },
+      "downloadActive": false
+    }
+ },
   "projectsConfig": {
     "loadLocalFile": false,
     "localFileUrl": "./testdata/projects.json"
