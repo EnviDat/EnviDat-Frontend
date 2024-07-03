@@ -82,12 +82,12 @@ import {
 } from '@/factories/userEditingValidations';
 
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
-
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout.vue';
 import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody.vue';
 import { EDIT_METADATA_DESCRIPTION_TITLE } from '@/factories/metadataConsts';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+import { mdiText } from '@mdi/js';
 
 
 export default {
@@ -145,7 +145,7 @@ export default {
         labelTextarea: this.labels.labelTextarea,
         textareaContent: this.description,
         isVerticalLayout: false,
-        prependIcon: 'description',
+        prependIcon: mdiText,
       };
     },
     descriptionObject() {
@@ -196,6 +196,7 @@ export default {
     },
   },
   data: () => ({
+    mdiText,
     editingProperty: 'description',
     previewText: null,
     labels: {
