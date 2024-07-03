@@ -47,7 +47,8 @@
       "resolveIds": true,
       "idPrefix": "*",
       "idDelimiter": ":",
-      "resolveBaseUrl": "https://www.envidat.ch/dora/"
+      "resolveBaseUrl": "https://www.envidat.ch/dora/",
+      "useListResolving": false
     },
     "authorDetailsConfig": {
       "showAuthorInfos": true,
