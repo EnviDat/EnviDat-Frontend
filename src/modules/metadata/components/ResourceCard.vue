@@ -31,8 +31,8 @@
               "
             class="readableText resourceCardText heightAndScroll"
             :class="{
-              'text-white': dark,
-              'text-black': !dark,
+              'text-white': !dark,
+              'text-black': dark,
             }"
             :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`
               ">
