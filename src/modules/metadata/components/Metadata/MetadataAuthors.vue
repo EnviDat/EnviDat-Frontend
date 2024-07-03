@@ -33,6 +33,7 @@
 
           <v-col v-for="author in authors"
                   :key="author.fullName"
+                  :id="author.fullName"
                   cols="12" sm="6"
                   class="pa-2" >
 
