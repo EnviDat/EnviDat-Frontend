@@ -70,7 +70,7 @@
       :count="selectedTags.length"
       style="position: absolute; bottom: 0; right: 0;"
       :icon="mdiChevronDown"
-      color="secondary"
+      outline-color="secondary"
       icon-color="secondary"
       class="ma-1"
       outlined
