@@ -247,9 +247,9 @@ export default {
     editingProperty: 'relatedPublicationsText',
     labels: {
       title: EDIT_METADATA_ADD_PUBLICATION_TITLE,
-      cardInstructions: 'Add DORA permantant Id (PID) or a Data Object Identifer (DOI).',
-      subtitlePreview: 'Preview Publications resolved via DORA',
-      pId: 'Permant Id',
+      cardInstructions: 'Add DORA permanent Id (PID) or a Data Object Identifier (DOI).',
+      subtitlePreview: 'Preview Publication resolved via DORA',
+      pId: 'Permanent Id',
       doi: EDIT_METADATA_DOI_LABEL,
     },
     validationErrors: {
