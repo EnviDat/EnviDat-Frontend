@@ -45,7 +45,6 @@ export const EmptyMetadataList = {
 
 export const ListLoading = {
   args: {
-    ...EmptyMetadataList.args,
     loading: true,
     showSearch: true,
   },
@@ -53,10 +52,17 @@ export const ListLoading = {
 
 export const MinimalList = {
   args: {
-    ...EmptyMetadataList.args,
     listContent: longList,
     showSearch: true,
     allTags,
+  },
+}
+
+const selectedTagNames = allTags.filter(tag => tag.name === 'CLIMATE').map(tag => tag.name);
+export const MinimalSelectionList = {
+  args: {
+    ...MinimalList.args,
+    selectedTagNames,
   },
 }
 
