@@ -103,7 +103,7 @@
     "vite-plugin-eslint": "^1.8.1",
     "vite-plugin-static-copy": "^0.17.1",
     "vite-plugin-webfont-dl": "^3.9.1",
-    "vitest": "^0.34.6",
+    "vitest": "^1.6.0",
     "vuetify-loader": "^1.9.2"
   },
   "browserslist": [

@@ -105,11 +105,11 @@ import {
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 
 import { EDIT_METADATA_RELATEDPUBLICATIONS_TITLE } from '@/factories/metadataConsts';
+import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
 
 import EditAddPublication from '@/modules/user/components/EditAddPublication.vue';
-import { extractPIDMapFromText } from '@/factories/metaDataFactory';
 import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications.vue';
-import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
+
 
 export default {
   name: 'EditRelatedPublicationsList',
@@ -159,12 +159,6 @@ export default {
     }
   },
   computed: {
-    pIdMap() {
-      return extractPIDMapFromText(this.text);
-    },
-    doiMap() {
-      return extractPIDMapFromText(this.text);
-    },
     publicationsObject() {
       return {
         text: this.previewPublicationsText,

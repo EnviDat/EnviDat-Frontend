@@ -100,9 +100,9 @@ import {
   LOAD_METADATA_CONTENT_BY_ID,
   METADATA_NAMESPACE,
 } from '@/store/metadataMutationsConsts';
+
 import {
   createBody,
-  createCitation,
   createFunding,
   createHeader,
   createLicense,
@@ -111,6 +111,10 @@ import {
   createRelatedDatasets,
   createResources,
 } from '@/factories/metaDataFactory';
+
+import {
+  createCitation,
+} from '@/factories/citationFactory';
 
 import { getFullAuthorsFromDataset } from '@/factories/authorFactory';
 

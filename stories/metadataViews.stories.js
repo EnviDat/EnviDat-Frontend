@@ -25,12 +25,15 @@ import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuth
 
 import {
   createHeader,
-  createCitation,
   createDetails,
   createPublications,
   createBody,
   createLocation,
 } from '@/factories/metaDataFactory';
+
+import {
+  createCitation,
+} from '@/factories/citationFactory'
 
 import { extractAuthorsMap, getFullAuthorsFromDataset } from '@/factories/authorFactory';
 

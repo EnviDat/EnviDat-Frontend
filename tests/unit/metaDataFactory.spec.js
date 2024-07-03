@@ -4,7 +4,6 @@ import {
   createHeader,
   createBody,
   createFunding,
-  createCitation,
   createLicense,
   createLocation,
   createPublications,
@@ -13,9 +12,11 @@ import {
   enhanceTags,
   formatDate,
   enhanceTitleImg,
-  extractPIDMapFromText,
 } from '@/factories/metaDataFactory';
-
+import {
+  createCitation,
+  extractPIDMapFromText,
+} from '@/factories/citationFactory';
 
 import categoryCards from '@/store/categoryCards';
 import packagelist from '@/../stories/testdata/packagelist.json';

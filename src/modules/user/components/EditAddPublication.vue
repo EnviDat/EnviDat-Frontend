@@ -116,7 +116,7 @@ import BaseCitationView from '@/components/BaseElements/BaseCitationView.vue';
 import {
   resolveDoiCitationObjectsViaDora,
   resolvePidCitationObjectsViaDora,
-} from '@/factories/metaDataFactory';
+} from '@/factories/citationFactory';
 
 export default {
   name: 'EditAddPublication',
