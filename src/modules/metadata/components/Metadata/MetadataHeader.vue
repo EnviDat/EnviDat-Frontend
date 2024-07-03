@@ -72,7 +72,7 @@
         <v-col cols="12">
 
           <!-- author list -->
-          <v-row v-if="authors"
+          <v-row v-if="hasAuthors"
                  no-gutters
                   style="position: relative; z-index: 1;">
 
@@ -511,6 +511,9 @@ export default {
     authorTagsMaxHeight: 75,
   }),
   computed: {
+    hasAuthors() {
+      return this.authors?.length > 0;
+    },
     hasContent() {
       return this.metadataTitle && !this.showPlaceholder;
     },
