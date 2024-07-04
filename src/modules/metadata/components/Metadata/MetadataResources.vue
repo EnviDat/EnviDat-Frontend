@@ -133,6 +133,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
+import { toRaw } from 'vue';
 import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
 import ResourceCard from '@/modules/metadata/components/ResourceCard.vue';
 import ResourceCardPlaceholder from '@/modules/metadata/components/ResourceCardPlaceholder.vue';
@@ -176,7 +177,8 @@ export default {
     },
     resources() {
       const r = this.mixinMethods_getGenericProp('resources') ?? [];
-      return r.sort((a, b) => Number(!!a.deprecated) - Number(!!b.deprecated));
+      const resources = [...r];
+      return resources.sort((a, b) => Number(!!a.deprecated) - Number(!!b.deprecated));
     },
     dates() {
       return this.mixinMethods_getGenericProp('dates');

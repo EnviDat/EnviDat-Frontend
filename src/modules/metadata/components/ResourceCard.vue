@@ -14,6 +14,7 @@
     <v-card-title class="text-h5 resourceHeadline white--text">
       <span class="d-flex align-center">
         <v-icon v-if="isProtected" left>lock</v-icon>
+        <v-icon v-if="deprecated" left>not_interested</v-icon>
         {{ resourceName }}
       </span>
     </v-card-title>

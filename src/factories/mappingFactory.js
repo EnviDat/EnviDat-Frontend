@@ -76,7 +76,7 @@ import {
   METADATA_URL_PROPERTY,
   EDIT_METADATA_PUBLISHER_LABEL,
   METADATA_DATALICENSE_PROPERTY,
-  EDIT_METADATA_DATALICENSE_LABEL,
+  EDIT_METADATA_DATALICENSE_LABEL, METADATA_DEPRECATEDRESOURCES_PROPERTY,
 } from '@/factories/metadataConsts';
 import { createAuthor } from '@/factories/authorFactory';
 
@@ -190,7 +190,6 @@ const JSONFrontendBackendRules = {
   ],
   [EDITMETADATA_DATA_RESOURCES]: [
     ['resources','resources'],
-    ['customFields', 'extras'],
   ],
   [EDITMETADATA_DATA_INFO]: [
     ['dates','date'],
@@ -853,7 +852,7 @@ function populateEditingResources(commit, snakeCaseJSON, dataLicenseInfo, custom
 
   resourceData.dataLicenseTitle = dataLicenseInfo.dataLicenseTitle;
   resourceData.dataLicenseUrl = dataLicenseInfo.dataLicenseUrl;
-  const deprecatedResources = customFields.deprecatedResources;
+  const deprecatedResources = customFields?.deprecatedResources;
 
   for (let i = 0; i < resources.length; i++) {
     resources[i] = cleanResourceForFrontend(resources[i]);
@@ -863,8 +862,7 @@ function populateEditingResources(commit, snakeCaseJSON, dataLicenseInfo, custom
     // the mapping of the deprecated field is performed here in a very inefficient and unmaintainable way
     // The counterpart is found in editActions -> METADATA_EDITING_PATCH_RESOURCE
     // change this ASAP (move to centralised mapping, or simply adjust backend)!
-    resources.deprecated = deprecatedResources.includes(resources[i].id);
-
+    resources[i].deprecated = deprecatedResources?.includes(resources[i].id);
   }
 
   enhanceElementsWithStrategyEvents(
@@ -943,7 +941,7 @@ export function populateEditingComponents(commit, metadataRecord, categoryCards)
 
   const { customFieldsData } = populateEditingRelatedResearch(commit, snakeCaseJSON);
 
-  populateEditingResources(commit, snakeCaseJSON, dataLicenseInfo, customFieldsData);
+  populateEditingResources(commit, snakeCaseJSON, dataLicenseInfo, customFieldsData.customFields);
 
 
   const { publicationData } = populateEditingPublicationInfo(commit, metadataRecord, snakeCaseJSON);
@@ -1177,4 +1175,27 @@ export function getMetadataUrlFromTitle(title) {
   }
 
   return urlName;
+}
+
+export function markResourceDeprecated(resourceId, deprecated, inputCustomField)  {
+
+  const customFields = inputCustomField;
+  if (customFields.length <= 0) {
+    customFields.push({ fieldName: METADATA_DEPRECATEDRESOURCES_PROPERTY, content: [] });
+  }
+
+  const deprecatedResourcesEntry = customFields.filter((entry) => entry?.fieldName === METADATA_DEPRECATEDRESOURCES_PROPERTY)[0];
+  let deprecatedResources = deprecatedResourcesEntry?.content || [];
+
+  if (typeof deprecatedResources === 'string') {
+    deprecatedResources = JSON.parse(deprecatedResources);
+  }
+
+  if (deprecated) {
+    deprecatedResources.push(resourceId);
+  } else {
+    deprecatedResources = deprecatedResources.filter(i => i !== resourceId);
+  }
+
+  return customFields;
 }

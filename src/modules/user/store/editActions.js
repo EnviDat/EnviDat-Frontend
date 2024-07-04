@@ -16,6 +16,8 @@ import { urlRewrite } from '@/factories/apiFactory';
 
 import {
   getBackendJSONForStep,
+  getFrontendJSONForStep,
+  markResourceDeprecated,
   mapFrontendToBackend,
   populateEditingComponents,
   stringifyResourceForBackend,
@@ -26,8 +28,13 @@ import {
   METADATA_NAMESPACE,
 } from '@/store/metadataMutationsConsts';
 
-import { EDITMETADATA_AUTHOR_LIST, EDITMETADATA_CUSTOMFIELDS } from '@/factories/eventBus';
+import {
+  EDITMETADATA_AUTHOR_LIST,
+  EDITMETADATA_CUSTOMFIELDS,
+  EDITMETADATA_DATA_RESOURCE,
+} from '@/factories/eventBus';
 
+import { METADATA_DEPRECATEDRESOURCES_PROPERTY } from '@/factories/metadataConsts';
 import {
   ACTION_METADATA_EDITING_PATCH_DATASET,
   ACTION_METADATA_EDITING_PATCH_DATASET_ORGANIZATION,
@@ -136,34 +143,40 @@ export default {
 
     // create a local copy to avoid mutation of vuex store objects / properties
     const localData = { ...data };
+    const isDeprecated = localData.deprecated;
     const cleaned = getBackendJSONForStep(stepKey, localData);
     const postData = stringifyResourceForBackend(cleaned);
 
     try {
       const response = await axios.post(url, postData);
+      const resource = getFrontendJSONForStep(EDITMETADATA_DATA_RESOURCE, response.data.result);
+      const packageId  =  resource.packageId;
 
-      // HACK: Due to the lack of proper mapping in the frontend
-      // and the inability to change the schema in the backend
-      // the mapping of the deprecated field is performed here in a very inefficient and unmaintainable way
-      // The counterpart is found in  mappingFactory -> populateEditingResources
-      // change this ASAP (move to centralised mapping, or simply adjust backend)!
-      const deprecatedResourcesRaw = data.customFields.deprecatedResources ?? '[]';
-      const isDeprecatedOnServer = deprecatedResourcesRaw.includes(cleaned.id);
-      const isDeprecatedLocally = data.deprecated === true;
-      const isDeprecatedDirty = isDeprecatedLocally !== isDeprecatedOnServer;
-      if(isDeprecatedDirty){
-        let deprecatedResources = JSON.parse(deprecatedResourcesRaw);
-        if(isDeprecatedLocally){
-          // Add case
-          deprecatedResources.push(cleaned.id);
-        } else {
-          // Remove case
-          deprecatedResources = deprecatedResources.filter(i=> i !== cleaned.id);
+      const customFieldsData = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_CUSTOMFIELDS);
+
+      if (customFieldsData) {
+        // HACK: Due to the lack of proper mapping in the frontend
+        // and the inability to change the schema in the backend
+        // the mapping of the deprecated field is performed here in a very inefficient and unmaintainable way
+        // The counterpart is found in  mappingFactory -> populateEditingResources
+        // change this ASAP (move to centralised mapping, or simply adjust backend)!
+
+        const deprecatedResourcesRaw = customFieldsData.customFields?.filter((entry) => entry?.fieldName === METADATA_DEPRECATEDRESOURCES_PROPERTY)[0] ?? '[]';
+        const isDeprecatedOnServer = deprecatedResourcesRaw.includes(packageId);
+        const isDeprecatedLocally = isDeprecated === true;
+        const isDeprecatedDirty = isDeprecatedLocally !== isDeprecatedOnServer;
+
+        if (isDeprecatedDirty) {
+          customFieldsData.customFields = markResourceDeprecated(packageId, isDeprecated, customFieldsData.customFields);
+
+          await dispatch(METADATA_EDITING_PATCH_DATASET_OBJECT, {
+            data: customFieldsData,
+            stepKey: EDITMETADATA_CUSTOMFIELDS,
+            id: packageId,
+          });
         }
-        data.customFields.deprecatedResources = JSON.stringify(deprecatedResources);
-        await dispatch(METADATA_EDITING_PATCH_DATASET_OBJECT, {data, stepKey: EDITMETADATA_CUSTOMFIELDS, id: cleaned.packageId});
-      }
 
+      }
       commit(METADATA_EDITING_PATCH_RESOURCE_SUCCESS, {
         stepKey,
         resource: response.data.result,
