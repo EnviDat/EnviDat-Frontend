@@ -42,7 +42,7 @@
   ],
   "metadataConfig": {
     "loadLocalFile": false,
-    "localFileUrl": "./testdata/packagelist.json",
+    "localFileUrl": "https://frontend-static.s3-zh.os.switch.ch/metadata/packagelist/packagelist.json",
     "publicationsConfig": {
       "resolveIds": true,
       "idPrefix": "*",
@@ -62,7 +62,7 @@
  },
   "projectsConfig": {
     "loadLocalFile": false,
-    "localFileUrl": "./testdata/projects.json"
+    "localFileUrl": "https://frontend-static.s3-zh.os.switch.ch/metadata/projects/projects.json"
   },
   "maintenanceConfig": {
     "signinDisabled": false,
