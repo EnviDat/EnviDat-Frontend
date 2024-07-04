@@ -113,7 +113,7 @@ export const modes = [
     extrasKey: EDNA_MODE_EXTRAS_KEY,
     datasetUrl: 'https://s3-zh.os.switch.ch/frontend-static/modes/eDNA_datasets.json',
     loadDatasets: loadEDNADatasets,
-    isShallow: true,
+    isShallow: false,
   },
 ];
 

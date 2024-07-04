@@ -10,7 +10,8 @@
 
 // import createPersist from 'vuex-localstorage';
 
-import { getCitationList, getTagColor } from '@/factories/metaDataFactory';
+import { getTagColor } from '@/factories/metaDataFactory';
+import { getCitationList } from '@/factories/citationFactory';
 import categoryCards from '@/store/categoryCards';
 
 import actions from './metadataActions';

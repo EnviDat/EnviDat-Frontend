@@ -1,5 +1,8 @@
 <template>
-  <v-row align="center" justify="center" no-gutters>
+  <v-row align="center"
+         justify="center"
+         no-gutters>
+
     <v-col v-if="compact" class="shrink text-body-2 mx-1 text-no-wrap">
       {{ modeInfoPrefix }}: {{ modeTitle }}
     </v-col>
@@ -38,7 +41,8 @@
       />
     </v-col>
 
-    <div v-if="closeCallback" class="shrink mx-1">
+    <v-col v-if="closeCallback"
+           class="shrink mx-1">
       <base-icon-button
         materialIconName="close"
         :tooltipText="`Exit ${modeTitle} ${modeInfoPrefix}`"
@@ -48,7 +52,7 @@
         isSmall
         @clicked="closeCallback"
       />
-    </div>
+    </v-col>
   </v-row>
 </template>
 

@@ -92,9 +92,10 @@ import marker2x from '@/assets/map/marker-icon-2x.png';
 import markerShadow from '@/assets/map/marker-shadow.png';
 import selectedMarker from '@/assets/map/selected-marker-icon.png';
 import selectedMarker2x from '@/assets/map/selected-marker-icon-2x.png';
+// HACK end
 import FilterMapWidget from '@/components/Filtering/FilterMapWidget.vue';
 import { createLocation } from '@/factories/metaDataFactory';
-// HACK end
+import {EDNA_MODE} from '@/store/metadataMutationsConsts';
 
 export default {
   name: 'FilterMapView',
@@ -112,6 +113,9 @@ export default {
   },
   mounted() {
     this.setupMap();
+    if (this.modeData && this.modeData.name === EDNA_MODE && !this.modeData.isShallow){
+      this.polygonEnabled = true;
+    }
   },
   beforeDestroy() {
     if (this.map) {
@@ -284,7 +288,7 @@ export default {
       let width = 25;
       let iconClass = '';
 
-      if (modeData && modeData.icons) {
+      if (modeData && modeData.name !== EDNA_MODE && modeData.icons) {
         let extraValue = dataset[modeData.extrasKey];
 
         if (extraValue) {
@@ -364,10 +368,75 @@ export default {
 
       return points;
     },
-    createMapElements(locationDataSet) {
-      const pins = [];
-      const multiPins = [];
+    getMultiPolygon(coords, id, title, selected) {
       const polys = [];
+      for (let i = 0; i < coords.length; i++) {
+        const pointCoord = coords[i];
+        const poly = this.getPolygon(pointCoord, id, title, selected);
+        polys.push(poly);
+      }
+
+      return polys;
+    },
+    createPoints(dataset, location, selected) {
+      if (location.isPoint) {
+        const pin = this.getPoint(
+            dataset,
+            location.pointArray,
+            dataset.id,
+            dataset.title,
+            selected,
+        );
+        if (pin) {
+          this.pinLayerGroup.push(pin);
+        }
+      }
+
+      if (location.isMultiPoint) {
+        const multiPin = this.getMultiPoint(
+            dataset,
+            location.pointArray,
+            dataset.id,
+            dataset.title,
+            selected,
+        );
+        if (multiPin) {
+          this.multiPins.push(multiPin);
+        }
+      }
+      if (location.isPolygon) {
+        const polygon = this.getPolygon(
+            location.pointArray,
+            dataset.id,
+            dataset.title,
+            selected,
+        );
+        if (polygon) {
+          this.polygonLayerGroup.push(polygon);
+        }
+      }
+      // this case is not being counted for polygons
+      if (location.isMultiPolygon) {
+        const multiPoly = this.getMultiPolygon(
+            location.pointArray,
+            dataset.id,
+            dataset.title,
+            selected,
+        );
+        if (multiPoly) {
+          this.multiPolygonLayerGroup.push(multiPoly);
+        }
+      }
+
+    },
+    createMapElements(locationDataSet) {
+      if (!locationDataSet) return;
+
+      this.pinLayerGroup = [];
+      this.multiPins = [];
+      this.polygonLayerGroup = [];
+      this.multiPinLayerGroup = [];
+      this.multiPolygonLayerGroup = [];
 
       for (let i = 0; i < locationDataSet.length; i++) {
         const dataset = locationDataSet[i];
@@ -378,52 +447,18 @@ export default {
         }
         const selected = this.pinnedIds.includes(location.id);
 
-        if (location.isPoint) {
-          const pin = this.getPoint(
-            dataset,
-            location.pointArray,
-            location.id,
-            location.title,
-            selected,
-          );
-          if (pin) {
-            pins.push(pin);
-          }
+        if (location.isGeomCollection) {
+          location.pointArray.forEach(item => {
+            this.createPoints(dataset, item, selected)
+          });
         }
-
-        if (location.isMultiPoint) {
-          const multiPin = this.getMultiPoint(
-            dataset,
-            location.pointArray,
-            location.id,
-            location.title,
-            selected,
-          );
-          if (multiPin) {
-            multiPins.push(multiPin);
-          }
-        }
-
-        if (location.isPolygon) {
-          const polygon = this.getPolygon(
-            location.pointArray,
-            location.id,
-            location.title,
-            selected,
-          );
-          if (polygon) {
-            polys.push(polygon);
-          }
+        else{
+          this.createPoints(dataset, location, selected)
         }
       }
-
-      this.polygonLayerGroup = polys;
-
-      this.pinLayerGroup = pins;
-
-      if (multiPins.length > 0) {
+      if (this.multiPins.length > 0) {
         const flatMultiPins = [];
-        multiPins.forEach(pinCollection => {
+        this.multiPins.forEach(pinCollection => {
           if (pinCollection) {
             pinCollection.forEach(pin => {
               if (pin) {
@@ -432,11 +467,6 @@ export default {
             });
           }
         });
-
-        // store the multiPins in data to get the actual number
-        // the number from the flatMultiPins will be every single pin
-        this.multiPins = multiPins;
-
         this.multiPinLayerGroup = flatMultiPins;
 
         // merge the multipins with the normal pins on one layer?
@@ -444,6 +474,7 @@ export default {
       } else {
         this.multiPinLayerGroup = [];
       }
+
     },
     addElementsToMap(elements, enabled, checkBounds) {
       if (!enabled || !elements || elements.length <= 0) {
@@ -477,6 +508,7 @@ export default {
         const feat = featureGroup(allLayers);
         const featBounds = feat.getBounds();
         this.map.fitBounds(featBounds, { maxZoom: 8 });
+
       }
     },
     clearLayers(map, specificClear) {
@@ -548,6 +580,10 @@ export default {
       this.addElementsToMap(this.polygonLayerGroup, this.polygonEnabled, true);
 
       this.clusterLayer.addTo(this.map);
+
+      if (this.modeData && (this.hasPins || this.hasMultiPins || this.hasPolygons)) {
+        this.focusOnLayers();
+      }
     },
     updatePins() {
       this.clearLayers(this.map, 'pins');
@@ -581,9 +617,10 @@ export default {
     errorLoadingLeaflet: false,
     mapLayerGroup: null,
     polygonEnabled: false,
-    polygonLayerGroup: null,
+    polygonLayerGroup: [],
+    multiPolygonLayerGroup: [],
     pinEnabled: true,
-    pinLayerGroup: null,
+    pinLayerGroup: [],
     multiPinEnabled: true,
     multiPinLayerGroup: null,
     multiPins: [],

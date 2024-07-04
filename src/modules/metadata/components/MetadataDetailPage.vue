@@ -96,13 +96,13 @@ import {
 import { SET_APP_BACKGROUND, SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
 import {
   CLEAN_CURRENT_METADATA,
-  CLEAR_SEARCH_METADATA,
+  CLEAR_SEARCH_METADATA, EDNA_MODE,
   LOAD_METADATA_CONTENT_BY_ID,
   METADATA_NAMESPACE,
 } from '@/store/metadataMutationsConsts';
+
 import {
   createBody,
-  createCitation,
   createFunding,
   createHeader,
   createLicense,
@@ -111,6 +111,10 @@ import {
   createRelatedDatasets,
   createResources,
 } from '@/factories/metaDataFactory';
+
+import {
+  createCitation,
+} from '@/factories/citationFactory';
 
 import { getFullAuthorsFromDataset } from '@/factories/authorFactory';
 
@@ -492,7 +496,13 @@ export default {
 
         this.funding = createFunding(currentContent);
 
-        // authors are going to be loaded via the watch when the AuthorsMap is available
+        const authorMapSize = Object.keys(this.authorsMap).length || 0;
+
+        if (authorMapSize > 0) {
+          // if the authorMap is not loaded (direct loading of the this page) without
+          // loading the whole app first, the author loading happens via the watch when the AuthorsMap
+          this.loadAuthors(currentContent);
+        }
       }
     },
     loadAuthors(currentContent) {
@@ -701,6 +711,7 @@ export default {
 
       this.$router.push({
         path: BROWSE_PATH,
+        query: this.$route.query,
       });
     },
     catchEditClicked() {
@@ -720,19 +731,27 @@ export default {
      */
     async loadMetaDataContent() {
       if (this.mode) {
+        if(this.mode === EDNA_MODE) {
+          const modeMetadata = this.modeStore.getModeMetadata(this.mode);
+          modeMetadata.isShallow = !this.isRealdataset();
+        }
         const modeDatasets = this.modeStore.getDatasets(this.mode);
-        const datasets = Object.values(modeDatasets);
+        let datasets = Object.values(modeDatasets);
+        if (datasets.length <=  0) {
+          datasets = await this.modeStore.loadModeDatasets(this.mode);
+        }
         this.modeDataset = datasets.filter(entry => entry.name === this.metadataId)[0];
-        // console.log(this.modeDataset);
       }
 
       if (!this.loadingMetadatasContent
           && !this.isCurrentIdOrName(this.metadataId) ) {
         // in case of navigating into the page load the content directly via Id
         await this.$store.dispatch(`${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`, {
-          metadataId: this.metadataId,
+            metadataId: this.metadataId,
+
         });
-      } else {
+      }
+      else {
         // in case of entring the page directly via Url without having loaded the rest of the app.
         // this call is to initialize the components in the their loading state
         this.$nextTick(() => {
@@ -743,6 +762,16 @@ export default {
           });
         });
       }
+    },
+    isRealdataset() {
+      if(this.mode && this.mode === EDNA_MODE) {
+        const contents = Object.values(this.metadatasContent);
+
+        const localEntry = contents.filter(entry => entry.name === this.metadataId);
+        return localEntry.length === 1;
+
+      }
+      return false;
     },
     fetchUserOrganisationData() {
       const userId = this.user?.id;
@@ -804,13 +833,13 @@ export default {
      * in case all the metadataContents are already loaded take it from there
      * if EnviDat is called via MetadataDetailPage URL directly
      */
-    metadatasContent() {
+    async metadatasContent() {
       if (!this.loadingMetadatasContent
           && !this.loadingCurrentMetadataContent
           && !this.isCurrentIdOrName(this.metadataId)) {
 
-        this.$store.dispatch(`${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`, {
-          metadataId: this.metadataId,
+        await this.$store.dispatch(`${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`, {
+            metadataId: this.metadataId,
         });
       }
     },

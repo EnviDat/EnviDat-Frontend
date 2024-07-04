@@ -43,7 +43,7 @@
         </v-col>
 
         <v-col v-if="showSearch && mode !== EDNA_MODE"
-               class="py-0 ml-sm-4 shrink">
+               class="ml-sm-4 shrink">
 
           <BaseIconSwitch :active="isAuthorSearch"
                           :tooltipText="`Author search is ${isAuthorSearch ? 'active' : 'inactive'}`"
@@ -53,12 +53,25 @@
         </v-col>
 
         <v-col v-if="showSearch && mode === EDNA_MODE"
-               class="py-0 ml-sm-4 shrink">
+               class="ml-sm-4 shrink" >
 
-          <BaseIconSwitch :active="isShallow"
-                          :tooltipText="`Type of dataset is ${isShallow ? 'Shallow' : 'Real'}`"
+
+           <BaseIconSwitch :active="isShallow" :zIndex="elementVisible? 6 : undefined"
+                          :tooltipText="`${isShallow ? 'Samples' : 'Overview'} datasets are visible, click to switch to ${isShallow ? 'overview' : 'samples'} datasets.`"
                           materialIconName="layers"
                           @clicked="catchShallowRealClick" />
+
+          <v-overlay
+            absolute
+            :value="elementVisible"
+            style="z-index: 5 !important;">
+
+            <div class="dialog"
+                 :style="`left: ${ $vuetify.breakpoint.smAndDown ? '-20' : '45' }px;`"
+                 @click="elementVisible = !elementVisible">
+              <span>Toggle from overview to sample datasets:</span>
+            </div>
+          </v-overlay>
 
         </v-col>
 
@@ -73,6 +86,7 @@
 
 
     </v-container>
+
   </v-card>
 </template>
 
@@ -125,6 +139,11 @@ export default {
     BaseIconButton,
     BaseIconSwitch,
   },
+  mounted() {
+    if (this.mode === EDNA_MODE) {
+      this.showOverlay();
+    }
+  },
   methods: {
     catchSearchClicked(search) {
       this.$emit('searchClick', search);
@@ -146,6 +165,13 @@ export default {
 
       navigator.clipboard.writeText(window.location);
     },
+    showOverlay() {
+      this.elementVisible = true;
+
+      setTimeout(() => {
+        this.elementVisible = false;
+      }, 10000); // 10000 milliseconds = 5 seconds
+    },
   },
   computed: {
     hasEnabledControls() {
@@ -154,13 +180,16 @@ export default {
     controlsHeight() {
       if (this.compactLayout || !this.fixedHeight) {
         return '36px';
-      } 
+      }
 
       return `${this.fixedHeight}px`;
     },
   },
   data: () => ({
     EDNA_MODE,
+    elementVisible: true,
+    overlay: false,
+    zIndex: 2,
   }),
 };
 
@@ -171,5 +200,17 @@ export default {
 .switchSmallFont label {
   font-size: 10px !important;
 }
-
+.dialog {
+  position: relative;
+  background-color: white;
+  padding: 5px;
+  border-radius: 5px;
+  color: black;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+}
+.dialog:hover {
+  cursor: pointer;
+}
 </style>

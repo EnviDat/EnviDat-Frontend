@@ -1,6 +1,6 @@
 {
   "name": "envidat.ch",
-  "version": "0.8.151",
+  "version": "0.8.1571",
   "private": true,
   "description": "EnviDat frontend with vue",
   "author": "Dominik Haas-Artho",
@@ -24,9 +24,7 @@
     "@amcharts/amcharts5": "^5.2.2",
     "@azure/msal-browser": "^2.34.0",
     "@geoman-io/leaflet-geoman-free": "^2.13.0",
-    "@mapbox/geojsonhint": "^3.1.1",
     "@metamask/jazzicon": "^2.0.0",
-    "@storybook/blocks": "^7.6.7",
     "@turf/buffer": "^6.5.0",
     "@turf/centroid": "^6.5.0",
     "@turf/envelope": "^6.5.0",
@@ -75,7 +73,8 @@
     "@storybook/addon-mdx-gfm": "^7.6.7",
     "@storybook/addon-storysource": "^7.6.7",
     "@storybook/addon-viewport": "^7.6.7",
-    "@storybook/icons": "^1.2.3",
+    "@storybook/blocks": "^8.0.0",
+    "@storybook/icons": "^1.2.9",
     "@storybook/jest": "^0.2.3",
     "@storybook/test-runner": "^0.16.0",
     "@storybook/testing-library": "^0.2.2",
@@ -104,7 +103,7 @@
     "vite-plugin-eslint": "^1.8.1",
     "vite-plugin-static-copy": "^0.17.1",
     "vite-plugin-webfont-dl": "^3.9.1",
-    "vitest": "^0.34.6",
+    "vitest": "^1.6.0",
     "vuetify-loader": "^1.9.2"
   },
   "browserslist": [

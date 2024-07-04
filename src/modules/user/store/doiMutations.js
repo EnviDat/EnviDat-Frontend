@@ -65,6 +65,6 @@ export default {
     baseDoiSuccess(state);
   },
   [`${DOI_PUBLISH}_ERROR`](state, reason) {
-    baseDoiError(this.commit, state, reason, 'DOI Reserving failed');
+    baseDoiError(this.commit, state, reason, 'DOI Publishing failed');
   },
 }

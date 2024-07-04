@@ -228,3 +228,10 @@ EditExistingAuthors.args = {
   existingAuthors: extractedAuthors,
   authorsMap,
 };
+
+export const EditLargeAuthorList = Template.bind({});
+EditLargeAuthorList.args = {
+  authors: Object.values(authorsMap),
+  existingAuthors: Object.values(authorsMap),
+  authorsMap,
+};
