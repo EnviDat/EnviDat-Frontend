@@ -141,6 +141,8 @@ install-node:
     paths:
       - node_modules
     expire_in: 1 day
+  retry:
+    max: 2
 
 run-tests:
   stage: test
