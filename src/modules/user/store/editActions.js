@@ -20,7 +20,7 @@ import {
   markResourceDeprecated,
   mapFrontendToBackend,
   populateEditingComponents,
-  stringifyResourceForBackend,
+  stringifyResourceForBackend, deprecatedResourceChanged,
 } from '@/factories/mappingFactory';
 
 import {
@@ -161,12 +161,7 @@ export default {
         // The counterpart is found in  mappingFactory -> populateEditingResources
         // change this ASAP (move to centralised mapping, or simply adjust backend)!
 
-        const deprecatedResourcesRaw = customFieldsData.customFields?.filter((entry) => entry?.fieldName === METADATA_DEPRECATEDRESOURCES_PROPERTY)[0] ?? '[]';
-        const isDeprecatedOnServer = deprecatedResourcesRaw.includes(packageId);
-        const isDeprecatedLocally = isDeprecated === true;
-        const isDeprecatedDirty = isDeprecatedLocally !== isDeprecatedOnServer;
-
-        if (isDeprecatedDirty) {
+        if (deprecatedResourceChanged(customFieldsData.customFields, isDeprecated, packageId)) {
           customFieldsData.customFields = markResourceDeprecated(packageId, isDeprecated, customFieldsData.customFields);
 
           await dispatch(METADATA_EDITING_PATCH_DATASET_OBJECT, {
