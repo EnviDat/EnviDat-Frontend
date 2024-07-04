@@ -9,11 +9,11 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import axios from 'axios';
+
 import { format, parse } from 'date-fns';
 import seedrandom from 'seedrandom';
 
-import { getAuthorName, getAuthorsCitationString, getAuthorsString } from '@/factories/authorFactory';
+import { getAuthorName, getAuthorsString } from '@/factories/authorFactory';
 
 import { DIVERSITY, FOREST, HAZARD, LAND, METEO, SNOW } from '@/store/categoriesConsts';
 
@@ -28,6 +28,7 @@ import {
   LOCATION_TYPE_MULTIPOLYGON,
   LOCATION_TYPE_POINT,
   LOCATION_TYPE_POLYGON,
+  METADATA_DEPRECATEDRESOURCES_PROPERTY,
   METADATA_STATE_DRAFT,
   METADATA_STATE_INVISILBE,
   METADATA_STATE_VISILBE,
@@ -1056,4 +1057,16 @@ export function localSearch(searchTerm, datasets) {
   }
 
   return foundDatasets;
+}
+
+export function unpackDeprecatedResources(customFields) {
+  let unpackedResourceIds = [];
+
+  if (customFields?.length > 0) {
+    const customFieldEntry = customFields.filter((entry) => entry?.fieldName === METADATA_DEPRECATEDRESOURCES_PROPERTY)[0];
+    const stringResourceIds = customFieldEntry?.content || '[]';
+    unpackedResourceIds = JSON.parse(stringResourceIds);
+  }
+
+  return unpackedResourceIds;
 }

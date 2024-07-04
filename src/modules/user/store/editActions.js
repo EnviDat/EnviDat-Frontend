@@ -20,7 +20,8 @@ import {
   markResourceDeprecated,
   mapFrontendToBackend,
   populateEditingComponents,
-  stringifyResourceForBackend, deprecatedResourceChanged,
+  stringifyResourceForBackend,
+  deprecatedResourceChanged,
 } from '@/factories/mappingFactory';
 
 import {
@@ -34,7 +35,6 @@ import {
   EDITMETADATA_DATA_RESOURCE,
 } from '@/factories/eventBus';
 
-import { METADATA_DEPRECATEDRESOURCES_PROPERTY } from '@/factories/metadataConsts';
 import {
   ACTION_METADATA_EDITING_PATCH_DATASET,
   ACTION_METADATA_EDITING_PATCH_DATASET_ORGANIZATION,
@@ -150,7 +150,7 @@ export default {
     try {
       const response = await axios.post(url, postData);
       const resource = getFrontendJSONForStep(EDITMETADATA_DATA_RESOURCE, response.data.result);
-      const packageId  =  resource.packageId;
+      const resourceId  =  resource.id;
 
       const customFieldsData = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_CUSTOMFIELDS);
 
@@ -161,13 +161,13 @@ export default {
         // The counterpart is found in  mappingFactory -> populateEditingResources
         // change this ASAP (move to centralised mapping, or simply adjust backend)!
 
-        if (deprecatedResourceChanged(customFieldsData.customFields, isDeprecated, packageId)) {
-          customFieldsData.customFields = markResourceDeprecated(packageId, isDeprecated, customFieldsData.customFields);
+        if (deprecatedResourceChanged(resourceId, isDeprecated, customFieldsData.customFields)) {
+          customFieldsData.customFields = markResourceDeprecated(resourceId, isDeprecated, customFieldsData.customFields);
 
           await dispatch(METADATA_EDITING_PATCH_DATASET_OBJECT, {
             data: customFieldsData,
             stepKey: EDITMETADATA_CUSTOMFIELDS,
-            id: packageId,
+            id: resource.packageId,
           });
         }
 
