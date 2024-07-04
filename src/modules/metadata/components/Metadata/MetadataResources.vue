@@ -21,7 +21,8 @@
     <v-card-text>
       <v-row no-gutters
         align="center">
-        <v-col class="pr-2">
+        <v-col v-if="dataLicenseTitle"
+               class="pr-2">
           <BaseIconLabelView icon-tooltip="Data License"
                              :icon="mdiShieldSearch"
                              icon-color="grey"
