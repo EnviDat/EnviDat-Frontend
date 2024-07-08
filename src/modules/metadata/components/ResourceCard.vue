@@ -1,7 +1,7 @@
 <template>
   <v-card
     :id="`resourceCard_${id}`"
-    :color="cardColor"
+    :color="computedCardColor"
     class="metadataResourceCard"
     :class="isSelected ? 'highlighted' : ''"
     style="height: 100%;"
@@ -14,6 +14,7 @@
     <v-card-title class="text-h5 resourceHeadline white--text">
       <span class="d-flex align-center">
         <v-icon v-if="isProtected" left>lock</v-icon>
+        <v-icon v-if="deprecated" left>not_interested</v-icon>
         {{ resourceName }}
       </span>
     </v-card-title>
@@ -249,6 +250,7 @@ export default {
     isProtected: Boolean,
     fileExtensionIcon: Object,
     metadataContact: String,
+    deprecated: Boolean,
     downloadActive: {
       type: Boolean,
       default: true,
@@ -283,6 +285,9 @@ export default {
     EDIT_METADATA_DOI_LABEL,
   }),
   computed: {
+    computedCardColor(){
+      return this.deprecated ? 'grey' : this.cardColor;
+    },
     readableCreated() {
       return formatDate(this.created) || this.created;
     },
@@ -290,12 +295,14 @@ export default {
       return formatDate(this.lastModified) || this.lastModified;
     },
     resourceName() {
-      if (!this.name && !!this.url) {
+      let name = this.name ?? 'Unnamed resource';
+      
+      const isUrl = !this.name && !!this.url;
+      if (isUrl) {
         const splits = this.url.split('/');
-        return splits[splits.length - 1];
+        name = splits[splits.length - 1];
       }
-
-      return this.name ? this.name : 'Unnamed resource';
+      return this.deprecated ? `[DEPRECATED] - ${name}` : name;
     },
     scrollbarColorFront() {
       return this.$vuetify

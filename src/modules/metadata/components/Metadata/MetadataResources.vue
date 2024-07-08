@@ -83,7 +83,6 @@
                 :key="res.id"
                 cols="12"
                 :sm="availableResources.length > 1 ? 6 : 12"
-                :order="res.position"
                 class="pa-2" >
 
           <ResourceCard v-bind="res"
@@ -133,6 +132,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
+import { toRaw } from 'vue';
 import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
 import ResourceCard from '@/modules/metadata/components/ResourceCard.vue';
 import ResourceCardPlaceholder from '@/modules/metadata/components/ResourceCardPlaceholder.vue';
@@ -175,7 +175,13 @@ export default {
       return this.mixinMethods_getGenericProp('doi');
     },
     resources() {
-      return this.mixinMethods_getGenericProp('resources');
+      const r = this.mixinMethods_getGenericProp('resources') ?? [];
+      const resources = [...r];
+
+      const normalRes = resources.filter((res) => !res.deprecated);
+      const deprecatedRes = resources.filter((res) => !!res.deprecated);
+
+      return [...normalRes, ...deprecatedRes];
     },
     dates() {
       return this.mixinMethods_getGenericProp('dates');

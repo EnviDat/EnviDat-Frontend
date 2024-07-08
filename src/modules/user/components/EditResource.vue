@@ -26,7 +26,9 @@
 
       <v-row>
         <v-col cols="6" class="text-h5 d-flex align-center">
-          <v-icon v-if="this.isRestrictedField" color="error" left>lock</v-icon>
+          <v-icon v-if="isDataPrivate" color="error" left>lock</v-icon>
+          <v-icon v-if="isDataDeprecated" color="error" left>not_interested</v-icon>
+
           <span>{{ labels.title }}</span>
         </v-col>
 
@@ -148,6 +150,24 @@
                           :error-messages="validationErrors.url"
             />
 
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col>
+            <BaseIconSwitch
+              :active="isDataDeprecated"
+              :disabled="!editingRestrictingActive"
+              materialIconName="not_interested"
+              class="mt-2"
+              :tooltipText="labels.dataDeprecatedSwitchTooltip"
+              @clicked="isDataDeprecated = !isDataDeprecated"
+              :label="labels.dataDeprecatedSwitchLabel"
+            />
+          </v-col>
+
+          <v-col v-show="isDataDeprecated">
+            {{ labels.dataDeprecatedSwitchInfo }}
           </v-col>
         </v-row>
 
@@ -440,6 +460,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    deprecated: {
+      type: Boolean,
+      default: false,
+    },
     loading: {
       type: Boolean,
       default: false,
@@ -616,6 +640,15 @@ export default {
         this.checkSaveButtonEnabled(true);
       },
     },
+    isDataDeprecated: {
+      get() {
+        return this.previews.deprecated !== null ? this.previews.deprecated : this.deprecated;
+      },
+      set(value) {
+        this.previews.deprecated = value;
+        this.checkSaveButtonEnabled(true);
+      },
+    },
     allowedUsers() {
       let users;
 
@@ -770,6 +803,7 @@ export default {
           level: this.writeRestrictionLvl,
           sharedSecret: '',
         },
+        deprecated: this.isDataDeprecated,
         format: this.formatField.toLowerCase(),
         // don't set the "size" directly because this is done
         // via the file upload
@@ -836,6 +870,7 @@ export default {
       format: null,
       size: null,
       sizeFormat: null,
+      deprecated: null,
     },
     loadingImagePreview: false,
     imagePreviewError: null,
@@ -861,6 +896,9 @@ export default {
       allowedUsersTypingInfo: 'Start typing the name in the text field to search for an EnviDat user.',
       restrictedAllowedUsersInfo: 'Additional access is granted to the following users',
       editingRestrictingUnavailableInfo: 'Editing the accessibility of resources is not available at the moment. Please contact the EnviDat team if you need to make changes.',
+      dataDeprecatedSwitchLabel: 'Data is deprecated',
+      dataDeprecatedSwitchTooltip: "If the resource is deprecated, it's grayed out and is last in the list.",
+      dataDeprecatedSwitchInfo: 'Deprecated resources are grayed out and at the bottom of the list. Make sure you provide an updated replacement!',
     },
     saveButtonEnabled: false,
     fileSizeIcon,

@@ -1,6 +1,6 @@
 {
   "name": "envidat.ch",
-  "version": "0.8.1571",
+  "version": "0.8.2",
   "private": true,
   "description": "EnviDat frontend with vue",
   "author": "Dominik Haas-Artho",
@@ -83,7 +83,7 @@
     "@vitejs/plugin-vue2": "^2.3.1",
     "@vue/test-utils": "^1.1.2",
     "babel-loader": "^8.2.5",
-    "chromatic": "^6.19.9",
+    "chromatic": "^11.5.4",
     "eslint": "^8.20.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.5.0",
@@ -103,7 +103,7 @@
     "vite-plugin-eslint": "^1.8.1",
     "vite-plugin-static-copy": "^0.17.1",
     "vite-plugin-webfont-dl": "^3.9.1",
-    "vitest": "^0.34.6",
+    "vitest": "^1.6.0",
     "vuetify-loader": "^1.9.2"
   },
   "browserslist": [

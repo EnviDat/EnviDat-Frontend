@@ -141,6 +141,8 @@ install-node:
     paths:
       - node_modules
     expire_in: 1 day
+  retry:
+    max: 2
 
 run-tests:
   stage: test
@@ -231,7 +233,7 @@ combine-builds:
     - ls -la
   artifacts:
     name: "frontend build $CI_COMMIT_REF_NAME"
-    expire_in: 7 day
+    expire_in: 1 day
     # stores the combined built code
     paths:
       - ./

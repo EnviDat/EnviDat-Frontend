@@ -64,6 +64,12 @@ for (let i = 0; i < unFormatedMetadata.length; i++) {
   allResources.push(resources);
 }
 
+const deprecatedResources = [...allResources[1], ...allResources[2]];
+
+deprecatedResources[1].deprecated = true;
+deprecatedResources[2].deprecated = true;
+
+
 export default {
   title: '9 Editing Metadata / Resource Views',
   decorators: [],
@@ -194,6 +200,17 @@ export const EditResourcesList = () => ({
           <EditMetadataResources v-bind="genericProps" />
         </v-col>
       </v-row>
+
+      <v-row>
+        EditMetadataResources with deprecated resources
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <EditMetadataResources v-bind="deprecatedProps" />
+        </v-col>
+      </v-row>
+      
     </v-col>
     `,
     created() {
@@ -234,6 +251,11 @@ export const EditResourcesList = () => ({
         resourcesConfig: {
           downloadActive: false,
         },
+      },
+      deprecatedProps: {
+        id: '2',
+        resources: deprecatedResources,
+        selectionId: -1,
       },
     }),
   });

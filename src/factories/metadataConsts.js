@@ -79,6 +79,7 @@ export const METADATA_DOI_PROPERTY = 'doi';
 export const METADATA_PUBLISHER_PROPERTY = 'publisher';
 export const METADATA_PUBLICATION_YEAR_PROPERTY = 'publicationYear';
 export const METADATA_DATALICENSE_PROPERTY = 'dataLicenseId';
+export const METADATA_DEPRECATEDRESOURCES_PROPERTY = 'deprecatedResources';
 
 export const ENVIDAT_SHOW_COOKIE_BANNER = 'ENVIDAT_SHOW_COOKIE_BANNER';
 
