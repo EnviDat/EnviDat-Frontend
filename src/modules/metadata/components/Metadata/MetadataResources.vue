@@ -83,7 +83,6 @@
                 :key="res.id"
                 cols="12"
                 :sm="availableResources.length > 1 ? 6 : 12"
-                :order="res.position"
                 class="pa-2" >
 
           <ResourceCard v-bind="res"
@@ -178,7 +177,11 @@ export default {
     resources() {
       const r = this.mixinMethods_getGenericProp('resources') ?? [];
       const resources = [...r];
-      return resources.sort((a, b) => Number(!!a.deprecated) - Number(!!b.deprecated));
+
+      const normalRes = resources.filter((res) => !res.deprecated);
+      const deprecatedRes = resources.filter((res) => !!res.deprecated);
+
+      return [...normalRes, ...deprecatedRes];
     },
     dates() {
       return this.mixinMethods_getGenericProp('dates');
