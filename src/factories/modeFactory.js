@@ -77,13 +77,28 @@ const loadModeDatasetsWithMainTag = async (modeMetadata) => {
  * @param {object} modeMetadata
  * @returns {Promise<any>}
  */
+const ednaFallback = async () => {
+  const url = `https://s3-zh.os.switch.ch/frontend-static/modes/eDNA_datasets.json?nocache=${new Date().getTime()}`;
+  const response = await fetch(url);
+  const data = await response.json();
+  return data;
+}
+
 const loadEDNADatasets = async (modeMetadata) => {
   if(modeMetadata.isShallow) {
-    const url = `${modeMetadata.datasetUrl}?nocache=${new Date().getTime()}`;
-    const response = await fetch(url);
-    const data = await response.json();
-
-    return data;
+    const url = `${modeMetadata.datasetUrl}&nocache=${new Date().getTime()}`;
+    try {
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        return ednaFallback();
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (e) {
+      return ednaFallback();
+    }
   }
 
   return loadModeDatasetsWithMainTag(modeMetadata);
@@ -111,7 +126,7 @@ export const modes = [
     logo: ednaLogo,
     icons: getEDNAIcons(),
     extrasKey: EDNA_MODE_EXTRAS_KEY,
-    datasetUrl: 'https://s3-zh.os.switch.ch/frontend-static/modes/eDNA_datasets.json',
+    datasetUrl: 'https://envidat.ch/converters-api/edna/shallow-datasets',
     loadDatasets: loadEDNADatasets,
     isShallow: false,
   },
