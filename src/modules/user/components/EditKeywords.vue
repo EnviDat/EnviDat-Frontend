@@ -140,11 +140,12 @@ import TagChip from '@/components/Chips/TagChip.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import catCards from '@/store/categoryCards';
 
-import { enhanceTitleImg, getTagColor } from '@/factories/metaDataFactory';
+import { enhanceTitleImg } from '@/factories/metaDataFactory';
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
 } from '@/factories/userEditingValidations';
+import { getTagColor } from '@/factories/keywordsFactory';
 
 
 

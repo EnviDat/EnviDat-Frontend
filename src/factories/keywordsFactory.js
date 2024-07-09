@@ -1,3 +1,99 @@
+import { DIVERSITY, FOREST, HAZARD, LAND, METEO, SNOW } from '@/store/categoriesConsts';
+
+/**
+ * @param {Array} tags
+ *
+ * @return {String} category based on tags array
+ */
+export function guessTagCategory(tags) {
+  if (!tags) {
+    return LAND;
+  }
+
+  for (let i = 0; i < tags.length; i++) {
+    const element = tags[i];
+    const name = element.name;
+
+    switch (true) {
+      case name.includes('HAZARD'):
+      case name.includes('ACCIDENTS'):
+      case name.includes('FATALITIES'):
+        return HAZARD;
+      case name.includes('DIVERSITY'):
+        return DIVERSITY;
+      case name.includes('FOREST'):
+        return FOREST;
+      case name.includes('SNOW'):
+      case name.includes('AVALANCHE'):
+        return SNOW;
+      case name.includes('METEO'):
+      case name.includes('CLIMATE'):
+        return METEO;
+      case name.includes('LAND'):
+        return LAND;
+      default:
+    }
+  }
+
+  return LAND;
+}
+
+export function convertTags(tagsStringArray, tagsEnabled) {
+  const tagObjs = [];
+
+  tagsStringArray.forEach((element) => {
+    tagObjs.push({
+      name: element,
+      enabled: tagsEnabled,
+    });
+  });
+
+  return tagObjs;
+}
+
+export function getCategoryColor(categoryCards, categoryName) {
+  for (let i = 0; i < categoryCards.length; i++) {
+    const cat = categoryCards[i];
+    if (cat.type === categoryName) {
+      return cat.color;
+    }
+  }
+
+  return null;
+}
+
+export function getTagColor(categoryCards, tagName) {
+  if (!categoryCards || !tagName) {
+    return '';
+  }
+
+  for (let i = 0; i < categoryCards.length; i++) {
+    const cat = categoryCards[i];
+    const name = tagName.toLowerCase();
+
+    if (name.includes(cat.type) || cat.alias.includes(name)) {
+      return cat.darkColor;
+    }
+  }
+
+  return '#e0e0e0';
+}
+
+export function enhanceTags(dataset, categoryCards) {
+  if (!dataset || !categoryCards) {
+    return null;
+  }
+
+  if (dataset.tags && dataset.tags instanceof Array) {
+    for (let j = 0; j < dataset.tags.length; j++) {
+      const tag = dataset.tags[j];
+      tag.color = getTagColor(categoryCards, tag.name);
+    }
+  }
+
+  return dataset;
+}
+
 /**
  * function factory for filtering methods by parsing
  * the json from the backend.
@@ -11,7 +107,11 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-const defaultTagOptions = { enabled: true, color: '#e0e0e0', count: 0 };
+const defaultTagOptions = {
+  enabled: true,
+  color: '#e0e0e0',
+  count: 0,
+};
 
 export function createTag(name, options = defaultTagOptions) {
   if (!name) return null;
@@ -27,7 +127,12 @@ export function createTag(name, options = defaultTagOptions) {
   }
 
   // eslint-disable-next-line object-curly-newline
-  return { name, enabled, color, count };
+  return {
+    name,
+    enabled,
+    color,
+    count,
+  };
 }
 
 /**
@@ -57,7 +162,11 @@ export function getEnabledTags(tags, content) {
       }
     }
 
-    updatedTags.push(createTag(tag.name, { enabled: found, color: tag.color, count: tag.count }));
+    updatedTags.push(createTag(tag.name, {
+      enabled: found,
+      color: tag.color,
+      count: tag.count,
+    }));
   }
 
   return updatedTags;

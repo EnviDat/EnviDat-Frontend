@@ -44,21 +44,17 @@ import {
 import catCards from '@/store/categoryCards';
 
 import {
-  tagsIncludedInSelectedTags,
-  getEnabledTags,
-  getPopularTags,
-} from '@/factories/metadataFilterMethods';
-import {
   getTagsMergedWithExtras,
   getSelectedTagsMergedWithHidden,
 } from '@/factories/modeFactory';
 import { urlRewrite } from '@/factories/apiFactory';
 import {
-  getTagColor, localSearch,
+  localSearch,
   sortObjectArray,
 } from '@/factories/metaDataFactory';
 
 import metadataTags from '@/modules/metadata/store/metadataTags';
+import { getEnabledTags, getPopularTags, getTagColor, tagsIncludedInSelectedTags } from '@/factories/keywordsFactory';
 /*
 import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
 import { SELECT_EDITING_AUTHOR_PROPERTY } from '@/factories/eventBus';

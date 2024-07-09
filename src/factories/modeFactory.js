@@ -10,7 +10,6 @@
 */
 import swissflLogo from '@/assets/modes/swissfl/logo.jpg';
 import globalMethods from '@/factories/globalMethods';
-import { createTag, tagsIncludedInSelectedTags } from '@/factories/metadataFilterMethods';
 import { swissFLExtraTags, swissFLTag } from '@/modules/metadata/store/swissForestLabTags';
 import {
   SWISSFL_MODE,
@@ -20,6 +19,7 @@ import {
 } from '@/store/metadataMutationsConsts';
 import ednaLogo from '@/assets/modes/edna/edna_logo.jpg';
 import { ednaTag } from '@/modules/metadata/store/ednaLabTags';
+import { createTag, tagsIncludedInSelectedTags } from '@/factories/keywordsFactory';
 
 export const MODE_STORE = 'MODE_STORE';
 

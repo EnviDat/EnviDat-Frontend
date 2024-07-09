@@ -1,12 +1,12 @@
 import { it, expect } from 'vitest';
 
 import {
-  createTag,
   countTags,
+  createTag,
   getEnabledTags,
-  tagsIncludedInSelectedTags,
   getPopularTags,
-} from '@/factories/metadataFilterMethods';
+  tagsIncludedInSelectedTags
+} from '@/factories/keywordsFactory';
 
 it('metadataFilterMethods Tag - creation - empty', () => {
   const tag = createTag();

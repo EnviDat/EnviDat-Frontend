@@ -11,8 +11,8 @@ import {
 
 import { enhanceMetadatas, localSearch } from '@/factories/metaDataFactory';
 import categoryCards from '@/store/categoryCards';
-import { getEnabledTags, getPopularTags, tagsIncludedInSelectedTags } from '@/factories/metadataFilterMethods';
 import { EDNA_MODE } from '@/store/metadataMutationsConsts';
+import { getEnabledTags, getPopularTags, tagsIncludedInSelectedTags } from '@/factories/keywordsFactory';
 
 const initState = {
   modeMetadata: [],

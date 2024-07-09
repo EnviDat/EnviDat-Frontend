@@ -304,14 +304,9 @@ import {
   SET_CURRENT_PAGE,
 } from '@/store/mainMutationsConsts';
 
-import {
-  tagsIncludedInSelectedTags,
-  getPopularTags,
-} from '@/factories/metadataFilterMethods';
-
 import { getNameInitials } from '@/factories/authorFactory';
 import { errorMessage } from '@/factories/notificationFactory';
-import { enhanceMetadatasTitleImage, getMetadataVisibilityState, getTagColor } from '@/factories/metaDataFactory';
+import { enhanceMetadatasTitleImage, getMetadataVisibilityState } from '@/factories/metaDataFactory';
 import {
   getUserOrganizationRoleMap,
   hasOrganizationRoles,
@@ -357,6 +352,7 @@ import { getPreviewDatasetFromLocalStorage } from '@/factories/userCreationFacto
 
 import fileIcon from '@/assets/icons/file.png';
 import { METADATA_TITLE_PROPERTY } from '@/factories/metadataConsts';
+import { getPopularTags, getTagColor, tagsIncludedInSelectedTags } from '@/factories/keywordsFactory';
 
 export default {
   name: 'DashboardPage',

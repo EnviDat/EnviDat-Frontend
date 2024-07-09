@@ -23,12 +23,10 @@ import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPr
 import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody.vue';
 import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications.vue';
 
-import { getTagColor } from '@/factories/metaDataFactory';
-import { getPopularTags } from '@/factories/metadataFilterMethods';
-
 import storyTags from '@/modules/metadata/store/metadataTags';
 import categoryCards from '@/store/categoryCards';
 import metadataset from './js/metadata';
+import { getPopularTags, getTagColor } from '@/factories/keywordsFactory';
 
 const tagsFromDatasets = getPopularTags(metadataset, '', 1);
 
