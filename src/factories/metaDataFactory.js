@@ -783,7 +783,7 @@ export function enhanceMetadataEntry(
   cardBGImages,
   categoryCards,
 ) {
-  if (!metadataEntry || !cardBGImages || !categoryCards) {
+  if (!metadataEntry || !categoryCards) {
     return null;
   }
 

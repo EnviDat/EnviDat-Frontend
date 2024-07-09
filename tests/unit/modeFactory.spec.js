@@ -2,7 +2,6 @@ import { it, describe, expect } from 'vitest';
 
 import {
   getModeData,
-  getTagsMergedWithExtras,
   enhanceMetadataWithModeExtras,
 } from '@/factories/modeFactory';
 
@@ -17,6 +16,7 @@ import {
 } from '@/modules/metadata/store/swissForestLabTags';
 
 import metadataTags from '@/modules/metadata/store/metadataTags';
+import { getTagsMergedWithExtras } from '@/factories/keywordsFactory';
 
 describe('modeFactory - getModeData', () => {
   it('empty', () => {

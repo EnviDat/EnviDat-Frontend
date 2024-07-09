@@ -43,22 +43,22 @@ import {
 
 import catCards from '@/store/categoryCards';
 
-import {
-  getTagsMergedWithExtras,
-  getSelectedTagsMergedWithHidden,
-} from '@/factories/modeFactory';
+import { getSelectedTagsMergedWithHidden } from '@/factories/modeFactory';
+
 import { urlRewrite } from '@/factories/apiFactory';
+
 import {
   localSearch,
   sortObjectArray,
 } from '@/factories/metaDataFactory';
 
-import metadataTags from '@/modules/metadata/store/metadataTags';
-import { getEnabledTags, getPopularTags, getTagColor, tagsIncludedInSelectedTags } from '@/factories/keywordsFactory';
-/*
-import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
-import { SELECT_EDITING_AUTHOR_PROPERTY } from '@/factories/eventBus';
-*/
+
+import {
+  getKeywordsForFiltering,
+  getTagColor,
+  tagsIncludedInSelectedTags,
+} from '@/factories/keywordsFactory';
+
 
 /* eslint-disable no-unused-vars  */
 let API_BASE = '';
@@ -126,9 +126,9 @@ function getfilteredArray(arr, maxWords) {
 function getKeywordObjects(arr) {
   for (let i = 0; i < arr.length; i++) {
     arr[i] = {
-              name: arr[i],
-              color: getTagColor(catCards, arr[i]),
-            };
+      name: arr[i],
+      color: getTagColor(catCards, arr[i]),
+    };
   }
   return arr;
 }
@@ -281,22 +281,12 @@ export default {
     commit(UPDATE_TAGS);
 
     try {
-      let allWithExtras = [];
+      const index = this.modeMetadata.findIndex((modeInfo) => modeInfo.name === mode);
+      const metaData = this.modeMetadata[index];
 
-      const mergedExtraTags = getTagsMergedWithExtras(mode, allTags);
-      if (mergedExtraTags) {
-        const popularTags = getPopularTags(filteredContent, 'SWISS FOREST LAB', 5, filteredContent.length);
-        const mergedWithPopulars = [...mergedExtraTags, ...popularTags.slice(0, 15)];
+      const updatedTags = getKeywordsForFiltering(filteredContent, allTags, metaData, 25);
 
-        const mergedWithoutDublicates = mergedWithPopulars.filter((item, pos, self) => self.findIndex(v => v.name === item.name) === pos);
-        // tags with the same count as the content have no use, remove them
-        // allWithExtras = mergedWithoutDublicates.filter((item) => { item.count >= filteredContent.length});
-        allWithExtras = mergedWithoutDublicates;
-      } else {
-        allWithExtras = metadataTags;
-      }
 
-      const updatedTags = getEnabledTags(allWithExtras, filteredContent);
       commit(UPDATE_TAGS_SUCCESS, updatedTags);
     } catch (error) {
       commit(UPDATE_TAGS_ERROR, error);

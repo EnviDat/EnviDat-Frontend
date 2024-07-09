@@ -1,4 +1,5 @@
 import { DIVERSITY, FOREST, HAZARD, LAND, METEO, SNOW } from '@/store/categoriesConsts';
+import mainCategoryTags from '@/modules/metadata/store/metadataTags';
 
 /**
  * @param {Array} tags
@@ -137,10 +138,11 @@ export function createTag(name, options = defaultTagOptions) {
 
 /**
  * Goes through all the tags and checks if they are part of the content list.
- * @param {array} tags
- * @param {array} content
+ * @param {tags[]} tags
+ * @param {datasets[]} content
+ * @param {boolean} sortBaseOnCount
  */
-export function getEnabledTags(tags, content) {
+export function getEnabledTags(tags, content, sortBaseOnCount = false) {
   const updatedTags = [];
 
   if (!tags || !content) return updatedTags;
@@ -167,6 +169,10 @@ export function getEnabledTags(tags, content) {
       color: tag.color,
       count: tag.count,
     }));
+  }
+
+  if (sortBaseOnCount) {
+    updatedTags.sort((a, b) => b.count - a.count);
   }
 
   return updatedTags;
@@ -199,7 +205,14 @@ export function tagsIncludedInSelectedTags(tags, selectedTagNames) {
   return selectedTagFound === selectedTagNames.length;
 }
 
-export function countTags(datasets) {
+/**
+ * Returns a sorted array of tags / keywords objects with a property count
+ * which represents how many times it's part of the datasets array
+ *
+ * @param datasets
+ * @returns {any[]|*[]}
+ */
+export function getCountedKeywords(datasets) {
   if (!datasets || datasets.length <= 0) return [];
 
   const tagMap = new Map();
@@ -236,7 +249,7 @@ export function countTags(datasets) {
 export function getPopularTags(datasets, excludeTag = '', minCount = 5, maxCount = 0) {
   if (!datasets || datasets.length <= 0) return [];
 
-  const tagCounted = countTags(datasets);
+  const tagCounted = getCountedKeywords(datasets);
   const cleandAndCounted = [];
 
   for (let i = 0; i < tagCounted.length; i++) {
@@ -268,4 +281,50 @@ export function enhanceTagsOrganizationDatasetFromAllDatasets(organizationDatase
   }
 
   return organizationDatasets;
+}
+
+
+export function getTagsMergedWithExtras(tags, modeData) {
+  if (!modeData) return null;
+
+  try {
+    const mergedTags = [...tags, ...modeData.extraTags];
+    return mergedTags.filter((item, pos, self) => self.findIndex(v => v.name === item.name) === pos);
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+}
+
+export function getKeywordsForFiltering(content, allTags = undefined, modeMetadata = undefined, maxKeywords = 25) {
+
+  const minTagAmount = modeMetadata ? modeMetadata.minTagAmount : 5;
+  const excludeTag = modeMetadata ? modeMetadata.mainTag.name : undefined;
+  const tags = allTags || mainCategoryTags;
+
+  let allWithExtras = [];
+
+  const mergedExtraTags = modeMetadata ? getTagsMergedWithExtras(tags, modeMetadata) : undefined;
+  if (mergedExtraTags) {
+    const popularTags = getPopularTags(content, excludeTag, minTagAmount, content.length);
+//    const mergedWithPopulars = [...mergedExtraTags, ...popularTags.slice(0, 15)];
+    const mergedWithPopulars = [...mergedExtraTags, ...popularTags];
+
+    const mergedWithoutDublicates = mergedWithPopulars.filter((item, pos, self) => self.findIndex(v => v.name === item.name) === pos);
+    // tags with the same count as the content have no use, remove them
+    // allWithExtras = mergedWithoutDublicates.filter((item) => { item.count >= filteredContent.length});
+    allWithExtras = mergedWithoutDublicates;
+  } else {
+    allWithExtras = mainCategoryTags;
+  }
+
+  // check which of the tags are actually part of the content list these are enabled = true
+  let updatedTags = getEnabledTags(allWithExtras, content, true);
+  updatedTags = updatedTags.filter((element) => element.enabled);
+
+  if (updatedTags.length > maxKeywords) {
+    updatedTags = updatedTags.slice(0, maxKeywords);
+  }
+
+  return updatedTags;
 }

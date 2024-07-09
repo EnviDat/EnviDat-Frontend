@@ -128,11 +128,12 @@ export default {
   }),
   computed: {
     unselectedTags() {
-      if (!this.allTags){
+      if (!this.allTagWithMax){
         return [];
       }
 
-      return this.allTags.filter((element) => element.enabled && !this.mixinMethods_isTagSelected(element.name) );
+      const topList = this.allTagWithMax;
+      return topList.filter((element) => element.enabled && !this.mixinMethods_isTagSelected(element.name));
 /*
       const unselectedTags = [];
 
@@ -150,10 +151,9 @@ export default {
       // tag JSON object
       const selecteds = [];
 
-      if (
-        this.selectedTagNames !== undefined &&
-        this.selectedTagNames.length > 0
-      ) {
+      if (this.selectedTagNames !== undefined
+          && this.selectedTagNames.length > 0) {
+
         for (let i = 0; i < this.selectedTagNames.length; i++) {
           const element = this.selectedTagNames[i];
 
@@ -161,13 +161,10 @@ export default {
         }
       }
 
-      return selecteds;
+      return selecteds.toSpliced(0, this.maxTagNumber(this.selectedTagNames));
     },
-    maxTagNumber() {
-      return this.getTagMaxAmout(
-        this.selectedTags,
-        this.maxSelectedTagsTextLength,
-      );
+    allTagWithMax() {
+      return this.allTags?.toSpliced(0, this.maxTagNumber(this.minTagCountToBeVisible));
     },
     maxUnselectedTagNumber() {
       let maxTextLength = this.maxUnselectedTagsTextLength;
@@ -182,17 +179,33 @@ export default {
         maxTextLength = this.mdTextLength;
       }
 
-      const maxNumber = this.getTagMaxAmout(this.allTags, maxTextLength);
+      const maxNumber = this.getTagMaxAmount(this.allTags, maxTextLength);
       const combinedMax = maxNumber - this.selectedTags.length;
 
       return combinedMax >= 0 ? combinedMax : 0;
     },
+    minTagCountToBeVisible() {
+      let minCount = 5;
+
+      if (this.$vuetify.breakpoint.xsOnly) {
+        minCount = 25;
+      } else if (this.$vuetify.breakpoint.smAndDown) {
+        minCount = 20;
+      } else if (this.$vuetify.breakpoint.mdAndDown) {
+        minCount = 10;
+      }
+
+      return minCount;
+    },
   },
-  beforeMount: function beforeMount() {
+  beforeMount() {
     this.tagIcon = this.mixinMethods_getIcon('tag');
     this.tagsIcon = this.mixinMethods_getIcon('tags');
   },
   methods: {
+    maxTagNumber(list) {
+      return this.getTagMaxAmount(list, this.minTagCountToBeVisible);
+    },
     clearTags() {
       this.$emit('clickedClear');
     },
@@ -207,16 +220,17 @@ export default {
 
       return tagName.split(' ').length <= maxWordsPerTag;
     },
-    getTagMaxAmout(list, maxTextLength) {
+    getTagMaxAmount(list, maxTextLength) {
       let textLength = 0;
       let numberOfTags = 0;
 
       if (list && list.length > 0) {
         for (let i = 0; i < list.length; i++) {
           const tag = list[i];
+          const tagName = tag?.name ? tag.name : tag;
 
-          if (tag) {
-            textLength += tag.name.length + 1;
+          if (tagName) {
+            textLength += tagName.length + 1;
 
             if (textLength >= maxTextLength) {
               break;
@@ -240,19 +254,7 @@ export default {
     catchTagCloseClicked(tagId) {
       this.$emit('clickedTagClose', tagId);
     },
-    minTagCountToBeVisible() {
-      let minCount = 5;
 
-      if (this.$vuetify.breakpoint.xsOnly) {
-        minCount = 25;
-      } else if (this.$vuetify.breakpoint.smAndDown) {
-        minCount = 20;
-      } else if (this.$vuetify.breakpoint.mdAndDown) {
-        minCount = 10;
-      }
-
-      return minCount;
-    },
   },
 };
 </script>

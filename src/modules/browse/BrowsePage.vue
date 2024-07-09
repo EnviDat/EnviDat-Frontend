@@ -76,7 +76,8 @@ import {
 } from '@/router/routeConsts';
 
 import {
-  CLEAR_SEARCH_METADATA, EDNA_MODE,
+  CLEAR_SEARCH_METADATA,
+  EDNA_MODE,
   FILTER_METADATA,
   LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
   LISTCONTROL_LIST_ACTIVE,
@@ -233,7 +234,6 @@ export default {
     async filterContent() {
       if (this.mode) {
         this.filteredModeContent = this.modeStore.getFilteredDatasets(this.selectedTagNames, this.mode);
-
         this.modeTags = this.modeStore.getModeKeywords(this.mode);
 
         return;

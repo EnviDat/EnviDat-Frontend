@@ -1,11 +1,11 @@
 import { it, expect } from 'vitest';
 
 import {
-  countTags,
+  getCountedKeywords,
   createTag,
   getEnabledTags,
   getPopularTags,
-  tagsIncludedInSelectedTags
+  tagsIncludedInSelectedTags,
 } from '@/factories/keywordsFactory';
 
 it('metadataFilterMethods Tag - creation - empty', () => {
@@ -38,7 +38,7 @@ it('metadataFilterMethods Tag - creation - options tag overload', () => {
 
 
 it('metadataFilterMethods Tag - countTags - empty', () => {
-  const count = countTags();
+  const count = getCountedKeywords();
   expect(count).toBeDefined();
   expect(count.length).toEqual(0);
 });
@@ -70,7 +70,7 @@ function getMockDatasets(two = false, three = false, four = false) {
 it('metadataFilterMethods Tag - countTags - basic', () => {
   const datasets = getMockDatasets();
 
-  const count = countTags(datasets);
+  const count = getCountedKeywords(datasets);
 
   expect(count.length).toEqual(4);
   expect(count[0].count).toEqual(3);

@@ -12,10 +12,11 @@ import swissflLogo from '@/assets/modes/swissfl/logo.jpg';
 import globalMethods from '@/factories/globalMethods';
 import { swissFLExtraTags, swissFLTag } from '@/modules/metadata/store/swissForestLabTags';
 import {
-  SWISSFL_MODE,
   EDNA_MODE,
+  EDNA_MODE_EXTRAS_KEY,
+  METADATA_NAMESPACE,
+  SWISSFL_MODE,
   SWISSFL_MODE_EXTRAS_KEY,
-  EDNA_MODE_EXTRAS_KEY, METADATA_NAMESPACE,
 } from '@/store/metadataMutationsConsts';
 import ednaLogo from '@/assets/modes/edna/edna_logo.jpg';
 import { ednaTag } from '@/modules/metadata/store/ednaLabTags';
@@ -111,6 +112,7 @@ export const modes = [
     externalUrl: 'https://swissforestlab.wsl.ch',
     mainTag: swissFLTag,
     extraTags: swissFLExtraTags,
+    minTagAmount: 5,
     logo: swissflLogo,
     icons: getSwissflIcons(),
     extrasKey: SWISSFL_MODE_EXTRAS_KEY,
@@ -123,6 +125,7 @@ export const modes = [
     externalUrl: 'https://www.wsl.ch/en/about-wsl/instrumented-field-sites-and-laboratories/laboratories/edna-laboratory/',
     mainTag: ednaTag,
     extraTags: [], // swissFLExtraTags,
+    minTagAmount: 1,
     logo: ednaLogo,
     icons: getEDNAIcons(),
     extrasKey: EDNA_MODE_EXTRAS_KEY,
@@ -150,22 +153,6 @@ export function getModeData(mode) {
 }
 
 
-function mergedExtraTags(modeObj, tags) {
-  const mergedTags = [...tags, ...modeObj.extraTags];
-  return mergedTags.filter((item, pos, self) => self.findIndex(v => v.name === item.name) === pos);
-}
-
-export function getTagsMergedWithExtras(mode, tags, modeData = undefined) {
-  if (!mode) return null;
-
-  try {
-    const modeObj = modeData || getModeData(mode);
-    return mergedExtraTags(modeObj, tags);
-  } catch (e) {
-    console.error(e);
-    return null;
-  }
-}
 
 
 function mergedHiddenFilters(modeObj, selectedTagNames) {
