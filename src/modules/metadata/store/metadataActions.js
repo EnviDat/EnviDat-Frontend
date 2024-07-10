@@ -54,7 +54,8 @@ import {
 
 
 import {
-  getKeywordsForFiltering,
+  getDatasetIdsFromKeywordDatasetMap,
+  getKeywordsForFiltering, getKeywordsForFilteringFromMap,
   getTagColor,
   tagsIncludedInSelectedTags,
 } from '@/factories/keywordsFactory';
@@ -287,7 +288,6 @@ export default {
 
       const updatedTags = getKeywordsForFiltering(filteredContent, modeMetadata, 35);
 
-
       commit(UPDATE_TAGS_SUCCESS, updatedTags);
     } catch (error) {
       commit(UPDATE_TAGS_ERROR, error);
@@ -326,6 +326,13 @@ export default {
       let filteredContent = [];
 
       if (selectedTagNames.length > 0) {
+
+/*
+        const keywordDatasetMap = this.getters[`${METADATA_NAMESPACE}/keywordDatasetMap`];
+        const ids = getDatasetIdsFromKeywordDatasetMap(selectedTagNames, keywordDatasetMap);
+        filteredContent = content.filter((dataset) => ids.includes(dataset.id));
+*/
+
         for (let i = 0; i < content.length; i++) {
           const entry = content[i];
 

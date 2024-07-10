@@ -55,7 +55,7 @@ import globalMethods from '@/factories/globalMethods';
 import { METADATA_KEYWORDS_TITLE } from '@/factories/metadataConsts';
 
 import { checkWebpFeature } from '@/factories/enhancementsFactory';
-import { extractAuthorsMap } from '@/factories/authorFactory';
+import { extractAuthorsMapFromDatasets } from '@/factories/authorFactory';
 import { solrResultToCKANJSON } from '@/factories/apiFactory';
 import { enhanceMetadatas } from '@/factories/metaDataFactory';
 
@@ -143,7 +143,9 @@ export default {
 
     state.metadatasContent = enhanceMetadatas(payload, cardBGImgs, categoryCards);
 
-    state.authorsMap = extractAuthorsMap(payload);
+    const { authorMap, keywordDatasetMap } = extractAuthorsMapFromDatasets(payload);
+    state.authorsMap = authorMap;
+    state.keywordDatasetMap = keywordDatasetMap;
 
     state.metadatasContentOK = true;
     state.loadingMetadatasContent = false;

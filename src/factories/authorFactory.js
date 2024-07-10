@@ -332,75 +332,120 @@ export function getAuthorKey(author) {
   return author?.fullName?.trim().toLowerCase() || null;
 }
 
+function fillAuthorMap(authorMap, dataset) {
+
+  const authors = createAuthors(dataset);
+
+  for (let j = 0; j < authors.length; j++) {
+    const author = authors[j];
+
+    const authorKey = getAuthorKey(author);
+    let existingAuthor = authorMap[authorKey];
+
+    if (existingAuthor) {
+      existingAuthor.datasetCount += author.datasetCount;
+
+      if (author.dataCredit) {
+        overwriteDataCredit(author, existingAuthor);
+      }
+
+      const lastDate = parseISO(existingAuthor.lastModified);
+      const datasetModifiedDate = parseISO(dataset.metadata_modified);
+
+      if (compareAsc(lastDate, datasetModifiedDate) === 1) {
+        // compareAsc === 1 means the last modified date from the dataset is newer then the
+        // one from the author, therefore information from this datasets is newer and should be used
+        existingAuthor.lastModified = dataset.metadata_modified;
+
+        existingAuthor.firstName = author.firstName;
+        existingAuthor.lastName = author.lastName;
+        existingAuthor.fullName = author.fullName;
+
+        if (author.identifier && author.identifier !== existingAuthor.identifier) {
+          existingAuthor.identifier = author.identifier;
+        }
+
+        if (author.identifierType && author.identifierType !== existingAuthor.identifierType) {
+          existingAuthor.identifierType = author.identifierType;
+        }
+      }
+
+      // console.log('for ' + author.name + ' updated ' + existingAuthor.count);
+    } else {
+      // console.log('for ' + author.name + ' set ' + author.count);
+      existingAuthor = author;
+
+      overwriteDataCredit(author, existingAuthor);
+    }
+
+    // always clear the dataCredit because for the authorsMap only the total is relevant!
+    existingAuthor.dataCredit = [];
+
+    authorMap[authorKey] = existingAuthor;
+  }
+
+}
+
+function fillKeywordsMap(keywordDatasetMap, dataset) {
+
+  for (let k = 0; k < dataset.tags.length; k++) {
+    const keyword = dataset.tags[k];
+    const keywordKey = keyword.name;
+
+    let datasetListEntry = keywordDatasetMap[keywordKey];
+
+    if (datasetListEntry) {
+      datasetListEntry.push(dataset.id);
+    } else {
+      datasetListEntry = [dataset.id];
+      keywordDatasetMap[keywordKey] = datasetListEntry;
+    }
+
+  }
+}
+
 // TODO try using different method and compare performance
 // make 1st loop over the datasets and store the authors on the authorMap
 // then 2nd loop over the authors and do the counting of the datasets and merging
 // of the dataCredit
 // let noDataCredit = 0;
-export function extractAuthorsMap(datasets) {
-  if (!datasets) { return null; }
+export function extractAuthorsMapFromDatasets(datasets) {
+  if (!datasets) {
+    return {
+      authorMap: null,
+      keywordDatasetMap: null,
+    };
+  }
 
   const authorMap = {};
+  const keywordDatasetMap = {};
   // let authorCount = 0;
 
   for (let i = 0; i < datasets.length; i++) {
     const dataset = datasets[i];
-    const datasetModifiedDate = parseISO(dataset.metadata_modified);
 
-    const authors = createAuthors(dataset);
-
-    for (let j = 0; j < authors.length; j++) {
-      const author = authors[j];
-
-      const authorKey = getAuthorKey(author);
-      let existingAuthor = authorMap[authorKey];
-
-      if (existingAuthor) {
-        existingAuthor.datasetCount += author.datasetCount;
-
-        if (author.dataCredit) {
-          overwriteDataCredit(author, existingAuthor);
-        }
-
-        const lastDate = parseISO(existingAuthor.lastModified);
-
-        if (compareAsc(lastDate, datasetModifiedDate) === 1) {
-          // compareAsc === 1 means the last modified date from the dataset is newer then the
-          // one from the author, therefore information from this datasets is newer and should be used
-          existingAuthor.lastModified = dataset.metadata_modified;
-
-          existingAuthor.firstName = author.firstName;
-          existingAuthor.lastName = author.lastName;
-          existingAuthor.fullName = author.fullName;
-
-          if (author.identifier && author.identifier !== existingAuthor.identifier) {
-            existingAuthor.identifier = author.identifier;
-          }
-
-          if (author.identifierType && author.identifierType !== existingAuthor.identifierType) {
-            existingAuthor.identifierType = author.identifierType;
-          }
-        }
-
-        // console.log('for ' + author.name + ' updated ' + existingAuthor.count);
-      } else {
-        // console.log('for ' + author.name + ' set ' + author.count);
-        existingAuthor = author;
-
-        overwriteDataCredit(author, existingAuthor);
-      }
-
-      // always clear the dataCredit because for the authorsMap only the total is relevant!
-      existingAuthor.dataCredit = [];
-
-      authorMap[authorKey] = existingAuthor;
-    }
+    fillKeywordsMap(keywordDatasetMap, dataset);
+    fillAuthorMap(authorMap, dataset);
 
     // console.log(`extracted ${authorCount} authors`);
   }
 
+  // rewrite the keys of the keywordsMap to include to count for easy sorting
+  const keys = Object.keys(keywordDatasetMap);
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+    const count = keywordDatasetMap[key].length;
+
+    const newKey = `${count}_${key}`;
+    keywordDatasetMap[newKey] = keywordDatasetMap[key];
+    delete keywordDatasetMap[key];
+  }
+
   // console.log(`counted noDataCredit ${noDataCredit} of ${Object.keys(authorMap).length}`)
-  return authorMap;
+  return {
+    authorMap,
+    keywordDatasetMap,
+  };
 }
 
 /**

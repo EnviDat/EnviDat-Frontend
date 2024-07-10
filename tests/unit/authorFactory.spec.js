@@ -2,7 +2,7 @@ import { it, describe, expect } from 'vitest';
 
 import {
   createAuthors,
-  extractAuthorsMap,
+  extractAuthorsMapFromDatasets,
   getFullAuthorsFromDataset,
 } from '@/factories/authorFactory';
 
@@ -42,14 +42,14 @@ describe('authorFactory - createAuthors', () => {
 
 describe('authorFactory - extractAuthorsMap', () => {
   it('empty', () => {
-    const authorMap = extractAuthorsMap(undefined);
+    const { authorMap } = extractAuthorsMapFromDatasets(undefined);
     expect(authorMap).toBeNull();
   });
 
   it('with datasets', () => {
     const datasets = packagelist.result;
 
-    const authorMap = extractAuthorsMap(datasets);
+    const { authorMap } = extractAuthorsMapFromDatasets(datasets);
 
     expect(authorMap).toBeDefined();
 

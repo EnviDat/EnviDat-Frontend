@@ -351,6 +351,61 @@ function removeMultiWorkKeywords(keywords, maxWords = 2) {
   return keywords.filter((keyword) => keyword.name.split(' ').length <= maxWords);
 }
 
+
+export function getKeywordsForFilteringFromMap(content, keywordDatasetMap, modeMetadata = undefined, maxKeywords = 30) {
+  const minTagAmount = modeMetadata ? modeMetadata.minTagAmount : Math.max(5, content.length * 0.025);
+  const excludeTag = modeMetadata ? modeMetadata.mainTag.name : undefined;
+
+  const keywordsWithCount = Object.keys(keywordDatasetMap);
+  keywordsWithCount.sort((a, b) => {
+    const countA = Number.parseInt(a.split('_')[0], 10);
+    const countB = Number.parseInt(b.split('_')[0], 10);
+
+    return countA > countB ? -1 : 1;
+  });
+
+  let keywords = keywordsWithCount.map((keyWithCount) => {
+    const splits = keyWithCount.split('_');
+    const count = Number.parseInt(splits[0], 10);
+    const name = splits[1];
+    return createTag(name, { count, enabled: true });
+  })
+
+  if (excludeTag) {
+    keywords = keywords.filter((keyword) => keyword.name !== excludeTag);
+  }
+
+  keywords = keywords.filter((keyword) => keyword.count >= minTagAmount);
+
+  let extraTags = modeMetadata ? modeMetadata.extraTags : mainCategoryTags;
+  const popularTagNames = keywords.map((keyword) => keyword.name)
+  extraTags = extraTags.filter((extraKeyword) => !popularTagNames.includes(extraKeyword.name));
+
+  if (extraTags.length > 0) {
+    extraTags = getCountedKeywordsFuzzy(content, extraTags);
+  }
+
+  let mergedWithPopulars = [...keywords, ...extraTags];
+
+  if (mergedWithPopulars.length > maxKeywords) {
+    mergedWithPopulars = mergedWithPopulars.slice(0, maxKeywords);
+  }
+
+  return mergedWithPopulars
+  /*
+    const mergedWithPopulars = [...keywords, ...extraTags];
+
+    // check which of the tags are actually part of the content list these are enabled = true
+    let enabledTags = getEnabledTags(mergedWithPopulars, content, true);
+    enabledTags = enabledTags.filter((element) => element.enabled);
+    // enabledTags = removeMultiWorkKeywords(enabledTags);
+
+    if (enabledTags.length > maxKeywords) {
+      enabledTags = enabledTags.slice(0, maxKeywords);
+    }
+  */
+}
+
 export function getKeywordsForFiltering(content, modeMetadata = undefined, maxKeywords = 30) {
 
   const minTagAmount = modeMetadata ? modeMetadata.minTagAmount : Math.max(5, content.length * 0.025);
@@ -381,3 +436,36 @@ export function getKeywordsForFiltering(content, modeMetadata = undefined, maxKe
 
   return enabledTags;
 }
+
+/**
+ *
+ * @param selectedKeywords
+ * @param keywordDatasetMap
+ * @returns {*[]}
+ */
+export function getDatasetIdsFromKeywordDatasetMap(selectedKeywords, keywordDatasetMap) {
+  if (!selectedKeywords) {
+    return [];
+  }
+
+  let datasetsIds = [];
+
+  const keys = Object.keys(keywordDatasetMap);
+
+  for (let i = 0; i < selectedKeywords.length; i++) {
+    const selectedKeyword = selectedKeywords[i];
+
+    const matchingKeys = keys.filter((keywordWithCount) => keywordWithCount.includes(selectedKeyword));
+
+    for (let j = 0; j < matchingKeys.length; j++) {
+      const keywordKey = matchingKeys[j];
+      if (keywordKey.split('_')[1] === selectedKeyword) {
+        datasetsIds = [...datasetsIds, ...keywordDatasetMap[keywordKey]];
+        break;
+      }
+    }
+  }
+
+  return datasetsIds;
+}
+

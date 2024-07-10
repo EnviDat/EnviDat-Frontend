@@ -35,7 +35,7 @@ import {
   createCitation,
 } from '@/factories/citationFactory'
 
-import { extractAuthorsMap, getFullAuthorsFromDataset } from '@/factories/authorFactory';
+import { extractAuthorsMapFromDatasets, getFullAuthorsFromDataset } from '@/factories/authorFactory';
 
 // const iconFiles = getIcons();
 
@@ -139,7 +139,7 @@ const genericProps4 = {
   mapHeight: 450,
 };
 
-const authorsMap = extractAuthorsMap(metadata);
+const { authorsMap } = extractAuthorsMapFromDatasets(metadata);
 const fullAuthors = getFullAuthorsFromDataset(authorsMap, metadata[1]);
 
 

@@ -9,7 +9,7 @@ import AuthorCard from '@/modules/metadata/components/AuthorCard.vue';
 import DataCreditLayout from '@/components/Layouts/DataCreditLayout.vue';
 import {
   createAuthors,
-  extractAuthorsMap,
+  extractAuthorsMapFromDatasets,
   getFullAuthorsFromDataset,
 } from '@/factories/authorFactory';
 import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
@@ -24,7 +24,7 @@ unFormatedMetadataCards.forEach((el) => {
   metadataCards.push(el);
 });
 
-const authorsMap = extractAuthorsMap(metadataCards);
+const { authorsMap } = extractAuthorsMapFromDatasets(metadataCards);
 
 const authorFromCollection = getFullAuthorsFromDataset(authorsMap, metadataCards[0])[0];
 const authorFromCollection2 = getFullAuthorsFromDataset(authorsMap, metadataCards[1])[1];

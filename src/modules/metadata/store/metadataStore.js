@@ -38,9 +38,10 @@ const initialState = {
   metadatasContentOK: false,
   metadatasContent: {},
   /**
-   * authorsMap property holds the  for "bulk" loading all the metadata when the app starts up
+   * authorsMap property holds the all authors from the "bulk" loading all the datasets
    */
   authorsMap: {},
+  keywordDatasetMap: {},
   /**
    * the Search properties used when the users makes a full text search
    */
@@ -112,6 +113,7 @@ export const metadata = {
         ? Object.keys(state.metadatasContent).length
         : 0,
     authorsMap: state => state.authorsMap,
+    keywordDatasetMap: state => state.keywordDatasetMap,
     searchedMetadatasContent: state => state.searchedMetadatasContent,
     searchingMetadatasContent: state => state.searchingMetadatasContent,
     searchingMetadatasContentOK: state => state.searchingMetadatasContentOK,

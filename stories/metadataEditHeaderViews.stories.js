@@ -17,7 +17,7 @@ import { sortObjectArray } from '@/factories/metaDataFactory';
 import {
   createAuthors,
   getFullAuthorsFromDataset,
-  extractAuthorsMap,
+  extractAuthorsMapFromDatasets,
 } from '@/factories/authorFactory';
 
 import categoryCards from '@/store/categoryCards';
@@ -42,7 +42,7 @@ for (let i = 0; i < unFormatedMetadataCards.length; i++) {
 }
 
 
-const authorsMap = extractAuthorsMap(metadataCards);
+const { authorsMap } = extractAuthorsMapFromDatasets(metadataCards);
 const authors = getFullAuthorsFromDataset(authorsMap, metadataCards[1]);
 
 let existingAuthors = Object.values(authorsMap);

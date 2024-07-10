@@ -25,7 +25,7 @@ import EditAuthorList from '@/modules/user/components/edit/EditAuthorList.vue';
 
 import {
   createAuthors,
-  extractAuthorsMap,
+  extractAuthorsMapFromDatasets,
   getAuthorName,
   getFullAuthorsFromDataset,
   mergeAuthorsDataCredit,
@@ -41,7 +41,7 @@ unFormatedMetadataCards.forEach((el) => {
   metadataCards.push(el);
 });
 
-const authorsMap = extractAuthorsMap(metadataCards);
+const { authorsMap } = extractAuthorsMapFromDatasets(metadataCards);
 const authorsObjs = getFullAuthorsFromDataset(authorsMap, metadataCards[1]);
 // don't do it for now to disable Author Editing
 // enhanceElementsWithStrategyEvents(authors, SELECT_EDITING_AUTHOR_PROPERTY);
