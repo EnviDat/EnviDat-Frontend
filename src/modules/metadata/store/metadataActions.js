@@ -58,6 +58,7 @@ import {
   getTagColor,
   tagsIncludedInSelectedTags,
 } from '@/factories/keywordsFactory';
+import { useModeStore } from '@/modules/browse/store/modeStore';
 
 
 /* eslint-disable no-unused-vars  */
@@ -281,10 +282,10 @@ export default {
     commit(UPDATE_TAGS);
 
     try {
-      const index = this.modeMetadata.findIndex((modeInfo) => modeInfo.name === mode);
-      const metaData = this.modeMetadata[index];
+      const modeStore = useModeStore();
+      const modeMetadata = modeStore.getModeMetadata(mode);
 
-      const updatedTags = getKeywordsForFiltering(filteredContent, allTags, metaData, 25);
+      const updatedTags = getKeywordsForFiltering(filteredContent, allTags, modeMetadata, 25);
 
 
       commit(UPDATE_TAGS_SUCCESS, updatedTags);

@@ -24,7 +24,7 @@
               <tag-chip
                 v-for="tag in unselectedTags"
                 :key="tag.name"
-                :name="tag.name"
+                :name="tag.count ? `${tag.name} ${tag.count}` : tag.name"
                 :selectable="tag.enabled"
                 :highlighted="false"
                 :closeable="false"

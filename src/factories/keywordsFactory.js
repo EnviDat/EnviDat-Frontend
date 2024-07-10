@@ -143,9 +143,9 @@ export function createTag(name, options = defaultTagOptions) {
  * @param {boolean} sortBaseOnCount
  */
 export function getEnabledTags(tags, content, sortBaseOnCount = false) {
-  const updatedTags = [];
+  const enabledTags = [];
 
-  if (!tags || !content) return updatedTags;
+  if (!tags || !content) return enabledTags;
 
   for (let i = 0; i < tags.length; i++) {
     const tag = tags[i];
@@ -164,7 +164,7 @@ export function getEnabledTags(tags, content, sortBaseOnCount = false) {
       }
     }
 
-    updatedTags.push(createTag(tag.name, {
+    enabledTags.push(createTag(tag.name, {
       enabled: found,
       color: tag.color,
       count: tag.count,
@@ -172,10 +172,10 @@ export function getEnabledTags(tags, content, sortBaseOnCount = false) {
   }
 
   if (sortBaseOnCount) {
-    updatedTags.sort((a, b) => b.count - a.count);
+    enabledTags.sort((a, b) => b.count - a.count);
   }
 
-  return updatedTags;
+  return enabledTags;
 }
 
 /**
@@ -210,31 +210,60 @@ export function tagsIncludedInSelectedTags(tags, selectedTagNames) {
  * which represents how many times it's part of the datasets array
  *
  * @param datasets
+ * @param {keyword[]} keywordScope only count these keywords in the datasets
  * @returns {any[]|*[]}
  */
-export function getCountedKeywords(datasets) {
+export function getCountedKeywords(datasets, keywordScope) {
   if (!datasets || datasets.length <= 0) return [];
 
   const tagMap = new Map();
 
-  for (let i = 0; i < datasets.length; i++) {
-    const dataset = datasets[i];
+  if (keywordScope) {
+    for (let i = 0; i < keywordScope.length; i++) {
+      const keyword = keywordScope[i];
 
-    if (dataset.tags) {
-      for (let j = 0; j < dataset.tags.length; j++) {
-        const tag = dataset.tags[j];
+      for (let j = 0; j < datasets.length; j++) {
+        const dataset = datasets[i];
 
-        let count = 1;
-        const existingTag = tagMap.get(tag.name);
+        const contains = !!dataset.tags?.filter((tag) => tag.name.includes(keyword.name))[0];
 
-        if (existingTag) {
-          count += existingTag.count;
+        if (contains) {
+          let count = 1;
+          const existingTag = tagMap.get(keyword.name);
+
+          if (existingTag) {
+            count += existingTag.count;
+          }
+
+          tagMap.set(keyword.name, createTag(keyword.name, {
+            tag: existingTag,
+            count,
+          }));
         }
+      }
+    }
 
-        tagMap.set(tag.name, createTag(tag.name, {
-          tag: existingTag,
-          count,
-        }));
+  } else {
+
+    for (let i = 0; i < datasets.length; i++) {
+      const dataset = datasets[i];
+
+      if (dataset.tags) {
+        for (let j = 0; j < dataset.tags.length; j++) {
+          const tag = dataset.tags[j];
+
+          let count = 1;
+          const existingTag = tagMap.get(tag.name);
+
+          if (existingTag) {
+            count += existingTag.count;
+          }
+
+          tagMap.set(tag.name, createTag(tag.name, {
+            tag: existingTag,
+            count,
+          }));
+        }
       }
     }
   }
@@ -250,7 +279,7 @@ export function getPopularTags(datasets, excludeTag = '', minCount = 5, maxCount
   if (!datasets || datasets.length <= 0) return [];
 
   const tagCounted = getCountedKeywords(datasets);
-  const cleandAndCounted = [];
+  const cleandAndCounted  = [];
 
   for (let i = 0; i < tagCounted.length; i++) {
     const tag = tagCounted[i];
@@ -298,33 +327,26 @@ export function getTagsMergedWithExtras(tags, modeData) {
 
 export function getKeywordsForFiltering(content, allTags = undefined, modeMetadata = undefined, maxKeywords = 25) {
 
-  const minTagAmount = modeMetadata ? modeMetadata.minTagAmount : 5;
+  const minTagAmount = modeMetadata ? modeMetadata.minTagAmount : Math.max(5, content.length * 0.05);
   const excludeTag = modeMetadata ? modeMetadata.mainTag.name : undefined;
-  const tags = allTags || mainCategoryTags;
+  // const tags = allTags || undefined;
 
-  let allWithExtras = [];
+  const popularTags = getPopularTags(content, excludeTag, minTagAmount, content.length);
+  let mergedKeywords = [];
 
-  const mergedExtraTags = modeMetadata ? getTagsMergedWithExtras(tags, modeMetadata) : undefined;
-  if (mergedExtraTags) {
-    const popularTags = getPopularTags(content, excludeTag, minTagAmount, content.length);
-//    const mergedWithPopulars = [...mergedExtraTags, ...popularTags.slice(0, 15)];
-    const mergedWithPopulars = [...mergedExtraTags, ...popularTags];
-
-    const mergedWithoutDublicates = mergedWithPopulars.filter((item, pos, self) => self.findIndex(v => v.name === item.name) === pos);
-    // tags with the same count as the content have no use, remove them
-    // allWithExtras = mergedWithoutDublicates.filter((item) => { item.count >= filteredContent.length});
-    allWithExtras = mergedWithoutDublicates;
-  } else {
-    allWithExtras = mainCategoryTags;
-  }
+  let extraTags = modeMetadata ? modeMetadata.extraTags : mainCategoryTags;
+  extraTags = getCountedKeywords(content, extraTags);
+  // const mergedWithPopulars = [...extraTags, ...popularTags];
+  const mergedWithPopulars = [...popularTags, ...extraTags];
+  mergedKeywords = mergedWithPopulars.filter((item, pos, self) => self.findIndex(v => v.name === item.name) === pos);
 
   // check which of the tags are actually part of the content list these are enabled = true
-  let updatedTags = getEnabledTags(allWithExtras, content, true);
-  updatedTags = updatedTags.filter((element) => element.enabled);
+  let enabledTags = getEnabledTags(mergedKeywords, content, true);
+  enabledTags = enabledTags.filter((element) => element.enabled);
 
-  if (updatedTags.length > maxKeywords) {
-    updatedTags = updatedTags.slice(0, maxKeywords);
+  if (enabledTags.length > maxKeywords) {
+    enabledTags = enabledTags.slice(0, maxKeywords);
   }
 
-  return updatedTags;
+  return enabledTags;
 }
