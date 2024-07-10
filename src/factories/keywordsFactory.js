@@ -217,59 +217,74 @@ export function tagsIncludedInSelectedTags(tags, selectedTagNames) {
  * @param {keyword[]} keywordScope only count these keywords in the datasets
  * @returns {any[]|*[]}
  */
-export function getCountedKeywords(datasets, keywordScope) {
+export function getCountedKeywordsFuzzy(datasets, keywordScope) {
   if (!datasets || datasets.length <= 0) return [];
 
   const tagMap = new Map();
 
-  if (keywordScope) {
-    for (let i = 0; i < keywordScope.length; i++) {
-      const keyword = keywordScope[i];
+  for (let i = 0; i < keywordScope.length; i++) {
+    const keyword = keywordScope[i];
 
-      for (let j = 0; j < datasets.length; j++) {
-        const dataset = datasets[j];
+    for (let j = 0; j < datasets.length; j++) {
+      const dataset = datasets[j];
 
-        const contains = !!dataset.tags?.filter((tag) => tag.name.includes(keyword.name))[0];
+      const contains = !!dataset.tags?.filter((tag) => tag.name.includes(keyword.name))[0];
 
-        if (contains) {
-          let count = 1;
-          const existingTag = tagMap.get(keyword.name);
+      if (contains) {
+        let count = 1;
+        const existingTag = tagMap.get(keyword.name);
 
-          if (existingTag) {
-            count += existingTag.count;
-          }
-
-          tagMap.set(keyword.name, createTag(keyword.name, {
-            tag: existingTag,
-            count,
-            color: keyword.color,
-          }));
+        if (existingTag) {
+          count += existingTag.count;
         }
+
+        tagMap.set(keyword.name, createTag(keyword.name, {
+          tag: existingTag,
+          count,
+          color: keyword.color,
+        }));
       }
     }
+  }
 
-  } else {
+  const tagCounts = Array.from(tagMap.values());
 
-    for (let i = 0; i < datasets.length; i++) {
-      const dataset = datasets[i];
+  tagCounts.sort((a, b) => b.count - a.count);
 
-      if (dataset.tags) {
-        for (let j = 0; j < dataset.tags.length; j++) {
-          const tag = dataset.tags[j];
+  return tagCounts;
+}
 
-          let count = 1;
-          const existingTag = tagMap.get(tag.name);
+/**
+ * Returns a sorted array of tags / keywords objects with a property count
+ * which represents how many times it's part of the datasets array
+ *
+ * @param datasets
+ * @returns {any[]|*[]}
+ */
+export function getCountedKeywords(datasets) {
+  if (!datasets || datasets.length <= 0) return [];
 
-          if (existingTag) {
-            count += existingTag.count;
-          }
+  const tagMap = new Map();
 
-          tagMap.set(tag.name, createTag(tag.name, {
-            tag: existingTag,
-            count,
-            color: tag.color,
-          }));
+  for (let i = 0; i < datasets.length; i++) {
+    const dataset = datasets[i];
+
+    if (dataset.tags) {
+      for (let j = 0; j < dataset.tags.length; j++) {
+        const tag = dataset.tags[j];
+
+        let count = 1;
+        const existingTag = tagMap.get(tag.name);
+
+        if (existingTag) {
+          count += existingTag.count;
         }
+
+        tagMap.set(tag.name, createTag(tag.name, {
+          tag: existingTag,
+          count,
+          color: tag.color,
+        }));
       }
     }
   }
@@ -338,7 +353,7 @@ function removeMultiWorkKeywords(keywords, maxWords = 2) {
 
 export function getKeywordsForFiltering(content, modeMetadata = undefined, maxKeywords = 30) {
 
-  const minTagAmount = modeMetadata ? modeMetadata.minTagAmount : Math.max(5, content.length * 0.01);
+  const minTagAmount = modeMetadata ? modeMetadata.minTagAmount : Math.max(5, content.length * 0.025);
   const excludeTag = modeMetadata ? modeMetadata.mainTag.name : undefined;
 
   let popularTags = getPopularTags(content, excludeTag, minTagAmount, content.length);
@@ -346,7 +361,12 @@ export function getKeywordsForFiltering(content, modeMetadata = undefined, maxKe
   popularTags = popularTags.slice(0, maxKeywords - 5)
 
   let extraTags = modeMetadata ? modeMetadata.extraTags : mainCategoryTags;
-  extraTags = getCountedKeywords(content, extraTags);
+  const popularTagNames = popularTags.map((keyword) => keyword.name)
+  extraTags = extraTags.filter((keyword) => !popularTagNames.includes(keyword.name));
+  if (extraTags.length > 0) {
+    extraTags = getCountedKeywordsFuzzy(content, extraTags);
+  }
+
   const mergedWithPopulars = [...popularTags, ...extraTags];
   const mergedKeywords = mergedWithPopulars.filter((item, pos, self) => self.findIndex(v => v.name === item.name) === pos);
 
