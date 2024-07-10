@@ -27,13 +27,14 @@ it('metadataFilterMethods Tag - creation - defaults', () => {
 
 it('metadataFilterMethods Tag - creation - options tag overload', () => {
   const existingTag = {
- name: 'dude', enabled: false, color: '#ffffff', count: 5,
+ name: 'dude', enabled: false, color: '#ffffff', count: 5, active: true,
 };
-  const tag = createTag(existingTag.name, { tag: existingTag });
-  expect(tag.name).toBe(existingTag.name);
+  const tag = createTag('newName', { tag: existingTag });
+  expect(tag.name).toBe('newName');
   expect(tag.enabled).toBe(existingTag.enabled);
   expect(tag.color).toBe(existingTag.color);
   expect(tag.count).toBe(existingTag.count);
+  expect(tag.active).toBe(existingTag.active);
 });
 
 

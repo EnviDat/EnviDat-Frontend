@@ -285,7 +285,7 @@ export default {
       const modeStore = useModeStore();
       const modeMetadata = modeStore.getModeMetadata(mode);
 
-      const updatedTags = getKeywordsForFiltering(filteredContent, allTags, modeMetadata, 25);
+      const updatedTags = getKeywordsForFiltering(filteredContent, modeMetadata, 35);
 
 
       commit(UPDATE_TAGS_SUCCESS, updatedTags);

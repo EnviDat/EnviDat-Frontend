@@ -72,7 +72,7 @@ export const useModeStore = defineStore(MODE_STORE, {
       const currentFilteredKeywords = this.modeFilters[index];
 
       const filteredContent = this.getFilteredDatasets(currentFilteredKeywords, mode);
-      const updatedTags = getKeywordsForFiltering(filteredContent, undefined, metaData, undefined);
+      const updatedTags = getKeywordsForFiltering(filteredContent, metaData);
 
       return updatedTags;
     },

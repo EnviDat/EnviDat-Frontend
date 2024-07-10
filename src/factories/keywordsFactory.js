@@ -112,6 +112,7 @@ const defaultTagOptions = {
   enabled: true,
   color: '#e0e0e0',
   count: 0,
+  active: false,
 };
 
 export function createTag(name, options = defaultTagOptions) {
@@ -120,11 +121,13 @@ export function createTag(name, options = defaultTagOptions) {
   let enabled = options.enabled !== undefined ? options.enabled : defaultTagOptions.enabled;
   let color = options.color ? options.color : defaultTagOptions.color;
   let count = options.count ? options.count : defaultTagOptions.count;
+  let active = options.active ? options.active : defaultTagOptions.active;
 
   if (options.tag) {
     enabled = options.enabled === undefined && options.tag.enabled !== undefined ? options.tag.enabled : enabled;
     color = options.color === undefined && options.tag.color ? options.tag.color : color;
     count = options.count === undefined && options.tag.count ? options.tag.count : count;
+    active = options.active === undefined && options.tag.active ? options.tag.active : active;
   }
 
   // eslint-disable-next-line object-curly-newline
@@ -133,6 +136,7 @@ export function createTag(name, options = defaultTagOptions) {
     enabled,
     color,
     count,
+    active,
   };
 }
 
@@ -223,7 +227,7 @@ export function getCountedKeywords(datasets, keywordScope) {
       const keyword = keywordScope[i];
 
       for (let j = 0; j < datasets.length; j++) {
-        const dataset = datasets[i];
+        const dataset = datasets[j];
 
         const contains = !!dataset.tags?.filter((tag) => tag.name.includes(keyword.name))[0];
 
@@ -238,6 +242,7 @@ export function getCountedKeywords(datasets, keywordScope) {
           tagMap.set(keyword.name, createTag(keyword.name, {
             tag: existingTag,
             count,
+            color: keyword.color,
           }));
         }
       }
@@ -262,6 +267,7 @@ export function getCountedKeywords(datasets, keywordScope) {
           tagMap.set(tag.name, createTag(tag.name, {
             tag: existingTag,
             count,
+            color: tag.color,
           }));
         }
       }
@@ -325,24 +331,29 @@ export function getTagsMergedWithExtras(tags, modeData) {
   }
 }
 
-export function getKeywordsForFiltering(content, allTags = undefined, modeMetadata = undefined, maxKeywords = 25) {
 
-  const minTagAmount = modeMetadata ? modeMetadata.minTagAmount : Math.max(5, content.length * 0.05);
+function removeMultiWorkKeywords(keywords, maxWords = 2) {
+  return keywords.filter((keyword) => keyword.name.split(' ').length <= maxWords);
+}
+
+export function getKeywordsForFiltering(content, modeMetadata = undefined, maxKeywords = 30) {
+
+  const minTagAmount = modeMetadata ? modeMetadata.minTagAmount : Math.max(5, content.length * 0.01);
   const excludeTag = modeMetadata ? modeMetadata.mainTag.name : undefined;
-  // const tags = allTags || undefined;
 
-  const popularTags = getPopularTags(content, excludeTag, minTagAmount, content.length);
-  let mergedKeywords = [];
+  let popularTags = getPopularTags(content, excludeTag, minTagAmount, content.length);
+  popularTags = removeMultiWorkKeywords(popularTags);
+  popularTags = popularTags.slice(0, maxKeywords - 5)
 
   let extraTags = modeMetadata ? modeMetadata.extraTags : mainCategoryTags;
   extraTags = getCountedKeywords(content, extraTags);
-  // const mergedWithPopulars = [...extraTags, ...popularTags];
   const mergedWithPopulars = [...popularTags, ...extraTags];
-  mergedKeywords = mergedWithPopulars.filter((item, pos, self) => self.findIndex(v => v.name === item.name) === pos);
+  const mergedKeywords = mergedWithPopulars.filter((item, pos, self) => self.findIndex(v => v.name === item.name) === pos);
 
   // check which of the tags are actually part of the content list these are enabled = true
   let enabledTags = getEnabledTags(mergedKeywords, content, true);
   enabledTags = enabledTags.filter((element) => element.enabled);
+  // enabledTags = removeMultiWorkKeywords(enabledTags);
 
   if (enabledTags.length > maxKeywords) {
     enabledTags = enabledTags.slice(0, maxKeywords);
