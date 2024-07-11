@@ -16,7 +16,6 @@ import { ADD_USER_NOTIFICATION } from '@/store/mainMutationsConsts';
 
 import { enhanceMetadataFromCategories } from '@/modules/user/store/mutationFactory';
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
-import { enhanceTagsOrganizationDatasetFromAllDatasets } from '@/factories/metadataFilterMethods';
 import { USER_SIGNIN_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 import { isUserGroupAdmin } from '@/factories/userEditingValidations';
 import { enhanceElementsWithStrategyEvents, SELECT_EDITING_DATASET_PROPERTY } from '@/factories/strategyFactory';
@@ -43,6 +42,7 @@ import {
   USER_GET_ORGANIZATIONS_SEARCH_SUCCESS,
   USER_GET_ORGANIZATIONS_SUCCESS,
 } from './organizationsMutationsConsts';
+import { enhanceTagsOrganizationDatasetFromAllDatasets } from '@/factories/keywordsFactory';
 
 function resetErrorObject(state) {
   state.error = null;

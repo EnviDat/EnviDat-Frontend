@@ -897,7 +897,7 @@ export default {
       restrictedAllowedUsersInfo: 'Additional access is granted to the following users',
       editingRestrictingUnavailableInfo: 'Editing the accessibility of resources is not available at the moment. Please contact the EnviDat team if you need to make changes.',
       dataDeprecatedSwitchLabel: 'Data is deprecated',
-      dataDeprecatedSwitchTooltip: "If the resource is deprecated, it's grayed out and is last in the list.",
+      dataDeprecatedSwitchTooltip: 'Deprecated resources are grayed out and at the bottom of the list',
       dataDeprecatedSwitchInfo: 'Deprecated resources are grayed out and at the bottom of the list. Make sure you provide an updated replacement!',
     },
     saveButtonEnabled: false,

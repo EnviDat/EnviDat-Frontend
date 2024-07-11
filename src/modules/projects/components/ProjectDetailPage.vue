@@ -89,10 +89,6 @@
 
 import { mapGetters,mapState } from 'vuex';
 
-import {
-  createTag,
-  tagsIncludedInSelectedTags,
-} from '@/factories/metadataFilterMethods';
 import ProjectDatasets from '@/modules/projects/components/ProjectDetailViews/ProjectDatasets.vue';
 import {
   METADATADETAIL_PAGENAME,
@@ -110,6 +106,7 @@ import {
   SET_DETAIL_PAGE_BACK_URL,
 } from '@/store/metadataMutationsConsts';
 
+import { createTag, tagsIncludedInSelectedTags } from '@/factories/keywordsFactory';
 import {
   GET_PROJECTS,
   PROJECTS_NAMESPACE,

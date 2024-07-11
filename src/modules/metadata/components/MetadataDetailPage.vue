@@ -165,9 +165,11 @@ export default {
     });
   },
   created() {
+    this.modeStore = useModeStore();
+    this.modeStore.init(this.$store.getters.cardBGImages);
+
     eventBus.on(GCNET_PREPARE_DETAIL_CHARTS, this.prepareGCNetChartModal);
     eventBus.on(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
-
   },
   /**
    * @description load all the icons once before the first component's rendering.
@@ -868,7 +870,7 @@ export default {
     MetadataGeo,
   },
   data: () => ({
-    modeStore: useModeStore(),
+    modeStore: null,
     modeDataset: null,
     PageBGImage: 'app_b_browsepage',
     baseStationURL: 'https://www.envidat.ch/data-files/',

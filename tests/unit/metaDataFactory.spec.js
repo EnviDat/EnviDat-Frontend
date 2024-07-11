@@ -9,7 +9,6 @@ import {
   createPublications,
   createDetails,
   createResource,
-  enhanceTags,
   formatDate,
   enhanceTitleImg,
 } from '@/factories/metaDataFactory';
@@ -20,6 +19,7 @@ import {
 
 import categoryCards from '@/store/categoryCards';
 import packagelist from '@/../stories/testdata/packagelist.json';
+import { enhanceTags } from '@/factories/keywordsFactory';
 
 // const metadatasContent = {};
 // packagelist.result.forEach((entry) => {

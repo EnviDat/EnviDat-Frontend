@@ -15,8 +15,6 @@ import seedrandom from 'seedrandom';
 
 import { getAuthorName, getAuthorsString } from '@/factories/authorFactory';
 
-import { DIVERSITY, FOREST, HAZARD, LAND, METEO, SNOW } from '@/store/categoriesConsts';
-
 import {
   ACCESS_LEVEL_PUBLIC_VALUE,
   getAllowedUserNamesArray,
@@ -37,7 +35,7 @@ import {
   PUBLICATION_STATE_RESERVED,
 } from '@/factories/metadataConsts';
 
-import { enhanceMetadataWithModeExtras } from '@/factories/modeFactory';
+import { enhanceTags, getCategoryColor, guessTagCategory } from '@/factories/keywordsFactory';
 
 /**
  * Create a pseudo random integer based on a given seed using the 'seedrandom' lib.
@@ -58,44 +56,6 @@ export function randomInt(min, max, seed = 'For the Horde!') {
   }
 
   return r;
-}
-
-/**
- * @param {Array} tags
- *
- * @return {String} category based on tags array
- */
-export function guessTagCategory(tags) {
-  if (!tags) {
-    return LAND;
-  }
-
-  for (let i = 0; i < tags.length; i++) {
-    const element = tags[i];
-    const name = element.name;
-
-    switch (true) {
-      case name.includes('HAZARD'):
-      case name.includes('ACCIDENTS'):
-      case name.includes('FATALITIES'):
-        return HAZARD;
-      case name.includes('DIVERSITY'):
-        return DIVERSITY;
-      case name.includes('FOREST'):
-        return FOREST;
-      case name.includes('SNOW'):
-      case name.includes('AVALANCHE'):
-        return SNOW;
-      case name.includes('METEO'):
-      case name.includes('CLIMATE'):
-        return METEO;
-      case name.includes('LAND'):
-        return LAND;
-      default:
-    }
-  }
-
-  return LAND;
 }
 
 /**
@@ -772,62 +732,6 @@ export function createLocation(dataset) {
   return location;
 }
 
-export function convertTags(tagsStringArray, tagsEnabled) {
-  const tagObjs = [];
-
-  tagsStringArray.forEach((element) => {
-    tagObjs.push({
-      name: element,
-      enabled: tagsEnabled,
-    });
-  });
-
-  return tagObjs;
-}
-
-export function getCategoryColor(categoryCards, categoryName) {
-  for (let i = 0; i < categoryCards.length; i++) {
-    const cat = categoryCards[i];
-    if (cat.type === categoryName) {
-      return cat.color;
-    }
-  }
-
-  return null;
-}
-
-export function getTagColor(categoryCards, tagName) {
-  if (!categoryCards || !tagName) {
-    return '';
-  }
-
-  for (let i = 0; i < categoryCards.length; i++) {
-    const cat = categoryCards[i];
-    const name = tagName.toLowerCase();
-
-    if (name.includes(cat.type) || cat.alias.includes(name)) {
-      return cat.darkColor;
-    }
-  }
-
-  return '#e0e0e0';
-}
-
-export function enhanceTags(dataset, categoryCards) {
-  if (!dataset || !categoryCards) {
-    return null;
-  }
-
-  if (dataset.tags && dataset.tags instanceof Array) {
-    for (let j = 0; j < dataset.tags.length; j++) {
-      const tag = dataset.tags[j];
-      tag.color = getTagColor(categoryCards, tag.name);
-    }
-  }
-
-  return dataset;
-}
-
 let lastCategory = '';
 let tempImgKeys = [];
 let tempImgValues = [];
@@ -878,7 +782,7 @@ export function enhanceMetadataEntry(
   cardBGImages,
   categoryCards,
 ) {
-  if (!metadataEntry || !cardBGImages || !categoryCards) {
+  if (!metadataEntry || !categoryCards) {
     return null;
   }
 
@@ -1013,7 +917,6 @@ export function enhanceMetadatas(datasets, cardBGImages, categoryCards, mode) {
   for (let i = 0; i < datasets.length; i++) {
     let dataset = datasets[i];
     dataset = enhanceMetadataEntry(dataset, cardBGImages, categoryCards);
-    dataset = enhanceMetadataWithModeExtras(mode, dataset);
 
     dataset = enhanceTags(dataset, categoryCards);
 

@@ -12,8 +12,7 @@
 
 
 import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader.vue';
-import { getTagColor, sortObjectArray } from '@/factories/metaDataFactory';
-import { getPopularTags } from '@/factories/metadataFilterMethods';
+import { sortObjectArray } from '@/factories/metaDataFactory';
 
 import {
   createAuthors,
@@ -22,6 +21,7 @@ import {
 } from '@/factories/authorFactory';
 
 import categoryCards from '@/store/categoryCards';
+import { getPopularTags, getTagColor } from '@/factories/keywordsFactory';
 import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 import metadataset from './js/metadata';
 

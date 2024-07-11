@@ -20,11 +20,9 @@ import EditRelatedDatasets from '@/modules/user/components/EditRelatedDatasets.v
 import EditCustomFields from '@/modules/user/components/EditCustomFields.vue';
 import MetadataCreationRelatedInfo from '@/modules/user/components/MetadataCreationRelatedInfo.vue';
 
-import { getTagColor } from '@/factories/metaDataFactory';
-import { getPopularTags } from '@/factories/metadataFilterMethods';
-
 import storyTags from '@/modules/metadata/store/metadataTags';
 import categoryCards from '@/store/categoryCards';
+import { getPopularTags, getTagColor } from '@/factories/keywordsFactory';
 import metadataset from './js/metadata';
 
 const unFormatedMetadataCards = metadataset;

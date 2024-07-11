@@ -9,13 +9,15 @@
                         @onScroll="onScroll" >
 
     <template v-slot:filterKeywords>
-      <filter-keywords-view :compactLayout="$vuetify.breakpoint.smAndDown"
-                            :allTags="allTags"
-                            :selectedTagNames="selectedTagNames"
-                            :showPlaceholder="loading || updatingTags"
-                            @clickedTag="catchTagClicked"
-                            @clickedTagClose="catchTagCloseClicked"
-                            @clickedClear="catchTagCleared" />
+      <FilterKeywordsSingleView
+        :compactLayout="$vuetify.breakpoint.smAndDown"
+        :allTags="allTags"
+        :selectedTagNames="selectedTagNames"
+        :showPlaceholder="loading || updatingTags"
+        @clickedTag="catchTagClicked"
+        @clickedTagClose="catchTagCloseClicked"
+        @clickedClear="catchTagCleared" />
+
     </template>
 
     <template #controlPanel>
@@ -210,7 +212,7 @@ import Vue from 'vue';
 import InfiniteLoading from 'vue-infinite-loading';
 
 import { BROWSE_PATH} from '@/router/routeConsts';
-import FilterKeywordsView from '@/components/Filtering/FilterKeywordsView.vue';
+import FilterKeywordsSingleView from '@/components/Filtering/FilterKeywordsSingleView.vue';
 import FilterMapView from '@/components/Filtering/FilterMapView.vue';
 import ControlPanel from '@/components/Filtering/ControlPanel.vue';
 
@@ -661,7 +663,7 @@ export default {
     LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
   }),
   components: {
-    FilterKeywordsView,
+    FilterKeywordsSingleView,
     FilterMapView,
     ControlPanel,
     NoSearchResultsView,

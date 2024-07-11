@@ -14,18 +14,6 @@ variables:
   CACHE_COMPRESSION_LEVEL: "fast"
 #  npm_config_cache: '.npm/'
 
-.caching-rules:
-  cache:
-    - key:
-        files:
-          - package-lock.json
-        prefix: "package-lock"
-      paths:
-        - .npm/
-        - node_modules/
-      # only use pull for global cache
-      policy: pull
-
 .trigger-rules:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "pipeline"'
@@ -129,8 +117,6 @@ install-node:
   script:
     - echo "the cache work if node_modules and .npm/ folders are available"
     - ls -a
-    - npm config set cache .npm/
-    # - npm cache verify || true
     - npm ci --prefer-offline --no-audit
 #    - echo "Check afterwards how the folders are"
 #    - ls -a
@@ -149,7 +135,6 @@ run-tests:
   image: node:20.15.0-alpine3.20
   extends:
     - .trigger-rules
-    - .caching-rules
   needs:
     - modify-env
     - install-node
@@ -163,15 +148,14 @@ build-storybook:
   image: node:20.15.0-alpine3.20
   extends:
     - .trigger-rules
-    - .caching-rules
   needs:
-    # needs the artifact: config and environment variables
+   # needs the artifact: config and environment variables
     - modify-env
     # needs the artifact: node_modules to build storybook
     - install-node
   script:
-    - npm config set cache .npm/
-    - npm cache verify || true
+    # - npm config set cache .npm/
+    # - npm cache verify || true
     - npm run build-storybook -- -o ./storybook --loglevel error --disable-telemetry
   artifacts:
     name: "storybook build"
@@ -188,15 +172,12 @@ build-app:
   image: node:20.15.0-alpine3.20
   extends:
     - .trigger-rules
-    - .caching-rules
   needs:
     # needs the artifact: config and environment variables
     - modify-env
     # needs the artifact: node_modules to build the app
     - install-node
   script:
-    - npm config set cache .npm/
-    # - npm cache verify || true
     - npm run build -- --logLevel error
   artifacts:
     name: "frontend build "
@@ -228,8 +209,6 @@ combine-builds:
     # - ls -l
     # remove the dist folder recursively
     - rm -rf dist
-    # remove the .npm/ cache folder recursively to avoid that it's getting into the build
-    # - rm -rf .npm/
     - ls -la
   artifacts:
     name: "frontend build $CI_COMMIT_REF_NAME"

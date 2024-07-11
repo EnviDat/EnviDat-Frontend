@@ -22,43 +22,20 @@
 
             <v-col v-if="!showPlaceholder" class="grow pl-0">
               <tag-chip
-                v-for="tag in unselectedTags"
+                v-for="tag in tagList"
                 :key="tag.name"
                 :name="tag.count ? `${tag.name} (${tag.count})` : tag.name"
                 :selectable="tag.enabled"
-                :highlighted="false"
-                :closeable="false"
+                :highlighted="tag.active"
+                :closeable="tag.active"
                 :color="tag.color"
-                @clicked="catchTagClicked(tag.name)"
-              />
-            </v-col>
-          </v-row>
-        </v-col>
-
-        <v-col
-          v-if="filterExpanded || $vuetify.breakpoint.smAndUp"
-          class="pt-1"
-          cols="12"
-        >
-          <v-row>
-            <v-col class="metadataInfoIcon shrink">
-              <v-img :src="tagIcon" height="24" width="24" />
-            </v-col>
-
-            <v-col v-if="selectedTags.length > 0" class="grow pl-0">
-              <tag-chip
-                v-for="tag in selectedTags"
-                :key="tag.name"
-                :name="tag.name"
-                :selectable="true"
-                :highlighted="true"
-                :closeable="true"
                 @clickedClose="catchTagCloseClicked(tag.name)"
-                @clicked="catchTagCloseClicked(tag.name)"
+                @clicked="tag.active ? catchTagCloseClicked(tag.name) : catchTagClicked(tag.name)"
               />
             </v-col>
           </v-row>
         </v-col>
+
       </v-row>
     </v-container>
 
@@ -127,13 +104,35 @@ export default {
     filterExpanded: false,
   }),
   computed: {
+    tagList() {
+      const mergedTags = [...this.selectedTags, ...this.unselectedTags];
+      return mergedTags.filter((item, pos, self) => self.findIndex(v => v.name === item.name) === pos);
+    },
+    selectedTags() {
+      // always get the selected as a subset of the allTags because they are the full
+      // tag JSON object
+      const selecteds = [];
+
+      if (this.selectedTagNames !== undefined
+        && this.selectedTagNames.length > 0) {
+
+        for (let i = 0; i < this.selectedTagNames.length; i++) {
+          const element = this.selectedTagNames[i];
+
+          selecteds.push(createTag(element, { enabled: true, active: true }));
+        }
+      }
+
+      // return selecteds.toSpliced(0, this.maxTagNumber(this.selectedTagNames));
+      return selecteds;
+    },
     unselectedTags() {
       if (!this.allTagWithMax){
         return [];
       }
 
       const topList = this.allTagWithMax;
-      return topList.filter((element) => element.enabled && !this.mixinMethods_isTagSelected(element.name));
+      return topList.filter((element) => element.enabled && !this.selectedTagNames.indexOf(element.name) >= 0);
 /*
       const unselectedTags = [];
 
@@ -145,23 +144,6 @@ export default {
 
       return unselectedTags;
 */
-    },
-    selectedTags() {
-      // always get the selected as a subset of the allTags because they are the full
-      // tag JSON object
-      const selecteds = [];
-
-      if (this.selectedTagNames !== undefined
-          && this.selectedTagNames.length > 0) {
-
-        for (let i = 0; i < this.selectedTagNames.length; i++) {
-          const element = this.selectedTagNames[i];
-
-          selecteds.push(createTag(element, { enabled: true }));
-        }
-      }
-
-      return selecteds.toSpliced(0, this.maxTagNumber(this.selectedTagNames));
     },
     allTagWithMax() {
       return this.allTags?.toSpliced(0, this.maxTagNumber(this.minTagCountToBeVisible));

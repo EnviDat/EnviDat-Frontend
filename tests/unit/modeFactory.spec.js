@@ -2,7 +2,6 @@ import { it, describe, expect } from 'vitest';
 
 import {
   getModeData,
-  getTagsMergedWithExtras,
   enhanceMetadataWithModeExtras,
 } from '@/factories/modeFactory';
 
@@ -12,11 +11,6 @@ import {
   SWISSFL_MODE,
   SWISSFL_MODE_EXTRAS_KEY,
 } from '@/store/metadataMutationsConsts';
-import {
-  swissFLExtraTags,
-} from '@/modules/metadata/store/swissForestLabTags';
-
-import metadataTags from '@/modules/metadata/store/metadataTags';
 
 describe('modeFactory - getModeData', () => {
   it('empty', () => {
@@ -57,33 +51,6 @@ describe('modeFactory - getModeData', () => {
   });
 });
 
-describe('modeFactory - getTagsMergedWithExtras', () => {
-  it('empty', () => {
-    const mergedTags = getTagsMergedWithExtras(undefined, undefined);
-
-    expect(mergedTags).toBeNull();
-  });
-
-  it('with SwissFL mode with empty tags', () => {
-
-    const tags = [];
-    const mergedTags = getTagsMergedWithExtras(SWISSFL_MODE, tags);
-
-    expect(mergedTags).toBeDefined();
-    expect(mergedTags).toBeInstanceOf(Array);
-    expect(mergedTags.length).toBeLessThanOrEqual(swissFLExtraTags.length);
-  });
-
-  it('with SwissFL mode with tags', () => {
-
-    const tags = metadataTags;
-    const mergedTags = getTagsMergedWithExtras(SWISSFL_MODE, tags);
-
-    expect(mergedTags).toBeDefined();
-    expect(mergedTags).toBeInstanceOf(Array);
-    expect(mergedTags.length).toBeLessThanOrEqual(swissFLExtraTags.length + metadataTags.length);
-  });
-});
 
 describe('modeFactory - enhanceMetadataFromExtras', () => {
   it('empty', () => {

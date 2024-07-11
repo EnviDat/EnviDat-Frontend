@@ -132,7 +132,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import { toRaw } from 'vue';
 import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
 import ResourceCard from '@/modules/metadata/components/ResourceCard.vue';
 import ResourceCardPlaceholder from '@/modules/metadata/components/ResourceCardPlaceholder.vue';

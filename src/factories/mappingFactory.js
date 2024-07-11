@@ -45,7 +45,6 @@ import {
 
 import {
   createLocation,
-  enhanceTags,
   formatDate,
   getMetadataVisibilityState,
 } from '@/factories/metaDataFactory';
@@ -79,6 +78,7 @@ import {
   EDIT_METADATA_DATALICENSE_LABEL, METADATA_DEPRECATEDRESOURCES_PROPERTY,
 } from '@/factories/metadataConsts';
 import { createAuthor } from '@/factories/authorFactory';
+import { enhanceTags } from '@/factories/keywordsFactory';
 
 /**
  * Json conversion rules from frontend to backend and vise versa

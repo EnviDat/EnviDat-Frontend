@@ -76,7 +76,8 @@ import {
 } from '@/router/routeConsts';
 
 import {
-  CLEAR_SEARCH_METADATA, EDNA_MODE,
+  CLEAR_SEARCH_METADATA,
+  EDNA_MODE,
   FILTER_METADATA,
   LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
   LISTCONTROL_LIST_ACTIVE,
@@ -103,6 +104,10 @@ export default {
       vm.$store.commit(SET_CURRENT_PAGE, BROWSE_PAGENAME);
       vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
     });
+  },
+  created() {
+    this.modeStore = useModeStore();
+    this.modeStore.init(this.$store.getters.cardBGImages);
   },
   async mounted() {
     this.oldIsAuthorSearch = this.isAuthorSearch;
@@ -233,7 +238,6 @@ export default {
     async filterContent() {
       if (this.mode) {
         this.filteredModeContent = this.modeStore.getFilteredDatasets(this.selectedTagNames, this.mode);
-
         this.modeTags = this.modeStore.getModeKeywords(this.mode);
 
         return;
@@ -520,7 +524,7 @@ export default {
   },
   data: () => ({
     EDNA_MODE,
-    modeStore: useModeStore(),
+    modeStore: null,
     modeContent: null,
     filteredModeContent: null,
     modeTags: null,
