@@ -22,8 +22,8 @@ import MetadataCreationRelatedInfo from '@/modules/user/components/MetadataCreat
 
 import storyTags from '@/modules/metadata/store/metadataTags';
 import categoryCards from '@/store/categoryCards';
-import metadataset from './js/metadata';
 import { getPopularTags, getTagColor } from '@/factories/keywordsFactory';
+import metadataset from './js/metadata';
 
 const unFormatedMetadataCards = metadataset;
 const tagsFromDatasets = getPopularTags(metadataset, '', 1);

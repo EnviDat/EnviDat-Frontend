@@ -14,9 +14,9 @@ import categoryCards from '@/store/categoryCards';
 import { enhanceMetadatasTitleImage } from '@/factories/metaDataFactory';
 import globalMethods from '@/factories/globalMethods';
 import baseTags from '@/modules/metadata/store/metadataTags';
+import { getEnabledTags, getPopularTags } from '@/factories/keywordsFactory';
 import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 import metadata from './js/metadata';
-import { getEnabledTags, getPopularTags } from '@/factories/keywordsFactory';
 
 const cardBGImages = globalMethods.methods.mixinMethods_getCardBackgrounds();
 
