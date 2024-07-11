@@ -334,19 +334,6 @@ export function enhanceTagsOrganizationDatasetFromAllDatasets(organizationDatase
 }
 
 
-export function getTagsMergedWithExtras(tags, modeData) {
-  if (!modeData) return null;
-
-  try {
-    const mergedTags = [...tags, ...modeData.extraTags];
-    return mergedTags.filter((item, pos, self) => self.findIndex(v => v.name === item.name) === pos);
-  } catch (e) {
-    console.error(e);
-    return null;
-  }
-}
-
-
 function removeMultiWorkKeywords(keywords, maxWords = 2) {
   return keywords.filter((keyword) => keyword.name.split(' ').length <= maxWords);
 }

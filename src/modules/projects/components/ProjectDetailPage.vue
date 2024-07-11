@@ -106,6 +106,7 @@ import {
   SET_DETAIL_PAGE_BACK_URL,
 } from '@/store/metadataMutationsConsts';
 
+import { createTag, tagsIncludedInSelectedTags } from '@/factories/keywordsFactory';
 import {
   GET_PROJECTS,
   PROJECTS_NAMESPACE,
@@ -114,7 +115,6 @@ import {
 import ProjectBody from './ProjectDetailViews/ProjectBody.vue';
 import ProjectHeader from './ProjectDetailViews/ProjectHeader.vue';
 import ProjectSubprojects from './ProjectDetailViews/ProjectSubprojects.vue';
-import { createTag, tagsIncludedInSelectedTags } from '@/factories/keywordsFactory';
 
 export default {
   /**
