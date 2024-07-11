@@ -87,7 +87,7 @@ const ednaFallback = async () => {
 
 const loadEDNADatasets = async (modeMetadata) => {
   if(modeMetadata.isShallow) {
-    const url = `${modeMetadata.datasetUrl}&nocache=${new Date().getTime()}`;
+    const url = modeMetadata.datasetUrl;
     try {
       const response = await fetch(url);
       

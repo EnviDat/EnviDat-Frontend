@@ -5,13 +5,17 @@ import {
   modes,
 } from '@/factories/modeFactory';
 
-import { localSearch } from '@/factories/metaDataFactory';
+import { enhanceMetadatas, localSearch } from '@/factories/metaDataFactory';
 import {
   getKeywordsForFiltering,
   tagsIncludedInSelectedTags,
 } from '@/factories/keywordsFactory';
+import { EDNA_MODE } from '@/store/metadataMutationsConsts';
+
+import categoryCards from '@/store/categoryCards';
 
 const initState = {
+  cardBGImages: null,
   modeMetadata: [],
   modeDatasets: [],
   modeFilters: [],
@@ -33,6 +37,9 @@ export const useModeStore = defineStore(MODE_STORE, {
   },
 */
   actions: {
+    init(cardBGImages) {
+      this.cardBGImages = cardBGImages;
+    },
     /**
      * returns the metadata object for a mode name
      * @param {string} mode
@@ -134,7 +141,13 @@ export const useModeStore = defineStore(MODE_STORE, {
 
       const index = this.modeMetadata.findIndex((modeInfo) => modeInfo.name === mode);
       if (index >= 0) {
-        this.modeDatasets[index] = data;
+        let enhancedDatasets = data;
+        if (mode === EDNA_MODE) {
+          // eDNA shallow datasets need enhancement for
+          const enhancedDatasetsDictionary = enhanceMetadatas(data, this.cardBGImages, categoryCards, mode);
+          enhancedDatasets = Object.values(enhancedDatasetsDictionary);
+        }
+        this.modeDatasets[index] = enhancedDatasets;
       }
 
       return data;

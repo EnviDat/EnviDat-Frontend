@@ -35,7 +35,6 @@ import {
   PUBLICATION_STATE_RESERVED,
 } from '@/factories/metadataConsts';
 
-import { enhanceMetadataWithModeExtras } from '@/factories/modeFactory';
 import { enhanceTags, getCategoryColor, guessTagCategory } from '@/factories/keywordsFactory';
 
 /**
@@ -918,7 +917,6 @@ export function enhanceMetadatas(datasets, cardBGImages, categoryCards, mode) {
   for (let i = 0; i < datasets.length; i++) {
     let dataset = datasets[i];
     dataset = enhanceMetadataEntry(dataset, cardBGImages, categoryCards);
-    dataset = enhanceMetadataWithModeExtras(mode, dataset);
 
     dataset = enhanceTags(dataset, categoryCards);
 

@@ -283,6 +283,7 @@ export default {
 
     try {
       const modeStore = useModeStore();
+      modeStore.init(this.getters.cardBGImages);
       const modeMetadata = modeStore.getModeMetadata(mode);
 
       const updatedTags = getKeywordsForFiltering(filteredContent, modeMetadata, 35);

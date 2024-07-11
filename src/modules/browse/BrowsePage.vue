@@ -105,6 +105,10 @@ export default {
       vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
     });
   },
+  created() {
+    this.modeStore = useModeStore();
+    this.modeStore.init(this.$store.getters.cardBGImages);
+  },
   async mounted() {
     this.oldIsAuthorSearch = this.isAuthorSearch;
 
@@ -520,7 +524,7 @@ export default {
   },
   data: () => ({
     EDNA_MODE,
-    modeStore: useModeStore(),
+    modeStore: null,
     modeContent: null,
     filteredModeContent: null,
     modeTags: null,
