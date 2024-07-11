@@ -131,8 +131,12 @@ export default {
         return [];
       }
 
+      if(!this.selectedTagNames) {
+        return this.allTagWithMax;
+      }
+
       const topList = this.allTagWithMax;
-      return topList.filter((element) => element.enabled && !this.selectedTagNames?.indexOf(element.name) >= 0);
+      return topList.filter((element) => element.enabled && this.selectedTagNames.indexOf(element.name) >= 0);
     },
     allTagWithMax() {
       return this.allTags?.toSpliced(0, this.maxTagNumber(this.minTagCountToBeVisible));
