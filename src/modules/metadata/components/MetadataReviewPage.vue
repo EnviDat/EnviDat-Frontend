@@ -79,20 +79,20 @@ import { mapGetters, mapState } from 'vuex';
 import { BROWSE_PATH, METADATAREVIEW_PAGENAME } from '@/router/routeConsts';
 
 import {
-  USER_NAMESPACE,
   USER_SIGNIN_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts';
+
 import { SET_APP_BACKGROUND, SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
 import {
   CLEAR_SEARCH_METADATA,
   METADATA_NAMESPACE,
 } from '@/store/metadataMutationsConsts';
+
 import {
   createBody,
   createLicense,
   createResources,
   formatDate,
-  getMetadataVisibilityState,
 } from '@/factories/metaDataFactory';
 
 import { getAuthorName, getFullAuthorsFromDataset } from '@/factories/authorFactory';
