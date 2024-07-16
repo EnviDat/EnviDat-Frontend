@@ -59,6 +59,11 @@ export const EditFundingData = {
         grantNumber: '123',
         institutionUrl: 'https://www.superduper.ch',
       },
+      {
+        institution: 'NSF',
+        grantNumber: '123',
+        institutionUrl: 'https://www.superduper.ch/index.html',
+      },
     ],
   },
   parameters: {},
