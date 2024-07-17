@@ -30,7 +30,7 @@ set-vars:
       apk add jq yq --no-cache
       --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community
   script:
-    - echo "VERSION=$(jq '.version' package.json --raw-output)"
+    - VERSION=$(jq '.version' package.json --raw-output)
     # if BUILD_VERSION is alredy set it's overwritten from another pipeline and this has to be used
     # extract version number from package.json, to make it available in the app
     # use unset"${BUILD_VERSION" to check if variable is set, will cover both cases null and "unset" / empty string
