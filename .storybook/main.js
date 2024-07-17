@@ -5,6 +5,7 @@ export default {
   addons: [
     '@storybook/addon-storysource',
     '@storybook/addon-essentials',
+    '@chromatic-com/storybook'
   ],
 
   framework: {
@@ -12,7 +13,5 @@ export default {
     options: {},
   },
 
-  docs: {
-    autodocs: true,
-  }
+  docs: {}
 };
