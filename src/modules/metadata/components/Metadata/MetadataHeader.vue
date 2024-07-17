@@ -100,7 +100,7 @@
 
             <v-row no-gutters
                     :style="`max-height: ${authorTagsMaxHeight}px; overflow-y: auto;`" >
-              <v-col v-for="(author, index) in authors"
+              <v-col v-for="(author, index) in isAuthorsLonger"
                       :key="index"
                       :class="{
                         'pa-0': $vuetify.breakpoint.mdAndUp,
@@ -112,8 +112,23 @@
                                 :tooltipText="authorToolTipText"
                                 :asciiDead="asciiDead"
                                 :authorPassedInfo="authorPassedInfo"
+                                :authorsLengthDifference="authorsDifference"
                                 isSmall
                                @clicked="catchAuthorClicked(authorGivenName(author), authorLastName(author))" />
+              </v-col>
+              <v-col
+                    :class="{
+                      'pa-0': $vuetify.breakpoint.mdAndUp,
+                      'py-1 px-0': $vuetify.breakpoint.smAndDown,
+                    }"
+                    class="shrink" >
+                <TagChipAuthor 
+                              v-if="authorsDifference > 0 && !showAuthors || showAuthors"
+                              :name="!showAuthors ? 'show more ' + authorsDifference + ' authors' : 'show less authors'"
+                              color='highlight'
+                              :color-icon="'white'"
+                              isSmall
+                              @clicked="manageAuthors()" />
               </v-col>
             </v-row>
           </v-col>
@@ -564,8 +579,19 @@ export default {
     modifyTimeToolTipText: 'Time of last modification',
     NotFoundTitle: 'No metadata found for',
     authorTagsMaxHeight: 75,
+    limitAuthors: 16,
+    showAuthors: false,
   }),
   computed: {
+    isAuthorsLonger() {
+      return this.authors.length > 16 ? this.authors.slice(0, this.limitAuthors) : this.authors 
+    },
+    // test() {
+    //   return this.$vuetify.breakpoint.mdAndUp;
+    // },
+    authorsDifference() {
+      return this.authors.length - this.limitAuthors
+    },
     hasContent() {
       return this.metadataTitle && !this.showPlaceholder;
     },
@@ -624,6 +650,16 @@ export default {
     // expandFinished() {
     //   console.log('finished');
     // },
+    manageAuthors() {
+      if (!this.showAuthors) {
+        this.showAuthors =! this.showAuthors
+        this.limitAuthors = this.authors.length;
+      } else {
+        this.showAuthors =! this.showAuthors
+        this.limitAuthors = 16;
+      }
+      
+    },
     catchTagClicked(tagId) {
       this.$emit('clickedTag', tagId);
     },
