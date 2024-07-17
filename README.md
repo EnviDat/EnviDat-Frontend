@@ -26,7 +26,7 @@ Local development: <code>npm run serve</code>
 
 Create a build: <code>npm run build</code> or <code>npm run build --modern</code>
 
-Local Storybook: <code>npm run storybook</code>
+Local Storybook: <code>npm run storybook-dev</code>
 
 # Usage
 
