@@ -34,8 +34,9 @@ set-vars:
     - cat .env >> build.env
     # if BUILD_VERSION is alredy set it's overwritten from another pipeline and this has to be used
     # extract version number from package.json, to make it available in the app
+    # use a :- here "${BUILD_VERSION:-}", expands the variable and will cover both cases null and "unset" / empty string
     - |
-      if [ -z "${BUILD_VERSION}" ]; then
+      if [ -z "${BUILD_VERSION:-}" ]; then
         echo "VERSION=$(jq '.version' package.json --raw-output)" >> build.env
         echo "BUILD_VERSION=${VERSION}" >> build.env
       fi
