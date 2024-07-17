@@ -131,19 +131,12 @@ export default {
         return [];
       }
 
+      if(!this.selectedTagNames) {
+        return this.allTagWithMax;
+      }
+
       const topList = this.allTagWithMax;
-      return topList.filter((element) => element.enabled && !this.selectedTagNames.indexOf(element.name) >= 0);
-/*
-      const unselectedTags = [];
-
-      this.allTags.forEach(element => {
-        if (element.enabled && !this.mixinMethods_isTagSelected(element.name)) {
-          unselectedTags.push(element);
-        }
-      });
-
-      return unselectedTags;
-*/
+      return topList.filter((element) => element.enabled && this.selectedTagNames.indexOf(element.name) >= 0);
     },
     allTagWithMax() {
       return this.allTags?.toSpliced(0, this.maxTagNumber(this.minTagCountToBeVisible));
