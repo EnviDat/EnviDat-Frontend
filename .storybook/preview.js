@@ -34,5 +34,5 @@ export const parameters = {
 // decorator for vuetify is necessary
 export const decorators = [withVuetifyTheme];
 
-export const tags = ['autodocs'];
+export const tags = [];
 

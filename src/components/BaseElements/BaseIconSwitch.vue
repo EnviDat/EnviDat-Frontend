@@ -172,7 +172,7 @@ $slide-duration: 0.2s;
         width: $switch-length;
         height: $switch-bg-height;
         border-radius: 8px;
-        top: ($button-size - $switch-bg-height) / 2 + 1px;
+        top: calc(($button-size - $switch-bg-height) / 2) + 1px;
         background-color: currentColor;
         z-index: -1; // Behind the button
         box-shadow: inset 1px 1px 3px rgba(33, 33, 33, 0.2);
