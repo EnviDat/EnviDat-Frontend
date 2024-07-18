@@ -64,12 +64,12 @@ const metadataInEditingValidations = {
         .nullable()
         .min(5, 'Dataset url must be at least 5 characters')
         .max(80, 'Dataset url has a maximum of 80 characters')
-        .matches(/^[\wöüä-]+$/, 'Use only letters, numbers and dashes for the url (not spaces)'),
+        .matches(/^[\w-]+$/, 'Use only letters, numbers and dashes for the url (not spaces)'),
       [METADATA_TITLE_PROPERTY]: yup.string()
         .required('Dataset title is required')
         .min(5, 'Dataset title must be at least 5 characters')
         .max(180, 'Dataset title has a maximum of 180 characters')
-        .matches(/^[,\w\söüä-]+$/, 'Use only letters and numbers for the title'),
+        .matches(/^[\w\söüä-]+$/, 'Use only letters and numbers for the title'),
       contactGivenName: yup.string()
         .required('Contact given name is required')
         .min(3, 'Contact given (first) name must be at least 3 characters'),
