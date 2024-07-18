@@ -30,7 +30,7 @@
       <div v-if="!error"
            class="readableText pl-1 pl-md-0" >
           <v-icon :color="complete ? 'secondary' : 'grey'">
-            {{ complete ? 'check_circle' : 'check_circle_outline' }}
+            {{ complete ? 'check_circle' : 'warning_amber' }}
           </v-icon>
       </div>
 
