@@ -246,6 +246,9 @@ export default {
     publicationsConfig() {
       return this.metadataConfig?.publicationsConfig || {};
     },
+    useListResolving() {
+      return this.publicationsConfig?.useListResolving || false;
+    },
     resourcesConfig() {
       return this.metadataConfig?.resourcesConfig || {};
     },
@@ -584,10 +587,14 @@ export default {
         showPlaceholder: this.showPlaceholder,
       });
 
-      this.$set(components.MetadataPublications, 'genericProps', {
-        ...this.publications,
-        metadataConfig: this.metadataConfig,
-      });
+      if (this.useListResolving) {
+        // new component which shows the list of citationViews, maybe it's MetadataPublicationsList?
+      } else {
+        this.$set(components.MetadataPublications, 'genericProps', {
+          ...this.publications,
+          metadataConfig: this.metadataConfig,
+        });
+      }
 
       this.$set(components.MetadataRelatedDatasets, 'genericProps', {
         ...this.relatedDatasets,

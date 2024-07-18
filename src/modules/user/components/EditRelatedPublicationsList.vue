@@ -62,6 +62,15 @@
       </v-col>
     </v-row>
 
+    <v-row>
+      <v-col >
+        list of PIDs and Doi
+
+        The user should be able to remove items from the list
+        (Maybe also reorder the items)
+      </v-col>
+    </v-row>
+
     <v-row no-gutters
            class="pt-4">
       <v-col >
@@ -74,6 +83,7 @@
 
     <v-row>
       <v-col >
+        <!-- Replace with the new compoennt MetadataPublicationList.vue -->
          <MetadataPublications v-bind="publicationsObject" />
       </v-col>
     </v-row>
