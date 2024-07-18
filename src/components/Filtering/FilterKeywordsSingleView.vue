@@ -78,7 +78,7 @@ import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder.vue';
 import { createTag } from '@/factories/keywordsFactory';
 
 export default {
-  name: 'FilterKeywordsView',
+  name: 'FilterKeywordsSingleView',
   components: {
     BaseIconButton,
     TagChip,
@@ -113,8 +113,7 @@ export default {
       // tag JSON object
       const selecteds = [];
 
-      if (this.selectedTagNames !== undefined
-        && this.selectedTagNames.length > 0) {
+      if (this.selectedTagNames?.length > 0) {
 
         for (let i = 0; i < this.selectedTagNames.length; i++) {
           const element = this.selectedTagNames[i];
@@ -131,7 +130,7 @@ export default {
         return [];
       }
 
-      if(!this.selectedTagNames) {
+      if(!this.selectedTagNames || this.selectedTagNames.length <= 0) {
         return this.allTagWithMax;
       }
 
