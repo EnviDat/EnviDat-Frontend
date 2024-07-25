@@ -369,7 +369,6 @@ export function createResource(
     signedInUserName,
     signedInUserOrganizationIds,
   );
-  const numberDownloads = numberOfDownload;
 
   let fileFormat = resource.format ? resource.format : '';
   fileFormat = fileFormat.replace('.', '').toLowerCase();
@@ -406,7 +405,7 @@ export function createResource(
     restrictedUrl: `${ckanDomain}/dataset/${datasetName}/restricted_request_access/${resource.id}`,
     restricted: resource.restricted || '',
     format: fileFormat,
-    numberOfDownload: numberDownloads,
+    numberOfDownload,
     state: resource.state || '',
     created,
     deprecated: !!resource.deprecated,
