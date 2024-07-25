@@ -57,6 +57,7 @@
     "uplot": "^1.6.7",
     "vue": "^2.7.15",
     "vue-infinite-loading": "^2.4.5",
+    "vue-matomo": "^4.2.0",
     "vue-router": "^3.4.9",
     "vuetify": "^2.7.1",
     "vuex": "^3.6.0",
