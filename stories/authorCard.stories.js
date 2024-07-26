@@ -12,24 +12,41 @@ import {
   extractAuthorsMap,
   getFullAuthorsFromDataset,
 } from '@/factories/authorFactory';
-import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
+import {
+  envidatViewportParameters,
+  mobileLargeViewportParams,
+  mobileViewportParams,
+  tabletViewportParams,
+} from './js/envidatViewports';
 import authorCollection from './testdata/authorCollection.json';
 
 import unFormatedMetadataCards from './js/metadata';
 
 const metadataCards = [];
 
-unFormatedMetadataCards.forEach((el) => {
+unFormatedMetadataCards.forEach(el => {
   el.author = createAuthors(el);
   metadataCards.push(el);
 });
 
 const authorsMap = extractAuthorsMap(metadataCards);
 
-const authorFromCollection = getFullAuthorsFromDataset(authorsMap, metadataCards[0])[0];
-const authorFromCollection2 = getFullAuthorsFromDataset(authorsMap, metadataCards[1])[1];
-const authorFromCollection3 = getFullAuthorsFromDataset(authorsMap, metadataCards[2])[2];
-const authorFromCollection4 = getFullAuthorsFromDataset(authorsMap, metadataCards[2])[0];
+const authorFromCollection = getFullAuthorsFromDataset(
+  authorsMap,
+  metadataCards[0],
+)[0];
+const authorFromCollection2 = getFullAuthorsFromDataset(
+  authorsMap,
+  metadataCards[1],
+)[1];
+const authorFromCollection3 = getFullAuthorsFromDataset(
+  authorsMap,
+  metadataCards[2],
+)[2];
+const authorFromCollection4 = getFullAuthorsFromDataset(
+  authorsMap,
+  metadataCards[2],
+)[0];
 
 // console.log(authorFromCollection.totalDataCredits);
 
@@ -40,7 +57,6 @@ const methods = {
   },
 };
 
-
 export default {
   title: '3 Cards / Author Cards',
   decorators: [],
@@ -48,7 +64,6 @@ export default {
     ...envidatViewportParameters,
   },
 };
-
 
 const Template = (args, { argTypes }) => ({
   components: { AuthorCard },
@@ -60,27 +75,26 @@ const Template = (args, { argTypes }) => ({
 export const Empty = Template.bind({});
 */
 
-
 export const Author1 = Template.bind({});
 Author1.args = { author: authorFromCollection };
 
 const authorLoadsOfDatacredit = {
   firstName: 'Felix',
-    lastName: 'Gugerli',
-    fullName: 'Felix Gugerli',
-    datasetCount: 7,
-    affiliation: 'WSL',
-    id: {
+  lastName: 'Gugerli',
+  fullName: 'Felix Gugerli',
+  datasetCount: 7,
+  affiliation: 'WSL',
+  id: {
     identifier: '0000-0003-3878-1845',
   },
   email: 'felix.gugerli@wsl.ch',
-    totalDataCredits: {
+  totalDataCredits: {
     collection: 10,
-      validation: 3,
-      curation: 12,
-      software: 10,
-      publication: 15,
-      supervision: 1,
+    validation: 3,
+    curation: 12,
+    software: 10,
+    publication: 15,
+    supervision: 1,
   },
 };
 
@@ -91,6 +105,12 @@ export const AuthorCardInfosExpanded = Template.bind({});
 AuthorCardInfosExpanded.args = {
   ...AuthorManyDataCredit.args,
   overrideAuthorInfosExpanded: true,
+};
+export const AuthorCardOverallHide = Template.bind({});
+AuthorCardOverallHide.args = {
+  ...AuthorManyDataCredit.args,
+  overrideAuthorInfosExpanded: true,
+  hideDataCredit: true,
 };
 
 export const MobileAuthorCard = Template.bind({});
@@ -110,7 +130,7 @@ export const AuthorCardList = () => ({
     AuthorCard,
     DataCreditLayout,
   },
-/*
+  /*
     props: {
       author: {
         default: {
@@ -188,17 +208,13 @@ export const AuthorCardList = () => ({
   </v-container>
   `,
   methods,
-  computed: {
-  },
+  computed: {},
   data: () => ({
     authorFromCollection,
     authorFromCollection2,
     authorFromCollection3,
     authorFromCollection4,
-    datasetDataCredit: [
-      'collection',
-      'software',
-    ],
+    datasetDataCredit: ['collection', 'software'],
     author: authorLoadsOfDatacredit,
     author2: {
       firstName: 'Felix',
@@ -243,13 +259,11 @@ export const AuthorCardList = () => ({
 
 // stories.addDecorator(withKnobs);
 
-
 export const backgroundTest = () => ({
-  components: {
-  },
+  components: {},
   template: `
     <v-row>
-      
+
       <v-col cols="12" md="4" pt-5 >
         <div>
           <v-icon>menu_book</v-icon>
@@ -259,10 +273,10 @@ export const backgroundTest = () => ({
           <v-icon>record_voice_over</v-icon>
           <v-icon>supervision_account</v-icon>
         </div>
-        
+
 <!--
         <div style="width: 300px; height: 300px; background-color: whitesmoke; overflow: hidden;">
-          <div v-for="(index) in 10" 
+          <div v-for="(index) in 10"
                :key="index"
                 :style="getStyle(index, 300, 300)" >
             <v-icon>widgets</v-icon>
@@ -273,7 +287,7 @@ export const backgroundTest = () => ({
                :style="getStyle(index, 300, 300, -60)" >
             <v-icon>code</v-icon>
           </div>
-          
+
         </div>
 -->
 
@@ -291,13 +305,12 @@ export const backgroundTest = () => ({
           </div>
 -->
 
-        </div>        
+        </div>
       </v-col>
 
     </v-row>
   `,
-  computed: {
-  },
+  computed: {},
   methods: {
     getStyle(index, maxWidth, maxHeight, start = 0) {
       const size = 30;
@@ -314,6 +327,5 @@ export const backgroundTest = () => ({
       return `transform: translate(${pos}px, ${tPos}px); opacity: 0.25; width: ${size}px; height: ${size}px;`;
     },
   },
-  data: () => ({
-  }),
+  data: () => ({}),
 });
