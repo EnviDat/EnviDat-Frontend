@@ -4,7 +4,7 @@ const matomoState = {
   siteId: 37,
   startDate: '2024-07-23',
   endDate: 'today',
-  token: '1ca09c368e30f9d025de4f2463147dba',
+  token: import.meta.env.VITE_MATOMO_TOKEN,
   baseUrl: '/api',
 };
 

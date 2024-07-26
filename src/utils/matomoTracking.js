@@ -23,7 +23,7 @@ export function trackDownload(url, label) {
 //       .toString(36)
 //       .substr(2, 9),
 //     apiv: '1',
-//     token_auth: '1ca09c368e30f9d025de4f2463147dba',
+//     token_auth: '',
 //   });
 
 //   fetch(apiUrl, {
