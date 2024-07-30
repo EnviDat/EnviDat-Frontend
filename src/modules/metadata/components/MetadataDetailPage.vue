@@ -60,7 +60,6 @@
 
       </template>
     </two-column-layout>
-
   </v-container>
 </template>
 
@@ -84,7 +83,11 @@ import rewind from '@turf/rewind';
 import { mapGetters, mapState } from 'vuex';
 import { useModeStore } from '@/modules/browse/store/modeStore';
 
-import { BROWSE_PATH, METADATADETAIL_PAGENAME, METADATAEDIT_PAGENAME } from '@/router/routeConsts';
+import {
+  BROWSE_PATH,
+  METADATADETAIL_PAGENAME,
+  METADATAEDIT_PAGENAME,
+} from '@/router/routeConsts';
 
 import {
   ACTION_USER_SHOW,
@@ -93,10 +96,14 @@ import {
   USER_NAMESPACE,
   USER_SIGNIN_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts';
-import { SET_APP_BACKGROUND, SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
+import {
+  SET_APP_BACKGROUND,
+  SET_CURRENT_PAGE,
+} from '@/store/mainMutationsConsts';
 import {
   CLEAN_CURRENT_METADATA,
-  CLEAR_SEARCH_METADATA, EDNA_MODE,
+  CLEAR_SEARCH_METADATA,
+  EDNA_MODE,
   LOAD_METADATA_CONTENT_BY_ID,
   METADATA_NAMESPACE,
 } from '@/store/metadataMutationsConsts';
@@ -112,13 +119,15 @@ import {
   createResources,
 } from '@/factories/metaDataFactory';
 
-import {
-  createCitation,
-} from '@/factories/citationFactory';
+import { createCitation } from '@/factories/citationFactory';
 
 import { getFullAuthorsFromDataset } from '@/factories/authorFactory';
 
-import { getConfigFiles, getConfigUrls, getFeatureCollectionFromGcNetStations } from '@/factories/chartFactory';
+import {
+  getConfigFiles,
+  getConfigUrls,
+  getFeatureCollectionFromGcNetStations,
+} from '@/factories/chartFactory';
 
 import {
   AUTHOR_SEARCH_CLICK,
@@ -129,7 +138,10 @@ import {
   GCNET_PREPARE_DETAIL_CHARTS,
 } from '@/factories/eventBus';
 
-import { enhanceElementsWithStrategyEvents, enhanceResourcesWithMetadataExtras } from '@/factories/strategyFactory';
+import {
+  enhanceElementsWithStrategyEvents,
+  enhanceResourcesWithMetadataExtras,
+} from '@/factories/strategyFactory';
 
 import TwoColumnLayout from '@/components/Layouts/TwoColumnLayout.vue';
 
@@ -140,7 +152,11 @@ import {
   USER_GET_ORGANIZATION_IDS,
 } from '@/modules/organizations/store/organizationsMutationsConsts';
 
-import { convertJSON, getFrontendDates, getFrontendJSONForStep } from '@/factories/mappingFactory';
+import {
+  convertJSON,
+  getFrontendDates,
+  getFrontendJSONForStep,
+} from '@/factories/mappingFactory';
 
 import MetadataHeader from './Metadata/MetadataHeader.vue';
 import MetadataBody from './Metadata/MetadataBody.vue';
@@ -159,7 +175,7 @@ import MetadataAuthors from './Metadata/MetadataAuthors.vue';
 export default {
   name: 'MetadataDetailPage',
   beforeRouteEnter(to, from, next) {
-    next((vm) => {
+    next(vm => {
       vm.$store.commit(SET_CURRENT_PAGE, METADATADETAIL_PAGENAME);
       vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
     });
@@ -205,16 +221,9 @@ export default {
   },
   computed: {
     ...mapState(['config']),
-    ...mapState(USER_NAMESPACE, [
-      'userDatasets',
-    ]),
-    ...mapState(ORGANIZATIONS_NAMESPACE, [
-      'userOrganizationIds',
-    ]),
-    ...mapGetters(USER_SIGNIN_NAMESPACE, [
-      'user',
-      'userLoading',
-    ]),
+    ...mapState(USER_NAMESPACE, ['userDatasets']),
+    ...mapState(ORGANIZATIONS_NAMESPACE, ['userOrganizationIds']),
+    ...mapGetters(USER_SIGNIN_NAMESPACE, ['user', 'userLoading']),
     ...mapGetters({
       metadatasContent: `${METADATA_NAMESPACE}/metadatasContent`,
       metadatasContentSize: `${METADATA_NAMESPACE}/metadatasContentSize`,
@@ -282,13 +291,17 @@ export default {
       return fileList;
     },
     baseUrl() {
-      return import.meta.env.PROD ? this.baseStationURL : this.baseStationURLTestdata;
+      return import.meta.env.PROD
+        ? this.baseStationURL
+        : this.baseStationURLTestdata;
     },
     metadataId() {
       return this.$route.params.metadataid;
     },
     mode() {
-      return this.$route.query.mode ? this.$route.query.mode.toLowerCase() : undefined;
+      return this.$route.query.mode
+        ? this.$route.query.mode.toLowerCase()
+        : undefined;
     },
     showPlaceholder() {
       return this.loadingMetadatasContent || this.loadingCurrentMetadataContent;
@@ -338,7 +351,9 @@ export default {
         return false;
       }
 
-      const matches = this.userDatasets.filter(dSet => dSet.name === this.metadataId || dSet.id === this.metadataId);
+      const matches = this.userDatasets.filter(
+        dSet => dSet.name === this.metadataId || dSet.id === this.metadataId,
+      );
 
       return matches.length > 0;
     },
@@ -351,12 +366,12 @@ export default {
         this.geoServiceLayersError = error;
       }
 
-        this.geoServiceConfig = {
-          site: location,
-          layerConfig,
-          error: this.geoServiceLayersError,
-          ...(this.hasGcnetStationConfig) && { isGcnet: true },
-        };
+      this.geoServiceConfig = {
+        site: location,
+        layerConfig,
+        error: this.geoServiceLayersError,
+        ...(this.hasGcnetStationConfig && { isGcnet: true }),
+      };
 
       this.geoServiceConfig = {
         ...this.geoServiceConfig,
@@ -374,10 +389,10 @@ export default {
 
       axios
         .get(url)
-        .then((response) => {
+        .then(response => {
           this.geoServiceLayers = response.data;
         })
-        .catch((error) => {
+        .catch(error => {
           this.geoServiceLayersError = error;
         });
     },
@@ -386,11 +401,13 @@ export default {
 
       axios
         .get(url)
-        .then((response) => {
+        .then(response => {
           this.stationsConfig = response.data;
 
           const stations = response.data;
-          const featureCollection = getFeatureCollectionFromGcNetStations(stations);
+          const featureCollection = getFeatureCollectionFromGcNetStations(
+            stations,
+          );
 
           // Override location with stations FeatureCollection, creating shallow copy
           const locationOverride = { ...this.location };
@@ -399,7 +416,7 @@ export default {
 
           successCallback();
         })
-        .catch((error) => {
+        .catch(error => {
           this.stationsConfigError = error;
         });
     },
@@ -409,11 +426,11 @@ export default {
 
       axios
         .get(url)
-        .then((response) => {
+        .then(response => {
           this.fileObjects = response.data.fileObjects;
           this.graphStyling = response.data.graphStyling;
         })
-        .catch((error) => {
+        .catch(error => {
           this.stationParametersError = error;
         });
     },
@@ -437,8 +454,10 @@ export default {
     headerHeight() {
       let height = -2;
 
-      if ((this.$vuetify.breakpoint.smAndDown && this.appScrollPosition > 20)
-        || this.$vuetify.breakpoint.mdAndUp ) {
+      if (
+        (this.$vuetify.breakpoint.smAndDown && this.appScrollPosition > 20) ||
+        this.$vuetify.breakpoint.mdAndUp
+      ) {
         if (this.$refs && this.$refs.header) {
           height = this.$refs.header.clientHeight;
         }
@@ -478,7 +497,10 @@ export default {
         );
 
         const parsedContent = convertJSON(currentContent, false);
-        const publicationData = getFrontendJSONForStep(EDITMETADATA_PUBLICATION_INFO, parsedContent);
+        const publicationData = getFrontendJSONForStep(
+          EDITMETADATA_PUBLICATION_INFO,
+          parsedContent,
+        );
         this.header.publicationYear = publicationData.publicationYear;
 
         this.body = createBody(
@@ -513,7 +535,6 @@ export default {
       this.authors = getFullAuthorsFromDataset(this.authorsMap, currentContent);
 
       this.$nextTick(() => {
-
         this.$set(components.MetadataAuthors, 'genericProps', {
           authors: this.authors,
           authorDetailsConfig: this.authorDetailsConfig,
@@ -521,13 +542,14 @@ export default {
           showPlaceholder: this.showPlaceholder,
         });
       });
-
     },
     loadResources() {
       const { components } = this.$options;
       const currentContent = this.metadataContent;
 
-      this.resources = createResources(currentContent, this.user, this.userOrganizationIds) || {};
+      this.resources =
+        createResources(currentContent, this.user, this.userOrganizationIds) ||
+        {};
 
       const license = createLicense(currentContent);
 
@@ -537,14 +559,20 @@ export default {
       if (this.resources.resources) {
         this.configInfos = getConfigFiles(this.resources.resources);
 
-        enhanceElementsWithStrategyEvents(this.resources.resources, undefined, true);
-        enhanceResourcesWithMetadataExtras(this.metadataContent.extras, this.resources.resources);
+        enhanceElementsWithStrategyEvents(
+          this.resources.resources,
+          undefined,
+          true,
+        );
+        enhanceResourcesWithMetadataExtras(
+          this.metadataContent.extras,
+          this.resources.resources,
+        );
 
         this.resources.dates = getFrontendDates(this.metadataContent.date);
       }
 
       this.$nextTick(() => {
-
         this.$set(components.MetadataResources, 'genericProps', {
           ...this.resources,
           dataLicenseId: license.id,
@@ -553,7 +581,6 @@ export default {
           resourcesConfig: this.resourcesConfig,
         });
       });
-
     },
     setMetadataContent() {
       const { components } = this.$options;
@@ -606,10 +633,7 @@ export default {
         components.MetadataAuthors,
       ];
 
-      this.secondCol = [
-        components.MetadataResources,
-        components.MetadataGeo,
-      ];
+      this.secondCol = [components.MetadataResources, components.MetadataGeo];
 
       this.singleCol = [
         components.MetadataBody,
@@ -633,13 +657,14 @@ export default {
       });
     },
     async injectMicroCharts() {
-      const MicroChartList = (await import ('@/modules/metadata/components/GC-Net/MicroChartList.vue')).default;
+      const MicroChartList = (
+        await import('@/modules/metadata/components/GC-Net/MicroChartList.vue')
+      ).default;
 
-      eventBus.emit(
-        GCNET_INJECT_MICRO_CHARTS, {
-          component: MicroChartList,
-          config: this.stationsConfig,
-        });
+      eventBus.emit(GCNET_INJECT_MICRO_CHARTS, {
+        component: MicroChartList,
+        config: this.stationsConfig,
+      });
     },
     /**
      * @description
@@ -647,7 +672,10 @@ export default {
      * @returns {any}
      */
     isCurrentIdOrName(idOrName) {
-      return this.metadataContent?.id === idOrName || this.metadataContent?.name === idOrName;
+      return (
+        this.metadataContent?.id === idOrName ||
+        this.metadataContent?.name === idOrName
+      );
     },
     /**
      * @description
@@ -680,10 +708,8 @@ export default {
         path: BROWSE_PATH,
         query,
       });
-
     },
     catchAuthorClicked(authorGivenName, authorLastName) {
-
       const query = this.$route.query;
 
       // make sure to remove the ascii marker for dead authors for the search
@@ -733,27 +759,32 @@ export default {
      */
     async loadMetaDataContent() {
       if (this.mode) {
-        if(this.mode === EDNA_MODE) {
+        if (this.mode === EDNA_MODE) {
           const modeMetadata = this.modeStore.getModeMetadata(this.mode);
           modeMetadata.isShallow = !this.isRealdataset();
         }
         const modeDatasets = this.modeStore.getDatasets(this.mode);
         let datasets = Object.values(modeDatasets);
-        if (datasets.length <=  0) {
+        if (datasets.length <= 0) {
           datasets = await this.modeStore.loadModeDatasets(this.mode);
         }
-        this.modeDataset = datasets.filter(entry => entry.name === this.metadataId)[0];
+        this.modeDataset = datasets.filter(
+          entry => entry.name === this.metadataId,
+        )[0];
       }
 
-      if (!this.loadingMetadatasContent
-          && !this.isCurrentIdOrName(this.metadataId) ) {
+      if (
+        !this.loadingMetadatasContent &&
+        !this.isCurrentIdOrName(this.metadataId)
+      ) {
         // in case of navigating into the page load the content directly via Id
-        await this.$store.dispatch(`${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`, {
+        await this.$store.dispatch(
+          `${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`,
+          {
             metadataId: this.metadataId,
-
-        });
-      }
-      else {
+          },
+        );
+      } else {
         // in case of entring the page directly via Url without having loaded the rest of the app.
         // this call is to initialize the components in the their loading state
         this.$nextTick(() => {
@@ -766,47 +797,47 @@ export default {
       }
     },
     isRealdataset() {
-      if(this.mode && this.mode === EDNA_MODE) {
+      if (this.mode && this.mode === EDNA_MODE) {
         const contents = Object.values(this.metadatasContent);
 
-        const localEntry = contents.filter(entry => entry.name === this.metadataId);
+        const localEntry = contents.filter(
+          entry => entry.name === this.metadataId,
+        );
         return localEntry.length === 1;
-
       }
       return false;
     },
     fetchUserOrganisationData() {
       const userId = this.user?.id;
-      if (!userId){
+      if (!userId) {
         return;
       }
 
-      this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, userId);
+      this.$store.dispatch(
+        `${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`,
+        userId,
+      );
     },
     fetchUserDatasets() {
       const userId = this.user?.id;
-      if (!userId){
+      if (!userId) {
         return;
       }
 
-      this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`,
-        {
-          action: ACTION_USER_SHOW,
-          body: {
-            id: userId,
-            include_datasets: true,
-          },
-          commit: true,
-          mutation: USER_GET_DATASETS,
-        });
+      this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`, {
+        action: ACTION_USER_SHOW,
+        body: {
+          id: userId,
+          include_datasets: true,
+        },
+        commit: true,
+        mutation: USER_GET_DATASETS,
+      });
     },
   },
   watch: {
     geoServiceLayers() {
-      this.setGeoServiceLayers(
-        this.location,
-        this.geoServiceLayers,
-      );
+      this.setGeoServiceLayers(this.location, this.geoServiceLayers);
     },
     geoServiceLayersError() {
       if (this.geoServiceLayersError) {
@@ -836,13 +867,17 @@ export default {
      * if EnviDat is called via MetadataDetailPage URL directly
      */
     async metadatasContent() {
-      if (!this.loadingMetadatasContent
-          && !this.loadingCurrentMetadataContent
-          && !this.isCurrentIdOrName(this.metadataId)) {
-
-        await this.$store.dispatch(`${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`, {
+      if (
+        !this.loadingMetadatasContent &&
+        !this.loadingCurrentMetadataContent &&
+        !this.isCurrentIdOrName(this.metadataId)
+      ) {
+        await this.$store.dispatch(
+          `${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`,
+          {
             metadataId: this.metadataId,
-        });
+          },
+        );
       }
     },
     userLoading() {

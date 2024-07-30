@@ -3,7 +3,7 @@ import { createHeader } from '@/factories/metaDataFactory';
 import metadata from './js/metadata';
 
 const smallHeader = createHeader(metadata[0], true);
-const largeHeader = createHeader(metadata[2], false);
+const largeHeader = createHeader(metadata[3], false);
 const longAuthorsListHeader = createHeader(metadata[3], false);
 
 export default {
@@ -23,7 +23,7 @@ export const PlaceHolderMetadataHeader = {
   },
 };
 
-export const ShortTitleMetadataHeader = {
+export const ShortTitleMextadataHeader = {
   args: {
     ...smallHeader,
   },

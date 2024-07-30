@@ -489,11 +489,7 @@
       </v-expand-transition>
     </v-container>
 
-    <v-card-actions
-      v-show="expanded"
-      class="orgaChipFullWidth"
-      style="position: absolute; bottom: 0; right: 0; z-index: 2;"
-    >
+    <v-card-actions v-show="expanded" class="orgaChipFullWidth">
       <v-row no-gutters align="center">
         <!-- <v-col v-if="maxTagsReached" class="px-1 flex-grow-0">
           <base-icon-button
@@ -508,6 +504,15 @@
             @clicked="showTagsExpanded = !showTagsExpanded"
           />
         </v-col> -->
+
+        <v-col
+          v-if="publicationStatus && showEditButton"
+          class=" flex-grow-1 px-1"
+        >
+          <v-chip small :color="'secondary'">
+            {{ publicationStatus }}
+          </v-chip>
+        </v-col>
 
         <v-col v-if="metadataState && showEditButton" class=" flex-grow-1 px-1">
           <MetadataStateChip :state="metadataState" />
@@ -594,6 +599,10 @@ export default {
       default: undefined,
     },
     publicationYear: {
+      type: String,
+      default: undefined,
+    },
+    publicationStatus: {
       type: String,
       default: undefined,
     },
@@ -776,5 +785,12 @@ export default {
 .orgaChipFullWidth .organizationChip {
   max-width: unset !important;
   opacity: 0.85;
+}
+
+.orgaChipFullWidth {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 2;
 }
 </style>

@@ -2,9 +2,9 @@
   <v-chip
     class="stateChip"
     :class="{
-        stateChipHover: !this.showContent,
-        'px-2': true,
-      }"
+      stateChipHover: !this.showContent,
+      'px-2': true,
+    }"
     @mouseover="hover = true"
     @mouseleave="hover = false"
     :color="stateColor"
@@ -12,12 +12,12 @@
   >
     <v-tooltip bottom>
       <template v-slot:activator="{ on }">
-        <v-row v-on="on"
-               align="center"
-                no-gutters>
-          <v-col ><v-icon>{{ stateIcon }}</v-icon></v-col>
-          <v-col :class="showContent ? 'pl-1' : ''" >
-            {{ showContent ? stateText : ''  }}
+        <v-row v-on="on" align="center" no-gutters>
+          <v-col
+            ><v-icon>{{ stateIcon }}</v-icon></v-col
+          >
+          <v-col :class="showContent ? 'pl-1' : ''">
+            {{ showContent ? stateText : '' }}
           </v-col>
         </v-row>
       </template>
@@ -27,7 +27,8 @@
   </v-chip>
 </template>
 
-<script>/**
+<script>
+/**
  * MetadataStateChip.vue show the publication state of a metadata entry
  *
  * @summary show the publication state
@@ -58,7 +59,8 @@ export default {
         [METADATA_STATE_DRAFT]: 'Draft datasets are only visible to you',
         [METADATA_STATE_INVISILBE]:
           'Dataset is hidden, only you and members from your organization can see it',
-        [METADATA_STATE_VISILBE]: 'Visible datasets are publicly visible for everyone',
+        [METADATA_STATE_VISILBE]:
+          'Visible datasets are publicly visible for everyone',
       }),
     },
     colorMap: {
@@ -112,6 +114,8 @@ export default {
 .stateChip {
   height: 1.65rem;
   font-size: 0.75rem;
+  width: auto;
+  min-width: 105px;
 }
 
 .stateChipHover > .v-chip__content > div:nth-child(1) {
