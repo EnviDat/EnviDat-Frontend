@@ -30,11 +30,7 @@ export default {
   async [GET_PROJECTS]({ dispatch, commit }, projectsConfig = {}) {
     commit(GET_PROJECTS);
 
-    let url = urlRewrite(
-      ACTION_GET_PROJECTS(),
-      API_BASE,
-      API_ROOT,
-    );
+    let url = urlRewrite(ACTION_GET_PROJECTS(), API_BASE, API_ROOT);
 
     // if (this.getters[`${METADATA_NAMESPACE}/metadatasContentSize`] === 0) {
     //   const metadataConfig = this.state.config.metadataConfig;
