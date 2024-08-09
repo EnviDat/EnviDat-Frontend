@@ -14,7 +14,9 @@
     </v-card-title>
 
     <v-card-text v-if="showPlaceholder" class="pa-4 pt-0">
-      <div class="skeleton skeleton-size-normal skeleton-color-concrete skeleton-animation-shimmer" >
+      <div
+        class="skeleton skeleton-size-normal skeleton-color-concrete skeleton-animation-shimmer"
+      >
         <div class="bone bone-type-multiline bone-style-paragraph" />
       </div>
     </v-card-text>
@@ -37,9 +39,7 @@
       {{ emptyText }}
     </v-card-text>
 
-    <v-card-text v-if="statusText">
-      {{ statusText }}
-    </v-card-text>
+    <v-card-text v-if="statusText"> {{ statusText }} </v-card-text>
 
     <v-card-actions
       v-if="maxTextLengthReached"
