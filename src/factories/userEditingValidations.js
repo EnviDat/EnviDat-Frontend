@@ -120,8 +120,7 @@ const metadataInEditingValidations = {
       format: yup
         .string()
         .nullable()
-        .min(1, 'Format has to be at least 1 characters long.')
-        .matches(/^[A-Za-z\s]+$/, 'Format can only contain letters.'),
+        .min(1, 'Format has to be at least 1 characters long.'),
       size: yup
         .number('size must be a number')
         .transform(convertToZero)
