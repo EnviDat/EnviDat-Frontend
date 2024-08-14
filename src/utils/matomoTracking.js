@@ -10,34 +10,18 @@ export function trackDownload(url, label) {
   }
 }
 
-// TEST, post request to valuate the token rights.
+// tracking event
+// use this function to create an event from the website
+// EventCategory (mandatory): Describes the category of the event. It can be used to group similar events, for example, "Video," "Button Click," "Download," etc.
+// EventAction (mandatory): Describes the action performed by the user. For example, "Play," "Pause," "Click," "Download," etc.
+// EventName (optional): An optional label to describe the event in more detail. It could be the name of a video, the text of a button, the name of a downloaded file, etc.
 
-// export function trackPageView() {
-//   const apiUrl = '/api';
-//   const params = new URLSearchParams({
-//     idsite: '37',
-//     rec: '1',
-//     action_name: 'Test Page View',
-//     url: 'https://example.com/test-page',
-//     rand: Math.random()
-//       .toString(36)
-//       .substr(2, 9),
-//     apiv: '1',
-//     token_auth: '',
-//   });
+// IMPORTANT to use EventName to specify the path to the page ex /metadata/satellite-avalanche-mapping-validation, this is important to have the ability to filter and get all events related to a specific page
 
-//   fetch(apiUrl, {
-//     method: 'POST',
-//     body: params,
-//   })
-//     .then(response => {
-//       if (response.ok) {
-//         console.log('Tracciamento riuscito:', response);
-//       } else {
-//         console.error('Errore durante il tracciamento:', response);
-//       }
-//     })
-//     .catch(error => {
-//       console.error('Errore durante il tracciamento:', error);
-//     });
-// }
+export function trackEvent(eventCategory, eventAction, eventName) {
+  const consentGiven = localStorage.getItem('matomoConsentGiven');
+
+  if (consentGiven === 'true') {
+    window._paq.push(['trackEvent', eventCategory, eventAction, eventName]);
+  }
+}

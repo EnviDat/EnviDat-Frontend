@@ -117,7 +117,6 @@
               dark
               class="mb-1"
             />
-
             <base-icon-label-view
               v-if="isDownloaded"
               :text="'Number of Downloads: ' + String(numberOfDownload)"
