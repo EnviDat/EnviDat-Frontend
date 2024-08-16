@@ -239,7 +239,10 @@ export default {
     }),
     metadataContent() {
       if (this.mode) {
-        return this.modeDataset;
+        // TODO: check with Dominik
+        return this.modeDataset !== undefined
+          ? this.modeDataset
+          : this.currentMetadataContent;
       }
 
       return this.currentMetadataContent;
