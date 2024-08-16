@@ -93,7 +93,9 @@
               v-if="format"
               :text="formatedBytes ? `${format} - ${formatedBytes}` : format"
               :icon="extensionIcon"
-              :icon-tooltip="formatedBytes ? 'Resource type and size' : 'Resource type'"
+              :icon-tooltip="
+                formatedBytes ? 'Resource type and size' : 'Resource type'
+              "
               dark
               class="mb-1"
             />
@@ -115,6 +117,14 @@
               dark
               class="mb-1"
             />
+            <base-icon-label-view
+              v-if="isDownloaded"
+              :text="'Number of Downloads: ' + String(numberOfDownload)"
+              material-icon-name="download"
+              icon-tooltip="Number of downloads"
+              dark
+              class="mb-1"
+            />
           </v-col>
         </v-row>
       </v-container>
@@ -124,21 +134,24 @@
       class="ma-0 pa-2"
       style="position: absolute; bottom: 0; right: 55px;"
     >
-      <base-icon-button v-if="maxDescriptionLengthReached"
-                        :class="isProtected ? 'mr-2' : ''"
-                        material-icon-name="expand_more"
-                        :iconColor="showFullDescription ? 'primary' : 'accent'"
-                        color="accent"
-                        :fillColor="showFullDescription ? $vuetify.theme.themes.light.accent : ''"
-                        outlined
-                        :rotateOnClick="true"
-                        :rotateToggle="showFullDescription"
-                        :tooltipText="
-                          showFullDescription
-                            ? 'Hide full description'
-                            : 'Show full description'
-                        "
-                        @clicked="showFullDescription = !showFullDescription"
+      <base-icon-button
+        v-if="maxDescriptionLengthReached"
+        :class="isProtected ? 'mr-2' : ''"
+        material-icon-name="expand_more"
+        :iconColor="showFullDescription ? 'primary' : 'accent'"
+        color="accent"
+        :fillColor="
+          showFullDescription ? $vuetify.theme.themes.light.accent : ''
+        "
+        outlined
+        :rotateOnClick="true"
+        :rotateToggle="showFullDescription"
+        :tooltipText="
+          showFullDescription
+            ? 'Hide full description'
+            : 'Show full description'
+        "
+        @clicked="showFullDescription = !showFullDescription"
       />
     </v-card-actions>
 
@@ -169,6 +182,7 @@
       <v-row v-if="!isProtected">
         <v-col cols="12">
           <base-icon-button
+            @clicked="trackDownload(url, resourceName)"
             :materialIconName="isFile ? 'file_download' : 'link'"
             iconColor="black"
             color="accent"
@@ -221,10 +235,12 @@
  */
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
-import { renderMarkdown,stripMarkdown } from '@/factories/stringFactory';
+import { renderMarkdown, stripMarkdown } from '@/factories/stringFactory';
 import { formatBytes, formatDate } from '@/factories/metaDataFactory';
 import { EDIT_METADATA_DOI_LABEL } from '@/factories/metadataConsts';
 import { getFileIcon } from '@/factories/imageFactory';
+
+import { trackDownload } from '@/utils/matomoTracking';
 
 export default {
   name: 'ResourceCard',
@@ -251,6 +267,7 @@ export default {
     fileExtensionIcon: Object,
     metadataContact: String,
     deprecated: Boolean,
+    numberOfDownload: Number,
     downloadActive: {
       type: Boolean,
       default: true,
@@ -285,7 +302,10 @@ export default {
     EDIT_METADATA_DOI_LABEL,
   }),
   computed: {
-    computedCardColor(){
+    isDownloaded() {
+      return this.numberOfDownload > 0;
+    },
+    computedCardColor() {
       return this.deprecated ? 'grey' : this.cardColor;
     },
     readableCreated() {
@@ -296,7 +316,7 @@ export default {
     },
     resourceName() {
       let name = this.name ?? 'Unnamed resource';
-      
+
       const isUrl = !this.name && !!this.url;
       if (isUrl) {
         const splits = this.url.split('/');
@@ -390,12 +410,13 @@ export default {
       return getFileIcon(this.format);
     },
   },
-  methods: {},
+  methods: {
+    trackDownload,
+  },
 };
 </script>
 
 <style scoped>
-
 .resourceHeadline {
   line-height: 1.5rem;
 }
