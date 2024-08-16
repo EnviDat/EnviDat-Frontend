@@ -10,10 +10,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import {
-  EDITMETADATA_OBJECT_UPDATE,
-  eventBus,
-} from '@/factories/eventBus';
+import { EDITMETADATA_OBJECT_UPDATE, eventBus } from '@/factories/eventBus';
 
 import EditRelatedPublications from '@/modules/user/components/EditRelatedPublications.vue';
 import EditRelatedDatasets from '@/modules/user/components/EditRelatedDatasets.vue';
@@ -33,9 +30,7 @@ for (let i = 0; i < tagsFromDatasets.length; i++) {
   tag.color = getTagColor(categoryCards, tag.name);
 }
 
-
 function getKeywordsSource(tagsSource, catCards) {
-
   const keywordsArray = [...tagsSource];
 
   for (let i = 0; i < keywordsArray.length; i++) {
@@ -52,9 +47,9 @@ const placeholderKeywordsGenericProps = {
   metadataCardSubtitle: 'My metadata description is pleasant to read.',
   existingKeywords: tagsFromDatasets,
   componentTitle: 'Metadata Keywords',
-  disclaimer: 'Please note that the screenshot below will serve as a template for the future component.',
+  disclaimer:
+    'Please note that the screenshot below will serve as a template for the future component.',
 };
-
 
 export default {
   title: '9 Editing Metadata / Related Views',
@@ -63,8 +58,8 @@ export default {
 };
 
 export const EditRelatedDatasetsViews = () => ({
-    components: { EditRelatedDatasets },
-    template: `
+  components: { EditRelatedDatasets },
+  template: `
     <v-col>
 
       <v-row>
@@ -75,10 +70,10 @@ export const EditRelatedDatasetsViews = () => ({
 
       <v-row class="py-3" >
         <v-col cols="6">
-          <EditRelatedDatasets v-bind="genericProps" 
+          <EditRelatedDatasets v-bind="genericProps"
                                 :allDatasets="allDatasets" />
         </v-col>
-        
+
         <v-col cols="6">
           <EditRelatedDatasets v-bind="genericPropsFilled"
                                 :allDatasets="allDatasets" />
@@ -87,48 +82,48 @@ export const EditRelatedDatasetsViews = () => ({
 
     </v-col>
     `,
-    created() {
-        eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+  created() {
+    eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+  },
+  mounted() {
+    this.genericProps.relatedDatasetsText = this.relatedDatasetsText;
+    this.genericPropsFilled.relatedDatasetsText = this.relatedDatasetsText2;
+  },
+  beforeDestroy() {
+    eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+  },
+  methods: {
+    editComponentsChanged(updateObj) {
+      if (updateObj.data.id === this.genericProps.id) {
+        this.genericProps = updateObj.data;
+        // this.genericProps.publications.text = this.genericProps.textareaContent;
+      }
+      if (updateObj.data.id === this.genericPropsFilled.id) {
+        this.genericPropsFilled = updateObj.data;
+        // this.genericPropsFilled.relatedPublicationsText = this.genericPropsFilled.relatedPublicationsText;
+      }
     },
-    mounted() {
-        this.genericProps.relatedDatasetsText = this.relatedDatasetsText;
-        this.genericPropsFilled.relatedDatasetsText = this.relatedDatasetsText2;
-    },
-    beforeDestroy() {
-        eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
-    },
-    methods: {
-        editComponentsChanged(updateObj) {
-            if (updateObj.data.id === this.genericProps.id) {
-                this.genericProps = updateObj.data;
-                // this.genericProps.publications.text = this.genericProps.textareaContent;
-            }
-            if (updateObj.data.id === this.genericPropsFilled.id) {
-                this.genericPropsFilled = updateObj.data;
-                // this.genericPropsFilled.relatedPublicationsText = this.genericPropsFilled.relatedPublicationsText;
-            }
-        },
-    },
-    data: () => ({
-        relatedDatasetsText: '',
-        relatedDatasetsText2: `https://www.envidat.ch/#/metadata/total_basal_area-2
+  },
+  data: () => ({
+    relatedDatasetsText: '',
+    relatedDatasetsText2: `https://www.envidat.ch/#/metadata/total_basal_area-2
             https://www.envidat.ch/#/metadata/salvage_logging_star-186
         `,
-        allDatasets: unFormatedMetadataCards,
-        genericProps: {
-            relatedDatasetsText: '',
-            id: '1',
-        },
-        genericPropsFilled: {
-            id: '2',
-            relatedDatasetsText: '',
-        },
-    }),
-})
+    allDatasets: unFormatedMetadataCards,
+    genericProps: {
+      relatedDatasetsText: '',
+      id: '1',
+    },
+    genericPropsFilled: {
+      id: '2',
+      relatedDatasetsText: '',
+    },
+  }),
+});
 
 export const EditRelatedPublicationViews = () => ({
-    components: { EditRelatedPublications },
-    template: `
+  components: { EditRelatedPublications },
+  template: `
     <v-col>
 
       <v-row>
@@ -154,39 +149,40 @@ export const EditRelatedPublicationViews = () => ({
 
     </v-col>
     `,
-    created() {
-      eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+  created() {
+    eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+  },
+  beforeDestroy() {
+    eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+  },
+  methods: {
+    editComponentsChanged(updateObj) {
+      if (updateObj.data.id === this.genericProps.id) {
+        this.genericProps = updateObj.data;
+        // this.genericProps.publications.text = this.genericProps.textareaContent;
+      }
+      if (updateObj.data.id === this.genericPropsFilled.id) {
+        // this.genericPropsFilled = updateObj.data;
+        this.genericPropsFilled.relatedPublicationsText = updateObj.data;
+      }
     },
-    beforeDestroy() {
-      eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+  },
+  data: () => ({
+    genericProps: {
+      relatedPublicationsText: '', // * wsl:21835 wsl%3A22390 \n * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 ',
+      id: '1',
     },
-    methods: {
-      editComponentsChanged(updateObj) {
-        if (updateObj.data.id === this.genericProps.id) {
-          this.genericProps = updateObj.data;
-         // this.genericProps.publications.text = this.genericProps.textareaContent;
-        }
-        if (updateObj.data.id === this.genericPropsFilled.id) {
-          // this.genericPropsFilled = updateObj.data;
-          this.genericPropsFilled.relatedPublicationsText = updateObj.data;
-        }
-      },
+    genericPropsFilled: {
+      id: '2',
+      labelTextarea: 'Related Publications',
+      subtitlePreview: 'Preview',
+      showPlaceholder: false,
+      relatedPublicationsText:
+        '* wsl:21835 wsl%3A22390 \n * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 ',
+      // relatedPublicationsText: '* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A22390\r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 \r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A30382',
     },
-    data: () => ({
-      genericProps: {
-        relatedPublicationsText: '', // * wsl:21835 wsl%3A22390 \n * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 ',
-        id: '1',
-      },
-      genericPropsFilled: {
-        id: '2',
-        labelTextarea: 'Related Publications',
-        subtitlePreview: 'Preview',
-        showPlaceholder: false,
-        relatedPublicationsText: '* wsl:21835 wsl%3A22390 \n * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 ',
-        // relatedPublicationsText: '* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A22390\r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 \r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A30382',
-      },
-    }),
-  });
+  }),
+});
 
 export const EditCustomFieldViews = () => ({
   components: { EditCustomFields },
@@ -251,7 +247,7 @@ export const MetadataCreationRelatedInfoStep = () => ({
   components: { MetadataCreationRelatedInfo },
   template: `
     <v-col>
-    
+
       <v-row>
         MetadataCreationRelatedInfo with Placeholder
       </v-row>
@@ -269,5 +265,3 @@ export const MetadataCreationRelatedInfoStep = () => ({
     storyTags5,
   }),
 });
-
-
