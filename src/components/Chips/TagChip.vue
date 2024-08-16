@@ -12,7 +12,11 @@
     @click.stop="clicked"
     :close="closeable"
     @click:close="$emit('clickedClose', name)"
+    prepend-icon="date_range"
   >
+    <v-icon v-if="isAccordion" left size="14px">{{
+      !isOpen ? 'keyboard_arrow_down' : 'keyboard_arrow_up'
+    }}</v-icon>
     {{ name }}
 
     <!-- <span v-if="closeable"
@@ -51,6 +55,14 @@ export default {
     isSmall: {
       type: Boolean,
       default: true,
+    },
+    isAccordion: {
+      type: Boolean,
+      default: false,
+    },
+    isOpen: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {},

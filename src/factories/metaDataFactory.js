@@ -107,6 +107,13 @@ export function getMetadataVisibilityState(metadata) {
   return visibilityState;
 }
 
+// TODO: check with Dominik
+export function getPublicationStatus(metadata) {
+  const publicationStatus = metadata.publication_state;
+
+  return publicationStatus;
+}
+
 export function createLicense(dataset) {
   if (!dataset) {
     return null;
@@ -123,7 +130,6 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
   if (!dataset) {
     return null;
   }
-
   let { maintainer } = dataset;
 
   if (typeof dataset.maintainer === 'string') {
@@ -151,6 +157,7 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
   }
 
   const visibility = getMetadataVisibilityState(dataset);
+  const publicationStatus = getPublicationStatus(dataset);
   const created = formatDate(dataset.metadata_created);
   const modified = formatDate(dataset.metadata_modified);
 
@@ -168,6 +175,7 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
     organization: dataset.organization?.name || '',
     organizationTooltip: dataset.organization?.title || '',
     metadataState: visibility,
+    publicationStatus,
     spatialInfo: dataset.spatial_info,
     created,
     modified,
@@ -950,7 +958,7 @@ export const possibleVisibilityStates = [
  * @param mode
  * @returns {{}}
  */
-export function enhanceMetadatas(datasets, cardBGImages, categoryCards, mode) {
+export function enhanceMetadatas(datasets, cardBGImages, categoryCards) {
   if (!(datasets instanceof Array)) {
     throw new Error(
       `enhanceMetadatas() expects an array of datasets got ${typeof datasets}`,

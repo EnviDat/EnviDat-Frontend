@@ -56,13 +56,6 @@
         </v-col>
       </v-row>
 
-      <v-row>
-        <v-col>
-          list of PIDs and Doi The user should be able to remove items from the
-          list (Maybe also reorder the items)
-        </v-col>
-      </v-row>
-
       <v-row no-gutters class="pt-4">
         <v-col>
           <div class="text-subtitle-1" v-html="labels.preview"></div>
