@@ -95,8 +95,8 @@
         style="position: absolute; bottom: 0; z-index: 1001; width: 100%; "
         :text="cookieInfoText"
         icon="cookie"
-        confirmText="Accept tracking"
-        deniedText="Asking not to track"
+        confirmText="Accept all tracking"
+        deniedText="Accept only essential cookies"
         bannerColor="highlight"
         :confirmClick="catchCookieInfoOk"
         :deniedClick="deniedTracking"
@@ -815,7 +815,7 @@ export default {
     dialogCancelCallback: () => {},
     showCookieInfo: true,
     cookieInfoText:
-      "On envidat.ch, cookies are used to enhance your experience and provide features when you're signed in. These cookies are 'technical only' and are NOT used for tracking or monitoring you. When tracking is enabled, we also use cookies to anonymously track page views and downloads.",
+      "On envidat.ch, cookies are used to enhance your experience and provide features when you're signed in. These cookies are 'technical only' and we ANONYMOUSLY track usage (e.g. page views and downloads).",
     redirectToDashboard: false,
     appVersion: import.meta.env.VITE_VERSION,
     showMenu: true,

@@ -7,10 +7,11 @@
              ref="header"
              style="z-index: 1; left: 0"
              :style="headerStyle" >
-
         <!-- prettier-ignore -->
+
         <MetadataHeader v-bind="header"
                           :metadataId="metadataId"
+                          :pageViews="events"
                           :showPlaceholder="showPlaceholder"
                           @clickedTag="catchTagClicked"
                           @clickedBack="catchBackClicked"
@@ -143,6 +144,8 @@ import {
   enhanceResourcesWithMetadataExtras,
 } from '@/factories/strategyFactory';
 
+import { getEventsForPageAndName } from '@/modules/matomo/store/matomoStore';
+
 import TwoColumnLayout from '@/components/Layouts/TwoColumnLayout.vue';
 
 import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo.vue';
@@ -200,8 +203,10 @@ export default {
   /**
    * @description reset the scrolling to the top.
    */
-  mounted() {
+  async mounted() {
     this.loadMetaDataContent();
+
+    await this.setPageViews(this.$route.fullPath, 'Visit');
 
     window.scrollTo(0, 0);
 
@@ -237,6 +242,9 @@ export default {
       asciiDead: `${METADATA_NAMESPACE}/asciiDead`,
       authorPassedInfo: `${METADATA_NAMESPACE}/authorPassedInfo`,
     }),
+    pageViews() {
+      return this.events;
+    },
     metadataContent() {
       if (this.mode) {
         // TODO: check with Dominik
@@ -366,6 +374,9 @@ export default {
     },
   },
   methods: {
+    async setPageViews(pageName, eventName) {
+      this.events = await getEventsForPageAndName(pageName, eventName);
+    },
     setGeoServiceLayers(location, layerConfig) {
       try {
         location = location ? rewind(location.geoJSON) : null;
@@ -925,6 +936,7 @@ export default {
     MetadataGeo,
   },
   data: () => ({
+    events: null,
     modeStore: null,
     modeDataset: null,
     PageBGImage: 'app_b_browsepage',

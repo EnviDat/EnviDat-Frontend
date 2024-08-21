@@ -283,7 +283,6 @@
                           >more_time</v-icon
                         >
                       </v-col>
-
                       <v-col style="font-size: 0.9rem;">
                         {{ created }}
                       </v-col>
@@ -292,7 +291,6 @@
                   <span>{{ createTimeToolTipText }}</span>
                 </v-tooltip>
               </v-col>
-
               <v-col
                 v-if="hasContent && spatialInfo"
                 cols="12"
@@ -518,6 +516,11 @@
           <MetadataStateChip :state="metadataState" />
         </v-col>
 
+        <v-col v-if="pageViews && !showEditButton" class="flex-grow-0 px-1">
+          <v-chip small :color="'secondary'"
+            >Page views: {{ pageViews[0].nb_events }}</v-chip
+          >
+        </v-col>
         <v-col v-if="publicationYear" class="flex-grow-0 px-1">
           <v-chip small>{{ publicationYear }}</v-chip>
         </v-col>
@@ -575,6 +578,7 @@ export default {
     authors: Array,
     maxTags: Number,
     showPlaceholder: Boolean,
+    pageViews: Array,
     expanded: {
       type: Boolean,
       default: true,
@@ -790,11 +794,12 @@ export default {
   max-width: unset !important;
   opacity: 0.85;
 }
-
-.orgaChipFullWidth {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  z-index: 2;
+@media screen and (min-width: 964px) {
+  .orgaChipFullWidth {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: 2;
+  }
 }
 </style>
