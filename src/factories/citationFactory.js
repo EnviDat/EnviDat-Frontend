@@ -72,21 +72,21 @@ export function extractPIDsFromUrls(urls) {
   return pidMap;
 }
 
-export function extractedNoPidDoiText(text) {
-  let result = [];
-  if (!text) {
-    return result;
-  }
+// export function extractedNoPidDoiText(text) {
+//   let result = [];
+//   if (!text) {
+//     return result;
+//   }
 
-  const regExStr = '[a-zA-Z]+(:|%3A)\\d+';
-  const doiRegExStr =
-    '(?:https://doi\\.org/)?\\b(10\\.\\d{4,9}/[-._;()/:A-Z0-9]+)\\b';
+//   const regExStr = '[a-zA-Z]+(:|%3A)\\d+';
+//   const doiRegExStr =
+//     '(?:https://doi\\.org/)?\\b(10\\.\\d{4,9}/[-._;()/:A-Z0-9]+)\\b';
 
-  const combinedRegex = new RegExp(`(${regExStr})|(${doiRegExStr})`, 'gi');
+//   const combinedRegex = new RegExp(`(${regExStr})|(${doiRegExStr})`, 'gi');
 
-  result = text.split('\n').filter(line => !combinedRegex.test(line));
-  return result;
-}
+//   result = text.split('\n').filter(line => !combinedRegex.test(line));
+//   return result;
+// }
 
 export function extractPIDsFromText(text) {
   const pidMap = new Map();
@@ -125,6 +125,35 @@ export function extractDOIsFromText(text) {
   });
 
   return doiMap;
+}
+
+export function extractedNoPidDoiText(text) {
+  let result = [];
+  if (!text) {
+    return result;
+  }
+
+  const pidMap = extractPIDsFromText(text);
+
+  const doiMap = extractDOIsFromText(text);
+
+  const urlRegEx = /https:\/\/www\.dora\.lib4ri\.ch\/wsl\/islandora\/object\/[^\s]+/g;
+  const urlMatches = text.match(urlRegEx) || [];
+
+  const allLines = text.split('\n').map(line => line.trim());
+
+  result = allLines.filter(line => {
+    const containsPID = Array.from(pidMap.keys()).some(pid =>
+      line.includes(pid),
+    );
+    const containsDOI = Array.from(doiMap.keys()).some(doi =>
+      line.includes(doi),
+    );
+    const isURL = urlMatches.includes(line);
+    return !containsPID && !containsDOI && !isURL;
+  });
+
+  return result;
 }
 
 /**
