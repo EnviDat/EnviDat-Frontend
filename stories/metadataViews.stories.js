@@ -46,6 +46,8 @@ import citationTesting from "./js/citationTesting";
 import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue';
 
 import envidat_packages from './testdata/packagelist.json';
+import { getFrontendJSONForStep } from '@/factories/mappingFactory';
+import { EDITMETADATA_MAIN_HEADER, EDITMETADATA_PUBLICATION_INFO } from '@/factories/eventBus';
 
 const smallHeader = createHeader(metadata[0], true);
 const largeHeader = createHeader(metadata[2], false);
@@ -229,11 +231,25 @@ export const MetadataHeaderViews = () => ({
         />
       </v-col>
     </v-row>
+
+    <v-row class="py-3">
+      <v-col >
+        <metadata-header
+          v-bind="mergeWithPublicationInfo"
+        />
+      </v-col>
+    </v-row>    
   </v-col>
   `,
+  computed: {
+    mergeWithPublicationInfo() {
+      return { ...this.largeHeader, ...this.publicationInfo };
+    },
+  },
   data: () => ({
     smallHeader,
     largeHeader,
+    publicationInfo: getFrontendJSONForStep(EDITMETADATA_PUBLICATION_INFO, metadata[2]),
   }),
 });
 

@@ -69,7 +69,7 @@
 
         <v-col class="shrink px-1">
           <BaseIconButton
-            material-icon-name="clear"
+            material-icon-name="remove_circle_outline"
             icon-color="red"
             :disabled="index >= customFieldsProp.length - 1"
             @clicked="deleteEntry(index)"
