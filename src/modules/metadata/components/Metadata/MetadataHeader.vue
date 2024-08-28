@@ -516,11 +516,11 @@
           <MetadataStateChip :state="metadataState" />
         </v-col>
 
-        <v-col v-if="pageViews && !showEditButton" class="flex-grow-0 px-1">
+        <!-- <v-col v-if="pageViews && !showEditButton" class="flex-grow-0 px-1">
           <v-chip small
             >Page views: {{ pageViews[0].nb_events }}</v-chip
           >
-        </v-col>
+        </v-col> -->
         <v-col v-if="publicationYear" class="flex-grow-0 px-1">
           <v-chip small>{{ publicationYear }}</v-chip>
         </v-col>

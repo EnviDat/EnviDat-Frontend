@@ -117,14 +117,14 @@
               dark
               class="mb-1"
             />
-            <base-icon-label-view
+            <!-- <base-icon-label-view
               v-if="isDownloaded"
               :text="'Number of Downloads: ' + String(numberOfDownload)"
               material-icon-name="download"
               icon-tooltip="Number of downloads"
               dark
               class="mb-1"
-            />
+            /> -->
           </v-col>
         </v-row>
       </v-container>
