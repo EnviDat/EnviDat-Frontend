@@ -14,7 +14,7 @@
           @click:close="$emit('closeClicked', authorName)"
           >
     <v-avatar left>
-      <v-icon size="24px" >account_circle</v-icon>
+      <v-icon :class="colorIcon" size="24px" >account_circle</v-icon>
     </v-avatar>
 
     {{ authorName }}
@@ -51,6 +51,10 @@ export default {
     name: String,
     tooltipText: String,
     highlighted: Boolean,
+    colorIcon: {
+      type: String,
+      default: 'dark',
+    },
     color: {
       type: String,
       default: '#f8f8f8',
@@ -97,9 +101,14 @@ export default {
     margin-left: -12px !important;
   }
 
-  .authorTag > .v-chip__content > .v-avatar > .v-icon {
+  .authorTag > .v-chip__content > .v-avatar > .v-icon.dark {
     color: rgba(0, 0, 0, 0.87) !important;
   }
+  
+  .authorTag > .v-chip__content > .v-avatar > .v-icon.white {
+    background-color: #00897b !important;
+  }
+  
 
   .authorTagDraggable  {
     cursor: move !important;

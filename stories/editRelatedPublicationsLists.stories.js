@@ -14,7 +14,6 @@ import { mobileViewportParams } from './js/envidatViewports';
 
 import metadata from './js/metadata';
 
-
 export default {
   title: '9 Editing Metadata / Related Publication List',
   component: EditRelatedPublicationsList,
