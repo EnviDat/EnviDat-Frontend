@@ -9,7 +9,6 @@
         <v-col cols="6" class="text-h5">
           {{ EDIT_METADATA_RELATEDPUBLICATIONS_TITLE }}
         </v-col>
-
         <v-col v-if="message">
           <BaseStatusLabelView
             statusIcon="check"
@@ -44,7 +43,6 @@
           />
         </v-col>
       </v-row>
-
       <v-row>
         <v-col>
           <EditAddPublication

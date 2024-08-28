@@ -26,7 +26,7 @@
       <v-col cols="12" md="auto">
         <v-text-field
           v-model="doiField"
-          :label="labels.dataObjectIdentifier"
+          :label="labels.doi"
           :dense="dense"
           :disabled="!!pidField"
           outlined
@@ -70,7 +70,6 @@
         <div class="text-subtitle-1" v-html="labels.subtitlePreview"></div>
       </v-col>
     </v-row>
-
     <v-row no-gutters class="pt-2">
       <v-col>
         <v-card class="pa-4">
@@ -93,10 +92,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import {
-  EDIT_METADATA_ADD_PUBLICATION_TITLE,
-  EDIT_METADATA_DOI_LABEL,
-} from '@/factories/metadataConsts';
+import { EDIT_METADATA_ADD_PUBLICATION_TITLE } from '@/factories/metadataConsts';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseCitationView from '@/components/BaseElements/BaseCitationView.vue';
 
@@ -162,7 +158,9 @@ export default {
       },
     },
     citationViewProps() {
+      // console.log(this.previewCitation);
       return {
+        pid: this.previewCitation?.pid || this.pid,
         doi: this.previewCitation?.doi || this.doi,
         doiUrl: this.previewCitation?.doiUrl || this.doiUrl,
         citation: this.previewCitation?.citation || this.citation,
@@ -184,7 +182,6 @@ export default {
     async resolvePIDs(pid) {
       this.previewCitation = null;
       this.isResolving = true;
-
       const pidMap = new Map();
       pidMap.set(pid, pid);
 
@@ -222,6 +219,8 @@ export default {
         pid: this.pidField,
         doi: this.doiField,
       });
+      this.doiField = null;
+      this.pidField = null;
     },
   },
   data: () => ({
@@ -236,7 +235,7 @@ export default {
         'Add DORA permanent Id (PID) or a Data Object Identifier (DOI).',
       subtitlePreview: 'Preview Publication resolved via DORA',
       pId: 'Permanent Id',
-      doi: EDIT_METADATA_DOI_LABEL,
+      doi: 'Data Object Identifier',
     },
     validationErrors: {
       relatedPublicationsText: null,

@@ -233,12 +233,10 @@ export function resolvedCitationText(resolvedPubs, pidMap) {
 
 export function getPidCitationObjectMap(citationObjs) {
   const citationMap = new Map();
-  const pids = Object.entries(citationObjs);
 
-  pids.forEach(entry => {
-    const [pid, citationInfo] = entry;
-
-    const citationObj = getGenericCitationObject(citationInfo);
+  citationObjs.forEach(obj => {
+    const pid = obj.pid;
+    const citationObj = getGenericCitationObject(obj);
     citationMap.set(pid, citationObj);
   });
 
@@ -347,10 +345,8 @@ export async function resolvePIDsViaDora(pidMap, resolveBaseUrl = undefined) {
   if (!pidMap) {
     return null;
   }
-
   // get url which works with multiple PIDs
   const doraUrl = getDoraPidsUrl(pidMap, resolveBaseUrl);
-
   const response = await axios.get(doraUrl);
   return response.data;
 }
