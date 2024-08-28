@@ -517,7 +517,7 @@
         </v-col>
 
         <v-col v-if="pageViews && !showEditButton" class="flex-grow-0 px-1">
-          <v-chip small :color="'secondary'"
+          <v-chip small
             >Page views: {{ pageViews[0].nb_events }}</v-chip
           >
         </v-col>
