@@ -48,18 +48,23 @@ export const EditFundingData = {
   }),
   args: {
     id: 1,
-      funders: [
-        {
-          institution: 'WSL',
-          grantNumber: 'XYZ',
-          institutionUrl: 'https://www.wsl.ch',
-        },
-        {
-          institution: 'NSF',
-          grantNumber: '123',
-          institutionUrl: 'https://www.superduper.ch',
-        },
-      ],
+    funders: [
+      {
+        institution: 'WSL',
+        grantNumber: 'XYZ',
+        institutionUrl: 'https://www.wsl.ch',
+      },
+      {
+        institution: 'NSF',
+        grantNumber: '123',
+        institutionUrl: 'https://www.superduper.ch',
+      },
+      {
+        institution: 'NSF',
+        grantNumber: '123',
+        institutionUrl: 'https://www.superduper.ch/index.html',
+      },
+    ],
   },
   parameters: {},
 }

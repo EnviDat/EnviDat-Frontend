@@ -3,6 +3,7 @@
           :class="{
             'text-white': highlighted,
             smallChip: $vuetify.display.smAndDown,
+            authorTagDraggable: draggable,
            }"
           :style="{ height: $vuetify.display.xs ? '15px' : '' }"
           :color="highlighted ? 'primary' : color"
@@ -108,6 +109,10 @@ export default {
 
   .authorTag > .v-chip__content > .v-avatar > .v-icon {
     color: rgba(0, 0, 0, 0.87) !important;
+  }
+
+  .authorTagDraggable  {
+    cursor: move !important;
   }
 
 </style>

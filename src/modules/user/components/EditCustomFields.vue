@@ -64,7 +64,7 @@
 
         <v-col class="flex-grow-0 px-1">
           <BaseIconButton
-            :icon="mdiClose"
+            :icon="mdiMinusCircleOutline"
             icon-color="red"
             :disabled="index >= customFieldsProp.length - 1"
             @clicked="deleteEntry(index)"
@@ -114,12 +114,12 @@ import {
 } from '@/factories/userEditingValidations';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
-import { mdiClose } from '@mdi/js';
+import { mdiMinusCircleOutline } from '@mdi/js';
 
 export default {
   name: 'EditCustomFields',
   data: () => ({
-    mdiClose,
+    mdiMinusCircleOutline ,
     maxCustomFieldsReached: false,
     labels: {
       cardTitle: 'Custom Fields',

@@ -304,19 +304,11 @@ import {
   SET_CURRENT_PAGE,
 } from '@/store/mainMutationsConsts';
 
-import {
-  tagsIncludedInSelectedTags,
-  getPopularTags,
-} from '@/factories/metadataFilterMethods';
-
 import { getNameInitials } from '@/factories/authorFactory';
 import { errorMessage } from '@/factories/notificationFactory';
-import {
-  enhanceMetadatasTitleImage,
-  getMetadataVisibilityState,
-  getTagColor,
-  isTagSelected,
-} from '@/factories/metaDataFactory';
+import { getTagColor, getPopularTags, tagsIncludedInSelectedTags } from '@/factories/keywordsFactory';
+import { enhanceMetadatasTitleImage, getMetadataVisibilityState, isTagSelected } from '@/factories/metaDataFactory';
+
 import {
   getUserOrganizationRoleMap,
   hasOrganizationRoles,
@@ -362,9 +354,11 @@ import { getPreviewDatasetFromLocalStorage } from '@/factories/userCreationFacto
 
 import fileIcon from '@/assets/icons/file.png';
 import { METADATA_TITLE_PROPERTY } from '@/factories/metadataConsts';
+
 import { mdiRefresh } from '@mdi/js';
 import { loadRouteTags } from '@/factories/stringFactory';
 import { getIcon } from '@/factories/imageFactory';
+import categoryCards from '@/store/categoryCards';
 
 export default {
   name: 'DashboardPage',
@@ -671,7 +665,7 @@ export default {
 
       for (let j = 0; j < tags.length; j++) {
         const tag = tags[j];
-        tag.color = getTagColor(tag.name);
+        tag.color = getTagColor(categoryCards, tag.name);
       }
 
       tags = tags.slice(0, maxTagAmount);

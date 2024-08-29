@@ -1,5 +1,8 @@
 <template>
-  <div class="baseIconSwitch">
+  <div class="baseIconSwitch" :style="`z-index:  ${zIndex};
+                                      position: relative;
+                                      background-color: white;`">
+
     <v-tooltip :disabled="!tooltipText" bottom>
       <template v-slot:activator="{ props }">
         <div class="d-flex" v-bind="props">
@@ -25,6 +28,7 @@
           </label>
         </div>
       </template>
+
       <span v-if="tooltipText">{{ tooltipText }}</span>
     </v-tooltip>
   </div>
@@ -57,6 +61,7 @@ export default {
     active: { type: Boolean, default: false },
     disabled: { type: Boolean, default: false },
     tooltipText: { type: String, default: undefined },
+    zIndex: { type: Number, default: undefined },
   },
   watch: {
     active: {

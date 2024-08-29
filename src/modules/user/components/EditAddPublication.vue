@@ -144,9 +144,8 @@ import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.v
 import {
   resolveDoiCitationObjectsViaDora,
   resolvePidCitationObjectsViaDora,
-} from '@/factories/metaDataFactory';
+} from '@/factories/citationFactory';
 import { mdiPlus, mdiFingerprint, mdiIdentifier } from '@mdi/js';
-
 
 export default {
   name: 'EditAddPublication',

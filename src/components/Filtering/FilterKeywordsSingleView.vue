@@ -13,55 +13,29 @@
             </v-col>
 
             <v-col v-if="showPlaceholder" class="grow pl-0">
-              <v-row no-gutters >
-                <v-col v-for="n in 6"
-                       :key="n"
-                       class="flex-grow-0"
-                >
-                  <TagChipPlaceholder class="envidatChip" />
-                </v-col>
-              </v-row>
+              <TagChipPlaceholder
+                v-for="n in 6"
+                :key="n"
+                class="envidatChip"
+              />
             </v-col>
 
             <v-col v-if="!showPlaceholder" class="grow pl-0">
               <TagChip
-                v-for="tag in unselectedTags"
+                v-for="tag in tagList"
                 :key="tag.name"
                 :name="tag.count ? `${tag.name} (${tag.count})` : tag.name"
                 :selectable="tag.enabled"
-                :highlighted="false"
-                :closeable="false"
+                :highlighted="tag.active"
+                :closeable="tag.active"
                 :color="tag.color"
-                @clicked="catchTagClicked(tag.name)"
-              />
-            </v-col>
-          </v-row>
-        </v-col>
-
-        <v-col
-          v-if="filterExpanded || $vuetify.display.smAndUp"
-          class="pt-1"
-          cols="12"
-        >
-          <v-row>
-            <v-col class="metadataInfoIcon flex-grow-0">
-              <BaseIcon :icon="mdiTagMultiple" color='black' />
-            </v-col>
-
-            <v-col v-if="selectedTags.length > 0" class="grow pl-0">
-              <tag-chip
-                v-for="tag in selectedTags"
-                :key="tag.name"
-                :name="tag.name"
-                :selectable="true"
-                :highlighted="true"
-                :closeable="true"
                 @clickedClose="catchTagCloseClicked(tag.name)"
-                @clicked="catchTagCloseClicked(tag.name)"
+                @clicked="tag.active ? catchTagCloseClicked(tag.name) : catchTagClicked(tag.name)"
               />
             </v-col>
           </v-row>
         </v-col>
+
       </v-row>
     </v-container>
 
@@ -96,15 +70,16 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import { mdiChevronDown, mdiPaletteSwatch, mdiTagMultiple } from '@mdi/js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import TagChip from '@/components/Chips/TagChip.vue';
 import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder.vue';
+
+import { createTag } from '@/factories/keywordsFactory';
+import { mdiChevronDown, mdiPaletteSwatch } from '@mdi/js';
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
-import { createTag, isTagSelected } from '@/factories/keywordsFactory';
 
 export default {
-  name: 'FilterKeywordsView',
+  name: 'FilterKeywordsSingleView',
   components: {
     BaseIcon,
     BaseIconButton,
@@ -123,7 +98,6 @@ export default {
   data: () => ({
     mdiChevronDown,
     mdiPaletteSwatch,
-    mdiTagMultiple,
     maxSelectedTagsTextLength: 25,
     maxUnselectedTagsTextLength: 250,
     xsTextLength: 25,
@@ -132,41 +106,38 @@ export default {
     filterExpanded: false,
   }),
   computed: {
-    unselectedTags() {
-      if (!this.allTagWithMax){
-        return [];
-      }
-
-      const topList = this.allTagWithMax;
-      return topList.filter((element) => element.enabled && !isTagSelected(element.name, this.selectedTagNames));
-/*
-      const unselectedTags = [];
-
-      this.allTags.forEach(element => {
-        if (element.enabled && !isTagSelected(element.name, this.selectedTagNames)) {
-          unselectedTags.push(element);
-        }
-      });
-
-      return unselectedTags;
-*/
+    tagList() {
+      const mergedTags = [...this.selectedTags, ...this.unselectedTags];
+      return mergedTags.filter((item, pos, self) => self.findIndex(v => v.name === item.name) === pos);
     },
     selectedTags() {
       // always get the selected as a subset of the allTags because they are the full
       // tag JSON object
       const selecteds = [];
 
-      if (this.selectedTagNames !== undefined
-          && this.selectedTagNames.length > 0) {
+      if (this.selectedTagNames?.length > 0) {
 
         for (let i = 0; i < this.selectedTagNames.length; i++) {
           const element = this.selectedTagNames[i];
 
-          selecteds.push(createTag(element, { enabled: true }));
+          selecteds.push(createTag(element, { enabled: true, active: true }));
         }
       }
 
-      return selecteds.toSpliced(0, this.maxTagNumber(this.selectedTagNames));
+      // return selecteds.toSpliced(0, this.maxTagNumber(this.selectedTagNames));
+      return selecteds;
+    },
+    unselectedTags() {
+      if (!this.allTagWithMax){
+        return [];
+      }
+
+      if(!this.selectedTagNames || this.selectedTagNames.length <= 0) {
+        return this.allTagWithMax;
+      }
+
+      const topList = this.allTagWithMax;
+      return topList.filter((element) => element.enabled && this.selectedTagNames.indexOf(element.name) >= 0);
     },
     allTagWithMax() {
       return this.allTags?.toSpliced(0, this.maxTagNumber(this.minTagCountToBeVisible));
@@ -255,6 +226,7 @@ export default {
     catchTagCloseClicked(tagId) {
       this.$emit('clickedTagClose', tagId);
     },
+
   },
 };
 </script>

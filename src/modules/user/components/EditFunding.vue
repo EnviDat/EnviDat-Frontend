@@ -1,15 +1,11 @@
 <template>
-  <v-card
-    id="EditFunding"
-    class="pa-0"
-    max-width="100%"
-    :loading="loadingColor"
-  >
+  <v-card id="EditFunding" class="pa-0" max-width="100%" :loading="loading">
+
     <v-container fluid class="pa-4">
       <template slot="progress">
         <v-progress-linear color="primary" indeterminate />
       </template>
-      
+
       <v-row>
         <v-col cols="6" class="text-h5">
           {{ labels.cardTitle }}
@@ -84,7 +80,7 @@
 
           <v-col class="flex-grow-0 px-1">
             <BaseIconButton
-              :icon="mdiClose"
+              :icon="mdiMinusCircleOutline"
               icon-color="red"
               :disabled="index >= previewFundersAndEmpty.length - 1"
               @clicked="deleteFundersEntry(index)"
@@ -121,9 +117,7 @@ import {
   EDITMETADATA_FUNDING_INFO,
   eventBus,
 } from '@/factories/eventBus';
-import {
-  isObjectEmpty,
-} from '@/factories/userEditingFactory';
+import { isObjectEmpty } from '@/factories/userEditingFactory';
 import {
   getValidationMetadataEditingObject,
   isArrayContentValid,
@@ -131,7 +125,7 @@ import {
 } from '@/factories/userEditingValidations';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
-import { mdiClose } from '@mdi/js';
+import { mdiMinusCircleOutline } from '@mdi/js';
 
 const INSTITUTION = 'institution';
 const GRANTNUMBER = 'grantNumber';
@@ -184,9 +178,13 @@ export default {
   computed: {
     previewFundersAndEmpty() {
       // Check if the last entry has an error and prevent the new entry to be shown
-      const lastEntry = this.validationErrors.funders[this.validationErrors.funders.length - 1];
-      const entryIsValid = !Object.values(lastEntry ?? {}).find((i) => i !== '' && i !== null && i !== undefined);
-      if(entryIsValid) {
+      const lastEntry = this.validationErrors.funders[
+        this.validationErrors.funders.length - 1
+      ];
+      const entryIsValid = !Object.values(lastEntry ?? {}).find(
+        i => i !== '' && i !== null && i !== undefined,
+      );
+      if (entryIsValid) {
         return [...this.previewFunders, this.emptyEntry];
       }
       return [...this.previewFunders];
@@ -212,12 +210,13 @@ export default {
     /** Validates all entries or a specific property */
     validate(index = undefined, property = undefined) {
       // Keep the validation object in sync
-      const sizeDiff = this.previewFunders.length - this.validationErrors.funders.length;
-      for(let i = 0; i < sizeDiff; i += 1) {
+      const sizeDiff =
+        this.previewFunders.length - this.validationErrors.funders.length;
+      for (let i = 0; i < sizeDiff; i += 1) {
         this.validationErrors.funders.push({ ...this.emptyEntry });
       }
       // Validate entire array (cases like min/max entries)
-      if(index === undefined && !property) {
+      if (index === undefined && !property) {
         return isFieldValid(
           'funders',
           this.previewFunders,
@@ -225,8 +224,8 @@ export default {
           this.validationErrors,
           'fundersArray',
         );
-      } 
-      if(index >= 0 && property) {
+      }
+      if (index >= 0 && property) {
         // Validate a single entry and prop
         const errorArray = this.validationErrors.funders;
         return isArrayContentValid(
@@ -238,7 +237,7 @@ export default {
           errorArray,
         );
       }
-      throw new Error('Unable to validate EditFunding')
+      throw new Error('Unable to validate EditFunding');
     },
     deleteFundersEntry(index) {
       // If two entries with the same data exist, the UI does not update accordingly
@@ -259,7 +258,7 @@ export default {
       if (index === this.previewFunders.length) {
         // The last UI entry is a special case,
         // it does not exist in the data until the user enters something
-        this.previewFunders.push({...this.emptyEntry, [property]: value});
+        this.previewFunders.push({ ...this.emptyEntry, [property]: value });
       }
       const entry = this.previewFunders[index];
       entry[property] = value;
@@ -282,7 +281,7 @@ export default {
     },
   },
   data: () => ({
-    mdiClose,
+    mdiMinusCircleOutline,
     INSTITUTION,
     GRANTNUMBER,
     INSTITUTION_URL,
@@ -294,7 +293,8 @@ export default {
     previewFunders: [],
     labels: {
       cardTitle: 'Funding Information',
-      fundingInformation: 'Provide information about who funded the research efforts.',
+      fundingInformation:
+        'Provide information about who funded the research efforts.',
       institution: 'Institution',
       grantNumber: 'Grant Number',
       institutionUrl: 'Link',

@@ -82,10 +82,6 @@
 
 import { mapGetters, mapState } from 'vuex';
 
-import {
-  createTag,
-  tagsIncludedInSelectedTags,
-} from '@/factories/metadataFilterMethods';
 import ProjectDatasets from '@/modules/projects/components/ProjectDetailViews/ProjectDatasets.vue';
 import {
   METADATADETAIL_PAGENAME,
@@ -105,6 +101,7 @@ import {
 
 import { convertArrayToUrlString, convertUrlStringToArray } from '@/factories/stringFactory';
 import { getImage } from '@/factories/imageFactory';
+import { createTag, tagsIncludedInSelectedTags } from '@/factories/keywordsFactory';
 import { isTagSelected } from '@/factories/metaDataFactory';
 import {
   GET_PROJECTS,

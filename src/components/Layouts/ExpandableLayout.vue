@@ -98,8 +98,13 @@ export default {
       type: Boolean,
       default: false,
     },
+    startExpanded: {
+      type: Boolean,
+      default: false,
+    },
   },
-  computed: {
+  mounted() {
+    this.expanded = this.startExpanded;
   },
   methods: {
     readMore() {

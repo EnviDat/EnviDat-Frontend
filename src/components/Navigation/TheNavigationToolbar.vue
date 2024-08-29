@@ -10,9 +10,8 @@
               align="center"
               justify="space-between" >
 
-        <v-col cols="4" sm="2">
-          <v-row no-gutters
-                  align="center">
+        <v-col cols="auto" sm="2">
+          <v-row no-gutters>
 
             <v-col class="flex-grow-0" >
               <v-btn icon
@@ -26,7 +25,10 @@
               </v-btn>
             </v-col>
             <v-col class="flex-grow-0 py-0" >
-              <div class="text-md-h5 envidatText clickable mt-1 mt-sm-0" @click.stop="catchHomeClicked">{{logoText}}</div>
+              <div class="text-md-h5 envidatText clickable mt-1 mt-sm-0"
+                   @click.stop="catchHomeClicked">
+                {{ showAdditionalText ? logoText : '' }}
+              </div>
             </v-col>
           </v-row>
 
@@ -45,7 +47,7 @@
           <v-row align="center"
                   justify="end" >
 
-            <v-col style="text-align: right; ">
+            <v-col :style="`text-align: right; ${$vuetify.display.xs ? 'line-height: 1rem;' : ''}`">
               {{ signedInUser.fullName }}
             </v-col>
 
@@ -72,7 +74,7 @@
 
         <v-col v-else
                class="flex-grow-0"
-               cols="4" sm="3" md="2" xl="1">
+               cols="auto" sm="3" md="2" xl="1">
 
           <v-row align="center"
                   justify="end"
@@ -88,7 +90,7 @@
                   <div v-bind="props"
                         style="text-align: right;"
                         class="text-body-2">
-                    {{ signInText }}
+                    {{ showAdditionalText ? signInText : '' }}
                   </div>
                 </template>
 
@@ -154,6 +156,10 @@ export default {
     },
   },
   computed: {
+    showAdditionalText()  {
+      return this.$vuetify.display.xs && !this.hasModeData
+          || this.$vuetify.display.smAndUp;
+    },
     compact() {
       return this.$vuetify.display.xs;
     },

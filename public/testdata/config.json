@@ -42,12 +42,13 @@
   ],
   "metadataConfig": {
     "loadLocalFile": false,
-    "localFileUrl": "./testdata/packagelist.json",
+    "localFileUrl": "https://frontend-static.s3-zh.os.switch.ch/metadata/packagelist/packagelist.json",
     "publicationsConfig": {
       "resolveIds": true,
       "idPrefix": "*",
       "idDelimiter": ":",
-      "resolveBaseUrl": "https://www.envidat.ch/dora/"
+      "resolveBaseUrl": "https://www.envidat.ch/dora/",
+      "useListResolving": false
     },
     "authorDetailsConfig": {
       "showAuthorInfos": true,
@@ -56,13 +57,12 @@
       "showDataCreditScore": false
     },
     "resourcesConfig": {
-      "downloadActive": true
-    },
-    "ednaExternalDatasets": "https://os.zhdk.cloud.switch.ch/envicloud/edna/fw_ch_modipl_2020/metadata/metadata_fw_ch_modipl_2020.csvhttps://os.zhdk.cloud.switch.ch/envicloud/edna/fw_ch_modipl_2020/metadata/metadata_fw_ch_modipl_2020.csv"
-  },
+      "downloadActive": false
+    }
+ },
   "projectsConfig": {
     "loadLocalFile": false,
-    "localFileUrl": "./testdata/projects.json"
+    "localFileUrl": "https://frontend-static.s3-zh.os.switch.ch/metadata/projects/projects.json"
   },
   "maintenanceConfig": {
     "signinDisabled": false,

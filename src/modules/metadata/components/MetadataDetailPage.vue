@@ -86,13 +86,13 @@ import {
 import { SET_APP_BACKGROUND, SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
 import {
   CLEAN_CURRENT_METADATA,
-  CLEAR_SEARCH_METADATA,
+  CLEAR_SEARCH_METADATA, EDNA_MODE,
   LOAD_METADATA_CONTENT_BY_ID,
   METADATA_NAMESPACE,
 } from '@/store/metadataMutationsConsts';
+
 import {
   createBody,
-  createCitation,
   createFunding,
   createHeader,
   createLicense,
@@ -101,6 +101,10 @@ import {
   createRelatedDatasets,
   createResources,
 } from '@/factories/metaDataFactory';
+
+import {
+  createCitation,
+} from '@/factories/citationFactory';
 
 import { getFullAuthorsFromDataset } from '@/factories/authorFactory';
 
@@ -155,9 +159,11 @@ export default {
     });
   },
   created() {
+    this.modeStore = useModeStore();
+    this.modeStore.init(this.$store.getters.cardBGImages);
+
     eventBus.on(GCNET_PREPARE_DETAIL_CHARTS, this.prepareGCNetChartModal);
     eventBus.on(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
-
   },
   /**
    * @description load all the icons once before the first component's rendering.
@@ -236,6 +242,9 @@ export default {
     },
     publicationsConfig() {
       return this.metadataConfig?.publicationsConfig || {};
+    },
+    useListResolving() {
+      return this.publicationsConfig?.useListResolving || false;
     },
     resourcesConfig() {
       return this.metadataConfig?.resourcesConfig || {};
@@ -630,9 +639,14 @@ export default {
         showPlaceholder: this.showPlaceholder,
       };
 
-      this.MetadataPublications.props = {
-        ...this.publications,
-        metadataConfig: this.metadataConfig,
+
+      if (this.useListResolving) {
+        // new component which shows the list of citationViews, maybe it's MetadataPublicationsList?
+      } else {
+        this.MetadataPublications.props = {
+          ...this.publications,
+          metadataConfig: this.metadataConfig,
+        };
       }
 
       this.MetadataRelatedDatasets.props = {
@@ -759,6 +773,7 @@ export default {
 
       this.$router.push({
         path: BROWSE_PATH,
+        query: this.$route.query,
       });
     },
     catchEditClicked() {
@@ -778,19 +793,27 @@ export default {
      */
     async loadMetaDataContent() {
       if (this.mode) {
+        if(this.mode === EDNA_MODE) {
+          const modeMetadata = this.modeStore.getModeMetadata(this.mode);
+          modeMetadata.isShallow = !this.isRealdataset();
+        }
         const modeDatasets = this.modeStore.getDatasets(this.mode);
-        const datasets = Object.values(modeDatasets);
+        let datasets = Object.values(modeDatasets);
+        if (datasets.length <=  0) {
+          datasets = await this.modeStore.loadModeDatasets(this.mode);
+        }
         this.modeDataset = datasets.filter(entry => entry.name === this.metadataId)[0];
-        // console.log(this.modeDataset);
       }
 
       if (!this.loadingMetadatasContent
           && !this.isCurrentIdOrName(this.metadataId) ) {
         // in case of navigating into the page load the content directly via Id
         await this.$store.dispatch(`${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`, {
-          metadataId: this.metadataId,
+            metadataId: this.metadataId,
+
         });
-      } else {
+      }
+      else {
         // in case of entring the page directly via Url without having loaded the rest of the app.
         // this call is to initialize the components in the their loading state
         this.$nextTick(() => {
@@ -801,6 +824,16 @@ export default {
           });
         });
       }
+    },
+    isRealdataset() {
+      if(this.mode && this.mode === EDNA_MODE) {
+        const contents = Object.values(this.metadatasContent);
+
+        const localEntry = contents.filter(entry => entry.name === this.metadataId);
+        return localEntry.length === 1;
+
+      }
+      return false;
     },
     fetchUserOrganisationData() {
       const userId = this.user?.id;
@@ -862,13 +895,13 @@ export default {
      * in case all the metadataContents are already loaded take it from there
      * if EnviDat is called via MetadataDetailPage URL directly
      */
-    metadatasContent() {
+    async metadatasContent() {
       if (!this.loadingMetadatasContent
           && !this.loadingCurrentMetadataContent
           && !this.isCurrentIdOrName(this.metadataId)) {
 
-        this.$store.dispatch(`${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`, {
-          metadataId: this.metadataId,
+        await this.$store.dispatch(`${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`, {
+            metadataId: this.metadataId,
         });
       }
     },
@@ -897,7 +930,7 @@ export default {
     MetadataFunding: markRaw(MetadataFunding),
     MetadataAuthors: markRaw(MetadataAuthors),
     MetadataGeo: markRaw(MetadataGeo),
-    modeStore: useModeStore(),
+    modeStore: null,
     modeDataset: null,
     PageBGImage: 'app_b_browsepage',
     baseStationURL: 'https://www.envidat.ch/data-files/',

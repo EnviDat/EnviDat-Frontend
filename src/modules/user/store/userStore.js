@@ -11,8 +11,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { tagsIncludedInSelectedTags } from '@/factories/metadataFilterMethods';
-
 import {
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_DATA_RESOURCES,
@@ -20,6 +18,7 @@ import {
 
 import { getEmptyMetadataInEditingObject } from '@/factories/workflowFactory';
 import { DOI_RESERVED_PROPERTY } from '@/modules/user/store/doiMutationsConsts';
+import { tagsIncludedInSelectedTags } from '@/factories/keywordsFactory';
 
 import actions from './userActions';
 import editActions from './editActions';

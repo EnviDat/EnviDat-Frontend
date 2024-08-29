@@ -12,14 +12,17 @@
 
 
 import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader.vue';
-import { getTagColor, sortObjectArray } from '@/factories/metaDataFactory';
-import { getPopularTags } from '@/factories/metadataFilterMethods';
+import { sortObjectArray } from '@/factories/metaDataFactory';
 
 import {
   createAuthors,
   getFullAuthorsFromDataset,
   extractAuthorsMap,
 } from '@/factories/authorFactory';
+
+
+import categoryCards from '@/store/categoryCards';
+import { getPopularTags, getTagColor } from '@/factories/keywordsFactory';
 
 import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 import metadataset from './js/metadata';
@@ -29,7 +32,7 @@ const tagsFromDatasets = getPopularTags(metadataset, '', 1);
 
 for (let i = 0; i < tagsFromDatasets.length; i++) {
   const tag = tagsFromDatasets[i];
-  tag.color = getTagColor(tag.name);
+  tag.color = getTagColor(categoryCards, tag.name);
 }
 
 const metadataCards = [];

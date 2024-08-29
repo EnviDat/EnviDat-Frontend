@@ -24,6 +24,7 @@ export const Default = {
     twoColumnLayout: false,
     height: 'auto',
     dark: false,
+    deprecated: false,
     isProtected: false,
     metadataContact: '',
     downloadActive: true,
@@ -59,6 +60,14 @@ export const DarkThemeSelected = {
     description: 'Resource card in a dark theme, selected by the user.',
     dark: true,
     isSelected: true,
+  },
+};
+
+export const Deprecated = {
+  args: {
+    ...Default.args,
+    description: 'Resource card in of deprecated resource.',
+    deprecated: true,
   },
 };
 

@@ -4,20 +4,21 @@ import {
   createHeader,
   createBody,
   createFunding,
-  createCitation,
   createLicense,
   createLocation,
   createPublications,
   createDetails,
   createResource,
-  enhanceTags,
   formatDate,
   enhanceTitleImg,
-  extractPIDMapFromText,
 } from '@/factories/metaDataFactory';
-
+import {
+  createCitation,
+  extractPIDMapFromText,
+} from '@/factories/citationFactory';
 
 import packagelist from '@/../stories/testdata/packagelist.json';
+import { enhanceTags } from '@/factories/keywordsFactory';
 
 // const metadatasContent = {};
 // packagelist.result.forEach((entry) => {
@@ -325,4 +326,33 @@ describe('metaDataFactory - extractPIDMapFromText', () => {
     expect(pids).toBeDefined();
     expect(pids.size > 0).toBeTruthy();
   });
+
+  it('with text2 with dora url', () => {
+
+    const pids = extractPIDMapFromText(text2);
+    expect(pids).toBeDefined();
+    expect(pids.size > 0).toBeTruthy();
+  });
+
+  it('with text3 with dora url', () => {
+
+    const pids = extractPIDMapFromText(text3);
+    expect(pids).toBeDefined();
+    expect(pids.size > 0).toBeTruthy();
+  });
+
+  it('with text4 with dora url', () => {
+
+    const pids = extractPIDMapFromText(text4);
+    expect(pids).toBeDefined();
+    expect(pids.size > 0).toBeTruthy();
+  });
+
+  it('with text5 with dora url', () => {
+
+    const pids = extractPIDMapFromText(text5);
+    expect(pids).toBeDefined();
+    expect(pids.size > 0).toBeTruthy();
+  });
+
 });

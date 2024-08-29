@@ -1,12 +1,12 @@
 import { it, expect } from 'vitest';
 
 import {
+  getCountedKeywords,
   createTag,
-  countTags,
   getEnabledTags,
-  tagsIncludedInSelectedTags,
   getPopularTags,
-} from '@/factories/metadataFilterMethods';
+  tagsIncludedInSelectedTags,
+} from '@/factories/keywordsFactory';
 
 it('metadataFilterMethods Tag - creation - empty', () => {
   const tag = createTag();
@@ -27,18 +27,19 @@ it('metadataFilterMethods Tag - creation - defaults', () => {
 
 it('metadataFilterMethods Tag - creation - options tag overload', () => {
   const existingTag = {
- name: 'dude', enabled: false, color: '#ffffff', count: 5,
+ name: 'dude', enabled: false, color: '#ffffff', count: 5, active: true,
 };
-  const tag = createTag(existingTag.name, { tag: existingTag });
-  expect(tag.name).toBe(existingTag.name);
+  const tag = createTag('newName', { tag: existingTag });
+  expect(tag.name).toBe('newName');
   expect(tag.enabled).toBe(existingTag.enabled);
   expect(tag.color).toBe(existingTag.color);
   expect(tag.count).toBe(existingTag.count);
+  expect(tag.active).toBe(existingTag.active);
 });
 
 
 it('metadataFilterMethods Tag - countTags - empty', () => {
-  const count = countTags();
+  const count = getCountedKeywords();
   expect(count).toBeDefined();
   expect(count.length).toEqual(0);
 });
@@ -70,7 +71,7 @@ function getMockDatasets(two = false, three = false, four = false) {
 it('metadataFilterMethods Tag - countTags - basic', () => {
   const datasets = getMockDatasets();
 
-  const count = countTags(datasets);
+  const count = getCountedKeywords(datasets);
 
   expect(count.length).toEqual(4);
   expect(count[0].count).toEqual(3);

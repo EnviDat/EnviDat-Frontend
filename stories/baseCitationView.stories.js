@@ -10,7 +10,7 @@
  */
 
 import BaseCitationView from '@/components/BaseElements/BaseCitationView.vue';
-import { createCitation } from '@/factories/metaDataFactory';
+import { createCitation } from '@/factories/citationFactory';
 import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
 import metadata from './js/metadata';

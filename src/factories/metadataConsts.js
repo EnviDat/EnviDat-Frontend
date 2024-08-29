@@ -48,6 +48,8 @@ export const EDIT_METADATA_RELATEDPUBLICATIONS_TITLE = 'Related Publications';
 export const EDIT_METADATA_ADD_PUBLICATION_TITLE = 'Add a Related Publications';
 export const EDIT_METADATA_RELATED_DATASETS_TITLE = 'Related Datasets';
 export const EDIT_METADATA_GEODATA_TITLE = 'Geospatial Information about the research data';
+export const EDIT_METADATA_DATALICENSE_TITLE = 'Data License of the Resources';
+export const EDIT_METADATA_DATALICENSE_LABEL = 'Data License';
 
 export const EDIT_STEP_TITLE_MAIN_METADATA = 'Metadata';
 export const EDIT_STEP_TITLE_MAIN_RESOURCES = 'Data & Resources';
@@ -76,6 +78,8 @@ export const METADATA_ORGANIZATION_PROPERTY = 'organizationId';
 export const METADATA_DOI_PROPERTY = 'doi';
 export const METADATA_PUBLISHER_PROPERTY = 'publisher';
 export const METADATA_PUBLICATION_YEAR_PROPERTY = 'publicationYear';
+export const METADATA_DATALICENSE_PROPERTY = 'dataLicenseId';
+export const METADATA_DEPRECATEDRESOURCES_PROPERTY = 'deprecatedResources';
 
 export const ENVIDAT_SHOW_COOKIE_BANNER = 'ENVIDAT_SHOW_COOKIE_BANNER';
 

@@ -31,7 +31,8 @@
 
         </v-col>
 
-        <v-col v-if="showSearch && mode !== EDNA_MODE" class="py-0 ml-sm-4 flex-grow-0">
+        <v-col v-if="showSearch && mode !== EDNA_MODE"
+               class="ml-sm-4 shrink">
 
           <BaseIconSwitch
             :active="isAuthorSearch"
@@ -41,12 +42,27 @@
 
         </v-col>
 
-        <v-col v-if="showSearch && mode === EDNA_MODE" class="py-0 ml-sm-4 shrink">
 
-          <BaseIconSwitch
-            :active="isShallow"
-            :tooltipText="`Type of dataset is ${isShallow ? 'Shallow' : 'Real'}`"
-            :icon="mdiLayers" @clicked="catchShallowRealClick" />
+        <v-col v-if="showSearch && mode === EDNA_MODE"
+               class="ml-sm-4 shrink" >
+
+           <BaseIconSwitch
+             :active="isShallow" :zIndex="elementVisible? 6 : undefined"
+             :tooltipText="`${isShallow ? 'Samples' : 'Overview'} datasets are visible, click to switch to ${isShallow ? 'overview' : 'samples'} datasets.`"
+             :icon="mdiLayers"
+             @clicked="catchShallowRealClick" />
+
+          <v-overlay
+            absolute
+            :value="elementVisible"
+            style="z-index: 5 !important;">
+
+            <div class="dialog"
+                 :style="`left: ${ $vuetify.display.smAndDown ? '-20' : '45' }px;`"
+                 @click="elementVisible = !elementVisible">
+              <span>Toggle from overview to sample datasets:</span>
+            </div>
+          </v-overlay>
 
         </v-col>
 
@@ -58,6 +74,7 @@
 
 
     </v-container>
+
   </v-card>
 </template>
 
@@ -78,7 +95,7 @@ import ListControlToggle from '@/components/Filtering/ListControlToggle.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue'
 import { EDNA_MODE } from '@/store/metadataMutationsConsts';
-import { mdiAccountCircle, mdiLayers, mdiShareVariant } from '@mdi/js';
+import { mdiLayers, mdiShareVariant } from '@mdi/js';
 
 export default {
   name: 'ControlPanel',
@@ -111,6 +128,11 @@ export default {
     BaseIconButton,
     BaseIconSwitch,
   },
+  mounted() {
+    if (this.mode === EDNA_MODE) {
+      this.showOverlay();
+    }
+  },
   methods: {
     catchSearchClicked(search) {
       this.$emit('searchClick', search);
@@ -132,6 +154,13 @@ export default {
 
       navigator.clipboard.writeText(window.location);
     },
+    showOverlay() {
+      this.elementVisible = true;
+
+      setTimeout(() => {
+        this.elementVisible = false;
+      }, 10000); // 10000 milliseconds = 5 seconds
+    },
   },
   computed: {
     hasEnabledControls() {
@@ -147,9 +176,11 @@ export default {
   },
   data: () => ({
     EDNA_MODE,
-    mdiAccountCircle,
     mdiLayers,
     mdiShareVariant,
+    elementVisible: true,
+    overlay: false,
+    zIndex: 2,
   }),
 };
 
@@ -159,4 +190,20 @@ export default {
 .switchSmallFont label {
   font-size: 10px !important;
 }
+
+
+.dialog {
+  position: relative;
+  background-color: white;
+  padding: 5px;
+  border-radius: 5px;
+  color: black;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+}
+.dialog:hover {
+  cursor: pointer;
+}
+
 </style>

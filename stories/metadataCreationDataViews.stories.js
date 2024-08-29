@@ -30,7 +30,11 @@ import {
   SELECT_EDITING_RESOURCE_PROPERTY,
 } from '@/factories/strategyFactory';
 
-import { cleanListForFrontend, enhanceUserObject, mergeResourceSizeForFrontend } from '@/factories/mappingFactory';
+import {
+  cleanListForFrontend,
+  enhanceUserObject,
+  mergeResourceSizeForFrontend,
+} from '@/factories/mappingFactory';
 import unFormatedMetadata from './js/metadata';
 import userList from './testdata/user_list.json';
 
@@ -46,23 +50,37 @@ const allResources = [];
 
 for (let i = 0; i < unFormatedMetadata.length; i++) {
   const dataset = unFormatedMetadata[i];
-  let resources = cleanListForFrontend(dataset.resources, EDITMETADATA_DATA_RESOURCE);
+  let resources = cleanListForFrontend(
+    dataset.resources,
+    EDITMETADATA_DATA_RESOURCE,
+  );
 
   for (let j = 0; j < resources.length; j++) {
     const resource = resources[j];
-    if(resource.restricted && typeof resource.restricted === 'string') {
+    if (resource.restricted && typeof resource.restricted === 'string') {
       try {
         resource.restricted = JSON.parse(resource.restricted);
       } catch (e) {
-        console.log(`resource failed ${resource.name} restricted ${resource.restricted}`);
+        console.log(
+          `resource failed ${resource.name} restricted ${resource.restricted}`,
+        );
         console.error(e);
       }
     }
   }
 
-  resources = enhanceElementsWithStrategyEvents(resources, SELECT_EDITING_RESOURCE_PROPERTY, true);
+  resources = enhanceElementsWithStrategyEvents(
+    resources,
+    SELECT_EDITING_RESOURCE_PROPERTY,
+    true,
+  );
   allResources.push(resources);
 }
+
+const deprecatedResources = [...allResources[1], ...allResources[2]];
+
+deprecatedResources[1].deprecated = true;
+deprecatedResources[2].deprecated = true;
 
 export default {
   title: '9 Editing Metadata / Resource Views',
@@ -101,7 +119,17 @@ export const EditResourceViews = () => ({
         </v-col>
 
       </v-row>
-    
+
+      <h1 class="mt-5">EditResource with warning for uppercase extension</h1>
+
+      <v-row class="py-3" >
+
+        <v-col cols="12" lg="6" xl="4">
+          <EditResource v-bind="resource1" />
+        </v-col>
+
+      </v-row>
+
     </v-container>
     `,
   created() {
@@ -121,7 +149,7 @@ export const EditResourceViews = () => ({
         ...allResources[2][2],
         loading: true,
         envidatUsers,
-      }
+      };
     },
   },
   data: () => ({
@@ -155,8 +183,8 @@ export const EditResourceViews = () => ({
 });
 
 export const EditResourcesList = () => ({
-    components: { EditMetadataResources },
-    template: `
+  components: { EditMetadataResources },
+  template: `
     <v-col>
 
       <v-row>
@@ -178,54 +206,69 @@ export const EditResourcesList = () => ({
           <EditMetadataResources v-bind="genericProps" />
         </v-col>
       </v-row>
+
+      <v-row>
+        EditMetadataResources with deprecated resources
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <EditMetadataResources v-bind="deprecatedProps" />
+        </v-col>
+      </v-row>
+
     </v-col>
     `,
-    created() {
-      eventBus.on(SELECT_EDITING_RESOURCE, this.selectResource);
+  created() {
+    eventBus.on(SELECT_EDITING_RESOURCE, this.selectResource);
+  },
+  beforeUnmount() {
+    eventBus.off(SELECT_EDITING_RESOURCE, this.selectResource);
+  },
+  methods: {
+    selectResource(id) {
+      this.emptyFirstGenericProps = {
+        ...this.emptyFirstGenericProps,
+        selectionId: id,
+      };
     },
-    beforeUnmount() {
-      eventBus.off(SELECT_EDITING_RESOURCE, this.selectResource);
+    // editComponentsChanged(updateObj) {
+    //   if (updateObj.data.id === this.genericProps.id) {
+    //     this.genericProps = updateObj.data;
+    //   }
+    //   if (updateObj.data.id === this.emptyFirstGenericProps.id) {
+    //     this.emptyFirstGenericProps = updateObj.data;
+    //   }
+    // },
+  },
+  data: () => ({
+    emptyFirstGenericProps: {
+      id: '1',
+      resources: [],
+      selectionId: -1,
+      resourcesConfig: {
+        downloadActive: false,
+      },
     },
-    methods: {
-      selectResource(id) {
-        this.emptyFirstGenericProps = {
-          ...this.emptyFirstGenericProps,
-          selectionId: id,
-        };
+    genericProps: {
+      id: '2',
+      resources: allResources[2],
+      selectionId: -1,
+      resourcesConfig: {
+        downloadActive: false,
       },
-      // editComponentsChanged(updateObj) {
-      //   if (updateObj.data.id === this.genericProps.id) {
-      //     this.genericProps = updateObj.data;
-      //   }
-      //   if (updateObj.data.id === this.emptyFirstGenericProps.id) {
-      //     this.emptyFirstGenericProps = updateObj.data;
-      //   }
-      // },
     },
-    data: () => ({
-      emptyFirstGenericProps: {
-        id: '1',
-        resources: [],
-        selectionId: -1,
-        resourcesConfig: {
-          downloadActive: false,
-        },
-      },
-      genericProps: {
-        id: '2',
-        resources: allResources[2],
-        selectionId: -1,
-        resourcesConfig: {
-          downloadActive: false,
-        },
-      },
-    }),
-  });
-
+    deprecatedProps: {
+      id: '2',
+      resources: deprecatedResources,
+      selectionId: -1,
+    },
+  }),
+});
 
 export const EditDataAndResourcesListViews = () => ({
-    components: { EditDataAndResources },
-    template: `
+  components: { EditDataAndResources },
+  template: `
     <v-col>
 
       <v-row>
@@ -247,122 +290,121 @@ export const EditDataAndResourcesListViews = () => ({
           <EditDataAndResources v-bind="genericProps2" />
         </v-col>
       </v-row>
-    
+
     </v-col>
     `,
-    created() {
-      eventBus.on(SAVE_EDITING_RESOURCE, this.saveResource);
-      eventBus.on(CANCEL_EDITING_RESOURCE, this.cancelEditing);
-      eventBus.on(SELECT_EDITING_RESOURCE, this.selectResource);
-      eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+  created() {
+    eventBus.on(SAVE_EDITING_RESOURCE, this.saveResource);
+    eventBus.on(CANCEL_EDITING_RESOURCE, this.cancelEditing);
+    eventBus.on(SELECT_EDITING_RESOURCE, this.selectResource);
+    eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+  },
+  beforeUnmount() {
+    eventBus.off(SAVE_EDITING_RESOURCE, this.saveResource);
+    eventBus.off(CANCEL_EDITING_RESOURCE, this.cancelEditing);
+    eventBus.off(SELECT_EDITING_RESOURCE, this.selectResource);
+    eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+  },
+  computed: {
+    genericProps() {
+      return {
+        resources: this.resources,
+        license: unFormatedMetadata[0].license_title,
+        licenseUrl: unFormatedMetadata[0].license_url,
+        selectionId: this.selectionId,
+        resourcesConfig: {
+          downloadActive: false,
+        },
+      };
     },
-    beforeUnmount() {
-      eventBus.off(SAVE_EDITING_RESOURCE, this.saveResource);
-      eventBus.off(CANCEL_EDITING_RESOURCE, this.cancelEditing);
-      eventBus.off(SELECT_EDITING_RESOURCE, this.selectResource);
-      eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+    genericProps2() {
+      return {
+        resources: this.resources,
+        license: unFormatedMetadata[0].license_title,
+        licenseUrl: unFormatedMetadata[0].license_url,
+        selectionId: this.selectionId,
+        resourcesConfig: {
+          downloadActive: false,
+        },
+        userEditMetadataConfig: {
+          resourceUploadActive: true,
+          resourceEditingActive: true,
+          editingRestrictingActive: true,
+        },
+      };
     },
-    computed: {
-      genericProps() {
-        return {
-          resources: this.resources,
-          license: unFormatedMetadata[0].license_title,
-          licenseUrl: unFormatedMetadata[0].license_url,
-          selectionId: this.selectionId,
-          resourcesConfig: {
-            downloadActive: false,
-          },
-        };
-      },
-      genericProps2() {
-        return {
-          resources: this.resources,
-          license: unFormatedMetadata[0].license_title,
-          licenseUrl: unFormatedMetadata[0].license_url,
-          selectionId: this.selectionId,
-          resourcesConfig: {
-            downloadActive: false,
-          },
-          userEditMetadataConfig: {
-            resourceUploadActive: true,
-            resourceEditingActive: true,
-            editingRestrictingActive: true,
-          },
-        };
-      },
+  },
+  methods: {
+    selectResource(id) {
+      if (this.selectionId !== -1) {
+        this.cancelEditing();
+      }
+
+      this.selectionId = id;
+      this.setSelected(this.selectionId, true);
     },
-    methods: {
-      selectResource(id) {
-        if (this.selectionId !== -1) {
-          this.cancelEditing();
-        }
+    cancelEditing() {
+      this.setSelected(this.selectionId, false);
+      this.selectionId = -1;
+    },
+    editComponentsChanged(updateObj) {
+      if (updateObj.object === EDITMETADATA_DATA_RESOURCES) {
+        this.updateResource(updateObj.data);
+      }
+    },
+    updateResource(newRes) {
+      const res = this.resources;
 
-        this.selectionId = id;
-        this.setSelected(this.selectionId, true);
-      },
-      cancelEditing() {
-        this.setSelected(this.selectionId, false);
-        this.selectionId = -1;
-      },
-      editComponentsChanged(updateObj) {
-        if (updateObj.object === EDITMETADATA_DATA_RESOURCES) {
+      for (let i = 0; i < res.length; i++) {
+        const r = res[i];
+        // if (r.id === newRes.id) {
+        //   this.$set(res, i, newRes);
+        //   return;
+        // }
 
-          this.updateResource(updateObj.data);
-        }
-      },
-      updateResource(newRes) {
-        const res = this.resources;
-
-        for (let i = 0; i < res.length; i++) {
-          const r = res[i];
-          // if (r.id === newRes.id) {
-          //   this.$set(res, i, newRes);
-          //   return;
-          // }
-
-          if (r[localIdProperty]) {
-            if (r[localIdProperty] === newRes.id) {
-              this.$set(res, i, newRes);
-              return;
-            }
-          } else if (r.id === newRes.id) {
+        if (r[localIdProperty]) {
+          if (r[localIdProperty] === newRes.id) {
             this.$set(res, i, newRes);
             return;
           }
+        } else if (r.id === newRes.id) {
+          this.$set(res, i, newRes);
+          return;
         }
+      }
 
-        res.unshift(newRes);
-      },
-      setSelected(id, selected) {
-        const res = this.resources;
+      res.unshift(newRes);
+    },
+    setSelected(id, selected) {
+      const res = this.resources;
 
-        for (let i = 0; i < res.length; i++) {
-          const r = res[i];
-          // if (r.id === id) {
-          //   r.isSelected = selected;
-          //   return;
-          // }
+      for (let i = 0; i < res.length; i++) {
+        const r = res[i];
+        // if (r.id === id) {
+        //   r.isSelected = selected;
+        //   return;
+        // }
 
-          if (r[localIdProperty]) {
-            if (r[localIdProperty] === id) {
-              r.isSelected = selected;
-              this.$set(res, i, r);
-              return;
-            }
-          } else if (r.id === id) {
+        if (r[localIdProperty]) {
+          if (r[localIdProperty] === id) {
             r.isSelected = selected;
             this.$set(res, i, r);
             return;
           }
+        } else if (r.id === id) {
+          r.isSelected = selected;
+          this.$set(res, i, r);
+          return;
         }
-      },
-      saveResource(newRes) {
-        this.updateResource(newRes);
-        this.cancelEditing();
-      },
+      }
     },
-    data: () => ({
-      resources: allResources[0],
-      selectionId: -1,
-    }),
-  });
+    saveResource(newRes) {
+      this.updateResource(newRes);
+      this.cancelEditing();
+    },
+  },
+  data: () => ({
+    resources: allResources[0],
+    selectionId: -1,
+  }),
+});

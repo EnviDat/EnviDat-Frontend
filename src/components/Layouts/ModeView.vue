@@ -1,6 +1,8 @@
 <template>
+
   <v-row align="center" justify="center" no-gutters>
     <v-col v-if="compact" class="flex-grow-0 text-body-2 mx-1 text-no-wrap">
+
       {{ modeInfoPrefix }}: {{ modeTitle }}
     </v-col>
 
@@ -27,7 +29,7 @@
     </v-col>
 
     <v-col class="flex-grow-0 mx-1">
-      <base-icon-button
+      <BaseIconButton
         :icon="mdiInformationOutline"
         :tooltip-text="`${tooltipText} ${modeTitle}`"
         tooltip-bottom
@@ -36,8 +38,9 @@
       />
     </v-col>
 
-    <div v-if="closeCallback" class="flex-grow-0 mx-1">
-      <base-icon-button
+    <v-col v-if="closeCallback" class="flex-grow-0 mx-1">
+
+      <BaseIconButton
         :icon="mdiClose"
         :tooltip-text="`Exit ${modeTitle} ${modeInfoPrefix}`"
         tooltip-bottom
@@ -45,7 +48,7 @@
         icon-color="red"
         @clicked="closeCallback"
       />
-    </div>
+    </v-col>
   </v-row>
 </template>
 

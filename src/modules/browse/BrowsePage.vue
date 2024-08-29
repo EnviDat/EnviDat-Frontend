@@ -76,7 +76,8 @@ import {
 } from '@/router/routeConsts';
 
 import {
-  CLEAR_SEARCH_METADATA, EDNA_MODE,
+  CLEAR_SEARCH_METADATA,
+  EDNA_MODE,
   FILTER_METADATA,
   LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
   LISTCONTROL_LIST_ACTIVE,
@@ -95,7 +96,7 @@ import {
 import MetadataList from '@/components/MetadataList.vue';
 import { useModeStore } from '@/modules/browse/store/modeStore';
 import { areArraysIdentical, convertArrayToUrlString, convertUrlStringToArray } from '@/factories/stringFactory';
-import { isTagSelected } from '@/factories/metaDataFactory';
+import { isTagSelected } from '@/factories/keywordsFactory.js';
 import categoryCards from '@/store/categoryCards';
 
 
@@ -106,6 +107,10 @@ export default {
       vm.$store.commit(SET_CURRENT_PAGE, BROWSE_PAGENAME);
       vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
     });
+  },
+  created() {
+    this.modeStore = useModeStore();
+    this.modeStore.init(this.$store.getters.cardBGImages);
   },
   async mounted() {
     this.oldIsAuthorSearch = this.isAuthorSearch;
@@ -236,7 +241,6 @@ export default {
     async filterContent() {
       if (this.mode) {
         this.filteredModeContent = this.modeStore.getFilteredDatasets(this.selectedTagNames, this.mode);
-
         this.modeTags = this.modeStore.getModeKeywords(this.mode);
 
         return;
@@ -489,6 +493,13 @@ export default {
     },
   },
   watch: {
+    async metadatasContent() {
+      if (this.mode) {
+        await this.loadModeDatasets();
+      }
+
+      await this.filterContent();
+    },
     /* eslint-disable no-unused-vars */
     $route: async function watchRouteChanges(to, from) {
       // react on changes of the route (browser back / forward click)
@@ -516,7 +527,7 @@ export default {
   data: () => ({
     categoryCards,
     EDNA_MODE,
-    modeStore: useModeStore(),
+    modeStore: null,
     modeContent: null,
     filteredModeContent: null,
     modeTags: null,

@@ -1,26 +1,24 @@
 import { defineStore } from 'pinia';
-import mainCategoryTags from '@/modules/metadata/store/metadataTags';
 
 import {
-  getTagsMergedWithExtras,
-  // getSelectedTagsMergedWithHidden,
   MODE_STORE,
   modes,
 } from '@/factories/modeFactory';
 
 import { enhanceMetadatas, localSearch } from '@/factories/metaDataFactory';
-import { getEnabledTags, getPopularTags, tagsIncludedInSelectedTags } from '@/factories/metadataFilterMethods';
+import {
+  getKeywordsForFiltering,
+  tagsIncludedInSelectedTags,
+} from '@/factories/keywordsFactory';
 import { EDNA_MODE } from '@/store/metadataMutationsConsts';
 
+
 const initState = {
+  cardBGImages: null,
   modeMetadata: [],
   modeDatasets: [],
   modeFilters: [],
 }
-
-/*
-const getters = [];
-*/
 
 modes.forEach((modeMeta) => {
   initState.modeMetadata.push(modeMeta);
@@ -38,6 +36,9 @@ export const useModeStore = defineStore(MODE_STORE, {
   },
 */
   actions: {
+    init(cardBGImages) {
+      this.cardBGImages = cardBGImages;
+    },
     /**
      * returns the metadata object for a mode name
      * @param {string} mode
@@ -54,7 +55,7 @@ export const useModeStore = defineStore(MODE_STORE, {
 
       throw new Error(`No Mode Data for mode: "${mode}" implemented`);
     },
-    searchModeDatasets(parameter, mode) {
+    searchModeDatasets(searchTerm, mode) {
       // get filtered datasets based on the selected tags
       // then narrow down the list via local text search
       let results = [];
@@ -63,8 +64,8 @@ export const useModeStore = defineStore(MODE_STORE, {
 
       const filteredContent = this.getFilteredDatasets(currentFilteredKeywords, mode);
 
-      if (parameter ) {
-        results = localSearch(parameter, filteredContent)
+      if (searchTerm) {
+        results = localSearch(searchTerm, filteredContent);
       }
 
       return results;
@@ -77,23 +78,7 @@ export const useModeStore = defineStore(MODE_STORE, {
       const currentFilteredKeywords = this.modeFilters[index];
 
       const filteredContent = this.getFilteredDatasets(currentFilteredKeywords, mode);
-      let allWithExtras = [];
-
-      const mergedExtraTags = getTagsMergedWithExtras(mode, mainCategoryTags, metaData);
-
-      if (mergedExtraTags) {
-        const popularTags = getPopularTags(filteredContent, metaData.mainTag.name, 5, filteredContent.length);
-        const mergedWithPopulars = [...mergedExtraTags, ...popularTags.slice(0, 15)];
-
-        const mergedWithoutDublicates = mergedWithPopulars.filter((item, pos, self) => self.findIndex(v => v.name === item.name) === pos);
-        // tags with the same count as the content have no use, remove them
-        // allWithExtras = mergedWithoutDublicates.filter((item) => { item.count >= filteredContent.length});
-        allWithExtras = mergedWithoutDublicates;
-      } else {
-        allWithExtras = mainCategoryTags;
-      }
-
-      const updatedTags = getEnabledTags(allWithExtras, filteredContent);
+      const updatedTags = getKeywordsForFiltering(filteredContent, metaData);
 
       return updatedTags;
     },
@@ -153,20 +138,18 @@ export const useModeStore = defineStore(MODE_STORE, {
       const modeMetadata = this.getModeMetadata(mode);
       const data = await modeMetadata.loadDatasets(modeMetadata);
 
-      let datasets = data;
-
       const index = this.modeMetadata.findIndex((modeInfo) => modeInfo.name === mode);
       if (index >= 0) {
+        let enhancedDatasets = data;
         if (mode === EDNA_MODE) {
           // eDNA shallow datasets need enhancement
           const enhancedDatasetsDictionary = enhanceMetadatas(data, mode);
-          datasets = Object.values(enhancedDatasetsDictionary);
+          enhancedDatasets = Object.values(enhancedDatasetsDictionary);
         }
-
-        this.modeDatasets[index] = datasets;
+        this.modeDatasets[index] = enhancedDatasets;
       }
 
-      return datasets;
+      return data;
     },
   },
 })

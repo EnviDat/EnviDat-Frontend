@@ -135,11 +135,12 @@ import MetadataCard from '@/components/Cards/MetadataCard.vue';
 import TagChip from '@/components/Chips/TagChip.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 
-import { enhanceTitleImg, getTagColor } from '@/factories/metaDataFactory';
+import { enhanceTitleImg } from '@/factories/metaDataFactory';
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
 } from '@/factories/userEditingValidations';
+import { getTagColor } from '@/factories/keywordsFactory';
 
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';

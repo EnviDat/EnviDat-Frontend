@@ -42,26 +42,24 @@ import {
 } from '@/store/metadataMutationsConsts';
 
 
-import {
-  tagsIncludedInSelectedTags,
-  getEnabledTags,
-  getPopularTags,
-} from '@/factories/metadataFilterMethods';
-import {
-  getTagsMergedWithExtras,
-  getSelectedTagsMergedWithHidden,
-} from '@/factories/modeFactory';
+import { getSelectedTagsMergedWithHidden } from '@/factories/modeFactory';
+
 import { urlRewrite } from '@/factories/apiFactory';
+
 import {
-  getTagColor, localSearch,
+  localSearch,
   sortObjectArray,
 } from '@/factories/metaDataFactory';
 
-import metadataTags from '@/modules/metadata/store/metadataTags';
-/*
-import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
-import { SELECT_EDITING_AUTHOR_PROPERTY } from '@/factories/eventBus';
-*/
+
+import {
+  getKeywordsForFiltering,
+  getTagColor,
+  tagsIncludedInSelectedTags,
+} from '@/factories/keywordsFactory';
+import { useModeStore } from '@/modules/browse/store/modeStore';
+import categoryCards from '@/store/categoryCards';
+
 
 /* eslint-disable no-unused-vars  */
 let API_BASE = '';
@@ -129,9 +127,9 @@ function getfilteredArray(arr, maxWords) {
 function getKeywordObjects(arr) {
   for (let i = 0; i < arr.length; i++) {
     arr[i] = {
-              name: arr[i],
-              color: getTagColor(arr[i]),
-            };
+      name: arr[i],
+      color: getTagColor(categoryCards, arr[i]),
+    };
   }
   return arr;
 }
@@ -284,22 +282,13 @@ export default {
     commit(UPDATE_TAGS);
 
     try {
-      let allWithExtras = [];
+      const modeStore = useModeStore();
+      modeStore.init(this.getters.cardBGImages);
+      const modeMetadata = modeStore.getModeMetadata(mode);
 
-      const mergedExtraTags = getTagsMergedWithExtras(mode, allTags);
-      if (mergedExtraTags) {
-        const popularTags = getPopularTags(filteredContent, 'SWISS FOREST LAB', 5, filteredContent.length);
-        const mergedWithPopulars = [...mergedExtraTags, ...popularTags.slice(0, 15)];
+      const updatedTags = getKeywordsForFiltering(filteredContent, modeMetadata, 35);
 
-        const mergedWithoutDublicates = mergedWithPopulars.filter((item, pos, self) => self.findIndex(v => v.name === item.name) === pos);
-        // tags with the same count as the content have no use, remove them
-        // allWithExtras = mergedWithoutDublicates.filter((item) => { item.count >= filteredContent.length});
-        allWithExtras = mergedWithoutDublicates;
-      } else {
-        allWithExtras = metadataTags;
-      }
 
-      const updatedTags = getEnabledTags(allWithExtras, filteredContent);
       commit(UPDATE_TAGS_SUCCESS, updatedTags);
     } catch (error) {
       commit(UPDATE_TAGS_ERROR, error);

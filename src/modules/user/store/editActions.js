@@ -16,9 +16,12 @@ import { urlRewrite } from '@/factories/apiFactory';
 
 import {
   getBackendJSONForStep,
+  getFrontendJSONForStep,
+  markResourceDeprecated,
   mapFrontendToBackend,
   populateEditingComponents,
   stringifyResourceForBackend,
+  deprecatedResourceChanged,
 } from '@/factories/mappingFactory';
 
 import {
@@ -26,7 +29,11 @@ import {
   METADATA_NAMESPACE,
 } from '@/store/metadataMutationsConsts';
 
-import { EDITMETADATA_AUTHOR_LIST } from '@/factories/eventBus';
+import {
+  EDITMETADATA_AUTHOR_LIST,
+  EDITMETADATA_CUSTOMFIELDS,
+  EDITMETADATA_DATA_RESOURCE,
+} from '@/factories/eventBus';
 
 import {
   ACTION_METADATA_EDITING_PATCH_DATASET,
@@ -125,7 +132,7 @@ export default {
         });
       });
   },
-  async [METADATA_EDITING_PATCH_RESOURCE]({ commit }, { stepKey, data }) {
+  async [METADATA_EDITING_PATCH_RESOURCE]({ commit, dispatch }, { stepKey, data }) {
 
     commit(METADATA_EDITING_PATCH_RESOURCE, data);
 
@@ -134,26 +141,48 @@ export default {
 
     // create a local copy to avoid mutation of vuex store objects / properties
     const localData = { ...data };
+    const isDeprecated = localData.deprecated;
     const cleaned = getBackendJSONForStep(stepKey, localData);
     const postData = stringifyResourceForBackend(cleaned);
 
-    await axios.post(url, postData)
-      .then((response) => {
+    try {
+      const response = await axios.post(url, postData);
+      const resource = getFrontendJSONForStep(EDITMETADATA_DATA_RESOURCE, response.data.result);
+      const resourceId  =  resource.id;
 
-        commit(METADATA_EDITING_PATCH_RESOURCE_SUCCESS, {
-          stepKey,
-          resource: response.data.result,
-          message: 'Resource saved',
-          // details: `Changes saved ${stepKey} data for ${id}`,
-        });
+      const customFieldsData = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_CUSTOMFIELDS);
 
-      })
-      .catch((reason) => {
-        commit(METADATA_EDITING_PATCH_RESOURCE_ERROR, {
-          stepKey,
-          reason,
-        });
+      if (customFieldsData) {
+        // HACK: Due to the lack of proper mapping in the frontend
+        // and the inability to change the schema in the backend
+        // the mapping of the deprecated field is performed here in a very inefficient and unmaintainable way
+        // The counterpart is found in  mappingFactory -> populateEditingResources
+        // change this ASAP (move to centralised mapping, or simply adjust backend)!
+
+        if (deprecatedResourceChanged(resourceId, isDeprecated, customFieldsData.customFields)) {
+          customFieldsData.customFields = markResourceDeprecated(resourceId, isDeprecated, customFieldsData.customFields);
+
+          await dispatch(METADATA_EDITING_PATCH_DATASET_OBJECT, {
+            data: customFieldsData,
+            stepKey: EDITMETADATA_CUSTOMFIELDS,
+            id: resource.packageId,
+          });
+        }
+
+      }
+      commit(METADATA_EDITING_PATCH_RESOURCE_SUCCESS, {
+        stepKey,
+        resource: response.data.result,
+        message: 'Resource saved',
+        // details: `Changes saved ${stepKey} data for ${id}`,
       });
+
+    } catch(reason) {
+      commit(METADATA_EDITING_PATCH_RESOURCE_ERROR, {
+        stepKey,
+        reason,
+      });
+    }
   },
   async [METADATA_EDITING_PATCH_DATASET_ORGANIZATION]({ commit }, { stepKey, id, data }) {
 

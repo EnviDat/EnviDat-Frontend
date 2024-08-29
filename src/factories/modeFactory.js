@@ -9,16 +9,17 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import { createTag, tagsIncludedInSelectedTags } from '@/factories/metadataFilterMethods';
 import { swissFLExtraTags, swissFLTag } from '@/modules/metadata/store/swissForestLabTags';
 import {
-  SWISSFL_MODE,
   EDNA_MODE,
+  EDNA_MODE_EXTRAS_KEY,
+  METADATA_NAMESPACE,
+  SWISSFL_MODE,
   SWISSFL_MODE_EXTRAS_KEY,
-  EDNA_MODE_EXTRAS_KEY, METADATA_NAMESPACE,
 } from '@/store/metadataMutationsConsts';
 import { ednaTag } from '@/modules/metadata/store/ednaLabTags';
-import { ednaImages, swissflImages } from './imageFactory';
+import { createTag, tagsIncludedInSelectedTags } from '@/factories/keywordsFactory';
+import { ednaImages, swissflImages } from '@/factories/imageFactory';
 
 export const MODE_STORE = 'MODE_STORE';
 
@@ -54,13 +55,28 @@ const loadModeDatasetsWithMainTag = async (modeMetadata) => {
  * @param {object} modeMetadata
  * @returns {Promise<any>}
  */
+const ednaFallback = async () => {
+  const url = `https://s3-zh.os.switch.ch/frontend-static/modes/eDNA_datasets.json?nocache=${new Date().getTime()}`;
+  const response = await fetch(url);
+  const data = await response.json();
+  return data;
+}
+
 const loadEDNADatasets = async (modeMetadata) => {
   if(modeMetadata.isShallow) {
-    const url = `${modeMetadata.datasetUrl}?nocache=${new Date().getTime()}`;
-    const response = await fetch(url);
-    const data = await response.json();
-
-    return data;
+    const url = modeMetadata.datasetUrl;
+    try {
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        return ednaFallback();
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (e) {
+      return ednaFallback();
+    }
   }
 
   return loadModeDatasetsWithMainTag(modeMetadata);
@@ -75,6 +91,7 @@ export const modes = [
     extraTags: swissFLExtraTags,
     logo: swissflImages.logo,
     icons: swissflImages,
+    minTagAmount: 5,
     extrasKey: SWISSFL_MODE_EXTRAS_KEY,
     datasetUrl: '',
     loadDatasets: loadModeDatasetsWithMainTag,
@@ -87,10 +104,11 @@ export const modes = [
     extraTags: [], // swissFLExtraTags,
     logo: ednaImages.logo,
     icons: ednaImages,
+    minTagAmount: 1,
     extrasKey: EDNA_MODE_EXTRAS_KEY,
-    datasetUrl: 'https://s3-zh.os.switch.ch/frontend-static/modes/eDNA_datasets.json',
+    datasetUrl: 'https://envidat.ch/converters-api/edna/shallow-datasets',
     loadDatasets: loadEDNADatasets,
-    isShallow: true,
+    isShallow: false,
   },
 ];
 
@@ -112,22 +130,6 @@ export function getModeData(mode) {
 }
 
 
-function mergedExtraTags(modeObj, tags) {
-  const mergedTags = [...tags, ...modeObj.extraTags];
-  return mergedTags.filter((item, pos, self) => self.findIndex(v => v.name === item.name) === pos);
-}
-
-export function getTagsMergedWithExtras(mode, tags, modeData = undefined) {
-  if (!mode) return null;
-
-  try {
-    const modeObj = modeData || getModeData(mode);
-    return mergedExtraTags(modeObj, tags);
-  } catch (e) {
-    console.error(e);
-    return null;
-  }
-}
 
 
 function mergedHiddenFilters(modeObj, selectedTagNames) {

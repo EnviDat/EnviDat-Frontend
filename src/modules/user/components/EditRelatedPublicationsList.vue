@@ -50,10 +50,38 @@
 
     <v-row>
       <v-col >
-        <EditAddPublication @addClicked="catchAddPublication" />
+        <EditAddPublication :pid="previewPid"
+                            :doi="previewDoi"
+                            dense
+                            @addClicked="catchAddPublication" />
       </v-col>
     </v-row>
 
+    <v-row>
+      <v-col >
+        list of PIDs and Doi
+
+        The user should be able to remove items from the list
+        (Maybe also reorder the items)
+      </v-col>
+    </v-row>
+
+    <v-row no-gutters
+           class="pt-4">
+      <v-col >
+        <div class="text-subtitle-1"
+             v-html="labels.preview">
+
+        </div>
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col >
+        <!-- Replace with the new compoennt MetadataPublicationList.vue -->
+         <MetadataPublications v-bind="publicationsObject" />
+      </v-col>
+    </v-row>
 
  </v-container>
 </v-card>
@@ -82,9 +110,11 @@ import {
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 
 import { EDIT_METADATA_RELATEDPUBLICATIONS_TITLE } from '@/factories/metadataConsts';
+import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
 
 import EditAddPublication from '@/modules/user/components/EditAddPublication.vue';
-import { extractPIDMapFromText } from '@/factories/metaDataFactory';
+import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications.vue';
+
 
 export default {
   name: 'EditRelatedPublicationsList',
@@ -128,6 +158,11 @@ export default {
   beforeUnmount() {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
   },
+  mounted() {
+    if (this.relatedPublicationsText) {
+      this.previewText = this.relatedPublicationsText;
+    }
+  },
   computed: {
     loadingColor() {
       if (this.loading) {
@@ -136,21 +171,44 @@ export default {
 
       return undefined;
     },
-    pIdMap() {
-      return extractPIDMapFromText(this.text);
+    publicationsObject() {
+      return {
+        text: this.previewPublicationsText,
+        maxTextLength: 2000,
+      };
     },
-    doiMap() {
-      return extractPIDMapFromText(this.text);
+    previewPublicationsText() {
+      return this.previewText ? this.previewText : this.relatedPublicationsText;
+    },
+    validations() {
+      return getValidationMetadataEditingObject(EDITMETADATA_RELATED_PUBLICATIONS);
     },
   },
   methods: {
     catchAddPublication({ pid, doi }) {
+      this.previewPid = pid;
+      this.previewDoi = doi;
 
+      let value = pid;
+      if (doi) {
+        value = doi;
+      }
+
+      if (value) {
+        if (!this.previewText?.includes(value)) {
+          this.previewText += `\n- ${value}`;
+
+          this.catchChangedText(this.previewText);
+        }
+      }
     },
     catchChangedText(value) {
       if (this.validateProperty(this.editingProperty, value)) {
         this.setRelatedPublicationsText(value);
       }
+    },
+    validateProperty(property, value){
+      return isFieldValid(property, value, this.validations, this.validationErrors);
     },
     setRelatedPublicationsText(value) {
 
@@ -158,21 +216,30 @@ export default {
         object: EDITMETADATA_RELATED_PUBLICATIONS,
         data: { [this.editingProperty]: value },
       });
+
+      this.previewPid = null;
+      this.previewDoi = null;
     },
   },
   data: () => ({
     editingProperty: 'relatedPublicationsText',
     EDIT_METADATA_RELATEDPUBLICATIONS_TITLE,
     labels: {
-      labelTextarea: EDIT_METADATA_RELATEDPUBLICATIONS_TITLE,
       cardInstructions: 'Add DORA links to other publications, you can find them on <a href="https://www.dora.lib4ri.ch/wsl/" target="_blank">dora lib4ri</a> or directly enter DORA permanent IDs ex. wsl:29664). Click into the text arena for examples.',
       placeholder: 'Example entries: \n  * wsl:18753 \n' +
           ' * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:18753 ',
-      subtitlePreview: 'Related Publications Preview',
+      preview: 'Preview of the Related Publications',
     },
     publicationsMap: null,
+    previewText: null,
+    previewPid: null,
+    previewDoi: null,
+    validationErrors: {
+      relatedPublicationsText: null,
+    },
   }),
   components: {
+    MetadataPublications,
     EditAddPublication,
     BaseStatusLabelView,
   },

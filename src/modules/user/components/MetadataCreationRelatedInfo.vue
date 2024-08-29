@@ -1,8 +1,12 @@
 <template>
   <v-container id="MetadataCreationRelatedInfo" fluid class="pa-0">
     <v-row>
-      <v-col cols="4.5">
-        <!-- prettier-ignore -->
+      <v-col v-if="useListResolving"
+             cols="4.5">
+        <EditRelatedPublicationsList v-bind="editRelatedPublicationsProps" />
+      </v-col>
+      <v-col v-else
+             cols="4.5">
         <EditRelatedPublications v-bind="editRelatedPublicationsProps" />
       </v-col>
 
@@ -41,6 +45,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { mapState } from 'vuex';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import {
   EDITMETADATA_CUSTOMFIELDS,
@@ -54,6 +59,7 @@ import relatedDatasets from '@/modules/user/assets/placeholders/relatedDatasets.
 import EditCustomFields from '@/modules/user/components/EditCustomFields.vue';
 import EditRelatedDatasets from '@/modules/user/components/EditRelatedDatasets.vue';
 import EditRelatedPublications from '@/modules/user/components/EditRelatedPublications.vue';
+import EditRelatedPublicationsList from '@/modules/user/components/EditRelatedPublicationsList.vue';
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 
 export default {
@@ -87,6 +93,17 @@ export default {
     },
   },
   computed: {
+    ...mapState(['config']),
+    metadataConfig() {
+      return this.$store ? this.config?.metadataConfig || {} : {};
+    },
+    publicationsConfig() {
+      return this.metadataConfig?.publicationsConfig || {};
+    },
+    useListResolving() {
+      // for testing in storybook just flip the false to true
+      return this.publicationsConfig?.useListResolving || false;
+    },
     relatedPublicationsTextWrap() {
       if (this.isCreationWorkflow) {
         const stepData = this.currentStep.genericProps;
@@ -162,6 +179,7 @@ export default {
       'Please note that the screenshot below will serve as a template for the future component.',
   }),
   components: {
+    EditRelatedPublicationsList,
     EditRelatedDatasets,
     EditRelatedPublications,
     EditCustomFields,

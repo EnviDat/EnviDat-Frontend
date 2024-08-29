@@ -1,7 +1,7 @@
 <template>
   <v-card
     :id="`resourceCard_${id}`"
-    :color="dark ? 'white' : 'primary'"
+    :color="computedCardColor"
     class="metadataResourceCard"
     :class="isSelected ? 'highlighted' : ''"
     style="height: 100%;"
@@ -9,7 +9,8 @@
 
     <v-card-title class="text-h5 resourceHeadline">
       <span class="d-flex align-center">
-        <BaseIcon color="primary-lighten-2" v-if="isProtected" left :icon="mdiLock"></BaseIcon>
+        <BaseIcon v-if="isProtected" color="primary-lighten-2" left :icon="mdiLock"></BaseIcon>
+        <BaseIcon v-if="deprecated" color="primary-lighten-2" left :icon="mdiCancel"></BaseIcon>
         {{ resourceName }}
       </span>
     </v-card-title>
@@ -193,7 +194,18 @@ import { renderMarkdown, stripMarkdown } from '@/factories/stringFactory';
 import { formatBytes, formatDate } from '@/factories/metaDataFactory';
 import { EDIT_METADATA_DOI_LABEL } from '@/factories/metadataConsts';
 import { getFileIcon } from '@/factories/imageFactory';
-import { mdiChevronDown, mdiDownload, mdiFingerprint, mdiLink, mdiLock, mdiMonitorEye, mdiShield, mdiTimerPlusOutline, mdiUpdate } from '@mdi/js';
+import {
+  mdiCancel,
+  mdiChevronDown,
+  mdiDownload,
+  mdiFingerprint,
+  mdiLink,
+  mdiLock,
+  mdiMonitorEye,
+  mdiShield,
+  mdiTimerPlusOutline,
+  mdiUpdate,
+} from '@mdi/js';
 
 export default {
   name: 'ResourceCard',
@@ -221,6 +233,7 @@ export default {
     },
     isProtected: Boolean,
     metadataContact: String,
+    deprecated: Boolean,
     downloadActive: {
       type: Boolean,
       default: true,
@@ -253,6 +266,7 @@ export default {
     mdiLock,
     mdiTimerPlusOutline,
     mdiUpdate,
+    mdiCancel,
     maxDescriptionLength: 175,
     showFullDescription: false,
     audioFormats: ['mp3', 'wav', 'wma', 'ogg'],
@@ -266,6 +280,9 @@ export default {
 
       return undefined;
     },
+    computedCardColor(){
+      return this.deprecated ? 'grey' : this.cardColor;
+    },
     readableCreated() {
       return formatDate(this.created) || this.created;
     },
@@ -273,12 +290,14 @@ export default {
       return formatDate(this.lastModified) || this.lastModified;
     },
     resourceName() {
-      if (!this.name && !!this.url) {
+      let name = this.name ?? 'Unnamed resource';
+      
+      const isUrl = !this.name && !!this.url;
+      if (isUrl) {
         const splits = this.url.split('/');
-        return splits[splits.length - 1];
+        name = splits[splits.length - 1];
       }
-
-      return this.name ? this.name : 'Unnamed resource';
+      return this.deprecated ? `[DEPRECATED] - ${name}` : name;
     },
     scrollbarColorFront() {
       return this.$vuetify

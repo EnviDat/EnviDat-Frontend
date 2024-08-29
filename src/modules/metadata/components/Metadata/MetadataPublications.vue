@@ -36,7 +36,7 @@ import {
   getDoraPidsUrl,
   replacePIDsInText,
   resolvedCitationText,
-} from '@/factories/metaDataFactory';
+} from '@/factories/citationFactory';
 
 export default {
   name: 'MetadataPublications',

@@ -468,6 +468,10 @@ export default {
       type: String,
       default: undefined,
     },
+    publicationState: {
+      type: String,
+      default: undefined,
+    },
     publicationYear: {
       type: String,
       default: undefined,

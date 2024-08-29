@@ -24,9 +24,20 @@
         </v-col>
       </v-row>
 
-      <v-row>
-        <v-col >
-          <ExpandableLayout statusText="Click here to change the author sequence via Drag and Drop"
+      <v-row align="center">
+        <v-col class="flex-grow-0 pr-0 pb-0">
+          <v-icon>open_with</v-icon>
+        </v-col>
+
+        <v-col class="text-h6 pl-1 pb-0" >
+          Author Sequence
+        </v-col>
+      </v-row>
+
+      <v-row >
+        <v-col>
+          <ExpandableLayout statusText="Click here, drag and drop the authors to change the sequence."
+                            :startExpanded="authorFullNames?.length < 10"
                             isFlat>
 
             <BaseDraggableList :items="authorFullNames"

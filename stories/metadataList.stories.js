@@ -10,9 +10,9 @@
  */
 
 import MetadataList from '@/components/MetadataList.vue';
-import {enhanceMetadatasTitleImage, enhanceTags} from '@/factories/metaDataFactory';
+import {enhanceMetadatasTitleImage} from '@/factories/metaDataFactory';
 import baseTags from '@/modules/metadata/store/metadataTags';
-import { getEnabledTags, getPopularTags } from '@/factories/metadataFilterMethods';
+import { getEnabledTags, getPopularTags, enhanceTags } from '@/factories/keywordsFactory';
 import {
   LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
   LISTCONTROL_LIST_ACTIVE,

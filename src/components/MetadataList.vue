@@ -4,9 +4,16 @@
     :mapFilteringPossible="mapFilteringPossible" @onScroll="onScroll">
 
     <template v-slot:filterKeywords>
-      <filter-keywords-view :compactLayout="$vuetify.display.smAndDown" :allTags="allTags"
-        :selectedTagNames="selectedTagNames" :showPlaceholder="loading || updatingTags" @clickedTag="catchTagClicked"
-        @clickedTagClose="catchTagCloseClicked" @clickedClear="catchTagCleared" />
+
+      <FilterKeywordsSingleView
+        :compactLayout="$vuetify.display.smAndDown"
+        :allTags="allTags"
+        :selectedTagNames="selectedTagNames"
+        :showPlaceholder="loading || updatingTags"
+        @clickedTag="catchTagClicked"
+        @clickedTagClose="catchTagCloseClicked"
+        @clickedClear="catchTagCleared" />
+
     </template>
 
     <template #controlPanel>
@@ -115,8 +122,8 @@
 // import InfiniteLoading from 'vue-infinite-loading';
 // Vue.use(InfiniteLoading /* , { options } */);
 
-import { BROWSE_PATH } from '@/router/routeConsts';
-import FilterKeywordsView from '@/components/Filtering/FilterKeywordsView.vue';
+import { BROWSE_PATH} from '@/router/routeConsts';
+import FilterKeywordsSingleView from '@/components/Filtering/FilterKeywordsSingleView.vue';
 import FilterMapView from '@/components/Filtering/FilterMapView.vue';
 import ControlPanel from '@/components/Filtering/ControlPanel.vue';
 
@@ -237,6 +244,24 @@ export default {
     this.infiniteHandler();
   },
   computed: {
+    hasMetadatasContent() {
+      return this.metadatasContent ? Object.keys(this.metadatasContent)?.length > 0 : false;
+    },
+    hasPinnedContent() {
+      if (this.prePinnedIds?.length <= 0) {
+        return false;
+      }
+
+      for (let i = 0; i < this.prePinnedIds.length; i++) {
+        const pin = this.prePinnedIds[i];
+
+        if (this.metadatasContent[pin] === undefined) {
+          return false;
+        }
+      }
+
+      return true;
+    },
     showPinnedElements() {
       return !this.loading && this.showMapFilter && this.prePinnedIds?.length > 0;
     },
@@ -245,7 +270,8 @@ export default {
 
       for (let i = 0; i < this.virtualListContent.length; i++) {
         const metadata = this.virtualListContent[i];
-        if (!this.isPinned(metadata.id)) {
+
+        if (!this.prePinnedIds?.includes(metadata.id)) {
           listWithoutPins.push(metadata);
         }
       }
@@ -257,7 +283,11 @@ export default {
         return [];
       }
 
-      return this.prePinnedIds;
+      if (this.hasMetadatasContent && this.hasPinnedContent) {
+        return this.prePinnedIds
+      }
+
+      return [];
     },
     cardGridClass() {
       const mapActive = this.isActiveControl(LISTCONTROL_MAP_ACTIVE);
@@ -427,9 +457,6 @@ export default {
 
       return false;
     },
-    isPinned(id) {
-      return this.pinnedIds.includes(id);
-    },
     mapFilterHeight() {
       const sHeight = document.documentElement.clientHeight;
 
@@ -546,7 +573,7 @@ export default {
     LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
   }),
   components: {
-    FilterKeywordsView,
+    FilterKeywordsSingleView,
     FilterMapView,
     ControlPanel,
     NoSearchResultsView,

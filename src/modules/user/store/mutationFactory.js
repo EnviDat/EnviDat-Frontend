@@ -12,7 +12,7 @@
 * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import { enhanceMetadatasTitleImage, enhanceTags } from '@/factories/metaDataFactory';
+import { enhanceMetadatasTitleImage } from '@/factories/metaDataFactory';
 
 import {
   EDITMETADATA_AUTHOR_LIST,
@@ -23,6 +23,7 @@ import {
 
 import { updateEditingArray } from '@/factories/userEditingFactory';
 
+import { enhanceTags } from '@/factories/keywordsFactory';
 import { USER_NAMESPACE, VALIDATION_ERROR } from './userMutationsConsts';
 
 

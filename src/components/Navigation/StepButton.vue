@@ -29,7 +29,7 @@
         
       <div v-if="!error"
            class="readableText pl-1 pl-md-0" >
-        <BaseIcon :icon="complete ? mdiCheckCircle : mdiCheckCircleOutline"
+        <BaseIcon :icon="complete ? mdiCheckCircle : mdiAlertOutline"
                   :color="complete ? 'secondary' : 'grey'" />
       </div>
 
@@ -54,7 +54,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
-import { mdiAlertCircle, mdiCheckCircle, mdiCheckCircleOutline } from '@mdi/js';
+import { mdiAlertCircle, mdiCheckCircle, mdiAlertOutline } from '@mdi/js';
 
 export default {
   name: 'StepButton',
@@ -62,7 +62,7 @@ export default {
   data: ()=>({
     mdiAlertCircle,
     mdiCheckCircle,
-    mdiCheckCircleOutline,
+    mdiAlertOutline,
   }),
   props: {
     title: {

@@ -82,11 +82,10 @@
       <v-row no-gutters>
 
         <v-col v-for="res in availableResources"
-          :key="res.id"
-          cols="12"
-          :sm="availableResources.length > 1 ? 6 : 12"
-          :order="res.position"
-          class="pa-2">
+                :key="res.id"
+                cols="12"
+                :sm="availableResources.length > 1 ? 6 : 12"
+                class="pa-2" >
 
           <ResourceCard v-bind="res"
                           :key="res.id"
