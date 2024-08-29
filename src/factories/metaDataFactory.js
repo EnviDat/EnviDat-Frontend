@@ -909,7 +909,7 @@ export function enhanceMetadatas(datasets, mode) {
     dataset = enhanceMetadataEntry(dataset);
     dataset = enhanceMetadataWithModeExtras(mode, dataset);
 
-    dataset = enhanceTags(dataset);
+    dataset = enhanceTags(dataset, categoryCards);
 
     dataset.location = createLocation(dataset);
 
