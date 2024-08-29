@@ -2,6 +2,7 @@
 import ResourceCard from '@/modules/metadata/components/ResourceCard.vue';
 import ResourceCardPlaceholder from '@/modules/metadata/components/ResourceCardPlaceholder.vue';
 
+import { createResources } from '@/factories/metaDataFactory';
 import unFormatedMetadataCards from './js/metadata';
 
 import dateCreatedIcon from '../src/assets/icons/dateCreated.png';
@@ -11,6 +12,7 @@ import fileSizeIcon from '../src/assets/icons/fileSize.png';
 
 const metadataCards = unFormatedMetadataCards;
 
+const resources1 = createResources(metadataCards[2]);
 
 export default {
   title: '3 Cards / Resource Cards / 3 Collections From Datasets',
