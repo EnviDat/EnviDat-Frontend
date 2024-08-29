@@ -87,7 +87,7 @@ export default {
       }
 
       if (this.disabled) {
-        return 'gray';
+        return this.color ?? 'gray';
       }
 
       return this.color ?? 'transparent';

@@ -9,8 +9,8 @@
 
     <v-card-title class="text-h5 resourceHeadline">
       <span class="d-flex align-center">
-        <BaseIcon v-if="isProtected" color="primary-lighten-2" left :icon="mdiLock"></BaseIcon>
-        <BaseIcon v-if="deprecated" color="primary-lighten-2" left :icon="mdiCancel"></BaseIcon>
+        <BaseIcon v-if="isProtected" color="grey-darken-3" left :icon="mdiLock"></BaseIcon>
+        <BaseIcon v-if="deprecated" color="white" left :icon="mdiCancel"></BaseIcon>
         {{ resourceName }}
       </span>
     </v-card-title>
@@ -24,7 +24,7 @@
         'pb-md-3': !showFullDescription,
         'pb-md-10': showFullDescription,
       }">
-      <v-container class="pa-0" fluid>
+      <v-container class="pa-0 mt-2" fluid>
         <v-row no-gutters>
           <v-col
             v-if="showFullDescription ||
@@ -49,7 +49,7 @@
 
         <v-row v-if="!showFullDescription" no-gutters>
           <v-col>
-            <v-divider :dark="dark" class="my-2" />
+            <v-divider :dark="dark" class="mt-4 mb-2" />
           </v-col>
         </v-row>
 
@@ -161,7 +161,7 @@
           <div
             class="fabMenu fabPosition elevation-5 ma-2"
             :class="downloadActive ? 'fabMenuHover' : 'fabMenuDisabled'">
-            <BaseIcon :icon="mdiShield"/>
+            <BaseIcon :icon="mdiShield" color="grey-darken-3" />
             <div
               v-if="downloadActive"
               class="pt-2 lockedText text-black protectedLink">
@@ -250,6 +250,10 @@ export default {
     openButtonIcon: {
       type: String,
       default: mdiMonitorEye,
+    },
+    cardColor: {
+      type: String,
+      default: 'primary',
     },
     isSelected: {
       type: Boolean,
