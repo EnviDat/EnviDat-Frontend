@@ -165,13 +165,16 @@ export default {
     },
   },
   methods: {
-    catchAddPublication({ pid, doi }) {
+    catchAddPublication({ pid, doi, plainText }) {
       this.previewPid = pid;
       this.previewDoi = doi;
+      this.previewPlainText = doi;
 
       let value = pid;
       if (doi) {
         value = doi;
+      } else if (plainText) {
+        value = plainText;
       }
 
       if (value) {
@@ -203,6 +206,7 @@ export default {
 
       this.previewPid = null;
       this.previewDoi = null;
+      this.previewPlainText = null;
     },
   },
   data: () => ({

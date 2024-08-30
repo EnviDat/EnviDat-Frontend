@@ -34,17 +34,11 @@
           prepend-icon="fingerprint"
           @input="doiChange"
         />
-        <!--
-            @change="doiField = $event"
-            @input="validateProperty('doi', $event)"
-        :readonly="mixinMethods_isFieldReadOnly('doi')"
-        :hint="mixinMethods_readOnlyHint('doi')"
-        :error-messages="validationErrors.doi"
-  -->
       </v-col>
 
       <v-col cols="auto" class="ma-auto ma-md-0 pl-md-4 pt-4 pt-md-0">
         <BaseIconButton
+          v-if="!isEditMode"
           material-icon-name="add"
           :fillColor="$vuetify.theme.themes.light.primary"
           icon-color="white"
@@ -53,21 +47,36 @@
         />
       </v-col>
     </v-row>
-
-    <!--
-    <v-row no-gutters
-           class="pt-4">
-      <v-col >
-        <BaseStatusLabelView status-icon="question_mark"
-                             :show-expand-icon="true"
-          />
+    <v-row>
+      <v-col>
+        <a
+          id="textAreaController"
+          class="text-caption"
+          @click="toggleTextArea()"
+          >{{ showTextArea ? 'Hide' : 'Add' }} plain text</a
+        >
+        <template v-if="isEditMode">
+          <v-btn
+            class="mr-4 ml-4"
+            color="primary"
+            x-small
+            @click="editExistingData()"
+            >edit</v-btn
+          >
+          <v-btn x-small @click="closeEditMode()">cancel</v-btn>
+        </template>
       </v-col>
     </v-row>
--->
-
-    <v-row no-gutters class="pt-4">
+    <v-row>
       <v-col>
-        <div class="text-subtitle-1" v-html="labels.subtitlePreview"></div>
+        <!-- @changedText="catchChangedText($event)" -->
+        <GenericTextareaPreviewLayout
+          v-if="showTextArea"
+          v-bind="genericTextAreaObject"
+          :textareaContent="filledTextArea"
+          @inputedText="catchInputedText($event)"
+        >
+        </GenericTextareaPreviewLayout>
       </v-col>
     </v-row>
     <v-row no-gutters class="pt-2">
@@ -95,6 +104,14 @@
 import { EDIT_METADATA_ADD_PUBLICATION_TITLE } from '@/factories/metadataConsts';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseCitationView from '@/components/BaseElements/BaseCitationView.vue';
+// import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
+import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout.vue';
+
+import {
+  eventBus,
+  EDIT_RELATED_PUBLICATION_SEND,
+  EDIT_RELATED_PUBLICATION_ACTION,
+} from '@/factories/eventBus';
 
 import {
   resolveDoiCitationObjectsViaDora,
@@ -104,6 +121,10 @@ import {
 export default {
   name: 'EditAddPublication',
   props: {
+    filledtext: {
+      type: String,
+      default: undefined,
+    },
     pid: {
       type: String,
       default: undefined,
@@ -133,6 +154,12 @@ export default {
       default: false,
     },
   },
+  created() {
+    eventBus.on(EDIT_RELATED_PUBLICATION_SEND, this.editData);
+  },
+  beforeDestroy() {
+    eventBus.off(EDIT_RELATED_PUBLICATION_SEND, this.editData);
+  },
   mounted() {
     if (this.pid) {
       this.pidChange(this.pid);
@@ -141,6 +168,11 @@ export default {
     }
   },
   computed: {
+    genericTextAreaObject() {
+      return {
+        isVerticalLayout: true,
+      };
+    },
     pidField: {
       get() {
         return this.previewPID !== null ? this.previewPID : this.pid;
@@ -158,7 +190,6 @@ export default {
       },
     },
     citationViewProps() {
-      // console.log(this.previewCitation);
       return {
         pid: this.previewCitation?.pid || this.pid,
         doi: this.previewCitation?.doi || this.doi,
@@ -169,6 +200,50 @@ export default {
     },
   },
   methods: {
+    editExistingData() {
+      eventBus.emit(EDIT_RELATED_PUBLICATION_ACTION, {
+        object: this.previewCitation,
+        index: this.indexEditData,
+      });
+      this.closeEditMode();
+    },
+    closeEditMode() {
+      this.isEditMode = false;
+      this.plainText = null;
+      this.previewCitation = null;
+      this.showTextArea = false;
+      this.filledTextArea = '';
+    },
+    editData(object) {
+      this.isEditMode = true;
+      this.showTextArea = true;
+      this.filledTextArea = object.string.value;
+      const previewPlainText = {
+        doi: null,
+        doiUrl: null,
+        citation: object.string.value,
+        abstract: null,
+      };
+      this.previewCitation = previewPlainText;
+      this.indexEditData = object.index;
+    },
+    toggleTextArea() {
+      this.showTextArea = !this.showTextArea;
+      this.plainText = null;
+      this.previewCitation = null;
+      this.filledTextArea = '';
+      this.isEditMode = false;
+    },
+    catchInputedText(value) {
+      const previewPlainText = {
+        doi: null,
+        doiUrl: null,
+        citation: value,
+        abstract: null,
+      };
+      this.previewCitation = previewPlainText;
+      this.plainText = value;
+    },
     pidChange(pid) {
       if (!this.isResolving) {
         this.resolvePIDs(pid);
@@ -218,16 +293,25 @@ export default {
       this.$emit('addClicked', {
         pid: this.pidField,
         doi: this.doiField,
+        plainText: this.plainText,
       });
       this.doiField = null;
       this.pidField = null;
+      this.plainText = null;
+      this.previewCitation = null;
+      this.showTextArea = false;
     },
   },
   data: () => ({
+    indexEditData: false,
+    isEditMode: false,
+    showTextArea: false,
     isResolving: false,
     previewCitation: null,
+    filledTextArea: '',
     previewPID: null,
     previewDOI: null,
+    plainText: null,
     editingProperty: 'relatedPublicationsText',
     labels: {
       title: EDIT_METADATA_ADD_PUBLICATION_TITLE,
@@ -244,6 +328,8 @@ export default {
   components: {
     BaseIconButton,
     BaseCitationView,
+    // BaseStatusLabelView,
+    GenericTextareaPreviewLayout,
   },
 };
 </script>

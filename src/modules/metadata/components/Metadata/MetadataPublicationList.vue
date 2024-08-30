@@ -39,7 +39,13 @@
                 />
                 <!-- isPreview - show this button only if it is within the Edit Related Publications section -->
                 <div v-if="isPreview">
-                  <v-col class="shrink px-1">
+                  <v-col class="shrink px-1 d-flex flex-column flex-md-row">
+                    <BaseIconButton
+                      v-if="isPlainText(n)"
+                      material-icon-name="edit"
+                      icon-color="yellow"
+                      @clicked="sendEditItemData(n.citation, index)"
+                    />
                     <BaseIconButton
                       material-icon-name="remove_circle_outline"
                       icon-color="red"
@@ -90,6 +96,12 @@ import {
   extractedNoPidDoiText,
 } from '@/factories/citationFactory';
 
+import {
+  eventBus,
+  EDIT_RELATED_PUBLICATION_SEND,
+  EDIT_RELATED_PUBLICATION_ACTION,
+} from '@/factories/eventBus';
+
 export default {
   name: 'MetadataPublicationList',
   components: {
@@ -114,6 +126,12 @@ export default {
       type: Array,
       default: () => [],
     },
+  },
+  created() {
+    eventBus.on(EDIT_RELATED_PUBLICATION_ACTION, this.getEditItemData);
+  },
+  beforeDestroy() {
+    eventBus.off(EDIT_RELATED_PUBLICATION_ACTION, this.getEditItemData);
   },
   computed: {
     ...mapState(['config']),
@@ -168,6 +186,25 @@ export default {
     this.resolvedCitations(this.text);
   },
   methods: {
+    isPlainText(n) {
+      return n.doi == null && n.pid == null;
+    },
+    sendEditItemData(value, index) {
+      // scroll to textAreaControlloer (link above test area), import for mobile version
+      const textAreaControlloer = document.getElementById('textAreaController');
+      if (textAreaControlloer) {
+        textAreaControlloer.scrollIntoView({ behavior: 'smooth' });
+      }
+      eventBus.emit(EDIT_RELATED_PUBLICATION_SEND, {
+        string: { value },
+        index,
+      });
+    },
+    getEditItemData(object) {
+      this.dataRelatedPublications = this.dataRelatedPublications.map(
+        (obj, i) => (i === object.index ? object.object : obj),
+      );
+    },
     removeItem(array, index) {
       if (index >= 0 && index < array.length) {
         array.splice(index, 1);
@@ -232,9 +269,15 @@ export default {
       }
 
       if (!pidMapSize && !doiMapSize) {
-        this.replacedText = text;
+        const stringToArray = text.split('\n').map(line => line.trim());
         this.loading = false;
-        return '';
+        if (this.text.length > 0) {
+          this.$nextTick(() =>
+            this.generateCitationFromSimpleText(stringToArray),
+          );
+        } else {
+          return '';
+        }
       }
 
       return text;

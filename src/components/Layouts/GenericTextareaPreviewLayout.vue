@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div :id="id">
     <div v-if="isVerticalLayout">
       <v-row>
         <v-col :cols="columns">
           <v-textarea
-              class="heightAndScroll pt-1"
+            class="heightAndScroll pt-1"
             :label="labelTextarea"
             :placeholder="placeholderTextarea"
             outlined
@@ -86,6 +86,10 @@
 export default {
   name: 'GenericTextareaPreviewLayout',
   props: {
+    id: {
+      type: String,
+      default: null,
+    },
     isVerticalLayout: {
       type: Boolean,
       default: false,
