@@ -269,9 +269,9 @@ export default {
       }
 
       if (!pidMapSize && !doiMapSize) {
-        const stringToArray = text.split('\n').map(line => line.trim());
+        const stringToArray = text?.split('\n').map(line => line.trim());
         this.loading = false;
-        if (this.text.length > 0) {
+        if (this.text?.length > 0) {
           this.$nextTick(() =>
             this.generateCitationFromSimpleText(stringToArray),
           );
