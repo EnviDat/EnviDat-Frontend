@@ -35,88 +35,79 @@ export default {
   parameters: {},
 };
 
-export const ResourceCardCollection = {
-  render: args => ({
-    components: { ResourceCard },
-    data: () => ({ args }),
-    template: `
+export const ResourceCardCollection = () => ({
+  components: { ResourceCard },
+  template: `
+    <v-row>
+      <v-col cols="3" class="pa-2" v-for="(res, index) in metadataCards[2].resources" :key="'1_' + index" >
+        <resource-card
+          v-bind="res"
+        />
+      </v-col>
 
-      <v-row>
-        <v-col cols="3" class="pa-2" v-for="(res, index) in args.metadataCards[2].resources" :key="'1_' + index" >
-          <resource-card
-            v-bind="res"
-            :doiIcon="args.doiIcon"
-            :dateCreatedIcon="args.dateCreatedIcon"
-            :lastModifiedIcon="args.lastModifiedIcon"
-            :fileExtensionIcon="args.iconFiles"
-          />
-        </v-col>
+      <v-col cols="4" class="pa-2" v-for="(res, index) in metadataCards[2].resources" :key="'2_' + index" >
+        <resource-card
+          v-bind="res"
+          :doiIcon="doiIcon"
+          :dateCreatedIcon="dateCreatedIcon"
+          :lastModifiedIcon="lastModifiedIcon"
+          :fileExtensionIcon="iconFiles"
+          :isProtected="true"
+        />
+      </v-col>
 
-        <v-col cols="4" class="pa-2" v-for="(res, index) in args.metadataCards[2].resources" :key="'2_' + index" >
-          <resource-card
-            v-bind="res"
-            :doiIcon="args.doiIcon"
-            :dateCreatedIcon="args.dateCreatedIcon"
-            :lastModifiedIcon="args.lastModifiedIcon"
-            :fileExtensionIcon="args.iconFiles"
-            :isProtected="true"
-          />
-        </v-col>
+      <v-col cols="12" class="pa-2" v-for="(res, index) in metadataCards[2].resources" :key="'3_' + index" >
+        <resource-card
+          v-bind="res"
+          :doiIcon="doiIcon"
+          :dateCreatedIcon="dateCreatedIcon"
+          :lastModifiedIcon="lastModifiedIcon"
+          :fileExtensionIcon="iconFiles"
+        />
+      </v-col>
 
-        <v-col cols="12" class="pa-2" v-for="(res, index) in args.metadataCards[2].resources" :key="'3_' + index" >
-          <resource-card
-            v-bind="res"
-            :doiIcon="args.doiIcon"
-            :dateCreatedIcon="args.dateCreatedIcon"
-            :lastModifiedIcon="args.lastModifiedIcon"
-            :fileExtensionIcon="args.iconFiles"
-          />
-        </v-col>
+      <v-col cols="3" class="pa-2" v-for="(res, index) in metadataCards[2].resources" :key="'4_' + index" >
+        <resource-card
+          v-bind="res"
+          :doiIcon="doiIcon"
+          :dateCreatedIcon="dateCreatedIcon"
+          :lastModifiedIcon="lastModifiedIcon"
+          :fileExtensionIcon="iconFiles"
+          :deprecated="true"
+        />
+      </v-col>
 
-        <v-col cols="3" class="pa-2" v-for="(res, index) in args.metadataCards[2].resources" :key="'4_' + index" >
-          <resource-card
-            v-bind="res"
-            :doiIcon="args.doiIcon"
-            :dateCreatedIcon="args.dateCreatedIcon"
-            :lastModifiedIcon="args.lastModifiedIcon"
-            :fileExtensionIcon="args.iconFiles"
-            :deprecated="true"
-          />
-        </v-col>
+      <v-col cols="12" class="pa-2 my-2" >
+        <h2>Resource Cards with Download disabled</h2>
+      </v-col>
 
-        <v-col cols="12" class="pa-2 my-2" >
-          <h2>Resource Cards with Download disabled</h2>
-        </v-col>
+      <v-col cols="6" class="pa-2" v-for="(res, index) in metadataCards[0].resources" :key="'5_' + index" >
+        <resource-card
+          v-bind="res"
+          :doiIcon="doiIcon"
+          :dateCreatedIcon="dateCreatedIcon"
+          :lastModifiedIcon="lastModifiedIcon"
+          :fileExtensionIcon="iconFiles"
+          :downloadActive="false"
+        />
+      </v-col>
 
-        <v-col cols="6" class="pa-2" v-for="(res, index) in args.metadataCards[0].resources" :key="'5_' + index" >
-          <resource-card
-            v-bind="res"
-            :doiIcon="args.doiIcon"
-            :dateCreatedIcon="args.dateCreatedIcon"
-            :lastModifiedIcon="args.lastModifiedIcon"
-            :fileExtensionIcon="args.iconFiles"
-            :downloadActive="false"
-          />
-        </v-col>
-
-      </v-row>
-    `,
-  }),
-  args: {
-    metadataCards,
-    doiIcon,
-    fileSizeIcon,
-    dateCreatedIcon,
-    lastModifiedIcon,
-    iconFiles,
-  },
-};
+    </v-row>
+  `,
+data: () => ({
+  metadataCards,
+  doiIcon,
+  fileSizeIcon,
+  dateCreatedIcon,
+  lastModifiedIcon,
+  iconFiles,    
+  }),  
+});
 
 export const ResourceCardWithPreview = () => ({
   components: { ResourceCard },
   template: `
     <v-row >
-
       <v-col cols="3" class="pa-2"
               v-for="(res, index) in metadataCards[2].resources"
               :key="'cols-3_' + index" >
@@ -197,5 +188,9 @@ export const ResourceCardDownloaded = () => ({
     `,
   data: () => ({
     resources: resources1.resources,
+    doiIcon,
+    dateCreatedIcon,
+    lastModifiedIcon,
+    iconFiles,    
   }),
 });
