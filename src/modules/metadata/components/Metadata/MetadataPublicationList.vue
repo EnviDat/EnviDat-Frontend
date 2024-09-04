@@ -135,6 +135,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    updatedCitation: {
+      type: String,
+      default: undefined,
+    },
+    updatedCitationIndex: {
+      type: Number,
+      default: undefined,
+    },
     allDatasets: {
       // this is only for testing & implementation via storybook
       type: Array,
@@ -228,10 +236,8 @@ export default {
     },
     sendRemoveItem(index) {
       this.removeItem(this.dataRelatedPublications, index);
-      // const removedText = this.getEditItemData(index);
-      const citationsArray = this.dataRelatedPublications.map((citationObjects) => citationObjects?.citationText);
-
-      this.$emit('updateText', citationsArray);
+      const newRelatedText = this.recreateRelatedPublicationText();
+      this.$emit('updateText', newRelatedText);
     },
     removeItem(array, index) {
       if (index >= 0 && index < array.length) {
@@ -253,6 +259,26 @@ export default {
       return this.$vuetify
         ? this.$vuetify.theme.themes.light.highlight
         : 'auto';
+    },
+    recreateRelatedPublicationText() {
+      let newText = '';
+
+      for (let i = 0; i < this.dataRelatedPublications.length; i++) {
+        if (i !== 0) {
+          newText += '\n';
+        }
+
+        const publicationObj = this.dataRelatedPublications[i];
+        const id = publicationObj.pid || publicationObj.doi || null;
+
+        if(id) {
+          newText += `- ${id}`;
+        } else {
+          newText += `- ${publicationObj.citation}`;
+        }
+      }
+
+      return newText;
     },
     generatePublications() {
       this.dataRelatedPublications = [
@@ -368,8 +394,24 @@ export default {
   },
   watch: {
     text() {
+      console.log('new text?', this.text);
       this.resolvedCitations(this.text);
       // this.replacedText = null;
+    },
+    updatedCitationIndex() {
+      console.log('in watcher list index', this.updatedCitationIndex);
+    },
+    updatedCitation() {
+      console.log('in watcher list', this.updatedCitation);
+      if (this.updatedCitation) {
+
+        const citationObject = this.dataRelatedPublications[this.updatedCitationIndex];
+        if (citationObject){
+          citationObject.citation = this.updatedCitation;
+          const newRelatedText = this.recreateRelatedPublicationText();
+          this.$emit('updateText', newRelatedText);
+        }
+      }
     },
   },
   data: () => ({

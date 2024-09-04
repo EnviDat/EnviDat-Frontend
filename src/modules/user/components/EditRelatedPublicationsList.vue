@@ -68,7 +68,10 @@
           <MetadataPublicationList
             :isPreview="true"
             v-bind="publicationsObject"
+            :updatedCitation="updatedCitation"
+            :updatedCitationIndex="selectedTextIndex"
             @editItem="catchEditItem"
+            @updateText="catchUpdateText"
           />
         </v-col>
       </v-row>
@@ -169,16 +172,23 @@ export default {
     },
   },
   methods: {
+    catchUpdateText(newRelatedText) {
+      this.catchChangedText(newRelatedText);
+    },
     catchEditItem({ citationText, index }) {
+      console.log('catchEditItem', citationText, index);
       this.selectedPlainText = citationText;
       this.selectedTextIndex = index;
     },
     catchSaveText(citationText) {
-      this.catchAddPublication({ plainText: citationText })
+      this.updatedCitation = citationText;
+      console.log('catchSaveText', this.updatedCitation);
     },
     catchCancelText() {
       this.selectedPlainText = null;
       this.selectedTextIndex = null;
+      this.updatedCitation = null;
+      console.log('catchCancelText', this.updatedCitation);
     },
     catchAddPublication({ pid, doi, plainText }) {
       this.previewPid = pid;
@@ -218,9 +228,16 @@ export default {
         data: { [this.editingProperty]: value },
       });
 
+      console.log({
+        object: EDITMETADATA_RELATED_PUBLICATIONS,
+        data: { [this.editingProperty]: value },
+      });
+
       this.previewPid = null;
       this.previewDoi = null;
       this.selectedPlainText = null;
+      this.selectedTextIndex = null;
+      this.updatedCitation = null;
     },
   },
   data: () => ({
@@ -241,6 +258,9 @@ export default {
     validationErrors: {
       relatedPublicationsText: null,
     },
+    selectedPlainText: null,
+    updatedCitation: null,
+    selectedTextIndex: null,
   }),
   components: {
     MetadataPublicationList,

@@ -10,6 +10,7 @@
  */
 
 import EditRelatedPublicationsList from '@/modules/user/components/EditRelatedPublicationsList.vue';
+import { EDITMETADATA_OBJECT_UPDATE, eventBus } from '@/factories/eventBus';
 import { mobileViewportParams } from './js/envidatViewports';
 
 import metadata from './js/metadata';
@@ -33,11 +34,25 @@ export const FilledList = {
   },
 };
 
-export const FilledListMultipleText = {
-  args: {
-    relatedPublicationsText: multipleText,
+
+export const FilledListMultipleText = () => ({
+  components: { EditRelatedPublicationsList },
+  template: '<EditRelatedPublicationsList :relatedPublicationsText="multipleText" />',
+  created() {
+    eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.updateRelatedtext);
   },
-};
+  beforeDestroy() {
+    eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.updateRelatedtext);
+  },
+  methods: {
+    updateRelatedtext(updatedObject) {
+      this.multipleText = updatedObject.data.relatedPublicationsText;
+    },
+  },
+  data: () => ({
+    multipleText,
+  }),
+});
 
 export const MobileFilledList = {
   args: { ...FilledList.args },

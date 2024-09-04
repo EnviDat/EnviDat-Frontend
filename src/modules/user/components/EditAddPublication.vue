@@ -51,6 +51,7 @@
       <v-col>
         <a
           id="textAreaController"
+          ref="textAreaController"
           class="text-caption"
           @click="toggleTextArea()"
           >{{ showTextArea ? 'Hide' : 'Add' }} plain text</a
@@ -63,7 +64,7 @@
             @click="editExistingData()"
             >edit</v-btn
           >
-          <v-btn x-small @click="closeEditMode()">cancel</v-btn>
+          <v-btn x-small @click="closeEditMode(true)">cancel</v-btn>
         </template>
       </v-col>
     </v-row>
@@ -204,18 +205,27 @@ export default {
       this.$emit('saveText', this.previewCitation?.citation || this.citation );
       this.closeEditMode();
     },
-    closeEditMode() {
+    closeEditMode(triggerCancelEvent = false) {
       this.isEditMode = false;
       this.plainText = null;
       this.previewCitation = null;
       this.showTextArea = false;
       this.filledTextArea = '';
-      this.$emit('cancelText');
+
+      if (triggerCancelEvent) {
+        this.$emit('cancelText');
+      }
     },
     editData(citationText) {
       this.isEditMode = true;
       this.showTextArea = true;
       this.filledTextArea = citationText;
+
+
+      const textAreaController = this.$refs.textAreaController;
+      if (textAreaController) {
+        textAreaController.scrollIntoView({ behavior: 'smooth' });
+      }
 
       this.previewCitation = {
         doi: null,
@@ -302,9 +312,10 @@ export default {
     },
   },
   watch: {
-    selectPlainText() {
+    selectedPlainText() {
+
       if (this.selectedPlainText) {
-        this.editData(this.selectPlainText);
+        this.editData(this.selectedPlainText);
       }
     },
   },
