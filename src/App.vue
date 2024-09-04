@@ -94,13 +94,14 @@
         id="cookieBanner"
         style="position: absolute; bottom: 0; z-index: 1001; width: 100%; "
         :text="cookieInfoText"
+        deniedText="Okay"
         icon="cookie"
-        confirmText="Accept all tracking"
-        deniedText="Accept only essential cookies"
         bannerColor="highlight"
         :confirmClick="catchCookieInfoOk"
         :deniedClick="deniedTracking"
       />
+      <!-- deniedText="Accept only essential cookies" -->
+      <!-- confirmText="Accept all tracking" -->
 
       <v-dialog
         v-model="showReloadDialog"
@@ -815,6 +816,8 @@ export default {
     dialogCancelCallback: () => {},
     showCookieInfo: true,
     cookieInfoText:
+      "On envidat.ch cookies are used to enhance your experience and provide features when you're signed in. These cookies are 'technical only' and are NOT used for tracking or monitoring you.",
+    cookieInfoTextMatomo:
       "On envidat.ch, cookies are used to enhance your experience and provide features when you're signed in. These cookies are 'technical only' and we ANONYMOUSLY track usage (e.g. page views and downloads).",
     redirectToDashboard: false,
     appVersion: import.meta.env.VITE_VERSION,

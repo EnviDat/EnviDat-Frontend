@@ -40,7 +40,7 @@ import {
   guessTagCategory,
 } from '@/factories/keywordsFactory';
 
-import { getResourcesDownloads } from '@/modules/matomo/store/matomoStore';
+// import { getResourcesDownloads } from '@/modules/matomo/store/matomoStore';
 
 /**
  * Create a pseudo random integer based on a given seed using the 'seedrandom' lib.
@@ -452,15 +452,15 @@ export function createResources(
   if (dataset.resources) {
     dataset.resources.forEach(async element => {
       // get the number of download from matomo API
-      const numberOfDownload = await getResourcesDownloads(element.name);
+      // const numberOfDownload = await getResourcesDownloads(element.name);
       const res = createResource(
         element,
         dataset.name,
         organizationID,
         signedInUserName,
         signedInUserOrganizationIds,
-        numberOfDownload,
       );
+      // numberOfDownload,
       res.metadataContact = contactEmail;
 
       resources.push(res);

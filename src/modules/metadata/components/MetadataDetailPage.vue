@@ -206,7 +206,7 @@ export default {
   async mounted() {
     this.loadMetaDataContent();
 
-    await this.setPageViews(this.$route.fullPath, 'Visit');
+    // await this.setPageViews(this.$route.fullPath, 'Visit');
 
     window.scrollTo(0, 0);
 
