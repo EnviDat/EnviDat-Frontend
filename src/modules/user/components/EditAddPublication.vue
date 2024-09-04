@@ -48,7 +48,8 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col>
+      <v-col class="flex-grow-0"
+             cols="1">
         <a
           id="textAreaController"
           ref="textAreaController"
@@ -56,16 +57,26 @@
           @click="toggleTextArea()"
           >{{ showTextArea ? 'Hide' : 'Add' }} plain text</a
         >
-        <template v-if="isEditMode">
-          <v-btn
-            class="mr-4 ml-4"
-            color="primary"
-            x-small
-            @click="editExistingData()"
-            >edit</v-btn
-          >
-          <v-btn x-small @click="closeEditMode(true)">cancel</v-btn>
-        </template>
+      </v-col>
+
+      <v-col v-if="showTextArea"
+             class="flex-grow-0" >
+        <BaseRectangleButton
+            button-text="Save Text"
+            is-xs-small
+            @clicked="editExistingData()"
+        />
+
+      </v-col>
+
+      <v-col v-if="showTextArea"
+             class="flex-grow-0" >
+        <BaseRectangleButton
+            button-text="Cancel"
+            color="gray"
+            is-xs-small
+            @clicked="closeEditMode(true)"
+        />
       </v-col>
     </v-row>
     <v-row>

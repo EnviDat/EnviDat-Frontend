@@ -1,18 +1,4 @@
 <template id="MetadataPublications">
-  <!--
-    <section>
-      <template v-if="replacedText != null">
-        <expandable-text-layout
-          :title="METADATA_PUBLICATIONS_TITLE"
-          :text="replacedText"
-          :showPlaceholder="loading"
-          :sanitizeHTML="false"
-          :statusText="resolvingStatusText"
-          class="relatedPubList"
-        />
-      </template>
-      <template v-else>
-  -->
       <v-card class="relatedPubList">
         <v-card-title class="metadata_title text-h6 pa-4">
           {{ METADATA_PUBLICATIONS_TITLE }}
@@ -23,9 +9,7 @@
           type="list-item-two-line"
         >
         </v-skeleton-loader>
-<!--
-        <template v-else>
--->
+
           <v-card-text
             ref="text"
             class="pa-4 pt-0 heightAndScroll readableText"
@@ -34,6 +18,7 @@
             "
           >
             <v-col v-for="(n, index) in dataSliced" :key="'n_' + index">
+
               <section :class="{ 'd-flex align-center': isPreview }">
                 <BaseCitationView
                   :abstract="n.abstract"
@@ -81,14 +66,9 @@
               @clicked="readMore"
             />
           </v-card-actions>
-<!--
-        </template>
--->
+
       </v-card>
-<!--
-    </template>
-  </section>
--->
+
 </template>
 
 <script>
@@ -272,15 +252,15 @@ export default {
         const id = publicationObj.pid || publicationObj.doi || null;
 
         if(id) {
-          newText += `- ${id}`;
+          newText += id;
         } else {
-          newText += `- ${publicationObj.citation}`;
+          newText += publicationObj.citation;
         }
       }
 
       return newText;
     },
-    generatePublications() {
+    updatePublicationList() {
       this.dataRelatedPublications = [
         ...(this.pidPublications || []),
         ...(this.doiPublications || []),
@@ -289,6 +269,7 @@ export default {
     },
     generateCitationFromSimpleText(arrayText) {
       this.emptyCitation = [];
+
       arrayText.forEach(citation => {
         if (citation !== 'null' && citation.trim() !== '') {
           const citationProp = {
@@ -300,7 +281,8 @@ export default {
           this.emptyCitation.push(citationProp);
         }
       });
-      this.generatePublications();
+
+      this.updatePublicationList();
     },
     resolvedCitations(text) {
       const pidMapSize = this.extractedPIDMap?.size || 0;
@@ -359,7 +341,8 @@ export default {
 
         const response = await axios.get(doraUrl);
         this.pidPublications = response.data;
-        this.generatePublications();
+
+        this.updatePublicationList();
       } catch (e) {
         this.resolveError = e;
         this.loading = false;
@@ -382,7 +365,8 @@ export default {
         citationMap.forEach(value => {
           this.doiPublications.push(value);
         });
-        this.generatePublications();
+
+        this.updatePublicationList();
       } catch (e) {
         this.resolveDoiError = e;
         this.loading = false;
@@ -394,23 +378,29 @@ export default {
   },
   watch: {
     text() {
-      console.log('new text?', this.text);
       this.resolvedCitations(this.text);
       // this.replacedText = null;
     },
-    updatedCitationIndex() {
-      console.log('in watcher list index', this.updatedCitationIndex);
-    },
     updatedCitation() {
-      console.log('in watcher list', this.updatedCitation);
+
       if (this.updatedCitation) {
 
-        const citationObject = this.dataRelatedPublications[this.updatedCitationIndex];
-        if (citationObject){
-          citationObject.citation = this.updatedCitation;
-          const newRelatedText = this.recreateRelatedPublicationText();
-          this.$emit('updateText', newRelatedText);
+        if (this.updatedCitationIndex === undefined) {
+          // case for a new entry of just plain text
+          this.generateCitationFromSimpleText([
+              ...this.extractedNoPidDoi,
+              this.updatedCitation,
+          ]);
+        } else {
+          // case for selected item for editing and now needs updating
+          const citationObject = this.dataRelatedPublications[this.updatedCitationIndex];
+          if (citationObject) {
+            citationObject.citation = this.updatedCitation;
+          }
         }
+
+        const newRelatedText = this.recreateRelatedPublicationText();
+        this.$emit('updateText', newRelatedText);
       }
     },
   },

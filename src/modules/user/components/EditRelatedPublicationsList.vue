@@ -176,19 +176,16 @@ export default {
       this.catchChangedText(newRelatedText);
     },
     catchEditItem({ citationText, index }) {
-      console.log('catchEditItem', citationText, index);
       this.selectedPlainText = citationText;
       this.selectedTextIndex = index;
     },
     catchSaveText(citationText) {
       this.updatedCitation = citationText;
-      console.log('catchSaveText', this.updatedCitation);
     },
     catchCancelText() {
-      this.selectedPlainText = null;
-      this.selectedTextIndex = null;
-      this.updatedCitation = null;
-      console.log('catchCancelText', this.updatedCitation);
+      this.selectedPlainText = undefined;
+      this.selectedTextIndex = undefined;
+      this.updatedCitation = undefined;
     },
     catchAddPublication({ pid, doi, plainText }) {
       this.previewPid = pid;
@@ -203,7 +200,7 @@ export default {
 
       if (value) {
         if (!this.previewText?.includes(value)) {
-          this.previewText += `\n- ${value}`;
+          this.previewText += `\n ${value}`;
 
           this.catchChangedText(this.previewText);
         }
@@ -228,16 +225,11 @@ export default {
         data: { [this.editingProperty]: value },
       });
 
-      console.log({
-        object: EDITMETADATA_RELATED_PUBLICATIONS,
-        data: { [this.editingProperty]: value },
-      });
-
       this.previewPid = null;
       this.previewDoi = null;
-      this.selectedPlainText = null;
-      this.selectedTextIndex = null;
-      this.updatedCitation = null;
+      this.selectedPlainText = undefined;
+      this.selectedTextIndex = undefined;
+      this.updatedCitation = undefined;
     },
   },
   data: () => ({
@@ -258,9 +250,9 @@ export default {
     validationErrors: {
       relatedPublicationsText: null,
     },
-    selectedPlainText: null,
-    updatedCitation: null,
-    selectedTextIndex: null,
+    selectedPlainText: undefined,
+    updatedCitation: undefined,
+    selectedTextIndex: undefined,
   }),
   components: {
     MetadataPublicationList,
