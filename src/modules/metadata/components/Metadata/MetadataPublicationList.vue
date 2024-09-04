@@ -1,26 +1,31 @@
 <template id="MetadataPublications">
-  <section>
-    <template v-if="replacedText != null">
-      <expandable-text-layout
-        :title="METADATA_PUBLICATIONS_TITLE"
-        :text="replacedText"
-        :showPlaceholder="loading"
-        :sanitizeHTML="false"
-        :statusText="resolvingStatusText"
-        class="relatedPubList"
-      />
-    </template>
-    <template v-else>
-      <v-card :class="'relatedPubList'">
+  <!--
+    <section>
+      <template v-if="replacedText != null">
+        <expandable-text-layout
+          :title="METADATA_PUBLICATIONS_TITLE"
+          :text="replacedText"
+          :showPlaceholder="loading"
+          :sanitizeHTML="false"
+          :statusText="resolvingStatusText"
+          class="relatedPubList"
+        />
+      </template>
+      <template v-else>
+  -->
+      <v-card class="relatedPubList">
         <v-card-title class="metadata_title text-h6 pa-4">
           {{ METADATA_PUBLICATIONS_TITLE }}
         </v-card-title>
+
         <v-skeleton-loader
           v-if="loading || showPlaceholder"
           type="list-item-two-line"
         >
         </v-skeleton-loader>
+<!--
         <template v-else>
+-->
           <v-card-text
             ref="text"
             class="pa-4 pt-0 heightAndScroll readableText"
@@ -49,13 +54,14 @@
                     <BaseIconButton
                       material-icon-name="remove_circle_outline"
                       icon-color="red"
-                      @clicked="removeItem(dataRelatedPublications, index)"
+                      @clicked="sendRemoveItem(index)"
                     />
                   </v-col>
                 </div>
               </section>
             </v-col>
           </v-card-text>
+
           <v-card-actions
             v-if="dataLength > 2 && !isPreview"
             class="ma-0 pa-2"
@@ -75,17 +81,23 @@
               @clicked="readMore"
             />
           </v-card-actions>
+<!--
         </template>
+-->
       </v-card>
+<!--
     </template>
   </section>
+-->
 </template>
 
 <script>
 import axios from 'axios';
 import { mapState } from 'vuex';
 import BaseCitationView from '@/components/BaseElements/BaseCitationView.vue';
+/*
 import ExpandableTextLayout from '@/components/Layouts/ExpandableTextLayout.vue';
+*/
 
 import { METADATA_PUBLICATIONS_TITLE } from '@/factories/metadataConsts';
 import {
@@ -106,7 +118,9 @@ export default {
   name: 'MetadataPublicationList',
   components: {
     BaseCitationView,
+/*
     ExpandableTextLayout,
+*/
   },
   props: {
     text: {
@@ -190,20 +204,34 @@ export default {
       return n.doi == null && n.pid == null;
     },
     sendEditItemData(value, index) {
+      this.$emit('editItem', {
+        citationText: value,
+        index,
+      });
+
+/*
       // scroll to textAreaControlloer (link above test area), import for mobile version
       const textAreaControlloer = document.getElementById('textAreaController');
       if (textAreaControlloer) {
         textAreaControlloer.scrollIntoView({ behavior: 'smooth' });
       }
       eventBus.emit(EDIT_RELATED_PUBLICATION_SEND, {
-        string: { value },
+        citationText: value,
         index,
       });
+*/
     },
     getEditItemData(object) {
       this.dataRelatedPublications = this.dataRelatedPublications.map(
         (obj, i) => (i === object.index ? object.object : obj),
       );
+    },
+    sendRemoveItem(index) {
+      this.removeItem(this.dataRelatedPublications, index);
+      // const removedText = this.getEditItemData(index);
+      const citationsArray = this.dataRelatedPublications.map((citationObjects) => citationObjects?.citationText);
+
+      this.$emit('updateText', citationsArray);
     },
     removeItem(array, index) {
       if (index >= 0 && index < array.length) {
@@ -341,7 +369,7 @@ export default {
   watch: {
     text() {
       this.resolvedCitations(this.text);
-      this.replacedText = null;
+      // this.replacedText = null;
     },
   },
   data: () => ({
@@ -350,7 +378,7 @@ export default {
     isDoiResolving: false,
     resolveError: null,
     resolveDoiError: null,
-    replacedText: null,
+    // replacedText: null,
     dataRelatedPublications: null,
     doiPublications: null,
     pidPublications: null,

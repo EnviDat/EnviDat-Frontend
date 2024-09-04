@@ -48,8 +48,11 @@
           <EditAddPublication
             :pid="previewPid"
             :doi="previewDoi"
+            :selectedPlainText="selectedPlainText"
             dense
             @addClicked="catchAddPublication"
+            @saveText="catchSaveText"
+            @cancelText="catchCancelText"
           />
         </v-col>
       </v-row>
@@ -65,6 +68,7 @@
           <MetadataPublicationList
             :isPreview="true"
             v-bind="publicationsObject"
+            @editItem="catchEditItem"
           />
         </v-col>
       </v-row>
@@ -165,10 +169,20 @@ export default {
     },
   },
   methods: {
+    catchEditItem({ citationText, index }) {
+      this.selectedPlainText = citationText;
+      this.selectedTextIndex = index;
+    },
+    catchSaveText(citationText) {
+      this.catchAddPublication({ plainText: citationText })
+    },
+    catchCancelText() {
+      this.selectedPlainText = null;
+      this.selectedTextIndex = null;
+    },
     catchAddPublication({ pid, doi, plainText }) {
       this.previewPid = pid;
       this.previewDoi = doi;
-      this.previewPlainText = doi;
 
       let value = pid;
       if (doi) {
@@ -206,7 +220,7 @@ export default {
 
       this.previewPid = null;
       this.previewDoi = null;
-      this.previewPlainText = null;
+      this.selectedPlainText = null;
     },
   },
   data: () => ({

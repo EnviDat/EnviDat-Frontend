@@ -73,7 +73,6 @@
         <GenericTextareaPreviewLayout
           v-if="showTextArea"
           v-bind="genericTextAreaObject"
-          :textareaContent="filledTextArea"
           @inputedText="catchInputedText($event)"
         >
         </GenericTextareaPreviewLayout>
@@ -121,7 +120,7 @@ import {
 export default {
   name: 'EditAddPublication',
   props: {
-    filledtext: {
+    selectedPlainText: {
       type: String,
       default: undefined,
     },
@@ -171,6 +170,7 @@ export default {
     genericTextAreaObject() {
       return {
         isVerticalLayout: true,
+        textareaContent: this.selectedPlainText,
       };
     },
     pidField: {
@@ -201,10 +201,7 @@ export default {
   },
   methods: {
     editExistingData() {
-      eventBus.emit(EDIT_RELATED_PUBLICATION_ACTION, {
-        object: this.previewCitation,
-        index: this.indexEditData,
-      });
+      this.$emit('saveText', this.previewCitation?.citation || this.citation );
       this.closeEditMode();
     },
     closeEditMode() {
@@ -213,19 +210,21 @@ export default {
       this.previewCitation = null;
       this.showTextArea = false;
       this.filledTextArea = '';
+      this.$emit('cancelText');
     },
-    editData(object) {
+    editData(citationText) {
       this.isEditMode = true;
       this.showTextArea = true;
-      this.filledTextArea = object.string.value;
-      const previewPlainText = {
+      this.filledTextArea = citationText;
+
+      this.previewCitation = {
         doi: null,
         doiUrl: null,
-        citation: object.string.value,
+        citation: citationText,
         abstract: null,
       };
-      this.previewCitation = previewPlainText;
-      this.indexEditData = object.index;
+
+      // this.indexEditData = object.index;
     },
     toggleTextArea() {
       this.showTextArea = !this.showTextArea;
@@ -302,8 +301,15 @@ export default {
       this.showTextArea = false;
     },
   },
+  watch: {
+    selectPlainText() {
+      if (this.selectedPlainText) {
+        this.editData(this.selectPlainText);
+      }
+    },
+  },
   data: () => ({
-    indexEditData: false,
+    // indexEditData: false,
     isEditMode: false,
     showTextArea: false,
     isResolving: false,
