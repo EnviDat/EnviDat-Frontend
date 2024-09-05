@@ -20,13 +20,6 @@ const initState = {
   modeFilters: [],
 }
 
-modes.forEach((modeMeta) => {
-  initState.modeMetadata.push(modeMeta);
-  initState.modeDatasets.push({});
-  initState.modeFilters.push([]);
-})
-
-
 
 export const useModeStore = defineStore(MODE_STORE, {
   state: () => ({ ...initState }),
@@ -38,6 +31,12 @@ export const useModeStore = defineStore(MODE_STORE, {
   actions: {
     init(cardBGImages) {
       this.cardBGImages = cardBGImages;
+
+      modes.forEach((modeMeta) => {
+        initState.modeMetadata.push(modeMeta);
+        initState.modeDatasets.push({});
+        initState.modeFilters.push([]);
+      })
     },
     /**
      * returns the metadata object for a mode name
