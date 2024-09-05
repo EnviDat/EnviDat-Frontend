@@ -49,7 +49,6 @@ set-vars:
       if [ "${CI_COMMIT_REF_NAME}" == "develop" ]; then
         echo "CI_COMMIT_REF_NAME=dev" >> build.env
       fi
-    - echo "information environment ${CI_COMMIT_REF_NAME}"
     # move all variables from the CI / CD into the build variables
     - cat .env >> build.env
     # bash "source" command loads all the variables from the file
@@ -59,6 +58,7 @@ set-vars:
     - echo "BUILD_ZIP_NAME=envidat-frontend-${BUILD_VERSION}-${CI_COMMIT_REF_NAME}.zip" >> build.env
     - echo "Matomo token ${MATOMO_TOKEN}."
     - echo "content of build.env"
+    - echo "information environment ${CI_COMMIT_REF_NAME}"
     - cat build.env
   artifacts:
     reports:
