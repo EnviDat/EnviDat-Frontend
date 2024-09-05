@@ -57,7 +57,7 @@
       "showDataCreditScore": false
     },
     "resourcesConfig": {
-      "downloadActive": false
+      "downloadActive": true
     }
  },
   "projectsConfig": {
