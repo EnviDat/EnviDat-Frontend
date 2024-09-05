@@ -12,7 +12,6 @@
     @click.stop="clicked"
     :closable="closeable"
     @click:close="$emit('clickedClose', name)"
-    prepend-icon="date_range"
   >
     <v-icon v-if="isAccordion" left size="14px">{{
       !isOpen ? 'keyboard_arrow_down' : 'keyboard_arrow_up'
