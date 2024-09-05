@@ -88,13 +88,12 @@
             no-gutters
             justify="center"
           >
-            <p>{{ loading }} - {{ currentStateInfos.buttonEvent }}</p>
             <BaseRectangleButton
               id="interactiveButton"
               :button-text="currentStateInfos.buttonText"
               :material-icon-name="currentStateInfos.buttonIcon"
               icon-color="white"
-              :loading="loading"
+              :loading="loading || !isUserAllowedToEdit"
               :url="
                 publicationState === PUBLICATION_STATE_PUBLISHED
                   ? doiUrl
