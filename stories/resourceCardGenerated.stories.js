@@ -44,6 +44,7 @@ export const DefaultSelected = {
     description: 'A brief description of the default resource, selected by the user.',
     isSelected: true,
   },
+  decorators: [() => ({ template: '<div style="margin: 1em;"><story /></div>' })],
 };
 
 export const DarkTheme = {
