@@ -13,9 +13,12 @@
     :closable="closeable"
     @click:close="$emit('clickedClose', name)"
   >
-    <v-icon v-if="isAccordion" left size="14px">{{
-      !isOpen ? 'keyboard_arrow_down' : 'keyboard_arrow_up'
-    }}</v-icon>
+    <BaseIcon
+      v-if="isAccordion"
+      :icon="!isOpen ? mdiChevronDown : mdiChevronUp"
+      small
+    />
+
     {{ name }}
   </v-chip>
 </template>
@@ -33,9 +36,11 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import { mdiClose } from '@mdi/js';
+import { mdiClose, mdiChevronDown, mdiChevronUp } from '@mdi/js';
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 export default {
+  components: { BaseIcon },
   props: {
     name: String,
     closeable: Boolean,
@@ -74,6 +79,8 @@ export default {
   },
   data: () => ({
     mdiClose,
+    mdiChevronDown,
+    mdiChevronUp,
   }),
 };
 </script>
