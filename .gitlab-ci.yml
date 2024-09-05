@@ -10,8 +10,8 @@ stages:
   - manual-deploy
 
 variables:
-  ARTIFACT_COMPRESSION_LEVEL: "fast"
-  CACHE_COMPRESSION_LEVEL: "fast"
+  ARTIFACT_COMPRESSION_LEVEL: 'fast'
+  CACHE_COMPRESSION_LEVEL: 'fast'
 #  npm_config_cache: '.npm/'
 
 .trigger-rules:
@@ -90,10 +90,14 @@ modify-env:
           value = 'https://envidat.ch'
       dotenv.set_key(file, key, value, quote_mode='never')
 
+      key = 'VITE_MATOMO_TOKEN'
+      token = os.getenv('MATOMO_TOKEN')
+      dotenv.set_key(file, key, token, quote_mode='never')
+
       key = 'VITE_CONFIG_URL'
       value = f'https://frontend-config.s3-zh.os.switch.ch/{branch}.json'
       dotenv.set_key(file, key, value, quote_mode='never')
-      
+
       key = 'VITE_BUILD_SOURCEMAPS'
       value = 'false'
       if branch == 'staging' or branch == 'develop':
@@ -102,7 +106,7 @@ modify-env:
     - echo "created content for .env.production:"
     - cat .env.production
   artifacts:
-    name: "environment variables"
+    name: 'environment variables'
     paths:
       - .env.production
 
@@ -114,7 +118,7 @@ install-node:
     - key:
         files:
           - package-lock.json
-        prefix: "package-lock"
+        prefix: 'package-lock'
       paths:
         - .npm/
         - node_modules/
@@ -128,10 +132,10 @@ install-node:
     - echo "the cache work if node_modules and .npm/ folders are available"
     - ls -a
     - npm ci --prefer-offline --no-audit
-#    - echo "Check afterwards how the folders are"
-#    - ls -a
+  #    - echo "Check afterwards how the folders are"
+  #    - ls -a
   artifacts:
-    name: "node dependencies"
+    name: 'node dependencies'
     # stores node_modules as an artifact to be used in the next jobs
     # caching isn't always guaranteed to work
     paths:
@@ -159,7 +163,7 @@ build-storybook:
   extends:
     - .trigger-rules
   needs:
-   # needs the artifact: config and environment variables
+    # needs the artifact: config and environment variables
     - modify-env
     # needs the artifact: node_modules to build storybook
     - install-node
@@ -168,7 +172,7 @@ build-storybook:
     # - npm cache verify || true
     - npm run build-storybook -- -o ./storybook --loglevel error --disable-telemetry
   artifacts:
-    name: "storybook build"
+    name: 'storybook build'
     # keep the storybook for 7 days to be able to trigger the chromatic-deployment
     expire_in: 1 day
     # stores the storybook build as an artifact to be used in the next stages
@@ -190,7 +194,7 @@ build-app:
   script:
     - npm run build -- --logLevel error
   artifacts:
-    name: "frontend build "
+    name: 'frontend build '
     expire_in: 1 day
     # stores the built app code
     paths:
@@ -221,13 +225,11 @@ combine-builds:
     - rm -rf dist
     - ls -la
   artifacts:
-    name: "frontend build $CI_COMMIT_REF_NAME"
+    name: 'frontend build $CI_COMMIT_REF_NAME'
     expire_in: 1 day
     # stores the combined built code
     paths:
       - ./
-
-
 #tag-commit-sha:
 #  extends: .trigger-rules
 #  stage: package
