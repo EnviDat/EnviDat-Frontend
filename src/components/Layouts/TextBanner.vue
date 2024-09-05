@@ -1,8 +1,5 @@
 <template>
-  <v-banner two-line
-            class="noPaddingForActions"
-            :color="bannerColor">
-
+  <v-banner two-line class="noPaddingForActions" :color="bannerColor">
     <template v-slot:icon>
       <v-icon
         color="white"
@@ -17,22 +14,39 @@
       <span v-html="text" />
     </template>
 
-    <template v-slot:actions >
-      <BaseRectangleButton
-        v-if="confirmText"
-        marginClass="mx-1"
-        color="secondary"
-        :buttonText="confirmText"
-        @clicked="confirmClick"
-      />
+    <template v-slot:actions>
+      <div class="d-flex flex-column flex-sm-row">
+        <BaseRectangleButton
+          v-if="confirmText"
+          marginClass="mx-1"
+          color="primary"
+          :buttonText="confirmText"
+          @clicked="confirmClick"
+        />
+        <!-- <BaseRectangleButton
+          v-if="deniedText"
+          marginClass="mx-1 mt-4 mt-sm-0"
+          color="error"
+          :buttonText="deniedText"
+          @clicked="deniedClick"
+        /> -->
+        <!-- remove as soon as we activate matomo -->
+        <BaseRectangleButton
+          v-if="deniedText"
+          marginClass="mx-1 mt-4 mt-sm-0"
+          color="primary"
+          :buttonText="deniedText"
+          @clicked="deniedClick"
+        />
 
-      <BaseRectangleButton
-        v-if="cancelText"
-        marginClass="mx-1"
-        :buttonText="cancelText"
-        :isFlat="true"
-        @clicked="cancelClick"
-      />
+        <BaseRectangleButton
+          v-if="cancelText"
+          marginClass="mx-1"
+          :buttonText="cancelText"
+          :isFlat="true"
+          @clicked="cancelClick"
+        />
+      </div>
     </template>
   </v-banner>
 </template>
@@ -62,7 +76,9 @@ export default {
       default: 'settings',
     },
     confirmText: String,
+    deniedText: String,
     confirmClick: Function,
+    deniedClick: Function,
     cancelText: String,
     cancelClick: Function,
     bannerColor: {
@@ -88,8 +104,9 @@ export default {
 </script>
 
 <style>
-  .noPaddingForActions > .v-banner__wrapper > .v-banner__actions {
-    padding-top: 8px !important;
-    padding-bottom: 12px !important;
-  }
+.noPaddingForActions > .v-banner__wrapper > .v-banner__actions {
+  padding-top: 8px !important;
+  padding-bottom: 12px !important;
+  justify-content: center;
+}
 </style>

@@ -10,6 +10,7 @@
 */
 
 import { swissFLExtraTags, swissFLTag } from '@/modules/metadata/store/swissForestLabTags';
+
 import {
   EDNA_MODE,
   EDNA_MODE_EXTRAS_KEY,
@@ -17,6 +18,7 @@ import {
   SWISSFL_MODE,
   SWISSFL_MODE_EXTRAS_KEY,
 } from '@/store/metadataMutationsConsts';
+
 import { ednaTag } from '@/modules/metadata/store/ednaLabTags';
 import { createTag, tagsIncludedInSelectedTags } from '@/factories/keywordsFactory';
 import { ednaImages, swissflImages } from '@/factories/imageFactory';
@@ -29,16 +31,19 @@ export const MODE_STORE = 'MODE_STORE';
  * @param {object} modeMetadata
  * @returns {Promise<any>}
  */
-const loadModeDatasetsWithMainTag = async (modeMetadata) => {
-
+const loadModeDatasetsWithMainTag = async modeMetadata => {
   // eslint-disable-next-line import/no-cycle
   const store = await import('@/modules/metadata/store/metadataStore');
   const state = store.metadata.state;
-  const isSearchResultContent = store[METADATA_NAMESPACE].getters.searchingMetadatasContentOK(state);
+  const isSearchResultContent = store[
+    METADATA_NAMESPACE
+  ].getters.searchingMetadatasContentOK(state);
   let content = [];
 
   if (isSearchResultContent) {
-    const searchContent = store[METADATA_NAMESPACE].getters.searchedMetadatasContent(state);
+    const searchContent = store[
+      METADATA_NAMESPACE
+    ].getters.searchedMetadatasContent(state);
 
     if (Object.keys(searchContent).length > 0) {
       content = Object.values(searchContent);
@@ -47,8 +52,10 @@ const loadModeDatasetsWithMainTag = async (modeMetadata) => {
     content = store[METADATA_NAMESPACE].getters.allMetadatas(state);
   }
 
-  return content.filter((entry) => tagsIncludedInSelectedTags(entry.tags, [modeMetadata.mainTag.name]));
-}
+  return content.filter(entry =>
+    tagsIncludedInSelectedTags(entry.tags, [modeMetadata.mainTag.name]),
+  );
+};
 /**
  * loads the dataset specific for the eDNA mode based on its modeMetadata
  *
@@ -60,18 +67,18 @@ const ednaFallback = async () => {
   const response = await fetch(url);
   const data = await response.json();
   return data;
-}
+};
 
-const loadEDNADatasets = async (modeMetadata) => {
-  if(modeMetadata.isShallow) {
+const loadEDNADatasets = async modeMetadata => {
+  if (modeMetadata.isShallow) {
     const url = modeMetadata.datasetUrl;
     try {
       const response = await fetch(url);
-      
+
       if (!response.ok) {
         return ednaFallback();
       }
-      
+
       const data = await response.json();
       return data;
     } catch (e) {
@@ -80,7 +87,7 @@ const loadEDNADatasets = async (modeMetadata) => {
   }
 
   return loadModeDatasetsWithMainTag(modeMetadata);
-}
+};
 
 export const modes = [
   {
@@ -99,7 +106,8 @@ export const modes = [
   {
     name: EDNA_MODE,
     title: 'eDNA Data',
-    externalUrl: 'https://www.wsl.ch/en/about-wsl/instrumented-field-sites-and-laboratories/laboratories/edna-laboratory/',
+    externalUrl:
+      'https://www.wsl.ch/en/about-wsl/instrumented-field-sites-and-laboratories/laboratories/edna-laboratory/',
     mainTag: ednaTag,
     extraTags: [], // swissFLExtraTags,
     logo: ednaImages.logo,
@@ -112,15 +120,13 @@ export const modes = [
   },
 ];
 
-
 /**
  * Get the metadata of a mode
  * @param {string} mode
  * @returns {{externalUrl: string, datasetUrl: string, loadDatasets: (function(Object): Promise<*[]>), name: string, extrasKey: string, mainTag: {name: string, enabled: boolean}, logo: {}, title: string, icons: {infrastructure: any, model: any, dataset: any}, extraTags: [{color: string, name: string, enabled: boolean},{color: string, name: string, enabled: boolean}]}|{externalUrl: string, datasetUrl: string, loadDatasets: (function(Object): Promise<{}>), name: string, extrasKey: string, mainTag: {name: string, enabled: boolean}, logo: {}, title: string, icons: Record<string, unknown>, extraTags: *[]}}
  */
 export function getModeData(mode) {
-
-  const modeData = modes.filter((m) => m.name === mode)[0];
+  const modeData = modes.filter(m => m.name === mode)[0];
 
   if (modeData) {
     return modeData;
@@ -128,9 +134,6 @@ export function getModeData(mode) {
 
   throw new Error(`No Mode Data for mode: "${mode}" implemented`);
 }
-
-
-
 
 function mergedHiddenFilters(modeObj, selectedTagNames) {
   const secretTags = [...selectedTagNames];
@@ -153,7 +156,6 @@ export function getSelectedTagsMergedWithHidden(mode, selectedTagNames) {
     return null;
   }
 }
-
 
 let tempModeData = null;
 
@@ -193,4 +195,3 @@ export function enhanceMetadataWithModeExtras(mode, metadataEntry) {
 
   return metadataEntry;
 }
-

@@ -82,7 +82,10 @@ export default {
       return this.metadataConfig?.publicationsConfig || {};
     },
     resolveBaseUrl() {
-      return this.publicationsConfig?.resolveBaseUrl || 'https://www.dora.lib4ri.ch/wsl/islandora/search/json_cit_pids_wsl/';
+      return (
+        this.publicationsConfig?.resolveBaseUrl ||
+        'https://www.dora.lib4ri.ch/wsl/islandora/search/json_cit_pids_wsl/'
+      );
     },
     extractedPIDMap() {
       return extractPIDMapFromText(this.text);
@@ -96,21 +99,22 @@ export default {
     },
   },
   methods: {
-    resolvedCitations(text){
-
-      if (!this.isResolving && !this.resolveError
-          && this.extractedPIDMap?.size > 0) {
-
+    resolvedCitations(text) {
+      if (
+        !this.isResolving &&
+        !this.resolveError &&
+        this.extractedPIDMap?.size > 0
+      ) {
         this.isResolving = true;
         this.$nextTick(() => {
           this.resolvePIDs(text, this.extractedPIDMap);
-        })
+        });
       }
 
       return text;
     },
     /**
-     * 
+     *
      * @param text
      * @param {null|Map<string, string>} pidMap
      * @returns {Promise<void>}
@@ -134,7 +138,6 @@ export default {
 
         const citationMap = resolvedCitationText(response.data, pidMap);
         newText = replacePIDsInText(text, citationMap, pidMap);
-
       } catch (e) {
         this.resolveError = e;
       } finally {

@@ -1,9 +1,9 @@
-
 import ResourceCard from '@/modules/metadata/components/ResourceCard.vue';
 import ResourceCardPlaceholder from '@/modules/metadata/components/ResourceCardPlaceholder.vue';
 
 import { createResources } from '@/factories/metaDataFactory';
 import unFormatedMetadataCards from './js/metadata';
+
 
 import dateCreatedIcon from '../src/assets/icons/dateCreated.png';
 import lastModifiedIcon from '../src/assets/icons/dateModified.png';
@@ -14,13 +14,18 @@ const metadataCards = unFormatedMetadataCards;
 
 const resources1 = createResources(metadataCards[2]);
 
+const iconFiles = undefined; // undefined for now, need to figure out how to
+// load the iconFiles and if it's needed at all?
+
 export default {
   title: '3 Cards / Resource Cards / 3 Collections From Datasets',
   component: ResourceCard,
-  decorators: [(story) => ({
-    components: { story },
-    template: '<v-container><story /></v-container>',
-  })],
+  decorators: [
+    story => ({
+      components: { story },
+      template: '<v-container><story /></v-container>',
+    }),
+  ],
   parameters: {},
 };
 
@@ -90,8 +95,8 @@ data: () => ({
 
 
 export const ResourceCardWithPreview = () => ({
-    components: { ResourceCard },
-    template: `
+  components: { ResourceCard },
+  template: `
     <v-row >
       <v-col 
         cols="3" 
@@ -154,7 +159,7 @@ export const ResourceCardDownloaded = () => ({
   components: { ResourceCard },
   template: `
     <v-row >
-
+      
       <v-col cols="3" class="pa-2"
               v-for="(res, index) in resources"
               :key="'cols-3_' + index" >
@@ -178,4 +183,3 @@ export const ResourceCardDownloaded = () => ({
     lastModifiedIcon,
   }),
 });
-

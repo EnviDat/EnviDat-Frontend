@@ -10,7 +10,8 @@
           <div class="baseIconLabelViewIcon">
             <BaseIcon :icon="icon" :dark="dark" :light="light" :color="iconColor" />
           </div>
-          <div class="baseIconLabelViewText" :style="textStyle">
+
+          <div :style="textStyle">
             <a v-if="url" :href="url" target="_blank" rel="noopener noreferrer">
               {{ text ? text : url }}
             </a>
@@ -76,15 +77,24 @@ $icon-size: 24px;
   align-items: center;
 }
 
-.baseIconLabelViewText {
-  // TODO: Remove this once a sensible default font was chosen
-  font-family: sans-serif !important;
-}
 
 .baseIconLabelViewIcon {
   height: $icon-size;
   width: $icon-size;
   margin-right: 12px;
+
+/*
+=======
+.BaseIconLabelViewIcon {
+  &.dark {
+    // Make the icon white
+    filter: brightness(0) invert(1);
+  }
+  height: $icon-size;
+  width: $icon-size;
+  margin-right: 12px;
+>>>>>>> develop
+*/
 
   img {
     user-select: none;

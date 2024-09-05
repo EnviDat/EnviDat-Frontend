@@ -7,10 +7,11 @@
              ref="header"
              style="z-index: 1; left: 0"
              :style="headerStyle" >
-
         <!-- prettier-ignore -->
+
         <MetadataHeader v-bind="header"
                           :metadataId="metadataId"
+                          :pageViews="pageViewEvents"
                           :showPlaceholder="showPlaceholder"
                           @clickedTag="catchTagClicked"
                           @clickedBack="catchBackClicked"
@@ -74,7 +75,11 @@ import rewind from '@turf/rewind';
 import { mapGetters, mapState } from 'vuex';
 import { useModeStore } from '@/modules/browse/store/modeStore';
 
-import { BROWSE_PATH, METADATADETAIL_PAGENAME, METADATAEDIT_PAGENAME } from '@/router/routeConsts';
+import {
+  BROWSE_PATH,
+  METADATADETAIL_PAGENAME,
+  METADATAEDIT_PAGENAME,
+} from '@/router/routeConsts';
 
 import {
   ACTION_USER_SHOW,
@@ -83,10 +88,14 @@ import {
   USER_NAMESPACE,
   USER_SIGNIN_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts';
-import { SET_APP_BACKGROUND, SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
+import {
+  SET_APP_BACKGROUND,
+  SET_CURRENT_PAGE,
+} from '@/store/mainMutationsConsts';
 import {
   CLEAN_CURRENT_METADATA,
-  CLEAR_SEARCH_METADATA, EDNA_MODE,
+  CLEAR_SEARCH_METADATA,
+  EDNA_MODE,
   LOAD_METADATA_CONTENT_BY_ID,
   METADATA_NAMESPACE,
 } from '@/store/metadataMutationsConsts';
@@ -102,13 +111,15 @@ import {
   createResources,
 } from '@/factories/metaDataFactory';
 
-import {
-  createCitation,
-} from '@/factories/citationFactory';
+import { createCitation } from '@/factories/citationFactory';
 
 import { getFullAuthorsFromDataset } from '@/factories/authorFactory';
 
-import { getConfigFiles, getConfigUrls, getFeatureCollectionFromGcNetStations } from '@/factories/chartFactory';
+import {
+  getConfigFiles,
+  getConfigUrls,
+  getFeatureCollectionFromGcNetStations,
+} from '@/factories/chartFactory';
 
 import {
   AUTHOR_SEARCH_CLICK,
@@ -119,14 +130,23 @@ import {
   GCNET_PREPARE_DETAIL_CHARTS,
 } from '@/factories/eventBus';
 
-import { enhanceElementsWithStrategyEvents, enhanceResourcesWithMetadataExtras } from '@/factories/strategyFactory';
+import {
+  enhanceElementsWithStrategyEvents,
+  enhanceResourcesWithMetadataExtras,
+} from '@/factories/strategyFactory';
+
+import { getEventsForPageAndName } from '@/modules/matomo/store/matomoStore';
 
 import {
   ORGANIZATIONS_NAMESPACE,
   USER_GET_ORGANIZATION_IDS,
 } from '@/modules/organizations/store/organizationsMutationsConsts';
 
-import { convertJSON, getFrontendDates, getFrontendJSONForStep } from '@/factories/mappingFactory';
+import {
+  convertJSON,
+  getFrontendDates,
+  getFrontendJSONForStep,
+} from '@/factories/mappingFactory';
 
 import { getIcon } from '@/factories/imageFactory';
 import { convertArrayToUrlString } from '@/factories/stringFactory';
@@ -139,10 +159,12 @@ const MetadataBody = defineAsyncComponent(() => import ('./Metadata/MetadataBody
 const MetadataResources = defineAsyncComponent(() => import ('./Metadata/MetadataResources.vue'));
 const MetadataCitation = defineAsyncComponent(() => import ('./Metadata/MetadataCitation.vue'));
 const MetadataPublications = defineAsyncComponent(() => import ('./Metadata/MetadataPublications.vue'));
+const MetadataPublicationList = defineAsyncComponent(() => import ('./Metadata/MetadataPublicationList.vue'));
 const MetadataFunding = defineAsyncComponent(() => import ('./Metadata/MetadataFunding.vue'));
 const MetadataAuthors = defineAsyncComponent(() => import ('./Metadata/MetadataAuthors.vue'));
 const MetadataGeo = defineAsyncComponent(() => import ('@/modules/metadata/components/Geoservices/MetadataGeo.vue'));
 const MetadataRelatedDatasets = defineAsyncComponent(() => import ('@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue'));
+
 
 // Might want to check https://css-tricks.com/use-cases-fixed-backgrounds-css/
 // for animations between the different parts of the Metadata
@@ -153,7 +175,7 @@ const MetadataRelatedDatasets = defineAsyncComponent(() => import ('@/modules/me
 export default {
   name: 'MetadataDetailPage',
   beforeRouteEnter(to, from, next) {
-    next((vm) => {
+    next(vm => {
       vm.$store.commit(SET_CURRENT_PAGE, METADATADETAIL_PAGENAME);
       vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
     });
@@ -177,8 +199,10 @@ export default {
   /**
    * @description reset the scrolling to the top.
    */
-  mounted() {
+  async mounted() {
     this.loadMetaDataContent();
+
+    // await this.setPageViews(this.$route.fullPath, 'Visit');
 
     window.scrollTo(0, 0);
 
@@ -202,16 +226,9 @@ export default {
   },
   computed: {
     ...mapState(['config']),
-    ...mapState(USER_NAMESPACE, [
-      'userDatasets',
-    ]),
-    ...mapState(ORGANIZATIONS_NAMESPACE, [
-      'userOrganizationIds',
-    ]),
-    ...mapGetters(USER_SIGNIN_NAMESPACE, [
-      'user',
-      'userLoading',
-    ]),
+    ...mapState(USER_NAMESPACE, ['userDatasets']),
+    ...mapState(ORGANIZATIONS_NAMESPACE, ['userOrganizationIds']),
+    ...mapGetters(USER_SIGNIN_NAMESPACE, ['user', 'userLoading']),
     ...mapGetters({
       metadatasContent: `${METADATA_NAMESPACE}/metadatasContent`,
       metadatasContentSize: `${METADATA_NAMESPACE}/metadatasContentSize`,
@@ -226,7 +243,10 @@ export default {
     }),
     metadataContent() {
       if (this.mode) {
-        return this.modeDataset;
+        // TODO: check with Dominik
+        return this.modeDataset !== undefined
+          ? this.modeDataset
+          : this.currentMetadataContent;
       }
 
       return this.currentMetadataContent;
@@ -282,7 +302,9 @@ export default {
       return fileList;
     },
     baseUrl() {
-      return import.meta.env.PROD ? this.baseStationURL : this.baseStationURLTestdata;
+      return import.meta.env.PROD
+        ? this.baseStationURL
+        : this.baseStationURLTestdata;
     },
     /**
      * @returns {String} the metadataId from the route
@@ -291,7 +313,9 @@ export default {
       return this.$route.params.metadataid;
     },
     mode() {
-      return this.$route.query.mode ? this.$route.query.mode.toLowerCase() : undefined;
+      return this.$route.query.mode
+        ? this.$route.query.mode.toLowerCase()
+        : undefined;
     },
     showPlaceholder() {
       return this.loadingMetadatasContent || this.loadingCurrentMetadataContent;
@@ -341,7 +365,9 @@ export default {
         return false;
       }
 
-      const matches = this.userDatasets.filter(dSet => dSet.name === this.metadataId || dSet.id === this.metadataId);
+      const matches = this.userDatasets.filter(
+        dSet => dSet.name === this.metadataId || dSet.id === this.metadataId,
+      );
 
       return matches.length > 0;
     },
@@ -411,6 +437,9 @@ export default {
     },
   },
   methods: {
+    async setPageViews(pageName, eventName) {
+      this.pageViewEvents = await getEventsForPageAndName(pageName, eventName);
+    },
     setGeoServiceLayers(location, layerConfig) {
       try {
         location = location ? rewind(location.geoJSON) : null;
@@ -418,12 +447,12 @@ export default {
         this.geoServiceLayersError = error;
       }
 
-        this.geoServiceConfig = {
-          site: location,
-          layerConfig,
-          error: this.geoServiceLayersError,
-          ...(this.hasGcnetStationConfig) && { isGcnet: true },
-        };
+      this.geoServiceConfig = {
+        site: location,
+        layerConfig,
+        error: this.geoServiceLayersError,
+        ...(this.hasGcnetStationConfig && { isGcnet: true }),
+      };
 
       this.geoServiceConfig = {
         ...this.geoServiceConfig,
@@ -441,10 +470,10 @@ export default {
 
       axios
         .get(url)
-        .then((response) => {
+        .then(response => {
           this.geoServiceLayers = response.data;
         })
-        .catch((error) => {
+        .catch(error => {
           this.geoServiceLayersError = error;
         });
     },
@@ -453,11 +482,13 @@ export default {
 
       axios
         .get(url)
-        .then((response) => {
+        .then(response => {
           this.stationsConfig = response.data;
 
           const stations = response.data;
-          const featureCollection = getFeatureCollectionFromGcNetStations(stations);
+          const featureCollection = getFeatureCollectionFromGcNetStations(
+            stations,
+          );
 
           // Override location with stations FeatureCollection, creating shallow copy
           const locationOverride = { ...this.location };
@@ -466,7 +497,7 @@ export default {
 
           successCallback();
         })
-        .catch((error) => {
+        .catch(error => {
           this.stationsConfigError = error;
         });
     },
@@ -476,11 +507,11 @@ export default {
 
       axios
         .get(url)
-        .then((response) => {
+        .then(response => {
           this.fileObjects = response.data.fileObjects;
           this.graphStyling = response.data.graphStyling;
         })
-        .catch((error) => {
+        .catch(error => {
           this.stationParametersError = error;
         });
     },
@@ -545,7 +576,10 @@ export default {
         );
 
         const parsedContent = convertJSON(currentContent, false);
-        const publicationData = getFrontendJSONForStep(EDITMETADATA_PUBLICATION_INFO, parsedContent);
+        const publicationData = getFrontendJSONForStep(
+          EDITMETADATA_PUBLICATION_INFO,
+          parsedContent,
+        );
         this.header.publicationYear = publicationData.publicationYear;
 
         this.body = createBody(
@@ -583,12 +617,13 @@ export default {
         authorDeadInfo: this.authorDeadInfo,
         showPlaceholder: this.showPlaceholder,
       };
-
     },
     loadResources() {
       const currentContent = this.metadataContent;
 
-      this.resources = createResources(currentContent, this.user, this.userOrganizationIds) || {};
+      this.resources =
+        createResources(currentContent, this.user, this.userOrganizationIds) ||
+        {};
 
       const license = createLicense(currentContent);
 
@@ -598,8 +633,15 @@ export default {
       if (this.resources.resources) {
         this.configInfos = getConfigFiles(this.resources.resources);
 
-        enhanceElementsWithStrategyEvents(this.resources.resources, undefined, true);
-        enhanceResourcesWithMetadataExtras(this.metadataContent.extras, this.resources.resources);
+        enhanceElementsWithStrategyEvents(
+          this.resources.resources,
+          undefined,
+          true,
+        );
+        enhanceResourcesWithMetadataExtras(
+          this.metadataContent.extras,
+          this.resources.resources,
+        );
 
         this.resources.dates = getFrontendDates(this.metadataContent.date);
       }
@@ -611,7 +653,6 @@ export default {
         dataLicenseUrl: license.url,
         resourcesConfig: this.resourcesConfig,
       };
-
     },
     setMetadataContent() {
       this.configInfos = getConfigUrls(this.configInfos);
@@ -640,13 +681,21 @@ export default {
       };
 
 
+      let publicationList;
+
       if (this.useListResolving) {
         // new component which shows the list of citationViews, maybe it's MetadataPublicationsList?
+        this.MetadataPublicationList.props = {
+          ...this.publications,
+          metadataConfig: this.metadataConfig,
+        };
+        publicationList = this.MetadataPublicationList;
       } else {
         this.MetadataPublications.props = {
           ...this.publications,
           metadataConfig: this.metadataConfig,
         };
+        publicationList = this.MetadataPublications;
       }
 
       this.MetadataRelatedDatasets.props = {
@@ -660,7 +709,7 @@ export default {
       this.firstCol = [
         this.MetadataBody,
         this.MetadataCitation,
-        this.MetadataPublications,
+        publicationList,
         this.MetadataRelatedDatasets,
         this.MetadataFunding,
         this.MetadataAuthors,
@@ -678,7 +727,7 @@ export default {
         this.MetadataGeo,
         this.MetadataAuthors,
         this.MetadataFunding,
-        this.MetadataPublications,
+        publicationList,
         this.MetadataRelatedDatasets,
       ];
     },
@@ -693,13 +742,14 @@ export default {
       });
     },
     async injectMicroCharts() {
-      const MicroChartList = (await import ('@/modules/metadata/components/GC-Net/MicroChartList.vue')).default;
+      const MicroChartList = (
+        await import('@/modules/metadata/components/GC-Net/MicroChartList.vue')
+      ).default;
 
-      eventBus.emit(
-        GCNET_INJECT_MICRO_CHARTS, {
-          component: MicroChartList,
-          config: this.stationsConfig,
-        });
+      eventBus.emit(GCNET_INJECT_MICRO_CHARTS, {
+        component: MicroChartList,
+        config: this.stationsConfig,
+      });
     },
     /**
      * @description
@@ -707,7 +757,10 @@ export default {
      * @returns {any}
      */
     isCurrentIdOrName(idOrName) {
-      return this.metadataContent?.id === idOrName || this.metadataContent?.name === idOrName;
+      return (
+        this.metadataContent?.id === idOrName ||
+        this.metadataContent?.name === idOrName
+      );
     },
     /**
      * @description
@@ -740,10 +793,8 @@ export default {
         path: BROWSE_PATH,
         query,
       });
-
     },
     catchAuthorClicked(authorGivenName, authorLastName) {
-
       const query = this.$route.query;
 
       // make sure to remove the ascii marker for dead authors for the search
@@ -793,27 +844,32 @@ export default {
      */
     async loadMetaDataContent() {
       if (this.mode) {
-        if(this.mode === EDNA_MODE) {
+        if (this.mode === EDNA_MODE) {
           const modeMetadata = this.modeStore.getModeMetadata(this.mode);
           modeMetadata.isShallow = !this.isRealdataset();
         }
         const modeDatasets = this.modeStore.getDatasets(this.mode);
         let datasets = Object.values(modeDatasets);
-        if (datasets.length <=  0) {
+        if (datasets.length <= 0) {
           datasets = await this.modeStore.loadModeDatasets(this.mode);
         }
-        this.modeDataset = datasets.filter(entry => entry.name === this.metadataId)[0];
+        this.modeDataset = datasets.filter(
+          entry => entry.name === this.metadataId,
+        )[0];
       }
 
-      if (!this.loadingMetadatasContent
-          && !this.isCurrentIdOrName(this.metadataId) ) {
+      if (
+        !this.loadingMetadatasContent &&
+        !this.isCurrentIdOrName(this.metadataId)
+      ) {
         // in case of navigating into the page load the content directly via Id
-        await this.$store.dispatch(`${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`, {
+        await this.$store.dispatch(
+          `${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`,
+          {
             metadataId: this.metadataId,
-
-        });
-      }
-      else {
+          },
+        );
+      } else {
         // in case of entring the page directly via Url without having loaded the rest of the app.
         // this call is to initialize the components in the their loading state
         this.$nextTick(() => {
@@ -826,47 +882,47 @@ export default {
       }
     },
     isRealdataset() {
-      if(this.mode && this.mode === EDNA_MODE) {
+      if (this.mode && this.mode === EDNA_MODE) {
         const contents = Object.values(this.metadatasContent);
 
-        const localEntry = contents.filter(entry => entry.name === this.metadataId);
+        const localEntry = contents.filter(
+          entry => entry.name === this.metadataId,
+        );
         return localEntry.length === 1;
-
       }
       return false;
     },
     fetchUserOrganisationData() {
       const userId = this.user?.id;
-      if (!userId){
+      if (!userId) {
         return;
       }
 
-      this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, userId);
+      this.$store.dispatch(
+        `${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`,
+        userId,
+      );
     },
     fetchUserDatasets() {
       const userId = this.user?.id;
-      if (!userId){
+      if (!userId) {
         return;
       }
 
-      this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`,
-        {
-          action: ACTION_USER_SHOW,
-          body: {
-            id: userId,
-            include_datasets: true,
-          },
-          commit: true,
-          mutation: USER_GET_DATASETS,
-        });
+      this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`, {
+        action: ACTION_USER_SHOW,
+        body: {
+          id: userId,
+          include_datasets: true,
+        },
+        commit: true,
+        mutation: USER_GET_DATASETS,
+      });
     },
   },
   watch: {
     geoServiceLayers() {
-      this.setGeoServiceLayers(
-        this.location,
-        this.geoServiceLayers,
-      );
+      this.setGeoServiceLayers(this.location, this.geoServiceLayers);
     },
     geoServiceLayersError() {
       if (this.geoServiceLayersError) {
@@ -896,13 +952,17 @@ export default {
      * if EnviDat is called via MetadataDetailPage URL directly
      */
     async metadatasContent() {
-      if (!this.loadingMetadatasContent
-          && !this.loadingCurrentMetadataContent
-          && !this.isCurrentIdOrName(this.metadataId)) {
-
-        await this.$store.dispatch(`${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`, {
+      if (
+        !this.loadingMetadatasContent &&
+        !this.loadingCurrentMetadataContent &&
+        !this.isCurrentIdOrName(this.metadataId)
+      ) {
+        await this.$store.dispatch(
+          `${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`,
+          {
             metadataId: this.metadataId,
-        });
+          },
+        );
       }
     },
     userLoading() {
@@ -926,10 +986,12 @@ export default {
     MetadataResources: markRaw(MetadataResources),
     MetadataCitation: markRaw(MetadataCitation),
     MetadataPublications: markRaw(MetadataPublications),
+    MetadataPublicationList: markRaw(MetadataPublicationList),
     MetadataRelatedDatasets: markRaw(MetadataRelatedDatasets),
     MetadataFunding: markRaw(MetadataFunding),
     MetadataAuthors: markRaw(MetadataAuthors),
     MetadataGeo: markRaw(MetadataGeo),
+    pageViewEvents: null,
     modeStore: null,
     modeDataset: null,
     PageBGImage: 'app_b_browsepage',

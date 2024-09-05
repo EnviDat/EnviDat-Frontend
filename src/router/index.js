@@ -33,6 +33,8 @@ import { serviceRoutes } from '@/modules/services/routes';
 import { integrationRoutes } from '@/modules/integration/routes';
 import { aboutRoutes } from '@/modules/about/routes';
 
+import { trackEvent } from '@/utils/matomoTracking';
+
 import { userRoutes } from '@/modules/user/routes';
 
 import { blogRoutes } from '@/modules/blog/routes';
@@ -62,8 +64,7 @@ const routes = [
   },
 ];
 
-
-export default createRouter({
+const router = createRouter({
   history: createWebHashHistory(),
   routes: [
     ...homeRoutes,
@@ -78,7 +79,7 @@ export default createRouter({
     ...routes,
   ],
   scrollBehavior(to, from, savedPosition) {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       setTimeout(() => {
         resolve(() => {
           if (savedPosition) {
@@ -98,7 +99,9 @@ export default createRouter({
     if (b === null) b = {};
 
     // handle null value #1566
-    if (!a || !b) { return a === b; }
+    if (!a || !b) {
+      return a === b;
+    }
 
     const aKeys = Object.keys(a);
     const bKeys = Object.keys(b);
@@ -107,7 +110,7 @@ export default createRouter({
       return false;
     }
 
-    return aKeys.every((key) => {
+    return aKeys.every(key => {
       const aVal = a[key];
       const bVal = b[key];
       // check nested equality
@@ -129,18 +132,19 @@ export default createRouter({
 
     if (a.path && b.path) {
       return (
-        a.path.replace(trailingSlashRE, '') === b.path.replace(trailingSlashRE, '')
-        && a.hash === b.hash
-        && this.isObjectEqual(a.query, b.query)
+        a.path.replace(trailingSlashRE, '') ===
+          b.path.replace(trailingSlashRE, '') &&
+        a.hash === b.hash &&
+        this.isObjectEqual(a.query, b.query)
       );
     }
 
     if (a.name && b.name) {
       return (
-        a.name === b.name
-        && a.hash === b.hash
-        && this.isObjectEqual(a.query, b.query)
-        && this.isObjectEqual(a.params, b.params)
+        a.name === b.name &&
+        a.hash === b.hash &&
+        this.isObjectEqual(a.query, b.query) &&
+        this.isObjectEqual(a.params, b.params)
       );
     }
 
@@ -190,3 +194,10 @@ export default createRouter({
     });
   },
 });
+
+router.beforeEach((to, from, next) => {
+  trackEvent('PageView', 'Visit', to.path);
+  next();
+});
+
+export default router;

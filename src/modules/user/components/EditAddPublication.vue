@@ -80,49 +80,68 @@
 
       <v-col cols="auto"
              class="ma-auto ma-md-0 pl-md-4 pt-4 pt-md-0">
-        <BaseIconButton 
+        <BaseIconButton
+          v-if="!isEditMode"
           :icon="mdiPlus"
-          outlined
+          :is-small="$vuetify.display.mdAndUp"
           @clicked="addClick"
         />
-
       </v-col>
     </v-row>
 
+    <v-row>
+      <v-col class="flex-grow-0"
+             cols="1">
+        <a
+          id="textAreaController"
+          ref="textAreaController"
+          class="text-caption"
+          @click="toggleTextArea()"
+        >{{ showTextArea ? 'Hide' : 'Add' }} Add a citation in plain text</a
+        >
+      </v-col>
 
-<!--
-    <v-row no-gutters
-           class="pt-4">
-      <v-col >
-        <BaseStatusLabelView status-icon="question_mark"
-                             :show-expand-icon="true"
+      <v-col v-if="showTextArea"
+             class="flex-grow-0" >
+        <BaseRectangleButton
+          button-text="Save Text"
+          is-xs-small
+          @clicked="editExistingData()"
           />
       </v-col>
-    </v-row>
--->
 
-    <v-row no-gutters
-          class="pt-4">
-      <v-col >
-        <div class="text-subtitle-1"
-             v-html="labels.subtitlePreview">
-
-        </div>
+      <v-col v-if="showTextArea"
+             class="flex-grow-0" >
+        <BaseRectangleButton
+          button-text="Cancel"
+          color="gray"
+          is-xs-small
+          @clicked="closeEditMode(true)"
+        />
       </v-col>
     </v-row>
 
-    <v-row no-gutters
-            class="pt-2">
-      <v-col >
+    <v-row>
+      <v-col>
+        <!-- @changedText="catchChangedText($event)" -->
+        <GenericTextareaPreviewLayout
+          v-if="showTextArea"
+          v-bind="genericTextAreaObject"
+          @inputedText="catchInputedText($event)"
+        >
+        </GenericTextareaPreviewLayout>
+      </v-col>
+    </v-row>
+
+    <v-row no-gutters class="pt-2">
+      <v-col>
         <v-card class="pa-4">
           <BaseCitationView v-bind="citationViewProps" />
         </v-card>
       </v-col>
     </v-row>
-
   </v-container>
 </template>
-
 
 <script>
 /**
@@ -134,12 +153,14 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 
-import { EDIT_METADATA_ADD_PUBLICATION_TITLE, EDIT_METADATA_DOI_LABEL } from '@/factories/metadataConsts';
+import { EDIT_METADATA_ADD_PUBLICATION_TITLE } from '@/factories/metadataConsts';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseCitationView from '@/components/BaseElements/BaseCitationView.vue';
+
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
+import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout.vue';
 
 import {
   resolveDoiCitationObjectsViaDora,
@@ -150,6 +171,10 @@ import { mdiPlus, mdiFingerprint, mdiIdentifier } from '@mdi/js';
 export default {
   name: 'EditAddPublication',
   props: {
+    selectedPlainText: {
+      type: String,
+      default: undefined,
+    },
     pid: {
       type: String,
       default: undefined,
@@ -207,12 +232,17 @@ export default {
     }
   },
   computed: {
+    genericTextAreaObject() {
+      return {
+        isVerticalLayout: true,
+        textareaContent: this.selectedPlainText,
+      };
+    },
     pidField: {
       get() {
         return this.previewPID !== null ? this.previewPID : this.pid;
       },
       set(value) {
-
         this.previewPID = value;
       },
     },
@@ -221,12 +251,12 @@ export default {
         return this.previewDOI !== null ? this.previewDOI : this.doi;
       },
       set(value) {
-
         this.previewDOI = value;
       },
     },
     citationViewProps() {
       return {
+        pid: this.previewCitation?.pid || this.pid,
         doi: this.previewCitation?.doi || this.doi,
         doiUrl: this.previewCitation?.doiUrl || this.doiUrl,
         citation: this.previewCitation?.citation || this.citation,
@@ -235,6 +265,58 @@ export default {
     },
   },
   methods: {
+    editExistingData() {
+      this.$emit('saveText', this.previewCitation?.citation || this.citation );
+      this.closeEditMode();
+    },
+    closeEditMode(triggerCancelEvent = false) {
+      this.isEditMode = false;
+      this.plainText = null;
+      this.previewCitation = null;
+      this.showTextArea = false;
+      this.filledTextArea = '';
+
+      if (triggerCancelEvent) {
+        this.$emit('cancelText');
+      }
+    },
+    editData(citationText) {
+      this.isEditMode = true;
+      this.showTextArea = true;
+      this.filledTextArea = citationText;
+
+
+      const textAreaController = this.$refs.textAreaController;
+      if (textAreaController) {
+        textAreaController.scrollIntoView({ behavior: 'smooth' });
+      }
+
+      this.previewCitation = {
+        doi: null,
+        doiUrl: null,
+        citation: citationText,
+        abstract: null,
+      };
+
+      // this.indexEditData = object.index;
+    },
+    toggleTextArea() {
+      this.showTextArea = !this.showTextArea;
+      this.plainText = null;
+      this.previewCitation = null;
+      this.filledTextArea = '';
+      this.isEditMode = false;
+    },
+    catchInputedText(value) {
+      const previewPlainText = {
+        doi: null,
+        doiUrl: null,
+        citation: value,
+        abstract: null,
+      };
+      this.previewCitation = previewPlainText;
+      this.plainText = value;
+    },
     pidChange(pid) {
       if (!this.isResolving) {
         this.resolvePIDs(pid);
@@ -248,7 +330,6 @@ export default {
     async resolvePIDs(pid) {
       this.previewCitation = null;
       this.isResolving = true;
-
       const pidMap = new Map();
       pidMap.set(pid, pid);
 
@@ -285,24 +366,43 @@ export default {
       this.$emit('addClicked', {
         pid: this.pidField,
         doi: this.doiField,
+        plainText: this.plainText,
       });
+      this.doiField = null;
+      this.pidField = null;
+      this.plainText = null;
+      this.previewCitation = null;
+      this.showTextArea = false;
+    },
+  },
+  watch: {
+    selectedPlainText() {
+
+      if (this.selectedPlainText) {
+        this.editData(this.selectedPlainText);
+      }
     },
   },
   data: () => ({
     mdiPlus,
     mdiFingerprint,
     mdiIdentifier,
+    isEditMode: false,
+    showTextArea: false,
     isResolving: false,
     previewCitation: null,
+    filledTextArea: '',
     previewPID: null,
     previewDOI: null,
+    plainText: null,
     editingProperty: 'relatedPublicationsText',
     labels: {
       title: EDIT_METADATA_ADD_PUBLICATION_TITLE,
-      cardInstructions: 'Enter a DORA permanent Id (PID) or a Data Object Identifer (DOI) the citation will be resolved by lib4RI.',
+      cardInstructions: `Enter a DORA permanent Id (PID) or a Data Object Identifer (DOI) the citation will be resolved by lib4RI.
+                          If you have any other citation click on 'Add citation as plain text'.`,
       subtitlePreview: 'Preview Publications resolved via DORA',
       pId: 'Permanent Id',
-      doi: EDIT_METADATA_DOI_LABEL,
+      doi: 'Data Object Identifier',
     },
     validationErrors: {
       relatedPublicationsText: null,
@@ -312,8 +412,7 @@ export default {
     BaseIconButton,
     BaseCitationView,
     BaseStatusLabelView,
+    GenericTextareaPreviewLayout,
   },
 };
-
-
 </script>

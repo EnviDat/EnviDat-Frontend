@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :id="id">
     <div v-if="isVerticalLayout">
       <v-row>
         <v-col :cols="columns">
@@ -85,6 +85,10 @@
 export default {
   name: 'GenericTextareaPreviewLayout',
   props: {
+    id: {
+      type: String,
+      default: null,
+    },
     isVerticalLayout: {
       type: Boolean,
       default: false,

@@ -57,7 +57,6 @@ import { solrResultToCKANJSON } from '@/factories/apiFactory';
 import { enhanceMetadatas } from '@/factories/metaDataFactory';
 
 
-
 export default {
   [SEARCH_METADATA](state, searchTerm) {
     state.searchingMetadatasContent = true;
@@ -65,12 +64,10 @@ export default {
     state.searchedMetadatasContent = {};
     state.currentSearchTerm = searchTerm;
   },
-  [SEARCH_METADATA_SUCCESS](state, {
-    payload,
-    isLocalSearch = false,
-    mode = undefined,
-  }) {
-
+  [SEARCH_METADATA_SUCCESS](
+    state,
+    { payload, isLocalSearch = false, mode = undefined },
+  ) {
     let convertedPayload = [];
     if (isLocalSearch) {
       convertedPayload = payload;
@@ -90,7 +87,10 @@ export default {
     state.searchingMetadatasContent = false;
     state.searchingMetadatasContentOK = false;
 
-    const errObj = getSpecificApiError('The searching cause an error. Try again or use Keywords for filtering. Please report if the error persists!', reason);
+    const errObj = getSpecificApiError(
+      'The searching cause an error. Try again or use Keywords for filtering. Please report if the error persists!',
+      reason,
+    );
 
     this.commit(ADD_USER_NOTIFICATION, errObj);
   },
@@ -114,7 +114,10 @@ export default {
   [LOAD_METADATA_CONTENT_BY_ID_ERROR](state, reason) {
     state.loadingCurrentMetadataContent = false;
 
-    const errObj = getSpecificApiError('For this entry no Metadata could be loaded, please report if the error persists!', reason);
+    const errObj = getSpecificApiError(
+      'For this entry no Metadata could be loaded, please report if the error persists!',
+      reason,
+    );
 
     this.commit(ADD_USER_NOTIFICATION, errObj);
   },
@@ -129,7 +132,6 @@ export default {
   [BULK_LOAD_METADATAS_CONTENT_SUCCESS](state, payload) {
 
     state.metadatasContent = enhanceMetadatas(payload);
-
     state.authorsMap = extractAuthorsMap(payload);
 
     state.metadatasContentOK = true;
@@ -139,7 +141,10 @@ export default {
     state.loadingMetadatasContent = false;
     state.metadatasContentOK = false;
 
-    const errObj = getSpecificApiError('Metadata could not be loaded, please report if the error persists!', reason);
+    const errObj = getSpecificApiError(
+      'Metadata could not be loaded, please report if the error persists!',
+      reason,
+    );
 
     this.commit(ADD_USER_NOTIFICATION, errObj);
   },
@@ -153,7 +158,11 @@ export default {
   [UPDATE_TAGS_ERROR](state, reason) {
     state.updatingTags = false;
 
-    const errObj = warningMessage('Keyword update error', `Error: ${reason.message}. \n Filtering might not work properly try reloading the page`, reason.stack);
+    const errObj = warningMessage(
+      'Keyword update error',
+      `Error: ${reason.message}. \n Filtering might not work properly try reloading the page`,
+      reason.stack,
+    );
     this.commit(ADD_USER_NOTIFICATION, errObj);
   },
   [FILTER_METADATA](state) {
@@ -165,7 +174,11 @@ export default {
   },
   [FILTER_METADATA_ERROR](state, reason) {
     state.isFilteringContent = false;
-    const errObj = warningMessage('Filtering error', `Error: ${reason.message}. \n Filtering might not work properly try reloading the page`, reason.stack);
+    const errObj = warningMessage(
+      'Filtering error',
+      `Error: ${reason.message}. \n Filtering might not work properly try reloading the page`,
+      reason.stack,
+    );
     this.commit(ADD_USER_NOTIFICATION, errObj);
   },
   [PIN_METADATA](state, payload) {
@@ -187,13 +200,12 @@ export default {
   [SET_VIRTUAL_LIST_INDEX](state, payload) {
     state.vIndex = payload;
   },
-/*
+  /*
   [METADATA_CREATE_NEW_AUTHOR](state, newAuthor) {
 
   },
 */
   [METADATA_UPDATE_AN_EXISTING_AUTHOR](state, modifiedAuthor) {
-
     let authorToUpdate = {};
     const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
 
@@ -205,7 +217,9 @@ export default {
 
     if (!authorToUpdate) {
       const existingAuthors = Object.values(authorsMap);
-      const subSelection = existingAuthors.filter(a => a.fullName === modifiedAuthor.fullName);
+      const subSelection = existingAuthors.filter(
+        a => a.fullName === modifiedAuthor.fullName,
+      );
 
       if (subSelection.length > 0) {
         key = modifiedAuthor.email;
@@ -219,11 +233,10 @@ export default {
     if (authorToUpdate) {
       // use $set to overwrite the entry and make sure the update event of
       // vue is triggered
-      this._vm.$set(authorsMap, key,
-        {
-          ...authorToUpdate,
-          ...modifiedAuthor,
-        });
+      this._vm.$set(authorsMap, key, {
+        ...authorToUpdate,
+        ...modifiedAuthor,
+      });
     }
   },
   [METADATA_UPDATE_EXISTING_AUTHORS](state, existingAuthors) {
@@ -236,7 +249,11 @@ export default {
     state.existingKeywords = payload;
   },
   [METADATA_UPDATE_EXISTING_KEYWORDS_ERROR](state, reason) {
-    const errObj = warningMessage(`${METADATA_KEYWORDS_TITLE} Error`, `Error while processing keywords: ${reason.message}.`, reason.stack);
+    const errObj = warningMessage(
+      `${METADATA_KEYWORDS_TITLE} Error`,
+      `Error while processing keywords: ${reason.message}.`,
+      reason.stack,
+    );
     this.commit(ADD_USER_NOTIFICATION, errObj);
   },
 };

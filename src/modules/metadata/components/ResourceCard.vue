@@ -79,7 +79,9 @@
               :icon-tooltip="formatedBytes ? 'Resource type and size' : 'Resource type'"
               :light="dark"
               :dark="!dark"
-              class="mb-1" />
+              class="mb-1"
+            />
+
 
             <base-icon-label-view
               v-if="created"
@@ -98,6 +100,17 @@
               :light="dark"
               :dark="!dark"
               class="mb-1" />
+
+
+            <!-- <base-icon-label-view
+              v-if="isDownloaded"
+              :text="'Number of Downloads: ' + String(numberOfDownload)"
+              material-icon-name="download"
+              icon-tooltip="Number of downloads"
+              dark
+              class="mb-1"
+            /> -->
+
           </v-col>
         </v-row>
       </v-container>
@@ -106,6 +119,7 @@
     <v-card-actions
       class="ma-0 pa-2"
       style="position: absolute; bottom: 0; right: 55px;">
+
       <base-icon-button
         v-if="maxDescriptionLengthReached"
         :class="isProtected ? 'mr-2' : ''"
@@ -119,7 +133,9 @@
           ? 'Hide full description'
           : 'Show full description'
           "
-        @clicked="showFullDescription = !showFullDescription" />
+        @clicked="showFullDescription = !showFullDescription"
+      />
+
     </v-card-actions>
 
     <v-container
@@ -148,6 +164,7 @@
           <base-icon-button
             :icon="isFile ? mdiDownload : mdiLink"
             icon-color="black"
+            @clicked="trackDownload(url, resourceName)"
             color="accent"
             elevated
             :tooltip-text="isFile ? 'Download resource' : 'Open link'"
@@ -207,6 +224,8 @@ import {
   mdiUpdate,
 } from '@mdi/js';
 
+import { trackDownload } from '@/utils/matomoTracking';
+
 export default {
   name: 'ResourceCard',
   components: {
@@ -234,6 +253,7 @@ export default {
     isProtected: Boolean,
     metadataContact: String,
     deprecated: Boolean,
+    numberOfDownload: Number,
     downloadActive: {
       type: Boolean,
       default: true,
@@ -284,7 +304,10 @@ export default {
 
       return undefined;
     },
-    computedCardColor(){
+    isDownloaded() {
+      return this.numberOfDownload > 0;
+    },
+    computedCardColor() {
       return this.deprecated ? 'grey' : this.cardColor;
     },
     readableCreated() {
@@ -295,7 +318,7 @@ export default {
     },
     resourceName() {
       let name = this.name ?? 'Unnamed resource';
-      
+
       const isUrl = !this.name && !!this.url;
       if (isUrl) {
         const splits = this.url.split('/');
@@ -389,11 +412,14 @@ export default {
       return getFileIcon(this.format);
     },
   },
-  methods: {},
+  methods: {
+    trackDownload,
+  },
 };
 </script>
 
 <style lang="scss" scoped>
+
 .resourceHeadline {
   line-height: 1.5rem;
 }

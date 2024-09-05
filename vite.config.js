@@ -7,51 +7,57 @@ import vuetify from 'vite-plugin-vuetify';
 import { defineConfig, loadEnv } from 'vite';
 import { configDefaults } from 'vitest/dist/config';
 import eslint from 'vite-plugin-eslint';
+
 import Unfonts from 'unplugin-fonts/vite'
+
 import { visualizer } from 'rollup-plugin-visualizer';
 
 import { getFilesWithPrefix } from './src/factories/enhancementsFactoryNode';
 
 const version = process.env.npm_package_version;
 
+export default ({ mode, config }) => {
+  const isProd = mode === 'production';
 
-export default ({ mode }) => {
-    const isProd = mode === 'production'
+  const fileName = `version_${version}.txt`;
+  const existingFilePaths = path.resolve(__dirname, 'public/');
 
-    if (isProd) {
-        const fileName = `version_${version}.txt`;
-        const existingFilePaths = path.resolve(__dirname, 'public/');
+  const existingVersionFiles = getFilesWithPrefix(
+    existingFilePaths,
+    'version_',
+  );
 
-        const existingVersionFiles = getFilesWithPrefix(existingFilePaths, 'version_');
+  // delete any existing files with version_ as prefix to make sure only the latest version is created
+  for (let i = 0; i < existingVersionFiles.length; i++) {
+    const file = existingVersionFiles[i];
+    const fullPath = path.resolve(`${existingFilePaths}`, `${file}`);
+    console.log(`Going to delete version file: ${fullPath}`);
+    fs.unlinkSync(fullPath);
+  }
 
-        // delete any existing files with version_ as prefix to make sure only the latest version is created
-        for (let i = 0; i < existingVersionFiles.length; i++) {
-            const file = existingVersionFiles[i];
-            const fullPath = path.resolve(`${existingFilePaths}`, `${file}`);
-            console.log(`Going to delete version file: ${fullPath}`);
-            fs.unlinkSync(fullPath);
-        }
+  const filePath = path.resolve(__dirname, 'public/', `${fileName}`);
 
-        const filePath = path.resolve(__dirname, 'public/', `${fileName}`);
+  try {
+    fs.writeFileSync(filePath, version);
+    console.log(
+      `Created version file ${fileName} for easy build version highlight in ${filePath}`,
+    );
+  } catch (err) {
+    console.log(
+      `Tried to created file ${fileName} in ${filePath}. Error: ${err}`,
+    );
+  }
 
-        try {
-            fs.writeFileSync(filePath, version);
-            console.log(`Created version file ${fileName} for easy build version highlight.`);
-        } catch (err) {
-            console.log(`Tried to created file ${fileName}. Error: ${err}`);
-        }
-    }
+  const env = loadEnv(mode, process.cwd());
+  console.log(`With VITE_USE_TESTDATA: ${env.VITE_USE_TESTDATA}`);
+  console.log(`With VITE_CONFIG_URL: ${env.VITE_CONFIG_URL}`);
+  console.log(`With VITE_API_ROOT: ${env.VITE_API_ROOT}`);
+  console.log(`With VITE_API_BASE_URL: ${env.VITE_API_BASE_URL}`);
+  console.log(`With VITE_API_DOI_BASE_URL: ${env.VITE_API_DOI_BASE_URL}`);
+  console.log(`With VITE_BUILD_SOURCEMAPS: ${env.VITE_BUILD_SOURCEMAPS}`);
+  console.log(`starting ${mode} | version: ${version} | prod: ${isProd}`);
 
-    const env = loadEnv(mode, process.cwd())
-    console.log(`With VITE_USE_TESTDATA: ${env.VITE_USE_TESTDATA}`);
-    console.log(`With VITE_CONFIG_URL: ${env.VITE_CONFIG_URL}`);
-    console.log(`With VITE_API_ROOT: ${env.VITE_API_ROOT}`);
-    console.log(`With VITE_API_BASE_URL: ${env.VITE_API_BASE_URL}`);
-    console.log(`With VITE_API_DOI_BASE_URL: ${env.VITE_API_DOI_BASE_URL}`);
-    console.log(`With VITE_BUILD_SOURCEMAPS: ${env.VITE_BUILD_SOURCEMAPS}`);
-    console.log(`starting ${mode} | version: ${version} | prod: ${isProd}`);
-
-    const buildSourceMaps = env.VITE_BUILD_SOURCEMAPS === 'true'
+  const buildSourceMaps = env.VITE_BUILD_SOURCEMAPS === 'true';
 
     return defineConfig({
         plugins: [
@@ -80,18 +86,15 @@ export default ({ mode }) => {
             title : 'EnviDat Build Visualizer',
           }),
         ],
+        define: {
+          'process.env': loadEnv(mode, process.cwd()),
+          'import.meta.env.VITE_VERSION': JSON.stringify(version),
+        },
         test: {
           exclude: [
             ...configDefaults.exclude,
             './tests/unit/ckanRegression.spec.js',
           ],
-        },
-        define: {
-          'process.env': loadEnv(mode, process.cwd()),
-          'import.meta.env.VITE_VERSION': JSON.stringify(version),
-        },
-        optimizeDeps: {
-          include: ['vuetify'],
         },
         base: './',
         resolve: {
@@ -114,19 +117,18 @@ export default ({ mode }) => {
           minify: !buildSourceMaps,
           sourcemap: buildSourceMaps,
           emptyOutDir: true,
+/*
           rollupOptions: isProd ? {
             output: {
               manualChunks: (id) => {
                 if (id.includes('skeleton-placeholder')) {
                   return 'vendor_skeleton';
                 }
-/*
-                Had to be removed, it caused import errors, when the vendor_leaflet.js tried
-                to import something from the vendors.js
-                if (id.includes('leaflet')) {
-                  return 'vendor_leaflet';
-                }
-*/
+                // Had to be removed, it caused import errors, when the vendor_leaflet.js tried
+                // to import something from the vendors.js
+                // if (id.includes('leaflet')) {
+                //   return 'vendor_leaflet';
+                // }
                 if (id.includes('src/modules/about')) {
                   return 'envidat_about';
                 }
@@ -212,17 +214,22 @@ export default ({ mode }) => {
               },
             },
           } : {},
-          define: {
-            'import.meta.env.VITE_VERSION': JSON.stringify(version),
-          },
+*/
+      define: {
+        'import.meta.env.VITE_VERSION': JSON.stringify(version),
+      },
+    },
+    server: {
+      host: '0.0.0.0',
+      port: 8080,
+      // TODO: Check with Dominik
+      proxy: {
+        '/api': {
+          target: 'https://statistics.wsl.ch',
+          changeOrigin: true,
+          rewrite: proxyPath => proxyPath.replace(/^\/api/, ''),
         },
-        server: {
-            host: '0.0.0.0',
-            port: 8080,
-        },
-    });
-}
-
-// {
-//     from: 'node_modules/amcharts3/amcharts/images', to: 'amcharts/images',
-//   }],
+      },
+    },
+  });
+};

@@ -1,6 +1,10 @@
 <template>
-  <v-app class="application envidat-font-overwrite"
-         :style="dynamicBackground">
+  <v-app class="application envidat-font-overwrite" :style="dynamicBackground">
+    <div
+      v-show="showDecemberParticles"
+      id="christmas-canvas"
+      style="position: absolute; width: 100%; height: 100%;"
+    ></div>
 
     <div v-show="showDecemberParticles" id="christmas-canvas" style="position: absolute; width: 100%; height: 100%;">
     </div>
@@ -22,14 +26,31 @@
         @clickedReport="catchReportClicked(notification.key)" />
     </div>
 
-    <TheNavigationToolbar v-if="showToolbar" ref="TheNavigationToolbar" class="envidatToolbar"
-      :style="`z-index: ${NavToolbarZIndex}`" :loading="loading" :mode="mode" :modeCloseCallback="catchModeClose"
-      :signedInUser="user" :signInDisabled="signinDisabled" :userNavigationItems="userMenuItems"
-      :editingDatasetName="lastEditedDataset" @userMenuItemClick="catchUserItemClicked" @signinClick="catchSigninClicked"
-      @homeClick="catchHomeClicked" @continueClick="catchContinueClick" />
+    <TheNavigationToolbar
+      v-if="showToolbar"
+      ref="TheNavigationToolbar"
+      class="envidatToolbar"
+      :style="`z-index: ${NavToolbarZIndex}`"
+      :loading="loading"
+      :mode="mode"
+      :modeCloseCallback="catchModeClose"
+      :signedInUser="user"
+      :signInDisabled="signinDisabled"
+      :userNavigationItems="userMenuItems"
+      :editingDatasetName="lastEditedDataset"
+      @userMenuItemClick="catchUserItemClicked"
+      @signinClick="catchSigninClicked"
+      @homeClick="catchHomeClicked"
+      @continueClick="catchContinueClick"
+    />
 
-    <TheNavigation :style="`z-index: ${NavigationZIndex}`" :navigationItems="navigationItems" :version="appVersion"
-      @menuClick="catchMenuClicked" @itemClick="catchItemClicked" />
+    <TheNavigation
+      :style="`z-index: ${NavigationZIndex}`"
+      :navigationItems="navigationItems"
+      :version="appVersion"
+      @menuClick="catchMenuClicked"
+      @itemClick="catchItemClicked"
+    />
 
     <v-main>
 
@@ -49,36 +70,66 @@
                 <component :is="Component" />
               </transition>
             </router-view>
-
           </v-col>
         </v-row>
       </v-container>
 
-      <TextBanner v-if="maintenanceBannerVisible" id="maintenanceBanner"
-        style="position: absolute; top: 0; z-index: 1001; width: 100%; " :text="maintenanceBannerText" confirmText="Okay"
-        :bannerColor="maintenanceBannerColor" :confirmClick="catchMaintenanceConfirmClick" />
+      <TextBanner
+        v-if="maintenanceBannerVisible"
+        id="maintenanceBanner"
+        style="position: absolute; top: 0; z-index: 1001; width: 100%; "
+        :text="maintenanceBannerText"
+        confirmText="Okay"
+        :bannerColor="maintenanceBannerColor"
+        :confirmClick="catchMaintenanceConfirmClick"
+      />
 
-      <TextBanner v-if="showCookieInfo" id="cookieBanner"
-        style="position: absolute; bottom: 0; z-index: 1001; width: 100%; " :text="cookieInfoText" icon="cookie"
-        confirmText="Okay" bannerColor="highlight" :confirmClick="catchCookieInfoOk" />
+      <TextBanner
+        v-if="showCookieInfo"
+        id="cookieBanner"
+        style="position: absolute; bottom: 0; z-index: 1001; width: 100%; "
+        :text="cookieInfoText"
+        icon="cookie"
+        deniedText="Okay"
+        bannerColor="highlight"
+        :confirmClick="catchCookieInfoOk"
+        :deniedClick="deniedTracking"
+      />
 
-      <v-dialog v-model="showReloadDialog" persistent :style="`z-index: ${NotificationZIndex};`" max-width="450">
+      <v-dialog
+        v-model="showReloadDialog"
+        persistent
+        :style="`z-index: ${NotificationZIndex};`"
+        max-width="450">
 
-        <ConfirmTextCard title="New Version Available!" :text="dialogVersionText()" confirmText="Reload"
-          :confirmClick="reloadApp" cancelText="Cancel" :cancelClick="() => { reloadDialogCanceled = true }" />
-
+        <ConfirmTextCard
+          title="New Version Available!"
+          :text="dialogVersionText()"
+          confirmText="Reload"
+          :confirmClick="reloadApp"
+          cancelText="Cancel"
+          :cancelClick="() => { reloadDialogCanceled = true }"
+        />
       </v-dialog>
 
-      <v-dialog v-model="showInfoDialog" persistent :style="`z-index: ${NotificationZIndex};`" max-width="500">
+      <v-dialog
+        v-model="showInfoDialog"
+        persistent
+        :style="`z-index: ${NotificationZIndex};`"
+        max-width="500">
 
-        <ConfirmTextCard :title="dialogTitle" :text="dialogMessage" :confirmText="dialogConfirmText"
-          :confirmClick="dialogCallback" :cancelText="dialogCancelText" :cancelClick="dialogCancelCallback" />
-
+        <ConfirmTextCard
+          :title="dialogTitle"
+          :text="dialogMessage"
+          :confirmText="dialogConfirmText"
+          :confirmClick="dialogCallback"
+          :cancelText="dialogCancelText"
+          :cancelClick="dialogCancelCallback"
+        />
       </v-dialog>
 
       <GenericFullScreenModal :auto-scroll="true" />
     </v-main>
-
   </v-app>
 </template>
 
@@ -96,10 +147,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import {
-  mapState,
-  mapGetters,
-} from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 
 import { getMonth } from 'date-fns';
 
@@ -130,19 +178,18 @@ import {
 } from '@/store/mainMutationsConsts';
 
 import {
+  ACTION_OLD_GET_USER_CONTEXT,
+  ACTION_GET_USER_CONTEXT_TOKEN,
+  ACTION_USER_SHOW,
   USER_SIGNIN_NAMESPACE,
   GET_USER_CONTEXT,
-  ACTION_OLD_GET_USER_CONTEXT,
   SIGNIN_USER_ACTION,
   USER_NAMESPACE,
-  ACTION_GET_USER_CONTEXT_TOKEN,
+  FETCH_USER_DATA,
+  USER_GET_DATASETS,
 } from '@/modules/user/store/userMutationsConsts';
 
-
-import {
-  navigationItems,
-  userMenuItems,
-} from '@/store/navigationState';
+import { navigationItems, userMenuItems } from '@/store/navigationState';
 
 import {
   eventBus,
@@ -164,6 +211,7 @@ const ConfirmTextCard = defineAsyncComponent(() => import('@/components/Cards/Co
 const TextBanner = defineAsyncComponent(() => import('@/components/Layouts/TextBanner.vue'));
 const NotificationCard = defineAsyncComponent(() => import('@/components/Cards/NotificationCard.vue'));
 
+
 export default {
   name: 'App',
   beforeCreate() {
@@ -177,11 +225,13 @@ export default {
     });
   },
   created() {
-
     eventBus.on(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
     eventBus.on(SHOW_DIALOG, this.openGenericDialog);
     eventBus.on(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
-    eventBus.on(SHOW_REDIRECT_DASHBOARD_DIALOG, this.showRedirectDashboardDialog);
+    eventBus.on(
+      SHOW_REDIRECT_DASHBOARD_DIALOG,
+      this.showRedirectDashboardDialog,
+    );
 
     const strShowCookieInfo = localStorage.getItem(ENVIDAT_SHOW_COOKIE_BANNER);
     this.showCookieInfo = strShowCookieInfo !== 'false';
@@ -190,14 +240,17 @@ export default {
     eventBus.on(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
     eventBus.off(SHOW_DIALOG, this.openGenericDialog);
     eventBus.off(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
-    eventBus.off(SHOW_REDIRECT_DASHBOARD_DIALOG, this.showRedirectDashboardDialog);
+    eventBus.off(
+      SHOW_REDIRECT_DASHBOARD_DIALOG,
+      this.showRedirectDashboardDialog,
+    );
   },
   mounted() {
     this.checkUserSignedIn();
 
     this.$nextTick(() => {
       this.startParticles();
-    })
+    });
   },
   updated() {
     this.updateActiveStateOnNavItems();
@@ -213,15 +266,12 @@ export default {
       }
     },
     stopParticles(fullClean = true) {
-
       try {
-
         if (this.currentParticles) {
           this.currentParticles.particles.move.enable = false;
           this.currentParticles.particles.opcacity.anim.enable = false;
           this.currentParticles.particles.size.anim.enable = false;
         }
-
       } catch (error) {
         console.error(`Error during particle stop: ${error}`);
       } finally {
@@ -235,14 +285,17 @@ export default {
       // particleOptions have to be in the folder public/particles/christmasParticleOptions.json for development
       // in production they have to be in same folder as the index.html there -> ./particles/christmasParticleOptions.json
       // eslint-disable-next-line no-undef
-      particlesJS.load('christmas-canvas', './particles/christmasParticleOptions.json', () => {
-        // console.log('christmas-canvas - particles.js config loaded');
-        if (this.currentParticles) {
-          this.stopParticles(false);
-        }
-        this.currentParticles = window.pJS;
-      });
-
+      particlesJS.load(
+        'christmas-canvas',
+        './particles/christmasParticleOptions.json',
+        () => {
+          // console.log('christmas-canvas - particles.js config loaded');
+          if (this.currentParticles) {
+            this.stopParticles(false);
+          }
+          this.currentParticles = window.pJS;
+        },
+      );
     },
     updateScroll() {
       if (this.$refs && this.$refs.appContainer) {
@@ -266,7 +319,7 @@ export default {
           if (item.subpages && item.subpages instanceof Array) {
             let subIsActive = false;
 
-            item.subpages.forEach((sub) => {
+            item.subpages.forEach(sub => {
               if (!subIsActive) {
                 subIsActive = this.currentPage === sub;
               }
@@ -278,7 +331,6 @@ export default {
           }
         }
       }
-
     },
     visibleNotifications() {
       const notis = Object.values(this.notifications);
@@ -286,7 +338,9 @@ export default {
     },
     catchContinueClick() {
       if (this.lastEditedDatasetPath) {
-        this.$router.push({ path: `${this.lastEditedDatasetPath}?backPath=${this.$route.fullPath}` });
+        this.$router.push({
+          path: `${this.lastEditedDatasetPath}?backPath=${this.$route.fullPath}`,
+        });
       }
     },
     catchMenuClicked() {
@@ -311,7 +365,6 @@ export default {
       this.navigateTo(item.path);
     },
     catchUserItemClicked(item) {
-
       // make a redirect in case we need to disable the editing in the frontend
       if (this.dashboardRedirect && item.pageName === USER_DASHBOARD_PAGENAME) {
         this.showRedirectDashboardDialog();
@@ -334,6 +387,10 @@ export default {
       });
     },
     catchMaintenanceConfirmClick() {
+      // handle consent with Matomo
+      localStorage.setItem('matomoConsentGiven', 'true');
+      this.$matomo.rememberConsentGiven();
+
       if (this.userIsOnEditPage) {
         this.editMaintenanceBanner = false;
         return;
@@ -365,7 +422,16 @@ export default {
         query: index,
       });
     },
+    deniedTracking() {
+      localStorage.setItem(ENVIDAT_SHOW_COOKIE_BANNER, 'false');
+      localStorage.setItem('matomoConsentGiven', 'false');
+      this.showCookieInfo = false;
+    },
     catchCookieInfoOk() {
+      // handledeniedTracking consent with Matomo
+      localStorage.setItem('matomoConsentGiven', 'true');
+      this.$matomo.rememberConsentGiven();
+
       localStorage.setItem(ENVIDAT_SHOW_COOKIE_BANNER, 'false');
       this.showCookieInfo = false;
     },
@@ -374,7 +440,6 @@ export default {
       return `Hello ${userName}, we are urgently working on the "${componentName}" to fix an issue.\n We are going to open a new tab with the legacy website, so you can do any dataset editing there.\n (if it doesn't work please disable popup blocking and try again).`;
     },
     handleRedirectCallBack(redirectToDashboard) {
-
       let message = this.redirectMessage();
       let callback = this.redirectToLegacySignin;
 
@@ -407,7 +472,14 @@ export default {
       this.handleRedirectCallBack(true);
     },
     // eslint-disable-next-line default-param-last
-    openGenericDialog({ title = 'Redirect to Legacy Website!', message, callback, cancelCallback, confirmText = 'Ok', cancelText = 'Cancel' }) {
+    openGenericDialog({
+      title = 'Redirect to Legacy Website!',
+      message,
+      callback,
+      cancelCallback,
+      confirmText = 'Ok',
+      cancelText = 'Cancel',
+    }) {
       this.dialogTitle = title;
 
       if (!message) {
@@ -420,7 +492,7 @@ export default {
         this.dialogCancelCallback = () => {
           cancelCallback();
           this.showInfoDialog = false;
-        }
+        };
       } else {
         this.dialogCancelCallback = undefined;
       }
@@ -429,7 +501,7 @@ export default {
         this.dialogCallback = () => {
           callback();
           this.showInfoDialog = false;
-        }
+        };
       } else {
         this.dialogCallback = undefined;
       }
@@ -443,7 +515,6 @@ export default {
       this.showModal = true;
     },
     catchSigninClicked() {
-
       // make a redirect to the legacy website in case the sign in via the frontend doesn't work
       if (this.signinRedirectActive) {
         this.showRedirectSignDialog();
@@ -461,50 +532,65 @@ export default {
     },
     loadAllMetadata() {
       if (!this.loadingMetadatasContent && this.metadatasContentSize <= 0) {
-        this.$store.dispatch(`${METADATA_NAMESPACE}/${BULK_LOAD_METADATAS_CONTENT}`, this.config);
+        this.$store.dispatch(
+          `${METADATA_NAMESPACE}/${BULK_LOAD_METADATAS_CONTENT}`,
+          this.config,
+        );
       }
     },
     dialogVersionText() {
       return `You are using the version ${this.appVersion}, but there is are newer version available (${this.newVersion}). Please reload to get the latest verison of EnviDat.`;
     },
     setupNavItems() {
-
       if (this.signinDisabled) {
-        const signItem = this.navigationItems.filter(item => item.path === USER_SIGNIN_PATH)[0];
+        const signItem = this.navigationItems.filter(
+          item => item.path === USER_SIGNIN_PATH,
+        )[0];
         if (signItem) {
           signItem.disabled = true;
         }
       }
-
     },
-    checkUserSignedIn() {
+    fetchUserDatasets() {
+      this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`, {
+        action: ACTION_USER_SHOW,
+        body: {
+          id: this.user.id,
+          include_datasets: true,
+        },
+        commit: true,
+        mutation: USER_GET_DATASETS,
+      });
+    },
+    async checkUserSignedIn() {
       let action = ACTION_GET_USER_CONTEXT_TOKEN;
 
       if (this.config?.userDashboardConfig && !this.useTokenSignin) {
         action = ACTION_OLD_GET_USER_CONTEXT;
       }
 
-      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`,
+      await this.$store.dispatch(
+        `${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`,
         {
           action,
+          data: {
+            include_datasets: true,
+          },
           commit: true,
           mutation: GET_USER_CONTEXT,
-        });
+        },
+      );
+
+      if (this.user) {
+        this.fetchUserDatasets();
+      }
     },
   },
   computed: {
-    ...mapState([
-      'loadingConfig',
-      'config',
-      'webpIsSupported',
-    ]),
+    ...mapState(['loadingConfig', 'config', 'webpIsSupported']),
     ...mapState(USER_SIGNIN_NAMESPACE, ['user']),
-    ...mapState(USER_NAMESPACE, [
-      'lastEditedDataset',
-      'lastEditedDatasetPath',
-    ]),
-    ...mapGetters(
-      METADATA_NAMESPACE, [
+    ...mapState(USER_NAMESPACE, ['lastEditedDataset', 'lastEditedDatasetPath']),
+    ...mapGetters(METADATA_NAMESPACE, [
       'metadataIds',
       'metadatasContent',
       'metadatasContentSize',
@@ -515,8 +601,7 @@ export default {
       'currentMetadataContent',
       'filteredContent',
       'isFilteringContent',
-    ],
-    ),
+    ]),
     ...mapGetters({
       currentPage: 'currentPage',
       outdatedVersion: 'outdatedVersion',
@@ -578,7 +663,11 @@ export default {
       return this.maintenanceConfig?.signinDisabled || false;
     },
     showDecemberParticles() {
-      return this.$vuetify.display.mdAndUp && this.effectsConfig.decemberParticles && this.itIsDecember;
+      return (
+        this.$vuetify.display.mdAndUp &&
+        this.effectsConfig.decemberParticles &&
+        this.itIsDecember
+      );
     },
     userIsOnEditPage() {
       return this.currentPage === METADATAEDIT_PAGENAME;
@@ -587,10 +676,18 @@ export default {
       return getMonth(Date.now()) === 11;
     },
     polygonParticlesActive() {
-      return this.$vuetify.display.mdAndUp && this.currentPage && this.currentPage === LANDING_PAGENAME;
+      return (
+        this.$vuetify.display.mdAndUp &&
+        this.currentPage &&
+        this.currentPage === LANDING_PAGENAME
+      );
     },
     loading() {
-      return this.loadingMetadatasContent || this.searchingMetadatasContent || this.isFilteringContent;
+      return (
+        this.loadingMetadatasContent ||
+        this.searchingMetadatasContent ||
+        this.isFilteringContent
+      );
     },
     searchTerm() {
       return this.$route.query.search;
@@ -603,14 +700,20 @@ export default {
       return true;
     },
     pageStyle() {
-      const heightStyle = this.showToolbar ? 'height: calc(100vh - 36px);' : 'height: 100vh;';
-      return this.mainPageIsScrollable ? '' : `${heightStyle} overflow-y: auto; scroll-behavior: smooth; scrollbar-width: thin; `;
+      const heightStyle = this.showToolbar
+        ? 'height: calc(100vh - 36px);'
+        : 'height: 100vh;';
+      return this.mainPageIsScrollable
+        ? ''
+        : `${heightStyle} overflow-y: auto; scroll-behavior: smooth; scrollbar-width: thin; `;
     },
     showSmallNavigation() {
       return this.$vuetify.display.smAndDown;
     },
     searchCount() {
-      return this.filteredContent !== undefined ? Object.keys(this.filteredContent).length : 0;
+      return this.filteredContent !== undefined
+        ? Object.keys(this.filteredContent).length
+        : 0;
     },
     showReloadDialog() {
       return this.outdatedVersion && !this.reloadDialogCanceled;
@@ -639,7 +742,7 @@ export default {
     },
     menuItem() {
       let menuItem = { active: true };
-      this.navigationItems.forEach((el) => {
+      this.navigationItems.forEach(el => {
         if (el.icon === 'menu') {
           menuItem = el;
         }
@@ -648,7 +751,9 @@ export default {
       return menuItem;
     },
     mode() {
-      return this.$route.query.mode ? this.$route.query.mode.toLowerCase() : null;
+      return this.$route.query.mode
+        ? this.$route.query.mode.toLowerCase()
+        : null;
     },
   },
   components: {
@@ -693,7 +798,10 @@ export default {
     dialogCallback: () => { },
     dialogCancelCallback: () => { },
     showCookieInfo: true,
-    cookieInfoText: 'On envidat.ch cookies are used to enhance your experience and provide features when you\'re signed in. These cookies are "technical only" and are NOT used for tracking or monitoring you.',
+    cookieInfoText:
+      "On envidat.ch cookies are used to enhance your experience and provide features when you're signed in. These cookies are 'technical only' and are NOT used for tracking or monitoring you.",
+    cookieInfoTextMatomo:
+      "On envidat.ch, cookies are used to enhance your experience and provide features when you're signed in. These cookies are 'technical only' and we ANONYMOUSLY track usage (e.g. page views and downloads).",
     redirectToDashboard: false,
     appVersion: import.meta.env.VITE_VERSION,
     showMenu: true,

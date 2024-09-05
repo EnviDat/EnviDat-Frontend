@@ -17,6 +17,7 @@ import { metadata } from '@/modules/metadata/store/metadataStore';
 import { user } from '@/modules/user/store/userStore';
 import { userSignIn } from '@/modules/user/store/userSignInStore';
 import { organizations } from '@/modules/organizations/store/organizationsStore';
+import { matomo } from '@/modules/matomo/store/matomoStore';
 
 import mutations from '@/store/mainMutations';
 import actions from '@/store/mainActions';
@@ -35,7 +36,6 @@ const moduleImportMap = {
   service: () => import('@/modules/services/store/serviceStore'),
   projects: () => import('@/modules/projects/store/projectsStore'),
 }
-
 
 /*
 const errReport = process.env.VITE_ERROR_REPORTING_ENABLED;
@@ -71,6 +71,7 @@ const modules = {
   user,
   userSignIn,
   organizations,
+  matomo,
 };
 
 function createStore() {

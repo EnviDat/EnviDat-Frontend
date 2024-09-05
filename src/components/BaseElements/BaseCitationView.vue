@@ -45,16 +45,16 @@
               :url="doiUrl"
             />
           </v-col>
-
         </v-row>
       </v-col>
 
       <v-col class='flex-grow-1' >
+<!--
+        <v-col cols="10" :md="citationColsCustom ? citationColsCustom : 11">
+-->
         <div v-html="citation" ></div>
       </v-col>
-
     </v-row>
-
   </v-container>
 </template>
 
@@ -88,6 +88,10 @@ export default {
     },
     doiUrl: {
       type: String,
+      default: undefined,
+    },
+    citationColsCustom: {
+      type: Number,
       default: undefined,
     },
   },

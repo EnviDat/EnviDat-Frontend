@@ -9,7 +9,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-
 import { format, parse } from 'date-fns';
 import seedrandom from 'seedrandom';
 
@@ -38,6 +37,8 @@ import {
 import { enhanceMetadataWithModeExtras } from '@/factories/modeFactory';
 import categoryCards, { cardImageBgs } from '@/store/categoryCards';
 import { enhanceTags, getCategoryColor, guessTagCategory } from '@/factories/keywordsFactory';
+
+// import { getResourcesDownloads } from '@/modules/matomo/store/matomoStore';
 
 /**
  * Create a pseudo random integer based on a given seed using the 'seedrandom' lib.
@@ -104,6 +105,13 @@ export function getMetadataVisibilityState(metadata) {
   return visibilityState;
 }
 
+// TODO: check with Dominik
+export function getPublicationStatus(metadata) {
+  const publicationStatus = metadata.publication_state;
+
+  return publicationStatus;
+}
+
 export function createLicense(dataset) {
   if (!dataset) {
     return null;
@@ -120,7 +128,6 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
   if (!dataset) {
     return null;
   }
-
   let { maintainer } = dataset;
 
   if (typeof dataset.maintainer === 'string') {
@@ -146,6 +153,7 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
   }
 
   const visibility = getMetadataVisibilityState(dataset);
+  const publicationStatus = getPublicationStatus(dataset);
   const created = formatDate(dataset.metadata_created);
   const modified = formatDate(dataset.metadata_modified);
 
@@ -163,6 +171,7 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
     organization: dataset.organization?.name || '',
     organizationTooltip: dataset.organization?.title || '',
     metadataState: visibility,
+    publicationStatus,
     spatialInfo: dataset.spatial_info,
     created,
     modified,
@@ -293,7 +302,12 @@ export function getFileFormat(file) {
  * @param signedInUserOrganizationIds {string[]}
  * @returns {boolean|null}
  */
-export function isResourceProtectedForUser(resource, resourceOrganizationID, signedInUserName, signedInUserOrganizationIds) {
+export function isResourceProtectedForUser(
+  resource,
+  resourceOrganizationID,
+  signedInUserName,
+  signedInUserOrganizationIds,
+) {
   if (!resource) return null;
 
   let allowedUsers = '';
@@ -305,8 +319,11 @@ export function isResourceProtectedForUser(resource, resourceOrganizationID, sig
     try {
       const restrictedObj = JSON.parse(restrictedInfo);
       isPublic = restrictedObj.level === ACCESS_LEVEL_PUBLIC_VALUE;
-      isProtected = !!restrictedObj.level && restrictedObj.level !== ACCESS_LEVEL_PUBLIC_VALUE;
-      allowedUsers = restrictedObj.allowed_users || restrictedObj.allowedUsers || '';
+      isProtected =
+        !!restrictedObj.level &&
+        restrictedObj.level !== ACCESS_LEVEL_PUBLIC_VALUE;
+      allowedUsers =
+        restrictedObj.allowed_users || restrictedObj.allowedUsers || '';
       // "{"allowed_users": "", "level": "public", "shared_secret": ""}"
     } catch (err) {
       isPublic = restrictedInfo.includes(ACCESS_LEVEL_PUBLIC_VALUE);
@@ -338,12 +355,23 @@ export function isResourceProtectedForUser(resource, resourceOrganizationID, sig
   return isProtected;
 }
 
-export function createResource(resource, datasetName, resourceOrganizationID, signedInUserName, signedInUserOrganizationIds) {
+export function createResource(
+  resource,
+  datasetName,
+  resourceOrganizationID,
+  signedInUserName,
+  signedInUserOrganizationIds,
+  numberOfDownload,
+) {
   if (!resource) {
     return null;
   }
-
-  const isProtected = isResourceProtectedForUser(resource, resourceOrganizationID, signedInUserName, signedInUserOrganizationIds);
+  const isProtected = isResourceProtectedForUser(
+    resource,
+    resourceOrganizationID,
+    signedInUserName,
+    signedInUserOrganizationIds,
+  );
 
   let fileFormat = resource.format ? resource.format : '';
   fileFormat = fileFormat.replace('.', '').toLowerCase();
@@ -380,6 +408,7 @@ export function createResource(resource, datasetName, resourceOrganizationID, si
     restrictedUrl: `${ckanDomain}/dataset/${datasetName}/restricted_request_access/${resource.id}`,
     restricted: resource.restricted || '',
     format: fileFormat,
+    numberOfDownload,
     state: resource.state || '',
     created,
     deprecated: !!resource.deprecated,
@@ -390,7 +419,11 @@ export function createResource(resource, datasetName, resourceOrganizationID, si
   };
 }
 
-export function createResources(dataset, signedInUser, signedInUserOrganizationIds) {
+export function createResources(
+  dataset,
+  signedInUser,
+  signedInUserOrganizationIds,
+) {
   if (!dataset) {
     return null;
   }
@@ -412,8 +445,17 @@ export function createResources(dataset, signedInUser, signedInUserOrganizationI
   }
 
   if (dataset.resources) {
-    dataset.resources.forEach((element) => {
-      const res = createResource(element, dataset.name, organizationID, signedInUserName, signedInUserOrganizationIds);
+    dataset.resources.forEach(async element => {
+      // get the number of download from matomo API
+      // const numberOfDownload = await getResourcesDownloads(element.name);
+      const res = createResource(
+        element,
+        dataset.name,
+        organizationID,
+        signedInUserName,
+        signedInUserOrganizationIds,
+      );
+      // numberOfDownload,
       res.metadataContact = contactEmail;
 
       resources.push(res);
@@ -421,7 +463,6 @@ export function createResources(dataset, signedInUser, signedInUserOrganizationI
   }
 
   return {
-    
     metadataId: dataset.id,
     metadataTitle: dataset.title,
     doi: dataset.doi,
@@ -524,7 +565,7 @@ export function createDetails(dataset) {
 function getMultiPointArray(coordinates) {
   // Return a multipoint array with swapped point coordinates
   const pointArray = [];
-  coordinates.forEach((coord) => {
+  coordinates.forEach(coord => {
     const swappedCoord = [coord[1], coord[0]];
     pointArray.push(swappedCoord);
   });
@@ -535,9 +576,9 @@ function getMultiPointArray(coordinates) {
 function getPolygonPointArray(coordinates) {
   // Return a polygon array with swapped point coordinates, accepts holes
   const polygonArray = [];
-  coordinates.forEach((outerArray) => {
+  coordinates.forEach(outerArray => {
     const pointArray = [];
-    outerArray.forEach((coord) => {
+    outerArray.forEach(coord => {
       const swappedCoord = [coord[1], coord[0]];
       pointArray.push(swappedCoord);
     });
@@ -550,11 +591,11 @@ function getPolygonPointArray(coordinates) {
 function getMultiPolygonPointArray(coordinates) {
   // Return a multipolygon array with swapped point coordinates, accepts holes
   const multiPolyArray = [];
-  coordinates.forEach((polygon) => {
+  coordinates.forEach(polygon => {
     const polygonArray = [];
-    polygon.forEach((outerArray) => {
+    polygon.forEach(outerArray => {
       const pointArray = [];
-      outerArray.forEach((coord) => {
+      outerArray.forEach(coord => {
         const swappedCoord = [coord[1], coord[0]];
         pointArray.push(swappedCoord);
       });
@@ -573,7 +614,6 @@ function getMultiPolygonPointArray(coordinates) {
  * @returns {Array} array of single GeoJSON geometries (Point or Polygon)
  */
 function extractGeomsFromMultiGeoms(multiGeom) {
-
   let geomType = '';
   if (multiGeom.isMultiPoint) {
     geomType = 'Point';
@@ -582,7 +622,7 @@ function extractGeomsFromMultiGeoms(multiGeom) {
   }
 
   const geomArray = [];
-  multiGeom.geoJSON.coordinates.forEach((geomCoords) => {
+  multiGeom.geoJSON.coordinates.forEach(geomCoords => {
     const formattedGeom = {
       type: geomType,
       coordinates: geomCoords,
@@ -592,7 +632,6 @@ function extractGeomsFromMultiGeoms(multiGeom) {
 
   return geomArray;
 }
-
 
 /**
  * Extract an array of coordinate arrays with swapped point coordinates for each geom
@@ -607,7 +646,7 @@ function getGeomCollectionPointArray(geometries) {
   const geomCollectionArray = [];
   let category = '';
 
-  geometries.forEach((geometry) => {
+  geometries.forEach(geometry => {
     if (geometry.type === LOCATION_TYPE_POINT) {
       pointArray = [geometry.coordinates[1], geometry.coordinates[0]];
       category = 'isPoint';
@@ -621,7 +660,7 @@ function getGeomCollectionPointArray(geometries) {
       pointArray = getMultiPolygonPointArray(geometry.coordinates);
       category = 'isMultiPolygon';
     }
-    geomCollectionArray.push({[category]: true, 'pointArray': pointArray});
+    geomCollectionArray.push({ [category]: true, pointArray });
   });
 
   return geomCollectionArray;
@@ -636,7 +675,6 @@ function getGeomCollectionPointArray(geometries) {
  * @returns {Object} GeoJSON of GeometryCollection type
  */
 export function parseAsGeomCollection(geomArray, propertiesObj = {}) {
-
   if (!geomArray) {
     return null;
   }
@@ -692,7 +730,8 @@ export function createLocation(dataset) {
       location.isPoint = spatialJSON.type === LOCATION_TYPE_POINT;
       location.isMultiPoint = spatialJSON.type === LOCATION_TYPE_MULTIPOINT;
       location.isMultiPolygon = spatialJSON.type === LOCATION_TYPE_MULTIPOLYGON;
-      location.isGeomCollection = spatialJSON.type === LOCATION_TYPE_GEOMCOLLECTION;
+      location.isGeomCollection =
+        spatialJSON.type === LOCATION_TYPE_GEOMCOLLECTION;
 
       // Swap lngLat to latLng because the geoJOSN from CKAN might be invalid!
 
@@ -704,26 +743,26 @@ export function createLocation(dataset) {
           spatialJSON.coordinates[1],
           spatialJSON.coordinates[0],
         ];
-
       } else if (location.isPolygon) {
         location.pointArray = getPolygonPointArray(spatialJSON.coordinates);
-
       } else if (location.isMultiPoint) {
         location.pointArray = getMultiPointArray(spatialJSON.coordinates);
         geomCollection = extractGeomsFromMultiGeoms(location);
-
       } else if (location.isMultiPolygon) {
-        location.pointArray = getMultiPolygonPointArray(spatialJSON.coordinates);
+        location.pointArray = getMultiPolygonPointArray(
+          spatialJSON.coordinates,
+        );
         geomCollection = extractGeomsFromMultiGeoms(location);
-
       } else if (location.isGeomCollection) {
-        location.pointArray = getGeomCollectionPointArray(spatialJSON.geometries);
+        location.pointArray = getGeomCollectionPointArray(
+          spatialJSON.geometries,
+        );
         geomCollection = spatialJSON.geometries;
-
       }
 
-      location.geomCollection = parseAsGeomCollection(geomCollection, {name: location.name});
-
+      location.geomCollection = parseAsGeomCollection(geomCollection, {
+        name: location.name,
+      });
     }
   }
 
@@ -839,33 +878,37 @@ export function formatBytes(a, b = 2) {
 
 export const defaultSwissLocation = {
   type: 'GeometryCollection',
-  geometries: [{
-    type: 'Polygon',
-    coordinates: [
-      [
-        [5.95587, 45.81802],
-        [5.95587, 47.80838],
-        [10.49203, 47.80838],
-        [10.49203, 45.81802],
-        [5.95587, 45.81802],
+  geometries: [
+    {
+      type: 'Polygon',
+      coordinates: [
+        [
+          [5.95587, 45.81802],
+          [5.95587, 47.80838],
+          [10.49203, 47.80838],
+          [10.49203, 45.81802],
+          [5.95587, 45.81802],
+        ],
       ],
-    ],
-  }],
+    },
+  ],
 };
 export const defaultWorldLocation = {
   type: 'GeometryCollection',
-  geometries: [{
-    type: 'Polygon',
-    coordinates: [
-      [
-        [-175, -85],
-        [-175, 85],
-        [175, 85],
-        [175, -85],
-        [-175, -85],
+  geometries: [
+    {
+      type: 'Polygon',
+      coordinates: [
+        [
+          [-175, -85],
+          [-175, 85],
+          [175, 85],
+          [175, -85],
+          [-175, -85],
+        ],
       ],
-    ],
-  }],
+    },
+  ],
 };
 
 /**
@@ -897,9 +940,10 @@ export const possibleVisibilityStates = [
  */
 export function enhanceMetadatas(datasets, mode) {
 
-
   if (!(datasets instanceof Array)) {
-    throw new Error(`enhanceMetadatas() expects an array of datasets got ${typeof datasets}`);
+    throw new Error(
+      `enhanceMetadatas() expects an array of datasets got ${typeof datasets}`,
+    );
   }
 
   const enhancedContent = {};
@@ -934,15 +978,17 @@ export function localSearch(searchTerm, datasets) {
 
   for (let i = 0; i < datasets.length; i++) {
     const dataset = datasets[i];
-    const match1 = dataset.title?.toLowerCase().includes(term1)
-      || dataset.author?.toLowerCase().includes(term1)
-      || dataset.notes?.toLowerCase().includes(term1);
+    const match1 =
+      dataset.title?.toLowerCase().includes(term1) ||
+      dataset.author?.toLowerCase().includes(term1) ||
+      dataset.notes?.toLowerCase().includes(term1);
 
     let match2 = true;
     if (check2Terms) {
-      match2 = dataset.title?.toLowerCase().includes(term2)
-        || dataset.author?.toLowerCase().includes(term2)
-        || dataset.notes?.toLowerCase().includes(term2);
+      match2 =
+        dataset.title?.toLowerCase().includes(term2) ||
+        dataset.author?.toLowerCase().includes(term2) ||
+        dataset.notes?.toLowerCase().includes(term2);
     }
 
     if (match1 && match2) {
@@ -965,7 +1011,9 @@ export function unpackDeprecatedResources(customFields) {
   let unpackedResourceIds = [];
 
   if (customFields?.length > 0) {
-    const customFieldEntry = customFields.filter((entry) => entry?.fieldName === METADATA_DEPRECATEDRESOURCES_PROPERTY)[0];
+    const customFieldEntry = customFields.filter(
+      entry => entry?.fieldName === METADATA_DEPRECATEDRESOURCES_PROPERTY,
+    )[0];
     const stringResourceIds = customFieldEntry?.content || '[]';
     unpackedResourceIds = JSON.parse(stringResourceIds);
   }

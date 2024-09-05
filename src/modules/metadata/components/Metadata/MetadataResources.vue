@@ -5,15 +5,19 @@
     <v-card-title class="pa-4 pb-2">
       <v-row justify="end"
         no-gutters>
-        <v-col class="text-h6 metadata_title grow">
+
+        <v-col class="text-h6 metadata_title flex-grow-1">
           {{ METADATA_RESOURCES_TITLE }}
         </v-col>
 
         <v-col v-if="!showPlaceholder && resources && resources.length > 0"
           class="flex-grow-0 resourcesIcons">
+
           <base-icon-count-view :count="resources.length"
             tooltip-text="Amount of Resources"
-            :icon="mdiFile" />
+            :icon="mdiFile"
+          />
+
         </v-col>
       </v-row>
     </v-card-title>
@@ -36,19 +40,20 @@
             justify="end"
             v-for="(dateObj, index) in dates"
             :key="index">
+
             <v-col>{{ dateObj[DATE_PROPERTY_DATE_TYPE] }}</v-col>
 
             <!--
             <v-col class="flex-grow-0 px-2">Start:</v-col>
 -->
             <v-col align-self="end" class="">{{ dateObj[DATE_PROPERTY_START_DATE] }}</v-col>
+
             <!--
             <v-col class="flex-grow-0 px-2">End:</v-col>
 -->
             <v-col align-self="end">{{ dateObj[DATE_PROPERTY_END_DATE] }}</v-col>
           </v-row>
         </v-col>
-
       </v-row>
     </v-card-text>
 
@@ -67,15 +72,18 @@
       </v-row>
     </v-container>
 
-    <v-container v-if="!showPlaceholder && availableResources && availableResources.length > 0"
+    <v-container
+      v-if="!showPlaceholder && availableResources && availableResources.length > 0"
       id="resourceList"
       fluid
       :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
       class="heightAndScroll pa-2 pt-0">
 
-      <v-row v-if="injectedComponent && injectAtStart"
+      <v-row
+        v-if="injectedComponent && injectAtStart"
         no-gutters>
-        <component :is="injectedComponent"
+        <component
+          :is="injectedComponent"
           :stationConfig="injectedComponentConfig" />
       </v-row>
 
@@ -100,16 +108,20 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="injectedComponent && !injectAtStart"
+      <v-row
+        v-if="injectedComponent && !injectAtStart"
         no-gutters>
-        <component :is="injectedComponent"
+        <component
+          :is="injectedComponent"
           :config="injectedComponentConfig" />
-      </v-row>
 
+      </v-row>
     </v-container>
 
-    <v-card-text v-if="!showPlaceholder && (!resources || resources.length <= 0)"
-      :style="`color: ${emptyTextColor}};`">
+    <v-card-text
+      v-if="!showPlaceholder && (!resources || resources.length <= 0)"
+      :style="`color: ${emptyTextColor}};`"
+    >
       {{ emptyText }}
     </v-card-text>
 
@@ -128,7 +140,7 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 
 import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
@@ -142,10 +154,7 @@ import {
   METADATA_RESOURCES_TITLE,
 } from '@/factories/metadataConsts';
 
-import {
-  eventBus,
-  GCNET_INJECT_MICRO_CHARTS,
-} from '@/factories/eventBus';
+import { eventBus, GCNET_INJECT_MICRO_CHARTS } from '@/factories/eventBus';
 
 import { dataLicenses, WSL_DATA_LICENSE_ID } from '@/factories/dataLicense';
 import { mdiFile, mdiShieldSearch } from '@mdi/js';
@@ -219,10 +228,12 @@ export default {
   computed: {
     availableResources() {
       const res = this.resources;
+
       return res ? res.filter(r => !r.hideFromResourceList) : [];
     },
     dataLicenseUrlField() {
       const licenseId = this.dataLicenseId;
+
       if (licenseId === WSL_DATA_LICENSE_ID) {
         const wslDataLicense = dataLicenses.filter((l) => l.id === WSL_DATA_LICENSE_ID)[0];
 
@@ -239,9 +250,6 @@ export default {
     },
   },
   methods: {
-    readMore() {
-      this.showAllResources = !this.showAllResources;
-    },
     injectComponent({ component, config, injectAtStart = true }) {
       this.injectedComponent = component;
       this.injectedComponentConfig = config;
@@ -257,7 +265,6 @@ export default {
     injectedComponent: null,
     injectAtStart: true,
     injectedComponentConfig: null,
-    showAllResources: false,
     METADATA_RESOURCES_TITLE,
     DATE_PROPERTY_DATE_TYPE,
     DATE_PROPERTY_START_DATE,

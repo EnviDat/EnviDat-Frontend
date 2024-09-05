@@ -1,63 +1,60 @@
 <template>
+  <v-card id="EditRelatedPublications" class="pa-0" :loading="loadingColor">
+    <v-container fluid class="pa-4 fill-height">
 
-<v-card id="EditRelatedPublications"
-        class="pa-0"
-        :loading="loadingColor">
+      <v-row>
+        <v-col cols="6" class="text-h5">
+          {{ EDIT_METADATA_RELATEDPUBLICATIONS_TITLE }}
+        </v-col>
 
-  <v-container fluid
-                class="pa-4 fill-height" >
+        <v-col v-if="message">
+          <BaseStatusLabelView
+            statusIcon="check"
+            statusColor="success"
+            :statusText="message"
+            :expandedText="messageDetails"
+          />
+        </v-col>
+        <v-col v-if="error">
+          <BaseStatusLabelView
+            statusIcon="error"
+            statusColor="error"
+            :statusText="error"
+            :expandedText="errorDetails"
+          />
+        </v-col>
+      </v-row>
 
-    <v-row>
-      <v-col cols="6" class="text-h5">
-        {{ EDIT_METADATA_RELATEDPUBLICATIONS_TITLE }}
-      </v-col>
+      <v-row>
+        <v-col >
+          <div class="text-subtitle-1"
+               v-html="labels.cardInstructions">
 
-      <v-col v-if="message" >
-        <BaseStatusLabelView status="check"
-                             statusColor="success"
-                             :statusText="message"
-                             :expandedText="messageDetails" />
-      </v-col>
-      <v-col v-if="error"  >
+          </div>
+        </v-col>
+      </v-row>
 
-        <BaseStatusLabelView status="error"
-                             statusColor="error"
-                             :statusText="error"
-                             :expandedText="errorDetails" />
-      </v-col>
+      <v-row>
+        <v-col >
 
-    </v-row>
+          <GenericTextareaPreviewLayout
+            v-bind="genericTextAreaObject"
+            :validationError="validationErrors[editingProperty]"
+            :readonly="isReadOnly(editingProperty)"
+            :hint="readOnlyHint(editingProperty)"
+            @inputedText="catchInputedText($event)"
+            @changedText="catchChangedText($event)">
 
-    <v-row>
-      <v-col >
-        <div class="text-subtitle-1"
-              v-html="labels.cardInstructions">
+            <MetadataPublications v-bind="publicationsObject" />
 
-        </div>
-      </v-col>
-    </v-row>
+          </GenericTextareaPreviewLayout>
 
+        </v-col>
+      </v-row>
 
-    <v-row>
-      <v-col >
-
-        <GenericTextareaPreviewLayout v-bind="genericTextAreaObject"
-                                      :validationError="validationErrors[editingProperty]"
-                                      :readonly="isReadOnly(editingProperty)"
-                                      :hint="readOnlyHint(editingProperty)"
-                                      @inputedText="catchInputedText($event)"
-                                      @changedText="catchChangedText($event)">
-          <MetadataPublications v-bind="publicationsObject" />
-        </GenericTextareaPreviewLayout>
-
-      </v-col>
-    </v-row>
-
- </v-container>
-</v-card>
-
+    </v-container>
+  </v-card>
 </template>
-
 
 <script>
 /**
@@ -72,7 +69,7 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 import {
   EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_OBJECT_UPDATE,
@@ -159,7 +156,9 @@ export default {
       };
     },
     validations() {
-      return getValidationMetadataEditingObject(EDITMETADATA_RELATED_PUBLICATIONS);
+      return getValidationMetadataEditingObject(
+        EDITMETADATA_RELATED_PUBLICATIONS,
+      );
     },
     previewPublicationsText() {
       return this.previewText ? this.previewText : this.relatedPublicationsText;
@@ -169,8 +168,13 @@ export default {
     clearPreview() {
       this.previewText = null;
     },
-    validateProperty(property, value){
-      return isFieldValid(property, value, this.validations, this.validationErrors)
+    validateProperty(property, value) {
+      return isFieldValid(
+        property,
+        value,
+        this.validations,
+        this.validationErrors,
+      );
     },
     catchInputedText(value) {
       this.previewText = value;
@@ -182,7 +186,6 @@ export default {
       }
     },
     setRelatedPublicationsText(value) {
-
       eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_RELATED_PUBLICATIONS,
         data: { [this.editingProperty]: value },
@@ -201,9 +204,11 @@ export default {
     EDIT_METADATA_RELATEDPUBLICATIONS_TITLE,
     labels: {
       labelTextarea: EDIT_METADATA_RELATEDPUBLICATIONS_TITLE,
-      cardInstructions: 'Add DORA links to other publications, you can find them on <a href="https://www.dora.lib4ri.ch/wsl/" target="_blank">dora lib4ri</a> or directly enter DORA permanent IDs ex. wsl:29664). Click into the text arena for examples.',
-      placeholder: 'Example entries: \n  * wsl:18753 \n' +
-          ' * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:18753 ',
+      cardInstructions:
+        'Add DORA links to other publications, you can find them on <a href="https://www.dora.lib4ri.ch/wsl/" target="_blank">dora lib4ri</a> or directly enter DORA permanent IDs ex. wsl:29664). Click into the text arena for examples.',
+      placeholder:
+        'Example entries: \n  * wsl:18753 \n' +
+        ' * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:18753 ',
       subtitlePreview: 'Related Publications Preview',
     },
     validationErrors: {
@@ -216,6 +221,4 @@ export default {
     BaseStatusLabelView,
   },
 };
-
-
 </script>

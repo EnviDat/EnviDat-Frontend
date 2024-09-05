@@ -30,9 +30,7 @@
       {{ emptyText }}
     </v-card-text>
 
-    <v-card-text v-if="statusText">
-      {{ statusText }}
-    </v-card-text>
+    <v-card-text v-if="statusText"> {{ statusText }} </v-card-text>
 
     <v-card-actions
       v-if="maxTextLengthReached"

@@ -1,16 +1,17 @@
 <template>
-  <v-card id="MetadataHeader"
-          :dark="dark"
-          :color="(showPlaceholder || !hasContent) ? 'primary' : 'transparent'"  >
-
-    <div id="headerBackground"
-         :style="dynamicCardBackground" >
+  <v-card
+    id="MetadataHeader"
+    :dark="dark"
+    :color="showPlaceholder || !hasContent ? 'primary' : 'transparent'"
+  >
+    <div id="headerBackground" :style="dynamicCardBackground">
       <!-- this loads the background image -->
     </div>
 
-    <base-icon-button 
+    <base-icon-button
       v-if="showCloseButton"
-      class="metadataHeaderCloseButton ma-2"
+      id="MetadataHeaderCloseButton"
+      class="ma-2"
       :class="{ 'mx-1' : $vuetify.display.smAndDown }"
       style="position: absolute; top: 0; right: 0; z-index: 2;"
       :icon="mdiClose"
@@ -24,7 +25,8 @@
 
     <base-icon-button 
       v-if="showEditButton"
-      class="metadataHeaderEditButton ma-2"
+      id="MetadataHeaderEditButton"
+      class="ma-2"
       :class="{ 'mx-1' : $vuetify.display.smAndDown }"
       style="position: absolute; top: 0; right: 46px; z-index: 2;"
       :icon="mdiPencil"
@@ -92,7 +94,8 @@
 
               <v-row no-gutters
                       :style="`max-height: ${authorTagsMaxHeight}px; overflow-y: auto;`" >
-                <v-col v-for="(author, index) in authors"
+
+                <v-col v-for="(author, index) in isAuthorsLonger"
                         :key="index"
                         :class="{
                           'pa-0': $vuetify.display.mdAndUp,
@@ -100,12 +103,42 @@
                         }"
                         class="flex-grow-0" >
 
-                  <TagChipAuthor :name="authorName(author)"
-                                  :tooltipText="authorToolTipText"
-                                  :asciiDead="asciiDead"
-                                  :authorPassedInfo="authorPassedInfo"
-                                  is-small
-                                @clicked="catchAuthorClicked(authorGivenName(author), authorLastName(author))" />
+                  <TagChipAuthor
+                    :name="authorName(author)"
+                    :tooltipText="authorToolTipText"
+                    :asciiDead="asciiDead"
+                    :authorPassedInfo="authorPassedInfo"
+                    isSmall
+                    @clicked="
+                        catchAuthorClicked(
+                          authorGivenName(author),
+                          authorLastName(author),
+                        )
+                      "
+                  />
+                </v-col>
+
+                <v-col
+                  :class="{
+                      'pa-0': $vuetify.display.mdAndUp,
+                      'py-1 px-0': $vuetify.display.smAndDown,
+                    }"
+                  class="flex-grow-0"
+                >
+                  <TagChipAuthor
+                    v-if="
+                        (authorsDifference > 0 && !showAuthors) || showAuthors
+                      "
+                    :name="
+                        !showAuthors
+                          ? 'show more ' + authorsDifference + ' authors'
+                          : 'show less authors'
+                      "
+                    color="highlight"
+                    color-icon="white"
+                    isSmall
+                    @clicked="expandAuthorList()"
+                  />
                 </v-col>
               </v-row>
             </v-col>
@@ -143,7 +176,11 @@
 
                   <v-row no-gutters align="center" v-bind="props">
                     <v-col class="flex-grow-0 pr-2">
-                      <BaseIcon :icon="mdiAccountCog" :small="$vuetify.display.xs" color="black"></BaseIcon>
+                      <BaseIcon
+                        :icon="mdiAccountCog"
+                        :small="$vuetify.display.xs"
+                        color="black"
+                      />
                     </v-col>
                     <v-col>
                       {{ contactName }}
@@ -165,9 +202,13 @@
                 <template v-slot:activator="{ props }">
                   <v-row no-gutters
                         v-bind="props"
-                      align="center">
+                        align="center">
                     <v-col class="flex-grow-0 pr-2">
-                      <BaseIcon color="black" :icon="mdiFingerprint" :small="$vuetify.display.xs"></BaseIcon>
+                      <BaseIcon
+                        color="black"
+                        :icon="mdiFingerprint"
+                        :small="$vuetify.display.xs"
+                      />
                     </v-col>
                     <v-col>
                       <a :href="doiUrl" target="_blank">{{ doi }}</a>
@@ -194,7 +235,11 @@
                         v-bind="props"
                         align="center">
                     <v-col class="flex-grow-0 pr-2">
-                      <BaseIcon color="black" :icon="mdiClockPlusOutline" :small="$vuetify.display.xs"></BaseIcon>
+                      <BaseIcon
+                        color="black"
+                        :icon="mdiClockPlusOutline"
+                        :small="$vuetify.display.xs"
+                      />
                     </v-col>
                     <v-col style="font-size: 0.9rem;">
                       {{ created }}
@@ -219,7 +264,11 @@
                         v-bind="props"
                         align="center">
                     <v-col class="flex-grow-0 pr-2">
-                      <BaseIcon color="black" :small="$vuetify.display.xs" :icon="mdiMapMarker"></BaseIcon>
+                      <BaseIcon
+                        color="black"
+                        :small="$vuetify.display.xs"
+                        :icon="mdiMapMarker"
+                      />
                     </v-col>
                     <v-col style="font-size: 0.9rem;">
                       {{ spatialInfo }}
@@ -251,10 +300,18 @@
                         v-bind="props"
                         align="center">
                     <v-col class="flex-grow-0 pr-2">
-                      <BaseIcon color="black" :small="$vuetify.display.xs" :icon="mdiEmail"></BaseIcon>
+                      <BaseIcon
+                        color="black"
+                        :small="$vuetify.display.xs"
+                        :icon="mdiEmail"
+                      />
                     </v-col>
                     <v-col>
-                      <a :href="contactEmailLowerCase ? `mailto:${contactEmailLowerCase}` : ''" target="_blank">{{ contactEmailLowerCase }}</a>
+                      <a
+                        :href="contactEmailLowerCase ? `mailto:${contactEmailLowerCase}` : ''"
+                        target="_blank">
+                        {{ contactEmailLowerCase }}
+                      </a>
                     </v-col>
                   </v-row>
                 </template>
@@ -281,7 +338,11 @@
                         v-bind="props"
                         align="center">
                     <v-col class="flex-grow-0 pr-2">
-                      <BaseIcon color="black" :small="$vuetify.display.xs" :icon="mdiUpdate"></BaseIcon>
+                      <BaseIcon
+                        color="black"
+                        :small="$vuetify.display.xs"
+                        :icon="mdiUpdate"
+                      />
                     </v-col>
                     <v-col style="font-size: 0.9rem;">
                       {{ modified }}
@@ -299,9 +360,11 @@
                    lg="3"
                   class="headerInfo py-1 py-sm-0" >
 
-              <MetadataOrganizationChip v-if="hasContent && organization"
-                                        :organization="organization"
-                                        :tooltip="organizationTooltip" />
+              <MetadataOrganizationChip
+                v-if="hasContent && organization"
+                :organization="organization"
+                :tooltip="organizationTooltip"
+              />
 
             </v-col>
 
@@ -337,11 +400,20 @@
                             @clicked="catchTagClicked(tag.name)" />
                 </v-col>
 
-                <v-col v-if="maxTagsReached && !showTagsExpanded"
+                <v-col v-if="(maxTagsReached && !showTagsExpanded) || showTagsExpanded"
                         class="flex-grow-0" >
-                  <tag-chip class="headerTag flex-grow-0"
-                            :name="'...'"
-                            @click.native="showTagsExpanded = !showTagsExpanded" />
+                  <tag-chip
+                    class="headerTag flex-grow-0"
+                    color="highlight"
+                    :isAccordion="true"
+                    :isOpen="showTagsExpanded"
+                    :name="
+                        !showTagsExpanded
+                          ? 'SHOW MORE ' + tagsDifference + ' TAGS'
+                          : 'SHOW LESS TAGS'
+                      "
+                    @click.native="showTagsExpanded = !showTagsExpanded"
+                  />
                 </v-col>
               </v-row>
             </v-col>
@@ -371,17 +443,20 @@
           />
         </v-col>
 
-        <v-col v-if="metadataState && showEditButton" class=" flex-grow-1 px-1" >
+        <v-col v-if="metadataState && showEditButton"
+               class=" flex-grow-1 px-1" >
           <MetadataStateChip :state="metadataState" />
         </v-col>
 
-        <v-col v-if="publicationYear"
-               class="flex-grow-0 px-1" >
+        <!-- <v-col v-if="pageViews && !showEditButton" class="flex-grow-0 px-1">
+          <v-chip small
+            >Page views: {{ pageViews[0].nb_events }}</v-chip
+          >
+        </v-col> -->
+        <v-col v-if="publicationYear" class="flex-grow-0 px-1">
           <v-chip small>{{ publicationYear }}</v-chip>
         </v-col>
-
       </v-row>
-
     </v-card-actions>
   </v-card>
 </template>
@@ -399,7 +474,7 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 
 import TagChip from '@/components/Chips/TagChip.vue';
 import TagChipAuthor from '@/components/Chips/TagChipAuthor.vue';
@@ -409,6 +484,7 @@ import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import MetadataHeaderPlaceholder from '@/modules/metadata/components/Metadata/MetadataHeaderPlaceholder.vue';
 import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip.vue';
 import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
+
 import {
   mdiAccountCog,
   mdiChevronDown,
@@ -445,6 +521,7 @@ export default {
     authors: Array,
     maxTags: Number,
     showPlaceholder: Boolean,
+    pageViews: Array,
     expanded: {
       type: Boolean,
       default: true,
@@ -473,6 +550,10 @@ export default {
       default: undefined,
     },
     publicationYear: {
+      type: String,
+      default: undefined,
+    },
+    publicationStatus: {
       type: String,
       default: undefined,
     },
@@ -513,19 +594,47 @@ export default {
     modifyTimeToolTipText: 'Time of last modification',
     NotFoundTitle: 'No metadata found for',
     authorTagsMaxHeight: 75,
+    limitAuthors: 16,
+    showAuthors: false,
   }),
+  watch: {
+    breakpoint: {
+      handler() {
+        this.updateAuthorsBasedOnBreakpoint();
+      },
+      immediate: true,
+    },
+  },
   computed: {
     hasAuthors() {
       return this.authors?.length > 0;
+    },
+    breakpoint() {
+      return this.$vuetify.display;
+    },
+    isAuthorsLonger() {
+      return this.authors.length > this.limitAuthors
+        ? this.authors.slice(0, this.limitAuthors)
+        : this.authors;
+    },
+    authorsDifference() {
+      return this.authors.length - this.limitAuthors;
+    },
+    tagsDifference() {
+      return this.tags.length - this.maxTags;
     },
     hasContent() {
       return this.metadataTitle && !this.showPlaceholder;
     },
     asciiDead() {
-      return this.authorDeadInfo && this.authorDeadInfo.asciiDead ? this.authorDeadInfo.asciiDead : null;
+      return this.authorDeadInfo && this.authorDeadInfo.asciiDead
+        ? this.authorDeadInfo.asciiDead
+        : null;
     },
     authorPassedInfo() {
-      return this.authorDeadInfo && this.authorDeadInfo.authorPassedInfo ? this.authorDeadInfo.authorPassedInfo : null;
+      return this.authorDeadInfo && this.authorDeadInfo.authorPassedInfo
+        ? this.authorDeadInfo.authorPassedInfo
+        : null;
     },
     maxTagsReached() {
       return this.tags ? this.tags.length >= this.maxTags : false;
@@ -542,7 +651,9 @@ export default {
       return this.tags.slice(0, this.maxTags);
     },
     dynamicCardBackground() {
-      const gradient = this.dark ? this.blackTopToBottom : this.whiteTopToBottom;
+      const gradient = this.dark
+        ? this.blackTopToBottom
+        : this.whiteTopToBottom;
 
       let style = `position: absolute; top: 0px; right: 0px;
                     height: 100%; width: 100%;
@@ -576,8 +687,28 @@ export default {
     // expandFinished() {
     //   console.log('finished');
     // },
+    expandAuthorList() {
+      if (!this.showAuthors) {
+        this.showAuthors = !this.showAuthors;
+        this.limitAuthors = this.authors.length;
+      } else {
+        this.showAuthors = !this.showAuthors;
+        this.updateAuthorsBasedOnBreakpoint();
+      }
+    },
     catchTagClicked(tagId) {
       this.$emit('clickedTag', tagId);
+    },
+    updateAuthorsBasedOnBreakpoint() {
+      if (this.breakpoint.xs) {
+        this.limitAuthors = 3;
+      } else if (this.breakpoint.smAndDown) {
+        this.limitAuthors = 8;
+      } else if (this.breakpoint.lgAndDown) {
+        this.limitAuthors = 13;
+      } else {
+        this.limitAuthors = 16;
+      }
     },
     catchAuthorClicked(authorGivenName, authorLastName) {
       this.$emit('clickedAuthor', authorGivenName, authorLastName);
@@ -599,25 +730,31 @@ export default {
 </script>
 
 <style scoped>
+.headerInfo {
+  font-weight: 400;
+  opacity: 0.85;
+  line-height: 1rem;
+}
 
-  .headerInfo {
-    font-weight: 400;
-    opacity: 0.85;
-    line-height: 1rem;
+.headerInfo img,
+.headerInfo > .envidatIcon {
+  opacity: 0.85;
+}
+
+.headerTag {
+  opacity: 0.85;
+}
+
+.orgaChipFullWidth .organizationChip {
+  max-width: unset !important;
+  opacity: 0.85;
+}
+@media screen and (min-width: 964px) {
+  .orgaChipFullWidth {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: 2;
   }
-
-  .headerInfo img,
-  .headerInfo > .envidatIcon {
-    opacity: 0.85;
-  }
-
-  .headerTag {
-    opacity: 0.85;
-  }
-
-  .orgaChipFullWidth .organizationChip {
-    max-width: unset !important;
-    opacity: 0.85;
-  }
-
+}
 </style>

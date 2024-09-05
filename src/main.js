@@ -15,6 +15,7 @@
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 // import InfiniteLoading from 'vue-infinite-loading';
+import VueMatomo from 'vue-matomo';
 
 import store from '@/store/store';
 import App from '@/App.vue';
@@ -27,11 +28,40 @@ const app = createApp(App);
 const pinia = createPinia();
 
 initAxios(app, store);
+// initAzureLogin(Vue);
 
 app
   .use(vuetify)
   .use(router)
   .use(store)
   .use(pinia)
+  .use(VueMatomo, {
+    // Configure your Matomo server and site by providing:
+    host: 'https://statistics.wsl.ch/',
+    siteId: 37,
+    router,
+    enableLinkTracking: true,
+    requireConsent: true,
+    trackInitialView: true,
+    disableCookies: false,
+    enableHeartBeatTimer: true,
+    heartBeatTimerInterval: 15,
+    // set to false as soon as finish the test
+    debug: true,
+  })
   //  .use(InfiniteLoading)
   .mount('#app');
+
+/*
+ * was used for the azure-login, maybe it would need converting to vue3 too?
+Vue.directive('hide', {
+  // Run on initialisation (first render) of the directive on the element
+  bind: (el, binding) => {
+    el.style.visibility = binding.value ? 'hidden' : '';
+  },
+  // Run on subsequent updates to the value supplied to the directive
+  update: (el, binding) => {
+    el.style.visibility = binding.value ? 'hidden' : '';
+  },
+});
+*/
