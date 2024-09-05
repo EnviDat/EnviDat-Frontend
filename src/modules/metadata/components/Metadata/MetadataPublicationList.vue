@@ -32,12 +32,12 @@
                   <v-col class="shrink px-1 d-flex flex-column flex-md-row">
                     <BaseIconButton
                       v-if="isPlainText(n)"
-                      material-icon-name="edit"
+                      :icon="mdiPencil"
                       icon-color="yellow"
                       @clicked="sendEditItemData(n.citation, index)"
                     />
                     <BaseIconButton
-                      material-icon-name="remove_circle_outline"
+                      :icon="mdiMinusCircleOutline"
                       icon-color="red"
                       @clicked="sendRemoveItem(index)"
                     />
@@ -52,7 +52,7 @@
             class="ma-0 pa-2"
             :style="`position: absolute; bottom: 0px; right: ${rightPos()};`"
           >
-            <base-icon-button
+            <BaseIconButton
               material-icon-name="expand_more"
               :iconColor="showFullText ? 'primary' : 'accent'"
               :fillColor="
@@ -75,9 +75,7 @@
 import axios from 'axios';
 import { mapState } from 'vuex';
 import BaseCitationView from '@/components/BaseElements/BaseCitationView.vue';
-/*
-import ExpandableTextLayout from '@/components/Layouts/ExpandableTextLayout.vue';
-*/
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
 import { METADATA_PUBLICATIONS_TITLE } from '@/factories/metadataConsts';
 import {
@@ -88,13 +86,13 @@ import {
   extractedNoPidDoiText,
 } from '@/factories/citationFactory';
 
+import { mdiPencil, mdiMinusCircleOutline } from '@mdi/js';
+
 export default {
   name: 'MetadataPublicationList',
   components: {
     BaseCitationView,
-/*
-    ExpandableTextLayout,
-*/
+    BaseIconButton,
   },
   props: {
     text: {
@@ -382,6 +380,8 @@ export default {
     },
   },
   data: () => ({
+    mdiPencil,
+    mdiMinusCircleOutline,
     METADATA_PUBLICATIONS_TITLE,
     isResolving: false,
     isDoiResolving: false,

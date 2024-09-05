@@ -28,9 +28,7 @@
       </v-row>
 
       <div class="pa-1">
-        <v-alert type="info" border="left" dense icon="info">{{ labels.instructions }}</v-alert>
-
-        <v-alert type="info" border="left" variant="outlined" >{{ labels.instructions }}</v-alert>
+        <v-alert type="info" border variant="outlined" >{{ labels.instructions }}</v-alert>
 
         <v-row id="resourceName" no-gutters class="pt-4">
           <v-col cols="12">
@@ -311,7 +309,7 @@
             v-if="isDataPrivate"
             :active="hasAllowedUsers"
             :disabled="!editingRestrictingActive"
-            materialIconName="groups"
+            :icon="mdiAccountGroup"
             class="mt-2"
             :tooltipText="labels.hasAllowedUsersSwitchTooltip"
             @clicked="hasAllowedUsers = !hasAllowedUsers"
@@ -346,7 +344,7 @@
 
           <v-row v-if="checkUppercaseValue" class="py-2">
             <v-col>
-              <v-alert type="info" icon="info">{{
+              <v-alert type="info" >{{
                 labels.editingWarningUppercaseExtension
               }}</v-alert>
             </v-col>
@@ -404,8 +402,20 @@ import {
   ACCESS_LEVEL_SAMEORGANIZATION_VALUE,
   ACCESS_LEVEL_PUBLIC_VALUE,
 } from '@/factories/userEditingFactory';
-import {mdiAccount, mdiCalendarRange, mdiClose, mdiKey, mdiLock, mdiLockOpen, mdiUpdate, mdiCancel} from '@mdi/js';
+import {
+  mdiAccount,
+  mdiCalendarRange,
+  mdiClose,
+  mdiKey,
+  mdiLock,
+  mdiLockOpen,
+  mdiUpdate,
+  mdiCancel,
+  mdiAccountGroup,
+} from '@mdi/js';
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
+
 
 export default {
   name: 'EditResource',
@@ -907,6 +917,7 @@ export default {
     mdiClose,
     mdiCalendarRange,
     mdiUpdate,
+    mdiAccountGroup,
     previews: {
       name: null,
       description: null,
@@ -977,6 +988,7 @@ export default {
     BaseIconButton,
     BaseIconSwitch,
     BaseIcon,
+    BaseStatusLabelView,
   },
 };
 </script>
