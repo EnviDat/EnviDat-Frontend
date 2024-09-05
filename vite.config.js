@@ -117,7 +117,6 @@ export default ({ mode, config }) => {
           minify: !buildSourceMaps,
           sourcemap: buildSourceMaps,
           emptyOutDir: true,
-/*
           rollupOptions: isProd ? {
             output: {
               manualChunks: (id) => {
@@ -201,9 +200,11 @@ export default ({ mode, config }) => {
                 if (id.includes('tokenize')) {
                   return 'vendor_tokenize';
                 }
+/*
                 if (id.includes('micromark') || id.includes('remark') || id.includes('markdown') || id.includes('mdast-util') || id.includes('hast-util') || id.includes('unist-util')) {
                   return 'vendor_markdown';
                 }
+*/
 
                 // all other node_modules
                 if (id.includes('node_modules')) {
@@ -214,7 +215,6 @@ export default ({ mode, config }) => {
               },
             },
           } : {},
-*/
       define: {
         'import.meta.env.VITE_VERSION': JSON.stringify(version),
       },
