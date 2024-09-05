@@ -164,7 +164,7 @@ const router = createRouter({
    * @param {Array} pins array of ids for the pinned metadatas
    * @param {String} isAuthorSearch if true the search term will only be compared against authors
    */
-  additiveChangeRoute(route, router, basePath, search, tags, mode = undefined, pins = undefined, isAuthorSearch = undefined) {
+  additiveChangeRoute(route, routerObj, basePath, search, tags, mode = undefined, pins = undefined, isAuthorSearch = undefined) {
     const query = {};
     Object.assign(query, route.query);
 
@@ -188,7 +188,7 @@ const router = createRouter({
       query.isAuthorSearch = typeof isAuthorSearch !== 'string' ? isAuthorSearch.toString() : isAuthorSearch;
     }
 
-    router.push({
+    routerObj.push({
       path: basePath,
       query,
     });
