@@ -171,7 +171,7 @@
                    lg="3"
                   class="headerInfo py-1 py-sm-0" >
 
-              <v-tooltip bottom>
+              <v-tooltip location='bottom'>
                 <template v-slot:activator="{ props }">
 
                   <v-row no-gutters align="center" v-bind="props">
@@ -198,7 +198,7 @@
                   lg="3"
                   class="headerInfo py-1 py-sm-0" >
 
-              <v-tooltip bottom>
+              <v-tooltip location='bottom'>
                 <template v-slot:activator="{ props }">
                   <v-row no-gutters
                         v-bind="props"
@@ -228,7 +228,7 @@
                   lg="3"
                   class="headerInfo py-1 py-sm-0" >
 
-              <v-tooltip bottom>
+              <v-tooltip location='bottom'>
                 <template v-slot:activator="{ props }">
 
                   <v-row no-gutters
@@ -257,7 +257,7 @@
                   lg="3"
                   class="headerInfo py-1 py-sm-0" >
 
-              <v-tooltip bottom>
+              <v-tooltip location='bottom'>
                 <template v-slot:activator="{ props }">
 
                   <v-row no-gutters
@@ -293,7 +293,7 @@
                    lg="3"
                   class="headerInfo py-1 py-sm-0" >
 
-              <v-tooltip bottom>
+              <v-tooltip location='bottom'>
                 <template v-slot:activator="{ props }">
 
                   <v-row no-gutters
@@ -331,7 +331,7 @@
                   lg="3"
                   class="headerInfo py-1 py-sm-0" >
 
-              <v-tooltip bottom>
+              <v-tooltip location='bottom'>
                 <template v-slot:activator="{ props }">
 
                   <v-row no-gutters

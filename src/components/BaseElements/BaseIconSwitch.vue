@@ -3,7 +3,7 @@
                                       position: relative;
                                       background-color: white;`">
 
-    <v-tooltip :disabled="!tooltipText" bottom>
+    <v-tooltip :disabled="!tooltipText" location='bottom'>
       <template v-slot:activator="{ props }">
         <div class="d-flex" v-bind="props">
           <div class="iconSwitch">

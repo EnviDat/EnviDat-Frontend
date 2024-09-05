@@ -21,7 +21,7 @@
         <v-col v-if="authorIsDead"
                class="flex-grow-0 py-0">
 
-          <v-tooltip bottom>
+          <v-tooltip location='bottom'>
             <template v-slot:activator="{ props }">
               <BaseIcon 
                 v-bind="props"
@@ -99,7 +99,7 @@
         </v-col>
 
         <v-col class="flex-grow-0">
-          <v-tooltip bottom>
+          <v-tooltip location='bottom'>
             <template v-slot:activator="{ props }">
               <BaseIcon v-bind="props"
                         :color="dark ? 'white' : 'black'"

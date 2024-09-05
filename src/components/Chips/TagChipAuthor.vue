@@ -22,7 +22,7 @@
     {{ authorName }}
 
     <v-tooltip v-if="authorIsDead"
-                bottom>
+               location='bottom'>
       <template v-slot:activator="{ props }">
         <v-icon v-bind="props" size='small' :icon="mdiTimerSand" />
       </template>

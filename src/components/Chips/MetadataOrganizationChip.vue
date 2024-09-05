@@ -7,7 +7,7 @@
     @mouseleave="hover = false"
     @click="$emit('organizationClicked', organization)"
   >
-    <v-tooltip v-if="tooltip" bottom>
+    <v-tooltip v-if="tooltip" location='bottom'>
       <template v-slot:activator="{ props }">
         <div v-bind="props" >
           <v-icon :icon="mdiHome" color="black" />

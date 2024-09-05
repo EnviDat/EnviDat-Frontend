@@ -32,7 +32,8 @@
           class="flex-grow-0 py-0 mx-sm-2"
           style="min-width: 45px; text-align: center;"
         >
-          <v-tooltip bottom :disabled="$vuetify.display.xs">
+          <v-tooltip location='bottom'
+                     :disabled="$vuetify.display.xs">
             <template v-slot:activator="{ props }">
               <tag-chip
                 v-bind="props"
@@ -61,7 +62,7 @@
               :class="hasButton ? 'ml-4 ' : 'ml-2 ml-xs-0'"
         >
           <v-tooltip
-            bottom
+            location='bottom'
             :disabled="$vuetify.display.xs || !searchToolTipText"
           >
             <template v-slot:activator="{ props }">

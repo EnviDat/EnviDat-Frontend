@@ -85,7 +85,7 @@
                    class="px-1"
                     :style="!signInDisabled  ? 'cursor: pointer;' : ''">
 
-              <v-tooltip bottom>
+              <v-tooltip location='bottom'>
                 <template v-slot:activator="{ props }">
                   <div v-bind="props"
                         style="text-align: right;"
@@ -101,7 +101,7 @@
 
             <v-col class="flex-grow-0" >
 
-              <v-tooltip bottom>
+              <v-tooltip location='bottom'>
                 <template v-slot:activator="{ props }">
                   <v-btn icon
                          :disabled="signInDisabled"
