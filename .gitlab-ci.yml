@@ -44,6 +44,7 @@ set-vars:
         echo "BUILD_VERSION is already set to ${BUILD_VERSION}."
         cat build.env
       fi
+    - echo "information environment ${CI_COMMIT_REF_NAME}"
     - |
       if [ "${CI_COMMIT_REF_NAME}" == "develop" ]; then
         echo "CI_COMMIT_REF_NAME=dev" >> build.env
@@ -55,6 +56,7 @@ set-vars:
     # set build variables for the package registry
     - echo "BUILD_NAME=${BUILD_VERSION}-${CI_COMMIT_REF_NAME}" >> build.env
     - echo "BUILD_ZIP_NAME=envidat-frontend-${BUILD_VERSION}-${CI_COMMIT_REF_NAME}.zip" >> build.env
+    - echo "Matomo token ${MATOMO_TOKEN}."
     - echo "content of build.env"
     - cat build.env
   artifacts:
