@@ -78,11 +78,12 @@
 
       </v-col>
 
-      <v-col cols="auto"
-             class="ma-auto ma-md-0 pl-md-4 pt-4 pt-md-0">
+      <v-col cols="auto" class="ma-auto ma-md-0 pl-md-4 pt-4">
         <BaseIconButton
           v-if="!isEditMode"
           :icon="mdiPlus"
+          color='primary'
+          icon-color='white'
           :is-small="$vuetify.display.mdAndUp"
           @clicked="addClick"
         />
@@ -91,13 +92,17 @@
 
     <v-row>
       <v-col class="flex-grow-0"
-             cols="1">
+             cols="12"
+             sm="4"
+             md="2"
+      >
         <a
           id="textAreaController"
           ref="textAreaController"
-          class="text-caption"
+          style="cursor: pointer;"
+          class="text-body-1"
           @click="toggleTextArea()"
-        >{{ showTextArea ? 'Hide' : 'Add' }} Add a citation in plain text</a
+        >{{ showTextArea ? 'Hide' : 'Add' }} citation in plain text</a
         >
       </v-col>
 
@@ -158,6 +163,7 @@
 import { EDIT_METADATA_ADD_PUBLICATION_TITLE } from '@/factories/metadataConsts';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseCitationView from '@/components/BaseElements/BaseCitationView.vue';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout.vue';
@@ -399,7 +405,7 @@ export default {
     labels: {
       title: EDIT_METADATA_ADD_PUBLICATION_TITLE,
       cardInstructions: `Enter a DORA permanent Id (PID) or a Data Object Identifer (DOI) the citation will be resolved by lib4RI.
-                          If you have any other citation click on 'Add citation as plain text'.`,
+                          If you have any other citation click on 'Add citation in plain text'.`,
       subtitlePreview: 'Preview Publications resolved via DORA',
       pId: 'Permanent Id',
       doi: 'Data Object Identifier',
@@ -413,6 +419,7 @@ export default {
     BaseCitationView,
     BaseStatusLabelView,
     GenericTextareaPreviewLayout,
+    BaseRectangleButton,
   },
 };
 </script>

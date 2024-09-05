@@ -1,6 +1,6 @@
 <template>
   <v-card id="EditRelatedPublicationsList" class="pa-0" :loading="loadingColor">
-    <v-container fluid class="pa-4 fill-height">
+    <v-container fluid class="pa-4">
 
       <v-row>
         <v-col cols="6" class="text-h5">
