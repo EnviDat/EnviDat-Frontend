@@ -88,12 +88,6 @@ import {
   extractedNoPidDoiText,
 } from '@/factories/citationFactory';
 
-import {
-  eventBus,
-  EDIT_RELATED_PUBLICATION_SEND,
-  EDIT_RELATED_PUBLICATION_ACTION,
-} from '@/factories/eventBus';
-
 export default {
   name: 'MetadataPublicationList',
   components: {
@@ -128,12 +122,6 @@ export default {
       type: Array,
       default: () => [],
     },
-  },
-  created() {
-    eventBus.on(EDIT_RELATED_PUBLICATION_ACTION, this.getEditItemData);
-  },
-  beforeDestroy() {
-    eventBus.off(EDIT_RELATED_PUBLICATION_ACTION, this.getEditItemData);
   },
   computed: {
     ...mapState(['config']),
@@ -197,17 +185,6 @@ export default {
         index,
       });
 
-/*
-      // scroll to textAreaControlloer (link above test area), import for mobile version
-      const textAreaControlloer = document.getElementById('textAreaController');
-      if (textAreaControlloer) {
-        textAreaControlloer.scrollIntoView({ behavior: 'smooth' });
-      }
-      eventBus.emit(EDIT_RELATED_PUBLICATION_SEND, {
-        citationText: value,
-        index,
-      });
-*/
     },
     getEditItemData(object) {
       this.dataRelatedPublications = this.dataRelatedPublications.map(
