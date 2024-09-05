@@ -14,7 +14,7 @@
     <v-row no-gutters>
       <v-col v-if="!hasDataCreditCounts"
               cols="12"
-              class="pt-4"
+              class="pt-1"
               :class="dark ? 'text-white' : 'text-black'"
               style="opacity: 0.65">
         {{ noCreditslabel }}
