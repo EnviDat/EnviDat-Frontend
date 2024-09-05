@@ -49,6 +49,7 @@ set-vars:
       if [ "${CI_COMMIT_REF_NAME}" == "develop" ]; then
         echo "CI_COMMIT_REF_NAME=dev" >> build.env
       fi
+    - echo "information environment ${CI_COMMIT_REF_NAME}"
     # move all variables from the CI / CD into the build variables
     - cat .env >> build.env
     # bash "source" command loads all the variables from the file
