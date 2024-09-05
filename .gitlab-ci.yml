@@ -25,6 +25,7 @@ variables:
 set-vars:
   stage: .pre
   image: alpine:3.20
+  environment: $CI_COMMIT_REF_NAME  
   before_script:
     - >
       apk add jq yq --no-cache
@@ -67,6 +68,7 @@ set-vars:
 modify-env:
   stage: config
   image: python:3.9-alpine3.17
+  environment: $CI_COMMIT_REF_NAME  
   extends: .trigger-rules
   dependencies:
     - set-vars
@@ -116,6 +118,7 @@ modify-env:
 install-node:
   stage: config
   image: node:20.15.0-alpine3.20
+  environment: $CI_COMMIT_REF_NAME  
   # overwrite the global caching to use push-pull policy
   cache:
     - key:
@@ -150,6 +153,7 @@ install-node:
 run-tests:
   stage: test
   image: node:20.15.0-alpine3.20
+  environment: $CI_COMMIT_REF_NAME  
   extends:
     - .trigger-rules
   needs:
@@ -163,6 +167,7 @@ run-tests:
 build-storybook:
   stage: build
   image: node:20.15.0-alpine3.20
+  environment: $CI_COMMIT_REF_NAME  
   extends:
     - .trigger-rules
   needs:
@@ -187,6 +192,7 @@ build-storybook:
 build-app:
   stage: build
   image: node:20.15.0-alpine3.20
+  environment: $CI_COMMIT_REF_NAME  
   extends:
     - .trigger-rules
   needs:
@@ -208,6 +214,7 @@ build-app:
 combine-builds:
   stage: build
   image: alpine:3.20
+  environment: $CI_COMMIT_REF_NAME  
   extends: .trigger-rules
   variables:
     GIT_STRATEGY: none
