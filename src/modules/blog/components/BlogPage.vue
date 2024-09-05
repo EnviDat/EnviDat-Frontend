@@ -222,7 +222,7 @@ export default {
   },
   data: () => ({
     BLOG_PAGENAME,
-    PageBGImage: 'app_b_browsepage',
+    PageBGImage: getImage('app_b_browsepage'),
     fallbackCardImg: null,
     pageIntroText: 'The EnviDat blog page provides news and information from the EnviDat team. Click on a card to read the blog post, click the close icon in the top right to go back to the overview.',
     blogModuleLoaded: false,

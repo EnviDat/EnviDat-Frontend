@@ -436,7 +436,7 @@ export default {
     ProjectDatasets,
   },
   data: () => ({
-    PageBGImage: 'app_b_browsepage',
+    PageBGImage: getImage('app_b_browsepage'),
     placeHolderAmount: 3,
     selectedTagNames: [],
     selectedPins: [],

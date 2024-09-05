@@ -75,6 +75,7 @@ import {
   SET_CURRENT_PAGE,
 } from '@/store/mainMutationsConsts';
 
+import { getImage } from '@/factories/imageFactory';
 import SigninView from './SigninView.vue';
 
 export default {
@@ -240,7 +241,7 @@ export default {
     },
   },
   data: () => ({
-    PageBGImage: 'app_b_browsepage',
+    PageBGImage: getImage('app_b_browsepage'),
   }),
 };
 </script>

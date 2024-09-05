@@ -39,6 +39,7 @@ import {
   SET_APP_BACKGROUND,
   SET_CURRENT_PAGE,
 } from '@/store/mainMutationsConsts';
+import { getImage } from '@/factories/imageFactory';
 
 export default {
   name: GCMD_PAGENAME,
@@ -61,7 +62,7 @@ export default {
   },
   components: {},
   data: () => ({
-    PageBGImage: 'app_b_browsepage',
+    PageBGImage: getImage('app_b_browsepage'),
     GCMD_PAGENAME,
   }),
 };

@@ -98,6 +98,7 @@ import { useModeStore } from '@/modules/browse/store/modeStore';
 import { areArraysIdentical, convertArrayToUrlString, convertUrlStringToArray } from '@/factories/stringFactory';
 import { isTagSelected } from '@/factories/metaDataFactory';
 import categoryCards from '@/store/categoryCards';
+import { getImage } from '@/factories/imageFactory';
 
 
 export default {
@@ -531,7 +532,7 @@ export default {
     modeContent: null,
     filteredModeContent: null,
     modeTags: null,
-    PageBGImage: 'app_b_browsepage',
+    PageBGImage: getImage('app_b_browsepage'),
     placeHolderAmount: 4,
     suggestionText: 'Try one of these categories',
     searchPlaceholderTextSmall: 'Enter research search term',

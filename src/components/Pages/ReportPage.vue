@@ -86,6 +86,7 @@ import {
   SET_APP_BACKGROUND,
   SET_CURRENT_PAGE,
 } from '@/store/mainMutationsConsts';
+import { getImage } from '@/factories/imageFactory';
 
 export default {
   /**
@@ -126,7 +127,7 @@ export default {
     NotificationCard,
   },
   data: () => ({
-    PageBGImage: 'app_b_browsepage',
+    PageBGImage: getImage('app_b_browsepage'),
     name: '',
     email: '',
     feedback: false,

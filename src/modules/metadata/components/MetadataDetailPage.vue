@@ -148,7 +148,7 @@ import {
   getFrontendJSONForStep,
 } from '@/factories/mappingFactory';
 
-import { getIcon } from '@/factories/imageFactory';
+import { getIcon, getImage } from '@/factories/imageFactory';
 import { convertArrayToUrlString } from '@/factories/stringFactory';
 
 import {defineAsyncComponent, markRaw} from 'vue';
@@ -994,7 +994,7 @@ export default {
     pageViewEvents: null,
     modeStore: null,
     modeDataset: null,
-    PageBGImage: 'app_b_browsepage',
+    PageBGImage: getImage('app_b_browsepage'),
     baseStationURL: 'https://www.envidat.ch/data-files/',
     baseStationURLTestdata: './testdata/',
     geoConfigUrl: '',

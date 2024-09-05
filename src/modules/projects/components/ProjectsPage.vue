@@ -175,7 +175,7 @@ export default {
     ProjectCardPlaceholder,
   },
   data: () => ({
-    PageBGImage: 'app_b_browsepage',
+    PageBGImage: getImage('app_b_browsepage'),
   }),
 };
 </script>

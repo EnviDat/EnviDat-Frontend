@@ -340,7 +340,7 @@ export default {
     AboutTabLayout,
   },
   data: () => ({
-    PageBGImage: 'app_b_browsepage',
+    PageBGImage: getImage('app_b_browsepage'),
     orga,
     activeTab: null,
     tabs: [

@@ -357,7 +357,7 @@ import { METADATA_TITLE_PROPERTY } from '@/factories/metadataConsts';
 
 import { mdiRefresh } from '@mdi/js';
 import { loadRouteTags } from '@/factories/stringFactory';
-import { getIcon } from '@/factories/imageFactory';
+import { getIcon, getImage } from '@/factories/imageFactory';
 import categoryCards from '@/store/categoryCards';
 
 export default {
@@ -860,7 +860,7 @@ export default {
     ckanDomain: process.env.VITE_API_ROOT,
     fileIconString: '',
     title: 'Dashboard',
-    PageBGImage: 'app_b_dashboardpage',
+    PageBGImage: getImage('app_b_dashboardpage'),
     refreshButtonText: 'Reload Datasets',
     refreshOrgaButtonText: 'Reload Organisation Datasets',
     placeHolderAmount: 4,

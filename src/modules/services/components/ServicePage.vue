@@ -151,7 +151,7 @@ export default {
     ImageTextCard,
   },
   data: () => ({
-    PageBGImage: 'app_b_browsepage',
+    PageBGImage: getImage('app_b_browsepage'),
     pageTitle: 'Tools & Services',
     pageIntroText: 'List of the Research Data Management (RDM) tools and services currently provided for WSL employees by WSL IT and EnviDat. <a href="mailto:envidat@wsl.ch" >Get in touch</a> with the EnviDat team for consulting on services, tools or any other requests.',
     fallbackCardImg: null,

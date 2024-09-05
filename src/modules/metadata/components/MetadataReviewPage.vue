@@ -102,7 +102,7 @@ import { convertJSON, getFrontendDates, getFrontendJSONForStep } from '@/factori
 
 import { useReviewStore } from '@/modules/metadata/store/reviewStore';
 import { convertArrayToUrlString } from '@/factories/stringFactory';
-import {getIcon} from '@/factories/imageFactory';
+import { getIcon, getImage } from '@/factories/imageFactory';
 import {defineAsyncComponent, markRaw} from 'vue';
 
 import MetadataHeader from './Metadata/MetadataHeader.vue';
@@ -590,7 +590,7 @@ export default {
     MetadataCitation: markRaw(MetadataCitation),
     MetadataAuthors: markRaw(MetadataAuthors),
     reviewStore: useReviewStore(),
-    PageBGImage: 'app_b_browsepage',
+    PageBGImage: getImage('app_b_browsepage'),
     baseStationURL: 'https://www.envidat.ch/data-files/',
     baseStationURLTestdata: './testdata/',
     header: null,
