@@ -10,8 +10,8 @@ stages:
   - manual-deploy
 
 variables:
-  ARTIFACT_COMPRESSION_LEVEL: "fast"
-  CACHE_COMPRESSION_LEVEL: "fast"
+  ARTIFACT_COMPRESSION_LEVEL: 'fast'
+  CACHE_COMPRESSION_LEVEL: 'fast'
 #  npm_config_cache: '.npm/'
 
 .trigger-rules:
@@ -25,6 +25,7 @@ variables:
 set-vars:
   stage: .pre
   image: alpine:3.20
+  environment: $CI_COMMIT_REF_NAME  
   before_script:
     - >
       apk add jq yq --no-cache
@@ -44,6 +45,7 @@ set-vars:
         echo "BUILD_VERSION is already set to ${BUILD_VERSION}."
         cat build.env
       fi
+    - echo "information environment ${CI_COMMIT_REF_NAME}"
     - |
       if [ "${CI_COMMIT_REF_NAME}" == "develop" ]; then
         echo "CI_COMMIT_REF_NAME=dev" >> build.env
@@ -55,7 +57,9 @@ set-vars:
     # set build variables for the package registry
     - echo "BUILD_NAME=${BUILD_VERSION}-${CI_COMMIT_REF_NAME}" >> build.env
     - echo "BUILD_ZIP_NAME=envidat-frontend-${BUILD_VERSION}-${CI_COMMIT_REF_NAME}.zip" >> build.env
+    - echo "Matomo token ${MATOMO_TOKEN}."
     - echo "content of build.env"
+    - echo "information environment ${CI_COMMIT_REF_NAME}"
     - cat build.env
   artifacts:
     reports:
@@ -64,6 +68,7 @@ set-vars:
 modify-env:
   stage: config
   image: python:3.9-alpine3.17
+  environment: $CI_COMMIT_REF_NAME  
   extends: .trigger-rules
   dependencies:
     - set-vars
@@ -90,10 +95,14 @@ modify-env:
           value = 'https://envidat.ch'
       dotenv.set_key(file, key, value, quote_mode='never')
 
+      key = 'VITE_MATOMO_TOKEN'
+      token = os.getenv('MATOMO_TOKEN')
+      dotenv.set_key(file, key, token, quote_mode='never')
+
       key = 'VITE_CONFIG_URL'
       value = f'https://frontend-config.s3-zh.os.switch.ch/{branch}.json'
       dotenv.set_key(file, key, value, quote_mode='never')
-      
+
       key = 'VITE_BUILD_SOURCEMAPS'
       value = 'false'
       if branch == 'staging' or branch == 'develop':
@@ -102,19 +111,20 @@ modify-env:
     - echo "created content for .env.production:"
     - cat .env.production
   artifacts:
-    name: "environment variables"
+    name: 'environment variables'
     paths:
       - .env.production
 
 install-node:
   stage: config
   image: node:20.15.0-alpine3.20
+  environment: $CI_COMMIT_REF_NAME  
   # overwrite the global caching to use push-pull policy
   cache:
     - key:
         files:
           - package-lock.json
-        prefix: "package-lock"
+        prefix: 'package-lock'
       paths:
         - .npm/
         - node_modules/
@@ -128,10 +138,10 @@ install-node:
     - echo "the cache work if node_modules and .npm/ folders are available"
     - ls -a
     - npm ci --prefer-offline --no-audit
-#    - echo "Check afterwards how the folders are"
-#    - ls -a
+  #    - echo "Check afterwards how the folders are"
+  #    - ls -a
   artifacts:
-    name: "node dependencies"
+    name: 'node dependencies'
     # stores node_modules as an artifact to be used in the next jobs
     # caching isn't always guaranteed to work
     paths:
@@ -143,6 +153,7 @@ install-node:
 run-tests:
   stage: test
   image: node:20.15.0-alpine3.20
+  environment: $CI_COMMIT_REF_NAME  
   extends:
     - .trigger-rules
   needs:
@@ -156,10 +167,11 @@ run-tests:
 build-storybook:
   stage: build
   image: node:20.15.0-alpine3.20
+  environment: $CI_COMMIT_REF_NAME  
   extends:
     - .trigger-rules
   needs:
-   # needs the artifact: config and environment variables
+    # needs the artifact: config and environment variables
     - modify-env
     # needs the artifact: node_modules to build storybook
     - install-node
@@ -168,7 +180,7 @@ build-storybook:
     # - npm cache verify || true
     - npm run build-storybook -- -o ./storybook --loglevel error --disable-telemetry
   artifacts:
-    name: "storybook build"
+    name: 'storybook build'
     # keep the storybook for 7 days to be able to trigger the chromatic-deployment
     expire_in: 1 day
     # stores the storybook build as an artifact to be used in the next stages
@@ -180,6 +192,7 @@ build-storybook:
 build-app:
   stage: build
   image: node:20.15.0-alpine3.20
+  environment: $CI_COMMIT_REF_NAME  
   extends:
     - .trigger-rules
   needs:
@@ -190,7 +203,7 @@ build-app:
   script:
     - npm run build -- --logLevel error
   artifacts:
-    name: "frontend build "
+    name: 'frontend build '
     expire_in: 1 day
     # stores the built app code
     paths:
@@ -201,6 +214,7 @@ build-app:
 combine-builds:
   stage: build
   image: alpine:3.20
+  environment: $CI_COMMIT_REF_NAME  
   extends: .trigger-rules
   variables:
     GIT_STRATEGY: none
@@ -221,13 +235,11 @@ combine-builds:
     - rm -rf dist
     - ls -la
   artifacts:
-    name: "frontend build $CI_COMMIT_REF_NAME"
+    name: 'frontend build $CI_COMMIT_REF_NAME'
     expire_in: 1 day
     # stores the combined built code
     paths:
       - ./
-
-
 #tag-commit-sha:
 #  extends: .trigger-rules
 #  stage: package

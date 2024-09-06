@@ -48,8 +48,11 @@
           <EditAddPublication
             :pid="previewPid"
             :doi="previewDoi"
+            :selectedPlainText="selectedPlainText"
             dense
             @addClicked="catchAddPublication"
+            @saveText="catchSaveText"
+            @cancelText="catchCancelText"
           />
         </v-col>
       </v-row>
@@ -65,6 +68,10 @@
           <MetadataPublicationList
             :isPreview="true"
             v-bind="publicationsObject"
+            :updatedCitation="updatedCitation"
+            :updatedCitationIndex="selectedTextIndex"
+            @editItem="catchEditItem"
+            @updateText="catchUpdateText"
           />
         </v-col>
       </v-row>
@@ -165,10 +172,24 @@ export default {
     },
   },
   methods: {
+    catchUpdateText(newRelatedText) {
+      this.catchChangedText(newRelatedText);
+    },
+    catchEditItem({ citationText, index }) {
+      this.selectedPlainText = citationText;
+      this.selectedTextIndex = index;
+    },
+    catchSaveText(citationText) {
+      this.updatedCitation = citationText;
+    },
+    catchCancelText() {
+      this.selectedPlainText = undefined;
+      this.selectedTextIndex = undefined;
+      this.updatedCitation = undefined;
+    },
     catchAddPublication({ pid, doi, plainText }) {
       this.previewPid = pid;
       this.previewDoi = doi;
-      this.previewPlainText = doi;
 
       let value = pid;
       if (doi) {
@@ -179,7 +200,7 @@ export default {
 
       if (value) {
         if (!this.previewText?.includes(value)) {
-          this.previewText += `\n- ${value}`;
+          this.previewText += `\n ${value}`;
 
           this.catchChangedText(this.previewText);
         }
@@ -206,7 +227,9 @@ export default {
 
       this.previewPid = null;
       this.previewDoi = null;
-      this.previewPlainText = null;
+      this.selectedPlainText = undefined;
+      this.selectedTextIndex = undefined;
+      this.updatedCitation = undefined;
     },
   },
   data: () => ({
@@ -227,6 +250,9 @@ export default {
     validationErrors: {
       relatedPublicationsText: null,
     },
+    selectedPlainText: undefined,
+    updatedCitation: undefined,
+    selectedTextIndex: undefined,
   }),
   components: {
     MetadataPublicationList,

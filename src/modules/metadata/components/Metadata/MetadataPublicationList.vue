@@ -1,26 +1,15 @@
 <template id="MetadataPublications">
-  <section>
-    <template v-if="replacedText != null">
-      <expandable-text-layout
-        :title="METADATA_PUBLICATIONS_TITLE"
-        :text="replacedText"
-        :showPlaceholder="loading"
-        :sanitizeHTML="false"
-        :statusText="resolvingStatusText"
-        class="relatedPubList"
-      />
-    </template>
-    <template v-else>
-      <v-card :class="'relatedPubList'">
+      <v-card class="relatedPubList">
         <v-card-title class="metadata_title text-h6 pa-4">
           {{ METADATA_PUBLICATIONS_TITLE }}
         </v-card-title>
+
         <v-skeleton-loader
           v-if="loading || showPlaceholder"
           type="list-item-two-line"
         >
         </v-skeleton-loader>
-        <template v-else>
+
           <v-card-text
             ref="text"
             class="pa-4 pt-0 heightAndScroll readableText"
@@ -29,6 +18,7 @@
             "
           >
             <v-col v-for="(n, index) in dataSliced" :key="'n_' + index">
+
               <section :class="{ 'd-flex align-center': isPreview }">
                 <BaseCitationView
                   :abstract="n.abstract"
@@ -49,13 +39,14 @@
                     <BaseIconButton
                       material-icon-name="remove_circle_outline"
                       icon-color="red"
-                      @clicked="removeItem(dataRelatedPublications, index)"
+                      @clicked="sendRemoveItem(index)"
                     />
                   </v-col>
                 </div>
               </section>
             </v-col>
           </v-card-text>
+
           <v-card-actions
             v-if="dataLength > 2 && !isPreview"
             class="ma-0 pa-2"
@@ -75,17 +66,18 @@
               @clicked="readMore"
             />
           </v-card-actions>
-        </template>
+
       </v-card>
-    </template>
-  </section>
+
 </template>
 
 <script>
 import axios from 'axios';
 import { mapState } from 'vuex';
 import BaseCitationView from '@/components/BaseElements/BaseCitationView.vue';
+/*
 import ExpandableTextLayout from '@/components/Layouts/ExpandableTextLayout.vue';
+*/
 
 import { METADATA_PUBLICATIONS_TITLE } from '@/factories/metadataConsts';
 import {
@@ -106,7 +98,9 @@ export default {
   name: 'MetadataPublicationList',
   components: {
     BaseCitationView,
+/*
     ExpandableTextLayout,
+*/
   },
   props: {
     text: {
@@ -120,6 +114,14 @@ export default {
     isPreview: {
       type: Boolean,
       default: false,
+    },
+    updatedCitation: {
+      type: String,
+      default: undefined,
+    },
+    updatedCitationIndex: {
+      type: Number,
+      default: undefined,
     },
     allDatasets: {
       // this is only for testing & implementation via storybook
@@ -190,20 +192,32 @@ export default {
       return n.doi == null && n.pid == null;
     },
     sendEditItemData(value, index) {
+      this.$emit('editItem', {
+        citationText: value,
+        index,
+      });
+
+/*
       // scroll to textAreaControlloer (link above test area), import for mobile version
       const textAreaControlloer = document.getElementById('textAreaController');
       if (textAreaControlloer) {
         textAreaControlloer.scrollIntoView({ behavior: 'smooth' });
       }
       eventBus.emit(EDIT_RELATED_PUBLICATION_SEND, {
-        string: { value },
+        citationText: value,
         index,
       });
+*/
     },
     getEditItemData(object) {
       this.dataRelatedPublications = this.dataRelatedPublications.map(
         (obj, i) => (i === object.index ? object.object : obj),
       );
+    },
+    sendRemoveItem(index) {
+      this.removeItem(this.dataRelatedPublications, index);
+      const newRelatedText = this.recreateRelatedPublicationText();
+      this.$emit('updateText', newRelatedText);
     },
     removeItem(array, index) {
       if (index >= 0 && index < array.length) {
@@ -226,7 +240,27 @@ export default {
         ? this.$vuetify.theme.themes.light.highlight
         : 'auto';
     },
-    generatePublications() {
+    recreateRelatedPublicationText() {
+      let newText = '';
+
+      for (let i = 0; i < this.dataRelatedPublications.length; i++) {
+        if (i !== 0) {
+          newText += '\n';
+        }
+
+        const publicationObj = this.dataRelatedPublications[i];
+        const id = publicationObj.pid || publicationObj.doi || null;
+
+        if(id) {
+          newText += id;
+        } else {
+          newText += publicationObj.citation;
+        }
+      }
+
+      return newText;
+    },
+    updatePublicationList() {
       this.dataRelatedPublications = [
         ...(this.pidPublications || []),
         ...(this.doiPublications || []),
@@ -235,6 +269,7 @@ export default {
     },
     generateCitationFromSimpleText(arrayText) {
       this.emptyCitation = [];
+
       arrayText.forEach(citation => {
         if (citation !== 'null' && citation.trim() !== '') {
           const citationProp = {
@@ -246,7 +281,8 @@ export default {
           this.emptyCitation.push(citationProp);
         }
       });
-      this.generatePublications();
+
+      this.updatePublicationList();
     },
     resolvedCitations(text) {
       const pidMapSize = this.extractedPIDMap?.size || 0;
@@ -305,7 +341,8 @@ export default {
 
         const response = await axios.get(doraUrl);
         this.pidPublications = response.data;
-        this.generatePublications();
+
+        this.updatePublicationList();
       } catch (e) {
         this.resolveError = e;
         this.loading = false;
@@ -328,7 +365,8 @@ export default {
         citationMap.forEach(value => {
           this.doiPublications.push(value);
         });
-        this.generatePublications();
+
+        this.updatePublicationList();
       } catch (e) {
         this.resolveDoiError = e;
         this.loading = false;
@@ -341,7 +379,29 @@ export default {
   watch: {
     text() {
       this.resolvedCitations(this.text);
-      this.replacedText = null;
+      // this.replacedText = null;
+    },
+    updatedCitation() {
+
+      if (this.updatedCitation) {
+
+        if (this.updatedCitationIndex === undefined) {
+          // case for a new entry of just plain text
+          this.generateCitationFromSimpleText([
+              ...this.extractedNoPidDoi,
+              this.updatedCitation,
+          ]);
+        } else {
+          // case for selected item for editing and now needs updating
+          const citationObject = this.dataRelatedPublications[this.updatedCitationIndex];
+          if (citationObject) {
+            citationObject.citation = this.updatedCitation;
+          }
+        }
+
+        const newRelatedText = this.recreateRelatedPublicationText();
+        this.$emit('updateText', newRelatedText);
+      }
     },
   },
   data: () => ({
@@ -350,7 +410,7 @@ export default {
     isDoiResolving: false,
     resolveError: null,
     resolveDoiError: null,
-    replacedText: null,
+    // replacedText: null,
     dataRelatedPublications: null,
     doiPublications: null,
     pidPublications: null,

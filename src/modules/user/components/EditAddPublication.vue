@@ -48,23 +48,35 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col>
+      <v-col class="flex-grow-0"
+             cols="1">
         <a
           id="textAreaController"
+          ref="textAreaController"
           class="text-caption"
           @click="toggleTextArea()"
           >{{ showTextArea ? 'Hide' : 'Add' }} plain text</a
         >
-        <template v-if="isEditMode">
-          <v-btn
-            class="mr-4 ml-4"
-            color="primary"
-            x-small
-            @click="editExistingData()"
-            >edit</v-btn
-          >
-          <v-btn x-small @click="closeEditMode()">cancel</v-btn>
-        </template>
+      </v-col>
+
+      <v-col v-if="showTextArea"
+             class="flex-grow-0" >
+        <BaseRectangleButton
+            button-text="Save Text"
+            is-xs-small
+            @clicked="editExistingData()"
+        />
+
+      </v-col>
+
+      <v-col v-if="showTextArea"
+             class="flex-grow-0" >
+        <BaseRectangleButton
+            button-text="Cancel"
+            color="gray"
+            is-xs-small
+            @clicked="closeEditMode(true)"
+        />
       </v-col>
     </v-row>
     <v-row>
@@ -73,7 +85,6 @@
         <GenericTextareaPreviewLayout
           v-if="showTextArea"
           v-bind="genericTextAreaObject"
-          :textareaContent="filledTextArea"
           @inputedText="catchInputedText($event)"
         >
         </GenericTextareaPreviewLayout>
@@ -121,7 +132,7 @@ import {
 export default {
   name: 'EditAddPublication',
   props: {
-    filledtext: {
+    selectedPlainText: {
       type: String,
       default: undefined,
     },
@@ -171,6 +182,7 @@ export default {
     genericTextAreaObject() {
       return {
         isVerticalLayout: true,
+        textareaContent: this.selectedPlainText,
       };
     },
     pidField: {
@@ -201,31 +213,39 @@ export default {
   },
   methods: {
     editExistingData() {
-      eventBus.emit(EDIT_RELATED_PUBLICATION_ACTION, {
-        object: this.previewCitation,
-        index: this.indexEditData,
-      });
+      this.$emit('saveText', this.previewCitation?.citation || this.citation );
       this.closeEditMode();
     },
-    closeEditMode() {
+    closeEditMode(triggerCancelEvent = false) {
       this.isEditMode = false;
       this.plainText = null;
       this.previewCitation = null;
       this.showTextArea = false;
       this.filledTextArea = '';
+
+      if (triggerCancelEvent) {
+        this.$emit('cancelText');
+      }
     },
-    editData(object) {
+    editData(citationText) {
       this.isEditMode = true;
       this.showTextArea = true;
-      this.filledTextArea = object.string.value;
-      const previewPlainText = {
+      this.filledTextArea = citationText;
+
+
+      const textAreaController = this.$refs.textAreaController;
+      if (textAreaController) {
+        textAreaController.scrollIntoView({ behavior: 'smooth' });
+      }
+
+      this.previewCitation = {
         doi: null,
         doiUrl: null,
-        citation: object.string.value,
+        citation: citationText,
         abstract: null,
       };
-      this.previewCitation = previewPlainText;
-      this.indexEditData = object.index;
+
+      // this.indexEditData = object.index;
     },
     toggleTextArea() {
       this.showTextArea = !this.showTextArea;
@@ -302,8 +322,16 @@ export default {
       this.showTextArea = false;
     },
   },
+  watch: {
+    selectedPlainText() {
+
+      if (this.selectedPlainText) {
+        this.editData(this.selectedPlainText);
+      }
+    },
+  },
   data: () => ({
-    indexEditData: false,
+    // indexEditData: false,
     isEditMode: false,
     showTextArea: false,
     isResolving: false,
