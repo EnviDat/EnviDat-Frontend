@@ -6,35 +6,35 @@
     tag="article"
   >
     <!-- prettier-ignore -->
-    <NavigationStepper :steps="editingSteps"
-                       :step="routeStep"
-                       :subStep="routeSubStep"
-                       stepColor="highlight"
-                       :loading="loading"
-                       :saving="loadingEditingData"
-                       showPreviewButton
-                       :dataset-title="currentEditingContent?.title"
-                       @clickedPreview="catchPreviewClicked"
-                       @clickedClose="catchBackClicked" />
+    <NavigationStepper
+      :steps="editingSteps"
+      :step="routeStep"
+      :subStep="routeSubStep"
+      stepColor="highlight"
+      :loading="loading"
+      :saving="loadingEditingData"
+      showPreviewButton
+      :dataset-title="currentEditingContent?.title"
+      @clickedPreview="catchPreviewClicked"
+      @clickedClose="catchBackClicked"
+    />
 
-
-    <v-snackbar id="NotificationSnack"
-                top
-                elevation="0"
-                color="transparent"
-                timeout="10000"
-                v-model="showSnack"
-                >
-
-      <NotificationCard v-if="editingError"
-                        :notification="editingError"
-                        :showCloseButton="true"
-                        @clickedClose="showSnack = false" />
-
+    <v-snackbar
+      id="NotificationSnack"
+      top
+      elevation="0"
+      color="transparent"
+      timeout="10000"
+      v-model="showSnack"
+    >
+      <NotificationCard
+        v-if="editingError"
+        :notification="editingError"
+        :showCloseButton="true"
+        @clickedClose="showSnack = false"
+      />
     </v-snackbar>
-
   </v-container>
-
 </template>
 
 <script>
@@ -77,9 +77,7 @@ import {
   EDITMETADATA_MAIN,
 } from '@/factories/eventBus';
 
-import {
-  componentChangedEvent,
-} from '@/factories/userEditingFactory';
+import { componentChangedEvent } from '@/factories/userEditingFactory';
 
 import {
   METADATA_CANCEL_AUTHOR_EDITING,
@@ -122,7 +120,10 @@ import {
   METADATA_UPDATE_AN_EXISTING_AUTHOR,
 } from '@/store/metadataMutationsConsts';
 
-import { getReadOnlyFieldsObject, populateEditingComponents } from '@/factories/mappingFactory';
+import {
+  getReadOnlyFieldsObject,
+  populateEditingComponents,
+} from '@/factories/mappingFactory';
 import NavigationStepper from '@/components/Navigation/NavigationStepper.vue';
 import NotificationCard from '@/components/Cards/NotificationCard.vue';
 import { errorMessage } from '@/factories/notificationFactory';
@@ -143,19 +144,20 @@ import {
   metadataEditingSteps,
 } from '@/factories/workflowFactory';
 
-import { DOI_API_ACTIONS, DOI_RESERVE } from '@/modules/user/store/doiMutationsConsts';
+import {
+  DOI_API_ACTIONS,
+  DOI_RESERVE,
+} from '@/modules/user/store/doiMutationsConsts';
 import {
   getUserOrganizationRoleMap,
   USER_ROLE_EDITOR,
   USER_ROLE_MEMBER,
 } from '@/factories/userEditingValidations';
 
-
 export default {
   name: 'MetadataEditPage',
   beforeRouteEnter(to, from, next) {
-
-    next((vm) => {
+    next(vm => {
       vm.$store.commit(SET_CURRENT_PAGE, METADATAEDIT_PAGENAME);
       vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
 
@@ -189,7 +191,12 @@ export default {
     eventBus.off(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
   },
   beforeMount() {
-    initializeStepsInUrl(this.editingSteps, this.routeStep, this.routeSubStep, this);
+    initializeStepsInUrl(
+      this.editingSteps,
+      this.routeStep,
+      this.routeSubStep,
+      this,
+    );
   },
   mounted() {
     // reset the scrolling to the top
@@ -200,16 +207,13 @@ export default {
     } else if (!this.userLoading) {
       this.showDialogSignInNeeded();
     }
-
   },
   computed: {
     ...mapState(['config']),
-    ...mapState(USER_SIGNIN_NAMESPACE,[
-      'user',
-      'userLoading',
-    ]),
-    ...mapState(ORGANIZATIONS_NAMESPACE,[
+    ...mapState(USER_SIGNIN_NAMESPACE, ['user', 'userLoading']),
+    ...mapState(ORGANIZATIONS_NAMESPACE, [
       'userOrganizationIds',
+      'userOrganizationLoading',
     ]),
     ...mapState(USER_NAMESPACE, [
       'lastEditedBackPath',
@@ -220,15 +224,9 @@ export default {
       'uploadNewResourceLoading',
       'userDatasets',
     ]),
-    ...mapState(METADATA_NAMESPACE,[
-      'authorsMap',
-      'asciiDead',
-    ]),
+    ...mapState(METADATA_NAMESPACE, ['authorsMap', 'asciiDead']),
     ...mapGetters(USER_NAMESPACE, ['resources', 'authors']),
-    ...mapGetters(METADATA_NAMESPACE, [
-      'existingAuthors',
-      'existingKeywords',
-    ]),
+    ...mapGetters(METADATA_NAMESPACE, ['existingAuthors', 'existingKeywords']),
     doiWorkflowActive() {
       return this.config?.userEditMetadataConfig?.doiWorkflowActive;
     },
@@ -239,7 +237,12 @@ export default {
       return this.$route.params.metadataid;
     },
     loading() {
-      return this.loadingCurrentEditingContent || !this.currentEditingContent || this.authorsMapLoading;
+      return (
+        this.loadingCurrentEditingContent ||
+        !this.currentEditingContent ||
+        this.userOrganizationLoading ||
+        this.authorsMapLoading
+      );
     },
     authorsMapLoading() {
       const map = this.authorsMap;
@@ -284,56 +287,71 @@ export default {
 
         for (let j = 0; j < dataKeys.length; j++) {
           const dataKey = dataKeys[j];
-          const data = this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](dataKey);
+          const data = this.$store.getters[
+            `${USER_NAMESPACE}/getMetadataEditingObject`
+          ](dataKey);
 
           if (data) {
             mergedData = {
               ...mergedData,
               ...data,
-            }
+            };
           }
         }
 
         step.genericProps = mergedData;
 
         if (step.detailSteps) {
-          this.initStepDataFromStore(step.detailSteps)
+          this.initStepDataFromStore(step.detailSteps);
         }
       }
-
     },
     async loadUserOrganizations() {
-      if (!this.$store.getters[`${ORGANIZATIONS_NAMESPACE}/hasUserOrganizations`]) {
-        await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user?.id);
-
-        // always call the USER_GET_ORGANIZATIONS action because it resolves the store & state also when userOrganizationIds is empty
-        await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS}`, this.userOrganizationIds);
+      if (
+        !this.$store.getters[`${ORGANIZATIONS_NAMESPACE}/hasUserOrganizations`]
+      ) {
+        await this.$store.dispatch(
+          `${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`,
+          this.user?.id,
+        );
       }
+      // always call the USER_GET_ORGANIZATIONS action because it resolves the store & state also when userOrganizationIds is empty
+      await this.$store.dispatch(
+        `${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS}`,
+        this.userOrganizationIds,
+      );
 
       this.updateStepsOrganizations();
     },
     updateStepsOrganizations() {
-      const userOrganizations = this.$store.state.organizations.userOrganizations
+      const userOrganizations = this.$store.state.organizations
+        .userOrganizations;
 
-      const editOrgaData = this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_ORGANIZATION);
+      const editOrgaData = this.$store.getters[
+        `${USER_NAMESPACE}/getMetadataEditingObject`
+      ](EDITMETADATA_ORGANIZATION);
       const datasetOrgaId = editOrgaData.organizationId;
 
-      this.$store.commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`,
-        {
-          object: EDITMETADATA_ORGANIZATION,
-          data: {
-            ...editOrgaData,
-            userOrganizations,
-          },
+      this.$store.commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`, {
+        object: EDITMETADATA_ORGANIZATION,
+        data: {
+          ...editOrgaData,
+          userOrganizations,
         },
-      );
+      });
 
       this.updatePublicationStatus(datasetOrgaId);
     },
     updatePublicationStatus(datasetOrgaId) {
-      const userOrganizations = this.$store.state.organizations.userOrganizations
-      const roleMap = getUserOrganizationRoleMap(this.user.id, userOrganizations);
-      const datasetOrga = userOrganizations.filter((orga) => orga.id === datasetOrgaId)[0]
+      const userOrganizations = this.$store.state.organizations
+        .userOrganizations;
+      const roleMap = getUserOrganizationRoleMap(
+        this.user.id,
+        userOrganizations,
+      );
+      const datasetOrga = userOrganizations.filter(
+        orga => orga.id === datasetOrgaId,
+      )[0];
 
       // use member as default, which means no editing of the publicationstatus is possible
       let userRole = USER_ROLE_MEMBER;
@@ -344,36 +362,46 @@ export default {
 
         if (userRole === USER_ROLE_EDITOR) {
           // check if the current dataset is part of the dataset the user owns (this.userDatasets)
-          const userIsOwner = this.userDatasets?.length > 0 ? this.userDatasets.filter((d) => d.id === this.currentEditingContent?.id)[0] : false;
+          const userIsOwner =
+            this.userDatasets?.length > 0
+              ? this.userDatasets.filter(
+                  d => d.id === this.currentEditingContent?.id,
+                )[0]
+              : false;
           if (!userIsOwner) {
             userRole = USER_ROLE_MEMBER;
           }
         }
       }
 
-      const editPublicationInfo = this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_PUBLICATION_INFO);
+      const editPublicationInfo = this.$store.getters[
+        `${USER_NAMESPACE}/getMetadataEditingObject`
+      ](EDITMETADATA_PUBLICATION_INFO);
 
       // udpate the EDITMETADATA_PUBLICATION_INFO so the component has the userRole assigned for the
       // different usecases
-      this.$store.commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`,
-        {
-          object: EDITMETADATA_PUBLICATION_INFO,
-          data: {
-            ...editPublicationInfo,
-            userRole,
-          },
+      this.$store.commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`, {
+        object: EDITMETADATA_PUBLICATION_INFO,
+        data: {
+          ...editPublicationInfo,
+          userRole,
+          loadingProps: true,
         },
-      );
-
+      });
     },
     async initMetadataUsingId(id) {
       if (id !== this.currentEditingContent?.name) {
-
         // load the metadata from the backend for editing
-        await this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_LOAD_DATASET}`, id);
+        await this.$store.dispatch(
+          `${USER_NAMESPACE}/${METADATA_EDITING_LOAD_DATASET}`,
+          id,
+        );
 
-        if (this.doiWorkflowActive
-          && !this.currentEditingContent?.doi && this.currentEditingContent?.publicationState === '') {
+        if (
+          this.doiWorkflowActive &&
+          !this.currentEditingContent?.doi &&
+          this.currentEditingContent?.publicationState === ''
+        ) {
           // always call the doi reserve on dataset without a doi so one get reserved
           // automatically for any datasets opened in the editing workflow
           await this.$store.dispatch(`${USER_NAMESPACE}/${DOI_RESERVE}`, id);
@@ -382,9 +410,15 @@ export default {
 
       this.initStepDataFromStore(this.editingSteps);
 
-      this.updateLastEditingDataset(this.$route.params.metadataid, this.$route.path, this.$route.query.backPath);
+      this.updateLastEditingDataset(
+        this.$route.params.metadataid,
+        this.$route.path,
+        this.$route.query.backPath,
+      );
 
-      const publicationState = getMetadataVisibilityState(this.currentEditingContent);
+      const publicationState = getMetadataVisibilityState(
+        this.currentEditingContent,
+      );
       const readOnlyObj = getReadOnlyFieldsObject(publicationState);
 
       if (readOnlyObj) {
@@ -396,32 +430,48 @@ export default {
       updateAllStepsForCompletion(this.editingSteps);
     },
     updateLastEditingDataset(name, path, backPath) {
-      this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_LAST_DATASET}`, { name, path, backPath });
+      this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_LAST_DATASET}`, {
+        name,
+        path,
+        backPath,
+      });
     },
     catchBackClicked() {
       const path = this.lastEditedBackPath || USER_DASHBOARD_PATH;
       this.$router.push({ path });
     },
     catchPreviewClicked() {
-      const routeData = this.$router.resolve({ path:`${METADATADETAIL_PATH}/${this.metadataId}`});
+      const routeData = this.$router.resolve({
+        path: `${METADATADETAIL_PATH}/${this.metadataId}`,
+      });
       window.open(routeData.href, '_blank');
     },
     catchAuthorCardAuthorSearch(fullName) {
       const cleanFullName = fullName.replace(`(${this.asciiDead})`, '').trim();
 
-      const routeData = this.$router.resolve({ path:`${BROWSE_PATH}?search=${cleanFullName}&isAuthorSearch=true`});
+      const routeData = this.$router.resolve({
+        path: `${BROWSE_PATH}?search=${cleanFullName}&isAuthorSearch=true`,
+      });
       window.open(routeData.href, '_blank');
     },
     selectResource(id) {
-      this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, id);
+      this.$store.commit(
+        `${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`,
+        id,
+      );
       this.updateResourceStepFromStore();
     },
     selectAuthor(id) {
-      this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_AUTHOR}`, id);
+      this.$store.commit(
+        `${USER_NAMESPACE}/${METADATA_EDITING_SELECT_AUTHOR}`,
+        id,
+      );
       this.updateAuthorStepFromStore();
     },
     cancelEditingResource() {
-      this.$store.commit(`${USER_NAMESPACE}/${METADATA_CANCEL_RESOURCE_EDITING}`);
+      this.$store.commit(
+        `${USER_NAMESPACE}/${METADATA_CANCEL_RESOURCE_EDITING}`,
+      );
       this.updateResourceStepFromStore();
     },
     cancelEditingAuthor() {
@@ -429,7 +479,6 @@ export default {
       this.updateAuthorStepFromStore();
     },
     saveResource(newRes) {
-
       this.editComponentsChanged({
         object: EDITMETADATA_DATA_RESOURCE,
         data: newRes,
@@ -437,16 +486,21 @@ export default {
     },
     updateResourceStepFromStore() {
       const dataStep = getStepByName(EDITMETADATA_DATA, this.editingSteps);
-      const resourceStep = getStepByName(EDITMETADATA_DATA_RESOURCES, dataStep.detailSteps);
+      const resourceStep = getStepByName(
+        EDITMETADATA_DATA_RESOURCES,
+        dataStep.detailSteps,
+      );
       this.initStepDataFromStore([resourceStep]);
     },
     updateAuthorStepFromStore() {
       const mainStep = getStepByName(EDITMETADATA_MAIN, this.editingSteps);
-      const authorsStep = getStepByName(EDITMETADATA_AUTHOR_LIST, mainStep.detailSteps);
+      const authorsStep = getStepByName(
+        EDITMETADATA_AUTHOR_LIST,
+        mainStep.detailSteps,
+      );
       this.initStepDataFromStore([authorsStep]);
     },
     editComponentsChanged(updateObj) {
-
       const dataKey = updateObj.object;
       const editPayload = componentChangedEvent(updateObj, this);
 
@@ -457,7 +511,6 @@ export default {
       // save the full dataObject it in the backend
       this.$store.dispatch(`${USER_NAMESPACE}/${action}`, editPayload);
 
-
       this.$nextTick(() => {
         // if (updateObj.object === EDITMETADATA_AUTHOR) {
         //  this.updateExistingAuthors(updateObj.data);
@@ -465,7 +518,6 @@ export default {
         const step = getStepByName(dataKey, this.editingSteps);
         updateStepValidation(step, this.editingSteps);
       });
-
     },
     validateCurrentStep() {
       const step = getStepFromRoute(this.$route, this.editingSteps);
@@ -475,10 +527,12 @@ export default {
       return this.userActions[stepKey] || METADATA_EDITING_PATCH_DATASET_OBJECT;
     },
     updateExistingAuthors(data) {
-      this.$store.commit(`${METADATA_NAMESPACE}/${METADATA_UPDATE_AN_EXISTING_AUTHOR}`, data);
+      this.$store.commit(
+        `${METADATA_NAMESPACE}/${METADATA_UPDATE_AN_EXISTING_AUTHOR}`,
+        data,
+      );
     },
     showSnackMessage({ status, statusMessage, details }) {
-
       const id = this.currentEditingContent?.id || null;
       const name = this.currentEditingContent?.name || null;
 
@@ -489,7 +543,8 @@ export default {
 
       const predefinedErrors = this.backendErrorList[status];
       this.errorTitle = predefinedErrors?.message || 'Fatal Error';
-      this.errorMessage = `${statusMessage} ${details} ${predefinedErrors?.details || ''}`;
+      this.errorMessage = `${statusMessage} ${details} ${predefinedErrors?.details ||
+        ''}`;
 
       this.showSnack = true;
     },
@@ -539,26 +594,35 @@ export default {
         this.validateCurrentStep();
       }
     },
-    $route(){
-      this.updateLastEditingDataset(this.$route.params.metadataid, this.$route.path, this.$route.query.backPath);
+    $route() {
+      this.updateLastEditingDataset(
+        this.$route.params.metadataid,
+        this.$route.path,
+        this.$route.query.backPath,
+      );
 
       this.validateCurrentStep();
 
       updateAllStepsForCompletion(this.editingSteps);
     },
     authorsMap() {
-
-      if (this.currentEditingContent
-        && this.authorsMap && Object.keys(this.authorsMap).length > 0) {
-
+      if (
+        this.currentEditingContent &&
+        this.authorsMap &&
+        Object.keys(this.authorsMap).length > 0
+      ) {
         const { categoryCards } = this.$store.getters;
 
         // re-trigger the populate of the data when the authorsMap is loaded for author enhancement
-        populateEditingComponents(this.$store.commit, this.currentEditingContent, categoryCards);
+        populateEditingComponents(
+          this.$store.commit,
+          this.currentEditingContent,
+          categoryCards,
+        );
       }
     },
     userLoading() {
-      if(!this.userLoading) {
+      if (!this.userLoading) {
         if (this.user) {
           this.initializeMetadata();
         } else {
@@ -584,7 +648,8 @@ export default {
       },
       408: {
         message: 'Server timeout happened.',
-        details: 'This can have many reasons, please try your action / changes again after a while. If it problem persists please contact us via envidat@wsl.ch.',
+        details:
+          'This can have many reasons, please try your action / changes again after a while. If it problem persists please contact us via envidat@wsl.ch.',
       },
       409: {
         message: 'You are not authorized to make these changes',
