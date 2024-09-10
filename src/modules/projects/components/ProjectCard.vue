@@ -21,7 +21,7 @@
           <v-img
             class="imagezoom"
             style="border-radius: 2px 0 0 2px;"
-            :cover="headerImg ? headerImg.width <= headerImg.height : false"
+            :cover="headerImg ? headerImg.height <= headerImg.width : false"
             :height="headerCardHeight"
             :src="headerImg ? headerImg.src : ''"
             :lazy-src="defaultImg"
@@ -73,9 +73,7 @@
               color="transparent"
               icon-color="secondary"
               :tooltip-text="`Open Subproject ${sub.title}`"
-              outlined
               outline-color="secondary"
-              small
               tooltip-bottom
               @clicked="subprojectClick(sub.name)"
             />
