@@ -14,18 +14,10 @@ const metadataCards = unFormatedMetadataCards;
 
 const resources1 = createResources(metadataCards[2]);
 
-const iconFiles = undefined; // undefined for now, need to figure out how to
-// load the iconFiles and if it's needed at all?
 
 export default {
   title: '3 Cards / Resource Cards / 3 Collections From Datasets',
   component: ResourceCard,
-  decorators: [
-    story => ({
-      components: { story },
-      template: '<v-container><story /></v-container>',
-    }),
-  ],
   parameters: {},
 };
 

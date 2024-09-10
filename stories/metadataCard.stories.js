@@ -22,12 +22,9 @@ import {
   tabletViewportParams,
 } from './js/envidatViewports';
 
-import fileIcon from '../src/assets/icons/file.png';
-import lockedIcon from '../src/assets/icons/lockClosed.png';
-import unlockedIcon from '../src/assets/icons/lockOpen.png';
-import pinIcon from '../src/assets/icons/marker.png';
-import multiPinIcon from '../src/assets/icons/markerMulti.png';
-import polygonIcon from '../src/assets/icons/polygons.png';
+import pinIcon from '../src/assets/icons/marker.webp';
+import multiPinIcon from '../src/assets/icons/markerMulti.webp';
+import polygonIcon from '../src/assets/icons/polygons.webp';
 
 // metadata gets enhance in the storybook config
 import metadataCards from './js/metadata';
@@ -60,16 +57,20 @@ const methods = {
     }
     const spatialJSON = typeof metadata.spatial === 'string' ? JSON.parse(metadata.spatial) : metadata.spatial;
 
-    if (spatialJSON.type.toLowerCase() === 'point') {
-      return this.pinIcon;
+    const spatialName = spatialJSON.type.toLowerCase();
+
+    console.log(spatialName);
+    
+    if (spatialName === 'point') {
+      return pinIcon;
     }
 
-    if (spatialJSON.type.toLowerCase() === 'multipoint') {
-      return this.multiPinIcon;
+    if (spatialName === 'multipoint') {
+      return multiPinIcon;
     }
 
-    if (spatialJSON.type.toLowerCase() === 'polygon') {
-      return this.polygonIcon;
+    if (spatialName === 'polygon') {
+      return polygonIcon;
     }
 
     return null;
@@ -94,7 +95,6 @@ export const TitleOnly = Template.bind({});
 TitleOnly.args = {
   id: firstDataset.id,
   title: firstDataset.title,
-  fileIconString: fileIcon,
   categoryColor: firstDataset.categoryColor,
 }
 
@@ -184,9 +184,6 @@ export const MetadataCardCollectionView = () => ({
           :restricted="hasRestrictedResources(metadata)"
           :resourceCount="metadata.num_resources || metadata.res_name.length"
           :resources="metadata.resources"
-          :fileIconString="fileIcon"
-          :lockedIconString="lockedIcon"
-          :unlockedIconString="lockedIcon"
           :categoryColor="metadata.categoryColor"
           :geoJSONIcon="geoJSONIcon(metadata)"
         />
@@ -209,9 +206,6 @@ export const MetadataCardCollectionView = () => ({
           :restricted="hasRestrictedResources(metadata)"
           :resourceCount="metadata.num_resources || metadata.res_name.length"
           :resources="metadata.resources"
-          :fileIconString="fileIcon"
-          :lockedIconString="lockedIcon"
-          :unlockedIconString="lockedIcon"
           :categoryColor="metadata.categoryColor"
         />
       </v-col>
@@ -234,9 +228,6 @@ export const MetadataCardCollectionView = () => ({
           :restricted="hasRestrictedResources(metadata)"
           :resourceCount="metadata.num_resources || metadata.res_name.length"
           :resources="metadata.resources"
-          :fileIconString="fileIcon"
-          :lockedIconString="lockedIcon"
-          :unlockedIconString="lockedIcon"
           :categoryColor="metadata.categoryColor"
         />
       </v-col>
@@ -259,9 +250,6 @@ export const MetadataCardCollectionView = () => ({
           :restricted="hasRestrictedResources(metadata)"
           :resourceCount="metadata.num_resources || metadata.res_name.length"
           :resources="metadata.resources"
-          :fileIconString="fileIcon"
-          :lockedIconString="lockedIcon"
-          :unlockedIconString="lockedIcon"
           :categoryColor="metadata.categoryColor"
         />
       </v-col>
@@ -272,9 +260,6 @@ export const MetadataCardCollectionView = () => ({
     methods,
     data: () => ({
       metadataCards,
-      fileIcon,
-      lockedIcon,
-      unlockedIcon,
       pinIcon,
       multiPinIcon,
       polygonIcon,
@@ -301,10 +286,8 @@ export const MetadataCardFlatCollectionView = () => ({
           :resourceCount="metadata.num_resources || metadata.res_name.length"
           :resources="metadata.resources"
           flatLayout
-          :fileIconString="fileIcon"
-          :lockedIconString="lockedIcon"
-          :unlockedIconString="lockedIcon"
           :categoryColor="metadata.categoryColor"
+          :geoJSONIcon="geoJSONIcon(metadata)"          
         />
       </v-col>
 
@@ -312,9 +295,6 @@ export const MetadataCardFlatCollectionView = () => ({
     methods,
     data: () => ({
       metadataCards,
-      fileIcon,
-      lockedIcon,
-      unlockedIcon,
     }),
   });
 

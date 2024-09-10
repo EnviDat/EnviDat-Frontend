@@ -62,6 +62,7 @@ export const DarkThemeSelected = {
     dark: true,
     isSelected: true,
   },
+  decorators: [() => ({ template: '<div style="margin: 1em;"><story /></div>' })],
 };
 
 export const Deprecated = {
