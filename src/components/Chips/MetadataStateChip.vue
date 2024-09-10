@@ -2,7 +2,7 @@
   <v-chip
     class="stateChip"
     :class="{
-      stateChipHover: !this.showContent,
+      'stateChipHover': !this.showContent,
       'px-2': true,
     }"
     @mouseover="hover = true"
@@ -19,7 +19,7 @@
           <v-col >
             <v-icon :icon="stateIcon" />
           </v-col>
-          <v-col :class="showContent ? 'pl-1' : ''" >
+          <v-col :class="showContent ? 'px-1' : ''" >
             {{ showContent ? stateText : ''  }}
           </v-col>
         </v-row>
@@ -119,7 +119,6 @@ export default {
   height: 1.65rem;
   font-size: 0.75rem;
   width: auto;
-  min-width: 105px;
 }
 
 .stateChipHover > .v-chip__content > div:nth-child(1) {
