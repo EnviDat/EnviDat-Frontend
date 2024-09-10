@@ -42,7 +42,6 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import { getIcon } from '@/factories/imageFactory';
 
 export default {
   name: 'BaseIcon',
@@ -81,8 +80,8 @@ export default {
       }
     },
     customIcon() {
-      if (typeof this.icon === 'string') {
-        return getIcon(this.icon);
+      if (this.icon.includes('/')){
+        return this.icon;
       }
       return null;
     },
