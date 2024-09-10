@@ -7,12 +7,28 @@
     style="height: 100%;"
     :loading="loadingColor">
 
-    <v-card-title class="text-h5 resourceHeadline">
-      <span class="d-flex align-center">
-        <BaseIcon v-if="isProtected" color="grey-darken-3" left :icon="mdiLock"></BaseIcon>
-        <BaseIcon v-if="deprecated" color="white" left :icon="mdiCancel"></BaseIcon>
-        {{ resourceName }}
-      </span>
+    <v-card-title class="text-h5 resourceHeadline"
+                  :class="{
+                    'text-white': !dark,
+                    'text-black': dark,
+                  }"
+    >
+      <v-row no-gutters
+             justify='start'>
+        <v-col v-if="isProtected"
+               class='flex-grow-0 pr-2'
+        >
+          <BaseIcon color="grey-darken-3" :icon="mdiLock"></BaseIcon>
+        </v-col>
+        <v-col v-if="deprecated"
+               class='flex-grow-0 pr-2'
+        >
+          <BaseIcon color="white" :icon="mdiCancel"></BaseIcon>
+        </v-col>
+        <v-col style='text-wrap: balance;'>
+          {{ resourceName }}
+        </v-col>
+      </v-row>
     </v-card-title>
 
     <v-card-text
