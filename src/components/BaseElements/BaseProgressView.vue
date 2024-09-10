@@ -8,7 +8,7 @@
     <v-col class="flex-grow-0 pl-2">
       <v-progress-circular :model-value="progressPct"
                            :size="38"
-                           :rotate="-90"
+                           :rotate="360"
                            :color="color"
       >
           <div style="font-size: 0.6rem;" >{{ completedPctInteger }} %</div>
