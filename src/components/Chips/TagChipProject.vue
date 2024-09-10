@@ -3,11 +3,11 @@
     class="projectTag"
     :class="{
       'white--text': highlighted,
-      smallChip: $vuetify.breakpoint.smAndDown,
+      smallChip: $vuetify.display.smAndDown,
     }"
     :color="highlighted ? 'primary' : color"
     :style="{
-      height: $vuetify.breakpoint.xsOnly ? '15px' : '',
+      height: $vuetify.display.xsOnly ? '15px' : '',
     }"
     :small="isSmall"
     close-icon="close"
