@@ -7,7 +7,7 @@
     }"
     :color="highlighted ? 'primary' : color"
     :style="{
-      height: $vuetify.display.xsOnly ? '15px' : '',
+      height: $vuetify.display.xs ? '15px' : '',
     }"
     :small="isSmall"
     close-icon="close"

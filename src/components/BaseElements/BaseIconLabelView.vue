@@ -1,6 +1,6 @@
 <template>
   <div class="baseIconLabelView">
-    <v-tooltip location='bottom' :disabled="$vuetify.display.xsOnly || !iconTooltip">
+    <v-tooltip location='bottom' :disabled="$vuetify.display.xs || !iconTooltip">
       <template v-slot:activator="{ props }">
         <div v-bind="props" class="baseIconLabelViewWrapper" :class="{
           dark,

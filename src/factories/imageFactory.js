@@ -124,7 +124,8 @@ export const getFileIcon = (fileExtension) => {
     return 'filevideo';
   }
 
-  return ext ? `file${ext}` : 'file';
+  const fileExt = ext ? `file${ext}` : 'file';
+  return getIcon(fileExt);
 };
 
 export const getGeoJSONIcon = (type) => {

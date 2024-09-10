@@ -80,7 +80,7 @@
 
         <v-row no-gutters justify="end">
           <v-col class="cardIcons flex-grow-0">
-            <base-icon-count-view :count="resourceAmount" icon="file" />
+            <base-icon-count-view :count="resourceAmount" :icon="mdiFile" />
           </v-col>
         </v-row>
 
@@ -111,7 +111,7 @@
           </v-col>
 
           <v-col class="pl-3 flex-grow-0 cardIcons">
-            <base-icon-count-view :count="resourceAmount" icon="file" />
+            <base-icon-count-view :count="resourceAmount" :icon="mdiFile" />
           </v-col>
 
           <v-col v-if="geoJSONIcon" class="pl-1 flex-grow-0 cardIcons">
@@ -154,6 +154,7 @@ import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
 import TagChip from '@/components/Chips/TagChip.vue';
 import UserRoleChip from '@/components/Chips/UserRoleChip.vue';
 import { stripMarkdown } from '@/factories/stringFactory';
+import { mdiFile } from '@mdi/js';
 
 // Header Sleek design
 // https://codepen.io/GeorgeGedox/pen/NQrxrY
@@ -410,6 +411,7 @@ export default {
     UserRoleChip,
   },
   data: () => ({
+    mdiFile,
     hover: false,
     show: false,
     titleLength: 100,

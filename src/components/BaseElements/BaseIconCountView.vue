@@ -5,7 +5,7 @@
       :count="count"
       color="grey-darken-4"
       v-bind="$props"
-    ></base-icon>
+    />
   </div>
 </template>
 
@@ -29,7 +29,6 @@ export default {
   name: 'BaseIconCountView',
   components: { BaseIcon },
   props: {
-    iconString: String,
     icon: String,
     count: Number,
     tooltipText: String,
