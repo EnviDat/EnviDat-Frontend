@@ -7,7 +7,7 @@
     <v-row v-if="instructions"
            no-gutters>
       <v-col class="text-body-2 pb-1">
-        {{ instructions }}
+        {{ draggableItems?.length > 0 ? instructions :  emptyInstructionsText }}
       </v-col>
     </v-row>
 
@@ -153,6 +153,7 @@ export default {
     TagChipAuthor,
   },
   data: () => ({
+    emptyInstructionsText: 'No items to change the sequence, add items first.',
     currentDragItem: '',
     currentHoverItem: '',
     previewItems: null,
