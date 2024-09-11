@@ -22,9 +22,9 @@
             >
               <template v-slot:activator="{ props }">
                 <BaseIcon
-                  :icon="mdiInformation"
-                  :icon-color="abstract ? 'primary' : 'gray'"
                   v-bind="props"
+                  :icon="mdiInformation"
+                  :color="abstract ? 'primary' : 'grey'"
                 />
               </template>
 
