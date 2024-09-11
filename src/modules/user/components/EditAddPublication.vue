@@ -48,34 +48,30 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col class="flex-grow-0"
-             cols="1">
+      <v-col class="flex-grow-0" cols="12" sm="4" md="3">
         <a
           id="textAreaController"
           ref="textAreaController"
           class="text-caption"
           @click="toggleTextArea()"
-          >{{ showTextArea ? 'Hide' : 'Add' }} plain text</a
+          >{{ showTextArea ? 'Hide' : 'Add' }} citation in plain text</a
         >
       </v-col>
 
-      <v-col v-if="showTextArea"
-             class="flex-grow-0" >
+      <v-col v-if="showTextArea" class="flex-grow-0">
         <BaseRectangleButton
-            button-text="Save Text"
-            is-xs-small
-            @clicked="editExistingData()"
+          button-text="Save Text"
+          is-xs-small
+          @clicked="editExistingData()"
         />
-
       </v-col>
 
-      <v-col v-if="showTextArea"
-             class="flex-grow-0" >
+      <v-col v-if="showTextArea" class="flex-grow-0">
         <BaseRectangleButton
-            button-text="Cancel"
-            color="gray"
-            is-xs-small
-            @clicked="closeEditMode(true)"
+          button-text="Cancel"
+          color="gray"
+          is-xs-small
+          @clicked="closeEditMode(true)"
         />
       </v-col>
     </v-row>
@@ -213,7 +209,7 @@ export default {
   },
   methods: {
     editExistingData() {
-      this.$emit('saveText', this.previewCitation?.citation || this.citation );
+      this.$emit('saveText', this.previewCitation?.citation || this.citation);
       this.closeEditMode();
     },
     closeEditMode(triggerCancelEvent = false) {
@@ -231,7 +227,6 @@ export default {
       this.isEditMode = true;
       this.showTextArea = true;
       this.filledTextArea = citationText;
-
 
       const textAreaController = this.$refs.textAreaController;
       if (textAreaController) {
@@ -324,7 +319,6 @@ export default {
   },
   watch: {
     selectedPlainText() {
-
       if (this.selectedPlainText) {
         this.editData(this.selectedPlainText);
       }
@@ -344,7 +338,7 @@ export default {
     labels: {
       title: EDIT_METADATA_ADD_PUBLICATION_TITLE,
       cardInstructions:
-        'Add DORA permanent Id (PID) or a Data Object Identifier (DOI).',
+        "Add DORA permanent Id (PID) or a Data Object Identifier (DOI). If you have any other citation click on 'Add citation in plain text'.",
       subtitlePreview: 'Preview Publication resolved via DORA',
       pId: 'Permanent Id',
       doi: 'Data Object Identifier',

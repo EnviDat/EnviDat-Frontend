@@ -759,11 +759,6 @@ export default {
         return null;
       }
 
-      if (size < 1024) {
-        // PROBLEMA
-        return 1;
-      }
-
       let convertedSized = size / 1024;
       let index = 0;
 

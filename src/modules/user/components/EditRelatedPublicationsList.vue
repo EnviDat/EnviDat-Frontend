@@ -32,17 +32,6 @@
           <div class="text-subtitle-1" v-html="labels.cardInstructions"></div>
         </v-col>
       </v-row>
-
-      <v-row no-gutters class="pt-4">
-        <v-col>
-          <BaseStatusLabelView
-            status-icon="question_mark"
-            status-text="More Info"
-            expandedText="instructions for adding"
-            :show-expand-icon="true"
-          />
-        </v-col>
-      </v-row>
       <v-row>
         <v-col>
           <EditAddPublication
