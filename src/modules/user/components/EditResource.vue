@@ -752,7 +752,7 @@ export default {
   },
   methods: {
     getFileSizeFormat(size) {
-      return this.labels.sizeFormatList[this.getFileSizeFormatIndex(size) - 1];
+      return this.labels.sizeFormatList[this.getFileSizeFormatIndex(size)];
     },
     getFileSizeFormatIndex(size) {
       if (!size) {
