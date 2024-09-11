@@ -95,7 +95,7 @@ import ListControlToggle from '@/components/Filtering/ListControlToggle.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue'
 import { EDNA_MODE } from '@/store/metadataMutationsConsts';
-import { mdiLayers, mdiShareVariant } from '@mdi/js';
+import { mdiLayers, mdiShareVariant, mdiAccountCircle } from '@mdi/js';
 
 export default {
   name: 'ControlPanel',
@@ -178,6 +178,7 @@ export default {
     EDNA_MODE,
     mdiLayers,
     mdiShareVariant,
+    mdiAccountCircle,
     elementVisible: true,
     overlay: false,
     zIndex: 2,
