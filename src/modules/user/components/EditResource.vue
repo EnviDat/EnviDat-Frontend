@@ -760,7 +760,8 @@ export default {
       }
 
       if (size < 1024) {
-        return 0;
+        // PROBLEMA
+        return 1;
       }
 
       let convertedSized = size / 1024;
@@ -898,7 +899,7 @@ export default {
       created: 'Created at',
       lastModified: 'Last modified time',
       size: 'File size',
-      sizeFormatList: ['KB', 'MB', 'GB', 'TB', 'PB'],
+      sizeFormatList: ['B', 'KB', 'MB', 'GB', 'TB', 'PB'],
       format: 'File format',
       openAccessPreferedInstructions:
         'Resource is **NOT** Open Access!\nPlease make your data available to everyone unless it contains sensitive data.\nData is **always** accessible by people in the same organization.',
