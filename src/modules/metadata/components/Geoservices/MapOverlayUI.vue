@@ -7,8 +7,9 @@
             <BaseIconButton
               :icon="mdiPlus"
               icon-color="black"
-              color="white"
+              color="highlight"
               outlined
+              outlineColor="black"
               @clicked="triggerZoomIn" />
           </v-col>
 
@@ -16,8 +17,9 @@
             <BaseIconButton
               :icon="mdiMinus"
               icon-color="black"
-              color="white"
+              color="highlight"
               outlined
+              outlineColor="black"
               @clicked="triggerZoomOut" />
           </v-col>
 
@@ -25,8 +27,9 @@
             <BaseIconButton
               :icon="mdiImageFilterCenterFocus"
               icon-color="black"
-              color="white"
+              color="highlight"
               outlined
+              outlineColor="black"
               @clicked="triggerZoomCenter" />
           </v-col>
         </v-row>
