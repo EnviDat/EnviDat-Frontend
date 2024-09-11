@@ -12,15 +12,21 @@
               <BaseIcon :icon="mdiPaletteSwatch" color='black' />
             </v-col>
 
-            <v-col v-if="showPlaceholder" class="grow pl-0">
-              <TagChipPlaceholder
-                v-for="n in 6"
-                :key="n"
-                class="envidatChip"
-              />
-            </v-col>
+            <div v-if="showPlaceholder"
+                 style="display: flex; flex-direction: row;"
+            >
+              <v-col class="flex-grow-0 pl-0"
+                     v-for="n in 6"
+                     :key="n"
+              >
+                <TagChipPlaceholder
 
-            <v-col v-if="!showPlaceholder" class="grow pl-0">
+                  class="envidatChip"
+                />
+              </v-col>
+            </div>
+
+            <v-col v-if="!showPlaceholder" class="flex-grow-1 pl-0">
               <TagChip
                 v-for="tag in tagList"
                 :key="tag.name"
