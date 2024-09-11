@@ -152,6 +152,7 @@ import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/Meta
 import {
   ORGANIZATIONS_NAMESPACE,
   USER_GET_ORGANIZATION_IDS,
+  USER_GET_ORGANIZATIONS,
 } from '@/modules/organizations/store/organizationsMutationsConsts';
 
 import {
@@ -861,15 +862,20 @@ export default {
       }
       return false;
     },
-    fetchUserOrganisationData() {
+    async fetchUserOrganisationData() {
       const userId = this.user?.id;
       if (!userId) {
         return;
       }
 
-      this.$store.dispatch(
+      await this.$store.dispatch(
         `${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`,
         userId,
+      );
+      // always call the USER_GET_ORGANIZATIONS action because it resolves the store & state also when userOrganizationIds is empty
+      await this.$store.dispatch(
+        `${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS}`,
+        this.userOrganizationIds,
       );
     },
     fetchUserDatasets() {

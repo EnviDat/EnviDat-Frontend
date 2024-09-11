@@ -93,7 +93,7 @@
               :button-text="currentStateInfos.buttonText"
               :material-icon-name="currentStateInfos.buttonIcon"
               icon-color="white"
-              :loading="loading || !isUserAllowedToEdit"
+              :loading="loading"
               :url="
                 publicationState === PUBLICATION_STATE_PUBLISHED
                   ? doiUrl

@@ -314,12 +314,12 @@ export default {
           `${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`,
           this.user?.id,
         );
+        // always call the USER_GET_ORGANIZATIONS action because it resolves the store & state also when userOrganizationIds is empty
+        await this.$store.dispatch(
+          `${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS}`,
+          this.userOrganizationIds,
+        );
       }
-      // always call the USER_GET_ORGANIZATIONS action because it resolves the store & state also when userOrganizationIds is empty
-      await this.$store.dispatch(
-        `${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS}`,
-        this.userOrganizationIds,
-      );
 
       this.updateStepsOrganizations();
     },
@@ -330,7 +330,6 @@ export default {
       const editOrgaData = this.$store.getters[
         `${USER_NAMESPACE}/getMetadataEditingObject`
       ](EDITMETADATA_ORGANIZATION);
-      const datasetOrgaId = editOrgaData.organizationId;
 
       this.$store.commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`, {
         object: EDITMETADATA_ORGANIZATION,
@@ -340,6 +339,7 @@ export default {
         },
       });
 
+      const datasetOrgaId = editOrgaData.organizationId;
       this.updatePublicationStatus(datasetOrgaId);
     },
     updatePublicationStatus(datasetOrgaId) {
@@ -550,14 +550,11 @@ export default {
     },
     initializeMetadata() {
       if (this.metadataId) {
-        this.$nextTick(() => {
-          this.initMetadataUsingId(this.metadataId);
+        this.$nextTick(async () => {
+          await this.initMetadataUsingId(this.metadataId);
+          await this.loadUserOrganizations();
         });
       }
-
-      this.$nextTick(() => {
-        this.loadUserOrganizations();
-      });
     },
     showDialogSignInNeeded() {
       eventBus.emit(SHOW_DIALOG, {
