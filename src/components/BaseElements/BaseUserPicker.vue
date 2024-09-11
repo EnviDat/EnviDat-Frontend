@@ -223,7 +223,11 @@ export default {
 
 <style>
 .tagAuthorFix .v-chip__content {
-  padding: 0 12px !important;
+  /*
+  a fix for now because there is a overlay coming in the way of the author icon
+  but the chips are getting wider which isn't good
+  */
+  padding: 0 11px !important;
 }
 
 </style>

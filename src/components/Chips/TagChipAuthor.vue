@@ -99,7 +99,10 @@ export default {
 <style scoped>
 
   .authorTag {
+    /*
+    Remove opacity because with vuetify 3 chip are harder to read
     opacity: 0.85;
+    */
     /*
     background-color: #f8f8f8 !important;
     */
