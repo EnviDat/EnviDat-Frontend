@@ -245,31 +245,8 @@ export default {
     pageViews() {
       return this.events;
     },
-    authorAlreadyExist() {
-      if (this.authors) {
-        return !!this.authors.find(a => a.email === this.header.contactEmail);
-      }
-      return false;
-    },
-    // This placeholder is used to display the author placeholder card in preview mode for the author who does not yet have a published dataset.
-    placeHolderAuthor() {
-      if (this.header) {
-        const nameString = this.header?.contactName.split(' ');
-
-        const firstName = nameString[0];
-        const lastName = nameString.slice(1).join(' ');
-        return {
-          fullName: this.header.contactName,
-          email: this.header.contactEmail,
-          firstName,
-          lastName,
-        };
-      }
-      return {};
-    },
     metadataContent() {
       if (this.mode) {
-        // TODO: check with Dominik
         return this.modeDataset !== undefined
           ? this.modeDataset
           : this.currentMetadataContent;
@@ -574,15 +551,14 @@ export default {
 
       this.authors = getFullAuthorsFromDataset(this.authorsMap, currentContent);
 
+      console.log(this.authors);
+
       this.$nextTick(() => {
         this.$set(components.MetadataAuthors, 'genericProps', {
           authors: this.authors,
           authorDetailsConfig: this.authorDetailsConfig,
           authorDeadInfo: this.authorDeadInfo,
           showPlaceholder: this.showPlaceholder,
-          authorPlaceHolder: !this.authorAlreadyExist
-            ? this.placeHolderAuthor
-            : null,
         });
       });
     },

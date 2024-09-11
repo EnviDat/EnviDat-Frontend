@@ -24,12 +24,6 @@
         class="pa-0 heightAndScroll"
       >
         <v-row no-gutters>
-          <v-col cols="12" sm="6" class="pa-2" v-if="authorPlaceHolder">
-            <AuthorCard
-              :author="authorPlaceHolder"
-              :authorDetailsConfig="authorDetailsConfig"
-            />
-          </v-col>
           <v-col
             v-for="author in authors"
             :key="author.fullName"
@@ -73,17 +67,8 @@
       </v-container>
     </v-card-text>
 
-    <v-card-text v-if="!hasAuthors && authorPlaceHolder">
-      <v-col cols="12" sm="6" class="pa-2" v-if="authorPlaceHolder">
-        <AuthorCard
-          :author="authorPlaceHolder"
-          :authorDetailsConfig="authorDetailsConfig"
-        />
-      </v-col>
-    </v-card-text>
-
     <v-card-text
-      v-if="!showPlaceholder && !hasAuthors && authorPlaceHolder == null"
+      v-if="!showPlaceholder && !hasAuthors"
       :style="`color: ${emptyTextColor};`"
       class="pa-4 pt-0"
     >
@@ -120,10 +105,6 @@ export default {
   props: {
     genericProps: Object,
     showPlaceholder: Boolean,
-    authorPlaceHolder: {
-      type: Object,
-      default: null,
-    },
   },
   mounted() {
     const options = this.options || {};
