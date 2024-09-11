@@ -331,11 +331,11 @@ export function getDoraDoisUrl(doiMap, resolveBaseUrl) {
   return fullUrl;
 }
 
-export async function resolveDOIsViaDora(doiMap, resolveBaseUrl = undefined) {
+export async function resolveDOIsViaDora(doiMap, resolveBaseDOIUrl = undefined) {
   if (!doiMap) {
     return null;
   }
-  const doraUrl = getDoraDoisUrl(doiMap, resolveBaseUrl);
+  const doraUrl = getDoraDoisUrl(doiMap, resolveBaseDOIUrl);
 
   const response = await axios.get(doraUrl);
   return response.data;
@@ -355,32 +355,6 @@ export async function resolvePidCitationObjectsViaDora(pidMap) {
   const citationObj = await resolvePIDsViaDora(pidMap);
 
   return getPidCitationObjectMap(citationObj);
-}
-
-export async function resolveMultipleDoiCitationObjectsViaDora(doiMap) {
-  // this function has been created for manage and resolve multiple DOIs
-  const promises = [];
-
-  const citationObjMap = new Map();
-
-  for (const [key, value] of doiMap) {
-    const promise = resolveDOIsViaDora(new Map([[key, value]]))
-      .then(citationObj => {
-        const doiCitationObjectMap = getDoiCitationObjectMap(citationObj);
-
-        for (const [doi, citation] of doiCitationObjectMap) {
-          citationObjMap.set(doi, citation);
-        }
-      })
-      .catch(error => {
-        console.error(`Error resolving DOI ${key}:`, error);
-      });
-
-    promises.push(promise);
-  }
-
-  await Promise.all(promises);
-  return citationObjMap;
 }
 
 export async function resolveDoiCitationObjectsViaDora(doiMap) {
