@@ -72,27 +72,20 @@
 </template>
 
 <script>
-import axios from 'axios';
+
+
 import { mapState } from 'vuex';
+
 import BaseCitationView from '@/components/BaseElements/BaseCitationView.vue';
-/*
-import ExpandableTextLayout from '@/components/Layouts/ExpandableTextLayout.vue';
-*/
 
 import { METADATA_PUBLICATIONS_TITLE } from '@/factories/metadataConsts';
 import {
   extractPIDsFromText,
   extractDOIsFromText,
-  getDoraPidsUrl,
-  resolveMultipleDoiCitationObjectsViaDora,
   extractedNoPidDoiText,
+  resolveDoiCitationObjectsViaDora,
+  resolvePidCitationObjectsViaDora,
 } from '@/factories/citationFactory';
-
-import {
-  eventBus,
-  EDIT_RELATED_PUBLICATION_SEND,
-  EDIT_RELATED_PUBLICATION_ACTION,
-} from '@/factories/eventBus';
 
 export default {
   name: 'MetadataPublicationList',
@@ -158,10 +151,10 @@ export default {
       return this.metadataConfig?.publicationsConfig || {};
     },
     resolveBaseUrl() {
-      return (
-        this.publicationsConfig?.resolveBaseUrl ||
-        'https://www.dora.lib4ri.ch/wsl/islandora/search/json_cit_pids_wsl/'
-      );
+      return this.publicationsConfig?.resolveBaseUrl || undefined;
+    },
+    resolveBaseDOIUrl() {
+      return this.publicationsConfig?.resolveBaseDOIUrl || undefined;
     },
     extractedPIDMap() {
       return extractPIDsFromText(this.text);
@@ -335,12 +328,12 @@ export default {
       this.loading = true;
 
       try {
-        // get url which works with multiple PIDs
-        // TODO: Ask Domink if there is a way to handle multiple doi in a single URL like here
-        const doraUrl = getDoraPidsUrl(pidMap, this.resolveBaseUrl);
+        const citationMap = await resolvePidCitationObjectsViaDora(pidMap, this.resolveBaseUrl);
 
-        const response = await axios.get(doraUrl);
-        this.pidPublications = response.data;
+        this.pidPublications = [];
+        citationMap.forEach(value => {
+          this.pidPublications.push(value);
+        });
 
         this.updatePublicationList();
       } catch (e) {
@@ -351,8 +344,8 @@ export default {
         this.loading = false;
       }
     },
-    async resolveDOIs(doi) {
-      if (!doi) {
+    async resolveDOIs(doiMap) {
+      if (!doiMap) {
         return;
       }
       this.isDoiResolving = true;
@@ -360,7 +353,8 @@ export default {
       this.loading = true;
 
       try {
-        const citationMap = await resolveMultipleDoiCitationObjectsViaDora(doi);
+        const citationMap = await resolveDoiCitationObjectsViaDora(doiMap, this.resolveBaseDOIUrl);
+
         this.doiPublications = [];
         citationMap.forEach(value => {
           this.doiPublications.push(value);
