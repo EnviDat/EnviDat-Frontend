@@ -30,7 +30,7 @@
     <base-icon v-if="showFallbackAccountIcon"
                color="black"
                :small="size <= 20"
-               :large="size > 40 && size < 128"
+               :large="size > 40"
                :icon='mdiAccountCircle' />
   </v-avatar>
 </template>
