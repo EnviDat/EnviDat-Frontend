@@ -234,11 +234,18 @@ export function resolvedCitationText(resolvedPubs, pidMap) {
 export function getPidCitationObjectMap(citationObjs) {
   const citationMap = new Map();
 
-  citationObjs.forEach(obj => {
-    const pid = obj.pid;
-    const citationObj = getGenericCitationObject(obj);
-    citationMap.set(pid, citationObj);
-  });
+  if (Array.isArray(citationObjs)) {
+    citationObjs.forEach(obj => {
+      const pid = obj.pid;
+      const citationObj = getGenericCitationObject(obj);
+      citationMap.set(pid, citationObj);
+    });
+  } else if (typeof citationObjs === 'object' && citationObjs !== null) {
+    Object.entries(citationObjs).forEach(([pid, obj]) => {
+      const citationObj = getGenericCitationObject(obj);
+      citationMap.set(pid, citationObj);
+    });
+  }
 
   return citationMap;
 }
@@ -331,7 +338,7 @@ export function getDoraDoisUrl(doiMap, resolveBaseUrl) {
   return fullUrl;
 }
 
-export async function resolveDOIsViaDora(doiMap, resolveBaseDOIUrl = undefined) {
+export async function resolveDOIsViaDora(doiMap, resolveBaseDOIUrl) {
   if (!doiMap) {
     return null;
   }
@@ -341,7 +348,7 @@ export async function resolveDOIsViaDora(doiMap, resolveBaseDOIUrl = undefined) 
   return response.data;
 }
 
-export async function resolvePIDsViaDora(pidMap, resolveBaseUrl = undefined) {
+export async function resolvePIDsViaDora(pidMap, resolveBaseUrl) {
   if (!pidMap) {
     return null;
   }
@@ -351,8 +358,9 @@ export async function resolvePIDsViaDora(pidMap, resolveBaseUrl = undefined) {
   return response.data;
 }
 
-export async function resolvePidCitationObjectsViaDora(pidMap) {
-  const citationObj = await resolvePIDsViaDora(pidMap);
+// export async function resolvePidCitationObjectsViaDora(pidMap) {
+export async function resolvePidCitationObjectsViaDora(pidMap, resolveBaseUrl) {
+  const citationObj = await resolvePIDsViaDora(pidMap, resolveBaseUrl);
 
   return getPidCitationObjectMap(citationObj);
 }

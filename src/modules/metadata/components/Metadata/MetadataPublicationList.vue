@@ -1,79 +1,70 @@
 <template id="MetadataPublications">
-      <v-card class="relatedPubList">
-        <v-card-title class="metadata_title text-h6 pa-4">
-          {{ METADATA_PUBLICATIONS_TITLE }}
-        </v-card-title>
+  <v-card class="relatedPubList">
+    <v-card-title class="metadata_title text-h6 pa-4">
+      {{ METADATA_PUBLICATIONS_TITLE }}
+    </v-card-title>
 
-        <v-skeleton-loader
-          v-if="loading || showPlaceholder"
-          type="list-item-two-line"
-        >
-        </v-skeleton-loader>
+    <v-skeleton-loader
+      v-if="loading || showPlaceholder"
+      type="list-item-two-line"
+    >
+    </v-skeleton-loader>
 
-          <v-card-text
-            ref="text"
-            class="pa-4 pt-0 heightAndScroll readableText"
-            :style="
-              `scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`
-            "
-          >
-            <v-col v-for="(n, index) in dataSliced" :key="'n_' + index">
-
-              <section :class="{ 'd-flex align-center': isPreview }">
-                <BaseCitationView
-                  :abstract="n.abstract"
-                  :citation="setCitation(n)"
-                  :doi="n.doi"
-                  :doiUrl="n.doiUrl"
-                  :citationColsCustom="10"
-                />
-                <!-- isPreview - show this button only if it is within the Edit Related Publications section -->
-                <div v-if="isPreview">
-                  <v-col class="shrink px-1 d-flex flex-column flex-md-row">
-                    <BaseIconButton
-                      v-if="isPlainText(n)"
-                      material-icon-name="edit"
-                      icon-color="yellow"
-                      @clicked="sendEditItemData(n.citation, index)"
-                    />
-                    <BaseIconButton
-                      material-icon-name="remove_circle_outline"
-                      icon-color="red"
-                      @clicked="sendRemoveItem(index)"
-                    />
-                  </v-col>
-                </div>
-              </section>
+    <v-card-text
+      ref="text"
+      class="pa-4 pt-0 heightAndScroll readableText"
+      :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
+    >
+      <v-col v-for="(n, index) in dataSliced" :key="'n_' + index">
+        <section :class="{ 'd-flex align-center': isPreview }">
+          <BaseCitationView
+            :abstract="n.abstract"
+            :citation="setCitation(n)"
+            :doi="n.doi"
+            :doiUrl="n.doiUrl"
+            :citationColsCustom="10"
+          />
+          <!-- isPreview - show this button only if it is within the Edit Related Publications section -->
+          <div v-if="isPreview">
+            <v-col class="shrink px-1 d-flex flex-column flex-md-row">
+              <BaseIconButton
+                v-if="isPlainText(n)"
+                material-icon-name="edit"
+                icon-color="yellow"
+                @clicked="sendEditItemData(n.citation, index)"
+              />
+              <BaseIconButton
+                material-icon-name="remove_circle_outline"
+                icon-color="red"
+                @clicked="sendRemoveItem(index)"
+              />
             </v-col>
-          </v-card-text>
+          </div>
+        </section>
+      </v-col>
+    </v-card-text>
 
-          <v-card-actions
-            v-if="dataLength > 2 && !isPreview"
-            class="ma-0 pa-2"
-            :style="`position: absolute; bottom: 0px; right: ${rightPos()};`"
-          >
-            <base-icon-button
-              material-icon-name="expand_more"
-              :iconColor="showFullText ? 'primary' : 'accent'"
-              :fillColor="
-                showFullText ? '' : $vuetify.theme.themes.light.primary
-              "
-              :color="showFullText ? 'accent' : 'transparent'"
-              :outlined="showFullText"
-              :rotateOnClick="true"
-              :rotateToggle="showFullText"
-              :tooltipText="showFullText ? 'Collaspe text' : 'Show full text'"
-              @clicked="readMore"
-            />
-          </v-card-actions>
-
-      </v-card>
-
+    <v-card-actions
+      v-if="dataLength > 2 && !isPreview"
+      class="ma-0 pa-2"
+      :style="`position: absolute; bottom: 0px; right: ${rightPos()};`"
+    >
+      <base-icon-button
+        material-icon-name="expand_more"
+        :iconColor="showFullText ? 'primary' : 'accent'"
+        :fillColor="showFullText ? '' : $vuetify.theme.themes.light.primary"
+        :color="showFullText ? 'accent' : 'transparent'"
+        :outlined="showFullText"
+        :rotateOnClick="true"
+        :rotateToggle="showFullText"
+        :tooltipText="showFullText ? 'Collaspe text' : 'Show full text'"
+        @clicked="readMore"
+      />
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script>
-
-
 import { mapState } from 'vuex';
 
 import BaseCitationView from '@/components/BaseElements/BaseCitationView.vue';
@@ -91,7 +82,7 @@ export default {
   name: 'MetadataPublicationList',
   components: {
     BaseCitationView,
-/*
+    /*
     ExpandableTextLayout,
 */
   },
@@ -121,12 +112,6 @@ export default {
       type: Array,
       default: () => [],
     },
-  },
-  created() {
-    eventBus.on(EDIT_RELATED_PUBLICATION_ACTION, this.getEditItemData);
-  },
-  beforeDestroy() {
-    eventBus.off(EDIT_RELATED_PUBLICATION_ACTION, this.getEditItemData);
   },
   computed: {
     ...mapState(['config']),
@@ -190,7 +175,7 @@ export default {
         index,
       });
 
-/*
+      /*
       // scroll to textAreaControlloer (link above test area), import for mobile version
       const textAreaControlloer = document.getElementById('textAreaController');
       if (textAreaControlloer) {
@@ -244,7 +229,7 @@ export default {
         const publicationObj = this.dataRelatedPublications[i];
         const id = publicationObj.pid || publicationObj.doi || null;
 
-        if(id) {
+        if (id) {
           newText += id;
         } else {
           newText += publicationObj.citation;
@@ -328,7 +313,10 @@ export default {
       this.loading = true;
 
       try {
-        const citationMap = await resolvePidCitationObjectsViaDora(pidMap, this.resolveBaseUrl);
+        const citationMap = await resolvePidCitationObjectsViaDora(
+          pidMap,
+          this.resolveBaseUrl,
+        );
 
         this.pidPublications = [];
         citationMap.forEach(value => {
@@ -353,7 +341,10 @@ export default {
       this.loading = true;
 
       try {
-        const citationMap = await resolveDoiCitationObjectsViaDora(doiMap, this.resolveBaseDOIUrl);
+        const citationMap = await resolveDoiCitationObjectsViaDora(
+          doiMap,
+          this.resolveBaseDOIUrl,
+        );
 
         this.doiPublications = [];
         citationMap.forEach(value => {
@@ -376,18 +367,18 @@ export default {
       // this.replacedText = null;
     },
     updatedCitation() {
-
       if (this.updatedCitation) {
-
         if (this.updatedCitationIndex === undefined) {
           // case for a new entry of just plain text
           this.generateCitationFromSimpleText([
-              ...this.extractedNoPidDoi,
-              this.updatedCitation,
+            ...this.extractedNoPidDoi,
+            this.updatedCitation,
           ]);
         } else {
           // case for selected item for editing and now needs updating
-          const citationObject = this.dataRelatedPublications[this.updatedCitationIndex];
+          const citationObject = this.dataRelatedPublications[
+            this.updatedCitationIndex
+          ];
           if (citationObject) {
             citationObject.citation = this.updatedCitation;
           }

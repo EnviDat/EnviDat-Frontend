@@ -108,6 +108,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { mapState } from 'vuex';
+
 import { EDIT_METADATA_ADD_PUBLICATION_TITLE } from '@/factories/metadataConsts';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseCitationView from '@/components/BaseElements/BaseCitationView.vue';
@@ -175,6 +177,22 @@ export default {
     }
   },
   computed: {
+    ...mapState(['config']),
+    publications() {
+      return this.mixinMethods_getGenericProp('publications');
+    },
+    metadataConfig() {
+      return this.$store ? this.config?.metadataConfig || {} : {};
+    },
+    publicationsConfig() {
+      return this.metadataConfig?.publicationsConfig || {};
+    },
+    resolveBaseUrl() {
+      return this.publicationsConfig?.resolveBaseUrl || undefined;
+    },
+    resolveBaseDOIUrl() {
+      return this.publicationsConfig?.resolveBaseDOIUrl || undefined;
+    },
     genericTextAreaObject() {
       return {
         isVerticalLayout: true,
@@ -276,7 +294,10 @@ export default {
       pidMap.set(pid, pid);
 
       try {
-        const citationMap = await resolvePidCitationObjectsViaDora(pidMap);
+        const citationMap = await resolvePidCitationObjectsViaDora(
+          pidMap,
+          this.resolveBaseUrl,
+        );
         this.previewCitation = citationMap.get(pid);
       } catch (e) {
         this.previewCitation = {
@@ -294,7 +315,10 @@ export default {
       doiMap.set(doi, doi);
 
       try {
-        const citationMap = await resolveDoiCitationObjectsViaDora(doiMap);
+        const citationMap = await resolveDoiCitationObjectsViaDora(
+          doiMap,
+          this.resolveBaseDOIUrl,
+        );
         this.previewCitation = citationMap.get(doi);
       } catch (e) {
         this.previewCitation = {

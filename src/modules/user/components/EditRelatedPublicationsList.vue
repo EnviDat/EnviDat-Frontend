@@ -213,7 +213,8 @@ export default {
         object: EDITMETADATA_RELATED_PUBLICATIONS,
         data: { [this.editingProperty]: value },
       });
-
+    },
+    clearPreview() {
       this.previewPid = null;
       this.previewDoi = null;
       this.selectedPlainText = undefined;
