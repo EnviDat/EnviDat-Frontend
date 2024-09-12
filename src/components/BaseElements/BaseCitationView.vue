@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="pa-0">
     <v-row no-gutters align="start">
-      <v-col cols="2" sm="auto">
+      <v-col cols="2">
         <v-row no-gutters>
           <v-col cols="12">
             <v-menu
@@ -42,7 +42,7 @@
         </v-row>
       </v-col>
 
-      <v-col cols="10" :md="citationColsCustom ? citationColsCustom : 11">
+      <v-col cols="10" :md="citationColsCustom ? citationColsCustom : 10">
         <div v-html="citation"></div>
       </v-col>
     </v-row>
