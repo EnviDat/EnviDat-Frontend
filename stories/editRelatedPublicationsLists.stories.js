@@ -10,7 +10,7 @@
  */
 
 import EditRelatedPublicationsList from '@/modules/user/components/EditRelatedPublicationsList.vue';
-import { EDITMETADATA_OBJECT_UPDATE, eventBus } from '@/factories/eventBus';
+import { EDITMETADATA_CLEAR_PREVIEW, EDITMETADATA_OBJECT_UPDATE, eventBus } from '@/factories/eventBus';
 import { mobileViewportParams } from './js/envidatViewports';
 
 import metadata from './js/metadata';
@@ -44,7 +44,10 @@ const Template = {
     },
     methods: {
       updateRelatedtext(updatedObject) {
-        this.newText = updatedObject.data.relatedPublicationsText;
+        eventBus.emit(EDITMETADATA_CLEAR_PREVIEW)
+        setTimeout(() => {
+          this.newText = updatedObject.data.relatedPublicationsText;
+        }, 1000);
       },
     },
     data: () => ({
