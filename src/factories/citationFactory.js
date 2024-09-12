@@ -185,10 +185,10 @@ function getGenericCitation(resolvedObject) {
   // in this generic way, the first citation will be used no matter the name
   const citationObj = resolvedObject?.citation || {};
   const keys = Object.keys(citationObj);
-  return citationObj[keys[0]];
+  return keys.length > 0 ? citationObj[keys[0]] : '';
 }
 
-function getGenericCitationObject(citationInfo) {
+function getGenericCitationObject(citationInfo, pid, doi) {
   const genericCitation = getGenericCitation(citationInfo);
 
   let abstractTitle = 'Abstract';
@@ -199,13 +199,13 @@ function getGenericCitationObject(citationInfo) {
   }
 
   return {
-    citation: genericCitation || null,
-    abstract: citationInfo.abstract
-      ? `${abstractTitle} \n ${citationInfo.abstract}`
-      : null,
+    citation: genericCitation,
+    // always use the title for the abstract, so there is at least the link to refer to
+    abstract: citationInfo.abstract ? `${abstractTitle} \n ${citationInfo.abstract}` : abstractTitle,
     doraSiteUrl: citationInfo.object_url,
-    doi: citationInfo.doi,
-    doiUrl: `https://www.doi.org/${citationInfo.doi}`,
+    pid: citationInfo.pid || pid,
+    doi: citationInfo.doi || doi,
+    doiUrl: citationInfo.doi ? `https://www.doi.org/${citationInfo.doi}` : undefined,
   };
 }
 
@@ -231,36 +231,27 @@ export function resolvedCitationText(resolvedPubs, pidMap) {
   return citationTextMap;
 }
 
-export function getPidCitationObjectMap(citationObjs) {
-  const citationMap = new Map();
+export function getCitationObjectMap(idUrlMap, responseObj) {
+  const citationMap= new Map();
 
-  if (Array.isArray(citationObjs)) {
-    citationObjs.forEach(obj => {
-      const pid = obj.pid;
-      const citationObj = getGenericCitationObject(obj);
-      citationMap.set(pid, citationObj);
+  if (!responseObj) {
+    return citationMap;
+  }
+
+  if (Array.isArray(responseObj)) {
+    responseObj.forEach(obj => {
+      const pid = idUrlMap.has(obj.pid) ? obj.pid : undefined;
+      const doi = idUrlMap.has(obj.doi) ? obj.doi : undefined;
+
+      const citationObj = getGenericCitationObject(obj, pid, doi);
+      citationMap.set(pid || doi, citationObj);
     });
-  } else if (typeof citationObjs === 'object' && citationObjs !== null) {
-    Object.entries(citationObjs).forEach(([pid, obj]) => {
-      const citationObj = getGenericCitationObject(obj);
+  } else if (typeof responseObj === 'object') {
+    Object.entries(responseObj).forEach(([pid, obj]) => {
+      const citationObj = getGenericCitationObject(obj, pid);
       citationMap.set(pid, citationObj);
     });
   }
-
-  return citationMap;
-}
-
-export function getDoiCitationObjectMap(doiObjs) {
-  if (!doiObjs) {
-    return null;
-  }
-
-  const citationMap = new Map();
-
-  doiObjs.forEach(citationInfo => {
-    const citationObj = getGenericCitationObject(citationInfo);
-    citationMap.set(citationObj.doi, citationObj);
-  });
 
   return citationMap;
 }
@@ -360,15 +351,15 @@ export async function resolvePIDsViaDora(pidMap, resolveBaseUrl) {
 
 // export async function resolvePidCitationObjectsViaDora(pidMap) {
 export async function resolvePidCitationObjectsViaDora(pidMap, resolveBaseUrl) {
-  const citationObj = await resolvePIDsViaDora(pidMap, resolveBaseUrl);
+  const responseObj = await resolvePIDsViaDora(pidMap, resolveBaseUrl);
 
-  return getPidCitationObjectMap(citationObj);
+  return getCitationObjectMap(pidMap, responseObj);
 }
 
 export async function resolveDoiCitationObjectsViaDora(doiMap) {
-  const citationObj = await resolveDOIsViaDora(doiMap);
+  const responseObj = await resolveDOIsViaDora(doiMap);
 
-  return getDoiCitationObjectMap(citationObj);
+  return getCitationObjectMap(doiMap, responseObj);
 }
 
 export function extractDatasetIdsFromText(text) {
