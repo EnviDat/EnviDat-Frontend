@@ -38,6 +38,7 @@
             :pid="previewPid"
             :doi="previewDoi"
             :selectedPlainText="selectedPlainText"
+            :validationError="validationErrors[editingProperty]"
             dense
             @addClicked="catchAddPublication"
             @saveText="catchSaveText"

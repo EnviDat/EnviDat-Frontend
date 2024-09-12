@@ -1,7 +1,7 @@
 <template>
   <v-container fluid id="EditAddPublication" class="pa-0">
     <v-row no-gutters align="center" :dense="dense">
-      <v-col cols="12" md="auto">
+      <v-col cols="12" xl="auto">
         <v-text-field
           v-model="pidField"
           :label="labels.pId"
@@ -16,14 +16,14 @@
 
       <v-col
         cols="12"
-        md="auto"
+        xl="auto"
         style="text-align: center;"
         class="text-h6 px-md-4 shrink"
       >
         Or
       </v-col>
 
-      <v-col cols="12" md="auto">
+      <v-col cols="12" xl="auto">
         <v-text-field
           v-model="doiField"
           :label="labels.doi"
@@ -36,7 +36,10 @@
         />
       </v-col>
 
-      <v-col cols="auto" class="ma-auto ma-md-0 pl-md-4 pt-4 pt-md-0">
+      <v-col
+        cols="auto"
+        class="ma-auto mt-4 ma-xl-0 mt-xl-0 pl-md-4 pt-4 pt-md-0"
+      >
         <BaseIconButton
           v-if="!isEditMode"
           material-icon-name="add"
@@ -48,7 +51,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col class="flex-grow-0" cols="12" sm="4" md="3">
+      <v-col class="flex-grow-0" cols="12" sm="4" md="4">
         <a
           id="textAreaController"
           ref="textAreaController"
@@ -61,6 +64,7 @@
       <v-col v-if="showTextArea" class="flex-grow-0">
         <BaseRectangleButton
           button-text="Save Text"
+          :disabled="!isValid"
           is-xs-small
           @clicked="editExistingData()"
         />
@@ -80,6 +84,10 @@
         <!-- @changedText="catchChangedText($event)" -->
         <GenericTextareaPreviewLayout
           v-if="showTextArea"
+          :validationError="validationErrors[editingProperty]"
+          :hint="
+            'Write at least 10 characters to describe the related publications.'
+          "
           v-bind="genericTextAreaObject"
           @inputedText="catchInputedText($event)"
         >
@@ -115,11 +123,15 @@ import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseCitationView from '@/components/BaseElements/BaseCitationView.vue';
 // import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout.vue';
+import {
+  getValidationMetadataEditingObject,
+  isFieldValid,
+} from '@/factories/userEditingValidations';
 
 import {
   eventBus,
   EDIT_RELATED_PUBLICATION_SEND,
-  EDIT_RELATED_PUBLICATION_ACTION,
+  EDITMETADATA_RELATED_PUBLICATIONS,
 } from '@/factories/eventBus';
 
 import {
@@ -162,6 +174,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    validationError: {
+      type: String,
+      default: '',
+    },
+    hint: {
+      type: String,
+      default: '',
+    },
   },
   created() {
     eventBus.on(EDIT_RELATED_PUBLICATION_SEND, this.editData);
@@ -178,6 +198,11 @@ export default {
   },
   computed: {
     ...mapState(['config']),
+    validations() {
+      return getValidationMetadataEditingObject(
+        EDITMETADATA_RELATED_PUBLICATIONS,
+      );
+    },
     publications() {
       return this.mixinMethods_getGenericProp('publications');
     },
@@ -226,6 +251,14 @@ export default {
     },
   },
   methods: {
+    validateProperty(property, value) {
+      return isFieldValid(
+        property,
+        value,
+        this.validations,
+        this.validationErrors,
+      );
+    },
     editExistingData() {
       this.$emit('saveText', this.previewCitation?.citation || this.citation);
       this.closeEditMode();
@@ -275,6 +308,11 @@ export default {
         abstract: null,
       };
       this.previewCitation = previewPlainText;
+      this.validateProperty(this.editingProperty, previewPlainText.citation);
+      this.isValid = this.validateProperty(
+        this.editingProperty,
+        previewPlainText.citation,
+      );
       this.plainText = value;
     },
     pidChange(pid) {
@@ -354,6 +392,7 @@ export default {
     showTextArea: false,
     isResolving: false,
     previewCitation: null,
+    isValid: false,
     filledTextArea: '',
     previewPID: null,
     previewDOI: null,
