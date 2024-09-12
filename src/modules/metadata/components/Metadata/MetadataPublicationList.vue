@@ -69,6 +69,11 @@ import { mapState } from 'vuex';
 
 import BaseCitationView from '@/components/BaseElements/BaseCitationView.vue';
 
+import {
+  EDITMETADATA_CLEAR_PREVIEW,
+  eventBus,
+} from '@/factories/eventBus';
+
 import { METADATA_PUBLICATIONS_TITLE } from '@/factories/metadataConsts';
 import {
   extractPIDsFromText,
@@ -112,6 +117,12 @@ export default {
       type: Array,
       default: () => [],
     },
+  },
+  created() {
+    eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
+  },
+  beforeDestroy() {
+    eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
   },
   computed: {
     ...mapState(['config']),
@@ -268,7 +279,7 @@ export default {
 
       if (pidMapSize > 0 && !this.isResolving && !this.resolveError) {
         this.isResolving = true;
-        this.$nextTick(() => this.resolvePIDs(text, this.extractedPIDMap));
+        this.$nextTick(() => this.resolvePIDs(this.extractedPIDMap));
       }
 
       if (doiMapSize > 0 && !this.isDoiResolving && !this.resolveDoiError) {
@@ -303,8 +314,8 @@ export default {
      * @returns {Promise<void>}
      */
 
-    async resolvePIDs(text, pidMap) {
-      if (!text || !pidMap) {
+    async resolvePIDs(pidMap) {
+      if (!pidMap) {
         return;
       }
       this.resolveError = null;
@@ -360,6 +371,11 @@ export default {
         this.loading = false;
       }
     },
+    clearPreview() {
+      this.doiPublications = null;
+      this.pidPublications = null;
+      this.emptyCitation = null;
+    },    
   },
   watch: {
     text() {
@@ -399,9 +415,9 @@ export default {
     dataRelatedPublications: null,
     doiPublications: null,
     pidPublications: null,
+    emptyCitation: null,
     loading: true,
     showFullText: false,
-    emptyCitation: null,
   }),
 };
 </script>
