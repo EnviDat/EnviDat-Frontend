@@ -81,7 +81,7 @@ export default {
     enhanceElementsWithStrategyEvents(datasets, SELECT_EDITING_DATASET_PROPERTY);
 
     // use the $set to make sure updates are triggered
-    this._vm.$set(state, 'userDatasets', datasets);
+    state.userDatasets = datasets;
 
     resetErrorObject(state);
   },
@@ -142,7 +142,7 @@ export default {
     ];
 
     // use the $set to make sure updates are triggered
-    this._vm.$set(state, 'collaboratorDatasets', collaboratorDatasets);
+    state.collaboratorDatasets = collaboratorDatasets;
   },
   [USER_GET_COLLABORATOR_DATASETS_ERROR](state, reason) {
     state.collaboratorDatasetsLoading = false;

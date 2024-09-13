@@ -144,8 +144,8 @@ export default {
     }
 
     // use this._vm.$set() to make sure computed properties are recalulated
-    this._vm.$set(state, 'userOrganizationIds', orgaIds);
-    this._vm.$set(state, 'userOrganizations', payload);
+    state.userOrganizationIds = orgaIds;
+    state.userOrganizations = payload;
   },
   [USER_GET_ORGANIZATION_IDS_ERROR](state, reason) {
     state.userOrganizationLoading = false;
@@ -170,7 +170,7 @@ export default {
     const userOrgas = enhanceOrganizationsWithDatasets(this, datasets);
 
     // use this._vm.$set() to make sure computed properties are recalulated
-    this._vm.$set(state, 'userOrganizations', userOrgas);
+    state.userOrganizations = userOrgas;
   },
   [USER_GET_ORGANIZATIONS_SEARCH_SUCCESS](state, payload) {
     state.userOrganizationLoading = false;
@@ -179,7 +179,7 @@ export default {
     const userOrgas = enhanceOrganizationsWithDatasets(this, datasets);
 
     // use this._vm.$set() to make sure computed properties are recalulated
-    this._vm.$set(state, 'userOrganizations', userOrgas);
+    state.userOrganizations = userOrgas;
   },
   /**
    * result : {

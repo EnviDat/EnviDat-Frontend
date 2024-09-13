@@ -130,7 +130,7 @@ export function updateResources(store, state, newRes) {
   const resources = store.getters[`${USER_NAMESPACE}/resources`];
 
   const updatedResources = updateEditingArray(resources, newRes, 'id');
-  store._vm.$set(state.metadataInEditing[EDITMETADATA_DATA_RESOURCES], 'resources', updatedResources);
+  state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].resources = updatedResources;
 }
 
 export function updateAuthors(store, state, newAuthor) {
