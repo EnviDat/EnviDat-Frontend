@@ -96,8 +96,7 @@ export default {
         this.setCurrentStep(stepTitle);
         return;
       }
-
-      const params = this.$route.params;
+      const params = { ...this.$route.params };
       params.substep = stepTitle;
 
       this.$router.push(
