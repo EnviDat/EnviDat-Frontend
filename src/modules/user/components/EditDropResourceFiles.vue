@@ -151,13 +151,15 @@ export default {
   },
   methods: {
     getStateColor(state) {
-      if (this.currentState) {
-        return 'grey';
-      }
-      const index = this.states.findIndex(((s) => s.id === state?.id));
-      const currentIndex = this.states.findIndex(((s) => s.id === this.currentState?.id));
 
-      return currentIndex >= index ? 'primary' : 'grey';
+      if (!this.currentState) {
+        return 'grey-lighten-2';
+      }
+
+      const index = this.states.findIndex(s => s.id === state?.id);
+      const currentIndex = this.states.findIndex(s => s.id === this.currentState?.id);
+
+      return currentIndex >= index ? 'primary' : 'grey-lighten-2';
     },
     getIndicatorLoading(state) {
       const index = this.states.findIndex(((s) => s.id === state?.id));
