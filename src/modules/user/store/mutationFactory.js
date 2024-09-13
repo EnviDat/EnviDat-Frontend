@@ -137,5 +137,5 @@ export function updateAuthors(store, state, newAuthor) {
   const authors = state.metadataInEditing[EDITMETADATA_AUTHOR_LIST].authors;
 
   const updatedAuthors = updateEditingArray(authors, newAuthor, 'email');
-  store._vm.$set(state.metadataInEditing[EDITMETADATA_AUTHOR_LIST], 'authors', updatedAuthors);
+  state.metadataInEditing[EDITMETADATA_AUTHOR_LIST].authors = updatedAuthors;
 }
