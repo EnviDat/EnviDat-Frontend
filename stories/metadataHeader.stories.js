@@ -1,6 +1,8 @@
 import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
-import { createHeader } from '@/factories/metaDataFactory';
+import { createHeader, enhanceMetadatasTitleImage } from '@/factories/metaDataFactory';
 import metadata from './js/metadata';
+
+enhanceMetadatasTitleImage(metadata);
 
 const smallHeader = createHeader(metadata[0], true);
 const largeHeader = createHeader(metadata[3], false);
