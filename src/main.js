@@ -13,30 +13,49 @@
  */
 
 import Vue from 'vue';
-import { createPinia, PiniaVuePlugin } from 'pinia'
+import { createPinia, PiniaVuePlugin } from 'pinia';
+
+import VueMatomo from 'vue-matomo';
 
 import store from '@/store/store';
 import App from '@/App.vue';
-import { initAxios, initAzureLogin } from '@/init';
+import { initAxios } from '@/init';
 
 import vuetify from './plugins/vuetify';
 import router from './router';
 import globalMethods from './factories/globalMethods';
 
-
 Vue.config.productionTip = false;
 Vue.mixin(globalMethods);
 Vue.directive('hide', {
   // Run on initialisation (first render) of the directive on the element
-  bind: (el, binding) => {el.style.visibility = (binding.value) ? 'hidden' : ''},
+  bind: (el, binding) => {
+    el.style.visibility = binding.value ? 'hidden' : '';
+  },
   // Run on subsequent updates to the value supplied to the directive
-  update: (el, binding) => {el.style.visibility = (binding.value) ? 'hidden' : ''},
-})
+  update: (el, binding) => {
+    el.style.visibility = binding.value ? 'hidden' : '';
+  },
+});
 Vue.use(PiniaVuePlugin);
 const pinia = createPinia();
 
+Vue.use(VueMatomo, {
+  // Configure your Matomo server and site by providing:
+  host: 'https://statistics.wsl.ch/',
+  siteId: 37,
+  router,
+  enableLinkTracking: true,
+  requireConsent: true,
+  trackInitialView: true,
+  disableCookies: false,
+  enableHeartBeatTimer: true,
+  heartBeatTimerInterval: 15,
+  // set to false as soon as finish the test
+  debug: true,
+});
+
 initAxios(Vue, store);
-initAzureLogin(Vue);
 
 
 /* eslint-disable no-new */
@@ -45,6 +64,7 @@ new Vue({
   router,
   store,
   vuetify,
+  VueMatomo,
   components: { App },
   template: '<App/>',
   pinia,

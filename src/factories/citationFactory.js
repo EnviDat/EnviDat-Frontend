@@ -1,6 +1,6 @@
 /**
  * function factory for all functionality of citations
-*
+ *
  * @summary function factory for citations
  * @author Dominik Haas-Artho
  *
@@ -72,6 +72,22 @@ export function extractPIDsFromUrls(urls) {
   return pidMap;
 }
 
+// export function extractedNoPidDoiText(text) {
+//   let result = [];
+//   if (!text) {
+//     return result;
+//   }
+
+//   const regExStr = '[a-zA-Z]+(:|%3A)\\d+';
+//   const doiRegExStr =
+//     '(?:https://doi\\.org/)?\\b(10\\.\\d{4,9}/[-._;()/:A-Z0-9]+)\\b';
+
+//   const combinedRegex = new RegExp(`(${regExStr})|(${doiRegExStr})`, 'gi');
+
+//   result = text.split('\n').filter(line => !combinedRegex.test(line));
+//   return result;
+// }
+
 export function extractPIDsFromText(text) {
   const pidMap = new Map();
 
@@ -84,11 +100,60 @@ export function extractPIDsFromText(text) {
 
   const pidMatches = text.match(regEx) || [];
 
-  pidMatches.forEach((match) => {
+  pidMatches.forEach(match => {
     pidMap.set(match, match);
   });
 
   return pidMap;
+}
+
+export function extractDOIsFromText(text) {
+  const doiMap = new Map();
+
+  if (!text) {
+    return doiMap;
+  }
+
+  // reGex for get doi from text/url
+  const doiRegEx = /(?:https:\/\/doi\.org\/)?\b(10\.\d{4,9}\/[-._;()/:A-Z0-9]+)\b/gi;
+
+  const doiMatches = text.match(doiRegEx) || [];
+
+  doiMatches.forEach(match => {
+    const doi = match.replace('https://doi.org/', '');
+    doiMap.set(doi, doi);
+  });
+
+  return doiMap;
+}
+
+export function extractedNoPidDoiText(text) {
+  let result = [];
+  if (!text) {
+    return result;
+  }
+
+  const pidMap = extractPIDsFromText(text);
+
+  const doiMap = extractDOIsFromText(text);
+
+  const urlRegEx = /https:\/\/www\.dora\.lib4ri\.ch\/wsl\/islandora\/object\/[^\s]+/g;
+  const urlMatches = text.match(urlRegEx) || [];
+
+  const allLines = text.split('\n').map(line => line.trim());
+
+  result = allLines.filter(line => {
+    const containsPID = Array.from(pidMap.keys()).some(pid =>
+      line.includes(pid),
+    );
+    const containsDOI = Array.from(doiMap.keys()).some(doi =>
+      line.includes(doi),
+    );
+    const isURL = urlMatches.includes(line);
+    return !containsPID && !containsDOI && !isURL;
+  });
+
+  return result;
 }
 
 /**
@@ -99,11 +164,9 @@ export function extractPIDsFromText(text) {
  * @returns {*}
  */
 export function replacePIDsInText(text, citationMap, pidMap) {
-
   let newText = text;
 
   if (text) {
-
     pidMap.forEach((pid, url) => {
       const citation = citationMap.get(pid);
       if (citation) {
@@ -111,7 +174,6 @@ export function replacePIDsInText(text, citationMap, pidMap) {
         newText = newText.replace(url, `${citation} <br /> <br />`);
       }
     });
-
   }
 
   return newText;
@@ -123,10 +185,10 @@ function getGenericCitation(resolvedObject) {
   // in this generic way, the first citation will be used no matter the name
   const citationObj = resolvedObject?.citation || {};
   const keys = Object.keys(citationObj);
-  return citationObj[keys[0]];
+  return keys.length > 0 ? citationObj[keys[0]] : '';
 }
 
-function getGenericCitationObject(citationInfo) {
+function getGenericCitationObject(citationInfo, pid, doi) {
   const genericCitation = getGenericCitation(citationInfo);
 
   let abstractTitle = 'Abstract';
@@ -137,11 +199,13 @@ function getGenericCitationObject(citationInfo) {
   }
 
   return {
-    citation: genericCitation || null,
-    abstract: citationInfo.abstract ? `${abstractTitle} \n ${citationInfo.abstract}` : null,
+    citation: genericCitation,
+    // always use the title for the abstract, so there is at least the link to refer to
+    abstract: citationInfo.abstract ? `${abstractTitle} \n ${citationInfo.abstract}` : abstractTitle,
     doraSiteUrl: citationInfo.object_url,
-    doi: citationInfo.doi,
-    doiUrl: `https://www.doi.org/${citationInfo.doi}`,
+    pid: citationInfo.pid || pid,
+    doi: citationInfo.doi || doi,
+    doiUrl: citationInfo.doi ? `https://www.doi.org/${citationInfo.doi}` : undefined,
   };
 }
 
@@ -154,7 +218,7 @@ function getGenericCitationObject(citationInfo) {
 export function resolvedCitationText(resolvedPubs, pidMap) {
   const citationTextMap = new Map();
 
-  pidMap.forEach((pid) => {
+  pidMap.forEach(pid => {
     const resolvedObject = resolvedPubs[pid];
 
     const genericCitation = getGenericCitation(resolvedObject);
@@ -167,33 +231,27 @@ export function resolvedCitationText(resolvedPubs, pidMap) {
   return citationTextMap;
 }
 
-export function getPidCitationObjectMap(citationObjs) {
+export function getCitationObjectMap(idUrlMap, responseObj) {
+  const citationMap= new Map();
 
-  const citationMap = new Map();
-  const pids = Object.entries(citationObjs);
-
-  pids.forEach(entry => {
-    const [pid, citationInfo] = entry;
-
-    const citationObj = getGenericCitationObject(citationInfo);
-    citationMap.set(pid, citationObj);
-  });
-
-
-  return citationMap;
-}
-
-export function getDoiCitationObjectMap(doiObjs) {
-  if (!doiObjs) {
-    return null;
+  if (!responseObj) {
+    return citationMap;
   }
 
-  const citationMap = new Map();
+  if (Array.isArray(responseObj)) {
+    responseObj.forEach(obj => {
+      const pid = idUrlMap.has(obj.pid) ? obj.pid : undefined;
+      const doi = idUrlMap.has(obj.doi) ? obj.doi : undefined;
 
-  doiObjs.forEach((citationInfo) => {
-    const citationObj = getGenericCitationObject(citationInfo);
-    citationMap.set(citationObj.doi, citationObj);
-  });
+      const citationObj = getGenericCitationObject(obj, pid, doi);
+      citationMap.set(pid || doi, citationObj);
+    });
+  } else if (typeof responseObj === 'object') {
+    Object.entries(responseObj).forEach(([pid, obj]) => {
+      const citationObj = getGenericCitationObject(obj, pid);
+      citationMap.set(pid, citationObj);
+    });
+  }
 
   return citationMap;
 }
@@ -224,7 +282,6 @@ export function extractPIDMapFromText(text) {
   const urlsPIDValues = Array.from(urlsPIDMap.values());
 
   if (urlsPIDValues.length > 0) {
-
     // in case there are urls in the text, make sure not to overwrite any
     onlyPIDs.forEach((value, key) => {
       const cleanPID = sanitizeUrls(value);
@@ -234,7 +291,6 @@ export function extractPIDMapFromText(text) {
       }
     });
   } else {
-
     // in case there are only ids merged as well
     onlyPIDs.forEach((value, key) => {
       const cleanPID = sanitizeUrls(value);
@@ -246,26 +302,25 @@ export function extractPIDMapFromText(text) {
   return pidMap;
 }
 
-const fallbackPIDUrl = 'https://www.dora.lib4ri.ch/wsl/islandora/search/json_cit_pids_wsl/';
+const fallbackPIDUrl =
+  'https://www.dora.lib4ri.ch/wsl/islandora/search/json_cit_pids_wsl/';
 
 export function getDoraPidsUrl(pidMap, resolveBaseUrl) {
   let fullUrl = resolveBaseUrl || fallbackPIDUrl;
-
-  pidMap.forEach((pid) => {
+  pidMap.forEach(pid => {
     fullUrl += `${pid}|`;
   });
 
   fullUrl = fullUrl.substring(0, fullUrl.length - 1);
-
   return fullUrl;
 }
 
-const fallbackDoiUrl = 'https://www.dora.lib4ri.ch/wsl/islandora/search/json_cit_wsl/mods_identifier_doi_mt:';
+const fallbackDoiUrl =
+  'https://www.dora.lib4ri.ch/wsl/islandora/search/json_cit_wsl/mods_identifier_doi_mt:';
 
 export function getDoraDoisUrl(doiMap, resolveBaseUrl) {
   let fullUrl = resolveBaseUrl || fallbackDoiUrl;
-
-  doiMap.forEach((doi) => {
+  doiMap.forEach(doi => {
     fullUrl += `${doi.replace('/', '~slsh~')}|`;
   });
 
@@ -274,41 +329,37 @@ export function getDoraDoisUrl(doiMap, resolveBaseUrl) {
   return fullUrl;
 }
 
-export async function resolveDOIsViaDora(doiMap, resolveBaseUrl = undefined) {
+export async function resolveDOIsViaDora(doiMap, resolveBaseDOIUrl) {
   if (!doiMap) {
     return null;
   }
-
-  const doraUrl = getDoraDoisUrl(doiMap, resolveBaseUrl);
+  const doraUrl = getDoraDoisUrl(doiMap, resolveBaseDOIUrl);
 
   const response = await axios.get(doraUrl);
   return response.data;
 }
 
-export async function resolvePIDsViaDora(pidMap, resolveBaseUrl = undefined) {
+export async function resolvePIDsViaDora(pidMap, resolveBaseUrl) {
   if (!pidMap) {
     return null;
   }
-
   // get url which works with multiple PIDs
   const doraUrl = getDoraPidsUrl(pidMap, resolveBaseUrl);
-
   const response = await axios.get(doraUrl);
   return response.data;
 }
 
-export async function resolvePidCitationObjectsViaDora(pidMap) {
+// export async function resolvePidCitationObjectsViaDora(pidMap) {
+export async function resolvePidCitationObjectsViaDora(pidMap, resolveBaseUrl) {
+  const responseObj = await resolvePIDsViaDora(pidMap, resolveBaseUrl);
 
-  const citationObj = await resolvePIDsViaDora(pidMap);
-
-  return getPidCitationObjectMap(citationObj);
+  return getCitationObjectMap(pidMap, responseObj);
 }
 
 export async function resolveDoiCitationObjectsViaDora(doiMap) {
+  const responseObj = await resolveDOIsViaDora(doiMap);
 
-  const citationObj = await resolveDOIsViaDora(doiMap);
-
-  return getDoiCitationObjectMap(citationObj);
+  return getCitationObjectMap(doiMap, responseObj);
 }
 
 export function extractDatasetIdsFromText(text) {
@@ -324,7 +375,6 @@ export function extractDatasetIdsFromText(text) {
   const matches = text.match(regEx) || [];
 
   for (let i = 0; i < matches.length; i++) {
-
     const match = matches[i];
     const splits = match.split('/');
 
@@ -358,7 +408,8 @@ export function createCitation(dataset) {
   }
 
   const publisher = publication?.publisher || '';
-  const year = publication?.publication_year || publication?.publicationYear || '';
+  const year =
+    publication?.publication_year || publication?.publicationYear || '';
   const doi = dataset.doi || '';
   const doiUrl = `https://www.doi.org/${doi}`;
 
@@ -392,8 +443,9 @@ export function getCitationList(datasets, datasetIds) {
     return citations;
   }
 
-  const datasetMatches = datasets.filter((d) => datasetIds.includes(d.name) || datasetIds.includes(d.id));
-
+  const datasetMatches = datasets.filter(
+    d => datasetIds.includes(d.name) || datasetIds.includes(d.id),
+  );
 
   for (let i = 0; i < datasetMatches.length; i++) {
     const c = createCitation(datasetMatches[i]);

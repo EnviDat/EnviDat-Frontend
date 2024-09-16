@@ -14,15 +14,16 @@
 import TagChip from '@/components/Chips/TagChip.vue';
 import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder.vue';
 import TagChipAuthor from '@/components/Chips/TagChipAuthor.vue';
+import TagChipProject from '@/components/Chips/TagChipProject.vue';
 
 export default {
-    title: '10 Chips / keyword chips',
-    decorators: [],
+  title: '10 Chips / keyword chips',
+  decorators: [],
 };
 
 export const TagChips = () => ({
-    components: { TagChip, TagChipPlaceholder, TagChipAuthor },
-    template: `
+  components: { TagChip, TagChipPlaceholder, TagChipAuthor, TagChipProject },
+  template: `
     <v-row >
 
       <v-col>
@@ -65,8 +66,22 @@ export const TagChips = () => ({
       <v-col>
         <tag-chip-author name="draggable"
                          :draggable="true"/>
-      </v-col>      
+      </v-col>
+
+      <v-col>
+        <tag-chip-project :fontSize="'14px'"
+              :iconSize="'14px'"
+              :iconName="'category'" name="Project 1"  />
+      </v-col>
+
+      <v-col>
+        <tag-chip-project :fontSize="'14px'"
+              :iconSize="'14px'"
+              :closeable="true"
+              :iconName="'category'" name="Project 1 closeable"
+                         :is-closeable="true"/>
+      </v-col>
+
 
     </v-row>`,
-  });
-
+});
