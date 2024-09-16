@@ -19,7 +19,7 @@ import VueMatomo from 'vue-matomo';
 
 import store from '@/store/store';
 import App from '@/App.vue';
-import { initAxios, initAzureLogin } from '@/init';
+import { initAxios } from '@/init';
 
 import vuetify from './plugins/vuetify';
 import router from './router';
@@ -56,7 +56,7 @@ Vue.use(VueMatomo, {
 });
 
 initAxios(Vue, store);
-initAzureLogin(Vue);
+
 
 /* eslint-disable no-new */
 new Vue({
