@@ -36,6 +36,7 @@
             :pid="previewPid"
             :doi="previewDoi"
             :selectedPlainText="selectedPlainText"
+            :validationError="validationErrors[editingProperty]"
             @addClicked="catchAddPublication"
             @saveText="catchSaveText"
             @cancelText="catchCancelText"
@@ -137,9 +138,9 @@ export default {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
   },
   mounted() {
-    if (this.relatedPublicationsText) {
-      this.previewText = this.relatedPublicationsText;
-    }
+    // if (this.relatedPublicationsText) {
+    //   this.previewText = this.relatedPublicationsText;
+    // }
   },
   computed: {
     loadingColor() {
@@ -151,13 +152,14 @@ export default {
     },
     publicationsObject() {
       return {
-        text: this.previewPublicationsText,
+        text: this.relatedPublicationsText,
         maxTextLength: 2000,
+        showPlaceholder: this.loading,
       };
     },
-    previewPublicationsText() {
-      return this.previewText ? this.previewText : this.relatedPublicationsText;
-    },
+    // previewPublicationsText() {
+    //   return this.previewText ? this.previewText : this.relatedPublicationsText;
+    // },
     validations() {
       return getValidationMetadataEditingObject(
         EDITMETADATA_RELATED_PUBLICATIONS,
@@ -192,10 +194,10 @@ export default {
       }
 
       if (value) {
-        if (!this.previewText?.includes(value)) {
-          this.previewText += `\n ${value}`;
+        if (!this.relatedPublicationsText?.includes(value)) {
+          const newText = `${this.relatedPublicationsText}\n ${value}`;
 
-          this.catchChangedText(this.previewText);
+          this.catchChangedText(newText);
         }
       }
     },
@@ -217,7 +219,9 @@ export default {
         object: EDITMETADATA_RELATED_PUBLICATIONS,
         data: { [this.editingProperty]: value },
       });
-
+    },
+    clearPreview() {
+      // this.previewText = null;
       this.previewPid = null;
       this.previewDoi = null;
       this.selectedPlainText = undefined;
@@ -237,7 +241,7 @@ export default {
       preview: 'Preview of the Related Publications',
     },
     publicationsMap: null,
-    previewText: null,
+    // previewText: null,
     previewPid: null,
     previewDoi: null,
     validationErrors: {

@@ -18,7 +18,7 @@
             md="4"
             class="pa-2"
           >
-            <base-click-card
+            <BaseClickCard
               :title="card.title"
               :img="card.imgPath"
               :color="card.darkColor"

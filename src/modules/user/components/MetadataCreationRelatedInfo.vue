@@ -147,24 +147,45 @@ export default {
       return this.customFields;
     },
     editRelatedPublicationsProps() {
+      const editingObject = this.$store ? this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_RELATED_PUBLICATIONS) : undefined;
+
       return {
         relatedPublicationsText: this.relatedPublicationsTextWrap,
         readOnlyFields: this.readOnlyFields,
         readOnlyExplanation: this.readOnlyExplanation,
+        loading: editingObject?.loading,
+        message: editingObject?.message,
+        messageDetails: editingObject?.messageDetails,
+        error: editingObject?.error,
+        errorDetails: editingObject?.errorDetails,
       };
     },
     editRelatedDatasetsProps() {
+      const editingObject = this.$store ? this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_RELATED_DATASETS) : undefined;
+
       return {
         relatedDatasetsText: this.relatedDatasetsTextWrap,
         readOnlyFields: this.readOnlyFields,
         readOnlyExplanation: this.readOnlyExplanation,
+        loading: editingObject?.loading,
+        message: editingObject?.message,
+        messageDetails: editingObject?.messageDetails,
+        error: editingObject?.error,
+        errorDetails: editingObject?.errorDetails,
       };
     },
     editCustomFieldsProps() {
+      const editingObject = this.$store ? this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_CUSTOMFIELDS) : undefined;
+
       return {
         customFields: this.customFieldsWrap,
         readOnlyFields: this.readOnlyFields,
         readOnlyExplanation: this.readOnlyExplanation,
+        loading: editingObject?.loading,
+        message: editingObject?.message,
+        messageDetails: editingObject?.messageDetails,
+        error: editingObject?.error,
+        errorDetails: editingObject?.errorDetails,
       };
     },
   },

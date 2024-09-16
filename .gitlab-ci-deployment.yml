@@ -1,6 +1,6 @@
-
 deploy-chromatic:
   stage: deploy
+  environment: $CI_COMMIT_REF_NAME
   image: node:20.15.0-alpine3.20
   extends:
     - .trigger-rules
@@ -20,6 +20,7 @@ deploy-chromatic:
 
 publish-build:
   stage: deploy
+  environment: $CI_COMMIT_REF_NAME
   image: alpine:3.20
   extends: .trigger-rules
   variables:
@@ -45,9 +46,9 @@ publish-build:
       --upload-file ${BUILD_ZIP_NAME} \
       "${PUBLISH_LOCATION}"
 
-
 deploy-to-s3-bucket:
   stage: deploy
+  environment: $CI_COMMIT_REF_NAME
   image: alpine:3.20
   extends: .trigger-rules
   needs:
@@ -93,7 +94,6 @@ deploy-to-s3-bucket:
     - ls -l
     - echo "going to rclone sync from ./ to switch:${BUCKET_NAME}"
     - rclone sync ./ "switch:${BUCKET_NAME}" --verbose
-
 
 manual-deploy-to-s3-bucket:
   stage: manual-deploy
@@ -145,4 +145,3 @@ manual-deploy-to-s3-bucket:
     - ls -l
     - echo "going to rclone sync from ./ to switch:${BUCKET_NAME}"
     - rclone sync ./ "switch:${BUCKET_NAME}" --verbose
-

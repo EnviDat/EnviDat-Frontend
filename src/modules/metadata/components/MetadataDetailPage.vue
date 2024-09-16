@@ -8,7 +8,6 @@
              style="z-index: 1; left: 0"
              :style="headerStyle" >
         <!-- prettier-ignore -->
-
         <MetadataHeader v-bind="header"
                           :metadataId="metadataId"
                           :pageViews="pageViewEvents"
@@ -140,6 +139,7 @@ import { getEventsForPageAndName } from '@/modules/matomo/store/matomoStore';
 import {
   ORGANIZATIONS_NAMESPACE,
   USER_GET_ORGANIZATION_IDS,
+  USER_GET_ORGANIZATIONS,
 } from '@/modules/organizations/store/organizationsMutationsConsts';
 
 import {
@@ -243,7 +243,6 @@ export default {
     }),
     metadataContent() {
       if (this.mode) {
-        // TODO: check with Dominik
         return this.modeDataset !== undefined
           ? this.modeDataset
           : this.currentMetadataContent;
@@ -892,15 +891,20 @@ export default {
       }
       return false;
     },
-    fetchUserOrganisationData() {
+    async fetchUserOrganisationData() {
       const userId = this.user?.id;
       if (!userId) {
         return;
       }
 
-      this.$store.dispatch(
+      await this.$store.dispatch(
         `${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`,
         userId,
+      );
+      // always call the USER_GET_ORGANIZATIONS action because it resolves the store & state also when userOrganizationIds is empty
+      await this.$store.dispatch(
+        `${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS}`,
+        this.userOrganizationIds,
       );
     },
     fetchUserDatasets() {
