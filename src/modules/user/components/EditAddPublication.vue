@@ -122,7 +122,6 @@ import { EDIT_METADATA_ADD_PUBLICATION_TITLE } from '@/factories/metadataConsts'
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseCitationView from '@/components/BaseElements/BaseCitationView.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout.vue';
 import {
   getValidationMetadataEditingObject,
@@ -431,7 +430,6 @@ export default {
   components: {
     BaseIconButton,
     BaseCitationView,
-    BaseStatusLabelView,
     GenericTextareaPreviewLayout,
     BaseRectangleButton,
   },

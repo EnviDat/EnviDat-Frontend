@@ -15,39 +15,35 @@
       class="pa-4 pt-0 heightAndScroll readableText"
       :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
     >
-      <v-col v-for="(n, index) in dataSliced" :key="'n_' + index">
-        <v-row :class="{ 'align-center': isPreview }">
-<!--
-        <section :class="{ 'd-flex align-center': isPreview }">
--->
-          <BaseCitationView
-            :abstract="n.abstract"
-            :citation="setCitation(n)"
-            :doi="n.doi"
-            :doiUrl="n.doiUrl"
-          />
+      <v-col v-for="(n, index) in dataSliced" :key="'n_' + index"
+              class="px-0 py-1">
+        <v-row no-gutters
+               :class="{ 'align-center': isPreview }">
+
+          <v-col class="flex-grow-1">
+            <BaseCitationView
+              :abstract="n.abstract"
+              :citation="setCitation(n)"
+              :doi="n.doi"
+              :doiUrl="n.doiUrl"
+            />
+          </v-col>
+
           <!-- isPreview - show this button only if it is within the Edit Related Publications section -->
-<!--
-          <div v-if="isPreview">
--->
-            <v-col v-if="isPreview"
-                   class="px-1 d-flex flex-column flex-md-row">
-              <BaseIconButton
-                  v-if="isPlainText(n)"
-                  :icon="mdiPencil"
-                  icon-color="yellow"
-                  @clicked="sendEditItemData(n.citation, index)"
-              />
-              <BaseIconButton
-                  :icon="mdiMinusCircleOutline"
-                  icon-color="red"
-                  @clicked="sendRemoveItem(index)"
-              />
-            </v-col>
-<!--
-          </div>
-        </section>
--->
+          <v-col v-if="isPreview"
+                 class="flex-grow-0 px-1 d-flex flex-column flex-md-row">
+            <BaseIconButton
+                v-if="isPlainText(n)"
+                :icon="mdiPencil"
+                icon-color="yellow"
+                @clicked="sendEditItemData(n.citation, index)"
+            />
+            <BaseIconButton
+                :icon="mdiMinusCircleOutline"
+                icon-color="red"
+                @clicked="sendRemoveItem(index)"
+            />
+          </v-col>
         </v-row>
       </v-col>
     </v-card-text>
@@ -60,12 +56,11 @@
     >
       <BaseIconButton
         :icon="mdiChevronDown"
-        :iconColor="showFullText ? 'primary' : 'accent'"
-        :fillColor="showFullText ? '' : $vuetify.theme.themes.light.primary"
-        :color="showFullText ? 'accent' : 'transparent'"
-        :outlined="showFullText"
-        :rotateOnClick="true"
-        :rotateToggle="showFullText"
+        :icon-color="showFullText ? 'secondary' : 'white'"
+        :color="showFullText ? 'transparent' : 'secondary'"
+        :outlined="!!showFullText"
+        outline-color="secondary"
+        :rotated="showFullText"
         :tooltipText="showFullText ? 'Collaspe text' : 'Show full text'"
         @clicked="readMore"
       />
