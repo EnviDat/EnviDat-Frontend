@@ -25,8 +25,8 @@
       </v-row>
 
       <v-row align="center">
-        <v-col class="flex-grow-0 pr-0 pb-0">
-          <v-icon>open_with</v-icon>
+        <v-col class="flex-grow-0 pl-1 pr-0 pb-0">
+          <BaseIcon :icon="mdiCursorMove" color="grey" />
         </v-col>
 
         <v-col class="text-h6 pl-1 pb-0" >
@@ -103,6 +103,7 @@ import AuthorCard from '@/modules/metadata/components/AuthorCard.vue';
 import EditDataCredits from '@/modules/user/components/edit/EditDataCredits.vue';
 import BaseDraggableList from '@/components/BaseElements/BaseDraggableList.vue';
 import ExpandableLayout from '@/components/Layouts/ExpandableLayout.vue'
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 import {
   AUTHOR_SEARCH_CLICK,
@@ -115,7 +116,7 @@ import {
 
 import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
 import { getAuthorName } from '@/factories/authorFactory';
-import { mdiClose, mdiPencil } from '@mdi/js';
+import {mdiClose, mdiCursorMove, mdiPencil} from '@mdi/js';
 
 export default {
   name: 'EditMetadataAuthors',
@@ -286,6 +287,7 @@ export default {
     },
   },
   data: () => ({
+    mdiCursorMove,
     editingInstructions: 'Here is a preview list of the authors of this dataset. Edit the <a href="https://www.wsl.ch/datacredit/#feat" target="_blank">DataCRediT</a> contributions for each author directly in this list by clicking on the icons. For further editing of authors, select them with the edit icon. ',
     title: EDIT_METADATA_AUTHORSLIST_TITLE,
     editDataCreditsInstruction: AUTHORS_EDIT_CURRENT_DATACREDIT,
@@ -295,6 +297,7 @@ export default {
     },
   }),
   components: {
+    BaseIcon,
     MetadataAuthors,
     AuthorCard,
     EditDataCredits,

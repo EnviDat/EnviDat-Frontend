@@ -108,10 +108,9 @@
               dense
               hide-details
               :disabled="loading"
-              :value="urlField"
+              v-model="urlField"
               :error-messages="validationErrors.url"
             />
-
             <v-text-field
               v-if="!isLongUrl"
               :label="isLink ? labels.url : labels.fileName"
@@ -120,7 +119,7 @@
               dense
               hide-details
               :disabled="loading"
-              :value="urlField"
+              v-model="urlField"
               :error-messages="validationErrors.url"
             />
           </v-col>
@@ -141,86 +140,6 @@
 
           <v-col v-show="isDataDeprecated">
             {{ labels.dataDeprecatedSwitchInfo }}
-          </v-col>
-        </v-row>
-
-        <v-row id="format" no-gutters class="pt-5">
-          <v-col cols="12" md="6" class="pr-md-4">
-            <v-row no-gutters>
-              <v-col class="shrink pt-2">
-                <img
-                  class="customIcon"
-                  :src="fileFormatIcon"
-                  width="24"
-                  height="24"
-                  alt="file extension icon"
-                />
-              </v-col>
-
-              <v-col class="pl-2">
-                <v-text-field
-                  :label="labels.format"
-                  outlined
-                  dense
-                  hide-details="auto"
-                  :disabled="loading"
-                  @change="formatField = $event"
-                  :value="formatField"
-                  :error-messages="validationErrors.format"
-                />
-              </v-col>
-            </v-row>
-          </v-col>
-
-          <v-col id="size" cols="12" md="6" class="pt-2 pt-md-0">
-            <v-row no-gutters>
-              <v-col class="shrink pt-2">
-                <img
-                  class="customIcon"
-                  :src="fileSizeIcon"
-                  width="24"
-                  height="24"
-                  alt="file size icon"
-                />
-              </v-col>
-
-              <v-col class="pl-2">
-                <v-text-field
-                  :label="labels.size"
-                  outlined
-                  dense
-                  hide-details="auto"
-                  :disabled="!isLink || loading"
-                  @change="sizeField = $event"
-                  :value="isLink ? sizeField : sizeFieldText"
-                  :error-messages="validationErrors.size"
-                />
-              </v-col>
-              <v-col class="pl-2">
-                <v-select
-                  :items="labels.sizeFormatList"
-                  v-model="sizeFormatField"
-                  label="File size format"
-                  outlined
-                  dense
-                  hide-details="auto"
-                  :disabled="!isLink || loading"
-                  :error-messages="validationErrors.sizeFormat"
-                />
-              </v-col>
-            </v-row>
-          </v-col>
-        </v-row>
-
-        <v-row id="dates" no-gutters align="center" class="pt-3">
-          <v-col cols="12" md="6" class="pr-md-4">
-
-            <v-text-field
-              v-if="!isLongUrl"
-              :label="isLink ? labels.url : labels.fileName" readonly
-              hide-details :disabled="loading"
-              :model-value="urlField" :error-messages="validationErrors.url" />
-
           </v-col>
         </v-row>
 

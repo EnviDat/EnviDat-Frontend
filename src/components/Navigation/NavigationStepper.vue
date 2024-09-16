@@ -330,13 +330,13 @@ export default {
         this.setCurrentStep(stepTitle);
         return;
       }
+      const params = { ...this.$route.params };
+      params.step = stepTitle;
+      delete params.substep
 
       this.$router.push(
         {
-          params: {
-            step: stepTitle,
-            substep: undefined,
-          },
+          params,
           query: this.$route.query,
         },
         () => {},

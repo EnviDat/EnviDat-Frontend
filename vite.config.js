@@ -117,104 +117,105 @@ export default ({ mode, config }) => {
           minify: !buildSourceMaps,
           sourcemap: buildSourceMaps,
           emptyOutDir: true,
-          rollupOptions: isProd ? {
-            output: {
-              manualChunks: (id) => {
-                if (id.includes('skeleton-placeholder')) {
-                  return 'vendor_skeleton';
-                }
-                // Had to be removed, it caused import errors, when the vendor_leaflet.js tried
-                // to import something from the vendors.js
-                // if (id.includes('leaflet')) {
-                //   return 'vendor_leaflet';
-                // }
-                if (id.includes('src/modules/about')) {
-                  return 'envidat_about';
-                }
-                if (id.includes('src/modules/blog')) {
-                  return 'envidat_blog';
-                }
-                if (id.includes('src/modules/browse')) {
-                  return 'envidat_browse';
-                }
-                if (id.includes('src/modules/home')) {
-                  return 'envidat_home';
-                }
-                if (id.includes('src/modules/integration')) {
-                  return 'envidat_integration';
-                }
-                if (id.includes('src/modules/metadata')) {
-                  return 'envidat_metadata';
-                }
-                if (id.includes('src/modules/organizations')) {
-                  return 'envidat_organizations';
-                }
-                if (id.includes('src/modules/projects')) {
-                  return 'envidat_projects';
-                }
-                if (id.includes('src/modules/services')) {
-                  return 'envidat_services';
-                }
-                if (id.includes('src/modules/user')) {
-                  return 'envidat_user';
-                }
-                if (id.includes('src/factories')) {
-                  return 'envidat_factories';
-                }
-                if (id.includes('vuetify')) {
-                  return 'vendor_vuetify';
-                }
-                if (id.includes('vue-router')) {
-                  return 'vendor_vue-router';
-                }
-                if (id.includes('vuex')) {
-                  return 'vendor_vuex';
-                }
-                if (id.includes('vue') && !id.includes('.vue')) {
-                  return 'vendor_vue';
-                }
-                if (id.includes('turf')) {
-                  return 'vendor_turf';
-                }
-                if (id.includes('axios')) {
-                  return 'vendor_axios';
-                }
-                if (id.includes('date-fns')) {
-                  return 'vendor_date_fns';
-                }
-                if (id.includes('yup')) {
-                  return 'vendor_yup';
-                }
-                if (id.includes('amchart') || id.includes('uplot')) {
-                  return 'vendor_charts';
-                }
-                if (id.includes('uppy') || id.includes('exifr')) {
-                  return 'vendor_uppy';
-                }
-                if (id.includes('core-js')) {
-                  return 'vendor_core_js';
-                }
-                if (id.includes('lodash')) {
-                  return 'vendor_lodash';
-                }
-                if (id.includes('tokenize')) {
-                  return 'vendor_tokenize';
-                }
-/*
-                if (id.includes('micromark') || id.includes('remark') || id.includes('markdown') || id.includes('mdast-util') || id.includes('hast-util') || id.includes('unist-util')) {
-                  return 'vendor_markdown';
-                }
-*/
 
-                // all other node_modules
-                if (id.includes('node_modules')) {
-                  return 'vendors';
-                }
+//           rollupOptions: isProd ? {
+//             output: {
+//               manualChunks: (id) => {
+//                 if (id.includes('skeleton-placeholder')) {
+//                   return 'vendor_skeleton';
+//                 }
+//                 // Had to be removed, it caused import errors, when the vendor_leaflet.js tried
+//                 // to import something from the vendors.js
+//                 // if (id.includes('leaflet')) {
+//                 //   return 'vendor_leaflet';
+//                 // }
+//                 if (id.includes('src/modules/about')) {
+//                   return 'envidat_about';
+//                 }
+//                 if (id.includes('src/modules/blog')) {
+//                   return 'envidat_blog';
+//                 }
+//                 if (id.includes('src/modules/browse')) {
+//                   return 'envidat_browse';
+//                 }
+//                 if (id.includes('src/modules/home')) {
+//                   return 'envidat_home';
+//                 }
+//                 if (id.includes('src/modules/integration')) {
+//                   return 'envidat_integration';
+//                 }
+//                 if (id.includes('src/modules/metadata')) {
+//                   return 'envidat_metadata';
+//                 }
+//                 if (id.includes('src/modules/organizations')) {
+//                   return 'envidat_organizations';
+//                 }
+//                 if (id.includes('src/modules/projects')) {
+//                   return 'envidat_projects';
+//                 }
+//                 if (id.includes('src/modules/services')) {
+//                   return 'envidat_services';
+//                 }
+//                 if (id.includes('src/modules/user')) {
+//                   return 'envidat_user';
+//                 }
+//                 if (id.includes('src/factories')) {
+//                   return 'envidat_factories';
+//                 }
+//                 if (id.includes('vuetify')) {
+//                   return 'vendor_vuetify';
+//                 }
+//                 if (id.includes('vue-router')) {
+//                   return 'vendor_vue-router';
+//                 }
+//                 if (id.includes('vuex')) {
+//                   return 'vendor_vuex';
+//                 }
+//                 if (id.includes('vue') && !id.includes('.vue')) {
+//                   return 'vendor_vue';
+//                 }
+//                 if (id.includes('turf')) {
+//                   return 'vendor_turf';
+//                 }
+//                 if (id.includes('axios')) {
+//                   return 'vendor_axios';
+//                 }
+//                 if (id.includes('date-fns')) {
+//                   return 'vendor_date_fns';
+//                 }
+//                 if (id.includes('yup')) {
+//                   return 'vendor_yup';
+//                 }
+//                 if (id.includes('amchart') || id.includes('uplot')) {
+//                   return 'vendor_charts';
+//                 }
+//                 if (id.includes('uppy') || id.includes('exifr')) {
+//                   return 'vendor_uppy';
+//                 }
+//                 if (id.includes('core-js')) {
+//                   return 'vendor_core_js';
+//                 }
+//                 if (id.includes('lodash')) {
+//                   return 'vendor_lodash';
+//                 }
+//                 if (id.includes('tokenize')) {
+//                   return 'vendor_tokenize';
+//                 }
+// /*
+//                 if (id.includes('micromark') || id.includes('remark') || id.includes('markdown') || id.includes('mdast-util') || id.includes('hast-util') || id.includes('unist-util')) {
+//                   return 'vendor_markdown';
+//                 }
+// */
 
-                return undefined;
-              },
-            },
-          } : {},
+//                 // all other node_modules
+//                 if (id.includes('node_modules')) {
+//                   return 'vendors';
+//                 }
+
+//                 return undefined;
+//               },
+//             },
+//           } : {},
       define: {
         'import.meta.env.VITE_VERSION': JSON.stringify(version),
       },

@@ -41,7 +41,7 @@
       </v-col>
     </v-row>
 
-    <v-row v-if="!mapLayout" id="metadataListLayoutFiltering_no_map" ref="metadataListLayoutFiltering" no-gutters>
+    <v-row v-if="!mapLayout" id="metadataListLayoutFiltering_no_map" ref="metadataListLayoutFiltering" class="w-100" no-gutters>
       <v-col class="hidden-sm-and-up pb-2" cols="12" key="controlPanel_smallscreen">
         <slot name="controlPanel" />
       </v-col>

@@ -80,7 +80,7 @@ export default {
       }
     },
     customIcon() {
-      if (this.icon.includes('/')){
+      if (this.icon?.includes('/')){
         return this.icon;
       }
       return null;

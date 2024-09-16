@@ -10,8 +10,8 @@
         >
 
             <v-divider v-if="!step && $vuetify.display.smAndUp"
-                       color="accent"
                        class="mx-2 mx-md-5"
+                       :opacity="0.3"
                        style="align-self: center; "
             />
 

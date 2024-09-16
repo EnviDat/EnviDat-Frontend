@@ -95,7 +95,7 @@ export function setSelected(
     if (match) {
       element.isSelected = selected;
       if (store) {
-        store._vm.$set(elementList, i, element);
+        store.elementList = element;
       }
       return element;
     }

@@ -62,24 +62,20 @@
 
     </v-row>
 
-    <v-row >
-      <v-container fluid class="fill-height py-0" >
-        <v-row no-gutters align-content="end">
-          <v-col v-if="message" >
-            <BaseStatusLabelView status="check"
-                                 statusColor="success"
-                                 :statusText="message"
-                                 :expandedText="messageDetails" />
-          </v-col>
+    <v-row no-gutters class="mt-2">
+      <v-col v-if="message" >
+        <BaseStatusLabelView status="check"
+                             statusColor="success"
+                             :statusText="message"
+                             :expandedText="messageDetails" />
+      </v-col>
 
-          <v-col v-if="error" >
-            <BaseStatusLabelView status="error"
-                                 statusColor="error"
-                                 :statusText="error"
-                                 :expandedText="errorDetails" />
-          </v-col>
-        </v-row>
-      </v-container>
+      <v-col v-if="error" >
+        <BaseStatusLabelView status="error"
+                             statusColor="error"
+                             :statusText="error"
+                             :expandedText="errorDetails" />
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -96,6 +92,8 @@
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseProgressView from '@/components/BaseElements/BaseProgressView.vue'
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue'
+
 
 import { countSteps } from '@/factories/userCreationFactory';
 import { mdiClose, mdiContentSave, mdiEye } from '@mdi/js';
@@ -194,6 +192,7 @@ export default {
   components: {
     BaseIconButton,
     BaseProgressView,
+    BaseStatusLabelView,
   },
 };
 </script>
