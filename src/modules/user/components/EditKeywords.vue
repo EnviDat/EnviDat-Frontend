@@ -67,21 +67,25 @@
                       >
 
             <template v-slot:selection="{ item }" >
-              <TagChip  :name="item.raw.name"
-                        selectable
-                        closeable
-                        @clickedClose="removeKeyword(item)"
-                        :isSmall="false"
-                        />
+              <TagChip
+                :name="item.raw.name"
+                selectable
+                closeable
+                @clickedClose="removeKeyword(item)"
+                :isSmall="false"
+                />
             </template>
 
             <template v-slot:item="{ item }">
-              <v-list-item >
-                <TagChip v-if="item && item.value"
-                         :name="item.raw.name"
-                         selectable
-                         @clicked="catchKeywordClicked(item.raw.name)"
-                         :isSmall="false" />
+              <v-list-item class='py-0' >
+                <TagChip
+                  class='py-0'
+                  v-if="item && item.value"
+                  :name="item.raw.name"
+                  selectable
+                  @clicked="catchKeywordClicked(item.raw.name)"
+                  :isSmall="false"
+                />
               </v-list-item>
             </template>
 
@@ -134,6 +138,7 @@ import { EDIT_METADATA_KEYWORDS_TITLE } from '@/factories/metadataConsts';
 import MetadataCard from '@/components/Cards/MetadataCard.vue';
 import TagChip from '@/components/Chips/TagChip.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
+import categoryCards from '@/store/categoryCards';
 
 import { enhanceTitleImg } from '@/factories/metaDataFactory';
 import {
@@ -312,7 +317,7 @@ export default {
       // Use pickedKeyword to create pickedKeywordObj
       const pickedKeywordObj = {
         name: pickedKeyword.toUpperCase().trim(),
-        color: getTagColor(pickedKeyword),
+        color: getTagColor(categoryCards, pickedKeyword),
       };
 
       // Assign selectedKeywords to keywords concatenated with pickedKeywordObj
@@ -336,13 +341,13 @@ export default {
 
           if (!keywordValid) {
             valuesArray.splice(i, 1);
-            i--; // decrease to ensure not skipping the next entry becduse splice changes the index
+            i--; // decrease to ensure not skipping the next entry because splice changes the index
           } else {
 
             valuesArray[i] = {
               name: valuesArray[i].toUpperCase()
                   .trim(),
-              color: getTagColor(valuesArray[i]),
+              color: getTagColor(categoryCards, valuesArray[i]),
             };
           }
         }

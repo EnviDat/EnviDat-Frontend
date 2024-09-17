@@ -60,12 +60,12 @@ export function getCategoryColor(categoryCards, categoryName) {
     }
   }
 
-  return null;
+  return undefined;
 }
 
 export function getTagColor(categoryCards, tagName) {
   if (!categoryCards || !tagName) {
-    return '';
+    return undefined;
   }
 
   for (let i = 0; i < categoryCards.length; i++) {
@@ -77,9 +77,15 @@ export function getTagColor(categoryCards, tagName) {
     }
   }
 
-  return '#e0e0e0';
+  return undefined;
 }
 
+/**
+ *
+ * @param dataset
+ * @param categoryCards
+ * @returns {[any]|null}
+ */
 export function enhanceTags(dataset, categoryCards) {
   if (!dataset || !categoryCards) {
     return null;
