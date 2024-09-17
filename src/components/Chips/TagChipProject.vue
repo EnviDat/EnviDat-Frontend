@@ -15,9 +15,8 @@
     :close="closeable"
     @click:close="$emit('clickedClose', name)"
   >
-    <v-avatar v-if="iconName != null" left>
-      <v-icon :size="iconSize">{{ iconName }}</v-icon>
-    </v-avatar>
+    <v-icon class='mr-1' :icon="mdiShape" :size="iconSize"></v-icon>
+
     <span :style="{ fontSize: fontSize }">
       {{ name }}
     </span>
@@ -25,6 +24,8 @@
 </template>
 
 <script>
+import { mdiShape } from '@mdi/js';
+
 export default {
   props: {
     name: String,
@@ -32,10 +33,6 @@ export default {
     selectable: Boolean,
     highlighted: Boolean,
     count: Number,
-    iconName: {
-      type: String,
-      default: null,
-    },
     fontSize: {
       type: String,
       default: '0.65rem',
@@ -54,6 +51,9 @@ export default {
     },
   },
   computed: {},
+  data: ()=>({
+    mdiShape,
+  }),
   methods: {
     clicked: function clicked() {
       this.$emit('clicked', this.name);
