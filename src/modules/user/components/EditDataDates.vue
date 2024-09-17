@@ -60,8 +60,8 @@
                 :endDateProperty="endDateProperty"
                 :clearableEndDate="true"
                 rowLayout
-                @dateChange="dateChanged(index, ...arguments)"
-                @clearClick="clearDate(index, ...arguments)"
+                @dateChange="(property, value) => dateChanged(index, property, value)"
+                @clearClick="(property) => clearDate(index, property)"
                 :readOnlyFields="readOnlyFields"
                 :readOnlyExplanation="readOnlyExplanation"
               />

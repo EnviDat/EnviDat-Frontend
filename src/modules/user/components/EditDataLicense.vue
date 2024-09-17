@@ -47,7 +47,7 @@
             :prepend-icon="mdiShieldSearch"
             :menu-icon="mdiArrowDownDropCircleOutline"
             :model-value="selectedLicense"
-            @input="changeLicense($event)"
+            @update:model-value="changeLicense($event)"
             :error-messages="validationErrors.dataLicense"
           />
         </v-col>
@@ -58,17 +58,17 @@
           <v-expansion-panels focusable>
             <v-expansion-panel>
 
-              <v-expansion-panel-header :expand-icon="mdiArrowDownDropCircleOutline"
+              <v-expansion-panel-title :expand-icon="mdiArrowDownDropCircleOutline"
                 class="py-2 px-3">
                 {{ dataSummaryClickInfo }}
-              </v-expansion-panel-header>
+              </v-expansion-panel-title>
 
               <!--              <v-expansion-panel-content>{{ this.getDataLicenseSummary }}</v-expansion-panel-content>-->
 
-              <v-expansion-panel-content
+              <v-expansion-panel-text
                   class="pa-1 pa-md-2 licensePanel">
                 <div v-html="getDataLicenseSummary" />
-              </v-expansion-panel-content>
+              </v-expansion-panel-text>
             </v-expansion-panel>
 
           </v-expansion-panels>
@@ -78,12 +78,12 @@
       <v-row>
         <v-col class="text-body-2">
           <div>{{ labels.dataLicenseUrl }}</div>
-          
+
           <a v-if="dataLicenseLinkExists"
              :href="getDataLicenseLink" target="_blank">
             {{ getDataLicenseLink }}
           </a>
-          
+
           <div v-if="!dataLicenseLinkExists" >
             {{ getDataLicenseLink }}
           </div>
