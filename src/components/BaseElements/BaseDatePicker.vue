@@ -30,6 +30,7 @@
         </template>
 
         <v-date-picker
+          show-adjacent-months
           elevation="2"
           ref="datePicker"
           locale="en-in"
@@ -47,7 +48,7 @@
 </template>
 
 <script>
-import { isDate, isMatch, parse } from 'date-fns';
+import { isDate, isMatch, parse, format } from 'date-fns';
 import * as yup from 'yup';
 import { ValidationError } from 'yup';
 
@@ -202,17 +203,23 @@ export default {
       return yup.object().shape(validation);
     },
     changeDatePicker(dateProperty, value) {
+      let dateString = value;
+
+      if (isDate(value)) {
+        dateString = format(value, ckanDateFormat);
+      }
+
       if (dateProperty === this.dateProperty) {
-        this.previewDate = value;
+        this.previewDate = dateString;
       }
 
       if (isFieldValid(
             dateProperty,
-            value,
+            dateString,
             this.getValidation(dateProperty),
             this.validationErrors,
           )) {
-        this.changeDate(dateProperty, value);
+        this.changeDate(dateProperty, dateString);
       }
     },
     changedDateTextField(dateProperty, dateString) {
@@ -264,8 +271,7 @@ export default {
         return undefined;
       }
 
-      const adapter = useDate()
-      return adapter.parseISO(dateString);
+      return this.adapter.parseISO(dateString);
 
 /*
       const dateTime = parse(dateString, ckanDateFormat, new Date());
@@ -287,6 +293,7 @@ export default {
     previewDate: '',
     datePickerOpen: false,
     validationErrors: {},
+    adapter: useDate(),
   }),
 };
 </script>
