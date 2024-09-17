@@ -28,7 +28,6 @@ const app = createApp(App);
 const pinia = createPinia();
 
 initAxios(app, store);
-// initAzureLogin(Vue);
 
 app
   .use(vuetify)
@@ -51,17 +50,3 @@ app
   })
   //  .use(InfiniteLoading)
   .mount('#app');
-
-/*
- * was used for the azure-login, maybe it would need converting to vue3 too?
-Vue.directive('hide', {
-  // Run on initialisation (first render) of the directive on the element
-  bind: (el, binding) => {
-    el.style.visibility = binding.value ? 'hidden' : '';
-  },
-  // Run on subsequent updates to the value supplied to the directive
-  update: (el, binding) => {
-    el.style.visibility = binding.value ? 'hidden' : '';
-  },
-});
-*/

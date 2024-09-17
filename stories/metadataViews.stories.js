@@ -29,7 +29,7 @@ import {
   createDetails,
   createPublications,
   createBody,
-  createLocation,
+  createLocation, enhanceMetadatasTitleImage,
 } from '@/factories/metaDataFactory';
 
 import { createCitation } from '@/factories/citationFactory';
@@ -53,6 +53,8 @@ import {
   EDITMETADATA_MAIN_HEADER,
   EDITMETADATA_PUBLICATION_INFO,
 } from '@/factories/eventBus';
+
+enhanceMetadatasTitleImage(metadata);
 
 const smallHeader = createHeader(metadata[0], true);
 const largeHeader = createHeader(metadata[2], false);

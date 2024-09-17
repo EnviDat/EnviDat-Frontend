@@ -408,14 +408,17 @@ export function extractAuthorsMap(datasets) {
  * @param {Array} dataset
  */
 export function getFullAuthorsFromDataset(authorMap, dataset) {
-  if (!authorMap || !dataset) { return null; }
+  if (!authorMap || !dataset) {
+    return null;
+  }
 
   const authors = createAuthors(dataset);
   if (!authors) {
-    return []
+    return [];
   }
 
   const fullAuthors = [];
+  const authorPlaceholder = [];
 
   for (let i = 0; i < authors.length; i++) {
     const author = authors[i];
@@ -425,19 +428,22 @@ export function getFullAuthorsFromDataset(authorMap, dataset) {
 
     if (fullAuthor) {
       fullAuthors.push({
-          ...fullAuthor,
-          // merge / overwrite the dataCredit, because
-          // it's based on the current datasets
-          dataCredit: author.dataCredit,
-        },
-      );
+        ...fullAuthor,
+        // merge / overwrite the dataCredit, because
+        // it's based on the current datasets
+        dataCredit: author.dataCredit,
+      });
+    } else {
+      authorPlaceholder.push({
+        ...author,
+        dataCredit: author.dataCredit || null,
+        isMissing: true,
+      });
     }
-
   }
 
-  return fullAuthors;
+  return [...fullAuthors, ...authorPlaceholder];
 }
-
 
 export function getDataCreditLevel(dataCreditScore) {
   const entries = authorDataCreditLevels;

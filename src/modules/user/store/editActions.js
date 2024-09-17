@@ -117,13 +117,13 @@ export default {
         },
       })
       .then((response) => {
+        populateEditingComponents(commit, response.data.result);
+
         commit(METADATA_EDITING_PATCH_DATASET_OBJECT_SUCCESS, {
           stepKey,
           message: 'Changes saved',
           // details: `Changes saved ${stepKey} data for ${id}`,
         });
-
-        populateEditingComponents(commit, response.data.result);
       })
       .catch((reason) => {
         commit(METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR, {

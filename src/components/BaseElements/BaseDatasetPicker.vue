@@ -40,7 +40,6 @@
               :fontSize="'14px'"
               :iconSize="'14px'"
               :closeable="true"
-              :iconName="'category'"
               @clickedClose="catchCloseClicked"
             />
           </template>
@@ -52,7 +51,6 @@
               :fontSize="'14px'"
               :iconSize="'14px'"
               @clicked="catchPickClicked"
-              iconName="category"
               :isSmall="true"
             />
           </template>

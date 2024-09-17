@@ -1,92 +1,94 @@
 <template id="MetadataPublications">
-      <v-card class="relatedPubList">
-        <v-card-title class="metadata_title text-h6 pa-4">
-          {{ METADATA_PUBLICATIONS_TITLE }}
-        </v-card-title>
+  <v-card class="relatedPubList">
+    <v-card-title class="metadata_title text-h6 pa-4">
+      {{ METADATA_PUBLICATIONS_TITLE }}
+    </v-card-title>
 
-        <v-skeleton-loader
-          v-if="loading || showPlaceholder"
-          type="list-item-two-line"
-        >
-        </v-skeleton-loader>
+    <v-skeleton-loader
+      v-if="loading || showPlaceholder"
+      type="list-item-two-line"
+    >
+    </v-skeleton-loader>
 
-          <v-card-text
-            ref="text"
-            class="pa-4 pt-0 heightAndScroll readableText"
-            :style="
-              `scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`
-            "
-          >
-            <v-col v-for="(n, index) in dataSliced" :key="'n_' + index">
+    <v-card-text
+      ref="text"
+      class="pa-4 pt-0 heightAndScroll readableText"
+      :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
+    >
+      <v-col v-for="(n, index) in dataSliced" :key="'n_' + index"
+              class="px-0 py-1">
+        <v-row no-gutters
+               :class="{ 'align-center': isPreview }">
 
-              <section :class="{ 'd-flex align-center': isPreview }">
-                <BaseCitationView
-                  :abstract="n.abstract"
-                  :citation="setCitation(n)"
-                  :doi="n.doi"
-                  :doiUrl="n.doiUrl"
-                  :citationColsCustom="10"
-                />
-                <!-- isPreview - show this button only if it is within the Edit Related Publications section -->
-                <div v-if="isPreview">
-                  <v-col class="shrink px-1 d-flex flex-column flex-md-row">
-                    <BaseIconButton
-                      v-if="isPlainText(n)"
-                      :icon="mdiPencil"
-                      icon-color="yellow"
-                      @clicked="sendEditItemData(n.citation, index)"
-                    />
-                    <BaseIconButton
-                      :icon="mdiMinusCircleOutline"
-                      icon-color="red"
-                      @clicked="sendRemoveItem(index)"
-                    />
-                  </v-col>
-                </div>
-              </section>
-            </v-col>
-          </v-card-text>
-
-          <v-card-actions
-            v-if="dataLength > 2 && !isPreview"
-            class="ma-0 pa-2"
-            :style="`position: absolute; bottom: 0px; right: ${rightPos()};`"
-          >
-            <BaseIconButton
-              material-icon-name="expand_more"
-              :iconColor="showFullText ? 'primary' : 'accent'"
-              :fillColor="
-                showFullText ? '' : $vuetify.theme.themes.light.primary
-              "
-              :color="showFullText ? 'accent' : 'transparent'"
-              :outlined="showFullText"
-              :rotateOnClick="true"
-              :rotateToggle="showFullText"
-              :tooltipText="showFullText ? 'Collaspe text' : 'Show full text'"
-              @clicked="readMore"
+          <v-col class="flex-grow-1">
+            <BaseCitationView
+              :abstract="n.abstract"
+              :citation="setCitation(n)"
+              :doi="n.doi"
+              :doiUrl="n.doiUrl"
             />
-          </v-card-actions>
+          </v-col>
 
-      </v-card>
+          <!-- isPreview - show this button only if it is within the Edit Related Publications section -->
+          <v-col v-if="isPreview"
+                 class="flex-grow-0 px-1 d-flex flex-column flex-md-row">
+            <BaseIconButton
+                v-if="isPlainText(n)"
+                :icon="mdiPencil"
+                icon-color="yellow"
+                @clicked="sendEditItemData(n.citation, index)"
+            />
+            <BaseIconButton
+                :icon="mdiMinusCircleOutline"
+                icon-color="red"
+                @clicked="sendRemoveItem(index)"
+            />
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-card-text>
 
+
+    <v-card-actions
+      v-if="dataLength > 2 && !isPreview"
+      class="ma-0 pa-2"
+      :style="`position: absolute; bottom: 0px; right: ${rightPos()};`"
+    >
+      <BaseIconButton
+        :icon="mdiChevronDown"
+        :icon-color="showFullText ? 'secondary' : 'white'"
+        :color="showFullText ? 'transparent' : 'secondary'"
+        :outlined="!!showFullText"
+        outline-color="secondary"
+        :rotated="showFullText"
+        :tooltipText="showFullText ? 'Collaspe text' : 'Show full text'"
+        @clicked="readMore"
+      />
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script>
-import axios from 'axios';
 import { mapState } from 'vuex';
+
 import BaseCitationView from '@/components/BaseElements/BaseCitationView.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+
+import {
+  EDITMETADATA_CLEAR_PREVIEW,
+  eventBus,
+} from '@/factories/eventBus';
 
 import { METADATA_PUBLICATIONS_TITLE } from '@/factories/metadataConsts';
 import {
   extractPIDsFromText,
   extractDOIsFromText,
-  getDoraPidsUrl,
-  resolveMultipleDoiCitationObjectsViaDora,
   extractedNoPidDoiText,
+  resolveDoiCitationObjectsViaDora,
+  resolvePidCitationObjectsViaDora,
 } from '@/factories/citationFactory';
 
-import { mdiPencil, mdiMinusCircleOutline } from '@mdi/js';
+import { mdiPencil, mdiMinusCircleOutline, mdiChevronDown } from '@mdi/js';
 
 export default {
   name: 'MetadataPublicationList',
@@ -121,6 +123,12 @@ export default {
       default: () => [],
     },
   },
+  created() {
+    eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
+  },
+  beforeDestroy() {
+    eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
+  },
   computed: {
     ...mapState(['config']),
     dataLength() {
@@ -144,10 +152,10 @@ export default {
       return this.metadataConfig?.publicationsConfig || {};
     },
     resolveBaseUrl() {
-      return (
-        this.publicationsConfig?.resolveBaseUrl ||
-        'https://www.dora.lib4ri.ch/wsl/islandora/search/json_cit_pids_wsl/'
-      );
+      return this.publicationsConfig?.resolveBaseUrl || undefined;
+    },
+    resolveBaseDOIUrl() {
+      return this.publicationsConfig?.resolveBaseDOIUrl || undefined;
     },
     extractedPIDMap() {
       return extractPIDsFromText(this.text);
@@ -182,7 +190,6 @@ export default {
         citationText: value,
         index,
       });
-
     },
     getEditItemData(object) {
       this.dataRelatedPublications = this.dataRelatedPublications.map(
@@ -226,7 +233,7 @@ export default {
         const publicationObj = this.dataRelatedPublications[i];
         const id = publicationObj.pid || publicationObj.doi || null;
 
-        if(id) {
+        if (id) {
           newText += id;
         } else {
           newText += publicationObj.citation;
@@ -265,7 +272,7 @@ export default {
 
       if (pidMapSize > 0 && !this.isResolving && !this.resolveError) {
         this.isResolving = true;
-        this.$nextTick(() => this.resolvePIDs(text, this.extractedPIDMap));
+        this.$nextTick(() => this.resolvePIDs(this.extractedPIDMap));
       }
 
       if (doiMapSize > 0 && !this.isDoiResolving && !this.resolveDoiError) {
@@ -300,8 +307,8 @@ export default {
      * @returns {Promise<void>}
      */
 
-    async resolvePIDs(text, pidMap) {
-      if (!text || !pidMap) {
+    async resolvePIDs(pidMap) {
+      if (!pidMap) {
         return;
       }
       this.resolveError = null;
@@ -310,12 +317,15 @@ export default {
       this.loading = true;
 
       try {
-        // get url which works with multiple PIDs
-        // TODO: Ask Domink if there is a way to handle multiple doi in a single URL like here
-        const doraUrl = getDoraPidsUrl(pidMap, this.resolveBaseUrl);
+        const citationMap = await resolvePidCitationObjectsViaDora(
+          pidMap,
+          this.resolveBaseUrl,
+        );
 
-        const response = await axios.get(doraUrl);
-        this.pidPublications = response.data;
+        this.pidPublications = [];
+        citationMap.forEach(value => {
+          this.pidPublications.push(value);
+        });
 
         this.updatePublicationList();
       } catch (e) {
@@ -326,8 +336,8 @@ export default {
         this.loading = false;
       }
     },
-    async resolveDOIs(doi) {
-      if (!doi) {
+    async resolveDOIs(doiMap) {
+      if (!doiMap) {
         return;
       }
       this.isDoiResolving = true;
@@ -335,7 +345,11 @@ export default {
       this.loading = true;
 
       try {
-        const citationMap = await resolveMultipleDoiCitationObjectsViaDora(doi);
+        const citationMap = await resolveDoiCitationObjectsViaDora(
+          doiMap,
+          this.resolveBaseDOIUrl,
+        );
+
         this.doiPublications = [];
         citationMap.forEach(value => {
           this.doiPublications.push(value);
@@ -350,6 +364,11 @@ export default {
         this.loading = false;
       }
     },
+    clearPreview() {
+      this.doiPublications = null;
+      this.pidPublications = null;
+      this.emptyCitation = null;
+    },    
   },
   watch: {
     text() {
@@ -357,18 +376,18 @@ export default {
       // this.replacedText = null;
     },
     updatedCitation() {
-
       if (this.updatedCitation) {
-
         if (this.updatedCitationIndex === undefined) {
           // case for a new entry of just plain text
           this.generateCitationFromSimpleText([
-              ...this.extractedNoPidDoi,
-              this.updatedCitation,
+            ...this.extractedNoPidDoi,
+            this.updatedCitation,
           ]);
         } else {
           // case for selected item for editing and now needs updating
-          const citationObject = this.dataRelatedPublications[this.updatedCitationIndex];
+          const citationObject = this.dataRelatedPublications[
+            this.updatedCitationIndex
+          ];
           if (citationObject) {
             citationObject.citation = this.updatedCitation;
           }
@@ -382,6 +401,7 @@ export default {
   data: () => ({
     mdiPencil,
     mdiMinusCircleOutline,
+    mdiChevronDown,
     METADATA_PUBLICATIONS_TITLE,
     isResolving: false,
     isDoiResolving: false,
@@ -391,9 +411,9 @@ export default {
     dataRelatedPublications: null,
     doiPublications: null,
     pidPublications: null,
+    emptyCitation: null,
     loading: true,
     showFullText: false,
-    emptyCitation: null,
   }),
 };
 </script>

@@ -132,7 +132,7 @@
 /**
  * MetadataResources.vue shows all the resources of a metadata entry in a list.
  *
- * @summary shows the resources the a metadata entry
+ * @summary shows the resources of a metadata entry
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 14:11:27

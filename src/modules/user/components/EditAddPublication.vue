@@ -1,45 +1,8 @@
 <template>
-  <v-container fluid
-               id="EditAddPublication"
-               class="pa-4"
-  >
+  <v-container fluid id="EditAddPublication" class="pa-0">
+    <v-row no-gutters align="center" >
+      <v-col cols="12" xl="auto">
 
-    <v-row>
-      <v-col cols="6"
-             class="text-h5">
-        {{ labels.title }}
-      </v-col>
-
-      <v-col v-if="message" >
-        <BaseStatusLabelView status="check"
-                             statusColor="success"
-                             :statusText="message"
-                             :expandedText="messageDetails" />
-      </v-col>
-      <v-col v-if="error"  >
-
-        <BaseStatusLabelView status="error"
-                             statusColor="error"
-                             :statusText="error"
-                             :expandedText="errorDetails" />
-      </v-col>
-
-    </v-row>
-
-    <v-row>
-      <v-col >
-        <div class="text-subtitle-1"
-             v-html="labels.cardInstructions">
-
-        </div>
-      </v-col>
-    </v-row>
-
-    <v-row  align="center" >
-      <v-col cols="12"
-              md="4"
-             class='flex-grow-1'
-      >
         <v-text-field
             v-model="pidField"
             :label="labels.pId"
@@ -50,16 +13,16 @@
         />
       </v-col>
 
-      <v-col cols="12"
-             md="auto"
-             style="text-align: center;"
-              class="text-h6 px-md-4 flex-grow-0" >
+      <v-col
+        cols="12"
+        xl="auto"
+        style="text-align: center;"
+        class="text-h6 px-md-4 shrink"
+      >
         Or
       </v-col>
 
-      <v-col cols="12"
-             class='flex-grow-1'
-             md="4">
+      <v-col cols="12" xl="auto">
         <v-text-field
             v-model="doiField"
             :label="labels.doi"
@@ -68,17 +31,12 @@
             :prepend-icon="mdiFingerprint"
             @input="doiChange"
         />
-  <!--
-            @change="doiField = $event"
-            @input="validateProperty('doi', $event)"
-        :readonly="isReadOnly('doi')"
-        :hint="readOnlyHint('doi')"
-        :error-messages="validationErrors.doi"
-  -->
-
       </v-col>
 
-      <v-col cols="auto" class="ma-auto ma-md-0 pl-md-4 pt-4">
+      <v-col
+        cols="auto"
+        class="ma-auto mt-4 ma-xl-0 pl-md-4 pt-4 pt-md-0"
+      >
         <BaseIconButton
           v-if="!isEditMode"
           :icon="mdiPlus"
@@ -91,32 +49,26 @@
     </v-row>
 
     <v-row>
-      <v-col class="flex-grow-0"
-             cols="12"
-             sm="4"
-             md="2"
-      >
+      <v-col class="flex-grow-0" cols="12" sm="4" md="4">
         <a
           id="textAreaController"
           ref="textAreaController"
           style="cursor: pointer;"
           class="text-body-1"
           @click="toggleTextArea()"
-        >{{ showTextArea ? 'Hide' : 'Add' }} citation in plain text</a
-        >
+        >{{ showTextArea ? 'Hide' : 'Add' }} citation in plain text</a>
       </v-col>
 
-      <v-col v-if="showTextArea"
-             class="flex-grow-0" >
+      <v-col v-if="showTextArea" class="flex-grow-0">
         <BaseRectangleButton
           button-text="Save Text"
+          :disabled="!isInputTextValid"
           is-xs-small
           @clicked="editExistingData()"
-          />
+        />
       </v-col>
 
-      <v-col v-if="showTextArea"
-             class="flex-grow-0" >
+      <v-col v-if="showTextArea" class="flex-grow-0">
         <BaseRectangleButton
           button-text="Cancel"
           color="gray"
@@ -131,6 +83,10 @@
         <!-- @changedText="catchChangedText($event)" -->
         <GenericTextareaPreviewLayout
           v-if="showTextArea"
+          :validationError="validationErrors[editingProperty]"
+          :hint="
+            'Write at least 10 characters to describe the related publications.'
+          "
           v-bind="genericTextAreaObject"
           @inputedText="catchInputedText($event)"
         >
@@ -160,13 +116,21 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { mapState } from 'vuex';
+
 import { EDIT_METADATA_ADD_PUBLICATION_TITLE } from '@/factories/metadataConsts';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseCitationView from '@/components/BaseElements/BaseCitationView.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
-
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout.vue';
+import {
+  getValidationMetadataEditingObject,
+  isFieldValid,
+} from '@/factories/userEditingValidations';
+
+import {
+  EDITMETADATA_RELATED_PUBLICATIONS,
+} from '@/factories/eventBus';
 
 import {
   resolveDoiCitationObjectsViaDora,
@@ -229,6 +193,14 @@ export default {
       type: String,
       default: '',
     },
+    validationError: {
+      type: String,
+      default: '',
+    },
+    hint: {
+      type: String,
+      default: '',
+    },
   },
   mounted() {
     if (this.pid) {
@@ -238,6 +210,27 @@ export default {
     }
   },
   computed: {
+    ...mapState(['config']),
+    validations() {
+      return getValidationMetadataEditingObject(
+        EDITMETADATA_RELATED_PUBLICATIONS,
+      );
+    },
+    publications() {
+      return this.mixinMethods_getGenericProp('publications');
+    },
+    metadataConfig() {
+      return this.$store ? this.config?.metadataConfig || {} : {};
+    },
+    publicationsConfig() {
+      return this.metadataConfig?.publicationsConfig || {};
+    },
+    resolveBaseUrl() {
+      return this.publicationsConfig?.resolveBaseUrl || undefined;
+    },
+    resolveBaseDOIUrl() {
+      return this.publicationsConfig?.resolveBaseDOIUrl || undefined;
+    },
     genericTextAreaObject() {
       return {
         isVerticalLayout: true,
@@ -271,8 +264,16 @@ export default {
     },
   },
   methods: {
+    validateProperty(property, value) {
+      return isFieldValid(
+        property,
+        value,
+        this.validations,
+        this.validationErrors,
+      );
+    },
     editExistingData() {
-      this.$emit('saveText', this.previewCitation?.citation || this.citation );
+      this.$emit('saveText', this.previewCitation?.citation || this.citation);
       this.closeEditMode();
     },
     closeEditMode(triggerCancelEvent = false) {
@@ -291,7 +292,6 @@ export default {
       this.showTextArea = true;
       this.filledTextArea = citationText;
 
-
       const textAreaController = this.$refs.textAreaController;
       if (textAreaController) {
         textAreaController.scrollIntoView({ behavior: 'smooth' });
@@ -303,8 +303,6 @@ export default {
         citation: citationText,
         abstract: null,
       };
-
-      // this.indexEditData = object.index;
     },
     toggleTextArea() {
       this.showTextArea = !this.showTextArea;
@@ -320,7 +318,15 @@ export default {
         citation: value,
         abstract: null,
       };
+
       this.previewCitation = previewPlainText;
+      this.validateProperty(this.editingProperty, previewPlainText.citation);
+
+      this.isInputTextValid = this.validateProperty(
+        this.editingProperty,
+        previewPlainText.citation,
+      );
+
       this.plainText = value;
     },
     pidChange(pid) {
@@ -340,7 +346,10 @@ export default {
       pidMap.set(pid, pid);
 
       try {
-        const citationMap = await resolvePidCitationObjectsViaDora(pidMap);
+        const citationMap = await resolvePidCitationObjectsViaDora(
+          pidMap,
+          this.resolveBaseUrl,
+        );
         this.previewCitation = citationMap.get(pid);
       } catch (e) {
         this.previewCitation = {
@@ -358,7 +367,10 @@ export default {
       doiMap.set(doi, doi);
 
       try {
-        const citationMap = await resolveDoiCitationObjectsViaDora(doiMap);
+        const citationMap = await resolveDoiCitationObjectsViaDora(
+          doiMap,
+          this.resolveBaseDOIUrl,
+        );
         this.previewCitation = citationMap.get(doi);
       } catch (e) {
         this.previewCitation = {
@@ -374,6 +386,7 @@ export default {
         doi: this.doiField,
         plainText: this.plainText,
       });
+
       this.doiField = null;
       this.pidField = null;
       this.plainText = null;
@@ -383,7 +396,6 @@ export default {
   },
   watch: {
     selectedPlainText() {
-
       if (this.selectedPlainText) {
         this.editData(this.selectedPlainText);
       }
@@ -397,6 +409,7 @@ export default {
     showTextArea: false,
     isResolving: false,
     previewCitation: null,
+    isInputTextValid: false,
     filledTextArea: '',
     previewPID: null,
     previewDOI: null,
@@ -404,9 +417,9 @@ export default {
     editingProperty: 'relatedPublicationsText',
     labels: {
       title: EDIT_METADATA_ADD_PUBLICATION_TITLE,
-      cardInstructions: `Enter a DORA permanent Id (PID) or a Data Object Identifer (DOI) the citation will be resolved by lib4RI.
-                          If you have any other citation click on 'Add citation in plain text'.`,
-      subtitlePreview: 'Preview Publications resolved via DORA',
+      cardInstructions:
+        "Add DORA permanent Id (PID) or a Data Object Identifier (DOI). If you have any other citation click on 'Add citation in plain text'.",
+      subtitlePreview: 'Preview Publication resolved via DORA',
       pId: 'Permanent Id',
       doi: 'Data Object Identifier',
     },
@@ -417,7 +430,6 @@ export default {
   components: {
     BaseIconButton,
     BaseCitationView,
-    BaseStatusLabelView,
     GenericTextareaPreviewLayout,
     BaseRectangleButton,
   },

@@ -1,16 +1,11 @@
 <template>
-  <v-container
-    fluid
-    class="pa-0"
-  >
-    <v-row no-gutters >
-
+  <v-container fluid class="px-0 py-1">
+    <v-row no-gutters align="start">
       <v-col class='pr-4 flex-grow-0'>
-        <v-row no-gutters
-                justify="center">
-          <v-col cols="12"
-                 class='pl-1 py-2'
-          >
+        <v-row no-gutters>
+            <v-col cols="12"
+                   class='pl-1 pb-2'
+            >
             <v-menu
                 :open-on-hover='true'
                 :open-on-click='true'
@@ -36,7 +31,7 @@
           </v-col>
 
           <v-col cols="12"
-                  class="pl-1 py-2">
+                  class="pl-1 pt-2">
             <BaseIconButton 
               :icon="mdiFingerprint"
               :disabled="!doi"
@@ -49,10 +44,7 @@
       </v-col>
 
       <v-col class='flex-grow-1' >
-<!--
-        <v-col cols="10" :md="citationColsCustom ? citationColsCustom : 11">
--->
-        <div v-html="citation" ></div>
+        <div v-html="citation"></div>
       </v-col>
     </v-row>
   </v-container>
@@ -88,10 +80,6 @@ export default {
     },
     doiUrl: {
       type: String,
-      default: undefined,
-    },
-    citationColsCustom: {
-      type: Number,
       default: undefined,
     },
   },

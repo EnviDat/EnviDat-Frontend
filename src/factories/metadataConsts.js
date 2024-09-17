@@ -78,7 +78,7 @@ export const DATE_PROPERTY_CREATED_TYPE_EXPLANATION =
   'Date range during the research data was finalized or formally created';
 export const DATE_PROPERTY_COLLECTED_TYPE = 'collected';
 export const DATE_PROPERTY_COLLECTED_TYPE_EXPLANATION =
-  'Date range during which the research data was gathered or collected.';
+  'Date range during the research data was gathered or collected.';
 export const METADATA_TITLE_PROPERTY = 'metadataTitle';
 export const METADATA_URL_PROPERTY = 'metadataUrl';
 export const METADATA_AUTHORS_PROPERTY = 'authors';

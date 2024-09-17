@@ -81,17 +81,21 @@ export const TagChips = () => ({
       </v-col>
 
       <v-col>
-        <tag-chip-project :fontSize="'14px'"
-              :iconSize="'14px'"
-              :iconName="'category'" name="Project 1"  />
+        <tag-chip-project
+          :fontSize="'14px'"
+          :iconSize="'14px'"
+          name="Project 1"
+        />
       </v-col>
 
       <v-col>
-        <tag-chip-project :fontSize="'14px'"
-              :iconSize="'14px'"
-              :closeable="true"
-              :iconName="'category'" name="Project 1 closeable"
-                         :is-closeable="true"/>
+        <tag-chip-project
+          :fontSize="'14px'"
+          :iconSize="'14px'"
+          :closeable="true"
+          name="Project 1 closeable"
+          :is-closeable="true"
+        />
       </v-col>
 
 

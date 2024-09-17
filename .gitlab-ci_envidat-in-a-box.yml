@@ -2,6 +2,7 @@ modify-box-env:
   when: manual
   stage: config
   image: python:3.9-alpine3.17
+  environment: $CI_COMMIT_REF_NAME  
   dependencies:
     - set-vars
   before_script:
@@ -43,6 +44,7 @@ modify-box-env:
 build-box-app:
   stage: build
   image: node:20.15.0-alpine3.20
+  environment: $CI_COMMIT_REF_NAME  
   extends:
     - .trigger-rules
   # image: node:18.18.2-alpine3.17
@@ -64,6 +66,7 @@ build-box-app:
 combine-box-builds:
   stage: build
   image: alpine:3.20
+  environment: $CI_COMMIT_REF_NAME  
   extends: .trigger-rules
   variables:
     GIT_STRATEGY: none
@@ -90,6 +93,7 @@ combine-box-builds:
 publish-box-build:
   stage: deploy
   image: alpine:3.20
+  environment: $CI_COMMIT_REF_NAME  
   extends: .trigger-rules
   variables:
     GIT_STRATEGY: none

@@ -12,21 +12,8 @@
 
 
 import axios from 'axios';
-import msalPlugin from '@/plugins/msalPlugin';
 import { handleGenericAPIError, handleGenericError } from './factories/notificationFactory';
 
-const msalConfig = {
-  auth: {
-    clientId: '4cb09289-cbb9-48a3-bb16-87ef3508bad3',
-    authority: 'https://login.microsoftonline.com/5d407ffa-9961-403b-ab1f-6e7867089add',
-    redirect_uri: '/',
-    postLogoutRedirectUri: '/',
-  },
-  cache: {
-    cacheLocation: 'sessionStorage',
-  },
-  mode: 'popup',
-}
 
  export const initAxios = (app, store) => {
    const storeRef = store;
@@ -96,7 +83,3 @@ const msalConfig = {
    );
  }
 
-
- export function initAzureLogin(vue){
-   vue.use(msalPlugin, msalConfig);
- }

@@ -185,10 +185,10 @@ function getGenericCitation(resolvedObject) {
   // in this generic way, the first citation will be used no matter the name
   const citationObj = resolvedObject?.citation || {};
   const keys = Object.keys(citationObj);
-  return citationObj[keys[0]];
+  return keys.length > 0 ? citationObj[keys[0]] : '';
 }
 
-function getGenericCitationObject(citationInfo) {
+function getGenericCitationObject(citationInfo, pid, doi) {
   const genericCitation = getGenericCitation(citationInfo);
 
   let abstractTitle = 'Abstract';
@@ -199,13 +199,13 @@ function getGenericCitationObject(citationInfo) {
   }
 
   return {
-    citation: genericCitation || null,
-    abstract: citationInfo.abstract
-      ? `${abstractTitle} \n ${citationInfo.abstract}`
-      : null,
+    citation: genericCitation,
+    // always use the title for the abstract, so there is at least the link to refer to
+    abstract: citationInfo.abstract ? `${abstractTitle} \n ${citationInfo.abstract}` : abstractTitle,
     doraSiteUrl: citationInfo.object_url,
-    doi: citationInfo.doi,
-    doiUrl: `https://www.doi.org/${citationInfo.doi}`,
+    pid: citationInfo.pid || pid,
+    doi: citationInfo.doi || doi,
+    doiUrl: citationInfo.doi ? `https://www.doi.org/${citationInfo.doi}` : undefined,
   };
 }
 
@@ -231,29 +231,27 @@ export function resolvedCitationText(resolvedPubs, pidMap) {
   return citationTextMap;
 }
 
-export function getPidCitationObjectMap(citationObjs) {
-  const citationMap = new Map();
+export function getCitationObjectMap(idUrlMap, responseObj) {
+  const citationMap= new Map();
 
-  citationObjs.forEach(obj => {
-    const pid = obj.pid;
-    const citationObj = getGenericCitationObject(obj);
-    citationMap.set(pid, citationObj);
-  });
-
-  return citationMap;
-}
-
-export function getDoiCitationObjectMap(doiObjs) {
-  if (!doiObjs) {
-    return null;
+  if (!responseObj) {
+    return citationMap;
   }
 
-  const citationMap = new Map();
+  if (Array.isArray(responseObj)) {
+    responseObj.forEach(obj => {
+      const pid = idUrlMap.has(obj.pid) ? obj.pid : undefined;
+      const doi = idUrlMap.has(obj.doi) ? obj.doi : undefined;
 
-  doiObjs.forEach(citationInfo => {
-    const citationObj = getGenericCitationObject(citationInfo);
-    citationMap.set(citationObj.doi, citationObj);
-  });
+      const citationObj = getGenericCitationObject(obj, pid, doi);
+      citationMap.set(pid || doi, citationObj);
+    });
+  } else if (typeof responseObj === 'object') {
+    Object.entries(responseObj).forEach(([pid, obj]) => {
+      const citationObj = getGenericCitationObject(obj, pid);
+      citationMap.set(pid, citationObj);
+    });
+  }
 
   return citationMap;
 }
@@ -331,17 +329,17 @@ export function getDoraDoisUrl(doiMap, resolveBaseUrl) {
   return fullUrl;
 }
 
-export async function resolveDOIsViaDora(doiMap, resolveBaseUrl = undefined) {
+export async function resolveDOIsViaDora(doiMap, resolveBaseDOIUrl) {
   if (!doiMap) {
     return null;
   }
-  const doraUrl = getDoraDoisUrl(doiMap, resolveBaseUrl);
+  const doraUrl = getDoraDoisUrl(doiMap, resolveBaseDOIUrl);
 
   const response = await axios.get(doraUrl);
   return response.data;
 }
 
-export async function resolvePIDsViaDora(pidMap, resolveBaseUrl = undefined) {
+export async function resolvePIDsViaDora(pidMap, resolveBaseUrl) {
   if (!pidMap) {
     return null;
   }
@@ -351,42 +349,17 @@ export async function resolvePIDsViaDora(pidMap, resolveBaseUrl = undefined) {
   return response.data;
 }
 
-export async function resolvePidCitationObjectsViaDora(pidMap) {
-  const citationObj = await resolvePIDsViaDora(pidMap);
+// export async function resolvePidCitationObjectsViaDora(pidMap) {
+export async function resolvePidCitationObjectsViaDora(pidMap, resolveBaseUrl) {
+  const responseObj = await resolvePIDsViaDora(pidMap, resolveBaseUrl);
 
-  return getPidCitationObjectMap(citationObj);
-}
-
-export async function resolveMultipleDoiCitationObjectsViaDora(doiMap) {
-  // this function has been created for manage and resolve multiple DOIs
-  const promises = [];
-
-  const citationObjMap = new Map();
-
-  for (const [key, value] of doiMap) {
-    const promise = resolveDOIsViaDora(new Map([[key, value]]))
-      .then(citationObj => {
-        const doiCitationObjectMap = getDoiCitationObjectMap(citationObj);
-
-        for (const [doi, citation] of doiCitationObjectMap) {
-          citationObjMap.set(doi, citation);
-        }
-      })
-      .catch(error => {
-        console.error(`Error resolving DOI ${key}:`, error);
-      });
-
-    promises.push(promise);
-  }
-
-  await Promise.all(promises);
-  return citationObjMap;
+  return getCitationObjectMap(pidMap, responseObj);
 }
 
 export async function resolveDoiCitationObjectsViaDora(doiMap) {
-  const citationObj = await resolveDOIsViaDora(doiMap);
+  const responseObj = await resolveDOIsViaDora(doiMap);
 
-  return getDoiCitationObjectMap(citationObj);
+  return getCitationObjectMap(doiMap, responseObj);
 }
 
 export function extractDatasetIdsFromText(text) {

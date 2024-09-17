@@ -95,7 +95,6 @@ describe('authorFactory - getFullAuthorsFromDataset', () => {
       expect(author.lastName).toBeDefined();
       expect(author.datasetCount).toBeGreaterThanOrEqual(1);
       expect(author.affiliation).toBeDefined();
-      expect(author.id).toBeDefined();
       expect(author.email).toBeDefined();
       expect(author.dataCredit).toBeDefined();
     }
