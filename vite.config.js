@@ -223,7 +223,6 @@ export default ({ mode, config }) => {
     server: {
       host: '0.0.0.0',
       port: 8080,
-      // TODO: Check with Dominik
       proxy: {
         '/api': {
           target: 'https://statistics.wsl.ch',
