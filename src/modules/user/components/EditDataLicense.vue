@@ -42,35 +42,31 @@
             item-text="title"
             hide-details
             :label="labels.dataLicense"
-            :readonly="isReadOnly('dataLicenseId')"
-            :hint="readOnlyHint('dataLicenseId')"
+            :readonly="isDataLicenseReadonly"
+            :hint="dataLicenseReadonlyExplanation"
             :prepend-icon="mdiShieldSearch"
             :menu-icon="mdiArrowDownDropCircleOutline"
             :model-value="selectedLicense"
             @update:model-value="changeLicense($event)"
             :error-messages="validationErrors.dataLicense"
           />
+
         </v-col>
       </v-row>
 
       <v-row class="pl-md-8">
         <v-col>
-          <v-expansion-panels focusable>
-            <v-expansion-panel>
-
-              <v-expansion-panel-title :expand-icon="mdiArrowDownDropCircleOutline"
-                class="py-2 px-3">
-                {{ dataSummaryClickInfo }}
-              </v-expansion-panel-title>
-
-              <!--              <v-expansion-panel-content>{{ this.getDataLicenseSummary }}</v-expansion-panel-content>-->
-
-              <v-expansion-panel-text
-                  class="pa-1 pa-md-2 licensePanel">
+          <v-expansion-panels
+            focusable
+          >
+            <v-expansion-panel
+              :title='dataSummaryClickInfo'
+            >
+              <v-expansion-panel-text>
                 <div v-html="getDataLicenseSummary" />
               </v-expansion-panel-text>
-            </v-expansion-panel>
 
+            </v-expansion-panel>
           </v-expansion-panels>
         </v-col>
       </v-row>
@@ -124,7 +120,6 @@ import {
   isFieldValid,
 } from '@/factories/userEditingValidations';
 
-
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 import { mdiArrowDownDropCircleOutline, mdiShieldSearch } from '@mdi/js';
 
@@ -133,6 +128,7 @@ import {
   OTHER_UNDEFINED_LICENSE_ID,
   WSL_DATA_LICENSE_ID,
 } from '@/factories/dataLicense';
+
 import { EDIT_METADATA_DATALICENSE_TITLE, METADATA_DATALICENSE_PROPERTY } from '@/factories/metadataConsts';
 
 export default {
