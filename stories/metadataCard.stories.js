@@ -12,10 +12,16 @@
 import MetadataCard from '@/components/Cards/MetadataCard.vue';
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
 
-import { enhanceMetadatasTitleImage, getMetadataVisibilityState } from '@/factories/metaDataFactory';
+import {
+  createLocation,
+  enhanceMetadataEntry,
+  getMetadataVisibilityState,
+} from '@/factories/metaDataFactory';
 
 import { getModeData } from '@/factories/modeFactory';
 import { EDNA_MODE, SWISSFL_MODE } from '@/store/metadataMutationsConsts';
+import { enhanceTags } from '@/factories/keywordsFactory';
+import categoryCards from '@/store/categoryCards';
 import {
   mobileLargeViewportParams,
   mobileViewportParams,
@@ -26,10 +32,20 @@ import pinIcon from '../src/assets/icons/marker.webp';
 import multiPinIcon from '../src/assets/icons/markerMulti.webp';
 import polygonIcon from '../src/assets/icons/polygons.webp';
 
-// metadata gets enhance in the storybook config
 import metadataCards from './js/metadata';
 
-enhanceMetadatasTitleImage(metadataCards);
+const enhancedDatasets = [];
+
+for (let i = 0; i < metadataCards.length; i++) {
+  let dataset = metadataCards[i];
+  dataset = enhanceMetadataEntry(dataset);
+
+  dataset = enhanceTags(dataset, categoryCards);
+
+  dataset.location = createLocation(dataset);
+
+  enhancedDatasets.push(dataset);
+}
 
 const methods = {
   hasRestrictedResources(metadata) {
@@ -59,8 +75,6 @@ const methods = {
 
     const spatialName = spatialJSON.type.toLowerCase();
 
-    console.log(spatialName);
-    
     if (spatialName === 'point') {
       return pinIcon;
     }
@@ -89,7 +103,8 @@ const Template = (args, { argTypes }) => ({
   template: '<MetadataCard v-bind="$props" />',
 });
 
-const firstDataset = metadataCards[0];
+const firstDataset = enhancedDatasets[0];
+const otherDataset = enhancedDatasets[2];
 
 export const TitleOnly = Template.bind({});
 TitleOnly.args = {
@@ -108,8 +123,13 @@ NormalCard.args = {
 
 export const CardWithTags = Template.bind({});
 CardWithTags.args = {
-  ...NormalCard.args,
-  tags: firstDataset.tags,
+  id: otherDataset.id,
+  title: otherDataset.title,
+  categoryColor: otherDataset.categoryColor,
+  name: otherDataset.name,
+  subtitle: otherDataset.notes,
+  titleImg: otherDataset.titleImg,
+  tags: otherDataset.tags,
 }
 
 export const CompactCard = Template.bind({});
@@ -141,6 +161,7 @@ export const CardWithState = Template.bind({});
 CardWithState.args = {
   ...NormalCard.args,
   state: getMetadataVisibilityState(firstDataset),
+  tags: firstDataset.tags,
 }
 
 export const CardWithOrganization = Template.bind({});
@@ -171,7 +192,7 @@ export const MetadataCardCollectionView = () => ({
     <v-row>
 
       <v-col cols="3" class="pa-2"
-              v-for="(metadata, index) in metadataCards"
+              v-for="(metadata, index) in enhancedDatasets"
               :key="index" >
         <metadata-card
           :id="metadata.id"
@@ -194,7 +215,7 @@ export const MetadataCardCollectionView = () => ({
     <!-- v-row >
 
       <v-col cols="3" class="pa-2"
-              v-for="(metadata, index) in metadataCards"
+              v-for="(metadata, index) in enhancedDatasets"
               :key="index" >
         <metadata-card
           :id="metadata.id"
@@ -215,7 +236,7 @@ export const MetadataCardCollectionView = () => ({
     <v-row>
 
       <v-col cols="4" class="pa-2"
-              v-for="(metadata, index) in metadataCards"
+              v-for="(metadata, index) in enhancedDatasets"
               :key="index" >
         <metadata-card
           :id="metadata.id"
@@ -237,7 +258,7 @@ export const MetadataCardCollectionView = () => ({
     <v-row >
 
       <v-col cols="6" class="pa-2"
-              v-for="(metadata, index) in metadataCards"
+              v-for="(metadata, index) in enhancedDatasets"
               :key="index" >
         <metadata-card
           :id="metadata.id"
@@ -259,7 +280,7 @@ export const MetadataCardCollectionView = () => ({
     `,
     methods,
     data: () => ({
-      metadataCards,
+      enhancedDatasets,
       pinIcon,
       multiPinIcon,
       polygonIcon,
@@ -272,7 +293,7 @@ export const MetadataCardFlatCollectionView = () => ({
     <v-row >
 
       <v-col cols="12" class="pa-2"
-              v-for="(metadata, index) in metadataCards"
+              v-for="(metadata, index) in enhancedDatasets"
               :key="index" >
         <metadata-card
           :id="metadata.id"
@@ -294,7 +315,7 @@ export const MetadataCardFlatCollectionView = () => ({
     </v-row>`,
     methods,
     data: () => ({
-      metadataCards,
+      enhancedDatasets,
     }),
   });
 
