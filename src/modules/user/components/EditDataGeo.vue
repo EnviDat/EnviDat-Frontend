@@ -43,19 +43,19 @@
       <v-row>
         <v-col cols="12" md="12" class="editDataGeo">
           <v-file-input
-            ref="filePicker"
-            v-show="false"
-            multiple
-            accept=".geojson,.json"
-            @change="triggerFileUpload"
-          />
+              ref="filePicker"
+              multiple
+              accept=".geojson,.json"
+              @change="triggerFileUpload"
+              v-show="false"
+            />
 
-          <MetadataGeo
-            v-bind="genericProps"
-            @saveGeoms="commitGeometriesToAPI"
-            @undoGeoms="undoGeomEdits"
-            @uploadGeomFile="triggerFilePicker"
-          />
+            <MetadataGeo
+              v-bind="genericProps"
+              @saveGeoms="commitGeometriesToAPI"
+              @undoGeoms="undoGeomEdits"
+              @uploadGeomFile="triggerFilePicker"
+            />
         </v-col>
       </v-row>
 
@@ -300,7 +300,11 @@ export default {
       this.saveButtonEnabled = false;
     },
     triggerFilePicker() {
-      this.$refs.filePicker.$refs.input.click();
+      const fileInputElement = this.$refs.filePicker?.$el.querySelector('input[type="file"]');
+
+      if (fileInputElement) {
+        fileInputElement.click();
+      }
     },
     triggerFileUpload(fileArray) {
       // Loop through each dropped file
