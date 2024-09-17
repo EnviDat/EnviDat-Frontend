@@ -42,6 +42,7 @@ export const LongTitleMetadataHeader = {
   args: {
     ...largeHeader,
     showEditButton: true,
+    publicationYear: '2023',
   },
   argTypes: {
     checkSize: { action: 'checkSize' },
