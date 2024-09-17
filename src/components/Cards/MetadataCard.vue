@@ -36,11 +36,11 @@
 
         <v-row v-if="tags" no-gutters>
           <v-col v-for="(tag, index) in tags.slice(0, maxTagNumber)" :key="index" class="flex-grow-0">
-            <tag-chip class="py-0" :name="tag.name || tag" :selectable="true" :color="tag.color"
+            <TagChip class="py-0" :name="tag.name || tag" :selectable="true" :color="tag.color"
               @clicked="catchTagClicked(tag.name)" />
           </v-col>
           <v-col v-if="maxTagsReached" class="flex-grow-0">
-            <tag-chip class="py-0" name="..." />
+            <TagChip class="py-0" name="..." />
           </v-col>
         </v-row>
       </v-container>

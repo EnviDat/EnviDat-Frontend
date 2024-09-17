@@ -770,11 +770,11 @@ function populateEditingMain(commit, backendJSON) {
   dataObject.descriptionData = descriptionData;
 
   stepKey = EDITMETADATA_KEYWORDS;
-  const enhanceDataset = enhanceTags(backendJSON, categoryCards);
-  const keywordsData = getFrontendJSONForStep(stepKey, enhanceDataset);
+  const keywordsData = getFrontendJSONForStep(stepKey, backendJSON);
+  const enhanceDatasets = enhanceTags(keywordsData, categoryCards);
 
   const enhancedKeywords = {
-    ...keywordsData,
+    ...enhanceDatasets,
     metadataCardTitle: headerData.metadataTitle,
     metadataCardSubtitle: descriptionData.description,
   }

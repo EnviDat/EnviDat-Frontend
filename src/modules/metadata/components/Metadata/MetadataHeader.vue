@@ -47,7 +47,7 @@
           <div class="headerTitle"
                 :class="{ 'py-0': $vuetify.display.smAndDown,
                           'display-2': $vuetify.display.xl,
-                          'text-h3': $vuetify.display.mdAndUp,
+                          'text-h4': $vuetify.display.mdAndUp,
                           'text-h5': $vuetify.display.xs,
                         }" >
             {{ metadataTitle }}

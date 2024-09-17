@@ -15,47 +15,11 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
-import EditDescription from '@/modules/user/components/EditDescription.vue';
 import EditImgPlaceholder from '@/modules/user/components/EditImgPlaceholder.vue';
-import EditKeywords from '@/modules/user/components/EditKeywords.vue';
 
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout.vue';
 import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody.vue';
 import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications.vue';
-
-import storyTags from '@/modules/metadata/store/metadataTags';
-import categoryCards from '@/store/categoryCards';
-import { getPopularTags, getTagColor } from '@/factories/keywordsFactory';
-import metadataset from './js/metadata';
-
-const tagsFromDatasets = getPopularTags(metadataset, '', 1);
-
-for (let i = 0; i < tagsFromDatasets.length; i++) {
-  const tag = tagsFromDatasets[i];
-  tag.color = getTagColor(categoryCards, tag.name);
-}
-
-
-function getKeywordsSource(tagsSource) {
-
-  const keywordsArray = [...tagsSource];
-
-  for (let i = 0; i < keywordsArray.length; i++) {
-    keywordsArray[i].color = getTagColor(keywordsArray[i].name);
-  }
-
-  return keywordsArray;
-}
-
-const storyTags5 = getKeywordsSource(storyTags).slice(0, 5);
-
-const placeholderKeywordsGenericProps = {
-  metadataCardTitle: 'A Mostly Glorious Title',
-  metadataCardSubtitle: 'My metadata description is pleasant to read.',
-  existingKeywords: tagsFromDatasets,
-  componentTitle: 'Metadata Keywords',
-  disclaimer: 'Please note that the screenshot below will serve as a template for the future component.',
-};
 
 
 export default {
@@ -63,41 +27,6 @@ export default {
   decorators: [],
   parameters: {},
 };
-
-export const EditingKeywords = () => ({
-    components: { EditKeywords },
-    template: `
-    <v-col>
-
-      <v-row>
-        EditKeywords with Placeholder
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditKeywords v-bind="genericProps" />
-        </v-col>
-      </v-row>
-
-      <v-row>
-        EditKeywords with prefilled keywords
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditKeywords v-bind="genericProps"
-                        :keywords="storyTags5"
-          />
-        </v-col>
-      </v-row>
-
-    </v-col>
-    `,
-    data: () => ({
-      genericProps: placeholderKeywordsGenericProps,
-      storyTags5,
-    }),
-  });
 
 export const GenericTextAreaPreviewPublications = () => ({
     components: { GenericTextareaPreviewLayout, MetadataPublications },
@@ -333,64 +262,3 @@ contribute something to the general goal of your product. `,
     }),
   });
 
-
-export const EditMetadataDescriptionViews = () => ({
-    components: { EditDescription },
-    template: `
-     <v-col>
-
-      <v-row>
-        Edit Description textarea unfilled
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditDescription />
-        </v-col>
-      </v-row>
-
-
-      <v-row>
-        Edit Description textarea filled
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditDescription :description="genericProps.description" />
-        </v-col>
-      </v-row>
-
-
-    </v-col>
-    `,
-    computed: {
-      genericProps() {
-        return {
-          description: `# Why user stories?
-&nbsp;
-User Stories can help you to constantly improve the value of
-your product, estimate development efforts in an appropriate way and prioritize
-feature development during the MVP and post-MVP stages.
-&nbsp;
-# How user stories
-&nbsp;
-## 1. Step think about "Who" - type of user
-&nbsp;
-Try to omit using such a role as simply
-“the user”. It can be applied to any person - from your customers to admins -
-and, therefore, it doesn’t reflect the personality of particular target groups,
-the way they interact with the application. You can create personas.
-&nbsp;
-## 2. Step think about the "What" - function, UI & UX
-&nbsp;
-Define what functionality each user expects. How she’s going to interact with the app.
-&nbsp;
-## 3. Step think about the "Why" - added value
-&nbsp;
-It should either improve the UX, increase retention rates,
-shorten users’ journey to the issue solution or whatever. Each Story should
-contribute something to the general goal of your product. `,
-        };
-      },
-    },
-});
