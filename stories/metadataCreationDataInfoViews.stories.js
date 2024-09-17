@@ -18,36 +18,35 @@ import {
 } from '@/factories/metadataConsts';
 import { EDITMETADATA_OBJECT_UPDATE, eventBus } from '@/factories/eventBus';
 import { CC_BY_SA_LICENSE_ID, OTHER_UNDEFINED_LICENSE_ID, WSL_DATA_LICENSE_ID } from '@/factories/dataLicense';
-import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
+import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
 
 export default {
   title: '9 Editing Metadata / Data Info Views',
-  decorators: [],
-  parameters: {
-    ...envidatViewportParameters,
-  },
+  component: EditDataInfo,
 };
 
 
-const Template = (args, { argTypes }) => ({
-  components: { EditDataInfo },
-  props: Object.keys(argTypes),
-  template: '<EditDataInfo v-bind="$props" />',
-  created() {
-    eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.updateDataInfo);
-  },
-  beforeUnmount() {
-    eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.updateDataInfo);
-  },
-  methods: {
-    updateDataInfo (dataObject) {
-      if (dataObject.data.dataLicenseId) {
-        this.$props.dataLicenseId = dataObject.data.dataLicenseId;
-      }
+const Template = {
+  render: (args, { argTypes }) => ({
+    components: { EditDataInfo },
+    props: Object.keys(argTypes),
+    template: '<EditDataInfo v-bind="$props" />',
+    created() {
+      eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.updateDataInfo);
     },
-  },
-});
+    beforeUnmount() {
+      eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.updateDataInfo);
+    },
+    methods: {
+      updateDataInfo(dataObject) {
+        if (dataObject.data.dataLicenseId) {
+          this.$props.dataLicenseId = dataObject.data.dataLicenseId;
+        }
+      },
+    },
+  }),
+}
 
 const datesArrayFilled = [
   {
@@ -72,52 +71,70 @@ const datesArrayFilled = [
   },
 ];
 
-export const EditDataInfoEmpty = Template.bind({});
-
-export const EditDataInfoFilled = Template.bind({});
-EditDataInfoFilled.args = {
-  dates: datesArrayFilled,
-  dataLicenseId: CC_BY_SA_LICENSE_ID,
+export const EditDataInfoEmpty = {
+  ...Template,
+  args: {},
 };
 
-export const EditDataInfoReadonly = Template.bind({});
-EditDataInfoReadonly.args = {
-  dates: datesArrayFilled,
-  dataLicenseId: CC_BY_SA_LICENSE_ID,
-  readOnlyFields: [
-    METADATA_DATALICENSE_PROPERTY,
-  ],
-  readOnlyExplanation: 'Fields are readonly for testing!',
+export const EditDataInfoFilled = {
+  ...Template,
+  args: {
+    dates: datesArrayFilled,
+    dataLicenseId: CC_BY_SA_LICENSE_ID,
+  },
 };
 
-export const EditDataInfoReadonlyWslDataPolicy = Template.bind({});
-EditDataInfoReadonlyWslDataPolicy.args = {
-  dates: datesArrayFilled,
-  dataLicenseId: WSL_DATA_LICENSE_ID,
-  readOnlyFields: [
-    METADATA_DATALICENSE_PROPERTY,
-  ],
-  readOnlyExplanation: 'License should not be readonly be WSL DATA Policy should be possible to change',
+export const EditDataInfoReadonly = {
+  ...Template,
+  args: {
+    dates: datesArrayFilled,
+    dataLicenseId: CC_BY_SA_LICENSE_ID,
+    readOnlyFields: [
+      METADATA_DATALICENSE_PROPERTY,
+    ],
+    readOnlyExplanation: 'Fields are readonly for testing!',
+  },
 };
 
-export const EditDataInfoReadonlyOther = Template.bind({});
-EditDataInfoReadonlyOther.args = {
-  dates: datesArrayFilled,
-  dataLicenseId: OTHER_UNDEFINED_LICENSE_ID,
-  readOnlyFields: [
-    METADATA_DATALICENSE_PROPERTY,
-  ],
-  readOnlyExplanation: 'License should not be readonly be Other should be possible to change',
+
+export const EditDataInfoReadonlyWslDataPolicy = {
+  ...Template,
+  args: {
+    dates: datesArrayFilled,
+    dataLicenseId: WSL_DATA_LICENSE_ID,
+    readOnlyFields: [
+      METADATA_DATALICENSE_PROPERTY,
+    ],
+    readOnlyExplanation: 'License should not be readonly, the WSL DATA Policy should be possible to change!',
+  },
 };
 
-export const MobileEditDataInfo1 = Template.bind({});
-MobileEditDataInfo1.args = { ...EditDataInfoFilled.args };
-MobileEditDataInfo1.parameters = mobileViewportParams;
+export const EditDataInfoReadonlyOther = {
+  ...Template,
+  args: {
+    dates: datesArrayFilled,
+    dataLicenseId: OTHER_UNDEFINED_LICENSE_ID,
+    readOnlyFields: [
+      METADATA_DATALICENSE_PROPERTY,
+    ],
+    readOnlyExplanation: 'License should not be readonly, the Other should be possible to change',
+  },
+};
 
-export const MobileLargeEditDataInfo1 = Template.bind({});
-MobileLargeEditDataInfo1.args = { ...EditDataInfoFilled.args };
-MobileLargeEditDataInfo1.parameters = mobileLargeViewportParams;
+export const MobileEditDataInfo1 = {
+  ...Template,
+  args: { ...EditDataInfoFilled.args },
+  parameters: mobileViewportParams,
+};
 
-export const TabletEditDataInfo1 = Template.bind({});
-TabletEditDataInfo1.args = { ...EditDataInfoFilled.args };
-TabletEditDataInfo1.parameters = tabletViewportParams;
+export const MobileLargeEditDataInfo1 = {
+  ...Template,
+  args: { ...EditDataInfoFilled.args },
+  parameters: mobileLargeViewportParams,
+};
+
+export const TabletEditDataInfo1 = {
+  ...Template,
+  args: { ...EditDataInfoFilled.args },
+  parameters: tabletViewportParams,
+};

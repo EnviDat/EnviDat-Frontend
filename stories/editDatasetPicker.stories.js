@@ -2,7 +2,7 @@ import BaseDatasetPicker from '@/components/BaseElements/BaseDatasetPicker.vue';
 import unFormatedProjects from './js/groupList';
 
 export default {
-  title: '9 Editing Metadata / Dataset Picker',
+  title: '1 Base Elements / Dataset Picker',
   component: BaseDatasetPicker,
 };
 
