@@ -14,13 +14,13 @@
       >
         <template v-slot:activator="{ props }">
           <v-text-field
+            v-bind="props"
             :label="dateLabel"
             ref="dateTextField"
             :readonly="readonly"
             persistent-hint
             :hint="readOnlyExplanation"
             :prepend-icon="mdiCalendarRange"
-            v-bind="props"
             :clearable="!readonly"
             persistent-clear
             :model-value="formatToEnviDatDate(dateField, dateProperty)"
@@ -34,7 +34,7 @@
           elevation="2"
           ref="datePicker"
           locale="en-in"
-          :color='$vuetify.theme.themes.light.colors.primary'
+          color='secondary'
           :next-icon="mdiSkipNext"
           :prev-icon="mdiSkipPrevious"
           :min="formatToDatePickerDate(minDate)"
@@ -102,10 +102,6 @@ export default {
     maxDate: {
       type: String,
       default: undefined,
-    },
-    clearable: {
-      type: Boolean,
-      default: false,
     },
     readOnlyFields: {
       type: Array,
@@ -272,18 +268,6 @@ export default {
       }
 
       return this.adapter.parseISO(dateString);
-
-/*
-      const dateTime = parse(dateString, ckanDateFormat, new Date());
-
-      if (dateTime instanceof Date && !!dateTime.getTime()) {
-        return new Date(dateTime - new Date().getTimezoneOffset() * 60000)
-          .toISOString().substring(0, 10);
-          // .substr(0, 10);
-      }
-
-      return '';
-*/
     },
   },
   data: () => ({

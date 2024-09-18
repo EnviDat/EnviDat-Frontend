@@ -20,44 +20,26 @@ import {METADATA_STATE_INVISILBE} from '@/factories/metadataConsts';
 
 export default {
   title: '9 Editing Metadata / Edit Publication Infos',
-  decorators: [],
-  parameters: {},
+  component: EditPublicationInfo,
 };
 
-export const EditPublicationInfoView = () => ({
+const Template = {
+  render: (args, { argTypes }) => ({
     components: { EditPublicationInfo },
-    template: `
-    <v-col>
-
-      <v-row>
-        Edit Publication Info fields unfilled
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditPublicationInfo />
-        </v-col>
-      </v-row>
-
-       <v-row>
-        Edit Publication Info fields filled
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditPublicationInfo v-bind="genericPropsFilled" />
-        </v-col>
-      </v-row>
-
-    </v-col> `,
+    props: Object.keys(argTypes),
+    template: '<EditPublicationInfo v-bind="genericPropsFilled" />',
     created() {
       eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     beforeUnmount() {
       eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
+    mounted() {
+      this.genericPropsFilled = this.$props;
+    },
     methods: {
       editComponentsChanged(updateObj) {
+        console.log('EditPublicationInfo EDITMETADATA_OBJECT_UPDATE event', updateObj);
         this.genericPropsFilled = {
           ...this.genericPropsFilled,
           ...updateObj.data,
@@ -65,12 +47,23 @@ export const EditPublicationInfoView = () => ({
       },
     },
     data: () => ({
-      genericPropsFilled: {
-        id: 1,
-        doi: 'test',
-        visibilityState: METADATA_STATE_INVISILBE,
-        publicationYear: '2020',
-        publisher: 'EnviDat',
-      },
+      genericPropsFilled: {},
     }),
-  });
+  }),
+};
+
+export const EmptyPublicationComponent = {
+  ...Template,
+  args: {},
+};
+
+export const FilledPublicationComponent = {
+  ...Template,
+  args: {
+    id: 1,
+    doi: 'test',
+    visibilityState: METADATA_STATE_INVISILBE,
+    publicationYear: '2020',
+    publisher: 'EnviDat',
+  },
+}
