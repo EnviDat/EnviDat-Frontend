@@ -14,13 +14,13 @@
       >
         <template v-slot:activator="{ props }">
           <v-text-field
+            v-bind="props"
             :label="dateLabel"
             ref="dateTextField"
             :readonly="readonly"
             persistent-hint
             :hint="readOnlyExplanation"
             :prepend-icon="mdiCalendarRange"
-            v-bind="props"
             :clearable="!readonly"
             persistent-clear
             :model-value="formatToEnviDatDate(dateField, dateProperty)"
@@ -102,10 +102,6 @@ export default {
     maxDate: {
       type: String,
       default: undefined,
-    },
-    clearable: {
-      type: Boolean,
-      default: false,
     },
     readOnlyFields: {
       type: Array,

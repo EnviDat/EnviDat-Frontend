@@ -6,95 +6,42 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import BaseDatePicker from '@/components/BaseElements/BaseDatePicker.vue';
+import BaseDatePickerYear from '@/components/BaseElements/BaseDatePickerYear.vue';
 import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
 export default {
-  title: '1 Base Elements / Date picker',
-  decorators: [],
-  component: BaseDatePicker,
+  title: '1 Base Elements / Date picker Year',
+  component: BaseDatePickerYear,
 };
 
 export const Empty = {};
 
-export const FilledAndClearable = {
+export const Filled = {
   args: {
-    date: '2023-02-05',
-    dateLabel: 'Date',
-    clearable: true,
-    clearClick: () => {
-      FilledAndClearable.args.date = '';
-    },
+    year: '2023',
+    yearLabel: 'PublicationYear',
   },
 };
 
 export const Readonly = {
   args: {
-    ...FilledAndClearable.args,
-    readOnlyFields: ['date'],
+    ...Filled.args,
+    readOnlyFields: ['year'],
     readOnlyExplanation: 'THIS IS READONLY!!',
   },
 };
 
-export const WithMinDate = {
-  args: {
-    ...FilledAndClearable.args,
-    minDate: '2023-02-05',
-  },
+
+export const MobileFilled = {
+  args: Filled.args,
+  parameters: mobileViewportParams,
 };
 
-export const WithMinDateError = {
-  args: {
-    ...FilledAndClearable.args,
-    minDate: '2023-02-11',
-  },
-};
+export const MobileLargeFilled = {};
+MobileLargeFilled.args = { ...Filled.args };
+MobileLargeFilled.parameters = mobileLargeViewportParams;
 
-
-export const WithMaxDate = {
-  args: {
-    ...FilledAndClearable.args,
-    maxDate: '2023-02-21',
-  },
-};
-
-export const WithMaxDateError = {
-  args: {
-    ...FilledAndClearable.args,
-    maxDate: '2023-01-21',
-  },
-};
-
-export const WithMinAndMaxDate = {
-  args: {
-    ...WithMinDate.args,
-    ...WithMaxDate.args,
-  },
-};
-
-export const WithMinAndMaxDateError = {
-  args: {
-    ...FilledAndClearable.args,
-    date: '2023-02-02',
-    minDate: '2023-02-03',
-    maxDate: '2023-02-12',
-  },
-};
-
-
-export const MobileWithMinAndMax = {
-  args: {
-    ...FilledAndClearable.args,
-    ...WithMinAndMaxDate.args,
-  },
-};
-MobileWithMinAndMax.parameters = mobileViewportParams;
-
-export const MobileLargeWithMinAndMax = {};
-MobileLargeWithMinAndMax.args = { ...MobileWithMinAndMax.args };
-MobileLargeWithMinAndMax.parameters = mobileLargeViewportParams;
-
-export const TabletWithMinAndMax = {};
-TabletWithMinAndMax.args = { ...MobileWithMinAndMax.args };
-TabletWithMinAndMax.parameters = tabletViewportParams;
+export const TabletFilled = {};
+TabletFilled.args = { ...Filled.args };
+TabletFilled.parameters = tabletViewportParams;
 

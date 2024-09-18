@@ -82,39 +82,13 @@
         </v-col>
 
         <v-col cols="6">
-          <v-menu
-              id="dateMenu"
-              key="dateMenu"
-              :close-on-content-click="true"
-              transition="scale-transition"
-              :left="$vuetify?.display?.smAndDown"
-              :offset-y="$vuetify?.display?.mdAndUp"
-              min-width="280px"
-          >
-
-            <template v-slot:activator="{ props }">
-              <v-text-field
-                  :prepend-icon="mdiCalendarRange"
-                  v-bind="props"
-                  :model-value="publicationYearField"
-              />
-            </template>
-
-            <v-date-picker
-                ref="picker"
-                view-mode="year"
-                color="secondary"
-                no-title
-                :year='publicationYearField'
-                @update:year="saveYear"
-            >
-              <template #title
-                        v-if="publicationYearField">
-                {{ publicationYearField }}
-              </template>
-            </v-date-picker>
-          </v-menu>
-
+          <BaseDatePickerYear
+            :year='publicationYearField'
+            year-label="PublicationYear"
+            :readOnlyFields="readOnlyFields"
+            :readOnlyExplanation="readOnlyExplanation"
+            @yearChange="saveYear"
+          />
         </v-col>
       </v-row>
 
@@ -161,6 +135,7 @@ import {
 } from '@mdi/js';
 
 import {possibleVisibilityStates} from '@/factories/metaDataFactory';
+import BaseDatePickerYear from '@/components/BaseElements/BaseDatePickerYear.vue';
 
 export default {
   name: 'EditPublicationInfo',
@@ -263,12 +238,7 @@ export default {
     },
     publicationYearField: {
       get() {
-        const yearString = this.previewYear !== null ? this.previewYear : this.publicationYear;
-        if (yearString) {
-          return Number.parseInt(yearString, 10);
-        }
-
-        return undefined
+        return this.previewYear !== null ? this.previewYear : this.publicationYear;
       },
       set(value) {
         const property = 'publicationYear';
@@ -359,6 +329,7 @@ export default {
     stepKey: EDITMETADATA_PUBLICATION_INFO,
   }),
   components: {
+    BaseDatePickerYear,
     BaseStatusLabelView,
     MetadataStateChip,
   },
