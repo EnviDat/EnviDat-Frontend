@@ -85,7 +85,6 @@
           <v-menu
               id="dateMenu"
               key="dateMenu"
-              v-model="datePickerOpen"
               :close-on-content-click="true"
               transition="scale-transition"
               :left="$vuetify?.display?.smAndDown"
@@ -103,14 +102,16 @@
 
             <v-date-picker
                 ref="picker"
-                :active-picker.sync="activePicker"
-                next-icon="skip_next"
-                prev-icon="skip_previous"
+                view-mode="year"
+                color="secondary"
                 no-title
-                @click:year="saveYear"
-                :model-value="formatToDatePickerDate(yearWithMonths)"
+                :year='publicationYearField'
+                @update:year="saveYear"
             >
-
+              <template #title
+                        v-if="publicationYearField">
+                {{ publicationYearField }}
+              </template>
             </v-date-picker>
           </v-menu>
 
@@ -130,8 +131,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import { mapState } from 'vuex';
-
-import {parse} from 'date-fns';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
 
@@ -145,13 +144,13 @@ import {
   getValidationMetadataEditingObject,
   isFieldValid,
 } from '@/factories/userEditingValidations';
+
 import {
   EDIT_METADATA_DOI_LABEL,
   EDIT_METADATA_PUBLICATION_YEAR_LABEL,
   PUBLICATION_STATE_PUBLISHED,
 } from '@/factories/metadataConsts';
 
-import { ckanDateFormat } from '@/factories/mappingFactory';
 import {
   mdiEarth,
   mdiEye,
@@ -166,9 +165,6 @@ import {possibleVisibilityStates} from '@/factories/metaDataFactory';
 export default {
   name: 'EditPublicationInfo',
   created() {
-    const date = new Date();
-    const year = date.getFullYear();
-    this.currentYear = this.formatToDatePickerDate(`${year}-12-31`);
   },
   props: {
     publicationState: {
@@ -189,7 +185,7 @@ export default {
     },
     publicationYear: {
       type: String,
-      default: '',
+      default: undefined,
     },
     loading: {
       type: Boolean,
@@ -221,11 +217,11 @@ export default {
     },
   },
   mounted () {
-    if (this.publicationYearField) {
-      const yearFullFormat = `${this.publicationYearField}-12-31`
-      this.yearWithMonths = this.formatToDatePickerDate(yearFullFormat)
+
+    if (this.publicationYear) {
+      this.previewYear = this.publicationYear;
     } else {
-      this.yearWithMonths = this.currentYear;
+      this.previewYear = null;
     }
   },
   computed: {
@@ -236,16 +232,6 @@ export default {
       }
 
       return undefined;
-    },
-    maxYears() {
-      let maxYears = this.defaultUserEditMetadataConfig.publicationYearsList;
-
-      if (this.$store) {
-        maxYears =
-          this.config?.userEditMetadataConfig?.publicationYearsList || maxYears;
-      }
-
-      return maxYears;
     },
     doiField: {
       get() {
@@ -277,9 +263,12 @@ export default {
     },
     publicationYearField: {
       get() {
-        return this.previewYear !== null
-            ? this.previewYear
-            : this.publicationYear;
+        const yearString = this.previewYear !== null ? this.previewYear : this.publicationYear;
+        if (yearString) {
+          return Number.parseInt(yearString, 10);
+        }
+
+        return undefined
       },
       set(value) {
         const property = 'publicationYear';
@@ -329,24 +318,9 @@ export default {
       navigator.clipboard.writeText(this.doiField);
     },
     saveYear(year) {
-      this.previewYear = year.toString()
-      this.publicationYearField = year.toString()
-    },
-    formatToDatePickerDate(dateString) {
-      if (!dateString) {
-        return '';
-      }
-
-      const dateTime = parse(dateString, ckanDateFormat, new Date());
-
-      if (dateTime instanceof Date && !!dateTime.getTime()) {
-        const date = new Date(dateTime - new Date().getTimezoneOffset() * 60000)
-            .toISOString()
-            .substr(0, 10);
-        return date;
-      }
-
-      return '';
+      const yearString = year.toString();
+      this.previewYear = yearString;
+      this.publicationYearField = yearString;
     },
   },
   data: () => ({
@@ -380,29 +354,10 @@ export default {
       publisher: null,
       publicationYear: null,
     },
-    dataIsValid: true,
     buttonColor: '#269697',
-    currentYear: '',
     previewYear: null,
-    datePickerOpen: false,
-    yearWithMonths: null,
-    defaultUserEditMetadataConfig: {
-      publicationYearsList: 30,
-    },
     stepKey: EDITMETADATA_PUBLICATION_INFO,
-    activePicker: 'YEAR',
   }),
-  watch: {
-    datePickerOpen(val) {
-      if (val) {
-        // assign the activePicker after a delay so it goes into effect
-        // when the datepicker is active
-        setTimeout(() => {
-          this.activePicker = 'YEAR';
-        }, 100);
-      }
-    },
-  },
   components: {
     BaseStatusLabelView,
     MetadataStateChip,
