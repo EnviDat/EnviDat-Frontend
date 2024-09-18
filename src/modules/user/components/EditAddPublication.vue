@@ -320,7 +320,6 @@ export default {
       };
 
       this.previewCitation = previewPlainText;
-      this.validateProperty(this.editingProperty, previewPlainText.citation);
 
       this.isInputTextValid = this.validateProperty(
         this.editingProperty,
