@@ -2,7 +2,7 @@
   <div class="baseIcon" :class="classList">
     <v-badge
       :model-value="count >= 0"
-      location="bottom start"
+      location="left center"
       :content="count"
       color="highlight"
       class="envidatBadge"
@@ -95,7 +95,7 @@ export default {
   align-items: center;
   justify-content: center;
   position: relative;
-  
+
   .baseIconCustomIcon,
   .baseIconFontIcon {
     // The vuetify-3 default is smaller than the old one
