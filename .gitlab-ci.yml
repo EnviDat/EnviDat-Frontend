@@ -25,7 +25,8 @@ variables:
 set-vars:
   stage: .pre
   image: alpine:3.20
-  environment: $CI_COMMIT_REF_NAME  
+  environment: $CI_COMMIT_REF_NAME
+  extends: .trigger-rules
   before_script:
     - >
       apk add jq yq --no-cache
