@@ -17,6 +17,8 @@ variables:
 .trigger-rules:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "pipeline"'
+    # Exclude feature branches that start with 'feature/'
+    - if: '$CI_COMMIT_REF_NAME !~ /^feature\//'
       when: never
     - if: '$CI_COMMIT_REF_NAME =~ /^(main|staging|develop)$/'
     - if: $CI_PIPELINE_SOURCE == "web"
@@ -27,11 +29,16 @@ set-vars:
   image: alpine:3.20
   environment: $CI_COMMIT_REF_NAME
   rules:
+    # Exclude feature branches that start with 'feature/'
+    - if: '$CI_COMMIT_REF_NAME !~ /^feature\//'
+      when: never
     - if: '$CI_PIPELINE_SOURCE == "pipeline"'
     - if: '$CI_COMMIT_REF_NAME =~ /^(main|staging|develop)$/'
     - if: $CI_PIPELINE_SOURCE == "web"
       when: always
     - when: manual
+  # for manual jobs add allow_failure so the whole pipeline won't show up as "blocked"
+  allow_failure: true
   before_script:
     - >
       apk add jq yq --no-cache
