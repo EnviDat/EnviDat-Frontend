@@ -26,7 +26,12 @@ set-vars:
   stage: .pre
   image: alpine:3.20
   environment: $CI_COMMIT_REF_NAME
-  extends: .trigger-rules
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "pipeline"'
+    - if: '$CI_COMMIT_REF_NAME =~ /^(main|staging|develop)$/'
+    - if: $CI_PIPELINE_SOURCE == "web"
+      when: always
+    - when: manual
   before_script:
     - >
       apk add jq yq --no-cache
