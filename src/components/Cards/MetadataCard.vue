@@ -1,5 +1,5 @@
 <template>
-  <v-card @mouseover="hover = true" @mouseleave="hover = false" :dark="false" @click.native="cardClick">
+  <v-card @mouseover="hover = true" @mouseleave="hover = false" :dark="false" @click.native="cardClick" :style="'height: 100%'">
     <v-container fluid class="pa-0">
       <v-row no-gutters>
         <v-col>
@@ -28,7 +28,7 @@
       'pr-5': flatLayout,
     }">
       <v-container fluid class="pa-0 fill-height">
-        <v-row v-if="!compactLayout" no-gutters class="pb-2">
+        <v-row v-if="!compactLayout" no-gutters class="pb-2 pr-md-8">
           <v-col cols="12">
             {{ truncatedSubtitle }}
           </v-col>

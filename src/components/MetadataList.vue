@@ -341,7 +341,7 @@ export default {
       eventBus.emit(event, eventProperty);
     },
     getGeoJSONIcon(location) {
-      return getGeoJSONIcon(location?.geoJSON?.type);
+      return location?.geoJSON?.type ? getGeoJSONIcon(location.geoJSON.type) : null;
     },
     infiniteHandler($state) {
       const that = this;

@@ -70,7 +70,7 @@ export function formatDate(date, inputFormat = 'yyyy-MM-dd') {
   // expecting a format like 2017-08-15T15:25:45.175790
   let formatedDate = '';
 
-  if (date) {
+  if (typeof date === 'string' && date.trim() !== '') {
     const split = date.split('T');
     if (split.length > 1) {
       const dateOnly = split[0];
@@ -88,6 +88,7 @@ export function formatDate(date, inputFormat = 'yyyy-MM-dd') {
       formatedDate = date;
     }
   }
+
 
   return formatedDate;
 }

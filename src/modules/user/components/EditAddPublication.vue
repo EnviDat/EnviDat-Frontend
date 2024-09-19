@@ -1,7 +1,7 @@
 <template>
   <v-container fluid id="EditAddPublication" class="pa-0">
     <v-row no-gutters align="center" >
-      <v-col cols="12" xl="auto">
+      <v-col cols="12" xl="4">
 
         <v-text-field
             v-model="pidField"
@@ -9,32 +9,32 @@
             :disabled="!!doiField"
             hide-details
             :prepend-icon="mdiIdentifier"
-            @input="pidChange"
+            @input="(event) => pidChange(event.target.value)"
         />
       </v-col>
 
       <v-col
         cols="12"
-        xl="auto"
+        xl="1"
         style="text-align: center;"
         class="text-h6 px-md-4 shrink"
       >
         Or
       </v-col>
 
-      <v-col cols="12" xl="auto">
+      <v-col cols="12" xl="4">
         <v-text-field
             v-model="doiField"
             :label="labels.doi"
             :disabled="!!pidField"
             hide-details
             :prepend-icon="mdiFingerprint"
-            @input="doiChange"
+            @input="(event) => doiChange(event.target.value)"
         />
       </v-col>
 
       <v-col
-        cols="auto"
+        cols="2"
         class="ma-auto mt-4 ma-xl-0 pl-md-4 pt-4 pt-md-0"
       >
         <BaseIconButton

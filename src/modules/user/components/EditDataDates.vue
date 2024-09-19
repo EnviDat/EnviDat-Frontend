@@ -44,7 +44,7 @@
         >
           <v-row class="d-flex flex-column" no-gutters dense>
             <v-col cols="11" class="pt-2 px-sm-2 shrink mb-3">
-              <div class="text-body-1 font-weight-bold capitalize-text">
+              <div class="text-body-1 font-weight-bold text-capitalize">
                 {{ item.dateType }}
               </div>
               <div class="text-body-1 text-caption">
@@ -166,35 +166,37 @@ export default {
 
         const createdType = DATE_PROPERTY_CREATED_TYPE;
         const createdExplanation = DATE_PROPERTY_CREATED_TYPE_EXPLANATION;
-        const createdAmount = dates.filter(
-          dObj => dObj.dateType === createdType,
-        ).length;
 
-        if (createdAmount <= 0) {
-          dates.push({
+        let createdDateObj = dates.find(dObj => dObj.dateType === createdType);
+
+        if (!createdDateObj) {
+          createdDateObj = {
             [DATE_PROPERTY_DATE_TYPE]: createdType,
             [DATE_PROPERTY_START_DATE]: '',
             [DATE_PROPERTY_END_DATE]: '',
             dateExplanation: createdExplanation,
-          });
+          };
+          dates.push(createdDateObj);
+        } else {
+          createdDateObj.dateExplanation = createdExplanation;
         }
 
         const collectedType = DATE_PROPERTY_COLLECTED_TYPE;
         const collectedExplanation = DATE_PROPERTY_COLLECTED_TYPE_EXPLANATION;
-        const collectedAmount = dates.filter(
-          dObj => dObj.dateType === collectedType,
-        ).length;
 
-        if (collectedAmount <= 0) {
-          dates.push({
+        let collectedDateObj = dates.find(dObj => dObj.dateType === collectedType);
+
+        if (!collectedDateObj) {
+          collectedDateObj = {
             [DATE_PROPERTY_DATE_TYPE]: collectedType,
             [DATE_PROPERTY_START_DATE]: '',
             [DATE_PROPERTY_END_DATE]: '',
             dateExplanation: collectedExplanation,
-          });
+          };
+          dates.push(collectedDateObj);
+        } else {
+          collectedDateObj.dateExplanation = collectedExplanation;
         }
-
-        // This sort is important to keep the right order of components after updating dates.
 
         dates.sort((a, b) => {
           const order = [createdType, collectedType];
@@ -326,8 +328,5 @@ export default {
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: thin;
-}
-.capitalize-text {
-  text-transform: capitalize;
 }
 </style>
