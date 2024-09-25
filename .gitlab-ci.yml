@@ -9,6 +9,12 @@ stages:
   - deploy
   - manual-deploy
 
+workflow:
+  rules:
+    - if: '$CI_COMMIT_REF_NAME =~ /^feature\//'
+      when: never  # Do not create a pipeline for feature branches
+    - when: always  # Create a pipeline for all other branches
+
 variables:
   ARTIFACT_COMPRESSION_LEVEL: 'fast'
   CACHE_COMPRESSION_LEVEL: 'fast'
@@ -17,8 +23,6 @@ variables:
 .trigger-rules:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "pipeline"'
-    # Exclude feature branches that start with 'feature/'
-    - if: '$CI_COMMIT_REF_NAME !~ /^feature\//'
       when: never
     - if: '$CI_COMMIT_REF_NAME =~ /^(main|staging|develop)$/'
     - if: $CI_PIPELINE_SOURCE == "web"
