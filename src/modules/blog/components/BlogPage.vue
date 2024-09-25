@@ -126,7 +126,7 @@ export default {
   beforeRouteEnter(to, from, next) {
     next((vm) => {
       vm.$store.commit(SET_CURRENT_PAGE, BLOG_PAGENAME);
-      vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
+      vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
     });
   },
   created() {
@@ -222,7 +222,7 @@ export default {
   },
   data: () => ({
     BLOG_PAGENAME,
-    PageBGImage: getImage('app_b_browsepage'),
+    pageBGImage: 'app_b_browsepage',
     fallbackCardImg: null,
     pageIntroText: 'The EnviDat blog page provides news and information from the EnviDat team. Click on a card to read the blog post, click the close icon in the top right to go back to the overview.',
     blogModuleLoaded: false,

@@ -47,7 +47,7 @@ export default {
     next(vm => {
       // console.log("beforeRouteEnter to: " + to + " from: " + from + " next: " + next);
       vm.$store.commit(SET_CURRENT_PAGE, GCMD_PAGENAME);
-      vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
+      vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
     });
   },
   computed: {
@@ -62,7 +62,7 @@ export default {
   },
   components: {},
   data: () => ({
-    PageBGImage: getImage('app_b_browsepage'),
+    pageBGImage: 'app_b_browsepage',
     GCMD_PAGENAME,
   }),
 };

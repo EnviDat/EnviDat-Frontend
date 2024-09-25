@@ -104,7 +104,7 @@ export default {
   beforeRouteEnter(to, from, next) {
     next((vm) => {
       vm.$store.commit(SET_CURRENT_PAGE, INTEGRATION_PAGENAME);
-      vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
+      vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
     });
   },
   beforeMount() {
@@ -143,7 +143,7 @@ export default {
     ImageTextCard,
   },
   data: () => ({
-    PageBGImage: getImage('app_b_browsepage'),
+    pageBGImage: 'app_b_browsepage',
     pageTitle: 'Community Integration',
     pageIntroText: `With EnviDat, WSL aims to disseminate its data sets as broadly as possible in order to foster international research cooperation in the field of environmental science and contribute to the ongoing cultural evolution in research towards openness, shared data and opportunities for collaboration.
     Consequently, we are officially registered in re3data.org and FAIRsharing.org and a contributor community to NASA Earthdata, ESA's GEOSS Portal and data.europa.eu via opendata.swiss.`,

@@ -94,7 +94,7 @@ export default {
   beforeRouteEnter(to, from, next) {
     next(vm => {
       vm.$store.commit(SET_CURRENT_PAGE, PROJECTS_PAGENAME);
-      vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
+      vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
     });
   },
   /**
@@ -175,7 +175,7 @@ export default {
     ProjectCardPlaceholder,
   },
   data: () => ({
-    PageBGImage: getImage('app_b_browsepage'),
+    pageBGImage: 'app_b_browsepage',
   }),
 };
 </script>

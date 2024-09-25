@@ -105,7 +105,7 @@ export default {
   beforeRouteEnter(to, from, next) {
     next((vm) => {
       vm.$store.commit(SET_CURRENT_PAGE, SERVICE_PAGENAME);
-      vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
+      vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
     });
   },
   beforeMount() {
@@ -151,7 +151,7 @@ export default {
     ImageTextCard,
   },
   data: () => ({
-    PageBGImage: getImage('app_b_browsepage'),
+    pageBGImage: 'app_b_browsepage',
     pageTitle: 'Tools & Services',
     pageIntroText: 'List of the Research Data Management (RDM) tools and services currently provided for WSL employees by WSL IT and EnviDat. <a href="mailto:envidat@wsl.ch" >Get in touch</a> with the EnviDat team for consulting on services, tools or any other requests.',
     fallbackCardImg: null,

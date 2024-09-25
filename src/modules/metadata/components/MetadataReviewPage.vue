@@ -124,7 +124,7 @@ export default {
   beforeRouteEnter(to, from, next) {
     next((vm) => {
       vm.$store.commit(SET_CURRENT_PAGE, METADATAREVIEW_PAGENAME);
-      vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
+      vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
     });
   },
   created() {
@@ -590,7 +590,7 @@ export default {
     MetadataCitation: markRaw(MetadataCitation),
     MetadataAuthors: markRaw(MetadataAuthors),
     reviewStore: useReviewStore(),
-    PageBGImage: getImage('app_b_browsepage'),
+    pageBGImage: 'app_b_browsepage',
     baseStationURL: 'https://www.envidat.ch/data-files/',
     baseStationURLTestdata: './testdata/',
     header: null,

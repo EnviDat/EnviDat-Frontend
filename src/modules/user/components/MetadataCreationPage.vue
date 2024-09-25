@@ -136,7 +136,7 @@ export default {
 
     next((vm) => {
       vm.$store.commit(SET_CURRENT_PAGE, METADATA_CREATION_PAGENAME);
-      vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
+      vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
     });
   },
   created() {

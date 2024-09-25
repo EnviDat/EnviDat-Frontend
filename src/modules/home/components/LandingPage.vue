@@ -261,7 +261,7 @@ export default {
       vm.$store.commit(SET_CURRENT_PAGE, LANDING_PAGENAME);
       const bgimg = vm.$vuetify.display.smAndDown
         ? vm.MobileBGImage
-        : vm.PageBGImage;
+        : vm.pageBGImage;
       vm.$store.commit(SET_APP_BACKGROUND, bgimg);
     });
   },
@@ -522,7 +522,7 @@ export default {
   data: () => ({
     categoryCards,
     blogModuleLoaded: false,
-    PageBGImage: 'app_b_landingpage',
+    pageBGImage: 'app_b_landingpage',
     MobileBGImage: 'app_b_browsepage',
     buttonText: 'SEARCH',
     defaultWelcomeInfo: {

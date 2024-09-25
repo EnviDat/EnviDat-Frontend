@@ -158,7 +158,7 @@ export default {
   beforeRouteEnter(to, from, next) {
     next(vm => {
       vm.$store.commit(SET_CURRENT_PAGE, METADATAEDIT_PAGENAME);
-      vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
+      vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
 
       // vm.updateLastEditingDataset(to.params.metadataid, to.fullPath);
     });

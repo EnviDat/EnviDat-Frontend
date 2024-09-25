@@ -719,13 +719,11 @@ export default {
       return this.outdatedVersion && !this.reloadDialogCanceled;
     },
     dynamicBackground() {
-      let bgImg = this.appBGImage;
+      const bgImg = getImage(this.appBGImage);
 
       if(!bgImg) {
         return '';
       }
-
-      bgImg = getImage(this.appBGImage);
 
       let gradient = `background: linear-gradient(to bottom, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.25) 100%), url(${bgImg}) !important;`;
       let bgStyle = 'background-position: center top !important;';

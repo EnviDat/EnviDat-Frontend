@@ -365,7 +365,7 @@ export default {
   beforeRouteEnter(to, from, next) {
     next((vm) => {
       vm.$store.commit(SET_CURRENT_PAGE, USER_DASHBOARD_PAGENAME);
-      vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
+      vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
     });
   },
   created() {
@@ -860,7 +860,7 @@ export default {
     ckanDomain: process.env.VITE_API_ROOT,
     fileIconString: '',
     title: 'Dashboard',
-    PageBGImage: getImage('app_b_dashboardpage'),
+    pageBGImage: 'app_b_dashboardpage',
     refreshButtonText: 'Reload Datasets',
     refreshOrgaButtonText: 'Reload Organisation Datasets',
     placeHolderAmount: 4,

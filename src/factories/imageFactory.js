@@ -28,71 +28,34 @@ const loadImageUrlMap  = () => {
   if (isWebpSupported) {
     imageUrls = import.meta.glob('../**/*.{webp,WEBP}',
       { eager: true, query: '?url', import: 'default' });
-    // imageUrls = import.meta.glob([
-      // '@/assets/*.{webp,WEBP}',
-      // '@/assets/about/**/*.{webp,WEBP}',
-      // '@/assets/blog/**/*.{webp,WEBP}',
-      // '@/assets/integration/**/*.{webp,WEBP}',
-      // '@/assets/logo/**/*.{webp,WEBP}',
-      // '@/assets/map/**/*.{webp,WEBP}',
-      // '@/assets/modes/**/*.{webp,WEBP}',
-      // '@/assets/projects/**/*.{webp,WEBP}',
-      // '@/assets/service/**/*.{webp,WEBP}',
-    // ], { eager: true, query: '?url', import: 'default' });
   } else {
     imageUrls = import.meta.glob('../**/*.{jpg,jpeg,JPEG,JPG,png,PNG}',
       { eager: true, query: '?url', import: 'default' });
-    // imageUrls = import.meta.glob([
-    //   '../../*.{jpg,jpeg,JPEG,JPG,png,PNG}',
-      // '@/assets/*.{jpg,jpeg,JPEG,JPG,png,PNG}',
-      // '@/assets/about/**/*.{jpg,jpeg,JPEG,JPG,png,PNG}',
-      // '@/assets/blog/**/*.{jpg,jpeg,JPEG,JPG,png,PNG}',
-      // '@/assets/integration/**/*.{jpg,jpeg,JPEG,JPG,png,PNG}',
-      // '@/assets/logo/**/*.{jpg,jpeg,JPEG,JPG,png,PNG}',
-      // '@/assets/map/**/*.{jpg,jpeg,JPEG,JPG,png,PNG}',
-      // '@/assets/modes/**/*.{jpg,jpeg,JPEG,JPG,png,PNG}',
-      // '@/assets/projects/**/*.{jpg,jpeg,JPEG,JPG,png,PNG}',
-      // '@/assets/service/**/*.{jpg,jpeg,JPEG,JPG,png,PNG}',
-    // ], { eager: true, query: '?url', import: 'default' });
   }
 
     const keys = Object.keys(imageUrls);
 
     const imageMap = {};
-    keys.forEach(imageUrl => {
-      const key = normalizeImagePath(imageUrl);
-      imageMap[key] = new URL(imageUrl, import.meta.url).href;
+    const iconMap = {};
+
+    keys.forEach(key => {
+      const newKey = normalizeImagePath(key);
+      const imageDestination = new URL(imageUrls[key], import.meta.url).href;
+      if (key.includes('assets/icons/')) {
+        iconMap[newKey] = imageDestination;
+      } else {
+        imageMap[newKey] = imageDestination;
+      }
     })
 
   // const imageMap = Object.keys(imageUrls).map(image => new URL(image, import.meta.url).href);
-  return imageMap;
+  return {
+    imageMap,
+    iconMap,
+  };
 }
 
-const imageUrlMap = loadImageUrlMap();
-
-const loadIconImageUrlMap  = () => {
-  let iconUrls;
-
-  if (isWebpSupported) {
-    iconUrls = import.meta.glob('@/assets/icons/**/*.{webp,WEBP}', { eager: true, query: '?url', import: 'default' });
-  } else {
-    iconUrls = import.meta.glob('@/assets/icons/**/*.{jpg,jpeg,JPEG,JPG,png,PNG}', { eager: true, query: '?url', import: 'default' });
-  }
-
-  const keys = Object.keys(iconUrls);
-
-  const imageMap = {};
-  keys.forEach(imageUrl => {
-    const key = normalizeImagePath(imageUrl);
-    imageMap[key] = imageUrl;
-  })
-
-  return imageMap;
-}
-
-const iconImageUrlMap = loadIconImageUrlMap();
-
-
+const { imageMap: imageUrlMap, iconMap: iconImageUrlMap } = loadImageUrlMap();
 
 /**
  * Gets a single specific image url from the assets directory and automatically uses the most efficient format

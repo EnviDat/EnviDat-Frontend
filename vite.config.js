@@ -118,9 +118,9 @@ export default ({ mode, config }) => {
           sourcemap: buildSourceMaps,
           emptyOutDir: true,
 
-          rollupOptions: isProd ? {
-            output: {
-              manualChunks: (id) => {
+//        rollupOptions: isProd ? {
+//          output: {
+//            manualChunks: (id) => {
 //                 // Had to be removed, it caused import errors, when the vendor_leaflet.js tried
 //                 // to import something from the vendors.js
 //                 // if (id.includes('leaflet')) {
@@ -156,9 +156,9 @@ export default ({ mode, config }) => {
 //                 if (id.includes('src/modules/user')) {
 //                   return 'envidat_user';
 //                 }
-                if (id.includes('src/factories')) {
-                  return 'envidat_factories';
-                }
+//                 if (id.includes('src/factories')) {
+//                   return 'envidat_factories';
+//                 }
 //                 if (id.includes('vuetify')) {
 //                   return 'vendor_vuetify';
 //                 }
@@ -203,16 +203,16 @@ export default ({ mode, config }) => {
 //                   return 'vendor_markdown';
 //                 }
 // */
-
-                // all other node_modules
-                if (id.includes('node_modules')) {
-                  return 'vendors';
-                }
-
-                return undefined;
-              },
-            },
-          } : {},
+//
+//                 // all other node_modules
+//                 if (id.includes('node_modules')) {
+//                   return 'vendors';
+//                 }
+//
+//                 return undefined;
+//               },
+//             },
+//           } : {},
       define: {
         'import.meta.env.VITE_VERSION': JSON.stringify(version),
       },
