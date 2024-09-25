@@ -12,7 +12,8 @@
 
 import { getSpecificApiError } from '@/factories/notificationFactory';
 
-import categoryCards, { getCardImage } from '@/store/categoryCards';
+import categoryCards from '@/store/categoryCards';
+
 import {
   ADD_USER_NOTIFICATION,
   CHECK_FRONTEND_VERSION,
@@ -30,7 +31,6 @@ import {
   SET_WEBP_ASSETS,
   SET_WEBP_SUPPORT,
   TRIM_NOTIFICATIONS,
-  UPDATE_CATEGORYCARD_IMAGES,
 } from './mainMutationsConsts';
 
 function disablingCategoryCards(config) {
@@ -67,19 +67,6 @@ export default {
   },
   [SET_CARD_IMAGES](state, assets) {
     state.cardBGImages = assets;
-  },
-  [UPDATE_CATEGORYCARD_IMAGES](state) {
-    // enhance the category cards dynamically with either webp or jpg images based
-    // on what the browser supports
-    const updatedCards = [];
-
-    for (let i = 0; i < state.categoryCards.length; i++) {
-      const cardInfo = state.categoryCards[i];
-      cardInfo.img = getCardImage(cardInfo.imgPath);
-      updatedCards.push(cardInfo);
-    }
-
-    state.categoryCards = updatedCards;
   },
   [SET_CURRENT_PAGE](state, page) {
     state.currentPage = page;

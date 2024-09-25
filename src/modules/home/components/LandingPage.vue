@@ -242,7 +242,7 @@ import {
 } from '@/store/metadataMutationsConsts';
 import { getIcon, getImage } from '@/factories/imageFactory';
 import { convertArrayToUrlString } from '@/factories/stringFactory';
-import categoryCards, { getCardImage } from '@/store/categoryCards';
+import categoryCards from '@/store/categoryCards';
 
 // Login & Register form and animation
 // https://codepen.io/yusufbkr/pen/RPBQqg
@@ -348,13 +348,13 @@ export default {
       return this.effectsConfig.decemberWishes;
     },
     winterHolidayImage() {
-      return getCardImage('holidays_winter');
+      return getImage('holidays_winter');
     },
     newYearWishes() {
       return this.effectsConfig.newYearWishes || '';
     },
     newYearImage() {
-      return getCardImage('new_year');
+      return getImage('new_year');
     },
     effectsConfig() {
       return this.config?.effectsConfig || {};

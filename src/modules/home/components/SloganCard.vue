@@ -84,7 +84,7 @@
  */
 
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
-import { getCardImage } from '@/store/categoryCards';
+import {getImage} from '@/factories/imageFactory';
 
 export default {
   name: 'SloganCard',
@@ -121,7 +121,7 @@ export default {
   },
   components: { BaseRectangleButton },
   beforeMount() {
-    this.fallbackImg = getCardImage('fingertips_small');
+    this.fallbackImg = getImage('fingertips_small');
   },
   data: () => ({
     fallbackImg: '',

@@ -62,6 +62,10 @@ const { imageMap: imageUrlMap, iconMap: iconImageUrlMap } = loadImageUrlMap();
  */
 export const getImage = (imagePath) => imageUrlMap[imagePath];
 
+export const getImageList = (pathNeedsToInclude) => {
+  const imagePaths = Object.values(imageUrlMap);
+  return imagePaths.filter((path) => path.includes(pathNeedsToInclude));
+}
 /**
  * Gets a specific icon-image url from the assets directory
  * @param {string} iconName The icon name, for example ```'file'```

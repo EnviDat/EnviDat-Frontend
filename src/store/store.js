@@ -66,7 +66,7 @@ const initialState = {
   maxNotifications: 6,
 };
 
-const modules = {
+const preloadedModules = {
   metadata,
   user,
   userSignIn,
@@ -93,7 +93,7 @@ function createStore() {
     },
     mutations,
     actions,
-    modules,
+    modules: preloadedModules,
     plugins: [],
   });
 }
@@ -122,6 +122,8 @@ try {
     console.error(e);
 
     store = createStore();
+  } else {
+    console.error(e);
   }
 }
 
