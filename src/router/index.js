@@ -56,9 +56,9 @@ const routes = [
     name: REPORT_PAGENAME,
     component: reportPage,
   },
-  /* The not found route needes to be last in the list! */
+  /* The not found route needs to be last in the list! */
   {
-    path: '/:catchAll(.*)',
+    path: '/:pathMatch(.*)*',
     name: PAGENOTFOUND_PAGENAME,
     component: pageNotFound,
   },
@@ -86,7 +86,7 @@ const router = createRouter({
             return savedPosition;
           }
 
-          return { x: 0, y: 0 };
+          return { left: 0, top: 0 };
         });
       }, 450);
     });

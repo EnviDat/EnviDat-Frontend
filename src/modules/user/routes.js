@@ -46,31 +46,15 @@ export const userRoutes = [
     beforeEnter,
   },
   {
-    path: METADATAEDIT_PATH,
+    path: `${METADATAEDIT_PATH}/:metadataid/:step?/:substep?`,
     name: METADATAEDIT_PAGENAME,
     component: MetadataEditPage,
     beforeEnter,
-    children: [
-      {
-        path: `${METADATAEDIT_PATH}/:metadataid/:step?/:substep?`,
-        name: METADATAEDIT_PAGENAME,
-        component: MetadataEditPage,
-        beforeEnter,
-      },
-    ],
   },
   {
-    path: METADATA_CREATION_PATH,
+    path: `${METADATA_CREATION_PATH}/:step?/:substep?`,
     name: METADATA_CREATION_PAGENAME,
     component: MetadataCreationPage,
     beforeEnter,
-    children: [
-      {
-        path: `${METADATA_CREATION_PATH}/:step?/:substep?`,
-        name: METADATA_CREATION_PAGENAME,
-        component: MetadataCreationPage,
-        beforeEnter,
-      },
-    ],
   },
 ];
