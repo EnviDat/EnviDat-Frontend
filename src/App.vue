@@ -220,7 +220,7 @@ export default {
 
     this.$store.subscribe((mutation) => {
       if (mutation.type === SET_APP_BACKGROUND) {
-        this.appBGImage = getImage(mutation.payload);
+        this.appBGImage = mutation.payload;
       }
     });
   },
@@ -719,11 +719,13 @@ export default {
       return this.outdatedVersion && !this.reloadDialogCanceled;
     },
     dynamicBackground() {
-      const bgImg = this.appBGImage;
+      let bgImg = this.appBGImage;
 
       if(!bgImg) {
         return '';
       }
+
+      bgImg = getImage(this.appBGImage);
 
       let gradient = `background: linear-gradient(to bottom, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.25) 100%), url(${bgImg}) !important;`;
       let bgStyle = 'background-position: center top !important;';

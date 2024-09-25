@@ -1,16 +1,8 @@
 /* eslint-disable no-use-before-define */
-import { checkWebpSupport } from '@/factories/enhancementsFactory';
-import { mdiLayers, mdiMapMarker, mdiMapMarkerMultiple } from '@mdi/js';
-import {
-  checkIsFileAudio,
-  checkIsFileVideo,
-  getFileExtension,
-} from './fileFactory';
-import {
-  LOCATION_TYPE_MULTIPOINT,
-  LOCATION_TYPE_POINT,
-  LOCATION_TYPE_POLYGON,
-} from './metadataConsts';
+import {checkWebpSupport} from '@/factories/enhancementsFactory';
+import {mdiLayers, mdiMapMarker, mdiMapMarkerMultiple} from '@mdi/js';
+import {checkIsFileAudio, checkIsFileVideo, getFileExtension} from './fileFactory';
+import {LOCATION_TYPE_MULTIPOINT, LOCATION_TYPE_POINT, LOCATION_TYPE_POLYGON} from './metadataConsts';
 
 /** @private */
 const isWebpSupported = checkWebpSupport();
@@ -34,39 +26,45 @@ const loadImageUrlMap  = () => {
   let imageUrls;
 
   if (isWebpSupported) {
-    imageUrls = import.meta.glob([
-      '@/assets/*.{webp,WEBP}',
-      '@/assets/about/**/*.{webp,WEBP}',
-      '@/assets/blog/**/*.{webp,WEBP}',
-      '@/assets/integration/**/*.{webp,WEBP}',
-      '@/assets/logo/**/*.{webp,WEBP}',
-      '@/assets/map/**/*.{webp,WEBP}',
-      '@/assets/modes/**/*.{webp,WEBP}',
-      '@/assets/projects/**/*.{webp,WEBP}',
-      '@/assets/service/**/*.{webp,WEBP}',
-    ], { eager: true, query: '?url', import: 'default' });
+    imageUrls = import.meta.glob('../**/*.{webp,WEBP}',
+      { eager: true, query: '?url', import: 'default' });
+    // imageUrls = import.meta.glob([
+      // '@/assets/*.{webp,WEBP}',
+      // '@/assets/about/**/*.{webp,WEBP}',
+      // '@/assets/blog/**/*.{webp,WEBP}',
+      // '@/assets/integration/**/*.{webp,WEBP}',
+      // '@/assets/logo/**/*.{webp,WEBP}',
+      // '@/assets/map/**/*.{webp,WEBP}',
+      // '@/assets/modes/**/*.{webp,WEBP}',
+      // '@/assets/projects/**/*.{webp,WEBP}',
+      // '@/assets/service/**/*.{webp,WEBP}',
+    // ], { eager: true, query: '?url', import: 'default' });
   } else {
-    imageUrls = import.meta.glob([
-      '@/assets/*.{jpg,jpeg,JPEG,JPG,png,PNG}',
-      '@/assets/about/**/*.{jpg,jpeg,JPEG,JPG,png,PNG}',
-      '@/assets/blog/**/*.{jpg,jpeg,JPEG,JPG,png,PNG}',
-      '@/assets/integration/**/*.{jpg,jpeg,JPEG,JPG,png,PNG}',
-      '@/assets/logo/**/*.{jpg,jpeg,JPEG,JPG,png,PNG}',
-      '@/assets/map/**/*.{jpg,jpeg,JPEG,JPG,png,PNG}',
-      '@/assets/modes/**/*.{jpg,jpeg,JPEG,JPG,png,PNG}',
-      '@/assets/projects/**/*.{jpg,jpeg,JPEG,JPG,png,PNG}',
-      '@/assets/service/**/*.{jpg,jpeg,JPEG,JPG,png,PNG}',
-    ], { eager: true, query: '?url', import: 'default' });
+    imageUrls = import.meta.glob('../**/*.{jpg,jpeg,JPEG,JPG,png,PNG}',
+      { eager: true, query: '?url', import: 'default' });
+    // imageUrls = import.meta.glob([
+    //   '../../*.{jpg,jpeg,JPEG,JPG,png,PNG}',
+      // '@/assets/*.{jpg,jpeg,JPEG,JPG,png,PNG}',
+      // '@/assets/about/**/*.{jpg,jpeg,JPEG,JPG,png,PNG}',
+      // '@/assets/blog/**/*.{jpg,jpeg,JPEG,JPG,png,PNG}',
+      // '@/assets/integration/**/*.{jpg,jpeg,JPEG,JPG,png,PNG}',
+      // '@/assets/logo/**/*.{jpg,jpeg,JPEG,JPG,png,PNG}',
+      // '@/assets/map/**/*.{jpg,jpeg,JPEG,JPG,png,PNG}',
+      // '@/assets/modes/**/*.{jpg,jpeg,JPEG,JPG,png,PNG}',
+      // '@/assets/projects/**/*.{jpg,jpeg,JPEG,JPG,png,PNG}',
+      // '@/assets/service/**/*.{jpg,jpeg,JPEG,JPG,png,PNG}',
+    // ], { eager: true, query: '?url', import: 'default' });
   }
 
-  const keys = Object.keys(imageUrls);
+    const keys = Object.keys(imageUrls);
 
-  const imageMap = {};
-  keys.forEach(imageUrl => {
-    const key = normalizeImagePath(imageUrl);
-    imageMap[key] = imageUrl;
-  })
+    const imageMap = {};
+    keys.forEach(imageUrl => {
+      const key = normalizeImagePath(imageUrl);
+      imageMap[key] = new URL(imageUrl, import.meta.url).href;
+    })
 
+  // const imageMap = Object.keys(imageUrls).map(image => new URL(image, import.meta.url).href);
   return imageMap;
 }
 

@@ -522,7 +522,7 @@ export default {
   data: () => ({
     categoryCards,
     blogModuleLoaded: false,
-    PageBGImage: getImage('app_b_landingpage'),
+    PageBGImage: 'app_b_landingpage',
     MobileBGImage: 'app_b_browsepage',
     buttonText: 'SEARCH',
     defaultWelcomeInfo: {

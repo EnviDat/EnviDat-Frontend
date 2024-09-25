@@ -110,7 +110,7 @@ export default ({ mode, config }) => {
             ],
         },
         build: {
-          assetsDir: './static',
+          // assetsDir: './static',
           chunkSizeWarningLimit: 500,
           assetsInlineLimit: 4096 / 2, // Reduce the amount of image inlining so the chunks don't get huge
           cssCodeSplit: true,
@@ -118,12 +118,9 @@ export default ({ mode, config }) => {
           sourcemap: buildSourceMaps,
           emptyOutDir: true,
 
-//           rollupOptions: isProd ? {
-//             output: {
-//               manualChunks: (id) => {
-//                 if (id.includes('skeleton-placeholder')) {
-//                   return 'vendor_skeleton';
-//                 }
+          rollupOptions: isProd ? {
+            output: {
+              manualChunks: (id) => {
 //                 // Had to be removed, it caused import errors, when the vendor_leaflet.js tried
 //                 // to import something from the vendors.js
 //                 // if (id.includes('leaflet')) {
@@ -159,9 +156,9 @@ export default ({ mode, config }) => {
 //                 if (id.includes('src/modules/user')) {
 //                   return 'envidat_user';
 //                 }
-//                 if (id.includes('src/factories')) {
-//                   return 'envidat_factories';
-//                 }
+                if (id.includes('src/factories')) {
+                  return 'envidat_factories';
+                }
 //                 if (id.includes('vuetify')) {
 //                   return 'vendor_vuetify';
 //                 }
@@ -207,15 +204,15 @@ export default ({ mode, config }) => {
 //                 }
 // */
 
-//                 // all other node_modules
-//                 if (id.includes('node_modules')) {
-//                   return 'vendors';
-//                 }
+                // all other node_modules
+                if (id.includes('node_modules')) {
+                  return 'vendors';
+                }
 
-//                 return undefined;
-//               },
-//             },
-//           } : {},
+                return undefined;
+              },
+            },
+          } : {},
       define: {
         'import.meta.env.VITE_VERSION': JSON.stringify(version),
       },
