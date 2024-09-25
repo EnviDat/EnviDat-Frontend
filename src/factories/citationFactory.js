@@ -356,8 +356,8 @@ export async function resolvePidCitationObjectsViaDora(pidMap, resolveBaseUrl) {
   return getCitationObjectMap(pidMap, responseObj);
 }
 
-export async function resolveDoiCitationObjectsViaDora(doiMap) {
-  const responseObj = await resolveDOIsViaDora(doiMap);
+export async function resolveDoiCitationObjectsViaDora(doiMap, resolveBaseDOIUrl) {
+  const responseObj = await resolveDOIsViaDora(doiMap, resolveBaseDOIUrl);
 
   return getCitationObjectMap(doiMap, responseObj);
 }
