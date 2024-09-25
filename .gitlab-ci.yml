@@ -118,7 +118,7 @@ modify-env:
 
       key = 'VITE_BUILD_SOURCEMAPS'
       value = 'false'
-      if branch == 'staging' or branch == 'develop':
+      if branch == 'staging' or branch == 'develop' or branch == 'dev':
           value = 'true'
       dotenv.set_key(file, key, value, quote_mode='never') "
     - echo "created content for .env.production:"
