@@ -332,7 +332,7 @@ export default {
       }
       const params = { ...this.$route.params };
       params.step = stepTitle;
-      delete params.substep
+      params.substep = '';
 
       this.$router.push(
         {
