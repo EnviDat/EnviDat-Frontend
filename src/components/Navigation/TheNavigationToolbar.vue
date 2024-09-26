@@ -11,7 +11,7 @@
               justify="space-between" >
 
         <v-col cols="auto" sm="2">
-          <v-row no-gutters>
+          <v-row no-gutters class="align-center">
 
             <v-col class="flex-grow-0" >
               <v-btn icon
@@ -52,7 +52,7 @@
             </v-col>
 
             <v-col v-if="editingDatasetName" class="flex-grow-0">
-              <BaseIconButton 
+              <BaseIconButton
                 class="editButtonNavigationToolbar"
                 :icon="mdiPencil"
                 icon-color="black"
