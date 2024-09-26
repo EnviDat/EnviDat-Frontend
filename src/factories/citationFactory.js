@@ -321,7 +321,7 @@ const fallbackDoiUrl =
 export function getDoraDoisUrl(doiMap, resolveBaseUrl) {
   let fullUrl = resolveBaseUrl || fallbackDoiUrl;
   doiMap.forEach(doi => {
-    fullUrl += `${doi.replace('/', '~slsh~')}|`;
+    fullUrl += `${doi.replaceAll('/', '~slsh~')}|`;
   });
 
   fullUrl = fullUrl.substring(0, fullUrl.length - 1);
