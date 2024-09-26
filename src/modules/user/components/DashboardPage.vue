@@ -136,7 +136,7 @@
           ref="collaboratorDatasets">
 
        <TitleCard title="My Collaborator Datasets"
-                  icon="refresh"
+                  :icon='mdiRefresh'
                   :tooltipText="refreshButtonText"
                   :loading="collaboratorDatasetIdsLoading || collaboratorDatasetsLoading"
                   :clickCallback="catchCollaboratorRefreshClick" />
@@ -205,7 +205,7 @@
          ref="userOrgaDatasets">
 
       <TitleCard :title="`Datasets of ${usersOrganisationTitle}`"
-                  icon="refresh"
+                  :icon='mdiRefresh'
                   :tooltipText="refreshOrgaButtonText"
                  :loading="userOrganizationLoading"
                  :clickCallback="catchRefreshOrgaClick" />
