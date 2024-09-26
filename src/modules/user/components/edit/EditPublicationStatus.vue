@@ -56,29 +56,15 @@
                   (state === PUBLICATION_STATE_PUBLISHED &&
                     activeStateIndex !== index)
               "
-              small
+              smal
               :disabled="activeStateIndex > index"
               :color="activeStateIndex === index ? 'secondary' : ''"
+              :variant="activeStateIndex === index ? 'flat' : 'tonal'"
             >
               {{ getStateText(state) }}
             </v-chip>
+            <BaseIcon v-if="!getStateText(state)" :icon="mdiArrowRight" :color="'grey'" />
 
-            <v-icon v-if="!getStateText(state)" class="px-2">
-              {{ state }}
-            </v-icon>
-
-
-<!--
-            <v-chip v-if="!!getStateText(state)
-                            && state !== PUBLICATION_STATE_PUBLISHED
-                            || (state === PUBLICATION_STATE_PUBLISHED && activeStateIndex !== index)"
-                    small
-                    :disabled="activeStateIndex > index"
-                    :color="activeStateIndex === index ? 'secondary' : 'grey' "
-            >
-              {{ getStateText(state) }}
-            </v-chip>
--->
 
           </v-row>
 
@@ -88,7 +74,7 @@
             class="py-2"
             justify="center"
           >
-            <v-icon>arrow_upward</v-icon>
+            <BaseIcon :icon="mdiArrowUp" :color="'grey'"  class='mr-1' />
           </v-row>
 
           <v-row
@@ -99,10 +85,12 @@
             no-gutters
             justify="center"
           >
+
+
             <BaseRectangleButton
               id="interactiveButton"
               :button-text="currentStateInfos.buttonText"
-              :material-icon-name="currentStateInfos.buttonIcon"
+              :icon="currentStateInfos.buttonIcon"
               icon-color="white"
               :loading="loading"
               :url="
@@ -152,13 +140,6 @@
           </v-row>
 -->
 
-          <v-row v-if="currentStateInfos.positionIndex === index"
-                 class="pt-4"
-                 no-gutters
-                 justify="center">
-            {{ currentStateInfos.infoText }}
-          </v-row>
-
 
           <v-row v-if="currentStateInfos.positionIndex === index && !isUserAllowedToEdit"
                  class="pt-2 readOnlyHint"
@@ -167,22 +148,10 @@
             {{ readOnlyUserRole }}
           </v-row>
 
-          <v-row
-            v-if="
-              currentStateInfos.positionIndex === index && !isUserAllowedToEdit
-            "
-            class="pt-2 readOnlyHint"
-            no-gutters
-            justify="center"
-          >
-            {{ readOnlyUserRole }}
-          </v-row>
         </v-col>
       </v-row>
 
-      <v-row class="text-body-1 errorHighlight">
-        <v-col cols="12" v-html="labels.instructions2"> </v-col>
-      </v-row>
+      <v-alert type="warning" :text="labels.instructions2" class="text-body-1 mt-6 mb-6" />
 
       <v-row class="text-body-2 pt-4 px-3">
         <v-col
@@ -244,6 +213,8 @@
  */
 import { mapState } from 'vuex';
 
+
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import BaseShinyBadge from '@/components/BaseElements/BaseShinyBadge.vue';
@@ -272,7 +243,7 @@ import {
   PUBLICATION_STATE_RESERVED,
 } from '@/factories/metadataConsts';
 
-import {mdiArrowUp, mdiEarth, mdiFingerprint, mdiNewspaper} from '@mdi/js';
+import {mdiArrowUp, mdiArrowRight, mdiEarth, mdiFingerprint, mdiNewspaper} from '@mdi/js';
 
 export default {
   name: 'EditPublicationStatus',
@@ -328,7 +299,7 @@ export default {
       for (let i = 0; i < this.possiblePublicationStates.length; i++) {
         const pState = this.possiblePublicationStates[i] || PUBLICATION_STATE_DRAFT;
         pStateWithDiv.push(pState);
-        pStateWithDiv.push('arrow_forward');
+        pStateWithDiv.push('mdiArrowRight');
       }
 
       pStateWithDiv.splice(pStateWithDiv.length - 1, 1);
@@ -377,6 +348,7 @@ export default {
   },
   data: () => ({
     mdiArrowUp,
+    mdiArrowRight,
     possiblePublicationStates,
     stateTextMapEditor: new Map([
       [
@@ -443,7 +415,7 @@ export default {
           <br/><br/>Have you finished uploading data & resouces and entered all the metadata as best as possible? Yes, then <strong>click on 'Request'</strong> publication, the EnviDat Team will review the dataset and once approved the DOI will be published at DataCite.
           And this dataset and the DOI are publicly available.`,
       instructions2:
-        'Please be aware once the <strong>dataset is published</strong> the following metadata information <strong>can NOT be changed anymore</strong>.',
+        'Please be aware once the dataset is published the following metadata information can NOT be changed anymore.',
       instructions3:
         'You can still upload newer versions of your research data, please use a <strong>clear name and desription</strong> to indicate the latest version of the data.',
     },
@@ -457,6 +429,7 @@ export default {
     BaseRectangleButton,
     BaseStatusLabelView,
     BaseShinyBadge,
+    BaseIcon,
   },
 };
 </script>

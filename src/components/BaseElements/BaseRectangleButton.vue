@@ -1,18 +1,18 @@
 <template>
   <v-tooltip v-bind="{ tooltipPosition: true }" :disabled="$vuetify.display.smAndDown || !tooltipText">
     <template #activator="{ props }">
-      <v-btn 
-        v-bind="props" 
-        :size="buttonSize" 
-        :class="marginClass" 
-        :color="color" 
+      <v-btn
+        v-bind="props"
+        :size="buttonSize"
+        :class="marginClass"
+        :color="color"
         :variant='buttonVariant'
-        :disabled="disabled" 
-        :href="url" 
-        :loading="loading" 
-        :elevation="elevation" 
+        :disabled="disabled"
+        :href="url"
+        :loading="loading"
+        :elevation="elevation"
         rel="noopener noreferrer"
-        target="_blank" 
+        target="_blank"
         @click.stop="onClick"
       >
         <BaseIcon v-if="icon" :icon="icon" :color='iconColor' class='mr-1' />
