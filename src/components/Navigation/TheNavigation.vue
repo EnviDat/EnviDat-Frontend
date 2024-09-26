@@ -29,9 +29,11 @@
                    :prepend-icon="item.icon"
                    :title="item.title"
                    density='compact'
-                   :color="item.disabled ? 'grey' : item.active ? 'accent' : 'secondary'"
+                   :class="[
+                      item.disabled ? 'text-grey' : item.active ? 'text-secondary' : '',
+                      item.icon === 'envidat' ? mini ? 'px-2' : 'px-3' : ''
+                    ]"
                    :disabled="item.disabled"
-                   :class="`${item.icon === 'envidat' ? mini ? 'px-2' : 'px-3' : '' }`"
                    @click.stop="itemClick(item)" >
 
       </v-list-item>
@@ -90,6 +92,11 @@ export default {
       }
     },
     itemClick(item) {
+      // manage active status
+      this.navItemsMenuExcluded.forEach(i => {
+        i.active = false;
+      });
+      item.active = true;
       if (!item.disabled) {
         this.$emit('itemClick', item);
       }
