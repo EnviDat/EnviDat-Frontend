@@ -40,7 +40,8 @@ const loadImageUrlMap  = () => {
 
     keys.forEach(key => {
       const newKey = normalizeImagePath(key);
-      const imageDestination = new URL(imageUrls[key], import.meta.url).href;
+      // const imageDestination = new URL(imageUrls[key], import.meta.url).href;
+      const imageDestination = imageUrls[key];
       if (key.includes('assets/icons/')) {
         iconMap[newKey] = imageDestination;
       } else {
