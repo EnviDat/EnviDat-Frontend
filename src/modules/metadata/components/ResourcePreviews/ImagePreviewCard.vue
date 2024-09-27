@@ -5,11 +5,13 @@
       <v-row no-gutters >
         <v-col >
 
+
           <v-img v-show="!loadingImagePreview && !imagePreviewError"
                  ref="imagePreview"
                  style="max-height: 100%; max-width: 100%; cursor: pointer;"
                  @click="catchImageClick"
                  @load="loadingImagePreview = false"
+                 :src="urlImage"
                  @error="catchImageLoadError"
                  alt="resource image preview"/>
 
@@ -61,15 +63,18 @@ export default {
     loadImagePreview(url) {
       this.imagePreviewError = null;
       this.loadingImagePreview = true;
-      const vm = this;
 
       try {
         this.$nextTick(() => {
-          const imageRefs = vm.$refs.imagePreview;
-          const imageRef = (imageRefs instanceof Array) ? imageRefs[0] : imageRefs;
+          const imageRef = this.$refs.imagePreview;
 
-          imageRef.src = url;
-        })
+          if (imageRef && imageRef.$el) {
+            const imgElement = imageRef.$el;
+            if (imgElement) {
+              this.urlImage = url;
+            }
+          }
+        });
       } catch (e) {
         this.imagePreviewError = e;
         console.error(`Loading image preview failed: ${e}`);
@@ -91,6 +96,7 @@ export default {
     imagePreviewError: null,
     loadingImagePreview: false,
     notFoundImg,
+    urlImage: null,
   }),
 };
 </script>
