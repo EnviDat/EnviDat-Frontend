@@ -39,7 +39,6 @@
             <TagChipAuthor
                 v-if="item.value"
                 :name="item.value"
-                :isSmall="true"
                 :closable="userTagsCloseable && !readonly"
                 @closeClicked="catchCloseClicked"
             />
