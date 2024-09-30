@@ -2,7 +2,7 @@
   <v-col cols="12" class="pa-0" style="position: relative;">
     <v-row class="text-container" align="center" justify="center">
       <v-col
-        class="text-center text-md-h2 text-h4 headerTitle"
+        class="text-center text-md-h2 text-h4 headerTitle titleLayout"
         cols="12"
       >
         {{ title }}
@@ -44,7 +44,7 @@ export default {
 </script>
 
 <style scoped>
-.text {
+.titleLayout {
   letter-spacing: 0 !important;
   text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.7);
 }
