@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-container class="pa-0">
+    <v-container class="pa-0" fluid>
       <v-row no-gutters>
         <v-col
           class="py-0 pr-sm-0"
