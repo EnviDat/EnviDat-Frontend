@@ -29,7 +29,7 @@
                         :createClickCallback="canCreateDatasets ? createClickCallback : null"
                         :editingClickCallback="editingClickCallback"
                         :editingDatasetName="lastEditedDataset"
-                        :currentLocalDataset="currentLocalDataset"
+                        :currentLocalDataset="hasLocalDataset ? currentLocalDataset : undefined"
                         @localCardClicked="catchLocalCardClick"
                         @clearButtonClicked="catchClearLocalStorage"
       />
@@ -306,7 +306,11 @@ import {
 import { getNameInitials } from '@/factories/authorFactory';
 import { errorMessage } from '@/factories/notificationFactory';
 import { getTagColor, getPopularTags, tagsIncludedInSelectedTags } from '@/factories/keywordsFactory';
-import { enhanceMetadatasTitleImage, getMetadataVisibilityState, isTagSelected } from '@/factories/metaDataFactory';
+import {
+  enhanceMetadataEntry,
+  getMetadataVisibilityState,
+  isTagSelected,
+} from '@/factories/metaDataFactory';
 
 import {
   getUserOrganizationRoleMap,
@@ -622,27 +626,23 @@ export default {
     userLastName() {
       return this.user?.fullName?.split(' ')[1] || '';
     },
+    hasLocalDataset() {
+      const localStorageData = getPreviewDatasetFromLocalStorage();
+      const properties = Object.keys(localStorageData);
+
+      return properties.length > 0;
+    },
     currentLocalDataset() {
-      const localStorageInfos = getPreviewDatasetFromLocalStorage();
-
-      // eslint-disable-next-line vue/no-side-effects-in-computed-properties,no-unused-expressions
-      this.localDatasetUpdateCount;
-
-      const properties = Object.keys(localStorageInfos);
-
-      if (properties.length <= 0) {
-        return undefined;
-      }
+      const localStorageData = getPreviewDatasetFromLocalStorage();
 
       const localDataset = {
-        title: localStorageInfos[METADATA_TITLE_PROPERTY] ? localStorageInfos[METADATA_TITLE_PROPERTY] : '[Untitled Dataset]',
-        subTitle: localStorageInfos.description,
-        tags: localStorageInfos.keywords,
-        fileIconString: fileIcon,
+        title: localStorageData[METADATA_TITLE_PROPERTY] ? localStorageData[METADATA_TITLE_PROPERTY] : '[Untitled Dataset]',
+        subTitle: localStorageData.description,
+        tags: localStorageData.keywords,
         flatLayout: true,
       };
 
-      enhanceMetadatasTitleImage([localDataset]);
+      enhanceMetadataEntry(localDataset);
 
       return localDataset;
     },

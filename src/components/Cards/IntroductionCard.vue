@@ -108,6 +108,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import MetadataCardLocal from '@/components/Cards/MetadataCardLocal.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import { mdiClose } from '@mdi/js';
 
@@ -182,6 +183,7 @@ export default {
   }),
   components: {
     BaseRectangleButton,
+    MetadataCardLocal,
   },
 };
 </script>
