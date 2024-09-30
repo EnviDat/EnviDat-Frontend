@@ -47,11 +47,11 @@ export const TagChips = () => ({
       </v-col>
 
       <v-col>
-        <tag-chip name="highlighted" closeable selectable highlighted />
+        <tag-chip name="count='5'" selectable :count="5" />
       </v-col>
 
       <v-col>
-        <tag-chip name="count='5'" selectable :count="5" />
+        <tag-chip name="highlighted" closeable selectable highlighted />
       </v-col>
 
       <v-col>
@@ -63,7 +63,19 @@ export const TagChips = () => ({
       </v-col>
 
       <v-col>
-        <tag-chip name="red color" color="red" />
+        <tag-chip name="highlight color" color="highlight" />
+      </v-col>
+
+      <v-col>
+        <tag-chip name="accent color" color="accent" />
+      </v-col>
+
+      <v-col>
+        <tag-chip name="warning color" color="warning" />
+      </v-col>
+
+      <v-col>
+        <tag-chip name="error color" color="error" />
       </v-col>
       
       <v-col>
