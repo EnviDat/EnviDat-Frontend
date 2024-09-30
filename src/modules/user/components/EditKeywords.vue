@@ -147,9 +147,7 @@ import {
 } from '@/factories/userEditingValidations';
 import { getTagColor } from '@/factories/keywordsFactory';
 
-
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
-import {getIcon} from '@/factories/imageFactory';
 import {mdiArrowDownDropCircleOutline, mdiPaletteSwatch} from '@mdi/js';
 
 

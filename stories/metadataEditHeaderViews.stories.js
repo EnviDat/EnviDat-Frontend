@@ -24,7 +24,7 @@ import {
 import categoryCards from '@/store/categoryCards';
 import { getPopularTags, getTagColor } from '@/factories/keywordsFactory';
 
-import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
+import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 import metadataset from './js/metadata';
 
 const unFormatedMetadataCards = metadataset;
@@ -53,18 +53,8 @@ existingAuthors = sortObjectArray(existingAuthors, 'lastName');
 
 export default {
   title: '9 Editing Metadata / Metadata Header Views',
-  decorators: [],
-  parameters: {
-    ...envidatViewportParameters,
-  },
+  component: EditMetadataHeader,
 };
-
-
-const EditMetadataHeaderTemplate = (args, { argTypes }) => ({
-  components: { EditMetadataHeader },
-  props: Object.keys(argTypes),
-  template: '<EditMetadataHeader v-bind="$props" />',
-});
 
 const emptyFirstGenericProps = {
   id: '1',
@@ -76,8 +66,9 @@ const emptyFirstGenericProps = {
   existingEnviDatUsers: authors,
 };
 
-export const EmptyEditHeader = EditMetadataHeaderTemplate.bind({});
-EmptyEditHeader.args = { ...emptyFirstGenericProps }
+export const EmptyEditHeader = {
+  args: emptyFirstGenericProps,
+};
 
 const filledGenericProps = {
   id: '2',
@@ -88,17 +79,35 @@ const filledGenericProps = {
   contactSurname: 'Miller',
 };
 
-export const FilledEditHeader = EditMetadataHeaderTemplate.bind({});
-FilledEditHeader.args = { ...filledGenericProps }
+export const FilledEditHeader = {
+  args: filledGenericProps,
+};
 
-export const MobileFilledEditHeader = EditMetadataHeaderTemplate.bind({});
-MobileFilledEditHeader.args = { ...FilledEditHeader.args }
-MobileFilledEditHeader.parameters = mobileViewportParams;
+const filledProps2 = {
+  id: '3',
+  existingAuthors,
+  metadataTitle: 'My Glorious Title',
+  contactEmail: existingAuthors[3].email,
+  contactGivenName: existingAuthors[3].firstName,
+  contactSurname: existingAuthors[3].lastName,
+};
 
-export const MobileLargeFilledEditHeader = EditMetadataHeaderTemplate.bind({});
-MobileLargeFilledEditHeader.args = { ...FilledEditHeader.args };
-MobileLargeFilledEditHeader.parameters = mobileLargeViewportParams;
+export const FilledWithExistingAuthor = {
+  args: filledProps2,
+};
 
-export const TabletFilledEditHeader = EditMetadataHeaderTemplate.bind({});
-TabletFilledEditHeader.args = { ...FilledEditHeader.args };
-TabletFilledEditHeader.parameters = tabletViewportParams;
+
+export const MobileFilledEditHeader = {
+  args: { ...FilledEditHeader.args },
+  parameters: mobileViewportParams,
+};
+
+export const MobileLargeFilledEditHeader = {
+  args: {...FilledEditHeader.args},
+  parameters: mobileLargeViewportParams,
+};
+
+export const TabletFilledEditHeader = {
+  args: {...FilledEditHeader.args},
+  parameters: tabletViewportParams,
+};

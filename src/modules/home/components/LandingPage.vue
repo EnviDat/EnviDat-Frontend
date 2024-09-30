@@ -239,7 +239,7 @@ import {
   METADATA_NAMESPACE,
   SET_DETAIL_PAGE_BACK_URL,
 } from '@/store/metadataMutationsConsts';
-import { getIcon, getImage } from '@/factories/imageFactory';
+import { getImage } from '@/factories/imageFactory';
 import { convertArrayToUrlString } from '@/factories/stringFactory';
 import categoryCards from '@/store/categoryCards';
 
