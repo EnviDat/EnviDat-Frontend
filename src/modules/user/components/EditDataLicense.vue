@@ -125,6 +125,7 @@ import { mdiArrowDownDropCircleOutline, mdiShieldSearch } from '@mdi/js';
 
 import {
   getAvailableLicensesForEditing,
+  dataLicenses,
   OTHER_UNDEFINED_LICENSE_ID,
   WSL_DATA_LICENSE_ID,
 } from '@/factories/dataLicense';
@@ -252,7 +253,9 @@ export default {
         return null;
       }
 
-      const dataLicense = this.activeLicenses.filter(x => x.id === id)[0];
+      // make sure to pick from all licenses because older one still be to be shown, even though
+      // they can't be picked anymore
+      const dataLicense = dataLicenses.filter(x => x.id === id)[0];
 
       return dataLicense || null;
     },
