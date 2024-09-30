@@ -1,5 +1,6 @@
 <template>
-  <v-app :theme="themeName" class="vuetifyStorybookApp">
+  <v-app :theme="themeName" class="vuetifyStorybookApp"
+          style="font-family: 'Raleway', sans-serif !important;">
     <v-main>
       <slot name="story"></slot>
     </v-main>
@@ -17,7 +18,9 @@ export default {
 
 <style>
   .vuetifyStorybookApp .v-application__wrap {
-    font-family: 'Raleway', sans-serif;
+    /*
+    font-family: 'Raleway', sans-serif !important;
+    */
     min-height: auto;
   }
 </style>
