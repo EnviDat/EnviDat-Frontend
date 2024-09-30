@@ -18,6 +18,7 @@ import {
   LISTCONTROL_LIST_ACTIVE,
   LISTCONTROL_MAP_ACTIVE,
 } from '@/store/metadataMutationsConsts';
+import categoryCards from '@/store/categoryCards';
 
 import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 import metadata from './js/metadata';
@@ -39,12 +40,15 @@ export default {
 
 
 export const EmptyMetadataList = {
-  args: {},
+  args: {
+    categoryCards,
+  },
 }
 
 
 export const ListLoading = {
   args: {
+    categoryCards,
     loading: true,
     showSearch: true,
   },
@@ -52,6 +56,7 @@ export const ListLoading = {
 
 export const MinimalList = {
   args: {
+    categoryCards,
     listContent: longList,
     showSearch: true,
     allTags,
