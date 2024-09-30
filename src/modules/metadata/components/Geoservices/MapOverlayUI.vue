@@ -120,6 +120,8 @@ export default {
     opacity: 100,
     showSite: true,
     mapIn3D: false,
+    baseMapStreetsImg: undefined,
+    baseMapSatelliteImg: undefined,
   }),
   computed: {
     layerConfigTitle() {

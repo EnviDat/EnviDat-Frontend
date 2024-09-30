@@ -22,7 +22,10 @@
           <BaseIconButton
             :disabled="!undoButtonEnabled"
             :icon="mdiUndo"
+            color="accent"
             icon-color="black"
+            outlined
+            outline-color="black"
             tooltip-text="Undo"
             @clicked="triggerGeomUndo"
           />
@@ -35,6 +38,9 @@
             :loading="saveButtonInProgress"
             :icon="mdiContentSave"
             icon-color="black"
+            color="accent"
+            outlined
+            outline-color="black"
             tooltip-text="Save"
             @clicked="triggerGeomSave"
           />
@@ -105,7 +111,7 @@ export default {
   },
   props: {
     site: {
-      type: String,
+      type: Object,
       default: undefined,
     },
     layerConfig: {

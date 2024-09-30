@@ -51,7 +51,7 @@
             />
 
             <MetadataGeo
-              v-bind="genericProps"
+              v-bind="metadataGeoProps"
               @saveGeoms="commitGeometriesToAPI"
               @undoGeoms="undoGeomEdits"
               @uploadGeomFile="triggerFilePicker"
@@ -189,7 +189,7 @@ export default {
 
       return undefined;
     },
-    genericProps() {
+    metadataGeoProps() {
       return {
         mapDivId: this.mapDivId,
         mapHeight: this.mapHeight,
