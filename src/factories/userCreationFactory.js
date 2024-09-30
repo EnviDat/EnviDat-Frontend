@@ -569,7 +569,7 @@ export function storeCreationStepsData(dataKey, data, steps, resetMessages = tru
 
   if (clearUIPreviews) {
     // clearing the preview can mean it would clear any input of the users while typing
-    // normaly that's fine because the storeCreationStepsData() is triggered due a users making a change
+    // normally that's fine because the storeCreationStepsData() is triggered due a users making a change
     // but if there something needs to be updated (like the list of organizations to be able to select out of the users organziations)
     // then we have to make sure not to clear the previews because it can affect any of the UI components
     eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
