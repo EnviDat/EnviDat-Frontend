@@ -29,11 +29,14 @@
         
       <div v-if="!error"
            class="readableText pl-1 pl-md-0" >
-        <BaseIcon :icon="complete ? mdiCheckCircle : mdiAlertOutline"
-                  :color="complete ? 'secondary' : 'grey'" />
+        <BaseIcon :icon="complete ? mdiCheckboxMarkedOutline : mdiCheckboxBlankOutline"
+                  :badgeDot="!complete"
+                  badgeColor="accent"
+                  :color="complete ? 'secondary' : 'grey'"
+        />
       </div>
 
-      <BaseIcon v-if="error" :icon="mdiAlertCircle" color="error" />
+      <BaseIcon v-if="error" :icon="mdiAlertOctagram" color="error" />
 
     </div>
 
@@ -54,15 +57,15 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
-import { mdiAlertCircle, mdiCheckCircle, mdiAlertOutline } from '@mdi/js';
+import { mdiAlertOctagram, mdiCheckboxMarkedOutline, mdiCheckboxBlankOutline } from '@mdi/js';
 
 export default {
   name: 'StepButton',
   components: { BaseIcon },
   data: ()=>({
-    mdiAlertCircle,
-    mdiCheckCircle,
-    mdiAlertOutline,
+    mdiAlertOctagram,
+    mdiCheckboxMarkedOutline,
+    mdiCheckboxBlankOutline,
   }),
   props: {
     title: {

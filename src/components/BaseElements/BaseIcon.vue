@@ -1,11 +1,12 @@
 <template>
   <div class="baseIcon" :class="classList">
     <v-badge
-      :model-value="count >= 0"
-      location="left center"
+      :model-value="badgeDot ? '' : count >= 0"
+      :location="badgeDot ? 'right top' : 'left center'"
       :content="count"
-      color="highlight"
+      :color="badgeColor"
       class="envidatBadge"
+      :dot="badgeDot"
       :floating="small"
       :class="{
         bigNumber: count > 9
@@ -56,6 +57,8 @@ export default {
     dark: { type: Boolean, default: false },
     light: { type: Boolean, default: false },
     count: { type: Number, default: undefined },
+    badgeDot: { type: Boolean, default: false },
+    badgeColor: { type: String, default: 'highlight' },
   },
   data: () => ({
   }),
