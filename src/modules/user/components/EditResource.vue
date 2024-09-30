@@ -272,7 +272,11 @@
           <v-row no-gutters class="pt-4" justify="end">
             <v-col class="flex-grow-0">
               <!-- prettier-ignore -->
-              <BaseRectangleButton :disabled="!saveButtonEnabled" :loading="loading" :buttonText="labels.createButtonText"
+              <BaseRectangleButton
+                  :color="saveButtonEnabled ? 'primary' : 'grey'"
+                  :disabled="!saveButtonEnabled"
+                  :loading="loading"
+                  :buttonText="labels.createButtonText"
                 @clicked="saveResourceClick" />
             </v-col>
           </v-row>

@@ -33,6 +33,7 @@
       <v-row no-gutters justify="end">
         <v-col class="flex-grow-0">
           <BaseRectangleButton
+            :color="createButtonDisabled ? 'grey' : 'primary'"
             :disabled="createButtonDisabled"
             :buttonText="labels.buttonText"
             @clicked="createButtonClick"
