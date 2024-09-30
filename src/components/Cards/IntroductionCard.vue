@@ -41,7 +41,7 @@
             </v-col>
 
             <v-col cols="5" style="display: inline-flex; justify-content: center;">
-              <base-icon-button 
+              <BaseIconButton
                 :icon="mdiClose"
                 color="error"
                 icon-color="black"
@@ -59,7 +59,7 @@
             </v-col>
 
             <v-col cols="3">
-              <base-rectangle-button
+              <BaseRectangleButton
                 color="accent"
                 marginClass="text-black"
                 :button-text="createButtonText"
@@ -80,7 +80,7 @@
 
             <v-col cols="5"
                     class="pl-4">
-              <base-rectangle-button
+              <BaseRectangleButton
                 color="accent"
                 marginClass="text-black"
                 :button-text="editingButtonText"
@@ -110,6 +110,8 @@
  */
 import MetadataCardLocal from '@/components/Cards/MetadataCardLocal.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+
 import { mdiClose } from '@mdi/js';
 
 export default {
@@ -184,6 +186,7 @@ export default {
   components: {
     BaseRectangleButton,
     MetadataCardLocal,
+    BaseIconButton,
   },
 };
 </script>
