@@ -9,6 +9,7 @@
       style="position: absolute; top: 0; right: 0; z-index: 2;"
       :icon="mdiClose"
       icon-color="white"
+      color="primary"
       isElevated
       tooltipText="Close post and return to blog overview"
       tooltipBottom

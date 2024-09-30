@@ -44,8 +44,11 @@
         cols="12"
         md="10"
         offset-md="1">
-        <BlogPost :post="post"
-          :postContent="postContent" />
+
+        <BlogPost
+            :post="post"
+            :postContent="postContent"
+        />
       </v-col>
 
       <v-col v-if="!showBlogPost && loadingList"
