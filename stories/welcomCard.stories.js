@@ -13,15 +13,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import WelcomeCard from '@/components/Cards/WelcomeCard.vue';
 
-import authorCollection from './testdata/authorCollection.json';
-
-const methods = {
-  authors() {
-    const items = Object.values(authorCollection);
-    return items.splice(2, 4);
-  },
-};
-
 export default {
   title: '3 Cards / Welcome Card',
   component: WelcomeCard,
