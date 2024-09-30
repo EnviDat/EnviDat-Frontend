@@ -56,15 +56,15 @@
                   (state === PUBLICATION_STATE_PUBLISHED &&
                     activeStateIndex !== index)
               "
-              smal
+              density="compact"
               :disabled="activeStateIndex > index"
               :color="activeStateIndex === index ? 'secondary' : ''"
               :variant="activeStateIndex === index ? 'flat' : 'tonal'"
             >
               {{ getStateText(state) }}
             </v-chip>
-            <BaseIcon v-if="!getStateText(state)" :icon="mdiArrowRight" :color="'grey'" />
 
+            <BaseIcon v-if="!getStateText(state)" :icon="mdiArrowRight" :color="'grey'" />
 
           </v-row>
 
@@ -85,7 +85,6 @@
             no-gutters
             justify="center"
           >
-
 
             <BaseRectangleButton
               id="interactiveButton"
