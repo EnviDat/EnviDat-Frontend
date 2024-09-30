@@ -23,7 +23,7 @@
         <v-col
           cols="12"
           class="text-h6"
-          :style="`background-color: ${$vuetify.theme.themes.light.highlight};`"
+          :style="`background-color: ${$vuetify.theme.themes.light.colors.highlight};`"
         >
           {{ signedInText + signedInEmail }}
         </v-col>
@@ -144,7 +144,7 @@
         <v-row
           v-if="formErrorText"
           id="errorTextRow"
-          :style="`background-color: ${$vuetify.theme.themes.light.errorHighlight};`"
+          :style="`background-color: ${$vuetify.theme.themes.light.colors.errorHighlight};`"
         >
           <v-col cols="12" class="pa-0" >
             <v-alert type="error" >
