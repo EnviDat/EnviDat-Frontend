@@ -37,9 +37,6 @@ export default {
     dark: Boolean,
     flatLayout: Boolean,
     compactLayout: Boolean,
-    fileIconString: String,
-    lockedIconString: String,
-    unlockedIconString: String,
     geoJSONIcon: String,
     categoryColor: String,
     showGenericOpenButton: {

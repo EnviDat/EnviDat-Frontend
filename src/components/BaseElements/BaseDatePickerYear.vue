@@ -130,7 +130,6 @@ export default {
   },
   methods: {
     saveYear(year) {
-      console.log('saveYear', typeof year);
       const yearString = year.toString();
       this.previewYear = yearString;
       this.yearField = yearString;

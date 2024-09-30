@@ -55,20 +55,23 @@
 
           <v-col v-for="(pinnedId, index) in pinnedIds" :key="'pinned_' + index" :class="cardGridClass" class="pa-2">
 
-            <metadata-card class="highlighted" :id="pinnedId" :ref="pinnedId" :title="metadatasContent[pinnedId].title"
-              :name="metadatasContent[pinnedId].name" :subtitle="metadatasContent[pinnedId].notes"
-              :tags="!isCompactLayout ? metadatasContent[pinnedId].tags : null"
-              :titleImg="metadatasContent[pinnedId].titleImg"
-              :restricted="hasRestrictedResources(metadatasContent[pinnedId])"
-              :resourceCount="metadatasContent[pinnedId].num_resources" :modeData="modeData" :flatLayout="listView"
-              :compactLayout="isCompactLayout" :fileIconString="fileIconString" :lockedIconString="lockedIconString"
-              :unlockedIconString="unlockedIconString" :geoJSONIcon="getGeoJSONIcon(metadatasContent[pinnedId].location)"
-              :categoryColor="metadatasContent[pinnedId].categoryColor"
-              :state="getMetadataState(metadatasContent[pinnedId])"
-              :organization="metadatasContent[pinnedId].organization?.name"
-              :organizationTooltip="metadatasContent[pinnedId].organization?.title"
-              :showOrganizationOnHover="showOrganizationOnHover" @clickedEvent="metaDataClicked"
-              @clickedTag="catchTagClicked" />
+            <metadata-card
+                class="highlighted" :id="pinnedId" :ref="pinnedId"
+                :title="metadatasContent[pinnedId].title"
+                :name="metadatasContent[pinnedId].name" :subtitle="metadatasContent[pinnedId].notes"
+                :tags="!isCompactLayout ? metadatasContent[pinnedId].tags : null"
+                :titleImg="metadatasContent[pinnedId].titleImg"
+                :restricted="hasRestrictedResources(metadatasContent[pinnedId])"
+                :resourceCount="metadatasContent[pinnedId].num_resources" :modeData="modeData" :flatLayout="listView"
+                :compactLayout="isCompactLayout"
+                :geoJSONIcon="getGeoJSONIcon(metadatasContent[pinnedId].location)"
+                :categoryColor="metadatasContent[pinnedId].categoryColor"
+                :state="getMetadataState(metadatasContent[pinnedId])"
+                :organization="metadatasContent[pinnedId].organization?.name"
+                :organizationTooltip="metadatasContent[pinnedId].organization?.title"
+                :showOrganizationOnHover="showOrganizationOnHover" @clickedEvent="metaDataClicked"
+                @clickedTag="catchTagClicked"
+            />
           </v-col>
 
           <v-col v-for="(metadata, index) in unpinnedFilteredList" :key="'filtered_' + index" :class="cardGridClass"
@@ -77,8 +80,7 @@
             <metadata-card :id="metadata.id" :ref="metadata.id" :title="metadata.title" :name="metadata.name"
               :subtitle="metadata.notes" :tags="!isCompactLayout ? metadata.tags : null" :titleImg="metadata.titleImg"
               :restricted="hasRestrictedResources(metadata)" :resourceCount="metadata.num_resources" :modeData="modeData"
-              :flatLayout="listView" :compactLayout="isCompactLayout" :fileIconString="fileIconString"
-              :lockedIconString="lockedIconString" :unlockedIconString="unlockedIconString"
+              :flatLayout="listView" :compactLayout="isCompactLayout"
               :geoJSONIcon="getGeoJSONIcon(metadata.location)" :categoryColor="metadata.categoryColor"
               :state="getMetadataState(metadata)" :organization="metadata.organization?.name"
               :organizationTooltip="metadata.organization?.title" :showOrganizationOnHover="showOrganizationOnHover"
@@ -227,9 +229,6 @@ export default {
     },
   },
   beforeMount() {
-    this.fileIconString = getIcon('file');
-    this.lockedIconString = getIcon('lock2Closed');
-    this.unlockedIconString = getIcon('lock2Open');
     this.pinIcon = getIcon('marker');
     this.multiPinIcon = getIcon('markerMulti');
     this.polygonIcon = getIcon('polygons');
@@ -552,9 +551,6 @@ export default {
   data: () => ({
     noResultText: 'Nothing found for these search criterias.',
     suggestionText: 'Change the criterias or try one of these categories',
-    fileIconString: null,
-    lockedIconString: null,
-    unlockedIconString: null,
     pinIcon: null,
     multiPinIcon: null,
     polygonIcon: null,

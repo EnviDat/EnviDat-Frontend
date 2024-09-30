@@ -104,7 +104,6 @@
               :name="metadata.name"
               :titleImg="metadata.titleImg"
               :resourceCount="metadata.num_resources"
-              :fileIconString="fileIconString"
               :categoryColor="metadata.categoryColor"
               :compactLayout="true"
               @clickedEvent="catchMetadataClicked" />
@@ -275,7 +274,6 @@ export default {
   },
   beforeMount() {
 
-    this.fileIconString = getIcon('file');
     this.fallbackCardImg = getImage('contact');
   },
   mounted() {
@@ -541,7 +539,6 @@ export default {
       categoriesTitle: 'Research Data Categories',
       datasetsTitle: 'Recently Published Research Datasets',
     },
-    fileIconString: '',
     alternativeText: 'EnviDat logo',
     fallbackCardImg: null,
     smLogo,

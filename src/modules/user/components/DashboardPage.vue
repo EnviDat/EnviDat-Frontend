@@ -173,7 +173,6 @@
                            :name="metadata.name"
                            :titleImg="metadata.titleImg"
                            :resourceCount="metadata.num_resources"
-                           :fileIconString="fileIconString"
                            :categoryColor="metadata.categoryColor"
                            :compactLayout="true"
                            :state="getMetadataState(metadata)"
@@ -352,12 +351,10 @@ import {
 
 import { getPreviewDatasetFromLocalStorage } from '@/factories/userCreationFactory';
 
-import fileIcon from '@/assets/icons/file.png';
 import { METADATA_TITLE_PROPERTY } from '@/factories/metadataConsts';
 
 import { mdiRefresh } from '@mdi/js';
 import { loadRouteTags } from '@/factories/stringFactory';
-import { getIcon, getImage } from '@/factories/imageFactory';
 import categoryCards from '@/store/categoryCards';
 
 export default {
@@ -377,7 +374,6 @@ export default {
     eventBus.off(EDIT_USER_PROFILE_EVENT, this.callUserUpdateAction);
   },
   beforeMount() {
-    this.fileIconString = getIcon('file');
 
     this.loadRouteWithTags();
 
@@ -858,7 +854,6 @@ export default {
     dashboardCKANUrl: '/user/',
     createCKANUrl: '/dataset/new',
     ckanDomain: process.env.VITE_API_ROOT,
-    fileIconString: '',
     title: 'Dashboard',
     pageBGImage: 'app_b_dashboardpage',
     refreshButtonText: 'Reload Datasets',

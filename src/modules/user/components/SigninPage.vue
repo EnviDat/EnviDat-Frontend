@@ -75,7 +75,6 @@ import {
   SET_CURRENT_PAGE,
 } from '@/store/mainMutationsConsts';
 
-import { getImage } from '@/factories/imageFactory';
 import SigninView from './SigninView.vue';
 
 export default {

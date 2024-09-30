@@ -242,7 +242,6 @@ export default {
         title: this.metadataCardTitle,
         tags: this.keywordsField,
         subtitle: this.metadataCardSubtitle,
-        fileIconString: getIcon('file'),
       };
 
       if (this.$store) {

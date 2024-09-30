@@ -30,7 +30,6 @@ const currentLocalDataset = {
   title: dataset.title,
   subtitle: dataset.notes,
   tags: dataset.tags,
-  fileIconString: fileIcon,
   flatLayout: true,
 };
 
