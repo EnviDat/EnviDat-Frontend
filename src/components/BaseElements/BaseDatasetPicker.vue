@@ -14,9 +14,7 @@
         <v-autocomplete
           v-model="pickedDataset"
           :items="projects"
-          outlined
-          :dense="dense"
-          append-icon="arrow_drop_down"
+          :menu-icon="mdiArrowDownDropCircleOutline"
           :readonly="readonly"
           :hint="hint"
           :persistent-hint="!!hint"
@@ -27,7 +25,7 @@
           :search-input.sync="search"
           :error-messages="errorMessages"
           :menu-props="menuOptions"
-          clear-icon="close"
+          :clear-icon="mdiClose"
           v-bind="$props"
           @change="catchPicks"
           @blur="$emit('blur', $event)"
@@ -35,7 +33,7 @@
           <template v-slot:selection="{ item }">
             <TagChipProject
               v-if="item"
-              :name="item"
+              :name="item.value"
               :isSmall="false"
               :fontSize="'14px'"
               :iconSize="'14px'"
@@ -47,7 +45,7 @@
           <template v-slot:item="{ item }">
             <TagChipProject
               v-if="item"
-              :name="item"
+              :name="item.value"
               :fontSize="'14px'"
               :iconSize="'14px'"
               @clicked="catchPickClicked"
@@ -68,6 +66,7 @@
 
 <script>
 import TagChipProject from '@/components/Chips/TagChipProject.vue';
+import {mdiInvoiceListOutline, mdiArrowDownDropCircleOutline, mdiClose} from '@mdi/js';
 
 export default {
   name: 'BaseDatasetPicker',
@@ -88,15 +87,11 @@ export default {
     instructions: String,
     prependIcon: {
       type: String,
-      default: 'category',
+      default: mdiInvoiceListOutline,
     },
     userTagsCloseable: {
       type: Boolean,
       default: true,
-    },
-    dense: {
-      type: Boolean,
-      default: false,
     },
     errorMessages: {
       type: String,
@@ -149,7 +144,7 @@ export default {
           this.pickedDataset = this.preSelected[0];
         }
       } else {
-        this.pickedDataset = this.multiplePick ? [] : '';
+        this.pickedDataset = this.multiplePick ? [] : undefined;
       }
     },
     catchCloseClicked(projectName) {
@@ -191,6 +186,8 @@ export default {
   data: () => ({
     pickedDataset: [],
     search: '',
+    mdiClose,
+    mdiArrowDownDropCircleOutline,
   }),
   components: {
     TagChipProject,

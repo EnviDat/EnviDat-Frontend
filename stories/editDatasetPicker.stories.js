@@ -33,21 +33,21 @@ const argTypes = {
   pickedDataset: { action: 'pickedDataset' },
 };
 
-export const dataSetPicker = {
+export const DataSetPicker = {
   args: {
     projects: data.projects,
   },
   argTypes: { ...argTypes },
 };
 
-export const dataSetPickerPreSelection = {
+export const DataSetPickerPreSelection = {
   args: {
     preSelected: data.preSelectedProject,
     projects: data.projects,
   },
   argTypes: { ...argTypes },
 };
-export const dataSetPickerPreSelectionMultipleAndClearable = {
+export const DataSetPickerPreSelectionMultipleAndClearable = {
   args: {
     preSelected: data.preSelectedProject,
     projects: data.projects,
