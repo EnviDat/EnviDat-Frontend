@@ -86,7 +86,6 @@ import {
   SET_APP_BACKGROUND,
   SET_CURRENT_PAGE,
 } from '@/store/mainMutationsConsts';
-import { getImage } from '@/factories/imageFactory';
 
 export default {
   /**

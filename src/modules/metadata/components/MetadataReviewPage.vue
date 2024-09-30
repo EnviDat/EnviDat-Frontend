@@ -102,7 +102,7 @@ import { convertJSON, getFrontendDates, getFrontendJSONForStep } from '@/factori
 
 import { useReviewStore } from '@/modules/metadata/store/reviewStore';
 import { convertArrayToUrlString } from '@/factories/stringFactory';
-import { getIcon, getImage } from '@/factories/imageFactory';
+import { getIcon } from '@/factories/imageFactory';
 import {defineAsyncComponent, markRaw} from 'vue';
 
 import MetadataHeader from './Metadata/MetadataHeader.vue';

@@ -148,7 +148,7 @@ import {
   getFrontendJSONForStep,
 } from '@/factories/mappingFactory';
 
-import { getIcon, getImage } from '@/factories/imageFactory';
+import { getIcon } from '@/factories/imageFactory';
 import { convertArrayToUrlString } from '@/factories/stringFactory';
 
 import {defineAsyncComponent, markRaw} from 'vue';

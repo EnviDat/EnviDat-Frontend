@@ -98,7 +98,6 @@ import { useModeStore } from '@/modules/browse/store/modeStore';
 import { areArraysIdentical, convertArrayToUrlString, convertUrlStringToArray } from '@/factories/stringFactory';
 import { isTagSelected } from '@/factories/metaDataFactory';
 import categoryCards from '@/store/categoryCards';
-import { getImage } from '@/factories/imageFactory';
 
 
 export default {

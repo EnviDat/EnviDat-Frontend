@@ -52,7 +52,6 @@ import {
 } from '@/factories/mappingFactory';
 
 import { isFieldReadOnly } from '@/factories/globalMethods';
-import { useDate } from 'vuetify';
 import { mdiCalendarRange, mdiSkipNext, mdiSkipPrevious } from '@mdi/js';
 
 // eslint-disable-next-line func-names
