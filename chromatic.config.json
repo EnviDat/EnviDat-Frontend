@@ -1,6 +1,10 @@
 {
   "projectId": "Project:616d7a1f2adf9e003ab5ffd1",
   "buildScriptName": "build-storybook",
+  "storybookBaseDir": "stories",
+  "storybookBuildDir": "storybook-static",
+  "outputDir": "storybook-static",
+  "onlyChanged": true,
   "debug": true,
   "zip": true
 }
