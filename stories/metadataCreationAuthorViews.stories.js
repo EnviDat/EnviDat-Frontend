@@ -336,12 +336,10 @@ export const FullEditingAuthorViews = () => ({
     },
     setSelected(id, selected) {
       const auths = this.authors;
-
       for (let i = 0; i < auths.length; i++) {
         const author = auths[i];
         if (author.email === id) {
           author.isSelected = selected;
-          this.$set(auths, i, author);
           return;
         }
       }
@@ -358,11 +356,11 @@ export const FullEditingAuthorViews = () => ({
         const r = auths[i];
         if (r.localId) {
           if (r.localId === newAuthor.localId) {
-            this.$set(auths, i, newAuthor);
+            auths[i] = newAuthor;
             return;
           }
         } else if (r.email === newAuthor.email) {
-          this.$set(auths, i, newAuthor);
+          auths[i] = newAuthor;
           return;
         }
       }
@@ -403,7 +401,8 @@ export const FullEditingAuthorViews = () => ({
             const mergedAuthor = mergeEditingAuthor(updatedAuthor, auth);
 
             // this.authors[i] = createAuthor(updatedAuthor);
-            this.$set(this.authors, i, mergedAuthor);
+
+            this.authors[i] = mergedAuthor;
             // use $set to make the author entry reactive
             // this.$set(this.authors, i, author);
 

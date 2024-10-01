@@ -11,7 +11,7 @@
             <v-tooltip v-if="maxTitleLengthReached && !$vuetify.display.xs" location='bottom'>
               <template v-slot:activator="{ props }">
                 <div v-bind="props" class="pa-4 metadataTitle mb-0" :class="titleClass">
-                  {{ truncatedTitle }}
+                  {{ isFlatLayout ? title : truncatedTitle }}
                 </div>
               </template>
 
@@ -290,6 +290,9 @@ export default {
           !this.flatLayout &&
           this.title?.length > this.titleLength)
       );
+    },
+    isFlatLayout () {
+      return this.flatLayout
     },
     isCompactLayout() {
       return this.compactLayout || this.$vuetify.display.smAndDown;
