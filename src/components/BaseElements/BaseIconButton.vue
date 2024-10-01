@@ -1,28 +1,57 @@
 <template>
   <div class="baseIconButton">
-      <v-btn
-        class="iconButton ma-0 pa-0"
-        :class="buttonClass"
-        :style="buttonStyle"
-        :elevation="elevated ? 5 : undefined"
-        icon
-        :variant="outlined ? 'outlined' : disabled ? 'text' : 'flat'"
-        density="comfortable"
-        :size="large ? 'large' : small ? 'small' : undefined"
-        :color="computedColor"
-        :href="url"
-        :disabled="disabled"
-        @click.stop="onClick"
-      >
-        <base-icon
-          :icon="icon"
-          :large="large"
-          :rotated="rotated"
-          :color="computedIconColor"
-          :small="small"
-          :count="count">
-        </base-icon>
-      </v-btn>
+    <v-tooltip v-if="tooltipText"  :location="getLocation" :text="tooltipText">
+      <template v-slot:activator="{ props }">
+        <v-btn
+            v-bind="props"
+            class="iconButton ma-0 pa-0"
+            :class="buttonClass"
+            :style="buttonStyle"
+            :elevation="elevated ? 5 : undefined"
+            icon
+            :variant="outlined ? 'outlined' : disabled ? 'text' : 'flat'"
+            density="comfortable"
+            :size="large ? 'large' : small ? 'small' : undefined"
+            :color="computedColor"
+            :href="url"
+            :disabled="disabled"
+            @click.stop="onClick"
+          >
+            <base-icon
+              :icon="icon"
+              :large="large"
+              :rotated="rotated"
+              :color="computedIconColor"
+              :small="small"
+              :count="count">
+            </base-icon>
+          </v-btn>
+      </template>
+    </v-tooltip>
+    <v-btn v-else
+      class="iconButton ma-0 pa-0"
+      :class="buttonClass"
+      :style="buttonStyle"
+      :elevation="elevated ? 5 : undefined"
+      icon
+      :variant="outlined ? 'outlined' : disabled ? 'text' : 'flat'"
+      density="comfortable"
+      :size="large ? 'large' : small ? 'small' : undefined"
+      :color="computedColor"
+      :href="url"
+      :disabled="disabled"
+      @click.stop="onClick"
+    >
+      <base-icon
+        :icon="icon"
+        :large="large"
+        :rotated="rotated"
+        :color="computedIconColor"
+        :small="small"
+        :count="count">
+      </base-icon>
+    </v-btn>
+
   </div>
 </template>
 
@@ -91,6 +120,9 @@ export default {
       }
 
       return this.color ?? 'transparent';
+    },
+    getLocation() {
+      return this.tooltipBottom ? 'bottom' : 'top'
     },
     computedIconColor() {
       if (this.disabled) {
