@@ -51,14 +51,23 @@
     </template>
 
     <template v-slot:metadataListLayout="{ metadataListHeight }">
+<!--
+      <div :style="`display: flex; height: calc(100vh - ${metadataListHeight}px);`">
+-->
+<!--
       <v-container v-if="!loading" class="pa-0" fluid>
-        <!-- don't use class with paddings here, padding is done in the MetadataListLayout component -->
+        &lt;!&ndash; don't use class with paddings here, padding is done in the MetadataListLayout component &ndash;&gt;
+-->
 
         <v-virtual-scroll
             v-show="groupedContentList?.length > 0"
-            :height="metadataListHeight"
+            :height="`${metadataListHeight}`"
             :items="groupedContentList"
+            :item-height="fixedCardHeight"
         >
+<!--
+          :style="`height: ${metadataListHeight}px`"
+-->
           <template v-slot:default="{ item: metadataGroup, groupIndex }">
 
             <v-row :id="`metadataListLayout_${groupIndex}`"
@@ -101,8 +110,13 @@
           </v-col>
 
         </v-row>
+<!--
       </v-container>
+-->
 
+<!--
+      </div>
+-->
     </template>
 
   </metadata-list-layout>
@@ -266,6 +280,7 @@ export default {
     amountOfRowsItems()  {
       const mapActive = this.isActiveControl(LISTCONTROL_MAP_ACTIVE);
       const compactLayout = this.isCompactLayout;
+      const listLayout = this.isActiveControl(LISTCONTROL_LIST_ACTIVE);
 
       if (this.$vuetify.display.xlAndUp) {
         if (!compactLayout) {
@@ -284,6 +299,10 @@ export default {
           return 4;
         }
 
+        if (listLayout) {
+          return 2;
+        }
+
         return 3;
       }
 
@@ -296,6 +315,20 @@ export default {
       }
 
       return 4;
+    },
+    fixedCardHeight() {
+      const compactLayout = this.isCompactLayout;
+      const listLayout = this.isActiveControl(LISTCONTROL_LIST_ACTIVE);
+
+      if (compactLayout) {
+        return 115;
+      }
+
+      if (listLayout) {
+        return 197;
+      }
+
+      return 330;
     },
     cardGridClass() {
       const mapActive = this.isActiveControl(LISTCONTROL_MAP_ACTIVE);
@@ -367,17 +400,13 @@ export default {
   },
   methods: {
     getGroupItemList(array) {
-      return array.reduce((result, item, index) => {
+      const result = [];
 
-        const rowIndex = Math.floor(index / this.amountOfRowsItems);
-        if (!result[rowIndex]) {
-          result[rowIndex] = [];
-        }
+      for (let i = 0; i < array.length; i += this.amountOfRowsItems) {
+        result.push(array.slice(i, i + this.amountOfRowsItems));
+      }
 
-        result[rowIndex].push(item);
-
-        return result;
-      }, []);
+      return result;
     },
     getMetadataState(metadata) {
       if (!this.showPublicationState) {
@@ -471,18 +500,7 @@ export default {
 
       return false;
     },
-    mapFilterHeight() {
-      const sHeight = document.documentElement.clientHeight;
-
-      let height = this.maxMapFilterHeight;
-
-      if (sHeight < this.maxMapFilterHeight) {
-        height = sHeight - 165;
-      }
-
-      return height;
-    },
-    isActiveControl(number) {
+      isActiveControl(number) {
       return this.controlsActive ? this.controlsActive.includes(number) : false;
     },
     controlsChanged(number) {
@@ -521,8 +539,6 @@ export default {
       this.showMapFilter = mapToggled;
 
       this.controlsActive = controlsActive;
-
-      this.resetVirtualContent();
     },
     setScrollPos(toPos) {
       if (this.useDynamicHeight) {

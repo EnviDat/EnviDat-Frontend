@@ -10,7 +10,7 @@
  */
 
 import MetadataList from '@/components/MetadataList.vue';
-import {enhanceMetadatas, enhanceMetadatasTitleImage} from '@/factories/metaDataFactory';
+import {enhanceMetadatas} from '@/factories/metaDataFactory';
 import baseTags from '@/modules/metadata/store/metadataTags';
 import { getEnabledTags, getPopularTags, enhanceTags } from '@/factories/keywordsFactory';
 import {
@@ -28,6 +28,27 @@ metadata.forEach(dataset => enhanceTags(dataset));
 const longList = [...metadata, ...metadata, ...metadata];
 
 enhanceMetadatas(longList);
+
+const hugeList = [
+  ...longList, ...longList, ...longList,
+  ...longList, ...longList, ...longList,
+  ...longList, ...longList, ...longList,
+  ...longList, ...longList, ...longList,
+  ...longList, ...longList, ...longList,
+  ...longList, ...longList, ...longList,
+  ...longList, ...longList, ...longList,
+  ...longList, ...longList, ...longList,
+  ...longList, ...longList, ...longList,
+  ...longList, ...longList, ...longList,
+  ...longList, ...longList, ...longList,
+  ...longList, ...longList, ...longList,
+  ...longList, ...longList, ...longList,
+  ...longList, ...longList, ...longList,
+  ...longList, ...longList, ...longList,
+  ...longList, ...longList, ...longList,
+  ...longList, ...longList, ...longList,
+  ...longList, ...longList, ...longList,
+];
 
 const popularTags = getPopularTags(metadata, undefined, 1);
 const mergedWithPopulars = [...baseTags, ...popularTags.slice(0, 15)];
@@ -62,6 +83,17 @@ export const MinimalList = {
     allTags,
   },
 }
+
+export const HugeList = {
+  args: {
+    categoryCards,
+    listContent: hugeList,
+    showSearch: true,
+    useDynamicHeight: true,
+    allTags,
+  },
+}
+
 export const PinnedIdsList = {
   args: {
     ...MinimalList.args,

@@ -58,7 +58,8 @@
         <slot name="controlPanel" />
       </v-col>
 
-      <v-col v-if="showMapFilter && mapFilteringPossible" cols="12" :style="minMapHeight ? `min-height: ${minMapHeight}px;` : 'height: 100%;'
+      <v-col v-if="showMapFilter && mapFilteringPossible" cols="12"
+             :style="minMapHeight ? `min-height: ${minMapHeight}px;` : 'height: 100%;'
         " key="filterMap">
         <slot name="filterMap" />
       </v-col>
@@ -70,11 +71,10 @@
         id="metadataListScroll_no_mapLayout"
         class="noMapLayoutContainers mt-2 mb-4"
         v-on:scroll="onScroll()"
-        :class="useDynamicHeight ? 'listScroll' : ''"
-        :style="useDynamicHeight ? `height: ${metadataListHeight}px;` : ''"
+        :style="useDynamicHeight ? `height: calc(100vh - ${filteringComponentsHeight}px);` : ''"
       >
 <!--
-        `height: calc(100vh - ${filteringComponentsHeight}px);`
+        :class="useDynamicHeight ? 'listScroll' : ''"
 -->
 
         <slot name="metadataListPlaceholder" />
@@ -124,9 +124,11 @@ export default {
         this.$vuetify.display.mdAndUp
       );
     },
-    metadataListHeight() {
+  },
+  watch: {
+    filteringComponentsHeight() {
       const viewportHeight = window.innerHeight;
-      return viewportHeight - this.filteringComponentsHeight;
+      this.metadataListHeight = (viewportHeight - this.filteringComponentsHeight);
     },
   },
   methods: {
@@ -184,6 +186,7 @@ export default {
   data: () => ({
     filteringComponentsHeight: 150,
     keywordHeight: 150,
+    metadataListHeight: 800,
   }),
 };
 </script>
