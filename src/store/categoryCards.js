@@ -69,7 +69,7 @@ export default [
     title: 'Meteo',
     type: METEO,
     alias: ['climate'],
-    imgPath: getImage('c_b_c_b_clouds_lighting_small'),
+    imgPath: getImage('c_b_meteo_clouds_lighting_small'),
     color: '#E8EAF6',
     darkColor: '#C5CAE9',
     disabled: false,
@@ -97,12 +97,12 @@ export default [
 ];
 
 export const cardImageBgs = {
-  [LAND]: getImageList('cards/landscape/'),
-  [FOREST]: getImageList('cards/forest/'),
-  [SNOW]: getImageList('cards/snow/'),
-  [DIVERSITY]: getImageList('cards/diversity/'),
-  [HAZARD]: getImageList('cards/hazard/'),
-  [METEO]: getImageList('cards/meteo/'),
+  [LAND]: getImageList('c_b_landscape'),
+  [FOREST]: getImageList('c_b_forest'),
+  [SNOW]: getImageList('c_b_snow'),
+  [DIVERSITY]: getImageList('c_b_diversity'),
+  [HAZARD]: getImageList('c_b_hazard'),
+  [METEO]: getImageList('c_b_meteo'),
 };
 
 

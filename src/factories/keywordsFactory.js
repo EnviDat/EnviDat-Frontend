@@ -52,7 +52,13 @@ export function convertTags(tagsStringArray, tagsEnabled) {
   return tagObjs;
 }
 
-export function getCategoryColor(categoryCards, categoryName) {
+/**
+ *
+ * @param {string}categoryName
+ * @param {object[]}categoryCards
+ * @returns {undefined|string}
+ */
+export function getCategoryColor(categoryName, categoryCards) {
   for (let i = 0; i < categoryCards.length; i++) {
     const cat = categoryCards[i];
     if (cat.type === categoryName) {
