@@ -1,12 +1,14 @@
 <template>
-  <v-container class="pa-0" fluid tag="article" id="MetadataDetailPage">
+  <v-container class="pa-0" tag="article" id="MetadataDetailPage">
     <v-row no-gutters>
       <!-- prettier-ignore -->
       <v-col class="elevation-5 pa-0"
              cols="12"
              ref="header"
              style="z-index: 1; left: 0"
-             :style="headerStyle" >
+             >
+             <!-- :style="headerStyle" -->
+
         <!-- prettier-ignore -->
         <MetadataHeader v-bind="header"
                           :metadataId="metadataId"
@@ -18,18 +20,33 @@
                           @clickedEdit="catchEditClicked"
                           @clickedAuthor="catchAuthorClicked"
                           @checkSize="resize"
-                          :expanded="headerExpanded" />
+                          :expanded="true" />
       </v-col>
     </v-row>
+    <!-- mobile close button: is displayed only if the scroll is more than 400. -->
+    <div v-if="showCloseButton">
+      <base-icon-button
+        class="ma-2 closeIcon"
+        :class="{ 'mx-1': $vuetify.display.smAndDown }"
+        style="position: absolute; top: 80px; right: 20px; z-index: 2;"
+        :icon="mdiClose"
+        :icon-color="'white'"
+        :color="'secondary'"
+        outline-color="primary"
+        outlined
+        tooltip-text="Close metadata view"
+        tooltip-bottom
+      />
+    </div>
 
-    <v-row :style="`position: relative; top: ${headerHeight}px; z-index: 0;`"
-           no-gutters>
+    <v-row :style="`position: relative; z-index: 0;`" no-gutters>
       <v-col :class="firstColWidth" class="pt-0">
-        <v-row v-for="(entry, index) in firstColumn"
-               :key="`left_${index}_${keyHash}`"
-               no-gutters >
+        <v-row
+          v-for="(entry, index) in firstColumn"
+          :key="`left_${index}_${keyHash}`"
+          no-gutters
+        >
           <v-col class="mb-2 px-0">
-
             <!-- prettier-ignore -->
             <component :is="entry"
                        v-bind="entry.props" />
@@ -38,11 +55,12 @@
       </v-col>
 
       <v-col v-if="secondColumn" class="pt-0" :class="secondColWidth">
-        <v-row v-for="(entry, index) in secondColumn"
-               :key="`right_${index}_${keyHash}`"
-               no-gutters >
+        <v-row
+          v-for="(entry, index) in secondColumn"
+          :key="`right_${index}_${keyHash}`"
+          no-gutters
+        >
           <v-col class="mb-2 px-0">
-
             <!-- prettier-ignore -->
             <component :is="entry"
                        v-bind="entry.props" />
@@ -50,7 +68,6 @@
         </v-row>
       </v-col>
     </v-row>
-
   </v-container>
 </template>
 
@@ -73,12 +90,15 @@ import axios from 'axios';
 import rewind from '@turf/rewind';
 import { mapGetters, mapState } from 'vuex';
 import { useModeStore } from '@/modules/browse/store/modeStore';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
 import {
   BROWSE_PATH,
   METADATADETAIL_PAGENAME,
   METADATAEDIT_PAGENAME,
 } from '@/router/routeConsts';
+
+import { mdiClose } from '@mdi/js';
 
 import {
   ACTION_USER_SHOW,
@@ -151,20 +171,37 @@ import {
 import { getIcon } from '@/factories/imageFactory';
 import { convertArrayToUrlString } from '@/factories/stringFactory';
 
-import {defineAsyncComponent, markRaw} from 'vue';
+import { defineAsyncComponent, markRaw } from 'vue';
 
 import MetadataHeader from './Metadata/MetadataHeader.vue';
 
-const MetadataBody = defineAsyncComponent(() => import ('./Metadata/MetadataBody.vue'));
-const MetadataResources = defineAsyncComponent(() => import ('./Metadata/MetadataResources.vue'));
-const MetadataCitation = defineAsyncComponent(() => import ('./Metadata/MetadataCitation.vue'));
-const MetadataPublications = defineAsyncComponent(() => import ('./Metadata/MetadataPublications.vue'));
-const MetadataPublicationList = defineAsyncComponent(() => import ('./Metadata/MetadataPublicationList.vue'));
-const MetadataFunding = defineAsyncComponent(() => import ('./Metadata/MetadataFunding.vue'));
-const MetadataAuthors = defineAsyncComponent(() => import ('./Metadata/MetadataAuthors.vue'));
-const MetadataGeo = defineAsyncComponent(() => import ('@/modules/metadata/components/Geoservices/MetadataGeo.vue'));
-const MetadataRelatedDatasets = defineAsyncComponent(() => import ('@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue'));
-
+const MetadataBody = defineAsyncComponent(() =>
+  import('./Metadata/MetadataBody.vue'),
+);
+const MetadataResources = defineAsyncComponent(() =>
+  import('./Metadata/MetadataResources.vue'),
+);
+const MetadataCitation = defineAsyncComponent(() =>
+  import('./Metadata/MetadataCitation.vue'),
+);
+const MetadataPublications = defineAsyncComponent(() =>
+  import('./Metadata/MetadataPublications.vue'),
+);
+const MetadataPublicationList = defineAsyncComponent(() =>
+  import('./Metadata/MetadataPublicationList.vue'),
+);
+const MetadataFunding = defineAsyncComponent(() =>
+  import('./Metadata/MetadataFunding.vue'),
+);
+const MetadataAuthors = defineAsyncComponent(() =>
+  import('./Metadata/MetadataAuthors.vue'),
+);
+const MetadataGeo = defineAsyncComponent(() =>
+  import('@/modules/metadata/components/Geoservices/MetadataGeo.vue'),
+);
+const MetadataRelatedDatasets = defineAsyncComponent(() =>
+  import('@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue'),
+);
 
 // Might want to check https://css-tricks.com/use-cases-fixed-backgrounds-css/
 // for animations between the different parts of the Metadata
@@ -210,9 +247,8 @@ export default {
       this.fetchUserOrganisationData();
       this.fetchUserDatasets();
 
-      this.headerHeight = this.getHeaderHeight();
+      // this.headerHeight = this.getHeaderHeight();
     });
-
   },
   /**
    * @description
@@ -250,6 +286,7 @@ export default {
 
       return this.currentMetadataContent;
     },
+
     hasGcnetStationConfig() {
       return this.configInfos?.stationsConfigUrl !== null;
     },
@@ -273,6 +310,13 @@ export default {
         asciiDead: this.asciiDead,
         authorPassedInfo: this.authorPassedInfo,
       };
+    },
+    showCloseButton() {
+      if (this.$vuetify.display.mdAndUp) {
+        return false;
+      }
+
+      return this.appScrollPosition > 400;
     },
     generateFileList() {
       const fileList = [];
@@ -325,38 +369,16 @@ export default {
     secondColumn() {
       return this.$vuetify.display.mdAndUp ? this.secondCol : [];
     },
-    headerStyle() {
-      let width = 82.5;
-      let margin = '0px 11.5%';
+    // headerStyle() {
+    //   const width = 100;
+    //   const margin = '0';
 
-      if (this.$vuetify.display.mdAndDown) {
-        width = 100;
-        margin = '0';
-      }
+    //   const pos = 'position: relative';
 
-      if (this.$vuetify.display.lg) {
-        width = 79.75;
-      }
+    //   // const pos = `position: ${this.appScrollPosition > 20 ? 'fixed' : this.$vuetify.display.smAndDown ? 'relative' : 'absolute'}`;
 
-      let pos = 'position: ';
-      if (this.$vuetify.display.mdAndUp) {
-        pos += 'absolute';
-      } else if (this.appScrollPosition > 20) {
-        pos += 'fixed';
-      } else {
-        pos += 'relative';
-      }
-      // const pos = `position: ${this.appScrollPosition > 20 ? 'fixed' : this.$vuetify.display.smAndDown ? 'relative' : 'absolute'}`;
-
-      return `${pos}; width: ${width}%; margin: ${margin}; `;
-    },
-    headerExpanded() {
-      if (this.$vuetify.display.mdAndUp) {
-        return true;
-      }
-
-      return this.appScrollPosition < 20;
-    },
+    //   return `${pos}; width: ${width}%; margin: ${margin}; `;
+    // },
     showEditButton() {
       const userId = this.user?.id;
 
@@ -372,34 +394,33 @@ export default {
     },
     firstColWidth() {
       let bindings =
-          this.secondColumn && this.secondColumn.length > 0
-              ? { 'v-col-6': true }
-              : { 'v-col-12': true };
+        this.secondColumn && this.secondColumn.length > 0
+          ? {
+              'v-col-6': true,
+              'pr-1': this.$vuetify.display.mdAndUp,
+            }
+          : {
+              'v-col-12': true,
+            };
 
-      bindings = { ...bindings, ...this.leftOrFullWidth  };
+      bindings = { ...bindings };
 
       return bindings;
     },
     secondColWidth() {
       let bindings =
-          this.secondColumn && this.secondColumn.length > 0
-              ? { 'v-col-6': true }
-              : {};
+        this.secondColumn && this.secondColumn.length > 0
+          ? {
+              'v-col-6': true,
+              'pl-1': this.$vuetify.display.mdAndUp,
+            }
+          : {};
 
-      bindings = { ...bindings, ...this.rightOrFullWidth  };
+      bindings = { ...bindings };
 
       return bindings;
     },
-    leftOrFullWidth() {
-      return this.firstColumn && this.firstColumn.length > 0
-          ? this.halfWidthLeft
-          : this.fullWidthPadding;
-    },
-    rightOrFullWidth() {
-      return this.secondColumn && this.secondColumn.length > 0
-          ? this.halfWidthRight
-          : this.fullWidthPadding;
-    },
+
     fullWidthPadding() {
       const cssClasses = {};
 
@@ -407,29 +428,6 @@ export default {
         cssClasses['px-2'] = true;
       } else if (this.$vuetify.display.lgAndUp) {
         cssClasses['px-3'] = true;
-      }
-
-      return cssClasses;
-    },
-    halfWidthLeft() {
-      const cssClasses = {
-        'v-col-lg-5': true,
-        'offset-lg-1': true,
-      };
-
-      if (this.$vuetify.display.mdAndUp) {
-        cssClasses['pr-1'] = true;
-      }
-
-      return cssClasses;
-    },
-    halfWidthRight() {
-      const cssClasses = {
-        'v-col-lg-5': true,
-      };
-
-      if (this.$vuetify.display.mdAndUp) {
-        cssClasses['pl-1'] = true;
       }
 
       return cssClasses;
@@ -531,18 +529,20 @@ export default {
     resize() {
       this.reRenderComponents();
     },
-    getHeaderHeight() {
-      let height = -2;
+    // getHeaderHeight() {
+    //   let height = -2;
 
-      if ((this.$vuetify.display.smAndDown && this.appScrollPosition > 20)
-        || this.$vuetify.display.mdAndUp ) {
-        if (this.$refs?.header) {
-          height = this.$refs.header.$el.clientHeight;
-        }
-      }
+    //   if (
+    //     (this.$vuetify.display.smAndDown && this.appScrollPosition > 20) ||
+    //     this.$vuetify.display.mdAndUp
+    //   ) {
+    //     if (this.$refs?.header) {
+    //       height = this.$refs.header.$el.clientHeight;
+    //     }
+    //   }
 
-      return height;
-    },
+    //   return height;
+    // },
     /**
      * @description
      */
@@ -581,10 +581,7 @@ export default {
         );
         this.header.publicationYear = publicationData.publicationYear;
 
-        this.body = createBody(
-          currentContent,
-          this.$vuetify.display.smAndDown,
-        );
+        this.body = createBody(currentContent, this.$vuetify.display.smAndDown);
 
         this.citation = createCitation(currentContent);
 
@@ -679,7 +676,6 @@ export default {
         showPlaceholder: this.showPlaceholder,
       };
 
-
       let publicationList;
 
       if (this.useListResolving) {
@@ -699,11 +695,11 @@ export default {
 
       this.MetadataRelatedDatasets.props = {
         ...this.relatedDatasets,
-      }
+      };
 
       this.MetadataFunding.props = {
         funding: this.funding,
-      }
+      };
 
       this.firstCol = [
         this.MetadataBody,
@@ -714,10 +710,7 @@ export default {
         this.MetadataAuthors,
       ];
 
-      this.secondCol = [
-        this.MetadataResources,
-        this.MetadataGeo,
-      ];
+      this.secondCol = [this.MetadataResources, this.MetadataGeo];
 
       this.singleCol = [
         this.MetadataBody,
@@ -983,9 +976,11 @@ export default {
   },
   components: {
     MetadataHeader,
+    BaseIconButton,
   },
   data: () => ({
-    headerHeight: 0,
+    // headerHeight: 0,
+    mdiClose,
     MetadataBody: markRaw(MetadataBody),
     MetadataResources: markRaw(MetadataResources),
     MetadataCitation: markRaw(MetadataCitation),
@@ -1039,7 +1034,6 @@ export default {
 </script>
 
 <style>
-
 .metadataResourceCard .headline {
   font-size: 20px !important;
 }

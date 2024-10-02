@@ -20,14 +20,17 @@
       </v-col>
     </v-row>
 
-    <v-row :style="`position: relative; top: ${headerHeight}px; z-index: 0;`"
-           no-gutters>
+    <v-row
+      :style="`position: relative; top: ${headerHeight}px; z-index: 0;`"
+      no-gutters
+    >
       <v-col :class="firstColWidth" class="pt-0">
-        <v-row v-for="(entry, index) in firstColumn"
-               :key="`left_${index}_${keyHash}`"
-               no-gutters >
+        <v-row
+          v-for="(entry, index) in firstColumn"
+          :key="`left_${index}_${keyHash}`"
+          no-gutters
+        >
           <v-col class="mb-2 px-0">
-
             <!-- prettier-ignore -->
             <component :is="entry"
                        v-bind="entry.props" />
@@ -36,11 +39,12 @@
       </v-col>
 
       <v-col v-if="secondColumn" class="pt-0" :class="secondColWidth">
-        <v-row v-for="(entry, index) in secondColumn"
-               :key="`right_${index}_${keyHash}`"
-               no-gutters >
+        <v-row
+          v-for="(entry, index) in secondColumn"
+          :key="`right_${index}_${keyHash}`"
+          no-gutters
+        >
           <v-col class="mb-2 px-0">
-
             <!-- prettier-ignore -->
             <component :is="entry"
                        v-bind="entry.props" />
@@ -48,7 +52,6 @@
         </v-row>
       </v-col>
     </v-row>
-
   </v-container>
 </template>
 
@@ -68,11 +71,12 @@ import { mapGetters, mapState } from 'vuex';
 
 import { BROWSE_PATH, METADATAREVIEW_PAGENAME } from '@/router/routeConsts';
 
-import {
-  USER_SIGNIN_NAMESPACE,
-} from '@/modules/user/store/userMutationsConsts';
+import { USER_SIGNIN_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 
-import { SET_APP_BACKGROUND, SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
+import {
+  SET_APP_BACKGROUND,
+  SET_CURRENT_PAGE,
+} from '@/store/mainMutationsConsts';
 import {
   CLEAR_SEARCH_METADATA,
   METADATA_NAMESPACE,
@@ -85,7 +89,10 @@ import {
   formatDate,
 } from '@/factories/metaDataFactory';
 
-import { getAuthorName, getFullAuthorsFromDataset } from '@/factories/authorFactory';
+import {
+  getAuthorName,
+  getFullAuthorsFromDataset,
+} from '@/factories/authorFactory';
 
 import { getConfigFiles, getConfigUrls } from '@/factories/chartFactory';
 
@@ -96,22 +103,36 @@ import {
   METADATA_MAIN_HEADER,
 } from '@/factories/eventBus';
 
-import { enhanceElementsWithStrategyEvents, enhanceResourcesWithMetadataExtras } from '@/factories/strategyFactory';
+import {
+  enhanceElementsWithStrategyEvents,
+  enhanceResourcesWithMetadataExtras,
+} from '@/factories/strategyFactory';
 
-import { convertJSON, getFrontendDates, getFrontendJSONForStep } from '@/factories/mappingFactory';
+import {
+  convertJSON,
+  getFrontendDates,
+  getFrontendJSONForStep,
+} from '@/factories/mappingFactory';
 
 import { useReviewStore } from '@/modules/metadata/store/reviewStore';
 import { convertArrayToUrlString } from '@/factories/stringFactory';
 import { getIcon } from '@/factories/imageFactory';
-import {defineAsyncComponent, markRaw} from 'vue';
+import { defineAsyncComponent, markRaw } from 'vue';
 
 import MetadataHeader from './Metadata/MetadataHeader.vue';
 
-const MetadataBody = defineAsyncComponent(() => import ('./Metadata/MetadataBody.vue'));
-const MetadataResources = defineAsyncComponent(() => import ('./Metadata/MetadataResources.vue'));
-const MetadataCitation = defineAsyncComponent(() => import ('./Metadata/MetadataCitation.vue'));
-const MetadataAuthors = defineAsyncComponent(() => import ('./Metadata/MetadataAuthors.vue'));
-
+const MetadataBody = defineAsyncComponent(() =>
+  import('./Metadata/MetadataBody.vue'),
+);
+const MetadataResources = defineAsyncComponent(() =>
+  import('./Metadata/MetadataResources.vue'),
+);
+const MetadataCitation = defineAsyncComponent(() =>
+  import('./Metadata/MetadataCitation.vue'),
+);
+const MetadataAuthors = defineAsyncComponent(() =>
+  import('./Metadata/MetadataAuthors.vue'),
+);
 
 // Might want to check https://css-tricks.com/use-cases-fixed-backgrounds-css/
 // for animations between the different parts of the Metadata
@@ -122,7 +143,7 @@ const MetadataAuthors = defineAsyncComponent(() => import ('./Metadata/MetadataA
 export default {
   name: 'MetadataReviewPage',
   beforeRouteEnter(to, from, next) {
-    next((vm) => {
+    next(vm => {
       vm.$store.commit(SET_CURRENT_PAGE, METADATAREVIEW_PAGENAME);
       vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
     });
@@ -149,12 +170,12 @@ export default {
 
     this.$nextTick(() => {
       this.headerHeight = this.getHeaderHeight();
-    })
+    });
   },
   /**
    * @description
    */
-/*
+  /*
   beforeDestroy() {
     // clean current metadata to make be empty for the next to load up
     this.$store.commit(`${METADATA_NAMESPACE}/${CLEAN_CURRENT_METADATA}`);
@@ -164,9 +185,7 @@ export default {
 */
   computed: {
     ...mapState(['config']),
-    ...mapGetters(USER_SIGNIN_NAMESPACE, [
-      'user',
-    ]),
+    ...mapGetters(USER_SIGNIN_NAMESPACE, ['user']),
     ...mapGetters({
       detailPageBackRoute: `${METADATA_NAMESPACE}/detailPageBackRoute`,
       authorsMap: `${METADATA_NAMESPACE}/authorsMap`,
@@ -238,33 +257,33 @@ export default {
     },
     firstColWidth() {
       let bindings =
-          this.secondColumn && this.secondColumn.length > 0
-              ? { 'v-col-6': true }
-              : { 'v-col-12': true };
+        this.secondColumn && this.secondColumn.length > 0
+          ? { 'v-col-6': true }
+          : { 'v-col-12': true };
 
-      bindings = { ...bindings, ...this.leftOrFullWidth  };
+      bindings = { ...bindings, ...this.leftOrFullWidth };
 
       return bindings;
     },
     secondColWidth() {
       let bindings =
-          this.secondColumn && this.secondColumn.length > 0
-              ? { 'v-col-6': true }
-              : {};
+        this.secondColumn && this.secondColumn.length > 0
+          ? { 'v-col-6': true }
+          : {};
 
-      bindings = { ...bindings, ...this.rightOrFullWidth  };
+      bindings = { ...bindings, ...this.rightOrFullWidth };
 
       return bindings;
     },
     leftOrFullWidth() {
       return this.firstColumn && this.firstColumn.length > 0
-          ? this.halfWidthLeft
-          : this.fullWidthPadding;
+        ? this.halfWidthLeft
+        : this.fullWidthPadding;
     },
     rightOrFullWidth() {
       return this.secondColumn && this.secondColumn.length > 0
-          ? this.halfWidthRight
-          : this.fullWidthPadding;
+        ? this.halfWidthRight
+        : this.fullWidthPadding;
     },
     fullWidthPadding() {
       const cssClasses = {};
@@ -312,8 +331,10 @@ export default {
     getHeaderHeight() {
       let height = -2;
 
-      if ((this.$vuetify.display.smAndDown && this.appScrollPosition > 20)
-        || this.$vuetify.display.mdAndUp ) {
+      if (
+        (this.$vuetify.display.smAndDown && this.appScrollPosition > 20) ||
+        this.$vuetify.display.mdAndUp
+      ) {
         if (this.$refs && this.$refs.header) {
           height = this.$refs.header.$el.clientHeight;
         }
@@ -340,19 +361,22 @@ export default {
       if (currentContent && currentContent.title !== undefined) {
         // const subDataset = currentContent;
         const parsedContent = convertJSON(currentContent, false);
-/*
+        /*
         delete parsedContent.author;
         delete parsedContent.maintainer;
         delete parsedContent.organization;
 */
 
-        this.header = getFrontendJSONForStep(METADATA_MAIN_HEADER, parsedContent);
+        this.header = getFrontendJSONForStep(
+          METADATA_MAIN_HEADER,
+          parsedContent,
+        );
         // this.header.metadataState = getMetadataVisibilityState(this.header);
         this.header.contactName = getAuthorName(this.header);
         this.header.created = formatDate(this.header.created);
         this.header.modified = formatDate(this.header.modified);
 
-/*
+        /*
         this.header = createHeader(
           subDataset,
           this.$vuetify.display.smAndDown,
@@ -379,17 +403,17 @@ export default {
         };
 */
 
-        const publicationData = getFrontendJSONForStep(EDITMETADATA_PUBLICATION_INFO, parsedContent);
+        const publicationData = getFrontendJSONForStep(
+          EDITMETADATA_PUBLICATION_INFO,
+          parsedContent,
+        );
         this.header.publicationYear = publicationData.publicationYear;
 
         // this.header.publicationYear = currentContent.version;
 
-        this.body = createBody(
-          currentContent,
-          this.$vuetify.display.smAndDown,
-        );
+        this.body = createBody(currentContent, this.$vuetify.display.smAndDown);
 
-/*
+        /*
         this.citation = createCitation(currentContent);
 */
 
@@ -403,7 +427,6 @@ export default {
 
       if (this.authors) {
         this.$nextTick(() => {
-
           this.MetadataAuthors.props = {
             authors: this.authors,
             authorDetailsConfig: this.authorDetailsConfig,
@@ -412,7 +435,6 @@ export default {
           };
         });
       }
-
     },
     loadResources(currentContent) {
       this.resources = createResources(currentContent, this.user) || {};
@@ -425,8 +447,15 @@ export default {
       if (this.resources.resources) {
         this.configInfos = getConfigFiles(this.resources.resources);
 
-        enhanceElementsWithStrategyEvents(this.resources.resources, undefined, true);
-        enhanceResourcesWithMetadataExtras(this.metadataContent.extras, this.resources.resources);
+        enhanceElementsWithStrategyEvents(
+          this.resources.resources,
+          undefined,
+          true,
+        );
+        enhanceResourcesWithMetadataExtras(
+          this.metadataContent.extras,
+          this.resources.resources,
+        );
 
         this.resources.dates = getFrontendDates(this.metadataContent.date);
       }
@@ -438,7 +467,6 @@ export default {
         dataLicenseUrl: license.url,
         resourcesConfig: this.resourcesConfig,
       };
-
     },
     setMetadataContent() {
       this.configInfos = getConfigUrls(this.configInfos);
@@ -452,23 +480,21 @@ export default {
 
       this.firstCol = [
         this.MetadataBody,
-/*
+        /*
         this.MetadataCitation,
         this.MetadataAuthors,
 */
       ];
 
-      this.secondCol = [
-        this.MetadataResources,
-      ];
+      this.secondCol = [this.MetadataResources];
 
       this.singleCol = [
         this.MetadataBody,
-/*
+        /*
         this.MetadataCitation,
 */
         this.MetadataResources,
-/*
+        /*
         this.MetadataAuthors,
 */
       ];
@@ -479,7 +505,10 @@ export default {
      * @returns {any}
      */
     isCurrentIdOrName(idOrName) {
-      return this.metadataContent?.id === idOrName || this.metadataContent?.name === idOrName;
+      return (
+        this.metadataContent?.id === idOrName ||
+        this.metadataContent?.name === idOrName
+      );
     },
     /**
      * @description
@@ -512,10 +541,8 @@ export default {
         path: BROWSE_PATH,
         query,
       });
-
     },
     catchAuthorClicked(authorGivenName, authorLastName) {
-
       const query = this.$route.query;
 
       // make sure to remove the ascii marker for dead authors for the search
@@ -617,11 +644,9 @@ export default {
 </script>
 
 <style>
-
 .metadataResourceCard .headline {
   font-size: 20px !important;
 }
-
 
 .resourceCardText a {
   color: #ffd740;
