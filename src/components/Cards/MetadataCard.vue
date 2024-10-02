@@ -125,8 +125,14 @@
       style="position: absolute; top: 0; right: 0; width: 30px;">
       <v-row>
         <v-col cols="12">
-          <base-icon-button :icon="openButtonIcon" icon-color="black" color="accent" elevated small
-            :tooltip-text="openButtonTooltip" @clicked="$emit('openButtonClicked')" />
+          <base-icon-button
+              :icon="openButtonIcon"
+              icon-color="black"
+              color="accent"
+              elevated
+              small
+              :tooltip-text="openButtonTooltip"
+              @clicked="$emit('openButtonClicked')" />
         </v-col>
       </v-row>
     </v-container>
@@ -236,7 +242,7 @@ export default {
         : this.whiteTopToBottom;
       const hasImage = !this.flatLayout && this.titleImg && this.$vuetify.display.mdAndUp;
 
-      return {
+      const styles = {
         'border-radius': this.showCardBody ? '4px 4px 0 0' : '4px',
         'height': this.flatLayout ? '55px' : '115px',
 
@@ -249,6 +255,8 @@ export default {
         // Has no image
         'background-color': !hasImage ? this.categoryColor : undefined,
       }
+
+      return styles;
     },
     maxTagsReached() {
       return this.tags && this.tags.length > this.maxTagNumber;
@@ -364,9 +372,6 @@ export default {
       return {
         black_title: !this.dark,
         white_title: this.dark,
-        // smallScreenTitle: this.compactLayout || this.$vuetify.display.xs,
-        smallScreenTitle: this.$vuetify.display.xs,
-        compactTitle: this.compactLayout || this.$vuetify.display.smOnly,
       };
     },
     modeEntryIcon() {
@@ -460,14 +465,6 @@ export default {
   /* font-family: "Baskervville", serif !important; */
   font-size: 1.2rem !important;
   line-height: 1.2rem !important;
-}
-
-.compactTitle {
-  font-size: 17px !important;
-}
-
-.smallScreenTitle {
-  font-size: 14px !important;
 }
 
 .compactText {
