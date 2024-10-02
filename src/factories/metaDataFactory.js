@@ -934,12 +934,10 @@ export const possibleVisibilityStates = [
 /**
  *
  * @param {object[]}datasets
- * @param cardImageBgs
- * @param categoryCards
- * @param mode
+ * @param {string}mode
  * @returns {{}}
  */
-export function enhanceMetadatas(datasets, mode) {
+export function enhanceMetadatas(datasets, mode = undefined) {
 
   if (!(datasets instanceof Array)) {
     throw new Error(

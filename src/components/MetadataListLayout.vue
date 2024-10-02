@@ -28,11 +28,15 @@
         </v-row>
 
         <v-row class="mt-2">
-          <v-col cols="12" id="metadataListScroll_mapLayout" ref="metadataListScroll" class="mapLayoutContainers"
-            v-on:scroll="onScroll()" :class="useDynamicHeight ? 'listScroll' : ''" :style="useDynamicHeight
-                ? `height: calc(100vh - ${filteringComponentsHeight}px);`
-                : ''
-              ">
+          <v-col
+            cols="12"
+            id="metadataListScroll_mapLayout"
+            ref="metadataListScroll"
+            class="mapLayoutContainers"
+            v-on:scroll="onScroll()"
+            :class="useDynamicHeight ? 'listScroll' : ''"
+            :style="useDynamicHeight ? `height: calc(100vh - ${filteringComponentsHeight}px);` : ''"
+          >
             <slot name="metadataListPlaceholder" />
 
             <slot name="metadataListLayout" />
@@ -61,15 +65,21 @@
     </v-row>
 
     <v-row v-if="!mapLayout" class="" no-gutters>
-      <v-col ref="metadataListScroll" id="metadataListScroll_no_mapLayout"
-             class="noMapLayoutContainers mt-2 mb-4"
-        v-on:scroll="onScroll()" :class="useDynamicHeight ? 'listScroll' : ''" :style="useDynamicHeight
-            ? `height: calc(100vh - ${filteringComponentsHeight}px);`
-            : ''
-          ">
+      <v-col
+        ref="metadataListScroll"
+        id="metadataListScroll_no_mapLayout"
+        class="noMapLayoutContainers mt-2 mb-4"
+        v-on:scroll="onScroll()"
+        :class="useDynamicHeight ? 'listScroll' : ''"
+        :style="useDynamicHeight ? `height: ${metadataListHeight}px;` : ''"
+      >
+<!--
+        `height: calc(100vh - ${filteringComponentsHeight}px);`
+-->
+
         <slot name="metadataListPlaceholder" />
 
-        <slot name="metadataListLayout" />
+        <slot name="metadataListLayout" :metadataListHeight="metadataListHeight" />
       </v-col>
     </v-row>
   </v-container>
@@ -113,6 +123,10 @@ export default {
         this.showMapFilter &&
         this.$vuetify.display.mdAndUp
       );
+    },
+    metadataListHeight() {
+      const viewportHeight = window.innerHeight;
+      return viewportHeight - this.filteringComponentsHeight;
     },
   },
   methods: {

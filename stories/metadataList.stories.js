@@ -10,7 +10,7 @@
  */
 
 import MetadataList from '@/components/MetadataList.vue';
-import {enhanceMetadatasTitleImage} from '@/factories/metaDataFactory';
+import {enhanceMetadatas, enhanceMetadatasTitleImage} from '@/factories/metaDataFactory';
 import baseTags from '@/modules/metadata/store/metadataTags';
 import { getEnabledTags, getPopularTags, enhanceTags } from '@/factories/keywordsFactory';
 import {
@@ -25,9 +25,9 @@ import metadata from './js/metadata';
 
 metadata.forEach(dataset => enhanceTags(dataset));
 
-enhanceMetadatasTitleImage(metadata);
-
 const longList = [...metadata, ...metadata, ...metadata];
+
+enhanceMetadatas(longList);
 
 const popularTags = getPopularTags(metadata, undefined, 1);
 const mergedWithPopulars = [...baseTags, ...popularTags.slice(0, 15)];
@@ -62,6 +62,12 @@ export const MinimalList = {
     allTags,
   },
 }
+export const PinnedIdsList = {
+  args: {
+    ...MinimalList.args,
+    prePinnedIds: ['fb851074-a421-47bf-802f-f03493c57041'],
+  },
+}
 
 const selectedTagNames = allTags.filter(tag => tag.name === 'CLIMATE').map(tag => tag.name);
 export const MinimalSelectionList = {
@@ -92,11 +98,25 @@ export const ListWithMap = {
 export const CompactList = {
   args: {
     ...ListWithControls.args,
+    defaultListControls: [LISTCONTROL_COMPACT_LAYOUT_ACTIVE],
+  },
+}
+
+export const CompactListWithMap = {
+  args: {
+    ...ListWithMap.args,
     defaultListControls: [LISTCONTROL_MAP_ACTIVE, LISTCONTROL_COMPACT_LAYOUT_ACTIVE],
   },
 }
 
 export const ListRowView = {
+  args: {
+    ...ListWithControls.args,
+    defaultListControls: [LISTCONTROL_LIST_ACTIVE],
+  },
+}
+
+export const ListRowViewWithMap = {
   args: {
     ...ListWithControls.args,
     defaultListControls: [LISTCONTROL_MAP_ACTIVE, LISTCONTROL_LIST_ACTIVE],

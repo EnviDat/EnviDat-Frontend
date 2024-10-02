@@ -38,61 +38,65 @@
         <!-- don't use class with paddings here, it's being used in the MetadataListLayout component -->
         <v-row id="metadataListPlaceholder" ref="metadataListPlaceholder">
 
-          <v-col v-for="(n, index) in placeHolderAmount" :key="'placeHolder_' + index" :class="cardGridClass"
-            class="pa-2">
+          <v-col
+              v-for="(n, index) in placeHolderAmount"
+              :key="'placeHolder_' + index"
+              :class="cardGridClass"
+              class="pa-2">
 
-            <metadata-card-placeholder :dark="false" />
+            <MetadataCardPlaceholder :dark="false" />
           </v-col>
         </v-row>
       </v-container>
     </template>
 
-    <template v-slot:metadataListLayout>
-      <v-container v-if="!loading" class="px-0 pt-0 px-sm-1" fluid>
-        <!-- don't use class with paddings here, it's being used in the MetadataListLayout component -->
+    <template v-slot:metadataListLayout="{ metadataListHeight }">
+      <v-container v-if="!loading" class="pa-0" fluid>
+        <!-- don't use class with paddings here, padding is done in the MetadataListLayout component -->
 
-        <v-row id="metadataListLayout" ref="metadataListLayout">
+        <v-virtual-scroll
+            v-show="groupedContentList?.length > 0"
+            :height="metadataListHeight"
+            :items="groupedContentList"
+        >
+          <template v-slot:default="{ item: metadataGroup, groupIndex }">
 
-          <v-col v-for="(pinnedId, index) in pinnedIds" :key="'pinned_' + index" :class="cardGridClass" class="pa-2">
+            <v-row :id="`metadataListLayout_${groupIndex}`"
+                   :ref="`metadataListLayout_${groupIndex}`"
+                   no-gutters
+            >
 
-            <metadata-card
-                class="highlighted" :id="pinnedId" :ref="pinnedId"
-                :title="metadatasContent[pinnedId].title"
-                :name="metadatasContent[pinnedId].name" :subtitle="metadatasContent[pinnedId].notes"
-                :tags="!isCompactLayout ? metadatasContent[pinnedId].tags : null"
-                :titleImg="metadatasContent[pinnedId].titleImg"
-                :restricted="hasRestrictedResources(metadatasContent[pinnedId])"
-                :resourceCount="metadatasContent[pinnedId].num_resources" :modeData="modeData" :flatLayout="listView"
-                :compactLayout="isCompactLayout"
-                :geoJSONIcon="getGeoJSONIcon(metadatasContent[pinnedId].location)"
-                :categoryColor="metadatasContent[pinnedId].categoryColor"
-                :state="getMetadataState(metadatasContent[pinnedId])"
-                :organization="metadatasContent[pinnedId].organization?.name"
-                :organizationTooltip="metadatasContent[pinnedId].organization?.title"
-                :showOrganizationOnHover="showOrganizationOnHover" @clickedEvent="metaDataClicked"
-                @clickedTag="catchTagClicked"
-            />
-          </v-col>
+              <v-col v-for="(metadata, index) in metadataGroup"
+                     :key="'filtered_' + index"
+                     :class="cardGridClass"
+                     class="pa-2">
 
-          <v-col v-for="(metadata, index) in unpinnedFilteredList" :key="'filtered_' + index" :class="cardGridClass"
-            class="pa-2">
+                <MetadataCard
+                  :class="metadata.isPinned ? 'highlighted' : ''"
+                  :id="metadata.id" :ref="metadata.id" :title="metadata.title" :name="metadata.name"
+                  :subtitle="metadata.notes" :tags="!isCompactLayout ? metadata.tags : null" :titleImg="metadata.titleImg"
+                  :restricted="hasRestrictedResources(metadata)" :resourceCount="metadata.num_resources" :modeData="modeData"
+                  :flatLayout="listView" :compactLayout="isCompactLayout"
+                  :geoJSONIcon="getGeoJSONIcon(metadata.location)" :categoryColor="metadata.categoryColor"
+                  :state="getMetadataState(metadata)" :organization="metadata.organization?.name"
+                  :organizationTooltip="metadata.organization?.title" :showOrganizationOnHover="showOrganizationOnHover"
+                  @organizationClicked="$emit('organizationClicked', metadata.organization)" @clickedEvent="metaDataClicked"
+                  @clickedTag="catchTagClicked" :showGenericOpenButton="!!metadata.openEvent"
+                  :openButtonTooltip="metadata.openButtonTooltip" :openButtonIcon="metadata.openButtonIcon"
+                  @openButtonClicked="catchOpenClick(metadata.openEvent, metadata.openProperty)" />
+              </v-col>
+            </v-row>
 
-            <metadata-card :id="metadata.id" :ref="metadata.id" :title="metadata.title" :name="metadata.name"
-              :subtitle="metadata.notes" :tags="!isCompactLayout ? metadata.tags : null" :titleImg="metadata.titleImg"
-              :restricted="hasRestrictedResources(metadata)" :resourceCount="metadata.num_resources" :modeData="modeData"
-              :flatLayout="listView" :compactLayout="isCompactLayout"
-              :geoJSONIcon="getGeoJSONIcon(metadata.location)" :categoryColor="metadata.categoryColor"
-              :state="getMetadataState(metadata)" :organization="metadata.organization?.name"
-              :organizationTooltip="metadata.organization?.title" :showOrganizationOnHover="showOrganizationOnHover"
-              @organizationClicked="$emit('organizationClicked', metadata.organization)" @clickedEvent="metaDataClicked"
-              @clickedTag="catchTagClicked" :showGenericOpenButton="!!metadata.openEvent"
-              :openButtonTooltip="metadata.openButtonTooltip" :openButtonIcon="metadata.openButtonIcon"
-              @openButtonClicked="catchOpenClick(metadata.openEvent, metadata.openProperty)" />
-          </v-col>
+          </template>
 
-          <v-col :class="showScrollTopButton ? 'mx-2' : ''" key="infiniteLoader" cols="12"></v-col>
+        </v-virtual-scroll>
 
-          <v-col v-if="!loading && contentSize <= 0" class="mx-2" key="noSearchResultsView" cols="12">
+        <v-row>
+          <v-col
+            v-if="!loading && contentSize <= 0"
+            class="mx-2"
+            key="noSearchResultsView"
+            cols="12">
             <no-search-results-view :categoryCards="categoryCards" @clicked="catchCategoryClicked" />
           </v-col>
 
@@ -120,11 +124,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-// import Vue from 'vue';
-// import InfiniteLoading from 'vue-infinite-loading';
-// Vue.use(InfiniteLoading /* , { options } */);
-
-import { BROWSE_PATH} from '@/router/routeConsts';
+import { BROWSE_PATH } from '@/router/routeConsts';
 import FilterKeywordsSingleView from '@/components/Filtering/FilterKeywordsSingleView.vue';
 import FilterMapView from '@/components/Filtering/FilterMapView.vue';
 import ControlPanel from '@/components/Filtering/ControlPanel.vue';
@@ -140,11 +140,11 @@ import {
 
 import MetadataListLayout from '@/components/MetadataListLayout.vue';
 import { eventBus } from '@/factories/eventBus';
+
 import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
 import { getGeoJSONIcon, getIcon } from '@/factories/imageFactory';
 import { convertArrayToUrlString } from '@/factories/stringFactory';
 
-// check filtering in detail https://www.npmjs.com/package/vue2-filters
 
 export default {
   name: 'MetadataList',
@@ -240,7 +240,6 @@ export default {
       });
     }
 
-    this.infiniteHandler();
   },
   computed: {
     hasMetadatasContent() {
@@ -264,18 +263,79 @@ export default {
     showPinnedElements() {
       return !this.loading && this.showMapFilter && this.prePinnedIds?.length > 0;
     },
-    unpinnedFilteredList() {
+    amountOfRowsItems()  {
+      const mapActive = this.isActiveControl(LISTCONTROL_MAP_ACTIVE);
+      const compactLayout = this.isCompactLayout;
+
+      if (this.$vuetify.display.xlAndUp) {
+        if (!compactLayout) {
+          return 4;
+        }
+
+        return 6;
+      }
+
+      if (this.$vuetify.display.lgAndUp) {
+        if (!mapActive && compactLayout) {
+          return 6;
+        }
+
+        if (mapActive && compactLayout) {
+          return 4;
+        }
+
+        return 3;
+      }
+
+      if (this.$vuetify.display.smAndDown) {
+        return 2;
+      }
+
+      if (this.$vuetify.display.xs) {
+        return 1;
+      }
+
+      return 4;
+    },
+    cardGridClass() {
+      const mapActive = this.isActiveControl(LISTCONTROL_MAP_ACTIVE);
+      const compactLayout = this.isCompactLayout;
+
+      if (this.isActiveControl(LISTCONTROL_LIST_ACTIVE)) {
+        return {
+          'v-col-12': true,
+          'v-col-lg-6': !mapActive,
+          'v-col-xl-6': true,
+        };
+      }
+
+      return {
+        'v-col-12': true,
+        'v-col-sm-6': true,
+        'v-col-md-4': true,
+        'v-col-lg-2': compactLayout && !mapActive,
+        'v-col-lg-3': compactLayout && mapActive,
+        'v-col-lg-4': mapActive && !compactLayout,
+        'v-col-xl-2': compactLayout,
+        'v-col-xl-3': !compactLayout,
+      };
+    },
+    groupedContentList() {
       const listWithoutPins = [];
+      const listWithPins = [];
 
-      for (let i = 0; i < this.virtualListContent.length; i++) {
-        const metadata = this.virtualListContent[i];
+      for (let i = 0; i < this.listContent?.length; i++) {
+        const metadata = this.listContent[i];
 
-        if (!this.prePinnedIds?.includes(metadata.id)) {
+        if (this.prePinnedIds?.includes(metadata.id)) {
+          metadata.isPinned = true;
+          listWithPins.push(metadata);
+        } else {
           listWithoutPins.push(metadata);
         }
       }
 
-      return listWithoutPins;
+      return this.getGroupItemList([...listWithPins, ...listWithoutPins]);
     },
     pinnedIds() {
       if (!this.showPinnedElements) {
@@ -287,29 +347,6 @@ export default {
       }
 
       return [];
-    },
-    cardGridClass() {
-      const mapActive = this.isActiveControl(LISTCONTROL_MAP_ACTIVE);
-
-      if (this.isActiveControl(LISTCONTROL_LIST_ACTIVE)) {
-        return {
-          'v-col-12': true,
-          'v-col-lg-6': !mapActive,
-          'v-col-xl-6': true,
-        };
-      }
-
-      const compactLayout = this.isCompactLayout;
-
-      return {
-        'v-col-12': true,
-        'v-col-sm-6': true,
-        'v-col-md-4': true,
-        'v-col-lg-3': compactLayout || !mapActive,
-        'v-col-lg-4': mapActive && !compactLayout,
-        'v-col-xl-2': !mapActive,
-        'v-col-xl-3': mapActive,
-      };
     },
     contentSize() {
       return this.listContent ? Object.keys(this.listContent).length : 0;
@@ -329,6 +366,19 @@ export default {
     },
   },
   methods: {
+    getGroupItemList(array) {
+      return array.reduce((result, item, index) => {
+
+        const rowIndex = Math.floor(index / this.amountOfRowsItems);
+        if (!result[rowIndex]) {
+          result[rowIndex] = [];
+        }
+
+        result[rowIndex].push(item);
+
+        return result;
+      }, []);
+    },
     getMetadataState(metadata) {
       if (!this.showPublicationState) {
         return null;
@@ -341,41 +391,6 @@ export default {
     },
     getGeoJSONIcon(location) {
       return location?.geoJSON?.type ? getGeoJSONIcon(location.geoJSON.type) : null;
-    },
-    infiniteHandler($state) {
-      const that = this;
-      that.vLoading = true;
-
-      if (that.contentSize <= 0 && $state) {
-        $state.complete();
-        return;
-      }
-
-      // use a small timeout to show the loading?
-      setTimeout(() => {
-        let i = 0;
-
-        if (that.virtualListContent.length > 0) {
-          // use the current index only if the virtualList has already elements
-          i = that.vIndex;
-        }
-
-        for (; i < that.vIndex + that.reloadAmount && i < that.contentSize; i++) {
-          that.virtualListContent.push(that.listContent[i]);
-        }
-
-        if ($state) {
-          if (that.virtualListContent.length >= that.contentSize) {
-            $state.complete();
-          } else {
-            $state.loaded();
-          }
-        }
-
-        that.vIndex = i;
-
-        that.vLoading = false;
-      }, this.reloadDelay);
     },
     catchTagClicked(tagName) {
       this.$emit('clickedTag', tagName);
@@ -535,18 +550,6 @@ export default {
     catchShallowRealClick() {
       this.$emit('shallowRealClick');
     },
-    resetVirtualContent() {
-      // this.$store.commit(`${METADATA_NAMESPACE}/${SET_VIRTUAL_LIST_INDEX}`, 0);
-      this.vIndex = 0;
-      this.virtualListContent = [];
-      this.infiniteId += 1;
-      this.infiniteHandler();
-    },
-  },
-  watch: {
-    listContent() {
-      this.resetVirtualContent();
-    },
   },
   data: () => ({
     noResultText: 'Nothing found for these search criterias.',
@@ -555,10 +558,6 @@ export default {
     multiPinIcon: null,
     polygonIcon: null,
     localTags: [],
-    virtualListContent: [],
-    vLoading: false,
-    vIndex: 0,
-    infiniteId: +new Date(),
     scrollTopButtonText: 'Scroll to the top',
     controlsLabel: 'List controls',
     controlsActive: [],
