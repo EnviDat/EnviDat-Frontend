@@ -66,7 +66,7 @@
       @itemClick="catchItemClicked"
     />
 
-    <v-main>
+    <v-main class="pt-4 pt-md-8">
       <v-container
         class="pa-2 pa-sm-3"
         fluid

@@ -221,7 +221,7 @@
               </v-col>
 
               <v-col
-                v-if="hasContent"
+                v-if="hasContent && !isMobile"
                 cols="12"
                 sm="6"
                 lg="3"
@@ -247,7 +247,7 @@
               </v-col>
 
               <v-col
-                v-if="hasContent && spatialInfo"
+                v-if="hasContent && spatialInfo && !isMobile"
                 cols="12"
                 sm="6"
                 lg="3"
@@ -311,7 +311,7 @@
               </v-col>
 
               <v-col
-                v-if="hasContent"
+                v-if="hasContent && !isMobile"
                 cols="12"
                 sm="6"
                 lg="3"
@@ -337,6 +337,108 @@
               </v-col>
 
               <v-col cols="12" sm="6" lg="3" class="headerInfo py-1 py-sm-0">
+                <MetadataOrganizationChip
+                  v-if="hasContent && organization && !isMobile"
+                  :organization="organization"
+                  :tooltip="organizationTooltip"
+                />
+              </v-col>
+            </v-row>
+
+             <!-- info list Mobile -->
+
+             <v-row  style="position: relative; z-index: 1;" no-gutters v-if="hasContent && isMobile">
+              <tag-chip
+                class="headerTag flex-grow-0 mt-sm-4"
+                color="highlight"
+                :isAccordion="true"
+                :isOpen="showHeaderInformation"
+                :name="'SHOW MORE INFORMATION'"
+                @click.native="showHeaderInformation = !showHeaderInformation"
+                />
+
+            </v-row>
+
+            <v-row v-if="showHeaderInformation">
+              <v-col
+                v-if="hasContent"
+                cols="12"
+                sm="6"
+                lg="3"
+                class="headerInfo py-1 py-sm-0"
+              >
+                <v-tooltip location="bottom">
+                  <template v-slot:activator="{ props }">
+                    <v-row no-gutters v-bind="props" align="center">
+                      <v-col class="flex-grow-0 pr-2">
+                        <BaseIcon
+                          color="black"
+                          :icon="mdiClockPlusOutline"
+                          :small="$vuetify.display.xs"
+                        />
+                      </v-col>
+                      <v-col style="font-size: 0.9rem;">
+                        {{ created }}
+                      </v-col>
+                    </v-row>
+                  </template>
+                  <span>{{ createTimeToolTipText }}</span>
+                </v-tooltip>
+              </v-col>
+
+              <v-col
+                v-if="hasContent && spatialInfo"
+                cols="12"
+                sm="6"
+                lg="3"
+                class="headerInfo py-1 py-sm-0"
+              >
+                <v-tooltip location="bottom">
+                  <template v-slot:activator="{ props }">
+                    <v-row no-gutters v-bind="props" align="center">
+                      <v-col class="flex-grow-0 pr-2">
+                        <BaseIcon
+                          color="black"
+                          :small="$vuetify.display.xs"
+                          :icon="mdiMapMarker"
+                        />
+                      </v-col>
+                      <v-col style="font-size: 0.9rem;">
+                        {{ spatialInfo }}
+                      </v-col>
+                    </v-row>
+                  </template>
+
+                  <span>{{ locationToolTipText }}</span>
+                </v-tooltip>
+              </v-col>
+              <v-col
+                v-if="hasContent"
+                cols="12"
+                sm="6"
+                lg="3"
+                class="headerInfo py-1 py-sm-0"
+              >
+                <v-tooltip location="bottom">
+                  <template v-slot:activator="{ props }">
+                    <v-row no-gutters v-bind="props" align="center">
+                      <v-col class="flex-grow-0 pr-2">
+                        <BaseIcon
+                          color="black"
+                          :small="$vuetify.display.xs"
+                          :icon="mdiUpdate"
+                        />
+                      </v-col>
+                      <v-col style="font-size: 0.9rem;">
+                        {{ modified }}
+                      </v-col>
+                    </v-row>
+                  </template>
+                  <span>{{ modifyTimeToolTipText }}</span>
+                </v-tooltip>
+              </v-col>
+
+              <v-col cols="12" sm="6" lg="3" class="headerInfo py-1 py-sm-0 mb-6">
                 <MetadataOrganizationChip
                   v-if="hasContent && organization"
                   :organization="organization"
@@ -549,6 +651,7 @@ export default {
     mdiAccountCog,
     mdiUpdate,
     showTagsExpanded: false,
+    showHeaderInformation: false,
     dark: false,
     blackTopToBottom: 'rgba(80,80,80, 0.1) 0%, rgba(80,80,80, 0.9) 70%',
     // whiteTopToBottom: 'rgba(255,255,255, 0.3) 0%, rgba(255,255,255, 1) 60%',
@@ -562,8 +665,8 @@ export default {
     modifyTimeToolTipText: 'Time of last modification',
     NotFoundTitle: 'No metadata found for',
     authorTagsMaxHeight: 75,
-    limitAuthors: 16,
     showAuthors: false,
+    limitAuthors: 1,
   }),
   watch: {
     breakpoint: {
@@ -576,6 +679,9 @@ export default {
   computed: {
     hasAuthors() {
       return this.authors?.length > 0;
+    },
+    isMobile() {
+      return this.breakpoint.smAndDown
     },
     breakpoint() {
       return this.$vuetify.display;
@@ -656,11 +762,10 @@ export default {
     //   console.log('finished');
     // },
     expandAuthorList() {
-      if (!this.showAuthors) {
-        this.showAuthors = !this.showAuthors;
+      this.showAuthors = !this.showAuthors;
+      if (this.showAuthors) {
         this.limitAuthors = this.authors.length;
       } else {
-        this.showAuthors = !this.showAuthors;
         this.updateAuthorsBasedOnBreakpoint();
       }
     },
@@ -669,9 +774,9 @@ export default {
     },
     updateAuthorsBasedOnBreakpoint() {
       if (this.breakpoint.xs) {
-        this.limitAuthors = 3;
+        this.limitAuthors = 1;
       } else if (this.breakpoint.smAndDown) {
-        this.limitAuthors = 8;
+        this.limitAuthors = 1;
       } else if (this.breakpoint.lgAndDown) {
         this.limitAuthors = 13;
       } else {

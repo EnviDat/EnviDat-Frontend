@@ -28,8 +28,9 @@
       <base-icon-button
         class="ma-2 closeIcon"
         :class="{ 'mx-1': $vuetify.display.smAndDown }"
-        style="position: absolute; top: 80px; right: 20px; z-index: 2;"
+        style="position: absolute; top: 60px; right: 10px; z-index: 2;"
         :icon="mdiClose"
+        :elevated="true"
         :icon-color="'white'"
         :color="'secondary'"
         outline-color="primary"
@@ -316,7 +317,7 @@ export default {
         return false;
       }
 
-      return this.appScrollPosition > 400;
+      return this.appScrollPosition > 40;
     },
     generateFileList() {
       const fileList = [];
