@@ -61,23 +61,6 @@
         </v-col>
       </v-row>
 
-      <v-row no-gutters align="center">
-        <v-col cols="1">
-          <base-icon
-            color="white"
-            style="animation: progress-circular-rotate 3s linear infinite"
-            :icon="mdiCog"
-            large></base-icon>
-        </v-col>
-
-        <v-col class="text-h5" cols="11">
-          Coming Soon!
-        </v-col>
-
-        <v-col class="pt-2 text-body-1">
-          This section is still under construction.
-        </v-col>
-      </v-row>
     </v-container>
   </v-card>
 </template>
@@ -96,7 +79,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
-import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import { mdiCog } from '@mdi/js';
 
 export default {
@@ -170,7 +152,6 @@ export default {
   }),
   components: {
     BaseRectangleButton,
-    BaseIcon,
   },
 };
 </script>

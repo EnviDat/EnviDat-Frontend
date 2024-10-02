@@ -24,10 +24,12 @@ export default {
   name: 'MetadataCardLocal',
   props: {
     id: String,
-    title: String,
+    title: {
+      type: String,
+      default: '[Unnamed Dataset]',
+    },
     subtitle: String,
     name: String,
-    type: Number,
     restricted: Boolean,
     tags: {
       type: Array,
@@ -50,19 +52,19 @@ export default {
     },
     state: {
       type: String,
-      default: '',
+      default: 'draft',
     },
     organization: {
       type: String,
-      default: '',
+      default: undefined,
     },
     organizationTooltip: {
       type: String,
-      default: '',
+      default: undefined,
     },
     role: {
       type: String,
-      default: '',
+      default: undefined,
     },
     showOrganizationOnHover: {
       type: Boolean,
