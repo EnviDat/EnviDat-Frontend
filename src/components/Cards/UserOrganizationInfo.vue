@@ -112,11 +112,19 @@ export default {
       return (infoText);
     },
     organizationInfoText() {
-      if (isSysadmin(this.organizationRoles)) {
+      if (isMember(this.organizationRoles)) {
+        return this.userDashboardConfig.organizationRolesText?.memberOrganizationText || this.memberOrganizationText;
+      }
+
+      if (isEditor(this.organizationRoles)) {
         return (
-          this.userDashboardConfig.organizationRolesText
-            ?.sysadminOrganizationText || this.sysadminOrganizationText
+            this.userDashboardConfig.organizationRolesText
+                ?.editorOrganizationText || this.editorOrganizationText
         );
+      }
+
+      if (this.isCollaborator) {
+        return this.userDashboardConfig.organizationRolesText?.collaboratorText || this.collaboratorText;
       }
 
       if (isAdmin(this.organizationRoles)) {
@@ -126,25 +134,10 @@ export default {
         );
       }
 
-      if (isEditor(this.organizationRoles)) {
+      if (isSysadmin(this.organizationRoles)) {
         return (
-          this.userDashboardConfig.organizationRolesText
-            ?.editorOrganizationText || this.editorOrganizationText
-        );
-      }
-
-      if (this.isCollaborator) {
-        return this.userDashboardConfig.organizationRolesText?.collaboratorText || this.collaboratorText;
-      }
-
-      if (isMember(this.organizationRoles)) {
-        return this.userDashboardConfig.organizationRolesText?.memberOrganizationText || this.memberOrganizationText;
-      }
-
-      if (isMember(this.organizationRoles)) {
-        return (
-          this.userDashboardConfig.organizationRolesText
-            ?.memberOrganizationText || this.memberOrganizationText
+            this.userDashboardConfig.organizationRolesText
+                ?.sysadminOrganizationText || this.sysadminOrganizationText
         );
       }
 
@@ -157,7 +150,11 @@ export default {
       return hasOrganizationRoles(this.organizationRoles);
     },
   },
-  methods: {},
+  methods: {
+    getAdminText(organizationRoles) {
+
+    },
+  },
   data: () => ({
     mdiInformation,
     avatarHeight: 32,
