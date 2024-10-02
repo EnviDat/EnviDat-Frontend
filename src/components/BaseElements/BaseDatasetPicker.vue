@@ -22,6 +22,7 @@
           :label="pickerLabel"
           :multiple="multiplePick"
           :clearable="isClearable"
+          :persistent-clear="isClearable"
           :search-input.sync="search"
           :error-messages="errorMessages"
           :menu-props="menuOptions"

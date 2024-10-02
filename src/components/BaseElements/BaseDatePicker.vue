@@ -21,7 +21,7 @@
             persistent-hint
             :hint="readOnlyExplanation"
             :prepend-icon="mdiCalendarRange"
-            :clearable="!readonly"
+            :clearable="isClearable && !readonly"
             persistent-clear
             :model-value="formatToEnviDatDate(dateField, dateProperty)"
             @change="changedDateTextField(dateProperty, $event)"
@@ -102,6 +102,10 @@ export default {
     maxDate: {
       type: String,
       default: undefined,
+    },
+    isClearable: {
+      type: Boolean,
+      default: true,
     },
     readOnlyFields: {
       type: Array,

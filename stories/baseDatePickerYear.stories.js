@@ -23,9 +23,17 @@ export const Filled = {
   },
 };
 
+export const Clearable = {
+  args: {
+    ...Filled.args,
+    isClearable: true,
+ },
+};
+
 export const Readonly = {
   args: {
     ...Filled.args,
+    isClearable: true,
     readOnlyFields: ['year'],
     readOnlyExplanation: 'THIS IS READONLY!!',
   },

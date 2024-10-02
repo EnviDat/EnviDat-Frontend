@@ -17,6 +17,8 @@
           :label="yearLabel"
           ref="dateTextField"
           :prepend-icon="mdiCalendarRange"
+          :clearable="isClearable && !readonly"
+          persistent-clear
           :readonly="readonly"
           persistent-hint
           :hint="readOnlyExplanation"
@@ -84,6 +86,10 @@ export default {
     yearProperty: {
       type: String,
       default: 'year',
+    },
+    isClearable: {
+      type: Boolean,
+      default: false,
     },
     readOnlyFields: {
       type: Array,
