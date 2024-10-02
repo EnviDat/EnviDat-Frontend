@@ -6,24 +6,38 @@
       style="position: absolute; width: 100%; height: 100%;"
     ></div>
 
-    <div v-show="showDecemberParticles" id="christmas-canvas" style="position: absolute; width: 100%; height: 100%;">
-    </div>
+    <div
+      v-show="showDecemberParticles"
+      id="christmas-canvas"
+      style="position: absolute; width: 100%; height: 100%;"
+    ></div>
 
-    <link v-if="showDecemberParticles" rel="stylesheet" href="./particles/decemberEffects.css">
+    <link
+      v-if="showDecemberParticles"
+      rel="stylesheet"
+      href="./particles/decemberEffects.css"
+    />
 
-    <div v-for="(notification, index) in visibleNotifications()"
-         :key="`notification_${index}`" :style="`position: absolute;
+    <div
+      v-for="(notification, index) in visibleNotifications()"
+      :key="`notification_${index}`"
+      :style="
+        `position: absolute;
                 right: ${$vuetify.display.xs ? 0 : 15}px;
                 top: ${35 + index * 175}px;
-                z-index: ${NotificationZIndex};`">
-
+                z-index: ${NotificationZIndex};`
+      "
+    >
       <NotificationCard
         v-bind="notification"
         :height="165"
-        :showReportButton="config.errorReportingEnabled && notification.type === 'error'"
+        :showReportButton="
+          config.errorReportingEnabled && notification.type === 'error'
+        "
         :showCloseButton="true"
         @clickedClose="catchCloseClicked(notification.key)"
-        @clickedReport="catchReportClicked(notification.key)" />
+        @clickedReport="catchReportClicked(notification.key)"
+      />
     </div>
 
     <TheNavigationToolbar
@@ -52,19 +66,17 @@
       @itemClick="catchItemClicked"
     />
 
-    <v-main>
-
+    <v-main class="pt-4 pt-md-8">
       <v-container
         class="pa-2 pa-sm-3"
         fluid
-        v-on:scroll="updateScroll()"
+        @scroll="updateScroll()"
         id="appContainer"
         ref="appContainer"
-        :style="pageStyle" >
-
+        :style="pageStyle"
+      >
         <v-row id="mainPageRow">
           <v-col cols="12">
-
             <router-view v-slot="{ Component }">
               <transition name="fade" mode="out-in">
                 <component :is="Component" />
@@ -100,15 +112,19 @@
         v-model="showReloadDialog"
         persistent
         :style="`z-index: ${NotificationZIndex};`"
-        max-width="450">
-
+        max-width="450"
+      >
         <ConfirmTextCard
           title="New Version Available!"
           :text="dialogVersionText()"
           confirmText="Reload"
           :confirmClick="reloadApp"
           cancelText="Cancel"
-          :cancelClick="() => { reloadDialogCanceled = true }"
+          :cancelClick="
+            () => {
+              reloadDialogCanceled = true;
+            }
+          "
         />
       </v-dialog>
 
@@ -116,8 +132,8 @@
         v-model="showInfoDialog"
         persistent
         :style="`z-index: ${NotificationZIndex};`"
-        max-width="500">
-
+        max-width="500"
+      >
         <ConfirmTextCard
           :title="dialogTitle"
           :text="dialogMessage"
@@ -206,11 +222,18 @@ import { ENVIDAT_SHOW_COOKIE_BANNER } from '@/factories/metadataConsts';
 import { getImage } from '@/factories/imageFactory';
 import { defineAsyncComponent } from 'vue';
 
-const GenericFullScreenModal = defineAsyncComponent(() =>import('@/components/Layouts/GenericFullScreenModal.vue'));
-const ConfirmTextCard = defineAsyncComponent(() => import('@/components/Cards/ConfirmTextCard.vue'));
-const TextBanner = defineAsyncComponent(() => import('@/components/Layouts/TextBanner.vue'));
-const NotificationCard = defineAsyncComponent(() => import('@/components/Cards/NotificationCard.vue'));
-
+const GenericFullScreenModal = defineAsyncComponent(() =>
+  import('@/components/Layouts/GenericFullScreenModal.vue'),
+);
+const ConfirmTextCard = defineAsyncComponent(() =>
+  import('@/components/Cards/ConfirmTextCard.vue'),
+);
+const TextBanner = defineAsyncComponent(() =>
+  import('@/components/Layouts/TextBanner.vue'),
+);
+const NotificationCard = defineAsyncComponent(() =>
+  import('@/components/Cards/NotificationCard.vue'),
+);
 
 export default {
   name: 'App',
@@ -218,7 +241,7 @@ export default {
     // check for the backend version
     this.$store.dispatch(SET_CONFIG);
 
-    this.$store.subscribe((mutation) => {
+    this.$store.subscribe(mutation => {
       if (mutation.type === SET_APP_BACKGROUND) {
         this.appBGImage = mutation.payload;
       }
@@ -298,8 +321,11 @@ export default {
       );
     },
     updateScroll() {
-      if (this.$refs && this.$refs.appContainer) {
-        this.storeScroll(this.$refs.appContainer.scrollTop);
+      const appContainer =
+        this.$refs.appContainer?.$el || this.$refs.appContainer;
+
+      if (appContainer) {
+        this.storeScroll(appContainer.scrollTop);
       }
     },
     storeScroll(scrollY) {
@@ -375,11 +401,21 @@ export default {
       this.$router.push({ name: item.pageName });
     },
     catchSearchClicked(search) {
-      this.$router.options.additiveChangeRoute(this.$route, this.$router, BROWSE_PATH, search);
+      this.$router.options.additiveChangeRoute(
+        this.$route,
+        this.$router,
+        BROWSE_PATH,
+        search,
+      );
     },
     catchSearchCleared() {
       // the search parameter needs to be '' to clear it
-      this.$router.options.additiveChangeRoute(this.$route, this.$router, BROWSE_PATH, '');
+      this.$router.options.additiveChangeRoute(
+        this.$route,
+        this.$router,
+        BROWSE_PATH,
+        '',
+      );
     },
     catchModeClose() {
       this.$router.push({
@@ -721,7 +757,7 @@ export default {
     dynamicBackground() {
       const bgImg = getImage(this.appBGImage);
 
-      if(!bgImg) {
+      if (!bgImg) {
         return '';
       }
 
@@ -795,8 +831,8 @@ export default {
     dialogConfirmText: 'Ok',
     dialogCancelText: 'Cancel',
     dialogMessage: '',
-    dialogCallback: () => { },
-    dialogCancelCallback: () => { },
+    dialogCallback: () => {},
+    dialogCancelCallback: () => {},
     showCookieInfo: true,
     cookieInfoText:
       "On envidat.ch cookies are used to enhance your experience and provide features when you're signed in. These cookies are 'technical only' and are NOT used for tracking or monitoring you.",
@@ -818,6 +854,6 @@ export default {
 };
 </script>
 
-<style lang='scss' >
+<style lang="scss">
 @import url(./sass/globalStyles.scss);
 </style>

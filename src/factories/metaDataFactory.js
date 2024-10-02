@@ -165,7 +165,7 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
     contactEmail,
     tags: dataset.tags,
     titleImg: dataset.titleImg,
-    maxTags: smallScreen ? 5 : 12,
+    maxTags: smallScreen ? 1 : 12,
     authors,
     authorDeadInfo,
     categoryColor: dataset.categoryColor,
