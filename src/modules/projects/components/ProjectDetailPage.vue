@@ -331,7 +331,7 @@ export default {
     },
     headerHeight() {
       if (this.$refs && this.$refs.header) {
-        return this.$refs.header.clientHeight;
+        return this.$refs.header.$el.clientHeight;
       }
 
       return 150;
@@ -414,7 +414,7 @@ export default {
     },
     setScrollPos(toPos) {
       if (this.$root.$children && this.$root.$children[0].$refs.appContainer) {
-        this.$root.$children[0].$refs.appContainer.scrollTop = toPos;
+        this.$root.$children[0].$refs.appContainer.$el.scrollTop = toPos;
       }
     },
   },

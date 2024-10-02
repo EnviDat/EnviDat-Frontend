@@ -135,7 +135,7 @@ export default {
       this.showFullText = !this.showFullText;
     },
     rightPos() {
-      return this.$refs.text && this.$refs.text.clientHeight >= 500
+      return this.$refs.text && this.$refs.text.$el.clientHeight >= 500
         ? '0px'
         : '10px';
     },

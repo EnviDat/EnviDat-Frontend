@@ -234,7 +234,7 @@ export default {
       const target = this.$refs[`${paramName}_1`][0];
 
       if (target) {
-        this.$refs.scrollableList.scrollTop = target.offsetTop;
+        this.$refs.scrollableList.$el.scrollTop = target.offsetTop;
 
         // this.$vuetify.goTo(`${paramName}_1`, {
         // this.$vuetify.goTo(target, {

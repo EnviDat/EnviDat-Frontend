@@ -136,8 +136,8 @@ export default {
       let padding = 0;
 
       if (this.mapLayout && this.$refs && this.$refs.controlPanel) {
-        searchViewHeight = this.$refs.controlPanel.clientHeight
-          ? this.$refs.controlPanel.clientHeight
+        searchViewHeight = this.$refs.controlPanel.$el.clientHeight
+          ? this.$refs.controlPanel.$el.clientHeight
           : searchViewHeight;
       }
 
@@ -146,8 +146,8 @@ export default {
         this.$refs &&
         this.$refs.metadataListLayoutFiltering
       ) {
-        searchViewHeight = this.$refs.metadataListLayoutFiltering.clientHeight
-          ? this.$refs.metadataListLayoutFiltering.clientHeight
+        searchViewHeight = this.$refs.metadataListLayoutFiltering.$el.clientHeight
+          ? this.$refs.metadataListLayoutFiltering.$el.clientHeight
           : searchViewHeight;
         padding = 16;
       }
@@ -165,8 +165,8 @@ export default {
         this.$refs &&
         this.$refs.metadataListLayoutFiltering
       ) {
-        keywordHeight = this.$refs.metadataListLayoutFiltering.clientHeight
-          ? this.$refs.metadataListLayoutFiltering.clientHeight
+        keywordHeight = this.$refs.metadataListLayoutFiltering.$el.clientHeight
+          ? this.$refs.metadataListLayoutFiltering.$el.clientHeight
           : keywordHeight;
       }
 
@@ -174,11 +174,11 @@ export default {
     },
     setScrollPos(toPos) {
       if (this.$refs && this.$refs.metadataListScroll) {
-        this.$refs.metadataListScroll.scrollTop = toPos;
+        this.$refs.metadataListScroll.$el.scrollTop = toPos;
       }
     },
     onScroll() {
-      this.$emit('onScroll', this.$refs?.metadataListScroll?.scrollTop);
+      this.$emit('onScroll', this.$refs?.metadataListScroll?.$el.scrollTop);
     },
   },
   data: () => ({
