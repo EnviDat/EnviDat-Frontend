@@ -246,11 +246,7 @@ export default {
         return;
       }
 
-      await this.$store.dispatch(`${METADATA_NAMESPACE}/${FILTER_METADATA}`,
-        {
-          selectedTagNames: this.selectedTagNames,
-          mode: this.mode,
-        });
+      await this.$store.dispatch(`${METADATA_NAMESPACE}/${FILTER_METADATA}`, { selectedTagNames: this.selectedTagNames });
     },
     checkRouteChanges(fromRoute) {
       let triggerClearSearch = false;
