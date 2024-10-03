@@ -41,20 +41,15 @@ import {
   ACTION_SEARCH_METADATA,
 } from '@/store/metadataMutationsConsts';
 
-
-import { getSelectedTagsMergedWithHidden } from '@/factories/modeFactory';
-
 import { urlRewrite } from '@/factories/apiFactory';
-
 import { localSearch, sortObjectArray } from '@/factories/metaDataFactory';
 
 import {
-  datasetIncludesAnySelectedTag,
   getKeywordsForFiltering,
   getTagColor,
   tagsIncludedInSelectedTags,
 } from '@/factories/keywordsFactory';
-import { useModeStore } from '@/modules/browse/store/modeStore';
+
 import categoryCards from '@/store/categoryCards';
 
 /* eslint-disable no-unused-vars  */
