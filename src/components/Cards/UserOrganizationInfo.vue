@@ -150,11 +150,7 @@ export default {
       return hasOrganizationRoles(this.organizationRoles);
     },
   },
-  methods: {
-    getAdminText(organizationRoles) {
-
-    },
-  },
+  methods: {},
   data: () => ({
     mdiInformation,
     avatarHeight: 32,
