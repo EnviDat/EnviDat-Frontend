@@ -31,7 +31,7 @@
             sm="6"
             class="pa-2"
           >
-            <slot name="editingAuthors" :author="author" />
+            <slot name="editingAuthors" v-bind="author" />
             <AuthorCard
               v-if="!hasEditingAuthorsSlot"
               :author="author"
