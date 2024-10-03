@@ -41,11 +41,7 @@ import {
   ACTION_SEARCH_METADATA,
 } from '@/store/metadataMutationsConsts';
 
-
-import { getSelectedTagsMergedWithHidden } from '@/factories/modeFactory';
-
 import { urlRewrite } from '@/factories/apiFactory';
-
 import { localSearch, sortObjectArray } from '@/factories/metaDataFactory';
 
 import {
@@ -53,7 +49,7 @@ import {
   getTagColor,
   tagsIncludedInSelectedTags,
 } from '@/factories/keywordsFactory';
-import { useModeStore } from '@/modules/browse/store/modeStore';
+
 import categoryCards from '@/store/categoryCards';
 
 /* eslint-disable no-unused-vars  */
@@ -275,30 +271,26 @@ export default {
         commit(BULK_LOAD_METADATAS_CONTENT_ERROR, reason);
       });
   },
-  [UPDATE_TAGS]({ commit }, mode) {
+  [UPDATE_TAGS]({ commit }) {
     // if (this.getters[`${METADATA_NAMESPACE}/updatingTags`]) {
     //   return;
     // }
 
-    const filteredContent = this.getters[
+    const filteredDatasets = this.getters[
       `${METADATA_NAMESPACE}/filteredContent`
     ];
     const allTags = this.getters[`${METADATA_NAMESPACE}/allTags`];
 
-    if (!filteredContent || !allTags) {
+    if (!filteredDatasets || !allTags) {
       return;
     }
 
     commit(UPDATE_TAGS);
 
     try {
-      const modeStore = useModeStore();
-      modeStore.init(this.getters.cardBGImages);
-      const modeMetadata = modeStore.getModeMetadata(mode);
-
       const updatedTags = getKeywordsForFiltering(
-        filteredContent,
-        modeMetadata,
+        filteredDatasets,
+        undefined,
         35,
       );
 
@@ -310,56 +302,45 @@ export default {
   // eslint-disable-next-line consistent-return
   [FILTER_METADATA](
     { dispatch, commit },
-    { selectedTagNames = [], selectedPins = [], mode },
+    { selectedTagNames = [], selectedPins = [] },
   ) {
     commit(FILTER_METADATA);
-
-    const mergedWithHiddenNames = getSelectedTagsMergedWithHidden(
-      mode,
-      selectedTagNames,
-    );
-    if (mergedWithHiddenNames) {
-      selectedTagNames = mergedWithHiddenNames;
-    }
-    let content = [];
-    // console.log("filteredMetadataContent");
 
     const isSearchResultContent = this.getters[
       `${METADATA_NAMESPACE}/searchingMetadatasContentOK`
     ];
 
     try {
+
+      let datasets = this.getters[`${METADATA_NAMESPACE}/allMetadatas`];
+
       if (isSearchResultContent) {
         const searchContent = this.getters[
           `${METADATA_NAMESPACE}/searchedMetadatasContent`
         ];
 
         if (contentSize(searchContent) > 0) {
-          content = Object.values(searchContent);
+          datasets = Object.values(searchContent);
         }
-      } else {
-        // const metadatasContent = this.getters[`${METADATA_NAMESPACE}/metadatasContent`];
-        // content = Object.values(metadatasContent);
-        content = this.getters[`${METADATA_NAMESPACE}/allMetadatas`];
       }
 
-      let filteredContent = [];
+      let filteredDatasets = [];
 
       if (selectedTagNames.length > 0) {
-        for (let i = 0; i < content.length; i++) {
-          const entry = content[i];
+        for (let i = 0; i < datasets.length; i++) {
+          const dataset = datasets[i];
 
-          if (contentFilteredByTags(entry, selectedTagNames)) {
-            filteredContent.push(entry);
+          if (contentFilteredByTags(dataset, selectedTagNames)) {
+            filteredDatasets.push(dataset);
           }
         }
       } else {
-        filteredContent = content;
+        filteredDatasets = datasets;
       }
 
-      commit(FILTER_METADATA_SUCCESS, filteredContent);
+      commit(FILTER_METADATA_SUCCESS, filteredDatasets);
 
-      return dispatch(UPDATE_TAGS, mode);
+      return dispatch(UPDATE_TAGS);
     } catch (error) {
       commit(FILTER_METADATA_ERROR, error);
     }

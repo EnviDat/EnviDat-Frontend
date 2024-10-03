@@ -16,7 +16,7 @@
                  style="display: flex; flex-direction: row;"
             >
               <v-col class="flex-grow-0 pl-0"
-                     v-for="n in 6"
+                     v-for="n in 3"
                      :key="n"
               >
                 <TagChipPlaceholder
@@ -143,7 +143,7 @@ export default {
       }
 
       const topList = this.allTagWithMax;
-      return topList.filter((element) => element.enabled && this.selectedTagNames.indexOf(element.name) >= 0);
+      return topList.filter((element) => element.enabled && this.selectedTagNames.indexOf(element.name) < 0);
     },
     allTagWithMax() {
       return this.allTags?.toSpliced(0, this.maxTagNumber(this.minTagCountToBeVisible));
