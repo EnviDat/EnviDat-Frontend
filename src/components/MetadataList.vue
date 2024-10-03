@@ -56,8 +56,47 @@
       </v-container>
     </template>
 
-    <template v-slot:metadataListLayout="{ metadataListHeight }">
+    <template v-slot:metadataListLayout="{  }">
 
+      <Grid
+
+      >
+        <template v-slot:probe>
+          <MetadataCardPlaceholder :dark="false" />
+        </template>
+
+        <!-- When the item is not loaded, a placeholder is rendered -->
+        <template v-slot:placeholder="{ style }">
+<!--
+          <div class="item" :style="style">Placeholder {{ index }}</div>
+-->
+          <MetadataCardPlaceholder :style="style" :dark="false" />
+<!--
+          <NoSearchResultsView :categoryCards="categoryCards" @clicked="catchCategoryClicked" />
+-->
+
+        </template>
+
+        <!-- Render a loaded item -->
+        <template v-slot:default="{ item: metadata }">
+          <MetadataCard
+              :class="metadata.isPinned ? 'highlighted' : ''"
+              :id="metadata.id" :ref="metadata.id" :title="metadata.title" :name="metadata.name"
+              :subtitle="metadata.notes" :tags="!isCompactLayout ? metadata.tags : null" :titleImg="metadata.titleImg"
+              :restricted="hasRestrictedResources(metadata)" :resourceCount="metadata.num_resources" :modeData="modeData"
+              :flatLayout="listView" :compactLayout="isCompactLayout"
+              :geoJSONIcon="getGeoJSONIcon(metadata.location)" :categoryColor="metadata.categoryColor"
+              :state="getMetadataState(metadata)" :organization="metadata.organization?.name"
+              :organizationTooltip="metadata.organization?.title" :showOrganizationOnHover="showOrganizationOnHover"
+              @organizationClicked="$emit('organizationClicked', metadata.organization)" @clickedEvent="metaDataClicked"
+              @clickedTag="catchTagClicked" :showGenericOpenButton="!!metadata.openEvent"
+              :openButtonTooltip="metadata.openButtonTooltip" :openButtonIcon="metadata.openButtonIcon"
+              @openButtonClicked="catchOpenClick(metadata.openEvent, metadata.openProperty)"
+          />
+        </template>
+      </Grid>
+
+<!--
       <v-row v-if="hasGroupContent"
              :style="`height: ${metadataListHeight}px; overflow: hidden;`">
 
@@ -93,25 +132,28 @@
                   @clickedTag="catchTagClicked" :showGenericOpenButton="!!metadata.openEvent"
                   :openButtonTooltip="metadata.openButtonTooltip" :openButtonIcon="metadata.openButtonIcon"
                   @openButtonClicked="catchOpenClick(metadata.openEvent, metadata.openProperty)" />
+
               </v-col>
             </v-row>
 
           </template>
 
         </v-virtual-scroll>
-        </v-row>
 
-        <v-row>
-          <v-col
+      </v-row>
+
+
+-->
+      <v-row>
+        <v-col
             v-if="!loading && contentSize <= 0"
             class="mx-2"
             key="noSearchResultsView"
             cols="12">
-            <no-search-results-view :categoryCards="categoryCards" @clicked="catchCategoryClicked" />
-          </v-col>
+          <no-search-results-view :categoryCards="categoryCards" @clicked="catchCategoryClicked" />
+        </v-col>
 
-        </v-row>
-
+      </v-row>
     </template>
 
   </metadata-list-layout>
@@ -148,6 +190,8 @@ import {
 } from '@/store/metadataMutationsConsts';
 
 import MetadataListLayout from '@/components/MetadataListLayout.vue';
+import Grid from "vue-virtual-scroll-grid";
+
 import { eventBus } from '@/factories/eventBus';
 
 import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
@@ -610,6 +654,7 @@ export default {
     MetadataCardPlaceholder,
     // BaseRectangleButton,
     MetadataListLayout,
+    Grid,
   },
 };
 </script>
