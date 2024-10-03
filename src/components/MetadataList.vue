@@ -1,7 +1,13 @@
 <template>
-  <metadata-list-layout ref="metadataListLayoutComponent" :topFilteringLayout="topFilteringLayout"
-    :minMapHeight="minMapHeight" :useDynamicHeight="useDynamicHeight" :showMapFilter="showMapFilter"
-    :mapFilteringPossible="mapFilteringPossible" @onScroll="onScroll">
+  <metadata-list-layout
+      ref="metadataListLayoutComponent"
+      :topFilteringLayout="topFilteringLayout"
+      :minMapHeight="minMapHeight"
+      :useDynamicHeight="useDynamicHeight"
+      :showMapFilter="showMapFilter"
+      :mapFilteringPossible="mapFilteringPossible" @onScroll="onScroll"
+      :layoutRecalcTrigger="layoutRecalcTrigger"
+  >
 
     <template v-slot:filterKeywords>
 
@@ -51,23 +57,16 @@
     </template>
 
     <template v-slot:metadataListLayout="{ metadataListHeight }">
-<!--
-      <div :style="`display: flex; height: calc(100vh - ${metadataListHeight}px);`">
--->
-<!--
-      <v-container v-if="!loading" class="pa-0" fluid>
-        &lt;!&ndash; don't use class with paddings here, padding is done in the MetadataListLayout component &ndash;&gt;
--->
+
+      <v-row v-if="hasGroupContent"
+             :style="`height: ${metadataListHeight}px; overflow: hidden;`">
 
         <v-virtual-scroll
-            v-show="groupedContentList?.length > 0"
-            :height="`${metadataListHeight}`"
-            :items="groupedContentList"
+            :style="`height: ${metadataListHeight}px; scroll-behavior: smooth; `"
+            :items="groupedContent"
             :item-height="fixedCardHeight"
         >
-<!--
-          :style="`height: ${metadataListHeight}px`"
--->
+
           <template v-slot:default="{ item: metadataGroup, groupIndex }">
 
             <v-row :id="`metadataListLayout_${groupIndex}`"
@@ -75,8 +74,9 @@
                    no-gutters
             >
 
-              <v-col v-for="(metadata, index) in metadataGroup"
-                     :key="'filtered_' + index"
+              <v-col v-for="(metadata) in metadataGroup"
+                     :key="metadata.id"
+                     v-memo="pinnedIds.includes(metadata.id)"
                      :class="cardGridClass"
                      class="pa-2">
 
@@ -99,6 +99,7 @@
           </template>
 
         </v-virtual-scroll>
+        </v-row>
 
         <v-row>
           <v-col
@@ -110,13 +111,7 @@
           </v-col>
 
         </v-row>
-<!--
-      </v-container>
--->
 
-<!--
-      </div>
--->
     </template>
 
   </metadata-list-layout>
@@ -209,14 +204,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    reloadAmount: {
-      type: Number,
-      default: 16,
-    },
-    reloadDelay: {
-      type: Number,
-      default: 350,
-    },
     preloadingDistance: {
       type: Number,
       default: 150,
@@ -254,6 +241,7 @@ export default {
       });
     }
 
+    this.setGroupedContentList();
   },
   computed: {
     hasMetadatasContent() {
@@ -353,23 +341,6 @@ export default {
         'v-col-xl-3': !compactLayout,
       };
     },
-    groupedContentList() {
-      const listWithoutPins = [];
-      const listWithPins = [];
-
-      for (let i = 0; i < this.listContent?.length; i++) {
-        const metadata = this.listContent[i];
-
-        if (this.prePinnedIds?.includes(metadata.id)) {
-          metadata.isPinned = true;
-          listWithPins.push(metadata);
-        } else {
-          listWithoutPins.push(metadata);
-        }
-      }
-
-      return this.getGroupItemList([...listWithPins, ...listWithoutPins]);
-    },
     pinnedIds() {
       if (!this.showPinnedElements) {
         return [];
@@ -397,8 +368,36 @@ export default {
 
       return this.mapLayout ? '.mapLayoutContainers' : '.noMapLayoutContainers';
     },
+    hasGroupContent() {
+      return this.groupedContent?.length > 0;
+    },
   },
   methods: {
+    setGroupedContentList() {
+      if (!this.listContent || this.listContent.length <= 0) {
+        this.groupedContent = [];
+        return;
+      }
+
+      const listWithoutPins = [];
+      // const listWithPins = [];
+
+      for (let i = 0; i < this.listContent?.length; i++) {
+        const metadata = this.listContent[i];
+
+/*
+        if (this.prePinnedIds?.includes(metadata.id)) {
+          metadata.isPinned = true;
+          listWithPins.push(metadata);
+        } else {
+*/
+          listWithoutPins.push(metadata);
+//        }
+      }
+
+//      this.groupedContent = this.getGroupItemList([...listWithPins, ...listWithoutPins]);
+      this.groupedContent = this.getGroupItemList(listWithoutPins);
+    },
     getGroupItemList(array) {
       const result = [];
 
@@ -567,7 +566,26 @@ export default {
       this.$emit('shallowRealClick');
     },
   },
+  watch: {
+    listContent() {
+      this.$nextTick(() => {
+        this.setGroupedContentList();
+      })
+    },
+    controlsActive: {
+      handler(newValue, oldValue) {
+        // when the controls change, trigger a recalc of the layout specific height
+        this.layoutRecalcTrigger += 1;
+        this.$nextTick(() => {
+          this.setGroupedContentList();
+        })
+      },
+      deep: true,
+    },
+  },
   data: () => ({
+    layoutRecalcTrigger: 0,
+    groupedContent: [],
     noResultText: 'Nothing found for these search criterias.',
     suggestionText: 'Change the criterias or try one of these categories',
     pinIcon: null,

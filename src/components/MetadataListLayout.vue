@@ -22,7 +22,9 @@
       <v-col class="py-0 pl-2"
              cols="8">
         <v-row ref="controlPanel">
-          <v-col class="controlPanel hidden-xs" key="controlPanel" cols="12">
+          <v-col class="controlPanel hidden-xs"
+                 key="controlPanel"
+                 cols="12">
             <slot name="controlPanel" />
           </v-col>
         </v-row>
@@ -34,18 +36,21 @@
             ref="metadataListScroll"
             class="mapLayoutContainers"
             v-on:scroll="onScroll()"
-            :class="useDynamicHeight ? 'listScroll' : ''"
             :style="useDynamicHeight ? `height: calc(100vh - ${filteringComponentsHeight}px);` : ''"
           >
             <slot name="metadataListPlaceholder" />
 
-            <slot name="metadataListLayout" />
+            <slot name="metadataListLayout" :metadataListHeight="metadataListHeight" />
           </v-col>
         </v-row>
       </v-col>
     </v-row>
 
-    <v-row v-if="!mapLayout" id="metadataListLayoutFiltering_no_map" ref="metadataListLayoutFiltering" class="w-100" no-gutters>
+    <v-row v-if="!mapLayout"
+           id="metadataListLayoutFiltering_no_map"
+           ref="metadataListLayoutFiltering"
+           class="w-100"
+           no-gutters>
       <v-col class="hidden-sm-and-up pb-2" cols="12" key="controlPanel_smallscreen">
         <slot name="controlPanel" />
       </v-col>
@@ -73,9 +78,6 @@
         v-on:scroll="onScroll()"
         :style="useDynamicHeight ? `height: calc(100vh - ${filteringComponentsHeight}px);` : ''"
       >
-<!--
-        :class="useDynamicHeight ? 'listScroll' : ''"
--->
 
         <slot name="metadataListPlaceholder" />
 
@@ -111,7 +113,19 @@ export default {
       type: Boolean,
       default: false,
     },
+    layoutRecalcTrigger: {
+      type: Number,
+      default: 0,
+    },
   },
+/*
+  created() {
+    window.addEventListener('resize', this.setFilteringComponentsHeight);
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.setFilteringComponentsHeight);
+  },
+*/
   updated() {
     this.setFilteringComponentsHeight();
     this.setKeywordHeight();
@@ -125,12 +139,6 @@ export default {
       );
     },
   },
-  watch: {
-    filteringComponentsHeight() {
-      const viewportHeight = window.innerHeight;
-      this.metadataListHeight = (viewportHeight - this.filteringComponentsHeight);
-    },
-  },
   methods: {
     setFilteringComponentsHeight() {
       let searchViewHeight = 36;
@@ -138,9 +146,7 @@ export default {
       let padding = 0;
 
       if (this.mapLayout && this.$refs && this.$refs.controlPanel) {
-        searchViewHeight = this.$refs.controlPanel.$el.clientHeight
-          ? this.$refs.controlPanel.$el.clientHeight
-          : searchViewHeight;
+        searchViewHeight = this.$refs.controlPanel.$el.clientHeight;
       }
 
       if (
@@ -148,14 +154,15 @@ export default {
         this.$refs &&
         this.$refs.metadataListLayoutFiltering
       ) {
-        searchViewHeight = this.$refs.metadataListLayoutFiltering.$el.clientHeight
-          ? this.$refs.metadataListLayoutFiltering.$el.clientHeight
-          : searchViewHeight;
+        searchViewHeight = this.$refs.metadataListLayoutFiltering.$el.clientHeight;
         padding = 16;
       }
 
       this.filteringComponentsHeight =
         searchViewHeight + TheNavigationToolbar + padding;
+
+      const viewportHeight = window.innerHeight;
+      this.metadataListHeight = (viewportHeight - this.filteringComponentsHeight);
     },
     setKeywordHeight() {
       const TheNavigationToolbar = 36;
@@ -167,9 +174,8 @@ export default {
         this.$refs &&
         this.$refs.metadataListLayoutFiltering
       ) {
-        keywordHeight = this.$refs.metadataListLayoutFiltering.$el.clientHeight
-          ? this.$refs.metadataListLayoutFiltering.$el.clientHeight
-          : keywordHeight;
+        // use the offset Height here to measure the padding as well
+        keywordHeight = this.$refs.metadataListLayoutFiltering.$el.offsetHeight;
       }
 
       this.keywordHeight = keywordHeight + TheNavigationToolbar + padding;
@@ -181,6 +187,12 @@ export default {
     },
     onScroll() {
       this.$emit('onScroll', this.$refs?.metadataListScroll?.$el.scrollTop);
+    },
+  },
+  watch: {
+    layoutRecalcTrigger() {
+      this.setFilteringComponentsHeight();
+      this.setKeywordHeight();
     },
   },
   data: () => ({

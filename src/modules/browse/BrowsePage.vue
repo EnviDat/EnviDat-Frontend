@@ -6,7 +6,6 @@
     <metadata-list ref="metadataList"
                     :listContent="filteredDatasets"
                     :mapFilteringPossible="mapFilteringPossible"
-                    :placeHolderAmount="placeHolderAmount"
                     @clickedTag="catchTagClicked"
                     :selectedTagNames="selectedTagNames"
                     :allTags="tagsFromDatasets"
@@ -36,8 +35,6 @@
                     @shallowRealClick="catchShallowRealClick"
                     @organizationClicked="catchOrganizationClicked"
                     :showScrollTopButton="true"
-                    :reloadAmount="reloadAmount"
-                    :reloadDelay="vReloadDelay"
                     :updatingTags="updatingTags"
                     :loading="loading"
                     :metadatasContent="allDatasets"
@@ -528,7 +525,6 @@ export default {
     filteredModeContent: null,
     modeTags: null,
     pageBGImage: 'app_b_browsepage',
-    placeHolderAmount: 4,
     suggestionText: 'Try one of these categories',
     searchPlaceholderTextSmall: 'Enter research search term',
     searchPlaceholderText: 'Enter research term or topic ',

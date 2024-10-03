@@ -23,32 +23,12 @@ import categoryCards from '@/store/categoryCards';
 import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 import metadata from './js/metadata';
 
+
 metadata.forEach(dataset => enhanceTags(dataset));
 
 const longList = [...metadata, ...metadata, ...metadata];
 
 enhanceMetadatas(longList);
-
-const hugeList = [
-  ...longList, ...longList, ...longList,
-  ...longList, ...longList, ...longList,
-  ...longList, ...longList, ...longList,
-  ...longList, ...longList, ...longList,
-  ...longList, ...longList, ...longList,
-  ...longList, ...longList, ...longList,
-  ...longList, ...longList, ...longList,
-  ...longList, ...longList, ...longList,
-  ...longList, ...longList, ...longList,
-  ...longList, ...longList, ...longList,
-  ...longList, ...longList, ...longList,
-  ...longList, ...longList, ...longList,
-  ...longList, ...longList, ...longList,
-  ...longList, ...longList, ...longList,
-  ...longList, ...longList, ...longList,
-  ...longList, ...longList, ...longList,
-  ...longList, ...longList, ...longList,
-  ...longList, ...longList, ...longList,
-];
 
 const popularTags = getPopularTags(metadata, undefined, 1);
 const mergedWithPopulars = [...baseTags, ...popularTags.slice(0, 15)];
@@ -75,6 +55,15 @@ export const ListLoading = {
   },
 }
 
+export const ListLoadingWithMap = {
+  args: {
+    categoryCards,
+    loading: true,
+    showSearch: true,
+    defaultListControls: [LISTCONTROL_MAP_ACTIVE],
+  },
+}
+
 export const MinimalList = {
   args: {
     categoryCards,
@@ -84,13 +73,48 @@ export const MinimalList = {
   },
 }
 
+const templateForLoadingHugelist = {
+  render: (args, { argTypes }) => ({
+    components: { MetadataList },
+    props: Object.keys(argTypes),
+    template: `<MetadataList
+                v-bind="$props"
+                :loading="loadingList"
+                :listContent="largeList"
+    />`,
+    created() {
+      this.loadingList = true;
+    },
+    async mounted() {
+      setTimeout(async () => {
+        const packageList = await import ('../public/testdata/packagelist.json');
+        const contentMap = enhanceMetadatas(packageList.result);
+        this.largeList = Object.values(contentMap);
+        this.loadingList = false;
+      }, 1000)
+    },
+    methods: {
+    },
+    data: () => ({
+      loadingList: true,
+      largeList: [],
+    }),
+  }),
+};
+
 export const HugeList = {
+  ...templateForLoadingHugelist,
   args: {
     categoryCards,
-    listContent: hugeList,
+//    listContent: hugeList,
     showSearch: true,
     useDynamicHeight: true,
     allTags,
+    enabledControls: [
+      LISTCONTROL_LIST_ACTIVE,
+      LISTCONTROL_MAP_ACTIVE,
+      LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
+    ],
   },
 }
 
