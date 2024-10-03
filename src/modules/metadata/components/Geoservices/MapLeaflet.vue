@@ -260,7 +260,7 @@ export default {
       this.map.setMinZoom(
         Math.ceil(
           Math.log2(
-            Math.max(this.$refs.map.$el.clientWidth, this.$refs.map.$el.clientHeight) /
+            Math.max(this.$refs.map.clientWidth, this.$refs.map.clientHeight) /
               256,
           ),
         ),
