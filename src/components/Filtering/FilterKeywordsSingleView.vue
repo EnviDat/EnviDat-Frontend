@@ -16,7 +16,7 @@
                  style="display: flex; flex-direction: row;"
             >
               <v-col class="flex-grow-0 pl-0"
-                     v-for="n in 6"
+                     v-for="n in 3"
                      :key="n"
               >
                 <TagChipPlaceholder
