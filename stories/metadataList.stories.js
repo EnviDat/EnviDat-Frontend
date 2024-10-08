@@ -12,7 +12,7 @@
 import MetadataList from '@/components/MetadataList.vue';
 import {enhanceMetadatas} from '@/factories/metaDataFactory';
 import baseTags from '@/modules/metadata/store/metadataTags';
-import { getEnabledTags, getPopularTags, enhanceTags } from '@/factories/keywordsFactory';
+import { getEnabledTags, getPopularTags } from '@/factories/keywordsFactory';
 import {
   LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
   LISTCONTROL_LIST_ACTIVE,
@@ -24,9 +24,7 @@ import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams }
 import metadata from './js/metadata';
 
 
-metadata.forEach(dataset => enhanceTags(dataset));
-
-const longList = [...metadata, ...metadata, ...metadata];
+const longList = [...metadata, ...metadata, ...metadata, ...metadata];
 
 enhanceMetadatas(longList);
 
@@ -70,7 +68,25 @@ export const MinimalList = {
     listContent: longList,
     showSearch: true,
     allTags,
+    useDynamicHeight: true,
   },
+}
+
+export const NormalList = {
+  args: {
+    categoryCards,
+    listContent: longList,
+    showSearch: true,
+    allTags,
+    useDynamicHeight: true,
+    defaultListControls: [LISTCONTROL_MAP_ACTIVE],
+    enabledControls: [
+      LISTCONTROL_LIST_ACTIVE,
+      LISTCONTROL_MAP_ACTIVE,
+      LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
+    ],
+  },
+  parameters: undefined,
 }
 
 const templateForLoadingHugelist = {
@@ -147,6 +163,7 @@ export const ListWithControls = {
 export const ListWithMap = {
   args: {
     ...ListWithControls.args,
+    mapFilteringPossible: true,
     defaultListControls: [LISTCONTROL_MAP_ACTIVE],
   },
 }
@@ -179,17 +196,24 @@ export const ListRowViewWithMap = {
   },
 }
 
+export const TopFilteringLayout = {
+  args: {
+    ...ListWithMap.args,
+    topFilteringLayout: true,
+  },
+}
+
 export const MobileEmptyMetadataList= { args: EmptyMetadataList.args };
 MobileEmptyMetadataList.parameters = mobileViewportParams;
 
 export const MobileListLoading= { args: ListLoading.args };
 MobileListLoading.parameters = mobileViewportParams;
 
-export const MobileMinimalListSmall= { args: MinimalList.args };
-MobileMinimalListSmall.parameters = mobileViewportParams;
+export const MobileListSmall= { args: NormalList.args };
+MobileListSmall.parameters = mobileViewportParams;
 
-export const MobileMinimalListLarge = { args: MinimalList.args };
-MobileMinimalListLarge.parameters = mobileLargeViewportParams;
+export const MobileListLarge = { args: NormalList.args };
+MobileListLarge.parameters = mobileLargeViewportParams;
 
 export const TabletEmptyMetadataList = { args: EmptyMetadataList.args };
 TabletEmptyMetadataList.parameters = tabletViewportParams;
@@ -197,5 +221,5 @@ TabletEmptyMetadataList.parameters = tabletViewportParams;
 export const TabletListLoading = { args: ListLoading.args };
 TabletListLoading.parameters = tabletViewportParams;
 
-export const TabletMinimalList = { args: MinimalList.args };
-TabletMinimalList.parameters = tabletViewportParams;
+export const TabletList = { args: NormalList.args };
+TabletList.parameters = tabletViewportParams;

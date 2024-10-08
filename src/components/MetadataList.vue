@@ -1,11 +1,12 @@
 <template>
-  <metadata-list-layout
+  <MetadataListLayout
       ref="metadataListLayoutComponent"
       :topFilteringLayout="topFilteringLayout"
       :minMapHeight="minMapHeight"
       :useDynamicHeight="useDynamicHeight"
       :showMapFilter="showMapFilter"
-      :mapFilteringPossible="mapFilteringPossible" @onScroll="onScroll"
+      :mapFilteringPossible="mapFilteringPossible"
+      @onScroll="onScroll"
       :layoutRecalcTrigger="layoutRecalcTrigger"
   >
 
@@ -23,7 +24,7 @@
     </template>
 
     <template #controlPanel>
-      <control-panel :compactLayout="true" :searchTerm="searchTerm" :showSearch="showSearch" :searchCount="searchCount"
+      <ControlPanel :compactLayout="true" :searchTerm="searchTerm" :showSearch="showSearch" :searchCount="searchCount"
         :isAuthorSearch="isAuthorSearch" :isShallow="isShallow" :mode="modeData?.name" :fixedHeight="36"
         :searchBarPlaceholder="searchBarPlaceholder" :loading="loading" :controlsActive="controlsActive"
         :enabledControls="enabledControls" @searchClick="catchSearchClicked" @searchCleared="catchSearchCleared"
@@ -33,7 +34,7 @@
     </template>
 
     <template v-slot:filterMap>
-      <filter-map-view :content="listContent" :minMapHeight="minMapHeight" :pinnedIds="pinnedIds"
+      <FilterMapView :content="listContent" :minMapHeight="minMapHeight" :pinnedIds="pinnedIds"
         :topLayout="mapTopLayout" :modeData="modeData" @pointClicked="catchPointClicked"
         @clearButtonClicked="catchClearButtonClick" />
 
@@ -47,7 +48,8 @@
           <v-col
               v-for="(n, index) in placeHolderAmount"
               :key="'placeHolder_' + index"
-              :class="cardGridClass"
+              cols="12"
+              sm="3"
               class="pa-2">
 
             <MetadataCardPlaceholder :dark="false" />
@@ -56,94 +58,76 @@
       </v-container>
     </template>
 
-    <template v-slot:metadataListLayout="{  }">
-
-      <Grid
-
+    <template v-slot:metadataListLayout="{ metadataListHeight }">
+      <v-container
+        fluid
+       :style="`height: ${metadataListHeight}px; overflow-y: scroll;`"
       >
-        <template v-slot:probe>
-          <MetadataCardPlaceholder :dark="false" />
-        </template>
+      <v-row no-gutters>
 
-        <!-- When the item is not loaded, a placeholder is rendered -->
-        <template v-slot:placeholder="{ style }">
-<!--
-          <div class="item" :style="style">Placeholder {{ index }}</div>
--->
-          <MetadataCardPlaceholder :style="style" :dark="false" />
-<!--
-          <NoSearchResultsView :categoryCards="categoryCards" @clicked="catchCategoryClicked" />
--->
-
-        </template>
-
-        <!-- Render a loaded item -->
-        <template v-slot:default="{ item: metadata }">
-          <MetadataCard
-              :class="metadata.isPinned ? 'highlighted' : ''"
-              :id="metadata.id" :ref="metadata.id" :title="metadata.title" :name="metadata.name"
-              :subtitle="metadata.notes" :tags="!isCompactLayout ? metadata.tags : null" :titleImg="metadata.titleImg"
-              :restricted="hasRestrictedResources(metadata)" :resourceCount="metadata.num_resources" :modeData="modeData"
-              :flatLayout="listView" :compactLayout="isCompactLayout"
-              :geoJSONIcon="getGeoJSONIcon(metadata.location)" :categoryColor="metadata.categoryColor"
-              :state="getMetadataState(metadata)" :organization="metadata.organization?.name"
-              :organizationTooltip="metadata.organization?.title" :showOrganizationOnHover="showOrganizationOnHover"
-              @organizationClicked="$emit('organizationClicked', metadata.organization)" @clickedEvent="metaDataClicked"
-              @clickedTag="catchTagClicked" :showGenericOpenButton="!!metadata.openEvent"
-              :openButtonTooltip="metadata.openButtonTooltip" :openButtonIcon="metadata.openButtonIcon"
-              @openButtonClicked="catchOpenClick(metadata.openEvent, metadata.openProperty)"
-          />
-        </template>
-      </Grid>
-
-<!--
-      <v-row v-if="hasGroupContent"
-             :style="`height: ${metadataListHeight}px; overflow: hidden;`">
-
-        <v-virtual-scroll
-            :style="`height: ${metadataListHeight}px; scroll-behavior: smooth; `"
-            :items="groupedContent"
-            :item-height="fixedCardHeight"
+        <Grid
+          id="virtualScroller"
+          :length="contentSize"
+          :pageSize="virtualPageSize"
+          :pageProvider="pageProvider"
+          :pageProviderDebounceTime="100"
+          :respectScrollToOnResize="true"
+          class="virtualGrid"
+          :style="`
+          grid-template-columns: repeat(${this.amountOfRowsItems}, 1fr);
+          grid-template-rows: ${fixedCardHeight}px;
+          `"
         >
+<!--
+          <template v-slot:probe>
+            <MetadataCardPlaceholder :dark="false" />
+          </template>
+-->
 
-          <template v-slot:default="{ item: metadataGroup, groupIndex }">
-
-            <v-row :id="`metadataListLayout_${groupIndex}`"
-                   :ref="`metadataListLayout_${groupIndex}`"
-                   no-gutters
-            >
-
-              <v-col v-for="(metadata) in metadataGroup"
-                     :key="metadata.id"
-                     v-memo="pinnedIds.includes(metadata.id)"
-                     :class="cardGridClass"
-                     class="pa-2">
-
-                <MetadataCard
-                  :class="metadata.isPinned ? 'highlighted' : ''"
-                  :id="metadata.id" :ref="metadata.id" :title="metadata.title" :name="metadata.name"
-                  :subtitle="metadata.notes" :tags="!isCompactLayout ? metadata.tags : null" :titleImg="metadata.titleImg"
-                  :restricted="hasRestrictedResources(metadata)" :resourceCount="metadata.num_resources" :modeData="modeData"
-                  :flatLayout="listView" :compactLayout="isCompactLayout"
-                  :geoJSONIcon="getGeoJSONIcon(metadata.location)" :categoryColor="metadata.categoryColor"
-                  :state="getMetadataState(metadata)" :organization="metadata.organization?.name"
-                  :organizationTooltip="metadata.organization?.title" :showOrganizationOnHover="showOrganizationOnHover"
-                  @organizationClicked="$emit('organizationClicked', metadata.organization)" @clickedEvent="metaDataClicked"
-                  @clickedTag="catchTagClicked" :showGenericOpenButton="!!metadata.openEvent"
-                  :openButtonTooltip="metadata.openButtonTooltip" :openButtonIcon="metadata.openButtonIcon"
-                  @openButtonClicked="catchOpenClick(metadata.openEvent, metadata.openProperty)" />
-
-              </v-col>
-            </v-row>
-
+          <!-- When the item is not loaded, a placeholder is rendered -->
+          <template v-slot:placeholder="{ style }">
+            <MetadataCardPlaceholder
+              :dark="false"
+              :style="style"
+            />
           </template>
 
-        </v-virtual-scroll>
-
+          <!-- Render a loaded item -->
+          <template v-slot:default="{ item: metadata, style }">
+            <MetadataCard
+              :style="style"
+              :class="metadata.isPinned ? 'highlighted' : ''"
+              :id="metadata.id"
+              :ref="metadata.id"
+              :title="metadata.title"
+              :name="metadata.name"
+              :subtitle="metadata.notes"
+              :tags="!isCompactLayout ? metadata.tags : null"
+              :titleImg="isCompactLayout ? undefined : metadata.titleImg"
+              :restricted="hasRestrictedResources(metadata)"
+              :resourceCount="metadata.num_resources"
+              :modeData="modeData"
+              :flatLayout="listView"
+              :compactLayout="isCompactLayout"
+              :geoJSONIcon="getGeoJSONIcon(metadata.location)"
+              :categoryColor="metadata.categoryColor"
+              :state="getMetadataState(metadata)"
+              :organization="metadata.organization?.name"
+              :organizationTooltip="metadata.organization?.title"
+              :showOrganizationOnHover="showOrganizationOnHover"
+              @organizationClicked="$emit('organizationClicked', metadata.organization)"
+              @clickedEvent="metaDataClicked"
+              @clickedTag="catchTagClicked"
+              :showGenericOpenButton="!!metadata.openEvent"
+              :openButtonTooltip="metadata.openButtonTooltip"
+              :openButtonIcon="metadata.openButtonIcon"
+              @openButtonClicked="catchOpenClick(metadata.openEvent, metadata.openProperty)"
+            />
+          </template>
+        </Grid>
       </v-row>
 
 
--->
       <v-row>
         <v-col
             v-if="!loading && contentSize <= 0"
@@ -154,9 +138,11 @@
         </v-col>
 
       </v-row>
+      </v-container>
+
     </template>
 
-  </metadata-list-layout>
+  </MetadataListLayout>
 </template>
 
 <script>
@@ -175,11 +161,13 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
+import Grid from 'vue-virtual-scroll-grid';
 import { BROWSE_PATH } from '@/router/routeConsts';
 import FilterKeywordsSingleView from '@/components/Filtering/FilterKeywordsSingleView.vue';
 import FilterMapView from '@/components/Filtering/FilterMapView.vue';
 import ControlPanel from '@/components/Filtering/ControlPanel.vue';
 
+import MetadataListLayout from '@/components/MetadataListLayout.vue';
 import MetadataCard from '@/components/Cards/MetadataCard.vue';
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
 import NoSearchResultsView from '@/components/Filtering/NoSearchResultsView.vue';
@@ -188,9 +176,6 @@ import {
   LISTCONTROL_MAP_ACTIVE,
   LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
 } from '@/store/metadataMutationsConsts';
-
-import MetadataListLayout from '@/components/MetadataListLayout.vue';
-import Grid from "vue-virtual-scroll-grid";
 
 import { eventBus } from '@/factories/eventBus';
 
@@ -284,8 +269,6 @@ export default {
         this.controlsChanged(n);
       });
     }
-
-    this.setGroupedContentList();
   },
   computed: {
     hasMetadatasContent() {
@@ -309,44 +292,55 @@ export default {
     showPinnedElements() {
       return !this.loading && this.showMapFilter && this.prePinnedIds?.length > 0;
     },
+    virtualPageSize() {
+      const mapActive = this.isActiveControl(LISTCONTROL_MAP_ACTIVE);
+      const compactLayout = this.isCompactLayout;
+      const listLayout = this.isActiveControl(LISTCONTROL_LIST_ACTIVE);
+
+      if (this.$vuetify.display.lgAndUp) {
+        if (compactLayout) {
+          return 54; // 36 is about a fits on a screen, use 1,5 as much
+        }
+
+        if (listLayout) {
+          return mapActive ? 12 : 16;
+        }
+      }
+
+      return 16;
+    },
     amountOfRowsItems()  {
       const mapActive = this.isActiveControl(LISTCONTROL_MAP_ACTIVE);
       const compactLayout = this.isCompactLayout;
       const listLayout = this.isActiveControl(LISTCONTROL_LIST_ACTIVE);
 
-      if (this.$vuetify.display.xlAndUp) {
-        if (!compactLayout) {
-          return 4;
-        }
-
-        return 6;
-      }
-
-      if (this.$vuetify.display.lgAndUp) {
-        if (!mapActive && compactLayout) {
-          return 6;
-        }
-
-        if (mapActive && compactLayout) {
-          return 4;
-        }
-
-        if (listLayout) {
+      if (listLayout) {
+        if (this.$vuetify.display.xlAndUp) {
           return 2;
         }
 
-        return 3;
+        return mapActive ? 1 : 2;
+      }
+
+      if (compactLayout) {
+        if (this.$vuetify.display.xlAndUp) {
+          return mapActive ? 6 : 8;
+        }
+
+        if (this.$vuetify.display.lgAndUp) {
+          return mapActive ? 4 : 6;
+        }
       }
 
       if (this.$vuetify.display.smAndDown) {
-        return 2;
-      }
-
-      if (this.$vuetify.display.xs) {
         return 1;
       }
 
-      return 4;
+      if (this.$vuetify.display.xlAndUp) {
+        return 4;
+      }
+
+      return mapActive ? 3 : 4;
     },
     fixedCardHeight() {
       const compactLayout = this.isCompactLayout;
@@ -362,6 +356,7 @@ export default {
 
       return 330;
     },
+/*
     cardGridClass() {
       const mapActive = this.isActiveControl(LISTCONTROL_MAP_ACTIVE);
       const compactLayout = this.isCompactLayout;
@@ -385,6 +380,7 @@ export default {
         'v-col-xl-3': !compactLayout,
       };
     },
+*/
     pinnedIds() {
       if (!this.showPinnedElements) {
         return [];
@@ -405,51 +401,14 @@ export default {
     mapLayout() {
       return !this.topFilteringLayout && this.showMapFilter && this.$vuetify.display.mdAndUp;
     },
-    dynamicMainScrollClass() {
-      if (this.mainScrollClass) {
-        return this.mainScrollClass;
-      }
-
-      return this.mapLayout ? '.mapLayoutContainers' : '.noMapLayoutContainers';
-    },
-    hasGroupContent() {
-      return this.groupedContent?.length > 0;
-    },
   },
   methods: {
-    setGroupedContentList() {
-      if (!this.listContent || this.listContent.length <= 0) {
-        this.groupedContent = [];
-        return;
-      }
-
-      const listWithoutPins = [];
-      // const listWithPins = [];
-
-      for (let i = 0; i < this.listContent?.length; i++) {
-        const metadata = this.listContent[i];
-
-/*
-        if (this.prePinnedIds?.includes(metadata.id)) {
-          metadata.isPinned = true;
-          listWithPins.push(metadata);
-        } else {
-*/
-          listWithoutPins.push(metadata);
-//        }
-      }
-
-//      this.groupedContent = this.getGroupItemList([...listWithPins, ...listWithoutPins]);
-      this.groupedContent = this.getGroupItemList(listWithoutPins);
-    },
-    getGroupItemList(array) {
-      const result = [];
-
-      for (let i = 0; i < array.length; i += this.amountOfRowsItems) {
-        result.push(array.slice(i, i + this.amountOfRowsItems));
-      }
-
-      return result;
+    async pageProvider(pageNumber, pageSize) {
+      const start = pageNumber * pageSize;
+      const end = start + pageSize;
+      const sublist = this.listContent.slice(start, end);
+      console.log(`subList start ${start} end ${end} length ${sublist.length}`);
+      return sublist;
     },
     getMetadataState(metadata) {
       if (!this.showPublicationState) {
@@ -611,25 +570,17 @@ export default {
     },
   },
   watch: {
-    listContent() {
-      this.$nextTick(() => {
-        this.setGroupedContentList();
-      })
-    },
     controlsActive: {
-      handler(newValue, oldValue) {
+      handler() {
         // when the controls change, trigger a recalc of the layout specific height
         this.layoutRecalcTrigger += 1;
-        this.$nextTick(() => {
-          this.setGroupedContentList();
-        })
       },
       deep: true,
     },
   },
   data: () => ({
     layoutRecalcTrigger: 0,
-    groupedContent: [],
+    // groupedContent: [],
     noResultText: 'Nothing found for these search criterias.',
     suggestionText: 'Change the criterias or try one of these categories',
     pinIcon: null,
@@ -673,5 +624,10 @@ export default {
 
 .highlighted {
   box-shadow: #4db6ac 0 0 5px 5px !important;
+}
+
+.virtualGrid {
+  display: grid;
+  grid-gap: 15px;
 }
 </style>

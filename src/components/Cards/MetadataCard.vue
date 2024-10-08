@@ -1,5 +1,10 @@
 <template>
-  <v-card @mouseover="hover = true" @mouseleave="hover = false" :dark="false" @click.native="cardClick" :style="'height: 100%'">
+  <v-card
+    @mouseover="hover = true"
+    @mouseleave="hover = false"
+    :dark="false"
+    @click.native="cardClick"
+  >
     <v-container fluid class="pa-0">
       <v-row no-gutters>
         <v-col>
