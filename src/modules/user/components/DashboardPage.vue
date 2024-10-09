@@ -108,7 +108,6 @@
                       @clickedTagClose="catchTagCloseClicked"
                       :defaultListControls="userListDefaultControls"
                       :enabledControls="userListEnabledControls"
-                      :useDynamicHeight="false"
                       :mapTopLayout="false"
                       :topFilteringLayout="true"
                       :showSearch="false"
@@ -224,7 +223,6 @@
                     @clickedTagClose="catchOrgaTagCloseClicked"
                     :defaultListControls="userListDefaultControls"
                     :enabledControls="userListEnabledControls"
-                    :useDynamicHeight="false"
                     :mapTopLayout="false"
                     :topFilteringLayout="true"
                     :showSearch="false"
@@ -936,7 +934,7 @@ export default {
       display: grid
       grid-template-columns: 4fr auto auto
       gap: $gridGap
-      overflow: hidden auto
+      overflow: hidden hidden
       max-height: $maxHeight
 
     .midBoard
@@ -948,7 +946,7 @@ export default {
       max-height: $maxHeight
 
       .datasetsOverflow
-        overflow: hidden auto
+        overflow: hidden hidden
 
 
       .noUserDatasetsGrid

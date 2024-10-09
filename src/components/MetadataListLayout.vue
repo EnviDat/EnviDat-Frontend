@@ -29,12 +29,12 @@
           </v-col>
         </v-row>
 
-        <v-row class="mt-2">
+        <v-row no-gutters>
           <v-col
             cols="12"
             id="metadataListScroll_mapLayout"
             ref="metadataListScroll"
-            class="mapLayoutContainers"
+            class="mapLayoutContainers listScroll mt-2 mb-4"
             v-on:scroll="onScroll()"
             :style="useDynamicHeight ? `height: calc(100vh - ${filteringComponentsHeight}px);` : ''"
           >
@@ -74,7 +74,7 @@
       <v-col
         ref="metadataListScroll"
         id="metadataListScroll_no_mapLayout"
-        class="noMapLayoutContainers mt-2 mb-4"
+        class="noMapLayoutContainers listScroll mt-2 mb-4"
         v-on:scroll="onScroll()"
         :style="useDynamicHeight ? `height: calc(100vh - ${filteringComponentsHeight}px);` : ''"
       >

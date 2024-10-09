@@ -61,7 +61,8 @@
     <template v-slot:metadataListLayout="{ metadataListHeight }">
       <v-container
         fluid
-       :style="`height: ${metadataListHeight}px; overflow-y: scroll;`"
+        class="pa-0"
+       :style="`height: ${metadataListHeight}px;`"
       >
       <v-row no-gutters>
 
