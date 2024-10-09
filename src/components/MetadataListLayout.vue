@@ -70,7 +70,7 @@
       </v-col>
     </v-row>
 
-    <v-row v-if="!mapLayout" class="" no-gutters>
+    <v-row v-if="!mapLayout" no-gutters>
       <v-col
         ref="metadataListScroll"
         id="metadataListScroll_no_mapLayout"

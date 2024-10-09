@@ -162,16 +162,10 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
+import {defineAsyncComponent} from 'vue';
 import Grid from 'vue-virtual-scroll-grid';
 import { BROWSE_PATH } from '@/router/routeConsts';
-import FilterKeywordsSingleView from '@/components/Filtering/FilterKeywordsSingleView.vue';
-import FilterMapView from '@/components/Filtering/FilterMapView.vue';
-import ControlPanel from '@/components/Filtering/ControlPanel.vue';
 
-import MetadataListLayout from '@/components/MetadataListLayout.vue';
-import MetadataCard from '@/components/Cards/MetadataCard.vue';
-import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
-import NoSearchResultsView from '@/components/Filtering/NoSearchResultsView.vue';
 import {
   LISTCONTROL_LIST_ACTIVE,
   LISTCONTROL_MAP_ACTIVE,
@@ -184,6 +178,17 @@ import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
 import { getGeoJSONIcon, getIcon } from '@/factories/imageFactory';
 import { convertArrayToUrlString } from '@/factories/stringFactory';
 
+import FilterKeywordsSingleView from '@/components/Filtering/FilterKeywordsSingleView.vue';
+import FilterMapView from '@/components/Filtering/FilterMapView.vue';
+import ControlPanel from '@/components/Filtering/ControlPanel.vue';
+
+import MetadataListLayout from '@/components/MetadataListLayout.vue';
+import MetadataCard from '@/components/Cards/MetadataCard.vue';
+import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
+
+const NoSearchResultsView = defineAsyncComponent(() =>
+  import('@/components/Filtering/NoSearchResultsView.vue'),
+);
 
 export default {
   name: 'MetadataList',
@@ -300,7 +305,7 @@ export default {
 
       if (this.$vuetify.display.lgAndUp) {
         if (compactLayout) {
-          return 54; // 36 is about a fits on a screen, use 1,5 as much
+          return 36;
         }
 
         if (listLayout) {
@@ -355,33 +360,8 @@ export default {
         return 197;
       }
 
-      return 330;
+      return 360;
     },
-/*
-    cardGridClass() {
-      const mapActive = this.isActiveControl(LISTCONTROL_MAP_ACTIVE);
-      const compactLayout = this.isCompactLayout;
-
-      if (this.isActiveControl(LISTCONTROL_LIST_ACTIVE)) {
-        return {
-          'v-col-12': true,
-          'v-col-lg-6': !mapActive,
-          'v-col-xl-6': true,
-        };
-      }
-
-      return {
-        'v-col-12': true,
-        'v-col-sm-6': true,
-        'v-col-md-4': true,
-        'v-col-lg-2': compactLayout && !mapActive,
-        'v-col-lg-3': compactLayout && mapActive,
-        'v-col-lg-4': mapActive && !compactLayout,
-        'v-col-xl-2': compactLayout,
-        'v-col-xl-3': !compactLayout,
-      };
-    },
-*/
     pinnedIds() {
       if (!this.showPinnedElements) {
         return [];
@@ -407,9 +387,7 @@ export default {
     async pageProvider(pageNumber, pageSize) {
       const start = pageNumber * pageSize;
       const end = start + pageSize;
-      const sublist = this.listContent.slice(start, end);
-      console.log(`subList start ${start} end ${end} length ${sublist.length}`);
-      return sublist;
+      return this.listContent.slice(start, end);
     },
     getMetadataState(metadata) {
       if (!this.showPublicationState) {
