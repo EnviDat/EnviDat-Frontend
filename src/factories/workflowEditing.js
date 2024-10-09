@@ -27,7 +27,7 @@ import EditRelatedInfo from '@/modules/user/components/EditRelatedInfo.vue';
 import EditPublication from '@/modules/user/components/edit/EditPublication.vue';
 
 
-import {mainDetailSteps} from '@/factories/workflowFactory';
+import {mainDetailSteps} from '@/factories/workflowData';
 
 
 /**

@@ -24,7 +24,7 @@ import CreateDataAndResources from '@/modules/user/components/create/CreateDataA
 
 import MetadataGenericSubStepper from '@/modules/user/components/MetadataGenericSubStepper.vue';
 import MetadataCreationPublicationInfo from '@/modules/user/components/create/CreatePublicationInfo.vue';
-import {mainDetailSteps} from '@/factories/workflowFactory';
+import {mainDetailSteps} from '@/factories/workflowData';
 
 
 /**
