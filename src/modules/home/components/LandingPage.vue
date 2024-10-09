@@ -19,6 +19,7 @@
       :datasetsTotal="datasetsTotal"
       :newsTitle="welcomeInfo.newsTitle"
       :articlesTitle="welcomeInfo.articlesTitle">
+
       <template v-if="$vuetify.display.mdAndUp" v-slot:logo>
         <v-row no-gutters
           align="center">

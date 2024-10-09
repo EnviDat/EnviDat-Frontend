@@ -373,16 +373,16 @@ import EditUserProfile from '@/modules/user/components/edit/EditUserProfile.vue'
 import FlipLayout from '@/components/Layouts/FlipLayout.vue';
 
 const IntroductionCard = defineAsyncComponent(() =>
-    import('@/components/Cards/IntroductionCard.vue'),
+  import('@/components/Cards/IntroductionCard.vue'),
 );
 const NotFoundCard = defineAsyncComponent(() =>
-    import('@/components/Cards/NotFoundCard.vue'),
+  import('@/components/Cards/NotFoundCard.vue'),
 );
 const NotificationCard = defineAsyncComponent(() =>
-    import('@/components/Cards/NotificationCard.vue'),
+  import('@/components/Cards/NotificationCard.vue'),
 );
 const UserOrganizationInfo = defineAsyncComponent(() =>
-    import('@/components/Cards/UserOrganizationInfo.vue'),
+  import('@/components/Cards/UserOrganizationInfo.vue'),
 );
 
 export default {

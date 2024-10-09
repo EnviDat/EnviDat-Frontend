@@ -7,10 +7,6 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-
-// import createPersist from 'vuex-localstorage';
-
-
 import { getCitationList } from '@/factories/citationFactory';
 import categoryCards from '@/store/categoryCards';
 import { getTagColor } from '@/factories/keywordsFactory';

@@ -221,10 +221,10 @@ import { getImage } from '@/factories/imageFactory';
 import { defineAsyncComponent } from 'vue';
 
 const TheNavigation = defineAsyncComponent(() =>
-    import('@/components/Navigation/TheNavigation.vue'),
+  import('@/components/Navigation/TheNavigation.vue'),
 );
 const TheNavigationToolbar = defineAsyncComponent(() =>
-    import('@/components/Navigation/TheNavigationToolbar.vue'),
+  import('@/components/Navigation/TheNavigationToolbar.vue'),
 );
 
 const GenericFullScreenModal = defineAsyncComponent(() =>

@@ -71,7 +71,7 @@
            align="end" >
       <v-col cols="5"
               class="text-body-2">
-        Fill out all fields to save the dataset. Have a look at the the progess on the top right!
+        Fill out all fields to save the dataset. Have a look at the the progress on the top right!
       </v-col>
     </v-row>
   </v-container>

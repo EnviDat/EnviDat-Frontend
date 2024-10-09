@@ -95,12 +95,6 @@ import {
 
 import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
 
-import EditMetadataResources from '@/modules/user/components/EditMetadataResources.vue';
-import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles.vue';
-import EditResourcePasteUrl from '@/modules/user/components/EditResourcePasteUrl.vue';
-import EditResource from '@/modules/user/components/EditResource.vue';
-import EditResourceRedirect from '@/modules/user/components/EditResourceRedirect.vue';
-
 import {
   getUppyInstance,
   subscribeOnUppyEvent,
@@ -123,7 +117,21 @@ import { getSelectedElement } from '@/factories/userEditingFactory';
 
 import { mergeResourceSizeForFrontend } from '@/factories/mappingFactory';
 
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
+import {defineAsyncComponent} from 'vue';
+
+import EditMetadataResources from '@/modules/user/components/EditMetadataResources.vue';
+import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles.vue';
+import EditResourcePasteUrl from '@/modules/user/components/EditResourcePasteUrl.vue';
+
+const EditResource = defineAsyncComponent(() =>
+    import('@/modules/user/components/EditResource.vue'),
+);
+const EditResourceRedirect = defineAsyncComponent(() =>
+    import('@/modules/user/components/EditResourceRedirect.vue'),
+);
+const BaseRectangleButton = defineAsyncComponent(() =>
+    import('@/components/BaseElements/BaseRectangleButton.vue'),
+);
 
 export default {
   name: 'EditDataAndResources',

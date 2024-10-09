@@ -21,6 +21,7 @@ import {
   USER_SIGNIN_PAGENAME,
   USER_SIGNIN_PATH,
 } from '@/router/routeConsts';
+
 import store from '@/store/store';
 
 const SigninPage = () => import('@/modules/user/components/SigninPage.vue');

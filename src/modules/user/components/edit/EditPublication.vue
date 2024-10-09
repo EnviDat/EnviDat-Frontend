@@ -73,13 +73,6 @@
 
 import { mapState } from 'vuex';
 
-import EditOrganization from '@/modules/user/components/edit/EditOrganization.vue';
-import EditPublicationInfo from '@/modules/user/components/edit/EditPublicationInfo.vue';
-import EditFunding from '@/modules/user/components/EditFunding.vue';
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
-import EditPublicationStatus from '@/modules/user/components/edit/EditPublicationStatus.vue';
-import NotFoundCard from '@/components/Cards/NotFoundCard.vue'
-
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 import {
   EDITMETADATA_FUNDING_INFO,
@@ -90,6 +83,18 @@ import {
   eventBus,
   METADATA_EDITING_FINISH_CLICK,
 } from '@/factories/eventBus';
+
+import {defineAsyncComponent} from 'vue';
+
+import EditOrganization from '@/modules/user/components/edit/EditOrganization.vue';
+import EditPublicationInfo from '@/modules/user/components/edit/EditPublicationInfo.vue';
+import EditFunding from '@/modules/user/components/EditFunding.vue';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
+import EditPublicationStatus from '@/modules/user/components/edit/EditPublicationStatus.vue';
+
+const NotFoundCard = defineAsyncComponent(() =>
+  import('@/components/Cards/NotFoundCard.vue'),
+);
 
 
 export default {
