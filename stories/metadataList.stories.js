@@ -24,8 +24,10 @@ import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams }
 import metadata from './js/metadata';
 
 
+const smallList = [...metadata, ...metadata];
 const longList = [...metadata, ...metadata, ...metadata, ...metadata];
 
+enhanceMetadatas(smallList);
 enhanceMetadatas(longList);
 
 const popularTags = getPopularTags(metadata, undefined, 1);
@@ -65,10 +67,9 @@ export const ListLoadingWithMap = {
 export const MinimalList = {
   args: {
     categoryCards,
-    listContent: longList,
+    listContent: smallList,
     showSearch: true,
     allTags,
-    useDynamicHeight: true,
   },
 }
 
@@ -83,6 +84,8 @@ export const MinimalSelectionList = {
 export const ListWithControls = {
   args: {
     ...MinimalList.args,
+    useDynamicHeight: true,
+    listContent: longList,
     enabledControls: [
       LISTCONTROL_LIST_ACTIVE,
       LISTCONTROL_MAP_ACTIVE,
@@ -103,7 +106,6 @@ export const BrowsePageList = {
   args: {
     ...ListWithMap.args,
     categoryCards,
-    listContent: longList,
     showSearch: true,
   },
   parameters: {

@@ -43,7 +43,9 @@
     <template v-slot:metadataListPlaceholder>
       <v-container v-show="loading" class="px-0 pt-0 px-sm-1" fluid>
         <!-- don't use class with paddings here, it's being used in the MetadataListLayout component -->
-        <v-row id="metadataListPlaceholder" ref="metadataListPlaceholder">
+        <v-row no-gutters
+            id="metadataListPlaceholder"
+            ref="metadataListPlaceholder">
 
           <v-col
               v-for="(n, index) in placeHolderAmount"
@@ -60,11 +62,13 @@
 
     <template v-slot:metadataListLayout="{ metadataListHeight }">
       <v-container
+        id="datasetList"
         fluid
         class="pa-0"
-       :style="`height: ${metadataListHeight}px;`"
+       :style="`height: ${ useDynamicHeight ? `${metadataListHeight}px` : 'auto' };`"
       >
-      <v-row no-gutters>
+      <v-row v-if="!loading"
+             no-gutters>
 
         <Grid
           id="virtualScroller"
@@ -129,13 +133,14 @@
       </v-row>
 
 
-      <v-row>
+      <v-row v-if="!loading && contentSize <= 0"
+      >
         <v-col
-            v-if="!loading && contentSize <= 0"
             class="mx-2"
+            id="noSearchResultsView"
             key="noSearchResultsView"
             cols="12">
-          <no-search-results-view :categoryCards="categoryCards" @clicked="catchCategoryClicked" />
+          <NoSearchResultsView :categoryCards="categoryCards" @clicked="catchCategoryClicked" />
         </v-col>
 
       </v-row>
