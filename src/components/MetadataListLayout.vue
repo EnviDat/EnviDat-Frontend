@@ -34,7 +34,7 @@
             cols="12"
             id="metadataListScroll_mapLayout"
             ref="metadataListScroll"
-            class="mapLayoutContainers listScroll mt-2 mb-4"
+            class="mapLayoutContainers listScroll mt-2 mb-4 pr-1"
             v-on:scroll="onScroll()"
             :style="useDynamicHeight ? `height: calc(100vh - ${filteringComponentsHeight}px);` : ''"
           >
@@ -74,7 +74,7 @@
       <v-col
         ref="metadataListScroll"
         id="metadataListScroll_no_mapLayout"
-        class="noMapLayoutContainers listScroll mt-2 mb-4"
+        class="noMapLayoutContainers listScroll mt-2 mb-4 pr-1"
         v-on:scroll="onScroll()"
         :style="useDynamicHeight ? `height: calc(100vh - ${filteringComponentsHeight}px);` : ''"
       >

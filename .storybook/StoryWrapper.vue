@@ -17,12 +17,17 @@ export default {
 </script>
 
 <style>
+  .vuetifyStorybookApp {
+    background-color: transparent;
+  }
+
   .vuetifyStorybookApp .v-application__wrap {
     /*
     font-family: 'Raleway', sans-serif !important;
     */
     min-height: auto;
   }
+
 </style>
 
 <style lang='scss' >
