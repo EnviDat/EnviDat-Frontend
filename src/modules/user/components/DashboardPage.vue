@@ -93,6 +93,21 @@
                   :loading="userDatasetsLoading"
                   :clickCallback="catchRefreshClick" />
 
+      <div v-if="hasUserDatasets && userDatasetsLoading"
+           id="collaboratorPlaceholders"
+           class="datasetsOverflow" >
+
+        <v-row no-gutters>
+          <v-col v-for="n in placeHolderAmount"
+                 :key="`userDatasetsPlaceholder_${n}`"
+                 cols="2"
+                 class="pa-2" >
+
+            <MetadataCardPlaceholder  />
+          </v-col>
+        </v-row>
+      </div>
+
       <MetadataList v-if="hasUserDatasets"
                       class="datasetsOverflow px-1"
                       :listContent="filteredUserDatasets"
@@ -146,7 +161,7 @@
 
          <v-row no-gutters>
            <v-col v-for="n in orgaDatasetsPreview"
-                  :key="n"
+                  :key="`orgaDatasetsPlaceholder_${n}`"
                   cols="2"
                   class="pa-2" >
 
@@ -161,7 +176,7 @@
 
          <v-row no-gutters>
            <v-col v-for="(metadata, index) in collaboratorDatasets"
-                  :key="index"
+                  :key="`orgaDatasets_${index}`"
                   cols="2"
                   class="pa-2" >
 
@@ -331,18 +346,6 @@ import {
   USER_PROFILE,
 } from '@/factories/eventBus';
 
-import NotFoundCard from '@/components/Cards/NotFoundCard.vue';
-import MetadataList from '@/components/MetadataList.vue';
-import MetadataCard from '@/components/Cards/MetadataCard.vue';
-import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
-import IntroductionCard from '@/components/Cards/IntroductionCard.vue';
-import NotificationCard from '@/components/Cards/NotificationCard.vue';
-import TitleCard from '@/components/Cards/TitleCard.vue';
-import UserCard from '@/components/Cards/UserCard.vue';
-import EditUserProfile from '@/modules/user/components/edit/EditUserProfile.vue';
-import FlipLayout from '@/components/Layouts/FlipLayout.vue';
-import UserOrganizationInfo from '@/components/Cards/UserOrganizationInfo.vue';
-
 import {
   ORGANIZATIONS_NAMESPACE,
   USER_GET_ORGANIZATION_IDS,
@@ -358,6 +361,29 @@ import { METADATA_TITLE_PROPERTY } from '@/factories/metadataConsts';
 import { mdiRefresh } from '@mdi/js';
 import { loadRouteTags } from '@/factories/stringFactory';
 import categoryCards from '@/store/categoryCards';
+
+import {defineAsyncComponent} from 'vue';
+
+import MetadataList from '@/components/MetadataList.vue';
+import MetadataCard from '@/components/Cards/MetadataCard.vue';
+import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
+import TitleCard from '@/components/Cards/TitleCard.vue';
+import UserCard from '@/components/Cards/UserCard.vue';
+import EditUserProfile from '@/modules/user/components/edit/EditUserProfile.vue';
+import FlipLayout from '@/components/Layouts/FlipLayout.vue';
+
+const IntroductionCard = defineAsyncComponent(() =>
+    import('@/components/Cards/IntroductionCard.vue'),
+);
+const NotFoundCard = defineAsyncComponent(() =>
+    import('@/components/Cards/NotFoundCard.vue'),
+);
+const NotificationCard = defineAsyncComponent(() =>
+    import('@/components/Cards/NotificationCard.vue'),
+);
+const UserOrganizationInfo = defineAsyncComponent(() =>
+    import('@/components/Cards/UserOrganizationInfo.vue'),
+);
 
 export default {
   name: 'DashboardPage',

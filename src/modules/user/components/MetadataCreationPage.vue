@@ -123,8 +123,8 @@ import {
   getStepByName,
   getStepFromRoute,
   initializeSteps,
-  metadataCreationSteps,
 } from '@/factories/workflowFactory';
+import {metadataCreationSteps} from '@/factories/workflowCreation';
 
 import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
 import { getReadOnlyFieldsObject } from '@/factories/mappingFactory';

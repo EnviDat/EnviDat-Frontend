@@ -140,8 +140,8 @@ import {
   getStepByName,
   getStepFromRoute,
   initializeSteps,
-  metadataEditingSteps,
 } from '@/factories/workflowFactory';
+import {metadataEditingSteps} from '@/factories/workflowEditing';
 
 import {
   DOI_API_ACTIONS,

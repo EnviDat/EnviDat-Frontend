@@ -215,12 +215,17 @@ import {
   SHOW_REDIRECT_SIGNIN_DIALOG,
 } from '@/factories/eventBus';
 
-import TheNavigation from '@/components/Navigation/TheNavigation.vue';
-import TheNavigationToolbar from '@/components/Navigation/TheNavigationToolbar.vue';
 
 import { ENVIDAT_SHOW_COOKIE_BANNER } from '@/factories/metadataConsts';
 import { getImage } from '@/factories/imageFactory';
 import { defineAsyncComponent } from 'vue';
+
+const TheNavigation = defineAsyncComponent(() =>
+    import('@/components/Navigation/TheNavigation.vue'),
+);
+const TheNavigationToolbar = defineAsyncComponent(() =>
+    import('@/components/Navigation/TheNavigationToolbar.vue'),
+);
 
 const GenericFullScreenModal = defineAsyncComponent(() =>
   import('@/components/Layouts/GenericFullScreenModal.vue'),

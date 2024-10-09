@@ -1,5 +1,5 @@
 <template>
-  <v-container id="MetadataCreationRelatedInfo" fluid class="pa-0">
+  <v-container id="EditRelatedInfo" fluid class="pa-0">
     <v-row>
       <v-col v-if="useListResolving"
              cols="4.5">
@@ -63,7 +63,7 @@ import EditRelatedPublicationsList from '@/modules/user/components/EditRelatedPu
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 
 export default {
-  name: 'MetadataCreationRelatedInfo',
+  name: 'EditRelatedInfo',
   props: {
     currentStep: Object,
     relatedPublicationsText: {

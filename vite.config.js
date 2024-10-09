@@ -60,162 +60,123 @@ export default ({ mode, config }) => {
   const buildSourceMaps = env.VITE_BUILD_SOURCEMAPS === 'true';
 
     return defineConfig({
-        plugins: [
-            vue(),
-            eslint({
-              // https://github.com/storybookjs/builder-vite/issues/367#issuecomment-1938214165
-              // Remove warnings because Vite falesly tries to lint folders it should not
-              exclude: ['/virtual:/**', 'node_modules/**', '/sb-preview/**'],
-            }),
-            vuetify({
-              autoImport: true,
-            }),
-            Unfonts({
-              google: {
-                families: [
-                  'Baskervville',
-                  {
-                    name: 'Raleway',
-                    styles: 'wght@400;500;700',
-                  },
-                ],
-              },
-            }),
-          visualizer({
-            filename: './dist/buildStats.html',
-            title : 'EnviDat Build Visualizer',
+      plugins: [
+          vue(),
+          eslint({
+            // https://github.com/storybookjs/builder-vite/issues/367#issuecomment-1938214165
+            // Remove warnings because Vite falesly tries to lint folders it should not
+            exclude: ['/virtual:/**', 'node_modules/**', '/sb-preview/**'],
           }),
-        ],
-        define: {
-          'process.env': loadEnv(mode, process.cwd()),
-          'import.meta.env.VITE_VERSION': JSON.stringify(version),
-        },
-        test: {
-          exclude: [
-            ...configDefaults.exclude,
-            './tests/unit/ckanRegression.spec.js',
-          ],
-        },
-        base: './',
-        resolve: {
-            alias: [
-              { find: '@', replacement: path.resolve(__dirname, 'src') },
-              { find: '~', replacement: path.resolve(__dirname) },
-              { find: 'leaflet/dist/leaflet.css', replacement: 'leaflet/dist/leaflet.css' },
-              { find: 'leaflet', replacement: 'leaflet/dist/leaflet.js' },
-              { find: 'leaflet.markercluster/dist/MarkerCluster.css', replacement: 'leaflet.markercluster/dist/MarkerCluster.css' },
-              { find: 'leaflet.markercluster/dist/MarkerCluster.Default.css', replacement: 'leaflet.markercluster/dist/MarkerCluster.Default.css' },
-              { find: 'leaflet.markercluster', replacement: 'leaflet.markercluster/dist/leaflet.markercluster.js' },
-              { find: 'vue', replacement: 'vue/dist/vue.esm-bundler.js' },
-            ],
-        },
-        build: {
-          assetsDir: './static',
-          chunkSizeWarningLimit: 500,
-          assetsInlineLimit: 4096 / 2, // Reduce the amount of image inlining so the chunks don't get huge
-          cssCodeSplit: true,
-          minify: !buildSourceMaps,
-          sourcemap: buildSourceMaps,
-          emptyOutDir: true,
-
-//        rollupOptions: isProd ? {
-//          output: {
-//            manualChunks: (id) => {
-//                 // Had to be removed, it caused import errors, when the vendor_leaflet.js tried
-//                 // to import something from the vendors.js
-//                 // if (id.includes('leaflet')) {
-//                 //   return 'vendor_leaflet';
-//                 // }
-//                 if (id.includes('src/modules/about')) {
-//                   return 'envidat_about';
-//                 }
-//                 if (id.includes('src/modules/blog')) {
-//                   return 'envidat_blog';
-//                 }
-//                 if (id.includes('src/modules/browse')) {
-//                   return 'envidat_browse';
-//                 }
-//                 if (id.includes('src/modules/home')) {
-//                   return 'envidat_home';
-//                 }
-//                 if (id.includes('src/modules/integration')) {
-//                   return 'envidat_integration';
-//                 }
-//                 if (id.includes('src/modules/metadata')) {
-//                   return 'envidat_metadata';
-//                 }
-//                 if (id.includes('src/modules/organizations')) {
-//                   return 'envidat_organizations';
-//                 }
-//                 if (id.includes('src/modules/projects')) {
-//                   return 'envidat_projects';
-//                 }
-//                 if (id.includes('src/modules/services')) {
-//                   return 'envidat_services';
-//                 }
-//                 if (id.includes('src/modules/user')) {
-//                   return 'envidat_user';
-//                 }
-//                 if (id.includes('src/factories')) {
-//                   return 'envidat_factories';
-//                 }
-//                 if (id.includes('vuetify')) {
-//                   return 'vendor_vuetify';
-//                 }
-//                 if (id.includes('vue-router')) {
-//                   return 'vendor_vue-router';
-//                 }
-//                 if (id.includes('vuex')) {
-//                   return 'vendor_vuex';
-//                 }
-//                 if (id.includes('vue') && !id.includes('.vue')) {
-//                   return 'vendor_vue';
-//                 }
-//                 if (id.includes('turf')) {
-//                   return 'vendor_turf';
-//                 }
-//                 if (id.includes('axios')) {
-//                   return 'vendor_axios';
-//                 }
-//                 if (id.includes('date-fns')) {
-//                   return 'vendor_date_fns';
-//                 }
-//                 if (id.includes('yup')) {
-//                   return 'vendor_yup';
-//                 }
-//                 if (id.includes('amchart') || id.includes('uplot')) {
-//                   return 'vendor_charts';
-//                 }
-//                 if (id.includes('uppy') || id.includes('exifr')) {
-//                   return 'vendor_uppy';
-//                 }
-//                 if (id.includes('core-js')) {
-//                   return 'vendor_core_js';
-//                 }
-//                 if (id.includes('lodash')) {
-//                   return 'vendor_lodash';
-//                 }
-//                 if (id.includes('tokenize')) {
-//                   return 'vendor_tokenize';
-//                 }
-// /*
-//                 if (id.includes('micromark') || id.includes('remark') || id.includes('markdown') || id.includes('mdast-util') || id.includes('hast-util') || id.includes('unist-util')) {
-//                   return 'vendor_markdown';
-//                 }
-// */
-//
-//                 // all other node_modules
-//                 if (id.includes('node_modules')) {
-//                   return 'vendors';
-//                 }
-//
-//                 return undefined;
-//               },
-//             },
-//           } : {},
+          vuetify({
+            autoImport: true,
+          }),
+          Unfonts({
+            google: {
+              families: [
+                'Baskervville',
+                {
+                  name: 'Raleway',
+                  styles: 'wght@400;500;700',
+                },
+              ],
+            },
+          }),
+        visualizer({
+          filename: './dist/buildStats.html',
+          title : 'EnviDat Build Visualizer',
+        }),
+      ],
       define: {
+        'process.env': loadEnv(mode, process.cwd()),
         'import.meta.env.VITE_VERSION': JSON.stringify(version),
       },
+      test: {
+        exclude: [
+          ...configDefaults.exclude,
+          './tests/unit/ckanRegression.spec.js',
+        ],
+      },
+      base: './',
+      resolve: {
+          alias: [
+            { find: '@', replacement: path.resolve(__dirname, 'src') },
+            { find: '~', replacement: path.resolve(__dirname) },
+            { find: 'leaflet/dist/leaflet.css', replacement: 'leaflet/dist/leaflet.css' },
+            { find: 'leaflet', replacement: 'leaflet/dist/leaflet.js' },
+            { find: 'leaflet.markercluster/dist/MarkerCluster.css', replacement: 'leaflet.markercluster/dist/MarkerCluster.css' },
+            { find: 'leaflet.markercluster/dist/MarkerCluster.Default.css', replacement: 'leaflet.markercluster/dist/MarkerCluster.Default.css' },
+            { find: 'leaflet.markercluster', replacement: 'leaflet.markercluster/dist/leaflet.markercluster.js' },
+            { find: 'vue', replacement: 'vue/dist/vue.esm-bundler.js' },
+          ],
+      },
+      build: {
+        assetsDir: './static',
+        chunkSizeWarningLimit: 500,
+//         assetsInlineLimit: 4096 / 2, // Reduce the amount of image inlining so the chunks don't get huge
+        cssCodeSplit: true,
+        minify: !buildSourceMaps,
+        sourcemap: buildSourceMaps,
+        emptyOutDir: true,
+        rollupOptions: isProd ? {
+         output: {
+           manualChunks: (id) => {
+
+            if (id.includes('node_modules')) {
+
+              if (id.includes('vuetify')) {
+                return 'vendor_vuetify';
+              }
+
+              if (id.includes('vue') || id.includes('pinia')) {
+                // vue, vuex & pinia, vue-router, etc.
+                return 'vendor_vue';
+              }
+
+              if (id.includes('leaflet')) {
+                return 'vendor_leaflet';
+              }
+
+              if (id.includes('turf')) {
+                return 'vendor_turf';
+              }
+
+              if (id.includes('uppy')) {
+                return 'vendor_uppy';
+              }
+
+              if (id.includes('charts') || id.includes('uplot')) {
+                return 'vendor_charts';
+              }
+
+              if (id.includes('yup')) {
+                return 'vendor_validation';
+              }
+
+              if (id.includes('axios')
+                || id.includes('date-fns')
+                || id.includes('mitt')
+                || id.includes('seedrandom')
+                || id.includes('tiny-js-md5')
+              ) {
+                return 'vendor_utils';
+              }
+
+              return 'vendors';
+            }
+
+            if (id.includes('src/assets')) {
+              return 'envidat_assets';
+            }
+
+            if (id.includes('src/factories')) {
+              return 'envidat_factories';
+            }
+
+            // Let Rollup handle the rest
+            return undefined
+          },
+        },
+      } : {},
     },
     server: {
       host: '0.0.0.0',

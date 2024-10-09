@@ -7,7 +7,8 @@
         ref="header"
         style="z-index: 1; position: absolute; left: 0;"
         :style="headerStyle">
-        <project-header
+
+        <ProjectHeader
           :title="currentProject ? currentProject.title : null"
           :titleImg="currentProject ? currentProject.image_display_url : null"
           :defaultImg="missionImg"
@@ -20,7 +21,8 @@
       :style="`z-index: 0; position: relative; top: ${headerHeight()}px`"
       no-gutters>
       <v-col class="pb-2 px-sm-3" cols="12" lg="10" offset-lg="1">
-        <project-body
+
+        <ProjectBody
           :description="currentProject ? currentProject.description : null"
           :showPlaceholder="loading"
           :maxTextLength="$vuetify.display.xs ? 900 : 2000" />
@@ -32,7 +34,8 @@
         cols="12"
         lg="10"
         offset-lg="1">
-        <project-subprojects
+
+        <ProjectSubprojects
           :subProjects="subProjects"
           :defaultImg="creatorImg"
           :showPlaceholder="loading"
@@ -41,6 +44,7 @@
       </v-col>
 
       <v-col class="pb-2 px-sm-3" cols="12" lg="10" offset-lg="1">
+
         <ProjectDatasets
           :hasMetadatas="hasMetadatas"
           :listContent="filteredListContent"
@@ -63,6 +67,7 @@
           @setScroll="setScrollPos" />
       </v-col>
     </v-row>
+
   </v-container>
 </template>
 
@@ -82,7 +87,6 @@
 
 import { mapGetters, mapState } from 'vuex';
 
-import ProjectDatasets from '@/modules/projects/components/ProjectDetailViews/ProjectDatasets.vue';
 import {
   METADATADETAIL_PAGENAME,
   PROJECT_DETAIL_PAGENAME,
@@ -103,14 +107,24 @@ import { convertArrayToUrlString, convertUrlStringToArray } from '@/factories/st
 import { getImage } from '@/factories/imageFactory';
 import { createTag, tagsIncludedInSelectedTags } from '@/factories/keywordsFactory';
 import { isTagSelected } from '@/factories/metaDataFactory';
+import {defineAsyncComponent} from 'vue';
 import {
   GET_PROJECTS,
   PROJECTS_NAMESPACE,
   SET_PROJECTDETAIL_PAGE_BACK_URL,
 } from '../store/projectsMutationsConsts';
+
 import ProjectBody from './ProjectDetailViews/ProjectBody.vue';
 import ProjectHeader from './ProjectDetailViews/ProjectHeader.vue';
-import ProjectSubprojects from './ProjectDetailViews/ProjectSubprojects.vue';
+
+const ProjectSubprojects = defineAsyncComponent(() =>
+    import('@/modules/projects/components/ProjectDetailViews/ProjectSubprojects.vue'),
+);
+
+const ProjectDatasets = defineAsyncComponent(() =>
+  import('@/modules/projects/components/ProjectDetailViews/ProjectDatasets.vue'),
+);
+
 
 export default {
   /**

@@ -79,7 +79,7 @@
 
 <script>
 /**
- * MetadataCreationPublicationInfo.vue renders the GenericPlaceholder component with a screenshot image of the Metadata Keywords mockup used in the slot
+ * CreatePublicationInfo.vue renders the GenericPlaceholder component with a screenshot image of the Metadata Keywords mockup used in the slot
  *
  *
  * @summary shows a screenshot placeholder of the editing the Related Info

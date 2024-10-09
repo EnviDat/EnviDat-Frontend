@@ -15,7 +15,7 @@ import { EDITMETADATA_OBJECT_UPDATE, eventBus } from '@/factories/eventBus';
 import EditRelatedPublications from '@/modules/user/components/EditRelatedPublications.vue';
 import EditRelatedDatasets from '@/modules/user/components/EditRelatedDatasets.vue';
 import EditCustomFields from '@/modules/user/components/EditCustomFields.vue';
-import MetadataCreationRelatedInfo from '@/modules/user/components/MetadataCreationRelatedInfo.vue';
+import EditRelatedInfo from '@/modules/user/components/EditRelatedInfo.vue';
 
 import storyTags from '@/modules/metadata/store/metadataTags';
 
@@ -248,18 +248,18 @@ export const EditCustomFieldViews = () => ({
   }),
 });
 
-export const MetadataCreationRelatedInfoStep = () => ({
-  components: { MetadataCreationRelatedInfo },
+export const EditRelatedInfoStep = () => ({
+  components: { EditRelatedInfo },
   template: `
     <v-col>
 
       <v-row>
-        MetadataCreationRelatedInfo with Placeholder
+        EditRelatedInfo with Placeholder
       </v-row>
 
       <v-row class="py-3" >
         <v-col >
-          <MetadataCreationRelatedInfo v-bind="genericProps" />
+          <EditRelatedInfo v-bind="genericProps" />
         </v-col>
       </v-row>
 

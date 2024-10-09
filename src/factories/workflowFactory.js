@@ -1,13 +1,6 @@
 import {
-  EDIT_STEP_TITLE_MAIN_METADATA,
-  EDIT_STEP_TITLE_MAIN_PUBLICATION,
-  EDIT_STEP_TITLE_MAIN_RELATED,
-  EDIT_STEP_TITLE_MAIN_RESOURCES,
   EDIT_STEP_TITLE_SUB_AUTHORS,
-  EDIT_STEP_TITLE_SUB_DATA,
-  EDIT_STEP_TITLE_SUB_DATES,
   EDIT_STEP_TITLE_SUB_DESC,
-  EDIT_STEP_TITLE_SUB_GEO,
   EDIT_STEP_TITLE_SUB_HEADER,
   EDIT_STEP_TITLE_SUB_KEYWORDS,
   METADATA_TITLE_PROPERTY,
@@ -17,14 +10,12 @@ import {
 import {
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CUSTOMFIELDS,
-  EDITMETADATA_DATA,
   EDITMETADATA_DATA_GEO,
   EDITMETADATA_DATA_INFO,
   EDITMETADATA_DATA_LICENSE,
   EDITMETADATA_DATA_RESOURCES,
   EDITMETADATA_FUNDING_INFO,
   EDITMETADATA_KEYWORDS,
-  EDITMETADATA_MAIN,
   EDITMETADATA_MAIN_DESCRIPTION,
   EDITMETADATA_MAIN_HEADER,
   EDITMETADATA_ORGANIZATION,
@@ -37,17 +28,6 @@ import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader.vue
 import EditDescription from '@/modules/user/components/EditDescription.vue';
 import EditKeywords from '@/modules/user/components/EditKeywords.vue';
 import EditAuthorList from '@/modules/user/components/edit/EditAuthorList.vue';
-
-import EditDataAndResources from '@/modules/user/components/EditDataAndResources.vue';
-import EditDataInfo from '@/modules/user/components/EditDataInfo.vue';
-import EditDataGeo from '@/modules/user/components/EditDataGeo.vue';
-
-import CreateDataAndResources from '@/modules/user/components/create/CreateDataAndResources.vue';
-
-import MetadataGenericSubStepper from '@/modules/user/components/MetadataGenericSubStepper.vue';
-import MetadataCreationRelatedInfo from '@/modules/user/components/MetadataCreationRelatedInfo.vue';
-import MetadataCreationPublicationInfo from '@/modules/user/components/MetadataCreationPublicationInfo.vue';
-import MetadataEditingPublicationInfo from '@/modules/user/components/edit/MetadataEditingPublicationInfo.vue';
 
 import { defaultSwissLocation } from '@/factories/metaDataFactory';
 
@@ -127,7 +107,7 @@ const emptyMetadataInEditing = {
  * detail steps for the "main" major step
  * @type {step[]}
  */
-const mainDetailSteps = [
+export const mainDetailSteps = [
   {
     title: EDIT_STEP_TITLE_SUB_HEADER,
     completed: false,
@@ -155,138 +135,6 @@ const mainDetailSteps = [
     completed: false,
     component: EditAuthorList,
     key: EDITMETADATA_AUTHOR_LIST,
-    genericProps: {},
-  },
-];
-
-/**
- * detail steps for the "data and resources" major step only for the creation workflow
- * @type {step[]}
- */
-const creationDataDetailSteps = [
-  {
-    title: EDIT_STEP_TITLE_SUB_DATA,
-    completed: false,
-    component: CreateDataAndResources,
-    key: EDITMETADATA_DATA_RESOURCES,
-    genericProps: {},
-  },
-  {
-    title: EDIT_STEP_TITLE_SUB_DATES,
-    completed: false,
-    key: EDITMETADATA_DATA_INFO,
-    component: EditDataInfo,
-    genericProps: {},
-  },
-  {
-    title: EDIT_STEP_TITLE_SUB_GEO,
-    completed: false,
-    key: EDITMETADATA_DATA_GEO,
-    component: EditDataGeo,
-    genericProps: {},
-  },
-];
-
-/**
- * detail steps for the "data and resources" major step only for the editing workflow
- * inclues resource upload components
- * @type {step[]}
- */
-const editingDataDetailSteps = [
-  {
-    title: EDIT_STEP_TITLE_SUB_DATA,
-    completed: false,
-    component: EditDataAndResources,
-    key: EDITMETADATA_DATA_RESOURCES,
-    genericProps: {},
-  },
-  {
-    title: EDIT_STEP_TITLE_SUB_DATES,
-    completed: false,
-    key: EDITMETADATA_DATA_INFO,
-    component: EditDataInfo,
-    genericProps: {},
-  },
-  {
-    title: EDIT_STEP_TITLE_SUB_GEO,
-    completed: false,
-    key: EDITMETADATA_DATA_GEO,
-    component: EditDataGeo,
-    genericProps: {},
-  },
-];
-
-/**
- * The major steps for the creation workflow
- * @type {step[]}
- */
-export const metadataCreationSteps = [
-  {
-    title: EDIT_STEP_TITLE_MAIN_METADATA,
-    completed: false,
-    component: MetadataGenericSubStepper,
-    key: EDITMETADATA_MAIN,
-    detailSteps: mainDetailSteps,
-    stepTitle: mainDetailSteps[0].title,
-    color: 'white',
-    genericProps: {},
-  },
-  {
-    title: EDIT_STEP_TITLE_MAIN_RESOURCES,
-    completed: false,
-    component: MetadataGenericSubStepper,
-    key: EDITMETADATA_DATA,
-    detailSteps: creationDataDetailSteps,
-    stepTitle: creationDataDetailSteps[0].title,
-    color: 'white',
-    genericProps: {},
-  },
-  {
-    title: EDIT_STEP_TITLE_MAIN_PUBLICATION,
-    completed: false,
-    component: MetadataCreationPublicationInfo,
-    key: EDITMETADATA_PUBLICATION_INFO,
-    genericProps: {},
-  },
-];
-
-/**
- * The major steps for the editing workflow
- * @type {step[]}
- */
-export const metadataEditingSteps = [
-  {
-    title: EDIT_STEP_TITLE_MAIN_METADATA,
-    completed: false,
-    component: MetadataGenericSubStepper,
-    key: EDITMETADATA_MAIN,
-    detailSteps: mainDetailSteps,
-    stepTitle: mainDetailSteps[0].title,
-    color: 'white',
-    genericProps: {},
-  },
-  {
-    title: EDIT_STEP_TITLE_MAIN_RESOURCES,
-    completed: false,
-    component: MetadataGenericSubStepper,
-    key: EDITMETADATA_DATA,
-    detailSteps: editingDataDetailSteps,
-    stepTitle: editingDataDetailSteps[0].title,
-    color: 'white',
-    genericProps: {},
-  },
-  {
-    title: EDIT_STEP_TITLE_MAIN_RELATED,
-    completed: false,
-    component: MetadataCreationRelatedInfo,
-    key: EDITMETADATA_RELATED_PUBLICATIONS,
-    genericProps: {},
-  },
-  {
-    title: EDIT_STEP_TITLE_MAIN_PUBLICATION,
-    completed: false,
-    component: MetadataEditingPublicationInfo,
-    key: EDITMETADATA_PUBLICATION_INFO,
     genericProps: {},
   },
 ];
