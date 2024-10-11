@@ -35,6 +35,7 @@
             <AuthorCard
               v-if="!hasEditingAuthorsSlot"
               :author="author"
+              :hideDataCredit="true"
               :authorDetailsConfig="authorDetailsConfig"
               :asciiDead="authorDeadInfo ? authorDeadInfo.asciiDead : ''"
               :authorPassedInfo="
