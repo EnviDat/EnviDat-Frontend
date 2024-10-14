@@ -114,22 +114,11 @@ function createStore() {
 }
 
 // eslint-disable-next-line import/no-mutable-exports
-let store = null;
+let store;
 
 try {
   store = createStore();
-  storeRef = store;
-/*
-  store.state.asyncLoadStoreModule = async (module) => {
-    const importFun = moduleImportMap[module];
-
-    if (!importFun) {
-      throw new Error(`Error lazyLoadStoreModule, not import defined for ${module}`);
-    }
-
-    return importStoreModule(store, module, importFun);
-  };
-*/
+  storeRef = store
 
 } catch (e) {
   if (e instanceof SyntaxError) {
