@@ -149,7 +149,7 @@
 
             <v-row no-gutters>
               <v-col class="flex-grow-0 pt-2">
-                <BaseIcon :icon="fileFormatIcon"></BaseIcon>
+                <BaseIcon color="gray" :icon="fileFormatIcon"></BaseIcon>
               </v-col>
 
               <v-col class="pl-4">
@@ -165,7 +165,7 @@
 
             <v-row no-gutters>
               <v-col class="flex-grow-0 pt-2">
-                <BaseIcon :icon="fileSizeIcon"></BaseIcon>
+                <BaseIcon color="gray" :icon="fileSizeIcon"></BaseIcon>
               </v-col>
 
               <v-col class="pl-4">
@@ -273,7 +273,6 @@
             <v-col class="flex-grow-0">
               <!-- prettier-ignore -->
               <BaseRectangleButton
-                  :color="saveButtonEnabled ? 'primary' : 'grey'"
                   :disabled="!saveButtonEnabled"
                   :loading="loading"
                   :buttonText="labels.createButtonText"

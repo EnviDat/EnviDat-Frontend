@@ -5,7 +5,7 @@
         v-bind="props"
         :size="buttonSize"
         :class="marginClass"
-        :color="color"
+        :color="disabled ? 'grey' : color"
         :variant='buttonVariant'
         :disabled="disabled"
         :href="url"
