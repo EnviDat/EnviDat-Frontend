@@ -28,6 +28,7 @@
           </v-btn>
       </template>
     </v-tooltip>
+
     <v-btn v-else
       class="iconButton ma-0 pa-0"
       :class="buttonClass"

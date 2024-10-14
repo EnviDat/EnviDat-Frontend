@@ -2,7 +2,7 @@
   <div class="baseIcon" :class="classList">
     <v-badge
       :model-value="badgeDot ? '' : count >= 0"
-      :location="badgeDot ? 'right top' : 'left center'"
+      :location="badgeDot ? 'right top' : 'left bottom'"
       :content="count"
       :color="badgeColor"
       class="envidatBadge"
