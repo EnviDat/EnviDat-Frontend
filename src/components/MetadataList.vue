@@ -68,28 +68,89 @@
        :style="`height: ${ useDynamicHeight ? `${metadataListHeight}px` : 'auto' };`"
       >
       <v-row v-if="!loading"
-             no-gutters>
+             no-gutters
+      >
 
-        <Grid
+        <RecycleScroller
           id="virtualScroller"
-          :length="contentSize"
-          :pageSize="virtualPageSize"
-          :pageProvider="pageProvider"
-          :pageProviderDebounceTime="100"
-          :respectScrollToOnResize="true"
-          class="virtualGrid"
+          :items="listContent"
+          :itemSize="fixedCardHeight"
+          :grid-items="amountOfRowsItems"
+          :page-mode="true"
+          :buffer="150"
+          key-field="id"
+          style="width: 100%;"
+          itemClass="virtualItem"
+        >
+
+<!--
+          :emit-update="true"
+          @update="logScroll"
+          <template #before>
+            Hey! I'm a message displayed before the items!
+          </template>
+-->
+
+          <template v-slot="{ item: metadata }">
+
+            <MetadataCard
+                :class="metadata.isPinned ? 'highlighted' : ''"
+                :id="metadata.id"
+                :ref="metadata.id"
+                :title="metadata.title"
+                :name="metadata.name"
+                :subtitle="metadata.notes"
+                :tags="!isCompactLayout ? metadata.tags : null"
+                :titleImg="isCompactLayout ? undefined : metadata.titleImg"
+                :restricted="hasRestrictedResources(metadata)"
+                :resourceCount="metadata.num_resources"
+                :modeData="modeData"
+                :flatLayout="listView"
+                :compactLayout="isCompactLayout"
+                :geoJSONIcon="getGeoJSONIcon(metadata.location)"
+                :categoryColor="metadata.categoryColor"
+                :state="getMetadataState(metadata)"
+                :organization="metadata.organization?.name"
+                :organizationTooltip="metadata.organization?.title"
+                :showOrganizationOnHover="showOrganizationOnHover"
+                @organizationClicked="$emit('organizationClicked', metadata.organization)"
+                @clickedEvent="metaDataClicked"
+                @clickedTag="catchTagClicked"
+                :showGenericOpenButton="!!metadata.openEvent"
+                :openButtonTooltip="metadata.openButtonTooltip"
+                :openButtonIcon="metadata.openButtonIcon"
+                @openButtonClicked="catchOpenClick(metadata.openEvent, metadata.openProperty)"
+            />
+          </template>
+
+
+
+          <template #after>
+            <v-row v-if="!loading && contentSize <= 0">
+              <v-col
+                  class="mx-2"
+                  id="noSearchResultsView"
+                  key="noSearchResultsView"
+                  cols="12">
+                <NoSearchResultsView :categoryCards="categoryCards" @clicked="catchCategoryClicked" />
+              </v-col>
+
+            </v-row>
+          </template>
+        </RecycleScroller>
+
+<!--
           :style="`
           grid-template-columns: repeat(${this.amountOfRowsItems}, 1fr);
           grid-template-rows: ${fixedCardHeight}px;
           `"
-        >
-<!--
           <template v-slot:probe>
             <MetadataCardPlaceholder :dark="false" />
           </template>
 -->
 
-          <!-- When the item is not loaded, a placeholder is rendered -->
+<!--
+          &lt;!&ndash; When the item is not loaded, a placeholder is rendered &ndash;&gt;
           <template v-slot:placeholder="{ style }">
             <MetadataCardPlaceholder
               :dark="false"
@@ -97,7 +158,7 @@
             />
           </template>
 
-          <!-- Render a loaded item -->
+          &lt;!&ndash; Render a loaded item &ndash;&gt;
           <template v-slot:default="{ item: metadata, style }">
             <MetadataCard
               :style="style"
@@ -130,9 +191,12 @@
             />
           </template>
         </Grid>
+-->
+
       </v-row>
 
 
+<!--
       <v-row v-if="!loading && contentSize <= 0"
       >
         <v-col
@@ -144,6 +208,7 @@
         </v-col>
 
       </v-row>
+-->
       </v-container>
 
     </template>
@@ -168,7 +233,9 @@
 */
 
 import {defineAsyncComponent} from 'vue';
-import Grid from 'vue-virtual-scroll-grid';
+import { RecycleScroller } from 'vue-virtual-scroller';
+import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
+
 import { BROWSE_PATH } from '@/router/routeConsts';
 
 import {
@@ -389,6 +456,9 @@ export default {
     },
   },
   methods: {
+    logScroll(startIndex, endIndex, visibleStartIndex, visibleEndIndex) {
+      console.log('update', startIndex, endIndex, visibleStartIndex, visibleEndIndex);
+    },
     async pageProvider(pageNumber, pageSize) {
       const start = pageNumber * pageSize;
       const end = start + pageSize;
@@ -589,10 +659,27 @@ export default {
     MetadataCardPlaceholder,
     // BaseRectangleButton,
     MetadataListLayout,
-    Grid,
+    RecycleScroller,
   },
 };
 </script>
+
+<style>
+.virtualGrid {
+  display: grid;
+  grid-gap: 15px;
+}
+
+.virtualItem {
+  height: 100%;
+  padding: 10px;
+  margin: 0;
+}
+
+.highlighted {
+  box-shadow: #4db6ac 0 0 5px 5px !important;
+}
+</style>
 
 <style scoped>
 .itemfade-enter-active,
@@ -606,12 +693,4 @@ export default {
   opacity: 0;
 }
 
-.highlighted {
-  box-shadow: #4db6ac 0 0 5px 5px !important;
-}
-
-.virtualGrid {
-  display: grid;
-  grid-gap: 15px;
-}
 </style>

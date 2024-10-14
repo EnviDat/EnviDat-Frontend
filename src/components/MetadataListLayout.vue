@@ -35,9 +35,13 @@
             id="metadataListScroll_mapLayout"
             ref="metadataListScroll"
             class="mapLayoutContainers listScroll mt-2 mb-4 pr-1"
-            v-on:scroll="onScroll()"
             :style="useDynamicHeight ? `height: calc(100vh - ${filteringComponentsHeight}px);` : ''"
           >
+
+<!--
+            v-on:scroll="onScroll()"
+-->
+
             <slot name="metadataListPlaceholder" />
 
             <slot name="metadataListLayout" :metadataListHeight="metadataListHeight" />
@@ -75,9 +79,11 @@
         ref="metadataListScroll"
         id="metadataListScroll_no_mapLayout"
         class="noMapLayoutContainers listScroll mt-2 mb-4 pr-1"
-        v-on:scroll="onScroll()"
         :style="useDynamicHeight ? `height: calc(100vh - ${filteringComponentsHeight}px);` : ''"
       >
+<!--
+        v-on:scroll="onScroll()"
+-->
 
         <slot name="metadataListPlaceholder" />
 
