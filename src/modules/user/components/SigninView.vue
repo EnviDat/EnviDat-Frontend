@@ -23,9 +23,10 @@
         <v-col
           cols="12"
           class="text-h6"
-          :style="`background-color: ${$vuetify.theme.themes.light.colors.highlight};`"
         >
-          {{ signedInText + signedInEmail }}
+          <v-alert type="success">
+            {{ signedInText + signedInEmail }}
+          </v-alert>
         </v-col>
       </v-row>
 
