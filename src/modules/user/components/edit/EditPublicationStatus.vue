@@ -104,21 +104,6 @@
               @clicked="$emit('clicked', currentStateInfos.buttonEvent)"
             />
 
-<!--
-            <BaseRectangleButton id='interactiveButton'
-                                 :button-text="currentStateInfos.buttonText"
-                                 :icon="currentStateInfos.buttonIcon"
-                                 icon-color="white"
-                                 :loading="loading"
-                                 :url="publicationState === PUBLICATION_STATE_PUBLISHED ? doiUrl : undefined"
-                                 :disabled="!currentStateInfos.buttonEvent || !isUserAllowedToEdit"
-                                 tooltip-position="bottom"
-                                 :tooltip-text="`Click to ${currentStateInfos.infoText}`"
-                                 :elevation="10"
-                                 @clicked="$emit('clicked', currentStateInfos.buttonEvent)" />
--->
-
-
           </v-row>
 
           <v-row
@@ -362,7 +347,7 @@ export default {
         {
           chipText: 'Published',
           infoText: 'Open the DOI in a new Tab',
-          buttonIcon: mdiEarth,
+          buttonIcon: mdiOpenInNew,
           buttonText: 'Open DOI',
           buttonEvent: 'openDoi',
           positionIndex: 6,
@@ -376,7 +361,7 @@ export default {
           chipText: 'Publication Pending',
           infoText:
           'Please make sure you reviewed the dataset before publishing it!',
-          buttonIcon: mdiOpenInNew,
+          buttonIcon: mdiEarth,
           buttonText: 'Publish Dataset',
           buttonEvent: DOI_PUBLISH,
           positionIndex: 6,
