@@ -91,6 +91,8 @@ export const EditDataInfoReadonly = {
     dataLicenseId: CC_BY_SA_LICENSE_ID,
     readOnlyFields: [
       METADATA_DATALICENSE_PROPERTY,
+      DATE_PROPERTY_START_DATE,
+      DATE_PROPERTY_END_DATE,
     ],
     readOnlyExplanation: 'Fields are readonly for testing!',
   },
@@ -100,11 +102,8 @@ export const EditDataInfoReadonly = {
 export const EditDataInfoReadonlyWslDataPolicy = {
   ...Template,
   args: {
-    dates: datesArrayFilled,
+    ...EditDataInfoReadonly.args,
     dataLicenseId: WSL_DATA_LICENSE_ID,
-    readOnlyFields: [
-      METADATA_DATALICENSE_PROPERTY,
-    ],
     readOnlyExplanation: 'License should not be readonly, the WSL DATA Policy should be possible to change!',
   },
 };
@@ -112,11 +111,8 @@ export const EditDataInfoReadonlyWslDataPolicy = {
 export const EditDataInfoReadonlyOther = {
   ...Template,
   args: {
-    dates: datesArrayFilled,
+    ...EditDataInfoReadonly.args,
     dataLicenseId: OTHER_UNDEFINED_LICENSE_ID,
-    readOnlyFields: [
-      METADATA_DATALICENSE_PROPERTY,
-    ],
     readOnlyExplanation: 'License should not be readonly, the Other should be possible to change',
   },
 };

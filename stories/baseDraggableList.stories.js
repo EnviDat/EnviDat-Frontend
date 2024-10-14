@@ -14,7 +14,7 @@ import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams }
 
 
 export default {
-  title: '1 Base Elements / Base Draggable List',
+  title: '1 Base Elements / Draggable List',
   component: BaseDraggableList,
   argTypes: { listChanged: { action: 'listChanged' } },
 };

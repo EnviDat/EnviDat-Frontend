@@ -55,8 +55,10 @@
             <v-col cols="11">
               <BaseStartEndDate
                 :startDate="item.dateStart"
+                :startDateLabel="`${item.dateType} start date`"
                 :startDateProperty="startDateProperty"
                 :endDate="item.dateEnd"
+                :endDateLabel="`${item.dateType} end date`"
                 :endDateProperty="endDateProperty"
                 :clearableEndDate="true"
                 rowLayout
