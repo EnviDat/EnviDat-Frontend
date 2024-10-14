@@ -34,7 +34,7 @@
         </v-col>
       </v-row>
 
-      <v-row no-gutters class="pt-4">
+      <v-row class="mt-10">
         <v-col
           v-for="(state, index) in pStatesAndArrows"
           :key="`${index}_pState`"
@@ -126,6 +126,7 @@
             class="pt-2"
             no-gutters
             justify="center"
+            style="text-align: center;"
           >
             {{ currentStateInfos.infoText }}
           </v-row>
@@ -150,51 +151,25 @@
         </v-col>
       </v-row>
 
-      <v-alert type="warning" :text="labels.instructions2" class="text-body-1 mt-6 mb-6" />
+      <v-alert type="warning" :text="labels.instructions2" class="text-body-1 mt-10">
 
-      <v-row class="text-body-2 pt-4 px-3">
-        <v-col
-          v-for="(field, index) of metadataPublishedReadOnlyFields"
-          cols="6"
-          md="3"
-          class="pa-1"
-          :key="`${index}_${field}`"
-        >
-          {{ getReadableLabel(field) }}
-        </v-col>
-      </v-row>
+        <v-row class="text-body-2 mt-5 px-2">
+          <v-col
+            v-for="(field, index) of metadataPublishedReadOnlyFields"
+            cols="6"
+            md="3"
+            class="pa-1"
+            :key="`${index}_${field}`"
+          >
+            {{ getReadableLabel(field) }}
+          </v-col>
+        </v-row>
 
-      <v-row class="text-body-1 pt-4">
-        <v-col cols="12" v-html="labels.instructions3"> </v-col>
-      </v-row>
+        <v-row class="text-body-1 pt-4">
+          <v-col cols="12" v-html="labels.instructions3"> </v-col>
+        </v-row>
 
-<!--
-      <v-row>
-        <v-alert type="warning" >
-          <v-row class="text-body-1 errorHighlight">
-            <v-col cols="12" v-html="labels.instructions2">
-            </v-col>
-          </v-row>
-
-          <v-row class="text-body-2 pt-4 px-3">
-
-            <v-col v-for="(field, index) of metadataPublishedReadOnlyFields"
-                   cols="6"
-                   md="3"
-                   class="pa-1"
-                   :key="`${index}_${field}`">
-              {{ getReadableLabel(field) }}
-            </v-col>
-          </v-row>
-
-          <v-row class="text-body-1 pt-4">
-            <v-col cols="12" v-html="labels.instructions3">
-            </v-col>
-          </v-row>
-        </v-alert>
-      </v-row>
--->
-
+      </v-alert>
 
     </v-container>
   </v-card>
@@ -242,7 +217,7 @@ import {
   PUBLICATION_STATE_RESERVED,
 } from '@/factories/metadataConsts';
 
-import {mdiArrowUp, mdiArrowRight, mdiEarth, mdiFingerprint, mdiNewspaper} from '@mdi/js';
+import {mdiArrowUp, mdiArrowRight, mdiEarth, mdiFingerprint, mdiNewspaper, mdiOpenInNew} from '@mdi/js';
 
 export default {
   name: 'EditPublicationStatus',
@@ -401,7 +376,7 @@ export default {
           chipText: 'Publication Pending',
           infoText:
           'Please make sure you reviewed the dataset before publishing it!',
-          buttonIcon: mdiEarth,
+          buttonIcon: mdiOpenInNew,
           buttonText: 'Publish Dataset',
           buttonEvent: DOI_PUBLISH,
           positionIndex: 6,
