@@ -49,6 +49,7 @@ if (typeof errReport === 'string') {
 }
 */
 
+let storeRef;
 
 const initialState = {
   appBGImage: '',
@@ -66,6 +67,15 @@ const initialState = {
   config: {},
   notifications: {},
   maxNotifications: 6,
+  asyncLoadStoreModule: async (module) => {
+    const importFun = moduleImportMap[module];
+
+    if (!importFun) {
+      throw new Error(`Error lazyLoadStoreModule, not import defined for ${module}`);
+    }
+
+    return importStoreModule(storeRef, module, importFun);
+  },
 };
 
 const preloadedModules = {
@@ -108,6 +118,8 @@ let store = null;
 
 try {
   store = createStore();
+  storeRef = store;
+/*
   store.state.asyncLoadStoreModule = async (module) => {
     const importFun = moduleImportMap[module];
 
@@ -117,6 +129,7 @@ try {
 
     return importStoreModule(store, module, importFun);
   };
+*/
 
 } catch (e) {
   if (e instanceof SyntaxError) {
@@ -127,6 +140,7 @@ try {
     console.error(e);
 
     store = createStore();
+    storeRef = store;
   } else {
     console.error(e);
   }

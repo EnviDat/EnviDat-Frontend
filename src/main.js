@@ -30,9 +30,9 @@ const pinia = createPinia();
 initAxios(app, store);
 
 app
+  .use(store)
   .use(vuetify)
   .use(router)
-  .use(store)
   .use(pinia)
   .use(VueMatomo, {
     // Configure your Matomo server and site by providing:
