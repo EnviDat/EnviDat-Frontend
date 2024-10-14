@@ -5,18 +5,19 @@
         @click="catchStepClick">
 
     <div class="stepRow">
-      <div class="stepNumber readableText text-white"
+      <div v-if="showNumberOnly"
+           class="stepNumber readableText text-white"
             :style="`background-color: ${stepNumberColor} ;`">
         {{ number }}
       </div>
 
-      <div v-if="!error && title && !showNumberOnly"
-           class="px-3 readableText ">
+      <div v-if="!error && !showNumberOnly"
+           class="px-2 readableText ">
           {{ title }}
       </div>
 
       <div v-if="error"
-           class="stepText px-3 readableText ">
+           class="stepText px-2 readableText ">
         <div>
           {{ title }}
         </div>

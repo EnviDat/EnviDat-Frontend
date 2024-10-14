@@ -18,12 +18,12 @@
 
             <StepButton v-if="step"
                         :id="`step-${index}`"
-                        :title="$vuetify.display.smAndUp ? step.title : ''"
+                        :title="step.title"
                         :active="isCurrentStep(step)"
                         :complete="step.completed"
                         :number="step.number"
                         :error="step.error"
-                        :showNumberOnly="$vuetify.display.smAndDown"
+                        :showNumberOnly="$vuetify.display.xs"
                         @stepClick="catchStepClick(step.title)"
             />
 
@@ -77,7 +77,7 @@ export default {
 
         if ((i + 1) % 2 !== 0) {
           step = {
-            ... this.steps[stepCount],
+            ...this.steps[stepCount],
             number: (stepCount + 1),
           };
           stepCount++;
