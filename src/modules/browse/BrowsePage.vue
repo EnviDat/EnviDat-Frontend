@@ -107,7 +107,7 @@ export default {
   },
   created() {
     this.modeStore = useModeStore();
-    this.modeStore.init(this.$store.getters.cardBGImages);
+    this.modeStore.init();
   },
   async mounted() {
     this.oldIsAuthorSearch = this.isAuthorSearch;

@@ -34,7 +34,6 @@ import {
   CLEAR_PINNED_METADATA,
   SET_DETAIL_PAGE_BACK_URL,
   SET_ABOUT_PAGE_BACK_URL,
-  SET_VIRTUAL_LIST_INDEX,
   METADATA_UPDATE_EXISTING_AUTHORS,
   METADATA_UPDATE_EXISTING_KEYWORDS,
   METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS,
@@ -196,9 +195,6 @@ export default {
   },
   [SET_ABOUT_PAGE_BACK_URL](state, payload) {
     state.aboutPageBackRoute = payload;
-  },
-  [SET_VIRTUAL_LIST_INDEX](state, payload) {
-    state.vIndex = payload;
   },
   /*
   [METADATA_CREATE_NEW_AUTHOR](state, newAuthor) {
