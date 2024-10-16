@@ -5,11 +5,6 @@ import { createResources } from '@/factories/metaDataFactory';
 import unFormatedMetadataCards from './js/metadata';
 
 
-import dateCreatedIcon from '../src/assets/icons/dateCreated.png';
-import lastModifiedIcon from '../src/assets/icons/dateModified.png';
-import doiIcon from '../src/assets/icons/doi.png';
-import fileSizeIcon from '../src/assets/icons/fileSize.png';
-
 const metadataCards = unFormatedMetadataCards;
 
 const resources1 = createResources(metadataCards[2]);
@@ -34,9 +29,6 @@ export const ResourceCardCollection = () => ({
       <v-col cols="4" class="pa-2" v-for="(res, index) in metadataCards[2].resources" :key="'2_' + index" >
         <resource-card
           v-bind="res"
-          :doiIcon="doiIcon"
-          :dateCreatedIcon="dateCreatedIcon"
-          :lastModifiedIcon="lastModifiedIcon"
           :isProtected="true"
         />
       </v-col>
@@ -44,18 +36,12 @@ export const ResourceCardCollection = () => ({
       <v-col cols="12" class="pa-2" v-for="(res, index) in metadataCards[2].resources" :key="'3_' + index" >
         <resource-card
           v-bind="res"
-          :doiIcon="doiIcon"
-          :dateCreatedIcon="dateCreatedIcon"
-          :lastModifiedIcon="lastModifiedIcon"
         />
       </v-col>
 
       <v-col cols="3" class="pa-2" v-for="(res, index) in metadataCards[2].resources" :key="'4_' + index" >
         <resource-card
           v-bind="res"
-          :doiIcon="doiIcon"
-          :dateCreatedIcon="dateCreatedIcon"
-          :lastModifiedIcon="lastModifiedIcon"
           :deprecated="true"
         />
       </v-col>
@@ -67,9 +53,6 @@ export const ResourceCardCollection = () => ({
       <v-col cols="6" class="pa-2" v-for="(res, index) in metadataCards[0].resources" :key="'5_' + index" >
         <resource-card
           v-bind="res"
-          :doiIcon="doiIcon"
-          :dateCreatedIcon="dateCreatedIcon"
-          :lastModifiedIcon="lastModifiedIcon"
           :downloadActive="false"
         />
       </v-col>
@@ -78,10 +61,6 @@ export const ResourceCardCollection = () => ({
   `,
 data: () => ({
   metadataCards,
-  doiIcon,
-  fileSizeIcon,
-  dateCreatedIcon,
-  lastModifiedIcon,
   }),
 });
 

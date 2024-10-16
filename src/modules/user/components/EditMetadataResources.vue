@@ -37,7 +37,6 @@
  */
 import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
 import MetadataResources from '@/modules/metadata/components/Metadata/MetadataResources.vue';
-import {getIcon} from '@/factories/imageFactory';
 
 export default {
   name: 'EditMetadataResources',
@@ -58,22 +57,12 @@ export default {
       default: undefined,
     },
   },
-  mounted() {
-    this.fileSizeIcon = getIcon('fileSize') || '';
-    this.fileIcon = getIcon('file') || '';
-    this.dateCreatedIcon = getIcon('dateCreated') || '';
-    this.lastModifiedIcon = getIcon('dateModified') || '';
-  },
   computed: {
     metadataResourcesGenericProps() {
       return {
         resources: this.resources,
         dataLicenseTitle: this.dataLicenseTitle,
         dataLicenseUrl: this.dataLicenseUrl,
-        fileSizeIcon: this.fileSizeIcon,
-        fileIcon: this.fileIcon,
-        dateCreatedIcon: this.dateCreatedIcon,
-        lastModifiedIcon: this.lastModifiedIcon,
         emptyText:
           'No resources has been added yet. Upload a file or provide a link to a resource.',
         emptyTextColor: 'grey',
@@ -84,10 +73,6 @@ export default {
   data: () => ({
     editingInstructions: 'Pick a resource from the list to edit its details',
     EDIT_METADATA_RESOURCES_TITLE,
-    fileSizeIcon: null,
-    fileIcon: null,
-    dateCreatedIcon: null,
-    lastModifiedIcon: null,
   }),
 };
 </script>
