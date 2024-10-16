@@ -3,7 +3,7 @@
     class="landingPageGrid pa-0"
     :class="{
       gridXs: $vuetify.display.xs,
-      gridSm: $vuetify.display.smOnly,
+      gridSm: $vuetify.display.sm,
     }"
     id="LandingPage"
   >
@@ -106,7 +106,7 @@ export default {
 .landingPageGrid {
   display: grid;
   gap: 10px;
-  grid-template-columns: 2fr 2fr 1fr;
+  grid-template-columns: 2fr 2fr 1.5fr;
   grid-template-rows: 4fr 0.25fr auto;
   grid-template-areas:
     'Logo Welcome Categories'
