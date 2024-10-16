@@ -35,7 +35,7 @@
             id="metadataListScroll_mapLayout"
             ref="metadataListScroll"
             class="mapLayoutContainers listScroll mt-2 mb-4 pr-1"
-            :style="useDynamicHeight ? `height: calc(100vh - ${filteringComponentsHeight}px);` : ''"
+            :style="useDynamicHeight ? dynamicHeightStyle : ''"
             v-on:scrollend="onScroll()"
           >
             <slot name="metadataListPlaceholder" />
@@ -75,7 +75,7 @@
         ref="metadataListScroll"
         id="metadataListScroll_no_mapLayout"
         class="noMapLayoutContainers listScroll mt-2 mb-4 pr-1"
-        :style="useDynamicHeight ? `height: calc(100vh - ${filteringComponentsHeight}px);` : ''"
+        :style="useDynamicHeight ? dynamicHeightStyle : ''"
         v-on:scrollend="onScroll()"
       >
         <slot name="metadataListPlaceholder" />
@@ -136,6 +136,16 @@ export default {
         this.showMapFilter &&
         this.$vuetify.display.mdAndUp
       );
+    },
+    scrollbarColorFront() {
+      return this.$vuetify ? this.$vuetify.theme.themes.light.colors.highlight : 'auto';
+    },
+    scrollbarColorBack() {
+      return this.$vuetify ? '#F0F0F0' : 'auto';
+    },
+    dynamicHeightStyle() {
+      return `height: calc(100vh - ${this.filteringComponentsHeight}px);
+              scrollbar-color: ${this.scrollbarColorFront} ${this.scrollbarColorBack}`;
     },
   },
   methods: {
@@ -207,6 +217,7 @@ export default {
   overflow-y: auto;
   overflow-x: hidden;
   scroll-behavior: smooth;
+  scrollbar-width: thin;
 }
 
 .noMapLayoutContainers > .v-container {
