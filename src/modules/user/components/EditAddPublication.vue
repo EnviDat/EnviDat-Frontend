@@ -17,7 +17,7 @@
         cols="12"
         xl="1"
         style="text-align: center;"
-        class="text-h6 px-md-4 shrink"
+        class="text-h6 px-md-4 flex-grow-0"
       >
         Or
       </v-col>

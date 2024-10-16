@@ -58,7 +58,7 @@
         </v-col>
 
         <v-col v-if="showSearch"
-               class="grow py-0 mr-sm-2"
+               class="flex-grow-1 py-0 mr-sm-2"
               :class="hasButton ? 'ml-4 ' : 'ml-2 ml-xs-0'"
         >
           <v-tooltip

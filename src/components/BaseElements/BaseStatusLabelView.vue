@@ -27,7 +27,7 @@
       </v-col>
 
       <v-col
-        class="grow text-caption"
+        class="flex-grow-1 text-caption"
         :style="expandedText ? 'cursor: pointer;' : ''"
         v-on="expandedText ? { click: () => { expanded = !expanded } } : {}"
       >

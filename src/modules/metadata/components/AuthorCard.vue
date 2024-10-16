@@ -129,7 +129,7 @@
         class="pt-1 readableText"
         align="center"
       >
-        <v-col class="grow pr-5" @click="infosExpanded = !infosExpanded">
+        <v-col class="flex-grow-1 pr-5" @click="infosExpanded = !infosExpanded">
           <v-divider :dark="dark" />
         </v-col>
 

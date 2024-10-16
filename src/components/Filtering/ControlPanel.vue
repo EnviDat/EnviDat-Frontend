@@ -32,7 +32,7 @@
         </v-col>
 
         <v-col v-if="showSearch && mode !== EDNA_MODE"
-               class="ml-sm-4 shrink">
+               class="ml-sm-4 flex-grow-0">
 
           <BaseIconSwitch
             :active="isAuthorSearch"
@@ -44,7 +44,7 @@
 
 
         <v-col v-if="showSearch && mode === EDNA_MODE"
-               class="ml-sm-4 shrink" >
+               class="ml-sm-4 flex-grow-0" >
 
            <BaseIconSwitch
              :active="isShallow" :zIndex="elementVisible? 6 : undefined"

@@ -12,7 +12,7 @@
               <BaseIcon :icon="mdiPaletteSwatch" color='black' />
             </v-col>
 
-            <v-col v-if="showPlaceholder" class="grow pl-0">
+            <v-col v-if="showPlaceholder" class="flex-grow-1 pl-0">
               <v-row no-gutters >
                 <v-col v-for="n in 6"
                        :key="n"
@@ -23,7 +23,7 @@
               </v-row>
             </v-col>
 
-            <v-col v-if="!showPlaceholder" class="grow pl-0">
+            <v-col v-if="!showPlaceholder" class="flex-grow-1 pl-0">
               <TagChip
                 v-for="tag in unselectedTags"
                 :key="tag.name"
@@ -48,7 +48,7 @@
               <BaseIcon :icon="mdiTagMultiple" color='black' />
             </v-col>
 
-            <v-col v-if="selectedTags.length > 0" class="grow pl-0">
+            <v-col v-if="selectedTags.length > 0" class="flex-grow-1 pl-0">
               <tag-chip
                 v-for="tag in selectedTags"
                 :key="tag.name"

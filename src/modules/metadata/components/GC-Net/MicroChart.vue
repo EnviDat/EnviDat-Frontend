@@ -89,7 +89,7 @@
           </v-row>
 
           <v-row no-gutters>
-            <v-col class="grow pt-1 pr-1" id="statusInfo" cols="10">
+            <v-col class="flex-grow-1 pt-1 pr-1" id="statusInfo" cols="10">
               <v-row no-gutters>
                 <v-col
                   v-if="firstParameterData"
@@ -136,7 +136,7 @@
               </v-row>
             </v-col>
 
-            <v-col class="grow pt-1" style="align-self: flex-end;" cols="2">
+            <v-col class="flex-grow-1 pt-1" style="align-self: flex-end;" cols="2">
               <v-row no-gutters justify="end" class="pb-2">
                 <BaseIconButton
                   :icon="mdiChartBar"
