@@ -34,8 +34,9 @@
                   :icon="mdiChevronDown"
                   small
                   icon-color="black"
-                  outline-color="secondary"
-                  outlined
+                  :color="highlighted ? 'highlight' : ''"
+                  :outlined="!highlighted"
+                  outlineColor="primary"
                   :rotated="expanded"
                   :tooltipText="expanded ? 'Close' : 'Expand'"
                   @clicked="readMore"
@@ -45,7 +46,7 @@
 
       <v-row v-if="!swapStatusTextWithSoltText && $slots.default && expanded"
               no-gutters>
-        <v-col>
+        <v-col class="pt-2">
           <slot name="default"></slot>
         </v-col>
       </v-row>
@@ -99,6 +100,10 @@ export default {
       default: false,
     },
     startExpanded: {
+      type: Boolean,
+      default: false,
+    },
+    highlighted: {
       type: Boolean,
       default: false,
     },

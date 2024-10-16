@@ -38,11 +38,14 @@
         <v-col>
           <ExpandableLayout statusText="Click here, drag and drop the authors to change the sequence."
                             :startExpanded="authorFullNames?.length < 10"
+                            highlighted
                             isFlat>
 
-            <BaseDraggableList :items="authorFullNames"
-                               :useAuthorTags="true"
-                               @listChanged="reorderList"/>
+            <BaseDraggableList
+              :items="authorFullNames"
+              :useAuthorTags="true"
+              @listChanged="reorderList"
+            />
           </ExpandableLayout>
 
         </v-col>
