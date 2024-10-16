@@ -450,7 +450,7 @@ export default {
       cardInstructions1: 'Please enter at least 5 keywords.',
       cardInstructions2: 'To pick a keyword click into the list, you can start typing to search for a existing keywords.' +
         ' To create a new keyword type it and press enter.',
-      previewText: 'Metadata card preview',
+      previewText: 'Dataset entry preview',
     },
     defaultUserEditMetadataConfig: {
       keywordsListWordMax: 2,
