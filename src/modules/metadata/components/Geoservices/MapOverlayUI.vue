@@ -219,8 +219,8 @@ export default {
   pointer-events: none;
 }
 
-.overlayInteraction .col,
-.overlayInteraction .v-card {
+.overlayInteraction .v-col,
+.overlayInteraction .v-btn {
   pointer-events: auto;
 }
 </style>
