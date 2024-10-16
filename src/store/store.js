@@ -91,7 +91,9 @@ const preloadedModules = {
 
 function createStore() {
   return new Vuex.Store({
-    strict: true,
+    // strict is for getting error about the state mutations outside of mutations
+    // is very performance heavy, don't use it in production!
+    strict: false, // process.env.NODE_ENV !== 'production',
     state: initialState,
     getters: {
       appBGImage: state => state.appBGImage,
