@@ -58,7 +58,7 @@ const initialState = {
    * virtual List properties for MetaDataCards of the BrowsePage via MetadataListLayout
    */
   // scrollPositionDelay has to be more than the vReloadDelay
-  scrollPositionDelay: 20,
+  scrollPositionDelay: 100,
   /**
    * Pinned Elements from the MapFilter
    */
