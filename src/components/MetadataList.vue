@@ -180,7 +180,7 @@ import {
 import { eventBus } from '@/factories/eventBus';
 
 import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
-import { getGeoJSONIcon, getIcon } from '@/factories/imageFactory';
+import { getGeoJSONIcon } from '@/factories/imageFactory';
 import { convertArrayToUrlString } from '@/factories/stringFactory';
 
 import FilterKeywordsSingleView from '@/components/Filtering/FilterKeywordsSingleView.vue';
