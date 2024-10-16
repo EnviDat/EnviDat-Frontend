@@ -84,8 +84,8 @@ import {
 
 import {
   ORGANIZATIONS_NAMESPACE,
-  USER_GET_ORGANIZATION_IDS,
-  USER_GET_ORGANIZATIONS,
+  // USER_GET_ORGANIZATION_IDS,
+  // USER_GET_ORGANIZATIONS,
 } from '@/modules/organizations/store/organizationsMutationsConsts';
 
 import {
@@ -233,10 +233,13 @@ export default {
     },
     async loadUserOrganizations() {
       if (this.userOrganizations?.length < 0) {
-        await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user?.id);
+        await this.organizationsStore.USER_GET_ORGANIZATION_IDS(this.user?.id)
+        // await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user?.id);
 
         // always call the USER_GET_ORGANIZATIONS action because it resolves the store & state also when userOrganizationIds is empty
-        await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS}`, this.userOrganizationIds);
+        await this.organizationsStore.USER_GET_ORGANIZATIONS(this.userOrganizationIds)
+
+        // await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS}`, this.userOrganizationIds);
       }
 
       this.updateStepsOrganizations(this.userOrganizations);

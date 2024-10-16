@@ -153,9 +153,11 @@ export default {
       })
       .catch((error) => {
         commit(USER_GET_ORGANIZATION_IDS_ERROR, error);
+
       });
   },
   async [USER_GET_ORGANIZATIONS]({ commit }, ids) {
+
     commit(USER_GET_ORGANIZATIONS);
 
     if (!ids || ids.length <= 0) {

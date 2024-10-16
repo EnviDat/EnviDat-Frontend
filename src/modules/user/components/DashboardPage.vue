@@ -170,6 +170,8 @@
          </v-row>
        </div>
 
+
+
        <div v-if="!collaboratorDatasetIdsLoading && !collaboratorDatasetsLoading && hasCollaboratorDatasets"
             id="collaboratorDatasetCards"
             class="datasetsOverflow" >
@@ -217,18 +219,19 @@
     <div class="bottomBoard pt-2 pb-4"
          ref="userOrgaDatasets">
 
+
       <TitleCard :title="`Datasets of ${usersOrganisationTitle}`"
                   :icon='mdiRefresh'
                   :tooltipText="refreshOrgaButtonText"
-                 :loading="userOrganizationLoading"
-                 :clickCallback="catchRefreshOrgaClick" />
+                 :loading="organizationsStore.userOrganizationLoading"
+                 :clickCallback="loadOrganizations" />
 
-      <MetadataList v-if="hasOrgaDatasets"
-                    class="datasetsGrid px-1"
+                 <MetadataList v-if="hasOrgaDatasets"
+                 class="datasetsGrid px-1"
                     :listContent="filteredOrgaDatasets"
                     :searchCount="filteredOrgaDatasets.length"
                     :mapFilteringPossible="false"
-                    :loading="userOrganizationLoading"
+                    :loading="organizationsStore.userOrganizationLoading"
                     :placeHolderAmount="placeHolderAmount"
                     @clickedTag="catchOrgaTagClicked"
                     @clickedCard="catchMetadataClicked"
@@ -248,8 +251,14 @@
                     :metadatasContent="metadatasContent"
                     mainScrollClass=".bottomBoard > .datasetsGrid"
                     />
-
-      <div v-if="!hasOrgaDatasets"
+     <div v-if="!loadedOrg">
+        <BaseRectangleButton
+          color="secondary"
+          :button-text="loadOrgButton"
+          @clicked="loadOrganizations"
+        />
+     </div>
+      <div v-if="!hasOrgaDatasets && loadedOrg && !organizationsStore.userOrganizationLoading"
             class="noOrgaDatasetsGrid px-1">
 
         <NotificationCard v-if="noOrgaDatasetsError"
@@ -316,6 +325,9 @@ import {
   SET_CURRENT_PAGE,
 } from '@/store/mainMutationsConsts';
 
+import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
+
+
 import { getNameInitials } from '@/factories/authorFactory';
 import { errorMessage } from '@/factories/notificationFactory';
 import { getTagColor, getPopularTags, tagsIncludedInSelectedTags } from '@/factories/keywordsFactory';
@@ -348,10 +360,10 @@ import {
 
 import {
   ORGANIZATIONS_NAMESPACE,
-  USER_GET_ORGANIZATION_IDS,
-  USER_GET_ORGANIZATIONS,
-  USER_GET_ORGANIZATIONS_RESET,
-  USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE,
+  // USER_GET_ORGANIZATION_IDS,
+  // USER_GET_ORGANIZATIONS,
+  // USER_GET_ORGANIZATIONS_RESET,
+  // USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE,
 } from '@/modules/organizations/store/organizationsMutationsConsts';
 
 import { getPreviewDatasetFromLocalStorage } from '@/factories/userCreationFactory';
@@ -371,6 +383,8 @@ import TitleCard from '@/components/Cards/TitleCard.vue';
 import UserCard from '@/components/Cards/UserCard.vue';
 import EditUserProfile from '@/modules/user/components/edit/EditUserProfile.vue';
 import FlipLayout from '@/components/Layouts/FlipLayout.vue';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
+
 
 const IntroductionCard = defineAsyncComponent(() =>
   import('@/components/Cards/IntroductionCard.vue'),
@@ -394,6 +408,7 @@ export default {
     });
   },
   created() {
+    this.organizationsStore = useOrganizationsStore();
     eventBus.on(SELECT_EDITING_DATASET, this.catchEditingClick);
     eventBus.on(EDIT_USER_PROFILE_EVENT, this.callUserUpdateAction);
   },
@@ -408,7 +423,8 @@ export default {
     if (this.user) {
       this.fetchUserDatasets();
       this.fetchCollaboratorDatasets();
-      this.fetchUserOrganisationData(true);
+      this.fetchUserOrganizationId(true);
+      // this.fetchUserOrganisationData(true);
     }
   },
   mounted() {
@@ -439,7 +455,7 @@ export default {
     ]),
     ...mapState(ORGANIZATIONS_NAMESPACE, [
       'userOrganizationLoading',
-      'userOrganizations',
+      // 'userOrganizations',
       'userOrganizationIds',
       'userOrganizationError',
     ]),
@@ -461,7 +477,7 @@ export default {
       return this.userEditMetadataConfig?.datasetCreationActive || false;
     },
     loading() {
-      return this.userLoading || this.userEditLoading || this.userDatasetsLoading || this.userOrganizationLoading;
+      return this.userLoading || this.userEditLoading || this.userDatasetsLoading || this.organizationsStore.userOrganizationLoading;
     },
     noOrgaDatasetsError() {
       if (!this.userOrganizationError) {
@@ -499,11 +515,11 @@ export default {
     userOrgaDatasetList() {
       const datasets = [];
 
-      if (!this.userOrganizations) {
+      if (!this.organizationsStore.userOrganizations) {
         return datasets;
       }
 
-      this.userOrganizations.forEach(o => {
+      this.organizationsStore.userOrganizations.forEach(o => {
         if (o.packages?.length > 0) {
           datasets.push(o.packages);
         }
@@ -571,8 +587,8 @@ export default {
       return getNameInitials(this.user);
     },
     usersOrganisationTitle() {
-      if (this.userOrganizations?.length === 1) {
-        return this.userOrganizations[0].display_name;
+      if (this.organizationsStore.userOrganizations?.length === 1) {
+        return this.organizationsStore.userOrganizations[0].display_name;
       }
 
       return 'your Organizations';
@@ -591,11 +607,11 @@ export default {
       return this.userDashboardConfig.showOldDashboardUrl ? `${this.ckanDomain}${this.dashboardCKANUrl}${this.user.name}` : '';
     },
     userOrganizationRoles() {
-      if (this.userOrganizations.length <= 0) {
+      if (this.organizationsStore.userOrganizations.length <= 0) {
         return null;
       }
 
-      return getUserOrganizationRoleMap(this.user.id, this.userOrganizations);
+      return getUserOrganizationRoleMap(this.user.id, this.organizationsStore.userOrganizations);
     },
     organizationRoles() {
       if (!this.userOrganizationRoles) {
@@ -733,23 +749,40 @@ export default {
       // always call the USER_GET_COLLABORATOR_DATASETS action because it resolves the store & state also when collaboratorDatasetIds is empty
       await this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_COLLABORATOR_DATASETS}`, this.collaboratorDatasetIds);
     },
-    async fetchUserOrganisationData(forceReload = false) {
+    async fetchUserOrganizationId(forceReload = false) {
       if (forceReload || !forceReload && this.$store.getters[`${ORGANIZATIONS_NAMESPACE}/hasUserOrganizations`]) {
-        await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user.id);
-
-        // always call the USER_GET_ORGANIZATIONS action because it resolves the store & state also when userOrganizationIds is empty
-        await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS}`, this.userOrganizationIds);
+        await this.organizationsStore.USER_GET_ORGANIZATION_IDS(this.user.id)
       }
     },
+    async fetchUserOrganisationData(forceReload = false) {
+      if (forceReload || !forceReload && this.$store.getters[`${ORGANIZATIONS_NAMESPACE}/hasUserOrganizations`]) {
+        // always call the USER_GET_ORGANIZATIONS action because it resolves the store & state also when userOrganizationIds is empty
+        await this.organizationsStore.USER_GET_ORGANIZATIONS(this.$store, this.organizationsStore.userOrganizationIds)
+
+      }
+    },
+    // OLD FUNCTION
+    // async fetchUserOrganisationData(forceReload = false) {
+    //   if (forceReload || !forceReload && this.$store.getters[`${ORGANIZATIONS_NAMESPACE}/hasUserOrganizations`]) {
+    //     await this.organizationsStore.USER_GET_ORGANIZATION_IDS(this.user.id)
+    //     // await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user.id);
+
+    //     // always call the USER_GET_ORGANIZATIONS action because it resolves the store & state also when userOrganizationIds is empty
+    //     await this.organizationsStore.USER_GET_ORGANIZATIONS(this.$store, this.organizationsStore.userOrganizationIds)
+
+    //     // await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS}`, this.userOrganizationIds);
+    //   }
+    // },
     async fetchUserOrganisationDataRecursive() {
       // this was a test to see if the datasets of the organizations the users is in can be
       // loaded quickly via the package_search, it turns out that include_drafts / include_privte
       // slows down the search to be unuseable... we need to find another solution
-      this.$store.commit(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS_RESET}`);
-      await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user.id);
+      this.organizationsStore.resetOrganization()
+      await this.organizationsStore.USER_GET_ORGANIZATION_IDS(this.user.id)
 
       // always call the USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE action because it resolves the store & state also when userOrganizationIds is empty
-      await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE}`, this.userOrganizationIds);
+
+      await this.organizationsStore.USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE(this.userOrganizationIds)
     },
     catchRefreshClick() {
       if (this.user) {
@@ -761,7 +794,8 @@ export default {
         this.fetchCollaboratorDatasets();
       }
     },
-    catchRefreshOrgaClick() {
+    loadOrganizations() {
+      this.loadedOrg = true
       if (this.user) {
         this.fetchUserOrganisationData(true);
       }
@@ -875,6 +909,9 @@ export default {
     },
   },
   data: () => ({
+    loadedOrg: false,
+    loadOrgButton: 'Load Organizations',
+    organizationsStore: null,
     dashboardCKANUrl: '/user/',
     createCKANUrl: '/dataset/new',
     ckanDomain: process.env.VITE_API_ROOT,
@@ -936,6 +973,7 @@ export default {
     UserOrganizationInfo,
     FlipLayout,
     EditUserProfile,
+    BaseRectangleButton,
   },
 };
 </script>

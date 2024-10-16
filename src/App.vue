@@ -79,7 +79,12 @@
           <v-col cols="12">
             <router-view v-slot="{ Component }">
               <transition name="fade" mode="out-in">
-                <component :is="Component" />
+                <!-- Inactive components will be cached! -->
+                <KeepAlive>
+                  <Suspense>
+                    <component :is="Component" />
+                  </Suspense>
+                </KeepAlive>
               </transition>
             </router-view>
           </v-col>

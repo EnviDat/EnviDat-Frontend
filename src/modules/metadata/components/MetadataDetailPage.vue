@@ -49,8 +49,8 @@
         >
           <v-col class="mb-2 px-0">
             <!-- prettier-ignore -->
-            <component :is="entry"
-                       v-bind="entry.props" />
+            <BaseDynamicComponent :component="entry" :componentProps="entry.props" :showLoader="true" />
+
           </v-col>
         </v-row>
       </v-col>
@@ -63,8 +63,8 @@
         >
           <v-col class="mb-2 px-0">
             <!-- prettier-ignore -->
-            <component :is="entry"
-                       v-bind="entry.props" />
+            <BaseDynamicComponent :component="entry" :componentProps="entry.props" :showLoader="true" />
+
           </v-col>
         </v-row>
       </v-col>
@@ -87,11 +87,17 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+
+import { defineAsyncComponent, markRaw } from 'vue';
+
 import axios from 'axios';
 import rewind from '@turf/rewind';
 import { mapGetters, mapState } from 'vuex';
 import { useModeStore } from '@/modules/browse/store/modeStore';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+
+import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
+
 
 import {
   BROWSE_PATH,
@@ -157,11 +163,9 @@ import {
 
 import { getEventsForPageAndName } from '@/modules/matomo/store/matomoStore';
 
-import {
-  ORGANIZATIONS_NAMESPACE,
-  USER_GET_ORGANIZATION_IDS,
-  USER_GET_ORGANIZATIONS,
-} from '@/modules/organizations/store/organizationsMutationsConsts';
+// import {
+//   ORGANIZATIONS_NAMESPACE,
+// } from '@/modules/organizations/store/organizationsMutationsConsts';
 
 import {
   convertJSON,
@@ -172,7 +176,7 @@ import {
 import { getIcon } from '@/factories/imageFactory';
 import { convertArrayToUrlString } from '@/factories/stringFactory';
 
-import { defineAsyncComponent, markRaw } from 'vue';
+import BaseDynamicComponent from '@/components/BaseElements/BaseDynamicComponent.vue';
 
 import MetadataHeader from './Metadata/MetadataHeader.vue';
 
@@ -204,6 +208,9 @@ const MetadataRelatedDatasets = defineAsyncComponent(() =>
   import('@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue'),
 );
 
+
+
+
 // Might want to check https://css-tricks.com/use-cases-fixed-backgrounds-css/
 // for animations between the different parts of the Metadata
 
@@ -219,8 +226,10 @@ export default {
     });
   },
   created() {
+
     this.modeStore = useModeStore();
     this.modeStore.init(this.$store.getters.cardBGImages);
+    this.organizationsStore = useOrganizationsStore();
 
     eventBus.on(GCNET_PREPARE_DETAIL_CHARTS, this.prepareGCNetChartModal);
     eventBus.on(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
@@ -238,6 +247,7 @@ export default {
    * @description reset the scrolling to the top.
    */
   async mounted() {
+
     this.loadMetaDataContent();
 
     // await this.setPageViews(this.$route.fullPath, 'Visit');
@@ -264,7 +274,7 @@ export default {
   computed: {
     ...mapState(['config']),
     ...mapState(USER_NAMESPACE, ['userDatasets']),
-    ...mapState(ORGANIZATIONS_NAMESPACE, ['userOrganizationIds']),
+    // ...mapState(ORGANIZATIONS_NAMESPACE, ['userOrganizationIds']),
     ...mapGetters(USER_SIGNIN_NAMESPACE, ['user', 'userLoading']),
     ...mapGetters({
       metadatasContent: `${METADATA_NAMESPACE}/metadatasContent`,
@@ -886,20 +896,25 @@ export default {
       return false;
     },
     async fetchUserOrganisationData() {
+
       const userId = this.user?.id;
       if (!userId) {
         return;
       }
 
-      await this.$store.dispatch(
-        `${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`,
-        userId,
-      );
+      await this.organizationsStore.USER_GET_ORGANIZATION_IDS(userId)
+
+      // this.organizationsStore.USER_GET_ORGANIZATION_IDS(userId);
+      // await this.$store.dispatch(
+      //   `${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`,
+      //   userId,
+      // );
       // always call the USER_GET_ORGANIZATIONS action because it resolves the store & state also when userOrganizationIds is empty
-      await this.$store.dispatch(
-        `${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS}`,
-        this.userOrganizationIds,
-      );
+      await this.organizationsStore.USER_GET_ORGANIZATIONS(this.userOrganizationIds)
+      // await this.$store.dispatch(
+      //   `${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS}`,
+      //   this.userOrganizationIds,
+      // );
     },
     fetchUserDatasets() {
       const userId = this.user?.id;
@@ -978,8 +993,10 @@ export default {
   components: {
     MetadataHeader,
     BaseIconButton,
+    BaseDynamicComponent,
   },
   data: () => ({
+    organizationsStore: null,
     // headerHeight: 0,
     mdiClose,
     MetadataBody: markRaw(MetadataBody),
