@@ -173,15 +173,16 @@ import { getIcon } from '@/factories/imageFactory';
 import { convertArrayToUrlString } from '@/factories/stringFactory';
 
 import { defineAsyncComponent, markRaw } from 'vue';
-
-import MetadataHeader from './Metadata/MetadataHeader.vue';
+import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
 
 const MetadataBody = defineAsyncComponent(() =>
-  import('./Metadata/MetadataBody.vue'),
+  import('@/modules/metadata/components/Metadata/MetadataBody.vue'),
 );
+
 const MetadataResources = defineAsyncComponent(() =>
   import('./Metadata/MetadataResources.vue'),
 );
+
 const MetadataCitation = defineAsyncComponent(() =>
   import('./Metadata/MetadataCitation.vue'),
 );
@@ -649,6 +650,7 @@ export default {
         dataLicenseTitle: license.title,
         dataLicenseUrl: license.url,
         resourcesConfig: this.resourcesConfig,
+        showPlaceholder: this.showPlaceholder,
       };
     },
     setMetadataContent() {
@@ -671,7 +673,11 @@ export default {
         this.setGeoServiceLayers(this.location, null);
       }
 
-      this.MetadataBody.props = { ...this.body };
+      this.MetadataBody.props = {
+        ...this.body,
+        showPlaceholder: this.showPlaceholder,
+      };
+
       this.MetadataCitation.props = {
         ...this.citation,
         showPlaceholder: this.showPlaceholder,
@@ -684,22 +690,26 @@ export default {
         this.MetadataPublicationList.props = {
           ...this.publications,
           metadataConfig: this.metadataConfig,
+          showPlaceholder: this.showPlaceholder,
         };
         publicationList = this.MetadataPublicationList;
       } else {
         this.MetadataPublications.props = {
           ...this.publications,
           metadataConfig: this.metadataConfig,
+          showPlaceholder: this.showPlaceholder,
         };
         publicationList = this.MetadataPublications;
       }
 
       this.MetadataRelatedDatasets.props = {
         ...this.relatedDatasets,
+        showPlaceholder: this.showPlaceholder,
       };
 
       this.MetadataFunding.props = {
         funding: this.funding,
+        showPlaceholder: this.showPlaceholder,
       };
 
       this.firstCol = [
