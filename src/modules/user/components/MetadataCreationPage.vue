@@ -53,6 +53,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import { mapState } from 'vuex';
+import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
+
 
 import {
   eventBus,
@@ -80,13 +82,12 @@ import {
   METADATA_EDITING_LAST_DATASET,
   USER_NAMESPACE,
   USER_SIGNIN_NAMESPACE,
+  FETCH_USER_DATA,
+  ACTION_USER_SHOW,
+  USER_GET_DATASETS,
 } from '@/modules/user/store/userMutationsConsts';
 
-import {
-  ORGANIZATIONS_NAMESPACE,
-  // USER_GET_ORGANIZATION_IDS,
-  // USER_GET_ORGANIZATIONS,
-} from '@/modules/organizations/store/organizationsMutationsConsts';
+
 
 import {
   BROWSE_PATH,
@@ -119,6 +120,8 @@ import {
   readDataFromLocalStorage,
 } from '@/factories/userCreationFactory';
 
+
+
 import {
   getStepByName,
   getStepFromRoute,
@@ -140,6 +143,8 @@ export default {
     });
   },
   created() {
+    this.organizationsStore = useOrganizationsStore();
+
     this.creationSteps = initializeSteps(metadataCreationSteps);
 
     eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.componentChanged);
@@ -162,7 +167,7 @@ export default {
   beforeMount() {
     initializeStepsInUrl(this.creationSteps, this.routeStep, this.routeSubStep, this);
 
-    const prefilledOrganizationId = this.userOrganizationIds?.length === 1 ? this.userOrganizationIds[0] : undefined;
+    const prefilledOrganizationId = this.organizationsStore.userOrganizationIds?.length === 1 ? this.organizationsStore.userOrganizationIds[0] : undefined;
     initStepDataOnLocalStorage(this.creationSteps, this.user, prefilledOrganizationId);
 
     this.setReadOnlyBasedOnVisibilty(this.creationSteps);
@@ -183,10 +188,6 @@ export default {
     ...mapState(USER_SIGNIN_NAMESPACE,[
       'user',
       'userLoading',
-    ]),
-    ...mapState(ORGANIZATIONS_NAMESPACE,[
-      'userOrganizationIds',
-      'userOrganizations',
     ]),
     ...mapState(USER_NAMESPACE, [
       'newMetadatasetName',
@@ -232,17 +233,26 @@ export default {
 
     },
     async loadUserOrganizations() {
-      if (this.userOrganizations?.length < 0) {
-        await this.organizationsStore.USER_GET_ORGANIZATION_IDS(this.user?.id)
-        // await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user?.id);
+      if (this.organizationsStore.userOrganizations?.length < 0) {
+        await this.organizationsStore.UserGetOrgIds(this.user?.id)
 
-        // always call the USER_GET_ORGANIZATIONS action because it resolves the store & state also when userOrganizationIds is empty
-        await this.organizationsStore.USER_GET_ORGANIZATIONS(this.userOrganizationIds)
+        const userId = this.user?.id;
+        if (!userId) {
+          return;
+        }
 
-        // await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS}`, this.userOrganizationIds);
+        await this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`, {
+          action: ACTION_USER_SHOW,
+          body: {
+            id: userId,
+            include_datasets: true,
+          },
+          commit: true,
+          mutation: USER_GET_DATASETS,
+        });
       }
 
-      this.updateStepsOrganizations(this.userOrganizations);
+      this.updateStepsOrganizations(this.organizationsStore.userOrganizations);
     },
     updateStepsOrganizations(userOrganizations) {
       // Get any already existing information from the local storage
@@ -427,6 +437,7 @@ export default {
     NavigationStepper,
   },
   data: () => ({
+    organizationsStore: null,
     creationSteps: null,
     canSaveInBackend: false,
     errorTitle: null,

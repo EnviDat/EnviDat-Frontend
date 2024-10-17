@@ -902,17 +902,17 @@ export default {
         return;
       }
 
-      await this.organizationsStore.USER_GET_ORGANIZATION_IDS(userId)
+      await this.organizationsStore.UserGetOrgIds(userId)
 
-      // this.organizationsStore.USER_GET_ORGANIZATION_IDS(userId);
+      // this.organizationsStore.UserGetOrgIds(userId);
       // await this.$store.dispatch(
-      //   `${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`,
+      //   `${ORGANIZATIONS_NAMESPACE}/${UserGetOrgIds}`,
       //   userId,
       // );
-      // always call the USER_GET_ORGANIZATIONS action because it resolves the store & state also when userOrganizationIds is empty
-      await this.organizationsStore.USER_GET_ORGANIZATIONS(this.userOrganizationIds)
+      // always call the UserGetOrg action because it resolves the store & state also when userOrganizationIds is empty
+      await this.organizationsStore.UserGetOrg(this.userOrganizationIds)
       // await this.$store.dispatch(
-      //   `${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS}`,
+      //   `${ORGANIZATIONS_NAMESPACE}/${UserGetOrg}`,
       //   this.userOrganizationIds,
       // );
     },

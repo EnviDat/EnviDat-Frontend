@@ -101,11 +101,6 @@ import {
   USER_GET_DATASETS,
 } from '@/modules/user/store/userMutationsConsts';
 
-import {
-  ORGANIZATIONS_NAMESPACE,
-  // USER_GET_ORGANIZATION_IDS,
-  // USER_GET_ORGANIZATIONS,
-} from '@/modules/organizations/store/organizationsMutationsConsts';
 
 import {
   BROWSE_PATH,
@@ -217,10 +212,6 @@ export default {
   computed: {
     ...mapState(['config']),
     ...mapState(USER_SIGNIN_NAMESPACE, ['user', 'userLoading']),
-    ...mapState(ORGANIZATIONS_NAMESPACE, [
-      'userOrganizationIds',
-      'userOrganizationLoading',
-    ]),
     ...mapState(USER_NAMESPACE, [
       'lastEditedBackPath',
       'currentEditingContent',
@@ -314,16 +305,16 @@ export default {
     },
     async loadUserOrganizations() {
       if (
-        !this.$store.getters[`${ORGANIZATIONS_NAMESPACE}/hasUserOrganizations`]
+        !this.organizationsStore.userOrganizations?.length > 0
       ) {
-        await this.organizationsStore.USER_GET_ORGANIZATION_IDS(this.user?.id)
+        await this.organizationsStore.UserGetOrgIds(this.user?.id)
 
         const userId = this.user?.id;
         if (!userId) {
           return;
         }
 
-        this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`, {
+        await this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`, {
           action: ACTION_USER_SHOW,
           body: {
             id: userId,

@@ -16,8 +16,6 @@ import Vuex from 'vuex';
 import { metadata } from '@/modules/metadata/store/metadataStore';
 import { user } from '@/modules/user/store/userStore';
 import { userSignIn } from '@/modules/user/store/userSignInStore';
-import { organizations } from '@/modules/organizations/store/organizationsStore';
-import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
 import { matomo } from '@/modules/matomo/store/matomoStore';
 
 import mutations from '@/store/mainMutations';
@@ -32,8 +30,6 @@ const moduleImportMap = {
   user: () => import('@/modules/user/store/userStore'),
   userSignIn: () => import('@/modules/user/store/userSignInStore'),
   blog: () => import('@/modules/blog/store/blogStore'),
-  organizations: () => import('@/modules/organizations/store/organizationsStore'),
-  useOrganizationsStore: () => import('@/modules/organizations/store/organizationsStorePinia'),
   integration: () => import('@/modules/integration/store/integrationStore'),
   service: () => import('@/modules/services/store/serviceStore'),
   projects: () => import('@/modules/projects/store/projectsStore'),
@@ -82,8 +78,6 @@ const preloadedModules = {
   metadata,
   user,
   userSignIn,
-  organizations,
-  useOrganizationsStore,
   matomo,
 };
 
