@@ -14,6 +14,7 @@
         <v-btn
           v-bind="props"
           icon
+          :class="{noHover: elevation == 0}"
           :disabled="disabled"
           color="transparent"
           :elevation="elevation"
@@ -95,6 +96,10 @@ export default {
   animation-name: glowing;
   animation-duration: 2.5s;
   animation-iteration-count: infinite;
+}
+
+.noHover {
+  cursor: default;
 }
 
 @keyframes glowing {
