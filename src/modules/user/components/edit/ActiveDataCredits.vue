@@ -18,10 +18,10 @@
         class="flex-grow-0 pt-3 pt-md-4 px-md-1"
         v-show="isActive(creditName)"
       >
-
         <BaseIconToggleButton :active="isActive(creditName)"
                               :icon='iconLookup(creditName)'
                               :value='creditName'
+                              :elevation="0"
                               :tooltip="iconTooltip(creditName)"
                               :dark="dark"
                               @clicked="catchCreditClick"
