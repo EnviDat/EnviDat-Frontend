@@ -2,17 +2,17 @@
   <v-card id="EditAuthor"
             class="pa-4" >
 
-    <BaseIconButton 
+    <BaseIconButton
       class="editResourceCloseButton ma-2"
       :class="{ 'mx-1' : $vuetify.display.smAndDown }"
       style="position: absolute; top: 0; right: 0; z-index: 2;"
       :icon="mdiClose"
-      icon-color="primary"
-      color="primary"
+      icon-color="black"
+      color="black"
       outlined
       tooltip-text="Cancel author editing"
       tooltip-bottom
-      @clicked="$emit('closeClicked')" 
+      @clicked="$emit('closeClicked')"
     />
 
     <v-form ref="editAuthorForm">
