@@ -1,12 +1,11 @@
 <template>
-  <v-container class="pa-0" tag="article" fluid>
+  <v-container class="pa-0" tag="article">
     <v-row no-gutters>
       <v-col
         class="elevation-5 pa-0"
         cols="12"
         ref="header"
-        style="z-index: 1; position: absolute; left: 0;"
-        :style="headerStyle">
+        style="z-index: 1; left: 0">
 
         <ProjectHeader
           :title="currentProject ? currentProject.title : null"
@@ -18,9 +17,9 @@
     </v-row>
 
     <v-row
-      :style="`z-index: 0; position: relative; top: ${headerHeight()}px`"
+      :style="`z-index: 0; position: relative;`"
       no-gutters>
-      <v-col class="pb-2 px-sm-3" cols="12" lg="10" offset-lg="1">
+      <v-col class="pb-2 " cols="12" lg="12">
 
         <ProjectBody
           :description="currentProject ? currentProject.description : null"
@@ -30,10 +29,9 @@
 
       <v-col
         v-if="loading || (!loading && subProjects)"
-        class="pb-2 px-sm-3"
+        class="pb-2 "
         cols="12"
-        lg="10"
-        offset-lg="1">
+        lg="12">
 
         <ProjectSubprojects
           :subProjects="subProjects"
@@ -43,7 +41,7 @@
           @subprojectClick="catchSubprojectClick" />
       </v-col>
 
-      <v-col class="pb-2 px-sm-3" cols="12" lg="10" offset-lg="1">
+      <v-col class="pb-2 " cols="12" lg="12" >
 
         <ProjectDatasets
           :hasMetadatas="hasMetadatas"
@@ -287,21 +285,6 @@ export default {
 
       return projectDatasets;
     },
-    headerStyle() {
-      let width = 82.25;
-      let margin = '0px 8.33333%';
-
-      if (this.$vuetify.display.mdAndDown) {
-        width = 100;
-        margin = '0';
-      }
-
-      if (this.$vuetify.display.lg) {
-        width = 83.25;
-      }
-
-      return `width: ${width}%; margin: ${margin};`;
-    },
   },
   methods: {
     loadRoutePins() {
@@ -342,13 +325,6 @@ export default {
           this.projectsConfig,
         );
       }
-    },
-    headerHeight() {
-      if (this.$refs && this.$refs.header) {
-        return this.$refs.header.$el.clientHeight;
-      }
-
-      return 150;
     },
     getMetadataContent(id) {
       if (!this.metadatasContent) {
