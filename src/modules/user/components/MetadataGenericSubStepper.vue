@@ -122,7 +122,8 @@ export default {
         return;
       }
 
-      const params = this.$route.params;
+
+      const params = { ...this.$route.params };
       params.substep = this.steps[nextIndex].title;
 
       this.$router.push({ params });
