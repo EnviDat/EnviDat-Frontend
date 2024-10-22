@@ -31,7 +31,8 @@
                    density='compact'
                    :class="[
                       item.disabled ? 'text-grey' : item.active ? 'text-secondary' : '',
-                      item.icon === 'envidat' ? mini ? 'px-2' : 'px-3' : ''
+                      item.icon === 'envidat' ? mini ? 'px-2' : 'px-3' : '',
+                      item.isMenuIcon === true ? 'd-flex d-lg-none eccolo' : ''
                     ]"
                    :disabled="item.disabled"
                    @click.stop="itemClick(item)" >

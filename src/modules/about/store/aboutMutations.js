@@ -103,7 +103,7 @@ export default {
   [GET_IMPRINT_ERROR](state, reason) {
     state.imprintLoading = false;
 
-    const details = 'An error occurred while loading the dmp infos!';
+    const details = 'An error occurred while loading the imprint infos!';
     const errObj = getSpecificApiError(details, reason);
     state.imprintMarkdown = `${details}: ${reason}`;
 

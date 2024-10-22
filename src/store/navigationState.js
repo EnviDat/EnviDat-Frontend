@@ -107,6 +107,7 @@ export const navigationItems = [
     icon: mdiMenuRight,
     active: false,
     disabled: false,
+    isMenuIcon: true,
   },
 ];
 
