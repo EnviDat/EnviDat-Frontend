@@ -55,7 +55,7 @@
 
           <v-row class="pt-1"
                  no-gutters>
-            <v-col class="flex-grow-0">
+            <v-col class="flex-grow-0 mr-2">
               <v-icon :icon="mdiInformationOutline" />
             </v-col>
             <v-col>
