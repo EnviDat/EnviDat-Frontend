@@ -99,7 +99,7 @@
       <TextBanner
         v-if="showCookieInfo"
         id="cookieBanner"
-        style="position: absolute; bottom: 0; z-index: 1001; width: 100%; "
+        style="position: absolute; bottom: 0; left: 0; z-index: 1101; width: 100%;"
         :text="cookieInfoText"
         icon="cookie"
         deniedText="Okay"
