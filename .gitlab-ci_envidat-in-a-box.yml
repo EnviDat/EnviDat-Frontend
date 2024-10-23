@@ -3,7 +3,7 @@ modify-box-env:
   stage: config
   image: python:3.9-alpine3.17
   environment: $CI_COMMIT_REF_NAME  
-  dependencies:
+  needs:
     - set-vars
   before_script:
     - pip install --upgrade pip

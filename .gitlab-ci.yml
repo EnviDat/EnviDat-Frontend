@@ -34,9 +34,6 @@ set-vars:
   image: alpine:3.20
   environment: $CI_COMMIT_REF_NAME
   rules:
-    # Exclude feature branches that start with 'feature/'
-    - if: '$CI_COMMIT_REF_NAME !~ /^feature\//'
-      when: never
     - if: '$CI_PIPELINE_SOURCE == "pipeline"'
     - if: '$CI_COMMIT_REF_NAME =~ /^(main|staging|develop)$/'
     - if: $CI_PIPELINE_SOURCE == "web"
@@ -88,7 +85,7 @@ modify-env:
   image: python:3.9-alpine3.17
   environment: $CI_COMMIT_REF_NAME  
   extends: .trigger-rules
-  dependencies:
+  needs:
     - set-vars
   before_script:
     - pip install --upgrade pip
