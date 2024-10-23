@@ -22,7 +22,8 @@ publish-build:
   stage: deploy
   environment: $CI_COMMIT_REF_NAME
   image: alpine:3.20
-  extends: .trigger-rules
+  extends:
+    - .trigger-rules
   variables:
     GIT_STRATEGY: none
   needs:
@@ -50,7 +51,8 @@ deploy-to-s3-bucket:
   stage: deploy
   environment: $CI_COMMIT_REF_NAME
   image: alpine:3.20
-  extends: .trigger-rules
+  extends:
+    - .trigger-rules
   needs:
     # needs the environmental variables for the version number
     - set-vars
@@ -97,6 +99,7 @@ deploy-to-s3-bucket:
 
 manual-deploy-to-s3-bucket:
   stage: manual-deploy
+  environment: $CI_COMMIT_REF_NAME
   image: alpine:3.20
   rules:
     - if: '$CI_PIPELINE_SOURCE == "pipeline"'
