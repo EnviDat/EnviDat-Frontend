@@ -3,7 +3,7 @@ include:
 #  - local: '.gitlab-ci_envidat-in-a-box.yml'
 
 stages:
-  - .pre
+  - prepare
   - config
   - test
   - build
@@ -30,7 +30,7 @@ variables:
       when: always
 
 set-vars:
-  stage: .pre
+  stage: prepare
   image: alpine:3.20
   environment: $CI_COMMIT_REF_NAME
   rules:
