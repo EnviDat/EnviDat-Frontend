@@ -5,6 +5,11 @@ export default {
   core: {
     disableTelemetry: true,
   },
+  build: {
+    test: {
+      disableSourcemaps: false,
+    },
+  },
   addons: [
     '@storybook/addon-storysource',
     '@storybook/addon-essentials',
