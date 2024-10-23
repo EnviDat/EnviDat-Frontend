@@ -21,7 +21,6 @@ import {
   SET_APP_BACKGROUND,
   SET_APP_SCROLL_POSITION,
   SET_BROWSE_SCROLL_POSITION,
-  SET_CARD_IMAGES,
   SET_CONFIG,
   SET_CONFIG_ERROR,
   SET_CONFIG_SUCCESS,
@@ -64,9 +63,6 @@ export default {
   },
   [SET_JPG_ASSETS](state, assets) {
     state.jpgAssets = assets;
-  },
-  [SET_CARD_IMAGES](state, assets) {
-    state.cardBGImages = assets;
   },
   [SET_CURRENT_PAGE](state, page) {
     state.currentPage = page;

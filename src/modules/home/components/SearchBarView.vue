@@ -3,7 +3,7 @@
     <v-container fluid class="pa-0">
       <v-row align="center" justify="space-between" class="grow" no-gutters>
 
-        <v-col class="grow py-1 pr-4 ">
+        <v-col class="flex-grow-1 py-1 pr-4 ">
           <v-text-field
             class="ma-0"
             v-model="searchText"

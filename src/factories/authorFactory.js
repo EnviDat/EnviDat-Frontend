@@ -621,11 +621,19 @@ export function enhanceAuthorsFromAuthorMap(authors, authorMap) {
 }
 
 export function getAuthorByName(fullName, authors) {
+  if (!fullName) {
+    return null;
+  }
+
   const found = authors.filter(auth => getAuthorName(auth) === fullName);
   return found.length > 0 ? found[0] : null;
 }
 
 export function getAuthorByEmail(email, authors) {
+  if (!email) {
+    return null;
+  }
+
   const found = authors.filter(auth => auth.email === email);
   return found[0] || null;
 }

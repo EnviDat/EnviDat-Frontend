@@ -20,6 +20,8 @@ const aboutState = {
   policiesMarkdown: null,
   policiesLoading: false,
   dmpMarkdown: null,
+  imprintMarkdown: null,
+  imprintLoading: null,
   dmpLoading: false,
 };
 
@@ -31,6 +33,8 @@ export const about = {
     guidelinesLoading: state => state.guidelinesLoading,
     policiesMarkdown: state => state.policiesMarkdown,
     policiesLoading: state => state.policiesLoading,
+    imprintLoading: state => state.imprintLoading,
+    imprintMarkdown: state => state.imprintMarkdown,
     dmpMarkdown: state => state.dmpMarkdown,
     dmpLoading: state => state.dmpLoading,
   },

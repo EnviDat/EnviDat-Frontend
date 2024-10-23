@@ -107,7 +107,7 @@ export default {
   },
   created() {
     this.modeStore = useModeStore();
-    this.modeStore.init(this.$store.getters.cardBGImages);
+    this.modeStore.init();
   },
   async mounted() {
     this.oldIsAuthorSearch = this.isAuthorSearch;
@@ -135,7 +135,7 @@ export default {
 
       return dictionary;
     },
-    loadRouteTags() {
+    routeKeyworsChanged() {
       let tags = this.$route.query.tags || '';
 
       if (!areArraysIdentical(this.selectedTagNames, tags)) {
@@ -235,7 +235,7 @@ export default {
 
       return visibleContent;
     },
-    async filterContent() {
+    filterContent() {
       if (this.mode) {
         this.filteredModeContent = this.modeStore.getFilteredDatasets(this.selectedTagNames, this.mode);
         this.modeTags = this.modeStore.getModeKeywords(this.mode);
@@ -243,7 +243,7 @@ export default {
         return;
       }
 
-      await this.$store.dispatch(`${METADATA_NAMESPACE}/${FILTER_METADATA}`, { selectedTagNames: this.selectedTagNames });
+      this.$store.dispatch(`${METADATA_NAMESPACE}/${FILTER_METADATA}`, { selectedTagNames: this.selectedTagNames });
     },
     checkRouteChanges(fromRoute) {
       let triggerClearSearch = false;
@@ -258,7 +258,7 @@ export default {
       }
 
       const isBackNavigation = this.$router.options.isSameRoute(this.$route, fromRoute);
-      const tagsChanged = this.loadRouteTags();
+      const tagsChanged = this.routeKeyworsChanged();
 
       this.loadRoutePins();
 
@@ -286,8 +286,7 @@ export default {
         if (searchParameter && searchParameter.length > 0) {
           if (this.mode) {
             this.filteredModeContent = this.modeStore.searchModeDatasets(searchParameter, this.mode)
-          }
-          else {
+          } else {
             this.metadataSearch(searchParameter, this.metadataConfig);
           }
           this.resetScrollPos();
@@ -316,7 +315,7 @@ export default {
         this.clearSearchResults();
       }
 
-      // always filter changes of the url except a change of the search term
+     // always filter changes of the url except a change of the search term
       // because due to navigation the initial filter might be needed
       this.filterContent();
     },
@@ -394,18 +393,12 @@ export default {
       browseScrollPosition: 'browseScrollPosition',
       defaultControls: 'defaultControls',
       currentSearchTerm: `${METADATA_NAMESPACE}/currentSearchTerm`,
-      vReloadAmount: `${METADATA_NAMESPACE}/vReloadAmount`,
-      vReloadAmountMobile: `${METADATA_NAMESPACE}/vReloadAmountMobile`,
-      vReloadDelay: `${METADATA_NAMESPACE}/vReloadDelay`,
     }),
     loading() {
       return (this.loadingMetadatasContent
           || this.isFilteringContent
           || this.searchingMetadatasContent
       );
-    },
-    reloadAmount() {
-      return this.$vuetify.display.smAndUp ? this.vReloadAmount : this.vReloadAmountMobile;
     },
     metadataConfig() {
       return this.config?.metadataConfig || {};
@@ -480,7 +473,7 @@ export default {
           // reload the datasets again because there is a different behavior
           // based on the isShallow property
           await this.loadModeDatasets();
-          await this.filterContent();
+          this.filterContent();
         }
       },
     },
@@ -491,7 +484,7 @@ export default {
         await this.loadModeDatasets();
       }
 
-      await this.filterContent();
+      this.filterContent();
     },
     /* eslint-disable no-unused-vars */
     $route: async function watchRouteChanges(to, from) {

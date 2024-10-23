@@ -86,6 +86,16 @@
               :markdownContent="dmpMarkdownText" />
           </v-window-item>
 
+          <!-- imprint page -->
+          <v-window-item :key="tabs[4].name">
+            <about-tab-layout
+              title="Imprint"
+              :titleImage="mdiFingerprint"
+              :loading="dmpLoading"
+              loadingText="Loading Data Management Plan infos..."
+              :markdownContent="imprintMarkdownText" />
+          </v-window-item>
+
         </v-window>
 
       </v-col>
@@ -117,6 +127,7 @@ import {
   ABOUT_NAMESPACE,
   GET_DMP,
   GET_GUIDELINES,
+  GET_IMPRINT,
   GET_POLICIES,
 } from '@/modules/about/store/aboutMutationsConsts';
 import { ABOUT_PAGENAME } from '@/router/routeConsts';
@@ -126,7 +137,7 @@ import {
 } from '@/store/mainMutationsConsts';
 
 import { getImage } from '@/factories/imageFactory';
-import { mdiBookOpenVariant, mdiInformation, mdiLibrary, mdiShieldCheckOutline } from '@mdi/js';
+import { mdiBookOpenVariant, mdiInformation, mdiLibrary, mdiShieldCheckOutline, mdiFingerprint } from '@mdi/js';
 import AboutTabLayout from '@/modules/about/components/AboutTabLayout.vue';
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
@@ -147,6 +158,7 @@ export default {
     this.$store.dispatch(`${ABOUT_NAMESPACE}/${GET_POLICIES}`);
     this.$store.dispatch(`${ABOUT_NAMESPACE}/${GET_GUIDELINES}`);
     this.$store.dispatch(`${ABOUT_NAMESPACE}/${GET_DMP}`);
+    this.$store.dispatch(`${ABOUT_NAMESPACE}/${GET_IMPRINT}`);
   },
   /**
    * @description reset the scrolling to the top,
@@ -234,6 +246,8 @@ export default {
       guidelinesLoading: `${ABOUT_NAMESPACE}/guidelinesLoading`,
       policiesMarkdown: `${ABOUT_NAMESPACE}/policiesMarkdown`,
       policiesLoading: `${ABOUT_NAMESPACE}/policiesLoading`,
+      imprintLoading: `${ABOUT_NAMESPACE}/imprintLoading`,
+      imprintMarkdown: `${ABOUT_NAMESPACE}/imprintMarkdown`,
       dmpMarkdown: `${ABOUT_NAMESPACE}/dmpMarkdown`,
       dmpLoading: `${ABOUT_NAMESPACE}/dmpLoading`,
     }),
@@ -333,6 +347,9 @@ export default {
     dmpMarkdownText() {
       return renderMarkdown(this.dmpMarkdown);
     },
+    imprintMarkdownText() {
+      return renderMarkdown(this.imprintMarkdown);
+    },
   },
   components: {
     BaseIcon,
@@ -359,6 +376,10 @@ export default {
       {
         name: 'dmp',
         icon: mdiBookOpenVariant,
+      },
+      {
+        name: 'imprint',
+        icon: mdiFingerprint,
       },
     ],
   }),

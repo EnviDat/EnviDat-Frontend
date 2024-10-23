@@ -129,7 +129,7 @@
         class="pt-1 readableText"
         align="center"
       >
-        <v-col class="grow pr-5" @click="infosExpanded = !infosExpanded">
+        <v-col class="flex-grow-1 pr-5" @click="infosExpanded = !infosExpanded">
           <v-divider :dark="dark" />
         </v-col>
 
@@ -465,7 +465,7 @@ export default {
       const color = this.colorPalette[from];
       const toColor = this.colorPaletteTo[to];
 
-      return `background-image: linear-gradient(45deg, ${color} 10%, ${toColor} 90%);
+      return `background-image: linear-gradient(310deg, ${color} 10%, ${toColor} 45%);
               background-position: center, center; background-size: cover;`;
     },
     authorIsDead() {

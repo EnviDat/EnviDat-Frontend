@@ -75,7 +75,7 @@
       }"
     >
       <v-row no-gutters align="center">
-        <v-col class="grow text-caption">
+        <v-col class="flex-grow-1 text-caption">
           <div
             :style="
               `color:${

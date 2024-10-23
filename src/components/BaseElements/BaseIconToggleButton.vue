@@ -14,8 +14,10 @@
         <v-btn
           v-bind="props"
           icon
+          :class="{noHover: elevation == 0}"
           :disabled="disabled"
           color="transparent"
+          :elevation="elevation"
           :variant="disabled ? 'text' : 'elevated'"
           size='32'
           @click.stop="onClick"
@@ -59,6 +61,7 @@ export default {
     icon: { type: String, default: undefined, required: true },
     dark: { type: Boolean, default: false },
     disabled: { type: Boolean, default: false },
+    elevation: { type: Number, default: 2 },
   },
   computed: {
   },
@@ -93,6 +96,10 @@ export default {
   animation-name: glowing;
   animation-duration: 2.5s;
   animation-iteration-count: infinite;
+}
+
+.noHover {
+  cursor: default;
 }
 
 @keyframes glowing {

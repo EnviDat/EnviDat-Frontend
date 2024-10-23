@@ -8,7 +8,7 @@
       <div
         :class="{
           'grid-rows': topLayout,
-          'grid-colmuns': !topLayout,
+          'grid-columns': !topLayout,
         }"
         style="width: 100%; height: 100%"
       >
@@ -95,7 +95,7 @@ import selectedMarker2x from '@/assets/map/selected-marker-icon-2x.png';
 // HACK end
 import FilterMapWidget from '@/components/Filtering/FilterMapWidget.vue';
 import { createLocation } from '@/factories/metaDataFactory';
-import { getIcon } from '@/factories/imageFactory';
+
 import {EDNA_MODE} from '@/store/metadataMutationsConsts';
 
 export default {
@@ -105,12 +105,6 @@ export default {
     pinnedIds: Array,
     topLayout: Boolean,
     modeData: Object,
-  },
-  beforeMount() {
-    this.pinIcon = getIcon('marker');
-    this.multiPinIcon = getIcon('markerMulti');
-    this.polygonIcon = getIcon('polygons');
-    this.eyeIcon = getIcon('eye');
   },
   mounted() {
     this.setupMap();
@@ -629,10 +623,6 @@ export default {
     multiPinEnabled: true,
     multiPinLayerGroup: null,
     multiPins: [],
-    pinIcon: null,
-    multiPinIcon: null,
-    polygonIcon: null,
-    eyeIcon: null,
     filterText: 'Pinned: ',
     marker,
     marker2x,
@@ -662,7 +652,7 @@ export default {
   grid-template-rows: 1fr 5fr;
 }
 
-.grid-colmuns {
+.grid-columns {
   display: grid;
   grid-template-columns: 4fr 1fr;
 }

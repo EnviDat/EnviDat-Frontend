@@ -180,7 +180,7 @@ import {
 import { eventBus } from '@/factories/eventBus';
 
 import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
-import { getGeoJSONIcon, getIcon } from '@/factories/imageFactory';
+import { getGeoJSONIcon } from '@/factories/imageFactory';
 import { convertArrayToUrlString } from '@/factories/stringFactory';
 
 import FilterKeywordsSingleView from '@/components/Filtering/FilterKeywordsSingleView.vue';
@@ -270,11 +270,6 @@ export default {
     },
   },
   beforeMount() {
-    this.pinIcon = getIcon('marker');
-    this.multiPinIcon = getIcon('markerMulti');
-    this.polygonIcon = getIcon('polygons');
-  },
-  mounted() {
     if (this.defaultListControls && this.defaultListControls.length) {
       this.defaultListControls.forEach((n) => {
         this.controlsChanged(n);
@@ -567,10 +562,6 @@ export default {
     // groupedContent: [],
     noResultText: 'Nothing found for these search criterias.',
     suggestionText: 'Change the criterias or try one of these categories',
-    pinIcon: null,
-    multiPinIcon: null,
-    polygonIcon: null,
-    localTags: [],
     scrollTopButtonText: 'Scroll to the top',
     controlsLabel: 'List controls',
     controlsActive: [],

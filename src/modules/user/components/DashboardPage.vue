@@ -554,6 +554,10 @@ export default {
     },
     hasLocalDataset() {
       const localStorageData = getPreviewDatasetFromLocalStorage();
+
+      // eslint-disable-next-line no-unused-expressions
+      this.localDatasetUpdateCount;
+
       const properties = Object.keys(localStorageData);
 
       return properties.length > 0;

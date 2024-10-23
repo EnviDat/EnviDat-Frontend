@@ -15,10 +15,15 @@
       class="pa-4 pt-0 heightAndScroll readableText"
       :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
     >
-      <v-col v-for="(n, index) in dataSliced" :key="'n_' + index"
-              class="px-0 py-1">
+    <v-col v-for="(n, index) in dataSliced" :key="'n_' + index"
+    class="px-0 py-1">
+    <!-- title visible only in preview mode -->
+      <p class="font-weight-bold" v-if="isPreview && n.title"> {{ n.title }}</p>
+      <p class="font-weight-bold" v-if="isPreview && n.pid"> {{ n.pid }}</p>
+      <p class="font-weight-bold" v-if="isPreview && n.doi"> {{ n.doi }}</p>
         <v-row no-gutters
                :class="{ 'align-center': isPreview }">
+
 
           <v-col class="flex-grow-1">
             <BaseCitationView
@@ -255,6 +260,7 @@ export default {
       arrayText.forEach(citation => {
         if (citation !== 'null' && citation.trim() !== '') {
           const citationProp = {
+            title: 'Plain Text',
             doi: null,
             doiUrl: null,
             citation,

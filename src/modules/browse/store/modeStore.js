@@ -14,7 +14,6 @@ import { EDNA_MODE } from '@/store/metadataMutationsConsts';
 
 
 const initState = {
-  cardBGImages: null,
   modeMetadata: [],
   modeDatasets: [],
   modeFilters: [],
@@ -29,8 +28,7 @@ export const useModeStore = defineStore(MODE_STORE, {
   },
 */
   actions: {
-    init(cardBGImages) {
-      this.cardBGImages = cardBGImages;
+    init() {
 
       modes.forEach((modeMeta) => {
         initState.modeMetadata.push(modeMeta);

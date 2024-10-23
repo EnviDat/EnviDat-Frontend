@@ -43,7 +43,7 @@
           :class="(index + 1) % 2 === 0 ? 'pr-0' : 'px-0'"
         >
           <v-row class="d-flex flex-column" no-gutters dense>
-            <v-col cols="11" class="pt-2 px-sm-2 shrink mb-3">
+            <v-col cols="11" class="pt-2 px-sm-2 flex-grow-0 mb-3">
               <div class="text-body-1 font-weight-bold text-capitalize">
                 {{ item.dateType }}
               </div>
