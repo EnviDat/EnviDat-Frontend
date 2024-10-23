@@ -2,7 +2,9 @@ import { mergeConfig } from 'vite';
 
 export default {
   stories: ['../stories/**/*.stories.@(js|jsx|ts|tsx)'],
-
+  core: {
+    disableTelemetry: true,
+  },
   addons: [
     '@storybook/addon-storysource',
     '@storybook/addon-essentials',
@@ -11,7 +13,9 @@ export default {
 
   framework: {
     name: '@storybook/vue3-vite',
-    options: {},
+    options: {
+      docgen: 'vue-component-meta',
+    },
   },
   docs: {},
 

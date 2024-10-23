@@ -170,7 +170,7 @@ export default {
     const prefilledOrganizationId = this.organizationsStore.userOrganizationIds?.length === 1 ? this.organizationsStore.userOrganizationIds[0] : undefined;
     initStepDataOnLocalStorage(this.creationSteps, this.user, prefilledOrganizationId);
 
-    this.setReadOnlyBasedOnVisibilty(this.creationSteps);
+    this.setReadOnlyBasedOnVisibility(this.creationSteps);
   },
   mounted() {
     // reset the scrolling to the top
@@ -223,7 +223,7 @@ export default {
     },
   },
   methods: {
-    setReadOnlyBasedOnVisibilty(steps) {
+    setReadOnlyBasedOnVisibility(steps) {
       const publicationState = getMetadataVisibilityState();
       const readOnlyObj = getReadOnlyFieldsObject(publicationState);
 
