@@ -34,7 +34,8 @@
         </v-col>
       </v-row>
 
-      <v-row class="mt-10">
+      <v-row class="mt-10"
+             no-gutters>
         <v-col
           v-for="(state, index) in pStatesAndArrows"
           :key="`${index}_pState`"
