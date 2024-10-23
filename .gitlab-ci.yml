@@ -150,12 +150,23 @@ install-node:
       when: on_success
   extends:
     - .trigger-rules
+  before_script:
+    # disabled the funding check
+    - npm config set fund false
   script:
     - echo "the cache work if node_modules and .npm/ folders are available"
     - ls -a
-  # disabled the funding check
-    - npm config set fund false
-    - npm ci --prefer-offline --no-audit
+    # Only run npm ci if node_modules don't come from the cache
+    - |
+      if [ -d "node_modules" ]; then
+        echo "node_modules directory already exists. Skipping npm ci."
+      else
+        echo "node_modules directory not found. Running npm ci..."
+        npm ci --prefer-offline --no-audit
+        echo "Check afterwards how the folders are"
+        ls -a
+      fi
+  #  - npm ci --prefer-offline --no-audit
   #    - echo "Check afterwards how the folders are"
   #    - ls -a
   artifacts:
