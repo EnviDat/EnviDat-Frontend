@@ -2,9 +2,7 @@
   <Suspense>
 
     <template #default>
-      <KeepAlive>
-        <component :is="component" v-bind="component.props || {}" />
-      </KeepAlive>
+      <component :is="component" v-bind="component.props || {}" />
     </template>
 
     <template #fallback>
