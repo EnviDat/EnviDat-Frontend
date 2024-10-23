@@ -90,7 +90,7 @@
           <v-window-item :key="tabs[4].name">
             <about-tab-layout
               title="Imprint"
-              :titleImage="policiesImg"
+              :titleImage="mdiFingerprint"
               :loading="dmpLoading"
               loadingText="Loading Data Management Plan infos..."
               :markdownContent="imprintMarkdownText" />
@@ -137,7 +137,7 @@ import {
 } from '@/store/mainMutationsConsts';
 
 import { getImage } from '@/factories/imageFactory';
-import { mdiBookOpenVariant, mdiInformation, mdiLibrary, mdiShieldCheckOutline } from '@mdi/js';
+import { mdiBookOpenVariant, mdiInformation, mdiLibrary, mdiShieldCheckOutline, mdiFingerprint } from '@mdi/js';
 import AboutTabLayout from '@/modules/about/components/AboutTabLayout.vue';
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
@@ -379,7 +379,7 @@ export default {
       },
       {
         name: 'imprint',
-        icon: mdiShieldCheckOutline,
+        icon: mdiFingerprint,
       },
     ],
   }),
