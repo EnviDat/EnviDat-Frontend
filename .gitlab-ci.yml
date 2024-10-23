@@ -43,7 +43,7 @@ set-vars:
       when: always
     - when: manual
   # for manual jobs add allow_failure so the whole pipeline won't show up as "blocked"
-  allow_failure: true
+  allow_failure: false
   before_script:
     - >
       apk add jq yq --no-cache
