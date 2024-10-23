@@ -1,26 +1,30 @@
 <template>
   <span>
-    <v-btn v-if="smallScreen && !show"
-            fab
-            left
-            fixed
-            bottom
-            color="secondary"
-            @click="setShow(true)">
-      <v-icon :icon="mdiMenu" />
+    <v-btn
+      v-if="smallScreen && !show"
+      color="secondary"
+      @click="setShow(true)"
+      style="bottom: 15px; left: 15px; border-radius: 50%; height: 60px; width: 60px;"
+      class="position-fixed"
+    >
+      <v-icon size="x-large" :icon="mdiMenu" />
     </v-btn>
 
-  <v-navigation-drawer :permanent="!smallScreen"
-                       :style="smallScreen ? 'top: 36px; max-height: calc(100% - 36px);' : ''"
-                       :mini-variant="mini"
-                       :rail="!show"
-                       expand-on-hover
-                       @change="setShow"
-                       @input="onInput"
-                       overlay-color="highlight"
-                       mini-variant-width="60"
-                       rail-width="60"
-                       width="220" >
+
+  <v-navigation-drawer
+      app
+      clipped
+      :mode="smallScreen ? 'temporary' : 'permanent'"
+      :style="smallScreen ? 'top: 45px; max-height: calc(100% - 45px);' : ''"
+      :rail="!show"
+      v-model="drawerModel"
+      expand-on-hover
+      @change="setShow"
+      @update:modelValue="onInput"
+      overlay-color="highlight"
+      :rail-width="60"
+      width="220"
+    >
 
     <v-list dense >
 
@@ -32,7 +36,7 @@
                    :class="[
                       item.disabled ? 'text-grey' : item.active ? 'text-secondary' : '',
                       item.icon === 'envidat' ? mini ? 'px-2' : 'px-3' : '',
-                      item.isMenuIcon === true ? 'd-flex d-lg-none eccolo' : ''
+                      item.isMenuIcon === true ? 'd-flex d-lg-none rotateIcon' : ''
                     ]"
                    :disabled="item.disabled"
                    @click.stop="itemClick(item)" >
@@ -40,6 +44,7 @@
       </v-list-item>
 
     </v-list>
+
 
   </v-navigation-drawer>
   </span>
@@ -54,6 +59,13 @@ export default {
     navigationItems: Array,
     version: String,
   },
+  // mounted() {
+  //   this.updateShowBasedOnViewport();
+  //   window.addEventListener('resize', this.updateShowBasedOnViewport);
+  // },
+  // beforeUnmount() {
+  //   window.removeEventListener('resize', this.updateShowBasedOnViewport);
+  // },
   data: () => ({
     Logo,
     mdiMenu,
@@ -61,6 +73,9 @@ export default {
     show: false,
   }),
   computed: {
+    drawerModel() {
+      return this.smallScreen ? this.show : true;
+    },
     mini() {
       return !this.smallScreen && !this.show;
     },
@@ -83,8 +98,13 @@ export default {
     },
   },
   methods: {
+    // updateShowBasedOnViewport() {
+    //   this.show = window.innerWidth >= this.$vuetify.display.smAndUp;
+    // },
     setShow(value) {
-      this.show = value;
+      if (this.smallScreen) {
+        this.show = value;
+      }
     },
     // Hack: NavigationDrawer Input events should only take effect on smallScreen
     onInput(value) {
@@ -98,6 +118,9 @@ export default {
         i.active = false;
       });
       item.active = true;
+      if(item.isMenuIcon) {
+        this.setShow(false);
+      }
       if (!item.disabled) {
         this.$emit('itemClick', item);
       }
@@ -126,6 +149,10 @@ export default {
 
 .envidatNavbarTitleSmall {
   font-size: 18px !important;
+}
+
+.rotateIcon {
+  transform: rotate(180deg)
 }
 
 </style>
