@@ -685,6 +685,9 @@ const readOnlyMappingRules = [
 ];
 
 export function getReadOnlyFieldsObject(trigger) {
+  if (!trigger) {
+    return null;
+  }
 
   const lowCaseTrigger = trigger?.toLowerCase() || '';
 

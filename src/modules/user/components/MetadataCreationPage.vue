@@ -55,7 +55,6 @@
 import { mapState } from 'vuex';
 import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
 
-
 import {
   eventBus,
   CANCEL_EDITING_AUTHOR,
@@ -70,12 +69,12 @@ import {
   SHOW_DIALOG,
   EDITMETADATA_MAIN_HEADER,
   EDITMETADATA_DATA,
+  EDITMETADATA_PUBLICATION_INFO,
 } from '@/factories/eventBus';
 
 import {
   getSelectedElement,
 } from '@/factories/userEditingFactory';
-
 
 import {
   METADATA_CREATION_DATASET,
@@ -86,8 +85,6 @@ import {
   ACTION_USER_SHOW,
   USER_GET_DATASETS,
 } from '@/modules/user/store/userMutationsConsts';
-
-
 
 import {
   BROWSE_PATH,
@@ -104,7 +101,6 @@ import {
 
 import { METADATA_TITLE_PROPERTY } from '@/factories/metadataConsts';
 
-
 import NavigationStepper from '@/components/Navigation/NavigationStepper.vue';
 
 import { errorMessage } from '@/factories/notificationFactory';
@@ -120,16 +116,13 @@ import {
   readDataFromLocalStorage,
 } from '@/factories/userCreationFactory';
 
-
-
 import {
   getStepByName,
   getStepFromRoute,
   initializeSteps,
 } from '@/factories/workflowFactory';
-import {metadataCreationSteps} from '@/factories/workflowCreation';
 
-import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
+import {metadataCreationSteps} from '@/factories/workflowCreation';
 import { getReadOnlyFieldsObject } from '@/factories/mappingFactory';
 
 
@@ -224,8 +217,8 @@ export default {
   },
   methods: {
     setReadOnlyBasedOnVisibility(steps) {
-      const publicationState = getMetadataVisibilityState();
-      const readOnlyObj = getReadOnlyFieldsObject(publicationState);
+      const publicationStep = getStepByName(EDITMETADATA_PUBLICATION_INFO, steps);
+      const readOnlyObj = getReadOnlyFieldsObject(publicationStep?.genericProps?.publicationState);
 
       if (readOnlyObj) {
         updateStepsWithReadOnlyFields(steps, readOnlyObj);

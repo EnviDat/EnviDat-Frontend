@@ -54,7 +54,6 @@ import { mapGetters, mapState } from 'vuex';
 
 import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
 
-
 import {
   eventBus,
   CANCEL_EDITING_AUTHOR,
@@ -124,10 +123,10 @@ import {
   getReadOnlyFieldsObject,
   populateEditingComponents,
 } from '@/factories/mappingFactory';
+
 import NavigationStepper from '@/components/Navigation/NavigationStepper.vue';
 import NotificationCard from '@/components/Cards/NotificationCard.vue';
 import { errorMessage } from '@/factories/notificationFactory';
-import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
 
 import {
   initializeStepsInUrl,
@@ -142,12 +141,14 @@ import {
   getStepFromRoute,
   initializeSteps,
 } from '@/factories/workflowFactory';
+
 import {metadataEditingSteps} from '@/factories/workflowEditing';
 
 import {
   DOI_API_ACTIONS,
   DOI_RESERVE,
 } from '@/modules/user/store/doiMutationsConsts';
+
 import {
   getUserOrganizationRoleMap,
   USER_ROLE_EDITOR,
@@ -420,10 +421,8 @@ export default {
         this.$route.query.backPath,
       );
 
-      const publicationState = getMetadataVisibilityState(
-        this.currentEditingContent,
-      );
-      const readOnlyObj = getReadOnlyFieldsObject(publicationState);
+      const publicationStep = getStepByName(EDITMETADATA_PUBLICATION_INFO, this.editingSteps);
+      const readOnlyObj = getReadOnlyFieldsObject(publicationStep?.genericProps?.publicationState);
 
       if (readOnlyObj) {
         updateStepsWithReadOnlyFields(this.editingSteps, readOnlyObj);
