@@ -83,7 +83,7 @@ export function getTagColor(categoryCards, tagName) {
     }
   }
 
-  return undefined;
+  return '#e0e0e0';
 }
 
 /**
