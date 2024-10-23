@@ -136,9 +136,6 @@ export const ResourceCardDownloaded = () => ({
               :key="'cols-3_' + index" >
 
               <resource-card v-bind="res"
-                              :doiIcon="doiIcon"
-                              :dateCreatedIcon="dateCreatedIcon"
-                              :lastModifiedIcon="lastModifiedIcon"
                               :showGenericOpenButton="true"
                               :genericOpenButtonBottom="true"
                               openButtonTooltip="Open File in Preview"
@@ -149,8 +146,5 @@ export const ResourceCardDownloaded = () => ({
     `,
   data: () => ({
     resources: resources1.resources,
-    doiIcon,
-    dateCreatedIcon,
-    lastModifiedIcon,
   }),
 });

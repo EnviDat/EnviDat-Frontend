@@ -14,7 +14,6 @@
 
 // eslint-disable-next-line import/extensions
 import IntroductionCard from '@/components/Cards/IntroductionCard.vue';
-import fileIcon from '@/assets/icons/file.png';
 import { enhanceMetadatasTitleImage } from '@/factories/metaDataFactory';
 
 import metadataCards from './js/metadata';
