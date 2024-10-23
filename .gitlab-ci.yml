@@ -3,7 +3,6 @@ include:
 #  - local: '.gitlab-ci_envidat-in-a-box.yml'
 
 stages:
-  - prepare
   - config
   - test
   - build
@@ -30,7 +29,7 @@ variables:
       when: always
 
 set-vars:
-  stage: prepare
+  stage: .pre
   image: alpine:3.20
   environment: $CI_COMMIT_REF_NAME
   rules:
@@ -154,6 +153,8 @@ install-node:
   script:
     - echo "the cache work if node_modules and .npm/ folders are available"
     - ls -a
+  # disabled the funding check
+    - npm config set fund false
     - npm ci --prefer-offline --no-audit
   #    - echo "Check afterwards how the folders are"
   #    - ls -a
