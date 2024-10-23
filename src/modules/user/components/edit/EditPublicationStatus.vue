@@ -89,9 +89,9 @@
 
             <BaseRectangleButton
               id="interactiveButton"
-              :button-text="currentStateInfos.buttonText"
+              :buttonText="currentStateInfos.buttonText"
               :icon="currentStateInfos.buttonIcon"
-              icon-color="white"
+              iconColor="white"
               :loading="loading"
               :url="
                 publicationState === PUBLICATION_STATE_PUBLISHED
@@ -99,10 +99,12 @@
                   : undefined
               "
               :disabled="!currentStateInfos.buttonEvent || !isUserAllowedToEdit"
-              tooltip-position="bottom"
-              :tooltip-text="`Click to ${currentStateInfos.infoText}`"
+              tooltipPosition="bottom"
+              :tooltipText="`Click to ${currentStateInfos.infoText}`"
               :elevation="5"
-              @clicked="$emit('clicked', currentStateInfos.buttonEvent)"
+              @clicked="publicationState === PUBLICATION_STATE_PUBLISHED
+                  ? undefined
+                  : $emit('clicked', currentStateInfos.buttonEvent)"
             />
 
           </v-row>
