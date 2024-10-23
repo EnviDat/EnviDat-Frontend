@@ -151,10 +151,6 @@ export const ProjectDatasetViews = () => ({
       </v-col>
 
       <v-col cols="12" >
-        No full list for now, since the MetadataList relies on the vuex store
-      </v-col>
-
-      <!-- v-col cols="12" >
         <ProjectDatasets :hasMetadatas="true"
                           :listContent="metadata"
                           :showMapFilter="false"
@@ -163,7 +159,7 @@ export const ProjectDatasetViews = () => ({
                           :selectedTagNames="[]"
                           :topFilteringLayout="true"
                           :showSearch="false" />
-      </v-col -->
+      </v-col>
 
     </v-row>
     `,

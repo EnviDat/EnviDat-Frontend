@@ -2,12 +2,12 @@
   <article
     class="landingPageGrid pa-0"
     :class="{
-      gridXs: $vuetify.breakpoint.xsOnly,
-      gridSm: $vuetify.breakpoint.smOnly,
+      gridXs: $vuetify.display.xs,
+      gridSm: $vuetify.display.sm,
     }"
     id="LandingPage"
   >
-    <!--    'gridXl' : $vuetify.breakpoint.xlOnly,-->
+    <!--    'gridXl' : $vuetify.display.xlOnly,-->
 
     <div v-if="$slots.logo" class="logoGrid" :class="paddings">
       <slot name="logo"></slot>
@@ -106,7 +106,7 @@ export default {
 .landingPageGrid {
   display: grid;
   gap: 10px;
-  grid-template-columns: 2fr 2fr 1fr;
+  grid-template-columns: 2fr 2fr 1.5fr;
   grid-template-rows: 4fr 0.25fr auto;
   grid-template-areas:
     'Logo Welcome Categories'

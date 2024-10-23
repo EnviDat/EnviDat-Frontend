@@ -7,12 +7,8 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-
-// import createPersist from 'vuex-localstorage';
-
 import { getCitationList } from '@/factories/citationFactory';
 import categoryCards from '@/store/categoryCards';
-
 import { getTagColor } from '@/factories/keywordsFactory';
 import actions from './metadataActions';
 import mutations from './metadataMutations';
@@ -61,12 +57,8 @@ const initialState = {
   /**
    * virtual List properties for MetaDataCards of the BrowsePage via MetadataListLayout
    */
-  vIndex: 0,
-  vReloadAmount: 16,
-  vReloadAmountMobile: 5,
-  vReloadDelay: 15,
   // scrollPositionDelay has to be more than the vReloadDelay
-  scrollPositionDelay: 20,
+  scrollPositionDelay: 100,
   /**
    * Pinned Elements from the MapFilter
    */
@@ -124,10 +116,6 @@ export const metadata = {
       state.filteredContent !== undefined
         ? Object.keys(state.filteredContent).length
         : 0,
-    vIndex: state => state.vIndex,
-    vReloadAmount: state => state.vReloadAmount,
-    vReloadAmountMobile: state => state.vReloadAmountMobile,
-    vReloadDelay: state => state.vReloadDelay,
     scrollPositionDelay: state => state.scrollPositionDelay,
     pinnedIds: state => state.pinnedIds,
     allTags: state => state.allTags,

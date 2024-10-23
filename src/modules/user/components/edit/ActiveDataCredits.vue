@@ -6,7 +6,7 @@
     style="min-height: 67px;"
   >
     <v-row no-gutters>
-      <v-col cols="12" :class="dark ? 'white--text' : 'black--text'">
+      <v-col cols="12" :class="dark ? 'text-white' : 'text-black'">
         {{ instruction }}
       </v-col>
     </v-row>
@@ -15,40 +15,19 @@
       <v-col
         v-for="(creditName, index) in allDataCredits"
         :key="index"
-        class="shrink pt-3 pt-md-4 px-md-1"
+        class="flex-grow-0 pt-3 pt-md-4 px-md-1"
         v-show="isActive(creditName)"
       >
-        <v-hover v-if="isActive(creditName)" v-slot:default="{ hover }">
-          <v-badge
-            class="dataCreditIcon"
-            :overlap="!hover"
-            :color="dark ? 'white' : 'black'"
-          >
-            <span slot="badge">
-              <v-icon
-                :color="dark ? 'black' : 'white'"
-                size="20px"
-                style="left: 20px;"
-              >
-                checked
-              </v-icon>
-            </span>
+        <BaseIconToggleButton :active="isActive(creditName)"
+                              :icon='iconLookup(creditName)'
+                              :value='creditName'
+                              :elevation="0"
+                              :tooltip="iconTooltip(creditName)"
+                              :dark="dark"
+                              @clicked="catchCreditClick"
+        />
 
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on }">
-                <v-icon
-                  v-on="on"
-                  class="pa-1"
-                  :color="creditIconColor(creditName)"
-                >
-                  {{ iconLookup(creditName) }}
-                </v-icon>
-              </template>
 
-              <div v-html="iconTooltip(creditName)" />
-            </v-tooltip>
-          </v-badge>
-        </v-hover>
       </v-col>
     </v-row>
   </v-container>
@@ -56,6 +35,8 @@
 
 <script>
 import { getDataCreditIcon } from '@/factories/authorFactory';
+
+import BaseIconToggleButton from '@/components/BaseElements/BaseIconToggleButton.vue';
 
 /**
  * @summary Shows only the active data credits of an author for a dataset
@@ -139,8 +120,9 @@ export default {
       return getDataCreditIcon(creditName);
     },
   },
-  data: () => ({}),
-  components: {},
+  data: () => ({
+  }),
+  components: { BaseIconToggleButton },
 };
 </script>
 

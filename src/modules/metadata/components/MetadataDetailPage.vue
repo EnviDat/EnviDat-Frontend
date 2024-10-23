@@ -1,16 +1,18 @@
 <template>
-  <v-container class="pa-0" fluid tag="article" id="MetadataDetailPage">
+  <v-container class="pa-0" tag="article" id="MetadataDetailPage">
     <v-row no-gutters>
       <!-- prettier-ignore -->
       <v-col class="elevation-5 pa-0"
              cols="12"
              ref="header"
              style="z-index: 1; left: 0"
-             :style="headerStyle" >
+             >
+             <!-- :style="headerStyle" -->
+
         <!-- prettier-ignore -->
         <MetadataHeader v-bind="header"
                           :metadataId="metadataId"
-                          :pageViews="events"
+                          :pageViews="pageViewEvents"
                           :showPlaceholder="showPlaceholder"
                           @clickedTag="catchTagClicked"
                           @clickedBack="catchBackClicked"
@@ -18,48 +20,55 @@
                           @clickedEdit="catchEditClicked"
                           @clickedAuthor="catchAuthorClicked"
                           @checkSize="resize"
-                          :expanded="headerExpanded" />
+                          :expanded="true" />
       </v-col>
     </v-row>
+    <!-- mobile close button: is displayed only if the scroll is more than 400. -->
+    <div v-if="showCloseButton">
+      <base-icon-button
+        class="ma-2 closeIcon"
+        :class="{ 'mx-1': $vuetify.display.smAndDown }"
+        style="position: absolute; top: 60px; right: 10px; z-index: 2;"
+        :icon="mdiClose"
+        :elevated="true"
+        :icon-color="'white'"
+        :color="'secondary'"
+        outline-color="primary"
+        outlined
+        tooltip-text="Close metadata view"
+        tooltip-bottom
+      />
+    </div>
 
-    <!-- prettier-ignore -->
-    <two-column-layout :style="`position: relative; top: ${headerHeight()}px;`"
-                       :first-column="firstColumn"
-                       :second-column="secondColumn"
-                       :show-placeholder="showPlaceholder" >
-
-      <template v-slot:leftColumn>
-
-        <v-row v-for="(entry, index) in firstColumn"
-                :key="`left_${index}_${keyHash}`"
-                no-gutters >
+    <v-row :style="`position: relative; z-index: 0;`" no-gutters>
+      <v-col :class="firstColWidth" class="pt-0">
+        <v-row
+          v-for="(entry, index) in firstColumn"
+          :key="`left_${index}_${keyHash}`"
+          no-gutters
+        >
           <v-col class="mb-2 px-0">
+            <!-- prettier-ignore -->
+            <BaseDynamicComponent :component="entry" :componentProps="entry.props" :showLoader="true" />
 
-          <!-- prettier-ignore -->
-          <component :is="entry"
-                     v-bind="entry.genericProps"
-                     :generic-props="entry.genericProps"
-                     :show-placeholder="showPlaceholder" />
           </v-col>
         </v-row>
-      </template>
+      </v-col>
 
-      <template v-slot:rightColumn>
-        <v-row v-for="(entry, index) in secondColumn"
-                :key="`right_${index}_${keyHash}`"
-                no-gutters >
+      <v-col v-if="secondColumn" class="pt-0" :class="secondColWidth">
+        <v-row
+          v-for="(entry, index) in secondColumn"
+          :key="`right_${index}_${keyHash}`"
+          no-gutters
+        >
           <v-col class="mb-2 px-0">
+            <!-- prettier-ignore -->
+            <BaseDynamicComponent :component="entry" :componentProps="entry.props" :showLoader="true" />
 
-          <!-- prettier-ignore -->
-          <component :is="entry"
-                     v-bind="entry.genericProps"
-                     :generic-props="entry.genericProps"
-                     :show-placeholder="showPlaceholder" />
           </v-col>
         </v-row>
-
-      </template>
-    </two-column-layout>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -78,16 +87,25 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+
+import { defineAsyncComponent, markRaw } from 'vue';
+
 import axios from 'axios';
 import rewind from '@turf/rewind';
 import { mapGetters, mapState } from 'vuex';
 import { useModeStore } from '@/modules/browse/store/modeStore';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+
+import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
+
 
 import {
   BROWSE_PATH,
   METADATADETAIL_PAGENAME,
   METADATAEDIT_PAGENAME,
 } from '@/router/routeConsts';
+
+import { mdiClose } from '@mdi/js';
 
 import {
   ACTION_USER_SHOW,
@@ -145,15 +163,9 @@ import {
 
 import { getEventsForPageAndName } from '@/modules/matomo/store/matomoStore';
 
-import TwoColumnLayout from '@/components/Layouts/TwoColumnLayout.vue';
-
-import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo.vue';
-import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue';
-import {
-  ORGANIZATIONS_NAMESPACE,
-  USER_GET_ORGANIZATION_IDS,
-  USER_GET_ORGANIZATIONS,
-} from '@/modules/organizations/store/organizationsMutationsConsts';
+// import {
+//   ORGANIZATIONS_NAMESPACE,
+// } from '@/modules/organizations/store/organizationsMutationsConsts';
 
 import {
   convertJSON,
@@ -161,14 +173,44 @@ import {
   getFrontendJSONForStep,
 } from '@/factories/mappingFactory';
 
-import MetadataHeader from './Metadata/MetadataHeader.vue';
-import MetadataBody from './Metadata/MetadataBody.vue';
-import MetadataResources from './Metadata/MetadataResources.vue';
-import MetadataCitation from './Metadata/MetadataCitation.vue';
-import MetadataPublicationList from './Metadata/MetadataPublicationList.vue';
-import MetadataPublications from './Metadata/MetadataPublications.vue';
-import MetadataFunding from './Metadata/MetadataFunding.vue';
-import MetadataAuthors from './Metadata/MetadataAuthors.vue';
+import { getIcon } from '@/factories/imageFactory';
+import { convertArrayToUrlString } from '@/factories/stringFactory';
+
+import BaseDynamicComponent from '@/components/BaseElements/BaseDynamicComponent.vue';
+import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
+
+const MetadataBody = defineAsyncComponent(() =>
+  import('@/modules/metadata/components/Metadata/MetadataBody.vue'),
+);
+
+const MetadataResources = defineAsyncComponent(() =>
+  import('./Metadata/MetadataResources.vue'),
+);
+
+const MetadataCitation = defineAsyncComponent(() =>
+  import('./Metadata/MetadataCitation.vue'),
+);
+const MetadataPublications = defineAsyncComponent(() =>
+  import('./Metadata/MetadataPublications.vue'),
+);
+const MetadataPublicationList = defineAsyncComponent(() =>
+  import('./Metadata/MetadataPublicationList.vue'),
+);
+const MetadataFunding = defineAsyncComponent(() =>
+  import('./Metadata/MetadataFunding.vue'),
+);
+const MetadataAuthors = defineAsyncComponent(() =>
+  import('./Metadata/MetadataAuthors.vue'),
+);
+const MetadataGeo = defineAsyncComponent(() =>
+  import('@/modules/metadata/components/Geoservices/MetadataGeo.vue'),
+);
+const MetadataRelatedDatasets = defineAsyncComponent(() =>
+  import('@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue'),
+);
+
+
+
 
 // Might want to check https://css-tricks.com/use-cases-fixed-backgrounds-css/
 // for animations between the different parts of the Metadata
@@ -181,12 +223,14 @@ export default {
   beforeRouteEnter(to, from, next) {
     next(vm => {
       vm.$store.commit(SET_CURRENT_PAGE, METADATADETAIL_PAGENAME);
-      vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
+      vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
     });
   },
   created() {
+
     this.modeStore = useModeStore();
     this.modeStore.init(this.$store.getters.cardBGImages);
+    this.organizationsStore = useOrganizationsStore();
 
     eventBus.on(GCNET_PREPARE_DETAIL_CHARTS, this.prepareGCNetChartModal);
     eventBus.on(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
@@ -195,8 +239,8 @@ export default {
    * @description load all the icons once before the first component's rendering.
    */
   beforeMount() {
-    this.fileSizeIcon = this.mixinMethods_getIcon('fileSize');
-    this.fileIcon = this.mixinMethods_getIcon('file');
+    this.fileSizeIcon = getIcon('fileSize');
+    this.fileIcon = getIcon('file');
 
     window.scrollTo(0, 0);
   },
@@ -204,6 +248,7 @@ export default {
    * @description reset the scrolling to the top.
    */
   async mounted() {
+
     this.loadMetaDataContent();
 
     // await this.setPageViews(this.$route.fullPath, 'Visit');
@@ -213,12 +258,14 @@ export default {
     this.$nextTick(() => {
       this.fetchUserOrganisationData();
       this.fetchUserDatasets();
+
+      // this.headerHeight = this.getHeaderHeight();
     });
   },
   /**
    * @description
    */
-  beforeDestroy() {
+  beforeUnmount() {
     // clean current metadata to make be empty for the next to load up
     this.$store.commit(`${METADATA_NAMESPACE}/${CLEAN_CURRENT_METADATA}`);
 
@@ -228,7 +275,7 @@ export default {
   computed: {
     ...mapState(['config']),
     ...mapState(USER_NAMESPACE, ['userDatasets']),
-    ...mapState(ORGANIZATIONS_NAMESPACE, ['userOrganizationIds']),
+    // ...mapState(ORGANIZATIONS_NAMESPACE, ['userOrganizationIds']),
     ...mapGetters(USER_SIGNIN_NAMESPACE, ['user', 'userLoading']),
     ...mapGetters({
       metadatasContent: `${METADATA_NAMESPACE}/metadatasContent`,
@@ -242,9 +289,6 @@ export default {
       asciiDead: `${METADATA_NAMESPACE}/asciiDead`,
       authorPassedInfo: `${METADATA_NAMESPACE}/authorPassedInfo`,
     }),
-    pageViews() {
-      return this.events;
-    },
     metadataContent() {
       if (this.mode) {
         return this.modeDataset !== undefined
@@ -254,6 +298,7 @@ export default {
 
       return this.currentMetadataContent;
     },
+
     hasGcnetStationConfig() {
       return this.configInfos?.stationsConfigUrl !== null;
     },
@@ -277,6 +322,13 @@ export default {
         asciiDead: this.asciiDead,
         authorPassedInfo: this.authorPassedInfo,
       };
+    },
+    showCloseButton() {
+      if (this.$vuetify.display.mdAndUp) {
+        return false;
+      }
+
+      return this.appScrollPosition > 40;
     },
     generateFileList() {
       const fileList = [];
@@ -309,6 +361,9 @@ export default {
         ? this.baseStationURL
         : this.baseStationURLTestdata;
     },
+    /**
+     * @returns {String} the metadataId from the route
+     */
     metadataId() {
       return this.$route.params.metadataid;
     },
@@ -321,43 +376,21 @@ export default {
       return this.loadingMetadatasContent || this.loadingCurrentMetadataContent;
     },
     firstColumn() {
-      return this.$vuetify.breakpoint.mdAndUp ? this.firstCol : this.singleCol;
+      return this.$vuetify.display.mdAndUp ? this.firstCol : this.singleCol;
     },
     secondColumn() {
-      return this.$vuetify.breakpoint.mdAndUp ? this.secondCol : [];
+      return this.$vuetify.display.mdAndUp ? this.secondCol : [];
     },
-    headerStyle() {
-      let width = 82.25;
-      let margin = '0px 8.33333%';
+    // headerStyle() {
+    //   const width = 100;
+    //   const margin = '0';
 
-      if (this.$vuetify.breakpoint.mdAndDown) {
-        width = 100;
-        margin = '0';
-      }
+    //   const pos = 'position: relative';
 
-      if (this.$vuetify.breakpoint.lg) {
-        width = 82.5;
-      }
+    //   // const pos = `position: ${this.appScrollPosition > 20 ? 'fixed' : this.$vuetify.display.smAndDown ? 'relative' : 'absolute'}`;
 
-      let pos = 'position: ';
-      if (this.$vuetify.breakpoint.mdAndUp) {
-        pos += 'absolute';
-      } else if (this.appScrollPosition > 20) {
-        pos += 'fixed';
-      } else {
-        pos += 'relative';
-      }
-      // const pos = `position: ${this.appScrollPosition > 20 ? 'fixed' : this.$vuetify.breakpoint.smAndDown ? 'relative' : 'absolute'}`;
-
-      return `${pos}; width: ${width}%; margin: ${margin}; `;
-    },
-    headerExpanded() {
-      if (this.$vuetify.breakpoint.mdAndUp) {
-        return true;
-      }
-
-      return this.appScrollPosition < 20;
-    },
+    //   return `${pos}; width: ${width}%; margin: ${margin}; `;
+    // },
     showEditButton() {
       const userId = this.user?.id;
 
@@ -371,10 +404,50 @@ export default {
 
       return matches.length > 0;
     },
+    firstColWidth() {
+      let bindings =
+        this.secondColumn && this.secondColumn.length > 0
+          ? {
+              'v-col-6': true,
+              'pr-1': this.$vuetify.display.mdAndUp,
+            }
+          : {
+              'v-col-12': true,
+            };
+
+      bindings = { ...bindings };
+
+      return bindings;
+    },
+    secondColWidth() {
+      let bindings =
+        this.secondColumn && this.secondColumn.length > 0
+          ? {
+              'v-col-6': true,
+              'pl-1': this.$vuetify.display.mdAndUp,
+            }
+          : {};
+
+      bindings = { ...bindings };
+
+      return bindings;
+    },
+
+    fullWidthPadding() {
+      const cssClasses = {};
+
+      if (this.$vuetify.display.mdAndUp && this.$vuetify.display.lgAndDown) {
+        cssClasses['px-2'] = true;
+      } else if (this.$vuetify.display.lgAndUp) {
+        cssClasses['px-3'] = true;
+      }
+
+      return cssClasses;
+    },
   },
   methods: {
     async setPageViews(pageName, eventName) {
-      this.events = await getEventsForPageAndName(pageName, eventName);
+      this.pageViewEvents = await getEventsForPageAndName(pageName, eventName);
     },
     setGeoServiceLayers(location, layerConfig) {
       try {
@@ -397,8 +470,8 @@ export default {
         mapDivId: this.mapDivId,
         showFullscreenButton: this.showFullscreenButton,
       };
-      const { components } = this.$options;
-      this.$set(components.MetadataGeo, 'genericProps', this.geoServiceConfig);
+
+      this.MetadataGeo.pros = this.geoServiceConfig;
     },
     loadGeoServiceLayers(url) {
       this.geoServiceLayers = null;
@@ -468,20 +541,20 @@ export default {
     resize() {
       this.reRenderComponents();
     },
-    headerHeight() {
-      let height = -2;
+    // getHeaderHeight() {
+    //   let height = -2;
 
-      if (
-        (this.$vuetify.breakpoint.smAndDown && this.appScrollPosition > 20) ||
-        this.$vuetify.breakpoint.mdAndUp
-      ) {
-        if (this.$refs && this.$refs.header) {
-          height = this.$refs.header.clientHeight;
-        }
-      }
+    //   if (
+    //     (this.$vuetify.display.smAndDown && this.appScrollPosition > 20) ||
+    //     this.$vuetify.display.mdAndUp
+    //   ) {
+    //     if (this.$refs?.header) {
+    //       height = this.$refs.header.$el.clientHeight;
+    //     }
+    //   }
 
-      return height;
-    },
+    //   return height;
+    // },
     /**
      * @description
      */
@@ -509,7 +582,7 @@ export default {
       if (currentContent && currentContent.title !== undefined) {
         this.header = createHeader(
           currentContent,
-          this.$vuetify.breakpoint.smAndDown,
+          this.$vuetify.display.smAndDown,
           this.authorDeadInfo,
         );
 
@@ -520,10 +593,7 @@ export default {
         );
         this.header.publicationYear = publicationData.publicationYear;
 
-        this.body = createBody(
-          currentContent,
-          this.$vuetify.breakpoint.smAndDown,
-        );
+        this.body = createBody(currentContent, this.$vuetify.display.smAndDown);
 
         this.citation = createCitation(currentContent);
 
@@ -547,23 +617,16 @@ export default {
       }
     },
     loadAuthors(currentContent) {
-      const { components } = this.$options;
-
       this.authors = getFullAuthorsFromDataset(this.authorsMap, currentContent);
 
-      console.log(this.authors);
-
-      this.$nextTick(() => {
-        this.$set(components.MetadataAuthors, 'genericProps', {
-          authors: this.authors,
-          authorDetailsConfig: this.authorDetailsConfig,
-          authorDeadInfo: this.authorDeadInfo,
-          showPlaceholder: this.showPlaceholder,
-        });
-      });
+      this.MetadataAuthors.props = {
+        authors: this.authors,
+        authorDetailsConfig: this.authorDetailsConfig,
+        authorDeadInfo: this.authorDeadInfo,
+        showPlaceholder: this.showPlaceholder,
+      };
     },
     loadResources() {
-      const { components } = this.$options;
       const currentContent = this.metadataContent;
 
       this.resources =
@@ -591,19 +654,16 @@ export default {
         this.resources.dates = getFrontendDates(this.metadataContent.date);
       }
 
-      this.$nextTick(() => {
-        this.$set(components.MetadataResources, 'genericProps', {
-          ...this.resources,
-          dataLicenseId: license.id,
-          dataLicenseTitle: license.title,
-          dataLicenseUrl: license.url,
-          resourcesConfig: this.resourcesConfig,
-        });
-      });
+      this.MetadataResources.props = {
+        ...this.resources,
+        dataLicenseId: license.id,
+        dataLicenseTitle: license.title,
+        dataLicenseUrl: license.url,
+        resourcesConfig: this.resourcesConfig,
+        showPlaceholder: this.showPlaceholder,
+      };
     },
     setMetadataContent() {
-      const { components } = this.$options;
-
       this.configInfos = getConfigUrls(this.configInfos);
 
       if (this.configInfos?.stationsConfigUrl) {
@@ -623,58 +683,65 @@ export default {
         this.setGeoServiceLayers(this.location, null);
       }
 
-      this.$set(components.MetadataHeader, 'genericProps', this.header);
-      this.$set(components.MetadataBody, 'genericProps', { body: this.body });
-      this.$set(components.MetadataCitation, 'genericProps', {
+      this.MetadataBody.props = {
+        ...this.body,
+        showPlaceholder: this.showPlaceholder,
+      };
+
+      this.MetadataCitation.props = {
         ...this.citation,
         showPlaceholder: this.showPlaceholder,
-      });
+      };
+
+      let publicationList;
 
       if (this.useListResolving) {
         // new component which shows the list of citationViews, maybe it's MetadataPublicationsList?
-        this.$set(components.MetadataPublicationList, 'genericProps', {
+        this.MetadataPublicationList.props = {
           ...this.publications,
           metadataConfig: this.metadataConfig,
-        });
+          showPlaceholder: this.showPlaceholder,
+        };
+        publicationList = this.MetadataPublicationList;
       } else {
-        this.$set(components.MetadataPublications, 'genericProps', {
+        this.MetadataPublications.props = {
           ...this.publications,
           metadataConfig: this.metadataConfig,
-        });
+          showPlaceholder: this.showPlaceholder,
+        };
+        publicationList = this.MetadataPublications;
       }
 
-      this.$set(components.MetadataRelatedDatasets, 'genericProps', {
+      this.MetadataRelatedDatasets.props = {
         ...this.relatedDatasets,
-      });
+        showPlaceholder: this.showPlaceholder,
+      };
 
-      this.$set(components.MetadataFunding, 'genericProps', {
+      this.MetadataFunding.props = {
         funding: this.funding,
-      });
+        showPlaceholder: this.showPlaceholder,
+      };
 
       this.firstCol = [
-        components.MetadataBody,
-        components.MetadataCitation,
-        this.useListResolving
-          ? components.MetadataPublicationList
-          : components.MetadataPublications,
-        components.MetadataRelatedDatasets,
-        components.MetadataFunding,
-        components.MetadataAuthors,
+        this.MetadataBody,
+        this.MetadataCitation,
+        publicationList,
+        this.MetadataRelatedDatasets,
+        this.MetadataFunding,
+        this.MetadataAuthors,
       ];
 
-      this.secondCol = [components.MetadataResources, components.MetadataGeo];
+      this.secondCol = [this.MetadataResources, this.MetadataGeo];
 
       this.singleCol = [
-        components.MetadataBody,
-        components.MetadataCitation,
-        components.MetadataResources,
-        components.MetadataGeo,
-        components.MetadataAuthors,
-        this.useListResolving
-          ? components.MetadataPublicationList
-          : components.MetadataPublications,
-        components.MetadataPublications,
-        components.MetadataRelatedDatasets,
+        this.MetadataBody,
+        this.MetadataCitation,
+        this.MetadataResources,
+        this.MetadataGeo,
+        this.MetadataAuthors,
+        this.MetadataFunding,
+        publicationList,
+        this.MetadataRelatedDatasets,
       ];
     },
     prepareGCNetChartModal(stationId) {
@@ -713,7 +780,7 @@ export default {
      * @param {any} tagName
      */
     catchTagClicked(tagName) {
-      const stringTags = this.mixinMethods_convertArrayToUrlString([tagName]);
+      const stringTags = convertArrayToUrlString([tagName]);
 
       const query = this.$route.query;
       query.tags = stringTags;
@@ -839,20 +906,25 @@ export default {
       return false;
     },
     async fetchUserOrganisationData() {
+
       const userId = this.user?.id;
       if (!userId) {
         return;
       }
 
-      await this.$store.dispatch(
-        `${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`,
-        userId,
-      );
-      // always call the USER_GET_ORGANIZATIONS action because it resolves the store & state also when userOrganizationIds is empty
-      await this.$store.dispatch(
-        `${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS}`,
-        this.userOrganizationIds,
-      );
+      await this.organizationsStore.UserGetOrgIds(userId)
+
+      // this.organizationsStore.UserGetOrgIds(userId);
+      // await this.$store.dispatch(
+      //   `${ORGANIZATIONS_NAMESPACE}/${UserGetOrgIds}`,
+      //   userId,
+      // );
+      // always call the UserGetOrg action because it resolves the store & state also when userOrganizationIds is empty
+      await this.organizationsStore.UserGetOrg(this.userOrganizationIds)
+      // await this.$store.dispatch(
+      //   `${ORGANIZATIONS_NAMESPACE}/${UserGetOrg}`,
+      //   this.userOrganizationIds,
+      // );
     },
     fetchUserDatasets() {
       const userId = this.user?.id;
@@ -930,22 +1002,26 @@ export default {
   },
   components: {
     MetadataHeader,
-    MetadataBody,
-    MetadataResources,
-    MetadataCitation,
-    MetadataPublicationList,
-    MetadataPublications,
-    MetadataRelatedDatasets,
-    MetadataFunding,
-    TwoColumnLayout,
-    MetadataAuthors,
-    MetadataGeo,
+    BaseIconButton,
+    BaseDynamicComponent,
   },
   data: () => ({
-    events: null,
+    organizationsStore: null,
+    // headerHeight: 0,
+    mdiClose,
+    MetadataBody: markRaw(MetadataBody),
+    MetadataResources: markRaw(MetadataResources),
+    MetadataCitation: markRaw(MetadataCitation),
+    MetadataPublications: markRaw(MetadataPublications),
+    MetadataPublicationList: markRaw(MetadataPublicationList),
+    MetadataRelatedDatasets: markRaw(MetadataRelatedDatasets),
+    MetadataFunding: markRaw(MetadataFunding),
+    MetadataAuthors: markRaw(MetadataAuthors),
+    MetadataGeo: markRaw(MetadataGeo),
+    pageViewEvents: null,
     modeStore: null,
     modeDataset: null,
-    PageBGImage: 'app_b_browsepage',
+    pageBGImage: 'app_b_browsepage',
     baseStationURL: 'https://www.envidat.ch/data-files/',
     baseStationURLTestdata: './testdata/',
     geoConfigUrl: '',
@@ -986,21 +1062,8 @@ export default {
 </script>
 
 <style>
-.metadata_title {
-  line-height: 1rem !important;
-}
-
-.metadataResourceCard {
-  min-height: 100px !important;
-}
-
 .metadataResourceCard .headline {
   font-size: 20px !important;
-}
-
-.resourceCardText {
-  color: rgba(255, 255, 255, 0.87) !important;
-  overflow: hidden;
 }
 
 .resourceCardText a {

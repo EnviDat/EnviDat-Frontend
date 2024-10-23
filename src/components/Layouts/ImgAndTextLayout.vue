@@ -2,19 +2,15 @@
   <v-col cols="12" class="pa-0" style="position: relative;">
     <v-row class="text-container" align="center" justify="center">
       <v-col
-        class="text-center text headerTitle"
+        class="text-center text-md-h2 text-h4 headerTitle titleLayout"
         cols="12"
-        :class="{
-          'display-3': $vuetify.breakpoint.mdAndUp,
-          'text-h4': $vuetify.breakpoint.smAndDown,
-        }"
       >
         {{ title }}
       </v-col>
     </v-row>
 
     <!-- Using img instead of parallax, because parallax has problems loading src dynamically -->
-    <v-img :height="height" :src="img" class="blurred"> </v-img>
+    <v-img :height="height" :src="img" class="blurred" cover> </v-img>
   </v-col>
 </template>
 
@@ -48,7 +44,7 @@ export default {
 </script>
 
 <style scoped>
-.text {
+.titleLayout {
   letter-spacing: 0 !important;
   text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.7);
 }

@@ -1,15 +1,10 @@
 <template>
   <v-card id="EditMetadataResources"
           class="pa-0"
-          :loading="loading" >
+          :loading="loadingColor" >
 
     <v-container fluid
                  class="pa-4" >
-
-      <template slot="progress">
-        <v-progress-linear color="primary"
-                           indeterminate />
-      </template>
 
       <v-row >
         <v-col class="text-h5" >
@@ -24,14 +19,14 @@
       </v-row>
 
       <v-row v-show="validationErrors.authors">
-        <v-col :style="`background-color: ${$vuetify.theme.themes.light.error}; `">
+        <v-col :style="`background-color: ${$vuetify.theme.themes.light.colors.error}; `">
           {{ validationErrors.authors }}
         </v-col>
       </v-row>
 
       <v-row align="center">
-        <v-col class="flex-grow-0 pr-0 pb-0">
-          <v-icon>open_with</v-icon>
+        <v-col class="flex-grow-0 pl-1 pr-0 pb-0">
+          <BaseIcon :icon="mdiCursorMove" color="grey" />
         </v-col>
 
         <v-col class="text-h6 pl-1 pb-0" >
@@ -43,11 +38,14 @@
         <v-col>
           <ExpandableLayout statusText="Click here, drag and drop the authors to change the sequence."
                             :startExpanded="authorFullNames?.length < 10"
+                            highlighted
                             isFlat>
 
-            <BaseDraggableList :items="authorFullNames"
-                               :useAuthorTags="true"
-                               @listChanged="reorderList"/>
+            <BaseDraggableList
+              :items="authorFullNames"
+              :useAuthorTags="true"
+              @listChanged="reorderList"
+            />
           </ExpandableLayout>
 
         </v-col>
@@ -55,8 +53,8 @@
 
       <v-row >
         <v-col cols="12">
-          <MetadataAuthors :genericProps="metadataAuthorsObject" >
-            <template #editingAuthors="{ author }" >
+          <MetadataAuthors v-bind="metadataAuthorsObject" >
+            <template #editingAuthors="author" >
 
               <AuthorCard v-bind="authorEditingProperties(author)"
                           @openButtonClicked="catchEditAuthorClick(author)"
@@ -67,7 +65,7 @@
                   <EditDataCredits :instruction="editDataCreditsInstruction"
                                    :dataCredit="author.dataCredit"
                                    :authorName="author.fullName"
-                                   @creditClick="catchCreditClick(author, ...arguments)"
+                                   @creditClick="catchCreditClick(author, $event)"
                                     />
 
                 </template>
@@ -108,6 +106,7 @@ import AuthorCard from '@/modules/metadata/components/AuthorCard.vue';
 import EditDataCredits from '@/modules/user/components/edit/EditDataCredits.vue';
 import BaseDraggableList from '@/components/BaseElements/BaseDraggableList.vue';
 import ExpandableLayout from '@/components/Layouts/ExpandableLayout.vue'
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 import {
   AUTHOR_SEARCH_CLICK,
@@ -120,6 +119,7 @@ import {
 
 import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
 import { getAuthorName } from '@/factories/authorFactory';
+import {mdiClose, mdiCursorMove, mdiPencil} from '@mdi/js';
 
 export default {
   name: 'EditMetadataAuthors',
@@ -152,10 +152,17 @@ export default {
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   computed: {
+    loadingColor() {
+      if (this.loading) {
+        return 'accent';
+      }
+
+      return undefined;
+    },
     authorFullNames() {
       if (!this.authorsFields) {
         return [];
@@ -219,14 +226,15 @@ export default {
       // this lead to a UX where the user had to add a second author to then remove the first, it
       // changes want to be made
     },
-    authorEditingProperties(author) {
+    authorEditingProperties(authorObj) {
       let editingProperties = {};
+      const author = authorObj?.author ? authorObj.author : authorObj;
 
       if (this.authorEditingEnabled) {
         editingProperties = {
           showGenericOpenButton: true,
-          openButtonIcon: author.isSelected ? 'close' : 'edit',
-          openButtonTooltip: author.isSelected ? 'Cancel author editing' : 'Edit Author',
+          openButtonIcon: author?.isSelected ? mdiClose : mdiPencil,
+          openButtonTooltip: author?.isSelected ? 'Cancel author editing' : 'Edit Author',
         };
       }
 
@@ -282,6 +290,7 @@ export default {
     },
   },
   data: () => ({
+    mdiCursorMove,
     editingInstructions: 'Here is a preview list of the authors of this dataset. Edit the <a href="https://www.wsl.ch/datacredit/#feat" target="_blank">DataCRediT</a> contributions for each author directly in this list by clicking on the icons. For further editing of authors, select them with the edit icon. ',
     title: EDIT_METADATA_AUTHORSLIST_TITLE,
     editDataCreditsInstruction: AUTHORS_EDIT_CURRENT_DATACREDIT,
@@ -291,6 +300,7 @@ export default {
     },
   }),
   components: {
+    BaseIcon,
     MetadataAuthors,
     AuthorCard,
     EditDataCredits,

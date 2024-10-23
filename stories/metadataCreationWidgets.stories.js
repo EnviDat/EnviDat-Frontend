@@ -2,9 +2,6 @@
  * @summary story of the widgets for editing workflow views
  * @author Dominik Haas-Artho and Rebecca Kurup Buchholz
  *
- * Created at     : 2019-10-23 16:34:51
- * Last modified  : 2021-09-06 15:11:15
- *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
@@ -58,21 +55,13 @@ FilledDoi.args = {
   doi: '10.1002/eap.2133',
 }
 
-export const FilledDenseDoi = Template.bind({});
-FilledDenseDoi.args = {
-  ...FilledDoi.args,
-  dense: true,
-}
-
 export const FilledPidWithPreview = Template.bind({});
 FilledPidWithPreview.args = {
-  dense: true,
   ...citation1,
 }
 
 export const FilledDoiWithPreview = Template.bind({});
 FilledDoiWithPreview.args = {
-  dense: true,
   ...citation2,
 }
 

@@ -89,7 +89,7 @@ export default {
   mounted() {
     eventBus.on(MAP_TOGGLE_BASE_LAYER, this.toggleBaseMapLayer);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(MAP_TOGGLE_BASE_LAYER, this.toggleBaseMapLayer);
   },
   computed: {

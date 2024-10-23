@@ -1,4 +1,5 @@
 import ResourceCard from '@/modules/metadata/components/ResourceCard.vue';
+import { mdiFileEye } from '@mdi/js';
 
 // generated with https://chat.openai.com/g/g-p5QoaO4UG-storybookvue2gpt
 export default {
@@ -9,7 +10,7 @@ export default {
 export const Empty = {};
 
 export const Default = {
-  args: {
+  args: { 
     id: 'default-id',
     doi: '10.1000/xyz123',
     name: 'Default Resource',
@@ -30,19 +31,27 @@ export const Default = {
     showGenericOpenButton: false,
     genericOpenButtonBottom: false,
     openButtonTooltip: '',
-    openButtonIcon: 'preview',
+    openButtonIcon: mdiFileEye,
     cardColor: 'primary',
     isSelected: false,
-    loading: false,
+    loading: false, 
   },
 };
 
-export const DarkMode = {
+export const DefaultSelected = {
+  args: { 
+    ...Default.args, 
+    description: 'A brief description of the default resource, selected by the user.',
+    isSelected: true,
+  },
+  decorators: [() => ({ template: '<div style="margin: 1em;"><story /></div>' })],
+};
+
+export const DarkTheme = {
   args: {
     ...Default.args,
     description: 'Resource card in a dark theme',
     dark: true,
-    cardColor: 'dark',
   },
 };
 
@@ -53,6 +62,7 @@ export const DarkThemeSelected = {
     dark: true,
     isSelected: true,
   },
+  decorators: [() => ({ template: '<div style="margin: 1em;"><story /></div>' })],
 };
 
 export const Deprecated = {

@@ -1,52 +1,48 @@
 <template>
-  <v-container class="pa-0" tag="article" fluid>
+  <v-container class="pa-0" tag="article">
     <v-row no-gutters>
       <v-col
         class="elevation-5 pa-0"
         cols="12"
         ref="header"
-        style="z-index: 1; position: absolute; left: 0;"
-        :style="headerStyle"
-      >
-        <project-header
+        style="z-index: 1; left: 0">
+
+        <ProjectHeader
           :title="currentProject ? currentProject.title : null"
           :titleImg="currentProject ? currentProject.image_display_url : null"
           :defaultImg="missionImg"
           :showPlaceholder="loading"
-          @clickedBack="catchBackClicked"
-        />
+          @clickedBack="catchBackClicked" />
       </v-col>
     </v-row>
 
     <v-row
-      :style="`z-index: 0; position: relative; top: ${headerHeight()}px`"
-      no-gutters
-    >
-      <v-col class="pb-2 px-sm-3" cols="12" lg="10" offset-lg="1">
-        <project-body
+      :style="`z-index: 0; position: relative;`"
+      no-gutters>
+      <v-col class="pb-2 " cols="12" lg="12">
+
+        <ProjectBody
           :description="currentProject ? currentProject.description : null"
           :showPlaceholder="loading"
-          :maxTextLength="$vuetify.breakpoint.xsOnly ? 900 : 2000"
-        />
+          :maxTextLength="$vuetify.display.xs ? 900 : 2000" />
       </v-col>
 
       <v-col
         v-if="loading || (!loading && subProjects)"
-        class="pb-2 px-sm-3"
+        class="pb-2 "
         cols="12"
-        lg="10"
-        offset-lg="1"
-      >
-        <project-subprojects
+        lg="12">
+
+        <ProjectSubprojects
           :subProjects="subProjects"
           :defaultImg="creatorImg"
           :showPlaceholder="loading"
           @projectClick="catchProjectClick"
-          @subprojectClick="catchSubprojectClick"
-        />
+          @subprojectClick="catchSubprojectClick" />
       </v-col>
 
-      <v-col class="pb-2 px-sm-3" cols="12" lg="10" offset-lg="1">
+      <v-col class="pb-2 " cols="12" lg="12" >
+
         <ProjectDatasets
           :hasMetadatas="hasMetadatas"
           :listContent="filteredListContent"
@@ -66,10 +62,10 @@
           :showSearch="false"
           :metadatasContent="metadatasContent"
           :loading="loading"
-          @setScroll="setScrollPos"
-        />
+          @setScroll="setScrollPos" />
       </v-col>
     </v-row>
+
   </v-container>
 </template>
 
@@ -87,9 +83,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { mapGetters,mapState } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 
-import ProjectDatasets from '@/modules/projects/components/ProjectDetailViews/ProjectDatasets.vue';
 import {
   METADATADETAIL_PAGENAME,
   PROJECT_DETAIL_PAGENAME,
@@ -106,15 +101,28 @@ import {
   SET_DETAIL_PAGE_BACK_URL,
 } from '@/store/metadataMutationsConsts';
 
+import { convertArrayToUrlString, convertUrlStringToArray } from '@/factories/stringFactory';
+import { getImage } from '@/factories/imageFactory';
 import { createTag, tagsIncludedInSelectedTags } from '@/factories/keywordsFactory';
+import { isTagSelected } from '@/factories/metaDataFactory';
+import {defineAsyncComponent} from 'vue';
 import {
   GET_PROJECTS,
   PROJECTS_NAMESPACE,
   SET_PROJECTDETAIL_PAGE_BACK_URL,
 } from '../store/projectsMutationsConsts';
+
 import ProjectBody from './ProjectDetailViews/ProjectBody.vue';
 import ProjectHeader from './ProjectDetailViews/ProjectHeader.vue';
-import ProjectSubprojects from './ProjectDetailViews/ProjectSubprojects.vue';
+
+const ProjectSubprojects = defineAsyncComponent(() =>
+    import('@/modules/projects/components/ProjectDetailViews/ProjectSubprojects.vue'),
+);
+
+const ProjectDatasets = defineAsyncComponent(() =>
+  import('@/modules/projects/components/ProjectDetailViews/ProjectDatasets.vue'),
+);
+
 
 export default {
   /**
@@ -125,7 +133,7 @@ export default {
   beforeRouteEnter(to, from, next) {
     next(vm => {
       vm.$store.commit(SET_CURRENT_PAGE, PROJECT_DETAIL_PAGENAME);
-      vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
+      vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
 
       let backRoute = { path: PROJECTS_PATH };
 
@@ -205,7 +213,7 @@ export default {
       return this.currentProject?.subProjects || null;
     },
     mapFilteringPossible() {
-      return this.$vuetify.breakpoint.smAndUp;
+      return this.$vuetify.display.smAndUp;
     },
     hasMetadatas() {
       return (
@@ -215,16 +223,16 @@ export default {
       );
     },
     creatorImg() {
-      const imgPath = this.$vuetify.breakpoint.mdAndUp
-        ? 'projects/data_creator'
-        : 'projects/data_creator_small';
-      return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
+      const imgPath = this.$vuetify.display.mdAndUp
+        ? 'data_creator'
+        : 'data_creator_small';
+      return getImage(imgPath);
     },
     missionImg() {
-      const imgPath = this.$vuetify.breakpoint.mdAndUp
-        ? 'projects/mission'
-        : 'about/mission_small';
-      return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
+      const imgPath = this.$vuetify.display.mdAndUp
+        ? 'mission'
+        : 'mission_small';
+      return getImage(imgPath);
     },
     allMetadataTags() {
       const projectDatasetsTags = [];
@@ -277,28 +285,13 @@ export default {
 
       return projectDatasets;
     },
-    headerStyle() {
-      let width = 82.25;
-      let margin = '0px 8.33333%';
-
-      if (this.$vuetify.breakpoint.mdAndDown) {
-        width = 100;
-        margin = '0';
-      }
-
-      if (this.$vuetify.breakpoint.lg) {
-        width = 83.25;
-      }
-
-      return `width: ${width}%; margin: ${margin};`;
-    },
   },
   methods: {
     loadRoutePins() {
       let pins = this.$route.query.pins || '';
 
       if (pins.length > 0) {
-        pins = this.mixinMethods_convertUrlStringToArray(pins, false, true);
+        pins = convertUrlStringToArray(pins, false, true);
 
         this.selectedPins = pins;
       }
@@ -307,9 +300,9 @@ export default {
 
       this.selectedPins = pins;
 
-      const stringPins = this.mixinMethods_convertArrayToUrlString(this.selectedPins);
+      const stringPins = convertArrayToUrlString(this.selectedPins);
 
-      this.mixinMethods_additiveChangeRoute(this.$route.path, undefined, undefined,
+      this.$router.options.additiveChangeRoute(this.$route, this.$router, this.$route.path, undefined, undefined,
         undefined, stringPins, undefined);
     },
     catchMetadataClicked(datasetname) {
@@ -332,13 +325,6 @@ export default {
           this.projectsConfig,
         );
       }
-    },
-    headerHeight() {
-      if (this.$refs && this.$refs.header) {
-        return this.$refs.header.clientHeight;
-      }
-
-      return 150;
     },
     getMetadataContent(id) {
       if (!this.metadatasContent) {
@@ -398,7 +384,7 @@ export default {
       });
     },
     catchTagClicked(tagName) {
-      if (!this.mixinMethods_isTagSelected(tagName)) {
+      if (!isTagSelected(tagName, this.selectedTagNames)) {
         this.selectedTagNames.push(tagName);
       }
     },
@@ -407,7 +393,7 @@ export default {
         return;
       }
 
-      if (this.mixinMethods_isTagSelected(tagId)) {
+      if (isTagSelected(tagId, this.selectedTagNames)) {
         this.selectedTagNames = this.selectedTagNames.filter(
           tag => tag !== tagId,
         );
@@ -418,7 +404,7 @@ export default {
     },
     setScrollPos(toPos) {
       if (this.$root.$children && this.$root.$children[0].$refs.appContainer) {
-        this.$root.$children[0].$refs.appContainer.scrollTop = toPos;
+        this.$root.$children[0].$refs.appContainer.$el.scrollTop = toPos;
       }
     },
   },
@@ -440,7 +426,7 @@ export default {
     ProjectDatasets,
   },
   data: () => ({
-    PageBGImage: 'app_b_browsepage',
+    pageBGImage: 'app_b_browsepage',
     placeHolderAmount: 3,
     selectedTagNames: [],
     selectedPins: [],

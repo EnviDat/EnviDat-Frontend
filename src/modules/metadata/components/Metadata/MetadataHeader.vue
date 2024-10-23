@@ -9,74 +9,64 @@
     </div>
 
     <base-icon-button
-      id="MetadataHeaderCloseButton"
       v-if="showCloseButton"
+      id="MetadataHeaderCloseButton"
       class="ma-2"
-      :class="{ 'mx-1': $vuetify.breakpoint.smAndDown }"
+      :class="{ 'mx-1': $vuetify.display.smAndDown }"
       style="position: absolute; top: 0; right: 0; z-index: 2;"
-      material-icon-name="close"
+      :icon="mdiClose"
       icon-color="primary"
-      color="primary"
+      outline-color="primary"
       outlined
-      tooltipText="Close metadata view"
-      :tooltipBottom="true"
+      tooltip-text="Close metadata view"
+      tooltip-bottom
       @clicked="catchBackClicked"
     />
 
     <base-icon-button
-      id="MetadataHeaderEditButton"
       v-if="showEditButton"
+      id="MetadataHeaderEditButton"
       class="ma-2"
-      :class="{ 'mx-1': $vuetify.breakpoint.smAndDown }"
+      :class="{ 'mx-1': $vuetify.display.smAndDown }"
       style="position: absolute; top: 0; right: 46px; z-index: 2;"
-      material-icon-name="edit"
-      :fillColor="$vuetify.theme.themes.light.accent"
-      iconColor="black"
+      :icon="mdiPencil"
+      icon-color="black"
       color="accent"
-      tooltipText="Edit metadata"
-      :tooltipBottom="true"
+      tooltip-text="Edit metadata"
+      tooltip-bottom
       @clicked="catchEditClicked"
     />
 
-    <v-container fluid class="pa-4">
+    <MetadataHeaderPlaceholder v-if="showPlaceholder" />
+
+    <v-container v-if="!showPlaceholder" fluid class="pa-4">
       <v-row no-gutters style="position: relative; z-index: 1;">
         <v-col v-if="hasContent" cols="12">
           <div
             class="headerTitle"
-            :style="
-              `line-height: ${$vuetify.breakpoint.xsOnly ? '1.5rem' : ''};`
-            "
             :class="{
-              'py-0': $vuetify.breakpoint.smAndDown,
-              'display-2': $vuetify.breakpoint.xlOnly,
-              'text-h4': $vuetify.breakpoint.mdAndUp,
-              headline: $vuetify.breakpoint.smOnly,
-              'subtitle-1': $vuetify.breakpoint.xsOnly,
+              'py-0': $vuetify.display.smAndDown,
+              'display-2': $vuetify.display.xl,
+              'text-h4': $vuetify.display.mdAndUp,
+              'text-h5': $vuetify.display.xs,
+              headline: $vuetify.display.smAndDown,
             }"
           >
             {{ metadataTitle }}
           </div>
         </v-col>
 
-        <v-col v-if="!metadataTitle && !showPlaceholder" cols="12">
+        <v-col v-if="!hasContent" cols="12">
           <div
-            class="headerTitle py-3"
-            :style="`color: ${$vuetify.theme.themes.light.error}`"
+            class="text-h3 py-3"
+            :style="`color: ${$vuetify.theme.themes.light.colors.error}`"
             :class="{
-              'display-2': $vuetify.breakpoint.lgAndUp,
-              'text-h4': $vuetify.breakpoint.mdAndDown,
-              headline: $vuetify.breakpoint.smAndDown,
+              'display-2': $vuetify.display.lgAndUp,
+              'text-h4': $vuetify.display.mdAndDown,
+              headline: $vuetify.display.smAndDown,
             }"
           >
             {{ `${NotFoundTitle} '${metadataId}'` }}
-          </div>
-        </v-col>
-
-        <v-col v-if="!metadataTitle && showPlaceholder" cols="12">
-          <div
-            class="skeleton skeleton-size-big skeleton-color-concrete skeleton-animation-shimmer"
-          >
-            <div class="bone bone-type-text bone-style-steps" />
           </div>
         </v-col>
       </v-row>
@@ -85,9 +75,12 @@
         <v-row v-show="expanded" no-gutters>
           <v-col cols="12">
             <!-- author list -->
-            <v-row no-gutters style="position: relative; z-index: 1;">
+            <v-row
+              v-if="hasAuthors"
+              no-gutters
+              style="position: relative; z-index: 1;"
+            >
               <v-col
-                v-if="authors"
                 cols="12"
                 class="pa-0"
                 id="authors_divier"
@@ -96,19 +89,13 @@
                 <v-divider
                   :dark="dark"
                   :class="{
-                    'my-1': $vuetify.breakpoint.xsOnly,
-                    'my-2': $vuetify.breakpoint.smAndUp,
+                    'my-1': $vuetify.display.xs,
+                    'my-2': $vuetify.display.smAndUp,
                   }"
                 />
               </v-col>
 
-              <v-col
-                v-if="authors"
-                cols="12"
-                class="py-0"
-                id="authors"
-                key="authors"
-              >
+              <v-col cols="12" class="py-0" id="authors" key="authors">
                 <v-row
                   no-gutters
                   :style="
@@ -119,17 +106,16 @@
                     v-for="(author, index) in isAuthorsLonger"
                     :key="index"
                     :class="{
-                      'pa-0': $vuetify.breakpoint.mdAndUp,
-                      'py-1 px-0': $vuetify.breakpoint.smAndDown,
+                      'pa-0': $vuetify.display.mdAndUp,
+                      'py-1 px-0': $vuetify.display.smAndDown,
                     }"
-                    class="shrink"
+                    class="flex-grow-0"
                   >
                     <TagChipAuthor
                       :name="authorName(author)"
                       :tooltipText="authorToolTipText"
                       :asciiDead="asciiDead"
                       :authorPassedInfo="authorPassedInfo"
-                      :authorsLengthDifference="authorsDifference"
                       isSmall
                       @clicked="
                         catchAuthorClicked(
@@ -139,12 +125,13 @@
                       "
                     />
                   </v-col>
+
                   <v-col
                     :class="{
-                      'pa-0': $vuetify.breakpoint.mdAndUp,
-                      'py-1 px-0': $vuetify.breakpoint.smAndDown,
+                      'pa-0': $vuetify.display.mdAndUp,
+                      'py-1 px-0': $vuetify.display.smAndDown,
                     }"
-                    class="shrink"
+                    class="flex-grow-0"
                   >
                     <TagChipAuthor
                       v-if="
@@ -156,41 +143,10 @@
                           : 'show less authors'
                       "
                       color="highlight"
-                      :color-icon="'white'"
+                      color-icon="white"
                       isSmall
-                      @clicked="manageAuthors()"
+                      @clicked="expandAuthorList()"
                     />
-                  </v-col>
-                </v-row>
-              </v-col>
-
-              <v-col
-                v-if="!authors && showPlaceholder"
-                cols="12"
-                class="py-0"
-                id="authors_placeholder"
-                key="authors_placeholder"
-              >
-                <v-row no-gutters>
-                  <v-col
-                    cols="12"
-                    class="pa-0"
-                    id="authors_placeholder_divier"
-                    key="authors_placeholder_divier"
-                  >
-                    <v-divider
-                      :dark="dark"
-                      :class="{
-                        'my-1': $vuetify.breakpoint.xsOnly,
-                        'my-2': $vuetify.breakpoint.smAndUp,
-                      }"
-                    />
-                  </v-col>
-                </v-row>
-
-                <v-row no-gutters>
-                  <v-col v-for="n in 5" :key="n" class="shrink mr-1">
-                    <tag-chip-placeholder class="headerTag" />
                   </v-col>
                 </v-row>
               </v-col>
@@ -207,8 +163,8 @@
                 <v-divider
                   :dark="dark"
                   :class="{
-                    'my-1': $vuetify.breakpoint.xsOnly,
-                    'my-2': $vuetify.breakpoint.smAndUp,
+                    'my-1': $vuetify.display.xs,
+                    'my-2': $vuetify.display.smAndUp,
                   }"
                 />
               </v-col>
@@ -216,72 +172,70 @@
 
             <!-- info list row number 1 -->
             <v-row
-              v-if="!showPlaceholder && metadataTitle"
+              v-if="hasContent"
               no-gutters
               id="headerinfos"
               key="headerinfos"
               style="position: relative; z-index: 1;"
             >
-              <v-col cols="12" sm="3" class="headerInfo py-1 py-sm-0">
-                <v-tooltip v-if="contactToolTipText" bottom>
-                  <template v-slot:activator="{ on }">
-                    <v-row no-gutters v-on="on" align="center">
+              <v-col cols="12" sm="6" lg="3" class="headerInfo py-1 py-sm-0">
+                <v-tooltip location="bottom">
+                  <template v-slot:activator="{ props }">
+                    <v-row no-gutters align="center" v-bind="props">
                       <v-col class="flex-grow-0 pr-2">
-                        <v-icon
-                          class="envidatIcon"
-                          :class="$vuetify.breakpoint.xs ? 'small' : ''"
+                        <BaseIcon
+                          :icon="mdiAccountCog"
+                          :small="$vuetify.display.xs"
                           color="black"
-                          >manage_accounts</v-icon
-                        >
+                        />
                       </v-col>
-
                       <v-col>
                         {{ contactName }}
                       </v-col>
                     </v-row>
                   </template>
+
                   <span>{{ contactToolTipText }}</span>
                 </v-tooltip>
               </v-col>
 
-              <v-col cols="12" sm="3" class="headerInfo py-1 py-sm-0">
-                <v-tooltip v-if="doiToolTipText" bottom>
-                  <template v-slot:activator="{ on }">
-                    <v-row no-gutters v-on="on" align="center">
+              <v-col cols="12" sm="6" lg="3" class="headerInfo py-1 py-sm-0">
+                <v-tooltip location="bottom">
+                  <template v-slot:activator="{ props }">
+                    <v-row no-gutters v-bind="props" align="center">
                       <v-col class="flex-grow-0 pr-2">
-                        <v-icon
-                          class="envidatIcon"
-                          :class="$vuetify.breakpoint.xs ? 'small' : ''"
+                        <BaseIcon
                           color="black"
-                          >fingerprint</v-icon
-                        >
+                          :icon="mdiFingerprint"
+                          :small="$vuetify.display.xs"
+                        />
                       </v-col>
-
                       <v-col>
                         <a :href="doiUrl" target="_blank">{{ doi }}</a>
                       </v-col>
                     </v-row>
                   </template>
+
                   <span>{{ doiToolTipText }}</span>
                 </v-tooltip>
               </v-col>
 
               <v-col
-                v-if="hasContent"
+                v-if="hasContent && !isMobile"
                 cols="12"
-                sm="3"
+                sm="6"
+                lg="3"
                 class="headerInfo py-1 py-sm-0"
               >
-                <v-tooltip v-if="createTimeToolTipText" bottom>
-                  <template v-slot:activator="{ on }">
-                    <v-row no-gutters v-on="on" align="center">
+                <v-tooltip location="bottom">
+                  <template v-slot:activator="{ props }">
+                    <v-row no-gutters v-bind="props" align="center">
                       <v-col class="flex-grow-0 pr-2">
-                        <v-icon
-                          class="envidatIcon"
-                          :class="$vuetify.breakpoint.xs ? 'small' : ''"
+                        <BaseIcon
                           color="black"
-                          >more_time</v-icon
-                        >
+                          :icon="mdiClockPlusOutline"
+                          :small="$vuetify.display.xs"
+                        />
                       </v-col>
                       <v-col style="font-size: 0.9rem;">
                         {{ created }}
@@ -291,54 +245,48 @@
                   <span>{{ createTimeToolTipText }}</span>
                 </v-tooltip>
               </v-col>
+
               <v-col
-                v-if="hasContent && spatialInfo"
+                v-if="hasContent && spatialInfo && !isMobile"
                 cols="12"
-                sm="3"
+                sm="6"
+                lg="3"
                 class="headerInfo py-1 py-sm-0"
               >
-                <v-tooltip v-if="locationToolTipText" bottom>
-                  <template v-slot:activator="{ on }">
-                    <v-row no-gutters v-on="on" align="center">
+                <v-tooltip location="bottom">
+                  <template v-slot:activator="{ props }">
+                    <v-row no-gutters v-bind="props" align="center">
                       <v-col class="flex-grow-0 pr-2">
-                        <v-icon
-                          class="envidatIcon"
-                          :class="$vuetify.breakpoint.xs ? 'small' : ''"
+                        <BaseIcon
                           color="black"
-                          >location_pin</v-icon
-                        >
+                          :small="$vuetify.display.xs"
+                          :icon="mdiMapMarker"
+                        />
                       </v-col>
-
                       <v-col style="font-size: 0.9rem;">
                         {{ spatialInfo }}
                       </v-col>
                     </v-row>
                   </template>
+
                   <span>{{ locationToolTipText }}</span>
                 </v-tooltip>
               </v-col>
             </v-row>
 
             <!-- info list row number 2 -->
-            <v-row
-              v-if="!showPlaceholder && metadataTitle"
-              no-gutters
-              class="pt-1"
-              justify="end"
-            >
-              <v-col cols="12" sm="4" md="3" class="headerInfo py-1 py-sm-0">
-                <v-tooltip v-if="emailToolTipText" bottom>
-                  <template v-slot:activator="{ on }">
-                    <v-row no-gutters v-on="on" align="center">
+            <v-row v-if="hasContent" no-gutters class="pt-1" justify="end">
+              <v-col cols="12" sm="6" lg="3" class="headerInfo py-1 py-sm-0">
+                <v-tooltip location="bottom">
+                  <template v-slot:activator="{ props }">
+                    <v-row no-gutters v-bind="props" align="center">
                       <v-col class="flex-grow-0 pr-2">
-                        <v-icon
-                          class="envidatIcon"
-                          :class="$vuetify.breakpoint.xs ? 'small' : ''"
+                        <BaseIcon
                           color="black"
-                          >email</v-icon
-                        >
+                          :small="$vuetify.display.xs"
+                          :icon="mdiEmail"
+                        />
                       </v-col>
-
                       <v-col>
                         <a
                           :href="
@@ -347,47 +295,38 @@
                               : ''
                           "
                           target="_blank"
-                          >{{ contactEmailLowerCase }}</a
                         >
+                          {{ contactEmailLowerCase }}
+                        </a>
                       </v-col>
                     </v-row>
                   </template>
+
                   <span>{{ emailToolTipText }}</span>
                 </v-tooltip>
               </v-col>
 
-              <v-col
-                v-if="hasContent"
-                cols="12"
-                sm="2"
-                md="3"
-                class="headerInfo py-1 py-sm-0"
-              >
-                <!-- empty cell for spacing for the next cells -->
-                <v-row no-gutters align="center">
-                  <v-col class="flex-grow-0 pr-2"> </v-col>
-                  <v-col style="font-size: 0.9rem;"> </v-col>
-                </v-row>
+              <v-col>
+                <!-- empty col to match the cols with row before -->
               </v-col>
 
               <v-col
-                v-if="hasContent"
+                v-if="hasContent && !isMobile"
                 cols="12"
-                sm="3"
+                sm="6"
+                lg="3"
                 class="headerInfo py-1 py-sm-0"
               >
-                <v-tooltip v-if="modifyTimeToolTipText" bottom>
-                  <template v-slot:activator="{ on }">
-                    <v-row no-gutters v-on="on" align="center">
+                <v-tooltip location="bottom">
+                  <template v-slot:activator="{ props }">
+                    <v-row no-gutters v-bind="props" align="center">
                       <v-col class="flex-grow-0 pr-2">
-                        <v-icon
-                          class="envidatIcon"
-                          :class="$vuetify.breakpoint.xs ? 'small' : ''"
+                        <BaseIcon
                           color="black"
-                          >update</v-icon
-                        >
+                          :small="$vuetify.display.xs"
+                          :icon="mdiUpdate"
+                        />
                       </v-col>
-
                       <v-col style="font-size: 0.9rem;">
                         {{ modified }}
                       </v-col>
@@ -397,7 +336,109 @@
                 </v-tooltip>
               </v-col>
 
-              <v-col cols="12" sm="3" class="headerInfo py-1 py-sm-0">
+              <v-col cols="12" sm="6" lg="3" class="headerInfo py-1 py-sm-0">
+                <MetadataOrganizationChip
+                  v-if="hasContent && organization && !isMobile"
+                  :organization="organization"
+                  :tooltip="organizationTooltip"
+                />
+              </v-col>
+            </v-row>
+
+             <!-- info list Mobile -->
+
+             <v-row  style="position: relative; z-index: 1;" no-gutters v-if="hasContent && isMobile">
+              <tag-chip
+                class="headerTag flex-grow-0 mt-sm-4"
+                color="highlight"
+                :isAccordion="true"
+                :isOpen="showHeaderInformation"
+                :name="'SHOW MORE INFORMATION'"
+                @click.native="showHeaderInformation = !showHeaderInformation"
+                />
+
+            </v-row>
+
+            <v-row v-if="showHeaderInformation">
+              <v-col
+                v-if="hasContent"
+                cols="12"
+                sm="6"
+                lg="3"
+                class="headerInfo py-1 py-sm-0"
+              >
+                <v-tooltip location="bottom">
+                  <template v-slot:activator="{ props }">
+                    <v-row no-gutters v-bind="props" align="center">
+                      <v-col class="flex-grow-0 pr-2">
+                        <BaseIcon
+                          color="black"
+                          :icon="mdiClockPlusOutline"
+                          :small="$vuetify.display.xs"
+                        />
+                      </v-col>
+                      <v-col style="font-size: 0.9rem;">
+                        {{ created }}
+                      </v-col>
+                    </v-row>
+                  </template>
+                  <span>{{ createTimeToolTipText }}</span>
+                </v-tooltip>
+              </v-col>
+
+              <v-col
+                v-if="hasContent && spatialInfo"
+                cols="12"
+                sm="6"
+                lg="3"
+                class="headerInfo py-1 py-sm-0"
+              >
+                <v-tooltip location="bottom">
+                  <template v-slot:activator="{ props }">
+                    <v-row no-gutters v-bind="props" align="center">
+                      <v-col class="flex-grow-0 pr-2">
+                        <BaseIcon
+                          color="black"
+                          :small="$vuetify.display.xs"
+                          :icon="mdiMapMarker"
+                        />
+                      </v-col>
+                      <v-col style="font-size: 0.9rem;">
+                        {{ spatialInfo }}
+                      </v-col>
+                    </v-row>
+                  </template>
+
+                  <span>{{ locationToolTipText }}</span>
+                </v-tooltip>
+              </v-col>
+              <v-col
+                v-if="hasContent"
+                cols="12"
+                sm="6"
+                lg="3"
+                class="headerInfo py-1 py-sm-0"
+              >
+                <v-tooltip location="bottom">
+                  <template v-slot:activator="{ props }">
+                    <v-row no-gutters v-bind="props" align="center">
+                      <v-col class="flex-grow-0 pr-2">
+                        <BaseIcon
+                          color="black"
+                          :small="$vuetify.display.xs"
+                          :icon="mdiUpdate"
+                        />
+                      </v-col>
+                      <v-col style="font-size: 0.9rem;">
+                        {{ modified }}
+                      </v-col>
+                    </v-row>
+                  </template>
+                  <span>{{ modifyTimeToolTipText }}</span>
+                </v-tooltip>
+              </v-col>
+
+              <v-col cols="12" sm="6" lg="3" class="headerInfo py-1 py-sm-0 mb-6">
                 <MetadataOrganizationChip
                   v-if="hasContent && organization"
                   :organization="organization"
@@ -406,36 +447,27 @@
               </v-col>
             </v-row>
 
-            <v-row no-gutters style="position: relative; z-index: 1;">
-              <v-col
-                v-if="!showPlaceholder && tags"
-                cols="12"
-                class="pa-0"
-                id="tags_divier"
-                key="tags_divier"
-              >
+            <v-row
+              v-if="tags"
+              no-gutters
+              style="position: relative; z-index: 1;"
+            >
+              <v-col cols="12" class="pa-0" id="tags_divier" key="tags_divier">
                 <v-divider
                   :dark="dark"
                   :class="{
-                    'my-1': $vuetify.breakpoint.xsOnly,
-                    'my-2': $vuetify.breakpoint.smAndUp,
+                    'my-1': $vuetify.display.xs,
+                    'my-2': $vuetify.display.smAndUp,
                   }"
                 />
               </v-col>
 
-              <v-col
-                v-if="tags"
-                cols="12"
-                sm="9"
-                class="py-0"
-                id="tags"
-                key="tags"
-              >
+              <v-col cols="12" sm="9" class="py-0" id="tags" key="tags">
                 <v-row no-gutters>
                   <v-col
                     v-for="tag in slicedTags"
                     :key="tag.name"
-                    class="shrink"
+                    class="flex-grow-0"
                   >
                     <tag-chip
                       :name="tag.name"
@@ -445,15 +477,14 @@
                       @clicked="catchTagClicked(tag.name)"
                     />
                   </v-col>
-
                   <v-col
                     v-if="
                       (maxTagsReached && !showTagsExpanded) || showTagsExpanded
                     "
-                    class="shrink"
+                    class="flex-grow-0"
                   >
                     <tag-chip
-                      class="headerTag shrink"
+                      class="headerTag flex-grow-0"
                       color="highlight"
                       :isAccordion="true"
                       :isOpen="showTagsExpanded"
@@ -467,51 +498,18 @@
                   </v-col>
                 </v-row>
               </v-col>
-
-              <v-col
-                v-if="showPlaceholder"
-                cols="12"
-                class="py-0"
-                id="tags_placeholder"
-                key="tags_placeholder"
-              >
-                <v-row no-gutters>
-                  <v-col v-for="n in 5" :key="n" class="shrink mr-1">
-                    <tag-chip-placeholder class="headerTag" />
-                  </v-col>
-                </v-row>
-              </v-col>
             </v-row>
           </v-col>
         </v-row>
       </v-expand-transition>
     </v-container>
 
-    <v-card-actions v-show="expanded" class="orgaChipFullWidth">
+    <v-card-actions
+      v-show="expanded"
+      class="orgaChipFullWidth"
+      style="position: absolute; bottom: 0; right: 0; z-index: 2;"
+    >
       <v-row no-gutters align="center">
-        <!-- <v-col v-if="maxTagsReached" class="px-1 flex-grow-0">
-          <base-icon-button
-            materialIconName="expand_more"
-            color="primary"
-            :iconColor="showTagsExpanded ? 'accent' : 'primary'"
-            outlined
-            :rotateOnClick="true"
-            :rotateToggle="showTagsExpanded"
-            :tooltipText="showTagsExpanded ? 'Hide all tags' : 'Show all tags'"
-            :tooltipBottom="true"
-            @clicked="showTagsExpanded = !showTagsExpanded"
-          />
-        </v-col> -->
-
-        <v-col
-          v-if="publicationStatus && showEditButton"
-          class=" flex-grow-1 px-1"
-        >
-          <v-chip small :color="'secondary'">
-            {{ publicationStatus }}
-          </v-chip>
-        </v-col>
-
         <v-col v-if="metadataState && showEditButton" class=" flex-grow-1 px-1">
           <MetadataStateChip :state="metadataState" />
         </v-col>
@@ -545,24 +543,39 @@
  */
 
 import TagChip from '@/components/Chips/TagChip.vue';
-import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder.vue';
+import TagChipAuthor from '@/components/Chips/TagChipAuthor.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
+
+import MetadataHeaderPlaceholder from '@/modules/metadata/components/Metadata/MetadataHeaderPlaceholder.vue';
+import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip.vue';
+import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
+
+import {
+  mdiAccountCog,
+  mdiChevronDown,
+  mdiClockPlusOutline,
+  mdiClose,
+  mdiFingerprint,
+  mdiEmail,
+  mdiMapMarker,
+  mdiPencil,
+  mdiUpdate,
+} from '@mdi/js';
 
 import {
   getAuthorName,
   getAuthorGivenName,
   getAuthorLastName,
 } from '@/factories/authorFactory';
-import TagChipAuthor from '@/components/Chips/TagChipAuthor.vue';
-import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip.vue';
-import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
 
 export default {
   name: 'MetadataHeader',
   components: {
+    MetadataHeaderPlaceholder,
+    BaseIcon,
     TagChip,
     TagChipAuthor,
-    TagChipPlaceholder,
     BaseIconButton,
     MetadataOrganizationChip,
     MetadataStateChip,
@@ -628,7 +641,17 @@ export default {
     },
   },
   data: () => ({
+    mdiClose,
+    mdiEmail,
+    mdiMapMarker,
+    mdiPencil,
+    mdiChevronDown,
+    mdiClockPlusOutline,
+    mdiFingerprint,
+    mdiAccountCog,
+    mdiUpdate,
     showTagsExpanded: false,
+    showHeaderInformation: false,
     dark: false,
     blackTopToBottom: 'rgba(80,80,80, 0.1) 0%, rgba(80,80,80, 0.9) 70%',
     // whiteTopToBottom: 'rgba(255,255,255, 0.3) 0%, rgba(255,255,255, 1) 60%',
@@ -642,8 +665,8 @@ export default {
     modifyTimeToolTipText: 'Time of last modification',
     NotFoundTitle: 'No metadata found for',
     authorTagsMaxHeight: 75,
-    limitAuthors: 16,
     showAuthors: false,
+    limitAuthors: 1,
   }),
   watch: {
     breakpoint: {
@@ -654,8 +677,14 @@ export default {
     },
   },
   computed: {
+    hasAuthors() {
+      return this.authors?.length > 0;
+    },
+    isMobile() {
+      return this.breakpoint.smAndDown
+    },
     breakpoint() {
-      return this.$vuetify.breakpoint;
+      return this.$vuetify.display;
     },
     isAuthorsLonger() {
       return this.authors.length > this.limitAuthors
@@ -682,7 +711,7 @@ export default {
         : null;
     },
     maxTagsReached() {
-      return this.tags ? this.tags.length >= this.maxTags : false;
+      return this.tags ? this.tags.length > this.maxTags : false;
     },
     slicedTags() {
       if (!this.tags) {
@@ -711,7 +740,7 @@ export default {
         style += `background-image: linear-gradient(0deg, ${gradient}), url(${this.titleImg});
         filter: blur(2px);`;
       } else {
-        style += `background-color: ${this.cateoryColor};`;
+        style += `background-color: ${this.categoryColor};`;
       }
 
       return style;
@@ -732,12 +761,11 @@ export default {
     // expandFinished() {
     //   console.log('finished');
     // },
-    manageAuthors() {
-      if (!this.showAuthors) {
-        this.showAuthors = !this.showAuthors;
+    expandAuthorList() {
+      this.showAuthors = !this.showAuthors;
+      if (this.showAuthors) {
         this.limitAuthors = this.authors.length;
       } else {
-        this.showAuthors = !this.showAuthors;
         this.updateAuthorsBasedOnBreakpoint();
       }
     },
@@ -745,10 +773,10 @@ export default {
       this.$emit('clickedTag', tagId);
     },
     updateAuthorsBasedOnBreakpoint() {
-      if (this.breakpoint.xsOnly) {
-        this.limitAuthors = 3;
+      if (this.breakpoint.xs) {
+        this.limitAuthors = 1;
       } else if (this.breakpoint.smAndDown) {
-        this.limitAuthors = 8;
+        this.limitAuthors = 1;
       } else if (this.breakpoint.lgAndDown) {
         this.limitAuthors = 13;
       } else {

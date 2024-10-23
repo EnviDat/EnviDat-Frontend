@@ -9,6 +9,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 import SmallSearchBarView from '../src/components/Filtering/SmallSearchBarView.vue';
 
 export default {
@@ -16,6 +17,94 @@ export default {
   component: SmallSearchBarView,
 };
 
+export const Basic = {
+  args: {
+    labelText: 'Search for something',
+    buttonText: 'SEARCH',
+  },
+}
+
+export const BasicSmallSearchBar = {
+  args: {
+    ...Basic.args,
+    showSearch: true,
+  },
+};
+
+export const SmallSearchBarButton = {
+  args: {
+    ...BasicSmallSearchBar.args,
+    hasButton: true,
+  },
+};
+
+export const SmallSearchBarButtonMobile = {
+  args: SmallSearchBarButton.args,
+  parameters: mobileViewportParams,
+};
+
+export const SmallSearchBarButtonLargeMobile = {
+  args: SmallSearchBarButton.args,
+  parameters: mobileLargeViewportParams,
+};
+
+export const SmallSearchBarButtonTablet = {
+  args: SmallSearchBarButton.args,
+  parameters: tabletViewportParams,
+};
+
+
+export const SmallSearchBarButtonCompact = {
+  args: {
+    ...SmallSearchBarButton.args,
+    hasButton: true,
+    compactLayout: true,
+  },
+};
+
+export const SmallSearchBarSearchCountZero = {
+  args: {
+    ...SmallSearchBarButton.args,
+    searchCount: 0,
+    showSearchCount: true,
+  },
+};
+
+export const SmallSearchBarSearchCount = {
+  args: {
+    ...SmallSearchBarSearchCountZero.args,
+    searchCount: 123,
+  },
+};
+
+export const SearchBarInFilterView = {
+  args: {
+    ...BasicSmallSearchBar.args,
+    searchCount: 591,
+    showSearchCount: true,
+    compactLayout: true,
+  },
+};
+
+export const SearchBarInFilterViewMobile = {
+  args: SearchBarInFilterView.args,
+  parameters: mobileViewportParams,
+};
+
+export const SearchBarInFilterViewLargeMobile = {
+  args: SearchBarInFilterView.args,
+  parameters: mobileLargeViewportParams,
+};
+
+export const SearchBarInFilterViewTablet = {
+  args: SearchBarInFilterView.args,
+  parameters: tabletViewportParams,
+};
+
+
+
+
+/*
 export const SmallSearchViews = () => ({
     components: { SmallSearchBarView },
     template: `
@@ -115,3 +204,4 @@ export const SmallSearchViews = () => ({
       searchTerm: '',
     }),
   });
+*/

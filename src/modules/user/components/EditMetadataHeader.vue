@@ -1,15 +1,10 @@
 <template>
   <v-card id="EditMetadataHeader"
           class="pa-0"
-          :loading="loading">
+          :loading="loadingColor">
 
     <v-container fluid
-                 class="pa-4 fill-height">
-
-      <template slot="progress">
-        <v-progress-linear color="primary"
-                           indeterminate/>
-      </template>
+                 class="pa-4">
 
       <v-row>
 
@@ -18,14 +13,223 @@
         </v-col>
 
         <v-col v-if="message" cols="4" class="pl-16">
-          <BaseStatusLabelView statusIcon="check"
+          <BaseStatusLabelView status="check"
                                statusColor="success"
                                :statusText="message"
                                :expandedText="messageDetails"/>
         </v-col>
         <v-col v-if="error" cols="4" class="pl-16">
 
-          <BaseStatusLabelView statusIcon="error"
+          <BaseStatusLabelView status="error"
+                               statusColor="error"
+                               :statusText="error"
+                               :expandedText="errorDetails"/>
+        </v-col>
+
+      </v-row>
+
+
+      <v-row no-gutters
+             class="pt-4">
+        <v-col cols="12"
+               class="text-body-1">
+          {{ labels.instructions }}
+        </v-col>
+
+      </v-row>
+
+      <v-row>
+
+        <v-col >
+
+          <v-text-field ref="metadataTitle"
+                        :id="METADATA_TITLE_PROPERTY"
+                        :label="labels.labelTitle"
+                        :readonly="isReadOnly(METADATA_TITLE_PROPERTY)"
+                        :hint="readOnlyHint(METADATA_TITLE_PROPERTY)"
+                        :prepend-icon="mdiBookOpenVariantOutline"
+                        :error-messages="validationErrors[METADATA_TITLE_PROPERTY]"
+                        :placeholder="labels.placeholderTitle"
+                        :model-value="metadataTitleField"
+                        @keyup="blurOnEnterKey"
+                        @input="changePropertyForPreview(METADATA_TITLE_PROPERTY, $event.target.value)"
+                        @change="notifyPropertyChange(METADATA_TITLE_PROPERTY, $event.target.value)"
+          />
+
+        </v-col>
+
+      </v-row>
+
+
+      <v-row>
+        <v-col cols="12"
+                sm="6">
+
+          <v-row>
+            <v-col class="text-h6 pb-0">
+              {{ labels.contactPerson }}
+            </v-col>
+          </v-row>
+
+
+          <v-row>
+            <v-col class="text-body-1">
+              {{ labels.authorInstructions }}
+            </v-col>
+          </v-row>
+
+          <v-row dense
+                 class="pt-2">
+
+            <v-col cols="12"
+                   sm="6"
+                   class="pt-3"
+            >
+
+              <v-text-field ref="contactEmail"
+                            id="contactEmail"
+                            :label="labels.labelContactEmail"
+                            :error-messages="validationErrors.contactEmail"
+                            :readonly="isContactPropertyReadOnly('contactEmail')"
+                            :hint="contactPropertyHint('contactEmail')"
+                            :prepend-icon="mdiEmail"
+                            :placeholder="labels.placeholderContactEmail"
+                            :model-value="contactEmailField"
+                            @keyup="blurOnEnterKey"
+                            @focusin="focusIn($event)"
+                            @focusout="focusOut('contactEmail', $event)"
+                            @input="changePropertyForPreview('contactEmail', $event.target.value)"
+              />
+
+            </v-col>
+
+            <v-col cols="12"
+                    sm="6"
+                   class="pl-sm-4"
+            >
+
+              <BaseUserPicker :users="fullNameUsers"
+                              :preSelected="preselectAuthorNames"
+                              :hint="labels.authorPickHint"
+                              @removedUsers="catchPickerAuthorChange($event, false)"
+                              @pickedUsers="catchPickerAuthorChange($event, true)"/>
+            </v-col>
+
+          </v-row>
+
+          <v-row dense>
+
+            <v-col class="text-body-1"
+                   v-html="labels.authorAutoComplete">
+            </v-col>
+          </v-row>
+
+          <v-row dense >
+
+            <v-col cols="12"
+                   sm="6">
+
+              <v-text-field ref="contactGivenName"
+                            id="contactGivenName"
+                            :label="labels.labelContactGivenName"
+                            :error-messages="validationErrors.contactGivenName"
+                            :readonly="isContactPropertyReadOnly('contactGivenName')"
+                            :hint="contactPropertyHint('contactGivenName')"
+                            :prepend-icon="mdiAccount"
+                            :placeholder="labels.placeholderContactGivenName"
+                            :model-value="contactGivenNameField"
+                            @keyup="blurOnEnterKey"
+                            @focusin="focusIn($event)"
+                            @focusout="focusOut('contactGivenName', $event)"
+                            @input="changePropertyForPreview('contactGivenName', $event.target.value)"
+              />
+
+            </v-col>
+
+            <v-col cols="12"
+                   sm="6"
+                   class="pl-sm-4">
+
+              <v-text-field ref="contactSurname"
+                            id="contactSurname"
+                            :label="labels.labelContactSurname"
+                            :error-messages="validationErrors.contactSurname"
+                            :readonly="isContactPropertyReadOnly('contactSurname')"
+                            :hint="contactPropertyHint('contactSurname')"
+                            :prepend-icon="mdiAccount"
+                            :placeholder="labels.placeholderContactSurname"
+                            :model-value="contactSurnameField"
+                            @keyup="blurOnEnterKey"
+                            @focusin="focusIn($event)"
+                            @focusout="focusOut('contactSurname', $event)"
+                            @input="changePropertyForPreview('contactSurname', $event.target.value)"
+              />
+
+            </v-col>
+
+          </v-row>
+
+        </v-col>
+
+        <v-col cols="12"
+               sm="6">
+          <v-row>
+            <v-col cols="12" class="text-subtitle-1">
+              {{ labels.previewText }}
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col cols="12">
+              <MetadataHeader v-bind="metadataPreviewEntry"/>
+            </v-col>
+
+          </v-row>
+
+        </v-col>
+      </v-row>
+
+      <v-row dense >
+        <v-col cols="12" >
+
+          <ExpandableLayout statusText="Advanced Header info"
+                            isFlat>
+
+            <v-text-field ref="metadataUrl"
+                          :id="METADATA_URL_PROPERTY"
+                          :label="labels.labelUrl"
+                          :readonly="isReadOnly(METADATA_URL_PROPERTY)"
+                          :hint="readOnlyHint(METADATA_URL_PROPERTY)"
+                          :prepend-icon="mdiBookOpenVariantOutline"
+                          :error-messages="validationErrors[METADATA_URL_PROPERTY]"
+                          :placeholder="labels.placeholderUrl"
+                          :model-value="metadataUrlField"
+                          @keyup="blurOnEnterKey"
+                          @click.stop
+                          @input="changePropertyForPreview(METADATA_URL_PROPERTY, $event.target.value)"
+                          @change="notifyPropertyChange(METADATA_URL_PROPERTY, $event.target.value)"
+            />
+          </ExpandableLayout>
+
+        </v-col>
+      </v-row>
+
+<!--
+      <v-row>
+
+        <v-col class="text-h5" cols="8">
+          {{ labels.title }}
+        </v-col>
+
+        <v-col v-if="message" cols="4" class="pl-16">
+          <BaseStatusLabelView status="check"
+                               statusColor="success"
+                               :statusText="message"
+                               :expandedText="messageDetails"/>
+        </v-col>
+        <v-col v-if="error" cols="4" class="pl-16">
+
+          <BaseStatusLabelView status="error"
                                statusColor="error"
                                :statusText="error"
                                :expandedText="errorDetails"/>
@@ -40,36 +244,25 @@
                class="text-body-1">
           {{ labels.instructions }}
         </v-col>
-      </v-row>
 
-
-      <v-row no-gutters >
-        <v-col cols="12"
-               class="text-body-1">
-          {{ labels.instructions2 }}
-        </v-col>
       </v-row>
 
       <v-row>
 
-        <v-col cols="12"
-               md="8"
-               class="pb-0">
+        <v-col >
 
           <v-text-field ref="metadataTitle"
                         :id="METADATA_TITLE_PROPERTY"
                         :label="labels.labelTitle"
-                        outlined
-                        dense
-                        :readonly="mixinMethods_isFieldReadOnly(METADATA_TITLE_PROPERTY)"
-                        :hint="mixinMethods_readOnlyHint(METADATA_TITLE_PROPERTY)"
-                        prepend-icon="import_contacts"
+                        :readonly="isReadOnly(METADATA_TITLE_PROPERTY)"
+                        :hint="readOnlyHint(METADATA_TITLE_PROPERTY)"
+                        :prepend-icon="mdiBookOpenVariantOutline"
                         :error-messages="validationErrors[METADATA_TITLE_PROPERTY]"
                         :placeholder="labels.placeholderTitle"
-                        :value="metadataTitleField"
+                        :model-value="metadataTitleField"
                         @keyup="blurOnEnterKey"
-                        @input="changePropertyForPreview(METADATA_TITLE_PROPERTY, $event)"
-                        @change="notifyPropertyChange(METADATA_TITLE_PROPERTY, $event)"
+                        @input="changePropertyForPreview(METADATA_TITLE_PROPERTY, $event.target.value)"
+                        @change="notifyPropertyChange(METADATA_TITLE_PROPERTY, $event.target.value)"
           />
 
         </v-col>
@@ -84,11 +277,27 @@
       </v-row>
 
 
+&lt;!&ndash;
       <v-row>
         <v-col class="text-body-1">
           {{ labels.authorInstructions }}
         </v-col>
       </v-row>
+&ndash;&gt;
+
+      <v-row>
+        <v-col cols="12"
+               sm="5">
+
+          <BaseUserPicker :users="fullNameUsers"
+                          :preSelected="preselectAuthorNames"
+                          :hint="labels.authorPickHint"
+                          dense
+                          @removedUsers="catchPickerAuthorChange($event.target.value, false)"
+                          @pickedUsers="catchPickerAuthorChange($event.target.value, true)"/>
+        </v-col>
+      </v-row>
+
 
       <v-row dense
              class="pt-2">
@@ -98,29 +307,28 @@
           <v-text-field ref="contactEmail"
                         id="contactEmail"
                         :label="labels.labelContactEmail"
-                        outlined
-                        dense
                         :error-messages="validationErrors.contactEmail"
                         :readonly="isContactPropertyReadOnly('contactEmail')"
                         :hint="contactPropertyHint('contactEmail')"
-                        prepend-icon="email"
+                        :prepend-icon="mdiEmail"
                         :placeholder="labels.placeholderContactEmail"
-                        :value="contactEmailField"
+                        :model-value="contactEmailField"
                         @keyup="blurOnEnterKey"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('contactEmail', $event)"
-                        @input="changePropertyForPreview('contactEmail', $event)"
+                        @input="changePropertyForPreview('contactEmail', $event.target.value)"
                         />
 
         </v-col>
 
-        <v-col class="shrink px-4 text-body-1 "
+        <v-col class="flex-grow-0 px-4 text-body-1 "
                style="text-align: center;"
                cols="12"
                sm="2"
                v-html="labels.authorOr">
         </v-col>
 
+&lt;!&ndash;
         <v-col cols="12"
                 sm="5">
 
@@ -128,9 +336,10 @@
                           :preSelected="preselectAuthorNames"
                           :hint="labels.authorPickHint"
                           dense
-                          @removedUsers="catchPickerAuthorChange($event, false)"
-                          @pickedUsers="catchPickerAuthorChange($event, true)"/>
+                          @removedUsers="catchPickerAuthorChange($event.target.value, false)"
+                          @pickedUsers="catchPickerAuthorChange($event.target.value, true)"/>
         </v-col>
+&ndash;&gt;
 
       </v-row>
 
@@ -150,18 +359,16 @@
           <v-text-field ref="contactGivenName"
                         id="contactGivenName"
                         :label="labels.labelContactGivenName"
-                        outlined
-                        dense
                         :error-messages="validationErrors.contactGivenName"
                         :readonly="isContactPropertyReadOnly('contactGivenName')"
                         :hint="contactPropertyHint('contactGivenName')"
-                        prepend-icon="person"
+                        :prepend-icon="mdiAccount"
                         :placeholder="labels.placeholderContactGivenName"
-                        :value="contactGivenNameField"
+                        :model-value="contactGivenNameField"
                         @keyup="blurOnEnterKey"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('contactGivenName', $event)"
-                        @input="changePropertyForPreview('contactGivenName', $event)"
+                        @input="changePropertyForPreview('contactGivenName', $event.target.value)"
                         />
 
         </v-col>
@@ -173,18 +380,16 @@
           <v-text-field ref="contactSurname"
                         id="contactSurname"
                         :label="labels.labelContactSurname"
-                        outlined
-                        dense
                         :error-messages="validationErrors.contactSurname"
                         :readonly="isContactPropertyReadOnly('contactSurname')"
                         :hint="contactPropertyHint('contactSurname')"
-                        prepend-icon="person"
+                        :prepend-icon="mdiAccount"
                         :placeholder="labels.placeholderContactSurname"
-                        :value="contactSurnameField"
+                        :model-value="contactSurnameField"
                         @keyup="blurOnEnterKey"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('contactSurname', $event)"
-                        @input="changePropertyForPreview('contactSurname', $event)"
+                        @input="changePropertyForPreview('contactSurname', $event.target.value)"
                         />
 
         </v-col>
@@ -200,18 +405,16 @@
             <v-text-field ref="metadataUrl"
                           :id="METADATA_URL_PROPERTY"
                           :label="labels.labelUrl"
-                          dense
-                          outlined
-                          :readonly="mixinMethods_isFieldReadOnly(METADATA_URL_PROPERTY)"
-                          :hint="mixinMethods_readOnlyHint(METADATA_URL_PROPERTY)"
-                          prepend-icon="import_contacts"
+                          :readonly="isReadOnly(METADATA_URL_PROPERTY)"
+                          :hint="readOnlyHint(METADATA_URL_PROPERTY)"
+                          :prepend-icon="mdiBookOpenVariantOutline"
                           :error-messages="validationErrors[METADATA_URL_PROPERTY]"
                           :placeholder="labels.placeholderUrl"
-                          :value="metadataUrlField"
+                          :model-value="metadataUrlField"
                           @keyup="blurOnEnterKey"
                           @click.stop
-                          @input="changePropertyForPreview(METADATA_URL_PROPERTY, $event)"
-                          @change="notifyPropertyChange(METADATA_URL_PROPERTY, $event)"
+                          @input="changePropertyForPreview(METADATA_URL_PROPERTY, $event.target.value)"
+                          @change="notifyPropertyChange(METADATA_URL_PROPERTY, $event.target.value)"
             />
           </ExpandableLayout>
 
@@ -231,6 +434,7 @@
 
       </v-row>
 
+-->
 
     </v-container>
   </v-card>
@@ -246,9 +450,6 @@
  *
  * @summary shows the title, main contact information, and header preview
  * @author Dominik Haas-Artho and Rebecca Kurup Buchholz
- *
- * Created at     : 2019-10-23 14:11:27
- * Last modified  : 2021-11-23
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -282,7 +483,10 @@ import {
   METADATA_TITLE_PROPERTY,
   METADATA_URL_PROPERTY,
 } from '@/factories/metadataConsts';
+
 import { getMetadataUrlFromTitle } from '@/factories/mappingFactory';
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+import {mdiAccount, mdiBookOpenVariantOutline, mdiEmail} from '@mdi/js';
 
 
 export default {
@@ -372,10 +576,17 @@ export default {
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   computed: {
+    loadingColor() {
+      if (this.loading) {
+        return 'accent';
+      }
+
+      return undefined;
+    },
     metadataTitleField: {
       get() {
         return this.previews[METADATA_TITLE_PROPERTY] !== null ? this.previews[METADATA_TITLE_PROPERTY] : this.metadataTitle;
@@ -438,10 +649,7 @@ export default {
         authors: this.authors,
       };
 
-      if (this.$store) {
-        const { categoryCards, cardBGImages } = this.$store.getters;
-        enhanceTitleImg(previewEntry, cardBGImages, categoryCards);
-      }
+      enhanceTitleImg(previewEntry);
 
       return previewEntry;
     },
@@ -477,7 +685,7 @@ export default {
       }
     },
     isContactPropertyReadOnly(property) {
-      return this.contactInfoReadOnly || this.mixinMethods_isFieldReadOnly(property);
+      return this.contactInfoReadOnly || this.isReadOnly(property);
     },
     contactPropertyHint(property) {
 
@@ -485,7 +693,7 @@ export default {
         return 'Not editable because the contact is defined in the author picker';
       }
 
-      return this.mixinMethods_readOnlyHint(property);
+      return this.readOnlyHint(property);
     },
     clearPreviews() {
       this.previews.contactGivenName = null;
@@ -668,8 +876,17 @@ export default {
         data: newHeaderInfo,
       });
     },
+    isReadOnly(dateProperty) {
+      return isFieldReadOnly(this.$props, dateProperty);
+    },
+    readOnlyHint(dateProperty) {
+      return readOnlyHint(this.$props, dateProperty);
+    },
   },
   data: () => ({
+    mdiBookOpenVariantOutline,
+    mdiAccount,
+    mdiEmail,
     authorIsPicked: false,
     authorPickerTouched: false,
     previews: {
@@ -690,10 +907,10 @@ export default {
       instructions: 'The header is part of the main metadata information.' +
           ` Together with the other information in the "${EDIT_STEP_TITLE_MAIN_METADATA}" step, it represents the core information for your research dataset.`,
       instructions2: 'Enter a title for your research dataset. Please make sure that title is meaningful and specific.',
-      authorInstructions: 'Enter an email address as main contact and maintainer of this dataset.',
+      authorInstructions: 'Enter an email address or pick a user as the contact person for this dataset.',
       authorOr: '<strong>Or</strong> pick <br /> an author',
       authorOr2: '<strong>Or</strong> pick an author',
-      authorAutoComplete: 'If an author is picked or found with the email address the names is <strong>autocompleted</strong>!',
+      authorAutoComplete: 'If an author is picked the name is <strong>autocompleted</strong><br />otherwise please enter it!',
       placeholderTitle: 'Enter the title for your research dataset',
       placeholderUrl: 'Change the url for your dataset',
       placeholderHeaderTitle: 'Your Metadata Title',

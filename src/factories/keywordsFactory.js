@@ -52,7 +52,13 @@ export function convertTags(tagsStringArray, tagsEnabled) {
   return tagObjs;
 }
 
-export function getCategoryColor(categoryCards, categoryName) {
+/**
+ *
+ * @param {string}categoryName
+ * @param {object[]}categoryCards
+ * @returns {undefined|string}
+ */
+export function getCategoryColor(categoryName, categoryCards) {
   for (let i = 0; i < categoryCards.length; i++) {
     const cat = categoryCards[i];
     if (cat.type === categoryName) {
@@ -60,12 +66,12 @@ export function getCategoryColor(categoryCards, categoryName) {
     }
   }
 
-  return null;
+  return undefined;
 }
 
 export function getTagColor(categoryCards, tagName) {
   if (!categoryCards || !tagName) {
-    return '';
+    return undefined;
   }
 
   for (let i = 0; i < categoryCards.length; i++) {
@@ -80,6 +86,12 @@ export function getTagColor(categoryCards, tagName) {
   return '#e0e0e0';
 }
 
+/**
+ *
+ * @param dataset
+ * @param categoryCards
+ * @returns {[any]|null}
+ */
 export function enhanceTags(dataset, categoryCards) {
   if (!dataset || !categoryCards) {
     return null;
@@ -141,22 +153,22 @@ export function createTag(name, options = defaultTagOptions) {
 }
 
 /**
- * Goes through all the tags and checks if they are part of the content list.
+ * Goes through all the tags and checks if they are part of the dataset list.
  * @param {tags[]} tags
- * @param {datasets[]} content
+ * @param {datasets[]} datasets
  * @param {boolean} sortBaseOnCount
  */
-export function getEnabledTags(tags, content, sortBaseOnCount = false) {
+export function getEnabledTags(tags, datasets, sortBaseOnCount = false) {
   const enabledTags = [];
 
-  if (!tags || !content) return enabledTags;
+  if (!tags || !datasets) return enabledTags;
 
   for (let i = 0; i < tags.length; i++) {
     const tag = tags[i];
     let found = false;
 
-    for (let j = 0; j < content.length; j++) {
-      const el = content[j];
+    for (let j = 0; j < datasets.length; j++) {
+      const el = datasets[j];
 
       if (el.tags && el.tags.length > 0) {
         const index = el.tags.findIndex(obj => obj.name.includes(tag.name));
@@ -338,27 +350,32 @@ function removeMultiWorkKeywords(keywords, maxWords = 2) {
   return keywords.filter((keyword) => keyword.name.split(' ').length <= maxWords);
 }
 
-export function getKeywordsForFiltering(content, modeMetadata = undefined, maxKeywords = 30) {
+export function getKeywordsForFiltering(datasets, modeMetadata = undefined, maxKeywords = 30) {
 
-  const minTagAmount = modeMetadata ? modeMetadata.minTagAmount : Math.max(5, content.length * 0.025);
+  const minTagAmount = modeMetadata ? modeMetadata.minTagAmount : Math.max(5, datasets.length * 0.025);
   const excludeTag = modeMetadata ? modeMetadata.mainTag.name : undefined;
 
-  let popularTags = getPopularTags(content, excludeTag, minTagAmount, content.length);
+  let popularTags = getPopularTags(datasets, excludeTag, minTagAmount, datasets.length);
   popularTags = removeMultiWorkKeywords(popularTags);
   popularTags = popularTags.slice(0, maxKeywords - 5)
 
   let extraTags = modeMetadata ? modeMetadata.extraTags : mainCategoryTags;
   const popularTagNames = popularTags.map((keyword) => keyword.name)
   extraTags = extraTags.filter((keyword) => !popularTagNames.includes(keyword.name));
-  if (extraTags.length > 0) {
-    extraTags = getCountedKeywordsFuzzy(content, extraTags);
+
+  let mergedWithPopulars = popularTags;
+
+  if (extraTags.length > 0 && maxKeywords < (extraTags.length + popularTags.length)) {
+    extraTags = getCountedKeywordsFuzzy(datasets, extraTags);
+    mergedWithPopulars = [...popularTags, ...extraTags];
   }
 
-  const mergedWithPopulars = [...popularTags, ...extraTags];
-  const mergedKeywords = mergedWithPopulars.filter((item, pos, self) => self.findIndex(v => v.name === item.name) === pos);
+  return mergedWithPopulars;
+/*
+  // const mergedKeywords = mergedWithPopulars.filter((item, pos, self) => self.findIndex(v => v.name === item.name) === pos);
 
-  // check which of the tags are actually part of the content list these are enabled = true
-  let enabledTags = getEnabledTags(mergedKeywords, content, true);
+  // check which of the tags are actually part of the datasets list these are enabled = true
+  let enabledTags = getEnabledTags(mergedKeywords, datasets, true);
   enabledTags = enabledTags.filter((element) => element.enabled);
   // enabledTags = removeMultiWorkKeywords(enabledTags);
 
@@ -367,4 +384,5 @@ export function getKeywordsForFiltering(content, modeMetadata = undefined, maxKe
   }
 
   return enabledTags;
+*/
 }

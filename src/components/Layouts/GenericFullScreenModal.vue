@@ -23,16 +23,18 @@
             {{ modalTitle }}
           </v-col>
 
-          <v-col class="shrink" >
+          <v-col class="flex-grow-0" >
 
-            <BaseIconButton id="GenericFullScreenModalCloseButton"
-                              material-icon-name="close"
-                              icon-color="white"
-                              color="white"
-                              outlined
-                              tooltipText="Close fullscreen view"
-                              :tooltipBottom="true"
-                              @clicked="closeClicked" />
+            <BaseIconButton
+              class="genericFullScreenModalCloseButton"
+              :icon="mdiClose"
+              icon-color="white"
+              color="white"
+              outlined
+              tooltip-text="Close fullscreen view"
+              :tooltip-bottom="true"
+              @clicked="closeClicked"
+            />
 
           </v-col>
         </v-row>
@@ -42,7 +44,7 @@
                     style="overflow: auto;" >
 
           <component :is="currentComponent"
-                    v-bind="genericProps" />
+                      v-bind="genericProps" />
 
       </v-card-text>
     </v-card>
@@ -81,9 +83,16 @@ import {
   getPreviewStrategyFromUrlExtension,
   SHOW_DATA_PREVIEW_PROPERTY,
 } from '@/factories/strategyFactory';
+import { mdiClose } from '@mdi/js';
+import { defineAsyncComponent } from 'vue';
 
-const MetadataMapFullscreen = () => import('@/modules/metadata/components/Geoservices/MetadataMapFullscreen.vue');
-const DetailChartsList = () => import('@/modules/metadata/components/GC-Net/DetailChartsList.vue');
+const DetailChartsList = defineAsyncComponent(() =>
+  import('@/modules/metadata/components/GC-Net/DetailChartsList.vue'),
+)
+
+const MetadataMapFullscreen = defineAsyncComponent(() =>
+  import('@/modules/metadata/components/Geoservices/MetadataMapFullscreen.vue'),
+)
 
 export default {
   name: 'GenericFullScreenModal',
@@ -101,7 +110,7 @@ export default {
     eventBus.on(OPEN_DATA_PREVIEW_IFRAME, this.showDataPreviewIframe);
     eventBus.on(INJECT_MAP_FULLSCREEN, this.showFullscreenMapModal);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(OPEN_FULLSCREEN_MODAL, this.openModal);
     eventBus.off(CLOSE_FULLSCREEN_MODAL, this.closeModal);
     eventBus.off(GCNET_OPEN_DETAIL_CHARTS, this.showGCNetModal);
@@ -117,7 +126,6 @@ export default {
     },
     showGCNetModal({ currentStation, fileObjects, graphStyling, config }) {
       this.currentComponent = DetailChartsList;
-      this.modalTitle = `Sensor measurements for ${currentStation ? currentStation.name : '' } station`;
 
       this.genericProps = {
         currentStation,
@@ -125,6 +133,8 @@ export default {
         graphStyling,
         config,
       };
+
+      this.modalTitle = `Sensor measurements for ${currentStation ? currentStation.name : '' } station`;
 
       eventBus.emit(OPEN_FULLSCREEN_MODAL);
     },
@@ -165,11 +175,12 @@ export default {
       // this.modalTitle = `Fullscreen Map for ${metadataTitle}`;
       this.modalTitle = 'Fullscreen Map';
 
-      this.currentComponent = MetadataMapFullscreen;
       this.genericProps = {
         site,
         layerConfig,
       };
+
+      this.currentComponent = MetadataMapFullscreen;
 
       eventBus.emit(OPEN_FULLSCREEN_MODAL);
     },
@@ -185,6 +196,7 @@ export default {
   },
   components: { BaseIconButton },
   data: () => ({
+    mdiClose,
     showModal: false,
     genericProps: {},
     currentComponent: null,

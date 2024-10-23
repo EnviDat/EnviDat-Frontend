@@ -34,7 +34,6 @@ import {
   CLEAR_PINNED_METADATA,
   SET_DETAIL_PAGE_BACK_URL,
   SET_ABOUT_PAGE_BACK_URL,
-  SET_VIRTUAL_LIST_INDEX,
   METADATA_UPDATE_EXISTING_AUTHORS,
   METADATA_UPDATE_EXISTING_KEYWORDS,
   METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS,
@@ -50,14 +49,12 @@ import {
 
 import { ADD_USER_NOTIFICATION } from '@/store/mainMutationsConsts';
 
-import globalMethods from '@/factories/globalMethods';
-
 import { METADATA_KEYWORDS_TITLE } from '@/factories/metadataConsts';
 
-import { checkWebpFeature } from '@/factories/enhancementsFactory';
 import { extractAuthorsMap } from '@/factories/authorFactory';
 import { solrResultToCKANJSON } from '@/factories/apiFactory';
 import { enhanceMetadatas } from '@/factories/metaDataFactory';
+
 
 export default {
   [SEARCH_METADATA](state, searchTerm) {
@@ -80,18 +77,7 @@ export default {
       }
     }
 
-    let cardBGImgs = this.state.cardBGImages; // || rootBGImgs;
-    cardBGImgs =
-      cardBGImgs ||
-      globalMethods.methods.mixinMethods_getCardBackgrounds(checkWebpFeature());
-    const categoryCards = this.state.categoryCards;
-
-    state.searchedMetadatasContent = enhanceMetadatas(
-      convertedPayload,
-      cardBGImgs,
-      categoryCards,
-      mode,
-    );
+    state.searchedMetadatasContent = enhanceMetadatas(convertedPayload, mode);
 
     state.searchingMetadatasContentOK = true;
     state.searchingMetadatasContent = false;
@@ -120,16 +106,7 @@ export default {
   [LOAD_METADATA_CONTENT_BY_ID_SUCCESS](state, payload) {
     state.loadingCurrentMetadataContent = false;
 
-    let cardBGImgs = this.state.cardBGImages; // || rootBGImgs;
-    cardBGImgs =
-      cardBGImgs ||
-      globalMethods.methods.mixinMethods_getCardBackgrounds(checkWebpFeature());
-    const categoryCards = this.state.categoryCards;
-    const enhancedPayload = enhanceMetadatas(
-      [payload],
-      cardBGImgs,
-      categoryCards,
-    );
+    const enhancedPayload = enhanceMetadatas([payload]);
 
     state.currentMetadataContent = Object.values(enhancedPayload)[0];
   },
@@ -152,18 +129,8 @@ export default {
     state.metadatasContent = {};
   },
   [BULK_LOAD_METADATAS_CONTENT_SUCCESS](state, payload) {
-    let cardBGImgs = this.state.cardBGImages; // || rootBGImgs;
-    cardBGImgs =
-      cardBGImgs ||
-      globalMethods.methods.mixinMethods_getCardBackgrounds(checkWebpFeature());
-    const categoryCards = this.state.categoryCards;
 
-    state.metadatasContent = enhanceMetadatas(
-      payload,
-      cardBGImgs,
-      categoryCards,
-    );
-
+    state.metadatasContent = enhanceMetadatas(payload);
     state.authorsMap = extractAuthorsMap(payload);
 
     state.metadatasContentOK = true;
@@ -228,9 +195,6 @@ export default {
   },
   [SET_ABOUT_PAGE_BACK_URL](state, payload) {
     state.aboutPageBackRoute = payload;
-  },
-  [SET_VIRTUAL_LIST_INDEX](state, payload) {
-    state.vIndex = payload;
   },
   /*
   [METADATA_CREATE_NEW_AUTHOR](state, newAuthor) {

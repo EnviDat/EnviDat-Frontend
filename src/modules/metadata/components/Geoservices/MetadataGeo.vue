@@ -7,9 +7,9 @@
         </v-col>
 
         <v-col v-if="mapEditable"
-               class="shrink pl-2 pr-4">
+               class="flex-grow-0 pl-2 pr-4">
           <BaseRectangleButton
-            :color="$vuetify.theme.themes.light.secondary"
+            :color="$vuetify.theme.themes.light.colors.secondary"
             buttonText="Upload GeoJSON"
             tooltipText="File Drop Also Possible"
             tooltipPosition="top"
@@ -18,36 +18,39 @@
         </v-col>
 
         <v-col v-if="mapEditable"
-               class="shrink pl-2">
+               class="flex-grow-0 pl-2">
           <BaseIconButton
             :disabled="!undoButtonEnabled"
-            materialIconName="undo"
-            iconColor="black"
-            :fillColor="$vuetify.theme.themes.light.accent"
-            tooltipText="Undo"
+            :icon="mdiUndo"
+            color="accent"
+            icon-color="black"
+            outlined
+            outline-color="black"
+            tooltip-text="Undo"
             @clicked="triggerGeomUndo"
           />
         </v-col>
 
         <v-col v-if="mapEditable"
-                class="shrink pl-2">
+                class="flex-grow-0 pl-2">
           <BaseIconButton
             :disabled="!saveButtonEnabled"
             :loading="saveButtonInProgress"
-            materialIconName="save"
-            iconColor="black"
-            :fillColor="$vuetify.theme.themes.light.accent"
-            tooltipText="Save"
+            :icon="mdiContentSave"
+            icon-color="black"
+            color="accent"
+            outlined
+            outline-color="black"
+            tooltip-text="Save"
             @clicked="triggerGeomSave"
           />
         </v-col>
 
-        <v-col class="shrink pl-2">
+        <v-col class="flex-grow-0 pl-2">
           <BaseIconButton
             v-if="showFullscreenButton"
-            materialIconName="zoom_out_map"
-            iconColor="black"
-            :fillColor="$vuetify.theme.themes.light.accent"
+            :icon="mdiArrowCollapseAll"
+            icon-color="black"
             @clicked="triggerFullscreen"
           />
         </v-col>
@@ -58,7 +61,7 @@
       v-if="error"
       class="py-1 text-caption readableText"
       :style="
-        `line-height: 1rem; background-color: ${$vuetify.theme.themes.light.error};`
+        `line-height: 1rem; background-color: ${$vuetify.theme.themes.light.colors.error};`
       "
     >
       {{ error }}
@@ -82,7 +85,7 @@
         class="text-caption readableText"
         align="center"
         :style="
-          `line-height: 1rem; background-color: ${$vuetify.theme.themes.light.error};`
+          `line-height: 1rem; background-color: ${$vuetify.theme.themes.light.colors.error};`
         "
       >
         {{ editErrorMessage }}
@@ -97,6 +100,7 @@ import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.v
 import { eventBus, INJECT_MAP_FULLSCREEN } from '@/factories/eventBus';
 import { METADATA_LOCATION_TITLE } from '@/factories/metadataConsts';
 import MapRoot from '@/modules/metadata/components/Geoservices/MapRoot.vue';
+import { mdiArrowCollapseAll, mdiContentSave, mdiUndo } from '@mdi/js';
 
 export default {
   name: 'MetadataGeo',
@@ -106,43 +110,56 @@ export default {
     BaseRectangleButton,
   },
   props: {
-    genericProps: Object,
-    editErrorMessage: String,
+    site: {
+      type: Object,
+      default: undefined,
+    },
+    layerConfig: {
+      type: Object,
+      default: () => {},
+    },
+    mapHeight: {
+      type: Number,
+      default: 450,
+    },
+    editErrorMessage: {
+      type: String,
+      default: undefined,
+    },
+    error: {
+      type: String,
+      default: undefined,
+    },
+    isGcnet: {
+      type: Boolean,
+      default: false,
+    },
+    mapEditable: {
+      type: Boolean,
+      default: false,
+    },
+    mapDivId: {
+      type: String,
+      default: 'metadata-map-small',
+    },
+    saveButtonEnabled: {
+      type: Boolean,
+      default: false,
+    },
+    saveButtonInProgress: {
+      type: Boolean,
+      default: false,
+    },
+    undoButtonEnabled: {
+      type: Boolean,
+      default: false,
+    },
+    showFullscreenButton: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
-    error() {
-      return this.genericProps?.error;
-    },
-    site() {
-      return this.genericProps?.site;
-    },
-    layerConfig() {
-      return this.genericProps?.layerConfig;
-    },
-    isGcnet() {
-      return this.genericProps?.isGcnet || false;
-    },
-    mapHeight() {
-      return this.genericProps?.mapHeight || 450;
-    },
-    mapEditable() {
-      return this.genericProps?.mapEditable || false;
-    },
-    mapDivId() {
-      return this.genericProps?.mapDivId || 'metadata-map-small';
-    },
-    saveButtonEnabled() {
-      return this.genericProps?.saveButtonEnabled || false;
-    },
-    saveButtonInProgress() {
-      return this.genericProps?.saveButtonInProgress || false;
-    },
-    undoButtonEnabled() {
-      return this.genericProps?.undoButtonEnabled || false;
-    },
-    showFullscreenButton() {
-      return this.genericProps?.showFullscreenButton || false;
-    },
   },
   methods: {
     triggerGeomSave() {
@@ -165,6 +182,9 @@ export default {
     },
   },
   data: () => ({
+    mdiArrowCollapseAll,
+    mdiContentSave,
+    mdiUndo,
     ready: false,
     map: null,
     smallSize: 300,

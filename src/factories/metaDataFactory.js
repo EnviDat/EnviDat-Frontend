@@ -34,11 +34,9 @@ import {
   PUBLICATION_STATE_RESERVED,
 } from '@/factories/metadataConsts';
 
-import {
-  enhanceTags,
-  getCategoryColor,
-  guessTagCategory,
-} from '@/factories/keywordsFactory';
+import { enhanceMetadataWithModeExtras } from '@/factories/modeFactory';
+import categoryCards, { cardImageBgs } from '@/store/categoryCards';
+import { enhanceTags, getCategoryColor, guessTagCategory } from '@/factories/keywordsFactory';
 
 // import { getResourcesDownloads } from '@/modules/matomo/store/matomoStore';
 
@@ -72,7 +70,7 @@ export function formatDate(date, inputFormat = 'yyyy-MM-dd') {
   // expecting a format like 2017-08-15T15:25:45.175790
   let formatedDate = '';
 
-  if (date) {
+  if (typeof date === 'string' && date.trim() !== '') {
     const split = date.split('T');
     if (split.length > 1) {
       const dateOnly = split[0];
@@ -90,6 +88,7 @@ export function formatDate(date, inputFormat = 'yyyy-MM-dd') {
       formatedDate = date;
     }
   }
+
 
   return formatedDate;
 }
@@ -136,7 +135,6 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
     try {
       maintainer = JSON.parse(dataset.maintainer);
     } catch (e) {
-      // eslint-disable-next-line no-console
       console.error(`Maintainer json parse err: ${e}`);
     }
   }
@@ -149,7 +147,6 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
     try {
       authors = JSON.parse(dataset.author);
     } catch (e) {
-      // eslint-disable-next-line no-console
       console.error(`Author json parse err: ${e}`);
     }
   } else if (dataset.author instanceof Array) {
@@ -168,7 +165,7 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
     contactEmail,
     tags: dataset.tags,
     titleImg: dataset.titleImg,
-    maxTags: smallScreen ? 5 : 12,
+    maxTags: smallScreen ? 1 : 12,
     authors,
     authorDeadInfo,
     categoryColor: dataset.categoryColor,
@@ -239,7 +236,6 @@ export function createFunding(dataset) {
 
       return funding;
     } catch (e) {
-      // eslint-disable-next-line no-console
       console.error(`Error JSON Parse of Funding: ${e}`);
     }
   }
@@ -725,7 +721,6 @@ export function createLocation(dataset) {
       try {
         spatialJSON = JSON.parse(dataset.spatial);
       } catch (error) {
-        // eslint-disable-next-line no-console
         console.error(`MetaDataFactory: geojson parsing error ${error}`);
       }
     }
@@ -775,28 +770,27 @@ export function createLocation(dataset) {
   return location;
 }
 
+
 let lastCategory = '';
 let tempImgKeys = [];
 let tempImgValues = [];
 
 /**
  * @param {object} metadata
- * @param {object} cardBGImages it's an object of key value pairs paths to images
  *
- * @param {Array<Object>} categoryCards
  * @return {object} metadata entry enhanced with a title image based on its tags
  */
-export function enhanceTitleImg(metadata, cardBGImages, categoryCards) {
-  if (!metadata || !categoryCards) {
+export function enhanceTitleImg(metadata) {
+  if (!metadata) {
     return null;
   }
 
   /* eslint-disable no-param-reassign */
   const category = guessTagCategory(metadata.tags);
 
-  if (cardBGImages) {
+  if (cardImageBgs) {
     if (category !== lastCategory) {
-      const categoryImages = cardBGImages[category];
+      const categoryImages = cardImageBgs[category];
       tempImgKeys = Object.keys(categoryImages);
       tempImgValues = Object.values(categoryImages);
       lastCategory = category;
@@ -808,29 +802,23 @@ export function enhanceTitleImg(metadata, cardBGImages, categoryCards) {
     metadata.titleImg = randomIndex >= 0 ? tempImgValues[randomIndex] : 0;
   }
 
-  metadata.categoryColor = getCategoryColor(categoryCards, category);
+  metadata.categoryColor = getCategoryColor(category, categoryCards);
 
   return metadata;
 }
 
 /**
  * @param {Object} metadataEntry
- * @param {Array} cardBGImages
- * @param {Array} categoryCards
  *
  * @return {Object} metadataEntry enhanced with a title image based on the entrys tags
  */
-export function enhanceMetadataEntry(
-  metadataEntry,
-  cardBGImages,
-  categoryCards,
-) {
-  if (!metadataEntry || !categoryCards) {
+export function enhanceMetadataEntry(metadataEntry) {
+  if (!metadataEntry || !cardImageBgs) {
     return null;
   }
 
   if (!metadataEntry.titleImg) {
-    enhanceTitleImg(metadataEntry, cardBGImages, categoryCards);
+    enhanceTitleImg(metadataEntry);
   }
 
   return metadataEntry;
@@ -838,16 +826,9 @@ export function enhanceMetadataEntry(
 
 /**
  * @param {Array} metadatas
- * @param {Array} cardBGImages
- *
- * @param categoryCards
  * @return {Array} metadatas enhanced with a title image based on the metadatas tags
  */
-export function enhanceMetadatasTitleImage(
-  metadatas,
-  cardBGImages,
-  categoryCards,
-) {
+export function enhanceMetadatasTitleImage(metadatas) {
   if (metadatas === undefined) {
     return undefined;
   }
@@ -857,7 +838,7 @@ export function enhanceMetadatasTitleImage(
       const el = metadatas[i];
 
       if (!el.titleImg) {
-        metadatas[i] = enhanceTitleImg(el, cardBGImages, categoryCards);
+        metadatas[i] = enhanceTitleImg(el);
       }
     }
   }
@@ -953,12 +934,11 @@ export const possibleVisibilityStates = [
 /**
  *
  * @param {object[]}datasets
- * @param cardBGImages
- * @param categoryCards
- * @param mode
+ * @param {string}mode
  * @returns {{}}
  */
-export function enhanceMetadatas(datasets, cardBGImages, categoryCards) {
+export function enhanceMetadatas(datasets, mode = undefined) {
+
   if (!(datasets instanceof Array)) {
     throw new Error(
       `enhanceMetadatas() expects an array of datasets got ${typeof datasets}`,
@@ -969,7 +949,8 @@ export function enhanceMetadatas(datasets, cardBGImages, categoryCards) {
 
   for (let i = 0; i < datasets.length; i++) {
     let dataset = datasets[i];
-    dataset = enhanceMetadataEntry(dataset, cardBGImages, categoryCards);
+    dataset = enhanceMetadataEntry(dataset);
+    dataset = enhanceMetadataWithModeExtras(mode, dataset);
 
     dataset = enhanceTags(dataset, categoryCards);
 
@@ -1015,6 +996,14 @@ export function localSearch(searchTerm, datasets) {
   }
 
   return foundDatasets;
+}
+
+export function isTagSelected(tagName, selectedTagNames) {
+  if (!tagName || selectedTagNames === undefined) {
+    return false;
+  }
+
+  return selectedTagNames.indexOf(tagName) >= 0;
 }
 
 export function unpackDeprecatedResources(customFields) {

@@ -4,12 +4,45 @@
     max-height="500"
     max-width="750"
     class="elevation-5"
-    :color="notification.color"
+    :color="type"
+    :style="height ? 'overflow: hidden auto; ' : 'height: 100%;'"
   >
+    <v-alert :title="message"
+             :text="details"
+             :type="type"
+    />
+
+    <v-alert v-if="stack"
+             :type="type"
+    >
+      {{ stack }}
+    </v-alert>
+
+    <v-row no-gutters align="end" justify="end">
+      <v-col v-if="showReportButton" class="flex-grow-0 mx-2">
+        <base-rectangle-button
+          buttonText="Report"
+          isSmall
+          @clicked="$emit('clickedReport', $event)"
+        />
+      </v-col>
+
+      <v-col v-if="showCloseButton" class="flex-grow-0 mx-2">
+        <base-rectangle-button
+          color="black"
+          buttonText="Close"
+          isSmall
+          marginClass="text-white"
+          @clicked="$emit('clickedClose', $event)"
+        />
+      </v-col>
+    </v-row>
+
+<!--
     <v-card-title>
       <v-row align="start">
-        <v-col class="shrink">
-          <v-icon>{{ notification.icon }}</v-icon>
+        <v-col class="flex-grow-0">
+          <BaseIcon :icon="notification.icon" />
         </v-col>
 
         <v-col>
@@ -38,7 +71,7 @@
 
     <v-card-text v-show="showReportButton || showCloseButton">
       <v-row no-gutters align="end" justify="end">
-        <v-col v-if="showReportButton" class="shrink">
+        <v-col v-if="showReportButton" class="flex-grow-0">
           <base-rectangle-button
             buttonText="Report"
             isSmall
@@ -46,17 +79,19 @@
           />
         </v-col>
 
-        <v-col v-if="showCloseButton" class="shrink">
+        <v-col v-if="showCloseButton" class="flex-grow-0">
           <base-rectangle-button
             color="black"
             buttonText="Close"
             isSmall
-            marginClass="white--text"
+            marginClass="text-white"
             @clicked="$emit('clickedClose', $event)"
           />
         </v-col>
       </v-row>
     </v-card-text>
+-->
+
   </v-card>
 </template>
 
@@ -77,25 +112,44 @@
 
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 
-// checkout skeleton
-// https://github.com/ToxicJojo/SkeletonPlaceholder
-
 export default {
   name: 'NotificationCard',
   components: {
     BaseRectangleButton,
   },
   props: {
-    notification: Object,
+    message: {
+      type: String,
+      default: 'info',
+    },
+    details: {
+      type: String,
+      default: undefined,
+    },
+    stack: {
+      type: String,
+      default: undefined,
+    },
+    type: {
+      type: String,
+      default: undefined,
+    },
+    timeout: {
+      type: Number,
+      default: 2000,
+    },
     showReportButton: {
       type: Boolean,
       default: false,
     },
     showCloseButton: {
       type: Boolean,
-      default: false,
+      default: true,
     },
-    height: Number,
+    height: {
+      type: Number,
+      default: 200,
+    },
   },
   mounted() {
     this.setTimeout();
@@ -106,7 +160,7 @@ export default {
       const that = this;
       window.clearTimeout(this.activeTimeout);
 
-      if (this.notification.timeout) {
+      if (this.notification?.timeout) {
         this.activeTimeout = window.setTimeout(() => {
           that.$emit('clickedClose');
         }, this.notification.timeout);

@@ -1,28 +1,30 @@
 <template>
-  <v-chip class="authorTag"
+  <v-chip class="authorTag text-black"
           :class="{
-            'white--text': highlighted,
-            smallChip: $vuetify.breakpoint.smAndDown,
+            'text-white': highlighted,
+            smallChip: $vuetify.display.smAndDown,
             authorTagDraggable: draggable,
            }"
+          :style="{ height: $vuetify.display.xs ? '15px' : '' }"
           :color="highlighted ? 'primary' : color"
           @click.stop="clicked"
           :draggable="draggable"
           :small="isSmall"
-          close-icon="close"
-          :close="isCloseable"
+          :density="isSmall ? 'compact' : 'default'"
+          :close-icon="mdiClose"
+          :closeable="closeable"
           @click:close="$emit('closeClicked', authorName)"
           >
-    <v-avatar left>
-      <v-icon :class="colorIcon" size="24px" >account_circle</v-icon>
+    <v-avatar left class="pr-1">
+      <v-icon size="24px" :icon="mdiAccountCircle" />
     </v-avatar>
 
     {{ authorName }}
 
     <v-tooltip v-if="authorIsDead"
-                bottom>
-      <template v-slot:activator="{ on }">
-        <v-icon v-on="on" x-small >hourglass_bottom</v-icon>
+               location='bottom'>
+      <template v-slot:activator="{ props }">
+        <v-icon v-bind="props" size='small' :icon="mdiTimerSand" />
       </template>
 
       {{ authorPassedInfo }}
@@ -46,6 +48,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
+import { mdiTimerSand, mdiAccountCircle, mdiClose } from '@mdi/js';
+
 export default {
   props: {
     name: String,
@@ -65,12 +69,17 @@ export default {
       type: Boolean,
       default: false,
     },
-    isCloseable: Boolean,
+    closeable: Boolean,
     draggable: {
       type: Boolean,
       default: undefined,
     },
   },
+  data: ()=>({
+    mdiTimerSand,
+    mdiAccountCircle,
+    mdiClose,
+  }),
   computed: {
     authorIsDead() {
       return this.asciiDead && this.name ? this.name.includes(this.asciiDead) : false;
@@ -90,7 +99,10 @@ export default {
 <style scoped>
 
   .authorTag {
+    /*
+    Remove opacity because with vuetify 3 chip are harder to read
     opacity: 0.85;
+    */
     /*
     background-color: #f8f8f8 !important;
     */

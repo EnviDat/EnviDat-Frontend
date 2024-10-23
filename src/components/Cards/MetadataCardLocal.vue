@@ -1,6 +1,6 @@
 <template>
   <div class="localCard"
-       :style="`border: 2px dashed ${$vuetify.theme.themes.light.secondary};`">
+       :style="`border: 2px dashed ${$vuetify.theme.themes.light.colors.secondary};`">
     <MetadataCard v-bind="$props"
                   @clickedEvent="$emit('clickedEvent')"
                   @clickedTag="$emit('clickedTag')"
@@ -24,10 +24,12 @@ export default {
   name: 'MetadataCardLocal',
   props: {
     id: String,
-    title: String,
+    title: {
+      type: String,
+      default: '[Unnamed Dataset]',
+    },
     subtitle: String,
     name: String,
-    type: Number,
     restricted: Boolean,
     tags: {
       type: Array,
@@ -37,9 +39,6 @@ export default {
     dark: Boolean,
     flatLayout: Boolean,
     compactLayout: Boolean,
-    fileIconString: String,
-    lockedIconString: String,
-    unlockedIconString: String,
     geoJSONIcon: String,
     categoryColor: String,
     showGenericOpenButton: {
@@ -53,19 +52,19 @@ export default {
     },
     state: {
       type: String,
-      default: '',
+      default: 'draft',
     },
     organization: {
       type: String,
-      default: '',
+      default: undefined,
     },
     organizationTooltip: {
       type: String,
-      default: '',
+      default: undefined,
     },
     role: {
       type: String,
-      default: '',
+      default: undefined,
     },
     showOrganizationOnHover: {
       type: Boolean,

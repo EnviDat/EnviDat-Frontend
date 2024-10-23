@@ -9,6 +9,7 @@
           :style="
             `border-bottom-left-radius: 4px; border-top-left-radius: 4px;`
           "
+          cover
           :lazy-src="loadingImg"
           :src="titleImg"
         />

@@ -79,32 +79,12 @@ import {
 } from '@/factories/metadataConsts';
 import { createAuthor } from '@/factories/authorFactory';
 import { enhanceTags } from '@/factories/keywordsFactory';
+import categoryCards from '@/store/categoryCards';
 
 /**
  * Json conversion rules from frontend to backend and vise versa
  * https://stackoverflow.com/questions/50081462/javascript-how-to-map-a-backend-entity-to-a-frontend-entity-and-the-opposite
  */
-
-/*
-    {
-      metadataTitle: dataset.title,
-        doi: dataset.doi,
-        contactName: maintainer ? getAuthorName(maintainer) : '',
-        contactEmail,
-        tags: dataset.tags,
-        titleImg: dataset.titleImg,
-        maxTags: smallScreen ? 5 : 12,
-        authors,
-        authorDeadInfo,
-        categoryColor: dataset.categoryColor,
-        organization: dataset.organization?.name || '',
-        organizationTooltip: dataset.organization?.title || '',
-        metadataState: visibility,
-        spatialInfo: dataset.spatial_info,
-        created,
-        modified,
-    };
-*/
 const JSONFrontendBackendRules = {
   [METADATA_MAIN_HEADER]: [
     [METADATA_TITLE_PROPERTY,'title'],
@@ -357,10 +337,8 @@ export function convertJSON(data, stringify, recursive = false) {
 
           if (import.meta.env?.DEV) {
             if (e instanceof SyntaxError) {
-              // eslint-disable-next-line no-console
-              console.log(`Json parse error on property: ${prop} with value: ${value} had error: ${e}`);
+              console.error(`Json parse error on property: ${prop} with value: ${value} had error: ${e}`);
             } else {
-              // eslint-disable-next-line no-console
               console.error(`Json parse error on property: ${prop} with value: ${value} had error: ${e}`);
             }
           }
@@ -502,8 +480,8 @@ export function convertToBackendJSONWithRules(rules, data) {
       const value = convertGet(data, rule[0]);
       convertPut(backendJson, rule[1], value);
     } catch (e) {
-      console.log(i);
-      console.log(rule);
+      console.error(i);
+      console.error(rule);
       console.error(e);
     }
   }
@@ -527,8 +505,8 @@ function convertToFrontendJSONWithRules(rules, data) {
       const value = convertGet(data, rule[1]);
       convertPut(frontendJson, rule[0], value);
     } catch (e) {
-      console.log(i);
-      console.log(rule);
+      console.error(i);
+      console.error(rule);
       console.error(e);
     }
   }
@@ -631,7 +609,7 @@ export function cleanResourceForFrontend(resource) {
     try {
       resSize = JSON.parse(resSize);
     } catch (e) {
-      console.log(`resourceSize parsing failed (fallback used!) resource id: ${resource.id}`);
+      console.error(`resourceSize parsing failed (fallback used!) resource id: ${resource.id}`);
       resSize = { size_value: '', size_units: '' };
     }
   }
@@ -644,7 +622,7 @@ export function cleanResourceForFrontend(resource) {
     try {
       restricted = JSON.parse(restricted);
     } catch (e) {
-      console.log(`restricted parsing failed (fallback used!) resource id: ${resource.id}`);
+      console.error(`restricted parsing failed (fallback used!) resource id: ${resource.id}`);
       restricted = { allowed_users: '', level: 'public', shared_secret: '' };
     }
   }
@@ -774,7 +752,7 @@ function formatDatesForFrontend(dates) {
   return formattedDates;
 }
 
-function populateEditingMain(commit, categoryCards, backendJSON) {
+function populateEditingMain(commit, backendJSON) {
 
   const dataObject = {};
 
@@ -792,11 +770,11 @@ function populateEditingMain(commit, categoryCards, backendJSON) {
   dataObject.descriptionData = descriptionData;
 
   stepKey = EDITMETADATA_KEYWORDS;
-  const enhanceDataset = enhanceTags(backendJSON, categoryCards);
-  const keywordsData = getFrontendJSONForStep(stepKey, enhanceDataset);
+  const keywordsData = getFrontendJSONForStep(stepKey, backendJSON);
+  const enhanceDatasets = enhanceTags(keywordsData, categoryCards);
 
   const enhancedKeywords = {
-    ...keywordsData,
+    ...enhanceDatasets,
     metadataCardTitle: headerData.metadataTitle,
     metadataCardSubtitle: descriptionData.description,
   }
@@ -973,11 +951,11 @@ function populateEditingPublicationInfo(commit, metadataRecord, backendJSON) {
   return dataObject;
 }
 
-export function populateEditingComponents(commit, metadataRecord, categoryCards) {
+export function populateEditingComponents(commit, metadataRecord) {
 
   const backendJSON = convertJSON(metadataRecord, false);
 
-  const { headerData, keywordsData } = populateEditingMain(commit, categoryCards, backendJSON);
+  const { headerData, keywordsData } = populateEditingMain(commit, backendJSON);
 
   const { authors } = populateEditingAuthors(commit, backendJSON);
 
@@ -1169,7 +1147,7 @@ export function mergeResourceSizeForFrontend(resource) {
       try {
         size = Number.parseFloat(resourceSize.sizeValue);
       } catch (e) {
-        console.log(`sizeValue parsing failed resource id: ${resource.id}`);
+        console.error(`sizeValue parsing failed resource id: ${resource.id}`);
       }
 
       if (Number.isNaN(size)) {

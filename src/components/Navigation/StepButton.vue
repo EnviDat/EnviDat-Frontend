@@ -1,43 +1,43 @@
 <template>
 
   <div class="stepButton px-1 px-md-2 py-0"
-        :style="`border-color: ${ active ? $vuetify.theme.themes.light.accent : $vuetify.theme.themes.light.highlight };`"
+        :style="`border-color: ${ active ? $vuetify.theme.themes.light.colors.accent : $vuetify.theme.themes.light.colors.highlight };`"
         @click="catchStepClick">
 
     <div class="stepRow">
-      <div class="stepNumber readableText white--text"
+      <div v-if="showNumberOnly"
+           class="stepNumber readableText text-white"
             :style="`background-color: ${stepNumberColor} ;`">
         {{ number }}
       </div>
 
-      <div v-if="!error && title && !showNumberOnly"
-           class="px-3 readableText ">
+      <div v-if="!error && !showNumberOnly"
+           class="px-2 readableText ">
           {{ title }}
       </div>
 
       <div v-if="error"
-           class="stepText px-3 readableText ">
+           class="stepText px-2 readableText ">
         <div>
           {{ title }}
         </div>
 
         <div class="stepErrorText"
-             :style="`color: ${ $vuetify.theme.themes.light.error };`">
+             :style="`color: ${ $vuetify.theme.themes.light.colors.error };`">
           {{ error }}
         </div>
       </div>
         
       <div v-if="!error"
            class="readableText pl-1 pl-md-0" >
-          <v-icon :color="complete ? 'secondary' : 'grey'">
-            {{ complete ? 'check_circle' : 'warning_amber' }}
-          </v-icon>
+        <BaseIcon :icon="complete ? mdiCheckboxMarkedOutline : mdiCheckboxBlankOutline"
+                  :badgeDot="!complete"
+                  badgeColor="accent"
+                  :color="complete ? 'secondary' : 'grey'"
+        />
       </div>
 
-      <v-icon v-if="error"
-              color="error">
-        error
-      </v-icon>
+      <BaseIcon v-if="error" :icon="mdiAlertOctagram" color="error" />
 
     </div>
 
@@ -57,9 +57,17 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
+import { mdiAlertOctagram, mdiCheckboxMarkedOutline, mdiCheckboxBlankOutline } from '@mdi/js';
 
 export default {
   name: 'StepButton',
+  components: { BaseIcon },
+  data: ()=>({
+    mdiAlertOctagram,
+    mdiCheckboxMarkedOutline,
+    mdiCheckboxBlankOutline,
+  }),
   props: {
     title: {
       type: String,
@@ -88,7 +96,7 @@ export default {
   },
   computed: {
     stepNumberColor() {
-      return this.active ? this.$vuetify.theme.themes.light.accent : this.$vuetify.theme.themes.light.secondary;
+      return this.active ? this.$vuetify.theme.themes.light.colors.accent : this.$vuetify.theme.themes.light.colors.secondary;
     },
   },
   methods: {

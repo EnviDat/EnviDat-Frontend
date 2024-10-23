@@ -1,70 +1,68 @@
 <template>
   <v-container fluid id="EditAddPublication" class="pa-0">
-    <v-row no-gutters align="center" :dense="dense">
-      <v-col cols="12" xl="auto">
+    <v-row no-gutters align="center" >
+      <v-col cols="12" xl="4">
+
         <v-text-field
-          v-model="pidField"
-          :label="labels.pId"
-          :dense="dense"
-          :disabled="!!doiField"
-          outlined
-          hide-details
-          prepend-icon="account_circle"
-          @input="pidChange"
+            v-model="pidField"
+            :label="labels.pId"
+            :disabled="!!doiField"
+            hide-details
+            :prepend-icon="mdiIdentifier"
+            @input="(event) => pidChange(event.target.value)"
         />
       </v-col>
 
       <v-col
         cols="12"
-        xl="auto"
+        xl="1"
         style="text-align: center;"
-        class="text-h6 px-md-4 shrink"
+        class="text-h6 px-md-4 flex-grow-0"
       >
         Or
       </v-col>
 
-      <v-col cols="12" xl="auto">
+      <v-col cols="12" xl="4">
         <v-text-field
-          v-model="doiField"
-          :label="labels.doi"
-          :dense="dense"
-          :disabled="!!pidField"
-          outlined
-          hide-details
-          prepend-icon="fingerprint"
-          @input="doiChange"
+            v-model="doiField"
+            :label="labels.doi"
+            :disabled="!!pidField"
+            hide-details
+            :prepend-icon="mdiFingerprint"
+            @input="(event) => doiChange(event.target.value)"
         />
       </v-col>
 
       <v-col
-        cols="auto"
-        class="ma-auto mt-4 ma-xl-0 mt-xl-0 pl-md-4 pt-4 pt-md-0"
+        cols="2"
+        class="ma-auto mt-4 ma-xl-0 pl-md-4 pt-4 pt-md-0"
       >
         <BaseIconButton
           v-if="!isEditMode"
-          material-icon-name="add"
-          :fillColor="$vuetify.theme.themes.light.primary"
-          icon-color="white"
-          :is-small="dense && $vuetify.breakpoint.mdAndUp"
+          :icon="mdiPlus"
+          color='primary'
+          icon-color='white'
+          :is-small="$vuetify.display.mdAndUp"
           @clicked="addClick"
         />
       </v-col>
     </v-row>
+
     <v-row>
       <v-col class="flex-grow-0" cols="12" sm="4" md="4">
         <a
           id="textAreaController"
           ref="textAreaController"
-          class="text-caption"
+          style="cursor: pointer;"
+          class="text-body-1"
           @click="toggleTextArea()"
-          >{{ showTextArea ? 'Hide' : 'Add' }} citation in plain text</a
-        >
+        >{{ showTextArea ? 'Hide' : 'Add' }} citation in plain text</a>
       </v-col>
 
       <v-col v-if="showTextArea" class="flex-grow-0">
         <BaseRectangleButton
           button-text="Save Text"
-          :disabled="!isValid"
+          :disabled="!isInputTextValid"
           is-xs-small
           @clicked="editExistingData()"
         />
@@ -79,6 +77,7 @@
         />
       </v-col>
     </v-row>
+
     <v-row>
       <v-col>
         <!-- @changedText="catchChangedText($event)" -->
@@ -94,6 +93,7 @@
         </GenericTextareaPreviewLayout>
       </v-col>
     </v-row>
+
     <v-row no-gutters class="pt-2">
       <v-col>
         <v-card class="pa-4">
@@ -121,7 +121,7 @@ import { mapState } from 'vuex';
 import { EDIT_METADATA_ADD_PUBLICATION_TITLE } from '@/factories/metadataConsts';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseCitationView from '@/components/BaseElements/BaseCitationView.vue';
-// import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout.vue';
 import {
   getValidationMetadataEditingObject,
@@ -129,8 +129,6 @@ import {
 } from '@/factories/userEditingValidations';
 
 import {
-  eventBus,
-  EDIT_RELATED_PUBLICATION_SEND,
   EDITMETADATA_RELATED_PUBLICATIONS,
 } from '@/factories/eventBus';
 
@@ -138,6 +136,7 @@ import {
   resolveDoiCitationObjectsViaDora,
   resolvePidCitationObjectsViaDora,
 } from '@/factories/citationFactory';
+import { mdiPlus, mdiFingerprint, mdiIdentifier } from '@mdi/js';
 
 export default {
   name: 'EditAddPublication',
@@ -170,9 +169,29 @@ export default {
       type: Boolean,
       default: false,
     },
-    dense: {
-      type: Boolean,
-      default: false,
+    message: {
+      type: String,
+      default: '',
+    },
+    messageDetails: {
+      type: String,
+      default: null,
+    },
+    error: {
+      type: String,
+      default: '',
+    },
+    errorDetails: {
+      type: String,
+      default: null,
+    },
+    readOnlyFields: {
+      type: Array,
+      default: () => [],
+    },
+    readOnlyExplanation: {
+      type: String,
+      default: '',
     },
     validationError: {
       type: String,
@@ -182,12 +201,6 @@ export default {
       type: String,
       default: '',
     },
-  },
-  created() {
-    eventBus.on(EDIT_RELATED_PUBLICATION_SEND, this.editData);
-  },
-  beforeDestroy() {
-    eventBus.off(EDIT_RELATED_PUBLICATION_SEND, this.editData);
   },
   mounted() {
     if (this.pid) {
@@ -290,8 +303,6 @@ export default {
         citation: citationText,
         abstract: null,
       };
-
-      // this.indexEditData = object.index;
     },
     toggleTextArea() {
       this.showTextArea = !this.showTextArea;
@@ -307,12 +318,14 @@ export default {
         citation: value,
         abstract: null,
       };
+
       this.previewCitation = previewPlainText;
-      this.validateProperty(this.editingProperty, previewPlainText.citation);
-      this.isValid = this.validateProperty(
+
+      this.isInputTextValid = this.validateProperty(
         this.editingProperty,
         previewPlainText.citation,
       );
+
       this.plainText = value;
     },
     pidChange(pid) {
@@ -372,6 +385,7 @@ export default {
         doi: this.doiField,
         plainText: this.plainText,
       });
+
       this.doiField = null;
       this.pidField = null;
       this.plainText = null;
@@ -387,12 +401,14 @@ export default {
     },
   },
   data: () => ({
-    // indexEditData: false,
+    mdiPlus,
+    mdiFingerprint,
+    mdiIdentifier,
     isEditMode: false,
     showTextArea: false,
     isResolving: false,
     previewCitation: null,
-    isValid: false,
+    isInputTextValid: false,
     filledTextArea: '',
     previewPID: null,
     previewDOI: null,
@@ -413,8 +429,8 @@ export default {
   components: {
     BaseIconButton,
     BaseCitationView,
-    // BaseStatusLabelView,
     GenericTextareaPreviewLayout,
+    BaseRectangleButton,
   },
 };
 </script>

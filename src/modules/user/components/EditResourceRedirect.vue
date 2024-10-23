@@ -9,11 +9,10 @@
 
       <v-row no-gutters align="center" class="pt-6">
         <v-col cols="1">
-          <v-icon color="secondary"
-                  style="animation: progress-circular-rotate 3s linear infinite"
-                  x-large
-          >settings</v-icon
-          >
+          <BaseIcon style="animation: progress-circular-rotate 3s linear infinite"
+                    :icon="mdiCog"
+                    color="secondary"
+          />
         </v-col>
 
         <v-col class="text-h5" cols="11">
@@ -43,8 +42,7 @@
   </v-card>
 </template>
 
-<script>
-/**
+<script>/**
  * EditResourceRedirect.vue shows a explaination text and a button to redirect editing
  * in the ckan frontend
  *
@@ -54,11 +52,14 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import {mdiCog} from '@mdi/js';
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 
 export default {
   name: 'EditResourceRedirect',
   components: {
+    BaseIcon,
   },
   props: {
     title: {
@@ -81,6 +82,7 @@ export default {
   computed: {
   },
   data: () => ({
+    mdiCog,
   }),
 };
 </script>

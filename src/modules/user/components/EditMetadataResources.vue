@@ -15,7 +15,7 @@
 
       <v-row>
         <v-col cols="12">
-          <MetadataResources :genericProps="metadataResourcesGenericProps" />
+          <MetadataResources v-bind="metadataResourcesGenericProps" />
         </v-col>
       </v-row>
     </v-container>
@@ -57,22 +57,12 @@ export default {
       default: undefined,
     },
   },
-  mounted() {
-    this.fileSizeIcon = this.mixinMethods_getIcon('fileSize') || '';
-    this.fileIcon = this.mixinMethods_getIcon('file') || '';
-    this.dateCreatedIcon = this.mixinMethods_getIcon('dateCreated') || '';
-    this.lastModifiedIcon = this.mixinMethods_getIcon('dateModified') || '';
-  },
   computed: {
     metadataResourcesGenericProps() {
       return {
         resources: this.resources,
         dataLicenseTitle: this.dataLicenseTitle,
         dataLicenseUrl: this.dataLicenseUrl,
-        fileSizeIcon: this.fileSizeIcon,
-        fileIcon: this.fileIcon,
-        dateCreatedIcon: this.dateCreatedIcon,
-        lastModifiedIcon: this.lastModifiedIcon,
         emptyText:
           'No resources has been added yet. Upload a file or provide a link to a resource.',
         emptyTextColor: 'grey',
@@ -83,10 +73,6 @@ export default {
   data: () => ({
     editingInstructions: 'Pick a resource from the list to edit its details',
     EDIT_METADATA_RESOURCES_TITLE,
-    fileSizeIcon: null,
-    fileIcon: null,
-    dateCreatedIcon: null,
-    lastModifiedIcon: null,
   }),
 };
 </script>

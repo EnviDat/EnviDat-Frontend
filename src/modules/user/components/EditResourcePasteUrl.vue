@@ -20,9 +20,9 @@
             :label="labels.textFieldLabel"
             v-model="url"
             ref="urlTextField"
-            prepend-icon="link"
+            :prepend-icon="mdiLink"
             clearable
-            clear-icon="close"
+            :clear-icon="mdiClose"
             :error-messages="validationErrors.url"
             @keyup="blurOnEnterKey"
             @input="checkCreateButtonDisabled"
@@ -31,8 +31,9 @@
       </v-row>
 
       <v-row no-gutters justify="end">
-        <v-col class="shrink">
+        <v-col class="flex-grow-0">
           <BaseRectangleButton
+            :color="createButtonDisabled ? 'grey' : 'primary'"
             :disabled="createButtonDisabled"
             :buttonText="labels.buttonText"
             @clicked="createButtonClick"
@@ -58,11 +59,11 @@ import * as yup from 'yup';
 
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import { isObjectValidCheckAllProps } from '@/factories/userEditingValidations';
+import {mdiClose, mdiLink} from '@mdi/js';
 
 export default {
   name: 'EditResourcePasteUrl',
   props: {
-    genericProps: Object,
   },
   computed: {},
   methods: {
@@ -86,6 +87,8 @@ export default {
     },
   },
   data: () => ({
+    mdiLink,
+    mdiClose,
     url: '',
     labels: {
       title: 'Create Resource From Link',

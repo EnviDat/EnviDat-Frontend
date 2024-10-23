@@ -1,16 +1,21 @@
-// noinspection ES6UnusedImports
+import * as components from 'vuetify/components'
+import * as directives from 'vuetify/directives'
+import 'vuetify/styles';
+import { createVuetify } from 'vuetify';
+import config from '@/plugins/vuetifyConfig.js';
 
-import vuetify from './vuetify_storybook';
-
-// import App component for the css for the components
-// eslint-disable-next-line no-unused-vars
-import App from '../src/App.vue';
-
-import Vue from 'vue';
-import globalMethods from '../src/factories/globalMethods';
 import { envidatViewportParameters } from '~/stories/js/envidatViewports';
+import { setup } from '@storybook/vue3';
+import { withVuetifyTheme } from './withVuetifyTheme.decorator';
 
-Vue.mixin(globalMethods);
+setup((app) => {
+  // Registers your app's plugins into Storybook
+  app.use(createVuetify({
+    components,
+    directives,
+    ...config,
+  }))
+});
 
 // read more: https://storybook.js.org/docs/react/writing-stories/naming-components-and-hierarchy
 export const parameters = {
@@ -25,17 +30,9 @@ export const parameters = {
   ...envidatViewportParameters,
 };
 
-export const decorators = [
-  (Story) => ({
-    vuetify,
-    template: `
-    <v-app class="vuetifyStorybookApp">
-      <v-main >
-        <v-container fluid class="pa-0">
-          <story/>
-        </v-container>
-      </v-main>
-    </v-app>
-    `,
-  }),
-];
+// read more: https://storybook.js.org/recipes/vuetify#register-vuetify-in-storybook
+// decorator for vuetify is necessary
+export const decorators = [withVuetifyTheme];
+
+export const tags = [];
+

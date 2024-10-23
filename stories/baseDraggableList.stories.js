@@ -14,7 +14,7 @@ import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams }
 
 
 export default {
-  title: '1 Base Elements / Base Draggable List',
+  title: '1 Base Elements / Draggable List',
   component: BaseDraggableList,
   argTypes: { listChanged: { action: 'listChanged' } },
 };
@@ -34,7 +34,7 @@ export const FilledList = {
       'Gian-Kasper Plattner',
       'Ranita Pal',
     ],
-    instructions: 'Drag and Drop items to change order',
+    instructions: 'Drag and Drop authors to change order',
   },
 };
 

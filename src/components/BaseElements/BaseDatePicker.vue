@@ -1,97 +1,68 @@
 <template>
   <div :id="`BaseDatePicker_${dateLabel}`">
-      <v-text-field
-        v-if="isReadonly(dateProperty)"
-        :label="dateLabel"
-        dense
-        outlined
-        readonly
-        prepend-icon="date_range"
-        :hint="readonlyHint(dateProperty)"
-        :value="formatToEnviDatDate(dateField, dateProperty)"
-        :error-messages="validationErrors[dateProperty]"
-      />
-
       <v-menu
-        v-else
+        :disabled="readonly"
         id="dateMenu"
         key="dateMenu"
         ref="dateMenu"
         v-model="datePickerOpen"
         :close-on-content-click="false"
         transition="scale-transition"
-        :left="$vuetify?.breakpoint?.smAndDown"
-        :offset-y="$vuetify?.breakpoint?.mdAndUp"
+        :left="$vuetify?.display?.smAndDown"
+        :offset-y="$vuetify?.display?.mdAndUp"
         min-width="280px"
       >
-<!--
-        max-width="290px"
-        min-width="auto"
--->
-
-        <template v-slot:activator="{ on }">
+        <template v-slot:activator="{ props }">
           <v-text-field
+            v-bind="props"
             :label="dateLabel"
             ref="dateTextField"
-            dense
-            outlined
-            prepend-icon="date_range"
-            v-on="on"
-            :value="formatToEnviDatDate(dateField, dateProperty)"
+            :readonly="readonly"
+            persistent-hint
+            :hint="readOnlyExplanation"
+            :prepend-icon="mdiCalendarRange"
+            :clearable="isClearable && !readonly"
+            persistent-clear
+            :model-value="formatToEnviDatDate(dateField, dateProperty)"
             @change="changedDateTextField(dateProperty, $event)"
             :error-messages="validationErrors[dateProperty]"
           />
         </template>
 
         <v-date-picker
+          show-adjacent-months
+          elevation="2"
           ref="datePicker"
           locale="en-in"
-          @input="changeDatePicker(dateProperty, $event)"
-          scrollable
+          color='secondary'
+          :next-icon="mdiSkipNext"
+          :prev-icon="mdiSkipPrevious"
           :min="formatToDatePickerDate(minDate)"
           :max="formatToDatePickerDate(maxDate)"
-          :value="formatToDatePickerDate(dateField)"
-          next-icon="skip_next"
-          prev-icon="skip_previous"
+          :model-value="formatToDatePickerDate(dateField)"
+          @update:modelValue="changeDatePicker(dateProperty, $event)"
         >
-          <v-row v-if="clearable"
-                  no-gutters
-                  class="px-4"
-                  style="align-items: center;"
-          >
-            <v-col>
-              <div @click="clearClick(dateProperty)">
-                {{ `Clear the ${dateLabel}` }}
-              </div>
-            </v-col>
-
-            <v-col class="shrink">
-              <BaseIconButton
-                materialIconName="clear"
-                iconColor="red"
-                :tooltipText="`Clear the ${dateLabel}`"
-                @clicked="clearClick(dateProperty)"
-              />
-            </v-col>
-          </v-row>
         </v-date-picker>
       </v-menu>
   </div>
 </template>
 
 <script>
-import { isDate, isMatch, parse } from 'date-fns';
+import { isDate, isMatch, parse, format } from 'date-fns';
 import * as yup from 'yup';
 import { ValidationError } from 'yup';
 
-import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import {
   ckanDateFormat,
   enviDatDateFormat,
   parseDateStringToCKANFormat,
   parseDateStringToEnviDatFormat,
 } from '@/factories/mappingFactory';
+
 import { isFieldValid } from '@/factories/userEditingValidations';
+import { isFieldReadOnly } from '@/factories/globalMethods';
+import { useDate } from 'vuetify';
+import { mdiCalendarRange, mdiSkipNext, mdiSkipPrevious } from '@mdi/js';
 
 // eslint-disable-next-line func-names
 yup.addMethod(yup.date, 'parseDateString', function() {
@@ -132,9 +103,9 @@ export default {
       type: String,
       default: undefined,
     },
-    clearable: {
+    isClearable: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     readOnlyFields: {
       type: Array,
@@ -142,7 +113,7 @@ export default {
     },
     readOnlyExplanation: {
       type: String,
-      default: '',
+      default: undefined,
     },
   },
   beforeMount() {
@@ -150,7 +121,7 @@ export default {
       [this.dateProperty]: '',
     };
   },
-    mounted() {
+  mounted() {
 
     isFieldValid(
         this.dateProperty,
@@ -160,6 +131,9 @@ export default {
     );
   },
   computed: {
+    readonly() {
+      return isFieldReadOnly(this.$props, this.dateProperty);
+    },
     dateField: {
       get() {
         return this.previewDate || this.date;
@@ -228,24 +202,24 @@ export default {
 
       return yup.object().shape(validation);
     },
-    isReadonly(dateProperty) {
-      return this.mixinMethods_isFieldReadOnly(dateProperty);
-    },
-    readonlyHint(dateProperty) {
-      return this.mixinMethods_readOnlyHint(dateProperty);
-    },
     changeDatePicker(dateProperty, value) {
+      let dateString = value;
+
+      if (isDate(value)) {
+        dateString = format(value, ckanDateFormat);
+      }
+
       if (dateProperty === this.dateProperty) {
-        this.previewDate = value;
+        this.previewDate = dateString;
       }
 
       if (isFieldValid(
             dateProperty,
-            value,
+            dateString,
             this.getValidation(dateProperty),
             this.validationErrors,
           )) {
-        this.changeDate(dateProperty, value);
+        this.changeDate(dateProperty, dateString);
       }
     },
     changedDateTextField(dateProperty, dateString) {
@@ -271,8 +245,8 @@ export default {
     clearClick(dateProperty) {
       if (dateProperty === this.dateProperty) {
         this.previewDate = '';
+        this.datePickerOpen = false;
       }
-
 
       this.$emit('clearClick', dateProperty);
     },
@@ -284,7 +258,7 @@ export default {
       try {
         return parseDateStringToEnviDatFormat(dateString);
       } catch (e) {
-        console.log(e);
+        console.error(e);
         this.validationErrors[
           dateProperty
         ] = `Invalid date format, use ${enviDatDateFormat.toUpperCase()}`;
@@ -294,27 +268,20 @@ export default {
     },
     formatToDatePickerDate(dateString) {
       if (!dateString) {
-        return '';
+        return undefined;
       }
 
-      const dateTime = parse(dateString, ckanDateFormat, new Date());
-
-      if (dateTime instanceof Date && !!dateTime.getTime()) {
-        return new Date(dateTime - new Date().getTimezoneOffset() * 60000)
-          .toISOString()
-          .substr(0, 10);
-      }
-
-      return '';
+      return this.adapter.parseISO(dateString);
     },
   },
-  components: {
-    BaseIconButton,
-  },
   data: () => ({
+    mdiCalendarRange,
+    mdiSkipNext,
+    mdiSkipPrevious,
     previewDate: '',
     datePickerOpen: false,
     validationErrors: {},
+    adapter: useDate(),
   }),
 };
 </script>

@@ -13,7 +13,7 @@
     </v-card-text>
 
     <v-card-actions v-if="!showPlaceholder && citationText"
-                    class="pa-4 pt-0">
+                    class="pa-4">
       <v-container class="pa-0"
                     fluid >
         <v-row justify="end"
@@ -21,24 +21,24 @@
 
           <v-col v-for="link in citationLinks"
                   :key="link.text"
-                  class="shrink py-1 px-2" >
+                  class="flex-grow-0 py-1 px-2" >
 
             <base-rectangle-button margin-class="citationButton"
                                     color="secondary"
                                     :button-text="link.text"
                                     :tooltipText="link.tooltipText"
-                                    material-icon-name="assignment"
+                                    :icon="mdiClipboardText"
                                     :is-small="true"
                                     icon-color="white"
                                     :url="link.url" />
           </v-col>
 
-          <v-col class="shrink py-1 px-2">
+          <v-col class="flex-grow-0 py-1 px-2">
             <base-rectangle-button margin-class="citationButton"
                                    color="secondary"
                                    button-text="Copy"
                                    tooltipText="Copy citation text to your clipboard"
-                                   material-icon-name="content_copy"
+                                   :icon="mdiContentCopy"
                                    :is-small="true"
                                    icon-color="white"
                                    @clicked="catchClipboardCopy"
@@ -51,9 +51,7 @@
 
     <v-card-text v-if="showPlaceholder && !citationText"
                   class="pa-4 pt-0">
-      <div class="skeleton skeleton-size-normal skeleton-color-concrete skeleton-animation-shimmer">
-        <div class="bone bone-type-multiline bone-style-paragraph" />
-      </div>
+      <v-skeleton-loader type='paragraph' color='gray' />
     </v-card-text>
 
     <v-card-text v-if="!showPlaceholder && !citationText"
@@ -63,16 +61,11 @@
     </v-card-text>
 
     <v-card-actions v-if="showPlaceholder && !citationText"
-                    class="pa-4" >
+                    class="pa-4 pt-0" >
       <v-spacer />
-      <div class="skeleton skeleton-size-normal skeleton-color-concrete skeleton-animation-shimmer">
-        <div style="width: 128px; height: 32px;"
-              class="mx-1 bone bone-type-image bone-style-rectangle" />
-        <div style="width: 128px; height: 32px;"
-              class="mx-1 bone bone-type-image bone-style-rectangle" />
-        <div style="width: 128px; height: 32px;"
-              class="mx-1 bone bone-type-image bone-style-rectangle" />
-      </div>
+      <v-skeleton-loader type='button' color='gray' width='100' />
+      <v-skeleton-loader type='button' color='gray' width='100' />
+      <v-skeleton-loader type='button' color='gray' width='100' />
     </v-card-actions>
   </v-card>
 </template>
@@ -98,6 +91,7 @@ import {
 } from '@/factories/stringFactory';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import { METADATA_CITATION_TITLE } from '@/factories/metadataConsts';
+import { mdiClipboard, mdiClipboardText, mdiContentCopy } from '@mdi/js';
 
 export default {
   name: 'MetadataCitation',
@@ -105,18 +99,56 @@ export default {
     BaseRectangleButton,
   },
   props: {
-    genericProps: Object,
-    showPlaceholder: Boolean,
+    citationText: {
+      type: String,
+      default: undefined,
+    },
+    citationXmlLink: {
+      type: String,
+      default: undefined,
+    },
+    citationIsoXmlLink: {
+      type: String,
+      default: undefined,
+    },
+    citationGCMDXmlLink: {
+      type: String,
+      default: undefined,
+    },
+    citationBibtexXmlLink: {
+      type: String,
+      default: undefined,
+    },
+    citationRisXmlLink: {
+      type: String,
+      default: undefined,
+    },
+    fixedHeight: {
+      type: Boolean,
+      default: false,
+    },
+    emptyTextColor: {
+      type: String,
+      default: 'red',
+    },
+    emptyText: {
+      type: String,
+      default: 'No citation found for this dataset.',
+    },
+    showPlaceholder: {
+      type: Boolean,
+      default: false,
+    },
   },
   data: () => ({
     METADATA_CITATION_TITLE,
+    mdiClipboard,
+    mdiClipboardText,
+    mdiContentCopy,
   }),
   computed: {
     markdownText() {
       return renderMarkdown(this.citationText, false);
-    },
-    citationText() {
-      return this.mixinMethods_getGenericProp('citationText');
     },
     citationLinks() {
       return [{
@@ -145,30 +177,6 @@ export default {
         url: this.citationRisXmlLink,
       },
       ];
-    },
-    citationXmlLink() {
-      return this.mixinMethods_getGenericProp('citationXmlLink');
-    },
-    citationIsoXmlLink() {
-      return this.mixinMethods_getGenericProp('citationIsoXmlLink');
-    },
-    citationGCMDXmlLink() {
-      return this.mixinMethods_getGenericProp('citationGCMDXmlLink');
-    },
-    citationBibtexXmlLink() {
-      return this.mixinMethods_getGenericProp('citationBibtexXmlLink');
-    },
-    citationRisXmlLink() {
-      return this.mixinMethods_getGenericProp('citationRisXmlLink');
-    },
-    fixedHeight() {
-      return this.mixinMethods_getGenericProp('fixedHeight');
-    },
-    emptyTextColor() {
-      return this.mixinMethods_getGenericProp('emptyTextColor', 'red');
-    },
-    emptyText() {
-      return this.mixinMethods_getGenericProp('emptyText', 'No citation found for this dataset.');
     },
   },
   methods: {

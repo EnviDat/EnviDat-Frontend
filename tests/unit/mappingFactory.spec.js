@@ -27,7 +27,6 @@ import {
   EDITMETADATA_RELATED_PUBLICATIONS,
 } from '@/factories/eventBus';
 
-import categoryCards from '@/store/categoryCards';
 import * as mappingTestData from '@/../public/testdata/mappingTestData.json';
 import {
   DATE_PROPERTY_DATE_TYPE,
@@ -637,7 +636,7 @@ describe('populateEditingComponents', () => {
   }
 
   it('with mock commit', () => {
-    populateEditingComponents(mockCommit, mappingTestData, categoryCards);
+    populateEditingComponents(mockCommit, mappingTestData);
   });
 
 });

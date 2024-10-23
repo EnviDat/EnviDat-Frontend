@@ -3,12 +3,14 @@
 
     <div :style="`position: absolute; z-index: 2; top: 10px; left: ${ width - 50}px; width: 40px;`">
 
-      <base-icon-button :materialIconName="buttonIcon"
-                        iconColor="black"
-                        :color="buttonColor"
-                        :isElevated="true"
-                        :isSmall="true"
-                        @clicked="flipCard" />
+      <base-icon-button 
+        :icon="buttonIcon"
+        icon-color="black"
+        :color="buttonColor"
+        elevated
+        small
+        @clicked="flipCard"
+      />
     </div>
 
     <div class="flipAnimation"
@@ -30,6 +32,7 @@
 
 <script>
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import {mdiCheck, mdiPencil} from '@mdi/js';
 
 /**
  * FlipLayout.vue
@@ -62,10 +65,10 @@ export default {
   computed: {
     buttonIcon() {
       if (!this.autoButtonFlip) {
-        return 'edit';
+        return mdiPencil;
       }
 
-      return this.flipped ? 'check' : 'edit';
+      return this.flipped ? mdiCheck : mdiPencil;
     },
     buttonColor() {
       if (!this.autoButtonFlip) {
@@ -88,6 +91,8 @@ export default {
     },
   },
   data: () => ({
+    mdiPencil,
+    mdiCheck,
     flipped: false,
   }),
   components: {

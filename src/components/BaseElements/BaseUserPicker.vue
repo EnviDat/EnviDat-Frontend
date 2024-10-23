@@ -11,13 +11,11 @@
     </v-row>
 
     <v-row no-gutters>
-      <v-col>
+      <v-col class="pt-2 tagAuthorFix">
         <v-autocomplete
           v-model="pickedUsers"
           :items="users"
-          outlined
-          :dense="dense"
-          append-icon="arrow_drop_down"
+          :menu-icon="mdiArrowDownDropCircleOutline"
           :readonly="readonly"
           :hint="hint"
           :persistent-hint="!!hint"
@@ -25,31 +23,36 @@
           :label="pickerLabel"
           :multiple="multiplePick"
           :clearable="isClearable"
-          :search-input.sync="search"
+          :search-input="search"
           :error-messages="errorMessages"
           :menu-props="menuOptions"
-          clear-icon="close"
+          :clear-icon="mdiClose"
           v-bind="$props"
           @change="catchPicks"
           @blur="$emit('blur', $event)"
         >
+<!--
+          :search-input.sync="search"
+-->
+
           <template v-slot:selection="{ item }">
             <TagChipAuthor
-              v-if="item"
-              :name="item"
-              :isSmall="true"
-              :isCloseable="userTagsCloseable"
-              @closeClicked="catchCloseClicked"
+                v-if="item.value"
+                :name="item.value"
+                :closable="userTagsCloseable && !readonly"
+                @closeClicked="catchCloseClicked"
             />
           </template>
 
           <template v-slot:item="{ item }">
-            <TagChipAuthor
-              v-if="item"
-              :name="item"
-              @clicked="catchPickClicked"
-              :isSmall="true"
-            />
+            <v-list-item >
+              <TagChipAuthor
+                v-if="item"
+                :name="item.value"
+                @clicked="catchPickClicked"
+                :isSmall="true"
+              />
+            </v-list-item>
           </template>
 
           <template v-slot:no-data>
@@ -75,12 +78,16 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import TagChipAuthor from '@/components/Chips/TagChipAuthor.vue';
+import {mdiAccountBox, mdiArrowDownDropCircleOutline, mdiClose} from '@mdi/js';
 
 export default {
   name: 'BaseUserPicker',
   props: {
     users: Array,
-    preSelected: Array,
+    preSelected: {
+      type: Array,
+      default: undefined,
+    },
     multiplePick: Boolean,
     placeholder: {type: String, default: undefined},
     pickerLabel: {
@@ -95,15 +102,11 @@ export default {
     instructions: String,
     prependIcon: {
       type: String,
-      default: 'account_box',
+      default: mdiAccountBox,
     },
     userTagsCloseable: {
       type: Boolean,
       default: true,
-    },
-    dense: {
-      type: Boolean,
-      default: false,
     },
     errorMessages: {
       type: String,
@@ -160,7 +163,7 @@ export default {
           this.pickedUsers = this.preSelected[0];
         }
       } else {
-        this.pickedUsers = this.multiplePick ? [] : '';
+        this.pickedUsers = this.multiplePick ? [] : undefined;
       }
     },
     catchCloseClicked(authorName) {
@@ -177,7 +180,7 @@ export default {
           this.pickedUsers = [];
         }
       } else {
-        this.pickedUsers = '';
+        this.pickedUsers = undefined;
       }
 
       this.$emit('removedUsers', this.pickedUsers);
@@ -206,8 +209,10 @@ export default {
     },
   },
   data: () => ({
-    pickedUsers: [],
+    pickedUsers: undefined,
     search: '',
+    mdiArrowDownDropCircleOutline,
+    mdiClose,
   }),
   components: {
     TagChipAuthor,
@@ -215,4 +220,13 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style>
+.tagAuthorFix .v-chip__content {
+  /*
+  a fix for now because there is a overlay coming in the way of the author icon
+  but the chips are getting wider which isn't good
+  */
+  padding: 0 11px !important;
+}
+
+</style>

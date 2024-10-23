@@ -13,7 +13,7 @@ import SearchBarView from '@/modules/home/components/SearchBarView.vue';
 import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
 export default {
-  title: '4 Filtering / SearchBarView',
+  title: '4 Filtering / SearchBar View',
   component: SearchBarView,
 };
 

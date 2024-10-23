@@ -7,13 +7,10 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
- */
-import swissflLogo from '@/assets/modes/swissfl/logo.jpg';
-import globalMethods from '@/factories/globalMethods';
-import {
-  swissFLExtraTags,
-  swissFLTag,
-} from '@/modules/metadata/store/swissForestLabTags';
+*/
+
+import { swissFLExtraTags, swissFLTag } from '@/modules/metadata/store/swissForestLabTags';
+
 import {
   EDNA_MODE,
   EDNA_MODE_EXTRAS_KEY,
@@ -21,39 +18,12 @@ import {
   SWISSFL_MODE,
   SWISSFL_MODE_EXTRAS_KEY,
 } from '@/store/metadataMutationsConsts';
-import ednaLogo from '@/assets/modes/edna/edna_logo.jpg';
+
 import { ednaTag } from '@/modules/metadata/store/ednaLabTags';
-import {
-  createTag,
-  tagsIncludedInSelectedTags,
-} from '@/factories/keywordsFactory';
+import { createTag, tagsIncludedInSelectedTags } from '@/factories/keywordsFactory';
+import { ednaImages, swissflImages } from '@/factories/imageFactory';
 
 export const MODE_STORE = 'MODE_STORE';
-
-function getSwissflIcons() {
-  // use the relative path to the assets, because it will run in unit tests
-  const swissflPngs = require.context(
-    '@/assets/modes/swissfl',
-    false,
-    /\.png$/,
-  );
-  const iconImgs = globalMethods.methods.mixinMethods_importImages(swissflPngs);
-  // const swissflPngs = import.meta.glob('../assets/modes/swissfl/*.png', { eager: true });
-  // const iconImgs = globalMethods.methods.mixinMethods_importGlobImages(swissflPngs);
-
-  const icons = Object.values(iconImgs);
-  return {
-    dataset: icons[0],
-    infrastructure: icons[1],
-    model: icons[2],
-  };
-}
-
-function getEDNAIcons() {
-  return {
-    dataset: ednaLogo,
-  };
-}
 
 /**
  * loads the dataset specific for a mode based on the mainTag property on its modeMetadata
@@ -126,9 +96,9 @@ export const modes = [
     externalUrl: 'https://swissforestlab.wsl.ch',
     mainTag: swissFLTag,
     extraTags: swissFLExtraTags,
+    logo: swissflImages.logo,
+    icons: swissflImages,
     minTagAmount: 5,
-    logo: swissflLogo,
-    icons: getSwissflIcons(),
     extrasKey: SWISSFL_MODE_EXTRAS_KEY,
     datasetUrl: '',
     loadDatasets: loadModeDatasetsWithMainTag,
@@ -140,9 +110,9 @@ export const modes = [
       'https://www.wsl.ch/en/about-wsl/instrumented-field-sites-and-laboratories/laboratories/edna-laboratory/',
     mainTag: ednaTag,
     extraTags: [], // swissFLExtraTags,
+    logo: ednaImages.logo,
+    icons: ednaImages,
     minTagAmount: 1,
-    logo: ednaLogo,
-    icons: getEDNAIcons(),
     extrasKey: EDNA_MODE_EXTRAS_KEY,
     datasetUrl: 'https://envidat.ch/converters-api/edna/shallow-datasets',
     loadDatasets: loadEDNADatasets,
@@ -192,39 +162,36 @@ let tempModeData = null;
 /**
  *
  * @param {string} mode
- * @param {object} metdataEntry
+ * @param {object} metadataEntry
  * @returns {*}
  */
-export function enhanceMetadataWithModeExtras(mode, metdataEntry) {
-  if (!mode || !metdataEntry) return metdataEntry;
+export function enhanceMetadataWithModeExtras(mode, metadataEntry) {
+  if (!mode || !metadataEntry) return metadataEntry;
 
-  if (
-    typeof metdataEntry.extras === 'object' &&
-    metdataEntry.extras instanceof Array
-  ) {
+  if (typeof metadataEntry.extras === 'object'
+    && metadataEntry.extras instanceof Array) {
+
     if (!tempModeData || (tempModeData && tempModeData.name !== mode)) {
       tempModeData = getModeData(mode);
     }
 
     const key = tempModeData.extrasKey;
 
-    for (let i = 0; i < metdataEntry.extras.length; i++) {
-      const extra = metdataEntry.extras[i];
+    for (let i = 0; i < metadataEntry.extras.length; i++) {
+      const extra = metadataEntry.extras[i];
 
       if (extra.key === key) {
-        metdataEntry[key] = extra.value;
+        metadataEntry[key] = extra.value;
 
         const extraTag = createTag(extra.value.toUpperCase());
-        const tagIndex = metdataEntry.tags.findIndex(
-          t => t.name === extraTag.name,
-        );
+        const tagIndex = metadataEntry.tags.findIndex(t => t.name === extraTag.name);
 
         if (tagIndex < 0) {
-          metdataEntry.tags.push(extraTag);
+          metadataEntry.tags.push(extraTag);
         }
       }
     }
   }
 
-  return metdataEntry;
+  return metadataEntry;
 }

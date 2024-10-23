@@ -2,14 +2,14 @@
   <v-row
     no-gutters
     :class="{
-      'px-4': $vuetify.breakpoint.mdAndUp,
-      'px-3': $vuetify.breakpoint.sm,
+      'px-4': $vuetify.display.mdAndUp,
+      'px-3': $vuetify.display.sm,
     }"
   >
     <v-col class="pt-3" cols="12">
       <img-and-text-layout
         :img="titleImage"
-        :height="$vuetify.breakpoint.smAndDown ? 100 : 150"
+        :height="$vuetify.display.smAndDown ? 100 : 150"
         :title="title"
       />
     </v-col>
@@ -26,7 +26,7 @@
       <div v-html="markdownContent"></div>
     </v-col>
 
-    <slot v-if="hasSoltConent" />
+    <slot v-if="hasSlotContent" />
   </v-row>
 </template>
 
@@ -53,8 +53,16 @@ export default {
     markdownContent: String,
   },
   computed: {
-    hasSoltConent() {
-      return !!this.$slots.default && !!this.$slots.default[0];
+    hasSlotContent() {
+      // correct refactoring??
+      // https://v3-migration.vuejs.org/breaking-changes/slots-unification.html#_3-x-syntax
+      const slotAmount = Object.values(this.$slots).length;
+      if (slotAmount > 0) {
+        const def = this.$slots.default();
+        return def?.length > 0;
+      }
+
+      return false;
     },
   },
   components: {

@@ -3,30 +3,29 @@
                                       position: relative;
                                       background-color: white;`">
 
-    <v-tooltip :disabled="!tooltipText" bottom>
-      <template v-slot:activator="{ on }">
-        <div style="height: 26px;"
-              class="d-flex"
-              v-on="on">
+    <v-tooltip :disabled="!tooltipText" location='bottom'>
+      <template v-slot:activator="{ props }">
+        <div class="d-flex" v-bind="props">
           <div class="iconSwitch">
             <button
               tabindex="0"
               type="button"
               :disabled="disabled"
               class="iconSwitchButton"
-              :id="'iconSwitchButton' + _uid"
-              :class="classList"
+              :id="'iconSwitchButton' + $.uid" :class="classList"
               role="switch"
-              :aria-describedby="'iconSwitchLabel' + _uid"
-              :aria-checked="active"
-              @click="emitClick"
-            >
-              <v-icon v-if="materialIconName" class="iconSwitchButtonIcon" :color="iconColor">
-                {{ materialIconName }}
-              </v-icon>
+              :aria-describedby="'iconSwitchLabel' + $.uid"
+              :aria-checked="active" @click="emitClick">
+
+              <BaseIcon
+                :icon="icon"
+                :color="iconColor"
+              />
             </button>
           </div>
-          <label v-if="label" :for="'iconSwitchButton' + _uid" class="iconSwitchLabel" :class="{disabled}">{{ label }}</label>
+          <label v-if="label" :for="'iconSwitchButton' + $.uid" class="iconSwitchLabel" :class="{ disabled }">
+            {{ label }}
+          </label>
         </div>
       </template>
 
@@ -50,33 +49,24 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import BaseIcon from './BaseIcon.vue';
+
 export default {
   name: 'BaseIconSwitch',
+  components: { BaseIcon },
   props: {
-    active: {
-      type: Boolean,
-      default: false,
-    },
-    label: {
-      type: String,
-      default: undefined,
-    },
-    color: {
-      type: String,
-      default: 'primary',
-    },
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
-    materialIconName: String,
-    tooltipText: String,
-    zIndex: Number,
+    label: { type: String, default: undefined },
+    icon: { type: String, default: undefined, required: true },
+    color: { type: String, default: 'primary' },
+    active: { type: Boolean, default: false },
+    disabled: { type: Boolean, default: false },
+    tooltipText: { type: String, default: undefined },
+    zIndex: { type: Number, default: undefined },
   },
   watch: {
     active: {
       immediate: true,
-      handler(newValue){
+      handler(newValue) {
         this.internalActive = newValue;
       },
     },
@@ -85,24 +75,23 @@ export default {
     internalActive: false,
   }),
   computed: {
-    classList(){
+    classList() {
       return {
         disabled: this.disabled,
-        active: this.active,
-        [`${this.color}--text text--lighten-2`]: this.internalActive,
-        'grey--text text--lighten-2': !this.internalActive,
-      }
+        active: this.internalActive,
+        [`text-${this.color}-lighten-2`]: this.internalActive,
+        'text-grey-lighten-2': !this.internalActive,
+      };
     },
-    iconColor(){
-      return this.internalActive ? this.color : 'gray';
+    iconColor() {
+      return this.internalActive ? this.color : 'grey';
     },
   },
   methods: {
     emitClick(event) {
-      if (this.disabled){
+      if (this.disabled) {
         return;
       }
-      
       this.$emit('clicked', event);
     },
   },
@@ -111,11 +100,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
 $switch-length: 44px;
 $switch-bg-height: 14px;
 $button-size: 26px;
-$button-shadow: 0 2px 4px -1px rgba(0,0,0,.2),0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12);
+$button-shadow: 0 2px 4px -1px rgba(0, 0, 0, .2), 0 4px 5px 0 rgba(0, 0, 0, .14), 0 1px 10px 0 rgba(0, 0, 0, .12);
 $slide-duration: 0.2s;
 
 .baseIconSwitch {
@@ -149,9 +137,15 @@ $slide-duration: 0.2s;
       box-shadow: $button-shadow;
       background-color: #FFF;
       transition: none;
+      display: grid;
+
+      .baseIcon {
+        justify-self: center;
+        align-self: center;
+      }
 
       &:hover {
-        box-shadow: $button-shadow, 0 0 0 4px rgba(33,33,33,0.2);
+        box-shadow: $button-shadow, 0 0 0 4px rgba(33, 33, 33, 0.2);
       }
 
       &.active {
@@ -179,11 +173,11 @@ $slide-duration: 0.2s;
       &:before {
         content: ' ';
         position: absolute;
-        display: block; 
+        display: block;
         width: $switch-length;
         height: $switch-bg-height;
-        border-radius: 8px; 
-        top: ($button-size - $switch-bg-height) / 2 + 1px;
+        border-radius: 8px;
+        top: calc(($button-size - $switch-bg-height) / 2) + 1px;
         background-color: currentColor;
         z-index: -1; // Behind the button
         box-shadow: inset 1px 1px 3px rgba(33, 33, 33, 0.2);
@@ -192,5 +186,4 @@ $slide-duration: 0.2s;
     }
   }
 }
-
 </style>

@@ -1,11 +1,8 @@
-// noinspection ES6PreferShortImport
-
-import { addons } from '@storybook/addons';
+import { addons } from '@storybook/manager-api';
 import { create } from '@storybook/theming';
 import { lightColorblind } from '../src/plugins/colorThemes';
 
 addons.setConfig({
-  // panelPosition: 'right',
   theme: create({
     base: 'light',
     brandTitle: 'EnviDat Storybook',

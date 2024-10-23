@@ -82,7 +82,7 @@ export default {
   beforeRouteEnter(to, from, next) {
     next(vm => {
       vm.$store.commit(SET_CURRENT_PAGE, USER_SIGNIN_PAGENAME);
-      vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
+      vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
     });
   },
   components: {
@@ -240,7 +240,7 @@ export default {
     },
   },
   data: () => ({
-    PageBGImage: 'app_b_browsepage',
+    pageBGImage: 'app_b_browsepage',
   }),
 };
 </script>

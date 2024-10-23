@@ -25,7 +25,7 @@ export const aboutRoutes = [
   },
   {
     path: ABOUT_PATH,
-    // redirect from onyl /about to /about/about for consistency
+    // redirect from only /about to /about/about for consistency
     // with the defined :tab parameter above
     redirect: `${ABOUT_PATH}${ABOUT_PATH}`,
   },

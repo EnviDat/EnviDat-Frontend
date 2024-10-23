@@ -8,7 +8,7 @@
       <div
         :class="{
           'grid-rows': topLayout,
-          'grid-colmuns': !topLayout,
+          'grid-columns': !topLayout,
         }"
         style="width: 100%; height: 100%"
       >
@@ -95,6 +95,7 @@ import selectedMarker2x from '@/assets/map/selected-marker-icon-2x.png';
 // HACK end
 import FilterMapWidget from '@/components/Filtering/FilterMapWidget.vue';
 import { createLocation } from '@/factories/metaDataFactory';
+
 import {EDNA_MODE} from '@/store/metadataMutationsConsts';
 
 export default {
@@ -105,19 +106,13 @@ export default {
     topLayout: Boolean,
     modeData: Object,
   },
-  beforeMount() {
-    this.pinIcon = this.mixinMethods_getIcon('marker');
-    this.multiPinIcon = this.mixinMethods_getIcon('markerMulti');
-    this.polygonIcon = this.mixinMethods_getIcon('polygons');
-    this.eyeIcon = this.mixinMethods_getIcon('eye');
-  },
   mounted() {
     this.setupMap();
     if (this.modeData && this.modeData.name === EDNA_MODE && !this.modeData.isShallow){
       this.polygonEnabled = true;
     }
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.map) {
       this.map.remove();
     }
@@ -133,13 +128,17 @@ export default {
       loadingMetadatasContent: 'metadata/loadingMetadatasContent',
     }),
     bingApiKey() {
-      return this.config?.apiKeys?.bing || null;
+      if (this.$store) {
+        return this.config?.apiKeys?.bing || null;
+      }
+
+      return null;
     },
     loading() {
       return this.loadingMetadataIds || this.loadingMetadatasContent;
     },
     widgetWidth() {
-      return this.$vuetify.breakpoint.smAndDown ? 100 : 350;
+      return this.$vuetify.display.smAndDown ? 100 : 350;
     },
     hasPins() {
       return this.pinLayerGroup && this.pinLayerGroup.length > 0;
@@ -346,8 +345,8 @@ export default {
       // var latlngs = [[37, -109.05],[41, -109.03],[41, -102.05],[37, -102.04]];
       const polygon = createPolygon(coords, {
         color: selected
-          ? this.$vuetify.theme.themes.light.primary
-          : this.$vuetify.theme.themes.light.accent,
+          ? this.$vuetify.theme.themes.light.colors.primary
+          : this.$vuetify.theme.themes.light.colors.accent,
         opacity: 0.45,
         fillOpacity: 0,
       });
@@ -624,10 +623,6 @@ export default {
     multiPinEnabled: true,
     multiPinLayerGroup: null,
     multiPins: [],
-    pinIcon: null,
-    multiPinIcon: null,
-    polygonIcon: null,
-    eyeIcon: null,
     filterText: 'Pinned: ',
     marker,
     marker2x,
@@ -657,7 +652,7 @@ export default {
   grid-template-rows: 1fr 5fr;
 }
 
-.grid-colmuns {
+.grid-columns {
   display: grid;
   grid-template-columns: 4fr 1fr;
 }

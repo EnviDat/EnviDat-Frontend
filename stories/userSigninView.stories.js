@@ -54,7 +54,6 @@ export const EmailEnteredRequestSuccess = {
 export const EmailAndKeyEntered = {
   args: {
     prefilledEmail: 'dominik.haas@wsl.ch',
-    requestSuccess: true,
     prefilledKey: '01234567890123456789012345678901',
   },
 };

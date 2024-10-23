@@ -15,48 +15,57 @@
       class="pa-4 pt-0 heightAndScroll readableText"
       :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
     >
-      <v-col v-for="(n, index) in dataSliced" :key="'n_' + index">
-        <section :class="{ 'd-flex align-center': isPreview }">
-          <BaseCitationView
-            :abstract="n.abstract"
-            :citation="setCitation(n)"
-            :doi="n.doi"
-            :doiUrl="n.doiUrl"
-            :citationColsCustom="10"
-          />
+    <v-col v-for="(n, index) in dataSliced" :key="'n_' + index"
+    class="px-0 py-1">
+    <!-- title visible only in preview mode -->
+      <p class="font-weight-bold" v-if="isPreview && n.title"> {{ n.title }}</p>
+      <p class="font-weight-bold" v-if="isPreview && n.pid"> {{ n.pid }}</p>
+      <p class="font-weight-bold" v-if="isPreview && n.doi"> {{ n.doi }}</p>
+        <v-row no-gutters
+               :class="{ 'align-center': isPreview }">
+
+
+          <v-col class="flex-grow-1">
+            <BaseCitationView
+              :abstract="n.abstract"
+              :citation="setCitation(n)"
+              :doi="n.doi"
+              :doiUrl="n.doiUrl"
+            />
+          </v-col>
+
           <!-- isPreview - show this button only if it is within the Edit Related Publications section -->
-          <div v-if="isPreview">
-            <v-col class="shrink px-1 d-flex flex-column flex-md-row">
-              <BaseIconButton
+          <v-col v-if="isPreview"
+                 class="flex-grow-0 px-1 d-flex flex-column flex-md-row">
+            <BaseIconButton
                 v-if="isPlainText(n)"
-                material-icon-name="edit"
+                :icon="mdiPencil"
                 icon-color="yellow"
                 @clicked="sendEditItemData(n.citation, index)"
-              />
-              <BaseIconButton
-                material-icon-name="remove_circle_outline"
+            />
+            <BaseIconButton
+                :icon="mdiMinusCircleOutline"
                 icon-color="red"
                 @clicked="sendRemoveItem(index)"
-              />
-            </v-col>
-          </div>
-        </section>
+            />
+          </v-col>
+        </v-row>
       </v-col>
     </v-card-text>
+
 
     <v-card-actions
       v-if="dataLength > 2 && !isPreview"
       class="ma-0 pa-2"
       :style="`position: absolute; bottom: 0px; right: ${rightPos()};`"
     >
-      <base-icon-button
-        material-icon-name="expand_more"
-        :iconColor="showFullText ? 'primary' : 'accent'"
-        :fillColor="showFullText ? '' : $vuetify.theme.themes.light.primary"
-        :color="showFullText ? 'accent' : 'transparent'"
-        :outlined="showFullText"
-        :rotateOnClick="true"
-        :rotateToggle="showFullText"
+      <BaseIconButton
+        :icon="mdiChevronDown"
+        :icon-color="showFullText ? 'secondary' : 'white'"
+        :color="showFullText ? 'transparent' : 'secondary'"
+        :outlined="!!showFullText"
+        outline-color="secondary"
+        :rotated="showFullText"
         :tooltipText="showFullText ? 'Collaspe text' : 'Show full text'"
         @clicked="readMore"
       />
@@ -68,6 +77,7 @@
 import { mapState } from 'vuex';
 
 import BaseCitationView from '@/components/BaseElements/BaseCitationView.vue';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
 import {
   EDITMETADATA_CLEAR_PREVIEW,
@@ -83,13 +93,13 @@ import {
   resolvePidCitationObjectsViaDora,
 } from '@/factories/citationFactory';
 
+import { mdiPencil, mdiMinusCircleOutline, mdiChevronDown } from '@mdi/js';
+
 export default {
   name: 'MetadataPublicationList',
   components: {
     BaseCitationView,
-    /*
-    ExpandableTextLayout,
-*/
+    BaseIconButton,
   },
   props: {
     text: {
@@ -185,18 +195,6 @@ export default {
         citationText: value,
         index,
       });
-
-      /*
-      // scroll to textAreaControlloer (link above test area), import for mobile version
-      const textAreaControlloer = document.getElementById('textAreaController');
-      if (textAreaControlloer) {
-        textAreaControlloer.scrollIntoView({ behavior: 'smooth' });
-      }
-      eventBus.emit(EDIT_RELATED_PUBLICATION_SEND, {
-        citationText: value,
-        index,
-      });
-*/
     },
     getEditItemData(object) {
       this.dataRelatedPublications = this.dataRelatedPublications.map(
@@ -214,7 +212,7 @@ export default {
       }
     },
     rightPos() {
-      return this.$refs.text && this.$refs.text.clientHeight >= 500
+      return this.$refs.text && this.$refs.text.$el.clientHeight >= 500
         ? '0px'
         : '10px';
     },
@@ -226,7 +224,7 @@ export default {
     },
     scrollbarColorFront() {
       return this.$vuetify
-        ? this.$vuetify.theme.themes.light.highlight
+        ? this.$vuetify.theme.themes.light.colors.highlight
         : 'auto';
     },
     recreateRelatedPublicationText() {
@@ -262,6 +260,7 @@ export default {
       arrayText.forEach(citation => {
         if (citation !== 'null' && citation.trim() !== '') {
           const citationProp = {
+            title: 'Plain Text',
             doi: null,
             doiUrl: null,
             citation,
@@ -406,6 +405,9 @@ export default {
     },
   },
   data: () => ({
+    mdiPencil,
+    mdiMinusCircleOutline,
+    mdiChevronDown,
     METADATA_PUBLICATIONS_TITLE,
     isResolving: false,
     isDoiResolving: false,

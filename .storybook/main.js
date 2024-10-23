@@ -1,15 +1,19 @@
 import { mergeConfig } from 'vite';
 
-module.exports = {
-  stories: ['../stories/**/*.stories.@(js|jsx|ts|tsx|mdx)'],
-  addons: ['@storybook/addon-storysource', '@storybook/addon-essentials'],
+export default {
+  stories: ['../stories/**/*.stories.@(js|jsx|ts|tsx)'],
+
+  addons: [
+    '@storybook/addon-storysource',
+    '@storybook/addon-essentials',
+    '@chromatic-com/storybook'
+  ],
+
   framework: {
-    name: '@storybook/vue-vite',
+    name: '@storybook/vue3-vite',
     options: {},
   },
-  docs: {
-    autodocs: true,
-  },
+  docs: {},
 
   // reference
   // https://stackoverflow.com/questions/76297669/nx-16-cant-configure-a-proxy-in-storybook-vite-and-react-library

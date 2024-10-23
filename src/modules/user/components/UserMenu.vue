@@ -1,10 +1,13 @@
 <template>
-  <v-menu transition="slide-y-transition" bottom offset-y id="UserMenu">
-    <template v-slot:activator="{ on, attrs }">
-      <div v-bind="attrs" v-on="on">
-        <UserAvatar :size="size"
-                    :nameInitials="nameInitials"
-                    :emailHash="emailHash"/>
+  <v-menu transition="slide-y-transition" bottom offset-y id="UserMenu"
+          >
+    <template v-slot:activator="{ props }">
+      <div v-bind="props" >
+        <UserAvatar
+          style="cursor: pointer;"
+          :size="size"
+          :nameInitials="nameInitials"
+          :emailHash="emailHash"/>
       </div>
     </template>
     <v-list>
@@ -12,11 +15,9 @@
         v-for="(item, i) in navItems"
         :key="i"
         @click="menuClick(item)"
+        :prepend-icon="item.icon"
+        :title="item.title"
       >
-        <v-list-item-icon>
-          <v-icon>{{ item.icon }}</v-icon>
-        </v-list-item-icon>
-        <v-list-item-title>{{ item.title }}</v-list-item-title>
       </v-list-item>
     </v-list>
   </v-menu>

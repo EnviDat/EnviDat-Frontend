@@ -47,20 +47,44 @@ export const TagChips = () => ({
       </v-col>
 
       <v-col>
+        <tag-chip name="count='5'" selectable :count="5" />
+      </v-col>
+
+      <v-col>
         <tag-chip name="highlighted" closeable selectable highlighted />
       </v-col>
 
       <v-col>
-        <tag-chip name="count='5'" selectable :count="5" />
+        <tag-chip name="primary color" color="primary" />
       </v-col>
 
+      <v-col>
+        <tag-chip name="secondary color" color="secondary" />
+      </v-col>
+
+      <v-col>
+        <tag-chip name="highlight color" color="highlight" />
+      </v-col>
+
+      <v-col>
+        <tag-chip name="accent color" color="accent" />
+      </v-col>
+
+      <v-col>
+        <tag-chip name="warning color" color="warning" />
+      </v-col>
+
+      <v-col>
+        <tag-chip name="error color" color="error" />
+      </v-col>
+      
       <v-col>
         <tag-chip-author name="Dominik Haas-Artho"  />
       </v-col>
 
       <v-col>
         <tag-chip-author name="Autor tag closeable"
-                         :is-closeable="true"/>
+                         closeable />
       </v-col>
 
       <v-col>
@@ -69,17 +93,21 @@ export const TagChips = () => ({
       </v-col>
 
       <v-col>
-        <tag-chip-project :fontSize="'14px'"
-              :iconSize="'14px'"
-              :iconName="'category'" name="Project 1"  />
+        <tag-chip-project
+          :fontSize="'14px'"
+          :iconSize="'14px'"
+          name="Project 1"
+        />
       </v-col>
 
       <v-col>
-        <tag-chip-project :fontSize="'14px'"
-              :iconSize="'14px'"
-              :closeable="true"
-              :iconName="'category'" name="Project 1 closeable"
-                         :is-closeable="true"/>
+        <tag-chip-project
+          :fontSize="'14px'"
+          :iconSize="'14px'"
+          :closeable="true"
+          name="Project 1 closeable"
+          :is-closeable="true"
+        />
       </v-col>
 
 

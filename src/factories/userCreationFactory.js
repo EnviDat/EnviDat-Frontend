@@ -136,63 +136,6 @@ function initCreationDataWithDefaults(creationData, user, organizationId) {
 
 }
 
-const minRequiredPropsForDatasetCreation = [
-  'metadataTitle',
-  'contactEmail',
-  'contactGivenName',
-  'contactSurname',
-  'keywords',
-  'description',
-  'authors',
-  'dataLicenseId',
-  'funders',
-  'dates',
-  'organizationId',
-  // 'location', // 'location.geoJSON',
-  'publisher',
-  'publicationYear',
-];
-
-function matchedWithRequiredProps(steps) {
-
-  let step;
-  let matches;
-
-  for (let i = 0; i < steps.length; i++) {
-    step = steps[i];
-    const genericKeys = Object.keys(step.genericProps);
-
-    matches = minRequiredPropsForDatasetCreation.filter((prop) => genericKeys.includes(prop));
-
-    if (matches.length > 0) {
-
-      for (let j = 0; j < matches.length; j++) {
-
-        const key = matches[j];
-        const value = step.genericProps[key];
-        const isArray = value instanceof Array;
-        const arrayWithValues = isArray && value.length > 0;
-
-        if (value && (!isArray || arrayWithValues)) {
-          // continue
-        } else {
-          return false;
-        }
-      }
-    }
-
-    if (step.detailSteps) {
-      const detailMatched = matchedWithRequiredProps(step.detailSteps);
-
-      if (!detailMatched) {
-        return false;
-      }
-    }
-  }
-
-  return true;
-}
-
 /**
  * stores the data to a step in the creation workflow.
  * It uses the mapFrontendToBackend function to make sure only data is stored
@@ -626,7 +569,7 @@ export function storeCreationStepsData(dataKey, data, steps, resetMessages = tru
 
   if (clearUIPreviews) {
     // clearing the preview can mean it would clear any input of the users while typing
-    // normaly that's fine because the storeCreationStepsData() is triggered due a users making a change
+    // normally that's fine because the storeCreationStepsData() is triggered due a users making a change
     // but if there something needs to be updated (like the list of organizations to be able to select out of the users organziations)
     // then we have to make sure not to clear the previews because it can affect any of the UI components
     eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);

@@ -13,7 +13,8 @@
  */
 
 import NavigationStepper from '@/components/Navigation/NavigationStepper.vue';
-import { metadataCreationSteps, metadataEditingSteps } from '@/factories/workflowFactory';
+import { metadataCreationSteps } from '@/factories/workflowCreation';
+import { metadataEditingSteps } from '@/factories/workflowEditing';
 import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
 const datasetTitle = 'Lens, Switzerland: Long-term forest meteorological data from the Long-term Forest Ecosystem Research Programme (LWF), from 1997 onwards';

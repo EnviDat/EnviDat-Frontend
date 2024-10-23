@@ -1,14 +1,15 @@
+/* eslint-disable no-console */
 import fs from 'fs';
 import path from 'path';
-import vue from '@vitejs/plugin-vue2';
+import vue from '@vitejs/plugin-vue';
+import vuetify from 'vite-plugin-vuetify';
 
-import { VuetifyResolver } from 'unplugin-vue-components/resolvers';
-import Components from 'unplugin-vue-components/vite';
 import { defineConfig, loadEnv } from 'vite';
-import { configDefaults } from 'vitest/dist/config.cjs';
+import { configDefaults } from 'vitest/dist/config';
 import eslint from 'vite-plugin-eslint';
-import ViteRequireContext from '@originjs/vite-plugin-require-context';
-import ViteWebfontDownload from 'vite-plugin-webfont-dl';
+
+import Unfonts from 'unplugin-fonts/vite'
+
 import { visualizer } from 'rollup-plugin-visualizer';
 
 import { getFilesWithPrefix } from './src/factories/enhancementsFactoryNode';
@@ -58,169 +59,135 @@ export default ({ mode, config }) => {
 
   const buildSourceMaps = env.VITE_BUILD_SOURCEMAPS === 'true';
 
-  return defineConfig({
-    plugins: [
-      vue(),
-      eslint({
-        exclude: ['/virtual:/**', 'node_modules/**'],
-      }),
-
-      ViteRequireContext(),
-      Components({
-        resolvers: [
-          // Vuetify
-          VuetifyResolver(),
-        ],
-      }),
-      ViteWebfontDownload(
-        [
-          'https://fonts.googleapis.com/css2?family=Baskervville&family=Raleway:wght@400;500;700&display=swap',
-        ],
-        {
-          injectAsStyleTag: true,
-          minifyCss: true,
-          async: true,
-          cache: true,
-          proxy: false,
-        },
-      ),
-      visualizer({
-        filename: './dist/buildStats.html',
-        title: 'EnviDat Build Visualizer',
-      }),
-    ],
-    test: {
-      exclude: [
-        ...configDefaults.exclude,
-        './tests/unit/ckanRegression.spec.js',
-      ],
-    },
-    define: {
-      'process.env': loadEnv(mode, process.cwd()),
-      'import.meta.env.VITE_VERSION': JSON.stringify(version),
-    },
-    optimizeDeps: {
-      include: ['vuetify'],
-    },
-    base: './',
-    // runtimeCompiler: true,
-    resolve: {
-      alias: [
-        // 'vue': path.resolve(__dirname, './node_modules/vue/dist/vue.esm.js'),
-        { find: '@', replacement: path.resolve(__dirname, 'src') },
-        { find: '~', replacement: path.resolve(__dirname) },
-        // this turf-jsts replacement is used to minimize the footprint
-        // it's a dependency of @turf/buffer
-        { find: 'turf-jsts', replacement: 'turf-jsts/jsts.min.js' },
-        {
-          find: 'leaflet/dist/leaflet.css',
-          replacement: 'leaflet/dist/leaflet.css',
-        },
-        { find: 'leaflet', replacement: 'leaflet/dist/leaflet.js' },
-        {
-          find: 'leaflet.markercluster/dist/MarkerCluster.css',
-          replacement: 'leaflet.markercluster/dist/MarkerCluster.css',
-        },
-        {
-          find: 'leaflet.markercluster/dist/MarkerCluster.Default.css',
-          replacement: 'leaflet.markercluster/dist/MarkerCluster.Default.css',
-        },
-        {
-          find: 'leaflet.markercluster',
-          replacement: 'leaflet.markercluster/dist/leaflet.markercluster.js',
-        },
-        {
-          find: 'vue',
-          replacement: `vue/dist/vue.${isProd ? 'min' : 'esm'}.js`,
-        },
-      ],
-    },
-    build: {
-      assetsDir: './static',
-      chunkSizeWarningLimit: 500,
-      cssCodeSplit: true,
-      minify: !buildSourceMaps,
-      sourcemap: buildSourceMaps,
-      emptyOutDir: true,
-      rollupOptions: isProd
-        ? {
-            output: {
-              // eslint-disable-next-line consistent-return
-              manualChunks: id => {
-                if (id.includes('skeleton-placeholder')) {
-                  return 'vendor_skeleton';
-                }
-                /*
-                Had to be removed, it caused import errors, when the vendor_leaflet.js tried
-                to import something from the vendors.js
-                if (id.includes('leaflet')) {
-                  return 'vendor_leaflet';
-                }
-*/
-                if (id.includes('src/factories')) {
-                  return 'envidat_factories';
-                }
-                if (id.includes('vuetify')) {
-                  return 'vendor_vuetify';
-                }
-                if (id.includes('vue-router')) {
-                  return 'vendor_vue-router';
-                }
-                if (id.includes('vuex')) {
-                  return 'vendor_vuex';
-                }
-                if (id.includes('vue') && !id.includes('.vue')) {
-                  return 'vendor_vue';
-                }
-                if (id.includes('turf')) {
-                  return 'vendor_turf';
-                }
-                if (id.includes('axios')) {
-                  return 'vendor_axios';
-                }
-                if (id.includes('date-fns')) {
-                  return 'vendor_date_fns';
-                }
-                if (id.includes('yup')) {
-                  return 'vendor_yup';
-                }
-                if (id.includes('amchart') || id.includes('uplot')) {
-                  return 'vendor_charts';
-                }
-                if (id.includes('uppy')) {
-                  return 'vendor_uppy';
-                }
-                if (id.includes('core-js')) {
-                  return 'vendor_core_js';
-                }
-
-                // all other node_modules
-                if (id.includes('node_modules')) {
-                  return 'vendors';
-                }
-              },
+    return defineConfig({
+      plugins: [
+          vue(),
+          eslint({
+            // https://github.com/storybookjs/builder-vite/issues/367#issuecomment-1938214165
+            // Remove warnings because Vite falesly tries to lint folders it should not
+            exclude: ['/virtual:/**', 'node_modules/**', '/sb-preview/**'],
+          }),
+          vuetify({
+            autoImport: true,
+          }),
+          Unfonts({
+            google: {
+              families: [
+                'Baskervville',
+                {
+                  name: 'Raleway',
+                  styles: 'wght@400;500;700',
+                },
+              ],
             },
-          }
-        : {},
+          }),
+        visualizer({
+          filename: './dist/buildStats.html',
+          title : 'EnviDat Build Visualizer',
+        }),
+      ],
       define: {
+        'process.env': loadEnv(mode, process.cwd()),
         'import.meta.env.VITE_VERSION': JSON.stringify(version),
       },
+      test: {
+        exclude: [
+          ...configDefaults.exclude,
+          './tests/unit/ckanRegression.spec.js',
+        ],
+      },
+      base: './',
+      resolve: {
+          alias: [
+            { find: '@', replacement: path.resolve(__dirname, 'src') },
+            { find: '~', replacement: path.resolve(__dirname) },
+            { find: 'leaflet/dist/leaflet.css', replacement: 'leaflet/dist/leaflet.css' },
+            { find: 'leaflet', replacement: 'leaflet/dist/leaflet.js' },
+            { find: 'leaflet.markercluster/dist/MarkerCluster.css', replacement: 'leaflet.markercluster/dist/MarkerCluster.css' },
+            { find: 'leaflet.markercluster/dist/MarkerCluster.Default.css', replacement: 'leaflet.markercluster/dist/MarkerCluster.Default.css' },
+            { find: 'leaflet.markercluster', replacement: 'leaflet.markercluster/dist/leaflet.markercluster.js' },
+            { find: 'vue', replacement: 'vue/dist/vue.esm-bundler.js' },
+          ],
+      },
+      build: {
+        assetsDir: './static',
+        chunkSizeWarningLimit: 500,
+//         assetsInlineLimit: 4096 / 2, // Reduce the amount of image inlining so the chunks don't get huge
+        cssCodeSplit: true,
+        minify: !buildSourceMaps,
+        sourcemap: buildSourceMaps,
+        emptyOutDir: true,
+        rollupOptions: isProd ? {
+         output: {
+           manualChunks: (id) => {
+
+            if (id.includes('node_modules')) {
+
+              if (id.includes('vuetify')) {
+                return 'vendor_vuetify';
+              }
+
+              if (id.includes('vue') || id.includes('pinia')) {
+                // vue, vuex & pinia, vue-router, etc.
+                return 'vendor_vue';
+              }
+
+              if (id.includes('leaflet')) {
+                return 'vendor_leaflet';
+              }
+
+              if (id.includes('turf')) {
+                return 'vendor_turf';
+              }
+
+              if (id.includes('uppy')) {
+                return 'vendor_uppy';
+              }
+
+              if (id.includes('charts') || id.includes('uplot')) {
+                return 'vendor_charts';
+              }
+
+              if (id.includes('yup')) {
+                return 'vendor_validation';
+              }
+
+              if (id.includes('axios')
+                || id.includes('date-fns')
+                || id.includes('mitt')
+                || id.includes('seedrandom')
+                || id.includes('tiny-js-md5')
+              ) {
+                return 'vendor_utils';
+              }
+
+              return 'vendors';
+            }
+
+            if (id.includes('src/assets')) {
+              return 'envidat_assets';
+            }
+
+            if (id.includes('src/factories')) {
+              return 'envidat_factories';
+            }
+
+            // Let Rollup handle the rest
+            return undefined
+          },
+        },
+      } : {},
     },
     server: {
       host: '0.0.0.0',
       port: 8080,
-      // TODO: Check with Dominik
       proxy: {
         '/api': {
           target: 'https://statistics.wsl.ch',
           changeOrigin: true,
-          rewrite: path => path.replace(/^\/api/, ''),
+          rewrite: proxyPath => proxyPath.replace(/^\/api/, ''),
         },
       },
     },
   });
 };
-
-// {
-//     from: 'node_modules/amcharts3/amcharts/images', to: 'amcharts/images',
-//   }],

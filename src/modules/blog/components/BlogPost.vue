@@ -1,6 +1,7 @@
 <template>
   <div id="blogPostContent"
-       class="blogPost" v-html="postContentMarkdown"></div>
+       class="blogPost"
+       v-html="postContentMarkdown"></div>
 </template>
 
 <script>
@@ -21,7 +22,9 @@ import { renderMarkdown } from '@/factories/stringFactory';
 export default {
   name: 'BlogPost',
   props: {
+/*
     post: Object,
+*/
     postContent: String,
   },
   computed: {

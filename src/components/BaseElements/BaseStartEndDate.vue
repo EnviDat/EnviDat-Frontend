@@ -6,11 +6,11 @@
       <BaseDatePicker
           :date="startDate"
           :date-property="startDateProperty"
-          :date-label="labels.startDate"
+          :date-label="startDateLabel || labels.startDate"
           :max-date="endDate"
           :clearable="clearableStartDate"
-          :read-only-fields="readOnlyFields"
-          :read-only-explanation="readOnlyExplanation"
+          :readOnlyFields="readOnlyFields"
+          :readOnlyExplanation="readOnlyExplanation"
           @dateChange="changeDate"
           @clearClick="$emit('clearClick', $event)"
       />
@@ -24,11 +24,11 @@
       <BaseDatePicker
           :date="endDate"
           :date-property="endDateProperty"
-          :date-label="labels.endDate"
+          :date-label="endDateLabel || labels.endDate"
           :min-date="startDate"
           :clearable="clearableEndDate"
-          :read-only-fields="readOnlyFields"
-          :read-only-explanation="readOnlyExplanation"
+          :readOnlyFields="readOnlyFields"
+          :readOnlyExplanation="readOnlyExplanation"
           @dateChange="changeDate"
           @clearClick="$emit('clearClick', $event)"
       />
@@ -39,6 +39,7 @@
 
 <script>
 
+import BaseDatePicker from './BaseDatePicker.vue';
 
 export default {
   name: 'BaseStartEndDate',
@@ -47,6 +48,10 @@ export default {
       type: String,
       default: '',
     },
+    startDateLabel: {
+      type: String,
+      default: undefined,
+    },
     startDateProperty: {
       type: String,
       default: 'startDate',
@@ -54,6 +59,10 @@ export default {
     endDate: {
       type: String,
       default: '',
+    },
+    endDateLabel: {
+      type: String,
+      default: undefined,
     },
     endDateProperty: {
       type: String,
@@ -88,7 +97,7 @@ export default {
       return this.rowLayout ? 0 : 6;
     },
     paddingSecondCol() {
-      return this.rowLayout ? '' : 'pl-md-4';
+      return this.rowLayout ? undefined : 'pl-sm-4';
     },
   },
   methods: {
@@ -100,6 +109,7 @@ export default {
     },
   },
   components: {
+    BaseDatePicker,
   },
   data: () => ({
     labels: {

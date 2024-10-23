@@ -4,9 +4,8 @@
       <v-col cols="12" lg="10" offset-lg="1">
         <img-and-text-layout
           :img="missionImg"
-          :height="$vuetify.breakpoint.smAndDown ? 100 : 150"
-          title="Research Projects"
-        />
+          :height="$vuetify.display.smAndDown ? 100 : 150"
+          title="Research Projects" />
       </v-col>
 
       <v-col class="mt-5" cols="12" lg="10" offset-lg="1">
@@ -18,8 +17,7 @@
               cols="12"
               sm="6"
               md="4"
-              xl="3"
-            >
+              xl="3">
               <project-card-placeholder />
             </v-col>
           </v-row>
@@ -33,8 +31,7 @@
               cols="12"
               sm="6"
               md="4"
-              xl="3"
-            >
+              xl="3">
               <project-card
                 :id="project.name"
                 :title="project.title"
@@ -43,8 +40,7 @@
                 :description="project.description"
                 :subProjects="project.subProjects"
                 @cardClick="onCardClick"
-                @subprojectClick="onSubprojectClick"
-              />
+                @subprojectClick="onSubprojectClick" />
             </v-col>
           </v-row>
         </v-container>
@@ -68,7 +64,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { mapGetters,mapState } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 
 import ImgAndTextLayout from '@/components/Layouts/ImgAndTextLayout.vue';
 import {
@@ -80,6 +76,7 @@ import {
   SET_CURRENT_PAGE,
 } from '@/store/mainMutationsConsts';
 
+import { getImage } from '@/factories/imageFactory';
 import {
   GET_PROJECTS,
   PROJECTS_NAMESPACE,
@@ -97,7 +94,7 @@ export default {
   beforeRouteEnter(to, from, next) {
     next(vm => {
       vm.$store.commit(SET_CURRENT_PAGE, PROJECTS_PAGENAME);
-      vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
+      vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
     });
   },
   /**
@@ -130,16 +127,16 @@ export default {
       return this.config?.projectsConfig || {};
     },
     missionImg() {
-      const imgPath = this.$vuetify.breakpoint.mdAndUp
-        ? 'projects/mission'
-        : 'about/mission_small';
-      return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
+      const imgPath = this.$vuetify.display.mdAndUp
+        ? 'mission'
+        : 'mission_small';
+      return getImage(imgPath);
     },
     creatorImg() {
-      const imgPath = this.$vuetify.breakpoint.mdAndUp
-        ? 'projects/data_creator'
-        : 'projects/data_creator_small';
-      return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
+      const imgPath = this.$vuetify.display.mdAndUp
+        ? 'data_creator'
+        : 'data_creator_small';
+      return getImage(imgPath);
     },
   },
   methods: {
@@ -178,7 +175,7 @@ export default {
     ProjectCardPlaceholder,
   },
   data: () => ({
-    PageBGImage: 'app_b_browsepage',
+    pageBGImage: 'app_b_browsepage',
   }),
 };
 </script>

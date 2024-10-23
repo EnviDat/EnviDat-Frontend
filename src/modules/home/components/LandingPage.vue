@@ -3,10 +3,9 @@
     <div
       v-show="showPolygonParticles"
       id="polygon-canvas"
-      style="position: absolute; width: 99%; height: 325px; bottom: 0; left: 0;"
-    />
+      style="position: absolute; width: 99%; height: 325px; bottom: 0; left: 0;" />
 
-<!--
+    <!--
     <div
       v-show="showPolygonParticles"
       id="polygon-canvas2"
@@ -19,17 +18,17 @@
       :datasetsTitle="welcomeInfo.datasetsTitle"
       :datasetsTotal="datasetsTotal"
       :newsTitle="welcomeInfo.newsTitle"
-      :articlesTitle="welcomeInfo.articlesTitle"
-    >
-      <template v-if="$vuetify.breakpoint.mdAndUp" v-slot:logo>
+      :articlesTitle="welcomeInfo.articlesTitle">
+
+      <template v-if="$vuetify.display.mdAndUp" v-slot:logo>
         <v-row no-gutters
-               align="center">
+          align="center">
           <v-col class="hidden-sm-and-down" cols="4" lg="3">
             <v-img :src="mdLogo" height="128" width="128" :alt="alternativeText" />
 
           </v-col>
 
-          <v-col class="hidden-xs-only hidden-md-and-up" cols="2">
+          <v-col class="hidden-xs hidden-md-and-up" cols="2">
             <v-img :src="smLogo" height="64" width="64" :alt="alternativeText" />
           </v-col>
 
@@ -39,20 +38,17 @@
 
           <v-col
             class="envidatTitle text-h1 pl-5 hidden-md-and-down"
-            style="font-size: 80px !important;"
-          >
+            style="font-size: 80px !important;">
             {{ welcomeInfo.titleText }}
           </v-col>
 
           <v-col
-            class="envidatTitle text-h2 pl-2 hidden-sm-and-down hidden-lg-and-up"
-          >
+            class="envidatTitle text-h2 pl-2 hidden-sm-and-down hidden-lg-and-up">
             {{ welcomeInfo.titleText }}
           </v-col>
 
           <v-col
-            class="envidatTitle text-h3 pl-2 hidden-xs-only hidden-md-and-up"
-          >
+            class="envidatTitle text-h3 pl-2 hidden-xs hidden-md-and-up">
             {{ welcomeInfo.titleText }}
           </v-col>
 
@@ -70,25 +66,22 @@
           :buttonText="sloganButtonText"
           :buttonCallback="catchBrowseClicked"
           :moreButtonText="sloganMoreButtonText"
-          :moreButtonCallback="catchMoreClicked"
-        />
+          :moreButtonCallback="catchMoreClicked" />
       </template>
 
       <template v-slot:search>
         <SearchBarView
-          v-if="$vuetify.breakpoint.smAndUp"
+          v-if="$vuetify.display.smAndUp"
           :labelText="welcomeInfo.searchLabelText"
           :buttonText="buttonText"
           :hasButton="true"
-          @clicked="catchSearchClicked"
-        />
+          @clicked="catchSearchClicked" />
 
         <SmallSearchBarView
-          v-if="$vuetify.breakpoint.xsOnly"
+          v-if="$vuetify.display.xs"
           :labelText="welcomeInfo.smallSearchLabelText"
           :buttonText="buttonText"
-          @clicked="catchSearchClicked"
-        />
+          @clicked="catchSearchClicked" />
       </template>
 
       <template v-slot:datasets>
@@ -103,8 +96,7 @@
             v-for="(metadata, index) in recentMetadata"
             :key="index"
             cols="6"
-            class="pa-2"
-          >
+            class="pa-2">
             <MetadataCard
               :key="index"
               :id="metadata.id"
@@ -113,11 +105,9 @@
               :name="metadata.name"
               :titleImg="metadata.titleImg"
               :resourceCount="metadata.num_resources"
-              :fileIconString="fileIconString"
               :categoryColor="metadata.categoryColor"
               :compactLayout="true"
-              @clickedEvent="catchMetadataClicked"
-            />
+              @clickedEvent="catchMetadataClicked" />
           </v-col>
         </v-row>
       </template>
@@ -128,17 +118,15 @@
             v-for="card in categoryCards"
             :key="card.title"
             cols="6"
-            class="pa-2"
-          >
+            class="pa-2">
             <BaseClickCard
-              :height="$vuetify.breakpoint.lgAndDown ? '65' : '90'"
+              :height="$vuetify.display.lgAndDown ? '65' : '90'"
               :title="card.title"
-              :img="card.img"
+              :img="card.imgPath"
               :color="card.darkColor"
               :contain="card.contain"
               :disabled="card.disabled"
-              @click="catchCategoryClicked(card.type)"
-            />
+              @click="catchCategoryClicked(card.type)" />
           </v-col>
         </v-row>
       </template>
@@ -149,17 +137,15 @@
             v-for="(post, index) in blogPosts"
             :key="index"
             cols="6"
-            class="pa-2"
-          >
+            class="pa-2">
             <BlogPostCard
               :postTitle="post.title"
               :titleImg="post.titleImg"
               :loadingImg="fallbackCardImg"
               titleCssClass="compactBlogPostCard"
               subtitleCssClass="text-caption"
-              :height="$vuetify.breakpoint.lgAndDown ? '75' : '100'"
-              @clicked="catchPostClick(post.postFile)"
-            />
+              :height="$vuetify.display.lgAndDown ? '75' : '100'"
+              @clicked="catchPostClick(post.postFile)" />
           </v-col>
         </v-row>
       </template>
@@ -168,35 +154,30 @@
         <TitleCard
           :title="welcomeInfo.newsTitle"
           cardClass="pa-2"
-          titleClass="titleCardClass"
-        />
+          titleClass="titleCardClass" />
 
         <div
           v-for="(entry, index) in newsEntries"
           :key="index"
-          class="pt-4 px-1"
-        >
+          class="pt-4 px-1">
           <SloganCard
             :slogan="entry.title"
             :subSlogan="entry.text"
-            :sloganImg="entry.image"
-          />
+            :sloganImg="entry.image" />
         </div>
 
         <div v-if="showWinterHolidayWishs" class="pt-4 px-1">
           <SloganCard
             slogan="Happy Holidays!"
             :sloganImg="winterHolidayImage"
-            :subSlogan="decemberWishes"
-          />
+            :subSlogan="decemberWishes" />
         </div>
 
         <div v-if="showNewYearWishs" class="pt-4 px-1">
           <SloganCard
             slogan="Happy New Year!"
             :sloganImg="newYearImage"
-            :subSlogan="newYearWishes"
-          />
+            :subSlogan="newYearWishes" />
         </div>
       </template>
     </LandingPageLayout>
@@ -240,7 +221,7 @@ import {
   GET_BLOG_LIST,
 } from '@/modules/blog/store/blogMutationsConsts';
 import LandingPageLayout from '@/modules/home/components/LandingPageLayout.vue';
-// import TheTitleScreenLayout from '@/modules/home/components/TheTitleScreenLayout.vue';
+
 import SearchBarView from '@/modules/home/components/SearchBarView.vue';
 import SloganCard from '@/modules/home/components/SloganCard.vue';
 import {
@@ -259,8 +240,9 @@ import {
   METADATA_NAMESPACE,
   SET_DETAIL_PAGE_BACK_URL,
 } from '@/store/metadataMutationsConsts';
-import store from '@/store/store';
-import { importStoreModule } from '@/factories/enhancementsFactory';
+import { getImage } from '@/factories/imageFactory';
+import { convertArrayToUrlString } from '@/factories/stringFactory';
+import categoryCards from '@/store/categoryCards';
 
 // Login & Register form and animation
 // https://codepen.io/yusufbkr/pen/RPBQqg
@@ -277,45 +259,34 @@ export default {
     next(vm => {
       // console.log("landing beforeRouteEnter to: " + to + " from: " + from + " next: " + next);
       vm.$store.commit(SET_CURRENT_PAGE, LANDING_PAGENAME);
-      const bgimg = vm.$vuetify.breakpoint.smAndDown
+      const bgimg = vm.$vuetify.display.smAndDown
         ? vm.MobileBGImage
-        : vm.PageBGImage;
+        : vm.pageBGImage;
       vm.$store.commit(SET_APP_BACKGROUND, bgimg);
     });
   },
-  beforeCreate() {
-    const importFun = () => import('@/modules/blog/store/blogStore');
-    importStoreModule(store, 'blog', importFun)
-    .then(() => {
-      this.$store.dispatch(`${BLOG_NAMESPACE}/${GET_BLOG_LIST}`);
-    });
-
-  },
   created() {
+    this.$store.dispatch(`${BLOG_NAMESPACE}/${GET_BLOG_LIST}`);
     this.blogModuleLoaded = !!this.$store?.state?.blog;
 
-    this.$store?.watch((state) => state.blog,(value) => {
+    this.$store?.watch((state) => state.blog, (value) => {
       this.blogModuleLoaded = !!value;
     });
   },
   beforeMount() {
 
-    this.fileIconString = this.mixinMethods_getIcon('file');
-    this.fallbackCardImg = this.mixinMethods_getWebpImage(
-      'about/contact',
-      this.$store.state,
-    );
+    this.fallbackCardImg = getImage('contact');
   },
   mounted() {
     window.scrollTo(0, 0);
 
     this.initPolygonParticles();
   },
-  destroyed() {
+  unmounted() {
     this.stopParticles();
   },
   computed: {
-    ...mapState(['categoryCards', 'config', 'loadingConfig']),
+    ...mapState(['config', 'loadingConfig']),
     ...mapGetters(METADATA_NAMESPACE, [
       'loadingMetadatasContent',
       'metadatasContentSize',
@@ -349,7 +320,7 @@ export default {
     },
     showPolygonParticles() {
       return (
-        this.$vuetify.breakpoint.lgAndUp &&
+        this.$vuetify.display.lgAndUp &&
         this.effectsConfig.landingPageParticles &&
         !this.showDecemberParticles
       );
@@ -376,26 +347,20 @@ export default {
       return this.effectsConfig.decemberWishes;
     },
     winterHolidayImage() {
-      return this.mixinMethods_getWebpImage(
-        'cards/slogan/holidays_winter',
-        this.$store.state,
-      );
+      return getImage('holidays_winter');
     },
     newYearWishes() {
       return this.effectsConfig.newYearWishes || '';
     },
     newYearImage() {
-      return this.mixinMethods_getWebpImage(
-        'cards/slogan/new_year',
-        this.$store.state,
-      );
+      return getImage('new_year');
     },
     effectsConfig() {
       return this.config?.effectsConfig || {};
     },
     sloganButtonText() {
       /*
-      if (this.$vuetify.breakpoint.lgAndDown) {
+      if (this.$vuetify.display.lgAndDown) {
         return 'EXPLORE';
       }
 */
@@ -403,7 +368,7 @@ export default {
       return 'EXPLORE DATA';
     },
     sloganMoreButtonText() {
-      if (this.$vuetify.breakpoint.lgAndDown) {
+      if (this.$vuetify.display.lgAndDown) {
         return 'ABOUT';
       }
 
@@ -426,8 +391,7 @@ export default {
           this.currentParticles.particles.size.anim.enable = false;
         }
       } catch (error) {
-        // eslint-disable-next-line no-console
-        console.log(`Error during particle stop: ${error}`);
+        console.error(`Error during particle stop: ${error}`);
       } finally {
         this.currentParticles = null;
         if (fullClean) {
@@ -453,19 +417,19 @@ export default {
         );
 
         // eslint-disable-next-line no-undef
-/*
-        particlesJS.load(
-          'polygon-canvas2',
-          './particles/polygonParticleOptions2.json',
-          () => {
-            // console.log('polygon-canvas - particles.js config loaded');
-            if (this.currentParticles) {
-              this.stopParticles(false);
-            }
-            this.currentParticles = window.pJS;
-          },
-        );
-*/
+        /*
+                particlesJS.load(
+                  'polygon-canvas2',
+                  './particles/polygonParticleOptions2.json',
+                  () => {
+                    // console.log('polygon-canvas - particles.js config loaded');
+                    if (this.currentParticles) {
+                      this.stopParticles(false);
+                    }
+                    this.currentParticles = window.pJS;
+                  },
+                );
+        */
       }
     },
     catchCategoryClicked(cardType) {
@@ -482,9 +446,9 @@ export default {
       }
 
       const newTags = [cardType];
-      const stringTags = this.mixinMethods_convertArrayToUrlString(newTags);
+      const stringTags = convertArrayToUrlString(newTags);
 
-      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, '', stringTags);
+      this.$router.options.additiveChangeRoute(this.$route, this.$router, BROWSE_PATH, '', stringTags);
     },
     catchModeClicked(mode) {
       this.$router.push({
@@ -555,8 +519,9 @@ export default {
     BlogPostCard,
   },
   data: () => ({
+    categoryCards,
     blogModuleLoaded: false,
-    PageBGImage: 'app_b_landingpage',
+    pageBGImage: 'app_b_landingpage',
     MobileBGImage: 'app_b_browsepage',
     buttonText: 'SEARCH',
     defaultWelcomeInfo: {
@@ -575,7 +540,6 @@ export default {
       categoriesTitle: 'Research Data Categories',
       datasetsTitle: 'Recently Published Research Datasets',
     },
-    fileIconString: '',
     alternativeText: 'EnviDat logo',
     fallbackCardImg: null,
     smLogo,
@@ -584,9 +548,7 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
 
 <style>
 .compactBlogPostCard {

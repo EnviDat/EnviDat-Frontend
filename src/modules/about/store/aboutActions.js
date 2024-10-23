@@ -20,6 +20,9 @@ import {
   GET_GUIDELINES,
   GET_GUIDELINES_ERROR,
   GET_GUIDELINES_SUCCESS,
+  GET_IMPRINT,
+  GET_IMPRINT_SUCCESS,
+  GET_IMPRINT_ERROR,
   GET_POLICIES,
   GET_POLICIES_ERROR,
   GET_POLICIES_SUCCESS,
@@ -80,6 +83,24 @@ export default {
       })
       .catch(reason => {
         commit(GET_DMP_ERROR, reason);
+      });
+  },
+  [GET_IMPRINT]({ commit }) {
+    commit(GET_IMPRINT);
+
+    let url = `${staticRoot}/guidelines/imprint.md?nocache=${new Date().getTime()}`;
+
+    if (import.meta.env?.DEV && useTestdata) {
+      url = './testdata/imprint.md';
+    }
+
+    axios
+      .get(url)
+      .then(response => {
+        commit(GET_IMPRINT_SUCCESS, response.data);
+      })
+      .catch(reason => {
+        commit(GET_IMPRINT_ERROR, reason);
       });
   },
 };

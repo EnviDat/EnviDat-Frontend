@@ -5,17 +5,17 @@
        :style="`background-color: ${backgroundColor}`" >
 
     <div class="infoPanel ma-1 py-2 px-3 "
-         :class="`infoPanelGrid${$vuetify.breakpoint.mdAndUp ? '-md' : ''}`" >
+         :class="`infoPanelGrid${$vuetify.display.mdAndUp ? '-md' : ''}`" >
 
       <div class="instructions">
         <v-container fluid class="pa-0" >
           <v-row no-gutters>
             <v-col class="metadata_title text-h6 pa-0"
-                   :class="$vuetify.breakpoint.smAndDown ? 'compactTitle' : ''" >
+                   :class="$vuetify.display.smAndDown ? 'compactTitle' : ''" >
               {{ datasetTitleText }}
             </v-col>
 
-            <v-col v-if="$vuetify.breakpoint.smAndDown
+            <v-col v-if="$vuetify.display.smAndDown
                           && !isCreationWorkflow"
                     class="flex-grow-0">
               <StepperInteractionView :steps="steps"
@@ -34,7 +34,7 @@
             </v-col>
           </v-row>
 
-          <v-row v-if="$vuetify.breakpoint.smAndDown
+          <v-row v-if="$vuetify.display.smAndDown
                           && isCreationWorkflow">
             <v-col>
               <StepperInteractionView :steps="steps"
@@ -55,8 +55,8 @@
 
           <v-row class="pt-1"
                  no-gutters>
-            <v-col class="flex-grow-0">
-              <v-icon color="secondary" class="pr-2">info</v-icon>
+            <v-col class="flex-grow-0 mr-2">
+              <v-icon :icon="mdiInformationOutline" />
             </v-col>
             <v-col>
               <ExpandableLayout cardClass="pa-0"
@@ -73,7 +73,7 @@
 
       </div>
 
-      <div v-if="$vuetify.breakpoint.mdAndUp"
+      <div v-if="$vuetify.display.mdAndUp"
            class="interaction pl-md-2 py-2 py-sm-0">
 
         <StepperInteractionView :steps="steps"
@@ -116,7 +116,7 @@
       class="content fill-height pa-1"
       :style="`background-color: ${backgroundColor}`"
     >
-      <v-card v-show="loading" class="fill-height pa-4">
+      <v-card v-if="loading" class="fill-height pa-4">
         <v-row id="metadataListPlaceholder">
           <v-col
             v-for="(n, index) in 2"
@@ -128,7 +128,7 @@
         </v-row>
       </v-card>
 
-      <v-card v-if="!loading" class="fill-height pa-4">
+      <v-card v-else class="fill-height pa-4">
         <!-- prettier-ignore -->
         <component v-if="currentStep"
                        :is="currentStep.component"
@@ -166,7 +166,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import { mdiInformationOutline } from '@mdi/js';
 import BaseProgressView from '@/components/BaseElements/BaseProgressView.vue'
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
 import StepperHeader from '@/components/Navigation/StepperHeader.vue';
@@ -257,7 +257,7 @@ export default {
       return titleText;
     },
     backgroundColor() {
-      return this.$vuetify ? this.$vuetify.theme.themes.light.primary : '';
+      return this.$vuetify ? this.$vuetify.theme.themes.light.colors.primary : '';
     },
     completedPct() {
       const pct = this.completedStepsAmount / this.allStepsAmount;
@@ -330,13 +330,13 @@ export default {
         this.setCurrentStep(stepTitle);
         return;
       }
+      const params = { ...this.$route.params };
+      params.step = stepTitle;
+      params.substep = '';
 
       this.$router.push(
         {
-          params: {
-            step: stepTitle,
-            substep: undefined,
-          },
+          params,
           query: this.$route.query,
         },
         () => {},
@@ -344,7 +344,6 @@ export default {
           // add empty onAbort to not trigger the NavigationDuplicated Error message
           // when it's a NavigationDuplicated Error
           if (err?.name?.toLowerCase() !== 'navigationduplicated') {
-            // eslint-disable-next-line no-console
             console.error(err);
           }
         },
@@ -392,6 +391,7 @@ export default {
     },
   },
   data: () => ({
+    mdiInformationOutline,
     currentStep: null,
     currentStepIndex: -1,
     creationTitle: 'Dataset Creation',
@@ -407,7 +407,6 @@ export default {
   components: {
     StepperInteractionView,
     StepperHeader,
-    BaseIconButton,
     MetadataCardPlaceholder,
     BaseProgressView,
     ExpandableLayout,

@@ -1,40 +1,36 @@
 <template>
   <v-card
-    ripple
-    hover
-    raised
+    max-width='500px'
     :height="height"
     :disabled="disabled"
-    @click.native="clicked"
-  >
+    link
+    hover
+    @click="clicked">
     <v-container class="pa-0">
       <v-row align="center" no-gutters>
         <!-- Image -->
         <v-col class="py-0" cols="4" sm="5">
           <v-img
             class="imagezoom"
-            :aspect-ratio="$vuetify.breakpoint.xsOnly ? 1 : undefined"
-            :contain="contain"
+            :aspect-ratio="$vuetify.display.smAndUp ? undefined : 1"
+            :cover="!contain"
             :height="height"
             style="border-bottom-left-radius: 4px; border-top-left-radius: 4px;"
-            :src="img"
-          />
+            :src="img" />
         </v-col>
 
         <!-- Text -->
         <v-col class="px-0" cols="8" sm="7">
           <div
             class="px-2 px-sm-3 baseClickCardTitle"
-            :class="{ compactTitle: $vuetify.breakpoint.xl }"
-          >
+            :class="{ compactTitle: $vuetify.display.xl }">
             {{ title }}
           </div>
 
           <div
             v-if="color"
             class="py-0 my-0 "
-            :style="`height: 5px; background-color: ${color};`"
-          ></div>
+            :style="`height: 5px; background-color: ${color};`"></div>
         </v-col>
       </v-row>
     </v-container>

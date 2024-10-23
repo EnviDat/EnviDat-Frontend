@@ -2,15 +2,10 @@
 
   <v-card id="EditKeywords"
           class="pa-0"
-          :loading="loading">
+          :loading="loadingColor">
 
     <v-container fluid
                 class="pa-4">
-
-      <template slot="progress">
-        <v-progress-linear color="primary"
-                           indeterminate />
-      </template>
 
       <v-row>
         <v-col cols="6"
@@ -19,14 +14,14 @@
         </v-col>
 
         <v-col v-if="message" >
-          <BaseStatusLabelView statusIcon="check"
+          <BaseStatusLabelView status="check"
                                statusColor="success"
                                :statusText="message"
                                :expandedText="messageDetails" />
         </v-col>
         <v-col v-if="error"  >
 
-          <BaseStatusLabelView statusIcon="error"
+          <BaseStatusLabelView status="error"
                                statusColor="error"
                                :statusText="error"
                                :expandedText="errorDetails" />
@@ -50,18 +45,17 @@
       <v-row>
         <v-col>
 
-          <v-combobox :value="keywordsField"
+          <v-combobox :model-value="keywordsField"
                       :items="existingKeywordItems"
                       item-text="name"
                       multiple
-                      outlined
-                      append-icon="arrow_drop_down"
-                      prepend-icon="style"
+                      :menu-icon="mdiArrowDownDropCircleOutline"
+                      :prepend-icon="mdiPaletteSwatch"
                       :label="labels.keywordsLabel"
                       :placeholder="labels.placeholder"
                       :search-input.sync="search"
-                      :readonly="mixinMethods_isFieldReadOnly('keywords')"
-                      :hint="mixinMethods_readOnlyHint('keywords')"
+                      :readonly="isReadOnly('keywords')"
+                      :hint="readOnlyHint('keywords')"
                       :error-messages="validationErrors.keywords"
                       @update:search-input="isKeywordValid(search)"
                       @keyup="blurOnEnterKey"
@@ -73,20 +67,26 @@
                       >
 
             <template v-slot:selection="{ item }" >
-              <TagChip  :name="item.name"
-                        selectable
-                        closeable
-                        @clickedClose="removeKeyword(item)"
-                        :isSmall="false"
-                        />
+              <TagChip
+                :name="item.raw.name"
+                selectable
+                closeable
+                @clickedClose="removeKeyword(item)"
+                :isSmall="false"
+                />
             </template>
 
             <template v-slot:item="{ item }">
-              <TagChip v-if="item && item.name"
-                       :name="item.name"
-                       selectable
-                       @clicked="catchKeywordClicked"
-                       :isSmall="false" />
+              <v-list-item class='py-0' >
+                <TagChip
+                  class='py-0'
+                  v-if="item && item.value"
+                  :name="item.raw.name"
+                  selectable
+                  @clicked="catchKeywordClicked(item.raw.name)"
+                  :isSmall="false"
+                />
+              </v-list-item>
             </template>
 
             <template v-slot:no-data>
@@ -138,7 +138,7 @@ import { EDIT_METADATA_KEYWORDS_TITLE } from '@/factories/metadataConsts';
 import MetadataCard from '@/components/Cards/MetadataCard.vue';
 import TagChip from '@/components/Chips/TagChip.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
-import catCards from '@/store/categoryCards';
+import categoryCards from '@/store/categoryCards';
 
 import { enhanceTitleImg } from '@/factories/metaDataFactory';
 import {
@@ -147,6 +147,8 @@ import {
 } from '@/factories/userEditingValidations';
 import { getTagColor } from '@/factories/keywordsFactory';
 
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+import {mdiArrowDownDropCircleOutline, mdiPaletteSwatch} from '@mdi/js';
 
 
 export default {
@@ -200,13 +202,20 @@ export default {
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   computed: {
     ...mapState([
       'config',
     ]),
+    loadingColor() {
+      if (this.loading) {
+        return 'accent';
+      }
+
+      return undefined;
+    },
     userEditMetadataConfig() {
       if (!this.$store) {
         return this.defaultUserEditMetadataConfig;
@@ -231,12 +240,10 @@ export default {
         title: this.metadataCardTitle,
         tags: this.keywordsField,
         subtitle: this.metadataCardSubtitle,
-        fileIconString: this.mixinMethods_getIcon('file'),
       };
 
       if (this.$store) {
-        const { categoryCards, cardBGImages } = this.$store.getters;
-        enhanceTitleImg(previewEntry, cardBGImages, categoryCards);
+        enhanceTitleImg(previewEntry);
       }
 
       return previewEntry;
@@ -245,7 +252,7 @@ export default {
 
       if (!this.keywordValidConcise) {
         const wordMaxHint = `Each keyword tag may not exceed ${this.keywordsListWordMax} words.`;
-        return `<span class="red--text font-italic">${wordMaxHint}</span>`;
+        return `<span class="text-red font-italic">${wordMaxHint}</span>`;
       }
 
       let hint = '';
@@ -307,7 +314,7 @@ export default {
       // Use pickedKeyword to create pickedKeywordObj
       const pickedKeywordObj = {
         name: pickedKeyword.toUpperCase().trim(),
-        color: getTagColor(catCards, pickedKeyword),
+        color: getTagColor(categoryCards, pickedKeyword),
       };
 
       // Assign selectedKeywords to keywords concatenated with pickedKeywordObj
@@ -331,13 +338,13 @@ export default {
 
           if (!keywordValid) {
             valuesArray.splice(i, 1);
-            i--; // decrease to ensure not skipping the next entry becduse splice changes the index
+            i--; // decrease to ensure not skipping the next entry because splice changes the index
           } else {
 
             valuesArray[i] = {
               name: valuesArray[i].toUpperCase()
                   .trim(),
-              color: getTagColor(catCards, valuesArray[i]),
+              color: getTagColor(categoryCards, valuesArray[i]),
             };
           }
         }
@@ -421,8 +428,16 @@ export default {
       });
 
     },
+    isReadOnly(dateProperty) {
+      return isFieldReadOnly(this.$props, dateProperty);
+    },
+    readOnlyHint(dateProperty) {
+      return readOnlyHint(this.$props, dateProperty);
+    },
   },
   data: () => ({
+    mdiPaletteSwatch,
+    mdiArrowDownDropCircleOutline,
     search: null,
     keywordValidConcise: true,
     keywordValidMin3Characters: true,
@@ -435,7 +450,7 @@ export default {
       cardInstructions1: 'Please enter at least 5 keywords.',
       cardInstructions2: 'To pick a keyword click into the list, you can start typing to search for a existing keywords.' +
         ' To create a new keyword type it and press enter.',
-      previewText: 'Metadata card preview',
+      previewText: 'Dataset entry preview',
     },
     defaultUserEditMetadataConfig: {
       keywordsListWordMax: 2,

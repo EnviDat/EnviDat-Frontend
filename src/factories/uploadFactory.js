@@ -471,8 +471,7 @@ export function getUppyInstance(metadataId, store, height = 300, autoProceed = t
 
 export function destroyUppyInstance() {
   if (hasUppyInstance()) {
-    // uppyInstance.close({ reason: 'unmount' });
-    uppyInstance.close();
+    uppyInstance.destroy();
     uppyInstance = null;
   }
 

@@ -25,16 +25,8 @@
             style="border-bottom-left-radius: 4px; border-top-left-radius: 4px; cursor: pointer;"
           />
 
-          <div
-            v-show="imageLoading"
-            class="skeleton skeleton-animation-shimmer"
-            style="height: 100%;"
-          >
-            <div
-              style="width: 100%; min-height: 100%; "
-              class="bone bone-type-image"
-            ></div>
-          </div>
+          <v-skeleton-loader v-show="imageLoading" type="image"></v-skeleton-loader>
+
         </v-col>
 
         <v-col :cols="currentColumnNum" class="pa-2">
@@ -61,12 +53,9 @@
               cols="12"
               style="width: 100%"
             >
-              <div
-                class="skeleton skeleton-animation-shimmer"
-                :style="`height: ${chartHeight};`"
-              >
-                <div style="width: 100%;" class="bone bone-type-image"></div>
-              </div>
+
+              <v-skeleton-loader type="image"></v-skeleton-loader>
+
             </v-col>
 
             <v-col
@@ -100,7 +89,7 @@
           </v-row>
 
           <v-row no-gutters>
-            <v-col class="grow pt-1 pr-1" id="statusInfo" cols="10">
+            <v-col class="flex-grow-1 pt-1 pr-1" id="statusInfo" cols="10">
               <v-row no-gutters>
                 <v-col
                   v-if="firstParameterData"
@@ -115,7 +104,7 @@
                 <BaseStatusLabelView
                   v-if="infoObject && !errorObject"
                   :loading="chartIsLoading"
-                  :statusIcon="infoObject.icon"
+                  :status="infoObject.icon"
                   :statusColor="infoObject.icon"
                   :statusText="infoObject.title"
                   :expandedText="infoObject.message"
@@ -126,7 +115,7 @@
                 <BaseStatusLabelView
                   v-if="warningObject"
                   :loading="chartIsLoading"
-                  :statusIcon="warningObject.icon"
+                  :status="warningObject.icon"
                   :statusColor="warningObject.icon"
                   :statusText="warningObject.title"
                   :expandedText="warningObject.message"
@@ -137,7 +126,7 @@
                 <BaseStatusLabelView
                   v-if="errorObject"
                   :loading="chartIsLoading"
-                  :statusIcon="errorObject.icon"
+                  :status="errorObject.icon"
                   :statusColor="errorObject.icon"
                   :statusText="errorObject.title"
                   :expandedText="errorObject.message"
@@ -147,25 +136,25 @@
               </v-row>
             </v-col>
 
-            <v-col class="grow pt-1" style="align-self: flex-end;" cols="2">
+            <v-col class="flex-grow-1 pt-1" style="align-self: flex-end;" cols="2">
               <v-row no-gutters justify="end" class="pb-2">
                 <BaseIconButton
-                  materialIconName="bar_chart"
+                  :icon="mdiChartBar"
                   color="accent"
-                  iconColor="black"
-                  isElevated
-                  tooltipText="Show measurement details"
+                  icon-color="black"
+                  elevated
+                  tooltip-text="Show measurement details"
                   @clicked="catchDetailClick(station.alias)"
                 />
               </v-row>
 
               <v-row v-if="downloadAllUrl" no-gutters justify="end">
                 <BaseIconButton
-                  materialIconName="file_download"
+                  :icon="mdiDownload"
                   color="accent"
-                  iconColor="black"
-                  isElevated
-                  tooltipText="Download station data"
+                  icon-color="black"
+                  elevated
+                  tooltip-text="Download station data"
                   @clicked="downloadData()"
                 />
               </v-row>
@@ -188,6 +177,7 @@ import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import {addStartEndDateUrl, hasData} from '@/factories/chartFactory';
 import { eventBus, GCNET_PREPARE_DETAIL_CHARTS } from '@/factories/eventBus';
+import { mdiChartBar, mdiDownload } from '@mdi/js';
 
 export default {
   name: 'MicroChart',
@@ -216,11 +206,6 @@ export default {
     BaseIconButton,
     BaseStatusLabelView,
   },
-  beforeMount() {
-
-    const iconImgPath = require.context('@/assets/logo/', false, /\.png$/);
-    this.logoImgs = this.mixinMethods_importImages(iconImgPath);
-  },
   mounted() {
     let that = this;
 
@@ -233,7 +218,7 @@ export default {
       that = null;
     }, this.delay);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.clearChart();
   },
   computed: {
@@ -294,9 +279,6 @@ export default {
     },
   },
   methods: {
-    lazyImage() {
-      return this.imageError ? '' : this.logoImgs['./EnviDat_logo_64.png'];
-    },
     imageLoadError() {
       this.imageLoading = false;
       this.imageError = true;
@@ -567,6 +549,8 @@ export default {
     },
   },
   data: () => ({
+    mdiChartBar,
+    mdiDownload,
     microChart: null,
     dataError: '',
     noDataText: 'No preview data available, click on the chart icon to see all data.',

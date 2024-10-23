@@ -1,9 +1,9 @@
 <template>
-  <v-card id="EditDataGeo" class="pa-0" :loading="loading">
+  <v-card id="EditDataGeo"
+          class="pa-0"
+          :loading="loadingColor">
+
     <v-container fluid class="pa-4">
-      <template slot="progress">
-        <v-progress-linear color="primary" indeterminate />
-      </template>
 
       <v-row>
         <v-col cols="6" class="text-h5">
@@ -12,7 +12,7 @@
 
         <v-col v-if="message">
           <BaseStatusLabelView
-            statusIcon="check"
+            status="check"
             statusColor="success"
             :statusText="message"
             :expandedText="messageDetails"
@@ -20,7 +20,7 @@
         </v-col>
         <v-col v-if="error">
           <BaseStatusLabelView
-            statusIcon="error"
+            status="error"
             statusColor="error"
             :statusText="error"
             :expandedText="errorDetails"
@@ -35,7 +35,7 @@
       </v-row>
 
       <v-row v-show="isDefaultLocation">
-        <v-col :style="`background-color: ${$vuetify.theme.themes.light.warning}`">
+        <v-col :style="`background-color: ${$vuetify.theme.themes.light.colors.warning}`">
           {{ labels.defaultInstructions }}
         </v-col>
       </v-row>
@@ -43,18 +43,19 @@
       <v-row>
         <v-col cols="12" md="12" class="editDataGeo">
           <v-file-input
-            ref="filePicker"
-            v-show="false"
-            multiple
-            accept=".geojson,.json"
-            @change="triggerFileUpload"
-          ></v-file-input>
-          <MetadataGeo
-            :genericProps="genericProps"
-            @saveGeoms="commitGeometriesToAPI"
-            @undoGeoms="undoGeomEdits"
-            @uploadGeomFile="triggerFilePicker"
-          />
+              ref="filePicker"
+              multiple
+              accept=".geojson,.json"
+              @change="triggerFileUpload"
+              v-show="false"
+            />
+
+            <MetadataGeo
+              v-bind="metadataGeoProps"
+              @saveGeoms="commitGeometriesToAPI"
+              @undoGeoms="undoGeomEdits"
+              @uploadGeomFile="triggerFilePicker"
+            />
         </v-col>
       </v-row>
 
@@ -173,7 +174,7 @@ export default {
     eventBus.on(EDITMETADATA_DATA_GEO_MAP_ERROR, this.triggerValidationError);
     this.originalGeom = this.location?.geoJSON;
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.saveButtonEnabled) {
       this.commitGeometriesToAPI();
     }
@@ -181,7 +182,14 @@ export default {
     eventBus.off(EDITMETADATA_DATA_GEO_MAP_ERROR, this.triggerValidationError);
   },
   computed: {
-    genericProps() {
+    loadingColor() {
+      if (this.loading) {
+        return 'accent';
+      }
+
+      return undefined;
+    },
+    metadataGeoProps() {
       return {
         mapDivId: this.mapDivId,
         mapHeight: this.mapHeight,
@@ -292,7 +300,11 @@ export default {
       this.saveButtonEnabled = false;
     },
     triggerFilePicker() {
-      this.$refs.filePicker.$refs.input.click();
+      const fileInputElement = this.$refs.filePicker?.$el.querySelector('input[type="file"]');
+
+      if (fileInputElement) {
+        fileInputElement.click();
+      }
     },
     triggerFileUpload(fileArray) {
       // Loop through each dropped file
@@ -332,7 +344,7 @@ export default {
       cardTitle: EDIT_METADATA_GEODATA_TITLE,
       cardInstructions:
         'Choose the location(s) where the research data was collected.',
-      defaultInstructions: 'Your are using the default location (Switzerland). Consider adjusting the geo information to represent your research data as accurate as possible.',
+      defaultInstructions: 'You are using the default location (Switzerland). Consider adjusting the geo information to represent your research data as accurate as possible.',
     },
     validationErrors: {
       geometries: null,

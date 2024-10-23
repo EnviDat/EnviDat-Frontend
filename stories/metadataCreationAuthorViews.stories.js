@@ -10,22 +10,29 @@
 /* eslint-disable import/no-extraneous-dependencies */
 
 import {
-  EDITMETADATA_AUTHOR,
+  CANCEL_EDITING_AUTHOR,
+  EDITMETADATA_AUTHOR, EDITMETADATA_AUTHOR_DATACREDIT,
+  EDITMETADATA_AUTHOR_LIST,
+  EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_OBJECT_UPDATE,
-  eventBus,
+  eventBus, REMOVE_EDITING_AUTHOR,
+  SAVE_EDITING_AUTHOR,
   SELECT_EDITING_AUTHOR,
 } from '@/factories/eventBus';
 
 import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors.vue';
+import EditAuthorList from '@/modules/user/components/edit/EditAuthorList.vue';
 import EditAddAuthor from '@/modules/user/components/EditAddAuthor.vue';
 import EditDataCredits from '@/modules/user/components/edit/EditDataCredits.vue';
 
-import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
-
 import {
+  combineAuthorLists,
   createAuthors,
   extractAuthorsMap,
+  getAuthorName,
   getFullAuthorsFromDataset,
+  mergeAuthorsDataCredit,
+  mergeEditingAuthor,
 } from '@/factories/authorFactory';
 
 import { AUTHORS_EDIT_CURRENT_DATACREDIT } from '@/factories/metadataConsts';
@@ -52,6 +59,7 @@ authorsObjs.forEach((author) => {
 });
 
 const preSelectedAuthor = authorsStrings.filter(value => value.includes('Fischer'));
+const preSelectedAuthors2 = extractedAuthors.filter(value => value.fullName.includes('A'));
 const preSelectedAuthors3 = authorsStrings.filter(value => value.includes('B'));
 
 
@@ -94,7 +102,7 @@ export const EditAddAuthorViews = () => ({
   created() {
     eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.changeAuthor);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.changeAuthor);
   },
   methods: {
@@ -119,84 +127,6 @@ export const EditAddAuthorViews = () => ({
   }),
 });
 
-export const UserPickerViews = () => ({
-  components: { BaseUserPicker },
-  template: `
-  <v-col>
-
-    <v-row>
-      BaseUserPicker
-    </v-row>
-
-    <v-row class="py-3" >
-      <v-col >
-        <BaseUserPicker :users="authors" />
-      </v-col>
-    </v-row>
-
-    <v-row>
-      BaseUserPicker with preSelection
-    </v-row>
-
-    <v-row class="py-3" >
-      <v-col >
-        <BaseUserPicker :users="authors"
-                        :preSelected="preSelectedAuthor" />
-      </v-col>
-    </v-row>
-
-    <v-row>
-      BaseUserPicker as Card with multiple-pick, clearable and instructions
-    </v-row>
-
-    <v-row class="py-3" >
-      <v-col >
-        <BaseUserPicker :users="authors"
-                        :multiplePick="true"
-                        :isClearable="true"
-                        :showAsCard="true"
-                        instructions="Pick an EnviDat user to add as an author." />
-      </v-col>
-    </v-row>
-
-    <v-row>
-      BaseUserPicker with multiple-pick and clearable and with pre selection
-    </v-row>
-
-    <v-row class="py-3" >
-      <v-col >
-        <BaseUserPicker :users="authors"
-                        :multiplePick="true"
-                        :preSelected="preSelectedAuthors3"
-                        :isClearable="true" />
-      </v-col>
-    </v-row>
-
-    <v-row>
-      BaseUserPicker read only with pre selection
-    </v-row>
-
-    <v-row class="py-3" >
-      <v-col >
-        <BaseUserPicker :users="authors"
-                        :multiplePick="true"
-                        :preSelected="preSelectedAuthors3"
-                        :readonly="true"
-                        hint="Testing readonly" />
-      </v-col>
-    </v-row>
-
-  </v-col>
-  `,
-  methods: {
-  },
-  data: () => ({
-    authors: authorsStrings,
-    preSelectedAuthor,
-    preSelectedAuthors3,
-  }),
-});
-
 export const EditingDataCreditViews = () => ({
   components: { EditDataCredits },
   template: `
@@ -208,7 +138,7 @@ export const EditingDataCreditViews = () => ({
 
     <v-row class="py-3" >
       <v-col style="background-color: darkgrey;">
-        <EditDataCredits @creditClick="catchCreditClick(emptyAuthor, ...arguments)"
+        <EditDataCredits @creditClick="catchCreditClick(emptyAuthor, $event)"
                          :dataCredit="emptyAuthor.dataCredit"
                          authorName="Dominik Haas-Artho"
                          :dark="true"
@@ -225,7 +155,7 @@ export const EditingDataCreditViews = () => ({
         <EditDataCredits :instruction="instruction"
                          :dataCredit="author.dataCredit"
                          authorName="Dominik Haas-Artho"
-                          @creditClick="catchCreditClick(author, ...arguments)"
+                          @creditClick="catchCreditClick(author, $event)"
                          :dark="true"
                           />
       </v-col>
@@ -240,7 +170,7 @@ export const EditingDataCreditViews = () => ({
         <EditDataCredits :instruction="instruction"
                          :dataCredit="author.dataCredit"
                          authorName="Dominik Haas-Artho"
-                         @creditClick="catchCreditClick(author, ...arguments)"
+                         @creditClick="catchCreditClick(author, $event)"
         />
       </v-col>
     </v-row>
@@ -306,7 +236,7 @@ export const EditAuthorsListViews = () => ({
   created() {
     eventBus.on(SELECT_EDITING_AUTHOR, this.selectAuthor);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(SELECT_EDITING_AUTHOR, this.selectAuthor);
   },
   methods: {
@@ -344,5 +274,170 @@ export const EditAuthorsListViews = () => ({
       authors: extractedAuthors,
     },
     selectionId: -1,
+  }),
+});
+
+export const FullEditingAuthorViews = () => ({
+  components: { EditAuthorList },
+  template: `
+    <v-col>
+
+    <v-row>
+      EditAuthorList
+    </v-row>
+
+    <v-row class="py-3" >
+      <v-col >
+        <EditAuthorList :authors="authors"
+                        :existingAuthors="existingAuthors"
+                        :authorsMap="authorsMap" />
+      </v-col>
+    </v-row>
+
+    </v-col>
+  `,
+  created() {
+    eventBus.on(SAVE_EDITING_AUTHOR, this.saveAuthor);
+    eventBus.on(SELECT_EDITING_AUTHOR, this.selectAuthor);
+    eventBus.on(CANCEL_EDITING_AUTHOR, this.cancelEditing);
+    eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.changeAuthors);
+  },
+  beforeUnmount() {
+    eventBus.off(SAVE_EDITING_AUTHOR, this.saveAuthor);
+    eventBus.off(SELECT_EDITING_AUTHOR, this.selectAuthor);
+    eventBus.off(CANCEL_EDITING_AUTHOR, this.cancelEditing);
+    eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.changeAuthors);
+  },
+  methods: {
+    removeAuthor(email) {
+      const matches = this.authors.filter(auth => auth.email === email);
+      console.log('remove Author');
+      console.log(matches.length > 0);
+
+      if (matches.length > 0) {
+        const removeIndex = this.authors.indexOf(matches[0]);
+        this.authors.splice(removeIndex, 1);
+        console.log('remove index');
+        console.log(removeIndex);
+      }
+    },
+    selectAuthor(id) {
+      if (this.selectionId !== '') {
+        this.cancelEditing();
+      }
+
+      this.selectionId = id;
+      this.setSelected(this.selectionId, true);
+    },
+    cancelEditing() {
+      this.setSelected(this.selectionId, false);
+      this.selectionId = '';
+      eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
+    },
+    setSelected(id, selected) {
+      const auths = this.authors;
+      for (let i = 0; i < auths.length; i++) {
+        const author = auths[i];
+        if (author.email === id) {
+          author.isSelected = selected;
+          return;
+        }
+      }
+
+    },
+    saveAuthor(newAuthor) {
+      this.updateAuthors(newAuthor);
+      this.cancelEditing();
+    },
+    updateAuthors(newAuthor) {
+      const auths = this.genericProps.authors;
+
+      for (let i = 0; i < auths.length; i++) {
+        const r = auths[i];
+        if (r.localId) {
+          if (r.localId === newAuthor.localId) {
+            auths[i] = newAuthor;
+            return;
+          }
+        } else if (r.email === newAuthor.email) {
+          auths[i] = newAuthor;
+          return;
+        }
+      }
+
+      auths.unshift(newAuthor);
+    },
+    changeAuthors(updateObj) {
+      this.loading = true;
+
+      if (updateObj.object === EDITMETADATA_AUTHOR_DATACREDIT) {
+        const authorToMergeDataCredit = updateObj.data;
+
+        // overwrite the authors and stepKey so it will be saved as if it was a EDITMETADATA_AUTHOR_LIST change (to the list of authors)
+        this.authors = mergeAuthorsDataCredit(this.authors, authorToMergeDataCredit);
+      }
+
+      if (updateObj.object === EDITMETADATA_AUTHOR_LIST) {
+        this.authors = combineAuthorLists(this.authors, updateObj.data.authors, updateObj.data.removedAuthors);
+      }
+
+      if (updateObj.object === EDITMETADATA_AUTHOR) {
+        const updatedAuthor = updateObj.data;
+
+        let changed = false;
+
+        for (let i = 0; i < this.authors.length; i++) {
+          const auth = this.authors[i];
+          const email = auth.email;
+          const fullName = auth.fullName;
+          const searchAuthorFullName = getAuthorName({
+            firstName: updatedAuthor.firstName,
+            lastName: updatedAuthor.lastName,
+          });
+
+          if (email === updatedAuthor.email
+            || fullName === searchAuthorFullName){
+
+            const mergedAuthor = mergeEditingAuthor(updatedAuthor, auth);
+
+            // this.authors[i] = createAuthor(updatedAuthor);
+
+            this.authors[i] = mergedAuthor;
+            // use $set to make the author entry reactive
+            // this.$set(this.authors, i, author);
+
+            changed = true;
+            console.log(`Updated author ${ email } ${ fullName }`);
+            break;
+          }
+        }
+
+        if (!changed) {
+          this.authors.push(updatedAuthor);
+
+          this.selectAuthor(updatedAuthor.email);
+          // this.$set(this.authors, this.authors.length - 1, updatedAuthor);
+        }
+      }
+
+      if (updateObj.object === REMOVE_EDITING_AUTHOR) {
+        this.removeAuthor(updateObj.data);
+      }
+
+      console.log('FullEditingAuthorView updated authors');
+      console.log(this.authors);
+
+      setTimeout(() => {
+        this.loading = false;
+        eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
+      }, 1000)
+    },
+  },
+  data: () => ({
+    loading: false,
+    selectionId: '',
+    authors: preSelectedAuthors2,
+    existingAuthors: extractedAuthors,
+    authorsMap,
   }),
 });

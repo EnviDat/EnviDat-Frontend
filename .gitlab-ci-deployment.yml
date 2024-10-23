@@ -102,7 +102,7 @@ manual-deploy-to-s3-bucket:
     - if: '$CI_PIPELINE_SOURCE == "pipeline"'
       when: always
     - when: manual
-  # for manaul jobs add allow_failure so the whole pipeline won't show up as "blocked"
+  # for manual jobs add allow_failure so the whole pipeline won't show up as "blocked"
   allow_failure: true
   needs:
     # needs the environmental variables for the version number

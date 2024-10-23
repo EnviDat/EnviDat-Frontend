@@ -83,10 +83,14 @@ function genericMessage(status) {
 export function getSpecificApiError(details, reason) {
   let errObj = errorMessage(reason, details);
 
-  if (reason && reason.response) {
-    const status = `${reason.response.status} ${reason.response.statusText}`;
-    details += `\n ${reason.request ? reason.request.responseURL : ''}`;
-    errObj = errorMessage(status, details, reason.response.stack);
+  if (reason) {
+    if (reason.response) {
+      const status = `${reason.response.status} ${reason.response.statusText}`;
+      details += `\n ${reason.request ? reason.request.responseURL : ''}`;
+      errObj = errorMessage(status, details, reason.response.stack);
+    } else {
+      errObj.message = reason.message;
+    }
   }
 
   return errObj;
