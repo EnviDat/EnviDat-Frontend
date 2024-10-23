@@ -19,6 +19,7 @@ import {
 
 import packagelist from '@/../stories/testdata/packagelist.json';
 import { enhanceTags } from '@/factories/keywordsFactory';
+import categoryCards from '@/store/categoryCards';
 
 // const metadatasContent = {};
 // packagelist.result.forEach((entry) => {
@@ -243,7 +244,7 @@ describe('metaDataFactory - enhanceTags', () => {
   it('with dataset', () => {
     const dataset = packagelist.result[6];
 
-    const enhancedDataset = enhanceTags(dataset);
+    const enhancedDataset = enhanceTags(dataset, categoryCards);
 
     expect(enhancedDataset).toBeDefined();
 
