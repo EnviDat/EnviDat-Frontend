@@ -3,6 +3,7 @@ include:
 #  - local: '.gitlab-ci_envidat-in-a-box.yml'
 
 stages:
+  - .pre
   - config
   - test
   - build
