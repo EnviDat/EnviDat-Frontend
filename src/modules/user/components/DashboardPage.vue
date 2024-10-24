@@ -20,19 +20,18 @@
    <div v-if="user"
         class="dashboardGrid" >
 
-    <div class="topBoard" >
-
-      <IntroductionCard :userName="user.fullName"
-                        :introText="userDashboardConfig.introText"
-                        :feedbackText="userDashboardConfig.feedbackText"
-                        :oldDashboardUrl="oldDashboardUrl"
-                        :createClickCallback="canCreateDatasets ? createClickCallback : null"
-                        :editingClickCallback="editingClickCallback"
-                        :editingDatasetName="lastEditedDataset"
-                        :currentLocalDataset="hasLocalDataset ? currentLocalDataset : undefined"
-                        @localCardClicked="catchLocalCardClick"
-                        @clearButtonClicked="catchClearLocalStorage"
-      />
+    <div class="topBoard mt-6 mt-md-0" >
+        <IntroductionCard :userName="user.fullName"
+                          :introText="userDashboardConfig.introText"
+                          :feedbackText="userDashboardConfig.feedbackText"
+                          :oldDashboardUrl="oldDashboardUrl"
+                          :createClickCallback="canCreateDatasets ? createClickCallback : null"
+                          :editingClickCallback="editingClickCallback"
+                          :editingDatasetName="lastEditedDataset"
+                          :currentLocalDataset="hasLocalDataset ? currentLocalDataset : undefined"
+                          @localCardClicked="catchLocalCardClick"
+                          @clearButtonClicked="catchClearLocalStorage"
+        />
 
       <UserOrganizationInfo :height="userOrgaInfoCardHeight"
                             :width="userOrgaInfoCardWidth"
@@ -840,10 +839,7 @@ export default {
 
     .topBoard
       display: grid
-      grid-template-columns: 4fr auto auto
       gap: $gridGap
-      overflow: hidden hidden
-      max-height: $maxHeight
 
     .midBoard
       display: grid
@@ -880,6 +876,14 @@ export default {
 </style>
 
 <style scoped>
+
+@media (min-width: 767px) {
+  .topBoard {
+    grid-template-columns: 4fr auto auto;
+    overflow: hidden hidden;
+    max-height: 750px;
+  }
+}
   /* html,
   body {
     height: 100%;

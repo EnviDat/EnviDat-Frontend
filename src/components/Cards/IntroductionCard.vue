@@ -58,7 +58,7 @@
               {{ createText }}
             </v-col>
 
-            <v-col cols="3">
+            <v-col cols="auto">
               <BaseRectangleButton
                 color="accent"
                 marginClass="text-black"
