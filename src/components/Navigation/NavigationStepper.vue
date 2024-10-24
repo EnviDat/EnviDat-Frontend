@@ -116,7 +116,7 @@
       class="content fill-height pa-1"
       :style="`background-color: ${backgroundColor}`"
     >
-      <v-card v-show="loading" class="fill-height pa-4">
+      <v-card v-if="loading" class="fill-height pa-4">
         <v-row id="metadataListPlaceholder">
           <v-col
             v-for="(n, index) in 2"
@@ -128,7 +128,7 @@
         </v-row>
       </v-card>
 
-      <v-card v-if="!loading" class="fill-height pa-4">
+      <v-card v-else class="fill-height pa-4">
         <!-- prettier-ignore -->
         <component v-if="currentStep"
                        :is="currentStep.component"

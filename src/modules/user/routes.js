@@ -22,7 +22,6 @@ import {
   USER_SIGNIN_PATH,
 } from '@/router/routeConsts';
 
-import store from '@/store/store';
 
 const SigninPage = () => import('@/modules/user/components/SigninPage.vue');
 const DashboardPage = () => import('@/modules/user/components/DashboardPage.vue');
@@ -30,7 +29,6 @@ const MetadataEditPage = () => import('@/modules/user/components/MetadataEditPag
 const MetadataCreationPage = () => import('@/modules/user/components/MetadataCreationPage.vue');
 
 const beforeEnter = async (to, from, next)=> {
-  await store.state.asyncLoadStoreModule('organizations');
   next();
 }
 

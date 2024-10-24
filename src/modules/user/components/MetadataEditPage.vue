@@ -52,6 +52,9 @@
  */
 import { mapGetters, mapState } from 'vuex';
 
+import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
+
+
 import {
   eventBus,
   CANCEL_EDITING_AUTHOR,
@@ -93,13 +96,11 @@ import {
   UPDATE_METADATA_EDITING,
   USER_NAMESPACE,
   USER_SIGNIN_NAMESPACE,
+  FETCH_USER_DATA,
+  ACTION_USER_SHOW,
+  USER_GET_DATASETS,
 } from '@/modules/user/store/userMutationsConsts';
 
-import {
-  ORGANIZATIONS_NAMESPACE,
-  USER_GET_ORGANIZATION_IDS,
-  USER_GET_ORGANIZATIONS,
-} from '@/modules/organizations/store/organizationsMutationsConsts';
 
 import {
   BROWSE_PATH,
@@ -164,6 +165,7 @@ export default {
     });
   },
   created() {
+    this.organizationsStore = useOrganizationsStore();
     this.editingSteps = initializeSteps(metadataEditingSteps);
 
     eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
@@ -210,10 +212,6 @@ export default {
   computed: {
     ...mapState(['config']),
     ...mapState(USER_SIGNIN_NAMESPACE, ['user', 'userLoading']),
-    ...mapState(ORGANIZATIONS_NAMESPACE, [
-      'userOrganizationIds',
-      'userOrganizationLoading',
-    ]),
     ...mapState(USER_NAMESPACE, [
       'lastEditedBackPath',
       'currentEditingContent',
@@ -239,7 +237,7 @@ export default {
       return (
         this.loadingCurrentEditingContent ||
         !this.currentEditingContent ||
-        this.userOrganizationLoading ||
+        this.organizationsStore.userOrganizationLoading ||
         this.authorsMapLoading
       );
     },
@@ -307,23 +305,30 @@ export default {
     },
     async loadUserOrganizations() {
       if (
-        !this.$store.getters[`${ORGANIZATIONS_NAMESPACE}/hasUserOrganizations`]
+        !this.organizationsStore.userOrganizations?.length > 0
       ) {
-        await this.$store.dispatch(
-          `${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`,
-          this.user?.id,
-        );
-        // always call the USER_GET_ORGANIZATIONS action because it resolves the store & state also when userOrganizationIds is empty
-        await this.$store.dispatch(
-          `${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS}`,
-          this.userOrganizationIds,
-        );
+        await this.organizationsStore.UserGetOrgIds(this.user?.id)
+
+        const userId = this.user?.id;
+        if (!userId) {
+          return;
+        }
+
+        await this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`, {
+          action: ACTION_USER_SHOW,
+          body: {
+            id: userId,
+            include_datasets: true,
+          },
+          commit: true,
+          mutation: USER_GET_DATASETS,
+        });
       }
 
       this.updateStepsOrganizations();
     },
     updateStepsOrganizations() {
-      const userOrganizations = this.$store.state.organizations
+      const userOrganizations = this.organizationsStore
         .userOrganizations;
 
       const editOrgaData = this.$store.getters[
@@ -342,8 +347,8 @@ export default {
       this.updatePublicationStatus(datasetOrgaId);
     },
     updatePublicationStatus(datasetOrgaId) {
-      const userOrganizations = this.$store.state.organizations
-        .userOrganizations;
+      const userOrganizations = this.organizationsStore
+      .userOrganizations;
       const roleMap = getUserOrganizationRoleMap(
         this.user.id,
         userOrganizations,
@@ -624,6 +629,7 @@ export default {
     NotificationCard,
   },
   data: () => ({
+    organizationsStore: null,
     editingSteps: null,
     errorTitle: null,
     errorMessage: null,

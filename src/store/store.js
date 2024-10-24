@@ -13,27 +13,23 @@
 
 import Vuex from 'vuex';
 
-import {metadata} from '@/modules/metadata/store/metadataStore';
-import {user} from '@/modules/user/store/userStore';
-import {userSignIn} from '@/modules/user/store/userSignInStore';
-
-import {matomo} from '@/modules/matomo/store/matomoStore';
+import { metadata } from '@/modules/metadata/store/metadataStore';
+import { user } from '@/modules/user/store/userStore';
+import { userSignIn } from '@/modules/user/store/userSignInStore';
+import { matomo } from '@/modules/matomo/store/matomoStore';
 
 import mutations from '@/store/mainMutations';
 import actions from '@/store/mainActions';
 
-import {LISTCONTROL_MAP_ACTIVE} from '@/store/metadataMutationsConsts';
+import { LISTCONTROL_MAP_ACTIVE } from '@/store/metadataMutationsConsts';
 
-import {importStoreModule} from '@/factories/enhancementsFactory';
+import { importStoreModule } from '@/factories/enhancementsFactory';
 
 const moduleImportMap = {
-  /*
-    metadata: () => import('@/modules/metadata/store/metadataStore'),
-    user: () => import('@/modules/user/store/userStore'),
-    userSignIn: () => import('@/modules/user/store/userSignInStore'),
-  */
+  metadata: () => import('@/modules/metadata/store/metadataStore'),
+  user: () => import('@/modules/user/store/userStore'),
+  userSignIn: () => import('@/modules/user/store/userSignInStore'),
   blog: () => import('@/modules/blog/store/blogStore'),
-  organizations: () => import('@/modules/organizations/store/organizationsStore'),
   integration: () => import('@/modules/integration/store/integrationStore'),
   service: () => import('@/modules/services/store/serviceStore'),
   projects: () => import('@/modules/projects/store/projectsStore'),
@@ -82,12 +78,8 @@ const preloadedModules = {
   metadata,
   user,
   userSignIn,
-  /*
-    organizations,
-  */
   matomo,
 };
-
 
 function createStore() {
   return new Vuex.Store({
