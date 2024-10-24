@@ -155,4 +155,11 @@ export default {
   transform: rotate(180deg)
 }
 
+
+@media (min-width: 767px) {
+  .v-navigation-drawer__scrim {
+      display: none;
+    }
+}
+
 </style>
