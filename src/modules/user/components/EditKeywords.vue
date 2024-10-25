@@ -44,56 +44,51 @@
 
       <v-row>
         <v-col>
+          <v-autocomplete
+            v-model="keywordsField"
+            item-text="name"
+            item-value="name"
+            :items="existingKeywordItems"
+            :menu-icon="mdiArrowDownDropCircleOutline"
+            :readonly="isReadOnly('keywords')"
+            :hint="readOnlyHint('keywords')"
+            :persistent-hint="!!hint"
+            :prepend-icon="mdiPaletteSwatch"
+            :label="labels.placeholder"
+            clear-on-select="true"
+            multiple
+            :search-input.sync="search"
+            :error-messages="validationErrors.keywords"
+            @update:search="search = $event; isKeywordValid(search)"
+            @keyup="blurOnEnterKey"
+            @input="isEnoughKeywords()"
+            @change="notifyChange('keywords', $event)"
+            @blur="saveChange()"
+            @keydown="catchKeywordEntered($event)"
+            :rules="rulesKeywords"
+          >
 
-          <v-combobox :model-value="keywordsField"
-                      :items="existingKeywordItems"
-                      item-text="name"
-                      multiple
-                      :menu-icon="mdiArrowDownDropCircleOutline"
-                      :prepend-icon="mdiPaletteSwatch"
-                      :label="labels.keywordsLabel"
-                      :placeholder="labels.placeholder"
-                      :search-input.sync="search"
-                      :readonly="isReadOnly('keywords')"
-                      :hint="readOnlyHint('keywords')"
-                      :error-messages="validationErrors.keywords"
-                      @update:search-input="isKeywordValid(search)"
-                      @keyup="blurOnEnterKey"
-                      @input="isEnoughKeywords()"
-                      @change="notifyChange('keywords', $event)"
-                      @blur="saveChange()"
-                      @keydown="catchKeywordEntered($event)"
-                      :rules="rulesKeywords"
-                      >
+                <template v-slot:selection="{ item }" >
+                      <TagChip
+                        :name="item.raw.name"
+                        selectable
+                        closeable
+                        @clickedClose="removeKeyword(item)"
+                    :isSmall="false"
+                    />
+                </template>
 
-            <template v-slot:selection="{ item }" >
-              <TagChip
-                :name="item.raw.name"
-                selectable
-                closeable
-                @clickedClose="removeKeyword(item)"
-                :isSmall="false"
-                />
-            </template>
+                <template v-slot:item="{ item, props }">
+                  <v-list-item class="py-0" @click="catchKeywordClicked(item.value)" v-bind="props">
+                  </v-list-item>
+                </template>
 
-            <template v-slot:item="{ item }">
-              <v-list-item class='py-0' >
-                <TagChip
-                  class='py-0'
-                  v-if="item && item.value"
-                  :name="item.raw.name"
-                  selectable
-                  @clicked="catchKeywordClicked(item.raw.name)"
-                  :isSmall="false"
-                />
-              </v-list-item>
-            </template>
-
-            <template v-slot:no-data>
-              <v-list-item v-html="autocompleteHint" />
-            </template>
-
-          </v-combobox>
+                <template v-slot:no-data>
+                  <v-list-item>
+                    <div v-html="autocompleteHint"></div>
+                  </v-list-item>
+                </template>
+          </v-autocomplete>
         </v-col>
 
         <v-col>
@@ -249,7 +244,6 @@ export default {
       return previewEntry;
     },
     autocompleteHint() {
-
       if (!this.keywordValidConcise) {
         const wordMaxHint = `Each keyword tag may not exceed ${this.keywordsListWordMax} words.`;
         return `<span class="text-red font-italic">${wordMaxHint}</span>`;
@@ -262,7 +256,7 @@ export default {
       }
 
       if (this.search) {
-        hint += ` No results matching "<strong>${this.search}</strong>". Press <span class="mx-1"><kbd>enter</kbd></span> to create a new keyword. `;
+        hint += ` No results matching "<strong>${this.search}</strong>". Press <v-btn small variant="tonal" class="mx-1" text>enter</v-btn> to create a new keyword. `;
       } else {
         hint += ' Start typing for keyword autocompletion.';
       }
@@ -271,16 +265,21 @@ export default {
     },
     existingKeywordItems() {
       if (this.$store) {
-        return this.$store.getters[`${METADATA_NAMESPACE}/existingKeywords`];
+        const getTag = this.$store.getters[`${METADATA_NAMESPACE}/existingKeywords`]
+        const arrayFromTags = this.getTagName(getTag)
+        return arrayFromTags
       }
 
-      return this.existingKeywords;
+      return this.getTagName(this.existingKeywords);
     },
     validations() {
       return getValidationMetadataEditingObject(this.stepKey);
     },
   },
   methods: {
+    getTagName(arr) {
+      return arr.map(item => item.name);
+    },
     blurOnEnterKey(keyboardEvent) {
       if (keyboardEvent.key === 'Enter' && keyboardEvent.target.value === '') {
         keyboardEvent.target.blur();
@@ -406,7 +405,8 @@ export default {
 
       return this.keywordValidMin3Characters && this.keywordValidConcise;
     },
-    notifyChange(property, value) {
+    notifyChange(value) {
+
 
       // const keywordsAmount = value.length;
 
@@ -438,7 +438,7 @@ export default {
   data: () => ({
     mdiPaletteSwatch,
     mdiArrowDownDropCircleOutline,
-    search: null,
+    search: '',
     keywordValidConcise: true,
     keywordValidMin3Characters: true,
     keywordCount: 0,
