@@ -23,6 +23,7 @@
           :label="pickerLabel"
           :multiple="multiplePick"
           :clearable="isClearable"
+          clear-on-select="true"
           :search-input="search"
           :error-messages="errorMessages"
           :menu-props="menuOptions"
@@ -31,9 +32,6 @@
           @change="catchPicks"
           @blur="$emit('blur', $event)"
         >
-<!--
-          :search-input.sync="search"
--->
 
           <template v-slot:selection="{ item }">
             <TagChipAuthor
@@ -44,14 +42,24 @@
             />
           </template>
 
-          <template v-slot:item="{ item }">
-            <v-list-item >
-              <TagChipAuthor
+          <!-- documentation https://vuetifyjs.com/en/components/autocompletes/ -->
+
+          <!--
+
+          following documentation
+
+          Define a custom item appearance. The root element of this slot must be a v-list-item with v-bind="props" applied. props includes everything required for the default select list behaviour - including title, value, click handlers, virtual scrolling, and anything else that has been added with item-props.
+
+          -->
+
+          <template v-slot:item="{ props, item }">
+            <v-list-item v-bind="props"  @click="catchPickClicked(item.value)">
+              <!-- <TagChipAuthor
                 v-if="item"
                 :name="item.value"
                 @clicked="catchPickClicked"
                 :isSmall="true"
-              />
+              /> -->
             </v-list-item>
           </template>
 
@@ -153,11 +161,7 @@ export default {
           this.pickedUsers = [];
 
           this.preSelected.forEach(authorName => {
-            // if (typeof author === 'object') {
             this.pickedUsers.push(authorName);
-            // } else {
-            //   this.pickedUsers.push(author);
-            // }
           });
         } else {
           this.pickedUsers = this.preSelected[0];
@@ -187,24 +191,16 @@ export default {
     },
     catchPickClicked(pickedItem) {
       if (this.multiplePick) {
-        // if (Array.isArray(this.pickedUsers)) {
         if (!this.pickedUsers.includes(pickedItem)) {
           this.pickedUsers.push(pickedItem);
-          /*
-          } else {
-            const index = this.pickedUsers.indexOf(pickedItem);
-            this.pickedUsers.splice(index, 1);
-*/
         }
-        // }
       } else {
         this.pickedUsers = pickedItem;
       }
-
       this.$emit('pickedUsers', this.pickedUsers);
     },
-    catchPicks(picks) {
-      this.$emit('pickedUsers', picks);
+    catchPicks() {
+      this.$emit('pickedUsers', this.pickedUsers);
       this.search = '';
     },
   },
