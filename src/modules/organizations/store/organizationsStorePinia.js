@@ -35,12 +35,8 @@ export const useOrganizationsStore = defineStore({
     userOrgaDatasetOffset: 0,
   }),
   getters: {
-    hasOrganizations: (state) => {
-      return state.organizations.length > 0;
-    },
-    hasUserOrganizations: (state) => {
-      return state.userOrganizations.length > 0;
-    },
+    hasOrganizations: (state) => state.organizations.length > 0,
+    hasUserOrganizations: (state) => state.userOrganizations.length > 0,
   },
   actions: {
     async fetchOrganizations(url, params = {}) {
