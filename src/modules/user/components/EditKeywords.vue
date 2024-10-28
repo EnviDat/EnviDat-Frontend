@@ -62,7 +62,7 @@
             @update:search="search = $event; isKeywordValid(search)"
             @keyup="blurOnEnterKey"
             @input="isEnoughKeywords()"
-            @change="notifyChange('keywords', $event)"
+            @change="notifyChange($event)"
             @blur="saveChange()"
             @keydown="catchKeywordEntered($event)"
             :rules="rulesKeywords"
@@ -406,14 +406,7 @@ export default {
       return this.keywordValidMin3Characters && this.keywordValidConcise;
     },
     notifyChange(value) {
-
-
-      // const keywordsAmount = value.length;
-
       const mergedKeywordsField = [...this.keywordsField, ...value];
-
-      // const cleanedAmount = cleanedKeywordsField.length;
-
       this.previewKeywords = this.processValues(mergedKeywordsField);
     },
     setKeywords(property, value) {
