@@ -403,8 +403,8 @@ export default {
       this.selectedTagNames = [];
     },
     setScrollPos(toPos) {
-      if (this.$root.$children && this.$root.$children[0].$refs.appContainer) {
-        this.$root.$children[0].$refs.appContainer.$el.scrollTop = toPos;
+      if (this.$root && this.$root.$refs.appContainer) {
+        this.$root.$refs.appContainer.$el.scrollTop = toPos;
       }
     },
   },
