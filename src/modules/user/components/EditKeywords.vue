@@ -55,9 +55,9 @@
             :persistent-hint="!!hint"
             :prepend-icon="mdiPaletteSwatch"
             :label="labels.placeholder"
-            clear-on-select="true"
+            :clear-on-select="true"
             multiple
-            :search-input.sync="search"
+            :search="search"
             :error-messages="validationErrors.keywords"
             @update:search="search = $event; isKeywordValid(search)"
             @keyup="blurOnEnterKey"

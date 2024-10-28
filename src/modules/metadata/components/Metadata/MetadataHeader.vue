@@ -354,7 +354,7 @@
                 :isAccordion="true"
                 :isOpen="showHeaderInformation"
                 :name="'SHOW MORE INFORMATION'"
-                @click.native="showHeaderInformation = !showHeaderInformation"
+                @click="showHeaderInformation = !showHeaderInformation"
                 />
 
             </v-row>
@@ -493,7 +493,7 @@
                           ? 'SHOW MORE ' + tagsDifference + ' TAGS'
                           : 'SHOW LESS TAGS'
                       "
-                      @click.native="showTagsExpanded = !showTagsExpanded"
+                      @click="showTagsExpanded = !showTagsExpanded"
                     />
                   </v-col>
                 </v-row>

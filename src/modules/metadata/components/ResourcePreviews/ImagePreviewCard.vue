@@ -69,10 +69,7 @@ export default {
           const imageRef = this.$refs.imagePreview;
 
           if (imageRef && imageRef.$el) {
-            const imgElement = imageRef.$el;
-            if (imgElement) {
-              this.urlImage = url;
-            }
+            this.urlImage = imageRef.$el;
           }
         });
       } catch (e) {

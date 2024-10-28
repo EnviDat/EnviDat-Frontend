@@ -3,7 +3,7 @@
     @mouseover="hover = true"
     @mouseleave="hover = false"
     :dark="false"
-    @click.native="cardClick"
+    @click="cardClick"
   >
     <v-container fluid class="pa-0">
       <v-row no-gutters>

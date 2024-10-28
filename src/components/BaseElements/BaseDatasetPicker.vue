@@ -23,7 +23,7 @@
           :multiple="multiplePick"
           :clearable="isClearable"
           :persistent-clear="isClearable"
-          :search-input.sync="search"
+          :search="search"
           :error-messages="errorMessages"
           :menu-props="menuOptions"
           :clear-icon="mdiClose"
