@@ -207,7 +207,7 @@ build-storybook:
   script:
     # - npm config set cache .npm/
     # - npm cache verify || true
-    - npm run build-storybook -- -o ./storybook --loglevel error --disable-telemetry
+    - npm run build-storybook -- -o ./storybook --loglevel warning --disable-telemetry
   artifacts:
     name: 'storybook build'
     # keep the storybook for 7 days to be able to trigger the chromatic-deployment
