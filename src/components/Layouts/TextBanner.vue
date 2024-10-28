@@ -1,5 +1,7 @@
 <template>
-  <v-banner two-line class="noPaddingForActions" :color="bannerColor">
+  <v-banner density="compact"
+            class="noPaddingForActions"
+            :color="bannerColor">
     <template v-slot:icon>
       <v-icon
         color="white"
@@ -15,7 +17,7 @@
     </template>
 
     <template v-slot:actions>
-      <div class="d-flex flex-column flex-sm-row">
+
         <BaseRectangleButton
           v-if="confirmText"
           marginClass="mx-1"
@@ -46,7 +48,7 @@
           :isFlat="true"
           @clicked="cancelClick"
         />
-      </div>
+
     </template>
   </v-banner>
 </template>
@@ -104,9 +106,7 @@ export default {
 </script>
 
 <style>
-.noPaddingForActions > .v-banner__wrapper > .v-banner__actions {
-  padding-top: 8px !important;
-  padding-bottom: 12px !important;
-  justify-content: center;
+.noPaddingForActions .v-banner-actions {
+  margin: 0 !important;
 }
 </style>
