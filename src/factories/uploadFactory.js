@@ -235,10 +235,12 @@ export async function requestPresignedUrl(file, partData) {
 
   const resourceId = storeReference?.getters[`${USER_NAMESPACE}/uploadResourceId`];
 
+  const { uploadId, partNumber } = partData;
+
   const payload = {
     id: resourceId,
-    uploadId: partData.uploadId,
-    partNumber: partData.partNumber,
+    uploadId,
+    partNumber,
     filename: file.name,
   };
 
@@ -288,10 +290,12 @@ export async function completeMultipart(file, uploadData) {
   const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
   const resourceId = storeReference?.getters[`${USER_NAMESPACE}/uploadResourceId`];
 
+  const { uploadId } = uploadData;
+
   const payload = {
     id: resourceId,
-    uploadId: uploadData.uploadId,
-    partInfo: JSON.stringify(uploadData.parts),
+    uploadId,
+    parts: JSON.stringify(uploadData.parts),
   };
 
   try {

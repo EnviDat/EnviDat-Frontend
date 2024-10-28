@@ -175,7 +175,7 @@ import uPlot from 'uplot/dist/uPlot.esm';
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
-import {addStartEndDateUrl, hasData} from '@/factories/chartFactory';
+import { hasData } from '@/factories/chartFactory';
 import { eventBus, GCNET_PREPARE_DETAIL_CHARTS } from '@/factories/eventBus';
 import { mdiChartBar, mdiDownload } from '@mdi/js';
 
