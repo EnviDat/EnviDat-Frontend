@@ -14,7 +14,7 @@
 
 import Uppy from '@uppy/core';
 import axios from 'axios';
-import AwsS3Multipart from '@uppy/aws-s3-multipart';
+import awsS3 from '@uppy/aws-s3';
 
 import {
   METADATA_CREATION_RESOURCE,
@@ -431,7 +431,7 @@ function createUppyInstance(height = 300, autoProceed = true, restrictions = def
     height,
   });
 
-  uppy.use(AwsS3Multipart, {
+  uppy.use(awsS3, {
     id: 'multipart-aws',
     limit: 4,
     getChunkSize(file) {
