@@ -36,7 +36,7 @@ const Template = {
     created() {
       eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.updateRelatedtext);
     },
-    beforeDestroy() {
+    beforeUnmount() {
       eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.updateRelatedtext);
     },
     mounted() {

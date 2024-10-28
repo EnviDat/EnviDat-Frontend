@@ -33,10 +33,6 @@ import {
 } from './mainMutationsConsts';
 
 function disablingCategoryCards(config) {
-  if (!categoryCards) {
-    return;
-  }
-
   const signinDisabled = config?.maintenanceConfig?.signinDisabled || false;
 
   if (signinDisabled) {
@@ -83,7 +79,7 @@ export default {
     state.loadingConfig = false;
     state.config = payload;
 
-    disablingCategoryCards(state.config, state.categoryCards);
+    disablingCategoryCards(state.config);
   },
   [SET_CONFIG_ERROR](state, reason) {
     state.loadingConfig = true;

@@ -171,7 +171,7 @@ export default {
     funders: {
       immediate: true,
       handler(newData) {
-        this.previewFunders = [...newData] ?? [];
+        this.previewFunders = newData;
       },
     },
   },

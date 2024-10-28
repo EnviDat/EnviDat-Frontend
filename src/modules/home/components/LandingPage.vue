@@ -267,9 +267,9 @@ export default {
   },
   created() {
     this.$store.dispatch(`${BLOG_NAMESPACE}/${GET_BLOG_LIST}`);
-    this.blogModuleLoaded = !!this.$store?.state?.blog;
+    this.blogModuleLoaded = !!this.$store.state?.blog;
 
-    this.$store?.watch((state) => state.blog, (value) => {
+    this.$store.watch((state) => state.blog, (value) => {
       this.blogModuleLoaded = !!value;
     });
   },
@@ -282,7 +282,7 @@ export default {
 
     this.initPolygonParticles();
   },
-  unmounted() {
+  beforeUnmount() {
     this.stopParticles();
   },
   computed: {

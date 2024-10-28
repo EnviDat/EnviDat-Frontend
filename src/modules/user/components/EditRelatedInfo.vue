@@ -110,7 +110,7 @@ export default {
         return stepData.relatedPublicationsText;
       }
 
-      if (!this.isCreationWorkflow && this.$store) {
+      if (this.$store) {
         return this.$store.getters[
           `${USER_NAMESPACE}/getMetadataEditingObject`
         ](EDITMETADATA_RELATED_PUBLICATIONS).relatedPublicationsText;
@@ -124,7 +124,7 @@ export default {
         return stepData.relatedDatasetsText;
       }
 
-      if (!this.isCreationWorkflow && this.$store) {
+      if (this.$store) {
         return this.$store.getters[
           `${USER_NAMESPACE}/getMetadataEditingObject`
         ](EDITMETADATA_RELATED_DATASETS).relatedDatasetsText;
@@ -138,7 +138,7 @@ export default {
         return stepData.customFields;
       }
 
-      if (!this.isCreationWorkflow && this.$store) {
+      if (this.$store) {
         return this.$store.getters[
           `${USER_NAMESPACE}/getMetadataEditingObject`
         ](EDITMETADATA_CUSTOMFIELDS).customFields;

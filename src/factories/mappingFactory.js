@@ -336,11 +336,7 @@ export function convertJSON(data, stringify, recursive = false) {
         } catch (e) {
 
           if (import.meta.env?.DEV) {
-            if (e instanceof SyntaxError) {
-              console.error(`Json parse error on property: ${prop} with value: ${value} had error: ${e}`);
-            } else {
-              console.error(`Json parse error on property: ${prop} with value: ${value} had error: ${e}`);
-            }
+            console.error(`Json parse error on property: ${prop} with value: ${value} had error: ${e}`);
           }
         }
       }

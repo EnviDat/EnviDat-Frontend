@@ -305,9 +305,7 @@ export default {
       }
     },
     async loadUserOrganizations() {
-      if (
-        !this.organizationsStore.userOrganizations?.length > 0
-      ) {
+      if (!this.organizationsStore.hasUserOrganizations) {
         await this.organizationsStore.UserGetOrgIds(this.user?.id)
 
         const userId = this.user?.id;

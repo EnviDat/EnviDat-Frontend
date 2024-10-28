@@ -492,7 +492,7 @@ export default {
       return this.userDashboardConfig.showOldDashboardUrl ? `${this.ckanDomain}${this.dashboardCKANUrl}${this.user.name}` : '';
     },
     userOrganizationRoles() {
-      if (this.organizationsStore.userOrganizations.length <= 0) {
+      if (!this.organizationsStore.hasUserOrganizations) {
         return null;
       }
 

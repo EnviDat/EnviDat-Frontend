@@ -39,7 +39,7 @@ authorsObjs.forEach((author) => {
 });
 
 const preSelectedAuthor = authorsStrings.filter(value => value.includes('Fischer'));
-const preSelectedAuthors2 = extractedAuthors.filter(value => value.fullName.includes('A'));
+// const preSelectedAuthors2 = extractedAuthors.filter(value => value.fullName.includes('A'));
 const preSelectedAuthors3 = authorsStrings.filter(value => value.includes('B'));
 
 
