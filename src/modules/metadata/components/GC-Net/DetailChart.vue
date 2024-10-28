@@ -220,16 +220,23 @@ export default {
 
       // 2 weeks for the recent data, 2 years for historical
       let dayRange = this.isRecentDataChart ? 14 : 730;
-      if (this.isRecentDataChart && fallback) {
-        // use a 1.5 month for recent data as fallback
-        dayRange = 45;
+
+      if (this.isRecentDataChart) {
+        if (fallback) {
+          // use a 1.5 month for recent data as fallback
+          dayRange = 45;
+        }
+
+        urlParam = addStartEndDateUrl(
+          urlParam,
+          dayRange,
+          undefined,
+        );
+
+      } else {
+        urlParam = `${urlParam}/1995-01-01T00:00:00/2021-12-31T00:00:00/`;
       }
 
-      urlParam = addStartEndDateUrl(
-        urlParam,
-        dayRange,
-        this.isRecentDataChart ? undefined : this.historicalEndDate,
-      );
 
       axios
         .get(urlParam)

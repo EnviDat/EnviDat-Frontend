@@ -321,9 +321,8 @@ export default {
       this.chartIsLoading = true;
       this.isFallback = isFallback;
 
-      // 2 weeks for the recent data, 2 years for historical
-      const dayRange = isFallback ? 730 : 14;
-      const apiUrl = addStartEndDateUrl(url, dayRange);
+      // hardcode 2 years because there is a cut of date when we have date
+      const apiUrl = `${url}/2019-01-01T00:00:00/2021-12-31T00:00:00/`;
 
       axios
         .get(apiUrl)
