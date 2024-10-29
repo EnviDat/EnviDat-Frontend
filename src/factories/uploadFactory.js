@@ -438,6 +438,13 @@ function createUppyInstance(height = 300, autoProceed = true, restrictions = def
   uppy.use(awsS3, {
     id: 'multipart-aws',
     limit: 4,
+    shouldUseMultipart(file) {
+      // Use multipart only for files larger than 100MiB.
+      return file.size > 100 * 2 ** 20;
+
+      // always set to true because there isn't a connection for small files
+      // return true;
+    },
     getChunkSize(file) {
       // at least 25MB per request, at most 500 requests
       return Math.max(1024 * 1024 * 25, Math.ceil(file.size / 500));
