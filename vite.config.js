@@ -9,7 +9,7 @@ import { configDefaults } from 'vitest/dist/config';
 import eslint from 'vite-plugin-eslint';
 
 import Unfonts from 'unplugin-fonts/vite'
-
+import vueDevTools from 'vite-plugin-vue-devtools';
 import { visualizer } from 'rollup-plugin-visualizer';
 
 import { getFilesWithPrefix } from './src/factories/enhancementsFactoryNode';
@@ -85,6 +85,7 @@ export default ({ mode, config }) => {
           filename: './dist/buildStats.html',
           title : 'EnviDat Build Visualizer',
         }),
+        vueDevTools(),
       ],
       define: {
         'process.env': loadEnv(mode, process.cwd()),
