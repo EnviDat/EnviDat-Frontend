@@ -191,7 +191,7 @@ run-tests:
     - modify-env
     - install-node
   script:
-    - bun vitest
+    - bun vitest --run
   retry:
     max: 2
 
