@@ -34,7 +34,7 @@ set-vars:
   environment: $CI_COMMIT_REF_NAME
   rules:
     - if: '$CI_PIPELINE_SOURCE == "pipeline"'
-    - if: '$CI_COMMIT_REF_NAME =~ /^(main|staging|develop)$/'
+    - if: '$CI_COMMIT_REF_NAME =~ /^(main|staging|develop|testing_.*)$/'
     - if: $CI_PIPELINE_SOURCE == "web"
       when: always
     - when: manual
@@ -140,8 +140,8 @@ install-node:
   cache:
     - key:
         files:
-          - package-lock.json
-        prefix: 'package-lock'
+          - bun.lockb
+        prefix: 'bun-lock'
       paths:
         - .bun/
         - node_modules/
