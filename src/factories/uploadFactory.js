@@ -149,7 +149,8 @@ export async function initiateMultipart(file) {
   if (resourceId) {
     eventBus.emit(UPLOAD_STATE_RESOURCE_CREATED, { id: UPLOAD_STATE_RESOURCE_CREATED });
   } else {
-    eventBus.emit(UPLOAD_ERROR, { error: 'Resource creation failed' });
+    eventBus.emit(UPLOAD_ERROR, { error: 'Resource creation failed', metadataId });
+    return null;
   }
 
   const actionUrl = 'cloudstorage_initiate_multipart';
@@ -164,14 +165,14 @@ export async function initiateMultipart(file) {
   try {
     const res = await axios.post(url, payload);
 
-    // const fileId = res.data.result.id;
+    const uploadId = res.data.result.id;
     const key = res.data.result.name;
 
     storeReference?.commit(`${USER_NAMESPACE}/${METADATA_UPLOAD_FILE}`, key);
 
     return {
-      uploadId: res.data.result.id,
-      key: res.data.result.name,
+      uploadId,
+      key,
     };
   } catch (error) {
     console.error(`Multipart initiation failed: ${error}`);
@@ -181,30 +182,37 @@ export async function initiateMultipart(file) {
 
 export async function getSinglePresignedUrl(file) {
 
+  eventBus.emit(UPLOAD_STATE_RESET);
+
   const metadataId = storeReference?.getters[`${USER_NAMESPACE}/uploadMetadataId`];
+  const newResource = createNewResourceForFileUpload(metadataId, file);
 
-  await storeReference?.dispatch(
-    `${USER_NAMESPACE}/${METADATA_CREATION_RESOURCE}`,
-    {
-      metadataId,
-      file,
-      // fileUrl: file.id,
-    },
-  );
+  await storeReference?.dispatch(`${USER_NAMESPACE}/${METADATA_CREATION_RESOURCE}`, {
+    data: newResource,
+  });
 
+  const resourceId = storeReference?.getters[`${USER_NAMESPACE}/uploadResourceId`];
+
+  if (resourceId) {
+    eventBus.emit(UPLOAD_STATE_RESOURCE_CREATED, { id: UPLOAD_STATE_RESOURCE_CREATED });
+  } else {
+    eventBus.emit(UPLOAD_ERROR, { error: 'Resource creation failed', metadataId });
+    return null;
+  }
 
   const actionUrl = 'cloudstorage_get_presigned_url_multipart';
   const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
-  const resourceId = storeReference?.getters[`${USER_NAMESPACE}/uploadResourceId`];
-
   const payload = {
     id: resourceId,
+    partNumber: 0,
+    filename: file.name,
+/*
     // uploadId,
     // partNumber: partNumbers,
     upload: {
-      filename: file.name,
     },
+*/
   };
 
   try {
@@ -438,6 +446,9 @@ function createUppyInstance(height = 300, autoProceed = true, restrictions = def
   uppy.use(awsS3, {
     id: 'multipart-aws',
     limit: 4,
+    getUploadParameters(file) {
+      return getSinglePresignedUrl(file);
+    },
     shouldUseMultipart(file) {
       // Use multipart only for files larger than 100MiB.
       return file.size > 100 * 2 ** 20;
