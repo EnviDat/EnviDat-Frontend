@@ -210,7 +210,7 @@ build-storybook:
   script:
     # - npm config set cache .bun/
     # - npm cache verify || true
-    - bun storybook build -o ./storybook --loglevel error --disable-telemetry
+    - bun storybook build -- -o ./storybook --loglevel warn --disable-telemetry
   artifacts:
     name: 'storybook build'
     # keep the storybook for 7 days to be able to trigger the chromatic-deployment
@@ -234,7 +234,7 @@ build-app:
     # needs the artifact: node_modules to build the app
     - install-node
   script:
-    - bun vite build --logLevel warning
+    - bun vite build -- --logLevel warn
   artifacts:
     name: 'frontend build '
     expire_in: 1 day
