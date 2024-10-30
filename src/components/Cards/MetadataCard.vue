@@ -27,11 +27,14 @@
       </v-row>
     </v-container>
 
-    <v-card-text v-if="showCardBody" :class="{
-      cardText: $vuetify.display.mdAndUp,
-      compactText: flatLayout || $vuetify.display.smAndDown,
-      'pr-5': flatLayout,
-    }">
+    <v-card-text
+      v-if="showCardBody"
+      :class="{
+        cardText: $vuetify.display.mdAndUp,
+        compactText: flatLayout || $vuetify.display.smAndDown,
+        'pr-5': flatLayout,
+      }"
+    >
       <v-container fluid class="pa-0 fill-height">
         <v-row v-if="!compactLayout" no-gutters class="pb-2 pr-md-8">
           <v-col cols="12">
@@ -245,6 +248,7 @@ export default {
       const gradient = this.dark
         ? this.blackTopToBottom
         : this.whiteTopToBottom;
+
       const hasImage = !this.flatLayout && this.titleImg && this.$vuetify.display.mdAndUp;
 
       const styles = {

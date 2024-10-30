@@ -2,7 +2,6 @@
   <v-card
     :id="`resourceCard_${id}`"
     :color="computedCardColor"
-    class="metadataResourceCard"
     :class="isSelected ? 'highlighted' : ''"
     style="height: 100%;"
     :loading="loadingColor">

@@ -644,9 +644,6 @@ export default {
 </script>
 
 <style>
-.metadataResourceCard .headline {
-  font-size: 20px !important;
-}
 
 .resourceCardText a {
   color: #ffd740;
