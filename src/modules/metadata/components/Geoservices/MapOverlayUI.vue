@@ -59,15 +59,18 @@
       </v-col>
     </v-row>
 
-    <div style="position: absolute; bottom: 50px;">
-      <v-card
-        ripple
-        class="pa-0"
-        style="width: 48px; height: 48px;"
-        @click="toggleBaseMap">
-        <img width="40" height="40" :src="baseMapImage" class="ma-1" alt="toggle map tiles" />
-      </v-card>
-    </div>
+    <v-row style="position: absolute; bottom: 50px;">
+      <v-col class="px-2 flex-grow-0">
+          <v-card
+          ripple
+          class="pa-0"
+          style="width: 48px; height: 48px;"
+          @click="toggleBaseMap">
+          <img width="40" height="40" :src="baseMapImage" class="ma-1" alt="toggle map tiles" />
+        </v-card>
+      </v-col>
+    </v-row>
+
   </div>
 </template>
 

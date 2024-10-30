@@ -463,6 +463,7 @@ export default {
         ...(this.hasGcnetStationConfig && { isGcnet: true }),
       };
 
+
       this.geoServiceConfig = {
         ...this.geoServiceConfig,
         mapHeight: this.mapHeight,
@@ -471,7 +472,7 @@ export default {
         showFullscreenButton: this.showFullscreenButton,
       };
 
-      this.MetadataGeo.pros = this.geoServiceConfig;
+      this.MetadataGeo.props = this.geoServiceConfig;
     },
     loadGeoServiceLayers(url) {
       this.geoServiceLayers = null;
