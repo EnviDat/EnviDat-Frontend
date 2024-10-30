@@ -11,7 +11,6 @@
 
 import MicroChart from '@/modules/metadata/components/GC-Net/MicroChart.vue';
 
-
 const stations = [
   {
     id: 1,
@@ -28,7 +27,7 @@ const stations = [
       graphParameter: 'airtemp1',
       fallbackUrl: 'https://www.envidat.ch/data-files/1temp.json',
       fallbackParameter: 'airtemp1',
-      previewImageUrl: 'https://upload.wikimedia.org/wikipedia/en/9/95/Test_image.jpg',
+      previewImageUrl: 'https://www.envidat.ch/gcnet/assets/stations/small/swisscamp.jpg',
     },
   },
   {
@@ -46,7 +45,7 @@ const stations = [
       graphParameter: 'airtemp1',
       fallbackUrl: 'https://www.envidat.ch/data-files/3temp.json',
       fallbackParameter: 'airtemp1',
-      previewImageUrl: 'https://www.gstatic.com/webp/gallery/1.jpg',
+      previewImageUrl: 'https://www.envidat.ch/gcnet/assets/stations/small/nasau.jpg',
     },
   },
   {
@@ -64,7 +63,7 @@ const stations = [
       graphParameter: 'airtemp1',
       fallbackUrl: 'https://www.envidat.ch/data-files/4temp.json',
       fallbackParameter: 'airtemp1',
-      previewImageUrl: 'https://upload.wikimedia.org/wikipedia/en/9/95/Test_image.jpg',
+      previewImageUrl: 'https://www.envidat.ch/gcnet/assets/stations/small/gits.jpg',
     },
   },
 ];
@@ -86,6 +85,17 @@ export const EmptyMicroChart = () => ({
 });
 */
 
+export const MicroChartWithImage = {
+  args: {
+    station: stations[0],
+    apiUrl: stations[0].envidatConfig.apiUrl,
+    fallbackUrl: stations[0].envidatConfig.fallbackUrl,
+    parameter: stations[0].envidatConfig.graphParameter,
+    image: stations[0].envidatConfig.previewImageUrl,
+  },
+}
+
+/*
 export const MicroChartViews = () => ({
   components: { MicroChart },
   parameters: {
@@ -221,3 +231,4 @@ export const MicroChartViews = () => ({
     stations,
   }),
 });
+*/
