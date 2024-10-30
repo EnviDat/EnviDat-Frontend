@@ -108,7 +108,7 @@
               :name="metadata.name"
               :subtitle="metadata.notes"
               :tags="!isCompactLayout ? metadata.tags : null"
-              :titleImg="isCompactLayout ? undefined : metadata.titleImg"
+              :titleImg="metadata.titleImg"
               :restricted="hasRestrictedResources(metadata)"
               :resourceCount="metadata.num_resources"
               :modeData="modeData"
