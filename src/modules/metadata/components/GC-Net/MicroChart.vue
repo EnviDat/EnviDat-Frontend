@@ -2,11 +2,11 @@
 <template>
   <v-card
     :id="stationId"
+    :height="200"
     ref="main_container"
     class="metadataResourceCard"
     :color="darkTheme ? 'primary' : 'white'"
     :dark="darkTheme"
-    v-show="visible"
   >
     <v-container fluid class="pa-0">
       <v-row no-gutters>
@@ -18,10 +18,11 @@
         >
           <v-img
             :src="image"
+            cover
             @load="imageLoadSuccess"
             @error="imageLoadError"
-            :width="imageLoading || imageError ? '0%' : '100%'"
-            :height="imageLoading || imageError ? '0%' : '100%'"
+            :height="200"
+            :width="100"
             style="border-bottom-left-radius: 4px; border-top-left-radius: 4px; cursor: pointer;"
           />
 
@@ -40,7 +41,7 @@
             <v-col
               v-if="!dataError && dataAvailable()"
               id="chartSubText"
-              class="smallChartSubText pa-0 pb-1"
+              class="smallChartSubText px-0 pt-2 pb-1"
             >
               {{ chartSubText }}
             </v-col>
@@ -67,15 +68,7 @@
               {{ noDataText }}
             </v-col>
 
-            <!-- <v-col v-if="dataError"
-                    cols="12"
-                    class="smallText py-1"
-                    :style="`color: red;`" >
-              {{ dataError }}
-            </v-col> -->
-
             <v-col
-              v-show="!dataError"
               :id="microChartId"
               ref="microChart"
               class="mircoChart"
@@ -85,6 +78,11 @@
                 }px solid #eee;`
               "
             >
+
+              <UplotVue
+                v-if="!dataError && dataAvailable()"
+                :data="sparkData" :options="sparkLineOptions"
+              />
             </v-col>
           </v-row>
 
@@ -94,7 +92,7 @@
                 <v-col
                   v-if="firstParameterData"
                   id="FirstDate"
-                  class="smallChartSubText pa-0 pb-1"
+                  class="smallChartSubText pa-0 pt-2"
                 >
                   {{ `First Data point: ${firstParameterData}` }}
                 </v-col>
@@ -167,11 +165,11 @@
 </template>
 
 <script>
-import 'uplot/dist/uPlot.min.css';
-
 import axios from 'axios';
 import {format, min} from 'date-fns';
-import uPlot from 'uplot/dist/uPlot.esm';
+
+import UplotVue from 'uplot-vue';
+import 'uplot/dist/uPlot.min.css';
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
@@ -205,18 +203,10 @@ export default {
   components: {
     BaseIconButton,
     BaseStatusLabelView,
+    UplotVue,
   },
   mounted() {
-    let that = this;
-
-    setTimeout(() => {
-      that.visible = true;
-
-      if (that.$refs && that.$refs.main_container) {
-        that.loadChart();
-      }
-      that = null;
-    }, this.delay);
+    this.loadChart();
   },
   beforeUnmount() {
     this.clearChart();
@@ -231,7 +221,7 @@ export default {
       }`;
     },
     chartSubText() {
-      return `${this.chartIsLoading ? 'Loading' : 'Showing'} the ${
+      return `${this.chartIsLoading ? 'Loading' : ''} ${
         this.parameter ? `'${this.parameter}' parameter` : '[parameter missing]'
       } from ${new Date(this.minDate).toLocaleDateString(
         'en-US',
@@ -286,13 +276,10 @@ export default {
     imageLoadSuccess() {
       this.imageLoading = false;
       this.imageSuccess = true;
-
-      this.clearChart();
-      this.makeSparkChart(this.data, this.parameter);
     },
     dataAvailable() {
       // has to be a method, it doesn't work as computed property
-      return hasData(this.data, this.parameter);
+      return hasData(this.sparkData, this.parameter);
     },
     loadChart() {
       this.clearChart();
@@ -317,23 +304,24 @@ export default {
       }
     },
     loadJsonFiles(url, isFallback = false) {
-      this.data = null;
+      this.sparkData = [];
       this.chartIsLoading = true;
       this.isFallback = isFallback;
 
-      // hardcode 2 years because there is a cut of date when we have date
-      const apiUrl = `${url}/2019-01-01T00:00:00/2021-12-31T00:00:00/`;
+      // hardcode 1 years because there is a cut of date when we have date
+      // for the microChart one year is enough
+      const apiUrl = `${url}/2019-01-01T00:00:00/2019-12-31T00:00:00/`;
 
       axios
         .get(apiUrl)
         .then(response => {
           this.chartIsLoading = false;
-          this.data = response.data;
+          const rawData = response.data;
 
-          if (hasData(this.data, this.parameter)) {
-            this.makeSparkChart(this.data, this.parameter);
+          if (hasData(rawData, this.parameter)) {
+            this.makeSparkChart(rawData, this.parameter);
 
-            this.setFirstParameterData(this.data);
+            this.setFirstParameterData(rawData, this.parameter);
           } else if (isFallback) {
             this.dataError = this.noDataText;
           } else {
@@ -349,7 +337,7 @@ export default {
           }
         });
     },
-    setFirstParameterData(data) {
+    setFirstParameterData(data, chartParameter) {
       if (!data || data.length <= 0) {
         return;
       }
@@ -357,11 +345,13 @@ export default {
       const unixAvailable = typeof data[0].timestamp === 'number';
       const dataParam = unixAvailable ? 'timestamp' : 'timestamp_iso';
 
-      let firstDate = new Date(data[0][dataParam]);
+      let firstEntryWithData = data.findIndex((dataObj) => dataObj[chartParameter] != null);
+      if (!firstEntryWithData || firstEntryWithData < 0) {
+        firstEntryWithData = 0;
+      }
+      
+      let firstDate = new Date(data[firstEntryWithData][dataParam]);
       let lastDate = new Date(data[data.length - 1][dataParam]);
-
-      // let firstDate = fromUnixTime(data[0][dataParam]);
-      // let lastDate = fromUnixTime(data[data.length - 1][dataParam]);
 
       if (!unixAvailable) {
         const isoAvailable = typeof data[0].timestamp_iso === 'string';
@@ -384,6 +374,15 @@ export default {
       const y = [];
       const dataLength = data ? data.length : 0;
 
+      const width =
+        this.$refs.microChart.$el.clientWidth !== 0
+          ? this.$refs.microChart.$el.clientWidth
+          : this.$refs.microChart.$el.parentElement.clientWidth;
+
+      this.sparkLineOptions.width = width;
+      this.sparkLineOptions.height = this.chartHeight;
+      this.sparkLineOptions.plugins = [this.tooltipsPlugin(null, this.unit)];
+
       this.unit = chartParameter?.includes('temp') ? ' °' : '';
 
       if (dataLength > 0) {
@@ -395,30 +394,11 @@ export default {
           y.push(param);
         }
 
-        this.makeSpark([x, y]);
+        this.sparkData = [x, y];
 
         this.minDate = data[0].timestamp;
         this.maxDate = data[data.length - 1].timestamp;
       }
-    },
-    makeSpark(data) {
-      const width =
-        this.$refs.microChart.clientWidth !== 0
-          ? this.$refs.microChart.clientWidth
-          : this.$refs.microChart.parentElement.clientWidth;
-      this.sparkLineOptions.width = width;
-
-      this.sparkLineOptions.height = this.chartHeight;
-      this.sparkLineOptions.plugins = [this.tooltipsPlugin(null, this.unit)];
-
-      // eslint-disable-next-line new-cap
-      const sparkChart = new uPlot(
-        this.sparkLineOptions,
-        data,
-        this.$refs.microChart,
-      );
-
-      return sparkChart;
     },
     /* eslint-disable no-unused-vars */
     tooltipsPlugin(opts, unit) {
@@ -548,6 +528,7 @@ export default {
     },
   },
   data: () => ({
+    sparkData: [],
     mdiChartBar,
     mdiDownload,
     microChart: null,
@@ -599,14 +580,13 @@ export default {
         },
       ],
     },
-    visible: false,
   }),
 };
 </script>
 
 <style>
 .smallChartSubText {
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   word-break: break-word;
   line-height: 0.85rem;
 }

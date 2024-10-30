@@ -78,13 +78,6 @@ export default {
   },
 };
 
-/*
-export const EmptyMicroChart = () => ({
-  components: { MicroChart },
-  template: '<MicroChart />',
-});
-*/
-
 export const MicroChartWithImage = {
   args: {
     station: stations[0],
@@ -92,6 +85,16 @@ export const MicroChartWithImage = {
     fallbackUrl: stations[0].envidatConfig.fallbackUrl,
     parameter: stations[0].envidatConfig.graphParameter,
     image: stations[0].envidatConfig.previewImageUrl,
+  },
+}
+
+export const MicroChartWithout = {
+  args: {
+    station: stations[1],
+    apiUrl: stations[1].envidatConfig.apiUrl,
+    fallbackUrl: stations[1].envidatConfig.fallbackUrl,
+    parameter: stations[1].envidatConfig.graphParameter,
+    // image: stations[1].envidatConfig.previewImageUrl,
   },
 }
 
