@@ -258,11 +258,17 @@ export default {
           this.validationErrors,
         )
       ) {
-        this.editedGeomBuffer.push(
-          parseAsGeomCollection(geomArray, {
-            name: this.location.name,
-          }),
-        );
+
+        this.newObjectToSend = geomArray
+
+        // this.editedGeomBuffer.push(
+        //   parseAsGeomCollection(geomArray, {
+        //     name: this.location.name,
+        //   }),
+        // );
+
+
+
 
         this.undoButtonEnabled = true;
         this.saveButtonEnabled = true;
@@ -287,12 +293,15 @@ export default {
     commitGeometriesToAPI() {
       this.saveButtonInProgress = true;
 
+      const obj = this.newObjectToSend
+      const mapToSend = parseAsGeomCollection(obj, { name: this.location.name })
+
       eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_DATA_GEO,
         data: {
           location: {
             ...this.location,
-            geoJSON: this.geomsForMap,
+            geoJSON: mapToSend,
           },
         },
       });
@@ -349,6 +358,7 @@ export default {
     validationErrors: {
       geometries: null,
     },
+    newObjectToSend: null,
     originalGeom: null,
     editedGeomBuffer: [],
     saveButtonEnabled: false,
