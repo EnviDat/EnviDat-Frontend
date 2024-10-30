@@ -26,7 +26,7 @@ const props = defineProps({
   },
   skeletonType: {
     type: String,
-    default: 'card',
+    default: 'article',
   },
   showLoader: {
     type: Boolean,
