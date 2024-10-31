@@ -60,7 +60,7 @@
     "vue": "^3.5.12",
     "vue-matomo": "^4.2.0",
     "vue-router": "^4.4.5",
-    "vue-virtual-scroll-grid": "^1.11.0",
+    "vue-virtual-scroller": "^2.0.0-beta.8",
     "vuetify": "^3.7.3",
     "vuex": "^4.1.0",
     "yup": "^0.32.11"

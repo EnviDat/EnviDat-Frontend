@@ -32,6 +32,7 @@ const initialState = {
   loadingMetadatasContent: false,
   loadingCurrentMetadataContent: false,
   metadatasContentOK: false,
+  // map with key: metadata.id and value datasets object
   metadatasContent: {},
   /**
    * authorsMap property holds the  for "bulk" loading all the metadata when the app starts up

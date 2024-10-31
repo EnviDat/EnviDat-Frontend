@@ -70,12 +70,69 @@
       <v-row v-if="!loading"
              no-gutters>
 
+        <RecycleScroller
+            class="scroller"
+            :items="content"
+            :item-size="fixedCardHeight"
+            :page-mode="true"
+            :gridItems="virtualPageSize"
+            key-field="id"
+        >
+          <template #before>
+            displayed before the items!
+          </template>
+
+          <template v-slot:default="{ item: group }">
+
+            <v-row>
+              <v-col v-for="(metadata, index) in group"
+                     :key="`item_${metadata.id}_${index}`">
+
+                <MetadataCard
+                    :class="metadata.isPinned ? 'highlighted' : ''"
+                    :id="metadata.id"
+                    :ref="metadata.id"
+                    :title="metadata.title"
+                    :name="metadata.name"
+                    :subtitle="metadata.notes"
+                    :tags="!isCompactLayout ? metadata.tags : null"
+                    :titleImg="metadata.titleImg"
+                    :restricted="hasRestrictedResources(metadata)"
+                    :resourceCount="metadata.num_resources"
+                    :modeData="modeData"
+                    :flatLayout="listView"
+                    :compactLayout="isCompactLayout"
+                    :geoJSONIcon="getGeoJSONIcon(metadata.location)"
+                    :categoryColor="metadata.categoryColor"
+                    :state="getMetadataState(metadata)"
+                    :organization="metadata.organization?.name"
+                    :organizationTooltip="metadata.organization?.title"
+                    :showOrganizationOnHover="showOrganizationOnHover"
+                    @organizationClicked="$emit('organizationClicked', metadata.organization)"
+                    @clickedEvent="metaDataClicked"
+                    @clickedTag="catchTagClicked"
+                    :showGenericOpenButton="!!metadata.openEvent"
+                    :openButtonTooltip="metadata.openButtonTooltip"
+                    :openButtonIcon="metadata.openButtonIcon"
+                    @openButtonClicked="catchOpenClick(metadata.openEvent, metadata.openProperty)"
+                />
+              </v-col>
+            </v-row>
+
+          </template>
+
+          <template #after>
+            displayed after the items!
+          </template>
+
+        </RecycleScroller>
+
+<!--
         <Grid
           id="virtualScroller"
           :length="contentSize"
           :pageSize="virtualPageSize"
           :pageProvider="pageProvider"
-          :pageProviderDebounceTime="100"
           :respectScrollToOnResize="true"
           class="virtualGrid"
           :style="`
@@ -83,13 +140,7 @@
           grid-template-rows: ${fixedCardHeight}px;
           `"
         >
-<!--
-          <template v-slot:probe>
-            <MetadataCardPlaceholder :dark="false" />
-          </template>
--->
 
-          <!-- When the item is not loaded, a placeholder is rendered -->
           <template v-slot:placeholder="{ style }">
             <MetadataCardPlaceholder
               :dark="false"
@@ -97,7 +148,6 @@
             />
           </template>
 
-          <!-- Render a loaded item -->
           <template v-slot:default="{ item: metadata, style }">
             <MetadataCard
               :style="style"
@@ -130,6 +180,8 @@
             />
           </template>
         </Grid>
+-->
+
       </v-row>
 
 
@@ -168,7 +220,7 @@
 */
 
 import {defineAsyncComponent} from 'vue';
-import Grid from 'vue-virtual-scroll-grid';
+import { RecycleScroller } from 'vue-virtual-scroller';
 import { BROWSE_PATH } from '@/router/routeConsts';
 
 import {
@@ -295,6 +347,17 @@ export default {
 
       return true;
     },
+    content() {
+      const pins = this.pinnedIds;
+      let datasets = [];
+
+      if (pins.length > 0) {
+        datasets = Object.values(this.metadatasContent);
+        datasets = datasets.filter((metadata) => pins.includes(metadata.id));
+      }
+
+      return [...datasets, ...this.listContent];
+    },
     showPinnedElements() {
       return !this.loading && this.showMapFilter && this.prePinnedIds?.length > 0;
     },
@@ -384,10 +447,51 @@ export default {
     },
   },
   methods: {
+    setGroupedContentList() {
+      if (!this.listContent || this.listContent.length <= 0) {
+        this.groupedContent = [];
+        return;
+      }
+
+      const listWithoutPins = [];
+      const listWithPins = [];
+
+      for (let i = 0; i < this.listContent?.length; i++) {
+        const metadata = this.listContent[i];
+
+        if (this.prePinnedIds?.includes(metadata.id)) {
+          metadata.isPinned = true;
+          listWithPins.push(metadata);
+        } else {
+          listWithoutPins.push(metadata);
+        }
+      }
+
+      this.groupedContent = this.getGroupItemList([...listWithPins, ...listWithoutPins]);
+//      this.groupedContent = this.getGroupItemList(listWithoutPins);
+    },
+    getGroupItemList(array) {
+      const group = [];
+
+      for (let i = 0; i < array.length; i += this.amountOfRowsItems) {
+        group.push(array.slice(i, i + this.amountOfRowsItems));
+      }
+
+      return {
+        id: group[0]?.id || '',
+        group,
+      };
+    },
     async pageProvider(pageNumber, pageSize) {
       const start = pageNumber * pageSize;
       const end = start + pageSize;
-      return this.listContent.slice(start, end);
+
+      let content = this.listContent;
+      if (pageNumber <= 0 && this.hasPinnedContent) {
+        content = [...this.pinnedContent, this.listContent];
+      }
+
+      return content.slice(start, end);
     },
     getMetadataState(metadata) {
       if (!this.showPublicationState) {
@@ -549,17 +653,25 @@ export default {
     },
   },
   watch: {
+    listContent() {
+      this.$nextTick(() => {
+        this.setGroupedContentList();
+      })
+    },
     controlsActive: {
       handler() {
         // when the controls change, trigger a recalc of the layout specific height
         this.layoutRecalcTrigger += 1;
+        this.$nextTick(() => {
+          this.setGroupedContentList();
+        })
       },
       deep: true,
     },
   },
   data: () => ({
     layoutRecalcTrigger: 0,
-    // groupedContent: [],
+    groupedContent: [],
     noResultText: 'Nothing found for these search criterias.',
     suggestionText: 'Change the criterias or try one of these categories',
     scrollTopButtonText: 'Scroll to the top',
@@ -580,7 +692,7 @@ export default {
     MetadataCardPlaceholder,
     // BaseRectangleButton,
     MetadataListLayout,
-    Grid,
+    RecycleScroller,
   },
 };
 </script>
