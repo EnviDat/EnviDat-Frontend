@@ -298,12 +298,12 @@ export async function completeMultipart(file, uploadData) {
   const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
   const resourceId = storeReference?.getters[`${USER_NAMESPACE}/uploadResourceId`];
 
-  const { uploadId } = uploadData;
+  const { uploadId, parts } = uploadData;
 
   const payload = {
     id: resourceId,
     uploadId,
-    parts: JSON.stringify(uploadData.parts),
+    partInfo: JSON.stringify(parts),
   };
 
   try {
