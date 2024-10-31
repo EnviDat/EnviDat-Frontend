@@ -42,6 +42,16 @@ export const checkWebpSupport = () => {
     return false;
   }
 
+  try {
+    // try catch for the testing environment when running with vitest
+    if (document === undefined) {
+      return false;
+    }
+  } catch (e) {
+    return false
+  }
+
+
   const elem = document.createElement('canvas');
 
   if (!(elem.getContext && elem.getContext('2d'))) {
