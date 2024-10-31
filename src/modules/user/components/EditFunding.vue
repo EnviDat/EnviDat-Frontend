@@ -167,6 +167,15 @@ export default {
       default: '',
     },
   },
+  mounted() {
+    if (this.funders.length > 0) {
+      for (let i = 0; i < this.funders.length; i++) {
+        this.validate(i, INSTITUTION);
+        this.validate(i, GRANTNUMBER);
+        this.validate(i, INSTITUTION_URL);
+      }
+    }
+  },
   watch: {
     funders: {
       immediate: true,
