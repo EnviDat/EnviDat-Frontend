@@ -134,6 +134,7 @@ export function createNewResourceForUrl(metadataId, url) {
 }
 
 export async function initiateMultipart(file) {
+  console.log('initiateMultipart', file);
 
   eventBus.emit(UPLOAD_STATE_RESET);
 
@@ -237,6 +238,7 @@ export async function getSinglePresignedUrl(file) {
 }
 
 export async function requestPresignedUrl(file, partData) {
+  console.log('requestPresignedUrl', file, partData);
 
   const actionUrl = 'cloudstorage_get_presigned_url_multipart';
   const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
@@ -293,6 +295,7 @@ export async function updateResourceWithFileUrl(fileUrl, store) {
 */
 
 export async function completeMultipart(file, uploadData) {
+  console.log('completeMultipart', file, uploadData);
 
   const actionUrl = 'cloudstorage_finish_multipart';
   const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
@@ -321,6 +324,7 @@ export async function completeMultipart(file, uploadData) {
 }
 
 export async function abortMultipart(file, uploadData) {
+  console.log('abortMultipart', file, uploadData);
 
   const actionUrl = 'cloudstorage_abort_multipart';
   const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
