@@ -94,9 +94,9 @@ import selectedMarker from '@/assets/map/selected-marker-icon.png';
 import selectedMarker2x from '@/assets/map/selected-marker-icon-2x.png';
 // HACK end
 import FilterMapWidget from '@/components/Filtering/FilterMapWidget.vue';
-import { createLocation } from '@/factories/metaDataFactory';
 
 import {EDNA_MODE} from '@/store/metadataMutationsConsts';
+import { createLocation } from '@/factories/geoFactory.js';
 
 export default {
   name: 'FilterMapView',

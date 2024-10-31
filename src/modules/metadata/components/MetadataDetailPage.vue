@@ -131,7 +131,6 @@ import {
   createFunding,
   createHeader,
   createLicense,
-  createLocation,
   createPublications,
   createRelatedDatasets,
   createResources,
@@ -178,6 +177,7 @@ import { convertArrayToUrlString } from '@/factories/stringFactory';
 
 import BaseDynamicComponent from '@/components/BaseElements/BaseDynamicComponent.vue';
 import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
+import { createLocation } from '@/factories/geoFactory.js';
 
 const MetadataBody = defineAsyncComponent(() =>
   import('@/modules/metadata/components/Metadata/MetadataBody.vue'),

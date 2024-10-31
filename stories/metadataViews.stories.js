@@ -29,7 +29,7 @@ import {
   createDetails,
   createPublications,
   createBody,
-  createLocation, enhanceMetadatasTitleImage,
+  enhanceMetadatasTitleImage,
 } from '@/factories/metaDataFactory';
 
 import { createCitation } from '@/factories/citationFactory';
@@ -53,6 +53,7 @@ import {
   EDITMETADATA_MAIN_HEADER,
   EDITMETADATA_PUBLICATION_INFO,
 } from '@/factories/eventBus';
+import { createLocation } from '@/factories/geoFactory.js';
 
 enhanceMetadatasTitleImage(metadata);
 

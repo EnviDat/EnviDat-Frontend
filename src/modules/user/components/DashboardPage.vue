@@ -279,7 +279,6 @@ import { errorMessage } from '@/factories/notificationFactory';
 import { getTagColor, getPopularTags, tagsIncludedInSelectedTags } from '@/factories/keywordsFactory';
 import {
   enhanceMetadataEntry,
-  getMetadataVisibilityState,
   isTagSelected,
 } from '@/factories/metaDataFactory';
 
@@ -321,6 +320,7 @@ import TitleCard from '@/components/Cards/TitleCard.vue';
 import UserCard from '@/components/Cards/UserCard.vue';
 import EditUserProfile from '@/modules/user/components/edit/EditUserProfile.vue';
 import FlipLayout from '@/components/Layouts/FlipLayout.vue';
+import { getMetadataVisibilityState } from '@/factories/publicationFactory.js';
 
 
 const IntroductionCard = defineAsyncComponent(() =>

@@ -312,7 +312,6 @@ import {
 } from '@/factories/userEditingValidations';
 
 import { formatDateTimeToCKANFormat } from '@/factories/mappingFactory';
-import { formatDate } from '@/factories/metaDataFactory';
 import { renderMarkdown } from '@/factories/stringFactory';
 import {getFileIcon, getIcon} from '@/factories/imageFactory';
 
@@ -337,6 +336,7 @@ import {
 } from '@mdi/js';
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
+import { formatDate } from '@/factories/dateFactory.js';
 
 
 export default {

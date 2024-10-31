@@ -102,12 +102,12 @@ import {
 } from '@/factories/eventBus';
 
 import { EDIT_METADATA_GEODATA_TITLE } from '@/factories/metadataConsts';
-import { defaultSwissLocation, parseAsGeomCollection } from '@/factories/metaDataFactory';
 
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
 } from '@/factories/userEditingValidations';
+import { defaultSwissLocation, parseAsGeomCollection } from '@/factories/geoFactory.js';
 
 /*
 import geojsonhint from '@mapbox/geojsonhint';

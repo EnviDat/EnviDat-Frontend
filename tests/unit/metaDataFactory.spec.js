@@ -5,11 +5,9 @@ import {
   createBody,
   createFunding,
   createLicense,
-  createLocation,
   createPublications,
   createDetails,
   createResource,
-  formatDate,
   enhanceTitleImg,
 } from '@/factories/metaDataFactory';
 import {
@@ -20,6 +18,8 @@ import {
 import packagelist from '@/../stories/testdata/packagelist.json';
 import { enhanceTags } from '@/factories/keywordsFactory';
 import categoryCards from '@/store/categoryCards';
+import { createLocation } from '@/factories/geoFactory';
+import { formatDate } from '@/factories/dateFactory';
 
 // const metadatasContent = {};
 // packagelist.result.forEach((entry) => {

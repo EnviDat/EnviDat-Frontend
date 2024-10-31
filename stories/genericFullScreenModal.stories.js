@@ -18,7 +18,6 @@ import {
   OPEN_TEXT_PREVIEW,
 } from '@/factories/eventBus';
 
-import { createLocation } from '@/factories/metaDataFactory';
 import { getFeatureCollectionFromGcNetStations } from '@/factories/chartFactory';
 import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 import txtPreviewFile from './js/previewTextFile.txt';
@@ -26,6 +25,7 @@ import txtPreviewFile from './js/previewTextFile.txt';
 import stationsConfig from './testdata/stationsConfig.json';
 import gcnetDataset from './js/gcnetDataset';
 import stationParameters from './testdata/stationParameters.json'
+import { createLocation } from '@/factories/geoFactory.js';
 
 const gcNetLocation = createLocation(gcnetDataset);
 const fileObjects = stationParameters.fileObjects;

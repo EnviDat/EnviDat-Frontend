@@ -12,6 +12,8 @@ import {
   SWISSFL_MODE_EXTRAS_KEY,
 } from '@/store/metadataMutationsConsts';
 
+import packagelist from '@/../stories/testdata/packagelist.json';
+
 describe('modeFactory - getModeData', () => {
   it('empty', () => {
 
@@ -59,13 +61,13 @@ describe('modeFactory - enhanceMetadataFromExtras', () => {
     expect(enhancedMetadata).toBeUndefined();
   });
 
-  // it('with SwissFL mode', () => {
-  //   const metdataEntry = {};
+  it('with SwissFL mode', () => {
+    const metdataEntry = packagelist.result[9];
 
-  //   const enhancedMetadata = enhanceMetadataFromExtras(SWISSFL_MODE, metdataEntry);
+    const enhancedMetadata = enhanceMetadataWithModeExtras(SWISSFL_MODE, metdataEntry);
 
-  //   expect(enhancedMetadata).toBeDefined();
-  //   expect(enhancedMetadata.extras).toBeDefined();
-  //   expect(enhancedMetadata.extras).toBeInstanceOf(Array);
-  // });
+    expect(enhancedMetadata).toBeDefined();
+    expect(enhancedMetadata.extras).toBeDefined();
+    expect(enhancedMetadata.extras).toBeInstanceOf(Array);
+  });
 });

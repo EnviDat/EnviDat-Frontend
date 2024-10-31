@@ -223,7 +223,7 @@ import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
 import { renderMarkdown, stripMarkdown } from '@/factories/stringFactory';
-import { formatBytes, formatDate } from '@/factories/metaDataFactory';
+import { formatBytes } from '@/factories/metaDataFactory';
 import { EDIT_METADATA_DOI_LABEL } from '@/factories/metadataConsts';
 import { getFileIcon } from '@/factories/imageFactory';
 import {
@@ -240,6 +240,8 @@ import {
 } from '@mdi/js';
 
 import { trackDownload } from '@/utils/matomoTracking';
+
+import { formatDate } from '@/factories/dateFactory.js';
 
 export default {
   name: 'ResourceCard',

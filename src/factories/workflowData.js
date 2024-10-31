@@ -29,7 +29,7 @@ import EditDescription from '@/modules/user/components/EditDescription.vue';
 import EditKeywords from '@/modules/user/components/EditKeywords.vue';
 import EditAuthorList from '@/modules/user/components/edit/EditAuthorList.vue';
 
-import { defaultSwissLocation } from '@/factories/metaDataFactory';
+import { defaultSwissLocation } from '@/factories/geoFactory';
 
 /**
  * don't use any defaults on the emptyMetadataInEditing because it will be stored in the localstorage and therefore needs to be empty

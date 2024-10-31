@@ -38,21 +38,9 @@ import {
   USER_OBJECT,
 } from '@/factories/eventBus';
 
-import {
-  UPDATE_METADATA_EDITING,
-  USER_NAMESPACE,
-} from '@/modules/user/store/userMutationsConsts';
+import { UPDATE_METADATA_EDITING, USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 
-import {
-  createLocation,
-  formatDate,
-  getMetadataVisibilityState,
-} from '@/factories/metaDataFactory';
-
-import {
-  enhanceElementsWithStrategyEvents,
-  SELECT_EDITING_RESOURCE_PROPERTY,
-} from '@/factories/strategyFactory';
+import { enhanceElementsWithStrategyEvents, SELECT_EDITING_RESOURCE_PROPERTY } from '@/factories/strategyFactory';
 
 import { md5Hash } from '@/factories/stringFactory';
 import {
@@ -61,25 +49,30 @@ import {
   DATE_PROPERTY_END_DATE,
   DATE_PROPERTY_START_DATE,
   EDIT_METADATA_AUTHORS_LABEL,
+  EDIT_METADATA_DATALICENSE_LABEL,
   EDIT_METADATA_DOI_LABEL,
   EDIT_METADATA_ORGANIZATION_LABEL,
   EDIT_METADATA_PUBLICATION_YEAR_LABEL,
+  EDIT_METADATA_PUBLISHER_LABEL,
   EDIT_METADATA_TITLE_LABEL,
   EDIT_METADATA_URL_LABEL,
   METADATA_AUTHORS_PROPERTY,
+  METADATA_DATALICENSE_PROPERTY,
+  METADATA_DEPRECATEDRESOURCES_PROPERTY,
   METADATA_DOI_PROPERTY,
   METADATA_ORGANIZATION_PROPERTY,
-  METADATA_PUBLISHER_PROPERTY,
   METADATA_PUBLICATION_YEAR_PROPERTY,
+  METADATA_PUBLISHER_PROPERTY,
   METADATA_TITLE_PROPERTY,
   METADATA_URL_PROPERTY,
-  EDIT_METADATA_PUBLISHER_LABEL,
-  METADATA_DATALICENSE_PROPERTY,
-  EDIT_METADATA_DATALICENSE_LABEL, METADATA_DEPRECATEDRESOURCES_PROPERTY,
 } from '@/factories/metadataConsts';
+
 import { createAuthor } from '@/factories/authorFactory';
 import { enhanceTags } from '@/factories/keywordsFactory';
 import categoryCards from '@/store/categoryCards';
+import { createLocation } from '@/factories/geoFactory';
+import { getMetadataVisibilityState } from '@/factories/publicationFactory';
+import { formatDate } from '@/factories/dateFactory';
 
 /**
  * Json conversion rules from frontend to backend and vise versa

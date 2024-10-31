@@ -13,9 +13,8 @@ import MetadataCard from '@/components/Cards/MetadataCard.vue';
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
 
 import {
-  createLocation,
   enhanceMetadataEntry,
-  getMetadataVisibilityState,
+
 } from '@/factories/metaDataFactory';
 
 import { getModeData } from '@/factories/modeFactory';
@@ -33,6 +32,8 @@ import multiPinIcon from '../src/assets/icons/markerMulti.webp';
 import polygonIcon from '../src/assets/icons/polygons.webp';
 
 import metadataCards from './js/metadata';
+import { createLocation } from '@/factories/geoFactory.js';
+import { getMetadataVisibilityState } from '@/factories/publicationFactory.js';
 
 const enhancedDatasets = [];
 

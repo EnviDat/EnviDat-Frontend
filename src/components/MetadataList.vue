@@ -179,7 +179,6 @@ import {
 
 import { eventBus } from '@/factories/eventBus';
 
-import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
 import { getGeoJSONIcon } from '@/factories/imageFactory';
 import { convertArrayToUrlString } from '@/factories/stringFactory';
 
@@ -190,6 +189,7 @@ import ControlPanel from '@/components/Filtering/ControlPanel.vue';
 import MetadataListLayout from '@/components/MetadataListLayout.vue';
 import MetadataCard from '@/components/Cards/MetadataCard.vue';
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
+import { getMetadataVisibilityState } from '@/factories/publicationFactory.js';
 
 const NoSearchResultsView = defineAsyncComponent(() =>
   import('@/components/Filtering/NoSearchResultsView.vue'),

@@ -86,7 +86,7 @@ import {
   createBody,
   createLicense,
   createResources,
-  formatDate,
+
 } from '@/factories/metaDataFactory';
 
 import {
@@ -109,8 +109,7 @@ import {
 } from '@/factories/strategyFactory';
 
 import {
-  convertJSON,
-  getFrontendDates,
+  convertJSON, getFrontendDates,
   getFrontendJSONForStep,
 } from '@/factories/mappingFactory';
 
@@ -120,6 +119,7 @@ import { getIcon } from '@/factories/imageFactory';
 import { defineAsyncComponent, markRaw } from 'vue';
 
 import MetadataHeader from './Metadata/MetadataHeader.vue';
+import { formatDate } from '@/factories/dateFactory.js';
 
 const MetadataBody = defineAsyncComponent(() =>
   import('./Metadata/MetadataBody.vue'),

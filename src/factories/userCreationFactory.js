@@ -36,7 +36,8 @@ import {
   getStepKeyToDataKey,
 } from '@/factories/workflowFactory';
 
-import { defaultSwissLocation } from '@/factories/metaDataFactory';
+
+import { defaultSwissLocation } from '@/factories/geoFactory';
 
 /*
 export const ckanRequiredPropsForDatasetCreation = [
