@@ -416,7 +416,8 @@ export default {
     },
     $route() {
       // react on changes of the route ( pin clicks )
-      this.loadRoutePins();
+      // removed to fix the lang layer problem when clicking on markers, not very clear why. to be checked in redesign
+      // this.loadRoutePins();
     },
   },
   components: {
