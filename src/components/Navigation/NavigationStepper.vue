@@ -173,7 +173,12 @@ import StepperHeader from '@/components/Navigation/StepperHeader.vue';
 import ExpandableLayout from '@/components/Layouts/ExpandableLayout.vue';
 import StepperInteractionView from '@/components/Navigation/StepperInteractionView.vue';
 
-import { EDITMETADATA_NEXT_MAJOR_STEP, eventBus } from '@/factories/eventBus';
+import { mapGetters } from 'vuex';
+
+import { METADATA_NAMESPACE, METADATA_UPDATE_EXISTING_TITLE } from '@/store/metadataMutationsConsts';
+
+
+import { EDITMETADATA_NEXT_MAJOR_STEP, EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 import { countSteps } from '@/factories/userCreationFactory';
 
 export default {
@@ -234,8 +239,12 @@ export default {
   },
   mounted() {
     eventBus.on(EDITMETADATA_NEXT_MAJOR_STEP, this.catchStepClick);
+    eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearTitle);
   },
   computed: {
+    ...mapGetters({
+      titleEditing: `${METADATA_NAMESPACE}/titleEditing`,
+    }),
     datasetTitleText() {
       let titleText = this.editingTitle;
       if (this.isCreationWorkflow) {
@@ -248,16 +257,23 @@ export default {
 
       titleText += ' of ';
 
-      if (this.datasetTitle.length >= 85) {
-        titleText += `'${this.datasetTitle.substring(0, 85)} ...'`;
+      if (this.editingTitleDyn != null) {
+        titleText += this.editingTitleDyn;
       } else {
         titleText += `'${this.datasetTitle}'`;
+      }
+
+      if (this.datasetTitle.length >= 85) {
+        titleText += `'${this.datasetTitle.substring(0, 85)} ...'`;
       }
 
       return titleText;
     },
     backgroundColor() {
       return this.$vuetify ? this.$vuetify.theme.themes.light.colors.primary : '';
+    },
+    editingTitleDyn() {
+      return this.titleEditing
     },
     completedPct() {
       const pct = this.completedStepsAmount / this.allStepsAmount;
@@ -302,6 +318,12 @@ export default {
     },
   },
   methods: {
+    clearTitle() {
+      this.$store.commit(
+        `${METADATA_NAMESPACE}/${METADATA_UPDATE_EXISTING_TITLE}`,
+        null,
+      );
+    },
     getCompletedAmount() {
       return this.steps.filter((s) => s.complete === true).length;
     },
