@@ -13,9 +13,9 @@
                           :metadataId="metadataId"
                           :showPlaceholder="showPlaceholder"
                           @checkSize="resize"
+                          @clickedBack="catchBackClicked"
                           :expanded="headerExpanded" />
         <!--                          @clickedTag="catchTagClicked"
-                                  @clickedBack="catchBackClicked"
                                   @clickedAuthor="catchAuthorClicked"-->
       </v-col>
     </v-row>
@@ -564,8 +564,8 @@ export default {
       if (backRoute) {
         this.$router.push({
           path: backRoute.path,
-          query: backRoute.query,
-          params: backRoute.params,
+          query: backRoute.query || {},
+          params: backRoute.params || {},
         });
         return;
       }

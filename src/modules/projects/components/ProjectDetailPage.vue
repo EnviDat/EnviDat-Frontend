@@ -351,10 +351,11 @@ export default {
       const backRoute = this.projectsPageBackRoute;
 
       if (backRoute) {
+
         this.$router.push({
           path: backRoute.path,
-          query: backRoute.query,
-          params: backRoute.params,
+          query: backRoute.query || {},
+          params: backRoute.params || {},
         });
         return;
       }
