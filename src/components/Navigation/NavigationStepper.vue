@@ -332,7 +332,7 @@ export default {
       }
       const params = { ...this.$route.params };
       params.step = stepTitle;
-      params.substep = '';
+      params.substep = ''; // make sure to use an empty string to overwrite old values
 
       this.$router.push(
         {
