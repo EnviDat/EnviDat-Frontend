@@ -4,17 +4,16 @@
     max-height="500"
     max-width="750"
     class="elevation-5"
-    :color="notification?.color"
+    :color="notification.color"
   >
-  {{notification}}
     <v-card-title>
       <v-row align="start">
         <v-col class="shrink">
-          <v-icon>{{ notification?.icon }}</v-icon>
+          <v-icon>{{ notification.icon }}</v-icon>
         </v-col>
 
         <v-col>
-          <div class="text-h6">{{ notification?.message }}</div>
+          <div class="text-h6">{{ notification.message }}</div>
         </v-col>
       </v-row>
     </v-card-title>
@@ -24,16 +23,16 @@
         :style="height ? 'overflow: hidden auto; ' : 'height: 100%;'"
         class="text-body-1"
       >
-        {{ notification?.details }}
+        {{ notification.details }}
       </div>
     </v-card-text>
 
-    <v-card-text v-if="notification?.stack" class="pb-0">
+    <v-card-text v-if="notification.stack" class="pb-0">
       <div
         :style="height ? 'overflow: hidden auto; ' : 'height: 100%;'"
         class="text-caption"
       >
-        {{ notification?.stack }}
+        {{ notification.stack }}
       </div>
     </v-card-text>
 
@@ -107,7 +106,7 @@ export default {
       const that = this;
       window.clearTimeout(this.activeTimeout);
 
-      if (this.notification?.timeout) {
+      if (this.notification.timeout) {
         this.activeTimeout = window.setTimeout(() => {
           that.$emit('clickedClose');
         }, this.notification.timeout);
