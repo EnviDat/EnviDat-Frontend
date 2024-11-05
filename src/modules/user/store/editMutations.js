@@ -205,7 +205,7 @@ export default {
     editingObject.loading = false;
     editingObject.message = message;
 
-    eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
+    // eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
 
     setTimeout(() => {
       this.commit(`${USER_NAMESPACE}/resetMessage`, stepKey);
