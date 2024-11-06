@@ -1,7 +1,6 @@
 <template>
   <v-card
-    @mouseover="hover = true"
-    @mouseleave="hover = false"
+    hover
     :dark="false"
     @click="cardClick"
     height="100%"
@@ -30,21 +29,26 @@
 
     <v-card-text
       v-if="showCardBody"
-      :class="{
+     :class="{
         cardText: $vuetify.display.mdAndUp,
         compactText: flatLayout || $vuetify.display.smAndDown,
         'pr-5': flatLayout,
       }"
     >
       <v-container fluid class="pa-0 fill-height">
-        <v-row v-if="!compactLayout" no-gutters class="pb-2 pr-md-8">
+        <v-row v-if="!compactLayout" no-gutters class="pb-2">
           <v-col cols="12">
             {{ truncatedSubtitle }}
           </v-col>
         </v-row>
 
-        <v-row v-if="tags" no-gutters>
-          <v-col v-for="(tag, index) in tags.slice(0, maxTagNumber)" :key="index" class="flex-grow-0">
+        <v-row v-if="tags"
+           no-gutters
+           class="pr-11">
+          <v-col
+            v-for="(tag, index) in tags.slice(0, maxTagNumber)"
+            :key="index"
+            class="flex-grow-0">
             <TagChip class="py-0" :name="tag.name || tag" :selectable="true" :color="tag.color"
               @clicked="catchTagClicked(tag.name)" />
           </v-col>
@@ -56,8 +60,7 @@
     </v-card-text>
 
     <v-card-actions class="ma-0 pa-2" :style="`position: absolute; bottom: 0; right: 0;
-                              background-color: ${showCardBody ? 'white' : 'transparent'
-      };
+                              background-color: ${showCardBody ? 'white' : 'transparent'};
                               border-radius: 10px;`
       ">
       <v-container v-if="showCardBody" class="pa-0">
@@ -438,7 +441,7 @@ export default {
     descriptionLength: 280,
     compactDescriptionLength: 130,
     flatDescriptionLength: 285,
-    tagtextLength: 100,
+    tagtextLength: 65,
     compactTagtextLength: 160,
     flatTagtextLength: 70,
     blackTopToBottom: 'rgba(20,20,20, 0.1) 0%, rgba(20,20,20, 0.9) 60%',
