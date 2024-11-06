@@ -65,6 +65,7 @@ import 'leaflet-bing-layer';
 import {
   map as createMap,
   icon as createIcon,
+  divIcon,
   tileLayer,
   Icon,
   geoJSON,
@@ -97,6 +98,8 @@ import FilterMapWidget from '@/components/Filtering/FilterMapWidget.vue';
 import { createLocation } from '@/factories/metaDataFactory';
 
 import {EDNA_MODE} from '@/store/metadataMutationsConsts';
+
+import { mdiMapMarker, mdiMapMarkerMultiple } from '@mdi/js';
 
 export default {
   name: 'FilterMapView',
@@ -276,47 +279,48 @@ export default {
 
       control.layers(baseMaps).addTo(map);
     },
-    getPointIcon(dataset, modeData, selected) {
+    getPointIcon(dataset, modeData, selected, multiMarker = false) {
       const iconOptions = Icon.Default.prototype.options;
       // use the defaultoptions to ensure that all untouched defaults stay in place
 
-      let iconUrl = null;
-      let iconRetinaUrl = null;
-      let iconShadowUrl = null;
-      let height = 41;
-      let width = 25;
-      let iconClass = '';
-
       if (modeData && modeData.name !== EDNA_MODE && modeData.icons) {
+        let iconUrl = Object.values(modeData.icons)[0];
         let extraValue = dataset[modeData.extrasKey];
 
         if (extraValue) {
           extraValue = extraValue.toLowerCase();
           iconUrl = modeData.icons[extraValue];
-        } else {
-          iconUrl = Object.values(modeData.icons)[0];
         }
 
-        width = 30;
-        height = 30;
-        iconRetinaUrl = iconUrl;
-        iconClass = 'swissFL_icon';
-      } else {
-        iconUrl = selected ? this.selectedMarker : this.marker;
-        iconRetinaUrl = selected ? this.selectedMarker2x : this.marker2x;
-        iconShadowUrl = this.markerShadow;
+        return createIcon({
+          ...iconOptions,
+          iconUrl,
+          iconRetinaUrl: iconUrl,
+          iconShadowUrl: this.markerShadow,
+          iconSize: [30, 30],
+          className: 'swissFL_icon',
+        })
       }
 
-      iconOptions.iconUrl = iconUrl;
-      iconOptions.iconRetinaUrl = iconRetinaUrl;
-      iconOptions.shadowUrl = iconShadowUrl;
-      iconOptions.iconSize = [width, height];
-      iconOptions.className = iconClass;
+      iconOptions.iconSize = [30, 30];
+      iconOptions.html = `
+        <svg
+          width="30"
+          height="30"
+          viewBox="0 0 30 30"
+          class="v-icon__svg"
+          role="img"
+          preserveAspectRatio="none"
+          style="color: ${ selected ? this.$vuetify.theme.themes.light.colors.primary : 'black' }"
+        >
+          <path d="${ multiMarker ? mdiMapMarkerMultiple : mdiMapMarker}" transform="scale(1.25, 1.25)"></path>
+        </svg>
+      `;
 
-      return createIcon(iconOptions);
+      return divIcon(iconOptions);
     },
-    getPoint(dataset, coords, id, title, selected) {
-      const icon = this.getPointIcon(dataset, this.modeData, selected);
+    getPoint(dataset, coords, id, title, selected, multiMarker = false) {
+      const icon = this.getPointIcon(dataset, this.modeData, selected, multiMarker);
 
       let opacity = null;
 
@@ -361,7 +365,7 @@ export default {
       const points = [];
       for (let i = 0; i < coords.length; i++) {
         const pointCoord = coords[i];
-        const point = this.getPoint(dataset, pointCoord, id, title, selected);
+        const point = this.getPoint(dataset, pointCoord, id, title, selected, true);
         points.push(point);
       }
 
