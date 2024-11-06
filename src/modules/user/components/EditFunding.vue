@@ -171,38 +171,26 @@ export default {
     // Validate all entries to ensure validationErrors are up to date
     this.validate();
 
-    let hasRemovedProperties = false;
+    // Check if there are any validation errors
+    const hasErrors = this.validationErrors.funders.some(errors =>
+      Object.values(errors).some(error => error),
+    );
 
-    for (let i = 0; i < this.previewFunders.length; i++) {
-      const entry = this.previewFunders[i];
-      const errors = this.validationErrors.funders[i];
-
-      // For each property in the entry, check if there is a validation error
-      for (const property in entry) {
-        if (errors[property]) {
-          // There is an error in this property, remove it from the entry
-          delete entry[property];
-          hasRemovedProperties = true;
-        }
-      }
-
-      // After removing invalid properties, check if the entry is empty
-      if (isObjectEmpty(entry)) {
-        // Entry is empty, remove it
-        this.previewFunders.splice(i, 1);
-        this.validationErrors.funders.splice(i, 1);
-        // Adjust index because we've removed an item
-        i--;
-        hasRemovedProperties = true;
-      }
-    }
-
-    if (!hasRemovedProperties) {
-      // update the info only if we didn't find errors
+    if (hasErrors) {
+      // There are validation errors: restore previewFunders to previous valid state
+      this.previewFunders = JSON.parse(JSON.stringify(this.prevValidPreviewFunders));
+      console.log('Data not saved due to validation errors. State restored to previous valid values.');
+    } else {
+      // No validation errors: update prevValidPreviewFunders and save data
+      this.prevValidPreviewFunders = JSON.parse(JSON.stringify(this.previewFunders));
       this.setFundersInfo('funders', this.previewFunders);
     }
   },
   mounted() {
+    this.previewFunders = JSON.parse(JSON.stringify(this.funders));
+    this.prevValidPreviewFunders = JSON.parse(JSON.stringify(this.previewFunders));
+
+
     if (this.funders.length > 0) {
       for (let i = 0; i < this.funders.length; i++) {
         this.validate(i, INSTITUTION);
@@ -215,7 +203,8 @@ export default {
     funders: {
       immediate: true,
       handler(newData) {
-        this.previewFunders = newData;
+        this.previewFunders = JSON.parse(JSON.stringify(newData));
+        this.prevValidPreviewFunders = JSON.parse(JSON.stringify(newData));
       },
     },
   },
@@ -310,7 +299,18 @@ export default {
       if (isObjectEmpty(entry)) {
         // Remove entry since it's empty
         this.deleteFundersEntry(index);
-      } else if (this.validate(index, property) && this.validate()) {
+      }
+
+      // Validate the entry and update validation errors
+      this.validate(index, property);
+
+      // Validate the entire array
+      const isValid = this.validate();
+
+      if (isValid) {
+        // Data is valid: update prevValidPreviewFunders
+        this.prevValidPreviewFunders = JSON.parse(JSON.stringify(this.previewFunders));
+        // Save the data
         this.setFundersInfo('funders', this.previewFunders);
       }
     },
@@ -335,6 +335,7 @@ export default {
       institutionUrl: '',
     },
     previewFunders: [],
+    prevValidPreviewFunders: [],
     labels: {
       cardTitle: 'Funding Information',
       fundingInformation:
