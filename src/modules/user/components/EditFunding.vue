@@ -167,6 +167,41 @@ export default {
       default: '',
     },
   },
+  beforeUnmount() {
+    // Validate all entries to ensure validationErrors are up to date
+    this.validate();
+
+    let hasRemovedProperties = false;
+
+    for (let i = 0; i < this.previewFunders.length; i++) {
+      const entry = this.previewFunders[i];
+      const errors = this.validationErrors.funders[i];
+
+      // For each property in the entry, check if there is a validation error
+      for (const property in entry) {
+        if (errors[property]) {
+          // There is an error in this property, remove it from the entry
+          delete entry[property];
+          hasRemovedProperties = true;
+        }
+      }
+
+      // After removing invalid properties, check if the entry is empty
+      if (isObjectEmpty(entry)) {
+        // Entry is empty, remove it
+        this.previewFunders.splice(i, 1);
+        this.validationErrors.funders.splice(i, 1);
+        // Adjust index because we've removed an item
+        i--;
+        hasRemovedProperties = true;
+      }
+    }
+
+    if (!hasRemovedProperties) {
+      // update the info only if we didn't find errors
+      this.setFundersInfo('funders', this.previewFunders);
+    }
+  },
   mounted() {
     if (this.funders.length > 0) {
       for (let i = 0; i < this.funders.length; i++) {
