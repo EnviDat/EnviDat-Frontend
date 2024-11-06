@@ -250,7 +250,7 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
-import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
+import { METADATA_NAMESPACE, METADATA_UPDATE_EXISTING_TITLE } from '@/store/metadataMutationsConsts';
 
 import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
@@ -531,7 +531,15 @@ export default {
       this.previews[property] = value;
       const valid = this.validateProperty(property, value);
 
+
+      // pass the value of the title to preview changes
+      this.$store.commit(
+        `${METADATA_NAMESPACE}/${METADATA_UPDATE_EXISTING_TITLE}`,
+        value,
+      );
+
       if (valid && property === METADATA_TITLE_PROPERTY && !this.metadataUrl) {
+
         this.previews[METADATA_URL_PROPERTY] = getMetadataUrlFromTitle(value);
       }
     },

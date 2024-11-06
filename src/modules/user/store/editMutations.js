@@ -205,7 +205,8 @@ export default {
     editingObject.loading = false;
     editingObject.message = message;
 
-    eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
+    // Clarify with Dominik why we cancel the preview in case of success
+    // eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
 
     setTimeout(() => {
       this.commit(`${USER_NAMESPACE}/resetMessage`, stepKey);

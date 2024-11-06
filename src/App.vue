@@ -29,7 +29,7 @@
       "
     >
       <NotificationCard
-        v-bind="notification"
+        :notification="notification"
         :height="165"
         :showReportButton="
           config.errorReportingEnabled && notification.type === 'error'

@@ -40,6 +40,7 @@ import {
   METADATA_UPDATE_EXISTING_KEYWORDS_ERROR,
   METADATA_UPDATE_AN_EXISTING_AUTHOR,
   METADATA_NAMESPACE,
+  METADATA_UPDATE_EXISTING_TITLE,
 } from '@/store/metadataMutationsConsts';
 
 import {
@@ -243,6 +244,9 @@ export default {
   },
   [METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS](state, payload) {
     state.existingKeywords = payload;
+  },
+  [METADATA_UPDATE_EXISTING_TITLE](state, payload) {
+    state.titleEditing = payload;
   },
   [METADATA_UPDATE_EXISTING_KEYWORDS_ERROR](state, reason) {
     const errObj = warningMessage(

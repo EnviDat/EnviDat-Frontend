@@ -79,6 +79,7 @@ const initialState = {
   authorPassedInfo: 'Sadly this author has passed away.',
   existingAuthors: [],
   existingKeywords: [],
+  titleEditing: null,
 };
 
 export const metadata = {
@@ -123,6 +124,7 @@ export const metadata = {
     loadingAllTags: state => state.loadingAllTags,
     updatingTags: state => state.updatingTags,
     detailPageBackRoute: state => state.detailPageBackRoute,
+    titleEditing: state => state.titleEditing,
     aboutPageBackRoute: state => state.aboutPageBackRoute,
     asciiDead: state => state.asciiDead,
     authorPassedInfo: state => state.authorPassedInfo,
