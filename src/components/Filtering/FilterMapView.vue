@@ -183,15 +183,15 @@ export default {
     },
     catchPinClicked() {
       this.pinEnabled = !this.pinEnabled;
-      this.updatePins();
+      this.showMapElements(this.pinLayerGroup, this.pinEnabled)
     },
     catchMultipinClicked() {
       this.multiPinEnabled = !this.multiPinEnabled;
-      this.updateMultiPins();
+      this.showMapElements(this.multiPinLayerGroup, this.multiPinEnabled);
     },
     catchPolygonClicked() {
       this.polygonEnabled = !this.polygonEnabled;
-      this.updatePolygons();
+      this.showMapElements(this.polygonLayerGroup, this.polygonEnabled, true);
     },
     catchClearClicked() {
       this.$emit('clearButtonClicked');
@@ -217,11 +217,11 @@ export default {
         this.updateMap();
 
         this.map.on('zoomend', () => {
-          this.updatePolygons();
+          this.addElementsToMap(this.polygonLayerGroup, this.polygonEnabled, true);
         });
 
         this.map.on('moveend', () => {
-          this.updatePolygons();
+          this.addElementsToMap(this.polygonLayerGroup, this.polygonEnabled, true);
         });
 
         this.mapIsSetup = true;
@@ -455,9 +455,13 @@ export default {
           this.createPoints(dataset, location, selected)
         }
       }
+
       if (this.multiPins.length > 0) {
         const flatMultiPins = [];
-        this.multiPins.forEach(pinCollection => {
+
+        for (let i = 0; i < this.multiPins.length; i++) {
+          const pinCollection = this.multiPins[i];
+
           if (pinCollection) {
             pinCollection.forEach(pin => {
               if (pin) {
@@ -465,7 +469,8 @@ export default {
               }
             });
           }
-        });
+        }
+
         this.multiPinLayerGroup = flatMultiPins;
 
         // merge the multipins with the normal pins on one layer?
@@ -537,30 +542,25 @@ export default {
       }
     },
     showMapElements(elements, show, checkBounds) {
-      const currentBounds = this.map.getBounds();
 
-      if (elements instanceof Array) {
-        elements.forEach(el => {
-          if (
-            (show && !checkBounds) ||
-            (show && checkBounds && !el.getBounds().contains(currentBounds))
-          ) {
-            this.clusterLayer.addLayer(el);
-          } else {
-            this.clusterLayer.removeLayer(el);
-          }
-        });
-      } else {
-        /* eslint-disable no-lonely-if */
-        if (
-          (show && !checkBounds) ||
-          (show && checkBounds && !elements.getBounds().contains(currentBounds))
-        ) {
-          this.clusterLayer.addLayer(elements);
-        } else {
-          this.clusterLayer.removeLayer(elements);
-        }
+      let elementArray = elements;
+      if (!(elements instanceof Array)) {
+        elementArray = [elements];
       }
+
+      if (!show) {
+        this.clusterLayer.removeLayers(elementArray);
+        return;
+      }
+
+      let toAdd = elementArray;
+
+      if (checkBounds) {
+        const currentBounds = this.map.getBounds();
+        toAdd = elementArray.filter((el) => el.getBounds().contains(currentBounds));
+      }
+
+      this.clusterLayer.addLayers(toAdd)
     },
     async updateMap() {
       if (!this.clusterLayer) {
@@ -583,21 +583,6 @@ export default {
       if (this.modeData && (this.hasPins || this.hasMultiPins || this.hasPolygons)) {
         this.focusOnLayers();
       }
-    },
-    updatePins() {
-      this.clearLayers(this.map, 'pins');
-
-      this.addElementsToMap(this.pinLayerGroup, this.pinEnabled);
-    },
-    updateMultiPins() {
-      this.clearLayers(this.map, 'multiPins');
-
-      this.addElementsToMap(this.multiPinLayerGroup, this.multiPinEnabled);
-    },
-    updatePolygons() {
-      this.clearLayers(this.map, 'polygons');
-
-      this.addElementsToMap(this.polygonLayerGroup, this.polygonEnabled, true);
     },
   },
   watch: {
