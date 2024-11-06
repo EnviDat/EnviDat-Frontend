@@ -4,6 +4,7 @@
     @mouseleave="hover = false"
     :dark="false"
     @click="cardClick"
+    height="100%"
   >
     <v-container fluid class="pa-0">
       <v-row no-gutters>

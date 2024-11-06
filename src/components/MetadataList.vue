@@ -67,26 +67,26 @@
         class="pa-0"
        :style="`height: ${ useDynamicHeight ? `${metadataListHeight}px` : 'auto' };`"
       >
-      <v-row v-if="!loading"
+      <v-row v-if="!loading && hasContent"
              no-gutters>
 
         <RecycleScroller
             class="scroller"
-            :items="content"
             :item-size="fixedCardHeight"
+            :items="groupedContent"
             :page-mode="true"
-            :gridItems="virtualPageSize"
+            :buffer="fixedCardHeight * 3"
             key-field="id"
         >
-          <template #before>
-            displayed before the items!
-          </template>
+          <template v-slot:default="{ item }">
 
-          <template v-slot:default="{ item: group }">
-
-            <v-row>
-              <v-col v-for="(metadata, index) in group"
-                     :key="`item_${metadata.id}_${index}`">
+            <v-row no-gutters
+            >
+              <v-col :cols="12 / amountOfRowsItems"
+                v-for="(metadata, index) in item.group"
+                class="px-2 py-1"
+                :style="`height: ${fixedCardHeight - 10}px;`"
+                :key="`item_${metadata.id}_${index}`">
 
                 <MetadataCard
                     :class="metadata.isPinned ? 'highlighted' : ''"
@@ -121,71 +121,11 @@
 
           </template>
 
-          <template #after>
-            displayed after the items!
-          </template>
-
         </RecycleScroller>
-
-<!--
-        <Grid
-          id="virtualScroller"
-          :length="contentSize"
-          :pageSize="virtualPageSize"
-          :pageProvider="pageProvider"
-          :respectScrollToOnResize="true"
-          class="virtualGrid"
-          :style="`
-          grid-template-columns: repeat(${this.amountOfRowsItems}, 1fr);
-          grid-template-rows: ${fixedCardHeight}px;
-          `"
-        >
-
-          <template v-slot:placeholder="{ style }">
-            <MetadataCardPlaceholder
-              :dark="false"
-              :style="style"
-            />
-          </template>
-
-          <template v-slot:default="{ item: metadata, style }">
-            <MetadataCard
-              :style="style"
-              :class="metadata.isPinned ? 'highlighted' : ''"
-              :id="metadata.id"
-              :ref="metadata.id"
-              :title="metadata.title"
-              :name="metadata.name"
-              :subtitle="metadata.notes"
-              :tags="!isCompactLayout ? metadata.tags : null"
-              :titleImg="metadata.titleImg"
-              :restricted="hasRestrictedResources(metadata)"
-              :resourceCount="metadata.num_resources"
-              :modeData="modeData"
-              :flatLayout="listView"
-              :compactLayout="isCompactLayout"
-              :geoJSONIcon="getGeoJSONIcon(metadata.location)"
-              :categoryColor="metadata.categoryColor"
-              :state="getMetadataState(metadata)"
-              :organization="metadata.organization?.name"
-              :organizationTooltip="metadata.organization?.title"
-              :showOrganizationOnHover="showOrganizationOnHover"
-              @organizationClicked="$emit('organizationClicked', metadata.organization)"
-              @clickedEvent="metaDataClicked"
-              @clickedTag="catchTagClicked"
-              :showGenericOpenButton="!!metadata.openEvent"
-              :openButtonTooltip="metadata.openButtonTooltip"
-              :openButtonIcon="metadata.openButtonIcon"
-              @openButtonClicked="catchOpenClick(metadata.openEvent, metadata.openProperty)"
-            />
-          </template>
-        </Grid>
--->
 
       </v-row>
 
-
-      <v-row v-if="!loading && contentSize <= 0"
+      <v-row v-if="!loading && !hasContent"
       >
         <v-col
             class="mx-2"
@@ -219,7 +159,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import {defineAsyncComponent} from 'vue';
+import { defineAsyncComponent, shallowRef } from 'vue';
 import { RecycleScroller } from 'vue-virtual-scroller';
 import { BROWSE_PATH } from '@/router/routeConsts';
 
@@ -347,36 +287,32 @@ export default {
 
       return true;
     },
-    content() {
-      const pins = this.pinnedIds;
-      let datasets = [];
-
-      if (pins.length > 0) {
-        datasets = Object.values(this.metadatasContent);
-        datasets = datasets.filter((metadata) => pins.includes(metadata.id));
+    pinnedContent() {
+      if (!this.hasPinnedContent) {
+        return [];
       }
 
-      return [...datasets, ...this.listContent];
+      const pins = this.pinnedIds;
+      const pinnedContent = [];
+
+      for (let i = 0; i < pins.length; i++) {
+        const id = pins[i];
+        const dataset = shallowRef(this.metadatasContent[id]);
+        dataset.value.isPinned = true;
+        pinnedContent.push(dataset.value);
+      }
+
+      return pinnedContent;
+    },    
+    content() {
+      const pins = this.pinnedContent;
+      return [...pins, ...this.listContent];
+    },
+    hasContent() {
+      return this.content?.length > 0;
     },
     showPinnedElements() {
       return !this.loading && this.showMapFilter && this.prePinnedIds?.length > 0;
-    },
-    virtualPageSize() {
-      const mapActive = this.isActiveControl(LISTCONTROL_MAP_ACTIVE);
-      const compactLayout = this.isCompactLayout;
-      const listLayout = this.isActiveControl(LISTCONTROL_LIST_ACTIVE);
-
-      if (this.$vuetify.display.lgAndUp) {
-        if (compactLayout) {
-          return 36;
-        }
-
-        if (listLayout) {
-          return mapActive ? 12 : 16;
-        }
-      }
-
-      return 16;
     },
     amountOfRowsItems()  {
       const mapActive = this.isActiveControl(LISTCONTROL_MAP_ACTIVE);
@@ -423,7 +359,7 @@ export default {
         return 197;
       }
 
-      return 360;
+      return 370;
     },
     pinnedIds() {
       if (!this.showPinnedElements) {
@@ -436,9 +372,6 @@ export default {
 
       return [];
     },
-    contentSize() {
-      return this.listContent ? Object.keys(this.listContent).length : 0;
-    },
     isCompactLayout() {
       return this.isActiveControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE);
     },
@@ -448,52 +381,23 @@ export default {
   },
   methods: {
     setGroupedContentList() {
-      if (!this.listContent || this.listContent.length <= 0) {
+      if (!this.content || this.content.length <= 0) {
         this.groupedContent = [];
         return;
       }
 
-      const listWithoutPins = [];
-      const listWithPins = [];
+      const groupedItems = [];
 
-      for (let i = 0; i < this.listContent?.length; i++) {
-        const metadata = this.listContent[i];
-
-        if (this.prePinnedIds?.includes(metadata.id)) {
-          metadata.isPinned = true;
-          listWithPins.push(metadata);
-        } else {
-          listWithoutPins.push(metadata);
-        }
+      for (let i = 0; i < this.content.length; i += this.amountOfRowsItems) {
+        groupedItems.push({
+          id: this.content[i].id,
+          group: this.content.slice(i, i + this.amountOfRowsItems),
+        });
       }
 
-      this.groupedContent = this.getGroupItemList([...listWithPins, ...listWithoutPins]);
-//      this.groupedContent = this.getGroupItemList(listWithoutPins);
+      this.groupedContent = groupedItems;
     },
-    getGroupItemList(array) {
-      const group = [];
-
-      for (let i = 0; i < array.length; i += this.amountOfRowsItems) {
-        group.push(array.slice(i, i + this.amountOfRowsItems));
-      }
-
-      return {
-        id: group[0]?.id || '',
-        group,
-      };
-    },
-    async pageProvider(pageNumber, pageSize) {
-      const start = pageNumber * pageSize;
-      const end = start + pageSize;
-
-      let content = this.listContent;
-      if (pageNumber <= 0 && this.hasPinnedContent) {
-        content = [...this.pinnedContent, this.listContent];
-      }
-
-      return content.slice(start, end);
-    },
-    getMetadataState(metadata) {
+   getMetadataState(metadata) {
       if (!this.showPublicationState) {
         return null;
       }
@@ -653,7 +557,7 @@ export default {
     },
   },
   watch: {
-    listContent() {
+    content() {
       this.$nextTick(() => {
         this.setGroupedContentList();
       })
@@ -713,8 +617,7 @@ export default {
   box-shadow: #4db6ac 0 0 5px 5px !important;
 }
 
-.virtualGrid {
-  display: grid;
-  grid-gap: 15px;
+.scroller {
+  width: 100%;
 }
 </style>
