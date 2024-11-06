@@ -154,7 +154,10 @@ export default {
         pins = convertUrlStringToArray(pins, false, true);
 
         this.selectedPins = pins;
+        return true;
       }
+
+      return false;
     },
     async loadModeDatasets() {
       const datasets = await this.modeStore.loadModeDatasets(this.mode);
@@ -260,15 +263,15 @@ export default {
       const isBackNavigation = this.$router.options.isSameRoute(this.$route, fromRoute);
       const tagsChanged = this.routeKeyworsChanged();
 
-      this.loadRoutePins();
+      const pinsChanged = this.loadRoutePins();
 
       // Assign searchParameter so that it can be checked for full text searches
       const searchParameter = this.$route.query.search || '';
 
       // True is searchParameter does not equal currentSearchTerm, else False
-      const checkSearchTriggering = searchParameter !== this.currentSearchTerm || this.isAuthorSearch !== this.oldIsAuthorSearch;
+      const searchChanged = searchParameter !== this.currentSearchTerm || this.isAuthorSearch !== this.oldIsAuthorSearch;
 
-      if (!checkSearchTriggering) {
+      if (!searchChanged) {
         // use the search parameter from the url in any case
         // if it's a back navigation it has to be set that is will appear in the searchBar component
         triggerClearSearch = (this.currentSearchTerm !== '' && !searchParameter) && (this.filteredContentSize !== this.metadatasContentSize);
@@ -281,7 +284,7 @@ export default {
         }, this.scrollPositionDelay);
       }
 
-      if (checkSearchTriggering) {
+      if (searchChanged) {
 
         if (searchParameter && searchParameter.length > 0) {
           if (this.mode) {
@@ -289,6 +292,7 @@ export default {
           } else {
             this.metadataSearch(searchParameter, this.metadataConfig);
           }
+
           this.resetScrollPos();
 
           // prevent immediately filtering, the search results
@@ -315,7 +319,12 @@ export default {
         this.clearSearchResults();
       }
 
-     // always filter changes of the url except a change of the search term
+      if (pinsChanged && !tagsChanged && fromRoute) {
+        // don't filter incase only pinsChanged and we aren't in the initial check
+        return;
+      }
+
+      // always filter changes of the url except a change of the search term
       // because due to navigation the initial filter might be needed
       this.filterContent();
     },
