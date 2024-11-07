@@ -62,6 +62,8 @@ import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import 'leaflet-bing-layer';
 
+import { MarkerClusterGroup } from 'leaflet.markercluster';
+
 import {
   map as createMap,
   icon as createIcon,
@@ -80,8 +82,6 @@ import {
   mapGetters,
   mapState,
 } from 'vuex';
-
-const MarkerClusterGroupImport = () => import('leaflet.markercluster');
 
 // HACK start
 /* eslint-disable import/first */
@@ -186,15 +186,18 @@ export default {
     },
     catchPinClicked() {
       this.pinEnabled = !this.pinEnabled;
-      this.showMapElements(this.pinLayerGroup, this.pinEnabled)
+      this.clearFromClusterLayer('pins')
+      this.showMapElements(this.pinLayerGroup, this.pinEnabled);
     },
     catchMultipinClicked() {
       this.multiPinEnabled = !this.multiPinEnabled;
+      this.clearFromClusterLayer('multiPins');
       this.showMapElements(this.multiPinLayerGroup, this.multiPinEnabled);
     },
     catchPolygonClicked() {
       this.polygonEnabled = !this.polygonEnabled;
-      this.showMapElements(this.polygonLayerGroup, this.polygonEnabled, true);
+      this.clearFromClusterLayer('polygons');
+      this.showMapElements(this.polygonLayerGroup, this.polygonEnabled);
     },
     catchClearClicked() {
       this.$emit('clearButtonClicked');
@@ -217,14 +220,28 @@ export default {
         const bingKey = this.bingApiKey;
         this.addImageMapLayer(this.map, bingKey);
 
+/*
+        this.map.on('layerremove', (layerEvent) => {
+          // eslint-disable-next-line no-underscore-dangle
+          console.log('removed Layer', layerEvent.layer._leaflet_id);
+        })
+
+        this.map.on('layeradd', (layerEvent) => {
+          // eslint-disable-next-line no-underscore-dangle
+          console.log('added Layer', layerEvent.layer._leaflet_id);
+        })
+*/
+
         this.updateMap();
 
         this.map.on('zoomend', () => {
-          this.addElementsToMap(this.polygonLayerGroup, this.polygonEnabled, true);
+          this.clearFromClusterLayer('polygons');
+          this.showMapElements(this.polygonLayerGroup, this.polygonEnabled);
         });
 
         this.map.on('moveend', () => {
-          this.addElementsToMap(this.polygonLayerGroup, this.polygonEnabled, true);
+          this.clearFromClusterLayer('polygons');
+          this.showMapElements(this.polygonLayerGroup, this.polygonEnabled);
         });
 
         this.mapIsSetup = true;
@@ -519,61 +536,92 @@ export default {
 
       }
     },
-    clearLayers(map, specificClear) {
-      if (!map) {
+    clearFromClusterLayer(specificClear) {
+      if (!this.clusterLayer) {
         return;
       }
 
-      if (this.polygonLayerGroup) {
-        if ((specificClear && specificClear === 'polygons') || !specificClear) {
-          this.showMapElements(this.polygonLayerGroup, false);
+      let toClear = [];
+
+      if (specificClear) {
+        if (specificClear === 'polygons') {
+          toClear = this.polygonLayerGroup;
+        } else if (specificClear === 'pins') {
+          toClear = this.pinLayerGroup;
+        } else if (specificClear === 'multiPins') {
+          toClear = this.multiPinLayerGroup;
         }
+      } else {
+        toClear = [...this.polygonLayerGroup, ...this.pinLayerGroup, ...this.multiPinLayerGroup];
       }
 
-      if (this.pinLayerGroup) {
-        if ((specificClear && specificClear === 'pins') || !specificClear) {
-          this.showMapElements(this.pinLayerGroup, false);
+      this.showMapElements(toClear, false);
+    },
+    clearLayersFromMap(specificClear) {
+      let toClear = [];
+
+      if (specificClear) {
+        if (specificClear === 'polygons') {
+          toClear = this.polygonLayerGroup;
+        } else if (specificClear === 'pins') {
+          toClear = this.pinLayerGroup;
+        } else if (specificClear === 'multiPins') {
+          toClear = this.multiPinLayerGroup;
         }
+      } else {
+        toClear = [...this.polygonLayerGroup, ...this.pinLayerGroup, ...this.multiPinLayerGroup];
       }
 
-      if (this.multiPinLayerGroup) {
-        if (
-          (specificClear && specificClear === 'multiPins') ||
-          !specificClear
-        ) {
-          this.showMapElements(this.multiPinLayerGroup, false);
-        }
+      for (let i = 0; i < toClear.length; i++) {
+        const layer = toClear[i];
+        layer.remove();
       }
     },
     showMapElements(elements, show, checkBounds) {
-
-      let elementArray = elements;
-      if (!(elements instanceof Array)) {
-        elementArray = [elements];
-      }
-
-      if (!show) {
-        this.clusterLayer.removeLayers(elementArray);
+      if (!elements) {
         return;
       }
 
-      let toAdd = elementArray;
+      let isArray = true;
+      if (!(elements instanceof Array)) {
+        isArray = false;
+      }
+
+      if (!show) {
+        if (isArray) {
+          this.clusterLayer.removeLayers(elements);
+        } else {
+          this.clusterLayer.removeLayer(elements)
+        }
+        return;
+      }
+
+      let toAdd = elements;
 
       if (checkBounds) {
         const currentBounds = this.map.getBounds();
-        toAdd = elementArray.filter((el) => el.getBounds().contains(currentBounds));
+        if (isArray) {
+          toAdd = elements.filter((el) => el.getBounds()
+            .contains(currentBounds));
+        } else {
+          toAdd = elements.getBounds().contains(currentBounds) ? elements : undefined;
+        }
       }
 
-      this.clusterLayer.addLayers(toAdd)
+      if (isArray) {
+        this.clusterLayer.addLayers(toAdd);
+      } else if (toAdd) {
+        this.clusterLayer.addLayer(toAdd)
+      }
     },
-    async updateMap() {
-      if (!this.clusterLayer) {
-        const { MarkerClusterGroup } = await MarkerClusterGroupImport();
+    updateMap() {
+      if (this.clusterLayer) {
+        // this.map.removeLayer(this.clusterLayer);
+        this.clusterLayer.removeFrom(this.map);
+        this.clearFromClusterLayer();
+      } else {
         this.clusterLayer = new MarkerClusterGroup();
       }
-
-      this.clusterLayer.removeFrom(this.map);
-      this.clearLayers(this.map);
 
       // fills this.pinLayerGroup, this.multiPinLayerGroup, this.polygonLayerGroup
       this.createMapElements(this.content);
@@ -583,6 +631,7 @@ export default {
       this.addElementsToMap(this.polygonLayerGroup, this.polygonEnabled, true);
 
       this.clusterLayer.addTo(this.map);
+      // this.map.addLayer(this.clusterLayer)
 
       if (this.modeData && (this.hasPins || this.hasMultiPins || this.hasPolygons)) {
         this.focusOnLayers();
@@ -610,7 +659,7 @@ export default {
     pinEnabled: true,
     pinLayerGroup: [],
     multiPinEnabled: true,
-    multiPinLayerGroup: null,
+    multiPinLayerGroup: [],
     multiPins: [],
     filterText: 'Pinned: ',
     marker,
