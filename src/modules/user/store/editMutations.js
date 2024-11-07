@@ -205,8 +205,9 @@ export default {
     editingObject.loading = false;
     editingObject.message = message;
 
-    // Clarify with Dominik why we cancel the preview in case of success
-    // eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
+    // always clear the previews to make sure that the components
+    // show the latest datasets from the backend
+    eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
 
     setTimeout(() => {
       this.commit(`${USER_NAMESPACE}/resetMessage`, stepKey);
