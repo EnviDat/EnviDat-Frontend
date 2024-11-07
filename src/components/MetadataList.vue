@@ -41,7 +41,7 @@
     </template>
 
     <template v-slot:metadataListPlaceholder>
-      <v-container v-show="loading" class="px-0 pt-0 px-sm-1" fluid>
+      <v-container v-show="loadingList" class="px-0 pt-0 px-sm-1" fluid>
         <!-- don't use class with paddings here, it's being used in the MetadataListLayout component -->
         <v-row no-gutters
             id="metadataListPlaceholder"
@@ -67,7 +67,7 @@
         class="pa-0"
        :style="`height: ${ useDynamicHeight ? `${metadataListHeight}px` : 'auto' };`"
       >
-      <v-row v-if="!loading && hasContent"
+      <v-row v-if="!loadingList && hasContent"
              no-gutters>
 
         <RecycleScroller
@@ -125,7 +125,7 @@
 
       </v-row>
 
-      <v-row v-if="!loading && !hasContent"
+      <v-row v-if="!loadingList && !hasContent"
       >
         <v-col
             class="mx-2"
@@ -236,10 +236,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    preloadingDistance: {
-      type: Number,
-      default: 150,
-    },
     showOrganizationOnHover: {
       type: Boolean,
       default: undefined,
@@ -261,14 +257,26 @@ export default {
       default: () => [],
     },
   },
+  created() {
+    this.loadContent = true;
+    console.log('metadatalist created', this.loadingList);
+  },
   beforeMount() {
+    console.log('metadatalist beforeMount finished', this.loadingList);
+
     if (this.defaultListControls && this.defaultListControls.length) {
       this.defaultListControls.forEach((n) => {
         this.controlsChanged(n);
       });
     }
   },
+  mounted() {
+    this.loadContent = false;
+  },
   computed: {
+    loadingList () {
+      return this.loading && this.loadContent;
+    },
     hasMetadatasContent() {
       return this.metadatasContent ? Object.keys(this.metadatasContent)?.length > 0 : false;
     },
@@ -397,6 +405,10 @@ export default {
       }
 
       this.groupedContent = groupedItems;
+
+      this.$nextTick(() => {
+        this.loadContent = false;
+      })
     },
    getMetadataState(metadata) {
       if (!this.showPublicationState) {
@@ -559,22 +571,25 @@ export default {
   },
   watch: {
     content() {
-      this.$nextTick(() => {
-        this.setGroupedContentList();
-      })
+      this.loadContent = true;
+      console.time('watch content setGroupedContentList');
+      this.setGroupedContentList();
+      console.timeEnd('watch content setGroupedContentList');
     },
     controlsActive: {
       handler() {
+        this.loadContent = true;
         // when the controls change, trigger a recalc of the layout specific height
         this.layoutRecalcTrigger += 1;
-        this.$nextTick(() => {
-          this.setGroupedContentList();
-        })
+        console.time('watch controlsActive setGroupedContentList');
+        this.setGroupedContentList();
+        console.timeEnd('watch controlsActive setGroupedContentList');
       },
       deep: true,
     },
   },
   data: () => ({
+    loadContent: true,
     layoutRecalcTrigger: 0,
     groupedContent: [],
     noResultText: 'Nothing found for these search criterias.',
