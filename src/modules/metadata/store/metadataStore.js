@@ -114,10 +114,6 @@ export const metadata = {
     currentMetadataContent: state => state.currentMetadataContent,
     isFilteringContent: state => state.isFilteringContent,
     filteredContent: state => state.filteredContent,
-    filteredContentSize: state =>
-      state.filteredContent !== undefined
-        ? Object.keys(state.filteredContent).length
-        : 0,
     scrollPositionDelay: state => state.scrollPositionDelay,
     pinnedIds: state => state.pinnedIds,
     allTags: state => state.allTags,

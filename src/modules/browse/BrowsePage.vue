@@ -274,7 +274,7 @@ export default {
       if (!searchChanged) {
         // use the search parameter from the url in any case
         // if it's a back navigation it has to be set that is will appear in the searchBar component
-        triggerClearSearch = (this.currentSearchTerm !== '' && !searchParameter) && (this.filteredContentSize !== this.metadatasContentSize);
+        triggerClearSearch = (this.currentSearchTerm !== '' && !searchParameter) && (this.filteredDatasetsSize !== this.allDatasetsSize);
       }
 
       if (isBackNavigation) {
@@ -385,8 +385,6 @@ export default {
     ]),
     ...mapGetters({
       metadatasContent: `${METADATA_NAMESPACE}/metadatasContent`,
-      metadatasContentSize: `${METADATA_NAMESPACE}/metadatasContentSize`,
-      filteredContentSize: `${METADATA_NAMESPACE}/filteredContentSize`,
       searchedMetadatasContent: `${METADATA_NAMESPACE}/searchedMetadatasContent`,
       searchingMetadatasContent: `${METADATA_NAMESPACE}/searchingMetadatasContent`,
       searchingMetadatasContentOK: `${METADATA_NAMESPACE}/searchingMetadatasContentOK`,
@@ -450,12 +448,20 @@ export default {
 
       return this.filteredContent;
     },
+    filteredDatasetsSize() {
+      return this.filteredDatasets?.length;
+    },
     allDatasets() {
       if (this.modeContent) {
         return this.modeContent;
       }
 
       return this.metadatasContent
+    },
+    allDatasetsSize() {
+      return this.allDatasets !== undefined
+        ? Object.keys(this.allDatasets).length
+        : 0;
     },
     tagsFromDatasets() {
       if (this.mode) {
@@ -523,9 +529,9 @@ export default {
     categoryCards,
     EDNA_MODE,
     modeStore: null,
-    modeContent: null,
-    filteredModeContent: null,
-    modeTags: null,
+    modeContent: {},
+    filteredModeContent: [],
+    modeTags: [],
     pageBGImage: 'app_b_browsepage',
     suggestionText: 'Try one of these categories',
     searchPlaceholderTextSmall: 'Enter research search term',
