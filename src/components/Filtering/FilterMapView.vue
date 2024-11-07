@@ -81,12 +81,13 @@ import FilterMapWidget from '@/components/Filtering/FilterMapWidget.vue';
 
 import {EDNA_MODE} from '@/store/metadataMutationsConsts';
 import {
-  createLocation,
   getMultiPoint,
   getMultiPolygon,
   getPoint,
   getPolygon,
-} from '@/factories/geoFactory';
+} from '@/factories/leafleftFunctions';
+
+import { createLocation } from '@/factories/geoFactory';
 
 
 export default {
@@ -530,11 +531,6 @@ export default {
     multiPinLayerGroup: [],
     multiPins: [],
     filterText: 'Pinned: ',
-    marker,
-    marker2x,
-    selectedMarker,
-    selectedMarker2x,
-    markerShadow,
     clusterLayer: null,
   }),
   components: {
