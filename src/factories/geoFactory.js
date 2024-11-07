@@ -14,6 +14,17 @@ import {
   polygon as createPolygon,
 } from 'leaflet';
 
+// Solution to loading in the imgs correctly via webpack
+// see more https://github.com/PaulLeCam/react-leaflet/issues/255
+/*
+import marker from '@/assets/map/marker-icon.png';
+import marker2x from '@/assets/map/marker-icon-2x.png';
+import selectedMarker from '@/assets/map/selected-marker-icon.png';
+import selectedMarker2x from '@/assets/map/selected-marker-icon-2x.png';
+*/
+import markerShadow from '@/assets/map/marker-shadow.png';
+
+
 import { EDNA_MODE } from '@/store/metadataMutationsConsts';
 import { mdiMapMarker, mdiMapMarkerMultiple } from '@mdi/js';
 
@@ -295,7 +306,7 @@ export function getPointIcon(dataset, modeData, selected, multiMarker = false) {
       ...iconOptions,
       iconUrl,
       iconRetinaUrl: iconUrl,
-      iconShadowUrl: this.markerShadow,
+      iconShadowUrl: markerShadow,
       iconSize: [30, 30],
       className: 'swissFL_icon',
     })
@@ -310,7 +321,7 @@ export function getPointIcon(dataset, modeData, selected, multiMarker = false) {
           class="v-icon__svg"
           role="img"
           preserveAspectRatio="none"
-          style="color: ${ selected ? this.$vuetify.theme.themes.light.colors.primary : 'black' }"
+          style="color: ${ selected ? '#00897b' : 'black' }"
         >
           <path d="${ multiMarker ? mdiMapMarkerMultiple : mdiMapMarker}" transform="scale(1.25, 1.25)"></path>
         </svg>
@@ -319,12 +330,12 @@ export function getPointIcon(dataset, modeData, selected, multiMarker = false) {
   return divIcon(iconOptions);
 }
 
-export function getPoint(dataset, coords, id, title, selected, onClick, multiMarker = false) {
-  const icon = getPointIcon(dataset, this.modeData, selected, multiMarker);
+export function getPoint(dataset, coords, id, title, selected, onClick, modeData, multiMarker = false) {
+  const icon = getPointIcon(dataset, modeData, selected, multiMarker);
 
   let opacity = null;
 
-  if (this.modeData && this.modeData.icons) {
+  if (modeData && modeData.icons) {
     opacity = selected ? 1 : 0.65;
   } else {
     opacity = selected ? 0.8 : 0.65;
@@ -358,9 +369,7 @@ export function getPolygon(coords, id, title, selected, onClick) {
   // create a polygon from an array of LatLng points
   // var latlngs = [[37, -109.05],[41, -109.03],[41, -102.05],[37, -102.04]];
   const polygon = createPolygon(coords, {
-    color: selected
-      ? this.$vuetify.theme.themes.light.colors.primary
-      : this.$vuetify.theme.themes.light.colors.accent,
+    color: selected ? '#00897b' : '#ffd740',
     opacity: 0.45,
     fillOpacity: 0,
   });
@@ -372,12 +381,12 @@ export function getPolygon(coords, id, title, selected, onClick) {
   return polygon;
 }
 
-export function getMultiPoint(dataset, coords, id, title, selected, onClick) {
+export function getMultiPoint(dataset, coords, id, title, selected, onClick, modeData) {
   const points = [];
 
   for (let i = 0; i < coords.length; i++) {
     const pointCoord = coords[i];
-    const point = getPoint(dataset, pointCoord, id, title, selected, onClick, true);
+    const point = getPoint(dataset, pointCoord, id, title, selected, onClick, modeData, true);
     points.push(point);
   }
 
