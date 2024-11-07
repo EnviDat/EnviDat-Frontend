@@ -273,19 +273,20 @@ export default {
       return this.metadatasContent ? Object.keys(this.metadatasContent)?.length > 0 : false;
     },
     hasPinnedContent() {
-      if (this.prePinnedIds?.length <= 0) {
-        return false;
-      }
+      if (this.prePinnedIds?.length > 0) {
 
-      for (let i = 0; i < this.prePinnedIds.length; i++) {
-        const pin = this.prePinnedIds[i];
+        for (let i = 0; i < this.prePinnedIds.length; i++) {
+          const pin = this.prePinnedIds[i];
 
-        if (this.metadatasContent[pin] === undefined) {
-          return false;
+          if (this.metadatasContent[pin] === undefined) {
+            return false;
+          }
         }
+
+        return true;
       }
 
-      return true;
+      return false;
     },
     pinnedContent() {
       if (!this.hasPinnedContent) {
