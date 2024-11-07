@@ -169,9 +169,6 @@ export default ({ mode, config }) => {
               return 'envidat_assets';
             }
 
-            if (id.includes('src/factories')) {
-              return 'envidat_factories';
-            }
 
             // Let Rollup handle the rest
             return undefined
