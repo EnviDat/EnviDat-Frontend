@@ -181,7 +181,7 @@ import ControlPanel from '@/components/Filtering/ControlPanel.vue';
 import MetadataListLayout from '@/components/MetadataListLayout.vue';
 import MetadataCard from '@/components/Cards/MetadataCard.vue';
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
-import { getMetadataVisibilityState } from '@/factories/publicationFactory.js';
+import { getMetadataVisibilityState } from '@/factories/publicationFactory';
 
 const NoSearchResultsView = defineAsyncComponent(() =>
   import('@/components/Filtering/NoSearchResultsView.vue'),

@@ -32,8 +32,8 @@ import multiPinIcon from '../src/assets/icons/markerMulti.webp';
 import polygonIcon from '../src/assets/icons/polygons.webp';
 
 import metadataCards from './js/metadata';
-import { createLocation } from '@/factories/geoFactory.js';
-import { getMetadataVisibilityState } from '@/factories/publicationFactory.js';
+import { createLocation } from '@/factories/geoFactory';
+import { getMetadataVisibilityState } from '@/factories/publicationFactory';
 
 const enhancedDatasets = [];
 

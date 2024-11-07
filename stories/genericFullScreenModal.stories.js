@@ -25,7 +25,7 @@ import txtPreviewFile from './js/previewTextFile.txt';
 import stationsConfig from './testdata/stationsConfig.json';
 import gcnetDataset from './js/gcnetDataset';
 import stationParameters from './testdata/stationParameters.json'
-import { createLocation } from '@/factories/geoFactory.js';
+import { createLocation } from '@/factories/geoFactory';
 
 const gcNetLocation = createLocation(gcnetDataset);
 const fileObjects = stationParameters.fileObjects;

@@ -107,7 +107,11 @@ import {
   getValidationMetadataEditingObject,
   isFieldValid,
 } from '@/factories/userEditingValidations';
-import { defaultSwissLocation, parseAsGeomCollection } from '@/factories/geoFactory.js';
+
+import {
+  defaultSwissLocation,
+  parseAsGeomCollection,
+} from '@/factories/geoFactory';
 
 /*
 import geojsonhint from '@mapbox/geojsonhint';
@@ -266,9 +270,6 @@ export default {
         //     name: this.location.name,
         //   }),
         // );
-
-
-
 
         this.undoButtonEnabled = true;
         this.saveButtonEnabled = true;

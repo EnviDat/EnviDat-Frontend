@@ -66,14 +66,8 @@ import { MarkerClusterGroup } from 'leaflet.markercluster';
 
 import {
   map as createMap,
-  icon as createIcon,
-  divIcon,
   tileLayer,
-  Icon,
-  geoJSON,
-  marker as createMarker,
   layerGroup,
-  polygon as createPolygon,
   featureGroup,
   control,
 } from 'leaflet';
@@ -97,9 +91,14 @@ import selectedMarker2x from '@/assets/map/selected-marker-icon-2x.png';
 import FilterMapWidget from '@/components/Filtering/FilterMapWidget.vue';
 
 import {EDNA_MODE} from '@/store/metadataMutationsConsts';
-import { createLocation } from '@/factories/geoFactory.js';
+import {
+  createLocation,
+  getMultiPoint,
+  getMultiPolygon,
+  getPoint,
+  getPolygon,
+} from '@/factories/geoFactory';
 
-import { mdiMapMarker, mdiMapMarkerMultiple } from '@mdi/js';
 
 export default {
   name: 'FilterMapView',
@@ -259,13 +258,6 @@ export default {
 
       return map;
     },
-    parseGeoJSON(geoJsonString) {
-      try {
-        return geoJSON(geoJsonString);
-      } catch (error) {
-        return undefined;
-      }
-    },
     addImageMapLayer(map, bingKey) {
       const streetTiles = tileLayer(
         'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -296,111 +288,9 @@ export default {
 
       control.layers(baseMaps).addTo(map);
     },
-    getPointIcon(dataset, modeData, selected, multiMarker = false) {
-      const iconOptions = Icon.Default.prototype.options;
-      // use the defaultoptions to ensure that all untouched defaults stay in place
-
-      if (modeData && modeData.name !== EDNA_MODE && modeData.icons) {
-        let iconUrl = Object.values(modeData.icons)[0];
-        let extraValue = dataset[modeData.extrasKey];
-
-        if (extraValue) {
-          extraValue = extraValue.toLowerCase();
-          iconUrl = modeData.icons[extraValue];
-        }
-
-        return createIcon({
-          ...iconOptions,
-          iconUrl,
-          iconRetinaUrl: iconUrl,
-          iconShadowUrl: this.markerShadow,
-          iconSize: [30, 30],
-          className: 'swissFL_icon',
-        })
-      }
-
-      iconOptions.iconSize = [30, 30];
-      iconOptions.html = `
-        <svg
-          width="30"
-          height="30"
-          viewBox="0 0 30 30"
-          class="v-icon__svg"
-          role="img"
-          preserveAspectRatio="none"
-          style="color: ${ selected ? this.$vuetify.theme.themes.light.colors.primary : 'black' }"
-        >
-          <path d="${ multiMarker ? mdiMapMarkerMultiple : mdiMapMarker}" transform="scale(1.25, 1.25)"></path>
-        </svg>
-      `;
-
-      return divIcon(iconOptions);
-    },
-    getPoint(dataset, coords, id, title, selected, multiMarker = false) {
-      const icon = this.getPointIcon(dataset, this.modeData, selected, multiMarker);
-
-      let opacity = null;
-
-      if (this.modeData && this.modeData.icons) {
-        opacity = selected ? 1 : 0.65;
-      } else {
-        opacity = selected ? 0.8 : 0.65;
-      }
-
-      const point = createMarker(coords, {
-        icon,
-        opacity,
-        riseOnHover: true,
-      });
-
-      point.id = id;
-      point.title = title;
-      point.on({ click: this.catchPointClick });
-      point.on({ mouseover: this.catchPointHover });
-      point.on({ mouseout: this.catchPointHoverLeave });
-
-      return point;
-    },
-    getPolygon(coords, id, title, selected) {
-      // create a polygon from an array of LatLng points
-      // var latlngs = [[37, -109.05],[41, -109.03],[41, -102.05],[37, -102.04]];
-      const polygon = createPolygon(coords, {
-        color: selected
-          ? this.$vuetify.theme.themes.light.colors.primary
-          : this.$vuetify.theme.themes.light.colors.accent,
-        opacity: 0.45,
-        fillOpacity: 0,
-      });
-
-      polygon.on({ click: this.catchPointClick });
-      polygon.id = id;
-      polygon.title = title;
-
-      return polygon;
-    },
-    getMultiPoint(dataset, coords, id, title, selected) {
-      const points = [];
-      for (let i = 0; i < coords.length; i++) {
-        const pointCoord = coords[i];
-        const point = this.getPoint(dataset, pointCoord, id, title, selected, true);
-        points.push(point);
-      }
-
-      return points;
-    },
-    getMultiPolygon(coords, id, title, selected) {
-      const polys = [];
-      for (let i = 0; i < coords.length; i++) {
-        const pointCoord = coords[i];
-        const poly = this.getPolygon(pointCoord, id, title, selected);
-        polys.push(poly);
-      }
-
-      return polys;
-    },
     createPoints(dataset, location, selected) {
       if (location.isPoint) {
-        const pin = this.getPoint(
+        const pin = getPoint(
             dataset,
             location.pointArray,
             dataset.id,
@@ -413,7 +303,7 @@ export default {
       }
 
       if (location.isMultiPoint) {
-        const multiPin = this.getMultiPoint(
+        const multiPin = getMultiPoint(
             dataset,
             location.pointArray,
             dataset.id,
@@ -425,7 +315,7 @@ export default {
         }
       }
       if (location.isPolygon) {
-        const polygon = this.getPolygon(
+        const polygon = getPolygon(
             location.pointArray,
             dataset.id,
             dataset.title,
@@ -437,7 +327,7 @@ export default {
       }
       // this case is not being counted for polygons
       if (location.isMultiPolygon) {
-        const multiPoly = this.getMultiPolygon(
+        const multiPoly = getMultiPolygon(
             location.pointArray,
             dataset.id,
             dataset.title,

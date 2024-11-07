@@ -320,7 +320,7 @@ import TitleCard from '@/components/Cards/TitleCard.vue';
 import UserCard from '@/components/Cards/UserCard.vue';
 import EditUserProfile from '@/modules/user/components/edit/EditUserProfile.vue';
 import FlipLayout from '@/components/Layouts/FlipLayout.vue';
-import { getMetadataVisibilityState } from '@/factories/publicationFactory.js';
+import { getMetadataVisibilityState } from '@/factories/publicationFactory';
 
 
 const IntroductionCard = defineAsyncComponent(() =>

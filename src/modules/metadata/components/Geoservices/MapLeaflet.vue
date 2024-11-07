@@ -37,7 +37,7 @@ import {
   MAP_ZOOM_OUT,
   EDITMETADATA_DATA_GEO_MAP_ERROR,
 } from '@/factories/eventBus';
-import { defaultSwissLocation, defaultWorldLocation } from '@/factories/geoFactory.js';
+import { defaultSwissLocation, defaultWorldLocation, geomanGeomsToGeoJSON } from '@/factories/geoFactory';
 
 /* eslint-disable vue/no-unused-components */
 
@@ -305,25 +305,11 @@ export default {
       this.map.addLayer(this.basemapLayer);
       // this.basemapLayer.bringToBack();
     },
-    geomanGeomsToGeoJSON(layerArray) {
-      // Convert leaflet-geoman editing layers into GeoJSON for Leaflet
-
-      const geoJSONArray = [];
-
-      if (layerArray.length !== 0) {
-        layerArray.forEach(geometry => {
-          const geoJson = geometry.toGeoJSON();
-          geoJSONArray.push(geoJson.geometry);
-        });
-      }
-
-      return geoJSONArray;
-    },
     triggerGeometryEditEvent() {
       // Collect edited geometries and pass to event bus
 
       const layerArray = this.map.pm.getGeomanLayers();
-      const geoJSONArray = this.geomanGeomsToGeoJSON(layerArray);
+      const geoJSONArray = geomanGeomsToGeoJSON(layerArray);
       eventBus.emit(MAP_GEOMETRY_MODIFIED, geoJSONArray);
     },
     getCustomLeafletStyle() {

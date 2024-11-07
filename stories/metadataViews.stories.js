@@ -53,7 +53,7 @@ import {
   EDITMETADATA_MAIN_HEADER,
   EDITMETADATA_PUBLICATION_INFO,
 } from '@/factories/eventBus';
-import { createLocation } from '@/factories/geoFactory.js';
+import { createLocation } from '@/factories/geoFactory';
 
 enhanceMetadatasTitleImage(metadata);
 

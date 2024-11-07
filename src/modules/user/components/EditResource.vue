@@ -336,7 +336,7 @@ import {
 } from '@mdi/js';
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
-import { formatDate } from '@/factories/dateFactory.js';
+import { formatDate } from '@/factories/dateFactory';
 
 
 export default {

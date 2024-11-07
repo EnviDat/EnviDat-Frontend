@@ -118,8 +118,8 @@ import { convertArrayToUrlString } from '@/factories/stringFactory';
 import { getIcon } from '@/factories/imageFactory';
 import { defineAsyncComponent, markRaw } from 'vue';
 
+import { formatDate } from '@/factories/dateFactory';
 import MetadataHeader from './Metadata/MetadataHeader.vue';
-import { formatDate } from '@/factories/dateFactory.js';
 
 const MetadataBody = defineAsyncComponent(() =>
   import('./Metadata/MetadataBody.vue'),

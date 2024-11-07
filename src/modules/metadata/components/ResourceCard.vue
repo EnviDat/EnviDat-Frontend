@@ -241,7 +241,7 @@ import {
 
 import { trackDownload } from '@/utils/matomoTracking';
 
-import { formatDate } from '@/factories/dateFactory.js';
+import { formatDate } from '@/factories/dateFactory';
 
 export default {
   name: 'ResourceCard',
