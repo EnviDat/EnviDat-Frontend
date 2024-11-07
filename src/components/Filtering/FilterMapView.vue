@@ -645,4 +645,9 @@ export default {
   display: grid;
   grid-template-columns: 4fr 1fr;
 }
+
+.leaflet-marker-pane .leaflet-div-icon {
+  background-color: transparent !important;
+  border: none !important;
+}
 </style>
