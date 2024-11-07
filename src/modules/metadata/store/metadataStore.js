@@ -32,6 +32,7 @@ const initialState = {
   loadingMetadatasContent: false,
   loadingCurrentMetadataContent: false,
   metadatasContentOK: false,
+  // map with key: metadata.id and value datasets object
   metadatasContent: {},
   /**
    * authorsMap property holds the  for "bulk" loading all the metadata when the app starts up
@@ -78,6 +79,7 @@ const initialState = {
   authorPassedInfo: 'Sadly this author has passed away.',
   existingAuthors: [],
   existingKeywords: [],
+  titleEditing: null,
 };
 
 export const metadata = {
@@ -112,16 +114,13 @@ export const metadata = {
     currentMetadataContent: state => state.currentMetadataContent,
     isFilteringContent: state => state.isFilteringContent,
     filteredContent: state => state.filteredContent,
-    filteredContentSize: state =>
-      state.filteredContent !== undefined
-        ? Object.keys(state.filteredContent).length
-        : 0,
     scrollPositionDelay: state => state.scrollPositionDelay,
     pinnedIds: state => state.pinnedIds,
     allTags: state => state.allTags,
     loadingAllTags: state => state.loadingAllTags,
     updatingTags: state => state.updatingTags,
     detailPageBackRoute: state => state.detailPageBackRoute,
+    titleEditing: state => state.titleEditing,
     aboutPageBackRoute: state => state.aboutPageBackRoute,
     asciiDead: state => state.asciiDead,
     authorPassedInfo: state => state.authorPassedInfo,

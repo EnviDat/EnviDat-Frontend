@@ -167,11 +167,44 @@ export default {
       default: '',
     },
   },
+  beforeUnmount() {
+    // Validate all entries to ensure validationErrors are up to date
+    this.validate();
+
+    // Check if there are any validation errors
+    const hasErrors = this.validationErrors.funders.some(errors =>
+      Object.values(errors).some(error => error),
+    );
+
+    if (hasErrors) {
+      // There are validation errors: restore previewFunders to previous valid state
+      this.previewFunders = JSON.parse(JSON.stringify(this.prevValidPreviewFunders));
+      console.log('Data not saved due to validation errors. State restored to previous valid values.');
+    } else {
+      // No validation errors: update prevValidPreviewFunders and save data
+      this.prevValidPreviewFunders = JSON.parse(JSON.stringify(this.previewFunders));
+      this.setFundersInfo('funders', this.previewFunders);
+    }
+  },
+  mounted() {
+    this.previewFunders = JSON.parse(JSON.stringify(this.funders));
+    this.prevValidPreviewFunders = JSON.parse(JSON.stringify(this.previewFunders));
+
+
+    if (this.funders.length > 0) {
+      for (let i = 0; i < this.funders.length; i++) {
+        this.validate(i, INSTITUTION);
+        this.validate(i, GRANTNUMBER);
+        this.validate(i, INSTITUTION_URL);
+      }
+    }
+  },
   watch: {
     funders: {
       immediate: true,
       handler(newData) {
-        this.previewFunders = newData;
+        this.previewFunders = JSON.parse(JSON.stringify(newData));
+        this.prevValidPreviewFunders = JSON.parse(JSON.stringify(newData));
       },
     },
   },
@@ -266,7 +299,18 @@ export default {
       if (isObjectEmpty(entry)) {
         // Remove entry since it's empty
         this.deleteFundersEntry(index);
-      } else if (this.validate(index, property) && this.validate()) {
+      }
+
+      // Validate the entry and update validation errors
+      this.validate(index, property);
+
+      // Validate the entire array
+      const isValid = this.validate();
+
+      if (isValid) {
+        // Data is valid: update prevValidPreviewFunders
+        this.prevValidPreviewFunders = JSON.parse(JSON.stringify(this.previewFunders));
+        // Save the data
         this.setFundersInfo('funders', this.previewFunders);
       }
     },
@@ -291,6 +335,7 @@ export default {
       institutionUrl: '',
     },
     previewFunders: [],
+    prevValidPreviewFunders: [],
     labels: {
       cardTitle: 'Funding Information',
       fundingInformation:

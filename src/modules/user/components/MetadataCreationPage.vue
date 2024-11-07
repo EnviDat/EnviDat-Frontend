@@ -14,6 +14,7 @@
                        :showSaveButton="canSaveInBackend"
                        :isCreationWorkflow="true"
                        :showProgress="true"
+                       :loading="isLoadingUserOrganizations"
                        :dataset-title="currentDatasetTitle"
                        @clickedSaveDataset="catchSaveNewDataset"
                        @clickedClose="catchBackClicked" />
@@ -226,26 +227,33 @@ export default {
 
     },
     async loadUserOrganizations() {
-      if (this.organizationsStore.userOrganizations?.length < 0) {
-        await this.organizationsStore.UserGetOrgIds(this.user?.id)
+      this.isLoadingUserOrganizations = true;
+      try {
+        if (!this.organizationsStore.userOrganizations || this.organizationsStore.userOrganizations.length === 0) {
+          await this.organizationsStore.UserGetOrgIds(this.user?.id);
 
-        const userId = this.user?.id;
-        if (!userId) {
-          return;
+          const userId = this.user?.id;
+          if (!userId) {
+            return;
+          }
+
+          await this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`, {
+            action: ACTION_USER_SHOW,
+            body: {
+              id: userId,
+              include_datasets: true,
+            },
+            commit: true,
+            mutation: USER_GET_DATASETS,
+          });
         }
 
-        await this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`, {
-          action: ACTION_USER_SHOW,
-          body: {
-            id: userId,
-            include_datasets: true,
-          },
-          commit: true,
-          mutation: USER_GET_DATASETS,
-        });
+        this.updateStepsOrganizations(this.organizationsStore.userOrganizations);
+      } catch (error) {
+        console.error('Error:', error);
+      } finally {
+        this.isLoadingUserOrganizations = false;
       }
-
-      this.updateStepsOrganizations(this.organizationsStore.userOrganizations);
     },
     updateStepsOrganizations(userOrganizations) {
       // Get any already existing information from the local storage
@@ -430,6 +438,7 @@ export default {
     NavigationStepper,
   },
   data: () => ({
+    isLoadingUserOrganizations: false,
     organizationsStore: null,
     creationSteps: null,
     canSaveInBackend: false,

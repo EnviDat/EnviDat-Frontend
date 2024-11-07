@@ -69,8 +69,8 @@ set-vars:
     # bash "source" command loads all the variables from the file
     - source build.env
     # set build variables for the package registry
-    - echo "BUILD_NAME=${BUILD_VERSION}-${CI_COMMIT_REF_NAME}" >> build.env
-    - echo "BUILD_ZIP_NAME=envidat-frontend-${BUILD_VERSION}-${CI_COMMIT_REF_NAME}.zip" >> build.env
+    - echo "BUILD_NAME=${BUILD_VERSION}.${CI_COMMIT_REF_NAME}" >> build.env
+    - echo "BUILD_ZIP_NAME=envidat-frontend-${BUILD_VERSION}.${CI_COMMIT_REF_NAME}.zip" >> build.env
     - echo "Matomo token ${MATOMO_TOKEN}."
     - echo "content of build.env"
     - echo "information environment ${CI_COMMIT_REF_NAME}"
@@ -207,7 +207,7 @@ build-storybook:
   script:
     # - npm config set cache .npm/
     # - npm cache verify || true
-    - npm run build-storybook -- -o ./storybook --loglevel warning --disable-telemetry
+    - npm run build-storybook -- -o ./storybook --loglevel warn --disable-telemetry
   artifacts:
     name: 'storybook build'
     # keep the storybook for 7 days to be able to trigger the chromatic-deployment
@@ -230,7 +230,7 @@ build-app:
     # needs the artifact: node_modules to build the app
     - install-node
   script:
-    - npm run build -- --logLevel error
+    - npm run build -- --logLevel warn
   artifacts:
     name: 'frontend build '
     expire_in: 1 day

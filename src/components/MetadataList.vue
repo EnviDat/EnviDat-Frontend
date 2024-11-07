@@ -67,73 +67,65 @@
         class="pa-0"
        :style="`height: ${ useDynamicHeight ? `${metadataListHeight}px` : 'auto' };`"
       >
-      <v-row v-if="!loading"
+      <v-row v-if="!loading && hasContent"
              no-gutters>
 
-        <Grid
-          id="virtualScroller"
-          :length="contentSize"
-          :pageSize="virtualPageSize"
-          :pageProvider="pageProvider"
-          :pageProviderDebounceTime="100"
-          :respectScrollToOnResize="true"
-          class="virtualGrid"
-          :style="`
-          grid-template-columns: repeat(${this.amountOfRowsItems}, 1fr);
-          grid-template-rows: ${fixedCardHeight}px;
-          `"
+        <RecycleScroller
+            class="scroller"
+            :item-size="fixedCardHeight"
+            :items="groupedContent"
+            :page-mode="true"
+            :buffer="fixedCardHeight * 3"
+            key-field="id"
         >
-<!--
-          <template v-slot:probe>
-            <MetadataCardPlaceholder :dark="false" />
-          </template>
--->
+          <template v-slot:default="{ item }">
 
-          <!-- When the item is not loaded, a placeholder is rendered -->
-          <template v-slot:placeholder="{ style }">
-            <MetadataCardPlaceholder
-              :dark="false"
-              :style="style"
-            />
+            <v-row no-gutters
+            >
+              <v-col :cols="12 / amountOfRowsItems"
+                v-for="(metadata, index) in item.group"
+                class="px-2 py-1"
+                :style="`height: ${fixedCardHeight - 10}px;`"
+                :key="`item_${metadata.id}_${index}`">
+
+                <MetadataCard
+                    :class="metadata.isPinned ? 'highlighted' : ''"
+                    :id="metadata.id"
+                    :ref="metadata.id"
+                    :title="metadata.title"
+                    :name="metadata.name"
+                    :subtitle="metadata.notes"
+                    :tags="!isCompactLayout ? metadata.tags : null"
+                    :titleImg="metadata.titleImg"
+                    :restricted="hasRestrictedResources(metadata)"
+                    :resourceCount="metadata.num_resources"
+                    :modeData="modeData"
+                    :flatLayout="listView"
+                    :compactLayout="isCompactLayout"
+                    :geoJSONIcon="getGeoJSONIcon(metadata.location)"
+                    :categoryColor="metadata.categoryColor"
+                    :state="getMetadataState(metadata)"
+                    :organization="metadata.organization?.name"
+                    :organizationTooltip="metadata.organization?.title"
+                    :showOrganizationOnHover="showOrganizationOnHover"
+                    @organizationClicked="$emit('organizationClicked', metadata.organization)"
+                    @clickedEvent="metaDataClicked"
+                    @clickedTag="catchTagClicked"
+                    :showGenericOpenButton="!!metadata.openEvent"
+                    :openButtonTooltip="metadata.openButtonTooltip"
+                    :openButtonIcon="metadata.openButtonIcon"
+                    @openButtonClicked="catchOpenClick(metadata.openEvent, metadata.openProperty)"
+                />
+              </v-col>
+            </v-row>
+
           </template>
 
-          <!-- Render a loaded item -->
-          <template v-slot:default="{ item: metadata, style }">
-            <MetadataCard
-              :style="style"
-              :class="metadata.isPinned ? 'highlighted' : ''"
-              :id="metadata.id"
-              :ref="metadata.id"
-              :title="metadata.title"
-              :name="metadata.name"
-              :subtitle="metadata.notes"
-              :tags="!isCompactLayout ? metadata.tags : null"
-              :titleImg="metadata.titleImg"
-              :restricted="hasRestrictedResources(metadata)"
-              :resourceCount="metadata.num_resources"
-              :modeData="modeData"
-              :flatLayout="listView"
-              :compactLayout="isCompactLayout"
-              :geoJSONIcon="getGeoJSONIcon(metadata.location)"
-              :categoryColor="metadata.categoryColor"
-              :state="getMetadataState(metadata)"
-              :organization="metadata.organization?.name"
-              :organizationTooltip="metadata.organization?.title"
-              :showOrganizationOnHover="showOrganizationOnHover"
-              @organizationClicked="$emit('organizationClicked', metadata.organization)"
-              @clickedEvent="metaDataClicked"
-              @clickedTag="catchTagClicked"
-              :showGenericOpenButton="!!metadata.openEvent"
-              :openButtonTooltip="metadata.openButtonTooltip"
-              :openButtonIcon="metadata.openButtonIcon"
-              @openButtonClicked="catchOpenClick(metadata.openEvent, metadata.openProperty)"
-            />
-          </template>
-        </Grid>
+        </RecycleScroller>
+
       </v-row>
 
-
-      <v-row v-if="!loading && contentSize <= 0"
+      <v-row v-if="!loading && !hasContent"
       >
         <v-col
             class="mx-2"
@@ -167,8 +159,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import {defineAsyncComponent} from 'vue';
-import Grid from 'vue-virtual-scroll-grid';
+import { defineAsyncComponent, shallowRef } from 'vue';
+import { RecycleScroller } from 'vue-virtual-scroller';
 import { BROWSE_PATH } from '@/router/routeConsts';
 
 import {
@@ -281,39 +273,47 @@ export default {
       return this.metadatasContent ? Object.keys(this.metadatasContent)?.length > 0 : false;
     },
     hasPinnedContent() {
-      if (this.prePinnedIds?.length <= 0) {
-        return false;
-      }
+      if (this.prePinnedIds?.length > 0) {
 
-      for (let i = 0; i < this.prePinnedIds.length; i++) {
-        const pin = this.prePinnedIds[i];
+        for (let i = 0; i < this.prePinnedIds.length; i++) {
+          const pin = this.prePinnedIds[i];
 
-        if (this.metadatasContent[pin] === undefined) {
-          return false;
+          if (this.metadatasContent[pin] === undefined) {
+            return false;
+          }
         }
+
+        return true;
       }
 
-      return true;
+      return false;
+    },
+    pinnedContent() {
+      if (!this.hasPinnedContent) {
+        return [];
+      }
+
+      const pins = this.pinnedIds;
+      const pinnedContent = [];
+
+      for (let i = 0; i < pins.length; i++) {
+        const id = pins[i];
+        const dataset = shallowRef(this.metadatasContent[id]);
+        dataset.value.isPinned = true;
+        pinnedContent.push(dataset.value);
+      }
+
+      return pinnedContent;
+    },    
+    content() {
+      const pins = this.pinnedContent;
+      return [...pins, ...this.listContent];
+    },
+    hasContent() {
+      return this.content?.length > 0;
     },
     showPinnedElements() {
       return !this.loading && this.showMapFilter && this.prePinnedIds?.length > 0;
-    },
-    virtualPageSize() {
-      const mapActive = this.isActiveControl(LISTCONTROL_MAP_ACTIVE);
-      const compactLayout = this.isCompactLayout;
-      const listLayout = this.isActiveControl(LISTCONTROL_LIST_ACTIVE);
-
-      if (this.$vuetify.display.lgAndUp) {
-        if (compactLayout) {
-          return 36;
-        }
-
-        if (listLayout) {
-          return mapActive ? 12 : 16;
-        }
-      }
-
-      return 16;
     },
     amountOfRowsItems()  {
       const mapActive = this.isActiveControl(LISTCONTROL_MAP_ACTIVE);
@@ -360,7 +360,7 @@ export default {
         return 197;
       }
 
-      return 360;
+      return 370;
     },
     pinnedIds() {
       if (!this.showPinnedElements) {
@@ -373,9 +373,6 @@ export default {
 
       return [];
     },
-    contentSize() {
-      return this.listContent ? Object.keys(this.listContent).length : 0;
-    },
     isCompactLayout() {
       return this.isActiveControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE);
     },
@@ -384,12 +381,24 @@ export default {
     },
   },
   methods: {
-    async pageProvider(pageNumber, pageSize) {
-      const start = pageNumber * pageSize;
-      const end = start + pageSize;
-      return this.listContent.slice(start, end);
+    setGroupedContentList() {
+      if (!this.content || this.content.length <= 0) {
+        this.groupedContent = [];
+        return;
+      }
+
+      const groupedItems = [];
+
+      for (let i = 0; i < this.content.length; i += this.amountOfRowsItems) {
+        groupedItems.push({
+          id: this.content[i].id,
+          group: this.content.slice(i, i + this.amountOfRowsItems),
+        });
+      }
+
+      this.groupedContent = groupedItems;
     },
-    getMetadataState(metadata) {
+   getMetadataState(metadata) {
       if (!this.showPublicationState) {
         return null;
       }
@@ -549,17 +558,25 @@ export default {
     },
   },
   watch: {
+    content() {
+      this.$nextTick(() => {
+        this.setGroupedContentList();
+      })
+    },
     controlsActive: {
       handler() {
         // when the controls change, trigger a recalc of the layout specific height
         this.layoutRecalcTrigger += 1;
+        this.$nextTick(() => {
+          this.setGroupedContentList();
+        })
       },
       deep: true,
     },
   },
   data: () => ({
     layoutRecalcTrigger: 0,
-    // groupedContent: [],
+    groupedContent: [],
     noResultText: 'Nothing found for these search criterias.',
     suggestionText: 'Change the criterias or try one of these categories',
     scrollTopButtonText: 'Scroll to the top',
@@ -580,7 +597,7 @@ export default {
     MetadataCardPlaceholder,
     // BaseRectangleButton,
     MetadataListLayout,
-    Grid,
+    RecycleScroller,
   },
 };
 </script>
@@ -601,8 +618,7 @@ export default {
   box-shadow: #4db6ac 0 0 5px 5px !important;
 }
 
-.virtualGrid {
-  display: grid;
-  grid-gap: 15px;
+.scroller {
+  width: 100%;
 }
 </style>

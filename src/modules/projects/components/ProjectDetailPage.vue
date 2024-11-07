@@ -351,10 +351,11 @@ export default {
       const backRoute = this.projectsPageBackRoute;
 
       if (backRoute) {
+
         this.$router.push({
           path: backRoute.path,
-          query: backRoute.query,
-          params: backRoute.params,
+          query: backRoute.query || {},
+          params: backRoute.params || {},
         });
         return;
       }
@@ -416,7 +417,8 @@ export default {
     },
     $route() {
       // react on changes of the route ( pin clicks )
-      this.loadRoutePins();
+      // removed to fix the lang layer problem when clicking on markers, not very clear why. to be checked in redesign
+      // this.loadRoutePins();
     },
   },
   components: {

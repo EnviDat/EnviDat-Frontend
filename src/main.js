@@ -14,7 +14,6 @@
 
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
-// import InfiniteLoading from 'vue-infinite-loading';
 import VueMatomo from 'vue-matomo';
 
 import store from '@/store/store';
@@ -23,6 +22,8 @@ import { initAxios } from '@/init';
 
 import vuetify from '@/plugins/vuetify';
 import router from '@/router';
+import VueVirtualScroller from 'vue-virtual-scroller';
+import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
 
 const app = createApp(App);
 const pinia = createPinia();
@@ -34,6 +35,7 @@ app
   .use(vuetify)
   .use(router)
   .use(pinia)
+  .use(VueVirtualScroller)
   .use(VueMatomo, {
     // Configure your Matomo server and site by providing:
     host: 'https://statistics.wsl.ch/',
@@ -48,5 +50,4 @@ app
     // set to false as soon as finish the test
     debug: true,
   })
-  //  .use(InfiniteLoading)
   .mount('#app');

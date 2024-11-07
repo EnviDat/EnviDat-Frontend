@@ -323,12 +323,12 @@ export default {
           });
       }
     },
-    uploadStarted() {
-    // uploadStarted({ id, fileIDs }) {
+    // uploadStarted() {
+    uploadStarted({ id, fileIDs }) {
       // data object consists of `id` with upload ID and `fileIDs` array
       // with file IDs in current upload
       // data: { id, fileIDs }
-      // console.log(`Starting upload ${id} for files ${fileIDs}`);
+      console.log(`Starting upload ${id} for files ${fileIDs}`);
 
       this.uppyError = null;
       this.uploadProgessText = 'Starting upload file';
@@ -337,7 +337,7 @@ export default {
       eventBus.emit(UPLOAD_STATE_UPLOAD_STARTED, { id: UPLOAD_STATE_UPLOAD_STARTED });
     },
     uploadProgress(progress) {
-      // console.log(`upload progress: ${progress}`);
+      console.log(`upload progress: ${progress}`);
       this.uploadProgessText = `upload progress: ${progress}`;
       this.uploadProgressIcon = 'check';
 
@@ -347,6 +347,7 @@ export default {
       const oks = result.successful?.length || 0;
       const fails = result.failed?.length || 0;
 
+      console.log('upload complete', result);
       // console.log('successful files:', result.successful)
       // console.log('failed files:', result.failed)
 
@@ -363,6 +364,7 @@ export default {
       }
 
       eventBus.emit(UPLOAD_STATE_UPLOAD_COMPLETED, { id: UPLOAD_STATE_UPLOAD_COMPLETED });
+      console.log('upload complete emit', UPLOAD_STATE_UPLOAD_COMPLETED);
 
       this.uploadProgessText = message;
 
@@ -373,11 +375,13 @@ export default {
       const newRes = this.$store?.getters[`${USER_NAMESPACE}/uploadResource`];
 
       setTimeout(() => {
+        console.log(METADATA_EDITING_SELECT_RESOURCE, newRes);
         this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, newRes?.id);
       }, 500);
 
     },
     uploadUppyError(error) {
+      console.log('uploadUppyError', error);
       this.uppyError = error;
 
       this.uploadProgessText = `Upload failed ${error}`;
@@ -389,6 +393,7 @@ export default {
       this.resetUppy();
     },
     resetUppy() {
+      console.log('resetUppy');
       eventBus.emit(UPLOAD_STATE_RESET);
       this.uppyError = null;
 

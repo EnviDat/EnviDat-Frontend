@@ -256,7 +256,8 @@ const metadataInEditingValidations = {
               .string()
               .nullable()
               .transform(convertEmptyStringToNull)
-              .matches(urlRegex, 'Provide a valid link / url.'),
+              .url(),
+//              .matches(urlRegex, 'Provide a valid link / url.'),
           }),
         ),
     }),

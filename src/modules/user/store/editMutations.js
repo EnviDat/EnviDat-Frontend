@@ -205,6 +205,8 @@ export default {
     editingObject.loading = false;
     editingObject.message = message;
 
+    // always clear the previews to make sure that the components
+    // show the latest datasets from the backend
     eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
 
     setTimeout(() => {

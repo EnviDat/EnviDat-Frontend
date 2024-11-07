@@ -1,6 +1,5 @@
 <template>
-  <v-card :expanded="expanded"
-          max-width='500px'>
+  <v-card :expanded="expanded" >
     <v-container class="pa-0"
                  @click="toggleExpand">
 
