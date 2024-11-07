@@ -21,6 +21,8 @@ import { getModeData } from '@/factories/modeFactory';
 import { EDNA_MODE, SWISSFL_MODE } from '@/store/metadataMutationsConsts';
 import { enhanceTags } from '@/factories/keywordsFactory';
 import categoryCards from '@/store/categoryCards';
+import { createLocation } from '@/factories/geoFactory';
+import { getMetadataVisibilityState } from '@/factories/publicationFactory';
 import {
   mobileLargeViewportParams,
   mobileViewportParams,
@@ -32,8 +34,6 @@ import multiPinIcon from '../src/assets/icons/markerMulti.webp';
 import polygonIcon from '../src/assets/icons/polygons.webp';
 
 import metadataCards from './js/metadata';
-import { createLocation } from '@/factories/geoFactory';
-import { getMetadataVisibilityState } from '@/factories/publicationFactory';
 
 const enhancedDatasets = [];
 
