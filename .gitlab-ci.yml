@@ -69,8 +69,8 @@ set-vars:
     # bash "source" command loads all the variables from the file
     - source build.env
     # set build variables for the package registry
-    - echo "BUILD_NAME=${BUILD_VERSION}-${CI_COMMIT_REF_NAME}" >> build.env
-    - echo "BUILD_ZIP_NAME=envidat-frontend-${BUILD_VERSION}-${CI_COMMIT_REF_NAME}.zip" >> build.env
+    - echo "BUILD_NAME=${BUILD_VERSION}.${CI_COMMIT_REF_NAME}" >> build.env
+    - echo "BUILD_ZIP_NAME=envidat-frontend-${BUILD_VERSION}.${CI_COMMIT_REF_NAME}.zip" >> build.env
     - echo "Matomo token ${MATOMO_TOKEN}."
     - echo "content of build.env"
     - echo "information environment ${CI_COMMIT_REF_NAME}"

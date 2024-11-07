@@ -36,8 +36,8 @@ publish-build:
   before_script:
     - apk add curl zip --no-cache
   script:
-    - export PUBLISH_LOCATION="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/envidat-frontend-${CI_COMMIT_REF_NAME}/${BUILD_VERSION}/${BUILD_ZIP_NAME}"
-    - echo "Going to publish build ${BUILD_VERSION} with zip name ${BUILD_ZIP_NAME}"
+    - export PUBLISH_LOCATION="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/envidat-frontend/${BUILD_VERSION}.${CI_COMMIT_REF_NAME}/${BUILD_ZIP_NAME}"
+    - echo "Going to publish build ${BUILD_NAME} with zip name ${BUILD_ZIP_NAME}"
     - echo "to location ${PUBLISH_LOCATION}"
     - zip -r ${BUILD_ZIP_NAME} ./
     # - ls -l
@@ -81,8 +81,8 @@ deploy-to-s3-bucket:
       fi
       echo "Target for rclone sync is the bucket: '${BUCKET_NAME}'"
   script:
-    - export PUBLISH_LOCATION="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/envidat-frontend-${CI_COMMIT_REF_NAME}/${BUILD_VERSION}/${BUILD_ZIP_NAME}"
-    - echo "Going to pull build ${BUILD_VERSION} with zip name ${BUILD_ZIP_NAME}"
+    - export PUBLISH_LOCATION="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/envidat-frontend/${BUILD_VERSION}.${CI_COMMIT_REF_NAME}/${BUILD_ZIP_NAME}"
+    - echo "Going to pull build ${BUILD_NAME} with zip name ${BUILD_ZIP_NAME}"
     - echo "from location ${PUBLISH_LOCATION}"
     # - ls -l
     - |
@@ -133,8 +133,8 @@ manual-deploy-to-s3-bucket:
       fi
       echo "Target for rclone sync is the bucket: '${BUCKET_NAME}'"
   script:
-    - export PUBLISH_LOCATION="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/envidat-frontend-${CI_COMMIT_REF_NAME}/${BUILD_VERSION}/${BUILD_ZIP_NAME}"
-    - echo "Going to pull build ${BUILD_VERSION} with zip name ${BUILD_ZIP_NAME}"
+    - export PUBLISH_LOCATION="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/envidat-frontend/${BUILD_VERSION}.${CI_COMMIT_REF_NAME}/${BUILD_ZIP_NAME}"
+    - echo "Going to pull build ${BUILD_NAME} with zip name ${BUILD_ZIP_NAME}"
     - echo "from location ${PUBLISH_LOCATION}"
     # - ls -l
     - |
