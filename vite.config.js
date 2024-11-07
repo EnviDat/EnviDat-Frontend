@@ -11,7 +11,6 @@ import eslint from 'vite-plugin-eslint';
 import Unfonts from 'unplugin-fonts/vite'
 import vueDevTools from 'vite-plugin-vue-devtools';
 import { visualizer } from 'rollup-plugin-visualizer';
-import codspeedPlugin from "@codspeed/vitest-plugin";
 
 import { getFilesWithPrefix } from './src/factories/enhancementsFactoryNode';
 
@@ -87,7 +86,6 @@ export default ({ mode, config }) => {
           title : 'EnviDat Build Visualizer',
         }),
         vueDevTools(),
-        codspeedPlugin(),
       ],
       define: {
         'process.env': loadEnv(mode, process.cwd()),
