@@ -326,7 +326,7 @@ export default {
           });
         }
 
-        this.updateStepsOrganizations(this.organizationsStore.userOrganizations);
+        this.updateStepsOrganizations();
       } catch (error) {
         console.error('Error:', error);
       } finally {

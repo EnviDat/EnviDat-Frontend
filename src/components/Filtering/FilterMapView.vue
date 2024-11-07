@@ -172,14 +172,6 @@ export default {
     catchPointClick(e) {
       this.$emit('pointClicked', e.target.id);
     },
-    catchPointHover(e) {
-      e.target.bindPopup(`<p>${e.target.title}</p>`).openPopup();
-      this.$emit('pointHover', e.target.id);
-    },
-    catchPointHoverLeave(e) {
-      e.target.closePopup();
-      this.$emit('pointHoverLeave', e.target.id);
-    },
     catchClearButtonClicked() {
       this.$emit('clearButtonClicked');
     },
@@ -219,17 +211,6 @@ export default {
         const bingKey = this.bingApiKey;
         this.addImageMapLayer(this.map, bingKey);
 
-/*
-        this.map.on('layerremove', (layerEvent) => {
-          // eslint-disable-next-line no-underscore-dangle
-          console.log('removed Layer', layerEvent.layer._leaflet_id);
-        })
-
-        this.map.on('layeradd', (layerEvent) => {
-          // eslint-disable-next-line no-underscore-dangle
-          console.log('added Layer', layerEvent.layer._leaflet_id);
-        })
-*/
 
         this.updateMap();
 
@@ -296,7 +277,9 @@ export default {
             dataset.id,
             dataset.title,
             selected,
+            this.catchPointClick,
         );
+
         if (pin) {
           this.pinLayerGroup.push(pin);
         }
@@ -309,8 +292,10 @@ export default {
             dataset.id,
             dataset.title,
             selected,
+            this.catchPointClick,
         );
-        if (multiPin) {
+
+        if (multiPin.length > 0) {
           this.multiPins.push(multiPin);
         }
       }
@@ -320,7 +305,9 @@ export default {
             dataset.id,
             dataset.title,
             selected,
+            this.catchPointClick,
         );
+
         if (polygon) {
           this.polygonLayerGroup.push(polygon);
         }
@@ -332,8 +319,10 @@ export default {
             dataset.id,
             dataset.title,
             selected,
+            this.catchPointClick,
         );
-        if (multiPoly) {
+
+        if (multiPoly.length > 0) {
           this.multiPolygonLayerGroup.push(multiPoly);
         }
       }

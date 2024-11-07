@@ -319,8 +319,8 @@ export function getPointIcon(dataset, modeData, selected, multiMarker = false) {
   return divIcon(iconOptions);
 }
 
-export function getPoint(dataset, coords, id, title, selected, multiMarker = false) {
-  const icon = this.getPointIcon(dataset, this.modeData, selected, multiMarker);
+export function getPoint(dataset, coords, id, title, selected, onClick, multiMarker = false) {
+  const icon = getPointIcon(dataset, this.modeData, selected, multiMarker);
 
   let opacity = null;
 
@@ -338,14 +338,23 @@ export function getPoint(dataset, coords, id, title, selected, multiMarker = fal
 
   point.id = id;
   point.title = title;
-  point.on({ click: this.catchPointClick });
-  point.on({ mouseover: this.catchPointHover });
-  point.on({ mouseout: this.catchPointHoverLeave });
+  point.on({
+    click: (e) => {
+      onClick(e.target.id);
+    },
+    mouseover: (e) => {
+      e.target.bindPopup(`<p>${e.target.title}</p>`)
+        .openPopup();
+    },
+    mouseout: (e) => {
+      e.target.closePopup();
+    },
+  });
 
   return point;
 }
 
-export function getPolygon(coords, id, title, selected) {
+export function getPolygon(coords, id, title, selected, onClick) {
   // create a polygon from an array of LatLng points
   // var latlngs = [[37, -109.05],[41, -109.03],[41, -102.05],[37, -102.04]];
   const polygon = createPolygon(coords, {
@@ -356,29 +365,31 @@ export function getPolygon(coords, id, title, selected) {
     fillOpacity: 0,
   });
 
-  polygon.on({ click: this.catchPointClick });
+  polygon.on({ click: onClick });
   polygon.id = id;
   polygon.title = title;
 
   return polygon;
 }
 
-export function getMultiPoint(dataset, coords, id, title, selected) {
+export function getMultiPoint(dataset, coords, id, title, selected, onClick) {
   const points = [];
+
   for (let i = 0; i < coords.length; i++) {
     const pointCoord = coords[i];
-    const point = this.getPoint(dataset, pointCoord, id, title, selected, true);
+    const point = getPoint(dataset, pointCoord, id, title, selected, onClick, true);
     points.push(point);
   }
 
   return points;
 }
 
-export function getMultiPolygon(coords, id, title, selected) {
+export function getMultiPolygon(coords, id, title, selected, onClick) {
   const polys = [];
+
   for (let i = 0; i < coords.length; i++) {
     const pointCoord = coords[i];
-    const poly = this.getPolygon(pointCoord, id, title, selected);
+    const poly = getPolygon(pointCoord, id, title, selected, onClick);
     polys.push(poly);
   }
 
