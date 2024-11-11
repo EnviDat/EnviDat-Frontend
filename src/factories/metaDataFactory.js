@@ -30,6 +30,7 @@ import { enhanceTags, getCategoryColor, guessTagCategory } from '@/factories/key
 import { createLocation } from '@/factories/geoFactory';
 import { getMetadataVisibilityState } from '@/factories/publicationFactory';
 import { formatDate } from '@/factories/dateFactory';
+import { enhanceMetadataWithModeExtras } from '@/factories/modeFactory';
 
 // import { getResourcesDownloads } from '@/modules/matomo/store/matomoStore';
 
@@ -643,7 +644,7 @@ export const possibleVisibilityStates = [
  * @param {string}mode
  * @returns {{}}
  */
-export async function enhanceMetadatas(datasets, mode = undefined) {
+export function enhanceMetadatas(datasets, mode = undefined) {
 
   if (!(datasets instanceof Array)) {
     throw new Error(
@@ -651,19 +652,14 @@ export async function enhanceMetadatas(datasets, mode = undefined) {
     );
   }
 
-  let enhanceWithMode;
-  if (mode) {
-    const modeFactory = await import('@/factories/modeFactory');
-    enhanceWithMode = modeFactory.enhanceMetadataWithModeExtras;
-  }
   const enhancedContent = {};
 
   for (let i = 0; i < datasets.length; i++) {
     let dataset = datasets[i];
     dataset = enhanceMetadataEntry(dataset);
 
-    if (enhanceWithMode) {
-      dataset = enhanceWithMode(mode, dataset);
+    if (mode) {
+      dataset = enhanceMetadataWithModeExtras(mode, dataset);
     }
 
     dataset = enhanceTags(dataset, categoryCards);
