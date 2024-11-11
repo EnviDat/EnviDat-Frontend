@@ -27,19 +27,24 @@ export default {
     VTextField: {
       variant: overallVariant,
       density: overallDensity,
+      color: colors.primary,
     },
     VTextarea: {
       variant: overallVariant,
       density: overallDensity,
+      color: colors.primary,
     },
     VSelect: {
       ...selectionStyling,
+      color: colors.primary,
     },
     VAutocomplete: {
       ...selectionStyling,
+      color: colors.primary,
     },
     VCombobox: {
       ...selectionStyling,
+      color: colors.primary,
     },
     VAlert: {
       variant: 'flat',
