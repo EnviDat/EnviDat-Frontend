@@ -37,9 +37,13 @@
 
                 <v-row no-gutters align="center" class="pt-6">
 
-                  <v-col class="pt-2 text-body-1"
-                          v-html="publicationInstructions">
-
+                  <v-col >
+                    <v-alert
+                      type="warning"
+                      class="text-body-1"
+                    >
+                      <div v-html="publicationInstructions"></div>
+                    </v-alert>
                   </v-col>
                 </v-row>
 
@@ -55,7 +59,7 @@
       </v-col>
     </v-row>
 
-    <v-row justify="end" align="end">
+    <v-row justify="end" >
       <v-col class="flex-grow-0">
         <!-- prettier-ignore -->
         <BaseRectangleButton buttonText="Save Dataset"
@@ -68,10 +72,11 @@
 
     <v-row v-if="!showSaveButton"
            justify="end"
-           align="end" >
-      <v-col cols="5"
-              class="text-body-2">
-        Fill out all fields to save the dataset. Have a look at the the progress on the top right!
+    >
+      <v-col class="text-body-2 flex-grow-0"
+             style="white-space: nowrap"
+      >
+        Fill out all fields to save the dataset. Have a look at the progress on the top right!
       </v-col>
     </v-row>
   </v-container>
