@@ -531,12 +531,14 @@ export default {
       this.previews[property] = value;
       const valid = this.validateProperty(property, value);
 
-
-      // pass the value of the title to preview changes
-      this.$store.commit(
-        `${METADATA_NAMESPACE}/${METADATA_UPDATE_EXISTING_TITLE}`,
-        value,
-      );
+      if (this.$store) {
+        // do it if the store is available otherwise in the storybook context the component breaks
+        // pass the value of the title to preview changes
+        this.$store.commit(
+          `${METADATA_NAMESPACE}/${METADATA_UPDATE_EXISTING_TITLE}`,
+          value,
+        );
+      }
 
       if (valid && property === METADATA_TITLE_PROPERTY && !this.metadataUrl) {
 
