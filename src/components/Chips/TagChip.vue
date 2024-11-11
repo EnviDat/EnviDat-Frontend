@@ -8,9 +8,7 @@
     :style="{ height: $vuetify.display.xs ? '15px' : '' }"
     :color="highlighted ? 'primary' : color"
     :small="isSmall"
-    :close-icon="mdiClose"
     @click.stop="clicked"
-    :closable="closeable"
     @click:close="$emit('clickedClose', name)"
   >
     <BaseIcon
@@ -22,9 +20,11 @@
     {{ name }}
 
     <BaseIcon
-      v-if="appendIcon"
-      :color="iconColor"
-      :icon="iconName"
+      v-if="closeable"
+      class="ml-1"
+      :color="highlighted ? 'white' : 'black'"
+      :icon="mdiClose"
+      @click="$emit('clickedClose', name)"
       small
     />
   </v-chip>
@@ -69,18 +69,6 @@ export default {
     isOpen: {
       type: Boolean,
       default: false,
-    },
-    appendIcon: {
-      type: Boolean,
-      default: false,
-    },
-    iconName: {
-      type: String,
-      default: mdiClose,
-    },
-    iconColor: {
-      type: String,
-      default: 'white',
     },
   },
   computed: {},

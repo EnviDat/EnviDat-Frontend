@@ -33,9 +33,7 @@
                 :name="tag.count ? `${tag.name} (${tag.count})` : tag.name"
                 :selectable="tag.enabled"
                 :highlighted="tag.active"
-                :closeable="false"
-                :appendIcon="tag.active ? true : false"
-                :iconName="mdiClose"
+                :closeable="!!tag.active"
                 :color="tag.color"
                 @clickedClose="catchTagCloseClicked(tag.name)"
                 @clicked="tag.active ? catchTagCloseClicked(tag.name) : catchTagClicked(tag.name)"
@@ -88,12 +86,6 @@ import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 export default {
   name: 'FilterKeywordsSingleView',
-  components: {
-    BaseIcon,
-    BaseIconButton,
-    TagChip,
-    TagChipPlaceholder,
-  },
   props: {
     selectedTagNames: Array,
     allTags: Array,
@@ -103,16 +95,6 @@ export default {
     showPlaceholder: Boolean,
     compactLayout: Boolean,
   },
-  data: () => ({
-    mdiChevronDown,
-    mdiPaletteSwatch,
-    maxSelectedTagsTextLength: 25,
-    maxUnselectedTagsTextLength: 250,
-    xsTextLength: 25,
-    smTextLength: 50,
-    mdTextLength: 65,
-    filterExpanded: false,
-  }),
   computed: {
     tagList() {
       const mergedTags = [...this.selectedTags, ...this.unselectedTags];
@@ -234,7 +216,22 @@ export default {
     catchTagCloseClicked(tagId) {
       this.$emit('clickedTagClose', tagId);
     },
-
   },
+  components: {
+    BaseIcon,
+    BaseIconButton,
+    TagChip,
+    TagChipPlaceholder,
+  },
+  data: () => ({
+    mdiChevronDown,
+    mdiPaletteSwatch,
+    maxSelectedTagsTextLength: 25,
+    maxUnselectedTagsTextLength: 250,
+    xsTextLength: 25,
+    smTextLength: 50,
+    mdTextLength: 65,
+    filterExpanded: false,
+  }),
 };
 </script>
