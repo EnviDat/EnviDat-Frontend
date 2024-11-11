@@ -307,7 +307,7 @@ export default {
     },    
     content() {
       const pins = this.pinnedContent;
-      return [...pins, ...this.listContent];
+      return [...pins, ...this.listContent || []];
     },
     hasContent() {
       return this.content?.length > 0;

@@ -64,6 +64,7 @@
                               border-radius: 10px;`
       ">
       <v-container v-if="showCardBody" class="pa-0">
+
         <v-row v-if="state" class="pb-1" no-gutters justify="end">
           <v-col class="cardIcons flex-grow-0">
             <MetadataStateChip :state="state" :showOnHover="!hover" />
