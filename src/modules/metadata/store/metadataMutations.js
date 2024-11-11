@@ -228,12 +228,10 @@ export default {
     }
 
     if (authorToUpdate) {
-      // use $set to overwrite the entry and make sure the update event of
-      // vue is triggered
-      this._vm.$set(authorsMap, key, {
+      this.authorsMap[key] = {
         ...authorToUpdate,
         ...modifiedAuthor,
-      });
+      };
     }
   },
   [METADATA_UPDATE_EXISTING_AUTHORS](state, existingAuthors) {
