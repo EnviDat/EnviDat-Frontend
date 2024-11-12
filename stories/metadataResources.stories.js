@@ -24,6 +24,11 @@ import fileIcon from '../src/assets/icons/file.png';
 
 // metadata gets enhance in the storybook config
 import metadata from './js/metadata';
+import {
+  mobileLargeViewportParams,
+  mobileViewportParams,
+  tabletViewportParams
+} from '~/stories/js/envidatViewports.js';
 
 const resources1 = createResources(metadata[1]);
 const resources2 = createResources(metadata[2]);
@@ -62,6 +67,15 @@ export const WithResources = {
   }
 }
 
+export const WithResourcesCC0License = {
+  args: {
+    ...WithResources.args,
+    dataLicenseId: license2.id,
+    dataLicenseTitle: license2.title,
+    dataLicenseUrl: license2.url,
+  }
+}
+
 export const WithProtectedResources = {
   args: {
     dataLicenseId: license2.id,
@@ -74,4 +88,18 @@ export const WithProtectedResources = {
     fileIcon,
     fileSizeIcon,
   }
+}
+
+export const WithResourcesCC0LicenseMobile = {
+  args: WithResourcesCC0License.args,
+  parameters: mobileViewportParams,
+}
+
+export const WithResourcesCC0LicenseLargeMobile = {
+  args: WithResourcesCC0License.args,
+  parameters: mobileLargeViewportParams,
+}
+export const WithResourcesCC0LicenseTable = {
+  args: WithResourcesCC0License.args,
+  parameters: tabletViewportParams,
 }
