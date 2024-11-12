@@ -87,12 +87,10 @@
       </v-container>
 
       <TextBanner
-        v-if="maintenanceBannerVisible"
         id="maintenanceBanner"
-        style="position: absolute; top: 0; z-index: 1001; width: 100%; "
+        :style="`position: absolute; top: 32px; z-index: 1001; width: 100%; background-color: ${maintenanceBannerColor};`"
         :text="maintenanceBannerText"
         confirmText="Okay"
-        :bannerColor="maintenanceBannerColor"
         :confirmClick="catchMaintenanceConfirmClick"
       />
 
@@ -693,12 +691,7 @@ export default {
       return this.maintenanceConfig.message;
     },
     maintenanceBannerColor() {
-      if (this.userIsOnEditPage) {
-        return 'error';
-      }
-
-      // this will use the default defined by the TextBanner component
-      return undefined;
+      return this.$vuetify.theme.themes.light.colors.warning;
     },
     signinDisabled() {
       return this.maintenanceConfig?.signinDisabled || false;

@@ -1,7 +1,6 @@
 <template>
   <v-banner density="compact"
-            class="noPaddingForActions"
-            :color="bannerColor">
+            class="noPaddingForActions"  >
     <template v-slot:icon>
       <v-icon
         color="white"
