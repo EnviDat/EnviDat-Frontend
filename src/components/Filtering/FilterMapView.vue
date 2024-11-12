@@ -199,17 +199,17 @@ export default {
     catchPinClicked() {
       this.pinEnabled = !this.pinEnabled;
       this.clearFromClusterLayer('pins')
-      this.showMapElements(this.pinLayerGroup, this.pinEnabled);
+      this.showLayersOnCluster(this.pinLayerGroup, this.pinEnabled);
     },
     catchMultipinClicked() {
       this.multiPinEnabled = !this.multiPinEnabled;
       this.clearFromClusterLayer('multiPins');
-      this.showMapElements(this.multiPinLayerGroup, this.multiPinEnabled);
+      this.showLayersOnCluster(this.multiPinLayerGroup, this.multiPinEnabled);
     },
     catchPolygonClicked() {
       this.polygonEnabled = !this.polygonEnabled;
       this.clearFromClusterLayer('polygons');
-      this.showMapElements(this.polygonLayerGroup, this.polygonEnabled, this.polygonEnabled);
+      this.showLayersOnCluster(this.polygonLayerGroup, this.polygonEnabled, this.polygonEnabled);
     },
     catchClearClicked() {
       this.$emit('clearButtonClicked');
@@ -239,12 +239,12 @@ export default {
 
         this.map.on('zoomend', () => {
           this.clearFromClusterLayer('polygons');
-          this.showMapElements(this.polygonLayerGroup, this.polygonEnabled, true);
+          this.showLayersOnCluster(this.polygonLayerGroup, this.polygonEnabled, true);
         });
 
         this.map.on('moveend', () => {
           this.clearFromClusterLayer('polygons');
-          this.showMapElements(this.polygonLayerGroup, this.polygonEnabled, true);
+          this.showLayersOnCluster(this.polygonLayerGroup, this.polygonEnabled, true);
         });
 
         this.mapIsSetup = true;
@@ -394,7 +394,7 @@ export default {
         return;
       }
 
-      this.showMapElements(elements, true, checkBounds);
+      this.showLayersOnCluster(elements, true, checkBounds);
     },
     focusOnLayers() {
       const pins = this.pinEnabled ? this.pinLayerGroup : [];
@@ -428,7 +428,7 @@ export default {
         toClear = [...this.polygonLayerGroup, ...this.pinLayerGroup, ...this.multiPinLayerGroup];
       }
 
-      this.showMapElements(toClear, false);
+      this.showLayersOnCluster(toClear, false);
     },
     clearLayersFromMap(specificClear) {
       let toClear = [];
@@ -450,7 +450,7 @@ export default {
         layer.remove();
       }
     },
-    showMapElements(elements, show, checkBounds) {
+    showLayersOnCluster(elements, show, checkBounds) {
       if (!elements) {
         return;
       }
@@ -510,11 +510,12 @@ export default {
         let layer = map.get(dataset.id);
 
         if (layer) {
-          this.showMapElements(layer, false);
+          this.showLayersOnCluster(layer, false);
+          this.map.removeLayer(layer);
 
           layer = this.createLeafletLayer(dataset, selected);
 
-          this.showMapElements(layer, true);
+          this.showLayersOnCluster(layer, true);
           map.set(dataset.id, layer);
         }
       }
