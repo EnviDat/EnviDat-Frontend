@@ -35,7 +35,6 @@
                 :highlighted="tag.active"
                 :closeable="!!tag.active"
                 :color="tag.color"
-                @clickedClose="catchTagCloseClicked(tag.name)"
                 @clicked="tag.active ? catchTagCloseClicked(tag.name) : catchTagClicked(tag.name)"
               />
             </v-col>

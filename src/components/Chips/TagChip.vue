@@ -8,8 +8,7 @@
     :style="{ height: $vuetify.display.xs ? '15px' : '' }"
     :color="highlighted ? 'primary' : color"
     :small="isSmall"
-    @click.stop="clicked"
-    @click:close="$emit('clickedClose', name)"
+    @click="clicked"
   >
     <BaseIcon
       v-if="isAccordion"
@@ -24,7 +23,6 @@
       class="ml-1"
       :color="highlighted ? 'white' : 'black'"
       :icon="mdiClose"
-      @click="$emit('clickedClose', name)"
       small
     />
   </v-chip>
