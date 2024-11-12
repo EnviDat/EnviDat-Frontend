@@ -31,7 +31,6 @@ export default {
   async viteFinal(config) {
     return mergeConfig(config, {
       optimizeDeps: {
-        include: ['storybook-dark-mode'],
       },
       server: {
         proxy: {
