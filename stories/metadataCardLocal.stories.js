@@ -12,45 +12,31 @@
 import MetadataCardLocal from '@/components/Cards/MetadataCardLocal.vue';
 
 import { enhanceMetadatasTitleImage } from '@/factories/metaDataFactory';
-import categoryCards from '@/store/categoryCards';
-import globalMethods from '@/factories/globalMethods';
+
 import { METADATA_STATE_DRAFT } from '@/factories/metadataConsts';
-import fileIcon from '../src/assets/icons/file.png';
 
 // metadata gets enhanced in the storybook config
 import metadataCards from './js/metadata';
 
-const cardBGImages = globalMethods.methods.mixinMethods_getCardBackgrounds();
-
-enhanceMetadatasTitleImage(metadataCards, cardBGImages, categoryCards);
+enhanceMetadatasTitleImage(metadataCards);
 
 export default {
   title: '3 Cards / Metadata Cards',
-  decorators: [],
-  parameters: {},
+  component: MetadataCardLocal,
 };
-
-const Template = (args, { argTypes }) => ({
-  components: { MetadataCardLocal },
-  props: Object.keys(argTypes),
-  template: '<MetadataCardLocal v-bind="$props" />',
-});
 
 const firstDataset = metadataCards[0];
 
-/*
-export const LocalCardNoTitle = Template.bind({});
-*/
+export const LocalCardNoTitle = {};
 
-
-export const LocalCard = Template.bind({});
-LocalCard.args = {
-  id: firstDataset.id,
-  title: firstDataset.title,
-  fileIconString: fileIcon,
-  categoryColor: firstDataset.categoryColor,
-  name: firstDataset.name,
-  subtitle: firstDataset.notes,
-  state: METADATA_STATE_DRAFT,
-}
+export const LocalCard = {
+  args: {
+    id: firstDataset.id,
+    title: firstDataset.title,
+    categoryColor: firstDataset.categoryColor,
+    name: firstDataset.name,
+    subtitle: firstDataset.notes,
+    state: METADATA_STATE_DRAFT,
+  },
+};
 

@@ -1,3 +1,5 @@
+import { defineAsyncComponent } from 'vue';
+import { mdiFileEye, mdiPencil } from '@mdi/js';
 import { METADATA_DEPRECATEDRESOURCES_PROPERTY } from '@/factories/metadataConsts';
 import {
   OPEN_DATA_PREVIEW_IFRAME,
@@ -7,9 +9,10 @@ import {
   SELECT_EDITING_RESOURCE,
 } from './eventBus';
 
-const DataPreviewIframe = () => import('@/modules/metadata/components/ResourcePreviews/DataPreviewIframe.vue');
-const ImagePreviewCard = () => import('@/modules/metadata/components/ResourcePreviews/ImagePreviewCard.vue');
-const TextPreviewCard = () => import('@/modules/metadata/components/ResourcePreviews/TextPreviewCard.vue');
+const DataPreviewIframe = defineAsyncComponent(() => import('@/modules/metadata/components/ResourcePreviews/DataPreviewIframe.vue'));
+const ImagePreviewCard = defineAsyncComponent(() => import('@/modules/metadata/components/ResourcePreviews/ImagePreviewCard.vue'));
+const TextPreviewCard = defineAsyncComponent(() => import('@/modules/metadata/components/ResourcePreviews/TextPreviewCard.vue'));
+
 
 export const localIdProperty = 'localId';
 
@@ -24,39 +27,39 @@ export const clickStrategies = [
     strategyKeys: ['txt', 'md'],
     component: TextPreviewCard,
     openEvent: OPEN_TEXT_PREVIEW,
-    icon: 'preview',
+    icon: mdiFileEye,
     tooltip: 'Click for a preview of this resource',
   },
   {
     strategyKeys: ['jpg', 'png', 'jpeg'],
     component: ImagePreviewCard,
     openEvent: OPEN_TEXT_PREVIEW,
-    icon: 'preview',
+    icon: mdiFileEye,
     tooltip: 'Click for a preview of this image',
   },
   {
     strategyKeys: [SELECT_EDITING_RESOURCE_PROPERTY],
     openEvent: SELECT_EDITING_RESOURCE,
-    icon: 'edit',
+    icon: mdiPencil,
     tooltip: 'Click to select this resource for editing',
   },
   {
     strategyKeys: [SELECT_EDITING_AUTHOR_PROPERTY],
     openEvent: SELECT_EDITING_AUTHOR,
-    icon: 'edit',
+    icon: mdiPencil,
     tooltip: 'Click to select this author for editing',
   },
   {
     strategyKeys: [SELECT_EDITING_DATASET_PROPERTY],
     openEvent: SELECT_EDITING_DATASET,
-    icon: 'edit',
+    icon: mdiPencil,
     tooltip: 'Click to edit this dataset',
   },
   {
     strategyKeys: [SHOW_DATA_PREVIEW_PROPERTY],
     component: DataPreviewIframe,
     openEvent: OPEN_DATA_PREVIEW_IFRAME,
-    icon: 'preview',
+    icon: mdiFileEye,
     tooltip: 'Click for a preview of this resource',
   },
 ];

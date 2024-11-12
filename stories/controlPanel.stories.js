@@ -19,7 +19,6 @@ import {
   LISTCONTROL_LIST_ACTIVE,
   LISTCONTROL_MAP_ACTIVE,
 } from '@/store/metadataMutationsConsts';
-// import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue'
 import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
 
@@ -29,127 +28,33 @@ export default {
   component: ControlPanel,
 };
 
-/*
-export const BaseIconSwitches = () => ({
-  components: { BaseIconSwitch },
-  template: `
-  <v-row>
-    <v-col cols="12">
-      BaseIconSwitch inactive
-    </v-col>
-
-    <v-col class="shrink">
-      <BaseIconSwitch :active="false"/>
-    </v-col>
-
-    <v-col cols="12">
-      BaseIconSwitch active
-    </v-col>
-
-    <v-col class="shrink">
-      <BaseIconSwitch :active="true"/>
-    </v-col>
-
-    <v-col cols="12">
-      BaseIconSwitch with lock icon
-    </v-col>
-
-    <v-col class="shrink">
-      <BaseIconSwitch :active="true"
-                      materialIconName="lock"
-                      tooltipText="access restricted" />
-    </v-col>
-
-    <v-col cols="12">
-      BaseIconSwitch with lock open icon
-    </v-col>
-
-    <v-col class="shrink">
-      <BaseIconSwitch materialIconName="lock_open"
-                      tooltipText="access public" />
-    </v-col>
-    
-    <v-col cols="12">
-      BaseIconSwitch active clickable
-    </v-col>
-
-    <v-col class="shrink">
-      <BaseIconSwitch :active="!active"
-                      materialIconName="account_circle"
-                      tooltipText="Author search tool tip"
-                      @clicked="active = !active"/>
-    </v-col>
-
-    <v-col cols="12">
-      BaseIconSwitch active clickable
-    </v-col>
-
-    <v-col class="shrink">
-      <BaseIconSwitch :active="active2"
-                      materialIconName="account_circle"
-                      tooltipText="Author search tool tip"
-                      @clicked="active2 = !active2"/>
-    </v-col>
-    
-    <v-col cols="12">
-      BaseIconSwitch active clickable
-    </v-col>
-
-    <v-col class="shrink">
-      <BaseIconSwitch :active="active"
-                      materialIconName="info"
-                      tooltipText="notification tool tip"
-                      @clicked="active2 = !active2"/>
-    </v-col>
-
-    <v-col cols="12">
-      BaseIconSwitch active clickable
-    </v-col>
-    
-    <v-col class="shrink">
-      <BaseIconSwitch :active="active2"
-                      materialIconName="layers"
-                      tooltipText="Type of dataset tool tip"
-                      @clicked="active2 = !active2"/>
-    </v-col>
-
-  </v-row>
-  `,
-  data: () => ({
-    active: false,
-    active2: false,
-  }),
-})
-*/
-
-/*
-const Template = (args, { argTypes }) => ({
-  components: { ControlPanel },
-  props: Object.keys(argTypes),
-  template: '<ControlPanel v-bind="$props" />',
-});
-*/
 
 const Template2 = (args, { argTypes }) => ({
   components: { ControlPanel },
   props: Object.keys(argTypes),
   template: `
+  <v-container fluid>
   <v-row>
-    <v-col cols="12">
+    <v-col >
         compact layout disabled
-    </v-col>  
-    <v-col cols="12">
+    </v-col>
+  </v-row>
+  <v-row>     
+    <v-col >
         <ControlPanel v-bind="$props" />
     </v-col>
-
-    <v-col cols="12">
+  </v-row>
+  <v-row>
+    <v-col >
         compact layout enabled
     </v-col>
-    
-    <v-col cols="12">
+  </v-row>
+  <v-row>
+    <v-col >
         <ControlPanel v-bind="$props" compact-layout />
     </v-col>    
   </v-row>
+  </v-container>
 `,
 });
 
@@ -207,6 +112,7 @@ const enabledControls = [
   LISTCONTROL_MAP_ACTIVE,
   LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
 ];
+
 const controlsActive = [LISTCONTROL_COMPACT_LAYOUT_ACTIVE];
 
 export const PrefilledSearchWithControls = Template2.bind({});
@@ -219,6 +125,7 @@ PrefilledSearchWithControls.args = {
 export const PrefilledSearchWithActiveControls = Template2.bind({});
 PrefilledSearchWithActiveControls.args = {
   ...PrefilledSearchWithControls.args,
+  enabledControls,
   controlsActive,
 }
 

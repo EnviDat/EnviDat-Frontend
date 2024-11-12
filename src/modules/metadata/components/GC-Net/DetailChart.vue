@@ -2,7 +2,7 @@
   <v-card>
     <v-container class="pa-4" fluid>
       <v-row no-gutters justify="space-between">
-        <v-col :class="$vuetify.breakpoint.xsOnly ? 'title' : 'text-h4'">
+        <v-col :class="$vuetify.display.xs ? 'title' : 'text-h4'">
           {{ fileObject.chartTitle }}
         </v-col>
         <v-col class="text-h6 text-right">
@@ -13,10 +13,10 @@
       <v-row no-gutters>
         <v-col
           v-if="chartIsLoading && preloading"
-          :style="`height: ${$vuetify.breakpoint.xsOnly ? 300 : 350}px;`"
+          :style="`height: ${$vuetify.display.xs ? 300 : 350}px;`"
         >
           <v-row class="fill-height" justify="center" align="center">
-            <v-col class="shrink">
+            <v-col class="flex-grow-0">
               <v-progress-circular :size="50" color="primary" indeterminate />
             </v-col>
           </v-row>
@@ -40,19 +40,19 @@
 
         <v-col
           v-if="!preloading"
-          :style="`height: ${$vuetify.breakpoint.xsOnly ? 300 : 350}px;`"
+          :style="`height: ${$vuetify.display.xs ? 300 : 350}px;`"
         >
           <!-- <v-row class="fill-height" column
                     justify="center" align="center"> -->
           <v-row class="fill-height" justify="center" align="center">
-            <v-col class="shrink">
+            <v-col class="flex-grow-0">
               Historical datasets can be very large and take a while to load,
               therefore aren't loaded by default.
             </v-col>
-            <v-col class="shrink pt-3">
+            <v-col class="flex-grow-0 pt-3">
               <BaseRectangleButton
                 buttonText="Load historical data"
-                materialIconName="refresh"
+                :icon="mdiRefresh"
                 @clicked="
                   preloading = true;
                   intersected = true;
@@ -76,7 +76,7 @@
         <v-col v-show="showChart">
           <div
             :id="chartId"
-            :style="`height: ${$vuetify.breakpoint.xsOnly ? 300 : 350}px;`"
+            :style="`height: ${$vuetify.display.xs ? 300 : 350}px;`"
           ></div>
         </v-col>
       </v-row>
@@ -94,6 +94,7 @@ import {
   defaultSeriesSettings,
   hasData,
 } from '@/factories/chartFactory';
+import { mdiRefresh } from '@mdi/js';
 
 /* eslint-disable no-tabs */
 
@@ -166,8 +167,8 @@ export default {
       this.registeryIntersectionObserver();
     }
   },
-  beforeDestroy() {
-    // console.log('DetailChart: beforeDestroy method ' + this.chartId);
+  beforeUnmount() {
+    // console.log('DetailChart: beforeUnmount method ' + this.chartId);
     this.clearChart();
   },
   computed: {
@@ -219,16 +220,23 @@ export default {
 
       // 2 weeks for the recent data, 2 years for historical
       let dayRange = this.isRecentDataChart ? 14 : 730;
-      if (this.isRecentDataChart && fallback) {
-        // use a 1.5 month for recent data as fallback
-        dayRange = 45;
+
+      if (this.isRecentDataChart) {
+        if (fallback) {
+          // use a 1.5 month for recent data as fallback
+          dayRange = 45;
+        }
+
+        urlParam = addStartEndDateUrl(
+          urlParam,
+          dayRange,
+          undefined,
+        );
+
+      } else {
+        urlParam = `${urlParam}/1995-01-01T00:00:00/2021-12-31T00:00:00/`;
       }
 
-      urlParam = addStartEndDateUrl(
-        urlParam,
-        dayRange,
-        this.isRecentDataChart ? undefined : this.historicalEndDate,
-      );
 
       axios
         .get(urlParam)
@@ -272,8 +280,8 @@ export default {
       //   inputFormat: 'x',
       // };
 
-      // this.$vuetify.breakpoint.smAndDown ? this.seriesSettings.lineStrokeWidth = 4 : this.seriesSettings.lineStrokeWidth = 3;
-      this.seriesSettings.showLegend = this.$vuetify.breakpoint.smAndUp;
+      // this.$vuetify.display.smAndDown ? this.seriesSettings.lineStrokeWidth = 4 : this.seriesSettings.lineStrokeWidth = 3;
+      this.seriesSettings.showLegend = this.$vuetify.display.smAndUp;
       this.seriesSettings.numberFormat = this.fileObject.seriesNumberFormat
         ? this.fileObject.seriesNumberFormat
         : this.seriesSettings.numberFormat;
@@ -348,6 +356,7 @@ export default {
   },
   data() {
     return {
+      mdiRefresh,
       dateFormat: 'MMM dd, YYYY HH:mm UTC',
       dateFormatNoTime: 'MMM dd, YYYY',
       detailChart: null,

@@ -84,13 +84,15 @@ deprecatedResources[2].deprecated = true;
 
 export default {
   title: '9 Editing Metadata / Resource Views',
-  decorators: [],
-  parameters: {},
+  component: EditResource,
 };
 
 const userEditMetadataConfig = {
   editingRestrictingActive: true,
 };
+
+export const Default = {}
+
 
 export const EditResourceViews = () => ({
   components: { EditResource },
@@ -98,23 +100,11 @@ export const EditResourceViews = () => ({
     <v-container>
 
 
-      <h1>EditResource empty and with resource1</h1>
-
       <v-row class="py-3" >
-        <v-col cols="12" lg="6" xl="4">
-          <EditResource  />
-        </v-col>
-
         <v-col cols="12" lg="6" xl="4">
           <EditResource v-bind="resource1" />
         </v-col>
 
-      </v-row>
-
-
-      <h1 class="mt-5">EditResource with resource2 & resource3</h1>
-
-      <v-row class="py-3" >
 
         <v-col cols="12" lg="6" xl="4">
           <EditResource v-bind="resource2" />
@@ -123,12 +113,6 @@ export const EditResourceViews = () => ({
         <v-col cols="12" lg="6" xl="4">
           <EditResource v-bind="resource3" />
         </v-col>
-      </v-row>
-
-
-      <h1 class="mt-5">EditResource with resource4</h1>
-
-      <v-row class="py-3" >
 
         <v-col cols="12" lg="6" xl="4">
           <EditResource v-bind="resource4" />
@@ -151,7 +135,7 @@ export const EditResourceViews = () => ({
   created() {
     eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
   },
   methods: {
@@ -238,7 +222,7 @@ export const EditResourcesList = () => ({
   created() {
     eventBus.on(SELECT_EDITING_RESOURCE, this.selectResource);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(SELECT_EDITING_RESOURCE, this.selectResource);
   },
   methods: {
@@ -315,7 +299,7 @@ export const EditDataAndResourcesListViews = () => ({
     eventBus.on(SELECT_EDITING_RESOURCE, this.selectResource);
     eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(SAVE_EDITING_RESOURCE, this.saveResource);
     eventBus.off(CANCEL_EDITING_RESOURCE, this.cancelEditing);
     eventBus.off(SELECT_EDITING_RESOURCE, this.selectResource);

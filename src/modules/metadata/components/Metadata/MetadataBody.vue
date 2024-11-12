@@ -1,9 +1,9 @@
 <template id="MetadataBody">
   <expandable-text-layout
     :title="METADATA_BODY_TITLE"
-    :text="body ? body.text : undefined"
+    :text="text"
     :showPlaceholder="showPlaceholder"
-    :maxTextLength="body ? body.maxTextLength : undefined"
+    :maxTextLength="maxTextLength"
     :emptyTextColor="emptyTextColor"
     :emptyText="emptyText"
   />
@@ -32,22 +32,28 @@ export default {
     ExpandableTextLayout,
   },
   props: {
-    genericProps: Object,
-    showPlaceholder: Boolean,
+    text: {
+      type: String,
+      default: undefined,
+    },
+    maxTextLength: {
+      type: Number,
+      default: undefined,
+    },
+    emptyTextColor: {
+      type: String,
+      default: 'red',
+    },
+    emptyText: {
+      type: String,
+      default: 'No description found for this dataset.',
+    },
+    showPlaceholder: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
-    body() {
-      return this.mixinMethods_getGenericProp('body');
-    },
-    emptyTextColor() {
-      return this.mixinMethods_getGenericProp('emptyTextColor', 'red');
-    },
-    emptyText() {
-      return this.mixinMethods_getGenericProp(
-        'emptyText',
-        'No description found for this dataset.',
-      );
-    },
   },
   methods: {},
   data: () => ({

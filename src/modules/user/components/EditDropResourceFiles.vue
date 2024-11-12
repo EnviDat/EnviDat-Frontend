@@ -47,20 +47,20 @@
       <v-row class="px-5">
         <v-col v-for="(state, index) in states"
                 :key="index"
-               :class="index >= states.length - 1 ? 'shrink' : ''"
+               :class="index >= states.length - 1 ? 'flex-grow-0' : ''"
                >
           <v-row style="align-items: center;">
-            <v-col class="shrink">
-              <v-chip :color="getStateColor(state)" small>
-                {{ state.name }}
-              </v-chip>
+            <v-col class="flex-grow-0">
+              <TagChip :color="getStateColor(state)"
+                       :isSmall="true"
+                        :name="state.name" />
             </v-col>
 
             <v-col v-if="index < states.length - 1"
                    class="pa-0" >
-              <v-progress-linear :color="getIndicatorColor(state)"
+              <v-progress-linear :color="getStateColor(state)"
                                  :indeterminate="getIndicatorLoading(state)"
-                                 :value="getIndicatorValue(state)"
+                                 :model-value="getIndicatorValue(state)"
               />
               </v-col>
           </v-row>
@@ -108,6 +108,8 @@ import {
   UPLOAD_STATE_UPLOAD_STARTED,
 } from '@/factories/eventBus';
 
+import TagChip from '@/components/Chips/TagChip.vue';
+
 
 export default {
   name: 'EditDropResourceFiles',
@@ -130,7 +132,7 @@ export default {
   mounted() {
     this.resetState();
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(UPLOAD_STATE_RESET, this.resetState);
     eventBus.off(UPLOAD_STATE_RESOURCE_CREATED, this.changeState);
     eventBus.off(UPLOAD_STATE_UPLOAD_STARTED, this.changeState);
@@ -149,24 +151,15 @@ export default {
   },
   methods: {
     getStateColor(state) {
-      const index = this.states.findIndex(((s) => s.id === state?.id));
-      const currentIndex = this.states.findIndex(((s) => s.id === this.currentState?.id));
 
-      if (currentIndex >= index) {
-        return 'primary';
+      if (!this.currentState) {
+        return 'grey-lighten-2';
       }
 
-      return 'gray';
-    },
-    getIndicatorColor(state) {
-      const index = this.states.findIndex(((s) => s.id === state?.id));
-      const currentIndex = this.states.findIndex(((s) => s.id === this.currentState?.id));
+      const index = this.states.findIndex(s => s.id === state?.id);
+      const currentIndex = this.states.findIndex(s => s.id === this.currentState?.id);
 
-      if (currentIndex >= index) {
-        return 'primary';
-      }
-
-      return 'grey';
+      return currentIndex >= index ? 'primary' : 'grey-lighten-2';
     },
     getIndicatorLoading(state) {
       const index = this.states.findIndex(((s) => s.id === state?.id));
@@ -245,6 +238,7 @@ export default {
   components: {
     DragDrop,
     StatusBar,
+    TagChip,
   },
 };
 </script>

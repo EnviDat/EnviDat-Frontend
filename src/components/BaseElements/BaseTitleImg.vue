@@ -34,10 +34,10 @@
       <div
         class="envidatTitle"
         :class="{
-          'black--text': dark,
-          'white--text': !dark,
-          'display-3': $vuetify.breakpoint.mdAndUp,
-          'text-h4': $vuetify.breakpoint.smAndDown,
+          'text-black': dark,
+          'text-white': !dark,
+          'display-3': $vuetify.display.mdAndUp,
+          'text-h4': $vuetify.display.smAndDown,
         }"
       >
         <span
@@ -53,10 +53,10 @@
       <div
         class="envidatTitle"
         :class="{
-          'black--text': dark,
-          'white--text': !dark,
-          headline: $vuetify.breakpoint.mdAndUp,
-          'subtitle-1': $vuetify.breakpoint.smAndDown,
+          'text-black': dark,
+          'text-white': !dark,
+          headline: $vuetify.display.mdAndUp,
+          'subtitle-1': $vuetify.display.smAndDown,
         }"
       >
         <span

@@ -1,5 +1,6 @@
 <template>
   <v-card id="EditFunding" class="pa-0" max-width="100%" :loading="loading">
+
     <v-container fluid class="pa-4">
       <template slot="progress">
         <v-progress-linear color="primary" indeterminate />
@@ -12,18 +13,18 @@
 
         <v-col v-if="message">
           <BaseStatusLabelView
-            statusIcon="check"
-            statusColor="success"
-            :statusText="message"
-            :expandedText="messageDetails"
+              status="check"
+              statusColor="success"
+              :statusText="message"
+              :expandedText="messageDetails"
           />
         </v-col>
         <v-col v-if="error">
           <BaseStatusLabelView
-            statusIcon="error"
-            statusColor="error"
-            :statusText="error"
-            :expandedText="errorDetails"
+              status="error"
+              statusColor="error"
+              :statusText="error"
+              :expandedText="errorDetails"
           />
         </v-col>
       </v-row>
@@ -33,60 +34,53 @@
           <div class="text-subtitle-1">{{ labels.fundingInformation }}</div>
         </v-col>
       </v-row>
+
       <v-card flat max-height="350px" max-width="1200px" class="overflow-auto">
         <v-row
           v-for="(item, index) in previewFundersAndEmpty"
           :key="`${item}_${index}`"
-          :class="index === 0 ? 'pt-2' : 'py-0'"
+          :class="index === 0 ? 'mt-2' : 'py-0'"
           no-gutters
         >
           <v-col cols="4" class="pr-2">
             <v-text-field
               :label="labels.institution"
-              outlined
-              dense
-              :readonly="mixinMethods_isFieldReadOnly(INSTITUTION)"
-              :hint="mixinMethods_readOnlyHint(INSTITUTION)"
-              :value="item.institution"
+              :readonly="isFieldReadOnly(INSTITUTION)"
+              :hint="readOnlyHint(INSTITUTION)"
+              :model-value="item.institution"
               :error-messages="getValidationErrorMessage(INSTITUTION, index)"
               @keyup="onKeyUp"
-              @change="onChange(index, INSTITUTION, $event)"
+              @change="onChange(index, INSTITUTION, $event.target.value)"
             />
           </v-col>
 
           <v-col cols="3" class="px-2">
             <v-text-field
               :label="labels.grantNumber"
-              outlined
-              dense
-              :readonly="mixinMethods_isFieldReadOnly(GRANTNUMBER)"
-              :hint="mixinMethods_readOnlyHint(GRANTNUMBER)"
-              :value="item.grantNumber"
+              :readonly="isFieldReadOnly(GRANTNUMBER)"
+              :hint="readOnlyHint(GRANTNUMBER)"
+              :model-value="item.grantNumber"
               :error-messages="getValidationErrorMessage(GRANTNUMBER, index)"
               @keyup="onKeyUp"
-              @change="onChange(index, GRANTNUMBER, $event)"
+              @change="onChange(index, GRANTNUMBER, $event.target.value)"
             />
           </v-col>
 
-          <v-col class="grow pl-2">
+          <v-col class="flex-grow-1 pl-2">
             <v-text-field
               :label="labels.institutionUrl"
-              outlined
-              dense
-              :readonly="mixinMethods_isFieldReadOnly(INSTITUTION_URL)"
-              :hint="mixinMethods_readOnlyHint(INSTITUTION_URL)"
-              :value="item.institutionUrl"
-              :error-messages="
-                getValidationErrorMessage(INSTITUTION_URL, index)
-              "
+              :readonly="isFieldReadOnly(INSTITUTION_URL)"
+              :hint="readOnlyHint(INSTITUTION_URL)"
+              :model-value="item.institutionUrl"
+              :error-messages="getValidationErrorMessage(INSTITUTION_URL, index)"
               @keyup="onKeyUp"
-              @change="onChange(index, INSTITUTION_URL, $event)"
+              @change="onChange(index, INSTITUTION_URL, $event.target.value)"
             />
           </v-col>
 
-          <v-col class="shrink px-1">
+          <v-col class="flex-grow-0 px-1">
             <BaseIconButton
-              material-icon-name="remove_circle_outline"
+              :icon="mdiMinusCircleOutline"
               icon-color="red"
               :disabled="index >= previewFundersAndEmpty.length - 1"
               @clicked="deleteFundersEntry(index)"
@@ -98,7 +92,7 @@
       <v-row v-if="validationErrors.fundersArray" no-gutters>
         <v-col cols="12">
           <div class="text-subtitle-2">
-            <span class="red--text">{{ validationErrors.fundersArray }}</span>
+            <span class="text-red">{{ validationErrors.fundersArray }}</span>
           </div>
         </v-col>
       </v-row>
@@ -110,14 +104,13 @@
 /**
  * @summary Shows Funding Information
  * @author Dominik Haas-Artho
- * Created        : 2023-01-17
- * Last modified  : 2023-01-17 16:53:36
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
 import {
   EDITMETADATA_OBJECT_UPDATE,
@@ -130,6 +123,9 @@ import {
   isArrayContentValid,
   isFieldValid,
 } from '@/factories/userEditingValidations';
+
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+import { mdiMinusCircleOutline } from '@mdi/js';
 
 const INSTITUTION = 'institution';
 const GRANTNUMBER = 'grantNumber';
@@ -171,11 +167,44 @@ export default {
       default: '',
     },
   },
+  beforeUnmount() {
+    // Validate all entries to ensure validationErrors are up to date
+    this.validate();
+
+    // Check if there are any validation errors
+    const hasErrors = this.validationErrors.funders.some(errors =>
+      Object.values(errors).some(error => error),
+    );
+
+    if (hasErrors) {
+      // There are validation errors: restore previewFunders to previous valid state
+      this.previewFunders = JSON.parse(JSON.stringify(this.prevValidPreviewFunders));
+      console.log('Data not saved due to validation errors. State restored to previous valid values.');
+    } else {
+      // No validation errors: update prevValidPreviewFunders and save data
+      this.prevValidPreviewFunders = JSON.parse(JSON.stringify(this.previewFunders));
+      this.setFundersInfo('funders', this.previewFunders);
+    }
+  },
+  mounted() {
+    this.previewFunders = JSON.parse(JSON.stringify(this.funders));
+    this.prevValidPreviewFunders = JSON.parse(JSON.stringify(this.previewFunders));
+
+
+    if (this.funders.length > 0) {
+      for (let i = 0; i < this.funders.length; i++) {
+        this.validate(i, INSTITUTION);
+        this.validate(i, GRANTNUMBER);
+        this.validate(i, INSTITUTION_URL);
+      }
+    }
+  },
   watch: {
     funders: {
       immediate: true,
       handler(newData) {
-        this.previewFunders = [...newData] ?? [];
+        this.previewFunders = JSON.parse(JSON.stringify(newData));
+        this.prevValidPreviewFunders = JSON.parse(JSON.stringify(newData));
       },
     },
   },
@@ -198,6 +227,7 @@ export default {
     },
   },
   methods: {
+    isFieldReadOnly,
     setFundersInfo(property, value) {
       const newPublicationInfo = {
         ...this.$props,
@@ -269,15 +299,33 @@ export default {
       if (isObjectEmpty(entry)) {
         // Remove entry since it's empty
         this.deleteFundersEntry(index);
-      } else if (this.validate(index, property) && this.validate()) {
+      }
+
+      // Validate the entry and update validation errors
+      this.validate(index, property);
+
+      // Validate the entire array
+      const isValid = this.validate();
+
+      if (isValid) {
+        // Data is valid: update prevValidPreviewFunders
+        this.prevValidPreviewFunders = JSON.parse(JSON.stringify(this.previewFunders));
+        // Save the data
         this.setFundersInfo('funders', this.previewFunders);
       }
     },
     getValidationErrorMessage(property, index) {
       return this.validationErrors?.funders[index]?.[property] || '';
     },
+    isReadOnly(dateProperty) {
+      return isFieldReadOnly(this.$props, dateProperty);
+    },
+    readOnlyHint(dateProperty) {
+      return readOnlyHint(this.$props, dateProperty);
+    },
   },
   data: () => ({
+    mdiMinusCircleOutline,
     INSTITUTION,
     GRANTNUMBER,
     INSTITUTION_URL,
@@ -287,6 +335,7 @@ export default {
       institutionUrl: '',
     },
     previewFunders: [],
+    prevValidPreviewFunders: [],
     labels: {
       cardTitle: 'Funding Information',
       fundingInformation:
@@ -309,6 +358,7 @@ export default {
   }),
   components: {
     BaseStatusLabelView,
+    BaseIconButton,
   },
 };
 </script>

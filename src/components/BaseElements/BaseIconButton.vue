@@ -1,108 +1,58 @@
 <template>
-  <div
-    :style="`height: ${height}px; `"
-    @mouseover="hoverBadge = true"
-    @mouseleave="hoverBadge = false"
-  >
-    <v-tooltip
-      v-if="$vuetify.breakpoint.mdAndUp && tooltipText"
-      v-bind="{ top: !tooltipBottom, bottom: tooltipBottom }"
-    >
-      <template v-slot:activator="{ on }">
+  <div class="baseIconButton">
+    <v-tooltip v-if="tooltipText"  :location="getLocation" :text="tooltipText">
+      <template v-slot:activator="{ props }">
         <v-btn
-          v-on="on"
-          :style="{
-            height: `${height}px`,
-            width: `${height}px`,
-            backgroundColor: fillColor ? fillColor : '',
-          }"
-          style="margin: 0 !important;"
-          :icon="!isElevated"
-          :fab="isElevated"
-          :small="(isSmall || isElevated) && !(isSmall && isElevated)"
-          :x-small="isSmall && isElevated"
-          :outlined="outlined"
-          :color="color ? color : disabled ? '' : 'primary'"
-          :href="url"
-          :disabled="disabled"
-          :class="buttonClass"
-          v-bind="{ ['target']: '_blank' }"
-          @click.stop="onClick"
-        >
-          <div v-if="customIcon">
-            <img
-              class="envidatIcon"
-              :alt="`${customIcon} icon`"
-              :src="customIcon"
-            />
-          </div>
-
-          <v-icon
-            v-if="materialIconName"
-            :color="iconColor ? iconColor : 'primary'"
-            :style="
-              rotateOnClick && rotateToggle ? 'transform: rotate(-180deg);' : ''
-            "
+            v-bind="props"
+            class="iconButton ma-0 pa-0"
+            :class="buttonClass"
+            :style="buttonStyle"
+            :elevation="elevated ? 5 : undefined"
+            icon
+            :variant="outlined ? 'outlined' : disabled ? 'text' : 'flat'"
+            density="comfortable"
+            :size="large ? 'large' : small ? 'small' : undefined"
+            :color="computedColor"
+            :href="url"
+            :disabled="disabled"
+            @click.stop="onClick"
           >
-            {{ materialIconName }}
-          </v-icon>
-
-          <slot v-else> </slot>
-        </v-btn>
+            <base-icon
+              :icon="icon"
+              :large="large"
+              :rotated="rotated"
+              :color="computedIconColor"
+              :small="small"
+              :count="count">
+            </base-icon>
+          </v-btn>
       </template>
-
-      <span>{{ tooltipText }}</span>
     </v-tooltip>
 
-    <v-btn
-      v-else
-      :style="{ backgroundColor: fillColor ? fillColor : '' }"
-      style="margin: 0 !important;"
-      :icon="!isElevated"
-      :fab="isElevated"
-      :small="isSmall || isElevated"
-      :outlined="outlined"
-      :color="color ? color : disabled ? '' : 'primary'"
+    <v-btn v-else
+      class="iconButton ma-0 pa-0"
+      :class="buttonClass"
+      :style="buttonStyle"
+      :elevation="elevated ? 5 : undefined"
+      icon
+      :variant="outlined ? 'outlined' : disabled ? 'text' : 'flat'"
+      density="comfortable"
+      :size="large ? 'large' : small ? 'small' : undefined"
+      :color="computedColor"
       :href="url"
       :disabled="disabled"
-      :class="buttonClass"
-      v-bind="{ ['target']: '_blank' }"
       @click.stop="onClick"
     >
-      <div v-if="customIcon" class="iconCentering">
-        <img
-          class="envidatIcon"
-          :alt="`${customIcon} icon`"
-          :src="customIcon"
-        />
-      </div>
-
-      <v-icon
-        v-if="materialIconName"
-        :color="iconColor ? iconColor : 'primary'"
-        :style="
-          rotateOnClick && rotateToggle ? 'transform: rotate(-180deg);' : ''
-        "
-      >
-        {{ materialIconName }}
-      </v-icon>
-
-      <slot v-else> </slot>
+      <base-icon
+        :icon="icon"
+        :large="large"
+        :rotated="rotated"
+        :color="computedIconColor"
+        :small="small"
+        :count="count">
+      </base-icon>
     </v-btn>
 
-    <v-badge
-      v-if="count > 0"
-      :overlap="!isSmall"
-      :left="isSmall"
-      :style="isSmall ? 'position: relative; bottom: 10px;' : ''"
-      color="highlight"
-      :class="{ envidatBadgeBigNumber: count > 9, envidatBadge: count <= 9 }"
-      @click.stop="onClick"
-    >
-      <span slot="badge" class="black--text">
-        {{ count }}
-      </span>
-    </v-badge>
   </div>
 </template>
 
@@ -135,91 +85,101 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import BaseIcon from './BaseIcon.vue';
+
 export default {
   name: 'BaseIconButton',
+  components: { BaseIcon },
   props: {
-    fillColor: String,
-    customIcon: String,
-    materialIconName: String,
-    tooltipText: String,
-    tooltipBottom: Boolean,
-    color: String,
-    iconColor: String,
-    outlined: Boolean,
-    isSmall: Boolean,
-    rotateOnClick: Boolean,
-    rotateToggle: Boolean,
-    url: String,
-    isElevated: Boolean,
-    disabled: Boolean,
-    count: Number,
-    overwriteHeight: Number,
-    isFancy:Boolean,
-    isGlowing:Boolean,
+    color: { type: String, default: undefined },
+    outlineColor: { type: String, default: undefined },
+    tooltipText: { type: String, default: undefined }, // TODO: Either add a tooltip or remove this prop
+    tooltipBottom: { type: Boolean, default: false }, // TODO: Either add a tooltip or remove this prop
+    icon: { type: String, default: undefined, required: true },
+    iconColor: { type: String, default: undefined },
+    rotated: { type: Boolean, default: false },
+    url: { type: String, default: undefined },
+    elevated: { type: Boolean, default: false },
+    small: { type: Boolean, default: false },
+    large: { type: Boolean, default: false },
+    count: { type: Number, default: undefined },
+    outlined: { type: Boolean, default: false },
+    fancy: { type: Boolean, default: false },
+    glowing: { type: Boolean, default: false },
+    disabled: { type: Boolean, default: false },
   },
-  data: () => ({
-    hoverBadge: false,
-  }),
   computed: {
-    height() {
-      if (this.overwriteHeight) {
-        return this.overwriteHeight;
+    computedColor() {
+      // Vuetify only colors the outline when the "outlined" variant is chosen
+      // Because this component can change the background color even when in "outlined mode" a switch is needed
+      if(this.outlined) {
+        return this.outlineColor ?? this.iconColor ?? 'primary';
       }
 
-      let height = 36;
-
-      if (this.isSmall) {
-        height = 28;
-      } else if (this.isElevated) {
-        height = 40;
+      if (this.disabled) {
+        return this.color ?? 'gray';
       }
 
-      return height;
+      return this.color ?? 'transparent';
+    },
+    getLocation() {
+      return this.tooltipBottom ? 'bottom' : 'top'
+    },
+    computedIconColor() {
+      if (this.disabled) {
+        return 'gray';
+      }
+
+      return this.iconColor;
+    },
+    buttonStyle() {
+      if (!this.outlined) {
+        return undefined;
+      }
+
+      const isNamedColor = !(this.color?.includes('#') || this.color?.includes('('))
+      const bgColorStyle = isNamedColor ? `rgb(var(--v-theme-${this.color})) !important` : this.color;
+      return {
+        'background-color': this.color ? bgColorStyle : 'none !important',
+      };
     },
     buttonClass() {
-      let classes = this.isFancy ? 'fancyButton' : '';
-
-      classes += this.isGlowing ? ' glowingButton' : '';
-
-      return classes;
+      return {
+        fancyButton: this.fancy,
+        glowingButton: this.glowing,
+      }
     },
   },
   methods: {
-    onClick() {
-      this.$emit('clicked');
-    },
+    onClick() { this.$emit('clicked'); },
   },
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .fancyButton {
   background-color: #00BFAD;
   background-image:
-    linear-gradient(
-      to right bottom,
+    linear-gradient(to right bottom,
       #E2F27C,
-      #00BFAD
-    );
+      #00BFAD);
 }
 
 .fancyButton:hover {
   background-image:
-    linear-gradient(
-      to right bottom,
+    linear-gradient(to right bottom,
       #E2F27C 20%,
-      #00BFAD
-    );
+      #00BFAD);
 }
 
 .glowingButton {
-  animation-name: glow;
+  animation-name: glowing;
   animation-duration: 2.5s;
   animation-iteration-count: infinite;
 }
 
-@keyframes glow {
-  from {
+@keyframes glowing {
+  0% {
     box-shadow: 0 0 10px 0 yellow;
   }
 
@@ -227,9 +187,8 @@ export default {
     box-shadow: 0 0 10px 10px yellow;
   }
 
-  to {
+  100% {
     box-shadow: 0 0 10px 0 yellow;
   }
 }
-
 </style>

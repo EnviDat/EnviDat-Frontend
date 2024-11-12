@@ -10,30 +10,27 @@
  */
 
 import BaseClickCard from '@/components/BaseElements/BaseClickCard.vue';
-import globalMethods from '@/factories/globalMethods';
 import categoryCards from '@/store/categoryCards';
+
 import {
-  envidatViewportParameters,
   mobileLargeViewportParams,
   mobileViewportParams,
   tabletViewportParams,
 } from './js/envidatViewports';
 
-const jpgAssetPaths = require.context('@/assets/', true, /\.jpg$/)
-const jpgAssets = globalMethods.methods.mixinMethods_importImages(jpgAssetPaths);
-
-for (let i = 0; i < categoryCards.length; i++) {
-  const cardInfo = categoryCards[i];
-  const imageKey = `./${cardInfo.imgPath}.jpg`;
-
-  cardInfo.img = jpgAssets[imageKey];
-}
 
 export default {
   title: '3 Cards / Click Cards',
-  decorators: [],
-  parameters: {
-    ...envidatViewportParameters,
+  component: BaseClickCard,
+};
+
+const baseInfo = categoryCards[0];
+
+export const Basic = {
+  args: {
+    title: baseInfo.title,
+    img: baseInfo.imgPath,
+    color: baseInfo.color,
   },
 };
 
@@ -42,15 +39,17 @@ const Template = (args, { argTypes }) => ({
   props: Object.keys(argTypes),
   // template: '<AuthorCard v-bind="$props" />',
   template: `
-    <v-row>
+    <v-row >
       <v-col v-for="card in $props.categoryCards"
-             cols="12"
-             sm="6"
+             cols='12'
+             sm='6'
+             class='pa-2'
              :key="card.title">
-        
         <BaseClickCard :title="card.title"
-                       :img='card.img'
-                       :color='card.color' />
+                       :img='card.imgPath'
+                       :color='card.color'
+                       :contain='card.contain'
+        />
       </v-col>
     </v-row>
   `,

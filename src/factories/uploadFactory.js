@@ -14,7 +14,7 @@
 
 import Uppy from '@uppy/core';
 import axios from 'axios';
-import AwsS3Multipart from '@uppy/aws-s3-multipart';
+import awsS3 from '@uppy/aws-s3';
 
 import {
   METADATA_CREATION_RESOURCE,
@@ -134,6 +134,7 @@ export function createNewResourceForUrl(metadataId, url) {
 }
 
 export async function initiateMultipart(file) {
+  console.log('initiateMultipart', file);
 
   eventBus.emit(UPLOAD_STATE_RESET);
 
@@ -149,7 +150,8 @@ export async function initiateMultipart(file) {
   if (resourceId) {
     eventBus.emit(UPLOAD_STATE_RESOURCE_CREATED, { id: UPLOAD_STATE_RESOURCE_CREATED });
   } else {
-    eventBus.emit(UPLOAD_ERROR, { error: 'Resource creation failed' });
+    eventBus.emit(UPLOAD_ERROR, { error: 'Resource creation failed', metadataId });
+    return null;
   }
 
   const actionUrl = 'cloudstorage_initiate_multipart';
@@ -164,14 +166,14 @@ export async function initiateMultipart(file) {
   try {
     const res = await axios.post(url, payload);
 
-    // const fileId = res.data.result.id;
+    const uploadId = res.data.result.id;
     const key = res.data.result.name;
 
     storeReference?.commit(`${USER_NAMESPACE}/${METADATA_UPLOAD_FILE}`, key);
 
     return {
-      uploadId: res.data.result.id,
-      key: res.data.result.name,
+      uploadId,
+      key,
     };
   } catch (error) {
     console.error(`Multipart initiation failed: ${error}`);
@@ -181,30 +183,37 @@ export async function initiateMultipart(file) {
 
 export async function getSinglePresignedUrl(file) {
 
+  eventBus.emit(UPLOAD_STATE_RESET);
+
   const metadataId = storeReference?.getters[`${USER_NAMESPACE}/uploadMetadataId`];
+  const newResource = createNewResourceForFileUpload(metadataId, file);
 
-  await storeReference?.dispatch(
-    `${USER_NAMESPACE}/${METADATA_CREATION_RESOURCE}`,
-    {
-      metadataId,
-      file,
-      // fileUrl: file.id,
-    },
-  );
+  await storeReference?.dispatch(`${USER_NAMESPACE}/${METADATA_CREATION_RESOURCE}`, {
+    data: newResource,
+  });
 
+  const resourceId = storeReference?.getters[`${USER_NAMESPACE}/uploadResourceId`];
+
+  if (resourceId) {
+    eventBus.emit(UPLOAD_STATE_RESOURCE_CREATED, { id: UPLOAD_STATE_RESOURCE_CREATED });
+  } else {
+    eventBus.emit(UPLOAD_ERROR, { error: 'Resource creation failed', metadataId });
+    return null;
+  }
 
   const actionUrl = 'cloudstorage_get_presigned_url_multipart';
   const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
-  const resourceId = storeReference?.getters[`${USER_NAMESPACE}/uploadResourceId`];
-
   const payload = {
     id: resourceId,
+    partNumber: 0,
+    filename: file.name,
+/*
     // uploadId,
     // partNumber: partNumbers,
     upload: {
-      filename: file.name,
     },
+*/
   };
 
   try {
@@ -229,16 +238,19 @@ export async function getSinglePresignedUrl(file) {
 }
 
 export async function requestPresignedUrl(file, partData) {
+  console.log('requestPresignedUrl', file, partData);
 
   const actionUrl = 'cloudstorage_get_presigned_url_multipart';
   const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
   const resourceId = storeReference?.getters[`${USER_NAMESPACE}/uploadResourceId`];
 
+  const { uploadId, partNumber } = partData;
+
   const payload = {
     id: resourceId,
-    uploadId: partData.uploadId,
-    partNumber: partData.partNumber,
+    uploadId,
+    partNumber,
     filename: file.name,
   };
 
@@ -283,15 +295,18 @@ export async function updateResourceWithFileUrl(fileUrl, store) {
 */
 
 export async function completeMultipart(file, uploadData) {
+  console.log('completeMultipart', file, uploadData);
 
   const actionUrl = 'cloudstorage_finish_multipart';
   const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
   const resourceId = storeReference?.getters[`${USER_NAMESPACE}/uploadResourceId`];
 
+  const { uploadId, parts } = uploadData;
+
   const payload = {
     id: resourceId,
-    uploadId: uploadData.uploadId,
-    partInfo: JSON.stringify(uploadData.parts),
+    uploadId,
+    partInfo: JSON.stringify(parts),
   };
 
   try {
@@ -309,6 +324,7 @@ export async function completeMultipart(file, uploadData) {
 }
 
 export async function abortMultipart(file, uploadData) {
+  console.log('abortMultipart', file, uploadData);
 
   const actionUrl = 'cloudstorage_abort_multipart';
   const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
@@ -431,9 +447,21 @@ function createUppyInstance(height = 300, autoProceed = true, restrictions = def
     height,
   });
 
-  uppy.use(AwsS3Multipart, {
+  uppy.use(awsS3, {
     id: 'multipart-aws',
     limit: 4,
+/*
+    getUploadParameters(file) {
+      return getSinglePresignedUrl(file);
+    },
+*/
+    shouldUseMultipart(file) {
+      // Use multipart only for files larger than 100MiB.
+      // return file.size > 100 * 2 ** 20;
+
+      // always set to true because there isn't a connection for small files
+      return true;
+    },
     getChunkSize(file) {
       // at least 25MB per request, at most 500 requests
       return Math.max(1024 * 1024 * 25, Math.ceil(file.size / 500));
@@ -471,8 +499,7 @@ export function getUppyInstance(metadataId, store, height = 300, autoProceed = t
 
 export function destroyUppyInstance() {
   if (hasUppyInstance()) {
-    // uppyInstance.close({ reason: 'unmount' });
-    uppyInstance.close();
+    uppyInstance.destroy();
     uppyInstance = null;
   }
 

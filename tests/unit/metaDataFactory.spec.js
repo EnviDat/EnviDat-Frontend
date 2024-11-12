@@ -5,11 +5,9 @@ import {
   createBody,
   createFunding,
   createLicense,
-  createLocation,
   createPublications,
   createDetails,
   createResource,
-  formatDate,
   enhanceTitleImg,
 } from '@/factories/metaDataFactory';
 import {
@@ -17,9 +15,11 @@ import {
   extractPIDMapFromText,
 } from '@/factories/citationFactory';
 
-import categoryCards from '@/store/categoryCards';
 import packagelist from '@/../stories/testdata/packagelist.json';
 import { enhanceTags } from '@/factories/keywordsFactory';
+import categoryCards from '@/store/categoryCards';
+import { createLocation } from '@/factories/geoFactory';
+import { formatDate } from '@/factories/dateFactory';
 
 // const metadatasContent = {};
 // packagelist.result.forEach((entry) => {
@@ -269,7 +269,7 @@ describe('metaDataFactory - enhanceTitleImg', () => {
 
     for (let i = 0; i < datasets.length; i++) {
       const dataset = datasets[i];
-      const enhancedDataset = enhanceTitleImg(dataset, null, categoryCards);
+      const enhancedDataset = enhanceTitleImg(dataset);
 
       expect(enhancedDataset).toBeDefined();
       expect(enhancedDataset).not.toBe('');
@@ -282,7 +282,7 @@ describe('metaDataFactory - enhanceTitleImg', () => {
   // it('with dataset but no background images', () => {
   //   const dataset = packagelist.result[6];
 
-  //   const enhancedDataset = enhanceTitleImg(dataset, null, categoryCards);
+  //   const enhancedDataset = enhanceTitleImg(dataset);
 
   //   expect(enhancedDataset).toBeDefined();
   //   expect(enhancedDataset).not.toBe('');

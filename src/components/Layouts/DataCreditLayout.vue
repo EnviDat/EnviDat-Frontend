@@ -6,7 +6,7 @@
 
     <v-row no-gutters>
       <v-col cols="12"
-              :class="dark ? 'white--text' : 'black--text'" >
+              :class="dark ? 'text-white' : 'text-black'" >
         {{ badgesLabel }}
       </v-col>
     </v-row>
@@ -14,8 +14,8 @@
     <v-row no-gutters>
       <v-col v-if="!hasDataCreditCounts"
               cols="12"
-              class="pt-4"
-              :class="dark ? 'white--text' : 'black--text'"
+              class="pt-1"
+              :class="dark ? 'text-white' : 'text-black'"
               style="opacity: 0.65">
         {{ noCreditslabel }}
       </v-col>
@@ -23,28 +23,24 @@
       <v-col v-show="showZero || (!showZero && dataCreditCounts[index] > 0)"
               v-for="(creditName, index) in dataCreditNames"
               :key="index"
-              class="shrink pt-3 pt-md-4 px-1" >
+              class="flex-grow-0 pt-3 pt-md-4 px-1" >
 
-      <v-hover v-slot:default="{ hover }" >
-        <v-badge class="dataCreditIcon"
-                  bordered
-                  :overlap="!hover"
-                  :color="badgeColor">
+      <v-hover v-slot="{ isHovering, props }" >
+        <v-badge v-bind="props"
+                 class="dataCreditIcon"
+                 bordered
+                 :overlap="!isHovering"
+                 :color="badgeColor"
+                 :content="dataCreditCounts[index]"
+        >
 
-          <span slot="badge"
-                :class="!dark ? 'white--text' : 'black--text'" >
-                {{ dataCreditCounts[index] }}
-          </span>
-
-          <v-tooltip bottom >
-            <template v-slot:activator="{ on }">
-              <v-icon v-on="on"
-                      class="pa-1"
-                      :style="`border: ${dataCreditCounts[index] > 0 ? '0px solid' : '0px' };
-                                border-radius: 50%;`"
-                      :color="iconColor" >
-                {{ iconLookup(creditName) }}
-              </v-icon>
+          <v-tooltip location='bottom' >
+            <template v-slot:activator="{ props }">
+              <BaseIcon v-bind="props"
+                        class="pa-1"
+                        :icon="iconLookup(creditName)"
+                        :color="iconColor"
+              />
             </template >
 
             {{ `Author made ${dataCreditCounts[index]} ${creditName} contribution${ dataCreditCounts[index] > 1 ? 's': ''}` }}
@@ -60,10 +56,12 @@
 <script>
 
 import { getDataCreditIcon } from '@/factories/authorFactory';
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 export default {
   name: 'DataCreditLayout',
   components: {
+    BaseIcon,
   },
   props: {
     totalDataCredits: Object,
@@ -132,12 +130,12 @@ export default {
     right: 0 !important;
   }
 
-  .dataCreditBadge.black--text > span > span {
+  .dataCreditBadge.text-black > span > span {
     color: #000 !important;
     caret-color: #000 !important;
   }
 
-  .dataCreditBadge.white--text > span > span {
+  .dataCreditBadge.text-white > span > span {
     color: #fff !important;
     caret-color: #fff !important;
   }

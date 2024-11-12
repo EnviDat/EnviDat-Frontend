@@ -31,11 +31,7 @@
     </v-card-text>
 
     <v-card-text v-if="showPlaceholder && !subProjects">
-      <div
-        class="skeleton skeleton-size-normal skeleton-color-concrete skeleton-animation-shimmer"
-      >
-        <div class="bone bone-type-multiline bone-style-paragraph" />
-      </div>
+      <v-skeleton-loader type="paragraph" />
     </v-card-text>
 
     <v-card-text v-if="!showPlaceholder && !subProjects" style="color: red;">

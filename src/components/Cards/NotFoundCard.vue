@@ -5,6 +5,7 @@
       :src="notFoundImage"
       max-height="300"
       style="border-bottom-left-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 0;"
+      cover
     />
 
     <v-container fluid class="pa-4">
@@ -26,7 +27,7 @@
           {{ actionDescription }}
         </v-col>
 
-        <v-col v-if="actionButtonText && actionButtonCallback" class="shrink">
+        <v-col v-if="actionButtonText && actionButtonCallback" class="flex-grow-0">
           <base-rectangle-button
             :button-text="actionButtonText"
             @clicked="actionButtonCallback"

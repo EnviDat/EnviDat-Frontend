@@ -2,7 +2,7 @@
   <v-container class="fill-height pa-0" tag="article" fluid>
     <v-row no-gutters>
       <v-col cols="12" md="6" v-for="(err, index) in errors" :key="index">
-        <NotificationCard :notification="err" />
+        <NotificationCard v-bind="err" />
       </v-col>
     </v-row>
 
@@ -95,7 +95,7 @@ export default {
   beforeRouteEnter(to, from, next) {
     next(vm => {
       vm.$store.commit(SET_CURRENT_PAGE, REPORT_PAGENAME);
-      vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
+      vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
     });
   },
   /**
@@ -109,8 +109,8 @@ export default {
     ...mapState(['notifications']),
     color() {
       return this.error
-        ? this.$vuetify.theme.themes.light.error
-        : this.$vuetify.theme.themes.light.highlight;
+        ? this.$vuetify.theme.themes.light.colors.error
+        : this.$vuetify.theme.themes.light.colors.highlight;
     },
     errors() {
       return Object.values(this.notifications);
@@ -118,6 +118,7 @@ export default {
   },
   methods: {
     submit() {
+      // eslint-disable-next-line no-console
       console.log('submit clicked');
     },
   },
@@ -125,7 +126,7 @@ export default {
     NotificationCard,
   },
   data: () => ({
-    PageBGImage: 'app_b_browsepage',
+    pageBGImage: 'app_b_browsepage',
     name: '',
     email: '',
     feedback: false,

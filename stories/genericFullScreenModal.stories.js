@@ -9,7 +9,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-// eslint-disable-next-line import/extensions
 import GenericFullScreenModal from '@/components/Layouts/GenericFullScreenModal.vue';
 import {
   eventBus,
@@ -19,8 +18,8 @@ import {
   OPEN_TEXT_PREVIEW,
 } from '@/factories/eventBus';
 
-import { createLocation } from '@/factories/metaDataFactory';
 import { getFeatureCollectionFromGcNetStations } from '@/factories/chartFactory';
+import { createLocation } from '@/factories/geoFactory';
 import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 import txtPreviewFile from './js/previewTextFile.txt';
 

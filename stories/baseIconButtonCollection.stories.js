@@ -1,28 +1,30 @@
 /**
- * @summary story of BaseIconButton & BaseIconCountView for sandbox testing
+ * @summary story of BaseIconButton for sandbox testing
  * @author Dominik Haas-Artho
- *
- * Created at     : 2019-10-23 16:34:51
- * Last modified  : 2019-10-31 08:14:47
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
-import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
-import fileIcon from '../src/assets/icons/file.png';
+import { mdiChevronDown, mdiContentSave, mdiHome } from '@mdi/js';
 
 
 export default {
   title: '1 Base Elements / Icon buttons',
-  decorators: [],
-  parameters: {},
+  component: BaseIconButton,
 };
 
 
 
 const Template = (args, { argTypes }) => ({
+  components: { BaseIconButton },
+  props: Object.keys(argTypes),
+  data: ()=>({args}),
+  template: '<div><BaseIconButton v-bind="$props" /></div>',
+});
+
+const TemplateRotatable = (args, { argTypes }) => ({
   components: { BaseIconButton },
   props: Object.keys(argTypes),
   methods: {
@@ -31,78 +33,129 @@ const Template = (args, { argTypes }) => ({
     },
   },
   data: () => ({
-    rotated: false,
+    rotated: args.rotated,
   }),
-  template: '<BaseIconButton v-bind="$props" :rotate-toggle="rotated" @clicked="rotationClick" />',
+  template: '<div><BaseIconButton v-bind="$props" :rotated="rotated" @clicked="rotationClick" /></div>',
 });
 
 export const IconOnly = Template.bind({});
 IconOnly.args = {
-  materialIconName: 'save',
+  icon: mdiContentSave,
 }
 
-export const IconOnlyOutlined = Template.bind({});
-IconOnlyOutlined.args = {
-  materialIconName: 'save',
+export const IconOnlyDisabled = Template.bind({});
+IconOnlyDisabled.args = {
+  ...IconOnly.args,
+  disabled: true,
+}
+
+export const IconOutlined = Template.bind({});
+IconOutlined.args = {
+  icon: mdiContentSave,
   outlined: true,
+  outlineColor: 'primary',
   iconColor: 'black',
 }
 
-export const IconRotated = Template.bind({});
-IconRotated.args = {
-  materialIconName: 'expand_less',
+export const IconOutlinedDisabled = Template.bind({});
+IconOutlinedDisabled.args = {
+  ...IconOutlined.args,
+  disabled: true,
+}
+
+export const IconOutlinedColored = Template.bind({});
+IconOutlinedColored.args = {
+  ...IconOutlined.args,
   outlined: true,
-  rotateOnClick: true,
+  outlineColor: 'red',
+  color: 'secondary',
+  iconColor: 'yellow',
+}
+
+export const IconOutlinedColoredAndElevated = Template.bind({});
+IconOutlinedColoredAndElevated.args = {
+  ...IconOutlined.args,
+  outlined: true,
+  elevated: true,
+  outlineColor: 'red',
+  color: 'secondary',
+  iconColor: 'yellow',
+}
+
+export const IconAndElevated = Template.bind({});
+IconAndElevated.args = {
+  icon: mdiContentSave,
+  elevated: true,
+  iconColor: 'black',
+  color: 'accent',
+}
+
+export const IconAndElevatedDisabled = Template.bind({});
+IconAndElevatedDisabled.args = {
+  ...IconAndElevated.args,
+  disabled: true,
+}
+
+
+export const CustomIcon = Template.bind({});
+CustomIcon.args = {
+  icon: 'file',
+  outlined: true,
+  color: 'white',
+}
+
+export const IconRotated = TemplateRotatable.bind({});
+IconRotated.args = {
+  icon: mdiChevronDown,
+  outlined: true,
+  rotated: true,
+}
+
+export const LargeButton = Template.bind({});
+LargeButton.args = {
+  icon: mdiChevronDown,
+  large: true,
+  outlined: true,
+}
+
+export const SmallButton = Template.bind({});
+SmallButton.args = {
+  icon: mdiHome,
+  small: true,
+  outlined: true,
 }
 
 export const FancyButton = Template.bind({});
 FancyButton.args = {
-  materialIconName: 'save',
+  icon: mdiContentSave,
   outlined: true,
   iconColor: 'black',
-  isFancy: true,
+  fancy: true,
 }
 
 export const GlowingButton = Template.bind({});
 GlowingButton.args = {
-  ...IconOnlyOutlined.args,
-  isGlowing: true,
+  ...IconOutlined.args,
+  glowing: true,
 }
 
 export const FancyAndGlowingButton = Template.bind({});
 FancyAndGlowingButton.args = {
   ...FancyButton.args,
-  isGlowing: true,
+  glowing: true,
 }
 
-export const IconsWithCountBadeViews = () => ({
-    components: { BaseIconCountView },
-    template: `
-    <v-row style="border: solid 1px;">
+export const CountButton = Template.bind({});
+CountButton.args = {
+  ...IconOutlined.args,
+  count: 12,
+}
 
-      <v-col class="shrink" >
-        <!-- div style="position: absolute;" -->
-          <base-icon-count-view class="mr-2"
-                                :iconString="fileIcon"
-                                :count="counter"
-                                :tooltipText="tooltip"  />
-        <!-- /div -->
-      </v-col>
-
-      <v-col class="shrink" >
-        <!-- div style="position: absolute;" -->
-          <base-icon-count-view class="mr-2"
-                                :iconString="fileIcon"
-                                :count="counter"
-                                :tooltipText="tooltip" />
-        <!-- /div -->
-      </v-col>
-
-    </v-row>`,
-    data: () => ({
-      showFullDescription: false,
-      fileIcon,
-      counter: 55,
-      tooltip: 'This is the tooltip of the icon count view',
-    }),
-  });
+export const ReadonlyCountButtonSmall = Template.bind({});
+ReadonlyCountButtonSmall.args = {
+  ...IconOutlined.args,
+  outlined: false,
+  small: true,
+  count: 100,
+  readonly: true,
+}

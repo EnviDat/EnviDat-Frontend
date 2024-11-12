@@ -2,15 +2,10 @@
 
 <v-card id="EditRelatedDatasets"
         class="pa-0"
-        :loading="loading">
+        :loading="loadingColor">
 
   <v-container fluid
                 class="pa-4 fill-height" >
-
-    <template slot="progress">
-      <v-progress-linear color="primary"
-                         indeterminate />
-    </template>
 
     <v-row>
       <v-col cols="6" class="text-h5">
@@ -18,14 +13,14 @@
       </v-col>
 
       <v-col v-if="message" >
-        <BaseStatusLabelView statusIcon="check"
+        <BaseStatusLabelView status="check"
                              statusColor="success"
                              :statusText="message"
                              :expandedText="messageDetails" />
       </v-col>
       <v-col v-if="error"  >
 
-        <BaseStatusLabelView statusIcon="error"
+        <BaseStatusLabelView status="error"
                              statusColor="error"
                              :statusText="error"
                              :expandedText="errorDetails" />
@@ -48,8 +43,8 @@
 
         <GenericTextareaPreviewLayout v-bind="genericTextAreaObject"
                                       :validationError="validationErrors[editingProperty]"
-                                      :readonly="mixinMethods_isFieldReadOnly(editingProperty)"
-                                      :hint="mixinMethods_readOnlyHint(editingProperty)"
+                                      :readonly="isReadOnly(editingProperty)"
+                                      :hint="readOnlyHint(editingProperty)"
                                       @inputedText="catchInputedText($event)"
                                       @changedText="catchChangedText($event)">
           <MetadataRelatedDatasets v-bind="datasetObject" />
@@ -95,6 +90,8 @@ import {
   isFieldValid,
 } from '@/factories/userEditingValidations';
 
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+
 export default {
   name: 'EditRelatedDatasets',
   props: {
@@ -139,10 +136,17 @@ export default {
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
   },
   computed: {
+    loadingColor() {
+      if (this.loading) {
+        return 'accent';
+      }
+
+      return undefined;
+    },
     genericTextAreaObject() {
       return {
         subtitlePreview: this.labels.subtitlePreview,
@@ -188,6 +192,12 @@ export default {
         object: EDITMETADATA_RELATED_DATASETS,
         data: { [this.editingProperty]: value },
       });
+    },
+    isReadOnly(dateProperty) {
+      return isFieldReadOnly(this.$props, dateProperty);
+    },
+    readOnlyHint(dateProperty) {
+      return readOnlyHint(this.$props, dateProperty);
     },
   },
   data: () => ({

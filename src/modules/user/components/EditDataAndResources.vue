@@ -66,18 +66,6 @@
       </v-col>
     </v-row>
 
-<!--
-    <v-snackbar
-        :value="!!uploadProgessText"
-        bottom
-        elevation="24"
-    >
-      <v-icon color="highlight">checkmark</v-icon>
-      {{ uploadProgessText }}
-
-    </v-snackbar>
--->
-
   </v-container>
 </template>
 
@@ -107,12 +95,6 @@ import {
 
 import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
 
-import EditMetadataResources from '@/modules/user/components/EditMetadataResources.vue';
-import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles.vue';
-import EditResourcePasteUrl from '@/modules/user/components/EditResourcePasteUrl.vue';
-import EditResource from '@/modules/user/components/EditResource.vue';
-import EditResourceRedirect from '@/modules/user/components/EditResourceRedirect.vue';
-
 import {
   getUppyInstance,
   subscribeOnUppyEvent,
@@ -135,7 +117,21 @@ import { getSelectedElement } from '@/factories/userEditingFactory';
 
 import { mergeResourceSizeForFrontend } from '@/factories/mappingFactory';
 
-const BaseRectangleButton = () => import('@/components/BaseElements/BaseRectangleButton.vue');
+import {defineAsyncComponent} from 'vue';
+
+import EditMetadataResources from '@/modules/user/components/EditMetadataResources.vue';
+import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles.vue';
+import EditResourcePasteUrl from '@/modules/user/components/EditResourcePasteUrl.vue';
+
+const EditResource = defineAsyncComponent(() =>
+    import('@/modules/user/components/EditResource.vue'),
+);
+const EditResourceRedirect = defineAsyncComponent(() =>
+    import('@/modules/user/components/EditResourceRedirect.vue'),
+);
+const BaseRectangleButton = defineAsyncComponent(() =>
+    import('@/components/BaseElements/BaseRectangleButton.vue'),
+);
 
 export default {
   name: 'EditDataAndResources',
@@ -205,7 +201,7 @@ export default {
       this.loadEnvidatUsers();
     });
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.unselectCurrentResource);
 
     unSubscribeOnUppyEvent('upload', this.uploadStarted);
@@ -280,7 +276,7 @@ export default {
       try {
         mergedSize = mergeResourceSizeForFrontend(this.selectedResource);
       } catch (e) {
-        console.log('mergeResourceSizeForFrontend failed:');
+        console.error('mergeResourceSizeForFrontend failed:');
         console.error(e);
         // TODO Error tracking
       }
@@ -327,12 +323,12 @@ export default {
           });
       }
     },
-    uploadStarted() {
-    // uploadStarted({ id, fileIDs }) {
+    // uploadStarted() {
+    uploadStarted({ id, fileIDs }) {
       // data object consists of `id` with upload ID and `fileIDs` array
       // with file IDs in current upload
       // data: { id, fileIDs }
-      // console.log(`Starting upload ${id} for files ${fileIDs}`);
+      console.log(`Starting upload ${id} for files ${fileIDs}`);
 
       this.uppyError = null;
       this.uploadProgessText = 'Starting upload file';
@@ -341,7 +337,7 @@ export default {
       eventBus.emit(UPLOAD_STATE_UPLOAD_STARTED, { id: UPLOAD_STATE_UPLOAD_STARTED });
     },
     uploadProgress(progress) {
-      // console.log(`upload progress: ${progress}`);
+      console.log(`upload progress: ${progress}`);
       this.uploadProgessText = `upload progress: ${progress}`;
       this.uploadProgressIcon = 'check';
 
@@ -351,6 +347,7 @@ export default {
       const oks = result.successful?.length || 0;
       const fails = result.failed?.length || 0;
 
+      console.log('upload complete', result);
       // console.log('successful files:', result.successful)
       // console.log('failed files:', result.failed)
 
@@ -367,6 +364,7 @@ export default {
       }
 
       eventBus.emit(UPLOAD_STATE_UPLOAD_COMPLETED, { id: UPLOAD_STATE_UPLOAD_COMPLETED });
+      console.log('upload complete emit', UPLOAD_STATE_UPLOAD_COMPLETED);
 
       this.uploadProgessText = message;
 
@@ -377,11 +375,13 @@ export default {
       const newRes = this.$store?.getters[`${USER_NAMESPACE}/uploadResource`];
 
       setTimeout(() => {
+        console.log(METADATA_EDITING_SELECT_RESOURCE, newRes);
         this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, newRes?.id);
       }, 500);
 
     },
     uploadUppyError(error) {
+      console.log('uploadUppyError', error);
       this.uppyError = error;
 
       this.uploadProgessText = `Upload failed ${error}`;
@@ -393,6 +393,7 @@ export default {
       this.resetUppy();
     },
     resetUppy() {
+      console.log('resetUppy');
       eventBus.emit(UPLOAD_STATE_RESET);
       this.uppyError = null;
 

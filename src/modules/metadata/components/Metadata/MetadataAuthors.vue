@@ -31,10 +31,11 @@
             sm="6"
             class="pa-2"
           >
-            <slot name="editingAuthors" :author="author" />
+            <slot name="editingAuthors" v-bind="author" />
             <AuthorCard
               v-if="!hasEditingAuthorsSlot"
               :author="author"
+              :hideDataCredit="true"
               :authorDetailsConfig="authorDetailsConfig"
               :asciiDead="authorDeadInfo ? authorDeadInfo.asciiDead : ''"
               :authorPassedInfo="
@@ -81,7 +82,7 @@
 /**
  * MetadataAuthors.vue shows all the resources of a metadata entry in a list.
  *
- * @summary shows the resources the a metadata entry
+ * @summary shows the authors of a metadata entry
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 14:11:27
@@ -103,8 +104,30 @@ import ActiveDataCredits from '@/modules/user/components/edit/ActiveDataCredits.
 export default {
   name: 'MetadataAuthors',
   props: {
-    genericProps: Object,
-    showPlaceholder: Boolean,
+    authors: {
+      type: Array,
+      default: undefined, // () => [],
+    },
+    authorDetailsConfig: {
+      type: Object,
+      default: () => {},
+    },
+    authorDeadInfo: {
+      type: Object,
+      default: () => {},
+    },
+    emptyTextColor: {
+      type: String,
+      default: 'red',
+    },
+    emptyText: {
+      type: String,
+      default: 'No authors found for this dataset.',
+    },
+    showPlaceholder: {
+      type: Boolean,
+      default: false,
+    },
   },
   mounted() {
     const options = this.options || {};
@@ -118,39 +141,22 @@ export default {
 
     this.observer.observe(this.$el);
   },
-  destroyed() {
+  unmounted() {
     this.observer.disconnect();
     this.showAuthors = false;
   },
   computed: {
     hasEditingAuthorsSlot() {
-      return !!this.$scopedSlots.editingAuthors;
-    },
-    authors() {
-      return this.mixinMethods_getGenericProp('authors');
-    },
-    authorDetailsConfig() {
-      return this.mixinMethods_getGenericProp('authorDetailsConfig', {});
-    },
-    authorDeadInfo() {
-      return this.mixinMethods_getGenericProp('authorDeadInfo', {});
+      // correct refactoring??
+      // check https://v3-migration.vuejs.org/breaking-changes/slots-unification.html#_3-x-syntax
+      const slotAmount = Object.values(this.$slots).length;
+      return slotAmount > 0 && !!this.$slots.editingAuthors();
     },
     hasAuthors() {
       return this.authors?.length > 0;
     },
-    emptyTextColor() {
-      return this.mixinMethods_getGenericProp('emptyTextColor', 'red');
-    },
-    emptyText() {
-      return this.mixinMethods_getGenericProp(
-        'emptyText',
-        'No authors found for this dataset.',
-      );
-    },
     scrollbarColorFront() {
-      return this.$vuetify
-        ? this.$vuetify.theme.themes.light.highlight
-        : 'auto';
+      return this.$vuetify ? this.$vuetify.theme.themes.light.colors.highlight : 'auto';
     },
     scrollbarColorBack() {
       return this.$vuetify ? '#F0F0F0' : 'auto';

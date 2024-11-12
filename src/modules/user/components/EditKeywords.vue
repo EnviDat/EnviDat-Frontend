@@ -2,15 +2,10 @@
 
   <v-card id="EditKeywords"
           class="pa-0"
-          :loading="loading">
+          :loading="loadingColor">
 
     <v-container fluid
                 class="pa-4">
-
-      <template slot="progress">
-        <v-progress-linear color="primary"
-                           indeterminate />
-      </template>
 
       <v-row>
         <v-col cols="6"
@@ -19,14 +14,14 @@
         </v-col>
 
         <v-col v-if="message" >
-          <BaseStatusLabelView statusIcon="check"
+          <BaseStatusLabelView status="check"
                                statusColor="success"
                                :statusText="message"
                                :expandedText="messageDetails" />
         </v-col>
         <v-col v-if="error"  >
 
-          <BaseStatusLabelView statusIcon="error"
+          <BaseStatusLabelView status="error"
                                statusColor="error"
                                :statusText="error"
                                :expandedText="errorDetails" />
@@ -49,51 +44,51 @@
 
       <v-row>
         <v-col>
+          <v-autocomplete
+            v-model="keywordsField"
+            item-text="name"
+            item-value="name"
+            :items="existingKeywordItems"
+            :menu-icon="mdiArrowDownDropCircleOutline"
+            :readonly="isReadOnly('keywords')"
+            :hint="readOnlyHint('keywords')"
+            :persistent-hint="!!hint"
+            :prepend-icon="mdiPaletteSwatch"
+            :label="labels.placeholder"
+            :clear-on-select="true"
+            multiple
+            :search="search"
+            :error-messages="validationErrors.keywords"
+            @update:search="search = $event; isKeywordValid(search)"
+            @keyup="blurOnEnterKey"
+            @input="isEnoughKeywords()"
+            @change="notifyChange($event)"
+            @blur="saveChange()"
+            @keydown="catchKeywordEntered($event)"
+            :rules="rulesKeywords"
+          >
 
-          <v-combobox :value="keywordsField"
-                      :items="existingKeywordItems"
-                      item-text="name"
-                      multiple
-                      outlined
-                      append-icon="arrow_drop_down"
-                      prepend-icon="style"
-                      :label="labels.keywordsLabel"
-                      :placeholder="labels.placeholder"
-                      :search-input.sync="search"
-                      :readonly="mixinMethods_isFieldReadOnly('keywords')"
-                      :hint="mixinMethods_readOnlyHint('keywords')"
-                      :error-messages="validationErrors.keywords"
-                      @update:search-input="isKeywordValid(search)"
-                      @keyup="blurOnEnterKey"
-                      @input="isEnoughKeywords()"
-                      @change="notifyChange('keywords', $event)"
-                      @blur="saveChange()"
-                      @keydown="catchKeywordEntered($event)"
-                      :rules="rulesKeywords"
-                      >
-
-            <template v-slot:selection="{ item }" >
-              <TagChip  :name="item.name"
+                <template v-slot:selection="{ item }" >
+                      <TagChip
+                        :name="item.raw.name"
                         selectable
                         closeable
                         @clickedClose="removeKeyword(item)"
-                        :isSmall="false"
-                        />
-            </template>
+                    :isSmall="false"
+                    />
+                </template>
 
-            <template v-slot:item="{ item }">
-              <TagChip v-if="item && item.name"
-                       :name="item.name"
-                       selectable
-                       @clicked="catchKeywordClicked"
-                       :isSmall="false" />
-            </template>
+                <template v-slot:item="{ item, props }">
+                  <v-list-item class="py-0" @click="catchKeywordClicked(item.value)" v-bind="props">
+                  </v-list-item>
+                </template>
 
-            <template v-slot:no-data>
-              <v-list-item v-html="autocompleteHint" />
-            </template>
-
-          </v-combobox>
+                <template v-slot:no-data>
+                  <v-list-item>
+                    <div v-html="autocompleteHint"></div>
+                  </v-list-item>
+                </template>
+          </v-autocomplete>
         </v-col>
 
         <v-col>
@@ -138,7 +133,7 @@ import { EDIT_METADATA_KEYWORDS_TITLE } from '@/factories/metadataConsts';
 import MetadataCard from '@/components/Cards/MetadataCard.vue';
 import TagChip from '@/components/Chips/TagChip.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
-import catCards from '@/store/categoryCards';
+import categoryCards from '@/store/categoryCards';
 
 import { enhanceTitleImg } from '@/factories/metaDataFactory';
 import {
@@ -147,6 +142,8 @@ import {
 } from '@/factories/userEditingValidations';
 import { getTagColor } from '@/factories/keywordsFactory';
 
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+import {mdiArrowDownDropCircleOutline, mdiPaletteSwatch} from '@mdi/js';
 
 
 export default {
@@ -200,13 +197,20 @@ export default {
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   computed: {
     ...mapState([
       'config',
     ]),
+    loadingColor() {
+      if (this.loading) {
+        return 'accent';
+      }
+
+      return undefined;
+    },
     userEditMetadataConfig() {
       if (!this.$store) {
         return this.defaultUserEditMetadataConfig;
@@ -231,21 +235,18 @@ export default {
         title: this.metadataCardTitle,
         tags: this.keywordsField,
         subtitle: this.metadataCardSubtitle,
-        fileIconString: this.mixinMethods_getIcon('file'),
       };
 
       if (this.$store) {
-        const { categoryCards, cardBGImages } = this.$store.getters;
-        enhanceTitleImg(previewEntry, cardBGImages, categoryCards);
+        enhanceTitleImg(previewEntry);
       }
 
       return previewEntry;
     },
     autocompleteHint() {
-
       if (!this.keywordValidConcise) {
         const wordMaxHint = `Each keyword tag may not exceed ${this.keywordsListWordMax} words.`;
-        return `<span class="red--text font-italic">${wordMaxHint}</span>`;
+        return `<span class="text-red font-italic">${wordMaxHint}</span>`;
       }
 
       let hint = '';
@@ -255,7 +256,7 @@ export default {
       }
 
       if (this.search) {
-        hint += ` No results matching "<strong>${this.search}</strong>". Press <span class="mx-1"><kbd>enter</kbd></span> to create a new keyword. `;
+        hint += ` No results matching "<strong>${this.search}</strong>". Press <v-btn small variant="tonal" class="mx-1" text>enter</v-btn> to create a new keyword. `;
       } else {
         hint += ' Start typing for keyword autocompletion.';
       }
@@ -264,16 +265,21 @@ export default {
     },
     existingKeywordItems() {
       if (this.$store) {
-        return this.$store.getters[`${METADATA_NAMESPACE}/existingKeywords`];
+        const getTag = this.$store.getters[`${METADATA_NAMESPACE}/existingKeywords`]
+        const arrayFromTags = this.getTagName(getTag)
+        return arrayFromTags
       }
 
-      return this.existingKeywords;
+      return this.getTagName(this.existingKeywords);
     },
     validations() {
       return getValidationMetadataEditingObject(this.stepKey);
     },
   },
   methods: {
+    getTagName(arr) {
+      return arr.map(item => item.name);
+    },
     blurOnEnterKey(keyboardEvent) {
       if (keyboardEvent.key === 'Enter' && keyboardEvent.target.value === '') {
         keyboardEvent.target.blur();
@@ -307,7 +313,7 @@ export default {
       // Use pickedKeyword to create pickedKeywordObj
       const pickedKeywordObj = {
         name: pickedKeyword.toUpperCase().trim(),
-        color: getTagColor(catCards, pickedKeyword),
+        color: getTagColor(categoryCards, pickedKeyword),
       };
 
       // Assign selectedKeywords to keywords concatenated with pickedKeywordObj
@@ -331,13 +337,13 @@ export default {
 
           if (!keywordValid) {
             valuesArray.splice(i, 1);
-            i--; // decrease to ensure not skipping the next entry becduse splice changes the index
+            i--; // decrease to ensure not skipping the next entry because splice changes the index
           } else {
 
             valuesArray[i] = {
               name: valuesArray[i].toUpperCase()
                   .trim(),
-              color: getTagColor(catCards, valuesArray[i]),
+              color: getTagColor(categoryCards, valuesArray[i]),
             };
           }
         }
@@ -399,14 +405,8 @@ export default {
 
       return this.keywordValidMin3Characters && this.keywordValidConcise;
     },
-    notifyChange(property, value) {
-
-      // const keywordsAmount = value.length;
-
+    notifyChange(value) {
       const mergedKeywordsField = [...this.keywordsField, ...value];
-
-      // const cleanedAmount = cleanedKeywordsField.length;
-
       this.previewKeywords = this.processValues(mergedKeywordsField);
     },
     setKeywords(property, value) {
@@ -421,9 +421,17 @@ export default {
       });
 
     },
+    isReadOnly(dateProperty) {
+      return isFieldReadOnly(this.$props, dateProperty);
+    },
+    readOnlyHint(dateProperty) {
+      return readOnlyHint(this.$props, dateProperty);
+    },
   },
   data: () => ({
-    search: null,
+    mdiPaletteSwatch,
+    mdiArrowDownDropCircleOutline,
+    search: '',
     keywordValidConcise: true,
     keywordValidMin3Characters: true,
     keywordCount: 0,
@@ -435,7 +443,7 @@ export default {
       cardInstructions1: 'Please enter at least 5 keywords.',
       cardInstructions2: 'To pick a keyword click into the list, you can start typing to search for a existing keywords.' +
         ' To create a new keyword type it and press enter.',
-      previewText: 'Metadata card preview',
+      previewText: 'Dataset entry preview',
     },
     defaultUserEditMetadataConfig: {
       keywordsListWordMax: 2,

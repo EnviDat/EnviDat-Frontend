@@ -6,6 +6,12 @@
       style="position: absolute; width: 100%; height: 100%;"
     ></div>
 
+    <div
+      v-show="showDecemberParticles"
+      id="christmas-canvas"
+      style="position: absolute; width: 100%; height: 100%;"
+    ></div>
+
     <link
       v-if="showDecemberParticles"
       rel="stylesheet"
@@ -17,13 +23,12 @@
       :key="`notification_${index}`"
       :style="
         `position: absolute;
-                  right: ${$vuetify.breakpoint.xsOnly ? 0 : 15}px;
-                  top: ${35 + index * 175}px;
-                  z-index: ${NotificationZIndex};`
+                right: ${$vuetify.display.xs ? 0 : 15}px;
+                top: ${35 + index * 175}px;
+                z-index: ${NotificationZIndex};`
       "
     >
-      <notification-card
-        v-if="notification.show"
+      <NotificationCard
         :notification="notification"
         :height="165"
         :showReportButton="
@@ -34,14 +39,6 @@
         @clickedReport="catchReportClicked(notification.key)"
       />
     </div>
-
-    <TheNavigation
-      :style="`z-index: ${NavigationZIndex}`"
-      :navigationItems="navigationItems"
-      :version="appVersion"
-      @menuClick="catchMenuClicked"
-      @itemClick="catchItemClicked"
-    />
 
     <TheNavigationToolbar
       v-if="showToolbar"
@@ -61,20 +58,30 @@
       @continueClick="catchContinueClick"
     />
 
-    <v-main>
+    <TheNavigation
+      :style="`z-index: ${NavigationZIndex}`"
+      :navigationItems="navigationItems"
+      :version="appVersion"
+      @menuClick="catchMenuClicked"
+      @itemClick="catchItemClicked"
+    />
+
+    <v-main class="pt-4 pt-md-8">
       <v-container
-        class="pa-2 pa-sm-3 fill-height"
+        class="pa-2 pa-sm-3"
         fluid
-        v-on:scroll="updateScroll()"
+        @scroll="updateScroll()"
         id="appContainer"
         ref="appContainer"
         :style="pageStyle"
       >
-        <v-row class="fill-height" id="mainPageRow">
-          <v-col class="mx-0 py-0" cols="12">
-            <transition name="fade" mode="out-in">
-              <router-view />
-            </transition>
+        <v-row id="mainPageRow">
+          <v-col cols="12">
+            <router-view v-slot="{ Component }">
+              <transition name="fade" mode="out-in">
+                <component :is="Component" />
+              </transition>
+            </router-view>
           </v-col>
         </v-row>
       </v-container>
@@ -84,7 +91,7 @@
         id="maintenanceBanner"
         style="position: absolute; top: 0; z-index: 1001; width: 100%; "
         :text="maintenanceBannerText"
-        confirmText="Accept Tracking"
+        confirmText="Okay"
         :bannerColor="maintenanceBannerColor"
         :confirmClick="catchMaintenanceConfirmClick"
       />
@@ -92,16 +99,14 @@
       <TextBanner
         v-if="showCookieInfo"
         id="cookieBanner"
-        style="position: absolute; bottom: 0; z-index: 1001; width: 100%; "
+        style="position: absolute; bottom: 0; left: 0; z-index: 1101; width: 100%;"
         :text="cookieInfoText"
-        deniedText="Okay"
         icon="cookie"
+        deniedText="Okay"
         bannerColor="highlight"
         :confirmClick="catchCookieInfoOk"
         :deniedClick="deniedTracking"
       />
-      <!-- deniedText="Accept only essential cookies" -->
-      <!-- confirmText="Accept all tracking" -->
 
       <v-dialog
         v-model="showReloadDialog"
@@ -185,17 +190,18 @@ import {
   SET_APP_SCROLL_POSITION,
   TRIM_NOTIFICATIONS,
   HIDE_NOTIFICATIONS,
+  SET_APP_BACKGROUND,
 } from '@/store/mainMutationsConsts';
 
 import {
+  ACTION_OLD_GET_USER_CONTEXT,
+  ACTION_GET_USER_CONTEXT_TOKEN,
+  ACTION_USER_SHOW,
   USER_SIGNIN_NAMESPACE,
   GET_USER_CONTEXT,
-  ACTION_OLD_GET_USER_CONTEXT,
   SIGNIN_USER_ACTION,
   USER_NAMESPACE,
-  ACTION_GET_USER_CONTEXT_TOKEN,
   FETCH_USER_DATA,
-  ACTION_USER_SHOW,
   USER_GET_DATASETS,
 } from '@/modules/user/store/userMutationsConsts';
 
@@ -209,28 +215,44 @@ import {
   SHOW_REDIRECT_SIGNIN_DIALOG,
 } from '@/factories/eventBus';
 
-import TheNavigation from '@/components/Navigation/TheNavigation.vue';
-import TheNavigationToolbar from '@/components/Navigation/TheNavigationToolbar.vue';
-import '@/../node_modules/skeleton-placeholder/dist/bone.min.css';
 
 import { ENVIDAT_SHOW_COOKIE_BANNER } from '@/factories/metadataConsts';
+import { getImage } from '@/factories/imageFactory';
+import { defineAsyncComponent } from 'vue';
 
-const GenericFullScreenModal = () =>
-  import('@/components/Layouts/GenericFullScreenModal.vue');
-const ConfirmTextCard = () => import('@/components/Cards/ConfirmTextCard.vue');
-const TextBanner = () => import('@/components/Layouts/TextBanner.vue');
-const NotificationCard = () =>
-  import('@/components/Cards/NotificationCard.vue');
+const TheNavigation = defineAsyncComponent(() =>
+  import('@/components/Navigation/TheNavigation.vue'),
+);
+const TheNavigationToolbar = defineAsyncComponent(() =>
+  import('@/components/Navigation/TheNavigationToolbar.vue'),
+);
+
+const GenericFullScreenModal = defineAsyncComponent(() =>
+  import('@/components/Layouts/GenericFullScreenModal.vue'),
+);
+const ConfirmTextCard = defineAsyncComponent(() =>
+  import('@/components/Cards/ConfirmTextCard.vue'),
+);
+const TextBanner = defineAsyncComponent(() =>
+  import('@/components/Layouts/TextBanner.vue'),
+);
+const NotificationCard = defineAsyncComponent(() =>
+  import('@/components/Cards/NotificationCard.vue'),
+);
 
 export default {
   name: 'App',
   beforeCreate() {
-    // in beforeCreate none of the vue component exists, so not method can be called
-    // the this.$store does exist, so call it here directly, then in created setup the reloadConfigTimer
+    // check for the backend version
     this.$store.dispatch(SET_CONFIG);
+
+    this.$store.subscribe(mutation => {
+      if (mutation.type === SET_APP_BACKGROUND) {
+        this.appBGImage = mutation.payload;
+      }
+    });
   },
   created() {
-    this.reloadConfigTimer = window.setInterval(this.loadConfig, 60000);
     eventBus.on(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
     eventBus.on(SHOW_DIALOG, this.openGenericDialog);
     eventBus.on(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
@@ -240,12 +262,10 @@ export default {
     );
 
     const strShowCookieInfo = localStorage.getItem(ENVIDAT_SHOW_COOKIE_BANNER);
-    // this.showCookieInfo = strShowCookieInfo !== 'false';
-    this.showCookieInfo = true;
+    this.showCookieInfo = strShowCookieInfo !== 'false';
   },
-  beforeDestroy() {
-    window.clearInterval(this.reloadConfigTimer);
-    eventBus.off(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
+  beforeUnmount() {
+    eventBus.on(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
     eventBus.off(SHOW_DIALOG, this.openGenericDialog);
     eventBus.off(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
     eventBus.off(
@@ -264,10 +284,6 @@ export default {
     this.updateActiveStateOnNavItems();
   },
   methods: {
-    loadConfig() {
-      // check for the backend version
-      this.$store.dispatch(SET_CONFIG);
-    },
     startParticles() {
       if (!this.currentParticles) {
         if (this.showDecemberParticles) {
@@ -285,8 +301,7 @@ export default {
           this.currentParticles.particles.size.anim.enable = false;
         }
       } catch (error) {
-        // eslint-disable-next-line no-console
-        console.log(`Error during particle stop: ${error}`);
+        console.error(`Error during particle stop: ${error}`);
       } finally {
         this.currentParticles = null;
         if (fullClean) {
@@ -311,8 +326,11 @@ export default {
       );
     },
     updateScroll() {
-      if (this.$refs && this.$refs.appContainer) {
-        this.storeScroll(this.$refs.appContainer.scrollTop);
+      const appContainer =
+        this.$refs.appContainer?.$el || this.$refs.appContainer;
+
+      if (appContainer) {
+        this.storeScroll(appContainer.scrollTop);
       }
     },
     storeScroll(scrollY) {
@@ -388,11 +406,21 @@ export default {
       this.$router.push({ name: item.pageName });
     },
     catchSearchClicked(search) {
-      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search);
+      this.$router.options.additiveChangeRoute(
+        this.$route,
+        this.$router,
+        BROWSE_PATH,
+        search,
+      );
     },
     catchSearchCleared() {
       // the search parameter needs to be '' to clear it
-      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, '');
+      this.$router.options.additiveChangeRoute(
+        this.$route,
+        this.$router,
+        BROWSE_PATH,
+        '',
+      );
     },
     catchModeClose() {
       this.$router.push({
@@ -617,7 +645,6 @@ export default {
     ]),
     ...mapGetters({
       currentPage: 'currentPage',
-      appBGImage: 'appBGImage',
       outdatedVersion: 'outdatedVersion',
       newVersion: 'newVersion',
       notifications: 'notifications',
@@ -678,7 +705,7 @@ export default {
     },
     showDecemberParticles() {
       return (
-        this.$vuetify.breakpoint.mdAndUp &&
+        this.$vuetify.display.mdAndUp &&
         this.effectsConfig.decemberParticles &&
         this.itIsDecember
       );
@@ -691,7 +718,7 @@ export default {
     },
     polygonParticlesActive() {
       return (
-        this.$vuetify.breakpoint.mdAndUp &&
+        this.$vuetify.display.mdAndUp &&
         this.currentPage &&
         this.currentPage === LANDING_PAGENAME
       );
@@ -722,7 +749,7 @@ export default {
         : `${heightStyle} overflow-y: auto; scroll-behavior: smooth; scrollbar-width: thin; `;
     },
     showSmallNavigation() {
-      return this.$vuetify.breakpoint.smAndDown;
+      return this.$vuetify.display.smAndDown;
     },
     searchCount() {
       return this.filteredContent !== undefined
@@ -733,12 +760,8 @@ export default {
       return this.outdatedVersion && !this.reloadDialogCanceled;
     },
     dynamicBackground() {
-      const imageKey = this.appBGImage;
-      if (!imageKey) {
-        return '';
-      }
+      const bgImg = getImage(this.appBGImage);
 
-      const bgImg = this.mixinMethods_getWebpImage(imageKey, this.$store.state);
       if (!bgImg) {
         return '';
       }
@@ -804,6 +827,7 @@ export default {
   },
   /* eslint-disable object-curly-newline */
   data: () => ({
+    appBGImage: '',
     ckanDomain: process.env.VITE_API_ROOT,
     reloadDialogCanceled: false,
     showInfoDialog: false,
@@ -831,169 +855,10 @@ export default {
     navigationItems,
     userMenuItems,
     editMaintenanceMessage: `There is maintenance going on, please don't edit anything return to the <a href='./#${USER_DASHBOARD_PATH}' >dashboard page </a> or the <a href='/' >main page</a> for details!.`,
-    reloadConfigTimer: null,
   }),
 };
 </script>
 
 <style lang="scss">
-$font-family: 'Raleway', sans-serif;
-
-.envidat-font-overwrite {
-  font-family: $font-family, sans-serif !important;
-
-  [class*='display-'],
-  [class*='text-'] {
-    font-family: $font-family, sans-serif !important;
-  }
-
-  [class*='headerTitle'] {
-    font-family: 'Baskervville', serif !important;
-    font-weight: 400;
-    opacity: 1;
-    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
-  }
-
-  [class*='envidatTitle'] {
-    font-family: 'Baskervville', serif !important;
-  }
-}
-</style>
-
-<style>
-.v-dialog:not(.v-dialog--fullscreen) {
-  max-height: 95% !important;
-}
-
-.envidatNavbar {
-  position: sticky;
-  top: 8px;
-  z-index: 1000;
-}
-
-.envidatNavbar.small {
-  top: 0px;
-}
-
-/*** General Card styles ***/
-
-.card .subheading {
-  /* font-family: 'Baskervville', serif; */
-  font-weight: 400;
-  /* color: #555; */
-  opacity: 0.75;
-  line-height: 1.25em;
-}
-
-.readableText {
-  line-height: 1.2rem;
-  color: rgba(0, 0, 0, 0.87) !important;
-}
-
-.readableText img {
-  max-width: 100%;
-}
-
-.accentLink a {
-  color: #ffd740 !important;
-}
-
-.imagezoom,
-.imagezoom .v-image__image {
-  transition: all 0.2s;
-}
-
-.imagezoom:hover .v-image__image,
-.imagezoom:focus .v-image__image {
-  transform: scale(1.2);
-}
-
-.envidatSmallNavigation {
-  position: fixed;
-  top: auto;
-  right: 10px;
-  bottom: 10px;
-}
-
-.envidatToolbar > .v-toolbar__content {
-  padding: 0px 8px !important;
-}
-
-.envidatIcon {
-  height: 24px !important;
-  width: 24px !important;
-}
-
-.envidatIcon.small {
-  height: 20px !important;
-  width: 20px !important;
-}
-
-.envidatTitle {
-  letter-spacing: 0 !important;
-}
-
-.metadataInfoIcon,
-.metadataInfoIcon .v-icon,
-.metadataInfoIcon .v-image {
-  opacity: 0.8;
-}
-
-.metadataTitleIcons {
-  opacity: 0.5;
-}
-
-.envidatBadge span {
-  font-size: 0.8rem !important;
-}
-
-.envidatBadgeBigNumber span {
-  font-size: 0.7rem !important;
-}
-
-.envidatChip {
-  height: 1.1rem !important;
-  font-size: 0.65rem !important;
-  margin: 1px 2px !important;
-  /* opacity: 0.85 !important; */
-}
-
-.enviDatSnackbar > .v-snack__wrapper > .v-snack__content {
-  height: 100%;
-  padding: 12px;
-}
-
-.smallChip {
-  height: 1.25rem !important;
-  font-size: 0.55rem !important;
-}
-
-.smallChip > .v-chip__content > .v-chip__close > .v-icon {
-  font-size: 15px !important;
-}
-
-.authorTag span {
-  font-size: 14px !important;
-}
-
-.chip__content span {
-  cursor: pointer !important;
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition-duration: 0.1s;
-  transition-property: height, opacity;
-  transition-timing-function: ease;
-  /* overflow: hidden; */
-}
-
-.fade-enter,
-.fade-leave-active {
-  opacity: 0;
-}
-
-.application .v-overlay.v-overlay--active {
-  z-index: 1025 !important;
-}
+@import url(./sass/globalStyles.scss);
 </style>

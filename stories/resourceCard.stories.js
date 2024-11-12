@@ -1,5 +1,3 @@
-
-
 import ResourceCard from '@/modules/metadata/components/ResourceCard.vue';
 import { createResource } from '@/factories/metaDataFactory';
 import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';

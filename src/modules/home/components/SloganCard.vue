@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-container class="pa-0">
+    <v-container class="pa-0" fluid>
       <v-row no-gutters>
         <v-col
           class="py-0 pr-sm-0"
@@ -16,12 +16,8 @@
             :src="sloganImg ? sloganImg : fallbackImg"
             style="min-height: 100%; border-top-left-radius: 4px;"
             :style="
-              `max-height: ${maxHeight}px; border-bottom-left-radius: ${
-                $vuetify.breakpoint.smAndUp ? 4 : 0
-              }px;
-                    border-top-right-radius: ${
-                      $vuetify.breakpoint.xsOnly ? 4 : 0
-                    }px;`
+              `max-height: ${maxHeight}px; border-bottom-left-radius: ${ $vuetify.display.smAndUp ? 4 : 0 }px;
+              border-top-right-radius: ${ $vuetify.display.xs ? 4 : 0 }px;`
             "
           />
         </v-col>
@@ -32,7 +28,7 @@
             v-html="slogan"
           ></div>
           <div
-            class="hidden-xs-only hidden-md-and-up envidatSlogan text-h5 pb-5"
+            class="hidden-xs hidden-md-and-up envidatSlogan text-h5 pb-5"
             v-html="slogan"
           ></div>
           <div
@@ -88,6 +84,7 @@
  */
 
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
+import {getImage} from '@/factories/imageFactory';
 
 export default {
   name: 'SloganCard',
@@ -124,17 +121,7 @@ export default {
   },
   components: { BaseRectangleButton },
   beforeMount() {
-    if (this.$store) {
-      this.fallbackImg = this.mixinMethods_getWebpImage(
-        'cards/slogan/fingertips_small',
-        this.$store.state,
-      );
-    } else {
-      // use the import() for lazy loading a fallback incase there is not $store (storybook stories usually)
-      import('@/assets/cards/slogan/fingertips_small.jpg').then(imgImport => {
-        this.fallbackImg = imgImport.default;
-      });
-    }
+    this.fallbackImg = getImage('fingertips_small');
   },
   data: () => ({
     fallbackImg: '',

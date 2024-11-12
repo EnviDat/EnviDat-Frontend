@@ -26,9 +26,9 @@ export const dataLicenses = [
 - *Adapt*: remix, transform, and build upon the material for any purpose, even commercially.  
 
 <br /> <br />
-**Under the following terms:**
- -*Attribution*: You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
- -*No additional restrictions*: You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.  
+**Under the following terms:**  
+-*Attribution*: You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
+-*No additional restrictions*: You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.  
 
 <br /> <br />
 **Notices:**
@@ -48,10 +48,10 @@ No warranties are given. The license may not give you all of the permissions nec
 - *Adapt*: remix, transform, and build upon the material for any purpose, even commercially. The licensor cannot revoke these freedoms as long as you follow the license terms.  
 
 <br /> <br />
-**Under the following terms:**
- -*Attribution*: You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
- -*ShareAlike*: If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.
- -*No additional restrictions*: You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.  
+**Under the following terms:**  
+-*Attribution*: You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
+-*ShareAlike*: If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.
+-*No additional restrictions*: You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.  
 
 <br /> <br />
 **Notices:**
@@ -97,15 +97,15 @@ WSL reserves the right to use its research data itself or make it accessible to 
     summary: `This is a human-readable summary of the ODbL 1.0 license. Please see the disclaimer below.  
 
 **You are free to:**   
-  - *Share*: To copy, distribute and use the database.
-  - *Create*: To produce works from the database.
-  - *Adapt*: To modify, transform and build upon the database.  
+- *Share*: To copy, distribute and use the database.
+- *Create*: To produce works from the database.
+- *Adapt*: To modify, transform and build upon the database.  
 
 <br /> <br />
-**As long as you:**
-  - *Attribute*: You must attribute any public use of the database, or works produced from the database, in the manner specified in the ODbL. For any use or redistribution of the database, or works produced from it, you must make clear to others the license of the database and keep intact any notices on the original database.
-  - *Share-Alike*: If you publicly use any adapted version of this database, or works produced from an adapted database, you must also offer that adapted database under the ODbL.
-  - *Keep open*: If you redistribute the database, or an adapted version of it, then you may use technological measures that restrict the work (such as DRM) as long as you also redistribute a version without such measures.  
+**As long as you:**  
+- *Attribute*: You must attribute any public use of the database, or works produced from the database, in the manner specified in the ODbL. For any use or redistribution of the database, or works produced from it, you must make clear to others the license of the database and keep intact any notices on the original database.
+- *Share-Alike*: If you publicly use any adapted version of this database, or works produced from an adapted database, you must also offer that adapted database under the ODbL.
+- *Keep open*: If you redistribute the database, or an adapted version of it, then you may use technological measures that restrict the work (such as DRM) as long as you also redistribute a version without such measures.  
 
 <br /> <br />
 **Disclaimer**

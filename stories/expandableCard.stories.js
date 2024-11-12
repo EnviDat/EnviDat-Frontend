@@ -21,7 +21,7 @@ import communitySmall from '../src/assets/about/community_small.jpg';
 
 const computed = {
   missionImg() {
-    return this.$vuetify.breakpoint.mdAndUp ? mission : missionSmall;
+    return this.$vuetify.display.mdAndUp ? mission : missionSmall;
   },
   aboutCardInfo() {
     return [

@@ -4,22 +4,25 @@
       <v-col cols="12" md="10" offset-md="1">
         <!-- Tabs -->
         <v-tabs
-          v-model="activeTab"
+          :model-value="activeTab"
           slider-color="accent"
           color="white"
           grow
-          icons-and-text
-          background-color="highlight"
-        >
-          <v-tab
-            v-for="tab in tabs"
-            :key="tab.name"
-            @click="catchTabClick(tab.name)"
-            class="pa-0"
-          >
-            {{ $vuetify.breakpoint.smAndUp ? tab.name : '' }}
+          bg-color="highlight">
 
-            <v-icon>{{ tab.icon }}</v-icon>
+          <v-tab
+            v-for="(tab, index) in tabs"
+            :key="tab.name"
+            :value="tab.name"
+            @click="catchTabClick(tab.name)"
+            class="pa-0">
+
+            {{ $vuetify.display.smAndUp ? tab.name : '' }}
+
+            <BaseIcon
+              :icon="tab.icon"
+              :color="activeTab === index ? 'white' : 'grey-darken-3'"
+              class='px-sm-3' />
           </v-tab>
         </v-tabs>
       </v-col>
@@ -27,64 +30,74 @@
 
     <v-row no-gutters ref="aboutBody" class="py-1 py-md-4">
       <v-col cols="12" md="10" offset-md="1">
-        <!-- Tab contents -->
-        <v-tabs-items v-model="activeTab">
+
+        <v-window
+          :model-value="activeTab" >
+
+
           <!-- About -->
-          <v-tab-item :key="tabs[0].name">
+          <v-window-item :key="tabs[0].name">
             <about-tab-layout title="About EnviDat" :titleImage="missionImg">
               <v-row no-gutters>
                 <v-col
                   v-for="(card, index) in aboutCardInfo"
                   :key="index"
                   class="pa-3"
-                  :class="card.widthClass"
-                >
+                  :class="card.widthClass">
                   <expandable-card
                     :title="card.title"
                     :text="card.text"
                     :img="card.img"
                     :min-height="100"
                     :max-height="150"
-                    :contain="card.title === 'WSL'"
-                  />
+                    :contain="card.title === 'WSL'" />
                 </v-col>
               </v-row>
             </about-tab-layout>
-          </v-tab-item>
+          </v-window-item>
 
           <!-- Guidelines -->
-          <v-tab-item :key="tabs[1].name">
+          <v-window-item :key="tabs[1].name">
             <about-tab-layout
               title="Guidelines"
               :titleImage="guidelineImg"
               :loading="guidelinesLoading"
               loadingText="Loading Guidelines..."
-              :markdownContent="guidelinesMarkdownText"
-            />
-          </v-tab-item>
+              :markdownContent="guidelinesMarkdownText" />
+          </v-window-item>
 
           <!-- Policies -->
-          <v-tab-item :key="tabs[2].name">
+          <v-window-item :key="tabs[2].name">
             <about-tab-layout
               title="Policies"
               :titleImage="policiesImg"
               :loading="policiesLoading"
               loadingText="Loading Policies..."
-              :markdownContent="policiesMarkdownText"
-            />
-          </v-tab-item>
+              :markdownContent="policiesMarkdownText" />
+          </v-window-item>
 
           <!-- DMP -->
-          <v-tab-item :key="tabs[3].name">
+          <v-window-item :key="tabs[3].name">
             <about-tab-layout
               title="Data Management Plan"
               :titleImage="dmpImg"
               :loading="dmpLoading"
               loadingText="Loading Data Management Plan infos..."
-              :markdownContent="dmpMarkdownText"
-            />
-          </v-tab-item>
-        </v-tabs-items>
+              :markdownContent="dmpMarkdownText" />
+          </v-window-item>
+
+          <!-- imprint page -->
+          <v-window-item :key="tabs[4].name">
+            <about-tab-layout
+              title="Imprint"
+              :titleImage="mdiFingerprint"
+              :loading="dmpLoading"
+              loadingText="Loading Data Management Plan infos..."
+              :markdownContent="imprintMarkdownText" />
+          </v-window-item>
+
+        </v-window>
+
       </v-col>
     </v-row>
   </v-container>
@@ -114,6 +127,7 @@ import {
   ABOUT_NAMESPACE,
   GET_DMP,
   GET_GUIDELINES,
+  GET_IMPRINT,
   GET_POLICIES,
 } from '@/modules/about/store/aboutMutationsConsts';
 import { ABOUT_PAGENAME } from '@/router/routeConsts';
@@ -122,7 +136,10 @@ import {
   SET_CURRENT_PAGE,
 } from '@/store/mainMutationsConsts';
 
-import AboutTabLayout from './AboutTabLayout.vue';
+import { getImage } from '@/factories/imageFactory';
+import { mdiBookOpenVariant, mdiInformation, mdiLibrary, mdiShieldCheckOutline, mdiFingerprint } from '@mdi/js';
+import AboutTabLayout from '@/modules/about/components/AboutTabLayout.vue';
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 export default {
   name: 'AboutPage',
@@ -134,13 +151,14 @@ export default {
   beforeRouteEnter(to, from, next) {
     next(vm => {
       vm.$store.commit(SET_CURRENT_PAGE, ABOUT_PAGENAME);
-      vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
+      vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
     });
   },
   beforeMount() {
     this.$store.dispatch(`${ABOUT_NAMESPACE}/${GET_POLICIES}`);
     this.$store.dispatch(`${ABOUT_NAMESPACE}/${GET_GUIDELINES}`);
     this.$store.dispatch(`${ABOUT_NAMESPACE}/${GET_DMP}`);
+    this.$store.dispatch(`${ABOUT_NAMESPACE}/${GET_IMPRINT}`);
   },
   /**
    * @description reset the scrolling to the top,
@@ -228,39 +246,23 @@ export default {
       guidelinesLoading: `${ABOUT_NAMESPACE}/guidelinesLoading`,
       policiesMarkdown: `${ABOUT_NAMESPACE}/policiesMarkdown`,
       policiesLoading: `${ABOUT_NAMESPACE}/policiesLoading`,
+      imprintLoading: `${ABOUT_NAMESPACE}/imprintLoading`,
+      imprintMarkdown: `${ABOUT_NAMESPACE}/imprintMarkdown`,
       dmpMarkdown: `${ABOUT_NAMESPACE}/dmpMarkdown`,
       dmpLoading: `${ABOUT_NAMESPACE}/dmpLoading`,
     }),
     aboutCardInfo() {
       const backendAboutInfos = this.config?.aboutInfo || null;
 
-      const contact = this.mixinMethods_getWebpImage(
-        'about/contact',
-        this.$store.state,
-      );
-      const handsSmall = this.mixinMethods_getWebpImage(
-        'about/hands_small',
-        this.$store.state,
-      );
-      const conceptImg = this.mixinMethods_getWebpImage(
-        'about/concept_small',
-        this.$store.state,
-      );
+      const contact = getImage('contact');
+      const handsSmall = getImage('hands_small');
+      const conceptImg = getImage('concept_small');
 
-      const communityImg = this.mixinMethods_getWebpImage(
-        'about/community_small',
-        this.$store.state,
-      );
-      const wslLogoImg = this.mixinMethods_getWebpImage(
-        'about/wslLogo',
-        this.$store.state,
-      );
-      const teamImg = this.mixinMethods_getWebpImage(
-        'about/team_small',
-        this.$store.state,
-      );
+      const communityImg = getImage('community_small');
+      const wslLogoImg = getImage('wslLogo');
+      const teamImg = getImage('team_small');
 
-      const defaultWidthClass = 'col-12 col-sm-6 col-md-4 col-xl-3';
+      const defaultWidthClass = 'v-col-12 v-col-sm-6 v-col-md-4 v-col-xl-3';
 
       const defaultAboutInfo = [
         {
@@ -306,7 +308,7 @@ export default {
             this.orga +
             '" style="width: 100%; height: 100%;" />',
           img: teamImg,
-          defaultWidthClass: 'col-12 col-sm-12 col-md-8',
+          defaultWidthClass: 'v-col-12 v-col-sm-12 v-col-md-8',
         },
       ];
 
@@ -321,63 +323,63 @@ export default {
       );
     },
     missionImg() {
-      const imgPath = this.$vuetify.breakpoint.mdAndUp
-        ? 'about/mission'
-        : 'about/mission_small';
-      return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
+      const imgPath = this.$vuetify.display.mdAndUp ? 'mission' : 'mission_small';
+      return getImage(imgPath);
     },
     policiesMarkdownText() {
       return renderMarkdown(this.policiesMarkdown);
     },
     policiesImg() {
-      const imgPath = this.$vuetify.breakpoint.mdAndUp
-        ? 'about/policies'
-        : 'about/policies_small';
-      return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
+      const imgPath = this.$vuetify.display.mdAndUp ? 'policies' : 'policies_small';
+      return getImage(imgPath);
     },
     guidelinesMarkdownText() {
       return renderMarkdown(this.guidelinesMarkdown);
     },
     guidelineImg() {
-      const imgPath = this.$vuetify.breakpoint.mdAndUp
-        ? 'about/guidelines'
-        : 'about/guidelines_small';
-      return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
+      const imgPath = this.$vuetify.display.mdAndUp ? 'guidelines' : 'guidelines_small';
+      return getImage(imgPath);
     },
     dmpImg() {
-      const imgPath = this.$vuetify.breakpoint.mdAndUp
-        ? 'about/dmp'
-        : 'about/dmp_small';
-      return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
+      const imgPath = this.$vuetify.display.mdAndUp ? 'dmp' : 'dmp_small';
+      return getImage(imgPath);
     },
     dmpMarkdownText() {
       return renderMarkdown(this.dmpMarkdown);
     },
+    imprintMarkdownText() {
+      return renderMarkdown(this.imprintMarkdown);
+    },
   },
   components: {
+    BaseIcon,
     ExpandableCard,
     AboutTabLayout,
   },
   data: () => ({
-    PageBGImage: 'app_b_browsepage',
+    pageBGImage: 'app_b_browsepage',
     orga,
     activeTab: null,
     tabs: [
       {
         name: 'about',
-        icon: 'info',
+        icon: mdiInformation,
       },
       {
         name: 'guidelines',
-        icon: 'local_library',
+        icon: mdiLibrary,
       },
       {
         name: 'policies',
-        icon: 'policy',
+        icon: mdiShieldCheckOutline,
       },
       {
         name: 'dmp',
-        icon: 'menu_book',
+        icon: mdiBookOpenVariant,
+      },
+      {
+        name: 'imprint',
+        icon: mdiFingerprint,
       },
     ],
   }),

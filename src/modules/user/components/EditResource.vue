@@ -1,68 +1,45 @@
 <template>
-  <v-card id="EditResource" :key="id" :loading="loading" class="pa-0">
-    <!-- prettier-ignore -->
-    <BaseIconButton id="EditResourceCloseButton"
-                    class="ma-2"
-                    :class="{ 'mx-1': $vuetify.breakpoint.smAndDown }"
-                    style="position: absolute; top: 0; right: 0; z-index: 2"
-                    material-icon-name="close"
-                    icon-color="primary"
-                    color="primary"
-                    outlined
-                    tooltipText="Cancel Resource Editing"
-                    :tooltipBottom="true"
-                    @clicked="$emit('closeClicked')"/>
+  <v-card id="EditResource" :key="id" :loading="loadingColor" class="pa-0">
+
+    <BaseIconButton class="editResourceCloseButton ma-2" :class="{ 'mx-1': $vuetify.display.smAndDown }"
+                    style="position: absolute; top: 0; right: 0; z-index: 2" :icon="mdiClose" icon-color="primary"
+                    outline-color="primary"
+                    outlined tooltip-text="Cancel Resource Editing"
+                    tooltip-bottom
+                    @clicked="$emit('closeClicked')" />
+
 
     <div class="pa-3">
-      <template slot="progress">
-        <v-progress-linear color="primary" indeterminate />
-      </template>
-
       <v-row>
         <v-col cols="6" class="text-h5 d-flex align-center">
-          <v-icon v-if="isDataPrivate" color="error" left>lock</v-icon>
-          <v-icon v-if="isDataDeprecated" color="error" left
-            >not_interested</v-icon
-          >
-
-          <span>{{ labels.title }}</span>
+          <BaseIcon v-if="isDataPrivate" color="black" :icon="mdiLock" />
+          <BaseIcon v-if="isDataDeprecated" color="black" :icon="mdiCancel" />
+          <span class="pl-2" >{{ labels.title }}</span>
         </v-col>
 
         <v-col v-if="message">
-          <BaseStatusLabelView
-            statusIcon="check"
-            statusColor="success"
-            :statusText="message"
-            :expandedText="messageDetails"
-          />
+          <BaseStatusLabelView status="check" statusColor="success" :statusText="message"
+            :expandedText="messageDetails" />
         </v-col>
 
         <v-col v-if="error">
-          <BaseStatusLabelView
-            statusIcon="error"
-            statusColor="error"
-            :statusText="error"
-            :expandedText="errorDetails"
-          />
+          <BaseStatusLabelView status="error" statusColor="error" :statusText="error" :expandedText="errorDetails" />
         </v-col>
       </v-row>
 
       <div class="pa-1">
-        <v-alert type="info" border="left" dense icon="info">{{
-          labels.instructions
-        }}</v-alert>
+        <v-alert type="info" border variant="outlined" >{{ labels.instructions }}</v-alert>
 
         <v-row id="resourceName" no-gutters class="pt-4">
           <v-col cols="12">
             <v-text-field
               :label="labels.resourceName"
               ref="resourceName"
-              outlined
               required
               :disabled="loading"
               v-model="resourceNameField"
-              :error-messages="validationErrors.name"
-            />
+              :error-messages="validationErrors.name" />
+
           </v-col>
         </v-row>
 
@@ -70,7 +47,6 @@
           <v-col cols="12">
             <v-textarea
               :label="labels.description"
-              outlined
               auto-grow
               :disabled="loading"
               v-model="descriptionField"
@@ -118,6 +94,7 @@
               <div id="backdrop" class="pa-4 text-body-1">
                 Image preview could not be loaded!
               </div>
+
             </div>
           </v-col>
 
@@ -131,10 +108,9 @@
               dense
               hide-details
               :disabled="loading"
-              :value="urlField"
+              v-model="urlField"
               :error-messages="validationErrors.url"
             />
-
             <v-text-field
               v-if="!isLongUrl"
               :label="isLink ? labels.url : labels.fileName"
@@ -143,7 +119,7 @@
               dense
               hide-details
               :disabled="loading"
-              :value="urlField"
+              v-model="urlField"
               :error-messages="validationErrors.url"
             />
           </v-col>
@@ -154,7 +130,7 @@
             <BaseIconSwitch
               :active="isDataDeprecated"
               :disabled="!editingRestrictingActive"
-              materialIconName="not_interested"
+              :icon="mdiCancel"
               class="mt-2"
               :tooltipText="labels.dataDeprecatedSwitchTooltip"
               @clicked="isDataDeprecated = !isDataDeprecated"
@@ -168,98 +144,64 @@
         </v-row>
 
         <v-row id="format" no-gutters class="pt-5">
+
           <v-col cols="12" md="6" class="pr-md-4">
+
             <v-row no-gutters>
-              <v-col class="shrink pt-2">
-                <img
-                  class="customIcon"
-                  :src="fileFormatIcon"
-                  width="24"
-                  height="24"
-                  alt="file extension icon"
-                />
+              <v-col class="flex-grow-0 pt-2">
+                <BaseIcon color="gray" :icon="fileFormatIcon"></BaseIcon>
               </v-col>
 
-              <v-col class="pl-2">
+              <v-col class="pl-4">
                 <v-text-field
-                  :label="labels.format"
-                  outlined
-                  dense
-                  hide-details="auto"
-                  :disabled="loading"
-                  @change="formatField = $event"
-                  :value="formatField"
-                  :error-messages="validationErrors.format"
-                />
+                  :label="labels.format" hide-details="auto" :disabled="loading"
+                  @blur="formatField = $event.target.value"
+                  :model-value="formatField" :error-messages="validationErrors.format" />
               </v-col>
             </v-row>
           </v-col>
 
           <v-col id="size" cols="12" md="6" class="pt-2 pt-md-0">
+
             <v-row no-gutters>
-              <v-col class="shrink pt-2">
-                <img
-                  class="customIcon"
-                  :src="fileSizeIcon"
-                  width="24"
-                  height="24"
-                  alt="file size icon"
-                />
+              <v-col class="flex-grow-0 pt-2">
+                <BaseIcon color="gray" :icon="fileSizeIcon"></BaseIcon>
               </v-col>
 
-              <v-col class="pl-2">
+              <v-col class="pl-4">
                 <v-text-field
-                  :label="labels.size"
-                  outlined
-                  dense
-                  hide-details="auto"
-                  :disabled="!isLink || loading"
-                  @change="sizeField = $event"
-                  :value="isLink ? sizeField : sizeFieldText"
+                  :label="labels.size" hide-details="auto" :disabled="!isLink || loading"
+                  :model-value="isLink ? sizeField : sizeFieldText"
                   :error-messages="validationErrors.size"
+                  @blur="sizeField = $event.target.value"
                 />
               </v-col>
-              <v-col class="pl-2">
+              <v-col class="px-2">
                 <v-select
                   :items="labels.sizeFormatList"
                   v-model="sizeFormatField"
                   label="File size format"
-                  outlined
-                  dense
                   hide-details="auto"
-                  :disabled="!isLink || loading"
-                  :error-messages="validationErrors.sizeFormat"
-                />
+                  :disabled="!isLink || loading" :error-messages="validationErrors.sizeFormat" />
               </v-col>
             </v-row>
+
+
           </v-col>
         </v-row>
 
         <v-row id="dates" no-gutters align="center" class="pt-3">
+
           <v-col cols="12" md="6" class="pr-md-4">
             <v-text-field
-              :label="labels.created"
-              prepend-icon="date_range"
-              outlined
-              readonly
-              dense
-              hide-details
-              :disabled="loading"
-              :value="readableCreated"
-            />
+              :label="labels.created" :prepend-icon="mdiCalendarRange" readonly hide-details
+              :disabled="loading" :model-value="readableCreated" />
           </v-col>
 
           <v-col cols="12" md="6" class="pt-2 pt-md-0">
             <v-text-field
-              :label="labels.lastModified"
-              prepend-icon="update"
-              outlined
-              readonly
-              dense
-              hide-details
-              :disabled="loading"
-              :value="readableLastModified"
-            />
+              :label="labels.lastModified" :prepend-icon="mdiUpdate" readonly hide-details
+              :disabled="loading" :model-value="readableLastModified" />
           </v-col>
         </v-row>
 
@@ -267,7 +209,7 @@
 
         <div class="pa-1">
           <v-expand-transition>
-            <v-alert v-if="isDataPrivate" type="warning" icon="warning">
+            <v-alert v-if="isDataPrivate" type="warning" >
               <div v-html="openAccessDetails"></div>
             </v-alert>
           </v-expand-transition>
@@ -275,18 +217,18 @@
           <BaseIconSwitch
             :active="isDataPrivate"
             :disabled="!editingRestrictingActive"
-            materialIconName="lock"
+            :icon="isDataPrivate ? mdiLock : mdiLockOpen"
             class="mt-2"
             :tooltipText="labels.dataAccessSwitchTooltip"
             @clicked="isDataPrivate = !isDataPrivate"
-            :label="labels.dataAccessSwitchLabel"
-          />
+            :label="labels.dataAccessSwitchLabel" />
+
 
           <BaseIconSwitch
             v-if="isDataPrivate"
             :active="hasAllowedUsers"
             :disabled="!editingRestrictingActive"
-            materialIconName="groups"
+            :icon="mdiAccountGroup"
             class="mt-2"
             :tooltipText="labels.hasAllowedUsersSwitchTooltip"
             @clicked="hasAllowedUsers = !hasAllowedUsers"
@@ -303,7 +245,7 @@
                 :users="envidatUserNameStrings"
                 :pickerLabel="labels.restrictedAllowedUsersInfo"
                 multiplePick
-                prependIcon="key"
+                :prependIcon="mdiKey"
                 userTagsCloseable
                 :placeholder="labels.allowedUsersTypingInfo"
                 :preSelected="preSelectedAllowedUsers"
@@ -315,26 +257,26 @@
 
           <v-row v-if="!editingRestrictingActive" class="py-2">
             <v-col>
-              <v-alert type="warning" icon="warning">{{
-                labels.editingRestrictingUnavailableInfo
-              }}</v-alert>
+              <v-alert type="warning" >{{ labels.editingRestrictingUnavailableInfo }}</v-alert>
             </v-col>
           </v-row>
+
           <v-row v-if="checkUppercaseValue" class="py-2">
             <v-col>
-              <v-alert type="info" icon="info">{{
+              <v-alert type="info" >{{
                 labels.editingWarningUppercaseExtension
               }}</v-alert>
             </v-col>
           </v-row>
 
           <v-row no-gutters class="pt-4" justify="end">
-            <v-col class="shrink">
+            <v-col class="flex-grow-0">
               <!-- prettier-ignore -->
-              <BaseRectangleButton :disabled="!saveButtonEnabled"
-                                  :loading="loading"
-                                  :buttonText="labels.createButtonText"
-                                  @clicked="saveResourceClick"/>
+              <BaseRectangleButton
+                  :disabled="!saveButtonEnabled"
+                  :loading="loading"
+                  :buttonText="labels.createButtonText"
+                @clicked="saveResourceClick" />
             </v-col>
           </v-row>
         </div>
@@ -363,8 +305,6 @@ import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.v
 import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue';
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
 
-import fileSizeIcon from '@/assets/icons/fileSize.png';
-import fileIcon from '@/assets/icons/file.png';
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
@@ -372,9 +312,8 @@ import {
 } from '@/factories/userEditingValidations';
 
 import { formatDateTimeToCKANFormat } from '@/factories/mappingFactory';
-import { formatDate } from '@/factories/metaDataFactory';
 import { renderMarkdown } from '@/factories/stringFactory';
-import { getFileIcon } from '@/factories/imageFactory';
+import {getFileIcon, getIcon} from '@/factories/imageFactory';
 
 import notFoundImg from '@/modules/user/assets/imageNotFound.jpg';
 import {
@@ -384,6 +323,21 @@ import {
   ACCESS_LEVEL_SAMEORGANIZATION_VALUE,
   ACCESS_LEVEL_PUBLIC_VALUE,
 } from '@/factories/userEditingFactory';
+import {
+  mdiAccount,
+  mdiCalendarRange,
+  mdiClose,
+  mdiKey,
+  mdiLock,
+  mdiLockOpen,
+  mdiUpdate,
+  mdiCancel,
+  mdiAccountGroup,
+} from '@mdi/js';
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
+import { formatDate } from '@/factories/dateFactory';
+
 
 export default {
   name: 'EditResource',
@@ -488,11 +442,18 @@ export default {
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   mounted() {},
   computed: {
+    loadingColor() {
+      if (this.loading) {
+        return 'accent';
+      }
+
+      return undefined;
+    },
     editingRestrictingActive() {
       return this.userEditMetadataConfig?.editingRestrictingActive || false;
     },
@@ -833,7 +794,6 @@ export default {
           vm.imagePreviewError = e;
           vm.loadingImagePreview = false;
 
-          // eslint-disable-next-line no-console
           console.error(`Loading image preview failed: ${e}`);
         }
       });
@@ -867,6 +827,15 @@ export default {
     },
   },
   data: () => ({
+    mdiCancel,
+    mdiKey,
+    mdiAccount,
+    mdiLock,
+    mdiLockOpen,
+    mdiClose,
+    mdiCalendarRange,
+    mdiUpdate,
+    mdiAccountGroup,
     previews: {
       name: null,
       description: null,
@@ -919,8 +888,8 @@ export default {
         'Deprecated resources are grayed out and at the bottom of the list. Make sure you provide an updated replacement!',
     },
     saveButtonEnabled: false,
-    fileSizeIcon,
-    fileIcon,
+    fileSizeIcon: getIcon('fileSize'),
+    fileIcon: getIcon('file'),
     validationErrors: {
       name: null,
       description: null,
@@ -936,6 +905,8 @@ export default {
     BaseRectangleButton,
     BaseIconButton,
     BaseIconSwitch,
+    BaseIcon,
+    BaseStatusLabelView,
   },
 };
 </script>

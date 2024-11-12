@@ -59,7 +59,7 @@ export default {
   },
   mounted() {
   },
-  beforeDestroy() {
+  beforeUnmount() {
     destroyUppyInstance();
   },
   computed: {

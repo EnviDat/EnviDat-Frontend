@@ -1,8 +1,7 @@
 <template>
-  <v-app-bar clipped-left
-              app
-              color="white"
-              :height="$vuetify.breakpoint.xsOnly ? 50 : 36" >
+  <v-app-bar color="white"
+             order="-1"
+              :height="$vuetify.display.xs ? 50 : 36" >
 
     <v-container fluid
                   class="pa-0" >
@@ -12,21 +11,20 @@
               justify="space-between" >
 
         <v-col cols="auto" sm="2">
-          <v-row no-gutters>
+          <v-row no-gutters class="align-center">
 
-            <v-col class="shrink px-2" >
+            <v-col class="flex-grow-0" >
               <v-btn icon
-                      class="ma-0 pt-1"
                       small
                       @click.stop="catchHomeClicked" >
-                      <!-- :style="`background-color: ${ item.active ? $vuetify.theme.themes.light.accent : 'transparent' }`" -->
+                      <!-- :style="`background-color: ${ item.active ? $vuetify.theme.themes.light.colors.accent : 'transparent' }`" -->
                 <v-img :src="EnviDatLogo"
                      height="32"
                      width="32"
                       alt="envidat_logo" />
               </v-btn>
             </v-col>
-            <v-col class="shrink py-0" >
+            <v-col class="flex-grow-0 py-0" >
               <div class="text-md-h5 envidatText clickable mt-1 mt-sm-0"
                    @click.stop="catchHomeClicked">
                 {{ showAdditionalText ? logoText : '' }}
@@ -43,32 +41,30 @@
         </v-col>
 
         <v-col v-if="signedInUser"
-                class="shrink"
+                class="flex-grow-0"
                 cols="4" sm="4" md="3" xl="2">
 
           <v-row align="center"
                   justify="end" >
 
-            <v-col :style="`text-align: right; ${$vuetify.breakpoint.xsOnly ? 'line-height: 1rem;' : ''}`">
+            <v-col :style="`text-align: right; ${$vuetify.display.xs ? 'line-height: 1rem;' : ''}`">
               {{ signedInUser.fullName }}
             </v-col>
 
-            <v-col v-if="editingDatasetName"
-                   class="shrink">
-              <BaseIconButton id="EditButtonNavigationToolbar"
-                              material-icon-name="edit"
-                              :fillColor="$vuetify.theme.themes.light.accent"
-                              iconColor="black"
-                              color="accent"
-                              :isSmall="true"
-                              :isElevated="true"
-                              :tooltipText="`Continue editing ${editingDatasetName}`"
-                              :tooltipBottom="true"
-                              :overwriteHeight="24"
-                              @clicked="catchContinueClick" />
+            <v-col v-if="editingDatasetName" class="flex-grow-0">
+              <BaseIconButton
+                class="editButtonNavigationToolbar"
+                :icon="mdiPencil"
+                icon-color="black"
+                color="accent"
+                small
+                elevated
+                :tooltip-text="`Continue editing ${editingDatasetName}`"
+                tooltip-bottom
+                @clicked="catchContinueClick" />
             </v-col>
 
-            <v-col class="shrink">
+            <v-col class="flex-grow-0">
               <UserMenu :userObject="signedInUser"
                           :navItems="userNavigationItems"
                           @userMenuItemClick="catchUserMenuItemClicked" />
@@ -77,7 +73,7 @@
         </v-col>
 
         <v-col v-else
-               class="shrink"
+               class="flex-grow-0"
                cols="auto" sm="3" md="2" xl="1">
 
           <v-row align="center"
@@ -89,10 +85,9 @@
                    class="px-1"
                     :style="!signInDisabled  ? 'cursor: pointer;' : ''">
 
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on, attrs }">
-                  <div v-bind="attrs"
-                        v-on="on"
+              <v-tooltip location='bottom'>
+                <template v-slot:activator="{ props }">
+                  <div v-bind="props"
                         style="text-align: right;"
                         class="text-body-2">
                     {{ showAdditionalText ? signInText : '' }}
@@ -104,18 +99,17 @@
 
             </v-col>
 
-            <v-col class="shrink" >
+            <v-col class="flex-grow-0" >
 
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on, attrs }">
+              <v-tooltip location='bottom'>
+                <template v-slot:activator="{ props }">
                   <v-btn icon
                          :disabled="signInDisabled"
                           color="black"
                           small
                           @click="catchSigninClicked"
-                          v-bind="attrs"
-                          v-on="on" >
-                    <v-icon>account_circle</v-icon>
+                          v-bind="props" >
+                    <v-icon :icon="mdiAccountCircle" />
                   </v-btn>
                 </template>
 
@@ -127,7 +121,7 @@
 
         <v-progress-linear v-show="loading"
                           indeterminate
-                          style="position: absolute; left: 0; bottom: 0;"
+                          absolute
                           height="2"
                           color="primary" />
       </v-row>
@@ -138,6 +132,7 @@
 </template>
 
 <script>
+import {mdiAccountCircle, mdiPencil} from '@mdi/js';
 import ModeView from '@/components/Layouts/ModeView.vue';
 import EnviDatLogo from '@/assets/logo/EnviDat_logo_32.png';
 import UserMenu from '@/modules/user/components/UserMenu.vue';
@@ -162,11 +157,11 @@ export default {
   },
   computed: {
     showAdditionalText()  {
-      return this.$vuetify.breakpoint.xsOnly && !this.hasModeData
-          || this.$vuetify.breakpoint.smAndUp;
+      return this.$vuetify.display.xs && !this.hasModeData
+          || this.$vuetify.display.smAndUp;
     },
     compact() {
-      return this.$vuetify.breakpoint.xsOnly;
+      return this.$vuetify.display.xs;
     },
     hasModeData() {
       return !!this.mode;
@@ -190,6 +185,8 @@ export default {
     },
   },
   data: () => ({
+    mdiAccountCircle,
+    mdiPencil,
     EnviDatLogo,
     logoText: 'EnviDat',
     expanded: false,

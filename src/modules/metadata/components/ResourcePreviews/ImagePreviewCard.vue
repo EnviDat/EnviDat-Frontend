@@ -5,11 +5,13 @@
       <v-row no-gutters >
         <v-col >
 
+
           <v-img v-show="!loadingImagePreview && !imagePreviewError"
                  ref="imagePreview"
                  style="max-height: 100%; max-width: 100%; cursor: pointer;"
                  @click="catchImageClick"
                  @load="loadingImagePreview = false"
+                 :src="urlImage"
                  @error="catchImageLoadError"
                  alt="resource image preview"/>
 
@@ -21,15 +23,7 @@
                    style="max-height: 100%; max-width: 100%; opacity: 0.25;"
                    alt="resource image could not be loaded!"/>
 
-            <div v-show="loadingImagePreview"
-                 id="curtain"
-                 class="skeleton skeleton-animation-shimmer"
-                 style="height: 100%; width: 100%; "
-            >
-              <div style="width: 100%; min-height: 100%; "
-                   class="bone bone-type-image"
-              ></div>
-            </div>
+            <v-skeleton-loader v-show="loadingImagePreview" height='100%' width='100%' type="image" />
 
             <div v-show="!loadingImagePreview && imagePreviewError"
                  id="backdrop"
@@ -69,15 +63,15 @@ export default {
     loadImagePreview(url) {
       this.imagePreviewError = null;
       this.loadingImagePreview = true;
-      const vm = this;
 
       try {
         this.$nextTick(() => {
-          const imageRefs = vm.$refs.imagePreview;
-          const imageRef = (imageRefs instanceof Array) ? imageRefs[0] : imageRefs;
+          const imageRef = this.$refs.imagePreview;
 
-          imageRef.src = url;
-        })
+          if (imageRef && imageRef.$el) {
+            this.urlImage = imageRef.$el;
+          }
+        });
       } catch (e) {
         this.imagePreviewError = e;
         console.error(`Loading image preview failed: ${e}`);
@@ -89,7 +83,7 @@ export default {
       this.$emit('previewImageClicked');
     },
     catchImageLoadError(event) {
-      console.log('catchImageLoadError');
+      console.error('catchImageLoadError');
       console.error(event);
       this.loadingImagePreview = false;
       this.imagePreviewError = event;
@@ -99,6 +93,7 @@ export default {
     imagePreviewError: null,
     loadingImagePreview: false,
     notFoundImg,
+    urlImage: null,
   }),
 };
 </script>
@@ -111,9 +106,6 @@ export default {
 #backdrop, #curtain {
   grid-area: 1/1;
 }
-
-#backdrop {  }
-#curtain {  }
 
 .customIcon {
   opacity: 0.5;

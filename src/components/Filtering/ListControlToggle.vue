@@ -1,65 +1,67 @@
 <template>
-  <v-row align="center" justify="end" no-gutters class="fill-height">
+  <v-row align="center" justify="end" no-gutters >
     <v-btn-toggle
       v-if="isEnabledControl(LISTCONTROL_MAP_ACTIVE)"
-      v-model="controlsActive"
+      :model-value="controlsActive"
       class="fill-height"
-      borderless
-      tile
-      dense
+      color="secondary"
+      variant="flat"
+      rounded="0"
     >
       <v-btn
-        @click="catchControlClick(LISTCONTROL_MAP_ACTIVE)"
+          v-if="isEnabledControl(LISTCONTROL_MAP_ACTIVE)"
+          :active="mapActive"
+          :color="mapActive ? 'secondary' : 'white'"
+          :value="LISTCONTROL_MAP_ACTIVE"
+          @click="catchControlClick(LISTCONTROL_MAP_ACTIVE)"
         class="controlButton"
-        :class="isActiveControl(LISTCONTROL_MAP_ACTIVE) ? 'secondary' : ''"
-        text
       >
-        <v-icon>map</v-icon>
+        <BaseIcon :icon='mdiMap' color='grey-darken-3' />
       </v-btn>
     </v-btn-toggle>
 
     <v-btn-toggle
-      v-if="
-        isEnabledControl(LISTCONTROL_LIST_ACTIVE) ||
-          isEnabledControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE)
-      "
-      v-model="controlsActive"
+      v-if="isEnabledControl(LISTCONTROL_LIST_ACTIVE) ||
+            isEnabledControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE)"
+      :model-value="controlsActive"
       class="fill-height ml-2"
-      tile
-      borderless
-      dense
+      divided
+      color="secondary"
+      rounded="0"
     >
       <v-btn
         v-if="isEnabledControl(LISTCONTROL_LIST_ACTIVE)"
+        :active="listActive"
+        :color="listActive ? 'secondary' : 'white'"
+        :value="LISTCONTROL_LIST_ACTIVE"
         @click="catchControlClick(LISTCONTROL_LIST_ACTIVE)"
         class="controlButton"
-        :class="isActiveControl(LISTCONTROL_LIST_ACTIVE) ? 'secondary' : ''"
-        text
       >
-        <v-icon>view_headline</v-icon>
+        <BaseIcon :icon='mdiViewHeadline' color='grey-darken-3' />
       </v-btn>
 
       <v-btn
         v-if="isEnabledControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE)"
+        :active="compactListActive"
+        :color="compactListActive ? 'secondary' : 'white'"
+        :value="LISTCONTROL_COMPACT_LAYOUT_ACTIVE"
         @click="catchControlClick(LISTCONTROL_COMPACT_LAYOUT_ACTIVE)"
         class="controlButton"
-        :class="
-          isActiveControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE) ? 'secondary' : ''
-        "
-        text
       >
-        <v-icon>view_comfortable</v-icon>
+        <BaseIcon :icon="mdiViewComfy" color="grey-darken-3" />
       </v-btn>
 
+<!--
       <v-btn
         v-if="isEnabledControl(3)"
         @click="catchControlClick(3)"
         class="controlButton"
-        :class="isActiveControl(3) ? 'highlight' : ''"
-        text
+        :active="isActiveControl(3)"
       >
-        <v-icon>view_stream</v-icon>
+        <BaseIcon :icon="mdiViewAgenda" color="grey-darken-3" />
       </v-btn>
+-->
+
     </v-btn-toggle>
   </v-row>
 </template>
@@ -84,38 +86,68 @@ import {
   LISTCONTROL_MAP_ACTIVE,
 } from '@/store/metadataMutationsConsts';
 
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
+import { mdiMap, mdiViewAgenda, mdiViewComfy, mdiViewHeadline } from '@mdi/js';
+
 export default {
   name: 'ListControlToggle',
+  components: { BaseIcon },
   props: {
     controls: Array,
     enabledControls: Array,
-    mapEnabled: Boolean,
-    flat: Boolean,
   },
   data: () => ({
+    mdiMap,
+    mdiViewAgenda,
+    mdiViewComfy,
+    mdiViewHeadline,
     mapFilterActivateText: 'Activate Mapfiltering',
     mapFilterDeactivateText: 'Deactivate Mapfiltering',
     listViewActivate: 'List view',
     listViewDeactivate: 'Grid view',
-    controlsActive: [],
-    listViewIcon: null,
-    mapIcon: null,
+    previewControls: null,
     LISTCONTROL_LIST_ACTIVE,
     LISTCONTROL_MAP_ACTIVE,
     LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
   }),
-  beforeMount: function beforeMount() {
-    this.listViewIcon = this.mixinMethods_getIcon('listView');
-    this.mapIcon = this.mixinMethods_getIcon('map');
-  },
   mounted() {
-    this.controlsActive = this.controls;
+    this.previewControls = this.controls;
   },
+  computed: {
+    mapActive() {
+      return this.isActiveControl(LISTCONTROL_MAP_ACTIVE);
+    },
+    listActive() {
+      return this.isActiveControl(LISTCONTROL_LIST_ACTIVE);
+    },
+    compactListActive() {
+      return this.isActiveControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE);
+    },
+    controlsActive: {
+      get() {
+        return this.controls;
+        // return this.previewControls ? this.previewControls : this.controls;
+      },
+      set(value) {
+        this.catchControlClick(value);
+/*
+        if (!this.previewControls) {
+          this.previewControls = [];
+        }
+
+        this.previewControls.push(value);
+        console.log(this.previewControls);
+*/
+      },
+    },
+  },
+/*
   watch: {
     controls() {
       this.controlsActive = this.controls;
     },
   },
+*/
   methods: {
     isActiveControl(number) {
       return this.controlsActive ? this.controlsActive.includes(number) : false;
@@ -151,5 +183,6 @@ export default {
 .controlButton {
   min-width: 36px !important;
   height: 100% !important;
+  padding: 0;
 }
 </style>

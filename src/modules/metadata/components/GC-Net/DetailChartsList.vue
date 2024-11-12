@@ -234,7 +234,7 @@ export default {
       const target = this.$refs[`${paramName}_1`][0];
 
       if (target) {
-        this.$refs.scrollableList.scrollTop = target.offsetTop;
+        this.$refs.scrollableList.$el.scrollTop = target.offsetTop;
 
         // this.$vuetify.goTo(`${paramName}_1`, {
         // this.$vuetify.goTo(target, {
@@ -320,7 +320,7 @@ export default {
             const lastDigit = Number.parseInt(lastChar, 2);
             cutOff = Number.isInteger(lastDigit);
           } catch (e) {
-            console.log(`lastDigit parse failed: ${e}`);
+            console.error(`lastDigit parse failed: ${e}`);
           }
 
           if (!this.listHasSimilarString(paramList, stringToCheck)) {

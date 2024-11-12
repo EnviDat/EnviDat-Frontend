@@ -10,19 +10,17 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import globalMethods from '@/factories/globalMethods';
 import { getSpecificApiError } from '@/factories/notificationFactory';
 
+import categoryCards from '@/store/categoryCards';
+
 import {
-  ADD_CARD_IMAGES,
-  ADD_ICON_IMAGE,
   ADD_USER_NOTIFICATION,
   CHECK_FRONTEND_VERSION,
   HIDE_NOTIFICATIONS,
   SET_APP_BACKGROUND,
   SET_APP_SCROLL_POSITION,
   SET_BROWSE_SCROLL_POSITION,
-  SET_CARD_IMAGES,
   SET_CONFIG,
   SET_CONFIG_ERROR,
   SET_CONFIG_SUCCESS,
@@ -32,14 +30,9 @@ import {
   SET_WEBP_ASSETS,
   SET_WEBP_SUPPORT,
   TRIM_NOTIFICATIONS,
-  UPDATE_CATEGORYCARD_IMAGES,
 } from './mainMutationsConsts';
 
-function disablingCategoryCards(config, categoryCards) {
-  if (!categoryCards) {
-    return;
-  }
-
+function disablingCategoryCards(config) {
   const signinDisabled = config?.maintenanceConfig?.signinDisabled || false;
 
   if (signinDisabled) {
@@ -67,35 +60,8 @@ export default {
   [SET_JPG_ASSETS](state, assets) {
     state.jpgAssets = assets;
   },
-  [SET_CARD_IMAGES](state, assets) {
-    state.cardBGImages = assets;
-  },
-  [UPDATE_CATEGORYCARD_IMAGES](state) {
-    // enhance the category cards dynamically with either webp or jpg images based
-    // on what the browser supports
-    const updatedCards = [];
-
-    for (let i = 0; i < state.categoryCards.length; i++) {
-      const cardInfo = state.categoryCards[i];
-      cardInfo.img = globalMethods.methods.mixinMethods_getWebpImage(
-        cardInfo.imgPath,
-        state,
-      );
-      updatedCards.push(cardInfo);
-    }
-
-    this._vm.$set(state, 'categoryCards', updatedCards);
-  },
   [SET_CURRENT_PAGE](state, page) {
     state.currentPage = page;
-  },
-  [ADD_CARD_IMAGES](state, payload) {
-    // state.cardBGImages[payload.key] = payload.value;
-    this._vm.$set(state.cardBGImages, payload.key, payload.value);
-  },
-  [ADD_ICON_IMAGE](state, payload) {
-    // state.cardBGImages[payload.key] = payload.value;
-    this._vm.$set(state.iconImages, payload.key, payload.value);
   },
   [SET_CONTROLS](state, payload) {
     state.controls = payload;
@@ -113,7 +79,7 @@ export default {
     state.loadingConfig = false;
     state.config = payload;
 
-    disablingCategoryCards(state.config, state.categoryCards);
+    disablingCategoryCards(state.config);
   },
   [SET_CONFIG_ERROR](state, reason) {
     state.loadingConfig = true;
@@ -149,11 +115,11 @@ export default {
     notificationObj.key = key;
 
     if (!state.notifications[key]) {
-      this._vm.$set(state.notifications, key, notificationObj);
+      state.notifications[key] = notificationObj;
     } else {
       const existingNotification = state.notifications[key];
       if (existingNotification.details !== notificationObj.details) {
-        this._vm.$set(state.notifications, key, notificationObj);
+        state.notifications[key] = notificationObj;
       }
     }
   },

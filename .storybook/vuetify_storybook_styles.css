@@ -1,8 +1,0 @@
-.vuetifyStorybookApp {
-    min-height: fit-content !important;
-}
-
-.vuetifyStorybookApp > .v-application--wrap {
-    min-height: fit-content !important;
-    font-family: 'Raleway', sans-serif !important;
-}

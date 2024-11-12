@@ -15,7 +15,7 @@
             :id="val.label"
             :label="val.label"
             :name="val.label"
-            :value="replaceAuthorDeadInfo(val.text)"
+            :model-value="replaceAuthorDeadInfo(val.text)"
             hide-details
             readonly
           />
@@ -25,7 +25,7 @@
             :id="val.label"
             :label="val.label"
             :name="val.label"
-            :value="replaceAuthorDeadInfo(val.text)"
+            :model-value="replaceAuthorDeadInfo(val.text)"
             hide-details
             readonly
           />
@@ -79,8 +79,22 @@ export default {
   name: 'MetadataDetails',
   components: {},
   props: {
-    genericProps: Object,
-    showPlaceholder: Boolean,
+    details: {
+      type: Array,
+      default: () => [],
+    },
+    emptyTextColor: {
+      type: String,
+      default: 'red',
+    },
+    emptyText: {
+      type: String,
+      default: 'No details found for this dataset.',
+    },
+    showPlaceholder: {
+      type: Boolean,
+      default: false,
+    },
     authorDeadInfo: Object,
   },
   data: () => ({
@@ -90,18 +104,6 @@ export default {
     METADATA_DETAILS_TITLE,
   }),
   computed: {
-    details() {
-      return this.mixinMethods_getGenericProp('details');
-    },
-    emptyTextColor() {
-      return this.mixinMethods_getGenericProp('emptyTextColor', 'red');
-    },
-    emptyText() {
-      return this.mixinMethods_getGenericProp(
-        'emptyText',
-        'No details found for this dataset.',
-      );
-    },
   },
   methods: {
     replaceAuthorDeadInfo(text) {
@@ -121,11 +123,11 @@ export default {
         return true;
       }
 
-      if (this.$vuetify.breakpoint.xsOnly) {
+      if (this.$vuetify.display.xs) {
         return text.length <= this.maxSingleTextLengthXs;
       }
 
-      if (this.$vuetify.breakpoint.mdAndDown) {
+      if (this.$vuetify.display.mdAndDown) {
         return text.length <= this.maxSingleTextLengthMd;
       }
 

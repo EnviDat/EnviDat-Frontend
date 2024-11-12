@@ -1,16 +1,16 @@
 <template>
-  <v-card ripple hover>
+  <v-card >
     <v-card-media
       class="imagezoom"
       v-bind="{
-        [`height`]: this.$vuetify.breakpoint.smAndDown ? '200px' : '300px',
+        [`height`]: this.$vuetify.display.smAndDown ? '200px' : '300px',
       }"
       :src="dataCreatorImg"
     >
       <v-container class="fill-height" fluid>
         <v-row class="fill-height">
           <v-col cols="12">
-            <span class="text-h3 dataproducer_title white--text">{{
+            <span class="text-h3 dataproducer_title text-white">{{
               titleText
             }}</span>
           </v-col>
@@ -20,15 +20,15 @@
 
     <v-card-actions>
       <v-spacer />
-      <v-btn v-if="loggedIn" large color="primary" @click.native="enterclick">
+      <v-btn v-if="loggedIn" large color="primary" @click="enterclick">
         {{ loggedinText }}
       </v-btn>
 
-      <v-btn v-if="!loggedIn" large color="primary" @click.native="singupclick">
+      <v-btn v-if="!loggedIn" large color="primary" @click="singupclick">
         {{ signupText }}
       </v-btn>
 
-      <v-btn v-if="!loggedIn" large color="primary" @click.native="loginclick">
+      <v-btn v-if="!loggedIn" large color="primary" @click="loginclick">
         {{ loginText }}
       </v-btn>
     </v-card-actions>

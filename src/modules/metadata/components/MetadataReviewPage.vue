@@ -13,52 +13,45 @@
                           :metadataId="metadataId"
                           :showPlaceholder="showPlaceholder"
                           @checkSize="resize"
+                          @clickedBack="catchBackClicked"
                           :expanded="headerExpanded" />
         <!--                          @clickedTag="catchTagClicked"
-                                  @clickedBack="catchBackClicked"
                                   @clickedAuthor="catchAuthorClicked"-->
       </v-col>
     </v-row>
 
-    <!-- prettier-ignore -->
-    <two-column-layout :style="`position: relative; top: ${headerHeight()}px;`"
-                       :first-column="firstColumn"
-                       :second-column="secondColumn"
-                       :show-placeholder="showPlaceholder" >
-
-      <template v-slot:leftColumn>
-
-        <v-row v-for="(entry, index) in firstColumn"
-                :key="`left_${index}_${keyHash}`"
-                no-gutters >
+    <v-row
+      :style="`position: relative; top: ${headerHeight}px; z-index: 0;`"
+      no-gutters
+    >
+      <v-col :class="firstColWidth" class="pt-0">
+        <v-row
+          v-for="(entry, index) in firstColumn"
+          :key="`left_${index}_${keyHash}`"
+          no-gutters
+        >
           <v-col class="mb-2 px-0">
-
-          <!-- prettier-ignore -->
-          <component :is="entry"
-                     v-bind="entry.genericProps"
-                     :generic-props="entry.genericProps"
-                     :show-placeholder="showPlaceholder" />
+            <!-- prettier-ignore -->
+            <component :is="entry"
+                       v-bind="entry.props" />
           </v-col>
         </v-row>
-      </template>
+      </v-col>
 
-      <template v-slot:rightColumn>
-        <v-row v-for="(entry, index) in secondColumn"
-                :key="`right_${index}_${keyHash}`"
-                no-gutters >
+      <v-col v-if="secondColumn" class="pt-0" :class="secondColWidth">
+        <v-row
+          v-for="(entry, index) in secondColumn"
+          :key="`right_${index}_${keyHash}`"
+          no-gutters
+        >
           <v-col class="mb-2 px-0">
-
-          <!-- prettier-ignore -->
-          <component :is="entry"
-                     v-bind="entry.genericProps"
-                     :generic-props="entry.genericProps"
-                     :show-placeholder="showPlaceholder" />
+            <!-- prettier-ignore -->
+            <component :is="entry"
+                       v-bind="entry.props" />
           </v-col>
         </v-row>
-
-      </template>
-    </two-column-layout>
-
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -78,11 +71,12 @@ import { mapGetters, mapState } from 'vuex';
 
 import { BROWSE_PATH, METADATAREVIEW_PAGENAME } from '@/router/routeConsts';
 
-import {
-  USER_SIGNIN_NAMESPACE,
-} from '@/modules/user/store/userMutationsConsts';
+import { USER_SIGNIN_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 
-import { SET_APP_BACKGROUND, SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
+import {
+  SET_APP_BACKGROUND,
+  SET_CURRENT_PAGE,
+} from '@/store/mainMutationsConsts';
 import {
   CLEAR_SEARCH_METADATA,
   METADATA_NAMESPACE,
@@ -92,10 +86,13 @@ import {
   createBody,
   createLicense,
   createResources,
-  formatDate,
+
 } from '@/factories/metaDataFactory';
 
-import { getAuthorName, getFullAuthorsFromDataset } from '@/factories/authorFactory';
+import {
+  getAuthorName,
+  getFullAuthorsFromDataset,
+} from '@/factories/authorFactory';
 
 import { getConfigFiles, getConfigUrls } from '@/factories/chartFactory';
 
@@ -106,18 +103,36 @@ import {
   METADATA_MAIN_HEADER,
 } from '@/factories/eventBus';
 
-import { enhanceElementsWithStrategyEvents, enhanceResourcesWithMetadataExtras } from '@/factories/strategyFactory';
+import {
+  enhanceElementsWithStrategyEvents,
+  enhanceResourcesWithMetadataExtras,
+} from '@/factories/strategyFactory';
 
-import TwoColumnLayout from '@/components/Layouts/TwoColumnLayout.vue';
-
-import { convertJSON, getFrontendDates, getFrontendJSONForStep } from '@/factories/mappingFactory';
+import {
+  convertJSON, getFrontendDates,
+  getFrontendJSONForStep,
+} from '@/factories/mappingFactory';
 
 import { useReviewStore } from '@/modules/metadata/store/reviewStore';
+import { convertArrayToUrlString } from '@/factories/stringFactory';
+import { getIcon } from '@/factories/imageFactory';
+import { defineAsyncComponent, markRaw } from 'vue';
+
+import { formatDate } from '@/factories/dateFactory';
 import MetadataHeader from './Metadata/MetadataHeader.vue';
-import MetadataBody from './Metadata/MetadataBody.vue';
-import MetadataResources from './Metadata/MetadataResources.vue';
-import MetadataCitation from './Metadata/MetadataCitation.vue';
-import MetadataAuthors from './Metadata/MetadataAuthors.vue';
+
+const MetadataBody = defineAsyncComponent(() =>
+  import('./Metadata/MetadataBody.vue'),
+);
+const MetadataResources = defineAsyncComponent(() =>
+  import('./Metadata/MetadataResources.vue'),
+);
+const MetadataCitation = defineAsyncComponent(() =>
+  import('./Metadata/MetadataCitation.vue'),
+);
+const MetadataAuthors = defineAsyncComponent(() =>
+  import('./Metadata/MetadataAuthors.vue'),
+);
 
 // Might want to check https://css-tricks.com/use-cases-fixed-backgrounds-css/
 // for animations between the different parts of the Metadata
@@ -128,9 +143,9 @@ import MetadataAuthors from './Metadata/MetadataAuthors.vue';
 export default {
   name: 'MetadataReviewPage',
   beforeRouteEnter(to, from, next) {
-    next((vm) => {
+    next(vm => {
       vm.$store.commit(SET_CURRENT_PAGE, METADATAREVIEW_PAGENAME);
-      vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
+      vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
     });
   },
   created() {
@@ -140,8 +155,8 @@ export default {
    * @description load all the icons once before the first component's rendering.
    */
   beforeMount() {
-    this.fileSizeIcon = this.mixinMethods_getIcon('fileSize');
-    this.fileIcon = this.mixinMethods_getIcon('file');
+    this.fileSizeIcon = getIcon('fileSize');
+    this.fileIcon = getIcon('file');
 
     window.scrollTo(0, 0);
   },
@@ -152,12 +167,16 @@ export default {
     this.loadMetaDataContent();
 
     window.scrollTo(0, 0);
+
+    this.$nextTick(() => {
+      this.headerHeight = this.getHeaderHeight();
+    });
   },
   /**
    * @description
    */
-/*
-  beforeDestroy() {
+  /*
+  beforeUnmount() {
     // clean current metadata to make be empty for the next to load up
     this.$store.commit(`${METADATA_NAMESPACE}/${CLEAN_CURRENT_METADATA}`);
 
@@ -166,9 +185,7 @@ export default {
 */
   computed: {
     ...mapState(['config']),
-    ...mapGetters(USER_SIGNIN_NAMESPACE, [
-      'user',
-    ]),
+    ...mapGetters(USER_SIGNIN_NAMESPACE, ['user']),
     ...mapGetters({
       detailPageBackRoute: `${METADATA_NAMESPACE}/detailPageBackRoute`,
       authorsMap: `${METADATA_NAMESPACE}/authorsMap`,
@@ -201,42 +218,106 @@ export default {
       return this.loadingMetadatasContent || this.loadingCurrentMetadataContent;
     },
     firstColumn() {
-      return this.$vuetify.breakpoint.mdAndUp ? this.firstCol : this.singleCol;
+      return this.$vuetify.display.mdAndUp ? this.firstCol : this.singleCol;
     },
     secondColumn() {
-      return this.$vuetify.breakpoint.mdAndUp ? this.secondCol : [];
+      return this.$vuetify.display.mdAndUp ? this.secondCol : [];
     },
     headerStyle() {
-      let width = 82.25;
-      let margin = '0px 8.33333%';
+      let width = 82.5;
+      let margin = '0px 11.5%';
 
-      if (this.$vuetify.breakpoint.mdAndDown) {
+      if (this.$vuetify.display.mdAndDown) {
         width = 100;
         margin = '0';
       }
 
-      if (this.$vuetify.breakpoint.lg) {
-        width = 82.5;
+      if (this.$vuetify.display.lg) {
+        width = 79.75;
       }
 
       let pos = 'position: ';
-      if (this.$vuetify.breakpoint.mdAndUp) {
+      if (this.$vuetify.display.mdAndUp) {
         pos += 'absolute';
       } else if (this.appScrollPosition > 20) {
         pos += 'fixed';
       } else {
         pos += 'relative';
       }
-      // const pos = `position: ${this.appScrollPosition > 20 ? 'fixed' : this.$vuetify.breakpoint.smAndDown ? 'relative' : 'absolute'}`;
+      // const pos = `position: ${this.appScrollPosition > 20 ? 'fixed' : this.$vuetify.display.smAndDown ? 'relative' : 'absolute'}`;
 
       return `${pos}; width: ${width}%; margin: ${margin}; `;
     },
     headerExpanded() {
-      if (this.$vuetify.breakpoint.mdAndUp) {
+      if (this.$vuetify.display.mdAndUp) {
         return true;
       }
 
       return this.appScrollPosition < 20;
+    },
+    firstColWidth() {
+      let bindings =
+        this.secondColumn && this.secondColumn.length > 0
+          ? { 'v-col-6': true }
+          : { 'v-col-12': true };
+
+      bindings = { ...bindings, ...this.leftOrFullWidth };
+
+      return bindings;
+    },
+    secondColWidth() {
+      let bindings =
+        this.secondColumn && this.secondColumn.length > 0
+          ? { 'v-col-6': true }
+          : {};
+
+      bindings = { ...bindings, ...this.rightOrFullWidth };
+
+      return bindings;
+    },
+    leftOrFullWidth() {
+      return this.firstColumn && this.firstColumn.length > 0
+        ? this.halfWidthLeft
+        : this.fullWidthPadding;
+    },
+    rightOrFullWidth() {
+      return this.secondColumn && this.secondColumn.length > 0
+        ? this.halfWidthRight
+        : this.fullWidthPadding;
+    },
+    fullWidthPadding() {
+      const cssClasses = {};
+
+      if (this.$vuetify.display.mdAndUp && this.$vuetify.display.lgAndDown) {
+        cssClasses['px-2'] = true;
+      } else if (this.$vuetify.display.lgAndUp) {
+        cssClasses['px-3'] = true;
+      }
+
+      return cssClasses;
+    },
+    halfWidthLeft() {
+      const cssClasses = {
+        'v-col-lg-5': true,
+        'offset-lg-1': true,
+      };
+
+      if (this.$vuetify.display.mdAndUp) {
+        cssClasses['pr-1'] = true;
+      }
+
+      return cssClasses;
+    },
+    halfWidthRight() {
+      const cssClasses = {
+        'v-col-lg-5': true,
+      };
+
+      if (this.$vuetify.display.mdAndUp) {
+        cssClasses['pl-1'] = true;
+      }
+
+      return cssClasses;
     },
   },
   methods: {
@@ -247,13 +328,15 @@ export default {
     resize() {
       this.reRenderComponents();
     },
-    headerHeight() {
+    getHeaderHeight() {
       let height = -2;
 
-      if ((this.$vuetify.breakpoint.smAndDown && this.appScrollPosition > 20)
-        || this.$vuetify.breakpoint.mdAndUp ) {
+      if (
+        (this.$vuetify.display.smAndDown && this.appScrollPosition > 20) ||
+        this.$vuetify.display.mdAndUp
+      ) {
         if (this.$refs && this.$refs.header) {
-          height = this.$refs.header.clientHeight;
+          height = this.$refs.header.$el.clientHeight;
         }
       }
 
@@ -278,22 +361,25 @@ export default {
       if (currentContent && currentContent.title !== undefined) {
         // const subDataset = currentContent;
         const parsedContent = convertJSON(currentContent, false);
-/*
+        /*
         delete parsedContent.author;
         delete parsedContent.maintainer;
         delete parsedContent.organization;
 */
 
-        this.header = getFrontendJSONForStep(METADATA_MAIN_HEADER, parsedContent);
+        this.header = getFrontendJSONForStep(
+          METADATA_MAIN_HEADER,
+          parsedContent,
+        );
         // this.header.metadataState = getMetadataVisibilityState(this.header);
         this.header.contactName = getAuthorName(this.header);
         this.header.created = formatDate(this.header.created);
         this.header.modified = formatDate(this.header.modified);
 
-/*
+        /*
         this.header = createHeader(
           subDataset,
-          this.$vuetify.breakpoint.smAndDown,
+          this.$vuetify.display.smAndDown,
           this.authorDeadInfo,
         );
 
@@ -317,17 +403,17 @@ export default {
         };
 */
 
-        const publicationData = getFrontendJSONForStep(EDITMETADATA_PUBLICATION_INFO, parsedContent);
+        const publicationData = getFrontendJSONForStep(
+          EDITMETADATA_PUBLICATION_INFO,
+          parsedContent,
+        );
         this.header.publicationYear = publicationData.publicationYear;
 
         // this.header.publicationYear = currentContent.version;
 
-        this.body = createBody(
-          currentContent,
-          this.$vuetify.breakpoint.smAndDown,
-        );
+        this.body = createBody(currentContent, this.$vuetify.display.smAndDown);
 
-/*
+        /*
         this.citation = createCitation(currentContent);
 */
 
@@ -337,26 +423,20 @@ export default {
       }
     },
     loadAuthors(currentContent) {
-      const { components } = this.$options;
-
       this.authors = getFullAuthorsFromDataset(this.authorsMap, currentContent);
 
       if (this.authors) {
         this.$nextTick(() => {
-
-          this.$set(components.MetadataAuthors, 'genericProps', {
+          this.MetadataAuthors.props = {
             authors: this.authors,
             authorDetailsConfig: this.authorDetailsConfig,
             authorDeadInfo: this.authorDeadInfo,
             showPlaceholder: this.showPlaceholder,
-          });
+          };
         });
       }
-
     },
     loadResources(currentContent) {
-      const { components } = this.$options;
-
       this.resources = createResources(currentContent, this.user) || {};
 
       const license = createLicense(currentContent);
@@ -367,56 +447,55 @@ export default {
       if (this.resources.resources) {
         this.configInfos = getConfigFiles(this.resources.resources);
 
-        enhanceElementsWithStrategyEvents(this.resources.resources, undefined, true);
-        enhanceResourcesWithMetadataExtras(this.metadataContent.extras, this.resources.resources);
+        enhanceElementsWithStrategyEvents(
+          this.resources.resources,
+          undefined,
+          true,
+        );
+        enhanceResourcesWithMetadataExtras(
+          this.metadataContent.extras,
+          this.resources.resources,
+        );
 
         this.resources.dates = getFrontendDates(this.metadataContent.date);
       }
 
-      this.$nextTick(() => {
-
-        this.$set(components.MetadataResources, 'genericProps', {
-          ...this.resources,
-          dataLicenseId: license.id,
-          dataLicenseTitle: license.title,
-          dataLicenseUrl: license.url,
-          resourcesConfig: this.resourcesConfig,
-        });
-      });
-
+      this.MetadataResources.props = {
+        ...this.resources,
+        dataLicenseId: license.id,
+        dataLicenseTitle: license.title,
+        dataLicenseUrl: license.url,
+        resourcesConfig: this.resourcesConfig,
+      };
     },
     setMetadataContent() {
-      const { components } = this.$options;
-
       this.configInfos = getConfigUrls(this.configInfos);
 
-      this.$set(components.MetadataHeader, 'genericProps', this.header);
-      this.$set(components.MetadataBody, 'genericProps', { body: this.body });
-      this.$set(components.MetadataCitation, 'genericProps', {
+      this.MetadataBody.props = { ...this.body };
+
+      this.MetadataCitation.props = {
         ...this.citation,
         showPlaceholder: this.showPlaceholder,
-      });
+      };
 
       this.firstCol = [
-        components.MetadataBody,
-/*
-        components.MetadataCitation,
-        components.MetadataAuthors,
+        this.MetadataBody,
+        /*
+        this.MetadataCitation,
+        this.MetadataAuthors,
 */
       ];
 
-      this.secondCol = [
-        components.MetadataResources,
-      ];
+      this.secondCol = [this.MetadataResources];
 
       this.singleCol = [
-        components.MetadataBody,
-/*
-        components.MetadataCitation,
+        this.MetadataBody,
+        /*
+        this.MetadataCitation,
 */
-        components.MetadataResources,
-/*
-        components.MetadataAuthors,
+        this.MetadataResources,
+        /*
+        this.MetadataAuthors,
 */
       ];
     },
@@ -426,14 +505,17 @@ export default {
      * @returns {any}
      */
     isCurrentIdOrName(idOrName) {
-      return this.metadataContent?.id === idOrName || this.metadataContent?.name === idOrName;
+      return (
+        this.metadataContent?.id === idOrName ||
+        this.metadataContent?.name === idOrName
+      );
     },
     /**
      * @description
      * @param {any} tagName
      */
     catchTagClicked(tagName) {
-      const stringTags = this.mixinMethods_convertArrayToUrlString([tagName]);
+      const stringTags = convertArrayToUrlString([tagName]);
 
       const query = this.$route.query;
       query.tags = stringTags;
@@ -459,10 +541,8 @@ export default {
         path: BROWSE_PATH,
         query,
       });
-
     },
     catchAuthorClicked(authorGivenName, authorLastName) {
-
       const query = this.$route.query;
 
       // make sure to remove the ascii marker for dead authors for the search
@@ -484,8 +564,8 @@ export default {
       if (backRoute) {
         this.$router.push({
           path: backRoute.path,
-          query: backRoute.query,
-          params: backRoute.params,
+          query: backRoute.query || {},
+          params: backRoute.params || {},
         });
         return;
       }
@@ -529,15 +609,15 @@ export default {
   },
   components: {
     MetadataHeader,
-    MetadataBody,
-    MetadataResources,
-    MetadataCitation,
-    TwoColumnLayout,
-    MetadataAuthors,
   },
   data: () => ({
+    headerHeight: 0,
+    MetadataBody: markRaw(MetadataBody),
+    MetadataResources: markRaw(MetadataResources),
+    MetadataCitation: markRaw(MetadataCitation),
+    MetadataAuthors: markRaw(MetadataAuthors),
     reviewStore: useReviewStore(),
-    PageBGImage: 'app_b_browsepage',
+    pageBGImage: 'app_b_browsepage',
     baseStationURL: 'https://www.envidat.ch/data-files/',
     baseStationURLTestdata: './testdata/',
     header: null,
@@ -564,22 +644,6 @@ export default {
 </script>
 
 <style>
-.metadata_title {
-  line-height: 1rem !important;
-}
-
-.metadataResourceCard {
-  min-height: 100px !important;
-}
-
-.metadataResourceCard .headline {
-  font-size: 20px !important;
-}
-
-.resourceCardText {
-  color: rgba(255, 255, 255, 0.87) !important;
-  overflow: hidden;
-}
 
 .resourceCardText a {
   color: #ffd740;

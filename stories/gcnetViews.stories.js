@@ -9,12 +9,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-/* eslint-disable object-property-newline */
-// noinspection JSUnusedGlobalSymbols
-
 import MicroChart from '@/modules/metadata/components/GC-Net/MicroChart.vue';
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
-
 
 const stations = [
   {
@@ -32,7 +27,7 @@ const stations = [
       graphParameter: 'airtemp1',
       fallbackUrl: 'https://www.envidat.ch/data-files/1temp.json',
       fallbackParameter: 'airtemp1',
-      previewImageUrl: 'https://upload.wikimedia.org/wikipedia/en/9/95/Test_image.jpg',
+      previewImageUrl: 'https://www.envidat.ch/gcnet/assets/stations/small/swisscamp.jpg',
     },
   },
   {
@@ -50,7 +45,7 @@ const stations = [
       graphParameter: 'airtemp1',
       fallbackUrl: 'https://www.envidat.ch/data-files/3temp.json',
       fallbackParameter: 'airtemp1',
-      previewImageUrl: 'https://www.gstatic.com/webp/gallery/1.jpg',
+      previewImageUrl: 'https://www.envidat.ch/gcnet/assets/stations/small/nasau.jpg',
     },
   },
   {
@@ -68,7 +63,7 @@ const stations = [
       graphParameter: 'airtemp1',
       fallbackUrl: 'https://www.envidat.ch/data-files/4temp.json',
       fallbackParameter: 'airtemp1',
-      previewImageUrl: 'https://upload.wikimedia.org/wikipedia/en/9/95/Test_image.jpg',
+      previewImageUrl: 'https://www.envidat.ch/gcnet/assets/stations/small/gits.jpg',
     },
   },
 ];
@@ -76,7 +71,6 @@ const stations = [
 export default {
   title: '8 GC-Net Views / Micro Charts',
   component: MicroChart,
-  decorators: [],
   parameters: {
     // disable the snapshots for the MicroCharts because they pull in recent data and
     // will change almost everytime
@@ -84,89 +78,27 @@ export default {
   },
 };
 
+export const MicroChartWithImage = {
+  args: {
+    station: stations[0],
+    apiUrl: stations[0].envidatConfig.apiUrl,
+    fallbackUrl: stations[0].envidatConfig.fallbackUrl,
+    parameter: stations[0].envidatConfig.graphParameter,
+    image: stations[0].envidatConfig.previewImageUrl,
+  },
+}
+
+export const MicroChartWithout = {
+  args: {
+    station: stations[1],
+    apiUrl: stations[1].envidatConfig.apiUrl,
+    fallbackUrl: stations[1].envidatConfig.fallbackUrl,
+    parameter: stations[1].envidatConfig.graphParameter,
+    // image: stations[1].envidatConfig.previewImageUrl,
+  },
+}
+
 /*
-export const EmptyMicroChart = () => ({
-  components: { MicroChart },
-  template: '<MicroChart />',
-});
-*/
-
-export const BaseStatusLabelViews = () => ({
-  components: { BaseStatusLabelView },
-  template: `
-  <v-col >
-
-    <v-row >
-      Empty BaseStatusLabelView
-    </v-row>
-
-    <v-row class="py-1">
-      <v-col class="pa-0"
-             style="border: solid 1px;" >
-        <BaseStatusLabelView />
-      </v-col>
-    </v-row>
-
-    <v-row>
-      Loading BaseStatusLabelView
-    </v-row>
-
-    <v-row class="py-1">
-      <v-col class="pa-0"
-             style="border: solid 1px;" >
-        <BaseStatusLabelView :loading="true" />
-      </v-col>
-    </v-row>
-
-    <v-row>
-      Info BaseStatusLabelView
-    </v-row>
-
-    <v-row class="py-1">
-      <v-col class="pa-0"
-             style="border: solid 1px;" >
-        <BaseStatusLabelView :loading="false"
-                              statusIcon="info"
-                              statusColor="info"
-                              statusText="Here you see a info title"
-                              expandedText="Here you see more details about the info" />
-      </v-col>
-    </v-row>
-
-    <v-row>
-      Warning BaseStatusLabelView
-    </v-row>
-
-    <v-row class="py-1">
-      <v-col class="pa-0"
-             style="border: solid 1px;" >
-        <BaseStatusLabelView :loading="false"
-                              statusIcon="warning"
-                              statusColor="warning"
-                              statusText="Warning Title Here"
-                              expandedText="Some longer text about the details of the warning" />
-      </v-col>
-    </v-row>
-
-    <v-row>
-      Error BaseStatusLabelView
-    </v-row>
-
-    <v-row class="py-1">
-      <v-col class="pa-0"
-             style="border: solid 1px;" >
-        <BaseStatusLabelView :loading="false"
-                              statusIcon="error"
-                              statusColor="error"
-                              statusText="Error title message"
-                              expandedText="Details about the error probably with a stack of the coder and it will be very long and not meant to be seen be the users that's why you need to catch the error and return a meaningfull text for the users" />
-      </v-col>
-    </v-row>
-
-  </v-col>
-  `,
-});
-
 export const MicroChartViews = () => ({
   components: { MicroChart },
   parameters: {
@@ -302,3 +234,4 @@ export const MicroChartViews = () => ({
     stations,
   }),
 });
+*/

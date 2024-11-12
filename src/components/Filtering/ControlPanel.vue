@@ -1,65 +1,56 @@
 <template>
-  <v-card :style="`height: ${fixedHeight}px;`"
-            id="controlPanel" >
+  <v-card :style="`height: ${fixedHeight}px;`" class="controlPanel">
 
-    <v-container class="px-1 px-sm-2 py-0 fill-height"
-                    fluid>
-      <v-row align="center"
-              justify="space-between"
-              no-gutters>
+    <v-container class="px-1 px-sm-2 py-0 fill-height" fluid>
+      <v-row align="center" justify="space-between" no-gutters>
 
-        <v-col class="py-0"
-                cols="8"
-                :sm="hasEnabledControls ? 8 : 10"
-                md="8"
-               lg="8">
-          <small-search-bar-view class="elevation-0"
-                                  :compactLayout="compactLayout"
-                                  :searchTerm="searchTerm"
-                                  :showSearch="showSearch"
-                                  :showSearchCount="true"
-                                  :searchCount="searchCount"
-                                  :isFlat="true"
-                                  :fixedHeight="fixedHeight"
-                                  :labelText="searchBarPlaceholder"
-                                  :loading="loading"
-                                  @clicked="catchSearchClicked"
-                                  @searchCleared="catchSearchCleared" />
+        <v-col class="py-0" cols="8" :sm="hasEnabledControls ? 8 : 10" md="8" lg="8">
+          <small-search-bar-view
+            class="elevation-0"
+            :compactLayout="compactLayout"
+            :searchTerm="searchTerm"
+            :showSearch="showSearch"
+            :showSearchCount="true"
+            :searchCount="searchCount"
+            :isFlat="true"
+            :fixedHeight="fixedHeight"
+            :labelText="searchBarPlaceholder"
+            :loading="loading"
+            @clicked="catchSearchClicked"
+            @searchCleared="catchSearchCleared" />
         </v-col>
 
-        <v-col v-if="showSearch"
-               class="py-0 px-sm-1 shrink"
-                id="shareSearchResult" >
+        <v-col v-if="showSearch" class="py-0 px-sm-1 flex-grow-0" id="shareSearchResult">
 
-          <BaseIconButton style="opacity: 0.8;"
-                          materialIconName="share"
-                          iconColor="black"
-                          isSmall
-                          tooltipBottom
-                          tooltipText="Copy the url to this view to the clipboard to share it."
-                          @clicked="catchShareClick"
-                          />
+          <BaseIconButton
+            style="opacity: 0.8;"
+            :icon="mdiShareVariant"
+            iconColor="black"
+            tooltip-bottom
+            tooltip-text="Copy the url to this view to the clipboard to share it." @clicked="catchShareClick" />
 
         </v-col>
 
         <v-col v-if="showSearch && mode !== EDNA_MODE"
-               class="ml-sm-4 shrink">
+               class="ml-sm-4 flex-grow-0">
 
-          <BaseIconSwitch :active="isAuthorSearch"
-                          :tooltipText="`Author search is ${isAuthorSearch ? 'active' : 'inactive'}`"
-                          materialIconName="account_circle"
-                          @clicked="catchAuthorSearchClick" />
+          <BaseIconSwitch
+            :active="isAuthorSearch"
+            :tooltipText="`Author search is ${isAuthorSearch ? 'active' : 'NOT active'}`"
+            :icon="mdiAccountCircle"
+            @clicked="catchAuthorSearchClick" />
 
         </v-col>
 
+
         <v-col v-if="showSearch && mode === EDNA_MODE"
-               class="ml-sm-4 shrink" >
+               class="ml-sm-4 flex-grow-0" >
 
-
-           <BaseIconSwitch :active="isShallow" :zIndex="elementVisible? 6 : undefined"
-                          :tooltipText="`${isShallow ? 'Samples' : 'Overview'} datasets are visible, click to switch to ${isShallow ? 'overview' : 'samples'} datasets.`"
-                          materialIconName="layers"
-                          @clicked="catchShallowRealClick" />
+           <BaseIconSwitch
+             :active="isShallow" :zIndex="elementVisible? 6 : undefined"
+             :tooltipText="`${isShallow ? 'Samples' : 'Overview'} datasets are visible, click to switch to ${isShallow ? 'overview' : 'samples'} datasets.`"
+             :icon="mdiLayers"
+             @clicked="catchShallowRealClick" />
 
           <v-overlay
             absolute
@@ -67,7 +58,7 @@
             style="z-index: 5 !important;">
 
             <div class="dialog"
-                 :style="`left: ${ $vuetify.breakpoint.smAndDown ? '-20' : '45' }px;`"
+                 :style="`left: ${ $vuetify.display.smAndDown ? '-20' : '45' }px;`"
                  @click="elementVisible = !elementVisible">
               <span>Toggle from overview to sample datasets:</span>
             </div>
@@ -75,12 +66,9 @@
 
         </v-col>
 
-        <v-col class="hidden-xs-only py-0 fill-height" >
-          <list-control-toggle :style="`height: ${controlsHeight};`"
-                                :controls="controlsActive"
-                                :enabledControls="enabledControls"
-                                :flat="true"
-                                @controlsChanged="catchControlClick" />
+        <v-col class="hidden-xs py-0">
+          <list-control-toggle :style="`height: ${controlsHeight};`" :controls="controlsActive"
+            :enabledControls="enabledControls" :flat="true" @controlsChanged="catchControlClick" />
         </v-col>
       </v-row>
 
@@ -106,7 +94,8 @@ import SmallSearchBarView from '@/components/Filtering/SmallSearchBarView.vue';
 import ListControlToggle from '@/components/Filtering/ListControlToggle.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue'
-import {EDNA_MODE} from '@/store/metadataMutationsConsts';
+import { EDNA_MODE } from '@/store/metadataMutationsConsts';
+import { mdiLayers, mdiShareVariant, mdiAccountCircle } from '@mdi/js';
 
 export default {
   name: 'ControlPanel',
@@ -187,6 +176,9 @@ export default {
   },
   data: () => ({
     EDNA_MODE,
+    mdiLayers,
+    mdiShareVariant,
+    mdiAccountCircle,
     elementVisible: true,
     overlay: false,
     zIndex: 2,
@@ -196,10 +188,11 @@ export default {
 </script>
 
 <style>
-
 .switchSmallFont label {
   font-size: 10px !important;
 }
+
+
 .dialog {
   position: relative;
   background-color: white;
@@ -213,4 +206,5 @@ export default {
 .dialog:hover {
   cursor: pointer;
 }
+
 </style>

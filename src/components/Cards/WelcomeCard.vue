@@ -20,11 +20,11 @@
 
         <v-col>
           <base-rectangle-button
-            color="accent"
-            marginClass="black--text"
-            :button-text="editingButtonText"
-            :disabled="editingClickCallback === null"
-            @clicked="editingClickCallback ? editingClickCallback : ''"
+              color="accent"
+              marginClass="text-black"
+              :button-text="editingButtonText"
+              :disabled="editingClickCallback === null"
+              @clicked="editingClickCallback ? editingClickCallback : ''"
           />
         </v-col>
       </v-row>
@@ -36,12 +36,12 @@
 
         <v-col>
           <base-rectangle-button
-            color="accent"
-            marginClass="black--text"
-            :isOutlined="hasEditing"
-            :button-text="createButtonText"
-            :disabled="createClickCallback === null"
-            @clicked="createClickCallback ? createClickCallback : ''"
+              color="accent"
+              marginClass="text-black"
+              :isOutlined="hasEditing"
+              :button-text="createButtonText"
+              :disabled="createClickCallback === null"
+              @clicked="createClickCallback ? createClickCallback : ''"
           />
         </v-col>
       </v-row>
@@ -57,28 +57,10 @@
             isOutlined
             :button-text="unpublishedButtonText"
             :disabled="unpublishedClickCallback === null"
-            @clicked="unpublishedClickCallback ? unpublishedClickCallback : ''"
-          />
+            @clicked="unpublishedClickCallback ? unpublishedClickCallback : ''" />
         </v-col>
       </v-row>
 
-      <v-row no-gutters align="center">
-        <v-col cols="1">
-          <v-icon
-            style="animation: progress-circular-rotate 3s linear infinite"
-            x-large
-            >settings</v-icon
-          >
-        </v-col>
-
-        <v-col class="text-h5" cols="11">
-          Coming Soon!
-        </v-col>
-
-        <v-col class="pt-2 text-body-1">
-          This section is still under construction.
-        </v-col>
-      </v-row>
     </v-container>
   </v-card>
 </template>
@@ -97,6 +79,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
+import { mdiCog } from '@mdi/js';
 
 export default {
   name: 'WelcomeCard',
@@ -159,6 +142,7 @@ export default {
   },
   methods: {},
   data: () => ({
+    mdiCog,
     createText: 'Create a new dataset',
     createButtonText: 'New Dataset',
     unpublishedText: 'Edit your unpublished datasets',

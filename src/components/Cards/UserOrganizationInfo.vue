@@ -40,7 +40,7 @@
 
         <div  class="textGrid mt-2 text-caption">
           <div>
-            <v-icon small>info</v-icon>
+            <v-icon small :icon="mdiInformation" />
           </div>
           <div v-html="markdownText"></div>
         </div>
@@ -63,6 +63,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import { mapState } from 'vuex';
+
+import {mdiInformation} from '@mdi/js';
 
 import UserRoleChip from '@/components/Chips/UserRoleChip.vue';
 import UserAvatar from '@/components/Layouts/UserAvatar.vue';
@@ -110,11 +112,19 @@ export default {
       return (infoText);
     },
     organizationInfoText() {
-      if (isSysadmin(this.organizationRoles)) {
+      if (isMember(this.organizationRoles)) {
+        return this.userDashboardConfig.organizationRolesText?.memberOrganizationText || this.memberOrganizationText;
+      }
+
+      if (isEditor(this.organizationRoles)) {
         return (
-          this.userDashboardConfig.organizationRolesText
-            ?.sysadminOrganizationText || this.sysadminOrganizationText
+            this.userDashboardConfig.organizationRolesText
+                ?.editorOrganizationText || this.editorOrganizationText
         );
+      }
+
+      if (this.isCollaborator) {
+        return this.userDashboardConfig.organizationRolesText?.collaboratorText || this.collaboratorText;
       }
 
       if (isAdmin(this.organizationRoles)) {
@@ -124,25 +134,10 @@ export default {
         );
       }
 
-      if (isEditor(this.organizationRoles)) {
+      if (isSysadmin(this.organizationRoles)) {
         return (
-          this.userDashboardConfig.organizationRolesText
-            ?.editorOrganizationText || this.editorOrganizationText
-        );
-      }
-
-      if (this.isCollaborator) {
-        return this.userDashboardConfig.organizationRolesText?.collaboratorText || this.collaboratorText;
-      }
-
-      if (isMember(this.organizationRoles)) {
-        return this.userDashboardConfig.organizationRolesText?.memberOrganizationText || this.memberOrganizationText;
-      }
-
-      if (isMember(this.organizationRoles)) {
-        return (
-          this.userDashboardConfig.organizationRolesText
-            ?.memberOrganizationText || this.memberOrganizationText
+            this.userDashboardConfig.organizationRolesText
+                ?.sysadminOrganizationText || this.sysadminOrganizationText
         );
       }
 
@@ -157,6 +152,7 @@ export default {
   },
   methods: {},
   data: () => ({
+    mdiInformation,
     avatarHeight: 32,
     title: 'Organization Roles',
     noOrganizationText: 'If you are an employee of WSL or affiliated with WSL, please contact <a href="mailto:envidat@wsl.ch">envidat@wsl.ch</a> to receive editing rights for publishing datasets.',

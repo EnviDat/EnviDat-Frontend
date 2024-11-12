@@ -11,13 +11,11 @@
     </v-row>
 
     <v-row no-gutters>
-      <v-col>
+      <v-col class="pt-2 tagAuthorFix">
         <v-autocomplete
           v-model="pickedUsers"
           :items="users"
-          outlined
-          :dense="dense"
-          append-icon="arrow_drop_down"
+          :menu-icon="mdiArrowDownDropCircleOutline"
           :readonly="readonly"
           :hint="hint"
           :persistent-hint="!!hint"
@@ -25,31 +23,44 @@
           :label="pickerLabel"
           :multiple="multiplePick"
           :clearable="isClearable"
-          :search-input.sync="search"
+          :clear-on-select="true"
+          :search="search"
           :error-messages="errorMessages"
           :menu-props="menuOptions"
-          clear-icon="close"
+          :clear-icon="mdiClose"
           v-bind="$props"
           @change="catchPicks"
           @blur="$emit('blur', $event)"
         >
+
           <template v-slot:selection="{ item }">
             <TagChipAuthor
-              v-if="item"
-              :name="item"
-              :isSmall="true"
-              :isCloseable="userTagsCloseable"
-              @closeClicked="catchCloseClicked"
+                v-if="item.value"
+                :name="item.value"
+                :closable="userTagsCloseable && !readonly"
+                @closeClicked="catchCloseClicked"
             />
           </template>
 
-          <template v-slot:item="{ item }">
-            <TagChipAuthor
-              v-if="item"
-              :name="item"
-              @clicked="catchPickClicked"
-              :isSmall="true"
-            />
+          <!-- documentation https://vuetifyjs.com/en/components/autocompletes/ -->
+
+          <!--
+
+          following documentation
+
+          Define a custom item appearance. The root element of this slot must be a v-list-item with v-bind="props" applied. props includes everything required for the default select list behaviour - including title, value, click handlers, virtual scrolling, and anything else that has been added with item-props.
+
+          -->
+
+          <template v-slot:item="{ props, item }">
+            <v-list-item v-bind="props"  @click="catchPickClicked(item.value)">
+              <!-- <TagChipAuthor
+                v-if="item"
+                :name="item.value"
+                @clicked="catchPickClicked"
+                :isSmall="true"
+              /> -->
+            </v-list-item>
           </template>
 
           <template v-slot:no-data>
@@ -75,12 +86,16 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import TagChipAuthor from '@/components/Chips/TagChipAuthor.vue';
+import {mdiAccountBox, mdiArrowDownDropCircleOutline, mdiClose} from '@mdi/js';
 
 export default {
   name: 'BaseUserPicker',
   props: {
     users: Array,
-    preSelected: Array,
+    preSelected: {
+      type: Array,
+      default: undefined,
+    },
     multiplePick: Boolean,
     placeholder: {type: String, default: undefined},
     pickerLabel: {
@@ -95,15 +110,11 @@ export default {
     instructions: String,
     prependIcon: {
       type: String,
-      default: 'account_box',
+      default: mdiAccountBox,
     },
     userTagsCloseable: {
       type: Boolean,
       default: true,
-    },
-    dense: {
-      type: Boolean,
-      default: false,
     },
     errorMessages: {
       type: String,
@@ -150,17 +161,13 @@ export default {
           this.pickedUsers = [];
 
           this.preSelected.forEach(authorName => {
-            // if (typeof author === 'object') {
             this.pickedUsers.push(authorName);
-            // } else {
-            //   this.pickedUsers.push(author);
-            // }
           });
         } else {
           this.pickedUsers = this.preSelected[0];
         }
       } else {
-        this.pickedUsers = this.multiplePick ? [] : '';
+        this.pickedUsers = this.multiplePick ? [] : undefined;
       }
     },
     catchCloseClicked(authorName) {
@@ -177,37 +184,31 @@ export default {
           this.pickedUsers = [];
         }
       } else {
-        this.pickedUsers = '';
+        this.pickedUsers = undefined;
       }
 
       this.$emit('removedUsers', this.pickedUsers);
     },
     catchPickClicked(pickedItem) {
       if (this.multiplePick) {
-        // if (Array.isArray(this.pickedUsers)) {
         if (!this.pickedUsers.includes(pickedItem)) {
           this.pickedUsers.push(pickedItem);
-          /*
-          } else {
-            const index = this.pickedUsers.indexOf(pickedItem);
-            this.pickedUsers.splice(index, 1);
-*/
         }
-        // }
       } else {
         this.pickedUsers = pickedItem;
       }
-
       this.$emit('pickedUsers', this.pickedUsers);
     },
-    catchPicks(picks) {
-      this.$emit('pickedUsers', picks);
+    catchPicks() {
+      this.$emit('pickedUsers', this.pickedUsers);
       this.search = '';
     },
   },
   data: () => ({
-    pickedUsers: [],
+    pickedUsers: undefined,
     search: '',
+    mdiArrowDownDropCircleOutline,
+    mdiClose,
   }),
   components: {
     TagChipAuthor,
@@ -215,4 +216,13 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style>
+.tagAuthorFix .v-chip__content {
+  /*
+  a fix for now because there is a overlay coming in the way of the author icon
+  but the chips are getting wider which isn't good
+  */
+  padding: 0 11px !important;
+}
+
+</style>

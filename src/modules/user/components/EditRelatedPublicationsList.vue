@@ -1,9 +1,6 @@
 <template>
-  <v-card id="EditRelatedPublicationsList" class="pa-0" :loading="loading">
-    <v-container fluid class="pa-4 fill-height">
-      <template slot="progress">
-        <v-progress-linear color="primary" indeterminate />
-      </template>
+  <v-card id="EditRelatedPublicationsList" class="pa-0" :loading="loadingColor">
+    <v-container fluid class="pa-4">
 
       <v-row>
         <v-col cols="6" class="text-h5">
@@ -32,6 +29,7 @@
           <div class="text-subtitle-1" v-html="labels.cardInstructions"></div>
         </v-col>
       </v-row>
+
       <v-row>
         <v-col>
           <EditAddPublication
@@ -39,7 +37,6 @@
             :doi="previewDoi"
             :selectedPlainText="selectedPlainText"
             :validationError="validationErrors[editingProperty]"
-            dense
             @addClicked="catchAddPublication"
             @saveText="catchSaveText"
             @cancelText="catchCancelText"
@@ -137,7 +134,7 @@ export default {
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
   },
   mounted() {
@@ -146,6 +143,13 @@ export default {
     // }
   },
   computed: {
+    loadingColor() {
+      if (this.loading) {
+        return 'accent';
+      }
+
+      return undefined;
+    },
     publicationsObject() {
       return {
         text: this.relatedPublicationsText,

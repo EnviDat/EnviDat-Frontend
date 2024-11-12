@@ -5,15 +5,13 @@
  * @summary story of SigninPage sandbox testing
  * @author Dominik Haas-Artho
  *
- * Created at     : 2019-10-23 16:34:51
- * Last modified  : 2020-08-25 12:21:22
- *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
 /* eslint-disable import/no-extraneous-dependencies */
 
+import {ref} from 'vue';
 import jazzicons from '@metamask/jazzicon';
 import seedrandom from 'seedrandom';
 import { getNameInitials } from '@/factories/authorFactory';
@@ -24,13 +22,10 @@ import UserMenu from '@/modules/user/components/UserMenu.vue';
 import MetadataCube from '@/components/BaseElements/MetadataCube.vue';
 import TitleCard from '@/components/Cards/TitleCard.vue';
 
+import { userMenuItems } from '@/store/navigationState';
+import { mdiRefresh } from '@mdi/js';
 import authorCollection from './testdata/authorCollection.json';
 
-
-const userMenuItems = [
-  { title: 'dashboard', icon: 'dashboard', toolTip: 'My Dashboard', active: false, path: 'dashboard', pageName: 'UserDashboard' },
-  { title: 'profile', icon: 'edit', toolTip: 'Edit profile', active: false, path: 'profile', pageName: 'EditProfile' },
-];
 
 export default {
   title: '7 User / User Elements',
@@ -43,43 +38,45 @@ export default {
 export const TitleCardViews = () => ({
   components: { TitleCard },
   template: `
-    <v-row >
+    <v-row>
 
-    <v-col cols="12">
-      TitleCard empty
-    </v-col>
+      <v-col cols='12'>
+        TitleCard empty
+      </v-col>
 
-    <v-col cols="12">
-      <TitleCard title="Title only TitleCard" />
-    </v-col>
+      <v-col cols='12'>
+        <TitleCard title='Title only TitleCard' />
+      </v-col>
 
-    <v-col cols="12">
-      TitleCard with refresh icon
-    </v-col>
+      <v-col cols='12'>
+        TitleCard with refresh icon
+      </v-col>
 
-    <v-col >
-      <TitleCard title="My Datasets"
-                 icon="refresh"
-                 tooltipText="Click here to refresh"
-                 :clickCallback="() => {}" />
-    </v-col>
+      <v-col>
+        <TitleCard title='My Datasets'
+                   :icon='mdiRefresh'
+                   tooltipText='Click here to refresh'
+                   :clickCallback='() => {}' />
+      </v-col>
 
-    <v-col cols="12">
-      TitleCard with refresh icon
-    </v-col>
+      <v-col cols='12'>
+        TitleCard loading with refresh icon
+      </v-col>
 
-    <v-col >
-      <TitleCard title="My Datasets"
-                 icon="refresh"
-                 tooltipText="Click here to refresh"
-                 :loading="true"
-                 :clickCallback="() => {}" />
-    </v-col>
-
+      <v-col>
+        <TitleCard title='My Datasets'
+                   :icon='mdiRefresh'
+                   tooltipText='Click here to refresh'
+                   :loading='true'
+                   :clickCallback='() => {}' />
+      </v-col>
 
 
     </v-row>
   `,
+  data: () => ({
+    mdiRefresh,
+  }),
 });
 
 export const UserMenuViews = () => ({
@@ -91,21 +88,21 @@ export const UserMenuViews = () => ({
         Click on the avatar
       </v-col>
 
-      <v-col class="shrink">
+      <v-col class="flex-grow-0">
         <UserMenu :navItems="userMenuItems" />
       </v-col>
 
-      <v-col class="shrink">
+      <v-col class="flex-grow-0">
         <UserMenu :navItems="userMenuItems"
                   :user-object="user" />
       </v-col>
 
-      <v-col class="shrink">
+      <v-col class="flex-grow-0">
         <UserMenu :navItems="userMenuItems"
                   :user-object="user2" />
       </v-col>
 
-      <v-col class="shrink">
+      <v-col class="flex-grow-0">
         <UserMenu :navItems="userMenuItems"
                   :user-object="user3" />
       </v-col>
@@ -136,36 +133,48 @@ export const JazzIconsViews = () => ({
     <v-row >
 
 
-      <v-col class="shrink"
+      <v-col class="flex-grow-0"
              id="jazzIcon"
              ref="jazzIcon">
       </v-col>
 
-      <v-col class="shrink"
+      <v-col class="flex-grow-0"
              id="jazzIcon2"
              ref="jazzIcon2">
       </v-col>
 
-      <v-col class="shrink"
+      <v-col class="flex-grow-0"
              id="jazzIcon3"
              ref="jazzIcon3">
       </v-col>
 
     </v-row>
     `,
+  setup()   {
+
+    const jazzIcon = ref(null);
+    const jazzIcon2 = ref(null);
+    const jazzIcon3 = ref(null);
+
+    return {
+      jazzIcon,
+      jazzIcon2,
+      jazzIcon3,
+    }
+  },
   mounted() {
-    this.jazzIcon(this.$refs.jazzIcon);
-    this.jazzIcon(this.$refs.jazzIcon2);
-    this.jazzIcon(this.$refs.jazzIcon3);
+    this.createIcon(this.jazzIcon);
+    this.createIcon(this.jazzIcon2);
+    this.createIcon(this.jazzIcon3);
   },
   methods: {
-    jazzIcon(ref) {
+    createIcon(el) {
 
-      if (ref) {
-        const rng = seedrandom(ref.id);
+      if (el) {
+        const rng = seedrandom(el.id);
         const randNr = rng.int32();
         const icon = jazzicons(48, randNr);
-        ref.appendChild(icon);
+        el.$el.appendChild(icon);
       }
     },
   },

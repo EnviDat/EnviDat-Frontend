@@ -14,12 +14,12 @@
         </v-row>
 
       <v-row no-gutters align="center" class="pt-6">
-        <v-col cols="1">
+        <v-col class='flex-grow-0 pr-2'>
           <v-icon
-            color="secondary"
+            :icon="mdiPen"
             x-large
-            >draw</v-icon
-          >
+            />
+
         </v-col>
 
         <v-col class="text-body-1" v-html="instructions"> </v-col>
@@ -30,9 +30,12 @@
 </template>
 
 <script>
+import { mdiPen } from '@mdi/js';
+
 export default {
   name: 'CreateDataAndResources',
   data: () => ({
+    mdiPen,
     title: 'Research Data & Resources',
     subtitle: 'This dataset is still a "Draft"',
     instructions: 'Please finish all the steps to create your datasets on the server. Once it\'s saved you can upload your research data and other resources in the editing workflow.',

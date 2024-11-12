@@ -22,7 +22,7 @@
         >
           <v-btn
             color="secondary"
-            :small="$vuetify.breakpoint.mdAndUp"
+            :small="$vuetify.display.mdAndUp"
             :disabled="!downloadActive"
             @click="$emit('buttonClick', buttonObj.buttonKey)"
           >

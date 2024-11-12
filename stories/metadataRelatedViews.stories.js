@@ -15,11 +15,14 @@ import { EDITMETADATA_OBJECT_UPDATE, eventBus } from '@/factories/eventBus';
 import EditRelatedPublications from '@/modules/user/components/EditRelatedPublications.vue';
 import EditRelatedDatasets from '@/modules/user/components/EditRelatedDatasets.vue';
 import EditCustomFields from '@/modules/user/components/EditCustomFields.vue';
-import MetadataCreationRelatedInfo from '@/modules/user/components/MetadataCreationRelatedInfo.vue';
+import EditRelatedInfo from '@/modules/user/components/EditRelatedInfo.vue';
 
 import storyTags from '@/modules/metadata/store/metadataTags';
+
 import categoryCards from '@/store/categoryCards';
 import { getPopularTags, getTagColor } from '@/factories/keywordsFactory';
+
+
 import metadataset from './js/metadata';
 
 const unFormatedMetadataCards = metadataset;
@@ -30,17 +33,19 @@ for (let i = 0; i < tagsFromDatasets.length; i++) {
   tag.color = getTagColor(categoryCards, tag.name);
 }
 
-function getKeywordsSource(tagsSource, catCards) {
+
+function getKeywordsSource(tagsSource) {
+
   const keywordsArray = [...tagsSource];
 
   for (let i = 0; i < keywordsArray.length; i++) {
-    keywordsArray[i].color = getTagColor(catCards, keywordsArray[i].name);
+    keywordsArray[i].color = getTagColor(categoryCards, keywordsArray[i].name);
   }
 
   return keywordsArray;
 }
 
-const storyTags5 = getKeywordsSource(storyTags, categoryCards).slice(0, 5);
+const storyTags5 = getKeywordsSource(storyTags).slice(0, 5);
 
 const placeholderKeywordsGenericProps = {
   metadataCardTitle: 'A Mostly Glorious Title',
@@ -89,7 +94,7 @@ export const EditRelatedDatasetsViews = () => ({
     this.genericProps.relatedDatasetsText = this.relatedDatasetsText;
     this.genericPropsFilled.relatedDatasetsText = this.relatedDatasetsText2;
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
   },
   methods: {
@@ -152,7 +157,7 @@ export const EditRelatedPublicationViews = () => ({
   created() {
     eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
   },
   methods: {
@@ -213,7 +218,7 @@ export const EditCustomFieldViews = () => ({
   created() {
     eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
   },
   methods: {
@@ -243,18 +248,18 @@ export const EditCustomFieldViews = () => ({
   }),
 });
 
-export const MetadataCreationRelatedInfoStep = () => ({
-  components: { MetadataCreationRelatedInfo },
+export const EditRelatedInfoStep = () => ({
+  components: { EditRelatedInfo },
   template: `
     <v-col>
 
       <v-row>
-        MetadataCreationRelatedInfo with Placeholder
+        EditRelatedInfo with Placeholder
       </v-row>
 
       <v-row class="py-3" >
         <v-col >
-          <MetadataCreationRelatedInfo v-bind="genericProps" />
+          <EditRelatedInfo v-bind="genericProps" />
         </v-col>
       </v-row>
 

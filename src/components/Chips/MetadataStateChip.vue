@@ -10,14 +10,17 @@
     :color="stateColor"
     :style="!showContent ? 'font-size: 0.9rem;' : ''"
   >
-    <v-tooltip bottom>
-      <template v-slot:activator="{ on }">
-        <v-row v-on="on" align="center" no-gutters>
-          <v-col
-            ><v-icon>{{ stateIcon }}</v-icon></v-col
-          >
-          <v-col :class="showContent ? 'px-1' : ''">
-            {{ showContent ? stateText : '' }}
+    <v-tooltip location='bottom'>
+      <template v-slot:activator="{ props }">
+        <v-row v-bind="props"
+               align="center"
+               no-gutters
+               class="flex-nowrap">
+          <v-col >
+            <v-icon :icon="stateIcon" />
+          </v-col>
+          <v-col :class="showContent ? 'px-1' : ''" >
+            {{ showContent ? stateText : ''  }}
           </v-col>
         </v-row>
       </template>
@@ -45,6 +48,7 @@ import {
   METADATA_STATE_INVISILBE,
   METADATA_STATE_VISILBE,
 } from '@/factories/metadataConsts';
+import { mdiEye, mdiEyeOff, mdiPlaylistEdit } from '@mdi/js';
 
 export default {
   name: 'MetadataStateChip',
@@ -66,7 +70,7 @@ export default {
     colorMap: {
       type: Object,
       default: () => ({
-        [METADATA_STATE_DRAFT]: 'gray',
+        [METADATA_STATE_DRAFT]: '#e0e0e0',
         [METADATA_STATE_INVISILBE]: 'warning',
         [METADATA_STATE_VISILBE]: 'green',
       }),
@@ -74,9 +78,9 @@ export default {
     iconMap: {
       type: Object,
       default: () => ({
-        [METADATA_STATE_DRAFT]: 'edit_note',
-        [METADATA_STATE_INVISILBE]: 'visibility_off',
-        [METADATA_STATE_VISILBE]: 'visibility',
+        [METADATA_STATE_DRAFT]: mdiPlaylistEdit,
+        [METADATA_STATE_INVISILBE]: mdiEyeOff,
+        [METADATA_STATE_VISILBE]: mdiEye,
       }),
     },
     showOnHover: {

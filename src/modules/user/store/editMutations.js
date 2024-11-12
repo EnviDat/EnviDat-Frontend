@@ -205,6 +205,8 @@ export default {
     editingObject.loading = false;
     editingObject.message = message;
 
+    // always clear the previews to make sure that the components
+    // show the latest datasets from the backend
     eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
 
     setTimeout(() => {
@@ -264,9 +266,7 @@ export default {
     if (currentEntry) {
 //      const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
 
-      const { categoryCards } = this.getters;
-
-      populateEditingComponents(this.commit, currentEntry, categoryCards);
+      populateEditingComponents(this.commit, currentEntry);
     }
   },
   [METADATA_EDITING_LOAD_DATASET_ERROR](state, reason) {

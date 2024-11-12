@@ -79,7 +79,7 @@ const Template = (args, { argTypes }) => ({
   beforeMount() {
     this.localAuthors = this.authors;
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(SAVE_EDITING_AUTHOR, this.saveAuthor);
     eventBus.off(SELECT_EDITING_AUTHOR, this.selectAuthor);
     eventBus.off(CANCEL_EDITING_AUTHOR, this.cancelEditing);

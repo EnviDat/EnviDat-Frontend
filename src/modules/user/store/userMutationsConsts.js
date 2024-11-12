@@ -89,12 +89,6 @@ export const ACTION_GET_USER_CONTEXT_TOKEN = () => {
   return 'passwordless_get_user';
 };
 
-/*
-export const API_TOKEN = 'API_TOKEN';
-export const API_TOKEN_ERROR = 'API_TOKEN_ERROR';
-export const API_TOKEN_SUCCESS = 'API_TOKEN_SUCCESS';
-*/
-
 /**
  * endpoint to sign in with the token received via email
  *
@@ -116,12 +110,6 @@ export const ACTION_API_TOKEN_AZURE = () => {
 
   return 'passwordless_request_api_token_azure_ad';
 };
-
-/*
-export const RESET_KEY = 'RESET_KEY';
-export const RESET_KEY_ERROR = 'RESET_KEY_ERROR';
-export const RESET_KEY_SUCCESS = 'RESET_KEY_SUCCESS';
-*/
 
 /**
  * endpoint to request a new token via email

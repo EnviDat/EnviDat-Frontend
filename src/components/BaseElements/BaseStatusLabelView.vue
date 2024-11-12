@@ -1,37 +1,33 @@
 <template>
   <v-container
     fluid
-    :id="`BaseStatusLabelView_${statusIcon}`"
+    :id="`BaseStatusLabelView_${status}`"
     class="pa-0"
     :style="expanded ? `border: solid 1px ${statusTextColor};` : ''"
   >
     <v-row v-show="loading"
            no-gutters justify="start" class="align-center">
-      <v-col class="shrink pa-1 pt-2">
-        <div class="skeleton skeleton-animation-shimmer">
-          <div style="width: 24px; height: 24px;" class="bone bone-type-image bone-style-round"></div>
-        </div>
+      <v-col class="flex-grow-0 pa-1 pt-2">
+        <v-skeleton-loader class='noMargin smallAvatar' height='24' type="avatar"></v-skeleton-loader>
+      </v-col >
+
+      <v-col class="flex-grow-1 pa-1 pt-2">
+        <v-skeleton-loader class='noMargin' height='24' type="heading"></v-skeleton-loader>
       </v-col>
 
-      <v-col class="px-2">
-        <div class="skeleton skeleton-animation-shimmer">
-          <div style="width: 100%; height: 15px;"  class="bone bone-type-heading" ></div>
-        </div>
-      </v-col>
     </v-row>
 
     <v-row v-show="!loading"
            no-gutters justify="start" class="align-center">
-      <v-col class="shrink px-2">
-        <v-icon :color="statusColor"
+      <v-col class="flex-grow-0 px-2">
+        <BaseIcon :color="statusColor"
+                  :icon="statusIcon"
                 v-on="expandedText ? { click: () => { expanded = !expanded } } : {}"
-        >
-          {{ statusIcon }}
-        </v-icon>
+        />
       </v-col>
 
       <v-col
-        class="grow text-caption"
+        class="flex-grow-1 text-caption"
         :style="expandedText ? 'cursor: pointer;' : ''"
         v-on="expandedText ? { click: () => { expanded = !expanded } } : {}"
       >
@@ -39,13 +35,13 @@
       </v-col>
 
       <v-col v-show="showExpandIcon"
-             class="shrink">
+             class="flex-grow-0">
         <BaseIconButton
-          materialIconName="arrow_drop_down"
+          :icon="mdiMenuDown"
           iconColor="primary"
-          isSmall
-          :rotateOnClick="true"
-          :rotateToggle="expanded"
+          outlined
+          small
+          :rotated="expanded"
           @clicked="expanded = !expanded"
         />
       </v-col>
@@ -59,7 +55,7 @@
       justify="start"
       class="align-center py-1 px-2 text-caption"
     >
-      {{ expandedText }}
+      <v-alert :icon="statusIcon" :type="status" variant="tonal">{{ expandedText }}</v-alert>
     </v-row>
     <!-- </v-expand-y-transition> -->
   </v-container>
@@ -79,13 +75,15 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import {mdiAlertCircle, mdiCheckCircle, mdiCloseCircle, mdiInformation, mdiMenuDown} from '@mdi/js';
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 export default {
   name: 'BaseStatusLabelView',
   props: {
-    loading: Boolean,
+    loading: { type: Boolean, default: false },
     expandedText: String,
-    statusIcon: String,
+    status: String,
     statusColor: String,
     statusText: String,
     showExpandIcon: {
@@ -99,14 +97,47 @@ export default {
         this.$vuetify.theme.themes.light[this.statusColor] || this.statusColor
       );
     },
+    statusIcon() {
+      if (this.status === 'check') {
+        return mdiCheckCircle;
+      }
+      if (this.status === 'info') {
+        return mdiInformation;
+      }
+      if (this.status === 'warning') {
+        return mdiAlertCircle;
+      }
+      if (this.status === 'error') {
+        return mdiCloseCircle;
+      }
+
+      return mdiInformation;
+    },
   },
   data: () => ({
+    mdiMenuDown,
+    mdiInformation,
+    mdiAlertCircle,
+    mdiCloseCircle,
+    mdiCheckCircle,
     expanded: false,
   }),
   components: {
+    BaseIcon,
     BaseIconButton,
   },
 };
 </script>
 
-<style></style>
+<style>
+ .noMargin > .v-skeleton-loader__bone{
+   margin: 0 !important;
+ }
+
+ .smallAvatar > .v-skeleton-loader__bone {
+   height: 24px !important;
+   width: 24px !important;
+   min-height: 24px !important;
+   min-width: 24px !important;
+ }
+</style>

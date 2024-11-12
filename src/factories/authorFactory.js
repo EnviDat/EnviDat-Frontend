@@ -15,6 +15,7 @@ import {
   compareAsc,
   parseISO,
 } from 'date-fns';
+import { mdiAccountSupervisor, mdiAccountVoice, mdiBookOpenVariant, mdiCodeTags, mdiInformation, mdiLibrary, mdiWidgets } from '@mdi/js';
 
 const authorDataCreditLevels = [
   { score: 160, lvl: 6 },
@@ -153,19 +154,19 @@ export function getAuthorsCitationString(dataset) {
 export function getDataCreditIcon(creditName) {
   switch (creditName) {
     case 'publication':
-      return 'menu_book';
+      return mdiBookOpenVariant;
     case 'software':
-      return 'code';
+      return mdiCodeTags;
     case 'curation':
-      return 'local_library';
+      return mdiLibrary;
     case 'collection':
-      return 'widgets';
+      return mdiWidgets;
     case 'validation':
-      return 'record_voice_over';
+      return mdiAccountVoice;
     case 'supervision':
-      return 'supervisor_account';
+      return mdiAccountSupervisor;
     default:
-      return 'info';
+      return mdiInformation;
   }
 }
 
@@ -193,9 +194,7 @@ export function getDataCredit(author) {
   } else if (typeof author.data_credit === 'string') {
     dataCredit[author.data_credit] = 1;
   } else {
-    // eslint-disable-next-line no-console
     console.error(`Unexpected type for author.data_credit ${typeof author.data_credit}`);
-    // throw new Error(`Unexpected type for author.data_credit ${typeof author.data_credit}`);
   }
 
   return dataCredit;
@@ -531,6 +530,46 @@ export function UnwrapEditingAuthors(wrappedAuthors, authorsMap) {
   return authorWithFullInfos;
 }
 
+/**
+ * Combines authors arrays, the current is the basis, removedAuthors are subtracted from the currentAuthors and the newAuthors are being added.
+ * Main usage of this function is in the context of editing authors.
+ *
+ * @param currentAuthors
+ * @param removedAuthors
+ * @param newAuthors
+ * @returns {*[]}
+ */
+export function combineAuthorLists(currentAuthors, newAuthors = [], removedAuthors = []) {
+  const authors = [...currentAuthors];
+
+  for (let i = 0; i < removedAuthors.length; i++) {
+    const authToRemove = removedAuthors[i];
+
+    let deleteIndex = authors.findIndex(a => a.email === authToRemove.email);
+
+    if (deleteIndex >= 0) {
+      authors.splice(deleteIndex, 1);
+    }
+
+    deleteIndex = newAuthors.findIndex(a => a.email === authToRemove.email);
+
+    if (deleteIndex >= 0) {
+      newAuthors.splice(deleteIndex, 1);
+    }
+
+  }
+
+  for (let i = 0; i < newAuthors.length; i++) {
+    const auth = newAuthors[i];
+
+    if (!authors.some(a => a.email === auth.email)) {
+      authors.push(auth);
+    }
+  }
+
+  return authors;
+}
+
 export function mergeAuthorsDataCredit(currentAuthors, newAuthors) {
   const authors = [...currentAuthors];
 
@@ -582,11 +621,19 @@ export function enhanceAuthorsFromAuthorMap(authors, authorMap) {
 }
 
 export function getAuthorByName(fullName, authors) {
+  if (!fullName) {
+    return null;
+  }
+
   const found = authors.filter(auth => getAuthorName(auth) === fullName);
   return found.length > 0 ? found[0] : null;
 }
 
 export function getAuthorByEmail(email, authors) {
+  if (!email) {
+    return null;
+  }
+
   const found = authors.filter(auth => auth.email === email);
   return found[0] || null;
 }

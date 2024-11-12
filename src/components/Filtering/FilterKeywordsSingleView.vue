@@ -1,35 +1,40 @@
 <template>
   <v-card raised id="FilterKeywordsView">
     <v-container class="pa-2 fill-height" fluid>
-      <v-row class="fill-height" :no-gutters="$vuetify.breakpoint.smAndUp">
+      <v-row class="fill-height" :no-gutters="$vuetify.display.smAndUp">
         <v-col v-if="!filterExpanded" class="hidden-sm-and-up px-2" cols="12">
           <div class="mx-3">Filter for Keywords</div>
         </v-col>
 
-        <v-col v-if="filterExpanded || $vuetify.breakpoint.smAndUp" cols="12">
+        <v-col v-if="filterExpanded || $vuetify.display.smAndUp" cols="12">
           <v-row>
-            <v-col class="metadataInfoIcon shrink">
-              <v-icon size="24px" color="black">style</v-icon>
+            <v-col class="metadataInfoIcon flex-grow-0">
+              <BaseIcon :icon="mdiPaletteSwatch" color='black' />
             </v-col>
 
-            <v-col v-if="showPlaceholder" class="grow pl-0">
-              <tag-chip-placeholder
-                v-for="n in 6"
-                :key="n"
-                class="envidatChip"
-              />
-            </v-col>
+            <div v-if="showPlaceholder"
+                 style="display: flex; flex-direction: row;"
+            >
+              <v-col class="flex-grow-0 pl-0"
+                     v-for="n in 3"
+                     :key="n"
+              >
+                <TagChipPlaceholder
 
-            <v-col v-if="!showPlaceholder" class="grow pl-0">
-              <tag-chip
+                  class="envidatChip"
+                />
+              </v-col>
+            </div>
+
+            <v-col v-if="!showPlaceholder" class="flex-grow-1 pl-0">
+              <TagChip
                 v-for="tag in tagList"
                 :key="tag.name"
                 :name="tag.count ? `${tag.name} (${tag.count})` : tag.name"
                 :selectable="tag.enabled"
                 :highlighted="tag.active"
-                :closeable="tag.active"
+                :closeable="!!tag.active"
                 :color="tag.color"
-                @clickedClose="catchTagCloseClicked(tag.name)"
                 @clicked="tag.active ? catchTagCloseClicked(tag.name) : catchTagClicked(tag.name)"
               />
             </v-col>
@@ -39,18 +44,17 @@
       </v-row>
     </v-container>
 
-    <base-icon-button
-      v-if="$vuetify.breakpoint.xsOnly"
+    <BaseIconButton
+      v-if="$vuetify.display.xs"
       :count="selectedTags.length"
       style="position: absolute; bottom: 0; right: 0;"
-      material-icon-name="expand_more"
-      color="secondary"
+      :icon="mdiChevronDown"
+      outline-color="secondary"
       icon-color="secondary"
       class="ma-1"
-      :outlined="true"
-      :is-small="true"
-      :rotate-on-click="true"
-      :rotate-toggle="filterExpanded"
+      outlined
+      small
+      :rotated="filterExpanded"
       @clicked="catchExpandClicked"
     />
   </v-card>
@@ -76,14 +80,11 @@ import TagChip from '@/components/Chips/TagChip.vue';
 import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder.vue';
 
 import { createTag } from '@/factories/keywordsFactory';
+import { mdiChevronDown, mdiPaletteSwatch } from '@mdi/js';
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 export default {
   name: 'FilterKeywordsSingleView',
-  components: {
-    BaseIconButton,
-    TagChip,
-    TagChipPlaceholder,
-  },
   props: {
     selectedTagNames: Array,
     allTags: Array,
@@ -93,16 +94,6 @@ export default {
     showPlaceholder: Boolean,
     compactLayout: Boolean,
   },
-  data: () => ({
-    maxSelectedTagsTextLength: 25,
-    maxUnselectedTagsTextLength: 250,
-    xsTextLength: 25,
-    smTextLength: 50,
-    mdTextLength: 65,
-    tagIcon: null,
-    tagsIcon: null,
-    filterExpanded: false,
-  }),
   computed: {
     tagList() {
       const mergedTags = [...this.selectedTags, ...this.unselectedTags];
@@ -135,7 +126,7 @@ export default {
       }
 
       const topList = this.allTagWithMax;
-      return topList.filter((element) => element.enabled && this.selectedTagNames.indexOf(element.name) >= 0);
+      return topList.filter((element) => element.enabled && this.selectedTagNames.indexOf(element.name) < 0);
     },
     allTagWithMax() {
       return this.allTags?.toSpliced(0, this.maxTagNumber(this.minTagCountToBeVisible));
@@ -143,13 +134,13 @@ export default {
     maxUnselectedTagNumber() {
       let maxTextLength = this.maxUnselectedTagsTextLength;
 
-      if (this.$vuetify.breakpoint.xsOnly) {
+      if (this.$vuetify.display.xs) {
         maxTextLength = this.xsTextLength;
-      } else if (this.$vuetify.breakpoint.smAndDown) {
+      } else if (this.$vuetify.display.smAndDown) {
         maxTextLength = this.smTextLength;
-      } else if (this.$vuetify.breakpoint.mdAndDown) {
+      } else if (this.$vuetify.display.mdAndDown) {
         maxTextLength = this.mdTextLength;
-      } else if (this.$vuetify.breakpoint.lgAndDown) {
+      } else if (this.$vuetify.display.lgAndDown) {
         maxTextLength = this.mdTextLength;
       }
 
@@ -161,20 +152,16 @@ export default {
     minTagCountToBeVisible() {
       let minCount = 5;
 
-      if (this.$vuetify.breakpoint.xsOnly) {
+      if (this.$vuetify.display.xs) {
         minCount = 25;
-      } else if (this.$vuetify.breakpoint.smAndDown) {
+      } else if (this.$vuetify.display.smAndDown) {
         minCount = 20;
-      } else if (this.$vuetify.breakpoint.mdAndDown) {
+      } else if (this.$vuetify.display.mdAndDown) {
         minCount = 10;
       }
 
       return minCount;
     },
-  },
-  beforeMount() {
-    this.tagIcon = this.mixinMethods_getIcon('tag');
-    this.tagsIcon = this.mixinMethods_getIcon('tags');
   },
   methods: {
     maxTagNumber(list) {
@@ -186,9 +173,9 @@ export default {
     isCleanTag(tagName) {
       let maxWordsPerTag = 3;
 
-      if (this.$vuetify.breakpoint.xsOnly) {
+      if (this.$vuetify.display.xs) {
         maxWordsPerTag = 2;
-      } else if (this.$vuetify.breakpoint.smAndDown) {
+      } else if (this.$vuetify.display.smAndDown) {
         maxWordsPerTag = 20;
       }
 
@@ -228,7 +215,22 @@ export default {
     catchTagCloseClicked(tagId) {
       this.$emit('clickedTagClose', tagId);
     },
-
   },
+  components: {
+    BaseIcon,
+    BaseIconButton,
+    TagChip,
+    TagChipPlaceholder,
+  },
+  data: () => ({
+    mdiChevronDown,
+    mdiPaletteSwatch,
+    maxSelectedTagsTextLength: 25,
+    maxUnselectedTagsTextLength: 250,
+    xsTextLength: 25,
+    smTextLength: 50,
+    mdTextLength: 65,
+    filterExpanded: false,
+  }),
 };
 </script>

@@ -12,21 +12,12 @@ import {
 } from '@/factories/keywordsFactory';
 import { EDNA_MODE } from '@/store/metadataMutationsConsts';
 
-import categoryCards from '@/store/categoryCards';
 
 const initState = {
-  cardBGImages: null,
   modeMetadata: [],
   modeDatasets: [],
   modeFilters: [],
 }
-
-modes.forEach((modeMeta) => {
-  initState.modeMetadata.push(modeMeta);
-  initState.modeDatasets.push({});
-  initState.modeFilters.push([]);
-})
-
 
 
 export const useModeStore = defineStore(MODE_STORE, {
@@ -37,8 +28,13 @@ export const useModeStore = defineStore(MODE_STORE, {
   },
 */
   actions: {
-    init(cardBGImages) {
-      this.cardBGImages = cardBGImages;
+    init() {
+
+      modes.forEach((modeMeta) => {
+        initState.modeMetadata.push(modeMeta);
+        initState.modeDatasets.push({});
+        initState.modeFilters.push([]);
+      })
     },
     /**
      * returns the metadata object for a mode name
@@ -112,7 +108,7 @@ export const useModeStore = defineStore(MODE_STORE, {
           filteredContent = content;
         }
       } catch (e) {
-        console.log('Error in getFilteredDatasets()');
+        console.error('Error in getFilteredDatasets()');
         console.error(e)
       }
 
@@ -143,8 +139,8 @@ export const useModeStore = defineStore(MODE_STORE, {
       if (index >= 0) {
         let enhancedDatasets = data;
         if (mode === EDNA_MODE) {
-          // eDNA shallow datasets need enhancement for
-          const enhancedDatasetsDictionary = enhanceMetadatas(data, this.cardBGImages, categoryCards, mode);
+          // eDNA shallow datasets need enhancement
+          const enhancedDatasetsDictionary = enhanceMetadatas(data, mode);
           enhancedDatasets = Object.values(enhancedDatasetsDictionary);
         }
         this.modeDatasets[index] = enhancedDatasets;

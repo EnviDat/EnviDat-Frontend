@@ -1,19 +1,17 @@
 <template>
-  <v-row align="center"
-         justify="center"
-         no-gutters>
 
-    <v-col v-if="compact" class="shrink text-body-2 mx-1 text-no-wrap">
+  <v-row align="center" justify="center" no-gutters>
+    <v-col v-if="compact" class="flex-grow-0 text-body-2 mx-1 text-no-wrap">
+
       {{ modeInfoPrefix }}: {{ modeTitle }}
     </v-col>
 
-    <v-col v-else class="shrink text-h6 mx-1 text-no-wrap">
+    <v-col v-else class="flex-grow-0 text-h6 mx-1 text-no-wrap">
       {{ modeInfo }}
     </v-col>
 
     <v-col v-if="modeLogo"
-            class="shrink mx-1"
-    >
+            class="flex-grow-0 mx-1" >
       <a
         v-if="modeExternalUrl"
         :href="modeExternalUrl"
@@ -30,26 +28,24 @@
                      :width="size" />
     </v-col>
 
-    <v-col class="shrink mx-1">
-      <base-icon-button
-        materialIconName="info_outline"
-        :tooltipText="`${tooltipText} ${modeTitle}`"
-        tooltipBottom
+    <v-col class="flex-grow-0 mx-1">
+      <BaseIconButton
+        :icon="mdiInformationOutline"
+        :tooltip-text="`${tooltipText} ${modeTitle}`"
+        tooltip-bottom
         color="transparent"
-        iconColor="secondary"
-        isSmall
+        icon-color="secondary"
       />
     </v-col>
 
-    <v-col v-if="closeCallback"
-           class="shrink mx-1">
-      <base-icon-button
-        materialIconName="close"
-        :tooltipText="`Exit ${modeTitle} ${modeInfoPrefix}`"
-        tooltipBottom
+    <v-col v-if="closeCallback" class="flex-grow-0 mx-1">
+
+      <BaseIconButton
+        :icon="mdiClose"
+        :tooltip-text="`Exit ${modeTitle} ${modeInfoPrefix}`"
+        tooltip-bottom
         color="transparent"
-        iconColor="red"
-        isSmall
+        icon-color="red"
         @clicked="closeCallback"
       />
     </v-col>
@@ -71,6 +67,7 @@
  */
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import { getModeData } from '@/factories/modeFactory';
+import { mdiClose, mdiInformationOutline } from '@mdi/js';
 
 export default {
   name: 'ModeView',
@@ -83,6 +80,8 @@ export default {
     closeCallback: Function,
   },
   data: () => ({
+    mdiClose,
+    mdiInformationOutline,
     modeInfoPrefix: 'Special View',
     tooltipText: 'You are in a specific view which shows data for',
   }),

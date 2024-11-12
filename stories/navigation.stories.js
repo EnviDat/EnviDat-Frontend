@@ -15,8 +15,6 @@
 import TheNavigation from '@/components/Navigation/TheNavigation.vue';
 import TheNavigationToolbar from '@/components/Navigation/TheNavigationToolbar.vue';
 
-import { SWISSFL_MODE } from '@/store/metadataMutationsConsts';
-
 import {
   navigationItems,
   userMenuItems,
@@ -31,66 +29,24 @@ const dominikHaas = {
   id: '929b0bc7-bfe7-4248-b90c-21f547ffe9d9',
 };
 
-/*
-const methods = {
-  onMenuClick: action('clicked on menu'),
-  onSearchClick: action('clicked on search'),
-  onLoginClick: action('clicked on login'),
-};
-*/
 const appVersion = import.meta.env.VITE_VERSION;
 
 export default {
-  title: '5 Navigation / Redesigned Navigation',
-  decorators: [],
-  parameters: {},
+  title: '5 Navigation / Navigation',
+  component: TheNavigation,
 };
 
-export const Menu = () => ({
-  components: { TheNavigation },
-  template: `
-  <v-container>
-    <the-navigation :navigationItems="navigationItems"
-                    :version="appVersion" />
+export const Empty = { args: {} };
 
-    <p v-for="(item, index) in navigationItems"
-        :key="index"
-        v-show="item.active"
-        style="margin: 100px;" >
-      {{ item.title }}
-    </p>
-  </v-container>
-  `,
-  data: () => ({
+
+
+export const Menu = {
+  args: {
     navigationItems,
-    appVersion,
-  }),
-  // methods,
-});
+    version: appVersion,
+  },
+};
 
-export const ToolbarwithMode = () => ({
-  components: { TheNavigationToolbar },
-  template: `
-      <the-navigation-toolbar :mode="SWISSFL_MODE"
-            />`,
-  // methods,
-  data: () => ({
-    SWISSFL_MODE,
-  }),
-});
-
-export const ToolbarSignedin = () => ({
-  components: { TheNavigationToolbar },
-  template: `
-    <the-navigation-toolbar :signedInUser="dominikHaas"
-                            :userNavigationItems="userMenuItems"
-          />`,
-  // methods,
-  data: () => ({
-    dominikHaas,
-    userMenuItems,
-  }),
-});
 
 export const MenuAndToolbar = () => ({
   components: { TheNavigation, TheNavigationToolbar },
@@ -107,5 +63,4 @@ export const MenuAndToolbar = () => ({
     navigationItems,
     userMenuItems,
   }),
-  // methods,
 });

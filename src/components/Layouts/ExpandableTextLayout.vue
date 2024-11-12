@@ -5,20 +5,11 @@
     </v-card-title>
 
     <v-card-title v-if="showPlaceholder && !title" class="pa-4 pt-0">
-      <div
-        class="skeleton skeleton-size-normal skeleton-color-concrete skeleton-animation-shimmer"
-        style="width: 100%;"
-      >
-        <div class="bone bone-type-heading" />
-      </div>
+      <v-skeleton-loader type='paragraph' color='gray' />
     </v-card-title>
 
     <v-card-text v-if="showPlaceholder" class="pa-4 pt-0">
-      <div
-        class="skeleton skeleton-size-normal skeleton-color-concrete skeleton-animation-shimmer"
-      >
-        <div class="bone bone-type-multiline bone-style-paragraph" />
-      </div>
+      <v-skeleton-loader type='paragraph' color='gray' />
     </v-card-text>
 
     <v-card-text
@@ -46,15 +37,14 @@
       class="ma-0 pa-2"
       :style="`position: absolute; bottom: 0px; right: ${rightPos()};`"
     >
-      <base-icon-button
-        material-icon-name="expand_more"
-        :iconColor="showFullText ? 'primary' : 'accent'"
-        :fillColor="showFullText ? '' : $vuetify.theme.themes.light.primary"
-        :color="showFullText ? 'accent' : 'transparent'"
-        :outlined="showFullText"
-        :rotateOnClick="true"
-        :rotateToggle="showFullText"
-        :tooltipText="showFullText ? 'Collaspe text' : 'Show full text'"
+      <BaseIconButton
+        :icon="mdiChevronDown"
+        :icon-color="showFullText ? 'secondary' : 'white'"
+        :color="showFullText ? 'transparent' : 'secondary'"
+        :outlined="!!showFullText"
+        outline-color="secondary"
+        :rotated="showFullText"
+        :tooltip-text="showFullText ? 'Collaspe text' : 'Show full text'"
         @clicked="readMore"
       />
     </v-card-actions>
@@ -78,6 +68,7 @@
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import { renderMarkdown } from '@/factories/stringFactory';
+import { mdiChevronDown } from '@mdi/js';
 
 export default {
   name: 'ExpandableTextLayout',
@@ -132,7 +123,7 @@ export default {
     },
     scrollbarColorFront() {
       return this.$vuetify
-        ? this.$vuetify.theme.themes.light.highlight
+        ? this.$vuetify.theme.themes.light.colors.highlight
         : 'auto';
     },
     scrollbarColorBack() {
@@ -144,12 +135,13 @@ export default {
       this.showFullText = !this.showFullText;
     },
     rightPos() {
-      return this.$refs.text && this.$refs.text.clientHeight >= 500
+      return this.$refs.text && this.$refs.text.$el.clientHeight >= 500
         ? '0px'
         : '10px';
     },
   },
   data: () => ({
+    mdiChevronDown,
     showFullText: false,
   }),
 };

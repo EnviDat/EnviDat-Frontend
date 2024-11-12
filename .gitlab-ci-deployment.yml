@@ -15,14 +15,15 @@ deploy-chromatic:
     # manually deploy the storybook build to chromatic for visual regression testing
     - npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes --storybook-build-dir ./storybook
   when: manual
-  # for manaul jobs add allow_failure so the whole pipeline won't show up as "blocked"
+  # for manual jobs add allow_failure so the whole pipeline won't show up as "blocked"
   allow_failure: true
 
 publish-build:
   stage: deploy
   environment: $CI_COMMIT_REF_NAME
   image: alpine:3.20
-  extends: .trigger-rules
+  extends:
+    - .trigger-rules
   variables:
     GIT_STRATEGY: none
   needs:
@@ -35,8 +36,8 @@ publish-build:
   before_script:
     - apk add curl zip --no-cache
   script:
-    - export PUBLISH_LOCATION="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/envidat-frontend-${CI_COMMIT_REF_NAME}/${BUILD_VERSION}/${BUILD_ZIP_NAME}"
-    - echo "Going to publish build ${BUILD_VERSION} with zip name ${BUILD_ZIP_NAME}"
+    - export PUBLISH_LOCATION="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/envidat-frontend/${BUILD_VERSION}.${CI_COMMIT_REF_NAME}/${BUILD_ZIP_NAME}"
+    - echo "Going to publish build ${BUILD_NAME} with zip name ${BUILD_ZIP_NAME}"
     - echo "to location ${PUBLISH_LOCATION}"
     - zip -r ${BUILD_ZIP_NAME} ./
     # - ls -l
@@ -50,7 +51,8 @@ deploy-to-s3-bucket:
   stage: deploy
   environment: $CI_COMMIT_REF_NAME
   image: alpine:3.20
-  extends: .trigger-rules
+  extends:
+    - .trigger-rules
   needs:
     # needs the environmental variables for the version number
     - set-vars
@@ -79,8 +81,8 @@ deploy-to-s3-bucket:
       fi
       echo "Target for rclone sync is the bucket: '${BUCKET_NAME}'"
   script:
-    - export PUBLISH_LOCATION="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/envidat-frontend-${CI_COMMIT_REF_NAME}/${BUILD_VERSION}/${BUILD_ZIP_NAME}"
-    - echo "Going to pull build ${BUILD_VERSION} with zip name ${BUILD_ZIP_NAME}"
+    - export PUBLISH_LOCATION="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/envidat-frontend/${BUILD_VERSION}.${CI_COMMIT_REF_NAME}/${BUILD_ZIP_NAME}"
+    - echo "Going to pull build ${BUILD_NAME} with zip name ${BUILD_ZIP_NAME}"
     - echo "from location ${PUBLISH_LOCATION}"
     # - ls -l
     - |
@@ -97,12 +99,13 @@ deploy-to-s3-bucket:
 
 manual-deploy-to-s3-bucket:
   stage: manual-deploy
+  environment: $CI_COMMIT_REF_NAME
   image: alpine:3.20
   rules:
     - if: '$CI_PIPELINE_SOURCE == "pipeline"'
       when: always
     - when: manual
-  # for manaul jobs add allow_failure so the whole pipeline won't show up as "blocked"
+  # for manual jobs add allow_failure so the whole pipeline won't show up as "blocked"
   allow_failure: true
   needs:
     # needs the environmental variables for the version number
@@ -130,8 +133,8 @@ manual-deploy-to-s3-bucket:
       fi
       echo "Target for rclone sync is the bucket: '${BUCKET_NAME}'"
   script:
-    - export PUBLISH_LOCATION="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/envidat-frontend-${CI_COMMIT_REF_NAME}/${BUILD_VERSION}/${BUILD_ZIP_NAME}"
-    - echo "Going to pull build ${BUILD_VERSION} with zip name ${BUILD_ZIP_NAME}"
+    - export PUBLISH_LOCATION="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/envidat-frontend/${BUILD_VERSION}.${CI_COMMIT_REF_NAME}/${BUILD_ZIP_NAME}"
+    - echo "Going to pull build ${BUILD_NAME} with zip name ${BUILD_ZIP_NAME}"
     - echo "from location ${PUBLISH_LOCATION}"
     # - ls -l
     - |

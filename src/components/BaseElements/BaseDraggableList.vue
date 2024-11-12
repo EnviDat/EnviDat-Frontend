@@ -7,7 +7,7 @@
     <v-row v-if="instructions"
            no-gutters>
       <v-col class="text-body-2 pb-1">
-        {{ instructions }}
+        {{ draggableItems?.length > 0 ? instructions :  emptyInstructionsText }}
       </v-col>
     </v-row>
 
@@ -27,7 +27,7 @@
 
         <TagChipAuthor v-if="useAuthorTags"
                        :name="item"
-                       :color="currentHoverItem === item ? $vuetify.theme.themes.light.accent : undefined"
+                       :color="currentHoverItem === item ? $vuetify.theme.themes.light.colors.accent : undefined"
                        :highlighted="currentDragItem === item"
                        :isSmall="true"
                        :draggable="true"
@@ -35,7 +35,7 @@
 
         <TagChip v-if="!useAuthorTags"
                  :name="item"
-                 :color="currentHoverItem === item ? $vuetify.theme.themes.light.accent : undefined"
+                 :color="currentHoverItem === item ? $vuetify.theme.themes.light.colors.accent : undefined"
                  :highlighted="currentDragItem === item"
                  :isSmall="false"
         />
@@ -60,6 +60,8 @@
  */
 
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
+import TagChipAuthor from '@/components/Chips/TagChipAuthor.vue';
+import TagChip from '@/components/Chips/TagChip.vue';
 
 export default {
   name: 'BaseDraggableList',
@@ -80,7 +82,7 @@ export default {
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   computed: {
@@ -147,8 +149,11 @@ export default {
     },
   },
   components: {
+    TagChip,
+    TagChipAuthor,
   },
   data: () => ({
+    emptyInstructionsText: 'No items to change the sequence, add items first.',
     currentDragItem: '',
     currentHoverItem: '',
     previewItems: null,

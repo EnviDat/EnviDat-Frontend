@@ -1,56 +1,56 @@
 <template>
-  <v-container fluid class="pa-0">
+  <v-container fluid class="px-0 py-1">
     <v-row no-gutters align="start">
-      <v-col cols="2">
+      <v-col class='pr-4 flex-grow-0'>
         <v-row no-gutters>
-          <v-col cols="12">
-            <v-menu
-              open-on-hover
-              open-on-click
-              :close-on-click="false"
-              :close-on-content-click="false"
-              offset-y
-              z-index="2"
+            <v-col cols="12"
+                   class='pl-1 pb-2'
             >
-              <template v-slot:activator="{ on, attrs }">
-                <v-icon
-                  style="width: 36px; height: 36px;"
-                  :color="abstract ? 'primary' : 'gray'"
-                  v-bind="attrs"
-                  v-on="on"
-                >
-                  info
-                </v-icon>
+            <v-menu
+                :open-on-hover='true'
+                :open-on-click='true'
+                :close-on-click="false"
+                :close-on-content-click="false"
+                :disabled="!abstract"
+                offset-y
+                z-index="2"
+            >
+              <template v-slot:activator="{ props }">
+                <BaseIcon
+                  v-bind="props"
+                  :icon="mdiInformation"
+                  :color="abstract ? 'primary' : 'grey'"
+                />
               </template>
 
-              <div
-                class="pa-4"
-                style="background-color: white;"
-                v-html="abstract"
-              ></div>
+              <div class="pa-4"
+                   style="background-color: white;"
+                   v-html="abstract" />
+
             </v-menu>
           </v-col>
 
-          <v-col cols="12">
-            <BaseIconButton
-              material-icon-name="fingerprint"
+          <v-col cols="12"
+                  class="pl-1 pt-2">
+            <BaseIconButton 
+              :icon="mdiFingerprint"
               :disabled="!doi"
-              :tooltipText="`doi: ${doi}`"
+              :icon-color="doi ? 'primary' : 'gray'"
+              :tooltip-text="`doi: ${doi}`"
               :url="doiUrl"
             />
           </v-col>
         </v-row>
       </v-col>
 
-      <v-col cols="10" :md="citationColsCustom ? citationColsCustom : 10">
+      <v-col class='flex-grow-1' >
         <div v-html="citation"></div>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
-<script>
-/**
+<script>/**
  * BaseCitationView.vue base element for citations, show the abstract when hovering over the info icon
  *
  * @summary citation base element
@@ -59,6 +59,9 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import {mdiInformation, mdiFingerprint} from '@mdi/js';
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
 export default {
   name: 'BaseCitationView',
@@ -79,14 +82,17 @@ export default {
       type: String,
       default: undefined,
     },
-    citationColsCustom: {
-      type: Number,
-      default: undefined,
-    },
   },
-  computed: {},
-  data: () => ({}),
-  components: {},
+  computed: {
+  },
+  data: () => ({
+    mdiInformation,
+    mdiFingerprint,
+  }),
+  components: {
+    BaseIcon,
+    BaseIconButton,
+  },
 };
 </script>
 

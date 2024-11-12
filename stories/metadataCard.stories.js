@@ -7,34 +7,46 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
- */
+*/
 
 import MetadataCard from '@/components/Cards/MetadataCard.vue';
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
 
-import { enhanceMetadatasTitleImage, getMetadataVisibilityState } from '@/factories/metaDataFactory';
-import categoryCards from '@/store/categoryCards';
-import globalMethods from '@/factories/globalMethods';
+import {
+  enhanceMetadataEntry,
 
+} from '@/factories/metaDataFactory';
+
+import { getModeData } from '@/factories/modeFactory';
+import { EDNA_MODE, SWISSFL_MODE } from '@/store/metadataMutationsConsts';
+import { enhanceTags } from '@/factories/keywordsFactory';
+import categoryCards from '@/store/categoryCards';
+import { createLocation } from '@/factories/geoFactory';
+import { getMetadataVisibilityState } from '@/factories/publicationFactory';
 import {
   mobileLargeViewportParams,
   mobileViewportParams,
   tabletViewportParams,
 } from './js/envidatViewports';
 
-import fileIcon from '../src/assets/icons/file.png';
-import lockedIcon from '../src/assets/icons/lockClosed.png';
-import unlockedIcon from '../src/assets/icons/lockOpen.png';
-import pinIcon from '../src/assets/icons/marker.png';
-import multiPinIcon from '../src/assets/icons/markerMulti.png';
-import polygonIcon from '../src/assets/icons/polygons.png';
+import pinIcon from '../src/assets/icons/marker.webp';
+import multiPinIcon from '../src/assets/icons/markerMulti.webp';
+import polygonIcon from '../src/assets/icons/polygons.webp';
 
-// metadata gets enhance in the storybook config
 import metadataCards from './js/metadata';
 
-const cardBGImages = globalMethods.methods.mixinMethods_getCardBackgrounds();
+const enhancedDatasets = [];
 
-enhanceMetadatasTitleImage(metadataCards, cardBGImages, categoryCards);
+for (let i = 0; i < metadataCards.length; i++) {
+  let dataset = metadataCards[i];
+  dataset = enhanceMetadataEntry(dataset);
+
+  dataset = enhanceTags(dataset, categoryCards);
+
+  dataset.location = createLocation(dataset);
+
+  enhancedDatasets.push(dataset);
+}
 
 const methods = {
   hasRestrictedResources(metadata) {
@@ -62,16 +74,18 @@ const methods = {
     }
     const spatialJSON = typeof metadata.spatial === 'string' ? JSON.parse(metadata.spatial) : metadata.spatial;
 
-    if (spatialJSON.type.toLowerCase() === 'point') {
-      return this.pinIcon;
+    const spatialName = spatialJSON.type.toLowerCase();
+
+    if (spatialName === 'point') {
+      return pinIcon;
     }
 
-    if (spatialJSON.type.toLowerCase() === 'multipoint') {
-      return this.multiPinIcon;
+    if (spatialName === 'multipoint') {
+      return multiPinIcon;
     }
 
-    if (spatialJSON.type.toLowerCase() === 'polygon') {
-      return this.polygonIcon;
+    if (spatialName === 'polygon') {
+      return polygonIcon;
     }
 
     return null;
@@ -90,13 +104,13 @@ const Template = (args, { argTypes }) => ({
   template: '<MetadataCard v-bind="$props" />',
 });
 
-const firstDataset = metadataCards[0];
+const firstDataset = enhancedDatasets[0];
+const otherDataset = enhancedDatasets[2];
 
 export const TitleOnly = Template.bind({});
 TitleOnly.args = {
   id: firstDataset.id,
   title: firstDataset.title,
-  fileIconString: fileIcon,
   categoryColor: firstDataset.categoryColor,
 }
 
@@ -106,6 +120,17 @@ NormalCard.args = {
   name: firstDataset.name,
   subtitle: firstDataset.notes,
   titleImg: firstDataset.titleImg,
+}
+
+export const CardWithTags = Template.bind({});
+CardWithTags.args = {
+  id: otherDataset.id,
+  title: otherDataset.title,
+  categoryColor: otherDataset.categoryColor,
+  name: otherDataset.name,
+  subtitle: otherDataset.notes,
+  titleImg: otherDataset.titleImg,
+  tags: otherDataset.tags,
 }
 
 export const CompactCard = Template.bind({});
@@ -137,6 +162,7 @@ export const CardWithState = Template.bind({});
 CardWithState.args = {
   ...NormalCard.args,
   state: getMetadataVisibilityState(firstDataset),
+  tags: firstDataset.tags,
 }
 
 export const CardWithOrganization = Template.bind({});
@@ -146,10 +172,18 @@ CardWithOrganization.args = {
   compactLayout: true,
 }
 
-export const CardWithTags = Template.bind({});
-CardWithTags.args = {
-  ...CardWithState.args,
-  tags: firstDataset.tags,
+
+export const CardForModeSWISSFL = Template.bind({});
+CardForModeSWISSFL.args = {
+  ...CardWithTags.args,
+  modeData: getModeData(SWISSFL_MODE),
+}
+
+export const CardForModeEDNA = Template.bind({});
+CardForModeEDNA.args = {
+  ...CardWithTags.args,
+  modeData: getModeData(EDNA_MODE),
+  compactLayout: false,
 }
 
 export const MetadataCardCollectionView = () => ({
@@ -159,7 +193,7 @@ export const MetadataCardCollectionView = () => ({
     <v-row>
 
       <v-col cols="3" class="pa-2"
-              v-for="(metadata, index) in metadataCards"
+              v-for="(metadata, index) in enhancedDatasets"
               :key="index" >
         <metadata-card
           :id="metadata.id"
@@ -172,9 +206,6 @@ export const MetadataCardCollectionView = () => ({
           :restricted="hasRestrictedResources(metadata)"
           :resourceCount="metadata.num_resources || metadata.res_name.length"
           :resources="metadata.resources"
-          :fileIconString="fileIcon"
-          :lockedIconString="lockedIcon"
-          :unlockedIconString="lockedIcon"
           :categoryColor="metadata.categoryColor"
           :geoJSONIcon="geoJSONIcon(metadata)"
         />
@@ -185,7 +216,7 @@ export const MetadataCardCollectionView = () => ({
     <!-- v-row >
 
       <v-col cols="3" class="pa-2"
-              v-for="(metadata, index) in metadataCards"
+              v-for="(metadata, index) in enhancedDatasets"
               :key="index" >
         <metadata-card
           :id="metadata.id"
@@ -197,9 +228,6 @@ export const MetadataCardCollectionView = () => ({
           :restricted="hasRestrictedResources(metadata)"
           :resourceCount="metadata.num_resources || metadata.res_name.length"
           :resources="metadata.resources"
-          :fileIconString="fileIcon"
-          :lockedIconString="lockedIcon"
-          :unlockedIconString="lockedIcon"
           :categoryColor="metadata.categoryColor"
         />
       </v-col>
@@ -209,7 +237,7 @@ export const MetadataCardCollectionView = () => ({
     <v-row>
 
       <v-col cols="4" class="pa-2"
-              v-for="(metadata, index) in metadataCards"
+              v-for="(metadata, index) in enhancedDatasets"
               :key="index" >
         <metadata-card
           :id="metadata.id"
@@ -222,9 +250,6 @@ export const MetadataCardCollectionView = () => ({
           :restricted="hasRestrictedResources(metadata)"
           :resourceCount="metadata.num_resources || metadata.res_name.length"
           :resources="metadata.resources"
-          :fileIconString="fileIcon"
-          :lockedIconString="lockedIcon"
-          :unlockedIconString="lockedIcon"
           :categoryColor="metadata.categoryColor"
         />
       </v-col>
@@ -234,7 +259,7 @@ export const MetadataCardCollectionView = () => ({
     <v-row >
 
       <v-col cols="6" class="pa-2"
-              v-for="(metadata, index) in metadataCards"
+              v-for="(metadata, index) in enhancedDatasets"
               :key="index" >
         <metadata-card
           :id="metadata.id"
@@ -247,9 +272,6 @@ export const MetadataCardCollectionView = () => ({
           :restricted="hasRestrictedResources(metadata)"
           :resourceCount="metadata.num_resources || metadata.res_name.length"
           :resources="metadata.resources"
-          :fileIconString="fileIcon"
-          :lockedIconString="lockedIcon"
-          :unlockedIconString="lockedIcon"
           :categoryColor="metadata.categoryColor"
         />
       </v-col>
@@ -259,10 +281,7 @@ export const MetadataCardCollectionView = () => ({
     `,
     methods,
     data: () => ({
-      metadataCards,
-      fileIcon,
-      lockedIcon,
-      unlockedIcon,
+      enhancedDatasets,
       pinIcon,
       multiPinIcon,
       polygonIcon,
@@ -275,7 +294,7 @@ export const MetadataCardFlatCollectionView = () => ({
     <v-row >
 
       <v-col cols="12" class="pa-2"
-              v-for="(metadata, index) in metadataCards"
+              v-for="(metadata, index) in enhancedDatasets"
               :key="index" >
         <metadata-card
           :id="metadata.id"
@@ -289,20 +308,15 @@ export const MetadataCardFlatCollectionView = () => ({
           :resourceCount="metadata.num_resources || metadata.res_name.length"
           :resources="metadata.resources"
           flatLayout
-          :fileIconString="fileIcon"
-          :lockedIconString="lockedIcon"
-          :unlockedIconString="lockedIcon"
           :categoryColor="metadata.categoryColor"
+          :geoJSONIcon="geoJSONIcon(metadata)"          
         />
       </v-col>
 
     </v-row>`,
     methods,
     data: () => ({
-      metadataCards,
-      fileIcon,
-      lockedIcon,
-      unlockedIcon,
+      enhancedDatasets,
     }),
   });
 

@@ -1,14 +1,17 @@
 <template>
-  <div class="BaseIconLabelView">
-    <v-tooltip bottom :disabled="$vuetify.breakpoint.xsOnly || !iconTooltip">
-      <template v-slot:activator="{ on }">
-        <div v-on="on" class="BaseIconLabelViewWrapper">
-          <div class="BaseIconLabelViewIcon" :class="{ dark }">
-            <img v-if="icon" :src="icon" :alt="iconAlt" />
-            <v-icon v-else :dark="dark">{{ materialIconName }}</v-icon>
+  <div class="baseIconLabelView">
+    <v-tooltip location='bottom' :disabled="$vuetify.display.xs || !iconTooltip">
+      <template v-slot:activator="{ props }">
+        <div v-bind="props" class="baseIconLabelViewWrapper" :class="{
+          dark,
+          'text-white': dark,
+          'text-black': !dark,
+        }">
+          <div class="baseIconLabelViewIcon">
+            <BaseIcon :icon="icon" :dark="dark" :light="light" :color="iconColor" />
           </div>
 
-          <div class="BaseIconLabelViewText" :style="textStyle">
+          <div :style="textStyle">
             <a v-if="url" :href="url" target="_blank" rel="noopener noreferrer">
               {{ text ? text : url }}
             </a>
@@ -25,6 +28,8 @@
 </template>
 
 <script>
+import BaseIcon from './BaseIcon.vue';
+
 /**
  * BaseIconLabelView.vue creates a field with a label (text or icon) with the given
  * text as well a tooltip.
@@ -41,13 +46,15 @@
 
 export default {
   name: 'BaseIconLabelView',
+  components: { BaseIcon },
   props: {
     icon: String,
-    materialIconName: String,
+    iconColor: String,
     iconTooltip: String,
     text: String,
     url: String,
     dark: Boolean,
+    light: Boolean,
   },
   computed: {
     iconAlt() {
@@ -55,28 +62,29 @@ export default {
     },
     textStyle() {
       return {
-        'font-size': this.$vuetify.breakpoint.smAndDown
-          ? 'font-size: 0.85rem;'
-          : undefined,
+        'font-size': this.$vuetify.display.smAndDown ? 'font-size: 0.85rem;' : undefined,
       };
     },
   },
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 $icon-size: 24px;
 
-.BaseIconLabelViewWrapper {
+.baseIconLabelViewWrapper {
   display: inline-flex;
   align-items: center;
 }
 
-.BaseIconLabelViewText {
-  // TODO: Remove this once a sensible default font was chosen
-  font-family: sans-serif !important;
-}
 
+.baseIconLabelViewIcon {
+  height: $icon-size;
+  width: $icon-size;
+  margin-right: 12px;
+
+/*
+=======
 .BaseIconLabelViewIcon {
   &.dark {
     // Make the icon white
@@ -85,6 +93,9 @@ $icon-size: 24px;
   height: $icon-size;
   width: $icon-size;
   margin-right: 12px;
+>>>>>>> develop
+*/
+
   img {
     user-select: none;
     object-fit: contain;

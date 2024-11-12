@@ -9,14 +9,15 @@ export const getFileName = (path) => normalizePath(path)?.split('/')?.pop() ?? n
  * Gets base name of a file without the extension
  * @returns null if no base name was found
 */
-export const getFileBaseName = (filename) => getFileName(filename).matchAll(/^([\w\-. ]+)\./g)[0] ?? null;
+export const getFileBaseName = (filename) => (/^([\w\-. ]+)\./).exec(getFileName(filename))?.[0] ?? null;
 
 /**
  * Gets the file extension in lower-case, without the period
  * @returns null if no extension was found
  */
-export const getFileExtension = (filename) => filename?.toLowerCase()?.trim()?.matchAll(/\.([a-z0-9]+)$/g)?.[0] ?? null;
+export const getFileExtension = (filename) => (/\.([a-z0-9]+)$/).exec(filename?.toLowerCase()?.trim())?.[1] ?? null;
 
+/** Returns the path without its file extension */
 export const getExtensionlessPath = (path) => path.replace(`.${getFileExtension(path)}`, ''); 
 
 export const checkIsFileVideo = (filename) => extensionsVideoFiles.includes(getFileExtension(filename) ?? filename);

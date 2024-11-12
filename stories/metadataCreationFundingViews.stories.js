@@ -35,7 +35,7 @@ export const EditFundingData = {
     created() {
       eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
-    beforeDestroy() {
+    beforeUnmount() {
       eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     methods: {
@@ -57,12 +57,12 @@ export const EditFundingData = {
       {
         institution: 'NSF',
         grantNumber: '123',
-        institutionUrl: 'https://www.superduper.ch',
+        institutionUrl: 'https://www.superduper.ch/index.html',
       },
       {
         institution: 'NSF',
-        grantNumber: '123',
-        institutionUrl: 'https://www.superduper.ch/index.html',
+        grantNumber: '2345234234',
+        institutionUrl: 'http://envidat04.wsl.ch/#/edit/landfall-in-brienz-2018-new-url/Metadata/Header%20Information?backPath=/dashboard',
       },
     ],
   },

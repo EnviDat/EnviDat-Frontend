@@ -1,15 +1,10 @@
 <template>
   <v-card id="EditDescription"
           class="pa-0"
-          :loading="loading">
+          :loading="loadingColor">
 
     <v-container fluid
                   class="pa-4">
-
-      <template slot="progress">
-        <v-progress-linear color="primary"
-                           indeterminate />
-      </template>
 
       <v-row>
         <v-col cols="8"
@@ -18,14 +13,14 @@
         </v-col>
 
         <v-col v-if="message" >
-          <BaseStatusLabelView statusIcon="check"
+          <BaseStatusLabelView status="check"
                                statusColor="success"
                                :statusText="message"
                                :expandedText="messageDetails" />
         </v-col>
         <v-col v-if="error"  >
 
-          <BaseStatusLabelView statusIcon="error"
+          <BaseStatusLabelView status="error"
                                statusColor="error"
                                :statusText="error"
                                :expandedText="errorDetails" />
@@ -47,11 +42,11 @@
 
           <GenericTextareaPreviewLayout v-bind="genericTextAreaObject"
                                         :validationError="validationErrors[editingProperty]"
-                                        :readonly="mixinMethods_isFieldReadOnly(editingProperty)"
-                                        :hint="mixinMethods_readOnlyHint(editingProperty)"
+                                        :readonly="isReadOnly(editingProperty)"
+                                        :hint="readOnlyHint(editingProperty)"
                                         @inputedText="catchInputedText($event)"
                                         @changedText="catchChangedText($event)">
-            <MetadataBody :genericProps="descriptionObject" />
+            <MetadataBody v-bind="descriptionObject" />
           </GenericTextareaPreviewLayout>
 
         </v-col>
@@ -87,10 +82,12 @@ import {
 } from '@/factories/userEditingValidations';
 
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
-
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout.vue';
 import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody.vue';
 import { EDIT_METADATA_DESCRIPTION_TITLE } from '@/factories/metadataConsts';
+
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+import { mdiText } from '@mdi/js';
 
 
 export default {
@@ -132,24 +129,29 @@ export default {
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
   },
   computed: {
+    loadingColor() {
+      if (this.loading) {
+        return 'accent';
+      }
+
+      return undefined;
+    },
     genericTextAreaObject() {
       return {
         labelTextarea: this.labels.labelTextarea,
         textareaContent: this.description,
         isVerticalLayout: false,
-        prependIcon: 'description',
+        prependIcon: mdiText,
       };
     },
     descriptionObject() {
       return {
-        body: {
-          text: this.previewDescription,
-          maxTextLength: 5000,
-        },
+        text: this.previewDescription,
+        maxTextLength: 5000,
       };
     },
     validations() {
@@ -186,8 +188,15 @@ export default {
         data: newDescription,
       });
     },
+    isReadOnly(dateProperty) {
+      return isFieldReadOnly(this.$props, dateProperty);
+    },
+    readOnlyHint(dateProperty) {
+      return readOnlyHint(this.$props, dateProperty);
+    },
   },
   data: () => ({
+    mdiText,
     editingProperty: 'description',
     previewText: null,
     labels: {

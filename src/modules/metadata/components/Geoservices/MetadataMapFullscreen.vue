@@ -25,7 +25,7 @@
       </v-col>
 
       <v-col v-if="mapCompareActive" cols="6">
-        <Map
+        <MapRoot
           :layer-config="layerConfig"
           :mapDivId="mapId2"
           :selectedLayerName="selectedLayer2"
@@ -71,7 +71,7 @@ export default {
     eventBus.on(MAP_COMPARE_START, this.startSplit);
     eventBus.on(MAP_COMPARE_END, this.quitSplit);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(MAP_COMPARE_START, this.startSplit);
     eventBus.off(MAP_COMPARE_END, this.quitSplit);
 

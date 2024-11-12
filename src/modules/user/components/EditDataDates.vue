@@ -1,10 +1,9 @@
 <template>
-  <v-card id="EditDataDates" class="pa-0" :loading="loading">
-    <v-container fluid class="pa-4 fill-height">
-      <template slot="progress">
-        <v-progress-linear color="primary" indeterminate />
-      </template>
+  <v-card id="EditDataDates"
+          class="pa-0"
+          :loading="loadingColor">
 
+    <v-container fluid class="pa-4">
       <v-row>
         <v-col cols="8" class="text-h5">
           {{ labels.cardTitle }}
@@ -12,7 +11,7 @@
 
         <v-col v-if="message">
           <BaseStatusLabelView
-            statusIcon="check"
+            status="check"
             statusColor="success"
             :statusText="message"
             :expandedText="messageDetails"
@@ -20,7 +19,7 @@
         </v-col>
         <v-col v-if="error">
           <BaseStatusLabelView
-            statusIcon="error"
+            status="error"
             statusColor="error"
             :statusText="error"
             :expandedText="errorDetails"
@@ -44,8 +43,8 @@
           :class="(index + 1) % 2 === 0 ? 'pr-0' : 'px-0'"
         >
           <v-row class="d-flex flex-column" no-gutters dense>
-            <v-col cols="11" class="pt-2 px-sm-2 shrink mb-3">
-              <div class="text-body-1 font-weight-bold capitalize-text">
+            <v-col cols="11" class="pt-2 px-sm-2 flex-grow-0 mb-3">
+              <div class="text-body-1 font-weight-bold text-capitalize">
                 {{ item.dateType }}
               </div>
               <div class="text-body-1 text-caption">
@@ -56,19 +55,22 @@
             <v-col cols="11">
               <BaseStartEndDate
                 :startDate="item.dateStart"
+                :startDateLabel="`${item.dateType} start date`"
                 :startDateProperty="startDateProperty"
                 :endDate="item.dateEnd"
+                :endDateLabel="`${item.dateType} end date`"
                 :endDateProperty="endDateProperty"
                 :clearableEndDate="true"
                 rowLayout
-                @dateChange="dateChanged(index, ...arguments)"
-                @clearClick="clearDate(index, ...arguments)"
+                @dateChange="(property, value) => dateChanged(index, property, value)"
+                @clearClick="(property) => clearDate(index, property)"
                 :readOnlyFields="readOnlyFields"
                 :readOnlyExplanation="readOnlyExplanation"
               />
             </v-col>
           </v-row>
         </v-col>
+
       </v-row>
     </v-container>
   </v-card>
@@ -148,10 +150,17 @@ export default {
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   computed: {
+    loadingColor() {
+      if (this.loading) {
+        return 'accent';
+      }
+
+      return undefined;
+    },
     datesField: {
       get() {
         const dates =
@@ -159,35 +168,37 @@ export default {
 
         const createdType = DATE_PROPERTY_CREATED_TYPE;
         const createdExplanation = DATE_PROPERTY_CREATED_TYPE_EXPLANATION;
-        const createdAmount = dates.filter(
-          dObj => dObj.dateType === createdType,
-        ).length;
 
-        if (createdAmount <= 0) {
-          dates.push({
+        let createdDateObj = dates.find(dObj => dObj.dateType === createdType);
+
+        if (!createdDateObj) {
+          createdDateObj = {
             [DATE_PROPERTY_DATE_TYPE]: createdType,
             [DATE_PROPERTY_START_DATE]: '',
             [DATE_PROPERTY_END_DATE]: '',
             dateExplanation: createdExplanation,
-          });
+          };
+          dates.push(createdDateObj);
+        } else {
+          createdDateObj.dateExplanation = createdExplanation;
         }
 
         const collectedType = DATE_PROPERTY_COLLECTED_TYPE;
         const collectedExplanation = DATE_PROPERTY_COLLECTED_TYPE_EXPLANATION;
-        const collectedAmount = dates.filter(
-          dObj => dObj.dateType === collectedType,
-        ).length;
 
-        if (collectedAmount <= 0) {
-          dates.push({
+        let collectedDateObj = dates.find(dObj => dObj.dateType === collectedType);
+
+        if (!collectedDateObj) {
+          collectedDateObj = {
             [DATE_PROPERTY_DATE_TYPE]: collectedType,
             [DATE_PROPERTY_START_DATE]: '',
             [DATE_PROPERTY_END_DATE]: '',
             dateExplanation: collectedExplanation,
-          });
+          };
+          dates.push(collectedDateObj);
+        } else {
+          collectedDateObj.dateExplanation = collectedExplanation;
         }
-
-        // This sort is important to keep the right order of components after updating dates.
 
         dates.sort((a, b) => {
           const order = [createdType, collectedType];
@@ -319,8 +330,5 @@ export default {
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: thin;
-}
-.capitalize-text {
-  text-transform: capitalize;
 }
 </style>

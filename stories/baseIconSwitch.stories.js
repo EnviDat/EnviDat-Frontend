@@ -12,6 +12,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 
 import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue'
+import { mdiAccountCircleOutline, mdiLock, mdiHome, mdiInformationOutline } from '@mdi/js';
 
 
 export default {
@@ -26,7 +27,7 @@ export const Active = { args: { active: true } };
 export const WithIconAndTooltip = {
   args: {
     ...Active.args,
-    materialIconName: 'lock',
+    icon: mdiLock,
     tooltipText: 'access restricted',
   },
 };
@@ -34,7 +35,7 @@ export const WithIconAndTooltip = {
 export const WithIconAndTooltipInactive = {
   args: {
     ...Inactive.args,
-    materialIconName: 'lock',
+    icon: mdiLock,
     tooltipText: 'access restricted',
   },
 };
@@ -42,7 +43,7 @@ export const WithIconAndTooltipInactive = {
 export const AuthorSearchSwitch = {
   args: {
     ...Active.args,
-    materialIconName: 'account_circle',
+    icon: mdiAccountCircleOutline,
     tooltipText: 'Author search tool tip',
   },
 };
@@ -56,7 +57,7 @@ export const InteractiveSwitches = () => ({
         <v-col cols="3">
           <BaseIconSwitch 
             :active="active"
-            materialIconName="account_circle"
+            :icon="mdiAccountCircleOutline"
             tooltipText="Author search tool tip"
             @clicked="active = !active"
             label="Enable user registration"/>
@@ -64,7 +65,7 @@ export const InteractiveSwitches = () => ({
         <v-col cols="3">
           <BaseIconSwitch 
             :active="active"
-            materialIconName="home"
+            :icon="mdiHome"
             tooltipText="Home"
             color="orange"
             @clicked="active = !active"/>
@@ -72,14 +73,14 @@ export const InteractiveSwitches = () => ({
         <v-col cols="3">
           <BaseIconSwitch
             :active="active"
-            materialIconName="account_circle"
+            :icon="mdiAccountCircleOutline"
             tooltipText="Author search tool tip"
             @clicked="active = !active"/>
         </v-col>
         <v-col cols="12">
           <BaseIconSwitch 
             :active="active2"
-            materialIconName="info"
+            :icon="mdiInformationOutline"
             tooltipText="notification tool tip"
             @clicked="active2 = !active2"/>
         </v-col>
@@ -89,7 +90,7 @@ export const InteractiveSwitches = () => ({
         <v-col cols="12">
           <BaseIconSwitch 
             :active="active2"
-            materialIconName="info"
+            :icon="mdiInformationOutline"
             tooltipText="notification tool tip"
             disabled
             label="Show informational label"
@@ -101,5 +102,8 @@ export const InteractiveSwitches = () => ({
   data: () => ({
     active: false,
     active2: false,
+    mdiAccountCircleOutline,
+    mdiHome,
+    mdiInformationOutline,
   }),
 })

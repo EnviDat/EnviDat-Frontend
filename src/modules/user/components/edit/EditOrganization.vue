@@ -1,9 +1,8 @@
 <template>
-  <v-card id="EditOrganization" class="pa-0" :loading="loading">
+  <v-card id="EditOrganization"
+          class="pa-0"
+          :loading="loadingColor">
     <v-container fluid class="pa-4">
-      <template slot="progress">
-        <v-progress-linear color="primary" indeterminate />
-      </template>
 
       <v-row>
         <v-col cols="6" class="text-h5">
@@ -12,7 +11,7 @@
 
         <v-col v-if="message">
           <BaseStatusLabelView
-            statusIcon="check"
+            status="check"
             statusColor="success"
             :statusText="message"
             :expandedText="messageDetails"
@@ -20,7 +19,7 @@
         </v-col>
         <v-col v-if="error">
           <BaseStatusLabelView
-            statusIcon="error"
+            status="error"
             statusColor="error"
             :statusText="error"
             :expandedText="errorDetails"
@@ -29,52 +28,51 @@
       </v-row>
 
       <v-row>
-        <v-col v-if="onlyOneUserOrganziation">
+        <v-col v-if="onlyOneUserOrganization">
 
-          <v-select :value="selectedOrganization"
+          <v-select :model-value="selectedOrganization"
                     :items="userOrganizations"
                     item-text="title"
                     item-value="id"
-                    outlined
-                    dense
-                    chips
                     readonly
-                    prepend-icon="home_filled"
-                    :hint="mixinMethods_readOnlyHint('organization') || 'Your Organization was autocompleted'"
+                    :prepend-icon="mdiHome"
+                    :menu-icon="isEditOrganizationReadonly ? '' : mdiArrowDownDropCircleOutline"
+                    :hint="readOnlyHint(METADATA_ORGANIZATION_PROPERTY) || 'Your Organization was autocompleted'"
                     persistent-hint
-                    label="Organization"
+                    :label="EDIT_METADATA_ORGANIZATION_LABEL"
           >
             <template v-slot:selection="{ item }">
-              <MetadataOrganizationChip :organization="item.title"/>
+              <MetadataOrganizationChip v-if="item?.title"
+                                        :organization="item.title"/>
             </template>
           </v-select>
 
         </v-col>
 
-        <v-col v-if="!onlyOneUserOrganziation">
+        <v-col v-if="!onlyOneUserOrganization">
 
-          <v-select @input="setOrganization($event)"
-                    :value="organizationField"
+          <v-select :model-value="selectedOrganization"
                     :items="userOrganizations"
                     item-text="title"
                     item-value="id"
-                    outlined
-                    dense
-                    chips
-                    prepend-icon="home_filled"
-                    :append-icon="isEditOrganizationReadonly ? '' : 'arrow_drop_down'"
+                    :prepend-icon="mdiHome"
+                    :menu-icon="isEditOrganizationReadonly ? '' : mdiArrowDownDropCircleOutline"
                     :readonly="isEditOrganizationReadonly"
-                    :hint="mixinMethods_readOnlyHint('organization')"
+                    :hint="readOnlyHint(METADATA_ORGANIZATION_PROPERTY)"
                     :persistent-hint="isEditOrganizationReadonly"
-                    label="Organization"
+                    :label="EDIT_METADATA_ORGANIZATION_LABEL"
                     :error-messages="validationErrors.organizationId"
           >
             <template v-slot:selection="{ item }">
-              <MetadataOrganizationChip :organization="item.title"/>
+              <MetadataOrganizationChip v-if="item?.title"
+                                        :organization="item.title"/>
             </template>
 
             <template v-slot:item="{ item }">
-              <MetadataOrganizationChip :organization="item.title"/>
+              <v-list-item v-if="item?.title" density='compact' >
+                <MetadataOrganizationChip @click="setOrganization(item.value)"
+                                          :organization="item.title"/>
+              </v-list-item>
             </template>
           </v-select>
         </v-col>
@@ -110,18 +108,25 @@ import {
   EDITMETADATA_ORGANIZATION,
   eventBus,
 } from '@/factories/eventBus';
-import { EDIT_ORGANIZATION_TITLE } from '@/factories/metadataConsts';
+import {
+  EDIT_METADATA_ORGANIZATION_LABEL,
+  EDIT_ORGANIZATION_TITLE,
+  METADATA_ORGANIZATION_PROPERTY,
+} from '@/factories/metadataConsts';
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
 } from '@/factories/userEditingValidations';
+
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+import { mdiArrowDownDropCircleOutline, mdiHome } from '@mdi/js';
 
 export default {
   name: 'EditOrganization',
   props: {
     organizationId: {
       type: String,
-      default: '',
+      default: undefined,
     },
     userOrganizations: {
       type: Array,
@@ -159,24 +164,35 @@ export default {
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
   },
   computed: {
+    loadingColor() {
+      if (this.loading) {
+        return 'accent';
+      }
+
+      return undefined;
+    },
     organizationField: {
       get() {
         return this.previewOrganizationId ? this.previewOrganizationId : this.organizationId;
       },
     },
     isEditOrganizationReadonly() {
-      return this.mixinMethods_isFieldReadOnly('organization');
+      return isFieldReadOnly(this.$props, METADATA_ORGANIZATION_PROPERTY);
     },
-    onlyOneUserOrganziation() {
+    onlyOneUserOrganization() {
       return this.userOrganizations?.length === 1;
     },
     selectedOrganization() {
 
       const id = this.organizationField;
+
+      if (!id) {
+        return undefined;
+      }
 
       const userOrg = this.userOrganizations.filter((orga) => orga.id === id)[0] || {};
 
@@ -220,9 +236,16 @@ export default {
         this.validationErrors,
       );
     },
+    readOnlyHint(property) {
+      return readOnlyHint(this.$props, property);
+    },
   },
   data: () => ({
+    mdiHome,
+    mdiArrowDownDropCircleOutline,
     EDIT_ORGANIZATION_TITLE,
+    EDIT_METADATA_ORGANIZATION_LABEL,
+    METADATA_ORGANIZATION_PROPERTY,
     validationErrors: {
       organizationId: null,
     },

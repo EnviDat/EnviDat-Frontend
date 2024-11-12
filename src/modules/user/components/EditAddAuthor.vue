@@ -1,44 +1,37 @@
 <template>
   <v-card id="EditAddAuthor"
           class="pa-0"
-          :loading="loading">
+          :loading="loadingColor">
 
-    <BaseIconButton v-if="isEditingAuthor"
-                    id="EditResourceCloseButton"
-                    class="ma-2"
-                    :class="{ 'mx-1' : $vuetify.breakpoint.smAndDown }"
-                    style="position: absolute; top: 0; right: 0; z-index: 2;"
-                    material-icon-name="close"
-                    icon-color="primary"
-                    color="primary"
-                    outlined
-                    tooltipText="Cancel author editing"
-                    :tooltipBottom="true"
-                    @clicked="$emit('closeClicked')" />
+    <BaseIconButton
+      v-if="isEditingAuthor"
+      class="editResourceCloseButton ma-2"
+      :class="{ 'mx-1' : $vuetify.display.smAndDown }"
+      style="position: absolute; top: 0; right: 0; z-index: 2;"
+      :icon="mdiClose"
+      icon-color="black"
+      color="black"
+      outlined
+      tooltip-text="Cancel author editing"
+      tooltip-bottom
+      @clicked="$emit('closeClicked')"
+    />
 
-    <v-container fluid
-                 class="pa-4 fill-height">
-
-      <template slot="progress">
-        <v-progress-linear color="primary"
-                           indeterminate/>
-      </template>
-
+    <v-container fluid class="pa-4">
       <v-row>
-
         <v-col class="text-h5" cols="8">
           {{ titleLabel }}
         </v-col>
 
         <v-col v-if="message" cols="4" class="pl-16">
-          <BaseStatusLabelView statusIcon="check"
+          <BaseStatusLabelView status="check"
                                statusColor="success"
                                :statusText="message"
                                :expandedText="messageDetails"/>
         </v-col>
 
         <v-col v-if="error" cols="4" class="pl-16">
-          <BaseStatusLabelView statusIcon="error"
+          <BaseStatusLabelView status="error"
                                statusColor="error"
                                :statusText="error"
                                :expandedText="errorDetails"/>
@@ -65,18 +58,16 @@
           <v-text-field ref="email"
                         id="email"
                         :label="labels.labelEmail"
-                        outlined
-                        dense
                         :error-messages="validationErrors.email"
-                        :readonly="mixinMethods_isFieldReadOnly('authors')"
-                        :hint="mixinMethods_readOnlyHint('authors')"
-                        prepend-icon="email"
+                        :readonly="isReadOnly('authors')"
+                        :hint="readOnlyHint('authors')"
+                        :prepend-icon="mdiEmail"
                         :placeholder="labels.placeholderEmail"
-                        :value="emailField"
+                        :model-value="emailField"
                         @keyup="blurOnEnterKey"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('email', $event)"
-                        @input="changeProperty('email', $event)"
+                        @input="changeProperty('email', $event.target.value)"
           />
 
         </v-col>
@@ -102,7 +93,7 @@
           <BaseUserPicker :users="fullNameUsers"
                           :preSelected="preselectAuthorNames"
                           :readonly="isUserPickerReadOnly"
-                          :hint="isUserPickerReadOnly ? mixinMethods_readOnlyHint('authors') : labels.authorPickHint"
+                          :hint="isUserPickerReadOnly ? readOnlyHint('authors') : labels.authorPickHint"
                           @removedUsers="catchPickerAuthorChange($event, false)"
                           @pickedUsers="catchPickerAuthorChange($event, true)"/>
         </v-col>
@@ -125,18 +116,16 @@
           <v-text-field ref="firstName"
                         id="firstName"
                         :label="labels.labelFirstName"
-                        outlined
-                        dense
                         :error-messages="validationErrors.firstName"
-                        prepend-icon="person"
+                        :prepend-icon="mdiAccount"
                         :placeholder="labels.placeholderFirstName"
-                        :value="firstNameField"
-                        :readonly="mixinMethods_isFieldReadOnly('authors')"
-                        :hint="mixinMethods_readOnlyHint('authors')"
+                        :model-value="firstNameField"
+                        :readonly="isReadOnly('authors')"
+                        :hint="readOnlyHint('authors')"
                         @keyup="blurOnEnterKey"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('firstName', $event)"
-                        @input="changeProperty('firstName', $event)"
+                        @input="changeProperty('firstName', $event.target.value)"
           />
 
         </v-col>
@@ -146,18 +135,16 @@
           <v-text-field ref="lastName"
                         id="lastName"
                         :label="labels.labelLastName"
-                        outlined
-                        dense
                         :error-messages="validationErrors.lastName"
-                        prepend-icon="person"
+                        :prepend-icon="mdiAccount"
                         :placeholder="labels.placeholderLastName"
-                        :value="lastNameField"
-                        :readonly="mixinMethods_isFieldReadOnly('authors')"
-                        :hint="mixinMethods_readOnlyHint('authors')"
+                        :model-value="lastNameField"
+                        :readonly="isReadOnly('authors')"
+                        :hint="readOnlyHint('authors')"
                         @keyup="blurOnEnterKey"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('lastName', $event)"
-                        @input="changeProperty('lastName', $event)"
+                        @input="changeProperty('lastName', $event.target.value)"
           />
 
         </v-col>
@@ -172,18 +159,16 @@
           <v-text-field ref="affiliation"
                         id="affiliation"
                         :label="labels.labelAffiliation"
-                        outlined
-                        dense
                         :error-messages="validationErrors.affiliation"
-                        prepend-icon="handshake"
+                        :prepend-icon="mdiHandshake"
                         :placeholder="labels.placeholderAffiliation"
-                        :value="affiliationField"
-                        :readonly="mixinMethods_isFieldReadOnly('authors')"
-                        :hint="mixinMethods_readOnlyHint('authors')"
+                        :model-value="affiliationField"
+                        :readonly="isReadOnly('authors')"
+                        :hint="readOnlyHint('authors')"
                         @keyup="blurOnEnterKey"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('affiliation', $event)"
-                        @input="changeProperty('affiliation', $event)"
+                        @input="changeProperty('affiliation', $event.target.value)"
           />
 
         </v-col>
@@ -193,18 +178,16 @@
           <v-text-field ref="identifier"
                         id="identifier"
                         :label="labels.labelIdentifier"
-                        outlined
-                        dense
                         :error-messages="validationErrors.identifier"
-                        prepend-icon="card_membership"
+                        :prepend-icon="mdiWalletMembership"
                         :placeholder="labels.placeholderIdentifier"
-                        :value="identifierField"
-                        :readonly="mixinMethods_isFieldReadOnly('authors')"
-                        :hint="mixinMethods_readOnlyHint('authors')"
+                        :model-value="identifierField"
+                        :readonly="isReadOnly('authors')"
+                        :hint="readOnlyHint('authors')"
                         @keyup="blurOnEnterKey"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('identifier', $event)"
-                        @input="changeProperty('identifier', $event)"
+                        @input="changeProperty('identifier', $event.target.value)"
           />
 
         </v-col>
@@ -213,13 +196,13 @@
 
       <v-row v-if="isEditingAuthor" >
         <v-col>
-          <BaseRectangleButton material-icon-name="clear"
-                                icon-color="white"
-                                color="error"
-                               :disabled="mixinMethods_isFieldReadOnly('authors')"
-                                button-text="Remove Author"
-                                tooltip-text="Remove this author from the dataset"
-                                @clicked="removeAuthorClick(email)"/>
+          <BaseRectangleButton :icon="mdiClose"
+                               icon-color="white"
+                               color="error"
+                               :disabled="isReadOnly('authors')"
+                               button-text="Remove Author"
+                               tooltip-text="Remove this author from the dataset"
+                               @clicked="removeAuthorClick(email)"/>
 
         </v-col>
       </v-row>
@@ -267,6 +250,9 @@ import {
   eventBus,
   REMOVE_EDITING_AUTHOR,
 } from '@/factories/eventBus';
+
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+import { mdiAccount, mdiClose, mdiEmail, mdiHandshake, mdiWalletMembership } from '@mdi/js';
 
 
 export default {
@@ -338,10 +324,17 @@ export default {
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   computed: {
+    loadingColor() {
+      if (this.loading) {
+        return 'accent';
+      }
+
+      return undefined;
+    },
     affiliationField: {
       get() {
         return this.previews.affiliation !== null ? this.previews.affiliation : this.affiliation;
@@ -375,7 +368,7 @@ export default {
         return fullName ? [fullName] : [];
       }
 
-      return [];
+      return undefined;
     },
     fullNameUsers() {
       const localAuthors = [...this.existingAuthors];
@@ -417,7 +410,7 @@ export default {
       return 'Create a new author which is not on any published dataset.';
     },
     isUserPickerReadOnly() {
-      return this.mixinMethods_isFieldReadOnly('authors');
+      return this.isReadOnly('authors');
     },
   },
   methods: {
@@ -555,8 +548,19 @@ export default {
         data: email,
       });
     },
+    isReadOnly(dateProperty) {
+      return isFieldReadOnly(this.$props, dateProperty);
+    },
+    readOnlyHint(dateProperty) {
+      return readOnlyHint(this.$props, dateProperty);
+    },
   },
   data: () => ({
+    mdiWalletMembership,
+    mdiHandshake,
+    mdiClose,
+    mdiEmail,
+    mdiAccount,
     authorIsPicked: false,
     authorPickerTouched: false,
     previews: {

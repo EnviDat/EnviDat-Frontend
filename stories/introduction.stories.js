@@ -14,30 +14,25 @@
 
 // eslint-disable-next-line import/extensions
 import IntroductionCard from '@/components/Cards/IntroductionCard.vue';
-import fileIcon from '@/assets/icons/file.png';
 import { enhanceMetadatasTitleImage } from '@/factories/metaDataFactory';
-import categoryCards from '@/store/categoryCards';
 
 import metadataCards from './js/metadata';
 
 
 const dataset = metadataCards[0];
 export default {
-  title: '7 User / SignIn',
+  title: '3 Cards / Introduction Card',
   component: IntroductionCard,
-  decorators: [],
-  parameters: {},
 };
 
 const currentLocalDataset = {
   title: dataset.title,
   subtitle: dataset.notes,
   tags: dataset.tags,
-  fileIconString: fileIcon,
   flatLayout: true,
 };
 
-enhanceMetadatasTitleImage([currentLocalDataset], undefined, categoryCards);
+enhanceMetadatasTitleImage([currentLocalDataset]);
 
 export const IntroductionCardViews = () => ({
   components: { IntroductionCard },

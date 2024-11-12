@@ -10,7 +10,8 @@
  */
 
 import EditDataGeo from '@/modules/user/components/EditDataGeo.vue';
-import { createLocation } from '@/factories/metaDataFactory';
+
+import { createLocation } from '@/factories/geoFactory';
 
 // DUMMY DATA START
 const testMetadata = {

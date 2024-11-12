@@ -5,7 +5,7 @@
         <v-img :src="mdLogo" height="128" width="128" :alt="alternativeText" />
       </v-col>
 
-      <v-col class="hidden-xs-only hidden-md-and-up" cols="2">
+      <v-col class="hidden-xs hidden-md-and-up" cols="2">
         <v-img :src="smLogo" height="64" width="64" :alt="alternativeText" />
       </v-col>
 
@@ -26,7 +26,7 @@
         {{ title }}
       </v-col>
 
-      <v-col class="envidatTitle text-h3 pl-2 hidden-xs-only hidden-md-and-up">
+      <v-col class="envidatTitle text-h3 pl-2 hidden-xs hidden-md-and-up">
         {{ title }}
       </v-col>
 

@@ -1,6 +1,7 @@
 import { it, describe, expect } from 'vitest';
 
 import {
+  infoMessage,
   successMessage,
   errorMessage,
   warningMessage,
@@ -10,7 +11,7 @@ import {
 
 describe('notificationFactory - successMessage', () => {
   it('empty', () => {
-    const expectedType = 'info';
+    const expectedType = 'success';
 
     const msg = successMessage(undefined, undefined);
 
@@ -26,11 +27,11 @@ describe('notificationFactory - successMessage', () => {
     const detailsIn = 'unit test for successMessage()';
     const expectedType = 'info';
 
-    const msg = successMessage(msgIn, detailsIn);
+    const msg = infoMessage(msgIn, detailsIn);
 
     expect(msg).toBeDefined();
     expect(msg.type).toBe(expectedType);
-    expect(msg.color).toBe('success');
+    expect(msg.color).toBe('white');
     expect(msg.message).toBe(msgIn);
     expect(msg.details).toBe(detailsIn);
   });

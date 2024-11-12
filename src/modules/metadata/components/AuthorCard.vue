@@ -1,94 +1,83 @@
 <template>
-  <v-card
-    class="authorCard pa-0"
-    id="AuthorCard"
-    :class="cardClass"
-    :style="dynamicCardBackground"
-    :loading="loading"
-  >
-    <v-container fluid class="pa-4">
-      <template slot="progress">
-        <v-progress-linear color="primary" indeterminate />
-      </template>
+  <v-card class="authorCard pa-0"
+          id="AuthorCard"
+          :class="cardClass"
+          :style="dynamicCardBackground"
+          :loading="loadingColor">
 
-      <v-row no-gutters class="pb-3">
-        <v-col class="grow py-0">
-          <div
-            class="authorTitle"
-            :class="dark ? 'white--text' : 'black--text'"
-          >
+    <v-container fluid
+                 class="pa-4">
+
+      <v-row no-gutters
+             class="pb-3">
+
+        <v-col class="flex-grow-1 py-0">
+          <div class="authorTitle"
+               :class="dark ? 'text-white' : 'text-black'">
             {{ author.firstName }}
           </div>
         </v-col>
 
-        <v-col v-if="authorIsDead" class="shrink py-0">
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-              <v-icon
-                v-on="on"
-                dark
+        <v-col v-if="authorIsDead"
+               class="flex-grow-0 py-0">
+
+          <v-tooltip location='bottom'>
+            <template v-slot:activator="{ props }">
+              <BaseIcon 
+                v-bind="props"
+                :icon="mdiTimerSandComplete"
                 small
-                :class="dark ? 'white--text' : 'black--text'"
-              >
-                hourglass_bottom
-              </v-icon>
+                class='pr-2'
+              />
             </template>
 
             {{ authorPassedInfo }}
           </v-tooltip>
         </v-col>
 
-        <v-col class="py-0" cols="12">
-          <div
-            class="authorTitle"
-            :class="dark ? 'white--text' : 'black--text'"
-          >
-            {{
-              authorIsDead
-                ? author.lastName.replace(`(${asciiDead})`, '')
-                : author.lastName
-            }}
+        <v-col class="py-0"
+               cols="12">
+          <div class="authorTitle"
+               :class="dark ? 'text-white' : 'text-black'">
+            {{ authorIsDead ? author.lastName.replace(`(${asciiDead})`, '') : author.lastName }}
           </div>
         </v-col>
       </v-row>
 
-      <v-row
-        v-if="authorDetailsConfig.showDatasetCount"
-        no-gutters
-        class="py-1 readableText"
-        align="center"
-        justify="space-between"
-      >
-        <v-col cols="6" :class="dark ? 'white--text' : 'black--text'">
+      <v-row v-if="authorDetailsConfig.showDatasetCount"
+             no-gutters
+             class="py-1 readableText"
+             align="center"
+             justify="space-between">
+
+        <v-col cols="6"
+               :class="dark ? 'text-white' : 'text-black'">
           {{ dataCountLabel }}
         </v-col>
 
-        <v-col class="shrink py-0" style="max-height: 36px;">
-          <base-icon-button
+        <v-col class="flex-grow-0 py-0"
+               style="max-height: 36px;">
+
+          <BaseIconButton 
             class="ma-0"
-            material-icon-name="search"
-            :iconColor="dark ? 'white' : darkColor"
+            :icon="mdiMagnify"
+            :outline-color="dark ? 'white' : darkColor"
+            :icon-color="dark ? 'white' : darkColor"
             outlined
-            :color="dark ? 'white' : darkColor"
-            :tooltipText="
-              `Search for the datasets of ${author.firstName} ${author.lastName}`
-            "
+            :tooltip-text="`Search for the datasets of ${author.firstName} ${author.lastName}`"
             @clicked="catchSearchAuthor(author)"
           />
 
-          <v-badge
-            :color="dark ? 'white' : darkColor"
-            overlap
-            style="top: -25px; right: -2px;"
-          >
-            <span slot="badge" :class="!dark ? 'white--text' : 'black--text'">
-              {{ author.datasetCount }}
-            </span>
+          <v-badge :color="dark ? 'white' : darkColor"
+                   overlap
+                   style="position:relative; top: -20px; right: -2px;"
+                   :content="author.datasetCount || 0">
           </v-badge>
         </v-col>
       </v-row>
 
       <slot name="dataCreditCurrentDataset" />
+
       <DataCreditLayout
         v-if="authorDetailsConfig.showDataCredits && !hideDataCredit"
         :totalDataCredits="author.totalDataCredits"
@@ -98,43 +87,36 @@
         :dark="dark"
       />
 
-      <v-row
-        v-if="authorDetailsConfig.showDataCreditScore"
-        no-gutters
-        class="py-1 readableText"
-        justify="space-between"
-        align="center"
-      >
-        <v-col class="grow" :class="dark ? 'white--text' : 'black--text'">
+      <v-row v-if="authorDetailsConfig.showDataCreditScore"
+             no-gutters
+             class="py-1 readableText"
+             justify="space-between"
+             align="center">
+
+        <v-col class="flex-grow-1"
+               :class="dark ? 'text-white' : 'text-black'">
           {{ dataScoreLabel }}
         </v-col>
 
-        <v-col class="shrink">
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-              <v-icon
-                v-on="on"
-                class="badgesIcon"
-                dark
-                :class="dark ? 'white--text' : 'black--text'"
-              >
-                info_outline
-              </v-icon>
+        <v-col class="flex-grow-0">
+          <v-tooltip location='bottom'>
+            <template v-slot:activator="{ props }">
+              <BaseIcon v-bind="props"
+                        :color="dark ? 'white' : 'black'"
+                        :icon="mdiInformationOutline"
+              />
             </template>
 
             {{ dataCreditScoreInfo }}
           </v-tooltip>
         </v-col>
 
-        <v-col class="shrink pl-2">
-          <div
-            :style="`background-color: ${!this.dark ? darkColor : whiteColor};`"
-            class="dataCreditScore elevation-5"
-          >
-            <div
-              :style="bigCountStyling"
-              :class="!this.dark ? 'white--text' : 'black--text'"
-            >
+        <v-col class="flex-grow-0 pl-2">
+          <div :style="`background-color: ${ dark ? whiteColor : darkColor };`"
+               class="dataCreditScore elevation-5">
+
+            <div :style="bigCountStyling"
+                 :class="dark ? 'text-black' : 'text-white'">
               {{ dataCreditScore }}
             </div>
           </div>
@@ -147,24 +129,19 @@
         class="pt-1 readableText"
         align="center"
       >
-        <v-col class="grow pr-5" @click="infosExpanded = !infosExpanded">
+        <v-col class="flex-grow-1 pr-5" @click="infosExpanded = !infosExpanded">
           <v-divider :dark="dark" />
         </v-col>
 
-        <v-col class="shrink">
-          <v-btn
-            icon
-            :color="dark ? 'white' : 'black'"
+        <v-col class="flex-grow-0">
+          <BaseIconButton 
+            :icon="infosExpanded ? mdiChevronDown : mdiChevronLeft"
+            :icon-color="dark ? 'white' : darkColor"
+            :outline-color="dark ? 'white' : darkColor"
             outlined
             class="ma-0 badgesIcon"
-            @click="infosExpanded = !infosExpanded"
-          >
-            <v-icon>
-              {{
-                infosExpanded ? 'keyboard_arrow_down' : 'keyboard_arrow_left'
-              }}</v-icon
-            >
-          </v-btn>
+            @clicked="infosExpanded = !infosExpanded"
+          />
         </v-col>
       </v-row>
 
@@ -186,12 +163,13 @@
             />
           </v-row>
         </v-col>
+
         <v-col class="pa-1" sm="6" cols="12">
           <v-row no-gutters>
             <v-col
               cols="12"
               class="authorInfoLabel py-0"
-              :class="dark ? 'white--text' : 'black--text'"
+              :class="dark ? 'text-white' : 'text-black'"
             >
               {{ emailLabel }}
             </v-col>
@@ -199,7 +177,7 @@
             <v-col
               cols="12"
               class="authorInfo py-0"
-              :class="dark ? 'white--text' : 'black--text'"
+              :class="dark ? 'text-white' : 'text-black'"
             >
               <a :href="`mailto:${author.email}`">
                 {{ author.email }}
@@ -210,10 +188,11 @@
 
         <v-col class="pa-1" sm="6" cols="12" v-if="author?.identifier">
           <v-row no-gutters>
+
             <v-col
               cols="12"
               class="authorInfoLabel py-0"
-              :class="dark ? 'white--text' : 'black--text'"
+              :class="dark ? 'text-white' : 'text-black'"
             >
               {{ idLabel }}
             </v-col>
@@ -221,7 +200,7 @@
             <v-col
               cols="12"
               class="authorInfo py-0"
-              :class="dark ? 'white--text' : 'black--text'"
+              :class="dark ? 'text-white' : 'text-black'"
             >
               <a
                 v-if="
@@ -244,19 +223,15 @@
 
         <v-col class="pa-1" sm="6" cols="12" v-if="author.affiliation">
           <v-row no-gutters>
-            <v-col
-              cols="12"
-              class="authorInfoLabel py-0"
-              :class="dark ? 'white--text' : 'black--text'"
-            >
+            <v-col cols="12"
+                   class="authorInfoLabel py-0"
+                   :class="dark ? 'text-white' : 'text-black'">
               {{ affiliationLabel }}
             </v-col>
 
-            <v-col
-              cols="12"
-              class="authorInfo py-0"
-              :class="dark ? 'white--text' : 'black--text'"
-            >
+            <v-col cols="12"
+                   class="authorInfo py-0"
+                   :class="dark ? 'text-white' : 'text-black'">
               {{ author.affiliation }}
             </v-col>
           </v-row>
@@ -271,15 +246,17 @@
     >
       <v-row>
         <v-col cols="12">
-          <base-icon-button
-            :materialIconName="openButtonIcon"
-            iconColor="black"
+
+          <base-icon-button 
+            :icon="openButtonIcon"
+            icon-color="black"
             color="accent"
             :disabled="loading"
-            :isElevated="true"
-            :tooltipText="openButtonTooltip"
+            elevated
+            :tooltip-text="openButtonTooltip"
             @clicked="$emit('openButtonClicked')"
           />
+
         </v-col>
       </v-row>
     </v-container>
@@ -323,21 +300,26 @@ import {
 
 import DataCreditLayout from '@/components/Layouts/DataCreditLayout.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import {
   getLevelProgress,
   getDataCreditLevel,
   getAuthorName,
 } from '@/factories/authorFactory';
+import {
+  mdiChevronDown,
+  mdiChevronLeft,
+  mdiFileEye,
+  mdiInformationOutline,
+  mdiMagnify,
+  mdiTimerSandComplete,
+} from '@mdi/js';
 
 // checkout skeleton
 // https://github.com/ToxicJojo/SkeletonPlaceholder
 
 export default {
   name: 'AuthorCard',
-  components: {
-    DataCreditLayout,
-    BaseIconButton,
-  },
   props: {
     author: Object,
     asciiDead: String,
@@ -362,7 +344,7 @@ export default {
     openButtonTooltip: String,
     openButtonIcon: {
       type: String,
-      default: 'preview',
+      default: mdiFileEye,
     },
     isSelected: {
       type: Boolean,
@@ -382,6 +364,13 @@ export default {
     this.infosExpanded = this.overrideAuthorInfosExpanded;
   },
   computed: {
+    loadingColor() {
+      if (this.loading) {
+        return 'accent';
+      }
+
+      return undefined;
+    },
     // getDataCreditLevel(currentScore) {
     //   const entires = this.authorDataCreditLevels;
 
@@ -476,7 +465,7 @@ export default {
       const color = this.colorPalette[from];
       const toColor = this.colorPaletteTo[to];
 
-      return `background-image: linear-gradient(45deg, ${color} 10%, ${toColor} 90%);
+      return `background-image: linear-gradient(310deg, ${color} 10%, ${toColor} 45%);
               background-position: center, center; background-size: cover;`;
     },
     authorIsDead() {
@@ -494,9 +483,12 @@ export default {
   methods: {
     setLevelProgress() {
       const max = 2160;
-      let style = `stroke-dashoffset: ${((100 - this.levelProgress) / 100) *
-        max}; stroke: ${this.$vuetify.theme.themes.light.accent} !important;`;
+
+      let style = `stroke-dashoffset: ${((100 - this.levelProgress) / 100) * max};
+                   stroke: ${this.$vuetify.theme.themes.light.colors.accent} !important;`;
+
       this.$refs.progressFill.setAttribute('style', style);
+
       style = `stroke: ${this.dataCreditLevelColor} !important;`;
       this.$refs.progressTrack.setAttribute('style', style);
     },
@@ -535,6 +527,12 @@ export default {
     },
   },
   data: () => ({
+    mdiFileEye,
+    mdiInformationOutline,
+    mdiTimerSandComplete,
+    mdiChevronDown,
+    mdiChevronLeft,
+    mdiMagnify,
     dataScoreLabel: AUTHORS_DATACREDIT_SCORE,
     dataCountLabel: AUTHORS_PUBLISHED_DATACOUNT,
     dataCreditScoreInfo:
@@ -567,6 +565,11 @@ export default {
     ],
     // colorsPalette: ['#E2F27C', '#9EDB81', '#00BFAD', '#08877C', '#111111'],
   }),
+  components: {
+    BaseIcon,
+    DataCreditLayout,
+    BaseIconButton,
+  },
 };
 </script>
 

@@ -7,15 +7,14 @@
             class="heightAndScroll pt-1"
             :label="labelTextarea"
             :placeholder="placeholderTextarea"
-            outlined
             auto-grow
             :readonly="readonly"
             :hint="hint"
             :prepend-icon="prependIcon"
             :error-messages="validationError"
-            :value="textareaContent"
-            @input="catchInputedText($event)"
-            @change="catchChangedText($event)"
+            :model-value="textareaContent"
+            @input="catchInputedText($event.target.value)"
+            @change="catchChangedText($event.target.value)"
           >
           </v-textarea>
         </v-col>
@@ -40,14 +39,14 @@
           class="heightAndScroll pt-1"
           :label="labelTextarea"
           :placeholder="placeholderTextarea"
-          outlined
           auto-grow
           :readonly="readonly"
           :hint="hint"
+          :prepend-icon="prependIcon"
           :error-messages="validationError"
-          :value="textareaContent"
-          @input="catchInputedText($event)"
-          @change="catchChangedText($event)"
+          :model-value="textareaContent"
+          @input="catchInputedText($event.target.value)"
+          @change="catchChangedText($event.target.value)"
         >
         </v-textarea>
       </v-col>

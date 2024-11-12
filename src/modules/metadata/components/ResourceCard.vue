@@ -2,72 +2,69 @@
   <v-card
     :id="`resourceCard_${id}`"
     :color="computedCardColor"
-    class="metadataResourceCard"
     :class="isSelected ? 'highlighted' : ''"
     style="height: 100%;"
-    :loading="loading"
-  >
-    <template slot="progress">
-      <v-progress-linear color="accent" indeterminate />
-    </template>
+    :loading="loadingColor">
 
-    <v-card-title class="text-h5 resourceHeadline white--text">
-      <span class="d-flex align-center">
-        <v-icon v-if="isProtected" left>lock</v-icon>
-        <v-icon v-if="deprecated" left>not_interested</v-icon>
-        {{ resourceName }}
-      </span>
+    <v-card-title class="text-h5 resourceHeadline"
+                  :class="{
+                    'text-white': !dark,
+                    'text-black': dark,
+                  }"
+    >
+      <v-row no-gutters
+             justify='start'>
+        <v-col v-if="isProtected"
+               class='flex-grow-0 pr-2'
+        >
+          <BaseIcon color="grey-darken-3" :icon="mdiLock"></BaseIcon>
+        </v-col>
+        <v-col v-if="deprecated"
+               class='flex-grow-0 pr-2'
+        >
+          <BaseIcon color="white" :icon="mdiCancel"></BaseIcon>
+        </v-col>
+        <v-col style='text-wrap: balance;'>
+          {{ resourceName }}
+        </v-col>
+      </v-row>
     </v-card-title>
 
     <v-card-text
-      class="pt-0 white--text"
+      class="pt-0"
       :class="{
         'pb-5': !showFullDescription,
         'pb-10': showFullDescription,
         'pr-2': showFullDescription,
         'pb-md-3': !showFullDescription,
         'pb-md-10': showFullDescription,
-      }"
-    >
-      <v-container class="pa-0" fluid>
+      }">
+      <v-container class="pa-0 mt-2" fluid>
         <v-row no-gutters>
           <v-col
-            v-if="
-              showFullDescription ||
-                (!showFullDescription && !maxDescriptionLengthReached)
-            "
+            v-if="showFullDescription ||
+              (!showFullDescription && !maxDescriptionLengthReached)
+              "
             class="readableText resourceCardText heightAndScroll"
-            :style="
-              `scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`
-            "
-          >
+            :class="{
+              'text-white': !dark,
+              'text-black': dark,
+            }"
+            :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`
+              ">
             <div v-html="markdownText"></div>
           </v-col>
 
           <v-col
             v-if="!showFullDescription && maxDescriptionLengthReached"
-            class="readableText resourceCardText"
-          >
+            class="readableText resourceCardText">
             {{ markdownTextTruncated }}
           </v-col>
-
-          <!-- <v-col v-if="maxDescriptionLengthReached && !showFullDescription"
-                  style="width: 30px;"
-                  class="shrink"
-                  align-self="end" >
-
-            <base-icon-button material-icon-name="expand_more"
-                              iconColor="accent"
-                              color="accent"
-                              outlined
-                              tooltipText="Show full description"
-                              @clicked="showFullDescription = !showFullDescription" />
-          </v-col> -->
         </v-row>
 
         <v-row v-if="!showFullDescription" no-gutters>
           <v-col>
-            <v-divider :dark="dark" class="my-2" />
+            <v-divider :dark="dark" class="mt-4 mb-2" />
           </v-col>
         </v-row>
 
@@ -76,47 +73,50 @@
             <base-icon-label-view
               v-if="isProtected"
               text="This resource is private"
-              material-icon-name="lock"
-              dark
-            />
+              :icon="mdiLock"
+              :light="dark"
+              :dark="!dark"
+              class="mb-1" />
 
             <base-icon-label-view
               v-if="doi"
               :text="doi"
-              material-icon-name="fingerprint"
+              :icon="mdiFingerprint"
               :icon-tooltip="EDIT_METADATA_DOI_LABEL"
-              dark
-              class="mb-1"
-            />
+              :light="dark"
+              :dark="!dark"
+              class="mb-1" />
 
             <base-icon-label-view
               v-if="format"
               :text="formatedBytes ? `${format} - ${formatedBytes}` : format"
               :icon="extensionIcon"
-              :icon-tooltip="
-                formatedBytes ? 'Resource type and size' : 'Resource type'
-              "
-              dark
+              :icon-tooltip="formatedBytes ? 'Resource type and size' : 'Resource type'"
+              :light="dark"
+              :dark="!dark"
               class="mb-1"
             />
+
 
             <base-icon-label-view
               v-if="created"
               :text="readableCreated"
-              material-icon-name="more_time"
+              :icon="mdiTimerPlusOutline"
               icon-tooltip="Date of resource creation"
-              dark
-              class="mb-1"
-            />
+              :light="dark"
+              :dark="!dark"
+              class="mb-1" />
 
             <base-icon-label-view
               v-if="lastModified"
               :text="readableLastModified"
-              material-icon-name="update"
+              :icon="mdiUpdate"
               icon-tooltip="Date of last modification"
-              dark
-              class="mb-1"
-            />
+              :light="dark"
+              :dark="!dark"
+              class="mb-1" />
+
+
             <!-- <base-icon-label-view
               v-if="isDownloaded"
               :text="'Number of Downloads: ' + String(numberOfDownload)"
@@ -125,6 +125,7 @@
               dark
               class="mb-1"
             /> -->
+
           </v-col>
         </v-row>
       </v-container>
@@ -132,85 +133,70 @@
 
     <v-card-actions
       class="ma-0 pa-2"
-      style="position: absolute; bottom: 0; right: 55px;"
-    >
+      style="position: absolute; bottom: 0; right: 55px;">
+
       <base-icon-button
         v-if="maxDescriptionLengthReached"
         :class="isProtected ? 'mr-2' : ''"
-        material-icon-name="expand_more"
-        :iconColor="showFullDescription ? 'primary' : 'accent'"
-        color="accent"
-        :fillColor="
-          showFullDescription ? $vuetify.theme.themes.light.accent : ''
-        "
-        outlined
-        :rotateOnClick="true"
-        :rotateToggle="showFullDescription"
-        :tooltipText="
-          showFullDescription
-            ? 'Hide full description'
-            : 'Show full description'
-        "
+        :icon="mdiChevronDown"
+        :icon-color="showFullDescription ? 'primary' : 'accent'"
+        :color="showFullDescription ? 'accent' : 'black'"
+        :outlined="true"
+        outline-color="accent"
+        :rotated="showFullDescription"
+        :tooltipText="showFullDescription
+          ? 'Hide full description'
+          : 'Show full description'
+          "
         @clicked="showFullDescription = !showFullDescription"
       />
+
     </v-card-actions>
 
     <v-container
       v-if="showGenericOpenButton && !isProtected"
       class="pa-2"
       style="position: absolute; right: 0; width: 55px;"
-      :style="`${genericOpenButtonBottom ? 'bottom: 55px;' : 'top: 0;'}`"
-    >
+      :style="`${genericOpenButtonBottom ? 'bottom: 55px;' : 'top: 0;'}`">
       <v-row>
         <v-col cols="12">
           <base-icon-button
-            :materialIconName="openButtonIcon"
-            iconColor="black"
+            :icon="openButtonIcon"
+            icon-color="black"
             color="accent"
-            :isElevated="true"
-            :tooltipText="openButtonTooltip"
-            @clicked="$emit('openButtonClicked')"
-          />
+            elevated
+            :tooltip-text="openButtonTooltip"
+            @clicked="$emit('openButtonClicked')" />
         </v-col>
       </v-row>
     </v-container>
 
     <v-container
       class="pa-2"
-      style="position: absolute; bottom: 0; right: 0; width: 55px;"
-    >
+      style="position: absolute; bottom: 0; right: 0; width: 55px;">
       <v-row v-if="!isProtected">
         <v-col cols="12">
           <base-icon-button
+            :icon="isFile ? mdiDownload : mdiLink"
+            icon-color="black"
             @clicked="trackDownload(url, resourceName)"
-            :materialIconName="isFile ? 'file_download' : 'link'"
-            iconColor="black"
             color="accent"
-            :isElevated="true"
-            :tooltipText="isFile ? 'Download resource' : 'Open link'"
+            elevated
+            :tooltip-text="isFile ? 'Download resource' : 'Open link'"
             :url="url"
-            :disabled="!downloadActive"
-          />
+            :disabled="!downloadActive" />
         </v-col>
       </v-row>
 
       <v-row v-if="isProtected">
         <v-col>
           <div
-            class="fabMenu fabPosition elevation-2 ma-2 pl-2 pt-2"
-            :class="downloadActive ? 'fabMenuHover' : 'fabMenuDisabled'"
-          >
-            <v-icon
-              class="pl-1 pt-1"
-              :class="downloadActive ? 'iconCircle' : ''"
-              :disabled="!downloadActive"
-              >shield</v-icon
-            >
-
+            class="fabMenu fabPosition elevation-5 ma-2"
+            :class="downloadActive ? 'fabMenuHover' : 'fabMenuDisabled'">
+            <BaseIcon :icon="mdiShield" color="grey-darken-3" />
             <div
               v-if="downloadActive"
-              class="pt-2 lockedText black--text protectedLink"
-            >
+              class="pt-2 lockedText text-black protectedLink">
               <p v-html="protectedText"></p>
             </div>
           </div>
@@ -233,18 +219,34 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
 import { renderMarkdown, stripMarkdown } from '@/factories/stringFactory';
-import { formatBytes, formatDate } from '@/factories/metaDataFactory';
+import { formatBytes } from '@/factories/metaDataFactory';
 import { EDIT_METADATA_DOI_LABEL } from '@/factories/metadataConsts';
 import { getFileIcon } from '@/factories/imageFactory';
+import {
+  mdiCancel,
+  mdiChevronDown,
+  mdiDownload,
+  mdiFingerprint,
+  mdiLink,
+  mdiLock,
+  mdiMonitorEye,
+  mdiShield,
+  mdiTimerPlusOutline,
+  mdiUpdate,
+} from '@mdi/js';
 
 import { trackDownload } from '@/utils/matomoTracking';
+
+import { formatDate } from '@/factories/dateFactory';
 
 export default {
   name: 'ResourceCard',
   components: {
+    BaseIcon,
     BaseIconLabelView,
     BaseIconButton,
   },
@@ -261,10 +263,11 @@ export default {
     format: String,
     twoColumnLayout: Boolean,
     height: String,
-    dark: Boolean,
-    fileSizeIcon: String,
+    dark: {
+      type: Boolean,
+      default: false,
+    },
     isProtected: Boolean,
-    fileExtensionIcon: Object,
     metadataContact: String,
     deprecated: Boolean,
     numberOfDownload: Number,
@@ -283,7 +286,7 @@ export default {
     openButtonTooltip: String,
     openButtonIcon: {
       type: String,
-      default: 'preview',
+      default: mdiMonitorEye,
     },
     cardColor: {
       type: String,
@@ -296,12 +299,28 @@ export default {
     loading: Boolean,
   },
   data: () => ({
+    mdiShield,
+    mdiChevronDown,
+    mdiDownload,
+    mdiLink,
+    mdiFingerprint,
+    mdiLock,
+    mdiTimerPlusOutline,
+    mdiUpdate,
+    mdiCancel,
     maxDescriptionLength: 175,
     showFullDescription: false,
     audioFormats: ['mp3', 'wav', 'wma', 'ogg'],
     EDIT_METADATA_DOI_LABEL,
   }),
   computed: {
+    loadingColor() {
+      if (this.loading) {
+        return 'accent';
+      }
+
+      return undefined;
+    },
     isDownloaded() {
       return this.numberOfDownload > 0;
     },
@@ -326,7 +345,7 @@ export default {
     },
     scrollbarColorFront() {
       return this.$vuetify
-        ? this.$vuetify.theme.themes.light.highlight
+        ? this.$vuetify.theme.themes.light.colors.highlight
         : 'auto';
     },
     scrollbarColorBack() {
@@ -416,7 +435,8 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+
 .resourceHeadline {
   line-height: 1.5rem;
 }
@@ -446,7 +466,9 @@ export default {
   height: 48px;
   background-color: #ffd740;
   border-radius: 50%;
-  /* transition: .1s; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .fabMenuDisabled {
@@ -457,19 +479,23 @@ export default {
 .fabMenuHover:hover,
 .fabMenuHover:active {
   background: #fff;
+  color: black !important;
   min-width: 160px;
   min-height: 160px;
   width: 100%;
   height: 100%;
   border-radius: 3px 3px;
   display: inherit;
-}
+  padding: 8px;
 
-.fabMenuHover:hover .v-icon,
-.fabMenuHover:active .v-icon {
-  border: 1px solid grey;
-  border-radius: 50%;
-  padding: 0 4px 4px 0;
+  a {
+    color: rgb(var(--v-theme-primary)) !important;
+  }
+
+  .lockedText {
+    display: inherit;
+    opacity: 1;
+  }
 }
 
 .lockedText {
@@ -477,11 +503,6 @@ export default {
   opacity: 0;
 }
 
-.fabMenuHover:hover .lockedText,
-.fabMenuHover:active .lockedText {
-  display: inherit;
-  opacity: 1;
-}
 
 .resourceInfo {
   font-size: 12px !important;

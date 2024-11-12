@@ -9,7 +9,7 @@
     <v-row>
       <v-col>
         <div class="text-subtitle-1">
-          <span class="red--text">{{ disclaimer }}</span>
+          <span class="text-red">{{ disclaimer }}</span>
         </div>
       </v-col>
     </v-row>
@@ -21,7 +21,7 @@
     </v-row>
 
     <v-row v-if="!img">
-      <v-col cols="12" class="red--text">
+      <v-col cols="12" class="text-red">
         {{
           'Given image not found! If you see this please conact envidat@wsl.ch to let the team know something is broken!'
         }}

@@ -1,7 +1,9 @@
 <template>
   <v-row>
-    <v-col cols="12" class="warning py-4">
-      <div class="text-h6">{{ noResultText }}</div>
+    <v-col cols="12" class="py-4">
+      <v-alert type="warning">
+        {{ noResultText }}
+      </v-alert>
     </v-col>
 
     <v-col cols="12">
@@ -18,9 +20,9 @@
             md="4"
             class="pa-2"
           >
-            <base-click-card
+            <BaseClickCard
               :title="card.title"
-              :img="card.img"
+              :img="card.imgPath"
               :color="card.darkColor"
               :contain="card.contain"
               :disabled="card.disabled"

@@ -1,7 +1,7 @@
 <template>
   <v-card id="EditAddExistingAuthor"
           class="pa-0"
-          :loading="loading" >
+          :loading="loadingColor" >
 
     <v-container fluid
                  class="pa-4" >
@@ -18,14 +18,14 @@
         </v-col>
 
         <v-col v-if="message" >
-          <BaseStatusLabelView statusIcon="check"
+          <BaseStatusLabelView status="check"
                                statusColor="success"
                                :statusText="message"
                                :expandedText="messageDetails" />
         </v-col>
         <v-col v-if="error"  >
 
-          <BaseStatusLabelView statusIcon="error"
+          <BaseStatusLabelView status="error"
                                statusColor="error"
                                :statusText="error"
                                :expandedText="errorDetails" />
@@ -47,7 +47,7 @@
                           :isClearable="isClearable"
                           :instructions="labels.userPickInstructions"
                           :readonly="isUserPickerReadOnly"
-                          :hint="isUserPickerReadOnly ? mixinMethods_readOnlyHint('authors') : labels.authorPickHint"
+                          :hint="isUserPickerReadOnly ? readOnlyHint('authors') : labels.authorPickHint"
                           @blur="notifyChange"
                           @removedUsers="catchRemovedUsers"
                           @pickedUsers="catchPickedUsers"/>
@@ -84,6 +84,7 @@ import { getArrayOfFullNames, getAuthorByName } from '@/factories/authorFactory'
 import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
 import { EDIT_METADATA_AUTHORS_TITLE } from '@/factories/metadataConsts';
 
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 
 export default {
   name: 'EditAddExistingAuthor',
@@ -132,12 +133,19 @@ export default {
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   computed: {
+    loadingColor() {
+      if (this.loading) {
+        return 'accent';
+      }
+
+      return undefined;
+    },
     isUserPickerReadOnly() {
-      return this.mixinMethods_isFieldReadOnly('authors');
+      return this.isReadOnly('authors');
     },
     baseUserPickerObject() {
       return getArrayOfFullNames(this.existingEnviDatUsers);
@@ -206,6 +214,12 @@ export default {
       // DO NOT clear the preview because than the user isn't able to remove the last author
       // this lead to a UX where the user had to add a second author to then remove the first, it
       // changes want to be made
+    },
+    isReadOnly(dateProperty) {
+      return isFieldReadOnly(this.$props, dateProperty);
+    },
+    readOnlyHint(dateProperty) {
+      return readOnlyHint(this.$props, dateProperty);
     },
   },
   data: () => ({

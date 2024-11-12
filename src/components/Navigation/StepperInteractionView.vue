@@ -4,34 +4,32 @@
 
     <v-row justify="end">
 
-      <v-col v-if="showPreviewButton"
-             class="shrink">
+      <v-col v-if="showPreviewButton" class="flex-grow-0">
         <BaseIconButton
-                id="PreviewMetadataButton"
-                material-icon-name="remove_red_eye"
-                icon-color="black"
-                color="black"
-                outlined
-                tooltipText="Preview Dataset"
-                :tooltipBottom="true"
-                @clicked="catchPreviewClick"
+          class="previewMetadataButton"
+          :icon="mdiEye"
+          icon-color="black"
+          color="black"
+          outlined
+          tooltip-text="Preview Dataset"
+          :tooltip-bottom="true"
+          @clicked="catchPreviewClick"
         />
       </v-col>
 
-      <v-col v-if="isCreationWorkflow"
-              class="shrink">
+      <v-col v-if="isCreationWorkflow" class="flex-grow-0">
         <BaseIconButton
-                id="SaveMetadataButton"
-                material-icon-name="save"
-                icon-color="black"
-                color="black"
-                outlined
-                tooltipText="Save Dataset On the Server"
-                :disabled="!showSaveButton"
-                isFancy
-                :is-glowing="showSaveButton"
-                :tooltipBottom="true"
-                @clicked="catchSaveDatasetClick"
+          class="saveMetadataButton"
+          :icon="mdiContentSave"
+          icon-color="black"
+          color="black"
+          outlined
+          tooltip-text="Save Dataset On the Server"
+          :disabled="!showSaveButton"
+          fancy
+          :glowing="showSaveButton"
+          :tooltip-bottom="true"
+          @clicked="catchSaveDatasetClick"
         />
       </v-col>
 
@@ -49,40 +47,35 @@
           />
       </v-col>
 
-      <v-col class="shrink">
-
+      <v-col class="flex-grow-0">
         <BaseIconButton
-                id="MetadataEditCloseButton"
-                material-icon-name="close"
-                icon-color="black"
-                color="black"
-                outlined
-                tooltipText="Close workflow"
-                :tooltipBottom="true"
-                @clicked="catchCloseClick"
+          class="metadataEditCloseButton"
+          :icon="mdiClose"
+          icon-color="black"
+          color="black"
+          outlined
+          tooltip-text="Close workflow"
+          tooltip-bottom
+          @clicked="catchCloseClick"
         />
       </v-col>
 
     </v-row>
 
-    <v-row >
-      <v-container fluid class="fill-height py-0" >
-        <v-row no-gutters align-content="end">
-          <v-col v-if="message" >
-            <BaseStatusLabelView statusIcon="check"
-                                 statusColor="success"
-                                 :statusText="message"
-                                 :expandedText="messageDetails" />
-          </v-col>
+    <v-row no-gutters class="mt-2">
+      <v-col v-if="message" >
+        <BaseStatusLabelView status="check"
+                             statusColor="success"
+                             :statusText="message"
+                             :expandedText="messageDetails" />
+      </v-col>
 
-          <v-col v-if="error" >
-            <BaseStatusLabelView statusIcon="error"
-                                 statusColor="error"
-                                 :statusText="error"
-                                 :expandedText="errorDetails" />
-          </v-col>
-        </v-row>
-      </v-container>
+      <v-col v-if="error" >
+        <BaseStatusLabelView status="error"
+                             statusColor="error"
+                             :statusText="error"
+                             :expandedText="errorDetails" />
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -99,8 +92,11 @@
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseProgressView from '@/components/BaseElements/BaseProgressView.vue'
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue'
+
 
 import { countSteps } from '@/factories/userCreationFactory';
+import { mdiClose, mdiContentSave, mdiEye } from '@mdi/js';
 
 export default {
   name: 'StepperInteractionView',
@@ -188,9 +184,15 @@ export default {
       this.$emit('clickedSaveDataset');
     },
   },
+  data: ()=>({
+    mdiClose,
+    mdiContentSave,
+    mdiEye,
+  }),
   components: {
     BaseIconButton,
     BaseProgressView,
+    BaseStatusLabelView,
   },
 };
 </script>

@@ -20,19 +20,18 @@
    <div v-if="user"
         class="dashboardGrid" >
 
-    <div class="topBoard" >
-
-      <IntroductionCard :userName="user.fullName"
-                        :introText="userDashboardConfig.introText"
-                        :feedbackText="userDashboardConfig.feedbackText"
-                        :oldDashboardUrl="oldDashboardUrl"
-                        :createClickCallback="canCreateDatasets ? createClickCallback : null"
-                        :editingClickCallback="editingClickCallback"
-                        :editingDatasetName="lastEditedDataset"
-                        :currentLocalDataset="currentLocalDataset"
-                        @localCardClicked="catchLocalCardClick"
-                        @clearButtonClicked="catchClearLocalStorage"
-      />
+    <div class="topBoard mt-6 mt-md-0" >
+        <IntroductionCard :userName="user.fullName"
+                          :introText="userDashboardConfig.introText"
+                          :feedbackText="userDashboardConfig.feedbackText"
+                          :oldDashboardUrl="oldDashboardUrl"
+                          :createClickCallback="canCreateDatasets ? createClickCallback : null"
+                          :editingClickCallback="editingClickCallback"
+                          :editingDatasetName="lastEditedDataset"
+                          :currentLocalDataset="hasLocalDataset ? currentLocalDataset : undefined"
+                          @localCardClicked="catchLocalCardClick"
+                          @clearButtonClicked="catchClearLocalStorage"
+        />
 
       <UserOrganizationInfo :height="userOrgaInfoCardHeight"
                             :width="userOrgaInfoCardWidth"
@@ -88,10 +87,25 @@
          ref="userDatasets">
 
       <TitleCard title="My Datasets"
-                  icon="refresh"
+                  :icon='mdiRefresh'
                   :tooltipText="refreshButtonText"
                   :loading="userDatasetsLoading"
                   :clickCallback="catchRefreshClick" />
+
+      <div v-if="hasUserDatasets && userDatasetsLoading"
+           id="collaboratorPlaceholders"
+           class="datasetsOverflow" >
+
+        <v-row no-gutters>
+          <v-col v-for="n in placeHolderAmount"
+                 :key="`userDatasetsPlaceholder_${n}`"
+                 cols="2"
+                 class="pa-2" >
+
+            <MetadataCardPlaceholder  />
+          </v-col>
+        </v-row>
+      </div>
 
       <MetadataList v-if="hasUserDatasets"
                       class="datasetsOverflow px-1"
@@ -108,7 +122,6 @@
                       @clickedTagClose="catchTagCloseClicked"
                       :defaultListControls="userListDefaultControls"
                       :enabledControls="userListEnabledControls"
-                      :useDynamicHeight="false"
                       :mapTopLayout="false"
                       :topFilteringLayout="true"
                       :showSearch="false"
@@ -124,7 +137,7 @@
                       :actionButtonCallback="isEditorAndAbove ? createClickCallback : null" />
 
         <NotificationCard v-if="noUserDatasetsError"
-                          :notification="noUserDatasetsError"
+                          v-bind="noUserDatasetsError"
                           :showCloseButton="false" />
 
       </div>
@@ -136,7 +149,7 @@
           ref="collaboratorDatasets">
 
        <TitleCard title="My Collaborator Datasets"
-                  icon="refresh"
+                  :icon='mdiRefresh'
                   :tooltipText="refreshButtonText"
                   :loading="collaboratorDatasetIdsLoading || collaboratorDatasetsLoading"
                   :clickCallback="catchCollaboratorRefreshClick" />
@@ -147,7 +160,7 @@
 
          <v-row no-gutters>
            <v-col v-for="n in orgaDatasetsPreview"
-                  :key="n"
+                  :key="`orgaDatasetsPlaceholder_${n}`"
                   cols="2"
                   class="pa-2" >
 
@@ -156,13 +169,15 @@
          </v-row>
        </div>
 
+
+
        <div v-if="!collaboratorDatasetIdsLoading && !collaboratorDatasetsLoading && hasCollaboratorDatasets"
             id="collaboratorDatasetCards"
             class="datasetsOverflow" >
 
          <v-row no-gutters>
            <v-col v-for="(metadata, index) in collaboratorDatasets"
-                  :key="index"
+                  :key="`orgaDatasets_${index}`"
                   cols="2"
                   class="pa-2" >
 
@@ -173,7 +188,6 @@
                            :name="metadata.name"
                            :titleImg="metadata.titleImg"
                            :resourceCount="metadata.num_resources"
-                           :fileIconString="fileIconString"
                            :categoryColor="metadata.categoryColor"
                            :compactLayout="true"
                            :state="getMetadataState(metadata)"
@@ -201,53 +215,6 @@
 
      </div>
 
-    <div class="bottomBoard pt-2 pb-4"
-         ref="userOrgaDatasets">
-
-      <TitleCard :title="`Datasets of ${usersOrganisationTitle}`"
-                  icon="refresh"
-                  :tooltipText="refreshOrgaButtonText"
-                 :loading="userOrganizationLoading"
-                 :clickCallback="catchRefreshOrgaClick" />
-
-      <MetadataList v-if="hasOrgaDatasets"
-                    class="datasetsGrid px-1"
-                    :listContent="filteredOrgaDatasets"
-                    :searchCount="filteredOrgaDatasets.length"
-                    :mapFilteringPossible="false"
-                    :loading="userOrganizationLoading"
-                    :placeHolderAmount="placeHolderAmount"
-                    @clickedTag="catchOrgaTagClicked"
-                    @clickedCard="catchMetadataClicked"
-                    :selectedTagNames="selectedOrgaTagNames"
-                    :allTags="allUserOrganizationDataTags"
-                    :showPlaceholder="updatingTags"
-                    @clickedTagClose="catchOrgaTagCloseClicked"
-                    :defaultListControls="userListDefaultControls"
-                    :enabledControls="userListEnabledControls"
-                    :useDynamicHeight="false"
-                    :mapTopLayout="false"
-                    :topFilteringLayout="true"
-                    :showSearch="false"
-                    :showPublicationState="true"
-                    :reloadAmount="20"
-                    :preloadingDistance="10"
-                    :showOrganizationOnHover="false"
-                    :metadatasContent="metadatasContent"
-                    mainScrollClass=".bottomBoard > .datasetsGrid"
-                    />
-
-      <div v-if="!hasOrgaDatasets"
-            class="noOrgaDatasetsGrid px-1">
-
-        <NotificationCard v-if="noOrgaDatasetsError"
-                          :notification="noOrgaDatasetsError"
-                          :showCloseButton="false" />
-
-        <NotFoundCard v-bind="noOrganizationsInfos"  />
-      </div>
-
-    </div>
    </div>
 
   </v-container>
@@ -304,9 +271,17 @@ import {
   SET_CURRENT_PAGE,
 } from '@/store/mainMutationsConsts';
 
+import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
+
+
 import { getNameInitials } from '@/factories/authorFactory';
 import { errorMessage } from '@/factories/notificationFactory';
-import { enhanceMetadatasTitleImage, getMetadataVisibilityState } from '@/factories/metaDataFactory';
+import { getTagColor, getPopularTags, tagsIncludedInSelectedTags } from '@/factories/keywordsFactory';
+import {
+  enhanceMetadataEntry,
+  isTagSelected,
+} from '@/factories/metaDataFactory';
+
 import {
   getUserOrganizationRoleMap,
   hasOrganizationRoles,
@@ -328,57 +303,64 @@ import {
   USER_PROFILE,
 } from '@/factories/eventBus';
 
-import NotFoundCard from '@/components/Cards/NotFoundCard.vue';
+import { getPreviewDatasetFromLocalStorage } from '@/factories/userCreationFactory';
+
+import { METADATA_TITLE_PROPERTY } from '@/factories/metadataConsts';
+
+import { mdiRefresh } from '@mdi/js';
+import { loadRouteTags } from '@/factories/stringFactory';
+import categoryCards from '@/store/categoryCards';
+
+import {defineAsyncComponent} from 'vue';
+
 import MetadataList from '@/components/MetadataList.vue';
 import MetadataCard from '@/components/Cards/MetadataCard.vue';
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
-import IntroductionCard from '@/components/Cards/IntroductionCard.vue';
-import NotificationCard from '@/components/Cards/NotificationCard.vue';
 import TitleCard from '@/components/Cards/TitleCard.vue';
 import UserCard from '@/components/Cards/UserCard.vue';
 import EditUserProfile from '@/modules/user/components/edit/EditUserProfile.vue';
 import FlipLayout from '@/components/Layouts/FlipLayout.vue';
-import UserOrganizationInfo from '@/components/Cards/UserOrganizationInfo.vue';
+import { getMetadataVisibilityState } from '@/factories/publicationFactory';
 
-import {
-  ORGANIZATIONS_NAMESPACE,
-  USER_GET_ORGANIZATION_IDS,
-  USER_GET_ORGANIZATIONS,
-  USER_GET_ORGANIZATIONS_RESET,
-  USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE,
-} from '@/modules/organizations/store/organizationsMutationsConsts';
 
-import { getPreviewDatasetFromLocalStorage } from '@/factories/userCreationFactory';
-
-import fileIcon from '@/assets/icons/file.png';
-import { METADATA_TITLE_PROPERTY } from '@/factories/metadataConsts';
-import { getPopularTags, getTagColor, tagsIncludedInSelectedTags } from '@/factories/keywordsFactory';
+const IntroductionCard = defineAsyncComponent(() =>
+  import('@/components/Cards/IntroductionCard.vue'),
+);
+const NotFoundCard = defineAsyncComponent(() =>
+  import('@/components/Cards/NotFoundCard.vue'),
+);
+const NotificationCard = defineAsyncComponent(() =>
+  import('@/components/Cards/NotificationCard.vue'),
+);
+const UserOrganizationInfo = defineAsyncComponent(() =>
+  import('@/components/Cards/UserOrganizationInfo.vue'),
+);
 
 export default {
   name: 'DashboardPage',
   beforeRouteEnter(to, from, next) {
     next((vm) => {
       vm.$store.commit(SET_CURRENT_PAGE, USER_DASHBOARD_PAGENAME);
-      vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
+      vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
     });
   },
   created() {
+    this.organizationsStore = useOrganizationsStore();
     eventBus.on(SELECT_EDITING_DATASET, this.catchEditingClick);
     eventBus.on(EDIT_USER_PROFILE_EVENT, this.callUserUpdateAction);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(SELECT_EDITING_DATASET, this.catchEditingClick);
     eventBus.off(EDIT_USER_PROFILE_EVENT, this.callUserUpdateAction);
   },
   beforeMount() {
-    this.fileIconString = this.mixinMethods_getIcon('file');
 
-    this.loadRouteTags();
+    this.loadRouteWithTags();
 
     if (this.user) {
       this.fetchUserDatasets();
       this.fetchCollaboratorDatasets();
-      this.fetchUserOrganisationData(true);
+      this.fetchUserOrganizationId(true);
     }
   },
   mounted() {
@@ -390,7 +372,6 @@ export default {
   computed: {
     ...mapState([
       'config',
-      'categoryCards',
     ]),
     ...mapState(USER_SIGNIN_NAMESPACE, [
       'user',
@@ -407,12 +388,6 @@ export default {
       'userDatasetsError',
       'lastEditedDataset',
       'lastEditedDatasetPath',
-    ]),
-    ...mapState(ORGANIZATIONS_NAMESPACE, [
-      'userOrganizationLoading',
-      'userOrganizations',
-      'userOrganizationIds',
-      'userOrganizationError',
     ]),
     ...mapGetters(METADATA_NAMESPACE, [
       'allTags',
@@ -432,20 +407,9 @@ export default {
       return this.userEditMetadataConfig?.datasetCreationActive || false;
     },
     loading() {
-      return this.userLoading || this.userEditLoading || this.userDatasetsLoading || this.userOrganizationLoading;
+      return this.userLoading || this.userEditLoading || this.userDatasetsLoading || this.organizationsStore.userOrganizationLoading;
     },
-    noOrgaDatasetsError() {
-      if (!this.userOrganizationError) {
-        return null;
-      }
 
-      const errorDetail = `${this.userOrganizationError}<br /> <strong>Try reloading the datasets. If the problem persists please let use know via envidat@wsl.ch!</strong>`;
-
-      const notification = errorMessage('Error Loading Datasets From Organization', errorDetail);
-      notification.timeout = 0;
-
-      return notification;
-    },
     noUserDatasetsError() {
       if (!this.userDatasetsError) {
         return null;
@@ -464,17 +428,15 @@ export default {
     hasCollaboratorDatasets() {
       return this.collaboratorDatasets?.length > 0;
     },
-    hasOrgaDatasets() {
-      return this.userOrgaDatasetList.length > 0;
-    },
+
     userOrgaDatasetList() {
       const datasets = [];
 
-      if (!this.userOrganizations) {
+      if (!this.organizationsStore.userOrganizations) {
         return datasets;
       }
 
-      this.userOrganizations.forEach(o => {
+      this.organizationsStore.userOrganizations.forEach(o => {
         if (o.packages?.length > 0) {
           datasets.push(o.packages);
         }
@@ -503,27 +465,7 @@ export default {
 
       return filteredContent;
     },
-    filteredOrgaDatasets() {
-      const filteredContent = [];
 
-      if (!this.hasOrgaDatasets) {
-        return filteredContent;
-      }
-
-      if (!this.selectedOrgaTagNames || this.selectedOrgaTagNames.length <= 0) {
-        return this.userOrgaDatasetList;
-      }
-
-      for (let i = 0; i < this.userOrgaDatasetList.length; i++) {
-        const entry = this.userOrgaDatasetList[i];
-
-        if (tagsIncludedInSelectedTags(entry.tags, this.selectedOrgaTagNames)) {
-          filteredContent.push(entry);
-        }
-      }
-
-      return filteredContent;
-    },
     publishedDatasets() {
       if (this.userDatasets) {
         return this.userDatasets.filter(dataset => !dataset.private);
@@ -541,32 +483,20 @@ export default {
     nameInitials() {
       return getNameInitials(this.user);
     },
-    usersOrganisationTitle() {
-      if (this.userOrganizations?.length === 1) {
-        return this.userOrganizations[0].display_name;
-      }
-
-      return 'your Organizations';
-    },
     allUserdataTags() {
       const minTagCount = this.userDatasets?.length > 50 ? 5 : 2;
 
       return this.getPopularTagsFromDatasets(this.filteredUserDatasets, minTagCount, undefined, this.filteredUserDatasets.length);
     },
-    allUserOrganizationDataTags() {
-      const minTagCount = this.userOrgaDatasetList?.length > 50 ? 3 : 2;
-
-      return this.getPopularTagsFromDatasets(this.filteredOrgaDatasets, minTagCount, undefined, this.filteredOrgaDatasets.length);
-    },
     oldDashboardUrl() {
       return this.userDashboardConfig.showOldDashboardUrl ? `${this.ckanDomain}${this.dashboardCKANUrl}${this.user.name}` : '';
     },
     userOrganizationRoles() {
-      if (this.userOrganizations.length <= 0) {
+      if (!this.organizationsStore.hasUserOrganizations) {
         return null;
       }
 
-      return getUserOrganizationRoleMap(this.user.id, this.userOrganizations);
+      return getUserOrganizationRoleMap(this.user.id, this.organizationsStore.userOrganizations);
     },
     organizationRoles() {
       if (!this.userOrganizationRoles) {
@@ -621,27 +551,27 @@ export default {
     userLastName() {
       return this.user?.fullName?.split(' ')[1] || '';
     },
-    currentLocalDataset() {
-      const localStorageInfos = getPreviewDatasetFromLocalStorage();
+    hasLocalDataset() {
+      const localStorageData = getPreviewDatasetFromLocalStorage();
 
-      // eslint-disable-next-line vue/no-side-effects-in-computed-properties,no-unused-expressions
+      // eslint-disable-next-line no-unused-expressions
       this.localDatasetUpdateCount;
 
-      const properties = Object.keys(localStorageInfos);
+      const properties = Object.keys(localStorageData);
 
-      if (properties.length <= 0) {
-        return undefined;
-      }
+      return properties.length > 0;
+    },
+    currentLocalDataset() {
+      const localStorageData = getPreviewDatasetFromLocalStorage();
 
       const localDataset = {
-        title: localStorageInfos[METADATA_TITLE_PROPERTY] ? localStorageInfos[METADATA_TITLE_PROPERTY] : '[Untitled Dataset]',
-        subTitle: localStorageInfos.description,
-        tags: localStorageInfos.keywords,
-        fileIconString: fileIcon,
+        title: localStorageData[METADATA_TITLE_PROPERTY] ? localStorageData[METADATA_TITLE_PROPERTY] : '[Untitled Dataset]',
+        subTitle: localStorageData.description,
+        tags: localStorageData.keywords,
         flatLayout: true,
       };
 
-      enhanceMetadatasTitleImage([localDataset], undefined, this.categoryCards);
+      enhanceMetadataEntry(localDataset);
 
       return localDataset;
     },
@@ -660,7 +590,7 @@ export default {
 
       for (let j = 0; j < tags.length; j++) {
         const tag = tags[j];
-        tag.color = getTagColor(this.categoryCards, tag.name);
+        tag.color = getTagColor(categoryCards, tag.name);
       }
 
       tags = tags.slice(0, maxTagAmount);
@@ -674,10 +604,10 @@ export default {
     contentFilteredByTags(value, selectedUserTagNames) {
       return value.tags && tagsIncludedInSelectedTags(value.tags, selectedUserTagNames);
     },
-    loadRouteTags() {
-      const routeTags = this.mixinMethods_loadRouteTags(this.$route.query.tags, this.selectedUserTagNames);
+    loadRouteWithTags() {
+      const routeTags = loadRouteTags(this.$route.query.tags, this.selectedUserTagNames);
 
-      if (routeTags) {
+      if (routeTags?.length > 0) {
         this.selectedUserTagNames = routeTags;
       }
     },
@@ -708,24 +638,12 @@ export default {
       // always call the USER_GET_COLLABORATOR_DATASETS action because it resolves the store & state also when collaboratorDatasetIds is empty
       await this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_COLLABORATOR_DATASETS}`, this.collaboratorDatasetIds);
     },
-    async fetchUserOrganisationData(forceReload = false) {
-      if (forceReload || !forceReload && this.$store.getters[`${ORGANIZATIONS_NAMESPACE}/hasUserOrganizations`]) {
-        await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user.id);
-
-        // always call the USER_GET_ORGANIZATIONS action because it resolves the store & state also when userOrganizationIds is empty
-        await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS}`, this.userOrganizationIds);
+    async fetchUserOrganizationId(forceReload = false) {
+      if (forceReload || !forceReload && this.organizationsStore.userOrganizations?.length > 0) {
+        await this.organizationsStore.UserGetOrgIds(this.user.id)
       }
     },
-    async fetchUserOrganisationDataRecursive() {
-      // this was a test to see if the datasets of the organizations the users is in can be
-      // loaded quickly via the package_search, it turns out that include_drafts / include_privte
-      // slows down the search to be unuseable... we need to find another solution
-      this.$store.commit(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS_RESET}`);
-      await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user.id);
 
-      // always call the USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE action because it resolves the store & state also when userOrganizationIds is empty
-      await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE}`, this.userOrganizationIds);
-    },
     catchRefreshClick() {
       if (this.user) {
         this.fetchUserDatasets();
@@ -734,11 +652,6 @@ export default {
     catchCollaboratorRefreshClick() {
       if (this.user) {
         this.fetchCollaboratorDatasets();
-      }
-    },
-    catchRefreshOrgaClick() {
-      if (this.user) {
-        this.fetchUserOrganisationData(true);
       }
     },
     catchSigninClick() {
@@ -775,20 +688,13 @@ export default {
       });
     },
     catchTagClicked(tagName) {
-      if (!this.mixinMethods_isTagSelected(tagName)) {
+      if (!isTagSelected(tagName, this.selectedTagNames)) {
         this.selectedUserTagNames.push(tagName);
       }
     },
-    catchOrgaTagClicked(tagName) {
-      if (!this.mixinMethods_isTagSelected(tagName)) {
-        this.selectedOrgaTagNames.push(tagName);
-      }
-    },
+
     catchTagCloseClicked(tagName) {
       this.selectedUserTagNames = this.selectedUserTagNames.filter(tag => tag !== tagName);
-    },
-    catchOrgaTagCloseClicked(tagName) {
-      this.selectedOrgaTagNames = this.selectedOrgaTagNames.filter(tag => tag !== tagName);
     },
     catchMetadataClicked(datasetname) {
       this.$store.commit(`${METADATA_NAMESPACE}/${SET_DETAIL_PAGE_BACK_URL}`, this.$route);
@@ -845,19 +751,19 @@ export default {
       if (this.user) {
         this.fetchUserDatasets();
         this.fetchCollaboratorDatasets();
-        this.fetchUserOrganisationData();
       }
     },
   },
   data: () => ({
+    loadedOrg: false,
+    loadOrgButton: 'Load Organizations',
+    organizationsStore: null,
     dashboardCKANUrl: '/user/',
     createCKANUrl: '/dataset/new',
     ckanDomain: process.env.VITE_API_ROOT,
-    fileIconString: '',
     title: 'Dashboard',
-    PageBGImage: 'app_b_dashboardpage',
+    pageBGImage: 'app_b_dashboardpage',
     refreshButtonText: 'Reload Datasets',
-    refreshOrgaButtonText: 'Reload Organisation Datasets',
     placeHolderAmount: 4,
     orgaDatasetsPreview: 4,
     maxFilterTags: 20,
@@ -872,7 +778,6 @@ export default {
     right: false,
     headerTitle: 'Dashboard',
     selectedUserTagNames: [],
-    selectedOrgaTagNames: [],
     notSignedInInfos: {
       title: 'Not Signed in',
       description: 'Sign in with your email address to see your datasets.',
@@ -898,6 +803,7 @@ export default {
       LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
     ],
     localDatasetUpdateCount: 0,
+    mdiRefresh,
   }),
   components: {
     MetadataList,
@@ -933,10 +839,7 @@ export default {
 
     .topBoard
       display: grid
-      grid-template-columns: 4fr auto auto
       gap: $gridGap
-      overflow: hidden auto
-      max-height: $maxHeight
 
     .midBoard
       display: grid
@@ -947,7 +850,7 @@ export default {
       max-height: $maxHeight
 
       .datasetsOverflow
-        overflow: hidden auto
+        overflow: hidden hidden
 
 
       .noUserDatasetsGrid
@@ -973,6 +876,14 @@ export default {
 </style>
 
 <style scoped>
+
+@media (min-width: 767px) {
+  .topBoard {
+    grid-template-columns: 4fr auto auto;
+    overflow: hidden hidden;
+    max-height: 750px;
+  }
+}
   /* html,
   body {
     height: 100%;
