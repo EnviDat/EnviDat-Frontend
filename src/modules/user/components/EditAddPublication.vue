@@ -309,7 +309,7 @@ export default {
       this.plainText = null;
       this.previewCitation = null;
       this.filledTextArea = '';
-      this.isEditMode = false;
+      this.isEditMode = !this.isEditMode;
     },
     catchInputedText(value) {
       const previewPlainText = {
