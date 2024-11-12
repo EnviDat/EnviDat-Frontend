@@ -197,7 +197,10 @@ export default {
   name: 'MetadataList',
   props: {
     listContent: Array,
-    prePinnedIds: Array,
+    prePinnedIds: {
+      type: Array,
+      default: () => [],
+    },
     mapFilteringPossible: Boolean,
     placeHolderAmount: {
       type: Number,
@@ -295,7 +298,7 @@ export default {
       return false;
     },
     pinnedContent() {
-      if (Object.keys(this.metadatasContent)?.length <= 0) {
+      if (!this.metadatasContent || Object.keys(this.metadatasContent)?.length <= 0) {
         return [];
       }
 
