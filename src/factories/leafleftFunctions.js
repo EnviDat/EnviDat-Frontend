@@ -22,9 +22,9 @@ import { mdiMapMarker, mdiMapMarkerMultiple } from '@mdi/js';
 
 
 
-export function getPointIcon(dataset, modeData, selected, multiMarker = false) {
+export function getPointIcon(selected, multiMarker = false, modeData = undefined, dataset = undefined) {
   const iconOptions = Icon.Default.prototype.options;
-  // use the defaultoptions to ensure that all untouched defaults stay in place
+  // use the default options to ensure that all untouched defaults stay in place
 
   if (modeData && modeData.name !== EDNA_MODE && modeData.icons) {
     let iconUrl = Object.values(modeData.icons)[0];
@@ -54,6 +54,7 @@ export function getPointIcon(dataset, modeData, selected, multiMarker = false) {
           class="v-icon__svg"
           role="img"
           preserveAspectRatio="none"
+          isSelected="${selected}"
           style="color: ${ selected ? '#00897b' : 'black' }"
         >
           <path d="${ multiMarker ? mdiMapMarkerMultiple : mdiMapMarker}" transform="scale(1.25, 1.25)"></path>
@@ -63,8 +64,8 @@ export function getPointIcon(dataset, modeData, selected, multiMarker = false) {
   return divIcon(iconOptions);
 }
 
-export function getPoint(dataset, coords, id, title, selected, onClick, modeData, multiMarker = false) {
-  const icon = getPointIcon(dataset, modeData, selected, multiMarker);
+export function getPoint(coords, id, title, selected, onClick, multiMarker = false, modeData = undefined, dataset = undefined) {
+  const icon = getPointIcon(selected, multiMarker, modeData, dataset);
 
   let opacity = null;
 
@@ -103,23 +104,25 @@ export function getPolygon(coords, id, title, selected, onClick) {
   // var latlngs = [[37, -109.05],[41, -109.03],[41, -102.05],[37, -102.04]];
   const polygon = createPolygon(coords, {
     color: selected ? '#00897b' : '#ffd740',
-    opacity: 0.45,
+    opacity: 0.55,
     fillOpacity: 0,
   });
 
-  polygon.on({ click: onClick });
+  polygon.on('click', (e) => {
+    onClick(e.target.id);
+  });
   polygon.id = id;
   polygon.title = title;
 
   return polygon;
 }
 
-export function getMultiPoint(dataset, coords, id, title, selected, onClick, modeData) {
+export function getMultiPoint(coords, id, title, selected, onClick, modeData, dataset) {
   const points = [];
 
   for (let i = 0; i < coords.length; i++) {
     const pointCoord = coords[i];
-    const point = getPoint(dataset, pointCoord, id, title, selected, onClick, modeData, true);
+    const point = getPoint(pointCoord, id, title, selected, onClick, true, modeData, dataset);
     points.push(point);
   }
 
