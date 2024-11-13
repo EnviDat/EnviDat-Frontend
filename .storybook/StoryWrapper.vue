@@ -1,18 +1,33 @@
 <template>
   <v-app :theme="themeName" class="vuetifyStorybookApp"
-          style="font-family: 'Raleway', sans-serif !important;">
-    <v-main>
+          style="font-family: 'Raleway', sans-serif !important;"
+          id="storyWrapper--v-app"
+          ref="storyWrapper--v-app"
+  >
+    <v-main id="storyWrapper--v-main"
+            ref="storyWrapper--v-main"
+    >
       <slot name="story"></slot>
     </v-main>
   </v-app>
 </template>
 
 <script>
-
 export default {
   props: {
     themeName: String,
   },
+  provide() {
+    return {
+      getStorybookAppRefs: () => this.$refs,
+    };
+  },
+  mounted() {
+    // console.log('StoryWrapper refs', this.$refs);
+  },
+  data: () => ({
+    storybookAppRefs: null,
+  }),
 };
 </script>
 
