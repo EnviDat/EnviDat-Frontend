@@ -426,10 +426,6 @@ export default {
       });
     },
     catchMaintenanceConfirmClick() {
-      // handle consent with Matomo
-      localStorage.setItem('matomoConsentGiven', 'true');
-      this.$matomo.rememberConsentGiven();
-
       if (this.userIsOnEditPage) {
         this.editMaintenanceBanner = false;
         return;
