@@ -71,7 +71,7 @@
         id="datasetList"
         fluid
         class="pa-0"
-       :style="`${ useDynamicHeight ? `height: ${metadataListHeight}px` : 'max-height: 750px;' };`"
+        :style="`height: ${metadataListHeight}px;`"
       >
       <v-row v-if="!loading && hasContent"
              no-gutters>
@@ -349,17 +349,29 @@ export default {
         if (this.$vuetify.display.lgAndUp) {
           return mapActive ? 4 : 6;
         }
-      }
 
-      if (this.$vuetify.display.smAndDown) {
-        return 1;
+        if (this.$vuetify.display.smAndDown) {
+          return 4;
+        }
       }
 
       if (this.$vuetify.display.xlAndUp) {
         return 4;
       }
 
-      return mapActive ? 3 : 4;
+      if (this.$vuetify.display.mdAndUp) {
+        return mapActive ? 3 : 4;
+      }
+
+      if (this.$vuetify.display.smAndUp) {
+        return 2;
+      }
+
+      if (this.$vuetify.display.xs) {
+        return 1;
+      }
+
+      return 4;
     },
     fixedCardHeight() {
       const compactLayout = this.isCompactLayout;
