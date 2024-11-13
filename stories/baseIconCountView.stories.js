@@ -12,7 +12,7 @@ import { mdiHome } from '@mdi/js';
 
 
 export default {
-  title: '1 Base Elements / Icon Count View',
+  title: '1 Base / Icons / Icon Count View',
   component: BaseIconCountView,
 };
 

@@ -10,7 +10,7 @@ import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import { mdiAccount, mdiPencil } from '@mdi/js';
 
 export default {
-  title: '1 Base Elements / Icon Font & Custom',
+  title: '1 Base / Icons / Icon Font & Custom',
   component: BaseIcon,
 };
 

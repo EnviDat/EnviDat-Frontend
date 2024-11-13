@@ -43,7 +43,7 @@ const methods = {
 };
 
 export default {
-  title: '5 Navigation / Projects',
+  title: '15 Project Page / Project Views',
   decorators: [],
   parameters: {
   },

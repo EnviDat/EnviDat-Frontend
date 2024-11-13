@@ -58,7 +58,7 @@ const preSelectedAuthors2 = extractedAuthors.filter(value => value.fullName.incl
 
 
 export default {
-  title: '9 Editing Metadata / Author Infos',
+  title: '3 Dataset / 2 Edit / Author Infos',
   component: EditAuthorList,
   argTypes: { listChanged: { action: 'listChanged' } },
 };

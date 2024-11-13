@@ -12,7 +12,7 @@
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
 
 export default {
-  title: '1 Base Elements / Labels Collection',
+  title: '1 Base / Icons / Labels Collection',
   component: BaseIconLabelView,
 };
 

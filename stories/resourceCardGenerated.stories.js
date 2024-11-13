@@ -3,7 +3,7 @@ import { mdiFileEye } from '@mdi/js';
 
 // generated with https://chat.openai.com/g/g-p5QoaO4UG-storybookvue2gpt
 export default {
-  title: '3 Cards / Resource Cards / 1 Generics',
+  title: '1 Base / Cards /  Resource Cards / 1 Generics',
   component: ResourceCard,
 };
 

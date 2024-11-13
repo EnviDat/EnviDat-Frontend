@@ -19,7 +19,7 @@ import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportPar
 // const readme2 = './testdata/10-16904-envidat-30_readme.txt';
 
 export default {
-  title: '3 Cards / Resource Previews',
+  title: '1 Base / Cards /  Resource Previews',
   decorators: [],
   parameters: {
     ...envidatViewportParameters,

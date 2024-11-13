@@ -13,7 +13,7 @@ import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams }
 import SmallSearchBarView from '../src/components/Filtering/SmallSearchBarView.vue';
 
 export default {
-  title: '4 Filtering / Small SearchBar View',
+  title: '2 Search / Small SearchBar View',
   component: SmallSearchBarView,
 };
 

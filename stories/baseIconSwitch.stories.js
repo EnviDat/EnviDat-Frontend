@@ -16,7 +16,7 @@ import { mdiAccountCircleOutline, mdiLock, mdiHome, mdiInformationOutline } from
 
 
 export default {
-  title: '1 Base Elements / Icon Switch',
+  title: '1 Base / Icons / Icon Switch',
   component: BaseIconSwitch,
 };
 

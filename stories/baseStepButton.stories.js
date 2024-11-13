@@ -12,7 +12,7 @@
 import StepButton from '@/components/Navigation/StepButton.vue';
 
 export default {
-  title: '1 Base Elements / Step button',
+  title: '1 Base / Buttons /  Step button',
   component: StepButton,
 };
 

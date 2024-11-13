@@ -58,7 +58,7 @@ function projectsCardsChilds() {
 }
 
 export default {
-  title: '3 Cards / Projects Cards',
+  title: '1 Base / Cards /  Projects Cards',
   component: ProjectCard,
 };
 

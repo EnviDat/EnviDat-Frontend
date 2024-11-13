@@ -12,7 +12,7 @@ import UserNotFound1 from '@/modules/user/assets/UserNotFound1.jpg';
 import UserNotFound2 from '@/modules/user/assets/UserNotFound2.jpg';
 
 export default {
-  title: '3 Cards / Not Found',
+  title: '1 Base / Cards /  Not Found',
   component: NotFoundCard,
 };
 

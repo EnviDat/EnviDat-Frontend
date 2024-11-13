@@ -12,7 +12,7 @@
 import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip.vue';
 
 export default {
-    title: '10 Chips / MetadataOrganizationChip',
+    title: '1 Base / Chips / MetadataOrganizationChip',
     decorators: [],
 };
 

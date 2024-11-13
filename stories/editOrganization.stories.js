@@ -18,7 +18,7 @@ import testOrganizations from './js/organizations';
 const editingReadOnlyObj = getReadOnlyFieldsObject('published');
 
 export default {
-  title: '9 Editing Metadata / Edit Organization',
+  title: '3 Dataset / 2 Edit / Organization',
   component: EditOrganization,
 };
 

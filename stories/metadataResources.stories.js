@@ -42,7 +42,7 @@ const resources2Dates = getFrontendDates(metadata[2].date);
 
 
 export default {
-  title: '6 Dataset Detail Views / Metadata Resources Views',
+  title: '3 Dataset / 1 Views / Metadata Resources',
   component: MetadataResources,
 };
 

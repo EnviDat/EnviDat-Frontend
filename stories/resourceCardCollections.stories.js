@@ -11,7 +11,7 @@ const resources1 = createResources(metadataCards[2]);
 
 
 export default {
-  title: '3 Cards / Resource Cards / 3 Collections From Datasets',
+  title: '1 Base / Cards /  Resource Cards / 3 Collections From Datasets',
   component: ResourceCard,
   parameters: {},
 };

@@ -29,7 +29,7 @@ const user2 =  authorCollection[keys[2]];
 
 
 export default {
-  title: '9 Editing Metadata / User Profile',
+  title: '7 User / Edit User Profile',
   component: EditUserProfile,
 };
 

@@ -93,7 +93,7 @@ const methods = {
 };
 
 export default {
-  title: '3 Cards / Metadata Cards',
+  title: '1 Base / Cards /  Metadata Cards',
   decorators: [],
   parameters: {},
 };

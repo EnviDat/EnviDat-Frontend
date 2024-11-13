@@ -11,7 +11,7 @@ import { mdiChevronDown, mdiContentSave, mdiHome } from '@mdi/js';
 
 
 export default {
-  title: '1 Base Elements / Icon buttons',
+  title: '1 Base / Icons / Icon buttons',
   component: BaseIconButton,
 };
 

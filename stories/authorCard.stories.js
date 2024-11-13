@@ -59,7 +59,7 @@ const methods = {
 };
 
 export default {
-  title: '3 Cards / Author Cards',
+  title: '1 Base / Cards /  Author Cards',
   decorators: [],
   parameters: {
     ...envidatViewportParameters,

@@ -14,7 +14,7 @@
 import WelcomeCard from '@/components/Cards/WelcomeCard.vue';
 
 export default {
-  title: '3 Cards / Welcome Card',
+  title: '1 Base / Cards /  Welcome Card',
   component: WelcomeCard,
 };
 

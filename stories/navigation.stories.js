@@ -20,7 +20,6 @@ import {
   userMenuItems,
 } from '@/store/navigationState';
 import TextBanner from '@/components/Layouts/TextBanner.vue';
-import { inject } from 'vue';
 
 
 const dominikHaas = {
@@ -34,12 +33,11 @@ const dominikHaas = {
 const appVersion = import.meta.env.VITE_VERSION;
 
 export default {
-  title: '5 Navigation / Navigation',
+  title: '5 Navigation / Menu And Toolbar',
   component: TheNavigation,
 };
 
 export const Empty = { args: {} };
-
 
 
 export const Menu = {

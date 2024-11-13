@@ -69,7 +69,7 @@ const stations = [
 ];
 
 export default {
-  title: '8 GC-Net Views / Micro Charts',
+  title: '17 GC-Net Views / Micro Charts',
   component: MicroChart,
   parameters: {
     // disable the snapshots for the MicroCharts because they pull in recent data and

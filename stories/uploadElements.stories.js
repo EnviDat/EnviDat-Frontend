@@ -18,7 +18,7 @@ import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFil
 import EditMultiDropResourceFiles from '@/modules/user/components/EditMultiDropResourceFiles.vue';
 
 export default {
-  title: '9 Editing Metadata / Upload Elements',
+  title: '3 Dataset / 2 Edit / Upload Elements',
   decorators: [],
   parameters: {
   },

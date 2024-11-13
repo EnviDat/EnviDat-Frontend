@@ -40,7 +40,7 @@ Accessed 8 November 2023.
 `;
 
 export default {
-  title: '15 Blog Page / Blog Elements',
+  title: '16 Blog Page / Blog Elements',
   component: BlogPost,
 };
 

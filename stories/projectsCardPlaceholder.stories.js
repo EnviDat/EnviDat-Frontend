@@ -14,7 +14,7 @@ import ProjectCardPlaceholder from '@/modules/projects/components/ProjectCardPla
 
 
 export default {
-  title: '3 Cards / Projects Cards',
+  title: '1 Base / Cards /  Projects Cards',
   component: ProjectCardPlaceholder,
 };
 

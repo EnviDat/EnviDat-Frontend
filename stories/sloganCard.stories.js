@@ -6,7 +6,7 @@ import holidaysWinter from '../src/assets/cards/slogan/holidays_winter.webp';
 
 
 export default {
-  title: '3 Cards / Slogan Card',
+  title: '1 Base / Cards /  Slogan Card',
   component: SloganCard ,
 };
 

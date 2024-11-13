@@ -16,7 +16,7 @@ import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.v
 
 
 export default {
-  title: '1 Base Elements / Status Label View',
+  title: '1 Base / Labels / Status Label View',
   component: BaseStatusLabelView,
 };
 

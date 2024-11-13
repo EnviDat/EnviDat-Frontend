@@ -19,7 +19,7 @@ import EditPublicationInfo from '@/modules/user/components/edit/EditPublicationI
 import {METADATA_STATE_INVISILBE} from '@/factories/metadataConsts';
 
 export default {
-  title: '9 Editing Metadata / Edit Publication Infos',
+  title: '3 Dataset / 2 Edit / Publication Infos',
   component: EditPublicationInfo,
 };
 

@@ -17,7 +17,7 @@ import TagChipAuthor from '@/components/Chips/TagChipAuthor.vue';
 import TagChipProject from '@/components/Chips/TagChipProject.vue';
 
 export default {
-  title: '10 Chips / keyword chips',
+  title: '1 Base / Chips / keyword chips',
   decorators: [],
 };
 

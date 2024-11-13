@@ -14,7 +14,7 @@ import { EDNA_MODE, SWISSFL_MODE } from '@/store/metadataMutationsConsts';
 import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
 export default {
-  title: '14 Mode / Mode View',
+  title: '5 Navigation / Mode View',
   component: ModeView,
   decorators: [],
   parameters: {},
