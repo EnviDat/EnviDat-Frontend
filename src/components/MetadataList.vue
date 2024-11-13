@@ -556,10 +556,13 @@ export default {
     },
   },
   watch: {
-    content() {
-      this.$nextTick(() => {
-        this.setGroupedContentList();
-      })
+    content: {
+      handler() {
+        this.$nextTick(() => {
+          this.setGroupedContentList();
+        })
+      },
+      immediate: true,
     },
     controlsActive: {
       handler() {

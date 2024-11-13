@@ -24,7 +24,9 @@ import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams }
 import metadata from './js/metadata';
 
 
-const smallList = [...metadata, ...metadata];
+// slice of the first item of the later added entries, because the virutal-scroller from the MetadataList
+// uses the ids of the datasets and if they are identical it won't be rendered
+const smallList = [...metadata, ...metadata.slice(1, metadata.length)];
 const longList = [...metadata, ...metadata, ...metadata, ...metadata];
 
 enhanceMetadatas(smallList);
