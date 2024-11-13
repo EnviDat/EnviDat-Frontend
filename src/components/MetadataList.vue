@@ -318,7 +318,7 @@ export default {
       if (!this.listContent) {
         return [];
       }
-      
+
       const pins = this.pinnedContent;
       return [...pins, ...this.listContent];
     },
