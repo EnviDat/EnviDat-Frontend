@@ -130,6 +130,8 @@ modify-env:
     name: 'environment variables'
     paths:
       - .env.production
+  retry:
+    max: 2
 
 install-node:
   stage: config
@@ -142,7 +144,6 @@ install-node:
           - package-lock.json
         prefix: 'package-lock'
       paths:
-        - .npm/
         - node_modules/
       # pull-push to be able to update the node_modules in the cache
       policy: pull-push
@@ -174,7 +175,7 @@ install-node:
     # stores node_modules as an artifact to be used in the next jobs
     # caching isn't always guaranteed to work
     paths:
-      - node_modules
+      - node_modules/**/*  # Include all contents, including hidden files and directories
     expire_in: 1 day
   retry:
     max: 2
