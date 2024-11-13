@@ -19,6 +19,8 @@ import {
   navigationItems,
   userMenuItems,
 } from '@/store/navigationState';
+import TextBanner from '@/components/Layouts/TextBanner.vue';
+import { inject } from 'vue';
 
 
 const dominikHaas = {
@@ -51,14 +53,100 @@ export const Menu = {
 export const MenuAndToolbar = () => ({
   components: { TheNavigation, TheNavigationToolbar },
   template: `
-    <div>
+    <!--  teleport to the storybookHead which is defined in the StoryWrapper.vue -->
+    <teleport defer to=".v-application__wrap">
       <the-navigation :navigationItems="navigationItems" />
 
       <the-navigation-toolbar :signedInUser="dominikHaas"
                               :userNavigationItems="userMenuItems" />
-    </div>
+    </teleport>
+    
+    <v-container fluid style="position: relative;">
+      <v-row style="height: 100vh;">
+        <v-col>
+          Page content stuff
+        </v-col>
+      </v-row>
+    </v-container>
   `,
+  inject: ['getStorybookAppRefs'],
+  mounted() {
+    this.$nextTick(() => {
+      this.changeMainLayout();
+    })
+  },
+  methods: {
+    changeMainLayout() {
+      const parentRefs = this.getStorybookAppRefs();
+      // console.log('navigationStory refs', parentRefs);
+      let currentStyle = parentRefs['storyWrapper--v-main'].$el.getAttribute('style');
+      currentStyle += 'position: relative; left: 60px; --v-layout-left: 60px; !important';
+      parentRefs['storyWrapper--v-main'].$el.setAttribute('style', currentStyle);
+    },
+  },
   data: () => ({
+    dominikHaas,
+    navigationItems,
+    userMenuItems,
+  }),
+});
+
+
+export const MenuToolbarAndBanners = () => ({
+  components: { TheNavigation, TheNavigationToolbar, TextBanner },
+  template: `
+    <!--  teleport to the storybookHead which is defined in the StoryWrapper.vue -->
+      <teleport defer to=".v-application__wrap">
+        <the-navigation :navigationItems="navigationItems" />
+
+        <the-navigation-toolbar :signedInUser="dominikHaas"
+                                :userNavigationItems="userMenuItems" />
+      </teleport>
+    
+      <v-container
+          fluid
+          style="position: relative"
+      >
+        <v-row style="height: 100vh;">
+          <v-col>
+            Page content stuff
+          </v-col>
+        </v-row>
+
+        <TextBanner
+            style="position: absolute; top: 0; left: 0; z-index: 1101; width: 100%; background-color: orange;"
+            title="Maintenance Message"
+            text="On Wednesday 29th March, between 9 and 12, EnviDat is undergoing the planned annual physical checkup. EnviDat can be accessed in <strong>read-only mode</strong>. Data download, upload and <strong>user data management functionalities will be disabled</strong>."
+            confirm-text="Okay"
+        />
+
+        <TextBanner
+            id="cookieBanner"
+            style="position: absolute; bottom: 0; left: 0; z-index: 1101; width: 100%; background-color: lightseagreen;"
+            text="On envidat.ch, cookies are used to enhance your experience and provide features when you're signed in. These cookies are 'technical only' and we ANONYMOUSLY track usage (e.g. page views and downloads)."
+            icon="cookie"
+            deniedText="Okay"
+        />        
+        
+      </v-container>
+  `,
+  inject: ['getStorybookAppRefs'],
+  mounted() {
+    this.$nextTick(() => {
+      this.changeMainLayout();
+    })
+  },
+  methods: {
+    changeMainLayout() {
+      const parentRefs = this.getStorybookAppRefs();
+      // console.log('navigationStory refs', parentRefs);
+      let currentStyle = parentRefs['storyWrapper--v-main'].$el.getAttribute('style');
+      currentStyle += 'position: relative; left: 60px; --v-layout-left: 60px; !important';
+      parentRefs['storyWrapper--v-main'].$el.setAttribute('style', currentStyle);
+    },
+  },
+  data: () => ({
+    storybookAppRefs: null,
     dominikHaas,
     navigationItems,
     userMenuItems,

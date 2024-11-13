@@ -273,7 +273,7 @@ export default {
       return this.$vuetify ? this.$vuetify.theme.themes.light.colors.primary : '';
     },
     editingTitleDyn() {
-      return this.titleEditing
+      return this.$store ? this.titleEditing : false;
     },
     completedPct() {
       const pct = this.completedStepsAmount / this.allStepsAmount;

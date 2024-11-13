@@ -71,7 +71,7 @@
         id="datasetList"
         fluid
         class="pa-0"
-       :style="`height: ${ useDynamicHeight ? `${metadataListHeight}px` : 'auto' };`"
+       :style="`height: ${ useDynamicHeight ? `${metadataListHeight}px` : '800px' };`"
       >
       <v-row v-if="!loading && hasContent"
              no-gutters>
@@ -315,8 +315,12 @@ export default {
       return pinnedContent;
     },    
     content() {
+      if (!this.listContent) {
+        return [];
+      }
+      
       const pins = this.pinnedContent;
-      return [...pins, ...this.listContent || []];
+      return [...pins, ...this.listContent];
     },
     hasContent() {
       return this.content?.length > 0;
@@ -339,7 +343,7 @@ export default {
 
       if (compactLayout) {
         if (this.$vuetify.display.xlAndUp) {
-          return mapActive ? 6 : 8;
+          return 6;
         }
 
         if (this.$vuetify.display.lgAndUp) {
@@ -556,10 +560,13 @@ export default {
     },
   },
   watch: {
-    content() {
-      this.$nextTick(() => {
-        this.setGroupedContentList();
-      })
+    content: {
+      handler() {
+        this.$nextTick(() => {
+          this.setGroupedContentList();
+        })
+      },
+      immediate: true,
     },
     controlsActive: {
       handler() {

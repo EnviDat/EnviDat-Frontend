@@ -130,6 +130,8 @@ modify-env:
     name: 'environment variables'
     paths:
       - .env.production
+  retry:
+    max: 2
 
 install-node:
   stage: config
@@ -142,7 +144,6 @@ install-node:
           - package-lock.json
         prefix: 'package-lock'
       paths:
-        - .npm/
         - node_modules/
       # pull-push to be able to update the node_modules in the cache
       policy: pull-push
@@ -156,6 +157,10 @@ install-node:
   script:
     - echo "the cache work if node_modules and .npm/ folders are available"
     - ls -a
+    - ls node_modules/.bin/ || echo "/.bin/ not found"
+    #- npm ci --prefer-offline --no-audit
+    #- echo "Check afterwards how the folders are"
+    #- ls node_modules/.bin/ || echo "/.bin/ not found"
     # Only run npm ci if node_modules don't come from the cache
     - |
       if [ -d "node_modules" ]; then
@@ -174,7 +179,7 @@ install-node:
     # stores node_modules as an artifact to be used in the next jobs
     # caching isn't always guaranteed to work
     paths:
-      - node_modules
+      - node_modules/**/*  # Include all contents, including hidden files and directories
     expire_in: 1 day
   retry:
     max: 2
@@ -188,6 +193,15 @@ run-tests:
   needs:
     - modify-env
     - install-node
+  before_script:
+    - |
+      if [ -d "node_modules" ]; then
+        echo "node_modules directory already exists."
+        ls node_modules/.bin/vitest || echo "/.bin/vitest not found"
+      else
+        echo "node_modules directory not found. Should have got them from the install-node artifact!"
+        ls -a
+      fi
   script:
     - npm run test
   retry:
@@ -204,6 +218,15 @@ build-storybook:
     - modify-env
     # needs the artifact: node_modules to build storybook
     - install-node
+  before_script:
+    - |
+      if [ -d "node_modules" ]; then
+        echo "node_modules directory already exists."
+        ls node_modules/.bin/storybook || echo "/.bin/storybook not found"
+      else
+        echo "node_modules directory not found. Should have got them from the install-node artifact!"
+        ls -a
+      fi
   script:
     # - npm config set cache .npm/
     # - npm cache verify || true
@@ -229,6 +252,15 @@ build-app:
     - modify-env
     # needs the artifact: node_modules to build the app
     - install-node
+  before_script:
+    - |
+      if [ -d "node_modules" ]; then
+        echo "node_modules directory already exists."
+        ls node_modules/.bin/vite || echo "/.bin/vite not found"
+      else
+        echo "node_modules directory not found. Should have got them from the install-node artifact!"
+        ls -a
+      fi
   script:
     - npm run build -- --logLevel warn
   artifacts:
