@@ -188,6 +188,14 @@ run-tests:
   needs:
     - modify-env
     - install-node
+  before_script:
+    - |
+      if [ -d "node_modules" ]; then
+        echo "node_modules directory already exists. Everything is correct."
+      else
+        echo "node_modules directory not found. Should have got them from the install-node artifact!"
+        ls -a
+      fi
   script:
     - npm run test
   retry:
@@ -204,6 +212,14 @@ build-storybook:
     - modify-env
     # needs the artifact: node_modules to build storybook
     - install-node
+  before_script:
+    - |
+      if [ -d "node_modules" ]; then
+        echo "node_modules directory already exists. Everything is correct."
+      else
+        echo "node_modules directory not found. Should have got them from the install-node artifact!"
+        ls -a
+      fi
   script:
     # - npm config set cache .npm/
     # - npm cache verify || true
@@ -229,6 +245,14 @@ build-app:
     - modify-env
     # needs the artifact: node_modules to build the app
     - install-node
+  before_script:
+    - |
+      if [ -d "node_modules" ]; then
+        echo "node_modules directory already exists. Everything is correct."
+      else
+        echo "node_modules directory not found. Should have got them from the install-node artifact!"
+        ls -a
+      fi
   script:
     - npm run build -- --logLevel warn
   artifacts:
