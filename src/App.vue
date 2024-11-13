@@ -86,6 +86,7 @@
         </v-row>
 
         <TextBanner
+          v-if="showMaintenanceBanner"
           id="maintenanceBanner"
           :style="`position: absolute; top: 0; left: 0; z-index: 1001; width: 100%; background-color: ${maintenanceBannerColor};`"
           :text="maintenanceBannerText"
