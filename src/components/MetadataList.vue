@@ -34,9 +34,15 @@
     </template>
 
     <template v-slot:filterMap>
-      <FilterMapView :content="listContent" :minMapHeight="minMapHeight" :pinnedIds="pinnedIds"
-        :topLayout="mapTopLayout" :modeData="modeData" @pointClicked="catchPointClicked"
-        @clearButtonClicked="catchClearButtonClick" />
+      <FilterMapView
+        :content="listContent"
+        :minMapHeight="minMapHeight"
+        :pinnedContent="pinnedContent"
+        :topLayout="mapTopLayout"
+        :modeData="modeData"
+        @pointClicked="catchPointClicked"
+        @clearButtonClicked="catchClearButtonClick"
+      />
 
     </template>
 
@@ -191,7 +197,10 @@ export default {
   name: 'MetadataList',
   props: {
     listContent: Array,
-    prePinnedIds: Array,
+    prePinnedIds: {
+      type: Array,
+      default: () => [],
+    },
     mapFilteringPossible: Boolean,
     placeHolderAmount: {
       type: Number,
@@ -289,11 +298,11 @@ export default {
       return false;
     },
     pinnedContent() {
-      if (!this.hasPinnedContent) {
+      if (!this.metadatasContent || Object.keys(this.metadatasContent)?.length <= 0) {
         return [];
       }
 
-      const pins = this.pinnedIds;
+      const pins = this.prePinnedIds;
       const pinnedContent = [];
 
       for (let i = 0; i < pins.length; i++) {
@@ -361,17 +370,6 @@ export default {
       }
 
       return 370;
-    },
-    pinnedIds() {
-      if (!this.showPinnedElements) {
-        return [];
-      }
-
-      if (this.hasMetadatasContent && this.hasPinnedContent) {
-        return this.prePinnedIds
-      }
-
-      return [];
     },
     isCompactLayout() {
       return this.isActiveControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE);
@@ -457,10 +455,10 @@ export default {
     catchPointClicked(id) {
       // bring to top
       // highlight entry
-      let newPins = this.pinnedIds;
+      let newPins = this.prePinnedIds;
 
-      if (this.pinnedIds.includes(id)) {
-        newPins = this.pinnedIds.filter(i => i !== id);
+      if (this.prePinnedIds.includes(id)) {
+        newPins = this.prePinnedIds.filter(i => i !== id);
       } else {
         newPins.push(id);
       }

@@ -93,7 +93,8 @@ export const CropAuthorsListMetadataHeader = {
     clickedEdit: { action: 'clickedEdit' },
   },
 };
-export const pageViewsMetadataHeader = {
+
+export const PageViewsMetadataHeader = {
   args: {
     ...longAuthorsListHeader,
     pageViews: [{ nb_events: 10 }],

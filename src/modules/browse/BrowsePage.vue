@@ -452,7 +452,7 @@ export default {
       return this.filteredDatasets?.length;
     },
     allDatasets() {
-      if (this.modeContent) {
+      if (this.mode) {
         return this.modeContent;
       }
 

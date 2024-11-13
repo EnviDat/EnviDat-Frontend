@@ -26,7 +26,8 @@
       <v-row no-gutters
         align="center">
         <v-col v-if="dataLicenseTitle"
-               class="pr-2">
+               cols="6"
+               class="pr-md-10">
           <BaseIconLabelView icon-tooltip="Data License"
                              :icon="mdiShieldSearch"
                              icon-color="grey"
@@ -35,13 +36,15 @@
                              />
         </v-col>
 
-        <v-col>
+        <v-col class="">
           <v-row no-gutters
             justify="end"
             v-for="(dateObj, index) in dates"
             :key="index">
 
-            <v-col>{{ dateObj[DATE_PROPERTY_DATE_TYPE] }}</v-col>
+            <v-col cols="12"
+                   sm="auto"
+                   class="pr-0 pr-sm-5">{{ dateObj[DATE_PROPERTY_DATE_TYPE] }}</v-col>
 
             <!--
             <v-col class="flex-grow-0 px-2">Start:</v-col>
