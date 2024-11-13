@@ -71,7 +71,7 @@
         id="datasetList"
         fluid
         class="pa-0"
-       :style="`height: ${ useDynamicHeight ? `${metadataListHeight}px` : '800px' };`"
+       :style="`${ useDynamicHeight ? `height: ${metadataListHeight}px` : 'max-height: 750px;' };`"
       >
       <v-row v-if="!loading && hasContent"
              no-gutters>
