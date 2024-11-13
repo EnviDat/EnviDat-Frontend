@@ -66,7 +66,7 @@
       @itemClick="catchItemClicked"
     />
 
-    <v-main class="pt-4 pt-md-8">
+    <v-main class="custom-v-main pt-4 pt-md-8">
       <v-container
         class="mainPageContainer pa-2 pa-sm-3"
         fluid
@@ -851,4 +851,16 @@ export default {
 
 <style lang="scss">
 @import url(./sass/globalStyles.scss);
+
+.custom-v-main {
+  position: relative;
+  left: 0px;
+}
+
+@media (min-width: 960px) and (max-width: 1279px) {
+  .custom-v-main {
+    left: 60px;
+  }
+}
+
 </style>
