@@ -339,7 +339,7 @@ export default {
 
       if (compactLayout) {
         if (this.$vuetify.display.xlAndUp) {
-          return mapActive ? 6 : 8;
+          return 6;
         }
 
         if (this.$vuetify.display.lgAndUp) {
