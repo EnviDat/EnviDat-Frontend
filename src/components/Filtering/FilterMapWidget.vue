@@ -15,8 +15,9 @@
       <base-icon-button
         :icon="mdiClose"
         icon-color="red"
-        :color="topLayout ? 'transparent' : 'primary'"
-        :outlined="!topLayout && pinnedIds.length > 0"
+        color="transparent"
+        :outlined="pinnedIds.length > 0"
+        outline-color="highlight"
         :disabled="pinnedIds.length <= 0"
         :tooltip-text="clearButtonTooltipText"
         @clicked="catchClearClicked()"
