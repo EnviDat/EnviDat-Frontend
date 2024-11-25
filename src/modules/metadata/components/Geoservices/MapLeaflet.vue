@@ -37,7 +37,10 @@ import {
   MAP_ZOOM_OUT,
   EDITMETADATA_DATA_GEO_MAP_ERROR,
 } from '@/factories/eventBus';
+
 import { defaultSwissLocation, defaultWorldLocation, geomanGeomsToGeoJSON } from '@/factories/geoFactory';
+import { getMultiPointLayer, getPointLayer, getPolygonLayer } from '@/factories/leafleftFunctions';
+import { LOCATION_TYPE_MULTIPOINT, LOCATION_TYPE_POINT, LOCATION_TYPE_POLYGON } from '@/factories/metadataConsts';
 
 /* eslint-disable vue/no-unused-components */
 
@@ -156,21 +159,47 @@ export default {
 
       const isGcnet = this.isGcnet;
 
+      const vueInstance = this;
+
       this.siteLayer = geoJSON(geoJsonArray, {
         pointToLayer(feature, latlng) {
           if (isGcnet) {
-            if (feature.properties.active === false) {
-              return createMarker(latlng, styleObj.gcnetInactiveStyle);
+            let gcLayer;
+
+            if (feature.properties.active === null || feature.properties.active === undefined) {
+              gcLayer = createMarker(latlng, styleObj.gcnetMissingStyle);
+            } else if (feature.properties.active === true) {
+                gcLayer = createMarker(latlng, styleObj.gcnetStyle);
+            } else if (feature.properties.active === false) {
+              gcLayer = createMarker(latlng, styleObj.gcnetInactiveStyle);
             }
 
-            if (feature.properties.active === null) {
-              return createMarker(latlng, styleObj.gcnetMissingStyle);
-            }
+            gcLayer.on({
+              click: () => {
+                vueInstance.catchGcnetStationClick(feature.properties.alias);
+              },
+            });
 
-            return createMarker(latlng, styleObj.gcnetStyle);
+            return gcLayer;
           }
 
-          return createMarker(latlng, styleObj.customPointStyle);
+          const title = feature.properties?.name || undefined;
+          const layerType = feature.geometry?.type;
+
+          if (layerType === LOCATION_TYPE_POINT) {
+            return getPointLayer(latlng, '1', title, false, undefined);
+          }
+
+          if(layerType === LOCATION_TYPE_MULTIPOINT) {
+            return getMultiPointLayer(latlng, '2', title, false, undefined);
+          }
+
+          if(layerType === LOCATION_TYPE_POLYGON) {
+            return getPolygonLayer(latlng, '2', title, false, undefined);
+          }
+
+          return getPointLayer(latlng, '1', title, false, undefined);
+          // return createMarker(latlng, styleObj.customPointStyle);
         },
         style: styleObj.customPolygonStyle,
       });
@@ -191,9 +220,6 @@ export default {
           );
 
           // Open popup data modal on click
-          layer.on('click', () => {
-            this.catchGcnetStationClick(layer.feature.properties.alias);
-          });
         });
       }
 
