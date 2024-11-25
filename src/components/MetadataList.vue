@@ -165,7 +165,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import { defineAsyncComponent, shallowRef } from 'vue';
+import { defineAsyncComponent, markRaw, shallowRef, toRaw } from 'vue';
 import { RecycleScroller } from 'vue-virtual-scroller';
 import { BROWSE_PATH } from '@/router/routeConsts';
 
@@ -307,9 +307,9 @@ export default {
 
       for (let i = 0; i < pins.length; i++) {
         const id = pins[i];
-        const dataset = shallowRef(this.metadatasContent[id]);
-        dataset.value.isPinned = true;
-        pinnedContent.push(dataset.value);
+        const dataset = toRaw(this.metadatasContent[id]);
+        dataset.isPinned = true;
+        pinnedContent.push(dataset);
       }
 
       return pinnedContent;
@@ -320,7 +320,13 @@ export default {
       }
 
       const pins = this.pinnedContent;
-      return [...pins, ...this.listContent];
+
+      if (pins.length > 0) {
+        const content = this.listContent.filter((dataset) => !this.prePinnedIds.includes(dataset.id));
+        return [...pins, ...content];
+      }
+
+      return this.listContent;
     },
     hasContent() {
       return this.content?.length > 0;

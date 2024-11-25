@@ -87,7 +87,7 @@ import {
   getPolygonLayer,
 } from '@/factories/leafleftFunctions';
 
-import { createLocation } from '@/factories/geoFactory';
+import { createLocation, creationGeometry } from '@/factories/geoFactory';
 
 
 export default {
@@ -325,12 +325,25 @@ export default {
         );
       } else if (location.isMultiPolygon) {
         layer = getMultiPolygonLayer(
-              location.pointArray,
-              dataset.id,
-              dataset.title,
-              selected,
-              this.catchPointClick,
-          );
+          location.pointArray,
+          dataset.id,
+          dataset.title,
+          selected,
+          this.catchPointClick,
+        );
+      } else if (location.isGeomCollection) {
+        const flatLayers = [];
+
+        location.geomCollection.geometries.forEach(item => {
+          const geo = creationGeometry(item, location)
+          const sublayer = this.createLeafletLayer(dataset, geo, selected);
+
+          if (sublayer) {
+            flatLayers.push(sublayer);
+          }
+        });
+
+        return flatLayers.length > 1 ? flatLayers : flatLayers[0];
       }
       
       return layer;
@@ -446,7 +459,13 @@ export default {
 
       for (let i = 0; i < toClear.length; i++) {
         const layer = toClear[i];
-        layer.remove();
+        if (layer && layer instanceof Array) {
+          layer.forEach((l) => {
+            l.remove();
+          });
+        } else {
+          layer.remove();
+        }
       }
     },
     showLayersOnCluster(elements, show, checkBounds) {
@@ -523,6 +542,9 @@ export default {
   watch: {
     content() {
       // fills this.pinLayerGroup, this.multiPinLayerGroup, this.polygonLayerGroup
+      this.clearLayersFromMap();
+      this.clearFromClusterLayer();
+
       this.createMapElements(this.content);
 
       this.updateMap();
