@@ -70,7 +70,7 @@
 
         <v-row v-if="!showFullDescription" no-gutters>
           <v-col class="resourceInfo">
-            <base-icon-label-view
+            <BaseIconLabelView
               v-if="isProtected"
               text="This resource is private"
               :icon="mdiLock"
@@ -78,7 +78,7 @@
               :dark="!dark"
               class="mb-1" />
 
-            <base-icon-label-view
+            <BaseIconLabelView
               v-if="doi"
               :text="doi"
               :icon="mdiFingerprint"
@@ -87,7 +87,7 @@
               :dark="!dark"
               class="mb-1" />
 
-            <base-icon-label-view
+            <BaseIconLabelView
               v-if="format"
               :text="formatedBytes ? `${format} - ${formatedBytes}` : format"
               :icon="extensionIcon"
@@ -98,7 +98,7 @@
             />
 
 
-            <base-icon-label-view
+            <BaseIconLabelView
               v-if="created"
               :text="readableCreated"
               :icon="mdiTimerPlusOutline"
@@ -107,7 +107,7 @@
               :dark="!dark"
               class="mb-1" />
 
-            <base-icon-label-view
+            <BaseIconLabelView
               v-if="lastModified"
               :text="readableLastModified"
               :icon="mdiUpdate"

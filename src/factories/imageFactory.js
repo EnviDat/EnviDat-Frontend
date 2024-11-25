@@ -1,6 +1,6 @@
 /* eslint-disable no-use-before-define */
 import {checkWebpSupport} from '@/factories/enhancementsFactory';
-import {mdiLayers, mdiMapMarker, mdiMapMarkerMultiple} from '@mdi/js';
+import { mdiFile, mdiLayers, mdiMapMarker, mdiMapMarkerMultiple } from '@mdi/js';
 import {checkIsFileAudio, checkIsFileVideo, getFileExtension} from './fileFactory';
 import {LOCATION_TYPE_MULTIPOINT, LOCATION_TYPE_POINT, LOCATION_TYPE_POLYGON} from './metadataConsts';
 
@@ -91,7 +91,8 @@ export const getFileIcon = (fileExtension) => {
   }
 
   const fileExt = ext ? `file${ext}` : 'file';
-  return getIcon(fileExt);
+  const fileExtIcon = getIcon(fileExt);
+  return fileExtIcon || mdiFile;
 };
 
 export const getGeoJSONIcon = (type) => {
