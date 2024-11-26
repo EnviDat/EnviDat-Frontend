@@ -839,7 +839,7 @@ export default {
     NavToolbarZIndex: 1150,
     NavigationZIndex: 1100,
     NotificationZIndex: 1500,
-    showMaintenanceBanner: true,
+    showMaintenanceBanner: false,
     editMaintenanceBanner: true,
     currentParticles: null,
     navigationItems,
