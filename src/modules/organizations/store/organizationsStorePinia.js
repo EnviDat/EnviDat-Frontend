@@ -50,32 +50,44 @@ export const useOrganizationsStore = defineStore({
       }
     },
 
-    async getAllOrgIds() {
+    async getAllOrganizationIds() {
       this.organizationIds = [];
       try {
         this.organizationIds = await this.fetchOrganizations(GET_ORGANIZATIONS_URL, { limit: 1000 });
       } catch (error) {
         this.error = error;
       }
+
+      return this.organizationIds;
     },
 
-    async getAllOrg(ids) {
+    async getAllOrganizations(ids) {
       this.organizations = [];
+
       try {
-        const requests = this.getOrganizationRequestArray(ids, { include_datasets: true });
+        // set include_datasets to false, because backend calls will take forever to load
+        const requests = this.getOrganizationRequestArray(ids, { include_datasets: false });
         const responses = await Promise.all(requests);
         this.organizations = responses.map(response => response.data.result);
       } catch (error) {
         this.error = error;
       }
+
+      return this.organizations;
     },
 
-    async getOrg() {
-      await this.getAllOrgIds();
-      if (this.organizationIds.length > 0) {
-        await this.getAllOrg(this.organizationIds);
+    async loadAllOrganizations() {
+      let organizations;
+
+      const ids = await this.getAllOrganizationIds();
+
+      if (ids.length > 0) {
+        organizations = await this.getAllOrganizations(ids);
       }
+
       this.loading = !this.error;
+
+      return organizations;
     },
 
     async UserGetOrgIds(userId) {

@@ -32,12 +32,10 @@ import { projectsRoutes } from '@/modules/projects/routes';
 import { serviceRoutes } from '@/modules/services/routes';
 import { integrationRoutes } from '@/modules/integration/routes';
 import { aboutRoutes } from '@/modules/about/routes';
-
 import { trackEvent } from '@/utils/matomoTracking';
-
 import { userRoutes } from '@/modules/user/routes';
-
 import { blogRoutes } from '@/modules/blog/routes';
+import { organizationsRoutes } from '@/modules/organizations/routes';
 
 const gcmdPage = () => import('@/components/Pages/GCMDPage.vue');
 const reportPage = () => import('@/components/Pages/ReportPage.vue');
@@ -71,6 +69,7 @@ const router = createRouter({
     ...browseRoutes,
     ...metadataRoutes,
     ...projectsRoutes,
+    ...organizationsRoutes,
     ...aboutRoutes,
     ...userRoutes,
     ...serviceRoutes,
