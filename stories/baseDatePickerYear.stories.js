@@ -10,7 +10,7 @@ import BaseDatePickerYear from '@/components/BaseElements/BaseDatePickerYear.vue
 import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
 export default {
-  title: '1 Base Elements / Date picker Year',
+  title: '1 Base / Pickers / Date picker Year',
   component: BaseDatePickerYear,
 };
 

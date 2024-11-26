@@ -81,13 +81,13 @@ import FilterMapWidget from '@/components/Filtering/FilterMapWidget.vue';
 
 import {EDNA_MODE} from '@/store/metadataMutationsConsts';
 import {
-  getMultiPoint,
-  getMultiPolygon,
-  getPoint,
-  getPolygon,
+  getMultiPointLayer,
+  getMultiPolygonLayer,
+  getPointLayer,
+  getPolygonLayer,
 } from '@/factories/leafleftFunctions';
 
-import { createLocation } from '@/factories/geoFactory';
+import { createLocation, creationGeometry } from '@/factories/geoFactory';
 
 
 export default {
@@ -292,12 +292,11 @@ export default {
 
       control.layers(baseMaps).addTo(map);
     },
-    createLeafletLayer(dataset, selected) {
+    createLeafletLayer(dataset, location, selected) {
       let layer;
-      const location = dataset.location;
 
       if (location.isPoint) {
-        layer = getPoint(
+        layer = getPointLayer(
             location.pointArray,
             dataset.id,
             dataset.title,
@@ -307,7 +306,7 @@ export default {
             dataset,
         );
       } else if (location.isMultiPoint) {
-        layer = getMultiPoint(
+        layer = getMultiPointLayer(
             location.pointArray,
             dataset.id,
             dataset.title,
@@ -317,7 +316,7 @@ export default {
             dataset,
         );
       } else if (location.isPolygon) {
-        layer = getPolygon(
+        layer = getPolygonLayer(
             location.pointArray,
             dataset.id,
             dataset.title,
@@ -325,20 +324,33 @@ export default {
             this.catchPointClick,
         );
       } else if (location.isMultiPolygon) {
-        layer = getMultiPolygon(
-              location.pointArray,
-              dataset.id,
-              dataset.title,
-              selected,
-              this.catchPointClick,
-          );
+        layer = getMultiPolygonLayer(
+          location.pointArray,
+          dataset.id,
+          dataset.title,
+          selected,
+          this.catchPointClick,
+        );
+      } else if (location.isGeomCollection) {
+        const flatLayers = [];
+
+        location.geomCollection.geometries.forEach(item => {
+          const geo = creationGeometry(item, location)
+          const sublayer = this.createLeafletLayer(dataset, geo, selected);
+
+          if (sublayer) {
+            flatLayers.push(sublayer);
+          }
+        });
+
+        return flatLayers.length > 1 ? flatLayers : flatLayers[0];
       }
       
       return layer;
     },
     createPoints(dataset, location, selected) {
 
-      const layer = this.createLeafletLayer(dataset, selected);
+      const layer = this.createLeafletLayer(dataset, location, selected);
 
       if (layer) {
         if (location.isPoint) {
@@ -447,7 +459,15 @@ export default {
 
       for (let i = 0; i < toClear.length; i++) {
         const layer = toClear[i];
-        layer.remove();
+        if (layer) {
+          if (layer instanceof Array) {
+            layer.forEach((l) => {
+              l.remove();
+            });
+          } else {
+            layer.remove();
+          }
+        }
       }
     },
     showLayersOnCluster(elements, show, checkBounds) {
@@ -513,7 +533,7 @@ export default {
           this.showLayersOnCluster(layer, false);
           this.map.removeLayer(layer);
 
-          layer = this.createLeafletLayer(dataset, selected);
+          layer = this.createLeafletLayer(dataset, dataset.location, selected);
 
           this.showLayersOnCluster(layer, true);
           map.set(dataset.id, layer);
@@ -524,6 +544,9 @@ export default {
   watch: {
     content() {
       // fills this.pinLayerGroup, this.multiPinLayerGroup, this.polygonLayerGroup
+      this.clearLayersFromMap();
+      this.clearFromClusterLayer();
+
       this.createMapElements(this.content);
 
       this.updateMap();
@@ -581,10 +604,6 @@ export default {
   margin-left: -15px !important;
 }
 
-.leaflet-popup-content-wrapper .leaflet-popup-content {
-  font-family: 'Raleway', sans-serif !important;
-}
-
 .grid-rows {
   display: grid;
   grid-template-rows: 1fr 5fr;
@@ -595,8 +614,5 @@ export default {
   grid-template-columns: 4fr 1fr;
 }
 
-.leaflet-marker-pane .leaflet-div-icon {
-  background-color: transparent !important;
-  border: none !important;
-}
+
 </style>

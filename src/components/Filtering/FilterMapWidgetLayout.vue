@@ -13,6 +13,7 @@
     >
       <v-row
         v-if="topLayout"
+        id="topLayout"
         class="fill-height my-0"
         align="center"
         no-gutters
@@ -36,6 +37,7 @@
 
       <div
         v-if="!topLayout"
+        id="sideLyout"
         class="my-0"
         :class="mdScreen ? 'text-caption' : 'body-2'"
       >
@@ -69,6 +71,7 @@
 
     <v-container
       v-if="!topLayout"
+      id="FilterMapWidgetLayout_sideLayout"
       :class="{
         'pa-4 pt-2': mdScreen,
         'py-0 px-4': !mdScreen,

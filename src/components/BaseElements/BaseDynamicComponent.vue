@@ -2,7 +2,7 @@
   <Suspense>
 
     <template #default>
-      <component :is="component" v-bind="component.props || {}" />
+      <component :is="component" v-bind="componentProps || component.props || {}" />
     </template>
 
     <template #fallback>

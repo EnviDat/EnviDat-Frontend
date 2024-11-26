@@ -12,7 +12,7 @@ import { METADATA_STATE_DRAFT, METADATA_STATE_INVISILBE, METADATA_STATE_VISILBE 
 
 
 export default {
-    title: '10 Chips / MetadataStateChip',
+    title: '1 Base / Chips / MetadataStateChip',
     component: MetadataStateChip,
     decorators: [],
     parameters: {},

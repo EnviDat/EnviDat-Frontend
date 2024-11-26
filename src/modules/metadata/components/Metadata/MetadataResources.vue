@@ -98,16 +98,32 @@
                 :sm="availableResources.length > 1 ? 6 : 12"
                 class="pa-2" >
 
-          <ResourceCard v-bind="res"
-                          :key="res.id"
-                          :twoColumnLayout="twoColumnLayout"
-                          :downloadActive="resourcesConfig?.downloadActive"
-                          :showGenericOpenButton="!!res.openEvent"
-                          :genericOpenButtonBottom="true"
-                          :openButtonTooltip="res.openButtonTooltip"
-                          :openButtonIcon="res.openButtonIcon"
-                          cardColor="primary"
-                          @openButtonClicked="catchOpenClick(res.openEvent, res.openProperty)" />
+          <ResourceCard
+            :key="res.id"
+            :id="res.id"
+            :description="res.description"
+            :url="res.url"
+            :restrictedUrl="res.restrictedUrl"
+            :created="res.created"
+            :lastModified="res.lastModified"
+            :size="res.size"
+            :format="res.format"
+            :twoColumnLayout="res.twoColumnLayout"
+            :height="res.height"
+            :isProtected="res.isProtected"
+            :metadataContact="res.metadataContact"
+            :deprecated="res.deprecated"
+            :numberOfDownload="res.numberOfDownload"
+            :downloadActive="resourcesConfig?.downloadActive"
+            :showGenericOpenButton="!!res.openEvent"
+            :genericOpenButtonBottom="true"
+            :openButtonTooltip="res.openButtonTooltip"
+            :openButtonIcon="res.openButtonIcon"
+            cardColor="primary"
+            :isSelected="res.isSelected"
+            :loading="res.loading"
+            @openButtonClicked="catchOpenClick(res.openEvent, res.openProperty)"
+          />
         </v-col>
       </v-row>
 

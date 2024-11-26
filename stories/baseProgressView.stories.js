@@ -17,7 +17,7 @@ import {
 
 
 export default {
-  title: '1 Base Elements / Progress View',
+  title: '1 Base / Labels / Progress View',
   decorators: [],
   parameters: {
     ...envidatViewportParameters,

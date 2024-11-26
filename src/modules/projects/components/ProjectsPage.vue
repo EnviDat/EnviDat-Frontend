@@ -102,7 +102,7 @@ export default {
    * because of the scrolling is set from the browsePage or metaDetailPage
    */
   beforeMount() {
-    if (!this.loadingConfig && !this.loading) {
+    if (!this.loadingConfig && !this.loading && this.projects?.length <= 0) {
       this.loadProjects();
     }
   },
@@ -111,7 +111,7 @@ export default {
   },
   watch: {
     config() {
-      if (!this.loadingConfig && !this.loading) {
+      if (!this.loadingConfig && !this.loading && this.projects?.length <= 0) {
         this.loadProjects();
       }
     },

@@ -40,7 +40,7 @@ import {
   METADATA_URL_PROPERTY,
 } from '@/factories/metadataConsts';
 
-const urlRegex = /^(https?:\/\/)?(www\.)?[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/[\w-]*)*(\/[\w-]+\.(html|htm))?)?$/gm;
+// const urlRegex = /^(https?:\/\/)?(www\.)?[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/[\w-]*)*(\/[\w-]+\.(html|htm))?)?$/gm;
 
 const convertEmptyStringToNull = (value, originalValue) =>
   originalValue === '' ? null : value;

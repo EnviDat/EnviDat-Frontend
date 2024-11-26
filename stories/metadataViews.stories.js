@@ -186,7 +186,7 @@ const genericProps5 = {
 };
 
 export default {
-  title: '6 Dataset Detail Views / Metadata Detail Page View',
+  title: '3 Dataset / 1 Views / Metadata Detail Page View',
   decorators: [],
   parameters: {},
 };

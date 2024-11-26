@@ -24,7 +24,7 @@ import { mobileViewportParams, tabletViewportParams } from './js/envidatViewport
 
 
  export default {
-   title: '9 Editing Metadata / Edit Publication Status',
+   title: '3 Dataset / 2 Edit / Publication Status',
    // component: don't specify here,
    // because the template needs to be a neutral component for the interaction
 };

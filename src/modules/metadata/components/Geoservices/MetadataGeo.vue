@@ -49,7 +49,9 @@
         <v-col class="flex-grow-0 pl-2">
           <BaseIconButton
             v-if="showFullscreenButton"
-            :icon="mdiArrowCollapseAll"
+            :icon="mdiArrowExpandAll"
+            outlined
+            outline-color="secondary"
             icon-color="black"
             @clicked="triggerFullscreen"
           />
@@ -100,7 +102,7 @@ import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.v
 import { eventBus, INJECT_MAP_FULLSCREEN } from '@/factories/eventBus';
 import { METADATA_LOCATION_TITLE } from '@/factories/metadataConsts';
 import MapRoot from '@/modules/metadata/components/Geoservices/MapRoot.vue';
-import { mdiArrowCollapseAll, mdiContentSave, mdiUndo } from '@mdi/js';
+import { mdiArrowExpandAll, mdiContentSave, mdiUndo } from '@mdi/js';
 
 export default {
   name: 'MetadataGeo',
@@ -182,7 +184,7 @@ export default {
     },
   },
   data: () => ({
-    mdiArrowCollapseAll,
+    mdiArrowExpandAll,
     mdiContentSave,
     mdiUndo,
     ready: false,

@@ -30,7 +30,7 @@ const protResNotSameOgaButUser = createResource(dSet.resources[1], dSet.name, 'r
   [dSet.organization.id]);
 
 export default {
-  title: '3 Cards / Resource Cards / 2 From Datasets',
+  title: '1 Base / Cards /  Resource Cards / 2 From Datasets',
   component: ResourceCard,
   decorators: [],
   parameters: {

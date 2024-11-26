@@ -44,7 +44,7 @@ const geoServiceConfig = {
 };
 
 export default {
-  title: '13 Layouts / Generic Fullscreen Modal',
+  title: '1 Base / Layouts / Generic Fullscreen Modal',
   // component: TextCardListLayout,
   decorators: [],
   parameters: {

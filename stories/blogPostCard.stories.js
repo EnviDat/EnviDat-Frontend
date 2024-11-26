@@ -14,7 +14,7 @@ import {getImage} from '@/factories/imageFactory';
 
 
 export default {
-  title: '15 Blog Page / Blog Elements',
+  title: '16 Blog Page / Blog Elements',
   component: BlogPostCard,
 };
 

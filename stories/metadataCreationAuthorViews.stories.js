@@ -64,7 +64,7 @@ const preSelectedAuthors3 = authorsStrings.filter(value => value.includes('B'));
 
 
 export default {
-  title: '9 Editing Metadata / Author Infos',
+  title: '3 Dataset / 2 Edit / Author Infos',
   decorators: [],
   parameters: {},
 };

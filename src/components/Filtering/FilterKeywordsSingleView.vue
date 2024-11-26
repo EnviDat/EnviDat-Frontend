@@ -20,7 +20,6 @@
                      :key="n"
               >
                 <TagChipPlaceholder
-
                   class="envidatChip"
                 />
               </v-col>

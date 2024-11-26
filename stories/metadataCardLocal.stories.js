@@ -21,7 +21,7 @@ import metadataCards from './js/metadata';
 enhanceMetadatasTitleImage(metadataCards);
 
 export default {
-  title: '3 Cards / Metadata Cards',
+  title: '1 Base / Cards /  Metadata Cards',
   component: MetadataCardLocal,
 };
 

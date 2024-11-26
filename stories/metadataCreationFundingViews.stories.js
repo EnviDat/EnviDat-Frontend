@@ -18,7 +18,7 @@ import {
 import EditFunding from '@/modules/user/components/EditFunding.vue';
 
 export default {
-  title: '9 Editing Metadata / Funding Infos',
+  title: '3 Dataset / 2 Edit / Funding Infos',
   component: EditFunding,
 };
 

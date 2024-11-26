@@ -24,7 +24,7 @@ import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams }
 
 
 export default {
-  title: '4 Filtering / filtering control panels',
+  title: '2 Search / filtering control panels',
   component: ControlPanel,
 };
 

@@ -21,7 +21,7 @@ import integrationlist from './testdata/integrationlist.json';
 
 
 export default {
-  title: '13 Layouts / Page layouts',
+  title: '1 Base / Layouts / Page layouts',
   // component: TextCardListLayout,
   decorators: [],
   parameters: {},

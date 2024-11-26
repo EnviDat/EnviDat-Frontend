@@ -8,7 +8,7 @@
           :date-property="startDateProperty"
           :date-label="startDateLabel || labels.startDate"
           :max-date="endDate"
-          :clearable="clearableStartDate"
+          :isClearable="clearableStartDate"
           :readOnlyFields="readOnlyFields"
           :readOnlyExplanation="readOnlyExplanation"
           @dateChange="changeDate"
@@ -20,13 +20,12 @@
     <v-col :cols="defaultCols"
            :md="mdCols"
            :class="paddingSecondCol">
-
       <BaseDatePicker
           :date="endDate"
           :date-property="endDateProperty"
           :date-label="endDateLabel || labels.endDate"
           :min-date="startDate"
-          :clearable="clearableEndDate"
+          :isClearable="clearableEndDate"
           :readOnlyFields="readOnlyFields"
           :readOnlyExplanation="readOnlyExplanation"
           @dateChange="changeDate"

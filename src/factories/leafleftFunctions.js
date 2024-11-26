@@ -64,7 +64,7 @@ export function getPointIcon(selected, multiMarker = false, modeData = undefined
   return divIcon(iconOptions);
 }
 
-export function getPoint(coords, id, title, selected, onClick, multiMarker = false, modeData = undefined, dataset = undefined) {
+export function getPointLayer(coords, id, title, selected, onClick, multiMarker = false, modeData = undefined, dataset = undefined) {
   const icon = getPointIcon(selected, multiMarker, modeData, dataset);
 
   let opacity = null;
@@ -85,9 +85,14 @@ export function getPoint(coords, id, title, selected, onClick, multiMarker = fal
   point.title = title;
   point.on({
     click: (e) => {
-      onClick(e.target.id);
+      if(onClick) {
+        onClick(e.target.id);
+      }
     },
     mouseover: (e) => {
+      if (!e.target?.title) {
+        return;
+      }
       e.target.bindPopup(`<p>${e.target.title}</p>`)
         .openPopup();
     },
@@ -99,7 +104,7 @@ export function getPoint(coords, id, title, selected, onClick, multiMarker = fal
   return point;
 }
 
-export function getPolygon(coords, id, title, selected, onClick) {
+export function getPolygonLayer(coords, id, title, selected, onClick) {
   // create a polygon from an array of LatLng points
   // var latlngs = [[37, -109.05],[41, -109.03],[41, -102.05],[37, -102.04]];
   const polygon = createPolygon(coords, {
@@ -117,24 +122,24 @@ export function getPolygon(coords, id, title, selected, onClick) {
   return polygon;
 }
 
-export function getMultiPoint(coords, id, title, selected, onClick, modeData, dataset) {
+export function getMultiPointLayer(coords, id, title, selected, onClick, modeData, dataset) {
   const points = [];
 
   for (let i = 0; i < coords.length; i++) {
     const pointCoord = coords[i];
-    const point = getPoint(pointCoord, id, title, selected, onClick, true, modeData, dataset);
+    const point = getPointLayer(pointCoord, id, title, selected, onClick, true, modeData, dataset);
     points.push(point);
   }
 
   return points;
 }
 
-export function getMultiPolygon(coords, id, title, selected, onClick) {
+export function getMultiPolygonLayer(coords, id, title, selected, onClick) {
   const polys = [];
 
   for (let i = 0; i < coords.length; i++) {
     const pointCoord = coords[i];
-    const poly = getPolygon(pointCoord, id, title, selected, onClick);
+    const poly = getPolygonLayer(pointCoord, id, title, selected, onClick);
     polys.push(poly);
   }
 

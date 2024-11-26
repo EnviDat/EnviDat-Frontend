@@ -23,7 +23,7 @@ import MetadataPublications from '@/modules/metadata/components/Metadata/Metadat
 
 
 export default {
-  title: '9 Editing Metadata / Main Infos',
+  title: '3 Dataset / 2 Edit / GenericTextAreas',
   decorators: [],
   parameters: {},
 };

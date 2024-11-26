@@ -394,7 +394,7 @@ export default {
       for (let i = 0; i < keys.length; i++) {
         const key = keys[i];
 
-        if (this.tags.findIndex(t => t.name === key.toUpperCase()) >= 0) {
+        if (this.tags?.findIndex(t => t.name === key.toUpperCase()) >= 0) {
           return this.modeData.icons[key];
         }
       }

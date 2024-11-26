@@ -66,9 +66,9 @@
       @itemClick="catchItemClicked"
     />
 
-    <v-main class="pt-4 pt-md-8">
+    <v-main class="custom-v-main pt-4 pt-md-8">
       <v-container
-        class="pa-2 pa-sm-3"
+        class="mainPageContainer pa-2 pa-sm-3"
         fluid
         @scroll="updateScroll()"
         id="appContainer"
@@ -84,29 +84,28 @@
             </router-view>
           </v-col>
         </v-row>
+
+        <TextBanner
+          v-if="showMaintenanceBanner"
+          id="maintenanceBanner"
+          :style="`position: absolute; top: 0; left: 0; z-index: 1001; width: 100%; background-color: ${maintenanceBannerColor};`"
+          :text="maintenanceBannerText"
+          confirmText="Okay"
+          :confirmClick="catchMaintenanceConfirmClick"
+        />
+
+        <TextBanner
+            v-if="showCookieInfo"
+            id="cookieBanner"
+            :style="`position: absolute; bottom: 0; left: 0; z-index: 1101; width: 100%; background-color: ${$vuetify.theme.themes.light.colors.highlight};`"
+            :text="cookieInfoText"
+            icon="cookie"
+            deniedText="Okay"
+            :confirmClick="catchCookieInfoOk"
+            :deniedClick="deniedTracking"
+        />
+
       </v-container>
-
-      <TextBanner
-        v-if="maintenanceBannerVisible"
-        id="maintenanceBanner"
-        style="position: absolute; top: 0; z-index: 1001; width: 100%; "
-        :text="maintenanceBannerText"
-        confirmText="Okay"
-        :bannerColor="maintenanceBannerColor"
-        :confirmClick="catchMaintenanceConfirmClick"
-      />
-
-      <TextBanner
-        v-if="showCookieInfo"
-        id="cookieBanner"
-        style="position: absolute; bottom: 0; left: 0; z-index: 1101; width: 100%;"
-        :text="cookieInfoText"
-        icon="cookie"
-        deniedText="Okay"
-        bannerColor="highlight"
-        :confirmClick="catchCookieInfoOk"
-        :deniedClick="deniedTracking"
-      />
 
       <v-dialog
         v-model="showReloadDialog"
@@ -428,10 +427,6 @@ export default {
       });
     },
     catchMaintenanceConfirmClick() {
-      // handle consent with Matomo
-      localStorage.setItem('matomoConsentGiven', 'true');
-      this.$matomo.rememberConsentGiven();
-
       if (this.userIsOnEditPage) {
         this.editMaintenanceBanner = false;
         return;
@@ -693,12 +688,7 @@ export default {
       return this.maintenanceConfig.message;
     },
     maintenanceBannerColor() {
-      if (this.userIsOnEditPage) {
-        return 'error';
-      }
-
-      // this will use the default defined by the TextBanner component
-      return undefined;
+      return this.$vuetify.theme.themes.light.colors.warning;
     },
     signinDisabled() {
       return this.maintenanceConfig?.signinDisabled || false;
@@ -742,7 +732,7 @@ export default {
     },
     pageStyle() {
       const heightStyle = this.showToolbar
-        ? 'height: calc(100vh - 36px);'
+        ? 'height: calc(100vh - 32px);'
         : 'height: 100vh;';
       return this.mainPageIsScrollable
         ? ''
@@ -861,4 +851,16 @@ export default {
 
 <style lang="scss">
 @import url(./sass/globalStyles.scss);
+
+.custom-v-main {
+  position: relative;
+  left: 0px;
+}
+
+@media (min-width: 960px) and (max-width: 1279px) {
+  .custom-v-main {
+    left: 60px;
+  }
+}
+
 </style>

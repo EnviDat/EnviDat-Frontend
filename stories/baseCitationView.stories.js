@@ -18,7 +18,7 @@ import relatedPublicCitationTesting from './js/relatedPublicCitation';
 
 
 export default {
-  title: '1 Base Elements / Citation View',
+  title: '1 Base / Citation View',
   component: BaseCitationView,
 };
 

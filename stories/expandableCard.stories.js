@@ -61,7 +61,7 @@ const computed = {
 };
 
 export default {
-  title: '3 Cards / Expandable Cards',
+  title: '1 Base / Cards /  Expandable Cards',
   decorators: [],
   parameters: {},
 };

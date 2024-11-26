@@ -49,7 +49,7 @@
         >
           <v-col class="mb-2 px-0">
             <!-- prettier-ignore -->
-            <BaseDynamicComponent :component="entry" :componentProps="entry.props" :showLoader="true" />
+            <component :component="entry" :is="entry" v-bind="entry.props" />
 
           </v-col>
         </v-row>
@@ -63,7 +63,7 @@
         >
           <v-col class="mb-2 px-0">
             <!-- prettier-ignore -->
-            <BaseDynamicComponent :component="entry" :componentProps="entry.props" :showLoader="true" />
+            <component :component="entry" :is="entry" v-bind="entry.props" />
 
           </v-col>
         </v-row>
@@ -175,7 +175,6 @@ import {
 import { getIcon } from '@/factories/imageFactory';
 import { convertArrayToUrlString } from '@/factories/stringFactory';
 
-import BaseDynamicComponent from '@/components/BaseElements/BaseDynamicComponent.vue';
 import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
 import { createLocation } from '@/factories/geoFactory';
 
@@ -450,22 +449,19 @@ export default {
       this.pageViewEvents = await getEventsForPageAndName(pageName, eventName);
     },
     setGeoServiceLayers(location, layerConfig) {
+      let geoJSON;
+
       try {
-        location = location ? rewind(location.geoJSON) : null;
+        geoJSON = location ? rewind(location.geoJSON) : null;
       } catch (error) {
         this.geoServiceLayersError = error;
       }
 
       this.geoServiceConfig = {
-        site: location,
+        site: geoJSON,
         layerConfig,
         error: this.geoServiceLayersError,
         ...(this.hasGcnetStationConfig && { isGcnet: true }),
-      };
-
-
-      this.geoServiceConfig = {
-        ...this.geoServiceConfig,
         mapHeight: this.mapHeight,
         mapEditable: this.mapEditable,
         mapDivId: this.mapDivId,
@@ -734,16 +730,19 @@ export default {
 
       this.secondCol = [this.MetadataResources, this.MetadataGeo];
 
-      this.singleCol = [
-        this.MetadataBody,
-        this.MetadataCitation,
-        this.MetadataResources,
-        this.MetadataGeo,
-        this.MetadataAuthors,
-        this.MetadataFunding,
-        publicationList,
-        this.MetadataRelatedDatasets,
-      ];
+      if (this.$vuetify.display.smAndDown) {
+        this.singleCol = [
+          this.MetadataBody,
+          this.MetadataCitation,
+          this.MetadataResources,
+          this.MetadataGeo,
+          this.MetadataAuthors,
+          this.MetadataFunding,
+          publicationList,
+          this.MetadataRelatedDatasets,
+        ];
+      }
+
     },
     prepareGCNetChartModal(stationId) {
       this.currentStation = this.getCurrentStation(stationId);
@@ -1004,7 +1003,6 @@ export default {
   components: {
     MetadataHeader,
     BaseIconButton,
-    BaseDynamicComponent,
   },
   data: () => ({
     organizationsStore: null,

@@ -10,7 +10,7 @@ import BaseShinyBadge from '@/components/BaseElements/BaseShinyBadge.vue';
 import docTemplate from './docTemplate.mdx';
 
 export default {
-  title: '1 Base Elements / Shiny Badges',
+  title: '1 Base / Labels / Shiny Badges',
   component: BaseShinyBadge,
   parameters: {
     docs: {

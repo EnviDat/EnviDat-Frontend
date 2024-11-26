@@ -44,7 +44,7 @@ const preSelectedAuthors3 = authorsStrings.filter(value => value.includes('B'));
 
 
 export default {
-  title: '1 Base Elements / User Picker',
+  title: '1 Base / Pickers / User Picker',
   component: BaseUserPicker,
 };
 

@@ -20,7 +20,7 @@ import {
 
 
 export default {
-  title: '3 Cards / Click Cards',
+  title: '1 Base / Cards /  Click Cards',
   component: BaseClickCard,
 };
 

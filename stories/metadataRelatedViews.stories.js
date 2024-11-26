@@ -57,7 +57,7 @@ const placeholderKeywordsGenericProps = {
 };
 
 export default {
-  title: '9 Editing Metadata / Related Views',
+  title: '3 Dataset / 2 Edit / Related',
   decorators: [],
   parameters: {},
 };

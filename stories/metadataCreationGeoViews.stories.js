@@ -118,7 +118,7 @@ const geomCollectionLocation = createLocation({
 // DUMMY DATA END
 
 export default {
-  title: '9 Editing Metadata / Geo Data Views',
+  title: '3 Dataset / 2 Edit / Geo Data',
   decorators: [],
   parameters: {},
 };

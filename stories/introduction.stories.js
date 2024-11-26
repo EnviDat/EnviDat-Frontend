@@ -21,7 +21,7 @@ import metadataCards from './js/metadata';
 
 const dataset = metadataCards[0];
 export default {
-  title: '3 Cards / Introduction Card',
+  title: '1 Base / Cards /  Introduction Card',
   component: IntroductionCard,
 };
 

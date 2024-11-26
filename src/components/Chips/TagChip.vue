@@ -8,7 +8,7 @@
     :style="{ height: $vuetify.display.xs ? '15px' : '' }"
     :color="highlighted ? 'primary' : color"
     :small="isSmall"
-    @click="clicked"
+    @click.stop="clicked"
   >
     <BaseIcon
       v-if="isAccordion"

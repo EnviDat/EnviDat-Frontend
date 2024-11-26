@@ -825,7 +825,6 @@ export default {
   /* @import "~vuetify/src/styles/settings/_variables.scss" */
   $spacer: 4px !default
   $gridGap: $spacer * 4
-  $maxHeight: 750px
 
   .notSignedinGrid
     display: grid
@@ -847,7 +846,6 @@ export default {
       gap: $gridGap
       transition: 1s all
       overflow: hidden hidden
-      max-height: $maxHeight
 
       .datasetsOverflow
         overflow: hidden hidden
@@ -863,7 +861,6 @@ export default {
       grid-template-rows: 36px auto
       gap: $gridGap
       overflow: hidden auto
-      max-height: $maxHeight
 
       .datasetsGrid
         overflow: hidden auto
@@ -881,7 +878,6 @@ export default {
   .topBoard {
     grid-template-columns: 4fr auto auto;
     overflow: hidden hidden;
-    max-height: 750px;
   }
 }
   /* html,

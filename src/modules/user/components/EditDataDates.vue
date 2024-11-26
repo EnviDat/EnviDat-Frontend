@@ -60,7 +60,8 @@
                 :endDate="item.dateEnd"
                 :endDateLabel="`${item.dateType} end date`"
                 :endDateProperty="endDateProperty"
-                :clearableEndDate="true"
+                :clearableEndDate="false"
+                :clearableStartDate="false"
                 rowLayout
                 @dateChange="(property, value) => dateChanged(index, property, value)"
                 @clearClick="(property) => clearDate(index, property)"

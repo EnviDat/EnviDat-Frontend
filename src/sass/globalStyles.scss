@@ -179,3 +179,28 @@ a {
 .application .v-overlay.v-overlay--active {
   z-index: 1025 !important;
 }
+
+.mainPageContainer {
+  position: relative;
+}
+
+.leaflet-marker-pane .leaflet-div-icon {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+.leaflet-popup-content-wrapper .leaflet-popup-content {
+  font-family: 'Raleway', sans-serif !important;
+}
+
+.leaflet-marker-icon.rounded-circle.green {
+  background-color: lightgreen !important;
+}
+
+.leaflet-marker-icon.rounded-circle.red {
+  background-color: indianred !important;
+}
+
+.leaflet-marker-icon.rounded-circle.grey {
+  background-color: grey !important;
+}

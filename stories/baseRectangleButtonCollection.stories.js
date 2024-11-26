@@ -13,7 +13,7 @@ import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.v
 import { mdiPencil, mdiMagnify, mdiPlus } from '@mdi/js';
 
 export default {
-  title: '1 Base Elements / Rectangle Buttons Collection',
+  title: '1 Base / Buttons /  Rectangle Buttons Collection',
   component: BaseRectangleButton,
 };
 
