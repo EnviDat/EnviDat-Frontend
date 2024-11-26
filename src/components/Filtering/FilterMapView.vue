@@ -459,12 +459,14 @@ export default {
 
       for (let i = 0; i < toClear.length; i++) {
         const layer = toClear[i];
-        if (layer && layer instanceof Array) {
-          layer.forEach((l) => {
-            l.remove();
-          });
-        } else {
-          layer.remove();
+        if (layer) {
+          if (layer instanceof Array) {
+            layer.forEach((l) => {
+              l.remove();
+            });
+          } else {
+            layer.remove();
+          }
         }
       }
     },

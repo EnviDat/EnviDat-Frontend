@@ -165,7 +165,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import { defineAsyncComponent, markRaw, shallowRef, toRaw } from 'vue';
+import { defineAsyncComponent, toRaw } from 'vue';
 import { RecycleScroller } from 'vue-virtual-scroller';
 import { BROWSE_PATH } from '@/router/routeConsts';
 
@@ -307,9 +307,7 @@ export default {
 
       for (let i = 0; i < pins.length; i++) {
         const id = pins[i];
-        const dataset = toRaw(this.metadatasContent[id]);
-        dataset.isPinned = true;
-        pinnedContent.push(dataset);
+        pinnedContent.push(this.metadatasContent[id]);
       }
 
       return pinnedContent;
@@ -475,20 +473,20 @@ export default {
       this.$emit('clickedOrganization', organization);
     },
     catchPointClicked(id) {
-      // bring to top
-      // highlight entry
-      let newPins = this.prePinnedIds;
+      // highlight entry dataset and bring to the top of the list
 
-      if (this.prePinnedIds.includes(id)) {
-        newPins = this.prePinnedIds.filter(i => i !== id);
+      // toRaw to avoid triggering reactivity already here
+      // changes should come in via the props and their watcher
+      // so avoid directly manipulating the props here
+      let newPins = toRaw(this.prePinnedIds);
+
+      if (newPins.includes(id)) {
+        newPins = newPins.filter(i => i !== id);
       } else {
         newPins.push(id);
       }
 
-      // this.pinnedIds = newPins;
-
       this.$emit('pinnedIds', newPins);
-      // this.$store.commit(`${METADATA_NAMESPACE}/${PIN_METADATA}`, id);
     },
     catchClearButtonClick() {
       this.$emit('pinnedIds', []);
@@ -576,6 +574,17 @@ export default {
     catchShallowRealClick() {
       this.$emit('shallowRealClick');
     },
+    setDatasetsPinned(pins, isPinned) {
+      if (!this.hasMetadatasContent) {
+        return;
+      }
+
+      for (let i = 0; i < pins.length; i++) {
+        const id = pins[i];
+        const dataset = this.metadatasContent[id];
+        dataset.isPinned = isPinned;
+      }
+    },
   },
   watch: {
     content: {
@@ -595,6 +604,10 @@ export default {
         })
       },
       deep: true,
+    },
+    prePinnedIds(newPins, oldPins) {
+      this.setDatasetsPinned(oldPins, false)
+      this.setDatasetsPinned(newPins, true)
     },
   },
   data: () => ({

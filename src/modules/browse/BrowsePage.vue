@@ -320,7 +320,7 @@ export default {
       }
 
       if (pinsChanged && !tagsChanged && fromRoute) {
-        // don't filter incase only pinsChanged and we aren't in the initial check
+        // don't filter in case only pinsChanged and we aren't in the initial check
         return;
       }
 
