@@ -326,7 +326,6 @@ export default {
           });
         }
 
-        this.updateStepsOrganizations();
       } catch (error) {
         console.error('Error:', error);
       } finally {
@@ -334,8 +333,7 @@ export default {
       }
     },
     updateStepsOrganizations() {
-      const userOrganizations = this.organizationsStore
-        .userOrganizations;
+      const userOrganizations = this.organizationsStore.userOrganizations;
 
       const editOrgaData = this.$store.getters[
         `${USER_NAMESPACE}/getMetadataEditingObject`
@@ -353,8 +351,8 @@ export default {
       this.updatePublicationStatus(datasetOrgaId);
     },
     updatePublicationStatus(datasetOrgaId) {
-      const userOrganizations = this.organizationsStore
-      .userOrganizations;
+      const userOrganizations = this.organizationsStore.userOrganizations;
+
       const roleMap = getUserOrganizationRoleMap(
         this.user.id,
         userOrganizations,
@@ -382,6 +380,8 @@ export default {
             userRole = USER_ROLE_MEMBER;
           }
         }
+      } else {
+        console.error('Not organization datasets available to determine the users role!')
       }
 
       const editPublicationInfo = this.$store.getters[
@@ -436,6 +436,18 @@ export default {
       this.validateCurrentStep();
 
       updateAllStepsForCompletion(this.editingSteps);
+    },
+    async fetchUserDatasets() {
+      await this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`,
+        {
+          action: ACTION_USER_SHOW,
+          body: {
+            id: this.user.id,
+            include_datasets: true,
+          },
+          commit: true,
+          mutation: USER_GET_DATASETS,
+        });
     },
     updateLastEditingDataset(name, path, backPath) {
       this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_LAST_DATASET}`, {
@@ -561,6 +573,11 @@ export default {
         this.$nextTick(async () => {
           await this.initMetadataUsingId(this.metadataId);
           await this.loadUserOrganizations();
+
+          // always fetch the latest user datasets
+          // in case of entering the EditPage directly after creation a dataset
+          await this.fetchUserDatasets();
+          this.updateStepsOrganizations();
         });
       }
     },
