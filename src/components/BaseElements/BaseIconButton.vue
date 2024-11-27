@@ -14,6 +14,7 @@
             :size="large ? 'large' : small ? 'small' : undefined"
             :color="computedColor"
             :href="url"
+            :target="url ? '_blank' : undefined"
             :disabled="disabled"
             @click.stop="onClick"
           >
