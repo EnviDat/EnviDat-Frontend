@@ -38,7 +38,7 @@
             :style="{
               'scrollbar-color': `${this.scrollbarColorFront} ${this.scrollbarColorBack}`,
               height: useDynamicHeight ? `calc(100vh - ${this.filteringComponentsHeight}px)` : undefined,
-              'max-height': !useDynamicHeight ? `${metadataListHeight}px` : undefined,
+              'max-height': !useDynamicHeight ? '650px' : undefined,
               }"
             v-on:scrollend="onScroll()"
           >
@@ -83,7 +83,7 @@
         :style="{
               'scrollbar-color': `${this.scrollbarColorFront} ${this.scrollbarColorBack}`,
               height: useDynamicHeight ? `calc(100vh - ${this.filteringComponentsHeight}px)` : undefined,
-              'max-height': !useDynamicHeight ? `${metadataListHeight}px` : undefined,
+              'max-height': !useDynamicHeight ? '650px' : undefined,
               }"
         v-on:scrollend="onScroll()"
       >
