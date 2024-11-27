@@ -42,25 +42,8 @@
             />
           </template>
 
-          <!-- documentation https://vuetifyjs.com/en/components/autocompletes/ -->
-
-          <!--
-
-          following documentation
-
-          Define a custom item appearance. The root element of this slot must be a v-list-item with v-bind="props" applied. props includes everything required for the default select list behaviour - including title, value, click handlers, virtual scrolling, and anything else that has been added with item-props.
-
-          -->
-
           <template v-slot:item="{ props, item }">
-            <v-list-item v-bind="props"  @click="catchPickClicked(item.value)">
-              <!-- <TagChipAuthor
-                v-if="item"
-                :name="item.value"
-                @clicked="catchPickClicked"
-                :isSmall="true"
-              /> -->
-            </v-list-item>
+            <v-list-item v-bind="props"  @click="catchPickClicked(item.value)" />
           </template>
 
           <template v-slot:no-data>
