@@ -78,7 +78,7 @@ export const MenuAndToolbar = () => ({
       const parentRefs = this.getStorybookAppRefs();
       // console.log('navigationStory refs', parentRefs);
       let currentStyle = parentRefs['storyWrapper--v-main'].$el.getAttribute('style');
-      currentStyle += 'position: relative; left: 60px; --v-layout-left: 60px; !important';
+      currentStyle += '--v-layout-left: 60px; !important';
       parentRefs['storyWrapper--v-main'].$el.setAttribute('style', currentStyle);
     },
   },
@@ -139,7 +139,7 @@ export const MenuToolbarAndBanners = () => ({
       const parentRefs = this.getStorybookAppRefs();
       // console.log('navigationStory refs', parentRefs);
       let currentStyle = parentRefs['storyWrapper--v-main'].$el.getAttribute('style');
-      currentStyle += 'position: relative; left: 60px; --v-layout-left: 60px; !important';
+      currentStyle += '--v-layout-left: 60px; !important';
       parentRefs['storyWrapper--v-main'].$el.setAttribute('style', currentStyle);
     },
   },
