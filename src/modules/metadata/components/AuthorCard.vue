@@ -50,7 +50,7 @@
              align="center"
              justify="space-between">
 
-        <v-col cols="6"
+        <v-col class="flex-grow-1"
                :class="dark ? 'text-white' : 'text-black'">
           {{ dataCountLabel }}
         </v-col>
@@ -139,6 +139,7 @@
             :icon-color="dark ? 'white' : darkColor"
             :outline-color="dark ? 'white' : darkColor"
             outlined
+            small
             class="ma-0 badgesIcon"
             @clicked="infosExpanded = !infosExpanded"
           />
