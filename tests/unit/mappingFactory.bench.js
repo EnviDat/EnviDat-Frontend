@@ -32,6 +32,10 @@ import {
   DATE_PROPERTY_DATE_TYPE,
   DATE_PROPERTY_END_DATE,
   DATE_PROPERTY_START_DATE,
+  METADATA_TITLE_PROPERTY,
+  METADATA_CONTACT_EMAIL,
+  METADATA_CONTACT_FIRSTNAME,
+  METADATA_CONTACT_LASTNAME,
 } from '@/factories/metadataConsts';
 
 describe('getFrontendJSON performance', () => {
@@ -41,18 +45,18 @@ describe('getFrontendJSON performance', () => {
     const snakeCaseJSON = convertJSON(mappingTestData, false);
     const headerData = getFrontendJSONForStep(EDITMETADATA_MAIN_HEADER, snakeCaseJSON)
 
-    expect(headerData.metadataTitle).not.toBeNull();
-    expect(headerData.contactEmail).not.toBeNull();
-    expect(headerData.contactGivenName).not.toBeNull();
-    expect(headerData.contactSurname).not.toBeNull();
+    expect(headerData[METADATA_TITLE_PROPERTY]).not.toBeNull();
+    expect(headerData[METADATA_CONTACT_EMAIL]).not.toBeNull();
+    expect(headerData[METADATA_CONTACT_FIRSTNAME]).not.toBeNull();
+    expect(headerData[METADATA_CONTACT_LASTNAME]).not.toBeNull();
     expect(headerData.license).not.toBeNull();
 
     const maintainer = JSON.parse(mappingTestData.maintainer);
 
-    expect(headerData.metadataTitle).toBe(mappingTestData.title);
-    expect(headerData.contactEmail).toBe(maintainer.email);
-    expect(headerData.contactGivenName).toBe(maintainer.given_name);
-    expect(headerData.contactSurname).toBe(maintainer.name);
+    expect(headerData[METADATA_TITLE_PROPERTY]).toBe(mappingTestData.title);
+    expect(headerData[METADATA_CONTACT_EMAIL]).toBe(maintainer.email);
+    expect(headerData[METADATA_CONTACT_FIRSTNAME]).toBe(maintainer.given_name);
+    expect(headerData[METADATA_CONTACT_LASTNAME]).toBe(maintainer.name);
     expect(headerData.license).toBe(mappingTestData.license_title);
 
   });
@@ -266,10 +270,10 @@ describe('getBackendJSON performance', () => {
     const inputMaintainer = JSON.parse(mappingTestData.maintainer);
 
     const frontEndJSON = {
-      metadataTitle: mappingTestData.title,
-      contactEmail: inputMaintainer.email,
-      contactGivenName: inputMaintainer.given_name,
-      contactSurname: inputMaintainer.name,
+      [METADATA_TITLE_PROPERTY]: mappingTestData.title,
+      [METADATA_CONTACT_EMAIL]: inputMaintainer.email,
+      [METADATA_CONTACT_FIRSTNAME]: inputMaintainer.given_name,
+      [METADATA_CONTACT_LASTNAME]: inputMaintainer.name,
       license: mappingTestData.license_title,
     }
 
@@ -279,24 +283,24 @@ describe('getBackendJSON performance', () => {
     expect(headerData.maintainer).not.toBeNull();
     expect(headerData.license_title).not.toBeNull();
 
-    expect(headerData.title).toBe(frontEndJSON.metadataTitle);
-    expect(headerData.maintainer.email).toBe(frontEndJSON.contactEmail);
-    expect(headerData.maintainer.given_name).toBe(frontEndJSON.contactGivenName);
-    expect(headerData.maintainer.name).toBe(frontEndJSON.contactSurname);
+    expect(headerData.title).toBe(frontEndJSON[METADATA_TITLE_PROPERTY]);
+    expect(headerData.maintainer.email).toBe(frontEndJSON[METADATA_CONTACT_EMAIL]);
+    expect(headerData.maintainer.given_name).toBe(frontEndJSON[METADATA_CONTACT_FIRSTNAME]);
+    expect(headerData.maintainer.name).toBe(frontEndJSON[METADATA_CONTACT_LASTNAME]);
     expect(headerData.license_title).toBe(frontEndJSON.license);
 
     const flatJSON = convertJSON(headerData, true);
 
-    expect(flatJSON.title).toBe(frontEndJSON.metadataTitle);
+    expect(flatJSON.title).toBe(frontEndJSON[METADATA_TITLE_PROPERTY]);
 
     expect(flatJSON.maintainer).not.toBeNull();
     expect(typeof flatJSON.maintainer === 'string').toBeTruthy()
     expect(flatJSON.maintainer.includes('given_name')).toBeTruthy()
     expect(flatJSON.maintainer.includes('name')).toBeTruthy()
     expect(flatJSON.maintainer.includes('email')).toBeTruthy()
-    expect(flatJSON.maintainer.includes(frontEndJSON.contactEmail)).toBeTruthy()
-    expect(flatJSON.maintainer.includes(frontEndJSON.contactGivenName)).toBeTruthy()
-    expect(flatJSON.maintainer.includes(frontEndJSON.contactSurname)).toBeTruthy()
+    expect(flatJSON.maintainer.includes(frontEndJSON[METADATA_CONTACT_EMAIL])).toBeTruthy()
+    expect(flatJSON.maintainer.includes(frontEndJSON[METADATA_CONTACT_FIRSTNAME])).toBeTruthy()
+    expect(flatJSON.maintainer.includes(frontEndJSON[METADATA_CONTACT_LASTNAME])).toBeTruthy()
 
     expect(flatJSON.license_title).toBe(frontEndJSON.license);
 

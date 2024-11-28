@@ -20,6 +20,11 @@ import { enhanceTags } from '@/factories/keywordsFactory';
 import categoryCards from '@/store/categoryCards';
 import { createLocation } from '@/factories/geoFactory';
 import { formatDate } from '@/factories/dateFactory';
+import {
+  METADATA_CONTACT_EMAIL,
+  METADATA_CONTACT_FULLNAME,
+  METADATA_TITLE_PROPERTY,
+} from '@/factories/metadataConsts';
 
 // const metadatasContent = {};
 // packagelist.result.forEach((entry) => {
@@ -38,10 +43,10 @@ describe('metaDataFactory - createHeader', () => {
     const header = createHeader(dataset);
 
     expect(header).toBeDefined();
-    expect(header.metadataTitle).toBeDefined();
+    expect(header[METADATA_TITLE_PROPERTY]).toBeDefined();
     expect(header.doi).toBeDefined();
-    expect(header.contactName).toBeDefined();
-    expect(header.contactEmail).toBeDefined();
+    expect(header[METADATA_CONTACT_FULLNAME]).toBeDefined();
+    expect(header[METADATA_CONTACT_EMAIL]).toBeDefined();
     expect(header.tags).toBeDefined();
     expect(header.titleImg).toBe(dataset.titleImg);
     expect(header.maxTags).toBeDefined();

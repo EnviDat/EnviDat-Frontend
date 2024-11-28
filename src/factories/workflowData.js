@@ -3,6 +3,9 @@ import {
   EDIT_STEP_TITLE_SUB_DESC,
   EDIT_STEP_TITLE_SUB_HEADER,
   EDIT_STEP_TITLE_SUB_KEYWORDS,
+  METADATA_CONTACT_EMAIL,
+  METADATA_CONTACT_FIRSTNAME,
+  METADATA_CONTACT_LASTNAME,
   METADATA_TITLE_PROPERTY,
   METADATA_URL_PROPERTY,
 } from '@/factories/metadataConsts';
@@ -40,9 +43,9 @@ import { defaultSwissLocation } from '@/factories/geoFactory';
 export const emptyMetadataInEditing = {
   [EDITMETADATA_MAIN_HEADER]: {
     [METADATA_TITLE_PROPERTY]: '',
-    contactEmail: '',
-    contactGivenName: '',
-    contactSurname: '',
+    [METADATA_CONTACT_EMAIL]: '',
+    [METADATA_CONTACT_FIRSTNAME]: '',
+    [METADATA_CONTACT_LASTNAME]: '',
     [METADATA_URL_PROPERTY]: '',
   },
   [EDITMETADATA_MAIN_DESCRIPTION]: {

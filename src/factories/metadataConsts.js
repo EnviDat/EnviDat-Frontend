@@ -81,6 +81,11 @@ export const DATE_PROPERTY_COLLECTED_TYPE_EXPLANATION =
   'Date range during the research data was gathered or collected.';
 export const METADATA_TITLE_PROPERTY = 'metadataTitle';
 export const METADATA_URL_PROPERTY = 'metadataUrl';
+export const METADATA_CONTACT_EMAIL = 'contactEmail';
+export const METADATA_CONTACT_FIRSTNAME = 'contactGivenName';
+export const METADATA_CONTACT_LASTNAME = 'contactSurname';
+export const METADATA_CONTACT_FULLNAME = 'contactName';
+
 export const METADATA_AUTHORS_PROPERTY = 'authors';
 export const METADATA_ORGANIZATION_PROPERTY = 'organizationId';
 export const METADATA_DOI_PROPERTY = 'doi';

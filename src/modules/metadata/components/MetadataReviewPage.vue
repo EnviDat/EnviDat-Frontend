@@ -387,7 +387,7 @@ export default {
           metadataTitle: dataset.title,
             doi: dataset.doi,
             contactName: maintainer ? getAuthorName(maintainer) : '',
-            contactEmail,
+            [METADATA_CONTACT_EMAIL]: contactEmail,
             tags: dataset.tags,
             titleImg: dataset.titleImg,
             maxTags: smallScreen ? 5 : 12,

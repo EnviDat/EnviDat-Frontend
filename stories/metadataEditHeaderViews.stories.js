@@ -24,6 +24,13 @@ import {
 import categoryCards from '@/store/categoryCards';
 import { getPopularTags, getTagColor } from '@/factories/keywordsFactory';
 
+import {
+  METADATA_CONTACT_EMAIL,
+  METADATA_CONTACT_FIRSTNAME,
+  METADATA_CONTACT_LASTNAME,
+  METADATA_TITLE_PROPERTY,
+} from '@/factories/metadataConsts';
+
 import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 import metadataset from './js/metadata';
 
@@ -60,9 +67,9 @@ const emptyFirstGenericProps = {
   id: '1',
   existingAuthors,
   metadataTitle: '',
-  contactEmail: '',
-  contactGivenName: '',
-  contactSurname: '',
+  [METADATA_CONTACT_EMAIL]: '',
+  [METADATA_CONTACT_FIRSTNAME]: '',
+  [METADATA_CONTACT_LASTNAME]: '',
   existingEnviDatUsers: authors,
 };
 
@@ -74,9 +81,9 @@ const filledGenericProps = {
   id: '2',
   existingAuthors,
   metadataTitle: 'My Glorious Title',
-  contactEmail: 'sarah@smith.com',
-  contactGivenName: 'Sarah',
-  contactSurname: 'Miller',
+  [METADATA_CONTACT_EMAIL]: 'sarah@smith.com',
+  [METADATA_CONTACT_FIRSTNAME]: 'Sarah',
+  [METADATA_CONTACT_LASTNAME]: 'Miller',
 };
 
 export const FilledEditHeader = {
@@ -87,13 +94,22 @@ const filledProps2 = {
   id: '3',
   existingAuthors,
   metadataTitle: 'My Glorious Title',
-  contactEmail: existingAuthors[3].email,
-  contactGivenName: existingAuthors[3].firstName,
-  contactSurname: existingAuthors[3].lastName,
+  [METADATA_CONTACT_EMAIL]: existingAuthors[3].email,
+  [METADATA_CONTACT_FIRSTNAME]: existingAuthors[3].firstName,
+  [METADATA_CONTACT_LASTNAME]: existingAuthors[3].lastName,
 };
 
 export const FilledWithExistingAuthor = {
   args: filledProps2,
+};
+
+export const FilledAndReadOnly = {
+  args: filledProps2,
+  readOnlyFields: [
+    METADATA_TITLE_PROPERTY,
+    METADATA_CONTACT_EMAIL,
+  ],
+  readOnlyExplanation: 'Fields are readonly for testing!',
 };
 
 
@@ -101,6 +117,7 @@ export const MobileFilledEditHeader = {
   args: { ...FilledEditHeader.args },
   parameters: mobileViewportParams,
 };
+
 
 export const MobileLargeFilledEditHeader = {
   args: {...FilledEditHeader.args},
