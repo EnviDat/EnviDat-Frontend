@@ -18,6 +18,7 @@
             :label="dateLabel"
             ref="dateTextField"
             :readonly="readonly"
+            hide-details="auto"
             persistent-hint
             :hint="readOnlyExplanation"
             :prepend-icon="mdiCalendarRange"

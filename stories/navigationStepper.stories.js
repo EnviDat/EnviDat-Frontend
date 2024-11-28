@@ -20,7 +20,7 @@ import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams }
 const datasetTitle = 'Lens, Switzerland: Long-term forest meteorological data from the Long-term Forest Ecosystem Research Programme (LWF), from 1997 onwards';
 
 export default {
-  title: '5 Navigation / NavigationStepper',
+  title: '6 Workflows / NavigationStepper',
   decorators: [],
   parameters: {},
 };

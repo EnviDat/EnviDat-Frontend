@@ -38,6 +38,11 @@ import {
 
 
 import { defaultSwissLocation } from '@/factories/geoFactory';
+import {
+  METADATA_CONTACT_EMAIL,
+  METADATA_CONTACT_FIRSTNAME,
+  METADATA_CONTACT_LASTNAME,
+} from '@/factories/metadataConsts';
 
 /*
 export const ckanRequiredPropsForDatasetCreation = [
@@ -94,9 +99,9 @@ function initCreationDataWithDefaults(creationData, user, organizationId) {
 
   creationData[EDITMETADATA_MAIN_HEADER] = {
     ...headerStep,
-    contactEmail: email,
-    contactGivenName: firstName,
-    contactSurname: lastName,
+    [METADATA_CONTACT_EMAIL]: email,
+    [METADATA_CONTACT_FIRSTNAME]: firstName,
+    [METADATA_CONTACT_LASTNAME]: lastName,
   };
 
   const userAuthor = [];

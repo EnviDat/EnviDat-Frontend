@@ -16,7 +16,11 @@ import {
 } from '@/factories/eventBus';
 
 import EditPublicationInfo from '@/modules/user/components/edit/EditPublicationInfo.vue';
-import {METADATA_STATE_INVISILBE} from '@/factories/metadataConsts';
+import {
+  METADATA_PUBLICATION_YEAR_PROPERTY,
+  METADATA_PUBLISHER_PROPERTY,
+  METADATA_STATE_INVISILBE,
+} from '@/factories/metadataConsts';
 
 export default {
   title: '3 Dataset / 2 Edit / Publication Infos',
@@ -52,18 +56,30 @@ const Template = {
   }),
 };
 
-export const EmptyPublicationComponent = {
+export const Empty = {
   ...Template,
   args: {},
 };
 
-export const FilledPublicationComponent = {
+export const Filled = {
   ...Template,
   args: {
     id: 1,
     doi: 'test',
     visibilityState: METADATA_STATE_INVISILBE,
-    publicationYear: '2020',
-    publisher: 'EnviDat',
+    [METADATA_PUBLICATION_YEAR_PROPERTY]: '2020',
+    [METADATA_PUBLISHER_PROPERTY]: 'EnviDat',
   },
 }
+
+export const FilledAndReadOnly = {
+  ...Template,
+  args: {
+    ...Filled.args,
+    readOnlyFields: [
+      METADATA_PUBLICATION_YEAR_PROPERTY,
+      METADATA_STATE_INVISILBE,
+    ],
+    readOnlyExplanation: 'Fields are readonly for testing!',
+  },
+};

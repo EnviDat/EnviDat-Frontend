@@ -27,7 +27,7 @@ import metadata from './js/metadata';
 // slice of the first item of the later added entries, because the virutal-scroller from the MetadataList
 // uses the ids of the datasets and if they are identical it won't be rendered
 const smallList = [...metadata, ...metadata.slice(1, metadata.length)];
-const longList = [...metadata, ...metadata, ...metadata, ...metadata];
+const longList = [...metadata, ...metadata.slice(1, metadata.length), ...metadata.slice(2, metadata.length), ...metadata.slice(3, metadata.length)];
 
 enhanceMetadatas(smallList);
 enhanceMetadatas(longList);
@@ -86,7 +86,7 @@ export const MinimalSelectionList = {
 export const ListWithControls = {
   args: {
     ...MinimalList.args,
-    useDynamicHeight: true,
+    useDynamicHeight: false,
     listContent: longList,
     enabledControls: [
       LISTCONTROL_LIST_ACTIVE,
@@ -100,6 +100,7 @@ export const ListWithMap = {
   args: {
     ...ListWithControls.args,
     mapFilteringPossible: true,
+    useDynamicHeight: false,
     defaultListControls: [LISTCONTROL_MAP_ACTIVE],
   },
 }
@@ -107,6 +108,7 @@ export const ListWithMap = {
 export const BrowsePageList = {
   args: {
     ...ListWithMap.args,
+    useDynamicHeight: true,
     categoryCards,
     showSearch: true,
   },
@@ -165,8 +167,8 @@ export const HugeList = {
   args: {
     categoryCards,
 //    listContent: hugeList,
-    showSearch: true,
     useDynamicHeight: true,
+    showSearch: true,
     allTags,
     enabledControls: [
       LISTCONTROL_LIST_ACTIVE,
@@ -212,23 +214,58 @@ export const ListRowViewWithMap = {
   },
 }
 
-export const MobileEmptyMetadataList= { args: EmptyMetadataList.args };
-MobileEmptyMetadataList.parameters = mobileViewportParams;
+export const MobileEmptyMetadataList= {
+  args: {
+    ...EmptyMetadataList.args,
+    mapFilteringPossible: false,
+  },
+  parameters: mobileViewportParams,
+};
 
-export const MobileListLoading= { args: ListLoading.args };
-MobileListLoading.parameters = mobileViewportParams;
+export const MobileListLoading= {
+  args: {
+    ...ListLoading.args,
+    mapFilteringPossible: false,
+  },
+  parameters: mobileViewportParams,
+};
 
-export const MobileListSmall= { args: BrowsePageList.args };
-MobileListSmall.parameters = mobileViewportParams;
+export const MobileListSmall= {
+  args: {
+    ...BrowsePageList.args,
+    mapFilteringPossible: false,
+  },
+  parameters: mobileViewportParams,
+};
 
-export const MobileListLarge = { args: BrowsePageList.args };
-MobileListLarge.parameters = mobileLargeViewportParams;
+export const MobileListLarge ={
+  args: {
+    ...BrowsePageList.args,
+    mapFilteringPossible: false,
+  },
+  parameters: mobileLargeViewportParams,
+};
 
-export const TabletEmptyMetadataList = { args: EmptyMetadataList.args };
-TabletEmptyMetadataList.parameters = tabletViewportParams;
+export const TabletEmptyMetadataList ={
+  args: {
+    ...EmptyMetadataList.args,
+    mapFilteringPossible: false,
+  },
+  parameters: tabletViewportParams,
+};
 
-export const TabletListLoading = { args: ListLoading.args };
-TabletListLoading.parameters = tabletViewportParams;
+export const TabletListLoading ={
+  args: {
+    ...ListLoading.args,
+    mapFilteringPossible: false,
+  },
+  parameters: tabletViewportParams,
+};
 
-export const TabletList = { args: BrowsePageList.args };
-TabletList.parameters = tabletViewportParams;
+export const TabletList ={
+  args: {
+    ...BrowsePageList.args,
+    mapFilteringPossible: false,
+  },
+  parameters: tabletViewportParams,
+};

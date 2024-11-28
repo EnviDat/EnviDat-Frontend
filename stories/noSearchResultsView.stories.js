@@ -19,7 +19,7 @@ for (let i = 0; i < categoryCards.length; i++) {
 }
 
 export default {
-  title: '5 Navigation / NoSearchResultsView',
+  title: '2 Search / NoSearchResultsView',
   decorators: [],
   parameters: {
   },

@@ -11,7 +11,6 @@ import {
   EDITMETADATA_DATA,
   EDITMETADATA_DATA_GEO,
   EDITMETADATA_DATA_INFO,
-  EDITMETADATA_DATA_RESOURCES,
   EDITMETADATA_MAIN,
   EDITMETADATA_PUBLICATION_INFO,
 } from '@/factories/eventBus';
@@ -19,9 +18,6 @@ import {
 
 import EditDataInfo from '@/modules/user/components/EditDataInfo.vue';
 import EditDataGeo from '@/modules/user/components/EditDataGeo.vue';
-
-import CreateDataAndResources from '@/modules/user/components/create/CreateDataAndResources.vue';
-
 import MetadataGenericSubStepper from '@/modules/user/components/MetadataGenericSubStepper.vue';
 import MetadataCreationPublicationInfo from '@/modules/user/components/create/CreatePublicationInfo.vue';
 import {mainDetailSteps} from '@/factories/workflowData';
@@ -32,13 +28,6 @@ import {mainDetailSteps} from '@/factories/workflowData';
  * @type {step[]}
  */
 const creationDataDetailSteps = [
-  {
-    title: EDIT_STEP_TITLE_SUB_DATA,
-    completed: false,
-    component: CreateDataAndResources,
-    key: EDITMETADATA_DATA_RESOURCES,
-    genericProps: {},
-  },
   {
     title: EDIT_STEP_TITLE_SUB_DATES,
     completed: false,

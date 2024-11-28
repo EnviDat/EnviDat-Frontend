@@ -57,6 +57,9 @@ import {
   EDIT_METADATA_TITLE_LABEL,
   EDIT_METADATA_URL_LABEL,
   METADATA_AUTHORS_PROPERTY,
+  METADATA_CONTACT_EMAIL,
+  METADATA_CONTACT_FIRSTNAME,
+  METADATA_CONTACT_LASTNAME,
   METADATA_DATALICENSE_PROPERTY,
   METADATA_DEPRECATEDRESOURCES_PROPERTY,
   METADATA_DOI_PROPERTY,
@@ -81,7 +84,7 @@ import { formatDate } from '@/factories/dateFactory';
 const JSONFrontendBackendRules = {
   [METADATA_MAIN_HEADER]: [
     [METADATA_TITLE_PROPERTY,'title'],
-    ['contactEmail','maintainer.email'],
+    [METADATA_CONTACT_EMAIL,'maintainer.email'],
     ['firstName','maintainer.given_name'],
     ['lastName','maintainer.name'],
     ['doi','doi'],
@@ -98,9 +101,9 @@ const JSONFrontendBackendRules = {
   [EDITMETADATA_MAIN_HEADER]: [
     [METADATA_TITLE_PROPERTY,'title'],
     [METADATA_URL_PROPERTY,'name'],
-    ['contactEmail','maintainer.email'],
-    ['contactGivenName','maintainer.given_name'],
-    ['contactSurname','maintainer.name'],
+    [METADATA_CONTACT_EMAIL,'maintainer.email'],
+    [METADATA_CONTACT_FIRSTNAME,'maintainer.given_name'],
+    [METADATA_CONTACT_LASTNAME,'maintainer.name'],
     ['license','license_title'],
   ],
   [EDITMETADATA_MAIN_DESCRIPTION]: [

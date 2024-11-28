@@ -68,26 +68,25 @@
             :rules="rulesKeywords"
           >
 
-                <template v-slot:selection="{ item }" >
-                      <TagChip
-                        :name="item.raw.name"
-                        selectable
-                        closeable
-                        @clickedClose="removeKeyword(item)"
-                    :isSmall="false"
-                    />
-                </template>
+            <template v-slot:selection="{ item }" >
+              <TagChip
+                :name="item.value"
+                selectable
+                closeable
+                @clicked="removeKeyword(item.raw)"
+                :isSmall="false"
+              />
+            </template>
 
-                <template v-slot:item="{ item, props }">
-                  <v-list-item class="py-0" @click="catchKeywordClicked(item.value)" v-bind="props">
-                  </v-list-item>
-                </template>
+            <template v-slot:item="{ item, props }">
+              <v-list-item @click="catchKeywordClicked(item.value)" v-bind="props" />
+            </template>
 
-                <template v-slot:no-data>
-                  <v-list-item>
-                    <div v-html="autocompleteHint"></div>
-                  </v-list-item>
-                </template>
+            <template v-slot:no-data>
+              <v-list-item>
+                <div v-html="autocompleteHint"></div>
+              </v-list-item>
+            </template>
           </v-autocomplete>
         </v-col>
 

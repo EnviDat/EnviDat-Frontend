@@ -16,10 +16,12 @@ import { getAuthorName, getAuthorsString } from '@/factories/authorFactory';
 import { ACCESS_LEVEL_PUBLIC_VALUE, getAllowedUserNamesArray } from '@/factories/userEditingFactory';
 
 import {
+  METADATA_CONTACT_EMAIL,
+  METADATA_CONTACT_FULLNAME,
   METADATA_DEPRECATEDRESOURCES_PROPERTY,
   METADATA_STATE_DRAFT,
   METADATA_STATE_INVISILBE,
-  METADATA_STATE_VISILBE,
+  METADATA_STATE_VISILBE, METADATA_TITLE_PROPERTY,
   PUBLICATION_STATE_PENDING,
   PUBLICATION_STATE_PUBLISHED,
   PUBLICATION_STATE_RESERVED,
@@ -108,10 +110,10 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
   const modified = formatDate(dataset.metadata_modified);
 
   return {
-    metadataTitle: dataset.title,
+    [METADATA_TITLE_PROPERTY]: dataset.title,
     doi: dataset.doi,
-    contactName: maintainer ? getAuthorName(maintainer) : '',
-    contactEmail,
+    [METADATA_CONTACT_FULLNAME]: maintainer ? getAuthorName(maintainer) : '',
+    [METADATA_CONTACT_EMAIL]: contactEmail,
     tags: dataset.tags,
     titleImg: dataset.titleImg,
     maxTags: smallScreen ? 1 : 12,
@@ -414,7 +416,7 @@ export function createResources(
 
   return {
     metadataId: dataset.id,
-    metadataTitle: dataset.title,
+    [METADATA_TITLE_PROPERTY]: dataset.title,
     doi: dataset.doi,
     resources,
   };

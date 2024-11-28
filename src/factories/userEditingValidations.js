@@ -36,6 +36,9 @@ import {
 import {
   DATE_PROPERTY_END_DATE,
   DATE_PROPERTY_START_DATE,
+  METADATA_CONTACT_EMAIL,
+  METADATA_CONTACT_FIRSTNAME,
+  METADATA_CONTACT_LASTNAME,
   METADATA_TITLE_PROPERTY,
   METADATA_URL_PROPERTY,
 } from '@/factories/metadataConsts';
@@ -73,15 +76,15 @@ const metadataInEditingValidations = {
         .min(5, 'Dataset title must be at least 5 characters')
         .max(180, 'Dataset title has a maximum of 180 characters')
         .matches(/^[\w\söüä-]+$/, 'Use only letters and numbers for the title'),
-      contactGivenName: yup
+      [METADATA_CONTACT_FIRSTNAME]: yup
         .string()
         .required('Contact given name is required')
         .min(3, 'Contact given (first) name must be at least 3 characters'),
-      contactSurname: yup
+      [METADATA_CONTACT_LASTNAME]: yup
         .string()
         .required('Contact surname is required')
         .min(3, 'Contact surname must be at least 3 characters'),
-      contactEmail: yup
+      [METADATA_CONTACT_EMAIL]: yup
         .string()
         .email('Contact email must be a valid email address')
         .required('Contact email is required'),

@@ -14,10 +14,24 @@
               <EditAddExistingAuthor v-bind="authorPickingGenericProps" />
           </v-col>
 
-          <v-col cols="12">
+          <v-col v-if="isReadOnly(METADATA_AUTHORS_PROPERTY)"
+                 cols="12">
 
-              <EditAddAuthor v-bind="editAddAuthorObject"
-                             @closeClicked="catchEditAuthorClose" />
+              <v-card>
+                <v-card-title>
+                  {{ EDIT_METADATA_ADD_AUTHOR_TITLE }}
+                </v-card-title>
+                <v-card-text>
+                  Adding a new Author is readonly, because: {{ readOnlyHint(METADATA_AUTHORS_PROPERTY) }}
+                </v-card-text>
+              </v-card>
+          </v-col>
+
+          <v-col v-else
+                 cols="12">
+
+            <EditAddAuthor v-bind="editAddAuthorObject"
+                           @closeClicked="catchEditAuthorClose" />
           </v-col>
 
         </v-row>
@@ -64,6 +78,8 @@ import {
 
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+import { EDIT_METADATA_ADD_AUTHOR_TITLE, METADATA_AUTHORS_PROPERTY } from '@/factories/metadataConsts';
 
 
 export default {
@@ -191,6 +207,8 @@ export default {
           showDataCredits: false,
           showDataCreditScore: false,
         },
+        readOnlyFields: this.readOnlyFields,
+        readOnlyExplanation: this.readOnlyExplanation,
       };
     },
     selectedAuthor() {
@@ -231,6 +249,12 @@ export default {
     },
   },
   methods: {
+    isReadOnly(dateProperty) {
+      return isFieldReadOnly(this.$props, dateProperty);
+    },
+    readOnlyHint(dateProperty) {
+      return readOnlyHint(this.$props, dateProperty);
+    },
     catchEditAuthorClick(author) {
       if (author.isSelected) {
         eventBus.emit(CANCEL_EDITING_AUTHOR, author.email);
@@ -243,6 +267,8 @@ export default {
     },
   },
   data: () => ({
+    METADATA_AUTHORS_PROPERTY,
+    EDIT_METADATA_ADD_AUTHOR_TITLE,
   }),
 };
 </script>

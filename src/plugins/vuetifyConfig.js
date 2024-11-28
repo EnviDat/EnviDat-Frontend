@@ -54,6 +54,9 @@ export default {
       variant: 'flat',
       color: '#e0e0e0',
     },
+    VList: {
+      density: overallDensity,
+    },
   },
   theme: {
     variations: {

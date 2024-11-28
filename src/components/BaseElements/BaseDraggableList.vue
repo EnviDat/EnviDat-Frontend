@@ -17,7 +17,7 @@
       <v-col v-for="(item, index) in draggableItems"
            :key="`${index}_${item}`"
            class="flex-grow-0"
-           :draggable="true"
+           :draggable="!isReadOnly"
            @dragenter.prevent
            @dragover="onDragOver($event, item)"
            @dragleave="onDragLeave($event)"
@@ -41,6 +41,14 @@
         />
       </v-col>
     </v-row>
+
+    <v-row v-if="isReadOnly"
+           class="ma-0 v-messages v-messages__message"
+    >
+      <v-col>
+        {{ readOnlyHint }}
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -62,6 +70,7 @@
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 import TagChipAuthor from '@/components/Chips/TagChipAuthor.vue';
 import TagChip from '@/components/Chips/TagChip.vue';
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 
 export default {
   name: 'BaseDraggableList',
@@ -69,6 +78,7 @@ export default {
     items: {
       type: Array,
       default: () => [],
+      required: true,
     },
     useAuthorTags: {
       type: Boolean,
@@ -77,6 +87,19 @@ export default {
     instructions: {
       type: String,
       default: undefined,
+    },
+    draggableProperty: {
+      type: String,
+      default: undefined,
+      required: true,
+    },
+    readOnlyFields: {
+      type: Array,
+      default: () => [],
+    },
+    readOnlyExplanation: {
+      type: String,
+      default: '',
     },
   },
   created() {
@@ -94,20 +117,41 @@ export default {
         this.previewItems = value;
       },
     },
+    isReadOnly() {
+      return isFieldReadOnly(this.$props, this.draggableProperty);
+    },
+    readOnlyHint() {
+      return readOnlyHint(this.$props, this.draggableProperty);
+    },
   },
   methods: {
     onDragOver(event, item) {
+      if (this.readOnlyHint) {
+        return;
+      }
+
       event.preventDefault();
       this.currentHoverItem = item
     },
     onDragStart(event, item) {
+      if (this.readOnlyHint) {
+        return;
+      }
+
       this.currentDragItem = item
     },
     onDragLeave(event) {
+      if (this.readOnlyHint) {
+        return;
+      }
+
       event.preventDefault();
       this.currentHoverItem = ''
     },
     onDrop(event, item) {
+      if (this.readOnlyHint) {
+        return;
+      }
 
       const dragItem = this.draggableItems.filter((author) => author === this.currentDragItem)[0];
       const dragIndex = this.draggableItems.findIndex((author) => author === this.currentDragItem);
