@@ -40,9 +40,10 @@
             :items="activeLicenses"
             item-value="id"
             item-text="title"
-            hide-details
             :label="labels.dataLicense"
             :readonly="isDataLicenseReadonly"
+            hide-details="auto"
+            persistent-hint
             :hint="dataLicenseReadonlyExplanation"
             :prepend-icon="mdiShieldSearch"
             :menu-icon="mdiArrowDownDropCircleOutline"
@@ -234,8 +235,14 @@ export default {
       const readonlyBecausePublished = this.readOnlyFields?.includes(METADATA_DATALICENSE_PROPERTY) || false;
 
       if (readonlyBecausePublished) {
-        return (this.dataLicenseId !== WSL_DATA_LICENSE_ID
-                && this.dataLicenseId !== OTHER_UNDEFINED_LICENSE_ID);
+        if (this.dataLicenseId === WSL_DATA_LICENSE_ID
+          || this.dataLicenseId === OTHER_UNDEFINED_LICENSE_ID) {
+          // overwrite the readonly so license can still be changned from these to the other
+          // available license
+          return false;
+        }
+
+        return true;
       }
 
       return false;

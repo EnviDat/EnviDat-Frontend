@@ -1,5 +1,5 @@
 <template>
-  <v-row no-gutters>
+  <v-row >
     <v-col :cols="defaultCols"
             :md="mdCols">
 
