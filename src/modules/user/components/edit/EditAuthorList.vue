@@ -18,8 +18,12 @@
                  cols="12">
 
               <v-card>
-                <v-card-title>{{ EDIT_METADATA_ADD_AUTHOR_TITLE }}</v-card-title>
-                <v-card-text>Adding a new Author is readonly, because: {{ readOnlyHint(METADATA_AUTHORS_PROPERTY) }}</v-card-text>
+                <v-card-title>
+                  {{ EDIT_METADATA_ADD_AUTHOR_TITLE }}
+                </v-card-title>
+                <v-card-text>
+                  Adding a new Author is readonly, because: {{ readOnlyHint(METADATA_AUTHORS_PROPERTY) }}
+                </v-card-text>
               </v-card>
           </v-col>
 
@@ -203,6 +207,8 @@ export default {
           showDataCredits: false,
           showDataCreditScore: false,
         },
+        readOnlyFields: this.readOnlyFields,
+        readOnlyExplanation: this.readOnlyExplanation,
       };
     },
     selectedAuthor() {

@@ -44,6 +44,9 @@
             <BaseDraggableList
               :items="authorFullNames"
               :useAuthorTags="true"
+              :draggableProperty="METADATA_AUTHOR_SEQUENCE_PROPERTY"
+              :readOnlyFields="readOnlyFields"
+              :readOnlyExplanation="readOnlyExplanation"
               @listChanged="reorderList"
             />
           </ExpandableLayout>
@@ -99,6 +102,7 @@
 import {
   AUTHORS_EDIT_CURRENT_DATACREDIT,
   EDIT_METADATA_AUTHORSLIST_TITLE,
+  METADATA_AUTHOR_SEQUENCE_PROPERTY,
 } from '@/factories/metadataConsts';
 
 import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuthors.vue';
@@ -290,6 +294,7 @@ export default {
     },
   },
   data: () => ({
+    METADATA_AUTHOR_SEQUENCE_PROPERTY,
     mdiCursorMove,
     editingInstructions: 'Here is a preview list of the authors of this dataset. Edit the <a href="https://www.wsl.ch/datacredit/#feat" target="_blank">DataCRediT</a> contributions for each author directly in this list by clicking on the icons. For further editing of authors, select them with the edit icon. ',
     title: EDIT_METADATA_AUTHORSLIST_TITLE,

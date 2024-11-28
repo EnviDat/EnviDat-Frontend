@@ -87,6 +87,7 @@ export const METADATA_CONTACT_LASTNAME = 'contactSurname';
 export const METADATA_CONTACT_FULLNAME = 'contactName';
 
 export const METADATA_AUTHORS_PROPERTY = 'authors';
+export const METADATA_AUTHOR_SEQUENCE_PROPERTY = 'authorSequence';
 export const METADATA_ORGANIZATION_PROPERTY = 'organizationId';
 export const METADATA_DOI_PROPERTY = 'doi';
 export const METADATA_PUBLISHER_PROPERTY = 'publisher';

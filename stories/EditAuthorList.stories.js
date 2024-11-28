@@ -32,7 +32,7 @@ import {
   mergeEditingAuthor,
 } from '@/factories/authorFactory';
 
-import { METADATA_AUTHORS_PROPERTY } from '@/factories/metadataConsts';
+import { METADATA_AUTHOR_SEQUENCE_PROPERTY, METADATA_AUTHORS_PROPERTY } from '@/factories/metadataConsts';
 import unFormatedMetadataCards from './js/metadata';
 
 const metadataCards = [];
@@ -243,6 +243,7 @@ export const EditExistingAuthorsReadOnly = {
     ...EditExistingAuthors.args,
     readOnlyFields: [
       METADATA_AUTHORS_PROPERTY,
+      METADATA_AUTHOR_SEQUENCE_PROPERTY,
     ],
     readOnlyExplanation: 'Fields are readonly for testing!',
   },
