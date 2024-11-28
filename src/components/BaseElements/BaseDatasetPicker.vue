@@ -38,20 +38,13 @@
               :isSmall="false"
               :fontSize="'14px'"
               :iconSize="'14px'"
-              :closeable="true"
-              @clickedClose="catchCloseClicked"
+              closeable
+              @clickedClose="catchCloseClicked(item.value)"
             />
           </template>
 
-          <template v-slot:item="{ item }">
-            <TagChipProject
-              v-if="item"
-              :name="item.value"
-              :fontSize="'14px'"
-              :iconSize="'14px'"
-              @clicked="catchPickClicked"
-              :isSmall="true"
-            />
+          <template v-slot:item="{ item, props }">
+            <v-list-item @click="catchPickClicked(item.value)" v-bind="props" />
           </template>
 
           <template v-slot:no-data>

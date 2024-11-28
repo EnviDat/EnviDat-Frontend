@@ -16,6 +16,11 @@ import {
   parseISO,
 } from 'date-fns';
 import { mdiAccountSupervisor, mdiAccountVoice, mdiBookOpenVariant, mdiCodeTags, mdiInformation, mdiLibrary, mdiWidgets } from '@mdi/js';
+import {
+  METADATA_CONTACT_EMAIL,
+  METADATA_CONTACT_FIRSTNAME,
+  METADATA_CONTACT_LASTNAME,
+} from '@/factories/metadataConsts';
 
 const authorDataCreditLevels = [
   { score: 160, lvl: 6 },
@@ -198,6 +203,26 @@ export function getDataCredit(author) {
   }
 
   return dataCredit;
+}
+
+export function createContact(email, firstName, lastName) {
+  return {
+    [METADATA_CONTACT_FIRSTNAME]: firstName,
+    [METADATA_CONTACT_LASTNAME]: lastName,
+    [METADATA_CONTACT_EMAIL]: email,
+  }
+}
+
+export function creationContactFromAuthor(author) {
+  if (author) {
+    return {
+      [METADATA_CONTACT_FIRSTNAME]: author.firstName?.trim(),
+      [METADATA_CONTACT_LASTNAME]: author.lastName?.trim(),
+      [METADATA_CONTACT_EMAIL]: author.email?.trim(),
+    };
+  }
+
+  return undefined;
 }
 
 export function createAuthor(author, lastModified = '') {

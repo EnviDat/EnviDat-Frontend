@@ -13,8 +13,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
-
 import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody.vue';
 import MetadataCitation from '@/modules/metadata/components/Metadata/MetadataCitation.vue';
 import MetadataDetails from '@/modules/metadata/components/Metadata/MetadataDetails.vue';
@@ -25,7 +23,6 @@ import MetadataFunding from '@/modules/metadata/components/Metadata/MetadataFund
 import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuthors.vue';
 
 import {
-  createHeader,
   createDetails,
   createPublications,
   createBody,
@@ -55,10 +52,13 @@ import {
 } from '@/factories/eventBus';
 import { createLocation } from '@/factories/geoFactory';
 
-enhanceMetadatasTitleImage(metadata);
+export default {
+  title: '3 Dataset / 1 Views',
+  decorators: [],
+  parameters: {},
+};
 
-const smallHeader = createHeader(metadata[0], true);
-const largeHeader = createHeader(metadata[2], false);
+enhanceMetadatasTitleImage(metadata);
 
 const citation1 = createCitation(metadata[0]);
 const citation2 = createCitation(metadata[2]);
@@ -185,11 +185,6 @@ const genericProps5 = {
   },
 };
 
-export default {
-  title: '3 Dataset / 1 Views / Metadata Detail Page View',
-  decorators: [],
-  parameters: {},
-};
 
 export const MetadataBodyViews = () => ({
   components: { MetadataBody },
@@ -335,9 +330,8 @@ export const MetadataLocationViews = () => ({
   data: () => ({
     genericProps4,
     genericPropsPlaceholder: {
-      details: [],
+      ...genericProps4,
       showPlaceholder: true,
-      fixedHeight: false,
     },
   }),
 });

@@ -37,6 +37,8 @@
             :label="labels.dataObjectIdentifier"
             readonly
             hint="DOI can be changed at the Dataset Publication Status"
+            hide-details="auto"
+            persistent-hint
             :error-messages="validationErrors.doi"
             :prepend-icon="mdiFingerprint"
             @change="doiField = $event"
@@ -49,13 +51,17 @@
         </v-col>
 
         <v-col>
-          <v-autocomplete :model-value="visibilityState"
-                          :items="[possibleVisibilityStates]"
-                          readonly
-                          :prepend-icon="mdiEye"
-                          :menu-icon="mdiArrowDownDropCircleOutline"
-                          persistent-hint
-                          :label="labels.visibilityState"
+          <v-autocomplete
+            :id="METADATA_STATE_INVISILBE"
+            :model-value="visibilityState"
+            :items="[possibleVisibilityStates]"
+            :readonly="isReadOnly(METADATA_STATE_INVISILBE)"
+            hide-details="auto"
+            persistent-hint
+            :hint="readOnlyHint(METADATA_STATE_INVISILBE)"
+            :prepend-icon="mdiEye"
+            :menu-icon="mdiArrowDownDropCircleOutline"
+            :label="labels.visibilityState"
           >
             <template v-slot:selection="{ item }">
               <MetadataStateChip style="font-size: 12px;" :state="item.value" />
@@ -72,6 +78,8 @@
             :label="labels.publisher"
             readonly
             hint="Publisher can't be changed"
+            hide-details="auto"
+            persistent-hint
             :error-messages="validationErrors.publisher"
             :prepend-icon="mdiEarth"
             @change="publisherField = $event"
@@ -83,8 +91,9 @@
 
         <v-col cols="6">
           <BaseDatePickerYear
-            :year='publicationYearField'
+            :year="publicationYearField"
             year-label="PublicationYear"
+            :yearProperty="METADATA_PUBLICATION_YEAR_PROPERTY"
             :readOnlyFields="readOnlyFields"
             :readOnlyExplanation="readOnlyExplanation"
             @yearChange="saveYear"
@@ -123,6 +132,8 @@ import {
   EDIT_METADATA_DOI_LABEL,
   EDIT_METADATA_PUBLICATION_YEAR_LABEL,
   PUBLICATION_STATE_PUBLISHED,
+  METADATA_STATE_INVISILBE,
+  METADATA_PUBLICATION_YEAR_PROPERTY,
 } from '@/factories/metadataConsts';
 
 import {
@@ -136,6 +147,8 @@ import {
 
 import {possibleVisibilityStates} from '@/factories/metaDataFactory';
 import BaseDatePickerYear from '@/components/BaseElements/BaseDatePickerYear.vue';
+
+import { readOnlyHint, isFieldReadOnly } from '@/factories/globalMethods';
 
 export default {
   name: 'EditPublicationInfo',
@@ -253,6 +266,12 @@ export default {
     },
   },
   methods: {
+    isReadOnly(dateProperty) {
+      return isFieldReadOnly(this.$props, dateProperty);
+    },
+    readOnlyHint(dateProperty) {
+      return readOnlyHint(this.$props, dateProperty);
+    },
     validateProperty(property, value) {
       return isFieldValid(
         property,
@@ -294,6 +313,8 @@ export default {
     },
   },
   data: () => ({
+    METADATA_STATE_INVISILBE,
+    METADATA_PUBLICATION_YEAR_PROPERTY,
     possibleVisibilityStates,
     mdiFingerprint,
     mdiEarth,

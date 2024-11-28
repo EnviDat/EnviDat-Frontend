@@ -119,8 +119,6 @@ const geomCollectionLocation = createLocation({
 
 export default {
   title: '3 Dataset / 2 Edit / Geo Data',
-  decorators: [],
-  parameters: {},
 };
 
 export const EditGeoPoint = () => ({

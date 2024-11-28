@@ -10,6 +10,7 @@
  */
 
 import BaseDraggableList from '@/components/BaseElements/BaseDraggableList.vue';
+import { METADATA_AUTHOR_SEQUENCE_PROPERTY, METADATA_AUTHORS_PROPERTY } from '@/factories/metadataConsts';
 import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
 
@@ -40,6 +41,17 @@ export const FilledList = {
 
 export const FilledAuthorsList = {
   args: { ...FilledList.args, useAuthorTags: true },
+};
+
+export const FilledAuthorsListReadOnly = {
+  args: {
+    ...FilledAuthorsList.args,
+    draggableProperty: METADATA_AUTHOR_SEQUENCE_PROPERTY,
+    readOnlyFields: [
+      METADATA_AUTHOR_SEQUENCE_PROPERTY,
+    ],
+    readOnlyExplanation: 'Fields are readonly for testing!',
+  },
 };
 
 export const MobileNormalCitation = {
