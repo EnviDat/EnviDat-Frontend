@@ -13,8 +13,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
-
 import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody.vue';
 import MetadataCitation from '@/modules/metadata/components/Metadata/MetadataCitation.vue';
 import MetadataDetails from '@/modules/metadata/components/Metadata/MetadataDetails.vue';
@@ -25,7 +23,6 @@ import MetadataFunding from '@/modules/metadata/components/Metadata/MetadataFund
 import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuthors.vue';
 
 import {
-  createHeader,
   createDetails,
   createPublications,
   createBody,
@@ -62,9 +59,6 @@ export default {
 };
 
 enhanceMetadatasTitleImage(metadata);
-
-const smallHeader = createHeader(metadata[0], true);
-const largeHeader = createHeader(metadata[2], false);
 
 const citation1 = createCitation(metadata[0]);
 const citation2 = createCitation(metadata[2]);
@@ -336,9 +330,8 @@ export const MetadataLocationViews = () => ({
   data: () => ({
     genericProps4,
     genericPropsPlaceholder: {
-      details: [],
+      ...genericProps4,
       showPlaceholder: true,
-      fixedHeight: false,
     },
   }),
 });

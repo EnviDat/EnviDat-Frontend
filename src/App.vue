@@ -97,7 +97,7 @@
         <TextBanner
             v-if="showCookieInfo"
             id="cookieBanner"
-            :style="`position: absolute; bottom: 0; left: 0; z-index: 1001; width: 100%; background-color: ${$vuetify.theme.themes.light.colors.highlight};`"
+            :style="`position: fixed; bottom: 0; left: 60px; z-index: 1001; width: calc(100vw - 60px); background-color: ${$vuetify.theme.themes.light.colors.highlight};`"
             :text="cookieInfoText"
             icon="cookie"
             deniedText="Okay"
