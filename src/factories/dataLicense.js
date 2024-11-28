@@ -125,7 +125,6 @@ export const availableLicensesForEditing =  [
   CC_BY_LICENSE_ID,
   CC_BY_SA_LICENSE_ID,
   CC_ZERO_LICENSE_ID,
-  WSL_DATA_LICENSE_ID,
 ]
 
 export function getAvailableLicensesForEditing() {
