@@ -207,6 +207,8 @@
                           :id="METADATA_URL_PROPERTY"
                           :label="labels.labelUrl"
                           :readonly="isReadOnly(METADATA_URL_PROPERTY)"
+                          hide-details="auto"
+                          persistent-hint
                           :hint="readOnlyHint(METADATA_URL_PROPERTY)"
                           :prepend-icon="mdiBookOpenVariantOutline"
                           :error-messages="validationErrors[METADATA_URL_PROPERTY]"

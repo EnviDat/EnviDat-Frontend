@@ -32,6 +32,7 @@ import {
   mergeEditingAuthor,
 } from '@/factories/authorFactory';
 
+import { METADATA_AUTHORS_PROPERTY } from '@/factories/metadataConsts';
 import unFormatedMetadataCards from './js/metadata';
 
 const metadataCards = [];
@@ -60,178 +61,199 @@ const preSelectedAuthors2 = extractedAuthors.filter(value => value.fullName.incl
 export default {
   title: '3 Dataset / 2 Edit / Author Infos',
   component: EditAuthorList,
-  argTypes: { listChanged: { action: 'listChanged' } },
+  // argTypes: { listChanged: { action: 'listChanged' } },
 };
 
-const Template = (args, { argTypes }) => ({
-  components: { EditAuthorList },
-  props: Object.keys(argTypes),
-  template: `<EditAuthorList :existing-authors="$props.existingAuthors"
-                             :authors-map="$props.authorsMap"
-                             :authors="localAuthors"
-              />`,
-  created() {
-    eventBus.on(SAVE_EDITING_AUTHOR, this.saveAuthor);
-    eventBus.on(SELECT_EDITING_AUTHOR, this.selectAuthor);
-    eventBus.on(CANCEL_EDITING_AUTHOR, this.cancelEditing);
-    eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.changeAuthors);
-  },
-  beforeMount() {
-    this.localAuthors = this.authors;
-  },
-  beforeUnmount() {
-    eventBus.off(SAVE_EDITING_AUTHOR, this.saveAuthor);
-    eventBus.off(SELECT_EDITING_AUTHOR, this.selectAuthor);
-    eventBus.off(CANCEL_EDITING_AUTHOR, this.cancelEditing);
-    eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.changeAuthors);
-  },
-  methods: {
-    removeAuthor(email) {
-      const matches = this.localAuthors.filter(auth => auth.email === email);
-
-      console.log('remove Author');
-      console.log(matches.length > 0);
-
-      if (matches.length > 0) {
-        const removeIndex = this.localAuthors.indexOf(matches[0]);
-        this.localAuthors.splice(removeIndex, 1);
-
-        console.log('remove index');
-        console.log(removeIndex);
-      }
+const Template = {
+  render: (args, { argTypes }) => ({
+    components: { EditAuthorList },
+    props: Object.keys(argTypes),
+    template: `<EditAuthorList v-bind="$props"
+                               :authors="localAuthors"
+                               :loading="storyLoading"
+                />`,
+    created() {
+      eventBus.on(SAVE_EDITING_AUTHOR, this.saveAuthor);
+      eventBus.on(SELECT_EDITING_AUTHOR, this.selectAuthor);
+      eventBus.on(CANCEL_EDITING_AUTHOR, this.cancelEditing);
+      eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.changeAuthors);
     },
-    selectAuthor(id) {
-      if (this.selectionId !== '') {
-        this.cancelEditing();
-      }
-
-      this.selectionId = id;
-      this.setSelected(this.selectionId, true);
+    beforeMount() {
+      this.localAuthors = this.authors;
     },
-    cancelEditing() {
-      this.setSelected(this.selectionId, false);
-      this.selectionId = '';
-      eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
+    beforeUnmount() {
+      eventBus.off(SAVE_EDITING_AUTHOR, this.saveAuthor);
+      eventBus.off(SELECT_EDITING_AUTHOR, this.selectAuthor);
+      eventBus.off(CANCEL_EDITING_AUTHOR, this.cancelEditing);
+      eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.changeAuthors);
     },
-    setSelected(id, selected) {
-      const auths = this.localAuthors;
+    methods: {
+      removeAuthor(email) {
+        const matches = this.localAuthors.filter(auth => auth.email === email);
 
-      for (let i = 0; i < auths.length; i++) {
-        const author = auths[i];
-        if (author.email === id) {
-          author.isSelected = selected;
-          this.$set(auths, i, author);
-          return;
+        console.log('remove Author');
+        console.log(matches.length > 0);
+
+        if (matches.length > 0) {
+          const removeIndex = this.localAuthors.indexOf(matches[0]);
+          this.localAuthors.splice(removeIndex, 1);
+
+          console.log('remove index');
+          console.log(removeIndex);
         }
-      }
+      },
+      selectAuthor(id) {
+        if (this.selectionId !== '') {
+          this.cancelEditing();
+        }
 
-    },
-    saveAuthor(newAuthor) {
-      this.updateAuthors(newAuthor);
-      this.cancelEditing();
-    },
-    updateAuthors(newAuthor) {
-      const auths = this.localAuthors;
+        this.selectionId = id;
+        this.setSelected(this.selectionId, true);
+      },
+      cancelEditing() {
+        this.setSelected(this.selectionId, false);
+        this.selectionId = '';
+        eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
+      },
+      setSelected(id, selected) {
+        const auths = this.localAuthors;
 
-      for (let i = 0; i < auths.length; i++) {
-        const r = auths[i];
-        if (r.localId) {
-          if (r.localId === newAuthor.localId) {
-//            this.$set(auths, i, newAuthor);
+        for (let i = 0; i < auths.length; i++) {
+          const author = auths[i];
+          if (author.email === id) {
+            author.isSelected = selected;
+            // this.$set(auths, i, author);
             return;
           }
-        } else if (r.email === newAuthor.email) {
-//          this.$set(auths, i, newAuthor);
-          return;
         }
-      }
 
-      auths.unshift(newAuthor);
-    },
-    changeAuthors(updateObj) {
-      this.loading = true;
+      },
+      saveAuthor(newAuthor) {
+        this.updateAuthors(newAuthor);
+        this.cancelEditing();
+      },
+      updateAuthors(newAuthor) {
+        const auths = this.localAuthors;
 
-      if (updateObj.object === EDITMETADATA_AUTHOR_DATACREDIT) {
-        const authorToMergeDataCredit = updateObj.data;
-
-        // overwrite the authors and stepKey so it will be saved as if it was a EDITMETADATA_AUTHOR_LIST change (to the list of authors)
-        this.localAuthors = mergeAuthorsDataCredit(this.localAuthors, authorToMergeDataCredit);
-      }
-
-      if (updateObj.object === EDITMETADATA_AUTHOR_LIST) {
-        this.localAuthors = updateObj.data.authors;
-      }
-
-      if (updateObj.object === EDITMETADATA_AUTHOR) {
-        const updatedAuthor = updateObj.data;
-
-        let changed = false;
-
-        for (let i = 0; i < this.localAuthors.length; i++) {
-          const auth = this.localAuthors[i];
-
-          const email = auth.email;
-          const fullName = auth.fullName;
-
-          const searchAuthorFullName = getAuthorName({
-            firstName: updatedAuthor.firstName,
-            lastName: updatedAuthor.lastName,
-          });
-
-          if (email === updatedAuthor.email
-            || fullName === searchAuthorFullName){
-
-            const mergedAuthor = mergeEditingAuthor(updatedAuthor, auth);
-
-            // this.authors[i] = createAuthor(updatedAuthor);
-            this.$set(this.localAuthors, i, mergedAuthor);
-            // use $set to make the author entry reactive
-            // this.$set(this.authors, i, author);
-
-            changed = true;
-            console.log(`Updated author ${ email } ${ fullName }`);
-            break;
+        for (let i = 0; i < auths.length; i++) {
+          const r = auths[i];
+          if (r.localId) {
+            if (r.localId === newAuthor.localId) {
+              auths[i] = newAuthor;
+  //            this.$set(auths, i, newAuthor);
+              return;
+            }
+          } else if (r.email === newAuthor.email) {
+            auths[i] = newAuthor;
+  //          this.$set(auths, i, newAuthor);
+            return;
           }
         }
 
-        if (!changed) {
-          this.localAuthors.push(updatedAuthor);
+        auths.unshift(newAuthor);
+      },
+      changeAuthors(updateObj) {
+        this.storyLoading = true;
 
-          this.selectAuthor(updatedAuthor.email);
-          // this.$set(this.authors, this.authors.length - 1, updatedAuthor);
+        if (updateObj.object === EDITMETADATA_AUTHOR_DATACREDIT) {
+          const authorToMergeDataCredit = updateObj.data;
+
+          // overwrite the authors and stepKey so it will be saved as if it was a EDITMETADATA_AUTHOR_LIST change (to the list of authors)
+          this.localAuthors = mergeAuthorsDataCredit(this.localAuthors, authorToMergeDataCredit);
         }
-      }
 
-      if (updateObj.object === REMOVE_EDITING_AUTHOR) {
-        this.removeAuthor(updateObj.data);
-      }
+        if (updateObj.object === EDITMETADATA_AUTHOR_LIST) {
+          this.localAuthors = updateObj.data.authors;
+        }
 
-      console.log('FullEditingAuthorView updated authors');
-      console.log(this.localAuthors);
+        if (updateObj.object === EDITMETADATA_AUTHOR) {
+          const updatedAuthor = updateObj.data;
 
-      setTimeout(() => {
-        this.loading = false;
-        eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
-      }, 1000)
+          let changed = false;
+
+          for (let i = 0; i < this.localAuthors.length; i++) {
+            const auth = this.localAuthors[i];
+
+            const email = auth.email;
+            const fullName = auth.fullName;
+
+            const searchAuthorFullName = getAuthorName({
+              firstName: updatedAuthor.firstName,
+              lastName: updatedAuthor.lastName,
+            });
+
+            if (email === updatedAuthor.email
+              || fullName === searchAuthorFullName){
+
+              const mergedAuthor = mergeEditingAuthor(updatedAuthor, auth);
+
+              // this.authors[i] = createAuthor(updatedAuthor);
+              //  this.$set(this.localAuthors, i, mergedAuthor);
+              this.localAuthors[i] = mergedAuthor;
+
+              // use $set to make the author entry reactive
+              // this.$set(this.authors, i, author);
+
+              changed = true;
+              console.log(`Updated author ${ email } ${ fullName }`);
+              break;
+            }
+          }
+
+          if (!changed) {
+            this.localAuthors.push(updatedAuthor);
+
+            this.selectAuthor(updatedAuthor.email);
+            // this.$set(this.authors, this.authors.length - 1, updatedAuthor);
+          }
+        }
+
+        if (updateObj.object === REMOVE_EDITING_AUTHOR) {
+          this.removeAuthor(updateObj.data);
+        }
+
+        console.log('FullEditingAuthorView updated authors');
+        console.log(this.localAuthors);
+
+        setTimeout(() => {
+          this.storyLoading = false;
+          eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
+        }, 1000)
+      },
     },
-  },
-  data: () => ({
-    loading: false,
-    selectionId: '',
-    localAuthors: undefined,
+    data: () => ({
+      storyLoading: false,
+      selectionId: '',
+      localAuthors: undefined,
+    }),
   }),
-});
+}
 
-export const EditExistingAuthors = Template.bind({});
-EditExistingAuthors.args = {
-  authors: preSelectedAuthors2,
-  existingAuthors: extractedAuthors,
-  authorsMap,
+export const EditExistingAuthors = {
+  ...Template,
+  args: {
+    authors: preSelectedAuthors2,
+    existingAuthors: extractedAuthors,
+    authorsMap,
+  },
+}
+
+export const EditExistingAuthorsReadOnly = {
+  args: {
+    ...EditExistingAuthors.args,
+    readOnlyFields: [
+      METADATA_AUTHORS_PROPERTY,
+    ],
+    readOnlyExplanation: 'Fields are readonly for testing!',
+  },
+}
+
+export const EditLargeAuthorList = {
+  ...Template,
+  args: {
+    authors: Object.values(authorsMap),
+    existingAuthors: Object.values(authorsMap),
+    authorsMap,
+  },
 };
 
-export const EditLargeAuthorList = Template.bind({});
-EditLargeAuthorList.args = {
-  authors: Object.values(authorsMap),
-  existingAuthors: Object.values(authorsMap),
-  authorsMap,
-};
