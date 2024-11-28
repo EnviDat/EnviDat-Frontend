@@ -55,6 +55,12 @@ import {
 } from '@/factories/eventBus';
 import { createLocation } from '@/factories/geoFactory';
 
+export default {
+  title: '3 Dataset / 1 Views',
+  decorators: [],
+  parameters: {},
+};
+
 enhanceMetadatasTitleImage(metadata);
 
 const smallHeader = createHeader(metadata[0], true);
@@ -185,11 +191,6 @@ const genericProps5 = {
   },
 };
 
-export default {
-  title: '3 Dataset / 1 Views / Metadata Detail Page View',
-  decorators: [],
-  parameters: {},
-};
 
 export const MetadataBodyViews = () => ({
   components: { MetadataBody },
