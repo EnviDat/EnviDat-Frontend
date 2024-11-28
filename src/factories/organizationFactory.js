@@ -1,3 +1,4 @@
+
 const ruBarColors = () => {
   const barColors = [
     '#874540','#954D59','#9C5A74','#9B6A90','#907DA8','#7D92BC','#62A5C7','#45B8C8','#38C9C1','#4DD8B1','#75E59C','#A3EF86','#D5F673',
@@ -7,7 +8,74 @@ const ruBarColors = () => {
   return barColors.reverse();
 }
 
-export const organizationSeries = (orgaDatasetMap ) => {
+export const getYearDatasetMap = (datasets) => {
+
+  const yearMap = new Map();
+
+  for (const dSet of datasets) {
+
+    let year
+    try {
+      year = JSON.parse(dSet.publication).publication_year;
+    } catch (e) {
+      console.error(`JSON.parse error: ${e}`);
+    }
+
+    if (year) {
+      if (typeof year === 'number') {
+        year = year.toString()
+      }
+
+      if (yearMap.has(year)) {
+        const dList = yearMap.get(year);
+        dList.push(dSet);
+      } else {
+        yearMap.set(year, [dSet]);
+      }
+    }
+  }
+
+  return yearMap;
+}
+
+export const getOrgaDatasetMap = (datasets) => {
+  const datasetMap = new Map();
+
+  for (let i = 0; i < datasets.length; i++) {
+    const dataset = datasets[i];
+
+    // const key = dataset?.owner_org || dataset?.organization.id;
+    const key = dataset.organization.title;
+
+    if (key) {
+      const orgaDatasets = datasetMap.get(key);
+      if (orgaDatasets) {
+
+        orgaDatasets.count += 1
+        orgaDatasets.datasets.push(dataset);
+      } else {
+        datasetMap.set(key, {
+          count: 1,
+          datasets: [dataset],
+        });
+      }
+    }
+  }
+
+  const keys = datasetMap.keys();
+
+  for (const k of keys) {
+    const orga = datasetMap.get(k);
+    const orgaDatasets = orga.datasets;
+    orga.yearMap = getYearDatasetMap(orgaDatasets);
+  }
+
+  return datasetMap;
+}
+
+
+
+export const organizationSeries = (orgaDatasetMap) => {
 
   const series = [];
   const keys = Array.from(orgaDatasetMap.keys());
