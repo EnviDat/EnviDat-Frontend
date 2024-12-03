@@ -115,7 +115,6 @@ import {
 
 import { useReviewStore } from '@/modules/metadata/store/reviewStore';
 import { convertArrayToUrlString } from '@/factories/stringFactory';
-import { getIcon } from '@/factories/imageFactory';
 import { defineAsyncComponent, markRaw } from 'vue';
 
 import { formatDate } from '@/factories/dateFactory';

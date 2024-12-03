@@ -22,7 +22,6 @@ export default {
       docgen: 'vue-component-meta',
     },
   },
-  docs: { autodocs: false },
 
   // reference
   // https://stackoverflow.com/questions/76297669/nx-16-cant-configure-a-proxy-in-storybook-vite-and-react-library

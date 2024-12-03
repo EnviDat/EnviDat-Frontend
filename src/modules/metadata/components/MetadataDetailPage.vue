@@ -172,7 +172,6 @@ import {
   getFrontendJSONForStep,
 } from '@/factories/mappingFactory';
 
-import { getIcon } from '@/factories/imageFactory';
 import { convertArrayToUrlString } from '@/factories/stringFactory';
 
 import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';

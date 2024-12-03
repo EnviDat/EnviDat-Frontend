@@ -60,7 +60,7 @@ export default {
   computed: {
   },
   methods: {
-    loadImagePreview(url) {
+    loadImagePreview() {
       this.imagePreviewError = null;
       this.loadingImagePreview = true;
 
