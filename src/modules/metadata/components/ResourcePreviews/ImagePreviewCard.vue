@@ -60,18 +60,16 @@ export default {
   computed: {
   },
   methods: {
-    loadImagePreview() {
+    loadImagePreview(url) {
       this.imagePreviewError = null;
       this.loadingImagePreview = true;
 
       try {
-        this.$nextTick(() => {
-          const imageRef = this.$refs.imagePreview;
+        const imageRef = this.$refs.imagePreview;
 
-          if (imageRef && imageRef.$el) {
-            this.urlImage = imageRef.$el;
-          }
-        });
+        if (imageRef?.$el) {
+          this.urlImage = url;
+        }
       } catch (e) {
         this.imagePreviewError = e;
         console.error(`Loading image preview failed: ${e}`);
