@@ -238,9 +238,6 @@ export default {
    * @description load all the icons once before the first component's rendering.
    */
   beforeMount() {
-    this.fileSizeIcon = getIcon('fileSize');
-    this.fileIcon = getIcon('file');
-
     window.scrollTo(0, 0);
   },
   /**
@@ -626,14 +623,9 @@ export default {
     loadResources() {
       const currentContent = this.metadataContent;
 
-      this.resources =
-        createResources(currentContent, this.user, this.userOrganizationIds) ||
-        {};
+      this.resources = createResources(currentContent, this.user, this.userOrganizationIds) || {};
 
       const license = createLicense(currentContent);
-
-      this.resources.fileSizeIcon = this.fileSizeIcon;
-      this.resources.fileIcon = this.fileIcon;
 
       if (this.resources.resources) {
         this.configInfos = getConfigFiles(this.resources.resources);
@@ -1043,8 +1035,6 @@ export default {
     authors: null,
     amountOfResourcesToShowDetailsLeft: 4,
     notFoundBackPath: 'browse',
-    fileSizeIcon: null,
-    fileIcon: null,
     eventBus,
     stationsConfig: null,
     currentStation: null,

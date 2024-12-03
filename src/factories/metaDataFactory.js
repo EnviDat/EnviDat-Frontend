@@ -18,7 +18,6 @@ import { ACCESS_LEVEL_PUBLIC_VALUE, getAllowedUserNamesArray } from '@/factories
 import {
   METADATA_CONTACT_EMAIL,
   METADATA_CONTACT_FULLNAME,
-  METADATA_DEPRECATEDRESOURCES_PROPERTY,
   METADATA_STATE_DRAFT,
   METADATA_STATE_INVISILBE,
   METADATA_STATE_VISILBE, METADATA_TITLE_PROPERTY,
@@ -414,6 +413,9 @@ export function createResources(
     });
   }
 
+  // the deprecated resources have to be at the bottom of the list
+  resources.sort((a, b) => a.deprecated && !b.deprecated ? 1 : -1);
+
   return {
     metadataId: dataset.id,
     [METADATA_TITLE_PROPERTY]: dataset.title,
@@ -718,16 +720,3 @@ export function isTagSelected(tagName, selectedTagNames) {
   return selectedTagNames.indexOf(tagName) >= 0;
 }
 
-export function unpackDeprecatedResources(customFields) {
-  let unpackedResourceIds = [];
-
-  if (customFields?.length > 0) {
-    const customFieldEntry = customFields.filter(
-      entry => entry?.fieldName === METADATA_DEPRECATEDRESOURCES_PROPERTY,
-    )[0];
-    const stringResourceIds = customFieldEntry?.content || '[]';
-    unpackedResourceIds = JSON.parse(stringResourceIds);
-  }
-
-  return unpackedResourceIds;
-}

@@ -889,7 +889,6 @@ export default {
     },
     saveButtonEnabled: false,
     fileSizeIcon: getIcon('fileSize'),
-    fileIcon: getIcon('file'),
     validationErrors: {
       name: null,
       description: null,
