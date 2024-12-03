@@ -103,6 +103,7 @@
             :id="res.id"
             :description="res.description"
             :url="res.url"
+            :name="res.name"
             :restrictedUrl="res.restrictedUrl"
             :created="res.created"
             :lastModified="res.lastModified"
