@@ -413,9 +413,6 @@ export function createResources(
     });
   }
 
-  // the deprecated resources have to be at the bottom of the list
-  resources.sort((a, b) => a.deprecated && !b.deprecated ? 1 : -1);
-
   return {
     metadataId: dataset.id,
     [METADATA_TITLE_PROPERTY]: dataset.title,

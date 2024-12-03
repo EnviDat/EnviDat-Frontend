@@ -164,9 +164,9 @@ export function enhanceResourcesWithMetadataExtras(metdataExtras, resources) {
       }
     }
 
+    // the deprecated resources have to be at the bottom of the list
+    resources.sort((a, b) => a.deprecated && !b.deprecated ? 1 : -1);
   }
-
-  enhanceElementsWithStrategyEvents(resources, SHOW_DATA_PREVIEW_PROPERTY);
 
   return resources;
 }

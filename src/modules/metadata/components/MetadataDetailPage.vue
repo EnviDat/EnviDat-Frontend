@@ -158,6 +158,7 @@ import {
 import {
   enhanceElementsWithStrategyEvents,
   enhanceResourcesWithMetadataExtras,
+  SHOW_DATA_PREVIEW_PROPERTY,
 } from '@/factories/strategyFactory';
 
 import { getEventsForPageAndName } from '@/modules/matomo/store/matomoStore';
@@ -638,6 +639,8 @@ export default {
           this.metadataContent.extras,
           this.resources.resources,
         );
+
+        enhanceElementsWithStrategyEvents(this.resources.resources, SHOW_DATA_PREVIEW_PROPERTY);
 
         this.resources.dates = getFrontendDates(this.metadataContent.date);
       }
