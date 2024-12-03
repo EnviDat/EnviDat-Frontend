@@ -453,11 +453,11 @@ export function createCitation(dataset) {
     citationText: text,
     doi,
     doiUrl,
-    citationXmlLink: `${ckanDomain}/dataset/${dataset.name}/export/datacite.xml`,
-    citationIsoXmlLink: `${ckanDomain}/dataset/${dataset.name}/export/iso19139.xml`,
-    citationGCMDXmlLink: `${ckanDomain}/dataset/${dataset.name}/export/gcmd_dif.xml`,
-    citationBibtexXmlLink: `${ckanDomain}/dataset/${dataset.name}/export/bibtex.bib`,
-    citationRisXmlLink: `${ckanDomain}/dataset/${dataset.name}/export/ris.ris`,
+    citationXmlLink: `${ckanDomain}/converters-api/internal-dataset/convert/datacite?package-id=${dataset.name}`,
+    citationIsoXmlLink: `${ckanDomain}/converters-api/internal-dataset/convert/iso?package-id=${dataset.name}`,
+    citationGCMDXmlLink: `${ckanDomain}/converters-api/internal-dataset/convert/dif?package-id=${dataset.name}`,
+    citationBibtexXmlLink: `${ckanDomain}/converters-api/internal-dataset/convert/bibtex?package-id=${dataset.name}`,
+    citationRisXmlLink: `${ckanDomain}/converters-api/internal-dataset/convert/ris?package-id=${dataset.name}`,
   };
 }
 
