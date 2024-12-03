@@ -41,8 +41,8 @@
     }
   ],
   "metadataConfig": {
-    "loadLocalFile": false,
-    "localFileUrl": "https://frontend-static.s3-zh.os.switch.ch/metadata/packagelist/packagelist.json",
+    "loadLocalFile": true,
+    "localFileUrl": "./testdata/packagelist.json",
     "publicationsConfig": {
       "resolveIds": true,
       "idPrefix": "*",

@@ -98,5 +98,12 @@ public/version_*
 
 public/testdata/config.json
 public/testdata/*user*.json
+public/testdata/*localUser*.js
 public/testdata/*password*.json
 tests/unit/regression
+
+# Custom additions
+collaborator_search.json
+package_create.json
+packagelist.json
+tag_list.json

@@ -11,12 +11,21 @@ import { isUserGroupAdmin } from '@/factories/userEditingValidations';
 import { enhanceElementsWithStrategyEvents, SELECT_EDITING_DATASET_PROPERTY } from '@/factories/strategyFactory';
 
 const useTestdata = import.meta.env?.VITE_USE_TESTDATA === 'true';
-const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
-const API_ROOT = import.meta.env.VITE_API_ROOT;
+
+// don't use an api base url or API_ROOT when using testdata
+let API_BASE = '';
+let API_ROOT = '';
+
+if (!useTestdata) {
+  API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
+  API_ROOT = import.meta.env.VITE_API_ROOT;
+}
+
 const GET_ORGANIZATIONS_URL = useTestdata ? './testdata/organization_list.json' : 'organization_list';
 const GET_ORGANIZATION_URL = useTestdata ? './testdata/organization_show.json' : 'organization_show';
-const ACTION_USER_ORGANIZATION_IDS = useTestdata ? './testdata/organization_list_for_user.json' : 'organization_list_for_user';
+const ACTION_USER_ORGANIZATION_IDS = useTestdata ? '/testdata/organization_list_for_user.json' : 'organization_list_for_user';
 const ACTION_USER_GET_ORGANIZATIONS_SEARCH = useTestdata ? './testdata/organization_search.json' : 'package_search';
+
 
 export const useOrganizationsStore = defineStore({
   id: 'organizations',

@@ -101,6 +101,7 @@ export default ({ mode, config }) => {
       resolve: {
           alias: [
             { find: '@', replacement: path.resolve(__dirname, 'src') },
+            { find: '@public', replacement: path.resolve(__dirname, 'public') },
             { find: '~', replacement: path.resolve(__dirname) },
             { find: 'leaflet/dist/leaflet.css', replacement: 'leaflet/dist/leaflet.css' },
             { find: 'leaflet', replacement: 'leaflet/dist/leaflet.js' },
@@ -180,10 +181,15 @@ export default ({ mode, config }) => {
       host: '0.0.0.0',
       port: 8080,
       proxy: {
-        '/api': {
+        '/api/statistics': {
           target: 'https://statistics.wsl.ch',
           changeOrigin: true,
-          rewrite: proxyPath => proxyPath.replace(/^\/api/, ''),
+          rewrite: (path) => path.replace(/^\/api\/statistics/, ''),
+        },
+        '/api': {
+          target: 'http://envidat04.wsl.ch',
+          changeOrigin: true,
+          secure: false,
         },
       },
     },
