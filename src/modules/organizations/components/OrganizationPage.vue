@@ -6,7 +6,7 @@
   import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
   import {
     enhanceDatasetWithResearchUnit,
-    getOrgaDatasetMap,
+    getOrgaDatasetMap, getOrganizationMap,
     organizationSeries,
   } from '@/factories/organizationFactory';
   import DatasetBarChart from '@/components/Charts/DatasetBarChart.vue';
@@ -61,6 +61,9 @@
   onMounted(async () => {
     orgas.value = await orgaStore.loadAllOrganizations();
 
+    const tree = getOrganizationMap(orgas.value);
+    console.log(tree);
+
     orgaDatasetsMap.value = loadOrgaDatasets();
 
     const yearLables = new Set();
@@ -92,7 +95,7 @@
     <v-row no-gutters>
       <v-col >
         <DatasetBarChart
-          height="600"
+          :height="600"
           :data="ruChartDatasets"
           :options="ruChartOptions"
           :plugins="[ChartDataLabels]"

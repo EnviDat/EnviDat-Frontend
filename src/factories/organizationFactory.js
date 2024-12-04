@@ -145,9 +145,31 @@ export function enhanceDatasetWithResearchUnit(datasets, researchUnits) {
 }
 
 
-export function getOrganizationTree(organizations) {
+export function getOrganizationMap(organizations) {
 
+  const organizationMap = new Map();
 
+  for (let i = 0; i < organizations.length; i++) {
+    const orga = organizations[i];
+    let key = orga.name;
+
+    if (orga.group?.length > 0) {
+      key = orga.group[0].name;
+    }
+
+    const orgaEntry = organizationMap.get(key);
+    if (orgaEntry) {
+      orgaEntry.push(orga);
+    } else {
+      organizationMap.set(key, [orga]);
+    }
+  }
+
+  return organizationMap;
+
+}
+
+export function getOrganizationTree(organizationMap) {
 /*
   {
     id: 6,
