@@ -20,7 +20,7 @@ import {
 
 import { getFeatureCollectionFromGcNetStations } from '@/factories/chartFactory';
 import { createLocation } from '@/factories/geoFactory';
-import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
+import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 import txtPreviewFile from './js/previewTextFile.txt';
 
 import stationsConfig from './testdata/stationsConfig.json';
@@ -46,10 +46,6 @@ const geoServiceConfig = {
 export default {
   title: '1 Base / Layouts / Generic Fullscreen Modal',
   // component: TextCardListLayout,
-  decorators: [],
-  parameters: {
-    ...envidatViewportParameters,
-  },
 };
 
 

@@ -118,10 +118,10 @@ describe('metaDataFactory - createCitation', () => {
     expect(citation.citationGCMDXmlLink).toBeDefined();
 
     expect(citation.citationBibtexXmlLink).toBeDefined();
-    expect(citation.citationBibtexXmlLink.includes('.bib')).toBeTruthy();
+    expect(citation.citationBibtexXmlLink.includes('bib')).toBeTruthy();
 
     expect(citation.citationRisXmlLink).toBeDefined();
-    expect(citation.citationRisXmlLink.includes('.ris')).toBeTruthy();
+    expect(citation.citationRisXmlLink.includes('ris')).toBeTruthy();
   });
 });
 

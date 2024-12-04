@@ -789,7 +789,7 @@ export default {
           const imageRefs = vm.$refs.filePreview;
           const imageRef =
             imageRefs instanceof Array ? imageRefs[0] : imageRefs;
-          imageRef.src = url;
+          imageRef.$el.src = url;
         } catch (e) {
           vm.imagePreviewError = e;
           vm.loadingImagePreview = false;
@@ -889,7 +889,6 @@ export default {
     },
     saveButtonEnabled: false,
     fileSizeIcon: getIcon('fileSize'),
-    fileIcon: getIcon('file'),
     validationErrors: {
       name: null,
       description: null,

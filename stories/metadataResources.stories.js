@@ -18,19 +18,15 @@ import MetadataResources from '@/modules/metadata/components/Metadata/MetadataRe
 import { createLicense, createResources } from '@/factories/metaDataFactory';
 import { getFrontendDates } from '@/factories/mappingFactory';
 
-import doiIcon from '../src/assets/icons/doi.png';
-import fileSizeIcon from '../src/assets/icons/fileSize.png';
-import fileIcon from '../src/assets/icons/file.png';
-
 // metadata gets enhance in the storybook config
 import metadata from './js/metadata';
 import {
   mobileLargeViewportParams,
   mobileViewportParams,
   tabletViewportParams
-} from '~/stories/js/envidatViewports.js';
+} from './js/envidatViewports';
 
-const resources1 = createResources(metadata[1]);
+const resources1 = createResources(metadata[0]);
 const resources2 = createResources(metadata[2]);
 
 const license1 = createLicense(metadata[1]);
@@ -39,7 +35,16 @@ const license2 = createLicense(metadata[2]);
 const resources1Dates = getFrontendDates(metadata[1].date);
 const resources2Dates = getFrontendDates(metadata[2].date);
 
+const deprecatedMetadata = metadata[3];
 
+for (let j = 0; j < deprecatedMetadata.resources.length; j++) {
+  const res = deprecatedMetadata.resources[j];
+  if (j % 2 === 0) {
+    res.deprecated = true;
+  }
+}
+
+const deprecatedResources1 = createResources(deprecatedMetadata);
 
 export default {
   title: '3 Dataset / 1 Views / Metadata Resources',
@@ -61,9 +66,13 @@ export const WithResources = {
     resources: resources1.resources,
     dates: resources1Dates,
     showPlaceholder: false,
-    doiIcon,
-    fileIcon,
-    fileSizeIcon,
+  }
+}
+
+export const WithDeprecatedResources = {
+  args: {
+    ...WithResources.args,
+    resources: deprecatedResources1.resources,
   }
 }
 
@@ -84,9 +93,6 @@ export const WithProtectedResources = {
     resources: resources2.resources,
     dates: resources2Dates,
     showPlaceholder: false,
-    doiIcon,
-    fileIcon,
-    fileSizeIcon,
   }
 }
 
