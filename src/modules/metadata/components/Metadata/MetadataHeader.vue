@@ -520,7 +520,13 @@
           >
         </v-col> -->
         <v-col v-if="publicationYear" class="flex-grow-0 px-1">
-          <v-chip small>{{ publicationYear }}</v-chip>
+          <v-tooltip location='bottom'>
+            <template v-slot:activator="{ props }">
+              <v-chip v-bind="props" small>{{ publicationYear }}</v-chip>
+            </template>
+
+            Publication Year
+          </v-tooltip>
         </v-col>
       </v-row>
     </v-card-actions>
