@@ -20,6 +20,7 @@ const metadatas = metadataFile.result;
 export default {
   title: '1 Base / Charts / DatasetBarChart',
   component: DatasetBarChart,
+//  decorators: [() => ({ template: '<div style="height: 500px;"><story/></div>' })],
 };
 
 const barColors = [
@@ -29,14 +30,6 @@ const barColors = [
 ];
 barColors.reverse();
 
-const orgaDatasetMap = getOrgaDatasetMap(metadatas);
-const series = organizationSeries(orgaDatasetMap);
-
-const datasets = series.map((s) => ({
-  label: s.name,
-  data: s.data,
-  backgroundColor: s.color,
-}));
 
 const labels = [
   'January',
@@ -55,65 +48,10 @@ const labels = [
 */
 ];
 
-
-
-const keys = Array.from(orgaDatasetMap.keys());
-
-const yearLables = new Set();
-for (const [orgaName, value] of orgaDatasetMap) {
-  const yearMap = value.yearMap;
-
-  for (const year of yearMap.keys()) {
-    yearLables.add(year);
-  }
-}
-
-
-const stackedData = {
-  labels: Array.from(yearLables).reverse(),
-  datasets: [
-    {
-      label: 'Dataset 1',
-      data: [10, 20, 30],
-      backgroundColor: barColors[0],
-    },
-    {
-      label: 'Dataset 2',
-      data: [44, 23, 234],
-      backgroundColor: barColors[1],
-    },
-    {
-      label: 'Dataset 3',
-      data: [87, 20, 7],
-      backgroundColor: barColors[2],
-    },
-  ],
-};
-
-const stackedOptions = {
-  plugins: {
-    title: {
-      display: true,
-        text: 'Chart.js Bar Chart - Stacked',
-    },
-  },
-  responsive: true,
-    scales: {
-    x: {
-      stacked: true,
-    },
-    y: {
-      stacked: true,
-    },
-  },
-}
-
-
 export const Basic = {
   args: {
     data: {
-      // labels: keys,
-      labels: Array.from(yearLables).reverse(),
+      labels,
       datasets: [
         {
           label: 'Dataset 1',
@@ -147,6 +85,62 @@ export const Basic = {
   },
 }
 
+
+const orgaDatasetMap = getOrgaDatasetMap(metadatas);
+
+const yearLables = new Set();
+for (const [orgaName, value] of orgaDatasetMap) {
+  const yearMap = value.yearMap;
+
+  for (const year of yearMap.keys()) {
+    yearLables.add(year);
+  }
+}
+
+const yearsSorted = Array.from(yearLables).sort();
+
+const series = organizationSeries(orgaDatasetMap, yearsSorted);
+
+const stackedData = {
+  labels: Array.from(yearLables).reverse(),
+  datasets: [
+    {
+      label: 'Dataset 1',
+      data: [10, 20, 30],
+      backgroundColor: barColors[0],
+    },
+    {
+      label: 'Dataset 2',
+      data: [44, 23, 234],
+      backgroundColor: barColors[1],
+    },
+    {
+      label: 'Dataset 3',
+      data: [87, 20, 7],
+      backgroundColor: barColors[2],
+    },
+  ],
+};
+
+const stackedOptions = {
+  plugins: {
+    title: {
+      display: true,
+      text: 'Chart.js Bar Chart - Stacked',
+    },
+  },
+  responsive: true,
+  scales: {
+    x: {
+      stacked: true,
+    },
+    y: {
+      stacked: true,
+    },
+  },
+}
+
+
 export const Stacked = {
   args: {
     data: stackedData,
@@ -157,9 +151,8 @@ export const Stacked = {
 export const StackedOrgasDatasetPerYear = {
   args: {
     data: {
-      labels: Array.from(yearLables)
-        .reverse(),
-      datasets,
+      labels: yearsSorted,
+      datasets: series,
     },
     options: stackedOptions,
   },

@@ -13,6 +13,16 @@
   ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale, LinearScale);
 
   const { data, options } = defineProps({
+    id: {
+      type: String,
+      default: 'DatasetPieChart',
+      required: false,
+    },
+    height: {
+      type: Number,
+      default: 500,
+      required: false,
+    },
     data: {
       type: Object,
       default: undefined,
@@ -23,17 +33,25 @@
       default: undefined,
       required: true,
     },
+    plugins: {
+      type: Array,
+      default: undefined,
+      required: false,
+    },
   });
   
 
 </script>
 
 <template>
-  <Pie
-    id="DatasetPieChart"
-    :options
-    :data
-  />
+  <v-card :height >
+    <Pie
+      :id
+      :options
+      :data
+      :plugins
+    />
+  </v-card>
 </template>
 
 <style scoped>

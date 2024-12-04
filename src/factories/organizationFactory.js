@@ -38,14 +38,14 @@ export const getYearDatasetMap = (datasets) => {
   return yearMap;
 }
 
-export const getOrgaDatasetMap = (datasets) => {
+export const getOrgaDatasetMap = (datasets, groupForResearchUnit = false) => {
   const datasetMap = new Map();
 
   for (let i = 0; i < datasets.length; i++) {
     const dataset = datasets[i];
 
     // const key = dataset?.owner_org || dataset?.organization.id;
-    const key = dataset.organization.title;
+    const key = groupForResearchUnit ? dataset.ruName : dataset.organization.title;
 
     if (key) {
       const orgaDatasets = datasetMap.get(key);
@@ -75,7 +75,7 @@ export const getOrgaDatasetMap = (datasets) => {
 
 
 
-export const organizationSeries = (orgaDatasetMap) => {
+export const organizationSeries = (orgaDatasetMap, yearLabels) => {
 
   const series = [];
   const keys = Array.from(orgaDatasetMap.keys());
@@ -83,26 +83,86 @@ export const organizationSeries = (orgaDatasetMap) => {
   for (const [orgaName, value] of orgaDatasetMap) {
     const index = keys.indexOf(orgaName);
     const data = [];
-
     const yearMap = value.yearMap;
 
-    for (const year of yearMap.keys()) {
-      const amount = yearMap.get(year)?.length || 0;
+    for (const year of yearLabels) {
+      const amount = yearMap.get(year)?.length || null;
       data.push(amount);
     }
 
     series.push({
-      name: orgaName,
+      label: orgaName,
       data,
-      color: ruBarColors()[index],
-      /*
-      dataSorting: {
-        enabled: true,
-        matchByName: true
-      },
-      */
+      backgroundColor: ruBarColors()[index],
     });
   }
 
   return series;
+}
+
+export function getResearchUnit(orgaName, researchUnits) {
+  const units = researchUnits.researchUnits;
+
+  for (let i = 0; i < units.length; ++i) {
+    const unit = units[i];
+    const ruName = unit.name;
+    const ruNameLower = unit.name.toLowerCase();
+
+    if (ruNameLower.includes(orgaName.toLowerCase())) {
+      return ruName;
+    }
+
+    if (unit.groups.length > 0) {
+      const groups = unit.groups;
+
+      for (let j = 0; j < groups.length; ++j) {
+        const groupName = groups[j].toLowerCase();
+
+        if (groupName.includes(orgaName.toLowerCase())) {
+          return ruName;
+        }
+      }
+    }
+
+  }
+
+  return 'Others';
+}
+
+export function enhanceDatasetWithResearchUnit(datasets, researchUnits) {
+  const ruDatasets = [];
+
+  for (let i = 0; i < datasets.length; ++i) {
+    const dSet = datasets[i];
+
+    const orgaName = dSet.organization.title;
+    dSet.ruName = getResearchUnit(orgaName, researchUnits);
+
+    ruDatasets.push(dSet);
+  }
+
+  return ruDatasets;
+}
+
+
+export function getOrganizationTree(organizations) {
+
+
+/*
+  {
+    id: 6,
+      title: 'vuetify :',
+    children: [
+    {
+      id: 7,
+      title: 'src :',
+      children: [
+        { id: 8, title: 'index : ts' },
+        { id: 9, title: 'bootstrap : ts' },
+      ],
+    },
+  ],
+  },
+*/
+
 }

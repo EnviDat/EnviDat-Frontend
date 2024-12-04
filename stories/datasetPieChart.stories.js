@@ -15,6 +15,7 @@ import DatasetPieChart from '@/components/Charts/DatasetPieChart.vue';
 export default {
   title: '1 Base / Charts / DatasetPieChart',
   component: DatasetPieChart,
+//  decorators: [() => ({ template: '<div style="height: 500px;"><story/></div>' })],
 };
 
 

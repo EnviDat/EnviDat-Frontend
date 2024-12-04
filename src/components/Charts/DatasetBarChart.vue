@@ -5,26 +5,44 @@
   ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
 
   const { data, options } = defineProps({
+    id: {
+      type: String,
+      default: 'DatasetBarChart',
+      required: false,
+    },
+    height: {
+      type: Number,
+      default: 500,
+      required: false,
+    },
     data: {
       type: Object,
-      default: undefined,
+      default: () => {},
       required: true,
     },
     options: {
       type: Object,
-      default: undefined,
+      default: () => {},
       required: true,
+    },
+    plugins: {
+      type: Array,
+      default: undefined,
+      required: false,
     },
   })
 
 </script>
 
 <template>
-  <Bar
-    id="DatasetBarChart"
-    :options
-    :data
-  />
+  <v-card :height >
+    <Bar
+      :id
+      :options
+      :data
+      :plugins
+    />
+  </v-card>
 </template>
 
 <style scoped>

@@ -40,6 +40,7 @@
     "@uppy/status-bar": "^4.0.3",
     "@uppy/vue": "^2.0.1",
     "axios": "^1.7.2",
+    "chartjs-plugin-datalabels": "^2.2.0",
     "css-loader": "^7.1.2",
     "date-fns": "^2.30.0",
     "leaflet": "^1.8.0",

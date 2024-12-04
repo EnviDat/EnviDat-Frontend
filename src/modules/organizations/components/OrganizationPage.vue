@@ -1,27 +1,87 @@
 <script setup>
-import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
-import { computed, onMounted, ref } from 'vue';
-import store from '@/store/store';
-import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
-import { getOrgaDatasetMap } from '@/factories/organizationFactory';
+  import ChartDataLabels from 'chartjs-plugin-datalabels';
+  import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
+  import { computed, markRaw, onMounted, ref } from 'vue';
+  import store from '@/store/store';
+  import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
+  import {
+    enhanceDatasetWithResearchUnit,
+    getOrgaDatasetMap,
+    organizationSeries,
+  } from '@/factories/organizationFactory';
+  import DatasetBarChart from '@/components/Charts/DatasetBarChart.vue';
 
-const orgaStore = useOrganizationsStore();
+  import researchUnits from '@/../public/researchUnits.json';
+
+  const orgaStore = useOrganizationsStore();
   const orgas = ref();
-
   const orgaDatasetsMap = ref();
+  const ruChartDatasets = ref({
+    labels: [],
+    datasets: [],
+  });
 
+  const ruChartOptions = {
+    plugins: {
+      title: {
+        display: true,
+        text: 'Dataset Publication per Research Unit History',
+      },
+      legend: {
+        position: 'bottom',
+      },
+      datalabels: {
+        color: '#d9f3f3',
+        textStrokeColor: '#222222',
+        textStrokeWidth: 2,
+      },
+    },
+    animations: {
+      colors: 'show',
+    },
+    responsive: true,
+    scales: {
+      x: {
+        stacked: true,
+      },
+      y: {
+        stacked: true,
+      },
+    },
+  }
 
-  const loadOrgaDatasets = async () => {
+  const loadOrgaDatasets = () => {
     const allDatasets = store.getters[`${METADATA_NAMESPACE}/allMetadatas`];
-    orgaDatasetsMap.value = getOrgaDatasetMap(allDatasets);
+
+    const enhancedDatasets = enhanceDatasetWithResearchUnit(markRaw(allDatasets), researchUnits);
+
+    return getOrgaDatasetMap(enhancedDatasets, true);
   }
 
   onMounted(async () => {
     orgas.value = await orgaStore.loadAllOrganizations();
 
-    await loadOrgaDatasets();
+    orgaDatasetsMap.value = loadOrgaDatasets();
+
+    const yearLables = new Set();
+    for (const [orgaName, value] of orgaDatasetsMap.value) {
+      const yearMap = value.yearMap;
+
+      for (const year of yearMap.keys()) {
+        yearLables.add(year);
+      }
+    }
+
+    const yearsSorted = Array.from(yearLables).sort();
+
+    const series = organizationSeries(orgaDatasetsMap.value, yearsSorted);
+
+    ruChartDatasets.value = {
+      labels: yearsSorted,
+      datasets: series,
+    };
   })
-  
+
   const orgaKeys = computed(() => orgaDatasetsMap.value?.keys());
 
 </script>
@@ -30,8 +90,13 @@ const orgaStore = useOrganizationsStore();
   <v-container fluid>
 
     <v-row no-gutters>
-      <v-col>
-        organization Page content
+      <v-col >
+        <DatasetBarChart
+          height="600"
+          :data="ruChartDatasets"
+          :options="ruChartOptions"
+          :plugins="[ChartDataLabels]"
+        />
       </v-col>
     </v-row>
 
@@ -41,6 +106,14 @@ const orgaStore = useOrganizationsStore();
         :key="index"
       >
         {{ title }} {{ orgaDatasetsMap?.get(title).count }}
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col>
+        <v-treeview >
+
+        </v-treeview>
       </v-col>
     </v-row>
   </v-container>
