@@ -10,7 +10,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-/* eslint-disable import/no-extraneous-dependencies */
 import DatasetPieChart from '@/components/Charts/DatasetPieChart.vue';
 
 export default {
