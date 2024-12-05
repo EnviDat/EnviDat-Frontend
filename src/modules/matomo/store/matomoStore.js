@@ -1,10 +1,10 @@
 import axios from 'axios';
 
 const matomoState = {
-  siteId: 37,
+  siteId: 36,
   startDate: '2024-07-23',
   endDate: 'today',
-  token: '',
+  token: process.env.VITE_MATOMO_TOKEN,
   baseUrl: '/api',
   eventsBasedOnPage: null,
 };
@@ -24,6 +24,7 @@ export const matomo = {
         name,
       )}`;
 
+
       try {
         const response = await axios.get(url);
         const downloadCount =
@@ -39,6 +40,7 @@ export const matomo = {
       try {
         // Get All events name for the page
         const getName = `${state.baseUrl}/index.php?module=API&method=Events.getName&format=JSON&idSite=${state.siteId}&period=range&date=${state.startDate},${state.endDate}&token_auth=${state.token}`;
+
         const eventNames = await axios.get(getName);
 
         // Find idsuitable for get the Actions
