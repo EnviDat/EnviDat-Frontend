@@ -137,20 +137,20 @@ export default {
       if (geoJson.type === 'GeometryCollection') {
         // Split geometries from geometries list
         geoJson.geometries.forEach(geometry => {
-          geoJsonArray.push(geometry);
+        geoJsonArray.push(geometry);
+      });
+
+      } else if (geoJson.type === 'Feature') {
+        // Split geometry from feature object
+        geoJsonArray.push(geoJson.geometry);
+        // propertiesArray.push(geoJson.properties);
+
+      } else if (geoJson.type === 'FeatureCollection') {
+        // Split geometries from feature list
+        geoJson.features.forEach((feature) => {
+          geoJsonArray.push(feature.geometry);
+          // propertiesArray.push(feature.properties);
         });
-
-        // } else if (geoJson.type === 'Feature') {
-        //   // Split geometry from feature object
-        //   geoJsonArray.push(geoJson.geometry);
-        //   propertiesArray.push(geoJson.properties);
-
-        // } else if (geoJson.type === 'FeatureCollection') {
-        //   // Split geometries from feature list
-        //   geoJson.features.forEach((feature) => {
-        //     geoJsonArray.push(feature.geometry);
-        //     propertiesArray.push(feature.properties);
-        //   });
       } else {
         geoJsonArray = [geoJson];
       }
@@ -169,7 +169,7 @@ export default {
             if (feature.properties.active === null || feature.properties.active === undefined) {
               gcLayer = createMarker(latlng, styleObj.gcnetMissingStyle);
             } else if (feature.properties.active === true) {
-                gcLayer = createMarker(latlng, styleObj.gcnetStyle);
+              gcLayer = createMarker(latlng, styleObj.gcnetStyle);
             } else if (feature.properties.active === false) {
               gcLayer = createMarker(latlng, styleObj.gcnetInactiveStyle);
             }

@@ -43,11 +43,11 @@
       <v-row>
         <v-col cols="12" md="12" class="editDataGeo">
           <v-file-input
+              v-show="false"
               ref="filePicker"
-              multiple
               accept=".geojson,.json"
               @change="triggerFileUpload"
-              v-show="false"
+              v-model="geoFile"
             />
 
             <MetadataGeo
@@ -101,7 +101,11 @@ import {
   EDITMETADATA_DATA_GEO_SPATIAL,
 } from '@/factories/eventBus';
 
-import { EDIT_METADATA_GEODATA_TITLE } from '@/factories/metadataConsts';
+import {
+  EDIT_METADATA_GEODATA_TITLE,
+  LOCATION_TYPE_FEATCOLLECTION,
+  LOCATION_TYPE_GEOMCOLLECTION,
+} from '@/factories/metadataConsts';
 
 import {
   getValidationMetadataEditingObject,
@@ -110,7 +114,7 @@ import {
 
 import {
   defaultSwissLocation,
-  parseAsGeomCollection,
+  createGeomCollection, fetureCollectionToGeoCollection,
 } from '@/factories/geoFactory';
 
 /*
@@ -265,11 +269,11 @@ export default {
 
         this.newObjectToSend = geomArray
 
-        // this.editedGeomBuffer.push(
-        //   parseAsGeomCollection(geomArray, {
-        //     name: this.location.name,
-        //   }),
-        // );
+        this.editedGeomBuffer.push(
+          createGeomCollection(geomArray, {
+            name: this.location.name,
+          }),
+        );
 
         this.undoButtonEnabled = true;
         this.saveButtonEnabled = true;
@@ -295,7 +299,7 @@ export default {
       this.saveButtonInProgress = true;
 
       const obj = this.newObjectToSend
-      const mapToSend = parseAsGeomCollection(obj, { name: this.location.name })
+      const mapToSend = createGeomCollection(obj, { name: this.location.name })
 
       eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_DATA_GEO,
@@ -310,34 +314,39 @@ export default {
       this.saveButtonEnabled = false;
     },
     triggerFilePicker() {
-      const fileInputElement = this.$refs.filePicker?.$el.querySelector('input[type="file"]');
+      const fileInputElement = this.$refs.filePicker?.$el; // .querySelector('input[type="file"]');
 
       if (fileInputElement) {
         fileInputElement.click();
       }
     },
-    triggerFileUpload(fileArray) {
-      // Loop through each dropped file
-      for (const file of fileArray) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          // Attempt GeoJSON
-          try {
-            const geoJSON = JSON.parse(reader.result);
-            const geomArray = JSON.parse(
-              JSON.stringify(this.geomsForMap.geometries),
-            );
-            geomArray.push(geoJSON);
-            this.parseGeomCollectionAddToBuffer(geomArray);
-          } catch {
-            this.validationErrors.geometries =
-              'Could not load file. Is it GeoJSON?';
-          }
-        };
+    triggerFileUpload() {
 
-        reader.readAsText(file);
+      const reader = new FileReader();
+      reader.onload = () => {
+        // Attempt GeoJSON
+        try {
+          let inputGeoJSON = JSON.parse(reader.result);
+
+          if (inputGeoJSON.type === LOCATION_TYPE_FEATCOLLECTION) {
+            inputGeoJSON = fetureCollectionToGeoCollection(inputGeoJSON);
+          }
+
+          const currentGeometries = this.geomsForMap.type === LOCATION_TYPE_GEOMCOLLECTION ? this.geomsForMap.geometries : [this.geomsForMap];
+
+          currentGeometries.push(inputGeoJSON);
+          this.parseGeomCollectionAddToBuffer(currentGeometries);
+        } catch (e) {
+          this.validationErrors.geometries = `Could not load file. Is it GeoJSON? ${e}`;
+        }
+      };
+
+      reader.onerror = (e) => {
+        this.validationErrors.geometries = `Could not load file. Is it GeoJSON? ${e}`;
       }
-    },
+
+      reader.readAsText(this.geoFile);
+   },
     triggerValidationError(errorMsg) {
       this.validationErrors.geometries = errorMsg;
     },
@@ -365,6 +374,7 @@ export default {
     saveButtonEnabled: false,
     saveButtonInProgress: false,
     undoButtonEnabled: false,
+    geoFile: undefined,
   }),
 };
 </script>

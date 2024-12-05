@@ -61,9 +61,9 @@ function getMultiPolygonPointArray(coordinates) {
 function extractGeomsFromMultiGeoms(multiGeom) {
   let geomType = '';
   if (multiGeom.isMultiPoint) {
-    geomType = 'Point';
+    geomType = LOCATION_TYPE_POINT;
   } else if (multiGeom.isMultiPolygon) {
-    geomType = 'Polygon';
+    geomType = LOCATION_TYPE_POLYGON;
   }
 
   const geomArray = [];
@@ -87,11 +87,12 @@ function extractGeomsFromMultiGeoms(multiGeom) {
 function getGeomCollectionPointArray(geometries) {
   // Return an array of coordinate arrays with swapped point coordinates for each geom
 
-  let pointArray = [];
   const geomCollectionArray = [];
-  let category = '';
 
   geometries.forEach(geometry => {
+    let pointArray = [];
+    let category = '';
+
     if (geometry.type === LOCATION_TYPE_POINT) {
       pointArray = [geometry.coordinates[1], geometry.coordinates[0]];
       category = 'isPoint';
@@ -105,6 +106,7 @@ function getGeomCollectionPointArray(geometries) {
       pointArray = getMultiPolygonPointArray(geometry.coordinates);
       category = 'isMultiPolygon';
     }
+
     geomCollectionArray.push({
       [category]: true,
       pointArray,
@@ -122,13 +124,13 @@ function getGeomCollectionPointArray(geometries) {
  * @param {Object} [propertiesObj={}] key:value mapping for properties included in output GeoJSON
  * @returns {Object} GeoJSON of GeometryCollection type
  */
-export function parseAsGeomCollection(geomArray, propertiesObj = {}) {
+export function createGeomCollection(geomArray, propertiesObj = {}) {
   if (!geomArray) {
     return null;
   }
 
   return {
-    type: 'GeometryCollection',
+    type: LOCATION_TYPE_GEOMCOLLECTION,
     geometries: geomArray,
     properties: propertiesObj,
   };
@@ -167,7 +169,7 @@ export function creationGeometry(spatialJSON, properties) {
     geomCollection = spatialJSON.geometries;
   }
 
-  geometry.geomCollection = parseAsGeomCollection(geomCollection, properties);
+  geometry.geomCollection = createGeomCollection(geomCollection, properties);
 
   return geometry;
 }
@@ -184,10 +186,12 @@ export function createLocation(dataset) {
     return null;
   }
 
+/*
   // If already GeoJSON return, else WKT
   if (typeof dataset.location === 'object') {
     return dataset.location;
   }
+*/
 
   let location = {
     id: dataset.id,
@@ -199,19 +203,22 @@ export function createLocation(dataset) {
     location.geoJSON = dataset.spatial;
 
     // parseJSON because the geoJOSN from CKAN might be invalid!
-
-    let spatialJSON = dataset.spatial;
-
-    if (typeof dataset.spatial === 'string') {
+    if (typeof location.geoJSON === 'string') {
       try {
-        spatialJSON = JSON.parse(dataset.spatial);
+        location.geoJSON = JSON.parse(location.geoJSON);
       } catch (error) {
         console.error(`MetaDataFactory: geojson parsing error ${error}`);
       }
     }
 
-    if (spatialJSON) {
-      const geometry = creationGeometry(spatialJSON, location);
+    if (location.geoJSON) {
+      const geometry = creationGeometry(location.geoJSON,
+        {
+          id: location.id,
+          name: location.name,
+          title: location.title,
+        });
+
       location = {
         ...location,
         ...geometry,
@@ -223,10 +230,10 @@ export function createLocation(dataset) {
 }
 
 export const defaultSwissLocation = {
-  type: 'GeometryCollection',
+  type: LOCATION_TYPE_GEOMCOLLECTION,
   geometries: [
     {
-      type: 'Polygon',
+      type: LOCATION_TYPE_POLYGON,
       coordinates: [
         [
           [5.95587, 45.81802],
@@ -241,10 +248,10 @@ export const defaultSwissLocation = {
 };
 
 export const defaultWorldLocation = {
-  type: 'GeometryCollection',
+  type: LOCATION_TYPE_GEOMCOLLECTION,
   geometries: [
     {
-      type: 'Polygon',
+      type: LOCATION_TYPE_POLYGON,
       coordinates: [
         [
           [-175, -85],
@@ -271,4 +278,22 @@ export function geomanGeomsToGeoJSON(layerArray) {
   }
 
   return geoJSONArray;
+}
+
+export function fetureCollectionToGeoCollection(featureColl) {
+  const features = featureColl?.features;
+
+  if (!features) {
+   return null;
+  }
+
+  const geometries = [];
+
+  for (let i = 0; i < features.length; i++) {
+    const f = features[i];
+
+    geometries.push(f.geometry);
+  }
+
+  return createGeomCollection(geometries);
 }

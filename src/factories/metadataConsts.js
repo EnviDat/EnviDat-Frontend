@@ -112,3 +112,4 @@ export const LOCATION_TYPE_POLYGON = 'Polygon';
 export const LOCATION_TYPE_MULTIPOLYGON = 'MultiPolygon';
 export const LOCATION_TYPE_GEOMCOLLECTION = 'GeometryCollection';
 export const LOCATION_TYPE_FEATCOLLECTION = 'FeatureCollection';
+export const LOCATION_TYPE_FEATURE = 'Feature';
