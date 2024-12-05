@@ -169,22 +169,60 @@ export function getOrganizationMap(organizations) {
 
 }
 
-export function getOrganizationTree(organizationMap) {
-/*
-  {
-    id: 6,
-      title: 'vuetify :',
-    children: [
-    {
-      id: 7,
-      title: 'src :',
-      children: [
-        { id: 8, title: 'index : ts' },
-        { id: 9, title: 'bootstrap : ts' },
-      ],
-    },
-  ],
-  },
-*/
+function getItem(organizationMap, organization, index) {
 
+  const name = organization.name;
+  const children = [];
+
+  const childrendOrgas = organizationMap.get(name);
+  if (childrendOrgas?.length > 0) {
+
+    for (let i = 0; i < childrendOrgas.length; i++) {
+      const childOrga = childrendOrgas[i];
+      if (childOrga.name !== name) {
+        const child = getItem(organizationMap, childOrga, index);
+        children.push(child);
+        index = child.id;
+      }
+    }
+  }
+
+  return {
+    id: ++index,
+    title: name,
+    children,
+  }
+}
+
+export function getOrganizationTree(organizationMap) {
+
+  const orgaTitle = Array.from(organizationMap.keys()).sort();
+  const treeItems = [];
+  let index = 0;
+
+  for (const name of orgaTitle) {
+
+    const entries = organizationMap.get(name);
+
+    const children = []
+    if (entries.length > 0) {
+      for (let i = 0; i < entries.length; i++) {
+        const orga = entries[i];
+
+        if (orga.name !== name) {
+          const childItem = getItem(organizationMap, orga, index);
+          children.push(childItem);
+          index = childItem.id;
+        }
+      }
+    }
+
+    treeItems.push({
+      id: ++index,
+      title: name,
+      children,
+    });
+  }
+
+  return treeItems;
 }

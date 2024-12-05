@@ -1,19 +1,19 @@
 <script setup>
-  import ChartDataLabels from 'chartjs-plugin-datalabels';
-  import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
-  import { computed, markRaw, onMounted, ref } from 'vue';
-  import store from '@/store/store';
-  import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
-  import {
-    enhanceDatasetWithResearchUnit,
-    getOrgaDatasetMap, getOrganizationMap,
-    organizationSeries,
-  } from '@/factories/organizationFactory';
-  import DatasetBarChart from '@/components/Charts/DatasetBarChart.vue';
+import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
+import { markRaw, onMounted, ref } from 'vue';
+import store from '@/store/store';
+import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
+import {
+  enhanceDatasetWithResearchUnit,
+  getOrgaDatasetMap,
+  getOrganizationTree,
+  organizationSeries,
+} from '@/factories/organizationFactory';
 
-  import researchUnits from '@/../public/researchUnits.json';
+import researchUnits from '@/../public/researchUnits.json';
+import orgaMapProd from '@/../stories/testdata/orgaMapProd.json';
 
-  const orgaStore = useOrganizationsStore();
+const orgaStore = useOrganizationsStore();
   const orgas = ref();
   const orgaDatasetsMap = ref();
   const ruChartDatasets = ref({
@@ -21,6 +21,9 @@
     datasets: [],
   });
 
+  const organiztionTree = ref();
+  const search = ref(null);
+  
   const ruChartOptions = {
     plugins: {
       title: {
@@ -61,8 +64,8 @@
   onMounted(async () => {
     orgas.value = await orgaStore.loadAllOrganizations();
 
-    const tree = getOrganizationMap(orgas.value);
-    console.log(tree);
+    // const tree = getOrganizationMap(orgas.value);
+    // console.log(tree);
 
     orgaDatasetsMap.value = loadOrgaDatasets();
 
@@ -83,40 +86,69 @@
       labels: yearsSorted,
       datasets: series,
     };
-  })
 
-  const orgaKeys = computed(() => orgaDatasetsMap.value?.keys());
+    const organiztionMap = new Map();
+    const orgaEntries = Object.values(orgaMapProd);
+    orgaEntries.map((entry) => organiztionMap.set(entry.key, entry.value));
+    
+    organiztionTree.value = getOrganizationTree(organiztionMap);
+  })
 
 </script>
 
 <template>
   <v-container fluid>
 
+<!--
     <v-row no-gutters>
       <v-col >
         <DatasetBarChart
           :height="600"
           :data="ruChartDatasets"
           :options="ruChartOptions"
-          :plugins="[ChartDataLabels]"
         />
       </v-col>
     </v-row>
-
-    <v-row>
-      <v-col
-        v-for="(title, index) in orgaKeys"
-        :key="index"
-      >
-        {{ title }} {{ orgaDatasetsMap?.get(title).count }}
-      </v-col>
-    </v-row>
+-->
 
     <v-row>
       <v-col>
-        <v-treeview >
 
-        </v-treeview>
+        <v-card>
+          <v-sheet class="pa-4 bg-primary">
+            <v-text-field
+                v-model="search"
+                label="Search Company Directory"
+                clearable
+                dark
+                flat
+                hide-details
+                solo-inverted
+            ></v-text-field>
+<!--
+            <v-checkbox
+                v-model="caseSensitive"
+                label="Case sensitive search"
+                dark
+                hide-details
+            ></v-checkbox>
+-->
+          </v-sheet>
+
+          <v-card-text>
+            <v-treeview
+                :items="organiztionTree"
+                item-value="id"
+                activatable
+                color="secondary"
+                open-on-click
+                :search
+            >
+            </v-treeview>
+
+          </v-card-text>
+        </v-card>
+
       </v-col>
     </v-row>
   </v-container>
