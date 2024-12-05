@@ -14,21 +14,36 @@
 
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
-import VueMatomo from 'vue-matomo';
 
 import store from '@/store/store';
 import App from '@/App.vue';
 import { initAxios } from '@/init';
+
+
 
 import vuetify from '@/plugins/vuetify';
 import router from '@/router';
 import VueVirtualScroller from 'vue-virtual-scroller';
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
 
+import VueMatomo from 'vue-matomo';
+
+
 const app = createApp(App);
 const pinia = createPinia();
 
 initAxios(app, store);
+
+const siteMatomoId = process.env.VITE_MATOMO_SITEID
+
+// matomo part to manage the refresh issue
+if (localStorage.getItem('matomoConsentGiven') === 'true') {
+  /* eslint-disable no-underscore-dangle */
+  window._paq = window._paq || [];
+  window._paq.push(['rememberConsentGiven']);
+  /* eslint-enable no-underscore-dangle */
+}
+
 
 app
   .use(store)
@@ -39,7 +54,7 @@ app
   .use(VueMatomo, {
     // Configure your Matomo server and site by providing:
     host: 'https://statistics.wsl.ch/',
-    siteId: 37,
+    siteId: siteMatomoId,
     router,
     enableLinkTracking: true,
     requireConsent: true,
@@ -48,6 +63,8 @@ app
     enableHeartBeatTimer: true,
     heartBeatTimerInterval: 15,
     // set to false as soon as finish the test
-    debug: true,
+    debug: false,
   })
+
   .mount('#app');
+

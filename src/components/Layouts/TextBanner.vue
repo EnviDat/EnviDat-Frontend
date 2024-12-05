@@ -24,18 +24,11 @@
           :buttonText="confirmText"
           @clicked="confirmClick"
         />
-        <!-- <BaseRectangleButton
-          v-if="deniedText"
-          marginClass="mx-1 mt-4 mt-sm-0"
-          color="error"
-          :buttonText="deniedText"
-          @clicked="deniedClick"
-        /> -->
-        <!-- remove as soon as we activate matomo -->
+
         <BaseRectangleButton
           v-if="deniedText"
           marginClass="mx-1 mt-4 mt-sm-0"
-          color="primary"
+          color="error"
           :buttonText="deniedText"
           @clicked="deniedClick"
         />

@@ -72,6 +72,7 @@ set-vars:
     - echo "BUILD_NAME=${BUILD_VERSION}.${CI_COMMIT_REF_NAME}" >> build.env
     - echo "BUILD_ZIP_NAME=envidat-frontend-${BUILD_VERSION}.${CI_COMMIT_REF_NAME}.zip" >> build.env
     - echo "Matomo token ${MATOMO_TOKEN}."
+    - echo "Matomo siteId ${MATOMO_SITEID}."
     - echo "content of build.env"
     - echo "information environment ${CI_COMMIT_REF_NAME}"
     - cat build.env
@@ -82,7 +83,7 @@ set-vars:
 modify-env:
   stage: config
   image: python:3.9-alpine3.17
-  environment: $CI_COMMIT_REF_NAME  
+  environment: $CI_COMMIT_REF_NAME
   extends: .trigger-rules
   needs:
     - set-vars
@@ -115,6 +116,10 @@ modify-env:
       token = os.getenv('MATOMO_TOKEN')
       dotenv.set_key(file, key, token, quote_mode='never')
 
+      key = 'VITE_MATOMO_SITEID'
+      token = os.getenv('MATOMO_SITEID')
+      dotenv.set_key(file, key, token, quote_mode='never')
+
       key = 'VITE_CONFIG_URL'
       value = f'https://frontend-config.s3-zh.os.switch.ch/{branch}.json'
       dotenv.set_key(file, key, value, quote_mode='never')
@@ -136,7 +141,7 @@ modify-env:
 install-node:
   stage: config
   image: node:20.15.0-alpine3.20
-  environment: $CI_COMMIT_REF_NAME  
+  environment: $CI_COMMIT_REF_NAME
   # overwrite the global caching to use push-pull policy
   cache:
     - key:
@@ -180,7 +185,7 @@ install-node:
 run-tests:
   stage: test
   image: node:20.15.0-alpine3.20
-  environment: $CI_COMMIT_REF_NAME  
+  environment: $CI_COMMIT_REF_NAME
   extends:
     - .trigger-rules
   needs:
@@ -203,7 +208,7 @@ run-tests:
 build-storybook:
   stage: build
   image: node:20.15.0-alpine3.20
-  environment: $CI_COMMIT_REF_NAME  
+  environment: $CI_COMMIT_REF_NAME
   extends:
     - .trigger-rules
   needs:
@@ -237,7 +242,7 @@ build-storybook:
 build-app:
   stage: build
   image: node:20.15.0-alpine3.20
-  environment: $CI_COMMIT_REF_NAME  
+  environment: $CI_COMMIT_REF_NAME
   extends:
     - .trigger-rules
   needs:
@@ -268,7 +273,7 @@ build-app:
 combine-builds:
   stage: build
   image: alpine:3.20
-  environment: $CI_COMMIT_REF_NAME  
+  environment: $CI_COMMIT_REF_NAME
   extends: .trigger-rules
   variables:
     GIT_STRATEGY: none

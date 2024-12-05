@@ -1,12 +1,33 @@
 /* eslint-disable no-underscore-dangle */
 // Utility file to collect all tracking functions from Matomo
 
+// matomo code to pass the matomo instance in not component.vue file
+export function getMatomoInstance() {
+  return new Promise((resolve, reject) => {
+    const checkMatomo = () => {
+      const matomo = window._paq || undefined;
+      if (matomo) {
+        resolve(matomo);
+      } else {
+        setTimeout(checkMatomo, 100);
+      }
+    };
+    checkMatomo();
+  });
+}
+
 // tracking download
-export function trackDownload(url, label) {
+export async function trackDownload(url, label) {
+
   const consentGiven = localStorage.getItem('matomoConsentGiven');
 
   if (consentGiven === 'true') {
-    window._paq.push(['trackEvent', 'Download', url, label]);
+    try {
+      const matomo = await getMatomoInstance();
+      matomo.push(['trackEvent', 'Download', url, label]);
+    } catch (error) {
+      console.error('Failed to get Matomo instance:', error);
+    }
   }
 }
 
@@ -18,10 +39,15 @@ export function trackDownload(url, label) {
 
 // IMPORTANT to use EventName to specify the path to the page ex /metadata/satellite-avalanche-mapping-validation, this is important to have the ability to filter and get all events related to a specific page
 
-export function trackEvent(eventCategory, eventAction, eventName) {
+export async function trackEvent(eventCategory, eventAction, eventName) {
   const consentGiven = localStorage.getItem('matomoConsentGiven');
 
   if (consentGiven === 'true') {
-    window._paq.push(['trackEvent', eventCategory, eventAction, eventName]);
+    try {
+      const matomo = await getMatomoInstance();
+      matomo.push(['trackEvent', eventCategory, eventAction, eventName]);
+    } catch (error) {
+      console.error('Failed to get Matomo instance:', error);
+    }
   }
 }

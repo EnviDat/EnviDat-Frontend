@@ -100,7 +100,8 @@
             :style="`position: fixed; bottom: 0; left: 60px; z-index: 1001; width: calc(100vw - 60px); background-color: ${$vuetify.theme.themes.light.colors.highlight};`"
             :text="cookieInfoText"
             icon="cookie"
-            deniedText="Okay"
+            deniedText="Reject"
+            confirmText="Accept"
             :confirmClick="catchCookieInfoOk"
             :deniedClick="deniedTracking"
         />
@@ -461,12 +462,14 @@ export default {
     deniedTracking() {
       localStorage.setItem(ENVIDAT_SHOW_COOKIE_BANNER, 'false');
       localStorage.setItem('matomoConsentGiven', 'false');
+      /* eslint-disable no-underscore-dangle */
+      window._paq.push(['forgetConsentGiven']);
       this.showCookieInfo = false;
     },
     catchCookieInfoOk() {
       // handledeniedTracking consent with Matomo
       localStorage.setItem('matomoConsentGiven', 'true');
-      this.$matomo.rememberConsentGiven();
+      window._paq.push(['rememberConsentGiven']);
 
       localStorage.setItem(ENVIDAT_SHOW_COOKIE_BANNER, 'false');
       this.showCookieInfo = false;
