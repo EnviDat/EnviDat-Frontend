@@ -170,38 +170,56 @@
         </v-col>
       </v-row>
     </v-container>
+    <v-container style="position: relative;">
+      <v-container
+        class="pa-2"
+        style="position: absolute; bottom: 0; right: 0; width: 55px;">
+          <v-row v-if="!isProtected">
+            <v-col cols="12">
+              <base-icon-button
+              :icon="isFile ? mdiDownload : mdiLink"
+              icon-color="black"
+              @clicked="trackDownload(url, resourceName)"
+              color="accent"
+              elevated
+              :tooltip-text="isFile ? 'Download resource' : 'Open link'"
+              :url="url"
+              :disabled="!downloadActive" />
+            </v-col>
+          </v-row>
 
-    <v-container
-      class="pa-2"
-      style="position: absolute; bottom: 0; right: 0; width: 55px;">
-      <v-row v-if="!isProtected">
-        <v-col cols="12">
-          <base-icon-button
-            :icon="isFile ? mdiDownload : mdiLink"
-            icon-color="black"
-            @clicked="trackDownload(url, resourceName)"
-            color="accent"
-            elevated
-            :tooltip-text="isFile ? 'Download resource' : 'Open link'"
-            :url="url"
-            :disabled="!downloadActive" />
-        </v-col>
-      </v-row>
-
-      <v-row v-if="isProtected">
-        <v-col>
-          <div
-            class="fabMenu fabPosition elevation-5 ma-2"
-            :class="downloadActive ? 'fabMenuHover' : 'fabMenuDisabled'">
-            <BaseIcon :icon="mdiShield" color="grey-darken-3" />
-            <div
-              v-if="downloadActive"
-              class="pt-2 lockedText text-black protectedLink">
-              <p v-html="protectedText"></p>
+          <v-row v-if="isProtected">
+            <v-col>
+              <div
+              class="fabMenu fabPosition elevation-5 ma-2"
+              :class="downloadActive ? 'fabMenuHover' : 'fabMenuDisabled'">
+              <BaseIcon :icon="mdiShield" color="grey-darken-3" />
+                <div
+                v-if="downloadActive"
+                class="pt-2 lockedText text-black protectedLink">
+                <p v-html="protectedText"></p>
+              </div>
             </div>
-          </div>
-        </v-col>
-      </v-row>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-container>
+    <v-container fluid style="width: 100%;" v-if="s3Bucket = true">
+      <v-divider></v-divider>
+      <!-- eslint-disable vue/no-v-model-argument -->
+      <v-treeview
+          :items="items"
+          item-value="id"
+          class="s3-treeview"
+          density="compact"
+          bg-color="transparent"
+          base-color="white"
+          open-on-click
+          >
+          <template #title="{ item }">
+            <span class="title-s3-treeview" style="font-size: 12px;">{{ item.title }}</span>
+          </template>
+        </v-treeview>
     </v-container>
   </v-card>
 </template>
@@ -243,12 +261,16 @@ import { trackDownload } from '@/utils/matomoTracking';
 
 import { formatDate } from '@/factories/dateFactory';
 
+import { VTreeview } from 'vuetify/labs/VTreeview'
+
+
 export default {
   name: 'ResourceCard',
   components: {
     BaseIcon,
     BaseIconLabelView,
     BaseIconButton,
+    VTreeview,
   },
   props: {
     id: String,
@@ -312,7 +334,79 @@ export default {
     showFullDescription: false,
     audioFormats: ['mp3', 'wav', 'wma', 'ogg'],
     EDIT_METADATA_DOI_LABEL,
-  }),
+    items: [
+        {
+          id: 1,
+          title: 'Applications :',
+          children: [
+            { id: 2, title: 'Calendar : app' },
+            { id: 3, title: 'Chrome : app' },
+            { id: 4, title: 'Webstorm : app' },
+          ],
+        },
+        {
+          id: 5,
+          title: 'Documents :',
+          children: [
+            {
+              id: 6,
+              title: 'vuetify :',
+              children: [
+                {
+                  id: 7,
+                  title: 'src :',
+                  children: [
+                    { id: 8, title: 'index : ts' },
+                    { id: 9, title: 'bootstrap : ts' },
+                  ],
+                },
+              ],
+            },
+            {
+              id: 10,
+              title: 'material2 :',
+              children: [
+                {
+                  id: 11,
+                  title: 'src :',
+                  children: [
+                    { id: 12, title: 'v-btn : ts' },
+                    { id: 13, title: 'v-card : ts' },
+                    { id: 14, title: 'v-window : ts' },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: 15,
+          title: 'Downloads :',
+          children: [
+            { id: 16, title: 'October : pdf' },
+            { id: 17, title: 'November : pdf' },
+            { id: 18, title: 'Tutorial : html' },
+          ],
+        },
+        {
+          id: 19,
+          title: 'Videos :',
+          children: [
+            {
+              id: 20,
+              title: 'Tutorials :',
+              children: [
+                { id: 21, title: 'Basic layouts : mp4' },
+                { id: 22, title: 'Advanced techniques : mp4' },
+                { id: 23, title: 'All about app : dir' },
+              ],
+            },
+            { id: 24, title: 'Intro : mov' },
+            { id: 25, title: 'Conference introduction : avi' },
+          ],
+        },
+      ],
+    }),
   computed: {
     loadingColor() {
       if (this.loading) {
@@ -518,4 +612,15 @@ export default {
 .highlighted {
   box-shadow: #ffd740 0 0 5px 5px !important;
 }
+
+
+</style>
+
+<style>
+  .s3-treeview .v-icon__svg {
+    color: #fff;
+  }
+  .s3-treeview .v-list-item--density-compact:not(.v-list-item--nav).v-list-item--one-line {
+    padding: 0;
+  }
 </style>
