@@ -17,10 +17,10 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
-import { getOrganizationMap } from '@/factories/metaDataFactory';
+import { getOrganizationMapObject } from '@/factories/organizationFactory';
 import testOrganizations from './js/organizations';
 
-const organizationsMap = getOrganizationMap(testOrganizations);
+const organizationsMap = getOrganizationMapObject(testOrganizations);
 
 export default {
   title: '3 Dataset / 1 Views / Organization Tree',

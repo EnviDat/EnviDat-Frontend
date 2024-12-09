@@ -16,7 +16,7 @@ import {
   INTEGRATION_PATH,
   INTEGRATION_PAGENAME,
   SERVICE_PATH,
-  SERVICE_PAGENAME,
+  SERVICE_PAGENAME, ORGANIZATIONS_PATH, ORGANIZATIONS_PAGENAME,
 } from '@/router/routeConsts';
 
 import {
@@ -51,10 +51,10 @@ export const navigationItems = [
   {
     title: 'Organizations',
     icon: mdiFileTree,
-    toolTip: 'Overview of the different organizations',
+    toolTip: 'Overview of the organizations of WSL',
     active: false,
-    path: `${domain}/organization`,
-    pageName: 'external',
+    path: ORGANIZATIONS_PATH,
+    pageName: ORGANIZATIONS_PAGENAME,
     disabled: false,
   },
   {

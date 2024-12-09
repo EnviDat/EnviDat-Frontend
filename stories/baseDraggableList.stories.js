@@ -10,7 +10,7 @@
  */
 
 import BaseDraggableList from '@/components/BaseElements/BaseDraggableList.vue';
-import { METADATA_AUTHOR_SEQUENCE_PROPERTY, METADATA_AUTHORS_PROPERTY } from '@/factories/metadataConsts';
+import { METADATA_AUTHOR_SEQUENCE_PROPERTY } from '@/factories/metadataConsts';
 import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
 

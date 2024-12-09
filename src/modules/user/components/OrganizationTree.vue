@@ -1,48 +1,43 @@
 <template>
-  <v-card id="OrganizationTree" class="pa-4">
-    <v-sheet class="pa-4 primary lighten-2">
+  <v-card
+      id="OrganizationTree"
+      class="pa-0">
+    <v-sheet class="pa-2 bg-secondary">
       <v-text-field
         v-model="search"
-        label="Search Company Directory"
+        label="Search Organization"
         dark
         flat
         solo-inverted
         hide-details
         clearable
-        clear-icon="close"
+        persistent-clear
+        :clear-icon="mdiClose"
       />
     </v-sheet>
+
     <v-card-text>
       <v-treeview
-        :items="items"
-        :search="search"
-        :open="open"
-        :active="active"
+        :items
+        :search
+        :open
+        :activated
+        color="secondary"
+        open-on-click
+        item-value="id"
         item-disabled="locked"
         activatable
-        rounded
         hoverable
         @update:active="catchActiveClick"
       >
 
-<!--
-        :open.sync="open"
-        :active.sync="active"
--->
-
         <template v-slot:prepend="{ item }">
-          <v-btn
+          <BaseIconButton
             v-if="item.children && item.children.length > 0"
-            icon
+            :style="!open.includes(item.id) ? '' : 'transform: rotate(90deg);'"
+            :icon="mdiArrowRight"
             @click.stop="catchOpenClick(item)"
-          >
-            <v-icon
-              :style="
-                !open.includes(item.id) ? '' : 'transform: rotate(90deg);'
-              "
-              >arrow_right</v-icon
-            >
-          </v-btn>
+          />
         </template>
 
         <!-- <template v-slot:label="{ item, active }"> -->
@@ -69,11 +64,13 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { mdiClose, mdiArrowRight } from '@mdi/js';
+
 export default {
   name: 'OrganizationTree',
   props: {
     preSelectedOrganization: String,
-    organizationsMap: Object,
+    organizationsTree: Array,
     selectionDisabled: Boolean,
   },
   mounted() {
@@ -82,38 +79,8 @@ export default {
     }
   },
   computed: {
-    items: {
-      get() {
-        const map = this.organizationsMap;
-        const mainKeys = Object.keys(map);
-
-        const orgItems = [];
-
-        for (let i = 0; i < mainKeys.length; i++) {
-          const mainOrg = mainKeys[i];
-          const childs = map[mainOrg];
-
-          const children = [];
-
-          for (let j = 0; j < childs.length; j++) {
-            const c = childs[j];
-            children.push({
-              id: `${this.childIdPrefix}_${i}_${j}`,
-              name: c.name,
-              locked: this.selectionDisabled,
-            });
-          }
-
-          orgItems.push({
-            id: `${this.parentIdPrefix}_${i}`,
-            name: mainOrg,
-            children,
-            locked: this.selectionDisabled,
-          });
-        }
-
-        return orgItems;
-      },
+    items() {
+      return this.organizationsTree;
     },
   },
   methods: {
@@ -122,14 +89,9 @@ export default {
         for (let i = 0; i < items.length; i++) {
           const item = items[i];
 
-          if (item.name === name) {
-            // if (item.children?.length > 0) {
-            //   this.catchOpenClick(item);
-            // }
-
-            // this.catchActiveClick([item.id]);
-            if (!this.active.includes(item.id)) {
-              this.active.push(item.id);
+          if (item.title === name) {
+            if (!this.activated.includes(item.id)) {
+              this.activated.push(item.id);
             }
 
             return true;
@@ -191,11 +153,13 @@ export default {
     },
   },
   data: () => ({
-    search: '',
+    search: null,
     open: [],
-    active: [],
+    activated: [],
     childIdPrefix: 'child',
     parentIdPrefix: 'parent',
+    mdiClose,
+    mdiArrowRight,
   }),
   components: {},
 };
