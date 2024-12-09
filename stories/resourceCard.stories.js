@@ -44,7 +44,7 @@ export const UrlLink = {
 };
 
 export const UrlLinkS3bucket = {
-  args: { ...urlRes },
+  args: { ...urlRes, s3Bucket: true },
 };
 
 export const FileLink = {

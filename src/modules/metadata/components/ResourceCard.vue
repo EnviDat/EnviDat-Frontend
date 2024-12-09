@@ -204,7 +204,7 @@
         </v-row>
       </v-container>
     </v-container>
-    <v-container fluid style="width: 100%;" v-if="s3Bucket = true">
+    <v-container fluid style="width: 100%;" v-if="s3Bucket">
       <v-divider></v-divider>
       <!-- eslint-disable vue/no-v-model-argument -->
       <v-treeview
@@ -217,7 +217,24 @@
           open-on-click
           >
           <template #title="{ item }">
-            <span class="title-s3-treeview" style="font-size: 12px;">{{ item.title }}</span>
+            <v-row>
+              <v-col class="d-flex align-center justify-space-between">
+                <!-- <BaseIcon
+                  class="mr-2"
+                  v-if="!item.children"
+                  :icon="mdiFileDocumentCheckOutline"
+                /> -->
+                <span class="title-s3-treeview" style="font-size: 12px;">{{ item.title }}</span>
+                <BaseRectangleButton
+                v-if="!item.children"
+                :isXsSmall="true"
+                marginClass="mx-1 mt-4 mt-sm-0 ml-5"
+                color="white"
+                buttonText="download"
+                @clicked="deniedClick"
+                />
+              </v-col>
+            </v-row>
           </template>
         </v-treeview>
     </v-container>
@@ -240,6 +257,8 @@
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
+
 import { renderMarkdown, stripMarkdown } from '@/factories/stringFactory';
 import { formatBytes } from '@/factories/metaDataFactory';
 import { EDIT_METADATA_DOI_LABEL } from '@/factories/metadataConsts';
@@ -255,6 +274,7 @@ import {
   mdiShield,
   mdiTimerPlusOutline,
   mdiUpdate,
+  mdiFileDocumentCheckOutline,
 } from '@mdi/js';
 
 import { trackDownload } from '@/utils/matomoTracking';
@@ -271,6 +291,7 @@ export default {
     BaseIconLabelView,
     BaseIconButton,
     VTreeview,
+    BaseRectangleButton,
   },
   props: {
     id: String,
@@ -285,6 +306,10 @@ export default {
     format: String,
     twoColumnLayout: Boolean,
     height: String,
+    s3Bucket: {
+      type: Boolean,
+      default: true,
+    },
     dark: {
       type: Boolean,
       default: false,
@@ -329,6 +354,7 @@ export default {
     mdiLock,
     mdiTimerPlusOutline,
     mdiUpdate,
+    mdiFileDocumentCheckOutline,
     mdiCancel,
     maxDescriptionLength: 175,
     showFullDescription: false,
@@ -339,9 +365,9 @@ export default {
           id: 1,
           title: 'Applications :',
           children: [
-            { id: 2, title: 'Calendar : app' },
-            { id: 3, title: 'Chrome : app' },
-            { id: 4, title: 'Webstorm : app' },
+            { id: 2, title: 'Calendar' },
+            { id: 3, title: 'Chrome' },
+            { id: 4, title: 'Webstorm' },
           ],
         },
         {
@@ -356,8 +382,8 @@ export default {
                   id: 7,
                   title: 'src :',
                   children: [
-                    { id: 8, title: 'index : ts' },
-                    { id: 9, title: 'bootstrap : ts' },
+                    { id: 8, title: 'index' },
+                    { id: 9, title: 'bootstrap' },
                   ],
                 },
               ],
@@ -370,39 +396,13 @@ export default {
                   id: 11,
                   title: 'src :',
                   children: [
-                    { id: 12, title: 'v-btn : ts' },
-                    { id: 13, title: 'v-card : ts' },
-                    { id: 14, title: 'v-window : ts' },
+                    { id: 12, title: 'v-btn' },
+                    { id: 13, title: 'v-card' },
+                    { id: 14, title: 'v-window' },
                   ],
                 },
               ],
             },
-          ],
-        },
-        {
-          id: 15,
-          title: 'Downloads :',
-          children: [
-            { id: 16, title: 'October : pdf' },
-            { id: 17, title: 'November : pdf' },
-            { id: 18, title: 'Tutorial : html' },
-          ],
-        },
-        {
-          id: 19,
-          title: 'Videos :',
-          children: [
-            {
-              id: 20,
-              title: 'Tutorials :',
-              children: [
-                { id: 21, title: 'Basic layouts : mp4' },
-                { id: 22, title: 'Advanced techniques : mp4' },
-                { id: 23, title: 'All about app : dir' },
-              ],
-            },
-            { id: 24, title: 'Intro : mov' },
-            { id: 25, title: 'Conference introduction : avi' },
           ],
         },
       ],
