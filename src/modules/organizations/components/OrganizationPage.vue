@@ -12,7 +12,7 @@ import {
 } from '@/factories/organizationFactory';
 
 import researchUnits from '@/../public/researchUnits.json';
-import orgaMapProd from '@/../stories/testdata/orgaMapProd.json';
+import DatasetBarChart from '@/components/Charts/DatasetBarChart.vue';
 import organizationList from '@/../public/testdata/organization_show.json';
 import OrganizationTree from '@/modules/user/components/OrganizationTree.vue';
 
@@ -89,11 +89,6 @@ const orgaStore = useOrganizationsStore();
       datasets: series,
     };
 
-/*
-    const organiztionMap = new Map();
-    const orgaEntries = Object.values(orgaMapProd);
-    orgaEntries.map((entry) => organiztionMap.set(entry.key, entry.value));
-*/
     const orgaMap = getOrganizationMap(organizationList.result);
 
     organizationsTree.value = getOrganizationTree(orgaMap);
@@ -104,7 +99,6 @@ const orgaStore = useOrganizationsStore();
 <template>
   <v-container fluid>
 
-<!--
     <v-row no-gutters>
       <v-col >
         <DatasetBarChart
@@ -114,7 +108,6 @@ const orgaStore = useOrganizationsStore();
         />
       </v-col>
     </v-row>
--->
 
     <v-row>
       <v-col>
