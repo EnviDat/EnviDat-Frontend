@@ -29,6 +29,7 @@
         selectable
         activatable
         hoverable
+        :max-height="maxHeight"
         @update:active="catchActiveClick"
         @click:open="item => catchItemClick(item)"
       >
@@ -84,6 +85,10 @@ export default {
     preSelectedOrganization: String,
     organizationsTree: Array,
     selectionDisabled: Boolean,
+    maxHeight: {
+      type: Number,
+      default: 500,
+    },
   },
   emits: ['click', 'clickAppend'],
   mounted() {

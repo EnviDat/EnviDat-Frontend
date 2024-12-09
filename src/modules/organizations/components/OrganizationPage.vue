@@ -1,10 +1,10 @@
 <script setup>
   import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
-  import { nextTick, onMounted, ref } from 'vue';
-  import store from '@/store/store';
+  import { nextTick, onMounted, onBeforeMount, ref } from 'vue';
+
   import { METADATA_NAMESPACE, SET_DETAIL_PAGE_BACK_URL } from '@/store/metadataMutationsConsts';
   import {
-    enhanceDatasetWithResearchUnit, getOraganizationsFromMap,
+    enhanceDatasetWithResearchUnit,
     getOrgaDatasetsMap,
     getOrganizationMap,
     getOrganizationTree,
@@ -18,11 +18,20 @@
 
   import OrganizationTree from '@/modules/user/components/OrganizationTree.vue';
   import organizations from '@/../public/testdata/organization_show.json';
-  import { BROWSE_PATH, METADATADETAIL_PAGENAME } from '@/router/routeConsts';
+  import { BROWSE_PATH, METADATADETAIL_PAGENAME, ORGANIZATIONS_PAGENAME } from '@/router/routeConsts';
+  import { SET_APP_BACKGROUND, SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
   import { useRouter, useRoute } from 'vue-router';
+  import { useStore } from 'vuex';
 
   const router = useRouter();
   const route = useRoute();
+  const store = useStore();
+  const pageBGImage= 'app_b_browsepage';
+
+  onBeforeMount(() => {
+    store.commit(SET_CURRENT_PAGE, ORGANIZATIONS_PAGENAME);
+    store.commit(SET_APP_BACKGROUND, pageBGImage);
+  });
 
   const orgaStore = useOrganizationsStore();
   const orgas = ref();
@@ -48,16 +57,16 @@
   }
 
   const catchOrganizationClick = (orgaTitle) => {
-    const orgaDataset = orgaDatasetsMap.value.get(orgaTitle).datasets;
+    const orgaDataset = orgaDatasetsMap.value.get(orgaTitle)?.datasets || [];
     listContent.value = orgaDataset;
   }
 
   const catchMetadataClicked = (datasetname) => {
-    this.$store.commit(`${METADATA_NAMESPACE}/${SET_DETAIL_PAGE_BACK_URL}`, this.$route);
+    store.commit(`${METADATA_NAMESPACE}/${SET_DETAIL_PAGE_BACK_URL}`, route);
 
-    this.$router.push({
+    router.push({
       name: METADATADETAIL_PAGENAME,
-      query: this.$route.query,
+      query: route.query,
       params: {
         metadataid: datasetname,
       },
@@ -96,55 +105,72 @@
 
     <v-row no-gutters>
       <v-col >
-        <v-card
-          v-show="loading"
-          title="Loading Reserach Unit Dataset Chart"
-          :height="600">
+        <v-card class="pa-4">
+          <v-card-title class="px-0 pt-0">
+            {{ `${loading ? 'Loading ' : ''}Research Unit Dataset Chart` }}
+          </v-card-title>
 
-          <v-row justify="center"
-                 align="center"
-                 class="fill-height">
-            <v-col class="flex-grow-0">
-              <v-progress-circular indeterminate />
-            </v-col>
-          </v-row>
+          <v-card-text class="px-0">
+            <v-row v-show="loading"
+              justify="center"
+              align="center"
+              style="height: 600px;"
+            >
+              <v-col class="flex-grow-0">
+                <v-progress-circular indeterminate />
+              </v-col>
+            </v-row>
 
+            <BarChart
+              v-if="!loading"
+              id="DatasetBarChart"
+              :height="600"
+              :data
+              :options
+            />
+          </v-card-text>
         </v-card>
 
-        <BarChart
-          v-if="!loading"
-          id="DatasetBarChart"
-          :height="600"
-          :data
-          :options
-        />
       </v-col>
     </v-row>
 
     <v-row>
       <v-col>
+        <v-card class="pa-4">
+          <v-card-title class="px-0 pt-0">
+            List of Organizations in EnviDat
+          </v-card-title>
 
-        <OrganizationTree
-          :organizationsTree
-          @click="catchOrganizationClick"
-          @clickAppend="catchDatasetClick"
-        />
+          <v-card-text class="px-0">
+            <OrganizationTree
+              :organizationsTree
+              @click="catchOrganizationClick"
+              @clickAppend="catchDatasetClick"
+            />
+          </v-card-text>
+        </v-card>
 
       </v-col>
     </v-row>
 
     <v-row>
       <v-col>
-        <MetadataList
-          ref="metadataList"
-          :listContent="listContent"
-          :mapFilteringPossible="false"
-          @clickedCard="catchMetadataClicked"
-          :searchCount="listContent.length"
-          :showSearch="false"
-          @setScroll="$emit('setScroll', $event)"
-        />
+        <v-card class="pa-4">
+          <v-card-title class="px-0 pt-0">
+            Datasets of the selected organization
+          </v-card-title>
 
+          <v-card-text class="px-0">
+            <MetadataList
+              ref="metadataList"
+              :listContent="listContent"
+              :mapFilteringPossible="false"
+              @clickedCard="catchMetadataClicked"
+              :searchCount="listContent.length"
+              :showSearch="false"
+            />
+          </v-card-text>
+        </v-card>
       </v-col>
     </v-row>
   </v-container>
