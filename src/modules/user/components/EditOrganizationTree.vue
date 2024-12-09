@@ -19,7 +19,7 @@
     </v-row>
 
     <OrganizationTree
-      :organizationsMap="organizationsMap"
+      :organizationsTree="organizationsTree"
       :preSelectedOrganization="organization"
       :selectionDisabled="selectionDisabled"
       @organizationChanged="catchOrganizationChanged"
@@ -57,9 +57,9 @@ export default {
       type: String,
       default: '',
     },
-    organizationsMap: {
-      type: Object,
-      default: () => {},
+    organizationsTree: {
+      type: Array,
+      default: () => [],
     },
     selectionDisabled: {
       type: Boolean,

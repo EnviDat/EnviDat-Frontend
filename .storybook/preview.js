@@ -1,6 +1,7 @@
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import 'vuetify/styles';
+import { VTreeview } from 'vuetify/labs/VTreeview'
 import { createVuetify } from 'vuetify';
 import config from '@/plugins/vuetifyConfig.js';
 
@@ -11,10 +12,13 @@ import { withVuetifyTheme } from './withVuetifyTheme.decorator';
 setup((app) => {
   // Registers your app's plugins into Storybook
   app.use(createVuetify({
-    components,
+    components: {
+      ...components,
+      VTreeview,
+    },
     directives,
     ...config,
-  }))
+  }));
 });
 
 // read more: https://storybook.js.org/docs/react/writing-stories/naming-components-and-hierarchy
