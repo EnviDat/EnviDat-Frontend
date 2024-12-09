@@ -11,66 +11,23 @@
  */
 
 import OrganizationTree from '@/modules/user/components/OrganizationTree.vue';
-import {
-  EDITMETADATA_OBJECT_UPDATE,
-  EDITMETADATA_ORGANIZATION,
-  eventBus,
-} from '@/factories/eventBus';
 
-import { getOrganizationMapObject } from '@/factories/organizationFactory';
+import { getOrganizationMap, getOrganizationTree } from '@/factories/organizationFactory';
 import testOrganizations from './js/organizations';
 
-const organizationsMap = getOrganizationMapObject(testOrganizations);
+// const organizationsMap = getOrganizationMapObject(testOrganizations);
+const orgaMap = getOrganizationMap(testOrganizations);
+const organizationsTree = getOrganizationTree(orgaMap);
 
 export default {
   title: '3 Dataset / 1 Views / Organization Tree',
   component: OrganizationTree,
 };
 
-export const OrganizationTreeView = () => ({
-    components: { OrganizationTree },
-    template: `
-    <v-col>
+export const Default = {
+  args: {
+    organizationsTree,
+    selectionDisabled: false,
+  },
+}
 
-      <v-row>
-        OrganizationTree
-      </v-row>
-
-      <v-row>
-        <v-col>
-          Selection of the Organization Tree:
-        </v-col>
-        <v-col>
-          {{ selectedOrga }}
-        </v-col>
-      </v-row>
-
-      <v-row class='py-3' >
-        <v-col >
-          <OrganizationTree v-bind='genericProps' />
-        </v-col>
-      </v-row>
-
-    </v-col>
-    `,
-    created() {
-      eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.showSelectedOrga);
-    },
-    beforeUnmount() {
-      eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.showSelectedOrga);
-    },
-    methods: {
-      showSelectedOrga(updateObj) {
-        if (updateObj.object === EDITMETADATA_ORGANIZATION) {
-          this.selectedOrga = updateObj.data;
-        }
-      },
-    },
-    data: () => ({
-      genericProps: {
-        organizationsMap,
-      },
-      selectedOrga: '',
-      preSelectedOrganization: 'wsl',
-    }),
-  });

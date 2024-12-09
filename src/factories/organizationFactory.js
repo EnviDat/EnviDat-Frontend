@@ -1,3 +1,4 @@
+import { toRaw } from 'vue';
 
 const ruBarColors = () => {
   const barColors = [
@@ -38,14 +39,27 @@ export const getYearDatasetMap = (datasets) => {
   return yearMap;
 }
 
-export const getOrgaDatasetMap = (datasets, groupForResearchUnit = false) => {
+export const getOraganizationsFromMap = (orgaDatasetsMap) => {
+
+  const organizations = [];
+
+  // eslint-disable-next-line no-unused-vars
+  for (const [orgaTitle, entry] of orgaDatasetsMap) {
+    organizations.push(entry.organization);
+  }
+
+  return organizations;
+}
+
+export const getOrgaDatasetsMap = (datasets, groupForResearchUnit = false) => {
   const datasetMap = new Map();
 
   for (let i = 0; i < datasets.length; i++) {
     const dataset = datasets[i];
 
     // const key = dataset?.owner_org || dataset?.organization.id;
-    const key = groupForResearchUnit ? dataset.ruName : dataset.organization.title;
+    let key = groupForResearchUnit ? dataset.ruName : dataset.organization.title;
+    key = key.toLowerCase();
 
     if (key) {
       const orgaDatasets = datasetMap.get(key);
@@ -56,6 +70,7 @@ export const getOrgaDatasetMap = (datasets, groupForResearchUnit = false) => {
       } else {
         datasetMap.set(key, {
           count: 1,
+          organization: dataset.organization,
           datasets: [dataset],
         });
       }
@@ -75,13 +90,13 @@ export const getOrgaDatasetMap = (datasets, groupForResearchUnit = false) => {
 
 
 
-export const organizationSeries = (orgaDatasetMap, yearLabels) => {
+export const organizationSeries = (orgaDatasetsMap, yearLabels) => {
 
   const series = [];
-  const keys = Array.from(orgaDatasetMap.keys());
+  const keys = Array.from(orgaDatasetsMap.keys());
 
-  for (const [orgaName, value] of orgaDatasetMap) {
-    const index = keys.indexOf(orgaName);
+  for (const [orgaTitle, value] of orgaDatasetsMap) {
+    const index = keys.indexOf(orgaTitle);
     const data = [];
     const yearMap = value.yearMap;
 
@@ -91,7 +106,7 @@ export const organizationSeries = (orgaDatasetMap, yearLabels) => {
     }
 
     series.push({
-      label: orgaName,
+      label: orgaTitle,
       data,
       backgroundColor: ruBarColors()[index],
     });
@@ -100,15 +115,16 @@ export const organizationSeries = (orgaDatasetMap, yearLabels) => {
   return series;
 }
 
-export function getResearchUnit(orgaName, researchUnits) {
+export function getResearchUnit(orgaTitle, researchUnits) {
   const units = researchUnits.researchUnits;
+  const orgaTitleLower = orgaTitle.toLowerCase();
 
   for (let i = 0; i < units.length; ++i) {
     const unit = units[i];
     const ruName = unit.name;
     const ruNameLower = unit.name.toLowerCase();
 
-    if (ruNameLower.includes(orgaName.toLowerCase())) {
+    if (ruNameLower.includes(orgaTitleLower)) {
       return ruName;
     }
 
@@ -118,7 +134,7 @@ export function getResearchUnit(orgaName, researchUnits) {
       for (let j = 0; j < groups.length; ++j) {
         const groupName = groups[j].toLowerCase();
 
-        if (groupName.includes(orgaName.toLowerCase())) {
+        if (groupName.includes(orgaTitleLower)) {
           return ruName;
         }
       }
@@ -133,10 +149,10 @@ export function enhanceDatasetWithResearchUnit(datasets, researchUnits) {
   const ruDatasets = [];
 
   for (let i = 0; i < datasets.length; ++i) {
-    const dSet = datasets[i];
+    const dSet = toRaw(datasets[i]);
 
-    const orgaName = dSet.organization.title;
-    dSet.ruName = getResearchUnit(orgaName, researchUnits);
+    const orgaTitle = dSet.organization.title;
+    dSet.ruName = getResearchUnit(orgaTitle, researchUnits);
 
     ruDatasets.push(dSet);
   }
@@ -155,10 +171,12 @@ export function getOrganizationMap(organizations) {
 
   for (let i = 0; i < organizations.length; i++) {
     const orga = organizations[i];
-    let key = orga.name;
+    let key = orga.title.toLowerCase();
 
     if (orga.groups?.length > 0) {
-      key = orga.groups[0].name;
+      // in the groups the organizations are referenced by "name" which has '-' instead of spaces
+      key = orga.groups[0].name.toLowerCase();
+      key = key.replaceAll('-', ' ');
     }
 
     const orgaEntry = organizationMap.get(key);
@@ -172,17 +190,42 @@ export function getOrganizationMap(organizations) {
   return organizationMap;
 }
 
-function getItem(organizationMap, organization, index) {
+export const getOrganitzionTreeItem = (entries, id) => {
 
-  const name = organization.name;
+  for (let i = 0; i < entries.length; i++) {
+    const entry = entries[i];
+
+    if (entry.id === id) {
+      return entry;
+    }
+
+    if (entry.children?.length > 0) {
+      const childEntry = getOrganitzionTreeItem(entry.children, id);
+      if (childEntry) {
+        return childEntry;
+      }
+    }
+  }
+
+  return null;
+}
+
+function getItem(organizationMap, organizationDatasetMap, organization, index) {
+
+  const title = organization.title;
   const children = [];
 
-  const childrendOrgas = organizationMap.get(name);
+  const childrendOrgas = organizationMap.get(title);
+
+  const orgaDatasetEntry = organizationDatasetMap?.get(title);
+  const datasetCount = orgaDatasetEntry?.count || 0;
+
   if (childrendOrgas?.length > 0) {
 
     for (let i = 0; i < childrendOrgas.length; i++) {
       const childOrga = childrendOrgas[i];
-      if (childOrga.name !== name) {
+
+      if (childOrga.title.toLowerCase() !== title) {
         const child = getItem(organizationMap, childOrga, index);
         children.push(child);
         index = child.id;
@@ -192,28 +235,31 @@ function getItem(organizationMap, organization, index) {
 
   return {
     id: ++index,
-    title: name,
+    title,
+    datasetCount,
     children,
   }
 }
 
-export function getOrganizationTree(organizationMap) {
+export function getOrganizationTree(organizationMap, organizationDatasetMap = undefined) {
 
-  const orgaTitle = Array.from(organizationMap.keys()).sort();
+  const orgaTitles = Array.from(organizationMap.keys()).sort();
   const treeItems = [];
   let index = 0;
 
-  for (const name of orgaTitle) {
+  for (const title of orgaTitles) {
 
-    const entries = organizationMap.get(name);
+    const entries = organizationMap.get(title);
+    const orgaDatasetEntry = organizationDatasetMap?.get(title);
+    const datasetCount = orgaDatasetEntry?.count || 0;
 
     const children = []
     if (entries.length > 0) {
       for (let i = 0; i < entries.length; i++) {
         const orga = entries[i];
 
-        if (orga.name !== name) {
-          const childItem = getItem(organizationMap, orga, index);
+        if (orga.title.toLowerCase() !== title) {
+          const childItem = getItem(organizationMap, organizationDatasetMap, orga, index);
           children.push(childItem);
           index = childItem.id;
         }
@@ -222,7 +268,8 @@ export function getOrganizationTree(organizationMap) {
 
     treeItems.push({
       id: ++index,
-      title: name,
+      title,
+      datasetCount,
       children,
     });
   }
@@ -230,41 +277,6 @@ export function getOrganizationTree(organizationMap) {
   return treeItems;
 }
 
-export function getOrganizationMapObject(organizations) {
-  const mainOrgas = {};
-  const topLevel = [];
-
-  if (!organizations) {
-    return mainOrgas;
-  }
-
-  for (let i = 0; i < organizations.length; i++) {
-    const orga = organizations[i];
-    let orgasSublist = null;
-
-    if (orga?.groups?.length > 0) {
-      const main = orga.groups[0].name;
-      if (main && !mainOrgas[main]) {
-        mainOrgas[main] = [];
-      }
-
-      orgasSublist = mainOrgas[main];
-    }
-
-    if (orgasSublist && !orgasSublist.includes(orga)) {
-      orgasSublist.push(orga);
-    } else {
-      topLevel.push(orga);
-    }
-  }
-
-  for (let i = 0; i < topLevel.length; i++) {
-    const k = topLevel[i];
-    mainOrgas[k.name] = k;
-  }
-
-  return mainOrgas;
-}
 
 export const researchUnitDatasetChartOptions = {
   plugins: {
@@ -306,7 +318,7 @@ export const getResearchUnitDatasetSeries = (orgaDatasetsMap) => {
   const yearLables = new Set();
 
   // eslint-disable-next-line no-unused-vars
-  for (const [orgaName, value] of orgaDatasetsMap) {
+  for (const [orgaTitle, value] of orgaDatasetsMap) {
     const yearMap = value.yearMap;
 
     for (const year of yearMap.keys()) {

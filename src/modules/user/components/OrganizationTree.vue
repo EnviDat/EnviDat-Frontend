@@ -26,11 +26,14 @@
         open-on-click
         item-value="id"
         item-disabled="locked"
+        selectable
         activatable
         hoverable
         @update:active="catchActiveClick"
+        @click:open="item => catchItemClick(item)"
       >
 
+<!--
         <template v-slot:prepend="{ item }">
           <BaseIconButton
             v-if="item.children && item.children.length > 0"
@@ -39,14 +42,21 @@
             @click.stop="catchOpenClick(item)"
           />
         </template>
+-->
 
-        <!-- <template v-slot:label="{ item, active }"> -->
-        <template v-slot:label="{ item }">
-          <!-- <div @click="catchActiveClick(item)"> -->
-          <div>
-            {{ item.name }}
-          </div>
+        <template v-slot:append="{ item }">
+          <v-col>
+            Datasets published
+          </v-col>
+          <v-col class="flex-grow-0">
+            <BaseIconCountView
+              class="ma-0"
+              :icon="mdiEarth"
+              :count="item.datasetCount"
+            />
+          </v-col>
         </template>
+
       </v-treeview>
     </v-card-text>
   </v-card>
@@ -64,7 +74,9 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { mdiClose, mdiArrowRight } from '@mdi/js';
+import { mdiClose, mdiArrowRight, mdiEarth } from '@mdi/js';
+import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
+import { getOrganitzionTreeItem } from '@/factories/organizationFactory';
 
 export default {
   name: 'OrganizationTree',
@@ -73,6 +85,7 @@ export default {
     organizationsTree: Array,
     selectionDisabled: Boolean,
   },
+  emits: ['click', 'clickAppend'],
   mounted() {
     if (this.preSelectedOrganization) {
       this.setActiveItem(this.items, this.preSelectedOrganization);
@@ -107,6 +120,20 @@ export default {
       }
 
       return false;
+    },
+    catchAppendClick(orgaTitle) {
+      this.$emit('clickAppend', orgaTitle);
+    },
+    catchItemClick({ id }) {
+
+      let orgaTitle = id;
+
+      const entry = getOrganitzionTreeItem(this.organizationsTree, id);
+      if (entry) {
+        orgaTitle = entry.title;
+      }
+
+      this.$emit('click', orgaTitle);
     },
     catchOpenClick(item) {
       if (this.open.includes(item.id)) {
@@ -160,8 +187,11 @@ export default {
     parentIdPrefix: 'parent',
     mdiClose,
     mdiArrowRight,
+    mdiEarth,
   }),
-  components: {},
+  components: {
+    BaseIconCountView,
+  },
 };
 </script>
 

@@ -3,7 +3,7 @@
             id="BrowsePage"
             key="BrowsePage">
 
-    <metadata-list ref="metadataList"
+    <MetadataList ref="metadataList"
                     :listContent="filteredDatasets"
                     :mapFilteringPossible="mapFilteringPossible"
                     @clickedTag="catchTagClicked"
@@ -41,7 +41,7 @@
                     :categoryCards="categoryCards"
     >
 
-    </metadata-list>
+    </MetadataList>
 
   </article>
 </template>
