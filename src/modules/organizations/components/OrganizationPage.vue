@@ -12,7 +12,7 @@ import {
 } from '@/factories/organizationFactory';
 
 import researchUnits from '@/../public/researchUnits.json';
-import DatasetBarChart from '@/components/Charts/DatasetBarChart.vue';
+import BarChart from '@/components/Charts/BarChart.vue';
 import organizationList from '@/../public/testdata/organization_show.json';
 import OrganizationTree from '@/modules/user/components/OrganizationTree.vue';
 
@@ -101,7 +101,8 @@ const orgaStore = useOrganizationsStore();
 
     <v-row no-gutters>
       <v-col >
-        <DatasetBarChart
+        <BarChart
+            id="DatasetBarChart"
           :height="600"
           :data="ruChartDatasets"
           :options="ruChartOptions"

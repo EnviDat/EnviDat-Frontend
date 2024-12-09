@@ -1,21 +1,13 @@
 <script setup>
-  import { Pie } from 'vue-chartjs';
-  import {
-    Chart as ChartJS,
-    Title,
-    Tooltip,
-    Legend,
-    ArcElement,
-    CategoryScale,
-    LinearScale,
-  } from 'chart.js';
+  import { Bar } from 'vue-chartjs';
+  import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js';
 
-  ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale, LinearScale);
+  ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
 
   const { data, options } = defineProps({
     id: {
       type: String,
-      default: 'DatasetPieChart',
+      default: 'BarChart',
       required: false,
     },
     height: {
@@ -25,12 +17,12 @@
     },
     data: {
       type: Object,
-      default: undefined,
+      default: () => {},
       required: true,
     },
     options: {
       type: Object,
-      default: undefined,
+      default: () => {},
       required: true,
     },
     plugins: {
@@ -38,14 +30,13 @@
       default: undefined,
       required: false,
     },
-  });
-  
+  })
 
 </script>
 
 <template>
   <v-card :height >
-    <Pie
+    <Bar
       :id
       :options
       :data

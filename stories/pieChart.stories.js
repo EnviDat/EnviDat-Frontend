@@ -10,11 +10,11 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import DatasetPieChart from '@/components/Charts/DatasetPieChart.vue';
+import PieChart from '@/components/Charts/PieChart.vue';
 
 export default {
-  title: '1 Base / Charts / DatasetPieChart',
-  component: DatasetPieChart,
+  title: '1 Base / Charts / PieChart',
+  component: PieChart,
 //  decorators: [() => ({ template: '<div style="height: 500px;"><story/></div>' })],
 };
 

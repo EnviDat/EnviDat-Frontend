@@ -10,7 +10,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import DatasetBarChart from '@/components/Charts/DatasetBarChart.vue';
+import BarChart from '@/components/Charts/BarChart.vue';
 import { getOrgaDatasetMap, organizationSeries } from '@/factories/organizationFactory';
 
 import metadataFile from './testdata/packagelist.json'
@@ -18,8 +18,8 @@ import metadataFile from './testdata/packagelist.json'
 const metadatas = metadataFile.result;
 
 export default {
-  title: '1 Base / Charts / DatasetBarChart',
-  component: DatasetBarChart,
+  title: '1 Base / Charts / BarChart',
+  component: BarChart,
 //  decorators: [() => ({ template: '<div style="height: 500px;"><story/></div>' })],
 };
 
