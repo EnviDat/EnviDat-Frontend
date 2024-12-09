@@ -166,7 +166,6 @@ export function getOrganizationMap(organizations) {
   }
 
   return organizationMap;
-
 }
 
 function getItem(organizationMap, organization, index) {
@@ -225,4 +224,36 @@ export function getOrganizationTree(organizationMap) {
   }
 
   return treeItems;
+}
+
+export function getOrganizationMapObject(organizations) {
+  const mainOrgas = {};
+  const topLevel = [];
+
+  for (let i = 0; i < organizations.length; i++) {
+    const orga = organizations[i];
+    let orgasSublist = null;
+
+    if (orga?.groups?.length > 0) {
+      const main = orga.groups[0].name;
+      if (main && !mainOrgas[main]) {
+        mainOrgas[main] = [];
+      }
+
+      orgasSublist = mainOrgas[main];
+    }
+
+    if (orgasSublist && !orgasSublist.includes(orga)) {
+      orgasSublist.push(orga);
+    } else {
+      topLevel.push(orga);
+    }
+  }
+
+  for (let i = 0; i < topLevel.length; i++) {
+    const k = topLevel[i];
+    mainOrgas[k.name] = k;
+  }
+
+  return mainOrgas;
 }

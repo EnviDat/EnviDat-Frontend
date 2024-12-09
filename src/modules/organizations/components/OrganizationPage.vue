@@ -6,12 +6,15 @@ import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 import {
   enhanceDatasetWithResearchUnit,
   getOrgaDatasetMap,
+  getOrganizationMap,
   getOrganizationTree,
   organizationSeries,
 } from '@/factories/organizationFactory';
 
 import researchUnits from '@/../public/researchUnits.json';
 import orgaMapProd from '@/../stories/testdata/orgaMapProd.json';
+import organizationList from '@/../public/testdata/organization_show.json';
+import OrganizationTree from '@/modules/user/components/OrganizationTree.vue';
 
 const orgaStore = useOrganizationsStore();
   const orgas = ref();
@@ -21,9 +24,8 @@ const orgaStore = useOrganizationsStore();
     datasets: [],
   });
 
-  const organiztionTree = ref();
-  const search = ref(null);
-  
+  const organizationsTree = ref();
+
   const ruChartOptions = {
     plugins: {
       title: {
@@ -87,11 +89,14 @@ const orgaStore = useOrganizationsStore();
       datasets: series,
     };
 
+/*
     const organiztionMap = new Map();
     const orgaEntries = Object.values(orgaMapProd);
     orgaEntries.map((entry) => organiztionMap.set(entry.key, entry.value));
-    
-    organiztionTree.value = getOrganizationTree(organiztionMap);
+*/
+    const orgaMap = getOrganizationMap(organizationList.result);
+
+    organizationsTree.value = getOrganizationTree(orgaMap);
   })
 
 </script>
@@ -114,40 +119,9 @@ const orgaStore = useOrganizationsStore();
     <v-row>
       <v-col>
 
-        <v-card>
-          <v-sheet class="pa-4 bg-primary">
-            <v-text-field
-                v-model="search"
-                label="Search Company Directory"
-                clearable
-                dark
-                flat
-                hide-details
-                solo-inverted
-            ></v-text-field>
-<!--
-            <v-checkbox
-                v-model="caseSensitive"
-                label="Case sensitive search"
-                dark
-                hide-details
-            ></v-checkbox>
--->
-          </v-sheet>
-
-          <v-card-text>
-            <v-treeview
-                :items="organiztionTree"
-                item-value="id"
-                activatable
-                color="secondary"
-                open-on-click
-                :search
-            >
-            </v-treeview>
-
-          </v-card-text>
-        </v-card>
+        <OrganizationTree
+          :organizationsTree
+        />
 
       </v-col>
     </v-row>

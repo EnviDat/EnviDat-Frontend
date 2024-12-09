@@ -20,7 +20,8 @@ import {
   METADATA_CONTACT_FULLNAME,
   METADATA_STATE_DRAFT,
   METADATA_STATE_INVISILBE,
-  METADATA_STATE_VISILBE, METADATA_TITLE_PROPERTY,
+  METADATA_STATE_VISILBE,
+  METADATA_TITLE_PROPERTY,
   PUBLICATION_STATE_PENDING,
   PUBLICATION_STATE_PUBLISHED,
   PUBLICATION_STATE_RESERVED,
@@ -419,38 +420,6 @@ export function createResources(
     doi: dataset.doi,
     resources,
   };
-}
-
-export function getOrganizationMap(organizations) {
-  const mainOrgas = {};
-  const topLevel = [];
-
-  for (let i = 0; i < organizations.length; i++) {
-    const orga = organizations[i];
-    let orgasSublist = null;
-
-    if (orga?.groups?.length > 0) {
-      const main = orga.groups[0].name;
-      if (main && !mainOrgas[main]) {
-        mainOrgas[main] = [];
-      }
-
-      orgasSublist = mainOrgas[main];
-    }
-
-    if (orgasSublist && !orgasSublist.includes(orga)) {
-      orgasSublist.push(orga);
-    } else {
-      topLevel.push(orga);
-    }
-  }
-
-  for (let i = 0; i < topLevel.length; i++) {
-    const k = topLevel[i];
-    mainOrgas[k.name] = k;
-  }
-
-  return mainOrgas;
 }
 
 export function createDetails(dataset) {
