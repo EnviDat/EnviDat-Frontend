@@ -298,6 +298,7 @@ export const researchUnitDatasetChartOptions = {
 export const getResearchUnitDatasetSeries = (orgaDatasetsMap) => {
   const yearLables = new Set();
 
+  // eslint-disable-next-line no-unused-vars
   for (const [orgaName, value] of orgaDatasetsMap) {
     const yearMap = value.yearMap;
 
