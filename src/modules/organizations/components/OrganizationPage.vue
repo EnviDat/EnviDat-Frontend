@@ -12,16 +12,18 @@
     researchUnitDatasetChartOptions,
   } from '@/factories/organizationFactory';
   
-  import researchUnits from '@/../public/researchUnits.json';
   import BarChart from '@/components/Charts/BarChart.vue';
   import MetadataList from '@/components/MetadataList.vue';
-
+  import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
   import OrganizationTree from '@/modules/user/components/OrganizationTree.vue';
+
   import organizations from '@/../public/testdata/organization_show.json';
+  import researchUnits from '@/../public/researchUnits.json';
   import { BROWSE_PATH, METADATADETAIL_PAGENAME, ORGANIZATIONS_PAGENAME } from '@/router/routeConsts';
   import { SET_APP_BACKGROUND, SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
   import { useRouter, useRoute } from 'vue-router';
   import { useStore } from 'vuex';
+  import { mdiEarth } from '@mdi/js';
 
   const router = useRouter();
   const route = useRoute();
@@ -49,11 +51,6 @@
     const allDatasets = store.getters[`${METADATA_NAMESPACE}/allMetadatas`];
 
     return enhanceDatasetWithResearchUnit(allDatasets, researchUnits);
-  }
-
-  const catchDatasetClick = (orgaTitle) => {
-    router.options.additiveChangeRoute(route, router, BROWSE_PATH, orgaTitle,
-      undefined, undefined, undefined, undefined);
   }
 
   const catchOrganizationClick = (orgaTitle) => {
@@ -85,10 +82,10 @@
     data.value = getResearchUnitDatasetSeries(ruDatasetsMap.value);
 
     nextTick(() => {
-      const orgaMap = getOrganizationMap(orgas.value);
+      // const orgaMap = getOrganizationMap(orgas.value);
 
       // for local testing
-      // const orgaMap = getOrganizationMap(organizations.result);
+      const orgaMap = getOrganizationMap(organizations.result);
 
       orgaDatasetsMap.value = getOrgaDatasetsMap(datasets);
 
@@ -145,8 +142,20 @@
             <OrganizationTree
               :organizationsTree
               @click="catchOrganizationClick"
-              @clickAppend="catchDatasetClick"
-            />
+            >
+              <template v-slot:append="{ item }">
+                <v-col>
+                  Datasets published
+                </v-col>
+                <v-col class="flex-grow-0">
+                  <BaseIconCountView
+                      class="ma-0"
+                      :icon="mdiEarth"
+                      :count="item.datasetCount"
+                  />
+                </v-col>
+              </template>
+            </OrganizationTree>
           </v-card-text>
         </v-card>
 

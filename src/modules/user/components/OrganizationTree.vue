@@ -34,28 +34,16 @@
         @click:open="item => catchItemClick(item)"
       >
 
-<!--
         <template v-slot:prepend="{ item }">
-          <BaseIconButton
-            v-if="item.children && item.children.length > 0"
-            :style="!open.includes(item.id) ? '' : 'transform: rotate(90deg);'"
-            :icon="mdiArrowRight"
-            @click.stop="catchOpenClick(item)"
-          />
+          <slot name="prepend" :item="item" />
         </template>
--->
+
+        <template v-slot:item="{ item }">
+          <slot name="item" :item="item" />
+        </template>
 
         <template v-slot:append="{ item }">
-          <v-col>
-            Datasets published
-          </v-col>
-          <v-col class="flex-grow-0">
-            <BaseIconCountView
-              class="ma-0"
-              :icon="mdiEarth"
-              :count="item.datasetCount"
-            />
-          </v-col>
+          <slot name="append" :item="item" />
         </template>
 
       </v-treeview>
@@ -75,8 +63,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { mdiClose, mdiArrowRight, mdiEarth } from '@mdi/js';
-import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
+import { mdiClose } from '@mdi/js';
 import { getOrganitzionTreeItem } from '@/factories/organizationFactory';
 
 export default {
@@ -191,11 +178,8 @@ export default {
     childIdPrefix: 'child',
     parentIdPrefix: 'parent',
     mdiClose,
-    mdiArrowRight,
-    mdiEarth,
   }),
   components: {
-    BaseIconCountView,
   },
 };
 </script>
