@@ -9,6 +9,7 @@
     CategoryScale,
     LinearScale,
   } from 'chart.js';
+  import ChartDataLabels from 'chartjs-plugin-datalabels';
 
   ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale, LinearScale);
 
@@ -33,13 +34,9 @@
       default: undefined,
       required: true,
     },
-    plugins: {
-      type: Array,
-      default: undefined,
-      required: false,
-    },
   });
-  
+
+  const plugins = [ChartDataLabels];
 
 </script>
 

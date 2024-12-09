@@ -149,6 +149,10 @@ export function getOrganizationMap(organizations) {
 
   const organizationMap = new Map();
 
+  if (!organizations) {
+    return organizationMap;
+  }
+
   for (let i = 0; i < organizations.length; i++) {
     const orga = organizations[i];
     let key = orga.name;
@@ -230,6 +234,10 @@ export function getOrganizationMapObject(organizations) {
   const mainOrgas = {};
   const topLevel = [];
 
+  if (!organizations) {
+    return mainOrgas;
+  }
+
   for (let i = 0; i < organizations.length; i++) {
     const orga = organizations[i];
     let orgasSublist = null;
@@ -256,4 +264,54 @@ export function getOrganizationMapObject(organizations) {
   }
 
   return mainOrgas;
+}
+
+export const researchUnitDatasetChartOptions = {
+  plugins: {
+    title: {
+      display: true,
+      text: 'Dataset Publication per Research Unit History',
+    },
+    legend: {
+      position: 'right',
+    },
+    datalabels: {
+      color: '#d9f3f3',
+      textStrokeColor: '#222222',
+      textStrokeWidth: 2,
+    },
+  },
+  animations: {
+    colors: 'show',
+  },
+  responsive: true,
+  scales: {
+    x: {
+      stacked: true,
+    },
+    y: {
+      stacked: true,
+    },
+  },
+}
+
+export const getResearchUnitDatasetSeries = (orgaDatasetsMap) => {
+  const yearLables = new Set();
+
+  for (const [orgaName, value] of orgaDatasetsMap) {
+    const yearMap = value.yearMap;
+
+    for (const year of yearMap.keys()) {
+      yearLables.add(year);
+    }
+  }
+
+  const yearsSorted = Array.from(yearLables).sort();
+
+  const series = organizationSeries(orgaDatasetsMap, yearsSorted);
+
+  return {
+    labels: yearsSorted,
+    datasets: series,
+  };
 }
