@@ -157,8 +157,8 @@ export function getOrganizationMap(organizations) {
     const orga = organizations[i];
     let key = orga.name;
 
-    if (orga.group?.length > 0) {
-      key = orga.group[0].name;
+    if (orga.groups?.length > 0) {
+      key = orga.groups[0].name;
     }
 
     const orgaEntry = organizationMap.get(key);
@@ -296,6 +296,13 @@ export const researchUnitDatasetChartOptions = {
 }
 
 export const getResearchUnitDatasetSeries = (orgaDatasetsMap) => {
+  if (!orgaDatasetsMap) {
+    return {
+      labels: [],
+      datasets: [],
+    };
+  }
+
   const yearLables = new Set();
 
   // eslint-disable-next-line no-unused-vars
