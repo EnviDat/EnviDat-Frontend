@@ -17,9 +17,9 @@
   import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
   import OrganizationTree from '@/modules/user/components/OrganizationTree.vue';
 
-  import organizations from '@/../public/testdata/organization_show.json';
+  // import organizations from '@/../public/testdata/organization_show.json';
   import researchUnits from '@/../public/researchUnits.json';
-  import { BROWSE_PATH, METADATADETAIL_PAGENAME, ORGANIZATIONS_PAGENAME } from '@/router/routeConsts';
+  import { METADATADETAIL_PAGENAME, ORGANIZATIONS_PAGENAME } from '@/router/routeConsts';
   import { SET_APP_BACKGROUND, SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
   import { useRouter, useRoute } from 'vue-router';
   import { useStore } from 'vuex';
@@ -82,10 +82,10 @@
     data.value = getResearchUnitDatasetSeries(ruDatasetsMap.value);
 
     nextTick(() => {
-      // const orgaMap = getOrganizationMap(orgas.value);
+      const orgaMap = getOrganizationMap(orgas.value);
 
       // for local testing
-      const orgaMap = getOrganizationMap(organizations.result);
+      // const orgaMap = getOrganizationMap(organizations.result);
 
       orgaDatasetsMap.value = getOrgaDatasetsMap(datasets);
 
