@@ -55,6 +55,7 @@ import { METADATA_KEYWORDS_TITLE } from '@/factories/metadataConsts';
 import { extractAuthorsMap } from '@/factories/authorFactory';
 import { solrResultToCKANJSON } from '@/factories/apiFactory';
 import { enhanceMetadatas } from '@/factories/metaDataFactory';
+import { toRaw } from 'vue';
 
 
 export default {
@@ -192,10 +193,12 @@ export default {
     state.pinnedIds = [];
   },
   [SET_DETAIL_PAGE_BACK_URL](state, payload) {
-    state.detailPageBackRoute = payload;
+    // make a copy to avoid using a reactive object, otherwise with every navigation the backRoute is also updated!
+    state.detailPageBackRoute = { ...payload };
   },
   [SET_ABOUT_PAGE_BACK_URL](state, payload) {
-    state.aboutPageBackRoute = payload;
+    // make a copy to avoid using a reactive object, otherwise with every navigation the backRoute is also updated!
+    state.aboutPageBackRoute = { ...payload };
   },
   /*
   [METADATA_CREATE_NEW_AUTHOR](state, newAuthor) {
