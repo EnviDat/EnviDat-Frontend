@@ -483,7 +483,7 @@ export function convertToBackendJSONWithRules(rules, data) {
   return backendJson;
 }
 
-function convertToFrontendJSONWithRules(rules, data) {
+export function convertToFrontendJSONWithRules(rules, data) {
   if (!rules) {
     return null;
   }
