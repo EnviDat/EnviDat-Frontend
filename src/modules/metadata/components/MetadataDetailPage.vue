@@ -576,21 +576,13 @@ export default {
 
       if (currentContent && currentContent.title !== undefined) {
         const parsedContent = convertJSON(currentContent, false);
-        this.header = createHeaderViewModel(parsedContent);
-/*
-        this.header = createHeader(
-          currentContent,
+        this.header = createHeaderViewModel(
+          parsedContent,
           this.$vuetify.display.smAndDown,
+          currentContent.categoryColor,
+          currentContent.titleImg,
           this.authorDeadInfo,
         );
-
-        const parsedContent = convertJSON(currentContent, false);
-        const publicationData = getFrontendJSONForStep(
-          EDITMETADATA_PUBLICATION_INFO,
-          parsedContent,
-        );
-        this.header.publicationYear = publicationData.publicationYear;
-*/
 
         this.body = createBody(currentContent, this.$vuetify.display.smAndDown);
 
