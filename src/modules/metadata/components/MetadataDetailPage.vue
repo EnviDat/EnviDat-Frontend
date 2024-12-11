@@ -177,6 +177,7 @@ import { convertArrayToUrlString } from '@/factories/stringFactory';
 
 import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
 import { createLocation } from '@/factories/geoFactory';
+import { createHeaderViewModel } from '@/factories/ViewModels/HeaderViewModel';
 
 const MetadataBody = defineAsyncComponent(() =>
   import('@/modules/metadata/components/Metadata/MetadataBody.vue'),
@@ -574,6 +575,9 @@ export default {
       };
 
       if (currentContent && currentContent.title !== undefined) {
+        const parsedContent = convertJSON(currentContent, false);
+        this.header = createHeaderViewModel(parsedContent);
+/*
         this.header = createHeader(
           currentContent,
           this.$vuetify.display.smAndDown,
@@ -586,6 +590,7 @@ export default {
           parsedContent,
         );
         this.header.publicationYear = publicationData.publicationYear;
+*/
 
         this.body = createBody(currentContent, this.$vuetify.display.smAndDown);
 

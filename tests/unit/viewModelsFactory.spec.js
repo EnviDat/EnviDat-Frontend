@@ -9,7 +9,7 @@ import metadatas from '../../stories/js/metadata';
 
 describe('viewModel Factory ', () => {
 
-  const datasetBackend = metadatas[0];
+  const datasetBackend = metadatas[metadatas.length - 1];
   const backendJSON = convertJSON(datasetBackend, false);
 
   const headerVM = createHeaderViewModel(backendJSON);
