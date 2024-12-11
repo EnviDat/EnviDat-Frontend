@@ -297,7 +297,7 @@ export default {
 
       if (location.isPoint) {
         layer = getPointLayer(
-            location.pointArray,
+            location.geomCollection.geometries,
             dataset.id,
             dataset.title,
             selected,
@@ -307,7 +307,7 @@ export default {
         );
       } else if (location.isMultiPoint) {
         layer = getMultiPointLayer(
-            location.pointArray,
+            location.geomCollection.geometries,
             dataset.id,
             dataset.title,
             selected,
@@ -317,7 +317,7 @@ export default {
         );
       } else if (location.isPolygon) {
         layer = getPolygonLayer(
-            location.pointArray,
+            location.geomCollection.geometries,
             dataset.id,
             dataset.title,
             selected,
@@ -325,7 +325,7 @@ export default {
         );
       } else if (location.isMultiPolygon) {
         layer = getMultiPolygonLayer(
-          location.pointArray,
+          location.geomCollection.geometries,
           dataset.id,
           dataset.title,
           selected,
@@ -348,7 +348,7 @@ export default {
       
       return layer;
     },
-    createPoints(dataset, location, selected) {
+    createAllLayers(dataset, location, selected) {
 
       const layer = this.createLeafletLayer(dataset, location, selected);
 
@@ -389,14 +389,18 @@ export default {
         }
         const selected = idsPinned.includes(dataset.id);
 
+        this.createAllLayers(dataset, location, selected)
+
+/*
         if (location.isGeomCollection) {
-          location.pointArray.forEach(item => {
-            this.createPoints(dataset, item, selected)
+          location.geomCollection.geometries.forEach(item => {
+            this.createAllLayers(dataset, item, selected)
           });
         }
         else{
-          this.createPoints(dataset, location, selected)
+          this.createAllLayers(dataset, location, selected)
         }
+*/
       }
 
       // console.timeEnd('createMapElements');

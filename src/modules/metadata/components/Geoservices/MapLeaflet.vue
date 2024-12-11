@@ -137,8 +137,8 @@ export default {
       if (geoJson.type === 'GeometryCollection') {
         // Split geometries from geometries list
         geoJson.geometries.forEach(geometry => {
-        geoJsonArray.push(geometry);
-      });
+          geoJsonArray.push(geometry);
+        });
 
       } else if (geoJson.type === 'Feature') {
         // Split geometry from feature object
@@ -184,7 +184,7 @@ export default {
           }
 
           const title = feature.properties?.name || undefined;
-          const layerType = feature.geometry?.type;
+          const layerType = feature.geometry?.type || feature.type;
 
           if (layerType === LOCATION_TYPE_POINT) {
             return getPointLayer(latlng, '1', title, false, undefined);

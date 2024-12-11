@@ -114,7 +114,7 @@ import {
 
 import {
   defaultSwissLocation,
-  createGeomCollection, fetureCollectionToGeoCollection,
+  createGeomCollection, fetureCollectionToGeoCollection, creationGeometry,
 } from '@/factories/geoFactory';
 
 /*
@@ -267,13 +267,13 @@ export default {
         )
       ) {
 
-        this.newObjectToSend = geomArray
+        const geomColl = createGeomCollection(geomArray, {
+          name: this.location.name,
+        });
 
-        this.editedGeomBuffer.push(
-          createGeomCollection(geomArray, {
-            name: this.location.name,
-          }),
-        );
+        this.newObjectToSend = geomColl
+
+        this.editedGeomBuffer.push(geomColl);
 
         this.undoButtonEnabled = true;
         this.saveButtonEnabled = true;
@@ -314,7 +314,8 @@ export default {
       this.saveButtonEnabled = false;
     },
     triggerFilePicker() {
-      const fileInputElement = this.$refs.filePicker?.$el; // .querySelector('input[type="file"]');
+      // select the hidden file input
+      const fileInputElement = this.$refs.filePicker?.$el.querySelector('input[type="file"]');
 
       if (fileInputElement) {
         fileInputElement.click();
@@ -326,15 +327,21 @@ export default {
       reader.onload = () => {
         // Attempt GeoJSON
         try {
-          let inputGeoJSON = JSON.parse(reader.result);
+          const inputGeoJSON = JSON.parse(reader.result);
 
+          let newGeometries = [];
+          
           if (inputGeoJSON.type === LOCATION_TYPE_FEATCOLLECTION) {
-            inputGeoJSON = fetureCollectionToGeoCollection(inputGeoJSON);
+            const geomColl = fetureCollectionToGeoCollection(inputGeoJSON)
+            newGeometries = geomColl.geometries;
+          } else {
+            newGeometries = creationGeometry(inputGeoJSON).geomCollection.geometries;
           }
 
-          const currentGeometries = this.geomsForMap.type === LOCATION_TYPE_GEOMCOLLECTION ? this.geomsForMap.geometries : [this.geomsForMap];
+          const currentGeometries = this.geomsForMap.type === LOCATION_TYPE_GEOMCOLLECTION ? this.geomsForMap.geometries : [{ ...this.geomsForMap }];
 
-          currentGeometries.push(inputGeoJSON);
+          newGeometries.forEach((geometry) => currentGeometries.push(geometry));
+
           this.parseGeomCollectionAddToBuffer(currentGeometries);
         } catch (e) {
           this.validationErrors.geometries = `Could not load file. Is it GeoJSON? ${e}`;

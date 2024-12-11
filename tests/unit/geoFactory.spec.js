@@ -95,14 +95,54 @@ const geoJsonFeatureCollection = {
   type: LOCATION_TYPE_FEATCOLLECTION,
   features: [
     {
-      type: LOCATION_TYPE_FEATURE,
-      geometry: { type: LOCATION_TYPE_POINT, coordinates: [8.563607, 46.554404] },
-      properties: { deployment_location: 1 },
+      'type': 'Feature',
+      'geometry': { 'type': 'Point', 'coordinates': [8.563607, 46.554404] },
+      'properties': { 'deployment_location': 1 },
     },
     {
-      type: LOCATION_TYPE_FEATURE,
-      geometry: { type: LOCATION_TYPE_POINT, coordinates: [8.562377, 46.555487] },
-      properties: { deployment_location: 2 },
+      'type': 'Feature',
+      'geometry': { 'type': 'Point', 'coordinates': [8.562377, 46.555487] },
+      'properties': { 'deployment_location': 2 },
+    },
+    {
+      'type': 'Feature',
+      'geometry': { 'type': 'Point', 'coordinates': [8.561106, 46.556471] },
+      'properties': { 'deployment_location': 3 },
+    },
+    {
+      'type': 'Feature',
+      'geometry': { 'type': 'Point', 'coordinates': [8.559837, 46.557518] },
+      'properties': { 'deployment_location': 4 },
+    },
+    {
+      'type': 'Feature',
+      'geometry': { 'type': 'Point', 'coordinates': [8.558686, 46.558636] },
+      'properties': { 'deployment_location': 5 },
+    },
+    {
+      'type': 'Feature',
+      'geometry': { 'type': 'Point', 'coordinates': [8.557429, 46.559656] },
+      'properties': { 'deployment_location': 6 },
+    },
+    {
+      'type': 'Feature',
+      'geometry': { 'type': 'Point', 'coordinates': [8.564797, 46.553313] },
+      'properties': { 'deployment_location': 7 },
+    },
+    {
+      'type': 'Feature',
+      'geometry': { 'type': 'Point', 'coordinates': [8.565399, 46.552803] },
+      'properties': { 'deployment_location': 8 },
+    },
+    {
+      'type': 'Feature',
+      'geometry': { 'type': 'Point', 'coordinates': [8.554611, 46.562113] },
+      'properties': { 'deployment_location': 9 },
+    },
+    {
+      'type': 'Feature',
+      'geometry': { 'type': 'Point', 'coordinates': [8.564458, 46.560828] },
+      'properties': { 'deployment_location': 10 },
     },
   ],
 }
@@ -118,8 +158,8 @@ const testFilledLocation = (loc) => {
   expect(loc.isPoint).toBeDefined();
   expect(loc.isMultiPoint).toBeDefined();
 
-  expect(loc.pointArray).toBeDefined();
-  expect(loc.pointArray.length).toBeGreaterThan(0);
+  expect(loc.geomCollection).toBeDefined();
+  expect(loc.geomCollection.geometries.length).toBeGreaterThan(0);
 
   expect(loc.geoJSON).toBeDefined();
   expect(loc.geomCollection).toBeDefined();
@@ -180,6 +220,7 @@ describe('geoFactory - merge geometry ', () => {
     expect(geoCollection.type).equals(LOCATION_TYPE_GEOMCOLLECTION)
     expect(geoCollection.geometries.length).greaterThan(0);
 
+    console.log(JSON.stringify(geoCollection));
   });
 
 });
