@@ -17,8 +17,9 @@
   import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
   import OrganizationTree from '@/modules/user/components/OrganizationTree.vue';
 
-  import organizations from '@/../public/testdata/organization_show.json';
+//  import organizations from '@/../public/testdata/organization_show.json';
   import researchUnits from '@/../public/researchUnits.json';
+//  import metadatas from '@/../public/packagelist.json';
   import { METADATADETAIL_PAGENAME, ORGANIZATIONS_PAGENAME } from '@/router/routeConsts';
   import { SET_APP_BACKGROUND, SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
   import { useRoute, useRouter } from 'vue-router';
@@ -28,7 +29,7 @@
   const router = useRouter();
   const route = useRoute();
 
-  const pageBGImage= 'app_b_browsepage';
+  const pageBGImage = 'app_b_browsepage';
 
   onBeforeMount(() => {
     store.commit(SET_CURRENT_PAGE, ORGANIZATIONS_PAGENAME);
@@ -36,7 +37,6 @@
   });
 
   const orgaStore = useOrganizationsStore();
-  const orgas = ref();
   const ruDatasetsMap = ref();
   const orgaDatasetsMap = ref();
   const data = ref(getResearchUnitDatasetSeries(undefined));
@@ -46,18 +46,19 @@
   const organizationsTree = ref();
 
   const loadOrgaDatasets = () => {
+    // const allDatasets = metadatas.result;
     const allDatasets = store.getters[`${METADATA_NAMESPACE}/allMetadatas`];
 
     return enhanceDatasetWithResearchUnit(allDatasets, researchUnits);
   }
 
-  const catchOrganizationClick = (orgaTitle) => {
+  const catchOrganizationClick = (orgaName) => {
 
     router.push({
       name: ORGANIZATIONS_PAGENAME,
       query: route.query,
       params: {
-        organization: orgaTitle,
+        organization: orgaName,
       },
     });
   }
@@ -75,28 +76,27 @@
   }
 
   const listContent = computed(() => {
-    const orgaTitle = route?.params?.organization;
+    const orgaName = route?.params?.organization;
 
-    if (!orgaTitle || !orgaDatasetsMap.value) {
+    if (!orgaName || !orgaDatasetsMap.value) {
       return [];
     }
 
-    return orgaDatasetsMap.value.get(orgaTitle)?.datasets || [];
+    return orgaDatasetsMap.value.get(orgaName)?.datasets || [];
   })
 
   onMounted(async () => {
-    orgas.value = await orgaStore.loadAllOrganizations();
+    // const orgas = organizations.result;
+    const orgas = await orgaStore.loadAllOrganizations();
 
     const datasets = loadOrgaDatasets();
+
     ruDatasetsMap.value = getOrgaDatasetsMap(datasets, true);
 
     data.value = getResearchUnitDatasetSeries(ruDatasetsMap.value);
 
     nextTick(() => {
-      const orgaMap = getOrganizationMap(orgas.value);
-
-      // for local testing
-      // const orgaMap = getOrganizationMap(organizations.result);
+      const orgaMap = getOrganizationMap(orgas);
 
       orgaDatasetsMap.value = getOrgaDatasetsMap(datasets);
 

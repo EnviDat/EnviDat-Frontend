@@ -57,8 +57,9 @@ export const getOrgaDatasetsMap = (datasets, groupForResearchUnit = false) => {
   for (let i = 0; i < datasets.length; i++) {
     const dataset = datasets[i];
 
-    // const key = dataset?.owner_org || dataset?.organization.id;
-    let key = groupForResearchUnit ? dataset.ruName : dataset.organization.title;
+    let key = groupForResearchUnit ? dataset.ruName : dataset.organization.name;
+    // in the groups the organizations are referenced by "name" which has '-' instead of spaces
+    key = key.replaceAll(' ', '-');
     key = key.toLowerCase();
 
     if (key) {
@@ -72,6 +73,8 @@ export const getOrgaDatasetsMap = (datasets, groupForResearchUnit = false) => {
           count: 1,
           organization: dataset.organization,
           datasets: [dataset],
+          name: dataset.organization.name,
+          title: dataset.organization.title,
         });
       }
     }
@@ -88,15 +91,14 @@ export const getOrgaDatasetsMap = (datasets, groupForResearchUnit = false) => {
   return datasetMap;
 }
 
-
-
 export const organizationSeries = (orgaDatasetsMap, yearLabels) => {
 
   const series = [];
   const keys = Array.from(orgaDatasetsMap.keys());
 
-  for (const [orgaTitle, value] of orgaDatasetsMap) {
-    const index = keys.indexOf(orgaTitle);
+  for (const [orgaName, value] of orgaDatasetsMap) {
+    const orgaTitle = value.title;
+    const index = keys.indexOf(orgaName);
     const data = [];
     const yearMap = value.yearMap;
 
@@ -142,7 +144,7 @@ export function getResearchUnit(orgaTitle, researchUnits) {
 
   }
 
-  return 'Others';
+  return 'External Research Units';
 }
 
 export function enhanceDatasetWithResearchUnit(datasets, researchUnits) {
@@ -152,6 +154,7 @@ export function enhanceDatasetWithResearchUnit(datasets, researchUnits) {
     const dSet = toRaw(datasets[i]);
 
     const orgaTitle = dSet.organization.title;
+    // research units have the title with CamelCase and spaces
     dSet.ruName = getResearchUnit(orgaTitle, researchUnits);
 
     ruDatasets.push(dSet);
@@ -171,12 +174,10 @@ export function getOrganizationMap(organizations) {
 
   for (let i = 0; i < organizations.length; i++) {
     const orga = organizations[i];
-    let key = orga.title.toLowerCase();
+    let key = orga.name;
 
     if (orga.groups?.length > 0) {
-      // in the groups the organizations are referenced by "name" which has '-' instead of spaces
-      key = orga.groups[0].name.toLowerCase();
-      key = key.replaceAll('-', ' ');
+      key = orga.groups[0].name;
     }
 
     const orgaEntry = organizationMap.get(key);
@@ -210,14 +211,14 @@ export const getOrganitzionTreeItem = (entries, id) => {
   return null;
 }
 
-function getItem(organizationMap, organizationDatasetMap, organization, index) {
+function getTreeItem(organizationMap, organizationDatasetMap, organization, index) {
 
-  const title = organization.title;
+  const orgaName = organization.name;
   const children = [];
 
-  const childrendOrgas = organizationMap.get(title);
+  const childrendOrgas = organizationMap.get(orgaName);
 
-  const orgaDatasetEntry = organizationDatasetMap?.get(title);
+  const orgaDatasetEntry = organizationDatasetMap?.get(orgaName);
   const datasetCount = orgaDatasetEntry?.count || 0;
 
   if (childrendOrgas?.length > 0) {
@@ -225,8 +226,8 @@ function getItem(organizationMap, organizationDatasetMap, organization, index) {
     for (let i = 0; i < childrendOrgas.length; i++) {
       const childOrga = childrendOrgas[i];
 
-      if (childOrga.title.toLowerCase() !== title) {
-        const child = getItem(organizationMap, childOrga, index);
+      if (childOrga.name !== orgaName) {
+        const child = getTreeItem(organizationMap, organizationDatasetMap, childOrga, index);
         children.push(child);
         index = child.id;
       }
@@ -235,7 +236,8 @@ function getItem(organizationMap, organizationDatasetMap, organization, index) {
 
   return {
     id: ++index,
-    title,
+    title: organization.title || orgaName,
+    name: orgaName,
     datasetCount,
     children,
   }
@@ -243,23 +245,26 @@ function getItem(organizationMap, organizationDatasetMap, organization, index) {
 
 export function getOrganizationTree(organizationMap, organizationDatasetMap = undefined) {
 
-  const orgaTitles = Array.from(organizationMap.keys()).sort();
+  const orgaNames = Array.from(organizationMap.keys()).sort();
   const treeItems = [];
   let index = 0;
 
-  for (const title of orgaTitles) {
+  for (const orgaName of orgaNames) {
 
-    const entries = organizationMap.get(title);
-    const orgaDatasetEntry = organizationDatasetMap?.get(title);
+    const entries = organizationMap.get(orgaName);
+    const orgaDatasetEntry = organizationDatasetMap?.get(orgaName);
     const datasetCount = orgaDatasetEntry?.count || 0;
+    let orgaTitle = orgaDatasetEntry?.title;
 
     const children = []
     if (entries.length > 0) {
       for (let i = 0; i < entries.length; i++) {
         const orga = entries[i];
 
-        if (orga.title.toLowerCase() !== title) {
-          const childItem = getItem(organizationMap, organizationDatasetMap, orga, index);
+        if (orga.name === orgaName) {
+          orgaTitle = orga.title;
+        } else {
+          const childItem = getTreeItem(organizationMap, organizationDatasetMap, orga, index);
           children.push(childItem);
           index = childItem.id;
         }
@@ -268,7 +273,8 @@ export function getOrganizationTree(organizationMap, organizationDatasetMap = un
 
     treeItems.push({
       id: ++index,
-      title,
+      title: orgaTitle || orgaName,
+      name: orgaName,
       datasetCount,
       children,
     });
