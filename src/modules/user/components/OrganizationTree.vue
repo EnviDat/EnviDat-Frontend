@@ -113,19 +113,16 @@ export default {
 
       return false;
     },
-    catchAppendClick(orgaTitle) {
-      this.$emit('clickAppend', orgaTitle);
-    },
     catchItemClick({ id }) {
 
-      let orgaTitle = id;
+      let orgaName = id;
 
       const entry = getOrganitzionTreeItem(this.organizationsTree, id);
       if (entry) {
-        orgaTitle = entry.title;
+        orgaName = entry.name;
       }
 
-      this.$emit('click', orgaTitle);
+      this.$emit('click', orgaName);
     },
     catchOpenClick(item) {
       if (this.open.includes(item.id)) {

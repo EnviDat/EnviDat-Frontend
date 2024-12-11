@@ -7,7 +7,7 @@ const OrganizationPage = () => import('@/modules/organizations/components/Organi
 
 export const organizationsRoutes = [
   {
-    path: ORGANIZATIONS_PATH,
+    path: `${ORGANIZATIONS_PATH}/:organization?`,
     name: ORGANIZATIONS_PAGENAME,
     component: OrganizationPage,
   },

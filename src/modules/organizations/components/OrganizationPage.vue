@@ -1,6 +1,6 @@
 <script setup>
   import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
-  import { nextTick, onMounted, onBeforeMount, ref } from 'vue';
+  import { computed, nextTick, onBeforeMount, onMounted, ref } from 'vue';
 
   import { METADATA_NAMESPACE, SET_DETAIL_PAGE_BACK_URL } from '@/store/metadataMutationsConsts';
   import {
@@ -11,24 +11,25 @@
     getResearchUnitDatasetSeries,
     researchUnitDatasetChartOptions,
   } from '@/factories/organizationFactory';
-  
+
   import BarChart from '@/components/Charts/BarChart.vue';
   import MetadataList from '@/components/MetadataList.vue';
   import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
   import OrganizationTree from '@/modules/user/components/OrganizationTree.vue';
 
-  // import organizations from '@/../public/testdata/organization_show.json';
+//  import organizations from '@/../public/testdata/organization_show.json';
   import researchUnits from '@/../public/researchUnits.json';
+//  import metadatas from '@/../public/packagelist.json';
   import { METADATADETAIL_PAGENAME, ORGANIZATIONS_PAGENAME } from '@/router/routeConsts';
   import { SET_APP_BACKGROUND, SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
-  import { useRouter, useRoute } from 'vue-router';
-  import { useStore } from 'vuex';
+  import { useRoute, useRouter } from 'vue-router';
+  import store from '@/store/store';
   import { mdiEarth } from '@mdi/js';
 
   const router = useRouter();
   const route = useRoute();
-  const store = useStore();
-  const pageBGImage= 'app_b_browsepage';
+
+  const pageBGImage = 'app_b_browsepage';
 
   onBeforeMount(() => {
     store.commit(SET_CURRENT_PAGE, ORGANIZATIONS_PAGENAME);
@@ -36,7 +37,6 @@
   });
 
   const orgaStore = useOrganizationsStore();
-  const orgas = ref();
   const ruDatasetsMap = ref();
   const orgaDatasetsMap = ref();
   const data = ref(getResearchUnitDatasetSeries(undefined));
@@ -45,17 +45,22 @@
   const loading = ref(true);
   const organizationsTree = ref();
 
-  const listContent = ref([]);
-
   const loadOrgaDatasets = () => {
+    // const allDatasets = metadatas.result;
     const allDatasets = store.getters[`${METADATA_NAMESPACE}/allMetadatas`];
 
     return enhanceDatasetWithResearchUnit(allDatasets, researchUnits);
   }
 
-  const catchOrganizationClick = (orgaTitle) => {
-    const orgaDataset = orgaDatasetsMap.value.get(orgaTitle)?.datasets || [];
-    listContent.value = orgaDataset;
+  const catchOrganizationClick = (orgaName) => {
+
+    router.push({
+      name: ORGANIZATIONS_PAGENAME,
+      query: route.query,
+      params: {
+        organization: orgaName,
+      },
+    });
   }
 
   const catchMetadataClicked = (datasetname) => {
@@ -70,22 +75,28 @@
     });
   }
 
-  onMounted(async () => {
-    orgas.value = await orgaStore.loadAllOrganizations();
+  const listContent = computed(() => {
+    const orgaName = route?.params?.organization;
 
-    // const tree = getOrganizationMap(orgas.value);
-    // console.log(tree);
+    if (!orgaName || !orgaDatasetsMap.value) {
+      return [];
+    }
+
+    return orgaDatasetsMap.value.get(orgaName)?.datasets || [];
+  })
+
+  onMounted(async () => {
+    // const orgas = organizations.result;
+    const orgas = await orgaStore.loadAllOrganizations();
 
     const datasets = loadOrgaDatasets();
+
     ruDatasetsMap.value = getOrgaDatasetsMap(datasets, true);
 
     data.value = getResearchUnitDatasetSeries(ruDatasetsMap.value);
 
     nextTick(() => {
-      const orgaMap = getOrganizationMap(orgas.value);
-
-      // for local testing
-      // const orgaMap = getOrganizationMap(organizations.result);
+      const orgaMap = getOrganizationMap(orgas);
 
       orgaDatasetsMap.value = getOrgaDatasetsMap(datasets);
 
