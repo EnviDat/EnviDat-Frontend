@@ -36,8 +36,7 @@ export function extractUserError(store, reason, errorProperty = 'error') {
   if (reason?.response && reason.response.status !== 200) {
     msg = `${reason.response.status} ${reason.response.statusText}
           url: ${reason.response.config?.url} Message: ${reason.response.data?.error?.message} type: ${reason.response.data?.error?.__type}`;
-
-    store.state.user.errorProperty = msg;
+    store.state.user[errorProperty] = msg;
     return;
   }
 
@@ -64,7 +63,7 @@ export function extractUserError(store, reason, errorProperty = 'error') {
   store.state.user.errorField = field;
   store.state.user.errorType = type;
 
-  store.state.user.errorProperty = msg;
+  store.state.user[errorProperty] = msg;
 }
 
 const defaultMessage = 'There was an error. Please try again. If it persists, please contact envidat@wsl.ch for assistance.';
