@@ -20,17 +20,13 @@ module.exports = {
   settings: {
     'import/resolver': {
       alias: {
-        map: [
-          ['@', './src'],
-        ],
+        map: [['@', './src']],
       },
     },
   },
   // // required to lint *.vue files
-  plugins: [
-    'vuetify',
-  ],
-  'ignorePatterns': ['particles.js'],
+  plugins: ['vuetify'],
+  ignorePatterns: ['particles.js'],
   // add your custom rules here
   rules: {
     'import/no-unresolved': 'off',
@@ -51,7 +47,7 @@ module.exports = {
     'no-restricted-syntax': 0,
     'comma-dangle': ['error', 'always-multiline'],
     'jsx-quotes': ['error', 'prefer-single'],
-    'quotes': ['error', 'single', { avoidEscape: true }],
+    quotes: ['error', 'single', { avoidEscape: true }],
     'operator-linebreak': ['off', 'before'],
     'vuetify/no-deprecated-classes': 'error',
     'vuetify/grid-unknown-attributes': 'error',

@@ -3,28 +3,24 @@
     :id="`resourceCard_${id}`"
     :color="computedCardColor"
     :class="isSelected ? 'highlighted' : ''"
-    style="height: 100%;"
-    :loading="loadingColor">
-
-    <v-card-title class="text-h5 resourceHeadline"
-                  :class="{
-                    'text-white': !dark,
-                    'text-black': dark,
-                  }"
+    style="height: 100%"
+    :loading="loadingColor"
+  >
+    <v-card-title
+      class="text-h5 resourceHeadline"
+      :class="{
+        'text-white': !dark,
+        'text-black': dark,
+      }"
     >
-      <v-row no-gutters
-             justify='start'>
-        <v-col v-if="isProtected"
-               class='flex-grow-0 pr-2'
-        >
+      <v-row no-gutters justify="start">
+        <v-col v-if="isProtected" class="flex-grow-0 pr-2">
           <BaseIcon color="grey-darken-3" :icon="mdiLock"></BaseIcon>
         </v-col>
-        <v-col v-if="deprecated"
-               class='flex-grow-0 pr-2'
-        >
+        <v-col v-if="deprecated" class="flex-grow-0 pr-2">
           <BaseIcon color="white" :icon="mdiCancel"></BaseIcon>
         </v-col>
-        <v-col style='text-wrap: balance;'>
+        <v-col style="text-wrap: balance">
           {{ resourceName }}
         </v-col>
       </v-row>
@@ -38,26 +34,29 @@
         'pr-2': showFullDescription,
         'pb-md-3': !showFullDescription,
         'pb-md-10': showFullDescription,
-      }">
+      }"
+    >
       <v-container class="pa-0 mt-2" fluid>
         <v-row no-gutters>
           <v-col
-            v-if="showFullDescription ||
+            v-if="
+              showFullDescription ||
               (!showFullDescription && !maxDescriptionLengthReached)
-              "
+            "
             class="readableText resourceCardText heightAndScroll"
             :class="{
               'text-white': !dark,
               'text-black': dark,
             }"
-            :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`
-              ">
+            :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
+          >
             <div v-html="markdownText"></div>
           </v-col>
 
           <v-col
             v-if="!showFullDescription && maxDescriptionLengthReached"
-            class="readableText resourceCardText">
+            class="readableText resourceCardText"
+          >
             {{ markdownTextTruncated }}
           </v-col>
         </v-row>
@@ -76,7 +75,8 @@
               :icon="mdiLock"
               :light="dark"
               :dark="!dark"
-              class="mb-1" />
+              class="mb-1"
+            />
 
             <BaseIconLabelView
               v-if="doi"
@@ -85,18 +85,20 @@
               :icon-tooltip="EDIT_METADATA_DOI_LABEL"
               :light="dark"
               :dark="!dark"
-              class="mb-1" />
+              class="mb-1"
+            />
 
             <BaseIconLabelView
               v-if="format"
               :text="formatedBytes ? `${format} - ${formatedBytes}` : format"
               :icon="extensionIcon"
-              :icon-tooltip="formatedBytes ? 'Resource type and size' : 'Resource type'"
+              :icon-tooltip="
+                formatedBytes ? 'Resource type and size' : 'Resource type'
+              "
               :light="dark"
               :dark="!dark"
               class="mb-1"
             />
-
 
             <BaseIconLabelView
               v-if="created"
@@ -105,7 +107,8 @@
               icon-tooltip="Date of resource creation"
               :light="dark"
               :dark="!dark"
-              class="mb-1" />
+              class="mb-1"
+            />
 
             <BaseIconLabelView
               v-if="lastModified"
@@ -114,8 +117,8 @@
               icon-tooltip="Date of last modification"
               :light="dark"
               :dark="!dark"
-              class="mb-1" />
-
+              class="mb-1"
+            />
 
             <!-- <base-icon-label-view
               v-if="isDownloaded"
@@ -125,7 +128,6 @@
               dark
               class="mb-1"
             /> -->
-
           </v-col>
         </v-row>
       </v-container>
@@ -133,8 +135,8 @@
 
     <v-card-actions
       class="ma-0 pa-2"
-      style="position: absolute; bottom: 0; right: 55px;">
-
+      style="position: absolute; bottom: 0; right: 55px"
+    >
       <base-icon-button
         v-if="maxDescriptionLengthReached"
         :class="isProtected ? 'mr-2' : ''"
@@ -144,20 +146,21 @@
         :outlined="true"
         outline-color="accent"
         :rotated="showFullDescription"
-        :tooltipText="showFullDescription
-          ? 'Hide full description'
-          : 'Show full description'
-          "
+        :tooltipText="
+          showFullDescription
+            ? 'Hide full description'
+            : 'Show full description'
+        "
         @clicked="showFullDescription = !showFullDescription"
       />
-
     </v-card-actions>
 
     <v-container
       v-if="showGenericOpenButton && !isProtected"
       class="pa-2"
-      style="position: absolute; right: 0; width: 55px;"
-      :style="`${genericOpenButtonBottom ? 'bottom: 55px;' : 'top: 0;'}`">
+      style="position: absolute; right: 0; width: 55px"
+      :style="`${genericOpenButtonBottom ? 'bottom: 55px;' : 'top: 0;'}`"
+    >
       <v-row>
         <v-col cols="12">
           <base-icon-button
@@ -166,17 +169,20 @@
             color="accent"
             elevated
             :tooltip-text="openButtonTooltip"
-            @clicked="$emit('openButtonClicked')" />
+            @clicked="$emit('openButtonClicked')"
+          />
         </v-col>
       </v-row>
     </v-container>
-    <v-container style="position: relative;">
+    <v-container style="position: relative">
       <v-container
         class="pa-2"
-        style="position: absolute; bottom: 0; right: 0; width: 55px;">
-          <v-row v-if="!isProtected">
-            <v-col cols="12">
-              <base-icon-button
+        style="position: absolute; bottom: 0; right: 0; width: 55px"
+      >
+        <v-row v-if="!isProtected">
+          <v-col cols="12">
+            <!-- OLD version -->
+            <!-- <base-icon-button
               :icon="isFile ? mdiDownload : mdiLink"
               icon-color="black"
               @clicked="trackDownload(url, resourceName)"
@@ -184,19 +190,33 @@
               elevated
               :tooltip-text="isFile ? 'Download resource' : 'Open link'"
               :url="url"
-              :disabled="!downloadActive" />
-            </v-col>
-          </v-row>
+              :disabled="!downloadActive"
+            /> -->
+            <!-- New version with S3 Component -->
+            <base-icon-button
+              :icon="isFile ? mdiDownload : mdiLink"
+              icon-color="black"
+              @clicked="trackDownload(url, resourceName)"
+              color="accent"
+              elevated
+              :tooltip-text="isFile ? 'Download resource' : 'Open link'"
+              :url="url"
+              :disabled="!downloadActive"
+            />
+          </v-col>
+        </v-row>
 
-          <v-row v-if="isProtected">
-            <v-col>
-              <div
+        <v-row v-if="isProtected">
+          <v-col>
+            <div
               class="fabMenu fabPosition elevation-5 ma-2"
-              :class="downloadActive ? 'fabMenuHover' : 'fabMenuDisabled'">
+              :class="downloadActive ? 'fabMenuHover' : 'fabMenuDisabled'"
+            >
               <BaseIcon :icon="mdiShield" color="grey-darken-3" />
-                <div
+              <div
                 v-if="downloadActive"
-                class="pt-2 lockedText text-black protectedLink">
+                class="pt-2 lockedText text-black protectedLink"
+              >
                 <p v-html="protectedText"></p>
               </div>
             </div>
@@ -204,39 +224,9 @@
         </v-row>
       </v-container>
     </v-container>
-    <v-container fluid style="width: 100%;" v-if="s3Bucket">
+    <v-container fluid style="width: 100%" v-if="!isProtected && !isFile">
       <v-divider></v-divider>
-      <!-- eslint-disable vue/no-v-model-argument -->
-      <v-treeview
-          :items="items"
-          item-value="id"
-          class="s3-treeview"
-          density="compact"
-          bg-color="transparent"
-          base-color="white"
-          open-on-click
-          >
-          <template #title="{ item }">
-            <v-row>
-              <v-col class="d-flex align-center justify-space-between">
-                <!-- <BaseIcon
-                  class="mr-2"
-                  v-if="!item.children"
-                  :icon="mdiFileDocumentCheckOutline"
-                /> -->
-                <span class="title-s3-treeview" style="font-size: 12px;">{{ item.title }}</span>
-                <BaseRectangleButton
-                v-if="!item.children"
-                :isXsSmall="true"
-                marginClass="mx-1 mt-4 mt-sm-0 ml-5"
-                color="white"
-                buttonText="download"
-                @clicked="deniedClick"
-                />
-              </v-col>
-            </v-row>
-          </template>
-        </v-treeview>
+      <S3Tree v-if="url" :url="url" />
     </v-container>
   </v-card>
 </template>
@@ -257,7 +247,8 @@
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
+
+import S3Tree from '@/modules/s3/components/S3Tree.vue';
 
 import { renderMarkdown, stripMarkdown } from '@/factories/stringFactory';
 import { formatBytes } from '@/factories/metaDataFactory';
@@ -281,17 +272,13 @@ import { trackDownload } from '@/utils/matomoTracking';
 
 import { formatDate } from '@/factories/dateFactory';
 
-import { VTreeview } from 'vuetify/labs/VTreeview'
-
-
 export default {
   name: 'ResourceCard',
   components: {
     BaseIcon,
     BaseIconLabelView,
     BaseIconButton,
-    VTreeview,
-    BaseRectangleButton,
+    S3Tree,
   },
   props: {
     id: String,
@@ -361,52 +348,52 @@ export default {
     audioFormats: ['mp3', 'wav', 'wma', 'ogg'],
     EDIT_METADATA_DOI_LABEL,
     items: [
-        {
-          id: 1,
-          title: 'Applications :',
-          children: [
-            { id: 2, title: 'Calendar' },
-            { id: 3, title: 'Chrome' },
-            { id: 4, title: 'Webstorm' },
-          ],
-        },
-        {
-          id: 5,
-          title: 'Documents :',
-          children: [
-            {
-              id: 6,
-              title: 'vuetify :',
-              children: [
-                {
-                  id: 7,
-                  title: 'src :',
-                  children: [
-                    { id: 8, title: 'index' },
-                    { id: 9, title: 'bootstrap' },
-                  ],
-                },
-              ],
-            },
-            {
-              id: 10,
-              title: 'material2 :',
-              children: [
-                {
-                  id: 11,
-                  title: 'src :',
-                  children: [
-                    { id: 12, title: 'v-btn' },
-                    { id: 13, title: 'v-card' },
-                    { id: 14, title: 'v-window' },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    }),
+      {
+        id: 1,
+        title: 'Applications :',
+        children: [
+          { id: 2, title: 'Calendar' },
+          { id: 3, title: 'Chrome' },
+          { id: 4, title: 'Webstorm' },
+        ],
+      },
+      {
+        id: 5,
+        title: 'Documents :',
+        children: [
+          {
+            id: 6,
+            title: 'vuetify :',
+            children: [
+              {
+                id: 7,
+                title: 'src :',
+                children: [
+                  { id: 8, title: 'index' },
+                  { id: 9, title: 'bootstrap' },
+                ],
+              },
+            ],
+          },
+          {
+            id: 10,
+            title: 'material2 :',
+            children: [
+              {
+                id: 11,
+                title: 'src :',
+                children: [
+                  { id: 12, title: 'v-btn' },
+                  { id: 13, title: 'v-card' },
+                  { id: 14, title: 'v-window' },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  }),
   computed: {
     loadingColor() {
       if (this.loading) {
@@ -530,7 +517,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 .resourceHeadline {
   line-height: 1.5rem;
 }
@@ -597,7 +583,6 @@ export default {
   opacity: 0;
 }
 
-
 .resourceInfo {
   font-size: 12px !important;
   line-height: 0.8rem !important;
@@ -612,15 +597,4 @@ export default {
 .highlighted {
   box-shadow: #ffd740 0 0 5px 5px !important;
 }
-
-
-</style>
-
-<style>
-  .s3-treeview .v-icon__svg {
-    color: #fff;
-  }
-  .s3-treeview .v-list-item--density-compact:not(.v-list-item--nav).v-list-item--one-line {
-    padding: 0;
-  }
 </style>
