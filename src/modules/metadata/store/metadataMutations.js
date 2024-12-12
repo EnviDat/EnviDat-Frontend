@@ -55,7 +55,6 @@ import { METADATA_KEYWORDS_TITLE } from '@/factories/metadataConsts';
 import { extractAuthorsMap } from '@/factories/authorFactory';
 import { solrResultToCKANJSON } from '@/factories/apiFactory';
 import { enhanceMetadatas } from '@/factories/metaDataFactory';
-import { toRaw } from 'vue';
 
 
 export default {

@@ -6,7 +6,7 @@
   import {
     enhanceDatasetWithResearchUnit,
     getOrgaDatasetsMap,
-    getOrganizationMap,
+    getOrganizationRelationMap,
     getOrganizationTree,
     getResearchUnitDatasetSeries,
     researchUnitDatasetChartOptions,
@@ -17,9 +17,9 @@
   import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
   import OrganizationTree from '@/modules/user/components/OrganizationTree.vue';
 
-//  import organizations from '@/../public/testdata/organization_show.json';
+  // import organizations from '@/../public/testdata/organization_show.json';
   import researchUnits from '@/../public/researchUnits.json';
-//  import metadatas from '@/../public/packagelist.json';
+  // import metadatas from '@/../public/packagelist.json';
   import { METADATADETAIL_PAGENAME, ORGANIZATIONS_PAGENAME } from '@/router/routeConsts';
   import { SET_APP_BACKGROUND, SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
   import { useRoute, useRouter } from 'vue-router';
@@ -91,14 +91,14 @@
     if (orgaStore.organizations?.length <= 0) {
       orgas = await orgaStore.loadAllOrganizations();
     }
-    
+
     const datasets = enhancedResearchUnitDatasets();
     const ruDatasetsMap = getOrgaDatasetsMap(datasets, true);
     data.value = getResearchUnitDatasetSeries(ruDatasetsMap);
 
     nextTick(() => {
 
-      const orgaMap = getOrganizationMap(orgas);
+      const orgaMap = getOrganizationRelationMap(orgas);
       orgaDatasetsMap.value = getOrgaDatasetsMap(datasets);
       organizationsTree.value = getOrganizationTree(orgaMap, orgaDatasetsMap.value);
     })
@@ -118,7 +118,7 @@
             {{ `${loading ? 'Loading ' : ''}Research Unit Dataset Chart` }}
           </v-card-title>
 
-          <v-card-text class="px-0">
+          <v-card-text class="pa-0">
             <v-row v-show="loading"
               justify="center"
               align="center"
