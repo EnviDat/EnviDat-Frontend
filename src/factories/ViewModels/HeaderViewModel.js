@@ -1,4 +1,4 @@
-import { reactive } from 'vue';
+import { reactive, watch } from 'vue';
 import { AbstractBaseViewModel } from '@/factories/ViewModels/AbstractBaseViewModel';
 
 import {
@@ -81,9 +81,16 @@ export class HeaderViewModel extends AbstractBaseViewModel{
   }
 }
 
-export const createHeaderViewModel = (datasetDTO, smallScreen, categoryColor, titleImg, authorDeadInfo = null) => {
+export const createHeaderViewModel = (datasetDTO, smallScreen, categoryColor, titleImg, authorDeadInfo = null, changeCallback = undefined) => {
   const headerVM = new HeaderViewModel(datasetDTO, smallScreen, categoryColor, titleImg, authorDeadInfo);
+  const reactiveHeaderVM = reactive(headerVM);
 
-  return reactive(headerVM);
+  watch(() => reactiveHeaderVM, (newModel) => {
+    if (changeCallback) {
+      changeCallback(newModel);
+    }
+  }, { deep: true });
+
+  return reactiveHeaderVM;
 }
 

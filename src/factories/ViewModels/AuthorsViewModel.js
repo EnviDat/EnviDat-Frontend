@@ -1,4 +1,4 @@
-import { reactive } from 'vue';
+import { reactive, watch } from 'vue';
 import { AbstractBaseViewModel } from '@/factories/ViewModels/AbstractBaseViewModel';
 
 import { convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
@@ -48,9 +48,16 @@ export class AuthorsViewModel extends AbstractBaseViewModel{
   }
 }
 
-export const createHeaderViewModel = (datasetDTO) => {
+export const createHeaderViewModel = (datasetDTO, changeCallback = undefined) => {
   const authorVM = new AuthorsViewModel(datasetDTO);
+  const reactiveAuthorVM = reactive(authorVM);
 
-  return reactive(authorVM);
+  watch(() => reactiveAuthorVM, (newModel) => {
+    if (changeCallback) {
+      changeCallback(newModel);
+    }
+  }, { deep: true });
+
+  return reactiveAuthorVM;
 }
 
