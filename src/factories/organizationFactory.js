@@ -182,9 +182,13 @@ export function getOrganizationMap(organizations) {
 
     const orgaEntry = organizationMap.get(key);
     if (orgaEntry) {
-      orgaEntry.push(orga);
+      orgaEntry.childOrganizations.push(orga);
     } else {
-      organizationMap.set(key, [orga]);
+      organizationMap.set(key, {
+        name: key,
+        title: orga.title,
+        childOrganizations: [orga],
+      });
     }
   }
 
@@ -251,19 +255,19 @@ export function getOrganizationTree(organizationMap, organizationDatasetMap = un
 
   for (const orgaName of orgaNames) {
 
-    const entries = organizationMap.get(orgaName);
+    const orgaEntry = organizationMap.get(orgaName);
+    const orgaTitle = orgaEntry.title;
+    const childOrganizations = orgaEntry.childOrganizations;
     const orgaDatasetEntry = organizationDatasetMap?.get(orgaName);
     const datasetCount = orgaDatasetEntry?.count || 0;
-    let orgaTitle = orgaDatasetEntry?.title;
 
     const children = []
-    if (entries.length > 0) {
-      for (let i = 0; i < entries.length; i++) {
-        const orga = entries[i];
 
-        if (orga.name === orgaName) {
-          orgaTitle = orga.title;
-        } else {
+    if (childOrganizations.length > 0) {
+      for (let i = 0; i < childOrganizations.length; i++) {
+        const orga = childOrganizations[i];
+
+        if (orga.name !== orgaName) {
           const childItem = getTreeItem(organizationMap, organizationDatasetMap, orga, index);
           children.push(childItem);
           index = childItem.id;
@@ -273,7 +277,7 @@ export function getOrganizationTree(organizationMap, organizationDatasetMap = un
 
     treeItems.push({
       id: ++index,
-      title: orgaTitle || orgaName,
+      title: orgaTitle,
       name: orgaName,
       datasetCount,
       children,

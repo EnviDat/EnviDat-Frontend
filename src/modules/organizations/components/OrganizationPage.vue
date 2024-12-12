@@ -37,7 +37,6 @@
   });
 
   const orgaStore = useOrganizationsStore();
-  const ruDatasetsMap = ref();
   const orgaDatasetsMap = ref();
   const data = ref(getResearchUnitDatasetSeries(undefined));
   const options = researchUnitDatasetChartOptions;
@@ -45,7 +44,7 @@
   const loading = ref(true);
   const organizationsTree = ref();
 
-  const loadOrgaDatasets = () => {
+  const enhancedResearchUnitDatasets = () => {
     // const allDatasets = metadatas.result;
     const allDatasets = store.getters[`${METADATA_NAMESPACE}/allMetadatas`];
 
@@ -87,19 +86,20 @@
 
   onMounted(async () => {
     // const orgas = organizations.result;
-    const orgas = await orgaStore.loadAllOrganizations();
+    let orgas = orgaStore.organizations;
 
-    const datasets = loadOrgaDatasets();
-
-    ruDatasetsMap.value = getOrgaDatasetsMap(datasets, true);
-
-    data.value = getResearchUnitDatasetSeries(ruDatasetsMap.value);
+    if (orgaStore.organizations?.length <= 0) {
+      orgas = await orgaStore.loadAllOrganizations();
+    }
+    
+    const datasets = enhancedResearchUnitDatasets();
+    const ruDatasetsMap = getOrgaDatasetsMap(datasets, true);
+    data.value = getResearchUnitDatasetSeries(ruDatasetsMap);
 
     nextTick(() => {
+
       const orgaMap = getOrganizationMap(orgas);
-
       orgaDatasetsMap.value = getOrgaDatasetsMap(datasets);
-
       organizationsTree.value = getOrganizationTree(orgaMap, orgaDatasetsMap.value);
     })
 
