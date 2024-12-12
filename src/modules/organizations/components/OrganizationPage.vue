@@ -9,6 +9,7 @@
     getOrganizationRelationMap,
     getOrganizationTree,
     getResearchUnitDatasetSeries,
+    getTopOraganizations,
     researchUnitDatasetChartOptions,
   } from '@/factories/organizationFactory';
 
@@ -99,8 +100,9 @@
     nextTick(() => {
 
       const orgaMap = getOrganizationRelationMap(orgas);
+      const topOrgas = getTopOraganizations(orgas);
       orgaDatasetsMap.value = getOrgaDatasetsMap(datasets);
-      organizationsTree.value = getOrganizationTree(orgaMap, orgaDatasetsMap.value);
+      organizationsTree.value = getOrganizationTree(topOrgas, orgaMap, orgaDatasetsMap.value);
     })
 
     loading.value = false;
