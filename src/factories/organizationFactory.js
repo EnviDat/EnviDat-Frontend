@@ -144,7 +144,7 @@ export function getResearchUnit(orgaTitle, researchUnits) {
 
   }
 
-  return 'External Research Units';
+  return 'Others';
 }
 
 export function enhanceDatasetWithResearchUnit(datasets, researchUnits) {
