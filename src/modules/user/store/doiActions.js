@@ -28,7 +28,7 @@ const API_ROOT = import.meta.env.VITE_API_ROOT;
 const API_DOI_BASE = import.meta.env.VITE_API_DOI_BASE_URL || '/doi-api/datacite/';
 
 async function reloadMetadataForEditing(dispatch, metadataId) {
-  await dispatch(METADATA_EDITING_LOAD_DATASET, metadataId);
+  await dispatch(METADATA_EDITING_LOAD_DATASET, { metadataId, forceBackendReload: true });
 }
 
 export default {

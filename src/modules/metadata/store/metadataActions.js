@@ -197,7 +197,7 @@ export default {
   },
   async [LOAD_METADATA_CONTENT_BY_ID](
     { commit },
-    { metadataId, commitMethod },
+    { metadataId, commitMethod, forceBackendReload = false },
   ) {
     // commitMethod can be given from the caller of the action to direct
     // the output to a different store mutation then one from this module (metadataMutations)
@@ -207,18 +207,20 @@ export default {
       root: !!commitMethod,
     });
 
-    const metadatasContent = this.getters[
-      `${METADATA_NAMESPACE}/metadatasContent`
-    ];
-    const contents = Object.values(metadatasContent);
+    if (!forceBackendReload) {
+      const metadatasContent = this.getters[
+        `${METADATA_NAMESPACE}/metadatasContent`
+        ];
+      const contents = Object.values(metadatasContent);
 
-    const localEntry = contents.filter(entry => entry.name === metadataId);
-    if (localEntry.length === 1) {
-      // filter() always return an array
-      commit(`${commitMethodPrefix}_SUCCESS`, localEntry[0], {
-        root: !!commitMethod,
-      });
-      return;
+      const localEntry = contents.filter(entry => entry.name === metadataId);
+      if (localEntry.length === 1) {
+        // filter() always return an array
+        commit(`${commitMethodPrefix}_SUCCESS`, localEntry[0], {
+          root: !!commitMethod,
+        });
+        return;
+      }
     }
 
     const actionUrl = ACTION_LOAD_METADATA_CONTENT_BY_ID();

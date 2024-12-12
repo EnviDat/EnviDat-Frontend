@@ -404,7 +404,10 @@ export default {
         // load the metadata from the backend for editing
         await this.$store.dispatch(
           `${USER_NAMESPACE}/${METADATA_EDITING_LOAD_DATASET}`,
-          id,
+          {
+            metadataId: id,
+            forceBackendReload: true,
+          },
         );
 
         if (

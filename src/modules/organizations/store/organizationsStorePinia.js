@@ -10,9 +10,16 @@ import { enhanceMetadataFromCategories } from '@/modules/user/store/mutationFact
 import { isUserGroupAdmin } from '@/factories/userEditingValidations';
 import { enhanceElementsWithStrategyEvents, SELECT_EDITING_DATASET_PROPERTY } from '@/factories/strategyFactory';
 
+let API_BASE = '';
+let API_ROOT = '';
+
 const useTestdata = import.meta.env?.VITE_USE_TESTDATA === 'true';
-const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
-const API_ROOT = import.meta.env.VITE_API_ROOT;
+
+if (!useTestdata) {
+  API_BASE = import.meta.env?.VITE_API_BASE_URL;
+  API_ROOT = import.meta.env?.VITE_API_ROOT;
+}
+
 const GET_ORGANIZATIONS_URL = useTestdata ? './testdata/organization_list.json' : 'organization_list';
 const GET_ORGANIZATION_URL = useTestdata ? './testdata/organization_show.json' : 'organization_show';
 const ACTION_USER_ORGANIZATION_IDS = useTestdata ? './testdata/organization_list_for_user.json' : 'organization_list_for_user';
@@ -50,32 +57,49 @@ export const useOrganizationsStore = defineStore({
       }
     },
 
-    async getAllOrgIds() {
+    async getAllOrganizationIds() {
       this.organizationIds = [];
       try {
         this.organizationIds = await this.fetchOrganizations(GET_ORGANIZATIONS_URL, { limit: 1000 });
       } catch (error) {
         this.error = error;
       }
+
+      return this.organizationIds;
     },
 
-    async getAllOrg(ids) {
+    async getAllOrganizations(ids) {
       this.organizations = [];
+
       try {
-        const requests = this.getOrganizationRequestArray(ids, { include_datasets: true });
-        const responses = await Promise.all(requests);
-        this.organizations = responses.map(response => response.data.result);
+        // set include_datasets to false, because backend calls will take forever to load
+        if (useTestdata) {
+          const response = await axios.get(GET_ORGANIZATION_URL);
+          this.organizations = response.data.result;
+        } else {
+          const requests = this.getOrganizationRequestArray(ids, { include_datasets: false });
+          const responses = await Promise.all(requests);
+          this.organizations = responses.map(response => response.data.result);
+        }
       } catch (error) {
         this.error = error;
       }
+
+      return this.organizations;
     },
 
-    async getOrg() {
-      await this.getAllOrgIds();
-      if (this.organizationIds.length > 0) {
-        await this.getAllOrg(this.organizationIds);
+    async loadAllOrganizations() {
+      let organizations;
+
+      const ids = await this.getAllOrganizationIds();
+
+      if (ids.length > 0) {
+        organizations = await this.getAllOrganizations(ids);
       }
+
       this.loading = !this.error;
+
+      return organizations;
     },
 
     async UserGetOrgIds(userId) {

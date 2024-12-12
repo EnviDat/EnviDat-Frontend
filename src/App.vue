@@ -97,10 +97,11 @@
         <TextBanner
             v-if="showCookieInfo"
             id="cookieBanner"
-            :style="`position: fixed; bottom: 0; left: 60px; z-index: 1001; width: calc(100vw - 60px); background-color: ${$vuetify.theme.themes.light.colors.highlight};`"
-            :text="cookieInfoText"
+            :style="bannerStyle"
+            :text="cookieInfoTextMatomo"
             icon="cookie"
-            deniedText="Okay"
+            deniedText="Reject"
+            confirmText="Accept"
             :confirmClick="catchCookieInfoOk"
             :deniedClick="deniedTracking"
         />
@@ -461,12 +462,14 @@ export default {
     deniedTracking() {
       localStorage.setItem(ENVIDAT_SHOW_COOKIE_BANNER, 'false');
       localStorage.setItem('matomoConsentGiven', 'false');
+      /* eslint-disable no-underscore-dangle */
+      window._paq.push(['forgetConsentGiven']);
       this.showCookieInfo = false;
     },
     catchCookieInfoOk() {
       // handledeniedTracking consent with Matomo
       localStorage.setItem('matomoConsentGiven', 'true');
-      this.$matomo.rememberConsentGiven();
+      window._paq.push(['rememberConsentGiven']);
 
       localStorage.setItem(ENVIDAT_SHOW_COOKIE_BANNER, 'false');
       this.showCookieInfo = false;
@@ -786,6 +789,18 @@ export default {
         ? this.$route.query.mode.toLowerCase()
         : null;
     },
+    bannerStyle() {
+      const isDesktop = window.innerWidth >= 768;
+
+      return {
+        position: 'fixed',
+        bottom: '0',
+        left: isDesktop ? '60px' : '0',
+        zIndex: '1001',
+        width: isDesktop ? 'calc(100vw - 60px)' : '100%',
+        backgroundColor: this.$vuetify.theme.themes.light.colors.highlight,
+      };
+    },
   },
   components: {
     TheNavigation,
@@ -832,7 +847,7 @@ export default {
     cookieInfoText:
       "On envidat.ch cookies are used to enhance your experience and provide features when you're signed in. These cookies are 'technical only' and are NOT used for tracking or monitoring you.",
     cookieInfoTextMatomo:
-      "On envidat.ch, cookies are used to enhance your experience and provide features when you're signed in. These cookies are 'technical only' and we ANONYMOUSLY track usage (e.g. page views and downloads).",
+      "On envidat.ch, essential cookies are used to enhance your experience and provide features when you're signed in. By accepting additional cookies, you consent to anonymized monitoring to improve the usability of EnviDat. If you reject, only essential technical cookies will be used.",
     redirectToDashboard: false,
     appVersion: import.meta.env.VITE_VERSION,
     showMenu: true,

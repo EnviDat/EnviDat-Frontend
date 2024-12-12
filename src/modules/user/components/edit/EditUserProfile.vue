@@ -48,7 +48,7 @@
                         :model-value="firstNameField"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('firstName', $event)"
-                        @input="previewChange('firstName', $event)"
+                        @input="previewChange('firstName', $event.target.value)"
           />
         </v-col>
       </v-row>
@@ -66,7 +66,7 @@
                         :model-value="lastNameField"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('lastName', $event)"
-                        @input="previewChange('lastName', $event)"
+                        @input="previewChange('lastName', $event.target.value)"
           />
         </v-col>
       </v-row>
@@ -84,7 +84,7 @@
                         :model-value="emailField"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('email', $event)"
-                        @input="previewChange('email', $event)"
+                        @input="previewChange('email', $event.target.value)"
           />
         </v-col>
 

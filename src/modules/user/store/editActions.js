@@ -88,13 +88,14 @@ export default {
       data: newAuthorList,
       id });
   },
-  async [METADATA_EDITING_LOAD_DATASET]({ dispatch }, metadataId) {
+  async [METADATA_EDITING_LOAD_DATASET]({ dispatch }, { metadataId, forceBackendReload = false }) {
 
     // defining the commitMethod has the effect that mutations of this
     // module are being used with the output of the action from the metadata module
     await dispatch(`${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`, {
       metadataId,
       commitMethod: `${USER_NAMESPACE}/${METADATA_EDITING_LOAD_DATASET}`,
+      forceBackendReload,
     },
     { root: true },
     );
