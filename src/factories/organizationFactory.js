@@ -225,12 +225,13 @@ function getTreeItem(organizationRelationMap, organizationDatasetMap, organizati
 
   const orgaName = organization.name;
   const orgaTitle = organization.title;
-  const children = [];
 
   const childrendOrgas = organizationRelationMap.get(orgaName);
 
   const orgaDatasetEntry = organizationDatasetMap?.get(orgaName);
   const datasetCount = orgaDatasetEntry?.count || 0;
+
+  const childItems = [];
 
   if (childrendOrgas?.length > 0) {
 
@@ -239,7 +240,7 @@ function getTreeItem(organizationRelationMap, organizationDatasetMap, organizati
 
       if (childOrga.name !== orgaName) {
         const child = getTreeItem(organizationRelationMap, organizationDatasetMap, childOrga, index);
-        children.push(child);
+        childItems.push(child);
         index = child.id;
       }
     }
@@ -250,11 +251,14 @@ function getTreeItem(organizationRelationMap, organizationDatasetMap, organizati
     title: orgaTitle,
     name: orgaName,
     datasetCount,
+    children: childItems,
   };
 
-  if (children?.length > 0) {
-    item.children = children;
+/*
+  if (childItems?.length > 0) {
+    item.children = childItems;
   }
+*/
 
   return item;
 }
@@ -275,7 +279,7 @@ export function getOrganizationTree(topOrganizations, organizationRelationMap, o
     const orgaDatasetEntry = organizationDatasetMap?.get(orgaName);
     const datasetCount = orgaDatasetEntry?.count || 0;
 
-    const children = []
+    const childItems = []
 
     if (childOrganizations.length > 0) {
       for (let j = 0; j < childOrganizations.length; j++) {
@@ -283,7 +287,7 @@ export function getOrganizationTree(topOrganizations, organizationRelationMap, o
 
         if (orga.name !== orgaName) {
           const childItem = getTreeItem(organizationRelationMap, organizationDatasetMap, orga, index);
-          children.push(childItem);
+          childItems.push(childItem);
           index = childItem.id;
         }
       }
@@ -294,11 +298,14 @@ export function getOrganizationTree(topOrganizations, organizationRelationMap, o
       title: toPascalCase(orgaName.replaceAll('-', ' ')),
       name: orgaName,
       datasetCount,
+      children: childItems,
     };
 
-    if (children?.length > 0) {
-      item.children = children;
+/*
+    if (childItems?.length > 0) {
+      item.children = childItems;
     }
+*/
 
     treeItems.push(item);
   }
