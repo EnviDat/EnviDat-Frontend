@@ -119,6 +119,8 @@ import { convertArrayToUrlString } from '@/factories/stringFactory';
 import { defineAsyncComponent, markRaw } from 'vue';
 
 import { formatDate } from '@/factories/dateFactory';
+import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionViewModel';
+// import { createHeaderViewModel } from '@/factories/ViewModels/HeaderViewModel';
 import MetadataHeader from './Metadata/MetadataHeader.vue';
 
 const MetadataBody = defineAsyncComponent(() =>
@@ -406,9 +408,22 @@ export default {
         );
         this.header.publicationYear = publicationData.publicationYear;
 
-        // this.header.publicationYear = currentContent.version;
+/*
+        const parsedContent = convertJSON(currentContent, false);
+        const isSmallScreen = this.$vuetify.display.smAndDown;
 
-        this.body = createBody(currentContent, this.$vuetify.display.smAndDown);
+        const headerVW = createHeaderViewModel(
+            parsedContent,
+            isSmallScreen,
+            currentContent.categoryColor,
+            currentContent.titleImg,
+            this.authorDeadInfo,
+        );
+        this.header = {...headerVW}
+*/
+
+        // this.body = createBody(currentContent, this.$vuetify.display.smAndDown);
+        this.body = createDescriptionViewModel(parsedContent, this.$vuetify.display.smAndDown);
 
         /*
         this.citation = createCitation(currentContent);

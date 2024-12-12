@@ -150,7 +150,7 @@ export default {
     },
     descriptionObject() {
       return {
-        text: this.previewDescription,
+        description: this.previewDescription,
         maxTextLength: 5000,
       };
     },

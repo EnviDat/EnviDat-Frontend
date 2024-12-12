@@ -13,7 +13,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody.vue';
 import MetadataCitation from '@/modules/metadata/components/Metadata/MetadataCitation.vue';
 import MetadataDetails from '@/modules/metadata/components/Metadata/MetadataDetails.vue';
 import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo.vue';
@@ -25,7 +24,6 @@ import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuth
 import {
   createDetails,
   createPublications,
-  createBody,
   enhanceMetadatasTitleImage,
 } from '@/factories/metaDataFactory';
 
@@ -150,8 +148,6 @@ const funding2 = [
   },
 ];
 
-const body1 = createBody(metadata[0]);
-const body2 = createBody(metadata[1]);
 const authorDeadInfo = {
   asciiDead: '&#8224;',
   authorPassedInfo: 'Sadly this author has passed away.',
@@ -185,44 +181,6 @@ const genericProps5 = {
   },
 };
 
-
-export const MetadataBodyViews = () => ({
-  components: { MetadataBody },
-  template: `
-  <v-row>
-
-    <v-col cols="6" class="py-3">
-      <metadata-body  />
-    </v-col>
-
-    <v-col cols="6" class="py-3">
-      <metadata-body v-bind="genericPropsPlaceholder" />
-    </v-col>
-
-    <v-col cols="4" class="py-3">
-      <metadata-body v-bind="genericPropsBody" />
-    </v-col>
-
-    <v-col cols="8" class="py-3">
-      <metadata-body v-bind="genericPropsBodyLongDesc" />
-    </v-col>
-
-  </v-row>
-  `,
-  data: () => ({
-    genericPropsPlaceholder: {
-      showPlaceholder: true,
-    },
-    genericPropsBody: {
-      showPlaceholder: false,
-      ...body1,
-    },
-    genericPropsBodyLongDesc: {
-      showPlaceholder: false,
-      ...body2,
-    },
-  }),
-});
 
 export const MetadataCitationViews = () => ({
   components: { MetadataCitation },

@@ -1,7 +1,7 @@
 <template id="MetadataBody">
   <expandable-text-layout
     :title="METADATA_BODY_TITLE"
-    :text="text"
+    :text="description"
     :showPlaceholder="showPlaceholder"
     :maxTextLength="maxTextLength"
     :emptyTextColor="emptyTextColor"
@@ -32,7 +32,7 @@ export default {
     ExpandableTextLayout,
   },
   props: {
-    text: {
+    description: {
       type: String,
       default: undefined,
     },

@@ -11,47 +11,9 @@
  */
 
 import EditDescription from '@/modules/user/components/EditDescription.vue';
+import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionViewModel';
 
-export default {
-  title: '3 Dataset / 2 Edit / Description',
-  decorators: [],
-  parameters: {},
-};
-
-
-export const EditMetadataDescriptionViews = () => ({
-    components: { EditDescription },
-    template: `
-     <v-col>
-
-      <v-row>
-        Edit Description textarea unfilled
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditDescription />
-        </v-col>
-      </v-row>
-
-
-      <v-row>
-        Edit Description textarea filled
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditDescription :description="genericProps.description" />
-        </v-col>
-      </v-row>
-
-
-    </v-col>
-    `,
-    computed: {
-      genericProps() {
-        return {
-          description: `# Why user stories?
+const description = `# Why user stories?
 &nbsp;
 User Stories can help you to constantly improve the value of
 your product, estimate development efforts in an appropriate way and prioritize
@@ -74,8 +36,17 @@ Define what functionality each user expects. How she’s going to interact with 
 &nbsp;
 It should either improve the UX, increase retention rates,
 shorten users’ journey to the issue solution or whatever. Each Story should
-contribute something to the general goal of your product. `,
-        };
-      },
-    },
-});
+contribute something to the general goal of your product. `;
+
+
+export default {
+  title: '3 Dataset / 2 Edit / Description',
+  component: EditDescription,
+};
+
+
+export const Empty = {}
+
+export const Filled = {
+  args: createDescriptionViewModel({ notes: description }),
+}

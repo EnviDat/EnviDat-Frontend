@@ -178,6 +178,7 @@ import { convertArrayToUrlString } from '@/factories/stringFactory';
 import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
 import { createLocation } from '@/factories/geoFactory';
 import { createHeaderViewModel } from '@/factories/ViewModels/HeaderViewModel';
+import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionViewModel';
 
 const MetadataBody = defineAsyncComponent(() =>
   import('@/modules/metadata/components/Metadata/MetadataBody.vue'),
@@ -576,15 +577,18 @@ export default {
 
       if (currentContent && currentContent.title !== undefined) {
         const parsedContent = convertJSON(currentContent, false);
+        const isSmallScreen = this.$vuetify.display.smAndDown;
+
         this.header = createHeaderViewModel(
           parsedContent,
-          this.$vuetify.display.smAndDown,
+            isSmallScreen,
           currentContent.categoryColor,
           currentContent.titleImg,
           this.authorDeadInfo,
         );
 
-        this.body = createBody(currentContent, this.$vuetify.display.smAndDown);
+        // this.body = createBody(currentContent, this.$vuetify.display.smAndDown);
+        this.body = createDescriptionViewModel(parsedContent, isSmallScreen);
 
         this.citation = createCitation(currentContent);
 
