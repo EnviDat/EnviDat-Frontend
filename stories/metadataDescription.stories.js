@@ -34,7 +34,7 @@ const parsedContent2 = convertJSON(metadata[3], false);
 
 const descVM1 = createDescriptionViewModel(parsedContent, true);
 const descVM2 = createDescriptionViewModel(parsedContent2, false, (newModel) => {
-  console.log('changed descVM2.description', newModel);
+  console.log('changed descVM2.description after timeout', newModel);
 });
 
 export const Empty = {}
