@@ -101,7 +101,6 @@ export const organizationSeries = (orgaDatasetsMap, yearLabels) => {
   const keys = Array.from(orgaDatasetsMap.keys());
 
   for (const [orgaName, value] of orgaDatasetsMap) {
-    const orgaTitle = value.title;
     const index = keys.indexOf(orgaName);
     const data = [];
     const yearMap = value.yearMap;

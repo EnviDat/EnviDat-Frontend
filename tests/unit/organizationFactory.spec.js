@@ -1,6 +1,6 @@
 import { it, describe, expect } from 'vitest';
 
-import { getOrganizationMap, getOrganizationTree } from '@/factories/organizationFactory';
+import { getOrganizationRelationMap, getOrganizationTree } from '@/factories/organizationFactory';
 
 import orgaMapProd from '../../stories/testdata/orgaMapProd.json';
 
@@ -13,7 +13,7 @@ describe('organizationFactory - getOrganizationTree', () => {
       orgas = [...orgas, ...entry.value];
     });
 
-    const orgaMap = getOrganizationMap(orgas);
+    const orgaMap = getOrganizationRelationMap(orgas);
     const tree = getOrganizationTree(orgaMap);
 
     expect(tree).toBeDefined();
