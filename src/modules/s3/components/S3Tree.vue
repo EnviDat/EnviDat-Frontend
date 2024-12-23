@@ -45,13 +45,16 @@
             :isXsSmall="true"
             marginClass="mx-1 mt-4 mt-sm-0 ml-5"
             color="white"
+            :url="item.link"
             buttonText="download"
           />
+
           <BaseRectangleButton
             v-if="item.isLastItem"
             :isXsSmall="true"
             marginClass="mx-1 mt-4 mt-sm-0 ml-5"
             color="white"
+            :url="item.link"
             buttonText="View All"
           />
         </v-col>
@@ -97,6 +100,8 @@ function getData(url, isChild, nodeId) {
 }
 
 function extractS3Url(inputUrl) {
+  // View All link
+  s3Store.s3BucketUrl = inputUrl;
   const url = new URL(inputUrl);
 
   const hash = url.hash.substring(2);
@@ -104,16 +109,19 @@ function extractS3Url(inputUrl) {
 
   const bucket = decodeURIComponent(hashParams.get('bucket'));
   const prefix = decodeURIComponent(hashParams.get('prefix'));
-
+  // link for download resourse
+  const s3DownloadUrl = bucket?.replace(/\/$/, '');
+  s3Store.s3Url = s3DownloadUrl;
+  // link for get content
   const basePath = bucket?.replace('https://envicloud.wsl.ch', '/s3');
   const extractedUrl = `${basePath}?prefix=${prefix}/&max-keys=100000&delimiter=/`;
   baseUrl.value = extractedUrl;
-
   getData(baseUrl.value);
 }
 
 onMounted(() => {
   extractS3Url(props.url);
+  // test(props.url);
 });
 </script>
 

@@ -13,28 +13,11 @@ export const useS3Store = defineStore({
     contentFromS3: [],
     error: null,
     treeData: [],
+    s3Url: null,
+    s3BucketUrl: null,
   }),
   getters: {},
   actions: {
-    extractS3Url(inputUrl) {
-      const url = new URL(inputUrl);
-
-      // Analizza i parametri nel hash (dopo il #)
-      const hash = url.hash.substring(2); // Rimuove il "#/" iniziale
-      const hashParams = new URLSearchParams(hash);
-
-      // Estrai i parametri bucket e prefix
-      const bucket = decodeURIComponent(hashParams.get('bucket'));
-      const prefix = decodeURIComponent(hashParams.get('prefix'));
-
-      // Per localhost proxy
-      const basePath = bucket?.replace('https://envicloud.wsl.ch', '/s3');
-      const extractedUrl = `${basePath}?prefix=${prefix}/&max-keys=100000&delimiter=/`;
-
-      console.log(extractedUrl);
-      return extractedUrl;
-    },
-
     async fetchS3Content(url, isChild, nodeId, params = {}) {
       this.loading = true;
       try {
@@ -82,6 +65,7 @@ export const useS3Store = defineStore({
             isChild: true,
             title: this.parseStringChild(prefix.Key),
             isFile: this.isItemFile(prefix.Key),
+            link: this.setUrl(prefix.Key),
             childrenLoaded: false,
           }))
         : [
@@ -90,6 +74,7 @@ export const useS3Store = defineStore({
               title: 'Go to S3',
               // lastItem is needed for manage the last level of deep allowed
               isLastItem: true,
+              link: this.s3BucketUrl,
               childrenLoaded: false,
             },
           ];
@@ -166,6 +151,14 @@ export const useS3Store = defineStore({
         },
       ];
       // console.log(this.contentFromS3);
+    },
+    // set the URL for download and vie all
+    setUrl(url) {
+      const cleanedBaseUrl = this.s3Url.replace(/\/$/, '');
+      const cleanedUrl = url.replace(/^\//, '');
+
+      const linkUrl = `${cleanedBaseUrl}/${cleanedUrl}`;
+      return linkUrl;
     },
     // Clean the string for the fileName to reduce the length of the word
     parseStringChild(str) {
