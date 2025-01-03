@@ -25,6 +25,9 @@ import { LISTCONTROL_MAP_ACTIVE } from '@/store/metadataMutationsConsts';
 
 import { importStoreModule } from '@/factories/enhancementsFactory';
 
+
+import categoryCards from './categoryCards';
+
 const moduleImportMap = {
   metadata: () => import('@/modules/metadata/store/metadataStore'),
   user: () => import('@/modules/user/store/userStore'),
@@ -53,6 +56,7 @@ const initialState = {
   /**
    * default "list controls" for the metdata list
    */
+  categoryCards,
   defaultControls: [LISTCONTROL_MAP_ACTIVE],
   appScrollPosition: 0,
   browseScrollPosition: 0,
@@ -91,6 +95,7 @@ function createStore() {
       appBGImage: state => state.appBGImage,
       currentPage: state => state.currentPage,
       aboutText: state => state.aboutText,
+      categoryCards: state => state.categoryCards,
       defaultControls: state => state.defaultControls,
       appScrollPosition: state => state.appScrollPosition,
       browseScrollPosition: state => state.browseScrollPosition,

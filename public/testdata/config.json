@@ -11,6 +11,7 @@
     "articlesTitle": "Recent EnviDat Blog Articles",
     "newsTitle": "News From The EnviDat Team",
     "categoriesTitle": "Research Data Categories",
+    "infoTitle": "How it works?",
     "datasetsTitle": "Recently Published Research Datasets"
   },
   "aboutInfo": [
@@ -41,7 +42,7 @@
     }
   ],
   "metadataConfig": {
-    "loadLocalFile": false,
+    "loadLocalFile": true,
     "localFileUrl": "https://frontend-static.s3-zh.os.switch.ch/metadata/packagelist/packagelist.json",
     "publicationsConfig": {
       "resolveIds": true,

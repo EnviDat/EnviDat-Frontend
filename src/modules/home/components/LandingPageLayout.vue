@@ -2,58 +2,73 @@
   <article
     class="landingPageGrid pa-0"
     :class="{
-      gridXs: $vuetify.display.xs,
-      gridSm: $vuetify.display.sm,
+      gridXs: isXsOnly,
+      gridSm: isSmOnly,
     }"
     id="LandingPage"
   >
-    <!--    'gridXl' : $vuetify.display.xlOnly,-->
-
-    <div v-if="$slots.logo" class="logoGrid" :class="paddings">
-      <slot name="logo"></slot>
-    </div>
-
-    <div v-if="$slots.welcome" class="welcomeGrid" :class="paddings">
+    <v-container v-if="$slots.welcome" class="welcomeGrid" :class="paddings">
       <slot name="welcome"></slot>
 
-      <div class="pt-8">
+      <v-container class="pt-8">
         <slot name="search"></slot>
-      </div>
-    </div>
-
-    <div v-if="$slots.categories" class="categoriesGrid" :class="paddings">
-      <TitleCard
-        :title="categoriesTitle"
-        cardClass="pa-2"
-        titleClass="titleCardClass"
-      />
+      </v-container>
 
       <div class="pt-2">
         <slot name="categories"></slot>
       </div>
-    </div>
+    </v-container>
 
-    <div v-if="$slots.datasets" class="datasetsGrid" :class="paddings">
-      <TitleCard
-        :title="datasetsTotal > 0 ? `${datasetsTitle} of ${datasetsTotal} Total` : datasetsTitle"
+    <v-container v-if="$slots.datasets" class="datasetsGrid" :class="paddings">
+      <BaseTitle
+        style="text-align: center"
+        :text="datasetsTitle"
+        :className="'text-h4 font-weight-bold mb-6 position-relative'"
         cardClass="pa-2"
         titleClass="titleCardClass"
       />
 
-      <div class="pt-2 px-1">
+      <v-container class="pt-2 px-1">
         <slot name="datasets"></slot>
-      </div>
-    </div>
+      </v-container>
+    </v-container>
 
-    <div v-if="$slots.news" class="newsGrid" :class="paddings">
-      <div class="">
+    <v-container fluid v-if="$slots.info" class="infoGrid" :class="paddings">
+      <BaseTitle
+        style="text-align: center"
+        :text="infoTitle"
+        :className="'text-h4 font-weight-bold mb-6'"
+        cardClass="pa-2"
+        titleClass="titleCardClass"
+      />
+
+      <v-container fluid class="pt-2 px-1">
+        <slot name="info"></slot>
+      </v-container>
+    </v-container>
+
+    <v-container v-if="$slots.news" class="newsGrid" :class="paddings">
+      <BaseTitle
+        style="text-align: center"
+        :text="newsTitle"
+        :className="'text-h4 font-weight-bold mb-6'"
+        cardClass="pa-2"
+        titleClass="titleCardClass"
+      />
+      <div class="pt-2">
         <slot name="news"></slot>
       </div>
-    </div>
+    </v-container>
 
-    <div v-if="$slots.articles" class="articlesGrid" :class="`${paddings} pb-4 pb-sm-0`">
-      <TitleCard
-        :title="articlesTitle"
+    <v-container
+      v-if="$slots.articles"
+      class="articlesGrid"
+      :class="`${paddings} pb-4 pb-sm-0`"
+    >
+      <BaseTitle
+        style="text-align: center"
+        :text="articlesTitle"
+        :className="'text-h4 font-weight-bold mb-6'"
         cardClass="pa-2"
         titleClass="titleCardClass"
       />
@@ -61,23 +76,15 @@
       <div class="pt-2">
         <slot name="articles"></slot>
       </div>
-    </div>
+    </v-container>
   </article>
 </template>
 
 <script>
-/**
- * LandingPageLayout.vue
- *
- * @summary implements the different layout for the landing page
- * @author Haas
- *
- * Created at     : 2022-02-21
- *
- * This file is subject to the terms and conditions defined in
- * file 'LICENSE.txt', which is part of this source code package.
- */
-import TitleCard from '@/components/Cards/TitleCard.vue';
+import { computed } from 'vue';
+import { useDisplay } from 'vuetify';
+import BaseTitle from '@/components/BaseElements/BaseTitle.vue';
+
 
 export default {
   name: 'LandingPageLayout',
@@ -85,54 +92,59 @@ export default {
     categoriesTitle: String,
     datasetsTitle: String,
     newsTitle: String,
+    infoTitle: String,
     articlesTitle: String,
     datasetsTotal: {
       type: Number,
       default: 0,
     },
   },
+  components: {
+    BaseTitle,
+  },
+  setup() {
+    const display = useDisplay();
+
+    // Computed properties per i breakpoint
+    const isXsOnly = computed(() => display.xsOnly);
+    const isSmOnly = computed(() => display.smOnly);
+
+    return {
+      isXsOnly,
+      isSmOnly,
+    };
+  },
   computed: {
     paddings() {
       return 'pa-md-2 pt-4 pt-sm-6';
     },
   },
-  components: {
-    TitleCard,
-  },
 };
 </script>
 
 <style scoped>
-.landingPageGrid {
-  display: grid;
-  gap: 10px;
-  grid-template-columns: 2fr 2fr 1.5fr;
-  grid-template-rows: 4fr 0.25fr auto;
-  grid-template-areas:
-    'Logo Welcome Categories'
-    '. . .'
-    'News Datasets Articles';
-}
-
-@media screen and (min-width: 1921px) {
+@media screen and (min-width: 1340px) {
   .landingPageGrid {
-    grid-template-columns: 2fr 2fr 2fr 2fr;
-    grid-template-rows: 1fr 0.25fr auto;
+    display: grid;
+    gap: 100px;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
     grid-template-areas:
-      '. Logo Welcome Categories'
-      '. . . .'
-      '. News Datasets Articles';
+      'Welcome'
+      'Datasets'
+      'Info'
+      'News';
   }
 }
 
 .landingPageGrid.gridSm {
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   grid-template-rows: none;
   grid-template-areas:
-    'Welcome Welcome'
-    'News News'
-    'Datasets Categories'
-    '. Articles';
+    'Welcome'
+    'Datasets'
+    'Info'
+    'News';
 }
 
 .landingPageGrid.gridXs {
@@ -140,43 +152,45 @@ export default {
   grid-template-rows: none;
   grid-template-areas:
     'Welcome'
-    'News'
     'Datasets'
-    'Categories'
-    'Articles';
-}
-
-.logoGrid {
-  grid-area: Logo;
+    'Info'
+    'News';
 }
 
 .welcomeGrid {
   grid-area: Welcome;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 }
 
 .datasetsGrid {
   grid-area: Datasets;
 }
 
-.categoriesGrid {
-  grid-area: Categories;
+.infoGrid {
+  grid-area: Info;
+}
+
+.articlesGrid {
+  grid-area: Articles;
 }
 
 .newsGrid {
   grid-area: News;
 }
 
-.articlesGrid {
-  grid-area: Articles;
-}
-</style>
-
-<style>
 .titleCardClass {
   font-size: 1.25rem;
   word-break: break-word;
   line-height: 1.5rem !important;
   font-weight: 500;
   letter-spacing: normal !important;
+}
+
+#firstContainer {
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: right;
 }
 </style>

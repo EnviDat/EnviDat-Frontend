@@ -60,6 +60,7 @@ export default {
     color: { type: String, default: 'primary' },
     iconColor: { type: String, default: undefined },
     isSmall: Boolean,
+    isXLarge: Boolean,
     isXsSmall: Boolean,
     url: String,
     marginClass: String,
@@ -75,6 +76,9 @@ export default {
       }
       if (this.isXsSmall) {
         return 'x-small';
+      }
+      if (this.isXLarge) {
+        return 'x-large';
       }
       return 'default';
     },

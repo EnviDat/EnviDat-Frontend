@@ -1,74 +1,99 @@
 <template>
-  <v-card hover raised style="width: 100%;" class="searchBarView pa-4">
-    <v-container fluid class="pa-0">
-      <v-row align="center" justify="space-between" class="grow" no-gutters>
+  <v-container
+    :style="containerStyle"
+    class="pa-0 mb-10 mb-md-0"
+  >
+    <v-row align="center" justify="space-between" class="grow flex-column" no-gutters>
+      <v-col class="grow py-1 "> <!-- pr-4 -->
+        <v-text-field
+          class="ma-0 main-search-bar"
+          outlined
+          rounded="lg"
+          density="comfortable"
+          v-model="searchText"
+          :prepend-inner-icon="searchIcon"
+          :label="labelText"
+          @click:prepend="clicked"
+          @keyup.enter="clicked"
+        />
+      </v-col>
 
-        <v-col class="flex-grow-1 py-1 pr-4 ">
-          <v-text-field
-            class="ma-0"
-            v-model="searchText"
-            :prepend-icon="mdiMagnify"
-            hide-details
-            clearable
-            persitent-clear
-            variant='underlined'
-            :label="labelText"
-            @click:prepend="clicked"
-            @keyup.enter="clicked" />
-        </v-col>
-
-        <v-col v-if="hasButton" class="flex-grow-0 py-0">
-          <BaseRectangleButton :button-text="buttonText" :is-small="true" @clicked="clicked" />
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-card>
+      <v-col
+        v-if="hasButtonComputed"
+        class="shrink py-0 d-flex align-center justify-center"
+      >
+        <base-rectangle-button
+          v-for="(button, i) in buttonText"
+          :key="i"
+          :button-text="button.text"
+          :color="button.class"
+          :isOutlined="button.outlined"
+          :marginClass="'mr-5 ml-5'"
+          :isXLarge="true"
+          @clicked="() => clicked(button.action)"
+        />
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
-<script>
-/**
- * SearchBarView.vue is a broad search bar to jump to the browsepage.
- *
- * @summary textfield with icon and button
- * @author Dominik Haas-Artho
- *
- * Created at     : 2019-10-02 11:24:00
- * Last modified  : 2021-01-06 18:23:11
- *
- * This file is subject to the terms and conditions defined in
- * file 'LICENSE.txt', which is part of this source code package.
- */
+<script setup>
 
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
-import {mdiMagnify} from '@mdi/js';
 
-export default {
-  components: {
-    BaseRectangleButton,
+import { ref, computed, watch } from 'vue'
+import { useDisplay } from 'vuetify'
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue'
+import {
+  mdiMagnify,
+} from '@mdi/js';
+
+const props = defineProps({
+  labelText: {
+    type: String,
+    default: '',
   },
-  props: {
-    labelText: String,
-    buttonText: String,
-    hasButton: Boolean,
+  buttonText: {
+    type: Array,
+    default: () => [],
   },
-  data: () => ({
-    mdiMagnify,
-    searchText: '',
-  }),
-  updated() {
-    if (!this.searchText) {
-      this.$emit('searchEmpty');
-    }
+  hasButton: {
+    type: Boolean,
+    default: false,
   },
-  methods: {
-    clicked() {
-      this.$emit('clicked', this.searchText);
-    },
-  },
-};
+})
+
+const searchIcon = mdiMagnify
+
+const emit = defineEmits(['clicked', 'searchEmpty'])
+
+const { mdAndUp } = useDisplay()
+
+const containerStyle = computed(() => {
+  if (mdAndUp.value) {
+    return { maxWidth: '50%' }
+  }
+  return { maxWidth: '100%' }
+})
+
+const hasButtonComputed = computed(
+  () => props.hasButton && props.buttonText.length > 0,
+)
+
+const searchText = ref('')
+
+const clicked = (action = null) => {
+  emit('clicked', action, searchText.value)
+}
+
+watch(searchText, (newVal) => {
+  if (!newVal) {
+    emit('searchEmpty')
+  }
+})
 </script>
 
-<style>
+<style scoped>
+
 .adjustIconSearchbar {
   margin-top: 0;
 }
