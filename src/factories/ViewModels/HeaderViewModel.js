@@ -14,26 +14,6 @@ import { formatDate } from '@/factories/dateFactory';
 import { getMetadataVisibilityState } from '@/factories/publicationFactory';
 import { AuthorsViewModel } from '@/factories/ViewModels/AuthorsViewModel';
 
-/*
-const mappingRules = [
-  [METADATA_TITLE_PROPERTY,'title'],
-  [METADATA_CONTACT_EMAIL,'maintainer.email'],
-  [METADATA_CONTACT_FIRSTNAME,'maintainer.given_name'],
-  [METADATA_CONTACT_LASTNAME,'maintainer.name'],
-  ['doi','doi'],
-  ['tags','tags'],
-  ['authors','author'],
-  ['organization','organization.name'],
-  ['organizationTooltip','organization.title'],
-  ['spatialInfo','spatial_info'],
-  ['state','state'],
-  ['private','private'],
-  ['publicationYear','publication.publication_year'],
-  ['publicationStatus','publication_state'],
-  ['created','metadata_created'],
-  ['modified','metadata_modified'],
-];
-*/
 
 export class HeaderViewModel extends AbstractBaseViewModel{
 

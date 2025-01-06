@@ -20,8 +20,7 @@ export class AbstractBaseViewModel {
 
     // enforceAbstractProps(this, ['mappingRules']);
 
-    const frontendJson = convertToFrontendJSONWithRules(this.mappingRules, datasetDTO);
-    Object.assign(this, frontendJson);
+    this.updateModel(datasetDTO, mappingRules);
   }
 
   get mappingRules() {
@@ -30,6 +29,11 @@ export class AbstractBaseViewModel {
 
   set mappingRules(mappingRules) {
     this.privateMappingRules = mappingRules;
+  }
+
+  updateModel (datasetDTO) {
+    const frontendJson = convertToFrontendJSONWithRules(this.mappingRules, datasetDTO);
+    Object.assign(this, frontendJson);
   }
 
   get backendJSON() {

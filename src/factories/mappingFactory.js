@@ -82,6 +82,7 @@ import { formatDate } from '@/factories/dateFactory';
  * https://stackoverflow.com/questions/50081462/javascript-how-to-map-a-backend-entity-to-a-frontend-entity-and-the-opposite
  */
 const JSONFrontendBackendRules = {
+/*
   [METADATA_MAIN_HEADER]: [
     [METADATA_TITLE_PROPERTY,'title'],
     [METADATA_CONTACT_EMAIL,'maintainer.email'],
@@ -109,6 +110,7 @@ const JSONFrontendBackendRules = {
   [EDITMETADATA_MAIN_DESCRIPTION]: [
     ['description','notes'],
   ],
+*/
   [EDITMETADATA_KEYWORDS]: [
     ['keywords','tags'],
   ],
