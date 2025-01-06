@@ -6,9 +6,10 @@
   import {
     enhanceDatasetWithResearchUnit,
     getOrgaDatasetsMap,
-    getOrganizationMap,
+    getOrganizationRelationMap,
     getOrganizationTree,
     getResearchUnitDatasetSeries,
+    getTopOraganizations,
     researchUnitDatasetChartOptions,
   } from '@/factories/organizationFactory';
 
@@ -17,9 +18,9 @@
   import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
   import OrganizationTree from '@/modules/user/components/OrganizationTree.vue';
 
-//  import organizations from '@/../public/testdata/organization_show.json';
+  // import organizations from '@/../public/testdata/organization_show.json';
   import researchUnits from '@/../public/researchUnits.json';
-//  import metadatas from '@/../public/packagelist.json';
+  // import metadatas from '@/../public/packagelist.json';
   import { METADATADETAIL_PAGENAME, ORGANIZATIONS_PAGENAME } from '@/router/routeConsts';
   import { SET_APP_BACKGROUND, SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
   import { useRoute, useRouter } from 'vue-router';
@@ -37,7 +38,6 @@
   });
 
   const orgaStore = useOrganizationsStore();
-  const ruDatasetsMap = ref();
   const orgaDatasetsMap = ref();
   const data = ref(getResearchUnitDatasetSeries(undefined));
   const options = researchUnitDatasetChartOptions;
@@ -45,7 +45,7 @@
   const loading = ref(true);
   const organizationsTree = ref();
 
-  const loadOrgaDatasets = () => {
+  const enhancedResearchUnitDatasets = () => {
     // const allDatasets = metadatas.result;
     const allDatasets = store.getters[`${METADATA_NAMESPACE}/allMetadatas`];
 
@@ -87,20 +87,22 @@
 
   onMounted(async () => {
     // const orgas = organizations.result;
-    const orgas = await orgaStore.loadAllOrganizations();
+    let orgas = orgaStore.organizations;
 
-    const datasets = loadOrgaDatasets();
+    if (orgaStore.organizations?.length <= 0) {
+      orgas = await orgaStore.loadAllOrganizations();
+    }
 
-    ruDatasetsMap.value = getOrgaDatasetsMap(datasets, true);
-
-    data.value = getResearchUnitDatasetSeries(ruDatasetsMap.value);
+    const datasets = enhancedResearchUnitDatasets();
+    const ruDatasetsMap = getOrgaDatasetsMap(datasets, true);
+    data.value = getResearchUnitDatasetSeries(ruDatasetsMap);
 
     nextTick(() => {
-      const orgaMap = getOrganizationMap(orgas);
 
+      const orgaMap = getOrganizationRelationMap(orgas);
+      const topOrgas = getTopOraganizations(orgas);
       orgaDatasetsMap.value = getOrgaDatasetsMap(datasets);
-
-      organizationsTree.value = getOrganizationTree(orgaMap, orgaDatasetsMap.value);
+      organizationsTree.value = getOrganizationTree(topOrgas, orgaMap, orgaDatasetsMap.value);
     })
 
     loading.value = false;
@@ -118,7 +120,7 @@
             {{ `${loading ? 'Loading ' : ''}Research Unit Dataset Chart` }}
           </v-card-title>
 
-          <v-card-text class="px-0">
+          <v-card-text class="pa-0">
             <v-row v-show="loading"
               justify="center"
               align="center"

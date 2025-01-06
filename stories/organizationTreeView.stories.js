@@ -12,11 +12,11 @@
 
 import OrganizationTree from '@/modules/user/components/OrganizationTree.vue';
 
-import { getOrganizationMap, getOrganizationTree } from '@/factories/organizationFactory';
+import { getOrganizationRelationMap, getOrganizationTree } from '@/factories/organizationFactory';
 import testOrganizations from './js/organizations';
 
 // const organizationsMap = getOrganizationMapObject(testOrganizations);
-const orgaMap = getOrganizationMap(testOrganizations);
+const orgaMap = getOrganizationRelationMap(testOrganizations);
 const organizationsTree = getOrganizationTree(orgaMap);
 
 export default {
