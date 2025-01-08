@@ -1,11 +1,14 @@
+/*
 import { reactive, watch } from 'vue';
+*/
 import { AbstractBaseViewModel } from '@/factories/ViewModels/AbstractBaseViewModel';
 
 import {
   METADATA_CONTACT_EMAIL,
   METADATA_CONTACT_FIRSTNAME,
   METADATA_CONTACT_LASTNAME,
-  METADATA_TITLE_PROPERTY, METADATA_URL_PROPERTY,
+  METADATA_TITLE_PROPERTY,
+  METADATA_URL_PROPERTY,
 } from '@/factories/metadataConsts';
 
 
@@ -26,17 +29,3 @@ export class EditHeaderViewModel extends AbstractBaseViewModel{
     ];
   }
 }
-
-export const createEditHeaderViewModel = (datasetDTO, changeCallback = undefined) => {
-  const editHeaderVM = new EditHeaderViewModel(datasetDTO);
-  const reactiveEditHeaderVM = reactive(editHeaderVM);
-
-  watch(() => reactiveEditHeaderVM, (newModel) => {
-    if (changeCallback) {
-      changeCallback(newModel);
-    }
-  }, { deep: true });
-
-  return reactiveEditHeaderVM;
-}
-

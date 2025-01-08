@@ -3,7 +3,9 @@ import { createHeaderViewModel } from '@/factories/ViewModels/HeaderViewModel';
 import { EDITMETADATA_MAIN_HEADER } from '@/factories/eventBus';
 import { convertJSON } from '@/factories/mappingFactory';
 
-import { METADATA_TITLE_PROPERTY } from '@/factories/metadataConsts';
+import { METADATA_CONTACT_EMAIL, METADATA_TITLE_PROPERTY } from '@/factories/metadataConsts';
+import { getViewModels, init } from '@/factories/ViewModels/EditDatasetServiceLayer';
+import { EditHeaderViewModel } from '@/factories/ViewModels/EditHeaderViewModel';
 import metadatas from '../../stories/js/metadata';
 
 const authorDeadInfo = {
@@ -52,6 +54,23 @@ describe('viewModel Factory ', () => {
 
     const headerVM2 = createHeaderViewModel(backendJSON, false, 'black', 'url/to/an/img', authorDeadInfo, callback);
     headerVM2[METADATA_TITLE_PROPERTY] = 'Some new title for testing';
+  });
+
+  it(`${EDITMETADATA_MAIN_HEADER} reactivity`, () => {
+
+    init(backendJSON);
+
+    const instances = getViewModels();
+
+    const vm = instances.get(EditHeaderViewModel.toString());
+
+    expect(vm).toBeDefined();
+
+    vm.subscribe((vmNew) => {
+      expect(vmNew[METADATA_CONTACT_EMAIL]).toBe('dominik.haas@wsl.ch');
+    })
+
+    vm[METADATA_CONTACT_EMAIL] = 'dominik.haas@wsl.ch';
   });
 
 });

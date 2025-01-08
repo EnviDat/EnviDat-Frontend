@@ -1,4 +1,6 @@
 import { convertToBackendJSONWithRules, convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
+import { reactive, watch } from 'vue';
+// import { HeaderViewModel } from '@/factories/ViewModels/HeaderViewModel.js';
 
 /*
 function enforceAbstractProps(instance, requiredProps) {
@@ -11,6 +13,7 @@ function enforceAbstractProps(instance, requiredProps) {
 */
 
 export class AbstractBaseViewModel {
+
   constructor(datasetDTO, mappingRules) {
     this.mappingRules = mappingRules;
 
@@ -20,7 +23,9 @@ export class AbstractBaseViewModel {
 
     // enforceAbstractProps(this, ['mappingRules']);
 
-    this.updateModel(datasetDTO, mappingRules);
+    if (datasetDTO) {
+      this.updateModel(datasetDTO, mappingRules);
+    }
   }
 
   get mappingRules() {
