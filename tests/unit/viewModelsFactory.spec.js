@@ -3,9 +3,15 @@ import { createHeaderViewModel } from '@/factories/ViewModels/HeaderViewModel';
 import { EDITMETADATA_MAIN_HEADER } from '@/factories/eventBus';
 import { convertJSON } from '@/factories/mappingFactory';
 
-import { METADATA_CONTACT_EMAIL, METADATA_TITLE_PROPERTY } from '@/factories/metadataConsts';
-import { getViewModels, init } from '@/factories/ViewModels/EditDatasetServiceLayer';
-import { EditHeaderViewModel } from '@/factories/ViewModels/EditHeaderViewModel';
+import {
+  METADATA_CONTACT_EMAIL,
+  METADATA_CONTACT_FIRSTNAME,
+  METADATA_CONTACT_LASTNAME,
+  METADATA_TITLE_PROPERTY,
+} from '@/factories/metadataConsts';
+
+import { EditDatasetServiceLayer } from '@/factories/ViewModels/EditDatasetServiceLayer';
+
 import metadatas from '../../stories/js/metadata';
 
 const authorDeadInfo = {
@@ -58,19 +64,19 @@ describe('viewModel Factory ', () => {
 
   it(`${EDITMETADATA_MAIN_HEADER} reactivity`, () => {
 
-    init(backendJSON);
+    const serviceLayer = new EditDatasetServiceLayer(datasetBackend)
 
-    const instances = getViewModels();
+    const instances = serviceLayer.viewModels;
 
-    const vm = instances.get(EditHeaderViewModel.toString());
+    const vm = instances.get('EditHeaderViewModel');
 
     expect(vm).toBeDefined();
 
-    vm.subscribe((vmNew) => {
-      expect(vmNew[METADATA_CONTACT_EMAIL]).toBe('dominik.haas@wsl.ch');
-    })
-
     vm[METADATA_CONTACT_EMAIL] = 'dominik.haas@wsl.ch';
+    vm[METADATA_CONTACT_FIRSTNAME] = 'Dominik';
+    vm[METADATA_CONTACT_LASTNAME] = 'Haas';
+
+    // serviceLayer.datasetDTO.unsubscribeFromViewModels();
   });
 
 });

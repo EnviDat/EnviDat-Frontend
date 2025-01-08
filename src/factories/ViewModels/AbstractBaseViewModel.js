@@ -1,5 +1,4 @@
-import { convertToBackendJSONWithRules, convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
-import { reactive, watch } from 'vue';
+import { convertJSON, convertToBackendJSONWithRules, convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
 // import { HeaderViewModel } from '@/factories/ViewModels/HeaderViewModel.js';
 
 /*
@@ -13,6 +12,10 @@ function enforceAbstractProps(instance, requiredProps) {
 */
 
 export class AbstractBaseViewModel {
+
+  saveSuccessfull = false;
+
+  error;
 
   constructor(datasetDTO, mappingRules) {
     this.mappingRules = mappingRules;
@@ -42,7 +45,8 @@ export class AbstractBaseViewModel {
   }
 
   get backendJSON() {
-    return convertToBackendJSONWithRules(this.mappingRules, this);
+    const backendFields = convertToBackendJSONWithRules(this.mappingRules, this);
+    return convertJSON(backendFields, true);
   }
 
   get frontendProperties() {

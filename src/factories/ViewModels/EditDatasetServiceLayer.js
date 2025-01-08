@@ -8,7 +8,8 @@ import axios from 'axios';
 import { EditHeaderViewModel } from '@/factories/ViewModels/EditHeaderViewModel';
 import { ACTION_METADATA_EDITING_PATCH_DATASET } from '@/modules/user/store/userMutationsConsts';
 import { urlRewrite } from '@/factories/apiFactory';
-import { reactive, watch } from 'vue';
+import { reactive } from 'vue';
+import { DatasetDTO } from '@/factories/ViewModels/DatasetDTO';
 
 // don't use an api base url or API_ROOT when using testdata
 let API_BASE = '';
@@ -21,104 +22,100 @@ if (!useTestdata) {
   API_ROOT = import.meta.env.VITE_API_ROOT || '';
 }
 
+export class EditDatasetServiceLayer {
 
-const viewModelClasses = [
-  EditHeaderViewModel,
-]
+  viewModelClasses = [
+    EditHeaderViewModel,
+  ];
 
-const viewModelInstances = new Map();
-const subscribers = new Map();
+  viewModelInstances = new Map();
 
-let metadataId = '';
+  datasetDTO;
 
-function updateViewModels(datasetDTO) {
-  viewModelInstances.forEach((model) => model.updateModel(datasetDTO))
-}
+  constructor(datasetBackend) {
 
-async function patchDatasetChanges(viewModel) {
+    this.datasetDTO = new DatasetDTO(datasetBackend, this);
 
-  const actionUrl = ACTION_METADATA_EDITING_PATCH_DATASET();
-  const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
+    for (let i = 0; i < this.viewModelClasses.length; i++) {
+      const vmClass = this.viewModelClasses[i];
+      // eslint-disable-next-line new-cap
+      const instance = new vmClass(this.datasetDTO);
+      const reactiveVM = reactive(instance);
 
-  const postData = viewModel.backendJSON;
-  postData.id = metadataId;
+      this.viewModelInstances.set(instance.constructor.name, reactiveVM);
+    }
 
-  const response = await axios.post(url, postData,
-  {
-    headers: {
-      // Authorization: apiKey,
-    },
-  });
-
-  if (response?.data) {
-    updateViewModels(response.data);
-  }
-}
-
-/*
-function getEditHeaderViewModel(datasetDTO = undefined) {
-  const ehVM = createEditHeaderViewModel(datasetDTO, patchDatasetChanges);
-
-}
-*/
-
-export function getViewModels() {
-  return viewModelInstances;
-}
-
-export function subscribe(id, callbackFunction) {
-  const subs = subscribers.get(id);
-  if (subs) {
-    subs.push(callbackFunction);
-    return
+    this.datasetDTO.subscribeToViewModels(this.viewModelInstances);
   }
 
-  subscribers.set(id, [callbackFunction]);
-}
 
-export function unsubscribe(id, callbackFunction) {
-  const subs = subscribers.get(id);
-  if (subs) {
-    const index = subs.indexOf(callbackFunction);
-    if (index >= 0) {
-      subs.splice(index, 1);
+  // eslint-disable-next-line class-methods-use-this
+  async patchDatasetChanges (datasetId, viewModel) {
+
+    const actionUrl = ACTION_METADATA_EDITING_PATCH_DATASET();
+    const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
+
+    const postData = viewModel.backendJSON;
+    postData.id = datasetId;
+
+    const response = await axios.post(url, postData,
+      {
+        headers: {
+          // Authorization: apiKey,
+        },
+      });
+
+    return response.data
+  }
+
+  /*
+  function getEditHeaderViewModel(datasetDTO = undefined) {
+    const ehVM = createEditHeaderViewModel(datasetDTO, patchDatasetChanges);
+
+  }
+  */
+
+  get viewModels() {
+    return this.viewModelInstances;
+  }
+
+  /*
+  export function subscribe(id, callbackFunction) {
+    const subs = subscribers.get(id);
+    if (subs) {
+      subs.push(callbackFunction);
+      return
+    }
+
+    subscribers.set(id, [callbackFunction]);
+  }
+
+  export function unsubscribe(id, callbackFunction) {
+    const subs = subscribers.get(id);
+    if (subs) {
+      const index = subs.indexOf(callbackFunction);
+      if (index >= 0) {
+        subs.splice(index, 1);
+      }
+    }
+
+  }
+
+  function notifySubscribers(newModel, oldModel) {
+    const subs = subscribers.get(oldModel.toString());
+    if (!subs) {
+      return
+    }
+
+    for (let i = 0; i < subs.length; i++) {
+      const sub = subs[i];
+      if (typeof sub === 'function') {
+        sub(newModel);
+      } else {
+        throw new Error(`Wrong type of subscriber ${typeof sub}`);
+      }
     }
   }
+  */
 
-}
-
-function notifySubscribers(newModel, oldModel) {
-  const subs = subscribers.get(oldModel.toString());
-  if (!subs) {
-    return
-  }
-
-  for (let i = 0; i < subs.length; i++) {
-    const sub = subs[i];
-    if (typeof sub === 'function') {
-      sub(newModel);
-    } else {
-      throw new Error(`Wrong type of subscriber ${typeof sub}`);
-    }
-  }
-}
-
-export function init(datasetDTO) {
-  metadataId = datasetDTO.id;
-
-  for (let i = 0; i < viewModelClasses.length; i++) {
-    const vmClass = viewModelClasses[i];
-    // eslint-disable-next-line new-cap
-    const instance = new vmClass(datasetDTO);
-    const reactiveVM = reactive(instance);
-
-    watch(() => reactiveVM, (newModel, oldModel) => {
-      notifySubscribers(newModel, oldModel);
-    }, { deep: true });
-
-    // reactiveVM.subscribe(patchDatasetChanges);
-    subscribe(vmClass.toString(), patchDatasetChanges);
-
-    viewModelInstances.set(vmClass.toString(), reactiveVM);
-  }
 }
