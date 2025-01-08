@@ -9,7 +9,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import MicroChart from '@/modules/metadata/components/GC-Net/MicroChart.vue';
+import GcNetMicroChart from '@/modules/metadata/components/GC-Net/GcNetMicroChart.vue';
 
 const stations = [
   {
@@ -70,7 +70,7 @@ const stations = [
 
 export default {
   title: '17 GC-Net Views / Micro Charts',
-  component: MicroChart,
+  component: GcNetMicroChart,
   parameters: {
     // disable the snapshots for the MicroCharts because they pull in recent data and
     // will change almost everytime
@@ -78,7 +78,7 @@ export default {
   },
 };
 
-export const MicroChartWithImage = {
+export const GcNetMicroChartWithImage = {
   args: {
     station: stations[0],
     apiUrl: stations[0].envidatConfig.apiUrl,
@@ -88,7 +88,7 @@ export const MicroChartWithImage = {
   },
 }
 
-export const MicroChartWithout = {
+export const GcNetMicroChartWithout = {
   args: {
     station: stations[1],
     apiUrl: stations[1].envidatConfig.apiUrl,
@@ -99,22 +99,22 @@ export const MicroChartWithout = {
 }
 
 /*
-export const MicroChartViews = () => ({
-  components: { MicroChart },
+export const GcNetMicroChartViews = () => ({
+  components: { GcNetMicroChart },
   parameters: {
-    // disable the snapshots for the MicroCharts because they pull in recent data and
+    // disable the snapshots for the GcNetMicroCharts because they pull in recent data and
     // will change almost everytime
     chromatic: { disableSnapshot: false },
   },
   template: `
     <v-col class="chromatic-ignore">
       <v-row>
-        Station 1 MicroChart with test image
+        Station 1 GcNetMicroChart with test image
       </v-row>
 
       <v-row class="py-3" >
         <v-col >
-          <MicroChart :station="station1"
+          <GcNetMicroChart :station="station1"
                       :apiUrl="station1.envidatConfig.apiUrl"
                       :fallbackUrl="station1.envidatConfig.fallbackUrl"
                       :parameter="station1.envidatConfig.graphParameter"
@@ -124,12 +124,12 @@ export const MicroChartViews = () => ({
       </v-row>
 
       <v-row>
-        Station 1 MicroChart without image
+        Station 1 GcNetMicroChart without image
       </v-row>
 
       <v-row class="py-3" >
         <v-col >
-          <MicroChart :station="station1"
+          <GcNetMicroChart :station="station1"
                       :apiUrl="station1.envidatConfig.apiUrl"
                       :fallbackUrl="station1.envidatConfig.fallbackUrl"
                       :parameter="station1.envidatConfig.graphParameter"
@@ -138,12 +138,12 @@ export const MicroChartViews = () => ({
       </v-row>
 
       <v-row>
-        Station 2 MicroChart with only fallback url
+        Station 2 GcNetMicroChart with only fallback url
       </v-row>
 
       <v-row class="py-3" >
         <v-col >
-          <MicroChart :station="station2"
+          <GcNetMicroChart :station="station2"
                       :apiUrl="station2.envidatConfig.wrongProperty"
                       :fallbackUrl="station2.envidatConfig.fallbackUrl"
                       :parameter="station2.envidatConfig.graphParameter"
@@ -153,12 +153,12 @@ export const MicroChartViews = () => ({
       </v-row>
 
       <v-row>
-        Station 1 MicroChart with a wrong image url
+        Station 1 GcNetMicroChart with a wrong image url
       </v-row>
 
       <v-row class="py-3" >
         <v-col >
-          <MicroChart :station="station1"
+          <GcNetMicroChart :station="station1"
                       :apiUrl="station1.envidatConfig.apiUrl"
                       :fallbackUrl="station1.envidatConfig.fallbackUrl"
                       :parameter="station1.envidatConfig.graphParameter"
@@ -168,12 +168,12 @@ export const MicroChartViews = () => ({
       </v-row>
 
       <v-row>
-        Station 2 MicroChart with errors
+        Station 2 GcNetMicroChart with errors
       </v-row>
 
       <v-row class="py-3" >
         <v-col >
-          <MicroChart :station="station2"
+          <GcNetMicroChart :station="station2"
                       :apiUrl="station2.envidatConfig.wrongProperty"
                       :fallbackUrl="station2.envidatConfig.wrongProperty"
                       :parameter="station2.envidatConfig.graphParameter"
@@ -183,12 +183,12 @@ export const MicroChartViews = () => ({
       </v-row>
 
       <v-row>
-        Station 2 MicroChart api url
+        Station 2 GcNetMicroChart api url
       </v-row>
 
       <v-row class="py-3" >
         <v-col >
-          <MicroChart :station="station2"
+          <GcNetMicroChart :station="station2"
                       :apiUrl="station2.envidatConfig.apiUrl"
                       :fallbackUrl="station2.envidatConfig.fallbackUrl"
                       :parameter="station2.envidatConfig.graphParameter"
@@ -198,12 +198,12 @@ export const MicroChartViews = () => ({
       </v-row>
 
       <v-row>
-        Station 3 MicroChart
+        Station 3 GcNetMicroChart
       </v-row>
 
       <v-row class="py-3" >
         <v-col >
-          <MicroChart :station="station3"
+          <GcNetMicroChart :station="station3"
                       :apiUrl="station3.envidatConfig.apiUrl"
                       :fallbackUrl="station3.envidatConfig.fallbackUrl"
                       :parameter="station3.envidatConfig.graphParameter"
