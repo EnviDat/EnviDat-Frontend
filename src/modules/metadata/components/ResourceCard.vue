@@ -226,7 +226,7 @@
     </v-container>
     <v-container fluid style="width: 100%" v-if="!isProtected && !isFile">
       <v-divider></v-divider>
-      <S3Tree v-if="url" :url="url" />
+      <S3Tree v-if="isEnvicloudUrl" :url="url" />
     </v-container>
   </v-card>
 </template>
@@ -401,6 +401,10 @@ export default {
       }
 
       return undefined;
+    },
+    isEnvicloudUrl(url) {
+      const urlToCheck = url.url;
+      return urlToCheck.indexOf('envicloud') > -1;
     },
     isDownloaded() {
       return this.numberOfDownload > 0;

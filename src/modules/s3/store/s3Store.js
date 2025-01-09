@@ -4,7 +4,7 @@ import axios from 'axios';
 import { XMLParser } from 'fast-xml-parser';
 
 // const TEST_URL =
-//   'https://envicloud.wsl.ch/edna/?prefix=ma_fr/ma_fr_eparse_2019/&max-keys=100000&delimiter=/';
+//   https://os.zhdk.cloud.switch.ch/envicloud/?prefix=wsl/CORE_S2A/&max-keys=100000&delimiter=/
 
 export const useS3Store = defineStore({
   id: 's3Store',
@@ -21,7 +21,10 @@ export const useS3Store = defineStore({
     async fetchS3Content(url, isChild, nodeId, params = {}) {
       this.loading = true;
       try {
-        const response = await axios.get(url, params);
+        const response = await axios.get(url, {
+          params,
+          forceNoCredentials: true,
+        });
 
         const jsonObj = this.parseXmlToJson(response.data);
         if (isChild) {
@@ -31,6 +34,7 @@ export const useS3Store = defineStore({
         this.mapData(jsonObj);
       } catch (error) {
         this.error = error;
+        this.loading = false;
         throw error;
       } finally {
         this.loading = false;
