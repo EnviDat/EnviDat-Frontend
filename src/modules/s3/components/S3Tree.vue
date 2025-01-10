@@ -256,4 +256,11 @@ const limitedItems = computed(() => limitAllNodes(s3Store.contentFromS3));
   padding: 0;
   padding-inline-start: 0 !important;
 }
+.s3-treeview .v-list-item__content {
+  height: 100%;
+}
+.s3-treeview .v-list-item__content .v-list-item-title {
+  height: 100%;
+  display: flex;
+}
 </style>
