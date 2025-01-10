@@ -3,7 +3,7 @@
     :id="`resourceCard_${id}`"
     :color="computedCardColor"
     :class="isSelected ? 'highlighted' : ''"
-    style="height: 100%"
+    :style="{ height: autoHeight ? 'auto' : '100%' }"
     :loading="loadingColor"
   >
     <v-card-title
@@ -133,28 +133,6 @@
       </v-container>
     </v-card-text>
 
-    <v-card-actions
-      class="ma-0 pa-2"
-      style="position: absolute; bottom: 0; right: 55px"
-    >
-      <base-icon-button
-        v-if="maxDescriptionLengthReached"
-        :class="isProtected ? 'mr-2' : ''"
-        :icon="mdiChevronDown"
-        :icon-color="showFullDescription ? 'primary' : 'accent'"
-        :color="showFullDescription ? 'accent' : 'black'"
-        :outlined="true"
-        outline-color="accent"
-        :rotated="showFullDescription"
-        :tooltipText="
-          showFullDescription
-            ? 'Hide full description'
-            : 'Show full description'
-        "
-        @clicked="showFullDescription = !showFullDescription"
-      />
-    </v-card-actions>
-
     <v-container
       v-if="showGenericOpenButton && !isProtected"
       class="pa-2"
@@ -175,6 +153,29 @@
       </v-row>
     </v-container>
     <v-container style="position: relative">
+      <!-- moved inside the relative container for resolve the issue of positioning -->
+      <v-card-actions
+        class="ma-0 pa-2"
+        style="position: absolute; bottom: 0; right: 55px; z-index: 2"
+      >
+        <base-icon-button
+          v-if="maxDescriptionLengthReached"
+          :class="isProtected ? 'mr-2' : ''"
+          :icon="mdiChevronDown"
+          :icon-color="showFullDescription ? 'primary' : 'accent'"
+          :color="showFullDescription ? 'accent' : 'black'"
+          :outlined="true"
+          outline-color="accent"
+          :rotated="showFullDescription"
+          :tooltipText="
+            showFullDescription
+              ? 'Hide full description'
+              : 'Show full description'
+          "
+          @clicked="showFullDescription = !showFullDescription"
+        />
+      </v-card-actions>
+
       <v-container
         class="pa-2"
         style="position: absolute; bottom: 0; right: 0; width: 55px"
@@ -226,7 +227,7 @@
     </v-container>
     <v-container fluid style="width: 100%" v-if="!isProtected && !isFile">
       <v-divider></v-divider>
-      <S3Tree v-if="isEnvicloudUrl" :url="url" />
+      <S3Tree v-if="isEnvicloudUrl" @setStatus="changeHeight" :url="url" />
     </v-container>
   </v-card>
 </template>
@@ -249,6 +250,7 @@ import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
 
 import S3Tree from '@/modules/s3/components/S3Tree.vue';
+import { useS3Store } from '@/modules/s3/store/s3Store';
 
 import { renderMarkdown, stripMarkdown } from '@/factories/stringFactory';
 import { formatBytes } from '@/factories/metaDataFactory';
@@ -284,6 +286,7 @@ export default {
     id: String,
     doi: String,
     name: String,
+    autoHeight: String,
     description: String,
     url: String,
     restrictedUrl: String,
@@ -345,8 +348,10 @@ export default {
     mdiCancel,
     maxDescriptionLength: 175,
     showFullDescription: false,
+    setAutoHeight: false,
     audioFormats: ['mp3', 'wav', 'wma', 'ogg'],
     EDIT_METADATA_DOI_LABEL,
+    s3Store: useS3Store(),
     items: [
       {
         id: 1,
@@ -516,6 +521,9 @@ export default {
   },
   methods: {
     trackDownload,
+    changeHeight(value) {
+      this.setAutoHeight = value;
+    },
   },
 };
 </script>

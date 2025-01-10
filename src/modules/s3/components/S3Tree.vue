@@ -12,10 +12,13 @@
     >
       <template v-slot:prepend="{ item }">
         <v-icon
+          v-if="!item.maximumLengthItem"
           :path="mdiArrowRight"
           style="cursor: pointer"
           @click="
-            item.isChild ? getData(item.title, item.isChild, item.id) : null
+            item.isChild
+              ? getData(item.title, item.isChild, item.id)
+              : setStatus()
           "
         />
       </template>
@@ -23,7 +26,9 @@
       <template #title="{ item }">
         <v-row
           @click="
-            item.isChild ? getData(item.title, item.isChild, item.id) : null
+            item.isChild
+              ? getData(item.title, item.isChild, item.id)
+              : setStatus()
           "
         >
           <v-col class="d-flex align-center justify-space-between">
@@ -46,6 +51,27 @@
               }"
             >
               {{ item.title }}
+
+              <v-progress-circular
+                v-if="
+                  item.id === itemClicked && s3Store.loading && !item.isLoaded
+                "
+                :size="15"
+                color="white"
+                class="ml-2"
+                indeterminate
+              ></v-progress-circular>
+              <v-chip
+                class="ml-2"
+                size="x-small"
+                v-if="
+                  item.isChild && item.numberOfChild && !item.maximumLengthItem
+                "
+                >{{ item.numberOfChild }}</v-chip
+              >
+              <v-chip class="ml-2" size="x-small" v-if="!item.isChild">{{
+                childrenObject
+              }}</v-chip>
             </span>
 
             <BaseRectangleButton
@@ -63,6 +89,15 @@
               marginClass="mx-1 mt-4 mt-sm-0 ml-5"
               color="white"
               :url="item.link"
+              buttonText="View All"
+            />
+
+            <BaseRectangleButton
+              v-if="item.maximumLengthItem"
+              :isXsSmall="true"
+              marginClass="mx-1 mt-4 mt-sm-0 ml-5"
+              color="white"
+              :url="url"
               buttonText="View All"
             />
           </v-col>
@@ -90,9 +125,23 @@ const props = defineProps({
 });
 const baseUrl = ref('');
 
+const childrenObject = ref(0);
+const itemClicked = ref(0);
+const itemOpened = ref(false);
+
+// set store event for change the style of the resourceCard height if the treeview is opened
+function setStatus() {
+  itemOpened.value = !itemOpened.value;
+  const value = itemOpened.value;
+  s3Store.treeViewIsOpened = value;
+}
+
 // isChild is needed for undestand wich function triggher in the store
 // nodeId is needed to filter and add the new data to the right node
 function getData(url, isChild, nodeId) {
+  // set clickedID item
+  itemClicked.value = nodeId;
+
   let dynamicUrl;
 
   if (url && isChild) {
@@ -109,64 +158,6 @@ function getData(url, isChild, nodeId) {
   s3Store.fetchS3Content(dynamicUrl, isChild, nodeId);
 }
 
-// /envicloud/?prefix=wsl/CORE_S2A/&max-keys=100000&delimiter=/
-// http://localhost:8080/null?prefix=wsl/CORE_S2A/&max-keys=100000&delimiter=/
-// before deploy function
-// function extractS3Url(inputUrl) {
-//   // View All link
-//   s3Store.s3BucketUrl = inputUrl;
-//   const url = new URL(inputUrl);
-
-//   const hash = url.hash.substring(2);
-//   const hashParams = new URLSearchParams(hash);
-
-//   const bucket = decodeURIComponent(hashParams.get('bucket'));
-//   const prefix = decodeURIComponent(hashParams.get('prefix'));
-//   // link for download resourse
-//   const s3DownloadUrl = bucket?.replace(/\/$/, '');
-//   s3Store.s3Url = s3DownloadUrl;
-//   // link for get content
-//   const basePath = bucket?.replace('https://envicloud.wsl.ch', '/s3');
-//   const extractedUrl = `${basePath}?prefix=${prefix}/&max-keys=100000&delimiter=/`;
-//   baseUrl.value = extractedUrl;
-//   getData(baseUrl.value);
-// }
-
-// with PROXY
-// function extractS3Url(inputUrl) {
-//   s3Store.s3BucketUrl = inputUrl;
-//   const url = new URL(inputUrl);
-//   const hash = url.hash.substring(2);
-//   const hashParams = new URLSearchParams(hash);
-
-//   const rawBucket = hashParams.get('bucket') || '';
-//   const bucket = decodeURIComponent(rawBucket);
-
-//   const prefix = decodeURIComponent(hashParams.get('prefix') || '').replace(
-//     /^\/+/,
-//     '',
-//   );
-
-//   const s3DownloadUrl = bucket.replace(/\/$/, '');
-//   s3Store.s3Url = s3DownloadUrl;
-
-//   // Se manca 'bucket' => uso '/s3' come fallback
-//   // Altrimenti sostituisco 'https://envicloud.wsl.ch' con '/s3'
-//   let basePath;
-//   if (bucket && bucket !== 'null') {
-//     basePath = bucket.replace('https://envicloud.wsl.ch', '/s3');
-//   } else {
-//     basePath = '/s3/';
-//   }
-
-//   const extractedUrl = `${basePath}?prefix=${prefix}&max-keys=100000&delimiter=/`;
-//   baseUrl.value = extractedUrl;
-
-//   getData(baseUrl.value);
-// }
-
-// no PROXY
-
 function extractS3Url(inputUrl) {
   s3Store.s3BucketUrl = inputUrl;
   const url = new URL(inputUrl);
@@ -182,46 +173,72 @@ function extractS3Url(inputUrl) {
     '',
   );
 
-  // link for resource (download) in store
-  const s3DownloadUrl = bucket.replace(/\/$/, '');
-  s3Store.s3Url = s3DownloadUrl;
-
   // If missing 'bucket', fall back to envicloud
   let basePath;
   if (bucket && bucket !== 'null') {
     basePath = bucket; // e.g. "https://envicloud.wsl.ch/edna"
   } else {
-    // check this url if it works
     basePath = 'https://os.zhdk.cloud.switch.ch/envicloud/';
   }
+
+  const s3DownloadUrl = bucket
+    ? bucket.replace(/\/$/, '')
+    : basePath.replace(/\/$/, ''); // Use basePath if bucket is missing
+
+  s3Store.s3Url = s3DownloadUrl;
 
   // Build final direct URL
   const extractedUrl = `${basePath}?prefix=${prefix}&max-keys=100000&delimiter=/`;
   baseUrl.value = extractedUrl;
 
-  // Perform the fetch
   getData(baseUrl.value);
 }
 
-function limitChildren(array) {
-  const lastItem = {
-    id: 2,
-    isChild: true,
-    maximumLenghtItem: true,
-    title: 'Go to S3',
-    isFile: false,
-    childrenLoaded: false,
-    children: [],
-  };
-  console.log(array);
-  return array;
+function limitAllNodes(nodes) {
+  const limitResources = 10;
+  if (!Array.isArray(nodes)) return [];
+
+  return nodes.map((node) => {
+    const newNode = { ...node };
+
+    if (Array.isArray(newNode.children) && newNode.children.length > 0) {
+      const processedChildren = limitAllNodes(newNode.children);
+      if (newNode.isChild) {
+        // number of items in the child element
+        newNode.numberOfChild = processedChildren.length;
+        newNode.isLoaded = true;
+      }
+      childrenObject.value = processedChildren.length;
+
+      if (processedChildren.length > limitResources) {
+        const sliced = processedChildren.slice(0, limitResources);
+
+        const lastItem = {
+          id: limitResources + 1,
+          isChild: true,
+          maximumLengthItem: true,
+          title: 'Go to S3',
+          isFile: false,
+          childrenLoaded: false,
+          children: [],
+        };
+
+        sliced.push(lastItem);
+        newNode.children = sliced;
+      } else {
+        newNode.children = processedChildren;
+      }
+    }
+
+    return newNode;
+  });
 }
 
 onMounted(() => {
   extractS3Url(props.url);
 });
 
-const limitedItems = computed(() => limitChildren(s3Store.contentFromS3));
+const limitedItems = computed(() => limitAllNodes(s3Store.contentFromS3));
 </script>
 
 <style>

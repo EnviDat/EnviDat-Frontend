@@ -15,6 +15,7 @@ export const useS3Store = defineStore({
     treeData: [],
     s3Url: null,
     s3BucketUrl: null,
+    treeViewIsOpened: false,
   }),
   getters: {},
   actions: {
@@ -96,8 +97,6 @@ export const useS3Store = defineStore({
         if (node.id === nodeId) {
           if (node.children && node.children.length > 0) {
             // The array check is necessary because if the node contains multiple items,
-            // it will only have one item and not an array. This is helpful for blocking
-            // the function and adding a "View All" button.
             // Skip if already populated
             return true;
           }
@@ -105,12 +104,10 @@ export const useS3Store = defineStore({
           // Add the children and remove unnecessary `children: []` if it's beyond the first level
           node.children = children.map((child) => {
             if (child.isFile || child.isLastItem) {
-              // Remove `children: []` for leaf nodes
               delete child.children;
             }
             return child;
           });
-          // Node found and updated
           return true;
         }
 
@@ -125,7 +122,6 @@ export const useS3Store = defineStore({
           if (found) return true;
         }
       }
-      // Node not found
       return false;
     },
 

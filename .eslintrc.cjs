@@ -24,10 +24,9 @@ module.exports = {
       },
     },
   },
-  // // required to lint *.vue files
+
   plugins: ['vuetify'],
   ignorePatterns: ['particles.js'],
-  // add your custom rules here
   rules: {
     'import/no-unresolved': 'off',
     // allow optionalDependencies
