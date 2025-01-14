@@ -80,11 +80,11 @@
             </v-col>
           </v-row>
 
-          <v-row class="pt-2">
+          <v-row >
 
             <v-col cols="12"
                    sm="6"
-                   class="pt-3"
+                   class="pt-5"
             >
 
               <v-text-field ref="contactEmail"
@@ -120,7 +120,7 @@
 
           </v-row>
 
-          <v-row dense>
+          <v-row>
 
             <v-col class="text-body-1"
                    v-html="labels.authorAutoComplete">
@@ -499,7 +499,7 @@ export default {
     contactPropertyHint(property) {
 
       if (this.contactInfoReadOnly) {
-        return 'Not editable because the contact is defined in the author picker';
+        return 'Not editable, the contact is defined in the drop down';
       }
 
       return this.readOnlyHint(property);

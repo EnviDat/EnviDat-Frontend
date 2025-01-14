@@ -8,7 +8,7 @@
         cols="12"
         sm="6"
       >
-        <MicroChart
+        <GcNetMicroChart
           :station="station"
           :image="station.envidatConfig.previewImageUrl"
           :apiUrl="station.envidatConfig.apiUrl"
@@ -30,7 +30,7 @@
 <script>
 import { mapState } from 'vuex';
 
-import MicroChart from '@/modules/metadata/components/GC-Net/MicroChart.vue';
+import GcNetMicroChart from '@/modules/metadata/components/GC-Net/GcNetMicroChart.vue';
 
 export default {
   name: 'MicroChartList',
@@ -38,7 +38,7 @@ export default {
     stationConfig: Array,
   },
   components: {
-    MicroChart,
+    GcNetMicroChart,
   },
   computed: {
     ...mapState(['config']),
