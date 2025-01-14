@@ -21,7 +21,8 @@
     "storybook-dev": "storybook dev -p 6006 --loglevel warn",
     "storybook-debug": "storybook dev -p 6006 --loglevel silly",
     "test-storybook": "test-storybook",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "format-project": "npx prettier . --write"
   },
   "dependencies": {
     "@amcharts/amcharts5": "^5.2.2",
