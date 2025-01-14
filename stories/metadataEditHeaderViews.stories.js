@@ -31,7 +31,10 @@ import {
   METADATA_TITLE_PROPERTY, METADATA_URL_PROPERTY,
 } from '@/factories/metadataConsts';
 
+import { EditDatasetServiceLayer } from '@/factories/ViewModels/EditDatasetServiceLayer';
+import { EditHeaderViewModel } from '@/factories/ViewModels/EditHeaderViewModel';
 import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
+
 import metadataset from './js/metadata';
 
 const unFormatedMetadataCards = metadataset;
@@ -57,6 +60,7 @@ const authors = getFullAuthorsFromDataset(authorsMap, metadataCards[1]);
 let existingAuthors = Object.values(authorsMap);
 existingAuthors = sortObjectArray(existingAuthors, 'lastName');
 
+const serviceLayer = new EditDatasetServiceLayer(metadataset[0]);
 
 export default {
   title: '3 Dataset / 2 Edit / Metadata Header',
@@ -117,6 +121,11 @@ export const FilledAndReadOnly = {
   },
 };
 
+export const FilledWithViewModel = {
+  args: { 
+    ...serviceLayer.getViewModel(EditHeaderViewModel.name),
+  },
+};
 
 export const MobileFilledEditHeader = {
   args: { ...FilledEditHeader.args },

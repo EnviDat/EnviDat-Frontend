@@ -3,14 +3,24 @@ import { watch } from 'vue';
 
 export class DatasetDTO {
 
+  /**
+   * List of the watcher methods to be called to stop watching on a reactive model
+   * @type {[]}
+   */
   subscribers = [];
 
   serviceLayer;
 
+  /**
+   * Map to keep reference of models that are being updated from the backend
+   * because the update to the backend itself is in a watcher, when a model is updated
+   * this would case an endless loop.
+   *
+   * @type {Map<string, boolean>}
+   */
   modelInSyncMap = new Map();
 
   constructor(datasetBackend, serviceLayer) {
-
     this.convertBackendDataset(datasetBackend);
     this.serviceLayer = serviceLayer;
   }
@@ -27,10 +37,12 @@ export class DatasetDTO {
 
       this.modelInSyncMap.set(key, false);
 
-      const sub = watch(() => vm, async (newModel) => {
+      const watcherMethod = watch(() => vm, async (newModel) => {
 
         const isSyncing = this.modelInSyncMap.get(key);
         if (isSyncing) {
+          // use a map to store if a Model is syncing to avoid an endless loop
+          // when updating a model
           this.modelInSyncMap.set(key, false);
           return;
         }
@@ -42,16 +54,16 @@ export class DatasetDTO {
           this.convertBackendDataset(newBackendDataset);
           this.updateViewModels();
 
-          newModel.saveSuccessfull = true;
+          newModel.savedSuccessfull = true;
 
         } catch (e) {
-          newModel.saveSuccessfull = false;
+          newModel.savedSuccessfull = false;
           this.updateViewModelWithError(e, newModel);
         }
 
       }, { deep: true });
 
-      this.subscribers.push(sub);
+      this.subscribers.push(watcherMethod);
     }
 
   }
@@ -63,8 +75,8 @@ export class DatasetDTO {
 
   unsubscribeFromViewModels() {
     for (let i = 0; i < this.subscribers.length; i++) {
-      const subWatches = this.subscribers[i];
-      subWatches(); // calling the watcher should stop it
+      const watcherMethod = this.subscribers[i];
+      watcherMethod(); // calling the watcher should stop it
     }
   }
 

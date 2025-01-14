@@ -10,12 +10,22 @@ import { ACTION_METADATA_EDITING_PATCH_DATASET } from '@/modules/user/store/user
 import { urlRewrite } from '@/factories/apiFactory';
 import { reactive } from 'vue';
 import { DatasetDTO } from '@/factories/ViewModels/DatasetDTO';
+import { HeaderViewModel } from '@/factories/ViewModels/HeaderViewModel';
+import { AuthorsViewModel } from '@/factories/ViewModels/AuthorsViewModel';
+import { EditDescriptionViewModel } from '@/factories/ViewModels/EditDescriptionViewModel';
+import { EditKeywordsViewModel } from '@/factories/ViewModels/EditKeywordsViewModel';
 
 // don't use an api base url or API_ROOT when using testdata
 let API_BASE = '';
 let API_ROOT = '';
 
 const useTestdata = import.meta.env?.VITE_USE_TESTDATA === 'true';
+
+let mockDataResponse;
+if (useTestdata) {
+  mockDataResponse = await import('../../../public/testdata/dataset_10-16904-1');
+}
+
 
 if (!useTestdata) {
   API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
@@ -26,6 +36,10 @@ export class EditDatasetServiceLayer {
 
   viewModelClasses = [
     EditHeaderViewModel,
+    HeaderViewModel,
+    AuthorsViewModel,
+    EditDescriptionViewModel,
+    EditKeywordsViewModel,
   ];
 
   viewModelInstances = new Map();
@@ -49,8 +63,11 @@ export class EditDatasetServiceLayer {
   }
 
 
-  // eslint-disable-next-line class-methods-use-this
   async patchDatasetChanges (datasetId, viewModel) {
+
+    if (useTestdata) {
+      return mockDataResponse.dataset.result;
+    }
 
     const actionUrl = ACTION_METADATA_EDITING_PATCH_DATASET();
     const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
@@ -68,54 +85,12 @@ export class EditDatasetServiceLayer {
     return response.data
   }
 
-  /*
-  function getEditHeaderViewModel(datasetDTO = undefined) {
-    const ehVM = createEditHeaderViewModel(datasetDTO, patchDatasetChanges);
-
-  }
-  */
-
   get viewModels() {
     return this.viewModelInstances;
   }
 
-  /*
-  export function subscribe(id, callbackFunction) {
-    const subs = subscribers.get(id);
-    if (subs) {
-      subs.push(callbackFunction);
-      return
-    }
-
-    subscribers.set(id, [callbackFunction]);
+  getViewModel(modelName) {
+    return this.viewModelInstances.get(modelName);
   }
-
-  export function unsubscribe(id, callbackFunction) {
-    const subs = subscribers.get(id);
-    if (subs) {
-      const index = subs.indexOf(callbackFunction);
-      if (index >= 0) {
-        subs.splice(index, 1);
-      }
-    }
-
-  }
-
-  function notifySubscribers(newModel, oldModel) {
-    const subs = subscribers.get(oldModel.toString());
-    if (!subs) {
-      return
-    }
-
-    for (let i = 0; i < subs.length; i++) {
-      const sub = subs[i];
-      if (typeof sub === 'function') {
-        sub(newModel);
-      } else {
-        throw new Error(`Wrong type of subscriber ${typeof sub}`);
-      }
-    }
-  }
-  */
 
 }

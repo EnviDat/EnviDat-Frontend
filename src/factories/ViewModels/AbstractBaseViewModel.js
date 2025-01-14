@@ -13,9 +13,11 @@ function enforceAbstractProps(instance, requiredProps) {
 
 export class AbstractBaseViewModel {
 
-  saveSuccessfull = false;
+  savedSuccessfull = false;
 
-  error;
+  loading = false;
+
+  error = undefined;
 
   constructor(datasetDTO, mappingRules) {
     this.mappingRules = mappingRules;

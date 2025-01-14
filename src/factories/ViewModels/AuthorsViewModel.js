@@ -5,8 +5,10 @@ import { convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
 
 export class AuthorsViewModel extends AbstractBaseViewModel{
 
+  authorsRaw = [];
+
   constructor(datasetDTO) {
-    super(datasetDTO, ['authorsRaw', 'author']);
+    super(datasetDTO, [['authorsRaw', 'author']]);
 
     this.authors = AuthorsViewModel.getFormattedAuthors(this.authorsRaw);
 

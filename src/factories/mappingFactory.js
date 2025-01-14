@@ -33,7 +33,7 @@ import {
   EDITMETADATA_ORGANIZATION,
   EDITMETADATA_PUBLICATION_INFO,
   EDITMETADATA_RELATED_DATASETS,
-  EDITMETADATA_RELATED_PUBLICATIONS,
+  EDITMETADATA_RELATED_PUBLICATIONS, METADATA_MAIN_HEADER,
   USER_OBJECT,
 } from '@/factories/eventBus';
 
@@ -56,6 +56,9 @@ import {
   EDIT_METADATA_TITLE_LABEL,
   EDIT_METADATA_URL_LABEL,
   METADATA_AUTHORS_PROPERTY,
+  METADATA_CONTACT_EMAIL,
+  METADATA_CONTACT_FIRSTNAME,
+  METADATA_CONTACT_LASTNAME,
   METADATA_DATALICENSE_PROPERTY,
   METADATA_DEPRECATEDRESOURCES_PROPERTY,
   METADATA_DOI_PROPERTY,
@@ -78,7 +81,6 @@ import { formatDate } from '@/factories/dateFactory';
  * https://stackoverflow.com/questions/50081462/javascript-how-to-map-a-backend-entity-to-a-frontend-entity-and-the-opposite
  */
 const JSONFrontendBackendRules = {
-/*
   [METADATA_MAIN_HEADER]: [
     [METADATA_TITLE_PROPERTY,'title'],
     [METADATA_CONTACT_EMAIL,'maintainer.email'],
@@ -106,7 +108,6 @@ const JSONFrontendBackendRules = {
   [EDITMETADATA_MAIN_DESCRIPTION]: [
     ['description','notes'],
   ],
-*/
   [EDITMETADATA_KEYWORDS]: [
     ['keywords','tags'],
   ],
@@ -118,11 +119,6 @@ const JSONFrontendBackendRules = {
     ['identifierType','identifier_scheme'],
     ['identifier','identifier'],
     ['affiliation','affiliation'],
-/*
-    ['affiliations.affiliation1','affiliation'],
-    ['affiliations.affiliation2','affiliation_02'],
-    ['affiliations.affiliation3','affiliation_03'],
-*/
   ],
   [EDITMETADATA_AUTHOR_LIST]: [
     ['authors','author'],

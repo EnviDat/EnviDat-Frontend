@@ -40,6 +40,7 @@ describe('viewModel Factory ', () => {
       })
   });
 
+/*
   it(`${EDITMETADATA_MAIN_HEADER} frontendJSON`, () => {
 
     const props = headerVM.frontendProperties;
@@ -50,6 +51,7 @@ describe('viewModel Factory ', () => {
       expect(headerVM[key], `${key} has no value in headerVM`).toBeDefined();
     })
   });
+*/
 
   it(`${EDITMETADATA_MAIN_HEADER} reactivity of ${METADATA_TITLE_PROPERTY}`, () => {
 

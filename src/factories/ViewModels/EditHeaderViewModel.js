@@ -1,6 +1,3 @@
-/*
-import { reactive, watch } from 'vue';
-*/
 import { AbstractBaseViewModel } from '@/factories/ViewModels/AbstractBaseViewModel';
 
 import {
