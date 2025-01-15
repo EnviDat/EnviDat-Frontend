@@ -187,11 +187,7 @@ export default {
     resetState() {
       console.log('resetState');
       this.currentState = null;
-      this.states = null;
-
-      this.$nextTick(() => {
-        this.states = this.initStates;
-      })
+      this.states = this.initStates;
     },
     changeState(id, progress) {
       if (!this.states) {
@@ -238,6 +234,24 @@ export default {
     fileSize: null,
     currentState: null,
     states: [
+      {
+        id: UPLOAD_STATE_UPLOAD_STARTED,
+        name: 'upload started',
+      },
+      {
+        id: UPLOAD_STATE_RESOURCE_CREATED,
+        name: 'resource created',
+      },
+      {
+        id: UPLOAD_STATE_UPLOAD_PROGRESS,
+        name: 'uploading file',
+      },
+      {
+        id: UPLOAD_STATE_UPLOAD_COMPLETED,
+        name: 'upload finished',
+      },
+    ],
+    initStates: [
       {
         id: UPLOAD_STATE_UPLOAD_STARTED,
         name: 'upload started',
