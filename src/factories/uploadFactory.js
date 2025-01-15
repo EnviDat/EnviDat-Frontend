@@ -136,7 +136,9 @@ export function createNewResourceForUrl(metadataId, url) {
 export async function initiateMultipart(file) {
   console.log('initiateMultipart', file);
 
+/*
   eventBus.emit(UPLOAD_STATE_RESET);
+*/
 
   const metadataId = storeReference?.getters[`${USER_NAMESPACE}/uploadMetadataId`];
   const newResource = createNewResourceForFileUpload(metadataId, file);
@@ -148,7 +150,7 @@ export async function initiateMultipart(file) {
   const resourceId = storeReference?.getters[`${USER_NAMESPACE}/uploadResourceId`];
 
   if (resourceId) {
-    eventBus.emit(UPLOAD_STATE_RESOURCE_CREATED, { id: UPLOAD_STATE_RESOURCE_CREATED });
+    eventBus.emit(UPLOAD_STATE_RESOURCE_CREATED, { id: UPLOAD_STATE_RESOURCE_CREATED, resourceId});
   } else {
     eventBus.emit(UPLOAD_ERROR, { error: 'Resource creation failed', metadataId });
     return null;
@@ -183,7 +185,9 @@ export async function initiateMultipart(file) {
 
 export async function getSinglePresignedUrl(file) {
 
+/*
   eventBus.emit(UPLOAD_STATE_RESET);
+*/
 
   const metadataId = storeReference?.getters[`${USER_NAMESPACE}/uploadMetadataId`];
   const newResource = createNewResourceForFileUpload(metadataId, file);

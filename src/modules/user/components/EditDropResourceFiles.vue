@@ -27,10 +27,11 @@
         <v-col v-show="error"
                cols="12"
                 class="py-0">
-          <BaseStatusLabelView :status-text="error"
-                               :expanded-text="errorDetails"
-                               status-icon="error"
-                               status-color="error"
+          <BaseStatusLabelView :statusText="error"
+                               :expandedText="errorDetails"
+                               :showExpandIcon="!!errorDetails"
+                               status="error"
+                               statusColor="error"
                                />
         </v-col>
 
@@ -100,8 +101,10 @@ import '@uppy/status-bar/dist/style.min.css';
 
 import { destroyUppyInstance, getUppyInstance } from '@/factories/uploadFactory';
 import {
+/*
   eventBus,
   UPLOAD_STATE_RESET,
+*/
   UPLOAD_STATE_RESOURCE_CREATED,
   UPLOAD_STATE_UPLOAD_COMPLETED,
   UPLOAD_STATE_UPLOAD_PROGRESS,
@@ -109,6 +112,7 @@ import {
 } from '@/factories/eventBus';
 
 import TagChip from '@/components/Chips/TagChip.vue';
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 
 
 export default {
@@ -119,9 +123,12 @@ export default {
       type: String,
       default: undefined,
     },
+    state: String,
+    progress: Number,
     error: String,
     errorDetails: String,
   },
+/*
   created() {
     eventBus.on(UPLOAD_STATE_RESET, this.resetState);
     eventBus.on(UPLOAD_STATE_RESOURCE_CREATED, this.changeState);
@@ -129,15 +136,15 @@ export default {
     eventBus.on(UPLOAD_STATE_UPLOAD_PROGRESS, this.changeState);
     eventBus.on(UPLOAD_STATE_UPLOAD_COMPLETED, this.changeState);
   },
-  mounted() {
-    this.resetState();
-  },
+*/
   beforeUnmount() {
+/*
     eventBus.off(UPLOAD_STATE_RESET, this.resetState);
     eventBus.off(UPLOAD_STATE_RESOURCE_CREATED, this.changeState);
     eventBus.off(UPLOAD_STATE_UPLOAD_STARTED, this.changeState);
     eventBus.off(UPLOAD_STATE_UPLOAD_PROGRESS, this.changeState);
     eventBus.off(UPLOAD_STATE_UPLOAD_COMPLETED, this.changeState);
+*/
 
     destroyUppyInstance();
   },
@@ -178,6 +185,7 @@ export default {
       return this.getIndicatorLoading(state) ? undefined : 100;
     },
     resetState() {
+      console.log('resetState');
       this.currentState = null;
       this.states = null;
 
@@ -185,24 +193,38 @@ export default {
         this.states = this.initStates;
       })
     },
-    changeState(event) {
+    changeState(id, progress) {
       if (!this.states) {
         return;
       }
 
-      const { id, progress } = event;
+      console.log('Change State', id, progress);
 
       const index = this.states.findIndex(((s) => s.id === id));
+
       if (index >= 0) {
         this.currentState = this.states[index];
-        if (progress) {
+
+        if (progress !== 0) {
           this.currentState = {
-            ...this.states[index],
-            name: `${this.states[index].name} ${progress}%`,
+            ...this.currentState,
+            name: `${this.currentState.name} ${progress}%`,
           };
         }
       }
 
+    },
+  },
+  watch: {
+    state: {
+      handler(newState) {
+        if (newState) {
+          this.changeState(newState, this.progress)
+        } else {
+          this.resetState();
+        }
+      },
+      immediate: true,
     },
   },
   data: () => ({
@@ -215,8 +237,7 @@ export default {
     fileName: null,
     fileSize: null,
     currentState: null,
-    states: null,
-    initStates: [
+    states: [
       {
         id: UPLOAD_STATE_UPLOAD_STARTED,
         name: 'upload started',
@@ -239,6 +260,7 @@ export default {
     DragDrop,
     StatusBar,
     TagChip,
+    BaseStatusLabelView,
   },
 };
 </script>

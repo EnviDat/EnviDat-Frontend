@@ -90,7 +90,7 @@ import {
   UPLOAD_STATE_UPLOAD_PROGRESS,
   UPLOAD_STATE_UPLOAD_STARTED,
   UPLOAD_STATE_RESET,
-  EDITMETADATA_CLEAR_PREVIEW,
+  EDITMETADATA_CLEAR_PREVIEW, UPLOAD_ERROR, UPLOAD_STATE_RESOURCE_CREATED,
 } from '@/factories/eventBus';
 
 import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
@@ -189,10 +189,12 @@ export default {
   },
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.unselectCurrentResource);
+    eventBus.on(UPLOAD_STATE_RESET, this.resetUppy);
+    eventBus.on(UPLOAD_STATE_RESOURCE_CREATED, this.uploadResourceCreated);
   },
   mounted() {
     subscribeOnUppyEvent('upload', this.uploadStarted);
-    subscribeOnUppyEvent('progress', this.uploadProgress);
+    subscribeOnUppyEvent('progress', this.uploadStateProgress);
     subscribeOnUppyEvent('complete', this.uploadCompleted);
     subscribeOnUppyEvent('cancel-all', this.cancelUpload);
     subscribeOnUppyEvent('error', this.uploadUppyError);
@@ -203,9 +205,11 @@ export default {
   },
   beforeUnmount() {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.unselectCurrentResource);
+    eventBus.off(UPLOAD_STATE_RESET, this.resetUppy);
+    eventBus.off(UPLOAD_STATE_RESOURCE_CREATED, this.uploadResourceCreated);
 
     unSubscribeOnUppyEvent('upload', this.uploadStarted);
-    unSubscribeOnUppyEvent('progress', this.uploadProgress);
+    unSubscribeOnUppyEvent('progress', this.uploadStateProgress);
     unSubscribeOnUppyEvent('complete', this.uploadCompleted);
     unSubscribeOnUppyEvent('cancel-all', this.cancelUpload);
     unSubscribeOnUppyEvent('error', this.uploadUppyError);
@@ -292,6 +296,8 @@ export default {
       return {
         metadataId: this.metadataId,
         legacyUrl: this.linkAddNewResourcesCKAN,
+        state: this.uploadState,
+        progress: this.uploadProgress,
         error: this.resourceUploadError?.message || this.uppyError?.name,
         errorDetails: this.resourceUploadError?.details || this.uppyError?.message,
       };
@@ -323,7 +329,6 @@ export default {
           });
       }
     },
-    // uploadStarted() {
     uploadStarted({ id, fileIDs }) {
       // data object consists of `id` with upload ID and `fileIDs` array
       // with file IDs in current upload
@@ -331,17 +336,30 @@ export default {
       console.log(`Starting upload ${id} for files ${fileIDs}`);
 
       this.uppyError = null;
+      this.uploadState = UPLOAD_STATE_UPLOAD_STARTED;
+      this.uploadProgress = 0;
+
       this.uploadProgessText = 'Starting upload file';
       this.uploadProgressIcon = 'check_box_outline_blank';
 
+/*
       eventBus.emit(UPLOAD_STATE_UPLOAD_STARTED, { id: UPLOAD_STATE_UPLOAD_STARTED });
+*/
     },
-    uploadProgress(progress) {
+    uploadResourceCreated(event) {
+      console.log(`Resource created ${event.resourceId}`);
+      this.uploadState = UPLOAD_STATE_RESOURCE_CREATED;
+    },
+    uploadStateProgress(progress) {
+      this.uploadState = UPLOAD_STATE_UPLOAD_PROGRESS;
+      this.uploadProgress = progress;
       console.log(`upload progress: ${progress}`);
       this.uploadProgessText = `upload progress: ${progress}`;
       this.uploadProgressIcon = 'check';
 
+/*
       eventBus.emit(UPLOAD_STATE_UPLOAD_PROGRESS, { id: UPLOAD_STATE_UPLOAD_PROGRESS, progress });
+*/
     },
     async uploadCompleted(result) {
       const oks = result.successful?.length || 0;
@@ -363,8 +381,10 @@ export default {
         this.uploadProgressIcon = 'report_gmailerrorred';
       }
 
-      eventBus.emit(UPLOAD_STATE_UPLOAD_COMPLETED, { id: UPLOAD_STATE_UPLOAD_COMPLETED });
+//      eventBus.emit(UPLOAD_STATE_UPLOAD_COMPLETED, { id: UPLOAD_STATE_UPLOAD_COMPLETED });
       console.log('upload complete emit', UPLOAD_STATE_UPLOAD_COMPLETED);
+      this.uploadState = UPLOAD_STATE_UPLOAD_COMPLETED;
+      this.uploadProgress = 0;
 
       this.uploadProgessText = message;
 
@@ -382,20 +402,28 @@ export default {
     },
     uploadUppyError(error) {
       console.log('uploadUppyError', error);
+
+      this.uploadState = undefined;
       this.uppyError = error;
 
       this.uploadProgessText = `Upload failed ${error}`;
       this.uploadProgressIcon = 'report_gmailerrorred';
 
+/*
       eventBus.emit(UPLOAD_STATE_RESET);
+*/
     },
     cancelUpload() {
       this.resetUppy();
     },
     resetUppy() {
       console.log('resetUppy');
+/*
       eventBus.emit(UPLOAD_STATE_RESET);
+*/
       this.uppyError = null;
+      this.uploadState = undefined;
+      this.uploadProgress = 0;
 
       const uppy = getUppyInstance();
       const files = uppy.getFiles();
@@ -454,6 +482,8 @@ export default {
                     <br />
                     Please add resources via the legacy website by clicking on
                     the button below.`,
+    uploadProgress: 0,
+    uploadState: undefined,
   }),
   components: {
     EditMetadataResources,
