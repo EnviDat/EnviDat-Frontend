@@ -204,3 +204,11 @@ a {
 .leaflet-marker-icon.rounded-circle.grey {
   background-color: grey !important;
 }
+
+.v-input--horizontal .v-input__prepend {
+  margin-inline-end: 12px !important;
+}
+
+.v-input--horizontal .v-input__append {
+  margin-inline-start: 12px !important;
+}

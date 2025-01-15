@@ -12,75 +12,32 @@
 
 import EditOrganizationTree from '@/modules/user/components/EditOrganizationTree.vue';
 
-import {
-  EDITMETADATA_OBJECT_UPDATE,
-  EDITMETADATA_ORGANIZATION,
-  eventBus,
-} from '@/factories/eventBus';
+import { getOrganizationRelationMap, getOrganizationTree } from '@/factories/organizationFactory';
 
-import { getOrganizationMap } from '@/factories/metaDataFactory';
-import testOrganizations from './js/organizations';
+import organizationList from '~/public/testdata/organization_show.json';
 
-const organizationsMap = getOrganizationMap(testOrganizations);
-const organizationsMap2 = { ...organizationsMap };
+const orgaMap = getOrganizationRelationMap(organizationList.result);
+const organizationsTree = getOrganizationTree(orgaMap);
+
+// const organizationsTree = getOrganizationMapObject(testOrganizations);
+// const organizationsTree2 = { ...organizationsTree };
 
 export default {
   title: '3 Dataset / 2 Edit / Organization Tree',
   component: EditOrganizationTree,
 };
 
-export const EditOrganizationViews = () => ({
-    components: { EditOrganizationTree },
-    template: `
-    <v-col>
+export const Default = {
+  args: {
+    organizationsTree,
+    selectionDisabled: false,
+  },
+}
 
-      <v-row>
-        EditOrganizationTree
-      </v-row>
-
-      <v-row class='py-3' >
-        <v-col >
-          <EditOrganizationTree v-bind='genericProps' />
-        </v-col>
-      </v-row>
-
-      <v-row>
-        EditOrganizationTree preselected and editing disabled
-      </v-row>
-
-      <v-row class='py-3' >
-        <v-col >
-          <EditOrganizationTree v-bind='genericProps2' />
-        </v-col>
-      </v-row>
-
-    </v-col>
-    `,
-    created() {
-      eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.updateOrga);
-    },
-    beforeUnmount() {
-      eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.updateOrga);
-    },
-    methods: {
-      updateOrga(updateObj) {
-        if (updateObj.object === EDITMETADATA_ORGANIZATION
-          && updateObj.data.id === this.genericProps.id) {
-          this.genericProps = updateObj.data;
-        }
-      },
-    },
-    data: () => ({
-      genericProps: {
-        id: '1',
-        organizationsMap,
-        organization: 'wabio',
-        selectionDisabled: false,
-      },
-      genericProps2: {
-        organizationsMap: organizationsMap2,
-        organization: 'community-ecology',
-        selectionDisabled: true,
-      },
-    }),
-  });
+export const PreselectedOrganization = {
+  args: {
+    organizationsTree,
+    organization: 'community-ecology',
+    selectionDisabled: true,
+  },
+}

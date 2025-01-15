@@ -1,12 +1,17 @@
 <template>
   <v-card id="EditResource" :key="id" :loading="loadingColor" class="pa-0">
 
-    <BaseIconButton class="editResourceCloseButton ma-2" :class="{ 'mx-1': $vuetify.display.smAndDown }"
-                    style="position: absolute; top: 0; right: 0; z-index: 2" :icon="mdiClose" icon-color="primary"
-                    outline-color="primary"
-                    outlined tooltip-text="Cancel Resource Editing"
-                    tooltip-bottom
-                    @clicked="$emit('closeClicked')" />
+    <BaseIconButton
+      class="editResourceCloseButton ma-2"
+      :class="{ 'mx-1': $vuetify.display.smAndDown }"
+      style="position: absolute; top: 0; right: 0; z-index: 2"
+      :icon="mdiClose"
+      icon-color="primary"
+      outline-color="primary"
+      outlined
+      tooltip-text="Cancel Resource Editing"
+      tooltip-bottom
+      @clicked="$emit('closeClicked')" />
 
 
     <div class="pa-3">
@@ -152,7 +157,7 @@
                 <BaseIcon color="gray" :icon="fileFormatIcon"></BaseIcon>
               </v-col>
 
-              <v-col class="pl-4">
+              <v-col class="pl-3">
                 <v-text-field
                   :label="labels.format" hide-details="auto" :disabled="loading"
                   @blur="formatField = $event.target.value"
@@ -168,7 +173,7 @@
                 <BaseIcon color="gray" :icon="fileSizeIcon"></BaseIcon>
               </v-col>
 
-              <v-col class="pl-4">
+              <v-col class="pl-3">
                 <v-text-field
                   :label="labels.size" hide-details="auto" :disabled="!isLink || loading"
                   :model-value="isLink ? sizeField : sizeFieldText"

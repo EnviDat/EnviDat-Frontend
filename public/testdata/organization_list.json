@@ -1,587 +1,92 @@
 {
-  "help": "https://www.envidat.ch/api/3/action/help_show?name=organization_list",
-  "success": true,
-  "result": [
-      {
-          "approval_status": "approved",
-          "created": "2020-01-16T12:55:40.341488",
-          "description": "MeteoSwiss is the Federal Office for Meteorology and Climatology. We operate the national surface and radar measurement network and collect, manage and analyse weather and climate data. We produce forecasts, inform, warn and advise, and are engaged in researching and developing tailor-made products and services. \r\n\r\nThe Atmospheric Measurement and Data division is specialized in upper air measurements.\r\n\r\nMore information on: https://www.meteosuisse.admin.ch/home.html",
-          "display_name": "Atmospheric Measurement and Data Division",
-          "id": "b1e29434-1f21-4eb6-bfa9-1ecfe1d59fc7",
-          "image_display_url": "https://www.envidat.ch/uploads/group/2020-01-16-115540.320888meteoschweiz.png",
-          "image_url": "2020-01-16-115540.320888meteoschweiz.png",
-          "is_organization": true,
-          "longname": "",
-          "name": "atmospheric-measurement-and-data-division",
-          "num_followers": 0,
-          "package_count": 5,
-          "state": "active",
-          "title": "Atmospheric Measurement and Data Division",
-          "type": "organization",
-          "groups": [
-              {
-                  "capacity": "public",
-                  "name": "meteoswiss"
-              }
-          ]
-      },
-      {
-          "approval_status": "approved",
-          "created": "2020-11-03T14:11:24.254062",
-          "datamanager": "lwp-slf_ch",
-          "description": "The official Swiss avalanche bulletin is published by the avalanche warning service of the WSL Institute for Snow and Avalanche Research SLF. A description of this publication is given in 'Information about the avalanche bulletin' on the website www.slf.ch. Only the most recent version is binding. 'Information about the avalanche bulletin' does not go into the details of supporting products such as snow maps and measured data, which can be found with the relevant products, nor does it give a description of the Information Platform for Natural Hazards (GIN) or the special products on offer there to safety services. ",
-          "display_name": "Avalanche bulletin and snow situation",
-          "id": "e0a9da75-bd52-4cbf-aa39-7f2882b3eb63",
-          "image_display_url": "https://www.envidat.ch/uploads/group/2016-05-24-141521.837240logoslf.png",
-          "image_url": "https://www.envidat.ch/uploads/group/2016-05-24-141521.837240logoslf.png",
-          "is_organization": true,
-          "longname": "",
-          "name": "avalanche-bulletin-and-snow-situation",
-          "num_followers": 0,
-          "package_count": 4,
-          "state": "active",
-          "title": "Avalanche bulletin and snow situation",
-          "type": "organization",
-          "groups": [
-              {
-                  "capacity": "public",
-                  "name": "slf"
-              }
-          ]
-      },
-      {
-          "approval_status": "approved",
-          "created": "2019-09-27T12:40:13.473824",
-          "datamanager": "vanherwijnen-slf_ch",
-          "description": "Snow avalanches – a type of fast-moving mass movement – occur in snow covered mountain areas throughout the world and may cause property damage and loss of life as they interfere with human activities. Most avalanches release from terrain steeper than about 30° during or soon after snow storms, or are triggered by snow loading due to wind, or by a temperature change. Snow slab avalanches can also be triggered artificially by, for example, people (usually unintentionally) or intentionally by explosives used as part of avalanche control programs. Today, most avalanche fatalities are recreationists. Independent of the triggering mode, the snowpack layering is decisive for the instability of the snowpack which consists of layers with varying properties. The complex microstructure of snow and spatial variations in snow layer properties across the terrain limit the predictability of snow avalanches. Even today, it is not possible to predict the exact location, time and extent of an avalanche event. Improving avalanche prediction requires a better understanding of the underlying processes. ",
-          "display_name": "Avalanche Formation",
-          "id": "a357f01f-845b-4b61-9ad0-f204d3332c52",
-          "image_display_url": "https://www.envidat.ch/uploads/group/2019-09-27-104013.456832slf.png",
-          "image_url": "2019-09-27-104013.456832slf.png",
-          "is_organization": true,
-          "longname": "",
-          "name": "avalanche-formation",
-          "num_followers": 0,
-          "package_count": 4,
-          "state": "active",
-          "title": "Avalanche Formation",
-          "type": "organization",
-          "groups": [
-              {
-                  "capacity": "public",
-                  "name": "snow-avalanches-and-prevention"
-              }
-          ]
-      },
-      {
-          "approval_status": "approved",
-          "created": "2018-05-18T09:11:21.193404",
-          "datamanager": "admin",
-          "description": "The research unit Biodiversity and Conservation Biology studies the diversity of life in its various forms, from genetic diversity to the diversity of species and ecosystems as well as their interactions. In collaboration with partners such as federal, cantonal and local authorities, we elaborate scientific knowledge for management strategies for the conservation of biodiversity and the preservation of natural resources in Switzerland.",
-          "display_name": "Biodiversity and Conservation Biology",
-          "id": "b573549f-b478-4e37-b658-3e42f07452c6",
-          "image_display_url": "https://www.envidat.ch/uploads/group/2018-07-10-090054.684594LogoWSL.svg",
-          "image_url": "2018-07-10-090054.684594LogoWSL.svg",
-          "is_organization": true,
-          "longname": "",
-          "name": "biodiversity-and-conservation-biology",
-          "num_followers": 0,
-          "package_count": 0,
-          "state": "active",
-          "title": "Biodiversity and Conservation Biology",
-          "type": "organization",
-          "groups": [
-              {
-                  "capacity": "public",
-                  "name": "wsl"
-              }
-          ]
-      },
-      {
-          "approval_status": "approved",
-          "created": "2016-05-24T16:12:30.759558",
-          "datamanager": "admin",
-          "description": "The overall strategic goals of the Competence Center Environment and Sustainability of the ETH Domain are to foster major advancements in research; to establish the CCES partners as international and national focal points for environment and sustainability; to achieve a long-term structuring effect lasting beyond the completion of CCES; to establish a strong wide-ranging education and outreach program; to achieve a visible societal impact with a focus on socio-economic implementation. \r\n\r\nMore information: http://www.cces.ethz.ch\r\n",
-          "display_name": "CCES",
-          "id": "66790e9b-d0a1-45c3-9b1f-fd521d366254",
-          "image_display_url": "https://www.envidat.ch/uploads/group/2016-05-24-141230.736114LogoCCEScolor9cm.jpg",
-          "image_url": "2016-05-24-141230.736114LogoCCEScolor9cm.jpg",
-          "is_organization": true,
-          "longname": "Competence Center Environment and Sustainability",
-          "name": "cces",
-          "num_followers": 0,
-          "package_count": 3,
-          "state": "active",
-          "title": "CCES",
-          "type": "organization",
-          "groups": []
-      },
-      {
-          "approval_status": "approved",
-          "created": "2016-11-15T16:59:06.904865",
-          "datamanager": "boris_pezzatti-wsl_ch",
-          "description": "The Research Unit focuses on functional interactions between communities of plants (producers), herbivores (primary consumers), predators (secondary consumers), and soil biota (decomposers) with regard to critical ecosystem services such as productivity, protection, nutrient cycling and storage. Environmental factors considered include direct and indirect anthropogenic impacts with global relevance such as land-use change (e.g. land abandonment, fragmentation, urban sprawl, eutrophication, trivialization of herbivore communities), natural disturbances (e.g. avalanches, landslides, fire) or climatic changes. \r\n\r\nParticular emphasis is given to sensitive natural, semi-natural and urban ecosystems, among many others wetlands, treeline ecotones and insubric ecosystems. Comparing history and modeling functional processes in and between these systems provides clues for predicting biodiversity changes, the evolution of ecosystems, and consequences for ecosystem services in the context of future global change.\r\n\r\nThe Unit has partners both within WSL and the wider scientific community. Stakeholders are mainly the forest and agricultural services, nature conservation, forest owners, regional and federal agencies.\r\n\r\n__Further information__: https://www.wsl.ch/en/about-wsl/organization/research-units/community-ecology.html",
-          "display_name": "Community Ecology",
-          "id": "ac08caff-641d-4b12-85dd-9d50f01c688d",
-          "image_display_url": "https://www.envidat.ch/uploads/group/2018-07-10-090153.154508LogoWSL.svg",
-          "image_url": "2018-07-10-090153.154508LogoWSL.svg",
-          "is_organization": true,
-          "longname": "",
-          "name": "community-ecology",
-          "num_followers": 0,
-          "package_count": 0,
-          "state": "active",
-          "title": "Community Ecology",
-          "type": "organization",
-          "groups": [
-              {
-                  "capacity": "public",
-                  "name": "wsl"
-              }
-          ]
-      },
-      {
-          "approval_status": "approved",
-          "created": "2018-05-18T09:12:30.577470",
-          "datamanager": "martin_obrist-wsl_ch",
-          "description": "We study the relationship between threatened species and their habitat with the objective to develop evidence-based instruments for conservation. The viability of populations of habitat specialists is often limited due to restricted availability of suitable habitat or discontinuous distribution. We focus on selected animal species of conservation concern (forest birds, bats, forest insects) and analyse species-habitat relationships at a scale ranging from single subpopulations to entire metapopulations. We strive towards standardised recording of elusive species with novel techniques, assessing environmental variables and combining these field data with data from remote sensing. We determine limiting factors (habitat, climate, resources) and predict species occurrence and habitat suitability with modelling techniques.\r\n\r\nThese models allow to predict species occurrence patterns and to delineate evidence-based priority areas for conservation. Our long-term collaboration with federal and cantonal stakeholders of forest and nature conservation enables the combination of research results with conservation requirements (e.g. species action plans, forest biodiversity expert panel, scientific counsel for bat protection). While we investigate complete distribution ranges in bats, we focus on forest habitats in birds and insects given the large extent and high importance of forests for biodiversity conservation in Switzerland.",
-          "display_name": "Conservation Biology",
-          "id": "32672ec5-c180-471e-92f7-ef58e00eb1fb",
-          "image_display_url": "https://www.envidat.ch/uploads/group/2018-07-10-090115.162284LogoWSL.svg",
-          "image_url": "2018-07-10-090115.162284LogoWSL.svg",
-          "is_organization": true,
-          "longname": "",
-          "name": "conservation-biology",
-          "num_followers": 0,
-          "package_count": 9,
-          "state": "active",
-          "title": "Conservation Biology",
-          "type": "organization",
-          "groups": [
-              {
-                  "capacity": "public",
-                  "name": "biodiversity-and-conservation-biology"
-              }
-          ]
-      },
-      {
-          "approval_status": "approved",
-          "created": "2016-11-17T12:24:20.447699",
-          "datamanager": "lehning",
-          "description": "CRYOS is the EPFL laboratory of the WSL/SLF - EPFL joint appointment for Prof. Michael Lehning. At his WSL side, Prof. Michael Lehning is head of the research unit \"Snow and Permafrost\" at SLF in Davos.\r\n \r\n###General Mission\r\nThe laboratory of cryospheric sciences investigates the processes that shape snow and ice in mountains and polar regions. In particular, snow cover processes, snow-atmosphere interactions and mountain hydrology are in the focus of current research. This includes a strive for deeper understanding of the complicated mass and energy exchange processes within, above and below a snow cover but also predictions of future snow and ice in mountains and high latitudes. A newer work area is the risk management and optimization in the field of renewable energy production based on our detailed understanding of water, wind and radiation processes in mountains.\r\n\r\nMore information: http://cryos.epfl.ch/",
-          "display_name": "CRYOS",
-          "id": "b2ef52fe-c56a-4973-8309-24837f3848ed",
-          "image_display_url": "https://www.envidat.ch/uploads/group/2019-03-26-151807.125593CRYOSLogoFinal.jpg",
-          "image_url": "2019-03-26-151807.125593CRYOSLogoFinal.jpg",
-          "is_organization": true,
-          "longname": "Laboratory of Cryospheric Sciences",
-          "name": "cryos",
-          "num_followers": 0,
-          "package_count": 22,
-          "state": "active",
-          "title": "CRYOS",
-          "type": "organization",
-          "groups": [
-              {
-                  "capacity": "public",
-                  "name": "epfl"
-              }
-          ]
-      },
-      {
-          "approval_status": "approved",
-          "created": "2018-06-27T15:53:18.389170",
-          "description": "The Civil, Environmental and Geomatic Engineering Department is one of the world's leading teaching and research units in the field of construction, environment and geomatic engineering sciences and the integration thereof.\r\n\r\nCentral to the activities of the Department is overall responsibility for structural systems and natural resources, in which, in particular, aspects of safety, ecology, form, economic feasibility and social processes are be taken into account and balanced against one another.",
-          "display_name": "D-BAUG",
-          "id": "fbddb500-59f3-4c2c-9e0a-f9939d03b035",
-          "image_display_url": "https://www.baug.ethz.ch/en/_jcr_content/orgLogo.imageformat.logo.1371778923.png",
-          "image_url": "https://www.baug.ethz.ch/en/_jcr_content/orgLogo.imageformat.logo.1371778923.png",
-          "is_organization": true,
-          "longname": "Department of Civil, Environmental and Geomatic Engineering",
-          "name": "d-baug",
-          "num_followers": 0,
-          "package_count": 0,
-          "state": "active",
-          "title": "D-BAUG",
-          "type": "organization",
-          "groups": [
-              {
-                  "capacity": "public",
-                  "name": "eth-zurich"
-              }
-          ]
-      },
-      {
-          "approval_status": "approved",
-          "created": "2019-10-03T13:31:18.856051",
-          "datamanager": "admin",
-          "description": "The primary interest of the research group Dendrosciences is to gain an understanding of the influence of environmental stresses on the anatomical structure and tree physiological processes with focus on intra- and inter-annual cambial activity, and therefore ring-formation. The group strives to study the key processes behind tree growth – many of which are still not quantified or even understood. The group aims to develop novel methodologies, in natural as well as controlled experimental conditions, to explore the response of cambium to stress in all of its phenological and functional traits (structural, physiological, biochemical, molecular). Experiments with stressors such as drought or pollutants are used to disentangle the various growth influences arising from natural and anthropogenic environmental change.\r\n\r\nThe Dendrosciences Group i) quantifies the impacts of environmental change on tree growth and ii) reconstructs climate variations over the past centuries to millennia, using ring width, maximum latewood density, and other novel parameters such as isotopes, and iii) improves methodologies relevant to tree-ring and global change research. The group is well-positioned to address the societally, politically, and scientifically relevant questions centred around the earth’s climate variability during the modern anthropogenically impacted system (via e.g., greenhouse gases, land-use changes) in relation to more naturally (e.g., solar, volcanic, atmosphere-ocean dynamics) forced variability. The group explores statistical and analytical techniques to provide metric understanding of past climate variability, supportive for validating regional and global climate models. Activities take place across a wide variety of spatial and temporal scales, including detailed daily-weekly analysis of the impacts of temperature on tree growth along an altitudinal gradient to hemispheric-scale reconstructions of climate over the past millennia. Field investigations are performed within Switzerland, across Europe, and at other locations across the globe ranging from Greenland to Patagonia.",
-          "display_name": "Dendrosciences",
-          "id": "06e539f9-9710-46cb-874f-b17d2b2b8774",
-          "image_display_url": "https://www.envidat.ch/uploads/group/2019-10-03-113402.186639dendro.png",
-          "image_url": "2019-10-03-113402.186639dendro.png",
-          "is_organization": true,
-          "longname": "",
-          "name": "dendrosciences",
-          "num_followers": 0,
-          "package_count": 0,
-          "state": "active",
-          "title": "Dendrosciences",
-          "type": "organization",
-          "groups": [
-              {
-                  "capacity": "public",
-                  "name": "forest-dynamics"
-              }
-          ]
-      },
-      {
-          "approval_status": "approved",
-          "created": "2019-06-03T14:54:30.704583",
-          "description": "The Department of Environmental Sciences at the University of Basel aims at investigating the complex interactions of biosphere, geosphere and anthroposphere at the highest stage to convey the results to students and the public.",
-          "display_name": "Department of  Environmental Sciences",
-          "id": "43ec6f3d-5047-48eb-9505-19a67b2e276c",
-          "image_display_url": "https://www.envidat.ch/uploads/group/2019-06-03-125430.684408UniBasLogoENSchwarzRGB65.jpg",
-          "image_url": "2019-06-03-125430.684408UniBasLogoENSchwarzRGB65.jpg",
-          "is_organization": true,
-          "longname": "",
-          "name": "department-of-environmental-sciences",
-          "num_followers": 0,
-          "package_count": 0,
-          "state": "active",
-          "title": "Department of  Environmental Sciences",
-          "type": "organization",
-          "groups": [
-              {
-                  "capacity": "public",
-                  "name": "university-of-basel"
-              }
-          ]
-      },
-      {
-          "approval_status": "approved",
-          "created": "2020-06-11T16:34:59.508470",
-          "datamanager": "thomas_wohlgemuth-wsl_ch",
-          "description": "We study the importance of extreme events such as drought, storms, forest fires or clearings for the forest dynamics. In the frame  of such disturbances we focus on:\r\n\r\nresistance to disturbance: the potential to resist; we experimentally test the drought resistance of regenerating trees\r\n resilience after disturbance: the potential to regenerate; we monitor severely disturbed forests on the basis of systematic or stratified samples\r\nfunctional traits of forest plant species\r\n\r\nBoth the strong climate warming and a growing demand of forest goods (timber, fuel) will result in a general increase of disturbances. We elaborate basic knowledge for an adaptive forest management.",
-          "display_name": "Disturbance Ecology",
-          "id": "6f131219-7e16-4ae9-890f-3ccac530d5ca",
-          "image_display_url": "https://www.envidat.ch/uploads/group/2018-07-10-090947.094601LogoWSL.svg",
-          "image_url": "https://www.envidat.ch/uploads/group/2018-07-10-090947.094601LogoWSL.svg",
-          "is_organization": true,
-          "longname": "",
-          "name": "disturbance-ecology",
-          "num_followers": 0,
-          "package_count": 3,
-          "state": "active",
-          "title": "Disturbance Ecology",
-          "type": "organization",
-          "groups": [
-              {
-                  "capacity": "public",
-                  "name": "forest-dynamics"
-              }
-          ]
-      },
-      {
-          "approval_status": "approved",
-          "created": "2016-12-05T14:46:39.653082",
-          "datamanager": "admin",
-          "description": "The Department of Environmental Systems Science (D-USYS) at ETH Zurich conducts research into the condition and functions of environ­mental systems and develops solutions and methods for managing them on a sustainable basis. It also provides academic education for future managers in this field, following an approach aimed at ensuring sustain­ability and paving the way for dialogue.\r\n\r\nThe department’s core activities include analysing environmental systems – including their relevance to society – and training up future generations of scientists and decision-makers in society, industry and politics. D-USYS helps to develop sustainable solutions to environmental problems at local, regional and global level. This requires expert knowledge, interdisciplinary cooperation and social discourse. The department focuses on five main subject areas: ecosystem processes and services, sustainable use of resources, food security, climate change, and biological diversity and how it adapts to changing environmental conditions. D-USYS fosters a culture based on integrity, responsibility, fairness and transparency and fulfils the highest quality standards in research and education.\r\n\r\n__More information:__ https://www.usys.ethz.ch/en/",
-          "display_name": "D-USYS",
-          "id": "723bcfad-da17-42a0-b03f-029f8a438be6",
-          "image_display_url": "https://www.intranet.usys.ethz.ch/ISG/images/foot_unitlogo_DE.gif",
-          "image_url": "https://www.intranet.usys.ethz.ch/ISG/images/foot_unitlogo_DE.gif",
-          "is_organization": true,
-          "longname": "Department of Environmental Systems Science",
-          "name": "usys",
-          "num_followers": 0,
-          "package_count": 0,
-          "state": "active",
-          "title": "D-USYS",
-          "type": "organization",
-          "groups": [
-              {
-                  "capacity": "public",
-                  "name": "eth-zurich"
-              }
-          ]
-      },
-      {
-          "approval_status": "approved",
-          "created": "2018-05-31T14:24:18.890912",
-          "datamanager": "dirk_schmatz-wsl_ch",
-          "description": "The dynamic macroecology group studies different aspects of ecology on large spatial and temporal scales, from the Pleistocene to the Anthropocene, related to the question: “How do species and their traits change in space and time, particularly with global change?”",
-          "display_name": "Dynamic Macroecology",
-          "id": "8bdea9a0-ea8c-424f-8c27-a4a1f0c55f02",
-          "image_display_url": "https://www.envidat.ch/uploads/group/2018-07-10-102727.341687LogoWSL.svg",
-          "image_url": "2018-07-10-102727.341687LogoWSL.svg",
-          "is_organization": true,
-          "longname": "",
-          "name": "dynamic-macroecology",
-          "num_followers": 0,
-          "package_count": 8,
-          "state": "active",
-          "title": "Dynamic Macroecology",
-          "type": "organization",
-          "groups": [
-              {
-                  "capacity": "public",
-                  "name": "land-change-science"
-              }
-          ]
-      },
-      {
-          "approval_status": "approved",
-          "created": "2019-07-25T09:55:24.618682",
-          "datamanager": "martina_peter-wsl_ch",
-          "description": "We study ecological processes in populations of plants, mycorrhizal fungi and animals with molecular-genetic methods and supplement them with experimental approaches. We mainly investigate species that are relevant for Switzerland owing to their function in ecosystems, their distributional focus or their conservation status. We describe how plants of the Alpine region evolve to adapt to changing environmental conditions (adaptation). As important symbiosis partners of our forest trees, we investigate mycorrhizal fungi, their adaptation to tree partners and local conditions, and their significance for the stability of forest ecosystems in a changing environment. We study what effects the characteristics and configuration of landscape elements impose on the dispersal and the connectivity of organisms and their populations or how land use affects rare species of plants and animals (conservation genetics).",
-          "display_name": "Ecological Genetics",
-          "id": "0944cb88-78c2-43f4-8089-423db2e6d322",
-          "image_display_url": "",
-          "image_url": "",
-          "is_organization": true,
-          "longname": "",
-          "name": "ecological-genetics",
-          "num_followers": 0,
-          "package_count": 1,
-          "state": "active",
-          "title": "Ecological Genetics",
-          "type": "organization",
-          "groups": [
-              {
-                  "capacity": "public",
-                  "name": "biodiversity-and-conservation-biology"
-              }
-          ]
-      },
-      {
-          "approval_status": "approved",
-          "created": "2018-11-15T03:33:47.940861",
-          "datamanager": "roland_olschewski-wsl_ch",
-          "description": "The Economics and Social Sciences Research Unit is concerned with economic, institutional and societal questions of WSL-Research topics, in particular with landscape, natural resources, spatial development and natural hazards. It addresses real and specific problems and deals with them in an interdisciplinary, transdisciplinary or disciplinary way.\r\n\r\nThe work of the research unit is undertaken in accordance with the idea of sustainability and improves the knowledge of systems, of objectives, and of transformation.\r\n\r\nThe researchers\r\n\r\n- investigate societal claims, attitudes, valuations, and participation and decision processes regarding the topics mentioned above;\r\n- analyze economic, societal, and spatial processes, as well as societal structures, institutions, and relevant policies (e.g. governance) as to their effects on the environment, resources, and life quality;\r\n- develop and evaluate communicative, persuasive, regulative, institutional, and economic measures, instruments and strategies.",
-          "display_name": "Economics and Social Sciences",
-          "id": "ebdd0eb5-d94f-4e90-b87b-b1e0803d3209",
-          "image_display_url": "https://www.envidat.ch/uploads/group/2018-11-15-023347.920517wsllogo.png",
-          "image_url": "2018-11-15-023347.920517wsllogo.png",
-          "is_organization": true,
-          "longname": "",
-          "name": "economics-and-social-sciences",
-          "num_followers": 0,
-          "package_count": 7,
-          "state": "active",
-          "title": "Economics and Social Sciences",
-          "type": "organization",
-          "groups": [
-              {
-                  "capacity": "public",
-                  "name": "wsl"
-              }
-          ]
-      },
-      {
-          "approval_status": "approved",
-          "created": "2018-07-18T11:14:04.773731",
-          "datamanager": "steffen_boch-wsl_ch",
-          "description": "We assess and analyse the state of different habitat types and their ecological changes with a particular focus on the habitats of national importance of Switzerland. We concentrate on ecological changes and their causes in different ecosystems and habitat types of Switzerland. We are especially interested in the effects of different management systems, nutrient input, land-use change (e.g. intensification, abandonment), habitat fragmentation as well as climate change on ecosystem state. We base our research on systematically assessed floristic and faunistic biodiversity-data, modelling and remote sensing information.\r\n\r\nWe strongly engage in the monitoring and evaluation of qualitative and quantitative changes in natural or semi-natural habitats of Switzerland as a basis for decision-making in policy and applied nature conservation. In the project \"Effectiveness of Habitat Protection in Switzerland\", commissioned by the Federal Office of Environment BAFU, we concentrate on the habitats of national importance (raised bogs, transitional mires and fens, dry meadows, alluvial zones and amphibian spawning areas), i.e. the \"crown jewelry\" of Swiss nature reserves. Moreover, we share our knowledge on mire protection through consulting activities for the national government and the cantons.",
-          "display_name": "Ecosystems Dynamics",
-          "id": "0ee5727f-9228-464f-b4c2-a7399e702be2",
-          "image_display_url": "https://upload.wikimedia.org/wikipedia/de/9/94/Logo_WSL.svg",
-          "image_url": "https://upload.wikimedia.org/wikipedia/de/9/94/Logo_WSL.svg",
-          "is_organization": true,
-          "longname": "",
-          "name": "ecosystems-dynamics",
-          "num_followers": 0,
-          "package_count": 4,
-          "state": "active",
-          "title": "Ecosystems Dynamics",
-          "type": "organization",
-          "groups": [
-              {
-                  "capacity": "public",
-                  "name": "biodiversity-and-conservation-biology"
-              }
-          ]
-      },
-      {
-          "approval_status": "approved",
-          "created": "2019-10-04T11:00:39.190238",
-          "datamanager": "admin",
-          "description": "Research at PSI comprises all aspects of human energy use, with the ultimate goal of promoting development towards a sustainable energy supply system. Technologies are being advanced for the utilization of renewable energy sources, low-loss energy storage, efficient conversion, and low emission energy use. Experimental and model-based assessment of these emissions forms the basis of a comprehensive assessment of economic, environmental and social consequences, for both present and future energy supply systems.\r\n\r\nMore information: https://www.psi.ch/en/ene",
-          "display_name": "ENE",
-          "id": "99fbc567-c986-4eda-8fd8-efa8c8efae49",
-          "image_display_url": "https://www.psi.ch/themes/custom/design/psi.svg",
-          "image_url": "https://www.psi.ch/themes/custom/design/psi.svg",
-          "is_organization": true,
-          "longname": "Energy and Environment Research Division",
-          "name": "ene",
-          "num_followers": 0,
-          "package_count": 0,
-          "state": "active",
-          "title": "ENE",
-          "type": "organization",
-          "groups": [
-              {
-                  "capacity": "public",
-                  "name": "psi"
-              }
-          ]
-      },
-      {
-          "approval_status": "approved",
-          "created": "2019-06-03T14:56:16.635159",
-          "datamanager": "franz_conen-unibas_ch",
-          "description": "The research group of Environmental Geosciences is part of the Department of Environmental Sciences of University of Basel. The group focuses on terrestrial biogeochemical cycles, including interactions between the soil and the atmosphere or the hydrosphere.\r\n \r\nFurther information: https://duw.unibas.ch/en/environmental-geoscience/.\r\n",
-          "display_name": "Environmental Geosciences",
-          "id": "38d422eb-a711-4e99-b9b0-94140d4d3b2d",
-          "image_display_url": "https://www.envidat.ch/uploads/group/2019-06-03-125616.603857UniBasLogoENSchwarzRGB65.jpg",
-          "image_url": "2019-06-03-125616.603857UniBasLogoENSchwarzRGB65.jpg",
-          "is_organization": true,
-          "longname": "",
-          "name": "environmental-geosciences",
-          "num_followers": 0,
-          "package_count": 1,
-          "state": "active",
-          "title": "Environmental Geosciences",
-          "type": "organization",
-          "groups": [
-              {
-                  "capacity": "public",
-                  "name": "department-of-environmental-sciences"
-              }
-          ]
-      },
-      {
-          "approval_status": "approved",
-          "created": "2016-11-02T11:15:27.444553",
-          "datamanager": "admin",
-          "description": "EPFL is Europe’s most cosmopolitan technical university with students, professors and staff from over 120 nations. A dynamic environment, open to Switzerland and the world, EPFL is centered on its three missions: teaching, research and technology transfer. EPFL works together with an extensive network of partners including other universities and institutes of technology, developing and emerging countries, secondary schools and colleges, industry and economy, political circles and the general public, to bring about real impact for society.\r\n\r\nMore information: http://www.epfl.ch/",
-          "display_name": "EPFL",
-          "id": "0cf1daf3-4dea-4325-a9a9-ea63c659ae45",
-          "image_display_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Logo_EPFL.svg/200px-Logo_EPFL.svg.png",
-          "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Logo_EPFL.svg/200px-Logo_EPFL.svg.png",
-          "is_organization": true,
-          "longname": "Ecole Polytechnique Fédérale de Lausanne",
-          "name": "epfl",
-          "num_followers": 0,
-          "package_count": 0,
-          "state": "active",
-          "title": "EPFL",
-          "type": "organization",
-          "groups": []
-      },
-      {
-          "approval_status": "approved",
-          "created": "2016-10-17T13:29:42.554731",
-          "datamanager": "admin",
-          "description": "ETH Zurich (German: Eidgenössische Technische Hochschule Zürich) is a science, technology, engineering and mathematics university in the city of Zürich, Switzerland. Like its sister institution EPFL, it is an integral part of the Swiss Federal Institutes of Technology Domain (ETH Domain) that is directly subordinate to Switzerland's Federal Department of Economic Affairs, Education and Research.\r\n\r\nTwenty-one Nobel Prizes have been awarded to students or professors of the Institute in the past, the most famous of whom was Albert Einstein with the 1921 Nobel Prize in Physics, along with Niels Bohr who was awarded the 1922 Nobel Prize in Physics, both for work dealing with quantum physics. It is a founding member of the IDEA League and the International Alliance of Research Universities (IARU) and a member of the CESAER network.\r\n\r\nThe school was founded by the Swiss Federal Government in 1854 with the stated mission to educate engineers and scientists, serve as a national center of excellence in science and technology and provide a hub for interaction between the scientific community and industry.\r\n\r\nMore Information: https://www.ethz.ch/en.html",
-          "display_name": "ETH Zurich",
-          "id": "efe2f438-cc39-4d34-b85f-904c81a41a54",
-          "image_display_url": "https://www.ethz.ch/services/en/service/communication/corporate-design/logo/eth-zurich-short-logo/_jcr_content/par/twocolumn_0/par_left/fullwidthimage/image.imageformat.lightbox.117244484.jpg",
-          "image_url": "https://www.ethz.ch/services/en/service/communication/corporate-design/logo/eth-zurich-short-logo/_jcr_content/par/twocolumn_0/par_left/fullwidthimage/image.imageformat.lightbox.117244484.jpg",
-          "is_organization": true,
-          "longname": "",
-          "name": "eth-zurich",
-          "num_followers": 0,
-          "package_count": 0,
-          "state": "active",
-          "title": "ETH Zurich",
-          "type": "organization",
-          "groups": []
-      },
-      {
-          "approval_status": "approved",
-          "created": "2016-08-10T09:44:59.305912",
-          "datamanager": "admin",
-          "description": "The Research Unit (RU) Forest Resources and Management is principally engaged in four research themes:\r\n\r\n* Monitoring, analysis, assessment and prognosis of forest resources\r\n* Silvicultural interventions to ensure the provision of forest products and services\r\n* Availability and optimized utilisation of forest resources, especially timber\r\n* Development of methods and models related to the three research themes mentioned previously\r\n\r\nAmong the forest resources, the RU focuses its research on timber and carbon sequestration. Moreover, it provides contributions to protection from natural hazards and to the forest as habitat and recreational area, by covering forest structures and their development.\r\n\r\nAlthough the RU focuses on forests, it also deals with the interaction between forests and other landscape elements. The RU handles its research themes on different spatial levels: from the stand, to the forest enterprise, to the region and up to the national level. Its research has a strong international reach, especially regarding the methods.\r\n\r\nThe RU administers the major project Swiss National Forest Inventory LFI and executes it by statutory mandate and in co-operation with the Federal Office of the Environment FOEN. Substantial parts of the LFI are carried out within the RU, while other parts are processed in co-operation with other RUs.\r\n\r\nThe RU is active in knowledge transfer. Its research projects are usually application-relevant and have an implementation component.\r\n\r\n__Further information__: https://www.wsl.ch/en/about-wsl/organization/research-units/forest-resources-and-management.html",
-          "display_name": "FoReMa",
-          "id": "f2be36b2-6e95-42f1-af29-19f56a8f306d",
-          "image_display_url": "https://www.envidat.ch/uploads/group/2018-07-10-090748.186777LogoWSL.svg",
-          "image_url": "2018-07-10-090748.186777LogoWSL.svg",
-          "is_organization": true,
-          "longname": "Research Unit Forest Resources and Management",
-          "name": "forema",
-          "num_followers": 0,
-          "package_count": 1,
-          "state": "active",
-          "title": "FoReMa",
-          "type": "organization",
-          "groups": [
-              {
-                  "capacity": "public",
-                  "name": "wsl"
-              }
-          ]
-      },
-      {
-          "approval_status": "approved",
-          "created": "2016-08-10T09:52:10.614420",
-          "datamanager": "admin",
-          "description": "The Research Unit explores the functional significance of forest diversity with respect to the ecology of managed and unmanaged forests. In order to assess the future development of forests in Switzerland and other temperate and mountainous regions, the Unit pursues a threefold research agenda:\r\n\r\n1. it performs basic research on forest diversity and its influence i) on forest dynamics, i.e. successional processes including tree growth, mortality and regeneration, and ii) on ecosystem goods and services;\r\n2. it studies the disturbance agents such as storms, avalanches, fires and insects with respect to their occurrences and their impact on forest dynamics, as well as the importance of forest diversity to resist disturbance;\r\n3. it investigates the impact of management operations on forest structure and development to improve sustainable forest management.\r\n\r\nBased on the research outcomes, the Unit develops recommendations for best practice to sustain or improve forest products and services such as production of timber and other forest goods (e.g. mushrooms), catchment value, water quality, protection against natural hazards and pests, conservation and recreation. The infrastructure of the Research Unit includes extensive networks of forest study plots and laboratories for insects and fungi analysis.\r\n\r\nThe Unit has partners both within WSL and the wider scientific community. Stakeholders are mainly the forest services, forest owners and federal agencies.\r\n\r\n__Further Information__: https://www.wsl.ch/en/about-wsl/organization/research-units/forest-dynamics.html",
-          "display_name": "Forest Dynamics",
-          "id": "68c556c0-bbeb-4210-aec2-47702ad9be83",
-          "image_display_url": "https://www.envidat.ch/uploads/group/2018-07-10-090947.094601LogoWSL.svg",
-          "image_url": "2018-07-10-090947.094601LogoWSL.svg",
-          "is_organization": true,
-          "longname": "",
-          "name": "forest-dynamics",
-          "num_followers": 0,
-          "package_count": 0,
-          "state": "active",
-          "title": "Forest Dynamics",
-          "type": "organization",
-          "groups": [
-              {
-                  "capacity": "public",
-                  "name": "wsl"
-              }
-          ]
-      },
-      {
-          "approval_status": "approved",
-          "created": "2019-09-12T13:05:17.879759",
-          "description": "Our group Forest Entomology investigates forest insects in their broadest sense: ecology of potential forest pests, natural enemies, diversity of forest insects.\r\n\r\nResearch topics\r\n\r\n- Infestation dynamics of bark beetles, effect of natural enemies.\r\n- Interactions between host trees and bark beetles\r\n- Recolonization of windthrow and wildfire areas by insect communities.\r\n- Dependency of dead wood (saproxylic) insects on tree and stand characteristics.",
-          "display_name": "Forest Entomology",
-          "id": "2c0895b6-f72a-4b09-bd25-9b19ed538d0f",
-          "image_display_url": "",
-          "image_url": "",
-          "is_organization": true,
-          "longname": "",
-          "name": "forest-entomology",
-          "num_followers": 0,
-          "package_count": 2,
-          "state": "active",
-          "title": "Forest Entomology",
-          "type": "organization",
-          "groups": [
-              {
-                  "capacity": "public",
-                  "name": "wabio"
-              }
-          ]
-      },
-      {
-          "approval_status": "approved",
-          "created": "2019-09-12T13:04:11.693292",
-          "datamanager": "admin",
-          "description": "The research unit studies the effect of biotic factors (in particular insects and fungi) on forest health and develops the scientific basis for protecting the forest against potential pests and pathogens. We conduct surveys on the emergence of forest pests and diseases, advise forestry services on forest protection issues, and assist the federal government and cantonal authorities with measures to combat pests and pathogens. The unit's infrastructure includes a modern diagnostic laboratory and a high-security plant protection laboratory, so that alien organisms can be dealt with appropriately.\r\n\r\nAnother focus of the unit is on studying the effect of biotic (alien species) and abiotic disturbances (wind damage, climate change), as well as cultivation, on invertebrate fauna and the interactions between them and their host trees.",
-          "display_name": "Forest health and biotic interactions",
-          "id": "2a5ab60b-4c63-46f0-99d3-40e80e97ab3c",
-          "image_display_url": "",
-          "image_url": "",
-          "is_organization": true,
-          "longname": "",
-          "name": "wabio",
-          "num_followers": 0,
-          "package_count": 0,
-          "state": "active",
-          "title": "Forest health and biotic interactions",
-          "type": "organization",
-          "groups": [
-              {
-                  "capacity": "public",
-                  "name": "wsl"
-              }
-          ]
-      }
-  ]
+    "help": "https://www.envidat.ch/api/3/action/help_show?name=organization_list",
+    "success": true,
+    "result": [
+        "alpine-environment-and-natural-hazards",
+        "alpine-remote-sensing",
+        "atmospheric-measurement-and-data-division",
+        "avalanche-bulletin-and-snow-situation",
+        "avalanche-formation",
+        "bgb",
+        "biodiversity-and-conservation-biology",
+        "cces",
+        "cirm",
+        "community-ecology",
+        "conservation-biology",
+        "cryos",
+        "d-baug",
+        "dendrosciences",
+        "department-of-environmental-sciences",
+        "usys",
+        "dynamic-macroecology",
+        "ecological-genetics",
+        "economics-and-social-sciences",
+        "ecosystem-ecology",
+        "ele-group",
+        "ecosystems-dynamics",
+        "ene",
+        "environmental-geosciences",
+        "epfl",
+        "eth-zurich",
+        "forema",
+        "forest-dynamics",
+        "forest-entomology",
+        "wabio",
+        "forest-soils-and-biogeochemistry",
+        "functional-plant-ecology",
+        "gebirgshydrologie",
+        "gis",
+        "giuz",
+        "ground-based-remote-sensing",
+        "h2k",
+        "holzner-lab",
+        "hyclimm",
+        "iac",
+        "iap",
+        "ibp",
+        "insubric-ecosystems",
+        "institute-of-terrestrial-ecosystems",
+        "land-change-science",
+        "land-use-systems",
+        "laboratory-of-atmospheric-processes-and-their-impacts",
+        "laboratory-of-environmental-chemistry",
+        "lwf",
+        "meteodat-gmbh",
+        "meteoswiss",
+        "mountain-ecosystems",
+        "nfi",
+        "organization-hidden",
+        "permafrost-and-snow-climatology",
+        "physics-of-environmental-systems",
+        "plant-animal-interactions",
+        "plant-regeneration-ecology",
+        "psi",
+        "remote-sensing",
+        "remote-sensing-of-atmospheric-processes",
+        "resource-analysis",
+        "silviculture",
+        "wsl-institute-for-snow-and-avalanche-research-slf",
+        "snow-and-atmo",
+        "slf-snow-avalanches-and-prevention",
+        "snow-hydrology",
+        "snow-physics",
+        "snow-processes",
+        "spatial-evolutionary-ecology",
+        "stand-dynamics-and-silviculture",
+        "sustainable-forestry",
+        "swissforestlab-swissfl",
+        "national-data-and-information-center-for-the-fungi-of-switzerland",
+        "swisslichens",
+        "treenet",
+        "leibniz-institute-for-tropospheric-research-e-v",
+        "trusted",
+        "unil",
+        "university-of-basel",
+        "uzh",
+        "vaw",
+        "snow-sports",
+        "wis",
+        "wsl",
+        "wsl-publications"
+    ]
 }

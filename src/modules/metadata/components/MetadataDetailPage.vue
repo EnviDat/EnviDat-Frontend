@@ -749,12 +749,12 @@ export default {
       });
     },
     async injectMicroCharts() {
-      const MicroChartList = (
-        await import('@/modules/metadata/components/GC-Net/MicroChartList.vue')
+      const GcNetMicroChartList = (
+        await import('@/modules/metadata/components/GC-Net/GcNetMicroChartList.vue')
       ).default;
 
       eventBus.emit(GCNET_INJECT_MICRO_CHARTS, {
-        component: MicroChartList,
+        component: GcNetMicroChartList,
         config: this.stationsConfig,
       });
     },

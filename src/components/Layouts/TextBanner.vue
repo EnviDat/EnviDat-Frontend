@@ -19,7 +19,7 @@
 
         <BaseRectangleButton
           v-if="confirmText"
-          marginClass="mx-1"
+          marginClass="mx-1 mt-4 mt-sm-0"
           color="primary"
           :buttonText="confirmText"
           @clicked="confirmClick"
@@ -35,7 +35,7 @@
 
         <BaseRectangleButton
           v-if="cancelText"
-          marginClass="mx-1"
+          marginClass="mx-1 mt-4"
           :buttonText="cancelText"
           :isFlat="true"
           @clicked="cancelClick"
@@ -100,5 +100,9 @@ export default {
 <style>
 .noPaddingForActions .v-banner-actions {
   margin: 0 !important;
+}
+.v-banner-actions {
+  display: flex;
+  align-items: center;
 }
 </style>

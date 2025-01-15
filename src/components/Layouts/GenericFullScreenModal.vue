@@ -86,8 +86,8 @@ import {
 import { mdiClose } from '@mdi/js';
 import { defineAsyncComponent } from 'vue';
 
-const DetailChartsList = defineAsyncComponent(() =>
-  import('@/modules/metadata/components/GC-Net/DetailChartsList.vue'),
+const GcNetDetailChartsList = defineAsyncComponent(() =>
+  import('@/modules/metadata/components/GC-Net/GcNetDetailChartsList.vue'),
 )
 
 const MetadataMapFullscreen = defineAsyncComponent(() =>
@@ -125,7 +125,7 @@ export default {
       eventBus.emit(CLOSE_FULLSCREEN_MODAL);
     },
     showGCNetModal({ currentStation, fileObjects, graphStyling, config }) {
-      this.currentComponent = DetailChartsList;
+      this.currentComponent = GcNetDetailChartsList;
 
       this.genericProps = {
         currentStation,

@@ -24,12 +24,12 @@
         </v-col>
       </v-row>
 
-      <v-row align="center">
-        <v-col class="flex-grow-0 pl-1 pr-0 pb-0">
+      <v-row align="center" class="pt-2">
+        <v-col class="flex-grow-0 px-3 py-0">
           <BaseIcon :icon="mdiCursorMove" color="grey" />
         </v-col>
 
-        <v-col class="text-h6 pl-1 pb-0" >
+        <v-col class="text-h6 pa-0">
           Author Sequence
         </v-col>
       </v-row>
