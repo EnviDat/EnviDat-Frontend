@@ -99,7 +99,7 @@ import '@uppy/core/dist/style.min.css';
 import '@uppy/drag-drop/dist/style.min.css';
 import '@uppy/status-bar/dist/style.min.css';
 
-import { destroyUppyInstance, getUppyInstance } from '@/factories/uploadFactory';
+import { getUppyInstance } from '@/factories/uploadFactory';
 import {
 /*
   eventBus,
@@ -127,26 +127,6 @@ export default {
     progress: Number,
     error: String,
     errorDetails: String,
-  },
-/*
-  created() {
-    eventBus.on(UPLOAD_STATE_RESET, this.resetState);
-    eventBus.on(UPLOAD_STATE_RESOURCE_CREATED, this.changeState);
-    eventBus.on(UPLOAD_STATE_UPLOAD_STARTED, this.changeState);
-    eventBus.on(UPLOAD_STATE_UPLOAD_PROGRESS, this.changeState);
-    eventBus.on(UPLOAD_STATE_UPLOAD_COMPLETED, this.changeState);
-  },
-*/
-  beforeUnmount() {
-/*
-    eventBus.off(UPLOAD_STATE_RESET, this.resetState);
-    eventBus.off(UPLOAD_STATE_RESOURCE_CREATED, this.changeState);
-    eventBus.off(UPLOAD_STATE_UPLOAD_STARTED, this.changeState);
-    eventBus.off(UPLOAD_STATE_UPLOAD_PROGRESS, this.changeState);
-    eventBus.off(UPLOAD_STATE_UPLOAD_COMPLETED, this.changeState);
-*/
-
-    destroyUppyInstance();
   },
   computed: {
     uppy () {

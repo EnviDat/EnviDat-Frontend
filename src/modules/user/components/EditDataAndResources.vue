@@ -99,7 +99,7 @@ import {
   getUppyInstance,
   subscribeOnUppyEvent,
   unSubscribeOnUppyEvent,
-  createNewResourceForUrl,
+  createNewResourceForUrl, destroyUppyInstance,
 } from '@/factories/uploadFactory';
 
 import {
@@ -188,15 +188,20 @@ export default {
     },
   },
   created() {
+    // call once to create the uppy instance
+    getUppyInstance(this.metadataId, this.$store);
+
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.unselectCurrentResource);
     eventBus.on(UPLOAD_STATE_RESET, this.resetUppy);
     eventBus.on(UPLOAD_STATE_RESOURCE_CREATED, this.uploadResourceCreated);
   },
   mounted() {
+    subscribeOnUppyEvent('file-added', this.uploadResetState);
     subscribeOnUppyEvent('upload', this.uploadStarted);
     subscribeOnUppyEvent('progress', this.uploadStateProgress);
-    subscribeOnUppyEvent('complete', this.uploadCompleted);
-    subscribeOnUppyEvent('cancel-all', this.cancelUpload);
+
+    subscribeOnUppyEvent('upload-success', this.uploadCompleted);
+    subscribeOnUppyEvent('file-removed', this.cancelUpload);
     subscribeOnUppyEvent('error', this.uploadUppyError);
 
     this.$nextTick(() => {
@@ -208,11 +213,15 @@ export default {
     eventBus.off(UPLOAD_STATE_RESET, this.resetUppy);
     eventBus.off(UPLOAD_STATE_RESOURCE_CREATED, this.uploadResourceCreated);
 
+    unSubscribeOnUppyEvent('file-added', this.uploadResetState);
     unSubscribeOnUppyEvent('upload', this.uploadStarted);
     unSubscribeOnUppyEvent('progress', this.uploadStateProgress);
-    unSubscribeOnUppyEvent('complete', this.uploadCompleted);
-    unSubscribeOnUppyEvent('cancel-all', this.cancelUpload);
+
+    unSubscribeOnUppyEvent('upload-success', this.uploadCompleted);
+    unSubscribeOnUppyEvent('file-removed', this.cancelUpload);
     unSubscribeOnUppyEvent('error', this.uploadUppyError);
+
+    destroyUppyInstance();
   },
   computed: {
     ...mapState(['config']),
@@ -329,67 +338,35 @@ export default {
           });
       }
     },
-    uploadStarted({ id, fileIDs }) {
+    uploadResetState() {
+      this.uploadState = undefined;
+      this.uploadProgress = 0;
+    },
+    uploadStarted({ uploadID, files }) {
       // data object consists of `id` with upload ID and `fileIDs` array
       // with file IDs in current upload
       // data: { id, fileIDs }
-      console.log(`Starting upload ${id} for files ${fileIDs}`);
+      console.log(`Starting upload ${uploadID } for files ${files}`);
 
       this.uppyError = null;
       this.uploadState = UPLOAD_STATE_UPLOAD_STARTED;
       this.uploadProgress = 0;
-
-      this.uploadProgessText = 'Starting upload file';
-      this.uploadProgressIcon = 'check_box_outline_blank';
-
-/*
-      eventBus.emit(UPLOAD_STATE_UPLOAD_STARTED, { id: UPLOAD_STATE_UPLOAD_STARTED });
-*/
     },
     uploadResourceCreated(event) {
       console.log(`Resource created ${event.resourceId}`);
       this.uploadState = UPLOAD_STATE_RESOURCE_CREATED;
     },
     uploadStateProgress(progress) {
+      console.log(`upload progress: ${progress}`);
+
       this.uploadState = UPLOAD_STATE_UPLOAD_PROGRESS;
       this.uploadProgress = progress;
-      console.log(`upload progress: ${progress}`);
-      this.uploadProgessText = `upload progress: ${progress}`;
-      this.uploadProgressIcon = 'check';
-
-/*
-      eventBus.emit(UPLOAD_STATE_UPLOAD_PROGRESS, { id: UPLOAD_STATE_UPLOAD_PROGRESS, progress });
-*/
     },
-    async uploadCompleted(result) {
-      const oks = result.successful?.length || 0;
-      const fails = result.failed?.length || 0;
+    async uploadCompleted() {
+      console.log('upload complete');
 
-      console.log('upload complete', result);
-      // console.log('successful files:', result.successful)
-      // console.log('failed files:', result.failed)
-
-      let message = '';
-
-      if (oks > 0) {
-        message += `${oks} uploads successful`;
-        this.uploadProgressIcon = 'check_circle';
-      }
-
-      if (fails > 0) {
-        message += `${fails} failed uploads`;
-        this.uploadProgressIcon = 'report_gmailerrorred';
-      }
-
-//      eventBus.emit(UPLOAD_STATE_UPLOAD_COMPLETED, { id: UPLOAD_STATE_UPLOAD_COMPLETED });
-      console.log('upload complete emit', UPLOAD_STATE_UPLOAD_COMPLETED);
       this.uploadState = UPLOAD_STATE_UPLOAD_COMPLETED;
       this.uploadProgress = 0;
-
-      this.uploadProgessText = message;
-
-      // reset uppy to be able to upload another file
-      this.resetUppy();
 
       // resource exists already, get it from uploadResource
       const newRes = this.$store?.getters[`${USER_NAMESPACE}/uploadResource`];
@@ -397,40 +374,34 @@ export default {
       setTimeout(() => {
         console.log(METADATA_EDITING_SELECT_RESOURCE, newRes);
         this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, newRes?.id);
+
+        // reset uppy to be able to upload another file
+        this.resetUppy();
       }, 500);
 
     },
     uploadUppyError(error) {
       console.log('uploadUppyError', error);
 
-      this.uploadState = undefined;
       this.uppyError = error;
-
-      this.uploadProgessText = `Upload failed ${error}`;
-      this.uploadProgressIcon = 'report_gmailerrorred';
-
-/*
-      eventBus.emit(UPLOAD_STATE_RESET);
-*/
     },
     cancelUpload() {
       this.resetUppy();
     },
     resetUppy() {
       console.log('resetUppy');
-/*
-      eventBus.emit(UPLOAD_STATE_RESET);
-*/
+
       this.uppyError = null;
       this.uploadState = undefined;
       this.uploadProgress = 0;
 
       const uppy = getUppyInstance();
+
       const files = uppy.getFiles();
-      if (files.length === 1) {
-        uppy.removeFile(files[0].id);
-      } else if(files.length > 1) {
+      if (files.length > 0) {
         uppy.cancelAll();
+      } else {
+        uppy.clear()
       }
     },
     async createResourceFromUrl(url) {
@@ -471,8 +442,6 @@ export default {
     EDIT_METADATA_RESOURCES_TITLE,
     localResCounter: 0,
     envidatDomain: import.meta.env.VITE_API_ROOT,
-    uploadProgessText: null,
-    uploadProgressIcon: '',
     uppyError: null,
     editResourceRedirectText: `Editing metadata and uploading resources is not available right now.
                     <br />
