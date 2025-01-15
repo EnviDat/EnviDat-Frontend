@@ -459,7 +459,7 @@ function createUppyInstance(height = 300, autoProceed = true, restrictions = def
       return getSinglePresignedUrl(file);
     },
 */
-    shouldUseMultipart(file) {
+    shouldUseMultipart() {
       // Use multipart only for files larger than 100MiB.
       // return file.size > 100 * 2 ** 20;
 
