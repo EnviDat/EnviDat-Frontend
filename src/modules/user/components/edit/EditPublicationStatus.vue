@@ -133,7 +133,7 @@
                  class="pt-2 readOnlyHint"
                  no-gutters
                  justify="center">
-            {{ readOnlyUserRole }}
+            {{ readOnlyUserRoleInfo }}
           </v-row>
 
         </v-col>
@@ -272,9 +272,7 @@ export default {
       return this.pStatesAndArrows.findIndex(v => v === this.publicationState);
     },
     currentStateInfos() {
-      return this.stateTextMap.get(
-        this.publicationState || PUBLICATION_STATE_DRAFT,
-      );
+      return this.stateTextMap.get(this.publicationState);
     },
     doiUrl() {
       return this.doi ? `https://www.doi.org/${this.doi}` : undefined;
@@ -287,16 +285,13 @@ export default {
       );
     },
     stateTextMap() {
-      if (
-        this.userRole === USER_ROLE_ADMIN ||
-        this.userRole === USER_ROLE_SYSTEM_ADMIN
-      ) {
+      if (this.userRole === USER_ROLE_SYSTEM_ADMIN) {
         return new Map([...this.stateTextMapEditor, ...this.stateTextMapAdmin]);
       }
 
       return this.stateTextMapEditor;
     },
-    readOnlyUserRole() {
+    readOnlyUserRoleInfo() {
       return this.isUserAllowedToEdit ? '' : this.readOnlyExplanation;
     },
   },
