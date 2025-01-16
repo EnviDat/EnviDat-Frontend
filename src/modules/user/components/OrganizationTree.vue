@@ -18,6 +18,7 @@
 
     <v-card-text>
       <v-treeview
+        :style="`scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
         :items
         :search
         :open
@@ -86,6 +87,12 @@ export default {
   computed: {
     items() {
       return this.organizationsTree;
+    },
+    scrollbarColorFront() {
+      return this.$vuetify ? this.$vuetify.theme.themes.light.colors.highlight : 'auto';
+    },
+    scrollbarColorBack() {
+      return this.$vuetify ? '#F0F0F0' : 'auto';
     },
   },
   methods: {
