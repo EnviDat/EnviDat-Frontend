@@ -272,7 +272,7 @@ export default {
       return this.pStatesAndArrows.findIndex(v => v === this.publicationState);
     },
     currentStateInfos() {
-      return this.stateTextMap.get(this.publicationState);
+      return this.stateTextMap.get(this.publicationState || PUBLICATION_STATE_DRAFT);
     },
     doiUrl() {
       return this.doi ? `https://www.doi.org/${this.doi}` : undefined;
