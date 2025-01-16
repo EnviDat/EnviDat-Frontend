@@ -133,7 +133,7 @@
                  class="pt-2 readOnlyHint"
                  no-gutters
                  justify="center">
-            {{ readOnlyUserRole }}
+            {{ readOnlyUserRoleInfo }}
           </v-row>
 
         </v-col>
@@ -272,9 +272,7 @@ export default {
       return this.pStatesAndArrows.findIndex(v => v === this.publicationState);
     },
     currentStateInfos() {
-      return this.stateTextMap.get(
-        this.publicationState || PUBLICATION_STATE_DRAFT,
-      );
+      return this.stateTextMap.get(this.publicationState || PUBLICATION_STATE_DRAFT);
     },
     doiUrl() {
       return this.doi ? `https://www.doi.org/${this.doi}` : undefined;
@@ -287,16 +285,15 @@ export default {
       );
     },
     stateTextMap() {
-      if (
-        this.userRole === USER_ROLE_ADMIN ||
-        this.userRole === USER_ROLE_SYSTEM_ADMIN
-      ) {
+      if (this.userRole === USER_ROLE_SYSTEM_ADMIN) {
+        // for system admin add the state for publication so the button event is there
+        // and a dataset can be published
         return new Map([...this.stateTextMapEditor, ...this.stateTextMapAdmin]);
       }
 
       return this.stateTextMapEditor;
     },
-    readOnlyUserRole() {
+    readOnlyUserRoleInfo() {
       return this.isUserAllowedToEdit ? '' : this.readOnlyExplanation;
     },
   },
@@ -373,9 +370,9 @@ export default {
     ]),
     labels: {
       cardTitle: 'Dataset Publication Status',
-      instructions: `Ready to start publishing? <strong>Click on the 'Reserve'</strong> button, this will add a DOI to this datasets (so you could already put it a paper). But be aware the DOI is not active yet and this dataset is still private!
-          <br/><br/>Have you finished uploading data & resouces and entered all the metadata as best as possible? Yes, then <strong>click on 'Request'</strong> publication, the EnviDat Team will review the dataset and once approved the DOI will be published at DataCite.
-          And this dataset and the DOI are publicly available.`,
+      instructions: `Ready to start publishing? <br/>Click the <strong>'Reserve' button</strong>, this will add a DOI to this datasets (you could already use it in your paper). <br/>  Be aware the DOI is not active yet and this dataset is still private!
+          <br/><br/>Have you finished uploading your research data and entered all the metadata as best as possible?<br/> <br/> Yes, then click on <strong>'Request' publication</strong>, the EnviDat Team will review the dataset and once approved the DOI will be published at DataCite.
+          And your dataset and the DOI are publicly available.`,
       instructions2:
         'Please be aware once the dataset is published the following metadata information can NOT be changed anymore.',
       instructions3:

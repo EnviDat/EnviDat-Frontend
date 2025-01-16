@@ -11,13 +11,23 @@
  */
 
 import OrganizationTree from '@/modules/user/components/OrganizationTree.vue';
+import {
+  enhanceDatasetWithResearchUnit,
+  getOrgaDatasetsMap,
+  getOrganizationRelationMap,
+  getOrganizationTree,
+  getTopOraganizations,
+} from '@/factories/organizationFactory';
 
-import { getOrganizationRelationMap, getOrganizationTree } from '@/factories/organizationFactory';
+import metadatas from '@/../public/packagelist.json';
+import researchUnits from '@/../public/researchUnits.json';
 import testOrganizations from './js/organizations';
 
-// const organizationsMap = getOrganizationMapObject(testOrganizations);
+const datasets = enhanceDatasetWithResearchUnit(metadatas.result, researchUnits);
 const orgaMap = getOrganizationRelationMap(testOrganizations);
-const organizationsTree = getOrganizationTree(orgaMap);
+const topOrgas = getTopOraganizations(testOrganizations);
+const orgaDatasetsMap = getOrgaDatasetsMap(datasets);
+const organizationsTree = getOrganizationTree(topOrgas, orgaMap, orgaDatasetsMap);
 
 export default {
   title: '3 Dataset / 1 Views / Organization Tree',

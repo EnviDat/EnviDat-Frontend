@@ -8,14 +8,12 @@
 
 <script>
 import 'leaflet/dist/leaflet.css';
-import 'leaflet-bing-layer';
 import '@geoman-io/leaflet-geoman-free';
 import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css';
 
 import {
   map as createMap,
   icon as createIcon,
-  tileLayer,
   Icon,
   geoJSON,
   marker as createMarker,
@@ -39,7 +37,13 @@ import {
 } from '@/factories/eventBus';
 
 import { defaultSwissLocation, defaultWorldLocation, geomanGeomsToGeoJSON } from '@/factories/geoFactory';
-import { getMultiPointLayer, getPointLayer, getPolygonLayer } from '@/factories/leafleftFunctions';
+import {
+  createImageryLayer,
+  createTopoLayer,
+  getMultiPointLayer,
+  getPointLayer,
+  getPolygonLayer,
+} from '@/factories/leafleftFunctions';
 import { LOCATION_TYPE_MULTIPOINT, LOCATION_TYPE_POINT, LOCATION_TYPE_POLYGON } from '@/factories/metadataConsts';
 
 /* eslint-disable vue/no-unused-components */
@@ -94,19 +98,14 @@ export default {
     layerConfig() {
       return this.$store?.state.geoservices.layerConfig || null;
     },
-    streets() {
-      return tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        noWrap: true,
-      });
+    isTopoActive() {
+      return this.baseMapLayerName === 'topo';
     },
-    satellite() {
-      return tileLayer.bing({
-        bingMapsKey: this.config?.apiKeys?.bing || null,
-        imagerySet: 'AerialWithLabels',
-        noWrap: true,
-      });
+    topoLayer() {
+      return createTopoLayer();
+    },
+    imageryLayer() {
+      return createImageryLayer();
     },
     isMapEditable() {
       return this.mapEditable;
@@ -326,8 +325,9 @@ export default {
       if (this.basemapLayer) {
         this.map.removeLayer(this.basemapLayer);
       }
-      this.basemapLayer =
-        this.baseMapLayerName === 'streets' ? this.streets : this.satellite;
+
+      this.basemapLayer = this.isTopoActive ? this.topoLayer : this.imageryLayer;
+
       this.map.addLayer(this.basemapLayer);
       // this.basemapLayer.bringToBack();
     },
@@ -343,7 +343,9 @@ export default {
       iconOptions.iconUrl = this.markerIcon;
       iconOptions.iconRetinaUrl = this.markerIcon2x;
       iconOptions.shadowUrl = this.markerIconShadow;
+
       const icon = createIcon(iconOptions);
+
       return {
         customPointStyle: {
           icon,

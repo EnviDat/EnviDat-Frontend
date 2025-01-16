@@ -33,7 +33,7 @@
       </v-row>
 
       <div class="pa-1">
-        <v-alert type="info" border variant="outlined" >{{ labels.instructions }}</v-alert>
+        <v-alert type="info" >{{ labels.instructions }}</v-alert>
 
         <v-row id="resourceName" no-gutters class="pt-4">
           <v-col cols="12">
