@@ -95,7 +95,10 @@ export default {
     BaseIconButton,
   },
   props: {
-    baseMapLayerName: String,
+    baseMapLayerName: {
+      type: String,
+      default: 'topo',
+    },
     layerConfig: Object,
     site: Object,
     mapDivId: {
@@ -145,7 +148,7 @@ export default {
       return layer;
     },
     baseMapImage() {
-      return this.baseMapLayerName === 'streets'
+      return this.baseMapLayerName === 'topo'
         ? this.baseMapSatelliteImg
         : this.baseMapStreetsImg;
     },
