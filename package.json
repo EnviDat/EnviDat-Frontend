@@ -44,7 +44,7 @@
     "chartjs-plugin-datalabels": "^2.2.0",
     "css-loader": "^7.1.2",
     "date-fns": "^2.30.0",
-    "leaflet": "^1.8.0",
+    "leaflet": "^1.9.4",
     "leaflet.markercluster": "^1.5.3",
     "mitt": "^3.0.1",
     "pinia": "^2.3.0",
