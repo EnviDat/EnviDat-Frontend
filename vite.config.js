@@ -146,7 +146,7 @@ export default ({ mode, config }) => {
                 return 'vendor_uppy';
               }
 
-              if (id.includes('charts') || id.includes('uplot')) {
+              if (id.includes('chart') || id.includes('uplot')) {
                 return 'vendor_charts';
               }
 
