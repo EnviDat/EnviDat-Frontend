@@ -75,6 +75,7 @@ import {
   OPEN_TEXT_PREVIEW,
   OPEN_DATA_PREVIEW_IFRAME,
   INJECT_MAP_FULLSCREEN,
+  INJECT_GENERIC_COMPONENT,
 } from '@/factories/eventBus';
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
@@ -109,6 +110,7 @@ export default {
     eventBus.on(OPEN_TEXT_PREVIEW, this.showTextPreviewModal);
     eventBus.on(OPEN_DATA_PREVIEW_IFRAME, this.showDataPreviewIframe);
     eventBus.on(INJECT_MAP_FULLSCREEN, this.showFullscreenMapModal);
+    eventBus.on(INJECT_GENERIC_COMPONENT, this.showGenericComponent);
   },
   beforeUnmount() {
     eventBus.off(OPEN_FULLSCREEN_MODAL, this.openModal);
@@ -117,6 +119,7 @@ export default {
     eventBus.off(OPEN_TEXT_PREVIEW, this.showTextPreviewModal);
     eventBus.off(OPEN_DATA_PREVIEW_IFRAME, this.showDataPreviewIframe);
     eventBus.off(INJECT_MAP_FULLSCREEN, this.showFullscreenMapModal);
+    eventBus.on(INJECT_GENERIC_COMPONENT, this.showGenericComponent);
   },
   computed: {
   },
@@ -181,6 +184,14 @@ export default {
       };
 
       this.currentComponent = MetadataMapFullscreen;
+
+      eventBus.emit(OPEN_FULLSCREEN_MODAL);
+    },
+    showGenericComponent({ asyncComponent, props }) {
+      this.genericProps = props;
+      this.modalTitle = 'Fullscreen';
+      
+      this.currentComponent = asyncComponent;
 
       eventBus.emit(OPEN_FULLSCREEN_MODAL);
     },

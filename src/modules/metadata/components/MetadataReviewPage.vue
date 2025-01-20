@@ -121,8 +121,8 @@ import { defineAsyncComponent, markRaw } from 'vue';
 import { formatDate } from '@/factories/dateFactory';
 import MetadataHeader from './Metadata/MetadataHeader.vue';
 
-const MetadataBody = defineAsyncComponent(() =>
-  import('./Metadata/MetadataBody.vue'),
+const MetadataDescription = defineAsyncComponent(() =>
+  import('./Metadata/MetadataDescription.vue'),
 );
 const MetadataResources = defineAsyncComponent(() =>
   import('./Metadata/MetadataResources.vue'),
@@ -467,7 +467,7 @@ export default {
     setMetadataContent() {
       this.configInfos = getConfigUrls(this.configInfos);
 
-      this.MetadataBody.props = { ...this.body };
+      this.MetadataDescription.props = { ...this.body };
 
       this.MetadataCitation.props = {
         ...this.citation,
@@ -475,7 +475,7 @@ export default {
       };
 
       this.firstCol = [
-        this.MetadataBody,
+        this.MetadataDescription,
         /*
         this.MetadataCitation,
         this.MetadataAuthors,
@@ -485,7 +485,7 @@ export default {
       this.secondCol = [this.MetadataResources];
 
       this.singleCol = [
-        this.MetadataBody,
+        this.MetadataDescription,
         /*
         this.MetadataCitation,
 */
@@ -608,7 +608,7 @@ export default {
   },
   data: () => ({
     headerHeight: 0,
-    MetadataBody: markRaw(MetadataBody),
+    MetadataDescription: markRaw(MetadataDescription),
     MetadataResources: markRaw(MetadataResources),
     MetadataCitation: markRaw(MetadataCitation),
     MetadataAuthors: markRaw(MetadataAuthors),

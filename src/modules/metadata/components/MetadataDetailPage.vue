@@ -178,8 +178,8 @@ import { convertArrayToUrlString } from '@/factories/stringFactory';
 import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
 import { createLocation } from '@/factories/geoFactory';
 
-const MetadataBody = defineAsyncComponent(() =>
-  import('@/modules/metadata/components/Metadata/MetadataBody.vue'),
+const MetadataDescription = defineAsyncComponent(() =>
+  import('@/modules/metadata/components/Metadata/MetadataDescription.vue'),
 );
 
 const MetadataResources = defineAsyncComponent(() =>
@@ -674,7 +674,7 @@ export default {
         this.setGeoServiceLayers(this.location, null);
       }
 
-      this.MetadataBody.props = {
+      this.MetadataDescription.props = {
         ...this.body,
         showPlaceholder: this.showPlaceholder,
       };
@@ -714,7 +714,7 @@ export default {
       };
 
       this.firstCol = [
-        this.MetadataBody,
+        this.MetadataDescription,
         this.MetadataCitation,
         publicationList,
         this.MetadataRelatedDatasets,
@@ -726,7 +726,7 @@ export default {
 
       if (this.$vuetify.display.smAndDown) {
         this.singleCol = [
-          this.MetadataBody,
+          this.MetadataDescription,
           this.MetadataCitation,
           this.MetadataResources,
           this.MetadataGeo,
@@ -1002,7 +1002,7 @@ export default {
     organizationsStore: null,
     // headerHeight: 0,
     mdiClose,
-    MetadataBody: markRaw(MetadataBody),
+    MetadataDescription: markRaw(MetadataDescription),
     MetadataResources: markRaw(MetadataResources),
     MetadataCitation: markRaw(MetadataCitation),
     MetadataPublications: markRaw(MetadataPublications),

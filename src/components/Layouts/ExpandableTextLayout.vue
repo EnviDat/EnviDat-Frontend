@@ -1,7 +1,23 @@
 <template>
   <v-card :class="cardClass">
     <v-card-title v-if="title" class="metadata_title text-h6 pa-4">
-      {{ title }}
+      <v-row>
+        <v-col class="text-h6 metadata_title grow" align-self="start">
+          {{ title }}
+        </v-col>
+
+        <v-col class="flex-grow-0 pl-2">
+          <BaseIconButton
+            v-if="showFullscreenButton"
+            :icon="mdiArrowExpandAll"
+            outlined
+            outline-color="secondary"
+            icon-color="black"
+            @clicked="triggerFullscreen"
+          />
+        </v-col>
+      </v-row>
+
     </v-card-title>
 
     <v-card-title v-if="showPlaceholder && !title" class="pa-4 pt-0">
@@ -68,7 +84,8 @@
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import { renderMarkdown } from '@/factories/stringFactory';
-import { mdiChevronDown } from '@mdi/js';
+import { mdiArrowExpandAll, mdiChevronDown } from '@mdi/js';
+import { eventBus, INJECT_GENERIC_COMPONENT } from '@/factories/eventBus';
 
 export default {
   name: 'ExpandableTextLayout',
@@ -99,6 +116,10 @@ export default {
     statusText: {
       type: String,
       default: undefined,
+    },
+    showFullscreenButton: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {
@@ -139,9 +160,13 @@ export default {
         ? '0px'
         : '10px';
     },
+    triggerFullscreen() {
+      this.$emit('fullscreenClick');
+    },
   },
   data: () => ({
     mdiChevronDown,
+    mdiArrowExpandAll,
     showFullText: false,
   }),
 };

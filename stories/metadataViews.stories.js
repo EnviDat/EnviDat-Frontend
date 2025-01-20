@@ -13,7 +13,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody.vue';
+import MetadataDescription from '@/modules/metadata/components/Metadata/MetadataDescription.vue';
 import MetadataCitation from '@/modules/metadata/components/Metadata/MetadataCitation.vue';
 import MetadataDetails from '@/modules/metadata/components/Metadata/MetadataDetails.vue';
 import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo.vue';
@@ -186,25 +186,25 @@ const genericProps5 = {
 };
 
 
-export const MetadataBodyViews = () => ({
-  components: { MetadataBody },
+export const MetadataDescriptionViews = () => ({
+  components: { MetadataDescription },
   template: `
   <v-row>
 
     <v-col cols="6" class="py-3">
-      <metadata-body  />
+      <MetadataDescription  />
     </v-col>
 
     <v-col cols="6" class="py-3">
-      <metadata-body v-bind="genericPropsPlaceholder" />
+      <MetadataDescription v-bind="genericPropsPlaceholder" />
     </v-col>
 
     <v-col cols="4" class="py-3">
-      <metadata-body v-bind="genericPropsBody" />
+      <MetadataDescription v-bind="genericPropsBody" />
     </v-col>
 
     <v-col cols="8" class="py-3">
-      <metadata-body v-bind="genericPropsBodyLongDesc" />
+      <MetadataDescription v-bind="genericPropsBodyLongDesc" />
     </v-col>
 
   </v-row>
