@@ -2,11 +2,12 @@
 module.exports = {
   root: true,
   parserOptions: {
+    parser: '@typescript-eslint/parser', // Use TypeScript parser
     sourceType: 'module',
-    ecmaVersion: 2023,
+    ecmaVersion: 2022,
   },
   env: {
-    es2023: true,
+    es2022: true,
     'vitest-globals/env': true,
   },
   extends: [
@@ -29,6 +30,7 @@ module.exports = {
   // // required to lint *.vue files
   plugins: [
     'vuetify',
+    '@typescript-eslint'
   ],
   'ignorePatterns': ['particles.js'],
   // add your custom rules here

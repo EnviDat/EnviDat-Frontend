@@ -63,9 +63,10 @@ export default ({ mode, config }) => {
       plugins: [
           vue(),
           eslint({
+            include: ['src/**/*.ts', 'src/**/*.vue'], // Include TypeScript files
             // https://github.com/storybookjs/builder-vite/issues/367#issuecomment-1938214165
             // Remove warnings because Vite falesly tries to lint folders it should not
-            exclude: ['/virtual:/**', 'node_modules/**', '/sb-preview/**'],
+            // exclude: ['/virtual:/**', 'node_modules/**', '/sb-preview/**'],
           }),
           vuetify({
             autoImport: true,

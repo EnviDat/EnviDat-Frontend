@@ -177,6 +177,7 @@ import { convertArrayToUrlString } from '@/factories/stringFactory';
 
 import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
 import { createLocation } from '@/factories/geoFactory';
+import { loadResourcesPreview } from '@/modules/charts/middelware/chartServiceLayer.ts';
 
 const MetadataDescription = defineAsyncComponent(() =>
   import('@/modules/metadata/components/Metadata/MetadataDescription.vue'),
@@ -644,6 +645,8 @@ export default {
 
         this.resources.dates = getFrontendDates(this.metadataContent.date);
       }
+
+      loadResourcesPreview(this.resources.resources);
 
       this.MetadataResources.props = {
         ...this.resources,
