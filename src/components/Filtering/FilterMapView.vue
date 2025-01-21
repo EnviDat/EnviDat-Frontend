@@ -61,7 +61,6 @@ import {
   map as createMap,
   featureGroup,
   control,
-  layerGroup,
 } from 'leaflet';
 
 import 'leaflet/dist/leaflet.css';

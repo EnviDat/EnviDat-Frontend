@@ -13,9 +13,8 @@
 
 /* eslint-disable import/no-extraneous-dependencies */
 
-import EditResourcePasteUrl from '@/modules/user/components/EditResourcePasteUrl.vue';
 import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles.vue';
-import EditMultiDropResourceFiles from '@/modules/user/components/EditMultiDropResourceFiles.vue';
+
 import {
   UPLOAD_STATE_RESOURCE_CREATED, UPLOAD_STATE_UPLOAD_COMPLETED,
   UPLOAD_STATE_UPLOAD_PROGRESS,

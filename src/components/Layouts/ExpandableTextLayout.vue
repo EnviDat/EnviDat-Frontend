@@ -85,7 +85,6 @@
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import { renderMarkdown } from '@/factories/stringFactory';
 import { mdiArrowExpandAll, mdiChevronDown } from '@mdi/js';
-import { eventBus, INJECT_GENERIC_COMPONENT } from '@/factories/eventBus';
 
 export default {
   name: 'ExpandableTextLayout',

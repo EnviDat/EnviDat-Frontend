@@ -40,12 +40,15 @@
     },
   })
 
+  const height = width * 0.25;
 
 </script>
 
 <template>
   <v-card
     :width
+    :height
+    color="highlight"
     :variant="showCardBorder ? undefined : 'flat'"
     class="pa-0"
     @click="$emit('clicked')"
@@ -53,7 +56,7 @@
     <v-skeleton-loader
       v-if="loading"
       type="image"
-      :height="width * 0.5"
+      :height
     />
 
     <v-sparkline
@@ -62,12 +65,15 @@
       label-size="10"
       :model-value="data"
       line-width="1.5"
-      padding="15"
+      padding="5"
+      color="white"
       :auto-draw-duration="500"
       :auto-draw="true"
       :smooth="true"
+      lineCap="round"
       :type
       :width
+      :height="height * 0.75"
     />
   </v-card>
 </template>
