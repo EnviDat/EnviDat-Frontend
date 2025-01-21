@@ -19,8 +19,6 @@ import store from '@/store/store';
 import App from '@/App.vue';
 import { initAxios } from '@/init';
 
-
-
 import vuetify from '@/plugins/vuetify';
 import router from '@/router';
 import VueVirtualScroller from 'vue-virtual-scroller';

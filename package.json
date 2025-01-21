@@ -14,6 +14,7 @@
     "test-performance": "npx vitest bench --run",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
+    "type-check": "vue-tsc --noEmit",
     "extract-authors": "node src/node/extractAuthors.js",
     "extract-emails": "node src/node/extractUsers.js",
     "full-build": "vite build && storybook build",
@@ -83,6 +84,8 @@
     "@storybook/theming": "^8.5.0",
     "@storybook/vue3": "^8.5.0",
     "@storybook/vue3-vite": "^8.5.0",
+    "@typescript-eslint/eslint-plugin": "^8.21.0",
+    "@typescript-eslint/parser": "^8.21.0",
     "@vitejs/plugin-vue": "^5.1.5",
     "babel-loader": "^8.3.0",
     "chromatic": "^11.0.8",
@@ -100,13 +103,15 @@
     "rollup-plugin-visualizer": "^5.14.0",
     "sass": "^1.77.8",
     "storybook": "^8.5.0",
+    "typescript": "^5.7.3",
     "unplugin-fonts": "^1.1.1",
     "vite": "^5.4.11",
     "vite-plugin-eslint": "^1.8.1",
     "vite-plugin-static-copy": "^1.0.6",
     "vite-plugin-vuetify": "^2.0.4",
     "vite-plugin-webfont-dl": "^3.9.5",
-    "vitest": "^2.1.4"
+    "vitest": "^2.1.4",
+    "vue-tsc": "^2.2.0"
   },
   "browserslist": [
     "> 1%",
