@@ -41,22 +41,70 @@
       </v-row>
 
       <v-row>
-        <v-col cols="12" md="12" class="editDataGeo">
-          <v-file-input
-              v-show="false"
-              ref="filePicker"
-              accept=".geojson,.json"
-              @change="triggerFileUpload"
-              v-model="geoFile"
-            />
+        <v-col cols="5">
+          <v-row >
+            <v-col cols="12"
+                   class="text-h6">
+              Text Editor
+            </v-col>
 
-            <MetadataGeo
-              v-bind="metadataGeoProps"
-              @saveGeoms="commitGeometriesToAPI"
-              @undoGeoms="undoGeomEdits"
-              @uploadGeomFile="triggerFilePicker"
-            />
+            <v-col cols="12">
+              <v-textarea
+                :modelValue="geomsForMapString"
+                @change="changeGeoViaText($event.target.value)"
+                auto-grow
+                hide-details
+              />
+            </v-col>
+
+            <v-col v-show="geoJSONValid"
+                   cols="12">
+              <v-alert type="info" >GeoJson is valid!</v-alert>
+            </v-col>
+
+            <v-col v-show="validationErrors.input"
+                   cols="12">
+              <v-alert type="error">
+                {{ validationErrors.input }}
+              </v-alert>
+            </v-col>
+
+            <v-col cols="12"
+                   class="text-h6">
+              Pretty Preview
+            </v-col>
+
+            <v-col cols="12">
+              <div class="json-container" v-html="geoJSONHtml" ></div>
+            </v-col>
+
+          </v-row>
+
         </v-col>
+
+        <v-col cols="7">
+          <v-row no-gutters>
+            <v-col cols="12" md="12">
+              <v-file-input
+                v-show="false"
+                ref="filePicker"
+                accept=".geojson,.json"
+                @change="triggerFileUpload"
+                v-model="geoFile"
+              />
+
+            </v-col>
+            <v-col cols="12" md="12" class="editDataGeo">
+              <MetadataGeo
+                v-bind="metadataGeoProps"
+                @saveGeoms="commitGeometriesToAPI"
+                @undoGeoms="undoGeomEdits"
+                @uploadGeomFile="triggerFilePicker"
+              />
+            </v-col>
+          </v-row>
+        </v-col>
+
       </v-row>
 
 <!--
@@ -104,7 +152,7 @@ import {
 import {
   EDIT_METADATA_GEODATA_TITLE,
   LOCATION_TYPE_FEATCOLLECTION,
-  LOCATION_TYPE_GEOMCOLLECTION,
+  LOCATION_TYPE_GEOMCOLLECTION, LOCATION_TYPE_MULTIPOINT, LOCATION_TYPE_POINT, LOCATION_TYPE_POLYGON,
 } from '@/factories/metadataConsts';
 
 import {
@@ -114,12 +162,14 @@ import {
 
 import {
   defaultSwissLocation,
-  createGeomCollection, fetureCollectionToGeoCollection, creationGeometry,
+  fetureCollectionToGeoCollection,
+  creationGeometry,
+  createGeomCollection,
 } from '@/factories/geoFactory';
 
-/*
 import geojsonhint from '@mapbox/geojsonhint';
-*/
+// import 'pretty-print-json/dist/css/pretty-print-json.css';
+import { prettyPrintJson } from 'pretty-print-json';
 
 export default {
   name: 'EditDataGeo',
@@ -180,7 +230,14 @@ export default {
   mounted() {
     eventBus.on(MAP_GEOMETRY_MODIFIED, this.parseGeomCollectionAddToBuffer);
     eventBus.on(EDITMETADATA_DATA_GEO_MAP_ERROR, this.triggerValidationError);
-    this.originalGeom = this.location?.geoJSON;
+
+    const jsonString = JSON.stringify(this.location.geoJSON);
+
+    this.changeGeoViaText(jsonString);
+/*
+    const geoColl = this.converGeoJSONToGeoCollection(this.location?.geoJSON);
+    this.parseGeomCollectionAddToBuffer(geoColl);
+*/
   },
   beforeUnmount() {
     if (this.saveButtonEnabled) {
@@ -212,10 +269,7 @@ export default {
       };
     },
     geomsForMap() {
-      return (
-        this.editedGeomBuffer[this.editedGeomBuffer.length - 1] ||
-        this.originalGeom
-      );
+      return this.editedGeomBuffer[this.editedGeomBuffer.length - 1];
     },
     editErrorMessage() {
       return this.validationErrors.geometries;
@@ -229,6 +283,14 @@ export default {
     },
     geomsForMapString() {
       return this.geomsForMap ? JSON.stringify(this.geomsForMap) : '';
+    },
+    geoJSONHtml() {
+      return prettyPrintJson.toHtml(this.geomsForMap, {
+        indent: 2,
+        lineNumbers: true,
+        quoteKeys: true,
+        trailingCommas: true,
+      });
     },
 /*
     geoJSONHintPreview() {
@@ -252,28 +314,80 @@ export default {
     },
   },
   methods: {
+    changeGeoViaText(text) {
+      this.geoJSONValid = this.isValidateGeoJSON(text);
+
+      if (this.geoJSONValid) {
+
+        const inputGeoJSON = JSON.parse(text);
+
+        const geoColl = this.converGeoJSONToGeoCollection(inputGeoJSON);
+
+        this.parseGeomCollectionAddToBuffer(geoColl);
+      }
+    },
+    isValidateGeoJSON(text) {
+      const hint = geojsonhint.hint(text, {
+        noDuplicateMembers: true,
+      })
+
+      if (hint?.length > 0) {
+        let errMsg = '';
+
+        for (let i = 0; i < hint.length; i++) {
+          const err = hint[i];
+          errMsg += `${err.message} \n`;
+        }
+
+        this.validationErrors.input = errMsg;
+        return false;
+      }
+
+      this.validationErrors.input = null;
+      return true;
+    },
+    converGeoJSONToGeoCollection(inputGeoJSON) {
+      let geoColl;
+
+      if (inputGeoJSON.type === LOCATION_TYPE_FEATCOLLECTION) {
+        geoColl = fetureCollectionToGeoCollection(inputGeoJSON);
+      } else if(inputGeoJSON.type === LOCATION_TYPE_GEOMCOLLECTION) {
+        geoColl = inputGeoJSON;
+      } else if(inputGeoJSON.type === LOCATION_TYPE_POINT
+        || inputGeoJSON.type === LOCATION_TYPE_MULTIPOINT
+        || inputGeoJSON.type === LOCATION_TYPE_POLYGON
+      ) {
+//        geoColl = creationGeometry(inputGeoJSON).geomCollection;
+        geoColl = createGeomCollection(inputGeoJSON, inputGeoJSON.properties);
+      } else {
+        geoColl = createGeomCollection(inputGeoJSON, inputGeoJSON.properties);
+      }
+
+      return geoColl;
+    },
     /**
      * Validate updated geometries, and store in local variable
      *
-     * @param {Array} geomArray array of valid GeoJSON geometries
+     * @param {Array} geoCollection array of valid GeoJSON geometries
      */
-    parseGeomCollectionAddToBuffer(geomArray) {
+    parseGeomCollectionAddToBuffer(geoCollection) {
       if (
         isFieldValid(
           'geometries',
-          geomArray,
+          geoCollection.geometries,
           this.validations,
           this.validationErrors,
         )
       ) {
 
-        const geomColl = createGeomCollection(geomArray, {
-          name: this.location.name,
-        });
+        const propsKeys = geoCollection.properties ? Object.keys(geoCollection.properties) : [];
+        if (propsKeys?.length <= 0) {
+          geoCollection.properties = { name: this.location.name }
+        }
 
-        this.newObjectToSend = geomColl
+        this.newObjectToSend = geoCollection
 
-        this.editedGeomBuffer.push(geomColl);
+        this.editedGeomBuffer.push(geoCollection);
 
         this.undoButtonEnabled = true;
         this.saveButtonEnabled = true;
@@ -299,14 +413,14 @@ export default {
       this.saveButtonInProgress = true;
 
       const obj = this.newObjectToSend
-      const mapToSend = createGeomCollection(obj, { name: this.location.name })
+      // const mapToSend = createGeomCollection(obj, { name: this.location.name })
 
       eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_DATA_GEO,
         data: {
           location: {
             ...this.location,
-            geoJSON: mapToSend,
+            geoJSON: obj,
           },
         },
       });
@@ -324,6 +438,10 @@ export default {
     triggerFileUpload() {
 
       const reader = new FileReader();
+      reader.onload = () => {
+        this.changeGeoViaText(reader.result);
+      }
+/*
       reader.onload = () => {
         // Attempt GeoJSON
         try {
@@ -347,6 +465,7 @@ export default {
           this.validationErrors.geometries = `Could not load file. Is it GeoJSON? ${e}`;
         }
       };
+*/
 
       reader.onerror = (e) => {
         this.validationErrors.geometries = `Could not load file. Is it GeoJSON? ${e}`;
@@ -366,6 +485,7 @@ export default {
 */
   },
   data: () => ({
+    geoJSONValid: false,
     labels: {
       cardTitle: EDIT_METADATA_GEODATA_TITLE,
       cardInstructions:
@@ -373,10 +493,10 @@ export default {
       defaultInstructions: 'You are using the default location (Switzerland). Consider adjusting the geo information to represent your research data as accurate as possible.',
     },
     validationErrors: {
+      input: null,
       geometries: null,
     },
     newObjectToSend: null,
-    originalGeom: null,
     editedGeomBuffer: [],
     saveButtonEnabled: false,
     saveButtonInProgress: false,

@@ -22,7 +22,6 @@ import { EDNA_MODE } from '@/store/metadataMutationsConsts';
 import { mdiMapMarker, mdiMapMarkerMultiple } from '@mdi/js';
 
 
-
 export function getPointIcon(selected, multiMarker = false, modeData = undefined, dataset = undefined) {
   const iconOptions = Icon.Default.prototype.options;
   // use the default options to ensure that all untouched defaults stay in place
@@ -65,6 +64,26 @@ export function getPointIcon(selected, multiMarker = false, modeData = undefined
   return divIcon(iconOptions);
 }
 
+function ensureLngLatCoords(coords) {
+  const [x, y] = coords;
+
+  // If x is within the latitude range (-90..90)
+  // and y is within the longitude range (-180..180),
+  // and the absolute value of y is greater than x (common for many coords),
+  // then we guess it's [lat, lng] and should be flipped
+  const isPossiblyLatLng =
+    Math.abs(x) <= 90 &&
+    Math.abs(y) <= 180 &&
+    // A further heuristic: Usually longitude has a larger absolute value than latitude
+    Math.abs(y) >= Math.abs(x);
+
+  if (isPossiblyLatLng) {
+    return [y, x]; // flip to [lng, lat]
+  }
+
+  return coords; // assume it's already [lng, lat]
+}
+
 export function getPointLayer(coords, id, title, selected, onClick, multiMarker = false, modeData = undefined, dataset = undefined) {
   const icon = getPointIcon(selected, multiMarker, modeData, dataset);
 
@@ -76,7 +95,8 @@ export function getPointLayer(coords, id, title, selected, onClick, multiMarker 
     opacity = selected ? 0.8 : 0.65;
   }
 
-  const point = createMarker(coords, {
+  const flippedCoords = ensureLngLatCoords(coords);
+  const point = createMarker(flippedCoords, {
     icon,
     opacity,
     riseOnHover: true,
@@ -108,7 +128,19 @@ export function getPointLayer(coords, id, title, selected, onClick, multiMarker 
 export function getPolygonLayer(coords, id, title, selected, onClick) {
   // create a polygon from an array of LatLng points
   // var latlngs = [[37, -109.05],[41, -109.03],[41, -102.05],[37, -102.04]];
-  const polygon = createPolygon(coords, {
+
+  // const { coordinates: flippedCoords } = rewind({ coordinates: coords });
+  const flippedCoords = [];
+
+  for (let i = 0; i < coords.length; i++) {
+    const polyArray = coords[i];
+    for (let j = 0; j < polyArray.length; j++) {
+      const polyCoords = polyArray[j];
+      flippedCoords.push(ensureLngLatCoords(polyCoords));
+    }
+  }
+
+  const polygon = createPolygon(flippedCoords, {
     color: selected ? '#00897b' : '#ffd740',
     opacity: 0.55,
     fillOpacity: 0,

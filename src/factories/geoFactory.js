@@ -129,9 +129,14 @@ export function createGeomCollection(geomArray, propertiesObj = {}) {
     return null;
   }
 
+  let geometries = geomArray;
+  if (!(geometries instanceof Array)) {
+    geometries = [geometries];
+  }
+
   return {
     type: LOCATION_TYPE_GEOMCOLLECTION,
-    geometries: geomArray,
+    geometries,
     properties: propertiesObj,
   };
 }
@@ -147,16 +152,20 @@ export function creationGeometry(geoJSON, properties) {
   geometry.isGeomCollection = geoJSON.type === LOCATION_TYPE_GEOMCOLLECTION;
 
   // let geomCollection = [geoJSON];
-  let coordinates;
+  // let coordinates;
   // let geomType;
 
+/*
   if (geometry.isPoint) {
+    coordinates = geoJSON.coordinates;
     // Swap lngLat to latLng because the geoJOSN from CKAN might be invalid!
     // swap coords for the leaflet map
+/!*
     coordinates = [
       geoJSON.coordinates[1],
       geoJSON.coordinates[0],
     ];
+*!/
     // geomType = LOCATION_TYPE_POINT;
   } else if (geometry.isPolygon) {
     coordinates = getPolygonPointArray(geoJSON.coordinates);
@@ -174,8 +183,14 @@ export function creationGeometry(geoJSON, properties) {
     // geomType = LOCATION_TYPE_GEOMCOLLECTION;
     // geomCollection = geoJSON.geometries;
   }
+*/
 
-  geometry.geomCollection = createGeomCollection(coordinates, properties);
+  if (geometry.isGeomCollection) {
+    geometry.geomCollection = geoJSON;
+    return geometry;
+  }
+
+  geometry.geomCollection = createGeomCollection(geoJSON, properties);
 
   return geometry;
 }
@@ -294,12 +309,15 @@ export function fetureCollectionToGeoCollection(featureColl) {
   }
 
   const geometries = [];
+  const properties = [];
 
   for (let i = 0; i < features.length; i++) {
     const f = features[i];
-
+    if (f.properties) {
+      properties.push(f.properties);
+    }
     geometries.push(f.geometry);
   }
 
-  return createGeomCollection(geometries);
+  return createGeomCollection(geometries, properties);
 }
