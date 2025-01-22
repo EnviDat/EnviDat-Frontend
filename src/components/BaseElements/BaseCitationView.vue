@@ -24,7 +24,7 @@
               </template>
 
               <div class="pa-4"
-                   style="background-color: white;"
+                   style="position: relative; left: 70px; background-color: white; max-width: 90%;"
                    v-html="abstract" />
 
             </v-menu>

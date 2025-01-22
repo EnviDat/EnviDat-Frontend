@@ -3,10 +3,10 @@ module.exports = {
   root: true,
   parserOptions: {
     sourceType: 'module',
-    ecmaVersion: 2021,
+    ecmaVersion: 2023,
   },
   env: {
-    es2021: true,
+    es2023: true,
     'vitest-globals/env': true,
   },
   extends: [

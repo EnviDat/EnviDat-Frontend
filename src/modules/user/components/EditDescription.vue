@@ -46,7 +46,7 @@
                                         :hint="readOnlyHint(editingProperty)"
                                         @inputedText="catchInputedText($event)"
                                         @changedText="catchChangedText($event)">
-            <MetadataBody v-bind="descriptionObject" />
+            <MetadataDescription v-bind="descriptionObject" />
           </GenericTextareaPreviewLayout>
 
         </v-col>
@@ -83,7 +83,7 @@ import {
 
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout.vue';
-import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody.vue';
+import MetadataDescription from '@/modules/metadata/components/Metadata/MetadataDescription.vue';
 import { EDIT_METADATA_DESCRIPTION_TITLE } from '@/factories/metadataConsts';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
@@ -210,7 +210,7 @@ export default {
     },
   }),
   components: {
-    MetadataBody,
+    MetadataDescription,
     GenericTextareaPreviewLayout,
     BaseStatusLabelView,
   },

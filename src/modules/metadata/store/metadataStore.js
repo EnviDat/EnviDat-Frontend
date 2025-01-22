@@ -75,8 +75,6 @@ const initialState = {
    */
   detailPageBackRoute: null,
   aboutPageBackRoute: null,
-  asciiDead: '&#8224;',
-  authorPassedInfo: 'Sadly this author has passed away.',
   existingAuthors: [],
   existingKeywords: [],
   titleEditing: null,
@@ -122,8 +120,6 @@ export const metadata = {
     detailPageBackRoute: state => state.detailPageBackRoute,
     titleEditing: state => state.titleEditing,
     aboutPageBackRoute: state => state.aboutPageBackRoute,
-    asciiDead: state => state.asciiDead,
-    authorPassedInfo: state => state.authorPassedInfo,
     existingAuthors: state => state.existingAuthors,
     existingKeywords: state => state.existingKeywords,
     getCitationListFromIds: state => datasetIds => {

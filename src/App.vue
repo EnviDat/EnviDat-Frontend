@@ -122,7 +122,7 @@
           cancelText="Cancel"
           :cancelClick="
             () => {
-              reloadDialogCanceled = true;
+              this.reloadDialogCanceled = true;
             }
           "
         />
@@ -243,8 +243,15 @@ const NotificationCard = defineAsyncComponent(() =>
 export default {
   name: 'App',
   beforeCreate() {
-    // check for the backend version
+
+    // load the config initially
     this.$store.dispatch(SET_CONFIG);
+
+    // define an interval to check again regularly to make sure
+    // all users get any changes in the config and version updates
+    setInterval(() => {
+      this.$store.dispatch(SET_CONFIG);
+    }, 300000); // 1000 * 60 * 5 = 5 minutes
 
     this.$store.subscribe(mutation => {
       if (mutation.type === SET_APP_BACKGROUND) {

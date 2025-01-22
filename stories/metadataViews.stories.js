@@ -13,7 +13,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody.vue';
+import MetadataDescription from '@/modules/metadata/components/Metadata/MetadataDescription.vue';
 import MetadataCitation from '@/modules/metadata/components/Metadata/MetadataCitation.vue';
 import MetadataDetails from '@/modules/metadata/components/Metadata/MetadataDetails.vue';
 import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo.vue';
@@ -152,15 +152,11 @@ const funding2 = [
 
 const body1 = createBody(metadata[0]);
 const body2 = createBody(metadata[1]);
-const authorDeadInfo = {
-  asciiDead: '&#8224;',
-  authorPassedInfo: 'Sadly this author has passed away.',
-};
+
 
 const genericProps3 = {
   showPlaceholder: false,
   details: details1,
-  authorDeadInfo,
 };
 
 const location1 = createLocation(metadata[2]);
@@ -186,25 +182,25 @@ const genericProps5 = {
 };
 
 
-export const MetadataBodyViews = () => ({
-  components: { MetadataBody },
+export const MetadataDescriptionViews = () => ({
+  components: { MetadataDescription },
   template: `
   <v-row>
 
     <v-col cols="6" class="py-3">
-      <metadata-body  />
+      <MetadataDescription  />
     </v-col>
 
     <v-col cols="6" class="py-3">
-      <metadata-body v-bind="genericPropsPlaceholder" />
+      <MetadataDescription v-bind="genericPropsPlaceholder" />
     </v-col>
 
     <v-col cols="4" class="py-3">
-      <metadata-body v-bind="genericPropsBody" />
+      <MetadataDescription v-bind="genericPropsBody" />
     </v-col>
 
     <v-col cols="8" class="py-3">
-      <metadata-body v-bind="genericPropsBodyLongDesc" />
+      <MetadataDescription v-bind="genericPropsBodyLongDesc" />
     </v-col>
 
   </v-row>
@@ -284,7 +280,6 @@ export const MetadataDetailsViews = () => ({
     <v-col cols="6" class="py-3">
       <metadata-details v-bind="genericPropsPlaceholder"
                         :showPlaceholder="genericPropsPlaceholder.showPlaceholder"
-                        :authorDeadInfo="genericPropsPlaceholder.authorDeadInfo"
       />
     </v-col>
 
@@ -306,7 +301,6 @@ export const MetadataDetailsViews = () => ({
       details: [],
       showPlaceholder: true,
       fixedHeight: false,
-      authorDeadInfo,
     },
   }),
 });

@@ -90,7 +90,7 @@ import {
   UPLOAD_STATE_UPLOAD_PROGRESS,
   UPLOAD_STATE_UPLOAD_STARTED,
   UPLOAD_STATE_RESET,
-  EDITMETADATA_CLEAR_PREVIEW,
+  EDITMETADATA_CLEAR_PREVIEW, UPLOAD_ERROR, UPLOAD_STATE_RESOURCE_CREATED,
 } from '@/factories/eventBus';
 
 import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
@@ -99,7 +99,7 @@ import {
   getUppyInstance,
   subscribeOnUppyEvent,
   unSubscribeOnUppyEvent,
-  createNewResourceForUrl,
+  createNewResourceForUrl, destroyUppyInstance,
 } from '@/factories/uploadFactory';
 
 import {
@@ -188,13 +188,20 @@ export default {
     },
   },
   created() {
+    // call once to create the uppy instance
+    getUppyInstance(this.metadataId, this.$store);
+
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.unselectCurrentResource);
+    eventBus.on(UPLOAD_STATE_RESET, this.resetUppy);
+    eventBus.on(UPLOAD_STATE_RESOURCE_CREATED, this.uploadResourceCreated);
   },
   mounted() {
+    subscribeOnUppyEvent('file-added', this.uploadResetState);
     subscribeOnUppyEvent('upload', this.uploadStarted);
-    subscribeOnUppyEvent('progress', this.uploadProgress);
-    subscribeOnUppyEvent('complete', this.uploadCompleted);
-    subscribeOnUppyEvent('cancel-all', this.cancelUpload);
+    subscribeOnUppyEvent('progress', this.uploadStateProgress);
+
+    subscribeOnUppyEvent('upload-success', this.uploadCompleted);
+    subscribeOnUppyEvent('file-removed', this.cancelUpload);
     subscribeOnUppyEvent('error', this.uploadUppyError);
 
     this.$nextTick(() => {
@@ -203,12 +210,18 @@ export default {
   },
   beforeUnmount() {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.unselectCurrentResource);
+    eventBus.off(UPLOAD_STATE_RESET, this.resetUppy);
+    eventBus.off(UPLOAD_STATE_RESOURCE_CREATED, this.uploadResourceCreated);
 
+    unSubscribeOnUppyEvent('file-added', this.uploadResetState);
     unSubscribeOnUppyEvent('upload', this.uploadStarted);
-    unSubscribeOnUppyEvent('progress', this.uploadProgress);
-    unSubscribeOnUppyEvent('complete', this.uploadCompleted);
-    unSubscribeOnUppyEvent('cancel-all', this.cancelUpload);
+    unSubscribeOnUppyEvent('progress', this.uploadStateProgress);
+
+    unSubscribeOnUppyEvent('upload-success', this.uploadCompleted);
+    unSubscribeOnUppyEvent('file-removed', this.cancelUpload);
     unSubscribeOnUppyEvent('error', this.uploadUppyError);
+
+    destroyUppyInstance();
   },
   computed: {
     ...mapState(['config']),
@@ -292,6 +305,8 @@ export default {
       return {
         metadataId: this.metadataId,
         legacyUrl: this.linkAddNewResourcesCKAN,
+        state: this.uploadState,
+        progress: this.uploadProgress,
         error: this.resourceUploadError?.message || this.uppyError?.name,
         errorDetails: this.resourceUploadError?.details || this.uppyError?.message,
       };
@@ -323,53 +338,35 @@ export default {
           });
       }
     },
-    // uploadStarted() {
-    uploadStarted({ id, fileIDs }) {
+    uploadResetState() {
+      this.uploadState = undefined;
+      this.uploadProgress = 0;
+    },
+    uploadStarted({ uploadID, files }) {
       // data object consists of `id` with upload ID and `fileIDs` array
       // with file IDs in current upload
       // data: { id, fileIDs }
-      console.log(`Starting upload ${id} for files ${fileIDs}`);
+      // console.log(`Starting upload ${uploadID } for files ${files}`);
 
       this.uppyError = null;
-      this.uploadProgessText = 'Starting upload file';
-      this.uploadProgressIcon = 'check_box_outline_blank';
-
-      eventBus.emit(UPLOAD_STATE_UPLOAD_STARTED, { id: UPLOAD_STATE_UPLOAD_STARTED });
+      this.uploadState = UPLOAD_STATE_UPLOAD_STARTED;
+      this.uploadProgress = 0;
     },
-    uploadProgress(progress) {
-      console.log(`upload progress: ${progress}`);
-      this.uploadProgessText = `upload progress: ${progress}`;
-      this.uploadProgressIcon = 'check';
-
-      eventBus.emit(UPLOAD_STATE_UPLOAD_PROGRESS, { id: UPLOAD_STATE_UPLOAD_PROGRESS, progress });
+    uploadResourceCreated(event) {
+      // console.log(`Resource created ${event.resourceId}`);
+      this.uploadState = UPLOAD_STATE_RESOURCE_CREATED;
     },
-    async uploadCompleted(result) {
-      const oks = result.successful?.length || 0;
-      const fails = result.failed?.length || 0;
+    uploadStateProgress(progress) {
+      // console.log(`upload progress: ${progress}`);
 
-      console.log('upload complete', result);
-      // console.log('successful files:', result.successful)
-      // console.log('failed files:', result.failed)
+      this.uploadState = UPLOAD_STATE_UPLOAD_PROGRESS;
+      this.uploadProgress = progress;
+    },
+    async uploadCompleted() {
+      // console.log('upload complete');
 
-      let message = '';
-
-      if (oks > 0) {
-        message += `${oks} uploads successful`;
-        this.uploadProgressIcon = 'check_circle';
-      }
-
-      if (fails > 0) {
-        message += `${fails} failed uploads`;
-        this.uploadProgressIcon = 'report_gmailerrorred';
-      }
-
-      eventBus.emit(UPLOAD_STATE_UPLOAD_COMPLETED, { id: UPLOAD_STATE_UPLOAD_COMPLETED });
-      console.log('upload complete emit', UPLOAD_STATE_UPLOAD_COMPLETED);
-
-      this.uploadProgessText = message;
-
-      // reset uppy to be able to upload another file
-      this.resetUppy();
+      this.uploadState = UPLOAD_STATE_UPLOAD_COMPLETED;
+      this.uploadProgress = 0;
 
       // resource exists already, get it from uploadResource
       const newRes = this.$store?.getters[`${USER_NAMESPACE}/uploadResource`];
@@ -377,32 +374,34 @@ export default {
       setTimeout(() => {
         console.log(METADATA_EDITING_SELECT_RESOURCE, newRes);
         this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, newRes?.id);
+
+        // reset uppy to be able to upload another file
+        this.resetUppy();
       }, 500);
 
     },
     uploadUppyError(error) {
-      console.log('uploadUppyError', error);
+      // console.log('uploadUppyError', error);
+
       this.uppyError = error;
-
-      this.uploadProgessText = `Upload failed ${error}`;
-      this.uploadProgressIcon = 'report_gmailerrorred';
-
-      eventBus.emit(UPLOAD_STATE_RESET);
     },
     cancelUpload() {
       this.resetUppy();
     },
     resetUppy() {
-      console.log('resetUppy');
-      eventBus.emit(UPLOAD_STATE_RESET);
+      // console.log('resetUppy');
+
       this.uppyError = null;
+      this.uploadState = undefined;
+      this.uploadProgress = 0;
 
       const uppy = getUppyInstance();
+
       const files = uppy.getFiles();
-      if (files.length === 1) {
-        uppy.removeFile(files[0].id);
-      } else if(files.length > 1) {
+      if (files.length > 0) {
         uppy.cancelAll();
+      } else {
+        uppy.clear()
       }
     },
     async createResourceFromUrl(url) {
@@ -443,8 +442,6 @@ export default {
     EDIT_METADATA_RESOURCES_TITLE,
     localResCounter: 0,
     envidatDomain: import.meta.env.VITE_API_ROOT,
-    uploadProgessText: null,
-    uploadProgressIcon: '',
     uppyError: null,
     editResourceRedirectText: `Editing metadata and uploading resources is not available right now.
                     <br />
@@ -454,6 +451,8 @@ export default {
                     <br />
                     Please add resources via the legacy website by clicking on
                     the button below.`,
+    uploadProgress: 0,
+    uploadState: undefined,
   }),
   components: {
     EditMetadataResources,

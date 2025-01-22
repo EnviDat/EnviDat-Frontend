@@ -57,20 +57,18 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import 'leaflet/dist/leaflet.css';
-import 'leaflet.markercluster/dist/MarkerCluster.css';
-import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
-import 'leaflet-bing-layer';
-
-import { MarkerClusterGroup } from 'leaflet.markercluster';
-
 import {
   map as createMap,
-  tileLayer,
-  layerGroup,
   featureGroup,
   control,
 } from 'leaflet';
+
+import 'leaflet/dist/leaflet.css';
+import 'leaflet.markercluster/dist/MarkerCluster.css';
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
+
+// import has to be after leaflet import
+import { MarkerClusterGroup } from 'leaflet.markercluster';
 
 import {
   mapGetters,
@@ -81,6 +79,8 @@ import FilterMapWidget from '@/components/Filtering/FilterMapWidget.vue';
 
 import {EDNA_MODE} from '@/store/metadataMutationsConsts';
 import {
+  createImageryLayer,
+  createTopoLayer,
   getMultiPointLayer,
   getMultiPolygonLayer,
   getPointLayer,
@@ -119,13 +119,6 @@ export default {
       loadingMetadataIds: 'metadata/loadingMetadataIds',
       loadingMetadatasContent: 'metadata/loadingMetadatasContent',
     }),
-    bingApiKey() {
-      if (this.$store) {
-        return this.config?.apiKeys?.bing || null;
-      }
-
-      return null;
-    },
     loading() {
       return this.loadingMetadataIds || this.loadingMetadatasContent;
     },
@@ -229,9 +222,6 @@ export default {
           this.errorLoadingLeaflet = true;
         });
 
-        const bingKey = this.bingApiKey;
-        this.addImageMapLayer(this.map, bingKey);
-
         // fills this.pinLayerGroup, this.multiPinLayerGroup, this.polygonLayerGroup
         this.createMapElements(this.content);
 
@@ -251,46 +241,27 @@ export default {
       }
     },
     initLeaflet(mapElement) {
+      const topoTiles = createTopoLayer();
+      const aerialTiles = createImageryLayer();
+
+      const baseMaps = {
+        'Satellit (Esri World Imagery)': aerialTiles,
+        'Topo (Esri World Topo)': topoTiles, // default seems to be the last one
+      };
+
       const map = createMap(mapElement, {
-        // scrollWheelZoom: false,
         center: this.setupCenterCoords,
         zoom: 7,
         zoomSnap: 0.5,
+        layers: topoTiles, // only default layer to avoid showing both attributions
       });
+
+      // add little box to switch the base layers
+      control.layers(baseMaps).addTo(map);
 
       this.initialBounds = map.getBounds();
 
       return map;
-    },
-    addImageMapLayer(map, bingKey) {
-      const streetTiles = tileLayer(
-        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        {
-          attribution:
-            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        },
-      );
-
-      const layers = [streetTiles];
-      const baseMaps = {};
-
-      if (bingKey) {
-        const aerialTiles = tileLayer.bing({
-          bingMapsKey: bingKey,
-          imagerySet: 'AerialWithLabels',
-        });
-        layers.push(aerialTiles);
-
-        baseMaps['Satellit (Bingmaps)'] = aerialTiles;
-      }
-
-      // put is afterwards, because default seems to be the last one
-      baseMaps['Roads (OpenStreetMaps)'] = streetTiles;
-
-      this.mapLayerGroup = layerGroup(layers);
-      this.mapLayerGroup.addTo(map);
-
-      control.layers(baseMaps).addTo(map);
     },
     createLeafletLayer(dataset, location, selected) {
       let layer;
@@ -585,7 +556,6 @@ export default {
     setupCenterCoords: [46.943961, 8.19924],
     initialBounds: null,
     errorLoadingLeaflet: false,
-    mapLayerGroup: null,
     polygonEnabled: false,
     polygonLayerGroupMap: new Map(),
     multiPinEnabled: true,

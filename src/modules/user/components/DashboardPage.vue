@@ -128,7 +128,6 @@
                       :showPublicationState="true"
                       :reloadAmount="20"
                       :metadatasContent="metadatasContent"
-                      mainScrollClass=".midBoard > .datasetsGrid"
       />
 
       <div v-if="!hasUserDatasets"

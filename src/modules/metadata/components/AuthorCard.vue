@@ -14,24 +14,23 @@
         <v-col class="flex-grow-1 py-0">
           <div class="authorTitle"
                :class="dark ? 'text-white' : 'text-black'">
-            {{ author.firstName }}
+            {{ firstName }}
           </div>
         </v-col>
 
-        <v-col v-if="authorIsDead"
+        <v-col v-if="author.isAuthorDead"
                class="flex-grow-0 py-0">
 
           <v-tooltip location='bottom'>
             <template v-slot:activator="{ props }">
               <BaseIcon 
                 v-bind="props"
+                color="black"
                 :icon="mdiTimerSandComplete"
-                small
-                class='pr-2'
               />
             </template>
 
-            {{ authorPassedInfo }}
+            {{ AUTHOR_PASSED_INFO }}
           </v-tooltip>
         </v-col>
 
@@ -39,7 +38,7 @@
                cols="12">
           <div class="authorTitle"
                :class="dark ? 'text-white' : 'text-black'">
-            {{ authorIsDead ? author.lastName.replace(`(${asciiDead})`, '') : author.lastName }}
+            {{ lastName }}
           </div>
         </v-col>
       </v-row>
@@ -306,6 +305,7 @@ import {
   getLevelProgress,
   getDataCreditLevel,
   getAuthorName,
+  replaceAuthorDeadAscii,
 } from '@/factories/authorFactory';
 import {
   mdiChevronDown,
@@ -316,6 +316,8 @@ import {
   mdiTimerSandComplete,
 } from '@mdi/js';
 
+import { AUTHOR_PASSED_INFO } from '@/store/mainMutationsConsts';
+
 // checkout skeleton
 // https://github.com/ToxicJojo/SkeletonPlaceholder
 
@@ -323,8 +325,6 @@ export default {
   name: 'AuthorCard',
   props: {
     author: Object,
-    asciiDead: String,
-    authorPassedInfo: String,
     authorDetailsConfig: {
       type: Object,
       default: () => ({
@@ -469,16 +469,19 @@ export default {
       return `background-image: linear-gradient(310deg, ${color} 10%, ${toColor} 45%);
               background-position: center, center; background-size: cover;`;
     },
-    authorIsDead() {
-      if (!this.asciiDead) {
-        return false;
+    firstName() {
+      if (this.author.isAuthorDead) {
+        return replaceAuthorDeadAscii(this.author.firstName);
       }
 
-      return (
-        this.author?.firstName?.includes(this.asciiDead) ||
-        this.author?.lastName?.includes(this.asciiDead) ||
-        false
-      );
+      return this.author.firstName;
+    },
+    lastName() {
+      if (this.author.isAuthorDead) {
+        return replaceAuthorDeadAscii(this.author.lastName);
+      }
+
+      return this.author.lastName;
     },
   },
   methods: {
@@ -528,6 +531,7 @@ export default {
     },
   },
   data: () => ({
+    AUTHOR_PASSED_INFO,
     mdiFileEye,
     mdiInformationOutline,
     mdiTimerSandComplete,
