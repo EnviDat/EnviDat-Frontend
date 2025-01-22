@@ -68,65 +68,114 @@
           </v-col>
         </v-row>
 
-        <v-row v-if="!showFullDescription" no-gutters>
-          <v-col class="resourceInfo">
+        <v-row v-if="!showFullDescription"
+               no-gutters
+               class="resourceInfo"
+        >
+          <v-col v-if="isProtected"
+                 cols="12"
+                 class="py-1"
+          >
             <BaseIconLabelView
-              v-if="isProtected"
               text="This resource is private"
               :icon="mdiLock"
               :light="dark"
               :dark="!dark"
-              class="mb-1" />
+            />
+          </v-col>
 
+          <v-col v-if="sparkChartData"
+                 cols="12"
+                 class="py-1"
+          >
+            <v-row no-gutters
+                   style="opacity: 1 !important;"
+                   align="center"
+            >
+              <v-col class="flex-grow-1">
+                <SparkChart :data="sparkChartData" />
+              </v-col>
+
+              <v-col class="flex-grow-0">
+                <base-icon-button
+                  :icon="mdiChartBar"
+                  icon-color="black"
+                  color="accent"
+                  elevated
+                  :tooltip-text="chartPreviewTooltip"
+                  @clicked="$emit('openButtonClicked')"
+                />
+              </v-col>
+            </v-row>
+          </v-col>
+
+          <v-col v-if="doi"
+                 cols="12"
+                 class="py-1"
+          >
             <BaseIconLabelView
-              v-if="doi"
               :text="doi"
               :icon="mdiFingerprint"
               :icon-tooltip="EDIT_METADATA_DOI_LABEL"
               :light="dark"
               :dark="!dark"
-              class="mb-1" />
+            />
+          </v-col>
 
+          <v-col v-if="format"
+                 cols="12"
+                 class="py-1"
+          >
             <BaseIconLabelView
-              v-if="format"
               :text="formatedBytes ? `${format} - ${formatedBytes}` : format"
               :icon="extensionIcon"
               :icon-tooltip="formatedBytes ? 'Resource type and size' : 'Resource type'"
               :light="dark"
               :dark="!dark"
-              class="mb-1"
             />
+          </v-col>
 
-
+          <v-col v-if="created"
+                 cols="12"
+                 class="py-1"
+          >
             <BaseIconLabelView
-              v-if="created"
               :text="readableCreated"
               :icon="mdiTimerPlusOutline"
               icon-tooltip="Date of resource creation"
               :light="dark"
               :dark="!dark"
-              class="mb-1" />
+            />
+          </v-col>
 
+          <v-col v-if="lastModified"
+                 cols="12"
+                 class="py-1"
+          >
             <BaseIconLabelView
-              v-if="lastModified"
               :text="readableLastModified"
               :icon="mdiUpdate"
               icon-tooltip="Date of last modification"
               :light="dark"
               :dark="!dark"
-              class="mb-1" />
+            />
+          </v-col>
 
-
-            <!-- <base-icon-label-view
-              v-if="isDownloaded"
+<!--
+          <v-col v-if="isDownloaded"
+                 cols="12"
+                 class="py-1"
+          >
+             <base-icon-label-view
               :text="'Number of Downloads: ' + String(numberOfDownload)"
               material-icon-name="download"
               icon-tooltip="Number of downloads"
               dark
               class="mb-1"
-            /> -->
-
+            />
           </v-col>
+-->
+
         </v-row>
       </v-container>
     </v-card-text>
@@ -154,7 +203,7 @@
     </v-card-actions>
 
     <v-container
-      v-if="showGenericOpenButton && !isProtected"
+      v-if="showGenericOpenButton && !isProtected && !sparkChartData"
       class="pa-2"
       style="position: absolute; right: 0; width: 55px;"
       :style="`${genericOpenButtonBottom ? 'bottom: 55px;' : 'top: 0;'}`">
@@ -222,6 +271,8 @@
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
+import SparkChart from '@/components/Charts/SparkChart.vue';
+
 import { renderMarkdown, stripMarkdown } from '@/factories/stringFactory';
 import { formatBytes } from '@/factories/metaDataFactory';
 import { EDIT_METADATA_DOI_LABEL } from '@/factories/metadataConsts';
@@ -237,6 +288,7 @@ import {
   mdiShield,
   mdiTimerPlusOutline,
   mdiUpdate,
+  mdiChartBar,
 } from '@mdi/js';
 
 import { trackDownload } from '@/utils/matomoTracking';
@@ -246,6 +298,7 @@ import { formatDate } from '@/factories/dateFactory';
 export default {
   name: 'ResourceCard',
   components: {
+    SparkChart,
     BaseIcon,
     BaseIconLabelView,
     BaseIconButton,
@@ -297,8 +350,19 @@ export default {
       default: false,
     },
     loading: Boolean,
+    sparkChartLabels: {
+      type: Array,
+      required: false,
+      default: undefined,
+    },
+    sparkChartData: {
+      type: Array,
+      required: false,
+      default: undefined,
+    },
   },
   data: () => ({
+    mdiChartBar,
     mdiShield,
     mdiChevronDown,
     mdiDownload,
@@ -312,6 +376,7 @@ export default {
     showFullDescription: false,
     audioFormats: ['mp3', 'wav', 'wma', 'ogg'],
     EDIT_METADATA_DOI_LABEL,
+    chartPreviewTooltip: 'Visualize the data',
   }),
   computed: {
     loadingColor() {
