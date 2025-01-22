@@ -7,10 +7,6 @@
 </template>
 
 <script>
-import 'leaflet/dist/leaflet.css';
-import '@geoman-io/leaflet-geoman-free';
-import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css';
-
 import {
   map as createMap,
   icon as createIcon,
@@ -20,6 +16,10 @@ import {
   divIcon,
   control,
 } from 'leaflet';
+
+import 'leaflet/dist/leaflet.css';
+import '@geoman-io/leaflet-geoman-free';
+import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css';
 
 import { mapState } from 'vuex';
 

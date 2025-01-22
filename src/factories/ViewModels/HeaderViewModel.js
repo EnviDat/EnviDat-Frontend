@@ -17,7 +17,7 @@ import { AuthorsViewModel } from '@/factories/ViewModels/AuthorsViewModel';
 
 export class HeaderViewModel extends AbstractBaseViewModel{
 
-  constructor(datasetDTO, smallScreen, categoryColor, titleImg, authorDeadInfo) {
+  constructor(datasetDTO, smallScreen, categoryColor, titleImg) {
     super(datasetDTO, HeaderViewModel.mappingRules());
 
     this.created = formatDate(this.created);
@@ -30,7 +30,6 @@ export class HeaderViewModel extends AbstractBaseViewModel{
 
     this.authors = AuthorsViewModel.getFormattedAuthors(datasetDTO.author);
 
-    this.authorDeadInfo = authorDeadInfo;
     this.categoryColor = categoryColor;
     this.titleImg = titleImg;
     this.maxTags = smallScreen ? 1 : 12;
@@ -61,8 +60,8 @@ export class HeaderViewModel extends AbstractBaseViewModel{
   }
 }
 
-export const createHeaderViewModel = (datasetDTO, smallScreen, categoryColor, titleImg, authorDeadInfo = null, changeCallback = undefined) => {
-  const headerVM = new HeaderViewModel(datasetDTO, smallScreen, categoryColor, titleImg, authorDeadInfo);
+export const createHeaderViewModel = (datasetDTO, smallScreen, categoryColor, titleImg, changeCallback = undefined) => {
+  const headerVM = new HeaderViewModel(datasetDTO, smallScreen, categoryColor, titleImg);
   const reactiveHeaderVM = reactive(headerVM);
 
   watch(() => reactiveHeaderVM, (newModel) => {

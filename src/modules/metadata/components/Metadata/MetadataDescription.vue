@@ -1,4 +1,4 @@
-<template id="MetadataBody">
+<template id="MetadataDescription">
   <expandable-text-layout
     :title="METADATA_BODY_TITLE"
     :text="description"
@@ -6,12 +6,14 @@
     :maxTextLength="maxTextLength"
     :emptyTextColor="emptyTextColor"
     :emptyText="emptyText"
+    :showFullscreenButton="text?.length > maxTextLength"
+    @fullscreenClick="triggerFullscreen"
   />
 </template>
 
 <script>
 /**
- * MetadataBody.vue renders markdown showing the description of the metadatas.
+ * MetadataDescription.vue renders markdown showing the description of the metadatas.
  *
  * @summary shows the description of a metadata entry
  * @author Dominik Haas-Artho
@@ -25,9 +27,16 @@
 
 import ExpandableTextLayout from '@/components/Layouts/ExpandableTextLayout.vue';
 import { METADATA_BODY_TITLE } from '@/factories/metadataConsts';
+import { eventBus, INJECT_GENERIC_COMPONENT } from '@/factories/eventBus';
+import { defineAsyncComponent } from 'vue';
+
+const MetadataDescriptionAsync = defineAsyncComponent(() =>
+  // eslint-disable-next-line import/no-self-import
+  import('@/modules/metadata/components/Metadata/MetadataDescription.vue'),
+)
 
 export default {
-  name: 'MetadataBody',
+  name: 'MetadataDescription',
   components: {
     ExpandableTextLayout,
   },
@@ -55,7 +64,21 @@ export default {
   },
   computed: {
   },
-  methods: {},
+  methods: {
+    triggerFullscreen() {
+      // define the new max length very long for the fullscreen component
+      // to avoid showing the fullscreen button again and show all the text at once
+      const maxTextLength = 50000;
+
+      eventBus.emit(INJECT_GENERIC_COMPONENT, {
+        asyncComponent: MetadataDescriptionAsync,
+        props: {
+          ...this.$props,
+          maxTextLength,
+        },
+      });
+    },
+  },
   data: () => ({
     METADATA_BODY_TITLE,
   }),

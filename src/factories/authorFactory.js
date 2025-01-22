@@ -21,6 +21,8 @@ import {
   METADATA_CONTACT_FIRSTNAME,
   METADATA_CONTACT_LASTNAME,
 } from '@/factories/metadataConsts';
+import { toRaw } from 'vue';
+import { AUTHOR_ASCII_DEAD } from '@/store/mainMutationsConsts';
 
 const authorDataCreditLevels = [
   { score: 160, lvl: 6 },
@@ -253,6 +255,9 @@ export function createAuthor(author, lastModified = '') {
 
   // console.log(`creating author from ${fullName} dataCredit: ${dataCredit} datasetCount: ${author.datasetCount}`);
 
+  const isAuthorDead = firstName?.includes(AUTHOR_ASCII_DEAD) ||
+    lastName?.includes(AUTHOR_ASCII_DEAD);
+
   return {
     firstName: firstName.trim(),
     lastName: lastName.trim(),
@@ -269,6 +274,7 @@ export function createAuthor(author, lastModified = '') {
     identifier: author.identifier,
     email: author.email,
     isSelected: false,
+    isAuthorDead,
     dataCredit,
     totalDataCredits: author.totalDataCredits || {},
     lastModified,
@@ -661,4 +667,11 @@ export function getAuthorByEmail(email, authors) {
 
   const found = authors.filter(auth => auth.email === email);
   return found[0] || null;
+}
+
+export function replaceAuthorDeadAscii(name) {
+  let rawName = toRaw(name);
+  rawName = rawName.replace(`(${AUTHOR_ASCII_DEAD})`, '');
+  rawName = rawName.replace(AUTHOR_ASCII_DEAD, '');
+  return rawName.trim();
 }

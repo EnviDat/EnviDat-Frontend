@@ -21,13 +21,13 @@
 
     {{ authorName }}
 
-    <v-tooltip v-if="authorIsDead"
+    <v-tooltip v-if="isAuthorDead"
                location='bottom'>
       <template v-slot:activator="{ props }">
         <v-icon v-bind="props" size='small' :icon="mdiTimerSand" />
       </template>
 
-      {{ authorPassedInfo }}
+      {{ AUTHOR_PASSED_INFO }}
     </v-tooltip>
 
   </v-chip>
@@ -49,6 +49,8 @@
 */
 
 import { mdiTimerSand, mdiAccountCircle, mdiClose } from '@mdi/js';
+import { replaceAuthorDeadAscii } from '@/factories/authorFactory';
+import { AUTHOR_ASCII_DEAD, AUTHOR_PASSED_INFO } from '@/store/mainMutationsConsts';
 
 export default {
   props: {
@@ -63,8 +65,6 @@ export default {
       type: String,
       default: '#f8f8f8',
     },
-    asciiDead: String,
-    authorPassedInfo: String,
     isSmall: {
       type: Boolean,
       default: false,
@@ -79,13 +79,18 @@ export default {
     mdiTimerSand,
     mdiAccountCircle,
     mdiClose,
+    AUTHOR_PASSED_INFO,
   }),
   computed: {
-    authorIsDead() {
-      return this.asciiDead && this.name ? this.name.includes(this.asciiDead) : false;
+    isAuthorDead() {
+      return this.name?.includes(AUTHOR_ASCII_DEAD);
     },
     authorName() {
-      return this.authorIsDead ? this.name.replace(`(${this.asciiDead})`, '') : this.name;
+      if (this.isAuthorDead) {
+        return replaceAuthorDeadAscii(this.name);
+      }
+
+      return this.name;
     },
   },
   methods: {

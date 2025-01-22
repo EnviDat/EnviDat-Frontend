@@ -76,7 +76,7 @@ export function createLicense(dataset) {
   };
 }
 
-export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
+export function createHeader(dataset, smallScreen) {
   if (!dataset) {
     return null;
   }
@@ -123,7 +123,6 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
     publicationStatus,
     created,
     modified,
-    authorDeadInfo,
     categoryColor: dataset.categoryColor,
     titleImg: dataset.titleImg,
     maxTags: smallScreen ? 1 : 12,

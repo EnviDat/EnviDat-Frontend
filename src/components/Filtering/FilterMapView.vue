@@ -57,17 +57,18 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import 'leaflet/dist/leaflet.css';
-import 'leaflet.markercluster/dist/MarkerCluster.css';
-import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
-
-import { MarkerClusterGroup } from 'leaflet.markercluster';
-
 import {
   map as createMap,
   featureGroup,
   control,
 } from 'leaflet';
+
+import 'leaflet/dist/leaflet.css';
+import 'leaflet.markercluster/dist/MarkerCluster.css';
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
+
+// import has to be after leaflet import
+import { MarkerClusterGroup } from 'leaflet.markercluster';
 
 import {
   mapGetters,
@@ -551,7 +552,6 @@ export default {
     setupCenterCoords: [46.943961, 8.19924],
     initialBounds: null,
     errorLoadingLeaflet: false,
-    mapLayerGroup: null,
     polygonEnabled: false,
     polygonLayerGroupMap: new Map(),
     multiPinEnabled: true,

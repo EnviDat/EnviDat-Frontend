@@ -74,6 +74,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import { METADATA_DETAILS_TITLE } from '@/factories/metadataConsts';
+import { AUTHOR_ASCII_DEAD } from '@/store/mainMutationsConsts';
 
 export default {
   name: 'MetadataDetails',
@@ -95,7 +96,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    authorDeadInfo: Object,
   },
   data: () => ({
     maxSingleTextLengthLg: 80,
@@ -112,10 +112,7 @@ export default {
       }
 
       return text
-        .replace(
-          `(${this.authorDeadInfo ? this.authorDeadInfo.asciiDead : ''})`,
-          '',
-        )
+        .replace(`(${AUTHOR_ASCII_DEAD})`, '')
         .trim();
     },
     isSingleText: function isSingleText(text) {
