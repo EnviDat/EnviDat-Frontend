@@ -1,23 +1,22 @@
 <template>
   <v-card :class="cardClass">
-    <v-card-title v-if="title" class="metadata_title text-h6 pa-4">
-      <v-row>
+    <v-card-title v-if="title">
+      <v-row no-gutters>
         <v-col class="text-h6 metadata_title grow" align-self="start">
           {{ title }}
         </v-col>
 
-        <v-col class="flex-grow-0 pl-2">
+        <v-col class="flex-grow-0">
           <BaseIconButton
             v-if="showFullscreenButton"
             :icon="mdiArrowExpandAll"
             outlined
             outline-color="secondary"
             icon-color="black"
-            @clicked="triggerFullscreen"
+            @clicked="$emit('fullscreenClick')"
           />
         </v-col>
       </v-row>
-
     </v-card-title>
 
     <v-card-title v-if="showPlaceholder && !title" class="pa-4 pt-0">
@@ -33,7 +32,7 @@
       ref="text"
       :usedMaxTextLength="maxTextLength"
       class="pa-4 pt-0 heightAndScroll readableText"
-      :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
+      :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}; ${ !showFullscreenButton && !maxTextLengthReached ? 'max-height: 100% !important;' : ''}`"
     >
       <div v-html="markdownText"></div>
     </v-card-text>
@@ -85,7 +84,6 @@
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import { renderMarkdown } from '@/factories/stringFactory';
 import { mdiArrowExpandAll, mdiChevronDown } from '@mdi/js';
-import { eventBus, INJECT_GENERIC_COMPONENT } from '@/factories/eventBus';
 
 export default {
   name: 'ExpandableTextLayout',
@@ -138,9 +136,7 @@ export default {
       return '';
     },
     maxTextLengthReached() {
-      return (
-        this.text && this.maxTextLength && this.text.length > this.maxTextLength
-      );
+      return this.text?.length > this.maxTextLength;
     },
     scrollbarColorFront() {
       return this.$vuetify
@@ -159,9 +155,6 @@ export default {
       return this.$refs.text && this.$refs.text.$el.clientHeight >= 500
         ? '0px'
         : '10px';
-    },
-    triggerFullscreen() {
-      this.$emit('fullscreenClick');
     },
   },
   data: () => ({

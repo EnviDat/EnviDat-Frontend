@@ -1,7 +1,22 @@
 <template>
   <v-card id="MetadataAuthors" ref="MetadataAuthors">
-    <v-card-title class="text-h6 metadata_title">
-      {{ METADATA_AUTHORS_TITLE }}
+    <v-card-title >
+      <v-row no-gutters>
+        <v-col class="text-h6 metadata_title grow" align-self="start">
+          {{ METADATA_AUTHORS_TITLE }}
+        </v-col>
+
+        <v-col v-if="showFullscreenButton && hasAuthors"
+               class="flex-grow-0">
+          <BaseIconButton
+            :icon="mdiArrowExpandAll"
+            outlined
+            outline-color="secondary"
+            icon-color="black"
+            @clicked="triggerFullscreen"
+          />
+        </v-col>
+      </v-row>
     </v-card-title>
 
     <v-card-text v-if="showPlaceholder" class="pa-2 pt-0">
@@ -20,8 +35,8 @@
     >
       <v-container
         fluid
-        :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
         class="pa-0 heightAndScroll"
+        :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}; ${ !showFullscreenButton ? 'max-height: 100% !important;' : ''}`"
       >
         <v-row no-gutters>
           <v-col
@@ -32,6 +47,7 @@
             class="pa-2"
           >
             <slot name="editingAuthors" v-bind="author" />
+
             <AuthorCard
               v-if="!hasEditingAuthorsSlot"
               :author="author"
@@ -46,6 +62,7 @@
               :openButtonIcon="author.openButtonIcon"
               :isSelected="author.isSelected"
               :loading="author.loading"
+              :overrideAuthorInfosExpanded="!showFullscreenButton"
               @openButtonClicked="
                 catchOpenClick(author.openEvent, author.openProperty)
               "
@@ -98,8 +115,17 @@ import {
 
 import AuthorCard from '@/modules/metadata/components/AuthorCard.vue';
 import AuthorCardPlaceholder from '@/modules/metadata/components/AuthorCardPlaceholder.vue';
-import { AUTHOR_SEARCH_CLICK, eventBus } from '@/factories/eventBus';
+import { AUTHOR_SEARCH_CLICK, eventBus, INJECT_GENERIC_COMPONENT } from '@/factories/eventBus';
 import ActiveDataCredits from '@/modules/user/components/edit/ActiveDataCredits.vue';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+
+import { mdiArrowExpandAll } from '@mdi/js';
+import { defineAsyncComponent, markRaw } from 'vue';
+
+const MetadataAuthorsAsync = defineAsyncComponent(() =>
+  // eslint-disable-next-line import/no-self-import
+  import('@/modules/metadata/components/Metadata/MetadataAuthors.vue'),
+)
 
 export default {
   name: 'MetadataAuthors',
@@ -127,6 +153,10 @@ export default {
     showPlaceholder: {
       type: Boolean,
       default: false,
+    },
+    showFullscreenButton: {
+      type: Boolean,
+      default: true,
     },
   },
   mounted() {
@@ -176,13 +206,25 @@ export default {
     catchAuthorSearchClick(fullName) {
       eventBus.emit(AUTHOR_SEARCH_CLICK, fullName);
     },
+    triggerFullscreen() {
+      eventBus.emit(INJECT_GENERIC_COMPONENT, {
+        asyncComponent: markRaw(MetadataAuthorsAsync),
+        props: {
+          ...this.$props,
+          // don't show the fullscreen button again to avoid recursion
+          showFullscreenButton: false,
+        },
+      });
+    },
   },
   components: {
     ActiveDataCredits,
     AuthorCard,
     AuthorCardPlaceholder,
+    BaseIconButton,
   },
   data: () => ({
+    mdiArrowExpandAll,
     showAuthors: false,
     checkedGenericProps: false,
     observer: null,
