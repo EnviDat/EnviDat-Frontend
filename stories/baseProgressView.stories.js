@@ -10,18 +10,11 @@
  */
 
 import BaseProgressView from '@/components/BaseElements/BaseProgressView.vue';
-import {
-  envidatViewportParameters,
-  mobileViewportParams,
-} from './js/envidatViewports';
+import { mobileViewportParams } from './js/envidatViewports';
 
 
 export default {
   title: '1 Base / Labels / Progress View',
-  decorators: [],
-  parameters: {
-    ...envidatViewportParameters,
-  },
 };
 
 
