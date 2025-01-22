@@ -28,7 +28,7 @@ const authorsMap = extractAuthorsMap(metadataCards);
 const authorFromCollection = getFullAuthorsFromDataset(
   authorsMap,
   metadataCards[0],
-)[0];
+)[1];
 
 
 export default {
@@ -61,12 +61,11 @@ const authorLoadsOfDatacredit = {
   },
 };
 
+const authorWhichIsDead = createAuthors(metadataCards[0])[0];
+
 export const DeadAuthor = {
   args: {
-    author: {
-      ...authorFromCollection,
-      lastName: `${ authorFromCollection.lastName } ${AUTHOR_ASCII_DEAD}`,
-    },
+    author: authorWhichIsDead,
   },
 }
 
