@@ -1,25 +1,18 @@
-/* eslint-disable import/no-extraneous-dependencies */
-/*
-import {
- withKnobs, text, number,
-} from '@storybook/addon-knobs';
-*/
-import { mdiBookOpenVariantOutline, mdiPencil, mdiLibraryOutline, mdiCodeTags, mdiWidgetsOutline, mdiAccountVoice, mdiAccountSupervisorOutline } from '@mdi/js';
+import { mdiBookOpenVariantOutline, mdiLibraryOutline, mdiCodeTags, mdiWidgetsOutline, mdiAccountVoice, mdiAccountSupervisorOutline } from '@mdi/js';
 
 import AuthorCard from '@/modules/metadata/components/AuthorCard.vue';
-import DataCreditLayout from '@/components/Layouts/DataCreditLayout.vue';
+
 import {
   createAuthors,
   extractAuthorsMap,
   getFullAuthorsFromDataset,
 } from '@/factories/authorFactory';
+import { AUTHOR_ASCII_DEAD } from '@/store/mainMutationsConsts';
 import {
-  envidatViewportParameters,
   mobileLargeViewportParams,
   mobileViewportParams,
   tabletViewportParams,
 } from './js/envidatViewports';
-import authorCollection from './testdata/authorCollection.json';
 
 import unFormatedMetadataCards from './js/metadata';
 
@@ -36,48 +29,17 @@ const authorFromCollection = getFullAuthorsFromDataset(
   authorsMap,
   metadataCards[0],
 )[0];
-const authorFromCollection2 = getFullAuthorsFromDataset(
-  authorsMap,
-  metadataCards[1],
-)[1];
-const authorFromCollection3 = getFullAuthorsFromDataset(
-  authorsMap,
-  metadataCards[2],
-)[2];
-const authorFromCollection4 = getFullAuthorsFromDataset(
-  authorsMap,
-  metadataCards[2],
-)[0];
 
-// console.log(authorFromCollection.totalDataCredits);
-
-const methods = {
-  authors() {
-    const items = Object.values(authorCollection);
-    return items.splice(0, items.length / 2);
-  },
-};
 
 export default {
-  title: '1 Base / Cards /  Author Cards',
-  decorators: [],
-  parameters: {
-    ...envidatViewportParameters,
-  },
+  title: '1 Base / Cards / Author Cards',
+  component: AuthorCard,
 };
 
-const Template = (args, { argTypes }) => ({
-  components: { AuthorCard },
-  props: Object.keys(argTypes),
-  template: '<AuthorCard v-bind="$props" />',
-});
 
-/*
-export const Empty = Template.bind({});
-*/
-
-export const Author1 = Template.bind({});
-Author1.args = { author: authorFromCollection };
+export const Default = {
+  args: { author: authorFromCollection },
+};
 
 const authorLoadsOfDatacredit = {
   firstName: 'Felix',
@@ -99,167 +61,49 @@ const authorLoadsOfDatacredit = {
   },
 };
 
-export const AuthorManyDataCredit = Template.bind({});
-AuthorManyDataCredit.args = { author: authorLoadsOfDatacredit };
-
-export const AuthorCardInfosExpanded = Template.bind({});
-AuthorCardInfosExpanded.args = {
-  ...AuthorManyDataCredit.args,
-  overrideAuthorInfosExpanded: true,
-};
-export const AuthorCardOverallHide = Template.bind({});
-AuthorCardOverallHide.args = {
-  ...AuthorManyDataCredit.args,
-  overrideAuthorInfosExpanded: true,
-  hideDataCredit: true,
-};
-
-export const MobileAuthorCard = Template.bind({});
-MobileAuthorCard.args = { ...AuthorCardInfosExpanded.args };
-MobileAuthorCard.parameters = mobileViewportParams;
-
-export const MobileLargeAuthorCard = Template.bind({});
-MobileLargeAuthorCard.args = { ...AuthorCardInfosExpanded.args };
-MobileLargeAuthorCard.parameters = mobileLargeViewportParams;
-
-export const TabletAuthorCard = Template.bind({});
-TabletAuthorCard.args = { ...AuthorCardInfosExpanded.args };
-TabletAuthorCard.parameters = tabletViewportParams;
-
-export const AuthorCardList = () => ({
-  components: {
-    AuthorCard,
-    DataCreditLayout,
+export const DeadAuthor = {
+  args: {
+    author: {
+      ...authorFromCollection,
+      lastName: `${ authorFromCollection.lastName } ${AUTHOR_ASCII_DEAD}`,
+    },
   },
-  /*
-    props: {
-      author: {
-        default: {
-          firstName: text('firstName', 'Felix'),
-          lastName: text('lastName', 'Gugerli'),
-          fullName: text('fullName', 'Felix Gugerli'),
-          datasetCount: number('datasetCount', 7),
-          affiliation: text('affiliation', 'WSL'),
-          id: {
-            identifier: text('identifier', '0000-0003-3878-1845'),
-          },
-          email: text('email', 'felix.gugerli@wsl.ch'),
-          dataCredit: {
-            collection: number('collection', 1),
-            validation: number('validation', 2),
-            curation: number('curation', 3),
-            software: number('software', 4),
-            publication: number('publication', 5),
-            supervision: number('supervision', 6),
-          },
-        },
-      },
-    },
-*/
-  template: `
-  <v-container grid-list-lg fluid pa-0>
-    <v-row>
+}
 
-<!--      <v-col cols="12" md="4" pt-5 >
-        <author-card :author="emptyAuthor" />
-      </v-col>
+export const AuthorManyDataCredit = {
+  args: { author: authorLoadsOfDatacredit },
+}
 
-      <v-col cols="12" md="4" pt-5 >
+export const AuthorCardInfosExpanded = {
+  args: {
+    ...AuthorManyDataCredit.args,
+    overrideAuthorInfosExpanded: true,
+  },
+}
 
-        <author-card :author="authorFromCollection" />
-      </v-col>
+export const AuthorCardOverallHide = {
+  args: {
+    ...AuthorManyDataCredit.args,
+    overrideAuthorInfosExpanded: true,
+    hideDataCredit: true,
+  },
+}
 
-      <v-col cols="12" md="4" pt-5 >
-        <author-card :author="author" />
-      </v-col>-->
+export const MobileAuthorCard = {
+  args: AuthorCardInfosExpanded.args,
+  parameters: mobileViewportParams,
+}
 
-      <v-col cols="12" md="4" pt-5 >
-        <author-card :author="author" :overrideAuthorInfosExpanded="true"/>
-      </v-col>
+export const MobileLargeAuthorCard = {
+  args: AuthorCardInfosExpanded.args,
+  parameters: mobileLargeViewportParams,
+}
 
-      <v-col cols="12" md="4" pt-5 >
-        <author-card :author="authorFromCollection2" />
-      </v-col>
+export const TabletAuthorCard = {
+  args: AuthorCardInfosExpanded.args,
+  parameters: tabletViewportParams,
+}
 
-      <v-col cols="12" md="4" pt-5 >
-        <author-card :author="authorFromCollection2" :isSelected="true" />
-      </v-col>
-
-      <v-col cols="12" md="4" pt-5 >
-        <author-card :author="authorFromCollection3" :loading="true" />
-      </v-col>
-
-      <v-col cols="12" md="4" pt-5 >
-        <author-card :author="authorFromCollection4"
-                     :loading="true"
-                     :show-generic-open-button="true"
-                     :open-button-icon="mdiPencil"
-                     open-button-tooltip="Editing Author"
-        />
-      </v-col>
-
-      <v-col cols="12" md="4" pt-5 >
-        <author-card :author="author2"
-                     :show-generic-open-button="true"
-                     :open-button-icon="mdiPencil"
-                     open-button-tooltip="Editing Author"
-        />
-      </v-col>
-    </v-row>
-  </v-container>
-  `,
-  methods,
-  computed: {},
-  data: () => ({
-    mdiPencil,
-    authorFromCollection,
-    authorFromCollection2,
-    authorFromCollection3,
-    authorFromCollection4,
-    datasetDataCredit: ['collection', 'software'],
-    author: authorLoadsOfDatacredit,
-    author2: {
-      firstName: 'Felix',
-      lastName: 'Gugerli',
-      fullName: 'Felix Gugerli',
-      datasetCount: 77,
-      affiliation: 'WSL',
-      id: {
-        identifier: '0000-0003-3878-1845',
-      },
-      email: 'felix.gugerli@wsl.ch',
-      totalDataCredits: {
-        collection: 20,
-        validation: 20,
-        curation: 32,
-        software: 30,
-        publication: 15,
-        supervision: 20,
-      },
-    },
-    emptyAuthor: {
-      firstName: 'Some',
-      lastName: 'Dude',
-      fullName: 'Some Dude',
-      datasetCount: 0,
-      affiliation: 'WSL',
-      id: {
-        identifier: '01234-0003-3878-1845',
-      },
-      email: 'some.dude@wsl.ch',
-      totalDataCredits: {
-        collection: 0,
-        validation: 0,
-        curation: 0,
-        software: 0,
-        publication: 0,
-        supervision: 0,
-      },
-    },
-  }),
-});
-
-// stories.addDecorator(withKnobs);
 
 export const BackgroundTest = () => ({
   data: ()=>({

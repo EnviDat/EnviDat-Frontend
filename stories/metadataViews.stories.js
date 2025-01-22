@@ -152,15 +152,11 @@ const funding2 = [
 
 const body1 = createBody(metadata[0]);
 const body2 = createBody(metadata[1]);
-const authorDeadInfo = {
-  asciiDead: '&#8224;',
-  authorPassedInfo: 'Sadly this author has passed away.',
-};
+
 
 const genericProps3 = {
   showPlaceholder: false,
   details: details1,
-  authorDeadInfo,
 };
 
 const location1 = createLocation(metadata[2]);
@@ -284,7 +280,6 @@ export const MetadataDetailsViews = () => ({
     <v-col cols="6" class="py-3">
       <metadata-details v-bind="genericPropsPlaceholder"
                         :showPlaceholder="genericPropsPlaceholder.showPlaceholder"
-                        :authorDeadInfo="genericPropsPlaceholder.authorDeadInfo"
       />
     </v-col>
 
@@ -306,7 +301,6 @@ export const MetadataDetailsViews = () => ({
       details: [],
       showPlaceholder: true,
       fixedHeight: false,
-      authorDeadInfo,
     },
   }),
 });

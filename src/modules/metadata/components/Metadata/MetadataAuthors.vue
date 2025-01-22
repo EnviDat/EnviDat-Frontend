@@ -53,10 +53,6 @@
               :author="author"
               :hideDataCredit="true"
               :authorDetailsConfig="authorDetailsConfig"
-              :asciiDead="authorDeadInfo ? authorDeadInfo.asciiDead : ''"
-              :authorPassedInfo="
-                authorDeadInfo ? authorDeadInfo.authorPassedInfo : ''
-              "
               :showGenericOpenButton="!!author.openEvent"
               :openButtonTooltip="author.openButtonTooltip"
               :openButtonIcon="author.openButtonIcon"
@@ -135,10 +131,6 @@ export default {
       default: undefined, // () => [],
     },
     authorDetailsConfig: {
-      type: Object,
-      default: () => {},
-    },
-    authorDeadInfo: {
       type: Object,
       default: () => {},
     },

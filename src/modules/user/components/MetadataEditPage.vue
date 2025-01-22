@@ -154,6 +154,7 @@ import {
   USER_ROLE_EDITOR,
   USER_ROLE_MEMBER,
 } from '@/factories/userEditingValidations';
+import { replaceAuthorDeadAscii } from '@/factories/authorFactory';
 
 export default {
   name: 'MetadataEditPage',
@@ -222,7 +223,7 @@ export default {
       'uploadNewResourceLoading',
       'userDatasets',
     ]),
-    ...mapState(METADATA_NAMESPACE, ['authorsMap', 'asciiDead']),
+    ...mapState(METADATA_NAMESPACE, ['authorsMap']),
     ...mapGetters(USER_NAMESPACE, ['resources', 'authors']),
     ...mapGetters(METADATA_NAMESPACE, ['existingAuthors', 'existingKeywords']),
     doiWorkflowActive() {
@@ -470,7 +471,7 @@ export default {
       window.open(routeData.href, '_blank');
     },
     catchAuthorCardAuthorSearch(fullName) {
-      const cleanFullName = fullName.replace(`(${this.asciiDead})`, '').trim();
+      const cleanFullName = replaceAuthorDeadAscii(fullName);
 
       const routeData = this.$router.resolve({
         path: `${BROWSE_PATH}?search=${cleanFullName}&isAuthorSearch=true`,
