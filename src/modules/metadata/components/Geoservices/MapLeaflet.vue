@@ -38,6 +38,7 @@ import {
 } from '@/factories/geoFactory';
 import {
   createImageryLayer,
+  createLeafletLayerViaGeoJson,
   createTopoLayer,
   getMultiPointLayer,
   getPointIcon,
@@ -200,9 +201,9 @@ export default {
 
         // const rewound = rewind(geometry);
         // layer = getMultiPolygonLayer(geometry.coordinates, i, `${LOCATION_TYPE_MULTIPOLYGON}-${i}`, false, undefined);
-        layer = this.createLeafletLayerViaGeoJson(geometry, i, `${LOCATION_TYPE_MULTIPOLYGON}-${i}`)
+        layer = createLeafletLayerViaGeoJson(geometry, i, `${LOCATION_TYPE_MULTIPOLYGON}-${i}`, this)
       } else if (geometry.type === LOCATION_TYPE_GEOMCOLLECTION) {
-        layer = this.createLeafletLayerViaGeoJson(geometry, i, `${LOCATION_TYPE_GEOMCOLLECTION}-${i}`)
+        layer = createLeafletLayerViaGeoJson(geometry, i, `${LOCATION_TYPE_GEOMCOLLECTION}-${i}`, this)
 
 /*
         const flatLayers = [];
@@ -220,57 +221,12 @@ export default {
       } else {
         console.log(`Unkown Geometry ${geometry.type}`);
         console.log(geometry);
-        layer = this.createLeafletLayerViaGeoJson(geometry, i, `${LOCATION_TYPE_GEOMCOLLECTION}-${i}`)
+        layer = createLeafletLayerViaGeoJson(geometry, i, `${LOCATION_TYPE_GEOMCOLLECTION}-${i}`, this)
 
         // throw new Error(`Unkown Geometry ${geometry.type}`);
       }
 
       return layer;
-    },
-    createLeafletLayerViaGeoJson(geoJsonArray, id, title) {
-
-      const vueInstance = this;
-
-      return geoJSON(geoJsonArray, {
-        pointToLayer(feature, latlng) {
-          if (vueInstance.isGcnet) {
-            let gcLayer;
-
-            if (feature.properties.active === null || feature.properties.active === undefined) {
-              gcLayer = createMarker(latlng, vueInstance.getCustomLeafletStyle.gcnetMissingStyle);
-            } else if (feature.properties.active === true) {
-              gcLayer = createMarker(latlng, vueInstance.getCustomLeafletStyle.gcnetStyle);
-            } else if (feature.properties.active === false) {
-              gcLayer = createMarker(latlng, vueInstance.getCustomLeafletStyle.gcnetInactiveStyle);
-            }
-
-            gcLayer.on({
-              click: () => {
-                vueInstance.catchGcnetStationClick(feature.properties.alias);
-              },
-            });
-
-            return gcLayer;
-          }
-
-          const layerType = feature.geometry?.type || feature.type;
-
-          if (layerType === LOCATION_TYPE_POINT) {
-            return getPointLayer(feature.geometry.coordinates, id, title, false, undefined);
-          }
-
-          if(layerType === LOCATION_TYPE_MULTIPOINT) {
-            return getMultiPointLayer(feature.geometry.coordinates, id, title, false, undefined);
-          }
-
-          if(layerType === LOCATION_TYPE_POLYGON) {
-            return getPolygonLayer(feature.geometry.coordinates, id, title, false, undefined);
-          }
-
-          return getPointLayer(feature.geometry.coordinates, id, title, false, undefined);
-        },
-        style: vueInstance.getCustomLeafletStyle,
-      });
     },
     createSiteLayers(geoJson) {
 /*

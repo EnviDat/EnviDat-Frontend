@@ -87,7 +87,14 @@ import {
   getPolygonLayer,
 } from '@/factories/leafleftFunctions';
 
-import { createLocation, creationGeometry } from '@/factories/geoFactory';
+import { createLocation } from '@/factories/geoFactory';
+import {
+  LOCATION_TYPE_GEOMCOLLECTION,
+  LOCATION_TYPE_MULTIPOINT,
+  LOCATION_TYPE_MULTIPOLYGON,
+  LOCATION_TYPE_POINT,
+  LOCATION_TYPE_POLYGON,
+} from '@/factories/metadataConsts';
 
 
 export default {
@@ -223,7 +230,7 @@ export default {
         });
 
         // fills this.pinLayerGroup, this.multiPinLayerGroup, this.polygonLayerGroup
-        this.createMapElements(this.content);
+        this.createLayersFromDatasets(this.content);
 
         this.updateMap();
 
@@ -263,86 +270,113 @@ export default {
 
       return map;
     },
-    createLeafletLayer(dataset, location, selected) {
+    addLayerToGroupMap(map, dataset, layer) {
+      let layerCollection = map.get(dataset.id);
+      
+      if (!layerCollection) {
+        layerCollection = [layer]
+      } else if(!layerCollection.includes(layer)) {
+        layerCollection.push(layer);
+      }
+
+      map.set(dataset.id, layerCollection);
+    },
+    removeLayerFromGroupMap(map, dataset, layer) {
+      const layerCollection = map.get(dataset.id);
+
+      if (layerCollection) {
+        const index = layerCollection.indexOf(layer)
+        if (index >= 0) {
+          layerCollection.splice(index, 1)
+          // map.set(dataset.id, layerCollection);
+        }
+      }
+
+    },
+    createLeafletSpecificLayer(dataset, geometry, selected) {
       let layer;
 
-      if (location.isPoint) {
+      if (geometry.type === LOCATION_TYPE_POINT) {
         layer = getPointLayer(
-            location.geomCollection.geometries,
-            dataset.id,
-            dataset.title,
-            selected,
-            this.catchPointClick,
-            this.modeData,
-            dataset,
+          geometry.coordinates,
+          dataset.id,
+          dataset.title,
+          selected,
+          this.catchPointClick,
+          this.modeData,
+          dataset,
         );
-      } else if (location.isMultiPoint) {
+      } else if (geometry.type === LOCATION_TYPE_MULTIPOINT) {
         layer = getMultiPointLayer(
-            location.geomCollection.geometries,
-            dataset.id,
-            dataset.title,
-            selected,
-            this.catchPointClick,
-            this.modeData,
-            dataset,
+          geometry.coordinates,
+          dataset.id,
+          dataset.title,
+          selected,
+          this.catchPointClick,
+          this.modeData,
+          dataset,
         );
-      } else if (location.isPolygon) {
+      } else if (geometry.type === LOCATION_TYPE_POLYGON) {
         layer = getPolygonLayer(
-            location.geomCollection.geometries,
-            dataset.id,
-            dataset.title,
-            selected,
-            this.catchPointClick,
-        );
-      } else if (location.isMultiPolygon) {
-        layer = getMultiPolygonLayer(
-          location.geomCollection.geometries,
+          geometry.coordinates,
           dataset.id,
           dataset.title,
           selected,
           this.catchPointClick,
         );
-      } else if (location.isGeomCollection) {
-        const flatLayers = [];
+      } else if (geometry.type === LOCATION_TYPE_MULTIPOLYGON) {
+        layer = getMultiPolygonLayer(
+          geometry.coordinates,
+          dataset.id,
+          dataset.title,
+          selected,
+          this.catchPointClick,
+        );
+//      } else if (geometry.type === LOCATION_TYPE_GEOMCOLLECTION) {
 
-        location.geomCollection.geometries.forEach(item => {
-          const geo = creationGeometry(item, location)
-          const sublayer = this.createLeafletLayer(dataset, geo, selected);
-
-          if (sublayer) {
-            flatLayers.push(sublayer);
-          }
-        });
-
-        return flatLayers.length > 1 ? flatLayers : flatLayers[0];
       }
-      
+
+      layer.type = geometry.type;
       return layer;
+    },
+    createLeafletLayers(dataset, location, selected) {
+      const layers = [];
+
+      location.geomCollection.geometries.forEach(geometry => {
+        // const geo = creationGeometry(item, location)
+        const sublayer = this.createLeafletSpecificLayer(dataset, geometry, selected);
+
+        if (sublayer) {
+          layers.push(sublayer);
+        }
+      });
+
+      return layers;
     },
     createAllLayers(dataset, location, selected) {
 
-      const layer = this.createLeafletLayer(dataset, location, selected);
+      const layers = this.createLeafletLayers(dataset, location, selected);
 
-      if (layer) {
-        if (location.isPoint) {
-          this.pinLayerGroupMap.set(dataset.id, layer);
-        }
-        if (location.isMultiPoint) {
-          this.multiPinLayerGroupMap.set(dataset.id, layer);
-        }
-        if (location.isPolygon) {
-          this.polygonLayerGroupMap.set(dataset.id, layer);
-        }
-        // this case is not being counted for polygons
-        if (location.isMultiPolygon) {
-          this.multiPolygonLayerGroupMap.set(dataset.id, layer);
+      for (let i = 0; i < layers.length; i++) {
+        const layer = layers[i];
+
+        let mapInQuestion;
+        if (layer.type === LOCATION_TYPE_POINT) {
+          mapInQuestion = this.pinLayerGroupMap;
+        } else if (layer.type === LOCATION_TYPE_MULTIPOINT) {
+          mapInQuestion = this.multiPinLayerGroupMap;
+        } else if (layer.type === LOCATION_TYPE_POLYGON) {
+          mapInQuestion = this.polygonLayerGroupMap;
+        } else if (layer.type === LOCATION_TYPE_MULTIPOLYGON) {
+          mapInQuestion = this.multiPolygonLayerGroupMap;
         }
 
+        this.addLayerToGroupMap(mapInQuestion, dataset, layer);
       }
     },
-    createMapElements(locationDataSet) {
+    createLayersFromDatasets(locationDataSet) {
       if (!locationDataSet) return;
-      // console.time('createMapElements');
+      // console.time('createLayersFromDatasets');
 
       this.pinLayerGroupMap = new Map();
       // this.multiPins = [];
@@ -361,20 +395,9 @@ export default {
         const selected = idsPinned.includes(dataset.id);
 
         this.createAllLayers(dataset, location, selected)
-
-/*
-        if (location.isGeomCollection) {
-          location.geomCollection.geometries.forEach(item => {
-            this.createAllLayers(dataset, item, selected)
-          });
-        }
-        else{
-          this.createAllLayers(dataset, location, selected)
-        }
-*/
       }
 
-      // console.timeEnd('createMapElements');
+      // console.timeEnd('createLayersFromDatasets');
     },
     addElementsToMap(elements, enabled, checkBounds) {
       if (!enabled || !elements || elements.length <= 0) {
@@ -450,10 +473,7 @@ export default {
         return;
       }
 
-      let isArray = true;
-      if (!(elements instanceof Array)) {
-        isArray = false;
-      }
+      const isArray = (elements instanceof Array);
 
       if (!show) {
         if (isArray) {
@@ -476,7 +496,7 @@ export default {
       }
 
       if (isArray) {
-        this.clusterLayer.addLayers(toAdd);
+        this.clusterLayer.addLayers(toAdd, true);
       } else if (toAdd) {
         this.clusterLayer.addLayer(toAdd)
       }
@@ -502,16 +522,27 @@ export default {
     updateGeoSelection(toUpdate, map, selected) {
       for (let i = 0; i < toUpdate.length; i++) {
         const dataset = toUpdate[i];
-        let layer = map.get(dataset.id);
+        const layers = map.get(dataset.id);
 
-        if (layer) {
-          this.showLayersOnCluster(layer, false);
-          this.map.removeLayer(layer);
+        if (layers) {
+          this.showLayersOnCluster(layers, false);
 
-          layer = this.createLeafletLayer(dataset, dataset.location, selected);
+          for (let j = 0; j < layers.length; j++) {
+            const layer = layers[i];
+            this.map.removeLayer(layer);
+            this.removeLayerFromGroupMap(map, dataset.id, layer);
+          }
 
-          this.showLayersOnCluster(layer, true);
-          map.set(dataset.id, layer);
+          const newLayers = this.createLeafletLayers(dataset, dataset.location, selected);
+
+          for (let j = 0; j < newLayers.length; j++) {
+            const l = newLayers[i];
+            // this.map.addLayer(l) is that needed here?
+            // this.map.removeLayer(l);
+            this.addLayerToGroupMap(map, dataset.id, l);
+          }
+
+          this.showLayersOnCluster(newLayers, true);
         }
       }
     },
@@ -522,7 +553,7 @@ export default {
       this.clearLayersFromMap();
       this.clearFromClusterLayer();
 
-      this.createMapElements(this.content);
+      this.createLayersFromDatasets(this.content);
 
       this.updateMap();
     },

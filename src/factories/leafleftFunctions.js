@@ -1,6 +1,6 @@
 
 import {
-  divIcon,
+  divIcon, geoJSON,
   icon as createIcon,
   Icon,
   marker as createMarker,
@@ -20,6 +20,7 @@ import markerShadow from '@/assets/map/marker-shadow.png';
 
 import { EDNA_MODE } from '@/store/metadataMutationsConsts';
 import { mdiMapMarker, mdiMapMarkerMultiple } from '@mdi/js';
+import { LOCATION_TYPE_MULTIPOINT, LOCATION_TYPE_POINT, LOCATION_TYPE_POLYGON } from '@/factories/metadataConsts';
 
 
 export function getPointIcon(selected, multiMarker = false, modeData = undefined, dataset = undefined) {
@@ -191,4 +192,53 @@ export function createImageryLayer() {
     attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
     maxZoom: 19,
   });
+}
+
+
+export function createLeafletLayerViaGeoJson(geoJSONArray, id, title, vueInstance) {
+
+  return geoJSON(geoJSONArray);
+
+/*
+  return geoJSON(geoJson, {
+    pointToLayer(feature, latlng) {
+      if (vueInstance.isGcnet) {
+        let gcLayer;
+
+        if (feature.properties.active === null || feature.properties.active === undefined) {
+          gcLayer = createMarker(latlng, vueInstance.getCustomLeafletStyle.gcnetMissingStyle);
+        } else if (feature.properties.active === true) {
+          gcLayer = createMarker(latlng, vueInstance.getCustomLeafletStyle.gcnetStyle);
+        } else if (feature.properties.active === false) {
+          gcLayer = createMarker(latlng, vueInstance.getCustomLeafletStyle.gcnetInactiveStyle);
+        }
+
+        gcLayer.on({
+          click: () => {
+            vueInstance.catchGcnetStationClick(feature.properties.alias);
+          },
+        });
+
+        return gcLayer;
+      }
+
+      const layerType = feature.geometry?.type || feature.type;
+
+      if (layerType === LOCATION_TYPE_POINT) {
+        return getPointLayer(feature.geometry.coordinates, id, title, false, undefined);
+      }
+
+      if(layerType === LOCATION_TYPE_MULTIPOINT) {
+        return getMultiPointLayer(feature.geometry.coordinates, id, title, false, undefined);
+      }
+
+      if(layerType === LOCATION_TYPE_POLYGON) {
+        return getPolygonLayer(feature.geometry.coordinates, id, title, false, undefined);
+      }
+
+      return getPointLayer(feature.geometry.coordinates, id, title, false, undefined);
+    },
+    style: vueInstance.getCustomLeafletStyle,
+  });
+*/
 }

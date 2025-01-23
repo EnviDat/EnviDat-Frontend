@@ -7,6 +7,7 @@ import {
 } from '@/factories/metadataConsts';
 
 
+/*
 function getMultiPointArray(coordinates) {
   // Return a multipoint array with swapped point coordinates
   const pointArray = [];
@@ -52,12 +53,12 @@ function getMultiPolygonPointArray(coordinates) {
   return multiPolyArray;
 }
 
-/**
+/!**
  * Extract each geometry individually from a multipoint or multipolygon
  *
  * @param {Object} multiGeom valid MultiPoint or MultiPolygon GeoJSON
  * @returns {Array} array of single GeoJSON geometries (Point or Polygon)
- */
+ *!/
 function extractGeomsFromMultiGeoms(multiGeom) {
   let geomType = '';
   if (multiGeom.isMultiPoint) {
@@ -78,12 +79,12 @@ function extractGeomsFromMultiGeoms(multiGeom) {
   return geomArray;
 }
 
-/**
+/!**
  * Extract an array of coordinate arrays with swapped point coordinates for each geom
  *
  * @param {Array} geometries array of GeoJSON objects from GeometryCollection (.geometries)
  * @returns {Array} array of geometry arrays, with swapped coordinates
- */
+ *!/
 function getGeomCollectionPointArray(geometries) {
   // Return an array of coordinate arrays with swapped point coordinates for each geom
 
@@ -115,6 +116,7 @@ function getGeomCollectionPointArray(geometries) {
 
   return geomCollectionArray;
 }
+*/
 
 /**
  * Parse geometries into GeometryCollection GeoJSON format
@@ -129,22 +131,30 @@ export function createGeomCollection(geomArray, propertiesObj = {}) {
     return null;
   }
 
-  let geometries = geomArray;
-  if (!(geometries instanceof Array)) {
-    geometries = [geometries];
-  }
-
-  return {
+  const geoCollection = {
     type: LOCATION_TYPE_GEOMCOLLECTION,
-    geometries,
     properties: propertiesObj,
   };
+
+  if (geomArray.type === LOCATION_TYPE_GEOMCOLLECTION) {
+    geoCollection.geometries = geomArray.geometries;
+  } else {
+
+    let geometries = geomArray;
+    if (!(geometries instanceof Array)) {
+      geometries = [geometries];
+    }
+
+    geoCollection.geometries = geometries;
+  }
+
+  return geoCollection;
 }
 
 export function creationGeometry(geoJSON, properties) {
   const geometry = {};
 
-  geometry.geoJSON = geoJSON;
+  // geometry.geoJSON = geoJSON;
   geometry.isPolygon = geoJSON.type === LOCATION_TYPE_POLYGON;
   geometry.isPoint = geoJSON.type === LOCATION_TYPE_POINT;
   geometry.isMultiPoint = geoJSON.type === LOCATION_TYPE_MULTIPOINT;
@@ -233,7 +243,8 @@ export function createLocation(dataset) {
     }
 
     if (location.geoJSON) {
-      const geometry = creationGeometry(location.geoJSON,
+      const geomCollection = createGeomCollection(location.geoJSON,
+      // const geometry = creationGeometry(location.geoJSON,
         {
           id: location.id,
           name: location.name,
@@ -242,7 +253,7 @@ export function createLocation(dataset) {
 
       location = {
         ...location,
-        ...geometry,
+        geomCollection,
       }
     }
   }
