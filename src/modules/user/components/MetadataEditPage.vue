@@ -153,6 +153,7 @@ import {
   getUserOrganizationRoleMap,
   USER_ROLE_EDITOR,
   USER_ROLE_MEMBER,
+  USER_ROLE_SYSTEM_ADMIN,
 } from '@/factories/userEditingValidations';
 import { replaceAuthorDeadAscii } from '@/factories/authorFactory';
 
@@ -365,7 +366,9 @@ export default {
       // use member as default, which means no editing of the publicationstatus is possible
       let userRole = USER_ROLE_MEMBER;
 
-      if (datasetOrga) {
+      if (this.user?.sysadmin === true) {
+        userRole = USER_ROLE_SYSTEM_ADMIN
+      } else if (datasetOrga) {
         const orgaName = datasetOrga.name;
         userRole = roleMap[orgaName];
 
