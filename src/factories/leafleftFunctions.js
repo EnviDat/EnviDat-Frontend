@@ -1,6 +1,7 @@
 
 import {
-  divIcon, geoJSON,
+  divIcon as createDivIcon,
+  geoJSON,
   icon as createIcon,
   Icon,
   marker as createMarker,
@@ -20,7 +21,6 @@ import markerShadow from '@/assets/map/marker-shadow.png';
 
 import { EDNA_MODE } from '@/store/metadataMutationsConsts';
 import { mdiMapMarker, mdiMapMarkerMultiple } from '@mdi/js';
-import { LOCATION_TYPE_MULTIPOINT, LOCATION_TYPE_POINT, LOCATION_TYPE_POLYGON } from '@/factories/metadataConsts';
 
 
 export function getPointIcon(selected, multiMarker = false, modeData = undefined, dataset = undefined) {
@@ -49,6 +49,7 @@ export function getPointIcon(selected, multiMarker = false, modeData = undefined
   iconOptions.iconSize = [30, 30];
   iconOptions.html = `
         <svg
+          id="${dataset?.id}"
           width="30"
           height="30"
           viewBox="0 0 30 30"
@@ -62,7 +63,7 @@ export function getPointIcon(selected, multiMarker = false, modeData = undefined
         </svg>
       `;
 
-  return divIcon(iconOptions);
+  return createDivIcon(iconOptions);
 }
 
 function ensureLngLatCoords(coords) {

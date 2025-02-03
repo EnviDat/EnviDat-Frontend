@@ -155,10 +155,13 @@ export default {
       return this.modeData ? this.modeData.icons[2] : null;
     },
     pinLayerGroup() {
-      return Array.from(this.pinLayerGroupMap.values());
+      const mapEntries = Array.from(this.pinLayerGroupMap.values());
+      return mapEntries.flat();
     },
     multiPinLayerGroup() {
-      const groupedMultiPins = Array.from(this.multiPinLayerGroupMap.values());
+      const mapEntries = Array.from(this.multiPinLayerGroupMap.values());
+      const groupedMultiPins = mapEntries.flat();
+
       const flatMultiPins = [];
 
       for (let i = 0; i < groupedMultiPins.length; i++) {
@@ -176,7 +179,8 @@ export default {
       return flatMultiPins;
     },
     polygonLayerGroup() {
-      return Array.from(this.polygonLayerGroupMap.values());
+      const mapEntries = Array.from(this.polygonLayerGroupMap.values());
+      return mapEntries.flat();
     },
     pinnedIds() {
       if (this.pinnedContent.length <= 0) {
@@ -281,17 +285,9 @@ export default {
 
       map.set(dataset.id, layerCollection);
     },
-    removeLayerFromGroupMap(map, dataset, layer) {
-      const layerCollection = map.get(dataset.id);
-
-      if (layerCollection) {
-        const index = layerCollection.indexOf(layer)
-        if (index >= 0) {
-          layerCollection.splice(index, 1)
-          // map.set(dataset.id, layerCollection);
-        }
-      }
-
+    clearLayersFromGroup(map, dataset) {
+      // always clear everything because for a dataset layers need to be removed
+      map.set(dataset.id, [])
     },
     createLeafletSpecificLayer(dataset, geometry, selected) {
       let layer;
@@ -507,6 +503,9 @@ export default {
         this.clearFromClusterLayer();
       } else {
         this.clusterLayer = new MarkerClusterGroup();
+        this.clusterLayer.on('layerremove', (data) => {
+          console.log('removed layer', data);
+        })
       }
 
       this.addElementsToMap(this.pinLayerGroup, this.pinEnabled);
@@ -525,18 +524,19 @@ export default {
         const layers = map.get(dataset.id);
 
         if (layers) {
+          for (let j = 0; j < layers.length; j++) {
+            const layer = layers[j];
+            layer.removeFrom(this.map)
+            // this.map.removeLayer(layer);
+          }
           this.showLayersOnCluster(layers, false);
 
-          for (let j = 0; j < layers.length; j++) {
-            const layer = layers[i];
-            this.map.removeLayer(layer);
-            this.removeLayerFromGroupMap(map, dataset.id, layer);
-          }
+          this.clearLayersFromGroup(map, dataset.id);
 
           const newLayers = this.createLeafletLayers(dataset, dataset.location, selected);
 
           for (let j = 0; j < newLayers.length; j++) {
-            const l = newLayers[i];
+            const l = newLayers[j];
             // this.map.addLayer(l) is that needed here?
             // this.map.removeLayer(l);
             this.addLayerToGroupMap(map, dataset.id, l);
