@@ -853,8 +853,8 @@ export default {
     showCookieInfo: true,
     cookieInfoText:
       "On envidat.ch cookies are used to enhance your experience and provide features when you're signed in. These cookies are 'technical only' and are NOT used for tracking or monitoring you.",
-    cookieInfoTextMatomo:
-      "On envidat.ch, essential cookies are used to enhance your experience and provide features when you're signed in. By accepting additional cookies, you consent to anonymized monitoring to improve the usability of EnviDat. If you reject, only essential technical cookies will be used.",
+      cookieInfoTextMatomo:
+  'On envidat.ch, essential cookies are used to enhance your experience and provide features when you\'re signed in. By accepting additional cookies, you consent to anonymized monitoring to improve the usability of EnviDat.<b> The anonymized data is stored on WSL infrastructure and is not sold or shared with any third party. </b>If you reject, only essential technical cookies will be used.',
     redirectToDashboard: false,
     appVersion: import.meta.env.VITE_VERSION,
     showMenu: true,
