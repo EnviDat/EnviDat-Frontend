@@ -39,22 +39,17 @@ import {
 
 import {
   createImageryLayer,
-  createLeafletLayerViaGeoJson,
+  createLeafletLayer,
   createTopoLayer,
-  getMultiPointLayer,
   getPointIcon,
-  getPointLayer,
-  getPolygonLayer, pointStyle, polygonStyle,
+  pointStyle,
+  polygonStyle,
 } from '@/factories/leafletFunctions';
 
 import {
   LOCATION_TYPE_FEATCOLLECTION,
   LOCATION_TYPE_FEATURE,
   LOCATION_TYPE_GEOMCOLLECTION,
-  LOCATION_TYPE_MULTIPOINT,
-  LOCATION_TYPE_MULTIPOLYGON,
-  LOCATION_TYPE_POINT,
-  LOCATION_TYPE_POLYGON,
 } from '@/factories/metadataConsts';
 
 
@@ -182,36 +177,7 @@ export default {
         });
       }
     },
-    createLeafletLayer(geometry, i) {
-      let layer;
 
-      if (this.isGcnet) {
-        return createLeafletLayerViaGeoJson(geometry, i, `${LOCATION_TYPE_GEOMCOLLECTION}-${i}`, this);
-      }
-
-      if (geometry.type === LOCATION_TYPE_POINT) {
-        layer = getPointLayer(geometry.coordinates, i, `${LOCATION_TYPE_POINT}-${i}`, false, undefined);
-      } else if (geometry.type === LOCATION_TYPE_MULTIPOINT) {
-        layer = getMultiPointLayer(geometry.coordinates, i, `${LOCATION_TYPE_MULTIPOINT}-${i}`, false, undefined);
-      } else if (geometry.type === LOCATION_TYPE_POLYGON) {
-        layer = getPolygonLayer(geometry.coordinates, i, `${LOCATION_TYPE_POLYGON}-${i}`, false, undefined);
-      } else if (geometry.type === LOCATION_TYPE_MULTIPOLYGON) {
-
-        // don't manually rewind (change the sequence of the coordination) it's done via the geoJSON from leaflet
-        layer = createLeafletLayerViaGeoJson(geometry, i, `${LOCATION_TYPE_MULTIPOLYGON}-${i}`, this)
-      } else if (geometry.type === LOCATION_TYPE_GEOMCOLLECTION) {
-        layer = createLeafletLayerViaGeoJson(geometry, i, `${LOCATION_TYPE_GEOMCOLLECTION}-${i}`, this)
-
-      } else {
-        console.log(`Unknown Geometry ${geometry.type}`);
-        console.log(geometry);
-        layer = createLeafletLayerViaGeoJson(geometry, i, `${LOCATION_TYPE_GEOMCOLLECTION}-${i}`, this)
-
-        // throw new Error(`Unkown Geometry ${geometry.type}`);
-      }
-
-      return layer;
-    },
     createSiteLayers(geoJson) {
       let geometries = [];
       const siteLayers = [];
@@ -236,7 +202,11 @@ export default {
 
       for (let i = 0; i < geometries.length; i++) {
         const geometry = geometries[i];
-        const layer = this.createLeafletLayer(geometry, i);
+        const layer = createLeafletLayer(geometry, i, `${geometry.type}-${i}`,
+          undefined, undefined,
+          this.isGcnet, undefined, undefined,
+          this,
+        );
 
         if (layer instanceof Array) {
           // if it's a geometry collection
