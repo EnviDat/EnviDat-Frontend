@@ -227,7 +227,7 @@ export default {
     },
   },
   mounted() {
-    eventBus.on(MAP_GEOMETRY_MODIFIED, this.parseGeomCollectionAddToBuffer);
+    eventBus.on(MAP_GEOMETRY_MODIFIED, this.changedGeoViaEditor);
     eventBus.on(EDITMETADATA_DATA_GEO_MAP_ERROR, this.triggerValidationError);
 
     const jsonString = JSON.stringify(this.location.geoJSON);
@@ -238,7 +238,7 @@ export default {
     if (this.saveButtonEnabled) {
       this.commitGeometriesToAPI();
     }
-    eventBus.off(MAP_GEOMETRY_MODIFIED, this.parseGeomCollectionAddToBuffer);
+    eventBus.off(MAP_GEOMETRY_MODIFIED, this.changedGeoViaEditor);
     eventBus.off(EDITMETADATA_DATA_GEO_MAP_ERROR, this.triggerValidationError);
   },
   computed: {
@@ -309,6 +309,10 @@ export default {
     },
   },
   methods: {
+    changedGeoViaEditor(geoJSONArray) {
+      const geoJsonStr = JSON.stringify(geoJSONArray)
+      this.changeGeoViaText(geoJsonStr);
+    },
     changeGeoViaText(text) {
       this.geoJSONValid = this.isValidateGeoJSON(text);
 
