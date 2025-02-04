@@ -64,7 +64,7 @@
 
             <v-col v-show="validationErrors.input"
                    cols="12">
-              <v-alert type="error">
+              <v-alert type="warning">
                 {{ validationErrors.input }}
               </v-alert>
             </v-col>
@@ -312,14 +312,14 @@ export default {
     changeGeoViaText(text) {
       this.geoJSONValid = this.isValidateGeoJSON(text);
 
-      if (this.geoJSONValid) {
+      // if (this.geoJSONValid) {
 
         const inputGeoJSON = JSON.parse(text);
 
         const geoColl = this.converGeoJSONToGeoCollection(inputGeoJSON);
 
         this.parseGeomCollectionAddToBuffer(geoColl);
-      }
+      // }
     },
     isValidateGeoJSON(text) {
       const hint = geojsonhint.hint(text, {
