@@ -94,7 +94,7 @@
           v-for="res in availableResources"
           :key="res.id"
           cols="12"
-          :sm="availableResources.length > 1 ? 6 : 12"
+          :sm="setSmGrid"
           class="pa-2"
         >
           <ResourceCard
@@ -246,6 +246,12 @@ export default {
       const res = this.resources;
 
       return res ? res.filter((r) => !r.hideFromResourceList) : [];
+    },
+    setSmGrid() {
+      if (this.availableResources.length > 1 && !this.s3Store.isS3Resources) {
+        return 6;
+      }
+      return 12;
     },
     dataLicenseUrlField() {
       const licenseId = this.dataLicenseId;

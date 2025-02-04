@@ -226,8 +226,10 @@
       </v-container>
     </v-container>
     <v-container fluid style="width: 100%" v-if="!isProtected && !isFile">
-      <v-divider></v-divider>
-      <S3Tree v-if="isEnvicloudUrl" @setStatus="changeHeight" :url="url" />
+      <template v-if="isEnvicloudUrl">
+        <v-divider />
+        <S3Tree @setStatus="changeHeight" :url="url" />
+      </template>
     </v-container>
   </v-card>
 </template>
@@ -399,6 +401,10 @@ export default {
       },
     ],
   }),
+  mounted() {
+    // set in the store the isS3Resources property, this property is needed to manage the card style in the sm view
+    this.setIfS3isPresent();
+  },
   computed: {
     loadingColor() {
       if (this.loading) {
@@ -523,6 +529,11 @@ export default {
     trackDownload,
     changeHeight(value) {
       this.setAutoHeight = value;
+    },
+    setIfS3isPresent() {
+      if (this.isEnvicloudUrl && !this.isProtected && !this.isFile) {
+        this.s3Store.isS3Resources = true;
+      }
     },
   },
 };

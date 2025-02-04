@@ -16,6 +16,7 @@ export const useS3Store = defineStore({
     s3Url: null,
     s3BucketUrl: null,
     treeViewIsOpened: false,
+    isS3Resources: false,
   }),
   getters: {},
   actions: {
