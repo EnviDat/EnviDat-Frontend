@@ -332,3 +332,23 @@ export function fetureCollectionToGeoCollection(featureColl) {
 
   return createGeomCollection(geometries, properties);
 }
+
+export function singlePointsToMultiPoints(geometries, asGeoCollection) {
+  const multiPointCoords = []
+
+  for (let i = 0; i < geometries.length; i++) {
+    const geometry = geometries[i];
+    multiPointCoords.push(geometry.coordinates);
+  }
+
+  const multiPointGeometry = {
+    type: LOCATION_TYPE_MULTIPOINT,
+    coordinates: multiPointCoords,
+  }
+
+  if (asGeoCollection) {
+    return createGeomCollection(multiPointGeometry);
+  }
+
+  return multiPointGeometry;
+}
