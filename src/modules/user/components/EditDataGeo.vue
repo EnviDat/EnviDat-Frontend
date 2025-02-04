@@ -71,11 +71,15 @@
 
             <v-col cols="12"
                    class="text-h6">
-              Pretty Preview
+              Preview
             </v-col>
 
             <v-col cols="12">
-              <div class="json-container" v-html="geoJSONHtml" ></div>
+              <div class="columns">
+                <div class="column">
+                  <div class="jsoneditor-vue" id="jsoneditor-vue" ref="editorRef"></div>
+                </div>
+              </div>
             </v-col>
 
           </v-row>
@@ -167,8 +171,7 @@ import {
 } from '@/factories/geoFactory';
 
 import geojsonhint from '@mapbox/geojsonhint';
-// import 'pretty-print-json/dist/css/pretty-print-json.css';
-import { prettyPrintJson } from 'pretty-print-json';
+import { createJSONEditor } from 'vanilla-jsoneditor';
 
 export default {
   name: 'EditDataGeo',
@@ -233,6 +236,8 @@ export default {
     const jsonString = JSON.stringify(this.location.geoJSON);
 
     this.changeGeoViaText(jsonString);
+
+    this.initEditor(jsonString);
   },
   beforeUnmount() {
     if (this.saveButtonEnabled) {
@@ -240,6 +245,8 @@ export default {
     }
     eventBus.off(MAP_GEOMETRY_MODIFIED, this.changedGeoViaEditor);
     eventBus.off(EDITMETADATA_DATA_GEO_MAP_ERROR, this.triggerValidationError);
+
+    this.jsonEditor.destroy()
   },
   computed: {
     loadingColor() {
@@ -279,29 +286,41 @@ export default {
     geomsForMapString() {
       return this.geomsForMap ? JSON.stringify(this.geomsForMap) : '';
     },
-    geoJSONHtml() {
-      return prettyPrintJson.toHtml(this.geomsForMap, {
-        indent: 2,
-        lineNumbers: true,
-        quoteKeys: true,
-        trailingCommas: true,
-      });
-    },
+    editorOptions(){
+      return {
 /*
-    geoJSONHintPreview() {
-      const geomString = this.geomsForMapString;
-
-      if (geomString) {
-        const hints = geojsonhint.hint(geomString, {});
-
-        if (hints) {
-          return `${geomString} \n\n\n ${JSON.stringify(hints)}`;
-        }
-      }
-
-      return geomString;
-    },
+        readOnly: props.readOnly,
+        mode: props.mode,
 */
+        selection:
+        indentation: 2,
+        navigationBar: false,
+        /*
+        mainMenuBar: true,
+        statusBar: true,
+        tabSize,
+        askToFormat,
+        escapeControlCharacters,
+        escapeUnicodeCharacters,
+        flattenColumns,
+        */
+        onChange: (updatedContent, previousContent, status) => {
+          // content is an object { json: unknown } | { text: string }
+          // const { contentErrors, patchResult } = status;
+          // console.log('onChange', { updatedContent, previousContent, contentErrors, patchResult })
+          // contentRef.value = updatedContent;
+
+          const contentAsString = updatedContent.text ? updatedContent.text : JSON.stringify(updatedContent.json);
+          this.changeGeoViaText(contentAsString);
+
+          // emit('editorChange', updatedContent);
+        },
+        onError: (err) => {
+          console.error(err)
+          // emit('editorError', err);
+        },
+      }
+    },
   },
   watch: {
     location() {
@@ -309,6 +328,33 @@ export default {
     },
   },
   methods: {
+    initEditor (textContent, jsonContent) {
+
+      const content = textContent ? { text: textContent } : { json: jsonContent };
+
+      try {
+        if (this.jsonEditor) {
+          console.log('JSONEditor update');
+          this.jsonEditor.update(content);
+
+          return;
+        }
+
+        console.log('JSONEditor init');
+
+        this.jsonEditor = createJSONEditor({
+          target: this.$refs.editorRef,
+          props: {
+            content,
+            ...this.editorOptions,
+          },
+        });
+      } catch (err) {
+        console.error(err);
+        // emit('editorError', err);
+      }
+
+    },
     changedGeoViaEditor(geoJSONArray) {
       const geoJsonStr = JSON.stringify(geoJSONArray)
       this.changeGeoViaText(geoJsonStr);
@@ -401,7 +447,9 @@ export default {
       this.editedGeomBuffer.pop();
 
       if (this.editedGeomBuffer.length === 0) {
+/*
         this.commitGeometriesToAPI();
+*/
         this.undoButtonEnabled = false;
       }
     },
@@ -440,7 +488,7 @@ export default {
       reader.onload = () => {
         this.changeGeoViaText(reader.result);
       }
-      
+
       reader.onerror = (e) => {
         this.validationErrors.geometries = `Could not load file. Is it GeoJSON? ${e}`;
       }
@@ -459,6 +507,7 @@ export default {
 */
   },
   data: () => ({
+    jsonEditor: undefined,
     geoJSONValid: false,
     labels: {
       cardTitle: EDIT_METADATA_GEODATA_TITLE,
