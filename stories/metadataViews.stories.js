@@ -16,7 +16,6 @@
 import MetadataDescription from '@/modules/metadata/components/Metadata/MetadataDescription.vue';
 import MetadataCitation from '@/modules/metadata/components/Metadata/MetadataCitation.vue';
 import MetadataDetails from '@/modules/metadata/components/Metadata/MetadataDetails.vue';
-import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo.vue';
 import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications.vue';
 import MetadataPublicationList from '@/modules/metadata/components/Metadata/MetadataPublicationList.vue';
 import MetadataFunding from '@/modules/metadata/components/Metadata/MetadataFunding.vue';
@@ -45,12 +44,6 @@ import citationTesting from './js/citationTesting';
 import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue';
 
 import envidat_packages from './testdata/packagelist.json';
-import { getFrontendJSONForStep } from '@/factories/mappingFactory';
-import {
-  EDITMETADATA_MAIN_HEADER,
-  EDITMETADATA_PUBLICATION_INFO,
-} from '@/factories/eventBus';
-import { createLocation } from '@/factories/geoFactory';
 
 export default {
   title: '3 Dataset / 1 Views',
@@ -157,14 +150,6 @@ const body2 = createBody(metadata[1]);
 const genericProps3 = {
   showPlaceholder: false,
   details: details1,
-};
-
-const location1 = createLocation(metadata[2]);
-
-const genericProps4 = {
-  showPlaceholder: false,
-  site: location1.geomCollection,
-  mapHeight: 450,
 };
 
 const authorsMap = extractAuthorsMap(metadata);
@@ -305,30 +290,6 @@ export const MetadataDetailsViews = () => ({
   }),
 });
 
-export const MetadataLocationViews = () => ({
-  components: { MetadataGeo },
-  template: `
-  <v-row >
-
-    <v-col cols="6" class="py-3">
-      <MetadataGeo v-bind="genericProps4" />
-    </v-col>
-
-    <v-col cols="6" class="py-3">
-      <MetadataGeo v-bind="genericPropsPlaceholder"
-                    :showPlaceholder="genericPropsPlaceholder.showPlaceholder" />
-    </v-col>
-
-  </v-row>
-  `,
-  data: () => ({
-    genericProps4,
-    genericPropsPlaceholder: {
-      ...genericProps4,
-      showPlaceholder: true,
-    },
-  }),
-});
 
 export const MetadataRelatedPublicationsViews = () => ({
   components: { MetadataPublications },

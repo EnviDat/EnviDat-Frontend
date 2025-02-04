@@ -85,7 +85,7 @@ import {
   getMultiPolygonLayer,
   getPointLayer,
   getPolygonLayer,
-} from '@/factories/leafleftFunctions';
+} from '@/factories/leafletFunctions';
 
 import { createLocation } from '@/factories/geoFactory';
 import {
@@ -107,6 +107,7 @@ export default {
   },
   mounted() {
     this.setupMap();
+
     if (this.modeData && this.modeData.name === EDNA_MODE && !this.modeData.isShallow){
       this.polygonEnabled = true;
     }
@@ -183,7 +184,7 @@ export default {
       return mapEntries.flat();
     },
     pinnedIds() {
-      if (this.pinnedContent.length <= 0) {
+      if (!this.pinnedContent || this.pinnedContent.length <= 0) {
         return [];
       }
 
@@ -503,9 +504,11 @@ export default {
         this.clearFromClusterLayer();
       } else {
         this.clusterLayer = new MarkerClusterGroup();
+/*
         this.clusterLayer.on('layerremove', (data) => {
           console.log('removed layer', data);
         })
+*/
       }
 
       this.addElementsToMap(this.pinLayerGroup, this.pinEnabled);

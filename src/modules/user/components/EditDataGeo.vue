@@ -163,7 +163,6 @@ import {
 import {
   defaultSwissLocation,
   fetureCollectionToGeoCollection,
-  creationGeometry,
   createGeomCollection,
 } from '@/factories/geoFactory';
 
@@ -234,10 +233,6 @@ export default {
     const jsonString = JSON.stringify(this.location.geoJSON);
 
     this.changeGeoViaText(jsonString);
-/*
-    const geoColl = this.converGeoJSONToGeoCollection(this.location?.geoJSON);
-    this.parseGeomCollectionAddToBuffer(geoColl);
-*/
   },
   beforeUnmount() {
     if (this.saveButtonEnabled) {
@@ -441,32 +436,7 @@ export default {
       reader.onload = () => {
         this.changeGeoViaText(reader.result);
       }
-/*
-      reader.onload = () => {
-        // Attempt GeoJSON
-        try {
-          const inputGeoJSON = JSON.parse(reader.result);
-
-          let newGeometries = [];
-          
-          if (inputGeoJSON.type === LOCATION_TYPE_FEATCOLLECTION) {
-            const geomColl = fetureCollectionToGeoCollection(inputGeoJSON)
-            newGeometries = geomColl.geometries;
-          } else {
-            newGeometries = creationGeometry(inputGeoJSON).geomCollection.geometries;
-          }
-
-          const currentGeometries = this.geomsForMap.type === LOCATION_TYPE_GEOMCOLLECTION ? this.geomsForMap.geometries : [{ ...this.geomsForMap }];
-
-          newGeometries.forEach((geometry) => currentGeometries.push(geometry));
-
-          this.parseGeomCollectionAddToBuffer(currentGeometries);
-        } catch (e) {
-          this.validationErrors.geometries = `Could not load file. Is it GeoJSON? ${e}`;
-        }
-      };
-*/
-
+      
       reader.onerror = (e) => {
         this.validationErrors.geometries = `Could not load file. Is it GeoJSON? ${e}`;
       }

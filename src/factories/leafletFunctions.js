@@ -21,10 +21,21 @@ import markerShadow from '@/assets/map/marker-shadow.png';
 
 import { EDNA_MODE } from '@/store/metadataMutationsConsts';
 import { mdiMapMarker, mdiMapMarkerMultiple } from '@mdi/js';
+import { LOCATION_TYPE_MULTIPOINT, LOCATION_TYPE_POINT, LOCATION_TYPE_POLYGON } from '@/factories/metadataConsts';
 
+
+export const pointStyle = (selected) => ({
+  color: selected ? '#00897b' : 'black',
+  riseOnHover: true,
+})
+
+export const polygonStyle = (selected, editing) => ({
+  color: selected ? '#00897b' : '#ffd740',
+  opacity: 0.55,
+  fillOpacity: editing ? 0.25 : 0,
+})
 
 export function getPointIcon(selected, multiMarker = false, modeData = undefined, dataset = undefined) {
-  const iconOptions = Icon.Default.prototype.options;
   // use the default options to ensure that all untouched defaults stay in place
 
   if (modeData && modeData.name !== EDNA_MODE && modeData.icons) {
@@ -36,6 +47,8 @@ export function getPointIcon(selected, multiMarker = false, modeData = undefined
       iconUrl = modeData.icons[extraValue];
     }
 
+    const iconOptions = Icon.Default.prototype.options;
+
     return createIcon({
       ...iconOptions,
       iconUrl,
@@ -46,6 +59,8 @@ export function getPointIcon(selected, multiMarker = false, modeData = undefined
     })
   }
 
+  const style = pointStyle(selected)
+  const iconOptions = {}
   iconOptions.iconSize = [30, 30];
   iconOptions.html = `
         <svg
@@ -57,7 +72,7 @@ export function getPointIcon(selected, multiMarker = false, modeData = undefined
           role="img"
           preserveAspectRatio="none"
           isSelected="${selected}"
-          style="color: ${ selected ? '#00897b' : 'black' }"
+          style="color: ${ style.color }"
         >
           <path d="${ multiMarker ? mdiMapMarkerMultiple : mdiMapMarker}" transform="scale(1.25, 1.25)"></path>
         </svg>
@@ -142,11 +157,7 @@ export function getPolygonLayer(coords, id, title, selected, onClick) {
     }
   }
 
-  const polygon = createPolygon(flippedCoords, {
-    color: selected ? '#00897b' : '#ffd740',
-    opacity: 0.55,
-    fillOpacity: 0,
-  });
+  const polygon = createPolygon(flippedCoords, polygonStyle(selected));
 
   polygon.on('click', (e) => {
     onClick(e.target.id);
@@ -195,10 +206,60 @@ export function createImageryLayer() {
   });
 }
 
+function createGcNetLayers(feature, latlng, vueInstance){
+
+  let style = vueInstance.getCustomLeafletStyle.gcnetStyle
+
+  if (feature.properties) {
+    if (feature.properties.active === null || feature.properties.active === undefined) {
+      style = vueInstance.getCustomLeafletStyle.gcnetMissingStyle;
+    } else if (feature.properties.active === true) {
+      style = vueInstance.getCustomLeafletStyle.gcnetStyle;
+    } else if (feature.properties.active === false) {
+      style = vueInstance.getCustomLeafletStyle.gcnetInactiveStyle;
+    }
+  }
+
+  const gcLayer = createMarker(latlng, style);
+
+  gcLayer.on({
+    click: () => {
+      vueInstance.catchGcnetStationClick(feature.properties.alias);
+    },
+  });
+
+  return gcLayer;
+}
 
 export function createLeafletLayerViaGeoJson(geoJSONArray, id, title, vueInstance) {
 
-  return geoJSON(geoJSONArray);
+  const layerId = id
+  const layerTitle = title
+
+  return geoJSON(geoJSONArray, {
+    style: vueInstance.getCustomLeafletStyle,
+    pointToLayer: (feature, latlng) => {
+      if (vueInstance.isGcnet) {
+        return createGcNetLayers(feature, latlng, vueInstance);
+      }
+
+      const layerType = feature.geometry?.type || feature.type;
+
+      if (layerType === LOCATION_TYPE_POINT) {
+        return getPointLayer(feature.geometry.coordinates, layerId, layerTitle, false, undefined);
+      }
+
+      if(layerType === LOCATION_TYPE_MULTIPOINT) {
+        return getMultiPointLayer(feature.geometry.coordinates, layerId, layerTitle, false, undefined);
+      }
+
+      if(layerType === LOCATION_TYPE_POLYGON) {
+        return getPolygonLayer(feature.geometry.coordinates, layerId, layerTitle, false, undefined);
+      }
+
+      return getPointLayer(feature.geometry.coordinates, layerId, layerTitle, false, undefined);
+    },
+  });
 
 /*
   return geoJSON(geoJson, {

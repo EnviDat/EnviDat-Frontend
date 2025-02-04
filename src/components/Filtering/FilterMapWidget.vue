@@ -2,7 +2,7 @@
   <filter-map-widget-layout
     :title="title"
     :highlightedText="highlightedText"
-    :pinnedAmount="pinnedIds.length"
+    :pinnedAmount="pinnedIds ? pinnedIds.length : 0"
     :hasPins="hasPins"
     :hasMultiPins="hasMultiPins"
     :hasPolygons="hasPolygons"

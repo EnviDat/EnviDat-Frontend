@@ -36,6 +36,7 @@ import {
   defaultWorldLocation,
   geomanGeomsToGeoJSON,
 } from '@/factories/geoFactory';
+
 import {
   createImageryLayer,
   createLeafletLayerViaGeoJson,
@@ -43,8 +44,9 @@ import {
   getMultiPointLayer,
   getPointIcon,
   getPointLayer,
-  getPolygonLayer,
-} from '@/factories/leafleftFunctions';
+  getPolygonLayer, pointStyle, polygonStyle,
+} from '@/factories/leafletFunctions';
+
 import {
   LOCATION_TYPE_FEATCOLLECTION,
   LOCATION_TYPE_FEATURE,
@@ -129,6 +131,7 @@ export default {
       return this.mapEditable;
     },
     getCustomLeafletStyle() {
+      const pointColor = pointStyle()
       const icon = getPointIcon(false, false, undefined);
 
       return {
@@ -136,16 +139,9 @@ export default {
           icon,
           opacity: 0.65,
           riseOnHover: true,
+          ...pointColor,
         },
-        customPolygonStyle: {
-          // color: this.$vuetify.theme.themes.light.colors.accent,
-          // fillOpacity: 0.5,
-          // opacity: 1,
-          // weight: 1,
-          color: '#ffd740',
-          opacity: 0.55,
-          fillOpacity: 0,
-        },
+        customPolygonStyle: polygonStyle(undefined, true),
         gcnetStyle: {
           icon: divIcon({
             className: 'rounded-circle green',
@@ -189,37 +185,25 @@ export default {
     createLeafletLayer(geometry, i) {
       let layer;
 
+      if (this.isGcnet) {
+        return createLeafletLayerViaGeoJson(geometry, i, `${LOCATION_TYPE_GEOMCOLLECTION}-${i}`, this);
+      }
+
       if (geometry.type === LOCATION_TYPE_POINT) {
         layer = getPointLayer(geometry.coordinates, i, `${LOCATION_TYPE_POINT}-${i}`, false, undefined);
       } else if (geometry.type === LOCATION_TYPE_MULTIPOINT) {
         layer = getMultiPointLayer(geometry.coordinates, i, `${LOCATION_TYPE_MULTIPOINT}-${i}`, false, undefined);
       } else if (geometry.type === LOCATION_TYPE_POLYGON) {
-
-        // const rewound = rewind(geometry);
         layer = getPolygonLayer(geometry.coordinates, i, `${LOCATION_TYPE_POLYGON}-${i}`, false, undefined);
       } else if (geometry.type === LOCATION_TYPE_MULTIPOLYGON) {
 
-        // const rewound = rewind(geometry);
-        // layer = getMultiPolygonLayer(geometry.coordinates, i, `${LOCATION_TYPE_MULTIPOLYGON}-${i}`, false, undefined);
+        // don't manually rewind (change the sequence of the coordination) it's done via the geoJSON from leaflet
         layer = createLeafletLayerViaGeoJson(geometry, i, `${LOCATION_TYPE_MULTIPOLYGON}-${i}`, this)
       } else if (geometry.type === LOCATION_TYPE_GEOMCOLLECTION) {
         layer = createLeafletLayerViaGeoJson(geometry, i, `${LOCATION_TYPE_GEOMCOLLECTION}-${i}`, this)
 
-/*
-        const flatLayers = [];
-
-        geometry.geometries.forEach(item => {
-          const sublayer = this.createLeafletLayer(item, i);
-
-          if (sublayer) {
-            flatLayers.push(sublayer);
-          }
-        });
-
-        return flatLayers;
-*/
       } else {
-        console.log(`Unkown Geometry ${geometry.type}`);
+        console.log(`Unknown Geometry ${geometry.type}`);
         console.log(geometry);
         layer = createLeafletLayerViaGeoJson(geometry, i, `${LOCATION_TYPE_GEOMCOLLECTION}-${i}`, this)
 
@@ -229,34 +213,12 @@ export default {
       return layer;
     },
     createSiteLayers(geoJson) {
-/*
-      if (!geoJson) {
-        this.siteLayer = null;
-        return;
-      }
-*/
-
       let geometries = [];
-      // const propertiesArray = [];
       const siteLayers = [];
 
       if (geoJson.type === LOCATION_TYPE_GEOMCOLLECTION) {
-        const layer = this.createLeafletLayer(geoJson);
-
-        if (layer instanceof Array) {
-          // if it's a geometry collection
-          for (let j = 0; j < layer.length; j++) {
-            const subLayer = layer[j];
-            siteLayers.push(subLayer);
-          }
-        } else {
-          siteLayers.push(layer);
-        }
-
-        return siteLayers;
-      }
-
-      if (geoJson.type === LOCATION_TYPE_FEATURE) {
+        geometries = geoJson.geometries;
+      } else if (geoJson.type === LOCATION_TYPE_FEATURE) {
         // Split geometry from feature object
         geometries.push(geoJson.geometry);
         // propertiesArray.push(geoJson.properties);
@@ -274,7 +236,7 @@ export default {
 
       for (let i = 0; i < geometries.length; i++) {
         const geometry = geometries[i];
-        const layer = this.createLeafletLayer(geometry);
+        const layer = this.createLeafletLayer(geometry, i);
 
         if (layer instanceof Array) {
           // if it's a geometry collection
@@ -288,83 +250,6 @@ export default {
       }
 
       return siteLayers;
-/*
-      const styleObj = this.getCustomLeafletStyle();
-
-      const isGcnet = this.isGcnet;
-
-      const vueInstance = this;
-*/
-
-/*
-      this.siteLayer = geoJSON(geoJsonArray, {
-        pointToLayer(feature, latlng) {
-          if (isGcnet) {
-            let gcLayer;
-
-            if (feature.properties.active === null || feature.properties.active === undefined) {
-              gcLayer = createMarker(latlng, styleObj.gcnetMissingStyle);
-            } else if (feature.properties.active === true) {
-              gcLayer = createMarker(latlng, styleObj.gcnetStyle);
-            } else if (feature.properties.active === false) {
-              gcLayer = createMarker(latlng, styleObj.gcnetInactiveStyle);
-            }
-
-            gcLayer.on({
-              click: () => {
-                vueInstance.catchGcnetStationClick(feature.properties.alias);
-              },
-            });
-
-            return gcLayer;
-          }
-
-          const title = feature.properties?.name || undefined;
-          const layerType = feature.geometry?.type || feature.type;
-
-          if (layerType === LOCATION_TYPE_POINT) {
-            return getPointLayer(latlng, '1', title, false, undefined);
-          }
-
-          if(layerType === LOCATION_TYPE_MULTIPOINT) {
-            return getMultiPointLayer(latlng, '2', title, false, undefined);
-          }
-
-          if(layerType === LOCATION_TYPE_POLYGON) {
-            return getPolygonLayer(latlng, '2', title, false, undefined);
-          }
-
-          return getPointLayer(latlng, '1', title, false, undefined);
-          // return createMarker(latlng, styleObj.customPointStyle);
-        },
-        style: styleObj.customPolygonStyle,
-      });
-*/
-
-/*
-      if (isGcnet) {
-        this.siteLayer.eachLayer(layer => {
-          layer.bindTooltip(
-            `<div>
-              <b>${layer.feature.properties.name}</b>
-              <br/>
-              Elevation: ${layer.feature.properties.elevation}
-            </div>
-            `,
-            {
-              className: 'rounded-xl text-md-center subtitle-1',
-              permanent: false,
-            },
-          );
-
-          // Open popup data modal on click
-        });
-      }
-
-      // this.siteLayer.bindPopup(layer => layer.feature.properties.description);
-
-      this.map.addLayer(this.siteLayer);
-*/
     },
     showSiteLayersOnMap(show) {
       if (!this.siteLayers) {
