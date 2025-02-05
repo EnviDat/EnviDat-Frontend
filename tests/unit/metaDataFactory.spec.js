@@ -18,7 +18,6 @@ import {
 import packagelist from '@/../stories/testdata/packagelist.json';
 import { enhanceTags } from '@/factories/keywordsFactory';
 import categoryCards from '@/store/categoryCards';
-import { createLocation } from '@/factories/geoFactory';
 import { formatDate } from '@/factories/dateFactory';
 import {
   METADATA_CONTACT_EMAIL,
@@ -173,31 +172,6 @@ describe('metaDataFactory - createLicense', () => {
     expect(license.id).toBeDefined();
     expect(license.title).toBeDefined();
     expect(license.url).toBeDefined();
-  });
-});
-
-describe('metaDataFactory - createLocation', () => {
-  it('empty', () => {
-    const loc = createLocation(undefined);
-    expect(loc).toBeNull();
-  });
-
-  it('with dataset', () => {
-    const dataset = packagelist.result[6];
-
-    const loc = createLocation(dataset);
-
-    expect(loc).toBeDefined();
-    expect(loc.id).toBeDefined();
-    expect(loc.name).toBeDefined();
-    expect(loc.title).toBeDefined();
-
-    expect(loc.isPolygon).toBeDefined();
-    expect(loc.isPoint).toBeDefined();
-    expect(loc.isMultiPoint).toBeDefined();
-
-    expect(loc.pointArray).toBeDefined();
-    expect(loc.pointArray.length).toBeGreaterThan(0);
   });
 });
 

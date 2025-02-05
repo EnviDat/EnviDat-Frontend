@@ -7,6 +7,7 @@ import {
 } from '@/factories/metadataConsts';
 
 
+/*
 function getMultiPointArray(coordinates) {
   // Return a multipoint array with swapped point coordinates
   const pointArray = [];
@@ -52,18 +53,18 @@ function getMultiPolygonPointArray(coordinates) {
   return multiPolyArray;
 }
 
-/**
+/!**
  * Extract each geometry individually from a multipoint or multipolygon
  *
  * @param {Object} multiGeom valid MultiPoint or MultiPolygon GeoJSON
  * @returns {Array} array of single GeoJSON geometries (Point or Polygon)
- */
+ *!/
 function extractGeomsFromMultiGeoms(multiGeom) {
   let geomType = '';
   if (multiGeom.isMultiPoint) {
-    geomType = 'Point';
+    geomType = LOCATION_TYPE_POINT;
   } else if (multiGeom.isMultiPolygon) {
-    geomType = 'Polygon';
+    geomType = LOCATION_TYPE_POLYGON;
   }
 
   const geomArray = [];
@@ -78,20 +79,21 @@ function extractGeomsFromMultiGeoms(multiGeom) {
   return geomArray;
 }
 
-/**
+/!**
  * Extract an array of coordinate arrays with swapped point coordinates for each geom
  *
  * @param {Array} geometries array of GeoJSON objects from GeometryCollection (.geometries)
  * @returns {Array} array of geometry arrays, with swapped coordinates
- */
+ *!/
 function getGeomCollectionPointArray(geometries) {
   // Return an array of coordinate arrays with swapped point coordinates for each geom
 
-  let pointArray = [];
   const geomCollectionArray = [];
-  let category = '';
 
   geometries.forEach(geometry => {
+    let pointArray = [];
+    let category = '';
+
     if (geometry.type === LOCATION_TYPE_POINT) {
       pointArray = [geometry.coordinates[1], geometry.coordinates[0]];
       category = 'isPoint';
@@ -105,6 +107,7 @@ function getGeomCollectionPointArray(geometries) {
       pointArray = getMultiPolygonPointArray(geometry.coordinates);
       category = 'isMultiPolygon';
     }
+
     geomCollectionArray.push({
       [category]: true,
       pointArray,
@@ -113,6 +116,7 @@ function getGeomCollectionPointArray(geometries) {
 
   return geomCollectionArray;
 }
+*/
 
 /**
  * Parse geometries into GeometryCollection GeoJSON format
@@ -122,52 +126,81 @@ function getGeomCollectionPointArray(geometries) {
  * @param {Object} [propertiesObj={}] key:value mapping for properties included in output GeoJSON
  * @returns {Object} GeoJSON of GeometryCollection type
  */
-export function parseAsGeomCollection(geomArray, propertiesObj = {}) {
+export function createGeomCollection(geomArray, propertiesObj = {}) {
   if (!geomArray) {
     return null;
   }
 
-  return {
-    type: 'GeometryCollection',
-    geometries: geomArray,
+  const geoCollection = {
+    type: LOCATION_TYPE_GEOMCOLLECTION,
     properties: propertiesObj,
   };
-}
 
-export function creationGeometry(spatialJSON, properties) {
-  const geometry = {};
+  if (geomArray.type === LOCATION_TYPE_GEOMCOLLECTION) {
+    geoCollection.geometries = geomArray.geometries;
+  } else {
 
-  geometry.geoJSON = spatialJSON;
-  geometry.isPolygon = spatialJSON.type === LOCATION_TYPE_POLYGON;
-  geometry.isPoint = spatialJSON.type === LOCATION_TYPE_POINT;
-  geometry.isMultiPoint = spatialJSON.type === LOCATION_TYPE_MULTIPOINT;
-  geometry.isMultiPolygon = spatialJSON.type === LOCATION_TYPE_MULTIPOLYGON;
-  geometry.isGeomCollection = spatialJSON.type === LOCATION_TYPE_GEOMCOLLECTION;
+    let geometries = geomArray;
+    if (!(geometries instanceof Array)) {
+      geometries = [geometries];
+    }
 
-  // Swap lngLat to latLng because the geoJOSN from CKAN might be invalid!
-
-  let geomCollection = [spatialJSON];
-
-  if (geometry.isPoint) {
-    // swap coords for the leaflet map
-    geometry.pointArray = [
-      spatialJSON.coordinates[1],
-      spatialJSON.coordinates[0],
-    ];
-  } else if (geometry.isPolygon) {
-    geometry.pointArray = getPolygonPointArray(spatialJSON.coordinates);
-  } else if (geometry.isMultiPoint) {
-    geometry.pointArray = getMultiPointArray(spatialJSON.coordinates);
-    geomCollection = extractGeomsFromMultiGeoms(geometry);
-  } else if (geometry.isMultiPolygon) {
-    geometry.pointArray = getMultiPolygonPointArray(spatialJSON.coordinates);
-    geomCollection = extractGeomsFromMultiGeoms(geometry);
-  } else if (geometry.isGeomCollection) {
-    geometry.pointArray = getGeomCollectionPointArray(spatialJSON.geometries);
-    geomCollection = spatialJSON.geometries;
+    geoCollection.geometries = geometries;
   }
 
-  geometry.geomCollection = parseAsGeomCollection(geomCollection, properties);
+  return geoCollection;
+}
+
+export function creationGeometry(geoJSON, properties) {
+  const geometry = {};
+
+  // geometry.geoJSON = geoJSON;
+  geometry.isPolygon = geoJSON.type === LOCATION_TYPE_POLYGON;
+  geometry.isPoint = geoJSON.type === LOCATION_TYPE_POINT;
+  geometry.isMultiPoint = geoJSON.type === LOCATION_TYPE_MULTIPOINT;
+  geometry.isMultiPolygon = geoJSON.type === LOCATION_TYPE_MULTIPOLYGON;
+  geometry.isGeomCollection = geoJSON.type === LOCATION_TYPE_GEOMCOLLECTION;
+
+  // let geomCollection = [geoJSON];
+  // let coordinates;
+  // let geomType;
+
+/*
+  if (geometry.isPoint) {
+    coordinates = geoJSON.coordinates;
+    // Swap lngLat to latLng because the geoJOSN from CKAN might be invalid!
+    // swap coords for the leaflet map
+/!*
+    coordinates = [
+      geoJSON.coordinates[1],
+      geoJSON.coordinates[0],
+    ];
+*!/
+    // geomType = LOCATION_TYPE_POINT;
+  } else if (geometry.isPolygon) {
+    coordinates = getPolygonPointArray(geoJSON.coordinates);
+    // geomType = LOCATION_TYPE_POLYGON;
+  } else if (geometry.isMultiPoint) {
+    coordinates = getMultiPointArray(geoJSON.coordinates);
+    // geomType = LOCATION_TYPE_MULTIPOINT;
+    // geomCollection = extractGeomsFromMultiGeoms(geometry);
+  } else if (geometry.isMultiPolygon) {
+    coordinates = getMultiPolygonPointArray(geoJSON.coordinates);
+    // geomType = LOCATION_TYPE_MULTIPOLYGON;
+    // geomCollection = extractGeomsFromMultiGeoms(geometry);
+  } else if (geometry.isGeomCollection) {
+    coordinates = getGeomCollectionPointArray(geoJSON.geometries);
+    // geomType = LOCATION_TYPE_GEOMCOLLECTION;
+    // geomCollection = geoJSON.geometries;
+  }
+*/
+
+  if (geometry.isGeomCollection) {
+    geometry.geomCollection = geoJSON;
+    return geometry;
+  }
+
+  geometry.geomCollection = createGeomCollection(geoJSON, properties);
 
   return geometry;
 }
@@ -184,10 +217,12 @@ export function createLocation(dataset) {
     return null;
   }
 
+/*
   // If already GeoJSON return, else WKT
   if (typeof dataset.location === 'object') {
     return dataset.location;
   }
+*/
 
   let location = {
     id: dataset.id,
@@ -199,22 +234,26 @@ export function createLocation(dataset) {
     location.geoJSON = dataset.spatial;
 
     // parseJSON because the geoJOSN from CKAN might be invalid!
-
-    let spatialJSON = dataset.spatial;
-
-    if (typeof dataset.spatial === 'string') {
+    if (typeof location.geoJSON === 'string') {
       try {
-        spatialJSON = JSON.parse(dataset.spatial);
+        location.geoJSON = JSON.parse(location.geoJSON);
       } catch (error) {
         console.error(`MetaDataFactory: geojson parsing error ${error}`);
       }
     }
 
-    if (spatialJSON) {
-      const geometry = creationGeometry(spatialJSON, location);
+    if (location.geoJSON) {
+      const geomCollection = createGeomCollection(location.geoJSON,
+      // const geometry = creationGeometry(location.geoJSON,
+        {
+          id: location.id,
+          name: location.name,
+          title: location.title,
+        });
+
       location = {
         ...location,
-        ...geometry,
+        geomCollection,
       }
     }
   }
@@ -223,10 +262,10 @@ export function createLocation(dataset) {
 }
 
 export const defaultSwissLocation = {
-  type: 'GeometryCollection',
+  type: LOCATION_TYPE_GEOMCOLLECTION,
   geometries: [
     {
-      type: 'Polygon',
+      type: LOCATION_TYPE_POLYGON,
       coordinates: [
         [
           [5.95587, 45.81802],
@@ -241,10 +280,10 @@ export const defaultSwissLocation = {
 };
 
 export const defaultWorldLocation = {
-  type: 'GeometryCollection',
+  type: LOCATION_TYPE_GEOMCOLLECTION,
   geometries: [
     {
-      type: 'Polygon',
+      type: LOCATION_TYPE_POLYGON,
       coordinates: [
         [
           [-175, -85],
@@ -271,4 +310,45 @@ export function geomanGeomsToGeoJSON(layerArray) {
   }
 
   return geoJSONArray;
+}
+
+export function fetureCollectionToGeoCollection(featureColl) {
+  const features = featureColl?.features;
+
+  if (!features) {
+   return null;
+  }
+
+  const geometries = [];
+  const properties = [];
+
+  for (let i = 0; i < features.length; i++) {
+    const f = features[i];
+    if (f.properties) {
+      properties.push(f.properties);
+    }
+    geometries.push(f.geometry);
+  }
+
+  return createGeomCollection(geometries, properties);
+}
+
+export function singlePointsToMultiPoints(geometries, asGeoCollection) {
+  const multiPointCoords = []
+
+  for (let i = 0; i < geometries.length; i++) {
+    const geometry = geometries[i];
+    multiPointCoords.push(geometry.coordinates);
+  }
+
+  const multiPointGeometry = {
+    type: LOCATION_TYPE_MULTIPOINT,
+    coordinates: multiPointCoords,
+  }
+
+  if (asGeoCollection) {
+    return createGeomCollection(multiPointGeometry);
+  }
+
+  return multiPointGeometry;
 }

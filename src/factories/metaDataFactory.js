@@ -633,7 +633,9 @@ export function enhanceMetadatas(datasets, mode = undefined) {
 
     dataset = enhanceTags(dataset, categoryCards);
 
-    dataset.location = createLocation(dataset);
+    if (!dataset.location || typeof dataset.location === 'string') {
+      dataset.location = createLocation(dataset);
+    }
 
     enhancedContent[dataset.id] = dataset;
   }
