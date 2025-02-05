@@ -67,8 +67,7 @@
             </v-col>
 
             <v-col cols="12">
-              <v-row class="mt-4"
-                     no-gutters
+              <v-row no-gutters
               >
                 <v-col cols="12">
                   <BaseRectangleButton
@@ -627,9 +626,9 @@ export default {
       cardInstructions:
         'Choose the location(s) where the research data was collected.',
       defaultInstructions: 'You are using the default location (Switzerland). Consider adjusting the geo information to represent your research data as accurate as possible.',
-      editorInstructions: 'Use the text editor for fine adjustments',
-      uploadInstructions: 'Upload geojson from a file.',
-      mapInstructions: 'Use the tools on the right side of the map to define locations. You can mix Points and Polygons. Or pick predefined locations.',
+      editorInstructions: "Use the text editor for fine adjustments, Undo or Redo. It's not allowed to change the structure of the geoJson via the editor.",
+      uploadInstructions: 'Upload geojson from a file if you have large changes or many geometries.',
+      mapInstructions: 'Use the tools on the right side of the map to define locations. You can mix Points and Polygons. Or pick predefined locations. Use the eraser icon to remove geometries.',
     },
     validationErrors: {
       input: null,
