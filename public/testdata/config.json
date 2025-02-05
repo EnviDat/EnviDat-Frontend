@@ -78,7 +78,8 @@
       {
         "title": "Update: New Way of Editing",
         "text": "The homepage has a new look and many other new features are part of this update. Have look at the navigation entries on the left side and <a href='./#/signin' >sign into</a> your account in the top right corner. The main feature is the <strong>new editing workflow</strong>, sign in and give it a try or read more in the <a href='./#/blog/new_editing_workflow.md' >blog post</a>.",
-        "image": "https://www.envidat.ch/blog/images/edit_workflow_header.jpg"
+        "image": "https://www.envidat.ch/blog/images/edit_workflow_header.jpg",
+        "date": "10/10/2024"
       }
     ]
   },

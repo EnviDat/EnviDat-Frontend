@@ -37,7 +37,7 @@
           <div v-if="postDate" class="text-body-1">
             {{ postDate }}
           </div>
-          <v-btn rounded="xl" :color="'secondary'" @click="cardClick"
+          <v-btn rounded="xl" :color="'primary'" @click="cardClick"
             >Read</v-btn
           >
         </v-col>

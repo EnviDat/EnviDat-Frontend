@@ -119,61 +119,41 @@
 
       <template v-slot:news>
         <v-row no-gutters>
-          <v-col class="fill-height" cols="12" md="6">
-            <v-col
-              v-for="(post, index) in newsEntries"
-              :key="index"
-              cols="12"
-              class="pa-2"
-            >
-              <TeamPostCard
-                :postTitle="post.title"
-                :postDate="post.date"
-                :postText="post.text"
-                :showButton="true"
-                :loadingImg="fallbackCardImg"
-                titleCssClass="compactBlogPostCard"
-                subtitleCssClass="text-caption"
-                :height="isLargeScreen ? '100' : '75'"
-                @clicked="catchPostClick(post.postFile)"
-              />
-            </v-col>
-            <v-col
-              v-for="(post, index) in blogPostsFirst"
-              :key="index"
-              cols="12"
-              class="pa-2"
-            >
-              <BlogPostCard
-                :postTitle="post.title"
-                :postDate="post.date"
-                :loadingImg="fallbackCardImg"
-                titleCssClass="compactBlogPostCard"
-                subtitleCssClass="text-caption"
-                :height="isLargeScreen ? '100' : '75'"
-                @clicked="catchPostClick(post.postFile)"
-              />
-            </v-col>
+          <v-col
+            v-for="(post, index) in newsEntries"
+            :key="index"
+            cols="12"
+            md="6"
+            class="pa-2"
+          >
+            <TeamPostCard
+              :postTitle="post.title"
+              :postDate="post.date"
+              :postText="post.text"
+              :showButton="true"
+              :loadingImg="fallbackCardImg"
+              titleCssClass="compactBlogPostCard"
+              subtitleCssClass="text-caption"
+              :height="isLargeScreen ? '100' : '75'"
+              @clicked="catchPostClick(post.postFile)"
+            />
           </v-col>
-          <v-col class="fill-height" cols="12" md="6">
-            <v-row no-gutters>
-              <v-col
-                v-for="(post, index) in blogPostsSecond"
-                :key="index"
-                cols="12"
-                class="pa-2"
-              >
-                <BlogPostCard
-                  :postTitle="post.title"
-                  :postDate="post.date"
-                  :loadingImg="fallbackCardImg"
-                  titleCssClass="compactBlogPostCard"
-                  subtitleCssClass="text-caption"
-                  :height="isLargeScreen ? '100' : '75'"
-                  @clicked="catchPostClick(post.postFile)"
-                />
-              </v-col>
-            </v-row>
+          <v-col
+            v-for="(post, index) in blogPosts"
+            :key="index"
+            cols="12"
+            md="6"
+            class="pa-2"
+          >
+            <BlogPostCard
+              :postTitle="post.title"
+              :postDate="post.date"
+              :loadingImg="fallbackCardImg"
+              titleCssClass="compactBlogPostCard"
+              subtitleCssClass="text-caption"
+              :height="isLargeScreen ? '100' : '75'"
+              @clicked="catchPostClick(post.postFile)"
+            />
           </v-col>
         </v-row>
       </template>
@@ -343,19 +323,10 @@ export default {
       return this.display.md.value || this.display.lg.value || this.display.xl.value;
     },
 
-    blogPostsFirst() {
+    blogPosts() {
       if (this.blogModuleLoaded) {
         if (this.list?.length > 0) {
-          return this.list.slice(0, 1);
-        }
-      }
-
-      return [];
-    },
-    blogPostsSecond() {
-      if (this.blogModuleLoaded) {
-        if (this.list?.length > 0) {
-          return this.list.slice(1, 3);
+          return this.list.slice(0, 3);
         }
       }
 

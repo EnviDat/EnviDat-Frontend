@@ -26,8 +26,8 @@
         <v-row class="category-action">
           <v-col class="d-flex justify-space-between">
             <!-- class="primary" -->
-            <div class="text-body-1">
-              10/10/2024
+            <div v-if="postDate" class="text-body-1">
+              {{ postDate }}
             </div>
             <v-btn v-if="showButton" rounded="xl" :color="'primary'" @click="cardClick">View</v-btn>
 
@@ -38,6 +38,8 @@
   </template>
 
   <script>
+import { type } from '@amcharts/amcharts5';
+
   /**
    * BlogPostCard shows the content the title of a post
    *
@@ -60,19 +62,9 @@
         default:
           'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quisquam eos saepe explicabo. Blanditiis cumque officia enim velit suscipit tenetur distinctio eveniet, dolorum perferendis, nulla commodi amet, magnam sunt nam repudiandae.',
       },
-      titleImg: String,
-      loadingImg: String,
-      titleCssClass: {
-        type: String,
-        default: 'text-h5',
-      },
       showButton: {
         type: Boolean,
         default: false,
-      },
-      subtitleCssClass: {
-        type: String,
-        default: 'text-body-1',
       },
       height: String,
     },

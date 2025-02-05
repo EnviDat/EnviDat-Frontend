@@ -31,7 +31,6 @@ export default {
     commit(GET_BLOG_LIST);
 
     const url = `${bloglistUrlPrefix}/blog/bloglist.json?nocache=${new Date().getTime()}`;
-
     axios
       .get(url)
       .then(response => {
