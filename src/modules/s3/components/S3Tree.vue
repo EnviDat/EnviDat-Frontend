@@ -25,13 +25,17 @@
 
       <template #title="{ item }">
         <v-row
+          no-gutters
+          dense
           @click="
             item.isChild
               ? getData(item.title, item.isChild, item.id)
               : setStatus()
           "
+          align="center"
+          justify="space-between"
         >
-          <v-col class="d-flex align-center justify-space-between">
+          <v-col class="flex-grow-1 py-0">
             <span
               v-if="item.isLastItem"
               class="title-s3-treeview"
@@ -40,8 +44,9 @@
                 cursor: item.isChild ? 'pointer' : 'default',
               }"
             >
-              Go to S3
+              {{ labels.viewAll }}
             </span>
+
             <span
               v-else
               class="title-s3-treeview"
@@ -56,51 +61,68 @@
                 v-if="
                   item.id === itemClicked && s3Store.loading && !item.isLoaded
                 "
-                :size="15"
+                :size="18"
                 color="white"
                 class="ml-2"
                 indeterminate
-              ></v-progress-circular>
+              />
+
               <v-chip
-                class="ml-2"
-                size="x-small"
                 v-if="
                   item.isChild && item.numberOfChild && !item.maximumLengthItem
                 "
-                >{{ item.numberOfChild }}</v-chip
-              >
-              <v-chip class="ml-2" size="x-small" v-if="!item.isChild">{{
-                childrenObject
-              }}</v-chip>
-            </span>
+                class="ml-2"
+                size="x-small"
+                color="white"
+                variant="outlined"
+                >
+                {{ item.numberOfChild }}
+              </v-chip>
 
+              <v-chip v-if="!item.isChild"
+                      class="ml-2"
+                      size="x-small"
+                      color="white"
+                      variant="outlined"
+              >
+                {{ childrenObject }}
+              </v-chip>
+            </span>
+          </v-col>
+
+          <v-col v-if="item.isFile"
+                 class="flex-grow-0 py-0"
+          >
             <BaseRectangleButton
-              v-if="item.isFile"
               :isXsSmall="true"
-              marginClass="mx-1 mt-4 mt-sm-0 ml-5"
               color="white"
               :url="item.link"
               buttonText="download"
             />
+          </v-col>
 
+          <v-col v-if="item.isLastItem"
+                 class="flex-grow-0 py-0"
+          >
             <BaseRectangleButton
-              v-if="item.isLastItem"
               :isXsSmall="true"
-              marginClass="mx-1 mt-4 mt-sm-0 ml-5"
               color="white"
               :url="item.link"
               buttonText="View All"
             />
+          </v-col>
 
+          <v-col v-if="item.maximumLengthItem"
+                 class="flex-grow-0 py-0"
+          >
             <BaseRectangleButton
-              v-if="item.maximumLengthItem"
               :isXsSmall="true"
-              marginClass="mx-1 mt-4 mt-sm-0 ml-5"
               color="white"
               :url="url"
               buttonText="View All"
             />
-          </v-col>
+        </v-col>
+
         </v-row>
       </template>
     </v-treeview>
@@ -129,6 +151,10 @@ const childrenObject = ref(0);
 const itemClicked = ref(0);
 const itemOpened = ref(false);
 
+const labels = {
+  viewAll: 'View all data on the S3 File Browser website',
+}
+
 // set store event for change the style of the resourceCard height if the treeview is opened
 function setStatus() {
   itemOpened.value = !itemOpened.value;
@@ -136,8 +162,12 @@ function setStatus() {
   s3Store.treeViewIsOpened = value;
 }
 
-// isChild is needed for undestand wich function triggher in the store
-// nodeId is needed to filter and add the new data to the right node
+/**
+ *
+ * @param {string} url
+ * @param {boolean} isChild is needed for undestand wich function triggher in the store
+ * @param {boolean} nodeId is needed to filter and add the new data to the right node
+ */
 function getData(url, isChild, nodeId) {
   // set clickedID item
   itemClicked.value = nodeId;
@@ -146,9 +176,7 @@ function getData(url, isChild, nodeId) {
 
   if (url && isChild) {
     // create dynamic URL
-    const currentPrefix = new URLSearchParams(baseUrl.value.split('?')[1]).get(
-      'prefix',
-    );
+    const currentPrefix = new URLSearchParams(baseUrl.value.split('?')[1]).get('prefix');
     const newPrefix = `${currentPrefix}${url}/`;
     dynamicUrl = `${baseUrl.value.split('?')[0]}?prefix=${newPrefix}&max-keys=100000&delimiter=/`;
   } else {
@@ -217,7 +245,7 @@ function limitAllNodes(nodes) {
           id: limitResources + 1,
           isChild: true,
           maximumLengthItem: true,
-          title: 'Go to S3',
+          title: labels.viewAll,
           isFile: false,
           childrenLoaded: false,
           children: [],

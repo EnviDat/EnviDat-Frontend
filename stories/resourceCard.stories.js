@@ -56,8 +56,6 @@ const protResNotSameOgaButUser = createResource(
 export default {
   title: '1 Base / Cards /  Resource Cards / 2 From Datasets',
   component: ResourceCard,
-  decorators: [],
-  parameters: {},
 };
 
 export const UrlLink = {
