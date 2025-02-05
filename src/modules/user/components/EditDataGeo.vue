@@ -292,18 +292,25 @@ export default {
         readOnly: props.readOnly,
         mode: props.mode,
 */
-        selection:
+        selection: {
+          type: 'key',
+          edit: false,
+          path: [],
+        },
         indentation: 2,
         navigationBar: false,
-        /*
         mainMenuBar: true,
         statusBar: true,
+        /*
         tabSize,
         askToFormat,
         escapeControlCharacters,
         escapeUnicodeCharacters,
         flattenColumns,
         */
+        onSelect: (selection) => {
+          console.log('selection', selection);
+        },
         onChange: (updatedContent, previousContent, status) => {
           // content is an object { json: unknown } | { text: string }
           // const { contentErrors, patchResult } = status;
