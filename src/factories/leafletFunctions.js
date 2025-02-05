@@ -298,9 +298,11 @@ export function createLeafletLayer(geometry, id, title, selected, onClick, isGcn
     layer = createLeafletLayerViaGeoJson(geometry, id, title, this)
 
   } else {
-    console.log(`Unknown Geometry ${geometry.type}`);
     console.log(geometry);
+    throw new Error(`Unknown Geometry type: '${geometry.type}'`)
+/*
     layer = createLeafletLayerViaGeoJson(geometry, id, title, this)
+*/
 
     // throw new Error(`Unkown Geometry ${geometry.type}`);
   }

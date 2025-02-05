@@ -322,6 +322,7 @@ export default {
         // Editing event listeners on map layers
         if (this.isMapEditable) {
           const allLayers = this.map.pm.getGeomanLayers();
+
           allLayers.forEach(editableLayer => {
             editableLayer.on('pm:update', () => {
               this.triggerGeometryEditEvent();
@@ -458,7 +459,7 @@ export default {
     },
     addPredefinedGeomToMap(type) {
       const layerArray = this.map.pm.getGeomanLayers();
-      const geoJSONArray = this.geomanGeomsToGeoJSON(layerArray);
+      const geoJSONArray = geomanGeomsToGeoJSON(layerArray);
 
       if (type === 'swiss') {
         geoJSONArray.push(defaultSwissLocation);

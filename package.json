@@ -41,6 +41,7 @@
     "@uppy/progress-bar": "^4.0.0",
     "@uppy/status-bar": "^4.0.3",
     "@uppy/vue": "^2.0.1",
+    "@vueuse/core": "^12.5.0",
     "axios": "^1.7.2",
     "chartjs-plugin-datalabels": "^2.2.0",
     "css-loader": "^7.1.2",
