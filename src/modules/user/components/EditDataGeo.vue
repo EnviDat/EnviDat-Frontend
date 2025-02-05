@@ -575,11 +575,8 @@ export default {
       }
     },
     onFileDrop(files) {
-      // called when files are dropped on zone
-      console.log('files', files);
-
       if (files?.length > 0) {
-        const file = files[1];
+        const file = files[0];
         this.triggerFileUpload(file);
       }
     },
@@ -603,7 +600,6 @@ export default {
   watch: {
     geomsForMapString() {
       this.jsonEditor.update({ text: this.geomsForMapString });
-      expandAll();
     },
     location() {
       this.saveButtonInProgress = false;
