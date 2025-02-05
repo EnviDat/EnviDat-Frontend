@@ -11,6 +11,7 @@ import metadataCards from './js/metadata';
 const urlRes = createResource(metadataCards[0].resources[0]);
 const fileRes = createResource(metadataCards[2].resources[1]);
 const loadingRes = createResource(metadataCards[1].resources[0]);
+const s3Url = createResource(metadataCards[0].resources[3]);
 loadingRes.loading = true;
 
 const dataset = metadataCards[2];
@@ -63,7 +64,7 @@ export const UrlLink = {
 };
 
 export const UrlLinkS3bucket = {
-  args: { ...urlRes, s3Bucket: true },
+  args: { ...s3Url, s3Bucket: true },
 };
 
 export const FileLink = {
