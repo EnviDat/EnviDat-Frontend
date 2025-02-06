@@ -13,7 +13,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody.vue';
+import MetadataDescription from '@/modules/metadata/components/Metadata/MetadataDescription.vue';
 
 import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionViewModel';
 import { convertJSON } from '@/factories/mappingFactory';
@@ -24,7 +24,7 @@ import { toRefs } from 'vue';
 
 export default {
   title: '3 Dataset / 1 Views / Metadata Description',
-  component: MetadataBody,
+  component: MetadataDescription,
 };
 
 enhanceMetadatasTitleImage(metadata);
