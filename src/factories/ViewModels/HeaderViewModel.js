@@ -62,14 +62,14 @@ export class HeaderViewModel extends AbstractBaseViewModel{
 
 export const createHeaderViewModel = (datasetDTO, smallScreen, categoryColor, titleImg, changeCallback = undefined) => {
   const headerVM = new HeaderViewModel(datasetDTO, smallScreen, categoryColor, titleImg);
-  const reactiveHeaderVM = reactive(headerVM);
+  const reactiveVM = reactive(headerVM);
 
-  watch(() => reactiveHeaderVM, (newModel) => {
-    if (changeCallback) {
-      changeCallback(newModel);
-    }
-  }, { deep: true });
+  if (changeCallback) {
+    watch(() => reactiveVM, (newModel) => {
+        changeCallback(newModel);
+    }, { deep: true });
+  }
 
-  return reactiveHeaderVM;
+  return reactiveVM;
 }
 

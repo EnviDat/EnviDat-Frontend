@@ -14,17 +14,13 @@ import { EditDatasetServiceLayer } from '@/factories/ViewModels/EditDatasetServi
 
 import metadatas from '../../stories/js/metadata';
 
-const authorDeadInfo = {
-  asciiDead: '&#8224;',
-  authorPassedInfo: 'Sadly this author has passed away.',
-};
 
 describe('viewModel Factory ', () => {
 
   const datasetBackend = metadatas[metadatas.length - 1];
   const backendJSON = convertJSON(datasetBackend, false);
 
-  const headerVM = createHeaderViewModel(backendJSON, false, 'black', 'url/to/an/img', authorDeadInfo);
+  const headerVM = createHeaderViewModel(backendJSON, false, 'black', 'url/to/an/img');
 
   it(`${EDITMETADATA_MAIN_HEADER} backendJSON`, () => {
 
@@ -60,7 +56,7 @@ describe('viewModel Factory ', () => {
       expect(newModel[METADATA_TITLE_PROPERTY]).toBe('Some new title for testing');
     }
 
-    const headerVM2 = createHeaderViewModel(backendJSON, false, 'black', 'url/to/an/img', authorDeadInfo, callback);
+    const headerVM2 = createHeaderViewModel(backendJSON, false, 'black', 'url/to/an/img', callback);
     headerVM2[METADATA_TITLE_PROPERTY] = 'Some new title for testing';
   });
 

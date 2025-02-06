@@ -20,11 +20,11 @@ export const createDescriptionViewModel = (datasetDTO, smallScreen, changeCallba
   const descVM = new DescriptionViewModel(datasetDTO, smallScreen);
   const reactiveVM = reactive(descVM);
 
-  watch(() => reactiveVM, (newModel) => {
-    if (changeCallback) {
-      changeCallback(newModel);
-    }
-  }, { deep: true });
+  if (changeCallback) {
+    watch(() => reactiveVM, (newModel) => {
+        changeCallback(newModel);
+    }, { deep: true });
+  }
 
   return reactiveVM;
 }
