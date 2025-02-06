@@ -12,7 +12,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 
 import {ref} from 'vue';
-import jazzicons from '@metamask/jazzicon';
+import jazzicon from 'jazzicon-ts';
 import seedrandom from 'seedrandom';
 import { getNameInitials } from '@/factories/authorFactory';
 
@@ -173,7 +173,7 @@ export const JazzIconsViews = () => ({
       if (el) {
         const rng = seedrandom(el.id);
         const randNr = rng.int32();
-        const icon = jazzicons(48, randNr);
+        const icon = jazzicon(48, randNr);
         el.$el.appendChild(icon);
       }
     },
