@@ -638,7 +638,9 @@ export default {
         this.resources.dates = getFrontendDates(this.metadataContent.date);
       }
 
-      loadResourcesPreview(this.resources.resources);
+      if (this.resourcesConfig.loadDataViz) {
+        loadResourcesPreview(this.resources.resources);
+      }
 
       this.MetadataResources.props = {
         ...this.resources,
