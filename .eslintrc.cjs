@@ -2,11 +2,12 @@
 module.exports = {
   root: true,
   parserOptions: {
+    parser: '@typescript-eslint/parser', // Use TypeScript parser
     sourceType: 'module',
-    ecmaVersion: 2023,
+    ecmaVersion: 2022,
   },
   env: {
-    es2023: true,
+    es2022: true,
     'vitest-globals/env': true,
   },
   extends: [
@@ -20,15 +21,15 @@ module.exports = {
   settings: {
     'import/resolver': {
       alias: {
-        map: [
-          ['@', './src'],
-        ],
+        map: [['@', './src/*']],
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
       },
     },
   },
   // // required to lint *.vue files
   plugins: [
     'vuetify',
+    '@typescript-eslint'
   ],
   'ignorePatterns': ['particles.js'],
   // add your custom rules here
@@ -51,7 +52,7 @@ module.exports = {
     'no-restricted-syntax': 0,
     'comma-dangle': ['error', 'always-multiline'],
     'jsx-quotes': ['error', 'prefer-single'],
-    'quotes': ['error', 'single', { avoidEscape: true }],
+    quotes: ['error', 'single', { avoidEscape: true }],
     'operator-linebreak': ['off', 'before'],
     'vuetify/no-deprecated-classes': 'error',
     'vuetify/grid-unknown-attributes': 'error',
@@ -59,5 +60,7 @@ module.exports = {
     'import/first': 'error',
     'import/newline-after-import': 'error',
     'import/no-duplicates': 'error',
+    'import/extensions': 'off',
+    'import/order': 'warn'
   },
 };

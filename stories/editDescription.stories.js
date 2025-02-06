@@ -13,6 +13,7 @@
 import EditDescription from '@/modules/user/components/EditDescription.vue';
 import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionViewModel';
 
+
 const description = `# Why user stories?
 &nbsp;
 User Stories can help you to constantly improve the value of
@@ -36,7 +37,8 @@ Define what functionality each user expects. How she’s going to interact with 
 &nbsp;
 It should either improve the UX, increase retention rates,
 shorten users’ journey to the issue solution or whatever. Each Story should
-contribute something to the general goal of your product. `;
+contribute something to the general goal of your product.
+`;
 
 
 export default {

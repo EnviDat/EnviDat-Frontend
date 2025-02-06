@@ -40,7 +40,7 @@ const storyTags5 = getKeywordsSource(storyTags).slice(0, 5);
 
 
 export default {
-  title: '3 Dataset / 2 Edit / Keywords',
+  title: '3 Datasets / 2 Edit / Keywords',
   decorators: [],
   parameters: {},
 };

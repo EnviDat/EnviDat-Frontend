@@ -28,7 +28,7 @@
       <base-icon-button
         class="ma-2 closeIcon"
         :class="{ 'mx-1': $vuetify.display.smAndDown }"
-        style="position: absolute; top: 60px; right: 10px; z-index: 2;"
+        style="position: absolute; top: 60px; right: 10px; z-index: 2"
         :icon="mdiClose"
         :elevated="true"
         :icon-color="'white'"
@@ -50,7 +50,6 @@
           <v-col class="mb-2 px-0">
             <!-- prettier-ignore -->
             <component :component="entry" :is="entry" v-bind="entry.props" />
-
           </v-col>
         </v-row>
       </v-col>
@@ -64,7 +63,6 @@
           <v-col class="mb-2 px-0">
             <!-- prettier-ignore -->
             <component :component="entry" :is="entry" v-bind="entry.props" />
-
           </v-col>
         </v-row>
       </v-col>
@@ -87,7 +85,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-
 import { defineAsyncComponent, markRaw } from 'vue';
 
 import axios from 'axios';
@@ -97,7 +94,6 @@ import { useModeStore } from '@/modules/browse/store/modeStore';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
 import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
-
 
 import {
   BROWSE_PATH,
@@ -127,9 +123,7 @@ import {
 } from '@/store/metadataMutationsConsts';
 
 import {
-  createBody,
   createFunding,
-  createHeader,
   createLicense,
   createPublications,
   createRelatedDatasets,
@@ -138,7 +132,10 @@ import {
 
 import { createCitation } from '@/factories/citationFactory';
 
-import { getFullAuthorsFromDataset, replaceAuthorDeadAscii } from '@/factories/authorFactory';
+import {
+  getFullAuthorsFromDataset,
+  replaceAuthorDeadAscii,
+} from '@/factories/authorFactory';
 
 import {
   getConfigFiles,
@@ -148,7 +145,6 @@ import {
 
 import {
   AUTHOR_SEARCH_CLICK,
-  EDITMETADATA_PUBLICATION_INFO,
   eventBus,
   GCNET_INJECT_MICRO_CHARTS,
   GCNET_OPEN_DETAIL_CHARTS,
@@ -170,7 +166,6 @@ import { getEventsForPageAndName } from '@/modules/matomo/store/matomoStore';
 import {
   convertJSON,
   getFrontendDates,
-  getFrontendJSONForStep,
 } from '@/factories/mappingFactory';
 
 import { convertArrayToUrlString } from '@/factories/stringFactory';
@@ -179,39 +174,41 @@ import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeade
 import { createLocation } from '@/factories/geoFactory';
 import { createHeaderViewModel } from '@/factories/ViewModels/HeaderViewModel';
 import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionViewModel';
+import { loadResourcesPreview } from '@/modules/charts/middelware/chartServiceLayer.ts';
 
-const MetadataDescription = defineAsyncComponent(() =>
-  import('@/modules/metadata/components/Metadata/MetadataDescription.vue'),
-);
-
-const MetadataResources = defineAsyncComponent(() =>
-  import('./Metadata/MetadataResources.vue'),
+const MetadataDescription = defineAsyncComponent(
+  () =>
+    import('@/modules/metadata/components/Metadata/MetadataDescription.vue'),
 );
 
-const MetadataCitation = defineAsyncComponent(() =>
-  import('./Metadata/MetadataCitation.vue'),
-);
-const MetadataPublications = defineAsyncComponent(() =>
-  import('./Metadata/MetadataPublications.vue'),
-);
-const MetadataPublicationList = defineAsyncComponent(() =>
-  import('./Metadata/MetadataPublicationList.vue'),
-);
-const MetadataFunding = defineAsyncComponent(() =>
-  import('./Metadata/MetadataFunding.vue'),
-);
-const MetadataAuthors = defineAsyncComponent(() =>
-  import('./Metadata/MetadataAuthors.vue'),
-);
-const MetadataGeo = defineAsyncComponent(() =>
-  import('@/modules/metadata/components/Geoservices/MetadataGeo.vue'),
-);
-const MetadataRelatedDatasets = defineAsyncComponent(() =>
-  import('@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue'),
+const MetadataResources = defineAsyncComponent(
+  () => import('./Metadata/MetadataResources.vue'),
 );
 
-
-
+const MetadataCitation = defineAsyncComponent(
+  () => import('./Metadata/MetadataCitation.vue'),
+);
+const MetadataPublications = defineAsyncComponent(
+  () => import('./Metadata/MetadataPublications.vue'),
+);
+const MetadataPublicationList = defineAsyncComponent(
+  () => import('./Metadata/MetadataPublicationList.vue'),
+);
+const MetadataFunding = defineAsyncComponent(
+  () => import('./Metadata/MetadataFunding.vue'),
+);
+const MetadataAuthors = defineAsyncComponent(
+  () => import('./Metadata/MetadataAuthors.vue'),
+);
+const MetadataGeo = defineAsyncComponent(
+  () => import('@/modules/metadata/components/Geoservices/MetadataGeo.vue'),
+);
+const MetadataRelatedDatasets = defineAsyncComponent(
+  () =>
+    import(
+      '@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue'
+    ),
+);
 
 // Might want to check https://css-tricks.com/use-cases-fixed-backgrounds-css/
 // for animations between the different parts of the Metadata
@@ -222,13 +219,12 @@ const MetadataRelatedDatasets = defineAsyncComponent(() =>
 export default {
   name: 'MetadataDetailPage',
   beforeRouteEnter(to, from, next) {
-    next(vm => {
+    next((vm) => {
       vm.$store.commit(SET_CURRENT_PAGE, METADATADETAIL_PAGENAME);
       vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
     });
   },
   created() {
-
     this.modeStore = useModeStore();
     this.modeStore.init(this.$store.getters.cardBGImages);
     this.organizationsStore = useOrganizationsStore();
@@ -246,7 +242,6 @@ export default {
    * @description reset the scrolling to the top.
    */
   async mounted() {
-
     this.loadMetaDataContent();
 
     // await this.setPageViews(this.$route.fullPath, 'Visit');
@@ -389,7 +384,7 @@ export default {
       }
 
       const matches = this.userDatasets.filter(
-        dSet => dSet.name === this.metadataId || dSet.id === this.metadataId,
+        (dSet) => dSet.name === this.metadataId || dSet.id === this.metadataId,
       );
 
       return matches.length > 0;
@@ -467,10 +462,10 @@ export default {
 
       axios
         .get(url)
-        .then(response => {
+        .then((response) => {
           this.geoServiceLayers = response.data;
         })
-        .catch(error => {
+        .catch((error) => {
           this.geoServiceLayersError = error;
         });
     },
@@ -479,13 +474,12 @@ export default {
 
       axios
         .get(url)
-        .then(response => {
+        .then((response) => {
           this.stationsConfig = response.data;
 
           const stations = response.data;
-          const featureCollection = getFeatureCollectionFromGcNetStations(
-            stations,
-          );
+          const featureCollection =
+            getFeatureCollectionFromGcNetStations(stations);
 
           // Override location with stations FeatureCollection, creating shallow copy
           const locationOverride = { ...this.location };
@@ -494,7 +488,7 @@ export default {
 
           successCallback();
         })
-        .catch(error => {
+        .catch((error) => {
           this.stationsConfigError = error;
         });
     },
@@ -504,11 +498,11 @@ export default {
 
       axios
         .get(url)
-        .then(response => {
+        .then((response) => {
           this.fileObjects = response.data.fileObjects;
           this.graphStyling = response.data.graphStyling;
         })
-        .catch(error => {
+        .catch((error) => {
           this.stationParametersError = error;
         });
     },
@@ -573,7 +567,7 @@ export default {
 
         this.header = createHeaderViewModel(
           parsedContent,
-            isSmallScreen,
+          isSmallScreen,
           currentContent.categoryColor,
           currentContent.titleImg,
         );
@@ -614,7 +608,9 @@ export default {
     loadResources() {
       const currentContent = this.metadataContent;
 
-      this.resources = createResources(currentContent, this.user, this.userOrganizationIds) || {};
+      this.resources =
+        createResources(currentContent, this.user, this.userOrganizationIds) ||
+        {};
 
       const license = createLicense(currentContent);
 
@@ -631,9 +627,16 @@ export default {
           this.resources.resources,
         );
 
-        enhanceElementsWithStrategyEvents(this.resources.resources, SHOW_DATA_PREVIEW_PROPERTY);
+        enhanceElementsWithStrategyEvents(
+          this.resources.resources,
+          SHOW_DATA_PREVIEW_PROPERTY,
+        );
 
         this.resources.dates = getFrontendDates(this.metadataContent.date);
+      }
+
+      if (this.resourcesConfig.loadDataViz) {
+        loadResourcesPreview(this.resources.resources);
       }
 
       this.MetadataResources.props = {
@@ -727,7 +730,6 @@ export default {
           this.MetadataRelatedDatasets,
         ];
       }
-
     },
     prepareGCNetChartModal(stationId) {
       this.currentStation = this.getCurrentStation(stationId);
@@ -741,7 +743,9 @@ export default {
     },
     async injectMicroCharts() {
       const GcNetMicroChartList = (
-        await import('@/modules/metadata/components/GC-Net/GcNetMicroChartList.vue')
+        await import(
+          '@/modules/metadata/components/GC-Net/GcNetMicroChartList.vue'
+        )
       ).default;
 
       eventBus.emit(GCNET_INJECT_MICRO_CHARTS, {
@@ -852,7 +856,7 @@ export default {
           datasets = await this.modeStore.loadModeDatasets(this.mode);
         }
         this.modeDataset = datasets.filter(
-          entry => entry.name === this.metadataId,
+          (entry) => entry.name === this.metadataId,
         )[0];
       }
 
@@ -884,20 +888,19 @@ export default {
         const contents = Object.values(this.metadatasContent);
 
         const localEntry = contents.filter(
-          entry => entry.name === this.metadataId,
+          (entry) => entry.name === this.metadataId,
         );
         return localEntry.length === 1;
       }
       return false;
     },
     async fetchUserOrganisationData() {
-
       const userId = this.user?.id;
       if (!userId) {
         return;
       }
 
-      await this.organizationsStore.UserGetOrgIds(userId)
+      await this.organizationsStore.UserGetOrgIds(userId);
 
       // this.organizationsStore.UserGetOrgIds(userId);
       // await this.$store.dispatch(
@@ -905,7 +908,7 @@ export default {
       //   userId,
       // );
       // always call the UserGetOrg action because it resolves the store & state also when userOrganizationIds is empty
-      await this.organizationsStore.UserGetOrg(this.userOrganizationIds)
+      await this.organizationsStore.UserGetOrg(this.userOrganizationIds);
       // await this.$store.dispatch(
       //   `${ORGANIZATIONS_NAMESPACE}/${UserGetOrg}`,
       //   this.userOrganizationIds,
@@ -1044,8 +1047,6 @@ export default {
 </script>
 
 <style>
-
-
 .resourceCardText a {
   color: #ffd740;
 }

@@ -7,7 +7,7 @@ import {
   extractAuthorsMap,
   getFullAuthorsFromDataset,
 } from '@/factories/authorFactory';
-import { AUTHOR_ASCII_DEAD } from '@/store/mainMutationsConsts';
+
 import {
   mobileLargeViewportParams,
   mobileViewportParams,

@@ -37,7 +37,7 @@ const mergedWithPopulars = [...baseTags, ...popularTags.slice(0, 15)];
 const allTags = getEnabledTags(mergedWithPopulars, metadata);
 
 export default {
-  title: '3 Dataset / 1 Views / Metadata List',
+  title: '3 Datasets / Metadata List',
   component: MetadataList,
 };
 

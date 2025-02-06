@@ -15,6 +15,9 @@ import axios from 'axios';
 import { urlRewrite } from '@/factories/apiFactory';
 import { extractBodyIntoUrl } from '@/factories/stringFactory';
 
+import { trackEvent } from '@/utils/matomoTracking';
+
+
 import {
   ACTION_OLD_GET_USER_CONTEXT,
   ACTION_USER_EDITING_UPDATE,
@@ -72,6 +75,9 @@ export default {
           if (actionUrl === ACTION_USER_SIGNIN_TOKEN()) {
             // make an additional call with the token to get the cookie set
             const token = response.data.result.token;
+
+            // Send Matomo event to track the number of login
+            trackEvent('Login', payload.body.email)
 
             this.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`, {
               action: ACTION_GET_USER_CONTEXT_TOKEN,

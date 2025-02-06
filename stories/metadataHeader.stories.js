@@ -16,7 +16,7 @@ const parsedContent = convertJSON(metadata[0], false);
 const header1 = createHeaderViewModel(parsedContent, true);
 
 export default {
-  title: '3 Dataset / 1 Views / Metadata Header',
+  title: '3 Datasets / 1 Views / Metadata Header',
   component: MetadataHeader,
 };
 

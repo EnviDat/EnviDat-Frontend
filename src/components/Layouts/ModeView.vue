@@ -83,7 +83,7 @@ export default {
     mdiClose,
     mdiInformationOutline,
     modeInfoPrefix: 'Special View',
-    tooltipText: 'You are in a specific view which shows data for',
+    tooltipText: 'You are in a specific view which shows ',
   }),
   computed: {
     size() {

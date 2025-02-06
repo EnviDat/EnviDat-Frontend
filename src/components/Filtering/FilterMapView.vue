@@ -79,17 +79,13 @@ import FilterMapWidget from '@/components/Filtering/FilterMapWidget.vue';
 
 import {EDNA_MODE} from '@/store/metadataMutationsConsts';
 import {
-  createImageryLayer, createLeafletLayer,
+  createImageryLayer,
+  createLeafletLayer,
   createTopoLayer,
-  getMultiPointLayer,
-  getMultiPolygonLayer,
-  getPointLayer,
-  getPolygonLayer,
 } from '@/factories/leafletFunctions';
 
 import { createLocation } from '@/factories/geoFactory';
 import {
-  LOCATION_TYPE_GEOMCOLLECTION,
   LOCATION_TYPE_MULTIPOINT,
   LOCATION_TYPE_MULTIPOLYGON,
   LOCATION_TYPE_POINT,
@@ -296,7 +292,7 @@ export default {
       location.geomCollection.geometries.forEach(geometry => {
         const sublayer = createLeafletLayer(geometry,
           dataset.id, dataset.title,
-          selected, this.catchPointClick,
+          selected, this.catchPointClick, false,
           this.modeData, dataset, this)
 
         if (sublayer) {

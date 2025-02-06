@@ -23,7 +23,7 @@ import {
 } from '@/factories/metadataConsts';
 
 export default {
-  title: '3 Dataset / 2 Edit / Publication Status',
+  title: '3 Datasets / 2 Edit / Publication Status',
   component: EditPublicationStatus,
 };
 

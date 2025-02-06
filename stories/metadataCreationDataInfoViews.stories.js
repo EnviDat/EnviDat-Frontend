@@ -22,7 +22,7 @@ import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams }
 
 
 export default {
-  title: '3 Dataset / 2 Edit / Data Info',
+  title: '3 Datasets / 2 Edit / Data Info',
   component: EditDataInfo,
 };
 

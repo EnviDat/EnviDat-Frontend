@@ -91,7 +91,7 @@
                            :style="`border-color: ${$vuetify.theme.themes.light.colors.highlight};
                                     background-color: ${ isOverDropZone ? $vuetify.theme.themes.light.colors.highlight : 'transparent' };
                                   `">
-                        Or drop a file with geoJSONO here
+                        {{ labels.fileDropLabel }}
                       </div>
 
                     </v-col>
@@ -202,7 +202,7 @@ import {
 import {
   EDIT_METADATA_GEODATA_TITLE,
   LOCATION_TYPE_FEATCOLLECTION,
-  LOCATION_TYPE_GEOMCOLLECTION, LOCATION_TYPE_MULTIPOINT, LOCATION_TYPE_POINT, LOCATION_TYPE_POLYGON,
+  LOCATION_TYPE_GEOMCOLLECTION,
 } from '@/factories/metadataConsts';
 
 import {
@@ -219,7 +219,7 @@ import {
 import { mdiContentSave, mdiUndo, mdiFileUpload } from '@mdi/js';
 
 import geojsonhint from '@mapbox/geojsonhint';
-import { createJSONEditor, expandAll, SelectionType } from 'vanilla-jsoneditor';
+import { createJSONEditor, SelectionType } from 'vanilla-jsoneditor';
 import { useDropZone } from '@vueuse/core'
 
 
@@ -363,6 +363,8 @@ export default {
           this.jsonEditorOnChange(updatedContent, previousContent, status);
         },
         onError: (err) => {
+          this.validationErrors.input = err.message;
+
           console.error(err)
           // emit('editorError', err);
         },
@@ -370,7 +372,7 @@ export default {
     },
   },
   errorCaptured(err, vm, info) {
-    this.validationErrors.input = err;
+    this.validationErrors.input = err.message;
 
     // console.error('Error captured in parent:', err);
     console.log('Error source component:', vm.$options.name);
@@ -507,12 +509,6 @@ export default {
         geoColl = fetureCollectionToGeoCollection(inputGeoJSON);
       } else if(inputGeoJSON.type === LOCATION_TYPE_GEOMCOLLECTION) {
         geoColl = inputGeoJSON;
-      } else if(inputGeoJSON.type === LOCATION_TYPE_POINT
-        || inputGeoJSON.type === LOCATION_TYPE_MULTIPOINT
-        || inputGeoJSON.type === LOCATION_TYPE_POLYGON
-      ) {
-//        geoColl = creationGeometry(inputGeoJSON).geomCollection;
-        geoColl = createGeomCollection(inputGeoJSON, inputGeoJSON.properties);
       } else {
         geoColl = createGeomCollection(inputGeoJSON, inputGeoJSON.properties);
       }
@@ -626,9 +622,10 @@ export default {
       cardInstructions:
         'Choose the location(s) where the research data was collected.',
       defaultInstructions: 'You are using the default location (Switzerland). Consider adjusting the geo information to represent your research data as accurate as possible.',
-      editorInstructions: "Use the text editor for fine adjustments, Undo or Redo. It's not allowed to change the structure of the geoJson via the editor.",
+      editorInstructions: 'Use the text editor for fine adjustments, Undo or Redo. Only changing the values of geometries is allowed to edit. If you need to make needs of the structure upload a new file or change it on the map.',
       uploadInstructions: 'Upload geojson from a file if you have large changes or many geometries.',
       mapInstructions: 'Use the tools on the right side of the map to define locations. You can mix Points and Polygons. Or pick predefined locations. Use the eraser icon to remove geometries.',
+      fileDropLabel : 'Or drop a file with geoJSON here',
     },
     validationErrors: {
       input: null,
