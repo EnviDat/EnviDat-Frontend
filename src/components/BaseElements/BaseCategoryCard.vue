@@ -7,22 +7,32 @@
     :disabled="disabled"
     @click="clicked"
     class="d-flex align-center pa-2 rounded-xl bgcCard"
-    :style="{
-      backgroundColor: color ? convertToRgba(color, 0.9) : '#fff',
-    }"
+    :style="{ backgroundColor: color ? convertToRgba(color, 0.9) : '#fff' }"
   >
     <v-container class="pa-0">
       <v-row align="center" no-gutters>
-        <!-- Text -->
         <v-col cols="12">
-          <!-- <v-icon :color="darkenHex(color, 50)" :size="iconSize">forest</v-icon> -->
-          <div
-            class="px-2 px-sm-3 baseClickCardTitle font-weight-bold"
-            :class="{ compactTitle: isXl }"
-            :style="{ color: color ? darkenHex(color, 50) : '#000' }"
+          <v-card
+            flat
+            class="d-flex align-center px-2 px-sm-3 baseClickCardTitle font-weight-bold"
+            :style="{ backgroundColor: 'transparent', color: color ? darkenHex(color, 80) : '#000' }"
           >
-            {{ title }}
-          </div>
+            <v-icon
+              v-if="icon"
+              :size="iconSize"
+              class="mr-1"
+              :color="color ? darkenHex(color, 50) : '#000'"
+            >
+              {{ icon }}
+            </v-icon>
+            <v-img
+              v-if="img"
+              :width="iconSize"
+              :src="img"
+              class="mr-1"
+            ></v-img>
+            <span>{{ title }}</span>
+          </v-card>
         </v-col>
       </v-row>
     </v-container>
@@ -30,10 +40,8 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
 import { useDisplay } from 'vuetify'
 
-// 1) Define props
 const props = defineProps({
   title: {
     type: String,
@@ -41,7 +49,9 @@ const props = defineProps({
   },
   img: {
     type: String,
-    default: '',
+  },
+  icon: {
+    type: String,
   },
   color: {
     type: String,
@@ -71,21 +81,15 @@ const props = defineProps({
 
 const emit = defineEmits(['click'])
 
-const display = useDisplay()
-
-const isXl = computed(() => display.xl)
-
 const clicked = () => {
   emit('click', props.title.toLowerCase())
 }
 
-// Convert color to RGBA
 const convertToRgba = (color, alpha = 1) => {
-  let r
-  let g
-  let b
+  let r;
+  let g;
+  let b;
 
-  // If color is in RGB format
   if (/^rgb\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)$/.test(color)) {
     const rgbValues = color.match(/\d+/g).map(Number)
     r = rgbValues[0]
@@ -94,10 +98,7 @@ const convertToRgba = (color, alpha = 1) => {
   } else if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(color)) {
     let hex = color.substring(1)
     if (hex.length === 3) {
-      hex = hex
-        .split('')
-        .map((x) => x + x)
-        .join('')
+      hex = hex.split('').map(x => x + x).join('')
     }
     r = parseInt(hex.substring(0, 2), 16)
     g = parseInt(hex.substring(2, 4), 16)
@@ -113,7 +114,6 @@ const convertToRgba = (color, alpha = 1) => {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`
 }
 
-// Darken a hex color by a certain percentage
 const darkenHex = (hex, percent) => {
   if (!/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
     return hex
@@ -121,7 +121,7 @@ const darkenHex = (hex, percent) => {
 
   let hexValue = hex.substring(1)
   if (hexValue.length === 3) {
-    hexValue = hexValue.split('').map((x) => x + x).join('')
+    hexValue = hexValue.split('').map(x => x + x).join('')
   }
   const r = parseInt(hexValue.substring(0, 2), 16)
   const g = parseInt(hexValue.substring(2, 4), 16)
@@ -138,12 +138,11 @@ const darkenHex = (hex, percent) => {
   const clampedB = Math.min(255, Math.max(0, newB))
 
   const newHex = `#${[clampedR, clampedG, clampedB]
-    .map((x) => x.toString(16).padStart(2, '0'))
+    .map(x => x.toString(16).padStart(2, '0'))
     .join('')}`
 
   return newHex
 }
-
 </script>
 
 <style scoped>

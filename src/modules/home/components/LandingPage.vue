@@ -49,8 +49,8 @@
             <BaseCategoryCard
               :height="isLargeScreen ? '40' : '30'"
               :title="card.title"
-              :img="card.img"
-              :icon="'forest'"
+              :img="card.imgPath"
+              :icon="card.iconPath"
               :color="card.darkColor"
               :contain="card.contain"
               :disabled="card.disabled"
@@ -106,6 +106,7 @@
               :title="metadata.title"
               :subtitle="metadata.notes"
               :name="metadata.name"
+              :categoryName="metadata.categoryName"
               :titleImg="metadata.titleImg"
               :resourceCount="metadata.num_resources"
               :fileIconString="fileIconString"

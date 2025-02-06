@@ -20,7 +20,7 @@
             size="x-large"
             :color="categoryColor"
           >
-            <span class="text-subtitle-1 font-weight-bold">Category</span>
+            <span class="text-subtitle-1 font-weight-bold">{{ getCategoryName }}</span>
           </v-chip>
           <v-row class="category-title" no-gutters>
             <v-col class="pa-0" cols="12">
@@ -118,6 +118,10 @@
         default: false,
       },
       openButtonTooltip: String,
+      categoryName: {
+        type: String,
+        default: 'Category',
+      },
       openButtonIcon: {
         type: String,
         default: 'preview',
@@ -146,6 +150,15 @@
     computed: {
       showCardBody() {
         return !!this.tags || !this.compactLayout;
+      },
+      getCategoryName() {
+        return this.categoryName
+          .split(' ')
+          .map(word => {
+            if (word.length === 0) return word;
+            return word.charAt(0).toUpperCase() + word.slice(1);
+          })
+          .join(' ');
       },
       headerImageStyle() {
         let topBorderStyle =

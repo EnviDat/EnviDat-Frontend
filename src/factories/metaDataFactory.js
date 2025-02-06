@@ -520,6 +520,24 @@ export function enhanceTitleImg(metadata) {
 }
 
 /**
+ * @param {object} metadata
+ *
+ * @return {object} metadata entry enhanced with the name of the category
+ */
+export function enhanceCategoryName(metadata) {
+  if (!metadata) {
+    return null;
+  }
+
+  /* eslint-disable no-param-reassign */
+  const category = guessTagCategory(metadata.tags);
+
+  metadata.categoryName = category;
+
+  return metadata;
+}
+
+/**
  * @param {Object} metadataEntry
  *
  * @return {Object} metadataEntry enhanced with a title image based on the entrys tags
@@ -531,6 +549,10 @@ export function enhanceMetadataEntry(metadataEntry) {
 
   if (!metadataEntry.titleImg) {
     enhanceTitleImg(metadataEntry);
+  }
+
+  if (metadataEntry) {
+    enhanceCategoryName(metadataEntry);
   }
 
   return metadataEntry;
