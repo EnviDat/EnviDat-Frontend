@@ -186,7 +186,7 @@ function getMetaDataFromCSV(data: unknown) : MetaData {
 
   let metaRows: MetaRows = { fields: [] } satisfies MetaRows;
   let metaFields: MetaRows = { fields: [] } satisfies MetaRows;
-  let csvLines = csvDataString.split('\n');
+  const csvLines = csvDataString.split('\n');
 
   const iCSVMetaRows = csvLines.filter((line) => line.startsWith('#'));
   let hasMetaRows = iCSVMetaRows?.length > 0;
