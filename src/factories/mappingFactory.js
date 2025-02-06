@@ -841,9 +841,10 @@ function populateEditingDataInfo(commit, backendJSON) {
   const geoData = getFrontendJSONForStep(stepKey, backendJSON);
 
   const location = createLocation({
-    ...backendJSON,
-    // don't pass location directly as property because it would be
-    // returned without the parsing of geo spatial infos
+    id: backendJSON.id,
+    name: backendJSON.name,
+    title: backendJSON.title,
+    // don't pass location directly as the mapping to the fontend location only contains the geoJSON
     spatial: geoData.location.geoJSON,
   });
 

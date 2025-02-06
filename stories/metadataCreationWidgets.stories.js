@@ -9,14 +9,11 @@
 /* eslint-disable object-property-newline */
 import EditAddPublication from '@/modules/user/components/EditAddPublication.vue';
 import relatedPublicCitationTesting from './js/relatedPublicCitation';
-import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
+import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
 export default {
   title: '3 Dataset / 2 Edit / Add Related Publication Widget',
-  decorators: [],
-  parameters: {
-    ...envidatViewportParameters,
-  },
+
 };
 
 const keys = Object.keys(relatedPublicCitationTesting);

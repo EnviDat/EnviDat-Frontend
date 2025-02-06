@@ -5,7 +5,8 @@
             scrollable
             fullscreen
             class="pa-2"
-            style="z-index: 2030;">
+            :style="`z-index: 2030; scrollbar-width: thin; scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack};`"
+            >
 
     <v-card class="fill-height pa-0" >
 
@@ -122,6 +123,12 @@ export default {
     eventBus.on(INJECT_GENERIC_COMPONENT, this.showGenericComponent);
   },
   computed: {
+    scrollbarColorFront() {
+      return this.$vuetify ? this.$vuetify.theme.themes.light.colors.highlight : 'auto';
+    },
+    scrollbarColorBack() {
+      return this.$vuetify ? '#F0F0F0' : 'auto';
+    },
   },
   methods: {
     closeClicked() {

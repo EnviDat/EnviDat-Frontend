@@ -12,7 +12,7 @@
  */
 
 import TextPreviewCard from '@/modules/metadata/components/ResourcePreviews/TextPreviewCard.vue';
-import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
+import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
 
 // const readme1 = './testdata/bender2020_readme.txt';
@@ -20,10 +20,6 @@ import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportPar
 
 export default {
   title: '1 Base / Cards /  Resource Previews',
-  decorators: [],
-  parameters: {
-    ...envidatViewportParameters,
-  },
 };
 
 

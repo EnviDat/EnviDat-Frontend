@@ -138,7 +138,7 @@ import {
 
 import { createCitation } from '@/factories/citationFactory';
 
-import { getFullAuthorsFromDataset } from '@/factories/authorFactory';
+import { getFullAuthorsFromDataset, replaceAuthorDeadAscii } from '@/factories/authorFactory';
 
 import {
   getConfigFiles,
@@ -283,8 +283,6 @@ export default {
       detailPageBackRoute: `${METADATA_NAMESPACE}/detailPageBackRoute`,
       authorsMap: `${METADATA_NAMESPACE}/authorsMap`,
       appScrollPosition: 'appScrollPosition',
-      asciiDead: `${METADATA_NAMESPACE}/asciiDead`,
-      authorPassedInfo: `${METADATA_NAMESPACE}/authorPassedInfo`,
     }),
     metadataContent() {
       if (this.mode) {
@@ -313,12 +311,6 @@ export default {
     },
     resourcesConfig() {
       return this.metadataConfig?.resourcesConfig || {};
-    },
-    authorDeadInfo() {
-      return {
-        asciiDead: this.asciiDead,
-        authorPassedInfo: this.authorPassedInfo,
-      };
     },
     showCloseButton() {
       if (this.$vuetify.display.mdAndUp) {
@@ -578,7 +570,6 @@ export default {
         this.header = createHeader(
           currentContent,
           this.$vuetify.display.smAndDown,
-          this.authorDeadInfo,
         );
 
         const parsedContent = convertJSON(currentContent, false);
@@ -617,7 +608,6 @@ export default {
       this.MetadataAuthors.props = {
         authors: this.authors,
         authorDetailsConfig: this.authorDetailsConfig,
-        authorDeadInfo: this.authorDeadInfo,
         showPlaceholder: this.showPlaceholder,
       };
     },
@@ -792,7 +782,7 @@ export default {
       });
     },
     catchAuthorCardAuthorSearch(fullName) {
-      const cleanFullName = fullName.replace(`(${this.asciiDead})`, '').trim();
+      const cleanFullName = replaceAuthorDeadAscii(fullName);
 
       const query = {
         search: cleanFullName,
@@ -809,8 +799,8 @@ export default {
 
       // make sure to remove the ascii marker for dead authors for the search
       // so the special characters won't case issues
-      const given = authorGivenName.replace(`(${this.asciiDead})`, '').trim();
-      const lastName = authorLastName.replace(`(${this.asciiDead})`, '').trim();
+      const given = replaceAuthorDeadAscii(authorGivenName);
+      const lastName = replaceAuthorDeadAscii(authorLastName);
 
       query.search = `${given} ${lastName}`;
       query.isAuthorSearch = true;

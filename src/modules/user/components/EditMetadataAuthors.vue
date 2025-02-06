@@ -136,10 +136,6 @@ export default {
       type: Object,
       default: () => {},
     },
-    authorDeadInfo: {
-      type: Object,
-      default: () => {},
-    },
     readOnlyFields: {
       type: Array,
       default: () => [],
@@ -185,7 +181,6 @@ export default {
       return {
         authors: this.authorsFields,
         authorDetailsConfig: this.authorDetailsConfig,
-        authorDeadInfo: this.authorDeadInfo,
         emptyText: 'No author has been added yet. Select authors in the dropdown or create a new author.',
         emptyTextColor: 'grey',
       };
@@ -247,7 +242,6 @@ export default {
         ...editingProperties,
         overrideAuthorInfosExpanded: true,
         authorDetailsConfig: this.authorDetailsConfig,
-        ...this.authorDeadInfo,
       };
     },
     clearPreviews() {
