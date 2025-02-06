@@ -197,7 +197,7 @@ function getMetaDataFromCSV(data: unknown) : MetaData {
 
     if (metaFields?.fields) {
       const fields: string = metaFields.fields instanceof Array ? metaFields.fields.join(',') : metaFields.fields;
-      csvLines = csvLines.toSpliced(0, iCSVMetaRows.length, fields);
+      csvLines.splice(0, iCSVMetaRows.length, fields)
     }
   } else {
     // store the secondDataRow for detecting if there are headers
@@ -210,7 +210,7 @@ function getMetaDataFromCSV(data: unknown) : MetaData {
       const paramHeaderLine = cols.map((element, index) => `Col ${index}`);
       metaFields.fields = paramHeaderLine;
       hasMetaRows = true;
-      csvLines = csvLines.toSpliced(0, 1, paramHeaderLine.join(','));
+      csvLines.splice(0, 1, paramHeaderLine.join(','))
     } else {
       hasMetaRows = hasHeaderRow;
     }
