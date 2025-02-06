@@ -33,8 +33,8 @@
 </template>
 
 <script>
-import { getDataCreditIcon } from '@/factories/authorFactory';
 import { mdiCheck } from '@mdi/js';
+import { getDataCreditIcon } from '@/factories/authorFactory';
 import BaseIconToggleButton from '@/components/BaseElements/BaseIconToggleButton.vue';
 
 /**

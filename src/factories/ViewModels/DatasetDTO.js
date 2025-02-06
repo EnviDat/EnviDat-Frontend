@@ -1,5 +1,5 @@
-import { convertJSON } from '@/factories/mappingFactory';
 import { watch } from 'vue';
+import { convertJSON } from '@/factories/mappingFactory';
 
 export class DatasetDTO {
 

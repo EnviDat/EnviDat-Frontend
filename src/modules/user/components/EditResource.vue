@@ -300,6 +300,18 @@
  */
 
 import {
+  mdiAccount,
+  mdiCalendarRange,
+  mdiClose,
+  mdiKey,
+  mdiLock,
+  mdiLockOpen,
+  mdiUpdate,
+  mdiCancel,
+  mdiAccountGroup,
+} from '@mdi/js';
+
+import {
   EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_DATA_RESOURCE,
   eventBus,
@@ -328,17 +340,6 @@ import {
   ACCESS_LEVEL_SAMEORGANIZATION_VALUE,
   ACCESS_LEVEL_PUBLIC_VALUE,
 } from '@/factories/userEditingFactory';
-import {
-  mdiAccount,
-  mdiCalendarRange,
-  mdiClose,
-  mdiKey,
-  mdiLock,
-  mdiLockOpen,
-  mdiUpdate,
-  mdiCancel,
-  mdiAccountGroup,
-} from '@mdi/js';
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import { formatDate } from '@/factories/dateFactory';

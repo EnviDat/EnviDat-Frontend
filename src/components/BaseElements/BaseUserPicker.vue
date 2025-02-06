@@ -68,8 +68,8 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import TagChipAuthor from '@/components/Chips/TagChipAuthor.vue';
 import {mdiAccountBox, mdiArrowDownDropCircleOutline, mdiClose} from '@mdi/js';
+import TagChipAuthor from '@/components/Chips/TagChipAuthor.vue';
 
 export default {
   name: 'BaseUserPicker',

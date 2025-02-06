@@ -176,6 +176,7 @@
 import { mapState } from 'vuex';
 
 
+import {mdiArrowUp, mdiArrowRight, mdiEarth, mdiFingerprint, mdiNewspaper, mdiOpenInNew} from '@mdi/js';
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
@@ -205,7 +206,6 @@ import {
   PUBLICATION_STATE_RESERVED,
 } from '@/factories/metadataConsts';
 
-import {mdiArrowUp, mdiArrowRight, mdiEarth, mdiFingerprint, mdiNewspaper, mdiOpenInNew} from '@mdi/js';
 
 export default {
   name: 'EditPublicationStatus',
