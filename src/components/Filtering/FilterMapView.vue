@@ -292,7 +292,7 @@ export default {
       location.geomCollection.geometries.forEach(geometry => {
         const sublayer = createLeafletLayer(geometry,
           dataset.id, dataset.title,
-          selected, this.catchPointClick,
+          selected, this.catchPointClick, false,
           this.modeData, dataset, this)
 
         if (sublayer) {
