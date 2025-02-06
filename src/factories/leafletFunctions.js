@@ -17,10 +17,10 @@ import marker2x from '@/assets/map/marker-icon-2x.png';
 import selectedMarker from '@/assets/map/selected-marker-icon.png';
 import selectedMarker2x from '@/assets/map/selected-marker-icon-2x.png';
 */
+import { mdiMapMarker, mdiMapMarkerMultiple } from '@mdi/js';
 import markerShadow from '@/assets/map/marker-shadow.png';
 
 import { EDNA_MODE } from '@/store/metadataMutationsConsts';
-import { mdiMapMarker, mdiMapMarkerMultiple } from '@mdi/js';
 import {
   LOCATION_TYPE_GEOMCOLLECTION,
   LOCATION_TYPE_MULTIPOINT,

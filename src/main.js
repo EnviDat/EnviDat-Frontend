@@ -15,15 +15,18 @@
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 
+import VueVirtualScroller from 'vue-virtual-scroller';
 import store from '@/store/store';
+
 import App from '@/App.vue';
 import { initAxios } from '@/init';
 
 import vuetify from '@/plugins/vuetify';
 import router from '@/router';
-import VueVirtualScroller from 'vue-virtual-scroller';
+
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
 
+// eslint-disable-next-line import/order
 import VueMatomo from 'vue-matomo';
 
 
