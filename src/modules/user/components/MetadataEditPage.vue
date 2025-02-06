@@ -356,7 +356,7 @@ export default {
       const userOrganizations = this.organizationsStore.userOrganizations;
 
       const roleMap = getUserOrganizationRoleMap(
-        this.user.id,
+        this.user?.id,
         userOrganizations,
       );
       const datasetOrga = userOrganizations.filter(

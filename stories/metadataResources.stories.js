@@ -47,7 +47,7 @@ for (let j = 0; j < deprecatedMetadata.resources.length; j++) {
 const deprecatedResources1 = createResources(deprecatedMetadata);
 
 export default {
-  title: '3 Dataset / 1 Views / Metadata Resources',
+  title: '3 Datasets / 1 Views / Metadata Resources',
   component: MetadataResources,
 };
 

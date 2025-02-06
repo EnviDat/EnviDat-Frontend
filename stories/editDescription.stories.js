@@ -13,7 +13,7 @@
 import EditDescription from '@/modules/user/components/EditDescription.vue';
 
 export default {
-  title: '3 Dataset / 2 Edit / Description',
+  title: '3 Datasets / 2 Edit / Description',
   decorators: [],
   parameters: {},
 };

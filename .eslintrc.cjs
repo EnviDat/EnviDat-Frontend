@@ -21,9 +21,7 @@ module.exports = {
   settings: {
     'import/resolver': {
       alias: {
-        map: [
-          ['@', './src'],
-        ],
+        map: [['@', './src']],
       },
     },
   },
@@ -53,7 +51,7 @@ module.exports = {
     'no-restricted-syntax': 0,
     'comma-dangle': ['error', 'always-multiline'],
     'jsx-quotes': ['error', 'prefer-single'],
-    'quotes': ['error', 'single', { avoidEscape: true }],
+    quotes: ['error', 'single', { avoidEscape: true }],
     'operator-linebreak': ['off', 'before'],
     'vuetify/no-deprecated-classes': 'error',
     'vuetify/grid-unknown-attributes': 'error',

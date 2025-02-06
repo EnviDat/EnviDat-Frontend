@@ -9,7 +9,7 @@ const largeHeader = createHeader(metadata[3], false);
 const longAuthorsListHeader = createHeader(metadata[3], false);
 
 export default {
-  title: '3 Dataset / 1 Views / Metadata Header',
+  title: '3 Datasets / 1 Views / Metadata Header',
   component: MetadataHeader,
 };
 

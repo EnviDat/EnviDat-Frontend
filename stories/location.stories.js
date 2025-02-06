@@ -19,7 +19,7 @@ import { createLocation, singlePointsToMultiPoints } from '@/factories/geoFactor
 
 
 export default {
-  title: '3 Dataset / 1 Views / Metadata Location',
+  title: '3 Datasets / 1 Views / Metadata Location',
   component: MetadataGeo,
 };
 

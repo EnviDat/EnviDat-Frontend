@@ -10,7 +10,6 @@
 import {
   map as createMap,
   geoJSON,
-  marker as createMarker,
   divIcon,
   control,
 } from 'leaflet';

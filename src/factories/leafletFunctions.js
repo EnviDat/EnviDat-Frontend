@@ -249,7 +249,7 @@ export function createLeafletLayerViaGeoJson(geoJSONArray, id, title, vueInstanc
         return createGcNetLayers(feature, latlng, vueInstance);
       }
 
-      const layerType = feature.geometry?.type || feature.type;
+      const layerType = feature.geometry.type || feature.type;
 
       if (layerType === LOCATION_TYPE_POINT) {
         return getPointLayer(feature.geometry.coordinates, layerId, layerTitle, false, undefined);
@@ -288,7 +288,7 @@ export function createLeafletLayer(geometry, id, title, selected, onClick, isGcn
   } else if (geometry.type === LOCATION_TYPE_POLYGON) {
     layer = getPolygonLayer(geometry.coordinates, id, title,
       selected, onClick,
-      modeData, dataset,
+//      modeData, dataset,
     );
   } else if (geometry.type === LOCATION_TYPE_MULTIPOLYGON) {
 

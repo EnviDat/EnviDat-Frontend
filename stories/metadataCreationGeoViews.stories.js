@@ -149,7 +149,7 @@ const geoJsonFeatureLocation = createLocation({
 // DUMMY DATA END
 
 export default {
-  title: '3 Dataset / 2 Edit / Geo Data',
+  title: '3 Datasets / 2 Edit / Geo Data',
   component: EditDataGeo,
 };
 

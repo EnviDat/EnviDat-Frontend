@@ -95,8 +95,7 @@ export default [
           '{"allowed_users": "adrian_meyer,zweifel", "level": "public"}',
         size: null,
         state: 'active',
-        url:
-          'http://www.lfi.ch/resultate/resultateliste-en.php?p=theme&zigrNr=2&invNr=250',
+        url: 'http://www.lfi.ch/resultate/resultateliste-en.php?p=theme&zigrNr=2&invNr=250',
         url_type: null,
       },
       {
@@ -120,8 +119,7 @@ export default [
           '{"allowed_users": "zhichao_he,zeljka_vulovic", "level": "same_organization"}',
         size: null,
         state: 'active',
-        url:
-          'http://www.lfi.ch/resultate/resultateliste-en.php?p=theme&zigrNr=2&invNr=350',
+        url: 'http://www.lfi.ch/resultate/resultateliste-en.php?p=theme&zigrNr=2&invNr=350',
         url_type: null,
       },
       {
@@ -144,8 +142,30 @@ export default [
         restricted: '{"allowed_users": "yohann_chauvier", "level": "public"}',
         size: null,
         state: 'active',
-        url:
-          'http://www.lfi.ch/resultate/resultateliste-en.php?p=theme&zigrNr=2&invNr=452',
+        url: 'http://www.lfi.ch/resultate/resultateliste-en.php?p=theme&zigrNr=2&invNr=452',
+        url_type: null,
+      },
+      {
+        cache_last_updated: null,
+        cache_url: null,
+        created: '2018-05-29T21:17:31.470548',
+        description: '',
+        format: 'URL',
+        hash: '',
+        id: '53281d5d-1d5a-445b-bc77-42aa3c14c14f',
+        last_modified: null,
+        metadata_modified: null,
+        mimetype: null,
+        mimetype_inner: null,
+        name: 'NFI4b (2009/13) ',
+        package_id: 'fb851074-a421-47bf-802f-f03493c57041',
+        position: 2,
+        resource_type: null,
+        resource_size: '{"size_value": "2", "size_units": "mb"}',
+        restricted: '{"allowed_users": "yohann_chauvier", "level": "public"}',
+        size: null,
+        state: 'active',
+        url: 'https://envicloud.wsl.ch/#/?prefix=wsl%2FCORE_S2A%2F',
         url_type: null,
       },
     ],
@@ -370,8 +390,7 @@ export default [
         restricted: '{"allowed_users": "", "level": "public"}',
         size: null,
         state: 'active',
-        url:
-          'http://www.lfi.ch/resultate/resultateliste-en.php?p=theme&zigrNr=186&invNr=250350',
+        url: 'http://www.lfi.ch/resultate/resultateliste-en.php?p=theme&zigrNr=186&invNr=250350',
         url_type: null,
       },
       {
@@ -393,8 +412,7 @@ export default [
         restricted: '{"allowed_users": "", "level": "public"}',
         size: null,
         state: 'active',
-        url:
-          'http://www.lfi.ch/resultate/resultateliste-en.php?p=theme&zigrNr=186&invNr=350452',
+        url: 'http://www.lfi.ch/resultate/resultateliste-en.php?p=theme&zigrNr=186&invNr=350452',
         url_type: null,
       },
     ],
@@ -633,8 +651,7 @@ export default [
           '{ "allowed_users": "", "level": "same_organization", "shared_secret": ""}',
         size: 382534,
         state: 'active',
-        url:
-          'https://www.envidat.ch/dataset/fea7c28b-0a5b-4f38-b3df-c1ce66c2cf43/resource/15eb26e6-46a4-43e6-8cdb-fd7072968eb3/download/leb.jpg',
+        url: 'https://www.envidat.ch/dataset/fea7c28b-0a5b-4f38-b3df-c1ce66c2cf43/resource/15eb26e6-46a4-43e6-8cdb-fd7072968eb3/download/leb.jpg',
         url_type: 'upload',
       },
       {
@@ -658,8 +675,7 @@ export default [
         restricted: '',
         size: 234314,
         state: 'active',
-        url:
-          'https://www.envidat.ch/dataset/fea7c28b-0a5b-4f38-b3df-c1ce66c2cf43/resource/569d951e-97b2-44e0-9ad5-d861994a78eb/download/lebplot.pdf',
+        url: 'https://www.envidat.ch/dataset/fea7c28b-0a5b-4f38-b3df-c1ce66c2cf43/resource/569d951e-97b2-44e0-9ad5-d861994a78eb/download/lebplot.pdf',
         url_type: 'upload',
       },
       {
@@ -683,8 +699,7 @@ export default [
           '{ "allowed_users": "", "level": "same_organization", "shared_secret": ""}',
         size: 9240564,
         state: 'active',
-        url:
-          'https://www.envidat.ch/dataset/fea7c28b-0a5b-4f38-b3df-c1ce66c2cf43/resource/21e6ffa5-4cc5-4310-be18-91c2d579163c/download/lebforest.csv',
+        url: 'https://www.envidat.ch/dataset/fea7c28b-0a5b-4f38-b3df-c1ce66c2cf43/resource/21e6ffa5-4cc5-4310-be18-91c2d579163c/download/lebforest.csv',
         url_type: 'upload',
       },
     ],
@@ -858,8 +873,7 @@ export default [
           '{ "allowed_users": "", "level": "same_organization", "shared_secret": ""}',
         size: 382534,
         state: 'active',
-        url:
-          'https://www.envidat.ch/dataset/fea7c28b-0a5b-4f38-b3df-c1ce66c2cf43/resource/15eb26e6-46a4-43e6-8cdb-fd7072968eb3/download/leb.jpg',
+        url: 'https://www.envidat.ch/dataset/fea7c28b-0a5b-4f38-b3df-c1ce66c2cf43/resource/15eb26e6-46a4-43e6-8cdb-fd7072968eb3/download/leb.jpg',
         url_type: 'upload',
       },
       {
@@ -883,8 +897,7 @@ export default [
         restricted: '',
         size: 234314,
         state: 'active',
-        url:
-          'https://www.envidat.ch/dataset/fea7c28b-0a5b-4f38-b3df-c1ce66c2cf43/resource/569d951e-97b2-44e0-9ad5-d861994a78eb/download/lebplot.pdf',
+        url: 'https://www.envidat.ch/dataset/fea7c28b-0a5b-4f38-b3df-c1ce66c2cf43/resource/569d951e-97b2-44e0-9ad5-d861994a78eb/download/lebplot.pdf',
         url_type: 'upload',
       },
       {
@@ -908,8 +921,7 @@ export default [
           '{ "allowed_users": "", "level": "same_organization", "shared_secret": ""}',
         size: 9240564,
         state: 'active',
-        url:
-          'https://www.envidat.ch/dataset/fea7c28b-0a5b-4f38-b3df-c1ce66c2cf43/resource/21e6ffa5-4cc5-4310-be18-91c2d579163c/download/lebforest.csv',
+        url: 'https://www.envidat.ch/dataset/fea7c28b-0a5b-4f38-b3df-c1ce66c2cf43/resource/21e6ffa5-4cc5-4310-be18-91c2d579163c/download/lebforest.csv',
         url_type: 'upload',
       },
     ],

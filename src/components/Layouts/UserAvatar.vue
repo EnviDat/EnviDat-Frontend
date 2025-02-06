@@ -48,7 +48,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
-import jazzicons from '@metamask/jazzicon';
+import jazzicon from 'jazzicon-ts';
 import seedrandom from 'seedrandom';
 
 import { getAvataaarUrl } from '@/store/avataaars';
@@ -125,7 +125,7 @@ export default {
       if (jazzIconElement) {
         const rng = seedrandom(this.nameInitials);
         const randNr = rng.int32();
-        const icon = jazzicons(this.size, randNr);
+        const icon = jazzicon(this.size, randNr);
         jazzIconElement.appendChild(icon);
       }
     },

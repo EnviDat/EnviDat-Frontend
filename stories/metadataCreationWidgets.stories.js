@@ -12,7 +12,7 @@ import relatedPublicCitationTesting from './js/relatedPublicCitation';
 import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
 export default {
-  title: '3 Dataset / 2 Edit / Add Related Publication Widget',
+  title: '3 Datasets / 2 Edit / Add Related Publication Widget',
 
 };
 

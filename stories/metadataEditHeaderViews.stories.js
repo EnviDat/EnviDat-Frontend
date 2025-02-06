@@ -59,7 +59,7 @@ existingAuthors = sortObjectArray(existingAuthors, 'lastName');
 
 
 export default {
-  title: '3 Dataset / 2 Edit / Metadata Header',
+  title: '3 Datasets / 2 Edit / Metadata Header',
   component: EditMetadataHeader,
 };
 
