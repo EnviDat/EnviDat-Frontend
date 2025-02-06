@@ -13,7 +13,10 @@ import seedrandom from 'seedrandom';
 
 import { getAuthorName, getAuthorsString } from '@/factories/authorFactory';
 
-import { ACCESS_LEVEL_PUBLIC_VALUE, getAllowedUserNamesArray } from '@/factories/userEditingFactory';
+import {
+  ACCESS_LEVEL_PUBLIC_VALUE,
+  getAllowedUserNamesArray,
+} from '@/factories/userEditingFactory';
 
 import {
   METADATA_CONTACT_EMAIL,
@@ -28,7 +31,11 @@ import {
 } from '@/factories/metadataConsts';
 
 import categoryCards, { cardImageBgs } from '@/store/categoryCards';
-import { enhanceTags, getCategoryColor, guessTagCategory } from '@/factories/keywordsFactory';
+import {
+  enhanceTags,
+  getCategoryColor,
+  guessTagCategory,
+} from '@/factories/keywordsFactory';
 import { createLocation } from '@/factories/geoFactory';
 import { getMetadataVisibilityState } from '@/factories/publicationFactory';
 import { formatDate } from '@/factories/dateFactory';
@@ -396,7 +403,7 @@ export function createResources(
   }
 
   if (dataset.resources) {
-    dataset.resources.forEach(async element => {
+    dataset.resources.forEach(async (element) => {
       // get the number of download from matomo API
       // const numberOfDownload = await getResourcesDownloads(element.name);
       const res = createResource(
@@ -480,7 +487,6 @@ export function createDetails(dataset) {
 
   return details;
 }
-
 
 let lastCategory = '';
 let tempImgKeys = [];
@@ -636,7 +642,6 @@ export const possibleVisibilityStates = [
  * @returns {{}}
  */
 export function enhanceMetadatas(datasets, mode = undefined) {
-
   if (!(datasets instanceof Array)) {
     throw new Error(
       `enhanceMetadatas() expects an array of datasets got ${typeof datasets}`,
@@ -708,4 +713,3 @@ export function isTagSelected(tagName, selectedTagNames) {
 
   return selectedTagNames.indexOf(tagName) >= 0;
 }
-

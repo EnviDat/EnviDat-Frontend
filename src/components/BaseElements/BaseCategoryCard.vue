@@ -15,7 +15,10 @@
           <v-card
             flat
             class="d-flex align-center px-2 px-sm-3 baseClickCardTitle font-weight-bold"
-            :style="{ backgroundColor: 'transparent', color: color ? darkenHex(color, 80) : '#000' }"
+            :style="{
+              backgroundColor: 'transparent',
+              color: color ? darkenHex(color, 80) : '#000',
+            }"
           >
             <v-icon
               v-if="icon"
@@ -25,12 +28,7 @@
             >
               {{ icon }}
             </v-icon>
-            <v-img
-              v-if="img"
-              :width="iconSize"
-              :src="img"
-              class="mr-1"
-            ></v-img>
+            <v-img v-if="img" :width="iconSize" :src="img" class="mr-1"></v-img>
             <span>{{ title }}</span>
           </v-card>
         </v-col>
@@ -40,7 +38,7 @@
 </template>
 
 <script setup>
-import { useDisplay } from 'vuetify'
+import { useDisplay } from 'vuetify';
 
 const props = defineProps({
   title: {
@@ -71,19 +69,19 @@ const props = defineProps({
   },
   height: {
     type: String,
-    default: '30',
+    default: '40',
   },
   iconSize: {
     type: String,
     default: '20',
   },
-})
+});
 
-const emit = defineEmits(['click'])
+const emit = defineEmits(['click']);
 
 const clicked = () => {
-  emit('click', props.title.toLowerCase())
-}
+  emit('click', props.title.toLowerCase());
+};
 
 const convertToRgba = (color, alpha = 1) => {
   let r;
@@ -91,58 +89,64 @@ const convertToRgba = (color, alpha = 1) => {
   let b;
 
   if (/^rgb\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)$/.test(color)) {
-    const rgbValues = color.match(/\d+/g).map(Number)
-    r = rgbValues[0]
-    g = rgbValues[1]
-    b = rgbValues[2]
+    const rgbValues = color.match(/\d+/g).map(Number);
+    r = rgbValues[0];
+    g = rgbValues[1];
+    b = rgbValues[2];
   } else if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(color)) {
-    let hex = color.substring(1)
+    let hex = color.substring(1);
     if (hex.length === 3) {
-      hex = hex.split('').map(x => x + x).join('')
+      hex = hex
+        .split('')
+        .map((x) => x + x)
+        .join('');
     }
-    r = parseInt(hex.substring(0, 2), 16)
-    g = parseInt(hex.substring(2, 4), 16)
-    b = parseInt(hex.substring(4, 6), 16)
+    r = parseInt(hex.substring(0, 2), 16);
+    g = parseInt(hex.substring(2, 4), 16);
+    b = parseInt(hex.substring(4, 6), 16);
   } else {
-    return color
+    return color;
   }
 
-  r = Math.min(255, Math.max(0, r))
-  g = Math.min(255, Math.max(0, g))
-  b = Math.min(255, Math.max(0, b))
+  r = Math.min(255, Math.max(0, r));
+  g = Math.min(255, Math.max(0, g));
+  b = Math.min(255, Math.max(0, b));
 
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`
-}
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
 
 const darkenHex = (hex, percent) => {
   if (!/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
-    return hex
+    return hex;
   }
 
-  let hexValue = hex.substring(1)
+  let hexValue = hex.substring(1);
   if (hexValue.length === 3) {
-    hexValue = hexValue.split('').map(x => x + x).join('')
+    hexValue = hexValue
+      .split('')
+      .map((x) => x + x)
+      .join('');
   }
-  const r = parseInt(hexValue.substring(0, 2), 16)
-  const g = parseInt(hexValue.substring(2, 4), 16)
-  const b = parseInt(hexValue.substring(4, 6), 16)
+  const r = parseInt(hexValue.substring(0, 2), 16);
+  const g = parseInt(hexValue.substring(2, 4), 16);
+  const b = parseInt(hexValue.substring(4, 6), 16);
 
-  const factor = 1 - Math.max(0, Math.min(100, percent)) / 100
+  const factor = 1 - Math.max(0, Math.min(100, percent)) / 100;
 
-  const newR = Math.round(r * factor)
-  const newG = Math.round(g * factor)
-  const newB = Math.round(b * factor)
+  const newR = Math.round(r * factor);
+  const newG = Math.round(g * factor);
+  const newB = Math.round(b * factor);
 
-  const clampedR = Math.min(255, Math.max(0, newR))
-  const clampedG = Math.min(255, Math.max(0, newG))
-  const clampedB = Math.min(255, Math.max(0, newB))
+  const clampedR = Math.min(255, Math.max(0, newR));
+  const clampedG = Math.min(255, Math.max(0, newG));
+  const clampedB = Math.min(255, Math.max(0, newB));
 
   const newHex = `#${[clampedR, clampedG, clampedB]
-    .map(x => x.toString(16).padStart(2, '0'))
-    .join('')}`
+    .map((x) => x.toString(16).padStart(2, '0'))
+    .join('')}`;
 
-  return newHex
-}
+  return newHex;
+};
 </script>
 
 <style scoped>

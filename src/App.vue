@@ -1,15 +1,15 @@
 <template>
-  <v-app  class="application envidat-font-overwrite" :style="dynamicBackground">
+  <v-app class="application envidat-font-overwrite" :style="dynamicBackground">
     <div
       v-show="showDecemberParticles"
       id="christmas-canvas"
-      style="position: absolute; width: 100%; height: 100%;"
+      style="position: absolute; width: 100%; height: 100%"
     ></div>
 
     <div
       v-show="showDecemberParticles"
       id="christmas-canvas"
-      style="position: absolute; width: 100%; height: 100%;"
+      style="position: absolute; width: 100%; height: 100%"
     ></div>
 
     <link
@@ -21,12 +21,10 @@
     <div
       v-for="(notification, index) in visibleNotifications()"
       :key="`notification_${index}`"
-      :style="
-        `position: absolute;
+      :style="`position: absolute;
                 right: ${$vuetify.display.xs ? 0 : 15}px;
                 top: ${35 + index * 175}px;
-                z-index: ${NotificationZIndex};`
-      "
+                z-index: ${NotificationZIndex};`"
     >
       <NotificationCard
         :notification="notification"
@@ -95,17 +93,16 @@
         />
 
         <TextBanner
-            v-if="showCookieInfo"
-            id="cookieBanner"
-            :style="bannerStyle"
-            :text="cookieInfoTextMatomo"
-            icon="cookie"
-            deniedText="Reject"
-            confirmText="Accept"
-            :confirmClick="catchCookieInfoOk"
-            :deniedClick="deniedTracking"
+          v-if="showCookieInfo"
+          id="cookieBanner"
+          :style="bannerStyle"
+          :text="cookieInfoTextMatomo"
+          icon="cookie"
+          deniedText="Reject"
+          confirmText="Accept"
+          :confirmClick="catchCookieInfoOk"
+          :deniedClick="deniedTracking"
         />
-
       </v-container>
 
       <v-dialog
@@ -215,35 +212,33 @@ import {
   SHOW_REDIRECT_SIGNIN_DIALOG,
 } from '@/factories/eventBus';
 
-
 import { ENVIDAT_SHOW_COOKIE_BANNER } from '@/factories/metadataConsts';
 import { getImage } from '@/factories/imageFactory';
 import { defineAsyncComponent } from 'vue';
 
-const TheNavigation = defineAsyncComponent(() =>
-  import('@/components/Navigation/TheNavigation.vue'),
+const TheNavigation = defineAsyncComponent(
+  () => import('@/components/Navigation/TheNavigation.vue'),
 );
-const TheNavigationToolbar = defineAsyncComponent(() =>
-  import('@/components/Navigation/TheNavigationToolbar.vue'),
+const TheNavigationToolbar = defineAsyncComponent(
+  () => import('@/components/Navigation/TheNavigationToolbar.vue'),
 );
 
-const GenericFullScreenModal = defineAsyncComponent(() =>
-  import('@/components/Layouts/GenericFullScreenModal.vue'),
+const GenericFullScreenModal = defineAsyncComponent(
+  () => import('@/components/Layouts/GenericFullScreenModal.vue'),
 );
-const ConfirmTextCard = defineAsyncComponent(() =>
-  import('@/components/Cards/ConfirmTextCard.vue'),
+const ConfirmTextCard = defineAsyncComponent(
+  () => import('@/components/Cards/ConfirmTextCard.vue'),
 );
-const TextBanner = defineAsyncComponent(() =>
-  import('@/components/Layouts/TextBanner.vue'),
+const TextBanner = defineAsyncComponent(
+  () => import('@/components/Layouts/TextBanner.vue'),
 );
-const NotificationCard = defineAsyncComponent(() =>
-  import('@/components/Cards/NotificationCard.vue'),
+const NotificationCard = defineAsyncComponent(
+  () => import('@/components/Cards/NotificationCard.vue'),
 );
 
 export default {
   name: 'App',
   beforeCreate() {
-
     // load the config initially
     this.$store.dispatch(SET_CONFIG);
 
@@ -253,7 +248,7 @@ export default {
       this.$store.dispatch(SET_CONFIG);
     }, 300000); // 1000 * 60 * 5 = 5 minutes
 
-    this.$store.subscribe(mutation => {
+    this.$store.subscribe((mutation) => {
       if (mutation.type === SET_APP_BACKGROUND) {
         this.appBGImage = mutation.payload;
       }
@@ -357,7 +352,7 @@ export default {
           if (item.subpages && item.subpages instanceof Array) {
             let subIsActive = false;
 
-            item.subpages.forEach(sub => {
+            item.subpages.forEach((sub) => {
               if (!subIsActive) {
                 subIsActive = this.currentPage === sub;
               }
@@ -372,7 +367,7 @@ export default {
     },
     visibleNotifications() {
       const notis = Object.values(this.notifications);
-      return notis.filter(n => n.show);
+      return notis.filter((n) => n.show);
     },
     catchContinueClick() {
       if (this.lastEditedDatasetPath) {
@@ -590,7 +585,7 @@ export default {
     setupNavItems() {
       if (this.signinDisabled) {
         const signItem = this.navigationItems.filter(
-          item => item.path === USER_SIGNIN_PATH,
+          (item) => item.path === USER_SIGNIN_PATH,
         )[0];
         if (signItem) {
           signItem.disabled = true;
@@ -783,7 +778,7 @@ export default {
     },
     menuItem() {
       let menuItem = { active: true };
-      this.navigationItems.forEach(el => {
+      this.navigationItems.forEach((el) => {
         if (el.icon === 'menu') {
           menuItem = el;
         }
@@ -853,8 +848,8 @@ export default {
     showCookieInfo: true,
     cookieInfoText:
       "On envidat.ch cookies are used to enhance your experience and provide features when you're signed in. These cookies are 'technical only' and are NOT used for tracking or monitoring you.",
-      cookieInfoTextMatomo:
-  'On envidat.ch, essential cookies are used to enhance your experience and provide features when you\'re signed in. By accepting additional cookies, you consent to anonymized monitoring to improve the usability of EnviDat.<b> The anonymized data is stored on WSL infrastructure and is not sold or shared with any third party. </b>If you reject, only essential technical cookies will be used.',
+    cookieInfoTextMatomo:
+      "On envidat.ch, essential cookies are used to enhance your experience and provide features when you're signed in. By accepting additional cookies, you consent to anonymized monitoring to improve the usability of EnviDat.<b> The anonymized data is stored on WSL infrastructure and is not sold or shared with any third party. </b>If you reject, only essential technical cookies will be used.",
     redirectToDashboard: false,
     appVersion: import.meta.env.VITE_VERSION,
     showMenu: true,
@@ -872,28 +867,25 @@ export default {
 </script>
 
 <style lang="scss">
+// #appContainer {
+//   position: relative;
+// }
 
-
-#appContainer {
-  position: relative;
-
-}
-
-#appContainer::before {
-  content: '';
-  position: absolute;
-  height: 100vh;
-  width: 100%;
-  background-image: url('https://envidat.ch/beta/static/app_b_landingpage-BjXUE1sY.webp');
-  background-repeat: no-repeat;
-  background-size: cover;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  opacity: 0.3;
-  pointer-events: none;
-}
+// #appContainer::before {
+//   content: '';
+//   position: absolute;
+//   height: 100vh;
+//   width: 100%;
+//   background-image: url('https://envidat.ch/beta/static/app_b_landingpage-BjXUE1sY.webp');
+//   background-repeat: no-repeat;
+//   background-size: cover;
+//   top: 0;
+//   right: 0;
+//   bottom: 0;
+//   left: 0;
+//   opacity: 0.3;
+//   pointer-events: none;
+// }
 @import url(./sass/globalStyles.scss);
 
 .custom-v-main {
@@ -906,5 +898,4 @@ export default {
     left: 60px;
   }
 }
-
 </style>
