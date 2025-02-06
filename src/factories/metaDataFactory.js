@@ -111,21 +111,21 @@ export function createHeader(dataset, smallScreen) {
 
   return {
     [METADATA_TITLE_PROPERTY]: dataset.title,
-    doi: dataset.doi,
     [METADATA_CONTACT_FULLNAME]: maintainer ? getAuthorName(maintainer) : '',
     [METADATA_CONTACT_EMAIL]: contactEmail,
+    doi: dataset.doi,
     tags: dataset.tags,
-    titleImg: dataset.titleImg,
-    maxTags: smallScreen ? 1 : 12,
     authors,
-    categoryColor: dataset.categoryColor,
     organization: dataset.organization?.name || '',
     organizationTooltip: dataset.organization?.title || '',
+    spatialInfo: dataset.spatial_info,
     metadataState: visibility,
     publicationStatus,
-    spatialInfo: dataset.spatial_info,
     created,
     modified,
+    categoryColor: dataset.categoryColor,
+    titleImg: dataset.titleImg,
+    maxTags: smallScreen ? 1 : 12,
   };
 }
 

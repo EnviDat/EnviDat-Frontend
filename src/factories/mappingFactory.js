@@ -33,8 +33,7 @@ import {
   EDITMETADATA_ORGANIZATION,
   EDITMETADATA_PUBLICATION_INFO,
   EDITMETADATA_RELATED_DATASETS,
-  EDITMETADATA_RELATED_PUBLICATIONS,
-  METADATA_MAIN_HEADER,
+  EDITMETADATA_RELATED_PUBLICATIONS, METADATA_MAIN_HEADER,
   USER_OBJECT,
 } from '@/factories/eventBus';
 
@@ -120,11 +119,6 @@ const JSONFrontendBackendRules = {
     ['identifierType','identifier_scheme'],
     ['identifier','identifier'],
     ['affiliation','affiliation'],
-/*
-    ['affiliations.affiliation1','affiliation'],
-    ['affiliations.affiliation2','affiliation_02'],
-    ['affiliations.affiliation3','affiliation_03'],
-*/
   ],
   [EDITMETADATA_AUTHOR_LIST]: [
     ['authors','author'],
@@ -483,7 +477,7 @@ export function convertToBackendJSONWithRules(rules, data) {
   return backendJson;
 }
 
-function convertToFrontendJSONWithRules(rules, data) {
+export function convertToFrontendJSONWithRules(rules, data) {
   if (!rules) {
     return null;
   }

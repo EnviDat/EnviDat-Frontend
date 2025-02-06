@@ -55,7 +55,7 @@ export function getAuthorName(author) {
 
   fullName = fullName.trim();
 
-  return  fullName || null;
+  return fullName || null;
 }
 
 export function getAuthorNameCitation(author) {
