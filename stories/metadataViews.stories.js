@@ -46,7 +46,7 @@ import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/Meta
 import envidat_packages from './testdata/packagelist.json';
 
 export default {
-  title: '3 Dataset / 1 Views',
+  title: '3 Datasets / 1 Views',
   decorators: [],
   parameters: {},
 };

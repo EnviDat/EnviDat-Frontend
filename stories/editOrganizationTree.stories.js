@@ -23,7 +23,7 @@ const organizationsTree = getOrganizationTree(orgaMap);
 // const organizationsTree2 = { ...organizationsTree };
 
 export default {
-  title: '3 Dataset / 2 Edit / Organization Tree',
+  title: '3 Datasets / 2 Edit / Organization Tree',
   component: EditOrganizationTree,
 };
 

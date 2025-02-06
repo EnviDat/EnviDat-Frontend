@@ -22,7 +22,7 @@ import {
 } from '@/factories/eventBus';
 
 export default {
-  title: '3 Dataset / 2 Edit / Upload Resources',
+  title: '3 Datasets / 2 Edit / Upload Resources',
   component: EditDropResourceFiles,
 };
 

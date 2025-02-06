@@ -57,7 +57,7 @@ const placeholderKeywordsGenericProps = {
 };
 
 export default {
-  title: '3 Dataset / 2 Edit / Related',
+  title: '3 Datasets / 2 Edit / Related',
   decorators: [],
   parameters: {},
 };
