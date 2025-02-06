@@ -46,7 +46,7 @@
           <v-col cols="12"
                   class="py-2"
           >
-            <DetailChart
+            <GcNetDetailChart
               :apiUrl="currentStation.envidatConfig.apiUrl"
               :fallbackUrl="currentStation.envidatConfig.fallbackUrl"
               :fallbackFilename="fileObject.fileName"
@@ -82,7 +82,7 @@ import parseISO from 'date-fns/parseISO';
 import ButtonContentTable from '@/components/Navigation/ButtonContentTable.vue';
 import { defaultSeriesSettings } from '@/factories/chartFactory';
 
-import DetailChart from './DetailChart.vue';
+import GcNetDetailChart from './GcNetDetailChart.vue';
 
 export default {
   name: 'DetailChartsList',
@@ -93,7 +93,7 @@ export default {
     config: Object,
   },
   components: {
-    DetailChart,
+    GcNetDetailChart,
     ButtonContentTable,
   },
   created() {

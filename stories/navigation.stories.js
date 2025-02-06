@@ -19,7 +19,10 @@ import {
   navigationItems,
   userMenuItems,
 } from '@/store/navigationState';
+
 import TextBanner from '@/components/Layouts/TextBanner.vue';
+import BaseCitationView from '@/components/BaseElements/BaseCitationView.vue';
+import relatedPublicCitationTesting from './js/relatedPublicCitation';
 
 
 const dominikHaas = {
@@ -31,6 +34,17 @@ const dominikHaas = {
 };
 
 const appVersion = import.meta.env.VITE_VERSION;
+
+const keys = Object.keys(relatedPublicCitationTesting);
+
+const pubCitation = relatedPublicCitationTesting[keys[1]];
+
+const citation = {
+  citation: pubCitation.citation.WSL,
+  abstract: pubCitation.abstract,
+  doi: pubCitation.doi,
+  doiUrl: `https://www.doi.org/${pubCitation.doi}`,
+};
 
 export default {
   title: '5 Navigation / Menu And Toolbar',
@@ -46,6 +60,15 @@ export const Menu = {
     version: appVersion,
   },
 };
+
+const changeMainLayout = (parentRefs) => {
+  let currentStyle = parentRefs['storyWrapper--v-main'].$el.getAttribute('style');
+  // console.log('navigationStory refs currentStyle', currentStyle);
+  currentStyle += '--v-layout-left: 60px !important;';
+  // currentStyle = currentStyle.replace('--v-layout-left: 0px;', '--v-layout-left: 60px !important;');
+  parentRefs['storyWrapper--v-main'].$el.setAttribute('style', currentStyle);
+  // console.log('new style', parentRefs['storyWrapper--v-main'].$el.getAttribute('style'));
+}
 
 
 export const MenuAndToolbar = () => ({
@@ -69,18 +92,13 @@ export const MenuAndToolbar = () => ({
   `,
   inject: ['getStorybookAppRefs'],
   mounted() {
-    this.$nextTick(() => {
-      this.changeMainLayout();
-    })
+    setTimeout(() => {
+      const parentRefs = this.getStorybookAppRefs();
+      this.changeMainLayout(parentRefs);
+    }, 500);
   },
   methods: {
-    changeMainLayout() {
-      const parentRefs = this.getStorybookAppRefs();
-      // console.log('navigationStory refs', parentRefs);
-      let currentStyle = parentRefs['storyWrapper--v-main'].$el.getAttribute('style');
-      currentStyle += '--v-layout-left: 60px; !important';
-      parentRefs['storyWrapper--v-main'].$el.setAttribute('style', currentStyle);
-    },
+    changeMainLayout,
   },
   data: () => ({
     dominikHaas,
@@ -130,23 +148,60 @@ export const MenuToolbarAndBanners = () => ({
   `,
   inject: ['getStorybookAppRefs'],
   mounted() {
-    this.$nextTick(() => {
-      this.changeMainLayout();
-    })
+    setTimeout(() => {
+      const parentRefs = this.getStorybookAppRefs();
+      this.changeMainLayout(parentRefs);
+    }, 500);
   },
   methods: {
-    changeMainLayout() {
-      const parentRefs = this.getStorybookAppRefs();
-      // console.log('navigationStory refs', parentRefs);
-      let currentStyle = parentRefs['storyWrapper--v-main'].$el.getAttribute('style');
-      currentStyle += '--v-layout-left: 60px; !important';
-      parentRefs['storyWrapper--v-main'].$el.setAttribute('style', currentStyle);
-    },
+    changeMainLayout,
   },
   data: () => ({
     storybookAppRefs: null,
     dominikHaas,
     navigationItems,
     userMenuItems,
+  }),
+});
+
+export const MenuToolbarAndCitation = () => ({
+  components: { TheNavigation, TheNavigationToolbar, BaseCitationView },
+  template: `
+    <!--  teleport to the storybookHead which is defined in the StoryWrapper.vue -->
+      <teleport defer to=".v-application__wrap">
+        <the-navigation :navigationItems="navigationItems" />
+
+        <the-navigation-toolbar :signedInUser="dominikHaas"
+                                :userNavigationItems="userMenuItems" />
+      </teleport>
+    
+      <v-container
+          fluid
+          style="position: relative"
+      >
+        <v-row style="height: 100vh;">
+          <v-col>
+            <BaseCitationView v-bind="citation" />
+          </v-col>
+        </v-row>
+        
+      </v-container>
+  `,
+  inject: ['getStorybookAppRefs'],
+  mounted() {
+    setTimeout(() => {
+      const parentRefs = this.getStorybookAppRefs();
+      this.changeMainLayout(parentRefs);
+    }, 500);
+  },
+  methods: {
+    changeMainLayout,
+  },
+  data: () => ({
+    storybookAppRefs: null,
+    dominikHaas,
+    navigationItems,
+    userMenuItems,
+    citation,
   }),
 });

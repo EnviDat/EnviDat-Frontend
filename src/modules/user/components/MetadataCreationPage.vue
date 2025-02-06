@@ -125,6 +125,7 @@ import {
 
 import {metadataCreationSteps} from '@/factories/workflowCreation';
 import { getReadOnlyFieldsObject } from '@/factories/mappingFactory';
+import { replaceAuthorDeadAscii } from '@/factories/authorFactory';
 
 
 export default {
@@ -344,7 +345,7 @@ export default {
 
     },
     catchAuthorCardAuthorSearch(fullName) {
-      const cleanFullName = fullName.replace(`(${this.asciiDead})`, '').trim();
+      const cleanFullName = replaceAuthorDeadAscii(fullName);
 
       const routeData = this.$router.resolve({ path:`${BROWSE_PATH}?search=${cleanFullName}&isAuthorSearch=true`});
       window.open(routeData.href, '_blank');

@@ -67,19 +67,38 @@
           </v-col>
         </v-row>
 
-        <v-row v-if="!showFullDescription" no-gutters>
-          <v-col class="resourceInfo">
+        <v-row v-if="!showFullDescription" no-gutters class="resourceInfo">
+          <v-col v-if="isProtected" cols="12" class="py-1">
             <BaseIconLabelView
-              v-if="isProtected"
               text="This resource is private"
               :icon="mdiLock"
               :light="dark"
               :dark="!dark"
               class="mb-1"
             />
+          </v-col>
 
+          <v-col v-if="sparkChartData" cols="12" class="py-1">
+            <v-row no-gutters style="opacity: 1 !important" align="center">
+              <v-col class="flex-grow-1">
+                <SparkChart :data="sparkChartData" />
+              </v-col>
+
+              <v-col class="flex-grow-0">
+                <base-icon-button
+                  :icon="mdiChartBar"
+                  icon-color="black"
+                  color="accent"
+                  elevated
+                  :tooltip-text="chartPreviewTooltip"
+                  @clicked="$emit('openButtonClicked')"
+                />
+              </v-col>
+            </v-row>
+          </v-col>
+
+          <v-col v-if="doi" cols="12" class="py-1">
             <BaseIconLabelView
-              v-if="doi"
               :text="doi"
               :icon="mdiFingerprint"
               :icon-tooltip="EDIT_METADATA_DOI_LABEL"
@@ -87,9 +106,10 @@
               :dark="!dark"
               class="mb-1"
             />
+          </v-col>
 
+          <v-col v-if="format" cols="12" class="py-1">
             <BaseIconLabelView
-              v-if="format"
               :text="formatedBytes ? `${format} - ${formatedBytes}` : format"
               :icon="extensionIcon"
               :icon-tooltip="
@@ -97,11 +117,11 @@
               "
               :light="dark"
               :dark="!dark"
-              class="mb-1"
             />
+          </v-col>
 
+          <v-col v-if="created" cols="12" class="py-1">
             <BaseIconLabelView
-              v-if="created"
               :text="readableCreated"
               :icon="mdiTimerPlusOutline"
               icon-tooltip="Date of resource creation"
@@ -109,9 +129,10 @@
               :dark="!dark"
               class="mb-1"
             />
+          </v-col>
 
+          <v-col v-if="lastModified" cols="12" class="py-1">
             <BaseIconLabelView
-              v-if="lastModified"
               :text="readableLastModified"
               :icon="mdiUpdate"
               icon-tooltip="Date of last modification"
@@ -122,6 +143,14 @@
 
             <!-- <base-icon-label-view
               v-if="isDownloaded"
+            />
+          </v-col>
+
+          <v-col v-if="isDownloaded"
+                 cols="12"
+                 class="py-1"
+          >
+             <base-icon-label-view
               :text="'Number of Downloads: ' + String(numberOfDownload)"
               material-icon-name="download"
               icon-tooltip="Number of downloads"
@@ -134,7 +163,7 @@
     </v-card-text>
 
     <v-container
-      v-if="showGenericOpenButton && !isProtected"
+      v-if="showGenericOpenButton && !isProtected && !sparkChartData"
       class="pa-2"
       style="position: absolute; right: 0; width: 55px"
       :style="`${genericOpenButtonBottom ? 'bottom: 55px;' : 'top: 0;'}`"
@@ -253,6 +282,7 @@ import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
 
 import S3Tree from '@/modules/s3/components/S3Tree.vue';
 import { useS3Store } from '@/modules/s3/store/s3Store';
+import SparkChart from '@/components/Charts/SparkChart.vue';
 
 import { renderMarkdown, stripMarkdown } from '@/factories/stringFactory';
 import { formatBytes } from '@/factories/metaDataFactory';
@@ -270,6 +300,7 @@ import {
   mdiTimerPlusOutline,
   mdiUpdate,
   mdiFileDocumentCheckOutline,
+  mdiChartBar,
 } from '@mdi/js';
 
 import { trackDownload } from '@/utils/matomoTracking';
@@ -279,6 +310,7 @@ import { formatDate } from '@/factories/dateFactory';
 export default {
   name: 'ResourceCard',
   components: {
+    SparkChart,
     BaseIcon,
     BaseIconLabelView,
     BaseIconButton,
@@ -336,8 +368,19 @@ export default {
       default: false,
     },
     loading: Boolean,
+    sparkChartLabels: {
+      type: Array,
+      required: false,
+      default: undefined,
+    },
+    sparkChartData: {
+      type: Array,
+      required: false,
+      default: undefined,
+    },
   },
   data: () => ({
+    mdiChartBar,
     mdiShield,
     mdiChevronDown,
     mdiDownload,
@@ -354,56 +397,15 @@ export default {
     audioFormats: ['mp3', 'wav', 'wma', 'ogg'],
     EDIT_METADATA_DOI_LABEL,
     s3Store: useS3Store(),
-    items: [
-      {
-        id: 1,
-        title: 'Applications :',
-        children: [
-          { id: 2, title: 'Calendar' },
-          { id: 3, title: 'Chrome' },
-          { id: 4, title: 'Webstorm' },
-        ],
-      },
-      {
-        id: 5,
-        title: 'Documents :',
-        children: [
-          {
-            id: 6,
-            title: 'vuetify :',
-            children: [
-              {
-                id: 7,
-                title: 'src :',
-                children: [
-                  { id: 8, title: 'index' },
-                  { id: 9, title: 'bootstrap' },
-                ],
-              },
-            ],
-          },
-          {
-            id: 10,
-            title: 'material2 :',
-            children: [
-              {
-                id: 11,
-                title: 'src :',
-                children: [
-                  { id: 12, title: 'v-btn' },
-                  { id: 13, title: 'v-card' },
-                  { id: 14, title: 'v-window' },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-    ],
+    chartPreviewTooltip: 'Visualize the data',
   }),
   mounted() {
     // set in the store the isS3Resources property, this property is needed to manage the card style in the sm view
     this.setIfS3isPresent();
+  },
+  beforeUnmount() {
+    // reset store before unmount the component
+    this.s3Store.isS3Resources = false;
   },
   computed: {
     loadingColor() {

@@ -24,7 +24,7 @@ import {
   mdiMagnify, mdiMenuRight, mdiPound, mdiInformation, mdiBookshelf, mdiAccountArrowRight,
 } from '@mdi/js';
 
-const domain = import.meta.env.VITE_DOMAIN;
+// const domain = import.meta.env.VITE_DOMAIN;
 const appVersion = import.meta.env.VITE_VERSION;
 
 export const navigationItems = [

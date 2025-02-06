@@ -1,8 +1,6 @@
 import { it, describe, expect } from 'vitest';
 
-import {
-  getPreviewStrategy,
-} from '@/factories/strategyFactory';
+import { getPreviewStrategy } from '@/factories/strategyFactory';
 
 
 // import dataset from '@/../public/testdata/testResoures';

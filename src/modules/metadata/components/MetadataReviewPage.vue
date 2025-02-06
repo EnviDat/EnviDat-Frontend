@@ -91,7 +91,7 @@ import {
 
 import {
   getAuthorName,
-  getFullAuthorsFromDataset,
+  getFullAuthorsFromDataset, replaceAuthorDeadAscii,
 } from '@/factories/authorFactory';
 
 import { getConfigFiles, getConfigUrls } from '@/factories/chartFactory';
@@ -121,8 +121,8 @@ import { defineAsyncComponent, markRaw } from 'vue';
 import { formatDate } from '@/factories/dateFactory';
 import MetadataHeader from './Metadata/MetadataHeader.vue';
 
-const MetadataBody = defineAsyncComponent(() =>
-  import('./Metadata/MetadataBody.vue'),
+const MetadataDescription = defineAsyncComponent(() =>
+  import('./Metadata/MetadataDescription.vue'),
 );
 const MetadataResources = defineAsyncComponent(() =>
   import('./Metadata/MetadataResources.vue'),
@@ -187,8 +187,6 @@ export default {
       detailPageBackRoute: `${METADATA_NAMESPACE}/detailPageBackRoute`,
       authorsMap: `${METADATA_NAMESPACE}/authorsMap`,
       appScrollPosition: 'appScrollPosition',
-      asciiDead: `${METADATA_NAMESPACE}/asciiDead`,
-      authorPassedInfo: `${METADATA_NAMESPACE}/authorPassedInfo`,
     }),
     metadataContent() {
       return this.reviewStore.metadata;
@@ -201,12 +199,6 @@ export default {
     },
     resourcesConfig() {
       return this.metadataConfig?.resourcesConfig || {};
-    },
-    authorDeadInfo() {
-      return {
-        asciiDead: this.asciiDead,
-        authorPassedInfo: this.authorPassedInfo,
-      };
     },
     metadataId() {
       return this.$route.params.metadataid;
@@ -377,7 +369,6 @@ export default {
         this.header = createHeader(
           subDataset,
           this.$vuetify.display.smAndDown,
-          this.authorDeadInfo,
         );
 
         {
@@ -389,7 +380,6 @@ export default {
             titleImg: dataset.titleImg,
             maxTags: smallScreen ? 5 : 12,
             authors,
-            authorDeadInfo,
             categoryColor: dataset.categoryColor,
             organization: dataset.organization?.name || '',
             organizationTooltip: dataset.organization?.title || '',
@@ -427,7 +417,6 @@ export default {
           this.MetadataAuthors.props = {
             authors: this.authors,
             authorDetailsConfig: this.authorDetailsConfig,
-            authorDeadInfo: this.authorDeadInfo,
             showPlaceholder: this.showPlaceholder,
           };
         });
@@ -467,7 +456,7 @@ export default {
     setMetadataContent() {
       this.configInfos = getConfigUrls(this.configInfos);
 
-      this.MetadataBody.props = { ...this.body };
+      this.MetadataDescription.props = { ...this.body };
 
       this.MetadataCitation.props = {
         ...this.citation,
@@ -475,7 +464,7 @@ export default {
       };
 
       this.firstCol = [
-        this.MetadataBody,
+        this.MetadataDescription,
         /*
         this.MetadataCitation,
         this.MetadataAuthors,
@@ -485,7 +474,7 @@ export default {
       this.secondCol = [this.MetadataResources];
 
       this.singleCol = [
-        this.MetadataBody,
+        this.MetadataDescription,
         /*
         this.MetadataCitation,
 */
@@ -526,7 +515,7 @@ export default {
       });
     },
     catchAuthorCardAuthorSearch(fullName) {
-      const cleanFullName = fullName.replace(`(${this.asciiDead})`, '').trim();
+      const cleanFullName = replaceAuthorDeadAscii(fullName);
 
       const query = {
         search: cleanFullName,
@@ -543,8 +532,8 @@ export default {
 
       // make sure to remove the ascii marker for dead authors for the search
       // so the special characters won't case issues
-      const given = authorGivenName.replace(`(${this.asciiDead})`, '').trim();
-      const lastName = authorLastName.replace(`(${this.asciiDead})`, '').trim();
+      const given = replaceAuthorDeadAscii(authorGivenName);
+      const lastName = replaceAuthorDeadAscii(authorLastName);
 
       query.search = `${given} ${lastName}`;
       query.isAuthorSearch = true;
@@ -608,7 +597,7 @@ export default {
   },
   data: () => ({
     headerHeight: 0,
-    MetadataBody: markRaw(MetadataBody),
+    MetadataDescription: markRaw(MetadataDescription),
     MetadataResources: markRaw(MetadataResources),
     MetadataCitation: markRaw(MetadataCitation),
     MetadataAuthors: markRaw(MetadataAuthors),

@@ -12,11 +12,11 @@
 
 import EditOrganizationTree from '@/modules/user/components/EditOrganizationTree.vue';
 
-import { getOrganizationMap, getOrganizationTree } from '@/factories/organizationFactory';
+import { getOrganizationRelationMap, getOrganizationTree } from '@/factories/organizationFactory';
 
 import organizationList from '~/public/testdata/organization_show.json';
 
-const orgaMap = getOrganizationMap(organizationList.result);
+const orgaMap = getOrganizationRelationMap(organizationList.result);
 const organizationsTree = getOrganizationTree(orgaMap);
 
 // const organizationsTree = getOrganizationMapObject(testOrganizations);

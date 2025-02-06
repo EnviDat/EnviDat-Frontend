@@ -18,6 +18,7 @@
 
     <v-card-text>
       <v-treeview
+        :style="`scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
         :items
         :search
         :open
@@ -26,27 +27,26 @@
         open-on-click
         item-value="id"
         item-disabled="locked"
+        selectable
         activatable
         hoverable
+        :max-height="maxHeight"
         @update:active="catchActiveClick"
+        @click:open="item => catchItemClick(item)"
       >
 
         <template v-slot:prepend="{ item }">
-          <BaseIconButton
-            v-if="item.children && item.children.length > 0"
-            :style="!open.includes(item.id) ? '' : 'transform: rotate(90deg);'"
-            :icon="mdiArrowRight"
-            @click.stop="catchOpenClick(item)"
-          />
+          <slot name="prepend" :item="item" />
         </template>
 
-        <!-- <template v-slot:label="{ item, active }"> -->
-        <template v-slot:label="{ item }">
-          <!-- <div @click="catchActiveClick(item)"> -->
-          <div>
-            {{ item.name }}
-          </div>
+        <template v-slot:item="{ item }">
+          <slot name="item" :item="item" />
         </template>
+
+        <template v-slot:append="{ item }">
+          <slot name="append" :item="item" />
+        </template>
+
       </v-treeview>
     </v-card-text>
   </v-card>
@@ -64,7 +64,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { mdiClose, mdiArrowRight } from '@mdi/js';
+import { mdiClose } from '@mdi/js';
+import { getOrganitzionTreeItem } from '@/factories/organizationFactory';
 
 export default {
   name: 'OrganizationTree',
@@ -72,7 +73,12 @@ export default {
     preSelectedOrganization: String,
     organizationsTree: Array,
     selectionDisabled: Boolean,
+    maxHeight: {
+      type: Number,
+      default: 500,
+    },
   },
+  emits: ['click', 'clickAppend'],
   mounted() {
     if (this.preSelectedOrganization) {
       this.setActiveItem(this.items, this.preSelectedOrganization);
@@ -81,6 +87,12 @@ export default {
   computed: {
     items() {
       return this.organizationsTree;
+    },
+    scrollbarColorFront() {
+      return this.$vuetify ? this.$vuetify.theme.themes.light.colors.highlight : 'auto';
+    },
+    scrollbarColorBack() {
+      return this.$vuetify ? '#F0F0F0' : 'auto';
     },
   },
   methods: {
@@ -107,6 +119,17 @@ export default {
       }
 
       return false;
+    },
+    catchItemClick({ id }) {
+
+      let orgaName = id;
+
+      const entry = getOrganitzionTreeItem(this.organizationsTree, id);
+      if (entry) {
+        orgaName = entry.name;
+      }
+
+      this.$emit('click', orgaName);
     },
     catchOpenClick(item) {
       if (this.open.includes(item.id)) {
@@ -159,9 +182,9 @@ export default {
     childIdPrefix: 'child',
     parentIdPrefix: 'parent',
     mdiClose,
-    mdiArrowRight,
   }),
-  components: {},
+  components: {
+  },
 };
 </script>
 

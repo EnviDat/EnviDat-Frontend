@@ -233,10 +233,6 @@ export default {
       default: false,
     },
     searchBarPlaceholder: String,
-    mainScrollClass: {
-      type: String,
-      default: undefined,
-    },
     showPublicationState: {
       type: Boolean,
       default: false,

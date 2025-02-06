@@ -100,7 +100,7 @@ export const ListWithMap = {
   args: {
     ...ListWithControls.args,
     mapFilteringPossible: true,
-    useDynamicHeight: false,
+    useDynamicHeight: true,
     defaultListControls: [LISTCONTROL_MAP_ACTIVE],
   },
 }

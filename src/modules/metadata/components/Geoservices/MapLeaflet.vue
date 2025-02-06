@@ -7,27 +7,19 @@
 </template>
 
 <script>
-import 'leaflet/dist/leaflet.css';
-import 'leaflet-bing-layer';
-import '@geoman-io/leaflet-geoman-free';
-import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css';
-
 import {
   map as createMap,
-  icon as createIcon,
-  tileLayer,
-  Icon,
   geoJSON,
-  marker as createMarker,
   divIcon,
   control,
 } from 'leaflet';
 
+import 'leaflet/dist/leaflet.css';
+import '@geoman-io/leaflet-geoman-free';
+import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css';
+
 import { mapState } from 'vuex';
 
-import markerIcon from '@/assets/map/marker-icon.png';
-import markerIcon2x from '@/assets/map/marker-icon-2x.png';
-import markerIconShadow from '@/assets/map/marker-shadow.png';
 import {
   eventBus,
   GCNET_PREPARE_DETAIL_CHARTS,
@@ -38,9 +30,27 @@ import {
   EDITMETADATA_DATA_GEO_MAP_ERROR,
 } from '@/factories/eventBus';
 
-import { defaultSwissLocation, defaultWorldLocation, geomanGeomsToGeoJSON } from '@/factories/geoFactory';
-import { getMultiPointLayer, getPointLayer, getPolygonLayer } from '@/factories/leafleftFunctions';
-import { LOCATION_TYPE_MULTIPOINT, LOCATION_TYPE_POINT, LOCATION_TYPE_POLYGON } from '@/factories/metadataConsts';
+import {
+  defaultSwissLocation,
+  defaultWorldLocation,
+  geomanGeomsToGeoJSON,
+} from '@/factories/geoFactory';
+
+import {
+  createImageryLayer,
+  createLeafletLayer,
+  createTopoLayer,
+  getPointIcon,
+  pointStyle,
+  polygonStyle,
+} from '@/factories/leafletFunctions';
+
+import {
+  LOCATION_TYPE_FEATCOLLECTION,
+  LOCATION_TYPE_FEATURE,
+  LOCATION_TYPE_GEOMCOLLECTION,
+} from '@/factories/metadataConsts';
+
 
 /* eslint-disable vue/no-unused-components */
 
@@ -76,6 +86,14 @@ export default {
 
     this.setupMap();
 
+    // Set styles for markers and polygons
+    const styleObj = this.getCustomLeafletStyle;
+
+    this.map.pm.setGlobalOptions({
+      markerStyle: styleObj.customPointStyle,
+      pathOptions: styleObj.customPolygonStyle,
+    });
+
     if (this.isMapEditable) {
       this.setupEditing();
     }
@@ -94,22 +112,55 @@ export default {
     layerConfig() {
       return this.$store?.state.geoservices.layerConfig || null;
     },
-    streets() {
-      return tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        noWrap: true,
-      });
+    isTopoActive() {
+      return this.baseMapLayerName === 'topo';
     },
-    satellite() {
-      return tileLayer.bing({
-        bingMapsKey: this.config?.apiKeys?.bing || null,
-        imagerySet: 'AerialWithLabels',
-        noWrap: true,
-      });
+    topoLayer() {
+      return createTopoLayer();
+    },
+    imageryLayer() {
+      return createImageryLayer();
     },
     isMapEditable() {
       return this.mapEditable;
+    },
+    getCustomLeafletStyle() {
+      const pointColor = pointStyle()
+      const icon = getPointIcon(false, false, undefined);
+
+      return {
+        customPointStyle: {
+          icon,
+          opacity: 0.65,
+          riseOnHover: true,
+          ...pointColor,
+        },
+        customPolygonStyle: polygonStyle(undefined, true),
+        gcnetStyle: {
+          icon: divIcon({
+            className: 'rounded-circle green',
+            iconSize: [20, 20],
+          }),
+          opacity: 0.75,
+          riseOnHover: true,
+        },
+        gcnetInactiveStyle: {
+          icon: divIcon({
+            className: 'rounded-circle red',
+            iconSize: [20, 20],
+          }),
+          opacity: 0.75,
+          riseOnHover: true,
+        },
+        gcnetMissingStyle: {
+          icon: divIcon({
+            className: 'rounded-circle grey',
+            iconSize: [20, 20],
+          }),
+          opacity: 0.75,
+          riseOnHover: true,
+        },
+      };
     },
   },
   methods: {
@@ -125,120 +176,64 @@ export default {
         });
       }
     },
-    addSite(geoJson) {
-      if (!geoJson) {
-        this.siteLayer = null;
+
+    createSiteLayers(geoJson) {
+      let geometries = [];
+      const siteLayers = [];
+
+      if (geoJson.type === LOCATION_TYPE_GEOMCOLLECTION) {
+        geometries = geoJson.geometries;
+      } else if (geoJson.type === LOCATION_TYPE_FEATURE) {
+        // Split geometry from feature object
+        geometries.push(geoJson.geometry);
+        // propertiesArray.push(geoJson.properties);
+
+      } else if (geoJson.type === LOCATION_TYPE_FEATCOLLECTION) {
+        // Split geometries from feature list
+        geoJson.features.forEach((feature) => {
+          geometries.push(feature.geometry);
+          // propertiesArray.push(feature.properties);
+        });
+      } else {
+        geometries = [geoJson];
+      }
+
+
+      for (let i = 0; i < geometries.length; i++) {
+        const geometry = geometries[i];
+        const layer = createLeafletLayer(geometry, i, `${geometry.type}-${i}`,
+          undefined, undefined,
+          this.isGcnet, undefined, undefined,
+          this,
+        );
+
+        if (layer instanceof Array) {
+          // if it's a geometry collection
+          for (let j = 0; j < layer.length; j++) {
+            const subLayer = layer[j];
+            siteLayers.push(subLayer);
+          }
+        } else {
+          siteLayers.push(layer);
+        }
+      }
+
+      return siteLayers;
+    },
+    showSiteLayersOnMap(show) {
+      if (!this.siteLayers) {
         return;
       }
 
-      let geoJsonArray = [];
-      // const propertiesArray = [];
-
-      if (geoJson.type === 'GeometryCollection') {
-        // Split geometries from geometries list
-        geoJson.geometries.forEach(geometry => {
-          geoJsonArray.push(geometry);
-        });
-
-        // } else if (geoJson.type === 'Feature') {
-        //   // Split geometry from feature object
-        //   geoJsonArray.push(geoJson.geometry);
-        //   propertiesArray.push(geoJson.properties);
-
-        // } else if (geoJson.type === 'FeatureCollection') {
-        //   // Split geometries from feature list
-        //   geoJson.features.forEach((feature) => {
-        //     geoJsonArray.push(feature.geometry);
-        //     propertiesArray.push(feature.properties);
-        //   });
-      } else {
-        geoJsonArray = [geoJson];
+      for (let i = 0; i < this.siteLayers.length; i++) {
+        const l = this.siteLayers[i];
+        if (show) {
+          this.map.addLayer(l);
+        } else {
+          this.map.removeLayer(l)
+        }
       }
 
-      const styleObj = this.getCustomLeafletStyle();
-
-      const isGcnet = this.isGcnet;
-
-      const vueInstance = this;
-
-      this.siteLayer = geoJSON(geoJsonArray, {
-        pointToLayer(feature, latlng) {
-          if (isGcnet) {
-            let gcLayer;
-
-            if (feature.properties.active === null || feature.properties.active === undefined) {
-              gcLayer = createMarker(latlng, styleObj.gcnetMissingStyle);
-            } else if (feature.properties.active === true) {
-                gcLayer = createMarker(latlng, styleObj.gcnetStyle);
-            } else if (feature.properties.active === false) {
-              gcLayer = createMarker(latlng, styleObj.gcnetInactiveStyle);
-            }
-
-            gcLayer.on({
-              click: () => {
-                vueInstance.catchGcnetStationClick(feature.properties.alias);
-              },
-            });
-
-            return gcLayer;
-          }
-
-          const title = feature.properties?.name || undefined;
-          const layerType = feature.geometry?.type;
-
-          if (layerType === LOCATION_TYPE_POINT) {
-            return getPointLayer(latlng, '1', title, false, undefined);
-          }
-
-          if(layerType === LOCATION_TYPE_MULTIPOINT) {
-            return getMultiPointLayer(latlng, '2', title, false, undefined);
-          }
-
-          if(layerType === LOCATION_TYPE_POLYGON) {
-            return getPolygonLayer(latlng, '2', title, false, undefined);
-          }
-
-          return getPointLayer(latlng, '1', title, false, undefined);
-          // return createMarker(latlng, styleObj.customPointStyle);
-        },
-        style: styleObj.customPolygonStyle,
-      });
-
-      if (isGcnet) {
-        this.siteLayer.eachLayer(layer => {
-          layer.bindTooltip(
-            `<div>
-              <b>${layer.feature.properties.name}</b>
-              <br/>
-              Elevation: ${layer.feature.properties.elevation}
-            </div>
-            `,
-            {
-              className: 'rounded-xl text-md-center subtitle-1',
-              permanent: false,
-            },
-          );
-
-          // Open popup data modal on click
-        });
-      }
-
-      // this.siteLayer.bindPopup(layer => layer.feature.properties.description);
-
-      this.map.addLayer(this.siteLayer);
-
-      // Editing event listeners on map layers
-      if (this.isMapEditable) {
-        const allLayers = this.map.pm.getGeomanLayers();
-        allLayers.forEach(editableLayer => {
-          editableLayer.on('pm:update', () => {
-            this.triggerGeometryEditEvent();
-          });
-          editableLayer.on('pm:dragend', () => {
-            this.triggerGeometryEditEvent();
-          });
-        });
-      }
     },
     zoomIn(mapId) {
       if (this.mapDivId !== mapId) {
@@ -282,7 +277,14 @@ export default {
         maxBoundsViscosity: 1,
       });
 
+      // add little box to switch the base layers
+      this.leafletCtrl = control.scale().addTo(this.map);
+
+      // toggle map layers, so the first layer is being added as the base layer
+      this.replaceBasemap();
+
       // Lock zoom to bounds
+/*
       this.map.setMinZoom(
         Math.ceil(
           Math.log2(
@@ -291,24 +293,49 @@ export default {
           ),
         ),
       );
+*/
 
-      control.scale().addTo(this.map);
-      this.replaceBasemap();
+/*
+      this.map.on('zoomend', () => {
+
+      });
+*/
 
       this.addSiteIfAvailable();
     },
     addSiteIfAvailable() {
-      this.removeSite();
+      // this.removeSite();
+      this.showSiteLayersOnMap(false);
+
+      if (this.isMapEditable) {
+        const layerArray = this.map.pm.getGeomanLayers();
+        layerArray.forEach(layer => {
+          this.map.removeLayer(layer);
+        });
+      }
 
       if (this.site) {
-        this.addSite(this.site);
+        this.siteLayers = this.createSiteLayers(this.site);
+        this.showSiteLayersOnMap(true);
+
+        // Editing event listeners on map layers
+        if (this.isMapEditable) {
+          const allLayers = this.map.pm.getGeomanLayers();
+
+          allLayers.forEach(editableLayer => {
+            editableLayer.on('pm:update', () => {
+              this.triggerGeometryEditEvent();
+            });
+            editableLayer.on('pm:dragend', () => {
+              this.triggerGeometryEditEvent();
+            });
+          });
+        }
       }
 
       if (this.maxExtent) {
         this.zoomToExtent(this.maxExtent);
       }
-
-      this.replaceLayer();
     },
     zoomToExtent(bbox) {
       this.map.fitBounds([
@@ -316,18 +343,13 @@ export default {
         [bbox.maxy, bbox.maxx],
       ]);
     },
-    replaceLayer() {
-      if (this.mapLayer) {
-        this.map.removeLayer(this.mapLayer);
-        this.mapLayer = null;
-      }
-    },
     replaceBasemap() {
       if (this.basemapLayer) {
         this.map.removeLayer(this.basemapLayer);
       }
-      this.basemapLayer =
-        this.baseMapLayerName === 'streets' ? this.streets : this.satellite;
+
+      this.basemapLayer = this.isTopoActive ? this.topoLayer : this.imageryLayer;
+
       this.map.addLayer(this.basemapLayer);
       // this.basemapLayer.bringToBack();
     },
@@ -338,57 +360,7 @@ export default {
       const geoJSONArray = geomanGeomsToGeoJSON(layerArray);
       eventBus.emit(MAP_GEOMETRY_MODIFIED, geoJSONArray);
     },
-    getCustomLeafletStyle() {
-      const iconOptions = Icon.Default.prototype.options;
-      iconOptions.iconUrl = this.markerIcon;
-      iconOptions.iconRetinaUrl = this.markerIcon2x;
-      iconOptions.shadowUrl = this.markerIconShadow;
-      const icon = createIcon(iconOptions);
-      return {
-        customPointStyle: {
-          icon,
-          opacity: 0.65,
-          riseOnHover: true,
-        },
-        customPolygonStyle: {
-          color: this.$vuetify.theme.themes.light.colors.accent,
-          // fillOpacity: 0.5,
-          // opacity: 1,
-          // weight: 1,
-        },
-        gcnetStyle: {
-          icon: divIcon({
-            className: 'rounded-circle green',
-            iconSize: [20, 20],
-          }),
-          opacity: 0.75,
-          riseOnHover: true,
-        },
-        gcnetInactiveStyle: {
-          icon: divIcon({
-            className: 'rounded-circle red',
-            iconSize: [20, 20],
-          }),
-          opacity: 0.75,
-          riseOnHover: true,
-        },
-        gcnetMissingStyle: {
-          icon: divIcon({
-            className: 'rounded-circle grey',
-            iconSize: [20, 20],
-          }),
-          opacity: 0.75,
-          riseOnHover: true,
-        },
-      };
-    },
     setupEditing() {
-      // Set styles for markers and polygons
-      const styleObj = this.getCustomLeafletStyle();
-      this.map.pm.setGlobalOptions({
-        markerStyle: styleObj.customPointStyle,
-        pathOptions: styleObj.customPolygonStyle,
-      });
 
       this.map.pm.addControls({
         drawMarker: true,
@@ -486,7 +458,7 @@ export default {
     },
     addPredefinedGeomToMap(type) {
       const layerArray = this.map.pm.getGeomanLayers();
-      const geoJSONArray = this.geomanGeomsToGeoJSON(layerArray);
+      const geoJSONArray = geomanGeomsToGeoJSON(layerArray);
 
       if (type === 'swiss') {
         geoJSONArray.push(defaultSwissLocation);
@@ -499,7 +471,7 @@ export default {
   },
   watch: {
     opacity() {
-      this.mapLayer.setOpacity(this.opacity / 100);
+      // this.mapLayer.setOpacity(this.opacity / 100);
     },
     baseMapLayerName() {
       this.replaceBasemap();
@@ -509,14 +481,12 @@ export default {
     },
   },
   data: () => ({
+    siteLayers: null,
+    leafletCtrl: null,
     map: null,
-    mapLayer: null,
     basemapLayer: null,
     // isMapEditable: JSON.parse(JSON.stringify(this.mapEditable)),
     markers: [],
-    markerIcon,
-    markerIcon2x,
-    markerIconShadow,
   }),
 };
 </script>

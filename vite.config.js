@@ -81,6 +81,102 @@ export default ({ mode, config }) => {
           ],
         },
       }),
+
+        visualizer({
+          filename: './dist/buildStats.html',
+          title : 'EnviDat Build Visualizer',
+        }),
+        vueDevTools(),
+      ],
+      define: {
+        'process.env': loadEnv(mode, process.cwd()),
+        'import.meta.env.VITE_VERSION': JSON.stringify(version),
+      },
+      test: {
+        exclude: [
+          ...configDefaults.exclude,
+          './tests/unit/ckanRegression.spec.js',
+        ],
+      },
+      base: './',
+      resolve: {
+          alias: [
+            { find: '@', replacement: path.resolve(__dirname, 'src') },
+            { find: '~', replacement: path.resolve(__dirname) },
+            // { find: 'leaflet', replacement: 'leaflet/dist/leaflet.js' },
+            { find: 'leaflet/dist/leaflet.css', replacement: 'leaflet/dist/leaflet.css' },
+            // { find: 'leaflet', replacement: 'leaflet/dist/leaflet-src.esm.js' },
+            { find: 'leaflet.markercluster/dist/MarkerCluster.css', replacement: 'leaflet.markercluster/dist/MarkerCluster.css' },
+            { find: 'leaflet.markercluster/dist/MarkerCluster.Default.css', replacement: 'leaflet.markercluster/dist/MarkerCluster.Default.css' },
+            { find: 'leaflet.markercluster', replacement: 'leaflet.markercluster/dist/leaflet.markercluster.js' },
+            { find: 'vue', replacement: 'vue/dist/vue.esm-bundler.js' },
+          ],
+      },
+      build: {
+        assetsDir: './static',
+        chunkSizeWarningLimit: 500,
+//         assetsInlineLimit: 4096 / 2, // Reduce the amount of image inlining so the chunks don't get huge
+        cssCodeSplit: true,
+        minify: !buildSourceMaps,
+        sourcemap: buildSourceMaps,
+        emptyOutDir: true,
+        rollupOptions: isProd ? {
+         output: {
+           manualChunks: (id) => {
+
+            if (id.includes('node_modules')) {
+
+              if (id.includes('vuetify')) {
+                return 'vendor_vuetify';
+              }
+
+              if (id.includes('vue') || id.includes('pinia')) {
+                // vue, vuex & pinia, vue-router, etc.
+                return 'vendor_vue';
+              }
+
+              if (id.includes('leaflet')) {
+                return 'vendor_leaflet';
+              }
+
+              if (id.includes('turf')) {
+                return 'vendor_turf';
+              }
+
+              if (id.includes('uppy')) {
+                return 'vendor_uppy';
+              }
+
+              if (id.includes('chart') || id.includes('uplot')) {
+                return 'vendor_charts';
+              }
+
+              if (id.includes('yup')) {
+                return 'vendor_validation';
+              }
+
+              if (id.includes('axios')
+                || id.includes('date-fns')
+                || id.includes('mitt')
+                || id.includes('seedrandom')
+                || id.includes('tiny-js-md5')
+              ) {
+                return 'vendor_utils';
+              }
+
+              return 'vendors';
+            }
+
+            if (id.includes('src/assets')) {
+              return 'envidat_assets';
+            }
+
+
+            // Let Rollup handle the rest
+            return undefined
+          },
+        },
+      }),
       visualizer({
         filename: './dist/buildStats.html',
         title: 'EnviDat Build Visualizer',

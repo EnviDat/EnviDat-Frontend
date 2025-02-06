@@ -92,7 +92,7 @@ const loadEDNADatasets = async modeMetadata => {
 export const modes = [
   {
     name: SWISSFL_MODE,
-    title: 'Swiss Forest Lab',
+    title: 'Swiss Forest Lab Data',
     externalUrl: 'https://swissforestlab.wsl.ch',
     mainTag: swissFLTag,
     extraTags: swissFLExtraTags,

@@ -11,7 +11,7 @@
  */
 
 import BarChart from '@/components/Charts/BarChart.vue';
-import { getOrgaDatasetMap, organizationSeries } from '@/factories/organizationFactory';
+import { getOrgaDatasetsMap, organizationSeries } from '@/factories/organizationFactory';
 
 import metadataFile from './testdata/packagelist.json'
 
@@ -86,7 +86,7 @@ export const Basic = {
 }
 
 
-const orgaDatasetMap = getOrgaDatasetMap(metadatas);
+const orgaDatasetMap = getOrgaDatasetsMap(metadatas);
 
 const yearLables = new Set();
 for (const [orgaName, value] of orgaDatasetMap) {
