@@ -2,7 +2,6 @@ import { it, describe, expect } from 'vitest';
 import { createLocation, fetureCollectionToGeoCollection, singlePointsToMultiPoints } from '@/factories/geoFactory';
 import {
   LOCATION_TYPE_FEATCOLLECTION,
-  LOCATION_TYPE_FEATURE,
   LOCATION_TYPE_GEOMCOLLECTION,
   LOCATION_TYPE_MULTIPOINT,
   LOCATION_TYPE_MULTIPOLYGON,
@@ -208,11 +207,7 @@ describe('geoFactory - merge geometry ', () => {
 
   it('into geo collection', () => {
 
-    const exitingLocation = createLocation({ ...dataset, spatial: metaPoint });
-
-    const geoCollection = fetureCollectionToGeoCollection(geoJsonFeatureCollection, {
-      name: exitingLocation.name,
-    });
+    const geoCollection = fetureCollectionToGeoCollection(geoJsonFeatureCollection);
 
     expect(geoCollection).toBeDefined();
     expect(geoCollection.type).equals(LOCATION_TYPE_GEOMCOLLECTION)
