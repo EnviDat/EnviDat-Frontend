@@ -150,10 +150,10 @@ export default {
         return;
       }
 
-      if (this.currentBaseMapLayer === 'streets') {
+      if (this.currentBaseMapLayer === 'topo') {
         this.currentBaseMapLayer = 'satellite';
       } else {
-        this.currentBaseMapLayer = 'streets';
+        this.currentBaseMapLayer = 'topo';
       }
     },
   },
@@ -161,7 +161,7 @@ export default {
     layerControlOpen: false,
     opacity: 100,
     mapIn3D: false,
-    currentBaseMapLayer: 'streets',
+    currentBaseMapLayer: 'topo',
   }),
 };
 </script>

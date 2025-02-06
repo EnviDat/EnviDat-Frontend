@@ -114,8 +114,6 @@
                     <TagChipAuthor
                       :name="authorName(author)"
                       :tooltipText="authorToolTipText"
-                      :asciiDead="asciiDead"
-                      :authorPassedInfo="authorPassedInfo"
                       isSmall
                       @clicked="
                         catchAuthorClicked(
@@ -602,10 +600,6 @@ export default {
       type: Boolean,
       default: true,
     },
-    authorDeadInfo: {
-      type: Object,
-      default: null,
-    },
     showCloseButton: {
       type: Boolean,
       default: true,
@@ -705,16 +699,6 @@ export default {
     },
     hasContent() {
       return this.metadataTitle && !this.showPlaceholder;
-    },
-    asciiDead() {
-      return this.authorDeadInfo && this.authorDeadInfo.asciiDead
-        ? this.authorDeadInfo.asciiDead
-        : null;
-    },
-    authorPassedInfo() {
-      return this.authorDeadInfo && this.authorDeadInfo.authorPassedInfo
-        ? this.authorDeadInfo.authorPassedInfo
-        : null;
     },
     maxTagsReached() {
       return this.tags ? this.tags.length > this.maxTags : false;

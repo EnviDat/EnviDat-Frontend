@@ -153,7 +153,9 @@ import {
   getUserOrganizationRoleMap,
   USER_ROLE_EDITOR,
   USER_ROLE_MEMBER,
+  USER_ROLE_SYSTEM_ADMIN,
 } from '@/factories/userEditingValidations';
+import { replaceAuthorDeadAscii } from '@/factories/authorFactory';
 
 export default {
   name: 'MetadataEditPage',
@@ -222,7 +224,7 @@ export default {
       'uploadNewResourceLoading',
       'userDatasets',
     ]),
-    ...mapState(METADATA_NAMESPACE, ['authorsMap', 'asciiDead']),
+    ...mapState(METADATA_NAMESPACE, ['authorsMap']),
     ...mapGetters(USER_NAMESPACE, ['resources', 'authors']),
     ...mapGetters(METADATA_NAMESPACE, ['existingAuthors', 'existingKeywords']),
     doiWorkflowActive() {
@@ -354,7 +356,7 @@ export default {
       const userOrganizations = this.organizationsStore.userOrganizations;
 
       const roleMap = getUserOrganizationRoleMap(
-        this.user.id,
+        this.user?.id,
         userOrganizations,
       );
       const datasetOrga = userOrganizations.filter(
@@ -364,7 +366,9 @@ export default {
       // use member as default, which means no editing of the publicationstatus is possible
       let userRole = USER_ROLE_MEMBER;
 
-      if (datasetOrga) {
+      if (this.user?.sysadmin === true) {
+        userRole = USER_ROLE_SYSTEM_ADMIN
+      } else if (datasetOrga) {
         const orgaName = datasetOrga.name;
         userRole = roleMap[orgaName];
 
@@ -470,7 +474,7 @@ export default {
       window.open(routeData.href, '_blank');
     },
     catchAuthorCardAuthorSearch(fullName) {
-      const cleanFullName = fullName.replace(`(${this.asciiDead})`, '').trim();
+      const cleanFullName = replaceAuthorDeadAscii(fullName);
 
       const routeData = this.$router.resolve({
         path: `${BROWSE_PATH}?search=${cleanFullName}&isAuthorSearch=true`,

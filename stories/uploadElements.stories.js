@@ -14,7 +14,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 
 import EditResourcePasteUrl from '@/modules/user/components/EditResourcePasteUrl.vue';
-import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles.vue';
 import EditMultiDropResourceFiles from '@/modules/user/components/EditMultiDropResourceFiles.vue';
 
 export default {
@@ -25,21 +24,6 @@ export default {
 };
 
 const metadataId = 'storybook_testing_metadataId';
-
-const EditDropResourceFilesTemplate = (args, { argTypes }) => ({
-  components: { EditDropResourceFiles },
-  props: Object.keys(argTypes),
-  template: '<EditDropResourceFiles v-bind="$props" />',
-});
-
-export const EmptyEditDropResourceFiles = EditDropResourceFilesTemplate.bind({});
-EmptyEditDropResourceFiles.args = { metadataId };
-export const ErrorEditDropResourceFiles = EditDropResourceFilesTemplate.bind({});
-ErrorEditDropResourceFiles.args = {
-  ...EmptyEditDropResourceFiles.args,
-  error: 'Network Error',
-  errorDetails: 'CORS something something',
-};
 
 
 export const EditMultiDropResourceFilesView = () => ({

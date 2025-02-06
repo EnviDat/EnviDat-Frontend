@@ -18,7 +18,7 @@ import {
 import EditImgPlaceholder from '@/modules/user/components/EditImgPlaceholder.vue';
 
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout.vue';
-import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody.vue';
+import MetadataDescription from '@/modules/metadata/components/Metadata/MetadataDescription.vue';
 import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications.vue';
 
 
@@ -164,8 +164,8 @@ export const EditImagePlaceholderView = () => ({
     }),
   });
 
-export const GenericTextareaPreviewMetadataBodyView = () => ({
-    components: { GenericTextareaPreviewLayout, MetadataBody },
+export const GenericTextareaPreviewMetadataDescriptionView = () => ({
+    components: { GenericTextareaPreviewLayout, MetadataDescription },
     template: `
     <v-col>
 
@@ -176,7 +176,7 @@ export const GenericTextareaPreviewMetadataBodyView = () => ({
       <v-row class="py-3" >
         <v-col >
           <GenericTextareaPreviewLayout  v-bind="genericProps"  >
-            <metadata-body v-bind="genericProps" />
+            <MetadataDescription v-bind="genericProps" />
           </GenericTextareaPreviewLayout>
         </v-col>
       </v-row>
@@ -188,7 +188,7 @@ export const GenericTextareaPreviewMetadataBodyView = () => ({
       <v-row class="py-3" >
         <v-col >
          <GenericTextareaPreviewLayout  v-bind="genericPropsFilled"  >
-            <metadata-body v-bind="genericPropsFilled" />
+            <MetadataDescription v-bind="genericPropsFilled" />
           </GenericTextareaPreviewLayout>
         </v-col>
       </v-row>

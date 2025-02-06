@@ -3,10 +3,10 @@ module.exports = {
   root: true,
   parserOptions: {
     sourceType: 'module',
-    ecmaVersion: 2021,
+    ecmaVersion: 2023,
   },
   env: {
-    es2021: true,
+    es2023: true,
     'vitest-globals/env': true,
   },
   extends: [
@@ -20,18 +20,13 @@ module.exports = {
   settings: {
     'import/resolver': {
       alias: {
-        map: [
-          ['@', './src'],
-        ],
+        map: [['@', './src']],
       },
     },
   },
-  // // required to lint *.vue files
-  plugins: [
-    'vuetify',
-  ],
-  'ignorePatterns': ['particles.js'],
-  // add your custom rules here
+
+  plugins: ['vuetify'],
+  ignorePatterns: ['particles.js'],
   rules: {
     'import/no-unresolved': 'off',
     // allow optionalDependencies
@@ -51,7 +46,7 @@ module.exports = {
     'no-restricted-syntax': 0,
     'comma-dangle': ['error', 'always-multiline'],
     'jsx-quotes': ['error', 'prefer-single'],
-    'quotes': ['error', 'single', { avoidEscape: true }],
+    quotes: ['error', 'single', { avoidEscape: true }],
     'operator-linebreak': ['off', 'before'],
     'vuetify/no-deprecated-classes': 'error',
     'vuetify/grid-unknown-attributes': 'error',

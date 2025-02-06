@@ -24,12 +24,12 @@
         </v-col>
       </v-row>
 
-      <v-row align="center">
-        <v-col class="flex-grow-0 pl-1 pr-0 pb-0">
+      <v-row align="center" class="pt-2">
+        <v-col class="flex-grow-0 px-3 py-0">
           <BaseIcon :icon="mdiCursorMove" color="grey" />
         </v-col>
 
-        <v-col class="text-h6 pl-1 pb-0" >
+        <v-col class="text-h6 pa-0">
           Author Sequence
         </v-col>
       </v-row>
@@ -136,10 +136,6 @@ export default {
       type: Object,
       default: () => {},
     },
-    authorDeadInfo: {
-      type: Object,
-      default: () => {},
-    },
     readOnlyFields: {
       type: Array,
       default: () => [],
@@ -185,7 +181,6 @@ export default {
       return {
         authors: this.authorsFields,
         authorDetailsConfig: this.authorDetailsConfig,
-        authorDeadInfo: this.authorDeadInfo,
         emptyText: 'No author has been added yet. Select authors in the dropdown or create a new author.',
         emptyTextColor: 'grey',
       };
@@ -247,7 +242,6 @@ export default {
         ...editingProperties,
         overrideAuthorInfosExpanded: true,
         authorDetailsConfig: this.authorDetailsConfig,
-        ...this.authorDeadInfo,
       };
     },
     clearPreviews() {

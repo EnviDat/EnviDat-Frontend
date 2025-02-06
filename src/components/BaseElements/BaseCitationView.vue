@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="px-0 py-1">
     <v-row no-gutters align="start">
-      <v-col class='pr-4 flex-grow-0'>
+      <v-col class='pr-3 flex-grow-0'>
         <v-row no-gutters>
             <v-col cols="12"
                    class='pl-1 pb-2'
@@ -24,7 +24,7 @@
               </template>
 
               <div class="pa-4"
-                   style="background-color: white;"
+                   style="position: relative; left: 70px; background-color: white; max-width: 90%;"
                    v-html="abstract" />
 
             </v-menu>

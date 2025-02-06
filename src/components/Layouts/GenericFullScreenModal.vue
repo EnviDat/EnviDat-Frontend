@@ -5,7 +5,8 @@
             scrollable
             fullscreen
             class="pa-2"
-            style="z-index: 2030;">
+            :style="`z-index: 2030; scrollbar-width: thin; scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack};`"
+            >
 
     <v-card class="fill-height pa-0" >
 
@@ -75,6 +76,7 @@ import {
   OPEN_TEXT_PREVIEW,
   OPEN_DATA_PREVIEW_IFRAME,
   INJECT_MAP_FULLSCREEN,
+  INJECT_GENERIC_COMPONENT,
 } from '@/factories/eventBus';
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
@@ -86,8 +88,8 @@ import {
 import { mdiClose } from '@mdi/js';
 import { defineAsyncComponent } from 'vue';
 
-const DetailChartsList = defineAsyncComponent(() =>
-  import('@/modules/metadata/components/GC-Net/DetailChartsList.vue'),
+const GcNetDetailChartsList = defineAsyncComponent(() =>
+  import('@/modules/metadata/components/GC-Net/GcNetDetailChartsList.vue'),
 )
 
 const MetadataMapFullscreen = defineAsyncComponent(() =>
@@ -109,6 +111,7 @@ export default {
     eventBus.on(OPEN_TEXT_PREVIEW, this.showTextPreviewModal);
     eventBus.on(OPEN_DATA_PREVIEW_IFRAME, this.showDataPreviewIframe);
     eventBus.on(INJECT_MAP_FULLSCREEN, this.showFullscreenMapModal);
+    eventBus.on(INJECT_GENERIC_COMPONENT, this.showGenericComponent);
   },
   beforeUnmount() {
     eventBus.off(OPEN_FULLSCREEN_MODAL, this.openModal);
@@ -117,15 +120,22 @@ export default {
     eventBus.off(OPEN_TEXT_PREVIEW, this.showTextPreviewModal);
     eventBus.off(OPEN_DATA_PREVIEW_IFRAME, this.showDataPreviewIframe);
     eventBus.off(INJECT_MAP_FULLSCREEN, this.showFullscreenMapModal);
+    eventBus.on(INJECT_GENERIC_COMPONENT, this.showGenericComponent);
   },
   computed: {
+    scrollbarColorFront() {
+      return this.$vuetify ? this.$vuetify.theme.themes.light.colors.highlight : 'auto';
+    },
+    scrollbarColorBack() {
+      return this.$vuetify ? '#F0F0F0' : 'auto';
+    },
   },
   methods: {
     closeClicked() {
       eventBus.emit(CLOSE_FULLSCREEN_MODAL);
     },
     showGCNetModal({ currentStation, fileObjects, graphStyling, config }) {
-      this.currentComponent = DetailChartsList;
+      this.currentComponent = GcNetDetailChartsList;
 
       this.genericProps = {
         currentStation,
@@ -181,6 +191,14 @@ export default {
       };
 
       this.currentComponent = MetadataMapFullscreen;
+
+      eventBus.emit(OPEN_FULLSCREEN_MODAL);
+    },
+    showGenericComponent({ asyncComponent, props }) {
+      this.genericProps = props;
+      this.modalTitle = 'Fullscreen';
+      
+      this.currentComponent = asyncComponent;
 
       eventBus.emit(OPEN_FULLSCREEN_MODAL);
     },

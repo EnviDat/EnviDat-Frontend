@@ -3,7 +3,7 @@
 
 // matomo code to pass the matomo instance in not component.vue file
 export function getMatomoInstance() {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const checkMatomo = () => {
       const matomo = window._paq || undefined;
       if (matomo) {

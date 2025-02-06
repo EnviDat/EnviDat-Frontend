@@ -26,3 +26,6 @@ export const GENERIC_API_ERROR = 'GENERIC_API_ERROR';
 export const ADD_USER_NOTIFICATION = 'ADD_USER_NOTIFICATION';
 export const TRIM_NOTIFICATIONS = 'TRIM_NOTIFICATIONS';
 export const HIDE_NOTIFICATIONS = 'HIDE_NOTIFICATIONS';
+
+export const AUTHOR_ASCII_DEAD = '&#8224;';
+export const AUTHOR_PASSED_INFO = 'Sadly this author has passed away.';

@@ -76,7 +76,7 @@ export function createLicense(dataset) {
   };
 }
 
-export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
+export function createHeader(dataset, smallScreen) {
   if (!dataset) {
     return null;
   }
@@ -118,7 +118,6 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
     titleImg: dataset.titleImg,
     maxTags: smallScreen ? 1 : 12,
     authors,
-    authorDeadInfo,
     categoryColor: dataset.categoryColor,
     organization: dataset.organization?.name || '',
     organizationTooltip: dataset.organization?.title || '',
@@ -656,7 +655,9 @@ export function enhanceMetadatas(datasets, mode = undefined) {
 
     dataset = enhanceTags(dataset, categoryCards);
 
-    dataset.location = createLocation(dataset);
+    if (!dataset.location || typeof dataset.location === 'string') {
+      dataset.location = createLocation(dataset);
+    }
 
     enhancedContent[dataset.id] = dataset;
   }

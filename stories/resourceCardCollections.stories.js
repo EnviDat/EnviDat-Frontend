@@ -9,6 +9,14 @@ const metadataCards = unFormatedMetadataCards;
 
 const resources1 = createResources(metadataCards[2]);
 
+const previewResources = [];
+
+for (let i = 0; i < metadataCards[2].resources.length; i++) {
+  const res = metadataCards[2].resources[i];
+  res.sparkChartData = [10, 54, 23, 20, 3, 40, 320 , 323,234 ,10];
+  previewResources.push(res)
+}
+
 
 export default {
   title: '1 Base / Cards /  Resource Cards / 3 Collections From Datasets',
@@ -72,7 +80,7 @@ export const ResourceCardWithPreview = () => ({
       <v-col 
         cols="3" 
         class="pa-2"
-        v-for="(res, index) in metadataCards[2].resources"
+        v-for="(res, index) in previewResources"
         :key="'cols-3_' + index" 
       >
         <resource-card 
@@ -86,7 +94,7 @@ export const ResourceCardWithPreview = () => ({
     </v-row>
     `,
     data: () => ({
-      metadataCards,
+      previewResources,
     }),
   });
 

@@ -56,20 +56,21 @@ export const EDIT_METADATA_DATALICENSE_TITLE = 'Data License of the Resources';
 export const EDIT_METADATA_DATALICENSE_LABEL = 'Data License';
 
 export const EDIT_STEP_TITLE_MAIN_METADATA = 'Metadata';
-export const EDIT_STEP_TITLE_MAIN_RESOURCES = 'Data & Resources';
+export const EDIT_STEP_TITLE_MAIN_RESOURCES = 'Research Data';
 export const EDIT_STEP_TITLE_MAIN_RELATED = 'Related Research';
 export const EDIT_STEP_TITLE_MAIN_PUBLICATION = 'Publication Information';
 export const EDIT_METADATA_PUBLISHER_LABEL = 'Publisher';
 export const EDIT_METADATA_PUBLICATION_YEAR_LABEL = 'Publication Year';
 
-export const EDIT_STEP_TITLE_SUB_HEADER = 'Header Information';
+export const EDIT_STEP_TITLE_SUB_HEADER = 'Title & Contact';
 export const EDIT_STEP_TITLE_SUB_DESC = 'Description';
 export const EDIT_STEP_TITLE_SUB_KEYWORDS = 'Keywords';
 export const EDIT_STEP_TITLE_SUB_AUTHORS = 'Authors';
 
-export const EDIT_STEP_TITLE_SUB_DATA = 'Manage Resources';
-export const EDIT_STEP_TITLE_SUB_DATES = 'Data License & Time';
-export const EDIT_STEP_TITLE_SUB_GEO = 'Geospatial Information';
+export const EDIT_STEP_TITLE_SUB_DATA = 'Manage Data';
+export const EDIT_STEP_TITLE_SUB_DATES = 'License & Time';
+export const EDIT_STEP_TITLE_SUB_GEO = 'Geo Information';
+
 export const DATE_PROPERTY_DATE_TYPE = 'dateType';
 export const DATE_PROPERTY_START_DATE = 'dateStart';
 export const DATE_PROPERTY_END_DATE = 'dateEnd';
@@ -112,3 +113,4 @@ export const LOCATION_TYPE_POLYGON = 'Polygon';
 export const LOCATION_TYPE_MULTIPOLYGON = 'MultiPolygon';
 export const LOCATION_TYPE_GEOMCOLLECTION = 'GeometryCollection';
 export const LOCATION_TYPE_FEATCOLLECTION = 'FeatureCollection';
+export const LOCATION_TYPE_FEATURE = 'Feature';
