@@ -1,3 +1,7 @@
+import _ from 'lodash';
+
+import {de} from 'date-fns/locale';
+import type {ChartConfiguration} from 'chart.js';
 import {
   chartTitle,
   chartTitleVisible,
@@ -8,10 +12,6 @@ import {
   enableGapsInLineCharts, enableLineDrawing,
 } from '@/modules/charts/middelware/propertyConst.ts';
 
-import _ from 'lodash';
-
-import {de} from 'date-fns/locale';
-import type {ChartConfiguration} from 'chart.js';
 import type {ChartProps} from '@/types/env';
 
 /**
@@ -89,6 +89,7 @@ export const largeDataTemplate = {
 
 const chartJsDefaults: Partial<ChartConfiguration> = {
   options: {
+    // @ts-ignore
     showLine: true,
     responsive: true,
     plugins: {
