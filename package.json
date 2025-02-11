@@ -28,7 +28,7 @@
   "dependencies": {
     "@amcharts/amcharts5": "^5.2.2",
     "@geoman-io/leaflet-geoman-free": "^2.18.3",
-    "@mapbox/geojsonhint": "^3.3.0",
+    "@placemarkio/check-geojson": "^0.1.12",
     "@turf/buffer": "^6.5.0",
     "@turf/centroid": "^6.5.0",
     "@turf/envelope": "^6.5.0",
@@ -115,7 +115,7 @@
     "vite-plugin-static-copy": "^1.0.6",
     "vite-plugin-vuetify": "^2.0.4",
     "vite-plugin-webfont-dl": "^3.9.5",
-    "vitest": "^2.1.4",
+    "vitest": "^3.0.5",
     "vue-tsc": "^2.2.0"
   },
   "overrides": {

@@ -110,16 +110,16 @@ const geoJsonFeatureCollection = {
   features: [
     {
       type: 'Feature',
-      geometry: { 'type': 'Point', 'coordinates': [8.563607, 46.554404] },
-      properties: { 'deployment_location': 1 },
+      geometry: { type: 'Point', coordinates: [8.563607, 46.554404] },
+      properties: { deployment_location: 1 },
     },
     {
       type: 'Feature',
-      geometry: { 'type': 'Point', 'coordinates': [8.562377, 46.555487] },
-      properties: { 'deployment_location': 2 },
+      geometry: { type: 'Point', coordinates: [8.562377, 46.555487] },
+      properties: { deployment_location: 2 },
     },
   ],
-}
+};
 
 const pointLocation = createLocation({ ...testMetadata, spatial: metaPoint });
 const polygonLocation = createLocation({
@@ -146,6 +146,28 @@ const geoJsonFeatureLocation = createLocation({
   ...testMetadata,
   spatial: geoJsonFeatureCollection,
 });
+
+const geojsonErrorPolygon = JSON.stringify({
+  type: LOCATION_TYPE_POLYGON,
+  coordinates: [
+    [],
+    [],
+    [
+      [8.7451171875, 46.89073198488606],
+      [17.4462890625, 51.971796908939176],
+      [28.388671875, 57.42208294734931],
+      [23.73046875, 59.086490948368436],
+      [4.658203125, 52.24170452760525],
+      [0.2197265625, 48.80734571355101],
+      [8.7451171875, 46.89073198488606],
+    ],
+  ],
+});
+
+const geoJsonErrorLocation = createLocation({
+  ...testMetadata,
+  spatial: geojsonErrorPolygon,
+});
 // DUMMY DATA END
 
 export default {
@@ -158,42 +180,48 @@ export const Point = {
     mapDivId: 'point-map-small',
     location: pointLocation,
   },
-}
-
+};
 
 export const Polygon = {
   args: {
     mapDivId: 'polygon-map-small',
     location: polygonLocation,
   },
-}
+};
 
 export const MultiPoint = {
   args: {
     mapDivId: 'multipoint-map-small',
     location: multiPointLocation,
   },
-}
+};
 
 export const MultiPolygon = {
   args: {
     mapDivId: 'multipolygon-map-small',
     location: multiPolygonLocation,
   },
-}
+};
 
 export const GeoGeometryCollection = {
   args: {
-    mapDivId: 'geometrycollection-map-small',
+    mapDivId: 'geometrycollection-map',
     location: geomCollectionLocation,
   },
-}
+};
 
 export const FeatrueCollection = {
   args: {
     label: 'EditDataGeo with FeatureCollection',
-    mapDivId: 'featureCollection-map-small',
+    mapDivId: 'featureCollection-map',
     location: geoJsonFeatureLocation,
   },
-}
+};
 
+export const GeoJSONError = {
+  args: {
+    label: 'EditDataGeo with FeatureCollection',
+    mapDivId: 'geoJSONError-map',
+    location: geoJsonErrorLocation,
+  },
+};
