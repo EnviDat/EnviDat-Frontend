@@ -127,6 +127,8 @@ export function getPointLayer(coords, id, title, selected, onClick, multiMarker 
 
   point.id = id;
   point.title = title;
+  point.type = LOCATION_TYPE_POINT;
+
   point.on({
     click: (e) => {
       if(onClick) {
@@ -170,6 +172,7 @@ export function getPolygonLayer(coords, id, title, selected, onClick) {
   });
   polygon.id = id;
   polygon.title = title;
+  polygon.type = LOCATION_TYPE_POLYGON;
 
   return polygon;
 }
@@ -268,46 +271,48 @@ export function createLeafletLayerViaGeoJson(geoJSONArray, id, title, vueInstanc
   });
 }
 
-export function createLeafletLayer(geometry, id, title, selected, onClick, isGcnet, modeData, dataset, vueInstance) {
-  let layer;
+export function createLeafletLayerArray(geometry, id, title, selected, onClick, isGcnet, modeData, dataset, vueInstance) {
+  let layers = [];
 
   if (isGcnet) {
     return createLeafletLayerViaGeoJson(geometry, id, title, vueInstance);
   }
 
   if (geometry.type === LOCATION_TYPE_POINT) {
-    layer = getPointLayer(geometry.coordinates, id, title,
+    const l = getPointLayer(geometry.coordinates, id, title,
       selected, onClick,
       undefined, modeData, dataset,
     );
+    layers.push(l);
   } else if (geometry.type === LOCATION_TYPE_MULTIPOINT) {
-    layer = getMultiPointLayer(geometry.coordinates, id, title,
+    layers = getMultiPointLayer(geometry.coordinates, id, title,
       selected, onClick,
       modeData, dataset,
     );
   } else if (geometry.type === LOCATION_TYPE_POLYGON) {
-    layer = getPolygonLayer(geometry.coordinates, id, title,
+    const l = getPolygonLayer(geometry.coordinates, id, title,
       selected, onClick,
 //      modeData, dataset,
     );
+    layers.push(l);
   } else if (geometry.type === LOCATION_TYPE_MULTIPOLYGON) {
 
     // don't manually rewind (change the sequence of the coordination) it's done via the geoJSON from leaflet
-    layer = createLeafletLayerViaGeoJson(geometry, id, title, this)
+    layers = createLeafletLayerViaGeoJson(geometry, id, title, this)
   } else if (geometry.type === LOCATION_TYPE_GEOMCOLLECTION) {
-    layer = createLeafletLayerViaGeoJson(geometry, id, title, this)
+    layers = createLeafletLayerViaGeoJson(geometry, id, title, this)
 
   } else {
     console.log(geometry);
     throw new Error(`Unknown Geometry type: '${geometry.type}'`)
 /*
-    layer = createLeafletLayerViaGeoJson(geometry, id, title, this)
+    layers = createLeafletLayerViaGeoJson(geometry, id, title, this)
 */
 
     // throw new Error(`Unkown Geometry ${geometry.type}`);
   }
 
-  layer.type = geometry.type;
-  return layer;
+  // layers.type = geometry.type;
+  return layers;
 }
 

@@ -38,7 +38,7 @@ import {
 
 import {
   createImageryLayer,
-  createLeafletLayer,
+  createLeafletLayerArray,
   createTopoLayer,
   getPointIcon,
   pointStyle,
@@ -201,20 +201,15 @@ export default {
 
       for (let i = 0; i < geometries.length; i++) {
         const geometry = geometries[i];
-        const layer = createLeafletLayer(geometry, i, `${geometry.type}-${i}`,
+        const layers = createLeafletLayerArray(geometry, i, `${geometry.type}-${i}`,
           undefined, undefined,
           this.isGcnet, undefined, undefined,
           this,
         );
 
-        if (layer instanceof Array) {
-          // if it's a geometry collection
-          for (let j = 0; j < layer.length; j++) {
-            const subLayer = layer[j];
-            siteLayers.push(subLayer);
-          }
-        } else {
-          siteLayers.push(layer);
+        for (let j = 0; j < layers.length; j++) {
+          const subLayer = layers[j];
+          siteLayers.push(subLayer);
         }
       }
 
