@@ -12,7 +12,7 @@
     <v-container class="ma-2 fill-height category-card">
       <v-chip
         class="outlined flat pa-0 mb-4 d-flex aling-center justify-center"
-        style="width: 100%; max-width: 150px;"
+        style="width: 100%; max-width: 150px"
         size="x-large"
         color="secondary"
       >
@@ -37,9 +37,7 @@
           <div v-if="postDate" class="text-body-1">
             {{ postDate }}
           </div>
-          <v-btn rounded="xl" :color="'primary'" @click="cardClick"
-            >Read</v-btn
-          >
+          <v-btn rounded="xl" :color="'primary'" @click="cardClick">Read</v-btn>
         </v-col>
       </v-row>
     </v-container>

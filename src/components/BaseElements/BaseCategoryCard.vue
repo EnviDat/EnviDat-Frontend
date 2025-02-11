@@ -7,7 +7,10 @@
     :disabled="disabled"
     @click="clicked"
     class="d-flex align-center pa-2 rounded-xl bgcCard"
-    :style="{ backgroundColor: color ? convertToRgba(color, 0.9) : '#fff' }"
+    :style="{
+      backgroundColor: getBgcColor,
+      border: isMode ? `2px solid ${convertToRgba(color, 0.9)}` : '',
+    }"
   >
     <v-container class="pa-0">
       <v-row align="center" no-gutters>
@@ -38,7 +41,7 @@
 </template>
 
 <script setup>
-import { useDisplay } from 'vuetify';
+import { computed } from 'vue';
 
 const props = defineProps({
   title: {
@@ -54,6 +57,10 @@ const props = defineProps({
   color: {
     type: String,
     default: '',
+  },
+  isMode: {
+    type: Boolean,
+    default: false,
   },
   contain: {
     type: Boolean,
@@ -147,6 +154,19 @@ const darkenHex = (hex, percent) => {
 
   return newHex;
 };
+
+// computed
+
+const getBgcColor = computed(() => {
+  let bgc = '#fff';
+  if (props.isMode) {
+    bgc = '#fff';
+  }
+  if (props.color && !props.isMode) {
+    bgc = convertToRgba(props.color, 0.9);
+  }
+  return bgc;
+});
 </script>
 
 <style scoped>

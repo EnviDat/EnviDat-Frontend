@@ -29,7 +29,7 @@
     },
     {
       "title": "Team",
-	  "text": "<img src='https://www.envidat.ch/EnviDat_organigram.png' style='width: 100%; height: 100%;' />",
+      "text": "<img src='https://www.envidat.ch/EnviDat_organigram.png' style='width: 100%; height: 100%;' />",
       "widthClass": "col-12 col-sm-6 col-md-8"
     },
     {
@@ -61,7 +61,7 @@
     "resourcesConfig": {
       "downloadActive": true
     }
- },
+  },
   "projectsConfig": {
     "loadLocalFile": false,
     "localFileUrl": "https://frontend-static.s3-zh.os.switch.ch/metadata/projects/projects.json"
@@ -69,8 +69,9 @@
   "maintenanceConfig": {
     "signinDisabled": false,
     "signinRedirectActive": false,
-    "messageActive": false,
-    "message": "On Wednesday 29th March, between 9 and 12, EnviDat is undergoing the planned annual physical checkup. EnviDat can be accessed in <strong>read-only mode</strong>. Data download, upload and <strong>user data management functionalities will be disabled</strong>."
+    "messageActive": true,
+    "title": "Maintenance Mode",
+    "message": "On Wednesday 29th March, between 9 and 12, EnviDat is undergoing the planned annual physical checkup. EnviDat can be accessed in read-only mode. Data download, upload and user data management functionalities will be disabled"
   },
   "newsConfig": {
     "newsActive": true,
@@ -79,7 +80,39 @@
         "title": "Update: New Way of Editing",
         "text": "The homepage has a new look and many other new features are part of this update. Have look at the navigation entries on the left side and <a href='./#/signin' >sign into</a> your account in the top right corner. The main feature is the <strong>new editing workflow</strong>, sign in and give it a try or read more in the <a href='./#/blog/new_editing_workflow.md' >blog post</a>.",
         "image": "https://www.envidat.ch/blog/images/edit_workflow_header.jpg",
-        "date": "10/10/2024"
+        "date": "10.10.2024"
+      }
+    ]
+  },
+  "infoConfig": {
+    "infoActive": true,
+    "info": [
+      {
+        "title": "Create your dataset",
+        "subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id felis eget magna tincidunt viverra. Integer posuere volutpat lectus, sit amet convallis tortor condimentum in. Fusce aliquam, lectus non cursus elementum, elit nunc consequat lacus, a aliquet neque ipsum et turpis. Phasellus scelerisque velit et sapien placerat, quis ornare lorem convallis. Donec at justo sed est interdum accumsan sed ut risus. Nulla facilisi. Mauris condimentum felis sit amet tortor dignissim, non vestibulum turpis pretium.",
+        "icon": "create",
+        "points": [],
+        "image": "",
+        "action": "/",
+        "actionTitle": "Create Dataset"
+      },
+      {
+        "title": "Validated by official institutions",
+        "subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id felis eget magna tincidunt viverra. Integer posuere volutpat lectus, sit amet convallis tortor condimentum in. Fusce aliquam, lectus non cursus elementum, elit nunc consequat lacus, a aliquet neque ipsum et turpis. Phasellus scelerisque velit et sapien placerat, quis ornare lorem convallis. Donec at justo sed est interdum accumsan sed ut risus. Nulla facilisi. Mauris condimentum felis sit amet tortor dignissim, non vestibulum turpis pretium.",
+        "icon": "protected",
+        "points": [],
+        "image": "",
+        "action": "/",
+        "actionTitle": "View More"
+      },
+      {
+        "title": "Connect to the world",
+        "subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id felis eget magna tincidunt viverra. Integer posuere volutpat lectus, sit amet convallis tortor condimentum in. Fusce aliquam, lectus non cursus elementum, elit nunc consequat lacus, a aliquet neque ipsum et turpis. Phasellus scelerisque velit et sapien placerat, quis ornare lorem convallis. Donec at justo sed est interdum accumsan sed ut risus. Nulla facilisi. Mauris condimentum felis sit amet tortor dignissim, non vestibulum turpis pretium.",
+        "icon": "world",
+        "points": [],
+        "image": "",
+        "action": "/",
+        "actionTitle": "Browse all datasets"
       }
     ]
   },
@@ -138,9 +171,9 @@
     "wslSigninEnabled": false,
     "disclaimerText": "Please note that by publishing data, you allow EnviDat to store, copy and transform any deposited digital objects for preservation purposes, as well as to provide long-term access to them. All EnviDat datasets will be published with a Digital Object Identifier (DOI) and consequently, every <b>data provider</b>:",
     "disclaimerPoints": [
-	  "has acquired the permission to publish the dataset (e.g. from the group or research unit leader) and that the dataset doesn't violate copyright, privacy, confidentiality, non-disclosure agreements or institutional research integrity policies.",
-	  "after the publication, understands the responsibility not to modify the already uploaded data files, as well as any metadata field that influences the <b>citation</b> (Dataset Title, Authors, etc...); if errors will need to be corrected, please get in touch with the EnviDat team at envidat@wsl.ch for devising an appropriate solution.",
-	  "will always use the DOI to reference the dataset in any publication and will regularly review and curate the published dataset, e.g. by improving the Description of the dataset or by adding associated papers to the list of Related Publications."
-	]
+      "has acquired the permission to publish the dataset (e.g. from the group or research unit leader) and that the dataset doesn't violate copyright, privacy, confidentiality, non-disclosure agreements or institutional research integrity policies.",
+      "after the publication, understands the responsibility not to modify the already uploaded data files, as well as any metadata field that influences the <b>citation</b> (Dataset Title, Authors, etc...); if errors will need to be corrected, please get in touch with the EnviDat team at envidat@wsl.ch for devising an appropriate solution.",
+      "will always use the DOI to reference the dataset in any publication and will regularly review and curate the published dataset, e.g. by improving the Description of the dataset or by adding associated papers to the list of Related Publications."
+    ]
   }
 }

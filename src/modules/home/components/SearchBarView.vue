@@ -1,13 +1,16 @@
 <template>
-  <v-container
-    :style="containerStyle"
-    class="pa-0 mb-10 mb-md-0"
-  >
-    <v-row align="center" justify="space-between" class="grow flex-column" no-gutters>
-      <v-col class="grow py-1 "> <!-- pr-4 -->
+  <v-container :style="containerStyle" class="pa-0 mb-10 mb-md-0">
+    <v-row
+      align="center"
+      justify="space-between"
+      class="grow flex-column"
+      no-gutters
+    >
+      <v-col class="grow py-1">
         <v-text-field
           class="ma-0 main-search-bar"
           outlined
+          bg-color="#fff"
           rounded="lg"
           density="comfortable"
           v-model="searchText"
@@ -28,6 +31,7 @@
           :button-text="button.text"
           :color="button.class"
           :isOutlined="button.outlined"
+          :bgcWhite="button.bgcWhite"
           :marginClass="'mr-5 ml-5'"
           :isXLarge="true"
           @clicked="() => clicked(button.action)"
@@ -38,14 +42,10 @@
 </template>
 
 <script setup>
-
-
-import { ref, computed, watch } from 'vue'
-import { useDisplay } from 'vuetify'
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue'
-import {
-  mdiMagnify,
-} from '@mdi/js';
+import { ref, computed, watch } from 'vue';
+import { useDisplay } from 'vuetify';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
+import { mdiMagnify } from '@mdi/js';
 
 const props = defineProps({
   labelText: {
@@ -60,40 +60,39 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-})
+});
 
-const searchIcon = mdiMagnify
+const searchIcon = mdiMagnify;
 
-const emit = defineEmits(['clicked', 'searchEmpty'])
+const emit = defineEmits(['clicked', 'searchEmpty']);
 
-const { mdAndUp } = useDisplay()
+const { mdAndUp } = useDisplay();
 
 const containerStyle = computed(() => {
   if (mdAndUp.value) {
-    return { maxWidth: '50%' }
+    return { maxWidth: '50%' };
   }
-  return { maxWidth: '100%' }
-})
+  return { maxWidth: '100%' };
+});
 
 const hasButtonComputed = computed(
   () => props.hasButton && props.buttonText.length > 0,
-)
+);
 
-const searchText = ref('')
+const searchText = ref('');
 
-const clicked = (action = null) => {
-  emit('clicked', action, searchText.value)
-}
+const clicked = () => {
+  emit('clicked', 'search', searchText.value);
+};
 
 watch(searchText, (newVal) => {
   if (!newVal) {
-    emit('searchEmpty')
+    emit('searchEmpty');
   }
-})
+});
 </script>
 
 <style scoped>
-
 .adjustIconSearchbar {
   margin-top: 0;
 }

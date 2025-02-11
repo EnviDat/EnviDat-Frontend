@@ -33,10 +33,10 @@ export default {
     const url = `${bloglistUrlPrefix}/blog/bloglist.json?nocache=${new Date().getTime()}`;
     axios
       .get(url)
-      .then(response => {
+      .then((response) => {
         commit(GET_BLOG_LIST_SUCCESS, response.data);
       })
-      .catch(reason => {
+      .catch((reason) => {
         commit(GET_BLOG_LIST_ERROR, reason);
       });
   },
@@ -47,13 +47,13 @@ export default {
 
     axios
       .get(url)
-      .then(response => {
+      .then((response) => {
         commit(GET_BLOG_POST_SUCCESS, {
           postFile,
           postContent: response.data,
         });
       })
-      .catch(reason => {
+      .catch((reason) => {
         commit(GET_BLOG_POST_ERROR, reason);
       });
   },

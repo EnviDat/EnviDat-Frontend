@@ -1,150 +1,144 @@
 <template>
-    <v-card
-      ripple
-      @mouseover="hover = true"
-      @mouseleave="hover = false"
-      class="fill-height pa-14 rounded-xl"
-      :dark="false"
+  <v-card
+    ripple
+    @mouseover="hover = true"
+    @mouseleave="hover = false"
+    class="fill-height pt-14 pb-14 rounded-xl elevation-10 info-card"
+    :dark="false"
+  >
+    <v-container
+      :class="{ 'grey-background': hasGreyBackground }"
+      class="ma-2 fill-height d-flex"
     >
-      <v-container
-        :class="{ 'grey-background': hasGreyBackground }"
-        class="ma-2 fill-height info-card d-flex"
-      >
-        <v-row>
-          <!-- Invert layout if grey background and on desktop -->
-          <v-col
-            v-if="hasGreyBackground"
-            cols="12"
-            md="4"
-            class="d-md-flex"
-            order-md="1"
-            order="2"
-          >
-            <v-row class="info-action">
-              <v-col class="d-flex flex-column align-center justify-center">
-                <img class="info-img" src="https://placehold.co/600x400/000000/FFF" />
-                <v-btn rounded="xl" :color="'secondary'" @click="cardClick">
-                  {{ info.actionTitle }}
-                </v-btn>
+      <v-row>
+        <!-- Invert layout if grey background is present and on desktop -->
+        <v-col
+          v-if="hasGreyBackground"
+          cols="12"
+          md="4"
+          class="d-md-flex"
+          order-md="1"
+          order="2"
+        >
+          <v-row class="info-action">
+            <v-col
+              v-if="info.icon"
+              class="d-flex flex-column align-center justify-center"
+            >
+              <!-- Display icon based on info type using extractIcons -->
+              <v-icon
+                class="mr-1 mb-10 info-icon"
+                :size="iconSize"
+                :color="'#000'"
+              >
+                {{ computedIcon }}
+              </v-icon>
+            </v-col>
+          </v-row>
+        </v-col>
+
+        <!-- Info text section -->
+        <v-col cols="12" md="8" order-md="2" order="1">
+          <v-row class="info-text pl-10 pr-14 h-100 ga-4">
+            <v-row class="info-title">
+              <v-col class="pa-0" v-if="info.title">
+                <span class="text-h5 font-weight-bold">{{ info.title }}</span>
               </v-col>
             </v-row>
-          </v-col>
 
-          <!-- Info text part -->
-          <v-col cols="12" md="8" order-md="2" order="1">
-            <v-row class="info-text">
-              <v-row class="info-title">
-                <v-col v-if="info.title">
-                  <span class="text-h5 font-weight-bold">{{ info.title }}</span>
-                </v-col>
-              </v-row>
-
-              <v-row v-if="info.subtitle" class="info-subtitle">
-                <v-col>{{ info.subtitle }}</v-col>
-              </v-row>
-
-              <v-row v-if="info.points?.length > 0" class="info-points">
-                <v-col>
-                  <v-list lines="two">
-                    <v-list-item v-for="n in info.points" :key="n" class="pa-0">
-                      <span>- {{ n }}</span>
-                    </v-list-item>
-                  </v-list>
-                </v-col>
-              </v-row>
+            <v-row v-if="info.subtitle" class="info-subtitle text-subtitle-1">
+              <v-col class="pa-0">{{ info.subtitle }}</v-col>
             </v-row>
-          </v-col>
 
-          <!-- Action part if grey background is not present -->
-          <v-col
-            v-if="!hasGreyBackground"
-            cols="12"
-            md="4"
-            class="d-md-flex"
-            order-md="3"
-            order="2"
-          >
-            <v-row class="info-action">
-              <v-col class="d-flex flex-column align-center justify-center">
-                <img class="info-img" src="https://placehold.co/600x400/000000/FFF" />
-                <v-btn rounded="xl" :color="'secondary'" @click="cardClick">
-                  {{ info.actionTitle }}
-                </v-btn>
+            <v-row v-if="info.points?.length > 0" class="info-points">
+              <v-col>
+                <v-list lines="two">
+                  <v-list-item
+                    v-for="point in info.points"
+                    :key="point"
+                    class="pa-0"
+                  >
+                    <span>- {{ point }}</span>
+                  </v-list-item>
+                </v-list>
               </v-col>
             </v-row>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-card>
-  </template>
 
-  <script>
-  /**
-   * MetaDataCard.vue creates a card with a header image, title, keywords and preview description.
-   * When clicked its emits the 'clickedEvent' event, also the clickedTag can be emitted.
-   *
-   * @summary card with img, title, keywords and preview description
-   * @author Dominik Haas-Artho
-   *
-   * Created at     : 2019-10-02 11:24:00
-   * Last modified  : 2021-01-06 11:37:52
-   *
-   * This file is subject to the terms and conditions defined in
-   * file 'LICENSE.txt', which is part of this source code package.
-   */
+            <!-- Render action button if actionTitle is provided -->
+            <v-row v-if="info.actionTitle">
+              <v-btn color="secondary" @click="cardClick">
+                {{ info.actionTitle }}
+              </v-btn>
+            </v-row>
+          </v-row>
+        </v-col>
 
-  //    import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
+        <!-- Action part when grey background is not present -->
+        <v-col
+          v-if="!hasGreyBackground"
+          cols="12"
+          md="4"
+          class="d-md-flex"
+          order-md="3"
+          order="2"
+        >
+          <v-row class="info-action">
+            <v-col
+              v-if="info.icon"
+              class="d-flex flex-column align-center justify-center"
+            >
+              <v-icon
+                class="mr-1 mb-10 info-icon"
+                :size="iconSize"
+                :color="'#000'"
+              >
+                {{ computedIcon }}
+              </v-icon>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-card>
+</template>
 
-  //   import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+<script setup>
+import { computed, ref } from 'vue';
+import { mdiMapPlus } from '@mdi/js';
+import { extractIcons } from '@/factories/iconFactory';
+import { useDisplay } from 'vuetify';
 
-  // Header Sleek design
-  // https://codepen.io/GeorgeGedox/pen/NQrxrY
+// Define component props
+const props = defineProps({
+  info: Object,
+  index: Number,
+});
 
-  // checkout possible transition animation
-  // https://codepen.io/balapa/pen/embYYB
-  // https://codepen.io/zavoloklom/pen/eNaEBM
+const display = useDisplay();
 
-  // this one maybe for the guided content scrolling
-  // https://codepen.io/pgreg/pen/EDoFB
+const emit = defineEmits(['clickedEvent']);
 
-  // Card design #2 probably only the header would be doable?
-  // https://codepen.io/marlenesco/pen/NqOozj
+const hasGreyBackground = computed(() => props.index % 2 === 0);
 
-  // Card opening animation
-  // https://codepen.io/luizotcarvalho/pen/yyQNRO
+const iconSize = computed(() => (display.smAndDown.value ? 100 : 200));
 
-  // check multi line truncation via css (only works with one-colored background)
-  // http://hackingui.com/front-end/a-pure-css-solution-for-multiline-text-truncation/
-  //   import iconGet from '../../assets/icon-get.png';
+const computedIcon = computed(
+  () => extractIcons(props.info?.icon) || mdiMapPlus,
+);
 
-  export default {
-    name: 'InfoCards',
-    props: {
-      info: Object,
-      index: Number,
-    },
-    computed: {
-      hasGreyBackground() {
-        return this.index % 2 === 0;
-      },
-    },
-    created() {},
+const hover = ref(false);
 
-    components: {
-      //   BaseIconButton,
-    },
-    data: () => ({
-      hover: false,
-    }),
-  };
-  </script>
+function cardClick() {
+  const detailParam = props.info?.name || props.info?.id || '';
+  emit('clickedEvent', detailParam);
+}
+</script>
 
-  <!-- Add "scoped" attribute to limit CSS to this component only -->
-  <style scoped>
-  .info-img {
-    width: 100%;
-    height: auto;
-    max-width: 300px;
-    margin-bottom: 2rem;
-  }
-  </style>
+<style scoped lang="scss">
+.info-img {
+  width: 100%;
+  height: auto;
+  max-width: 300px;
+  margin-bottom: 2rem;
+}
+</style>

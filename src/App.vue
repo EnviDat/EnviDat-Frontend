@@ -38,6 +38,8 @@
       />
     </div>
 
+    <MaintenanceBanner v-if="maintenanceBannerVisible" />
+
     <TheNavigationToolbar
       v-if="showToolbar"
       ref="TheNavigationToolbar"
@@ -211,6 +213,8 @@ import {
   SHOW_REDIRECT_DASHBOARD_DIALOG,
   SHOW_REDIRECT_SIGNIN_DIALOG,
 } from '@/factories/eventBus';
+
+import MaintenanceBanner from '@/modules/home/components/MaintenanceBanner.vue';
 
 import { ENVIDAT_SHOW_COOKIE_BANNER } from '@/factories/metadataConsts';
 import { getImage } from '@/factories/imageFactory';
@@ -669,18 +673,12 @@ export default {
       return this.userDashboardConfig?.useTokenSignin || false;
     },
     maintenanceBannerVisible() {
-      if (!this.maintenanceConfig.messageActive) {
-        return false;
+      if (this.maintenanceConfig.messageActive) {
+        return true;
       }
 
       if (this.userIsOnEditPage) {
         return this.editMaintenanceBanner;
-      }
-
-      // exclude the landing page with the banner because
-      // on the landingpage a "news" entry for maintenance can be shown!
-      if (this.currentPage !== LANDING_PAGENAME) {
-        return this.showMaintenanceBanner;
       }
 
       return false;
@@ -811,6 +809,7 @@ export default {
     ConfirmTextCard,
     TextBanner,
     GenericFullScreenModal,
+    MaintenanceBanner,
   },
   watch: {
     config() {

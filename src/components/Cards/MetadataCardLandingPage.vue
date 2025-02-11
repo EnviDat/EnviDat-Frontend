@@ -33,10 +33,8 @@
       </v-card>
       <v-row class="category-action">
         <v-col class="d-flex justify-space-between pa-6">
-          <span class="text-body-1"> 10/10/2024</span>
-          <v-btn rounded="xl" color="secondary" @click="cardClick">
-            View
-          </v-btn>
+          <span class="text-body-1">{{ formatDate(date) }}</span>
+          <v-btn color="secondary" @click="cardClick"> View </v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -44,9 +42,10 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted } from 'vue';
+import { computed, ref } from 'vue';
 import { stripMarkdown } from '@/factories/stringFactory';
 import { extractIcons } from '@/factories/iconFactory';
+import { formatDate } from '@/factories/dateFactory';
 
 // Define component props (only the ones that are actually used)
 const props = defineProps({
@@ -54,6 +53,7 @@ const props = defineProps({
   title: String,
   subtitle: String,
   name: String,
+  date: String,
   categoryColor: String,
   categoryName: {
     type: String,

@@ -84,10 +84,10 @@ export const metadata = {
   namespaced: true,
   state: initialState,
   getters: {
-    loadingMetadataIds: state => state.loadingMetadataIds,
-    loadingMetadatasContent: state => state.loadingMetadatasContent,
-    metadataIds: state => state.metadataIds,
-    metadatasContent: state => state.metadatasContent,
+    loadingMetadataIds: (state) => state.loadingMetadataIds,
+    loadingMetadatasContent: (state) => state.loadingMetadatasContent,
+    metadataIds: (state) => state.metadataIds,
+    metadatasContent: (state) => state.metadatasContent,
     recentMetadata: (state, getters) => {
       if (
         state.loadingMetadatasContent ||
@@ -95,34 +95,34 @@ export const metadata = {
       ) {
         return [];
       }
-
       return getters.allMetadatas.slice(0, 4);
     },
-    allMetadatas: state => Object.values(state.metadatasContent),
-    metadatasContentSize: state =>
+    allMetadatas: (state) => Object.values(state.metadatasContent),
+    metadatasContentSize: (state) =>
       state.metadatasContent !== undefined
         ? Object.keys(state.metadatasContent).length
         : 0,
-    authorsMap: state => state.authorsMap,
-    searchedMetadatasContent: state => state.searchedMetadatasContent,
-    searchingMetadatasContent: state => state.searchingMetadatasContent,
-    searchingMetadatasContentOK: state => state.searchingMetadatasContentOK,
-    currentSearchTerm: state => state.currentSearchTerm,
-    loadingCurrentMetadataContent: state => state.loadingCurrentMetadataContent,
-    currentMetadataContent: state => state.currentMetadataContent,
-    isFilteringContent: state => state.isFilteringContent,
-    filteredContent: state => state.filteredContent,
-    scrollPositionDelay: state => state.scrollPositionDelay,
-    pinnedIds: state => state.pinnedIds,
-    allTags: state => state.allTags,
-    loadingAllTags: state => state.loadingAllTags,
-    updatingTags: state => state.updatingTags,
-    detailPageBackRoute: state => state.detailPageBackRoute,
-    titleEditing: state => state.titleEditing,
-    aboutPageBackRoute: state => state.aboutPageBackRoute,
-    existingAuthors: state => state.existingAuthors,
-    existingKeywords: state => state.existingKeywords,
-    getCitationListFromIds: state => datasetIds => {
+    authorsMap: (state) => state.authorsMap,
+    searchedMetadatasContent: (state) => state.searchedMetadatasContent,
+    searchingMetadatasContent: (state) => state.searchingMetadatasContent,
+    searchingMetadatasContentOK: (state) => state.searchingMetadatasContentOK,
+    currentSearchTerm: (state) => state.currentSearchTerm,
+    loadingCurrentMetadataContent: (state) =>
+      state.loadingCurrentMetadataContent,
+    currentMetadataContent: (state) => state.currentMetadataContent,
+    isFilteringContent: (state) => state.isFilteringContent,
+    filteredContent: (state) => state.filteredContent,
+    scrollPositionDelay: (state) => state.scrollPositionDelay,
+    pinnedIds: (state) => state.pinnedIds,
+    allTags: (state) => state.allTags,
+    loadingAllTags: (state) => state.loadingAllTags,
+    updatingTags: (state) => state.updatingTags,
+    detailPageBackRoute: (state) => state.detailPageBackRoute,
+    titleEditing: (state) => state.titleEditing,
+    aboutPageBackRoute: (state) => state.aboutPageBackRoute,
+    existingAuthors: (state) => state.existingAuthors,
+    existingKeywords: (state) => state.existingKeywords,
+    getCitationListFromIds: (state) => (datasetIds) => {
       const datasets = Object.values(state.metadatasContent);
 
       return getCitationList(datasets, datasetIds);

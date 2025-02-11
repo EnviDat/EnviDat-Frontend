@@ -39,6 +39,7 @@
               :img="card.imgPath"
               :icon="card.iconPath"
               :color="card.darkColor"
+              :isMode="card.isMode"
               :contain="card.contain"
               :disabled="card.disabled"
               @click="catchCategoryClicked(card.type)"
@@ -71,7 +72,7 @@
             :key="index"
             cols="12"
             md="6"
-            lg="3"
+            xl="3"
             class="pa-2"
           >
             <MetadataCardLandingPage
@@ -79,6 +80,7 @@
               :title="metadata.title"
               :subtitle="metadata.notes"
               :name="metadata.name"
+              :date="metadata.metadata_created"
               :categoryName="metadata.categoryName"
               :categoryColor="metadata.categoryColor"
               @clickedEvent="catchMetadataClicked"
@@ -94,7 +96,10 @@
             v-for="(info, i) in infoCards"
             :key="i"
             cols="12"
-            :class="['pa-md-16', { 'background-grey': i % 2 === 0 }]"
+            :class="[
+              i === 0 ? 'pa-md-16 pt-md-0' : 'pa-md-16',
+              { 'background-grey': i % 2 === 1 },
+            ]"
           >
             <v-container>
               <InfoCards :index="i" :info="info" />
@@ -172,7 +177,10 @@ import {
   METADATADETAIL_PAGENAME,
   USER_SIGNIN_PATH,
 } from '@/router/routeConsts';
-import { SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
+import {
+  SET_CURRENT_PAGE,
+  SET_APP_BACKGROUND,
+} from '@/store/mainMutationsConsts';
 import {
   BLOG_NAMESPACE,
   GET_BLOG_LIST,
@@ -191,6 +199,7 @@ export default {
   beforeRouteEnter(to, from, next) {
     next((vm) => {
       vm.$store.commit(SET_CURRENT_PAGE, LANDING_PAGENAME);
+      vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
     });
   },
   beforeCreate() {
@@ -232,7 +241,10 @@ export default {
     },
     isMediumScreenAndUp() {
       return (
-        this.display.md.value || this.display.lg.value || this.display.xl.value
+        this.display.md.value ||
+        this.display.lg.value ||
+        this.display.xl.value ||
+        this.display.xxl.value
       );
     },
     blogPosts() {
@@ -242,6 +254,9 @@ export default {
     },
     welcomeInfo() {
       return this.config?.welcomeInfo || this.defaultWelcomeInfo;
+    },
+    infoCards() {
+      return this.config?.infoConfig?.info;
     },
     datasetsTotal() {
       return this.loadingMetadatasContent ? 0 : this.metadatasContentSize;
@@ -340,6 +355,7 @@ export default {
           text: 'Explore all',
           class: 'primary',
           outlined: true,
+          bgcWhite: true,
           action: 'explore',
         },
       ],
@@ -361,50 +377,10 @@ export default {
         categoriesTitle: 'Research Data Categories',
         datasetsTitle: 'Recently Published Research Datasets',
       },
-      infoCards: [
-        {
-          title: 'Create your dataset',
-          subtitle:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id felis eget magna tincidunt viverra. Integer posuere volutpat lectus, sit amet convallis tortor condimentum in. Fusce aliquam, lectus non cursus elementum, elit nunc consequat lacus, a aliquet neque ipsum et turpis. Phasellus scelerisque velit et sapien placerat, quis ornare lorem convallis. Donec at justo sed est interdum accumsan sed ut risus. Nulla facilisi. Mauris condimentum felis sit amet tortor dignissim, non vestibulum turpis pretium.',
-          points: [
-            'Lorem ipsum dolor sit amet',
-            'Lorem ipsum dolor sit amet',
-            'Lorem ipsum dolor sit amet',
-          ],
-          action: '/',
-          actionTitle: 'Create Dataset',
-          // image: iconGet,
-        },
-        {
-          title: 'Validated by official institutions',
-          subtitle:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id felis eget magna tincidunt viverra. Integer posuere volutpat lectus, sit amet convallis tortor condimentum in. Fusce aliquam, lectus non cursus elementum, elit nunc consequat lacus, a aliquet neque ipsum et turpis. Phasellus scelerisque velit et sapien placerat, quis ornare lorem convallis. Donec at justo sed est interdum accumsan sed ut risus. Nulla facilisi. Mauris condimentum felis sit amet tortor dignissim, non vestibulum turpis pretium.',
-          points: [
-            'Lorem ipsum dolor sit amet',
-            'Lorem ipsum dolor sit amet',
-            'Lorem ipsum dolor sit amet',
-          ],
-          action: '/',
-          actionTitle: 'View More',
-          // image: iconGet,
-        },
-        {
-          title: 'Connect to the world',
-          subtitle:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id felis eget magna tincidunt viverra. Integer posuere volutpat lectus, sit amet convallis tortor condimentum in. Fusce aliquam, lectus non cursus elementum, elit nunc consequat lacus, a aliquet neque ipsum et turpis. Phasellus scelerisque velit et sapien placerat, quis ornare lorem convallis. Donec at justo sed est interdum accumsan sed ut risus. Nulla facilisi. Mauris condimentum felis sit amet tortor dignissim, non vestibulum turpis pretium.',
-          points: [
-            'Lorem ipsum dolor sit amet',
-            'Lorem ipsum dolor sit amet',
-            'Lorem ipsum dolor sit amet',
-          ],
-          action: '/',
-          actionTitle: 'Browse all datasets',
-          // image: iconGet,
-        },
-      ],
       fileIconString: '',
       alternativeText: 'EnviDat logo',
       fallbackCardImg: null,
+      pageBGImage: '',
       smLogo,
       mdLogo,
     };

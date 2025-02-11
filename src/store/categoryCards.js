@@ -8,18 +8,28 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { DIVERSITY, FOREST, HAZARD, LAND, METEO, SNOW } from '@/store/categoriesConsts';
+import {
+  DIVERSITY,
+  FOREST,
+  HAZARD,
+  LAND,
+  METEO,
+  SNOW,
+} from '@/store/categoriesConsts';
 import { EDNA_MODE, SWISSFL_MODE } from '@/store/metadataMutationsConsts';
 import { getModeData } from '@/factories/modeFactory';
 import { getImage, getImageList } from '@/factories/imageFactory';
-import { mdiForest, mdiSnowflake, mdiImageFilterHdr, mdiHazardLights, mdiLeaf, mdiWeatherCloudy } from '@mdi/js';
-
-
+import {
+  mdiForest,
+  mdiSnowflake,
+  mdiImageFilterHdr,
+  mdiHazardLights,
+  mdiLeaf,
+  mdiWeatherCloudy,
+} from '@mdi/js';
 
 const swissFLMode = getModeData(SWISSFL_MODE);
 const ednaMode = getModeData(EDNA_MODE);
-
-
 
 export default [
   {
@@ -85,6 +95,7 @@ export default [
     darkColor: '#8BC34A',
     contain: true,
     disabled: false,
+    isMode: true,
   },
   {
     title: `${ednaMode.title} View`,
@@ -95,6 +106,7 @@ export default [
     darkColor: '#2f5dc7',
     contain: true,
     disabled: false,
+    isMode: true,
   },
 ];
 
@@ -106,5 +118,3 @@ export const cardImageBgs = {
   [HAZARD]: getImageList('c_b_hazard'),
   [METEO]: getImageList('c_b_meteo'),
 };
-
-

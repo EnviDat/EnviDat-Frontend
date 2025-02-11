@@ -5,7 +5,11 @@
     id="LandingPage"
   >
     <!-- Welcome Slot -->
-    <v-container v-if="$slots.welcome" class="welcomeGrid" :class="paddings">
+    <v-container-fluid
+      v-if="$slots.welcome"
+      class="welcomeGrid"
+      :class="paddings"
+    >
       <slot name="welcome"></slot>
       <v-container class="pt-8">
         <slot name="search"></slot>
@@ -22,10 +26,10 @@
           <slot name="datasets"></slot>
         </v-container>
       </section>
-    </v-container>
+    </v-container-fluid>
 
     <!-- Info Slot -->
-    <v-container fluid v-if="$slots.info" class="infoGrid" :class="paddings">
+    <v-container-fluid v-if="$slots.info" class="infoGrid" :class="paddings">
       <BaseTitle
         style="text-align: center"
         :text="infoTitle"
@@ -36,10 +40,10 @@
       <v-container fluid class="pt-2 px-1">
         <slot name="info"></slot>
       </v-container>
-    </v-container>
+    </v-container-fluid>
 
     <!-- News Slot -->
-    <v-container v-if="$slots.news" class="newsGrid" :class="paddings">
+    <v-container-fluid v-if="$slots.news" class="newsGrid" :class="paddings">
       <BaseTitle
         style="text-align: center"
         :text="newsTitle"
@@ -47,10 +51,10 @@
         cardClass="pa-2"
         titleClass="titleCardClass"
       />
-      <div class="pt-2">
+      <v-container class="pt-2">
         <slot name="news"></slot>
-      </div>
-    </v-container>
+      </v-container>
+    </v-container-fluid>
   </article>
 </template>
 
@@ -83,19 +87,6 @@ const paddings = 'pa-md-2 pt-4 pt-sm-6';
 </script>
 
 <style scoped lang="scss">
-@media screen and (min-width: 1340px) {
-  .landingPageGrid {
-    display: grid;
-    gap: 100px;
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto;
-    grid-template-areas:
-      'Welcome'
-      'Info'
-      'News';
-  }
-}
-
 /* Use same grid structure for small screens */
 .landingPageGrid.gridSm,
 .landingPageGrid.gridXs {
@@ -108,9 +99,6 @@ const paddings = 'pa-md-2 pt-4 pt-sm-6';
 }
 
 /* Additional styling */
-.metadata-wrapper {
-  margin-top: 100px;
-}
 
 .welcomeGrid {
   grid-area: Welcome;
@@ -119,23 +107,27 @@ const paddings = 'pa-md-2 pt-4 pt-sm-6';
   flex-direction: column;
   height: auto;
   min-height: 100vh;
+  position: relative;
+  width: 100%;
+  margin-bottom: 64px;
 
   &::after {
     content: '';
     position: absolute;
     top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100vw; // full viewport width
+    height: 100%;
     background-image: url('https://envidat.ch/beta/static/app_b_landingpage-BjXUE1sY.webp');
     background-repeat: no-repeat;
+    background-position: center;
     background-size: cover;
     opacity: 0.3;
     pointer-events: none;
     z-index: 0;
   }
 
-  // Ensure that the direct children are above the pseudo-element
   > * {
     position: relative;
     z-index: 1;
@@ -166,5 +158,30 @@ const paddings = 'pa-md-2 pt-4 pt-sm-6';
   background-repeat: no-repeat;
   background-size: contain;
   background-position: right;
+}
+.background-grey {
+  background-color: rgba(245, 245, 245, 0.75);
+}
+
+@media screen and (min-width: 1340px) {
+  .landingPageGrid {
+    display: grid;
+    gap: 100px;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      'Welcome'
+      'Info'
+      'News';
+  }
+  .welcomeGrid {
+    margin-bottom: 0;
+  }
+}
+
+@media screen and (min-width: 968px) {
+  .metadata-wrapper {
+    margin-top: 50px;
+  }
 }
 </style>

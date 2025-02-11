@@ -5,6 +5,9 @@ import {
   mdiHazardLights,
   mdiLeaf,
   mdiWeatherCloudy,
+  mdiShieldCheck,
+  mdiMapPlus,
+  mdiEarth,
 } from '@mdi/js';
 
 export const extractIcons = (data) => {
@@ -20,6 +23,9 @@ export const extractIcons = (data) => {
     meteo: mdiWeatherCloudy,
     hazard: mdiHazardLights,
     diversity: mdiLeaf,
+    protected: mdiShieldCheck,
+    create: mdiMapPlus,
+    world: mdiEarth,
   };
   return map[lowerData];
 };
