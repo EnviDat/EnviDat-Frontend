@@ -1,6 +1,6 @@
 /* eslint-disable no-use-before-define */
-import {checkWebpSupport} from '@/factories/enhancementsFactory';
 import { mdiFile, mdiLayers, mdiMapMarker, mdiMapMarkerMultiple } from '@mdi/js';
+import {checkWebpSupport} from '@/factories/enhancementsFactory';
 import {checkIsFileAudio, checkIsFileVideo, getFileExtension} from './fileFactory';
 import {LOCATION_TYPE_MULTIPOINT, LOCATION_TYPE_POINT, LOCATION_TYPE_POLYGON} from './metadataConsts';
 

@@ -5,10 +5,10 @@
 
 import axios from 'axios';
 
+import { reactive } from 'vue';
 import { EditHeaderViewModel } from '@/factories/ViewModels/EditHeaderViewModel';
 import { ACTION_METADATA_EDITING_PATCH_DATASET } from '@/modules/user/store/userMutationsConsts';
 import { urlRewrite } from '@/factories/apiFactory';
-import { reactive } from 'vue';
 import { DatasetDTO } from '@/factories/ViewModels/DatasetDTO';
 import { HeaderViewModel } from '@/factories/ViewModels/HeaderViewModel';
 import { AuthorsViewModel } from '@/factories/ViewModels/AuthorsViewModel';
