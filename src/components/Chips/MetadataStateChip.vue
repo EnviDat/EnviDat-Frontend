@@ -45,8 +45,8 @@
  */
 import {
   METADATA_STATE_DRAFT,
-  METADATA_STATE_INVISILBE,
-  METADATA_STATE_VISILBE,
+  METADATA_STATE_INVISIBLE,
+  METADATA_STATE_VISIBLE,
 } from '@/factories/metadataConsts';
 import { mdiEye, mdiEyeOff, mdiPlaylistEdit } from '@mdi/js';
 
@@ -61,9 +61,9 @@ export default {
       type: Object,
       default: () => ({
         [METADATA_STATE_DRAFT]: 'Draft datasets are only visible to you',
-        [METADATA_STATE_INVISILBE]:
+        [METADATA_STATE_INVISIBLE]:
           'Dataset is hidden, only you and members from your organization can see it',
-        [METADATA_STATE_VISILBE]:
+        [METADATA_STATE_VISIBLE]:
           'Visible datasets are publicly visible for everyone',
       }),
     },
@@ -71,16 +71,16 @@ export default {
       type: Object,
       default: () => ({
         [METADATA_STATE_DRAFT]: '#e0e0e0',
-        [METADATA_STATE_INVISILBE]: 'warning',
-        [METADATA_STATE_VISILBE]: 'green',
+        [METADATA_STATE_INVISIBLE]: 'warning',
+        [METADATA_STATE_VISIBLE]: 'green',
       }),
     },
     iconMap: {
       type: Object,
       default: () => ({
         [METADATA_STATE_DRAFT]: mdiPlaylistEdit,
-        [METADATA_STATE_INVISILBE]: mdiEyeOff,
-        [METADATA_STATE_VISILBE]: mdiEye,
+        [METADATA_STATE_INVISIBLE]: mdiEyeOff,
+        [METADATA_STATE_VISIBLE]: mdiEye,
       }),
     },
     showOnHover: {
