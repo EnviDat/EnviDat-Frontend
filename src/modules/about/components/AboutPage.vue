@@ -120,6 +120,7 @@
  */
 import { mapGetters, mapState } from 'vuex';
 
+import { mdiBookOpenVariant, mdiInformation, mdiLibrary, mdiShieldCheckOutline, mdiFingerprint } from '@mdi/js';
 import orga from '@/assets/about/EnviDat_organigram.png';
 import { renderMarkdown } from '@/factories/stringFactory';
 import ExpandableCard from '@/modules/about/components/ExpandableCard.vue';
@@ -137,7 +138,6 @@ import {
 } from '@/store/mainMutationsConsts';
 
 import { getImage } from '@/factories/imageFactory';
-import { mdiBookOpenVariant, mdiInformation, mdiLibrary, mdiShieldCheckOutline, mdiFingerprint } from '@mdi/js';
 import AboutTabLayout from '@/modules/about/components/AboutTabLayout.vue';
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 

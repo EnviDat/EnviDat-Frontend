@@ -57,8 +57,8 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import { mdiAlertOctagram, mdiCheckboxMarkedOutline, mdiCheckboxBlankOutline } from '@mdi/js';
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 export default {
   name: 'StepButton',

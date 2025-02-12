@@ -120,6 +120,7 @@
  */
 import { mapState } from 'vuex';
 
+import {mdiArrowDownDropCircleOutline, mdiPaletteSwatch} from '@mdi/js';
 import {
   EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_KEYWORDS,
@@ -142,7 +143,6 @@ import {
 import { getTagColor } from '@/factories/keywordsFactory';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
-import {mdiArrowDownDropCircleOutline, mdiPaletteSwatch} from '@mdi/js';
 
 
 export default {

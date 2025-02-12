@@ -57,11 +57,11 @@
 </template>
 
 <script>
+import { mdiArrowExpandAll } from '@mdi/js';
 import { eventBus, INJECT_MAP_FULLSCREEN } from '@/factories/eventBus';
 import { METADATA_LOCATION_TITLE } from '@/factories/metadataConsts';
 import MapRoot from '@/modules/metadata/components/Geoservices/MapRoot.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
-import { mdiArrowExpandAll } from '@mdi/js';
 
 export default {
   name: 'MetadataGeo',

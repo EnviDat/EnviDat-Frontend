@@ -1,5 +1,5 @@
-import ResourceCard from '@/modules/metadata/components/ResourceCard.vue';
 import { mdiFileEye } from '@mdi/js';
+import ResourceCard from '@/modules/metadata/components/ResourceCard.vue';
 
 // generated with https://chat.openai.com/g/g-p5QoaO4UG-storybookvue2gpt
 export default {

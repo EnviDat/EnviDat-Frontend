@@ -59,8 +59,8 @@
 </template>
 
 <script>
-import TagChipProject from '@/components/Chips/TagChipProject.vue';
 import {mdiInvoiceListOutline, mdiArrowDownDropCircleOutline, mdiClose} from '@mdi/js';
+import TagChipProject from '@/components/Chips/TagChipProject.vue';
 
 export default {
   name: 'BaseDatasetPicker',

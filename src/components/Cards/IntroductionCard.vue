@@ -108,11 +108,11 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import { mdiClose } from '@mdi/js';
 import MetadataCardLocal from '@/components/Cards/MetadataCardLocal.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
-import { mdiClose } from '@mdi/js';
 
 export default {
   name: 'IntroductionCard',

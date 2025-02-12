@@ -76,6 +76,7 @@
 <script>
 import { mapState } from 'vuex';
 
+import { mdiPencil, mdiMinusCircleOutline, mdiChevronDown } from '@mdi/js';
 import BaseCitationView from '@/components/BaseElements/BaseCitationView.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
@@ -93,7 +94,6 @@ import {
   resolvePidCitationObjectsViaDora,
 } from '@/factories/citationFactory';
 
-import { mdiPencil, mdiMinusCircleOutline, mdiChevronDown } from '@mdi/js';
 
 export default {
   name: 'MetadataPublicationList',

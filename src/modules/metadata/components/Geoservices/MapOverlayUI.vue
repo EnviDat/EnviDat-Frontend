@@ -75,6 +75,7 @@
 </template>
 
 <script>
+import { mdiImageFilterCenterFocus, mdiMapMarker, mdiMinus, mdiPlus, mdiSimpleIcons } from '@mdi/js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import {
   eventBus,
@@ -86,7 +87,6 @@ import {
   MAP_ZOOM_OUT,
 } from '@/factories/eventBus';
 import { getImage } from '@/factories/imageFactory';
-import { mdiImageFilterCenterFocus, mdiMapMarker, mdiMinus, mdiPlus, mdiSimpleIcons } from '@mdi/js';
 
 
 export default {

@@ -90,13 +90,13 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
+import { mdiClose, mdiContentSave, mdiEye } from '@mdi/js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseProgressView from '@/components/BaseElements/BaseProgressView.vue'
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue'
 
 
 import { countSteps } from '@/factories/userCreationFactory';
-import { mdiClose, mdiContentSave, mdiEye } from '@mdi/js';
 
 export default {
   name: 'StepperInteractionView',

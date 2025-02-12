@@ -232,11 +232,11 @@
 
 import * as yup from 'yup';
 
+import { mdiAlertCircle, mdiClose, mdiEmail, mdiInformation, mdiKey } from '@mdi/js';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import { isFieldValid } from '@/factories/userEditingValidations';
 import signInPic from '@/modules/user/assets/signin.jpg';
 import {getIcon} from '@/factories/imageFactory';
-import { mdiAlertCircle, mdiClose, mdiEmail, mdiInformation, mdiKey } from '@mdi/js';
 
 const keyLength = 32;
 

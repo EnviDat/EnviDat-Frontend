@@ -174,9 +174,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import { mapState } from 'vuex';
-
-
 import {mdiArrowUp, mdiArrowRight, mdiEarth, mdiFingerprint, mdiNewspaper, mdiOpenInNew} from '@mdi/js';
+
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';

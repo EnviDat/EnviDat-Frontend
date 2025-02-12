@@ -98,9 +98,9 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import { mdiFileFind } from '@mdi/js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import { stripMarkdown } from '@/factories/stringFactory';
-import { mdiFileFind } from '@mdi/js';
 
 // checkout skeleton
 // https://github.com/ToxicJojo/SkeletonPlaceholder

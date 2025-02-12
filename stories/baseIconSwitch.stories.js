@@ -11,8 +11,8 @@
 
 /* eslint-disable import/no-extraneous-dependencies */
 
-import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue'
 import { mdiAccountCircleOutline, mdiLock, mdiHome, mdiInformationOutline } from '@mdi/js';
+import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue'
 
 
 export default {

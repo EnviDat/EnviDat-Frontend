@@ -118,6 +118,7 @@
 
 import { mapState } from 'vuex';
 
+import { mdiPlus, mdiFingerprint, mdiIdentifier } from '@mdi/js';
 import { EDIT_METADATA_ADD_PUBLICATION_TITLE } from '@/factories/metadataConsts';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseCitationView from '@/components/BaseElements/BaseCitationView.vue';
@@ -136,7 +137,6 @@ import {
   resolveDoiCitationObjectsViaDora,
   resolvePidCitationObjectsViaDora,
 } from '@/factories/citationFactory';
-import { mdiPlus, mdiFingerprint, mdiIdentifier } from '@mdi/js';
 
 export default {
   name: 'EditAddPublication',

@@ -53,6 +53,8 @@ import { isDate, isMatch, parse, format } from 'date-fns';
 import * as yup from 'yup';
 import { ValidationError } from 'yup';
 
+import { mdiCalendarRange, mdiSkipNext, mdiSkipPrevious } from '@mdi/js';
+import { useDate } from 'vuetify';
 import {
   ckanDateFormat,
   enviDatDateFormat,
@@ -62,8 +64,6 @@ import {
 
 import { isFieldValid } from '@/factories/userEditingValidations';
 import { isFieldReadOnly } from '@/factories/globalMethods';
-import { useDate } from 'vuetify';
-import { mdiCalendarRange, mdiSkipNext, mdiSkipPrevious } from '@mdi/js';
 
 // eslint-disable-next-line func-names
 yup.addMethod(yup.date, 'parseDateString', function() {

@@ -6,8 +6,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
 import { mdiHome } from '@mdi/js';
+import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
 
 
 

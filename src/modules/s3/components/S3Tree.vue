@@ -132,8 +132,8 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import { VTreeview } from 'vuetify/labs/VTreeview';
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import { mdiArrowRight } from '@mdi/js';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 
 import { useS3Store } from '@/modules/s3/store/s3Store';
 

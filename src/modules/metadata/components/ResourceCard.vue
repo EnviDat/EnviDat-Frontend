@@ -276,18 +276,6 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
-import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
-import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
-
-import S3Tree from '@/modules/s3/components/S3Tree.vue';
-import { useS3Store } from '@/modules/s3/store/s3Store';
-import SparkChart from '@/components/Charts/SparkChart.vue';
-
-import { renderMarkdown, stripMarkdown } from '@/factories/stringFactory';
-import { formatBytes } from '@/factories/metaDataFactory';
-import { EDIT_METADATA_DOI_LABEL } from '@/factories/metadataConsts';
-import { getFileIcon } from '@/factories/imageFactory';
 import {
   mdiCancel,
   mdiChevronDown,
@@ -302,6 +290,19 @@ import {
   mdiFileDocumentCheckOutline,
   mdiChartBar,
 } from '@mdi/js';
+
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
+
+import S3Tree from '@/modules/s3/components/S3Tree.vue';
+import { useS3Store } from '@/modules/s3/store/s3Store';
+import SparkChart from '@/components/Charts/SparkChart.vue';
+
+import { renderMarkdown, stripMarkdown } from '@/factories/stringFactory';
+import { formatBytes } from '@/factories/metaDataFactory';
+import { EDIT_METADATA_DOI_LABEL } from '@/factories/metadataConsts';
+import { getFileIcon } from '@/factories/imageFactory';
 
 import { trackDownload } from '@/utils/matomoTracking';
 

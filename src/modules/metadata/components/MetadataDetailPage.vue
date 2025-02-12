@@ -90,6 +90,7 @@ import { defineAsyncComponent, markRaw } from 'vue';
 import axios from 'axios';
 import rewind from '@turf/rewind';
 import { mapGetters, mapState } from 'vuex';
+import { mdiClose } from '@mdi/js';
 import { useModeStore } from '@/modules/browse/store/modeStore';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
@@ -101,7 +102,6 @@ import {
   METADATAEDIT_PAGENAME,
 } from '@/router/routeConsts';
 
-import { mdiClose } from '@mdi/js';
 
 import {
   ACTION_USER_SHOW,
