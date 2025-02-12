@@ -1,79 +1,61 @@
 <template>
-  <v-card
-    ripple
-    @mouseover="hover = true"
-    @mouseleave="hover = false"
-    class="fill-height pa-4 elevation-5 rounded-xl"
-    :dark="false"
-  >
-    <v-container class="ma-2 fill-height category-card">
-      <v-row>
-        <v-col class="pb-0" cols="auto">
-          <BaseCategoryCard
-            :elevation="0"
-            color="#35A89D"
-            :blackText="true"
-            :height="45"
-            title="Blog article"
-            :icon="iconName('post')"
-          />
-        </v-col>
-      </v-row>
-      <v-row class="category-title w-100">
-        <v-col cols="12">
-          <span class="text-h6 font-weight-bold">{{ postTitle }}</span>
-        </v-col>
-      </v-row>
-      <v-row class="category-subtitle">
-        <v-col>
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quisquam eos
-          saepe explicabo. Blanditiis cumque officia enim velit suscipit tenetur
-          distinctio eveniet, dolorum perferendis, nulla commodi amet, magnam
-          sunt nam repudiandae.
-        </v-col>
-      </v-row>
-      <v-row class="category-action">
-        <v-col class="d-flex justify-space-between">
-          <div v-if="postDate" class="text-body-1">
-            {{ postDate }}
-          </div>
-          <v-btn color="secondary" @click="cardClick">Read</v-btn>
-        </v-col>
-      </v-row>
-    </v-container>
+  <v-card ripple hover :height="height" @click="$emit('clicked')">
+    <v-row no-gutters class="pa-0">
+      <v-col cols="5" class="pa-0">
+        <v-img
+          class="imagezoom"
+          :height="height"
+          :aspect-ratio="1"
+          :style="`border-bottom-left-radius: 4px; border-top-left-radius: 4px;`"
+          cover
+          :lazy-src="loadingImg"
+          :src="titleImg"
+        />
+      </v-col>
+
+      <v-col cols="7" class="px-3" :class="titleCssClass" align-self="center">
+        {{ postTitle }}
+
+        <div v-if="postDate" :class="subtitleCssClass">
+          {{ postDate }}
+        </div>
+      </v-col>
+    </v-row>
   </v-card>
 </template>
 
-<script setup>
-import { ref } from 'vue';
-import BaseCategoryCard from '@/components/BaseElements/BaseCategoryCard.vue';
-import { extractIcons } from '@/factories/iconFactory';
+<script>
+/**
+ * BlogPostCard shows the content the title of a post
+ *
+ * @summary BlogPostCard shows the content the title of a post
+ * @author Dominik Haas-Artho
+ *
+ * Created at     : 2022-02-17
+ *
+ * This file is subject to the terms and conditions defined in
+ * file 'LICENSE.txt', which is part of this source code package.
+ */
 
-const props = defineProps({
-  postTitle: String,
-  postDate: String,
-});
-
-const emit = defineEmits(['clicked']);
-
-const hover = ref(false);
-
-const getCategoryName = ref('');
-
-const iconName = (data) => extractIcons(data);
-
-function cardClick() {
-  emit('clicked');
-}
+export default {
+  name: 'BlogPostCard',
+  props: {
+    postTitle: String,
+    postDate: String,
+    titleImg: String,
+    loadingImg: String,
+    titleCssClass: {
+      type: String,
+      default: 'text-h5',
+    },
+    subtitleCssClass: {
+      type: String,
+      default: 'text-body-1',
+    },
+    height: String,
+  },
+  computed: {},
+};
 </script>
 
-<style scoped>
-.baseClickCardTitle {
-  font-size: 1rem !important;
-  overflow: inherit !important;
-  text-overflow: inherit !important;
-  max-height: inherit !important;
-  line-height: 1.1em !important;
-  text-align: center;
-}
-</style>
+<style scoped></style>
