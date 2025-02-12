@@ -81,6 +81,7 @@
  */
 
 import { mapGetters, mapState } from 'vuex';
+import {defineAsyncComponent} from 'vue';
 import {
   eventBus,
   CANCEL_EDITING_RESOURCE,
@@ -115,10 +116,7 @@ import {
 } from '@/modules/user/store/userMutationsConsts';
 
 import { getSelectedElement } from '@/factories/userEditingFactory';
-
 import { mergeResourceSizeForFrontend } from '@/factories/mappingFactory';
-
-import {defineAsyncComponent} from 'vue';
 
 import EditMetadataResources from '@/modules/user/components/EditMetadataResources.vue';
 import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles.vue';

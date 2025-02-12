@@ -69,6 +69,7 @@
 
 import { mapGetters, mapState } from 'vuex';
 
+import { defineAsyncComponent, markRaw } from 'vue';
 import { BROWSE_PATH, METADATAREVIEW_PAGENAME } from '@/router/routeConsts';
 
 import { USER_SIGNIN_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
@@ -83,10 +84,8 @@ import {
 } from '@/store/metadataMutationsConsts';
 
 import {
-  createBody,
   createLicense,
   createResources,
-
 } from '@/factories/metaDataFactory';
 
 import {
@@ -116,7 +115,6 @@ import {
 
 import { useReviewStore } from '@/modules/metadata/store/reviewStore';
 import { convertArrayToUrlString } from '@/factories/stringFactory';
-import { defineAsyncComponent, markRaw } from 'vue';
 
 import { formatDate } from '@/factories/dateFactory';
 import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionViewModel';
