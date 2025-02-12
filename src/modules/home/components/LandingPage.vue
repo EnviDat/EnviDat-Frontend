@@ -162,7 +162,7 @@
             md="6"
             class="pa-2"
           >
-            <BlogPostCard
+            <BlogPostCardLandingPage
               :postTitle="post.title"
               :postDate="post.date"
               :icon="'mdiAccountGroup'"
@@ -190,7 +190,7 @@ import MetadataCardLandingPage from '@/components/Cards/MetadataCardLandingPage.
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
 import InfoCards from '@/components/Cards/InfoCards.vue';
 import TeamPostCard from '@/modules/home/components/TeamPostCard.vue';
-import BlogPostCard from '@/modules/blog/components/BlogPostCard.vue';
+import BlogPostCardLandingPage from '@/modules/blog/components/BlogPostCardLandingPage.vue';
 import { useDisplay } from 'vuetify';
 import { importStoreModule } from '@/factories/enhancementsFactory';
 
@@ -378,7 +378,7 @@ export default {
     SloganCard,
     MetadataCardLandingPage,
     MetadataCardPlaceholder,
-    BlogPostCard,
+    BlogPostCardLandingPage,
     TeamPostCard,
     InfoCards,
   },
