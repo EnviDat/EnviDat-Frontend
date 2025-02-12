@@ -43,12 +43,12 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import { mdiEye, mdiEyeOff, mdiPlaylistEdit } from '@mdi/js';
 import {
   METADATA_STATE_DRAFT,
   METADATA_STATE_INVISIBLE,
   METADATA_STATE_VISIBLE,
 } from '@/factories/metadataConsts';
-import { mdiEye, mdiEyeOff, mdiPlaylistEdit } from '@mdi/js';
 
 export default {
   name: 'MetadataStateChip',

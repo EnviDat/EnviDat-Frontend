@@ -104,6 +104,8 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import { mdiArrowExpandAll } from '@mdi/js';
+import { defineAsyncComponent, markRaw } from 'vue';
 import {
   AUTHORS_DATACREDIT_CONTRIBUTION_CURRENT,
   METADATA_AUTHORS_TITLE,
@@ -115,8 +117,6 @@ import { AUTHOR_SEARCH_CLICK, eventBus, INJECT_GENERIC_COMPONENT } from '@/facto
 import ActiveDataCredits from '@/modules/user/components/edit/ActiveDataCredits.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
-import { mdiArrowExpandAll } from '@mdi/js';
-import { defineAsyncComponent, markRaw } from 'vue';
 
 const MetadataAuthorsAsync = defineAsyncComponent(() =>
   // eslint-disable-next-line import/no-self-import

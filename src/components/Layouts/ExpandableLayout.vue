@@ -69,8 +69,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import { mdiChevronDown } from '@mdi/js';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
 export default {
   name: 'ExpandableLayout',

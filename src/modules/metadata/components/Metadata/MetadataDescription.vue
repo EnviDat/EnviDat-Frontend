@@ -25,10 +25,10 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { defineAsyncComponent } from 'vue';
 import ExpandableTextLayout from '@/components/Layouts/ExpandableTextLayout.vue';
 import { METADATA_BODY_TITLE } from '@/factories/metadataConsts';
 import { eventBus, INJECT_GENERIC_COMPONENT } from '@/factories/eventBus';
-import { defineAsyncComponent } from 'vue';
 
 const MetadataDescriptionAsync = defineAsyncComponent(() =>
   // eslint-disable-next-line import/no-self-import

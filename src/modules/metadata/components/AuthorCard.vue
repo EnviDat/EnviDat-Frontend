@@ -293,6 +293,15 @@
 
 <script>
 import {
+  mdiChevronDown,
+  mdiChevronLeft,
+  mdiFileEye,
+  mdiInformationOutline,
+  mdiMagnify,
+  mdiTimerSandComplete,
+} from '@mdi/js';
+
+import {
   AUTHORS_PUBLISHED_DATACOUNT,
   AUTHORS_DATACREDIT_CONTRIBUTION,
   AUTHORS_DATACREDIT_SCORE,
@@ -307,14 +316,6 @@ import {
   getAuthorName,
   replaceAuthorDeadAscii,
 } from '@/factories/authorFactory';
-import {
-  mdiChevronDown,
-  mdiChevronLeft,
-  mdiFileEye,
-  mdiInformationOutline,
-  mdiMagnify,
-  mdiTimerSandComplete,
-} from '@mdi/js';
 
 import { AUTHOR_PASSED_INFO } from '@/store/mainMutationsConsts';
 

@@ -546,15 +546,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import TagChip from '@/components/Chips/TagChip.vue';
-import TagChipAuthor from '@/components/Chips/TagChipAuthor.vue';
-import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
-import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
-
-import MetadataHeaderPlaceholder from '@/modules/metadata/components/Metadata/MetadataHeaderPlaceholder.vue';
-import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip.vue';
-import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
-
 import {
   mdiAccountCog,
   mdiChevronDown,
@@ -566,6 +557,15 @@ import {
   mdiPencil,
   mdiUpdate,
 } from '@mdi/js';
+
+import TagChip from '@/components/Chips/TagChip.vue';
+import TagChipAuthor from '@/components/Chips/TagChipAuthor.vue';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
+
+import MetadataHeaderPlaceholder from '@/modules/metadata/components/Metadata/MetadataHeaderPlaceholder.vue';
+import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip.vue';
+import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
 
 import {
   getAuthorName,

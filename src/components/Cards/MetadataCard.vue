@@ -166,6 +166,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import { mdiFile } from '@mdi/js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
 import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip.vue';
@@ -173,7 +174,6 @@ import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
 import TagChip from '@/components/Chips/TagChip.vue';
 import UserRoleChip from '@/components/Chips/UserRoleChip.vue';
 import { stripMarkdown } from '@/factories/stringFactory';
-import { mdiFile } from '@mdi/js';
 
 // Header Sleek design
 // https://codepen.io/GeorgeGedox/pen/NQrxrY
