@@ -3,7 +3,7 @@
     ripple
     @mouseover="hover = true"
     @mouseleave="hover = false"
-    class="fill-height pt-14 pb-14 rounded-xl elevation-10 info-card"
+    class="fill-height pt-14 pb-14 rounded-xl elevation-5 info-card"
     :dark="false"
   >
     <v-container
@@ -20,7 +20,7 @@
           order-md="1"
           order="2"
         >
-          <v-row class="info-action">
+          <v-row class="info-action mt-6 mt-md-0">
             <v-col
               v-if="info.icon"
               class="d-flex flex-column align-center justify-center"
@@ -65,7 +65,7 @@
             </v-row>
 
             <!-- Render action button if actionTitle is provided -->
-            <v-row v-if="info.actionTitle">
+            <v-row v-if="info.actionTitle" class="justify-end">
               <v-btn color="secondary" @click="cardClick">
                 {{ info.actionTitle }}
               </v-btn>
@@ -82,7 +82,7 @@
           order-md="3"
           order="2"
         >
-          <v-row class="info-action">
+          <v-row class="info-action mt-6 mt-md-0">
             <v-col
               v-if="info.icon"
               class="d-flex flex-column align-center justify-center"

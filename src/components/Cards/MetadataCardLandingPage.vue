@@ -3,26 +3,38 @@
     ripple
     @mouseover="hover = true"
     @mouseleave="hover = false"
-    class="fill-height elevation-10 rounded-xl"
+    class="fill-height elevation-5 rounded-xl"
   >
     <v-container class="fill-height category-card">
       <v-card
         class="pa-3 fill-height elevation-0 rounded-xl d-flex flex-column bgcCard"
       >
-        <v-chip
-          class="outlined flat pa-0 mb-4 d-flex align-center justify-center"
-          style="width: 100%; max-width: 150px"
-          size="x-large"
-          :prepend-icon="iconName(getCategoryName)"
-          :color="categoryColor"
-        >
-          <span class="text-subtitle-1 font-weight-bold"
-            >{{ getCategoryName }}
-          </span>
-        </v-chip>
+        <v-row v-if="categoryAbove">
+          <v-col cols="auto">
+            <BaseCategoryCard
+              class="mb-4"
+              :elevation="0"
+              :color="categoryColor"
+              :height="45"
+              :title="getCategoryName"
+              :icon="iconName(getCategoryName)"
+            />
+          </v-col>
+        </v-row>
         <v-row class="category-title" no-gutters>
           <v-col class="pa-0" cols="12">
             <span class="text-h6 font-weight-bold">{{ truncatedTitle }}</span>
+          </v-col>
+        </v-row>
+        <v-row class="mt-0" v-if="categoryBelow">
+          <v-col cols="auto">
+            <BaseCategoryCard
+              :elevation="0"
+              :color="categoryColor"
+              :height="25"
+              :title="getCategoryName"
+              :icon="iconName(getCategoryName)"
+            />
           </v-col>
         </v-row>
         <v-row class="category-subtitle pt-3" no-gutters>
@@ -33,7 +45,9 @@
       </v-card>
       <v-row class="category-action">
         <v-col class="d-flex justify-space-between pa-6">
-          <span class="text-body-1">{{ formatDate(date) }}</span>
+          <span class="text-body-1">{{
+            formatDate(date, 'yyyy-MM-dd', true)
+          }}</span>
           <v-btn color="secondary" @click="cardClick"> View </v-btn>
         </v-col>
       </v-row>
@@ -46,6 +60,7 @@ import { computed, ref } from 'vue';
 import { stripMarkdown } from '@/factories/stringFactory';
 import { extractIcons } from '@/factories/iconFactory';
 import { formatDate } from '@/factories/dateFactory';
+import BaseCategoryCard from '@/components/BaseElements/BaseCategoryCard.vue';
 
 // Define component props (only the ones that are actually used)
 const props = defineProps({
@@ -58,6 +73,14 @@ const props = defineProps({
   categoryName: {
     type: String,
     default: 'Category',
+  },
+  categoryAbove: {
+    type: Boolean,
+    default: false,
+  },
+  categoryBelow: {
+    type: Boolean,
+    default: false,
   },
 });
 

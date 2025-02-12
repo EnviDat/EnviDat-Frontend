@@ -8,6 +8,8 @@ import {
   mdiShieldCheck,
   mdiMapPlus,
   mdiEarth,
+  mdiAccountGroup,
+  mdiTextBox,
 } from '@mdi/js';
 
 export const extractIcons = (data) => {
@@ -26,6 +28,8 @@ export const extractIcons = (data) => {
     protected: mdiShieldCheck,
     create: mdiMapPlus,
     world: mdiEarth,
+    team: mdiAccountGroup,
+    post: mdiTextBox,
   };
   return map[lowerData];
 };

@@ -48,6 +48,7 @@ export default {
     axios
       .get(url)
       .then((response) => {
+        console.log(response);
         commit(GET_BLOG_POST_SUCCESS, {
           postFile,
           postContent: response.data,

@@ -27,14 +27,37 @@
           @clicked="catchActionsButton"
         />
         <v-row justify="center" class="flex-grow-0" no-gutters>
+          <!-- noMode Category -->
           <v-col
-            v-for="card in categoryCards"
+            v-for="card in categoryCardsNoMode"
             :key="card.title"
             class="pa-2"
             cols="auto"
           >
             <BaseCategoryCard
               :height="'45'"
+              :title="card.title"
+              :img="card.imgPath"
+              :icon="card.iconPath"
+              :color="card.darkColor"
+              :isMode="card.isMode"
+              :contain="card.contain"
+              :disabled="card.disabled"
+              @click="catchCategoryClicked(card.type)"
+            />
+          </v-col>
+        </v-row>
+        <v-row justify="center" class="flex-grow-0" no-gutters>
+          <!-- Mode Category -->
+          <v-col
+            v-for="card in categoryCardsMode"
+            :key="card.title"
+            class="pa-2 d-block"
+            cols="auto"
+          >
+            <BaseCategoryCard
+              :height="'45'"
+              :elevation="5"
               :title="card.title"
               :img="card.imgPath"
               :icon="card.iconPath"
@@ -76,6 +99,7 @@
             class="pa-2"
           >
             <MetadataCardLandingPage
+              :categoryBelow="true"
               :id="metadata.id"
               :title="metadata.title"
               :subtitle="metadata.notes"
@@ -90,7 +114,7 @@
       </template>
 
       <!-- Info slot -->
-      <template #info>
+      <template v-if="showInfo" #info>
         <v-row>
           <v-col
             v-for="(info, i) in infoCards"
@@ -98,6 +122,7 @@
             cols="12"
             :class="[
               i === 0 ? 'pa-md-16 pt-md-0' : 'pa-md-16',
+              { 'pb-md-0': i === infoCards.length - 1 },
               { 'background-grey': i % 2 === 1 },
             ]"
           >
@@ -122,7 +147,7 @@
               :postTitle="post.title"
               :postDate="post.date"
               :postText="post.text"
-              :showButton="true"
+              :showButton="false"
               :loadingImg="fallbackCardImg"
               titleCssClass="compactBlogPostCard"
               subtitleCssClass="text-caption"
@@ -140,6 +165,7 @@
             <BlogPostCard
               :postTitle="post.title"
               :postDate="post.date"
+              :icon="'mdiAccountGroup'"
               :loadingImg="fallbackCardImg"
               titleCssClass="compactBlogPostCard"
               subtitleCssClass="text-caption"
@@ -239,6 +265,12 @@ export default {
     isMediumScreenAndDown() {
       return this.display.sm.value || this.display.xs.value;
     },
+    categoryCardsNoMode() {
+      return this.categoryCards.filter((el) => !el.isMode);
+    },
+    categoryCardsMode() {
+      return this.categoryCards.filter((el) => el.isMode);
+    },
     isMediumScreenAndUp() {
       return (
         this.display.md.value ||
@@ -257,6 +289,9 @@ export default {
     },
     infoCards() {
       return this.config?.infoConfig?.info;
+    },
+    showInfo() {
+      return this.config?.infoConfig?.infoActive;
     },
     datasetsTotal() {
       return this.loadingMetadatasContent ? 0 : this.metadatasContentSize;
