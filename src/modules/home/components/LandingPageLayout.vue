@@ -15,10 +15,9 @@
         <slot name="search"></slot>
       </v-container>
       <section class="metadata-wrapper">
-        <BaseTitleDataset
+        <BaseTitle
           style="text-align: center"
           :text="datasetsTitle"
-          :extraData="datasetsTotal"
           :className="'text-h4 mt-10 margin-asd font-weight-bold mb-6 position-relative'"
           cardClass="pa-2"
           titleClass="titleCardClass"
@@ -75,7 +74,6 @@
 import { computed } from 'vue';
 import { useDisplay } from 'vuetify';
 import BaseTitle from '@/components/BaseElements/BaseTitle.vue';
-import BaseTitleDataset from '@/modules/home/components/BaseTitleDataset.vue';
 
 // Define component props
 const props = defineProps({

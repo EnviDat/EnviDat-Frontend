@@ -1,8 +1,14 @@
 <template>
   <div>
-    <div :class="className">
+    <div class="position-relative" :class="className">
       {{ text }}
-      <v-chip v-if="extraData" color="secondary">Total: {{ extraData }}</v-chip>
+      <v-chip
+        class="title-chip"
+        v-if="extraData"
+        variant="outlined"
+        color="secondary"
+        >Total: {{ extraData }}</v-chip
+      >
     </div>
   </div>
 </template>
@@ -26,3 +32,10 @@ export default {
   },
 };
 </script>
+<style scss scoped>
+.title-chip {
+  background-color: #fff;
+  position: absolute;
+  top
+}
+</style>

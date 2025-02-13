@@ -64,7 +64,6 @@ import { extractIcons } from '@/factories/iconFactory';
 import { formatDate } from '@/factories/dateFactory';
 import BaseCategoryCard from '@/components/BaseElements/BaseCategoryCard.vue';
 
-// Define component props (only the ones that are actually used)
 const props = defineProps({
   id: String,
   title: String,
@@ -86,15 +85,11 @@ const props = defineProps({
   },
 });
 
-// Define emits
 const emit = defineEmits(['clickedEvent']);
 
-// Data (using refs)
 const hover = ref(false);
 const titleLength = ref(50);
 const descriptionLength = ref(200);
-
-// Computed properties
 
 const getCategoryName = computed(() =>
   props.categoryName
@@ -122,14 +117,12 @@ const truncatedSubtitle = computed(() => {
   return cleanSubtitle;
 });
 
-// Methods
-
 const iconName = (data) => extractIcons(data);
 
 function cardClick() {
   let detailParam = props.name;
   if (!detailParam) {
-    detailParam = props.id; // fallback if name is missing
+    detailParam = props.id;
   }
   emit('clickedEvent', detailParam);
 }

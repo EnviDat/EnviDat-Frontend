@@ -65,7 +65,10 @@
             </v-row>
 
             <!-- Render action button if actionTitle is provided -->
-            <v-row v-if="info.actionTitle" class="justify-end">
+            <v-row
+              v-if="info.actionTitle"
+              class="justify-center mt-5 justify-md-end"
+            >
               <v-btn color="secondary" @click="cardClick">
                 {{ info.actionTitle }}
               </v-btn>
@@ -133,12 +136,3 @@ function cardClick() {
   emit('clickedEvent', detailParam);
 }
 </script>
-
-<style scoped lang="scss">
-.info-img {
-  width: 100%;
-  height: auto;
-  max-width: 300px;
-  margin-bottom: 2rem;
-}
-</style>
