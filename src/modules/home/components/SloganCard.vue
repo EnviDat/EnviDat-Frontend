@@ -18,7 +18,7 @@
 
           <div
             :class="{
-              'pb-5 mb-5 mb-md-0': hasButtons,
+              'pb-5 mb-5 mb-md-0 pr-0 pl-0 pl-sm-10 pr-sm-10': hasButtons,
               'pb-0': !hasButtons,
               'text-h6': true,
               'envidat-subSlogan': true,

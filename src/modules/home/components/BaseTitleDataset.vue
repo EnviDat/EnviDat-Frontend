@@ -1,6 +1,9 @@
 <template>
   <div>
-    <div :class="className">{{ text }}</div>
+    <div :class="className">
+      {{ text }}
+      <v-chip v-if="extraData" color="secondary">Total: {{ extraData }}</v-chip>
+    </div>
   </div>
 </template>
 
@@ -11,6 +14,10 @@ export default {
     text: {
       type: String,
       required: true,
+    },
+    extraData: {
+      type: String,
+      required: false,
     },
     className: {
       type: String,

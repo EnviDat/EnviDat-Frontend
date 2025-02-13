@@ -15,9 +15,10 @@
         <slot name="search"></slot>
       </v-container>
       <section class="metadata-wrapper">
-        <BaseTitle
+        <BaseTitleDataset
           style="text-align: center"
           :text="datasetsTitle"
+          :extraData="datasetsTotal"
           :className="'text-h4 mt-10 margin-asd font-weight-bold mb-6 position-relative'"
           cardClass="pa-2"
           titleClass="titleCardClass"
@@ -55,6 +56,17 @@
         <slot name="news"></slot>
       </v-container>
     </v-container-fluid>
+
+    <!-- Contact Slot -->
+    <v-container-fluid
+      v-if="$slots.contact"
+      class="contactGrid"
+      :class="paddings"
+    >
+      <v-container fluid class="pt-2 px-1">
+        <slot name="contact"></slot>
+      </v-container>
+    </v-container-fluid>
   </article>
 </template>
 
@@ -63,6 +75,7 @@
 import { computed } from 'vue';
 import { useDisplay } from 'vuetify';
 import BaseTitle from '@/components/BaseElements/BaseTitle.vue';
+import BaseTitleDataset from '@/modules/home/components/BaseTitleDataset.vue';
 
 // Define component props
 const props = defineProps({
@@ -95,7 +108,8 @@ const paddings = 'pa-md-2 pt-4 pt-sm-6';
   grid-template-areas:
     'Welcome'
     'Info'
-    'News';
+    'News'
+    'Contact';
 }
 
 /* Additional styling */
@@ -145,6 +159,9 @@ const paddings = 'pa-md-2 pt-4 pt-sm-6';
 .newsGrid {
   grid-area: News;
 }
+.contactGrid {
+  grid-area: Contact;
+}
 
 .titleCardClass {
   font-size: 1.25rem;
@@ -172,7 +189,8 @@ const paddings = 'pa-md-2 pt-4 pt-sm-6';
     grid-template-areas:
       'Welcome'
       'Info'
-      'News';
+      'News'
+      'Contact';
   }
   .welcomeGrid {
     margin-bottom: 0;

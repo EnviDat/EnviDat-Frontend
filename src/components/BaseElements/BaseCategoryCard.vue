@@ -7,6 +7,7 @@
     :disabled="disabled"
     @click="clicked"
     :elevation="elevation"
+    :class="{ disableClick: disableClick }"
     class="d-flex align-center pa-2 rounded-xl bgcCard"
     :style="{
       backgroundColor: getBgcColor,
@@ -85,11 +86,16 @@ const props = defineProps({
     type: String,
     default: 'auto',
   },
+  disableClick: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const emit = defineEmits(['click']);
 
 const clicked = () => {
+  if (props.disableClick) return;
   emit('click', props.title.toLowerCase());
 };
 
@@ -169,5 +175,8 @@ const getBgcColor = computed(() => {
 
 .rounded-xl {
   border-radius: 1rem;
+}
+.disableClick {
+  pointer-events: none;
 }
 </style>

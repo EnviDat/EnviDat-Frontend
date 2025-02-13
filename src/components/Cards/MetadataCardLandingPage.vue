@@ -15,6 +15,7 @@
               class="mb-4"
               :elevation="0"
               :color="categoryColor"
+              :disableClick="true"
               :height="45"
               :title="getCategoryName"
               :icon="iconName(getCategoryName)"
@@ -31,6 +32,7 @@
             <BaseCategoryCard
               :elevation="0"
               :color="categoryColor"
+              :disableClick="true"
               :height="25"
               :title="getCategoryName"
               :icon="iconName(getCategoryName)"

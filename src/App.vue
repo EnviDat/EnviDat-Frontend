@@ -75,7 +75,7 @@
         ref="appContainer"
         :style="pageStyle"
       >
-        <v-row id="mainPageRow">
+        <v-row id="mainPageRow" class="position-relative">
           <v-col cols="12">
             <router-view v-slot="{ Component }">
               <transition name="fade" mode="out-in">

@@ -15,7 +15,6 @@
           :subSlogan="welcomeInfo.SubSlogan"
           :maxHeight="200"
           :buttonText="sloganButtonText"
-          :buttonCallback="catchBrowseClicked"
           :moreButtonText="sloganMoreButtonText"
           :moreButtonCallback="catchMoreClicked"
         />
@@ -134,7 +133,7 @@
       </template>
 
       <!-- News slot -->
-      <template #news>
+      <template v-if="showNews" #news>
         <v-row no-gutters>
           <v-col
             v-for="(post, index) in newsEntries"
@@ -175,6 +174,14 @@
           </v-col>
         </v-row>
       </template>
+
+      <template v-if="showContact" #contact>
+        <v-row>
+          <v-col cols="12" class="background-grey">
+            <v-container> <LandingPageContactForm /> </v-container>
+          </v-col>
+        </v-row>
+      </template>
     </LandingPageLayout>
   </v-container>
 </template>
@@ -184,6 +191,7 @@ import { mapGetters, mapState } from 'vuex';
 import { eventBus, SHOW_REDIRECT_SIGNIN_DIALOG } from '@/factories/eventBus';
 import LandingPageLayout from '@/modules/home/components/LandingPageLayout.vue';
 import SearchBarView from '@/modules/home/components/SearchBarView.vue';
+import LandingPageContactForm from '@/modules/home/components/LandingPageContactForm.vue';
 import SloganCard from '@/modules/home/components/SloganCard.vue';
 import BaseCategoryCard from '@/components/BaseElements/BaseCategoryCard.vue';
 import MetadataCardLandingPage from '@/components/Cards/MetadataCardLandingPage.vue';
@@ -293,6 +301,12 @@ export default {
     showInfo() {
       return this.config?.infoConfig?.infoActive;
     },
+    showNews() {
+      return this.config?.newsConfig?.newsActive;
+    },
+    showContact() {
+      return this.config?.showContact?.contactActive;
+    },
     datasetsTotal() {
       return this.loadingMetadatasContent ? 0 : this.metadatasContentSize;
     },
@@ -375,6 +389,7 @@ export default {
     LandingPageLayout,
     SearchBarView,
     BaseCategoryCard,
+    LandingPageContactForm,
     SloganCard,
     MetadataCardLandingPage,
     MetadataCardPlaceholder,

@@ -73,6 +73,9 @@
     "title": "Maintenance Mode",
     "message": "On Wednesday 29th March, between 9 and 12, EnviDat is undergoing the planned annual physical checkup. EnviDat can be accessed in read-only mode. Data download, upload and user data management functionalities will be disabled"
   },
+  "showContact": {
+    "contactActive": true
+  },
   "newsConfig": {
     "newsActive": true,
     "entries": [
