@@ -1,9 +1,6 @@
 <template>
-  <v-app
-    class="application envidat-font-overwrite"
-    id="app-container"
-    :style="dynamicBackground"
-  >
+  <v-app class="application envidat-font-overwrite" id="app-container">
+    <!-- :style="dynamicBackground" -->
     <div
       v-show="showDecemberParticles"
       id="christmas-canvas"
@@ -832,5 +829,9 @@ export default {
   .custom-v-main {
     left: 60px;
   }
+}
+
+.bg-dark {
+  background-color: #e0e0e0 !important;
 }
 </style>
