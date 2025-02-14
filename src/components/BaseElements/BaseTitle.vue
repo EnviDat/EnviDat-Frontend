@@ -4,18 +4,15 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'BaseTitle',
-  props: {
-    text: {
-      type: String,
-      required: true,
-    },
-    className: {
-      type: String,
-      default: 'text-h5',
-    },
+<script setup>
+const props = defineProps({
+  text: {
+    type: String,
+    required: true,
   },
-};
+  className: {
+    type: String,
+    default: 'text-h5',
+  },
+});
 </script>

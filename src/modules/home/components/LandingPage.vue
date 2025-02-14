@@ -186,8 +186,10 @@
   </v-container>
 </template>
 
-<script>
-import { mapGetters, mapState } from 'vuex';
+<script setup>
+import { computed, ref, onMounted } from 'vue';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 import { eventBus, SHOW_REDIRECT_SIGNIN_DIALOG } from '@/factories/eventBus';
 import LandingPageLayout from '@/modules/home/components/LandingPageLayout.vue';
 import SearchBarView from '@/modules/home/components/SearchBarView.vue';
@@ -224,224 +226,202 @@ import {
   SET_DETAIL_PAGE_BACK_URL,
 } from '@/store/metadataMutationsConsts';
 
-import smLogo from '@/assets/logo/EnviDat_logo_64.png';
-import mdLogo from '@/assets/logo/EnviDat_logo_128.png';
-// import iconGet from '@/assets/icon-get.png';
+// data
+const buttonsActions = ref([
+  { text: 'Search', class: 'primary', action: 'search' },
+  {
+    text: 'Explore all',
+    class: 'primary',
+    outlined: true,
+    bgcWhite: true,
+    action: 'explore',
+  },
+]);
+const defaultWelcomeInfo = ref({
+  titleText: 'EnviDat',
+  Slogan: 'Environmental Research Data at your Fingertips',
+  SubSlogan:
+    'EnviDat provides research data from Switzerland and around the world. The data is provided by researchers from various research units of the Swiss Federal Institute for Forest, Snow and Landscape WSL.',
+  searchLabelText:
+    'Looking for something specific? Enter research term, topic or author here!',
+  smallSearchLabelText: 'Enter research term, topic or author',
+  searchText: 'Looking for something specific?',
+  categoryText:
+    'Have a look at one of these categories or sign in to upload your data',
+  articlesTitle: 'Recent EnviDat Blog Articles',
+  newsTitle: 'News From The EnviDat Team',
+  infoTitle: 'How it works?',
+  categoriesTitle: 'Research Data Categories',
+  datasetsTitle: 'Recently Published Research Datasets',
+});
+const fallbackCardImg = ref(null);
 
-export default {
-  name: 'LandingPage',
-  beforeRouteEnter(to, from, next) {
-    next((vm) => {
-      vm.$store.commit(SET_CURRENT_PAGE, LANDING_PAGENAME);
-      vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
+// beforeCreate
+const store = useStore();
+importStoreModule(
+  store,
+  'blog',
+  () => import('@/modules/blog/store/blogStore'),
+).then(() => {
+  store.dispatch(`${BLOG_NAMESPACE}/${GET_BLOG_LIST}`);
+});
+
+// created
+const blogModuleLoaded = ref(false);
+blogModuleLoaded.value = !!store.state.blog;
+store.watch(
+  (state) => state.blog,
+  (value) => {
+    blogModuleLoaded.value = !!value;
+  },
+);
+
+// setup
+const display = useDisplay();
+const router = useRouter();
+
+// computed
+const categoryCards = computed(() => store.state.categoryCards);
+const config = computed(() => store.state.config);
+const loadingMetadatasContent = computed(
+  () => store.getters[`${METADATA_NAMESPACE}/loadingMetadatasContent`],
+);
+const metadatasContentSize = computed(
+  () => store.getters[`${METADATA_NAMESPACE}/metadatasContentSize`],
+);
+const recentMetadata = computed(
+  () => store.getters[`${METADATA_NAMESPACE}/recentMetadata`],
+);
+const blogList = computed(() => store.state[BLOG_NAMESPACE].list);
+
+const isLargeScreen = computed(() => display.large);
+const isMediumScreenAndDown = computed(
+  () => display.sm.value || display.xs.value,
+);
+const categoryCardsNoMode = computed(() =>
+  categoryCards.value.filter((el) => !el.isMode),
+);
+const categoryCardsMode = computed(() =>
+  categoryCards.value.filter((el) => el.isMode),
+);
+const isMediumScreenAndUp = computed(
+  () =>
+    display.md.value ||
+    display.lg.value ||
+    display.xl.value ||
+    display.xxl.value,
+);
+const blogPosts = computed(() =>
+  blogModuleLoaded.value && blogList.value?.length > 0
+    ? blogList.value.slice(0, 3)
+    : [],
+);
+const welcomeInfo = computed(
+  () => config.value?.welcomeInfo || defaultWelcomeInfo.value,
+);
+const infoCards = computed(() => config.value?.infoConfig?.info);
+const showInfo = computed(() => config.value?.infoConfig?.infoActive);
+const showNews = computed(() => config.value?.newsConfig?.newsActive);
+const showContact = computed(() => config.value?.showContact?.contactActive);
+const datasetsTotal = computed(() =>
+  loadingMetadatasContent.value ? 0 : metadatasContentSize.value,
+);
+const newsEntries = computed(() => config.value?.newsConfig?.entries || []);
+const sloganButtonText = computed(() => 'EXPLORE DATA');
+const sloganMoreButtonText = computed(() =>
+  isLargeScreen.value ? 'ABOUT ENVIDAT' : 'ABOUT',
+);
+
+// METHODS (funzioni come arrow functions)
+
+const removeBackgroundImage = () => {
+  const appContainer = document.getElementById('app-container');
+  if (appContainer) {
+    appContainer.style.backgroundImage = 'none';
+  }
+};
+
+const mixinMethodsConvertArrayToUrlString = (array) => array.join(',');
+
+const mixinMethodsAdditiveChangeRoute = (path, query, tags) => {
+  router.push({
+    path,
+    query: { ...query, tags },
+  });
+};
+
+const catchModeClicked = (mode) => {
+  router.push({
+    path: BROWSE_PATH,
+    query: { mode },
+  });
+};
+
+const catchActionsButton = (event, search) => {
+  const query = event === 'search' ? { search } : {};
+  router.push({ path: BROWSE_PATH, query });
+};
+
+const catchMoreClicked = () => {
+  router.push({ path: ABOUT_PATH });
+};
+
+const catchSigninClick = () => {
+  if (config.value?.maintenanceConfig?.signinRedirectActive) {
+    eventBus.emit(SHOW_REDIRECT_SIGNIN_DIALOG);
+  } else if (router.currentRoute.value.path !== USER_SIGNIN_PATH) {
+    router.push({ path: USER_SIGNIN_PATH });
+  }
+};
+
+const catchMetadataClicked = (datasetname) => {
+  store.commit(
+    `${METADATA_NAMESPACE}/${SET_DETAIL_PAGE_BACK_URL}`,
+    router.currentRoute.value,
+  );
+  router.push({
+    name: METADATADETAIL_PAGENAME,
+    params: { metadataid: datasetname },
+  });
+};
+
+const catchPostClick = (post) => {
+  if (router.currentRoute.value.params?.post !== post) {
+    router.push({
+      name: BLOG_PAGENAME,
+      params: { post },
     });
-  },
-  beforeCreate() {
-    const importFun = () => import('@/modules/blog/store/blogStore');
-    importStoreModule(this.$store, 'blog', importFun).then(() => {
-      this.$store.dispatch(`${BLOG_NAMESPACE}/${GET_BLOG_LIST}`);
-    });
-  },
-  created() {
-    // Set blogModuleLoaded flag and watch for changes
-    this.blogModuleLoaded = !!this.$store?.state?.blog;
-    this.$store?.watch(
-      (state) => state.blog,
-      (value) => {
-        this.blogModuleLoaded = !!value;
-      },
-    );
-  },
-  mounted() {
-    window.scrollTo(0, 0);
-    this.removeBackgroundImage();
-  },
-  setup() {
-    const display = useDisplay();
-    return { display };
-  },
-  computed: {
-    ...mapState(['categoryCards', 'config', 'loadingConfig']),
-    ...mapGetters(METADATA_NAMESPACE, [
-      'loadingMetadatasContent',
-      'metadatasContentSize',
-      'recentMetadata',
-    ]),
-    ...mapState(BLOG_NAMESPACE, ['list']),
-    isLargeScreen() {
-      return this.display.large;
-    },
-    isMediumScreenAndDown() {
-      return this.display.sm.value || this.display.xs.value;
-    },
-    categoryCardsNoMode() {
-      return this.categoryCards.filter((el) => !el.isMode);
-    },
-    categoryCardsMode() {
-      return this.categoryCards.filter((el) => el.isMode);
-    },
-    isMediumScreenAndUp() {
-      return (
-        this.display.md.value ||
-        this.display.lg.value ||
-        this.display.xl.value ||
-        this.display.xxl.value
-      );
-    },
-    blogPosts() {
-      return this.blogModuleLoaded && this.list?.length > 0
-        ? this.list.slice(0, 3)
-        : [];
-    },
-    welcomeInfo() {
-      return this.config?.welcomeInfo || this.defaultWelcomeInfo;
-    },
-    infoCards() {
-      return this.config?.infoConfig?.info;
-    },
-    showInfo() {
-      return this.config?.infoConfig?.infoActive;
-    },
-    showNews() {
-      return this.config?.newsConfig?.newsActive;
-    },
-    showContact() {
-      return this.config?.showContact?.contactActive;
-    },
-    datasetsTotal() {
-      return this.loadingMetadatasContent ? 0 : this.metadatasContentSize;
-    },
-    newsEntries() {
-      return this.config?.newsConfig?.entries || [];
-    },
-    effectsConfig() {
-      return this.config?.effectsConfig || {};
-    },
-    sloganButtonText() {
-      return 'EXPLORE DATA';
-    },
-    sloganMoreButtonText() {
-      return this.isLargeScreen ? 'ABOUT ENVIDAT' : 'ABOUT';
-    },
-  },
-  methods: {
-    removeBackgroundImage() {
-      const appContainer = document.getElementById('app-container');
-      if (appContainer) {
-        appContainer.style.backgroundImage = 'none';
-      }
-    },
-    catchCategoryClicked(cardType) {
-      if (cardType.includes('login')) {
-        this.catchSigninClick();
-        return;
-      }
-      if (cardType.includes('mode')) {
-        const [, modeName] = cardType.split('_');
-        this.catchModeClicked(modeName);
-        return;
-      }
-      const stringTags = this.mixinMethods_convertArrayToUrlString([cardType]);
-      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, '', stringTags);
-    },
-    catchModeClicked(mode) {
-      this.$router.push({
-        path: BROWSE_PATH,
-        query: { mode },
-      });
-    },
-    catchActionsButton(event, search) {
-      const query = event === 'search' ? { search } : {};
-      this.$router.push({ path: BROWSE_PATH, query });
-    },
-    catchMoreClicked() {
-      this.$router.push({ path: ABOUT_PATH });
-    },
-    catchSigninClick() {
-      if (this.config?.maintenanceConfig?.signinRedirectActive) {
-        eventBus.emit(SHOW_REDIRECT_SIGNIN_DIALOG);
-      } else if (this.$route.path !== USER_SIGNIN_PATH) {
-        this.$router.push({ path: USER_SIGNIN_PATH });
-      }
-    },
-    catchMetadataClicked(datasetname) {
-      this.$store.commit(
-        `${METADATA_NAMESPACE}/${SET_DETAIL_PAGE_BACK_URL}`,
-        this.$route,
-      );
-      this.$router.push({
-        name: METADATADETAIL_PAGENAME,
-        params: { metadataid: datasetname },
-      });
-    },
-    catchPostClick(post) {
-      if (this.$route.params?.post !== post) {
-        this.$router.push({
-          name: BLOG_PAGENAME,
-          params: { post },
-        });
-      }
-    },
-    mixinMethods_convertArrayToUrlString(array) {
-      return array.join(',');
-    },
-    mixinMethods_additiveChangeRoute(path, query, tags) {
-      this.$router.push({
-        path,
-        query: { ...query, tags },
-      });
-    },
-  },
-  components: {
-    LandingPageLayout,
-    SearchBarView,
-    BaseCategoryCard,
-    LandingPageContactForm,
-    SloganCard,
-    MetadataCardLandingPage,
-    MetadataCardPlaceholder,
-    BlogPostCardLandingPage,
-    TeamPostCard,
-    InfoCards,
-  },
-  data() {
-    return {
-      buttonsActions: [
-        { text: 'Search', class: 'primary', action: 'search' },
-        {
-          text: 'Explore all',
-          class: 'primary',
-          outlined: true,
-          bgcWhite: true,
-          action: 'explore',
-        },
-      ],
-      blogModuleLoaded: false,
-      defaultWelcomeInfo: {
-        titleText: 'EnviDat',
-        Slogan: 'Environmental Research Data at your Fingertips',
-        SubSlogan:
-          'EnviDat provides research data from Switzerland and around the world. The data is provided by researchers from various research units of the Swiss Federal Institute for Forest, Snow and Landscape WSL.',
-        searchLabelText:
-          'Looking for something specific? Enter research term, topic or author here!',
-        smallSearchLabelText: 'Enter research term, topic or author',
-        searchText: 'Looking for something specific?',
-        categoryText:
-          'Have a look at one of these categories or sign in to upload your data',
-        articlesTitle: 'Recent EnviDat Blog Articles',
-        newsTitle: 'News From The EnviDat Team',
-        infoTitle: 'How it works?',
-        categoriesTitle: 'Research Data Categories',
-        datasetsTitle: 'Recently Published Research Datasets',
-      },
-      fileIconString: '',
-      alternativeText: 'EnviDat logo',
-      fallbackCardImg: null,
-      pageBGImage: 'asd',
-      smLogo,
-      mdLogo,
-    };
-  },
+  }
+};
+
+const catchCategoryClicked = (cardType) => {
+  if (cardType.includes('login')) {
+    catchSigninClick();
+    return;
+  }
+  if (cardType.includes('mode')) {
+    const [, modeName] = cardType.split('_');
+    catchModeClicked(modeName);
+    return;
+  }
+  const stringTags = mixinMethodsConvertArrayToUrlString([cardType]);
+  mixinMethodsAdditiveChangeRoute(BROWSE_PATH, '', stringTags);
+};
+
+// mounted
+onMounted(() => {
+  window.scrollTo(0, 0);
+  removeBackgroundImage();
+});
+</script>
+
+<script>
+// beforeRouteEnter remains outside <script setup>
+export const beforeRouteEnter = (to, from, next) => {
+  next((vm) => {
+    vm.$store.commit(SET_CURRENT_PAGE, LANDING_PAGENAME);
+    vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
+  });
 };
 </script>
 

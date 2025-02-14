@@ -48,7 +48,6 @@
 
 <script setup>
 import { computed, ref } from 'vue';
-import { stripMarkdown } from '@/factories/stringFactory';
 import { extractIcons } from '@/factories/iconFactory';
 import { formatDate } from '@/factories/dateFactory';
 import BaseCategoryCard from '@/components/BaseElements/BaseCategoryCard.vue';

@@ -42,7 +42,9 @@
           <v-row class="info-text pl-md-10 pr-md-14 pl-7 pr-7 h-100 ga-4">
             <v-row class="info-title">
               <v-col class="pa-0" v-if="info.title">
-                <span class="text-h5 font-weight-bold">{{ info.title }}</span>
+                <span class="text-h6 text-md-h5 font-weight-bold">{{
+                  info.title
+                }}</span>
               </v-col>
             </v-row>
 

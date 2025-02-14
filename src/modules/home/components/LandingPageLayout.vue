@@ -18,7 +18,7 @@
         <BaseTitle
           style="text-align: center"
           :text="datasetsTitle"
-          :className="'text-h4 mt-10 margin-asd font-weight-bold mb-6 position-relative'"
+          :className="'text-md-h4 text-h5 mt-10 margin-asd font-weight-bold mb-6 position-relative'"
           cardClass="pa-2"
           titleClass="titleCardClass"
         />
@@ -33,7 +33,7 @@
       <BaseTitle
         style="text-align: center"
         :text="infoTitle"
-        :className="'text-h4 font-weight-bold mb-6'"
+        :className="'text-md-h4 text-h5 font-weight-bold mb-6'"
         cardClass="pa-2"
         titleClass="titleCardClass"
       />
@@ -47,7 +47,7 @@
       <BaseTitle
         style="text-align: center"
         :text="newsTitle"
-        :className="'text-h4 font-weight-bold mb-6'"
+        :className="'text-md-h4 text-h5 font-weight-bold mb-6'"
         cardClass="pa-2"
         titleClass="titleCardClass"
       />
@@ -70,7 +70,6 @@
 </template>
 
 <script setup>
-// Import required functions and components
 import { computed } from 'vue';
 import { useDisplay } from 'vuetify';
 import BaseTitle from '@/components/BaseElements/BaseTitle.vue';
@@ -93,12 +92,11 @@ const display = useDisplay();
 const isXsOnly = computed(() => display.xsOnly);
 const isSmOnly = computed(() => display.smOnly);
 
-// Define padding classes as a constant (if fixed)
+// Define padding classes as a constant string
 const paddings = 'pa-md-2 pt-4 pt-sm-6';
 </script>
 
 <style scoped lang="scss">
-/* Use same grid structure for small screens */
 .landingPageGrid.gridSm,
 .landingPageGrid.gridXs {
   grid-template-columns: 1fr;
@@ -150,10 +148,6 @@ const paddings = 'pa-md-2 pt-4 pt-sm-6';
   grid-area: Info;
 }
 
-/* .articlesGrid {
-  grid-area: Articles;
-} */
-
 .newsGrid {
   grid-area: News;
 }
@@ -200,4 +194,8 @@ const paddings = 'pa-md-2 pt-4 pt-sm-6';
     margin-top: 50px;
   }
 }
+</style>
+
+<style>
+/* Global styles */
 </style>
