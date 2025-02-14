@@ -1,5 +1,9 @@
 <template>
-  <v-app class="application envidat-font-overwrite" :style="dynamicBackground">
+  <v-app
+    class="application envidat-font-overwrite"
+    id="app-container"
+    :style="dynamicBackground"
+  >
     <div
       v-show="showDecemberParticles"
       id="christmas-canvas"
@@ -75,7 +79,7 @@
         ref="appContainer"
         :style="pageStyle"
       >
-        <v-row id="mainPageRow" class="position-relative">
+        <v-row id="mainPageRow" class="position-relative overflow-hidden">
           <v-col cols="12">
             <router-view v-slot="{ Component }">
               <transition name="fade" mode="out-in">
@@ -866,25 +870,6 @@ export default {
 </script>
 
 <style lang="scss">
-// #appContainer {
-//   position: relative;
-// }
-
-// #appContainer::before {
-//   content: '';
-//   position: absolute;
-//   height: 100vh;
-//   width: 100%;
-//   background-image: url('https://envidat.ch/beta/static/app_b_landingpage-BjXUE1sY.webp');
-//   background-repeat: no-repeat;
-//   background-size: cover;
-//   top: 0;
-//   right: 0;
-//   bottom: 0;
-//   left: 0;
-//   opacity: 0.3;
-//   pointer-events: none;
-// }
 @import url(./sass/globalStyles.scss);
 
 .custom-v-main {

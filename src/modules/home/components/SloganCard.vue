@@ -10,7 +10,7 @@
           />
 
           <div
-            class="envidatSlogan text-h3 text-xl-h2 pb-5 mb-5 mb-md-0 font-weight-bold envidat-slogan"
+            class="envidatSlogan text-h4 text-md-h3 text-xl-h2 pb-5 mb-md-5 mb-md-0 font-weight-bold envidat-slogan"
             :style="dynamicSloganStyle"
           >
             {{ slogan }}
@@ -20,7 +20,7 @@
             :class="{
               'pb-5 mb-5 mb-md-0 pr-0 pl-0 pl-sm-10 pr-sm-10': hasButtons,
               'pb-0': !hasButtons,
-              'text-h6': true,
+              'text-subtitle-1 text-md-h6': true,
               'envidat-subSlogan': true,
             }"
             style="text-align: center"
@@ -106,7 +106,7 @@ const dynamicImgStyle = computed(() => {
 const dynamicSloganStyle = computed(() => {
   if (smAndDown.value) {
     return {
-      lineHeight: '3.6rem',
+      lineHeight: '2.6rem',
       textAlign: 'center',
     };
   }

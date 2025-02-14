@@ -1,7 +1,9 @@
 <template>
   <div>
     <v-col cols="12" class="d-flex justify-center">
-      <span class="text-h6 font-weight-bold">Need information or support?</span>
+      <span class="text-h6 text-center font-weight-bold"
+        >Need information or support?</span
+      >
     </v-col>
     <v-col class="d-flex justify-center">
       <div class="text-center">

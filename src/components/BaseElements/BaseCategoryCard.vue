@@ -54,10 +54,6 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  contain: {
-    type: Boolean,
-    default: false,
-  },
   blackText: {
     type: Boolean,
     default: false,
@@ -66,10 +62,7 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  compact: {
-    type: Boolean,
-    default: false,
-  },
+
   height: {
     type: String,
     default: '40',
@@ -144,39 +137,3 @@ const getBgcColor = computed(() => {
   return bgc;
 });
 </script>
-
-<style scoped>
-.baseClickCardTitle {
-  font-size: 1rem !important;
-  overflow: inherit !important;
-  text-overflow: inherit !important;
-  max-height: inherit !important;
-  line-height: 1.1em !important;
-  text-align: center;
-}
-
-@media screen and (max-width: 1920px) {
-  .compactTitle {
-    font-size: 1rem !important;
-    line-height: 1.3em !important;
-  }
-}
-
-@media screen and (min-width: 1921px) {
-  .compactTitle {
-    font-size: 1.1rem !important;
-    line-height: 1.1em !important;
-  }
-}
-
-.v-card__media img {
-  width: inherit !important;
-}
-
-.rounded-xl {
-  border-radius: 1rem;
-}
-.disableClick {
-  pointer-events: none;
-}
-</style>

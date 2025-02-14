@@ -1,5 +1,8 @@
 <template>
-  <v-container :style="containerStyle" class="pa-0 mb-10 mb-md-0">
+  <v-container
+    :style="containerStyle"
+    class="pa-0 mb-10 mb-md-0 overflow-hidden"
+  >
     <v-row
       align="center"
       justify="space-between"
@@ -92,8 +95,4 @@ watch(searchText, (newVal) => {
 });
 </script>
 
-<style scoped>
-.adjustIconSearchbar {
-  margin-top: 0;
-}
-</style>
+<style scoped></style>

@@ -3,7 +3,7 @@
     ripple
     @mouseover="hover = true"
     @mouseleave="hover = false"
-    class="fill-height pt-14 pb-14 rounded-xl elevation-5 info-card"
+    class="fill-height pt-md-14 pb-md-14 pb-6 pt-6 rounded-xl elevation-5 info-card"
     :dark="false"
   >
     <v-container
@@ -27,7 +27,7 @@
             >
               <!-- Display icon based on info type using extractIcons -->
               <v-icon
-                class="mr-1 mb-10 info-icon"
+                class="mr-1 mb-md-10 info-icon"
                 :size="iconSize"
                 :color="'#000'"
               >
@@ -39,7 +39,7 @@
 
         <!-- Info text section -->
         <v-col cols="12" md="8" order-md="2" order="1">
-          <v-row class="info-text pl-10 pr-14 h-100 ga-4">
+          <v-row class="info-text pl-md-10 pr-md-14 pl-7 pr-7 h-100 ga-4">
             <v-row class="info-title">
               <v-col class="pa-0" v-if="info.title">
                 <span class="text-h5 font-weight-bold">{{ info.title }}</span>
@@ -91,7 +91,7 @@
               class="d-flex flex-column align-center justify-center"
             >
               <v-icon
-                class="mr-1 mb-10 info-icon"
+                class="mr-1 mb-md-10 info-icon"
                 :size="iconSize"
                 :color="'#000'"
               >

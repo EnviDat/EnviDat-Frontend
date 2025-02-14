@@ -121,7 +121,7 @@ const paddings = 'pa-md-2 pt-4 pt-sm-6';
   min-height: 100vh;
   position: relative;
   width: 100%;
-  margin-bottom: 64px;
+  margin-bottom: 30px;
 
   &::after {
     content: '';
