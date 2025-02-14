@@ -102,7 +102,6 @@ import {
   METADATAEDIT_PAGENAME,
 } from '@/router/routeConsts';
 
-
 import {
   ACTION_USER_SHOW,
   FETCH_USER_DATA,
@@ -163,10 +162,7 @@ import { getEventsForPageAndName } from '@/modules/matomo/store/matomoStore';
 //   ORGANIZATIONS_NAMESPACE,
 // } from '@/modules/organizations/store/organizationsMutationsConsts';
 
-import {
-  convertJSON,
-  getFrontendDates,
-} from '@/factories/mappingFactory';
+import { convertJSON, getFrontendDates } from '@/factories/mappingFactory';
 
 import { convertArrayToUrlString } from '@/factories/stringFactory';
 

@@ -84,7 +84,14 @@
       <!-- Datasets slot -->
       <template #datasets>
         <v-row v-if="loadingMetadatasContent" no-gutters>
-          <v-col v-for="index in 2" :key="index" cols="6" class="pa-2">
+          <v-col
+            v-for="index in 4"
+            :key="index"
+            cols="12"
+            md="6"
+            xl="3"
+            class="pa-2"
+          >
             <MetadataCardPlaceholder id="orgaDataset" class="mx-2" />
           </v-col>
         </v-row>
@@ -341,6 +348,13 @@ const removeBackgroundImage = () => {
   }
 };
 
+const removeOverflowHidden = () => {
+  const htmlElement = document.documentElement;
+  if (htmlElement) {
+    htmlElement.style.overflow = 'visible';
+  }
+};
+
 const mixinMethodsConvertArrayToUrlString = (array) => array.join(',');
 
 const mixinMethodsAdditiveChangeRoute = (path, query, tags) => {
@@ -411,19 +425,25 @@ const catchCategoryClicked = (cardType) => {
 // mounted
 onMounted(() => {
   window.scrollTo(0, 0);
-  removeBackgroundImage();
+  // removeBackgroundImage();
+  removeOverflowHidden();
 });
 </script>
 
-<script>
-// beforeRouteEnter remains outside <script setup>
-export const beforeRouteEnter = (to, from, next) => {
-  next((vm) => {
-    vm.$store.commit(SET_CURRENT_PAGE, LANDING_PAGENAME);
-    vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
-  });
+<!-- <script>
+// import { getCurrentInstance, onMounted } from 'vue';
+// const { proxy: vm } = getCurrentInstance();
+
+export default {
+  beforeRouteEnter(to, from, next) {
+    next((vm) => {
+      vm.$store.commit('SET_CURRENT_PAGE', 'LANDING_PAGENAME');
+      const bgimg = '';
+      vm.$store.commit('SET_APP_BACKGROUND', bgimg);
+    });
+  },
 };
-</script>
+</script> -->
 
 <style scoped>
 .compactBlogPostCard {

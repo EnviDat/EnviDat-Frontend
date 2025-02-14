@@ -49,6 +49,7 @@ function disablingCategoryCards(config) {
 
 export default {
   [SET_APP_BACKGROUND](state, bgImg) {
+    console.log('dentro store');
     state.appBGImage = bgImg;
   },
   [SET_WEBP_SUPPORT](state, isSupported) {
@@ -83,7 +84,10 @@ export default {
   },
   [SET_CONFIG_ERROR](state, reason) {
     state.loadingConfig = true;
-    const notificationObj = getSpecificApiError('Config could not be loaded!', reason);
+    const notificationObj = getSpecificApiError(
+      'Config could not be loaded!',
+      reason,
+    );
     this.commit(ADD_USER_NOTIFICATION, notificationObj);
   },
   [CHECK_FRONTEND_VERSION](state, version) {
