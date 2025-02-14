@@ -63,7 +63,7 @@
 
 <script setup>
 import { computed, ref } from 'vue';
-import { stripMarkdown } from '@/factories/stringFactory';
+// import { stripMarkdown } from '@/factories/stringFactory';
 import { extractIcons } from '@/factories/iconFactory';
 import { formatDate } from '@/factories/dateFactory';
 import BaseCategoryCard from '@/components/BaseElements/BaseCategoryCard.vue';
@@ -96,7 +96,7 @@ const emit = defineEmits(['clickedEvent']);
 
 const hover = ref(false);
 const titleLength = ref(50);
-const contentLength = ref(200);
+// const contentLength = ref(200);
 
 const getCategoryName = computed(() =>
   props.categoryName
@@ -115,14 +115,14 @@ const truncatedTitle = computed(() => {
   return props.postTitle;
 });
 
-const truncatedSubtitle = computed(() => {
-  const maxLength = contentLength.value;
-  const cleanContent = stripMarkdown(props.postContent, true);
-  if (cleanContent && cleanContent.length > maxLength) {
-    return `${cleanContent.substring(0, maxLength)}...`;
-  }
-  return cleanContent;
-});
+// const truncatedSubtitle = computed(() => {
+//   const maxLength = contentLength.value;
+//   const cleanContent = stripMarkdown(props.postContent, true);
+//   if (cleanContent && cleanContent.length > maxLength) {
+//     return `${cleanContent.substring(0, maxLength)}...`;
+//   }
+//   return cleanContent;
+// });
 
 const formattedDate = computed(() =>
   props.postDate ? formatDate(props.postDate, 'yyyy-MM-dd', true) : '',
