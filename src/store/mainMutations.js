@@ -49,7 +49,6 @@ function disablingCategoryCards(config) {
 
 export default {
   [SET_APP_BACKGROUND](state, bgImg) {
-    console.log('dentro store');
     state.appBGImage = bgImg;
   },
   [SET_WEBP_SUPPORT](state, isSupported) {

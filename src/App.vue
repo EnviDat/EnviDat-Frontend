@@ -285,56 +285,11 @@ export default {
   },
   mounted() {
     this.checkUserSignedIn();
-
-    this.$nextTick(() => {
-      this.startParticles();
-    });
   },
   updated() {
     this.updateActiveStateOnNavItems();
   },
   methods: {
-    startParticles() {
-      if (!this.currentParticles) {
-        if (this.showDecemberParticles) {
-          this.initChristmasParticles();
-        } else {
-          this.stopParticles();
-        }
-      }
-    },
-    stopParticles(fullClean = true) {
-      try {
-        if (this.currentParticles) {
-          this.currentParticles.particles.move.enable = false;
-          this.currentParticles.particles.opcacity.anim.enable = false;
-          this.currentParticles.particles.size.anim.enable = false;
-        }
-      } catch (error) {
-        console.error(`Error during particle stop: ${error}`);
-      } finally {
-        this.currentParticles = null;
-        if (fullClean) {
-          window.pJS = null;
-        }
-      }
-    },
-    initChristmasParticles() {
-      // particleOptions have to be in the folder public/particles/christmasParticleOptions.json for development
-      // in production they have to be in same folder as the index.html there -> ./particles/christmasParticleOptions.json
-      // eslint-disable-next-line no-undef
-      particlesJS.load(
-        'christmas-canvas',
-        './particles/christmasParticleOptions.json',
-        () => {
-          // console.log('christmas-canvas - particles.js config loaded');
-          if (this.currentParticles) {
-            this.stopParticles(false);
-          }
-          this.currentParticles = window.pJS;
-        },
-      );
-    },
     updateScroll() {
       const appContainer =
         this.$refs.appContainer?.$el || this.$refs.appContainer;
@@ -820,10 +775,6 @@ export default {
       if (!this.loadingConfig) {
         this.setupNavItems();
         this.loadAllMetadata();
-
-        this.$nextTick(() => {
-          this.startParticles();
-        });
       }
     },
     notifications() {
