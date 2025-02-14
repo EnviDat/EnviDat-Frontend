@@ -90,12 +90,13 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
+import { mdiLayers, mdiShareVariant, mdiAccountCircle } from '@mdi/js';
+
 import SmallSearchBarView from '@/components/Filtering/SmallSearchBarView.vue';
 import ListControlToggle from '@/components/Filtering/ListControlToggle.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue'
 import { EDNA_MODE } from '@/store/metadataMutationsConsts';
-import { mdiLayers, mdiShareVariant, mdiAccountCircle } from '@mdi/js';
 
 export default {
   name: 'ControlPanel',

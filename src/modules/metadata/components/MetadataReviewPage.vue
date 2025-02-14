@@ -69,6 +69,7 @@
 
 import { mapGetters, mapState } from 'vuex';
 
+import { defineAsyncComponent, markRaw } from 'vue';
 import { BROWSE_PATH, METADATAREVIEW_PAGENAME } from '@/router/routeConsts';
 
 import { USER_SIGNIN_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
@@ -83,10 +84,8 @@ import {
 } from '@/store/metadataMutationsConsts';
 
 import {
-  createBody,
   createLicense,
   createResources,
-
 } from '@/factories/metaDataFactory';
 
 import {
@@ -116,9 +115,10 @@ import {
 
 import { useReviewStore } from '@/modules/metadata/store/reviewStore';
 import { convertArrayToUrlString } from '@/factories/stringFactory';
-import { defineAsyncComponent, markRaw } from 'vue';
 
 import { formatDate } from '@/factories/dateFactory';
+import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionViewModel';
+// import { createHeaderViewModel } from '@/factories/ViewModels/HeaderViewModel';
 import MetadataHeader from './Metadata/MetadataHeader.vue';
 
 const MetadataDescription = defineAsyncComponent(() =>
@@ -396,9 +396,22 @@ export default {
         );
         this.header.publicationYear = publicationData.publicationYear;
 
-        // this.header.publicationYear = currentContent.version;
+/*
+        const parsedContent = convertJSON(currentContent, false);
+        const isSmallScreen = this.$vuetify.display.smAndDown;
 
-        this.body = createBody(currentContent, this.$vuetify.display.smAndDown);
+        const headerVW = createHeaderViewModel(
+            parsedContent,
+            isSmallScreen,
+            currentContent.categoryColor,
+            currentContent.titleImg,
+            this.authorDeadInfo,
+        );
+        this.header = {...headerVW}
+*/
+
+        // this.body = createBody(currentContent, this.$vuetify.display.smAndDown);
+        this.body = createDescriptionViewModel(parsedContent, this.$vuetify.display.smAndDown);
 
         /*
         this.citation = createCitation(currentContent);

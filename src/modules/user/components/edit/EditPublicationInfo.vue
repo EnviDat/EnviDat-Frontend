@@ -52,13 +52,13 @@
 
         <v-col>
           <v-autocomplete
-            :id="METADATA_STATE_INVISILBE"
+            :id="METADATA_STATE_INVISIBLE"
             :model-value="visibilityState"
-            :items="[possibleVisibilityStates]"
-            :readonly="isReadOnly(METADATA_STATE_INVISILBE)"
+            :items="possibleVisibilityStates"
+            :readonly="isReadOnly(METADATA_STATE_INVISIBLE)"
             hide-details="auto"
             persistent-hint
-            :hint="readOnlyHint(METADATA_STATE_INVISILBE)"
+            :hint="readOnlyHint(METADATA_STATE_INVISIBLE)"
             :prepend-icon="mdiEye"
             :menu-icon="mdiArrowDownDropCircleOutline"
             :label="labels.visibilityState"
@@ -66,6 +66,13 @@
             <template v-slot:selection="{ item }">
               <MetadataStateChip style="font-size: 12px;" :state="item.value" />
             </template>
+
+            <template v-slot:item="{ item }">
+              <v-list-item >
+                <MetadataStateChip style="font-size: 12px;" :state="item.value" />
+              </v-list-item>
+            </template>
+
           </v-autocomplete>
 
         </v-col>
@@ -114,6 +121,15 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import { mapState } from 'vuex';
+import {
+  mdiEarth,
+  mdiEye,
+  mdiFingerprint,
+  mdiContentCopy,
+  mdiCalendarRange,
+  mdiArrowDownDropCircleOutline,
+} from '@mdi/js';
+
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
 
@@ -132,18 +148,10 @@ import {
   EDIT_METADATA_DOI_LABEL,
   EDIT_METADATA_PUBLICATION_YEAR_LABEL,
   PUBLICATION_STATE_PUBLISHED,
-  METADATA_STATE_INVISILBE,
+  METADATA_STATE_INVISIBLE,
   METADATA_PUBLICATION_YEAR_PROPERTY,
 } from '@/factories/metadataConsts';
 
-import {
-  mdiEarth,
-  mdiEye,
-  mdiFingerprint,
-  mdiContentCopy,
-  mdiCalendarRange,
-  mdiArrowDownDropCircleOutline,
-} from '@mdi/js';
 
 import {possibleVisibilityStates} from '@/factories/metaDataFactory';
 import BaseDatePickerYear from '@/components/BaseElements/BaseDatePickerYear.vue';
@@ -313,7 +321,7 @@ export default {
     },
   },
   data: () => ({
-    METADATA_STATE_INVISILBE,
+    METADATA_STATE_INVISIBLE,
     METADATA_PUBLICATION_YEAR_PROPERTY,
     possibleVisibilityStates,
     mdiFingerprint,

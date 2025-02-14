@@ -16,7 +16,7 @@ import { mobileViewportParams } from './js/envidatViewports';
 import metadata from './js/metadata';
 
 export default {
-  title: '3 Dataset / 2 Edit / Related Publication List',
+  title: '3 Datasets / 2 Edit / Related Publication List',
 };
 
 const relatedPubText = metadata[2].related_publications;

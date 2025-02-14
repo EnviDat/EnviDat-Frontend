@@ -68,6 +68,8 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
+import { mdiClose } from '@mdi/js';
+import { defineAsyncComponent } from 'vue';
 import {
   eventBus,
   OPEN_FULLSCREEN_MODAL,
@@ -85,8 +87,6 @@ import {
   getPreviewStrategyFromUrlExtension,
   SHOW_DATA_PREVIEW_PROPERTY,
 } from '@/factories/strategyFactory';
-import { mdiClose } from '@mdi/js';
-import { defineAsyncComponent } from 'vue';
 
 const GcNetDetailChartsList = defineAsyncComponent(() =>
   import('@/modules/metadata/components/GC-Net/GcNetDetailChartsList.vue'),

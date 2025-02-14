@@ -33,8 +33,7 @@ import {
   EDITMETADATA_ORGANIZATION,
   EDITMETADATA_PUBLICATION_INFO,
   EDITMETADATA_RELATED_DATASETS,
-  EDITMETADATA_RELATED_PUBLICATIONS,
-  METADATA_MAIN_HEADER,
+  EDITMETADATA_RELATED_PUBLICATIONS, METADATA_MAIN_HEADER,
   USER_OBJECT,
 } from '@/factories/eventBus';
 
@@ -61,7 +60,7 @@ import {
   METADATA_CONTACT_FIRSTNAME,
   METADATA_CONTACT_LASTNAME,
   METADATA_DATALICENSE_PROPERTY,
-  METADATA_DEPRECATEDRESOURCES_PROPERTY,
+  METADATA_DEPRECATED_RESOURCES_PROPERTY,
   METADATA_DOI_PROPERTY,
   METADATA_ORGANIZATION_PROPERTY,
   METADATA_PUBLICATION_YEAR_PROPERTY,
@@ -120,11 +119,6 @@ const JSONFrontendBackendRules = {
     ['identifierType','identifier_scheme'],
     ['identifier','identifier'],
     ['affiliation','affiliation'],
-/*
-    ['affiliations.affiliation1','affiliation'],
-    ['affiliations.affiliation2','affiliation_02'],
-    ['affiliations.affiliation3','affiliation_03'],
-*/
   ],
   [EDITMETADATA_AUTHOR_LIST]: [
     ['authors','author'],
@@ -237,7 +231,7 @@ export function unpackDeprecatedResources(customFields) {
   let unpackedResourceIds = [];
 
   if (customFields?.length > 0) {
-    const customFieldEntry = customFields.filter((entry) => entry?.fieldName === METADATA_DEPRECATEDRESOURCES_PROPERTY)[0];
+    const customFieldEntry = customFields.filter((entry) => entry?.fieldName === METADATA_DEPRECATED_RESOURCES_PROPERTY)[0];
     const stringResourceIds = customFieldEntry?.content || '[]';
     unpackedResourceIds = JSON.parse(stringResourceIds);
   }
@@ -257,11 +251,11 @@ export function markResourceDeprecated(resourceId, deprecated, customFields)  {
 
   if (customFields.length <= 0) {
     customFields.push({
-      fieldName: METADATA_DEPRECATEDRESOURCES_PROPERTY,
+      fieldName: METADATA_DEPRECATED_RESOURCES_PROPERTY,
       content: JSON.stringify(deprecatedResources),
     });
   } else {
-    const deprecatedResourcesEntry = customFields.filter((entry) => entry?.fieldName === METADATA_DEPRECATEDRESOURCES_PROPERTY)[0];
+    const deprecatedResourcesEntry = customFields.filter((entry) => entry?.fieldName === METADATA_DEPRECATED_RESOURCES_PROPERTY)[0];
     deprecatedResourcesEntry.content = JSON.stringify(deprecatedResources);
   }
 
@@ -483,7 +477,7 @@ export function convertToBackendJSONWithRules(rules, data) {
   return backendJson;
 }
 
-function convertToFrontendJSONWithRules(rules, data) {
+export function convertToFrontendJSONWithRules(rules, data) {
   if (!rules) {
     return null;
   }

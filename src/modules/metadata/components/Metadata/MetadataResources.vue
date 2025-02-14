@@ -156,6 +156,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { mdiFile, mdiShieldSearch } from '@mdi/js';
 import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
 import ResourceCard from '@/modules/metadata/components/ResourceCard.vue';
@@ -171,7 +172,6 @@ import {
 import { eventBus, GCNET_INJECT_MICRO_CHARTS } from '@/factories/eventBus';
 
 import { dataLicenses, WSL_DATA_LICENSE_ID } from '@/factories/dataLicense';
-import { mdiFile, mdiShieldSearch } from '@mdi/js';
 
 import { useS3Store } from '@/modules/s3/store/s3Store';
 

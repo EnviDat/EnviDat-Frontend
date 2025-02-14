@@ -16,12 +16,12 @@ import {
   parseISO,
 } from 'date-fns';
 import { mdiAccountSupervisor, mdiAccountVoice, mdiBookOpenVariant, mdiCodeTags, mdiInformation, mdiLibrary, mdiWidgets } from '@mdi/js';
+import { toRaw } from 'vue';
 import {
   METADATA_CONTACT_EMAIL,
   METADATA_CONTACT_FIRSTNAME,
   METADATA_CONTACT_LASTNAME,
 } from '@/factories/metadataConsts';
-import { toRaw } from 'vue';
 import { AUTHOR_ASCII_DEAD } from '@/store/mainMutationsConsts';
 
 const authorDataCreditLevels = [
@@ -55,7 +55,7 @@ export function getAuthorName(author) {
 
   fullName = fullName.trim();
 
-  return  fullName || null;
+  return fullName || null;
 }
 
 export function getAuthorNameCitation(author) {

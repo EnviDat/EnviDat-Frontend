@@ -80,6 +80,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import { mdiMap, mdiViewAgenda, mdiViewComfy, mdiViewHeadline } from '@mdi/js';
 import {
   LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
   LISTCONTROL_LIST_ACTIVE,
@@ -87,7 +88,6 @@ import {
 } from '@/store/metadataMutationsConsts';
 
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
-import { mdiMap, mdiViewAgenda, mdiViewComfy, mdiViewHeadline } from '@mdi/js';
 
 export default {
   name: 'ListControlToggle',

@@ -13,6 +13,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+
 import MetadataDescription from '@/modules/metadata/components/Metadata/MetadataDescription.vue';
 import MetadataCitation from '@/modules/metadata/components/Metadata/MetadataCitation.vue';
 import MetadataDetails from '@/modules/metadata/components/Metadata/MetadataDetails.vue';
@@ -24,7 +25,6 @@ import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuth
 import {
   createDetails,
   createPublications,
-  createBody,
   enhanceMetadatasTitleImage,
 } from '@/factories/metaDataFactory';
 
@@ -46,7 +46,7 @@ import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/Meta
 import envidat_packages from './testdata/packagelist.json';
 
 export default {
-  title: '3 Dataset / 1 Views',
+  title: '3 Datasets / 1 Views',
   decorators: [],
   parameters: {},
 };
@@ -146,7 +146,6 @@ const funding2 = [
 const body1 = createBody(metadata[0]);
 const body2 = createBody(metadata[1]);
 
-
 const genericProps3 = {
   showPlaceholder: false,
   details: details1,
@@ -204,6 +203,7 @@ export const MetadataDescriptionViews = () => ({
     },
   }),
 });
+
 
 export const MetadataCitationViews = () => ({
   components: { MetadataCitation },

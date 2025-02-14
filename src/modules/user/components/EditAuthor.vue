@@ -118,6 +118,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
+import { mdiClose } from '@mdi/js';
 import {
   EDITMETADATA_AUTHOR,
   EDITMETADATA_OBJECT_UPDATE,
@@ -127,7 +128,6 @@ import {
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import { getAuthorName } from '@/factories/authorFactory';
-import { mdiClose } from '@mdi/js';
 
 
 export default {

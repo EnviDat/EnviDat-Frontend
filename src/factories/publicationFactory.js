@@ -1,7 +1,7 @@
 import {
   METADATA_STATE_DRAFT,
-  METADATA_STATE_INVISILBE,
-  METADATA_STATE_VISILBE,
+  METADATA_STATE_INVISIBLE,
+  METADATA_STATE_VISIBLE,
 } from '@/factories/metadataConsts';
 
 export function getMetadataVisibilityState(metadata) {
@@ -11,7 +11,7 @@ export function getMetadataVisibilityState(metadata) {
   let visibilityState = METADATA_STATE_DRAFT;
 
   if (state === 'active') {
-    visibilityState = priv ? METADATA_STATE_INVISILBE : METADATA_STATE_VISILBE;
+    visibilityState = priv ? METADATA_STATE_INVISIBLE : METADATA_STATE_VISIBLE;
   }
 
   return visibilityState;

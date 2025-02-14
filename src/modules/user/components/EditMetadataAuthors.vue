@@ -99,6 +99,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
+import {mdiClose, mdiCursorMove, mdiPencil} from '@mdi/js';
 import {
   AUTHORS_EDIT_CURRENT_DATACREDIT,
   EDIT_METADATA_AUTHORSLIST_TITLE,
@@ -123,7 +124,6 @@ import {
 
 import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
 import { getAuthorName } from '@/factories/authorFactory';
-import {mdiClose, mdiCursorMove, mdiPencil} from '@mdi/js';
 
 export default {
   name: 'EditMetadataAuthors',

@@ -167,17 +167,15 @@
 */
 
 import { mdiInformationOutline } from '@mdi/js';
+import { mapGetters } from 'vuex';
+
 import BaseProgressView from '@/components/BaseElements/BaseProgressView.vue'
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
 import StepperHeader from '@/components/Navigation/StepperHeader.vue';
 import ExpandableLayout from '@/components/Layouts/ExpandableLayout.vue';
 import StepperInteractionView from '@/components/Navigation/StepperInteractionView.vue';
 
-import { mapGetters } from 'vuex';
-
 import { METADATA_NAMESPACE, METADATA_UPDATE_EXISTING_TITLE } from '@/store/metadataMutationsConsts';
-
-
 import { EDITMETADATA_NEXT_MAJOR_STEP, EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 import { countSteps } from '@/factories/userCreationFactory';
 

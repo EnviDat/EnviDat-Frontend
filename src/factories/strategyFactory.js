@@ -1,6 +1,6 @@
 import { defineAsyncComponent } from 'vue';
 import { mdiFileEye, mdiPencil } from '@mdi/js';
-import { METADATA_DEPRECATEDRESOURCES_PROPERTY } from '@/factories/metadataConsts';
+import { METADATA_DEPRECATED_RESOURCES_PROPERTY } from '@/factories/metadataConsts';
 import {
   OPEN_DATA_PREVIEW_IFRAME,
   OPEN_TEXT_PREVIEW,
@@ -147,7 +147,7 @@ export function enhanceResourcesWithMetadataExtras(metdataExtras, resources) {
     let deprecatedResources = [];
 
     if (metdataExtras?.length > 0) {
-      const customFieldEntry = metdataExtras.filter((entry) => entry?.key === METADATA_DEPRECATEDRESOURCES_PROPERTY)[0];
+      const customFieldEntry = metdataExtras.filter((entry) => entry?.key === METADATA_DEPRECATED_RESOURCES_PROPERTY)[0];
       deprecatedResources = JSON.parse(customFieldEntry?.value || '[]');
     }
 

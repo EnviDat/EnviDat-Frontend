@@ -1,5 +1,8 @@
 import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
 import { createHeader, enhanceMetadatasTitleImage } from '@/factories/metaDataFactory';
+import { createHeaderViewModel } from '@/factories/ViewModels/HeaderViewModel';
+import { convertJSON } from '@/factories/mappingFactory';
+
 import metadata from './js/metadata';
 
 enhanceMetadatasTitleImage(metadata);
@@ -8,25 +11,27 @@ const smallHeader = createHeader(metadata[0], true);
 const largeHeader = createHeader(metadata[3], false);
 const longAuthorsListHeader = createHeader(metadata[3], false);
 
+const parsedContent = convertJSON(metadata[0], false);
+
+const header1 = createHeaderViewModel(parsedContent, true);
+
 export default {
-  title: '3 Dataset / 1 Views / Metadata Header',
+  title: '3 Datasets / 1 Views / Metadata Header',
   component: MetadataHeader,
 };
 
-export const EmptyMetadataHeader = {
+export const Empty = {
   args: {},
 };
 
-export const PlaceHolderMetadataHeader = {
+export const PlaceHolder = {
   args: {
     showPlaceholder: true,
   },
 };
 
-export const ShortTitleMextadataHeader = {
-  args: {
-    ...smallHeader,
-  },
+export const ShortTitle = {
+  args: header1,
   argTypes: {
     checkSize: { action: 'checkSize' },
     clickedTag: { action: 'clickedTag' },
@@ -36,7 +41,7 @@ export const ShortTitleMextadataHeader = {
   },
 };
 
-export const LongTitleMetadataHeaderHidden = {
+export const LongTitleHidden = {
   args: {
     ...largeHeader,
     showEditButton: true,
@@ -52,7 +57,7 @@ export const LongTitleMetadataHeaderHidden = {
   },
 };
 
-export const LongTitleMetadataHeader = {
+export const LongTitle = {
   args: {
     ...largeHeader,
     showEditButton: true,
@@ -68,7 +73,7 @@ export const LongTitleMetadataHeader = {
   },
 };
 
-export const LongTitleNoIconsMetadataHeader = {
+export const LongTitleNoIcons = {
   args: {
     ...largeHeader,
   },
@@ -81,7 +86,7 @@ export const LongTitleNoIconsMetadataHeader = {
   },
 };
 
-export const CropAuthorsListMetadataHeader = {
+export const CropAuthorsList = {
   args: {
     ...longAuthorsListHeader,
   },
@@ -94,7 +99,7 @@ export const CropAuthorsListMetadataHeader = {
   },
 };
 
-export const PageViewsMetadataHeader = {
+export const PageViews = {
   args: {
     ...longAuthorsListHeader,
     pageViews: [{ nb_events: 10 }],

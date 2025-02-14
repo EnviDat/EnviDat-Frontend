@@ -65,9 +65,9 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import { mdiClose, mdiInformationOutline } from '@mdi/js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import { getModeData } from '@/factories/modeFactory';
-import { mdiClose, mdiInformationOutline } from '@mdi/js';
 
 export default {
   name: 'ModeView',

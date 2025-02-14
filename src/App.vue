@@ -170,6 +170,7 @@ import { mapState, mapGetters } from 'vuex';
 
 import { getMonth } from 'date-fns';
 
+import { defineAsyncComponent } from 'vue';
 import {
   LANDING_PATH,
   LANDING_PAGENAME,
@@ -222,7 +223,6 @@ import MaintenanceBanner from '@/modules/home/components/MaintenanceBanner.vue';
 
 import { ENVIDAT_SHOW_COOKIE_BANNER } from '@/factories/metadataConsts';
 import { getImage } from '@/factories/imageFactory';
-import { defineAsyncComponent } from 'vue';
 
 const TheNavigation = defineAsyncComponent(
   () => import('@/components/Navigation/TheNavigation.vue'),

@@ -51,9 +51,9 @@
 import jazzicon from 'jazzicon-ts';
 import seedrandom from 'seedrandom';
 
+import { mdiAccountCircle } from '@mdi/js';
 import { getAvataaarUrl } from '@/store/avataaars';
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
-import { mdiAccountCircle } from '@mdi/js';
 
 export default {
   components: { BaseIcon },

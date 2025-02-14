@@ -1,8 +1,6 @@
 <template>
   <v-card raised class="fill-height" id="FilterMapView">
-    <div v-if="errorLoadingLeaflet">
-      Error loading leaflet
-    </div>
+    <div v-if="errorLoadingLeaflet">Error loading leaflet</div>
 
     <v-container v-else class="fill-height pa-0" fluid>
       <div
@@ -57,11 +55,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import {
-  map as createMap,
-  featureGroup,
-  control,
-} from 'leaflet';
+import { map as createMap, featureGroup, control } from 'leaflet';
 
 import 'leaflet/dist/leaflet.css';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
@@ -70,17 +64,14 @@ import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 // import has to be after leaflet import
 import { MarkerClusterGroup } from 'leaflet.markercluster';
 
-import {
-  mapGetters,
-  mapState,
-} from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 
 import FilterMapWidget from '@/components/Filtering/FilterMapWidget.vue';
 
-import {EDNA_MODE} from '@/store/metadataMutationsConsts';
+import { EDNA_MODE } from '@/store/metadataMutationsConsts';
 import {
   createImageryLayer,
-  createLeafletLayer,
+  createLeafletLayerArray,
   createTopoLayer,
 } from '@/factories/leafletFunctions';
 
@@ -91,7 +82,6 @@ import {
   LOCATION_TYPE_POINT,
   LOCATION_TYPE_POLYGON,
 } from '@/factories/metadataConsts';
-
 
 export default {
   name: 'FilterMapView',
@@ -104,7 +94,11 @@ export default {
   mounted() {
     this.setupMap();
 
-    if (this.modeData && this.modeData.name === EDNA_MODE && !this.modeData.isShallow){
+    if (
+      this.modeData &&
+      this.modeData.name === EDNA_MODE &&
+      !this.modeData.isShallow
+    ) {
       this.polygonEnabled = true;
     }
   },
@@ -165,7 +159,7 @@ export default {
         const pinCollection = groupedMultiPins[i];
 
         if (pinCollection) {
-          pinCollection.forEach(pin => {
+          pinCollection.forEach((pin) => {
             if (pin) {
               flatMultiPins.push(pin);
             }
@@ -199,7 +193,7 @@ export default {
     },
     catchPinClicked() {
       this.pinEnabled = !this.pinEnabled;
-      this.clearFromClusterLayer('pins')
+      this.clearFromClusterLayer('pins');
       this.showLayersOnCluster(this.pinLayerGroup, this.pinEnabled);
     },
     catchMultipinClicked() {
@@ -210,7 +204,11 @@ export default {
     catchPolygonClicked() {
       this.polygonEnabled = !this.polygonEnabled;
       this.clearFromClusterLayer('polygons');
-      this.showLayersOnCluster(this.polygonLayerGroup, this.polygonEnabled, this.polygonEnabled);
+      this.showLayersOnCluster(
+        this.polygonLayerGroup,
+        this.polygonEnabled,
+        this.polygonEnabled,
+      );
     },
     catchClearClicked() {
       this.$emit('clearButtonClicked');
@@ -237,12 +235,20 @@ export default {
 
         this.map.on('zoomend', () => {
           this.clearFromClusterLayer('polygons');
-          this.showLayersOnCluster(this.polygonLayerGroup, this.polygonEnabled, true);
+          this.showLayersOnCluster(
+            this.polygonLayerGroup,
+            this.polygonEnabled,
+            true,
+          );
         });
 
         this.map.on('moveend', () => {
           this.clearFromClusterLayer('polygons');
-          this.showLayersOnCluster(this.polygonLayerGroup, this.polygonEnabled, true);
+          this.showLayersOnCluster(
+            this.polygonLayerGroup,
+            this.polygonEnabled,
+            true,
+          );
         });
 
         this.mapIsSetup = true;
@@ -273,10 +279,10 @@ export default {
     },
     addLayerToGroupMap(map, id, layer) {
       let layerCollection = map.get(id);
-      
+
       if (!layerCollection) {
-        layerCollection = [layer]
-      } else if(!layerCollection.includes(layer)) {
+        layerCollection = [layer];
+      } else if (!layerCollection.includes(layer)) {
         layerCollection.push(layer);
       }
 
@@ -284,39 +290,60 @@ export default {
     },
     clearLayersFromGroup(map, id) {
       // always clear everything because for a dataset layers need to be removed
-      map.set(id, [])
+      map.set(id, []);
     },
     createLeafletLayers(dataset, location, selected) {
       const layers = [];
 
-      location.geomCollection.geometries.forEach(geometry => {
-        const sublayer = createLeafletLayer(geometry,
-          dataset.id, dataset.title,
-          selected, this.catchPointClick,
-          this.modeData, dataset, this)
+      let geometryType;
 
-        if (sublayer) {
-          layers.push(sublayer);
+      location.geomCollection.geometries.forEach((geometry) => {
+        const subLayers = createLeafletLayerArray(
+          geometry,
+          dataset.id,
+          dataset.title,
+          selected,
+          this.catchPointClick,
+          false,
+          this.modeData,
+          dataset,
+          this,
+        );
+
+        for (let j = 0; j < subLayers.length; j++) {
+          const layer = subLayers[j];
+
+          if (!geometryType) {
+            geometryType = layer.type;
+          } else if (layer.type === LOCATION_TYPE_POLYGON) {
+            // overwrite if there is at least of polygon
+            // to know which map to assing it
+            geometryType = layer.type;
+          }
+
+          layers.push(layer);
         }
       });
 
-      return layers;
+      return {
+        type: geometryType,
+        layers,
+      };
     },
     createAllLayers(dataset, location, selected) {
-
-      const layers = this.createLeafletLayers(dataset, location, selected);
+      const { type, layers } = this.createLeafletLayers(dataset, location, selected);
 
       for (let i = 0; i < layers.length; i++) {
         const layer = layers[i];
 
         let mapInQuestion;
-        if (layer.type === LOCATION_TYPE_POINT) {
+        if (type === LOCATION_TYPE_POINT) {
           mapInQuestion = this.pinLayerGroupMap;
-        } else if (layer.type === LOCATION_TYPE_MULTIPOINT) {
+        } else if (type === LOCATION_TYPE_MULTIPOINT) {
           mapInQuestion = this.multiPinLayerGroupMap;
-        } else if (layer.type === LOCATION_TYPE_POLYGON) {
+        } else if (type === LOCATION_TYPE_POLYGON) {
           mapInQuestion = this.polygonLayerGroupMap;
-        } else if (layer.type === LOCATION_TYPE_MULTIPOLYGON) {
+        } else if (type === LOCATION_TYPE_MULTIPOLYGON) {
           mapInQuestion = this.multiPolygonLayerGroupMap;
         }
 
@@ -343,7 +370,7 @@ export default {
         }
         const selected = idsPinned.includes(dataset.id);
 
-        this.createAllLayers(dataset, location, selected)
+        this.createAllLayers(dataset, location, selected);
       }
 
       // console.timeEnd('createLayersFromDatasets');
@@ -384,7 +411,11 @@ export default {
           toClear = this.multiPinLayerGroup;
         }
       } else {
-        toClear = [...this.polygonLayerGroup, ...this.pinLayerGroup, ...this.multiPinLayerGroup];
+        toClear = [
+          ...this.polygonLayerGroup,
+          ...this.pinLayerGroup,
+          ...this.multiPinLayerGroup,
+        ];
       }
 
       this.showLayersOnCluster(toClear, false);
@@ -401,7 +432,11 @@ export default {
           toClear = this.multiPinLayerGroup;
         }
       } else {
-        toClear = [...this.polygonLayerGroup, ...this.pinLayerGroup, ...this.multiPinLayerGroup];
+        toClear = [
+          ...this.polygonLayerGroup,
+          ...this.pinLayerGroup,
+          ...this.multiPinLayerGroup,
+        ];
       }
 
       for (let i = 0; i < toClear.length; i++) {
@@ -422,16 +457,18 @@ export default {
         return;
       }
 
-      const isArray = (elements instanceof Array);
+      const isArray = elements instanceof Array;
 
       if (!show) {
         if (isArray) {
+/*
           elements.forEach((l) => {
-            this.clusterLayer.removeLayer(l)
-          })
-          // this.clusterLayer.removeLayers(elements);
+            this.clusterLayer.removeLayer(l);
+          });
+*/
+          this.clusterLayer.removeLayers(elements);
         } else {
-          this.clusterLayer.removeLayer(elements)
+          this.clusterLayer.removeLayer(elements);
         }
         return;
       }
@@ -441,19 +478,26 @@ export default {
       if (checkBounds) {
         const currentBounds = this.map.getBounds();
         if (isArray) {
-          toAdd = elements.filter((el) => currentBounds.contains(el.getBounds()) );
+          toAdd = elements.filter((el) =>
+            currentBounds.contains(el.getBounds()),
+          );
         } else {
-          toAdd = currentBounds.contains(elements.getBounds()) ? elements : undefined;
+          toAdd = currentBounds.contains(elements.getBounds())
+            ? elements
+            : undefined;
         }
       }
 
       if (isArray) {
+/*
         toAdd.forEach((l) => {
-          this.clusterLayer.addLayer(l)
-        })
-//        this.clusterLayer.addLayers(toAdd, true);
+          this.clusterLayer.addLayer(l);
+        });
+*/
+        this.clusterLayer.addLayers(toAdd, true);
       } else if (toAdd) {
-        this.clusterLayer.addLayer(toAdd)
+        this.clusterLayer.addLayers([toAdd], true);
+//        this.clusterLayer.addLayer(toAdd);
       }
     },
     updateMap() {
@@ -462,7 +506,7 @@ export default {
         this.clearFromClusterLayer();
       } else {
         this.clusterLayer = new MarkerClusterGroup();
-/*
+        /*
         this.clusterLayer.on('layerremove', (data) => {
           console.log('removed layer', data);
         })
@@ -475,27 +519,34 @@ export default {
 
       this.clusterLayer.addTo(this.map);
 
-      if (this.modeData && (this.hasPins || this.hasMultiPins || this.hasPolygons)) {
+      if (
+        this.modeData &&
+        (this.hasPins || this.hasMultiPins || this.hasPolygons)
+      ) {
         this.focusOnLayers();
       }
     },
     updateGeoSelection(toUpdate, map, selected) {
       for (let i = 0; i < toUpdate.length; i++) {
         const dataset = toUpdate[i];
-        const layers = map.get(dataset.id);
+        const existingLayers = map.get(dataset.id);
 
-        if (layers) {
-          this.showLayersOnCluster(layers, false);
+        if (existingLayers) {
+          this.showLayersOnCluster(existingLayers, false);
           this.clearLayersFromGroup(map, dataset.id);
 
-          const newLayers = this.createLeafletLayers(dataset, dataset.location, selected);
+          const { layers } = this.createLeafletLayers(
+            dataset,
+            dataset.location,
+            selected,
+          );
 
-          for (let j = 0; j < newLayers.length; j++) {
-            const l = newLayers[j];
+          for (let j = 0; j < layers.length; j++) {
+            const l = layers[j];
             this.addLayerToGroupMap(map, dataset.id, l);
           }
 
-          this.showLayersOnCluster(newLayers, true);
+          this.showLayersOnCluster(layers, true);
         }
       }
     },
@@ -511,12 +562,15 @@ export default {
       this.updateMap();
     },
     pinnedContent(newPinnedContent, oldPinnedContent) {
+      const newIdList = newPinnedContent.map((item) => item.id);
+      const toDeselect = oldPinnedContent.filter(
+        (d) => !newIdList.includes(d.id),
+      );
 
-      const newIdList = newPinnedContent.map(item => item.id);
-      const toDeselect = oldPinnedContent.filter((d) => !newIdList.includes(d.id));
-
-      const oldIdList = oldPinnedContent.map(item => item.id);
-      const toSelect = newPinnedContent.filter((d) => !oldIdList.includes(d.id));
+      const oldIdList = oldPinnedContent.map((item) => item.id);
+      const toSelect = newPinnedContent.filter(
+        (d) => !oldIdList.includes(d.id),
+      );
 
       if (this.pinEnabled) {
         this.updateGeoSelection(toDeselect, this.pinLayerGroupMap, false);
@@ -571,6 +625,4 @@ export default {
   display: grid;
   grid-template-columns: 4fr 1fr;
 }
-
-
 </style>

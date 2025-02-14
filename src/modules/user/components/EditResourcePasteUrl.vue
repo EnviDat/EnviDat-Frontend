@@ -57,9 +57,9 @@
  */
 import * as yup from 'yup';
 
+import {mdiClose, mdiLink} from '@mdi/js';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import { isObjectValidCheckAllProps } from '@/factories/userEditingValidations';
-import {mdiClose, mdiLink} from '@mdi/js';
 
 export default {
   name: 'EditResourcePasteUrl',

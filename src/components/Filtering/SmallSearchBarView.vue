@@ -117,10 +117,10 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import {mdiClose, mdiMagnify} from '@mdi/js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import TagChip from '@/components/Chips/TagChip.vue';
-import {mdiClose, mdiMagnify} from '@mdi/js';
 
 export default {
   components: {

@@ -91,7 +91,7 @@
                            :style="`border-color: ${$vuetify.theme.themes.light.colors.highlight};
                                     background-color: ${ isOverDropZone ? $vuetify.theme.themes.light.colors.highlight : 'transparent' };
                                   `">
-                        Or drop a file with geoJSONO here
+                        {{ labels.fileDropLabel }}
                       </div>
 
                     </v-col>
@@ -105,7 +105,10 @@
               {{ labels.editorInstructions }}
             </v-col>
 
-            <v-col cols="12">
+            <v-col cols="12"
+                   class="editorHeight"
+                  :style="`scrollbar-color: ${this.scrollbarColorFront} ${this.scrollbarColorBack};`"
+            >
               <div class="columns">
                 <div class="column">
                   <div class="jsoneditor-vue" id="jsoneditor-vue" ref="editorRef"></div>
@@ -122,7 +125,8 @@
 
           </v-row>
 
-          <v-row >
+          <v-row no-gutters
+            class="mt-4">
             <v-col >
               <BaseRectangleButton
                 :disabled="!saveButtonEnabled"
@@ -187,9 +191,15 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import { mdiContentSave, mdiUndo, mdiFileUpload } from '@mdi/js';
+import { check } from '@placemarkio/check-geojson';
+import { createJSONEditor, SelectionType } from 'vanilla-jsoneditor';
+import { useDropZone } from '@vueuse/core';
+
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo.vue';
+
 import {
   EDITMETADATA_DATA_GEO,
   EDITMETADATA_OBJECT_UPDATE,
@@ -215,12 +225,6 @@ import {
   fetureCollectionToGeoCollection,
   createGeomCollection,
 } from '@/factories/geoFactory';
-
-import { mdiContentSave, mdiUndo, mdiFileUpload } from '@mdi/js';
-
-import geojsonhint from '@mapbox/geojsonhint';
-import { createJSONEditor, SelectionType } from 'vanilla-jsoneditor';
-import { useDropZone } from '@vueuse/core'
 
 
 export default {
@@ -370,6 +374,12 @@ export default {
         },
       }
     },
+    scrollbarColorFront() {
+      return this.$vuetify ? this.$vuetify.theme.themes.light.colors.highlight : 'auto';
+    },
+    scrollbarColorBack() {
+      return this.$vuetify ? '#F0F0F0' : 'auto';
+    },
   },
   errorCaptured(err, vm, info) {
     this.validationErrors.input = err.message;
@@ -483,24 +493,15 @@ export default {
       }
     },
     isValidateGeoJSON(text) {
-      const hint = geojsonhint.hint(text, {
-        noDuplicateMembers: true,
-      })
+      this.validationErrors.input = undefined;
 
-      if (hint?.length > 0) {
-        let errMsg = '';
-
-        for (let i = 0; i < hint.length; i++) {
-          const err = hint[i];
-          errMsg += `${err.message} \n`;
-        }
-
-        this.validationErrors.input = errMsg;
+      try {
+        const geoJson = check(text);
+        return !!geoJson;
+      } catch (err) {
+        this.validationErrors.input = err.message;
         return false;
       }
-
-      this.validationErrors.input = null;
-      return true;
     },
     converGeoJSONToGeoCollection(inputGeoJSON) {
       let geoColl;
@@ -622,9 +623,10 @@ export default {
       cardInstructions:
         'Choose the location(s) where the research data was collected.',
       defaultInstructions: 'You are using the default location (Switzerland). Consider adjusting the geo information to represent your research data as accurate as possible.',
-      editorInstructions: "Use the text editor for fine adjustments, Undo or Redo. It's not allowed to change the structure of the geoJson via the editor.",
+      editorInstructions: 'Use the text editor for fine adjustments, Undo or Redo. Only changing the values of geometries is allowed to edit. If you need to make needs of the structure upload a new file or change it on the map.',
       uploadInstructions: 'Upload geojson from a file if you have large changes or many geometries.',
       mapInstructions: 'Use the tools on the right side of the map to define locations. You can mix Points and Polygons. Or pick predefined locations. Use the eraser icon to remove geometries.',
+      fileDropLabel : 'Or drop a file with geoJSON here',
     },
     validationErrors: {
       input: null,
@@ -652,5 +654,11 @@ export default {
   border: 1px solid;
   text-align: center;
   align-content: center;
+}
+
+.editorHeight {
+  max-height: 600px;
+  overflow: auto auto;
+  scrollbar-width: thin;
 }
 </style>

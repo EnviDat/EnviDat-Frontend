@@ -90,6 +90,7 @@ import { defineAsyncComponent, markRaw } from 'vue';
 import axios from 'axios';
 import rewind from '@turf/rewind';
 import { mapGetters, mapState } from 'vuex';
+import { mdiClose } from '@mdi/js';
 import { useModeStore } from '@/modules/browse/store/modeStore';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
@@ -101,7 +102,6 @@ import {
   METADATAEDIT_PAGENAME,
 } from '@/router/routeConsts';
 
-import { mdiClose } from '@mdi/js';
 
 import {
   ACTION_USER_SHOW,
@@ -123,9 +123,7 @@ import {
 } from '@/store/metadataMutationsConsts';
 
 import {
-  createBody,
   createFunding,
-  createHeader,
   createLicense,
   createPublications,
   createRelatedDatasets,
@@ -147,7 +145,6 @@ import {
 
 import {
   AUTHOR_SEARCH_CLICK,
-  EDITMETADATA_PUBLICATION_INFO,
   eventBus,
   GCNET_INJECT_MICRO_CHARTS,
   GCNET_OPEN_DETAIL_CHARTS,
@@ -169,13 +166,15 @@ import { getEventsForPageAndName } from '@/modules/matomo/store/matomoStore';
 import {
   convertJSON,
   getFrontendDates,
-  getFrontendJSONForStep,
 } from '@/factories/mappingFactory';
 
 import { convertArrayToUrlString } from '@/factories/stringFactory';
 
 import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
 import { createLocation } from '@/factories/geoFactory';
+import { createHeaderViewModel } from '@/factories/ViewModels/HeaderViewModel';
+import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionViewModel';
+import { loadResourcesPreview } from '@/modules/charts/middelware/chartServiceLayer.ts';
 
 const MetadataDescription = defineAsyncComponent(
   () =>
@@ -563,19 +562,18 @@ export default {
       };
 
       if (currentContent && currentContent.title !== undefined) {
-        this.header = createHeader(
-          currentContent,
-          this.$vuetify.display.smAndDown,
-        );
-
         const parsedContent = convertJSON(currentContent, false);
-        const publicationData = getFrontendJSONForStep(
-          EDITMETADATA_PUBLICATION_INFO,
-          parsedContent,
-        );
-        this.header.publicationYear = publicationData.publicationYear;
+        const isSmallScreen = this.$vuetify.display.smAndDown;
 
-        this.body = createBody(currentContent, this.$vuetify.display.smAndDown);
+        this.header = createHeaderViewModel(
+          parsedContent,
+          isSmallScreen,
+          currentContent.categoryColor,
+          currentContent.titleImg,
+        );
+
+        // this.body = createBody(currentContent, this.$vuetify.display.smAndDown);
+        this.body = createDescriptionViewModel(parsedContent, isSmallScreen);
 
         this.citation = createCitation(currentContent);
 
@@ -635,6 +633,10 @@ export default {
         );
 
         this.resources.dates = getFrontendDates(this.metadataContent.date);
+      }
+
+      if (this.resourcesConfig.loadDataViz) {
+        loadResourcesPreview(this.resources.resources);
       }
 
       this.MetadataResources.props = {

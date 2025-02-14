@@ -99,6 +99,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { mdiArrowDownDropCircleOutline, mdiHome } from '@mdi/js';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip.vue';
 
@@ -119,7 +120,6 @@ import {
 } from '@/factories/userEditingValidations';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
-import { mdiArrowDownDropCircleOutline, mdiHome } from '@mdi/js';
 
 export default {
   name: 'EditOrganization',

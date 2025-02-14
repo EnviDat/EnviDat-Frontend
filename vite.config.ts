@@ -5,14 +5,14 @@ import vue from '@vitejs/plugin-vue';
 import vuetify from 'vite-plugin-vuetify';
 
 import { defineConfig, loadEnv } from 'vite';
-import { configDefaults } from 'vitest/dist/config';
+import { configDefaults } from 'vitest/dist/config.js';
 import eslint from 'vite-plugin-eslint';
 
 import Unfonts from 'unplugin-fonts/vite';
 import vueDevTools from 'vite-plugin-vue-devtools';
 import { visualizer } from 'rollup-plugin-visualizer';
 
-import { getFilesWithPrefix } from './src/factories/enhancementsFactoryNode';
+import { getFilesWithPrefix } from './src/factories/enhancementsFactoryNode.js';
 
 const version = process.env.npm_package_version;
 
@@ -63,9 +63,10 @@ export default ({ mode, config }) => {
     plugins: [
       vue(),
       eslint({
+        include: ['src/**/*.ts', 'src/**/*.vue'], // Include TypeScript files
         // https://github.com/storybookjs/builder-vite/issues/367#issuecomment-1938214165
         // Remove warnings because Vite falesly tries to lint folders it should not
-        exclude: ['/virtual:/**', 'node_modules/**', '/sb-preview/**'],
+        // exclude: ['/virtual:/**', 'node_modules/**', '/sb-preview/**'],
       }),
       vuetify({
         autoImport: true,
@@ -128,54 +129,53 @@ export default ({ mode, config }) => {
                     return 'vendor_vuetify';
                   }
 
-                  if (id.includes('vue') || id.includes('pinia')) {
-                    // vue, vuex & pinia, vue-router, etc.
-                    return 'vendor_vue';
-                  }
+              if (id.includes('vue') || id.includes('pinia')) {
+                // vue, vuex & pinia, vue-router, etc.
+                return 'vendor_vue';
+              }
 
-                  if (id.includes('leaflet')) {
-                    return 'vendor_leaflet';
-                  }
+              if (id.includes('leaflet')) {
+                return 'vendor_leaflet';
+              }
 
-                  if (id.includes('turf')) {
-                    return 'vendor_turf';
-                  }
+              if (id.includes('turf')) {
+                return 'vendor_turf';
+              }
 
-                  if (id.includes('uppy')) {
-                    return 'vendor_uppy';
-                  }
+              if (id.includes('uppy')) {
+                return 'vendor_uppy';
+              }
 
-                  if (id.includes('charts') || id.includes('uplot')) {
-                    return 'vendor_charts';
-                  }
+              if (id.includes('chart') || id.includes('uplot')) {
+                return 'vendor_charts';
+              }
 
-                  if (id.includes('yup')) {
-                    return 'vendor_validation';
-                  }
+              if (id.includes('yup')) {
+                return 'vendor_validation';
+              }
 
-                  if (
-                    id.includes('axios') ||
-                    id.includes('date-fns') ||
-                    id.includes('mitt') ||
-                    id.includes('seedrandom') ||
-                    id.includes('tiny-js-md5')
-                  ) {
-                    return 'vendor_utils';
-                  }
+              if (id.includes('axios')
+                || id.includes('date-fns')
+                || id.includes('mitt')
+                || id.includes('seedrandom')
+                || id.includes('tiny-js-md5')
+              ) {
+                return 'vendor_utils';
+              }
 
-                  return 'vendors';
-                }
+              return 'vendors';
+            }
 
-                if (id.includes('src/assets')) {
-                  return 'envidat_assets';
-                }
+            if (id.includes('src/assets')) {
+              return 'envidat_assets';
+            }
 
-                // Let Rollup handle the rest
-                return undefined;
-              },
-            },
-          }
-        : {},
+
+            // Let Rollup handle the rest
+            return undefined
+          },
+        },
+      } : {},
     },
     server: {
       host: '0.0.0.0',
@@ -184,12 +184,7 @@ export default ({ mode, config }) => {
         '/api': {
           target: 'https://statistics.wsl.ch',
           changeOrigin: true,
-          rewrite: (proxyPath) => proxyPath.replace(/^\/api/, ''),
-        },
-        '/s3': {
-          target: 'https://envicloud.wsl.ch',
-          changeOrigin: true,
-          rewrite: (proxyPath) => proxyPath.replace(/^\/s3/, ''),
+          rewrite: proxyPath => proxyPath.replace(/^\/api/, ''),
         },
       },
     },
