@@ -71,7 +71,7 @@ import FilterMapWidget from '@/components/Filtering/FilterMapWidget.vue';
 import { EDNA_MODE } from '@/store/metadataMutationsConsts';
 import {
   createImageryLayer,
-  createLeafletLayerArray,
+  createLeafletLayerCollections,
   createTopoLayer,
 } from '@/factories/leafletFunctions';
 
@@ -158,12 +158,14 @@ export default {
       for (let i = 0; i < groupedMultiPins.length; i++) {
         const pinCollection = groupedMultiPins[i];
 
-        if (pinCollection) {
+        if (pinCollection instanceof Array) {
           pinCollection.forEach((pin) => {
             if (pin) {
               flatMultiPins.push(pin);
             }
           });
+        } else {
+          flatMultiPins.push(pinCollection);
         }
       }
 
@@ -267,6 +269,8 @@ export default {
         center: this.setupCenterCoords,
         zoom: 7,
         zoomSnap: 0.5,
+        // zoomAnimation: false,
+        markerZoomAnimation: false,
         layers: topoTiles, // only default layer to avoid showing both attributions
       });
 
@@ -295,10 +299,8 @@ export default {
     createLeafletLayers(dataset, location, selected) {
       const layers = [];
 
-      let geometryType;
-
       location.geomCollection.geometries.forEach((geometry) => {
-        const subLayers = createLeafletLayerArray(
+        const layerCollection = createLeafletLayerCollections(
           geometry,
           dataset.id,
           dataset.title,
@@ -310,44 +312,53 @@ export default {
           this,
         );
 
+        layers.push(layerCollection);
+
+        /*
         for (let j = 0; j < subLayers.length; j++) {
           const layer = subLayers[j];
 
+          /!*
           if (!geometryType) {
             geometryType = layer.type;
           } else if (layer.type === LOCATION_TYPE_POLYGON) {
-            // overwrite if there is at least of polygon
-            // to know which map to assing it
+            // overwrite if there is at least one polygon
+            // to know which map to assign it
             geometryType = layer.type;
           }
+*!/
 
           layers.push(layer);
         }
+*/
       });
 
-      return {
-        type: geometryType,
-        layers,
-      };
+      return layers;
     },
     createAllLayers(dataset, location, selected) {
-      const { type, layers } = this.createLeafletLayers(dataset, location, selected);
+      const layerCollections = this.createLeafletLayers(
+        dataset,
+        location,
+        selected,
+      );
 
-      for (let i = 0; i < layers.length; i++) {
-        const layer = layers[i];
+      for (let i = 0; i < layerCollections.length; i++) {
+        const { type, layers } = layerCollections[i];
 
         let mapInQuestion;
         if (type === LOCATION_TYPE_POINT) {
           mapInQuestion = this.pinLayerGroupMap;
         } else if (type === LOCATION_TYPE_MULTIPOINT) {
           mapInQuestion = this.multiPinLayerGroupMap;
-        } else if (type === LOCATION_TYPE_POLYGON) {
+        } else if (type === LOCATION_TYPE_POLYGON
+                || type === LOCATION_TYPE_MULTIPOLYGON) {
           mapInQuestion = this.polygonLayerGroupMap;
-        } else if (type === LOCATION_TYPE_MULTIPOLYGON) {
-          mapInQuestion = this.multiPolygonLayerGroupMap;
         }
 
-        this.addLayerToGroupMap(mapInQuestion, dataset.id, layer);
+        for (let j = 0; j < layers.length; j++) {
+          const layer = layers[j];
+          this.addLayerToGroupMap(mapInQuestion, dataset.id, layer);
+        }
       }
     },
     createLayersFromDatasets(locationDataSet) {
@@ -358,7 +369,7 @@ export default {
       // this.multiPins = [];
       this.polygonLayerGroupMap = new Map();
       this.multiPinLayerGroupMap = new Map();
-      this.multiPolygonLayerGroupMap = new Map();
+
       const idsPinned = this.pinnedIds;
 
       for (let i = 0; i < locationDataSet.length; i++) {
@@ -418,6 +429,10 @@ export default {
         ];
       }
 
+      if (toClear.length <= 0) {
+        return;
+      }
+
       this.showLayersOnCluster(toClear, false);
     },
     clearLayersFromMap(specificClear) {
@@ -461,11 +476,6 @@ export default {
 
       if (!show) {
         if (isArray) {
-/*
-          elements.forEach((l) => {
-            this.clusterLayer.removeLayer(l);
-          });
-*/
           this.clusterLayer.removeLayers(elements);
         } else {
           this.clusterLayer.removeLayer(elements);
@@ -489,28 +499,18 @@ export default {
       }
 
       if (isArray) {
-/*
-        toAdd.forEach((l) => {
-          this.clusterLayer.addLayer(l);
-        });
-*/
         this.clusterLayer.addLayers(toAdd, true);
       } else if (toAdd) {
+        // always use array to avoid getting the layer.addParentEvent() error (undefined function)
         this.clusterLayer.addLayers([toAdd], true);
-//        this.clusterLayer.addLayer(toAdd);
+        //        this.clusterLayer.addLayer(toAdd);
       }
     },
     updateMap() {
       if (this.clusterLayer) {
-        this.clusterLayer.removeFrom(this.map);
         this.clearFromClusterLayer();
       } else {
         this.clusterLayer = new MarkerClusterGroup();
-        /*
-        this.clusterLayer.on('layerremove', (data) => {
-          console.log('removed layer', data);
-        })
-*/
       }
 
       this.addElementsToMap(this.pinLayerGroup, this.pinEnabled);
@@ -527,6 +527,7 @@ export default {
       }
     },
     updateGeoSelection(toUpdate, map, selected) {
+
       for (let i = 0; i < toUpdate.length; i++) {
         const dataset = toUpdate[i];
         const existingLayers = map.get(dataset.id);
@@ -535,18 +536,22 @@ export default {
           this.showLayersOnCluster(existingLayers, false);
           this.clearLayersFromGroup(map, dataset.id);
 
-          const { layers } = this.createLeafletLayers(
+          const layerCollections = this.createLeafletLayers(
             dataset,
             dataset.location,
             selected,
           );
 
-          for (let j = 0; j < layers.length; j++) {
-            const l = layers[j];
-            this.addLayerToGroupMap(map, dataset.id, l);
+          for (let j = 0; j < layerCollections.length; j++) {
+            const { layers } = layerCollections[j];
+
+            for (let k = 0; k < layers.length; k++) {
+              this.addLayerToGroupMap(map, dataset.id, layers[k]);
+            }
+
+            this.showLayersOnCluster(layers, true);
           }
 
-          this.showLayersOnCluster(layers, true);
         }
       }
     },
@@ -598,7 +603,6 @@ export default {
     polygonLayerGroupMap: new Map(),
     multiPinEnabled: true,
     multiPinLayerGroupMap: new Map(),
-    multiPolygonLayerGroupMap: new Map(),
     pinEnabled: true,
     pinLayerGroupMap: new Map(),
     filterText: 'Pinned: ',

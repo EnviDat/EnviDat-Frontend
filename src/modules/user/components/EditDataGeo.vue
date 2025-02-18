@@ -68,11 +68,12 @@
 
             <v-col cols="12">
               <v-row no-gutters
+                     align="center"
               >
-                <v-col cols="12">
+                <v-col class="flex-grow-0 mr-4">
                   <BaseRectangleButton
                     :color="$vuetify.theme.themes.light.colors.highlight"
-                    buttonText="Upload GeoJSON"
+                    buttonText="Upload File"
                     tooltipText="File Drop Also Possible"
                     tooltipPosition="top"
                     :icon="mdiFileUpload"
@@ -81,10 +82,12 @@
                   />
                 </v-col>
 
-                <v-col cols="12"
-                       class="mt-2"
-                >
-                  <v-row align="center" justify="center">
+                <v-col class="flex-grow-1">
+
+                  <v-row align="center"
+                         justify="center"
+                         no-gutters
+                  >
                     <v-col >
                       <div ref="dropZoneRef"
                            class="dropZone"
@@ -211,8 +214,6 @@ import {
 
 import {
   EDIT_METADATA_GEODATA_TITLE,
-  LOCATION_TYPE_FEATCOLLECTION,
-  LOCATION_TYPE_GEOMCOLLECTION,
 } from '@/factories/metadataConsts';
 
 import {
@@ -220,11 +221,7 @@ import {
   isFieldValid,
 } from '@/factories/userEditingValidations';
 
-import {
-  defaultSwissLocation,
-  fetureCollectionToGeoCollection,
-  createGeomCollection,
-} from '@/factories/geoFactory';
+import { convertGeoJSONToGeoCollection, defaultSwissLocation } from '@/factories/geoFactory';
 
 
 export default {
@@ -484,7 +481,7 @@ export default {
     changeGeoViaText(text, skipUpdateSaveButton) {
       const inputGeoJSON = JSON.parse(text);
 
-      const geoColl = this.converGeoJSONToGeoCollection(inputGeoJSON);
+      const geoColl = convertGeoJSONToGeoCollection(inputGeoJSON);
 
       const validationOk = this.parseGeoCollection(geoColl);
 
@@ -502,19 +499,6 @@ export default {
         this.validationErrors.input = err.message;
         return false;
       }
-    },
-    converGeoJSONToGeoCollection(inputGeoJSON) {
-      let geoColl;
-
-      if (inputGeoJSON.type === LOCATION_TYPE_FEATCOLLECTION) {
-        geoColl = fetureCollectionToGeoCollection(inputGeoJSON);
-      } else if(inputGeoJSON.type === LOCATION_TYPE_GEOMCOLLECTION) {
-        geoColl = inputGeoJSON;
-      } else {
-        geoColl = createGeomCollection(inputGeoJSON, inputGeoJSON.properties);
-      }
-
-      return geoColl;
     },
     /**
      * Validate updated geometries, and store in local variable

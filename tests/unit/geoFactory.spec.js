@@ -1,5 +1,5 @@
 import { it, describe, expect } from 'vitest';
-import { createLocation, fetureCollectionToGeoCollection, singlePointsToMultiPoints } from '@/factories/geoFactory';
+import { createLocation, featureCollectionToGeoCollection, singlePointsToMultiPoints } from '@/factories/geoFactory';
 import {
   LOCATION_TYPE_FEATCOLLECTION,
   LOCATION_TYPE_GEOMCOLLECTION,
@@ -207,7 +207,7 @@ describe('geoFactory - merge geometry ', () => {
 
   it('into geo collection', () => {
 
-    const geoCollection = fetureCollectionToGeoCollection(geoJsonFeatureCollection);
+    const geoCollection = featureCollectionToGeoCollection(geoJsonFeatureCollection);
 
     expect(geoCollection).toBeDefined();
     expect(geoCollection.type).equals(LOCATION_TYPE_GEOMCOLLECTION)

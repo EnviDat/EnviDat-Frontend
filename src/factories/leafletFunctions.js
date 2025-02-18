@@ -41,6 +41,7 @@ export const polygonStyle = (selected, editing) => ({
   fillOpacity: editing ? 0.25 : 0,
 })
 
+
 export function getPointIcon(selected, multiMarker = false, modeData = undefined, dataset = undefined) {
   // use the default options to ensure that all untouched defaults stay in place
 
@@ -89,7 +90,10 @@ export function getPointIcon(selected, multiMarker = false, modeData = undefined
 
 function ensureLngLatCoords(coords) {
   const [x, y] = coords;
+  // always flip coords for leaflet
+  return [y, x];
 
+/*
   // If x is within the latitude range (-90..90)
   // and y is within the longitude range (-180..180),
   // and the absolute value of y is greater than x (common for many coords),
@@ -105,6 +109,7 @@ function ensureLngLatCoords(coords) {
   }
 
   return coords; // assume it's already [lng, lat]
+*/
 }
 
 export function getPointLayer(coords, id, title, selected, onClick, multiMarker = false, modeData = undefined, dataset = undefined) {
@@ -253,26 +258,25 @@ export function createLeafletLayerViaGeoJson(geoJSONArray, id, title, vueInstanc
       }
 
       const layerType = feature.geometry.type || feature.type;
-
-      if (layerType === LOCATION_TYPE_POINT) {
-        return getPointLayer(feature.geometry.coordinates, layerId, layerTitle, false, undefined);
-      }
+      let layer;
 
       if(layerType === LOCATION_TYPE_MULTIPOINT) {
-        return getMultiPointLayer(feature.geometry.coordinates, layerId, layerTitle, false, undefined);
+        layer = getMultiPointLayer(feature.geometry.coordinates, layerId, layerTitle, false, undefined);
+      } else if(layerType === LOCATION_TYPE_POLYGON) {
+        layer = getPolygonLayer(feature.geometry.coordinates, layerId, layerTitle, false, undefined);
+      } else {
+        layer = getPointLayer(feature.geometry.coordinates, layerId, layerTitle, false, undefined);
       }
 
-      if(layerType === LOCATION_TYPE_POLYGON) {
-        return getPolygonLayer(feature.geometry.coordinates, layerId, layerTitle, false, undefined);
-      }
-
-      return getPointLayer(feature.geometry.coordinates, layerId, layerTitle, false, undefined);
+      layer.type = layerType
+      return layer;
     },
   });
 }
 
-export function createLeafletLayerArray(geometry, id, title, selected, onClick, isGcnet, modeData, dataset, vueInstance) {
+export function createLeafletLayerCollections(geometry, id, title, selected, onClick, isGcnet, modeData, dataset, vueInstance) {
   let layers = [];
+  const geometryType = geometry.type
 
   if (isGcnet) {
     return createLeafletLayerViaGeoJson(geometry, id, title, vueInstance);
@@ -292,27 +296,54 @@ export function createLeafletLayerArray(geometry, id, title, selected, onClick, 
   } else if (geometry.type === LOCATION_TYPE_POLYGON) {
     const l = getPolygonLayer(geometry.coordinates, id, title,
       selected, onClick,
-//      modeData, dataset,
+      modeData, dataset,
     );
     layers.push(l);
   } else if (geometry.type === LOCATION_TYPE_MULTIPOLYGON) {
+    layers = getMultiPolygonLayer(
+      geometry.coordinates,
+      id,
+      title,
+      selected,
+      onClick,
+      modeData,
+      dataset,
+    );
 
     // don't manually rewind (change the sequence of the coordination) it's done via the geoJSON from leaflet
-    layers = createLeafletLayerViaGeoJson(geometry, id, title, this)
+    // layers = createLeafletLayerViaGeoJson(geometry, id, title, vueInstance)
   } else if (geometry.type === LOCATION_TYPE_GEOMCOLLECTION) {
-    layers = createLeafletLayerViaGeoJson(geometry, id, title, this)
+    const subLayers = []
 
+    for (let i = 0; i < geometry.geometries.length; i++) {
+      const subGeometry = geometry.geometries[i];
+
+      const { layers: subs } = createLeafletLayerCollections(subGeometry, id, title,
+        selected, onClick,
+        modeData, dataset,
+      )
+
+      for (let j = 0; j < subs.length; j++) {
+        subLayers.push(subs[j]);
+      }
+
+      layers = subLayers;
+    }
+
+    // layers = createLeafletLayerViaGeoJson(geometry, id, title, vueInstance);
   } else {
     console.log(geometry);
     throw new Error(`Unknown Geometry type: '${geometry.type}'`)
 /*
-    layers = createLeafletLayerViaGeoJson(geometry, id, title, this)
+    layers = createLeafletLayerViaGeoJson(geometry, id, title, vueInstance)
 */
 
-    // throw new Error(`Unkown Geometry ${geometry.type}`);
+    // throw new Error(`Unknown Geometry ${geometry.type}`);
   }
 
-  // layers.type = geometry.type;
-  return layers;
+  return {
+    type: geometryType,
+    layers,
+  };
 }
 
