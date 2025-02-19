@@ -165,7 +165,7 @@ export default {
         });
       }
     },
-    createSiteLayers(geoJson) {
+    createLeafletLayers(geoJson) {
 
       const { layers } = createLeafletLayerCollections(
         geoJson,
@@ -275,7 +275,7 @@ export default {
       }
 
       if (this.site) {
-        this.siteLayers = this.createSiteLayers(this.site);
+        this.siteLayers = this.createLeafletLayers(this.site);
         this.showSiteLayersOnMap(true);
 
         // Editing event listeners on map layers

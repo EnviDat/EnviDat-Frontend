@@ -172,12 +172,27 @@ export function getPolygonLayer(coords, id, title, selected, onClick) {
 
   const polygon = createPolygon(flippedCoords, polygonStyle(selected));
 
-  polygon.on('click', (e) => {
-    onClick(e.target.id);
-  });
   polygon.id = id;
   polygon.title = title;
   polygon.type = LOCATION_TYPE_POLYGON;
+
+  polygon.on({
+    click: (e) => {
+      if(onClick) {
+        onClick(e.target.id);
+      }
+    },
+    mouseover: (e) => {
+      if (!e.target?.title) {
+        return;
+      }
+      e.target.bindPopup(`<p>${e.target.title}</p>`)
+        .openPopup();
+    },
+    mouseout: (e) => {
+      e.target.closePopup();
+    },
+  });
 
   return polygon;
 }

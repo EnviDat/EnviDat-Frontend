@@ -284,7 +284,7 @@ export default {
     eventBus.on(MAP_GEOMETRY_MODIFIED, this.changedGeoViaEditor);
     eventBus.on(EDITMETADATA_DATA_GEO_MAP_ERROR, this.triggerValidationError);
 
-    const jsonString = JSON.stringify(this.location.geoJSON);
+    const jsonString = this.location?.geoJSON ? JSON.stringify(this.location?.geoJSON) : '';
 
     this.changeGeoViaText(jsonString, true);
 
@@ -315,7 +315,7 @@ export default {
     eventBus.off(MAP_GEOMETRY_MODIFIED, this.changedGeoViaEditor);
     eventBus.off(EDITMETADATA_DATA_GEO_MAP_ERROR, this.triggerValidationError);
 
-    this.jsonEditor.destroy()
+    this.jsonEditor?.destroy()
   },
   computed: {
     loadingColor() {
