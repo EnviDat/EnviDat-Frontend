@@ -31,8 +31,8 @@
         style="position: absolute; top: 60px; right: 10px; z-index: 2"
         :icon="mdiClose"
         :elevated="true"
-        :icon-color="'white'"
-        :color="'secondary'"
+        icon-color="white"
+        color="secondary"
         outline-color="primary"
         outlined
         tooltip-text="Close metadata view"
@@ -88,7 +88,6 @@
 import { defineAsyncComponent, markRaw } from 'vue';
 
 import axios from 'axios';
-import rewind from '@turf/rewind';
 import { mapGetters, mapState } from 'vuex';
 import { mdiClose } from '@mdi/js';
 import { useModeStore } from '@/modules/browse/store/modeStore';
@@ -546,7 +545,7 @@ export default {
       // always initialize because when changing the url directly the reloading
       // would not work and the old content would be loaded
       this.header = null;
-      this.body = null;
+      this.descriptionData = null;
       this.citation = null;
       this.resources = null;
       this.location = null;
@@ -572,8 +571,8 @@ export default {
           currentContent.titleImg,
         );
 
-        // this.body = createBody(currentContent, this.$vuetify.display.smAndDown);
-        this.body = createDescriptionViewModel(parsedContent, isSmallScreen);
+        // this.descriptionData = createBody(currentContent, this.$vuetify.display.smAndDown);
+        this.descriptionData = createDescriptionViewModel(parsedContent, isSmallScreen);
 
         this.citation = createCitation(currentContent);
 
@@ -669,7 +668,7 @@ export default {
       }
 
       this.MetadataDescription.props = {
-        ...this.body,
+        ...this.descriptionData,
         showPlaceholder: this.showPlaceholder,
       };
 
@@ -1021,7 +1020,7 @@ export default {
     geoServiceLayers: null,
     geoServiceLayersError: null,
     header: null,
-    body: null,
+    descriptionData: null,
     citation: null,
     resources: null,
     location: null,
