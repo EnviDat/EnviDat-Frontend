@@ -116,7 +116,7 @@
     "vite-plugin-vuetify": "^2.0.4",
     "vite-plugin-webfont-dl": "^3.9.5",
     "vitest": "^3.0.5",
-    "vue-tsc": "^2.2.0"
+    "vue-tsc": "^2.2.2"
   },
   "overrides": {
     "nomnom": {
