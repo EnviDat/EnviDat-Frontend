@@ -437,7 +437,7 @@ export default {
       let geoJSON;
 
       try {
-        geoJSON = location ? rewind(location.geoJSON) : null;
+        geoJSON = location ? location.geoJSON : null;
       } catch (error) {
         this.geoServiceLayersError = error;
       }

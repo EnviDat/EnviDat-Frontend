@@ -270,7 +270,7 @@ export default {
         zoom: 7,
         zoomSnap: 0.5,
         // zoomAnimation: false,
-        markerZoomAnimation: false,
+        // markerZoomAnimation: false,
         layers: topoTiles, // only default layer to avoid showing both attributions
       });
 

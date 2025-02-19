@@ -55,6 +55,14 @@ export const WithDataFromDataset = {
   },
 }
 
+export const WithPolygons = {
+  args: {
+    showPlaceholder: false,
+    site: gcnetLocation.geomCollection,
+    mapHeight: 450,
+  },
+}
+
 export const GcNetStyling = {
   args: {
     showPlaceholder: false,
