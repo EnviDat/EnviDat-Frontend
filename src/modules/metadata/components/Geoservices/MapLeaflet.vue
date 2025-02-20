@@ -164,18 +164,6 @@ export default {
     },
   },
   methods: {
-    removeSite() {
-      if (this.siteLayer) {
-        this.map.removeLayer(this.siteLayer);
-        this.siteLayer = null;
-      }
-      if (this.isMapEditable) {
-        const layerArray = this.map.pm.getGeomanLayers();
-        layerArray.forEach((layer) => {
-          this.map.removeLayer(layer);
-        });
-      }
-    },
     createLeafletLayers(geoJson) {
       const { layers } = createLeafletLayerCollections(
         geoJson,
@@ -201,8 +189,11 @@ export default {
         if (show) {
           this.map.addLayer(l);
         } else {
-          l.off();
-          l.removeFrom(this.map);
+          l.removeEventParent();
+          l.clearAllEventListeners();
+          l.off(this.map);
+          this.map.removeLayer(l);
+
           l = null;
         }
       }
@@ -275,13 +266,13 @@ export default {
       this.addSiteIfAvailable();
     },
     addSiteIfAvailable() {
+      this.showSiteLayersOnMap(false);
+
       if (this.isMapEditable) {
         const layerArray = this.map.pm.getGeomanLayers();
         layerArray.forEach((layer) => {
           this.map.removeLayer(layer);
         });
-      } else {
-        this.showSiteLayersOnMap(false);
       }
 
       if (this.site) {
