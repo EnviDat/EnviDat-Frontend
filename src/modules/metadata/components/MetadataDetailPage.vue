@@ -173,7 +173,7 @@ import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeade
 import { createLocation } from '@/factories/geoFactory';
 import { createHeaderViewModel } from '@/factories/ViewModels/HeaderViewModel';
 import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionViewModel';
-import { loadResourcesPreview } from '@/modules/charts/middelware/chartServiceLayer.ts';
+import { markResourceForDataViz } from '@/modules/charts/middelware/chartServiceLayer.ts';
 
 const MetadataDescription = defineAsyncComponent(
   () =>
@@ -547,7 +547,7 @@ export default {
       this.header = null;
       this.descriptionData = null;
       this.citation = null;
-      this.resources = null;
+      this.resourceData = null;
       this.location = null;
       this.publications = null;
       this.relatedDatasets = null;
@@ -607,39 +607,39 @@ export default {
     loadResources() {
       const currentContent = this.metadataContent;
 
-      this.resources =
+      this.resourceData =
         createResources(currentContent, this.user, this.userOrganizationIds) ||
         {};
 
       const license = createLicense(currentContent);
 
-      if (this.resources.resources) {
-        this.configInfos = getConfigFiles(this.resources.resources);
+      if (this.resourceData.resources) {
+        this.configInfos = getConfigFiles(this.resourceData.resources);
 
         enhanceElementsWithStrategyEvents(
-          this.resources.resources,
+          this.resourceData.resources,
           undefined,
           true,
         );
         enhanceResourcesWithMetadataExtras(
           this.metadataContent.extras,
-          this.resources.resources,
+          this.resourceData.resources,
         );
 
         enhanceElementsWithStrategyEvents(
-          this.resources.resources,
+          this.resourceData.resources,
           SHOW_DATA_PREVIEW_PROPERTY,
         );
 
-        this.resources.dates = getFrontendDates(this.metadataContent.date);
+        this.resourceData.dates = getFrontendDates(this.metadataContent.date);
       }
 
       if (this.resourcesConfig.loadDataViz) {
-        loadResourcesPreview(this.resources.resources);
+        markResourceForDataViz(this.resourceData.resources);
       }
 
       this.MetadataResources.props = {
-        ...this.resources,
+        ...this.resourceData,
         dataLicenseId: license.id,
         dataLicenseTitle: license.title,
         dataLicenseUrl: license.url,
@@ -1022,7 +1022,7 @@ export default {
     header: null,
     descriptionData: null,
     citation: null,
-    resources: null,
+    resourceData: null,
     location: null,
     publications: null,
     relatedDatasets: null,

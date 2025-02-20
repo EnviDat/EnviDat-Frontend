@@ -33,6 +33,7 @@ import { createLocation } from '@/factories/geoFactory';
 import { getMetadataVisibilityState } from '@/factories/publicationFactory';
 import { formatDate } from '@/factories/dateFactory';
 import { enhanceMetadataWithModeExtras } from '@/factories/modeFactory';
+import { reactive } from 'vue';
 
 // import { getResourcesDownloads } from '@/modules/matomo/store/matomoStore';
 
@@ -367,6 +368,9 @@ export function createResource(
     position: resource.position || '',
     isProtected,
     previewUrl: resource.previewUrl || null,
+    chartLabels: null,
+    chartData: null,
+    chartDataLoading: false,
   };
 }
 
@@ -405,8 +409,9 @@ export function createResources(
         organizationID,
         signedInUserName,
         signedInUserOrganizationIds,
+        // numberOfDownload,
       );
-      // numberOfDownload,
+
       res.metadataContact = contactEmail;
 
       resources.push(res);

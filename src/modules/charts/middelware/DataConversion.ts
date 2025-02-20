@@ -156,8 +156,16 @@ function getMetaDataFromJSON(data: unknown) : MetaData {
 }
 
 function csvHasHeaderRow(firstRow: string, secondRow: string) : boolean {
-  const firstCols = firstRow.split(',');
-  const secondCols = secondRow.split(',');
+  let delimiter = ',';
+  let firstCols = firstRow.split(delimiter);
+
+  // if it doesn't work with , try with ;
+  if (firstCols.length <= 1) {
+    delimiter = ';';
+    firstCols = firstRow.split(delimiter);
+  }
+
+  const secondCols = secondRow.split(delimiter);
 
 
   let firstParsedInt = Number.parseInt(firstCols[0], 10);
