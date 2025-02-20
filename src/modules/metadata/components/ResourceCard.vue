@@ -321,7 +321,7 @@ export default {
     id: String,
     doi: String,
     name: String,
-    autoHeight: String,
+    autoHeight: Boolean,
     description: String,
     url: String,
     restrictedUrl: String,

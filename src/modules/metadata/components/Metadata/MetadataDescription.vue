@@ -6,7 +6,7 @@
     :maxTextLength="maxTextLength"
     :emptyTextColor="emptyTextColor"
     :emptyText="emptyText"
-    :showFullscreenButton="text?.length > maxTextLength"
+    :showFullscreenButton="description?.length > maxTextLength"
     @fullscreenClick="triggerFullscreen"
   />
 </template>

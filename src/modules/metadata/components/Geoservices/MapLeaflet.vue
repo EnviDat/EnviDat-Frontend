@@ -40,7 +40,6 @@ import {
   polygonStyle,
 } from '@/factories/leafletFunctions';
 
-
 /* eslint-disable vue/no-unused-components */
 
 export default {
@@ -48,8 +47,20 @@ export default {
   components: {},
   props: {
     baseMapLayerName: String,
-    site: Object,
-    maxExtent: Object,
+    site: {
+      type: Object,
+      required: false,
+      default: undefined,
+      // skip validation because the validation of a geoJSON object fails because it
+      // contains a property "type" with value "GeometryCollection" which causes a error:
+      // "Right-hand side of 'instanceof' is not an object . Error Stack: TypeError: Right-hand side of 'instanceof' is not an object"
+      validator: () => true,
+    },
+    maxExtent: {
+      type: Object,
+      required: false,
+      default: undefined,
+    },
     opacity: Number,
     mapDivId: {
       type: String,
@@ -153,20 +164,7 @@ export default {
     },
   },
   methods: {
-    removeSite() {
-      if (this.siteLayer) {
-        this.map.removeLayer(this.siteLayer);
-        this.siteLayer = null;
-      }
-      if (this.isMapEditable) {
-        const layerArray = this.map.pm.getGeomanLayers();
-        layerArray.forEach((layer) => {
-          this.map.removeLayer(layer);
-        });
-      }
-    },
     createLeafletLayers(geoJson) {
-
       const { layers } = createLeafletLayerCollections(
         geoJson,
         1,
@@ -191,8 +189,11 @@ export default {
         if (show) {
           this.map.addLayer(l);
         } else {
-          l.off()
-          l.removeFrom(this.map)
+          l.removeEventParent();
+          l.clearAllEventListeners();
+          l.off(this.map);
+          this.map.removeLayer(l);
+
           l = null;
         }
       }
@@ -265,13 +266,13 @@ export default {
       this.addSiteIfAvailable();
     },
     addSiteIfAvailable() {
+      this.showSiteLayersOnMap(false);
+
       if (this.isMapEditable) {
         const layerArray = this.map.pm.getGeomanLayers();
         layerArray.forEach((layer) => {
           this.map.removeLayer(layer);
         });
-      } else {
-        this.showSiteLayersOnMap(false);
       }
 
       if (this.site) {

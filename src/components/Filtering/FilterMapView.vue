@@ -286,11 +286,11 @@ export default {
 
       if (!layerCollection) {
         layerCollection = [layer];
+        map.set(id, layerCollection);
       } else if (!layerCollection.includes(layer)) {
         layerCollection.push(layer);
       }
 
-      map.set(id, layerCollection);
     },
     clearLayersFromGroup(map, id) {
       // always clear everything because for a dataset layers need to be removed
@@ -477,7 +477,13 @@ export default {
       if (!show) {
         if (isArray) {
           this.clusterLayer.removeLayers(elements);
+
+          for (let i = 0; i < elements.length; i++) {
+            this.map.removeLayer(elements[i]);
+          }
+
         } else {
+          this.map.removeLayer(elements);
           this.clusterLayer.removeLayer(elements);
         }
         return;
@@ -503,14 +509,13 @@ export default {
       } else if (toAdd) {
         // always use array to avoid getting the layer.addParentEvent() error (undefined function)
         this.clusterLayer.addLayers([toAdd], true);
-        //        this.clusterLayer.addLayer(toAdd);
       }
     },
     updateMap() {
       if (this.clusterLayer) {
         this.clearFromClusterLayer();
       } else {
-        this.clusterLayer = new MarkerClusterGroup();
+        this.clusterLayer = new MarkerClusterGroup({ animate: false });
       }
 
       this.addElementsToMap(this.pinLayerGroup, this.pinEnabled);
