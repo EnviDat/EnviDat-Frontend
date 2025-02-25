@@ -22,9 +22,15 @@ import {
   GET_PROJECTS_SUCCESS,
 } from './projectsMutationsConsts';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
-const API_ROOT = import.meta.env.VITE_API_ROOT;
+let API_BASE = '';
+let API_ROOT = '';
 
+const useTestdata = import.meta.env?.VITE_USE_TESTDATA === 'true';
+
+if (!useTestdata) {
+  API_BASE = import.meta.env?.VITE_API_BASE_URL;
+  API_ROOT = import.meta.env?.VITE_API_ROOT;
+}
 export default {
   // eslint-disable-next-line no-unused-vars
   async [GET_PROJECTS]({ dispatch, commit }, projectsConfig = {}) {
