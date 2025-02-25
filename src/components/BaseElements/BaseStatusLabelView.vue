@@ -74,8 +74,8 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import {mdiAlertCircle, mdiCheckCircle, mdiCloseCircle, mdiInformation, mdiMenuDown} from '@mdi/js';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 export default {

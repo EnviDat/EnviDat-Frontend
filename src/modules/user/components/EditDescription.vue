@@ -69,6 +69,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
+import { mdiText } from '@mdi/js';
 import {
   EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_MAIN_DESCRIPTION,
@@ -87,7 +88,6 @@ import MetadataDescription from '@/modules/metadata/components/Metadata/Metadata
 import { EDIT_METADATA_DESCRIPTION_TITLE } from '@/factories/metadataConsts';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
-import { mdiText } from '@mdi/js';
 
 
 export default {
@@ -150,7 +150,7 @@ export default {
     },
     descriptionObject() {
       return {
-        text: this.previewDescription,
+        description: this.previewDescription,
         maxTextLength: 5000,
       };
     },

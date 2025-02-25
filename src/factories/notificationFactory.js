@@ -12,9 +12,9 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { mdiInformation, mdiCheckCircle, mdiAlert, mdiAlertOctagram } from '@mdi/js';
 import { ADD_USER_NOTIFICATION } from '@/store/mainMutationsConsts';
 
-import { mdiInformation, mdiCheckCircle, mdiAlert, mdiAlertOctagram } from '@mdi/js';
 
 export function infoMessage(message = undefined, details = undefined) {
   return {

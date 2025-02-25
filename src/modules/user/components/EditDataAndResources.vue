@@ -81,6 +81,7 @@
  */
 
 import { mapGetters, mapState } from 'vuex';
+import {defineAsyncComponent} from 'vue';
 import {
   eventBus,
   CANCEL_EDITING_RESOURCE,
@@ -90,7 +91,8 @@ import {
   UPLOAD_STATE_UPLOAD_PROGRESS,
   UPLOAD_STATE_UPLOAD_STARTED,
   UPLOAD_STATE_RESET,
-  EDITMETADATA_CLEAR_PREVIEW, UPLOAD_ERROR, UPLOAD_STATE_RESOURCE_CREATED,
+  EDITMETADATA_CLEAR_PREVIEW,
+  UPLOAD_STATE_RESOURCE_CREATED,
 } from '@/factories/eventBus';
 
 import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
@@ -114,10 +116,7 @@ import {
 } from '@/modules/user/store/userMutationsConsts';
 
 import { getSelectedElement } from '@/factories/userEditingFactory';
-
 import { mergeResourceSizeForFrontend } from '@/factories/mappingFactory';
-
-import {defineAsyncComponent} from 'vue';
 
 import EditMetadataResources from '@/modules/user/components/EditMetadataResources.vue';
 import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles.vue';

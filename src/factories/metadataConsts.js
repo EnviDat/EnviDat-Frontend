@@ -94,13 +94,13 @@ export const METADATA_DOI_PROPERTY = 'doi';
 export const METADATA_PUBLISHER_PROPERTY = 'publisher';
 export const METADATA_PUBLICATION_YEAR_PROPERTY = 'publicationYear';
 export const METADATA_DATALICENSE_PROPERTY = 'dataLicenseId';
-export const METADATA_DEPRECATEDRESOURCES_PROPERTY = 'deprecatedResources';
+export const METADATA_DEPRECATED_RESOURCES_PROPERTY = 'deprecatedResources';
 
 export const ENVIDAT_SHOW_COOKIE_BANNER = 'ENVIDAT_SHOW_COOKIE_BANNER';
 
 export const METADATA_STATE_DRAFT = 'draft';
-export const METADATA_STATE_INVISILBE = 'hidden';
-export const METADATA_STATE_VISILBE = 'visible';
+export const METADATA_STATE_INVISIBLE = 'hidden';
+export const METADATA_STATE_VISIBLE = 'visible';
 
 export const PUBLICATION_STATE_DRAFT = 'draft';
 export const PUBLICATION_STATE_RESERVED = 'reserved';
@@ -113,3 +113,4 @@ export const LOCATION_TYPE_POLYGON = 'Polygon';
 export const LOCATION_TYPE_MULTIPOLYGON = 'MultiPolygon';
 export const LOCATION_TYPE_GEOMCOLLECTION = 'GeometryCollection';
 export const LOCATION_TYPE_FEATCOLLECTION = 'FeatureCollection';
+export const LOCATION_TYPE_FEATURE = 'Feature';

@@ -81,9 +81,9 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { mdiArrowExpandAll, mdiChevronDown } from '@mdi/js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import { renderMarkdown } from '@/factories/stringFactory';
-import { mdiArrowExpandAll, mdiChevronDown } from '@mdi/js';
 
 export default {
   name: 'ExpandableTextLayout',

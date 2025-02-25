@@ -12,19 +12,29 @@
 import EditDataGeo from '@/modules/user/components/EditDataGeo.vue';
 
 import { createLocation } from '@/factories/geoFactory';
+import {
+  LOCATION_TYPE_GEOMCOLLECTION,
+  LOCATION_TYPE_MULTIPOINT,
+  LOCATION_TYPE_MULTIPOLYGON,
+  LOCATION_TYPE_POINT,
+  LOCATION_TYPE_POLYGON,
+} from '@/factories/metadataConsts';
 
-// DUMMY DATA START
+
+
 const testMetadata = {
   id: 1,
   name: 'test_site',
   title: 'Test Site',
 };
+
 const metaPoint = JSON.stringify({
-  type: 'Point',
+  type: LOCATION_TYPE_POINT,
   coordinates: [7.435198, 46.268368],
 });
+
 const metaPolygon = JSON.stringify({
-  type: 'Polygon',
+  type: LOCATION_TYPE_POLYGON,
   coordinates: [
     [
       [8.7451171875, 46.89073198488606],
@@ -37,8 +47,9 @@ const metaPolygon = JSON.stringify({
     ],
   ],
 });
+
 const metaMultiPoint = JSON.stringify({
-  type: 'MultiPoint',
+  type: LOCATION_TYPE_MULTIPOINT,
   coordinates: [
     [8.7451171875, 46.89073198488606],
     [17.4462890625, 51.971796908939176],
@@ -46,11 +57,11 @@ const metaMultiPoint = JSON.stringify({
     [23.73046875, 59.086490948368436],
     [4.658203125, 52.24170452760525],
     [0.2197265625, 48.80734571355101],
-    [8.7451171875, 46.89073198488606],
   ],
 });
+
 const metaMultiPolygon = JSON.stringify({
-  type: 'MultiPolygon',
+  type: LOCATION_TYPE_MULTIPOLYGON,
   coordinates: [
     [
       [
@@ -72,181 +83,162 @@ const metaMultiPolygon = JSON.stringify({
     ],
   ],
 });
+
 const metaGeomCollection = JSON.stringify({
-  type: 'GeometryCollection',
+  type: LOCATION_TYPE_GEOMCOLLECTION,
   geometries: [
-    { type: 'Point', coordinates: [100.0, 0.0] },
+    { type: LOCATION_TYPE_POINT, coordinates: [7.435198, 46.268368] },
     {
-      type: 'Polygon',
-      coordinates: [[
-        [102.0, 2.0],
-        [103.0, 2.0],
-        [103.0, 3.0],
-        [102.0, 3.0],
-        [102.0, 2.0],
-      ]],
-    },
-    {
-      type: 'Polygon',
-      coordinates: [[
-        [100.0, 0.0],
-        [101.0, 0.0],
-        [101.0, 1.0],
-        [100.0, 1.0],
-        [100.0, 0.0],
-      ]],
+      type: LOCATION_TYPE_POLYGON,
+      coordinates: [
+        [
+          [8.7451171875, 46.89073198488606],
+          [17.4462890625, 51.971796908939176],
+          [28.388671875, 57.42208294734931],
+          [23.73046875, 59.086490948368436],
+          [4.658203125, 52.24170452760525],
+          [0.2197265625, 48.80734571355101],
+          [8.7451171875, 46.89073198488606],
+        ],
+      ],
     },
   ],
 });
+
+const geoJsonFeatureCollection = {
+  type: 'FeatureCollection',
+  features: [
+    {
+      type: 'Feature',
+      geometry: { type: 'Point', coordinates: [8.563607, 46.554404] },
+      properties: { deployment_location: 1 },
+    },
+    {
+      type: 'Feature',
+      geometry: { type: 'Point', coordinates: [8.562377, 46.555487] },
+      properties: { deployment_location: 2 },
+    },
+  ],
+};
+
 const pointLocation = createLocation({ ...testMetadata, spatial: metaPoint });
 const polygonLocation = createLocation({
   ...testMetadata,
   spatial: metaPolygon,
 });
+
 const multiPointLocation = createLocation({
   ...testMetadata,
   spatial: metaMultiPoint,
 });
+
 const multiPolygonLocation = createLocation({
   ...testMetadata,
   spatial: metaMultiPolygon,
 });
+
 const geomCollectionLocation = createLocation({
   ...testMetadata,
   spatial: metaGeomCollection,
 });
-// DUMMY DATA END
+
+const geoJsonFeatureLocation = createLocation({
+  ...testMetadata,
+  spatial: geoJsonFeatureCollection,
+});
+
+const geojsonErrorPolygon = JSON.stringify({
+  type: LOCATION_TYPE_POLYGON,
+  coordinates: [
+    [],
+    [],
+    [
+      [8.7451171875, 46.89073198488606],
+      [17.4462890625, 51.971796908939176],
+      [28.388671875, 57.42208294734931],
+      [23.73046875, 59.086490948368436],
+      [4.658203125, 52.24170452760525],
+      [0.2197265625, 48.80734571355101],
+      [8.7451171875, 46.89073198488606],
+    ],
+  ],
+});
+
+const geoJsonErrorLocation = createLocation({
+  ...testMetadata,
+  spatial: geojsonErrorPolygon,
+});
+
+
+const multiPolygonError = '{"type":"GeometryCollection","geometries":[{"type":"Polygon","coordinates":[[[8.419304,46.608177],[8.421364,46.638122],[8.457413,46.639773],[8.464279,46.609592],[8.419304,46.608177]]]},{"type":"Polygon","coordinates":[[[9.937134,46.472862],[9.937134,46.534776],[10.016785,46.534776],[10.016785,46.472862],[9.937134,46.472862]]]},{"type":"Polygon","coordinates":[[[-16.858521,81.493931],[-16.858521,81.578822],[-16.221313,81.578822],[-16.221313,81.493931],[-16.858521,81.493931]]]},{"type":"Polygon","coordinates":[[[14.018555,78.134493],[14.018555,79.253586],[20.961914,79.253586],[20.961914,78.134493],[14.018555,78.134493]]]},{"type":"Polygon","coordinates":[[[89.648438,77.934055],[89.648438,81.255032],[106.962891,81.255032],[106.962891,77.934055],[89.648438,77.934055]]]}],"properties":{"name":"life-at-chilly-temperatures---a-collection-of-microorganisms-from-extreme-habita"}}';
+
+const multiPolyErrorLocation = createLocation({
+  ...testMetadata,
+  spatial: multiPolygonError,
+});
 
 export default {
-  title: '3 Dataset / 2 Edit / Geo Data',
+  title: '3 Datasets / 2 Edit / Geo Data',
+  component: EditDataGeo,
 };
 
-export const EditGeoPoint = () => ({
-  components: {
-    EditDataGeo,
-  },
-  template: `
-    <v-col>
-
-      <v-row>
-        {{ label }}
-      </v-row>
-      <v-row class="py-3" >
-        <v-col >
-          <EditDataGeo  :mapDivId="mapDivId"
-                        :location="location" />
-        </v-col>
-      </v-row>
-
-    </v-col>
-    `,
-  data: () => ({
-    label: 'EditDataGeo with Point',
+export const Point = {
+  args: {
     mapDivId: 'point-map-small',
     location: pointLocation,
-  }),
-});
-
-export const EditGeoPolygon = () => ({
-  components: {
-    EditDataGeo,
   },
-  template: `
-    <v-col>
+};
 
-      <v-row>
-        {{ label }}
-      </v-row>
-      <v-row class="py-3" >
-        <v-col >
-          <EditDataGeo  :mapDivId="mapDivId"
-                        :location="location" />
-        </v-col>
-      </v-row>
-
-    </v-col>
-    `,
-  data: () => ({
-    label: 'EditDataGeo with Polygon',
+export const Polygon = {
+  args: {
     mapDivId: 'polygon-map-small',
     location: polygonLocation,
-  }),
-});
-
-export const EditMultiPoint = () => ({
-  components: {
-    EditDataGeo,
   },
-  template: `
-    <v-col>
+};
 
-      <v-row>
-       {{ label }}
-      </v-row>
-      <v-row class="py-3" >
-        <v-col >
-          <EditDataGeo  :mapDivId="mapDivId"
-                        :location="location" />
-        </v-col>
-      </v-row>
-
-    </v-col>
-    `,
-  data: () => ({
-    label: 'EditDataGeo with MultiPoint',
+export const MultiPoint = {
+  args: {
     mapDivId: 'multipoint-map-small',
     location: multiPointLocation,
-  }),
-});
-
-export const EditGeoMultiPolygon = () => ({
-  components: {
-    EditDataGeo,
   },
-  template: `
-    <v-col>
+};
 
-      <v-row>
-        {{ label }}
-      </v-row>
-      <v-row class="py-3" >
-        <v-col >
-          <EditDataGeo  :mapDivId="mapDivId"
-                        :location="location" />
-        </v-col>
-      </v-row>
-
-    </v-col>
-    `,
-  data: () => ({
-    label: 'EditDataGeo with MultiPolygon',
+export const MultiPolygon = {
+  args: {
     mapDivId: 'multipolygon-map-small',
     location: multiPolygonLocation,
-  }),
-});
-
-export const EditGeoGeometryCollection = () => ({
-  components: {
-    EditDataGeo,
   },
-  template: `
-    <v-col>
+};
 
-      <v-row>
-        {{ label }}
-      </v-row>
-      <v-row class="py-3" >
-        <v-col >
-          <EditDataGeo  :mapDivId="mapDivId"
-                        :location="location" />
-        </v-col>
-      </v-row>
-
-    </v-col>
-    `,
-  data: () => ({
-    label: 'EditDataGeo with GeometryCollection',
-    mapDivId: 'geometrycollection-map-small',
+export const GeoGeometryCollection = {
+  args: {
+    mapDivId: 'geometrycollection-map',
     location: geomCollectionLocation,
-  }),
-});
+  },
+};
+
+export const FeatrueCollection = {
+  args: {
+    label: 'EditDataGeo with FeatureCollection',
+    mapDivId: 'featureCollection-map',
+    location: geoJsonFeatureLocation,
+  },
+};
+
+export const GeoJSONError = {
+  args: {
+    label: 'EditDataGeo with FeatureCollection',
+    mapDivId: 'geoJSONError-map',
+    location: geoJsonErrorLocation,
+  },
+};
+
+export const GeoJSONMultiPolyError = {
+  args: {
+    label: 'EditDataGeo with FeatureCollection',
+    mapDivId: 'geoJSONError-map',
+    location: multiPolyErrorLocation,
+  },
+};
+
+

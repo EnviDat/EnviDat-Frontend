@@ -2,7 +2,7 @@
   <filter-map-widget-layout
     :title="title"
     :highlightedText="highlightedText"
-    :pinnedAmount="pinnedIds.length"
+    :pinnedAmount="pinnedIds ? pinnedIds.length : 0"
     :hasPins="hasPins"
     :hasMultiPins="hasMultiPins"
     :hasPolygons="hasPolygons"
@@ -90,9 +90,9 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import {mdiClose, mdiEye, mdiLayers, mdiMapMarker, mdiMapMarkerMultiple} from '@mdi/js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import FilterMapWidgetLayout from '@/components/Filtering/FilterMapWidgetLayout.vue';
-import {mdiClose, mdiEye, mdiLayers, mdiMapMarker, mdiMapMarkerMultiple} from '@mdi/js';
 
 export default {
   name: 'FilterMapWidget',

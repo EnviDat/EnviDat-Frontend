@@ -171,11 +171,11 @@ import {format, min} from 'date-fns';
 import UplotVue from 'uplot-vue';
 import 'uplot/dist/uPlot.min.css';
 
+import { mdiChartBar, mdiDownload } from '@mdi/js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import { hasData } from '@/factories/chartFactory';
 import { eventBus, GCNET_PREPARE_DETAIL_CHARTS } from '@/factories/eventBus';
-import { mdiChartBar, mdiDownload } from '@mdi/js';
 
 export default {
   name: 'MicroChart',

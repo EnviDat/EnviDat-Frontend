@@ -252,6 +252,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import {mdiAccount, mdiBookOpenVariantOutline, mdiEmail} from '@mdi/js';
 import {
   EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_MAIN_HEADER,
@@ -295,7 +296,6 @@ import {
 
 import { getMetadataUrlFromTitle } from '@/factories/mappingFactory';
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
-import {mdiAccount, mdiBookOpenVariantOutline, mdiEmail} from '@mdi/js';
 
 
 export default {

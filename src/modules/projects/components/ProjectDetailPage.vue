@@ -83,7 +83,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { mapGetters, mapState } from 'vuex';
+import { mapGetters, mapState } from 'vuex'
+import {defineAsyncComponent} from 'vue';
 
 import {
   METADATADETAIL_PAGENAME,
@@ -105,7 +106,6 @@ import { convertArrayToUrlString, convertUrlStringToArray } from '@/factories/st
 import { getImage } from '@/factories/imageFactory';
 import { createTag, tagsIncludedInSelectedTags } from '@/factories/keywordsFactory';
 import { isTagSelected } from '@/factories/metaDataFactory';
-import {defineAsyncComponent} from 'vue';
 import {
   GET_PROJECTS,
   PROJECTS_NAMESPACE,

@@ -120,6 +120,7 @@
  */
 import { mapGetters, mapState } from 'vuex';
 
+import { mdiBookOpenVariant, mdiInformation, mdiLibrary, mdiShieldCheckOutline, mdiFingerprint } from '@mdi/js';
 import orga from '@/assets/about/EnviDat_organigram.png';
 import { renderMarkdown } from '@/factories/stringFactory';
 import ExpandableCard from '@/modules/about/components/ExpandableCard.vue';
@@ -137,7 +138,6 @@ import {
 } from '@/store/mainMutationsConsts';
 
 import { getImage } from '@/factories/imageFactory';
-import { mdiBookOpenVariant, mdiInformation, mdiLibrary, mdiShieldCheckOutline, mdiFingerprint } from '@mdi/js';
 import AboutTabLayout from '@/modules/about/components/AboutTabLayout.vue';
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
@@ -289,7 +289,7 @@ export default {
         {
           title: 'Community',
           text:
-            'With EnviDat, WSL aims to disseminate its data sets as broadly as possible in order to foster international research cooperation in the field of environmental science and contribute to the ongoing cultural evolution in research towards openness, shared data and opportunities for collaboration. Consequently, we are registered in <a href="https://fairsharing.org/biodbcore-001178/" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" >FAIRsharing.org</a> and <a href="https://www.re3data.org/repository/r3d100012587" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" >re3data.org</a> and a contributor community to <a href="https://geoportal.org/community/envidat-community" target="_blank" onclick="event.stopPropagation();" >ESA Geoportal </a>, <a href="https://gcmd.nasa.gov/search/Titles.do?AutoDisplayTitles=true&subset=envidat#titles" target="_blank" onclick="event.stopPropagation();" >NASA GCMD</a> and <a href="https://b2find.eudat.eu/dataset?groups=envidat" target="_blank" onclick="event.stopPropagation();" >EOSC-Hub via B2FIND</a>. ',
+            'With EnviDat, WSL aims to disseminate its data sets as broadly as possible in order to foster international research cooperation in the field of environmental science and contribute to the ongoing cultural evolution in research towards openness, shared data and opportunities for collaboration. Consequently, we are registered in <a href="https://fairsharing.org/biodbcore-001178/" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" >FAIRsharing.org</a> and <a href="https://www.re3data.org/repository/r3d100012587" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" >re3data.org</a> and a contributor community to <a href="https://geoportal.org/community/envidat-community" target="_blank" onclick="event.stopPropagation();" >ESA Geoportal </a>, <a href="https://gcmd.nasa.gov/search/Titles.do?AutoDisplayTitles=true&subset=envidat#titles" target="_blank" onclick="event.stopPropagation();" >NASA GCMD, <a href="https://opendata.swiss/en/organization/envidat" target="_blank" onclick="event.stopPropagation();" >OPENDATA Swiss</a></a> and <a href="https://b2find.eudat.eu/organization/envidat" target="_blank" onclick="event.stopPropagation();" >EOSC-Hub via B2FIND</a>. ',
           img: communityImg,
           defaultWidthClass,
         },

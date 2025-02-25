@@ -6,49 +6,9 @@
           {{ METADATA_LOCATION_TITLE }}
         </v-col>
 
-        <v-col v-if="mapEditable"
-               class="flex-grow-0 pl-2 pr-4">
-          <BaseRectangleButton
-            :color="$vuetify.theme.themes.light.colors.secondary"
-            buttonText="Upload GeoJSON"
-            tooltipText="File Drop Also Possible"
-            tooltipPosition="top"
-            @clicked="triggerFileUpload"
-          />
-        </v-col>
-
-        <v-col v-if="mapEditable"
+        <v-col v-if="showFullscreenButton"
                class="flex-grow-0 pl-2">
           <BaseIconButton
-            :disabled="!undoButtonEnabled"
-            :icon="mdiUndo"
-            color="accent"
-            icon-color="black"
-            outlined
-            outline-color="black"
-            tooltip-text="Undo"
-            @clicked="triggerGeomUndo"
-          />
-        </v-col>
-
-        <v-col v-if="mapEditable"
-                class="flex-grow-0 pl-2">
-          <BaseIconButton
-            :disabled="!saveButtonEnabled"
-            :loading="saveButtonInProgress"
-            :icon="mdiContentSave"
-            icon-color="black"
-            color="accent"
-            outlined
-            outline-color="black"
-            tooltip-text="Save"
-            @clicked="triggerGeomSave"
-          />
-        </v-col>
-
-        <v-col class="flex-grow-0 pl-2">
-          <BaseIconButton
-            v-if="showFullscreenButton"
             :icon="mdiArrowExpandAll"
             outlined
             outline-color="secondary"
@@ -97,19 +57,17 @@
 </template>
 
 <script>
-import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
+import { mdiArrowExpandAll } from '@mdi/js';
 import { eventBus, INJECT_MAP_FULLSCREEN } from '@/factories/eventBus';
 import { METADATA_LOCATION_TITLE } from '@/factories/metadataConsts';
 import MapRoot from '@/modules/metadata/components/Geoservices/MapRoot.vue';
-import { mdiArrowExpandAll, mdiContentSave, mdiUndo } from '@mdi/js';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
 export default {
   name: 'MetadataGeo',
   components: {
     MapRoot,
     BaseIconButton,
-    BaseRectangleButton,
   },
   props: {
     site: {
@@ -144,18 +102,6 @@ export default {
       type: String,
       default: 'metadata-map-small',
     },
-    saveButtonEnabled: {
-      type: Boolean,
-      default: false,
-    },
-    saveButtonInProgress: {
-      type: Boolean,
-      default: false,
-    },
-    undoButtonEnabled: {
-      type: Boolean,
-      default: false,
-    },
     showFullscreenButton: {
       type: Boolean,
       default: false,
@@ -164,15 +110,6 @@ export default {
   computed: {
   },
   methods: {
-    triggerGeomSave() {
-      this.$emit('saveGeoms');
-    },
-    triggerGeomUndo() {
-      this.$emit('undoGeoms');
-    },
-    triggerFileUpload() {
-      this.$emit('uploadGeomFile');
-    },
     triggerFullscreen() {
       eventBus.emit(INJECT_MAP_FULLSCREEN, {
         site: this.site,
@@ -185,9 +122,6 @@ export default {
   },
   data: () => ({
     mdiArrowExpandAll,
-    mdiContentSave,
-    mdiUndo,
-    ready: false,
     map: null,
     smallSize: 300,
     mediumSize: 500,

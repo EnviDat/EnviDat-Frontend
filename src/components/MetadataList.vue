@@ -570,14 +570,13 @@ export default {
     catchShallowRealClick() {
       this.$emit('shallowRealClick');
     },
-    setDatasetsPinned(pins, isPinned) {
+    setDatasetsPinned(datasets, isPinned) {
       if (!this.hasMetadatasContent) {
         return;
       }
 
-      for (let i = 0; i < pins.length; i++) {
-        const id = pins[i];
-        const dataset = this.metadatasContent[id];
+      for (let i = 0; i < datasets.length; i++) {
+        const dataset = datasets[i];
         dataset.isPinned = isPinned;
       }
     },
@@ -601,7 +600,7 @@ export default {
       },
       deep: true,
     },
-    prePinnedIds(newPins, oldPins) {
+    pinnedContent(newPins, oldPins) {
       this.setDatasetsPinned(oldPins, false)
       this.setDatasetsPinned(newPins, true)
     },

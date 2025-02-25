@@ -65,9 +65,9 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import { mdiClose, mdiInformationOutline } from '@mdi/js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import { getModeData } from '@/factories/modeFactory';
-import { mdiClose, mdiInformationOutline } from '@mdi/js';
 
 export default {
   name: 'ModeView',
@@ -83,7 +83,7 @@ export default {
     mdiClose,
     mdiInformationOutline,
     modeInfoPrefix: 'Special View',
-    tooltipText: 'You are in a specific view which shows data for',
+    tooltipText: 'You are in a specific view which shows ',
   }),
   computed: {
     size() {

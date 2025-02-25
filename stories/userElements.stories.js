@@ -12,8 +12,9 @@
 /* eslint-disable import/no-extraneous-dependencies */
 
 import {ref} from 'vue';
-import jazzicons from '@metamask/jazzicon';
+import jazzicon from 'jazzicon-ts';
 import seedrandom from 'seedrandom';
+import { mdiRefresh } from '@mdi/js';
 import { getNameInitials } from '@/factories/authorFactory';
 
 import UserAvatar from '@/components/Layouts/UserAvatar.vue';
@@ -23,7 +24,6 @@ import MetadataCube from '@/components/BaseElements/MetadataCube.vue';
 import TitleCard from '@/components/Cards/TitleCard.vue';
 
 import { userMenuItems } from '@/store/navigationState';
-import { mdiRefresh } from '@mdi/js';
 import authorCollection from './testdata/authorCollection.json';
 
 
@@ -173,7 +173,7 @@ export const JazzIconsViews = () => ({
       if (el) {
         const rng = seedrandom(el.id);
         const randNr = rng.int32();
-        const icon = jazzicons(48, randNr);
+        const icon = jazzicon(48, randNr);
         el.$el.appendChild(icon);
       }
     },

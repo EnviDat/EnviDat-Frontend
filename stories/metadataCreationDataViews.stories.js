@@ -83,7 +83,7 @@ deprecatedResources[1].deprecated = true;
 deprecatedResources[2].deprecated = true;
 
 export default {
-  title: '3 Dataset / 2 Edit / Resource',
+  title: '3 Datasets / 2 Edit / Resource',
   component: EditResource,
 };
 

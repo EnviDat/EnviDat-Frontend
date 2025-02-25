@@ -8,16 +8,20 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { DIVERSITY, FOREST, HAZARD, LAND, METEO, SNOW } from '@/store/categoriesConsts';
+import {
+  DIVERSITY,
+  FOREST,
+  HAZARD,
+  LAND,
+  CLIMATE,
+  SNOW,
+} from '@/store/categoriesConsts';
 import { EDNA_MODE, SWISSFL_MODE } from '@/store/metadataMutationsConsts';
 import { getModeData } from '@/factories/modeFactory';
 import { getImage, getImageList } from '@/factories/imageFactory';
 
-
 const swissFLMode = getModeData(SWISSFL_MODE);
 const ednaMode = getModeData(EDNA_MODE);
-
-
 
 export default [
   {
@@ -66,9 +70,9 @@ export default [
     disabled: false,
   },
   {
-    title: 'Meteo',
-    type: METEO,
-    alias: ['climate'],
+    title: 'Climate',
+    type: CLIMATE,
+    alias: ['meteo'],
     imgPath: getImage('c_b_meteo_clouds_lighting_small'),
     color: '#E8EAF6',
     darkColor: '#C5CAE9',
@@ -102,7 +106,5 @@ export const cardImageBgs = {
   [SNOW]: getImageList('c_b_snow'),
   [DIVERSITY]: getImageList('c_b_diversity'),
   [HAZARD]: getImageList('c_b_hazard'),
-  [METEO]: getImageList('c_b_meteo'),
+  [CLIMATE]: getImageList('c_b_meteo'),
 };
-
-

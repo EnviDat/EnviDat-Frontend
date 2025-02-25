@@ -6,8 +6,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import { mdiAccount, mdiPencil } from '@mdi/js';
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 export default {
   title: '1 Base / Icons / Icon Font & Custom',

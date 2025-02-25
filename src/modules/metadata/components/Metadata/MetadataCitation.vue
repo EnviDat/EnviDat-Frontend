@@ -85,13 +85,13 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
+import { mdiClipboard, mdiClipboardText, mdiContentCopy } from '@mdi/js';
 import {
   renderMarkdown,
   stripHTML,
 } from '@/factories/stringFactory';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import { METADATA_CITATION_TITLE } from '@/factories/metadataConsts';
-import { mdiClipboard, mdiClipboardText, mdiContentCopy } from '@mdi/js';
 
 export default {
   name: 'MetadataCitation',

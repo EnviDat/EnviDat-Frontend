@@ -31,9 +31,6 @@
 </template>
 
 <script>
-import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
-import {mdiCheck, mdiPencil} from '@mdi/js';
-
 /**
  * FlipLayout.vue
  *
@@ -45,6 +42,9 @@ import {mdiCheck, mdiPencil} from '@mdi/js';
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import {mdiCheck, mdiPencil} from '@mdi/js';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+
 
 export default {
   name: 'FlipLayout',

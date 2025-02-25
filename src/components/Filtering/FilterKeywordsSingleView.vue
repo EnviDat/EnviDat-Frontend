@@ -74,12 +74,12 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import { mdiChevronDown, mdiPaletteSwatch } from '@mdi/js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import TagChip from '@/components/Chips/TagChip.vue';
 import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder.vue';
 
 import { createTag } from '@/factories/keywordsFactory';
-import { mdiChevronDown, mdiPaletteSwatch } from '@mdi/js';
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 export default {

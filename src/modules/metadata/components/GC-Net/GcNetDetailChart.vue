@@ -87,6 +87,7 @@
 <script>
 import axios from 'axios';
 
+import { mdiRefresh } from '@mdi/js';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import {
   addStartEndDateUrl,
@@ -94,7 +95,6 @@ import {
   defaultSeriesSettings,
   hasData,
 } from '@/factories/chartFactory';
-import { mdiRefresh } from '@mdi/js';
 
 /* eslint-disable no-tabs */
 

@@ -64,9 +64,9 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import { mdiChevronDown } from '@mdi/js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import { renderMarkdown } from '@/factories/stringFactory';
-import { mdiChevronDown } from '@mdi/js';
 
 export default {
   name: 'ExpandableCard',

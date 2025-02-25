@@ -19,11 +19,11 @@ import EditPublicationInfo from '@/modules/user/components/edit/EditPublicationI
 import {
   METADATA_PUBLICATION_YEAR_PROPERTY,
   METADATA_PUBLISHER_PROPERTY,
-  METADATA_STATE_INVISILBE,
+  METADATA_STATE_INVISIBLE,
 } from '@/factories/metadataConsts';
 
 export default {
-  title: '3 Dataset / 2 Edit / Publication Infos',
+  title: '3 Datasets / 2 Edit / Publication Infos',
   component: EditPublicationInfo,
 };
 
@@ -66,7 +66,7 @@ export const Filled = {
   args: {
     id: 1,
     doi: 'test',
-    visibilityState: METADATA_STATE_INVISILBE,
+    visibilityState: METADATA_STATE_INVISIBLE,
     [METADATA_PUBLICATION_YEAR_PROPERTY]: '2020',
     [METADATA_PUBLISHER_PROPERTY]: 'EnviDat',
   },
@@ -78,7 +78,7 @@ export const FilledAndReadOnly = {
     ...Filled.args,
     readOnlyFields: [
       METADATA_PUBLICATION_YEAR_PROPERTY,
-      METADATA_STATE_INVISILBE,
+      METADATA_STATE_INVISIBLE,
     ],
     readOnlyExplanation: 'Fields are readonly for testing!',
   },

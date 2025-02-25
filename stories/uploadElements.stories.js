@@ -17,7 +17,7 @@ import EditResourcePasteUrl from '@/modules/user/components/EditResourcePasteUrl
 import EditMultiDropResourceFiles from '@/modules/user/components/EditMultiDropResourceFiles.vue';
 
 export default {
-  title: '3 Dataset / 2 Edit / Upload Elements',
+  title: '3 Datasets / 2 Edit / Upload Elements',
   decorators: [],
   parameters: {
   },

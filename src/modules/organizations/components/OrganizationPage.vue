@@ -1,6 +1,8 @@
 <script setup>
-  import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
+  import { mdiEarth } from '@mdi/js';
+  import { useRoute, useRouter } from 'vue-router';
   import { computed, nextTick, onBeforeMount, onMounted, ref } from 'vue';
+  import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
 
   import { METADATA_NAMESPACE, SET_DETAIL_PAGE_BACK_URL } from '@/store/metadataMutationsConsts';
   import {
@@ -23,9 +25,7 @@
   // import metadatas from '@/../public/packagelist.json';
   import { METADATADETAIL_PAGENAME, ORGANIZATIONS_PAGENAME } from '@/router/routeConsts';
   import { SET_APP_BACKGROUND, SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
-  import { useRoute, useRouter } from 'vue-router';
   import store from '@/store/store';
-  import { mdiEarth } from '@mdi/js';
 
   const router = useRouter();
   const route = useRoute();

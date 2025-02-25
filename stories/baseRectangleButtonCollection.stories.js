@@ -9,8 +9,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import { mdiPencil, mdiMagnify, mdiPlus } from '@mdi/js';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 
 export default {
   title: '1 Base / Buttons /  Rectangle Buttons Collection',

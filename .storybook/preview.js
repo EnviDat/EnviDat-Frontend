@@ -9,16 +9,22 @@ import { envidatViewportParameters } from '~/stories/js/envidatViewports';
 import { setup } from '@storybook/vue3';
 import { withVuetifyTheme } from './withVuetifyTheme.decorator';
 
+import { createPinia } from 'pinia';
+
 setup((app) => {
+  const pinia = createPinia();
+  app.use(pinia);
   // Registers your app's plugins into Storybook
-  app.use(createVuetify({
-    components: {
-      ...components,
-      VTreeview,
-    },
-    directives,
-    ...config,
-  }));
+  app.use(
+    createVuetify({
+      components: {
+        ...components,
+        VTreeview,
+      },
+      directives,
+      ...config,
+    }),
+  );
 });
 
 // read more: https://storybook.js.org/docs/react/writing-stories/naming-components-and-hierarchy

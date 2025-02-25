@@ -49,12 +49,12 @@
 import { isDate, parse } from 'date-fns';
 import * as yup from 'yup';
 
+import { mdiCalendarRange, mdiSkipNext, mdiSkipPrevious } from '@mdi/js';
 import {
   ckanDateFormat,
 } from '@/factories/mappingFactory';
 
 import { isFieldReadOnly } from '@/factories/globalMethods';
-import { mdiCalendarRange, mdiSkipNext, mdiSkipPrevious } from '@mdi/js';
 
 // eslint-disable-next-line func-names
 yup.addMethod(yup.date, 'parseDateString', function() {

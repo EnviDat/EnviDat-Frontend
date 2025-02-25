@@ -1,6 +1,11 @@
 /* eslint-disable object-curly-newline */
 
 import {
+  mdiEarth, mdiBookOpenPageVariant, mdiPencilRuler, mdiFileTree, mdiLibraryShelves,
+  mdiMagnify, mdiMenuRight, mdiPound, mdiInformation, mdiBookshelf, mdiAccountArrowRight,
+} from '@mdi/js';
+
+import {
   BROWSE_PATH,
   BROWSE_PAGENAME,
   PROJECTS_PATH,
@@ -19,10 +24,6 @@ import {
   SERVICE_PAGENAME, ORGANIZATIONS_PATH, ORGANIZATIONS_PAGENAME,
 } from '@/router/routeConsts';
 
-import {
-  mdiEarth, mdiBookOpenPageVariant, mdiPencilRuler, mdiFileTree, mdiLibraryShelves,
-  mdiMagnify, mdiMenuRight, mdiPound, mdiInformation, mdiBookshelf, mdiAccountArrowRight,
-} from '@mdi/js';
 
 // const domain = import.meta.env.VITE_DOMAIN;
 const appVersion = import.meta.env.VITE_VERSION;
