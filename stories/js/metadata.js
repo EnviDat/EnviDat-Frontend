@@ -719,9 +719,9 @@ export default [
         vocabulary_id: null,
       },
       {
-        display_name: 'METEO',
+        display_name: 'CLIMATE',
         id: 'a2d5289c-e970-4210-8cd2-b4d0e21ab4af',
-        name: 'METEO',
+        name: 'CLIMATE',
         state: 'active',
         vocabulary_id: null,
       },
