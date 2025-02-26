@@ -1,15 +1,19 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import BarChart from '@/components/Charts/BarChart.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue'
 import { loadResourcesData } from '@/modules/charts/middelware/chartServiceLayer.ts';
 import { MetaData } from '@/types/env';
 
-const { resource } = defineProps<{resource: object}>();
+const {
+  resource,
+} = defineProps<{
+  resource: object,
+}>();
 
 const loading = ref(true);
 
-const chartLabels = ref();
+const chartLabels = ref([]);
 const chartData = ref();
 const dataPerParameter = ref();
 
@@ -28,6 +32,8 @@ const defaultOptions = {
   },
 }
 
+const title = computed(() => resource ? `Data Visualization of ${resource.name}` : 'Data Visualization of "Unnamed" resource')
+
 const getParameter = (dataEntry: any, parameter: string = undefined) => {
   if (parameter) {
     return dataEntry[parameter];
@@ -38,29 +44,56 @@ const getParameter = (dataEntry: any, parameter: string = undefined) => {
   return dataEntry[firstParameter];
 }
 
+const getTimeParameter = (paramterList) => {
+  for (let i = 0; i < paramterList.length; i++) {
+    const param = paramterList[i];
+    if (param.includes('time')){
+      return param
+    }
+  }
+
+  return 'timestamp'
+}
+
 const loadDataForParameter = (data: object[], parameter: string = undefined) => {
 
   const seriesData = [];
-  const firstParameter = parameter || Object.keys(data[0])[0];
+  const paramterList = Object.keys(data[0]);
+  const firstParameter = parameter || paramterList[0];
+
+  const timeParameter = getTimeParameter(paramterList);
+
+
+  const labels = [];
 
   for (let i = 0; i < data.length; i++) {
     const entry = data[i];
     const entryPerParamter = entry[firstParameter];
+
+    const time = entry[timeParameter];
+    if (time) {
+      labels.push(time);
+    }
     seriesData.push(entryPerParamter);
   }
 
+//  labels: [firstParameter],
+
   return {
-    datasets: {
-      labels: [firstParameter],
-      data: seriesData,
-      // backgroundColor: barColors[0],
+    data: {
+      labels,
+      datasets: {
+        label: firstParameter,
+        data: seriesData,
+        // backgroundColor: barColors[0],
+      },
     },
   };
 }
 
 const loadData = () => {
-  if (resource.isProtected) {
-    return
+  if (!resource || resource?.isProtected) {
+    return;
   }
 
   loadResourcesData(
@@ -100,7 +133,7 @@ loadData();
 <template>
   <v-card>
     <v-card-title>
-
+      {{ title }}
     </v-card-title>
 
     <v-card-text>
@@ -112,6 +145,7 @@ loadData();
           >
             <BaseRectangleButton
               :button-text="parameter"
+              is-small
               @clicked="loadParameterData(parameter)"
             />
           </div>
@@ -119,7 +153,7 @@ loadData();
 
         <v-col cols="6">
 
-          <BarChart
+          <BarChart v-if="dataPerParameter"
             :options="defaultOptions"
             :data="dataPerParameter" />
         </v-col>
