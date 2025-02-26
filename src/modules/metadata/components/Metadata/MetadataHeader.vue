@@ -337,6 +337,7 @@
                   v-if="hasContent && organization && !isMobile"
                   :organization="organization"
                   :tooltip="organizationTooltip"
+                  @organizationClicked="$emit('organizationClicked', organization)"
                 />
               </v-col>
             </v-row>

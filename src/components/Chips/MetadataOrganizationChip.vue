@@ -56,7 +56,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    clickCallback: Function,
   },
   computed: {
     organizationText() {
