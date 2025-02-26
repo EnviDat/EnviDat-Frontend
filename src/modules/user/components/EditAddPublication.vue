@@ -352,7 +352,8 @@ export default {
         this.previewCitation = citationMap.get(pid);
       } catch (e) {
         this.previewCitation = {
-          citation: `Resolving citation was not possible ${e}`,
+          citation:
+            'Resolving the citation was not possible due to a network error.',
         };
       }
 
@@ -373,7 +374,8 @@ export default {
         this.previewCitation = citationMap.get(doi);
       } catch (e) {
         this.previewCitation = {
-          citation: `Resolving citation was not possible ${e}`,
+          citation:
+            'Resolving the citation was not possible due to a network error.',
         };
       }
 
