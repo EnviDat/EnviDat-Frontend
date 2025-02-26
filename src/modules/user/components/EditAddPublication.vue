@@ -49,14 +49,15 @@
     </v-row>
 
     <v-row>
-      <v-col class="flex-grow-0" cols="12" sm="4" md="4">
+      <v-col class="flex-grow-0" cols="12">
         <a
           id="textAreaController"
           ref="textAreaController"
-          style="cursor: pointer;"
+          style="cursor: pointer"
           class="text-body-1"
           @click="toggleTextArea()"
-        >{{ showTextArea ? 'Hide' : 'Add' }} citation in plain text</a>
+          >{{ showTextArea ? 'Hide' : 'Add' }} citation in plain text</a
+        >
       </v-col>
 
       <v-col v-if="showTextArea" class="flex-grow-0">

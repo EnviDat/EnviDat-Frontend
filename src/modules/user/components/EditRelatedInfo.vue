@@ -14,7 +14,7 @@
         <EditRelatedDatasets v-bind="editRelatedDatasetsProps" />
       </v-col>
 
-      <v-col cols="3">
+      <v-col cols="4.5">
         <!-- prettier-ignore -->
         <EditCustomFields v-bind="editCustomFieldsProps" />
       </v-col>
