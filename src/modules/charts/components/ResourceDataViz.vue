@@ -29,6 +29,10 @@ const defaultOptions = {
       display: true,
       text: 'Chart.js Bar Chart',
     },
+    decimate: {
+      enabled: true,
+      alorithm: 'lltb',
+    },
   },
 }
 
@@ -80,14 +84,12 @@ const loadDataForParameter = (data: object[], parameter: string = undefined) => 
 //  labels: [firstParameter],
 
   return {
-    data: {
-      labels,
-      datasets: {
-        label: firstParameter,
-        data: seriesData,
-        // backgroundColor: barColors[0],
-      },
-    },
+    labels,
+    datasets: [{
+      label: firstParameter,
+      data: seriesData,
+      // backgroundColor: barColors[0],
+    }],
   };
 }
 
@@ -131,7 +133,9 @@ loadData();
 </script>
 
 <template>
-  <v-card>
+  <v-card
+    :loading
+  >
     <v-card-title>
       {{ title }}
     </v-card-title>
