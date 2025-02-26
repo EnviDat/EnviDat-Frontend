@@ -1,5 +1,9 @@
 <template>
-  <v-container class="pa-0" tag="article" id="MetadataDetailPage">
+  <v-container id="MetadataDetailPage"
+               fluid
+               class="pa-0"
+               tag="article" >
+
     <v-row no-gutters>
       <!-- prettier-ignore -->
       <v-col class="elevation-5 pa-0"

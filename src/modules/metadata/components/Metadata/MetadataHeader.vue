@@ -47,9 +47,8 @@
             :class="{
               'py-0': $vuetify.display.smAndDown,
               'display-2': $vuetify.display.xl,
-              'text-h4': $vuetify.display.mdAndUp,
+              'text-h4': $vuetify.display.smAndUp,
               'text-h5': $vuetify.display.xs,
-              headline: $vuetify.display.smAndDown,
             }"
           >
             {{ metadataTitle }}
@@ -63,7 +62,6 @@
             :class="{
               'display-2': $vuetify.display.lgAndUp,
               'text-h4': $vuetify.display.mdAndDown,
-              headline: $vuetify.display.smAndDown,
             }"
           >
             {{ `${NotFoundTitle} '${metadataId}'` }}
