@@ -635,8 +635,12 @@ export default {
     },
     pinnedContent: {
       handler(newPins, oldPins) {
-        this.setDatasetsPinned(oldPins, false);
-        this.setDatasetsPinned(newPins, true);
+        if (Array.isArray(oldPins) && oldPins.length) {
+          this.setDatasetsPinned(oldPins, false);
+        }
+        if (Array.isArray(newPins) && newPins.length) {
+          this.setDatasetsPinned(newPins, true);
+        }
       },
       immediate: true,
     },
