@@ -7,7 +7,7 @@
     :loading="loadingColor"
   >
     <v-card-title
-      class="text-h5 resourceHeadline"
+      class="text-h5 resourceHeadline pt-4"
       :class="{
         'text-white': !dark,
         'text-black': dark,
@@ -163,10 +163,9 @@
     </v-card-text>
 
     <v-container
-      v-if="showGenericOpenButton && !isProtected && !sparkChartData"
-      class="pa-2"
-      style="position: absolute; right: 0; width: 55px"
-      :style="`${genericOpenButtonBottom ? 'bottom: 55px;' : 'top: 0;'}`"
+      v-if="showGenericOpenButton && !isProtected && !sparkChartData && !genericOpenButtonBottom"
+      class="pa-4"
+      style="position: absolute; right: 0; width: 68px; top: 0;"
     >
       <v-row>
         <v-col cols="12">
@@ -181,36 +180,64 @@
         </v-col>
       </v-row>
     </v-container>
-    <v-container style="position: relative">
+
+    <v-container fluid
+                 style="position: relative"
+                 class="py-0"
+    >
+
+      <v-container
+        v-if="showGenericOpenButton && !isProtected && !sparkChartData"
+        class="pa-4"
+        style="position: absolute; right: 0; width: 68px; bottom: 40px;"
+      >
+        <v-row>
+          <v-col cols="12">
+            <base-icon-button
+              :icon="openButtonIcon"
+              icon-color="black"
+              color="accent"
+              elevated
+              :tooltip-text="openButtonTooltip"
+              @clicked="$emit('openButtonClicked')"
+            />
+          </v-col>
+        </v-row>
+      </v-container>
+
       <!-- moved inside the relative container for resolve the issue of positioning -->
       <v-card-actions
-        class="ma-0 pa-2"
-        style="position: absolute; bottom: 0; right: 55px; z-index: 2"
+        class="ma-0"
+        style="position: absolute; bottom: 0; right: 0; width: 120px; z-index: 2;"
       >
-        <base-icon-button
-          v-if="maxDescriptionLengthReached"
-          :class="isProtected ? 'mr-2' : ''"
-          :icon="mdiChevronDown"
-          :icon-color="showFullDescription ? 'primary' : 'accent'"
-          :color="showFullDescription ? 'accent' : 'black'"
-          :outlined="true"
-          outline-color="accent"
-          :rotated="showFullDescription"
-          :tooltipText="
+
+        <v-row no-gutters
+               justify="end"
+        >
+          <v-col v-if="maxDescriptionLengthReached"
+                 cols="6"
+                 class="pa-2"
+          >
+            <base-icon-button
+              :icon="mdiChevronDown"
+              :icon-color="showFullDescription ? 'primary' : 'accent'"
+              :color="showFullDescription ? 'accent' : 'black'"
+              :outlined="true"
+              outline-color="accent"
+              :rotated="showFullDescription"
+              :tooltipText="
             showFullDescription
               ? 'Hide full description'
               : 'Show full description'
-          "
-          @clicked="showFullDescription = !showFullDescription"
-        />
-      </v-card-actions>
+            "
+              @clicked="showFullDescription = !showFullDescription"
+            />
+          </v-col>
 
-      <v-container
-        class="pa-2"
-        style="position: absolute; bottom: 0; right: 0; width: 55px"
-      >
-        <v-row v-if="!isProtected">
-          <v-col cols="12">
+          <v-col v-if="!isProtected"
+                 cols="6"
+                 class="pa-2"
+          >
             <!-- OLD version -->
             <!-- <base-icon-button
               :icon="isFile ? mdiDownload : mdiLink"
@@ -234,10 +261,11 @@
               :disabled="!downloadActive"
             />
           </v-col>
-        </v-row>
 
-        <v-row v-if="isProtected">
-          <v-col>
+          <v-col v-if="isProtected"
+                 cols="6"
+                 class="pa-4"
+          >
             <div
               class="fabMenu fabPosition elevation-5 ma-2"
               :class="downloadActive ? 'fabMenuHover' : 'fabMenuDisabled'"
@@ -252,13 +280,19 @@
             </div>
           </v-col>
         </v-row>
+
+<!--
       </v-container>
+-->
+
+    </v-card-actions>
+
     </v-container>
-    <v-container fluid style="width: 100%" v-if="!isProtected && !isFile">
-      <template v-if="isEnvicloudUrl">
-        <v-divider />
-        <S3Tree @setStatus="changeHeight" :url="url" />
-      </template>
+
+    <v-container fluid style="width: 100%"
+                 v-if="!isProtected && !isFile && isEnvicloudUrl">
+      <v-divider />
+      <S3Tree @setStatus="changeHeight" :url="url" />
     </v-container>
   </v-card>
 </template>
@@ -418,7 +452,7 @@ export default {
     },
     isEnvicloudUrl(url) {
       const urlToCheck = url.url;
-      return urlToCheck.indexOf('envicloud') > -1;
+      return urlToCheck.includes('envicloud');
     },
     isDownloaded() {
       return this.numberOfDownload > 0;
