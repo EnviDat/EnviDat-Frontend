@@ -189,7 +189,7 @@
       <v-container
         v-if="showGenericOpenButton && !isProtected && !sparkChartData"
         class="pa-4"
-        style="position: absolute; right: 0; width: 68px; bottom: 40px;"
+        style="position: absolute; right: 0; width: 68px; bottom: 52px;"
       >
         <v-row>
           <v-col cols="12">
