@@ -92,8 +92,8 @@
     "infoActive": true,
     "info": [
       {
-        "title": "Create your dataset",
-        "subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id felis eget magna tincidunt viverra. Integer posuere volutpat lectus, sit amet convallis tortor condimentum in. Fusce aliquam, lectus non cursus elementum, elit nunc consequat lacus, a aliquet neque ipsum et turpis. Phasellus scelerisque velit et sapien placerat, quis ornare lorem convallis. Donec at justo sed est interdum accumsan sed ut risus. Nulla facilisi. Mauris condimentum felis sit amet tortor dignissim, non vestibulum turpis pretium.",
+        "title": "Designed for your needs",
+        "subtitle": "EnviDat is user-friendly platform, adapted to the needs of researchers, for storing, managing and publishing environmental datasets.",
         "icon": "create",
         "points": [],
         "image": "",
@@ -101,8 +101,8 @@
         "actionTitle": "Create Dataset"
       },
       {
-        "title": "Validated by official institutions",
-        "subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id felis eget magna tincidunt viverra. Integer posuere volutpat lectus, sit amet convallis tortor condimentum in. Fusce aliquam, lectus non cursus elementum, elit nunc consequat lacus, a aliquet neque ipsum et turpis. Phasellus scelerisque velit et sapien placerat, quis ornare lorem convallis. Donec at justo sed est interdum accumsan sed ut risus. Nulla facilisi. Mauris condimentum felis sit amet tortor dignissim, non vestibulum turpis pretium.",
+        "title": "FAIR data repository",
+        "subtitle": "EnviDat is supporting environmental researchers to share data according to the Findability, Accessibility, Interoperability and Reusability principles. EnviDat is registered in <a href='https://fairsharing.org/biodbcore-001178/'>FAIRsharing.org</a> and <a href='https://www.re3data.org/repository/r3d100012587'>re3data.org</a>",
         "icon": "protected",
         "points": [],
         "image": "",
@@ -110,8 +110,8 @@
         "actionTitle": "View More"
       },
       {
-        "title": "Connect to the world",
-        "subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id felis eget magna tincidunt viverra. Integer posuere volutpat lectus, sit amet convallis tortor condimentum in. Fusce aliquam, lectus non cursus elementum, elit nunc consequat lacus, a aliquet neque ipsum et turpis. Phasellus scelerisque velit et sapien placerat, quis ornare lorem convallis. Donec at justo sed est interdum accumsan sed ut risus. Nulla facilisi. Mauris condimentum felis sit amet tortor dignissim, non vestibulum turpis pretium.",
+        "title": "Connected to the world",
+        "subtitle": "EnviDat disseminates its datasets globally in order to promote international research cooperation in the field of environmental science. EnviDat datasets are listed in the NASA EarthData portal (https://search.earthdata.nasa.gov/search?fdc=WSL&ac=true), the data.europa.eu <a href='https://data.europa.eu/data/datasets?country=ch&publisher=EnviDat'>European Open Data portal</a>, <a href='https://b2find9.cloud.dkrz.de/organization/envidat'>European Open Science Cloud Hub</a>, or <a href='https://opendata.swiss/en/organization/envidat'>opendata.swiss</a> so that scientific data is found and cited.",
         "icon": "world",
         "points": [],
         "image": "",

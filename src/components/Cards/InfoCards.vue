@@ -49,7 +49,7 @@
             </v-row>
 
             <v-row v-if="info.subtitle" class="info-subtitle text-subtitle-1">
-              <v-col class="pa-0">{{ info.subtitle }}</v-col>
+              <v-col class="pa-0" v-html="info.subtitle"></v-col>
             </v-row>
 
             <v-row v-if="info.points?.length > 0" class="info-points">

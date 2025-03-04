@@ -104,15 +104,16 @@
             xl="3"
             class="pa-2"
           >
-            <MetadataCardLandingPage
+            <BaseCardLandingPage
+              :cardType="'metadata'"
+              :truncateSubTilte="true"
               :categoryBelow="true"
               :id="metadata.id"
               :title="metadata.title"
               :subtitle="metadata.notes"
-              :name="metadata.name"
-              :date="metadata.metadata_created"
               :categoryName="metadata.categoryName"
               :categoryColor="metadata.categoryColor"
+              :date="metadata.metadata_created"
               @clickedEvent="catchMetadataClicked"
             />
           </v-col>
@@ -149,16 +150,18 @@
             md="6"
             class="pa-2"
           >
-            <TeamPostCard
-              :postTitle="post.title"
-              :postDate="post.date"
-              :postText="post.text"
+            <BaseCardLandingPage
+              :cardType="'team'"
               :showButton="false"
-              :loadingImg="fallbackCardImg"
-              titleCssClass="compactBlogPostCard"
-              subtitleCssClass="text-caption"
-              :height="isLargeScreen ? '100' : '75'"
-              @clicked="catchPostClick(post.postFile)"
+              :id="post.id"
+              :title="post.title"
+              :subtitle="post.text"
+              :date="post.date"
+              :categoryName="'Envidat Team'"
+              :categoryColor="post.categoryColor || '#aab2ff'"
+              :categoryAbove="true"
+              buttonText="View"
+              @clickedEvent="catchPostClick(post.postFile)"
             />
           </v-col>
           <v-col
@@ -168,15 +171,18 @@
             md="6"
             class="pa-2"
           >
-            <BlogPostCardLandingPage
-              :postTitle="post.title"
-              :postDate="post.date"
-              :icon="'mdiAccountGroup'"
-              :loadingImg="fallbackCardImg"
-              titleCssClass="compactBlogPostCard"
-              subtitleCssClass="text-caption"
-              :height="isLargeScreen ? '100' : '75'"
-              @clicked="catchPostClick(post.postFile)"
+            <BaseCardLandingPage
+              :cardType="'blog'"
+              :id="post.id"
+              :title="post.title"
+              :subtitle="post.postContent"
+              :date="post.postDate"
+              :categoryName="'Blog article'"
+              :categoryColor="post.categoryColor || '#35A89D'"
+              :categoryAbove="true"
+              :categoryBelow="false"
+              buttonText="Read"
+              @clickedEvent="catchPostClick(post.postFile)"
             />
           </v-col>
         </v-row>
@@ -204,6 +210,7 @@ import LandingPageContactForm from '@/modules/home/components/LandingPageContact
 import SloganCard from '@/modules/home/components/SloganCard.vue';
 import BaseCategoryCard from '@/components/BaseElements/BaseCategoryCard.vue';
 import MetadataCardLandingPage from '@/components/Cards/MetadataCardLandingPage.vue';
+import BaseCardLandingPage from '@/components/Cards/BaseCardLandingPage.vue';
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
 import InfoCards from '@/components/Cards/InfoCards.vue';
 import TeamPostCard from '@/modules/home/components/TeamPostCard.vue';
