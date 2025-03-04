@@ -289,27 +289,31 @@ export function createLeafletLayerViaGeoJson(geoJSONArray, id, title, vueInstanc
   });
 }
 
-export function createLeafletLayerCollections(geometry, id, title, selected, onClick, isGcnet, modeData, dataset, vueInstance) {
+
+export function createLeafletLayerCollections(geometry, dataset, selected, onClick, isGcnet, modeData, vueInstance) {
   let layers = [];
   const geometryType = geometry.type
 
   if (isGcnet) {
-    return createLeafletLayerViaGeoJson(geometry, id, title, vueInstance);
+    return createLeafletLayerViaGeoJson(geometry, dataset.id, dataset.title, vueInstance);
   }
 
   if (geometry.type === LOCATION_TYPE_POINT) {
-    const l = getPointLayer(geometry.coordinates, id, title,
+    const l = getPointLayer(
+      geometry.coordinates, dataset.id, dataset.title,
       selected, onClick,
       undefined, modeData, dataset,
     );
     layers.push(l);
   } else if (geometry.type === LOCATION_TYPE_MULTIPOINT) {
-    layers = getMultiPointLayer(geometry.coordinates, id, title,
+    layers = getMultiPointLayer(
+      geometry.coordinates, dataset.id, dataset.title,
       selected, onClick,
       modeData, dataset,
     );
   } else if (geometry.type === LOCATION_TYPE_POLYGON) {
-    const l = getPolygonLayer(geometry.coordinates, id, title,
+    const l = getPolygonLayer(
+      geometry.coordinates, dataset.id, dataset.title,
       selected, onClick,
       modeData, dataset,
     );
@@ -317,8 +321,8 @@ export function createLeafletLayerCollections(geometry, id, title, selected, onC
   } else if (geometry.type === LOCATION_TYPE_MULTIPOLYGON) {
     layers = getMultiPolygonLayer(
       geometry.coordinates,
-      id,
-      title,
+      dataset.id,
+      dataset.title,
       selected,
       onClick,
       modeData,
@@ -333,9 +337,10 @@ export function createLeafletLayerCollections(geometry, id, title, selected, onC
     for (let i = 0; i < geometry.geometries.length; i++) {
       const subGeometry = geometry.geometries[i];
 
-      const { layers: subs } = createLeafletLayerCollections(subGeometry, id, title,
+      const { layers: subs } = createLeafletLayerCollections(
+        subGeometry, dataset,
         selected, onClick,
-        modeData, dataset,
+        modeData,
       )
 
       for (let j = 0; j < subs.length; j++) {
@@ -344,16 +349,9 @@ export function createLeafletLayerCollections(geometry, id, title, selected, onC
 
       layers = subLayers;
     }
-
-    // layers = createLeafletLayerViaGeoJson(geometry, id, title, vueInstance);
   } else {
     console.log(geometry);
     throw new Error(`Unknown Geometry type: '${geometry.type}'`)
-/*
-    layers = createLeafletLayerViaGeoJson(geometry, id, title, vueInstance)
-*/
-
-    // throw new Error(`Unknown Geometry ${geometry.type}`);
   }
 
   return {
@@ -361,4 +359,20 @@ export function createLeafletLayerCollections(geometry, id, title, selected, onC
     layers,
   };
 }
+
+export function createLeafletLayerCollectionsGeoJSON(geoJson, isGcnet, vueInstance) {
+  return createLeafletLayerCollections(
+    geoJson,
+    {
+      id: 1,
+      title: 'geometry for dataset',
+    },
+    undefined,
+    undefined,
+    isGcnet,
+    undefined,
+    vueInstance,
+  );
+}
+
 

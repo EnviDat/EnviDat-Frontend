@@ -21,78 +21,83 @@ const datasetTitle = 'Lens, Switzerland: Long-term forest meteorological data fr
 
 export default {
   title: '6 Workflows / NavigationStepper',
-  decorators: [],
-  parameters: {},
 };
 
-const Template = (args, { argTypes }) => ({
-  components: { NavigationStepper },
-  props: Object.keys(argTypes),
-  template: '<NavigationStepper v-bind="$props"  />',
-});
 
-export const CreationSteps = Template.bind({});
-CreationSteps.args = {
-  steps: metadataCreationSteps,
-  initialStepTitle: metadataCreationSteps[0].title,
-  datasetTitle,
-  isCreationWorkflow: true,
-  showProgress: true,
+export const CreationSteps = {
+  args: {
+    steps: metadataCreationSteps,
+    initialStepTitle: metadataCreationSteps[0].title,
+    datasetTitle,
+    isCreationWorkflow: true,
+    showProgress: true,
+  },
 }
 
-export const CreationStepsMessage = Template.bind({});
-CreationStepsMessage.args = {
-  ...CreationSteps.args,
-  message: 'Saved successfull',
-  messageDetails: 'Saved Metadataheader',
+export const CreationStepsMessage = {
+  args: {
+    ...CreationSteps.args,
+    message: 'Saved successfull',
+    messageDetails: 'Saved Metadataheader',
+  },
 }
 
-export const CreationStepsError = Template.bind({});
-CreationStepsError.args = {
-  ...CreationSteps.args,
-  error: 'Network Error',
-  errorDetails: 'Could not save the dataset',
+export const CreationStepsError = {
+  args: {
+    ...CreationSteps.args,
+    error: 'Network Error',
+    errorDetails: 'Could not save the dataset',
+  },
 }
 
-export const CreationStepsLoading = Template.bind({});
-CreationStepsLoading.args = {
-  ...CreationSteps.args,
-  loading: true,
+export const CreationStepsLoading = {
+  args: {
+    ...CreationSteps.args,
+    loading: true,
+  },
 }
 
-export const EditingSteps = Template.bind({});
-EditingSteps.args = {
-  steps: metadataEditingSteps,
-  initialStepTitle: metadataEditingSteps[0].title,
-  datasetTitle,
+export const EditingSteps = {
+  args: {
+    steps: metadataEditingSteps,
+    initialStepTitle: metadataEditingSteps[0].title,
+    datasetTitle,
+  },
 }
 
-export const EditingStepsLoading = Template.bind({});
-EditingStepsLoading.args = {
-  ...EditingSteps.args,
-  loading: true,
+export const EditingStepsLoading = {
+  args: {
+    ...EditingSteps.args,
+    loading: true,
+  },
 }
 
-export const MobileCreationSteps = Template.bind({});
-MobileCreationSteps.args = { ...CreationSteps.args };
-MobileCreationSteps.parameters = mobileViewportParams;
+export const MobileCreationSteps = {
+  args: CreationSteps.args,
+  parameters: mobileViewportParams,
+}
 
-export const MobileEditingSteps = Template.bind({});
-MobileEditingSteps.args = { ...EditingSteps.args };
-MobileEditingSteps.parameters = mobileViewportParams;
+export const MobileEditingSteps = {
+  args: EditingSteps.args,
+  parameters: mobileViewportParams,
+}
 
-export const LargeMobileCreationSteps = Template.bind({});
-LargeMobileCreationSteps.args = { ...CreationSteps.args };
-LargeMobileCreationSteps.parameters = mobileLargeViewportParams;
+export const LargeMobileCreationSteps = {
+  args: CreationSteps.args,
+  parameters: mobileLargeViewportParams,
+}
 
-export const LargeMobileEditingSteps = Template.bind({});
-LargeMobileEditingSteps.args = { ...EditingSteps.args };
-LargeMobileEditingSteps.parameters = mobileLargeViewportParams;
+export const LargeMobileEditingSteps = {
+  args: EditingSteps.args,
+  parameters: mobileLargeViewportParams,
+}
 
-export const TabletCreationSteps = Template.bind({});
-TabletCreationSteps.args = { ...CreationSteps.args };
-TabletCreationSteps.parameters = tabletViewportParams;
+export const TabletCreationSteps = {
+  args: CreationSteps.args,
+  parameters: tabletViewportParams,
+}
 
-export const TabletEditingSteps = Template.bind({});
-TabletEditingSteps.args = { ...EditingSteps.args };
-TabletEditingSteps.parameters = tabletViewportParams;
+export const TabletEditingSteps = {
+  args: EditingSteps.args,
+  parameters: tabletViewportParams,
+}
