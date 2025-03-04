@@ -9,7 +9,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-export const SET_APP_BACKGROUND = 'SET_APP_BACKGROUND';
 export const SET_WEBP_ASSETS = 'SET_WEBP_ASSETS';
 export const SET_JPG_ASSETS = 'SET_JPG_ASSETS';
 export const SET_WEBP_SUPPORT = 'SET_WEBP_SUPPORT';

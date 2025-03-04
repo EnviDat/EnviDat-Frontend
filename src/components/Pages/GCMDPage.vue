@@ -35,18 +35,14 @@
 import { mapGetters } from 'vuex';
 
 import { GCMD_PAGENAME } from '@/router/routeConsts';
-import {
-  SET_APP_BACKGROUND,
-  SET_CURRENT_PAGE,
-} from '@/store/mainMutationsConsts';
+import { SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
 
 export default {
   name: GCMD_PAGENAME,
   beforeRouteEnter(to, from, next) {
-    next(vm => {
+    next((vm) => {
       // console.log("beforeRouteEnter to: " + to + " from: " + from + " next: " + next);
       vm.$store.commit(SET_CURRENT_PAGE, GCMD_PAGENAME);
-      vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
     });
   },
   computed: {
@@ -61,7 +57,6 @@ export default {
   },
   components: {},
   data: () => ({
-    pageBGImage: 'app_b_browsepage',
     GCMD_PAGENAME,
   }),
 };

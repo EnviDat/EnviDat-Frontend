@@ -82,10 +82,7 @@ import {
 
 import NotificationCard from '@/components/Cards/NotificationCard.vue';
 import { REPORT_PAGENAME } from '@/router/routeConsts';
-import {
-  SET_APP_BACKGROUND,
-  SET_CURRENT_PAGE,
-} from '@/store/mainMutationsConsts';
+import { SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
 
 export default {
   /**
@@ -93,9 +90,8 @@ export default {
    * It's called via vue-router.
    */
   beforeRouteEnter(to, from, next) {
-    next(vm => {
+    next((vm) => {
       vm.$store.commit(SET_CURRENT_PAGE, REPORT_PAGENAME);
-      vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
     });
   },
   /**
@@ -126,7 +122,6 @@ export default {
     NotificationCard,
   },
   data: () => ({
-    pageBGImage: 'app_b_browsepage',
     name: '',
     email: '',
     feedback: false,

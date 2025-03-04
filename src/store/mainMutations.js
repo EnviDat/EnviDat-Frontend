@@ -18,7 +18,6 @@ import {
   ADD_USER_NOTIFICATION,
   CHECK_FRONTEND_VERSION,
   HIDE_NOTIFICATIONS,
-  SET_APP_BACKGROUND,
   SET_APP_SCROLL_POSITION,
   SET_BROWSE_SCROLL_POSITION,
   SET_CONFIG,
@@ -48,9 +47,6 @@ function disablingCategoryCards(config) {
 }
 
 export default {
-  [SET_APP_BACKGROUND](state, bgImg) {
-    state.appBGImage = bgImg;
-  },
   [SET_WEBP_SUPPORT](state, isSupported) {
     state.webpIsSupported = isSupported;
   },

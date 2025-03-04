@@ -1,6 +1,5 @@
 <template>
   <v-app class="application envidat-font-overwrite" id="app-container">
-    <!-- :style="dynamicBackground" -->
     <div
       v-show="showDecemberParticles"
       id="christmas-canvas"
@@ -191,7 +190,6 @@ import {
   SET_APP_SCROLL_POSITION,
   TRIM_NOTIFICATIONS,
   HIDE_NOTIFICATIONS,
-  SET_APP_BACKGROUND,
 } from '@/store/mainMutationsConsts';
 
 import {
@@ -252,12 +250,6 @@ export default {
     setInterval(() => {
       this.$store.dispatch(SET_CONFIG);
     }, 300000); // 1000 * 60 * 5 = 5 minutes
-
-    this.$store.subscribe((mutation) => {
-      if (mutation.type === SET_APP_BACKGROUND) {
-        this.appBGImage = mutation.payload;
-      }
-    });
   },
   created() {
     eventBus.on(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
@@ -708,28 +700,6 @@ export default {
     showReloadDialog() {
       return this.outdatedVersion && !this.reloadDialogCanceled;
     },
-    dynamicBackground() {
-      const bgImg = getImage(this.appBGImage);
-
-      if (!bgImg) {
-        return '';
-      }
-
-      let gradient = `background: linear-gradient(to bottom, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.25) 100%), url(${bgImg}) !important;`;
-      let bgStyle = 'background-position: center top !important;';
-
-      if (bgImg.includes(LANDING_PAGENAME.toLowerCase())) {
-        bgStyle += `background-size: cover !important;
-                    background-repeat: no-repeat !important; `;
-      }
-
-      if (bgImg.includes(BROWSE_PAGENAME.toLowerCase())) {
-        gradient = `background: linear-gradient(to bottom, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.3) 100%), url(${bgImg}) !important;
-                    background-repeat: repeat !important; `;
-      }
-
-      return gradient + bgStyle;
-    },
     menuItem() {
       let menuItem = { active: true };
       this.navigationItems.forEach((el) => {
@@ -785,7 +755,6 @@ export default {
   },
   /* eslint-disable object-curly-newline */
   data: () => ({
-    appBGImage: '',
     ckanDomain: process.env.VITE_API_ROOT,
     reloadDialogCanceled: false,
     showInfoDialog: false,

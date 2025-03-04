@@ -5,7 +5,8 @@
         <img-and-text-layout
           :img="missionImg"
           :height="$vuetify.display.smAndDown ? 100 : 150"
-          title="Research Projects" />
+          title="Research Projects"
+        />
       </v-col>
 
       <v-col class="mt-5" cols="12" lg="10" offset-lg="1">
@@ -17,7 +18,8 @@
               cols="12"
               sm="6"
               md="4"
-              xl="3">
+              xl="3"
+            >
               <project-card-placeholder />
             </v-col>
           </v-row>
@@ -31,7 +33,8 @@
               cols="12"
               sm="6"
               md="4"
-              xl="3">
+              xl="3"
+            >
               <project-card
                 :id="project.name"
                 :title="project.title"
@@ -40,7 +43,8 @@
                 :description="project.description"
                 :subProjects="project.subProjects"
                 @cardClick="onCardClick"
-                @subprojectClick="onSubprojectClick" />
+                @subprojectClick="onSubprojectClick"
+              />
             </v-col>
           </v-row>
         </v-container>
@@ -71,10 +75,7 @@ import {
   PROJECT_DETAIL_PAGENAME,
   PROJECTS_PAGENAME,
 } from '@/router/routeConsts';
-import {
-  SET_APP_BACKGROUND,
-  SET_CURRENT_PAGE,
-} from '@/store/mainMutationsConsts';
+import { SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
 
 import { getImage } from '@/factories/imageFactory';
 import {
@@ -92,9 +93,8 @@ export default {
    * It's called via vue-router.
    */
   beforeRouteEnter(to, from, next) {
-    next(vm => {
+    next((vm) => {
       vm.$store.commit(SET_CURRENT_PAGE, PROJECTS_PAGENAME);
-      vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
     });
   },
   /**
@@ -174,8 +174,6 @@ export default {
     ProjectCard,
     ProjectCardPlaceholder,
   },
-  data: () => ({
-    pageBGImage: 'app_b_browsepage',
-  }),
+  data: () => ({}),
 };
 </script>

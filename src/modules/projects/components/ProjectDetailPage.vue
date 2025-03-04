@@ -5,44 +5,43 @@
         class="elevation-5 pa-0"
         cols="12"
         ref="header"
-        style="z-index: 1; left: 0">
-
+        style="z-index: 1; left: 0"
+      >
         <ProjectHeader
           :title="currentProject ? currentProject.title : null"
           :titleImg="currentProject ? currentProject.image_display_url : null"
           :defaultImg="missionImg"
           :showPlaceholder="loading"
-          @clickedBack="catchBackClicked" />
+          @clickedBack="catchBackClicked"
+        />
       </v-col>
     </v-row>
 
-    <v-row
-      :style="`z-index: 0; position: relative;`"
-      no-gutters>
-      <v-col class="pb-2 " cols="12" lg="12">
-
+    <v-row :style="`z-index: 0; position: relative;`" no-gutters>
+      <v-col class="pb-2" cols="12" lg="12">
         <ProjectBody
           :description="currentProject ? currentProject.description : null"
           :showPlaceholder="loading"
-          :maxTextLength="$vuetify.display.xs ? 900 : 2000" />
+          :maxTextLength="$vuetify.display.xs ? 900 : 2000"
+        />
       </v-col>
 
       <v-col
         v-if="loading || (!loading && subProjects)"
-        class="pb-2 "
+        class="pb-2"
         cols="12"
-        lg="12">
-
+        lg="12"
+      >
         <ProjectSubprojects
           :subProjects="subProjects"
           :defaultImg="creatorImg"
           :showPlaceholder="loading"
           @projectClick="catchProjectClick"
-          @subprojectClick="catchSubprojectClick" />
+          @subprojectClick="catchSubprojectClick"
+        />
       </v-col>
 
-      <v-col class="pb-2 " cols="12" lg="12" >
-
+      <v-col class="pb-2" cols="12" lg="12">
         <ProjectDatasets
           :hasMetadatas="hasMetadatas"
           :listContent="filteredListContent"
@@ -62,10 +61,10 @@
           :showSearch="false"
           :metadatasContent="metadatasContent"
           :loading="loading"
-          @setScroll="setScrollPos" />
+          @setScroll="setScrollPos"
+        />
       </v-col>
     </v-row>
-
   </v-container>
 </template>
 
@@ -83,18 +82,15 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { mapGetters, mapState } from 'vuex'
-import {defineAsyncComponent} from 'vue';
+import { mapGetters, mapState } from 'vuex';
+import { defineAsyncComponent } from 'vue';
 
 import {
   METADATADETAIL_PAGENAME,
   PROJECT_DETAIL_PAGENAME,
   PROJECTS_PATH,
 } from '@/router/routeConsts';
-import {
-  SET_APP_BACKGROUND,
-  SET_CURRENT_PAGE,
-} from '@/store/mainMutationsConsts';
+import { SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
 import {
   LISTCONTROL_LIST_ACTIVE,
   LISTCONTROL_MAP_ACTIVE,
@@ -102,9 +98,15 @@ import {
   SET_DETAIL_PAGE_BACK_URL,
 } from '@/store/metadataMutationsConsts';
 
-import { convertArrayToUrlString, convertUrlStringToArray } from '@/factories/stringFactory';
+import {
+  convertArrayToUrlString,
+  convertUrlStringToArray,
+} from '@/factories/stringFactory';
 import { getImage } from '@/factories/imageFactory';
-import { createTag, tagsIncludedInSelectedTags } from '@/factories/keywordsFactory';
+import {
+  createTag,
+  tagsIncludedInSelectedTags,
+} from '@/factories/keywordsFactory';
 import { isTagSelected } from '@/factories/metaDataFactory';
 import {
   GET_PROJECTS,
@@ -115,14 +117,19 @@ import {
 import ProjectBody from './ProjectDetailViews/ProjectBody.vue';
 import ProjectHeader from './ProjectDetailViews/ProjectHeader.vue';
 
-const ProjectSubprojects = defineAsyncComponent(() =>
-    import('@/modules/projects/components/ProjectDetailViews/ProjectSubprojects.vue'),
+const ProjectSubprojects = defineAsyncComponent(
+  () =>
+    import(
+      '@/modules/projects/components/ProjectDetailViews/ProjectSubprojects.vue'
+    ),
 );
 
-const ProjectDatasets = defineAsyncComponent(() =>
-  import('@/modules/projects/components/ProjectDetailViews/ProjectDatasets.vue'),
+const ProjectDatasets = defineAsyncComponent(
+  () =>
+    import(
+      '@/modules/projects/components/ProjectDetailViews/ProjectDatasets.vue'
+    ),
 );
-
 
 export default {
   /**
@@ -131,9 +138,8 @@ export default {
    */
   name: 'ProjectDetailPage',
   beforeRouteEnter(to, from, next) {
-    next(vm => {
+    next((vm) => {
       vm.$store.commit(SET_CURRENT_PAGE, PROJECT_DETAIL_PAGENAME);
-      vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
 
       let backRoute = { path: PROJECTS_PATH };
 
@@ -246,7 +252,7 @@ export default {
           const tags = dataset.tags;
 
           if (tags && tags.length > 0) {
-            const index = tags.findIndex(obj => obj.name.includes(tag.name));
+            const index = tags.findIndex((obj) => obj.name.includes(tag.name));
 
             if (index >= 0) {
               found = true;
@@ -297,13 +303,20 @@ export default {
       }
     },
     catchPinnedIds(pins) {
-
       this.selectedPins = pins;
 
       const stringPins = convertArrayToUrlString(this.selectedPins);
 
-      this.$router.options.additiveChangeRoute(this.$route, this.$router, this.$route.path, undefined, undefined,
-        undefined, stringPins, undefined);
+      this.$router.options.additiveChangeRoute(
+        this.$route,
+        this.$router,
+        this.$route.path,
+        undefined,
+        undefined,
+        undefined,
+        stringPins,
+        undefined,
+      );
     },
     catchMetadataClicked(datasetname) {
       this.$store.commit(
@@ -351,7 +364,6 @@ export default {
       const backRoute = this.projectsPageBackRoute;
 
       if (backRoute) {
-
         this.$router.push({
           path: backRoute.path,
           query: backRoute.query || {},
@@ -396,7 +408,7 @@ export default {
 
       if (isTagSelected(tagId, this.selectedTagNames)) {
         this.selectedTagNames = this.selectedTagNames.filter(
-          tag => tag !== tagId,
+          (tag) => tag !== tagId,
         );
       }
     },
@@ -428,7 +440,6 @@ export default {
     ProjectDatasets,
   },
   data: () => ({
-    pageBGImage: 'app_b_browsepage',
     placeHolderAmount: 3,
     selectedTagNames: [],
     selectedPins: [],

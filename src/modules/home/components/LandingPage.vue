@@ -220,10 +220,7 @@ import {
   METADATADETAIL_PAGENAME,
   USER_SIGNIN_PATH,
 } from '@/router/routeConsts';
-import {
-  SET_CURRENT_PAGE,
-  SET_APP_BACKGROUND,
-} from '@/store/mainMutationsConsts';
+import { SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
 import {
   BLOG_NAMESPACE,
   GET_BLOG_LIST,
@@ -425,25 +422,9 @@ const catchCategoryClicked = (cardType) => {
 // mounted
 onMounted(() => {
   window.scrollTo(0, 0);
-  // removeBackgroundImage();
   removeOverflowHidden();
 });
 </script>
-
-<!-- <script>
-// import { getCurrentInstance, onMounted } from 'vue';
-// const { proxy: vm } = getCurrentInstance();
-
-export default {
-  beforeRouteEnter(to, from, next) {
-    next((vm) => {
-      vm.$store.commit('SET_CURRENT_PAGE', 'LANDING_PAGENAME');
-      const bgimg = '';
-      vm.$store.commit('SET_APP_BACKGROUND', bgimg);
-    });
-  },
-};
-</script> -->
 
 <style scoped>
 .compactBlogPostCard {
