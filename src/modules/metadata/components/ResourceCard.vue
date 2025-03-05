@@ -27,7 +27,7 @@
     </v-card-title>
 
     <v-card-text
-      class="pt-0"
+      class="pt-0 mt-2"
       :class="{
         'pb-5': !showFullDescription,
         'pb-10': showFullDescription,
@@ -36,7 +36,7 @@
         'pb-md-10': showFullDescription,
       }"
     >
-      <v-container class="pa-0 mt-2" fluid>
+      <v-container class="pa-0" fluid>
         <v-row no-gutters>
           <v-col
             v-if="
@@ -163,9 +163,9 @@
     </v-card-text>
 
     <v-container
-      v-if="showGenericOpenButton && !isProtected && !sparkChartData && !genericOpenButtonBottom"
+      v-if="showGenericOpenButton && !isProtected && !sparkChartData"
       class="pa-4"
-      style="position: absolute; right: 0; width: 68px; top: 0;"
+      :style="`position: absolute; right: 0; width: 68px; ${genericOpenButtonBottom ? 'bottom: 52px;' : 'top: 0;'}`"
     >
       <v-row>
         <v-col cols="12">
@@ -175,35 +175,20 @@
             color="accent"
             elevated
             :tooltip-text="openButtonTooltip"
+            :disabled="!downloadActive"
             @clicked="$emit('openButtonClicked')"
           />
         </v-col>
       </v-row>
     </v-container>
 
+    <!-- it's not possible to always use directly v-card-actions
+    because for the S3 bucket file list, the list should appear
+    beneath the icon buttons, there the wrapper with the relative positioning -->
     <v-container fluid
-                 style="position: relative"
+                 :style="`position: ${ isEnvicloudUrl ? 'relative' : 'initial'}`"
                  class="py-0"
     >
-
-      <v-container
-        v-if="showGenericOpenButton && !isProtected && !sparkChartData"
-        class="pa-4"
-        style="position: absolute; right: 0; width: 68px; bottom: 52px;"
-      >
-        <v-row>
-          <v-col cols="12">
-            <base-icon-button
-              :icon="openButtonIcon"
-              icon-color="black"
-              color="accent"
-              elevated
-              :tooltip-text="openButtonTooltip"
-              @clicked="$emit('openButtonClicked')"
-            />
-          </v-col>
-        </v-row>
-      </v-container>
 
       <!-- moved inside the relative container for resolve the issue of positioning -->
       <v-card-actions
@@ -238,17 +223,6 @@
                  cols="6"
                  class="pa-2"
           >
-            <!-- OLD version -->
-            <!-- <base-icon-button
-              :icon="isFile ? mdiDownload : mdiLink"
-              icon-color="black"
-              @clicked="trackDownload(url, resourceName)"
-              color="accent"
-              elevated
-              :tooltip-text="isFile ? 'Download resource' : 'Open link'"
-              :url="url"
-              :disabled="!downloadActive"
-            /> -->
             <!-- New version with S3 Component -->
             <base-icon-button
               :icon="isFile ? mdiDownload : mdiLink"
@@ -264,10 +238,9 @@
 
           <v-col v-if="isProtected"
                  cols="6"
-                 class="pa-4"
           >
             <div
-              class="fabMenu fabPosition elevation-5 ma-2"
+              class="fabMenu fabPosition elevation-5 ma-4"
               :class="downloadActive ? 'fabMenuHover' : 'fabMenuDisabled'"
             >
               <BaseIcon :icon="mdiShield" color="grey-darken-3" />
@@ -281,20 +254,19 @@
           </v-col>
         </v-row>
 
-<!--
-      </v-container>
--->
-
-    </v-card-actions>
-
+      </v-card-actions>
     </v-container>
 
-    <v-container fluid style="width: 100%"
-                 v-if="!isProtected && !isFile && isEnvicloudUrl">
+    <v-card-text
+      v-if="!isProtected && !isFile && isEnvicloudUrl"
+      class="pa-4 pt-0"
+    >
       <v-divider />
       <S3Tree @setStatus="changeHeight" :url="url" />
-    </v-container>
+    </v-card-text>
+
   </v-card>
+
 </template>
 
 <script>
