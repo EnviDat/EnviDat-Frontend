@@ -1,5 +1,9 @@
 <template>
-  <v-container class="pa-0" tag="article" id="MetadataDetailPage">
+  <v-container id="MetadataDetailPage"
+               fluid
+               class="pa-0"
+               tag="article" >
+
     <v-row no-gutters>
       <!-- prettier-ignore -->
       <v-col class="elevation-5 pa-0"
@@ -19,6 +23,7 @@
                           :showEditButton="showEditButton"
                           @clickedEdit="catchEditClicked"
                           @clickedAuthor="catchAuthorClicked"
+                          @organizationClicked="catchOrganizationClick"
                           @checkSize="resize"
                           :expanded="true" />
       </v-col>
@@ -99,6 +104,7 @@ import {
   BROWSE_PATH,
   METADATADETAIL_PAGENAME,
   METADATAEDIT_PAGENAME,
+  ORGANIZATIONS_PAGENAME,
 } from '@/router/routeConsts';
 
 
@@ -157,10 +163,6 @@ import {
 } from '@/factories/strategyFactory';
 
 import { getEventsForPageAndName } from '@/modules/matomo/store/matomoStore';
-
-// import {
-//   ORGANIZATIONS_NAMESPACE,
-// } from '@/modules/organizations/store/organizationsMutationsConsts';
 
 import {
   convertJSON,
@@ -838,6 +840,15 @@ export default {
           backPath: this.$route.fullPath,
         },
       });
+    },
+    catchOrganizationClick(organization) {
+      this.$router.push({
+        name: ORGANIZATIONS_PAGENAME,
+        params: {
+          organization,
+        },
+      });
+
     },
     /**
      * @description loads the content of this metadata entry (metadataid) from the URL.

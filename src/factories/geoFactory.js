@@ -228,13 +228,13 @@ export function singlePointsToMultiPoints(geometries, asGeoCollection) {
   return multiPointGeometry;
 }
 
-export function convertSinglePointsToMultiPoint(points) {
-  if (!Array.isArray(points)) {
+export function convertSinglePointsToMultiPoint(pointLayers) {
+  if (!Array.isArray(pointLayers)) {
     return null;
     // throw new Error('Input must be an array of Point objects.');
   }
 
-  const validPoints = points.filter(point => point.type === 'Point' && Array.isArray(point.coordinates))
+  const validPoints = pointLayers.filter(point => point.type === LOCATION_TYPE_POINT && Array.isArray(point.coordinates))
 
   if (validPoints.length <= 0) {
     return null;
@@ -244,7 +244,7 @@ export function convertSinglePointsToMultiPoint(points) {
   const coordinates = validPoints.map(point => point.coordinates);
 
   return {
-    type: 'MultiPoint',
+    type: LOCATION_TYPE_MULTIPOINT,
     coordinates,
   };
 }
@@ -255,7 +255,7 @@ export function convertPolygonsToMultiPolygon(polygons) {
     // throw new Error('Input must be an array of Polygon objects.');
   }
 
-  const validPolygons = polygons.filter(polygon => polygon.type === 'Polygon' && Array.isArray(polygon.coordinates));
+  const validPolygons = polygons.filter(polygon => polygon.type === LOCATION_TYPE_POLYGON && Array.isArray(polygon.coordinates));
 
   if (validPolygons.length <= 0) {
     return polygons;
@@ -265,7 +265,7 @@ export function convertPolygonsToMultiPolygon(polygons) {
   const coordinates = validPolygons.map(polygon => polygon.coordinates);
 
   return {
-    type: 'MultiPolygon',
+    type: LOCATION_TYPE_MULTIPOLYGON,
     coordinates,
   };
 }
@@ -298,7 +298,7 @@ export function geomanGeomsToGeoJSON(layerArray) {
 
   const newGeometries = [];
 
-  const pointGeometries = geoJSONArray.filter(point => point.type === 'Point' && Array.isArray(point.coordinates))
+  const pointGeometries = geoJSONArray.filter(point => point.type === LOCATION_TYPE_POINT && Array.isArray(point.coordinates))
 
   if (pointGeometries.length > 0) {
 
@@ -312,7 +312,7 @@ export function geomanGeomsToGeoJSON(layerArray) {
     }
   }
 
-  const polygonGeometries = geoJSONArray.filter(polygon => polygon.type === 'Polygon' && Array.isArray(polygon.coordinates));
+  const polygonGeometries = geoJSONArray.filter(polygon => polygon.type === LOCATION_TYPE_POLYGON && Array.isArray(polygon.coordinates));
 
   if (polygonGeometries.length > 0) {
 

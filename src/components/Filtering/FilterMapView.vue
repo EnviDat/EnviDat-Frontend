@@ -18,13 +18,13 @@
             :pinnedIds="pinnedIds"
             :hasPins="hasPins"
             :pinEnabled="pinEnabled"
-            :pinNumber="hasPins ? pinLayerGroup.length : 0"
+            :pinNumber="hasPins ? pinLayerGroupMap.size : 0"
             :hasMultiPins="hasMultiPins"
             :multiPinEnabled="multiPinEnabled"
-            :multiPinNumber="hasMultiPins ? multiPinLayerGroup.length : 0"
+            :multiPinNumber="hasMultiPins ? multiPinLayerGroupMap.size : 0"
             :hasPolygons="hasPolygons"
             :polygonEnabled="polygonEnabled"
-            :polygonNumber="hasPolygons ? polygonLayerGroup.length : 0"
+            :polygonNumber="hasPolygons ? polygonLayerGroupMap.size : 0"
             :topLayout="topLayout"
             @clickedFocus="focusOnLayers"
             @clickedPin="catchPinClicked"
@@ -75,7 +75,7 @@ import {
   createTopoLayer,
 } from '@/factories/leafletFunctions';
 
-import { createLocation } from '@/factories/geoFactory';
+import { convertSinglePointsToMultiPoint, createLocation } from '@/factories/geoFactory';
 import {
   LOCATION_TYPE_MULTIPOINT,
   LOCATION_TYPE_MULTIPOLYGON,
@@ -297,43 +297,62 @@ export default {
       map.set(id, []);
     },
     createLeafletLayers(dataset, location, selected) {
-      const layers = [];
+      const layerCollections = [];
+      const pointGeometries = [];
 
       location.geomCollection.geometries.forEach((geometry) => {
-        const layerCollection = createLeafletLayerCollections(
-          geometry,
-          dataset.id,
-          dataset.title,
+        if (geometry.type === LOCATION_TYPE_POINT) {
+          // only collect the point geometries here for potential merging them
+          // into a multipoint layer
+          pointGeometries.push(geometry);
+        } else {
+
+          const layerCollection = createLeafletLayerCollections(
+            geometry,
+            dataset,
+            selected,
+            this.catchPointClick,
+            false,
+            this.modeData,
+            this,
+          );
+
+          layerCollections.push(layerCollection);
+        }
+      });
+
+      let pointLayer;
+
+      if (pointGeometries.length === 1) {
+        pointLayer = createLeafletLayerCollections(
+          pointGeometries[0],
+          dataset,
           selected,
           this.catchPointClick,
           false,
           this.modeData,
+          this,
+        );
+      } else if (pointGeometries.length >= 2) {
+        const multiPointGeometry = convertSinglePointsToMultiPoint(pointGeometries);
+
+        pointLayer = createLeafletLayerCollections(
+          multiPointGeometry,
           dataset,
+          selected,
+          this.catchPointClick,
+          false,
+          this.modeData,
           this,
         );
 
-        layers.push(layerCollection);
+      }
 
-        /*
-        for (let j = 0; j < subLayers.length; j++) {
-          const layer = subLayers[j];
+      if (pointLayer) {
+        return layerCollections.length <= 0 ? [pointLayer] : [pointLayer, ...layerCollections];
+      }
 
-          /!*
-          if (!geometryType) {
-            geometryType = layer.type;
-          } else if (layer.type === LOCATION_TYPE_POLYGON) {
-            // overwrite if there is at least one polygon
-            // to know which map to assign it
-            geometryType = layer.type;
-          }
-*!/
-
-          layers.push(layer);
-        }
-*/
-      });
-
-      return layers;
+      return layerCollections;
     },
     createAllLayers(dataset, location, selected) {
       const layerCollections = this.createLeafletLayers(

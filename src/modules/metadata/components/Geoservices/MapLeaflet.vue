@@ -33,7 +33,7 @@ import {
 
 import {
   createImageryLayer,
-  createLeafletLayerCollections,
+  createLeafletLayerCollectionsGeoJSON,
   createTopoLayer,
   getPointIcon,
   pointStyle,
@@ -165,15 +165,9 @@ export default {
   },
   methods: {
     createLeafletLayers(geoJson) {
-      const { layers } = createLeafletLayerCollections(
+      const { layers } = createLeafletLayerCollectionsGeoJSON(
         geoJson,
-        1,
-        'geometry for dataset',
-        undefined,
-        undefined,
         this.isGcnet,
-        undefined,
-        undefined,
         this,
       );
 

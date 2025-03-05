@@ -70,6 +70,7 @@ import { getOrganitzionTreeItem } from '@/factories/organizationFactory';
 export default {
   name: 'OrganizationTree',
   props: {
+    predefinedSearch: String,
     preSelectedOrganization: String,
     organizationsTree: Array,
     selectionDisabled: Boolean,
@@ -82,6 +83,10 @@ export default {
   mounted() {
     if (this.preSelectedOrganization) {
       this.setActiveItem(this.items, this.preSelectedOrganization);
+    }
+
+    if (this.predefinedSearch) {
+      this.search = this.predefinedSearch;
     }
   },
   computed: {

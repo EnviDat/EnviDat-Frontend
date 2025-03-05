@@ -1,17 +1,15 @@
 <template>
   <MetadataListLayout
-      ref="metadataListLayoutComponent"
-      :topFilteringLayout="topFilteringLayout"
-      :minMapHeight="minMapHeight"
-      :useDynamicHeight="useDynamicHeight"
-      :showMapFilter="showMapFilter"
-      :mapFilteringPossible="mapFilteringPossible"
-      @onScroll="onScroll"
-      :layoutRecalcTrigger="layoutRecalcTrigger"
+    ref="metadataListLayoutComponent"
+    :topFilteringLayout="topFilteringLayout"
+    :minMapHeight="minMapHeight"
+    :useDynamicHeight="useDynamicHeight"
+    :showMapFilter="showMapFilter"
+    :mapFilteringPossible="mapFilteringPossible"
+    @onScroll="onScroll"
+    :layoutRecalcTrigger="layoutRecalcTrigger"
   >
-
     <template v-slot:filterKeywords>
-
       <FilterKeywordsSingleView
         :compactLayout="$vuetify.display.smAndDown"
         :allTags="allTags"
@@ -19,18 +17,30 @@
         :showPlaceholder="loading || updatingTags"
         @clickedTag="catchTagClicked"
         @clickedTagClose="catchTagCloseClicked"
-        @clickedClear="catchTagCleared" />
-
+        @clickedClear="catchTagCleared"
+      />
     </template>
 
     <template #controlPanel>
-      <ControlPanel :compactLayout="true" :searchTerm="searchTerm" :showSearch="showSearch" :searchCount="searchCount"
-        :isAuthorSearch="isAuthorSearch" :isShallow="isShallow" :mode="modeData?.name" :fixedHeight="36"
-        :searchBarPlaceholder="searchBarPlaceholder" :loading="loading" :controlsActive="controlsActive"
-        :enabledControls="enabledControls" @searchClick="catchSearchClicked" @searchCleared="catchSearchCleared"
-        @controlsChanged="controlsChanged" @authorSearchClick="catchAuthorSearchClick"
-        @shallowRealClick="catchShallowRealClick" />
-
+      <ControlPanel
+        :compactLayout="true"
+        :searchTerm="searchTerm"
+        :showSearch="showSearch"
+        :searchCount="searchCount"
+        :isAuthorSearch="isAuthorSearch"
+        :isShallow="isShallow"
+        :mode="modeData?.name"
+        :fixedHeight="36"
+        :searchBarPlaceholder="searchBarPlaceholder"
+        :loading="loading"
+        :controlsActive="controlsActive"
+        :enabledControls="enabledControls"
+        @searchClick="catchSearchClicked"
+        @searchCleared="catchSearchCleared"
+        @controlsChanged="controlsChanged"
+        @authorSearchClick="catchAuthorSearchClick"
+        @shallowRealClick="catchShallowRealClick"
+      />
     </template>
 
     <template v-slot:filterMap>
@@ -43,23 +53,23 @@
         @pointClicked="catchPointClicked"
         @clearButtonClicked="catchClearButtonClick"
       />
-
     </template>
 
     <template v-slot:metadataListPlaceholder>
       <v-container v-show="loading" class="px-0 pt-0 px-sm-1" fluid>
         <!-- don't use class with paddings here, it's being used in the MetadataListLayout component -->
-        <v-row no-gutters
-            id="metadataListPlaceholder"
-            ref="metadataListPlaceholder">
-
+        <v-row
+          no-gutters
+          id="metadataListPlaceholder"
+          ref="metadataListPlaceholder"
+        >
           <v-col
-              v-for="(n, index) in placeHolderAmount"
-              :key="'placeHolder_' + index"
-              cols="12"
-              sm="3"
-              class="pa-2">
-
+            v-for="(n, index) in placeHolderAmount"
+            :key="'placeHolder_' + index"
+            cols="12"
+            sm="3"
+            class="pa-2"
+          >
             <MetadataCardPlaceholder :dark="false" />
           </v-col>
         </v-row>
@@ -73,28 +83,25 @@
         class="pa-0"
         :style="`height: ${metadataListHeight}px;`"
       >
-      <v-row v-if="!loading && hasContent"
-             no-gutters>
-
-        <RecycleScroller
+        <v-row v-if="!loading && hasContent" no-gutters>
+          <RecycleScroller
             class="scroller"
             :item-size="fixedCardHeight"
             :items="groupedContent"
             :page-mode="true"
             :buffer="fixedCardHeight * 3"
             key-field="id"
-        >
-          <template v-slot:default="{ item }">
-
-            <v-row no-gutters
-            >
-              <v-col :cols="12 / amountOfRowsItems"
-                v-for="(metadata, index) in item.group"
-                class="px-2 py-1"
-                :style="`height: ${fixedCardHeight - 10}px;`"
-                :key="`item_${metadata.id}_${index}`">
-
-                <MetadataCard
+          >
+            <template v-slot:default="{ item }">
+              <v-row no-gutters>
+                <v-col
+                  :cols="12 / amountOfRowsItems"
+                  v-for="(metadata, index) in item.group"
+                  class="px-2 py-1"
+                  :style="`height: ${fixedCardHeight - 10}px;`"
+                  :key="`item_${metadata.id}_${index}`"
+                >
+                  <MetadataCard
                     :class="metadata.isPinned ? 'highlighted' : ''"
                     :id="metadata.id"
                     :ref="metadata.id"
@@ -114,38 +121,39 @@
                     :organization="metadata.organization?.name"
                     :organizationTooltip="metadata.organization?.title"
                     :showOrganizationOnHover="showOrganizationOnHover"
-                    @organizationClicked="$emit('organizationClicked', metadata.organization)"
+                    @organizationClicked="
+                      $emit('organizationClicked', metadata.organization)
+                    "
                     @clickedEvent="metaDataClicked"
                     @clickedTag="catchTagClicked"
                     :showGenericOpenButton="!!metadata.openEvent"
                     :openButtonTooltip="metadata.openButtonTooltip"
                     :openButtonIcon="metadata.openButtonIcon"
-                    @openButtonClicked="catchOpenClick(metadata.openEvent, metadata.openProperty)"
-                />
-              </v-col>
-            </v-row>
+                    @openButtonClicked="
+                      catchOpenClick(metadata.openEvent, metadata.openProperty)
+                    "
+                  />
+                </v-col>
+              </v-row>
+            </template>
+          </RecycleScroller>
+        </v-row>
 
-          </template>
-
-        </RecycleScroller>
-
-      </v-row>
-
-      <v-row v-if="!loading && !hasContent"
-      >
-        <v-col
+        <v-row v-if="!loading && !hasContent">
+          <v-col
             class="mx-2"
             id="noSearchResultsView"
             key="noSearchResultsView"
-            cols="12">
-          <NoSearchResultsView :categoryCards="categoryCards" @clicked="catchCategoryClicked" />
-        </v-col>
-
-      </v-row>
+            cols="12"
+          >
+            <NoSearchResultsView
+              :categoryCards="categoryCards"
+              @clicked="catchCategoryClicked"
+            />
+          </v-col>
+        </v-row>
       </v-container>
-
     </template>
-
   </MetadataListLayout>
 </template>
 
@@ -163,7 +171,7 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 
 import { defineAsyncComponent, toRaw } from 'vue';
 import { RecycleScroller } from 'vue-virtual-scroller';
@@ -189,8 +197,8 @@ import MetadataCard from '@/components/Cards/MetadataCard.vue';
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
 import { getMetadataVisibilityState } from '@/factories/publicationFactory';
 
-const NoSearchResultsView = defineAsyncComponent(() =>
-  import('@/components/Filtering/NoSearchResultsView.vue'),
+const NoSearchResultsView = defineAsyncComponent(
+  () => import('@/components/Filtering/NoSearchResultsView.vue'),
 );
 
 export default {
@@ -259,7 +267,7 @@ export default {
     },
     metadatasContent: {
       type: Object,
-      default: () => { },
+      default: () => {},
     },
     categoryCards: {
       type: Array,
@@ -275,11 +283,12 @@ export default {
   },
   computed: {
     hasMetadatasContent() {
-      return this.metadatasContent ? Object.keys(this.metadatasContent)?.length > 0 : false;
+      return this.metadatasContent
+        ? Object.keys(this.metadatasContent)?.length > 0
+        : false;
     },
     hasPinnedContent() {
       if (this.prePinnedIds?.length > 0) {
-
         for (let i = 0; i < this.prePinnedIds.length; i++) {
           const pin = this.prePinnedIds[i];
 
@@ -294,20 +303,22 @@ export default {
       return false;
     },
     pinnedContent() {
-      if (!this.metadatasContent || Object.keys(this.metadatasContent)?.length <= 0) {
+      if (
+        !this.metadatasContent ||
+        Object.keys(this.metadatasContent)?.length <= 0
+      ) {
         return [];
       }
 
       const pins = this.prePinnedIds;
       const pinnedContent = [];
-
       for (let i = 0; i < pins.length; i++) {
         const id = pins[i];
         pinnedContent.push(this.metadatasContent[id]);
       }
 
       return pinnedContent;
-    },    
+    },
     content() {
       if (!this.listContent) {
         return [];
@@ -316,7 +327,9 @@ export default {
       const pins = this.pinnedContent;
 
       if (pins.length > 0) {
-        const content = this.listContent.filter((dataset) => !this.prePinnedIds.includes(dataset.id));
+        const content = this.listContent.filter(
+          (dataset) => !this.prePinnedIds.includes(dataset.id),
+        );
         return [...pins, ...content];
       }
 
@@ -326,9 +339,11 @@ export default {
       return this.content?.length > 0;
     },
     showPinnedElements() {
-      return !this.loading && this.showMapFilter && this.prePinnedIds?.length > 0;
+      return (
+        !this.loading && this.showMapFilter && this.prePinnedIds?.length > 0
+      );
     },
-    amountOfRowsItems()  {
+    amountOfRowsItems() {
       const mapActive = this.isActiveControl(LISTCONTROL_MAP_ACTIVE);
       const compactLayout = this.isCompactLayout;
       const listLayout = this.isActiveControl(LISTCONTROL_LIST_ACTIVE);
@@ -391,7 +406,11 @@ export default {
       return this.isActiveControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE);
     },
     mapLayout() {
-      return !this.topFilteringLayout && this.showMapFilter && this.$vuetify.display.mdAndUp;
+      return (
+        !this.topFilteringLayout &&
+        this.showMapFilter &&
+        this.$vuetify.display.mdAndUp
+      );
     },
   },
   methods: {
@@ -412,7 +431,7 @@ export default {
 
       this.groupedContent = groupedItems;
     },
-   getMetadataState(metadata) {
+    getMetadataState(metadata) {
       if (!this.showPublicationState) {
         return null;
       }
@@ -423,7 +442,9 @@ export default {
       eventBus.emit(event, eventProperty);
     },
     getGeoJSONIcon(location) {
-      return location?.geoJSON?.type ? getGeoJSONIcon(location.geoJSON.type) : null;
+      return location?.geoJSON?.type
+        ? getGeoJSONIcon(location.geoJSON.type)
+        : null;
     },
     catchTagClicked(tagName) {
       this.$emit('clickedTag', tagName);
@@ -448,7 +469,13 @@ export default {
       }
 
       const stringTags = convertArrayToUrlString([cardType]);
-      this.$router.options.additiveChangeRoute(this.$route, this.$router, BROWSE_PATH, '', stringTags);
+      this.$router.options.additiveChangeRoute(
+        this.$route,
+        this.$router,
+        BROWSE_PATH,
+        '',
+        stringTags,
+      );
     },
     catchModeClicked(mode) {
       this.$router.push({
@@ -477,7 +504,7 @@ export default {
       let newPins = toRaw(this.prePinnedIds);
 
       if (newPins.includes(id)) {
-        newPins = newPins.filter(i => i !== id);
+        newPins = newPins.filter((i) => i !== id);
       } else {
         newPins.push(id);
       }
@@ -495,16 +522,18 @@ export default {
       for (let i = 0; i < metadata.resources.length; i++) {
         const res = metadata.resources[i];
 
-        if (res.restricted !== undefined
-          && (res.restricted.allowed_users !== undefined
-            || res.restricted.level !== 'public')) {
+        if (
+          res.restricted !== undefined &&
+          (res.restricted.allowed_users !== undefined ||
+            res.restricted.level !== 'public')
+        ) {
           return true;
         }
       }
 
       return false;
     },
-      isActiveControl(number) {
+    isActiveControl(number) {
       return this.controlsActive ? this.controlsActive.includes(number) : false;
     },
     controlsChanged(number) {
@@ -512,17 +541,21 @@ export default {
       let controlsActive = this.controlsActive;
 
       if (this.isActiveControl(number)) {
-        controlsActive = controlsActive.filter(n => n !== number);
+        controlsActive = controlsActive.filter((n) => n !== number);
       } else {
         controlsActive.push(number);
       }
 
       if (number === LISTCONTROL_LIST_ACTIVE) {
-        controlsActive = controlsActive.filter(n => n !== LISTCONTROL_COMPACT_LAYOUT_ACTIVE);
+        controlsActive = controlsActive.filter(
+          (n) => n !== LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
+        );
       }
 
       if (number === LISTCONTROL_COMPACT_LAYOUT_ACTIVE) {
-        controlsActive = controlsActive.filter(n => n !== LISTCONTROL_LIST_ACTIVE);
+        controlsActive = controlsActive.filter(
+          (n) => n !== LISTCONTROL_LIST_ACTIVE,
+        );
       }
 
       let listActive = false;
@@ -586,7 +619,7 @@ export default {
       handler() {
         this.$nextTick(() => {
           this.setGroupedContentList();
-        })
+        });
       },
       immediate: true,
     },
@@ -596,13 +629,20 @@ export default {
         this.layoutRecalcTrigger += 1;
         this.$nextTick(() => {
           this.setGroupedContentList();
-        })
+        });
       },
       deep: true,
     },
-    pinnedContent(newPins, oldPins) {
-      this.setDatasetsPinned(oldPins, false)
-      this.setDatasetsPinned(newPins, true)
+    pinnedContent: {
+      handler(newPins, oldPins) {
+        if (Array.isArray(oldPins) && oldPins.length) {
+          this.setDatasetsPinned(oldPins, false);
+        }
+        if (Array.isArray(newPins) && newPins.length) {
+          this.setDatasetsPinned(newPins, true);
+        }
+      },
+      immediate: true,
     },
   },
   data: () => ({

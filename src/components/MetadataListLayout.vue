@@ -1,30 +1,33 @@
 <template>
   <v-container class="fill-height pa-0" id="MetadataListLayoutComponent" fluid>
     <v-row v-if="mapLayout" class="fill-height">
-
       <v-col class="py-0 pr-2 flex-column" cols="4">
         <v-row no-gutters>
-          <v-col id="metadataListLayoutFiltering_map" ref="metadataListLayoutFiltering">
+          <v-col
+            id="metadataListLayoutFiltering_map"
+            ref="metadataListLayoutFiltering"
+          >
             <slot name="filterKeywords" />
           </v-col>
         </v-row>
 
         <v-row no-gutters>
-          <v-col class="pt-4 " :style="useDynamicHeight
-              ? `height: calc(100vh - ${keywordHeight}px);`
-              : ''
-            ">
+          <v-col
+            class="pt-4"
+            :style="
+              useDynamicHeight
+                ? `height: calc(100vh - ${keywordHeight}px);`
+                : ''
+            "
+          >
             <slot name="filterMap" />
           </v-col>
         </v-row>
       </v-col>
 
-      <v-col class="py-0 pl-2"
-             cols="8">
+      <v-col class="py-0 pl-2" cols="8">
         <v-row ref="controlPanel">
-          <v-col class="controlPanel hidden-xs"
-                 key="controlPanel"
-                 cols="12">
+          <v-col class="controlPanel hidden-xs" key="controlPanel" cols="12">
             <slot name="controlPanel" />
           </v-col>
         </v-row>
@@ -37,25 +40,36 @@
             class="mapLayoutContainers listScroll mt-2 mb-4 pr-1"
             :style="{
               'scrollbar-color': `${this.scrollbarColorFront} ${this.scrollbarColorBack}`,
-              height: useDynamicHeight ? `calc(100vh - ${this.filteringComponentsHeight}px)` : undefined,
+              height: useDynamicHeight
+                ? `calc(100vh - ${this.filteringComponentsHeight}px)`
+                : undefined,
               'max-height': !useDynamicHeight ? '650px' : undefined,
-              }"
+            }"
             v-on:scrollend="onScroll()"
           >
             <slot name="metadataListPlaceholder" />
 
-            <slot name="metadataListLayout" :metadataListHeight="metadataListHeight" />
+            <slot
+              name="metadataListLayout"
+              :metadataListHeight="metadataListHeight"
+            />
           </v-col>
         </v-row>
       </v-col>
     </v-row>
 
-    <v-row v-if="!mapLayout"
-           id="metadataListLayoutFiltering_no_map"
-           ref="metadataListLayoutFiltering"
-           class="w-100"
-           no-gutters>
-      <v-col class="hidden-sm-and-up pb-2" cols="12" key="controlPanel_smallscreen">
+    <v-row
+      v-if="!mapLayout"
+      id="metadataListLayoutFiltering_no_map"
+      ref="metadataListLayoutFiltering"
+      class="w-100"
+      no-gutters
+    >
+      <v-col
+        class="hidden-sm-and-up pb-2"
+        cols="12"
+        key="controlPanel_smallscreen"
+      >
         <slot name="controlPanel" />
       </v-col>
 
@@ -67,10 +81,14 @@
         <slot name="controlPanel" />
       </v-col>
 
-      <v-col v-if="showMapFilter && mapFilteringPossible"
-             cols="12"
-             :style="minMapHeight ? `min-height: ${minMapHeight}px;` : 'height: 100%;'"
-             key="filterMap">
+      <v-col
+        v-if="showMapFilter && mapFilteringPossible"
+        cols="12"
+        :style="
+          minMapHeight ? `min-height: ${minMapHeight}px;` : 'height: 100%;'
+        "
+        key="filterMap"
+      >
         <slot name="filterMap" />
       </v-col>
     </v-row>
@@ -81,15 +99,20 @@
         id="metadataListScroll_no_mapLayout"
         class="noMapLayoutContainers listScroll mt-2 mb-4 pr-1"
         :style="{
-              'scrollbar-color': `${this.scrollbarColorFront} ${this.scrollbarColorBack}`,
-              height: useDynamicHeight ? `calc(100vh - ${this.filteringComponentsHeight}px)` : undefined,
-              'max-height': !useDynamicHeight ? '650px' : undefined,
-              }"
+          'scrollbar-color': `${this.scrollbarColorFront} ${this.scrollbarColorBack}`,
+          height: useDynamicHeight
+            ? `calc(100vh - ${this.filteringComponentsHeight}px)`
+            : undefined,
+          'max-height': !useDynamicHeight ? '650px' : undefined,
+        }"
         v-on:scrollend="onScroll()"
       >
         <slot name="metadataListPlaceholder" />
 
-        <slot name="metadataListLayout" :metadataListHeight="metadataListHeight" />
+        <slot
+          name="metadataListLayout"
+          :metadataListHeight="metadataListHeight"
+        />
       </v-col>
     </v-row>
   </v-container>
@@ -135,7 +158,9 @@ export default {
       );
     },
     scrollbarColorFront() {
-      return this.$vuetify ? this.$vuetify.theme.themes.light.colors.highlight : 'auto';
+      return this.$vuetify
+        ? this.$vuetify.theme.themes.light.colors.highlight
+        : 'auto';
     },
     scrollbarColorBack() {
       return this.$vuetify ? '#F0F0F0' : 'auto';
@@ -156,7 +181,8 @@ export default {
         this.$refs &&
         this.$refs.metadataListLayoutFiltering
       ) {
-        searchViewHeight = this.$refs.metadataListLayoutFiltering.$el.clientHeight;
+        searchViewHeight =
+          this.$refs.metadataListLayoutFiltering.$el.clientHeight;
         padding = 16;
       }
 
@@ -164,7 +190,7 @@ export default {
         searchViewHeight + TheNavigationToolbar + padding;
 
       const viewportHeight = window.innerHeight;
-      this.metadataListHeight = (viewportHeight - this.filteringComponentsHeight);
+      this.metadataListHeight = viewportHeight - this.filteringComponentsHeight;
     },
     setKeywordHeight() {
       const TheNavigationToolbar = 36;
