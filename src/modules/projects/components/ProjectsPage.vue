@@ -53,127 +53,142 @@
   </v-container>
 </template>
 
-<script>
-/**
- * The ProjectsPage shows an overview (list of ProjectCards) all the projects
- * and their subprojects.
- *
- * @summary projects page
- * @author Dominik Haas-Artho
- *
- * Created at     : 2019-10-23 16:12:30
- * Last modified  : 2020-11-03 17:20:56
- *
- * This file is subject to the terms and conditions defined in
- * file 'LICENSE.txt', which is part of this source code package.
- */
+<script setup lang="ts">
+import { ref, computed, onBeforeMount, onMounted, watch } from 'vue';
+import { useStore } from 'vuex';
+import { useRouter, useRoute } from 'vue-router';
 
-import { mapGetters, mapState } from 'vuex';
-
+// Import components
 import ImgAndTextLayout from '@/components/Layouts/ImgAndTextLayout.vue';
+import ProjectCard from './ProjectCard.vue';
+import ProjectCardPlaceholder from './ProjectCardPlaceholder.vue';
+
+// Import constants
 import {
   PROJECT_DETAIL_PAGENAME,
   PROJECTS_PAGENAME,
 } from '@/router/routeConsts';
-import { SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
-
-import { getImage } from '@/factories/imageFactory';
+import {
+  SET_APP_BACKGROUND,
+  SET_CURRENT_PAGE,
+} from '@/store/mainMutationsConsts';
 import {
   GET_PROJECTS,
   PROJECTS_NAMESPACE,
   SET_PROJECTDETAIL_PAGE_BACK_URL,
 } from '../store/projectsMutationsConsts';
-import ProjectCard from './ProjectCard.vue';
-import ProjectCardPlaceholder from './ProjectCardPlaceholder.vue';
+import { getImage } from '@/factories/imageFactory';
 
+if (typeof defineOptions === 'function') {
+  defineOptions({
+    beforeRouteEnter(to, from, next) {
+      next((vm: any) => {
+        vm.$store.commit(SET_CURRENT_PAGE, PROJECTS_PAGENAME);
+        vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
+      });
+    },
+  });
+}
+
+const store = useStore();
+const router = useRouter();
+const route = useRoute();
+
+// Map state from Vuex
+const loadingConfig = computed(() => store.state.loadingConfig);
+const config = computed(() => store.state.config);
+const projects = computed(
+  () => store.getters[`${PROJECTS_NAMESPACE}/projects`],
+);
+const loading = computed(() => store.getters[`${PROJECTS_NAMESPACE}/loading`]);
+const projectsCardsParents = computed(
+  () => store.getters[`${PROJECTS_NAMESPACE}/projectsCardsParents`],
+);
+
+// Derived config for projects
+const projectsConfig = computed(() => config.value?.projectsConfig || {});
+
+// Image paths using getImage factory. Note: this example assumes that $vuetify is available globally.
+const missionImg = computed(() => {
+  const imgPath =
+    window.$vuetify &&
+    window.$vuetify.display &&
+    window.$vuetify.display.mdAndUp
+      ? 'mission'
+      : 'mission_small';
+  return getImage(imgPath);
+});
+const creatorImg = computed(() => {
+  const imgPath =
+    window.$vuetify &&
+    window.$vuetify.display &&
+    window.$vuetify.display.mdAndUp
+      ? 'data_creator'
+      : 'data_creator_small';
+  return getImage(imgPath);
+});
+
+// Local data
+const pageBGImage = ref('app_b_browsepage');
+
+onBeforeMount(() => {
+  if (
+    !loadingConfig.value &&
+    !loading.value &&
+    (!projects.value || projects.value.length <= 0)
+  ) {
+    loadProjects();
+  }
+});
+
+onMounted(() => {
+  window.scrollTo(0, 0);
+});
+
+watch(config, () => {
+  if (
+    !loadingConfig.value &&
+    !loading.value &&
+    (!projects.value || projects.value.length <= 0)
+  ) {
+    loadProjects();
+  }
+});
+
+const loadProjects = () => {
+  store.dispatch(`${PROJECTS_NAMESPACE}/${GET_PROJECTS}`, projectsConfig.value);
+};
+
+const onCardClick = (projectId: string) => {
+  store.commit(
+    `${PROJECTS_NAMESPACE}/${SET_PROJECTDETAIL_PAGE_BACK_URL}`,
+    route,
+  );
+  router.push({
+    name: PROJECT_DETAIL_PAGENAME,
+    params: { id: projectId },
+  });
+};
+
+const onSubprojectClick = (subprojectId: string) => {
+  store.commit(
+    `${PROJECTS_NAMESPACE}/${SET_PROJECTDETAIL_PAGE_BACK_URL}`,
+    route,
+  );
+  router.push({
+    name: PROJECT_DETAIL_PAGENAME,
+    params: { id: subprojectId },
+  });
+};
+</script>
+
+<script lang="ts">
 export default {
-  name: 'ProjectsPage',
-  /**
-   * @description beforeRouteEnter is used to change background image of this page.
-   * It's called via vue-router.
-   */
-  beforeRouteEnter(to, from, next) {
-    next((vm) => {
-      vm.$store.commit(SET_CURRENT_PAGE, PROJECTS_PAGENAME);
-    });
-  },
-  /**
-   * @description reset the scrolling to the top,
-   * because of the scrolling is set from the browsePage or metaDetailPage
-   */
-  beforeMount() {
-    if (!this.loadingConfig && !this.loading && this.projects?.length <= 0) {
-      this.loadProjects();
-    }
-  },
-  mounted() {
-    window.scrollTo(0, 0);
-  },
-  watch: {
-    config() {
-      if (!this.loadingConfig && !this.loading && this.projects?.length <= 0) {
-        this.loadProjects();
-      }
-    },
-  },
-  computed: {
-    ...mapState(['loadingConfig', 'config']),
-    ...mapGetters({
-      projects: `${PROJECTS_NAMESPACE}/projects`,
-      loading: `${PROJECTS_NAMESPACE}/loading`,
-      projectsCardsParents: `${PROJECTS_NAMESPACE}/projectsCardsParents`,
-    }),
-    projectsConfig() {
-      return this.config?.projectsConfig || {};
-    },
-    missionImg() {
-      const imgPath = this.$vuetify.display.mdAndUp
-        ? 'mission'
-        : 'mission_small';
-      return getImage(imgPath);
-    },
-    creatorImg() {
-      const imgPath = this.$vuetify.display.mdAndUp
-        ? 'data_creator'
-        : 'data_creator_small';
-      return getImage(imgPath);
-    },
-  },
-  methods: {
-    loadProjects() {
-      this.$store.dispatch(
-        `${PROJECTS_NAMESPACE}/${GET_PROJECTS}`,
-        this.projectsConfig,
-      );
-    },
-    onCardClick(projectId) {
-      this.$store.commit(
-        `${PROJECTS_NAMESPACE}/${SET_PROJECTDETAIL_PAGE_BACK_URL}`,
-        this.$route,
-      );
-
-      this.$router.push({
-        name: PROJECT_DETAIL_PAGENAME,
-        params: { id: projectId },
-      });
-    },
-    onSubprojectClick(subprojectId) {
-      this.$store.commit(
-        `${PROJECTS_NAMESPACE}/${SET_PROJECTDETAIL_PAGE_BACK_URL}`,
-        this.$route,
-      );
-
-      this.$router.push({
-        name: PROJECT_DETAIL_PAGENAME,
-        params: { id: subprojectId },
-      });
-    },
-  },
+  // Provide component registration for non-setup parts
   components: {
     ImgAndTextLayout,
     ProjectCard,
     ProjectCardPlaceholder,
   },
-  data: () => ({}),
 };
 </script>

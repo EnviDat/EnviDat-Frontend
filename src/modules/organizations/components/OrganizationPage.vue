@@ -160,6 +160,7 @@ onMounted(async () => {
 
           <v-card-text class="px-0">
             <OrganizationTree
+              :predefinedSearch="route.params.organization"
               :organizationsTree
               @click="catchOrganizationClick"
             >

@@ -1,5 +1,5 @@
 <template>
-  <v-container class="pa-0" tag="article">
+  <v-container class="pa-0" tag="article" ref="projectDetail">
     <v-row no-gutters>
       <v-col
         class="elevation-5 pa-0"
@@ -41,8 +41,9 @@
         />
       </v-col>
 
-      <v-col class="pb-2" cols="12" lg="12">
+      <v-col ref="projectDatasetsList" class="pb-2" cols="12" lg="12">
         <ProjectDatasets
+          ref="projectDatasets"
           :hasMetadatas="hasMetadatas"
           :listContent="filteredListContent"
           :mapFilteringPossible="mapFilteringPossible"
@@ -90,7 +91,10 @@ import {
   PROJECT_DETAIL_PAGENAME,
   PROJECTS_PATH,
 } from '@/router/routeConsts';
-import { SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
+import {
+  SET_APP_BACKGROUND,
+  SET_CURRENT_PAGE,
+} from '@/store/mainMutationsConsts';
 import {
   LISTCONTROL_LIST_ACTIVE,
   LISTCONTROL_MAP_ACTIVE,
@@ -140,6 +144,7 @@ export default {
   beforeRouteEnter(to, from, next) {
     next((vm) => {
       vm.$store.commit(SET_CURRENT_PAGE, PROJECT_DETAIL_PAGENAME);
+      vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
 
       let backRoute = { path: PROJECTS_PATH };
 
@@ -174,7 +179,6 @@ export default {
       `${PROJECTS_NAMESPACE}/${SET_PROJECTDETAIL_PAGE_BACK_URL}`,
       backRoute,
     );
-
     this.setScrollPos(0);
     next();
   },
@@ -295,7 +299,6 @@ export default {
   methods: {
     loadRoutePins() {
       let pins = this.$route.query.pins || '';
-
       if (pins.length > 0) {
         pins = convertUrlStringToArray(pins, false, true);
 
@@ -397,6 +400,7 @@ export default {
       });
     },
     catchTagClicked(tagName) {
+      console.log(tagName);
       if (!isTagSelected(tagName, this.selectedTagNames)) {
         this.selectedTagNames.push(tagName);
       }
@@ -415,10 +419,14 @@ export default {
     catchTagCleared() {
       this.selectedTagNames = [];
     },
-    setScrollPos(toPos) {
-      if (this.$root && this.$root.$refs.appContainer) {
-        this.$root.$refs.appContainer.$el.scrollTop = toPos;
-      }
+    setScrollPos() {
+      this.$nextTick(() => {
+        const el =
+          this.$refs.projectDatasetsList.$el || this.$refs.projectDatasetsList;
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
     },
   },
   watch: {
@@ -430,7 +438,7 @@ export default {
     $route() {
       // react on changes of the route ( pin clicks )
       // removed to fix the lang layer problem when clicking on markers, not very clear why. to be checked in redesign
-      // this.loadRoutePins();
+      this.loadRoutePins();
     },
   },
   components: {
@@ -440,6 +448,7 @@ export default {
     ProjectDatasets,
   },
   data: () => ({
+    pageBGImage: 'app_b_browsepage',
     placeHolderAmount: 3,
     selectedTagNames: [],
     selectedPins: [],

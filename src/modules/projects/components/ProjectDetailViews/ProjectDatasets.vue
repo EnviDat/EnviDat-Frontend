@@ -6,7 +6,7 @@
 
     <v-card-text v-if="hasMetadatas" class="pa-4 pt-0">
       <MetadataList
-        ref="metadataList"
+        ref="metadataListComponent"
         :listContent="listContent"
         :mapFilteringPossible="mapFilteringPossible"
         :placeHolderAmount="placeHolderAmount"
@@ -29,7 +29,7 @@
       />
     </v-card-text>
 
-    <v-card-text v-if="!hasMetadatas" style="color: red;" class="pa-4 pt-0">
+    <v-card-text v-if="!hasMetadatas" style="color: red" class="pa-4 pt-0">
       {{ projectDatasetsEmptyText }}
     </v-card-text>
   </v-card>
@@ -77,6 +77,9 @@ export default {
     },
     catchMetadataClicked(datasetName) {
       this.$emit('clickedCard', datasetName);
+    },
+    setScrollPos(toPos) {
+      this.$refs.metadataListComponent.setScrollPos(toPos);
     },
   },
   data: () => ({

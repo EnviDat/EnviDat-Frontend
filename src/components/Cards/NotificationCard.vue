@@ -108,10 +108,10 @@ export default {
       const that = this;
       window.clearTimeout(this.activeTimeout);
 
-      if (this.notification.timeout) {
-        this.activeTimeout = window.setTimeout(() => {
+      if (that.notification.timeout) {
+        that.activeTimeout = window.setTimeout(() => {
           that.$emit('clickedClose');
-        }, this.notification.timeout);
+        }, that.notification.timeout);
       }
     },
   },

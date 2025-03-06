@@ -7,24 +7,25 @@
     <v-skeleton-loader
       v-if="loading || showPlaceholder"
       type="list-item-two-line"
-    >
-    </v-skeleton-loader>
-
+    />
     <v-card-text
       ref="text"
       class="pa-4 pt-0 heightAndScroll readableText"
       :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
     >
-    <v-col v-for="(n, index) in dataSliced" :key="'n_' + index"
-    class="px-0 py-1">
-    <!-- title visible only in preview mode -->
-      <p class="font-weight-bold" v-if="isPreview && n.title"> {{ n.title }}</p>
-      <p class="font-weight-bold" v-if="isPreview && n.pid"> {{ n.pid }}</p>
-      <p class="font-weight-bold" v-if="isPreview && n.doi"> {{ n.doi }}</p>
-        <v-row no-gutters
-               :class="{ 'align-center': isPreview }">
+      <v-col
+        v-for="(n, index) in dataSliced"
+        :key="'n_' + index"
+        class="px-0 py-1"
+      >
+        <!-- title visible only in preview mode -->
+        <p class="font-weight-bold" v-if="isPreview && n.title">
+          {{ n.title }}
+        </p>
+        <p class="font-weight-bold" v-if="isPreview && n.pid">{{ n.pid }}</p>
+        <p class="font-weight-bold" v-if="isPreview && n.doi">{{ n.doi }}</p>
 
-
+        <v-row no-gutters :class="{ 'align-center': isPreview }">
           <v-col class="flex-grow-1">
             <BaseCitationView
               :abstract="n.abstract"
@@ -33,26 +34,26 @@
               :doiUrl="n.doiUrl"
             />
           </v-col>
-
-          <!-- isPreview - show this button only if it is within the Edit Related Publications section -->
-          <v-col v-if="isPreview"
-                 class="flex-grow-0 px-1 d-flex flex-column flex-md-row">
+          <!-- Show buttons only in preview mode -->
+          <v-col
+            v-if="isPreview"
+            class="flex-grow-0 px-1 d-flex flex-column flex-md-row"
+          >
             <BaseIconButton
-                v-if="isPlainText(n)"
-                :icon="mdiPencil"
-                icon-color="yellow"
-                @clicked="sendEditItemData(n.citation, index)"
+              v-if="isPlainText(n)"
+              :icon="mdiPencil"
+              icon-color="yellow"
+              @clicked="sendEditItemData(n.citation, index)"
             />
             <BaseIconButton
-                :icon="mdiMinusCircleOutline"
-                icon-color="red"
-                @clicked="sendRemoveItem(index)"
+              :icon="mdiMinusCircleOutline"
+              icon-color="red"
+              @clicked="sendRemoveItem(index)"
             />
           </v-col>
         </v-row>
       </v-col>
     </v-card-text>
-
 
     <v-card-actions
       v-if="dataLength > 2 && !isPreview"
@@ -66,7 +67,7 @@
         :outlined="!!showFullText"
         outline-color="secondary"
         :rotated="showFullText"
-        :tooltipText="showFullText ? 'Collaspe text' : 'Show full text'"
+        :tooltipText="showFullText ? 'Collapse text' : 'Show full text'"
         @clicked="readMore"
       />
     </v-card-actions>
@@ -80,11 +81,7 @@ import { mdiPencil, mdiMinusCircleOutline, mdiChevronDown } from '@mdi/js';
 import BaseCitationView from '@/components/BaseElements/BaseCitationView.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
-import {
-  EDITMETADATA_CLEAR_PREVIEW,
-  eventBus,
-} from '@/factories/eventBus';
-
+import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 import { METADATA_PUBLICATIONS_TITLE } from '@/factories/metadataConsts';
 import {
   extractPIDsFromText,
@@ -93,7 +90,6 @@ import {
   resolveDoiCitationObjectsViaDora,
   resolvePidCitationObjectsViaDora,
 } from '@/factories/citationFactory';
-
 
 export default {
   name: 'MetadataPublicationList',
@@ -123,7 +119,6 @@ export default {
       default: undefined,
     },
     allDatasets: {
-      // this is only for testing & implementation via storybook
       type: Array,
       default: () => [],
     },
@@ -146,10 +141,6 @@ export default {
       }
       return dataSliced;
     },
-
-    publications() {
-      return this.mixinMethods_getGenericProp('publications');
-    },
     metadataConfig() {
       return this.$store ? this.config?.metadataConfig || {} : {};
     },
@@ -171,19 +162,11 @@ export default {
     extractedNoPidDoi() {
       return extractedNoPidDoiText(this.text);
     },
-    resolvingStatusText() {
-      if (this.resolveError) {
-        return `Publication could not be resolved because: ${this.resolveError}`;
-      }
-
-      return '';
-    },
     scrollbarColorBack() {
       return this.$vuetify ? '#F0F0F0' : 'auto';
     },
   },
   mounted() {
-    // get the text from props and prepare data for the component
     this.resolvedCitations(this.text);
   },
   methods: {
@@ -227,26 +210,35 @@ export default {
         ? this.$vuetify.theme.themes.light.colors.highlight
         : 'auto';
     },
+
+    /**
+     * Recreates a single string from dataRelatedPublications,
+     * preserving lines with PIDs/DOIs and plain text lines.
+     */
     recreateRelatedPublicationText() {
       let newText = '';
-
       for (let i = 0; i < this.dataRelatedPublications.length; i++) {
         if (i !== 0) {
           newText += '\n';
         }
-
         const publicationObj = this.dataRelatedPublications[i];
         const id = publicationObj.pid || publicationObj.doi || null;
 
+        // If an object has a PID or DOI, use that in the text
         if (id) {
-          newText += id;
+          newText += id; // e.g. "wsl:29664"
         } else {
+          // Otherwise, it's plain text
           newText += publicationObj.citation;
         }
       }
-
       return newText;
     },
+
+    /**
+     * Merges or updates final array from partial arrays (if you have them).
+     * Currently it's used for a different logic (resolvePIDs/resolveDOIs).
+     */
     updatePublicationList() {
       this.dataRelatedPublications = [
         ...(this.pidPublications || []),
@@ -254,10 +246,14 @@ export default {
         ...(this.emptyCitation || []),
       ];
     },
+
+    /**
+     * If you want to quickly add plain text lines in bulk
+     * (not PIDs, not DOIs).
+     */
     generateCitationFromSimpleText(arrayText) {
       this.emptyCitation = [];
-
-      arrayText.forEach(citation => {
+      arrayText.forEach((citation) => {
         if (citation !== 'null' && citation.trim() !== '') {
           const citationProp = {
             title: 'Plain Text',
@@ -269,136 +265,203 @@ export default {
           this.emptyCitation.push(citationProp);
         }
       });
-
       this.updatePublicationList();
     },
-    resolvedCitations(text) {
-      const pidMapSize = this.extractedPIDMap?.size || 0;
-      const doiMapSize = this.extractedDOIMap?.size || 0;
 
-      if (pidMapSize > 0 && !this.isResolving && !this.resolveError) {
-        this.isResolving = true;
-        this.$nextTick(() => this.resolvePIDs(this.extractedPIDMap));
+    /**
+     * Helper function to resolve a single line (all-or-nothing).
+     */
+    async processLine(line, resolveBaseUrl, resolveBaseDOIUrl) {
+      const linePidMap = extractPIDsFromText(line);
+      const lineDoiMap = extractDOIsFromText(line);
+
+      if (!linePidMap.size && !lineDoiMap.size) {
+        // purely plain text
+        return [
+          {
+            title: 'Plain Text',
+            citation: line,
+            pid: null,
+            doi: null,
+            abstract: null,
+          },
+        ];
       }
 
-      if (doiMapSize > 0 && !this.isDoiResolving && !this.resolveDoiError) {
-        this.isDoiResolving = true;
-        this.$nextTick(() => this.resolveDOIs(this.extractedDOIMap));
-      }
-      // check whether there are also parts within the text without PID or DOI that need to be displayed
-      if (doiMapSize > 0 || pidMapSize > 0) {
-        this.$nextTick(() =>
-          this.generateCitationFromSimpleText(this.extractedNoPidDoi),
-        );
-      }
-
-      if (!pidMapSize && !doiMapSize) {
-        const stringToArray = text?.split('\n').map(line => line.trim());
-        this.loading = false;
-        if (this.text?.length > 0) {
-          this.$nextTick(() =>
-            this.generateCitationFromSimpleText(stringToArray),
+      let pidCitationMap = new Map();
+      if (linePidMap.size > 0) {
+        try {
+          pidCitationMap = await resolvePidCitationObjectsViaDora(
+            linePidMap,
+            resolveBaseUrl,
           );
-        } else {
-          return '';
+        } catch (err) {
+          console.warn('Error resolving PIDs for line:', line, err);
         }
       }
 
-      return text;
+      let doiCitationMap = new Map();
+      if (lineDoiMap.size > 0) {
+        try {
+          doiCitationMap = await resolveDoiCitationObjectsViaDora(
+            lineDoiMap,
+            resolveBaseDOIUrl,
+          );
+        } catch (err) {
+          console.warn('Error resolving DOIs for line:', line, err);
+        }
+      }
+
+      let allResolved = true;
+
+      for (const pid of linePidMap.values()) {
+        if (!pidCitationMap.has(pid)) {
+          allResolved = false;
+          break;
+        }
+      }
+      if (allResolved) {
+        for (const doi of lineDoiMap.values()) {
+          if (!doiCitationMap.has(doi)) {
+            allResolved = false;
+            break;
+          }
+        }
+      }
+
+      if (!allResolved) {
+        return [
+          {
+            title: 'Plain Text',
+            citation: line,
+            pid: null,
+            doi: null,
+            abstract: null,
+          },
+        ];
+      }
+
+      // All PIDs/DOIs are resolved
+      const resultItems = [];
+      for (const pid of linePidMap.values()) {
+        const citObj = pidCitationMap.get(pid);
+        if (citObj) {
+          resultItems.push(citObj);
+        }
+      }
+      for (const doi of lineDoiMap.values()) {
+        const citObj = doiCitationMap.get(doi);
+        if (citObj) {
+          resultItems.push(citObj);
+        }
+      }
+      return resultItems;
     },
+
     /**
-     *
-     * @param text
-     * @param {null|Map<string, string>} pidMap
-     * @returns {Promise<void>}
+     * Processes the entire text line-by-line in parallel.
      */
+    async resolvedCitations(text) {
+      // You may decide to keep empty lines or not
+      const lines = text
+        .split('\n')
+        .map((l) => l.trim())
+        .filter((l) => l.length > 0);
+      // optional, if you don't want empty lines
 
+      this.loading = true;
+      try {
+        const linePromises = lines.map((line) =>
+          this.processLine(line, this.resolveBaseUrl, this.resolveBaseDOIUrl),
+        );
+        const arrayOfArrays = await Promise.all(linePromises);
+        const finalItems = arrayOfArrays.flat();
+        this.dataRelatedPublications = finalItems;
+      } catch (error) {
+        console.error('Error in resolvedCitations:', error);
+        // fallback
+        this.dataRelatedPublications = lines.map((l) => ({
+          title: 'Plain Text',
+          citation: l,
+          pid: null,
+          doi: null,
+          abstract: null,
+        }));
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    /**
+     * @param {null|Map<string, string>} pidMap
+     */
     async resolvePIDs(pidMap) {
-      if (!pidMap) {
-        return;
-      }
-      this.resolveError = null;
-      this.isResolving = true;
-      this.pidPublications = null;
-      this.loading = true;
-
-      try {
-        const citationMap = await resolvePidCitationObjectsViaDora(
-          pidMap,
-          this.resolveBaseUrl,
-        );
-
-        this.pidPublications = [];
-        citationMap.forEach(value => {
-          this.pidPublications.push(value);
-        });
-
-        this.updatePublicationList();
-      } catch (e) {
-        this.resolveError = e;
-        this.loading = false;
-      } finally {
-        this.isResolving = false;
-        this.loading = false;
-      }
+      // ...
     },
+
+    /**
+     * @param {null|Map<string, string>} doiMap
+     */
     async resolveDOIs(doiMap) {
-      if (!doiMap) {
-        return;
-      }
-      this.isDoiResolving = true;
-      this.doiPublications = null;
-      this.loading = true;
-
-      try {
-        const citationMap = await resolveDoiCitationObjectsViaDora(
-          doiMap,
-          this.resolveBaseDOIUrl,
-        );
-
-        this.doiPublications = [];
-        citationMap.forEach(value => {
-          this.doiPublications.push(value);
-        });
-
-        this.updatePublicationList();
-      } catch (e) {
-        this.resolveDoiError = e;
-        this.loading = false;
-      } finally {
-        this.isDoiResolving = false;
-        this.loading = false;
-      }
+      // ...
     },
+
     clearPreview() {
       this.doiPublications = null;
       this.pidPublications = null;
       this.emptyCitation = null;
-    },    
+    },
+
+    /**
+     * Add a new plain text line to dataRelatedPublications (manually),
+     * so that we don't lose existing lines.
+     */
+    addPlainTextLine(citationText) {
+      if (!citationText || citationText.trim().length === 0) {
+        return;
+      }
+      this.dataRelatedPublications.push({
+        title: 'Plain Text',
+        pid: null,
+        doi: null,
+        citation: citationText,
+        abstract: null,
+      });
+      // Then update the overall text
+      const newRelatedText = this.recreateRelatedPublicationText();
+      this.$emit('updateText', newRelatedText);
+    },
   },
   watch: {
-    text() {
-      this.resolvedCitations(this.text);
-      // this.replacedText = null;
+    text(newVal) {
+      // If text changes from outside, re-run the entire logic
+      this.resolvedCitations(newVal);
     },
-    updatedCitation() {
-      if (this.updatedCitation) {
-        if (this.updatedCitationIndex === undefined) {
-          // case for a new entry of just plain text
-          this.generateCitationFromSimpleText([
-            ...this.extractedNoPidDoi,
-            this.updatedCitation,
-          ]);
-        } else {
-          // case for selected item for editing and now needs updating
-          const citationObject = this.dataRelatedPublications[
-            this.updatedCitationIndex
-          ];
-          if (citationObject) {
-            citationObject.citation = this.updatedCitation;
-          }
-        }
 
+    /**
+     * When updatedCitation changes, we either:
+     * - add a new line (if updatedCitationIndex is undefined),
+     * - update an existing line (if updatedCitationIndex is set).
+     */
+    updatedCitation(newVal) {
+      if (!newVal) {
+        return;
+      }
+      if (this.updatedCitationIndex === undefined) {
+        // We add a brand new line of plain text
+        this.addPlainTextLine(newVal);
+      } else {
+        // We update the line at [updatedCitationIndex]
+        if (
+          this.dataRelatedPublications &&
+          this.dataRelatedPublications[this.updatedCitationIndex]
+        ) {
+          const item = this.dataRelatedPublications[this.updatedCitationIndex];
+          // If it's PID-based, you might want a different approach,
+          // but let's assume we just replace the citation
+          item.citation = newVal;
+        }
+        // Recreate the text
         const newRelatedText = this.recreateRelatedPublicationText();
         this.$emit('updateText', newRelatedText);
       }
@@ -409,14 +472,13 @@ export default {
     mdiMinusCircleOutline,
     mdiChevronDown,
     METADATA_PUBLICATIONS_TITLE,
+    dataRelatedPublications: [],
     isResolving: false,
     isDoiResolving: false,
     resolveError: null,
     resolveDoiError: null,
-    // replacedText: null,
-    dataRelatedPublications: null,
-    doiPublications: null,
     pidPublications: null,
+    doiPublications: null,
     emptyCitation: null,
     loading: true,
     showFullText: false,

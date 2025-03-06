@@ -1,4 +1,5 @@
 import {
+  LOCATION_TYPE_FEATCOLLECTION,
   LOCATION_TYPE_GEOMCOLLECTION,
   LOCATION_TYPE_MULTIPOINT,
   LOCATION_TYPE_MULTIPOLYGON,
@@ -185,22 +186,8 @@ export const defaultWorldLocation = {
   ],
 };
 
-export function geomanGeomsToGeoJSON(layerArray) {
-  // Convert leaflet-geoman editing layers into GeoJSON for Leaflet
 
-  const geoJSONArray = [];
-
-  if (layerArray.length !== 0) {
-    layerArray.forEach(geometry => {
-      const geoJson = geometry.toGeoJSON();
-      geoJSONArray.push(geoJson.geometry);
-    });
-  }
-
-  return geoJSONArray;
-}
-
-export function fetureCollectionToGeoCollection(featureColl) {
+export function featureCollectionToGeoCollection(featureColl) {
   const features = featureColl?.features;
 
   if (!features) {
@@ -239,4 +226,105 @@ export function singlePointsToMultiPoints(geometries, asGeoCollection) {
   }
 
   return multiPointGeometry;
+}
+
+export function convertSinglePointsToMultiPoint(pointLayers) {
+  if (!Array.isArray(pointLayers)) {
+    return null;
+    // throw new Error('Input must be an array of Point objects.');
+  }
+
+  const validPoints = pointLayers.filter(point => point.type === LOCATION_TYPE_POINT && Array.isArray(point.coordinates))
+
+  if (validPoints.length <= 0) {
+    return null;
+  }
+
+  // Extract coordinates from individual Point objects
+  const coordinates = validPoints.map(point => point.coordinates);
+
+  return {
+    type: LOCATION_TYPE_MULTIPOINT,
+    coordinates,
+  };
+}
+
+export function convertPolygonsToMultiPolygon(polygons) {
+  if (!Array.isArray(polygons)) {
+    return polygons;
+    // throw new Error('Input must be an array of Polygon objects.');
+  }
+
+  const validPolygons = polygons.filter(polygon => polygon.type === LOCATION_TYPE_POLYGON && Array.isArray(polygon.coordinates));
+
+  if (validPolygons.length <= 0) {
+    return polygons;
+  }
+
+  // Extract coordinates from individual Polygon objects
+  const coordinates = validPolygons.map(polygon => polygon.coordinates);
+
+  return {
+    type: LOCATION_TYPE_MULTIPOLYGON,
+    coordinates,
+  };
+}
+
+export function convertGeoJSONToGeoCollection(inputGeoJSON) {
+  let geoColl;
+
+  if (inputGeoJSON.type === LOCATION_TYPE_FEATCOLLECTION) {
+    geoColl = featureCollectionToGeoCollection(inputGeoJSON);
+  } else if(inputGeoJSON.type === LOCATION_TYPE_GEOMCOLLECTION) {
+    geoColl = inputGeoJSON;
+  } else {
+    geoColl = createGeomCollection(inputGeoJSON, inputGeoJSON.properties);
+  }
+
+  return geoColl;
+}
+
+export function geomanGeomsToGeoJSON(layerArray) {
+  // Convert leaflet-geoman editing layers into GeoJSON for Leaflet
+
+  const geoJSONArray = [];
+
+  if (layerArray.length !== 0) {
+    layerArray.forEach(geometry => {
+      const geoJson = geometry.toGeoJSON();
+      geoJSONArray.push(geoJson.geometry);
+    });
+  }
+
+  const newGeometries = [];
+
+  const pointGeometries = geoJSONArray.filter(point => point.type === LOCATION_TYPE_POINT && Array.isArray(point.coordinates))
+
+  if (pointGeometries.length > 0) {
+
+    if (pointGeometries.length === 1) {
+      newGeometries.push(pointGeometries[0]);
+    } else {
+      const mergedPoints = convertSinglePointsToMultiPoint(geoJSONArray);
+      if (mergedPoints) {
+        newGeometries.push(mergedPoints)
+      }
+    }
+  }
+
+  const polygonGeometries = geoJSONArray.filter(polygon => polygon.type === LOCATION_TYPE_POLYGON && Array.isArray(polygon.coordinates));
+
+  if (polygonGeometries.length > 0) {
+
+    if (polygonGeometries.length === 1) {
+      newGeometries.push(polygonGeometries[0]);
+    } else {
+      const mergedPolys = convertPolygonsToMultiPolygon(geoJSONArray);
+      if (mergedPolys) {
+        newGeometries.push(mergedPolys)
+      }
+    }
+  }
+
+  return newGeometries;
 }

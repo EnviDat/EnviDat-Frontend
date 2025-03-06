@@ -31,7 +31,7 @@ export const clickStrategies = [
     tooltip: 'Click for a preview of this resource',
   },
   {
-    strategyKeys: ['jpg', 'png', 'jpeg'],
+    strategyKeys: ['jpg', 'png', 'jpeg', 'gif', 'webp'],
     component: ImagePreviewCard,
     openEvent: OPEN_TEXT_PREVIEW,
     icon: mdiFileEye,

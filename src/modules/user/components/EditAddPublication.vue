@@ -1,22 +1,21 @@
 <template>
   <v-container fluid id="EditAddPublication" class="pa-0">
-    <v-row no-gutters align="center" >
+    <v-row no-gutters align="center">
       <v-col cols="12" xl="4">
-
         <v-text-field
-            v-model="pidField"
-            :label="labels.pId"
-            :disabled="!!doiField"
-            hide-details
-            :prepend-icon="mdiIdentifier"
-            @input="(event) => pidChange(event.target.value)"
+          v-model="pidField"
+          :label="labels.pId"
+          :disabled="!!doiField"
+          hide-details
+          :prepend-icon="mdiIdentifier"
+          @input="(event) => pidChange(event.target.value)"
         />
       </v-col>
 
       <v-col
         cols="12"
         xl="1"
-        style="text-align: center;"
+        style="text-align: center"
         class="text-h6 px-md-4 flex-grow-0"
       >
         Or
@@ -24,24 +23,21 @@
 
       <v-col cols="12" xl="4">
         <v-text-field
-            v-model="doiField"
-            :label="labels.doi"
-            :disabled="!!pidField"
-            hide-details
-            :prepend-icon="mdiFingerprint"
-            @input="(event) => doiChange(event.target.value)"
+          v-model="doiField"
+          :label="labels.doi"
+          :disabled="!!pidField"
+          hide-details
+          :prepend-icon="mdiFingerprint"
+          @input="(event) => doiChange(event.target.value)"
         />
       </v-col>
 
-      <v-col
-        cols="2"
-        class="ma-auto mt-4 ma-xl-0 pl-md-4 pt-4 pt-md-0"
-      >
+      <v-col cols="2" class="ma-auto mt-4 ma-xl-0 pl-md-4 pt-4 pt-md-0">
         <BaseIconButton
           v-if="!isEditMode"
           :icon="mdiPlus"
-          color='primary'
-          icon-color='white'
+          color="primary"
+          icon-color="white"
           :is-small="$vuetify.display.mdAndUp"
           @clicked="addClick"
         />
@@ -49,14 +45,15 @@
     </v-row>
 
     <v-row>
-      <v-col class="flex-grow-0" cols="12" sm="4" md="4">
+      <v-col class="flex-grow-0" cols="12">
         <a
           id="textAreaController"
           ref="textAreaController"
-          style="cursor: pointer;"
+          style="cursor: pointer"
           class="text-body-1"
           @click="toggleTextArea()"
-        >{{ showTextArea ? 'Hide' : 'Add' }} citation in plain text</a>
+          >{{ showTextArea ? 'Hide' : 'Add' }} citation in plain text</a
+        >
       </v-col>
 
       <v-col v-if="showTextArea" class="flex-grow-0">
@@ -84,9 +81,7 @@
         <GenericTextareaPreviewLayout
           v-if="showTextArea"
           :validationError="validationErrors[editingProperty]"
-          :hint="
-            'Write at least 10 characters to describe the related publications.'
-          "
+          :hint="'Write at least 10 characters to describe the related publications.'"
           v-bind="genericTextAreaObject"
           @inputedText="catchInputedText($event)"
         >
@@ -129,9 +124,7 @@ import {
   isFieldValid,
 } from '@/factories/userEditingValidations';
 
-import {
-  EDITMETADATA_RELATED_PUBLICATIONS,
-} from '@/factories/eventBus';
+import { EDITMETADATA_RELATED_PUBLICATIONS } from '@/factories/eventBus';
 
 import {
   resolveDoiCitationObjectsViaDora,
@@ -352,7 +345,8 @@ export default {
         this.previewCitation = citationMap.get(pid);
       } catch (e) {
         this.previewCitation = {
-          citation: `Resolving citation was not possible ${e}`,
+          citation:
+            'Resolving the citation was not possible due to a network error.',
         };
       }
 
@@ -373,7 +367,8 @@ export default {
         this.previewCitation = citationMap.get(doi);
       } catch (e) {
         this.previewCitation = {
-          citation: `Resolving citation was not possible ${e}`,
+          citation:
+            'Resolving the citation was not possible due to a network error.',
         };
       }
 
