@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import BarChart from '@/components/Charts/BarChart.vue';
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue'
+import LineChart from '@/components/Charts/LineChart.vue';
+
 import { loadResourcesData } from '@/modules/charts/middelware/chartServiceLayer.ts';
 import { MetaData } from '@/types/env';
 
-const {
-  resource,
-} = defineProps<{
-  resource: object,
+const { resource } = defineProps<{
+  resource: object;
 }>();
 
 const loading = ref(true);
@@ -17,7 +15,11 @@ const chartLabels = ref([]);
 const chartData = ref();
 const dataPerParameter = ref();
 
-const currentParameter = ref();
+const xParameter = ref();
+const yParameter = ref();
+
+const warning = ref();
+const error = ref();
 
 const defaultOptions = {
   responsive: true,
@@ -27,146 +29,217 @@ const defaultOptions = {
     },
     title: {
       display: true,
-      text: 'Chart.js Bar Chart',
+      text: 'Resource Visualization',
     },
     decimate: {
       enabled: true,
-      alorithm: 'lltb',
+      algorithm: 'lltb',
     },
   },
-}
+};
 
-const title = computed(() => resource ? `Data Visualization of ${resource.name}` : 'Data Visualization of "Unnamed" resource')
+const title = computed(() =>
+  resource
+    ? `Data Visualization of "${resource.name}"`
+    : 'Data Visualization of "Unnamed" resource',
+);
 
-const getParameter = (dataEntry: any, parameter: string = undefined) => {
-  if (parameter) {
-    return dataEntry[parameter];
-  }
+const instructions = 'Pick which parameters you would like to visualize. Time or timestamp would auto assigned to the x-axis.';
 
-  const firstParameter = Object.keys(dataEntry)[0];
-
-  return dataEntry[firstParameter];
-}
-
-const getTimeParameter = (paramterList) => {
-  for (let i = 0; i < paramterList.length; i++) {
-    const param = paramterList[i];
-    if (param.includes('time')){
-      return param
+const getTimeParameter = (parameterList: string[]) : string | null => {
+  for (let i = 0; i < parameterList.length; i++) {
+    const param = parameterList[i];
+    const compare = param.toLowerCase();
+    if (compare.includes('time') || compare.includes('date')) {
+      return param;
     }
   }
 
-  return 'timestamp'
+  return null;
+};
+
+const getNextParameter = (parameterList: string[], positionParameter: string) : string | null => {
+
+  const index = positionParameter.indexOf(positionParameter);
+  if (index >= 0) {
+    const next = index + 1;
+
+    if (next < positionParameter.length) {
+      return parameterList[next];
+    }
+
+    if (index !== 0) {
+      return parameterList[0];
+    }
+  }
+
+  return null;
 }
 
-const loadDataForParameter = (data: object[], parameter: string = undefined) => {
+const loadDataForParameter = (
+  data: object[],
+  xParam: string,
+  yParam: string,
+) => {
+  warning.value = undefined;
+  error.value = undefined;
 
   const seriesData = [];
-  const paramterList = Object.keys(data[0]);
-  const firstParameter = parameter || paramterList[0];
-
-  const timeParameter = getTimeParameter(paramterList);
-
 
   const labels = [];
 
   for (let i = 0; i < data.length; i++) {
     const entry = data[i];
-    const entryPerParamter = entry[firstParameter];
+    const entryPerParameter = entry[yParam];
 
-    const time = entry[timeParameter];
-    if (time) {
-      labels.push(time);
+    const xValue = entry[xParam];
+    if (xValue) {
+      labels.push(xValue);
     }
-    seriesData.push(entryPerParamter);
+    seriesData.push(entryPerParameter);
   }
 
-//  labels: [firstParameter],
+  //  labels: [firstParameter],
 
   return {
     labels,
-    datasets: [{
-      label: firstParameter,
-      data: seriesData,
-      // backgroundColor: barColors[0],
-    }],
+    datasets: [
+      {
+        label: yParam,
+        data: seriesData,
+        // backgroundColor: barColors[0],
+      },
+    ],
   };
-}
+};
 
 const loadData = () => {
+
+  error.value = undefined;
+  warning.value = undefined;
+  loading.value = true;
+
   if (!resource || resource?.isProtected) {
+    error.value = 'Resource is undefined or protected';
+    loading.value = false;
     return;
   }
 
   loadResourcesData(
     resource.url,
     (meta: MetaData, data: Object[]) => {
-
-      chartLabels.value = meta.hasMetaRows
-        ? meta.metaRows.fields
-        : null;
-
-      // currentParameter.value = meta.hasMetaRows ? meta.metaRows.fields[0] : null
+      chartLabels.value = meta.hasMetaRows ? meta.metaRows.fields : null;
 
       chartData.value = data;
 
-      dataPerParameter.value = loadDataForParameter(chartData.value);
+      const parameterList = Object.keys(data[0]);
+      xParameter.value = getTimeParameter(parameterList);
+      yParameter.value = getNextParameter(parameterList, xParameter.value)
 
+      if (!xParameter.value) {
+        warning.value =
+          'Auto pick a "time" parameter for X-axis did not work. Please choose a parameter for the X-Axis';
+      } else {
+        dataPerParameter.value = loadDataForParameter(
+          chartData.value,
+          xParameter.value,
+          yParameter.value,
+        );
+      }
 
       loading.value = false;
     },
     (e) => {
       loading.value = false;
-      console.warn('error while loading resource data for preview');
       console.error(e);
+      error.value = e;
     },
-  )
-}
+  );
+};
 
-const loadParameterData = (parameter: string) => {
-  currentParameter.value = parameter;
-  dataPerParameter.value = loadDataForParameter(chartData.value, parameter);
-}
+const assignXParameter = (parameter: string) => {
+  xParameter.value = parameter;
+
+  dataPerParameter.value = loadDataForParameter(
+    chartData.value,
+    xParameter.value,
+    yParameter.value,
+  );
+};
+
+const assignYParameter = (parameter: string) => {
+  yParameter.value = parameter;
+
+  dataPerParameter.value = loadDataForParameter(
+    chartData.value,
+    xParameter.value,
+    yParameter.value,
+  );
+};
 
 loadData();
 
 </script>
 
 <template>
-  <v-card
-    :loading
-  >
+  <v-card :loading>
     <v-card-title>
       {{ title }}
     </v-card-title>
 
     <v-card-text>
       <v-row>
+        <v-col>
+        {{ instructions }}
+        </v-col>
+      </v-row>
 
-        <v-col cols="6">
-          <div v-for="(parameter, index) in chartLabels"
-               :key="index"
-          >
-            <BaseRectangleButton
-              :button-text="parameter"
-              is-small
-              @clicked="loadParameterData(parameter)"
-            />
-          </div>
+      <v-row>
+        <v-col v-if="warning"
+               cols="12">
+          <v-alert type="warning">
+            {{ warning }}
+          </v-alert>
         </v-col>
 
-        <v-col cols="6">
+        <v-col v-if="error"
+               cols="12">
+          <v-alert type="error">
+            {{ error }}
+          </v-alert>
+        </v-col>
+      </v-row>
 
-          <BarChart v-if="dataPerParameter"
-            :options="defaultOptions"
-            :data="dataPerParameter" />
+      <v-row>
+        <v-col>
+          <v-autocomplete
+            label="X Parameter"
+            :items="chartLabels"
+            :model-value="xParameter"
+            @update:model-value="assignXParameter"
+          />
+        </v-col>
+        <v-col>
+          <v-autocomplete
+            label="Y Parameter"
+            :items="chartLabels"
+            :model-value="yParameter"
+            @update:model-value="assignYParameter"
+          />
         </v-col>
 
       </v-row>
+
+    </v-card-text>
+
+    <v-card-text>
+      <LineChart
+        v-if="dataPerParameter"
+        :options="defaultOptions"
+        :data="dataPerParameter"
+      />
     </v-card-text>
   </v-card>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

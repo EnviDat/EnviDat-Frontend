@@ -33,7 +33,7 @@
 </script>
 
 <template>
-  <v-card :height >
+  <v-card :height flat>
     <Line
       :id
       :options

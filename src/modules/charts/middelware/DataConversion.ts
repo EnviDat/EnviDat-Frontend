@@ -155,15 +155,30 @@ function getMetaDataFromJSON(data: unknown) : MetaData {
   };
 }
 
-function csvHasHeaderRow(firstRow: string, secondRow: string) : boolean {
+function getDelimiter(fileRow: string) : string {
   let delimiter = ',';
-  let firstCols = firstRow.split(delimiter);
+  let firstCols = fileRow.split(delimiter);
 
-  // if it doesn't work with , try with ;
   if (firstCols.length <= 1) {
     delimiter = ';';
-    firstCols = firstRow.split(delimiter);
+    firstCols = fileRow.split(delimiter);
   }
+
+  if (firstCols.length <= 1) {
+    delimiter = '\t';
+    firstCols = fileRow.split(delimiter);
+  }
+
+  if (firstCols.length <= 1) {
+    delimiter = ' ';
+  }
+
+  return delimiter;
+}
+
+function csvHasHeaderRow(firstRow: string, secondRow: string) : boolean {
+  const delimiter = getDelimiter(firstRow);
+  const firstCols = firstRow.split(delimiter);
 
   const secondCols = secondRow.split(delimiter);
 
@@ -186,6 +201,7 @@ export function isString(something: unknown): something is string {
 }
 
 function getMetaDataFromCSV(data: unknown) : MetaData {
+
   if (!isString(data)) {
     throw new Error(`Expected data to be string (data: ${data})`);
   }
@@ -196,6 +212,8 @@ function getMetaDataFromCSV(data: unknown) : MetaData {
   let metaFields: MetaRows = { fields: [] } satisfies MetaRows;
   const csvLines = csvDataString.split('\n');
 
+  const delimiter = getDelimiter(csvLines[0]);
+
   const iCSVMetaRows = csvLines.filter((line) => line.startsWith('#'));
   let hasMetaRows = iCSVMetaRows?.length > 0;
 
@@ -204,7 +222,7 @@ function getMetaDataFromCSV(data: unknown) : MetaData {
     metaFields = unpackICSVMapping(iCSVMetaRows, FIELDS_METADATA_MAPPING);
 
     if (metaFields?.fields) {
-      const fields: string = metaFields.fields instanceof Array ? metaFields.fields.join(',') : metaFields.fields;
+      const fields: string = metaFields.fields instanceof Array ? metaFields.fields.join(delimiter) : metaFields.fields;
       csvLines.splice(0, iCSVMetaRows.length, fields)
     }
   } else {
@@ -214,11 +232,11 @@ function getMetaDataFromCSV(data: unknown) : MetaData {
     const hasHeaderRow = csvHasHeaderRow(firstDataRow, secondDataRow);
 
     if (!hasHeaderRow) {
-      const cols = firstDataRow.split(',');
+      const cols = firstDataRow.split(delimiter);
       const paramHeaderLine = cols.map((element, index) => `Col ${index}`);
       metaFields.fields = paramHeaderLine;
       hasMetaRows = true;
-      csvLines.splice(0, 1, paramHeaderLine.join(','))
+      csvLines.splice(0, 1, paramHeaderLine.join(delimiter))
     } else {
       hasMetaRows = hasHeaderRow;
     }
