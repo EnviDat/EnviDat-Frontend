@@ -100,7 +100,7 @@ export function extractPIDsFromText(text) {
 
   const pidMatches = text.match(regEx) || [];
 
-  pidMatches.forEach(match => {
+  pidMatches.forEach((match) => {
     pidMap.set(match, match);
   });
 
@@ -115,11 +115,12 @@ export function extractDOIsFromText(text) {
   }
 
   // reGex for get doi from text/url
-  const doiRegEx = /(?:https:\/\/doi\.org\/)?\b(10\.\d{4,9}\/[-._;()/:A-Z0-9]+)\b/gi;
+  const doiRegEx =
+    /(?:https:\/\/doi\.org\/)?\b(10\.\d{4,9}\/[-._;()/:A-Z0-9]+)\b/gi;
 
   const doiMatches = text.match(doiRegEx) || [];
 
-  doiMatches.forEach(match => {
+  doiMatches.forEach((match) => {
     const doi = match.replace('https://doi.org/', '');
     doiMap.set(doi, doi);
   });
@@ -137,20 +138,21 @@ export function extractedNoPidDoiText(text) {
 
   const doiMap = extractDOIsFromText(text);
 
-  const urlRegEx = /https:\/\/www\.dora\.lib4ri\.ch\/wsl\/islandora\/object\/[^\s]+/g;
+  const urlRegEx =
+    /https:\/\/www\.dora\.lib4ri\.ch\/wsl\/islandora\/object\/[^\s]+/g;
   const urlMatches = text.match(urlRegEx) || [];
 
-  const allLines = text.split('\n').map(line => line.trim());
+  const allLines = text.split('\n').map((line) => line.trim());
 
-  result = allLines.filter(line => {
-    const containsPID = Array.from(pidMap.keys()).some(pid =>
+  result = allLines.filter((line) => {
+    const containsPID = Array.from(pidMap.keys()).some((pid) =>
       line.includes(pid),
     );
-    const containsDOI = Array.from(doiMap.keys()).some(doi =>
+    const containsDOI = Array.from(doiMap.keys()).some((doi) =>
       line.includes(doi),
     );
     const isURL = urlMatches.includes(line);
-    return !containsPID && !containsDOI && !isURL;
+    return !containsPID && !containsDOI && !isURL && line.length > 0;
   });
 
   return result;
@@ -201,11 +203,15 @@ function getGenericCitationObject(citationInfo, pid, doi) {
   return {
     citation: genericCitation,
     // always use the title for the abstract, so there is at least the link to refer to
-    abstract: citationInfo.abstract ? `${abstractTitle} \n ${citationInfo.abstract}` : abstractTitle,
+    abstract: citationInfo.abstract
+      ? `${abstractTitle} \n ${citationInfo.abstract}`
+      : abstractTitle,
     doraSiteUrl: citationInfo.object_url,
     pid: citationInfo.pid || pid,
     doi: citationInfo.doi || doi,
-    doiUrl: citationInfo.doi ? `https://www.doi.org/${citationInfo.doi}` : undefined,
+    doiUrl: citationInfo.doi
+      ? `https://www.doi.org/${citationInfo.doi}`
+      : undefined,
   };
 }
 
@@ -218,7 +224,7 @@ function getGenericCitationObject(citationInfo, pid, doi) {
 export function resolvedCitationText(resolvedPubs, pidMap) {
   const citationTextMap = new Map();
 
-  pidMap.forEach(pid => {
+  pidMap.forEach((pid) => {
     const resolvedObject = resolvedPubs[pid];
 
     const genericCitation = getGenericCitation(resolvedObject);
@@ -232,14 +238,14 @@ export function resolvedCitationText(resolvedPubs, pidMap) {
 }
 
 export function getCitationObjectMap(idUrlMap, responseObj) {
-  const citationMap= new Map();
+  const citationMap = new Map();
 
   if (!responseObj) {
     return citationMap;
   }
 
   if (Array.isArray(responseObj)) {
-    responseObj.forEach(obj => {
+    responseObj.forEach((obj) => {
       const pid = idUrlMap.has(obj.pid) ? obj.pid : undefined;
       const doi = idUrlMap.has(obj.doi) ? obj.doi : undefined;
 
@@ -307,7 +313,7 @@ const fallbackPIDUrl =
 
 export function getDoraPidsUrl(pidMap, resolveBaseUrl) {
   let fullUrl = resolveBaseUrl || fallbackPIDUrl;
-  pidMap.forEach(pid => {
+  pidMap.forEach((pid) => {
     fullUrl += `${pid}|`;
   });
 
@@ -320,7 +326,7 @@ const fallbackDoiUrl =
 
 export function getDoraDoisUrl(doiMap, resolveBaseUrl) {
   let fullUrl = resolveBaseUrl || fallbackDoiUrl;
-  doiMap.forEach(doi => {
+  doiMap.forEach((doi) => {
     fullUrl += `${doi.replaceAll('/', '~slsh~')}|`;
   });
 
@@ -356,25 +362,30 @@ export async function resolvePidCitationObjectsViaDora(pidMap, resolveBaseUrl) {
   return getCitationObjectMap(pidMap, responseObj);
 }
 
-export async function resolveDoiCitationObjectsViaDora(doiMap, resolveBaseDOIUrl) {
-
+export async function resolveDoiCitationObjectsViaDora(
+  doiMap,
+  resolveBaseDOIUrl,
+) {
   const requests = [];
   const citationObjMap = new Map();
 
   for (const entry of doiMap) {
-
     const singleMap = new Map(entry);
     const doraUrl = getDoraDoisUrl(singleMap, resolveBaseDOIUrl);
 
-    const request = axios.get(doraUrl)
-      .then(citationObj => {
-        const doiCitationObjectMap = getCitationObjectMap(singleMap, citationObj);
+    const request = axios
+      .get(doraUrl)
+      .then((citationObj) => {
+        const doiCitationObjectMap = getCitationObjectMap(
+          singleMap,
+          citationObj,
+        );
 
         for (const [doi, citation] of doiCitationObjectMap) {
           citationObjMap.set(doi, citation);
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(`Error resolving DOI ${doraUrl}:`, error);
       });
 
@@ -385,7 +396,6 @@ export async function resolveDoiCitationObjectsViaDora(doiMap, resolveBaseDOIUrl
 
   return citationObjMap;
 }
-
 
 export function extractDatasetIdsFromText(text) {
   const ids = [];
@@ -469,7 +479,7 @@ export function getCitationList(datasets, datasetIds) {
   }
 
   const datasetMatches = datasets.filter(
-    d => datasetIds.includes(d.name) || datasetIds.includes(d.id),
+    (d) => datasetIds.includes(d.name) || datasetIds.includes(d.id),
   );
 
   for (let i = 0; i < datasetMatches.length; i++) {
