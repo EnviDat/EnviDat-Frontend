@@ -100,7 +100,6 @@ import {
   USER_GET_DATASETS,
 } from '@/modules/user/store/userMutationsConsts';
 
-
 import {
   BROWSE_PATH,
   METADATADETAIL_PATH,
@@ -109,10 +108,7 @@ import {
   USER_SIGNIN_PAGENAME,
 } from '@/router/routeConsts';
 
-import {
-  SET_APP_BACKGROUND,
-  SET_CURRENT_PAGE,
-} from '@/store/mainMutationsConsts';
+import { SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
 
 import {
   METADATA_NAMESPACE,
@@ -142,7 +138,7 @@ import {
   initializeSteps,
 } from '@/factories/workflowFactory';
 
-import {metadataEditingSteps} from '@/factories/workflowEditing';
+import { metadataEditingSteps } from '@/factories/workflowEditing';
 
 import {
   DOI_API_ACTIONS,
@@ -160,9 +156,8 @@ import { replaceAuthorDeadAscii } from '@/factories/authorFactory';
 export default {
   name: 'MetadataEditPage',
   beforeRouteEnter(to, from, next) {
-    next(vm => {
+    next((vm) => {
       vm.$store.commit(SET_CURRENT_PAGE, METADATAEDIT_PAGENAME);
-      vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
 
       // vm.updateLastEditingDataset(to.params.metadataid, to.fullPath);
     });
@@ -241,7 +236,8 @@ export default {
         this.loadingCurrentEditingContent ||
         !this.currentEditingContent ||
         this.organizationsStore.userOrganizationLoading ||
-        this.authorsMapLoading || this.isLoadingUserOrganizations
+        this.authorsMapLoading ||
+        this.isLoadingUserOrganizations
       );
     },
     authorsMapLoading() {
@@ -287,9 +283,10 @@ export default {
 
         for (let j = 0; j < dataKeys.length; j++) {
           const dataKey = dataKeys[j];
-          const data = this.$store.getters[
-            `${USER_NAMESPACE}/getMetadataEditingObject`
-          ](dataKey);
+          const data =
+            this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](
+              dataKey,
+            );
 
           if (data) {
             mergedData = {
@@ -309,7 +306,10 @@ export default {
     async loadUserOrganizations() {
       this.isLoadingUserOrganizations = true;
       try {
-        if (!this.organizationsStore.userOrganizations || this.organizationsStore.userOrganizations.length === 0) {
+        if (
+          !this.organizationsStore.userOrganizations ||
+          this.organizationsStore.userOrganizations.length === 0
+        ) {
           await this.organizationsStore.UserGetOrgIds(this.user?.id);
 
           const userId = this.user?.id;
@@ -327,7 +327,6 @@ export default {
             mutation: USER_GET_DATASETS,
           });
         }
-
       } catch (error) {
         console.error('Error:', error);
       } finally {
@@ -360,14 +359,14 @@ export default {
         userOrganizations,
       );
       const datasetOrga = userOrganizations.filter(
-        orga => orga.id === datasetOrgaId,
+        (orga) => orga.id === datasetOrgaId,
       )[0];
 
       // use member as default, which means no editing of the publicationstatus is possible
       let userRole = USER_ROLE_MEMBER;
 
       if (this.user?.sysadmin === true) {
-        userRole = USER_ROLE_SYSTEM_ADMIN
+        userRole = USER_ROLE_SYSTEM_ADMIN;
       } else if (datasetOrga) {
         const orgaName = datasetOrga.name;
         userRole = roleMap[orgaName];
@@ -377,7 +376,7 @@ export default {
           const userIsOwner =
             this.userDatasets?.length > 0
               ? this.userDatasets.filter(
-                  d => d.id === this.currentEditingContent?.id,
+                  (d) => d.id === this.currentEditingContent?.id,
                 )[0]
               : false;
           if (!userIsOwner) {
@@ -385,7 +384,9 @@ export default {
           }
         }
       } else {
-        console.error('Not organization datasets available to determine the users role!')
+        console.error(
+          'Not organization datasets available to determine the users role!',
+        );
       }
 
       const editPublicationInfo = this.$store.getters[
@@ -433,8 +434,13 @@ export default {
         this.$route.query.backPath,
       );
 
-      const publicationStep = getStepByName(EDITMETADATA_PUBLICATION_INFO, this.editingSteps);
-      const readOnlyObj = getReadOnlyFieldsObject(publicationStep?.genericProps?.publicationState);
+      const publicationStep = getStepByName(
+        EDITMETADATA_PUBLICATION_INFO,
+        this.editingSteps,
+      );
+      const readOnlyObj = getReadOnlyFieldsObject(
+        publicationStep?.genericProps?.publicationState,
+      );
 
       if (readOnlyObj) {
         updateStepsWithReadOnlyFields(this.editingSteps, readOnlyObj);
@@ -445,16 +451,15 @@ export default {
       updateAllStepsForCompletion(this.editingSteps);
     },
     async fetchUserDatasets() {
-      await this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`,
-        {
-          action: ACTION_USER_SHOW,
-          body: {
-            id: this.user.id,
-            include_datasets: true,
-          },
-          commit: true,
-          mutation: USER_GET_DATASETS,
-        });
+      await this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`, {
+        action: ACTION_USER_SHOW,
+        body: {
+          id: this.user.id,
+          include_datasets: true,
+        },
+        commit: true,
+        mutation: USER_GET_DATASETS,
+      });
     },
     updateLastEditingDataset(name, path, backPath) {
       this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_LAST_DATASET}`, {
@@ -570,8 +575,9 @@ export default {
 
       const predefinedErrors = this.backendErrorList[status];
       this.errorTitle = predefinedErrors?.message || 'Fatal Error';
-      this.errorMessage = `${statusMessage} ${details} ${predefinedErrors?.details ||
-        ''}`;
+      this.errorMessage = `${statusMessage} ${details} ${
+        predefinedErrors?.details || ''
+      }`;
 
       this.showSnack = true;
     },
@@ -635,11 +641,16 @@ export default {
       updateAllStepsForCompletion(this.editingSteps);
     },
     authorsMap() {
-      if (this.currentEditingContent
-        && this.authorsMap && Object.keys(this.authorsMap).length > 0) {
-
+      if (
+        this.currentEditingContent &&
+        this.authorsMap &&
+        Object.keys(this.authorsMap).length > 0
+      ) {
         // re-trigger the populate of the data when the authorsMap is loaded for author enhancement
-        populateEditingComponents(this.$store.commit, this.currentEditingContent);
+        populateEditingComponents(
+          this.$store.commit,
+          this.currentEditingContent,
+        );
       }
     },
     userLoading() {

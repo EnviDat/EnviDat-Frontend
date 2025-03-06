@@ -16,9 +16,21 @@ import {
   CLIMATE,
   SNOW,
 } from '@/store/categoriesConsts';
+
 import { EDNA_MODE, SWISSFL_MODE } from '@/store/metadataMutationsConsts';
 import { getModeData } from '@/factories/modeFactory';
 import { getImage, getImageList } from '@/factories/imageFactory';
+
+
+import {
+  mdiForest,
+  mdiSnowflake,
+  mdiImageFilterHdr,
+  mdiHazardLights,
+  mdiLeaf,
+  mdiWeatherCloudy,
+} from '@mdi/js';
+
 
 const swissFLMode = getModeData(SWISSFL_MODE);
 const ednaMode = getModeData(EDNA_MODE);
@@ -28,7 +40,7 @@ export default [
     title: 'Forest',
     type: FOREST,
     alias: ['wood', 'tree'],
-    imgPath: getImage('c_b_forest_topdown3_small'),
+    iconPath: mdiForest,
     color: '#e8f5e9',
     darkColor: '#C8E6C9',
     disabled: false,
@@ -37,7 +49,7 @@ export default [
     title: 'Snow',
     type: SNOW,
     alias: ['avalanche', 'antarctica', 'arctic', 'polar'],
-    imgPath: getImage('c_b_snow_icy2_small'),
+    iconPath: mdiSnowflake,
     color: '#e0f2f1',
     darkColor: '#e0f2f1',
     disabled: false,
@@ -46,7 +58,7 @@ export default [
     title: 'Landscape',
     type: LAND,
     alias: ['soil'],
-    imgPath: getImage('c_b_landscape_view_small'),
+    iconPath: mdiImageFilterHdr,
     color: '#f1f8e9',
     darkColor: '#DCEDC8',
     disabled: false,
@@ -55,7 +67,7 @@ export default [
     title: 'Natural Hazards',
     type: HAZARD,
     alias: ['accident', 'fatalities'],
-    imgPath: getImage('c_b_hazard_cloud_small'),
+    iconPath: mdiHazardLights,
     color: '#fbe9e7',
     darkColor: '#FFCCBC',
     disabled: false,
@@ -64,7 +76,7 @@ export default [
     title: 'Biodiversity',
     type: DIVERSITY,
     alias: ['abundance', 'plants', 'insect', 'fungi', 'lichens'],
-    imgPath: getImage('c_b_diversity_meadow_small'),
+    iconPath: mdiLeaf,
     color: '#ede7f6',
     darkColor: '#D1C4E9',
     disabled: false,
@@ -73,7 +85,7 @@ export default [
     title: 'Climate',
     type: CLIMATE,
     alias: ['meteo'],
-    imgPath: getImage('c_b_meteo_clouds_lighting_small'),
+    imgPath: mdiWeatherCloudy, // getImage('c_b_meteo_clouds_lighting_small'),
     color: '#E8EAF6',
     darkColor: '#C5CAE9',
     disabled: false,
@@ -87,6 +99,7 @@ export default [
     darkColor: '#8BC34A',
     contain: true,
     disabled: false,
+    isMode: true,
   },
   {
     title: `${ednaMode.title} View`,
@@ -97,6 +110,7 @@ export default [
     darkColor: '#2f5dc7',
     contain: true,
     disabled: false,
+    isMode: true,
   },
 ];
 

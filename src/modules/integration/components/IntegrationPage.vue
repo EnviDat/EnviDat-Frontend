@@ -1,71 +1,53 @@
 <template>
-  <v-container class="pa-0 ma-0"
-    tag="article"
-    fluid
-    id="CommunityPage">
-
-    <v-row no-gutters
-      id="pageHeader"
-      class="py-1 py-md-4">
-
-      <v-col cols="12"
-        offset-md="1"
-        md="10">
-
-        <ImgAndTextLayout style="position: relative; z-index: 0;"
+  <v-container class="pa-0 ma-0" tag="article" fluid id="CommunityPage">
+    <v-row no-gutters id="pageHeader" class="py-1 py-md-4">
+      <v-col cols="12" offset-md="1" md="10">
+        <ImgAndTextLayout
+          style="position: relative; z-index: 0"
           :title="pageTitle"
           :img="titleImage"
-          :height="$vuetify.display.smAndDown ? 100 : 150" />
-
+          :height="$vuetify.display.smAndDown ? 100 : 150"
+        />
       </v-col>
-
     </v-row>
 
-    <v-row no-gutters
-      id="pageSubHeader"
-      class="py-2">
-
-      <v-col cols="12"
+    <v-row no-gutters id="pageSubHeader" class="py-2">
+      <v-col
+        cols="12"
         offset-md="1"
         md="10"
         class="text-body-1"
-        v-html="pageIntroText">
-
+        v-html="pageIntroText"
+      >
       </v-col>
-
     </v-row>
 
-    <v-row no-gutters
-      id="pageBody"
-      class="py-4">
-
-      <v-col cols="12"
-        offset-md="1"
-        md="10">
-
-        <TextCardListLayout :listItems="list"
+    <v-row no-gutters id="pageBody" class="py-4">
+      <v-col cols="12" offset-md="1" md="10">
+        <TextCardListLayout
+          :listItems="list"
           :smallCols="4"
           :loading="loadingList"
-          :loadingImg="fallbackCardImg">
-
-          <template #entry="{ entry, loadingImg, titleCssClass, subtitleCssClass }">
-            <ImageTextCard :height="cardHeight"
+          :loadingImg="fallbackCardImg"
+        >
+          <template
+            #entry="{ entry, loadingImg, titleCssClass, subtitleCssClass }"
+          >
+            <ImageTextCard
+              :height="cardHeight"
               :title="entry.title"
               :text="entry.text"
               :image="entry.image"
               :loadingImg="loadingImg"
               :titleCssClass="titleCssClass"
               :subtitleCssClass="subtitleCssClass"
-              :imageTopLayout="true">
-
+              :imageTopLayout="true"
+            >
             </ImageTextCard>
           </template>
         </TextCardListLayout>
-
       </v-col>
-
     </v-row>
-
   </v-container>
 </template>
 
@@ -84,10 +66,7 @@ import { mapState } from 'vuex';
 
 import { INTEGRATION_PAGENAME } from '@/router/routeConsts';
 
-import {
-  SET_APP_BACKGROUND,
-  SET_CURRENT_PAGE,
-} from '@/store/mainMutationsConsts';
+import { SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
 
 import {
   INTEGRATION_NAMESPACE,
@@ -104,7 +83,6 @@ export default {
   beforeRouteEnter(to, from, next) {
     next((vm) => {
       vm.$store.commit(SET_CURRENT_PAGE, INTEGRATION_PAGENAME);
-      vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
     });
   },
   beforeMount() {
@@ -121,13 +99,8 @@ export default {
     window.scrollTo(0, 0);
   },
   computed: {
-    ...mapState([
-      'config',
-    ]),
-    ...mapState(INTEGRATION_NAMESPACE, [
-      'loadingList',
-      'list',
-    ]),
+    ...mapState(['config']),
+    ...mapState(INTEGRATION_NAMESPACE, ['loadingList', 'list']),
     cardHeight() {
       return this.$vuetify?.display?.smAndDown ? 350 : 300;
     },
@@ -143,7 +116,6 @@ export default {
     ImageTextCard,
   },
   data: () => ({
-    pageBGImage: 'app_b_browsepage',
     pageTitle: 'Community Integration',
     pageIntroText: `With EnviDat, WSL aims to disseminate its data sets as broadly as possible in order to foster international research cooperation in the field of environmental science and contribute to the ongoing cultural evolution in research towards openness, shared data and opportunities for collaboration.
     Consequently, we are officially registered in re3data.org and FAIRsharing.org and a contributor community to NASA Earthdata, ESA's GEOSS Portal and data.europa.eu via opendata.swiss.`,

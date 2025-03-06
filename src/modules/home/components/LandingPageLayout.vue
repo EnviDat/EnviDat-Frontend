@@ -1,177 +1,165 @@
 <template>
   <article
     class="landingPageGrid pa-0"
-    :class="{
-      gridXs: $vuetify.display.xs,
-      gridSm: $vuetify.display.sm,
-    }"
+    :class="{ gridXs: isXsOnly, gridSm: isSmOnly }"
     id="LandingPage"
   >
-    <!--    'gridXl' : $vuetify.display.xlOnly,-->
-
-    <div v-if="$slots.logo" class="logoGrid" :class="paddings">
-      <slot name="logo"></slot>
-    </div>
-
-    <div v-if="$slots.welcome" class="welcomeGrid" :class="paddings">
+    <!-- Welcome Slot -->
+    <v-container-fluid
+      v-if="$slots.welcome"
+      class="welcomeGrid"
+      :class="paddings"
+    >
       <slot name="welcome"></slot>
-
-      <div class="pt-8">
+      <v-container class="pt-8">
         <slot name="search"></slot>
-      </div>
-    </div>
+      </v-container>
+      <section class="metadata-wrapper">
+        <BaseTitle
+          style="text-align: center"
+          :text="datasetsTitle"
+          :className="'text-md-h4 text-h5 mt-10 margin-asd font-weight-bold mb-6 position-relative'"
+          cardClass="pa-2"
+          titleClass="titleCardClass"
+        />
+        <v-container :fluid="$vuetify.display.lgAndDown" class="pt-2 px-1">
+          <slot name="datasets"></slot>
+        </v-container>
+      </section>
+    </v-container-fluid>
 
-    <div v-if="$slots.categories" class="categoriesGrid" :class="paddings">
-      <TitleCard
-        :title="categoriesTitle"
+    <!-- Info Slot -->
+    <v-container-fluid v-if="$slots.info" class="infoGrid background-grey">
+      <BaseTitle
+        style="text-align: center"
+        :text="infoTitle"
+        :className="'text-md-h4 text-h5 font-weight-bold mb-6'"
         cardClass="pa-2"
         titleClass="titleCardClass"
       />
+      <v-container :fluid="$vuetify.display.lgAndDown" class="pt-2">
+        <slot name="info"></slot>
+      </v-container>
+    </v-container-fluid>
 
-      <div class="pt-2">
-        <slot name="categories"></slot>
-      </div>
-    </div>
-
-    <div v-if="$slots.datasets" class="datasetsGrid" :class="paddings">
-      <TitleCard
-        :title="datasetsTotal > 0 ? `${datasetsTitle} of ${datasetsTotal} Total` : datasetsTitle"
+    <!-- News Slot -->
+    <v-container-fluid
+      v-if="$slots.news"
+      class="newsGrid mt-4"
+      :class="paddings"
+    >
+      <BaseTitle
+        style="text-align: center"
+        :text="newsTitle"
+        :className="'text-md-h4 text-h5 font-weight-bold mb-6'"
         cardClass="pa-2"
         titleClass="titleCardClass"
       />
-
-      <div class="pt-2 px-1">
-        <slot name="datasets"></slot>
-      </div>
-    </div>
-
-    <div v-if="$slots.news" class="newsGrid" :class="paddings">
-      <div class="">
+      <v-container :fluid="$vuetify.display.lgAndDown" class="pt-2">
         <slot name="news"></slot>
-      </div>
-    </div>
+      </v-container>
+    </v-container-fluid>
 
-    <div v-if="$slots.articles" class="articlesGrid" :class="`${paddings} pb-4 pb-sm-0`">
-      <TitleCard
-        :title="articlesTitle"
-        cardClass="pa-2"
-        titleClass="titleCardClass"
-      />
-
-      <div class="pt-2">
-        <slot name="articles"></slot>
-      </div>
-    </div>
+    <!-- Contact Slot -->
+    <v-container-fluid
+      v-if="$slots.contact"
+      class="contactGrid"
+      :class="paddings"
+    >
+      <v-container fluid class="pt-2 px-1">
+        <slot name="contact"></slot>
+      </v-container>
+    </v-container-fluid>
   </article>
 </template>
 
-<script>
-/**
- * LandingPageLayout.vue
- *
- * @summary implements the different layout for the landing page
- * @author Haas
- *
- * Created at     : 2022-02-21
- *
- * This file is subject to the terms and conditions defined in
- * file 'LICENSE.txt', which is part of this source code package.
- */
-import TitleCard from '@/components/Cards/TitleCard.vue';
+<script setup>
+import { computed } from 'vue';
+import { useDisplay } from 'vuetify';
+import BaseTitle from '@/components/BaseElements/BaseTitle.vue';
 
-export default {
-  name: 'LandingPageLayout',
-  props: {
-    categoriesTitle: String,
-    datasetsTitle: String,
-    newsTitle: String,
-    articlesTitle: String,
-    datasetsTotal: {
-      type: Number,
-      default: 0,
-    },
+// Define component props
+const props = defineProps({
+  categoriesTitle: String,
+  datasetsTitle: String,
+  newsTitle: String,
+  infoTitle: String,
+  articlesTitle: String,
+  datasetsTotal: {
+    type: Number,
+    default: 0,
   },
-  computed: {
-    paddings() {
-      return 'pa-md-2 pt-4 pt-sm-6';
-    },
-  },
-  components: {
-    TitleCard,
-  },
-};
+});
+
+// Get display info for responsive breakpoints
+const display = useDisplay();
+const isXsOnly = computed(() => display.xsOnly);
+const isSmOnly = computed(() => display.smOnly);
+
+// Define padding classes as a constant string
+const paddings = 'pa-md-2 pt-4 pt-sm-6';
 </script>
 
-<style scoped>
-.landingPageGrid {
-  display: grid;
-  gap: 10px;
-  grid-template-columns: 2fr 2fr 1.5fr;
-  grid-template-rows: 4fr 0.25fr auto;
-  grid-template-areas:
-    'Logo Welcome Categories'
-    '. . .'
-    'News Datasets Articles';
-}
-
-@media screen and (min-width: 1921px) {
-  .landingPageGrid {
-    grid-template-columns: 2fr 2fr 2fr 2fr;
-    grid-template-rows: 1fr 0.25fr auto;
-    grid-template-areas:
-      '. Logo Welcome Categories'
-      '. . . .'
-      '. News Datasets Articles';
-  }
-}
-
-.landingPageGrid.gridSm {
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: none;
-  grid-template-areas:
-    'Welcome Welcome'
-    'News News'
-    'Datasets Categories'
-    '. Articles';
-}
-
+<style scoped lang="scss">
+.landingPageGrid.gridSm,
 .landingPageGrid.gridXs {
   grid-template-columns: 1fr;
   grid-template-rows: none;
   grid-template-areas:
     'Welcome'
+    'Info'
     'News'
-    'Datasets'
-    'Categories'
-    'Articles';
+    'Contact';
 }
 
-.logoGrid {
-  grid-area: Logo;
-}
+/* Additional styling */
 
 .welcomeGrid {
   grid-area: Welcome;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  height: auto;
+  min-height: 100vh;
+  position: relative;
+  width: 100%;
+  margin-bottom: 30px;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100vw; // full viewport width
+    height: 100%;
+    background-image: url('https://envidat.ch/beta/static/app_b_landingpage-BjXUE1sY.webp');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    opacity: 0.3;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  > * {
+    position: relative;
+    z-index: 1;
+  }
 }
 
-.datasetsGrid {
-  grid-area: Datasets;
-}
-
-.categoriesGrid {
-  grid-area: Categories;
+.infoGrid {
+  grid-area: Info;
+  margin-top: -100px;
 }
 
 .newsGrid {
   grid-area: News;
 }
-
-.articlesGrid {
-  grid-area: Articles;
+.contactGrid {
+  grid-area: Contact;
 }
-</style>
 
-<style>
 .titleCardClass {
   font-size: 1.25rem;
   word-break: break-word;
@@ -179,4 +167,47 @@ export default {
   font-weight: 500;
   letter-spacing: normal !important;
 }
+
+#firstContainer {
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: right;
+}
+.background-grey {
+  background-color: rgba(245, 245, 245, 0.75);
+  padding-top: 100px;
+  padding-bottom: 20px;
+}
+
+.landingPageGrid {
+  display: flex;
+  flex-direction: column;
+}
+
+@media screen and (min-width: 1340px) {
+  .landingPageGrid {
+    display: grid;
+    gap: 100px;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      'Welcome'
+      'Info'
+      'News'
+      'Contact';
+  }
+  .welcomeGrid {
+    margin-bottom: 0;
+  }
+}
+
+@media screen and (min-width: 968px) {
+  .metadata-wrapper {
+    margin-top: 50px;
+  }
+}
+</style>
+
+<style>
+/* Global styles */
 </style>
