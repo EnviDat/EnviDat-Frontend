@@ -25,32 +25,25 @@
       </v-row>
 
       <v-row>
-        <v-col >
-          <div class="text-subtitle-1"
-               v-html="labels.cardInstructions">
-
-          </div>
+        <v-col>
+          <div class="text-subtitle-1" v-html="labels.cardInstructions"></div>
         </v-col>
       </v-row>
 
       <v-row>
-        <v-col >
-
+        <v-col>
           <GenericTextareaPreviewLayout
             v-bind="genericTextAreaObject"
             :validationError="validationErrors[editingProperty]"
             :readonly="isReadOnly(editingProperty)"
             :hint="readOnlyHint(editingProperty)"
             @inputedText="catchInputedText($event)"
-            @changedText="catchChangedText($event)">
-
+            @changedText="catchChangedText($event)"
+          >
             <MetadataPublications v-bind="publicationsObject" />
-
           </GenericTextareaPreviewLayout>
-
         </v-col>
       </v-row>
-
     </v-container>
   </v-card>
 </template>
