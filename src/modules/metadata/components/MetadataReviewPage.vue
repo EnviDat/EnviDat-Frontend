@@ -1,9 +1,5 @@
 <template>
-  <v-container id="MetadataReviewPage"
-               fluid
-               class="pa-0"
-               tag="article">
-
+  <v-container id="MetadataReviewPage" fluid class="pa-0" tag="article">
     <v-row no-gutters>
       <!-- prettier-ignore -->
       <v-col class="elevation-5 pa-0"
@@ -78,19 +74,13 @@ import { BROWSE_PATH, METADATAREVIEW_PAGENAME } from '@/router/routeConsts';
 
 import { USER_SIGNIN_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 
-import {
-  SET_APP_BACKGROUND,
-  SET_CURRENT_PAGE,
-} from '@/store/mainMutationsConsts';
+import { SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
 import {
   CLEAR_SEARCH_METADATA,
   METADATA_NAMESPACE,
 } from '@/store/metadataMutationsConsts';
 
-import {
-  createLicense,
-  createResources,
-} from '@/factories/metaDataFactory';
+import { createLicense, createResources } from '@/factories/metaDataFactory';
 
 import { getConfigFiles, getConfigUrls } from '@/factories/chartFactory';
 
@@ -120,17 +110,17 @@ import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionVi
 
 import MetadataHeader from './Metadata/MetadataHeader.vue';
 
-const MetadataDescription = defineAsyncComponent(() =>
-  import('./Metadata/MetadataDescription.vue'),
+const MetadataDescription = defineAsyncComponent(
+  () => import('./Metadata/MetadataDescription.vue'),
 );
-const MetadataResources = defineAsyncComponent(() =>
-  import('./Metadata/MetadataResources.vue'),
+const MetadataResources = defineAsyncComponent(
+  () => import('./Metadata/MetadataResources.vue'),
 );
-const MetadataCitation = defineAsyncComponent(() =>
-  import('./Metadata/MetadataCitation.vue'),
+const MetadataCitation = defineAsyncComponent(
+  () => import('./Metadata/MetadataCitation.vue'),
 );
-const MetadataAuthors = defineAsyncComponent(() =>
-  import('./Metadata/MetadataAuthors.vue'),
+const MetadataAuthors = defineAsyncComponent(
+  () => import('./Metadata/MetadataAuthors.vue'),
 );
 
 // Might want to check https://css-tricks.com/use-cases-fixed-backgrounds-css/
@@ -142,9 +132,8 @@ const MetadataAuthors = defineAsyncComponent(() =>
 export default {
   name: 'MetadataReviewPage',
   beforeRouteEnter(to, from, next) {
-    next(vm => {
+    next((vm) => {
       vm.$store.commit(SET_CURRENT_PAGE, METADATAREVIEW_PAGENAME);
-      vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
     });
   },
   /**
@@ -382,7 +371,7 @@ export default {
         );
         this.header.publicationYear = publicationData.publicationYear;
 
-/*
+        /*
         const parsedContent = convertJSON(currentContent, false);
         const isSmallScreen = this.$vuetify.display.smAndDown;
 
@@ -397,14 +386,16 @@ export default {
 */
 
         // this.body = createBody(currentContent, this.$vuetify.display.smAndDown);
-        this.body = createDescriptionViewModel(parsedContent, this.$vuetify.display.smAndDown);
+        this.body = createDescriptionViewModel(
+          parsedContent,
+          this.$vuetify.display.smAndDown,
+        );
 
         /*
         this.citation = createCitation(currentContent);
 */
 
         this.loadResources(currentContent);
-
       }
     },
     loadResources(currentContent) {
@@ -425,7 +416,10 @@ export default {
           this.resources.resources,
         );
 
-        enhanceElementsWithStrategyEvents(this.resources.resources, SHOW_DATA_PREVIEW_PROPERTY);
+        enhanceElementsWithStrategyEvents(
+          this.resources.resources,
+          SHOW_DATA_PREVIEW_PROPERTY,
+        );
 
         this.resources.dates = getFrontendDates(this.metadataContent.date);
       }
@@ -450,7 +444,7 @@ export default {
 
       this.firstCol = [
         this.MetadataDescription,
-/*
+        /*
         this.MetadataCitation,
         this.MetadataAuthors,
 */
@@ -461,7 +455,7 @@ export default {
       this.singleCol = [
         this.MetadataDescription,
         this.MetadataResources,
-/*
+        /*
         this.MetadataCitation,
         this.MetadataAuthors,
 */
@@ -540,7 +534,6 @@ export default {
     MetadataCitation: markRaw(MetadataCitation),
     MetadataAuthors: markRaw(MetadataAuthors),
     reviewStore: useReviewStore(),
-    pageBGImage: 'app_b_browsepage',
     baseStationURL: 'https://www.envidat.ch/data-files/',
     baseStationURLTestdata: './testdata/',
     header: null,
@@ -565,7 +558,6 @@ export default {
 </script>
 
 <style>
-
 .resourceCardText a {
   color: #ffd740;
 }

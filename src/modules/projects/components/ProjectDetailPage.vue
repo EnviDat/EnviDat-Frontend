@@ -91,10 +91,7 @@ import {
   PROJECT_DETAIL_PAGENAME,
   PROJECTS_PATH,
 } from '@/router/routeConsts';
-import {
-  SET_APP_BACKGROUND,
-  SET_CURRENT_PAGE,
-} from '@/store/mainMutationsConsts';
+import { SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
 import {
   LISTCONTROL_LIST_ACTIVE,
   LISTCONTROL_MAP_ACTIVE,
@@ -144,7 +141,6 @@ export default {
   beforeRouteEnter(to, from, next) {
     next((vm) => {
       vm.$store.commit(SET_CURRENT_PAGE, PROJECT_DETAIL_PAGENAME);
-      vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
 
       let backRoute = { path: PROJECTS_PATH };
 
@@ -448,7 +444,6 @@ export default {
     ProjectDatasets,
   },
   data: () => ({
-    pageBGImage: 'app_b_browsepage',
     placeHolderAmount: 3,
     selectedTagNames: [],
     selectedPins: [],
