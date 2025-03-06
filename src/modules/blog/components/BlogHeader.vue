@@ -37,9 +37,9 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { mdiClose } from '@mdi/js';
 import ImgAndTextLayout from '@/components/Layouts/ImgAndTextLayout.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
-import { mdiClose } from '@mdi/js';
 
 export default {
   name: 'BlogHeader',

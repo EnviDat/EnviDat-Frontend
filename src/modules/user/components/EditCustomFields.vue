@@ -95,6 +95,7 @@
  */
 import { mapState } from 'vuex';
 
+import { mdiMinusCircleOutline } from '@mdi/js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import {
@@ -114,7 +115,6 @@ import {
 } from '@/factories/userEditingValidations';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
-import { mdiMinusCircleOutline } from '@mdi/js';
 
 export default {
   name: 'EditCustomFields',

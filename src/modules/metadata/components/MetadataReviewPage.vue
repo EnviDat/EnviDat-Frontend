@@ -1,5 +1,9 @@
 <template>
-  <v-container class="pa-0" fluid tag="article" id="MetadataDetailPage">
+  <v-container id="MetadataReviewPage"
+               fluid
+               class="pa-0"
+               tag="article">
+
     <v-row no-gutters>
       <!-- prettier-ignore -->
       <v-col class="elevation-5 pa-0"
@@ -15,8 +19,8 @@
                           @checkSize="resize"
                           @clickedBack="catchBackClicked"
                           :expanded="headerExpanded" />
-        <!--                          @clickedTag="catchTagClicked"
-                                  @clickedAuthor="catchAuthorClicked"-->
+<!--                          @clickedTag="catchTagClicked"
+-->
       </v-col>
     </v-row>
 
@@ -69,6 +73,7 @@
 
 import { mapGetters, mapState } from 'vuex';
 
+import { defineAsyncComponent, markRaw } from 'vue';
 import { BROWSE_PATH, METADATAREVIEW_PAGENAME } from '@/router/routeConsts';
 
 import { USER_SIGNIN_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
@@ -83,24 +88,16 @@ import {
 } from '@/store/metadataMutationsConsts';
 
 import {
-  createBody,
   createLicense,
   createResources,
-
 } from '@/factories/metaDataFactory';
-
-import {
-  getAuthorName,
-  getFullAuthorsFromDataset, replaceAuthorDeadAscii,
-} from '@/factories/authorFactory';
 
 import { getConfigFiles, getConfigUrls } from '@/factories/chartFactory';
 
 import {
-  AUTHOR_SEARCH_CLICK,
   EDITMETADATA_PUBLICATION_INFO,
-  eventBus,
   METADATA_MAIN_HEADER,
+  eventBus,
 } from '@/factories/eventBus';
 
 import {
@@ -110,17 +107,17 @@ import {
 } from '@/factories/strategyFactory';
 
 import {
-  convertJSON, getFrontendDates,
+  convertJSON,
+  getFrontendDates,
   getFrontendJSONForStep,
 } from '@/factories/mappingFactory';
 
 import { useReviewStore } from '@/modules/metadata/store/reviewStore';
 import { convertArrayToUrlString } from '@/factories/stringFactory';
-import { defineAsyncComponent, markRaw } from 'vue';
 
 import { formatDate } from '@/factories/dateFactory';
 import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionViewModel';
-// import { createHeaderViewModel } from '@/factories/ViewModels/HeaderViewModel';
+
 import MetadataHeader from './Metadata/MetadataHeader.vue';
 
 const MetadataDescription = defineAsyncComponent(() =>
@@ -150,9 +147,6 @@ export default {
       vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
     });
   },
-  created() {
-    eventBus.on(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
-  },
   /**
    * @description load all the icons once before the first component's rendering.
    */
@@ -163,7 +157,7 @@ export default {
    * @description reset the scrolling to the top.
    */
   mounted() {
-    this.loadMetaDataContent();
+    this.loadReviewMetadataContent();
 
     window.scrollTo(0, 0);
 
@@ -174,20 +168,15 @@ export default {
   /**
    * @description
    */
-  /*
   beforeUnmount() {
     // clean current metadata to make be empty for the next to load up
-    this.$store.commit(`${METADATA_NAMESPACE}/${CLEAN_CURRENT_METADATA}`);
-
-    eventBus.off(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
+    this.reviewStore.resetReview();
   },
-*/
   computed: {
     ...mapState(['config']),
     ...mapGetters(USER_SIGNIN_NAMESPACE, ['user']),
     ...mapGetters({
       detailPageBackRoute: `${METADATA_NAMESPACE}/detailPageBackRoute`,
-      authorsMap: `${METADATA_NAMESPACE}/authorsMap`,
       appScrollPosition: 'appScrollPosition',
     }),
     metadataContent() {
@@ -196,9 +185,6 @@ export default {
     metadataConfig() {
       return this.config?.metadataConfig || {};
     },
-    authorDetailsConfig() {
-      return this.metadataConfig.authorDetailsConfig || {};
-    },
     resourcesConfig() {
       return this.metadataConfig?.resourcesConfig || {};
     },
@@ -206,7 +192,7 @@ export default {
       return this.$route.params.metadataid;
     },
     showPlaceholder() {
-      return this.loadingMetadatasContent || this.loadingCurrentMetadataContent;
+      return this.reviewStore.loadingMetadata;
     },
     firstColumn() {
       return this.$vuetify.display.mdAndUp ? this.firstCol : this.singleCol;
@@ -343,9 +329,7 @@ export default {
       // would not work and the old content would be loaded
       this.header = null;
       this.body = null;
-      this.citation = null;
       this.resources = null;
-      this.authors = null;
 
       this.configInfos = {};
 
@@ -363,7 +347,7 @@ export default {
           parsedContent,
         );
         // this.header.metadataState = getMetadataVisibilityState(this.header);
-        this.header.contactName = getAuthorName(this.header);
+        // this.header.contactName = getAuthorName(this.header);
         this.header.created = formatDate(this.header.created);
         this.header.modified = formatDate(this.header.modified);
 
@@ -421,20 +405,6 @@ export default {
 
         this.loadResources(currentContent);
 
-        // authors are going to be loaded via the watch when the AuthorsMap is available
-      }
-    },
-    loadAuthors(currentContent) {
-      this.authors = getFullAuthorsFromDataset(this.authorsMap, currentContent);
-
-      if (this.authors) {
-        this.$nextTick(() => {
-          this.MetadataAuthors.props = {
-            authors: this.authors,
-            authorDetailsConfig: this.authorDetailsConfig,
-            showPlaceholder: this.showPlaceholder,
-          };
-        });
       }
     },
     loadResources(currentContent) {
@@ -480,7 +450,7 @@ export default {
 
       this.firstCol = [
         this.MetadataDescription,
-        /*
+/*
         this.MetadataCitation,
         this.MetadataAuthors,
 */
@@ -490,25 +460,12 @@ export default {
 
       this.singleCol = [
         this.MetadataDescription,
-        /*
-        this.MetadataCitation,
-*/
         this.MetadataResources,
-        /*
+/*
+        this.MetadataCitation,
         this.MetadataAuthors,
 */
       ];
-    },
-    /**
-     * @description
-     * @param {any} idOrName
-     * @returns {any}
-     */
-    isCurrentIdOrName(idOrName) {
-      return (
-        this.metadataContent?.id === idOrName ||
-        this.metadataContent?.name === idOrName
-      );
     },
     /**
      * @description
@@ -523,35 +480,6 @@ export default {
       // clear the search result here, in case this metadata entry
       // was part of a full text search
       this.$store.commit(`${METADATA_NAMESPACE}/${CLEAR_SEARCH_METADATA}`);
-
-      this.$router.push({
-        path: BROWSE_PATH,
-        query,
-      });
-    },
-    catchAuthorCardAuthorSearch(fullName) {
-      const cleanFullName = replaceAuthorDeadAscii(fullName);
-
-      const query = {
-        search: cleanFullName,
-        isAuthorSearch: true,
-      };
-
-      this.$router.push({
-        path: BROWSE_PATH,
-        query,
-      });
-    },
-    catchAuthorClicked(authorGivenName, authorLastName) {
-      const query = this.$route.query;
-
-      // make sure to remove the ascii marker for dead authors for the search
-      // so the special characters won't case issues
-      const given = replaceAuthorDeadAscii(authorGivenName);
-      const lastName = replaceAuthorDeadAscii(authorLastName);
-
-      query.search = `${given} ${lastName}`;
-      query.isAuthorSearch = true;
 
       this.$router.push({
         path: BROWSE_PATH,
@@ -578,7 +506,7 @@ export default {
      * @description loads the content of this metadata entry (metadataid) from the URL.
      * Either loads it from the backend via action or creates it from the localStorage.
      */
-    async loadMetaDataContent() {
+    async loadReviewMetadataContent() {
       await this.reviewStore.loadReviewMetadata(this.metadataId);
 
       this.$nextTick(() => {
@@ -595,17 +523,12 @@ export default {
      * @description react on changes of the route (browser back / forward click)
      */
     $route: function watchRouteChanges() {
-      this.loadMetaDataContent();
+      this.loadReviewMetadataContent();
     },
     /**
      * @description watch the currentMetadataContent when it is the same as the url
      * the components will be filled with the metdata contents
      */
-    authorsMap() {
-      if (this.authorsMap) {
-        this.loadAuthors(this.metadataContent);
-      }
-    },
   },
   components: {
     MetadataHeader,

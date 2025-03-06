@@ -1,5 +1,9 @@
 <template>
-  <v-container class="pa-0" tag="article" id="MetadataDetailPage">
+  <v-container id="MetadataDetailPage"
+               fluid
+               class="pa-0"
+               tag="article" >
+
     <v-row no-gutters>
       <!-- prettier-ignore -->
       <v-col class="elevation-5 pa-0"
@@ -19,6 +23,7 @@
                           :showEditButton="showEditButton"
                           @clickedEdit="catchEditClicked"
                           @clickedAuthor="catchAuthorClicked"
+                          @organizationClicked="catchOrganizationClick"
                           @checkSize="resize"
                           :expanded="true" />
       </v-col>
@@ -31,8 +36,8 @@
         style="position: absolute; top: 60px; right: 10px; z-index: 2"
         :icon="mdiClose"
         :elevated="true"
-        :icon-color="'white'"
-        :color="'secondary'"
+        icon-color="white"
+        color="secondary"
         outline-color="primary"
         outlined
         tooltip-text="Close metadata view"
@@ -88,8 +93,8 @@
 import { defineAsyncComponent, markRaw } from 'vue';
 
 import axios from 'axios';
-import rewind from '@turf/rewind';
 import { mapGetters, mapState } from 'vuex';
+import { mdiClose } from '@mdi/js';
 import { useModeStore } from '@/modules/browse/store/modeStore';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
@@ -99,9 +104,9 @@ import {
   BROWSE_PATH,
   METADATADETAIL_PAGENAME,
   METADATAEDIT_PAGENAME,
+  ORGANIZATIONS_PAGENAME,
 } from '@/router/routeConsts';
 
-import { mdiClose } from '@mdi/js';
 
 import {
   ACTION_USER_SHOW,
@@ -158,10 +163,6 @@ import {
 } from '@/factories/strategyFactory';
 
 import { getEventsForPageAndName } from '@/modules/matomo/store/matomoStore';
-
-// import {
-//   ORGANIZATIONS_NAMESPACE,
-// } from '@/modules/organizations/store/organizationsMutationsConsts';
 
 import {
   convertJSON,
@@ -438,7 +439,7 @@ export default {
       let geoJSON;
 
       try {
-        geoJSON = location ? rewind(location.geoJSON) : null;
+        geoJSON = location ? location.geoJSON : null;
       } catch (error) {
         this.geoServiceLayersError = error;
       }
@@ -546,7 +547,7 @@ export default {
       // always initialize because when changing the url directly the reloading
       // would not work and the old content would be loaded
       this.header = null;
-      this.body = null;
+      this.descriptionData = null;
       this.citation = null;
       this.resources = null;
       this.location = null;
@@ -572,8 +573,8 @@ export default {
           currentContent.titleImg,
         );
 
-        // this.body = createBody(currentContent, this.$vuetify.display.smAndDown);
-        this.body = createDescriptionViewModel(parsedContent, isSmallScreen);
+        // this.descriptionData = createBody(currentContent, this.$vuetify.display.smAndDown);
+        this.descriptionData = createDescriptionViewModel(parsedContent, isSmallScreen);
 
         this.citation = createCitation(currentContent);
 
@@ -669,7 +670,7 @@ export default {
       }
 
       this.MetadataDescription.props = {
-        ...this.body,
+        ...this.descriptionData,
         showPlaceholder: this.showPlaceholder,
       };
 
@@ -839,6 +840,15 @@ export default {
           backPath: this.$route.fullPath,
         },
       });
+    },
+    catchOrganizationClick(organization) {
+      this.$router.push({
+        name: ORGANIZATIONS_PAGENAME,
+        params: {
+          organization,
+        },
+      });
+
     },
     /**
      * @description loads the content of this metadata entry (metadataid) from the URL.
@@ -1021,7 +1031,7 @@ export default {
     geoServiceLayers: null,
     geoServiceLayersError: null,
     header: null,
-    body: null,
+    descriptionData: null,
     citation: null,
     resources: null,
     location: null,

@@ -116,6 +116,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import {mdiAccount, mdiEmail} from '@mdi/js';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import UserCard from '@/components/Cards/UserCard.vue';
 import { getAuthorName, getNameInitials } from '@/factories/authorFactory';
@@ -133,7 +134,6 @@ import {
 } from '@/factories/eventBus';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
-import {mdiAccount, mdiEmail} from '@mdi/js';
 
 export default {
   name: 'EditUserProfile',

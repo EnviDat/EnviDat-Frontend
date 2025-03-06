@@ -68,11 +68,12 @@
 
             <v-col cols="12">
               <v-row no-gutters
+                     align="center"
               >
-                <v-col cols="12">
+                <v-col class="flex-grow-0 mr-4">
                   <BaseRectangleButton
                     :color="$vuetify.theme.themes.light.colors.highlight"
-                    buttonText="Upload GeoJSON"
+                    buttonText="Upload File"
                     tooltipText="File Drop Also Possible"
                     tooltipPosition="top"
                     :icon="mdiFileUpload"
@@ -81,10 +82,12 @@
                   />
                 </v-col>
 
-                <v-col cols="12"
-                       class="mt-2"
-                >
-                  <v-row align="center" justify="center">
+                <v-col class="flex-grow-1">
+
+                  <v-row align="center"
+                         justify="center"
+                         no-gutters
+                  >
                     <v-col >
                       <div ref="dropZoneRef"
                            class="dropZone"
@@ -211,8 +214,6 @@ import {
 
 import {
   EDIT_METADATA_GEODATA_TITLE,
-  LOCATION_TYPE_FEATCOLLECTION,
-  LOCATION_TYPE_GEOMCOLLECTION,
 } from '@/factories/metadataConsts';
 
 import {
@@ -220,11 +221,7 @@ import {
   isFieldValid,
 } from '@/factories/userEditingValidations';
 
-import {
-  defaultSwissLocation,
-  fetureCollectionToGeoCollection,
-  createGeomCollection,
-} from '@/factories/geoFactory';
+import { convertGeoJSONToGeoCollection, defaultSwissLocation } from '@/factories/geoFactory';
 
 
 export default {
@@ -287,7 +284,7 @@ export default {
     eventBus.on(MAP_GEOMETRY_MODIFIED, this.changedGeoViaEditor);
     eventBus.on(EDITMETADATA_DATA_GEO_MAP_ERROR, this.triggerValidationError);
 
-    const jsonString = JSON.stringify(this.location.geoJSON);
+    const jsonString = this.location?.geoJSON ? JSON.stringify(this.location?.geoJSON) : '';
 
     this.changeGeoViaText(jsonString, true);
 
@@ -318,7 +315,7 @@ export default {
     eventBus.off(MAP_GEOMETRY_MODIFIED, this.changedGeoViaEditor);
     eventBus.off(EDITMETADATA_DATA_GEO_MAP_ERROR, this.triggerValidationError);
 
-    this.jsonEditor.destroy()
+    this.jsonEditor?.destroy()
   },
   computed: {
     loadingColor() {
@@ -484,7 +481,7 @@ export default {
     changeGeoViaText(text, skipUpdateSaveButton) {
       const inputGeoJSON = JSON.parse(text);
 
-      const geoColl = this.converGeoJSONToGeoCollection(inputGeoJSON);
+      const geoColl = convertGeoJSONToGeoCollection(inputGeoJSON);
 
       const validationOk = this.parseGeoCollection(geoColl);
 
@@ -502,19 +499,6 @@ export default {
         this.validationErrors.input = err.message;
         return false;
       }
-    },
-    converGeoJSONToGeoCollection(inputGeoJSON) {
-      let geoColl;
-
-      if (inputGeoJSON.type === LOCATION_TYPE_FEATCOLLECTION) {
-        geoColl = fetureCollectionToGeoCollection(inputGeoJSON);
-      } else if(inputGeoJSON.type === LOCATION_TYPE_GEOMCOLLECTION) {
-        geoColl = inputGeoJSON;
-      } else {
-        geoColl = createGeomCollection(inputGeoJSON, inputGeoJSON.properties);
-      }
-
-      return geoColl;
     },
     /**
      * Validate updated geometries, and store in local variable
@@ -621,12 +605,12 @@ export default {
     labels: {
       cardTitle: EDIT_METADATA_GEODATA_TITLE,
       cardInstructions:
-        'Choose the location(s) where the research data was collected.',
+        'Define the location(s) where the research data was collected or were it is refeering to.',
       defaultInstructions: 'You are using the default location (Switzerland). Consider adjusting the geo information to represent your research data as accurate as possible.',
       editorInstructions: 'Use the text editor for fine adjustments, Undo or Redo. Only changing the values of geometries is allowed to edit. If you need to make needs of the structure upload a new file or change it on the map.',
-      uploadInstructions: 'Upload geojson from a file if you have large changes or many geometries.',
+      uploadInstructions: 'Upload geo-JSON from a file if you have large changes or many geometries.',
       mapInstructions: 'Use the tools on the right side of the map to define locations. You can mix Points and Polygons. Or pick predefined locations. Use the eraser icon to remove geometries.',
-      fileDropLabel : 'Or drop a file with geoJSON here',
+      fileDropLabel : 'Or drop a file with geo-JSON here',
     },
     validationErrors: {
       input: null,

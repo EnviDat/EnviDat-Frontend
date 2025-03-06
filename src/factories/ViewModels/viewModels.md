@@ -26,3 +26,5 @@ classDiagram
       +number maxTextLength
       MappingRules
     }
+
+```

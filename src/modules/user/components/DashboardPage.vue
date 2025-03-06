@@ -235,6 +235,8 @@ import {
   mapState,
   mapGetters,
 } from 'vuex';
+import { mdiRefresh } from '@mdi/js';
+import {defineAsyncComponent} from 'vue';
 
 import {
   USER_NAMESPACE,
@@ -271,8 +273,6 @@ import {
 } from '@/store/mainMutationsConsts';
 
 import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
-
-
 import { getNameInitials } from '@/factories/authorFactory';
 import { errorMessage } from '@/factories/notificationFactory';
 import { getTagColor, getPopularTags, tagsIncludedInSelectedTags } from '@/factories/keywordsFactory';
@@ -306,11 +306,8 @@ import { getPreviewDatasetFromLocalStorage } from '@/factories/userCreationFacto
 
 import { METADATA_TITLE_PROPERTY } from '@/factories/metadataConsts';
 
-import { mdiRefresh } from '@mdi/js';
 import { loadRouteTags } from '@/factories/stringFactory';
 import categoryCards from '@/store/categoryCards';
-
-import {defineAsyncComponent} from 'vue';
 
 import MetadataList from '@/components/MetadataList.vue';
 import MetadataCard from '@/components/Cards/MetadataCard.vue';
@@ -319,6 +316,7 @@ import TitleCard from '@/components/Cards/TitleCard.vue';
 import UserCard from '@/components/Cards/UserCard.vue';
 import EditUserProfile from '@/modules/user/components/edit/EditUserProfile.vue';
 import FlipLayout from '@/components/Layouts/FlipLayout.vue';
+
 import { getMetadataVisibilityState } from '@/factories/publicationFactory';
 
 

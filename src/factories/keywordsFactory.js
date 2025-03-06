@@ -1,4 +1,11 @@
-import { DIVERSITY, FOREST, HAZARD, LAND, METEO, SNOW } from '@/store/categoriesConsts';
+import {
+  DIVERSITY,
+  FOREST,
+  HAZARD,
+  LAND,
+  CLIMATE,
+  SNOW,
+} from '@/store/categoriesConsts';
 import mainCategoryTags from '@/modules/metadata/store/metadataTags';
 
 /**
@@ -27,9 +34,9 @@ export function guessTagCategory(tags) {
       case name.includes('SNOW'):
       case name.includes('AVALANCHE'):
         return SNOW;
-      case name.includes('METEO'):
       case name.includes('CLIMATE'):
-        return METEO;
+      case name.includes('SNOW'):
+        return CLIMATE;
       case name.includes('LAND'):
         return LAND;
       default:

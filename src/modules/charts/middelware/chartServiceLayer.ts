@@ -55,7 +55,10 @@ export function convertCSVToJSON(csv, nullValue) {
 }
 
 
-async function loadPreviewDataForResource(resource) {
+async function loadPreviewDataForResource(resource: {
+  url: string;
+  sparkChartData: object[];
+}) {
   try {
     const { meta, data } = await getDataWithMetaData(resource.url);
     resource.sparkChartData = data;
@@ -64,11 +67,11 @@ async function loadPreviewDataForResource(resource) {
   }
 }
 
-export async function loadResourcesPreview(resources) {
+export async function loadResourcesPreview(resources: string | any[]) {
 
   for (let i = 0; i < resources.length; i++) {
     const resource = resources[i];
-    const loadPreview = getUrlExtension(resource.url) === 'csv';
+    const loadPreview = !resource.isProtected && getUrlExtension(resource.url) === 'csv';
 
     if (loadPreview) {
       setTimeout(

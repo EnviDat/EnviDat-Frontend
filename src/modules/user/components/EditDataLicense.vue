@@ -106,6 +106,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { mdiArrowDownDropCircleOutline, mdiShieldSearch } from '@mdi/js';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import {
   EDITMETADATA_CLEAR_PREVIEW,
@@ -122,7 +123,6 @@ import {
 } from '@/factories/userEditingValidations';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
-import { mdiArrowDownDropCircleOutline, mdiShieldSearch } from '@mdi/js';
 
 import {
   getAvailableLicensesForEditing,

@@ -75,6 +75,7 @@
  */
 
 import { mapState } from 'vuex';
+import {defineAsyncComponent} from 'vue';
 
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 import {
@@ -86,8 +87,6 @@ import {
   eventBus,
   METADATA_EDITING_FINISH_CLICK,
 } from '@/factories/eventBus';
-
-import {defineAsyncComponent} from 'vue';
 
 import EditOrganization from '@/modules/user/components/edit/EditOrganization.vue';
 import EditPublicationInfo from '@/modules/user/components/edit/EditPublicationInfo.vue';

@@ -1,6 +1,6 @@
 {
   "name": "envidat.ch",
-  "version": "0.8.38",
+  "version": "0.8.39",
   "private": true,
   "description": "EnviDat frontend with vue",
   "author": "Dominik Haas-Artho",
@@ -48,7 +48,7 @@
     "date-fns": "^4.1.0",
     "fast-xml-parser": "^4.5.0",
     "jazzicon-ts": "^4.0.0",
-    "leaflet": "^1.8.0",
+    "leaflet": "^1.9.4",
     "leaflet.markercluster": "^1.5.3",
     "mitt": "^3.0.1",
     "papaparse": "^5.5.1",

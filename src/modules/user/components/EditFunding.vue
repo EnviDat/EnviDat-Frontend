@@ -109,6 +109,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { mdiMinusCircleOutline } from '@mdi/js';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
@@ -125,7 +126,6 @@ import {
 } from '@/factories/userEditingValidations';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
-import { mdiMinusCircleOutline } from '@mdi/js';
 
 const INSTITUTION = 'institution';
 const GRANTNUMBER = 'grantNumber';

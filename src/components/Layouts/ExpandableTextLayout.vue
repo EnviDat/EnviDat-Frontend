@@ -49,8 +49,8 @@
 
     <v-card-actions
       v-if="maxTextLengthReached"
-      class="ma-0 pa-2"
-      :style="`position: absolute; bottom: 0px; right: ${rightPos()};`"
+      class="ma-0 pa-4"
+      :style="`position: absolute; bottom: 0px; right: 0;`"
     >
       <BaseIconButton
         :icon="mdiChevronDown"
@@ -150,11 +150,6 @@ export default {
   methods: {
     readMore() {
       this.showFullText = !this.showFullText;
-    },
-    rightPos() {
-      return this.$refs.text && this.$refs.text.$el.clientHeight >= 500
-        ? '0px'
-        : '10px';
     },
   },
   data: () => ({
