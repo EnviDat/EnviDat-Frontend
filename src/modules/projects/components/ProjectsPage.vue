@@ -69,7 +69,6 @@ import {
   PROJECTS_PAGENAME,
 } from '@/router/routeConsts';
 import {
-  SET_APP_BACKGROUND,
   SET_CURRENT_PAGE,
 } from '@/store/mainMutationsConsts';
 import {
@@ -84,7 +83,6 @@ if (typeof defineOptions === 'function') {
     beforeRouteEnter(to, from, next) {
       next((vm: any) => {
         vm.$store.commit(SET_CURRENT_PAGE, PROJECTS_PAGENAME);
-        vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
       });
     },
   });
