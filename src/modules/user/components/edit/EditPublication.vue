@@ -11,6 +11,9 @@
           <v-col cols="12">
             <EditPublicationInfo v-bind="editPublicationsProps" />
           </v-col>
+          <v-col v-if="publicationState !== PUBLICATION_STATE_PUBLISHED()" cols="12">
+            <EditReviewInfo v-bind="editReviewProps" />
+          </v-col>
         </v-row>
       </v-col>
 
@@ -91,6 +94,8 @@ import EditPublicationInfo from '@/modules/user/components/edit/EditPublicationI
 import EditFunding from '@/modules/user/components/EditFunding.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import EditPublicationStatus from '@/modules/user/components/edit/EditPublicationStatus.vue';
+import EditReviewInfo from '@/modules/user/components/edit/EditReviewInfo.vue';
+import {BLIND_REVIEW_ON, PUBLICATION_STATE_PUBLISHED} from '@/factories/metadataConsts';
 
 const NotFoundCard = defineAsyncComponent(() =>
   import('@/components/Cards/NotFoundCard.vue'),
@@ -215,6 +220,15 @@ export default {
         errorDetails: this.$store ? this.doiError?.details : undefined,
       };
     },
+    editReviewProps() {
+      return {
+        ...this.publicationsInfo,
+        isBlindReview: (this.publicationsInfo.version === BLIND_REVIEW_ON),
+        loading: this.$store ? this.doiLoading : undefined,
+        error: this.$store ? this.doiError?.message : undefined,
+        errorDetails: this.$store ? this.doiError?.details : undefined,
+      };
+    },
     metadataId() {
       return this.$route?.params?.metadataid;
     },
@@ -223,6 +237,9 @@ export default {
     },
   },
   methods: {
+    PUBLICATION_STATE_PUBLISHED() {
+      return PUBLICATION_STATE_PUBLISHED
+    },
     submitEdittedMetadata() {
       eventBus.emit(METADATA_EDITING_FINISH_CLICK);
     },
@@ -243,6 +260,7 @@ export default {
     envidatDomain: process.env.VITE_API_ROOT,
   }),
   components: {
+    EditReviewInfo,
     EditPublicationStatus,
     EditPublicationInfo,
     EditFunding,
