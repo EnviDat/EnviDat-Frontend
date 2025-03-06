@@ -10,6 +10,8 @@ import {
   mdiEarth,
   mdiAccountGroup,
   mdiTextBox,
+  mdiAccountHeart,
+  mdiArrowDownBoldCircleOutline,
 } from '@mdi/js';
 
 export const extractIcons = (data) => {
@@ -30,6 +32,8 @@ export const extractIcons = (data) => {
     world: mdiEarth,
     team: mdiAccountGroup,
     post: mdiTextBox,
+    heart: mdiAccountHeart,
+    scroll: mdiArrowDownBoldCircleOutline,
   };
   return map[lowerData];
 };

@@ -22,14 +22,14 @@
           cardClass="pa-2"
           titleClass="titleCardClass"
         />
-        <v-container class="pt-2 px-1">
+        <v-container :fluid="$vuetify.display.lgAndDown" class="pt-2 px-1">
           <slot name="datasets"></slot>
         </v-container>
       </section>
     </v-container-fluid>
 
     <!-- Info Slot -->
-    <v-container-fluid v-if="$slots.info" class="infoGrid" :class="paddings">
+    <v-container-fluid v-if="$slots.info" class="infoGrid background-grey">
       <BaseTitle
         style="text-align: center"
         :text="infoTitle"
@@ -37,13 +37,17 @@
         cardClass="pa-2"
         titleClass="titleCardClass"
       />
-      <v-container fluid class="pt-2 px-1">
+      <v-container :fluid="$vuetify.display.lgAndDown" class="pt-2">
         <slot name="info"></slot>
       </v-container>
     </v-container-fluid>
 
     <!-- News Slot -->
-    <v-container-fluid v-if="$slots.news" class="newsGrid" :class="paddings">
+    <v-container-fluid
+      v-if="$slots.news"
+      class="newsGrid mt-4"
+      :class="paddings"
+    >
       <BaseTitle
         style="text-align: center"
         :text="newsTitle"
@@ -51,7 +55,7 @@
         cardClass="pa-2"
         titleClass="titleCardClass"
       />
-      <v-container class="pt-2">
+      <v-container :fluid="$vuetify.display.lgAndDown" class="pt-2">
         <slot name="news"></slot>
       </v-container>
     </v-container-fluid>
@@ -146,6 +150,7 @@ const paddings = 'pa-md-2 pt-4 pt-sm-6';
 
 .infoGrid {
   grid-area: Info;
+  margin-top: -100px;
 }
 
 .newsGrid {
@@ -170,6 +175,13 @@ const paddings = 'pa-md-2 pt-4 pt-sm-6';
 }
 .background-grey {
   background-color: rgba(245, 245, 245, 0.75);
+  padding-top: 100px;
+  padding-bottom: 20px;
+}
+
+.landingPageGrid {
+  display: flex;
+  flex-direction: column;
 }
 
 @media screen and (min-width: 1340px) {

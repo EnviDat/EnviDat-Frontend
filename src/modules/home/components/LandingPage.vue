@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="pa-0" tag="article" id="LandingPage">
+  <v-container fluid class="pa-0">
     <LandingPageLayout
       :categoriesTitle="welcomeInfo.categoriesTitle"
       :datasetsTitle="welcomeInfo.datasetsTitle"
@@ -100,8 +100,8 @@
             v-for="(metadata, index) in recentMetadata"
             :key="index"
             cols="12"
-            md="6"
-            xl="3"
+            sm="6"
+            md="3"
             class="pa-2"
           >
             <BaseCardLandingPage
@@ -122,20 +122,15 @@
 
       <!-- Info slot -->
       <template v-if="showInfo" #info>
-        <v-row>
+        <v-row class="justify-center">
           <v-col
             v-for="(info, i) in infoCards"
             :key="i"
             cols="12"
-            :class="[
-              i === 0 ? 'pa-md-16 pt-md-0' : 'pa-md-16',
-              { 'pb-md-0': i === infoCards.length - 1 },
-              { 'background-grey': i % 2 === 1 },
-            ]"
+            md="6"
+            lg="4"
           >
-            <v-container>
-              <InfoCards :index="i" :info="info" />
-            </v-container>
+            <InfoCards :index="i" :info="info" />
           </v-col>
         </v-row>
       </template>
@@ -158,7 +153,7 @@
               :subtitle="post.text"
               :date="post.date"
               :categoryName="'Envidat Team'"
-              :categoryColor="post.categoryColor || '#aab2ff'"
+              :categoryColor="'#aab2ff'"
               :categoryAbove="true"
               buttonText="View"
               @clickedEvent="catchPostClick(post.postFile)"
@@ -175,10 +170,11 @@
               :cardType="'blog'"
               :id="post.id"
               :title="post.title"
-              :subtitle="post.postContent"
-              :date="post.postDate"
+              :subtitle="post.preview"
+              :date="post.date"
+              :truncateSubTilte="true"
               :categoryName="'Blog article'"
-              :categoryColor="post.categoryColor || '#35A89D'"
+              :categoryColor="'#E0EF45E6'"
               :categoryAbove="true"
               :categoryBelow="false"
               buttonText="Read"

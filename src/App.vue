@@ -1,5 +1,9 @@
 <template>
-  <v-app class="application envidat-font-overwrite" id="app-container">
+  <v-app
+    class="application envidat-font-overwrite"
+    :class="{ 'hide-after': isScrolled }"
+    id="app-container"
+  >
     <div
       v-show="showDecemberParticles"
       id="christmas-canvas"
@@ -145,6 +149,12 @@
 
       <GenericFullScreenModal :auto-scroll="true" />
     </v-main>
+    <div class="scroll-icon">
+      <v-icon :size="46" class="mr-1" :color="'#000'">
+        {{ iconScroll }}
+      </v-icon>
+      <p class="font-weight-bold">Scroll</p>
+    </div>
   </v-app>
 </template>
 
@@ -165,6 +175,8 @@
 import { mapState, mapGetters } from 'vuex';
 
 import { getMonth } from 'date-fns';
+
+import { extractIcons } from '@/factories/iconFactory';
 
 import { defineAsyncComponent } from 'vue';
 import {
@@ -274,6 +286,9 @@ export default {
   },
   mounted() {
     this.checkUserSignedIn();
+    window.addEventListener('scroll', this.handleWindowScroll, {
+      passive: true,
+    });
   },
   updated() {
     this.updateActiveStateOnNavItems();
@@ -288,6 +303,7 @@ export default {
       }
     },
     storeScroll(scrollY) {
+      this.isScrolled = scrollY >= 10;
       this.$store.commit(SET_APP_SCROLL_POSITION, scrollY);
     },
     updateActiveStateOnNavItems() {
@@ -602,6 +618,9 @@ export default {
       notifications: 'notifications',
       maxNotifications: 'maxNotifications',
     }),
+    iconScroll() {
+      return extractIcons('scroll');
+    },
     effectsConfig() {
       return this.config?.effectsConfig || {};
     },
@@ -782,6 +801,7 @@ export default {
     navigationItems,
     userMenuItems,
     editMaintenanceMessage: `There is maintenance going on, please don't edit anything return to the <a href='./#${USER_DASHBOARD_PATH}' >dashboard page </a> or the <a href='/' >main page</a> for details!.`,
+    isScrolled: false,
   }),
 };
 </script>
@@ -802,5 +822,37 @@ export default {
 
 .bg-dark {
   background-color: #e0e0e0 !important;
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+#app-container {
+  position: relative;
+  .scroll-icon {
+    content: '';
+    display: block;
+    position: absolute;
+    bottom: -10px;
+    left: 45%;
+    transform: translateX(-50%);
+    opacity: 1;
+    transition: 0.1s linear;
+    z-index: 999;
+    animation: bounce 1s infinite ease-in-out;
+    @media (min-width: 1024px) {
+      left: 50%;
+    }
+  }
+}
+#app-container.hide-after .scroll-icon {
+  opacity: 0;
 }
 </style>
