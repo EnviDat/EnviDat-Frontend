@@ -149,7 +149,7 @@
 
       <GenericFullScreenModal :auto-scroll="true" />
     </v-main>
-    <div class="scroll-icon">
+    <div v-if="isLandingPage" class="scroll-icon">
       <v-icon :size="46" class="mr-1" :color="'#000'">
         {{ iconScroll }}
       </v-icon>
@@ -618,6 +618,12 @@ export default {
       notifications: 'notifications',
       maxNotifications: 'maxNotifications',
     }),
+    currentRoute() {
+      return this.$route;
+    },
+    isLandingPage() {
+      return this.currentRoute.fullPath === '/';
+    },
     iconScroll() {
       return extractIcons('scroll');
     },
@@ -836,9 +842,10 @@ export default {
 
 #app-container {
   position: relative;
+
   .scroll-icon {
     content: '';
-    display: block;
+    display: none;
     position: absolute;
     bottom: -10px;
     left: 45%;
@@ -848,10 +855,12 @@ export default {
     z-index: 999;
     animation: bounce 1s infinite ease-in-out;
     @media (min-width: 1024px) {
+      display: block;
       left: 50%;
     }
   }
 }
+
 #app-container.hide-after .scroll-icon {
   opacity: 0;
 }

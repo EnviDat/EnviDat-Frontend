@@ -11,7 +11,7 @@ import {
   mdiAccountGroup,
   mdiTextBox,
   mdiAccountHeart,
-  mdiArrowDownBoldCircleOutline,
+  mdiArrowDownThin,
 } from '@mdi/js';
 
 export const extractIcons = (data) => {
@@ -33,7 +33,7 @@ export const extractIcons = (data) => {
     team: mdiAccountGroup,
     post: mdiTextBox,
     heart: mdiAccountHeart,
-    scroll: mdiArrowDownBoldCircleOutline,
+    scroll: mdiArrowDownThin,
   };
   return map[lowerData];
 };
