@@ -7,7 +7,7 @@
     :disabled="disabled"
     @click="clicked"
     :elevation="elevation"
-    :class="{ disableClick: disableClick }"
+    :class="{ 'disableClick disableHover': disableClick }"
     class="d-flex align-center pa-2 rounded-xl bgcCard"
     :style="{
       backgroundColor: getBgcColor,
@@ -137,3 +137,9 @@ const getBgcColor = computed(() => {
   return bgc;
 });
 </script>
+
+<style lang="scss">
+.disableHover {
+  pointer-events: none;
+}
+</style>
