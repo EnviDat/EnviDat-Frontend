@@ -77,6 +77,7 @@ import {
 
 import { convertSinglePointsToMultiPoint, createLocation } from '@/factories/geoFactory';
 import {
+  LOCATION_TYPE_GEOMCOLLECTION,
   LOCATION_TYPE_MULTIPOINT,
   LOCATION_TYPE_MULTIPOLYGON,
   LOCATION_TYPE_POINT,
@@ -370,7 +371,9 @@ export default {
         } else if (type === LOCATION_TYPE_MULTIPOINT) {
           mapInQuestion = this.multiPinLayerGroupMap;
         } else if (type === LOCATION_TYPE_POLYGON
-                || type === LOCATION_TYPE_MULTIPOLYGON) {
+                || type === LOCATION_TYPE_MULTIPOLYGON
+                || type === LOCATION_TYPE_GEOMCOLLECTION
+        ) {
           mapInQuestion = this.polygonLayerGroupMap;
         }
 
