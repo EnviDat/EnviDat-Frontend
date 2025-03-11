@@ -68,9 +68,7 @@ import {
   PROJECT_DETAIL_PAGENAME,
   PROJECTS_PAGENAME,
 } from '@/router/routeConsts';
-import {
-  SET_CURRENT_PAGE,
-} from '@/store/mainMutationsConsts';
+import { SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
 import {
   GET_PROJECTS,
   PROJECTS_NAMESPACE,
@@ -127,7 +125,6 @@ const creatorImg = computed(() => {
 });
 
 // Local data
-const pageBGImage = ref('app_b_browsepage');
 
 onBeforeMount(() => {
   if (

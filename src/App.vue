@@ -1,7 +1,10 @@
 <template>
   <v-app
     class="application envidat-font-overwrite"
-    :class="{ 'hide-after': isScrolled }"
+    :class="{
+      'bg-dark': !isLandingPage,
+      'hide-after': isScrolled,
+    }"
     id="app-container"
   >
     <div

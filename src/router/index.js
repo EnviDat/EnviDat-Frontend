@@ -203,18 +203,6 @@ const router = createRouter({
   },
 });
 
-// to manage the background color
-router.afterEach((to) => {
-  const appContainer = document.getElementById('app-container');
-  if (!appContainer) return;
-
-  appContainer.classList.remove('bg-dark');
-
-  if (to.path != '/') {
-    appContainer.classList.add('bg-dark');
-  }
-});
-
 router.beforeEach((to, from, next) => {
   trackEvent('PageView', 'Visit', to.path);
   next();

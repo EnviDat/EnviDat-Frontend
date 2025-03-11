@@ -24,7 +24,7 @@ export const extractIcons = (data) => {
     snow: mdiSnowflake,
     forest: mdiForest,
     land: mdiImageFilterHdr,
-    meteo: mdiWeatherCloudy,
+    climate: mdiWeatherCloudy,
     hazard: mdiHazardLights,
     diversity: mdiLeaf,
     protected: mdiShieldCheck,

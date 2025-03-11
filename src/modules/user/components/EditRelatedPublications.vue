@@ -1,9 +1,8 @@
 <template>
   <v-card id="EditRelatedPublications" class="pa-0" :loading="loadingColor">
     <v-container fluid class="pa-4 fill-height">
-
       <v-row>
-        <v-col cols="6" class="text-h5">
+        <v-col cols="12" class="text-h5">
           {{ EDIT_METADATA_RELATEDPUBLICATIONS_TITLE }}
         </v-col>
 
@@ -26,32 +25,25 @@
       </v-row>
 
       <v-row>
-        <v-col >
-          <div class="text-subtitle-1"
-               v-html="labels.cardInstructions">
-
-          </div>
+        <v-col>
+          <div class="text-subtitle-1" v-html="labels.cardInstructions"></div>
         </v-col>
       </v-row>
 
       <v-row>
-        <v-col >
-
+        <v-col>
           <GenericTextareaPreviewLayout
             v-bind="genericTextAreaObject"
             :validationError="validationErrors[editingProperty]"
             :readonly="isReadOnly(editingProperty)"
             :hint="readOnlyHint(editingProperty)"
             @inputedText="catchInputedText($event)"
-            @changedText="catchChangedText($event)">
-
+            @changedText="catchChangedText($event)"
+          >
             <MetadataPublications v-bind="publicationsObject" />
-
           </GenericTextareaPreviewLayout>
-
         </v-col>
       </v-row>
-
     </v-container>
   </v-card>
 </template>

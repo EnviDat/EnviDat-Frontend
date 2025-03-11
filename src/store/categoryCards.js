@@ -21,7 +21,6 @@ import { EDNA_MODE, SWISSFL_MODE } from '@/store/metadataMutationsConsts';
 import { getModeData } from '@/factories/modeFactory';
 import { getImage, getImageList } from '@/factories/imageFactory';
 
-
 import {
   mdiForest,
   mdiSnowflake,
@@ -30,7 +29,6 @@ import {
   mdiLeaf,
   mdiWeatherCloudy,
 } from '@mdi/js';
-
 
 const swissFLMode = getModeData(SWISSFL_MODE);
 const ednaMode = getModeData(EDNA_MODE);
@@ -85,7 +83,7 @@ export default [
     title: 'Climate',
     type: CLIMATE,
     alias: ['meteo'],
-    imgPath: mdiWeatherCloudy, // getImage('c_b_meteo_clouds_lighting_small'),
+    iconPath: mdiWeatherCloudy,
     color: '#E8EAF6',
     darkColor: '#C5CAE9',
     disabled: false,

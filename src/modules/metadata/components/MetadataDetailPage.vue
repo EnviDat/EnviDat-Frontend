@@ -1,9 +1,5 @@
 <template>
-  <v-container id="MetadataDetailPage"
-               fluid
-               class="pa-0"
-               tag="article" >
-
+  <v-container id="MetadataDetailPage" fluid class="pa-0" tag="article">
     <v-row no-gutters>
       <!-- prettier-ignore -->
       <v-col class="elevation-5 pa-0"
@@ -159,11 +155,6 @@ import {
 } from '@/factories/strategyFactory';
 
 import { getEventsForPageAndName } from '@/modules/matomo/store/matomoStore';
-
-
-// import {
-//   ORGANIZATIONS_NAMESPACE,
-// } from '@/modules/organizations/store/organizationsMutationsConsts';
 
 import { convertJSON, getFrontendDates } from '@/factories/mappingFactory';
 
@@ -571,7 +562,10 @@ export default {
         );
 
         // this.descriptionData = createBody(currentContent, this.$vuetify.display.smAndDown);
-        this.descriptionData = createDescriptionViewModel(parsedContent, isSmallScreen);
+        this.descriptionData = createDescriptionViewModel(
+          parsedContent,
+          isSmallScreen,
+        );
 
         this.citation = createCitation(currentContent);
 
@@ -845,7 +839,6 @@ export default {
           organization,
         },
       });
-
     },
     /**
      * @description loads the content of this metadata entry (metadataid) from the URL.

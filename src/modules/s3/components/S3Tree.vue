@@ -75,24 +75,23 @@
                 size="x-small"
                 color="white"
                 variant="outlined"
-                >
+              >
                 {{ item.numberOfChild }}
               </v-chip>
 
-              <v-chip v-if="!item.isChild"
-                      class="ml-2"
-                      size="x-small"
-                      color="white"
-                      variant="outlined"
+              <v-chip
+                v-if="!item.isChild"
+                class="ml-2"
+                size="x-small"
+                color="white"
+                variant="outlined"
               >
                 {{ childrenObject }}
               </v-chip>
             </span>
           </v-col>
 
-          <v-col v-if="item.isFile"
-                 class="flex-grow-0 py-0"
-          >
+          <v-col v-if="item.isFile" class="flex-grow-0 py-0">
             <BaseRectangleButton
               :isXsSmall="true"
               color="white"
@@ -101,9 +100,7 @@
             />
           </v-col>
 
-          <v-col v-if="item.isLastItem"
-                 class="flex-grow-0 py-0"
-          >
+          <v-col v-if="item.isLastItem" class="flex-grow-0 py-0">
             <BaseRectangleButton
               :isXsSmall="true"
               color="white"
@@ -112,17 +109,14 @@
             />
           </v-col>
 
-          <v-col v-if="item.maximumLengthItem"
-                 class="flex-grow-0 py-0"
-          >
+          <v-col v-if="item.maximumLengthItem" class="flex-grow-0 py-0">
             <BaseRectangleButton
               :isXsSmall="true"
               color="white"
               :url="url"
               buttonText="View All"
             />
-        </v-col>
-
+          </v-col>
         </v-row>
       </template>
     </v-treeview>
@@ -153,7 +147,7 @@ const itemOpened = ref(false);
 
 const labels = {
   viewAll: 'View all data on the S3 File Browser website',
-}
+};
 
 // set store event for change the style of the resourceCard height if the treeview is opened
 function setStatus() {
@@ -176,7 +170,9 @@ function getData(url, isChild, nodeId) {
 
   if (url && isChild) {
     // create dynamic URL
-    const currentPrefix = new URLSearchParams(baseUrl.value.split('?')[1]).get('prefix');
+    const currentPrefix = new URLSearchParams(baseUrl.value.split('?')[1]).get(
+      'prefix',
+    );
     const newPrefix = `${currentPrefix}${url}/`;
     dynamicUrl = `${baseUrl.value.split('?')[0]}?prefix=${newPrefix}&max-keys=100000&delimiter=/`;
   } else {
@@ -187,6 +183,7 @@ function getData(url, isChild, nodeId) {
 }
 
 function extractS3Url(inputUrl) {
+  console.log(inputUrl);
   s3Store.s3BucketUrl = inputUrl;
   const url = new URL(inputUrl);
   const hash = url.hash.substring(2);
@@ -196,10 +193,14 @@ function extractS3Url(inputUrl) {
   const bucket = decodeURIComponent(rawBucket);
 
   // Remove leading slashes from prefix
-  const prefix = decodeURIComponent(hashParams.get('prefix') || '').replace(
+  let prefix = decodeURIComponent(hashParams.get('prefix') || '').replace(
     /^\/+/,
     '',
   );
+
+  if (prefix && !prefix.endsWith('/')) {
+    prefix += '/';
+  }
 
   // If missing 'bucket', fall back to envicloud
   let basePath;
@@ -217,6 +218,7 @@ function extractS3Url(inputUrl) {
 
   // Build final direct URL
   const extractedUrl = `${basePath}?prefix=${prefix}&max-keys=100000&delimiter=/`;
+  console.log(extractedUrl);
   baseUrl.value = extractedUrl;
 
   getData(baseUrl.value);
