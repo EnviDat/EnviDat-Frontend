@@ -84,22 +84,34 @@ export default ({ mode, config }) => {
       }),
       visualizer({
         filename: './dist/buildStats.html',
-        title : 'EnviDat Build Visualizer',
+        title: 'EnviDat Build Visualizer',
       }),
       vueDevTools(),
     ],
     resolve: {
-        alias: [
-          { find: '@', replacement: path.resolve(__dirname, 'src') },
-          { find: '~', replacement: path.resolve(__dirname) },
-          // { find: 'leaflet', replacement: 'leaflet/dist/leaflet.js' },
-          { find: 'leaflet/dist/leaflet.css', replacement: 'leaflet/dist/leaflet.css' },
-          // { find: 'leaflet', replacement: 'leaflet/dist/leaflet-src.esm.js' },
-          { find: 'leaflet.markercluster/dist/MarkerCluster.css', replacement: 'leaflet.markercluster/dist/MarkerCluster.css' },
-          { find: 'leaflet.markercluster/dist/MarkerCluster.Default.css', replacement: 'leaflet.markercluster/dist/MarkerCluster.Default.css' },
-          { find: 'leaflet.markercluster', replacement: 'leaflet.markercluster/dist/leaflet.markercluster.js' },
-          { find: 'vue', replacement: 'vue/dist/vue.esm-bundler.js' },
-        ],
+      alias: [
+        { find: '@', replacement: path.resolve(__dirname, 'src') },
+        { find: '~', replacement: path.resolve(__dirname) },
+        // { find: 'leaflet', replacement: 'leaflet/dist/leaflet.js' },
+        {
+          find: 'leaflet/dist/leaflet.css',
+          replacement: 'leaflet/dist/leaflet.css',
+        },
+        // { find: 'leaflet', replacement: 'leaflet/dist/leaflet-src.esm.js' },
+        {
+          find: 'leaflet.markercluster/dist/MarkerCluster.css',
+          replacement: 'leaflet.markercluster/dist/MarkerCluster.css',
+        },
+        {
+          find: 'leaflet.markercluster/dist/MarkerCluster.Default.css',
+          replacement: 'leaflet.markercluster/dist/MarkerCluster.Default.css',
+        },
+        {
+          find: 'leaflet.markercluster',
+          replacement: 'leaflet.markercluster/dist/leaflet.markercluster.js',
+        },
+        { find: 'vue', replacement: 'vue/dist/vue.esm-bundler.js' },
+      ],
     },
     define: {
       'process.env': loadEnv(mode, process.cwd()),
@@ -129,62 +141,69 @@ export default ({ mode, config }) => {
                     return 'vendor_vuetify';
                   }
 
-              if (id.includes('vue') || id.includes('pinia')) {
-                // vue, vuex & pinia, vue-router, etc.
-                return 'vendor_vue';
-              }
+                  if (id.includes('vue') || id.includes('pinia')) {
+                    // vue, vuex & pinia, vue-router, etc.
+                    return 'vendor_vue';
+                  }
 
-              if (id.includes('leaflet')) {
-                return 'vendor_leaflet';
-              }
+                  if (id.includes('leaflet')) {
+                    return 'vendor_leaflet';
+                  }
 
-              if (id.includes('turf')) {
-                return 'vendor_turf';
-              }
+                  if (id.includes('turf')) {
+                    return 'vendor_turf';
+                  }
 
-              if (id.includes('uppy')) {
-                return 'vendor_uppy';
-              }
+                  if (id.includes('uppy')) {
+                    return 'vendor_uppy';
+                  }
 
-              if (id.includes('chart') || id.includes('uplot')) {
-                return 'vendor_charts';
-              }
+                  if (id.includes('chart') || id.includes('uplot')) {
+                    return 'vendor_charts';
+                  }
 
-              if (id.includes('yup')) {
-                return 'vendor_validation';
-              }
+                  if (id.includes('yup')) {
+                    return 'vendor_validation';
+                  }
 
-              if (id.includes('axios')
-                || id.includes('date-fns')
-                || id.includes('mitt')
-                || id.includes('seedrandom')
-                || id.includes('tiny-js-md5')
-              ) {
-                return 'vendor_utils';
-              }
+                  if (
+                    id.includes('axios') ||
+                    id.includes('date-fns') ||
+                    id.includes('mitt') ||
+                    id.includes('seedrandom') ||
+                    id.includes('tiny-js-md5')
+                  ) {
+                    return 'vendor_utils';
+                  }
 
-              return 'vendors';
-            }
+                  return 'vendors';
+                }
 
-            if (id.includes('src/assets')) {
-              return 'envidat_assets';
-            }
+                if (id.includes('src/assets')) {
+                  return 'envidat_assets';
+                }
 
-
-            // Let Rollup handle the rest
-            return undefined
-          },
-        },
-      } : {},
+                // Let Rollup handle the rest
+                return undefined;
+              },
+            },
+          }
+        : {},
     },
     server: {
       host: '0.0.0.0',
       port: 8080,
+      allowedHosts: ['dev.envidat04.wsl.ch'],
       proxy: {
         '/api': {
           target: 'https://statistics.wsl.ch',
           changeOrigin: true,
-          rewrite: proxyPath => proxyPath.replace(/^\/api/, ''),
+          rewrite: (proxyPath) => proxyPath.replace(/^\/api/, ''),
+        },
+        '/envidat04': {
+          target: 'http://envidat04.wsl.ch',
+          changeOrigin: true,
+          rewrite: (proxyPath) => proxyPath.replace(/^\/envidat04/, ''),
         },
       },
     },

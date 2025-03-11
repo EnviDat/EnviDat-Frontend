@@ -17,7 +17,6 @@ import { extractBodyIntoUrl } from '@/factories/stringFactory';
 
 import { trackEvent } from '@/utils/matomoTracking';
 
-
 import {
   ACTION_OLD_GET_USER_CONTEXT,
   ACTION_USER_EDITING_UPDATE,
@@ -32,7 +31,6 @@ import {
   ACTION_USER_SIGNIN_TOKEN,
 } from './userMutationsConsts';
 
-
 // don't use an api base url or API_ROOT when using testdata
 let API_BASE = '';
 let API_ROOT = '';
@@ -44,7 +42,6 @@ if (!useTestdata) {
   API_ROOT = import.meta.env.VITE_API_ROOT;
 }
 
-
 export default {
   async [SIGNIN_USER_ACTION]({ commit }, payload) {
     commit(payload.mutation);
@@ -54,7 +51,8 @@ export default {
     const method = requestMethodsForLoginActions(action);
 
     // unpack the action because it might be wrapped to provide a test url
-    const actionUrl = typeof (payload.action) === 'function' ? payload.action() : payload.action;
+    const actionUrl =
+      typeof payload.action === 'function' ? payload.action() : payload.action;
 
     let url = actionUrl;
     if (method.toLowerCase() === 'get' && data) {
@@ -67,7 +65,8 @@ export default {
     // if the url is directly to a file it has to be a get call
     // const method = url.includes('.json') ? 'get' : 'post';
 
-    await axios.request({ url, method, data })
+    await axios
+      .request({ url, method, data })
       .then((response) => {
         if (payload.commit) {
           commit(`${payload.mutation}_SUCCESS`, response.data.result);
@@ -77,7 +76,7 @@ export default {
             const token = response.data.result.token;
 
             // Send Matomo event to track the number of login
-            trackEvent('Login', payload.body.email)
+            trackEvent('Login', payload.body.email);
 
             this.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`, {
               action: ACTION_GET_USER_CONTEXT_TOKEN,
@@ -92,8 +91,10 @@ export default {
         commit(`${payload.mutation}_ERROR`, error);
       });
   },
-  async [USER_EDITING_UPDATE]({ commit, dispatch }, { userId, firstName, lastName, email }) {
-
+  async [USER_EDITING_UPDATE](
+    { commit, dispatch },
+    { userId, firstName, lastName, email },
+  ) {
     commit(USER_EDITING_UPDATE);
 
     const actionUrl = ACTION_USER_EDITING_UPDATE();
@@ -116,18 +117,15 @@ export default {
     try {
       await axios.post(url, postData);
 
-      await dispatch(SIGNIN_USER_ACTION,
-        {
-          action: ACTION_OLD_GET_USER_CONTEXT,
-          commit: true,
-          mutation: GET_USER_CONTEXT,
-        });
+      await dispatch(SIGNIN_USER_ACTION, {
+        action: ACTION_OLD_GET_USER_CONTEXT,
+        commit: true,
+        mutation: GET_USER_CONTEXT,
+      });
 
       commit(USER_EDITING_UPDATE_SUCCESS);
-
     } catch (reason) {
       commit(USER_EDITING_UPDATE_ERROR, reason);
     }
   },
-
 };
