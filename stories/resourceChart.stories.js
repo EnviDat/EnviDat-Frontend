@@ -1,6 +1,6 @@
 /* eslint-disable object-curly-newline */
 /**
- * @summary story of SigninPage sandbox testing
+ * @summary story of Resource DataViz sandbox testing
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 16:34:51

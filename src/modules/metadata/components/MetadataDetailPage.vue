@@ -175,7 +175,7 @@ import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeade
 import { createLocation } from '@/factories/geoFactory';
 import { createHeaderViewModel } from '@/factories/ViewModels/HeaderViewModel';
 import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionViewModel';
-import { markResourceForDataViz } from '@/modules/charts/middelware/chartServiceLayer.ts';
+import { getResourcesForDataViz } from '@/modules/charts/middelware/chartServiceLayer.ts';
 
 const MetadataDescription = defineAsyncComponent(
   () =>
@@ -210,6 +210,10 @@ const MetadataRelatedDatasets = defineAsyncComponent(
       '@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue'
     ),
 );
+
+const ResourceDataVizListAsync = defineAsyncComponent(() =>
+  import('@/modules/charts/components/ResourceDataVizList.vue'),
+)
 
 // Might want to check https://css-tricks.com/use-cases-fixed-backgrounds-css/
 // for animations between the different parts of the Metadata
@@ -634,20 +638,23 @@ export default {
         );
 
         this.resourceData.dates = getFrontendDates(this.metadataContent.date);
+
+
+        if (this.resourcesConfig.loadDataViz) {
+          this.resourcesForDataViz = getResourcesForDataViz(this.resourceData.resources);
+        }
+
       }
 
-      if (this.resourcesConfig.loadDataViz) {
-        markResourceForDataViz(this.resourceData.resources);
-      }
 
-      this.MetadataResources.props = {
-        ...this.resourceData,
-        dataLicenseId: license.id,
-        dataLicenseTitle: license.title,
-        dataLicenseUrl: license.url,
-        resourcesConfig: this.resourcesConfig,
-        showPlaceholder: this.showPlaceholder,
-      };
+        this.MetadataResources.props = {
+          ...this.resourceData,
+          dataLicenseId: license.id,
+          dataLicenseTitle: license.title,
+          dataLicenseUrl: license.url,
+          resourcesConfig: this.resourcesConfig,
+          showPlaceholder: this.showPlaceholder,
+        };
     },
     setMetadataContent() {
       this.configInfos = getConfigUrls(this.configInfos);
@@ -708,22 +715,36 @@ export default {
         showPlaceholder: this.showPlaceholder,
       };
 
+      let resourceDataViz;
+
+      if (this.resourcesConfig.loadDataViz) {
+        resourceDataViz = ResourceDataVizListAsync
+        resourceDataViz.props = {
+          resources: this.resourcesForDataViz,
+        }
+      }
+
       this.firstCol = [
         this.MetadataDescription,
         this.MetadataCitation,
         publicationList,
-        this.MetadataRelatedDatasets,
         this.MetadataFunding,
         this.MetadataAuthors,
       ];
 
-      this.secondCol = [this.MetadataResources, this.MetadataGeo];
+      this.secondCol = [
+        this.MetadataResources,
+        resourceDataViz,
+        this.MetadataGeo,
+        this.MetadataRelatedDatasets,
+      ];
 
       if (this.$vuetify.display.smAndDown) {
         this.singleCol = [
           this.MetadataDescription,
           this.MetadataCitation,
           this.MetadataResources,
+          resourceDataViz,
           this.MetadataGeo,
           this.MetadataAuthors,
           this.MetadataFunding,
@@ -1034,6 +1055,7 @@ export default {
     descriptionData: null,
     citation: null,
     resourceData: null,
+    resourcesForDataViz: [],
     location: null,
     publications: null,
     relatedDatasets: null,

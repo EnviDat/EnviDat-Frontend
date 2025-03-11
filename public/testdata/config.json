@@ -58,7 +58,7 @@
       "showDataCreditScore": false
     },
     "resourcesConfig": {
-      "loadDataViz": false,
+      "loadDataViz": true,
       "downloadActive": true
     }
  },

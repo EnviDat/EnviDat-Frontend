@@ -1,11 +1,10 @@
 import { defineAsyncComponent } from 'vue';
 import { getUrlExtension } from '@/factories/strategyFactory';
-import { getDataWithMetaData } from '@/modules/charts/middelware/ServiceLayer.ts';
-import { MetaData } from '@/types/env';
+import { getDataWithMetaData } from '@/modules/charts/middelware/DataVizServiceLayer.ts';
+import { MetaData } from '@/types/dataVizTypes';
 import { INJECT_GENERIC_COMPONENT } from '@/factories/eventBus';
 
 const ResourceDataVizAsync = defineAsyncComponent(() =>
-  // eslint-disable-next-line import/no-self-import
   import('@/modules/charts/components/ResourceDataViz.vue'),
 )
 
@@ -118,4 +117,9 @@ export function markResourceForDataViz(resources: any[]) {
       };
     }
   }
+}
+
+export function getResourcesForDataViz(resources: object[]) : object[] {
+  return resources.filter((res) => !res.isProtected &&
+    DataVizSupportedExtensions.includes(getUrlExtension(res.url)));
 }

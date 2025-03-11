@@ -1,6 +1,6 @@
 import papa from 'papaparse';
 import {parseISO} from 'date-fns/parseISO';
-import type {MetaData, MetaRows} from '@/types/env';
+import type {MetaData, MetaRows} from '@/types/dataVizTypes';
 
 const normalDataConversion = (data: any, xAxis: string, yAxis: string, title: string) => ({
     labels: data?.map((row: any) => row[xAxis]),

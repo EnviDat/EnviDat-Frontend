@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import LineChart from '@/components/Charts/LineChart.vue';
 
 import { loadResourcesData } from '@/modules/charts/middelware/chartServiceLayer.ts';
-import { MetaData } from '@/types/env';
+import { MetaData } from '@/types/dataVizTypes';
 
 const { resource } = defineProps<{
   resource: object;
@@ -60,7 +60,7 @@ const getTimeParameter = (parameterList: string[]) : string | null => {
 
 const getNextParameter = (parameterList: string[], positionParameter: string) : string | null => {
 
-  const index = positionParameter.indexOf(positionParameter);
+  const index = parameterList.indexOf(positionParameter);
   if (index >= 0) {
     const next = index + 1;
 
@@ -113,20 +113,21 @@ const loadDataForParameter = (
   };
 };
 
-const loadData = () => {
+const loadData = (res: object) => {
 
   error.value = undefined;
   warning.value = undefined;
+  dataPerParameter.value = undefined;
   loading.value = true;
 
-  if (!resource || resource?.isProtected) {
+  if (!res || res?.isProtected) {
     error.value = 'Resource is undefined or protected';
     loading.value = false;
     return;
   }
 
   loadResourcesData(
-    resource.url,
+    res.url,
     (meta: MetaData, data: Object[]) => {
       chartLabels.value = meta.hasMetaRows ? meta.metaRows.fields : null;
 
@@ -177,7 +178,12 @@ const assignYParameter = (parameter: string) => {
   );
 };
 
-loadData();
+watch(() => resource,
+  (newResource) => {
+    loadData(newResource);
+  },
+  { immediate: true },
+)
 
 </script>
 
