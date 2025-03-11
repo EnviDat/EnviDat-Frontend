@@ -820,7 +820,7 @@ export default {
 
 .custom-v-main {
   position: relative;
-  left: 0px;
+  left: 0;
 }
 
 @media (min-width: 960px) and (max-width: 1279px) {

@@ -34,7 +34,7 @@
             cols="auto"
           >
             <BaseCategoryCard
-              :height="'45'"
+              height="45"
               :title="card.title"
               :img="card.imgPath"
               :icon="card.iconPath"
@@ -55,7 +55,7 @@
             cols="auto"
           >
             <BaseCategoryCard
-              :height="'45'"
+              height="45"
               :elevation="5"
               :title="card.title"
               :img="card.imgPath"
