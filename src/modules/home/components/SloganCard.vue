@@ -1,40 +1,38 @@
 <template>
-  <v-container class="pa-0 mt-10">
-    <v-container class="pa-0 pa-md-6">
-      <v-row no-gutters class="align-center">
-        <v-col cols="12">
-          <v-img
-            class="envidat-img"
-            alt="envidat_logo"
-            :style="[backgroundStyle, dynamicImgStyle]"
-          />
-
-          <div
-            class="envidatSlogan text-h4 text-md-h3 text-xl-h2 pb-5 mb-md-5 mb-md-0 font-weight-bold envidat-slogan"
-            :style="dynamicSloganStyle"
-          >
-            {{ slogan }}
-          </div>
-
-          <div
-            :class="{
-              'pb-5 mb-5 mb-md-0 pr-0 pl-0 pl-sm-10 pr-sm-10': hasButtons,
-              'pb-0': !hasButtons,
-              'text-subtitle-1 text-md-h6': true,
-              'envidat-subSlogan': true,
-            }"
-            style="text-align: center"
-            v-html="subSlogan"
-          ></div>
-        </v-col>
-
-        <base-rectangle-button
-          v-if="buttonText && buttonCallback"
-          :button-text="buttonText"
-          @clicked="buttonCallback"
+  <v-container class="pa-0">
+    <v-row no-gutters class="align-center">
+      <v-col cols="12">
+        <v-img
+          class="envidat-img"
+          alt="envidat_logo"
+          :style="[backgroundStyle, dynamicImgStyle]"
         />
-      </v-row>
-    </v-container>
+
+        <div
+          class="envidatSlogan text-h4 text-md-h3 text-xl-h2 pb-5 mb-md-5 mb-md-0 font-weight-bold envidat-slogan"
+          :style="dynamicSloganStyle"
+        >
+          {{ slogan }}
+        </div>
+
+        <div
+          :class="{
+            'pb-5 mb-5 mb-md-0 pr-0 pl-0 pl-sm-10 pr-sm-10': hasButtons,
+            'pb-0': !hasButtons,
+            'text-subtitle-1 text-md-h6': true,
+            'envidat-subSlogan': true,
+          }"
+          style="text-align: center"
+          v-html="subSlogan"
+        ></div>
+      </v-col>
+
+      <base-rectangle-button
+        v-if="buttonText && buttonCallback"
+        :button-text="buttonText"
+        @clicked="buttonCallback"
+      />
+    </v-row>
   </v-container>
 </template>
 
@@ -85,7 +83,7 @@ const backgroundStyle = computed(() => ({
   backgroundPosition: 'center',
 }));
 
-const { smAndDown, mdAndUp } = useDisplay();
+const { smAndDown } = useDisplay();
 
 const dynamicImgStyle = computed(() => {
   if (smAndDown.value) {
@@ -108,11 +106,13 @@ const dynamicSloganStyle = computed(() => {
     return {
       lineHeight: '2.6rem',
       textAlign: 'center',
+      'white-space': 'break-spaces',
     };
   }
   return {
-    lineHeight: '4.6rem',
+    lineHeight: '3.5rem',
     textAlign: 'center',
+    'white-space': 'break-spaces',
   };
 });
 

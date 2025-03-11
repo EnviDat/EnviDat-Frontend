@@ -5,7 +5,7 @@
     id="LandingPage"
   >
     <!-- Welcome Slot -->
-    <v-container-fluid
+    <v-container fluid
       v-if="$slots.welcome"
       class="welcomeGrid"
       :class="paddings"
@@ -26,10 +26,12 @@
           <slot name="datasets"></slot>
         </v-container>
       </section>
-    </v-container-fluid>
+    </v-container>
 
     <!-- Info Slot -->
-    <v-container-fluid v-if="$slots.info" class="infoGrid background-grey">
+    <v-container v-if="$slots.info"
+                 fluid
+                 class="infoGrid background-grey">
       <BaseTitle
         style="text-align: center"
         :text="infoTitle"
@@ -40,10 +42,10 @@
       <v-container :fluid="$vuetify.display.lgAndDown" class="pt-2">
         <slot name="info"></slot>
       </v-container>
-    </v-container-fluid>
+    </v-container>
 
     <!-- News Slot -->
-    <v-container-fluid
+    <v-container fluid
       v-if="$slots.news"
       class="newsGrid mt-4"
       :class="paddings"
@@ -58,10 +60,10 @@
       <v-container :fluid="$vuetify.display.lgAndDown" class="pt-2">
         <slot name="news"></slot>
       </v-container>
-    </v-container-fluid>
+    </v-container>
 
     <!-- Contact Slot -->
-    <v-container-fluid
+    <v-container fluid
       v-if="$slots.contact"
       class="contactGrid"
       :class="paddings"
@@ -69,7 +71,7 @@
       <v-container fluid class="pt-2 px-1">
         <slot name="contact"></slot>
       </v-container>
-    </v-container-fluid>
+    </v-container>
   </article>
 </template>
 
@@ -79,7 +81,7 @@ import { useDisplay } from 'vuetify';
 import BaseTitle from '@/components/BaseElements/BaseTitle.vue';
 
 // Define component props
-const props = defineProps({
+defineProps({
   categoriesTitle: String,
   datasetsTitle: String,
   newsTitle: String,

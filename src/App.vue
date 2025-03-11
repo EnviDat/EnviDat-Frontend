@@ -73,16 +73,16 @@
       @itemClick="catchItemClicked"
     />
 
-    <v-main class="custom-v-main pt-4 pt-md-8">
+    <v-main class="pt-13 pt-md-9">
       <v-container
-        class="mainPageContainer pa-2 pa-sm-3"
+        class="mainPageContainer pa-2"
         fluid
         @scroll="updateScroll()"
         id="appContainer"
         ref="appContainer"
         :style="pageStyle"
       >
-        <v-row id="mainPageRow" class="position-relative overflow-hidden">
+        <v-row id="mainPageRow" no-gutters>
           <v-col cols="12">
             <router-view v-slot="{ Component }">
               <transition name="fade" mode="out-in">
@@ -176,12 +176,11 @@
  */
 
 import { mapState, mapGetters } from 'vuex';
-
 import { getMonth } from 'date-fns';
+import { defineAsyncComponent } from 'vue';
 
 import { extractIcons } from '@/factories/iconFactory';
 
-import { defineAsyncComponent } from 'vue';
 import {
   LANDING_PATH,
   LANDING_PAGENAME,
@@ -232,7 +231,6 @@ import {
 import MaintenanceBanner from '@/modules/home/components/MaintenanceBanner.vue';
 
 import { ENVIDAT_SHOW_COOKIE_BANNER } from '@/factories/metadataConsts';
-import { getImage } from '@/factories/imageFactory';
 
 const TheNavigation = defineAsyncComponent(
   () => import('@/components/Navigation/TheNavigation.vue'),
@@ -702,20 +700,21 @@ export default {
     searchTerm() {
       return this.$route.query.search;
     },
+/*
     mainPageIsScrollable() {
       return this.currentPage === BROWSE_PAGENAME;
     },
+*/
     showToolbar() {
       // return this.mainPageIsScrollable && this.mode;
       return true;
     },
     pageStyle() {
-      const heightStyle = this.showToolbar
-        ? 'height: calc(100vh - 32px);'
-        : 'height: 100vh;';
-      return this.mainPageIsScrollable
-        ? ''
-        : `${heightStyle} overflow-y: auto; scroll-behavior: smooth; scrollbar-width: thin; `;
+      const heightStyle = `height: calc(100vh - ${ this.$vuetify.display.smAndDown ? 50 : 36 }px);`;
+
+      return this.currentPage === BROWSE_PAGENAME
+        ? heightStyle
+        : `${heightStyle} overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth; scrollbar-width: thin; `;
     },
     showSmallNavigation() {
       return this.$vuetify.display.smAndDown;

@@ -1,217 +1,216 @@
 <template>
-  <v-container fluid class="pa-0">
-    <LandingPageLayout
-      :categoriesTitle="welcomeInfo.categoriesTitle"
-      :datasetsTitle="welcomeInfo.datasetsTitle"
-      :datasetsTotal="datasetsTotal"
-      :newsTitle="welcomeInfo.newsTitle"
-      :infoTitle="welcomeInfo.infoTitle"
-      :articlesTitle="welcomeInfo.articlesTitle"
-    >
-      <!-- Welcome slot -->
-      <template #welcome>
-        <SloganCard
-          :slogan="welcomeInfo.Slogan"
-          :subSlogan="welcomeInfo.SubSlogan"
-          :maxHeight="200"
-          :buttonText="sloganButtonText"
-          :moreButtonText="sloganMoreButtonText"
-          :moreButtonCallback="catchMoreClicked"
-        />
-        <SearchBarView
-          v-if="isMediumScreenAndDown"
-          :labelText="welcomeInfo.searchLabelText"
-          :buttonText="buttonsActions"
-          :hasButton="true"
-          @clicked="catchActionsButton"
-        />
-        <v-row justify="center" class="flex-grow-0" no-gutters>
-          <!-- noMode Category -->
-          <v-col
-            v-for="card in categoryCardsNoMode"
-            :key="card.title"
-            class="pa-2"
-            cols="auto"
-          >
-            <BaseCategoryCard
-              height="45"
-              :title="card.title"
-              :img="card.imgPath"
-              :icon="card.iconPath"
-              :color="card.darkColor"
-              :isMode="card.isMode"
-              :contain="card.contain"
-              :disabled="card.disabled"
-              @click="catchCategoryClicked(card.type)"
-            />
-          </v-col>
-        </v-row>
-        <v-row justify="center" class="flex-grow-0" no-gutters>
-          <!-- Mode Category -->
-          <v-col
-            v-for="card in categoryCardsMode"
-            :key="card.title"
-            class="pa-2 d-block"
-            cols="auto"
-          >
-            <BaseCategoryCard
-              height="45"
-              :elevation="5"
-              :title="card.title"
-              :img="card.imgPath"
-              :icon="card.iconPath"
-              :color="card.darkColor"
-              :isMode="card.isMode"
-              :contain="card.contain"
-              :disabled="card.disabled"
-              @click="catchCategoryClicked(card.type)"
-            />
-          </v-col>
-        </v-row>
-      </template>
+  <LandingPageLayout
+    :categoriesTitle="welcomeInfo.categoriesTitle"
+    :datasetsTitle="welcomeInfo.datasetsTitle"
+    :datasetsTotal="datasetsTotal"
+    :newsTitle="welcomeInfo.newsTitle"
+    :infoTitle="welcomeInfo.infoTitle"
+    :articlesTitle="welcomeInfo.articlesTitle"
+  >
+    <!-- Welcome slot -->
+    <template #welcome>
+      <SloganCard
+        class="pa-md-6 pt-md-0"
+        :slogan="welcomeInfo.Slogan"
+        :subSlogan="welcomeInfo.SubSlogan"
+        :maxHeight="200"
+        :buttonText="sloganButtonText"
+        :moreButtonText="sloganMoreButtonText"
+        :moreButtonCallback="catchMoreClicked"
+      />
+      <SearchBarView
+        v-if="isMediumScreenAndDown"
+        :labelText="welcomeInfo.searchLabelText"
+        :buttonText="buttonsActions"
+        :hasButton="true"
+        @clicked="catchActionsButton"
+      />
+      <v-row justify="center" class="flex-grow-0" no-gutters>
+        <!-- noMode Category -->
+        <v-col
+          v-for="card in categoryCardsNoMode"
+          :key="card.title"
+          class="pa-2"
+          cols="auto"
+        >
+          <BaseCategoryCard
+            height="45"
+            :title="card.title"
+            :img="card.imgPath"
+            :icon="card.iconPath"
+            :color="card.darkColor"
+            :isMode="card.isMode"
+            :contain="card.contain"
+            :disabled="card.disabled"
+            @click="catchCategoryClicked(card.type)"
+          />
+        </v-col>
+      </v-row>
+      <v-row justify="center" class="flex-grow-0" no-gutters>
+        <!-- Mode Category -->
+        <v-col
+          v-for="card in categoryCardsMode"
+          :key="card.title"
+          class="pa-2 d-block"
+          cols="auto"
+        >
+          <BaseCategoryCard
+            height="45"
+            :elevation="5"
+            :title="card.title"
+            :img="card.imgPath"
+            :icon="card.iconPath"
+            :color="card.darkColor"
+            :isMode="card.isMode"
+            :contain="card.contain"
+            :disabled="card.disabled"
+            @click="catchCategoryClicked(card.type)"
+          />
+        </v-col>
+      </v-row>
+    </template>
 
-      <!-- Search slot -->
-      <template #search>
-        <SearchBarView
-          v-if="isMediumScreenAndUp"
-          :labelText="welcomeInfo.searchLabelText"
-          :buttonText="buttonsActions"
-          :hasButton="true"
-          @clicked="catchActionsButton"
-        />
-      </template>
+    <!-- Search slot -->
+    <template #search>
+      <SearchBarView
+        v-if="isMediumScreenAndUp"
+        :labelText="welcomeInfo.searchLabelText"
+        :buttonText="buttonsActions"
+        :hasButton="true"
+        @clicked="catchActionsButton"
+      />
+    </template>
 
-      <!-- Datasets slot -->
-      <template #datasets>
-        <v-row v-if="loadingMetadatasContent" no-gutters>
-          <v-col
-            v-for="index in 4"
-            :key="index"
-            cols="12"
-            md="6"
-            xl="3"
-            class="pa-2"
-          >
-            <MetadataCardPlaceholder id="orgaDataset" class="mx-2" />
-          </v-col>
-        </v-row>
-        <v-row v-else no-gutters>
-          <v-col
-            v-for="(metadata, index) in recentMetadata"
-            :key="index"
-            cols="12"
-            sm="6"
-            md="3"
-            class="pa-2"
-          >
-            <BaseCardLandingPage
-              :cardType="'metadata'"
-              :truncateSubTilte="true"
-              :categoryBelow="true"
-              :id="metadata.id"
-              :title="metadata.title"
-              :subtitle="metadata.notes"
-              :categoryName="metadata.categoryName"
-              :categoryColor="metadata.categoryColor"
-              :date="metadata.metadata_created"
-              @clickedEvent="catchMetadataClicked"
-            />
-          </v-col>
-        </v-row>
-      </template>
+    <!-- Datasets slot -->
+    <template #datasets>
+      <v-row v-if="loadingMetadatasContent" no-gutters>
+        <v-col
+          v-for="index in 4"
+          :key="index"
+          cols="12"
+          md="6"
+          xl="3"
+          class="pa-2"
+        >
+          <MetadataCardPlaceholder id="orgaDataset" class="mx-2" />
+        </v-col>
+      </v-row>
+      <v-row v-else no-gutters>
+        <v-col
+          v-for="(metadata, index) in recentMetadata"
+          :key="index"
+          cols="12"
+          sm="6"
+          md="3"
+          class="pa-2"
+        >
+          <BaseCardLandingPage
+            :cardType="'metadata'"
+            :truncateSubTilte="true"
+            :categoryBelow="true"
+            :id="metadata.id"
+            :title="metadata.title"
+            :subtitle="metadata.notes"
+            :categoryName="metadata.categoryName"
+            :categoryColor="metadata.categoryColor"
+            :date="metadata.metadata_created"
+            @clickedEvent="catchMetadataClicked"
+          />
+        </v-col>
+      </v-row>
+    </template>
 
-      <!-- Info slot -->
-      <template v-if="showInfo" #info>
-        <v-row class="justify-center">
-          <v-col
-            v-for="(info, i) in infoCards"
-            :key="i"
-            cols="12"
-            md="6"
-            lg="4"
-          >
-            <InfoCards :index="i" :info="info" />
-          </v-col>
-        </v-row>
-      </template>
+    <!-- Info slot -->
+    <template v-if="showInfo" #info>
+      <v-row class="justify-center">
+        <v-col
+          v-for="(info, i) in infoCards"
+          :key="i"
+          cols="12"
+          md="6"
+          lg="4"
+        >
+          <InfoCards :index="i" :info="info" />
+        </v-col>
+      </v-row>
+    </template>
 
-      <!-- News slot -->
-      <template v-if="showNews" #news>
-        <v-row no-gutters>
-          <v-col
-            v-for="(post, index) in newsEntries"
-            :key="index"
-            cols="12"
-            md="6"
-            class="pa-2"
-          >
-            <BaseCardLandingPage
-              :cardType="'team'"
-              :showButton="false"
-              :id="post.id"
-              :title="post.title"
-              :subtitle="post.text"
-              :date="post.date"
-              :categoryName="'Envidat Team'"
-              :categoryColor="'#aab2ff'"
-              :categoryAbove="true"
-              buttonText="View"
-              @clickedEvent="catchPostClick(post.postFile)"
-            />
-          </v-col>
-          <v-col
-            v-for="(post, index) in blogPosts"
-            :key="index"
-            cols="12"
-            md="6"
-            class="pa-2"
-          >
-            <BaseCardLandingPage
-              :cardType="'blog'"
-              :id="post.id"
-              :title="post.title"
-              :subtitle="post.preview"
-              :date="post.date"
-              :truncateSubTilte="true"
-              :categoryName="'Blog article'"
-              :categoryColor="'#E0EF45E6'"
-              :categoryAbove="true"
-              :categoryBelow="false"
-              buttonText="Read"
-              @clickedEvent="catchPostClick(post.postFile)"
-            />
-          </v-col>
-        </v-row>
-      </template>
+    <!-- News slot -->
+    <template v-if="showNews" #news>
+      <v-row no-gutters>
+        <v-col
+          v-for="(post, index) in newsEntries"
+          :key="index"
+          cols="12"
+          md="6"
+          class="pa-2"
+        >
+          <BaseCardLandingPage
+            :cardType="'team'"
+            :showButton="false"
+            :id="post.id"
+            :title="post.title"
+            :subtitle="post.text"
+            :date="post.date"
+            :categoryName="'Envidat Team'"
+            :categoryColor="'#aab2ff'"
+            :categoryAbove="true"
+            buttonText="View"
+            @clickedEvent="catchPostClick(post.postFile)"
+          />
+        </v-col>
+        <v-col
+          v-for="(post, index) in blogPosts"
+          :key="index"
+          cols="12"
+          md="6"
+          class="pa-2"
+        >
+          <BaseCardLandingPage
+            :cardType="'blog'"
+            :id="post.id"
+            :title="post.title"
+            :subtitle="post.preview"
+            :date="post.date"
+            :truncateSubTilte="true"
+            :categoryName="'Blog article'"
+            :categoryColor="'#E0EF45E6'"
+            :categoryAbove="true"
+            :categoryBelow="false"
+            buttonText="Read"
+            @clickedEvent="catchPostClick(post.postFile)"
+          />
+        </v-col>
+      </v-row>
+    </template>
 
-      <template v-if="showContact" #contact>
-        <v-row>
-          <v-col cols="12" class="background-grey">
-            <v-container> <LandingPageContactForm /> </v-container>
-          </v-col>
-        </v-row>
-      </template>
-    </LandingPageLayout>
-  </v-container>
+    <template v-if="showContact" #contact>
+      <v-row>
+        <v-col cols="12" class="background-grey">
+          <v-container> <LandingPageContactForm /> </v-container>
+        </v-col>
+      </v-row>
+    </template>
+  </LandingPageLayout>
 </template>
 
 <script setup>
 import { computed, ref, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
+import { useDisplay } from 'vuetify';
+
 import { eventBus, SHOW_REDIRECT_SIGNIN_DIALOG } from '@/factories/eventBus';
 import LandingPageLayout from '@/modules/home/components/LandingPageLayout.vue';
 import SearchBarView from '@/modules/home/components/SearchBarView.vue';
 import LandingPageContactForm from '@/modules/home/components/LandingPageContactForm.vue';
 import SloganCard from '@/modules/home/components/SloganCard.vue';
 import BaseCategoryCard from '@/components/BaseElements/BaseCategoryCard.vue';
-import MetadataCardLandingPage from '@/components/Cards/MetadataCardLandingPage.vue';
+
 import BaseCardLandingPage from '@/components/Cards/BaseCardLandingPage.vue';
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
 import InfoCards from '@/components/Cards/InfoCards.vue';
-import TeamPostCard from '@/modules/home/components/TeamPostCard.vue';
-import BlogPostCardLandingPage from '@/modules/blog/components/BlogPostCardLandingPage.vue';
-import { useDisplay } from 'vuetify';
+
 import { importStoreModule } from '@/factories/enhancementsFactory';
 
 // Import route constants and Vuex constants
@@ -219,11 +218,10 @@ import {
   ABOUT_PATH,
   BLOG_PAGENAME,
   BROWSE_PATH,
-  LANDING_PAGENAME,
   METADATADETAIL_PAGENAME,
   USER_SIGNIN_PATH,
 } from '@/router/routeConsts';
-import { SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
+
 import {
   BLOG_NAMESPACE,
   GET_BLOG_LIST,
@@ -246,9 +244,9 @@ const buttonsActions = ref([
 ]);
 const defaultWelcomeInfo = ref({
   titleText: 'EnviDat',
-  Slogan: 'Environmental Research Data at your Fingertips',
+  Slogan: 'Environmental Research Data\n\rat your Fingertips',
   SubSlogan:
-    'EnviDat provides research data from Switzerland and around the world. The data is provided by researchers from various research units of the Swiss Federal Institute for Forest, Snow and Landscape WSL.',
+    'EnviDat provides research data from Switzerland and around the world.<br/> The data is provided by researchers from various research units of the Swiss Federal Institute for Forest, Snow and Landscape WSL.',
   searchLabelText:
     'Looking for something specific? Enter research term, topic or author here!',
   smallSearchLabelText: 'Enter research term, topic or author',
@@ -261,7 +259,6 @@ const defaultWelcomeInfo = ref({
   categoriesTitle: 'Research Data Categories',
   datasetsTitle: 'Recently Published Research Datasets',
 });
-const fallbackCardImg = ref(null);
 
 // beforeCreate
 const store = useStore();
@@ -334,26 +331,11 @@ const datasetsTotal = computed(() =>
   loadingMetadatasContent.value ? 0 : metadatasContentSize.value,
 );
 const newsEntries = computed(() => config.value?.newsConfig?.entries || []);
-const sloganButtonText = computed(() => 'EXPLORE DATA');
+const sloganButtonText = 'EXPLORE DATA';
 const sloganMoreButtonText = computed(() =>
   isLargeScreen.value ? 'ABOUT ENVIDAT' : 'ABOUT',
 );
 
-// METHODS (funzioni come arrow functions)
-
-const removeBackgroundImage = () => {
-  const appContainer = document.getElementById('app-container');
-  if (appContainer) {
-    appContainer.style.backgroundImage = 'none';
-  }
-};
-
-const removeOverflowHidden = () => {
-  const htmlElement = document.documentElement;
-  if (htmlElement) {
-    htmlElement.style.overflow = 'visible';
-  }
-};
 
 const mixinMethodsConvertArrayToUrlString = (array) => array.join(',');
 
@@ -422,10 +404,8 @@ const catchCategoryClicked = (cardType) => {
   mixinMethodsAdditiveChangeRoute(BROWSE_PATH, '', stringTags);
 };
 
-// mounted
 onMounted(() => {
   window.scrollTo(0, 0);
-  removeOverflowHidden();
 });
 </script>
 
