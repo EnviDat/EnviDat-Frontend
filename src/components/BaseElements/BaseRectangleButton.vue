@@ -52,7 +52,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
-import { background } from '@storybook/theming';
 
 export default {
   name: 'BaseRectangleButton',

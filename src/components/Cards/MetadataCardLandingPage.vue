@@ -16,7 +16,7 @@
               :elevation="0"
               :color="categoryColor"
               :disableClick="true"
-              :height="45"
+              height="45"
               :title="getCategoryName"
               :icon="iconName(getCategoryName)"
             />
@@ -33,7 +33,7 @@
               :elevation="0"
               :color="categoryColor"
               :disableClick="true"
-              :height="25"
+              height="25"
               :title="getCategoryName"
               :icon="iconName(getCategoryName)"
             />

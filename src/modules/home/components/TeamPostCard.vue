@@ -17,7 +17,7 @@
               :color="categoryColor"
               :blackText="true"
               :disableClick="true"
-              :height="45"
+              height="45"
               :title="getCategoryName"
               :icon="iconName('team')"
             />
