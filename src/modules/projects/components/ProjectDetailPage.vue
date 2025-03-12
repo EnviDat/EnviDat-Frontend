@@ -157,7 +157,9 @@ export default {
       );
 
       // reset scroll for every new load of project details
-      vm.setScrollPos(0);
+      if (from.name === METADATADETAIL_PAGENAME) {
+        vm.setScrollPos(0);
+      }
     });
   },
   beforeRouteUpdate(to, from, next) {
@@ -175,7 +177,9 @@ export default {
       `${PROJECTS_NAMESPACE}/${SET_PROJECTDETAIL_PAGE_BACK_URL}`,
       backRoute,
     );
-    this.setScrollPos(0);
+    if (from.name === METADATADETAIL_PAGENAME) {
+      this.setScrollPos(0);
+    }
     next();
   },
   beforeMount() {

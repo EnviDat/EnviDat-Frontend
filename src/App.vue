@@ -2,29 +2,12 @@
   <v-app
     class="application envidat-font-overwrite"
     :class="{
-      'bg-dark': !isLandingPage,
+      'bg-dark': !isLandingPage && !isDashboardPage,
+      'bg-dark-dashboard': isDashboardPage,
       'hide-after': isScrolled,
     }"
     id="app-container"
   >
-    <div
-      v-show="showDecemberParticles"
-      id="christmas-canvas"
-      style="position: absolute; width: 100%; height: 100%"
-    ></div>
-
-    <div
-      v-show="showDecemberParticles"
-      id="christmas-canvas"
-      style="position: absolute; width: 100%; height: 100%"
-    ></div>
-
-    <link
-      v-if="showDecemberParticles"
-      rel="stylesheet"
-      href="./particles/decemberEffects.css"
-    />
-
     <div
       v-for="(notification, index) in visibleNotifications()"
       :key="`notification_${index}`"
@@ -75,7 +58,8 @@
 
     <v-main class="pt-13 pt-md-9 custom-v-main">
       <v-container
-        class="mainPageContainer pa-2"
+        class="mainPageContainer"
+        :class="[isLandingPage ? 'pa-0' : 'pa-2']"
         fluid
         @scroll="updateScroll()"
         id="appContainer"
@@ -623,7 +607,10 @@ export default {
       return this.$route;
     },
     isLandingPage() {
-      return this.currentRoute.fullPath === '/';
+      return this.currentRoute.name === 'LandingPage';
+    },
+    isDashboardPage() {
+      return this.currentRoute.name === 'DashboardPage';
     },
     iconScroll() {
       return extractIcons('scroll');
@@ -670,25 +657,8 @@ export default {
     signinDisabled() {
       return this.maintenanceConfig?.signinDisabled || false;
     },
-    showDecemberParticles() {
-      return (
-        this.$vuetify.display.mdAndUp &&
-        this.effectsConfig.decemberParticles &&
-        this.itIsDecember
-      );
-    },
     userIsOnEditPage() {
       return this.currentPage === METADATAEDIT_PAGENAME;
-    },
-    itIsDecember() {
-      return getMonth(Date.now()) === 11;
-    },
-    polygonParticlesActive() {
-      return (
-        this.$vuetify.display.mdAndUp &&
-        this.currentPage &&
-        this.currentPage === LANDING_PAGENAME
-      );
     },
     loading() {
       return (
@@ -700,19 +670,15 @@ export default {
     searchTerm() {
       return this.$route.query.search;
     },
-    /*
-    mainPageIsScrollable() {
-      return this.currentPage === BROWSE_PAGENAME;
-    },
-*/
+
     showToolbar() {
       // return this.mainPageIsScrollable && this.mode;
       return true;
     },
     pageStyle() {
-      const heightStyle = `height: calc(100vh - ${ this.$vuetify.display.smAndDown ? 50 : 36 }px);`;
+      const heightStyle = `height: calc(100vh - ${this.$vuetify.display.smAndDown ? 50 : 36}px);`;
 
-      return this.currentPage === BROWSE_PAGENAME
+      return this.$route.name === BROWSE_PAGENAME
         ? heightStyle
         : `${heightStyle} overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth; scrollbar-width: thin; `;
     },
@@ -805,7 +771,6 @@ export default {
     NotificationZIndex: 1500,
     showMaintenanceBanner: false,
     editMaintenanceBanner: true,
-    currentParticles: null,
     navigationItems,
     userMenuItems,
     editMaintenanceMessage: `There is maintenance going on, please don't edit anything return to the <a href='./#${USER_DASHBOARD_PATH}' >dashboard page </a> or the <a href='/' >main page</a> for details!.`,
@@ -829,7 +794,18 @@ export default {
 }
 
 .bg-dark {
-  background-color: #e0e0e0 !important;
+  // background-color: #e0e0e0 !important;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.3) 100%)
+      center top repeat,
+    url('https://envidat.ch/static/app_b_browsepage-Bk6vOmrC.webp') !important;
+}
+.bg-dark-dashboard {
+  // background-color: #e0e0e0 !important;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.3) 100%)
+      center top repeat,
+    url('https://envidat.ch/static/app_b_dashboardpage-D38vMBVL.webp') !important;
 }
 
 @keyframes bounce {
