@@ -3,7 +3,7 @@
   "welcomeInfo": {
     "titleText": "EnviDat",
     "Slogan": "Environmental Research Data\n\rat your Fingertips",
-    "SubSlogan": "EnviDat provides research data from Switzerland and all over the world.<br/>The data is contributed by researchers from various research units<br/>of the Swiss Federal Institute for Forest, Snow and Landscape WSL.",
+    "SubSlogan": "EnviDat provides research data from Switzerland and all over the world.<br/>The data is contributed by researchers from various research units of the Swiss Federal Institute for Forest, Snow and Landscape WSL.",
     "searchLabelText": "Looking for something specific? Enter research term, topic or author here!",
     "smallSearchLabelText": "Enter research term, topic or author",
     "searchText": "Looking for something specific?",
@@ -110,7 +110,7 @@
       },
       {
         "title": "Connected to the world",
-        "subtitle": "EnviDat disseminates its datasets globally in order to promote international research cooperation in the field of environmental science. EnviDat datasets are listed in the NASA EarthData portal (https://search.earthdata.nasa.gov/search?fdc=WSL&ac=true), the data.europa.eu <a href='https://data.europa.eu/data/datasets?country=ch&publisher=EnviDat'>European Open Data portal</a>, <a href='https://b2find9.cloud.dkrz.de/organization/envidat'>European Open Science Cloud Hub</a>, <a href='https://commons.datacite.org/doi.org?query=client.uid:ethz.wsl'>DataCite</a>, or <a href='https://opendata.swiss/en/organization/envidat'>opendata.swiss</a> so that scientific data is found and cited.",
+        "subtitle": "EnviDat disseminates its datasets globally in order to promote international research cooperation in the field of environmental science. EnviDat datasets are listed in the <a href='https://search.earthdata.nasa.gov/search?fdc=WSL&ac=true'>NASA EarthData portal</a>, the data.europa.eu <a href='https://data.europa.eu/data/datasets?country=ch&publisher=EnviDat'>European Open Data portal</a>, <a href='https://b2find9.cloud.dkrz.de/organization/envidat'>European Open Science Cloud Hub</a>, <a href='https://commons.datacite.org/doi.org?query=client.uid:ethz.wsl'>DataCite</a>, or <a href='https://opendata.swiss/en/organization/envidat'>opendata.swiss</a> so that scientific data is found and cited.",
         "icon": "world",
         "points": [],
         "image": "",

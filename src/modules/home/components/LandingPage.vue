@@ -20,7 +20,11 @@
       />
       <SearchBarView
         v-if="isMediumScreenAndDown"
-        :labelText="welcomeInfo.searchLabelText"
+        :labelText="
+          display.xs
+            ? welcomeInfo.smallSearchLabelText
+            : welcomeInfo.searchLabelText
+        "
         :buttonText="buttonsActions"
         :hasButton="true"
         @clicked="catchActionsButton"
@@ -83,26 +87,25 @@
 
     <!-- Datasets slot -->
     <template #datasets>
-      <v-row v-if="loadingMetadatasContent" no-gutters>
+      <v-row v-if="loadingMetadatasContent">
         <v-col
           v-for="index in 4"
           :key="index"
           cols="12"
           md="6"
           xl="3"
-          class="pa-2"
+          class="pt-3 pb-3"
         >
           <MetadataCardPlaceholder id="orgaDataset" class="mx-2" />
         </v-col>
       </v-row>
-      <v-row v-else no-gutters>
+      <v-row v-else>
         <v-col
           v-for="(metadata, index) in recentMetadata"
           :key="index"
           cols="12"
           md="6"
           xl="3"
-          class="pa-2"
         >
           <BaseCardLandingPage
             :cardType="'metadata'"
@@ -131,13 +134,12 @@
 
     <!-- News slot -->
     <template v-if="showNews" #news>
-      <v-row no-gutters>
+      <v-row>
         <v-col
           v-for="(post, index) in newsEntries"
           :key="index"
           cols="12"
           md="6"
-          class="pa-2"
         >
           <BaseCardLandingPage
             :cardType="'team'"
@@ -153,13 +155,7 @@
             @clickedEvent="catchPostClick(post.postFile)"
           />
         </v-col>
-        <v-col
-          v-for="(post, index) in blogPosts"
-          :key="index"
-          cols="12"
-          md="6"
-          class="pa-2"
-        >
+        <v-col v-for="(post, index) in blogPosts" :key="index" cols="12" md="6">
           <BaseCardLandingPage
             :cardType="'blog'"
             :id="post.id"
@@ -180,7 +176,7 @@
 
     <template v-if="showContact" #contact>
       <v-row>
-        <v-col cols="12" class="background-grey">
+        <v-col cols="12">
           <v-container> <LandingPageContactForm /> </v-container>
         </v-col>
       </v-row>

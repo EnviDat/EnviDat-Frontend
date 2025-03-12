@@ -5,7 +5,8 @@
     id="LandingPage"
   >
     <!-- Welcome Slot -->
-    <v-container fluid
+    <v-container
+      fluid
       v-if="$slots.welcome"
       class="welcomeGrid"
       :class="paddings"
@@ -14,7 +15,7 @@
       <v-container class="pt-8">
         <slot name="search"></slot>
       </v-container>
-      <section class="metadata-wrapper">
+      <section fluid class="metadata-wrapper">
         <BaseTitle
           style="text-align: center"
           :text="datasetsTitle"
@@ -22,16 +23,18 @@
           cardClass="pa-2"
           titleClass="titleCardClass"
         />
-        <v-container :fluid="$vuetify.display.lgAndDown" class="pt-2 px-1">
+        <v-container
+          :fluid="$vuetify.display.lgAndDown"
+          class="pt-2"
+          :class="{ 'pa-0': $vuetify.display.smAndDown }"
+        >
           <slot name="datasets"></slot>
         </v-container>
       </section>
     </v-container>
 
     <!-- Info Slot -->
-    <v-container v-if="$slots.info"
-                 fluid
-                 class="infoGrid background-grey">
+    <v-container v-if="$slots.info" fluid class="infoGrid background-grey">
       <BaseTitle
         style="text-align: center"
         :text="infoTitle"
@@ -39,13 +42,18 @@
         cardClass="pa-2"
         titleClass="titleCardClass"
       />
-      <v-container :fluid="$vuetify.display.lgAndDown" class="pt-2">
+      <v-container
+        :fluid="$vuetify.display.lgAndDown"
+        class="pt-2"
+        :class="{ 'pa-0': $vuetify.display.smAndDown }"
+      >
         <slot name="info"></slot>
       </v-container>
     </v-container>
 
     <!-- News Slot -->
-    <v-container fluid
+    <v-container
+      fluid
       v-if="$slots.news"
       class="newsGrid mt-4"
       :class="paddings"
@@ -57,18 +65,23 @@
         cardClass="pa-2"
         titleClass="titleCardClass"
       />
-      <v-container :fluid="$vuetify.display.lgAndDown" class="pt-2">
+      <v-container
+        :fluid="$vuetify.display.lgAndDown"
+        class="pt-2"
+        :class="{ 'pa-0': $vuetify.display.smAndDown }"
+      >
         <slot name="news"></slot>
       </v-container>
     </v-container>
 
     <!-- Contact Slot -->
-    <v-container fluid
+    <v-container
+      fluid
       v-if="$slots.contact"
-      class="contactGrid"
+      class="contactGrid background-grey"
       :class="paddings"
     >
-      <v-container fluid class="pt-2 px-1">
+      <v-container fluid class="pt-2">
         <slot name="contact"></slot>
       </v-container>
     </v-container>
@@ -177,6 +190,7 @@ const paddings = 'pa-md-2 pt-4 pt-sm-6';
 }
 .background-grey {
   background-color: rgba(245, 245, 245, 0.75);
+  // background-color: red;
   padding-top: 100px;
   padding-bottom: 20px;
 }
