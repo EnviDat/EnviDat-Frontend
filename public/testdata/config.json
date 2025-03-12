@@ -2,8 +2,8 @@
   "version": "0.8.1",
   "welcomeInfo": {
     "titleText": "EnviDat",
-    "Slogan": "Environmental Research Data at your Fingertips",
-    "SubSlogan": "EnviDat provides research data from Switzerland and all over the world. The data is being provided by researchers of the many research units of the Swiss Federal Institute for Forest, Snow and Landscape WSL.",
+    "Slogan": "Environmental Research Data\n\rat your Fingertips",
+    "SubSlogan": "EnviDat provides research data from Switzerland and all over the world.<br/>The data is contributed by researchers from various research units<br/>of the Swiss Federal Institute for Forest, Snow and Landscape WSL.",
     "searchLabelText": "Looking for something specific? Enter research term, topic or author here!",
     "smallSearchLabelText": "Enter research term, topic or author",
     "searchText": "Looking for something specific?",

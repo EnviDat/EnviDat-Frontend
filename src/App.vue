@@ -73,7 +73,7 @@
       @itemClick="catchItemClicked"
     />
 
-    <v-main class="pt-13 pt-md-9">
+    <v-main class="pt-13 pt-md-9 custom-v-main">
       <v-container
         class="mainPageContainer pa-2"
         fluid
@@ -700,7 +700,7 @@ export default {
     searchTerm() {
       return this.$route.query.search;
     },
-/*
+    /*
     mainPageIsScrollable() {
       return this.currentPage === BROWSE_PAGENAME;
     },
@@ -819,12 +819,12 @@ export default {
 
 .custom-v-main {
   position: relative;
-  left: 0;
+  // --v-layout-left: 0 !important;
 }
 
 @media (min-width: 960px) and (max-width: 1279px) {
   .custom-v-main {
-    left: 60px;
+    --v-layout-left: 60px !important;
   }
 }
 

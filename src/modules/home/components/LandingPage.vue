@@ -100,8 +100,8 @@
           v-for="(metadata, index) in recentMetadata"
           :key="index"
           cols="12"
-          sm="6"
-          md="3"
+          md="6"
+          xl="3"
           class="pa-2"
         >
           <BaseCardLandingPage
@@ -123,13 +123,7 @@
     <!-- Info slot -->
     <template v-if="showInfo" #info>
       <v-row class="justify-center">
-        <v-col
-          v-for="(info, i) in infoCards"
-          :key="i"
-          cols="12"
-          md="6"
-          lg="4"
-        >
+        <v-col v-for="(info, i) in infoCards" :key="i" cols="12" lg="4">
           <InfoCards :index="i" :info="info" />
         </v-col>
       </v-row>
@@ -335,7 +329,6 @@ const sloganButtonText = 'EXPLORE DATA';
 const sloganMoreButtonText = computed(() =>
   isLargeScreen.value ? 'ABOUT ENVIDAT' : 'ABOUT',
 );
-
 
 const mixinMethodsConvertArrayToUrlString = (array) => array.join(',');
 
