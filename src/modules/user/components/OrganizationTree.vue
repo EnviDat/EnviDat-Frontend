@@ -1,6 +1,7 @@
 <template>
   <v-card
       id="OrganizationTree"
+      flat
       class="pa-0">
     <v-sheet class="pa-2 bg-secondary">
       <v-text-field
@@ -27,16 +28,25 @@
         open-on-click
         item-value="id"
         item-disabled="locked"
-        selectable
         activatable
         hoverable
+        expand-icon=""
+        collapse-icon=""
         :max-height="maxHeight"
-        @update:active="catchActiveClick"
+        @click:active="catchActiveClick"
         @click:open="item => catchItemClick(item)"
       >
 
-        <template v-slot:prepend="{ item }">
-          <slot name="prepend" :item="item" />
+        <template v-slot:prepend="{ item, isOpen, isActive }">
+          <v-icon
+            v-if="item?.children?.length > 0"
+            :icon="isOpen ? mdiFolderOpen : mdiFolder"
+          />
+
+          <v-icon
+            v-if="item?.children?.length <= 0"
+            :icon="isActive ? mdiFolderOpenOutline : mdiFolderOutline"
+          />
         </template>
 
         <template v-slot:item="{ item }">
@@ -64,7 +74,15 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { mdiClose } from '@mdi/js';
+import {
+  mdiClose,
+  mdiMenuDown,
+  mdiMenuRight,
+  mdiFolder,
+  mdiFolderOpen,
+  mdiFolderOutline,
+  mdiFolderOpenOutline,
+} from '@mdi/js';
 import { getOrganitzionTreeItem } from '@/factories/organizationFactory';
 
 export default {
@@ -127,12 +145,17 @@ export default {
     },
     catchItemClick({ id }) {
 
-      let orgaName = id;
+      let orgaName;
 
       const entry = getOrganitzionTreeItem(this.organizationsTree, id);
       if (entry) {
         orgaName = entry.name;
       }
+
+/*
+      const activeItem = this.getItemFromId(id);
+      this.setActiveItem(this.items, activeItem.title);
+*/
 
       this.$emit('click', orgaName);
     },
@@ -153,22 +176,23 @@ export default {
         activeItem = this.getItemFromId(activeId);
       }
 
+/*
+      this.setActiveItem(this.items, activeItem);
+*/
+
       this.$emit('organizationChanged', activeItem ? activeItem.name : '');
     },
     getItemFromId(activeId) {
-      const isChild = activeId.includes(this.childIdPrefix);
-      let itemId = activeId;
+      return this.getItemById(this.items, activeId);
 
-      let activeItem = this.getItemById(this.items, itemId);
-
-      if (isChild) {
+/*
         itemId = this.getParentIdFromChild(activeId);
         const parentItem = this.getItemById(this.items, itemId);
 
         activeItem = this.getItemById(parentItem.children, activeId);
-      }
 
       return activeItem;
+*/
     },
     getItemById(items, itemId) {
       const itemSelection = items.filter(i => i.id === itemId);
@@ -187,6 +211,12 @@ export default {
     childIdPrefix: 'child',
     parentIdPrefix: 'parent',
     mdiClose,
+    mdiMenuDown,
+    mdiMenuRight,
+    mdiFolder,
+    mdiFolderOpen,
+    mdiFolderOutline,
+    mdiFolderOpenOutline,
   }),
   components: {
   },
