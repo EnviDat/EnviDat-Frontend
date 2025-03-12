@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import ResourceDataViz from '@/modules/charts/components/ResourceDataViz.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
+import { DataVizSupportedExtensions } from '@/modules/charts/middelware/chartServiceLayer.ts';
 
 const { resources } = defineProps<{
   resources: object[];
@@ -14,6 +15,21 @@ const selectResource = (resourceIndex: number) => {
 }
 
 const resourceName = (resource: object) : string => resource?.name || 'Unnamed resource';
+
+const allowedFormatText = () : string => {
+  let text = 'Currently only ';
+
+  for (let i = 0; i < DataVizSupportedExtensions.length; i++) {
+    const format = DataVizSupportedExtensions[i];
+    text += `${format},`;
+  }
+
+  // cut of the last ','
+  text = text.substring(0, text.length - 1);
+  text += ' resources are supported for visualization';
+
+  return text;
+}
 
 </script>
 
@@ -29,11 +45,11 @@ const resourceName = (resource: object) : string => resource?.name || 'Unnamed r
       <v-row>
         <v-col v-if="!resources"
                cols="3">
-          Currently only CSV resources are supported for preview
+          {{ allowedFormatText() }}
         </v-col>
 
         <v-col v-if="resources"
-               cols="3">
+               cols="8">
 
           <v-row>
             <v-col>
@@ -44,7 +60,6 @@ const resourceName = (resource: object) : string => resource?.name || 'Unnamed r
           <v-row >
             <v-col
               v-for="(resource, index) in resources"
-              cols="12"
               :key="resource.id"
             >
               <BaseRectangleButton
@@ -57,8 +72,10 @@ const resourceName = (resource: object) : string => resource?.name || 'Unnamed r
             </v-col>
           </v-row>
         </v-col>
+      </v-row>
 
-        <v-col cols="8">
+      <v-row>
+        <v-col >
           <ResourceDataViz :resource="resources ? resources[selectedId] : undefined"/>
         </v-col>
       </v-row>

@@ -5,6 +5,7 @@ import { MetaData } from '@/types/dataVizTypes';
 import { INJECT_GENERIC_COMPONENT } from '@/factories/eventBus';
 
 const ResourceDataVizAsync = defineAsyncComponent(() =>
+  // @ts-ignore
   import('@/modules/charts/components/ResourceDataViz.vue'),
 )
 
@@ -119,7 +120,7 @@ export function markResourceForDataViz(resources: any[]) {
   }
 }
 
-export function getResourcesForDataViz(resources: object[]) : object[] {
+export function getResourcesForDataViz(resources: any[]) : any[] {
   return resources.filter((res) => !res.isProtected &&
     DataVizSupportedExtensions.includes(getUrlExtension(res.url)));
 }

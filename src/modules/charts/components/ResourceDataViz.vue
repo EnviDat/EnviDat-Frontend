@@ -50,6 +50,7 @@ const getTimeParameter = (parameterList: string[]) : string | null => {
   for (let i = 0; i < parameterList.length; i++) {
     const param = parameterList[i];
     const compare = param.toLowerCase();
+
     if (compare.includes('time') || compare.includes('date')) {
       return param;
     }
@@ -223,14 +224,17 @@ watch(() => resource,
             :items="chartLabels"
             :model-value="xParameter"
             @update:model-value="assignXParameter"
+            hide-details
           />
         </v-col>
+
         <v-col>
           <v-autocomplete
             label="Y Parameter"
             :items="chartLabels"
             :model-value="yParameter"
             @update:model-value="assignYParameter"
+            hide-details
           />
         </v-col>
 
