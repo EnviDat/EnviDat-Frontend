@@ -1,4 +1,4 @@
-import { AbstractBaseViewModel } from '@/factories/ViewModels/AbstractBaseViewModel';
+import { AbstractBaseViewModel } from '@/factories/ViewModels/AbstractBaseViewModel.ts';
 
 import {
   METADATA_CONTACT_EMAIL,

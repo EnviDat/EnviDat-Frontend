@@ -1,4 +1,5 @@
 import { convertJSON, convertToBackendJSONWithRules, convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
+import type { DatasetDTO } from '@/types/modelTypes';
 // import { HeaderViewModel } from '@/factories/ViewModels/HeaderViewModel.js';
 
 /*
@@ -19,7 +20,7 @@ export class AbstractBaseViewModel {
 
   error = undefined;
 
-  constructor(datasetDTO, mappingRules) {
+  constructor(dataset: DatasetDTO, mappingRules) {
     this.mappingRules = mappingRules;
 
     if (new.target === AbstractBaseViewModel) {
@@ -28,8 +29,8 @@ export class AbstractBaseViewModel {
 
     // enforceAbstractProps(this, ['mappingRules']);
 
-    if (datasetDTO) {
-      this.updateModel(datasetDTO, mappingRules);
+    if (dataset) {
+      this.updateModel(dataset, mappingRules);
     }
   }
 
@@ -41,8 +42,8 @@ export class AbstractBaseViewModel {
     this.privateMappingRules = mappingRules;
   }
 
-  updateModel (datasetDTO) {
-    const frontendJson = convertToFrontendJSONWithRules(this.mappingRules, datasetDTO);
+  updateModel (dataset: DatasetDTO) {
+    const frontendJson = convertToFrontendJSONWithRules(this.mappingRules, dataset);
     Object.assign(this, frontendJson);
   }
 

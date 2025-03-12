@@ -1,5 +1,5 @@
 import { reactive, watch } from 'vue';
-import { AbstractBaseViewModel } from '@/factories/ViewModels/AbstractBaseViewModel';
+import { AbstractBaseViewModel } from '@/factories/ViewModels/AbstractBaseViewModel.ts';
 
 import { convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
 
