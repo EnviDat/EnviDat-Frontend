@@ -81,19 +81,8 @@ import {
 } from 'vuex';
 
 import NotificationCard from '@/components/Cards/NotificationCard.vue';
-import { REPORT_PAGENAME } from '@/router/routeConsts';
-import { SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
 
 export default {
-  /**
-   * @description beforeRouteEnter is used to change background image of this page.
-   * It's called via vue-router.
-   */
-  beforeRouteEnter(to, from, next) {
-    next((vm) => {
-      vm.$store.commit(SET_CURRENT_PAGE, REPORT_PAGENAME);
-    });
-  },
   /**
    * @description reset the scrolling to the top,
    * because of the scrolling is set from the browsePage or metaDetailPage

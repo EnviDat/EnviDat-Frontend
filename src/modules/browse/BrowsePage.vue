@@ -77,10 +77,7 @@ import {
   SET_DETAIL_PAGE_BACK_URL,
 } from '@/store/metadataMutationsConsts';
 
-import {
-  SET_BROWSE_SCROLL_POSITION,
-  SET_CURRENT_PAGE,
-} from '@/store/mainMutationsConsts';
+import { SET_BROWSE_SCROLL_POSITION } from '@/store/mainMutationsConsts';
 
 import MetadataList from '@/components/MetadataList.vue';
 import { useModeStore } from '@/modules/browse/store/modeStore';
@@ -94,11 +91,6 @@ import categoryCards from '@/store/categoryCards';
 
 export default {
   name: 'BrowsePage',
-  beforeRouteEnter(to, from, next) {
-    next((vm) => {
-      vm.$store.commit(SET_CURRENT_PAGE, BROWSE_PAGENAME);
-    });
-  },
   created() {
     this.modeStore = useModeStore();
     this.modeStore.init();

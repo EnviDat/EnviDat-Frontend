@@ -74,7 +74,6 @@ import { BROWSE_PATH, METADATAREVIEW_PAGENAME } from '@/router/routeConsts';
 
 import { USER_SIGNIN_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 
-import { SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
 import {
   CLEAR_SEARCH_METADATA,
   METADATA_NAMESPACE,
@@ -131,11 +130,6 @@ const MetadataAuthors = defineAsyncComponent(
 
 export default {
   name: 'MetadataReviewPage',
-  beforeRouteEnter(to, from, next) {
-    next((vm) => {
-      vm.$store.commit(SET_CURRENT_PAGE, METADATAREVIEW_PAGENAME);
-    });
-  },
   /**
    * @description load all the icons once before the first component's rendering.
    */

@@ -68,23 +68,12 @@ import {
   PROJECT_DETAIL_PAGENAME,
   PROJECTS_PAGENAME,
 } from '@/router/routeConsts';
-import { SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
 import {
   GET_PROJECTS,
   PROJECTS_NAMESPACE,
   SET_PROJECTDETAIL_PAGE_BACK_URL,
 } from '../store/projectsMutationsConsts';
 import { getImage } from '@/factories/imageFactory';
-
-if (typeof defineOptions === 'function') {
-  defineOptions({
-    beforeRouteEnter(to, from, next) {
-      next((vm: any) => {
-        vm.$store.commit(SET_CURRENT_PAGE, PROJECTS_PAGENAME);
-      });
-    },
-  });
-}
 
 const store = useStore();
 const router = useRouter();

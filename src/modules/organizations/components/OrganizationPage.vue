@@ -1,5 +1,5 @@
-<script setup>
-import { mdiEarth } from '@mdi/js';
+<script setup lang="ts">
+import { mdiEarth, mdiMenuDown, mdiMenuRight } from '@mdi/js';
 import { useRoute, useRouter } from 'vue-router';
 import { computed, nextTick, onBeforeMount, onMounted, ref } from 'vue';
 import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
@@ -30,15 +30,10 @@ import {
   METADATADETAIL_PAGENAME,
   ORGANIZATIONS_PAGENAME,
 } from '@/router/routeConsts';
-import { SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
 import store from '@/store/store';
 
 const router = useRouter();
 const route = useRoute();
-
-onBeforeMount(() => {
-  store.commit(SET_CURRENT_PAGE, ORGANIZATIONS_PAGENAME);
-});
 
 const orgaStore = useOrganizationsStore();
 const orgaDatasetsMap = ref();
@@ -87,6 +82,16 @@ const listContent = computed(() => {
   return orgaDatasetsMap.value.get(orgaName)?.datasets || [];
 });
 
+const getPredefinedSearch = () : string => {
+  const orgFromUrl = route?.params?.organization as string;
+
+  if (!orgFromUrl) {
+    return undefined;
+  }
+
+  return orgFromUrl.replaceAll('-', ' ');
+}
+
 onMounted(async () => {
   // const orgas = organizations.result;
   let orgas = orgaStore.organizations;
@@ -99,19 +104,17 @@ onMounted(async () => {
   const ruDatasetsMap = getOrgaDatasetsMap(datasets, true);
   data.value = getResearchUnitDatasetSeries(ruDatasetsMap);
 
-  nextTick(() => {
+  await nextTick(() => {
     const orgaMap = getOrganizationRelationMap(orgas);
     const topOrgas = getTopOraganizations(orgas);
+
     orgaDatasetsMap.value = getOrgaDatasetsMap(datasets);
-    organizationsTree.value = getOrganizationTree(
-      topOrgas,
-      orgaMap,
-      orgaDatasetsMap.value,
-    );
+    organizationsTree.value = getOrganizationTree(topOrgas, orgaMap, orgaDatasetsMap.value);
   });
 
   loading.value = false;
 });
+
 </script>
 
 <template>
@@ -160,17 +163,25 @@ onMounted(async () => {
 
           <v-card-text class="px-0">
             <OrganizationTree
-              :predefinedSearch="route.params.organization"
+              :predefinedSearch="getPredefinedSearch()"
               :organizationsTree
               @click="catchOrganizationClick"
             >
+<!--
+              <template v-slot:prepend="{ item, isOpen }">
+                <v-icon v-if="item?.childDatasetsCount > 0"
+                        :icon="isOpen ? mdiMenuDown : mdiMenuRight"
+                />
+              </template>
+-->
+
               <template v-slot:append="{ item }">
                 <v-col> Datasets published </v-col>
                 <v-col class="flex-grow-0">
                   <BaseIconCountView
-                    class="ma-0"
-                    :icon="mdiEarth"
-                    :count="item.datasetCount"
+                      class="ma-0"
+                      :icon="mdiEarth"
+                      :count="item?.datasetCount + item?.childDatasetsCount || 0"
                   />
                 </v-col>
               </template>

@@ -70,17 +70,12 @@ import {
   USER_DASHBOARD_PATH,
   USER_SIGNIN_PAGENAME,
 } from '@/router/routeConsts';
-import { SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
 
 import SigninView from './SigninView.vue';
 
 export default {
   name: 'SigninPage',
-  beforeRouteEnter(to, from, next) {
-    next((vm) => {
-      vm.$store.commit(SET_CURRENT_PAGE, USER_SIGNIN_PAGENAME);
-    });
-  },
+
   components: {
     SigninView,
   },

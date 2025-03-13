@@ -24,7 +24,6 @@ import {
   SET_CONFIG_ERROR,
   SET_CONFIG_SUCCESS,
   SET_CONTROLS,
-  SET_CURRENT_PAGE,
   SET_JPG_ASSETS,
   SET_WEBP_ASSETS,
   SET_WEBP_SUPPORT,
@@ -55,9 +54,6 @@ export default {
   },
   [SET_JPG_ASSETS](state, assets) {
     state.jpgAssets = assets;
-  },
-  [SET_CURRENT_PAGE](state, page) {
-    state.currentPage = page;
   },
   [SET_CONTROLS](state, payload) {
     state.controls = payload;
