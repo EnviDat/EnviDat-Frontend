@@ -23,6 +23,7 @@ import MetadataFunding from '@/modules/metadata/components/Metadata/MetadataFund
 import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuthors.vue';
 
 import {
+  createBody,
   createDetails,
   createPublications,
   enhanceMetadatasTitleImage,

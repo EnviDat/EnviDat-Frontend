@@ -13,8 +13,9 @@ function enforceAbstractProps(instance, requiredProps) {
 */
 
 export class AbstractBaseViewModel {
+  private privateMappingRules: string[][];
 
-  constructor(dataset: DatasetDTO, mappingRules) {
+  constructor(dataset: DatasetDTO = undefined, mappingRules: string[][] = undefined) {
     this.mappingRules = mappingRules;
 
     if (new.target === AbstractBaseViewModel) {

@@ -111,6 +111,7 @@ export interface DataCreditObject {
 }
 
 export interface Author {
+  lastModified: string;
   firstName: string;
   lastName: string;
   email: string;

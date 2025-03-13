@@ -13,10 +13,17 @@ import { getAuthorName } from '@/factories/authorFactory';
 import { formatDate } from '@/factories/dateFactory';
 import { getMetadataVisibilityState } from '@/factories/publicationFactory';
 import { AuthorsViewModel } from '@/factories/ViewModels/AuthorsViewModel';
-import { DatasetDTO } from '@/types/modelTypes';
+import { Author, DatasetDTO } from '@/types/modelTypes';
 
 
 export class HeaderViewModel extends AbstractBaseViewModel{
+  created: string;
+  modified: string;
+  authors: Author[];
+  categoryColor: any;
+  titleImg: any;
+  maxTags: number;
+  metadataState: string;
 
   constructor(dataset: DatasetDTO, smallScreen, categoryColor, titleImg) {
     super(dataset, HeaderViewModel.mappingRules());
@@ -29,7 +36,8 @@ export class HeaderViewModel extends AbstractBaseViewModel{
       lastName: this[METADATA_CONTACT_LASTNAME],
     });
 
-    this.authors = AuthorsViewModel.getFormattedAuthors(dataset.author);
+    // @ts-ignore
+    this.authors = AuthorsViewModel.getFormattedAuthors(dataset.author, dataset.metadata_modified);
 
     this.categoryColor = categoryColor;
     this.titleImg = titleImg;

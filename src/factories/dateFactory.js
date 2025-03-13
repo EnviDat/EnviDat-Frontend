@@ -1,10 +1,10 @@
 import { format, parse } from 'date-fns';
 
 /**
- * @param {String} date expecting a format like 2017-08-15T15:25:45.175790
- * @param {String} inputFormat, it's optional
- * @param {Boolean} formatNoTime, if true, only the date is returned in dd.MM.yyyy format
- * @return {String} Returns a date string; if formatNoTime is true, returns "dd.MM.yyyy", otherwise returns date and hours:minutes
+ * @param {string} date expecting a format like 2017-08-15T15:25:45.175790
+ * @param {string} inputFormat, it's optional
+ * @param {boolean} formatNoTime, if true, only the date is returned in dd.MM.yyyy format
+ * @return {string} Returns a date string; if formatNoTime is true, returns "dd.MM.yyyy", otherwise returns date and hours:minutes
  */
 export function formatDate(
   date,
