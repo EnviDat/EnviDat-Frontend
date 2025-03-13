@@ -86,7 +86,6 @@
 import { mapState } from 'vuex';
 
 import { BLOG_PAGENAME, BLOG_PATH } from '@/router/routeConsts';
-import { SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
 
 import {
   BLOG_NAMESPACE,
@@ -102,11 +101,6 @@ import { getImage } from '@/factories/imageFactory';
 
 export default {
   name: BLOG_PAGENAME,
-  beforeRouteEnter(to, from, next) {
-    next((vm) => {
-      vm.$store.commit(SET_CURRENT_PAGE, BLOG_PAGENAME);
-    });
-  },
   created() {
     this.blogModuleLoaded = !!this.$store?.state?.blog;
 

@@ -108,8 +108,6 @@ import {
   USER_SIGNIN_PAGENAME,
 } from '@/router/routeConsts';
 
-import { SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
-
 import {
   METADATA_NAMESPACE,
   METADATA_UPDATE_AN_EXISTING_AUTHOR,
@@ -155,13 +153,7 @@ import { replaceAuthorDeadAscii } from '@/factories/authorFactory';
 
 export default {
   name: 'MetadataEditPage',
-  beforeRouteEnter(to, from, next) {
-    next((vm) => {
-      vm.$store.commit(SET_CURRENT_PAGE, METADATAEDIT_PAGENAME);
 
-      // vm.updateLastEditingDataset(to.params.metadataid, to.fullPath);
-    });
-  },
   created() {
     this.organizationsStore = useOrganizationsStore();
     this.editingSteps = initializeSteps(metadataEditingSteps);

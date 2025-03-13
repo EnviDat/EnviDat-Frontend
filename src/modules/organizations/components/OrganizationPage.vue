@@ -30,15 +30,10 @@ import {
   METADATADETAIL_PAGENAME,
   ORGANIZATIONS_PAGENAME,
 } from '@/router/routeConsts';
-import { SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
 import store from '@/store/store';
 
 const router = useRouter();
 const route = useRoute();
-
-onBeforeMount(() => {
-  store.commit(SET_CURRENT_PAGE, ORGANIZATIONS_PAGENAME);
-});
 
 const orgaStore = useOrganizationsStore();
 const orgaDatasetsMap = ref();

@@ -33,18 +33,10 @@
  */
 
 import { mapGetters } from 'vuex';
-
 import { GCMD_PAGENAME } from '@/router/routeConsts';
-import { SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
 
 export default {
   name: GCMD_PAGENAME,
-  beforeRouteEnter(to, from, next) {
-    next((vm) => {
-      // console.log("beforeRouteEnter to: " + to + " from: " + from + " next: " + next);
-      vm.$store.commit(SET_CURRENT_PAGE, GCMD_PAGENAME);
-    });
-  },
   computed: {
     ...mapGetters({
       metadatasContent: 'metadata/metadatasContent',

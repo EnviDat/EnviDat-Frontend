@@ -91,8 +91,6 @@ import {
   USER_SIGNIN_PAGENAME,
 } from '@/router/routeConsts';
 
-import { SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
-
 import { METADATA_TITLE_PROPERTY } from '@/factories/metadataConsts';
 
 import NavigationStepper from '@/components/Navigation/NavigationStepper.vue';
@@ -122,11 +120,7 @@ import { replaceAuthorDeadAscii } from '@/factories/authorFactory';
 
 export default {
   name: 'MetadataCreationPage',
-  beforeRouteEnter(to, from, next) {
-    next((vm) => {
-      vm.$store.commit(SET_CURRENT_PAGE, METADATA_CREATION_PAGENAME);
-    });
-  },
+
   created() {
     this.organizationsStore = useOrganizationsStore();
 

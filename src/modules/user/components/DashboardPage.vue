@@ -285,8 +285,6 @@ import {
   METADATA_CREATION_PAGENAME,
 } from '@/router/routeConsts';
 
-import { SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
-
 import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
 import { getNameInitials } from '@/factories/authorFactory';
 import { errorMessage } from '@/factories/notificationFactory';
@@ -353,11 +351,6 @@ const UserOrganizationInfo = defineAsyncComponent(
 
 export default {
   name: 'DashboardPage',
-  beforeRouteEnter(to, from, next) {
-    next((vm) => {
-      vm.$store.commit(SET_CURRENT_PAGE, USER_DASHBOARD_PAGENAME);
-    });
-  },
   created() {
     this.organizationsStore = useOrganizationsStore();
     eventBus.on(SELECT_EDITING_DATASET, this.catchEditingClick);
