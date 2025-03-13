@@ -217,7 +217,7 @@ function extractS3Url(inputUrl) {
   s3Store.s3Url = s3DownloadUrl;
 
   // Build final direct URL
-  const extractedUrl = `${basePath}?prefix=${prefix}&max-keys=100000&delimiter=/`;
+  const extractedUrl = `${basePath}/?prefix=${prefix}&max-keys=100000&delimiter=/`;
   console.log(extractedUrl);
   baseUrl.value = extractedUrl;
 
