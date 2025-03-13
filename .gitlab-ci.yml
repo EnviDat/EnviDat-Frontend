@@ -200,6 +200,8 @@ run-tests:
         echo "node_modules directory not found. Should have got them from the install-node artifact!"
         ls -a
       fi
+    - ls node_modules/ -a
+    - ls node_modules/.bin/ -a
   script:
     - npm run test
   retry:
@@ -225,6 +227,8 @@ build-storybook:
         echo "node_modules directory not found. Should have got them from the install-node artifact!"
         ls -a
       fi
+    - ls node_modules/ -a
+    - ls node_modules/.bin/ -a
   script:
     # - npm config set cache .npm/
     # - npm cache verify || true
@@ -259,6 +263,8 @@ build-app:
         echo "node_modules directory not found. Should have got them from the install-node artifact!"
         ls -a
       fi
+    - ls node_modules/ -a
+    - ls node_modules/.bin/ -a
   script:
     - npm run build -- --logLevel warn
   artifacts:

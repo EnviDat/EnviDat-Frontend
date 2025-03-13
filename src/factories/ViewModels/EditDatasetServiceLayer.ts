@@ -11,7 +11,7 @@ import { ACTION_METADATA_EDITING_PATCH_DATASET } from '@/modules/user/store/user
 import { urlRewrite } from '@/factories/apiFactory';
 import { Dataset } from '@/factories/ViewModels/Dataset.ts';
 import { HeaderViewModel } from '@/factories/ViewModels/HeaderViewModel.ts';
-import { AuthorsViewModel } from '@/factories/ViewModels/AuthorsViewModel.js';
+import { AuthorsViewModel } from '@/factories/ViewModels/AuthorsViewModel';
 import { EditDescriptionViewModel } from '@/factories/ViewModels/EditDescriptionViewModel.ts';
 import { EditKeywordsViewModel } from '@/factories/ViewModels/EditKeywordsViewModel.ts';
 import { DatasetDTO } from '@/types/modelTypes';

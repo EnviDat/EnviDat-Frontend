@@ -17,7 +17,7 @@ export class EditAuthorViewModel extends AbstractBaseViewModel{
       author.dataCredit = [author.dataCredit];
     }
 
-    author.totalDataCredits = {};
+    author.totalDataCredits = { collection: 0, curation: 0, publication: 0, software: 0, supervision: 0, validation: 0 };
     author.lastModified = lastModified;
     return author;
   }
