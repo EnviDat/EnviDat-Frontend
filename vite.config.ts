@@ -18,6 +18,7 @@ const version = process.env.npm_package_version;
 
 export default ({ mode, config }) => {
   const isProd = mode === 'production';
+  const isDev = mode === 'development';
 
   const fileName = `version_${version}.txt`;
   const existingFilePaths = path.resolve(__dirname, 'public/');
@@ -176,6 +177,17 @@ export default ({ mode, config }) => {
                     return 'vendor_utils';
                   }
 
+                  if (id.includes('@mdi/js')) {
+                    return 'vendor_icons';
+                  }
+
+                  if (id.includes('vanilla-jsoneditor') ||
+                      id.includes('codemirror')
+                  ) {
+                    return 'vendor_jsoneditor';
+                  }
+
+
                   return 'vendors';
                 }
 
@@ -190,7 +202,7 @@ export default ({ mode, config }) => {
           }
         : {},
     },
-    server: {
+    server: isDev ? {
       host: '0.0.0.0',
       port: 8080,
       allowedHosts: ['dev.envidat04.wsl.ch:8080'],
@@ -211,6 +223,6 @@ export default ({ mode, config }) => {
         //   rewrite: (proxyPath) => proxyPath.replace(/^\/envidat04/, ''),
         // },
       },
-    },
+    } : {},
   });
 };
