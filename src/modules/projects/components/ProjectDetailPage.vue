@@ -155,7 +155,9 @@ export default {
 
       // reset scroll for every new load of project details
       if (from.name === METADATADETAIL_PAGENAME) {
-        vm.setScrollPos(0);
+        vm.setScrollPos('projectDatasetsList');
+      } else {
+        vm.setScrollPos('header');
       }
     });
   },
@@ -175,7 +177,9 @@ export default {
       backRoute,
     );
     if (from.name === METADATADETAIL_PAGENAME) {
-      this.setScrollPos(0);
+      this.setScrollPos('projectDatasetsList');
+    } else {
+      this.setScrollPos('header');
     }
     next();
   },
@@ -397,7 +401,6 @@ export default {
       });
     },
     catchTagClicked(tagName) {
-      console.log(tagName);
       if (!isTagSelected(tagName, this.selectedTagNames)) {
         this.selectedTagNames.push(tagName);
       }
@@ -416,12 +419,13 @@ export default {
     catchTagCleared() {
       this.selectedTagNames = [];
     },
-    setScrollPos() {
+    setScrollPos(refEl) {
       this.$nextTick(() => {
-        const el =
-          this.$refs.projectDatasetsList.$el || this.$refs.projectDatasetsList;
+        const refName = refEl;
+        const el = this.$refs[refName];
+
         if (el) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          (el.$el || el).scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       });
     },
