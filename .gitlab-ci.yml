@@ -109,7 +109,7 @@ modify-env:
       if branch == 'main' or branch == 'beta':
           value = 'https://envidat.ch'
       if branch == 'staging' or branch == 'develop':
-          value = 'http://envidat04.wsl.ch'
+          value = 'https://envidat04.wsl.ch'
       dotenv.set_key(file, key, value, quote_mode='never')
 
       key = 'VITE_MATOMO_TOKEN'
