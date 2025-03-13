@@ -169,13 +169,18 @@ install-node:
     # Only run npm ci if node_modules don't come from the cache
     - |
       if [ -d "node_modules" ] && [ -d "node_modules/.bin" ]; then
-        echo "node_modules and it's .bin directory already exists. Skipping npm ci."
+        if [ "$FORCE_NPM_INSTALL" = "true" ]; then
+          echo "FORCE_NPM_INSTALL $FORCE_NPM_INSTALL so going to run npm ci"
+          npm ci --prefer-offline --no-audit
+        else
+          echo "node_modules and it's .bin directory already exists. Skipping npm ci."
+        fi      
       else
         echo "node_modules or it's .bin directory not found. Running npm ci..."
         npm ci --prefer-offline --no-audit
-        echo "Check afterwards how the folders are"
-        ls -l node_modules
       fi
+    - echo "Check afterwards how the folders are"
+    - ls -l node_modules
   artifacts:
     name: 'node dependencies'
     # stores node_modules as an artifact to be used in the next jobs
