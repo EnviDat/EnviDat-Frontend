@@ -42,7 +42,7 @@ contribute something to the general goal of your product.
 
 
 export default {
-  title: '3 Dataset / 2 Edit / Description',
+  title: '3 Datasets / 2 Edit / Description',
   component: EditDescription,
 };
 

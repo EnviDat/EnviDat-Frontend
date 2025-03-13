@@ -30,16 +30,16 @@ export class AuthorsViewModel extends AbstractBaseViewModel{
 
 }
 
-export const createHeaderViewModel = (datasetDTO, changeCallback = undefined) => {
-  const authorVM = new AuthorsViewModel(datasetDTO);
-  const reactiveAuthorVM = reactive(authorVM);
+export const createAuthorsViewModel = (datasetDTO, changeCallback = undefined) => {
+  const authorsVM = new AuthorsViewModel(datasetDTO);
+  const reactiveAuthorsVM = reactive(authorsVM);
 
-  watch(() => reactiveAuthorVM, (newModel) => {
+  watch(() => reactiveAuthorsVM, (newModel) => {
     if (changeCallback) {
       changeCallback(newModel);
     }
   }, { deep: true });
 
-  return reactiveAuthorVM;
+  return reactiveAuthorsVM;
 }
 
