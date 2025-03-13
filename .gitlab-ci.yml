@@ -99,17 +99,19 @@ modify-env:
       branch = os.getenv('CI_COMMIT_REF_NAME')
 
       key = 'VITE_DOMAIN'
-      value = f'http://{branch}.envidat.ch'
+      value = 'https://envidat04.wsl.ch'
+      
       if branch == 'main' or branch == 'beta':
           value = 'https://envidat.ch'
+      
       dotenv.set_key(file, key, value, quote_mode='never')
 
       key = 'VITE_API_ROOT'
-      value = f'http://{branch}.envidat.ch'
+      value = 'https://envidat04.wsl.ch'
+      
       if branch == 'main' or branch == 'beta':
           value = 'https://envidat.ch'
-      if branch == 'staging' or branch == 'develop':
-          value = 'https://envidat04.wsl.ch'
+
       dotenv.set_key(file, key, value, quote_mode='never')
 
       key = 'VITE_MATOMO_TOKEN'
