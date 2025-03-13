@@ -91,7 +91,6 @@ import {
   PROJECT_DETAIL_PAGENAME,
   PROJECTS_PATH,
 } from '@/router/routeConsts';
-import { SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
 import {
   LISTCONTROL_LIST_ACTIVE,
   LISTCONTROL_MAP_ACTIVE,
@@ -140,8 +139,6 @@ export default {
   name: 'ProjectDetailPage',
   beforeRouteEnter(to, from, next) {
     next((vm) => {
-      vm.$store.commit(SET_CURRENT_PAGE, PROJECT_DETAIL_PAGENAME);
-
       let backRoute = { path: PROJECTS_PATH };
 
       if (vm.currentProject?.parent) {

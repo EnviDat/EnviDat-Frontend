@@ -66,8 +66,6 @@
 import { mapState } from 'vuex';
 import { SERVICE_PAGENAME } from '@/router/routeConsts';
 
-import { SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
-
 import {
   SERVICE_NAMESPACE,
   GET_SERVICE_LIST,
@@ -81,11 +79,6 @@ import { getImage } from '@/factories/imageFactory';
 
 export default {
   name: SERVICE_PAGENAME,
-  beforeRouteEnter(to, from, next) {
-    next((vm) => {
-      vm.$store.commit(SET_CURRENT_PAGE, SERVICE_PAGENAME);
-    });
-  },
   beforeMount() {
     this.loadServiceList();
 

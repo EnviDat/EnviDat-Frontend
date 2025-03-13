@@ -121,6 +121,8 @@
  */
 import { mapGetters, mapState } from 'vuex';
 
+import { ABOUT_PAGENAME } from '@/router/routeConsts';
+
 import {
   mdiBookOpenVariant,
   mdiInformation,
@@ -138,8 +140,6 @@ import {
   GET_IMPRINT,
   GET_POLICIES,
 } from '@/modules/about/store/aboutMutationsConsts';
-import { ABOUT_PAGENAME } from '@/router/routeConsts';
-import { SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
 
 import { getImage } from '@/factories/imageFactory';
 import AboutTabLayout from '@/modules/about/components/AboutTabLayout.vue';
@@ -151,12 +151,6 @@ export default {
    * @description beforeRouteEnter is used to change background image of this page.
    * It's called via vue-router.
    */
-  // TODO: Wieso die aktuelle Seite abspeichern? Ist ja im router. + Wenn Bild abhänig von CurrentPage --> im Code so reflektieren
-  beforeRouteEnter(to, from, next) {
-    next((vm) => {
-      vm.$store.commit(SET_CURRENT_PAGE, ABOUT_PAGENAME);
-    });
-  },
   beforeMount() {
     this.$store.dispatch(`${ABOUT_NAMESPACE}/${GET_POLICIES}`);
     this.$store.dispatch(`${ABOUT_NAMESPACE}/${GET_GUIDELINES}`);

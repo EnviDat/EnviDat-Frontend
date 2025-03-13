@@ -66,8 +66,6 @@ import { mapState } from 'vuex';
 
 import { INTEGRATION_PAGENAME } from '@/router/routeConsts';
 
-import { SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
-
 import {
   INTEGRATION_NAMESPACE,
   GET_INTEGRATION_LIST,
@@ -80,11 +78,6 @@ import { getImage } from '@/factories/imageFactory';
 
 export default {
   name: INTEGRATION_PAGENAME,
-  beforeRouteEnter(to, from, next) {
-    next((vm) => {
-      vm.$store.commit(SET_CURRENT_PAGE, INTEGRATION_PAGENAME);
-    });
-  },
   beforeMount() {
     this.loadCommunityList();
 

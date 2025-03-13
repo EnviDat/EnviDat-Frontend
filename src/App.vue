@@ -300,14 +300,14 @@ export default {
         const item = this.navigationItems[i];
 
         if (item.icon !== 'menu') {
-          const isActive = this.currentPage === item.pageName;
+          const isActive = this.$router.name === item.pageName;
 
           if (item.subpages && item.subpages instanceof Array) {
             let subIsActive = false;
 
             item.subpages.forEach((sub) => {
               if (!subIsActive) {
-                subIsActive = this.currentPage === sub;
+                subIsActive = this.$router.name === sub;
               }
             });
 
@@ -597,7 +597,6 @@ export default {
       'isFilteringContent',
     ]),
     ...mapGetters({
-      currentPage: 'currentPage',
       outdatedVersion: 'outdatedVersion',
       newVersion: 'newVersion',
       notifications: 'notifications',
@@ -658,7 +657,7 @@ export default {
       return this.maintenanceConfig?.signinDisabled || false;
     },
     userIsOnEditPage() {
-      return this.currentPage === METADATAEDIT_PAGENAME;
+      return this.$route.name === METADATAEDIT_PAGENAME;
     },
     loading() {
       return (

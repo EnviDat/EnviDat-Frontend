@@ -110,7 +110,6 @@ import {
   USER_NAMESPACE,
   USER_SIGNIN_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts';
-import { SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
 import {
   CLEAN_CURRENT_METADATA,
   CLEAR_SEARCH_METADATA,
@@ -208,11 +207,6 @@ const MetadataRelatedDatasets = defineAsyncComponent(
 
 export default {
   name: 'MetadataDetailPage',
-  beforeRouteEnter(to, from, next) {
-    next((vm) => {
-      vm.$store.commit(SET_CURRENT_PAGE, METADATADETAIL_PAGENAME);
-    });
-  },
   created() {
     this.modeStore = useModeStore();
     this.modeStore.init(this.$store.getters.cardBGImages);
