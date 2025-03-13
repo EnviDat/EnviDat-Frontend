@@ -1,7 +1,5 @@
 <template>
-  <div id="blogPostContent"
-       class="blogPost"
-       v-html="postContentMarkdown"></div>
+  <div id="blogPostContent" class="blogPost" v-html="postContentMarkdown"></div>
 </template>
 
 <script>
@@ -22,7 +20,7 @@ import { renderMarkdown } from '@/factories/stringFactory';
 export default {
   name: 'BlogPost',
   props: {
-/*
+    /*
     post: Object,
 */
     postContent: String,
@@ -44,18 +42,14 @@ export default {
 
   h1 + p,
   h2 + p {
-
     &::first-letter {
       font-size: 2rem;
       font-family: 'Baskervville', serif !important;
     }
   }
-
 }
 
 p {
   text-wrap: pretty;
 }
-
-
 </style>

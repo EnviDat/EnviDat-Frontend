@@ -1,6 +1,6 @@
 {
   "name": "envidat.ch",
-  "version": "0.8.39",
+  "version": "0.8.391",
   "private": true,
   "description": "EnviDat frontend with vue",
   "author": "Dominik Haas-Artho",
@@ -70,7 +70,7 @@
     "vue-matomo": "^4.2.0",
     "vue-router": "^4.5.0",
     "vue-virtual-scroller": "^2.0.0-beta.8",
-    "vuetify": "^3.7.7",
+    "vuetify": "^3.7.16",
     "vuex": "^4.1.0",
     "yup": "^0.32.11"
   },

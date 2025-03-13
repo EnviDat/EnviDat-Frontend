@@ -70,21 +70,12 @@ import {
   USER_DASHBOARD_PATH,
   USER_SIGNIN_PAGENAME,
 } from '@/router/routeConsts';
-import {
-  SET_APP_BACKGROUND,
-  SET_CURRENT_PAGE,
-} from '@/store/mainMutationsConsts';
 
 import SigninView from './SigninView.vue';
 
 export default {
   name: 'SigninPage',
-  beforeRouteEnter(to, from, next) {
-    next(vm => {
-      vm.$store.commit(SET_CURRENT_PAGE, USER_SIGNIN_PAGENAME);
-      vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
-    });
-  },
+
   components: {
     SigninView,
   },
@@ -157,19 +148,21 @@ export default {
       });
     },
     async submitDataAndSignIn(email, keyOrToken, isAzure = false) {
-      let action
+      let action;
 
       if (isAzure) {
-        action = ACTION_API_TOKEN_AZURE
+        action = ACTION_API_TOKEN_AZURE;
       } else {
-        action = this.useTokenSignin ? ACTION_USER_SIGNIN_TOKEN : ACTION_OLD_USER_SIGNIN;
+        action = this.useTokenSignin
+          ? ACTION_USER_SIGNIN_TOKEN
+          : ACTION_OLD_USER_SIGNIN;
       }
 
-      let bodyParams
+      let bodyParams;
       if (action !== ACTION_API_TOKEN_AZURE) {
-        bodyParams = { email, key: keyOrToken }
+        bodyParams = { email, key: keyOrToken };
       } else {
-        bodyParams = { email, token: keyOrToken }
+        bodyParams = { email, token: keyOrToken };
       }
 
       await this.$store.dispatch(
@@ -186,15 +179,15 @@ export default {
       // call within the action with the token
 
       if (!this.useTokenSignin && !this.errorField && !this.errorFieldText) {
-
         // Get user context via the old login
         await this.$store.dispatch(
-        `${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`,
-        {
-          action: ACTION_OLD_GET_USER_CONTEXT,
-          commit: true,
-          mutation: GET_USER_CONTEXT,
-        });
+          `${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`,
+          {
+            action: ACTION_OLD_GET_USER_CONTEXT,
+            commit: true,
+            mutation: GET_USER_CONTEXT,
+          },
+        );
       }
 
       // Then redirect with context set
@@ -210,7 +203,9 @@ export default {
       }
     },
     catchRequestToken(email) {
-      const action = this.useTokenSignin ? ACTION_RESET_TOKEN : ACTION_OLD_REQUEST_TOKEN;
+      const action = this.useTokenSignin
+        ? ACTION_RESET_TOKEN
+        : ACTION_OLD_REQUEST_TOKEN;
 
       this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`, {
         action,
@@ -220,14 +215,18 @@ export default {
       });
     },
     catchSignOut() {
-      let action = this.useTokenSignin ? ACTION_USER_SIGNOUT_REVOKE_TOKEN : ACTION_OLD_USER_SIGNOUT;
+      let action = this.useTokenSignin
+        ? ACTION_USER_SIGNOUT_REVOKE_TOKEN
+        : ACTION_OLD_USER_SIGNOUT;
 
       // In case where useTokenSignIn===false, but Azure login is used
-      const ckanCookie = (`; ${document.cookie}`).split('; ckan-beaker=').pop().split(';')[0];
+      const ckanCookie = `; ${document.cookie}`
+        .split('; ckan-beaker=')
+        .pop()
+        .split(';')[0];
       if (action === ACTION_OLD_USER_SIGNOUT && !ckanCookie) {
-        action = ACTION_USER_SIGNOUT_REVOKE_TOKEN
+        action = ACTION_USER_SIGNOUT_REVOKE_TOKEN;
       }
-
 
       this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`, {
         action,
@@ -239,9 +238,7 @@ export default {
       this.redirectToDashboardIfAllowed();
     },
   },
-  data: () => ({
-    pageBGImage: 'app_b_browsepage',
-  }),
+  data: () => ({}),
 };
 </script>
 

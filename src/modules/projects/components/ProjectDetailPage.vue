@@ -92,10 +92,6 @@ import {
   PROJECTS_PATH,
 } from '@/router/routeConsts';
 import {
-  SET_APP_BACKGROUND,
-  SET_CURRENT_PAGE,
-} from '@/store/mainMutationsConsts';
-import {
   LISTCONTROL_LIST_ACTIVE,
   LISTCONTROL_MAP_ACTIVE,
   METADATA_NAMESPACE,
@@ -143,9 +139,6 @@ export default {
   name: 'ProjectDetailPage',
   beforeRouteEnter(to, from, next) {
     next((vm) => {
-      vm.$store.commit(SET_CURRENT_PAGE, PROJECT_DETAIL_PAGENAME);
-      vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
-
       let backRoute = { path: PROJECTS_PATH };
 
       if (vm.currentProject?.parent) {
@@ -161,7 +154,9 @@ export default {
       );
 
       // reset scroll for every new load of project details
-      vm.setScrollPos(0);
+      if (from.name === METADATADETAIL_PAGENAME) {
+        vm.setScrollPos(0);
+      }
     });
   },
   beforeRouteUpdate(to, from, next) {
@@ -179,7 +174,9 @@ export default {
       `${PROJECTS_NAMESPACE}/${SET_PROJECTDETAIL_PAGE_BACK_URL}`,
       backRoute,
     );
-    this.setScrollPos(0);
+    if (from.name === METADATADETAIL_PAGENAME) {
+      this.setScrollPos(0);
+    }
     next();
   },
   beforeMount() {
@@ -448,7 +445,6 @@ export default {
     ProjectDatasets,
   },
   data: () => ({
-    pageBGImage: 'app_b_browsepage',
     placeHolderAmount: 3,
     selectedTagNames: [],
     selectedPins: [],

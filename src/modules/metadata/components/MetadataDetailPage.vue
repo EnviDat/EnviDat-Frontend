@@ -1,9 +1,5 @@
 <template>
-  <v-container id="MetadataDetailPage"
-               fluid
-               class="pa-0"
-               tag="article" >
-
+  <v-container id="MetadataDetailPage" fluid class="pa-0" tag="article">
     <v-row no-gutters>
       <!-- prettier-ignore -->
       <v-col class="elevation-5 pa-0"
@@ -102,11 +98,9 @@ import { useOrganizationsStore } from '@/modules/organizations/store/organizatio
 
 import {
   BROWSE_PATH,
-  METADATADETAIL_PAGENAME,
   METADATAEDIT_PAGENAME,
   ORGANIZATIONS_PAGENAME,
 } from '@/router/routeConsts';
-
 
 import {
   ACTION_USER_SHOW,
@@ -115,10 +109,6 @@ import {
   USER_NAMESPACE,
   USER_SIGNIN_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts';
-import {
-  SET_APP_BACKGROUND,
-  SET_CURRENT_PAGE,
-} from '@/store/mainMutationsConsts';
 import {
   CLEAN_CURRENT_METADATA,
   CLEAR_SEARCH_METADATA,
@@ -164,18 +154,17 @@ import {
 
 import { getEventsForPageAndName } from '@/modules/matomo/store/matomoStore';
 
-import {
-  convertJSON,
-  getFrontendDates,
-} from '@/factories/mappingFactory';
+import { convertJSON, getFrontendDates } from '@/factories/mappingFactory';
 
 import { convertArrayToUrlString } from '@/factories/stringFactory';
 
 import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
 import { createLocation } from '@/factories/geoFactory';
+
 import { createHeaderViewModel } from '@/factories/ViewModels/HeaderViewModel';
 import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionViewModel';
 import { getResourcesForDataViz } from '@/modules/charts/middelware/chartServiceLayer.ts';
+
 
 const MetadataDescription = defineAsyncComponent(
   () =>
@@ -223,12 +212,6 @@ const ResourceDataVizListAsync = defineAsyncComponent(() =>
 
 export default {
   name: 'MetadataDetailPage',
-  beforeRouteEnter(to, from, next) {
-    next((vm) => {
-      vm.$store.commit(SET_CURRENT_PAGE, METADATADETAIL_PAGENAME);
-      vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
-    });
-  },
   created() {
     this.modeStore = useModeStore();
     this.modeStore.init(this.$store.getters.cardBGImages);
@@ -578,7 +561,10 @@ export default {
         );
 
         // this.descriptionData = createBody(currentContent, this.$vuetify.display.smAndDown);
-        this.descriptionData = createDescriptionViewModel(parsedContent, isSmallScreen);
+        this.descriptionData = createDescriptionViewModel(
+          parsedContent,
+          isSmallScreen,
+        );
 
         this.citation = createCitation(currentContent);
 
@@ -869,7 +855,6 @@ export default {
           organization,
         },
       });
-
     },
     /**
      * @description loads the content of this metadata entry (metadataid) from the URL.
@@ -1039,7 +1024,6 @@ export default {
     pageViewEvents: null,
     modeStore: null,
     modeDataset: null,
-    pageBGImage: 'app_b_browsepage',
     baseStationURL: 'https://www.envidat.ch/data-files/',
     baseStationURLTestdata: './testdata/',
     geoConfigUrl: '',

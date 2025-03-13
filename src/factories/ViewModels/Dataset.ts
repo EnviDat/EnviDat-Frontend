@@ -1,7 +1,8 @@
 import { watch } from 'vue';
 import { convertJSON } from '@/factories/mappingFactory';
+import type { DatasetDTO } from '@/types/modelTypes';
 
-export class DatasetDTO {
+export class Dataset implements DatasetDTO {
 
   /**
    * List of the watcher methods to be called to stop watching on a reactive model
@@ -54,10 +55,11 @@ export class DatasetDTO {
           this.convertBackendDataset(newBackendDataset);
           this.updateViewModels();
 
-          newModel.savedSuccessfull = true;
+          newModel.savedSuccessful = true;
 
         } catch (e) {
-          newModel.savedSuccessfull = false;
+          newModel.savedSuccessful = false;
+          newModel.error = e;
           this.updateViewModelWithError(e, newModel);
         }
 

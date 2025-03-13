@@ -1,90 +1,74 @@
 <template>
-  <v-container class="pa-0 ma-0"
-    tag="article"
-    fluid
-    :id="BLOG_PAGENAME">
-
-    <v-row no-gutters
-      ref="blogHeader"
-      class="py-1 py-md-4">
-
-      <v-col cols="12"
-        md="10"
-        offset-md="1">
-
-        <BlogHeader :title="blogHeaderTitle"
+  <v-container class="pa-0 ma-0" tag="article" fluid :id="BLOG_PAGENAME">
+    <v-row no-gutters ref="blogHeader" class="py-1 py-md-4">
+      <v-col cols="12" md="10" offset-md="1">
+        <BlogHeader
+          :title="blogHeaderTitle"
           :titleImage="post ? post.titleImg : blogHeaderImg"
           :height="$vuetify.display.smAndDown ? 100 : 150"
           :showCloseButton="!!showBlogPost"
-          @clickedBack="catchClosePost" />
+          @clickedBack="catchClosePost"
+        />
       </v-col>
-
     </v-row>
 
-    <v-row no-gutters
-      id="blogSubHeader"
-      class="py-2">
-
-      <v-col cols="12"
+    <v-row no-gutters id="blogSubHeader" class="py-2">
+      <v-col
+        cols="12"
         offset-md="1"
         md="10"
         class="text-body-1"
-        v-html="pageIntroText">
-
+        v-html="pageIntroText"
+      >
       </v-col>
-
     </v-row>
 
-
-    <v-row no-gutters
-      ref="blogBody"
-      class="py-1 py-md-4">
-
-      <v-col v-if="showBlogPost"
-        cols="12"
-        md="10"
-        offset-md="1">
-
-        <BlogPost
-            :post="post"
-            :postContent="postContent"
-        />
+    <v-row no-gutters ref="blogBody" class="py-1 py-md-4">
+      <v-col v-if="showBlogPost" cols="12" md="10" offset-md="1">
+        <BlogPost :post="post" :postContent="postContent" />
       </v-col>
 
-      <v-col v-if="!showBlogPost && loadingList"
+      <v-col
+        v-if="!showBlogPost && loadingList"
         class="pt-3"
         cols="12"
         md="10"
-        offset-md="1">
+        offset-md="1"
+      >
         Loading the blog entries...
       </v-col>
 
-      <v-col v-if="!showBlogPost && !loadingList"
+      <v-col
+        v-if="!showBlogPost && !loadingList"
         class="pt-3"
         cols="12"
         md="10"
-        offset-md="1">
-
+        offset-md="1"
+      >
         <v-row no-gutters>
-          <v-col v-for="(post, index) in list"
+          <v-col
+            v-for="(post, index) in list"
             :key="index"
             cols="12"
             sm="6"
             md="4"
-            class="pa-2">
-            <BlogPostCard :postTitle="post.title"
-              :titleCssClass="$vuetify.display.smAndDown ? 'text-h6 px-4' : undefined"
+            class="pa-2"
+          >
+            <BlogPostCard
+              :postTitle="post.title"
+              :titleCssClass="
+                $vuetify.display.smAndDown ? 'text-h6 px-4' : undefined
+              "
               :postDate="post.date"
               :titleImg="post.titleImg"
               :loadingImg="fallbackCardImg"
               height="200"
-              @clicked="catchPostClick(post.postFile)" />
+              @clicked="catchPostClick(post.postFile)"
+            />
           </v-col>
         </v-row>
-
       </v-col>
     </v-row>
-
   </v-container>
 </template>
 
@@ -99,18 +83,9 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import {
-  mapState,
-} from 'vuex';
+import { mapState } from 'vuex';
 
-import {
-  BLOG_PAGENAME,
-  BLOG_PATH,
-} from '@/router/routeConsts';
-import {
-  SET_APP_BACKGROUND,
-  SET_CURRENT_PAGE,
-} from '@/store/mainMutationsConsts';
+import { BLOG_PAGENAME, BLOG_PATH } from '@/router/routeConsts';
 
 import {
   BLOG_NAMESPACE,
@@ -126,18 +101,15 @@ import { getImage } from '@/factories/imageFactory';
 
 export default {
   name: BLOG_PAGENAME,
-  beforeRouteEnter(to, from, next) {
-    next((vm) => {
-      vm.$store.commit(SET_CURRENT_PAGE, BLOG_PAGENAME);
-      vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
-    });
-  },
   created() {
     this.blogModuleLoaded = !!this.$store?.state?.blog;
 
-    this.$store?.watch((state) => state.blog, (value) => {
-      this.blogModuleLoaded = !!value;
-    });
+    this.$store?.watch(
+      (state) => state.blog,
+      (value) => {
+        this.blogModuleLoaded = !!value;
+      },
+    );
   },
   beforeMount() {
     this.$store.dispatch(`${BLOG_NAMESPACE}/${GET_BLOG_LIST}`);
@@ -154,9 +126,7 @@ export default {
     this.checkRouteChanges();
   },
   computed: {
-    ...mapState([
-      'config',
-    ]),
+    ...mapState(['config']),
     ...mapState(BLOG_NAMESPACE, [
       'loadingList',
       'loadingPost',
@@ -193,7 +163,6 @@ export default {
       }
     },
     catchPostClick(post) {
-
       if (this.$route.params?.post !== post) {
         this.$router.push({
           name: BLOG_PAGENAME,
@@ -225,9 +194,9 @@ export default {
   },
   data: () => ({
     BLOG_PAGENAME,
-    pageBGImage: 'app_b_browsepage',
     fallbackCardImg: null,
-    pageIntroText: 'The EnviDat blog page provides news and information from the EnviDat team. Click on a card to read the blog post, click the close icon in the top right to go back to the overview.',
+    pageIntroText:
+      'The EnviDat blog page provides news and information from the EnviDat team. Click on a card to read the blog post, click the close icon in the top right to go back to the overview.',
     blogModuleLoaded: false,
   }),
 };

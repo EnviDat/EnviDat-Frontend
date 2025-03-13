@@ -27,11 +27,11 @@ const initState = {
 export const useReviewStore = defineStore(METADATA_REVIEW_STORE, {
   state: () => ({ ...initState }),
   actions: {
-    async loadReviewMetadata(metadataId) {
+    async loadReviewMetadata(datasetId) {
 
       this.loadingMetadata = true;
       const actionUrl = ACTION_METADATA_REVIEW();
-      const url = urlRewrite(`${actionUrl}?id=${metadataId}`, API_BASE, API_ROOT);
+      const url = urlRewrite(`${actionUrl}?id=${datasetId}`, API_BASE, API_ROOT);
 
       try {
         const response = await axios.get(url);
@@ -42,6 +42,9 @@ export const useReviewStore = defineStore(METADATA_REVIEW_STORE, {
       } finally {
         this.loadingMetadata = false;
       }
+    },
+    resetReview() {
+      this.state = initState;
     },
   },
 })

@@ -1,4 +1,4 @@
-import { AbstractBaseViewModel } from '@/factories/ViewModels/AbstractBaseViewModel';
+import { AbstractBaseViewModel } from '@/factories/ViewModels/AbstractBaseViewModel.ts';
 
 import {
   METADATA_CONTACT_EMAIL,
@@ -7,12 +7,13 @@ import {
   METADATA_TITLE_PROPERTY,
   METADATA_URL_PROPERTY,
 } from '@/factories/metadataConsts';
+import { DatasetDTO } from '@/types/modelTypes';
 
 
 export class EditHeaderViewModel extends AbstractBaseViewModel{
 
-  constructor(datasetDTO) {
-    super(datasetDTO, EditHeaderViewModel.mappingRules());
+  constructor(dataset: DatasetDTO) {
+    super(dataset, EditHeaderViewModel.mappingRules());
   }
 
   static mappingRules () {

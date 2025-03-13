@@ -1,9 +1,8 @@
 <template>
   <v-card id="EditRelatedPublicationsList" class="pa-0" :loading="loadingColor">
     <v-container fluid class="pa-4">
-
       <v-row>
-        <v-col cols="6" class="text-h5">
+        <v-col cols="12" class="text-h5">
           {{ EDIT_METADATA_RELATEDPUBLICATIONS_TITLE }}
         </v-col>
         <v-col v-if="message">

@@ -69,26 +69,11 @@ import {
   PROJECTS_PAGENAME,
 } from '@/router/routeConsts';
 import {
-  SET_APP_BACKGROUND,
-  SET_CURRENT_PAGE,
-} from '@/store/mainMutationsConsts';
-import {
   GET_PROJECTS,
   PROJECTS_NAMESPACE,
   SET_PROJECTDETAIL_PAGE_BACK_URL,
 } from '../store/projectsMutationsConsts';
 import { getImage } from '@/factories/imageFactory';
-
-if (typeof defineOptions === 'function') {
-  defineOptions({
-    beforeRouteEnter(to, from, next) {
-      next((vm: any) => {
-        vm.$store.commit(SET_CURRENT_PAGE, PROJECTS_PAGENAME);
-        vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
-      });
-    },
-  });
-}
 
 const store = useStore();
 const router = useRouter();
@@ -129,7 +114,6 @@ const creatorImg = computed(() => {
 });
 
 // Local data
-const pageBGImage = ref('app_b_browsepage');
 
 onBeforeMount(() => {
   if (

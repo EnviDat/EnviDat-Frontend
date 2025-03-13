@@ -1,5 +1,5 @@
 import { reactive, watch } from 'vue';
-import { AbstractBaseViewModel } from '@/factories/ViewModels/AbstractBaseViewModel';
+import { AbstractBaseViewModel } from '@/factories/ViewModels/AbstractBaseViewModel.ts';
 
 export class DescriptionViewModel extends AbstractBaseViewModel{
 
@@ -8,6 +8,8 @@ export class DescriptionViewModel extends AbstractBaseViewModel{
 
     this.maxTextLength = smallScreen ? 900 : 1000;
   }
+
+  description: string;
 
   static mappingRules () {
     return [
