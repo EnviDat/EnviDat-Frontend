@@ -162,8 +162,8 @@ import { convertArrayToUrlString } from '@/factories/stringFactory';
 
 import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
 import { createLocation } from '@/factories/geoFactory';
-import { createHeaderViewModel } from '@/factories/ViewModels/HeaderViewModel';
-import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionViewModel';
+import { createHeaderViewModel } from '@/factories/ViewModels/HeaderViewModel.js';
+import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionViewModel.js';
 import { loadResourcesPreview } from '@/modules/charts/middelware/chartServiceLayer.ts';
 
 const MetadataDescription = defineAsyncComponent(

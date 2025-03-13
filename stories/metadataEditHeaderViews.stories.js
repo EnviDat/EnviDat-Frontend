@@ -37,6 +37,8 @@ import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams }
 
 import metadataset from './js/metadata';
 
+const serviceLayer = new EditDatasetServiceLayer(metadataset[0]);
+
 const unFormatedMetadataCards = metadataset;
 const tagsFromDatasets = getPopularTags(metadataset, '', 1);
 
@@ -60,7 +62,6 @@ const authors = getFullAuthorsFromDataset(authorsMap, metadataCards[1]);
 let existingAuthors = Object.values(authorsMap);
 existingAuthors = sortObjectArray(existingAuthors, 'lastName');
 
-const serviceLayer = new EditDatasetServiceLayer(metadataset[0]);
 
 export default {
   title: '3 Datasets / 2 Edit / Metadata Header',

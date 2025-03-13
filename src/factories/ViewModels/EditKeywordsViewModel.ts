@@ -1,9 +1,10 @@
 import { AbstractBaseViewModel } from '@/factories/ViewModels/AbstractBaseViewModel.ts';
+import { DatasetDTO } from '@/types/modelTypes';
 
 export class EditKeywordsViewModel extends AbstractBaseViewModel{
 
-  constructor(datasetDTO) {
-    super(datasetDTO, EditKeywordsViewModel.mappingRules());
+  constructor(dataset: DatasetDTO) {
+    super(dataset, EditKeywordsViewModel.mappingRules());
   }
 
   static mappingRules () {

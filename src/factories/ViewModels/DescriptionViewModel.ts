@@ -9,6 +9,8 @@ export class DescriptionViewModel extends AbstractBaseViewModel{
     this.maxTextLength = smallScreen ? 900 : 1000;
   }
 
+  description: string;
+
   static mappingRules () {
     return [
       ['description','notes'],

@@ -101,15 +101,31 @@ export interface DatasetDTO {
   resources: ResourceDTO[];
 }
 
+export interface DataCreditObject {
+  curation: number;
+  publication: number;
+  software: number;
+  supervision: number;
+  validation: number;
+  collection: number;
+}
+
 export interface Author {
   firstName: string;
   lastName: string;
+  email: string;
+  dataCredit: string[];
+  identifierType: string;
+  identifier: string;
+  affiliation: string;
+  totalDataCredits: DataCreditObject;
 }
 
 export interface Keyword {
   name: string;
 }
 
+/*
 export interface DatasetModel {
   metadataTitle: string;
   contactEmail: string;
@@ -122,6 +138,7 @@ export interface DatasetModel {
   authors: Author[];
   description: string;
 }
+*/
 
 export interface UserModel {
   id: string;

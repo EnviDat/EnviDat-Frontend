@@ -55,10 +55,11 @@ export class Dataset implements DatasetDTO {
           this.convertBackendDataset(newBackendDataset);
           this.updateViewModels();
 
-          newModel.savedSuccessfull = true;
+          newModel.savedSuccessful = true;
 
         } catch (e) {
-          newModel.savedSuccessfull = false;
+          newModel.savedSuccessful = false;
+          newModel.error = e;
           this.updateViewModelWithError(e, newModel);
         }
 

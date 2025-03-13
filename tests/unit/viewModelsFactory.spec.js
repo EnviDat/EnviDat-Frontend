@@ -1,5 +1,5 @@
 import { it, describe, expect } from 'vitest';
-import { createHeaderViewModel } from '@/factories/ViewModels/HeaderViewModel';
+import { createHeaderViewModel } from '@/factories/ViewModels/HeaderViewModel.js';
 import { EDITMETADATA_MAIN_HEADER } from '@/factories/eventBus';
 import { convertJSON } from '@/factories/mappingFactory';
 
@@ -10,7 +10,7 @@ import {
   METADATA_TITLE_PROPERTY,
 } from '@/factories/metadataConsts';
 
-import { EditDatasetServiceLayer } from '@/factories/ViewModels/EditDatasetServiceLayer';
+import { EditDatasetServiceLayer } from '@/factories/ViewModels/EditDatasetServiceLayer.js';
 
 import metadatas from '../../stories/js/metadata';
 
