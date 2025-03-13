@@ -11,18 +11,19 @@
 
 import {
   CANCEL_EDITING_AUTHOR,
-  EDITMETADATA_AUTHOR, EDITMETADATA_AUTHOR_DATACREDIT,
+  EDITMETADATA_AUTHOR,
+  EDITMETADATA_AUTHOR_DATACREDIT,
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_OBJECT_UPDATE,
-  eventBus, REMOVE_EDITING_AUTHOR,
+  eventBus,
+  REMOVE_EDITING_AUTHOR,
   SAVE_EDITING_AUTHOR,
   SELECT_EDITING_AUTHOR,
 } from '@/factories/eventBus';
 
 import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors.vue';
 import EditAuthorList from '@/modules/user/components/edit/EditAuthorList.vue';
-import EditAddAuthor from '@/modules/user/components/EditAddAuthor.vue';
 import EditDataCredits from '@/modules/user/components/edit/EditDataCredits.vue';
 
 import {
@@ -58,74 +59,14 @@ authorsObjs.forEach((author) => {
   authorsStrings.push(author.fullName);
 });
 
-const preSelectedAuthor = authorsStrings.filter(value => value.includes('Fischer'));
 const preSelectedAuthors2 = extractedAuthors.filter(value => value.fullName.includes('A'));
-const preSelectedAuthors3 = authorsStrings.filter(value => value.includes('B'));
 
 
 export default {
   title: '3 Datasets / 2 Edit / Author Infos',
-  decorators: [],
-  parameters: {},
 };
 
 
-export const EditAddAuthorViews = () => ({
-  components: { EditAddAuthor },
-  template: `
-  <v-col>
-
-    <v-row>
-      EditAddAuthor with existing authors
-    </v-row>
-
-    <v-row class="py-3" >
-      <v-col >
-        <EditAddAuthor v-bind="author"
-                        :existingAuthors="authors"
-                        :loading="loading" />
-      </v-col>
-    </v-row>
-
-    <v-row>
-      EditAddAuthor with the author
-    </v-row>
-
-    <v-row class="py-3" >
-      <v-col >
-        <EditAddAuthor v-bind="author"  />
-      </v-col>
-    </v-row>
-
-  </v-col>
-  `,
-  created() {
-    eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.changeAuthor);
-  },
-  beforeUnmount() {
-    eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.changeAuthor);
-  },
-  methods: {
-    changeAuthor(updateObj) {
-      if (updateObj.object === EDITMETADATA_AUTHOR) {
-        this.loading = true;
-
-        setTimeout(() => {
-          this.author = updateObj.data;
-          this.loading = false;
-        }, 2000);
-      }
-    },
-  },
-  data: () => ({
-    author: null,
-    // authors: authorsStrings,
-    authors: extractedAuthors,
-    preSelectedAuthor,
-    preSelectedAuthors3,
-    loading: false,
-  }),
-});
 
 export const EditingDataCreditViews = () => ({
   components: { EditDataCredits },
