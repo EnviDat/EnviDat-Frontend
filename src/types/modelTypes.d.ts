@@ -99,6 +99,8 @@ export interface DatasetDTO {
   version: string;
   extras: ExtrasDTO[],
   resources: ResourceDTO[];
+
+  subscribeToViewModels(viewModelInstances: Map<string, any>): void;
 }
 
 export interface DataCreditObject {
@@ -111,6 +113,7 @@ export interface DataCreditObject {
 }
 
 export interface Author {
+  lastModified: string;
   firstName: string;
   lastName: string;
   email: string;

@@ -183,7 +183,6 @@ function getData(url, isChild, nodeId) {
 }
 
 function extractS3Url(inputUrl) {
-  console.log(inputUrl);
   s3Store.s3BucketUrl = inputUrl;
   const url = new URL(inputUrl);
   const hash = url.hash.substring(2);
@@ -207,7 +206,7 @@ function extractS3Url(inputUrl) {
   if (bucket && bucket !== 'null') {
     basePath = bucket; // e.g. "https://envicloud.wsl.ch/edna"
   } else {
-    basePath = 'https://os.zhdk.cloud.switch.ch/envicloud/';
+    basePath = 'https://os.zhdk.cloud.switch.ch/envicloud';
   }
 
   const s3DownloadUrl = bucket
@@ -217,8 +216,7 @@ function extractS3Url(inputUrl) {
   s3Store.s3Url = s3DownloadUrl;
 
   // Build final direct URL
-  const extractedUrl = `${basePath}?prefix=${prefix}&max-keys=100000&delimiter=/`;
-  console.log(extractedUrl);
+  const extractedUrl = `${basePath}/?prefix=${prefix}&max-keys=100000&delimiter=/`;
   baseUrl.value = extractedUrl;
 
   getData(baseUrl.value);

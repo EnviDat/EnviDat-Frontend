@@ -151,9 +151,8 @@ export const useS3Store = defineStore({
           childrenLoaded: false,
         },
       ];
-      // console.log(this.contentFromS3);
     },
-    // set the URL for download and vie all
+    // set the URL for download
     setUrl(url) {
       const cleanedBaseUrl = this.s3Url.replace(/\/$/, '');
       const cleanedUrl = url.replace(/^\//, '');

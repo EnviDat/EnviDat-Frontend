@@ -2,6 +2,7 @@ import { reactive, watch } from 'vue';
 import { AbstractBaseViewModel } from '@/factories/ViewModels/AbstractBaseViewModel.ts';
 
 export class DescriptionViewModel extends AbstractBaseViewModel{
+  maxTextLength: number;
 
   constructor(datasetDTO, smallScreen) {
     super(datasetDTO, DescriptionViewModel.mappingRules());

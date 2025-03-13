@@ -88,6 +88,8 @@ modify-env:
   needs:
     - set-vars
   before_script:
+    - if [ -z "$CI_COMMIT_REF_NAME" ]; then echo "CI_COMMIT_REF_NAME is empty!"; exit 1; fi
+    - echo "CI_COMMIT_REF_NAME is set to $CI_COMMIT_REF_NAME"
     - pip install --upgrade pip
     - pip install python-dotenv==0.19.*
   script:
@@ -99,17 +101,19 @@ modify-env:
       branch = os.getenv('CI_COMMIT_REF_NAME')
 
       key = 'VITE_DOMAIN'
-      value = f'http://{branch}.envidat.ch'
+      value = 'https://envidat04.wsl.ch'
+      
       if branch == 'main' or branch == 'beta':
           value = 'https://envidat.ch'
+      
       dotenv.set_key(file, key, value, quote_mode='never')
 
       key = 'VITE_API_ROOT'
-      value = f'http://{branch}.envidat.ch'
+      value = 'https://envidat04.wsl.ch'
+      
       if branch == 'main' or branch == 'beta':
           value = 'https://envidat.ch'
-      if branch == 'staging' or branch == 'develop':
-          value = 'http://envidat04.wsl.ch'
+
       dotenv.set_key(file, key, value, quote_mode='never')
 
       key = 'VITE_MATOMO_TOKEN'
@@ -200,6 +204,8 @@ run-tests:
         echo "node_modules directory not found. Should have got them from the install-node artifact!"
         ls -a
       fi
+    - ls node_modules/ -a
+    - ls node_modules/.bin/ -a
   script:
     - npm run test
   retry:
@@ -225,6 +231,8 @@ build-storybook:
         echo "node_modules directory not found. Should have got them from the install-node artifact!"
         ls -a
       fi
+    - ls node_modules/ -a
+    - ls node_modules/.bin/ -a
   script:
     # - npm config set cache .npm/
     # - npm cache verify || true
@@ -259,6 +267,8 @@ build-app:
         echo "node_modules directory not found. Should have got them from the install-node artifact!"
         ls -a
       fi
+    - ls node_modules/ -a
+    - ls node_modules/.bin/ -a
   script:
     - npm run build -- --logLevel warn
   artifacts:

@@ -62,6 +62,8 @@ module.exports = {
     'import/no-duplicates': 'error',
     'import/extensions': 'off',
     'import/order': 'warn',
-    'class-methods-use-this': 'off'
+    'class-methods-use-this': 'off',
+    'lines-between-class-members': 'off'
   },
 };
+
