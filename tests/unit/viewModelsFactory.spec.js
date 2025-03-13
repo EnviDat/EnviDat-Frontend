@@ -2,6 +2,7 @@ import { it, describe, expect } from 'vitest';
 import { createHeaderViewModel } from '@/factories/ViewModels/HeaderViewModel';
 import { EDITMETADATA_MAIN_HEADER } from '@/factories/eventBus';
 import { convertJSON } from '@/factories/mappingFactory';
+import { EditDatasetServiceLayer } from '@/factories/ViewModels/EditDatasetServiceLayer';
 
 import {
   METADATA_CONTACT_EMAIL,
@@ -9,8 +10,6 @@ import {
   METADATA_CONTACT_LASTNAME,
   METADATA_TITLE_PROPERTY,
 } from '@/factories/metadataConsts';
-
-import { EditDatasetServiceLayer } from '@/factories/ViewModels/EditDatasetServiceLayer';
 
 import metadatas from '../../stories/js/metadata';
 

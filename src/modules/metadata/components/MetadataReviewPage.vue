@@ -105,7 +105,7 @@ import { useReviewStore } from '@/modules/metadata/store/reviewStore';
 import { convertArrayToUrlString } from '@/factories/stringFactory';
 
 import { formatDate } from '@/factories/dateFactory';
-import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionViewModel';
+import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionViewModel.js';
 
 import MetadataHeader from './Metadata/MetadataHeader.vue';
 

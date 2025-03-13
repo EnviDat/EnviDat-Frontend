@@ -1,19 +1,21 @@
 import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
 import { createHeader, enhanceMetadatasTitleImage } from '@/factories/metaDataFactory';
-import { createHeaderViewModel } from '@/factories/ViewModels/HeaderViewModel';
+import { createHeaderViewModel } from '@/factories/ViewModels/HeaderViewModel.js';
 import { convertJSON } from '@/factories/mappingFactory';
 
 import metadata from './js/metadata';
 
 enhanceMetadatasTitleImage(metadata);
 
-const smallHeader = createHeader(metadata[0], true);
-const largeHeader = createHeader(metadata[3], false);
+const parsedDataset1 = convertJSON(metadata[0], false);
+const headerViewModel = createHeaderViewModel(parsedDataset1, true, 'primary', metadata[0].titleImg);
+
+
+const parsedDataset2 = convertJSON(metadata[3], false);
+const largeHeader = createHeaderViewModel(parsedDataset2, true, 'primary', metadata[3].titleImg);
+// const largeHeader = createHeader(metadata[3], false);
 const longAuthorsListHeader = createHeader(metadata[3], false);
 
-const parsedContent = convertJSON(metadata[0], false);
-
-const header1 = createHeaderViewModel(parsedContent, true);
 
 export default {
   title: '3 Datasets / 1 Views / Metadata Header',
@@ -31,7 +33,7 @@ export const PlaceHolder = {
 };
 
 export const ShortTitle = {
-  args: header1,
+  args: { ...headerViewModel },
   argTypes: {
     checkSize: { action: 'checkSize' },
     clickedTag: { action: 'clickedTag' },
