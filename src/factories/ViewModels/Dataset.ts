@@ -1,7 +1,9 @@
 import { watch } from 'vue';
 import { convertJSON } from '@/factories/mappingFactory';
 import type { DatasetDTO } from '@/types/modelTypes';
+import { EditDatasetServiceLayer } from '@/factories/ViewModels/EditDatasetServiceLayer';
 
+// @ts-ignore TS2420
 export class Dataset implements DatasetDTO {
 
   /**
@@ -21,17 +23,17 @@ export class Dataset implements DatasetDTO {
    */
   modelInSyncMap = new Map();
 
-  constructor(datasetBackend, serviceLayer) {
+  constructor(datasetBackend: unknown, serviceLayer: EditDatasetServiceLayer) {
     this.convertBackendDataset(datasetBackend);
     this.serviceLayer = serviceLayer;
   }
 
-  convertBackendDataset(datasetBackend) {
+  convertBackendDataset(datasetBackend: unknown) {
     const frontendJson = convertJSON(datasetBackend, false);
     Object.assign(this, frontendJson);
   }
 
-  subscribeToViewModels(viewModels) {
+  subscribeToViewModels(viewModels: Map<string, any>) {
 
     // eslint-disable-next-line no-unused-vars
     for (const [key, vm] of viewModels) {
