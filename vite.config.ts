@@ -177,6 +177,17 @@ export default ({ mode, config }) => {
                     return 'vendor_utils';
                   }
 
+                  if (id.includes('@mdi/js')) {
+                    return 'vendor_icons';
+                  }
+
+                  if (id.includes('vanilla-jsoneditor') ||
+                      id.includes('codemirror')
+                  ) {
+                    return 'vendor_jsoneditor';
+                  }
+
+
                   return 'vendors';
                 }
 
