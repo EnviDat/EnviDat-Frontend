@@ -167,7 +167,6 @@ import { extractIcons } from '@/factories/iconFactory';
 
 import {
   LANDING_PATH,
-  LANDING_PAGENAME,
   BROWSE_PATH,
   BROWSE_PAGENAME,
   REPORT_PATH,
