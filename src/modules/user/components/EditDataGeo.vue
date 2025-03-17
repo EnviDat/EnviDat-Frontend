@@ -72,7 +72,7 @@
               >
                 <v-col class="flex-grow-0 mr-4">
                   <BaseRectangleButton
-                    :color="$vuetify.theme.themes.light.colors.highlight"
+                    color="highlight"
                     buttonText="Upload File"
                     tooltipText="File Drop Also Possible"
                     tooltipPosition="top"
@@ -135,7 +135,7 @@
                 :disabled="!saveButtonEnabled"
                 :loading="saveButtonInProgress"
                 :icon="mdiContentSave"
-                :color="$vuetify.theme.themes.light.colors.primary"
+                color="primary"
                 buttonText="Save Changes"
                 tooltipText="Save the changes you have made"
                 iconColor="black"
