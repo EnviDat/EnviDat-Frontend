@@ -137,7 +137,7 @@
       <GenericFullScreenModal :auto-scroll="true" />
     </v-main>
     <div v-if="isLandingPage" class="scroll-icon">
-      <v-icon :size="46" class="mr-1" :color="'#000'">
+      <v-icon @click="scrollDown()" :size="46" class="mr-1" :color="'#000'">
         {{ iconScroll }}
       </v-icon>
       <p class="font-weight-bold">Scroll</p>
@@ -160,14 +160,13 @@
  */
 
 import { mapState, mapGetters } from 'vuex';
-import { getMonth } from 'date-fns';
+// import { getMonth } from 'date-fns';
 import { defineAsyncComponent } from 'vue';
 
 import { extractIcons } from '@/factories/iconFactory';
 
 import {
   LANDING_PATH,
-  LANDING_PAGENAME,
   BROWSE_PATH,
   BROWSE_PAGENAME,
   REPORT_PATH,
@@ -279,6 +278,14 @@ export default {
     this.updateActiveStateOnNavItems();
   },
   methods: {
+    scrollDown() {
+      const appContainer =
+        this.$refs.appContainer?.$el || this.$refs.appContainer;
+      if (appContainer) {
+        // TBD: define where to scroll to
+        appContainer.scrollTop += appContainer.scrollTop + 600;
+      }
+    },
     updateScroll() {
       const appContainer =
         this.$refs.appContainer?.$el || this.$refs.appContainer;
@@ -835,10 +842,14 @@ export default {
       display: block;
       left: 50%;
     }
+    &:hover {
+      cursor: pointer;
+    }
   }
 }
 
 #app-container.hide-after .scroll-icon {
   opacity: 0;
+  z-index: -1;
 }
 </style>
