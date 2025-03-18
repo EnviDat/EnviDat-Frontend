@@ -11,7 +11,7 @@
  */
 
 import BarChart from '@/components/Charts/BarChart.vue';
-import { getOrgaDatasetsMap, organizationSeries } from '@/factories/organizationFactory';
+import { getOrgaDatasetsMap, getResearchUnitDatasetSeries, organizationSeries } from '@/factories/organizationFactory';
 
 import metadataFile from './testdata/packagelist.json'
 
@@ -48,6 +48,19 @@ const labels = [
 */
 ];
 
+const basicOptions = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: 'bottom',
+    },
+    title: {
+      display: true,
+      text: 'Chart.js Bar Chart',
+    },
+  },
+};
+
 export const Basic = {
   args: {
     data: {
@@ -70,18 +83,7 @@ export const Basic = {
         },
       ],
     },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          position: 'bottom',
-        },
-        title: {
-          display: true,
-          text: 'Chart.js Bar Chart',
-        },
-      },
-    },
+    options: basicOptions,
   },
 }
 
@@ -155,5 +157,16 @@ export const StackedOrgasDatasetPerYear = {
       datasets: series,
     },
     options: stackedOptions,
+  },
+}
+
+const datasetEntry = orgaDatasetMap.get('lwf');
+const tempOrgaDatasetMap = new Map([['lwf', datasetEntry]])
+const orgaDatasetSeries = getResearchUnitDatasetSeries(tempOrgaDatasetMap);
+
+export const OrgaDatasetHistory = {
+  args: {
+    data: orgaDatasetSeries,
+    options: basicOptions,
   },
 }

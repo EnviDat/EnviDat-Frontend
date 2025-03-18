@@ -1,4 +1,5 @@
 import { toRaw } from 'vue';
+import { DatasetDTO, DatasetOrganizationMapEntry, OrganizationDTO } from '@/types/modelTypes';
 
 const toPascalCase = (text, trimSpace=false) => text.split(' ').map((t) => t[0].toUpperCase() + t.slice(1).toLowerCase()).join(trimSpace?'':' ');
 
@@ -11,9 +12,9 @@ const ruBarColors = () => {
   return barColors.reverse();
 }
 
-export const getYearDatasetMap = (datasets) => {
+export const getYearDatasetMap = (datasets: DatasetDTO[]) => {
 
-  const yearMap = new Map();
+  const yearMap: Map<string, DatasetDTO[]> = new Map();
 
   for (const dSet of datasets) {
 
@@ -41,7 +42,7 @@ export const getYearDatasetMap = (datasets) => {
   return yearMap;
 }
 
-export const getTopOraganizations = (orgas) => {
+export const getTopOrganizations = (orgas: OrganizationDTO[]) => {
 
   const top = [];
 
@@ -55,7 +56,7 @@ export const getTopOraganizations = (orgas) => {
 }
 
 export const getOrgaDatasetsMap = (datasets, groupForResearchUnit = false) => {
-  const datasetMap = new Map();
+  const datasetMap: Map<string, DatasetOrganizationMapEntry> = new Map();
 
   for (let i = 0; i < datasets.length; i++) {
     const dataset = datasets[i];
@@ -80,7 +81,7 @@ export const getOrgaDatasetsMap = (datasets, groupForResearchUnit = false) => {
           name: dataset.organization.name,
           title: dataset.organization.title,
 */
-        });
+        } as DatasetOrganizationMapEntry);
       }
     }
   }
@@ -96,7 +97,7 @@ export const getOrgaDatasetsMap = (datasets, groupForResearchUnit = false) => {
   return datasetMap;
 }
 
-export const organizationSeries = (orgaDatasetsMap, yearLabels) => {
+export const organizationSeries = (orgaDatasetsMap : Map<string, DatasetOrganizationMapEntry>, yearLabels) => {
 
   const series = [];
   const keys = Array.from(orgaDatasetsMap.keys());
@@ -167,9 +168,9 @@ export function enhanceDatasetWithResearchUnit(datasets, researchUnits) {
 }
 
 
-export function getOrganizationRelationMap(organizations) {
+export function getOrganizationRelationMap(organizations : OrganizationDTO[]) {
 
-  const organizationRelationMap = new Map();
+  const organizationRelationMap : Map<string, OrganizationDTO[]> = new Map();
 
   if (!organizations) {
     return organizationRelationMap;
@@ -266,7 +267,11 @@ function getTreeItem(organizationRelationMap, organizationDatasetMap, organizati
   return item;
 }
 
-export function getOrganizationTree(topOrganizations, organizationRelationMap, organizationDatasetMap = undefined) {
+export function getOrganizationTree(
+  topOrganizations,
+  organizationRelationMap : Map<string, OrganizationDTO[]>,
+  organizationDatasetMap : Map<string, DatasetOrganizationMapEntry> = undefined,
+) {
 
   // const orgaNames = Array.from(organizationRelationMap.keys()).sort();
   const organizations = topOrganizations.sort();
@@ -319,6 +324,26 @@ export function getOrganizationTree(topOrganizations, organizationRelationMap, o
   return treeItems;
 }
 
+export const organizationDatasetHistoryOptions = {
+  plugins: {
+    title: {
+      display: true,
+      text: 'Dataset Publication History',
+    },
+    legend: {
+      position: 'top',
+    },
+    datalabels: {
+      color: '#d9f3f3',
+      textStrokeColor: '#222222',
+      textStrokeWidth: 2,
+    },
+  },
+  animations: {
+    colors: 'show',
+  },
+  responsive: true,
+}
 
 export const researchUnitDatasetChartOptions = {
   plugins: {
@@ -349,7 +374,7 @@ export const researchUnitDatasetChartOptions = {
   },
 }
 
-export const getResearchUnitDatasetSeries = (orgaDatasetsMap) => {
+export const getResearchUnitDatasetSeries = (orgaDatasetsMap : Map<string, DatasetOrganizationMapEntry>) => {
   if (!orgaDatasetsMap) {
     return {
       labels: [],
@@ -376,4 +401,31 @@ export const getResearchUnitDatasetSeries = (orgaDatasetsMap) => {
     labels: yearsSorted,
     datasets: series,
   };
+}
+
+export function getOrganizationFromRelationMap(orgaNameToFind :string, orgaRelationMap : Map<string, OrganizationDTO[]>) : OrganizationDTO | null {
+
+  if (!orgaNameToFind || !orgaRelationMap) {
+    return null;
+  }
+
+  const orgaNames = Array.from(orgaRelationMap.keys());
+
+  for (let i = 0; i < orgaNames.length; i++) {
+    const orgaName = orgaNames[i];
+
+    const childOrgas = orgaRelationMap.get(orgaName);
+
+    if (childOrgas.length > 0) {
+      for (let j = 0; j < childOrgas.length; j++) {
+        const childOrga = childOrgas[j];
+
+        if (childOrga.name === orgaNameToFind) {
+          return childOrga;
+        }
+      }
+    }
+  }
+
+  return null;
 }

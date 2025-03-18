@@ -21,6 +21,7 @@ const datasetTitle = 'Lens, Switzerland: Long-term forest meteorological data fr
 
 export default {
   title: '6 Workflows / NavigationStepper',
+  component: NavigationStepper,
 };
 
 

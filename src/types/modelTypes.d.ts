@@ -156,3 +156,14 @@ export interface UserModel {
   sysAdmin: boolean;
   state: string;
 }
+
+export interface DatasetOrganizationMapEntry {
+  count: number;
+  datasets: DatasetDTO[];
+  yearMap: Map<string, DatasetDTO[]>;
+/*
+          organization: dataset.organization,
+          name: dataset.organization.name,
+          title: dataset.organization.title,
+*/
+}

@@ -16,7 +16,7 @@ import {
   getOrgaDatasetsMap,
   getOrganizationRelationMap,
   getOrganizationTree,
-  getTopOraganizations,
+  getTopOrganizations,
 } from '@/factories/organizationFactory';
 
 import metadatas from '@/../public/packagelist.json';
@@ -25,7 +25,7 @@ import testOrganizations from './js/organizations';
 
 const datasets = enhanceDatasetWithResearchUnit(metadatas.result, researchUnits);
 const orgaMap = getOrganizationRelationMap(testOrganizations);
-const topOrgas = getTopOraganizations(testOrganizations);
+const topOrgas = getTopOrganizations(testOrganizations);
 const orgaDatasetsMap = getOrgaDatasetsMap(datasets);
 const organizationsTree = getOrganizationTree(topOrgas, orgaMap, orgaDatasetsMap);
 
