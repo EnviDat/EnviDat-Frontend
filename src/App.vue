@@ -160,7 +160,6 @@
  */
 
 import { mapState, mapGetters } from 'vuex';
-// import { getMonth } from 'date-fns';
 import { defineAsyncComponent } from 'vue';
 
 import { extractIcons } from '@/factories/iconFactory';
