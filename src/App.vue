@@ -283,7 +283,7 @@ export default {
         this.$refs.appContainer?.$el || this.$refs.appContainer;
       if (appContainer) {
         // TBD: define where to scroll to
-        appContainer.scrollTop += appContainer.scrollTop + 600;
+        appContainer.scrollTop += 600;
       }
     },
     updateScroll() {
