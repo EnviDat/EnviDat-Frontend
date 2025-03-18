@@ -103,7 +103,6 @@ import {
 import {
   BROWSE_PATH,
   METADATADETAIL_PATH,
-  METADATAEDIT_PAGENAME,
   USER_DASHBOARD_PATH,
   USER_SIGNIN_PAGENAME,
 } from '@/router/routeConsts';
