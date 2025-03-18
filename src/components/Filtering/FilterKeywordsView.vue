@@ -102,7 +102,7 @@ import TagChip from '@/components/Chips/TagChip.vue';
 import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder.vue';
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import { createTag } from '@/factories/keywordsFactory';
-import { isTagSelected } from '@/factories/metaDataFactory.js';
+import { isTagSelected } from '@/factories/metaDataFactory';
 
 export default {
   name: 'FilterKeywordsView',

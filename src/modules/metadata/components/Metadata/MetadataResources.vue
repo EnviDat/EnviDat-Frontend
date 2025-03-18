@@ -92,13 +92,12 @@
       <v-row no-gutters>
         <v-col
           v-for="res in availableResources"
-          :key="res.id"
+          :key="`${res.id}_${res.name}`"
           cols="12"
           :sm="setSmGrid"
           class="pa-2"
         >
           <ResourceCard
-            :key="res.id"
             :id="res.id"
             :description="res.description"
             :url="res.url"
