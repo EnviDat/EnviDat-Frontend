@@ -632,15 +632,14 @@ export default {
 
       }
 
-
-        this.MetadataResources.props = {
-          ...this.resourceData,
-          dataLicenseId: license.id,
-          dataLicenseTitle: license.title,
-          dataLicenseUrl: license.url,
-          resourcesConfig: this.resourcesConfig,
-          showPlaceholder: this.showPlaceholder,
-        };
+      this.MetadataResources.props = {
+        ...this.resourceData,
+        dataLicenseId: license.id,
+        dataLicenseTitle: license.title,
+        dataLicenseUrl: license.url,
+        resourcesConfig: this.resourcesConfig,
+        showPlaceholder: this.showPlaceholder,
+      };
     },
     setMetadataContent() {
       this.configInfos = getConfigUrls(this.configInfos);

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import ResourceDataViz from '@/modules/charts/components/ResourceDataViz.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import { DataVizSupportedExtensions } from '@/modules/charts/middelware/chartServiceLayer.ts';
@@ -31,6 +31,8 @@ const allowedFormatText = () : string => {
   return text;
 }
 
+const hasResources = computed(() => resources?.length > 0);
+
 </script>
 
 <template>
@@ -43,14 +45,11 @@ const allowedFormatText = () : string => {
 
     <v-card-text>
       <v-row>
-        <v-col v-if="!resources"
-               cols="3">
+        <v-col v-if="!hasResources" >
           {{ allowedFormatText() }}
         </v-col>
 
-        <v-col v-if="resources"
-               cols="8">
-
+        <v-col v-if="hasResources" >
           <v-row>
             <v-col>
               Select a resource for Visualization
@@ -74,7 +73,7 @@ const allowedFormatText = () : string => {
         </v-col>
       </v-row>
 
-      <v-row>
+      <v-row v-if="hasResources" >
         <v-col >
           <ResourceDataViz :resource="resources ? resources[selectedId] : undefined"/>
         </v-col>
