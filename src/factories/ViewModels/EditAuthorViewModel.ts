@@ -1,10 +1,23 @@
 import { reactive, watch } from 'vue';
 import { AbstractBaseViewModel } from '@/factories/ViewModels/AbstractBaseViewModel.ts';
-import { Author, DatasetDTO } from '@/types/modelTypes';
+import { Author, DataCreditObject, DatasetDTO } from '@/types/modelTypes';
 import { convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
 
 
 export class EditAuthorViewModel extends AbstractBaseViewModel{
+
+  declare firstName: string;
+  declare lastName: string;
+  declare email: string;
+
+  declare dataCredit: any[];
+  declare totalDataCredits: DataCreditObject;
+
+  declare identifierType: string;
+  declare identifier: string;
+
+  declare affiliation: string;
+  declare lastModified: string;
 
   constructor(dataset: DatasetDTO) {
     super(dataset, EditAuthorViewModel.mappingRules());
@@ -19,6 +32,7 @@ export class EditAuthorViewModel extends AbstractBaseViewModel{
 
     author.totalDataCredits = { collection: 0, curation: 0, publication: 0, software: 0, supervision: 0, validation: 0 };
     author.lastModified = lastModified;
+
     return author;
   }
 

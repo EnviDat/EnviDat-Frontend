@@ -92,14 +92,13 @@
       <v-row no-gutters>
         <v-col
           v-for="res in availableResources"
-          :key="res.id"
+          :key="`${res.id}_${res.name}`"
           cols="12"
           :sm="setSmGrid"
           class="pa-2"
         >
           <ResourceCard
             v-bind="res"
-            :key="res.id"
             :downloadActive="resourcesConfig?.downloadActive"
             :showGenericOpenButton="!!res.openEvent"
             :genericOpenButtonBottom="true"

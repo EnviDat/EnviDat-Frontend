@@ -306,7 +306,7 @@ import { useS3Store } from '@/modules/s3/store/s3Store';
 import SparkChart from '@/components/Charts/SparkChart.vue';
 
 import { renderMarkdown, stripMarkdown } from '@/factories/stringFactory';
-import { formatBytes } from '@/factories/metaDataFactory';
+import { formatBytes, getResourceName } from '@/factories/metaDataFactory';
 import { EDIT_METADATA_DOI_LABEL } from '@/factories/metadataConsts';
 import { getFileIcon } from '@/factories/imageFactory';
 
@@ -437,14 +437,7 @@ export default {
       return formatDate(this.lastModified) || this.lastModified;
     },
     resourceName() {
-      let name = this.name ?? 'Unnamed resource';
-
-      const isUrl = !this.name && !!this.url;
-      if (isUrl) {
-        const splits = this.url.split('/');
-        name = splits[splits.length - 1];
-      }
-      return this.deprecated ? `[DEPRECATED] - ${name}` : name;
+      return getResourceName(this);
     },
     scrollbarColorFront() {
       return this.$vuetify
