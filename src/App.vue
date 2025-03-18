@@ -244,7 +244,7 @@ export default {
     // all users get any changes in the config and version updates
     setInterval(() => {
       this.$store.dispatch(SET_CONFIG);
-    }, 300000); // 1000 * 60 * 5 = 5 minutes
+    }, 30000); // 1000 * 3 = 30 seconds
   },
   created() {
     eventBus.on(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);

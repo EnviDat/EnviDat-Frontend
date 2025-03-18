@@ -5,6 +5,8 @@ import { EditAuthorViewModel } from '@/factories/ViewModels/EditAuthorViewModel.
 
 export class AuthorsViewModel extends AbstractBaseViewModel{
 
+  declare authors: Author[];
+
   constructor(dataset: DatasetDTO) {
     // don't provide dataset and mapping rules because authors
     // would get partially unpacked and then the unpacking of the full list
@@ -13,8 +15,6 @@ export class AuthorsViewModel extends AbstractBaseViewModel{
 
     this.authors = AuthorsViewModel.getFormattedAuthors(dataset.author, dataset.metadata_modified);
   }
-
-  authors: Author[];
 
   static getFormattedAuthors(rawAuthors: any[], lastModified: string) : Author[] {
     const formattedAuthors : Author[] = [];

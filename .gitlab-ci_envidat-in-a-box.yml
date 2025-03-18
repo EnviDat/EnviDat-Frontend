@@ -46,7 +46,7 @@ build-box-app:
   image: node:20.15.0-alpine3.20
   environment: $CI_COMMIT_REF_NAME  
   extends:
-    - .trigger-rules
+    - .normal-rules
   # image: node:18.18.2-alpine3.17
   needs:
     # needs environment variables from the frontend in a box setup
@@ -67,7 +67,7 @@ combine-box-builds:
   stage: build
   image: alpine:3.20
   environment: $CI_COMMIT_REF_NAME  
-  extends: .trigger-rules
+  extends: .normal-rules
   variables:
     GIT_STRATEGY: none
   needs:
@@ -94,7 +94,7 @@ publish-box-build:
   stage: deploy
   image: alpine:3.20
   environment: $CI_COMMIT_REF_NAME  
-  extends: .trigger-rules
+  extends: .normal-rules
   variables:
     GIT_STRATEGY: none
     BOX_BUILD_ZIP_NAME: 'frontend-in-a-box.zip'

@@ -23,7 +23,7 @@ import metadata from './js/metadata';
 import { toRefs } from 'vue';
 
 export default {
-  title: '3 Dataset / 1 Views / Metadata Description',
+  title: '3 Datasets / 1 Views / Metadata Description',
   component: MetadataDescription,
 };
 
