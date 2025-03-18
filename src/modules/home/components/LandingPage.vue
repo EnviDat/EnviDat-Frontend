@@ -245,9 +245,47 @@ const defaultWelcomeInfo = ref({
     'Have a look at one of these categories or sign in to upload your data',
   articlesTitle: 'Recent EnviDat Blog Articles',
   newsTitle: 'News From The EnviDat Team',
-  infoTitle: 'How it works?',
+  infoTitle: 'How does EnviDat work?',
   categoriesTitle: 'Research Data Categories',
   datasetsTitle: 'Recently Published Research Datasets',
+  showContact: {
+    contactActive: true,
+  },
+  infoConfig: {
+    infoActive: true,
+    info: [
+      {
+        title: 'Designed for researcher needs',
+        subtitle:
+          'EnviDat is a user-friendly and open-source platform, specifically designed to meet the needs of researchers for storing, managing, and publishing environmental datasets. It provides structured metadata, integration with international data repositories, and long-term accessibility to support open science and reproducible research.',
+        icon: 'heart',
+        points: [],
+        image: '',
+        action: '/new',
+        actionTitle: 'Create Dataset',
+      },
+      {
+        title: 'FAIR data repository',
+        subtitle:
+          "EnviDat is supporting environmental researchers to share data according to the Findability, Accessibility, Interoperability, and Reusability (FAIR) principles. EnviDat is registered in <a href='https://fairsharing.org/biodbcore-001178/'>FAIRsharing.org</a> and <a href='https://www.re3data.org/repository/r3d100012587'>re3data.org</a> to enhance scientific collaboration and ensure that datasets remain discoverable and reusable by the global research community.",
+        icon: 'protected',
+        points: [],
+        image: '',
+        action:
+          'https://www.ub.uzh.ch/en/wissenschaftlich-arbeiten/mit-daten-arbeiten/FAIR-und-Open-Data.html',
+      },
+      {
+        title: 'Connected to the world',
+        subtitle:
+          "EnviDat disseminates its datasets globally in order to promote international research cooperation in the field of environmental science. EnviDat datasets are listed in the <a href='https://search.earthdata.nasa.gov/search?fdc=WSL&ac=true'>NASA EarthData portal</a>, the data.europa.eu <a href='https://data.europa.eu/data/datasets?country=ch&publisher=EnviDat'>European Open Data portal</a>, <a href='https://b2find9.cloud.dkrz.de/organization/envidat'>European Open Science Cloud Hub</a>, <a href='https://commons.datacite.org/doi.org?query=client.uid:ethz.wsl'>DataCite</a>, or <a href='https://opendata.swiss/en/organization/envidat'>opendata.swiss</a> so that scientific data is found and cited.",
+        icon: 'world',
+        points: [],
+        image: '',
+        action: '/browse',
+        actionTitle: 'Browse all datasets',
+      },
+    ],
+  },
 });
 
 // beforeCreate

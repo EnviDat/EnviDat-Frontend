@@ -13,43 +13,61 @@
  */
 
 import NavigationStepper from '@/components/Navigation/NavigationStepper.vue';
-import { metadataEditingSteps } from '@/factories/workflowEditing';
+import { metadataCreationSteps } from '@/factories/workflowCreation';
 import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
 const datasetTitle = 'Lens, Switzerland: Long-term forest meteorological data from the Long-term Forest Ecosystem Research Programme (LWF), from 1997 onwards';
 
 export default {
-  title: '6 Workflows / Editing Workflow',
+  title: '6 Workflows / Creation Workflow',
   component: NavigationStepper,
 };
 
 
-export const EditingSteps = {
+export const CreationSteps = {
   args: {
-    steps: metadataEditingSteps,
-    initialStepTitle: metadataEditingSteps[0].title,
+    steps: metadataCreationSteps,
+    initialStepTitle: metadataCreationSteps[0].title,
     datasetTitle,
+    isCreationWorkflow: true,
+    showProgress: true,
   },
 }
 
-export const EditingStepsLoading = {
+export const CreationStepsMessage = {
   args: {
-    ...EditingSteps.args,
+    ...CreationSteps.args,
+    message: 'Saved successfull',
+    messageDetails: 'Saved Metadataheader',
+  },
+}
+
+export const CreationStepsError = {
+  args: {
+    ...CreationSteps.args,
+    error: 'Network Error',
+    errorDetails: 'Could not save the dataset',
+  },
+}
+
+export const CreationStepsLoading = {
+  args: {
+    ...CreationSteps.args,
     loading: true,
   },
 }
 
-export const MobileEditingSteps = {
-  args: EditingSteps.args,
+export const MobileCreationSteps = {
+  args: CreationSteps.args,
   parameters: mobileViewportParams,
 }
 
-export const LargeMobileEditingSteps = {
-  args: EditingSteps.args,
+export const LargeMobileCreationSteps = {
+  args: CreationSteps.args,
   parameters: mobileLargeViewportParams,
 }
 
-export const TabletEditingSteps = {
-  args: EditingSteps.args,
+export const TabletCreationSteps = {
+  args: CreationSteps.args,
   parameters: tabletViewportParams,
 }

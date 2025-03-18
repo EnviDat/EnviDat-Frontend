@@ -66,10 +66,7 @@ import {
   USER_SIGNIN,
   ACTION_USER_SIGNOUT_REVOKE_TOKEN,
 } from '@/modules/user/store/userMutationsConsts';
-import {
-  USER_DASHBOARD_PATH,
-  USER_SIGNIN_PAGENAME,
-} from '@/router/routeConsts';
+import { USER_DASHBOARD_PATH } from '@/router/routeConsts';
 
 import SigninView from './SigninView.vue';
 

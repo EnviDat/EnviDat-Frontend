@@ -97,7 +97,7 @@
         "icon": "heart",
         "points": [],
         "image": "",
-        "action": "/signin",
+        "action": "/new",
         "actionTitle": "Create Dataset"
       },
       {

@@ -16,6 +16,8 @@ import { getFilesWithPrefix } from './src/factories/enhancementsFactoryNode.js';
 
 const version = process.env.npm_package_version;
 
+const useHttps = process.env.VITE_USE_HTTPS === 'true';
+
 export default ({ mode, config }) => {
   const isProd = mode === 'production';
   const isDev = mode === 'development';
@@ -181,12 +183,12 @@ export default ({ mode, config }) => {
                     return 'vendor_icons';
                   }
 
-                  if (id.includes('vanilla-jsoneditor') ||
-                      id.includes('codemirror')
+                  if (
+                    id.includes('vanilla-jsoneditor') ||
+                    id.includes('codemirror')
                   ) {
                     return 'vendor_jsoneditor';
                   }
-
 
                   return 'vendors';
                 }
@@ -202,27 +204,33 @@ export default ({ mode, config }) => {
           }
         : {},
     },
-    server: isDev ? {
-      host: '0.0.0.0',
-      port: 8080,
-      allowedHosts: ['dev.envidat04.wsl.ch:8080'],
-      https: {
-        key: fs.readFileSync(path.resolve(__dirname, 'certs/key.pem')),
-        cert: fs.readFileSync(path.resolve(__dirname, 'certs/cert.pem')),
-      },
-      proxy: {
-        '/api': {
-          target: 'https://statistics.wsl.ch',
-          changeOrigin: true,
-          rewrite: (proxyPath) => proxyPath.replace(/^\/api/, ''),
-        },
-        // '/envidat04': {
-        //   target: 'https://envidat04.wsl.ch',
-        //   changeOrigin: true,
-        //   secure: true,
-        //   rewrite: (proxyPath) => proxyPath.replace(/^\/envidat04/, ''),
-        // },
-      },
-    } : {},
+    server: isDev
+      ? {
+          host: '0.0.0.0',
+          port: 8080,
+          allowedHosts: ['dev.envidat04.wsl.ch:8080'],
+          https: useHttps
+            ? {
+                key: fs.readFileSync(path.resolve(__dirname, 'certs/key.pem')),
+                cert: fs.readFileSync(
+                  path.resolve(__dirname, 'certs/cert.pem'),
+                ),
+              }
+            : false,
+          proxy: {
+            '/api': {
+              target: 'https://statistics.wsl.ch',
+              changeOrigin: true,
+              rewrite: (proxyPath) => proxyPath.replace(/^\/api/, ''),
+            },
+            // '/envidat04': {
+            //   target: 'https://envidat04.wsl.ch',
+            //   changeOrigin: true,
+            //   secure: true,
+            //   rewrite: (proxyPath) => proxyPath.replace(/^\/envidat04/, ''),
+            // },
+          },
+        }
+      : {},
   });
 };

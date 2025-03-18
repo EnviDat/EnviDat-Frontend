@@ -47,8 +47,8 @@
 <script setup>
 import { ref, computed, watch } from 'vue';
 import { useDisplay } from 'vuetify';
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import { mdiMagnify } from '@mdi/js';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 
 const props = defineProps({
   labelText: {
