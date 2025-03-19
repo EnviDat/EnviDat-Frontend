@@ -132,17 +132,17 @@
             <v-col cols="12"
                    sm="6">
 
-              <v-text-field ref="contactGivenName"
+              <v-text-field ref="contactFirstName"
                             :id="METADATA_CONTACT_FIRSTNAME"
-                            :label="labels.labelContactGivenName"
+                            :label="labels.labelContactFirstName"
                             :error-messages="validationErrors[METADATA_CONTACT_FIRSTNAME]"
                             :readonly="isContactPropertyReadOnly(METADATA_CONTACT_FIRSTNAME)"
                             hide-details="auto"
                             persistent-hint
                             :hint="contactPropertyHint(METADATA_CONTACT_FIRSTNAME)"
                             :prepend-icon="mdiAccount"
-                            :placeholder="labels.placeholderContactGivenName"
-                            :model-value="contactGivenNameField"
+                            :placeholder="labels.placeholderContactFirstName"
+                            :model-value="contactFirstNameField"
                             @keyup="blurOnEnterKey"
                             @focusin="focusIn($event)"
                             @focusout="focusOut(METADATA_CONTACT_FIRSTNAME, $event)"
@@ -155,17 +155,17 @@
                    sm="6"
                    class="pl-sm-4">
 
-              <v-text-field ref="contactSurname"
+              <v-text-field ref="contactLastName"
                             :id="METADATA_CONTACT_LASTNAME"
-                            :label="labels.labelContactSurname"
+                            :label="labels.labelContactLastName"
                             :error-messages="validationErrors[METADATA_CONTACT_LASTNAME]"
                             :readonly="isContactPropertyReadOnly(METADATA_CONTACT_LASTNAME)"
                             hide-details="auto"
                             persistent-hint
                             :hint="contactPropertyHint(METADATA_CONTACT_LASTNAME)"
                             :prepend-icon="mdiAccount"
-                            :placeholder="labels.placeholderContactSurname"
-                            :model-value="contactSurnameField"
+                            :placeholder="labels.placeholderContactLastName"
+                            :model-value="contactLastNameField"
                             @keyup="blurOnEnterKey"
                             @focusin="focusIn($event)"
                             @focusout="focusOut(METADATA_CONTACT_LASTNAME, $event)"
@@ -321,11 +321,11 @@ export default {
       type: String,
       default: '',
     },
-    contactGivenName: {
+    contactFirstName: {
       type: String,
       default: '',
     },
-    contactSurname: {
+    contactLastName: {
       type: String,
       default: '',
     },
@@ -401,14 +401,14 @@ export default {
         return this.previews[METADATA_TITLE_PROPERTY] !== null ? this.previews[METADATA_TITLE_PROPERTY] : this.metadataTitle;
       },
     },
-    contactGivenNameField: {
+    contactFirstNameField: {
       get() {
-        return this.previews[METADATA_CONTACT_FIRSTNAME] !== null ? this.previews[METADATA_CONTACT_FIRSTNAME] : this.contactGivenName;
+        return this.previews[METADATA_CONTACT_FIRSTNAME] !== null ? this.previews[METADATA_CONTACT_FIRSTNAME] : this.contactFirstName;
       },
     },
-    contactSurnameField: {
+    contactLastNameField: {
       get() {
-        return this.previews[METADATA_CONTACT_LASTNAME] !== null ? this.previews[METADATA_CONTACT_LASTNAME] : this.contactSurname;
+        return this.previews[METADATA_CONTACT_LASTNAME] !== null ? this.previews[METADATA_CONTACT_LASTNAME] : this.contactLastName;
       },
     },
     contactEmailField: {
@@ -441,8 +441,8 @@ export default {
     metadataPreviewEntry() {
 
       const fullName = getAuthorName({
-        firstName: this.contactGivenNameField,
-        lastName: this.contactSurnameField,
+        firstName: this.contactFirstNameField,
+        lastName: this.contactLastNameField,
       });
 
       const previewEntry = {
@@ -615,7 +615,7 @@ export default {
       }
 
       // default to filling all the infos from the text-field input
-      let contactObject = createContact(this.contactGivenNameField, this.contactSurnameField, this.contactEmailField);
+      let contactObject = createContact(this.contactFirstNameField, this.contactLastNameField, this.contactEmailField);
 
       if (property === METADATA_CONTACT_EMAIL) {
         if (isFieldValid(property, value, this.validations, this.validationErrors)) {
@@ -708,8 +708,8 @@ export default {
       labelTitle: EDIT_METADATA_TITLE_LABEL,
       labelUrl: EDIT_METADATA_URL_LABEL,
       labelContactEmail: 'Contact Email',
-      labelContactGivenName: 'Contact Given Name',
-      labelContactSurname: 'Contact Surname',
+      labelContactFirstName: 'Contact First Name',
+      labelContactLastName: 'Contact Last Name',
       instructions: 'The header is part of the main metadata information.' +
           ` Together with the other information in the "${EDIT_STEP_TITLE_MAIN_METADATA}" step, it represents the core information for your research dataset.`,
       instructions2: 'Enter a title for your research dataset. Please make sure that title is meaningful and specific.',
@@ -721,8 +721,8 @@ export default {
       placeholderUrl: 'Change the url for your dataset',
       placeholderHeaderTitle: 'Your Metadata Title',
       placeholderContactEmail: 'Enter contact email address',
-      placeholderContactGivenName: 'Enter contact given (first) name',
-      placeholderContactSurname: 'Enter contact surname name',
+      placeholderContactFirstName: 'Enter contact first name',
+      placeholderContactLastName: 'Enter contact last name',
       previewText: 'Metadata Header Preview',
       authorDropdown: 'Click here and start typing to select an existing EnviDat author',
       authorPickHint: 'Start typing the name in the text field to search for an author.',

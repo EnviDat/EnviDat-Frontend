@@ -101,8 +101,8 @@ const JSONFrontendBackendRules = {
     [METADATA_TITLE_PROPERTY,'title'],
     [METADATA_URL_PROPERTY,'name'],
     [METADATA_CONTACT_EMAIL,'maintainer.email'],
-    [METADATA_CONTACT_FIRSTNAME,'maintainer.given_name'],
-    [METADATA_CONTACT_LASTNAME,'maintainer.name'],
+    ['contactFirstName','maintainer.given_name'],
+    ['contactLastName','maintainer.name'],
     ['license','license_title'],
   ],
   [EDITMETADATA_MAIN_DESCRIPTION]: [

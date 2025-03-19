@@ -12,17 +12,26 @@ import { DatasetDTO } from '@/types/modelTypes';
 
 export class EditHeaderViewModel extends AbstractBaseViewModel{
 
+  declare metadataTitle: string;
+  declare metadataUrl: string;
+
+  declare contactEmail: string;
+  declare contactFirstName: string;
+  declare contactLastName: string;
+
+  declare license: string;
+
   constructor(dataset: DatasetDTO) {
     super(dataset, EditHeaderViewModel.mappingRules());
   }
 
   static mappingRules () {
     return [
-      [METADATA_TITLE_PROPERTY,'title'],
-      [METADATA_URL_PROPERTY,'name'],
-      [METADATA_CONTACT_EMAIL,'maintainer.email'],
-      [METADATA_CONTACT_FIRSTNAME,'maintainer.given_name'],
-      [METADATA_CONTACT_LASTNAME,'maintainer.name'],
+      ['metadataTitle','title'],
+      ['metadataUrl','name'],
+      ['contactEmail','maintainer.email'],
+      ['contactFirstName','maintainer.given_name'],
+      ['contactLastName','maintainer.name'],
       ['license','license_title'],
     ];
   }

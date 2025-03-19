@@ -418,6 +418,8 @@ export function createResources(
         signedInUserOrganizationIds,
       );
       // numberOfDownload,
+
+      // @ts-ignore
       res.metadataContact = contactEmail;
 
       resources.push(res);
