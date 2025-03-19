@@ -1,5 +1,5 @@
 import { reactive, watch } from 'vue';
-import { Author, DatasetDTO } from '@/types/modelTypes';
+import { Author, AuthorDTO, DatasetDTO } from '@/types/modelTypes';
 import { AbstractBaseViewModel } from '@/factories/ViewModels/AbstractBaseViewModel.ts';
 import { EditAuthorViewModel } from '@/factories/ViewModels/EditAuthorViewModel.ts';
 
@@ -16,7 +16,7 @@ export class AuthorsViewModel extends AbstractBaseViewModel{
     this.authors = AuthorsViewModel.getFormattedAuthors(dataset.author, dataset.metadata_modified);
   }
 
-  static getFormattedAuthors(rawAuthors: any[], lastModified: string) : Author[] {
+  static getFormattedAuthors(rawAuthors: AuthorDTO[], lastModified: string) : Author[] {
     const formattedAuthors : Author[] = [];
 
     for (let i = 0; i < rawAuthors.length; i++) {

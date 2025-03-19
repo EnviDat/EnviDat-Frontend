@@ -2,6 +2,7 @@ import { watch } from 'vue';
 import { convertJSON } from '@/factories/mappingFactory';
 import type { DatasetDTO } from '@/types/modelTypes';
 import { EditDatasetServiceLayer } from '@/factories/ViewModels/EditDatasetServiceLayer';
+import { AbstractBaseViewModel } from '@/factories/ViewModels/AbstractBaseViewModel.ts';
 
 // @ts-ignore TS2420
 export class Dataset implements DatasetDTO {
@@ -12,7 +13,7 @@ export class Dataset implements DatasetDTO {
    */
   subscribers = [];
 
-  serviceLayer : EditDatasetServiceLayer;
+  declare serviceLayer : EditDatasetServiceLayer;
 
   /**
    * Map to keep reference of models that are being updated from the backend
@@ -21,7 +22,7 @@ export class Dataset implements DatasetDTO {
    *
    * @type {Map<string, boolean>}
    */
-  modelInSyncMap = new Map();
+  modelInSyncMap = new Map<string, boolean>();
 
   constructor(datasetBackend: unknown, serviceLayer: EditDatasetServiceLayer) {
     this.convertBackendDataset(datasetBackend);
@@ -33,7 +34,7 @@ export class Dataset implements DatasetDTO {
     Object.assign(this, frontendJson);
   }
 
-  subscribeToViewModels(viewModels: Map<string, any>) {
+  subscribeToViewModels(viewModels: Map<string, AbstractBaseViewModel>) {
 
     // eslint-disable-next-line no-unused-vars
     for (const [key, vm] of viewModels) {

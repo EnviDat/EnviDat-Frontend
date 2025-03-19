@@ -1,3 +1,4 @@
+import { AbstractBaseViewModel } from '@/factories/ViewModels/AbstractBaseViewModel.ts';
 
 export interface ResourceSizeDTO {
   size_value: string;
@@ -8,6 +9,15 @@ export interface RestrictedDTO {
   shared_secret: string,
   allowed_users: string,
   level: string;
+}
+
+export interface KeywordDTO {
+  id: string;
+  name: string;
+  display_name: string;
+  state: string;
+  vocabulary_id: string | null;
+  color: string;
 }
 
 export interface ResourceDTO {
@@ -72,7 +82,7 @@ export interface AuthorDTO {
 }
 
 export interface DatasetDTO {
-  author: string;
+  author: AuthorDTO[];
   author_email: string | null;
   creator_user_id: string;
   date: string;
@@ -103,6 +113,7 @@ export interface DatasetDTO {
   spatial_info: string;
   state: string;
   subtitle: string;
+  tags: KeywordDTO[];
   title: string;
   type: string;
   url: string | null;
@@ -110,7 +121,7 @@ export interface DatasetDTO {
   extras: ExtrasDTO[],
   resources: ResourceDTO[];
 
-  subscribeToViewModels(viewModelInstances: Map<string, any>): void;
+  subscribeToViewModels(viewModelInstances: Map<string, AbstractBaseViewModel>): void;
 }
 
 export interface DataCreditObject {
