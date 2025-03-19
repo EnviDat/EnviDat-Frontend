@@ -30,7 +30,7 @@ const orgaDatasetsMap = getOrgaDatasetsMap(datasets);
 const organizationsTree = getOrganizationTree(topOrgas, orgaMap, orgaDatasetsMap);
 
 export default {
-  title: '3 Datasets / Organization Tree',
+  title: '8 Organization / Organization Tree',
   component: OrganizationTree,
 };
 
