@@ -50,6 +50,7 @@ export class EditDatasetServiceLayer {
 
   constructor(datasetBackend : unknown) {
 
+    // @ts-ignore
     this.dataset = new Dataset(datasetBackend, this);
 
     for (let i = 0; i < this.viewModelClasses.length; i++) {

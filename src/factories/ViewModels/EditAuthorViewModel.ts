@@ -10,7 +10,7 @@ export class EditAuthorViewModel extends AbstractBaseViewModel{
   declare lastName: string;
   declare email: string;
 
-  declare dataCredit: any[];
+  declare dataCredit: string[];
   declare totalDataCredits: DataCreditObject;
 
   declare identifierType: string;
