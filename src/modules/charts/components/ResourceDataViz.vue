@@ -4,9 +4,11 @@ import LineChart from '@/components/Charts/LineChart.vue';
 
 import { loadResourcesData } from '@/modules/charts/middelware/chartServiceLayer.ts';
 import { MetaData } from '@/types/dataVizTypes';
+import { getResourceName } from '@/factories/metaDataFactory.ts';
 
 const { resource } = defineProps<{
   resource: object;
+  flat: boolean,
 }>();
 
 const loading = ref(true);
@@ -40,7 +42,7 @@ const defaultOptions = {
 
 const title = computed(() =>
   resource
-    ? `Data Visualization of "${resource.name}"`
+    ? `Data Visualization of "${ getResourceName(resource) }"`
     : 'Data Visualization of "Unnamed" resource',
 );
 
@@ -189,7 +191,10 @@ watch(() => resource,
 </script>
 
 <template>
-  <v-card :loading>
+  <v-card
+    :loading
+    :flat
+  >
     <v-card-title>
       {{ title }}
     </v-card-title>
