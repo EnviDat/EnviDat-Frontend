@@ -70,7 +70,7 @@
 import { mapGetters, mapState } from 'vuex';
 
 import { defineAsyncComponent, markRaw } from 'vue';
-import { BROWSE_PATH, METADATAREVIEW_PAGENAME } from '@/router/routeConsts';
+import { BROWSE_PATH } from '@/router/routeConsts';
 
 import { USER_SIGNIN_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 

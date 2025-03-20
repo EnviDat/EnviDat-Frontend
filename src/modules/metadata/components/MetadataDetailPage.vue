@@ -98,7 +98,6 @@ import { useOrganizationsStore } from '@/modules/organizations/store/organizatio
 
 import {
   BROWSE_PATH,
-  METADATADETAIL_PAGENAME,
   METADATAEDIT_PAGENAME,
   ORGANIZATIONS_PAGENAME,
 } from '@/router/routeConsts';
