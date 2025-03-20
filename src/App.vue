@@ -389,11 +389,6 @@ export default {
       });
     },
     catchMaintenanceConfirmClick() {
-      if (this.userIsOnEditPage) {
-        this.editMaintenanceBanner = false;
-        return;
-      }
-
       this.showMaintenanceBanner = false;
     },
     navigateTo(path) {
@@ -642,11 +637,6 @@ export default {
       if (this.maintenanceConfig.messageActive) {
         return true;
       }
-
-      if (this.userIsOnEditPage) {
-        return this.editMaintenanceBanner;
-      }
-
       return false;
     },
     maintenanceBannerText() {
