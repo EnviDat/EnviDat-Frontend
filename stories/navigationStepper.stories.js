@@ -13,49 +13,16 @@
  */
 
 import NavigationStepper from '@/components/Navigation/NavigationStepper.vue';
-import { metadataCreationSteps } from '@/factories/workflowCreation';
 import { metadataEditingSteps } from '@/factories/workflowEditing';
 import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
 const datasetTitle = 'Lens, Switzerland: Long-term forest meteorological data from the Long-term Forest Ecosystem Research Programme (LWF), from 1997 onwards';
 
 export default {
-  title: '6 Workflows / NavigationStepper',
+  title: '6 Workflows / Editing Workflow',
+  component: NavigationStepper,
 };
 
-
-export const CreationSteps = {
-  args: {
-    steps: metadataCreationSteps,
-    initialStepTitle: metadataCreationSteps[0].title,
-    datasetTitle,
-    isCreationWorkflow: true,
-    showProgress: true,
-  },
-}
-
-export const CreationStepsMessage = {
-  args: {
-    ...CreationSteps.args,
-    message: 'Saved successfull',
-    messageDetails: 'Saved Metadataheader',
-  },
-}
-
-export const CreationStepsError = {
-  args: {
-    ...CreationSteps.args,
-    error: 'Network Error',
-    errorDetails: 'Could not save the dataset',
-  },
-}
-
-export const CreationStepsLoading = {
-  args: {
-    ...CreationSteps.args,
-    loading: true,
-  },
-}
 
 export const EditingSteps = {
   args: {
@@ -72,29 +39,14 @@ export const EditingStepsLoading = {
   },
 }
 
-export const MobileCreationSteps = {
-  args: CreationSteps.args,
-  parameters: mobileViewportParams,
-}
-
 export const MobileEditingSteps = {
   args: EditingSteps.args,
   parameters: mobileViewportParams,
 }
 
-export const LargeMobileCreationSteps = {
-  args: CreationSteps.args,
-  parameters: mobileLargeViewportParams,
-}
-
 export const LargeMobileEditingSteps = {
   args: EditingSteps.args,
   parameters: mobileLargeViewportParams,
-}
-
-export const TabletCreationSteps = {
-  args: CreationSteps.args,
-  parameters: tabletViewportParams,
 }
 
 export const TabletEditingSteps = {

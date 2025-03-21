@@ -18,14 +18,12 @@ import {
   ADD_USER_NOTIFICATION,
   CHECK_FRONTEND_VERSION,
   HIDE_NOTIFICATIONS,
-  SET_APP_BACKGROUND,
   SET_APP_SCROLL_POSITION,
   SET_BROWSE_SCROLL_POSITION,
   SET_CONFIG,
   SET_CONFIG_ERROR,
   SET_CONFIG_SUCCESS,
   SET_CONTROLS,
-  SET_CURRENT_PAGE,
   SET_JPG_ASSETS,
   SET_WEBP_ASSETS,
   SET_WEBP_SUPPORT,
@@ -48,9 +46,6 @@ function disablingCategoryCards(config) {
 }
 
 export default {
-  [SET_APP_BACKGROUND](state, bgImg) {
-    state.appBGImage = bgImg;
-  },
   [SET_WEBP_SUPPORT](state, isSupported) {
     state.webpIsSupported = isSupported;
   },
@@ -59,9 +54,6 @@ export default {
   },
   [SET_JPG_ASSETS](state, assets) {
     state.jpgAssets = assets;
-  },
-  [SET_CURRENT_PAGE](state, page) {
-    state.currentPage = page;
   },
   [SET_CONTROLS](state, payload) {
     state.controls = payload;
@@ -83,7 +75,10 @@ export default {
   },
   [SET_CONFIG_ERROR](state, reason) {
     state.loadingConfig = true;
-    const notificationObj = getSpecificApiError('Config could not be loaded!', reason);
+    const notificationObj = getSpecificApiError(
+      'Config could not be loaded!',
+      reason,
+    );
     this.commit(ADD_USER_NOTIFICATION, notificationObj);
   },
   [CHECK_FRONTEND_VERSION](state, version) {

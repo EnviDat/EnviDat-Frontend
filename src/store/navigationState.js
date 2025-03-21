@@ -3,6 +3,7 @@
 import {
   mdiEarth, mdiBookOpenPageVariant, mdiPencilRuler, mdiFileTree, mdiLibraryShelves,
   mdiMagnify, mdiMenuRight, mdiPound, mdiInformation, mdiBookshelf, mdiAccountArrowRight,
+  mdiPlusBox,
 } from '@mdi/js';
 
 import {
@@ -21,7 +22,11 @@ import {
   INTEGRATION_PATH,
   INTEGRATION_PAGENAME,
   SERVICE_PATH,
-  SERVICE_PAGENAME, ORGANIZATIONS_PATH, ORGANIZATIONS_PAGENAME,
+  SERVICE_PAGENAME,
+  ORGANIZATIONS_PATH,
+  ORGANIZATIONS_PAGENAME,
+  METADATA_CREATION_PATH,
+  METADATA_CREATION_PAGENAME,
 } from '@/router/routeConsts';
 
 
@@ -114,7 +119,7 @@ export const navigationItems = [
 
 export const userMenuItems = [
   { title: 'Dashboard', icon: mdiBookshelf, toolTip: 'My Dashboard', active: false, path: USER_DASHBOARD_PATH, pageName: USER_DASHBOARD_PAGENAME },
-  // { title: 'Create Dataset', icon: 'add_cricle_outline', toolTip: 'Create a new dataset', active: false, path: 'createDataset', pageName: 'CreateDataset' },
+  { title: 'New Dataset', icon: mdiPlusBox, toolTip: 'Create a new dataset', active: false, path: METADATA_CREATION_PATH, pageName: METADATA_CREATION_PAGENAME },
   // { title: 'Edit Profile', icon: 'edit', toolTip: 'Edit profile', active: false, path: 'profile', pageName: 'EditProfile' },
   { title: 'Sign out', icon: mdiAccountArrowRight , toolTip: 'Sign out', active: false, path: USER_SIGNOUT_PATH, pageName: '' },
 ];

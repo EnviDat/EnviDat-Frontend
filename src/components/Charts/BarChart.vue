@@ -26,6 +26,10 @@
       default: () => {},
       required: true,
     },
+    isFlat: {
+      type: Boolean,
+      default: true,
+    },
   })
 
   const plugins = [ChartDataLabels];
@@ -33,7 +37,9 @@
 </script>
 
 <template>
-  <v-card :height >
+  <v-card :height
+          :flat="isFlat"
+  >
     <Bar
       :id
       :options

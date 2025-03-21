@@ -1,32 +1,20 @@
 <template>
-  <v-app class="application envidat-font-overwrite" :style="dynamicBackground">
-    <div
-      v-show="showDecemberParticles"
-      id="christmas-canvas"
-      style="position: absolute; width: 100%; height: 100%;"
-    ></div>
-
-    <div
-      v-show="showDecemberParticles"
-      id="christmas-canvas"
-      style="position: absolute; width: 100%; height: 100%;"
-    ></div>
-
-    <link
-      v-if="showDecemberParticles"
-      rel="stylesheet"
-      href="./particles/decemberEffects.css"
-    />
-
+  <v-app
+    class="application envidat-font-overwrite"
+    :class="{
+      'bg-dark': !isLandingPage && !isDashboardPage,
+      'bg-dark-dashboard': isDashboardPage,
+      'hide-after': isScrolled,
+    }"
+    id="app-container"
+  >
     <div
       v-for="(notification, index) in visibleNotifications()"
       :key="`notification_${index}`"
-      :style="
-        `position: absolute;
+      :style="`position: absolute;
                 right: ${$vuetify.display.xs ? 0 : 15}px;
                 top: ${35 + index * 175}px;
-                z-index: ${NotificationZIndex};`
-      "
+                z-index: ${NotificationZIndex};`"
     >
       <NotificationCard
         :notification="notification"
@@ -39,6 +27,8 @@
         @clickedReport="catchReportClicked(notification.key)"
       />
     </div>
+
+    <MaintenanceBanner v-if="maintenanceBannerVisible" />
 
     <TheNavigationToolbar
       v-if="showToolbar"
@@ -66,16 +56,17 @@
       @itemClick="catchItemClicked"
     />
 
-    <v-main class="custom-v-main pt-4 pt-md-8">
+    <v-main class="pt-13 pt-md-9 custom-v-main">
       <v-container
-        class="mainPageContainer pa-2 pa-sm-3"
+        class="mainPageContainer"
+        :class="[isLandingPage ? 'pa-0' : 'pa-2']"
         fluid
         @scroll="updateScroll()"
         id="appContainer"
         ref="appContainer"
         :style="pageStyle"
       >
-        <v-row id="mainPageRow">
+        <v-row id="mainPageRow" no-gutters>
           <v-col cols="12">
             <router-view v-slot="{ Component }">
               <transition name="fade" mode="out-in">
@@ -95,17 +86,16 @@
         />
 
         <TextBanner
-            v-if="showCookieInfo"
-            id="cookieBanner"
-            :style="bannerStyle"
-            :text="cookieInfoTextMatomo"
-            icon="cookie"
-            deniedText="Reject"
-            confirmText="Accept"
-            :confirmClick="catchCookieInfoOk"
-            :deniedClick="deniedTracking"
+          v-if="showCookieInfo"
+          id="cookieBanner"
+          :style="bannerStyle"
+          :text="cookieInfoTextMatomo"
+          icon="cookie"
+          deniedText="Reject"
+          confirmText="Accept"
+          :confirmClick="catchCookieInfoOk"
+          :deniedClick="deniedTracking"
         />
-
       </v-container>
 
       <v-dialog
@@ -146,6 +136,12 @@
 
       <GenericFullScreenModal :auto-scroll="true" />
     </v-main>
+    <div v-if="isLandingPage" class="scroll-icon">
+      <v-icon @click="scrollDown()" :size="46" class="mr-1" :color="'#000'">
+        {{ iconScroll }}
+      </v-icon>
+      <p class="font-weight-bold">Scroll</p>
+    </div>
   </v-app>
 </template>
 
@@ -164,13 +160,12 @@
  */
 
 import { mapState, mapGetters } from 'vuex';
-
-import { getMonth } from 'date-fns';
-
 import { defineAsyncComponent } from 'vue';
+
+import { extractIcons } from '@/factories/iconFactory';
+
 import {
   LANDING_PATH,
-  LANDING_PAGENAME,
   BROWSE_PATH,
   BROWSE_PAGENAME,
   REPORT_PATH,
@@ -191,7 +186,6 @@ import {
   SET_APP_SCROLL_POSITION,
   TRIM_NOTIFICATIONS,
   HIDE_NOTIFICATIONS,
-  SET_APP_BACKGROUND,
 } from '@/store/mainMutationsConsts';
 
 import {
@@ -216,34 +210,33 @@ import {
   SHOW_REDIRECT_SIGNIN_DIALOG,
 } from '@/factories/eventBus';
 
+import MaintenanceBanner from '@/modules/home/components/MaintenanceBanner.vue';
 
 import { ENVIDAT_SHOW_COOKIE_BANNER } from '@/factories/metadataConsts';
-import { getImage } from '@/factories/imageFactory';
 
-const TheNavigation = defineAsyncComponent(() =>
-  import('@/components/Navigation/TheNavigation.vue'),
+const TheNavigation = defineAsyncComponent(
+  () => import('@/components/Navigation/TheNavigation.vue'),
 );
-const TheNavigationToolbar = defineAsyncComponent(() =>
-  import('@/components/Navigation/TheNavigationToolbar.vue'),
+const TheNavigationToolbar = defineAsyncComponent(
+  () => import('@/components/Navigation/TheNavigationToolbar.vue'),
 );
 
-const GenericFullScreenModal = defineAsyncComponent(() =>
-  import('@/components/Layouts/GenericFullScreenModal.vue'),
+const GenericFullScreenModal = defineAsyncComponent(
+  () => import('@/components/Layouts/GenericFullScreenModal.vue'),
 );
-const ConfirmTextCard = defineAsyncComponent(() =>
-  import('@/components/Cards/ConfirmTextCard.vue'),
+const ConfirmTextCard = defineAsyncComponent(
+  () => import('@/components/Cards/ConfirmTextCard.vue'),
 );
-const TextBanner = defineAsyncComponent(() =>
-  import('@/components/Layouts/TextBanner.vue'),
+const TextBanner = defineAsyncComponent(
+  () => import('@/components/Layouts/TextBanner.vue'),
 );
-const NotificationCard = defineAsyncComponent(() =>
-  import('@/components/Cards/NotificationCard.vue'),
+const NotificationCard = defineAsyncComponent(
+  () => import('@/components/Cards/NotificationCard.vue'),
 );
 
 export default {
   name: 'App',
   beforeCreate() {
-
     // load the config initially
     this.$store.dispatch(SET_CONFIG);
 
@@ -251,13 +244,7 @@ export default {
     // all users get any changes in the config and version updates
     setInterval(() => {
       this.$store.dispatch(SET_CONFIG);
-    }, 300000); // 1000 * 60 * 5 = 5 minutes
-
-    this.$store.subscribe(mutation => {
-      if (mutation.type === SET_APP_BACKGROUND) {
-        this.appBGImage = mutation.payload;
-      }
-    });
+    }, 30000); // 1000 * 3 = 30 seconds
   },
   created() {
     eventBus.on(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
@@ -282,55 +269,21 @@ export default {
   },
   mounted() {
     this.checkUserSignedIn();
-
-    this.$nextTick(() => {
-      this.startParticles();
+    window.addEventListener('scroll', this.handleWindowScroll, {
+      passive: true,
     });
   },
   updated() {
     this.updateActiveStateOnNavItems();
   },
   methods: {
-    startParticles() {
-      if (!this.currentParticles) {
-        if (this.showDecemberParticles) {
-          this.initChristmasParticles();
-        } else {
-          this.stopParticles();
-        }
+    scrollDown() {
+      const appContainer =
+        this.$refs.appContainer?.$el || this.$refs.appContainer;
+      if (appContainer) {
+        // TBD: define where to scroll to
+        appContainer.scrollTop += 600;
       }
-    },
-    stopParticles(fullClean = true) {
-      try {
-        if (this.currentParticles) {
-          this.currentParticles.particles.move.enable = false;
-          this.currentParticles.particles.opcacity.anim.enable = false;
-          this.currentParticles.particles.size.anim.enable = false;
-        }
-      } catch (error) {
-        console.error(`Error during particle stop: ${error}`);
-      } finally {
-        this.currentParticles = null;
-        if (fullClean) {
-          window.pJS = null;
-        }
-      }
-    },
-    initChristmasParticles() {
-      // particleOptions have to be in the folder public/particles/christmasParticleOptions.json for development
-      // in production they have to be in same folder as the index.html there -> ./particles/christmasParticleOptions.json
-      // eslint-disable-next-line no-undef
-      particlesJS.load(
-        'christmas-canvas',
-        './particles/christmasParticleOptions.json',
-        () => {
-          // console.log('christmas-canvas - particles.js config loaded');
-          if (this.currentParticles) {
-            this.stopParticles(false);
-          }
-          this.currentParticles = window.pJS;
-        },
-      );
     },
     updateScroll() {
       const appContainer =
@@ -341,6 +294,7 @@ export default {
       }
     },
     storeScroll(scrollY) {
+      this.isScrolled = scrollY >= 10;
       this.$store.commit(SET_APP_SCROLL_POSITION, scrollY);
     },
     updateActiveStateOnNavItems() {
@@ -352,14 +306,14 @@ export default {
         const item = this.navigationItems[i];
 
         if (item.icon !== 'menu') {
-          const isActive = this.currentPage === item.pageName;
+          const isActive = this.$router.name === item.pageName;
 
           if (item.subpages && item.subpages instanceof Array) {
             let subIsActive = false;
 
-            item.subpages.forEach(sub => {
+            item.subpages.forEach((sub) => {
               if (!subIsActive) {
-                subIsActive = this.currentPage === sub;
+                subIsActive = this.$router.name === sub;
               }
             });
 
@@ -372,7 +326,7 @@ export default {
     },
     visibleNotifications() {
       const notis = Object.values(this.notifications);
-      return notis.filter(n => n.show);
+      return notis.filter((n) => n.show);
     },
     catchContinueClick() {
       if (this.lastEditedDatasetPath) {
@@ -435,11 +389,6 @@ export default {
       });
     },
     catchMaintenanceConfirmClick() {
-      if (this.userIsOnEditPage) {
-        this.editMaintenanceBanner = false;
-        return;
-      }
-
       this.showMaintenanceBanner = false;
     },
     navigateTo(path) {
@@ -590,7 +539,7 @@ export default {
     setupNavItems() {
       if (this.signinDisabled) {
         const signItem = this.navigationItems.filter(
-          item => item.path === USER_SIGNIN_PATH,
+          (item) => item.path === USER_SIGNIN_PATH,
         )[0];
         if (signItem) {
           signItem.disabled = true;
@@ -649,12 +598,23 @@ export default {
       'isFilteringContent',
     ]),
     ...mapGetters({
-      currentPage: 'currentPage',
       outdatedVersion: 'outdatedVersion',
       newVersion: 'newVersion',
       notifications: 'notifications',
       maxNotifications: 'maxNotifications',
     }),
+    currentRoute() {
+      return this.$route;
+    },
+    isLandingPage() {
+      return this.currentRoute.name === 'LandingPage';
+    },
+    isDashboardPage() {
+      return this.currentRoute.name === 'DashboardPage';
+    },
+    iconScroll() {
+      return extractIcons('scroll');
+    },
     effectsConfig() {
       return this.config?.effectsConfig || {};
     },
@@ -674,20 +634,9 @@ export default {
       return this.userDashboardConfig?.useTokenSignin || false;
     },
     maintenanceBannerVisible() {
-      if (!this.maintenanceConfig.messageActive) {
-        return false;
+      if (this.maintenanceConfig.messageActive) {
+        return true;
       }
-
-      if (this.userIsOnEditPage) {
-        return this.editMaintenanceBanner;
-      }
-
-      // exclude the landing page with the banner because
-      // on the landingpage a "news" entry for maintenance can be shown!
-      if (this.currentPage !== LANDING_PAGENAME) {
-        return this.showMaintenanceBanner;
-      }
-
       return false;
     },
     maintenanceBannerText() {
@@ -703,25 +652,8 @@ export default {
     signinDisabled() {
       return this.maintenanceConfig?.signinDisabled || false;
     },
-    showDecemberParticles() {
-      return (
-        this.$vuetify.display.mdAndUp &&
-        this.effectsConfig.decemberParticles &&
-        this.itIsDecember
-      );
-    },
     userIsOnEditPage() {
-      return this.currentPage === METADATAEDIT_PAGENAME;
-    },
-    itIsDecember() {
-      return getMonth(Date.now()) === 11;
-    },
-    polygonParticlesActive() {
-      return (
-        this.$vuetify.display.mdAndUp &&
-        this.currentPage &&
-        this.currentPage === LANDING_PAGENAME
-      );
+      return this.$route.name === METADATAEDIT_PAGENAME;
     },
     loading() {
       return (
@@ -733,20 +665,17 @@ export default {
     searchTerm() {
       return this.$route.query.search;
     },
-    mainPageIsScrollable() {
-      return this.currentPage === BROWSE_PAGENAME;
-    },
+
     showToolbar() {
       // return this.mainPageIsScrollable && this.mode;
       return true;
     },
     pageStyle() {
-      const heightStyle = this.showToolbar
-        ? 'height: calc(100vh - 32px);'
-        : 'height: 100vh;';
-      return this.mainPageIsScrollable
-        ? ''
-        : `${heightStyle} overflow-y: auto; scroll-behavior: smooth; scrollbar-width: thin; `;
+      const heightStyle = `height: calc(100vh - ${this.$vuetify.display.smAndDown ? 50 : 36}px);`;
+
+      return this.$route.name === BROWSE_PAGENAME
+        ? heightStyle
+        : `${heightStyle} overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth; scrollbar-width: thin; `;
     },
     showSmallNavigation() {
       return this.$vuetify.display.smAndDown;
@@ -759,31 +688,9 @@ export default {
     showReloadDialog() {
       return this.outdatedVersion && !this.reloadDialogCanceled;
     },
-    dynamicBackground() {
-      const bgImg = getImage(this.appBGImage);
-
-      if (!bgImg) {
-        return '';
-      }
-
-      let gradient = `background: linear-gradient(to bottom, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.25) 100%), url(${bgImg}) !important;`;
-      let bgStyle = 'background-position: center top !important;';
-
-      if (bgImg.includes(LANDING_PAGENAME.toLowerCase())) {
-        bgStyle += `background-size: cover !important;
-                    background-repeat: no-repeat !important; `;
-      }
-
-      if (bgImg.includes(BROWSE_PAGENAME.toLowerCase())) {
-        gradient = `background: linear-gradient(to bottom, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.3) 100%), url(${bgImg}) !important;
-                    background-repeat: repeat !important; `;
-      }
-
-      return gradient + bgStyle;
-    },
     menuItem() {
       let menuItem = { active: true };
-      this.navigationItems.forEach(el => {
+      this.navigationItems.forEach((el) => {
         if (el.icon === 'menu') {
           menuItem = el;
         }
@@ -816,16 +723,13 @@ export default {
     ConfirmTextCard,
     TextBanner,
     GenericFullScreenModal,
+    MaintenanceBanner,
   },
   watch: {
     config() {
       if (!this.loadingConfig) {
         this.setupNavItems();
         this.loadAllMetadata();
-
-        this.$nextTick(() => {
-          this.startParticles();
-        });
       }
     },
     notifications() {
@@ -839,7 +743,6 @@ export default {
   },
   /* eslint-disable object-curly-newline */
   data: () => ({
-    appBGImage: '',
     ckanDomain: process.env.VITE_API_ROOT,
     reloadDialogCanceled: false,
     showInfoDialog: false,
@@ -853,8 +756,8 @@ export default {
     showCookieInfo: true,
     cookieInfoText:
       "On envidat.ch cookies are used to enhance your experience and provide features when you're signed in. These cookies are 'technical only' and are NOT used for tracking or monitoring you.",
-      cookieInfoTextMatomo:
-  'On envidat.ch, essential cookies are used to enhance your experience and provide features when you\'re signed in. By accepting additional cookies, you consent to anonymized monitoring to improve the usability of EnviDat.<b> The anonymized data is stored on WSL infrastructure and is not sold or shared with any third party. </b>If you reject, only essential technical cookies will be used.',
+    cookieInfoTextMatomo:
+      "On envidat.ch, essential cookies are used to enhance your experience and provide features when you're signed in. By accepting additional cookies, you consent to anonymized monitoring to improve the usability of EnviDat.<b> The anonymized data is stored on WSL infrastructure and is not sold or shared with any third party. </b>If you reject, only essential technical cookies will be used.",
     redirectToDashboard: false,
     appVersion: import.meta.env.VITE_VERSION,
     showMenu: true,
@@ -863,10 +766,10 @@ export default {
     NotificationZIndex: 1500,
     showMaintenanceBanner: false,
     editMaintenanceBanner: true,
-    currentParticles: null,
     navigationItems,
     userMenuItems,
     editMaintenanceMessage: `There is maintenance going on, please don't edit anything return to the <a href='./#${USER_DASHBOARD_PATH}' >dashboard page </a> or the <a href='/' >main page</a> for details!.`,
+    isScrolled: false,
   }),
 };
 </script>
@@ -876,13 +779,66 @@ export default {
 
 .custom-v-main {
   position: relative;
-  left: 0px;
+  // --v-layout-left: 0 !important;
 }
 
 @media (min-width: 960px) and (max-width: 1279px) {
   .custom-v-main {
-    left: 60px;
+    --v-layout-left: 60px !important;
   }
 }
 
+.bg-dark {
+  background-color: #e0e0e0 !important;
+  // background:
+  //   linear-gradient(rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.3) 100%)
+  //     center top repeat,
+  //   url('https://envidat.ch/static/app_b_browsepage-Bk6vOmrC.webp') !important;
+}
+.bg-dark-dashboard {
+  background-color: #9c9c9c !important;
+  // background:
+  //   linear-gradient(rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.3) 100%)
+  //     center top repeat,
+  //   url('https://envidat.ch/static/app_b_dashboardpage-D38vMBVL.webp') !important;
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+#app-container {
+  position: relative;
+
+  .scroll-icon {
+    content: '';
+    display: none;
+    position: absolute;
+    bottom: -10px;
+    left: 45%;
+    transform: translateX(-50%);
+    opacity: 1;
+    transition: 0.1s linear;
+    z-index: 999;
+    animation: bounce 1s infinite ease-in-out;
+    @media (min-width: 1024px) {
+      display: block;
+      left: 50%;
+    }
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+
+#app-container.hide-after .scroll-icon {
+  opacity: 0;
+  z-index: -1;
+}
 </style>

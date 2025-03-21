@@ -6,7 +6,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { mdiAccount, mdiPencil } from '@mdi/js';
+import { mdiAccount, mdiPaletteSwatch, mdiPencil, mdiTagMultiple } from '@mdi/js';
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 export default {
@@ -44,13 +44,13 @@ export const ErrorFontIcon = {
 export const CustomPinIcon = {
   args: {
     color: '#00AAFF',
-    icon: 'tag',
+    icon: mdiPaletteSwatch,
   },
 }
 
 export const CustomMultiPinIcon = {
   args: {
     color: 'secondary',
-    icon: 'tags',
+    icon: mdiTagMultiple,
   },
 }

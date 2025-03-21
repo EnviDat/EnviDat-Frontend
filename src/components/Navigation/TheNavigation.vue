@@ -4,14 +4,19 @@
       v-if="smallScreen && !show"
       color="secondary"
       @click="setShow(true)"
-      style="bottom: 15px; left: 15px; border-radius: 50%; height: 60px; width: 60px;"
+      style="
+        bottom: 15px;
+        left: 15px;
+        border-radius: 50%;
+        height: 60px;
+        width: 60px;
+      "
       class="position-fixed"
     >
       <v-icon size="x-large" :icon="mdiMenu" />
     </v-btn>
 
-
-  <v-navigation-drawer
+    <v-navigation-drawer
       app
       clipped
       :mode="smallScreen ? 'temporary' : 'permanent'"
@@ -25,28 +30,24 @@
       :rail-width="60"
       width="220"
     >
-
-    <v-list dense >
-
-      <v-list-item v-for="(item, index) in navItemsMenuExcluded"
-                   :key="index"
-                   :prepend-icon="item.icon"
-                   :title="item.title"
-                   density='compact'
-                   :class="[
-                      item.disabled ? 'text-grey' : item.active ? 'text-secondary' : '',
-                      item.icon === 'envidat' ? mini ? 'px-2' : 'px-3' : '',
-                      item.isMenuIcon === true ? 'd-flex d-lg-none rotateIcon' : ''
-                    ]"
-                   :disabled="item.disabled"
-                   @click.stop="itemClick(item)" >
-
-      </v-list-item>
-
-    </v-list>
-
-
-  </v-navigation-drawer>
+      <v-list dense>
+        <v-list-item
+          v-for="(item, index) in navItemsMenuExcluded"
+          :key="index"
+          :prepend-icon="item.icon"
+          :title="item.title"
+          density="compact"
+          :class="[
+            item.disabled ? 'text-grey' : item.active ? 'text-secondary' : '',
+            item.icon === 'envidat' ? (mini ? 'px-2' : 'px-3') : '',
+            item.isMenuIcon === true ? 'd-flex d-lg-none rotateIcon' : '',
+          ]"
+          :disabled="item.disabled"
+          @click.stop="itemClick(item)"
+        >
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
   </span>
 </template>
 
@@ -114,11 +115,11 @@ export default {
     },
     itemClick(item) {
       // manage active status
-      this.navItemsMenuExcluded.forEach(i => {
+      this.navItemsMenuExcluded.forEach((i) => {
         i.active = false;
       });
       item.active = true;
-      if(item.isMenuIcon) {
+      if (item.isMenuIcon) {
         this.setShow(false);
       }
       if (!item.disabled) {
@@ -130,8 +131,7 @@ export default {
 </script>
 
 <style>
-
-.narrowNavigation > div[role="listitem"] > div {
+.narrowNavigation > div[role='listitem'] > div {
   padding: 0;
   margin: 0;
 }
@@ -152,14 +152,12 @@ export default {
 }
 
 .rotateIcon {
-  transform: rotate(180deg)
+  transform: rotate(180deg);
 }
-
 
 @media (min-width: 767px) {
   .v-navigation-drawer__scrim {
-      display: none;
-    }
+    display: none;
+  }
 }
-
 </style>

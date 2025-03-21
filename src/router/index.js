@@ -12,10 +12,7 @@
  */
 
 /* eslint-disable prefer-template */
-import {
-  createRouter,
-  createWebHashHistory,
-} from 'vue-router';
+import { createRouter, createWebHashHistory } from 'vue-router';
 
 import {
   GCMD_PATH,
@@ -78,7 +75,7 @@ const router = createRouter({
     ...routes,
   ],
   scrollBehavior(to, from, savedPosition) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       setTimeout(() => {
         resolve(() => {
           if (savedPosition) {
@@ -109,7 +106,7 @@ const router = createRouter({
       return false;
     }
 
-    return aKeys.every(key => {
+    return aKeys.every((key) => {
       const aVal = a[key];
       const bVal = b[key];
       // check nested equality
@@ -163,7 +160,16 @@ const router = createRouter({
    * @param {Array} pins array of ids for the pinned metadatas
    * @param {String} isAuthorSearch if true the search term will only be compared against authors
    */
-  additiveChangeRoute(route, routerObj, basePath, search, tags, mode = undefined, pins = undefined, isAuthorSearch = undefined) {
+  additiveChangeRoute(
+    route,
+    routerObj,
+    basePath,
+    search,
+    tags,
+    mode = undefined,
+    pins = undefined,
+    isAuthorSearch = undefined,
+  ) {
     const query = {};
     Object.assign(query, route.query);
 
@@ -184,7 +190,10 @@ const router = createRouter({
     }
 
     if (isAuthorSearch !== undefined) {
-      query.isAuthorSearch = typeof isAuthorSearch !== 'string' ? isAuthorSearch.toString() : isAuthorSearch;
+      query.isAuthorSearch =
+        typeof isAuthorSearch !== 'string'
+          ? isAuthorSearch.toString()
+          : isAuthorSearch;
     }
 
     routerObj.push({

@@ -1,15 +1,12 @@
-import {
-  LANDING_PAGENAME,
-  LANDING_PATH,
-} from '@/router/routeConsts';
+import { LANDING_PAGENAME, LANDING_PATH } from '@/router/routeConsts';
 import store from '@/store/store';
 
 const LandingPage = () => import('@/modules/home/components/LandingPage.vue');
 
-const beforeEnter = async (to, from, next)=> {
+const beforeEnter = async (to, from, next) => {
   await store.state.asyncLoadStoreModule('blog');
   next();
-}
+};
 
 export const homeRoutes = [
   {

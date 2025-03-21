@@ -13,7 +13,10 @@ import seedrandom from 'seedrandom';
 
 import { getAuthorName, getAuthorsString } from '@/factories/authorFactory';
 
-import { ACCESS_LEVEL_PUBLIC_VALUE, getAllowedUserNamesArray } from '@/factories/userEditingFactory';
+import {
+  ACCESS_LEVEL_PUBLIC_VALUE,
+  getAllowedUserNamesArray,
+} from '@/factories/userEditingFactory';
 
 import {
   METADATA_CONTACT_EMAIL,
@@ -28,11 +31,16 @@ import {
 } from '@/factories/metadataConsts';
 
 import categoryCards, { cardImageBgs } from '@/store/categoryCards';
-import { enhanceTags, getCategoryColor, guessTagCategory } from '@/factories/keywordsFactory';
+import {
+  enhanceTags,
+  getCategoryColor,
+  guessTagCategory,
+} from '@/factories/keywordsFactory';
 import { createLocation } from '@/factories/geoFactory';
 import { getMetadataVisibilityState } from '@/factories/publicationFactory';
 import { formatDate } from '@/factories/dateFactory';
 import { enhanceMetadataWithModeExtras } from '@/factories/modeFactory';
+import { DatasetDTO, ResourceDTO } from '@/types/modelTypes.js';
 
 // import { getResourcesDownloads } from '@/modules/matomo/store/matomoStore';
 
@@ -306,13 +314,26 @@ export function isResourceProtectedForUser(
   return isProtected;
 }
 
+export function getResourceName(resource: ResourceDTO) {
+  let name = resource.name ?? 'Unnamed resource';
+
+  const isUrl = !resource.name && !!resource.url;
+  if (isUrl) {
+    const splits = resource.url.split('/');
+    name = splits[splits.length - 1];
+  }
+
+  // @ts-ignore
+  return resource.deprecated ? `[DEPRECATED] - ${name}` : name;
+}
+
 export function createResource(
   resource,
   datasetName,
   resourceOrganizationID,
   signedInUserName,
   signedInUserOrganizationIds,
-  numberOfDownload,
+  numberOfDownload?: number,
 ) {
   if (!resource) {
     return null;
@@ -332,16 +353,6 @@ export function createResource(
 
   const ckanDomain = process.env.VITE_API_ROOT;
 
-  const resURL = resource.url;
-  let fileName = resource.name;
-
-  if (!fileName && resURL) {
-    const urlSplits = resURL.split('/');
-    if (urlSplits.length > 0) {
-      fileName = urlSplits[urlSplits.length - 1];
-    }
-  }
-
   return {
     // "hash": "",
     description: resource.description,
@@ -353,8 +364,8 @@ export function createResource(
     size: resource.size ? resource.size : 0,
     mimetype: resource.mimetype || '',
     doi: resource.doi,
-    name: fileName,
-    url: resURL,
+    name: getResourceName(resource),
+    url: resource.url,
     urlType: resource.url_type,
     restrictedUrl: `${ckanDomain}/dataset/${datasetName}/restricted_request_access/${resource.id}`,
     restricted: resource.restricted || '',
@@ -371,7 +382,7 @@ export function createResource(
 }
 
 export function createResources(
-  dataset,
+  dataset: DatasetDTO,
   signedInUser,
   signedInUserOrganizationIds,
 ) {
@@ -390,13 +401,13 @@ export function createResources(
     maintainer = JSON.parse(dataset.maintainer);
   }
 
-  let contactEmail = dataset.maintainer_email;
-  if (!dataset.maintainer_email && maintainer) {
-    contactEmail = maintainer.email ? maintainer.email : '';
+  let contactEmail = maintainer.email;
+  if (!contactEmail && dataset.maintainer_email) {
+    contactEmail = dataset.maintainer_email;
   }
 
   if (dataset.resources) {
-    dataset.resources.forEach(async element => {
+    dataset.resources.forEach(async (element) => {
       // get the number of download from matomo API
       // const numberOfDownload = await getResourcesDownloads(element.name);
       const res = createResource(
@@ -481,7 +492,6 @@ export function createDetails(dataset) {
   return details;
 }
 
-
 let lastCategory = '';
 let tempImgKeys = [];
 let tempImgValues = [];
@@ -519,6 +529,24 @@ export function enhanceTitleImg(metadata) {
 }
 
 /**
+ * @param {object} metadata
+ *
+ * @return {object} metadata entry enhanced with the name of the category
+ */
+export function enhanceCategoryName(metadata) {
+  if (!metadata) {
+    return null;
+  }
+
+  /* eslint-disable no-param-reassign */
+  const category = guessTagCategory(metadata.tags);
+
+  metadata.categoryName = category;
+
+  return metadata;
+}
+
+/**
  * @param {Object} metadataEntry
  *
  * @return {Object} metadataEntry enhanced with a title image based on the entrys tags
@@ -530,6 +558,10 @@ export function enhanceMetadataEntry(metadataEntry) {
 
   if (!metadataEntry.titleImg) {
     enhanceTitleImg(metadataEntry);
+  }
+
+  if (metadataEntry) {
+    enhanceCategoryName(metadataEntry);
   }
 
   return metadataEntry;
@@ -614,7 +646,6 @@ export const possibleVisibilityStates = [
  * @returns {{}}
  */
 export function enhanceMetadatas(datasets, mode = undefined) {
-
   if (!(datasets instanceof Array)) {
     throw new Error(
       `enhanceMetadatas() expects an array of datasets got ${typeof datasets}`,
@@ -686,4 +717,3 @@ export function isTagSelected(tagName, selectedTagNames) {
 
   return selectedTagNames.indexOf(tagName) >= 0;
 }
-

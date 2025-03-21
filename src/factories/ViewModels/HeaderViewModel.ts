@@ -13,12 +13,45 @@ import { getAuthorName } from '@/factories/authorFactory';
 import { formatDate } from '@/factories/dateFactory';
 import { getMetadataVisibilityState } from '@/factories/publicationFactory';
 import { AuthorsViewModel } from '@/factories/ViewModels/AuthorsViewModel';
+import { Author, DatasetDTO } from '@/types/modelTypes';
 
 
 export class HeaderViewModel extends AbstractBaseViewModel{
 
-  constructor(datasetDTO, smallScreen, categoryColor, titleImg) {
-    super(datasetDTO, HeaderViewModel.mappingRules());
+  declare metadataTitle: string;
+
+  declare contactEmail: string;
+  declare contactGivenName: string;
+  declare contactSurname: string;
+
+  declare doi: string;
+
+  declare tags: any[];
+
+  declare organization: string;
+  declare organizationTooltip: string;
+
+  declare spatialInfo: string;
+
+  declare state: string;
+  declare private: boolean;
+  declare metadataState: string;
+
+  declare publicationYear: string;
+  declare publicationStatus: string;
+
+  declare created: string;
+  declare modified: string;
+
+  declare authors: Author[];
+
+  declare categoryColor: any;
+  declare titleImg: any;
+
+  declare maxTags: number;
+
+  constructor(dataset: DatasetDTO, smallScreen, categoryColor, titleImg) {
+    super(dataset, HeaderViewModel.mappingRules());
 
     this.created = formatDate(this.created);
     this.modified = formatDate(this.modified);
@@ -28,7 +61,7 @@ export class HeaderViewModel extends AbstractBaseViewModel{
       lastName: this[METADATA_CONTACT_LASTNAME],
     });
 
-    this.authors = AuthorsViewModel.getFormattedAuthors(datasetDTO.author);
+    this.authors = AuthorsViewModel.getFormattedAuthors(dataset.author, dataset.metadata_modified);
 
     this.categoryColor = categoryColor;
     this.titleImg = titleImg;
@@ -45,7 +78,7 @@ export class HeaderViewModel extends AbstractBaseViewModel{
       [METADATA_CONTACT_LASTNAME,'maintainer.name'],
       ['doi','doi'],
       ['tags','tags'],
-//      ['authorsRaw','author'],
+//      ['rawAuthors','author'],
 //      ['authors','author'],
       ['organization','organization.name'],
       ['organizationTooltip','organization.title'],
@@ -60,8 +93,8 @@ export class HeaderViewModel extends AbstractBaseViewModel{
   }
 }
 
-export const createHeaderViewModel = (datasetDTO, smallScreen, categoryColor, titleImg, changeCallback = undefined) => {
-  const headerVM = new HeaderViewModel(datasetDTO, smallScreen, categoryColor, titleImg);
+export const createHeaderViewModel = (dataset: DatasetDTO, smallScreen, categoryColor, titleImg, changeCallback = undefined) => {
+  const headerVM = new HeaderViewModel(dataset, smallScreen, categoryColor, titleImg);
   const reactiveVM = reactive(headerVM);
 
   if (changeCallback) {

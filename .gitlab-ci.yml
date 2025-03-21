@@ -20,7 +20,16 @@ variables:
   CACHE_COMPRESSION_LEVEL: 'fast'
 #  npm_config_cache: '.npm/'
 
-.trigger-rules:
+.normal-rules:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "pipeline"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'    
+      when: never
+    - if: '$CI_COMMIT_REF_NAME =~ /^(main|staging|develop)$/'
+    - if: $CI_PIPELINE_SOURCE == "web"
+      when: always
+
+.deployment-rules:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "pipeline"'
       when: never
@@ -84,10 +93,12 @@ modify-env:
   stage: config
   image: python:3.9-alpine3.17
   environment: $CI_COMMIT_REF_NAME
-  extends: .trigger-rules
+  extends: .normal-rules
   needs:
     - set-vars
   before_script:
+    - if [ -z "$CI_COMMIT_REF_NAME" ]; then echo "CI_COMMIT_REF_NAME is empty!"; exit 1; fi
+    - echo "CI_COMMIT_REF_NAME is set to $CI_COMMIT_REF_NAME"
     - pip install --upgrade pip
     - pip install python-dotenv==0.19.*
   script:
@@ -99,17 +110,19 @@ modify-env:
       branch = os.getenv('CI_COMMIT_REF_NAME')
 
       key = 'VITE_DOMAIN'
-      value = f'http://{branch}.envidat.ch'
+      value = 'https://envidat04.wsl.ch'
+      
       if branch == 'main' or branch == 'beta':
           value = 'https://envidat.ch'
+      
       dotenv.set_key(file, key, value, quote_mode='never')
 
       key = 'VITE_API_ROOT'
-      value = f'http://{branch}.envidat.ch'
+      value = 'https://envidat04.wsl.ch'
+      
       if branch == 'main' or branch == 'beta':
           value = 'https://envidat.ch'
-      if branch == 'staging' or branch == 'develop':
-          value = 'http://envidat04.wsl.ch'
+
       dotenv.set_key(file, key, value, quote_mode='never')
 
       key = 'VITE_MATOMO_TOKEN'
@@ -155,7 +168,7 @@ install-node:
       untracked: true
       when: on_success
   extends:
-    - .trigger-rules
+    - .normal-rules
   before_script:
     # disabled the funding check
     - npm config set fund false
@@ -165,13 +178,18 @@ install-node:
     # Only run npm ci if node_modules don't come from the cache
     - |
       if [ -d "node_modules" ] && [ -d "node_modules/.bin" ]; then
-        echo "node_modules and it's .bin directory already exists. Skipping npm ci."
+        if [ "$FORCE_NPM_INSTALL" = "true" ]; then
+          echo "FORCE_NPM_INSTALL $FORCE_NPM_INSTALL so going to run npm ci"
+          npm ci --prefer-offline --no-audit
+        else
+          echo "node_modules and it's .bin directory already exists. Skipping npm ci."
+        fi      
       else
         echo "node_modules or it's .bin directory not found. Running npm ci..."
         npm ci --prefer-offline --no-audit
-        echo "Check afterwards how the folders are"
-        ls -l node_modules
       fi
+    - echo "Check afterwards how the folders are"
+    - ls -l node_modules
   artifacts:
     name: 'node dependencies'
     # stores node_modules as an artifact to be used in the next jobs
@@ -187,7 +205,7 @@ run-tests:
   image: node:20.15.0-alpine3.20
   environment: $CI_COMMIT_REF_NAME
   extends:
-    - .trigger-rules
+    - .normal-rules
   needs:
     - modify-env
     - install-node
@@ -200,6 +218,8 @@ run-tests:
         echo "node_modules directory not found. Should have got them from the install-node artifact!"
         ls -a
       fi
+    - ls node_modules/ -a
+    - ls node_modules/.bin/ -a
   script:
     - npm run test
   retry:
@@ -210,7 +230,7 @@ build-storybook:
   image: node:20.15.0-alpine3.20
   environment: $CI_COMMIT_REF_NAME
   extends:
-    - .trigger-rules
+    - .normal-rules
   needs:
     # needs the artifact: config and environment variables
     - modify-env
@@ -225,6 +245,8 @@ build-storybook:
         echo "node_modules directory not found. Should have got them from the install-node artifact!"
         ls -a
       fi
+    - ls node_modules/ -a
+    - ls node_modules/.bin/ -a
   script:
     # - npm config set cache .npm/
     # - npm cache verify || true
@@ -244,7 +266,7 @@ build-app:
   image: node:20.15.0-alpine3.20
   environment: $CI_COMMIT_REF_NAME
   extends:
-    - .trigger-rules
+    - .normal-rules
   needs:
     # needs the artifact: config and environment variables
     - modify-env
@@ -259,6 +281,8 @@ build-app:
         echo "node_modules directory not found. Should have got them from the install-node artifact!"
         ls -a
       fi
+    - ls node_modules/ -a
+    - ls node_modules/.bin/ -a
   script:
     - npm run build -- --logLevel warn
   artifacts:
@@ -274,7 +298,7 @@ combine-builds:
   stage: build
   image: alpine:3.20
   environment: $CI_COMMIT_REF_NAME
-  extends: .trigger-rules
+  extends: .normal-rules
   variables:
     GIT_STRATEGY: none
   needs:
@@ -300,7 +324,7 @@ combine-builds:
     paths:
       - ./
 #tag-commit-sha:
-#  extends: .trigger-rules
+#  extends: .normal-rules
 #  stage: package
 #  image: regclient/regctl:v0.3-alpine
 #  variables:

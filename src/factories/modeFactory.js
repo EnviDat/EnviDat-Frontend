@@ -114,7 +114,7 @@ export const modes = [
     icons: ednaImages,
     minTagAmount: 1,
     extrasKey: EDNA_MODE_EXTRAS_KEY,
-    datasetUrl: 'https://envidat.ch/converters-api/edna/shallow-datasets',
+    datasetUrl: `${process.env.VITE_API_ROOT}/converters-api/edna/shallow-datasets`,
     loadDatasets: loadEDNADatasets,
     isShallow: false,
   },

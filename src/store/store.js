@@ -25,6 +25,8 @@ import { LISTCONTROL_MAP_ACTIVE } from '@/store/metadataMutationsConsts';
 
 import { importStoreModule } from '@/factories/enhancementsFactory';
 
+import categoryCards from './categoryCards';
+
 const moduleImportMap = {
   metadata: () => import('@/modules/metadata/store/metadataStore'),
   user: () => import('@/modules/user/store/userStore'),
@@ -33,7 +35,7 @@ const moduleImportMap = {
   integration: () => import('@/modules/integration/store/integrationStore'),
   service: () => import('@/modules/services/store/serviceStore'),
   projects: () => import('@/modules/projects/store/projectsStore'),
-}
+};
 
 /*
 const errReport = process.env.VITE_ERROR_REPORTING_ENABLED;
@@ -49,10 +51,10 @@ let storeRef;
 
 const initialState = {
   appBGImage: '',
-  currentPage: '',
   /**
    * default "list controls" for the metdata list
    */
+  categoryCards,
   defaultControls: [LISTCONTROL_MAP_ACTIVE],
   appScrollPosition: 0,
   browseScrollPosition: 0,
@@ -67,7 +69,9 @@ const initialState = {
     const importFun = moduleImportMap[module];
 
     if (!importFun) {
-      throw new Error(`Error lazyLoadStoreModule, not import defined for ${module}`);
+      throw new Error(
+        `Error lazyLoadStoreModule, not import defined for ${module}`,
+      );
     }
 
     return importStoreModule(storeRef, module, importFun);
@@ -88,17 +92,17 @@ function createStore() {
     strict: false, // process.env.NODE_ENV !== 'production',
     state: initialState,
     getters: {
-      appBGImage: state => state.appBGImage,
-      currentPage: state => state.currentPage,
-      aboutText: state => state.aboutText,
-      defaultControls: state => state.defaultControls,
-      appScrollPosition: state => state.appScrollPosition,
-      browseScrollPosition: state => state.browseScrollPosition,
-      outdatedVersion: state => state.outdatedVersion,
-      newVersion: state => state.newVersion,
-      config: state => state.config,
-      notifications: state => state.notifications,
-      maxNotifications: state => state.maxNotifications,
+      appBGImage: (state) => state.appBGImage,
+      aboutText: (state) => state.aboutText,
+      categoryCards: (state) => state.categoryCards,
+      defaultControls: (state) => state.defaultControls,
+      appScrollPosition: (state) => state.appScrollPosition,
+      browseScrollPosition: (state) => state.browseScrollPosition,
+      outdatedVersion: (state) => state.outdatedVersion,
+      newVersion: (state) => state.newVersion,
+      config: (state) => state.config,
+      notifications: (state) => state.notifications,
+      maxNotifications: (state) => state.maxNotifications,
     },
     mutations,
     actions,
@@ -112,8 +116,7 @@ let store;
 
 try {
   store = createStore();
-  storeRef = store
-
+  storeRef = store;
 } catch (e) {
   if (e instanceof SyntaxError) {
     // if there is an error for the initial loading
@@ -128,6 +131,5 @@ try {
     console.error(e);
   }
 }
-
 
 export default store;

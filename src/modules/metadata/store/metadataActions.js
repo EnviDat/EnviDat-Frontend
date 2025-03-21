@@ -86,8 +86,8 @@ function contentFilteredByTags(value, selectedTagNames) {
 }
 
 function createSolrQuery(searchTerm) {
-  const overallSearchString = `title:"*${searchTerm}*"~2 OR notes:"*${searchTerm}*"~2`;
-
+  return `title:"*${searchTerm}*"~2 OR notes:"*${searchTerm}*"~2`;
+/*
   const splits = searchTerm.split(' ');
   if (splits.length <= 0) {
     return overallSearchString;
@@ -105,6 +105,7 @@ function createSolrQuery(searchTerm) {
   // %20OR%20author:%22*Marcia*%22%20OR%20author:%22*Phillips*%22&wt=json&rows=1000&fq=capacity:public&fq=state:active
 
   return solrQuery;
+*/
 }
 
 // Returns array with strings that are both only maxWords or less and do not start with a number

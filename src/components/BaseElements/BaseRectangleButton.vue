@@ -1,12 +1,16 @@
 <template>
-  <v-tooltip v-bind="{ tooltipPosition: true }" :disabled="$vuetify.display.smAndDown || !tooltipText">
+  <v-tooltip
+    v-bind="{ tooltipPosition: true }"
+    :disabled="$vuetify.display.smAndDown || !tooltipText"
+  >
     <template #activator="{ props }">
       <v-btn
+        :style="{ background: bgcWhite ? '#fff' : '' }"
         v-bind="props"
         :size="buttonSize"
         :class="marginClass"
         :color="disabled ? 'grey' : color"
-        :variant='buttonVariant'
+        :variant="buttonVariant"
         :disabled="disabled"
         :href="url"
         :loading="loading"
@@ -15,7 +19,7 @@
         target="_blank"
         @click.stop="onClick"
       >
-        <BaseIcon v-if="icon" :icon="icon" :color='iconColor' class='mr-1' />
+        <BaseIcon v-if="icon" :icon="icon" :color="iconColor" class="mr-1" />
         {{ buttonText }}
       </v-btn>
     </template>
@@ -56,10 +60,13 @@ export default {
     buttonText: String,
     tooltipText: String,
     isOutlined: Boolean,
+    bgcWhite: Boolean,
+    isTonal: Boolean,
     isFlat: Boolean,
     color: { type: String, default: 'primary' },
     iconColor: { type: String, default: undefined },
     isSmall: Boolean,
+    isXLarge: Boolean,
     isXsSmall: Boolean,
     url: String,
     marginClass: String,
@@ -76,10 +83,15 @@ export default {
       if (this.isXsSmall) {
         return 'x-small';
       }
+      if (this.isXLarge) {
+        return 'x-large';
+      }
       return 'default';
     },
     buttonVariant() {
       if (this.isFlat) return 'plain';
+
+      if (this.isTonal) return 'tonal';
 
       if (this.isOutlined) return 'outlined';
 

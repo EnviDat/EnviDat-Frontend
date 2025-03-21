@@ -16,8 +16,11 @@ import { getFilesWithPrefix } from './src/factories/enhancementsFactoryNode.js';
 
 const version = process.env.npm_package_version;
 
+const useHttps = process.env.VITE_USE_HTTPS === 'true';
+
 export default ({ mode, config }) => {
   const isProd = mode === 'production';
+  const isDev = mode === 'development';
 
   const fileName = `version_${version}.txt`;
   const existingFilePaths = path.resolve(__dirname, 'public/');
@@ -84,22 +87,34 @@ export default ({ mode, config }) => {
       }),
       visualizer({
         filename: './dist/buildStats.html',
-        title : 'EnviDat Build Visualizer',
+        title: 'EnviDat Build Visualizer',
       }),
       vueDevTools(),
     ],
     resolve: {
-        alias: [
-          { find: '@', replacement: path.resolve(__dirname, 'src') },
-          { find: '~', replacement: path.resolve(__dirname) },
-          // { find: 'leaflet', replacement: 'leaflet/dist/leaflet.js' },
-          { find: 'leaflet/dist/leaflet.css', replacement: 'leaflet/dist/leaflet.css' },
-          // { find: 'leaflet', replacement: 'leaflet/dist/leaflet-src.esm.js' },
-          { find: 'leaflet.markercluster/dist/MarkerCluster.css', replacement: 'leaflet.markercluster/dist/MarkerCluster.css' },
-          { find: 'leaflet.markercluster/dist/MarkerCluster.Default.css', replacement: 'leaflet.markercluster/dist/MarkerCluster.Default.css' },
-          { find: 'leaflet.markercluster', replacement: 'leaflet.markercluster/dist/leaflet.markercluster.js' },
-          { find: 'vue', replacement: 'vue/dist/vue.esm-bundler.js' },
-        ],
+      alias: [
+        { find: '@', replacement: path.resolve(__dirname, 'src') },
+        { find: '~', replacement: path.resolve(__dirname) },
+        // { find: 'leaflet', replacement: 'leaflet/dist/leaflet.js' },
+        {
+          find: 'leaflet/dist/leaflet.css',
+          replacement: 'leaflet/dist/leaflet.css',
+        },
+        // { find: 'leaflet', replacement: 'leaflet/dist/leaflet-src.esm.js' },
+        {
+          find: 'leaflet.markercluster/dist/MarkerCluster.css',
+          replacement: 'leaflet.markercluster/dist/MarkerCluster.css',
+        },
+        {
+          find: 'leaflet.markercluster/dist/MarkerCluster.Default.css',
+          replacement: 'leaflet.markercluster/dist/MarkerCluster.Default.css',
+        },
+        {
+          find: 'leaflet.markercluster',
+          replacement: 'leaflet.markercluster/dist/leaflet.markercluster.js',
+        },
+        { find: 'vue', replacement: 'vue/dist/vue.esm-bundler.js' },
+      ],
     },
     define: {
       'process.env': loadEnv(mode, process.cwd()),
@@ -123,68 +138,106 @@ export default ({ mode, config }) => {
       rollupOptions: isProd
         ? {
             output: {
+              // [name].[hash] to avoid the build to change the hash every time?
+              // https://rollupjs.org/configuration-options/#output-entryfilenames
+              // we need to so that when creating a new build, only the files which have changed
+              // get a new hash to breaking caching of the browser
+              entryFileNames: 'assets/[name].[hash].js',
+              chunkFileNames: 'assets/[name].[hash].js',
+              assetFileNames: 'assets/[name].[hash].[ext]',
               manualChunks: (id) => {
                 if (id.includes('node_modules')) {
                   if (id.includes('vuetify')) {
                     return 'vendor_vuetify';
                   }
 
-              if (id.includes('vue') || id.includes('pinia')) {
-                // vue, vuex & pinia, vue-router, etc.
-                return 'vendor_vue';
+                  if (id.includes('vue') || id.includes('pinia')) {
+                    // vue, vuex & pinia, vue-router, etc.
+                    return 'vendor_vue';
+                  }
+
+                  if (id.includes('leaflet')) {
+                    return 'vendor_leaflet';
+                  }
+
+                  if (id.includes('turf')) {
+                    return 'vendor_turf';
+                  }
+
+                  if (id.includes('uppy')) {
+                    return 'vendor_uppy';
+                  }
+
+                  if (id.includes('chart') || id.includes('uplot')) {
+                    return 'vendor_charts';
+                  }
+
+                  if (id.includes('yup')) {
+                    return 'vendor_validation';
+                  }
+
+                  if (
+                    id.includes('axios') ||
+                    id.includes('date-fns') ||
+                    id.includes('mitt') ||
+                    id.includes('seedrandom') ||
+                    id.includes('tiny-js-md5')
+                  ) {
+                    return 'vendor_utils';
+                  }
+
+                  if (id.includes('@mdi/js')) {
+                    return 'vendor_icons';
+                  }
+
+                  if (
+                    id.includes('vanilla-jsoneditor') ||
+                    id.includes('codemirror')
+                  ) {
+                    return 'vendor_jsoneditor';
+                  }
+
+                  return 'vendors';
+                }
+
+                if (id.includes('src/assets')) {
+                  return 'envidat_assets';
+                }
+
+                // Let Rollup handle the rest
+                return undefined;
+              },
+            },
+          }
+        : {},
+    },
+    server: isDev
+      ? {
+          host: '0.0.0.0',
+          port: 8080,
+          allowedHosts: ['dev.envidat04.wsl.ch:8080'],
+          https: useHttps
+            ? {
+                key: fs.readFileSync(path.resolve(__dirname, 'certs/key.pem')),
+                cert: fs.readFileSync(
+                  path.resolve(__dirname, 'certs/cert.pem'),
+                ),
               }
-
-              if (id.includes('leaflet')) {
-                return 'vendor_leaflet';
-              }
-
-              if (id.includes('turf')) {
-                return 'vendor_turf';
-              }
-
-              if (id.includes('uppy')) {
-                return 'vendor_uppy';
-              }
-
-              if (id.includes('chart') || id.includes('uplot')) {
-                return 'vendor_charts';
-              }
-
-              if (id.includes('yup')) {
-                return 'vendor_validation';
-              }
-
-              if (id.includes('axios')
-                || id.includes('date-fns')
-                || id.includes('mitt')
-                || id.includes('seedrandom')
-                || id.includes('tiny-js-md5')
-              ) {
-                return 'vendor_utils';
-              }
-
-              return 'vendors';
-            }
-
-            if (id.includes('src/assets')) {
-              return 'envidat_assets';
-            }
-
-
-            // Let Rollup handle the rest
-            return undefined
+            : false,
+          proxy: {
+            '/api': {
+              target: 'https://statistics.wsl.ch',
+              changeOrigin: true,
+              rewrite: (proxyPath) => proxyPath.replace(/^\/api/, ''),
+            },
+            // '/envidat04': {
+            //   target: 'https://envidat04.wsl.ch',
+            //   changeOrigin: true,
+            //   secure: true,
+            //   rewrite: (proxyPath) => proxyPath.replace(/^\/envidat04/, ''),
+            // },
           },
-        },
-      } : {},
-    },
-    server: {
-      host: '0.0.0.0',
-      port: 8080,
-      allowedHosts: ['dev.envidat04.wsl.ch:8080'],
-      https: {
-        key: fs.readFileSync(path.resolve(__dirname, 'certs/key.pem')),
-        cert: fs.readFileSync(path.resolve(__dirname, 'certs/cert.pem')),
-      },
-    },
+        }
+      : {},
   });
 };

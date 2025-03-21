@@ -14,7 +14,6 @@
  */
 
 
-import MetadataDescription from '@/modules/metadata/components/Metadata/MetadataDescription.vue';
 import MetadataCitation from '@/modules/metadata/components/Metadata/MetadataCitation.vue';
 import MetadataDetails from '@/modules/metadata/components/Metadata/MetadataDetails.vue';
 import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications.vue';
@@ -23,6 +22,7 @@ import MetadataFunding from '@/modules/metadata/components/Metadata/MetadataFund
 import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuthors.vue';
 
 import {
+  createBody,
   createDetails,
   createPublications,
   enhanceMetadatasTitleImage,
@@ -47,8 +47,6 @@ import envidat_packages from './testdata/packagelist.json';
 
 export default {
   title: '3 Datasets / 1 Views',
-  decorators: [],
-  parameters: {},
 };
 
 enhanceMetadatasTitleImage(metadata);
@@ -164,45 +162,6 @@ const genericProps5 = {
     showDatasetCount: false,
   },
 };
-
-
-export const MetadataDescriptionViews = () => ({
-  components: { MetadataDescription },
-  template: `
-  <v-row>
-
-    <v-col cols="6" class="py-3">
-      <MetadataDescription  />
-    </v-col>
-
-    <v-col cols="6" class="py-3">
-      <MetadataDescription v-bind="genericPropsPlaceholder" />
-    </v-col>
-
-    <v-col cols="4" class="py-3">
-      <MetadataDescription v-bind="genericPropsBody" />
-    </v-col>
-
-    <v-col cols="8" class="py-3">
-      <MetadataDescription v-bind="genericPropsBodyLongDesc" />
-    </v-col>
-
-  </v-row>
-  `,
-  data: () => ({
-    genericPropsPlaceholder: {
-      showPlaceholder: true,
-    },
-    genericPropsBody: {
-      showPlaceholder: false,
-      ...body1,
-    },
-    genericPropsBodyLongDesc: {
-      showPlaceholder: false,
-      ...body2,
-    },
-  }),
-});
 
 
 export const MetadataCitationViews = () => ({

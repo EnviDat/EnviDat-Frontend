@@ -6,14 +6,16 @@
 import axios from 'axios';
 
 import { reactive } from 'vue';
-import { EditHeaderViewModel } from '@/factories/ViewModels/EditHeaderViewModel';
+import { EditHeaderViewModel } from '@/factories/ViewModels/EditHeaderViewModel.ts';
 import { ACTION_METADATA_EDITING_PATCH_DATASET } from '@/modules/user/store/userMutationsConsts';
 import { urlRewrite } from '@/factories/apiFactory';
-import { DatasetDTO } from '@/factories/ViewModels/DatasetDTO';
-import { HeaderViewModel } from '@/factories/ViewModels/HeaderViewModel';
+import { Dataset } from '@/factories/ViewModels/Dataset.ts';
+import { HeaderViewModel } from '@/factories/ViewModels/HeaderViewModel.ts';
 import { AuthorsViewModel } from '@/factories/ViewModels/AuthorsViewModel';
-import { EditDescriptionViewModel } from '@/factories/ViewModels/EditDescriptionViewModel';
-import { EditKeywordsViewModel } from '@/factories/ViewModels/EditKeywordsViewModel';
+import { EditDescriptionViewModel } from '@/factories/ViewModels/EditDescriptionViewModel.ts';
+import { EditKeywordsViewModel } from '@/factories/ViewModels/EditKeywordsViewModel.ts';
+import { DatasetDTO } from '@/types/modelTypes';
+import { AbstractBaseViewModel } from '@/factories/ViewModels/AbstractBaseViewModel.ts';
 
 // don't use an api base url or API_ROOT when using testdata
 let API_BASE = '';
@@ -42,28 +44,28 @@ export class EditDatasetServiceLayer {
     EditKeywordsViewModel,
   ];
 
-  viewModelInstances = new Map();
+  viewModelInstances : Map<string, any> = new Map();
 
-  datasetDTO;
+  dataset: DatasetDTO;
 
-  constructor(datasetBackend) {
+  constructor(datasetBackend : unknown) {
 
-    this.datasetDTO = new DatasetDTO(datasetBackend, this);
+    this.dataset = new Dataset(datasetBackend, this);
 
     for (let i = 0; i < this.viewModelClasses.length; i++) {
       const vmClass = this.viewModelClasses[i];
       // eslint-disable-next-line new-cap
-      const instance = new vmClass(this.datasetDTO);
+      const instance = new vmClass(this.dataset);
       const reactiveVM = reactive(instance);
 
       this.viewModelInstances.set(instance.constructor.name, reactiveVM);
     }
 
-    this.datasetDTO.subscribeToViewModels(this.viewModelInstances);
+    this.dataset.subscribeToViewModels(this.viewModelInstances);
   }
 
 
-  async patchDatasetChanges (datasetId, viewModel) {
+  async patchDatasetChanges (datasetId : string, viewModel : AbstractBaseViewModel) {
 
     if (useTestdata) {
       return mockDataResponse.dataset.result;
@@ -89,7 +91,7 @@ export class EditDatasetServiceLayer {
     return this.viewModelInstances;
   }
 
-  getViewModel(modelName) {
+  getViewModel(modelName : string) {
     return this.viewModelInstances.get(modelName);
   }
 

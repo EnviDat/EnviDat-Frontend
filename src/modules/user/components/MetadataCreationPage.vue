@@ -19,24 +19,22 @@
                        @clickedSaveDataset="catchSaveNewDataset"
                        @clickedClose="catchBackClicked" />
 
-
-    <v-snackbar id="NotificationSnack"
-                top
-                elevation="0"
-                color="transparent"
-                timeout="10000"
-                v-model="showSnack"
-                >
-
-      <NotificationCard v-if="creationError"
-                        :notification="creationError"
-                        :showCloseButton="true"
-                        @clickedClose="showSnack = false" />
-
+    <v-snackbar
+      id="NotificationSnack"
+      top
+      elevation="0"
+      color="transparent"
+      timeout="10000"
+      v-model="showSnack"
+    >
+      <NotificationCard
+        v-if="creationError"
+        :notification="creationError"
+        :showCloseButton="true"
+        @clickedClose="showSnack = false"
+      />
     </v-snackbar>
-
   </v-container>
-
 </template>
 
 <script>
@@ -73,9 +71,7 @@ import {
   EDITMETADATA_PUBLICATION_INFO,
 } from '@/factories/eventBus';
 
-import {
-  getSelectedElement,
-} from '@/factories/userEditingFactory';
+import { getSelectedElement } from '@/factories/userEditingFactory';
 
 import {
   METADATA_CREATION_DATASET,
@@ -89,16 +85,10 @@ import {
 
 import {
   BROWSE_PATH,
-  METADATA_CREATION_PAGENAME,
   METADATAEDIT_PAGENAME,
   USER_DASHBOARD_PATH,
   USER_SIGNIN_PAGENAME,
 } from '@/router/routeConsts';
-
-import {
-  SET_APP_BACKGROUND,
-  SET_CURRENT_PAGE,
-} from '@/store/mainMutationsConsts';
 
 import { METADATA_TITLE_PROPERTY } from '@/factories/metadataConsts';
 
@@ -123,20 +113,13 @@ import {
   initializeSteps,
 } from '@/factories/workflowFactory';
 
-import {metadataCreationSteps} from '@/factories/workflowCreation';
+import { metadataCreationSteps } from '@/factories/workflowCreation';
 import { getReadOnlyFieldsObject } from '@/factories/mappingFactory';
 import { replaceAuthorDeadAscii } from '@/factories/authorFactory';
 
-
 export default {
   name: 'MetadataCreationPage',
-  beforeRouteEnter(to, from, next) {
 
-    next((vm) => {
-      vm.$store.commit(SET_CURRENT_PAGE, METADATA_CREATION_PAGENAME);
-      vm.$store.commit(SET_APP_BACKGROUND, vm.pageBGImage);
-    });
-  },
   created() {
     this.organizationsStore = useOrganizationsStore();
 
@@ -160,17 +143,28 @@ export default {
     eventBus.off(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
   },
   beforeMount() {
-    initializeStepsInUrl(this.creationSteps, this.routeStep, this.routeSubStep, this);
+    initializeStepsInUrl(
+      this.creationSteps,
+      this.routeStep,
+      this.routeSubStep,
+      this,
+    );
 
-    const prefilledOrganizationId = this.organizationsStore.userOrganizationIds?.length === 1 ? this.organizationsStore.userOrganizationIds[0] : undefined;
-    initStepDataOnLocalStorage(this.creationSteps, this.user, prefilledOrganizationId);
+    const prefilledOrganizationId =
+      this.organizationsStore.userOrganizationIds?.length === 1
+        ? this.organizationsStore.userOrganizationIds[0]
+        : undefined;
+    initStepDataOnLocalStorage(
+      this.creationSteps,
+      this.user,
+      prefilledOrganizationId,
+    );
 
     this.setReadOnlyBasedOnVisibility(this.creationSteps);
   },
   mounted() {
     // reset the scrolling to the top
     window.scrollTo(0, 0);
-
 
     if (this.user) {
       this.initializeMetadata();
@@ -180,10 +174,7 @@ export default {
   },
   computed: {
     ...mapState(['config']),
-    ...mapState(USER_SIGNIN_NAMESPACE,[
-      'user',
-      'userLoading',
-    ]),
+    ...mapState(USER_SIGNIN_NAMESPACE, ['user', 'userLoading']),
     ...mapState(USER_NAMESPACE, [
       'newMetadatasetName',
       'metadataCreationError',
@@ -219,18 +210,25 @@ export default {
   },
   methods: {
     setReadOnlyBasedOnVisibility(steps) {
-      const publicationStep = getStepByName(EDITMETADATA_PUBLICATION_INFO, steps);
-      const readOnlyObj = getReadOnlyFieldsObject(publicationStep?.genericProps?.publicationState);
+      const publicationStep = getStepByName(
+        EDITMETADATA_PUBLICATION_INFO,
+        steps,
+      );
+      const readOnlyObj = getReadOnlyFieldsObject(
+        publicationStep?.genericProps?.publicationState,
+      );
 
       if (readOnlyObj) {
         updateStepsWithReadOnlyFields(steps, readOnlyObj);
       }
-
     },
     async loadUserOrganizations() {
       this.isLoadingUserOrganizations = true;
       try {
-        if (!this.organizationsStore.userOrganizations || this.organizationsStore.userOrganizations.length === 0) {
+        if (
+          !this.organizationsStore.userOrganizations ||
+          this.organizationsStore.userOrganizations.length === 0
+        ) {
           await this.organizationsStore.UserGetOrgIds(this.user?.id);
 
           const userId = this.user?.id;
@@ -249,7 +247,9 @@ export default {
           });
         }
 
-        this.updateStepsOrganizations(this.organizationsStore.userOrganizations);
+        this.updateStepsOrganizations(
+          this.organizationsStore.userOrganizations,
+        );
       } catch (error) {
         console.error('Error:', error);
       } finally {
@@ -259,17 +259,29 @@ export default {
     updateStepsOrganizations(userOrganizations) {
       // Get any already existing information from the local storage
       // to make sure not to overwrite anything!
-      const existingOrganizationData = readDataFromLocalStorage(EDITMETADATA_ORGANIZATION);
+      const existingOrganizationData = readDataFromLocalStorage(
+        EDITMETADATA_ORGANIZATION,
+      );
 
       const data = {
         ...existingOrganizationData,
         userOrganizations,
-      }
+      };
 
-      storeCreationStepsData(EDITMETADATA_ORGANIZATION, data, this.creationSteps, true, false)
+      storeCreationStepsData(
+        EDITMETADATA_ORGANIZATION,
+        data,
+        this.creationSteps,
+        true,
+        false,
+      );
     },
     updateLastEditingDataset(name, path, backPath) {
-      this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_LAST_DATASET}`, { name, path, backPath });
+      this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_LAST_DATASET}`, {
+        name,
+        path,
+        backPath,
+      });
     },
     catchBackClicked() {
       const path = USER_DASHBOARD_PATH;
@@ -279,7 +291,6 @@ export default {
       this.catchSaveNewDataset();
     },
     loadDatasetInEditingWorkflow(metadataId) {
-
       const resourceStep = getStepByName(EDITMETADATA_DATA, this.creationSteps);
       const title = resourceStep?.title || undefined;
 
@@ -297,7 +308,9 @@ export default {
       this.$nextTick(() => {
         updateAllStepsForCompletion(this.creationSteps);
 
-        this.canSaveInBackend = canLocalDatasetBeStoredInBackend(this.creationSteps);
+        this.canSaveInBackend = canLocalDatasetBeStoredInBackend(
+          this.creationSteps,
+        );
       });
     },
     showDialogSignInNeeded() {
@@ -313,16 +326,21 @@ export default {
       this.$router.push({ name: USER_SIGNIN_PAGENAME });
     },
     async catchSaveNewDataset() {
-
-      const data = createNewDatasetFromSteps(this.creationSteps, this.userEditMetadataConfig);
+      const data = createNewDatasetFromSteps(
+        this.creationSteps,
+        this.userEditMetadataConfig,
+      );
       const metadataId = data.name;
 
-      await this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_CREATION_DATASET}`, data);
+      await this.$store.dispatch(
+        `${USER_NAMESPACE}/${METADATA_CREATION_DATASET}`,
+        data,
+      );
 
       if (this.newMetadatasetName) {
         eventBus.emit(SHOW_DIALOG, {
           title: 'Dataset Saved!',
-          message: `Your datasets ${ this.newMetadatasetName } has been saved successfully and it's now part of your dashboard! <br /> <br />
+          message: `Your datasets ${this.newMetadatasetName} has been saved successfully and it's now part of your dashboard! <br /> <br />
           Would you like to continue editing the dataset to upload resources and add additional metadata?`,
           callback: () => {
             localStorage.clear();
@@ -342,16 +360,16 @@ export default {
           details: this.metadataCreationError.details,
         });
       }
-
     },
     catchAuthorCardAuthorSearch(fullName) {
       const cleanFullName = replaceAuthorDeadAscii(fullName);
 
-      const routeData = this.$router.resolve({ path:`${BROWSE_PATH}?search=${cleanFullName}&isAuthorSearch=true`});
+      const routeData = this.$router.resolve({
+        path: `${BROWSE_PATH}?search=${cleanFullName}&isAuthorSearch=true`,
+      });
       window.open(routeData.href, '_blank');
     },
     selectAuthor(email) {
-
       const step = getStepByName(EDITMETADATA_AUTHOR_LIST, this.creationSteps);
       const authors = step.genericProps.authors;
 
@@ -360,27 +378,33 @@ export default {
       if (previousSelected) {
         previousSelected.isSelected = false;
 
-        this.componentChanged({
+        this.componentChanged(
+          {
             object: EDITMETADATA_AUTHOR,
             data: previousSelected,
           },
-          false);
+          false,
+        );
       }
 
-      const selectedAuthor = authors.filter(a => a.email === email)[0];
+      const selectedAuthor = authors.filter((a) => a.email === email)[0];
 
       selectedAuthor.isSelected = true;
 
-      this.componentChanged({
+      this.componentChanged(
+        {
           object: EDITMETADATA_AUTHOR,
           data: selectedAuthor,
         },
-        false);
+        false,
+      );
     },
     cancelEditingAuthor() {
-
       // don't use the the gene
-      const authorStep = getStepByName(EDITMETADATA_AUTHOR_LIST, this.creationSteps);
+      const authorStep = getStepByName(
+        EDITMETADATA_AUTHOR_LIST,
+        this.creationSteps,
+      );
       const authors = authorStep.genericProps.authors;
 
       const previousSelected = getSelectedElement(authors);
@@ -388,15 +412,16 @@ export default {
       if (previousSelected) {
         previousSelected.isSelected = false;
 
-        this.componentChanged({
+        this.componentChanged(
+          {
             object: EDITMETADATA_AUTHOR,
             data: previousSelected,
           },
-          false);
+          false,
+        );
       }
     },
     componentChanged(updateObj, resetMessages = true) {
-
       const dataKey = updateObj.object;
       const data = updateObj.data;
 
@@ -404,9 +429,10 @@ export default {
 
       this.$nextTick(() => {
         updateAllStepsForCompletion(this.creationSteps);
-        this.canSaveInBackend = canLocalDatasetBeStoredInBackend(this.creationSteps);
+        this.canSaveInBackend = canLocalDatasetBeStoredInBackend(
+          this.creationSteps,
+        );
       });
-
     },
     validateCurrentStep() {
       const step = getStepFromRoute(this.$route, this.creationSteps);
@@ -414,7 +440,6 @@ export default {
       return step.key;
     },
     showSnackMessage({ status, statusMessage, details }) {
-
       this.errorTitle = status;
       this.errorMessage = `${statusMessage} ${details}`;
 
@@ -422,11 +447,11 @@ export default {
     },
   },
   watch: {
-    $route(){
+    $route() {
       updateAllStepsForCompletion(this.creationSteps);
     },
     userLoading() {
-      if(!this.userLoading) {
+      if (!this.userLoading) {
         if (this.user) {
           this.initializeMetadata();
         } else {
@@ -452,7 +477,8 @@ export default {
       },
       408: {
         message: 'Server timeout happened.',
-        details: 'This can have many reasons, please try your action / changes again after a while. If it problem persists please contact us via envidat@wsl.ch.',
+        details:
+          'This can have many reasons, please try your action / changes again after a while. If it problem persists please contact us via envidat@wsl.ch.',
       },
       409: {
         message: 'You are not authorized to make these changes',

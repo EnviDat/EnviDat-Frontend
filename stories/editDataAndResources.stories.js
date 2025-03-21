@@ -11,30 +11,21 @@
  */
 
 import {
-  CANCEL_EDITING_RESOURCE,
   EDITMETADATA_DATA_RESOURCE,
-  EDITMETADATA_DATA_RESOURCES,
-  EDITMETADATA_OBJECT_UPDATE,
-  eventBus,
-  SAVE_EDITING_RESOURCE,
-  SELECT_EDITING_RESOURCE,
 } from '@/factories/eventBus';
 
-import EditMetadataResources from '@/modules/user/components/EditMetadataResources.vue';
 import EditDataAndResources from '@/modules/user/components/EditDataAndResources.vue';
-import EditResource from '@/modules/user/components/EditResource.vue';
 
 import {
   enhanceElementsWithStrategyEvents,
-  localIdProperty,
   SELECT_EDITING_RESOURCE_PROPERTY,
 } from '@/factories/strategyFactory';
 
 import {
   cleanListForFrontend,
   enhanceUserObject,
-  mergeResourceSizeForFrontend,
 } from '@/factories/mappingFactory';
+
 import unFormatedMetadata from './js/metadata';
 import userList from './testdata/user_list.json';
 
@@ -83,189 +74,43 @@ deprecatedResources[1].deprecated = true;
 deprecatedResources[2].deprecated = true;
 
 export default {
-  title: '3 Datasets / 2 Edit / Resource',
-  component: EditResource,
+  title: '3 Datasets / 2 Edit / Data And Resources',
+  component: EditDataAndResources,
 };
 
-const userEditMetadataConfig = {
-  editingRestrictingActive: true,
-};
 
-export const Default = {}
+export const Empty = {}
 
-
-export const EditResourceViews = () => ({
-  components: { EditResource },
-  template: `
-    <v-container>
-
-
-      <v-row class="py-3" >
-        <v-col cols="12" lg="6" xl="4">
-          <EditResource v-bind="resource1" />
-        </v-col>
-
-
-        <v-col cols="12" lg="6" xl="4">
-          <EditResource v-bind="resource2" />
-        </v-col>
-
-        <v-col cols="12" lg="6" xl="4">
-          <EditResource v-bind="resource3" />
-        </v-col>
-
-        <v-col cols="12" lg="6" xl="4">
-          <EditResource v-bind="resource4" />
-        </v-col>
-
-      </v-row>
-
-      <h1 class="mt-5">EditResource with warning for uppercase extension</h1>
-
-      <v-row class="py-3" >
-
-        <v-col cols="12" lg="6" xl="4">
-          <EditResource v-bind="resource1" />
-        </v-col>
-
-      </v-row>
-
-    </v-container>
-    `,
-  created() {
-    eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
-  },
-  beforeUnmount() {
-    eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
-  },
-  methods: {
-    editComponentsChanged(updateObj) {
-      this.resource1 = updateObj.data;
+export const WithResourcesDisabledNew = {
+  args: {
+    resources: allResources[0],
+    license: unFormatedMetadata[0].license_title,
+    licenseUrl: unFormatedMetadata[0].license_url,
+    // selectionId: this.selectionId,
+    resourcesConfig: {
+      downloadActive: false,
     },
   },
-  computed: {
-    resource4() {
-      return {
-        ...allResources[2][2],
-        loading: true,
-        envidatUsers,
-      };
+}
+
+export const WithResourcesEnabled = {
+  args: {
+    resources: allResources[0],
+    license: unFormatedMetadata[0].license_title,
+    licenseUrl: unFormatedMetadata[0].license_url,
+    // selectionId: this.selectionId,
+    resourcesConfig: {
+      downloadActive: false,
+    },
+    userEditMetadataConfig: {
+      resourceUploadActive: true,
+      resourceEditingActive: true,
+      editingRestrictingActive: true,
     },
   },
-  data: () => ({
-    emptyFirstGenericProps: {
-      id: '1',
-      resources: [],
-      selectionId: -1,
-      resourcesConfig: {
-        downloadActive: false,
-      },
-    },
-    resource1: {
-      ...allResources[0][0],
-      ...mergeResourceSizeForFrontend(allResources[0][0]),
-      userEditMetadataConfig,
-      envidatUsers,
-    },
-    resource2: {
-      ...allResources[0][1],
-      ...mergeResourceSizeForFrontend(allResources[0][1]),
-      userEditMetadataConfig,
-      envidatUsers,
-    },
-    resource3: {
-      ...allResources[2][0],
-      ...mergeResourceSizeForFrontend(allResources[2][0]),
-      userEditMetadataConfig,
-      envidatUsers,
-    },
-  }),
-});
+}
 
-export const EditResourcesList = () => ({
-  components: { EditMetadataResources },
-  template: `
-    <v-col>
-
-      <v-row>
-        EditMetadataResources EmptyList
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditMetadataResources v-bind="emptyFirstGenericProps" />
-        </v-col>
-      </v-row>
-
-      <v-row>
-        EditMetadataResources with resources
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditMetadataResources v-bind="genericProps" />
-        </v-col>
-      </v-row>
-
-      <v-row>
-        EditMetadataResources with deprecated resources
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditMetadataResources v-bind="deprecatedProps" />
-        </v-col>
-      </v-row>
-
-    </v-col>
-    `,
-  created() {
-    eventBus.on(SELECT_EDITING_RESOURCE, this.selectResource);
-  },
-  beforeUnmount() {
-    eventBus.off(SELECT_EDITING_RESOURCE, this.selectResource);
-  },
-  methods: {
-    selectResource(id) {
-      this.emptyFirstGenericProps = {
-        ...this.emptyFirstGenericProps,
-        selectionId: id,
-      };
-    },
-    // editComponentsChanged(updateObj) {
-    //   if (updateObj.data.id === this.genericProps.id) {
-    //     this.genericProps = updateObj.data;
-    //   }
-    //   if (updateObj.data.id === this.emptyFirstGenericProps.id) {
-    //     this.emptyFirstGenericProps = updateObj.data;
-    //   }
-    // },
-  },
-  data: () => ({
-    emptyFirstGenericProps: {
-      id: '1',
-      resources: [],
-      selectionId: -1,
-      resourcesConfig: {
-        downloadActive: false,
-      },
-    },
-    genericProps: {
-      id: '2',
-      resources: allResources[2],
-      selectionId: -1,
-      resourcesConfig: {
-        downloadActive: false,
-      },
-    },
-    deprecatedProps: {
-      id: '2',
-      resources: deprecatedResources,
-      selectionId: -1,
-    },
-  }),
-});
-
+/*
 export const EditDataAndResourcesListViews = () => ({
   components: { EditDataAndResources },
   template: `
@@ -408,3 +253,4 @@ export const EditDataAndResourcesListViews = () => ({
     selectionId: -1,
   }),
 });
+*/

@@ -1,7 +1,10 @@
 import { watch } from 'vue';
 import { convertJSON } from '@/factories/mappingFactory';
+import type { DatasetDTO } from '@/types/modelTypes';
+import { EditDatasetServiceLayer } from '@/factories/ViewModels/EditDatasetServiceLayer';
 
-export class DatasetDTO {
+// @ts-ignore TS2420
+export class Dataset implements DatasetDTO {
 
   /**
    * List of the watcher methods to be called to stop watching on a reactive model
@@ -9,7 +12,7 @@ export class DatasetDTO {
    */
   subscribers = [];
 
-  serviceLayer;
+  serviceLayer : EditDatasetServiceLayer;
 
   /**
    * Map to keep reference of models that are being updated from the backend
@@ -20,17 +23,17 @@ export class DatasetDTO {
    */
   modelInSyncMap = new Map();
 
-  constructor(datasetBackend, serviceLayer) {
+  constructor(datasetBackend: unknown, serviceLayer: EditDatasetServiceLayer) {
     this.convertBackendDataset(datasetBackend);
     this.serviceLayer = serviceLayer;
   }
 
-  convertBackendDataset(datasetBackend) {
+  convertBackendDataset(datasetBackend: unknown) {
     const frontendJson = convertJSON(datasetBackend, false);
     Object.assign(this, frontendJson);
   }
 
-  subscribeToViewModels(viewModels) {
+  subscribeToViewModels(viewModels: Map<string, any>) {
 
     // eslint-disable-next-line no-unused-vars
     for (const [key, vm] of viewModels) {
@@ -54,10 +57,11 @@ export class DatasetDTO {
           this.convertBackendDataset(newBackendDataset);
           this.updateViewModels();
 
-          newModel.savedSuccessfull = true;
+          newModel.savedSuccessful = true;
 
         } catch (e) {
-          newModel.savedSuccessfull = false;
+          newModel.savedSuccessful = false;
+          newModel.error = e;
           this.updateViewModelWithError(e, newModel);
         }
 
