@@ -89,6 +89,7 @@ typings/
 
 # envidat frontend
 dist/
+certs/
 storybook-static/
 /.idea/
 

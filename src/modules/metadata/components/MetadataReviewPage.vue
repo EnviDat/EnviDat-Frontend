@@ -119,6 +119,7 @@ import { formatDate } from '@/factories/dateFactory';
 import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionViewModel';
 
 import MetadataHeader from './Metadata/MetadataHeader.vue';
+import {BLIND_REVIEW_ON} from "@/factories/metadataConsts.js";
 
 const MetadataDescription = defineAsyncComponent(() =>
   import('./Metadata/MetadataDescription.vue'),
@@ -441,6 +442,11 @@ export default {
     setMetadataContent() {
       this.configInfos = getConfigUrls(this.configInfos);
 
+      // check if the url contains id for blind review
+      const datasetId = this.metadata.id;
+      if (datasetId !== this.metadataId && this.metadata.version === BLIND_REVIEW_ON) {
+        return;
+      }
       this.MetadataDescription.props = { ...this.body };
 
       this.MetadataCitation.props = {

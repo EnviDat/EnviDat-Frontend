@@ -180,12 +180,10 @@ export default ({ mode, config }) => {
     server: {
       host: '0.0.0.0',
       port: 8080,
-      proxy: {
-        '/api': {
-          target: 'https://statistics.wsl.ch',
-          changeOrigin: true,
-          rewrite: proxyPath => proxyPath.replace(/^\/api/, ''),
-        },
+      allowedHosts: ['dev.envidat04.wsl.ch:8080'],
+      https: {
+        key: fs.readFileSync(path.resolve(__dirname, 'certs/key.pem')),
+        cert: fs.readFileSync(path.resolve(__dirname, 'certs/cert.pem')),
       },
     },
   });

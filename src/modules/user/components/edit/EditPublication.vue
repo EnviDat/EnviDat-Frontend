@@ -223,9 +223,6 @@ export default {
       return {
         ...this.publicationsInfo,
         isBlindReview: (this.publicationsInfo.version === BLIND_REVIEW_ON),
-        loading: this.$store ? this.doiLoading : undefined,
-        error: this.$store ? this.doiError?.message : undefined,
-        errorDetails: this.$store ? this.doiError?.details : undefined,
       };
     },
     metadataId() {
