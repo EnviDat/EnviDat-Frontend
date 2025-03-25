@@ -7,6 +7,7 @@ import vuetify from 'vite-plugin-vuetify';
 import { defineConfig, loadEnv } from 'vite';
 import { configDefaults } from 'vitest/dist/config.js';
 import eslint from 'vite-plugin-eslint';
+import { ssr } from 'vike/plugin'
 
 import Unfonts from 'unplugin-fonts/vite';
 import vueDevTools from 'vite-plugin-vue-devtools';
@@ -18,7 +19,17 @@ const version = process.env.npm_package_version;
 
 const useHttps = process.env.VITE_USE_HTTPS === 'true';
 
-export default ({ mode, config }) => {
+const isVike = process.argv.some(arg => arg.includes('vike'));
+
+export default async ({ mode, config }) => {
+
+  if (isVike) {
+    console.log('Run with vite.config.vike!');
+    const vikeConfig = await import('./vite.config.vike.ts');
+    // console.log(vikeConfig.default);
+    return vikeConfig.default;
+  }
+
   const isProd = mode === 'production';
   const isDev = mode === 'development';
 
@@ -65,6 +76,7 @@ export default ({ mode, config }) => {
   return defineConfig({
     plugins: [
       vue(),
+      ssr(),
       eslint({
         include: ['src/**/*.ts', 'src/**/*.vue'], // Include TypeScript files
         // https://github.com/storybookjs/builder-vite/issues/367#issuecomment-1938214165
@@ -126,15 +138,16 @@ export default ({ mode, config }) => {
         './tests/unit/ckanRegression.spec.js',
       ],
     },
-    base: './',
+    base: '/',
     build: {
-      assetsDir: './static',
+      assetsDir: '/static',
       chunkSizeWarningLimit: 500,
       //         assetsInlineLimit: 4096 / 2, // Reduce the amount of image inlining so the chunks don't get huge
       cssCodeSplit: true,
       minify: !buildSourceMaps,
       sourcemap: buildSourceMaps,
       emptyOutDir: true,
+/*
       rollupOptions: isProd
         ? {
             output: {
@@ -210,7 +223,9 @@ export default ({ mode, config }) => {
             },
           }
         : {},
+*/
     },
+    /*
     server: isDev
       ? {
           host: '0.0.0.0',
@@ -239,5 +254,6 @@ export default ({ mode, config }) => {
           },
         }
       : {},
+      */
   });
 };

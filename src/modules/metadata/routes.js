@@ -8,7 +8,7 @@ import {
 } from '@/router/routeConsts';
 
 // const MetadataModule = () => import('@/modules/metadata/MetadataModule.vue');
-const MetadataDetailPage = () => import('@/modules/metadata/components/MetadataDetailPage.vue');
+const MetadataDetailPage = () => import('@/modules/metadata/components/MetadataDetail.page.vue');
 const MetadataReviewPage = () => import('@/modules/metadata/components/MetadataReviewPage.vue');
 
 export const metadataRoutes = [
