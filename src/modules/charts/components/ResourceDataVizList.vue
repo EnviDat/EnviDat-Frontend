@@ -11,7 +11,7 @@ const theme = useTheme();
 const {resources, maxHeight} = withDefaults(
   defineProps<{
     resources: object[];
-    maxHeight: number;
+    maxHeight?: number;
   }>(),
   {maxHeight: 600},
 )
