@@ -254,25 +254,18 @@ export default {
     catchBlindReviewClick() {
       if (this.isBlindReviewValid()) {
         this.isBlindActive = !this.isBlindActive;
-        console.log('isBlindActive:', this.isBlindActive);
-        console.log('isBlindReview:', this.isBlindReview);
         const value = this.isBlindActive? BLIND_REVIEW_ON : BLIND_REVIEW_OFF;
         this.changeBlindReviewStatus('version', value);
-        console.log('After change');
-        console.log('isBlindActive:', this.isBlindActive);
-        console.log('isBlindReview:', this.isBlindReview);
         this.generateBlindReviewUrl();
       }
     },
     generateBlindReviewUrl() {
       if (this.datasetId && this.isBlindReview) {
         this.blindUrl = `${this.ckanDomain}/#${METADATAREVIEW_PATH}/${this.datasetId}`;
-        console.log(this.blindUrl);
       }
       else {
         this.blindUrl = '';
       }
-      console.log(this.blindUrl);
       return this.blindUrl;
     },
     changeBlindReviewStatus(property, value) {
@@ -280,7 +273,6 @@ export default {
         ...this.$props,
         [property]: value,
       };
-      console.log('changing blind status');
       eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_PUBLICATION_INFO,
         data: newBlindReviewInfo,

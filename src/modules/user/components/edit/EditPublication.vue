@@ -11,7 +11,7 @@
           <v-col cols="12">
             <EditPublicationInfo v-bind="editPublicationsProps" />
           </v-col>
-          <v-col v-if="publicationState !== PUBLICATION_STATE_PUBLISHED()" cols="12">
+          <v-col v-if="blindReviewEditingActive && publicationState !== PUBLICATION_STATE_PUBLISHED" cols="12">
             <EditReviewInfo v-bind="editReviewProps" />
           </v-col>
         </v-row>
@@ -159,6 +159,14 @@ export default {
       // storybook context
       return true;
     },
+    blindReviewEditingActive() {
+      if (this.$store) {
+        return this.config?.userEditMetadataConfig?.blindReviewEditingActive;
+      }
+
+      // storybook context
+      return true;
+    },
     publicationsInfo() {
       if (this.$store) {
         return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_PUBLICATION_INFO);
@@ -233,9 +241,6 @@ export default {
     },
   },
   methods: {
-    PUBLICATION_STATE_PUBLISHED() {
-      return PUBLICATION_STATE_PUBLISHED
-    },
     submitEdittedMetadata() {
       eventBus.emit(METADATA_EDITING_FINISH_CLICK);
     },
@@ -254,6 +259,7 @@ export default {
   },
   data: () => ({
     envidatDomain: process.env.VITE_API_ROOT,
+    PUBLICATION_STATE_PUBLISHED,
   }),
   components: {
     EditReviewInfo,
