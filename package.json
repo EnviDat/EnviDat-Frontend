@@ -34,6 +34,7 @@
     "@turf/centroid": "^6.5.0",
     "@turf/envelope": "^6.5.0",
     "@turf/rewind": "^6.5.0",
+    "@unhead/vue": "^2.0.0",
     "@uppy/aws-s3": "^4.1.0",
     "@uppy/core": "^4.2.2",
     "@uppy/dashboard": "^4.1.1",

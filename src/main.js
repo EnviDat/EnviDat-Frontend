@@ -18,6 +18,8 @@ import { createPinia } from 'pinia';
 import VueVirtualScroller from 'vue-virtual-scroller';
 import store from '@/store/store';
 
+import { createHead } from '@unhead/vue/client';
+
 import App from '@/App.vue';
 import { initAxios } from '@/init';
 
@@ -29,13 +31,13 @@ import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
 // eslint-disable-next-line import/order
 import VueMatomo from 'vue-matomo';
 
-
 const app = createApp(App);
 const pinia = createPinia();
+const head = createHead();
 
 initAxios(app, store);
 
-const siteMatomoId = process.env.VITE_MATOMO_SITEID
+const siteMatomoId = process.env.VITE_MATOMO_SITEID;
 
 // matomo part to manage the refresh issue
 if (localStorage.getItem('matomoConsentGiven') === 'true') {
@@ -45,12 +47,12 @@ if (localStorage.getItem('matomoConsentGiven') === 'true') {
   /* eslint-enable no-underscore-dangle */
 }
 
-
 app
   .use(store)
   .use(vuetify)
   .use(router)
   .use(pinia)
+  .use(head)
   .use(VueVirtualScroller)
   .use(VueMatomo, {
     // Configure your Matomo server and site by providing:
@@ -68,4 +70,3 @@ app
   })
 
   .mount('#app');
-

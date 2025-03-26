@@ -29,6 +29,7 @@
         :hasButton="true"
         @clicked="catchActionsButton"
       />
+
       <v-row justify="center" class="flex-grow-0" no-gutters>
         <!-- noMode Category -->
         <v-col
@@ -190,6 +191,8 @@ import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import { useDisplay } from 'vuetify';
 
+import { useHead } from '@unhead/vue';
+
 import { eventBus, SHOW_REDIRECT_SIGNIN_DIALOG } from '@/factories/eventBus';
 import LandingPageLayout from '@/modules/home/components/LandingPageLayout.vue';
 import SearchBarView from '@/modules/home/components/SearchBarView.vue';
@@ -311,6 +314,27 @@ store.watch(
 // setup
 const display = useDisplay();
 const router = useRouter();
+const jsonLd = ref('');
+
+// useHead({
+//   title: 'Titolo SEO',
+//   meta: [
+//     { name: 'description', content: 'description' },
+//     { property: 'og:title', content: 'Title' },
+//     { property: 'og:image', content: 'https://example.com/immagine.jpg' },
+//   ],
+//   script: [
+//     {
+//       type: 'application/ld+json',
+//       children: JSON.stringify({
+//         '@context': 'https://schema.org',
+//         '@type': 'WebPage',
+//         name: 'Titolo',
+//         description: 'Descrizione',
+//       }),
+//     },
+//   ],
+// });
 
 // computed
 const categoryCards = computed(() => store.state.categoryCards);
@@ -431,8 +455,25 @@ const catchCategoryClicked = (cardType) => {
   mixinMethodsAdditiveChangeRoute(BROWSE_PATH, '', stringTags);
 };
 
-onMounted(() => {
+onMounted(async () => {
   window.scrollTo(0, 0);
+
+  try {
+    const resp = await fetch('yourUrl');
+    const data = await resp.json();
+    jsonLd.value = JSON.stringify(data);
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+useHead({
+  script: [
+    {
+      type: 'application/ld+json',
+      children: jsonLd,
+    },
+  ],
 });
 </script>
 
