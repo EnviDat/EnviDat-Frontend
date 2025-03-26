@@ -86,7 +86,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { defineAsyncComponent, markRaw } from 'vue';
+import { defineAsyncComponent, markRaw, ref, getCurrentInstance } from 'vue';
 
 import { useHead } from '@unhead/vue';
 
@@ -209,20 +209,25 @@ const MetadataRelatedDatasets = defineAsyncComponent(
 export default {
   name: 'MetadataDetailPage',
 
-  // seo part YASMINE
+  // seo part YASMIN
 
   setup() {
     const jsonLd = ref('');
-
-    onMounted(async () => {
+    const { proxy } = getCurrentInstance();
+ 
+    
+    async function loadJsonLd(doi) {
       try {
-        const resp = await fetch('seoUrl');
+        const cleanDoi = doi.replace('/', '_')
+        const resp = await fetch(`https://os.zhdk.cloud.switch.ch/envidat-doi/${cleanDoi}/ro-crate-metadata.json`);
         const data = await resp.json();
         jsonLd.value = JSON.stringify(data);
       } catch (error) {
         console.error(error);
       }
-    });
+    };
+
+    proxy.loadJsonLd = loadJsonLd;
 
     useHead({
       script: [
@@ -585,6 +590,9 @@ export default {
           currentContent.categoryColor,
           currentContent.titleImg,
         );
+        if (this.header.doi) {
+          this.loadJsonLd(this.header.doi);
+        }
 
         // this.descriptionData = createBody(currentContent, this.$vuetify.display.smAndDown);
         this.descriptionData = createDescriptionViewModel(
