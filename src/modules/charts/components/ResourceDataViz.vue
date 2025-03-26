@@ -247,9 +247,10 @@ watch(() => resource,
 
     </v-card-text>
 
-    <v-card-text>
+    <v-card-text class="pa-0">
       <LineChart
         v-if="dataPerParameter"
+        ref="chart"
         :options="defaultOptions"
         :data="dataPerParameter"
       />

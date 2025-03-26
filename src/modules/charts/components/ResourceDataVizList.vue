@@ -13,7 +13,7 @@ const {resources, maxHeight} = withDefaults(
     resources: object[];
     maxHeight?: number;
   }>(),
-  {maxHeight: 600},
+  {maxHeight: 700},
 )
 
 
@@ -89,7 +89,9 @@ const scrollbarColorBack = computed(() => theme ? '#F0F0F0' : 'auto');
               </v-row>
             </v-col>
 
-            <v-col cols="8">
+            <v-col cols="8"
+                   class="pt-0"
+            >
               <ResourceDataViz :resource="resources ? resources[selectedId] : undefined"
                                :flat="true"
               />
