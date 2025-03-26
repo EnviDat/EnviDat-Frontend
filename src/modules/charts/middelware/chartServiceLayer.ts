@@ -33,7 +33,7 @@ export const chartPreviewData = [
     240,
   ]
 
-  export function convertCSVToJSON(csv, nullValue) {
+export function convertCSVToJSON(csv, nullValue) {
   let lines = csv.split('\n');
 
   // TEST DEV BLOCK //

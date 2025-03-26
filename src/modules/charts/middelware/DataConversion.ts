@@ -176,24 +176,21 @@ function getDelimiter(fileRow: string) : string {
   return delimiter;
 }
 
-function csvHasHeaderRow(firstRow: string, secondRow: string) : boolean {
+function csvHasHeaderRow(firstRow: string) : boolean {
   const delimiter = getDelimiter(firstRow);
-  const firstCols = firstRow.split(delimiter);
+  const cols = firstRow.split(delimiter);
 
-  const secondCols = secondRow.split(delimiter);
+  for (let i = 0; i < cols.length; i++) {
+    const cell = cols[i];
+    const parsedCell = Number.parseInt(cell, 10);
+    const isNumber = !Number.isNaN(parsedCell);
 
+    if (isNumber) {
+      return false;
+    }
+  }
 
-  let firstParsedInt = Number.parseInt(firstCols[0], 10);
-  let secondParsedInt = Number.parseInt(secondCols[0], 10);
-
-  const firstParamFit: boolean = Number.isNaN(firstParsedInt) === Number.isNaN(secondParsedInt);
-
-  firstParsedInt = Number.parseInt(firstCols[1], 10);
-  secondParsedInt = Number.parseInt(secondCols[1], 10);
-
-  const secondParamFit: boolean = Number.isNaN(firstParsedInt) === Number.isNaN(secondParsedInt);
-
-  return !firstParamFit && !secondParamFit;
+  return true;
 }
 
 export function isString(something: unknown): something is string {
@@ -228,8 +225,7 @@ function getMetaDataFromCSV(data: unknown) : MetaData {
   } else {
     // store the secondDataRow for detecting if there are headers
     const firstDataRow = csvLines[0];
-    const secondDataRow = csvLines[1];
-    const hasHeaderRow = csvHasHeaderRow(firstDataRow, secondDataRow);
+    const hasHeaderRow = csvHasHeaderRow(firstDataRow);
 
     if (!hasHeaderRow) {
       const cols = firstDataRow.split(delimiter);
