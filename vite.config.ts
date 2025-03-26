@@ -230,12 +230,11 @@ export default ({ mode, config }) => {
               changeOrigin: true,
               rewrite: (proxyPath) => proxyPath.replace(/^\/api/, ''),
             },
-            // '/envidat04': {
-            //   target: 'https://envidat04.wsl.ch',
-            //   changeOrigin: true,
-            //   secure: true,
-            //   rewrite: (proxyPath) => proxyPath.replace(/^\/envidat04/, ''),
-            // },
+            '/envidat-doi': {
+              target: 'https://os.zhdk.cloud.switch.ch',
+              changeOrigin: true,
+              rewrite: (path) => path.replace(/^\/envidat-doi/, '/envidat-doi'),
+            },
           },
         }
       : {},

@@ -86,9 +86,16 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { defineAsyncComponent, markRaw, ref, getCurrentInstance } from 'vue';
+import {
+  defineAsyncComponent,
+  markRaw,
+  watch,
+  ref,
+  getCurrentInstance,
+} from 'vue';
 
 import { useHead } from '@unhead/vue';
+import { useSeoData } from '@/factories/seoFactory';
 
 import axios from 'axios';
 import { mapGetters, mapState } from 'vuex';
@@ -209,34 +216,13 @@ const MetadataRelatedDatasets = defineAsyncComponent(
 export default {
   name: 'MetadataDetailPage',
 
-  // seo part YASMIN
+  // seo part
 
   setup() {
-    const jsonLd = ref('');
+    const { fetchSeoData, jsonLd } = useSeoData();
+
     const { proxy } = getCurrentInstance();
- 
-    
-    async function loadJsonLd(doi) {
-      try {
-        const cleanDoi = doi.replace('/', '_')
-        const resp = await fetch(`https://os.zhdk.cloud.switch.ch/envidat-doi/${cleanDoi}/ro-crate-metadata.json`);
-        const data = await resp.json();
-        jsonLd.value = JSON.stringify(data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    proxy.loadJsonLd = loadJsonLd;
-
-    useHead({
-      script: [
-        {
-          type: 'application/ld+json',
-          children: jsonLd,
-        },
-      ],
-    });
+    proxy.fetchSeoData = fetchSeoData;
 
     return {
       jsonLd,
@@ -590,8 +576,9 @@ export default {
           currentContent.categoryColor,
           currentContent.titleImg,
         );
-        if (this.header.doi) {
-          this.loadJsonLd(this.header.doi);
+
+        if (this.header?.doi) {
+          this.fetchSeoData(this.header.doi);
         }
 
         // this.descriptionData = createBody(currentContent, this.$vuetify.display.smAndDown);
@@ -1052,7 +1039,9 @@ export default {
     geoServiceConfig: null,
     geoServiceLayers: null,
     geoServiceLayersError: null,
-    header: null,
+    header: {
+      doi: null,
+    },
     descriptionData: null,
     citation: null,
     resources: null,
