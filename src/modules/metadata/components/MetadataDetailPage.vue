@@ -88,6 +88,8 @@
 
 import { defineAsyncComponent, markRaw } from 'vue';
 
+import { useHead } from '@unhead/vue';
+
 import axios from 'axios';
 import { mapGetters, mapState } from 'vuex';
 import { mdiClose } from '@mdi/js';
@@ -206,6 +208,36 @@ const MetadataRelatedDatasets = defineAsyncComponent(
 
 export default {
   name: 'MetadataDetailPage',
+
+  // seo part YASMINE
+
+  setup() {
+    const jsonLd = ref('');
+
+    onMounted(async () => {
+      try {
+        const resp = await fetch('seoUrl');
+        const data = await resp.json();
+        jsonLd.value = JSON.stringify(data);
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
+    useHead({
+      script: [
+        {
+          type: 'application/ld+json',
+          children: jsonLd,
+        },
+      ],
+    });
+
+    return {
+      jsonLd,
+    };
+  },
+
   created() {
     this.modeStore = useModeStore();
     this.modeStore.init(this.$store.getters.cardBGImages);
