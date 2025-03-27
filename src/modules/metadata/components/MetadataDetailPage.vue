@@ -1016,7 +1016,5 @@ export default {
 </script>
 
 <style>
-.resourceCardText a {
-  color: #ffd740;
-}
+
 </style>
