@@ -14,7 +14,7 @@ export const Default = {
     id: 'default-id',
     doi: '10.1000/xyz123',
     name: 'Default Resource',
-    description: 'A brief description of the default resource. **Markdown? ** [https://www.google.com](https://www.google.com)',
+    description: 'A brief description of the default resource. **Markdown?** [https://www.google.com](https://www.google.com)',
     url: 'http://example.com',
     restrictedUrl: '',
     created: '2022-01-01',
