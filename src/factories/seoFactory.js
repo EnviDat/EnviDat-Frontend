@@ -10,7 +10,7 @@ export function useSeoData() {
     try {
       const cleanDoi = doi.replace('/', '_');
       const resp = await axios.get(
-        '/envidat-doi/10.16904_envidat.196/ro-crate-metadata.json',
+        `/envidat-doi/${cleanDoi}/ro-crate-metadata.json`,
       );
 
       jsonLd.value = JSON.stringify(resp.data);
@@ -20,6 +20,13 @@ export function useSeoData() {
   }
 
   useHead({
+    title: 'EnviDat',
+    meta: [
+      {
+        name: 'description',
+        content: 'Dominik',
+      },
+    ],
     script: [
       {
         type: 'application/ld+json',

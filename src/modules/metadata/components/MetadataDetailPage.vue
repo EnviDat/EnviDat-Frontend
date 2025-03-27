@@ -577,8 +577,8 @@ export default {
           currentContent.titleImg,
         );
 
-        if (this.header?.doi) {
-          this.fetchSeoData(this.header.doi);
+        if (this.currentContent?.doi) {
+          this.fetchSeoData(this.currentContent.doi);
         }
 
         // this.descriptionData = createBody(currentContent, this.$vuetify.display.smAndDown);
