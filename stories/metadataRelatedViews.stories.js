@@ -183,7 +183,7 @@ export const EditRelatedPublicationViews = () => ({
       subtitlePreview: 'Preview',
       showPlaceholder: false,
       relatedPublicationsText:
-        '* wsl:21835 wsl%3A22390 \n * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 ',
+        'Random text with __markdown__ [https://www.google.com](https://www.google.com) \n * wsl:21835 wsl%3A22390 \n * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 ',
       // relatedPublicationsText: '* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A22390\r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 \r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A30382',
     },
   }),
