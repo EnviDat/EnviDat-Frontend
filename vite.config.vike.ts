@@ -36,7 +36,7 @@ export default defineConfig({
       // { find: 'vue', replacement: 'vue/dist/vue.esm-bundler.js' },
     ],
   },
-  base: '/',
+  base: 'https://s3-zh.os.switch.ch/frontend-static/static_datasets/',
   build: {
     assetsDir: '/static',
     chunkSizeWarningLimit: 500,

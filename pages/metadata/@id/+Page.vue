@@ -1,8 +1,21 @@
 <template>
-  <h1>Dataset {{ data.name }}</h1>
-
   <div>
-    {{ data.notes }}
+    <h1>Dataset {{ data.name }}</h1>
+
+    <div>
+      {{ data.notes }}
+    </div>
+
+    <div>
+      <h2>Resources</h2>
+      <div v-for="(resource, index) in data.resources"
+           :key="index">
+      >
+        <div>{{ resource.title }}</div>
+
+        <a :href='resource.url'>{{ resource.url }}</a>
+      </div>
+    </div>
   </div>
 </template>
 
