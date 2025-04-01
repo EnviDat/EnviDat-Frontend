@@ -6,20 +6,22 @@ const fetchDatasets = async (url: string): Promise<DatasetDTO[]> => {
   return json.result;
 }
 
+// let datasets: DatasetDTO[];
+
 // @ts-ignore
 export async function onBeforePrerenderStart() {
   const datasets = await fetchDatasets('https://s3-zh.os.switch.ch/frontend-static/metadata/packagelist/packagelist.json');
-  const routes = datasets.map(dataset => `/metadata/${dataset.id}`);
-/*
+
+  // enhance the dataset as the pagecContext data
   const routes = datasets.map(dataset => ({
-    route: `/metadata/${dataset.id}`,
-    Page: MetadataDetailPage,
+    url: `/metadata/${dataset.name}`,
+    pageContext: {
+      data: {
+        ...dataset,
+      },
+    },
   }));
-*/
-  console.log('[Vike prerender routes]', routes)
+
   return routes;
-/*
-  const datasets = await fetchDatasets('https://s3-zh.os.switch.ch/frontend-static/metadata/packagelist/packagelist.json');
-  return datasets.map(dataset => `/metadata/${dataset.id}`);
-*/
 }
+
