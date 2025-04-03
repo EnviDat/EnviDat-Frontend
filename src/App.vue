@@ -2,7 +2,7 @@
   <v-app
     class="application envidat-font-overwrite"
     :class="{
-      'bg-dark': !isLandingPage && !isDashboardPage,
+      'bg-dark': !isLandingPage && !isDashboardPage && !isWorkFlowPage,
       'bg-dark-dashboard': isDashboardPage,
       'hide-after': isScrolled,
     }"
@@ -608,6 +608,9 @@ export default {
     },
     isLandingPage() {
       return this.currentRoute.name === 'LandingPage';
+    },
+    isWorkFlowPage() {
+      return this.currentRoute.name === 'WorkflowPage';
     },
     isDashboardPage() {
       return this.currentRoute.name === 'DashboardPage';

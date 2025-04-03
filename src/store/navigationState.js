@@ -1,8 +1,17 @@
 /* eslint-disable object-curly-newline */
 
 import {
-  mdiEarth, mdiBookOpenPageVariant, mdiPencilRuler, mdiFileTree, mdiLibraryShelves,
-  mdiMagnify, mdiMenuRight, mdiPound, mdiInformation, mdiBookshelf, mdiAccountArrowRight,
+  mdiEarth,
+  mdiBookOpenPageVariant,
+  mdiPencilRuler,
+  mdiFileTree,
+  mdiLibraryShelves,
+  mdiMagnify,
+  mdiMenuRight,
+  mdiPound,
+  mdiInformation,
+  mdiBookshelf,
+  mdiAccountArrowRight,
   mdiPlusBox,
 } from '@mdi/js';
 
@@ -27,8 +36,9 @@ import {
   ORGANIZATIONS_PAGENAME,
   METADATA_CREATION_PATH,
   METADATA_CREATION_PAGENAME,
+  WORKFLOW_PATH,
+  WORKFLOW_PAGENAME,
 } from '@/router/routeConsts';
-
 
 // const domain = import.meta.env.VITE_DOMAIN;
 const appVersion = import.meta.env.VITE_VERSION;
@@ -115,11 +125,41 @@ export const navigationItems = [
     disabled: false,
     isMenuIcon: true,
   },
+  {
+    title: 'About',
+    icon: mdiInformation,
+    toolTip: 'Information about EnviDat',
+    active: false,
+    path: WORKFLOW_PATH,
+    pageName: WORKFLOW_PAGENAME,
+    disabled: false,
+  },
 ];
 
 export const userMenuItems = [
-  { title: 'Dashboard', icon: mdiBookshelf, toolTip: 'My Dashboard', active: false, path: USER_DASHBOARD_PATH, pageName: USER_DASHBOARD_PAGENAME },
-  { title: 'New Dataset', icon: mdiPlusBox, toolTip: 'Create a new dataset', active: false, path: METADATA_CREATION_PATH, pageName: METADATA_CREATION_PAGENAME },
+  {
+    title: 'Dashboard',
+    icon: mdiBookshelf,
+    toolTip: 'My Dashboard',
+    active: false,
+    path: USER_DASHBOARD_PATH,
+    pageName: USER_DASHBOARD_PAGENAME,
+  },
+  {
+    title: 'New Dataset',
+    icon: mdiPlusBox,
+    toolTip: 'Create a new dataset',
+    active: false,
+    path: METADATA_CREATION_PATH,
+    pageName: METADATA_CREATION_PAGENAME,
+  },
   // { title: 'Edit Profile', icon: 'edit', toolTip: 'Edit profile', active: false, path: 'profile', pageName: 'EditProfile' },
-  { title: 'Sign out', icon: mdiAccountArrowRight , toolTip: 'Sign out', active: false, path: USER_SIGNOUT_PATH, pageName: '' },
+  {
+    title: 'Sign out',
+    icon: mdiAccountArrowRight,
+    toolTip: 'Sign out',
+    active: false,
+    path: USER_SIGNOUT_PATH,
+    pageName: '',
+  },
 ];

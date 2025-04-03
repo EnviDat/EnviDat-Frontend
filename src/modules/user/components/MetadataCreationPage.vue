@@ -6,19 +6,20 @@
     tag="article"
   >
     <!-- prettier-ignore -->
-    <NavigationStepper :steps="creationSteps"
-                       :step="routeStep"
-                       :subStep="routeSubStep"
-                       stepColor="highlight"
-                       :saving="metadataCreationLoading"
-                       :showSaveButton="canSaveInBackend"
-                       :isCreationWorkflow="true"
-                       :showProgress="true"
-                       :loading="isLoadingUserOrganizations"
-                       :dataset-title="currentDatasetTitle"
-                       @clickedSaveDataset="catchSaveNewDataset"
-                       @clickedClose="catchBackClicked" />
-
+    <NavigationStepper
+      :steps="creationSteps"
+      :step="routeStep"
+      :subStep="routeSubStep"
+      stepColor="highlight"
+      :saving="metadataCreationLoading"
+      :showSaveButton="canSaveInBackend"
+      :isCreationWorkflow="true"
+      :showProgress="true"
+      :loading="isLoadingUserOrganizations"
+      :dataset-title="currentDatasetTitle"
+      @clickedSaveDataset="catchSaveNewDataset"
+      @clickedClose="catchBackClicked"
+    />
     <v-snackbar
       id="NotificationSnack"
       top
@@ -53,6 +54,8 @@
  */
 import { mapState } from 'vuex';
 import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
+
+// new workflow
 
 import {
   eventBus,
