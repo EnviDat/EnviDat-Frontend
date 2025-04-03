@@ -10,6 +10,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { reactive } from 'vue';
+import type { Meta } from '@storybook/vue3';
 
 import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader.vue';
 import { sortObjectArray } from '@/factories/metaDataFactory';
@@ -19,7 +21,6 @@ import {
   getFullAuthorsFromDataset,
   extractAuthorsMap,
 } from '@/factories/authorFactory';
-
 
 import categoryCards from '@/store/categoryCards';
 import { getPopularTags, getTagColor } from '@/factories/keywordsFactory';
@@ -62,11 +63,13 @@ const authors = getFullAuthorsFromDataset(authorsMap, metadataCards[1]);
 let existingAuthors = Object.values(authorsMap);
 existingAuthors = sortObjectArray(existingAuthors, 'lastName');
 
+const viewModelWithErrors = new EditHeaderViewModel(metadataset[1])
+const reactiveViewModelWithErrors = reactive(viewModelWithErrors);
 
 export default {
   title: '3 Datasets / 2 Edit / Metadata Header',
   component: EditMetadataHeader,
-};
+} satisfies Meta<typeof EditMetadataHeader>;
 
 const emptyFirstGenericProps = {
   id: '1',
@@ -122,11 +125,27 @@ export const FilledAndReadOnly = {
   },
 };
 
+const vm = serviceLayer.getViewModel(EditHeaderViewModel.name);
+
 export const FilledWithViewModel = {
   args: { 
-    ...serviceLayer.getViewModel(EditHeaderViewModel.name),
+    ...vm,
+    onSave: () => {
+      vm.save();
+    },
   },
 };
+
+export const FilledWithViewModelErrors = {
+  args: {
+    ...reactiveViewModelWithErrors,
+    onSave: () => {
+      reactiveViewModelWithErrors.save();
+    },
+  },
+};
+
+reactiveViewModelWithErrors.validate();
 
 export const MobileFilledEditHeader = {
   args: { ...FilledEditHeader.args },

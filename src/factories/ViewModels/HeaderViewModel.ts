@@ -50,7 +50,7 @@ export class HeaderViewModel extends AbstractBaseViewModel{
 
   declare maxTags: number;
 
-  constructor(dataset: DatasetDTO, smallScreen, categoryColor, titleImg) {
+  constructor(dataset: DatasetDTO, smallScreen: boolean, categoryColor: string, titleImg: string) {
     super(dataset, HeaderViewModel.mappingRules());
 
     this.created = formatDate(this.created);
@@ -93,7 +93,7 @@ export class HeaderViewModel extends AbstractBaseViewModel{
   }
 }
 
-export const createHeaderViewModel = (dataset: DatasetDTO, smallScreen, categoryColor, titleImg, changeCallback = undefined) => {
+export const createHeaderViewModel = (dataset: DatasetDTO, smallScreen: boolean, categoryColor: string, titleImg: string, changeCallback = undefined) => {
   const headerVM = new HeaderViewModel(dataset, smallScreen, categoryColor, titleImg);
   const reactiveVM = reactive(headerVM);
 

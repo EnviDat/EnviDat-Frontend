@@ -373,6 +373,10 @@ export default {
       type: String,
       default: null,
     },
+    validationErrors: {
+      type: Object,
+      default: () => {},
+    },
     readOnlyFields: {
       type: Array,
       default: () => [],
@@ -382,6 +386,7 @@ export default {
       default: '',
     },
   },
+  emits: ['save'],
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
@@ -552,7 +557,7 @@ export default {
     },
     changePropertyForPreview(property, value) {
       this.previews[property] = value;
-      const valid = this.validateProperty(property, value);
+      const valid = true; // this.validateProperty(property, value);
 
       if (this.$store) {
         // do it if the store is available otherwise in the storybook context the component breaks
@@ -656,10 +661,14 @@ export default {
         ...contactObject,
       };
 
+/*
       eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_MAIN_HEADER,
         data: newHeaderInfo,
       });
+*/
+
+      this.$emit('save', newHeaderInfo);
     },
     setHeaderInfo(property, value) {
 
@@ -677,10 +686,14 @@ export default {
         }
       }
 
+/*
       eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_MAIN_HEADER,
         data: newHeaderInfo,
       });
+*/
+
+      this.$emit('save', newHeaderInfo);
     },
     isReadOnly(dateProperty) {
       return isFieldReadOnly(this.$props, dateProperty);
@@ -732,6 +745,7 @@ export default {
       METADATA_CONTACT_FIRSTNAME,
       METADATA_CONTACT_LASTNAME,
     ],
+/*
     validationErrors: {
       [METADATA_TITLE_PROPERTY]: null,
       [METADATA_URL_PROPERTY]: null,
@@ -739,6 +753,7 @@ export default {
       [METADATA_CONTACT_LASTNAME]: null,
       [METADATA_CONTACT_EMAIL]: null,
     },
+*/
     activeElements: {
       [METADATA_CONTACT_FIRSTNAME]: false,
       [METADATA_CONTACT_LASTNAME]: false,

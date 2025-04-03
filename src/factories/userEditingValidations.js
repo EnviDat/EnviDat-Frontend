@@ -409,6 +409,30 @@ export function isObjectValid(
   return true;
 }
 
+export function isObjectValidAuto(object, validationRules, errorObject) {
+  const props = Object.keys(object);
+
+  for (let i = 0; i < props.length; i++) {
+    const prop = props[i];
+    isFieldValid(
+      prop,
+      object[prop],
+      validationRules,
+      errorObject,
+    );
+  }
+
+  // Return false if any of the properties have a validation error
+  for (let i = 0; i < props.length; i++) {
+    const prop = props[i];
+    if (errorObject[prop]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 export function isObjectValidCheckAllProps(
   objectToValidate,
   validations,
