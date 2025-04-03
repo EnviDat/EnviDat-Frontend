@@ -11,30 +11,21 @@
  */
 
 import {
-  CANCEL_EDITING_RESOURCE,
   EDITMETADATA_DATA_RESOURCE,
-  EDITMETADATA_DATA_RESOURCES,
-  EDITMETADATA_OBJECT_UPDATE,
-  eventBus,
-  SAVE_EDITING_RESOURCE,
-  SELECT_EDITING_RESOURCE,
 } from '@/factories/eventBus';
 
-import EditMetadataResources from '@/modules/user/components/EditMetadataResources.vue';
 import EditDataAndResources from '@/modules/user/components/EditDataAndResources.vue';
-import EditResource from '@/modules/user/components/EditResource.vue';
 
 import {
   enhanceElementsWithStrategyEvents,
-  localIdProperty,
   SELECT_EDITING_RESOURCE_PROPERTY,
 } from '@/factories/strategyFactory';
 
 import {
   cleanListForFrontend,
   enhanceUserObject,
-  mergeResourceSizeForFrontend,
 } from '@/factories/mappingFactory';
+
 import unFormatedMetadata from './js/metadata';
 import userList from './testdata/user_list.json';
 

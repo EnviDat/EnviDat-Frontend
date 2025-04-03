@@ -315,7 +315,6 @@ export function createLeafletLayerCollections(geometry, dataset, selected, onCli
     const l = getPolygonLayer(
       geometry.coordinates, dataset.id, dataset.title,
       selected, onClick,
-      modeData, dataset,
     );
     layers.push(l);
   } else if (geometry.type === LOCATION_TYPE_MULTIPOLYGON) {
@@ -325,8 +324,6 @@ export function createLeafletLayerCollections(geometry, dataset, selected, onCli
       dataset.title,
       selected,
       onClick,
-      modeData,
-      dataset,
     );
 
     // don't manually rewind (change the sequence of the coordination) it's done via the geoJSON from leaflet
@@ -339,8 +336,8 @@ export function createLeafletLayerCollections(geometry, dataset, selected, onCli
 
       const { layers: subs } = createLeafletLayerCollections(
         subGeometry, dataset,
-        selected, onClick,
-        modeData,
+        selected, onClick, isGcnet,
+        modeData, vueInstance,
       )
 
       for (let j = 0; j < subs.length; j++) {

@@ -110,7 +110,7 @@ export default {
 
     const postData = mapFrontendToBackend(stepKey, data);
     postData.id = id;
-
+    console.log('about to post version to dataset');
     await axios.post(url, postData,
       {
         headers: {

@@ -7,7 +7,6 @@
              ref="header"
              style="z-index: 1; left: 0"
              >
-             <!-- :style="headerStyle" -->
 
         <!-- prettier-ignore -->
         <MetadataHeader v-bind="header"
@@ -98,7 +97,6 @@ import { useOrganizationsStore } from '@/modules/organizations/store/organizatio
 
 import {
   BROWSE_PATH,
-  METADATADETAIL_PAGENAME,
   METADATAEDIT_PAGENAME,
   ORGANIZATIONS_PAGENAME,
 } from '@/router/routeConsts';
@@ -349,16 +347,6 @@ export default {
     secondColumn() {
       return this.$vuetify.display.mdAndUp ? this.secondCol : [];
     },
-    // headerStyle() {
-    //   const width = 100;
-    //   const margin = '0';
-
-    //   const pos = 'position: relative';
-
-    //   // const pos = `position: ${this.appScrollPosition > 20 ? 'fixed' : this.$vuetify.display.smAndDown ? 'relative' : 'absolute'}`;
-
-    //   return `${pos}; width: ${width}%; margin: ${margin}; `;
-    // },
     showEditButton() {
       const userId = this.user?.id;
 
@@ -399,18 +387,6 @@ export default {
       bindings = { ...bindings };
 
       return bindings;
-    },
-
-    fullWidthPadding() {
-      const cssClasses = {};
-
-      if (this.$vuetify.display.mdAndUp && this.$vuetify.display.lgAndDown) {
-        cssClasses['px-2'] = true;
-      } else if (this.$vuetify.display.lgAndUp) {
-        cssClasses['px-3'] = true;
-      }
-
-      return cssClasses;
     },
   },
   methods: {
@@ -1040,7 +1016,5 @@ export default {
 </script>
 
 <style>
-.resourceCardText a {
-  color: #ffd740;
-}
+
 </style>

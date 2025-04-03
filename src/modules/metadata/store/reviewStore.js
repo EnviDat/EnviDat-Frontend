@@ -22,6 +22,7 @@ const initState = {
   loadingMetadata: false,
   metadata: {},
   metadataError: null,
+  metadataNotFound: null,
 }
 
 export const useReviewStore = defineStore(METADATA_REVIEW_STORE, {
@@ -31,14 +32,18 @@ export const useReviewStore = defineStore(METADATA_REVIEW_STORE, {
 
       this.loadingMetadata = true;
       const actionUrl = ACTION_METADATA_REVIEW();
-      const url = urlRewrite(`${actionUrl}?id=${datasetId}`, API_BASE, API_ROOT);
+      const url = urlRewrite(`${actionUrl}/${datasetId}`, API_BASE, API_ROOT);
 
       try {
         const response = await axios.get(url);
 
         this.metadata = response.data.result;
       } catch (e) {
-        this.metadataError = e;
+        if (e.response && e.response.status === 404) {
+          this.metadataNotFound = 'Dataset not found (404)';
+        } else {
+          this.metadataError = e;
+        }
       } finally {
         this.loadingMetadata = false;
       }

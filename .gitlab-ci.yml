@@ -23,6 +23,7 @@ variables:
 .normal-rules:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "pipeline"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'    
       when: never
     - if: '$CI_COMMIT_REF_NAME =~ /^(main|staging|develop)$/'
     - if: $CI_PIPELINE_SOURCE == "web"

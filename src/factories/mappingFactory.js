@@ -204,6 +204,8 @@ const JSONFrontendBackendRules = {
     ['doi','doi'],
     ['publisher','publication.publisher'],
     ['publicationYear','publication.publication_year'],
+    ['version', 'version'],
+    ['datasetId', 'id'],
   ],
   [EDITMETADATA_FUNDING_INFO]: [
     ['funders','funding'],

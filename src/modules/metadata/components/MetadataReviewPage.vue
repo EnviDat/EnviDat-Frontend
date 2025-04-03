@@ -6,7 +6,7 @@
              cols="12"
              ref="header"
              style="z-index: 1; left: 0"
-             :style="headerStyle" >
+      >
 
         <!-- prettier-ignore -->
         <MetadataHeader v-bind="header"
@@ -19,8 +19,15 @@
 -->
       </v-col>
     </v-row>
-
-    <v-row
+    <v-row v-if="datasetNotFound"
+           class="pt-4" style="z-index: 0;"
+           no-gutters
+    >
+      <v-col cols="12">
+        <v-alert type="info" >{{ labels.instructions }}</v-alert>
+      </v-col>
+    </v-row>
+    <v-row v-if="!datasetNotFound"
       :style="`position: relative; top: ${headerHeight}px; z-index: 0;`"
       no-gutters
     >
@@ -70,7 +77,7 @@
 import { mapGetters, mapState } from 'vuex';
 
 import { defineAsyncComponent, markRaw } from 'vue';
-import { BROWSE_PATH, METADATAREVIEW_PAGENAME } from '@/router/routeConsts';
+import { BROWSE_PATH } from '@/router/routeConsts';
 
 import { USER_SIGNIN_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 
@@ -174,6 +181,9 @@ export default {
     metadataId() {
       return this.$route.params.metadataid;
     },
+    datasetNotFound() {
+      return !!this.reviewStore.metadataNotFound;
+    },
     showPlaceholder() {
       return this.reviewStore.loadingMetadata;
     },
@@ -182,31 +192,6 @@ export default {
     },
     secondColumn() {
       return this.$vuetify.display.mdAndUp ? this.secondCol : [];
-    },
-    headerStyle() {
-      let width = 82.5;
-      let margin = '0px 11.5%';
-
-      if (this.$vuetify.display.mdAndDown) {
-        width = 100;
-        margin = '0';
-      }
-
-      if (this.$vuetify.display.lg) {
-        width = 79.75;
-      }
-
-      let pos = 'position: ';
-      if (this.$vuetify.display.mdAndUp) {
-        pos += 'absolute';
-      } else if (this.appScrollPosition > 20) {
-        pos += 'fixed';
-      } else {
-        pos += 'relative';
-      }
-      // const pos = `position: ${this.appScrollPosition > 20 ? 'fixed' : this.$vuetify.display.smAndDown ? 'relative' : 'absolute'}`;
-
-      return `${pos}; width: ${width}%; margin: ${margin}; `;
     },
     headerExpanded() {
       if (this.$vuetify.display.mdAndUp) {
@@ -428,7 +413,6 @@ export default {
     },
     setMetadataContent() {
       this.configInfos = getConfigUrls(this.configInfos);
-
       this.MetadataDescription.props = { ...this.body };
 
       this.MetadataCitation.props = {
@@ -547,12 +531,13 @@ export default {
     secondCol: [],
     singleCol: [],
     keyHash: '',
+    labels: {
+      instructions: 'This content will only load if Blind-review is activated. Blind-review needs to be activated from the edit page of the dataset.',
+    },
   }),
 };
 </script>
 
 <style>
-.resourceCardText a {
-  color: #ffd740;
-}
+
 </style>
