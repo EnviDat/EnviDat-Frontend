@@ -1,7 +1,7 @@
 import * as yup from 'yup';
 import { AbstractBaseViewModel } from '@/factories/ViewModels/AbstractBaseViewModel.ts';
 import { DatasetDTO } from '@/types/modelTypes';
-import { isObjectValidAuto } from '@/factories/userEditingValidations';
+import { isObjectValidAuto, isObjectValidCheckAllProps } from '@/factories/userEditingValidations';
 import {
   METADATA_CONTACT_EMAIL,
   METADATA_CONTACT_FIRSTNAME,
@@ -45,7 +45,7 @@ export class EditHeaderViewModel extends AbstractBaseViewModel{
 
     this.validationRules =
       yup.object().shape({
-        [METADATA_URL_PROPERTY]: yup
+        metadataUrl: yup
           .string()
           .nullable()
           .min(5, 'Dataset url must be at least 5 characters')
@@ -54,49 +54,65 @@ export class EditHeaderViewModel extends AbstractBaseViewModel{
             /^[\w-]+$/,
             'Use only letters, numbers and dashes for the url (not spaces)',
           ),
-        [METADATA_TITLE_PROPERTY]: yup
+        metadataTitle: yup
           .string()
           .required('Dataset title is required')
           .min(5, 'Dataset title must be at least 5 characters')
           .max(180, 'Dataset title has a maximum of 180 characters')
           .matches(/^[\w\söüä-]+$/, 'Use only letters and numbers for the title'),
-        [METADATA_CONTACT_FIRSTNAME]: yup
+        contactFirstName: yup
           .string()
-          .required('Contact given name is required')
-          .min(3, 'Contact given (first) name must be at least 3 characters'),
-        [METADATA_CONTACT_LASTNAME]: yup
+          .required('Contact first name is required')
+          .min(3, 'Contact first name must be at least 3 characters'),
+        contactLastName: yup
           .string()
-          .required('Contact surname is required')
-          .min(3, 'Contact surname must be at least 3 characters'),
-        [METADATA_CONTACT_EMAIL]: yup
+          .required('Contact last name is required')
+          .min(3, 'Contact last name must be at least 3 characters'),
+        contactEmail: yup
           .string()
-          .email('Contact email must be a valid email address')
-          .required('Contact email is required'),
+          .required('Contact email is required')
+          .email('Contact email must be a valid email address'),
       });
   }
 
-  validate() {
-    return isObjectValidAuto(
-      {
+  validate(newProps: any | undefined = undefined) {
+    let propObj = newProps;
+    if (newProps) {
+      propObj = {
+        metadataTitle: newProps.metadataTitle,
+        metadataUrl: newProps.metadataUrl,
+        contactEmail: newProps.contactEmail,
+        contactFirstName: newProps.contactFirstName,
+        contactLastName: newProps.contactLastName,
+      };
+    } else {
+      propObj = {
         metadataTitle: this.metadataTitle,
         metadataUrl: this.metadataUrl,
         contactEmail: this.contactEmail,
         contactFirstName: this.contactFirstName,
         contactLastName: this.contactLastName,
-      },
+      };
+    }
+
+    return isObjectValidCheckAllProps(
+      propObj,
       this.validationRules,
       this.validationErrors,
     );
   }
 
-  save() {
-    const isValid = this.validate();
+  save(newData: any): boolean {
+    const isValid = this.validate(newData);
 
-    if (isValid) {
-      console.log('EditHeaderViewModel saved');
-      return;
+    if (!isValid) {
+      console.log('EditHeaderViewModel NOT saved because validation failed!');
+      return false;
     }
-    console.log('EditHeaderViewModel NOT saved because validation failed!');
+
+    Object.assign(this, newData);
+    console.log('EditHeaderViewModel saved');
+    return true;
   }
 
   static mappingRules () {

@@ -270,11 +270,6 @@ import ExpandableLayout from '@/components/Layouts/ExpandableLayout.vue';
 import { enhanceTitleImg } from '@/factories/metaDataFactory';
 
 import {
-  getValidationMetadataEditingObject,
-  isFieldValid,
-  isObjectValid,
-} from '@/factories/userEditingValidations';
-import {
   createContact,
   creationContactFromAuthor,
   getArrayOfFullNames,
@@ -296,6 +291,7 @@ import {
 
 import { getMetadataUrlFromTitle } from '@/factories/mappingFactory';
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+import { preview } from 'vite';
 
 
 export default {
@@ -467,9 +463,6 @@ export default {
 
       return previewEntry;
     },
-    validations() {
-      return getValidationMetadataEditingObject(EDITMETADATA_MAIN_HEADER);
-    },
     contactInfoReadOnly() {
       return (this.authorPickerTouched && this.authorIsPicked) || (!this.authorPickerTouched && this.authorPickerFoundAuthor);
     },
@@ -516,30 +509,6 @@ export default {
       this.previews[METADATA_TITLE_PROPERTY] = null;
       this.previews[METADATA_URL_PROPERTY] = null;
     },
-    // Validate contact author properties by calling isFieldValid()
-    // Returns true if all properties are valid, else returns false
-    validateAuthor(contactObject) {
-      if (!contactObject) {
-        return false;
-      }
-
-      const properties = [METADATA_CONTACT_EMAIL, METADATA_CONTACT_FIRSTNAME, METADATA_CONTACT_LASTNAME];
-
-      // Validate fields corresponding to properties
-      for (let i = 0; i < properties.length; i++) {
-        isFieldValid(properties[i], contactObject[properties[i]], this.validations, this.validationErrors);
-      }
-
-      // Return false if any of the properties have a validation error
-      for (let i = 0; i < properties.length; i++) {
-        const prop = properties[i];
-        if (this.validationErrors[prop]) {
-          return false;
-        }
-      }
-
-      return true;
-    },
     focusIn(event) {
       this.markPropertyActive(event.target, true);
     },
@@ -557,7 +526,6 @@ export default {
     },
     changePropertyForPreview(property, value) {
       this.previews[property] = value;
-      const valid = true; // this.validateProperty(property, value);
 
       if (this.$store) {
         // do it if the store is available otherwise in the storybook context the component breaks
@@ -568,13 +536,10 @@ export default {
         );
       }
 
-      if (valid && property === METADATA_TITLE_PROPERTY && !this.metadataUrl) {
+      if (property === METADATA_TITLE_PROPERTY && !this.metadataUrl) {
 
         this.previews[METADATA_URL_PROPERTY] = getMetadataUrlFromTitle(value);
       }
-    },
-    validateProperty(property, value) {
-      return isFieldValid(property, value, this.validations, this.validationErrors);
     },
     catchPickerAuthorChange(pickedAuthorName, hasAuthor) {
 
@@ -589,9 +554,7 @@ export default {
         this.previews[METADATA_CONTACT_LASTNAME] = contactObject[METADATA_CONTACT_LASTNAME];
         this.previews[METADATA_CONTACT_EMAIL] = contactObject[METADATA_CONTACT_EMAIL];
 
-        if (this.validateAuthor(contactObject)) {
-          this.setFullContactInfos(contactObject);
-        }
+        this.setFullContactInfos(contactObject);
       } else {
         // has to be an empty string here otherwise the old value (via $props)
         // would be shown
@@ -606,9 +569,7 @@ export default {
         return;
       }
 
-      if (this.validateProperty(property, value)) {
-        this.setHeaderInfo(property, value);
-      }
+      this.setHeaderInfo(property, value);
     },
     notifyContactChange(property, value) {
       if (this.anyUserElementsActive) {
@@ -623,24 +584,22 @@ export default {
       let contactObject = createContact(this.contactFirstNameField, this.contactLastNameField, this.contactEmailField);
 
       if (property === METADATA_CONTACT_EMAIL) {
-        if (isFieldValid(property, value, this.validations, this.validationErrors)) {
 
-          // autocomplete author
-          const author = getAuthorByEmail(value, this.existingAuthorsWrap);
+        // autocomplete author
+        const author = getAuthorByEmail(value, this.existingAuthorsWrap);
 
-          const autoCompletedContactObject = creationContactFromAuthor(author);
+        const autoCompletedContactObject = creationContactFromAuthor(author);
 
-          if (autoCompletedContactObject) {
-            this.previews[METADATA_CONTACT_FIRSTNAME] = autoCompletedContactObject[METADATA_CONTACT_FIRSTNAME];
-            this.previews[METADATA_CONTACT_LASTNAME] = autoCompletedContactObject[METADATA_CONTACT_LASTNAME];
+        if (autoCompletedContactObject) {
+          this.previews[METADATA_CONTACT_FIRSTNAME] = autoCompletedContactObject[METADATA_CONTACT_FIRSTNAME];
+          this.previews[METADATA_CONTACT_LASTNAME] = autoCompletedContactObject[METADATA_CONTACT_LASTNAME];
 
-            // overwrite any infos from the text-fields with the author infos
-            // from the autocomplete
-            contactObject = autoCompletedContactObject;
+          // overwrite any infos from the text-fields with the author infos
+          // from the autocomplete
+          contactObject = autoCompletedContactObject;
 
-            // this makes the text-fields readonly again
-            this.authorPickerTouched = false;
-          }
+          // this makes the text-fields readonly again
+          this.authorPickerTouched = false;
         }
       }
 
@@ -649,24 +608,15 @@ export default {
       // when the user focus leaves any of the fields, therefore all changes
       // must be stored
 
-      if (isObjectValid(this.contactValidationProperties, contactObject, this.validations, this.validationErrors)) {
-        this.setFullContactInfos(contactObject);
-      }
-
+      this.setFullContactInfos(contactObject);
     },
     setFullContactInfos(contactObject) {
 
       const newHeaderInfo = {
         ...this.$props,
+        ...this.previews,
         ...contactObject,
       };
-
-/*
-      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: EDITMETADATA_MAIN_HEADER,
-        data: newHeaderInfo,
-      });
-*/
 
       this.$emit('save', newHeaderInfo);
     },
@@ -674,6 +624,7 @@ export default {
 
       let newHeaderInfo = {
         ...this.$props,
+        ...this.previews,
         [property]: value,
       };
 
@@ -686,12 +637,6 @@ export default {
         }
       }
 
-/*
-      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: EDITMETADATA_MAIN_HEADER,
-        data: newHeaderInfo,
-      });
-*/
 
       this.$emit('save', newHeaderInfo);
     },

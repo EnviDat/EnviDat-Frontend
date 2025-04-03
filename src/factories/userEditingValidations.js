@@ -366,7 +366,7 @@ export function isFieldValid(
     return false;
   }
 
-  errorObject[errProperty] = '';
+  errorObject[errProperty] = null;
 
   return true;
 }
@@ -401,30 +401,6 @@ export function isObjectValid(
   // Return false if any of the properties have a validation error
   for (let i = 0; i < properties.length; i++) {
     const prop = properties[i];
-    if (errorObject[prop]) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
-export function isObjectValidAuto(object, validationRules, errorObject) {
-  const props = Object.keys(object);
-
-  for (let i = 0; i < props.length; i++) {
-    const prop = props[i];
-    isFieldValid(
-      prop,
-      object[prop],
-      validationRules,
-      errorObject,
-    );
-  }
-
-  // Return false if any of the properties have a validation error
-  for (let i = 0; i < props.length; i++) {
-    const prop = props[i];
     if (errorObject[prop]) {
       return false;
     }

@@ -130,8 +130,8 @@ const vm = serviceLayer.getViewModel(EditHeaderViewModel.name);
 export const FilledWithViewModel = {
   args: { 
     ...vm,
-    onSave: () => {
-      vm.save();
+    onSave: (newData) => {
+      vm.save(newData);
     },
   },
 };
@@ -139,8 +139,8 @@ export const FilledWithViewModel = {
 export const FilledWithViewModelErrors = {
   args: {
     ...reactiveViewModelWithErrors,
-    onSave: () => {
-      reactiveViewModelWithErrors.save();
+    onSave: (newData) => {
+      reactiveViewModelWithErrors.save(newData);
     },
   },
 };
