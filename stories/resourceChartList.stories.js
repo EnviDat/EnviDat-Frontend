@@ -184,10 +184,10 @@ export const LargeList = {
   },
 }
 
-export const LargeList300Height = {
+export const LargeList500Height = {
   args: {
     resources: [...resources, ...resources, ...resources],
-    maxHeight: 300,
+    maxHeight: 500,
   },
 }
 
