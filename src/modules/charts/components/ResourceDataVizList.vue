@@ -70,8 +70,11 @@ const scrollbarColorBack = computed(() => theme ? '#F0F0F0' : 'auto');
                cols="12"
         >
           <v-row>
-            <v-col cols="3">
-              <v-row>
+            <v-col cols="3"
+                   md="3"
+                   xl="2"
+            >
+              <v-row no-gutters>
                 <v-list
                   :style="`max-height: ${maxHeight - 100}px; overflow: auto; scroll-behavior: smooth; scrollbar-width: thin;
                   scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack};`"
@@ -89,7 +92,9 @@ const scrollbarColorBack = computed(() => theme ? '#F0F0F0' : 'auto');
               </v-row>
             </v-col>
 
-            <v-col cols="8"
+            <v-col cols="9"
+                   md="9"
+                   xl="10"
                    class="pt-0"
             >
               <ResourceDataViz :resource="resources ? resources[selectedId] : undefined"

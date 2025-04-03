@@ -1,9 +1,9 @@
 <script setup>
   import { Line } from 'vue-chartjs';
-  import ChartDataLabels from 'chartjs-plugin-datalabels';
-  import { Chart as ChartJS, Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale } from 'chart.js';
+  // import ChartDataLabels from 'chartjs-plugin-datalabels';
+  import { Chart as ChartJS, Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale, TimeScale} from 'chart.js';
 
-  ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale);
+  ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale, TimeScale);
 
   const { data, options } = defineProps({
     id: {
@@ -28,7 +28,7 @@
     },
   })
 
-  const plugins = [ChartDataLabels];
+  const plugins = []; // [ChartDataLabels];
 
 </script>
 
