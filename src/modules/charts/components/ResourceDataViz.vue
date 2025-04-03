@@ -1,14 +1,18 @@
 <script setup lang="ts">
+import { de } from 'date-fns/locale';
 import { computed, ref, watch } from 'vue';
 import LineChart from '@/components/Charts/LineChart.vue';
 
 import { loadResourcesData } from '@/modules/charts/middelware/chartServiceLayer.ts';
 import { MetaData } from '@/types/dataVizTypes';
 import { getResourceName } from '@/factories/metaDataFactory.ts';
+import { getDataSeries } from '@/modules/charts/middelware/DataConversion.ts';
+import 'chartjs-adapter-date-fns';
+
 
 const { resource } = defineProps<{
   resource: object;
-  flat: boolean,
+  flat?: boolean,
 }>();
 
 const loading = ref(true);
@@ -23,7 +27,7 @@ const yParameter = ref();
 const warning = ref();
 const error = ref();
 
-const defaultOptions = {
+let defaultOptions : any = {
   responsive: true,
   plugins: {
     legend: {
@@ -35,7 +39,10 @@ const defaultOptions = {
     },
     decimate: {
       enabled: true,
-      algorithm: 'lltb',
+      // algorithm: 'min-max',
+      algorithm: 'lttb',
+      samples: 500,
+      threshold: 0,
     },
   },
 };
@@ -87,6 +94,11 @@ const loadDataForParameter = (
   warning.value = undefined;
   error.value = undefined;
 
+  const largeDatasetIsActive = data.length > 5000; // !!chartConfig?.options?.plugins?.decimation?.enabled;
+
+  return getDataSeries(data, xParam, yParam, yParam, largeDatasetIsActive);
+
+/*
   const seriesData = [];
 
   const labels = [];
@@ -114,6 +126,7 @@ const loadDataForParameter = (
       },
     ],
   };
+*/
 };
 
 const loadData = (res: object) => {
@@ -149,6 +162,37 @@ const loadData = (res: object) => {
           xParameter.value,
           yParameter.value,
         );
+
+        if (chartData.value?.length > 5000) {
+          defaultOptions = {
+            ...defaultOptions,
+            parsing: false,
+            indexAxis: 'x', // 'x' should be the default
+            scales: {
+              x: {
+                type: 'time',
+                adapters: {
+                  date: {
+                    locale: de,
+                  },
+                },
+              },
+            },
+/*
+            scales: {
+              x: {
+                type: 'time',
+                  adapters: {
+                  date: {
+                    locale: de,
+                  },
+                },
+              },
+            },
+*/
+          };
+        }
+
       }
 
       loading.value = false;

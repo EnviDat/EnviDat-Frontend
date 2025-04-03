@@ -21,10 +21,11 @@ const largeDataConversion = (data: any, xAxis: string, yAxis: string, title: str
       {
         label: title,
         data: data?.map((row: any) => ({
-            x: parseISO(row[xAxis]).getTime(),
-            // x: row[xAxis],
-            y: Number.parseFloat(row[yAxis]),
-          })),
+          x: parseISO(row[xAxis]).getTime(),
+          // x: row[xAxis],
+          // y: row[yAxis],
+          y: Number.parseFloat(row[yAxis]),
+        })),
       },
     ],
   })
@@ -32,7 +33,8 @@ const largeDataConversion = (data: any, xAxis: string, yAxis: string, title: str
 export function getDataSeries (data: object[] | undefined,
                                xAxisParam: string | undefined,
                                yAxisParam: string | undefined,
-                               title: string | undefined, largeDataset: boolean = false) {
+                               title: string | undefined,
+                               largeDataset: boolean = false) {
 
   if (!data || data.length <= 0) {
     return { labels: undefined, datasets: [] };
