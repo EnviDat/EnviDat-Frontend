@@ -10,6 +10,7 @@ import { urlRewrite } from '@/factories/apiFactory';
 import { Dataset } from '@/factories/ViewModels/Dataset.ts';
 import { DatasetDTO, DatasetServiceLayer } from '@/types/modelTypes';
 import { AbstractEditViewModel } from '@/factories/ViewModels/AbstractEditViewModel.ts';
+import { ACTION_LOAD_METADATA_CONTENT_BY_ID } from '@/store/metadataMutationsConsts';
 
 // don't use an api base url or API_ROOT when using testdata
 let API_BASE = '';
@@ -32,8 +33,25 @@ export class EditDatasetServiceLayer implements DatasetServiceLayer {
 
   dataset: DatasetDTO;
 
-  constructor(datasetBackend: unknown) {
+  constructor(datasetBackend: unknown | undefined) {
     this.dataset = new Dataset(datasetBackend);
+  }
+
+  async loadDataset(id: string) {
+
+    const actionUrl = ACTION_LOAD_METADATA_CONTENT_BY_ID();
+    const url = urlRewrite(`${actionUrl}?id=${id}`, API_BASE, API_ROOT);
+
+    try {
+      const response = await axios.get(url);
+      this.dataset = new Dataset(response.data);
+
+      return this.dataset;
+    } catch (e: Error) {
+      // console.error(e);
+      throw e;
+    }
+
   }
 
   async patchDatasetChanges(
@@ -50,15 +68,21 @@ export class EditDatasetServiceLayer implements DatasetServiceLayer {
     const postData = viewModel.backendJSON;
     postData.id = datasetId;
 
-    const response = await axios.post(url, postData, {
-      headers: {
-        // Authorization: apiKey,
-      },
-    });
+    try {
+      const response = await axios.post(url, postData, {
+        headers: {
+          // Authorization: apiKey,
+        },
+      });
 
-    this.dataset = new Dataset(response.data);
+      this.dataset = new Dataset(response.data);
 
-    return this.dataset;
+      return this.dataset;
+    } catch (e: Error) {
+      // console.error(e);
+      throw e;
+    }
+
   }
 
 

@@ -21,6 +21,17 @@ export class DatasetViewModel {
 
     this.serviceLayer = serviceLayer;
 
+    this.createViewModels();
+  }
+
+  private clearViewModels(): void {
+   this.viewModelInstances = new Map<string, any>();
+  }
+
+  private createViewModels() {
+
+    this.clearViewModels();
+
     for (let i = 0; i < this.viewModelClasses.length; i++) {
       const VMClass = this.viewModelClasses[i];
       const instance = new VMClass(this);
@@ -28,9 +39,15 @@ export class DatasetViewModel {
 
       this.viewModelInstances.set(instance.constructor.name, reactiveVM);
     }
-
   }
 
+  async loadViewModels(datasetId: string): Promise<void> {
+
+    const newDataset = this.serviceLayer.loadDataset(datasetId);
+    this.dataset = newDataset;
+
+    this.createViewModels();
+  }
 
   async patchViewModel(newModel) {
 
@@ -49,7 +66,6 @@ export class DatasetViewModel {
       newModel.error = e;
 
       console.error(e);
-
     }
 
   }
