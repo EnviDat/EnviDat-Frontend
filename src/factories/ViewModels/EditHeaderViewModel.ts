@@ -1,17 +1,10 @@
 import * as yup from 'yup';
-import { AbstractBaseViewModel } from '@/factories/ViewModels/AbstractBaseViewModel.ts';
-import { DatasetDTO } from '@/types/modelTypes';
-import { isObjectValidAuto, isObjectValidCheckAllProps } from '@/factories/userEditingValidations';
-import {
-  METADATA_CONTACT_EMAIL,
-  METADATA_CONTACT_FIRSTNAME,
-  METADATA_CONTACT_LASTNAME,
-  METADATA_TITLE_PROPERTY,
-  METADATA_URL_PROPERTY,
-} from '@/factories/metadataConsts';
+import { AbstractEditViewModel } from '@/factories/ViewModels/AbstractEditViewModel.ts';
+import { isObjectValidCheckAllProps } from '@/factories/userEditingValidations';
+import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel.ts';
 
 
-export class EditHeaderViewModel extends AbstractBaseViewModel{
+export class EditHeaderViewModel extends AbstractEditViewModel{
 
   declare metadataTitle: string;
   declare metadataUrl: string;
@@ -32,8 +25,9 @@ export class EditHeaderViewModel extends AbstractBaseViewModel{
 
   declare validationRules: object;
 
-  constructor(dataset: DatasetDTO) {
-    super(dataset, EditHeaderViewModel.mappingRules());
+
+  constructor(datasetViewModel: DatasetViewModel) {
+    super(datasetViewModel, EditHeaderViewModel.mappingRules());
 
     this.validationErrors = {
       metadataTitle: null,
@@ -102,18 +96,6 @@ export class EditHeaderViewModel extends AbstractBaseViewModel{
     );
   }
 
-  save(newData: any): boolean {
-    const isValid = this.validate(newData);
-
-    if (!isValid) {
-      console.log('EditHeaderViewModel NOT saved because validation failed!');
-      return false;
-    }
-
-    Object.assign(this, newData);
-    console.log('EditHeaderViewModel saved');
-    return true;
-  }
 
   static mappingRules () {
     return [
@@ -122,7 +104,6 @@ export class EditHeaderViewModel extends AbstractBaseViewModel{
       ['contactEmail','maintainer.email'],
       ['contactFirstName','maintainer.given_name'],
       ['contactLastName','maintainer.name'],
-      ['license','license_title'],
     ];
   }
 }

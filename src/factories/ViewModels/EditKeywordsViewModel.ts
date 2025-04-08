@@ -1,9 +1,10 @@
-import { AbstractBaseViewModel } from '@/factories/ViewModels/AbstractBaseViewModel.ts';
-import { DatasetDTO, KeywordDTO } from '@/types/modelTypes';
+import { AbstractEditViewModel } from '@/factories/ViewModels/AbstractEditViewModel.ts';
+import { KeywordDTO } from '@/types/modelTypes';
 import { enhanceKeywords } from '@/factories/keywordsFactory';
 import categoryCards from '@/store/categoryCards';
+import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel.ts';
 
-export class EditKeywordsViewModel extends AbstractBaseViewModel{
+export class EditKeywordsViewModel extends AbstractEditViewModel{
 
   declare keywords: KeywordDTO[];
   declare existingKeywords: KeywordDTO[];
@@ -12,8 +13,8 @@ export class EditKeywordsViewModel extends AbstractBaseViewModel{
   declare metadataDescription: string;
 
 
-  constructor(dataset: DatasetDTO, existingKeywords: KeywordDTO[]) {
-    super(dataset, EditKeywordsViewModel.mappingRules());
+  constructor(datasetViewModel: DatasetViewModel, existingKeywords: KeywordDTO[]) {
+    super(datasetViewModel, EditKeywordsViewModel.mappingRules());
 
     enhanceKeywords(this.keywords, categoryCards)
     this.existingKeywords = existingKeywords;

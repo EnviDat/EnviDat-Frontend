@@ -1,9 +1,9 @@
 import { reactive, watch } from 'vue';
 import { Author, AuthorDTO, DatasetDTO } from '@/types/modelTypes';
-import { AbstractBaseViewModel } from '@/factories/ViewModels/AbstractBaseViewModel.ts';
 import { EditAuthorViewModel } from '@/factories/ViewModels/EditAuthorViewModel.ts';
+import { AbstractViewModel } from '@/factories/ViewModels/AbstractViewModel.ts';
 
-export class AuthorsViewModel extends AbstractBaseViewModel{
+export class AuthorsViewModel extends AbstractViewModel {
 
   declare authors: Author[];
 

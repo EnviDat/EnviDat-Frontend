@@ -37,8 +37,11 @@ import { EditHeaderViewModel } from '@/factories/ViewModels/EditHeaderViewModel'
 import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
 import metadataset from './js/metadata';
+import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel.ts';
 
 const serviceLayer = new EditDatasetServiceLayer(metadataset[0]);
+const datasetVM = new DatasetViewModel(serviceLayer);
+
 
 const unFormatedMetadataCards = metadataset;
 const tagsFromDatasets = getPopularTags(metadataset, '', 1);
@@ -63,8 +66,9 @@ const authors = getFullAuthorsFromDataset(authorsMap, metadataCards[1]);
 let existingAuthors = Object.values(authorsMap);
 existingAuthors = sortObjectArray(existingAuthors, 'lastName');
 
-const viewModelWithErrors = new EditHeaderViewModel(metadataset[1])
-const reactiveViewModelWithErrors = reactive(viewModelWithErrors);
+const serviceLayer2 = new EditDatasetServiceLayer(metadataset[1]);
+const datasetVM2 = new DatasetViewModel(serviceLayer2);
+const reactiveViewModelWithErrors = datasetVM2.getViewModel('EditHeaderViewModel');
 
 export default {
   title: '3 Datasets / 2 Edit / Metadata Header',
@@ -125,12 +129,36 @@ export const FilledAndReadOnly = {
   },
 };
 
-const vm = serviceLayer.getViewModel(EditHeaderViewModel.name);
+const empty = new EditHeaderViewModel(new DatasetViewModel());
+const emptyVM = reactive(empty);
+
+/*
+const watcherMethod = watch(() => emptyVM, async (newModel) => {
+    newModel.loading = true;
+    setTimeout(() => {
+      newModel.loading = false;
+    }, 2000)
+  },
+  { deep: true },
+);
+*/
+
+
+export const EmptyWithViewModel = {
+  args: {
+    ...emptyVM,
+    onSave: (newData: any) => {
+      emptyVM.save(newData);
+    },
+  },
+};
+
+const vm = datasetVM.getViewModel(EditHeaderViewModel.name);
 
 export const FilledWithViewModel = {
   args: { 
     ...vm,
-    onSave: (newData) => {
+    onSave: (newData: any) => {
       vm.save(newData);
     },
   },

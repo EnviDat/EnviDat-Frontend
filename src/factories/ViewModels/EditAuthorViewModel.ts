@@ -1,10 +1,11 @@
 import { reactive, watch } from 'vue';
-import { AbstractBaseViewModel } from '@/factories/ViewModels/AbstractBaseViewModel.ts';
+import { AbstractEditViewModel } from '@/factories/ViewModels/AbstractEditViewModel.ts';
 import { Author, DataCreditObject, DatasetDTO } from '@/types/modelTypes';
 import { convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
+import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel.ts';
 
 
-export class EditAuthorViewModel extends AbstractBaseViewModel{
+export class EditAuthorViewModel extends AbstractEditViewModel{
 
   declare firstName: string;
   declare lastName: string;
@@ -19,8 +20,8 @@ export class EditAuthorViewModel extends AbstractBaseViewModel{
   declare affiliation: string;
   declare lastModified: string;
 
-  constructor(dataset: DatasetDTO) {
-    super(dataset, EditAuthorViewModel.mappingRules());
+  constructor(datasetViewModel: DatasetViewModel) {
+    super(datasetViewModel, EditAuthorViewModel.mappingRules());
   }
 
   static getFormattedAuthor(rawAuthor: any, lastModified: string) : Author {

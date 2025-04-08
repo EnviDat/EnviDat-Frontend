@@ -5,17 +5,11 @@
 
 import axios from 'axios';
 
-import { reactive } from 'vue';
-import { EditHeaderViewModel } from '@/factories/ViewModels/EditHeaderViewModel.ts';
 import { ACTION_METADATA_EDITING_PATCH_DATASET } from '@/modules/user/store/userMutationsConsts';
 import { urlRewrite } from '@/factories/apiFactory';
 import { Dataset } from '@/factories/ViewModels/Dataset.ts';
-import { HeaderViewModel } from '@/factories/ViewModels/HeaderViewModel.ts';
-import { AuthorsViewModel } from '@/factories/ViewModels/AuthorsViewModel';
-import { EditDescriptionViewModel } from '@/factories/ViewModels/EditDescriptionViewModel.ts';
-import { EditKeywordsViewModel } from '@/factories/ViewModels/EditKeywordsViewModel.ts';
-import { DatasetDTO } from '@/types/modelTypes';
-import { AbstractBaseViewModel } from '@/factories/ViewModels/AbstractBaseViewModel.ts';
+import { DatasetDTO, DatasetServiceLayer } from '@/types/modelTypes';
+import { AbstractEditViewModel } from '@/factories/ViewModels/AbstractEditViewModel.ts';
 
 // don't use an api base url or API_ROOT when using testdata
 let API_BASE = '';
@@ -34,40 +28,18 @@ if (!useTestdata) {
   API_ROOT = import.meta.env.VITE_API_ROOT || '';
 }
 
-export class EditDatasetServiceLayer {
-
-  viewModelClasses = [
-    EditHeaderViewModel,
-    HeaderViewModel,
-    AuthorsViewModel,
-    EditDescriptionViewModel,
-    EditKeywordsViewModel,
-  ];
-
-  viewModelInstances : Map<string, any> = new Map();
+export class EditDatasetServiceLayer implements DatasetServiceLayer {
 
   dataset: DatasetDTO;
 
-  constructor(datasetBackend : unknown) {
-
-    // @ts-ignore
-    this.dataset = new Dataset(datasetBackend, this);
-
-    for (let i = 0; i < this.viewModelClasses.length; i++) {
-      const vmClass = this.viewModelClasses[i];
-      // eslint-disable-next-line new-cap
-      const instance = new vmClass(this.dataset);
-      const reactiveVM = reactive(instance);
-
-      this.viewModelInstances.set(instance.constructor.name, reactiveVM);
-    }
-
-    this.dataset.subscribeToViewModels(this.viewModelInstances);
+  constructor(datasetBackend: unknown) {
+    this.dataset = new Dataset(datasetBackend);
   }
 
-
-  async patchDatasetChanges (datasetId : string, viewModel : AbstractBaseViewModel) {
-
+  async patchDatasetChanges(
+    datasetId: string,
+    viewModel: AbstractEditViewModel,
+  ) {
     if (useTestdata) {
       return mockDataResponse.dataset.result;
     }
@@ -78,22 +50,16 @@ export class EditDatasetServiceLayer {
     const postData = viewModel.backendJSON;
     postData.id = datasetId;
 
-    const response = await axios.post(url, postData,
-      {
-        headers: {
-          // Authorization: apiKey,
-        },
-      });
+    const response = await axios.post(url, postData, {
+      headers: {
+        // Authorization: apiKey,
+      },
+    });
 
-    return response.data
+    this.dataset = new Dataset(response.data);
+
+    return this.dataset;
   }
 
-  get viewModels() {
-    return this.viewModelInstances;
-  }
-
-  getViewModel(modelName : string) {
-    return this.viewModelInstances.get(modelName);
-  }
 
 }

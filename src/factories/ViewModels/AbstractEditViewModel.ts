@@ -1,6 +1,6 @@
 import { convertJSON, convertToBackendJSONWithRules, convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
 import type { DatasetDTO } from '@/types/modelTypes';
-// import { HeaderViewModel } from '@/factories/ViewModels/HeaderViewModel.ts';
+import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel.ts';
 
 /*
 function enforceAbstractProps(instance, requiredProps) {
@@ -12,18 +12,27 @@ function enforceAbstractProps(instance, requiredProps) {
 }
 */
 
-export class AbstractBaseViewModel {
+export abstract class AbstractEditViewModel {
+
   private privateMappingRules: string[][];
 
-  constructor(dataset: DatasetDTO = undefined, mappingRules: string[][] = undefined) {
-    this.mappingRules = mappingRules;
+  private datasetViewModel: DatasetViewModel;
 
-    if (new.target === AbstractBaseViewModel) {
+  abstract validate(newProps: any | undefined = undefined): boolean;
+
+
+  constructor(datasetViewModel: DatasetViewModel, mappingRules: string[][] = undefined) {
+
+    this.mappingRules = mappingRules;
+    this.datasetViewModel = datasetViewModel;
+
+    if (new.target === AbstractEditViewModel) {
       throw new Error('Cannot instantiate an abstract Class');
     }
 
     // enforceAbstractProps(this, ['mappingRules']);
 
+    const dataset = datasetViewModel.dataset
     if (dataset) {
       this.updateModel(dataset);
     }
@@ -60,6 +69,23 @@ export class AbstractBaseViewModel {
 
   get backendProperties() {
     return this.mappingRules.map((rule) => rule[1]);
+  }
+
+
+  async save(newData: any): Promise<boolean> {
+    const isValid = this.validate(newData);
+
+    if (!isValid) {
+//      console.log('EditHeaderViewModel NOT saved because validation failed!', this);
+      return false;
+    }
+
+    await this.datasetViewModel.patchViewModel(this)
+
+    Object.assign(this, newData);
+
+//    console.log('EditHeaderViewModel saved', this);
+    return true;
   }
 
 }

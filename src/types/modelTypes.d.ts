@@ -1,4 +1,4 @@
-import { AbstractBaseViewModel } from '@/factories/ViewModels/AbstractBaseViewModel.ts';
+import { AbstractEditViewModel } from '@/factories/ViewModels/AbstractEditViewModel.ts';
 
 export interface ResourceSizeDTO {
   size_value: string;
@@ -120,8 +120,6 @@ export interface DatasetDTO {
   version: string;
   extras: ExtrasDTO[],
   resources: ResourceDTO[];
-
-  subscribeToViewModels(viewModelInstances: Map<string, AbstractBaseViewModel>): void;
 }
 
 export interface DataCreditObject {
@@ -176,4 +174,16 @@ export interface UserModel {
   about: string;
   sysAdmin: boolean;
   state: string;
+}
+
+
+export interface DatasetServiceLayer {
+
+  dataset: DatasetDTO;
+
+  patchDatasetChanges(
+    datasetId: string,
+    viewModel: AbstractEditViewModel,
+  ): Promise<any>;
+
 }

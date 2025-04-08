@@ -3,6 +3,7 @@ import { createHeaderViewModel } from '@/factories/ViewModels/HeaderViewModel';
 import { EDITMETADATA_MAIN_HEADER } from '@/factories/eventBus';
 import { convertJSON } from '@/factories/mappingFactory';
 import { EditDatasetServiceLayer } from '@/factories/ViewModels/EditDatasetServiceLayer';
+import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel';
 
 import {
   METADATA_CONTACT_EMAIL,
@@ -21,7 +22,7 @@ describe('viewModel Factory ', () => {
 
   const headerVM = createHeaderViewModel(backendJSON, false, 'black', 'url/to/an/img');
 
-  it(`${EDITMETADATA_MAIN_HEADER} backendJSON`, () => {
+  it('HeaderViewModel backendJSON', () => {
 
     expect(headerVM).toBeDefined();
 
@@ -62,8 +63,8 @@ describe('viewModel Factory ', () => {
   it(`${EDITMETADATA_MAIN_HEADER} reactivity`, () => {
 
     const serviceLayer = new EditDatasetServiceLayer(datasetBackend)
-
-    const instances = serviceLayer.viewModels;
+    const datasetVM = new DatasetViewModel(serviceLayer);
+    const instances = datasetVM.viewModels;
 
     const vm = instances.get('EditHeaderViewModel');
 

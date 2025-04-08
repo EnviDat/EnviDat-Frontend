@@ -1,5 +1,4 @@
 import { reactive, watch } from 'vue';
-import { AbstractBaseViewModel } from '@/factories/ViewModels/AbstractBaseViewModel';
 
 import {
   METADATA_CONTACT_EMAIL,
@@ -14,15 +13,16 @@ import { formatDate } from '@/factories/dateFactory';
 import { getMetadataVisibilityState } from '@/factories/publicationFactory';
 import { AuthorsViewModel } from '@/factories/ViewModels/AuthorsViewModel';
 import { Author, DatasetDTO } from '@/types/modelTypes';
+import { AbstractViewModel } from '@/factories/ViewModels/AbstractViewModel';
 
 
-export class HeaderViewModel extends AbstractBaseViewModel{
+export class HeaderViewModel extends AbstractViewModel {
 
   declare metadataTitle: string;
 
   declare contactEmail: string;
-  declare contactGivenName: string;
-  declare contactSurname: string;
+  declare contactFirstName: string;
+  declare contactLastName: string;
 
   declare doi: string;
 
@@ -50,6 +50,7 @@ export class HeaderViewModel extends AbstractBaseViewModel{
 
   declare maxTags: number;
 
+
   constructor(dataset: DatasetDTO, smallScreen: boolean, categoryColor: string, titleImg: string) {
     super(dataset, HeaderViewModel.mappingRules());
 
@@ -72,10 +73,10 @@ export class HeaderViewModel extends AbstractBaseViewModel{
 
   static mappingRules () {
     return [
-      [METADATA_TITLE_PROPERTY,'title'],
-      [METADATA_CONTACT_EMAIL,'maintainer.email'],
-      [METADATA_CONTACT_FIRSTNAME,'maintainer.given_name'],
-      [METADATA_CONTACT_LASTNAME,'maintainer.name'],
+      ['metadataTitle','title'],
+      ['contactEmail','maintainer.email'],
+      ['contactFirstName','maintainer.given_name'],
+      ['contactLastName','maintainer.name'],
       ['doi','doi'],
       ['tags','tags'],
 //      ['rawAuthors','author'],

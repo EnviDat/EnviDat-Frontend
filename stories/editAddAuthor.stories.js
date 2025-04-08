@@ -21,13 +21,15 @@ import { AuthorsViewModel } from '@/factories/ViewModels/AuthorsViewModel';
 
 import unFormatedMetadataCards from './js/metadata';
 import { EditDatasetServiceLayer } from '@/factories/ViewModels/EditDatasetServiceLayer';
+import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel';
 
 
 const metadataCards = [];
 
 
 const serviceLayer = new EditDatasetServiceLayer(unFormatedMetadataCards[0])
-const authorsViewModel = serviceLayer.getViewModel(AuthorsViewModel.name);
+const datasetVM = new DatasetViewModel(serviceLayer);
+const authorsViewModel = new AuthorsViewModel(datasetVM.dataset);
 
 
 unFormatedMetadataCards.forEach((el) => {

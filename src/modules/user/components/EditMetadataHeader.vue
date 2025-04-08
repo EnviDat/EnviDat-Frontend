@@ -253,12 +253,14 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import {mdiAccount, mdiBookOpenVariantOutline, mdiEmail} from '@mdi/js';
+/*
 import {
   EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_MAIN_HEADER,
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
 } from '@/factories/eventBus';
+*/
 
 import { METADATA_NAMESPACE, METADATA_UPDATE_EXISTING_TITLE } from '@/store/metadataMutationsConsts';
 
@@ -270,7 +272,6 @@ import ExpandableLayout from '@/components/Layouts/ExpandableLayout.vue';
 import { enhanceTitleImg } from '@/factories/metaDataFactory';
 
 import {
-  createContact,
   creationContactFromAuthor,
   getArrayOfFullNames,
   getAuthorByEmail,
@@ -291,7 +292,6 @@ import {
 
 import { getMetadataUrlFromTitle } from '@/factories/mappingFactory';
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
-import { preview } from 'vite';
 
 
 export default {
@@ -371,7 +371,7 @@ export default {
     },
     validationErrors: {
       type: Object,
-      default: () => {},
+      default: () => ({}),
     },
     readOnlyFields: {
       type: Array,
@@ -383,12 +383,14 @@ export default {
     },
   },
   emits: ['save'],
+/*
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   beforeUnmount() {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
+*/
   computed: {
     loadingColor() {
       if (this.loading) {
@@ -537,7 +539,6 @@ export default {
       }
 
       if (property === METADATA_TITLE_PROPERTY && !this.metadataUrl) {
-
         this.previews[METADATA_URL_PROPERTY] = getMetadataUrlFromTitle(value);
       }
     },
@@ -580,9 +581,6 @@ export default {
         return;
       }
 
-      // default to filling all the infos from the text-field input
-      let contactObject = createContact(this.contactFirstNameField, this.contactLastNameField, this.contactEmailField);
-
       if (property === METADATA_CONTACT_EMAIL) {
 
         // autocomplete author
@@ -594,10 +592,6 @@ export default {
           this.previews[METADATA_CONTACT_FIRSTNAME] = autoCompletedContactObject[METADATA_CONTACT_FIRSTNAME];
           this.previews[METADATA_CONTACT_LASTNAME] = autoCompletedContactObject[METADATA_CONTACT_LASTNAME];
 
-          // overwrite any infos from the text-fields with the author infos
-          // from the autocomplete
-          contactObject = autoCompletedContactObject;
-
           // this makes the text-fields readonly again
           this.authorPickerTouched = false;
         }
@@ -608,26 +602,19 @@ export default {
       // when the user focus leaves any of the fields, therefore all changes
       // must be stored
 
-      this.setFullContactInfos(contactObject);
+      this.setHeaderInfo();
     },
-    setFullContactInfos(contactObject) {
+    setHeaderInfo() {
 
       const newHeaderInfo = {
-        ...this.$props,
-        ...this.previews,
-        ...contactObject,
+        metadataTitle: this.metadataTitleField,
+        metadataUrl: this.metadataUrlField,
+        contactEmail: this.contactEmailField,
+        contactFirstName: this.contactFirstNameField,
+        contactLastName: this.contactLastNameField,
       };
 
-      this.$emit('save', newHeaderInfo);
-    },
-    setHeaderInfo(property, value) {
-
-      let newHeaderInfo = {
-        ...this.$props,
-        ...this.previews,
-        [property]: value,
-      };
-
+/*
       if (property === METADATA_TITLE_PROPERTY && !this.metadataUrl && this.metadataUrlField) {
         // in the case of typing in the title for the first time, make sure
         // to store the url as well
@@ -636,6 +623,7 @@ export default {
           [METADATA_URL_PROPERTY]: this.metadataUrlField,
         }
       }
+*/
 
 
       this.$emit('save', newHeaderInfo);
@@ -645,6 +633,14 @@ export default {
     },
     readOnlyHint(dateProperty) {
       return readOnlyHint(this.$props, dateProperty);
+    },
+  },
+  watch: {
+    loading(newLoading, oldLoading) {
+      if (oldLoading && !newLoading) {
+        this.clearPreviews();
+        console.log('previews?', this.previews);
+      }
     },
   },
   data: () => ({

@@ -14,8 +14,8 @@
  */
 
 import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuthors.vue';
+import { Dataset } from '@/factories/ViewModels/Dataset';
 import { AuthorsViewModel } from '@/factories/ViewModels/AuthorsViewModel';
-import { EditDatasetServiceLayer } from '@/factories/ViewModels/EditDatasetServiceLayer';
 import { enhanceMetadatasTitleImage } from '@/factories/metaDataFactory';
 
 import {
@@ -38,7 +38,8 @@ enhanceMetadatasTitleImage(metadata);
 const authorsMap = extractAuthorsMap(metadata);
 const fullAuthors = getFullAuthorsFromDataset(authorsMap, metadata[1]);
 
-const serviceLayer = new EditDatasetServiceLayer(metadataset[0]);
+const dataset = new Dataset(metadataset[0]);
+const authorsViewModel = new AuthorsViewModel(dataset);
 
 export const Empty = {};
 
@@ -64,7 +65,7 @@ export const Filled = {
 
 export const FromViewModel = {
   args: {
-    ...serviceLayer.getViewModel(AuthorsViewModel.name),
+    ...authorsViewModel,
     authorDetailsConfig: {
       showAuthorInfos: true,
       showDataCredits: true,
