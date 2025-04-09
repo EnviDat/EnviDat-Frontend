@@ -84,10 +84,6 @@ export default {
       default: false,
     },
   },
-  mounted() {
-  },
-  computed: {
-  },
   methods: {
     creditIconColor(creditName) {
       const active = this.isActive(creditName);

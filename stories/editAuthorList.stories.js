@@ -237,12 +237,20 @@ export const EmptyAuthorList = {
   },
 }
 
+
 export const EditExistingAuthors = {
   ...Template,
   args: {
     authors: preSelectedAuthors2,
     existingAuthors: extractedAuthors,
     authorsMap,
+  },
+}
+
+export const LoadingAuthorList = {
+  args: {
+    ...EditExistingAuthors.args,
+    loading: true,
   },
 }
 
