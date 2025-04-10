@@ -244,7 +244,7 @@ export default {
     // all users get any changes in the config and version updates
     setInterval(() => {
       this.$store.dispatch(SET_CONFIG);
-    }, 300000); // 1000 * 60 * 5 = 5 minutes
+    }, 30000); // 1000 * 3 = 30 seconds
   },
   created() {
     eventBus.on(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
@@ -282,7 +282,7 @@ export default {
         this.$refs.appContainer?.$el || this.$refs.appContainer;
       if (appContainer) {
         // TBD: define where to scroll to
-        appContainer.scrollTop += appContainer.scrollTop + 600;
+        appContainer.scrollTop += 600;
       }
     },
     updateScroll() {
@@ -389,11 +389,6 @@ export default {
       });
     },
     catchMaintenanceConfirmClick() {
-      if (this.userIsOnEditPage) {
-        this.editMaintenanceBanner = false;
-        return;
-      }
-
       this.showMaintenanceBanner = false;
     },
     navigateTo(path) {
@@ -642,11 +637,6 @@ export default {
       if (this.maintenanceConfig.messageActive) {
         return true;
       }
-
-      if (this.userIsOnEditPage) {
-        return this.editMaintenanceBanner;
-      }
-
       return false;
     },
     maintenanceBannerText() {
@@ -799,18 +789,18 @@ export default {
 }
 
 .bg-dark {
-  // background-color: #e0e0e0 !important;
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.3) 100%)
-      center top repeat,
-    url('https://envidat.ch/static/app_b_browsepage-Bk6vOmrC.webp') !important;
+  background-color: #e0e0e0 !important;
+  // background:
+  //   linear-gradient(rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.3) 100%)
+  //     center top repeat,
+  //   url('https://envidat.ch/static/app_b_browsepage-Bk6vOmrC.webp') !important;
 }
 .bg-dark-dashboard {
-  // background-color: #e0e0e0 !important;
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.3) 100%)
-      center top repeat,
-    url('https://envidat.ch/static/app_b_dashboardpage-D38vMBVL.webp') !important;
+  background-color: #9c9c9c !important;
+  // background:
+  //   linear-gradient(rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.3) 100%)
+  //     center top repeat,
+  //   url('https://envidat.ch/static/app_b_dashboardpage-D38vMBVL.webp') !important;
 }
 
 @keyframes bounce {

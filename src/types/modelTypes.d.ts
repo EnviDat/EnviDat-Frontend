@@ -1,4 +1,3 @@
-import { METADATA_TITLE_PROPERTY } from '@/factories/metadataConsts';
 
 export interface ResourceSizeDTO {
   size_value: string;
@@ -60,6 +59,17 @@ export interface OrganizationDTO {
   state: string;
 }
 
+export interface AuthorDTO {
+  name: string;
+  given_name: string;
+  identifier?: string;
+  identifier_scheme?: string;
+  email: string;
+  affiliation: string;
+  affiliation_02?: string;
+  affiliation_03?: string;
+  data_credit?: string[];
+}
 
 export interface DatasetDTO {
   author: string;
@@ -73,7 +83,7 @@ export interface DatasetDTO {
   license_id: string;
   license_title: string;
   license_url: string;
-  maintainer: string;
+  maintainer: AuthorDTO;
   maintainer_email: string | null;
   metadata_created: string;
   metadata_modified: string;

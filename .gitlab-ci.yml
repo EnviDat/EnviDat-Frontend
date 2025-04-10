@@ -20,7 +20,16 @@ variables:
   CACHE_COMPRESSION_LEVEL: 'fast'
 #  npm_config_cache: '.npm/'
 
-.trigger-rules:
+.normal-rules:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "pipeline"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'    
+      when: never
+    - if: '$CI_COMMIT_REF_NAME =~ /^(main|staging|develop)$/'
+    - if: $CI_PIPELINE_SOURCE == "web"
+      when: always
+
+.deployment-rules:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "pipeline"'
       when: never
@@ -84,7 +93,7 @@ modify-env:
   stage: config
   image: python:3.9-alpine3.17
   environment: $CI_COMMIT_REF_NAME
-  extends: .trigger-rules
+  extends: .normal-rules
   needs:
     - set-vars
   before_script:
@@ -159,7 +168,7 @@ install-node:
       untracked: true
       when: on_success
   extends:
-    - .trigger-rules
+    - .normal-rules
   before_script:
     # disabled the funding check
     - npm config set fund false
@@ -196,7 +205,7 @@ run-tests:
   image: node:20.15.0-alpine3.20
   environment: $CI_COMMIT_REF_NAME
   extends:
-    - .trigger-rules
+    - .normal-rules
   needs:
     - modify-env
     - install-node
@@ -221,7 +230,7 @@ build-storybook:
   image: node:20.15.0-alpine3.20
   environment: $CI_COMMIT_REF_NAME
   extends:
-    - .trigger-rules
+    - .normal-rules
   needs:
     # needs the artifact: config and environment variables
     - modify-env
@@ -257,7 +266,7 @@ build-app:
   image: node:20.15.0-alpine3.20
   environment: $CI_COMMIT_REF_NAME
   extends:
-    - .trigger-rules
+    - .normal-rules
   needs:
     # needs the artifact: config and environment variables
     - modify-env
@@ -289,7 +298,7 @@ combine-builds:
   stage: build
   image: alpine:3.20
   environment: $CI_COMMIT_REF_NAME
-  extends: .trigger-rules
+  extends: .normal-rules
   variables:
     GIT_STRATEGY: none
   needs:
@@ -315,7 +324,7 @@ combine-builds:
     paths:
       - ./
 #tag-commit-sha:
-#  extends: .trigger-rules
+#  extends: .normal-rules
 #  stage: package
 #  image: regclient/regctl:v0.3-alpine
 #  variables:

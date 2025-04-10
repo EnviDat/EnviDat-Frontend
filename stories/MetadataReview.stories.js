@@ -14,6 +14,7 @@
  */
 
 
+import MetadataDescription from '@/modules/metadata/components/Metadata/MetadataDescription.vue';
 import MetadataCitation from '@/modules/metadata/components/Metadata/MetadataCitation.vue';
 import MetadataDetails from '@/modules/metadata/components/Metadata/MetadataDetails.vue';
 import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications.vue';
@@ -22,7 +23,6 @@ import MetadataFunding from '@/modules/metadata/components/Metadata/MetadataFund
 import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuthors.vue';
 
 import {
-  createBody,
   createDetails,
   createPublications,
   enhanceMetadatasTitleImage,
@@ -46,7 +46,9 @@ import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/Meta
 import envidat_packages from './testdata/packagelist.json';
 
 export default {
-  title: '3 Datasets / 1 Views',
+  title: 'Metadata review for 3 datasets',
+  decorators: [],
+  parameters: {},
 };
 
 enhanceMetadatasTitleImage(metadata);
@@ -164,7 +166,46 @@ const genericProps5 = {
 };
 
 
-export const MetadataCitationViews = () => ({
+export const MetadataDescriptionViews = () => ({
+  components: { MetadataDescription },
+  template: `
+  <v-row>
+
+    <v-col cols="6" class="py-3">
+      <MetadataDescription  />
+    </v-col>
+
+    <v-col cols="6" class="py-3">
+      <MetadataDescription v-bind="genericPropsPlaceholder" />
+    </v-col>
+
+    <v-col cols="4" class="py-3">
+      <MetadataDescription v-bind="genericPropsBody" />
+    </v-col>
+
+    <v-col cols="8" class="py-3">
+      <MetadataDescription v-bind="genericPropsBodyLongDesc" />
+    </v-col>
+
+  </v-row>
+  `,
+  data: () => ({
+    genericPropsPlaceholder: {
+      showPlaceholder: true,
+    },
+    genericPropsBody: {
+      showPlaceholder: false,
+      ...body1,
+    },
+    genericPropsBodyLongDesc: {
+      showPlaceholder: false,
+      ...body2,
+    },
+  }),
+});
+
+
+export const MetadataReviewCitationViews = () => ({
   components: { MetadataCitation },
   template: `
   <v-row >
@@ -212,7 +253,7 @@ export const MetadataCitationViews = () => ({
   }),
 });
 
-export const MetadataDetailsViews = () => ({
+export const MetadataReviewDetailsViews = () => ({
   components: { MetadataDetails },
   template: `
   <v-row >
@@ -250,7 +291,7 @@ export const MetadataDetailsViews = () => ({
 });
 
 
-export const MetadataRelatedPublicationsViews = () => ({
+export const MetadataReviewRelatedPublicationsViews = () => ({
   components: { MetadataPublications },
   template: `
   <v-row >
@@ -350,7 +391,7 @@ export const MetadataRelatedPublicationsViews = () => ({
     },
   }),
 });
-export const MetadataRelatedPublicationsListViews = () => ({
+export const MetadataReviewRelatedPublicationsListViews = () => ({
   components: { MetadataPublicationList },
   template: `
   <v-row >
@@ -442,7 +483,7 @@ export const MetadataRelatedPublicationsListViews = () => ({
   }),
 });
 
-export const MetadataRelatedDatasetsViews = () => ({
+export const MetadataReviewRelatedDatasetsViews = () => ({
   components: { MetadataRelatedDatasets },
   template: `
   <v-row >
@@ -495,7 +536,7 @@ export const MetadataRelatedDatasetsViews = () => ({
   }),
 });
 
-export const MetadataFundingViews = () => ({
+export const MetadataReviewFundingViews = () => ({
   components: { MetadataFunding },
   template: `
   <v-row >
@@ -538,7 +579,7 @@ export const MetadataFundingViews = () => ({
   }),
 });
 
-export const MetadataAuthorsViews = () => ({
+export const MetadataReviewAuthorsViews = () => ({
   components: { MetadataAuthors },
   template: `
   <v-row>

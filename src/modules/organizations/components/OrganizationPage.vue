@@ -15,7 +15,8 @@ import {
   getOrganizationRelationMap,
   getOrganizationTree,
   getResearchUnitDatasetSeries,
-  getTopOrganizations, organizationDatasetHistoryOptions,
+  getTopOrganizations,
+  organizationDatasetHistoryOptions,
   researchUnitDatasetChartOptions,
 } from '@/factories/organizationFactory';
 
@@ -24,9 +25,8 @@ import MetadataList from '@/components/MetadataList.vue';
 import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
 import OrganizationTree from '@/modules/user/components/OrganizationTree.vue';
 
-// import organizations from '@/../public/testdata/organization_show.json';
 import researchUnits from '@/../public/researchUnits.json';
-// import metadatas from '@/../public/packagelist.json';
+
 import {
   METADATADETAIL_PAGENAME,
   ORGANIZATIONS_PAGENAME,
@@ -41,8 +41,14 @@ const orgaStore = useOrganizationsStore();
 const orgaDatasetsMap = ref<Map<string, DatasetOrganizationMapEntry>>();
 const orgaRelationMap = ref();
 
-const ruDataSeries = ref(getResearchUnitDatasetSeries());
-const orgaDataseries = ref(getResearchUnitDatasetSeries());
+const ruDataSeries = ref({
+  labels: [],
+  datasets: [],
+});
+const orgaDataseries = ref({
+  labels: [],
+  datasets: [],
+});
 const researchUnitChartOptions = researchUnitDatasetChartOptions;
 
 const loading = ref(true);

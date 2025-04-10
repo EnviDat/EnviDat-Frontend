@@ -17,13 +17,38 @@ import { Author, DatasetDTO } from '@/types/modelTypes';
 
 
 export class HeaderViewModel extends AbstractBaseViewModel{
-  created: string;
-  modified: string;
-  authors: Author[];
-  categoryColor: any;
-  titleImg: any;
-  maxTags: number;
-  metadataState: string;
+
+  declare metadataTitle: string;
+
+  declare contactEmail: string;
+  declare contactGivenName: string;
+  declare contactSurname: string;
+
+  declare doi: string;
+
+  declare tags: any[];
+
+  declare organization: string;
+  declare organizationTooltip: string;
+
+  declare spatialInfo: string;
+
+  declare state: string;
+  declare private: boolean;
+  declare metadataState: string;
+
+  declare publicationYear: string;
+  declare publicationStatus: string;
+
+  declare created: string;
+  declare modified: string;
+
+  declare authors: Author[];
+
+  declare categoryColor: any;
+  declare titleImg: any;
+
+  declare maxTags: number;
 
   constructor(dataset: DatasetDTO, smallScreen, categoryColor, titleImg) {
     super(dataset, HeaderViewModel.mappingRules());
@@ -36,7 +61,6 @@ export class HeaderViewModel extends AbstractBaseViewModel{
       lastName: this[METADATA_CONTACT_LASTNAME],
     });
 
-    // @ts-ignore
     this.authors = AuthorsViewModel.getFormattedAuthors(dataset.author, dataset.metadata_modified);
 
     this.categoryColor = categoryColor;

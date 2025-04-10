@@ -61,7 +61,6 @@ const preSelectedAuthors2 = extractedAuthors.filter(value => value.fullName.incl
 export default {
   title: '3 Datasets / 2 Edit / Author Infos',
   component: EditAuthorList,
-  // argTypes: { listChanged: { action: 'listChanged' } },
 };
 
 const Template = {
@@ -229,12 +228,29 @@ const Template = {
   }),
 }
 
+export const EmptyAuthorList = {
+  ...Template,
+  args: {
+    authors: undefined,
+    existingAuthors: undefined,
+    authorsMap: undefined,
+  },
+}
+
+
 export const EditExistingAuthors = {
   ...Template,
   args: {
     authors: preSelectedAuthors2,
     existingAuthors: extractedAuthors,
     authorsMap,
+  },
+}
+
+export const LoadingAuthorList = {
+  args: {
+    ...EditExistingAuthors.args,
+    loading: true,
   },
 }
 

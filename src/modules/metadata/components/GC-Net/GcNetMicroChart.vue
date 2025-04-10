@@ -310,7 +310,7 @@ export default {
 
       // hardcode 1 years because there is a cut of date when we have date
       // for the microChart one year is enough
-      const apiUrl = `${url}/2019-01-01T00:00:00/2019-12-31T00:00:00/`;
+      const apiUrl = `${url}2019-01-01T00:00:00/2019-12-31T00:00:00/`;
 
       axios
         .get(apiUrl)

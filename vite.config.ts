@@ -138,6 +138,13 @@ export default ({ mode, config }) => {
       rollupOptions: isProd
         ? {
             output: {
+              // [name].[hash] to avoid the build to change the hash every time?
+              // https://rollupjs.org/configuration-options/#output-entryfilenames
+              // we need to so that when creating a new build, only the files which have changed
+              // get a new hash to breaking caching of the browser
+              entryFileNames: 'assets/[name].[hash].js',
+              chunkFileNames: 'assets/[name].[hash].js',
+              assetFileNames: 'assets/[name].[hash].[ext]',
               manualChunks: (id) => {
                 if (id.includes('node_modules')) {
                   if (id.includes('vuetify')) {

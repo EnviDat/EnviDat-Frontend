@@ -43,14 +43,16 @@
               showFullDescription ||
               (!showFullDescription && !maxDescriptionLengthReached)
             "
-            class="readableText resourceCardText heightAndScroll"
+            class="readableText heightAndScroll"
             :class="{
               'text-white': !dark,
               'text-black': dark,
             }"
             :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
           >
-            <div v-html="markdownText"></div>
+            <div class="resourceCardText"
+                 v-html="markdownText"
+            />
           </v-col>
 
           <v-col
@@ -306,7 +308,7 @@ import { useS3Store } from '@/modules/s3/store/s3Store';
 import SparkChart from '@/components/Charts/SparkChart.vue';
 
 import { renderMarkdown, stripMarkdown } from '@/factories/stringFactory';
-import { formatBytes } from '@/factories/metaDataFactory';
+import { formatBytes, getResourceName } from '@/factories/metaDataFactory';
 import { EDIT_METADATA_DOI_LABEL } from '@/factories/metadataConsts';
 import { getFileIcon } from '@/factories/imageFactory';
 
@@ -439,14 +441,7 @@ export default {
       return formatDate(this.lastModified) || this.lastModified;
     },
     resourceName() {
-      let name = this.name ?? 'Unnamed resource';
-
-      const isUrl = !this.name && !!this.url;
-      if (isUrl) {
-        const splits = this.url.split('/');
-        name = splits[splits.length - 1];
-      }
-      return this.deprecated ? `[DEPRECATED] - ${name}` : name;
+      return getResourceName(this);
     },
     scrollbarColorFront() {
       return this.$vuetify
@@ -549,24 +544,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.resourceHeadline {
-  line-height: 1.5rem;
-}
-
-.black_title {
-  color: rgba(0, 0, 0, 0.87) !important;
-}
-
-.white_title {
-  color: rgba(255, 255, 255, 0.9) !important;
-}
-
-.heightAndScroll {
-  max-height: 400px;
-  overflow-y: auto !important;
-  scrollbar-width: thin;
-}
-
 .fabPosition {
   position: absolute;
   bottom: 0;
@@ -609,6 +586,32 @@ export default {
     opacity: 1;
   }
 }
+</style>
+
+<style>
+.resourceCardText p a {
+  color: #ffd740 !important;
+}
+</style>
+
+<style scoped>
+.resourceHeadline {
+  line-height: 1.5rem;
+}
+
+.black_title {
+  color: rgba(0, 0, 0, 0.87) !important;
+}
+
+.white_title {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.heightAndScroll {
+  max-height: 400px;
+  overflow-y: auto !important;
+  scrollbar-width: thin;
+}
 
 .lockedText {
   display: none;
@@ -629,4 +632,6 @@ export default {
 .highlighted {
   box-shadow: #ffd740 0 0 5px 5px !important;
 }
+
+
 </style>

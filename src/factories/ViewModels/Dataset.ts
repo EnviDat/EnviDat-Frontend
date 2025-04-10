@@ -12,7 +12,7 @@ export class Dataset implements DatasetDTO {
    */
   subscribers = [];
 
-  serviceLayer;
+  serviceLayer : EditDatasetServiceLayer;
 
   /**
    * Map to keep reference of models that are being updated from the backend
