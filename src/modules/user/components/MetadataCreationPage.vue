@@ -150,7 +150,7 @@ export default {
       this,
     );
 
-    const prefilledOrganizationId = this.autoPreSelectedOrganizationId()
+    const prefilledOrganizationId = this.autoPreSelectedOrganizationId;
 
     initStepDataOnLocalStorage(
       this.creationSteps,
@@ -266,7 +266,7 @@ export default {
         EDITMETADATA_ORGANIZATION,
       );
 
-      const prefilledOrganizationId = this.autoPreSelectedOrganizationId()
+      const prefilledOrganizationId = this.autoPreSelectedOrganizationId;
 
       const data = {
         // if the case that nothing comes from the localstorage, check if the user has only one
