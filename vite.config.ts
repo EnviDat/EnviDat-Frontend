@@ -4,10 +4,9 @@ import path from 'path';
 import vue from '@vitejs/plugin-vue';
 import vuetify from 'vite-plugin-vuetify';
 
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig, loadEnv, UserConfig } from 'vite';
 import { configDefaults } from 'vitest/dist/config.js';
 import eslint from 'vite-plugin-eslint';
-import { ssr } from 'vike/plugin'
 
 import Unfonts from 'unplugin-fonts/vite';
 import vueDevTools from 'vite-plugin-vue-devtools';
@@ -21,14 +20,16 @@ const useHttps = process.env.VITE_USE_HTTPS === 'true';
 
 const isVike = process.argv.some(arg => arg.includes('vike'));
 
-export default async ({ mode, config }) => {
+export default async ({ mode, config }) : Promise<UserConfig> => {
 
   if (isVike) {
     console.log('Run with vite.config.vike!');
     const vikeConfig = await import('./vite.config.vike.ts');
-    // console.log(vikeConfig.default);
-    return vikeConfig.default;
+    console.log(vikeConfig.default);
+    return vikeConfig.default(mode, config);
   }
+
+  console.log('Run with vite.config.ts!');
 
   const isProd = mode === 'production';
   const isDev = mode === 'development';
@@ -76,7 +77,6 @@ export default async ({ mode, config }) => {
   return defineConfig({
     plugins: [
       vue(),
-      ssr(),
       eslint({
         include: ['src/**/*.ts', 'src/**/*.vue'], // Include TypeScript files
         // https://github.com/storybookjs/builder-vite/issues/367#issuecomment-1938214165

@@ -13,9 +13,12 @@ import { VTreeview } from 'vuetify/labs/VTreeview'
 import config from './vuetifyConfig';
 
 
-export default createVuetify({
-  ...config,
-  components: {
-    VTreeview,
-  },
-});
+export default createVuetify(ssr) => {
+  return {
+    ...config,
+    ssr,
+    components: {
+      VTreeview,
+    },
+  }
+}
