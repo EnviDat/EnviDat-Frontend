@@ -121,8 +121,6 @@
  */
 import { mapGetters, mapState } from 'vuex';
 
-import { ABOUT_PAGENAME } from '@/router/routeConsts';
-
 import {
   mdiBookOpenVariant,
   mdiInformation,
@@ -130,6 +128,8 @@ import {
   mdiShieldCheckOutline,
   mdiFingerprint,
 } from '@mdi/js';
+
+import { ABOUT_PAGENAME } from '@/router/routeConsts';
 import orga from '@/assets/about/EnviDat_organigram.png';
 import { renderMarkdown } from '@/factories/stringFactory';
 import ExpandableCard from '@/modules/about/components/ExpandableCard.vue';
