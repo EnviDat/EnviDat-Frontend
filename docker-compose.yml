@@ -6,7 +6,6 @@ networks:
 
 services:
   envidat-frontend:
-    image: "${INTERNAL_REG}/envidat-frontend:debug"
     build:
       context: .
       target: debug
@@ -15,6 +14,7 @@ services:
         EXTERNAL_REG: ${EXTERNAL_REG}
         MAINTAINER_APP: ${MAINTAINER_APP}
         MAINTAINER_CD: ${MAINTAINER_CD}
+        APP_VERSION: ${APP_VERSION}
     container_name: envidat_frontend
     ports:
       - 8990:8080

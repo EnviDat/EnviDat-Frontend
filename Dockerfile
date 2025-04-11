@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && update-ca-certificates
 
 
-FROM ${EXTERNAL_REG}/node:16 AS base
+FROM ${EXTERNAL_REG}/node:18 AS base
 ARG APP_VERSION
 ARG MAINTAINER_APP
 ARG MAINTAINER_CD
@@ -23,6 +23,8 @@ RUN npm install
 
 FROM base AS debug
 ENV NODE_ENV development
+ENV APP_VERSION=${APP_VERSION}
+
 ENTRYPOINT ["node", "--inspect=0.0.0.0:9229", \
             "node_modules/.bin/vite", "--debug"]
 

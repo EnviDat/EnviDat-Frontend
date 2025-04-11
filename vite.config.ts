@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+
 import fs from 'fs';
 import path from 'path';
 import vue from '@vitejs/plugin-vue';
@@ -13,6 +14,16 @@ import vueDevTools from 'vite-plugin-vue-devtools';
 import { visualizer } from 'rollup-plugin-visualizer';
 
 import { getFilesWithPrefix } from './src/factories/enhancementsFactoryNode.js';
+
+// envidat docker issue with crypto$2.getRandomValues
+import { webcrypto } from 'crypto';
+
+if (
+  !globalThis.crypto ||
+  typeof globalThis.crypto.getRandomValues !== 'function'
+) {
+  globalThis.crypto = webcrypto;
+}
 
 const version = process.env.npm_package_version;
 
