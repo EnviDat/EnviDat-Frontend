@@ -215,6 +215,10 @@ export default ({ mode, config }) => {
       ? {
           host: '0.0.0.0',
           port: 8080,
+          hmr: {
+            host: 'dev.envidat04.wsl.ch',
+            port: 8080,
+          },
           allowedHosts: ['dev.envidat04.wsl.ch:8080'],
           https: useHttps
             ? {
