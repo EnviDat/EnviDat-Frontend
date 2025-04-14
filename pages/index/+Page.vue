@@ -1,4 +1,9 @@
 <template>
+
+  <v-container>
+    Test
+  </v-container>
+<!--
   <LandingPageLayout
     :categoriesTitle="defaultWelcomeInfo.categoriesTitle"
     :datasetsTitle="defaultWelcomeInfo.datasetsTitle"
@@ -7,7 +12,7 @@
     :infoTitle="defaultWelcomeInfo.infoTitle"
     :articlesTitle="defaultWelcomeInfo.articlesTitle"
   >
-    <!-- Welcome slot -->
+    &lt;!&ndash; Welcome slot &ndash;&gt;
     <template #welcome>
       <SloganCard
         class="pa-md-6 pt-md-0"
@@ -18,7 +23,7 @@
         moreButtonText="ABOUT ENVIDAT"
       />
 
-<!--
+&lt;!&ndash;
       <SearchBarView
         v-if="isMediumScreenAndDown"
         :labelText="
@@ -30,10 +35,10 @@
         :hasButton="true"
 
       />
--->
+&ndash;&gt;
 
       <v-row justify="center" class="flex-grow-0" no-gutters>
-        <!-- noMode Category -->
+        &lt;!&ndash; noMode Category &ndash;&gt;
         <v-col
           v-for="card in categoryCardsNoMode"
           :key="card.title"
@@ -53,7 +58,7 @@
         </v-col>
       </v-row>
       <v-row justify="center" class="flex-grow-0" no-gutters>
-        <!-- Mode Category -->
+        &lt;!&ndash; Mode Category &ndash;&gt;
         <v-col
           v-for="card in categoryCardsMode"
           :key="card.title"
@@ -75,7 +80,7 @@
       </v-row>
     </template>
 
-    <!-- Search slot -->
+    &lt;!&ndash; Search slot &ndash;&gt;
     <template #search>
       <SearchBarView
         :labelText="defaultWelcomeInfo.searchLabelText"
@@ -84,25 +89,8 @@
       />
     </template>
 
-    <!-- Datasets slot -->
+    &lt;!&ndash; Datasets slot &ndash;&gt;
     <template #datasets>
-<!--
-      <v-row v-if="loadingMetadatasContent">
-        <v-col
-          v-for="index in 4"
-          :key="index"
-          cols="12"
-          md="6"
-          xl="3"
-          class="pt-3 pb-3"
-        >
-          <MetadataCardPlaceholder id="orgaDataset" class="mx-2" />
-        </v-col>
-      </v-row>
--->
-<!--
-      <v-row v-else>
--->
       <v-row>
         <v-col
           v-for="(metadata, index) in recentMetadata"
@@ -126,7 +114,7 @@
       </v-row>
     </template>
 
-    <!-- Info slot -->
+    &lt;!&ndash; Info slot &ndash;&gt;
     <template v-if="defaultWelcomeInfo.infoConfig.infoActive" #info>
       <v-row class="justify-center">
         <v-col v-for="(info, i) in defaultWelcomeInfo.infoConfig.info" :key="i" cols="12" lg="4">
@@ -135,50 +123,6 @@
       </v-row>
     </template>
 
-    <!-- News slot -->
-<!--
-    <template v-if="showNews" #news>
-      <v-row>
-        <v-col
-          v-for="(post, index) in newsEntries"
-          :key="index"
-          cols="12"
-          md="6"
-        >
-          <BaseCardLandingPage
-            :cardType="'team'"
-            :showButton="false"
-            :id="post.id"
-            :title="post.title"
-            :subtitle="post.text"
-            :date="post.date"
-            :categoryName="'Envidat Team'"
-            :categoryColor="'#aab2ff'"
-            :categoryAbove="true"
-            buttonText="View"
-          />
-        </v-col>
-
-        <v-col v-for="(post, index) in blogPosts" :key="index" cols="12" md="6">
-          <BaseCardLandingPage
-            :cardType="'blog'"
-            :id="post.id"
-            :title="post.title"
-            :subtitle="post.preview"
-            :date="post.date"
-            :truncateSubTilte="true"
-            :categoryName="'Blog article'"
-            :categoryColor="'#E0EF45E6'"
-            :categoryAbove="true"
-            :categoryBelow="false"
-            buttonText="Read"
-          />
-        </v-col>
-
-      </v-row>
-    </template>
--->
-
     <template #contact>
       <v-row>
         <v-col cols="12">
@@ -186,7 +130,9 @@
         </v-col>
       </v-row>
     </template>
+
   </LandingPageLayout>
+-->
 
 </template>
 

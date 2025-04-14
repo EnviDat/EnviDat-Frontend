@@ -1,11 +1,19 @@
 <template>
-  <div class="layout">
-    <div class="navigation">
-      <a class="navitem" href="/">Home</a>
-      <a class="navitem" href="/metadata">metadata</a>
-    </div>
-    <div class="content"><slot /></div>
-  </div>
+  <v-app>
+    <v-app-bar></v-app-bar>
+    <v-main>
+      <div class="layout">
+        <div class="navigation">
+          <a class="navitem" href="/">Home</a>
+          <a class="navitem" href="/metadata">metadata</a>
+        </div>
+    <!--
+        <div class="content"><slot /></div>
+    -->
+        <v-btn>hi click me!</v-btn>
+      </div>
+    </v-main>
+  </v-app>
 </template>
 
 <style>
@@ -46,3 +54,13 @@ a {
   padding: 3px;
 }
 </style>
+
+<script setup lang="ts">
+
+/*
+import { useDisplay } from 'vuetify';
+
+const display = useDisplay();
+console.log('setup of +Layout.vue', display);
+*/
+</script>
