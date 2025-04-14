@@ -3,12 +3,21 @@
   <link v-if="canonicalUrl" rel="canonical" :href="canonicalUrl" />
 
   <title>{{ data.name }}</title>
+
+  <script type="text/javascript">
+`    document.addEventListener('DOMContentLoaded', function () {
+      window.location.href = 'https://envidat.ch';
+    });`
+  </script>
+
   <meta property="og:title" :content="data.name">
 
   <meta name="description" :content="data.notes">
   <meta property="og:description" :content="data.notes">
 
   <meta property="og:image" :content="logoUrl">
+
+  <img :src v-bind="otherAttrs" />
 
 </template>
 
@@ -39,4 +48,21 @@ function getCanonicalUrl(): null | string {
 
 const canonicalUrl = getCanonicalUrl()
 
+
+import { useAttrs, h } from 'vue'
+import { useConfig } from 'vike-vue/useConfig'
+
+const { src, author, ...otherAttrs } = useAttrs()
+
+const config = useConfig()
+config({
+  Head: h('script', {
+    type: 'text/javascript',
+    innerHTML: `
+    document.addEventListener('DOMContentLoaded', function () {
+      window.location.href = 'https://envidat.ch';
+    });
+    `,
+  }),
+})
 </script>

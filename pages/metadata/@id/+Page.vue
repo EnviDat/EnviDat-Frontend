@@ -2,6 +2,8 @@
   <div>
     <h1>Dataset {{ data.name }}</h1>
 
+    <a :href="`https://www.envidat.ch/#/metadata/${data.name}`" >{{ data.name }}</a>
+
     <div>
       {{ data.notes }}
     </div>
