@@ -237,7 +237,7 @@ export default {
         instruction: AUTHORS_EDIT_CURRENT_DATACREDIT,
         dataCredit: author.dataCredit,
         authorName: author.fullName,
-        readOnly: this.loading || this.readOnlyFields.includes(METADATA_DATACREDIT_PROPERTY),
+        readOnly: this.loading || this.readOnlyFields?.includes(METADATA_DATACREDIT_PROPERTY),
       }
     },
     clearPreviews() {
