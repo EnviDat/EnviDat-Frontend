@@ -1,19 +1,15 @@
 <template>
-  <v-app>
-    <v-app-bar></v-app-bar>
-    <v-main>
-      <div class="layout">
-        <div class="navigation">
-          <a class="navitem" href="/">Home</a>
-          <a class="navitem" href="/metadata">metadata</a>
-        </div>
-    <!--
-        <div class="content"><slot /></div>
-    -->
-        <v-btn>hi click me!</v-btn>
+<!--
+  <div>
+    <div class="layout">
+      <div class="navigation">
+        <a class="navitem" href="/">Home</a>
+        <a class="navitem" href="/metadata">metadata</a>
       </div>
-    </v-main>
-  </v-app>
+    </div>
+  </div>
+-->
+  <div class="content"><slot /></div>
 </template>
 
 <style>

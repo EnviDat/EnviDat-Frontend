@@ -2,7 +2,6 @@
   <div>
     <h1>Dataset {{ data.name }}</h1>
 
-    <a :href="`https://www.envidat.ch/#/metadata/${data.name}`" >{{ data.name }}</a>
 
     <div>
       {{ data.notes }}
@@ -13,9 +12,9 @@
       <div v-for="(resource, index) in data.resources"
            :key="index">
       >
-        <div>{{ resource.title }}</div>
-
-        <a :href='resource.url'>{{ resource.url }}</a>
+        <div>{{ resource.name }}</div>
+        <div>{{ resource.description }}</div>
+        <a :href='resource.url'>{{ resource.name }}</a>
       </div>
     </div>
   </div>
@@ -26,4 +25,10 @@
   import { DatasetDTO } from '@/types/modelTypes';
 
   const data = useData<DatasetDTO>()
+
+/*
+  const baseCanonicalUrl = import.meta.env.PUBLIC_ENV__VIKE_BASE_CANONICAL_URL;
+  const canonicalUrl = data && data.name ? `${baseCanonicalUrl}#/metadata/${data.name}` : baseCanonicalUrl;
+*/
+
 </script>

@@ -1,14 +1,17 @@
 import type { PageContext } from 'vike/types';
 // import createVueApp from 'vike-vue'
 import { createSSRApp, defineComponent, h, markRaw, Component, reactive } from 'vue';
+
+import PageLayout from './PageLayout.vue';
+
+/*
 import { createVuetify } from 'vuetify';
 import { VTreeview } from 'vuetify/lib/labs/VTreeview';
-import PageLayout from './PageLayout.vue';
 import { setPageContext } from './usePageContext.ts'
 import config from '@/plugins/vuetifyConfig';
 
-import '@mdi/font/css/materialdesignicons.css'
-import 'vuetify/styles'
+import '@mdi/font/css/materialdesignicons.css';
+import 'vuetify/styles';
 
 const vuetify = createVuetify({
   ...config,
@@ -17,6 +20,7 @@ const vuetify = createVuetify({
     VTreeview,
   },
 });
+*/
 
 // Same as `Object.assign()` but with type inference
 function objectAssign<Obj extends object, ObjAddendum>(
@@ -27,7 +31,6 @@ function objectAssign<Obj extends object, ObjAddendum>(
 }
 
 export function createApp(pageContext: PageContext, isClient = true) {
-/*
   const { Page, pageProps } = pageContext
 
   const PageWithLayout = {
@@ -45,15 +48,15 @@ export function createApp(pageContext: PageContext, isClient = true) {
   }
 
   const app = createSSRApp(PageWithLayout)
-
+/*
   const vuetify = createVuetify();
-  console.log('vuetify', vuetify);
   app.use(vuetify);
-
-  return { app };
 */
 
+  return { app };
 
+
+/*
   let rootComponent; // : InstanceType <typeof PageWithWrapper>
 
   const PageWithWrapper = defineComponent({
@@ -79,17 +82,10 @@ export function createApp(pageContext: PageContext, isClient = true) {
     },
   })
 
-/*
-  if (isClient) {
-    pinia.use(piniaPluginPersistedstate)
-  }
 */
 
-  const app = createSSRApp(PageWithWrapper)
 /*
-  app.use(pinia)
-  app.use(i18n)
-*/
+  const app = createSSRApp(PageWithWrapper)
   app.use(vuetify)
 
   const pageContextReactive = reactive(pageContext)
@@ -105,4 +101,6 @@ export function createApp(pageContext: PageContext, isClient = true) {
   setPageContext(app, pageContextReactive)
 
   return { app }
+*/
+
 }

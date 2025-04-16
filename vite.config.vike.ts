@@ -5,7 +5,7 @@ import path from 'path';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import vike from 'vike/plugin'
-import vuetify from 'vite-plugin-vuetify';
+// import vuetify from 'vite-plugin-vuetify';
 
 export default async ({ mode, config }) => {
 
@@ -17,7 +17,7 @@ export default async ({ mode, config }) => {
     plugins: [
       vike(),
       vue(),
-      vuetify(),
+      // vuetify(),
     ],
     resolve: {
       alias: [
@@ -44,17 +44,18 @@ export default async ({ mode, config }) => {
         // { find: 'vue', replacement: 'vue/dist/vue.esm-bundler.js' },
       ],
     },
-    base: isProd ? 'https://s3-zh.os.switch.ch/frontend-static/static_datasets/' : '/',
+    // base: isProd ? 'https://s3-zh.os.switch.ch/frontend-static/static_datasets/' : '/',
+    // base: 'https://s3-zh.os.switch.ch/frontend-static/static_datasets/',
+    base: 'https://envidat04.wsl.ch/',
     build: {
       assetsDir: '/static',
-
       chunkSizeWarningLimit: 500,
       //         assetsInlineLimit: 4096 / 2, // Reduce the amount of image inlining so the chunks don't get huge
-      cssCodeSplit: true,
+      cssCodeSplit: false,
       // minify: !buildSourceMaps,
       // sourcemap: buildSourceMaps,
       emptyOutDir: true,
     },
-    ssr: { noExternal: ['vuetify'] },
+    // ssr: { noExternal: ['vuetify'] },
   });
 }
