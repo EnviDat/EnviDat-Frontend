@@ -94,7 +94,7 @@
               v-model="key"
               :error-messages="backendErrors.key"
               :counter="keyLength"
-              label="Token"
+              label="One-Time-Password"
               clearable
               :prepend-icon="mdiKey"
               :clear-icon="mdiClose"
@@ -369,14 +369,14 @@ export default {
     key: '',
     formInvalid: false,
     keyLength,
-    requestTokenText: 'Do you have a token to sign in?',
+    requestTokenText: 'Do you have a one-time-password to sign in?',
     disclaimerTitleText: 'Disclaimer',
-    requestSentText: 'The token was sent to ',
+    requestSentText: 'The one-time-password was sent to ',
     requestSentText2: 'Please check your email address.',
     title: 'Sign in',
     signedInText: 'You are signed in as ',
     emailSignInInstructions:
-      'Sign into EnviDat with your email address and the token which will be sent by email.',
+      'Sign into EnviDat with your email address and a one-time-password which will be sent by email.',
     azureSignInInstructions:
       'WSL staff may sign in using their email and password (LAP password) instead:',
     azureButtonText: 'WSL Sign in',
