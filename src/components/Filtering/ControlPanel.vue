@@ -5,7 +5,7 @@
       <v-row align="center" justify="space-between" no-gutters>
 
         <v-col class="py-0" cols="8" :sm="hasEnabledControls ? 8 : 10" md="8" lg="8">
-          <small-search-bar-view
+          <SmallSearchBarView
             class="elevation-0"
             :compactLayout="compactLayout"
             :searchTerm="searchTerm"
@@ -20,17 +20,6 @@
             @searchCleared="catchSearchCleared" />
         </v-col>
 
-        <v-col v-if="showSearch" class="py-0 px-sm-1 flex-grow-0" id="shareSearchResult">
-
-          <BaseIconButton
-            style="opacity: 0.8;"
-            :icon="mdiShareVariant"
-            iconColor="black"
-            tooltip-bottom
-            tooltip-text="Copy the url to this view to the clipboard to share it." @clicked="catchShareClick" />
-
-        </v-col>
-
         <v-col v-if="showSearch && mode !== EDNA_MODE"
                class="ml-sm-4 flex-grow-0">
 
@@ -42,6 +31,16 @@
 
         </v-col>
 
+        <v-col v-if="showSearch" class="py-0 px-sm-1 flex-grow-0" id="shareSearchResult">
+
+          <BaseIconButton
+            style="opacity: 0.8;"
+            :icon="mdiShareVariant"
+            iconColor="black"
+            tooltip-bottom
+            tooltip-text="Copy the url to this view to the clipboard to share it." @clicked="catchShareClick" />
+
+        </v-col>
 
         <v-col v-if="showSearch && mode === EDNA_MODE"
                class="ml-sm-4 flex-grow-0" >

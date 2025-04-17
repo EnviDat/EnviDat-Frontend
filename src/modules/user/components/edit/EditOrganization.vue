@@ -28,7 +28,7 @@
       </v-row>
 
       <v-row>
-        <v-col v-if="onlyOneUserOrganization">
+        <v-col v-if="onlyOneUserOrganization && selectedOrganization">
 
           <v-select :model-value="selectedOrganization"
                     :items="userOrganizations"
@@ -49,7 +49,7 @@
 
         </v-col>
 
-        <v-col v-if="!onlyOneUserOrganization">
+        <v-col v-else>
 
           <v-select :model-value="selectedOrganization"
                     :items="userOrganizations"

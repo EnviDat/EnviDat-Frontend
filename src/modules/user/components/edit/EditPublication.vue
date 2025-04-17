@@ -11,6 +11,9 @@
           <v-col cols="12">
             <EditPublicationInfo v-bind="editPublicationsProps" />
           </v-col>
+          <v-col v-if="blindReviewEditingActive && publicationState !== PUBLICATION_STATE_PUBLISHED" cols="12">
+            <EditReviewInfo v-bind="editReviewProps" />
+          </v-col>
         </v-row>
       </v-col>
 
@@ -90,6 +93,8 @@ import EditPublicationInfo from '@/modules/user/components/edit/EditPublicationI
 import EditFunding from '@/modules/user/components/EditFunding.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import EditPublicationStatus from '@/modules/user/components/edit/EditPublicationStatus.vue';
+import EditReviewInfo from '@/modules/user/components/edit/EditReviewInfo.vue';
+import {BLIND_REVIEW_ON, PUBLICATION_STATE_PUBLISHED} from '@/factories/metadataConsts';
 
 const NotFoundCard = defineAsyncComponent(() =>
   import('@/components/Cards/NotFoundCard.vue'),
@@ -149,6 +154,14 @@ export default {
     doiWorkflowActive() {
       if (this.$store) {
         return this.config?.userEditMetadataConfig?.doiWorkflowActive;
+      }
+
+      // storybook context
+      return true;
+    },
+    blindReviewEditingActive() {
+      if (this.$store) {
+        return this.config?.userEditMetadataConfig?.blindReviewEditingActive;
       }
 
       // storybook context
@@ -214,6 +227,12 @@ export default {
         errorDetails: this.$store ? this.doiError?.details : undefined,
       };
     },
+    editReviewProps() {
+      return {
+        ...this.publicationsInfo,
+        isBlindReview: (this.publicationsInfo.version === BLIND_REVIEW_ON),
+      };
+    },
     metadataId() {
       return this.$route?.params?.metadataid;
     },
@@ -240,8 +259,10 @@ export default {
   },
   data: () => ({
     envidatDomain: process.env.VITE_API_ROOT,
+    PUBLICATION_STATE_PUBLISHED,
   }),
   components: {
+    EditReviewInfo,
     EditPublicationStatus,
     EditPublicationInfo,
     EditFunding,
