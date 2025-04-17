@@ -150,7 +150,7 @@ const paddings = 'pa-md-2 pt-4 pt-sm-6';
     transform: translateX(-50%);
     width: 100vw; // full viewport width
     height: 100%;
-    background-image: url('https://envidat.ch/beta/static/app_b_landingpage-BjXUE1sY.webp');
+    background-image: url('@/assets/app_b_landingpage.webp');
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
