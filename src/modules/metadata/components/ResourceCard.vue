@@ -43,14 +43,16 @@
               showFullDescription ||
               (!showFullDescription && !maxDescriptionLengthReached)
             "
-            class="readableText resourceCardText heightAndScroll"
+            class="readableText heightAndScroll"
             :class="{
               'text-white': !dark,
               'text-black': dark,
             }"
             :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
           >
-            <div v-html="markdownText"></div>
+            <div class="resourceCardText"
+                 v-html="markdownText"
+            />
           </v-col>
 
           <v-col
@@ -540,24 +542,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.resourceHeadline {
-  line-height: 1.5rem;
-}
-
-.black_title {
-  color: rgba(0, 0, 0, 0.87) !important;
-}
-
-.white_title {
-  color: rgba(255, 255, 255, 0.9) !important;
-}
-
-.heightAndScroll {
-  max-height: 400px;
-  overflow-y: auto !important;
-  scrollbar-width: thin;
-}
-
 .fabPosition {
   position: absolute;
   bottom: 0;
@@ -600,6 +584,32 @@ export default {
     opacity: 1;
   }
 }
+</style>
+
+<style>
+.resourceCardText p a {
+  color: #ffd740 !important;
+}
+</style>
+
+<style scoped>
+.resourceHeadline {
+  line-height: 1.5rem;
+}
+
+.black_title {
+  color: rgba(0, 0, 0, 0.87) !important;
+}
+
+.white_title {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.heightAndScroll {
+  max-height: 400px;
+  overflow-y: auto !important;
+  scrollbar-width: thin;
+}
 
 .lockedText {
   display: none;
@@ -620,4 +630,6 @@ export default {
 .highlighted {
   box-shadow: #ffd740 0 0 5px 5px !important;
 }
+
+
 </style>

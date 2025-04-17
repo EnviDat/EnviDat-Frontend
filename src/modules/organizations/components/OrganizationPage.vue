@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { mdiEarth, mdiMenuDown, mdiMenuRight } from '@mdi/js';
+import { mdiEarth } from '@mdi/js';
 import { useRoute, useRouter } from 'vue-router';
-import { computed, nextTick, onBeforeMount, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
 import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
 
 import {
@@ -23,9 +23,8 @@ import MetadataList from '@/components/MetadataList.vue';
 import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
 import OrganizationTree from '@/modules/user/components/OrganizationTree.vue';
 
-// import organizations from '@/../public/testdata/organization_show.json';
 import researchUnits from '@/../public/researchUnits.json';
-// import metadatas from '@/../public/packagelist.json';
+
 import {
   METADATADETAIL_PAGENAME,
   ORGANIZATIONS_PAGENAME,

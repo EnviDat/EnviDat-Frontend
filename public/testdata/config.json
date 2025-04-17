@@ -152,7 +152,8 @@
     "editingRestrictingActive": true,
     "customFieldsMax": 10,
     "keywordsListWordMax": 2,
-    "keywordsCountMin": 5
+    "keywordsCountMin": 5,
+    "blindReviewEditingActive": false
   },
   "userDashboardConfig": {
     "dashboardRedirect": false,

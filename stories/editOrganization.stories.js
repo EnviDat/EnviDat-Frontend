@@ -22,41 +22,45 @@ export default {
   component: EditOrganization,
 };
 
-const Template = (args, { argTypes }) => ({
-  components: { EditOrganization },
-  props: Object.keys(argTypes),
-  template: '<EditOrganization v-bind="$props"  />',
-});
-
-export const Empty = Template.bind({});
-Empty.args = {
-  userOrganizations: testOrganizations,
+export const Empty = {
+  args: {
+    userOrganizations: testOrganizations,
+  },
 }
 
-export const SingleOrganization = Template.bind({});
-SingleOrganization.args = {
-  organizationId: testOrganizations[0].id,
-  userOrganizations: [testOrganizations[0]],
+export const SingleOrganization = {
+  args: {
+    organizationId: testOrganizations[0].id,
+    userOrganizations: [testOrganizations[0]],
+  },
 }
 
-export const MultipleOrganizations = Template.bind({});
-MultipleOrganizations.args = {
-  organizationId: testOrganizations[0].id,
-  userOrganizations: testOrganizations,
+export const SingleOrganizationOrgasNotLoaded = {
+  args: {
+    userOrganizations: [testOrganizations[0]],
+  },
+}
+export const MultipleOrganizations = {
+  args: {
+    organizationId: testOrganizations[0].id,
+    userOrganizations: testOrganizations,
+  },
 }
 
-export const EditingSingleOrganizationReadOnly = Template.bind({});
-EditingSingleOrganizationReadOnly.args = {
-  organizationId: testOrganizations[2].id,
-  userOrganizations: [testOrganizations[2]],
-  readOnlyFields: editingReadOnlyObj.readOnlyFields,
-  readOnlyExplanation: editingReadOnlyObj.explanation,
+export const EditingSingleOrganizationReadOnly = {
+  args: {
+    organizationId: testOrganizations[2].id,
+    userOrganizations: [testOrganizations[2]],
+    readOnlyFields: editingReadOnlyObj.readOnlyFields,
+    readOnlyExplanation: editingReadOnlyObj.explanation,
+  },
 }
 
-export const EditingMultipleOrganizationsReadOnly = Template.bind({});
-EditingMultipleOrganizationsReadOnly.args = {
-  organizationId: testOrganizations[2].id,
-  userOrganizations: testOrganizations,
-  readOnlyFields: editingReadOnlyObj.readOnlyFields,
-  readOnlyExplanation: editingReadOnlyObj.explanation,
+export const EditingMultipleOrganizationsReadOnly = {
+  args: {
+    organizationId: testOrganizations[2].id,
+    userOrganizations: testOrganizations,
+    readOnlyFields: editingReadOnlyObj.readOnlyFields,
+    readOnlyExplanation: editingReadOnlyObj.explanation,
+  },
 }

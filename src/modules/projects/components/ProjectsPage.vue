@@ -2,7 +2,7 @@
   <v-container id="ProjectsPage" tag="article" fluid class="pa-0">
     <v-row>
       <v-col cols="12" lg="10" offset-lg="1">
-        <img-and-text-layout
+        <ImgAndTextLayout
           :img="missionImg"
           :height="$vuetify.display.smAndDown ? 100 : 150"
           title="Research Projects"
@@ -20,7 +20,7 @@
               md="4"
               xl="3"
             >
-              <project-card-placeholder />
+              <ProjectCardPlaceholder />
             </v-col>
           </v-row>
         </v-container>
@@ -35,7 +35,7 @@
               md="4"
               xl="3"
             >
-              <project-card
+              <ProjectCard
                 :id="project.name"
                 :title="project.title"
                 :img="project.image_display_url"
@@ -54,11 +54,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onBeforeMount, onMounted, watch } from 'vue';
+import { computed, onBeforeMount, onMounted, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter, useRoute } from 'vue-router';
 
 // Import components
+import { useDisplay } from 'vuetify';
 import ImgAndTextLayout from '@/components/Layouts/ImgAndTextLayout.vue';
 import ProjectCard from './ProjectCard.vue';
 import ProjectCardPlaceholder from './ProjectCardPlaceholder.vue';
@@ -66,7 +67,6 @@ import ProjectCardPlaceholder from './ProjectCardPlaceholder.vue';
 // Import constants
 import {
   PROJECT_DETAIL_PAGENAME,
-  PROJECTS_PAGENAME,
 } from '@/router/routeConsts';
 import {
   GET_PROJECTS,
@@ -75,6 +75,7 @@ import {
 } from '../store/projectsMutationsConsts';
 import { getImage } from '@/factories/imageFactory';
 
+const display = useDisplay();
 const store = useStore();
 const router = useRouter();
 const route = useRoute();
@@ -96,22 +97,24 @@ const projectsConfig = computed(() => config.value?.projectsConfig || {});
 // Image paths using getImage factory. Note: this example assumes that $vuetify is available globally.
 const missionImg = computed(() => {
   const imgPath =
-    window.$vuetify &&
-    window.$vuetify.display &&
-    window.$vuetify.display.mdAndUp
+    display.mdAndUp
       ? 'mission'
       : 'mission_small';
   return getImage(imgPath);
 });
+
 const creatorImg = computed(() => {
   const imgPath =
-    window.$vuetify &&
-    window.$vuetify.display &&
-    window.$vuetify.display.mdAndUp
+    display.mdAndUp
       ? 'data_creator'
       : 'data_creator_small';
   return getImage(imgPath);
 });
+
+const loadProjects = () => {
+  store.dispatch(`${PROJECTS_NAMESPACE}/${GET_PROJECTS}`, projectsConfig.value);
+};
+
 
 // Local data
 
@@ -139,9 +142,6 @@ watch(config, () => {
   }
 });
 
-const loadProjects = () => {
-  store.dispatch(`${PROJECTS_NAMESPACE}/${GET_PROJECTS}`, projectsConfig.value);
-};
 
 const onCardClick = (projectId: string) => {
   store.commit(
@@ -166,13 +166,3 @@ const onSubprojectClick = (subprojectId: string) => {
 };
 </script>
 
-<script lang="ts">
-export default {
-  // Provide component registration for non-setup parts
-  components: {
-    ImgAndTextLayout,
-    ProjectCard,
-    ProjectCardPlaceholder,
-  },
-};
-</script>

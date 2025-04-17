@@ -85,7 +85,6 @@ import {
 
 import {
   BROWSE_PATH,
-  METADATA_CREATION_PAGENAME,
   METADATAEDIT_PAGENAME,
   USER_DASHBOARD_PATH,
   USER_SIGNIN_PAGENAME,
@@ -151,10 +150,8 @@ export default {
       this,
     );
 
-    const prefilledOrganizationId =
-      this.organizationsStore.userOrganizationIds?.length === 1
-        ? this.organizationsStore.userOrganizationIds[0]
-        : undefined;
+    const prefilledOrganizationId = this.autoPreSelectedOrganizationId;
+
     initStepDataOnLocalStorage(
       this.creationSteps,
       this.user,
@@ -181,6 +178,11 @@ export default {
       'metadataCreationError',
       'metadataCreationLoading',
     ]),
+    autoPreSelectedOrganizationId() {
+      return this.organizationsStore.userOrganizationIds?.length === 1
+          ? this.organizationsStore.userOrganizationIds[0]
+          : undefined;
+    },
     currentDatasetTitle() {
       const step = getStepByName(EDITMETADATA_MAIN_HEADER, this.creationSteps);
       return step?.genericProps[METADATA_TITLE_PROPERTY];
@@ -264,8 +266,13 @@ export default {
         EDITMETADATA_ORGANIZATION,
       );
 
+      const prefilledOrganizationId = this.autoPreSelectedOrganizationId;
+
       const data = {
-        ...existingOrganizationData,
+        // if the case that nothing comes from the localstorage, check if the user has only one
+        // organization and use it as preselected (this is the case when entering this page directly without
+        // navigating first over the dashboard)
+        organizationId: existingOrganizationData.organizationId || prefilledOrganizationId,
         userOrganizations,
       };
 
