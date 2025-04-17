@@ -29,7 +29,7 @@ const graphStyling = stationParameters.graphStyling;
 
 
 export default {
-  title: '12 Chart Views / Detail Charts',
+  title: '1 Base / Charts / GC-Net Detail Charts',
   component: DetailChartsList,
   decorators: [],
   parameters: {

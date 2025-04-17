@@ -18,7 +18,7 @@
 import Amcharts5 from '../src/modules/metadata/components/GC-Net/Amchart5Chart.vue';
 
 export default {
-  title: '12 Chart Views / AmChart5 Tests',
+  title: '1 Base / Charts / GC-Net AmChart5 Tests',
   component: Amcharts5,
   decorators: [],
   parameters: {},
