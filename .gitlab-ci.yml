@@ -294,6 +294,44 @@ build-app:
   retry:
     max: 2
 
+build-seo:
+  stage: build
+  image: node:20.15.0-alpine3.20
+  environment: $CI_COMMIT_REF_NAME
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "pipeline"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: never
+    - if: '$CI_COMMIT_REF_NAME =~ /^(staging|develop)$/'
+    - if: $CI_PIPELINE_SOURCE == "web"
+      when: always
+  needs:
+    # needs the artifact: config and environment variables
+    - modify-env
+    # needs the artifact: node_modules to build the app
+    - install-node
+  before_script:
+    - |
+      if [ -d "node_modules" ]; then
+        echo "node_modules directory already exists."
+        ls node_modules/.bin/vite || echo "/.bin/vite not found"
+      else
+        echo "node_modules directory not found. Should have got them from the install-node artifact!"
+        ls -a
+      fi
+    # - ls node_modules/ -a
+    # - ls node_modules/.bin/ -a
+  script:
+    - npm run build-vike
+  artifacts:
+    name: 'frontend seo build '
+    expire_in: 1 day
+    # stores the seo pre-rendered htmls
+    paths:
+      - dist/client/
+  retry:
+    max: 2
+
 combine-builds:
   stage: build
   image: alpine:3.20
@@ -303,9 +341,12 @@ combine-builds:
     GIT_STRATEGY: none
   needs:
     # needs the artifact: the build of the frontend app
-    - build-app
+    - job: build-app
     # needs the artifact: storybook
-    - build-storybook
+    - job: build-storybook
+    # needs the artifact: seo pre-rendered static htmls
+    - job: build-seo
+      optional: true
   script:
     - echo "Check for the artifacts in the filesystem"
     # - ls -l
