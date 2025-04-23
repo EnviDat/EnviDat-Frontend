@@ -173,7 +173,6 @@ import { createHeaderViewModel } from '@/factories/ViewModels/HeaderViewModel';
 import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionViewModel';
 import { getResourcesForDataViz } from '@/modules/charts/middelware/chartServiceLayer.ts';
 
-
 const MetadataDescription = defineAsyncComponent(
   () =>
     import('@/modules/metadata/components/Metadata/MetadataDescription.vue'),
@@ -208,9 +207,9 @@ const MetadataRelatedDatasets = defineAsyncComponent(
     ),
 );
 
-const ResourceDataVizListAsync = defineAsyncComponent(() =>
-  import('@/modules/charts/components/ResourceDataVizList.vue'),
-)
+const ResourceDataVizListAsync = defineAsyncComponent(
+  () => import('@/modules/charts/components/ResourceDataVizList.vue'),
+);
 
 // Might want to check https://css-tricks.com/use-cases-fixed-backgrounds-css/
 // for animations between the different parts of the Metadata
@@ -560,8 +559,9 @@ export default {
           currentContent.titleImg,
         );
 
-        if (this.currentContent?.doi) {
-          this.fetchSeoData(this.currentContent.doi);
+        if (currentContent?.doi) {
+          console.log('dentro');
+          this.fetchSeoData(currentContent.doi);
         }
 
         // this.descriptionData = createBody(currentContent, this.$vuetify.display.smAndDown);
@@ -629,11 +629,11 @@ export default {
 
         this.resourceData.dates = getFrontendDates(this.metadataContent.date);
 
-
         if (this.resourcesConfig.loadDataViz) {
-          this.resourcesForDataViz = getResourcesForDataViz(this.resourceData.resources);
+          this.resourcesForDataViz = getResourcesForDataViz(
+            this.resourceData.resources,
+          );
         }
-
       }
 
       this.MetadataResources.props = {
@@ -707,10 +707,10 @@ export default {
       let resourceDataViz;
 
       if (this.resourcesConfig.loadDataViz) {
-        resourceDataViz = ResourceDataVizListAsync
+        resourceDataViz = ResourceDataVizListAsync;
         resourceDataViz.props = {
           resources: this.resourcesForDataViz,
-        }
+        };
       }
 
       this.firstCol = [
@@ -1067,6 +1067,4 @@ export default {
 };
 </script>
 
-<style>
-
-</style>
+<style></style>

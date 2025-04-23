@@ -9,9 +9,7 @@ export function useSeoData() {
     if (!doi) return;
     try {
       const cleanDoi = doi.replace('/', '_');
-      const resp = await axios.get(
-        `/envidat-doi/${cleanDoi}/ro-crate-metadata.json`,
-      );
+      const resp = await axios.get(`/envidat-doi/${cleanDoi}/metadata.json`);
 
       jsonLd.value = JSON.stringify(resp.data);
     } catch (error) {
