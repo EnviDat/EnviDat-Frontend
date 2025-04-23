@@ -44,7 +44,7 @@
       </v-col>
 
       <v-col class='flex-grow-1' >
-        <div v-html="citation"></div>
+        <div v-html="markdownCitation"></div>
       </v-col>
     </v-row>
   </v-container>
@@ -62,6 +62,7 @@
 import {mdiInformation, mdiFingerprint} from '@mdi/js';
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import { renderMarkdown } from '@/factories/stringFactory.js';
 
 export default {
   name: 'BaseCitationView',
@@ -84,6 +85,9 @@ export default {
     },
   },
   computed: {
+    markdownCitation() {
+      return renderMarkdown(this.citation, false);
+    },
   },
   data: () => ({
     mdiInformation,

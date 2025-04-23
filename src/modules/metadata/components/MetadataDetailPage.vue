@@ -7,7 +7,6 @@
              ref="header"
              style="z-index: 1; left: 0"
              >
-             <!-- :style="headerStyle" -->
 
         <!-- prettier-ignore -->
         <MetadataHeader v-bind="header"
@@ -169,9 +168,11 @@ import { convertArrayToUrlString } from '@/factories/stringFactory';
 
 import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
 import { createLocation } from '@/factories/geoFactory';
+
 import { createHeaderViewModel } from '@/factories/ViewModels/HeaderViewModel';
 import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionViewModel';
-import { loadResourcesPreview } from '@/modules/charts/middelware/chartServiceLayer.ts';
+import { getResourcesForDataViz } from '@/modules/charts/middelware/chartServiceLayer.ts';
+
 
 const MetadataDescription = defineAsyncComponent(
   () =>
@@ -206,6 +207,10 @@ const MetadataRelatedDatasets = defineAsyncComponent(
       '@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue'
     ),
 );
+
+const ResourceDataVizListAsync = defineAsyncComponent(() =>
+  import('@/modules/charts/components/ResourceDataVizList.vue'),
+)
 
 // Might want to check https://css-tricks.com/use-cases-fixed-backgrounds-css/
 // for animations between the different parts of the Metadata
@@ -371,16 +376,6 @@ export default {
     secondColumn() {
       return this.$vuetify.display.mdAndUp ? this.secondCol : [];
     },
-    // headerStyle() {
-    //   const width = 100;
-    //   const margin = '0';
-
-    //   const pos = 'position: relative';
-
-    //   // const pos = `position: ${this.appScrollPosition > 20 ? 'fixed' : this.$vuetify.display.smAndDown ? 'relative' : 'absolute'}`;
-
-    //   return `${pos}; width: ${width}%; margin: ${margin}; `;
-    // },
     showEditButton() {
       const userId = this.user?.id;
 
@@ -421,18 +416,6 @@ export default {
       bindings = { ...bindings };
 
       return bindings;
-    },
-
-    fullWidthPadding() {
-      const cssClasses = {};
-
-      if (this.$vuetify.display.mdAndUp && this.$vuetify.display.lgAndDown) {
-        cssClasses['px-2'] = true;
-      } else if (this.$vuetify.display.lgAndUp) {
-        cssClasses['px-3'] = true;
-      }
-
-      return cssClasses;
     },
   },
   methods: {
@@ -553,7 +536,7 @@ export default {
       this.header = null;
       this.descriptionData = null;
       this.citation = null;
-      this.resources = null;
+      this.resourceData = null;
       this.location = null;
       this.publications = null;
       this.relatedDatasets = null;
@@ -620,39 +603,41 @@ export default {
     loadResources() {
       const currentContent = this.metadataContent;
 
-      this.resources =
+      this.resourceData =
         createResources(currentContent, this.user, this.userOrganizationIds) ||
         {};
 
       const license = createLicense(currentContent);
 
-      if (this.resources.resources) {
-        this.configInfos = getConfigFiles(this.resources.resources);
+      if (this.resourceData.resources) {
+        this.configInfos = getConfigFiles(this.resourceData.resources);
 
         enhanceElementsWithStrategyEvents(
-          this.resources.resources,
+          this.resourceData.resources,
           undefined,
           true,
         );
         enhanceResourcesWithMetadataExtras(
           this.metadataContent.extras,
-          this.resources.resources,
+          this.resourceData.resources,
         );
 
         enhanceElementsWithStrategyEvents(
-          this.resources.resources,
+          this.resourceData.resources,
           SHOW_DATA_PREVIEW_PROPERTY,
         );
 
-        this.resources.dates = getFrontendDates(this.metadataContent.date);
-      }
+        this.resourceData.dates = getFrontendDates(this.metadataContent.date);
 
-      if (this.resourcesConfig.loadDataViz) {
-        loadResourcesPreview(this.resources.resources);
+
+        if (this.resourcesConfig.loadDataViz) {
+          this.resourcesForDataViz = getResourcesForDataViz(this.resourceData.resources);
+        }
+
       }
 
       this.MetadataResources.props = {
-        ...this.resources,
+        ...this.resourceData,
         dataLicenseId: license.id,
         dataLicenseTitle: license.title,
         dataLicenseUrl: license.url,
@@ -719,22 +704,36 @@ export default {
         showPlaceholder: this.showPlaceholder,
       };
 
+      let resourceDataViz;
+
+      if (this.resourcesConfig.loadDataViz) {
+        resourceDataViz = ResourceDataVizListAsync
+        resourceDataViz.props = {
+          resources: this.resourcesForDataViz,
+        }
+      }
+
       this.firstCol = [
         this.MetadataDescription,
         this.MetadataCitation,
         publicationList,
-        this.MetadataRelatedDatasets,
         this.MetadataFunding,
         this.MetadataAuthors,
       ];
 
-      this.secondCol = [this.MetadataResources, this.MetadataGeo];
+      this.secondCol = [
+        this.MetadataResources,
+        resourceDataViz,
+        this.MetadataGeo,
+        this.MetadataRelatedDatasets,
+      ];
 
       if (this.$vuetify.display.smAndDown) {
         this.singleCol = [
           this.MetadataDescription,
           this.MetadataCitation,
           this.MetadataResources,
+          resourceDataViz,
           this.MetadataGeo,
           this.MetadataAuthors,
           this.MetadataFunding,
@@ -1044,7 +1043,8 @@ export default {
     },
     descriptionData: null,
     citation: null,
-    resources: null,
+    resourceData: null,
+    resourcesForDataViz: [],
     location: null,
     publications: null,
     relatedDatasets: null,
@@ -1068,7 +1068,5 @@ export default {
 </script>
 
 <style>
-.resourceCardText a {
-  color: #ffd740;
-}
+
 </style>

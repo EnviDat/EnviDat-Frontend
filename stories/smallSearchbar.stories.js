@@ -110,7 +110,7 @@ export const SmallSearchViews = () => ({
     template: `
     <v-row >
         <v-col class="py-1">
-            <small-search-bar-view
+            <SmallSearchBarView
                         labelText="Search for something"
                         :searchTerm="searchTerm"
                         buttonText="SEARCH"
@@ -122,7 +122,7 @@ export const SmallSearchViews = () => ({
                           />
         </v-col>
         <v-col class="py-1">
-            <small-search-bar-view
+            <SmallSearchBarView
                         labelText="Search for something"
                         :searchTerm="searchTerm"
                         buttonText="SEARCH"
@@ -136,7 +136,7 @@ export const SmallSearchViews = () => ({
         <v-col cols="12" class="py-1">
           <v-row>
             <v-col cols="6">
-                <small-search-bar-view
+                <SmallSearchBarView
                             labelText="xs6 optimal for button search"
                             :searchTerm="searchTerm"
                             buttonText="SEARCH"
@@ -154,7 +154,7 @@ export const SmallSearchViews = () => ({
         <v-col cols="12" class="py-1">
           <v-row >
             <v-col cols="6" class="px-1">
-                <small-search-bar-view
+                <SmallSearchBarView
                             labelText="xs6 no button"
                             :searchTerm="searchTerm"
                             showSearchCount
@@ -166,7 +166,7 @@ export const SmallSearchViews = () => ({
             </v-col>
 
             <v-col cols="6" class="px-1">
-                <small-search-bar-view
+                <SmallSearchBarView
                             labelText="xs6 with compactLayout"
                             :searchTerm="searchTerm"
                             showSearchCount
@@ -178,7 +178,7 @@ export const SmallSearchViews = () => ({
             </v-col>
 
             <v-col cols="6" class="px-1">
-                <small-search-bar-view
+                <SmallSearchBarView
                             labelText="xs6 no compactLayout"
                             :searchTerm="searchTerm"
                             showSearchCount

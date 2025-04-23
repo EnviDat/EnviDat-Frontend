@@ -141,6 +141,7 @@
           :key="index"
           cols="12"
           md="6"
+          xl="3"
         >
           <BaseCardLandingPage
             :cardType="'team'"
@@ -156,7 +157,13 @@
             @clickedEvent="catchPostClick(post.postFile)"
           />
         </v-col>
-        <v-col v-for="(post, index) in blogPosts" :key="index" cols="12" md="6">
+        <v-col
+          v-for="(post, index) in blogPosts"
+          :key="index"
+          cols="12"
+          md="6"
+          xl="3"
+        >
           <BaseCardLandingPage
             :cardType="'blog'"
             :id="post.id"

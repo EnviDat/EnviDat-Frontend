@@ -43,14 +43,16 @@
               showFullDescription ||
               (!showFullDescription && !maxDescriptionLengthReached)
             "
-            class="readableText resourceCardText heightAndScroll"
+            class="readableText heightAndScroll"
             :class="{
               'text-white': !dark,
               'text-black': dark,
             }"
             :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
           >
-            <div v-html="markdownText"></div>
+            <div class="resourceCardText"
+                 v-html="markdownText"
+            />
           </v-col>
 
           <v-col
@@ -78,10 +80,10 @@
             />
           </v-col>
 
-          <v-col v-if="sparkChartData" cols="12" class="py-1">
+          <v-col v-if="canDataViz" cols="12" class="py-1">
             <v-row no-gutters style="opacity: 1 !important" align="center">
               <v-col class="flex-grow-1">
-                <SparkChart :data="sparkChartData" />
+                <SparkChart :data="chartPreviewData" />
               </v-col>
 
               <v-col class="flex-grow-0">
@@ -313,6 +315,7 @@ import { getFileIcon } from '@/factories/imageFactory';
 import { trackDownload } from '@/utils/matomoTracking';
 
 import { formatDate } from '@/factories/dateFactory';
+import { chartPreviewData } from '@/modules/charts/middelware/chartServiceLayer';
 
 export default {
   name: 'ResourceCard',
@@ -380,11 +383,7 @@ export default {
       required: false,
       default: undefined,
     },
-    sparkChartData: {
-      type: Array,
-      required: false,
-      default: undefined,
-    },
+    canDataViz: Boolean,
   },
   data: () => ({
     mdiChartBar,
@@ -405,6 +404,7 @@ export default {
     EDIT_METADATA_DOI_LABEL,
     s3Store: useS3Store(),
     chartPreviewTooltip: 'Visualize the data',
+    chartPreviewData,
   }),
   mounted() {
     // set in the store the isS3Resources property, this property is needed to manage the card style in the sm view
@@ -542,24 +542,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.resourceHeadline {
-  line-height: 1.5rem;
-}
-
-.black_title {
-  color: rgba(0, 0, 0, 0.87) !important;
-}
-
-.white_title {
-  color: rgba(255, 255, 255, 0.9) !important;
-}
-
-.heightAndScroll {
-  max-height: 400px;
-  overflow-y: auto !important;
-  scrollbar-width: thin;
-}
-
 .fabPosition {
   position: absolute;
   bottom: 0;
@@ -602,6 +584,32 @@ export default {
     opacity: 1;
   }
 }
+</style>
+
+<style>
+.resourceCardText p a {
+  color: #ffd740 !important;
+}
+</style>
+
+<style scoped>
+.resourceHeadline {
+  line-height: 1.5rem;
+}
+
+.black_title {
+  color: rgba(0, 0, 0, 0.87) !important;
+}
+
+.white_title {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.heightAndScroll {
+  max-height: 400px;
+  overflow-y: auto !important;
+  scrollbar-width: thin;
+}
 
 .lockedText {
   display: none;
@@ -622,4 +630,6 @@ export default {
 .highlighted {
   box-shadow: #ffd740 0 0 5px 5px !important;
 }
+
+
 </style>

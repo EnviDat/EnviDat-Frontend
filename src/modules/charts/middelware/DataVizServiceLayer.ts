@@ -3,7 +3,7 @@ import type {ChartConfiguration} from 'chart.js';
 import {convertToChartProps} from '@/modules/charts/middelware/ConfigConversion.ts';
 import {getMetaData} from '@/modules/charts/middelware/DataConversion.ts';
 
-import type {ChartAppMode, ChartProps, LoadingContent, MetaData} from '@/types/env';
+import type {ChartAppMode, ChartProps, LoadingContent, MetaData} from '@/types/dataVizTypes';
 
 export const loadContentFromUrl = async (url: string) : Promise<LoadingContent> => {
   if (!url) {
