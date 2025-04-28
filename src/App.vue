@@ -816,6 +816,11 @@ export default {
   }
 }
 
+// TODO check if this works for all pages - REDESIGN WORKFLOW fix
+#mainPageRow {
+  height: 100%;
+}
+
 #app-container {
   position: relative;
 

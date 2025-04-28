@@ -9,7 +9,12 @@
         <v-list-item
           v-for="(step, index) in navigationStore.steps"
           :key="index"
-          class="pl-4 pr-4 mb-4"
+          :class="[
+            'navigationWorkflow__item',
+            step.id === navigationStore.currentStep ? 'active' : '',
+            step.completed === true ? 'completed' : '',
+          ]"
+          class="pl-4 pr-4 mb-4 navigationWorkflow__item"
         >
           <template #prepend>
             <BaseIcon :icon="iconName(step.icon)" color="black" class="mr-4" />
@@ -26,9 +31,15 @@
           <template #append>
             <BaseIcon
               :icon="iconName(step.status)"
-              color="blue"
+              :color="
+                step.id === navigationStore.currentStep
+                  ? 'blue'
+                  : step.completed
+                    ? 'green'
+                    : 'gray'
+              "
               class="mr-1"
-              large="true"
+              large
             />
           </template>
 
@@ -88,6 +99,7 @@ const navigationStore = useDatasetWorkflowStore();
 <style lang="scss">
 .navigationWorkflow {
   background-color: #f8f8f8;
+  height: 100%;
   position: relative;
   &__divider {
     background-color: #cac4d0;
@@ -103,6 +115,15 @@ const navigationStore = useDatasetWorkflowStore();
         width: 42px;
         height: 42px;
       }
+    }
+  }
+  &__item {
+    &:hover {
+      background-color: #eaeaea;
+      cursor: pointer;
+    }
+    &.active {
+      background-color: #eaeaea;
     }
   }
 }

@@ -1,13 +1,15 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
+import { set } from 'date-fns';
 
 export const useDatasetWorkflowStore = defineStore({
   id: 'datasetWorkflow',
   state: () => ({
     loading: false,
+    currentStep: 0,
     steps: [
       {
-        id: 1,
+        id: 0,
         title: 'Base Information',
         description: 'Title, Description and keywords',
         isEditable: true,
@@ -18,7 +20,7 @@ export const useDatasetWorkflowStore = defineStore({
         status: 'firststep',
       },
       {
-        id: 2,
+        id: 1,
         title: 'Authors',
         description: 'Authors details',
         isEditable: true,
@@ -29,7 +31,7 @@ export const useDatasetWorkflowStore = defineStore({
         status: 'secondstep',
       },
       {
-        id: 3,
+        id: 2,
         title: 'Geo Information',
         description: 'Data location and dates',
         isEditable: true,
@@ -40,7 +42,7 @@ export const useDatasetWorkflowStore = defineStore({
         status: 'thirdstep',
       },
       {
-        id: 4,
+        id: 3,
         title: 'Additional Information',
         description: 'Funding and License',
         isEditable: true,
@@ -51,7 +53,7 @@ export const useDatasetWorkflowStore = defineStore({
         status: 'fourthstep',
       },
       {
-        id: 5,
+        id: 4,
         title: 'Upload',
         description: 'Upload your resources',
         isEditable: true,
@@ -62,7 +64,7 @@ export const useDatasetWorkflowStore = defineStore({
         status: 'fifthstep',
       },
       {
-        id: 6,
+        id: 5,
         title: 'Related Research',
         description: 'Related and interconnected research',
         isEditable: true,
@@ -73,7 +75,7 @@ export const useDatasetWorkflowStore = defineStore({
         status: 'sixthstep',
       },
       {
-        id: 7,
+        id: 6,
         title: 'Publishing Information',
         description: 'Dataset Contact and Information',
         isEditable: true,
@@ -89,6 +91,19 @@ export const useDatasetWorkflowStore = defineStore({
     // hasOrganizations: (state) => state.organizations.length > 0,
   },
   actions: {
+    setCurrentStep(step) {
+      this.currentStep = step + 1;
+    },
+    validateStep(step) {
+      this.loading = true;
+      setTimeout(() => {
+        console.log('validated');
+        this.steps[step].completed = true;
+        this.setCurrentStep(step);
+        this.loading = false;
+      }, 2000);
+    },
+
     // async fetchOrganizations(url, params = {}) {
     //   try {
     //     const requestUrl = urlRewrite(
