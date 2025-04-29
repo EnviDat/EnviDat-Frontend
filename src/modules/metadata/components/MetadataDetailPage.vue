@@ -47,10 +47,10 @@
           :key="`left_${index}_${keyHash}`"
           no-gutters
         >
-          <v-col class="mb-2 px-0">
+          <v-col v-if="entry"
+                 class="mb-2 px-0">
             <!-- prettier-ignore -->
-            <component v-if="entry"
-                       :component="entry" :is="entry" v-bind="entry.props" />
+            <component :component="entry" :is="entry" v-bind="entry.props" />
           </v-col>
         </v-row>
       </v-col>
@@ -61,13 +61,14 @@
           :key="`right_${index}_${keyHash}`"
           no-gutters
         >
-          <v-col class="mb-2 px-0">
+          <v-col v-if="entry"
+                 class="mb-2 px-0">
             <!-- prettier-ignore -->
-            <component v-if="entry"
-                       :component="entry" :is="entry" v-bind="entry.props" />
+            <component :component="entry" :is="entry" v-bind="entry.props" />
           </v-col>
         </v-row>
       </v-col>
+
     </v-row>
   </v-container>
 </template>
