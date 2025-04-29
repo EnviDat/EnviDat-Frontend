@@ -9,6 +9,15 @@
  */
 
 import {
+  mdiForest,
+  mdiSnowflake,
+  mdiImageFilterHdr,
+  mdiHazardLights,
+  mdiLeaf,
+  mdiWeatherCloudy,
+} from '@mdi/js';
+
+import {
   DIVERSITY,
   FOREST,
   HAZARD,
@@ -21,14 +30,6 @@ import { EDNA_MODE, SWISSFL_MODE } from '@/store/metadataMutationsConsts';
 import { getModeData } from '@/factories/modeFactory';
 import { getImage, getImageList } from '@/factories/imageFactory';
 
-import {
-  mdiForest,
-  mdiSnowflake,
-  mdiImageFilterHdr,
-  mdiHazardLights,
-  mdiLeaf,
-  mdiWeatherCloudy,
-} from '@mdi/js';
 
 const swissFLMode = getModeData(SWISSFL_MODE);
 const ednaMode = getModeData(EDNA_MODE);
