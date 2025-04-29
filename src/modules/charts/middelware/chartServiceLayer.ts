@@ -108,6 +108,7 @@ export function markResourceForDataViz(resources: any[]) {
       DataVizSupportedExtensions.includes(getUrlExtension(resource.url));
 
     resource.canDataViz = canDataViz;
+
     if (canDataViz) {
       resource.openEvent = INJECT_GENERIC_COMPONENT;
       resource.openProperty = {

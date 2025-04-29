@@ -102,3 +102,32 @@ export const HugeData = {
   },
 }
 
+export const NEAD_CSV = {
+  args: {
+    resource: {
+      'cache_last_updated': null,
+      'cache_url': null,
+      'created': '2020-09-08T11:11:20.007458',
+      'description': 'Testing Nead with shortend EGrip GC-Net data',
+      'doi': '',
+      'format': '.csv',
+      'hash': '',
+      'id': '55b715bc-742a-4a5d-8728-314e7da4793e',
+      'last_modified': '2020-09-08T11:11:19.697330',
+      'metadata_modified': null,
+      'mimetype': 'text/csv',
+      'mimetype_inner': null,
+      'name': '',
+      'package_id': '04b7e6bf-ef34-4c42-b7b2-ee17fab3bed6',
+      'position': 0,
+      'resource_size': '{"size_value": "", "size_units": "kb"}',
+      'resource_type': null,
+      'restricted': '{"shared_secret": "", "allowed_users": "", "level": "public"}',
+      'size': 1996,
+      'state': 'active',
+      'url': './testdata/24-E-GRIP.csv',
+      'url_type': 'upload',
+    },
+  },
+}
+
