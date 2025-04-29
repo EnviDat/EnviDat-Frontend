@@ -1,9 +1,13 @@
 <script setup>
   import { Line } from 'vue-chartjs';
   // import ChartDataLabels from 'chartjs-plugin-datalabels';
-  import { Chart as ChartJS, Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale, TimeScale} from 'chart.js';
+  import {
+    Chart as ChartJS, Title, Tooltip,
+    Legend, LineElement, PointElement,
+    CategoryScale, LinearScale, TimeScale, Colors,
+  } from 'chart.js';
 
-  ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale, TimeScale);
+  ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale, TimeScale, Colors);
 
   const { data, options } = defineProps({
     id: {

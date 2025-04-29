@@ -17,8 +17,8 @@ const chartLabels = ref([]);
 const chartData = ref();
 const dataPerParameter = ref();
 
-const xParameter = ref();
-const yParameter = ref();
+const xParameter = ref<string>();
+const yParameter = ref<string[]>();
 
 const warning = ref();
 const error = ref();
@@ -36,6 +36,10 @@ const defaultOptions = {
     decimate: {
       enabled: true,
       algorithm: 'lltb',
+    },
+    colors: {
+      enabled: true,
+      forceOverride: true,
     },
   },
 };
@@ -82,37 +86,40 @@ const getNextParameter = (parameterList: string[], positionParameter: string) : 
 const loadDataForParameter = (
   data: object[],
   xParam: string,
-  yParam: string,
+  yParam: string[],
 ) => {
   warning.value = undefined;
   error.value = undefined;
 
-  const seriesData = [];
-
+  const datasets = [];
   const labels = [];
 
-  for (let i = 0; i < data.length; i++) {
-    const entry = data[i];
-    const entryPerParameter = entry[yParam];
+  for (let i = 0; i < yParam.length; i++) {
 
-    const xValue = entry[xParam];
-    if (xValue) {
-      labels.push(xValue);
+    const paramY = yParam[i];
+    labels.push(paramY);
+
+    const seriesData = [];
+
+    for (let j = 0; j < data.length; j++) {
+      const entry = data[j];
+
+      seriesData.push({
+        x: entry[xParam],
+        y: entry[paramY],
+      });
     }
-    seriesData.push(entryPerParameter);
-  }
 
-  //  labels: [firstParameter],
+    datasets.push({
+      label: paramY,
+      data: seriesData,
+      // backgroundColor: barColors[0],
+    });
+  }
 
   return {
     labels,
-    datasets: [
-      {
-        label: yParam,
-        data: seriesData,
-        // backgroundColor: barColors[0],
-      },
-    ],
+    datasets,
   };
 };
 
@@ -138,7 +145,8 @@ const loadData = (res: object) => {
 
       const parameterList = Object.keys(data[0]);
       xParameter.value = getTimeParameter(parameterList);
-      yParameter.value = getNextParameter(parameterList, xParameter.value)
+      const nextYParam = getNextParameter(parameterList, xParameter.value)
+      yParameter.value = [nextYParam];
 
       if (!xParameter.value) {
         warning.value =
@@ -171,8 +179,14 @@ const assignXParameter = (parameter: string) => {
   );
 };
 
-const assignYParameter = (parameter: string) => {
-  yParameter.value = parameter;
+const assignYParameter = (parameter: string | string[]) => {
+
+  let newParm = parameter;
+  if (typeof newParm === 'string') {
+    newParm = [parameter];
+  }
+
+  yParameter.value = newParm;
 
   dataPerParameter.value = loadDataForParameter(
     chartData.value,
@@ -238,6 +252,7 @@ watch(() => resource,
             label="Y Parameter"
             :items="chartLabels"
             :model-value="yParameter"
+            multiple
             @update:model-value="assignYParameter"
             hide-details
           />
