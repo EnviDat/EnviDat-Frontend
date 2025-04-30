@@ -314,7 +314,7 @@ build-seo:
     - |
       if [ -d "node_modules" ]; then
         echo "node_modules directory already exists."
-        ls node_modules/.bin/vite || echo "/.bin/vite not found"
+        ls node_modules/.bin/vike || echo "/.bin/vike not found"
       else
         echo "node_modules directory not found. Should have got them from the install-node artifact!"
         ls -a
