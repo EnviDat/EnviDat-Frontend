@@ -29,7 +29,7 @@ import { useDatasetWorkflowStore } from '@/modules/user/store/datasetWorkflow';
 const navigationStore = useDatasetWorkflowStore();
 
 const nextStep = () => {
-  navigationStore.validateStep(navigationStore.currentStep);
+  navigationStore.validateStepAction(navigationStore.currentStep);
 };
 </script>
 

@@ -14,10 +14,21 @@ export const useDatasetWorkflowStore = defineStore({
         description: 'Title, Description and keywords',
         isEditable: true,
         completed: false,
+        hasError: false,
         key: 'baseInformation',
         genericProps: {},
         icon: 'baseinfo',
-        status: 'firststep',
+        status: 'active',
+        guideLines: [
+          {
+            element: '.navigationWorkflow',
+            popover: { title: 'Title', description: 'Description' },
+          },
+          {
+            element: '.navigationWorkflow__actions',
+            popover: { title: 'Title', description: 'Description' },
+          },
+        ],
       },
       {
         id: 1,
@@ -25,10 +36,21 @@ export const useDatasetWorkflowStore = defineStore({
         description: 'Authors details',
         isEditable: true,
         completed: false,
+        hasError: false,
         key: 'authorinformation',
         genericProps: {},
         icon: 'authorsinfo',
-        status: 'secondstep',
+        status: 'disabled',
+        guideLines: [
+          {
+            element: '.navigationWorkflow__actions',
+            popover: { title: 'Title', description: 'Description' },
+          },
+          {
+            element: '.navigationWorkflow',
+            popover: { title: 'Title', description: 'Description' },
+          },
+        ],
       },
       {
         id: 2,
@@ -36,10 +58,11 @@ export const useDatasetWorkflowStore = defineStore({
         description: 'Data location and dates',
         isEditable: true,
         completed: false,
+        hasError: false,
         key: 'geoinformation',
         genericProps: {},
         icon: 'geoinfo',
-        status: 'thirdstep',
+        status: 'disabled',
       },
       {
         id: 3,
@@ -47,10 +70,11 @@ export const useDatasetWorkflowStore = defineStore({
         description: 'Funding and License',
         isEditable: true,
         completed: false,
+        hasError: false,
         key: 'additionalinformation',
         genericProps: {},
         icon: 'additionalinfo',
-        status: 'fourthstep',
+        status: 'disabled',
       },
       {
         id: 4,
@@ -58,10 +82,11 @@ export const useDatasetWorkflowStore = defineStore({
         description: 'Upload your resources',
         isEditable: true,
         completed: false,
+        hasError: false,
         key: 'uploadinformation',
         genericProps: {},
         icon: 'uploadinfo',
-        status: 'fifthstep',
+        status: 'disabled',
       },
       {
         id: 5,
@@ -69,10 +94,11 @@ export const useDatasetWorkflowStore = defineStore({
         description: 'Related and interconnected research',
         isEditable: true,
         completed: false,
+        hasError: false,
         key: 'relatedinformation',
         genericProps: {},
         icon: 'relatedinfo',
-        status: 'sixthstep',
+        status: 'disabled',
       },
       {
         id: 6,
@@ -80,26 +106,38 @@ export const useDatasetWorkflowStore = defineStore({
         description: 'Dataset Contact and Information',
         isEditable: true,
         completed: false,
+        hasError: false,
         key: 'publicationinformation',
         genericProps: {},
         icon: 'publicationinfo',
-        status: 'seventhstep',
+        status: 'disabled',
       },
     ],
   }),
   getters: {
-    // hasOrganizations: (state) => state.organizations.length > 0,
+    currentStepObject: (state) => state.steps[state.currentStep] ?? null,
   },
   actions: {
-    setCurrentStep(step) {
-      this.currentStep = step + 1;
+    navigateItemAction(id, statu) {
+      if (statu === 'disabled') {
+        return;
+      }
+      this.currentStep = id;
     },
-    validateStep(step) {
+    setCurrentStepAction(step) {
+      const next = step + 1;
+      if (this.steps[next]) {
+        this.steps[next].status = 'active';
+        this.currentStep = next;
+      }
+    },
+    validateStepAction(step) {
       this.loading = true;
       setTimeout(() => {
         console.log('validated');
         this.steps[step].completed = true;
-        this.setCurrentStep(step);
+        this.steps[step].status = 'completed';
+        this.setCurrentStepAction(step);
         this.loading = false;
       }, 2000);
     },
@@ -118,6 +156,7 @@ export const useDatasetWorkflowStore = defineStore({
     //     throw error;
     //   }
     // },
+    setCurrentGuide(step) {},
   },
 });
 
