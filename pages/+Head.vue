@@ -11,9 +11,9 @@
     `">
   </script>
 
-  <title>{{ data.name }}</title>
+  <title>{{ data.title }}</title>
 
-  <meta property="og:title" :content="data.name" />
+  <meta property="og:title" :content="data.title" />
 
   <meta name="description" :content="data.notes" />
   <meta property="og:description" :content="data.notes" />
