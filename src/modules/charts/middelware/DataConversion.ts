@@ -209,13 +209,17 @@ function getMetaDataFromCSV(data: unknown) : MetaData {
   let metaFields: MetaRows = { fields: [] } satisfies MetaRows;
   const csvLines = csvDataString.split('\n');
 
-  const delimiter = getDelimiter(csvLines[0]);
+  let delimiter = getDelimiter(csvLines[0]);
 
   const iCSVMetaRows = csvLines.filter((line) => line.startsWith('#'));
   let hasMetaRows = iCSVMetaRows?.length > 0;
 
   if (hasMetaRows) {
     metaRows = unpackICSVMapping(iCSVMetaRows, METADATA_MAPPING);
+    if (metaRows.fieldDelimiter) {
+      delimiter = metaRows.fieldDelimiter;
+    }
+
     metaFields = unpackICSVMapping(iCSVMetaRows, FIELDS_METADATA_MAPPING);
 
     if (metaFields?.fields) {

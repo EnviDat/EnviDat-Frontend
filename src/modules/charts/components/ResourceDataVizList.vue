@@ -69,13 +69,14 @@ const scrollbarColorBack = computed(() => theme ? '#F0F0F0' : 'auto');
         <v-col v-if="hasResources"
                cols="12"
         >
-          <v-row>
+          <v-row no-gutters>
             <v-col cols="3"
                    md="3"
                    xl="2"
             >
               <v-row no-gutters>
                 <v-list
+                  class="pa-0"
                   :style="`max-height: ${maxHeight - 100}px; overflow: auto; scroll-behavior: smooth; scrollbar-width: thin;
                   scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack};`"
                 >
