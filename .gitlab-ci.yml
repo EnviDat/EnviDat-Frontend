@@ -173,8 +173,8 @@ install-node:
     # disabled the funding check
     - npm config set fund false
   script:
-    - echo "the cache work if node_modules and it's .bin directory are available"
-    - ls -a
+    # - echo "the cache work if node_modules and it's .bin directory are available"
+    # - ls -a
     # Only run npm ci if node_modules don't come from the cache
     - |
       if [ -d "node_modules" ] && [ -d "node_modules/.bin" ]; then
@@ -188,8 +188,8 @@ install-node:
         echo "node_modules or it's .bin directory not found. Running npm ci..."
         npm ci --prefer-offline --no-audit
       fi
-    - echo "Check afterwards how the folders are"
-    - ls -l node_modules
+    # - echo "Check afterwards how the folders are"
+    # - ls -l node_modules
   artifacts:
     name: 'node dependencies'
     # stores node_modules as an artifact to be used in the next jobs
@@ -218,8 +218,8 @@ run-tests:
         echo "node_modules directory not found. Should have got them from the install-node artifact!"
         ls -a
       fi
-    - ls node_modules/ -a
-    - ls node_modules/.bin/ -a
+    # - ls node_modules/ -a
+    # - ls node_modules/.bin/ -a
   script:
     - npm run test
   retry:
@@ -245,8 +245,8 @@ build-storybook:
         echo "node_modules directory not found. Should have got them from the install-node artifact!"
         ls -a
       fi
-    - ls node_modules/ -a
-    - ls node_modules/.bin/ -a
+    # - ls node_modules/ -a
+    # - ls node_modules/.bin/ -a
   script:
     # - npm config set cache .npm/
     # - npm cache verify || true
@@ -281,8 +281,8 @@ build-app:
         echo "node_modules directory not found. Should have got them from the install-node artifact!"
         ls -a
       fi
-    - ls node_modules/ -a
-    - ls node_modules/.bin/ -a
+    # - ls node_modules/ -a
+    # - ls node_modules/.bin/ -a
   script:
     - npm run build -- --logLevel warn
   artifacts:
@@ -357,7 +357,7 @@ combine-builds:
     # - ls -l
     # remove the dist folder recursively
     - rm -rf dist
-    - ls -la
+    # - ls -la
   artifacts:
     name: 'frontend build $CI_COMMIT_REF_NAME'
     expire_in: 1 day

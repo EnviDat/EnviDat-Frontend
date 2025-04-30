@@ -1,5 +1,5 @@
 /// <reference types="vite/client" />
-import type { ChartConfiguration } from "chart.js";
+import type { ChartConfiguration } from 'chart.js';
 
 export interface DataProp {
   fields: string[] | undefined;

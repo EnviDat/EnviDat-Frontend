@@ -1,6 +1,6 @@
 import papa from 'papaparse';
 import {parseISO} from 'date-fns/parseISO';
-import type {MetaData, MetaRows} from '@/types/env';
+import type {MetaData, MetaRows} from '@/types/dataVizTypes';
 
 const normalDataConversion = (data: any, xAxis: string, yAxis: string, title: string) => ({
     labels: data?.map((row: any) => row[xAxis]),
@@ -155,22 +155,42 @@ function getMetaDataFromJSON(data: unknown) : MetaData {
   };
 }
 
-function csvHasHeaderRow(firstRow: string, secondRow: string) : boolean {
-  const firstCols = firstRow.split(',');
-  const secondCols = secondRow.split(',');
+function getDelimiter(fileRow: string) : string {
+  let delimiter = ',';
+  let firstCols = fileRow.split(delimiter);
 
+  if (firstCols.length <= 1) {
+    delimiter = ';';
+    firstCols = fileRow.split(delimiter);
+  }
 
-  let firstParsedInt = Number.parseInt(firstCols[0], 10);
-  let secondParsedInt = Number.parseInt(secondCols[0], 10);
+  if (firstCols.length <= 1) {
+    delimiter = '\t';
+    firstCols = fileRow.split(delimiter);
+  }
 
-  const firstParamFit: boolean = Number.isNaN(firstParsedInt) === Number.isNaN(secondParsedInt);
+  if (firstCols.length <= 1) {
+    delimiter = ' ';
+  }
 
-  firstParsedInt = Number.parseInt(firstCols[1], 10);
-  secondParsedInt = Number.parseInt(secondCols[1], 10);
+  return delimiter;
+}
 
-  const secondParamFit: boolean = Number.isNaN(firstParsedInt) === Number.isNaN(secondParsedInt);
+function csvHasHeaderRow(firstRow: string) : boolean {
+  const delimiter = getDelimiter(firstRow);
+  const cols = firstRow.split(delimiter);
 
-  return !firstParamFit && !secondParamFit;
+  for (let i = 0; i < cols.length; i++) {
+    const cell = cols[i];
+    const parsedCell = Number.parseInt(cell, 10);
+    const isNumber = !Number.isNaN(parsedCell);
+
+    if (isNumber) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 export function isString(something: unknown): something is string {
@@ -178,6 +198,7 @@ export function isString(something: unknown): something is string {
 }
 
 function getMetaDataFromCSV(data: unknown) : MetaData {
+
   if (!isString(data)) {
     throw new Error(`Expected data to be string (data: ${data})`);
   }
@@ -188,6 +209,8 @@ function getMetaDataFromCSV(data: unknown) : MetaData {
   let metaFields: MetaRows = { fields: [] } satisfies MetaRows;
   const csvLines = csvDataString.split('\n');
 
+  const delimiter = getDelimiter(csvLines[0]);
+
   const iCSVMetaRows = csvLines.filter((line) => line.startsWith('#'));
   let hasMetaRows = iCSVMetaRows?.length > 0;
 
@@ -196,21 +219,20 @@ function getMetaDataFromCSV(data: unknown) : MetaData {
     metaFields = unpackICSVMapping(iCSVMetaRows, FIELDS_METADATA_MAPPING);
 
     if (metaFields?.fields) {
-      const fields: string = metaFields.fields instanceof Array ? metaFields.fields.join(',') : metaFields.fields;
+      const fields: string = metaFields.fields instanceof Array ? metaFields.fields.join(delimiter) : metaFields.fields;
       csvLines.splice(0, iCSVMetaRows.length, fields)
     }
   } else {
     // store the secondDataRow for detecting if there are headers
     const firstDataRow = csvLines[0];
-    const secondDataRow = csvLines[1];
-    const hasHeaderRow = csvHasHeaderRow(firstDataRow, secondDataRow);
+    const hasHeaderRow = csvHasHeaderRow(firstDataRow);
 
     if (!hasHeaderRow) {
-      const cols = firstDataRow.split(',');
+      const cols = firstDataRow.split(delimiter);
       const paramHeaderLine = cols.map((element, index) => `Col ${index}`);
       metaFields.fields = paramHeaderLine;
       hasMetaRows = true;
-      csvLines.splice(0, 1, paramHeaderLine.join(','))
+      csvLines.splice(0, 1, paramHeaderLine.join(delimiter))
     } else {
       hasMetaRows = hasHeaderRow;
     }
