@@ -323,12 +323,18 @@ build-seo:
     # - ls node_modules/.bin/ -a
   script:
     - npm run build-vike
+    # rename the dist/client output folder
+    - mv dist/client dist/seo
+    - rm -rf dist/seo/testdata
+    - rm -rf dist/seo/particles
+    - rm -f dist/seo/researchUnits.json
+    - rm -f dist/seo/packagelist.json
   artifacts:
     name: 'frontend seo build '
     expire_in: 1 day
     # stores the seo pre-rendered htmls
     paths:
-      - dist/client/
+      - dist/seo/
   retry:
     max: 2
 
