@@ -1,15 +1,32 @@
 <template>
   <v-card
     class="pa-0 pt-8 pb-8 h-100 flex-column navigationWorkflow"
-    elevation="2"
+    :elevation="display.mdAndUp.value ? 2 : 0"
     rounded="xl"
   >
-    <v-card-title class="text-h6 font-weight-bold mb-4 pa-4">
+    <v-card-title class="text-h6 font-weight-bold mb-4 pa-md-4 pa-0">
       Create your Dataset
     </v-card-title>
 
+    <v-expansion-panels
+      class="mb-4 navigationWorkflow__note--mobile"
+      elevation="0"
+      v-if="display.smAndDown.value"
+    >
+      <v-expansion-panel>
+        <v-expansion-panel-title class="pa-0">
+          <BaseIcon :icon="iconName('info')" color="black" class="mr-4" />Note
+        </v-expansion-panel-title>
+
+        <v-expansion-panel-text class="pa-0">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua…
+        </v-expansion-panel-text>
+      </v-expansion-panel>
+    </v-expansion-panels>
+
     <v-card-text class="pa-0">
-      <v-list bg-color="#f8f8f8" class="pa-0" density="comfortable" nav>
+      <v-list class="pa-0 navigationWorkflow__list" density="comfortable" nav>
         <v-list-item
           v-for="(step, index) in navigationStore.steps"
           :key="index"
@@ -26,21 +43,38 @@
             //   : '',
           ]"
           @click="navigateItem(step.id, step.status)"
-          class="pl-4 pr-4 mb-6 navigationWorkflow__item"
+          class="pl-4 pr-4 mb-md-2 mb-xl-6 navigationWorkflow__item"
         >
           <template #prepend>
-            <BaseIcon :icon="iconName(step.icon)" color="black" class="mr-4" />
+            <BaseIcon
+              :icon="iconName(step.icon)"
+              color="black"
+              class="mr-md-4"
+            />
           </template>
 
-          <template #title>
+          <template #title v-if="display.mdAndUp.value">
             <span class="text-subtitle-1">{{ step.title }}</span>
           </template>
 
-          <template #subtitle>
+          <template #title v-else>
+            <!-- step.status === 'active'  -->
+            <span
+              v-if="navigationStore.currentStep === step.id"
+              :class="{
+                'font-weight-bold': display.mdAndDown.value,
+                'ml-2': navigationStore.currentStep === step.id,
+              }"
+            >
+              {{ step.title }}
+            </span>
+          </template>
+
+          <template #subtitle v-if="display.mdAndUp.value">
             <span class="text-body-2">{{ step.description }}</span>
           </template>
 
-          <template #append>
+          <template #append v-if="display.mdAndUp.value">
             <div
               class="navigationWorkflow__append mr-1"
               :class="[
@@ -50,21 +84,35 @@
                 // error: step.hasError,
               ]"
             >
-              <BaseIcon
-                v-if="step.completed"
-                :icon="iconName('success')"
-                class="navigationWorkflow__append--number"
-                :color="'#fff'"
-              />
-              <span v-else class="navigationWorkflow__append--number">{{
-                step.id + 1
-              }}</span>
+              <template v-if="step.completed">
+                <!-- If the step has already been completed, but we want to edit it -->
+                <span
+                  v-if="navigationStore.currentStep === step.id"
+                  class="navigationWorkflow__append--number font-weight-bold"
+                >
+                  {{ step.id + 1 }}
+                </span>
+                <!-- If the step has been completed-->
+                <BaseIcon
+                  v-else
+                  :icon="iconName('success')"
+                  class="navigationWorkflow__append--number"
+                  color="#fff"
+                />
+              </template>
+
+              <span v-else class="navigationWorkflow__append--number">
+                {{ step.id + 1 }}
+              </span>
             </div>
           </template>
 
           <div
             class="navigationWorkflow__divider"
-            v-if="step.id === 3 || step.id === navigationStore.steps.length - 1"
+            v-if="
+              display.mdAndUp.value &&
+              (step.id === 3 || step.id === navigationStore.steps.length - 1)
+            "
           ></div>
         </v-list-item>
       </v-list>
@@ -88,7 +136,10 @@
         <span class="text-body-2 mt-2">Draft</span>
       </div>
     </v-card-actions>
-    <v-card-text class="pl-4 pr-4 navigationWorkflow__note">
+    <v-card-text
+      v-if="display.smAndUp.value"
+      class="pl-4 pr-4 navigationWorkflow__note"
+    >
       <span class="font-weight-bold d-block mb-2">Note:</span>
       <span class="text-sm text-gray-600">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
@@ -108,12 +159,17 @@
 // import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
 
+import { useDisplay } from 'vuetify';
+
 import { driver } from 'driver.js';
 import 'driver.js/dist/driver.css';
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import { extractIcons } from '@/factories/iconFactory';
 
 import { useDatasetWorkflowStore } from '@/modules/user/store/datasetWorkflow';
+
+// define useDisplay
+const display = useDisplay();
 
 // Extract Icon name from IconFactory
 const iconName = (data) => extractIcons(data);
@@ -139,9 +195,29 @@ const initDriver = () => {
 
 <style lang="scss">
 .navigationWorkflow {
-  background-color: #f8f8f8;
+  background-color: #fff;
+  @media screen and (min-width: 960px) {
+    // 960 is md for vueitfy
+    background-color: #f8f8f8;
+  }
   height: 100%;
   position: relative;
+  &__list {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 8px;
+    scrollbar-width: none;
+    background-color: #fff;
+
+    @media screen and (min-width: 960px) {
+      // 960 is md for vueitfy
+      flex-direction: column;
+      overflow-x: hidden;
+      gap: 0px;
+      background-color: #f8f8f8;
+    }
+  }
   &__divider {
     background-color: #cac4d0;
     height: 1px;
@@ -151,6 +227,11 @@ const initDriver = () => {
     left: 0;
   }
   &__actions {
+    @media screen and (max-width: 960px) {
+      // 960 is md for vueitfy
+      border-radius: 10px;
+      background-color: #f8f8f8;
+    }
     &--item {
       align-items: center;
       .baseIcon .baseIconFontIcon {
@@ -163,20 +244,49 @@ const initDriver = () => {
     }
   }
   &__item {
+    @media screen and (max-width: 960px) {
+      // 960 is md for vueitfy
+      border-radius: 10px;
+      display: flex;
+    }
     &:hover {
-      // background-color: #eaeaea;
       cursor: pointer;
     }
     &.disabled {
       opacity: 0.5;
+      @media screen and (max-width: 960px) {
+        // 960 is md for vueitfy
+        background-color: #e8e8e8;
+      }
       &:hover {
-        // background-color: #eaeaea;
         cursor: not-allowed;
       }
     }
-    // &.active {
-    //   background-color: #eaeaea;
-    // }
+    &.active {
+      @media screen and (max-width: 960px) {
+        // 960 is md for vueitfy
+        // gap: 8px;
+        background-color: #499df7;
+        .navigationWorkflow__append--number,
+        .v-list-item-title,
+        .v-icon__svg {
+          color: #fff;
+          font-weight: bold;
+        }
+      }
+    }
+    &.completed {
+      @media screen and (max-width: 960px) {
+        // 960 is md for vueitfy
+        background-color: #40c057;
+        .navigationWorkflow__append--number,
+        .v-list-item-title,
+        .v-icon__svg {
+          color: #fff;
+          font-weight: bold;
+        }
+      }
+    }
   }
   &__append {
     height: 30px;
@@ -210,6 +320,17 @@ const initDriver = () => {
       .navigationWorkflow__append--number {
         color: #fff;
         font-weight: bold;
+      }
+    }
+  }
+  &__note {
+    &--mobile {
+      background-color: #fff;
+      .v-expansion-panel-title__overlay {
+        opacity: 0 !important;
+      }
+      .v-expansion-panel-text__wrapper {
+        padding: 10px 0;
       }
     }
   }

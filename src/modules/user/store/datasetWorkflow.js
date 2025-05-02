@@ -118,17 +118,18 @@ export const useDatasetWorkflowStore = defineStore({
     currentStepObject: (state) => state.steps[state.currentStep] ?? null,
   },
   actions: {
-    navigateItemAction(id, statu) {
-      if (statu === 'disabled') {
+    navigateItemAction(id, status) {
+      if (status === 'disabled') {
         return;
       }
       this.currentStep = id;
     },
-    setCurrentStepAction(step) {
-      const next = step + 1;
-      if (this.steps[next]) {
-        this.steps[next].status = 'active';
-        this.currentStep = next;
+    setCurrentStepAction() {
+      // find the next element with status != completed
+      const next = this.steps.find((el) => el.status != 'completed');
+      if (this.steps[next.id]) {
+        this.steps[next.id].status = 'active';
+        this.currentStep = next.id;
       }
     },
     validateStepAction(step) {
@@ -137,7 +138,7 @@ export const useDatasetWorkflowStore = defineStore({
         console.log('validated');
         this.steps[step].completed = true;
         this.steps[step].status = 'completed';
-        this.setCurrentStepAction(step);
+        this.setCurrentStepAction();
         this.loading = false;
       }, 2000);
     },
@@ -159,7 +160,3 @@ export const useDatasetWorkflowStore = defineStore({
     setCurrentGuide(step) {},
   },
 });
-
-// creare oggetto per steps
-// ogni step deve avere la validazione basasta sullo step id
-// ogni step deve avere un oggetto con i dati
