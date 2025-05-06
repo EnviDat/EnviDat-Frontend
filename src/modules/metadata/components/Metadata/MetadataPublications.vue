@@ -100,6 +100,10 @@ export default {
   },
   methods: {
     resolvedCitations(text) {
+      if (!text) {
+        return '';
+      }
+
       if (
         !this.isResolving &&
         !this.resolveError &&
