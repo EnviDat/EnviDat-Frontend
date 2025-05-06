@@ -8,7 +8,7 @@
     :maxTextLength="maxTextLength"
     :sanitizeHTML="false"
     :statusText="resolvingStatusText"
-    class="relatedPubList"
+    class="relatedPubList "
   />
 </template>
 

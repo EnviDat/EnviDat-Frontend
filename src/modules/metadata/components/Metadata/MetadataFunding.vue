@@ -1,7 +1,7 @@
 <template>
   <v-card id="MetadataFunding" >
 
-    <v-card-title class="metadata_title text-h6">
+    <v-card-title class="metadata_title text-h6 py-4">
       {{ METADATA_FUNDING_TITLE }}
     </v-card-title>
 
