@@ -127,7 +127,10 @@
         <BaseIcon :icon="iconName('question')" :color="'black'" />
         <span class="text-body-2 mt-2">Help mode</span>
       </div>
-      <div class="navigationWorkflow__actions--item d-flex flex-column">
+      <div
+        :class="{ disabled: navigationStore.currentStep < 3 }"
+        class="navigationWorkflow__actions--item d-flex flex-column"
+      >
         <BaseIcon :icon="iconName('print')" :color="'black'" />
         <span class="text-body-2 mt-2">Reserve DOI</span>
       </div>
@@ -136,6 +139,22 @@
         <span class="text-body-2 mt-2">Draft</span>
       </div>
     </v-card-actions>
+    <!-- <v-expansion-panels
+      class="mb-4 mt-4 navigationWorkflow__note--mobile"
+      elevation="0"
+      v-if="display.smAndUp.value"
+    >
+      <v-expansion-panel>
+        <v-expansion-panel-title class="pa-4">
+          <BaseIcon :icon="iconName('info')" color="black" class="mr-4" />Note
+        </v-expansion-panel-title>
+
+        <v-expansion-panel-text class="pa-0">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua…
+        </v-expansion-panel-text>
+      </v-expansion-panel>
+    </v-expansion-panels> -->
     <v-card-text
       v-if="display.smAndUp.value"
       class="pl-4 pr-4 navigationWorkflow__note"
@@ -240,6 +259,12 @@ const initDriver = () => {
       }
       &:hover {
         cursor: pointer;
+      }
+      &.disabled {
+        opacity: 0.5;
+        &:hover {
+          cursor: not-allowed;
+        }
       }
     }
   }
