@@ -69,7 +69,7 @@
  */
 import { mapState } from 'vuex';
 
-import { mdiInformation, mdiLinkVariant } from '@mdi/js';
+import { mdiInformation } from '@mdi/js';
 
 import UserRoleChip from '@/components/Chips/UserRoleChip.vue';
 import UserAvatar from '@/components/Layouts/UserAvatar.vue';
@@ -163,7 +163,6 @@ export default {
   methods: {},
   data: () => ({
     mdiInformation,
-    mdiLinkVariant,
     avatarHeight: 32,
     title: 'Organization Roles',
     noOrganizationText: 'If you are an employee of WSL or affiliated with WSL, please contact <a href="mailto:envidat@wsl.ch">envidat@wsl.ch</a> to receive editing rights for publishing datasets.',
