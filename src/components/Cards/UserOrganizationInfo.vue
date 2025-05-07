@@ -32,9 +32,8 @@
               <MetadataOrganizationChip
                 style="cursor: pointer !important;"
                 :organization="roles.organization"
-                @organizationClicked="$emit('organizationClick')"
+                @organizationClicked="$emit('organizationClick', $event)"
               />
-
             </div>
 
             <div class="text-body-1">
