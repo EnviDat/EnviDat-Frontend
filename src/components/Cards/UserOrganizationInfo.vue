@@ -28,8 +28,13 @@
           <div v-for="(roles,index) in organizationRoles"
                 :key="index"
                 class="pt-1">
-            <div class="text-body-1" >
-              <a :href="`${ckanDomain}/organization/${roles.organization}`" target="_blank">{{ roles.organization }}</a>
+            <div>
+              <MetadataOrganizationChip
+                style="cursor: pointer !important;"
+                :organization="roles.organization"
+                @organizationClicked="$emit('organizationClick')"
+              />
+
             </div>
 
             <div class="text-body-1">
@@ -64,10 +69,13 @@
  */
 import { mapState } from 'vuex';
 
-import {mdiInformation} from '@mdi/js';
+import { mdiInformation, mdiLinkVariant } from '@mdi/js';
 
 import UserRoleChip from '@/components/Chips/UserRoleChip.vue';
 import UserAvatar from '@/components/Layouts/UserAvatar.vue';
+import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip.vue';
+
+
 import {
   hasOrganizationRoles,
   isAdmin,
@@ -75,10 +83,12 @@ import {
   isMember,
   isSysadmin,
 } from '@/factories/userEditingValidations';
-import {renderMarkdown} from '@/factories/stringFactory';
+
+import { renderMarkdown } from '@/factories/stringFactory';
 
 export default {
   name: 'UserOrganizationInfo',
+  emit: ['organizationClick'],
   props: {
     width: {
       type: Number,
@@ -153,6 +163,7 @@ export default {
   methods: {},
   data: () => ({
     mdiInformation,
+    mdiLinkVariant,
     avatarHeight: 32,
     title: 'Organization Roles',
     noOrganizationText: 'If you are an employee of WSL or affiliated with WSL, please contact <a href="mailto:envidat@wsl.ch">envidat@wsl.ch</a> to receive editing rights for publishing datasets.',
@@ -166,6 +177,7 @@ export default {
   components: {
     UserAvatar,
     UserRoleChip,
+    MetadataOrganizationChip,
   },
 };
 </script>
@@ -195,6 +207,7 @@ export default {
   display: grid;
   grid-template-rows: 32px auto;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .roleGrid > div {
@@ -209,5 +222,12 @@ export default {
   overflow-y: auto;
   grid-template-columns: 1fr auto;
   gap: 8px;
+}
+
+</style>
+
+<style>
+.textGrid p {
+  margin: 0;
 }
 </style>
