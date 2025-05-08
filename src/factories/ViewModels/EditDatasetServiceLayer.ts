@@ -48,7 +48,7 @@ export class EditDatasetServiceLayer implements DatasetServiceLayer {
 
       return this.dataset;
     } catch (e: Error) {
-      // console.error(e);
+      console.error(e);
       throw e;
     }
 
@@ -79,7 +79,7 @@ export class EditDatasetServiceLayer implements DatasetServiceLayer {
 
       return this.dataset;
     } catch (e: Error) {
-      // console.error(e);
+      console.error(e);
       throw e;
     }
 

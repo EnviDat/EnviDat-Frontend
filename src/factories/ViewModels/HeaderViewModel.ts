@@ -1,13 +1,5 @@
 import { reactive, watch } from 'vue';
 
-import {
-  METADATA_CONTACT_EMAIL,
-  METADATA_CONTACT_FIRSTNAME,
-  METADATA_CONTACT_FULLNAME,
-  METADATA_CONTACT_LASTNAME,
-  METADATA_TITLE_PROPERTY,
-} from '@/factories/metadataConsts';
-
 import { getAuthorName } from '@/factories/authorFactory';
 import { formatDate } from '@/factories/dateFactory';
 import { getMetadataVisibilityState } from '@/factories/publicationFactory';
@@ -21,6 +13,8 @@ export class HeaderViewModel extends AbstractViewModel {
   declare metadataTitle: string;
 
   declare contactEmail: string;
+  declare contactName: string;
+
   declare contactFirstName: string;
   declare contactLastName: string;
 
@@ -57,9 +51,9 @@ export class HeaderViewModel extends AbstractViewModel {
     this.created = formatDate(this.created);
     this.modified = formatDate(this.modified);
 
-    this[METADATA_CONTACT_FULLNAME] = getAuthorName({
-      firstName: this[METADATA_CONTACT_FIRSTNAME],
-      lastName: this[METADATA_CONTACT_LASTNAME],
+    this.contactName = getAuthorName({
+      firstName: this.contactFirstName,
+      lastName: this.contactLastName,
     });
 
     this.authors = AuthorsViewModel.getFormattedAuthors(dataset.author, dataset.metadata_modified);
