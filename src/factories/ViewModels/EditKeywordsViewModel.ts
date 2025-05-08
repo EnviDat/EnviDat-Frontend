@@ -46,20 +46,11 @@ export class EditKeywordsViewModel extends AbstractEditViewModel{
   }
 
   validate(newProps?: any): boolean {
-    let propObj = newProps;
-
-    if (newProps) {
-      propObj = {
-        keywords: newProps.keywords,
-      };
-    } else {
-      propObj = {
-        keywords: this.keywords,
-      };
-    }
 
     return isObjectValidCheckAllProps(
-      propObj,
+      {
+        keywords: newProps.keywords || this.keywords,
+      },
       this.validationRules,
       this.validationErrors,
     );

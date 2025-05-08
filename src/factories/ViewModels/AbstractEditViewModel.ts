@@ -18,7 +18,8 @@ export abstract class AbstractEditViewModel {
 
   private datasetViewModel: DatasetViewModel;
 
-  abstract validate(newProps: any | undefined = undefined): boolean;
+  // eslint-disable-next-line no-unused-vars
+  abstract validate(newProps?: any): boolean;
 
 
   constructor(datasetViewModel: DatasetViewModel, mappingRules: string[][] = undefined) {

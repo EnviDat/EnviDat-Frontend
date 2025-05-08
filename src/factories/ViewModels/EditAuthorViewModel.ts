@@ -1,8 +1,10 @@
 import { reactive, watch } from 'vue';
+import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/factories/ViewModels/AbstractEditViewModel.ts';
 import { Author, DataCreditObject, DatasetDTO } from '@/types/modelTypes';
 import { convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
 import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel.ts';
+import { isObjectValidCheckAllProps } from '@/factories/userEditingValidations';
 
 
 export class EditAuthorViewModel extends AbstractEditViewModel{
@@ -20,8 +22,55 @@ export class EditAuthorViewModel extends AbstractEditViewModel{
   declare affiliation: string;
   declare lastModified: string;
 
+  declare validationErrors: {
+    firstName: string,
+    lastName: string;
+    email: string;
+    identifier: string;
+    affiliation: string;
+  }
+
+  declare validationRules: object;
+
   constructor(datasetViewModel: DatasetViewModel) {
     super(datasetViewModel, EditAuthorViewModel.mappingRules());
+
+    this.validationErrors = {
+      firstName: null,
+      lastName: null,
+      email: null,
+      identifier: null,
+      affiliation: null,
+    }
+
+    this.validationRules =
+      yup.object().shape({
+        firstName: yup
+          .string()
+          .required('Author first name is required')
+          .min(2, 'Author first name must be at least 2 characters'),
+        lastName: yup
+          .string()
+          .required('Author last name is required')
+          .min(3, 'Author last name must be at least 3 characters'),
+        email: yup
+          .string()
+          .email('Author email must be a valid email address')
+          .required('Author email is required'),
+        identifier: yup
+          .string()
+          // e.g. 0000-0002-3862-8720
+          .notRequired()
+          .min(
+            19,
+            'OrcId must be at least 19 characters, like 0000-0002-3862-8720',
+          ),
+        affiliation: yup
+          .string()
+          // .required('Author affiliation is required')
+          .min(3, 'Affiliation must be at least 3 characters'),
+      });
+
   }
 
   static getFormattedAuthor(rawAuthor: any, lastModified: string) : Author {
@@ -35,6 +84,34 @@ export class EditAuthorViewModel extends AbstractEditViewModel{
     author.lastModified = lastModified;
 
     return author;
+  }
+
+  validate(newProps?: any) {
+    let propObj = newProps;
+
+    if (newProps) {
+      propObj = {
+        firstName: newProps.firstName,
+        lastName: newProps.lastName,
+        email: newProps.email,
+        identifier: newProps.identifier,
+        affiliation: newProps.affiliation,
+      };
+    } else {
+      propObj = {
+        firstName: this.firstName,
+        lastName: this.lastName,
+        email: this.email,
+        identifier: this.identifier,
+        affiliation: this.affiliation,
+      };
+    }
+
+    return isObjectValidCheckAllProps(
+      propObj,
+      this.validationRules,
+      this.validationErrors,
+    );
   }
 
   static mappingRules () {
@@ -51,7 +128,7 @@ export class EditAuthorViewModel extends AbstractEditViewModel{
 }
 
 
-export const createAuthorViewModel = (dataset: DatasetDTO, changeCallback = undefined) => {
+export const createAuthorViewModel = (dataset: DatasetViewModel, changeCallback = undefined) => {
   const authorVM = new EditAuthorViewModel(dataset);
   const reactiveVM = reactive(authorVM);
 

@@ -1,6 +1,7 @@
 import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/factories/ViewModels/AbstractEditViewModel.ts';
 import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel.ts';
+import { isObjectValidCheckAllProps } from '@/factories/userEditingValidations';
 
 export class EditDescriptionViewModel extends AbstractEditViewModel{
 
@@ -36,7 +37,14 @@ export class EditDescriptionViewModel extends AbstractEditViewModel{
   }
 
   validate(newProps?: any): boolean {
-    return false;
+
+    return isObjectValidCheckAllProps(
+      {
+        description: newProps.description || this.description,
+      },
+      this.validationRules,
+      this.validationErrors,
+    );
   }
 }
 
