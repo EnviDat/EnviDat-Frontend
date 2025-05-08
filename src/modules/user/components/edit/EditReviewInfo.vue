@@ -28,7 +28,11 @@
           />
         </v-col>
       </v-row>
-
+      <v-row>
+        <v-col cols="12">
+          <div class="text-body-1" v-html="labels.purpose"></div>
+        </v-col>
+      </v-row>
       <v-row>
         <v-col>
           <v-alert type="info" >{{ labels.instructions }}</v-alert>
@@ -310,6 +314,7 @@ export default {
       dataObjectIdentifier: EDIT_METADATA_DOI_LABEL,
       instructions: 'DOI needs to be reserved to enable this feature',
       buttonText: 'Preview',
+      purpose: 'This feature grants anonymized metadata and data file access to reviewers for a scientific journal before the dataset has been set to public in the CKAN instance',
     },
     propertyValidationSuffix: 'Validation',
     // blindReviewMode: false,

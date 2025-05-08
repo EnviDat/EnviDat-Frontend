@@ -41,7 +41,6 @@
           <BaseCategoryCard
             height="45"
             :title="card.title"
-            :img="card.imgPath"
             :icon="card.iconPath"
             :color="card.darkColor"
             :isMode="card.isMode"

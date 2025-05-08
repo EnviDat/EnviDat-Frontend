@@ -4,7 +4,7 @@ import path from 'path';
 import vue from '@vitejs/plugin-vue';
 import vuetify from 'vite-plugin-vuetify';
 
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig, loadEnv, UserConfig } from 'vite';
 import { configDefaults } from 'vitest/dist/config.js';
 import eslint from 'vite-plugin-eslint';
 
@@ -18,7 +18,19 @@ const version = process.env.npm_package_version;
 
 const useHttps = process.env.VITE_USE_HTTPS === 'true';
 
-export default ({ mode, config }) => {
+const isVike = process.argv.some(arg => arg.includes('vike'));
+
+export default async ({ mode, config }) : Promise<UserConfig> => {
+
+  if (isVike) {
+    console.log('Run with vite.config.vike!');
+    const vikeConfig = await import('./vite.config.vike.ts');
+    console.log(vikeConfig.default);
+    return vikeConfig.default({mode, config});
+  }
+
+  console.log('Run with vite.config.ts!');
+
   const isProd = mode === 'production';
   const isDev = mode === 'development';
 
@@ -137,103 +149,109 @@ export default ({ mode, config }) => {
       emptyOutDir: true,
       rollupOptions: isProd
         ? {
-            output: {
-              manualChunks: (id) => {
-                if (id.includes('node_modules')) {
-                  if (id.includes('vuetify')) {
-                    return 'vendor_vuetify';
-                  }
-
-                  if (id.includes('vue') || id.includes('pinia')) {
-                    // vue, vuex & pinia, vue-router, etc.
-                    return 'vendor_vue';
-                  }
-
-                  if (id.includes('leaflet')) {
-                    return 'vendor_leaflet';
-                  }
-
-                  if (id.includes('turf')) {
-                    return 'vendor_turf';
-                  }
-
-                  if (id.includes('uppy')) {
-                    return 'vendor_uppy';
-                  }
-
-                  if (id.includes('chart') || id.includes('uplot')) {
-                    return 'vendor_charts';
-                  }
-
-                  if (id.includes('yup')) {
-                    return 'vendor_validation';
-                  }
-
-                  if (
-                    id.includes('axios') ||
-                    id.includes('date-fns') ||
-                    id.includes('mitt') ||
-                    id.includes('seedrandom') ||
-                    id.includes('tiny-js-md5')
-                  ) {
-                    return 'vendor_utils';
-                  }
-
-                  if (id.includes('@mdi/js')) {
-                    return 'vendor_icons';
-                  }
-
-                  if (
-                    id.includes('vanilla-jsoneditor') ||
-                    id.includes('codemirror')
-                  ) {
-                    return 'vendor_jsoneditor';
-                  }
-
-                  return 'vendors';
+          output: {
+            manualChunks: (id) => {
+              if (id.includes('node_modules')) {
+                if (id.includes('vuetify')) {
+                  return 'vendor_vuetify';
                 }
 
-                if (id.includes('src/assets')) {
-                  return 'envidat_assets';
+                if (id.includes('vue') || id.includes('pinia')) {
+                  // vue, vuex & pinia, vue-router, etc.
+                  return 'vendor_vue';
                 }
 
-                // Let Rollup handle the rest
-                return undefined;
-              },
+                if (id.includes('leaflet')) {
+                  return 'vendor_leaflet';
+                }
+
+                if (id.includes('turf')) {
+                  return 'vendor_turf';
+                }
+
+                if (id.includes('uppy')) {
+                  return 'vendor_uppy';
+                }
+
+                if (id.includes('chart') || id.includes('uplot')) {
+                  return 'vendor_charts';
+                }
+
+                if (id.includes('yup')) {
+                  return 'vendor_validation';
+                }
+
+                if (
+                  id.includes('axios') ||
+                  id.includes('date-fns') ||
+                  id.includes('mitt') ||
+                  id.includes('seedrandom') ||
+                  id.includes('tiny-js-md5')
+                ) {
+                  return 'vendor_utils';
+                }
+
+                if (id.includes('@mdi/js')) {
+                  return 'vendor_icons';
+                }
+
+                if (
+                  id.includes('vanilla-jsoneditor') ||
+                  id.includes('codemirror')
+                ) {
+                  return 'vendor_jsoneditor';
+                }
+
+                return 'vendors';
+              }
+
+              if (id.includes('src/assets')) {
+                return 'envidat_assets';
+              }
+
+              // Let Rollup handle the rest
+              return undefined;
             },
-          }
+          },
+        }
         : {},
     },
     server: isDev
       ? {
-          host: '0.0.0.0',
+        host: '0.0.0.0',
+        port: 8080,
+        hmr: {
+          host: 'dev.envidat04.wsl.ch',
           port: 8080,
-          hmr: {
-            host: 'dev.envidat04.wsl.ch',
-            port: 8080,
+        },
+        allowedHosts: ['dev.envidat04.wsl.ch:8080'],
+        https: useHttps
+          ? {
+            key: fs.readFileSync(path.resolve(__dirname, 'certs/key.pem')),
+            cert: fs.readFileSync(
+              path.resolve(__dirname, 'certs/cert.pem'),
+            ),
+          }
+          : false,
+        proxy: {
+          '/api': {
+            target: 'https://statistics.wsl.ch',
+            changeOrigin: true,
+            rewrite: (proxyPath) => proxyPath.replace(/^\/api/, ''),
           },
-          allowedHosts: ['dev.envidat04.wsl.ch:8080'],
-          https: useHttps
-            ? {
-                key: fs.readFileSync(path.resolve(__dirname, 'certs/key.pem')),
-                cert: fs.readFileSync(
-                  path.resolve(__dirname, 'certs/cert.pem'),
-                ),
-              }
-            : false,
-          proxy: {
-            '/api': {
-              target: 'https://statistics.wsl.ch',
-              changeOrigin: true,
-              rewrite: (proxyPath) => proxyPath.replace(/^\/api/, ''),
-            },
-            '/envidat-doi': {
-              target: 'https://os.zhdk.cloud.switch.ch',
-              changeOrigin: true,
-              rewrite: (path) => path.replace(/^\/envidat-doi/, '/envidat-doi'),
-            },
+          '/envidat-doi': {
+            target: 'https://os.zhdk.cloud.switch.ch',
+            changeOrigin: true,
+            rewrite: (p) => p.replace(/^\/envidat-doi/, '/envidat-doi'),
           },
-        }
+          // '/envidat04': {
+          //   target: 'https://envidat04.wsl.ch',
+          //   changeOrigin: true,
+          //   secure: true,
+          //   rewrite: (proxyPath) => proxyPath.replace(/^\/envidat04/, ''),
+          // },
+        },
+      }
       : {},
   });
 };
