@@ -63,7 +63,8 @@ module.exports = {
     'import/extensions': 'off',
     'import/order': 'warn',
     'class-methods-use-this': 'off',
-    'lines-between-class-members': 'off'
+    'lines-between-class-members': 'off',
+    'vue/multi-word-component-names': 'off'
   },
 };
 

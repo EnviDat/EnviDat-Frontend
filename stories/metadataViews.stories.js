@@ -23,6 +23,7 @@ import MetadataFunding from '@/modules/metadata/components/Metadata/MetadataFund
 import {
   createDetails,
   createPublications,
+  createFunding,
   enhanceMetadatasTitleImage,
 } from '@/factories/metaDataFactory';
 
@@ -35,6 +36,9 @@ import metadata from './js/metadata';
 import gcnetDataset from './js/gcnetDataset';
 import citationTesting from './js/citationTesting';
 import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue';
+import forestRadidationDataDataset from './js/forest-radiation-data';
+
+const forestFunding = createFunding(forestRadidationDataDataset.result);
 
 import envidat_packages from './testdata/packagelist.json';
 
@@ -317,7 +321,6 @@ export const MetadataRelatedPublicationsViews = () => ({
     allDatasets: envidat_packages.result,
     genericPropsPublications: {
       showPlaceholder: false,
-      title: 'Related Publications',
       text: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Cursus turpis massa tincidunt dui ut. Proin sagittis nisl rhoncus mattis rhoncus urna neque viverra. Quis enim lobortis scelerisque fermentum dui. Neque egestas congue quisque egestas. Malesuada proin libero nunc consequat interdum varius sit amet mattis. Volutpat blandit aliquam etiam erat. Tempor id eu nisl nunc. Lacus suspendisse faucibus interdum posuere lorem ipsum dolor sit amet. Ultricies mi eget mauris pharetra et ultrices. Eu consequat ac felis donec et odio pellentesque diam volutpat. Fames ac turpis egestas integer. Faucibus interdum posuere lorem ipsum dolor sit amet. Cursus euismod quis viverra nibh cras. Condimentum id venenatis a condimentum vitae sapien pellentesque habitant morbi. At elementum eu facilisis sed odio morbi quis. Ut sem viverra aliquet eget sit amet tellus.
       Proin nibh nisl condimentum id venenatis. Parturient montes nascetur ridiculus mus mauris vitae ultricies leo integer. Id eu nisl nunc mi ipsum faucibus vitae aliquet nec. Eu mi bibendum neque egestas congue quisque egestas diam. Eu volutpat odio facilisis mauris sit amet massa vitae tortor. Porttitor lacus luctus accumsan tortor posuere ac ut consequat. Sed velit dignissim sodales ut. Est pellentesque elit ullamcorper dignissim cras tincidunt lobortis. Sodales ut eu sem integer vitae. Ipsum nunc aliquet bibendum enim facilisis gravida neque convallis a. Augue lacus viverra vitae congue. Eget sit amet tellus cras adipiscing enim eu turpis. Pharetra vel turpis nunc eget lorem. Cras sed felis eget velit aliquet sagittis.
       Sagittis nisl rhoncus mattis rhoncus urna. Vehicula ipsum a arcu cursus vitae. Sed elementum tempus egestas sed. Nec nam aliquam sem et tortor. Enim lobortis scelerisque fermentum dui faucibus in ornare quam viverra. Massa eget egestas purus viverra accumsan in. Integer eget aliquet nibh praesent. Ut placerat orci nulla pellentesque dignissim enim sit amet. Amet venenatis urna cursus eget. Nunc pulvinar sapien et ligula. Vel pharetra vel turpis nunc eget lorem dolor. Felis donec et odio pellentesque diam. Porttitor rhoncus dolor purus non enim.
@@ -331,17 +334,20 @@ export const MetadataRelatedPublicationsListViews = () => ({
   template: `
   <v-row >
 
+    <v-col cols="4" class="py-3">
+      <h6 class="text-h6">Empty</h6>
+      <metadata-publication-list />
+    </v-col>
 
+    <v-col cols="4" class="py-3">
+      <h6 class="text-h6">Loader</h6>
+      <metadata-publication-list v-bind="genericPropsPlaceholder" />
+    </v-col>
+    
     <v-col cols="4" class="py-3">
       <h6 class="text-h6">Plain Text</h6>
       <metadata-publication-list v-bind="genericPropsPublications" />
     </v-col>
-
-    <v-col cols="4" class="py-3">
-    <h6 class="text-h6">Loader</h6>
-      <metadata-publication-list v-bind="genericPropsPlaceholder" />
-    </v-col>
-
 
     <v-col cols="6" class="py-3">
     <h6 class="text-h6">Multiple publications with even text without PID or DOI</h6>
@@ -408,7 +414,6 @@ export const MetadataRelatedPublicationsListViews = () => ({
     allDatasets: envidat_packages.result,
     genericPropsPublications: {
       showPlaceholder: false,
-      title: 'Related Publications',
       text: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Cursus turpis massa tincidunt dui ut. Proin sagittis nisl rhoncus mattis rhoncus urna neque viverra. Quis enim lobortis scelerisque fermentum dui. Neque egestas congue quisque egestas. Malesuada proin libero nunc consequat interdum varius sit amet mattis. Volutpat blandit aliquam etiam erat. Tempor id eu nisl nunc. Lacus suspendisse faucibus interdum posuere lorem ipsum dolor sit amet. Ultricies mi eget mauris pharetra et ultrices. Eu consequat ac felis donec et odio pellentesque diam volutpat. Fames ac turpis egestas integer. Faucibus interdum posuere lorem ipsum dolor sit amet. Cursus euismod quis viverra nibh cras. Condimentum id venenatis a condimentum vitae sapien pellentesque habitant morbi. At elementum eu facilisis sed odio morbi quis. Ut sem viverra aliquet eget sit amet tellus.
       Proin nibh nisl condimentum id venenatis. Parturient montes nascetur ridiculus mus mauris vitae ultricies leo integer. Id eu nisl nunc mi ipsum faucibus vitae aliquet nec. Eu mi bibendum neque egestas congue quisque egestas diam. Eu volutpat odio facilisis mauris sit amet massa vitae tortor. Porttitor lacus luctus accumsan tortor posuere ac ut consequat. Sed velit dignissim sodales ut. Est pellentesque elit ullamcorper dignissim cras tincidunt lobortis. Sodales ut eu sem integer vitae. Ipsum nunc aliquet bibendum enim facilisis gravida neque convallis a. Augue lacus viverra vitae congue. Eget sit amet tellus cras adipiscing enim eu turpis. Pharetra vel turpis nunc eget lorem. Cras sed felis eget velit aliquet sagittis.
       Sagittis nisl rhoncus mattis rhoncus urna. Vehicula ipsum a arcu cursus vitae. Sed elementum tempus egestas sed. Nec nam aliquam sem et tortor. Enim lobortis scelerisque fermentum dui faucibus in ornare quam viverra. Massa eget egestas purus viverra accumsan in. Integer eget aliquet nibh praesent. Ut placerat orci nulla pellentesque dignissim enim sit amet. Amet venenatis urna cursus eget. Nunc pulvinar sapien et ligula. Vel pharetra vel turpis nunc eget lorem dolor. Felis donec et odio pellentesque diam. Porttitor rhoncus dolor purus non enim.
@@ -495,6 +500,10 @@ export const MetadataFundingViews = () => ({
                         :showPlaceholder="genericProps2.showPlaceholder"/>
     </v-col>
 
+    <v-col cols="8" class="py-3">
+      <metadata-funding v-bind="genericProps3" />
+    </v-col>
+    
   </v-row>
   `,
   updated() {},
@@ -509,6 +518,10 @@ export const MetadataFundingViews = () => ({
     },
     genericProps2: {
       funding: funding2,
+      showPlaceholder: false,
+    },
+    genericProps3: {
+      funding: forestFunding,
       showPlaceholder: false,
     },
   }),

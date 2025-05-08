@@ -1,6 +1,11 @@
 
 import NoSearchResultsView from '@/components/Filtering/NoSearchResultsView.vue';
 import categoryCards from '@/store/categoryCards';
+import {
+  mobileLargeViewportParams,
+  mobileViewportParams,
+  tabletViewportParams,
+} from '~/stories/js/envidatViewports.js';
 
 const disabledCards = [];
 
@@ -20,43 +25,34 @@ for (let i = 0; i < categoryCards.length; i++) {
 
 export default {
   title: '2 Search / NoSearchResultsView',
-  decorators: [],
-  parameters: {
-  },
+  component: NoSearchResultsView,
 };
 
-export const NoSearchResultViews = () => ({
-  components: { NoSearchResultsView },
-  template: `
-    <v-row>
-      <v-col cols="12" class="pa-2">
-        Normal cards
-      </v-col>
-      <v-col cols="12" class="pa-2">
-        <no-search-results-view :categoryCards="categoryCards"  />
-      </v-col>
-
-      <v-col cols="12" class="pa-2">
-        Disabled cards
-      </v-col>
-      <v-col cols="12" class="pa-2">
-        <no-search-results-view :categoryCards="disabledCards"  />
-      </v-col>
-
-      <v-col cols="12" class="pa-2">
-        small cards
-      </v-col>
-      <v-col cols="6" class="pa-2">
-        <no-search-results-view :categoryCards="categoryCards" />
-      </v-col>
-
-      <v-col cols="6" class="pa-2">
-        <no-search-results-view :categoryCards="categoryCards"  />
-      </v-col>
-
-    </v-row>`,
-  data: () => ({
+export const DefaultCards = {
+  args: {
     categoryCards,
-    disabledCards,
-  }),
-});
+  },
+}
+
+export const DisabledCards = {
+  args: {
+    categoryCards: disabledCards,
+  },
+}
+
+export const MobileNoSearchResult = {
+  args: { ...DefaultCards.args },
+  parameters: mobileViewportParams,
+}
+
+export const MobileLargeCategoryCardCollection = {
+  args: { ...DefaultCards.args },
+  parameters: mobileLargeViewportParams,
+}
+
+export const TabletCategoryCardCollection = {
+  args: { ...DefaultCards.args },
+  parameters: tabletViewportParams,
+}
+
+

@@ -1,13 +1,14 @@
 <template>
   <v-card :style="fixedHeight ? 'height: 304px;' : ''"
+          class="pa-0"
           id="MetadataCitation" >
 
-    <v-card-title class="text-h6 metadata_title pa-4">
+    <v-card-title class="text-h6 metadata_title py-4">
       {{ METADATA_CITATION_TITLE }}
     </v-card-title>
 
     <v-card-text v-if="!showPlaceholder && citationText"
-                  class="readableText px-4 py-0"
+                  class="readableText"
                   v-html="markdownText" >
 
     </v-card-text>

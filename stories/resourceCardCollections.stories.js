@@ -13,7 +13,7 @@ const previewResources = [];
 
 for (let i = 0; i < metadataCards[2].resources.length; i++) {
   const res = metadataCards[2].resources[i];
-  res.sparkChartData = [10, 54, 23, 20, 3, 40, 320 , 323,234 ,10];
+  res.chartData = [10, 54, 23, 20, 3, 40, 320 , 323,234 ,10];
   previewResources.push(res)
 }
 

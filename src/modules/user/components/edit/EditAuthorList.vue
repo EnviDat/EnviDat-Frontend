@@ -228,6 +228,7 @@ export default {
     editAddAuthorObject() {
       if (!this.selectedAuthor) {
         return {
+          loading: this.loading,
           existingAuthors: this.noDataCreditAuthorsWrap,
           readOnlyFields: this.readOnlyFields,
           readOnlyExplanation: this.readOnlyExplanation,
@@ -235,6 +236,7 @@ export default {
       }
 
       return {
+        loading: this.loading,
         titleLabel: `Editing ${getAuthorName(this.selectedAuthor)}`,
         isEditingAuthor: !!this.selectedAuthor,
         existingAuthors: this.noDataCreditAuthorsWrap,

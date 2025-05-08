@@ -1,7 +1,7 @@
 <template>
   <v-card id="MetadataFunding" >
 
-    <v-card-title class="metadata_title text-h6">
+    <v-card-title class="metadata_title text-h6 py-4">
       {{ METADATA_FUNDING_TITLE }}
     </v-card-title>
 
@@ -20,7 +20,7 @@
         </v-col>
       </v-row>
 
-      <v-row >
+      <v-row>
         <v-col v-for="(item, index) in fundingItems"
                 :key="index"
                 cols="12"
@@ -54,12 +54,12 @@
 
     </v-card-text>
 
-    <v-card-text v-if="showPlaceholder && !funding"
+    <v-card-text v-if="showPlaceholder && !fundingField"
                   class="pa-4 pt-0" >
       <v-skeleton-loader type='paragraph' color='gray' />
     </v-card-text>
 
-    <v-card-text v-if="!showPlaceholder && !funding"
+    <v-card-text v-if="!showPlaceholder && !fundingField"
                   class="pa-4 pt-0 readableText"
                   :style="`color: ${emptyTextColor};`" >
       {{ emptyText }}
@@ -120,7 +120,7 @@ export default {
         }
 
         if (notAvailable === funding.length) {
-          return null;
+          return undefined;
         }
       }
 

@@ -80,10 +80,10 @@
             />
           </v-col>
 
-          <v-col v-if="sparkChartData" cols="12" class="py-1">
+          <v-col v-if="canDataViz" cols="12" class="py-1">
             <v-row no-gutters style="opacity: 1 !important" align="center">
               <v-col class="flex-grow-1">
-                <SparkChart :data="sparkChartData" />
+                <SparkChart :data="chartPreviewData" />
               </v-col>
 
               <v-col class="flex-grow-0">
@@ -315,6 +315,7 @@ import { getFileIcon } from '@/factories/imageFactory';
 import { trackDownload } from '@/utils/matomoTracking';
 
 import { formatDate } from '@/factories/dateFactory';
+import { chartPreviewData } from '@/modules/charts/middelware/chartServiceLayer';
 
 export default {
   name: 'ResourceCard',
@@ -382,11 +383,7 @@ export default {
       required: false,
       default: undefined,
     },
-    sparkChartData: {
-      type: Array,
-      required: false,
-      default: undefined,
-    },
+    canDataViz: Boolean,
   },
   data: () => ({
     mdiChartBar,
@@ -407,6 +404,7 @@ export default {
     EDIT_METADATA_DOI_LABEL,
     s3Store: useS3Store(),
     chartPreviewTooltip: 'Visualize the data',
+    chartPreviewData,
   }),
   mounted() {
     // set in the store the isS3Resources property, this property is needed to manage the card style in the sm view

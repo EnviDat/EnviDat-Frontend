@@ -322,9 +322,8 @@ export default {
           `${METADATA_NAMESPACE}/searchedMetadatasContent`
         ];
 
-        if (contentSize(searchContent) > 0) {
-          datasets = Object.values(searchContent);
-        }
+        // always overwrite the values also when nothing was found, so the "search not fount" can show up
+        datasets = Object.values(searchContent);
       }
 
       let filteredDatasets = [];

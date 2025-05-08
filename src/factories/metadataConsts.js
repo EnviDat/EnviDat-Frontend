@@ -95,6 +95,7 @@ export const METADATA_PUBLICATION_YEAR_PROPERTY = 'publicationYear';
 export const METADATA_DATALICENSE_PROPERTY = 'dataLicenseId';
 export const METADATA_DEPRECATED_RESOURCES_PROPERTY = 'deprecatedResources';
 export const METADATA_RESOURCES_SEQUENCE_PROPERTY = 'resourceSequence';
+export const METADATA_DATACREDIT_PROPERTY = 'dataCredit';
 
 export const ENVIDAT_SHOW_COOKIE_BANNER = 'ENVIDAT_SHOW_COOKIE_BANNER';
 
