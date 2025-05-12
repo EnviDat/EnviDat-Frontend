@@ -116,5 +116,5 @@ export const LOCATION_TYPE_GEOMCOLLECTION = 'GeometryCollection';
 export const LOCATION_TYPE_FEATCOLLECTION = 'FeatureCollection';
 export const LOCATION_TYPE_FEATURE = 'Feature';
 
-export const BLIND_REVIEW_ON = 'blind-review';
+export const BLIND_REVIEW_ON = 'double-blind';
 export const BLIND_REVIEW_OFF = '1.0';

@@ -1,12 +1,43 @@
+import { defineAsyncComponent } from 'vue';
 import { getUrlExtension } from '@/factories/strategyFactory';
-import { getDataWithMetaData } from '@/modules/charts/middelware/ServiceLayer.ts';
+import { getDataWithMetaData } from '@/modules/charts/middelware/DataVizServiceLayer.ts';
+import { MetaData } from '@/types/dataVizTypes';
+import { INJECT_GENERIC_COMPONENT } from '@/factories/eventBus';
 
+const ResourceDataVizAsync = defineAsyncComponent(() =>
+  // @ts-ignore
+  import('@/modules/charts/components/ResourceDataViz.vue'),
+)
+
+export const DataVizSupportedExtensions = ['csv'];
+
+export const chartPreviewLabels = [
+    '12am',
+    '3am',
+    '6am',
+    '9am',
+    '12pm',
+    '3pm',
+    '6pm',
+    '9pm',
+  ];
+
+export const chartPreviewData = [
+    200,
+    675,
+    410,
+    390,
+    310,
+    460,
+    250,
+    240,
+  ]
 
 export function convertCSVToJSON(csv, nullValue) {
   let lines = csv.split('\n');
 
   // TEST DEV BLOCK //
-  const displayDescription = lines.filter(line =>
+  const displayDescription = lines.filter((line) =>
     line.startsWith('# display_description = '),
   );
 
@@ -25,7 +56,7 @@ export function convertCSVToJSON(csv, nullValue) {
   }
 
   // TEST code for removing NEAD metadata header lines that start with '#'
-  lines = lines.filter(line => !line.startsWith('#'));
+  lines = lines.filter((line) => !line.startsWith('#'));
 
   // TEST END DEV BLOCK //
 
@@ -37,7 +68,7 @@ export function convertCSVToJSON(csv, nullValue) {
   // TEST comment this out
   // const keys = lines[0].split(',');
 
-  return lines.slice(1).map(line =>
+  return lines.slice(1).map((line) =>
     line.split(',').reduce((acc, cur, i) => {
       // TODO possible add logic that tests that keys.length equals length of comma separated line before adding JSON object
 
@@ -54,29 +85,42 @@ export function convertCSVToJSON(csv, nullValue) {
   );
 }
 
+type LoadResourcesCallback = (meta: MetaData, data: object[]) => void;
 
-async function loadPreviewDataForResource(resource: {
-  url: string;
-  sparkChartData: object[];
-}) {
+export async function loadResourcesData(
+  url: string,
+  successCallback: LoadResourcesCallback,
+  errorCallback: (e: Error) => void,
+) {
   try {
-    const { meta, data } = await getDataWithMetaData(resource.url);
-    resource.sparkChartData = data;
+    const { meta, data } = await getDataWithMetaData(url);
+    successCallback(meta, data);
   } catch (e) {
-    console.error(e);
+    errorCallback(e);
   }
 }
 
-export async function loadResourcesPreview(resources: string | any[]) {
-
+export function markResourceForDataViz(resources: any[]) {
   for (let i = 0; i < resources.length; i++) {
     const resource = resources[i];
-    const loadPreview = !resource.isProtected && getUrlExtension(resource.url) === 'csv';
+    const canDataViz =
+      !resource.isProtected &&
+      DataVizSupportedExtensions.includes(getUrlExtension(resource.url));
 
-    if (loadPreview) {
-      setTimeout(
-        () => loadPreviewDataForResource(resource),
-        500);
+    resource.canDataViz = canDataViz;
+    if (canDataViz) {
+      resource.openEvent = INJECT_GENERIC_COMPONENT;
+      resource.openProperty = {
+        asyncComponent: ResourceDataVizAsync,
+        props: {
+          resource,
+        },
+      };
     }
   }
+}
+
+export function getResourcesForDataViz(resources: any[]) : any[] {
+  return resources.filter((res) => !res.isProtected &&
+    DataVizSupportedExtensions.includes(getUrlExtension(res.url)));
 }

@@ -42,8 +42,6 @@ import { formatDate } from '@/factories/dateFactory';
 import { enhanceMetadataWithModeExtras } from '@/factories/modeFactory';
 import { DatasetDTO, ResourceDTO } from '@/types/modelTypes.js';
 
-// import { getResourcesDownloads } from '@/modules/matomo/store/matomoStore';
-
 /**
  * Create a pseudo random integer based on a given seed using the 'seedrandom' lib.
  *
@@ -378,6 +376,9 @@ export function createResource(
     position: resource.position || '',
     isProtected,
     previewUrl: resource.previewUrl || null,
+    chartLabels: null,
+    chartData: null,
+    chartDataLoading: false,
   };
 }
 
@@ -416,8 +417,9 @@ export function createResources(
         organizationID,
         signedInUserName,
         signedInUserOrganizationIds,
+        // numberOfDownload,
       );
-      // numberOfDownload,
+
       res.metadataContact = contactEmail;
 
       resources.push(res);

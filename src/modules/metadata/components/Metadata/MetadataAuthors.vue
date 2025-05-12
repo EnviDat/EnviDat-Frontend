@@ -1,6 +1,6 @@
 <template>
   <v-card id="MetadataAuthors" ref="MetadataAuthors">
-    <v-card-title >
+    <v-card-title class="py-4">
       <v-row no-gutters>
         <v-col class="text-h6 metadata_title grow" align-self="start">
           {{ METADATA_AUTHORS_TITLE }}
