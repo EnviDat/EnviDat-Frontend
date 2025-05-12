@@ -43,7 +43,7 @@
             //   : '',
           ]"
           @click="navigateItem(step.id, step.status)"
-          class="pl-4 pr-4 mb-md-2 mb-xl-6 navigationWorkflow__item"
+          class="pl-4 pr-4 mb-md-4 mb-xl-6 navigationWorkflow__item"
         >
           <template #prepend>
             <BaseIcon
@@ -162,13 +162,7 @@
       <span class="font-weight-bold d-block mb-2">Note:</span>
       <span class="text-sm text-gray-600">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-        commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-        velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-        occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-        mollit anim id est laborum. Excepteur sint occaecat cupidatat non
-        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        tempor incididunt ut labore et dolore magna aliqua. ...
       </span>
     </v-card-text>
   </v-card>

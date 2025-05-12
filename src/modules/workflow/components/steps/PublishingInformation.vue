@@ -1,5 +1,10 @@
 <template>
-  <v-card id="EditMetadataHeader" class="pa-0" :loading="loadingColor">
+  <v-card
+    id="EditMetadataHeader"
+    elevation="0"
+    class="pa-0"
+    :loading="loadingColor"
+  >
     <v-container fluid class="pa-4">
       <v-row>
         <v-col class="text-h5" cols="8">
@@ -31,49 +36,16 @@
       </v-row>
 
       <v-row>
-        <v-col>
-          <v-text-field
-            ref="metadataTitle"
-            :id="METADATA_TITLE_PROPERTY"
-            :label="labels.labelTitle"
-            :readonly="isReadOnly(METADATA_TITLE_PROPERTY)"
-            hide-details="auto"
-            persistent-hint
-            :hint="readOnlyHint(METADATA_TITLE_PROPERTY)"
-            :prepend-icon="mdiBookOpenVariantOutline"
-            :error-messages="validationErrors[METADATA_TITLE_PROPERTY]"
-            :placeholder="labels.placeholderTitle"
-            :model-value="metadataTitleField"
-            @keyup="blurOnEnterKey"
-            @input="
-              changePropertyForPreview(
-                METADATA_TITLE_PROPERTY,
-                $event.target.value,
-              )
-            "
-            @change="
-              notifyPropertyChange(METADATA_TITLE_PROPERTY, $event.target.value)
-            "
-          />
+        <v-col v-if="$vuetify.display.lgAndUp" cols="12">
+          <v-row>
+            <v-col cols="12">
+              <MetadataHeader v-bind="metadataPreviewEntry" />
+            </v-col>
+          </v-row>
         </v-col>
-      </v-row>
-
-      <v-row>
-        <v-col cols="12" lg="6">
+        <v-col cols="12">
           <v-row>
-            <v-col class="text-h6 pb-0">
-              {{ labels.contactPerson }}
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col class="text-body-1">
-              {{ labels.authorInstructions }}
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col cols="12" sm="6" class="pt-5">
+            <v-col cols="12" class="pt-5">
               <v-text-field
                 ref="contactEmail"
                 :id="METADATA_CONTACT_EMAIL"
@@ -98,7 +70,7 @@
               />
             </v-col>
 
-            <v-col cols="12" sm="6" class="pl-sm-4">
+            <v-col cols="12" class="pl-sm-4">
               <BaseUserPicker
                 :users="fullNameUsers"
                 :preSelected="preselectAuthorNames"
@@ -115,7 +87,7 @@
           </v-row>
 
           <v-row>
-            <v-col cols="12" sm="6">
+            <v-col cols="12">
               <v-text-field
                 ref="contactGivenName"
                 :id="METADATA_CONTACT_FIRSTNAME"
@@ -142,7 +114,7 @@
               />
             </v-col>
 
-            <v-col cols="12" sm="6" class="pl-sm-4">
+            <v-col cols="12" class="pl-sm-4">
               <v-text-field
                 ref="contactSurname"
                 :id="METADATA_CONTACT_LASTNAME"
@@ -167,61 +139,6 @@
               />
             </v-col>
           </v-row>
-        </v-col>
-
-        <v-col v-if="$vuetify.display.lgAndUp" cols="12" sm="6">
-          <v-row>
-            <v-col cols="12" class="text-subtitle-1">
-              {{ labels.previewText }}
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col cols="12">
-              <MetadataHeader v-bind="metadataPreviewEntry" />
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-row>
-
-      <v-row dense>
-        <v-col cols="12">
-          <ExpandableLayout statusText="Advanced Header info" isFlat>
-            <v-text-field
-              ref="metadataUrl"
-              :id="METADATA_URL_PROPERTY"
-              :label="labels.labelUrl"
-              :readonly="isReadOnly(METADATA_URL_PROPERTY)"
-              hide-details="auto"
-              persistent-hint
-              :hint="readOnlyHint(METADATA_URL_PROPERTY)"
-              :prepend-icon="mdiBookOpenVariantOutline"
-              :error-messages="validationErrors[METADATA_URL_PROPERTY]"
-              :placeholder="labels.placeholderUrl"
-              :model-value="metadataUrlField"
-              @keyup="blurOnEnterKey"
-              @click.stop
-              @input="
-                changePropertyForPreview(
-                  METADATA_URL_PROPERTY,
-                  $event.target.value,
-                )
-              "
-              @change="
-                notifyPropertyChange(METADATA_URL_PROPERTY, $event.target.value)
-              "
-            />
-          </ExpandableLayout>
-        </v-col>
-      </v-row>
-
-      <v-row v-if="$vuetify.display.mdAndDown">
-        <v-col cols="12" class="text-subtitle-1">
-          {{ labels.previewText }}
-        </v-col>
-
-        <v-col cols="12">
-          <MetadataHeader v-bind="metadataPreviewEntry" />
         </v-col>
       </v-row>
     </v-container>
@@ -256,7 +173,7 @@ import {
 import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
-import ExpandableLayout from '@/components/Layouts/ExpandableLayout.vue';
+// import ExpandableLayout from '@/components/Layouts/ExpandableLayout.vue';
 
 import { enhanceTitleImg } from '@/factories/metaDataFactory';
 
@@ -274,8 +191,8 @@ import {
   getAuthorName,
 } from '@/factories/authorFactory';
 import {
-  EDIT_METADATA_TITLE,
-  EDIT_METADATA_TITLE_LABEL,
+  //   EDIT_METADATA_TITLE,
+  //   EDIT_METADATA_TITLE_LABEL,
   EDIT_METADATA_URL_LABEL,
   EDIT_STEP_TITLE_MAIN_METADATA,
   METADATA_CONTACT_EMAIL,
@@ -748,16 +665,15 @@ export default {
       [METADATA_CONTACT_EMAIL]: null,
     },
     labels: {
-      title: EDIT_METADATA_TITLE,
+      title: 'Research Authors Details',
       contactPerson: 'Contact Person',
-      labelTitle: EDIT_METADATA_TITLE_LABEL,
+      labelTitle: 'Research Authors Details',
       labelUrl: EDIT_METADATA_URL_LABEL,
       labelContactEmail: 'Contact Email',
       labelContactGivenName: 'Contact Given Name',
       labelContactSurname: 'Contact Surname',
       instructions:
-        'The header is part of the main metadata information.' +
-        ` Together with the other information in the "${EDIT_STEP_TITLE_MAIN_METADATA}" step, it represents the core information for your research dataset.`,
+        'Enter an email address or pick a user as the contact person for this dataset.',
       instructions2:
         'Enter a title for your research dataset. Please make sure that title is meaningful and specific.',
       authorInstructions:
@@ -805,7 +721,7 @@ export default {
     MetadataHeader,
     BaseUserPicker,
     BaseStatusLabelView,
-    ExpandableLayout,
+    // ExpandableLayout,
   },
 };
 </script>

@@ -4,22 +4,26 @@
       class="fill-height"
       :class="{ 'overflow-x-scroll': display.smAndDown.value }"
     >
-      <v-col cols="12" md="3" class="workflow-navigation__wrapper">
+      <v-col cols="12" md="4" xl="3" class="workflow-navigation__wrapper">
         <NavigationWorkflow />
       </v-col>
 
       <v-col
         cols="12"
-        md="9"
+        md="8"
+        xl="9"
         class="workflow-content__wrapper"
         :class="{ loading: navigationStore.loading }"
       >
         <div>
-          Content {{ navigationStore.loading }}
+          {{ navigationStore.loading }}
           {{ navigationStore.currentStep }}
+          <component :is="currentAsyncComponent" />
         </div>
-        {{ navigationStore.steps }}
-        <v-btn @click="nextStep">Save</v-btn>
+        <!-- {{ navigationStore.steps }} -->
+        <div class="pa-4 d-flex align-center justify-end">
+          <v-btn @click="nextStep">Save</v-btn>
+        </div>
       </v-col>
     </v-row>
   </v-container>
@@ -27,6 +31,9 @@
 
 <script setup>
 import { useDisplay } from 'vuetify';
+import { storeToRefs } from 'pinia';
+
+import { defineAsyncComponent, computed } from 'vue';
 
 import NavigationWorkflow from '@/components/Navigation/NavigationWorkflow.vue';
 
@@ -36,6 +43,16 @@ import { useDatasetWorkflowStore } from '@/modules/user/store/datasetWorkflow';
 const display = useDisplay();
 
 const navigationStore = useDatasetWorkflowStore();
+const { currentStepObject } = storeToRefs(navigationStore);
+
+// dynamic import of steps component
+
+const currentAsyncComponent = computed(() => {
+  const key = currentStepObject.value.key;
+  return defineAsyncComponent(
+    () => import(`@/modules/workflow/components/steps/${key}.vue`),
+  );
+});
 
 const nextStep = () => {
   navigationStore.validateStepAction(navigationStore.currentStep);
