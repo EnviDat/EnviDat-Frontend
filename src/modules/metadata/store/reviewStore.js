@@ -37,7 +37,7 @@ export const useReviewStore = defineStore(METADATA_REVIEW_STORE, {
       try {
         const response = await axios.get(url);
 
-        this.metadata = response.data.result;
+        this.metadata = response.data;
       } catch (e) {
         if (e.response && e.response.status === 404) {
           this.metadataNotFound = 'Dataset not found (404)';
