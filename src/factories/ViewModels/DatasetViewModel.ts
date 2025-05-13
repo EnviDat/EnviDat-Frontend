@@ -4,13 +4,29 @@ import { DatasetServiceLayer } from '@/types/modelTypes';
 import { EditHeaderViewModel } from '@/factories/ViewModels/EditHeaderViewModel.ts';
 import { EditDescriptionViewModel } from '@/factories/ViewModels/EditDescriptionViewModel.ts';
 import { EditKeywordsViewModel } from '@/factories/ViewModels/EditKeywordsViewModel.ts';
+import { EditCustomFieldsViewModel } from '@/factories/ViewModels/EditCustomFieldsViewModel.ts';
+import { EditAuthorViewModel } from '@/factories/ViewModels/EditAuthorViewModel.ts';
+import { EditDataInfoViewModel } from '@/factories/ViewModels/EditDataInfoViewModel.ts';
+import { EditDataLicenseViewModel } from '@/factories/ViewModels/EditDataLicenseViewModel.ts';
+import { EditPublicationViewModel } from '@/factories/ViewModels/EditPublicationViewModel.ts';
+import { EditResourceViewModel } from '@/factories/ViewModels/EditResourceViewModel.ts';
+import { EditOrganizationViewModel } from '@/factories/ViewModels/EditOrganizationViewModel.ts';
+import { EditFundingViewModel } from '@/factories/ViewModels/EditFundingViewModel.ts';
 
 export class DatasetViewModel {
 
   viewModelClasses = [
     EditHeaderViewModel,
     EditDescriptionViewModel,
+    EditFundingViewModel,
     EditKeywordsViewModel,
+    EditAuthorViewModel,
+    EditCustomFieldsViewModel,
+    EditDataInfoViewModel,
+    EditDataLicenseViewModel,
+    EditPublicationViewModel,
+    EditResourceViewModel,
+    EditOrganizationViewModel,
   ];
 
   private viewModelInstances: Map<string, any> = new Map();

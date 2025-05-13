@@ -34,7 +34,7 @@ export abstract class AbstractEditViewModel {
     // enforceAbstractProps(this, ['mappingRules']);
 
     const dataset = datasetViewModel.dataset
-    if (dataset) {
+    if (dataset && this.mappingRules) {
       this.updateModel(dataset);
     }
     // console.log('Parent constructor:', this);

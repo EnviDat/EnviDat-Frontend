@@ -1,7 +1,7 @@
 import { reactive, watch } from 'vue';
 import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/factories/ViewModels/AbstractEditViewModel.ts';
-import { Author, DataCreditObject, DatasetDTO } from '@/types/modelTypes';
+import { Author, DataCreditObject } from '@/types/modelTypes';
 import { convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
 import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel.ts';
 import { isObjectValidCheckAllProps } from '@/factories/userEditingValidations';
@@ -87,28 +87,15 @@ export class EditAuthorViewModel extends AbstractEditViewModel{
   }
 
   validate(newProps?: any) {
-    let propObj = newProps;
-
-    if (newProps) {
-      propObj = {
-        firstName: newProps.firstName,
-        lastName: newProps.lastName,
-        email: newProps.email,
-        identifier: newProps.identifier,
-        affiliation: newProps.affiliation,
-      };
-    } else {
-      propObj = {
-        firstName: this.firstName,
-        lastName: this.lastName,
-        email: this.email,
-        identifier: this.identifier,
-        affiliation: this.affiliation,
-      };
-    }
 
     return isObjectValidCheckAllProps(
-      propObj,
+      {
+        firstName: newProps.firstName || this.firstName,
+        lastName: newProps.lastName || this.lastName,
+        email: newProps.email || this.email,
+        identifier: newProps.identifier || this.identifier,
+        affiliation: newProps.affiliation || this.affiliation,
+      },
       this.validationRules,
       this.validationErrors,
     );
