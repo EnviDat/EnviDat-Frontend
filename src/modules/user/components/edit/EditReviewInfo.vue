@@ -28,16 +28,19 @@
           />
         </v-col>
       </v-row>
+
       <v-row>
-        <v-col cols="12">
-          <div class="text-body-1" v-html="labels.purpose"></div>
+        <v-col >
+          {{ labels.purpose }}
         </v-col>
       </v-row>
-      <v-row>
+
+      <v-row v-if="!isBlindReviewValid">
         <v-col>
           <v-alert type="info" >{{ labels.instructions }}</v-alert>
         </v-col>
       </v-row>
+
       <v-row class="pt-2">
         <v-col class="ml-sm-0 mr-3 flex-grow-0 d-flex align-center">
           <!-- Icon (Aligned to Match v-text-field) -->
@@ -47,10 +50,10 @@
 
             <!-- BaseIconSwitch Component -->
             <BaseIconSwitch
-                :tooltipText="'Click here to enable blind review'"
+                :tooltipText="`${isBlindReviewActive ? 'Disable' : 'Enable'} blind review`"
                 :icon="mdiAccountCircle()"
                 :active="isBlindReviewActive"
-                :disabled="!isBlindReviewValid"
+                :disabled="loading || !isBlindReviewValid"
                 @clicked="catchBlindReviewClick()"
             />
 
@@ -280,13 +283,13 @@ export default {
       institutionUrl: '',
     },
     labels: {
-      cardTitle: 'Review Information',
+      cardTitle: 'Blind Review',
       reviewState: 'Dataset blind-review type',
       blindUrl: 'Url to view blind-review dataset',
       dataObjectIdentifier: EDIT_METADATA_DOI_LABEL,
       instructions: 'DOI needs to be reserved to enable this feature',
       buttonText: 'Preview',
-      purpose: 'This feature grants anonymized metadata and data file access to reviewers for a scientific journal before the dataset has been set to public in the CKAN instance',
+      purpose: 'Only activate the blind-review if you need to provide anonymized access to your research data files to reviewers for a scientific journal before the dataset has been published. Once enabled, copy the link below and provide it to the reviewers (the DOI is not be activate until the dataset is published).',
     },
     isBlindActive: null,
     allowedPublicationStates: [PUBLICATION_STATE_RESERVED, PUBLICATION_STATE_PENDING],

@@ -29,14 +29,48 @@
         </v-col>
       </v-row>
 
+      <v-row>
+        <v-col >
+          {{ labels.instructions }}
+        </v-col>
+      </v-row>
 
-      <v-row class="pt-2">
+      <v-row>
+        <v-col cols="6">
+          <v-text-field
+            :label="labels.publisher"
+            readonly
+            hint="Publisher can't be changed"
+            hide-details="auto"
+            persistent-hint
+            :error-messages="validationErrors.publisher"
+            :prepend-icon="mdiEarth"
+            @change="publisherField = $event"
+            @input="validateProperty('publisher', $event)"
+            :model-value="publisherField"
+          />
+
+        </v-col>
+
+        <v-col cols="6">
+          <BaseDatePickerYear
+            :year="publicationYearField"
+            year-label="PublicationYear"
+            :yearProperty="METADATA_PUBLICATION_YEAR_PROPERTY"
+            :readOnlyFields="readOnlyFields"
+            :readOnlyExplanation="readOnlyExplanation"
+            @yearChange="saveYear"
+          />
+        </v-col>
+      </v-row>
+
+      <v-row >
 
         <v-col >
           <v-text-field
             :label="labels.dataObjectIdentifier"
             readonly
-            hint="DOI can be changed at the Dataset Publication Status"
+            hint="DOI can be changed in the Publication Status of the dataset"
             hide-details="auto"
             persistent-hint
             :error-messages="validationErrors.doi"
@@ -79,34 +113,6 @@
 
       </v-row>
 
-      <v-row>
-        <v-col cols="6">
-          <v-text-field
-            :label="labels.publisher"
-            readonly
-            hint="Publisher can't be changed"
-            hide-details="auto"
-            persistent-hint
-            :error-messages="validationErrors.publisher"
-            :prepend-icon="mdiEarth"
-            @change="publisherField = $event"
-            @input="validateProperty('publisher', $event)"
-            :model-value="publisherField"
-          />
-
-        </v-col>
-
-        <v-col cols="6">
-          <BaseDatePickerYear
-            :year="publicationYearField"
-            year-label="PublicationYear"
-            :yearProperty="METADATA_PUBLICATION_YEAR_PROPERTY"
-            :readOnlyFields="readOnlyFields"
-            :readOnlyExplanation="readOnlyExplanation"
-            @yearChange="saveYear"
-          />
-        </v-col>
-      </v-row>
 
     </v-container>
   </v-card>
@@ -331,21 +337,13 @@ export default {
     mdiCalendarRange,
     mdiArrowDownDropCircleOutline,
     previewPublisher: null,
-    emptyEntry: {
-      institution: '',
-      grantNumber: '',
-      institutionUrl: '',
-    },
     labels: {
       cardTitle: 'Publication Information',
       visibilityState: 'Dataset visibility',
       dataObjectIdentifier: EDIT_METADATA_DOI_LABEL,
       publisher: 'Publisher',
       year: EDIT_METADATA_PUBLICATION_YEAR_LABEL,
-      fundingInformation: 'Funding Information',
-      institution: 'Institution',
-      grantNumber: 'Grant Number',
-      institutionUrl: 'Link',
+      instructions: 'Please set the correct publication year. The DOI is only activate once the dataset has been published. You can copy it to already put into a paper.',
     },
     propertyValidationSuffix: 'Validation',
     validationErrors: {
