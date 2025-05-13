@@ -1,6 +1,6 @@
 <template>
   <v-card :class="cardClass">
-    <v-card-title v-if="title">
+    <v-card-title v-if="title" class="py-4">
       <v-row no-gutters>
         <v-col class="text-h6 metadata_title grow" align-self="start">
           {{ title }}

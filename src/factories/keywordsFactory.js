@@ -95,23 +95,21 @@ export function getTagColor(categoryCards, tagName) {
 
 /**
  *
- * @param dataset
+ * @param keywords
  * @param categoryCards
  * @returns {[any]|null}
  */
-export function enhanceTags(dataset, categoryCards) {
-  if (!dataset || !categoryCards) {
+export function enhanceKeywords(keywords, categoryCards) {
+  if (!keywords || !categoryCards) {
     return null;
   }
 
-  if (dataset.tags && dataset.tags instanceof Array) {
-    for (let j = 0; j < dataset.tags.length; j++) {
-      const tag = dataset.tags[j];
-      tag.color = getTagColor(categoryCards, tag.name);
-    }
+  for (let j = 0; j < keywords.length; j++) {
+    const keyword = keywords[j];
+    keyword.color = getTagColor(categoryCards, keyword.name);
   }
 
-  return dataset;
+  return keywords;
 }
 
 /**

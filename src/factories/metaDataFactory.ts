@@ -32,7 +32,7 @@ import {
 
 import categoryCards, { cardImageBgs } from '@/store/categoryCards';
 import {
-  enhanceTags,
+  enhanceKeywords,
   getCategoryColor,
   guessTagCategory,
 } from '@/factories/keywordsFactory';
@@ -41,8 +41,6 @@ import { getMetadataVisibilityState } from '@/factories/publicationFactory';
 import { formatDate } from '@/factories/dateFactory';
 import { enhanceMetadataWithModeExtras } from '@/factories/modeFactory';
 import { DatasetDTO, ResourceDTO } from '@/types/modelTypes.js';
-
-// import { getResourcesDownloads } from '@/modules/matomo/store/matomoStore';
 
 /**
  * Create a pseudo random integer based on a given seed using the 'seedrandom' lib.
@@ -378,6 +376,9 @@ export function createResource(
     position: resource.position || '',
     isProtected,
     previewUrl: resource.previewUrl || null,
+    chartLabels: null,
+    chartData: null,
+    chartDataLoading: false,
   };
 }
 
@@ -416,8 +417,11 @@ export function createResources(
         organizationID,
         signedInUserName,
         signedInUserOrganizationIds,
+        // numberOfDownload,
       );
       // numberOfDownload,
+
+      // @ts-ignore
       res.metadataContact = contactEmail;
 
       resources.push(res);
@@ -662,7 +666,7 @@ export function enhanceMetadatas(datasets, mode = undefined) {
       dataset = enhanceMetadataWithModeExtras(mode, dataset);
     }
 
-    dataset = enhanceTags(dataset, categoryCards);
+    enhanceKeywords(dataset.tags, categoryCards);
 
     if (!dataset.location || typeof dataset.location === 'string') {
       dataset.location = createLocation(dataset);

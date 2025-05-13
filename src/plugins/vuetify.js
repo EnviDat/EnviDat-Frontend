@@ -15,6 +15,7 @@ import config from './vuetifyConfig';
 
 export default createVuetify({
   ...config,
+  ssr: true,
   components: {
     VTreeview,
   },

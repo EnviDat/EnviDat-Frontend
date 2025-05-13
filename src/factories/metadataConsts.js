@@ -82,8 +82,8 @@ export const DATE_PROPERTY_COLLECTED_TYPE_EXPLANATION =
 export const METADATA_TITLE_PROPERTY = 'metadataTitle';
 export const METADATA_URL_PROPERTY = 'metadataUrl';
 export const METADATA_CONTACT_EMAIL = 'contactEmail';
-export const METADATA_CONTACT_FIRSTNAME = 'contactGivenName';
-export const METADATA_CONTACT_LASTNAME = 'contactSurname';
+export const METADATA_CONTACT_FIRSTNAME = 'contactFirstName';
+export const METADATA_CONTACT_LASTNAME = 'contactLastName';
 export const METADATA_CONTACT_FULLNAME = 'contactName';
 
 export const METADATA_AUTHORS_PROPERTY = 'authors';
@@ -95,6 +95,7 @@ export const METADATA_PUBLICATION_YEAR_PROPERTY = 'publicationYear';
 export const METADATA_DATALICENSE_PROPERTY = 'dataLicenseId';
 export const METADATA_DEPRECATED_RESOURCES_PROPERTY = 'deprecatedResources';
 export const METADATA_RESOURCES_SEQUENCE_PROPERTY = 'resourceSequence';
+export const METADATA_DATACREDIT_PROPERTY = 'dataCredit';
 
 export const ENVIDAT_SHOW_COOKIE_BANNER = 'ENVIDAT_SHOW_COOKIE_BANNER';
 
@@ -115,5 +116,5 @@ export const LOCATION_TYPE_GEOMCOLLECTION = 'GeometryCollection';
 export const LOCATION_TYPE_FEATCOLLECTION = 'FeatureCollection';
 export const LOCATION_TYPE_FEATURE = 'Feature';
 
-export const BLIND_REVIEW_ON = 'blind-review';
+export const BLIND_REVIEW_ON = 'double-blind';
 export const BLIND_REVIEW_OFF = '1.0';

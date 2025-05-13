@@ -16,13 +16,22 @@ import storyTags from '@/modules/metadata/store/metadataTags';
 import categoryCards from '@/store/categoryCards';
 import { getPopularTags, getTagColor } from '@/factories/keywordsFactory';
 import metadataset from './js/metadata';
+import { convertJSON } from '@/factories/mappingFactory.js';
+import metadata from '~/stories/js/metadata.js';
+import { EditKeywordsViewModel } from '@/factories/ViewModels/EditKeywordsViewModel';
 
+
+const parsedDataset1 = convertJSON(metadata[2], false);
 const tagsFromDatasets = getPopularTags(metadataset, '', 1);
 
 for (let i = 0; i < tagsFromDatasets.length; i++) {
   const tag = tagsFromDatasets[i];
   tag.color = getTagColor(categoryCards, tag.name);
 }
+
+const editKeywordsViewModel = new EditKeywordsViewModel(parsedDataset1, tagsFromDatasets);
+const parsedDataset2 = convertJSON(metadata[0], false);
+const editKeywordsViewModel2 = new EditKeywordsViewModel(parsedDataset2, tagsFromDatasets);
 
 
 function getKeywordsSource(tagsSource) {
@@ -41,47 +50,28 @@ const storyTags5 = getKeywordsSource(storyTags).slice(0, 5);
 
 export default {
   title: '3 Datasets / 2 Edit / Keywords',
-  decorators: [],
-  parameters: {},
+  component: EditKeywords,
 };
 
-export const EditingKeywords = () => ({
-    components: { EditKeywords },
-    template: `
-    <v-col>
+export const Empty = {};
 
-      <v-row>
-        EditKeywords with Placeholder
-      </v-row>
+export const Filled = {
+  args: {
+    metadataTitle: 'A Mostly Glorious Title',
+    metadataDescription: 'My metadata description is pleasant to read.',
+    existingKeywords: tagsFromDatasets,
+    keywords: storyTags5,
+  },
+}
 
-      <v-row class="py-3" >
-        <v-col >
-          <EditKeywords v-bind="genericProps" />
-        </v-col>
-      </v-row>
+export const FromViewModel = {
+  args: {
+    ...editKeywordsViewModel,
+  },
+}
 
-      <v-row>
-        EditKeywords with prefilled keywords
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditKeywords v-bind="genericProps"
-                        :keywords="storyTags5"
-          />
-        </v-col>
-      </v-row>
-
-    </v-col>
-    `,
-    data: () => ({
-      genericProps: {
-        metadataCardTitle: 'A Mostly Glorious Title',
-        metadataCardSubtitle: 'My metadata description is pleasant to read.',
-        existingKeywords: tagsFromDatasets,
-        componentTitle: 'Metadata Keywords',
-        disclaimer: 'Please note that the screenshot below will serve as a template for the future component.',
-      },
-      storyTags5,
-    }),
-  });
+export const ManyKeywords = {
+  args: {
+    ...editKeywordsViewModel2,
+  },
+}

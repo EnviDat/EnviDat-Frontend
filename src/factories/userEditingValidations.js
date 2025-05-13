@@ -366,7 +366,7 @@ export function isFieldValid(
     return false;
   }
 
-  errorObject[errProperty] = '';
+  errorObject[errProperty] = null;
 
   return true;
 }

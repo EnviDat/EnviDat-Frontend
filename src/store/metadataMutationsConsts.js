@@ -101,6 +101,7 @@ export const ACTION_METADATA_UPDATE_EXISTING_KEYWORDS = () => {
 };
 
 export const METADATA_REVIEW_STORE = 'METADATA_REVIEW_STORE';
+export const EDIT_DATASET_STORE = 'EDIT_DATASET_STORE';
 
 export const ACTION_METADATA_REVIEW = () => {
   if (import.meta.env?.DEV && useTestdata) {

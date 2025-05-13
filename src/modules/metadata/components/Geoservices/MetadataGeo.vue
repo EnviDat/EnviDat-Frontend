@@ -1,6 +1,8 @@
 <template>
-  <v-card id="MetadataGeo">
-    <v-card-title>
+  <v-card id="MetadataGeo"
+          class="pa-0"
+  >
+    <v-card-title class="py-4">
       <v-row justify="end" align="center" no-gutters>
         <v-col class="text-h6 metadata_title grow" align-self="start">
           {{ METADATA_LOCATION_TITLE }}

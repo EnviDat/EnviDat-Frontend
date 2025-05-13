@@ -44,11 +44,25 @@ const Template = {
     },
     methods: {
       editComponentsChanged(updateObj) {
-        console.log('EditPublicationInfo EDITMETADATA_OBJECT_UPDATE event', updateObj);
+
         this.genericPropsFilled = {
           ...this.genericPropsFilled,
-          ...updateObj.data,
+          loading: true,
         };
+
+        console.log('EditPublicationInfo EDITMETADATA_OBJECT_UPDATE event', this.genericPropsFilled);
+
+        setTimeout(() => {
+
+          this.genericPropsFilled = {
+            ...this.genericPropsFilled,
+            ...updateObj.data,
+            loading: false,
+          };
+
+          console.log('EditPublicationInfo EDITMETADATA_OBJECT_UPDATE event', this.genericPropsFilled);
+
+        }, 1000)
       },
     },
     data: () => ({
@@ -65,13 +79,43 @@ export const Empty = {
   },
 };
 
-export const Filled = {
+export const EmptyDraft = {
+  ...Template,
+  args: {
+    doi: 'test1',
+    publicationState: PUBLICATION_STATE_DRAFT,
+  },
+};
+
+export const EmptyAndPending = {
+  ...Template,
+  args: {
+    publicationState: PUBLICATION_STATE_PENDING,
+  },
+};
+
+export const EmptyAndDisabled = {
+  ...Template,
+  args: {
+    publicationState: PUBLICATION_STATE_PUBLISHED,
+  },
+};
+
+export const FilledAndActive = {
   ...Template,
   args: {
     datasetId: '595',
     doi: 'test2',
     isBlindReview: true,
     publicationState: PUBLICATION_STATE_RESERVED,
+  },
+}
+
+export const FilledAndNotActive = {
+  ...Template,
+  args: {
+    ...FilledAndActive.args,
+    isBlindReview: false,
   },
 }
 
@@ -80,15 +124,10 @@ export const FilledWithLoading = {
   args: {
     datasetId: '595',
     doi: 'test2',
-    loading:true,
+    loading: true,
     isBlindReview: true,
     publicationState: PUBLICATION_STATE_RESERVED,
   },
 }
 
-export const EmptyAndDisabled = {
-  ...Template,
-  args: {
-    publicationState: PUBLICATION_STATE_PUBLISHED,
-  },
-};
+

@@ -70,7 +70,7 @@ import {
 } from '@/factories/metadataConsts';
 
 import { createAuthor } from '@/factories/authorFactory';
-import { enhanceTags } from '@/factories/keywordsFactory';
+import { enhanceKeywords } from '@/factories/keywordsFactory';
 import categoryCards from '@/store/categoryCards';
 import { createLocation } from '@/factories/geoFactory';
 import { getMetadataVisibilityState } from '@/factories/publicationFactory';
@@ -101,8 +101,8 @@ const JSONFrontendBackendRules = {
     [METADATA_TITLE_PROPERTY,'title'],
     [METADATA_URL_PROPERTY,'name'],
     [METADATA_CONTACT_EMAIL,'maintainer.email'],
-    [METADATA_CONTACT_FIRSTNAME,'maintainer.given_name'],
-    [METADATA_CONTACT_LASTNAME,'maintainer.name'],
+    ['contactFirstName','maintainer.given_name'],
+    ['contactLastName','maintainer.name'],
     ['license','license_title'],
   ],
   [EDITMETADATA_MAIN_DESCRIPTION]: [
@@ -110,6 +110,8 @@ const JSONFrontendBackendRules = {
   ],
   [EDITMETADATA_KEYWORDS]: [
     ['keywords','tags'],
+    ['metadataTitle','title'],
+    ['metadataDescription','notes'],
   ],
   [EDITMETADATA_AUTHOR]: [
     ['firstName','given_name'],
@@ -762,15 +764,9 @@ function populateEditingMain(commit, backendJSON) {
 
   stepKey = EDITMETADATA_KEYWORDS;
   const keywordsData = getFrontendJSONForStep(stepKey, backendJSON);
-  const enhanceDatasets = enhanceTags(keywordsData, categoryCards);
+  enhanceKeywords(keywordsData.keywords, categoryCards);
 
-  const enhancedKeywords = {
-    ...enhanceDatasets,
-    metadataCardTitle: headerData.metadataTitle,
-    metadataCardSubtitle: descriptionData.description,
-  }
-
-  commitEditingData(commit, stepKey, enhancedKeywords);
+  commitEditingData(commit, stepKey, keywordsData);
   dataObject.keywordsData = keywordsData;
 
   return dataObject;

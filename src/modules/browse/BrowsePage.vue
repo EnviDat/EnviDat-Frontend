@@ -60,7 +60,6 @@
 import { mapGetters, mapState } from 'vuex';
 
 import {
-  BROWSE_PAGENAME,
   BROWSE_PATH,
   METADATADETAIL_PAGENAME,
 } from '@/router/routeConsts';

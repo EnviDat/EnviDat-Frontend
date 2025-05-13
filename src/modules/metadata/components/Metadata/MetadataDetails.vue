@@ -1,6 +1,7 @@
 <template>
-  <v-card id="MetadataDetails">
-    <v-card-title class="text-h6 metadata_title">
+  <v-card id="MetadataDetails"
+  >
+    <v-card-title class="text-h6 metadata_title py-4">
       {{ METADATA_DETAILS_TITLE }}
     </v-card-title>
 

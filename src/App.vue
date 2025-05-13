@@ -792,18 +792,18 @@ export default {
 }
 
 .bg-dark {
-  background-color: #e0e0e0 !important;
-  // background:
-  //   linear-gradient(rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.3) 100%)
-  //     center top repeat,
-  //   url('https://envidat.ch/static/app_b_browsepage-Bk6vOmrC.webp') !important;
+  // background-color: #e0e0e0 !important;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.3) 100%)
+      center top repeat,
+    url('@/assets/app_b_browsepage.webp') !important;
 }
 .bg-dark-dashboard {
-  background-color: #9c9c9c !important;
-  // background:
-  //   linear-gradient(rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.3) 100%)
-  //     center top repeat,
-  //   url('https://envidat.ch/static/app_b_dashboardpage-D38vMBVL.webp') !important;
+  // background-color: #9c9c9c !important;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.3) 100%)
+      center top repeat,
+    url('@/assets/app_b_dashboardpage.webp') !important;
 }
 
 @keyframes bounce {

@@ -1,6 +1,5 @@
 import { convertJSON, convertToBackendJSONWithRules, convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
 import type { DatasetDTO } from '@/types/modelTypes';
-// import { HeaderViewModel } from '@/factories/ViewModels/HeaderViewModel.ts';
 
 /*
 function enforceAbstractProps(instance, requiredProps) {
@@ -12,13 +11,15 @@ function enforceAbstractProps(instance, requiredProps) {
 }
 */
 
-export class AbstractBaseViewModel {
+export abstract class AbstractViewModel {
+
   private privateMappingRules: string[][];
 
-  constructor(dataset: DatasetDTO = undefined, mappingRules: string[][] = undefined) {
+  constructor(dataset: DatasetDTO, mappingRules: string[][] = undefined) {
+
     this.mappingRules = mappingRules;
 
-    if (new.target === AbstractBaseViewModel) {
+    if (new.target === AbstractViewModel) {
       throw new Error('Cannot instantiate an abstract Class');
     }
 
@@ -29,8 +30,6 @@ export class AbstractBaseViewModel {
     }
     // console.log('Parent constructor:', this);
   }
-
-  savedSuccessful = false;
 
   loading = false;
 
@@ -61,5 +60,6 @@ export class AbstractBaseViewModel {
   get backendProperties() {
     return this.mappingRules.map((rule) => rule[1]);
   }
+
 
 }

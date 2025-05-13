@@ -12,7 +12,7 @@ import {
   enableGapsInLineCharts, enableLineDrawing,
 } from '@/modules/charts/middelware/propertyConst.ts';
 
-import type {ChartProps} from '@/types/env';
+import type {ChartProps} from '@/types/dataVizTypes';
 
 /**
  * First array entry is the "from" property, the second is the "to" property

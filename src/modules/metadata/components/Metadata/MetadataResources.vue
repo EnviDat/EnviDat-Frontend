@@ -1,6 +1,6 @@
 <template>
   <v-card id="MetadataResources" :class="{ ['pt-2']: this.isOnTop }">
-    <v-card-title class="pa-4 pb-2">
+    <v-card-title class="py-4">
       <v-row justify="end" no-gutters>
         <v-col class="text-h6 metadata_title flex-grow-1">
           {{ METADATA_RESOURCES_TITLE }}
@@ -19,9 +19,9 @@
       </v-row>
     </v-card-title>
 
-    <v-card-text>
+    <v-card-text v-if="dataLicenseTitle">
       <v-row no-gutters align="center">
-        <v-col v-if="dataLicenseTitle" cols="6" class="pr-md-10">
+        <v-col cols="6" class="pr-md-10">
           <BaseIconLabelView
             icon-tooltip="Data License"
             :icon="mdiShieldSearch"

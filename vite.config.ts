@@ -4,7 +4,7 @@ import path from 'path';
 import vue from '@vitejs/plugin-vue';
 import vuetify from 'vite-plugin-vuetify';
 
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig, loadEnv, UserConfig } from 'vite';
 import { configDefaults } from 'vitest/dist/config.js';
 import eslint from 'vite-plugin-eslint';
 
@@ -18,7 +18,18 @@ const version = process.env.npm_package_version;
 
 const useHttps = process.env.VITE_USE_HTTPS === 'true';
 
-export default ({ mode, config }) => {
+const isVike = process.argv.some((arg) => arg.includes('vike'));
+
+export default async ({ mode, config }): Promise<UserConfig> => {
+  if (isVike) {
+    console.log('Run with vite.config.vike!');
+    const vikeConfig = await import('./vite.config.vike.ts');
+    console.log(vikeConfig.default);
+    return vikeConfig.default({ mode, config });
+  }
+
+  console.log('Run with vite.config.ts!');
+
   const isProd = mode === 'production';
   const isDev = mode === 'development';
 
@@ -138,13 +149,6 @@ export default ({ mode, config }) => {
       rollupOptions: isProd
         ? {
             output: {
-              // [name].[hash] to avoid the build to change the hash every time?
-              // https://rollupjs.org/configuration-options/#output-entryfilenames
-              // we need to so that when creating a new build, only the files which have changed
-              // get a new hash to breaking caching of the browser
-              entryFileNames: 'assets/[name].[hash].js',
-              chunkFileNames: 'assets/[name].[hash].js',
-              assetFileNames: 'assets/[name].[hash].[ext]',
               manualChunks: (id) => {
                 if (id.includes('node_modules')) {
                   if (id.includes('vuetify')) {

@@ -41,6 +41,7 @@
           :nameInitials="nameInitials"
           :organizationRoles="organizationRoles"
           :isCollaborator="isCollaborator"
+          @organizationClick="catchOrganizationClick"
         />
 
         <FlipLayout
@@ -280,7 +281,7 @@ import {
   METADATADETAIL_PAGENAME,
   METADATAEDIT_PAGENAME,
   METADATA_CREATION_PATH,
-  METADATA_CREATION_PAGENAME,
+  METADATA_CREATION_PAGENAME, ORGANIZATIONS_PAGENAME,
 } from '@/router/routeConsts';
 
 import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
@@ -797,6 +798,14 @@ export default {
         },
         confirmText: 'Keep Dataset',
         cancelText: 'Delete Dataset',
+      });
+    },
+    catchOrganizationClick(organization) {
+      this.$router.push({
+        name: ORGANIZATIONS_PAGENAME,
+        params: {
+          organization,
+        },
       });
     },
   },
