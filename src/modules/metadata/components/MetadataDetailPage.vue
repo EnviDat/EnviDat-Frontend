@@ -1,5 +1,10 @@
 <template>
-  <v-container id="MetadataDetailPage" fluid class="pa-0" tag="article">
+  <v-container
+    id="MetadataDetailPage"
+    fluid
+    class="pa-0"
+    tag="article">
+
     <v-row no-gutters>
       <!-- prettier-ignore -->
       <v-col class="elevation-5 pa-0"
@@ -49,7 +54,6 @@
         >
           <v-col v-if="entry"
                  class="mb-2 px-0">
-            <!-- prettier-ignore -->
             <component :component="entry" :is="entry" v-bind="entry.props" />
           </v-col>
         </v-row>
@@ -241,8 +245,6 @@ export default {
     this.$nextTick(() => {
       this.fetchUserOrganisationData();
       this.fetchUserDatasets();
-
-      // this.headerHeight = this.getHeaderHeight();
     });
   },
   /**
@@ -491,20 +493,6 @@ export default {
     resize() {
       this.reRenderComponents();
     },
-    // getHeaderHeight() {
-    //   let height = -2;
-
-    //   if (
-    //     (this.$vuetify.display.smAndDown && this.appScrollPosition > 20) ||
-    //     this.$vuetify.display.mdAndUp
-    //   ) {
-    //     if (this.$refs?.header) {
-    //       height = this.$refs.header.$el.clientHeight;
-    //     }
-    //   }
-
-    //   return height;
-    // },
     /**
      * @description
      */
@@ -989,7 +977,6 @@ export default {
   },
   data: () => ({
     organizationsStore: null,
-    // headerHeight: 0,
     mdiClose,
     MetadataDescription: markRaw(MetadataDescription),
     MetadataResources: markRaw(MetadataResources),

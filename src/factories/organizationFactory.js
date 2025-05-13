@@ -45,6 +45,10 @@ export const getTopOraganizations = (orgas) => {
 
   const top = [];
 
+  if (!orgas) {
+    return top;
+  }
+
   for (const orga of orgas) {
     if (orga.groups?.length <= 0) {
       top.push(orga);
@@ -221,7 +225,12 @@ export const getOrganitzionTreeItem = (entries, id) => {
   return null;
 }
 
-function getTreeItem(organizationRelationMap, organizationDatasetMap, organization, index) {
+function getTreeItem(
+organizationRelationMap,
+  organizationDatasetMap,
+  organization,
+  index,
+  ) {
 
   const orgaName = organization.name;
   const orgaTitle = organization.title;
