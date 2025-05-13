@@ -12,7 +12,11 @@
 
 import EditDescription from '@/modules/user/components/EditDescription.vue';
 import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionViewModel';
-
+import {
+  mobileLargeViewportParams,
+  mobileViewportParams,
+  tabletViewportParams,
+} from './js/envidatViewports';
 
 const description = `# Why user stories?
 &nbsp;
@@ -51,4 +55,19 @@ export const Empty = {}
 
 export const Filled = {
   args: createDescriptionViewModel({ notes: description }),
+}
+
+export const FilledMobile = {
+  args: createDescriptionViewModel({ notes: description }, true),
+  parameters: mobileViewportParams,
+}
+
+export const FilledLargeMobile = {
+  args: createDescriptionViewModel({ notes: description }, true),
+  parameters: mobileLargeViewportParams,
+}
+
+export const FilledTablet = {
+  args: createDescriptionViewModel({ notes: description }, true),
+  parameters: tabletViewportParams,
 }

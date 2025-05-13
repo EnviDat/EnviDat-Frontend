@@ -19,7 +19,7 @@ import {
 
 import { getModeData } from '@/factories/modeFactory';
 import { EDNA_MODE, SWISSFL_MODE } from '@/store/metadataMutationsConsts';
-import { enhanceTags } from '@/factories/keywordsFactory';
+import { enhanceKeywords } from '@/factories/keywordsFactory';
 import categoryCards from '@/store/categoryCards';
 import { createLocation } from '@/factories/geoFactory';
 import { getMetadataVisibilityState } from '@/factories/publicationFactory';
@@ -41,7 +41,7 @@ for (let i = 0; i < metadataCards.length; i++) {
   let dataset = metadataCards[i];
   dataset = enhanceMetadataEntry(dataset);
 
-  dataset = enhanceTags(dataset, categoryCards);
+  enhanceKeywords(dataset.tags, categoryCards);
 
   dataset.location = createLocation(dataset);
 

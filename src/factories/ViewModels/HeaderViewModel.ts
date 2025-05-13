@@ -1,28 +1,22 @@
 import { reactive, watch } from 'vue';
-import { AbstractBaseViewModel } from '@/factories/ViewModels/AbstractBaseViewModel';
-
-import {
-  METADATA_CONTACT_EMAIL,
-  METADATA_CONTACT_FIRSTNAME,
-  METADATA_CONTACT_FULLNAME,
-  METADATA_CONTACT_LASTNAME,
-  METADATA_TITLE_PROPERTY,
-} from '@/factories/metadataConsts';
 
 import { getAuthorName } from '@/factories/authorFactory';
 import { formatDate } from '@/factories/dateFactory';
 import { getMetadataVisibilityState } from '@/factories/publicationFactory';
 import { AuthorsViewModel } from '@/factories/ViewModels/AuthorsViewModel';
 import { Author, DatasetDTO } from '@/types/modelTypes';
+import { AbstractViewModel } from '@/factories/ViewModels/AbstractViewModel';
 
 
-export class HeaderViewModel extends AbstractBaseViewModel{
+export class HeaderViewModel extends AbstractViewModel {
 
   declare metadataTitle: string;
 
   declare contactEmail: string;
-  declare contactGivenName: string;
-  declare contactSurname: string;
+  declare contactName: string;
+
+  declare contactFirstName: string;
+  declare contactLastName: string;
 
   declare doi: string;
 
@@ -50,15 +44,16 @@ export class HeaderViewModel extends AbstractBaseViewModel{
 
   declare maxTags: number;
 
-  constructor(dataset: DatasetDTO, smallScreen, categoryColor, titleImg) {
+
+  constructor(dataset: DatasetDTO, smallScreen: boolean, categoryColor: string, titleImg: string) {
     super(dataset, HeaderViewModel.mappingRules());
 
     this.created = formatDate(this.created);
     this.modified = formatDate(this.modified);
 
-    this[METADATA_CONTACT_FULLNAME] = getAuthorName({
-      firstName: this[METADATA_CONTACT_FIRSTNAME],
-      lastName: this[METADATA_CONTACT_LASTNAME],
+    this.contactName = getAuthorName({
+      firstName: this.contactFirstName,
+      lastName: this.contactLastName,
     });
 
     this.authors = AuthorsViewModel.getFormattedAuthors(dataset.author, dataset.metadata_modified);
@@ -72,10 +67,10 @@ export class HeaderViewModel extends AbstractBaseViewModel{
 
   static mappingRules () {
     return [
-      [METADATA_TITLE_PROPERTY,'title'],
-      [METADATA_CONTACT_EMAIL,'maintainer.email'],
-      [METADATA_CONTACT_FIRSTNAME,'maintainer.given_name'],
-      [METADATA_CONTACT_LASTNAME,'maintainer.name'],
+      ['metadataTitle','title'],
+      ['contactEmail','maintainer.email'],
+      ['contactFirstName','maintainer.given_name'],
+      ['contactLastName','maintainer.name'],
       ['doi','doi'],
       ['tags','tags'],
 //      ['rawAuthors','author'],
@@ -93,7 +88,7 @@ export class HeaderViewModel extends AbstractBaseViewModel{
   }
 }
 
-export const createHeaderViewModel = (dataset: DatasetDTO, smallScreen, categoryColor, titleImg, changeCallback = undefined) => {
+export const createHeaderViewModel = (dataset: DatasetDTO, smallScreen: boolean, categoryColor: string, titleImg: string, changeCallback = undefined) => {
   const headerVM = new HeaderViewModel(dataset, smallScreen, categoryColor, titleImg);
   const reactiveVM = reactive(headerVM);
 

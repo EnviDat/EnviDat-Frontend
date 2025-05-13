@@ -1,3 +1,4 @@
+import { AbstractEditViewModel } from '@/factories/ViewModels/AbstractEditViewModel.ts';
 
 export interface ResourceSizeDTO {
   size_value: string;
@@ -8,6 +9,15 @@ export interface RestrictedDTO {
   shared_secret: string,
   allowed_users: string,
   level: string;
+}
+
+export interface KeywordDTO {
+  id: string;
+  name: string;
+  display_name: string;
+  state: string;
+  vocabulary_id: string | null;
+  color: string;
 }
 
 export interface ResourceDTO {
@@ -72,7 +82,7 @@ export interface AuthorDTO {
 }
 
 export interface DatasetDTO {
-  author: string;
+  author: AuthorDTO[];
   author_email: string | null;
   creator_user_id: string;
   date: string;
@@ -103,14 +113,13 @@ export interface DatasetDTO {
   spatial_info: string;
   state: string;
   subtitle: string;
+  tags: KeywordDTO[];
   title: string;
   type: string;
   url: string | null;
   version: string;
   extras: ExtrasDTO[],
   resources: ResourceDTO[];
-
-  subscribeToViewModels(viewModelInstances: Map<string, any>): void;
 }
 
 export interface DataCreditObject {
@@ -165,4 +174,16 @@ export interface UserModel {
   about: string;
   sysAdmin: boolean;
   state: string;
+}
+
+
+export interface DatasetServiceLayer {
+
+  dataset: DatasetDTO;
+
+  patchDatasetChanges(
+    datasetId: string,
+    viewModel: AbstractEditViewModel,
+  ): Promise<any>;
+
 }

@@ -3,6 +3,7 @@ import { createHeaderViewModel } from '@/factories/ViewModels/HeaderViewModel';
 import { EDITMETADATA_MAIN_HEADER } from '@/factories/eventBus';
 import { convertJSON } from '@/factories/mappingFactory';
 import { EditDatasetServiceLayer } from '@/factories/ViewModels/EditDatasetServiceLayer';
+import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel';
 
 import {
   METADATA_CONTACT_EMAIL,
@@ -21,7 +22,10 @@ describe('viewModel Factory ', () => {
 
   const headerVM = createHeaderViewModel(backendJSON, false, 'black', 'url/to/an/img');
 
-  it(`${EDITMETADATA_MAIN_HEADER} backendJSON`, () => {
+  const serviceLayer = new EditDatasetServiceLayer(datasetBackend)
+  const datasetVM = new DatasetViewModel(serviceLayer);
+
+  it('HeaderViewModel backendJSON', () => {
 
     expect(headerVM).toBeDefined();
 
@@ -59,12 +63,9 @@ describe('viewModel Factory ', () => {
     headerVM2[METADATA_TITLE_PROPERTY] = 'Some new title for testing';
   });
 
-  it(`${EDITMETADATA_MAIN_HEADER} reactivity`, () => {
+  it('EditHeaderViewModel reactivity', () => {
 
-    const serviceLayer = new EditDatasetServiceLayer(datasetBackend)
-
-    const instances = serviceLayer.viewModels;
-
+    const instances = datasetVM.viewModels;
     const vm = instances.get('EditHeaderViewModel');
 
     expect(vm).toBeDefined();
@@ -73,7 +74,27 @@ describe('viewModel Factory ', () => {
     vm[METADATA_CONTACT_FIRSTNAME] = 'Dominik';
     vm[METADATA_CONTACT_LASTNAME] = 'Haas';
 
+    const valid = vm.validate();
+
+    expect(valid).toBeTruthy();
+
     // serviceLayer.datasetDTO.unsubscribeFromViewModels();
   });
+
+  it('EditKeywordsViewModel reactivity', () => {
+
+    const instances = datasetVM.viewModels;
+    const vm = instances.get('EditKeywordsViewModel');
+
+    expect(vm).toBeDefined();
+    expect(vm.keywords).toBeDefined();
+    expect(vm.metadataTitle).toBeDefined();
+    expect(vm.metadataDescription).toBeDefined();
+
+    expect(vm.validate()).toBeTruthy();
+
+    // serviceLayer.datasetDTO.unsubscribeFromViewModels();
+  });
+  
 
 });

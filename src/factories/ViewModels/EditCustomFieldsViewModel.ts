@@ -3,36 +3,42 @@ import { AbstractEditViewModel } from '@/factories/ViewModels/AbstractEditViewMo
 import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel.ts';
 import { isObjectValidCheckAllProps } from '@/factories/userEditingValidations';
 
-export class EditDescriptionViewModel extends AbstractEditViewModel{
+export class EditCustomFieldsViewModel extends AbstractEditViewModel{
 
-  declare description: string;
+  declare customFields: string;
 
   declare validationErrors: {
-    description: string,
+    customFields: string,
   }
 
   declare validationRules: object;
 
 
   constructor(datasetViewModel: DatasetViewModel) {
-    super(datasetViewModel, EditDescriptionViewModel.mappingRules());
+    super(datasetViewModel, EditCustomFieldsViewModel.mappingRules());
+
 
     this.validationErrors = {
-      description: null,
+      customFields: null,
     }
 
     this.validationRules =
       yup.object().shape({
-        description: yup
-          .string()
-          .required('Description is required')
-          .min(100, 'Write at least a description with 100 characters.'),
+        customFields: yup.array().of(
+          yup.object({
+            fieldName: yup
+              .string()
+              .required()
+              .min(3),
+            content: yup.string(),
+          }),
+        ),
       });
   }
 
   static mappingRules () {
     return [
-      ['description','notes'],
+      ['customFields', 'extras'],
     ];
   }
 
@@ -40,7 +46,7 @@ export class EditDescriptionViewModel extends AbstractEditViewModel{
 
     return isObjectValidCheckAllProps(
       {
-        description: newProps.description || this.description,
+        customFields: newProps.customFields || this.customFields,
       },
       this.validationRules,
       this.validationErrors,

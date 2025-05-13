@@ -19,10 +19,8 @@ import MetadataDetails from '@/modules/metadata/components/Metadata/MetadataDeta
 import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications.vue';
 import MetadataPublicationList from '@/modules/metadata/components/Metadata/MetadataPublicationList.vue';
 import MetadataFunding from '@/modules/metadata/components/Metadata/MetadataFunding.vue';
-import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuthors.vue';
 
 import {
-  createBody,
   createDetails,
   createPublications,
   createFunding,
@@ -30,11 +28,6 @@ import {
 } from '@/factories/metaDataFactory';
 
 import { createCitation } from '@/factories/citationFactory';
-
-import {
-  extractAuthorsMap,
-  getFullAuthorsFromDataset,
-} from '@/factories/authorFactory';
 
 // const iconFiles = getIcons();
 
@@ -145,26 +138,9 @@ const funding2 = [
   },
 ];
 
-const body1 = createBody(metadata[0]);
-const body2 = createBody(metadata[1]);
-
 const genericProps3 = {
   showPlaceholder: false,
   details: details1,
-};
-
-const authorsMap = extractAuthorsMap(metadata);
-const fullAuthors = getFullAuthorsFromDataset(authorsMap, metadata[1]);
-
-const genericProps5 = {
-  showPlaceholder: false,
-  authors: fullAuthors,
-  authorDetailsConfig: {
-    showAuthorInfos: true,
-    showDataCredits: true,
-    showDataCreditScore: false,
-    showDatasetCount: false,
-  },
 };
 
 
@@ -547,57 +523,6 @@ export const MetadataFundingViews = () => ({
     genericProps3: {
       funding: forestFunding,
       showPlaceholder: false,
-    },
-  }),
-});
-
-export const MetadataAuthorsViews = () => ({
-  components: { MetadataAuthors },
-  template: `
-  <v-row>
-
-    <v-col cols="12" md="6" class="py-3">
-      <metadata-authors  />
-    </v-col>
-
-    <v-col cols="12" md="6" class="py-3">
-      <metadata-authors v-bind="genericPropsPlaceholder"  />
-    </v-col>
-
-    <v-col cols="12" md="6" class="py-3">
-      <metadata-authors v-bind="genericProps6" />
-    </v-col>
-
-    <v-col cols="12" class="py-3">
-      <metadata-authors v-bind="genericProps5" />
-    </v-col>
-
-  </v-row>
-  `,
-  mounted() {
-    setTimeout(() => {
-      this.initialLoading = false;
-    }, 3000);
-  },
-  computed: {
-    genericProps6() {
-      if (this.initialLoading) {
-        return {
-          showPlaceholder: true,
-        };
-      }
-
-      return {
-        ...this.genericProps5,
-      };
-    },
-  },
-  data: () => ({
-    initialLoading: true,
-    genericProps5,
-    genericPropsPlaceholder: {
-      authors: [],
-      showPlaceholder: true,
     },
   }),
 });

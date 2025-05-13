@@ -3,36 +3,42 @@ import { AbstractEditViewModel } from '@/factories/ViewModels/AbstractEditViewMo
 import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel.ts';
 import { isObjectValidCheckAllProps } from '@/factories/userEditingValidations';
 
-export class EditDescriptionViewModel extends AbstractEditViewModel{
+export class EditOrganizationViewModel extends AbstractEditViewModel{
 
-  declare description: string;
+  declare organizationId: string;
 
   declare validationErrors: {
-    description: string,
+    organizationId: string,
   }
 
   declare validationRules: object;
 
 
   constructor(datasetViewModel: DatasetViewModel) {
-    super(datasetViewModel, EditDescriptionViewModel.mappingRules());
+    super(datasetViewModel, EditOrganizationViewModel.mappingRules());
+
 
     this.validationErrors = {
-      description: null,
+      organizationId: null,
     }
 
     this.validationRules =
       yup.object().shape({
-        description: yup
+        organizationId: yup
           .string()
-          .required('Description is required')
-          .min(100, 'Write at least a description with 100 characters.'),
+          .required('selected an Organization')
+          .test(
+            'empty-check',
+            'An organization must be selected.',
+            organizationId => organizationId !== '',
+            // Add validation - one of items in list
+          ),
       });
   }
 
   static mappingRules () {
     return [
-      ['description','notes'],
+      ['organizationId', 'organization.id'],
     ];
   }
 
@@ -40,7 +46,7 @@ export class EditDescriptionViewModel extends AbstractEditViewModel{
 
     return isObjectValidCheckAllProps(
       {
-        description: newProps.description || this.description,
+        organizationId: newProps.organizationId || this.organizationId,
       },
       this.validationRules,
       this.validationErrors,

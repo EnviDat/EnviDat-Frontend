@@ -32,7 +32,7 @@ import {
 
 import categoryCards, { cardImageBgs } from '@/store/categoryCards';
 import {
-  enhanceTags,
+  enhanceKeywords,
   getCategoryColor,
   guessTagCategory,
 } from '@/factories/keywordsFactory';
@@ -419,7 +419,9 @@ export function createResources(
         signedInUserOrganizationIds,
         // numberOfDownload,
       );
+      // numberOfDownload,
 
+      // @ts-ignore
       res.metadataContact = contactEmail;
 
       resources.push(res);
@@ -664,7 +666,7 @@ export function enhanceMetadatas(datasets, mode = undefined) {
       dataset = enhanceMetadataWithModeExtras(mode, dataset);
     }
 
-    dataset = enhanceTags(dataset, categoryCards);
+    enhanceKeywords(dataset.tags, categoryCards);
 
     if (!dataset.location || typeof dataset.location === 'string') {
       dataset.location = createLocation(dataset);

@@ -1,15 +1,15 @@
 ```mermaid
 classDiagram
-    AbstractBaseViewModel <|-- HeaderViewModel
-    AbstractBaseViewModel <|-- DescriptionViewModel
-    AbstractBaseViewModel : +bool loading
-    AbstractBaseViewModel : +string error
-    AbstractBaseViewModel: +get mappingRules ()
-    AbstractBaseViewModel: +set mappingRules(mappingRules)
-    AbstractBaseViewModel: +updateModel (datasetDTO)
-    AbstractBaseViewModel: +get backendJSON()
-    AbstractBaseViewModel: +get frontendProperties()
-    AbstractBaseViewModel: +get backendProperties()
+    AbstractEditViewModel <|-- HeaderViewModel
+    AbstractEditViewModel <|-- DescriptionViewModel
+    AbstractEditViewModel : +bool loading
+    AbstractEditViewModel : +string error
+    AbstractEditViewModel: +get mappingRules ()
+    AbstractEditViewModel: +set mappingRules(mappingRules)
+    AbstractEditViewModel: +updateModel (datasetDTO)
+    AbstractEditViewModel: +get backendJSON()
+    AbstractEditViewModel: +get frontendProperties()
+    AbstractEditViewModel: +get backendProperties()
 
     class HeaderViewModel{
       +Date created

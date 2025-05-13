@@ -3,36 +3,37 @@ import { AbstractEditViewModel } from '@/factories/ViewModels/AbstractEditViewMo
 import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel.ts';
 import { isObjectValidCheckAllProps } from '@/factories/userEditingValidations';
 
-export class EditDescriptionViewModel extends AbstractEditViewModel{
 
-  declare description: string;
+export class EditDataLicenseViewModel extends AbstractEditViewModel{
+
+  declare organizationId: string;
 
   declare validationErrors: {
-    description: string,
+    dataLicenseId: string,
   }
 
   declare validationRules: object;
 
 
   constructor(datasetViewModel: DatasetViewModel) {
-    super(datasetViewModel, EditDescriptionViewModel.mappingRules());
+    super(datasetViewModel, EditDataLicenseViewModel.mappingRules());
+
 
     this.validationErrors = {
-      description: null,
+      dataLicenseId: null,
     }
 
     this.validationRules =
       yup.object().shape({
-        description: yup
-          .string()
-          .required('Description is required')
-          .min(100, 'Write at least a description with 100 characters.'),
+        dataLicenseId: yup.string().required('Data licence is required'),
       });
   }
 
   static mappingRules () {
     return [
-      ['description','notes'],
+      ['dataLicenseId','license_id'],
+      ['dataLicenseTitle','license_title'],
+      ['dataLicenseUrl','license_url'],
     ];
   }
 
@@ -40,7 +41,7 @@ export class EditDescriptionViewModel extends AbstractEditViewModel{
 
     return isObjectValidCheckAllProps(
       {
-        description: newProps.description || this.description,
+        dataLicenseId: newProps.dataLicenseId || this.dataLicenseId,
       },
       this.validationRules,
       this.validationErrors,
