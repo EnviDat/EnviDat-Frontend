@@ -2,7 +2,6 @@
   <div>
     <h1>Dataset {{ data.name }}</h1>
 
-
     <div>
       {{ data.notes }}
     </div>
@@ -28,11 +27,11 @@
   import { DatasetDTO } from '@/types/modelTypes';
   import { createCitation } from '@/factories/citationFactory';
 
-  const data = useData<DatasetDTO>()
+  const data = useData<DatasetDTO>();
 
   const citation = createCitation(data);
 
-  console.log('jsonLd', data);
+//  console.log(`dataset ${data.name} has jsonld ${!!data.jsonLd}`);
 
 /*
   const baseCanonicalUrl = import.meta.env.PUBLIC_ENV__VIKE_BASE_CANONICAL_URL;

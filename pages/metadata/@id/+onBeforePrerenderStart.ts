@@ -12,7 +12,28 @@ export async function onBeforePrerenderStart() {
   }
 
   const datasets : DatasetDTO[] = await loadDataset();
+
+  let count = 0;
+
+  for (let i = 0; i < datasets.length; i++) {
+    const dataset = datasets[i];
+    count = dataset.jsonLd ? count + 1 : count;
+  }
+
+  console.log('before');
+  console.log(`jsonLd dataset count ${count}`);
+
   await enhanceJSONLd(datasets);
+
+  count = 0;
+  
+  for (let i = 0; i < datasets.length; i++) {
+    const dataset = datasets[i];
+    count = dataset.jsonLd ? count + 1 : count;
+  }
+
+  console.log('after');
+  console.log(`jsonLd dataset count ${count}`);
 
   // enhance the dataset as the pagecContext data
   const routes = datasets.map(dataset => ({

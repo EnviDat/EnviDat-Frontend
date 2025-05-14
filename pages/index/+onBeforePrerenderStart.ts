@@ -1,5 +1,5 @@
 import { DatasetDTO } from '@/types/modelTypes';
-import { enhanceJSONLd, getJSONLDMapForDatasets, isFechingDatasets, loadDataset } from '../datasets.ts';
+import { isFechingDatasets, loadDataset } from '../datasets.ts';
 
 // @ts-ignore
 export async function onBeforePrerenderStart() {
@@ -12,7 +12,8 @@ export async function onBeforePrerenderStart() {
   }
 
   const datasets : DatasetDTO[] = await loadDataset();
-  await enhanceJSONLd(datasets);
+
+  // don't enhance datasets with jsonLd, because here they would get overwritten
 
   const routes = [{
     url: '/',

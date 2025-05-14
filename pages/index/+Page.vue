@@ -14,15 +14,14 @@
 </template>
 
 <script setup lang="ts">
+  import { useData } from 'vike-vue/useData'
+  import { DatasetDTO } from '@/types/modelTypes';
 
-import { useData } from 'vike-vue/useData'
-import { DatasetDTO } from '@/types/modelTypes';
+  const data = useData<DatasetDTO>();
+  const datasets = Object.values(data);
 
-const data = useData<DatasetDTO>()
-const datasets = Object.values(data);
-
-const baseCanonicalUrl = import.meta.env.PUBLIC_ENV__VIKE_BASE_CANONICAL_URL;
-// const canonicalUrl = data && data.name ? `${baseCanonicalUrl}#/metadata/${data.name}` : baseCanonicalUrl;
+  const baseCanonicalUrl = import.meta.env.PUBLIC_ENV__VIKE_BASE_CANONICAL_URL;
+  // const canonicalUrl = data && data.name ? `${baseCanonicalUrl}#/metadata/${data.name}` : baseCanonicalUrl;
 
 </script>
 
