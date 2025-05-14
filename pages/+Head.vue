@@ -24,6 +24,12 @@
   <img :src v-bind="otherAttrs" />
 -->
 
+  <script v-if="data.jsonLd"
+          type='application/ld+json'
+          v-html="JSON.stringify(data.jsonLd)">
+
+  </script>
+
 </template>
 
 <script lang="ts" setup>
