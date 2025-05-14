@@ -4,6 +4,7 @@ import { DatasetServiceLayer } from '@/types/modelTypes';
 import { EditHeaderViewModel } from '@/factories/ViewModels/EditHeaderViewModel.ts';
 import { EditDescriptionViewModel } from '@/factories/ViewModels/EditDescriptionViewModel.ts';
 import { EditKeywordsViewModel } from '@/factories/ViewModels/EditKeywordsViewModel.ts';
+import { AbstractEditViewModel } from '@/factories/ViewModels/AbstractEditViewModel.ts';
 
 export class DatasetViewModel {
 
@@ -43,13 +44,12 @@ export class DatasetViewModel {
 
   async loadViewModels(datasetId: string): Promise<void> {
 
-    const newDataset = this.serviceLayer.loadDataset(datasetId);
-    this.dataset = newDataset;
+    await this.serviceLayer.loadDataset(datasetId);
 
     this.createViewModels();
   }
 
-  async patchViewModel(newModel) {
+  async patchViewModel(newModel: AbstractEditViewModel) {
 
     try {
       newModel.loading = true;
@@ -58,16 +58,15 @@ export class DatasetViewModel {
       this.updateViewModels();
 
       newModel.savedSuccessful = true;
-      newModel.loading = false;
 
     } catch (e) {
       newModel.savedSuccessful = false;
-      newModel.loading = false;
       newModel.error = e;
 
       console.error(e);
     }
 
+    newModel.loading = false;
   }
 
   get viewModels() {

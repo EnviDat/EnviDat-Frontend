@@ -33,7 +33,7 @@ export abstract class AbstractEditViewModel {
 
     // enforceAbstractProps(this, ['mappingRules']);
 
-    const dataset = datasetViewModel.dataset
+    const dataset = datasetViewModel.dataset;
     if (dataset) {
       this.updateModel(dataset);
     }
