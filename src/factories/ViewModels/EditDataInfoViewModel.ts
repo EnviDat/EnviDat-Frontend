@@ -60,7 +60,7 @@ export class EditDataInfoViewModel extends AbstractEditViewModel{
 
     return isObjectValidCheckAllProps(
       {
-        dates: newProps.dates || this.dates,
+        dates: newProps?.dates || this.dates,
       },
       this.validationRules,
       this.validationErrors,

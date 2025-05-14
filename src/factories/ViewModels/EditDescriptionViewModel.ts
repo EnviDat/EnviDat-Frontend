@@ -40,7 +40,7 @@ export class EditDescriptionViewModel extends AbstractEditViewModel{
 
     return isObjectValidCheckAllProps(
       {
-        description: newProps.description || this.description,
+        description: newProps?.description || this.description,
       },
       this.validationRules,
       this.validationErrors,

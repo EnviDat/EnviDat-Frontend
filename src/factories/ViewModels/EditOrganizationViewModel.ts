@@ -46,7 +46,7 @@ export class EditOrganizationViewModel extends AbstractEditViewModel{
 
     return isObjectValidCheckAllProps(
       {
-        organizationId: newProps.organizationId || this.organizationId,
+        organizationId: newProps?.organizationId || this.organizationId,
       },
       this.validationRules,
       this.validationErrors,
