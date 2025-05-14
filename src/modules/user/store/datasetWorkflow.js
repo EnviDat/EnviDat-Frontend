@@ -1,4 +1,8 @@
 import { defineStore } from 'pinia';
+import { defineAsyncComponent } from 'vue';
+
+import { workflowSteps } from '@/modules/workflow/resources/steps';
+
 import axios from 'axios';
 import { set } from 'date-fns';
 
@@ -7,115 +11,14 @@ export const useDatasetWorkflowStore = defineStore({
   state: () => ({
     loading: false,
     currentStep: 0,
-    steps: [
-      {
-        id: 0,
-        title: 'Base Information',
-        description: 'Title, Description and keywords',
-        isEditable: true,
-        completed: false,
-        hasError: false,
-        key: 'MetadataBaseInformation',
-        genericProps: {},
-        icon: 'baseinfo',
-        status: 'active',
-        guideLines: [
-          {
-            element: '.navigationWorkflow',
-            popover: { title: 'Title', description: 'Description' },
-          },
-          {
-            element: '.navigationWorkflow__actions',
-            popover: { title: 'Title', description: 'Description' },
-          },
-        ],
-      },
-      {
-        id: 1,
-        title: 'Authors',
-        description: 'Authors details',
-        isEditable: true,
-        completed: false,
-        hasError: false,
-        key: 'AuthorsInformation',
-        genericProps: {},
-        icon: 'authorsinfo',
-        status: 'disabled',
-        guideLines: [
-          {
-            element: '.navigationWorkflow__actions',
-            popover: { title: 'Title', description: 'Description' },
-          },
-          {
-            element: '.navigationWorkflow',
-            popover: { title: 'Title', description: 'Description' },
-          },
-        ],
-      },
-      {
-        id: 2,
-        title: 'Geo Information',
-        description: 'Data location and dates',
-        isEditable: true,
-        completed: false,
-        hasError: false,
-        key: 'GeoInformation',
-        genericProps: {},
-        icon: 'geoinfo',
-        status: 'disabled',
-      },
-      {
-        id: 3,
-        title: 'Additional Information',
-        description: 'Funding and License',
-        isEditable: true,
-        completed: false,
-        hasError: false,
-        key: 'additionalinformation',
-        genericProps: {},
-        icon: 'additionalinfo',
-        status: 'disabled',
-      },
-      {
-        id: 4,
-        title: 'Upload',
-        description: 'Upload your resources',
-        isEditable: true,
-        completed: false,
-        hasError: false,
-        key: 'uploadinformation',
-        genericProps: {},
-        icon: 'uploadinfo',
-        status: 'disabled',
-      },
-      {
-        id: 5,
-        title: 'Related Research',
-        description: 'Related and interconnected research',
-        isEditable: true,
-        completed: false,
-        hasError: false,
-        key: 'relatedinformation',
-        genericProps: {},
-        icon: 'relatedinfo',
-        status: 'disabled',
-      },
-      {
-        id: 6,
-        title: 'Publishing Information',
-        description: 'Dataset Contact and Information',
-        isEditable: true,
-        completed: false,
-        hasError: false,
-        key: 'publicationinformation',
-        genericProps: {},
-        icon: 'publicationinfo',
-        status: 'disabled',
-      },
-    ],
+    steps: workflowSteps,
   }),
   getters: {
     currentStepObject: (state) => state.steps[state.currentStep] ?? null,
+    currentAsyncComponent(state) {
+      const loader = state.steps[state.currentStep]?.loader;
+      return loader ? defineAsyncComponent(loader) : null;
+    },
   },
   actions: {
     navigateItemAction(id, status) {

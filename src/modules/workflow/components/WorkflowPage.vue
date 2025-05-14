@@ -18,7 +18,7 @@
         <div>
           {{ navigationStore.loading }}
           {{ navigationStore.currentStep }}
-          <component :is="currentAsyncComponent" />
+          <component :is="currentAsyncComponent" v-if="currentAsyncComponent" />
         </div>
         <!-- {{ navigationStore.steps }} -->
         <div class="pa-4 d-flex align-center justify-end">
@@ -43,16 +43,17 @@ import { useDatasetWorkflowStore } from '@/modules/user/store/datasetWorkflow';
 const display = useDisplay();
 
 const navigationStore = useDatasetWorkflowStore();
-const { currentStepObject } = storeToRefs(navigationStore);
+const { currentStepObject, currentAsyncComponent } =
+  storeToRefs(navigationStore);
 
 // dynamic import of steps component
 
-const currentAsyncComponent = computed(() => {
-  const key = currentStepObject.value.key;
-  return defineAsyncComponent(
-    () => import(`@/modules/workflow/components/steps/${key}.vue`),
-  );
-});
+// const currentAsyncComponent = computed(() => {
+//   const key = currentStepObject.value.key;
+//   return defineAsyncComponent(
+//     () => import(`@/modules/workflow/components/steps/${key}.vue`),
+//   );
+// });
 
 const nextStep = () => {
   navigationStore.validateStepAction(navigationStore.currentStep);
