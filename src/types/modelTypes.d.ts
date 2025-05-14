@@ -181,9 +181,11 @@ export interface DatasetServiceLayer {
 
   dataset: DatasetDTO;
 
+  loadDataset(id: string) : Promise<DatasetDTO>;
+
   patchDatasetChanges(
     datasetId: string,
     viewModel: AbstractEditViewModel,
-  ): Promise<any>;
+  ) : Promise<any>;
 
 }

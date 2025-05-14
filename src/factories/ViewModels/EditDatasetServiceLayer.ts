@@ -39,7 +39,7 @@ export class EditDatasetServiceLayer implements DatasetServiceLayer {
     this.loadingDataset = false;
   }
 
-  async loadDataset(id: string) {
+  async loadDataset(id: string) : Promise<DatasetDTO> {
 
     this.loadingDataset = true;
     const actionUrl = ACTION_LOAD_METADATA_CONTENT_BY_ID();
