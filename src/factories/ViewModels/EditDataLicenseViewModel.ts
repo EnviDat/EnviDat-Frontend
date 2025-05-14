@@ -41,7 +41,7 @@ export class EditDataLicenseViewModel extends AbstractEditViewModel{
 
     return isObjectValidCheckAllProps(
       {
-        dataLicenseId: newProps.dataLicenseId || this.dataLicenseId,
+        dataLicenseId: newProps?.dataLicenseId || this.dataLicenseId,
       },
       this.validationRules,
       this.validationErrors,

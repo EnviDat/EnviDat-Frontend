@@ -49,7 +49,7 @@ export class EditKeywordsViewModel extends AbstractEditViewModel{
 
     return isObjectValidCheckAllProps(
       {
-        keywords: newProps.keywords || this.keywords,
+        keywords: newProps?.keywords || this.keywords,
       },
       this.validationRules,
       this.validationErrors,

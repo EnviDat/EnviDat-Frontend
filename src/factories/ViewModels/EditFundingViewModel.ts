@@ -59,7 +59,7 @@ export class EditFundingViewModel extends AbstractEditViewModel{
 
     return isObjectValidCheckAllProps(
       {
-        funders: newProps.funders || this.funders,
+        funders: newProps?.funders || this.funders,
       },
       this.validationRules,
       this.validationErrors,

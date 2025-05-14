@@ -70,9 +70,11 @@ describe('viewModel Factory ', () => {
 
     expect(vm).toBeDefined();
 
-    vm[METADATA_CONTACT_EMAIL] = 'dominik.haas@wsl.ch';
-    vm[METADATA_CONTACT_FIRSTNAME] = 'Dominik';
-    vm[METADATA_CONTACT_LASTNAME] = 'Haas';
+    vm.metadataTitle = 'Some Title';
+    vm.metadataUrl = 'some-title';
+    vm.contactEmail = 'dominik.haas@wsl.ch';
+    vm.contactFirstName = 'Dominik';
+    vm.contactLastName = 'Haas';
 
     const valid = vm.validate();
 

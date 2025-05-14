@@ -46,7 +46,7 @@ export class EditCustomFieldsViewModel extends AbstractEditViewModel{
 
     return isObjectValidCheckAllProps(
       {
-        customFields: newProps.customFields || this.customFields,
+        customFields: newProps?.customFields || this.customFields,
       },
       this.validationRules,
       this.validationErrors,
