@@ -32,6 +32,7 @@
 
   const citation = createCitation(data);
 
+  console.log('jsonLd', data);
 
 /*
   const baseCanonicalUrl = import.meta.env.PUBLIC_ENV__VIKE_BASE_CANONICAL_URL;
