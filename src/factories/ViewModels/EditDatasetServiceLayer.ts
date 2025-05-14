@@ -31,27 +31,30 @@ if (!useTestdata) {
 
 export class EditDatasetServiceLayer implements DatasetServiceLayer {
 
-  dataset: DatasetDTO;
+  declare dataset: DatasetDTO;
+  declare loadingDataset: boolean;
 
   constructor(datasetBackend: unknown | undefined) {
     this.dataset = new Dataset(datasetBackend);
+    this.loadingDataset = false;
   }
 
   async loadDataset(id: string) {
 
+    this.loadingDataset = true;
     const actionUrl = ACTION_LOAD_METADATA_CONTENT_BY_ID();
     const url = urlRewrite(`${actionUrl}?id=${id}`, API_BASE, API_ROOT);
 
     try {
       const response = await axios.get(url);
       this.dataset = new Dataset(response.data);
-
-      return this.dataset;
     } catch (e: Error) {
       console.error(e);
       throw e;
     }
 
+    this.loadingDataset = false;
+    return this.dataset;
   }
 
   async patchDatasetChanges(
