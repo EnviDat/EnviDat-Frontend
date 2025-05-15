@@ -70,13 +70,26 @@ export const Loading = {
   },
 }
 
-const vm = datasetVM.getViewModel(EditAuthorViewModel.name);
+const authorListVM = datasetVM.getViewModel('EditAuthorListViewModel');
+const authorVMs = authorListVM.getEditAuthorViewModels(true);
+const authorVM = authorVMs[0];
+const authorVM2 = authorVMs[1];
+authorVM2.loading = true;
 
 export const Filled = {
   args: {
-    ...vm,
+    ...authorVM,
     onSave: (newData) => {
-      vm.save(newData);
+      authorVM.save(newData);
+    },
+  },
+}
+
+export const FilledAndLoading = {
+  args: {
+    ...authorVM2,
+    onSave: (newData) => {
+      authorVM2.save(newData);
     },
   },
 }

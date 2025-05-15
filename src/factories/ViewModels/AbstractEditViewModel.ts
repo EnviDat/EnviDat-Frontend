@@ -16,7 +16,7 @@ export abstract class AbstractEditViewModel {
 
   private privateMappingRules: string[][];
 
-  private datasetViewModel: DatasetViewModel;
+  protected datasetViewModel: DatasetViewModel;
 
   // eslint-disable-next-line no-unused-vars
   abstract validate(newProps?: any): boolean;
@@ -33,7 +33,7 @@ export abstract class AbstractEditViewModel {
 
     // enforceAbstractProps(this, ['mappingRules']);
 
-    const dataset = datasetViewModel.dataset
+    const dataset = this.datasetViewModel?.dataset;
     if (dataset && this.mappingRules) {
       this.updateModel(dataset);
     }
@@ -81,7 +81,9 @@ export abstract class AbstractEditViewModel {
       return false;
     }
 
-    await this.datasetViewModel.patchViewModel(this)
+    if (this.datasetViewModel) {
+      await this.datasetViewModel.patchViewModel(this)
+    }
 
     Object.assign(this, newData);
 

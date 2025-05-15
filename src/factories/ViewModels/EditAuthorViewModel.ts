@@ -32,8 +32,12 @@ export class EditAuthorViewModel extends AbstractEditViewModel{
 
   declare validationRules: object;
 
-  constructor(datasetViewModel: DatasetViewModel) {
-    super(datasetViewModel, EditAuthorViewModel.mappingRules());
+  constructor() {
+    // super(datasetViewModel, EditAuthorViewModel.mappingRules());
+
+    // intentionally not providing parameters, because authors have to be unpacked
+    // from the list of authors, done in the EditAuthorListViewModel
+    super()
 
     this.validationErrors = {
       firstName: null,
@@ -90,11 +94,11 @@ export class EditAuthorViewModel extends AbstractEditViewModel{
 
     return isObjectValidCheckAllProps(
       {
-        firstName: newProps.firstName || this.firstName,
-        lastName: newProps.lastName || this.lastName,
-        email: newProps.email || this.email,
-        identifier: newProps.identifier || this.identifier,
-        affiliation: newProps.affiliation || this.affiliation,
+        firstName: newProps?.firstName || this.firstName,
+        lastName: newProps?.lastName || this.lastName,
+        email: newProps?.email || this.email,
+        identifier: newProps?.identifier || this.identifier,
+        affiliation: newProps?.affiliation || this.affiliation,
       },
       this.validationRules,
       this.validationErrors,
@@ -115,8 +119,11 @@ export class EditAuthorViewModel extends AbstractEditViewModel{
 }
 
 
-export const createAuthorViewModel = (dataset: DatasetViewModel, changeCallback = undefined) => {
-  const authorVM = new EditAuthorViewModel(dataset);
+export const createAuthorViewModel = (author: Author, changeCallback = undefined) => {
+  const authorVM = new EditAuthorViewModel();
+
+  Object.assign(authorVM, author);
+
   const reactiveVM = reactive(authorVM);
 
   if (changeCallback) {

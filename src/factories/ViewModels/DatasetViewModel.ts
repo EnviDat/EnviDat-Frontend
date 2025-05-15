@@ -5,7 +5,7 @@ import { EditHeaderViewModel } from '@/factories/ViewModels/EditHeaderViewModel.
 import { EditDescriptionViewModel } from '@/factories/ViewModels/EditDescriptionViewModel.ts';
 import { EditKeywordsViewModel } from '@/factories/ViewModels/EditKeywordsViewModel.ts';
 import { EditCustomFieldsViewModel } from '@/factories/ViewModels/EditCustomFieldsViewModel.ts';
-import { EditAuthorViewModel } from '@/factories/ViewModels/EditAuthorViewModel.ts';
+import { EditAuthorListViewModel } from '@/factories/ViewModels/EditAuthorListViewModel.ts';
 import { EditDataInfoViewModel } from '@/factories/ViewModels/EditDataInfoViewModel.ts';
 import { EditDataLicenseViewModel } from '@/factories/ViewModels/EditDataLicenseViewModel.ts';
 import { EditPublicationViewModel } from '@/factories/ViewModels/EditPublicationViewModel.ts';
@@ -22,7 +22,7 @@ export class DatasetViewModel {
     EditDescriptionViewModel,
     EditFundingViewModel,
     EditKeywordsViewModel,
-    EditAuthorViewModel,
+    EditAuthorListViewModel,
     EditCustomFieldsViewModel,
     EditDataInfoViewModel,
     EditDataLicenseViewModel,
