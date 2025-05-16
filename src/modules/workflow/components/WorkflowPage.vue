@@ -16,11 +16,14 @@
         :class="{ loading: navigationStore.loading }"
       >
         <div>
-          {{ navigationStore.loading }}
-          {{ navigationStore.currentStep }}
-          <component :is="currentAsyncComponent" v-if="currentAsyncComponent" />
+          <!-- :view-model="empty" -->
+          <component
+            :is="currentAsyncComponent"
+            v-bind="empty"
+            @save="save"
+            v-if="currentAsyncComponent"
+          />
         </div>
-        <!-- {{ navigationStore.steps }} -->
         <div class="pa-4 d-flex align-center justify-end">
           <v-btn @click="nextStep">Save</v-btn>
         </div>
@@ -33,27 +36,32 @@
 import { useDisplay } from 'vuetify';
 import { storeToRefs } from 'pinia';
 
-import { defineAsyncComponent, computed } from 'vue';
+import { defineAsyncComponent, computed, reactive, watch } from 'vue';
 
 import NavigationWorkflow from '@/components/Navigation/NavigationWorkflow.vue';
 
 import { useDatasetWorkflowStore } from '@/modules/user/store/datasetWorkflow';
 
+import { ModelMetaDataHeader } from '@/modules/workflow/viewModel/ModelMetaDataHeader.ts';
+
+import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel.ts';
+import { EditDatasetServiceLayer } from '@/factories/ViewModels/EditDatasetServiceLayer.ts';
+
+const serviceLayer = new EditDatasetServiceLayer();
+const datasetModel = new DatasetViewModel(serviceLayer);
+const empty = reactive(datasetModel.getViewModel('ModelMetaDataHeader'));
+
+const save = (dataObject) => {
+  empty.save(dataObject);
+};
+
 // define useDisplay
 const display = useDisplay();
 
 const navigationStore = useDatasetWorkflowStore();
+
 const { currentStepObject, currentAsyncComponent } =
   storeToRefs(navigationStore);
-
-// dynamic import of steps component
-
-// const currentAsyncComponent = computed(() => {
-//   const key = currentStepObject.value.key;
-//   return defineAsyncComponent(
-//     () => import(`@/modules/workflow/components/steps/${key}.vue`),
-//   );
-// });
 
 const nextStep = () => {
   navigationStore.validateStepAction(navigationStore.currentStep);

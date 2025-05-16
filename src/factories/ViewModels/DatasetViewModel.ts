@@ -13,10 +13,9 @@ import { EditResourceViewModel } from '@/factories/ViewModels/EditResourceViewMo
 import { EditOrganizationViewModel } from '@/factories/ViewModels/EditOrganizationViewModel.ts';
 import { EditFundingViewModel } from '@/factories/ViewModels/EditFundingViewModel.ts';
 import { AbstractEditViewModel } from '@/factories/ViewModels/AbstractEditViewModel.ts';
-
+import { ModelMetaDataHeader } from '@/modules/workflow/viewModel/ModelMetaDataHeader.ts';
 
 export class DatasetViewModel {
-
   viewModelClasses = [
     EditHeaderViewModel,
     EditDescriptionViewModel,
@@ -29,25 +28,24 @@ export class DatasetViewModel {
     EditPublicationViewModel,
     EditResourceViewModel,
     EditOrganizationViewModel,
+    ModelMetaDataHeader,
   ];
 
   private viewModelInstances: Map<string, any> = new Map();
 
-  declare serviceLayer : DatasetServiceLayer;
+  declare serviceLayer: DatasetServiceLayer;
 
   constructor(serviceLayer: DatasetServiceLayer) {
-
     this.serviceLayer = serviceLayer;
 
     this.createViewModels();
   }
 
   private clearViewModels(): void {
-   this.viewModelInstances = new Map<string, any>();
+    this.viewModelInstances = new Map<string, any>();
   }
 
   private createViewModels() {
-
     this.clearViewModels();
 
     for (let i = 0; i < this.viewModelClasses.length; i++) {
@@ -60,14 +58,12 @@ export class DatasetViewModel {
   }
 
   async loadViewModels(datasetId: string): Promise<void> {
-
     await this.serviceLayer.loadDataset(datasetId);
 
     this.createViewModels();
   }
 
   async patchViewModel(newModel: AbstractEditViewModel) {
-
     try {
       newModel.loading = true;
 
@@ -75,7 +71,6 @@ export class DatasetViewModel {
       this.updateViewModels();
 
       newModel.savedSuccessful = true;
-
     } catch (e) {
       newModel.savedSuccessful = false;
       newModel.error = e;
@@ -95,11 +90,12 @@ export class DatasetViewModel {
   }
 
   updateViewModels() {
-    this.viewModelInstances.forEach((model) => model.updateModel(this.serviceLayer.dataset))
+    this.viewModelInstances.forEach((model) =>
+      model.updateModel(this.serviceLayer.dataset),
+    );
   }
 
   get dataset(): DatasetDTO | undefined {
     return this.serviceLayer?.dataset;
   }
-
 }

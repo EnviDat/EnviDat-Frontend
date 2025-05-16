@@ -12,6 +12,7 @@ export const useDatasetWorkflowStore = defineStore({
     loading: false,
     currentStep: 0,
     steps: workflowSteps,
+    datasetVM: null,
   }),
   getters: {
     currentStepObject: (state) => state.steps[state.currentStep] ?? null,
