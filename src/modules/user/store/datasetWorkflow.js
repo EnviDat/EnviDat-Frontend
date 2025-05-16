@@ -3,6 +3,9 @@ import { defineAsyncComponent } from 'vue';
 
 import { workflowSteps } from '@/modules/workflow/resources/steps';
 
+import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel';
+import { EditDatasetServiceLayer } from '@/factories/ViewModels/EditDatasetServiceLayer';
+
 import axios from 'axios';
 import { set } from 'date-fns';
 
@@ -12,13 +15,34 @@ export const useDatasetWorkflowStore = defineStore({
     loading: false,
     currentStep: 0,
     steps: workflowSteps,
-    datasetVM: null,
+    viewModelCache: new Map(),
+    datasetServiceLayer: new EditDatasetServiceLayer(),
   }),
   getters: {
     currentStepObject: (state) => state.steps[state.currentStep] ?? null,
     currentAsyncComponent(state) {
       const loader = state.steps[state.currentStep]?.loader;
       return loader ? defineAsyncComponent(loader) : null;
+    },
+    currentViewModel(state) {
+      const step = state.steps[state.currentStep];
+      if (!step || !step.viewModelLoader) {
+        return null;
+      }
+
+      if (state.viewModelCache.has(step.id)) {
+        return Promise.resolve(state.viewModelCache.get(step.id));
+      }
+
+      // We already have the class from steps.ts, thats why we don't need to do get getViewModel('ModelName'));
+
+      return step.viewModelLoader().then((VMClass) => {
+        const vmInstance = new VMClass(
+          new DatasetViewModel(state.datasetServiceLayer),
+        );
+        state.viewModelCache.set(step.id, vmInstance);
+        return vmInstance;
+      });
     },
   },
   actions: {
