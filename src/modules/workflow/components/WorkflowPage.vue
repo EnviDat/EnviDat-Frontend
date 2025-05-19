@@ -46,6 +46,8 @@ const display = useDisplay();
 
 const navigationStore = useDatasetWorkflowStore();
 
+const dataModel = ref(null);
+
 const vm = ref(null);
 
 // load the current view model
@@ -58,14 +60,14 @@ watch(
 );
 
 function save(data) {
-  vm.value?.save(data);
+  vm.value?.validate(data);
 }
 
 const { currentStepObject, currentAsyncComponent } =
   storeToRefs(navigationStore);
 
 const nextStep = () => {
-  navigationStore.validateStepAction(navigationStore.currentStep);
+  navigationStore.validateStepAction(navigationStore.currentStep, dataModel);
 };
 </script>
 

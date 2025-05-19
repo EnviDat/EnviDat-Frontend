@@ -52,7 +52,7 @@
             @change="notifyPropertyChange($event.target.value)"
           />
         </v-col>
-        <!-- <v-col cols="6">
+        <v-col cols="6">
           <v-row>
             <v-col class="text-body-1">
               <div>{{ labels.cardInstructions1 }}</div>
@@ -73,14 +73,14 @@
             :clear-on-select="true"
             multiple
             :search="search"
-            :error-messages="viewModel.validationErrors.keywords"
+            :error-messages="validationErrors.keywords"
             @update:search="
               search = $event;
               isKeywordValid(search);
             "
             @keyup="blurOnEnterKey"
             @input="isEnoughKeywords()"
-            @change="notifyChange($event)"
+            @change="notifyKeywordsChange"
             @blur="saveChange()"
             @keydown="catchKeywordEntered($event)"
             :rules="rulesKeywords"
@@ -108,23 +108,24 @@
               </v-list-item>
             </template>
           </v-autocomplete>
-        </v-col> -->
+        </v-col>
       </v-row>
-      <!--
+
       <v-row>
         <v-col>
           <GenericTextareaPreviewLayout
             v-bind="genericTextAreaObject"
-            :validationError="validationErrors[editingProperty]"
-            :readonly="isReadOnly(editingProperty)"
-            :hint="readOnlyHint(editingProperty)"
-            @inputedText="catchInputedText($event)"
-            @changedText="catchChangedText($event)"
+            :textarea-content="metadataDescriptionField"
+            :validationError="validationErrors.metadataDescription"
+            :readonly="isReadOnly('metadataDescription')"
+            :hint="readOnlyHint('metadataDescription')"
+            @inputedText="onDescriptionInput"
+            @changedText="onDescriptionChange"
           >
             <MetadataDescription v-bind="descriptionObject" />
           </GenericTextareaPreviewLayout>
         </v-col>
-      </v-row> -->
+      </v-row>
     </v-container>
   </v-card>
 </template>
@@ -187,6 +188,8 @@ export default {
   name: 'EditMetadataHeader',
   props: {
     metadataTitle: String,
+    metadataDescription: String,
+    // keywords: Array,
     validationErrors: {
       type: Object,
       default: () => {},
@@ -225,16 +228,30 @@ export default {
     keywordsListWordMax() {
       return this.defaultUserEditMetadataConfig.keywordsListWordMax;
     },
-    keywordsField: {
-      get() {
-        return this.previewKeywords.length > 0
-          ? this.previewKeywords
-          : this.keywords;
-      },
-    },
+    // keywordsField: {
+    //   get() {
+    //     return this.previewKeywords.length > 0
+    //       ? this.previewKeywords
+    //       : this.keywords;
+    //   },
+    // },
     metadataTitleField() {
       return this.metadataTitle;
     },
+    metadataDescriptionField() {
+      return this.metadataDescription;
+    },
+    keywordsField: {
+      get() {
+        return this.previewKeywords.length
+          ? this.previewKeywords
+          : this.keywords;
+      },
+      set(v) {
+        this.notifyKeywordsChange(v);
+      },
+    },
+
     autocompleteHint() {
       if (!this.keywordValidConcise) {
         const wordMaxHint = `Each keyword tag may not exceed ${this.keywordsListWordMax} words.`;
@@ -283,12 +300,22 @@ export default {
     // },
   },
   methods: {
+    notifyKeywordsChange(val) {
+      this.previewKeywords = this.processValues(val);
+      this.$emit('save', { keywords: this.previewKeywords });
+    },
     notifyPropertyChange(value) {
       const newHeaderInfo = {
         metadataTitle: value,
       };
 
       this.$emit('save', newHeaderInfo);
+    },
+    onDescriptionInput(val) {
+      /* live preview se ti serve */
+    },
+    onDescriptionChange(val) {
+      this.$emit('save', { metadataDescription: val }); // salva nel VM
     },
     blurOnEnterKey(keyboardEvent) {
       if (keyboardEvent.key === 'Enter') {
@@ -522,7 +549,7 @@ export default {
     MetadataHeader,
     // BaseUserPicker,
     BaseStatusLabelView,
-    // GenericTextareaPreviewLayout,
+    GenericTextareaPreviewLayout,
     // ExpandableLayout,
   },
 };

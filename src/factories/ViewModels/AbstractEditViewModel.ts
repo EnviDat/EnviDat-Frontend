@@ -1,4 +1,8 @@
-import { convertJSON, convertToBackendJSONWithRules, convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
+import {
+  convertJSON,
+  convertToBackendJSONWithRules,
+  convertToFrontendJSONWithRules,
+} from '@/factories/mappingFactory';
 import type { DatasetDTO } from '@/types/modelTypes';
 import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel.ts';
 
@@ -13,7 +17,6 @@ function enforceAbstractProps(instance, requiredProps) {
 */
 
 export abstract class AbstractEditViewModel {
-
   private privateMappingRules: string[][];
 
   protected datasetViewModel: DatasetViewModel;
@@ -21,9 +24,10 @@ export abstract class AbstractEditViewModel {
   // eslint-disable-next-line no-unused-vars
   abstract validate(newProps?: any): boolean;
 
-
-  constructor(datasetViewModel: DatasetViewModel, mappingRules: string[][] = undefined) {
-
+  constructor(
+    datasetViewModel: DatasetViewModel,
+    mappingRules: string[][] = undefined,
+  ) {
     this.mappingRules = mappingRules;
     this.datasetViewModel = datasetViewModel;
 
@@ -54,13 +58,19 @@ export abstract class AbstractEditViewModel {
     this.privateMappingRules = mappingRules;
   }
 
-  updateModel (dataset: DatasetDTO) {
-    const frontendJson = convertToFrontendJSONWithRules(this.mappingRules, dataset);
+  updateModel(dataset: DatasetDTO) {
+    const frontendJson = convertToFrontendJSONWithRules(
+      this.mappingRules,
+      dataset,
+    );
     Object.assign(this, frontendJson);
   }
 
   get backendJSON() {
-    const backendFields = convertToBackendJSONWithRules(this.mappingRules, this);
+    const backendFields = convertToBackendJSONWithRules(
+      this.mappingRules,
+      this,
+    );
     return convertJSON(backendFields, true);
   }
 
@@ -72,23 +82,30 @@ export abstract class AbstractEditViewModel {
     return this.mappingRules.map((rule) => rule[1]);
   }
 
+  async validation(newData: any): Promise<boolean> {
+    const isValid = this.validate(newData);
+    if (!isValid) {
+      //      console.log('EditHeaderViewModel NOT saved because validation failed!', this);
+      return false;
+    }
+    return true;
+  }
 
   async save(newData: any): Promise<boolean> {
     const isValid = this.validate(newData);
 
     if (!isValid) {
-//      console.log('EditHeaderViewModel NOT saved because validation failed!', this);
+      //      console.log('EditHeaderViewModel NOT saved because validation failed!', this);
       return false;
     }
 
     if (this.datasetViewModel) {
-      await this.datasetViewModel.patchViewModel(this)
+      await this.datasetViewModel.patchViewModel(this);
     }
 
     Object.assign(this, newData);
 
-//    console.log('EditHeaderViewModel saved', this);
+    //    console.log('EditHeaderViewModel saved', this);
     return true;
   }
-
 }

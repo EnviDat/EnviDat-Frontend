@@ -60,15 +60,32 @@ export const useDatasetWorkflowStore = defineStore({
         this.currentStep = next.id;
       }
     },
-    validateStepAction(step) {
+    async validateStepAction(stepId, newData) {
       this.loading = true;
-      setTimeout(() => {
-        console.log('validated');
-        this.steps[step].completed = true;
-        this.steps[step].status = 'completed';
-        this.setCurrentStepAction();
+
+      /* prendi l’istanza del VM corrente */
+      const vm = await this.currentViewModel;
+      if (!vm) {
+        console.warn('No view‑model for this step');
         this.loading = false;
-      }, 2000);
+        return;
+      }
+
+      const isValid = vm.validate(newData);
+
+      if (isValid) {
+        await vm.save(newData);
+
+        this.steps[stepId].completed = true;
+        this.steps[stepId].hasError = false;
+        this.steps[stepId].status = 'completed';
+        this.setCurrentStepAction();
+      } else {
+        this.steps[stepId].hasError = true;
+        this.steps[stepId].status = 'error';
+      }
+
+      this.loading = false;
     },
 
     // async fetchOrganizations(url, params = {}) {
