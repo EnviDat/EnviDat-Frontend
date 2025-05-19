@@ -337,6 +337,7 @@ export const researchUnitDatasetChartOptions = {
     },
     legend: {
       position: 'right',
+      reverse: 'true',
     },
     datalabels: {
       color: '#d9f3f3',
