@@ -9,7 +9,7 @@ export interface WorkflowStep {
   hasError: boolean;
   key: string;
   loader?: () => Promise<unknown>;
-  viewModelLoader?: () => Promise<unknown>;
+  viewModelKey: string;
   genericProps: Record<string, unknown>;
   icon: string;
   status: StepStatus;
@@ -30,10 +30,7 @@ export const workflowSteps: WorkflowStep[] = [
     key: 'MetadataBaseInformation',
     loader: () =>
       import('@/modules/workflow/components/steps/MetadataBaseInformation.vue'),
-    viewModelLoader: () =>
-      import('@/modules/workflow/viewModel/ModelMetaDataHeader').then(
-        (m) => m.ModelMetaDataHeader,
-      ),
+    viewModelKey: 'ModelMetaDataHeader',
     genericProps: {},
     icon: 'baseinfo',
     status: 'active',
@@ -58,10 +55,7 @@ export const workflowSteps: WorkflowStep[] = [
     key: 'AuthorsInformation',
     loader: () =>
       import('@/modules/workflow/components/steps/AuthorsInformation.vue'),
-    viewModelLoader: () =>
-      import('@/modules/workflow/viewModel/ModelMetaDataHeader').then(
-        (m) => m.ModelMetaDataHeader,
-      ),
+    viewModelKey: 'ModelMetaDataHeader',
     genericProps: {},
     icon: 'authorsinfo',
     status: 'disabled',
@@ -86,10 +80,7 @@ export const workflowSteps: WorkflowStep[] = [
     key: 'GeoInformation',
     loader: () =>
       import('@/modules/workflow/components/steps/GeoInformation.vue'),
-    viewModelLoader: () =>
-      import('@/modules/workflow/viewModel/ModelMetaDataHeader').then(
-        (m) => m.ModelMetaDataHeader,
-      ),
+    viewModelKey: 'ModelMetaDataHeader',
     genericProps: {},
     icon: 'geoinfo',
     status: 'disabled',
@@ -104,10 +95,7 @@ export const workflowSteps: WorkflowStep[] = [
     key: 'additionalinformation',
     loader: () =>
       import('@/modules/workflow/components/steps/AdditionalInformation.vue'),
-    viewModelLoader: () =>
-      import('@/modules/workflow/viewModel/ModelMetaDataHeader').then(
-        (m) => m.ModelMetaDataHeader,
-      ),
+    viewModelKey: 'ModelMetaDataHeader',
     genericProps: {},
     icon: 'additionalinfo',
     status: 'disabled',
@@ -122,10 +110,7 @@ export const workflowSteps: WorkflowStep[] = [
     key: 'uploadinformation',
     loader: () =>
       import('@/modules/workflow/components/steps/AdditionalInformation.vue'),
-    viewModelLoader: () =>
-      import('@/modules/workflow/viewModel/ModelMetaDataHeader').then(
-        (m) => m.ModelMetaDataHeader,
-      ),
+    viewModelKey: 'ModelMetaDataHeader',
     genericProps: {},
     icon: 'uploadinfo',
     status: 'disabled',
@@ -140,10 +125,7 @@ export const workflowSteps: WorkflowStep[] = [
     key: 'relatedinformation',
     loader: () =>
       import('@/modules/workflow/components/steps/AdditionalInformation.vue'),
-    viewModelLoader: () =>
-      import('@/modules/workflow/viewModel/ModelMetaDataHeader').then(
-        (m) => m.ModelMetaDataHeader,
-      ),
+    viewModelKey: 'ModelMetaDataHeader',
     genericProps: {},
     icon: 'relatedinfo',
     status: 'disabled',
@@ -158,10 +140,7 @@ export const workflowSteps: WorkflowStep[] = [
     key: 'publicationinformation',
     loader: () =>
       import('@/modules/workflow/components/steps/AdditionalInformation.vue'),
-    viewModelLoader: () =>
-      import('@/modules/workflow/viewModel/ModelMetaDataHeader').then(
-        (m) => m.ModelMetaDataHeader,
-      ),
+    viewModelKey: 'ModelMetaDataHeader',
     genericProps: {},
     icon: 'publicationinfo',
     status: 'disabled',

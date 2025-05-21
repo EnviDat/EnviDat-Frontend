@@ -20,7 +20,7 @@
             :is="currentAsyncComponent"
             v-bind="vm"
             @save="save"
-            v-if="currentAsyncComponent"
+            v-if="currentAsyncComponent && vm"
           />
         </div>
         <div class="pa-4 d-flex align-center justify-end">

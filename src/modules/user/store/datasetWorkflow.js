@@ -17,6 +17,7 @@ export const useDatasetWorkflowStore = defineStore({
     steps: workflowSteps,
     viewModelCache: new Map(),
     datasetServiceLayer: new EditDatasetServiceLayer(),
+    datasetViewModel: null,
   }),
   getters: {
     currentStepObject: (state) => state.steps[state.currentStep] ?? null,
@@ -26,23 +27,21 @@ export const useDatasetWorkflowStore = defineStore({
     },
     currentViewModel(state) {
       const step = state.steps[state.currentStep];
-      if (!step || !step.viewModelLoader) {
-        return null;
-      }
+      if (!step?.viewModelKey) return null;
 
       if (state.viewModelCache.has(step.id)) {
-        return Promise.resolve(state.viewModelCache.get(step.id));
+        return state.viewModelCache.get(step.id);
       }
 
-      // We already have the class from steps.ts, thats why we don't need to do get getViewModel('ModelName'));
+      // intialize the datasetServiceLayer
+      if (!this.datasetViewModel) {
+        this.datasetViewModel = new DatasetViewModel(this.datasetServiceLayer);
+      }
+      // get the viewModel
+      const vmInstance = state.datasetViewModel.getViewModel(step.viewModelKey);
 
-      return step.viewModelLoader().then((VMClass) => {
-        const vmInstance = new VMClass(
-          new DatasetViewModel(state.datasetServiceLayer),
-        );
-        state.viewModelCache.set(step.id, vmInstance);
-        return vmInstance;
-      });
+      state.viewModelCache.set(step.id, vmInstance);
+      return vmInstance;
     },
   },
   actions: {
