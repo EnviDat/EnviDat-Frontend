@@ -335,6 +335,7 @@ build-seo:
     # stores the seo pre-rendered htmls
     paths:
       - dist/seo/
+      - dist/sitemap.xml
   retry:
     max: 2
 
