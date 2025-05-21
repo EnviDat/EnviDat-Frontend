@@ -4,11 +4,15 @@
 
     <h2>Datasets</h2>
 
-    <a v-for="dataset in datasets"
-          :key='dataset.id'
-          :href="`${baseCanonicalUrl}metadata/${dataset.name}`" >
-      {{ dataset.title }}
-    </a>
+    <div v-for="dataset in datasets"
+         :key='dataset.id'
+          >
+      <h3>{{ dataset.title }}</h3>
+<!--
+      <div>{{ dataset.description }}</div>
+-->
+      <a :href="`${baseCanonicalUrl}metadata/${dataset.name}`">{{ dataset.title }}</a>
+    </div>
 
   </div>
 </template>
