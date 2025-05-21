@@ -18,21 +18,19 @@ import {
 import unFormatedMetadataCards from './js/metadata';
 import { EditDatasetServiceLayer } from '@/factories/ViewModels/EditDatasetServiceLayer';
 import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel';
-import AuthorEditing from '@/modules/workflow/components/steps/AuthorEditing.vue';
+import EditAuthorList from '@/modules/user/components/edit/EditAuthorList.vue';
 
 
 const metadataCards = [];
-
-
-const serviceLayer = new EditDatasetServiceLayer(unFormatedMetadataCards[0])
-const datasetVM = new DatasetViewModel(serviceLayer);
-
 
 unFormatedMetadataCards.forEach((el) => {
   el.author = createAuthors(el);
   metadataCards.push(el);
 });
 
+
+const serviceLayer = new EditDatasetServiceLayer(unFormatedMetadataCards[0])
+const datasetVM = new DatasetViewModel(serviceLayer);
 
 
 const authorsMap = extractAuthorsMap(metadataCards);
@@ -48,12 +46,10 @@ authorsObjs.forEach((author) => {
   authorsStrings.push(author.fullName);
 });
 
-const preSelectedAuthors2 = extractedAuthors.filter(value => value.fullName.includes('A'))[0];
-
 
 export default {
-  title: '6 Workflows / Combined / Author Editing',
-  component: AuthorEditing,
+  title: '6 Workflows / Combined / Author List Editing',
+  component: EditAuthorList,
 };
 
 export const Empty = {
@@ -77,6 +73,8 @@ authorVM2.loading = true;
 
 export const Filled = {
   args: {
+    authorsMap,
+    existingAuthors: extractedAuthors,
     ...authorVM,
     onSave: async (newData) => {
       await authorVM.save(newData);
@@ -86,6 +84,8 @@ export const Filled = {
 
 export const FilledAndLoading = {
   args: {
+    authorsMap,
+    existingAuthors: extractedAuthors,
     ...authorVM2,
     onSave: async (newData) => {
       await authorVM2.save(newData);

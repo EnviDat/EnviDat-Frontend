@@ -23,15 +23,8 @@ import {
   getAuthorByName,
   getAuthorName,
 } from '@/factories/authorFactory';
-import {
-  getValidationMetadataEditingObject,
-  isFieldValid,
-  isObjectValid,
-} from '@/factories/userEditingValidations';
 
 import {
-  EDITMETADATA_AUTHOR,
-  EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
   REMOVE_EDITING_AUTHOR,
