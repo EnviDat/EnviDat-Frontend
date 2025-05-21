@@ -1,5 +1,6 @@
 import { DatasetDTO } from '@/types/modelTypes';
 import { enhanceJSONLd, isFechingDatasets, loadDataset } from '../../datasets.ts';
+import { generateSitemap } from '../../generateSitemap.ts';
 
 // @ts-ignore
 export async function onBeforePrerenderStart() {
@@ -13,6 +14,7 @@ export async function onBeforePrerenderStart() {
 
   const datasets : DatasetDTO[] = await loadDataset();
 
+/*
   let count = 0;
 
   for (let i = 0; i < datasets.length; i++) {
@@ -22,17 +24,18 @@ export async function onBeforePrerenderStart() {
 
   console.log('before');
   console.log(`jsonLd dataset count ${count}`);
+*/
 
   await enhanceJSONLd(datasets);
 
-  count = 0;
-  
+  // count = 0;
+  let count = 0;
+
   for (let i = 0; i < datasets.length; i++) {
     const dataset = datasets[i];
     count = dataset.jsonLd ? count + 1 : count;
   }
 
-  console.log('after');
   console.log(`jsonLd dataset count ${count}`);
 
   // enhance the dataset as the pagecContext data
@@ -45,7 +48,13 @@ export async function onBeforePrerenderStart() {
     },
   }));
 
-  console.log('onBeforePrerenderStart metadata routes', routes.length);
+  // console.log('onBeforePrerenderStart metadata routes', routes.length);
+
+  console.log('generateSitemap from routes', routes.length);
+
+  generateSitemap(routes.map((r) => r.url)).catch(err => {
+    console.error('Error generating sitemap:', err)
+  })
 
   return routes;
 }
