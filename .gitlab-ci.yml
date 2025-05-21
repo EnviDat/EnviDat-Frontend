@@ -298,13 +298,8 @@ build-seo:
   stage: build
   image: node:20.15.0-alpine3.20
   environment: $CI_COMMIT_REF_NAME
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "pipeline"'
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      when: never
-    - if: '$CI_COMMIT_REF_NAME =~ /^(staging|develop)$/'
-    - if: $CI_PIPELINE_SOURCE == "web"
-      when: always
+  extends:
+    - .normal-rules
   needs:
     # needs the artifact: config and environment variables
     - modify-env
