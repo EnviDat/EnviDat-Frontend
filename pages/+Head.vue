@@ -20,10 +20,6 @@
 
   <meta property="og:image" :content="logoUrl" />
 
-<!--
-  <img :src v-bind="otherAttrs" />
--->
-
   <script v-if="data.jsonLd"
           type='application/ld+json'
           v-html="JSON.stringify(data.jsonLd)">
@@ -42,6 +38,6 @@ const data = useData<DatasetDTO>()
 
 
 const baseCanonicalUrl = import.meta.env.PUBLIC_ENV__VIKE_BASE_CANONICAL_URL;
-const canonicalUrl = data && data.name ? `${baseCanonicalUrl}#/metadata/${data.name}` : baseCanonicalUrl;
+const canonicalUrl = data && data.name ? `${baseCanonicalUrl}/#/metadata/${data.name}` : baseCanonicalUrl;
 
 </script>

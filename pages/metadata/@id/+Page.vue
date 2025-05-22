@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Dataset {{ data.name }}</h1>
+    <h1>Environmental Research Data: {{ data.name }}</h1>
 
     <div>
       {{ data.notes }}
@@ -35,7 +35,7 @@
 
 /*
   const baseCanonicalUrl = import.meta.env.PUBLIC_ENV__VIKE_BASE_CANONICAL_URL;
-  const canonicalUrl = data && data.name ? `${baseCanonicalUrl}#/metadata/${data.name}` : baseCanonicalUrl;
+  const canonicalUrl = data && data.name ? `${baseCanonicalUrl}/#/metadata/${data.name}` : baseCanonicalUrl;
 */
 
 </script>

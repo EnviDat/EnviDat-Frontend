@@ -1,15 +1,5 @@
 <template>
-<!--
-  <div>
-    <div class="layout">
-      <div class="navigation">
-        <a class="navitem" href="/">Home</a>
-        <a class="navitem" href="/metadata">metadata</a>
-      </div>
-    </div>
-  </div>
--->
-  <div class="content"><slot /></div>
+  <article class="content"><slot /></article>
 </template>
 
 <style>
