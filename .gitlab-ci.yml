@@ -11,8 +11,8 @@ stages:
 
 workflow:
   rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^feature\//'
-      when: never  # Do not create a pipeline for feature branches
+    - if: '$CI_COMMIT_REF_NAME =~ /^(feature|release)$/'
+      when: never  # Do not create a pipeline for feature or release branches
     - when: always  # Create a pipeline for all other branches
 
 variables:
