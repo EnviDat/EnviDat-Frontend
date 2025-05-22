@@ -13,10 +13,10 @@
 
   <title>{{ data.title }}</title>
 
-  <meta property="og:title" :content="data.title" />
+  <meta property="og:title" :content="seoData.title" />
 
-  <meta name="description" :content="data.notes" />
-  <meta property="og:description" :content="data.notes" />
+  <meta name="description" :content="seoData.notes" />
+  <meta property="og:description" :content="seoData.notes" />
 
   <meta property="og:image" :content="logoUrl" />
 
@@ -33,8 +33,10 @@ import { useData } from 'vike-vue/useData';
 import { DatasetDTO } from '@/types/modelTypes';
 
 import logoUrl from '@/assets/logo/EnviDat_fav.ico'
+import { getSeoSanitizedDataset } from '~/pages/seoConversions.ts';
 
 const data = useData<DatasetDTO>()
+const seoData = getSeoSanitizedDataset(data);
 
 
 const baseCanonicalUrl = import.meta.env.PUBLIC_ENV__VIKE_BASE_CANONICAL_URL;
