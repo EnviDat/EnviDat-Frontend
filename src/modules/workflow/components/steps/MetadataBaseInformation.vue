@@ -33,6 +33,7 @@
         </v-col>
       </v-row>
 
+      {{ validationErrors }}---
       <v-row>
         <v-col cols="6">
           <v-text-field
@@ -228,6 +229,12 @@ export default {
     keywordsListWordMax() {
       return this.defaultUserEditMetadataConfig.keywordsListWordMax;
     },
+    descriptionObject() {
+      return {
+        description: this.previewText,
+        maxTextLength: 5000,
+      };
+    },
     // keywordsField: {
     //   get() {
     //     return this.previewKeywords.length > 0
@@ -302,20 +309,20 @@ export default {
   methods: {
     notifyKeywordsChange(val) {
       this.previewKeywords = this.processValues(val);
-      this.$emit('save', { keywords: this.previewKeywords });
+      this.$emit('validate', { keywords: this.previewKeywords });
     },
     notifyPropertyChange(value) {
       const newHeaderInfo = {
         metadataTitle: value,
       };
 
-      this.$emit('save', newHeaderInfo);
+      this.$emit('validate', newHeaderInfo);
     },
     onDescriptionInput(val) {
-      /* live preview se ti serve */
+      this.$emit('validate', { metadataDescription: val });
     },
     onDescriptionChange(val) {
-      this.$emit('save', { metadataDescription: val }); // salva nel VM
+      this.$emit('validate', { metadataDescription: val });
     },
     blurOnEnterKey(keyboardEvent) {
       if (keyboardEvent.key === 'Enter') {

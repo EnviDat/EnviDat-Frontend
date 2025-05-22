@@ -19,7 +19,7 @@
           <component
             :is="currentAsyncComponent"
             v-bind="vm"
-            @save="save"
+            @validate="validate"
             v-if="currentAsyncComponent && vm"
           />
         </div>
@@ -59,7 +59,7 @@ watch(
   { immediate: true },
 );
 
-function save(data) {
+function validate(data) {
   vm.value?.validate(data);
 }
 
