@@ -1,6 +1,8 @@
 import { DatasetDTO } from '@/types/modelTypes';
 
 function cropString(str: string, maxLength: number, ending: string | undefined) {
+  if (!str) { return '' }
+
   if (str.length > maxLength) {
     return str.substring(0, maxLength);
   }

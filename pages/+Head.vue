@@ -27,7 +27,6 @@
   </script>
 
 </template>
-
 <script lang="ts" setup>
 import { useData } from 'vike-vue/useData';
 import { DatasetDTO } from '@/types/modelTypes';
