@@ -5,7 +5,7 @@
   <script type='application/javascript' v-html="`
     document.addEventListener('DOMContentLoaded', function () {
       if (!navigator.userAgent.includes('bot')) {
-        window.location.href = '${canonicalUrl}';
+        window.location.href = '${redirectUrl}';
       }
     });
     `">
@@ -40,6 +40,7 @@ const seoData = getSeoSanitizedDataset(data);
 
 
 const baseCanonicalUrl = import.meta.env.PUBLIC_ENV__VIKE_BASE_CANONICAL_URL;
-const canonicalUrl = data && data.name ? `${baseCanonicalUrl}/#/metadata/${data.name}` : baseCanonicalUrl;
+const canonicalUrl = data && data.name ? `${baseCanonicalUrl}/metadata/${data.name}` : baseCanonicalUrl;
+const redirectUrl = data && data.name ? `${baseCanonicalUrl}/#/metadata/${data.name}` : baseCanonicalUrl;
 
 </script>
