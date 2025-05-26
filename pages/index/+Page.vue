@@ -8,9 +8,6 @@
          :key='dataset.id'
           >
       <h3>{{ dataset.title }}</h3>
-<!--
-      <div>{{ dataset.description }}</div>
--->
       <a :href="`${baseCanonicalUrl}metadata/${dataset.name}`">{{ dataset.title }}</a>
     </div>
 

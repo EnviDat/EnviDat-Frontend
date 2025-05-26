@@ -86,7 +86,7 @@ export const useS3Store = defineStore({
           ];
 
       // Trigger function to add data in the right node
-      const updated = this.findAndAddChildren(
+      this.findAndAddChildren(
         this.contentFromS3,
         children,
         nodeId,

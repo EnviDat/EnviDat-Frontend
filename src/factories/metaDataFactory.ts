@@ -49,7 +49,7 @@ import { DatasetDTO, ResourceDTO } from '@/types/modelTypes.js';
  * @param {Number} max
  * @param {String} seed
  */
-export function randomInt(min, max, seed = 'For the Horde!') {
+export function randomInt(min: number, max: number, seed: string = 'For the Horde!') {
   const rng = seedrandom(seed);
   const r = Math.floor(rng() * 10);
 
@@ -70,7 +70,7 @@ export function getPublicationStatus(metadata) {
   return publicationStatus;
 }
 
-export function createLicense(dataset) {
+export function createLicense(dataset: DatasetDTO) {
   if (!dataset) {
     return null;
   }
@@ -82,10 +82,11 @@ export function createLicense(dataset) {
   };
 }
 
-export function createHeader(dataset, smallScreen) {
+export function createHeader(dataset: DatasetDTO, smallScreen: boolean) {
   if (!dataset) {
     return null;
   }
+
   let { maintainer } = dataset;
 
   if (typeof dataset.maintainer === 'string') {
@@ -135,7 +136,7 @@ export function createHeader(dataset, smallScreen) {
   };
 }
 
-export function createBody(dataset, smallScreen = false) {
+export function createBody(dataset: DatasetDTO, smallScreen = false) {
   if (!dataset) {
     return null;
   }
@@ -148,7 +149,7 @@ export function createBody(dataset, smallScreen = false) {
   };
 }
 
-export function createPublications(dataset) {
+export function createPublications(dataset: DatasetDTO) {
   if (!dataset) {
     return null;
   }
@@ -159,7 +160,7 @@ export function createPublications(dataset) {
   };
 }
 
-export function createRelatedDatasets(dataset) {
+export function createRelatedDatasets(dataset: DatasetDTO) {
   if (!dataset) {
     return null;
   }
@@ -170,7 +171,7 @@ export function createRelatedDatasets(dataset) {
   };
 }
 
-export function createFunding(dataset) {
+export function createFunding(dataset: DatasetDTO) {
   if (!dataset) {
     return null;
   }
@@ -199,7 +200,7 @@ export function createFunding(dataset) {
   return dataset.funding;
 }
 
-export function createPublishingInfo(dataset) {
+export function createPublishingInfo(dataset: DatasetDTO) {
   if (!dataset) {
     return null;
   }
@@ -260,10 +261,10 @@ export function getFileFormat(file) {
  * @returns {boolean|null}
  */
 export function isResourceProtectedForUser(
-  resource,
-  resourceOrganizationID,
-  signedInUserName,
-  signedInUserOrganizationIds,
+  resource: ResourceDTO,
+  resourceOrganizationID: string,
+  signedInUserName: any,
+  signedInUserOrganizationIds: string | any[],
 ) {
   if (!resource) return null;
 
@@ -326,11 +327,11 @@ export function getResourceName(resource: ResourceDTO) {
 }
 
 export function createResource(
-  resource,
-  datasetName,
-  resourceOrganizationID,
-  signedInUserName,
-  signedInUserOrganizationIds,
+  resource: ResourceDTO,
+  datasetName: string,
+  resourceOrganizationID: string,
+  signedInUserName: any,
+  signedInUserOrganizationIds: any,
   numberOfDownload?: number,
 ) {
   if (!resource) {
@@ -384,8 +385,8 @@ export function createResource(
 
 export function createResources(
   dataset: DatasetDTO,
-  signedInUser,
-  signedInUserOrganizationIds,
+  signedInUser: { name: any },
+  signedInUserOrganizationIds: any,
 ) {
   if (!dataset) {
     return null;
@@ -551,11 +552,11 @@ export function enhanceCategoryName(metadata) {
 }
 
 /**
- * @param {Object} metadataEntry
+ * @param {object} metadataEntry
  *
- * @return {Object} metadataEntry enhanced with a title image based on the entrys tags
+ * @return {object} metadataEntry enhanced with a title image based on the entrys tags
  */
-export function enhanceMetadataEntry(metadataEntry) {
+export function enhanceMetadataEntry(metadataEntry: object) : object {
   if (!metadataEntry || !cardImageBgs) {
     return null;
   }
@@ -564,9 +565,7 @@ export function enhanceMetadataEntry(metadataEntry) {
     enhanceTitleImg(metadataEntry);
   }
 
-  if (metadataEntry) {
-    enhanceCategoryName(metadataEntry);
-  }
+  enhanceCategoryName(metadataEntry);
 
   return metadataEntry;
 }
@@ -593,7 +592,11 @@ export function enhanceMetadatasTitleImage(metadatas) {
   return metadatas;
 }
 
-export function sortObjectArray(arrOfObjects, sortProperty, sort = 'ASC') {
+export function sortObjectArray(
+  arrOfObjects: any[],
+  sortProperty: string,
+  sort = 'ASC',
+) {
   if (sort === 'ASC') {
     return arrOfObjects.sort((a, b) =>
       a[sortProperty].toUpperCase() > b[sortProperty].toUpperCase() ? 1 : -1,
