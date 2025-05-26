@@ -108,6 +108,8 @@ export interface DatasetDTO {
   publication: string;
   resource_type: string;
   resource_type_general: string;
+  related_publications: string;
+  related_datasets: string;
   /** spatial is the GeoJson either a GeometryCollection is single Geometries */
   spatial: string;
   spatial_info: string;

@@ -597,6 +597,7 @@ export function canLocalDatasetBeStoredInBackend(steps) {
 }
 
 export function getPreviewDatasetFromLocalStorage() {
+
   const header = readDataFromLocalStorage(EDITMETADATA_MAIN_HEADER);
   const desc = readDataFromLocalStorage(EDITMETADATA_MAIN_DESCRIPTION);
   const keywords = readDataFromLocalStorage(EDITMETADATA_KEYWORDS);
