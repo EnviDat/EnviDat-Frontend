@@ -8,9 +8,6 @@
          :key='dataset.id'
           >
       <h3>{{ dataset.title }}</h3>
-<!--
-      <div>{{ dataset.description }}</div>
--->
       <a :href="`${baseCanonicalUrl}metadata/${dataset.name}`">{{ dataset.title }}</a>
     </div>
 
@@ -25,7 +22,7 @@
   const datasets = Object.values(data);
 
   const baseCanonicalUrl = import.meta.env.PUBLIC_ENV__VIKE_BASE_CANONICAL_URL;
-  // const canonicalUrl = data && data.name ? `${baseCanonicalUrl}#/metadata/${data.name}` : baseCanonicalUrl;
+  // const canonicalUrl = data && data.name ? `${baseCanonicalUrl}/#/metadata/${data.name}` : baseCanonicalUrl;
 
 </script>
 

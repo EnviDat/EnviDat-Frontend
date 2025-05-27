@@ -1,9 +1,9 @@
 <template>
   <div>
-    <h1>Dataset {{ data.name }}</h1>
+    <h1>Environmental Data: {{ seoData.title }}</h1>
 
     <div>
-      {{ data.notes }}
+      {{ seoData.notes }}
     </div>
 
     <div v-html="citation?.citationText" />
@@ -26,8 +26,10 @@
   import { useData } from 'vike-vue/useData'
   import { DatasetDTO } from '@/types/modelTypes';
   import { createCitation } from '@/factories/citationFactory';
+  import { getSeoSanitizedDataset } from '../../seoConversions.ts';
 
   const data = useData<DatasetDTO>();
+  const seoData = getSeoSanitizedDataset(data);
 
   const citation = createCitation(data);
 
@@ -35,7 +37,7 @@
 
 /*
   const baseCanonicalUrl = import.meta.env.PUBLIC_ENV__VIKE_BASE_CANONICAL_URL;
-  const canonicalUrl = data && data.name ? `${baseCanonicalUrl}#/metadata/${data.name}` : baseCanonicalUrl;
+  const canonicalUrl = data && data.name ? `${baseCanonicalUrl}/#/metadata/${data.name}` : baseCanonicalUrl;
 */
 
 </script>

@@ -9,9 +9,9 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { SelectionType } from 'vanilla-jsoneditor';
 import BaseJsonEditor from '@/components/BaseJsonEditor.vue';
 import metadata from './js/metadata.js'
-import { SelectionType } from 'vanilla-jsoneditor';
 
 export default {
   title: '1 Base / Json Editor',

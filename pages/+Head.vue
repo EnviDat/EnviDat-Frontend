@@ -5,7 +5,7 @@
   <script type='application/javascript' v-html="`
     document.addEventListener('DOMContentLoaded', function () {
       if (!navigator.userAgent.includes('bot')) {
-        window.location.href = '${canonicalUrl}';
+        window.location.href = '${redirectUrl}';
       }
     });
     `">
@@ -13,16 +13,12 @@
 
   <title>{{ data.title }}</title>
 
-  <meta property="og:title" :content="data.title" />
+  <meta property="og:title" :content="seoData.title" />
 
-  <meta name="description" :content="data.notes" />
-  <meta property="og:description" :content="data.notes" />
+  <meta name="description" :content="seoData.notes" />
+  <meta property="og:description" :content="seoData.notes" />
 
   <meta property="og:image" :content="logoUrl" />
-
-<!--
-  <img :src v-bind="otherAttrs" />
--->
 
   <script v-if="data.jsonLd"
           type='application/ld+json'
@@ -31,17 +27,19 @@
   </script>
 
 </template>
-
 <script lang="ts" setup>
 import { useData } from 'vike-vue/useData';
 import { DatasetDTO } from '@/types/modelTypes';
 
 import logoUrl from '@/assets/logo/EnviDat_fav.ico'
+import { getSeoSanitizedDataset } from './seoConversions.ts';
 
 const data = useData<DatasetDTO>()
+const seoData = getSeoSanitizedDataset(data);
 
 
 const baseCanonicalUrl = import.meta.env.PUBLIC_ENV__VIKE_BASE_CANONICAL_URL;
-const canonicalUrl = data && data.name ? `${baseCanonicalUrl}#/metadata/${data.name}` : baseCanonicalUrl;
+const canonicalUrl = data && data.name ? `${baseCanonicalUrl}/metadata/${data.name}` : baseCanonicalUrl;
+const redirectUrl = data && data.name ? `${baseCanonicalUrl}/#/metadata/${data.name}` : baseCanonicalUrl;
 
 </script>

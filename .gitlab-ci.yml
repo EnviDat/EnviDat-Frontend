@@ -11,8 +11,8 @@ stages:
 
 workflow:
   rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^feature\//'
-      when: never  # Do not create a pipeline for feature branches
+    - if: '$CI_COMMIT_REF_NAME =~ /^(feature|release)$/'
+      when: never  # Do not create a pipeline for feature or release branches
     - when: always  # Create a pipeline for all other branches
 
 variables:
@@ -125,6 +125,10 @@ modify-env:
 
       dotenv.set_key(file, key, value, quote_mode='never')
 
+      # also set the canonical url with same value as the api root
+      key = 'PUBLIC_ENV__VIKE_BASE_CANONICAL_URL'
+      dotenv.set_key(file, key, value, quote_mode='never')
+
       key = 'VITE_MATOMO_TOKEN'
       token = os.getenv('MATOMO_TOKEN')
       dotenv.set_key(file, key, token, quote_mode='never')
@@ -139,9 +143,17 @@ modify-env:
 
       key = 'VITE_BUILD_SOURCEMAPS'
       value = 'false'
+      
       if branch == 'staging' or branch == 'develop' or branch == 'dev':
           value = 'true'
-      dotenv.set_key(file, key, value, quote_mode='never') "
+      
+      dotenv.set_key(file, key, value, quote_mode='never')
+
+      key = 'VITE_GOOGLE_VERIFICATION_KEY'
+      value = os.getenv('GOOGLE_VERIFICATION_KEY')
+      dotenv.set_key(file, key, value, quote_mode='never')
+        
+      "
     - echo "created content for .env.production:"
     - cat .env.production
   artifacts:

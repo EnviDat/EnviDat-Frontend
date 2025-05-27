@@ -41,7 +41,10 @@ export const MetadataOrganizationChips = () => ({
             tooltip="Trusted Users Organization"
         />
       </v-col>
+    </v-row >
 
+    <v-row >
+            
       <v-col>
         showOnHover
         <MetadataOrganizationChip
@@ -51,5 +54,12 @@ export const MetadataOrganizationChips = () => ({
         />
       </v-col>
 
+      <v-col>
+        <MetadataOrganizationChip
+          organization="forest-soils-and-biogeochemistry"
+        />
+        
+      </v-col>
+        
     </v-row>`,
 });
