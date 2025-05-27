@@ -3,7 +3,6 @@ import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/factories/ViewModels/AbstractEditViewModel.ts';
 import { Author, DataCreditObject } from '@/types/modelTypes';
 import { convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
-import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel.ts';
 import { isObjectValidCheckAllProps } from '@/factories/userEditingValidations';
 
 

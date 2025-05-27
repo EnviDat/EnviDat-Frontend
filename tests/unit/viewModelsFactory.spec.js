@@ -6,9 +6,6 @@ import { EditDatasetServiceLayer } from '@/factories/ViewModels/EditDatasetServi
 import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel';
 
 import {
-  METADATA_CONTACT_EMAIL,
-  METADATA_CONTACT_FIRSTNAME,
-  METADATA_CONTACT_LASTNAME,
   METADATA_TITLE_PROPERTY,
 } from '@/factories/metadataConsts';
 
