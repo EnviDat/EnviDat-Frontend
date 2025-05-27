@@ -603,8 +603,9 @@ export function getPreviewDatasetFromLocalStorage() {
   const keywords = readDataFromLocalStorage(EDITMETADATA_KEYWORDS);
 
   return {
-    ...header,
     ...desc,
     ...keywords,
+    // keywords also contains METADATA_TITLE_PROPERTY, therefore the header needs to be applied afterwards
+    ...header,
   }
 }
