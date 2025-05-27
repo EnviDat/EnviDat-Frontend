@@ -147,7 +147,12 @@ modify-env:
       if branch == 'staging' or branch == 'develop' or branch == 'dev':
           value = 'true'
       
-      dotenv.set_key(file, key, value, quote_mode='never') "
+      dotenv.set_key(file, key, value, quote_mode='never')
+
+      key = 'VITE_GOOGLE_VERIFICATION_KEY'
+      value = os.getenv('GOOGLE_VERIFICATION_KEY')
+        
+      "
     - echo "created content for .env.production:"
     - cat .env.production
   artifacts:
