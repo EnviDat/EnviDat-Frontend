@@ -559,7 +559,7 @@ export default {
     },
     changePropertyForPreview(property, value) {
       this.previews[property] = value;
-      const valid = true; // this.validateProperty(property, value);
+      const valid = this.validateProperty(property, value);
 
       if (this.$store) {
         // do it if the store is available otherwise in the storybook context the component breaks
