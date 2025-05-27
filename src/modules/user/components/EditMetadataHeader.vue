@@ -622,7 +622,7 @@ export default {
       }
 
       // default to filling all the infos from the text-field input
-      let contactObject = createContact(this.contactFirstNameField, this.contactLastNameField, this.contactEmailField);
+      let contactObject = createContact(this.contactEmailField, this.contactFirstNameField, this.contactLastNameField);
 
       if (property === METADATA_CONTACT_EMAIL) {
         if (isFieldValid(property, value, this.validations, this.validationErrors)) {
