@@ -32,7 +32,7 @@ import { useData } from 'vike-vue/useData';
 import { DatasetDTO } from '@/types/modelTypes';
 
 import logoUrl from '@/assets/logo/EnviDat_fav.ico'
-import { getSeoSanitizedDataset } from '~/pages/seoConversions.ts';
+import { getSeoSanitizedDataset } from './seoConversions.ts';
 
 const data = useData<DatasetDTO>()
 const seoData = getSeoSanitizedDataset(data);

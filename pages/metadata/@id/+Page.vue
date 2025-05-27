@@ -26,7 +26,7 @@
   import { useData } from 'vike-vue/useData'
   import { DatasetDTO } from '@/types/modelTypes';
   import { createCitation } from '@/factories/citationFactory';
-  import { getSeoSanitizedDataset } from '~/pages/seoConversions.ts';
+  import { getSeoSanitizedDataset } from '../../seoConversions.ts';
 
   const data = useData<DatasetDTO>();
   const seoData = getSeoSanitizedDataset(data);
