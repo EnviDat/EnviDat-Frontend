@@ -9,8 +9,10 @@ import vike from 'vike/plugin'
 
 export default async ({ mode, config }) => {
 
+/*
   const isProd = mode === 'production';
   const isDev = mode === 'development';
+*/
 
 
   return defineConfig({

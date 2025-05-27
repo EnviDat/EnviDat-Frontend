@@ -9,9 +9,14 @@ function cropString(str: string, maxLength: number, ending: string | undefined) 
   return ending ? str + ending : str;
 }
 
-export const getSeoSanitizedDataset = (dataset: DatasetDTO): DatasetDTO => ({
+export const getSeoSanitizedDataset = (dataset: DatasetDTO): DatasetDTO => {
+  if (!dataset) {
+    return {}
+  }
+
+  return {
     title: cropString(dataset.title, 50, '...'),
     notes: cropString(dataset.notes, 155, '...'),
   } as Partial<DatasetDTO>
-)
+}
 
