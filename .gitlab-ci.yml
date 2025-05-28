@@ -314,7 +314,7 @@ combine-builds:
   stage: build
   image: alpine:3.20
   environment: $CI_COMMIT_REF_NAME
-  extends: .normal-rules
+  extends: .build-rules
   variables:
     GIT_STRATEGY: none
   needs:
