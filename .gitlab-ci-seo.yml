@@ -72,7 +72,7 @@ schedule-seo-deployment:
     # needs the artifact: config and environment variables
     - modify-env
     # needs the artifact: node_modules to build the app
-    - seo-build
+    - build-seo
   variables:
     GIT_STRATEGY: none
     RCLONE_CONFIG_SWITCH_TYPE: 's3'
