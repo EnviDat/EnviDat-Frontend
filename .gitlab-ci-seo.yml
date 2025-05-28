@@ -1,0 +1,111 @@
+
+# Seo is scheduled therefore make sure only basic seo build job and deployment is run
+.seo-rules:
+  rules:
+    # don't run when triggered from other pipeline (deployment-only-pipeline)
+    - if: '$CI_PIPELINE_SOURCE == "pipeline"'
+      # don't run when making a merge-request via gitlab
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: never
+
+      # run when pushed to main, staging or develop branch
+    - if: '$CI_COMMIT_REF_NAME =~ /^(main|staging|develop)$/'
+      # run when triggered from the gitlab ui to start a pipeline
+    - if: $CI_PIPELINE_SOURCE == "web"
+      when: always
+
+
+build-seo:
+  stage: build
+  image: node:20.15.0-alpine3.20
+  environment: $CI_COMMIT_REF_NAME
+  rules:
+    # don't run when triggered from other pipeline (deployment-only-pipeline)
+    - if: '$CI_PIPELINE_SOURCE == "pipeline"'
+      when: never
+    - when: always
+  needs:
+    # needs the artifact: config and environment variables
+    - modify-env
+    # needs the artifact: node_modules to build the app
+    - install-node
+  before_script:
+    - |
+      if [ -d "node_modules" ]; then
+        echo "node_modules directory already exists."
+        ls node_modules/.bin/vike || echo "/.bin/vike not found"
+      else
+        echo "node_modules directory not found. Should have got them from the install-node artifact!"
+        ls -a
+      fi
+    # - ls node_modules/ -a
+    # - ls node_modules/.bin/ -a
+  script:
+    - npm run build-vike
+    # rename the dist/client output folder
+    - mv dist/client dist/seo
+    - rm -rf dist/seo/testdata
+    - rm -rf dist/seo/particles
+    - rm -f dist/seo/researchUnits.json
+    - rm -f dist/seo/packagelist.json
+  artifacts:
+    name: 'frontend seo build '
+    expire_in: 1 day
+    # stores the seo pre-rendered htmls
+    paths:
+      - dist/seo/
+      - dist/sitemap.xml
+  retry:
+    max: 2
+
+
+schedule-seo-deployment:
+  stage: deploy
+  image: alpine:3.20
+  environment: $CI_COMMIT_REF_NAME
+  extends:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: always
+    - when: never  # only run when scheduled
+  needs:
+    - set-vars
+    # needs the artifact: config and environment variables
+    - modify-env
+    # needs the artifact: node_modules to build the app
+    - seo-build
+  variables:
+    GIT_STRATEGY: none
+    RCLONE_CONFIG_SWITCH_TYPE: 's3'
+    RCLONE_S3_PROVIDER: 'Other'
+    RCLONE_S3_ENV_AUTH: 'true'
+  before_script:
+    - apk add curl unzip --no-cache
+    - curl -O https://downloads.rclone.org/v1.59.0/rclone-v1.59.0-linux-amd64.zip
+    - unzip rclone-v1.59.0-linux-amd64.zip
+    - cp rclone-v1.59.0-linux-amd64/rclone /usr/bin/
+    - rm rclone-v1.59.0-linux-amd64.zip
+    - rm -rf rclone-v1.59.0-linux-amd64
+    - |
+      if [ "${CI_COMMIT_REF_NAME}" == "main" ]; then
+        BUCKET_NAME="frontend"
+      else
+        BUCKET_NAME="frontend-${CI_COMMIT_REF_NAME}"
+      fi
+      if [ "${CI_COMMIT_REF_NAME}" == "develop" ]; then
+        BUCKET_NAME="frontend-dev"
+      fi
+      echo "Target for rclone copy is the bucket: '${BUCKET_NAME}'"
+  script:
+    - echo "Check for the artifacts in the filesystem"
+    - ls -l
+    - ls dist/ -l
+    # - ls storybook/ -l
+    # copy all files from the dist folder into root
+    - cp -r dist/* ./
+    # - ls -l
+    # remove the dist folder recursively
+    - rm -rf dist
+    # use -q for quiet to not list all the files
+    - ls -l
+    - echo "going to rclone copy from ./ to switch:${BUCKET_NAME}"
+    - rclone copy ./ "switch:${BUCKET_NAME}" --verbose

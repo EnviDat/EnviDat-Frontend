@@ -1,6 +1,6 @@
 include:
   - local: '.gitlab-ci-deployment.yml'
-#  - local: '.gitlab-ci_envidat-in-a-box.yml'
+  - local: '.gitlab-ci-seo.yml'
 
 stages:
   - config
@@ -11,9 +11,19 @@ stages:
 
 workflow:
   rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^(feature|release)$/'
-      when: never  # Do not create a pipeline for feature or release branches
-    - when: always  # Create a pipeline for all other branches
+    # Allow pipeline when triggered from other pipelines (deployment-only-pipeline)
+    - if: '$CI_PIPELINE_SOURCE == "pipeline"'
+    # Allow pipeline when triggered from the gitlab ui to start a pipeline
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+    # Allow Pipeline run when it's scheduled
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    # Allow pipeline for pushing to develop, staging, main branches
+    - if: '$CI_COMMIT_REF_NAME =~ /^(main|staging|develop)$/'
+      when: always
+
+    # Block pipeline creation for all other cases (e.g. feature branches, tags, merge requests)
+    - when: never
+
 
 variables:
   ARTIFACT_COMPRESSION_LEVEL: 'fast'
@@ -22,31 +32,28 @@ variables:
 
 .normal-rules:
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "pipeline"'
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'    
-      when: never
-    - if: '$CI_COMMIT_REF_NAME =~ /^(main|staging|develop)$/'
-    - if: $CI_PIPELINE_SOURCE == "web"
-      when: always
+    # when ever a pipeline is created run job, even for manual jobs only
+    - when: always
 
-.deployment-rules:
+# don't run for deployment only and scheduled pipelines, to avoid making unnecessary changes
+# in production
+.build-rules:
   rules:
+    # don't run when triggered from other pipeline (deployment-only-pipeline)
     - if: '$CI_PIPELINE_SOURCE == "pipeline"'
+    # don't run when it's scheduled
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
       when: never
-    - if: '$CI_COMMIT_REF_NAME =~ /^(main|staging|develop)$/'
-    - if: $CI_PIPELINE_SOURCE == "web"
-      when: always
+
+    # run normal jobs in any other case
+    - when: always
+
 
 set-vars:
   stage: .pre
   image: alpine:3.20
   environment: $CI_COMMIT_REF_NAME
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "pipeline"'
-    - if: '$CI_COMMIT_REF_NAME =~ /^(main|staging|develop)$/'
-    - if: $CI_PIPELINE_SOURCE == "web"
-      when: always
-    - when: manual
+  extends: .normal-rules
   # for manual jobs add allow_failure so the whole pipeline won't show up as "blocked"
   allow_failure: false
   before_script:
@@ -179,8 +186,7 @@ install-node:
       policy: pull-push
       untracked: true
       when: on_success
-  extends:
-    - .normal-rules
+  extends: .normal-rules
   before_script:
     # disabled the funding check
     - npm config set fund false
@@ -216,8 +222,7 @@ run-tests:
   stage: test
   image: node:20.15.0-alpine3.20
   environment: $CI_COMMIT_REF_NAME
-  extends:
-    - .normal-rules
+  extends: .normal-rules
   needs:
     - modify-env
     - install-node
@@ -241,8 +246,7 @@ build-storybook:
   stage: build
   image: node:20.15.0-alpine3.20
   environment: $CI_COMMIT_REF_NAME
-  extends:
-    - .normal-rules
+  extends: .build-rules
   needs:
     # needs the artifact: config and environment variables
     - modify-env
@@ -277,8 +281,7 @@ build-app:
   stage: build
   image: node:20.15.0-alpine3.20
   environment: $CI_COMMIT_REF_NAME
-  extends:
-    - .normal-rules
+  extends: .build-rules
   needs:
     # needs the artifact: config and environment variables
     - modify-env
@@ -306,45 +309,6 @@ build-app:
   retry:
     max: 2
 
-build-seo:
-  stage: build
-  image: node:20.15.0-alpine3.20
-  environment: $CI_COMMIT_REF_NAME
-  extends:
-    - .normal-rules
-  needs:
-    # needs the artifact: config and environment variables
-    - modify-env
-    # needs the artifact: node_modules to build the app
-    - install-node
-  before_script:
-    - |
-      if [ -d "node_modules" ]; then
-        echo "node_modules directory already exists."
-        ls node_modules/.bin/vike || echo "/.bin/vike not found"
-      else
-        echo "node_modules directory not found. Should have got them from the install-node artifact!"
-        ls -a
-      fi
-    # - ls node_modules/ -a
-    # - ls node_modules/.bin/ -a
-  script:
-    - npm run build-vike
-    # rename the dist/client output folder
-    - mv dist/client dist/seo
-    - rm -rf dist/seo/testdata
-    - rm -rf dist/seo/particles
-    - rm -f dist/seo/researchUnits.json
-    - rm -f dist/seo/packagelist.json
-  artifacts:
-    name: 'frontend seo build '
-    expire_in: 1 day
-    # stores the seo pre-rendered htmls
-    paths:
-      - dist/seo/
-      - dist/sitemap.xml
-  retry:
-    max: 2
 
 combine-builds:
   stage: build
@@ -362,7 +326,7 @@ combine-builds:
     - job: build-seo
       optional: true
   script:
-    - echo "Check for the artifacts in the filesystem"
+    #- echo "Check for the artifacts in the filesystem"
     # - ls -l
     # - ls dist/ -l
     # - ls storybook/ -l

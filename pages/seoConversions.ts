@@ -11,7 +11,10 @@ function cropString(str: string, maxLength: number, ending: string | undefined) 
 
 export const getSeoSanitizedDataset = (dataset: DatasetDTO): DatasetDTO => {
   if (!dataset) {
-    return {}
+    return {
+      title: '',
+      notes: '',
+    }
   }
 
   return {
