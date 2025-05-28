@@ -63,7 +63,7 @@ schedule-seo-deployment:
   stage: deploy
   image: alpine:3.20
   environment: $CI_COMMIT_REF_NAME
-  extends:
+  rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
       when: always
     - when: never  # only run when scheduled
