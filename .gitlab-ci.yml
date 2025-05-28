@@ -48,6 +48,25 @@ variables:
     # run normal jobs in any other case
     - when: always
 
+# don't run for scheduled pipelines, to avoid making unnecessary changes in production
+.deployment-rules:
+  rules:
+    # don't run when it's scheduled
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
+
+    # run normal jobs in any other case
+    - when: always
+
+# don't run for scheduled pipelines, to avoid making unnecessary changes in production
+.manual-deployment-rules:
+  rules:
+    # don't run when it's scheduled
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
+
+    - when: manual
+
 
 set-vars:
   stage: .pre
