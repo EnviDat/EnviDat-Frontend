@@ -46,6 +46,7 @@ export const useDatasetWorkflowStore = defineStore({
   },
   actions: {
     navigateItemAction(id, status) {
+      // REMOVE after testing
       // if (status === 'disabled') {
       //   return;
       // }

@@ -254,6 +254,8 @@ const initDriver = () => {
       &:hover {
         cursor: pointer;
       }
+      // REMOVE after testing
+
       // &.disabled {
       //   opacity: 0.5;
       //   &:hover {
@@ -271,6 +273,8 @@ const initDriver = () => {
     &:hover {
       cursor: pointer;
     }
+    // REMOVE after testing
+
     // &.disabled {
     //   opacity: 0.5;
     //   @media screen and (max-width: 960px) {
