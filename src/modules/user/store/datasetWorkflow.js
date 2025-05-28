@@ -46,9 +46,9 @@ export const useDatasetWorkflowStore = defineStore({
   },
   actions: {
     navigateItemAction(id, status) {
-      if (status === 'disabled') {
-        return;
-      }
+      // if (status === 'disabled') {
+      //   return;
+      // }
       this.currentStep = id;
     },
     setCurrentStepAction() {
