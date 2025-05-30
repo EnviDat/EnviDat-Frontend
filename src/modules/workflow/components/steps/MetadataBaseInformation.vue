@@ -218,9 +218,9 @@ export default {
     },
   },
 
-  mounted() {
-    console.log(this.viewModel);
-  },
+  // mounted() {
+  //   console.log(this.viewModel);
+  // },
 
   computed: {
     keywordsCountMin() {
@@ -312,17 +312,17 @@ export default {
       this.$emit('validate', { keywords: this.previewKeywords });
     },
     notifyPropertyChange(value) {
-      const newHeaderInfo = {
-        metadataTitle: value,
-      };
+      this.newHeaderInfo.metadataTitle = value;
 
-      this.$emit('validate', newHeaderInfo);
+      this.$emit('validate', this.newHeaderInfo);
     },
-    onDescriptionInput(val) {
-      this.$emit('validate', { metadataDescription: val });
+    onDescriptionInput(value) {
+      this.newHeaderInfo.metadataDescription = value;
+      this.$emit('validate', this.newHeaderInfo);
     },
-    onDescriptionChange(val) {
-      this.$emit('validate', { metadataDescription: val });
+    onDescriptionChange(value) {
+      this.newHeaderInfo.metadataDescription = value;
+      this.$emit('validate', this.newHeaderInfo);
     },
     blurOnEnterKey(keyboardEvent) {
       if (keyboardEvent.key === 'Enter') {
@@ -434,17 +434,6 @@ export default {
       const mergedKeywordsField = [...this.keywordsField, ...value];
       this.previewKeywords = this.processValues(mergedKeywordsField);
     },
-    setKeywords(property, value) {
-      // const newKeywords = {
-      //   ...this.$props,
-      //   [property]: value,
-      // };
-      // setKEYWORDS here
-      // eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
-      //   object: EDITMETADATA_KEYWORDS,
-      //   data: newKeywords,
-      // });
-    },
     getTagName(arr) {
       return arr.map((item) => item.name);
     },
@@ -467,6 +456,7 @@ export default {
     mdiBookOpenVariantOutline,
     mdiAccount,
     mdiEmail,
+    newHeaderInfo: {},
     defaultUserEditMetadataConfig: {
       keywordsListWordMax: 2,
       keywordsCountMin: 5,

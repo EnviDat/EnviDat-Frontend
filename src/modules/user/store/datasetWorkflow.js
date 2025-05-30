@@ -47,9 +47,9 @@ export const useDatasetWorkflowStore = defineStore({
   actions: {
     navigateItemAction(id, status) {
       // REMOVE after testing
-      // if (status === 'disabled') {
-      //   return;
-      // }
+      if (status === 'disabled') {
+        return;
+      }
       this.currentStep = id;
     },
     setCurrentStepAction() {
@@ -62,7 +62,6 @@ export const useDatasetWorkflowStore = defineStore({
     },
     async validateStepAction(stepId, newData) {
       this.loading = true;
-
       /* prendi l’istanza del VM corrente */
       const vm = await this.currentViewModel;
       if (!vm) {
@@ -70,7 +69,6 @@ export const useDatasetWorkflowStore = defineStore({
         this.loading = false;
         return;
       }
-
       const isValid = vm.validate(newData);
 
       if (isValid) {
@@ -81,6 +79,7 @@ export const useDatasetWorkflowStore = defineStore({
         this.steps[stepId].status = 'completed';
         this.setCurrentStepAction();
       } else {
+        this.loading = false;
         this.steps[stepId].hasError = true;
         this.steps[stepId].status = 'error';
       }

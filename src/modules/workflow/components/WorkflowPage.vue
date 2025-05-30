@@ -59,15 +59,26 @@ watch(
   { immediate: true },
 );
 
-function validate(data) {
-  vm.value?.validate(data);
-}
+// save the data and pass them to the save function
+const setDataModel = (data) => {
+  dataModel.value = data;
+};
+
+const validate = (data) => {
+  setDataModel(data);
+  // we need to validate the sigle field, otherwise everytime the entire object would be triggered
+  // vm.value?.validate(data);
+  vm.value?.validateSingleField(data);
+};
 
 const { currentStepObject, currentAsyncComponent } =
   storeToRefs(navigationStore);
 
 const nextStep = () => {
-  navigationStore.validateStepAction(navigationStore.currentStep, dataModel);
+  navigationStore.validateStepAction(
+    navigationStore.currentStep,
+    dataModel.value,
+  );
 };
 </script>
 

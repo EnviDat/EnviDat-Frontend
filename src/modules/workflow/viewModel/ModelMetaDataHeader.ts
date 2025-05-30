@@ -1,6 +1,9 @@
 import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/factories/ViewModels/AbstractEditViewModel.ts';
-import { isObjectValidCheckAllProps } from '@/factories/userEditingValidations';
+import {
+  isFieldValid,
+  isObjectValidCheckAllProps,
+} from '@/factories/userEditingValidations';
 import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel.ts';
 import type { KeywordDTO } from '@/types/modelTypes';
 import { enhanceKeywords } from '@/factories/keywordsFactory';
@@ -50,21 +53,33 @@ export class ModelMetaDataHeader extends AbstractEditViewModel {
     });
   }
 
-  validate(newProps: any | undefined = undefined) {
-    let propObj = newProps;
-    if (newProps) {
-      propObj = {
-        metadataTitle: newProps.metadataTitle,
-        metadataDescription: newProps.metadataDescription,
-        keywords: newProps.keywords,
-      };
-    } else {
-      propObj = {
-        metadataTitle: this.metadataTitle,
-        metadataDescription: this.metadataDescription,
-        keywords: this.keywords,
-      };
+  validateSingleField(newProps?: Partial<ModelMetaDataHeader>) {
+    if (!newProps) return true;
+
+    let allValid = true;
+
+    for (const [field, value] of Object.entries(newProps)) {
+      const ok = isFieldValid(
+        field,
+        value,
+        this.validationRules,
+        this.validationErrors,
+      );
+      if (!ok) allValid = false;
     }
+
+    return allValid;
+  }
+
+  validate(newProps: any | undefined = undefined) {
+    if (!newProps) {
+      newProps = this;
+    }
+    const propObj = {
+      metadataTitle: newProps.metadataTitle,
+      metadataDescription: newProps.metadataDescription,
+      keywords: newProps.keywords,
+    };
 
     return isObjectValidCheckAllProps(
       propObj,
