@@ -256,12 +256,12 @@ const initDriver = () => {
       }
       // REMOVE after testing
 
-      &.disabled {
-        opacity: 0.5;
-        &:hover {
-          cursor: not-allowed;
-        }
-      }
+      // &.disabled {
+      //   opacity: 0.5;
+      //   &:hover {
+      //     cursor: not-allowed;
+      //   }
+      // }
     }
   }
   &__item {
@@ -275,16 +275,16 @@ const initDriver = () => {
     }
     // REMOVE after testing
 
-    &.disabled {
-      opacity: 0.5;
-      @media screen and (max-width: 960px) {
-        // 960 is md for vueitfy
-        background-color: #e8e8e8;
-      }
-      &:hover {
-        cursor: not-allowed;
-      }
-    }
+    // &.disabled {
+    //   opacity: 0.5;
+    //   @media screen and (max-width: 960px) {
+    //     // 960 is md for vueitfy
+    //     background-color: #e8e8e8;
+    //   }
+    //   &:hover {
+    //     cursor: not-allowed;
+    //   }
+    // }
     &.active {
       @media screen and (max-width: 960px) {
         // 960 is md for vueitfy
