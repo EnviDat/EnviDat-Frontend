@@ -351,7 +351,7 @@ export default {
       return maxLength;
     },
     truncatedSubtitle() {
-      if (!this.subTitle) {
+      if (!this.subtitle) {
         return undefined
       }
 
