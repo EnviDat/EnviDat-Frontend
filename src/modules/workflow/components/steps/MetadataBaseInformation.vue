@@ -33,12 +33,16 @@
         </v-col>
       </v-row>
 
-      {{ validationErrors }}---
       <v-row>
-        <v-col cols="6">
+        <v-col cols="12" md="6">
+          <v-row class="mb-5">
+            <v-col class="text-body-1">
+              <div>{{ labels.instructionsTitle }}</div>
+            </v-col>
+          </v-row>
           <v-text-field
             ref="metadataTitle"
-            :id="METADATA_TITLE_PROPERTY"
+            :id="'metadataTitle'"
             :label="labels.labelTitle"
             :readonly="isReadOnly(false)"
             :error-messages="validationErrors.metadataTitle"
@@ -53,11 +57,11 @@
             @change="notifyPropertyChange($event.target.value)"
           />
         </v-col>
-        <v-col cols="6">
-          <v-row>
+
+        <v-col cols="12" md="6">
+          <v-row class="mb-5">
             <v-col class="text-body-1">
-              <div>{{ labels.cardInstructions1 }}</div>
-              <div>{{ labels.cardInstructions2 }}</div>
+              <div>{{ labelsKeywords.cardInstructions1 }}</div>
             </v-col>
           </v-row>
           <v-autocomplete
@@ -112,8 +116,14 @@
       </v-row>
 
       <v-row>
-        <v-col>
+        <v-col cols="12">
+          <v-row class="mb-5">
+            <v-col class="text-body-1">
+              <div v-html="labelsDescription.descriptionInstructions"></div>
+            </v-col>
+          </v-row>
           <GenericTextareaPreviewLayout
+            :columns="12"
             v-bind="genericTextAreaObject"
             :textarea-content="metadataDescriptionField"
             :validationError="validationErrors.metadataDescription"
@@ -143,18 +153,13 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import {
-  mdiAccount,
   mdiBookOpenVariantOutline,
-  mdiEmail,
   mdiText,
   mdiPaletteSwatch,
   mdiArrowDownDropCircleOutline,
 } from '@mdi/js';
 
-import {
-  METADATA_NAMESPACE,
-  METADATA_UPDATE_EXISTING_TITLE,
-} from '@/store/metadataMutationsConsts';
+import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout.vue';
 import TagChip from '@/components/Chips/TagChip.vue';
@@ -167,20 +172,6 @@ import categoryCards from '@/store/categoryCards';
 
 import { getTagColor } from '@/factories/keywordsFactory';
 
-import {
-  EDIT_METADATA_TITLE,
-  EDIT_METADATA_TITLE_LABEL,
-  EDIT_METADATA_URL_LABEL,
-  EDIT_STEP_TITLE_MAIN_METADATA,
-  METADATA_CONTACT_EMAIL,
-  METADATA_CONTACT_FIRSTNAME,
-  METADATA_CONTACT_LASTNAME,
-  METADATA_TITLE_PROPERTY,
-  METADATA_URL_PROPERTY,
-  EDIT_METADATA_KEYWORDS_TITLE,
-  EDIT_METADATA_DESCRIPTION_TITLE,
-} from '@/factories/metadataConsts';
-
 // import { getMetadataUrlFromTitle } from '@/factories/mappingFactory';
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 // import { type } from '@amcharts/amcharts5';
@@ -190,7 +181,6 @@ export default {
   props: {
     metadataTitle: String,
     metadataDescription: String,
-    // keywords: Array,
     validationErrors: {
       type: Object,
       default: () => {},
@@ -199,10 +189,6 @@ export default {
       type: Array,
       default: null,
     },
-    // metadataTitle: {
-    //   type: String,
-    //   default: '',
-    // },
 
     loading: {
       type: Boolean,
@@ -218,10 +204,6 @@ export default {
     },
   },
 
-  // mounted() {
-  //   console.log(this.viewModel);
-  // },
-
   computed: {
     keywordsCountMin() {
       return this.defaultUserEditMetadataConfig.keywordsCountMin;
@@ -235,13 +217,7 @@ export default {
         maxTextLength: 5000,
       };
     },
-    // keywordsField: {
-    //   get() {
-    //     return this.previewKeywords.length > 0
-    //       ? this.previewKeywords
-    //       : this.keywords;
-    //   },
-    // },
+
     metadataTitleField() {
       return this.metadataTitle;
     },
@@ -301,22 +277,22 @@ export default {
   },
   methods: {
     notifyChange(val) {
-      console.log(val);
       this.previewKeywords = this.processValues(val);
-      this.$emit('validate', { keywords: this.previewKeywords });
+      this.newDatasetInfo.keywords = this.processValues(val);
+      this.$emit('validate', this.newDatasetInfo);
     },
     notifyPropertyChange(value) {
-      this.newHeaderInfo.metadataTitle = value;
+      this.newDatasetInfo.metadataTitle = value;
 
-      this.$emit('validate', this.newHeaderInfo);
+      this.$emit('validate', this.newDatasetInfo);
     },
     onDescriptionInput(value) {
-      this.newHeaderInfo.metadataDescription = value;
-      this.$emit('validate', this.newHeaderInfo);
+      this.newDatasetInfo.metadataDescription = value;
+      this.$emit('validate', this.newDatasetInfo);
     },
     onDescriptionChange(value) {
-      this.newHeaderInfo.metadataDescription = value;
-      this.$emit('validate', this.newHeaderInfo);
+      this.newDatasetInfo.metadataDescription = value;
+      this.$emit('validate', this.newDatasetInfo);
     },
     blurOnEnterKey(keyboardEvent) {
       if (keyboardEvent.key === 'Enter') {
@@ -338,8 +314,6 @@ export default {
         name: pickedKeyword.toUpperCase().trim(),
         color: getTagColor(categoryCards, pickedKeyword),
       };
-
-      // console.log(this.keywordsField);
 
       // Assign selectedKeywords to keywords concatenated with pickedKeywordObj
       const selectedKeywords = this.keywordsField.concat([pickedKeywordObj]);
@@ -447,85 +421,36 @@ export default {
     keywordCount: 0,
     rulesKeywords: [],
     mdiBookOpenVariantOutline,
-    mdiAccount,
-    mdiEmail,
-    newHeaderInfo: {},
+    newDatasetInfo: {},
     defaultUserEditMetadataConfig: {
       keywordsListWordMax: 2,
       keywordsCountMin: 5,
     },
     previewKeywords: [],
-    authorIsPicked: false,
-    authorPickerTouched: false,
-    previews: {
-      [METADATA_TITLE_PROPERTY]: null,
-      [METADATA_URL_PROPERTY]: null,
-      [METADATA_CONTACT_FIRSTNAME]: null,
-      [METADATA_CONTACT_LASTNAME]: null,
-      [METADATA_CONTACT_EMAIL]: null,
-    },
     labelsKeywords: {
-      title: EDIT_METADATA_KEYWORDS_TITLE,
       keywordsLabel: 'Keywords',
       placeholder: 'Pick keywords from the list or type in a new keyword',
-      cardInstructions1: 'Please enter at least 5 keywords.',
-      cardInstructions2:
-        'To pick a keyword click into the list, you can start typing to search for a existing keywords.' +
-        ' To create a new keyword type it and press enter.',
-      previewText: 'Dataset entry preview',
+      cardInstructions1:
+        'Enter at least 5 keywords. Click a keyword to select it, or type to search or create a new one.',
     },
     labelsDescription: {
-      cardTitle: EDIT_METADATA_DESCRIPTION_TITLE,
-      labelTextarea: 'Research Data Description',
       descriptionInstructions:
         'Enter a description which helps other researchers to understand your data. Use <a href="https://www.markdownguide.org/cheat-sheet" target="_blank">markdown </a> to format the description and make it easier to read.',
-      subtitlePreview: 'Description Preview',
     },
     labels: {
-      title: EDIT_METADATA_TITLE,
-      contactPerson: 'Contact Person',
-      labelTitle: EDIT_METADATA_TITLE_LABEL,
-      labelUrl: EDIT_METADATA_URL_LABEL,
-      labelContactEmail: 'Contact Email',
-      labelContactGivenName: 'Contact Given Name',
-      labelContactSurname: 'Contact Surname',
+      title: 'Research Header Information',
+      labelTitle: 'Research Data Title',
       instructions:
         'The header is part of the main metadata information.' +
-        ` Together with the other information in the "${EDIT_STEP_TITLE_MAIN_METADATA}" step, it represents the core information for your research dataset.`,
-      instructions2:
+        'Together with the other information in the "Metadata" step, it represents the core information for your research dataset.',
+      instructionsTitle:
         'Enter a title for your research dataset. Please make sure that title is meaningful and specific.',
-      authorInstructions:
-        'Enter an email address or pick a user as the contact person for this dataset.',
-      authorOr: '<strong>Or</strong> pick <br /> an author',
-      authorOr2: '<strong>Or</strong> pick an author',
-      authorAutoComplete:
-        'If an author is picked the name is <strong>autocompleted</strong> otherwise please enter it!',
       placeholderTitle: 'Enter the title for your research dataset',
-      placeholderUrl: 'Change the url for your dataset',
       placeholderHeaderTitle: 'Your Metadata Title',
-      placeholderContactEmail: 'Enter contact email address',
-      placeholderContactGivenName: 'Enter contact given (first) name',
-      placeholderContactSurname: 'Enter contact surname name',
-      previewText: 'Metadata Header Preview',
-      authorDropdown:
-        'Click here and start typing to select an existing EnviDat author',
-      authorPickHint:
-        'Start typing the name in the text field to search for an author.',
     },
-    activeElements: {
-      [METADATA_CONTACT_FIRSTNAME]: false,
-      [METADATA_CONTACT_LASTNAME]: false,
-      [METADATA_CONTACT_EMAIL]: false,
-    },
-    METADATA_TITLE_PROPERTY,
-    METADATA_URL_PROPERTY,
-    METADATA_CONTACT_EMAIL,
-    METADATA_CONTACT_FIRSTNAME,
-    METADATA_CONTACT_LASTNAME,
   }),
   components: {
     MetadataHeader,
-
     TagChip,
     BaseStatusLabelView,
     GenericTextareaPreviewLayout,

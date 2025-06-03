@@ -51,7 +51,7 @@ export class ModelMetaDataHeader extends AbstractEditViewModel {
         .min(20, 'Description must be at least 20 characters'),
       keywords: yup
         .array()
-        .required('Enter at least 5 keywords')
+        .required('Keywords is required')
         .min(5, 'Enter at least 5 keywords.'),
     });
   }
@@ -78,7 +78,6 @@ export class ModelMetaDataHeader extends AbstractEditViewModel {
     if (!newProps) {
       newProps = this;
     }
-    console.log('validate');
     console.log(newProps);
     const propObj = {
       metadataTitle: newProps.metadataTitle,
