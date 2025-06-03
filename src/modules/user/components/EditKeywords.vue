@@ -143,11 +143,11 @@ export default {
       type: Array,
       default: () => [],
     },
-    metadataTitle: {
+    metadataCardTitle: {
       type: String,
       default: '',
     },
-    metadataDescription: {
+    metadataCardSubtitle: {
       type: String,
       default: '',
     },
@@ -224,9 +224,9 @@ export default {
     },
     metadataPreviewEntry() {
       const previewEntry = {
-        title: this.metadataTitle,
+        title: this.metadataCardTitle,
         tags: this.keywordsField,
-        subtitle: this.metadataDescription,
+        subtitle: this.metadataCardSubtitle,
       };
 
       if (this.$store) {
@@ -279,17 +279,17 @@ export default {
     },
     saveChange() {
       if (this.previewKeywords.length > 0) {
-        if (this.validateProperty('keywords', this.previewKeywords)) {
-          this.setKeywords('keywords', this.previewKeywords);
+        if (this.validateProperty(this.previewKeywords)) {
+          this.setKeywords(this.previewKeywords);
         }
       }
     },
     clearPreviews() {
       this.previewKeywords = [];
     },
-    validateProperty(property, value) {
+    validateProperty(value) {
       return isFieldValid(
-        property,
+        'keywords',
         value,
         this.validations,
         this.validationErrors,
@@ -400,10 +400,9 @@ export default {
       const mergedKeywordsField = [...this.keywordsField, ...value];
       this.previewKeywords = this.processValues(mergedKeywordsField);
     },
-    setKeywords(property, value) {
+    setKeywords(value) {
       const newKeywords = {
-        ...this.$props,
-        [property]: value,
+        keywords: value,
       };
 
       eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {

@@ -36,7 +36,7 @@
       }"
     >
       <v-container fluid class="pa-0 fill-height">
-        <v-row v-if="!compactLayout" no-gutters class="pb-2">
+        <v-row v-if="!compactLayout && truncatedSubtitle" no-gutters class="pb-2">
           <v-col cols="12">
             {{ truncatedSubtitle }}
           </v-col>
@@ -351,6 +351,10 @@ export default {
       return maxLength;
     },
     truncatedSubtitle() {
+      if (!this.subTitle) {
+        return undefined
+      }
+
       const maxLength = this.maxDescriptionLength;
       const cleanSubtitle = stripMarkdown(this.subtitle, true);
 

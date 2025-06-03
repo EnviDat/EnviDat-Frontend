@@ -86,7 +86,9 @@ const config = computed(() => store.state.config);
 const projects = computed(
   () => store.getters[`${PROJECTS_NAMESPACE}/projects`],
 );
+
 const loading = computed(() => store.getters[`${PROJECTS_NAMESPACE}/loading`]);
+
 const projectsCardsParents = computed(
   () => store.getters[`${PROJECTS_NAMESPACE}/projectsCardsParents`],
 );
