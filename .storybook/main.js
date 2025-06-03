@@ -10,11 +10,7 @@ export default {
       disableSourcemaps: false,
     },
   },
-  addons: [
-    '@storybook/addon-storysource',
-    '@storybook/addon-essentials',
-    '@chromatic-com/storybook'
-  ],
+  addons: ['@chromatic-com/storybook', '@storybook/addon-docs'],
 
   framework: {
     name: '@storybook/vue3-vite',

@@ -11,7 +11,7 @@
  */
 
 import { reactive } from 'vue';
-import type { Meta } from '@storybook/vue3';
+import type { Meta } from '@storybook/vue3-vite';
 
 import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader.vue';
 import { sortObjectArray } from '@/factories/metaDataFactory';

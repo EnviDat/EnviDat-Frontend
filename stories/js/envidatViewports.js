@@ -1,5 +1,5 @@
-// import defaults from '@storybook/addon-viewport/dist/modern/defaults';
-import { MINIMAL_VIEWPORTS } from '@storybook/addon-viewport';
+// import defaults from 'storybook/viewport/dist/modern/defaults';
+import { MINIMAL_VIEWPORTS } from 'storybook/viewport';
 
 const smallMobile = 'mobile1';
 let sWidth = MINIMAL_VIEWPORTS[smallMobile].styles.width;
