@@ -81,8 +81,7 @@
             "
             @keyup="blurOnEnterKey"
             @input="isEnoughKeywords()"
-            @change="notifyKeywordsChange"
-            @blur="saveChange()"
+            @change="notifyChange"
             @keydown="catchKeywordEntered($event)"
             :rules="rulesKeywords"
           >
@@ -158,6 +157,7 @@ import {
 } from '@/store/metadataMutationsConsts';
 
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout.vue';
+import TagChip from '@/components/Chips/TagChip.vue';
 
 import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
 // import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
@@ -250,12 +250,12 @@ export default {
     },
     keywordsField: {
       get() {
-        return this.previewKeywords.length
+        return this.previewKeywords.length > 0
           ? this.previewKeywords
           : this.keywords;
       },
       set(v) {
-        this.notifyKeywordsChange(v);
+        this.notifyChange(v);
       },
     },
 
@@ -298,16 +298,10 @@ export default {
         prependIcon: mdiText,
       };
     },
-    // metadataTitleField: {
-    //   get() {
-    //     return this.previews[METADATA_TITLE_PROPERTY] !== null
-    //       ? this.previews[METADATA_TITLE_PROPERTY]
-    //       : this.metadataTitle;
-    //   },
-    // },
   },
   methods: {
-    notifyKeywordsChange(val) {
+    notifyChange(val) {
+      console.log(val);
       this.previewKeywords = this.processValues(val);
       this.$emit('validate', { keywords: this.previewKeywords });
     },
@@ -344,6 +338,8 @@ export default {
         name: pickedKeyword.toUpperCase().trim(),
         color: getTagColor(categoryCards, pickedKeyword),
       };
+
+      // console.log(this.keywordsField);
 
       // Assign selectedKeywords to keywords concatenated with pickedKeywordObj
       const selectedKeywords = this.keywordsField.concat([pickedKeywordObj]);
@@ -430,10 +426,7 @@ export default {
 
       return this.keywordValidMin3Characters && this.keywordValidConcise;
     },
-    notifyChange(value) {
-      const mergedKeywordsField = [...this.keywordsField, ...value];
-      this.previewKeywords = this.processValues(mergedKeywordsField);
-    },
+
     getTagName(arr) {
       return arr.map((item) => item.name);
     },
@@ -519,18 +512,6 @@ export default {
       authorPickHint:
         'Start typing the name in the text field to search for an author.',
     },
-    // contactValidationProperties: [
-    //   METADATA_CONTACT_EMAIL,
-    //   METADATA_CONTACT_FIRSTNAME,
-    //   METADATA_CONTACT_LASTNAME,
-    // ],
-    // validationErrors: {
-    //   [METADATA_TITLE_PROPERTY]: null,
-    //   [METADATA_URL_PROPERTY]: null,
-    //   [METADATA_CONTACT_FIRSTNAME]: null,
-    //   [METADATA_CONTACT_LASTNAME]: null,
-    //   [METADATA_CONTACT_EMAIL]: null,
-    // },
     activeElements: {
       [METADATA_CONTACT_FIRSTNAME]: false,
       [METADATA_CONTACT_LASTNAME]: false,
@@ -544,10 +525,10 @@ export default {
   }),
   components: {
     MetadataHeader,
-    // BaseUserPicker,
+
+    TagChip,
     BaseStatusLabelView,
     GenericTextareaPreviewLayout,
-    // ExpandableLayout,
   },
 };
 </script>

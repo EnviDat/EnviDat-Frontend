@@ -49,7 +49,10 @@ export class ModelMetaDataHeader extends AbstractEditViewModel {
         .string()
         .required('Dataset description is required')
         .min(20, 'Description must be at least 20 characters'),
-      keywords: yup.array().min(5, 'Enter at least 5 keywords.'),
+      keywords: yup
+        .array()
+        .required('Enter at least 5 keywords')
+        .min(5, 'Enter at least 5 keywords.'),
     });
   }
 
@@ -75,6 +78,8 @@ export class ModelMetaDataHeader extends AbstractEditViewModel {
     if (!newProps) {
       newProps = this;
     }
+    console.log('validate');
+    console.log(newProps);
     const propObj = {
       metadataTitle: newProps.metadataTitle,
       metadataDescription: newProps.metadataDescription,
