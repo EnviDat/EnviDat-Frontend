@@ -179,8 +179,14 @@ import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 export default {
   name: 'EditMetadataHeader',
   props: {
-    metadataTitle: String,
-    metadataDescription: String,
+    metadataTitle: {
+      type: String,
+      default: '',
+    },
+    metadataDescription: {
+      type: String,
+      default: '',
+    },
     validationErrors: {
       type: Object,
       default: () => {},
@@ -205,6 +211,19 @@ export default {
   },
 
   computed: {
+    metadataPreviewEntry() {
+      const previewEntry = {
+        metadataTitle:
+          this.newDatasetInfo.metadataTitle !== undefined
+            ? this.newDatasetInfo.metadataTitle
+            : 'Dataset Title',
+        tags: this.keywordsField,
+      };
+
+      console.log(previewEntry);
+
+      return previewEntry;
+    },
     keywordsCountMin() {
       return this.defaultUserEditMetadataConfig.keywordsCountMin;
     },
@@ -316,7 +335,10 @@ export default {
       };
 
       // Assign selectedKeywords to keywords concatenated with pickedKeywordObj
-      const selectedKeywords = this.keywordsField.concat([pickedKeywordObj]);
+      console.log(this.keywordsField);
+      const selectedKeywords = (this.keywordsField || []).concat([
+        pickedKeywordObj,
+      ]);
 
       this.previewKeywords = this.processValues(selectedKeywords);
       this.search = null;
