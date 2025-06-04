@@ -20,9 +20,9 @@
 
   <meta property="og:image" :content="logoUrl" />
 
-  <script v-if="data.jsonLd"
+  <script v-if="jsonLd"
           type='application/ld+json'
-          v-html="JSON.stringify(data.jsonLd)">
+          v-html="JSON.stringify(jsonLd)">
 
   </script>
 
@@ -35,6 +35,9 @@ import logoUrl from '@/assets/logo/EnviDat_fav.ico'
 import { getSeoSanitizedDataset } from './seoConversions.ts';
 
 const data = useData<DatasetDTO>()
+const jsonLd = data.jsonLd;
+delete data.jsonLd;
+
 const seoData = getSeoSanitizedDataset(data);
 
 
