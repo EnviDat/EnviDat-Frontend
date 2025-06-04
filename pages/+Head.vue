@@ -43,7 +43,13 @@ const seoData = getSeoSanitizedDataset(data);
 
 const baseCanonicalUrl = import.meta.env.PUBLIC_ENV__VIKE_BASE_CANONICAL_URL;
 const datasetName = data?.name;
-const canonicalUrl = datasetName ? `${baseCanonicalUrl}/metadata/${datasetName}` : baseCanonicalUrl;
-const redirectUrl = datasetName ? `${baseCanonicalUrl}/#/metadata/${datasetName}` : baseCanonicalUrl;
+
+let canonicalUrl = `${baseCanonicalUrl}/metadata/${datasetName}`;
+let redirectUrl = `${baseCanonicalUrl}/#/metadata/${datasetName}`;
+
+if (!datasetName) {
+  canonicalUrl = `${baseCanonicalUrl}/metadata/`
+  redirectUrl = `${baseCanonicalUrl}/#/browse`
+}
 
 </script>
