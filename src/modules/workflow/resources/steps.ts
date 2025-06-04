@@ -80,7 +80,7 @@ export const workflowSteps: WorkflowStep[] = [
     key: 'GeoInformation',
     loader: () =>
       import('@/modules/workflow/components/steps/GeoInformation.vue'),
-    viewModelKey: 'ModelMetaDataHeader',
+    viewModelKey: 'ModelGeoInfo',
     genericProps: {},
     icon: 'geoinfo',
     status: 'disabled',

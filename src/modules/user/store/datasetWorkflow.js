@@ -51,6 +51,12 @@ export const useDatasetWorkflowStore = defineStore({
       //   return;
       // }
       this.currentStep = id;
+      // REMOVE after testing
+      this.steps.forEach((step) => {
+        step.status = 'disabled';
+        step.hasError = false;
+      });
+      this.steps[id].status = 'active';
     },
     setCurrentStepAction() {
       // find the next element with status != completed
@@ -64,6 +70,7 @@ export const useDatasetWorkflowStore = defineStore({
       this.loading = true;
       /* prendi l’istanza del VM corrente */
       const vm = await this.currentViewModel;
+
       if (!vm) {
         console.warn('No view‑model for this step');
         this.loading = false;

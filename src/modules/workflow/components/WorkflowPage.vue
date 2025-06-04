@@ -55,6 +55,7 @@ watch(
   () => navigationStore.currentStep,
   async () => {
     vm.value = await navigationStore.currentViewModel;
+    console.log(vm.value);
   },
   { immediate: true },
 );

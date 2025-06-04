@@ -14,6 +14,7 @@ import { EditOrganizationViewModel } from '@/factories/ViewModels/EditOrganizati
 import { EditFundingViewModel } from '@/factories/ViewModels/EditFundingViewModel.ts';
 import { AbstractEditViewModel } from '@/factories/ViewModels/AbstractEditViewModel.ts';
 import { ModelMetaDataHeader } from '@/modules/workflow/viewModel/ModelMetaDataHeader.ts';
+import { ModelGeoInfo } from '@/modules/workflow/viewModel/ModelGeoInfo.ts';
 
 export class DatasetViewModel {
   viewModelClasses = [
@@ -29,6 +30,7 @@ export class DatasetViewModel {
     EditResourceViewModel,
     EditOrganizationViewModel,
     ModelMetaDataHeader,
+    ModelGeoInfo,
   ];
 
   private viewModelInstances: Map<string, any> = new Map();
