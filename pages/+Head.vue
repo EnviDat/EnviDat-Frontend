@@ -48,7 +48,7 @@ let canonicalUrl = `${baseCanonicalUrl}/metadata/${datasetName}`;
 let redirectUrl = `${baseCanonicalUrl}/#/metadata/${datasetName}`;
 
 if (!datasetName) {
-  canonicalUrl = `${baseCanonicalUrl}/metadata/`
+  canonicalUrl = `${baseCanonicalUrl}/metadata`
   redirectUrl = `${baseCanonicalUrl}/#/browse`
 }
 
