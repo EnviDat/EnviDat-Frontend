@@ -89,6 +89,20 @@ export class EditAuthorViewModel extends AbstractEditViewModel{
     return author;
   }
 
+  getAuthor() : Author {
+    return {
+      firstName: this.firstName,
+      lastName: this.lastName,
+      email: this.email,
+      dataCredit: this.dataCredit,
+      identifier: this.identifier,
+      identifierType: this.identifierType,
+      affiliation: this.affiliation,
+      totalDataCredits: this.totalDataCredits,
+      lastModified: this.lastModified,
+    }
+  }
+
   validate(newProps?: any) {
 
     return isObjectValidCheckAllProps(

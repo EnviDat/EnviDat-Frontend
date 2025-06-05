@@ -1,5 +1,5 @@
 <template>
-  <v-card id="AddAuthorEditing" class="pa-0" :loading="loadingColor">
+  <v-card id="AddNewAuthor" class="pa-0" :loading="loadingColor">
     <BaseIconButton
       v-if="isEditingAuthor"
       class="editResourceCloseButton ma-2"
@@ -208,6 +208,7 @@ import {
   mdiHandshake,
   mdiWalletMembership,
 } from '@mdi/js';
+
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
@@ -230,16 +231,18 @@ import {
 
 import {
   EDITMETADATA_AUTHOR,
+/*
   EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
   REMOVE_EDITING_AUTHOR,
+*/
 } from '@/factories/eventBus';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 
 export default {
-  name: 'EditAddAuthor',
+  name: 'AddNewAuthor',
   props: {
     titleLabel: {
       type: String,
@@ -302,6 +305,8 @@ export default {
       default: '',
     },
   },
+  emits: ['save', 'removeAuthor'],
+/*
   mounted() {},
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
@@ -309,6 +314,7 @@ export default {
   beforeUnmount() {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
+*/
   computed: {
     loadingColor() {
       if (this.loading) {
@@ -557,10 +563,14 @@ export default {
         ...authorObject,
       };
 
+/*
       eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_AUTHOR,
         data: newAuthorInfo,
       });
+*/
+
+      this.$emit('save', newAuthorInfo)
     },
     fillPreviews(email, firstName, lastName, identifier, affiliation) {
       this.previews.email = email;
@@ -570,10 +580,14 @@ export default {
       this.previews.affiliation = affiliation;
     },
     removeAuthorClick(email) {
+/*
       eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
         object: REMOVE_EDITING_AUTHOR,
         data: email,
       });
+*/
+
+      this.emit('removeAuthor', email)
     },
     isReadOnly(dateProperty) {
       return isFieldReadOnly(this.$props, dateProperty);

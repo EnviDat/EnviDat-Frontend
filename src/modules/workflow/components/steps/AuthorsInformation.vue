@@ -4,7 +4,10 @@
       <v-col cols="6">
         <v-row>
           <v-col v-show="!selectedAuthor" cols="12">
-            <AddExistingAuthor v-bind="authorPickingGenericProps" />
+            <AddExistingAuthor
+              v-bind="authorPickingGenericProps"
+              @save="save"
+            />
           </v-col>
 
           <v-col v-if="isReadOnly(METADATA_AUTHORS_PROPERTY)" cols="12">
@@ -20,9 +23,10 @@
           </v-col>
 
           <v-col v-else cols="12">
-            <AddAuthorEditing
+            <AddNewAuthor
               v-bind="editAddAuthorObject"
               @closeClicked="catchEditAuthorClose"
+              @save="saveNewAuthor"
             />
           </v-col>
         </v-row>
@@ -32,27 +36,29 @@
         <MetadataAuthorsEditing
           v-bind="authorListingGenericProps"
           @editAuthorClick="catchEditAuthorClick"
+          @save="save"
         />
       </v-col>
     </v-row>
   </v-container>
 </template>
 
-<script>
+<script lang="ts">
 /**
- * EditAuthorList.vue shows all the authors of a metadata entry in a list.
+ * AuthorsInformation.vue shows all the authors of a metadata entry in a list.
  *
  * @summary shows the authors of a metadata entry
  * @author Dominik Haas-Artho
  *
- * Created at     : 2019-10-23 14:11:27
- * Last modified  : 2021-09-01 11:00:41
+ * Created at     : 2025-06-05 14:11:27
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import AddAuthorEditing from '@/modules/workflow/components/steps/AddAuthorEditing.vue';
+import { PropType } from 'vue';
+import type { Author } from '@/types/modelTypes';
+import AddNewAuthor from '@/modules/workflow/components/steps/AddNewAuthor.vue';
 import AddExistingAuthor from '@/modules/workflow/components/steps/AddExistingAuthor.vue';
 import MetadataAuthorsEditing from '@/modules/workflow/components/steps/MetadataAuthorsEditing.vue';
 
@@ -75,11 +81,14 @@ import {
   METADATA_AUTHORS_PROPERTY,
 } from '@/factories/metadataConsts';
 
+import { EditAuthorViewModel } from '@/factories/ViewModels/EditAuthorViewModel.ts';
+
+
 export default {
-  name: 'EditAuthorList',
+  name: 'AuthorsInformation',
   components: {
     MetadataAuthorsEditing,
-    AddAuthorEditing,
+    AddNewAuthor,
     AddExistingAuthor,
   },
   props: {
@@ -88,7 +97,7 @@ export default {
       default: undefined,
     },
     authors: {
-      type: Array,
+      type: Array, // as PropType<Author>,
       default: undefined,
     },
     // only used for testing via storybook
@@ -260,12 +269,32 @@ export default {
     catchEditAuthorClose() {
       eventBus.emit(CANCEL_EDITING_AUTHOR, this.selectedAuthor.email);
     },
+    save(data: unknown) {
+      this.$emit('save', data);
+    },
+    saveNewAuthor(data: unknown) {
+      // call the save here to do validation, don't directly call validate()
+      // because if it's valid, we need to call getAuthor() which means the
+      // viewModel has to have the author information assign, which doesn't happen
+      // when only validating
+      const validData = this.addNewAuthorViewModel.save(data);
+
+      if (validData) {
+        const newAuthor = this.addNewAuthorViewModel.getAuthor();
+        const currentAuthors = [...this.authors];
+        currentAuthors.push(newAuthor);
+        this.save(currentAuthors);
+      }
+    },
   },
   data: () => ({
+    addNewAuthorViewModel: new EditAuthorViewModel(),
     METADATA_AUTHORS_PROPERTY,
     EDIT_METADATA_ADD_AUTHOR_TITLE,
   }),
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+
+</style>

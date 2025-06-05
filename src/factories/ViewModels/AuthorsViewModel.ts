@@ -8,13 +8,15 @@ export class AuthorsViewModel extends AbstractViewModel {
 
   declare authors: Author[];
 
-  constructor(dataset: DatasetDTO) {
+  constructor(dataset: DatasetDTO | undefined) {
     // don't provide dataset and mapping rules because authors
     // would get partially unpacked and then the unpacking of the full list
     // doesn't work anymore
     super();
 
-    this.authors = AuthorsViewModel.getFormattedAuthors(dataset.author, dataset.metadata_modified);
+    if (dataset) {
+      this.authors = AuthorsViewModel.getFormattedAuthors(dataset.author, dataset.metadata_modified);
+    }
   }
 
   static getFormattedAuthors(rawAuthors: AuthorDTO[], lastModified: string) : Author[] {
