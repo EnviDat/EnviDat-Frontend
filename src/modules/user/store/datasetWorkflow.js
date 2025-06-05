@@ -58,8 +58,10 @@ export const useDatasetWorkflowStore = defineStore({
       }
     },
     async validateStepAction(stepId, newData) {
+      this.setCurrentStepAction();
+/*
       this.loading = true;
-      /* prendi l’istanza del VM corrente */
+      /!* prendi l’istanza del VM corrente *!/
       const vm = this.currentViewModel;
 
       if (!vm) {
@@ -83,6 +85,7 @@ export const useDatasetWorkflowStore = defineStore({
       }
 
       this.loading = false;
+*/
     },
 
     // async fetchOrganizations(url, params = {}) {

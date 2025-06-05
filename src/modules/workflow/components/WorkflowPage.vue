@@ -20,7 +20,8 @@
             :is="currentAsyncComponent"
             v-bind="vm"
             @validate="validate"
-            v-if="currentAsyncComponent && vm"
+            @save="save"
+            v-if="currentAsyncComponent"
           />
         </div>
         <div class="pa-4 d-flex align-center justify-end">
@@ -35,7 +36,7 @@
 import { useDisplay } from 'vuetify';
 import { storeToRefs } from 'pinia';
 
-import { defineAsyncComponent, computed, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 
 import NavigationWorkflow from '@/components/Navigation/NavigationWorkflow.vue';
 
@@ -46,30 +47,24 @@ const display = useDisplay();
 
 const navigationStore = useDatasetWorkflowStore();
 
-const dataModel = ref(null);
-
 const vm = ref(null);
 
 // load the current view model
 watch(
   () => navigationStore.currentStep,
   async () => {
-    vm.value = await navigationStore.currentViewModel;
+    vm.value = navigationStore.currentViewModel;
     console.log(vm.value);
   },
   { immediate: true },
 );
 
-// save the data and pass them to the save function
-const setDataModel = (data) => {
-  dataModel.value = data;
-};
+const save = (data) => {
+  vm.value.save(data);
+}
 
 const validate = (data) => {
-  setDataModel(data);
-  // we need to validate the sigle field, otherwise everytime the entire object would be triggered
-  // vm.value?.validate(data);
-  vm.value?.validateSingleField(data);
+  vm.value?.validate(data);
 };
 
 const { currentStepObject, currentAsyncComponent } =
@@ -78,7 +73,6 @@ const { currentStepObject, currentAsyncComponent } =
 const nextStep = () => {
   navigationStore.validateStepAction(
     navigationStore.currentStep,
-    dataModel.value,
   );
 };
 </script>

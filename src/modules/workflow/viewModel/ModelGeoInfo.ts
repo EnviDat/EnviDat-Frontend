@@ -46,12 +46,10 @@ export class ModelGeoInfo extends AbstractEditViewModel {
     });
   }
 
-  validateSingleField(newProps?: Partial<ModelGeoInfo>): boolean {
+  validate(newProps?: Partial<ModelGeoInfo>): boolean {
     if (!newProps) return true;
 
     let allValid = true;
-
-    console.log(newProps);
 
     for (const [field, value] of Object.entries(newProps)) {
       const ok = isFieldValid(
@@ -64,24 +62,6 @@ export class ModelGeoInfo extends AbstractEditViewModel {
     }
 
     return allValid;
-  }
-
-  validate(newProps: any | undefined = undefined) {
-    if (!newProps) {
-      newProps = this;
-    }
-    const propObj = {
-      dates: newProps.dates,
-      geometries: newProps.geometries,
-    };
-
-    console.log(propObj);
-
-    return isObjectValidCheckAllProps(
-      propObj,
-      this.validationRules,
-      this.validationErrors,
-    );
   }
 
   static mappingRules() {

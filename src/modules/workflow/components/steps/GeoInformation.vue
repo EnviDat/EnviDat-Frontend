@@ -418,10 +418,7 @@ export default {
       this.dateChanged(index, prop, '');
     },
     setDataInfo(property, value) {
-      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: EDITMETADATA_DATA_INFO,
-        data: { ...this.$props, [property]: value },
-      });
+      this.$emit('save', { [property]: value });
     },
     initEditor(text) {
       this.jsonEditor = createJSONEditor({

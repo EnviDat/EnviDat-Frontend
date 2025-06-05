@@ -196,6 +196,7 @@ const navigateItem = (id, status) => {
   navigationStore.navigateItemAction(id, status);
 };
 
+
 // init the driver step
 const initDriver = () => {
   // DEFINE the guidelines on the store for each step

@@ -5,7 +5,7 @@ import {
   isObjectValidCheckAllProps,
 } from '@/factories/userEditingValidations';
 import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel.ts';
-import type { KeywordDTO } from '@/types/modelTypes';
+import type { KeywordDTO } from '@/types/dataTransferObjectsTypes';
 import { enhanceKeywords } from '@/factories/keywordsFactory';
 import categoryCards from '@/store/categoryCards';
 
@@ -56,7 +56,7 @@ export class ModelMetaDataHeader extends AbstractEditViewModel {
     });
   }
 
-  validateSingleField(newProps?: Partial<ModelMetaDataHeader>) {
+  validate(newProps?: Partial<ModelMetaDataHeader>) {
     if (!newProps) return true;
 
     let allValid = true;
@@ -72,24 +72,6 @@ export class ModelMetaDataHeader extends AbstractEditViewModel {
     }
 
     return allValid;
-  }
-
-  validate(newProps: any | undefined = undefined) {
-    if (!newProps) {
-      newProps = this;
-    }
-    console.log(newProps);
-    const propObj = {
-      metadataTitle: newProps.metadataTitle,
-      metadataDescription: newProps.metadataDescription,
-      keywords: newProps.keywords,
-    };
-
-    return isObjectValidCheckAllProps(
-      propObj,
-      this.validationRules,
-      this.validationErrors,
-    );
   }
 
   static mappingRules() {

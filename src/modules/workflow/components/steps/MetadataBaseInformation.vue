@@ -298,7 +298,7 @@ export default {
     notifyChange(val) {
       this.previewKeywords = this.processValues(val);
       this.newDatasetInfo.keywords = this.processValues(val);
-      this.$emit('validate', this.newDatasetInfo);
+      this.$emit('save', this.newDatasetInfo);
     },
     notifyPropertyChange(value) {
       this.newDatasetInfo.metadataTitle = value;
@@ -307,11 +307,11 @@ export default {
     },
     onDescriptionInput(value) {
       this.newDatasetInfo.metadataDescription = value;
-      this.$emit('validate', this.newDatasetInfo);
+      this.$emit('save', this.newDatasetInfo);
     },
     onDescriptionChange(value) {
       this.newDatasetInfo.metadataDescription = value;
-      this.$emit('validate', this.newDatasetInfo);
+      this.$emit('save', this.newDatasetInfo);
     },
     blurOnEnterKey(keyboardEvent) {
       if (keyboardEvent.key === 'Enter') {
