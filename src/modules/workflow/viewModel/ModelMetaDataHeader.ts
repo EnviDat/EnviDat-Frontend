@@ -1,7 +1,7 @@
 import * as yup from 'yup';
-import { AbstractEditViewModel } from '@/factories/ViewModels/AbstractEditViewModel.ts';
+import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 
-import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel.ts';
+import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.ts';
 import type { KeywordDTO } from '@/types/dataTransferObjectsTypes';
 import { enhanceKeywords } from '@/factories/keywordsFactory';
 import categoryCards from '@/store/categoryCards';

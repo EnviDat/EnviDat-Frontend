@@ -16,8 +16,8 @@ import {
 } from '@/factories/authorFactory';
 
 import unFormatedMetadataCards from './js/metadata';
-import { EditDatasetServiceLayer } from '@/factories/ViewModels/EditDatasetServiceLayer';
-import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel';
+import { EditDatasetServiceLayer } from '@/modules/workflow/viewModel/EditDatasetServiceLayer.js';
+import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.js';
 import EditAuthorList from '@/modules/user/components/edit/EditAuthorList.vue';
 
 

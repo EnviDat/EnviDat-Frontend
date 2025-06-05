@@ -11,12 +11,14 @@
  */
 
 import EditDescription from '@/modules/user/components/EditDescription.vue';
-import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionViewModel';
+import { EditDescriptionViewModel } from '@/modules/workflow/viewModel/EditDescriptionViewModel';
 import {
   mobileLargeViewportParams,
   mobileViewportParams,
   tabletViewportParams,
 } from './js/envidatViewports';
+import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.js';
+import { EditDatasetServiceLayer } from '@/modules/workflow/viewModel/EditDatasetServiceLayer.js';
 
 const description = `# Why user stories?
 &nbsp;
@@ -50,24 +52,27 @@ export default {
   component: EditDescription,
 };
 
+const vm = new EditDescriptionViewModel(new DatasetViewModel(new EditDatasetServiceLayer({
+  notes: description,
+})))
 
 export const Empty = {}
 
 export const Filled = {
-  args: createDescriptionViewModel({ notes: description }),
+  args: vm,
 }
 
 export const FilledMobile = {
-  args: createDescriptionViewModel({ notes: description }, true),
+  args: vm,
   parameters: mobileViewportParams,
 }
 
 export const FilledLargeMobile = {
-  args: createDescriptionViewModel({ notes: description }, true),
+  args: vm,
   parameters: mobileLargeViewportParams,
 }
 
 export const FilledTablet = {
-  args: createDescriptionViewModel({ notes: description }, true),
+  args: vm,
   parameters: tabletViewportParams,
 }

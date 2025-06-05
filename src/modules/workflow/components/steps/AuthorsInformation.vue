@@ -81,7 +81,7 @@ import {
   METADATA_AUTHORS_PROPERTY,
 } from '@/factories/metadataConsts';
 
-import { EditAuthorViewModel } from '@/factories/ViewModels/EditAuthorViewModel.ts';
+import { EditAuthorViewModel } from '@/modules/workflow/viewModel/EditAuthorViewModel.ts';
 
 
 export default {

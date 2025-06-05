@@ -7,10 +7,10 @@ import axios from 'axios';
 
 import { ACTION_METADATA_EDITING_PATCH_DATASET } from '@/modules/user/store/userMutationsConsts';
 import { urlRewrite } from '@/factories/apiFactory';
-import { Dataset } from '@/factories/ViewModels/Dataset';
+import { Dataset } from '@/modules/workflow/viewModel/Dataset.ts';
 import { DatasetServiceLayer } from '@/types/modelTypes';
 import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
-import { AbstractEditViewModel } from '@/factories/ViewModels/AbstractEditViewModel.ts';
+import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 import { ACTION_LOAD_METADATA_CONTENT_BY_ID } from '@/store/metadataMutationsConsts';
 
 // don't use an api base url or API_ROOT when using testdata
@@ -21,7 +21,7 @@ const useTestdata = import.meta.env?.VITE_USE_TESTDATA === 'true';
 
 let mockDataResponse;
 if (useTestdata) {
-  mockDataResponse = await import('../../../public/testdata/dataset_10-16904-1');
+  mockDataResponse = await import('../../../../public/testdata/dataset_10-16904-1');
 }
 
 

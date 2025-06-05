@@ -1,7 +1,6 @@
 import * as yup from 'yup';
-import { AbstractEditViewModel } from '@/factories/ViewModels/AbstractEditViewModel.ts';
-import { isObjectValidCheckAllProps } from '@/factories/userEditingValidations';
-import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel.ts';
+import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
+import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.ts';
 
 
 export class EditHeaderViewModel extends AbstractEditViewModel{
@@ -22,8 +21,6 @@ export class EditHeaderViewModel extends AbstractEditViewModel{
     contactFirstName: string;
     contactLastName: string;
   }
-
-  declare validationRules: object;
 
 
   constructor(datasetViewModel: DatasetViewModel) {
@@ -69,31 +66,8 @@ export class EditHeaderViewModel extends AbstractEditViewModel{
       });
   }
 
-  validate(newProps: any | undefined = undefined) {
-    let propObj = newProps;
-    if (newProps) {
-      propObj = {
-        metadataTitle: newProps.metadataTitle,
-        metadataUrl: newProps.metadataUrl,
-        contactEmail: newProps.contactEmail,
-        contactFirstName: newProps.contactFirstName,
-        contactLastName: newProps.contactLastName,
-      };
-    } else {
-      propObj = {
-        metadataTitle: this.metadataTitle,
-        metadataUrl: this.metadataUrl,
-        contactEmail: this.contactEmail,
-        contactFirstName: this.contactFirstName,
-        contactLastName: this.contactLastName,
-      };
-    }
-
-    return isObjectValidCheckAllProps(
-      propObj,
-      this.validationRules,
-      this.validationErrors,
-    );
+  validate(newProps?: Partial<EditHeaderViewModel>): boolean {
+    return super.validate(newProps);
   }
 
 

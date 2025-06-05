@@ -2,8 +2,8 @@ import { it, describe, expect } from 'vitest';
 import { createHeaderViewModel } from '@/factories/ViewModels/HeaderViewModel';
 import { EDITMETADATA_MAIN_HEADER } from '@/factories/eventBus';
 import { convertJSON } from '@/factories/mappingFactory';
-import { EditDatasetServiceLayer } from '@/factories/ViewModels/EditDatasetServiceLayer';
-import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel';
+import { EditDatasetServiceLayer } from '@/modules/workflow/viewModel/EditDatasetServiceLayer.js';
+import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.js';
 
 import {
   METADATA_TITLE_PROPERTY,

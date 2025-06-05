@@ -1,12 +1,13 @@
 import * as yup from 'yup';
-import { AbstractEditViewModel } from '@/factories/ViewModels/AbstractEditViewModel.ts';
-import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel.ts';
-import { isObjectValidCheckAllProps } from '@/factories/userEditingValidations';
+import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
+import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.ts';
 
-const convertEmptyStringToNull = (value, originalValue) =>
+
+const convertEmptyStringToNull = (value: string, originalValue: string) =>
   originalValue === '' ? null : value;
 
-const convertToZero = value => (Number.isNaN(value) ? 0 : value);
+const convertToZero = (value: unknown) => (Number.isNaN(value) ? 0 : value);
+
 
 export class EditResourceViewModel extends AbstractEditViewModel{
 
@@ -67,8 +68,6 @@ export class EditResourceViewModel extends AbstractEditViewModel{
     state: string,
   }
 
-  declare validationRules: object;
-
 
   constructor(datasetViewModel: DatasetViewModel) {
     super(datasetViewModel, EditResourceViewModel.mappingRules());
@@ -120,7 +119,8 @@ export class EditResourceViewModel extends AbstractEditViewModel{
           .nullable()
           .min(1, 'Format has to be at least 1 characters long.'),
         size: yup
-          .number('size must be a number')
+          // .number('size must be a number')
+          .number()
           .transform(convertToZero)
           .test(
             'empty-check',
@@ -169,42 +169,8 @@ export class EditResourceViewModel extends AbstractEditViewModel{
     ];
   }
 
-  validate(newProps?: any): boolean {
-
-    let objProps = newProps;
-
-    if(!objProps) {
-      objProps = {
-        metadataId: null,
-        description: null,
-        cacheLastUpdated: null,
-        cacheUrl: null,
-        id: null,
-        doi: null,
-        url: null,
-        urlType: null,
-        created: null,
-        lastModified: null,
-        mimetype: null,
-        mimetypeInner: null,
-        metadataModified: null,
-        multipartName: null,
-        name: null,
-        position: null,
-        restricted: null,
-        size: null,
-        sizeFormat: null,
-        resourceSize: null,
-        resourceType: null,
-        state: null,
-      };
-    }
-
-    return isObjectValidCheckAllProps(
-      objProps,
-      this.validationRules,
-      this.validationErrors,
-    );
+  validate(newProps?: Partial<EditResourceViewModel>): boolean {
+    return super.validate(newProps);
   }
 }
 

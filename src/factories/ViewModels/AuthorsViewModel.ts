@@ -1,7 +1,7 @@
 import { reactive, watch } from 'vue';
 import { Author } from '@/types/modelTypes';
 import { AuthorDTO, DatasetDTO } from '@/types/dataTransferObjectsTypes';
-import { EditAuthorViewModel } from '@/factories/ViewModels/EditAuthorViewModel.ts';
+import { EditAuthorViewModel } from '@/modules/workflow/viewModel/EditAuthorViewModel.ts';
 import { AbstractViewModel } from '@/factories/ViewModels/AbstractViewModel.ts';
 
 export class AuthorsViewModel extends AbstractViewModel {

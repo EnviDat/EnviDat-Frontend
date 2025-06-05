@@ -1,10 +1,10 @@
 import * as yup from 'yup';
-import { AbstractEditViewModel } from '@/factories/ViewModels/AbstractEditViewModel.ts';
-import { KeywordDTO } from '@/types/modelTypes';
+import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
+import { KeywordDTO } from '@/types/dataTransferObjectsTypes';
 import { enhanceKeywords } from '@/factories/keywordsFactory';
 import categoryCards from '@/store/categoryCards';
-import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel.ts';
-import { isObjectValidCheckAllProps } from '@/factories/userEditingValidations';
+import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.ts';
+
 
 export class EditKeywordsViewModel extends AbstractEditViewModel{
 
@@ -17,8 +17,6 @@ export class EditKeywordsViewModel extends AbstractEditViewModel{
   declare validationErrors: {
     keywords: string,
   }
-
-  declare validationRules: object;
 
 
   constructor(datasetViewModel: DatasetViewModel, existingKeywords: KeywordDTO[]) {
@@ -45,15 +43,8 @@ export class EditKeywordsViewModel extends AbstractEditViewModel{
     ];
   }
 
-  validate(newProps?: any): boolean {
-
-    return isObjectValidCheckAllProps(
-      {
-        keywords: newProps?.keywords || this.keywords,
-      },
-      this.validationRules,
-      this.validationErrors,
-    );
+  validate(newProps?: Partial<EditKeywordsViewModel>): boolean {
+    return super.validate(newProps);
   }
 }
 

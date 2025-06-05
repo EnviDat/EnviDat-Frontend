@@ -35,9 +35,9 @@ import {
 import { METADATA_AUTHOR_SEQUENCE_PROPERTY, METADATA_AUTHORS_PROPERTY } from '@/factories/metadataConsts';
 import unFormatedMetadataCards from './js/metadata';
 
-import { EditAuthorListViewModel } from '@/factories/ViewModels/EditAuthorListViewModel';
-import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel';
-import { EditDatasetServiceLayer } from '@/factories/ViewModels/EditDatasetServiceLayer';
+import { EditAuthorListViewModel } from '@/modules/workflow/viewModel/EditAuthorListViewModel.js';
+import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.js';
+import { EditDatasetServiceLayer } from '@/modules/workflow/viewModel/EditDatasetServiceLayer.js';
 
 const serviceLayer = new EditDatasetServiceLayer(unFormatedMetadataCards[0]);
 const datasetVM = new DatasetViewModel(serviceLayer);

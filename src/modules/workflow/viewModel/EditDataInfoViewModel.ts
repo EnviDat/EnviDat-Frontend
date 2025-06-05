@@ -1,8 +1,9 @@
 import * as yup from 'yup';
-import { AbstractEditViewModel } from '@/factories/ViewModels/AbstractEditViewModel.ts';
-import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel.ts';
-import { isObjectValidCheckAllProps } from '@/factories/userEditingValidations';
+import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
+import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.ts';
+
 import { DATE_PROPERTY_DATE_TYPE, DATE_PROPERTY_END_DATE, DATE_PROPERTY_START_DATE } from '@/factories/metadataConsts';
+
 
 export class EditDataInfoViewModel extends AbstractEditViewModel{
 
@@ -12,9 +13,6 @@ export class EditDataInfoViewModel extends AbstractEditViewModel{
     dates: string,
   }
 
-  declare validationRules: object;
-
-
   constructor(datasetViewModel: DatasetViewModel) {
     super(datasetViewModel, EditDataInfoViewModel.mappingRules());
 
@@ -23,7 +21,6 @@ export class EditDataInfoViewModel extends AbstractEditViewModel{
       dates: null,
     }
 
-    
 
     this.validationRules =
       yup.object().shape({
@@ -56,15 +53,8 @@ export class EditDataInfoViewModel extends AbstractEditViewModel{
     ];
   }
 
-  validate(newProps?: any): boolean {
-
-    return isObjectValidCheckAllProps(
-      {
-        dates: newProps?.dates || this.dates,
-      },
-      this.validationRules,
-      this.validationErrors,
-    );
+  validate(newProps?: Partial<EditDataInfoViewModel>): boolean {
+    return super.validate(newProps);
   }
 }
 

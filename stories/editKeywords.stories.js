@@ -18,7 +18,7 @@ import { getPopularTags, getTagColor } from '@/factories/keywordsFactory';
 import metadataset from './js/metadata';
 import { convertJSON } from '@/factories/mappingFactory.js';
 import metadata from '~/stories/js/metadata.js';
-import { EditKeywordsViewModel } from '@/factories/ViewModels/EditKeywordsViewModel';
+import { EditKeywordsViewModel } from '@/modules/workflow/viewModel/EditKeywordsViewModel.js';
 
 
 const parsedDataset1 = convertJSON(metadata[2], false);

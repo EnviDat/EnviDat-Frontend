@@ -6,9 +6,9 @@ import { AuthorDTO } from '@/types/dataTransferObjectsTypes';
 import {
   createAuthorViewModel,
   EditAuthorViewModel,
-} from '@/factories/ViewModels/EditAuthorViewModel.ts';
-import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel.ts';
-import { AbstractEditViewModel } from '@/factories/ViewModels/AbstractEditViewModel.ts';
+} from '@/modules/workflow/viewModel/EditAuthorViewModel.ts';
+import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.ts';
+import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 
 export class EditAuthorListViewModel extends AbstractEditViewModel {
   declare authors: Author[];

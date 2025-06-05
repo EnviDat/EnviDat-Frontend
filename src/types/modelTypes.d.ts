@@ -1,4 +1,4 @@
-import { AbstractEditViewModel } from '@/factories/ViewModels/AbstractEditViewModel.ts';
+import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 
 

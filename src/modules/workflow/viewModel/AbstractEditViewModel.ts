@@ -6,7 +6,7 @@ import {
 } from '@/factories/mappingFactory';
 
 import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
-import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel.ts';
+import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.ts';
 import { isFieldValid } from '@/factories/userEditingValidations';
 
 

@@ -1,10 +1,11 @@
 import * as yup from 'yup';
-import { AbstractEditViewModel } from '@/factories/ViewModels/AbstractEditViewModel.ts';
-import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel.ts';
-import { isObjectValidCheckAllProps } from '@/factories/userEditingValidations';
+import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
+import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.ts';
 
-const convertEmptyStringToNull = (value, originalValue) =>
+
+const convertEmptyStringToNull = (value: string, originalValue: string) =>
   originalValue === '' ? null : value;
+
 
 export class EditFundingViewModel extends AbstractEditViewModel{
 
@@ -13,8 +14,6 @@ export class EditFundingViewModel extends AbstractEditViewModel{
   declare validationErrors: {
     funders: string,
   }
-
-  declare validationRules: object;
 
 
   constructor(datasetViewModel: DatasetViewModel) {
@@ -55,15 +54,8 @@ export class EditFundingViewModel extends AbstractEditViewModel{
     ];
   }
 
-  validate(newProps?: any): boolean {
-
-    return isObjectValidCheckAllProps(
-      {
-        funders: newProps?.funders || this.funders,
-      },
-      this.validationRules,
-      this.validationErrors,
-    );
+  validate(newProps?: Partial<EditFundingViewModel>): boolean {
+    return super.validate(newProps);
   }
 }
 

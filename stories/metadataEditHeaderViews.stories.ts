@@ -10,7 +10,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { reactive } from 'vue';
 import type { Meta } from '@storybook/vue3';
 
 import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader.vue';
@@ -33,8 +32,8 @@ import {
   METADATA_URL_PROPERTY,
 } from '@/factories/metadataConsts';
 
-import { EditDatasetServiceLayer } from '@/factories/ViewModels/EditDatasetServiceLayer';
-import { EditHeaderViewModel } from '@/factories/ViewModels/EditHeaderViewModel';
+import { EditDatasetServiceLayer } from '@/modules/workflow/viewModel/EditDatasetServiceLayer.ts';
+import { EditHeaderViewModel } from '@/modules/workflow/viewModel/EditHeaderViewModel';
 import {
   mobileLargeViewportParams,
   mobileViewportParams,
@@ -42,7 +41,7 @@ import {
 } from './js/envidatViewports';
 
 import metadataset from './js/metadata';
-import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel.ts';
+import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.ts';
 
 const serviceLayer = new EditDatasetServiceLayer(metadataset[0]);
 const datasetVM = new DatasetViewModel(serviceLayer);

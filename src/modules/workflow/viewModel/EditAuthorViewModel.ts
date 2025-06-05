@@ -1,6 +1,6 @@
 import { reactive, watch } from 'vue';
 import * as yup from 'yup';
-import { AbstractEditViewModel } from '@/factories/ViewModels/AbstractEditViewModel';
+import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 import { Author, DataCreditObject } from '@/types/modelTypes';
 import { convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
 import { isObjectValidCheckAllProps } from '@/factories/userEditingValidations';
@@ -29,13 +29,12 @@ export class EditAuthorViewModel extends AbstractEditViewModel{
     affiliation: string;
   }
 
-  declare validationRules: object;
-
   constructor() {
     // super(datasetViewModel, EditAuthorViewModel.mappingRules());
 
     // intentionally not providing parameters, because authors have to be unpacked
     // from the list of authors, done in the EditAuthorListViewModel
+    // @ts-ignore
     super()
 
     this.validationErrors = {
@@ -103,19 +102,8 @@ export class EditAuthorViewModel extends AbstractEditViewModel{
     }
   }
 
-  validate(newProps?: any) {
-
-    return isObjectValidCheckAllProps(
-      {
-        firstName: newProps?.firstName || this.firstName,
-        lastName: newProps?.lastName || this.lastName,
-        email: newProps?.email || this.email,
-        identifier: newProps?.identifier || this.identifier,
-        affiliation: newProps?.affiliation || this.affiliation,
-      },
-      this.validationRules,
-      this.validationErrors,
-    );
+  validate(newProps?: Partial<EditAuthorViewModel>) {
+    return super.validate(newProps);
   }
 
   static mappingRules () {

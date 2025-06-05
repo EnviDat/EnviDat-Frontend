@@ -1,7 +1,7 @@
 import * as yup from 'yup';
-import { AbstractEditViewModel } from '@/factories/ViewModels/AbstractEditViewModel.ts';
-import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel.ts';
-import { isObjectValidCheckAllProps } from '@/factories/userEditingValidations';
+import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
+import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.ts';
+
 
 export class EditOrganizationViewModel extends AbstractEditViewModel{
 
@@ -10,8 +10,6 @@ export class EditOrganizationViewModel extends AbstractEditViewModel{
   declare validationErrors: {
     organizationId: string,
   }
-
-  declare validationRules: object;
 
 
   constructor(datasetViewModel: DatasetViewModel) {
@@ -42,15 +40,8 @@ export class EditOrganizationViewModel extends AbstractEditViewModel{
     ];
   }
 
-  validate(newProps?: any): boolean {
-
-    return isObjectValidCheckAllProps(
-      {
-        organizationId: newProps?.organizationId || this.organizationId,
-      },
-      this.validationRules,
-      this.validationErrors,
-    );
+  validate(newProps?: Partial<EditOrganizationViewModel>): boolean {
+    return super.validate(newProps);
   }
 }
 
