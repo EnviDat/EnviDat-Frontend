@@ -1,9 +1,6 @@
 import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/factories/ViewModels/AbstractEditViewModel.ts';
-import {
-  isFieldValid,
-  isObjectValidCheckAllProps,
-} from '@/factories/userEditingValidations';
+
 import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel.ts';
 import type { KeywordDTO } from '@/types/dataTransferObjectsTypes';
 import { enhanceKeywords } from '@/factories/keywordsFactory';
@@ -20,8 +17,6 @@ export class ModelMetaDataHeader extends AbstractEditViewModel {
     metadataDescription: string;
     keywords: string;
   };
-
-  declare validationRules: object;
 
   constructor(
     datasetViewModel: DatasetViewModel,
@@ -57,21 +52,7 @@ export class ModelMetaDataHeader extends AbstractEditViewModel {
   }
 
   validate(newProps?: Partial<ModelMetaDataHeader>) {
-    if (!newProps) return true;
-
-    let allValid = true;
-
-    for (const [field, value] of Object.entries(newProps)) {
-      const ok = isFieldValid(
-        field,
-        value,
-        this.validationRules,
-        this.validationErrors,
-      );
-      if (!ok) allValid = false;
-    }
-
-    return allValid;
+    return super.validate(newProps);
   }
 
   static mappingRules() {

@@ -1,30 +1,25 @@
+import * as yup from 'yup';
 import {
   convertJSON,
   convertToBackendJSONWithRules,
   convertToFrontendJSONWithRules,
 } from '@/factories/mappingFactory';
+
 import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel.ts';
+import { isFieldValid } from '@/factories/userEditingValidations';
 
-/*
-function enforceAbstractProps(instance, requiredProps) {
-  for (const prop in requiredProps) {
-    if (!(prop in instance)) {
-      throw new Error(`Property ${requiredProps[prop]} needs to be defined!`);
-    }
-  }
-}
-*/
 
 export abstract class AbstractEditViewModel {
   private privateMappingRules: string[][];
 
   protected datasetViewModel: DatasetViewModel;
 
-  // eslint-disable-next-line no-unused-vars
-  abstract validate(newProps?: any): boolean;
+  abstract validationErrors: object;
 
-  constructor(
+  declare validationRules: yup.AnyObjectSchema;
+
+  protected constructor(
     datasetViewModel: DatasetViewModel,
     mappingRules: string[][] = undefined,
   ) {
@@ -80,6 +75,24 @@ export abstract class AbstractEditViewModel {
 
   get backendProperties() {
     return this.mappingRules.map((rule) => rule[1]);
+  }
+
+  validate(newProps?: any): boolean {
+    if (!newProps) return true;
+
+    let allValid = true;
+
+    for (const [field, value] of Object.entries(newProps)) {
+      const ok = isFieldValid(
+        field,
+        value,
+        this.validationRules,
+        this.validationErrors,
+      );
+      if (!ok) allValid = false;
+    }
+
+    return allValid;
   }
 
   async save(newData: any): Promise<boolean> {

@@ -9,7 +9,6 @@ import {
 } from '@/factories/ViewModels/EditAuthorViewModel.ts';
 import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel.ts';
 import { AbstractEditViewModel } from '@/factories/ViewModels/AbstractEditViewModel.ts';
-import { isObjectValidCheckAllProps } from '@/factories/userEditingValidations';
 
 export class EditAuthorListViewModel extends AbstractEditViewModel {
   declare authors: Author[];
@@ -17,8 +16,6 @@ export class EditAuthorListViewModel extends AbstractEditViewModel {
   declare validationErrors: {
     authors: string;
   };
-
-  declare validationRules: object;
 
   constructor(datasetViewModel: DatasetViewModel) {
     // don't provide dataset and mapping rules because authors
@@ -77,6 +74,10 @@ export class EditAuthorListViewModel extends AbstractEditViewModel {
     });
   }
 
+  validate(newProps?: Partial<EditAuthorListViewModel>): boolean {
+    return super.validate(newProps);
+  }
+/*
   validate(newProps?: any): boolean {
     return isObjectValidCheckAllProps(
       {
@@ -86,6 +87,7 @@ export class EditAuthorListViewModel extends AbstractEditViewModel {
       this.validationErrors,
     );
   }
+*/
 
   static mappingRules() {
     return [['authors', 'author']];

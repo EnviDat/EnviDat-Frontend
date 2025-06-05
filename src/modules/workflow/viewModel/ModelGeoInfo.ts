@@ -2,10 +2,6 @@
 import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/factories/ViewModels/AbstractEditViewModel.ts';
 import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel.ts';
-import {
-  isFieldValid,
-  isObjectValidCheckAllProps,
-} from '@/factories/userEditingValidations';
 
 export class ModelGeoInfo extends AbstractEditViewModel {
   declare dates: any[];
@@ -16,7 +12,6 @@ export class ModelGeoInfo extends AbstractEditViewModel {
     geometries: string | null;
   };
 
-  declare validationRules: yup.AnyObjectSchema;
 
   constructor(datasetVM: DatasetViewModel) {
     super(datasetVM, ModelGeoInfo.mappingRules());
@@ -47,21 +42,7 @@ export class ModelGeoInfo extends AbstractEditViewModel {
   }
 
   validate(newProps?: Partial<ModelGeoInfo>): boolean {
-    if (!newProps) return true;
-
-    let allValid = true;
-
-    for (const [field, value] of Object.entries(newProps)) {
-      const ok = isFieldValid(
-        field,
-        value,
-        this.validationRules,
-        this.validationErrors,
-      );
-      if (!ok) allValid = false;
-    }
-
-    return allValid;
+    return super.validate(newProps);
   }
 
   static mappingRules() {
