@@ -4,7 +4,7 @@
       <v-col cols="6">
         <v-row>
           <v-col v-show="!selectedAuthor" cols="12">
-            <EditAddExistingAuthor v-bind="authorPickingGenericProps" />
+            <AddExistingAuthor v-bind="authorPickingGenericProps" />
           </v-col>
 
           <v-col v-if="isReadOnly(METADATA_AUTHORS_PROPERTY)" cols="12">
@@ -20,7 +20,7 @@
           </v-col>
 
           <v-col v-else cols="12">
-            <EditAddAuthor
+            <AddAuthorEditing
               v-bind="editAddAuthorObject"
               @closeClicked="catchEditAuthorClose"
             />
@@ -29,7 +29,7 @@
       </v-col>
 
       <v-col cols="6">
-        <EditMetadataAuthors
+        <MetadataAuthorsEditing
           v-bind="authorListingGenericProps"
           @editAuthorClick="catchEditAuthorClick"
         />
@@ -52,9 +52,9 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import EditAddAuthor from '@/modules/user/components/EditAddAuthor.vue';
-import EditAddExistingAuthor from '@/modules/user/components/EditAddExistingAuthor.vue';
-import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors.vue';
+import AddAuthorEditing from '@/modules/workflow/components/steps/AddAuthorEditing.vue';
+import AddExistingAuthor from '@/modules/workflow/components/steps/AddExistingAuthor.vue';
+import MetadataAuthorsEditing from '@/modules/workflow/components/steps/MetadataAuthorsEditing.vue';
 
 import {
   enhanceAuthorsFromAuthorMap,
@@ -78,9 +78,9 @@ import {
 export default {
   name: 'EditAuthorList',
   components: {
-    EditMetadataAuthors,
-    EditAddAuthor,
-    EditAddExistingAuthor,
+    MetadataAuthorsEditing,
+    AddAuthorEditing,
+    AddExistingAuthor,
   },
   props: {
     existingAuthors: {
@@ -125,6 +125,7 @@ export default {
       default: '',
     },
   },
+  emits: ['save'],
   computed: {
     authorsMapWrap() {
       if (this.authorsMap) {
