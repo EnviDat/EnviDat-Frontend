@@ -98,7 +98,7 @@ export default {
     },
     authors: {
       type: Array, // as PropType<Author>,
-      default: undefined,
+      default: () => ([]),
     },
     // only used for testing via storybook
     authorsMap: {
@@ -272,12 +272,12 @@ export default {
     save(data: unknown) {
       this.$emit('save', data);
     },
-    saveNewAuthor(data: unknown) {
+    async saveNewAuthor(data: unknown) {
       // call the save here to do validation, don't directly call validate()
       // because if it's valid, we need to call getAuthor() which means the
       // viewModel has to have the author information assign, which doesn't happen
       // when only validating
-      const validData = this.addNewAuthorViewModel.save(data);
+      const validData = await this.addNewAuthorViewModel.save(data);
 
       if (validData) {
         const newAuthor = this.addNewAuthorViewModel.getAuthor();
