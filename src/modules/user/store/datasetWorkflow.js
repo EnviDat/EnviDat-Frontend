@@ -6,8 +6,10 @@ import { workflowSteps } from '@/modules/workflow/resources/steps';
 import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel';
 import { EditDatasetServiceLayer } from '@/factories/ViewModels/EditDatasetServiceLayer';
 
+/*
 import axios from 'axios';
 import { set } from 'date-fns';
+*/
 
 export const useDatasetWorkflowStore = defineStore({
   id: 'datasetWorkflow',
@@ -15,9 +17,7 @@ export const useDatasetWorkflowStore = defineStore({
     loading: false,
     currentStep: 0,
     steps: workflowSteps,
-    viewModelCache: new Map(),
-    datasetServiceLayer: new EditDatasetServiceLayer(),
-    datasetViewModel: null,
+    datasetViewModel: new DatasetViewModel(new EditDatasetServiceLayer()),
   }),
   getters: {
     currentStepObject: (state) => state.steps[state.currentStep] ?? null,
@@ -29,18 +29,9 @@ export const useDatasetWorkflowStore = defineStore({
       const step = state.steps[state.currentStep];
       if (!step?.viewModelKey) return null;
 
-      if (state.viewModelCache.has(step.id)) {
-        return state.viewModelCache.get(step.id);
-      }
-
-      // intialize the datasetServiceLayer
-      if (!this.datasetViewModel) {
-        this.datasetViewModel = new DatasetViewModel(this.datasetServiceLayer);
-      }
       // get the viewModel
       const vmInstance = state.datasetViewModel.getViewModel(step.viewModelKey);
 
-      state.viewModelCache.set(step.id, vmInstance);
       return vmInstance;
     },
   },
@@ -69,7 +60,7 @@ export const useDatasetWorkflowStore = defineStore({
     async validateStepAction(stepId, newData) {
       this.loading = true;
       /* prendi l’istanza del VM corrente */
-      const vm = await this.currentViewModel;
+      const vm = this.currentViewModel;
 
       if (!vm) {
         console.warn('No view‑model for this step');
