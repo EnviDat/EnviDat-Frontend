@@ -424,7 +424,7 @@ export default {
     },
 
     getTagName(arr) {
-      return arr.map((item) => item.name);
+      return arr?.map((item) => item.name);
     },
 
     isReadOnly(dateProperty) {
