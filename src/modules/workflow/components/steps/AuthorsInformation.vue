@@ -56,8 +56,10 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+/*
 import { PropType } from 'vue';
 import type { Author } from '@/types/modelTypes';
+*/
 import AddNewAuthor from '@/modules/workflow/components/steps/AddNewAuthor.vue';
 import AddExistingAuthor from '@/modules/workflow/components/steps/AddExistingAuthor.vue';
 import MetadataAuthorsEditing from '@/modules/workflow/components/steps/MetadataAuthorsEditing.vue';
@@ -232,6 +234,7 @@ export default {
     editAddAuthorObject() {
       if (!this.selectedAuthor) {
         return {
+          ...this.addNewAuthorViewModel,
           existingAuthors: this.noDataCreditAuthorsWrap,
           readOnlyFields: this.readOnlyFields,
           readOnlyExplanation: this.readOnlyExplanation,

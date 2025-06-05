@@ -296,6 +296,10 @@ export default {
       type: String,
       default: null,
     },
+    validationErrors: {
+      type: Object,
+      default: () => {},
+    },
     readOnlyFields: {
       type: Array,
       default: () => [],
@@ -305,7 +309,7 @@ export default {
       default: '',
     },
   },
-  emits: ['save', 'removeAuthor'],
+  emits: ['validate', 'save', 'removeAuthor'],
 /*
   mounted() {},
   created() {
@@ -369,9 +373,6 @@ export default {
     fullNameUsers() {
       const localAuthors = [...this.existingAuthors];
       return getArrayOfFullNames(localAuthors);
-    },
-    validations() {
-      return getValidationMetadataEditingObject(EDITMETADATA_AUTHOR);
     },
     infoReadOnly() {
       return (
@@ -447,15 +448,7 @@ export default {
     },
     changeProperty(property, value) {
       this.previews[property] = value;
-      this.validateProperty(property, value);
-    },
-    validateProperty(property, value) {
-      return isFieldValid(
-        property,
-        value,
-        this.validations,
-        this.validationErrors,
-      );
+      this.$emit('validate', { property: value });
     },
     catchPickerAuthorChange(pickedAuthorName, hasAuthor) {
       this.authorPickerTouched = true;
@@ -474,16 +467,7 @@ export default {
           authorObject.affiliation,
         );
 
-        if (
-          isObjectValid(
-            this.validationProperties,
-            authorObject,
-            this.validations,
-            this.validationErrors,
-          )
-        ) {
-          this.setAuthorInfo(authorObject);
-        }
+        this.setAuthorInfo(authorObject);
       } else {
         // has to be an empty string here otherwise the old value (via $props)
         // would be shown
@@ -503,6 +487,7 @@ export default {
         firstName: this.firstNameField,
         lastName: this.lastNameField,
       };
+
       const fullName = getAuthorName(authorObj);
       // default to filling all the infos from the text-field input
       // so that single text-field changes are captured too
@@ -515,6 +500,12 @@ export default {
       });
 
       if (property === 'email') {
+        const autoAuthor = this.getAutoCompletedAuthor(value);
+        if (autoAuthor) {
+          authorObject = autoAuthor;
+        }
+
+/*
         if (
           isFieldValid(property, value, this.validations, this.validationErrors)
         ) {
@@ -523,8 +514,10 @@ export default {
             authorObject = autoAuthor;
           }
         }
+*/
       }
 
+/*
       if (
         isObjectValid(
           this.validationProperties,
@@ -535,6 +528,9 @@ export default {
       ) {
         this.setAuthorInfo(authorObject);
       }
+*/
+
+      this.setAuthorInfo(authorObject);
     },
     getAutoCompletedAuthor(email) {
       const autoAuthor = getAuthorByEmail(email, this.existingAuthors);
@@ -559,18 +555,7 @@ export default {
       return null;
     },
     setAuthorInfo(authorObject) {
-      const newAuthorInfo = {
-        ...authorObject,
-      };
-
-/*
-      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: EDITMETADATA_AUTHOR,
-        data: newAuthorInfo,
-      });
-*/
-
-      this.$emit('save', newAuthorInfo)
+      this.$emit('save', authorObject)
     },
     fillPreviews(email, firstName, lastName, identifier, affiliation) {
       this.previews.email = email;
@@ -628,20 +613,6 @@ export default {
         'If an author is picked or found with the email address these fields are <strong>autocompleted</strong>!',
       authorPickHint:
         'Start typing the name in the text field to search for an author.',
-    },
-    validationProperties: [
-      'email',
-      'firstName',
-      'lastName',
-      'affiliation',
-      // don't include the identifier here for auto validation, because it's optional
-    ],
-    validationErrors: {
-      email: null,
-      identifier: null,
-      affiliation: null,
-      firstName: null,
-      lastName: null,
     },
     activeElements: {
       email: null,

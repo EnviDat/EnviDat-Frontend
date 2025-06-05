@@ -62,7 +62,8 @@ export class EditAuthorViewModel extends AbstractEditViewModel{
         identifier: yup
           .string()
           // e.g. 0000-0002-3862-8720
-          .notRequired()
+          // .notRequired()
+          .nullable()
           .min(
             19,
             'OrcId must be at least 19 characters, like 0000-0002-3862-8720',
