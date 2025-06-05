@@ -1,7 +1,8 @@
 import { reactive, watch } from 'vue';
 import * as yup from 'yup';
 
-import { Author, AuthorDTO } from '@/types/modelTypes';
+import { Author } from '@/types/modelTypes';
+import { AuthorDTO } from '@/types/dataTransferObjectsTypes';
 import {
   createAuthorViewModel,
   EditAuthorViewModel,

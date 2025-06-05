@@ -40,7 +40,7 @@ import { createLocation } from '@/factories/geoFactory';
 import { getMetadataVisibilityState } from '@/factories/publicationFactory';
 import { formatDate } from '@/factories/dateFactory';
 import { enhanceMetadataWithModeExtras } from '@/factories/modeFactory';
-import { DatasetDTO, ResourceDTO } from '@/types/modelTypes.js';
+import { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 
 /**
  * Create a pseudo random integer based on a given seed using the 'seedrandom' lib.

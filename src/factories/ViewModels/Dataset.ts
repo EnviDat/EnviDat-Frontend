@@ -1,5 +1,5 @@
 import { convertJSON } from '@/factories/mappingFactory';
-import type { DatasetDTO } from '@/types/modelTypes';
+import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 
 // @ts-ignore TS2420
 export class Dataset implements DatasetDTO {

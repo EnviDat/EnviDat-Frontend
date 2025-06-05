@@ -3,7 +3,7 @@ import {
   convertToBackendJSONWithRules,
   convertToFrontendJSONWithRules,
 } from '@/factories/mappingFactory';
-import type { DatasetDTO } from '@/types/modelTypes';
+import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel.ts';
 
 /*
@@ -80,15 +80,6 @@ export abstract class AbstractEditViewModel {
 
   get backendProperties() {
     return this.mappingRules.map((rule) => rule[1]);
-  }
-
-  async validation(newData: any): Promise<boolean> {
-    const isValid = this.validate(newData);
-    if (!isValid) {
-      //      console.log('EditHeaderViewModel NOT saved because validation failed!', this);
-      return false;
-    }
-    return true;
   }
 
   async save(newData: any): Promise<boolean> {

@@ -28,7 +28,7 @@
 
 <script lang="ts" setup>
 import { useData } from 'vike-vue/useData';
-import { DatasetDTO } from '@/types/modelTypes';
+import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 
 import logoUrl from '@/assets/logo/EnviDat_fav.ico'
 

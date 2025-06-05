@@ -1,5 +1,5 @@
 import { reactive, watch } from 'vue';
-import { DatasetDTO } from '@/types/modelTypes';
+import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 import { AbstractViewModel } from '@/factories/ViewModels/AbstractViewModel.ts';
 
 export class DescriptionViewModel extends AbstractViewModel {

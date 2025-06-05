@@ -1,4 +1,4 @@
-import { DatasetDTO } from '@/types/modelTypes';
+import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 
 const fetchDatasets = async (url: string): Promise<DatasetDTO[]> => {
   const response = await fetch(url);

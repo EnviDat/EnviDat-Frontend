@@ -7,8 +7,9 @@ import axios from 'axios';
 
 import { ACTION_METADATA_EDITING_PATCH_DATASET } from '@/modules/user/store/userMutationsConsts';
 import { urlRewrite } from '@/factories/apiFactory';
-import { Dataset } from '@/factories/ViewModels/Dataset.ts';
-import { DatasetDTO, DatasetServiceLayer } from '@/types/modelTypes';
+import { Dataset } from '@/factories/ViewModels/Dataset';
+import { DatasetServiceLayer } from '@/types/modelTypes';
+import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 import { AbstractEditViewModel } from '@/factories/ViewModels/AbstractEditViewModel.ts';
 import { ACTION_LOAD_METADATA_CONTENT_BY_ID } from '@/store/metadataMutationsConsts';
 

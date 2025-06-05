@@ -1,5 +1,5 @@
 import { reactive } from 'vue';
-import type { DatasetDTO } from '@/types/modelTypes';
+import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 import { DatasetServiceLayer } from '@/types/modelTypes';
 import { EditHeaderViewModel } from '@/factories/ViewModels/EditHeaderViewModel.ts';
 import { EditDescriptionViewModel } from '@/factories/ViewModels/EditDescriptionViewModel.ts';

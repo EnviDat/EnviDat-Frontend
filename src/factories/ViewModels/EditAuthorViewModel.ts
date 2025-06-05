@@ -1,6 +1,6 @@
 import { reactive, watch } from 'vue';
 import * as yup from 'yup';
-import { AbstractEditViewModel } from '@/factories/ViewModels/AbstractEditViewModel.ts';
+import { AbstractEditViewModel } from '@/factories/ViewModels/AbstractEditViewModel';
 import { Author, DataCreditObject } from '@/types/modelTypes';
 import { convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
 import { isObjectValidCheckAllProps } from '@/factories/userEditingValidations';
