@@ -34,6 +34,15 @@
       </v-row>
 
       <v-row>
+        <v-col>
+          <v-alert type="info" closable :icon="false" class="rounded-lg">
+            <v-alert-title>Information</v-alert-title>
+            Lorem Ipsum
+          </v-alert>
+        </v-col>
+      </v-row>
+
+      <v-row>
         <v-col cols="12" md="6">
           <v-row class="mb-5">
             <v-col class="text-body-1">

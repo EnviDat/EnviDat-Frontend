@@ -11,7 +11,7 @@
         />
         <v-col class="pl-0" v-if="validationErrors.geometries != null">
           <div
-            :style="{ color: 'red', fontSize: '0.75rem' }"
+            :style="{ color: '#FF847B', fontSize: '0.75rem' }"
             class="error--text text-caption mt-1"
           >
             {{ validationErrors.geometries }}
@@ -19,7 +19,6 @@
         </v-col>
       </v-col>
 
-      {{ validationErrors }}
       <!-- TITLE + STATUS -->
       <v-row>
         <v-col cols="6" v-html="labels.cardTitle" class="text-h5" />
@@ -44,6 +43,15 @@
       <!-- INSTRUCTIONS -->
       <v-row>
         <v-col v-html="labels.cardInstructions" class="text-subtitle-1" />
+      </v-row>
+
+      <v-row>
+        <v-col>
+          <v-alert type="info" closable :icon="false" class="rounded-lg">
+            <v-alert-title>Information</v-alert-title>
+            Lorem Ipsum
+          </v-alert>
+        </v-col>
       </v-row>
 
       <!-- WARNING FOR DEFAULT LOCATION -->
@@ -147,7 +155,12 @@
                 {{ item.dateType }}
               </div>
               <div class="text-body-1 text-caption">
-                {{ item.dateExplanation }}
+                {{ item.dateExplanation }}.
+                <b>{{
+                  datesField[index].dateType === 'created'
+                    ? 'This field is mandatory'
+                    : ''
+                }}</b>
               </div>
             </v-col>
             <v-col cols="11">
@@ -170,8 +183,8 @@
             </v-col>
             <v-col v-if="datesField[index].dateType === 'created'">
               <div
-                :style="{ color: 'red', fontSize: '0.75rem' }"
-                class="error--text text-caption mt-1"
+                :style="{ color: '#FF847B', fontSize: '0.75rem' }"
+                class="error--text text-caption mt-3"
               >
                 {{ validationErrors.dates }}
               </div>
@@ -184,7 +197,7 @@
 </template>
 
 <script>
-import { mdiContentSave, mdiUndo, mdiFileUpload } from '@mdi/js';
+import { mdiContentSave, mdiFileUpload } from '@mdi/js';
 import { check } from '@placemarkio/check-geojson';
 import { createJSONEditor, SelectionType } from 'vanilla-jsoneditor';
 import { useDropZone } from '@vueuse/core';
@@ -203,17 +216,6 @@ import {
   EDITMETADATA_DATA_GEO_MAP_ERROR,
   EDITMETADATA_DATA_INFO,
 } from '@/factories/eventBus';
-
-import {
-  EDIT_METADATA_GEODATA_TITLE,
-  DATE_PROPERTY_COLLECTED_TYPE,
-  DATE_PROPERTY_COLLECTED_TYPE_EXPLANATION,
-  DATE_PROPERTY_CREATED_TYPE,
-  DATE_PROPERTY_CREATED_TYPE_EXPLANATION,
-  DATE_PROPERTY_DATE_TYPE,
-  DATE_PROPERTY_END_DATE,
-  DATE_PROPERTY_START_DATE,
-} from '@/factories/metadataConsts';
 
 import {
   getValidationMetadataEditingObject,
@@ -255,7 +257,6 @@ export default {
   },
   data() {
     return {
-      mdiUndo,
       mdiContentSave,
       mdiFileUpload,
       newGeoInfo: {
@@ -271,11 +272,11 @@ export default {
       isOverDropZone: false,
       inputError: null,
       geometryError: null,
-      startDateProperty: DATE_PROPERTY_START_DATE,
-      endDateProperty: DATE_PROPERTY_END_DATE,
+      startDateProperty: 'dateStart',
+      endDateProperty: 'dateEnd',
       previewDates: [],
       labels: {
-        cardTitle: EDIT_METADATA_GEODATA_TITLE,
+        cardTitle: 'Geospatial Information about the research data',
         cardInstructions:
           'Define the location(s) where the research data was collected or refers to. Use the map tools or upload a GeoJSON.',
         defaultInstructions:
@@ -320,15 +321,15 @@ export default {
         : [...this.dates];
       this.ensureDateEntry(
         dates,
-        DATE_PROPERTY_CREATED_TYPE,
-        DATE_PROPERTY_CREATED_TYPE_EXPLANATION,
+        'created',
+        'Date range during the research data was finalized or formally created',
       );
       this.ensureDateEntry(
         dates,
-        DATE_PROPERTY_COLLECTED_TYPE,
-        DATE_PROPERTY_COLLECTED_TYPE_EXPLANATION,
+        'collected',
+        'Date range during the research data was gathered or collected.',
       );
-      const order = [DATE_PROPERTY_CREATED_TYPE, DATE_PROPERTY_COLLECTED_TYPE];
+      const order = ['created', 'collected'];
       dates.sort(
         (a, b) => order.indexOf(a.dateType) - order.indexOf(b.dateType),
       );
@@ -398,9 +399,9 @@ export default {
       let obj = arr.find((d) => d.dateType === type);
       if (!obj) {
         obj = {
-          [DATE_PROPERTY_DATE_TYPE]: type,
-          [DATE_PROPERTY_START_DATE]: '',
-          [DATE_PROPERTY_END_DATE]: '',
+          dateType: type,
+          dateStart: '',
+          dateEnd: '',
         };
         arr.push(obj);
       }

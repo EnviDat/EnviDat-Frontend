@@ -12,7 +12,6 @@ export class ModelGeoInfo extends AbstractEditViewModel {
     geometries: string | null;
   };
 
-
   constructor(datasetVM: DatasetViewModel) {
     super(datasetVM, ModelGeoInfo.mappingRules());
 

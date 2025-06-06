@@ -61,7 +61,7 @@ watch(
 
 const save = (data) => {
   vm.value.save(data);
-}
+};
 
 const validate = (data) => {
   vm.value?.validate(data);
@@ -71,9 +71,7 @@ const { currentStepObject, currentAsyncComponent } =
   storeToRefs(navigationStore);
 
 const nextStep = () => {
-  navigationStore.validateStepAction(
-    navigationStore.currentStep,
-  );
+  navigationStore.validateStepAction(navigationStore.currentStep);
 };
 </script>
 
