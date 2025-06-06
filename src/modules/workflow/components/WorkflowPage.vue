@@ -15,6 +15,8 @@
         class="workflow-content__wrapper"
         :class="{ loading: navigationStore.loading }"
       >
+        <!-- {{ vm?.loading }} -->
+        <!-- {{ vm?.error }} -->
         <div>
           <component
             :is="currentAsyncComponent"
@@ -29,6 +31,32 @@
         </div>
       </v-col>
     </v-row>
+    <!-- dialog, TODO make a external component -->
+    <v-dialog v-model="navigationStore.openSaveDialog" max-width="500">
+      <v-card>
+        <v-card-text class="font-weight-bold"> Before You Proceed </v-card-text>
+
+        <v-card-text>
+          Saving your data now will <b>store your dataset in our system</b>, but
+          it will not be published yet. Before publication, you will need to
+          complete the remaining steps. However, from this point,
+          <b>you can request a DOI for your dataset.</b>
+        </v-card-text>
+
+        <v-card-text>
+          For any questions or clarifications, please contact the team at
+          <a href="mailto:envidat@wsl.ch">envidat@wsl.ch</a>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer />
+          <v-btn
+            text="Save and Proceed"
+            @click="navigationStore.confirmSave(obj)"
+          />
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -49,21 +77,26 @@ const navigationStore = useDatasetWorkflowStore();
 
 const vm = ref(null);
 
+// DOMINIK - only for validate all object, for now or the future implementation
+// DOMINIK - WE NEED obj because we need to pass it to validateStepAction, for the obj validation
+const obj = ref(null);
+
 // load the current view model
 watch(
   () => navigationStore.currentStep,
   async () => {
     vm.value = navigationStore.currentViewModel;
-    console.log(vm.value);
   },
   { immediate: true },
 );
 
 const save = (data) => {
+  obj.value = data;
   vm.value.save(data);
 };
 
 const validate = (data) => {
+  obj.value = data;
   vm.value?.validate(data);
 };
 
@@ -71,7 +104,7 @@ const { currentStepObject, currentAsyncComponent } =
   storeToRefs(navigationStore);
 
 const nextStep = () => {
-  navigationStore.validateStepAction(navigationStore.currentStep);
+  navigationStore.validateStepAction(navigationStore.currentStep, obj.value);
 };
 </script>
 

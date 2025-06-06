@@ -7,8 +7,10 @@ import {
 
 import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.ts';
-import { isFieldValid } from '@/factories/userEditingValidations';
-
+import {
+  isFieldValid,
+  isObjectValidCheckAllProps,
+} from '@/factories/userEditingValidations';
 
 export abstract class AbstractEditViewModel {
   private privateMappingRules: string[][];
@@ -91,25 +93,70 @@ export abstract class AbstractEditViewModel {
       );
       if (!ok) allValid = false;
     }
-
     return allValid;
   }
 
   async save(newData: any): Promise<boolean> {
-    const isValid = this.validate(newData);
+    this.loading = true;
+    this.error = undefined;
 
-    if (!isValid) {
-      //      console.log('EditHeaderViewModel NOT saved because validation failed!', this);
+    try {
+      if (!this.validate(newData)) {
+        this.error = this.validationErrors;
+        return false;
+      }
+
+      if (this.datasetViewModel) {
+        await this.datasetViewModel.patchViewModel(this);
+      }
+
+      Object.assign(this, newData);
+      return true;
+    } catch (e) {
+      this.error = e;
       return false;
+    } finally {
+      this.loading = false;
     }
+  }
 
-    if (this.datasetViewModel) {
-      await this.datasetViewModel.patchViewModel(this);
+  // This method is used to save the object with the current properties, ONLY when we click on next
+  async saveObject(newProps = {}) {
+    this.loading = true;
+    this.error = undefined;
+
+    try {
+      const schemaKeys = Object.keys(this.validationRules.fields);
+      // I need to check only the fields related to my current vm, that's why I use schemaKeys and reduce
+      const obj = schemaKeys.reduce((acc, key) => {
+        acc[key] = newProps && key in newProps ? newProps[key] : this[key];
+        return acc;
+      }, {});
+
+      const ok = isObjectValidCheckAllProps(
+        obj,
+        this.validationRules,
+        this.validationErrors,
+      );
+
+      if (!ok) {
+        this.error = this.validationErrors;
+        console.log(this.error);
+        return false;
+      }
+
+      Object.assign(this, newProps);
+
+      if (this.datasetViewModel?.patchViewModel) {
+        await this.datasetViewModel.patchViewModel(this);
+      }
+
+      return true;
+    } catch (e) {
+      this.error = e;
+      return false;
+    } finally {
+      this.loading = false;
     }
-
-    Object.assign(this, newData);
-
-    //    console.log('EditHeaderViewModel saved', this);
-    return true;
   }
 }

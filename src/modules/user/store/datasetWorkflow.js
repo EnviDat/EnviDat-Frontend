@@ -18,6 +18,9 @@ export const useDatasetWorkflowStore = defineStore({
     currentStep: 0,
     steps: workflowSteps,
     datasetViewModel: new DatasetViewModel(new EditDatasetServiceLayer()),
+    openSaveDialog: false,
+    isStepSaveConfirmed: false,
+    isStepSave: 3,
   }),
   getters: {
     currentStepObject: (state) => state.steps[state.currentStep] ?? null,
@@ -57,36 +60,81 @@ export const useDatasetWorkflowStore = defineStore({
         this.currentStep = next.id;
       }
     },
-    async validateStepAction(stepId, newData) {
-      this.setCurrentStepAction();
-/*
-      this.loading = true;
-      /!* prendi l’istanza del VM corrente *!/
-      const vm = this.currentViewModel;
-
-      if (!vm) {
-        console.warn('No view‑model for this step');
-        this.loading = false;
-        return;
+    setCurrentStepAction() {
+      // find the next element with status != completed
+      const next = this.steps.find((el) => el.status != 'completed');
+      if (this.steps[next.id]) {
+        this.steps[next.id].status = 'active';
+        this.currentStep = next.id;
       }
-      const isValid = vm.validate(newData);
-
-      if (isValid) {
-        await vm.save(newData);
-
-        this.steps[stepId].completed = true;
-        this.steps[stepId].hasError = false;
-        this.steps[stepId].status = 'completed';
-        this.setCurrentStepAction();
-      } else {
-        this.loading = false;
-        this.steps[stepId].hasError = true;
-        this.steps[stepId].status = 'error';
-      }
-
-      this.loading = false;
-*/
     },
+    async validateStepAction(stepId, newData) {
+      const vm = this.currentViewModel;
+      if (!vm) return;
+
+      // BOTH version here, in my opinion before proceed we should validate all object
+      // const ok = await vm.save(newData);
+      const ok = await vm.saveObject(newData);
+
+      if (ok) {
+        // only for the step 3, we need to ask to the user to confirm the save
+        if (stepId === this.isStepSave && !this.isStepSaveConfirmed) {
+          this.openSaveDialog = true;
+          return;
+        } else {
+          Object.assign(this.steps[stepId], {
+            completed: true,
+            hasError: false,
+            status: 'completed',
+            errors: null,
+          });
+          this.setCurrentStepAction();
+        }
+      } else {
+        Object.assign(this.steps[stepId], {
+          hasError: true,
+          status: 'error',
+          errors: vm.validationErrors,
+        });
+      }
+    },
+
+    confirmSave(newData) {
+      this.isStepSaveConfirmed = true;
+      this.openSaveDialog = false;
+
+      this.validateStepAction(this.isStepSave, newData);
+    },
+
+    // async validateStepAction(stepId, newData) {
+    //   this.setCurrentStepAction();
+
+    //   this.loading = true;
+    //   // /!* prendi l’istanza del VM corrente *!/
+    //   const vm = this.currentViewModel;
+
+    //   if (!vm) {
+    //     console.warn('No view‑model for this step');
+    //     this.loading = false;
+    //     return;
+    //   }
+    //   const isValid = vm.validate(newData);
+
+    //   if (isValid) {
+    //     await vm.save(newData);
+
+    //     this.steps[stepId].completed = true;
+    //     this.steps[stepId].hasError = false;
+    //     this.steps[stepId].status = 'completed';
+    //     this.setCurrentStepAction();
+    //   } else {
+    //     this.loading = false;
+    //     this.steps[stepId].hasError = true;
+    //     this.steps[stepId].status = 'error';
+    //   }
+
+    //   this.loading = false;
+    // },
 
     // async fetchOrganizations(url, params = {}) {
     //   try {

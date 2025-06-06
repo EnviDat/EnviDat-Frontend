@@ -95,7 +95,7 @@ export const workflowSteps: WorkflowStep[] = [
     key: 'additionalinformation',
     loader: () =>
       import('@/modules/workflow/components/steps/AdditionalInformation.vue'),
-    viewModelKey: 'ModelMetaDataHeader',
+    viewModelKey: 'ModelAdditionalInformation',
     genericProps: {},
     icon: 'additionalinfo',
     status: 'disabled',

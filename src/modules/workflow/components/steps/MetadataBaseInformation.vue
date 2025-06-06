@@ -5,11 +5,16 @@
         <v-col cols="12">
           <MetadataHeader v-bind="metadataPreviewEntry" />
         </v-col>
-        <v-col class="text-h5" cols="8">
-          {{ labels.title }}
-        </v-col>
+        <v-row class="mt-5">
+          <v-col class="text-h5" cols="8">
+            {{ labels.title }}
+          </v-col>
+          <v-col cols="12" class="text-body-1">
+            {{ labels.instructions }}
+          </v-col>
+        </v-row>
 
-        <v-col v-if="message" cols="4" class="pl-16">
+        <!-- <v-col v-if="message" cols="4" class="pl-16">
           <BaseStatusLabelView
             status="check"
             statusColor="success"
@@ -24,13 +29,7 @@
             :statusText="error"
             :expandedText="errorDetails"
           />
-        </v-col>
-      </v-row>
-
-      <v-row no-gutters class="pt-4">
-        <v-col cols="12" class="text-body-1">
-          {{ labels.instructions }}
-        </v-col>
+        </v-col> -->
       </v-row>
 
       <v-row>
@@ -62,7 +61,7 @@
             :placeholder="labels.placeholderTitle"
             :model-value="metadataTitleField"
             @keyup="blurOnEnterKey"
-            @input="notifyPropertyChange($event.target.value)"
+            @input="notifyPropertyInput($event.target.value)"
             @change="notifyPropertyChange($event.target.value)"
           />
         </v-col>
@@ -175,7 +174,7 @@ import TagChip from '@/components/Chips/TagChip.vue';
 
 import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
 // import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
+// import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 // import ExpandableLayout from '@/components/Layouts/ExpandableLayout.vue';
 import categoryCards from '@/store/categoryCards';
 
@@ -228,8 +227,6 @@ export default {
             : 'Dataset Title',
         tags: this.keywordsField,
       };
-
-      console.log(previewEntry);
 
       return previewEntry;
     },
@@ -309,10 +306,15 @@ export default {
       this.newDatasetInfo.keywords = this.processValues(val);
       this.$emit('save', this.newDatasetInfo);
     },
-    notifyPropertyChange(value) {
+    notifyPropertyInput(value) {
       this.newDatasetInfo.metadataTitle = value;
 
       this.$emit('validate', this.newDatasetInfo);
+    },
+    notifyPropertyChange(value) {
+      this.newDatasetInfo.metadataTitle = value;
+
+      this.$emit('save', this.newDatasetInfo);
     },
     onDescriptionInput(value) {
       this.newDatasetInfo.metadataDescription = value;
@@ -344,7 +346,7 @@ export default {
       };
 
       // Assign selectedKeywords to keywords concatenated with pickedKeywordObj
-      console.log(this.keywordsField);
+
       const selectedKeywords = (this.keywordsField || []).concat([
         pickedKeywordObj,
       ]);
@@ -483,7 +485,7 @@ export default {
   components: {
     MetadataHeader,
     TagChip,
-    BaseStatusLabelView,
+    // BaseStatusLabelView,
     GenericTextareaPreviewLayout,
   },
 };

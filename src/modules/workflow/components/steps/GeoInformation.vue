@@ -1,7 +1,6 @@
 <template>
   <v-card id="EditDataGeo" class="pa-0" elevation="0" :loading="loadingColor">
     <v-container fluid class="pa-4">
-      <!-- MAP PREVIEW -->
       <v-col cols="12" class="editDataGeo customPadding">
         <MetadataGeo
           :elevation="0"
@@ -19,10 +18,10 @@
         </v-col>
       </v-col>
 
-      <!-- TITLE + STATUS -->
-      <v-row>
-        <v-col cols="6" v-html="labels.cardTitle" class="text-h5" />
-        <v-col v-if="message">
+      <v-row class="mt-5">
+        <v-col cols="12" v-html="labels.cardTitle" class="text-h5" />
+        <v-col v-html="labels.cardInstructions" class="text-subtitle-1" />
+        <!-- <v-col v-if="message">
           <BaseStatusLabelView
             status="check"
             statusColor="success"
@@ -37,12 +36,7 @@
             :statusText="error"
             :expandedText="errorDetails"
           />
-        </v-col>
-      </v-row>
-
-      <!-- INSTRUCTIONS -->
-      <v-row>
-        <v-col v-html="labels.cardInstructions" class="text-subtitle-1" />
+        </v-col> -->
       </v-row>
 
       <v-row>
@@ -54,7 +48,6 @@
         </v-col>
       </v-row>
 
-      <!-- WARNING FOR DEFAULT LOCATION -->
       <v-row v-show="isDefaultLocation">
         <v-col>
           <v-alert type="warning">{{ labels.defaultInstructions }}</v-alert>
@@ -62,7 +55,6 @@
       </v-row>
 
       <v-row>
-        <!-- LEFT COLUMN — JSON-EDITOR & UPLOAD -->
         <v-col cols="12" md="6">
           <v-row>
             <v-col cols="12" class="text-h6">Editor</v-col>
@@ -138,7 +130,6 @@
           </v-row>
         </v-col>
 
-        <!-- RIGHT COLUMN — DATES -->
         <v-col cols="12" md="6">
           <v-col cols="12" class="text-h6"
             >Time information about the research data</v-col
@@ -202,7 +193,7 @@ import { check } from '@placemarkio/check-geojson';
 import { createJSONEditor, SelectionType } from 'vanilla-jsoneditor';
 import { useDropZone } from '@vueuse/core';
 
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
+// import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo.vue';
 import BaseStartEndDate from '@/components/BaseElements/BaseStartEndDate.vue';
@@ -231,7 +222,7 @@ export default {
   name: 'EditDataGeo',
   components: {
     MetadataGeo,
-    BaseStatusLabelView,
+    // BaseStatusLabelView,
     BaseRectangleButton,
     BaseStartEndDate,
   },
@@ -419,7 +410,7 @@ export default {
       this.dateChanged(index, prop, '');
     },
     setDataInfo(property, value) {
-      this.$emit('save', { [property]: value });
+      this.$emit('save', { ...this.newGeoInfo });
     },
     initEditor(text) {
       this.jsonEditor = createJSONEditor({

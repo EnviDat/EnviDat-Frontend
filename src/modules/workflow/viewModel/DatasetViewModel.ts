@@ -14,6 +14,7 @@ import { EditOrganizationViewModel } from '@/modules/workflow/viewModel/EditOrga
 import { EditFundingViewModel } from '@/modules/workflow/viewModel/EditFundingViewModel.ts';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 import { ModelMetaDataHeader } from '@/modules/workflow/viewModel/ModelMetaDataHeader.ts';
+import { ModelAdditionalInformation } from '@/modules/workflow/viewModel/ModelAdditionalInformation.ts';
 import { ModelGeoInfo } from '@/modules/workflow/viewModel/ModelGeoInfo.ts';
 
 export class DatasetViewModel {
@@ -30,6 +31,7 @@ export class DatasetViewModel {
     EditResourceViewModel,
     EditOrganizationViewModel,
     ModelMetaDataHeader,
+    ModelAdditionalInformation,
     ModelGeoInfo,
   ];
 
