@@ -77,10 +77,6 @@ const navigationStore = useDatasetWorkflowStore();
 
 const vm = ref(null);
 
-// DOMINIK - only for validate all object, for now or the future implementation
-// DOMINIK - WE NEED obj because we need to pass it to validateStepAction, for the obj validation
-const obj = ref(null);
-
 // load the current view model
 watch(
   () => navigationStore.currentStep,
@@ -91,12 +87,10 @@ watch(
 );
 
 const save = (data) => {
-  obj.value = data;
   vm.value.save(data);
 };
 
 const validate = (data) => {
-  obj.value = data;
   vm.value?.validate(data);
 };
 
@@ -104,7 +98,7 @@ const { currentStepObject, currentAsyncComponent } =
   storeToRefs(navigationStore);
 
 const nextStep = () => {
-  navigationStore.validateStepAction(navigationStore.currentStep, obj.value);
+  navigationStore.validateStepAction(navigationStore.currentStep);
 };
 </script>
 

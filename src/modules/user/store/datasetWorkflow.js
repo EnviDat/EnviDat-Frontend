@@ -60,13 +60,13 @@ export const useDatasetWorkflowStore = defineStore({
         this.currentStep = next.id;
       }
     },
-    async validateStepAction(stepId, newData) {
+    async validateStepAction(stepId) {
       const vm = this.currentViewModel;
       if (!vm) return;
 
+      const ok = await vm.validate();
       // BOTH version here, in my opinion before proceed we should validate all object
-      // const ok = await vm.save(newData);
-      const ok = await vm.saveObject(newData);
+      // const ok = await vm.saveObject(newData);
 
       if (ok) {
         // only for the step 3, we need to ask to the user to confirm the save
