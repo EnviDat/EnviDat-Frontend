@@ -317,7 +317,7 @@ export default {
     },
     onDescriptionInput(value) {
       this.newDatasetInfo.metadataDescription = value;
-      this.$emit('save', this.newDatasetInfo);
+      this.$emit('validate', this.newDatasetInfo);
     },
     onDescriptionChange(value) {
       this.newDatasetInfo.metadataDescription = value;

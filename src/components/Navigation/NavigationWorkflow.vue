@@ -128,10 +128,16 @@
         <span class="text-body-2 mt-2">Help mode</span>
       </div>
       <div
-        :class="{ disabled: navigationStore.currentStep < 3 }"
+        :class="{
+          disabled: !navigationStore.isStepSaveConfirmed,
+        }"
         class="navigationWorkflow__actions--item d-flex flex-column"
       >
-        <BaseIcon :icon="iconName('print')" :color="'black'" />
+        <BaseIcon
+          @click="reserveDoi"
+          :icon="iconName('print')"
+          :color="'black'"
+        />
         <span class="text-body-2 mt-2">Reserve DOI</span>
       </div>
       <div class="navigationWorkflow__actions--item d-flex flex-column">
@@ -170,6 +176,8 @@
 
 <script setup>
 // import { computed } from 'vue';
+import { useStore } from 'vuex';
+
 import { storeToRefs } from 'pinia';
 
 import { useDisplay } from 'vuetify';
@@ -181,6 +189,8 @@ import { extractIcons } from '@/factories/iconFactory';
 
 import { useDatasetWorkflowStore } from '@/modules/user/store/datasetWorkflow';
 
+// initialize the store
+const store = useStore();
 // define useDisplay
 const display = useDisplay();
 
@@ -196,6 +206,10 @@ const navigateItem = (id, status) => {
   navigationStore.navigateItemAction(id, status);
 };
 
+const reserveDoi = async () => {
+  // TODO metadataID connect with the real ID, see reference initMetadataUsingId - MetadataEditPage
+  await store.dispatch('user/DOI_RESERVE', 'metadataID');
+};
 
 // init the driver step
 const initDriver = () => {
@@ -257,12 +271,12 @@ const initDriver = () => {
       }
       // REMOVE after testing
 
-      // &.disabled {
-      //   opacity: 0.5;
-      //   &:hover {
-      //     cursor: not-allowed;
-      //   }
-      // }
+      &.disabled {
+        opacity: 0.5;
+        &:hover {
+          cursor: not-allowed;
+        }
+      }
     }
   }
   &__item {
