@@ -54,15 +54,7 @@ export const useDatasetWorkflowStore = defineStore({
     },
     setCurrentStepAction() {
       // find the next element with status != completed
-      const next = this.steps.find((el) => el.status != 'completed');
-      if (this.steps[next.id]) {
-        this.steps[next.id].status = 'active';
-        this.currentStep = next.id;
-      }
-    },
-    setCurrentStepAction() {
-      // find the next element with status != completed
-      const next = this.steps.find((el) => el.status != 'completed');
+      const next = this.steps.find((el) => el.status !== 'completed');
       if (this.steps[next.id]) {
         this.steps[next.id].status = 'active';
         this.currentStep = next.id;
