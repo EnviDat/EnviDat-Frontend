@@ -122,10 +122,10 @@ export const workflowSteps: WorkflowStep[] = [
     isEditable: true,
     completed: false,
     hasError: false,
-    key: 'relatedinformation',
+    key: 'relatedresearch',
     loader: () =>
-      import('@/modules/workflow/components/steps/AdditionalInformation.vue'),
-    viewModelKey: 'ModelMetaDataHeader',
+      import('@/modules/workflow/components/steps/RelatedResearch.vue'),
+    viewModelKey: 'ModelRelatedResearch',
     genericProps: {},
     icon: 'relatedinfo',
     status: 'disabled',

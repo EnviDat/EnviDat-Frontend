@@ -16,6 +16,7 @@ import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEdit
 import { ModelMetaDataHeader } from '@/modules/workflow/viewModel/ModelMetaDataHeader.ts';
 import { ModelAdditionalInformation } from '@/modules/workflow/viewModel/ModelAdditionalInformation.ts';
 import { ModelGeoInfo } from '@/modules/workflow/viewModel/ModelGeoInfo.ts';
+import { ModelRelatedResearch } from '@/modules/workflow/viewModel/ModelRelatedResearch.ts';
 
 export class DatasetViewModel {
   viewModelClasses = [
@@ -33,6 +34,7 @@ export class DatasetViewModel {
     ModelMetaDataHeader,
     ModelAdditionalInformation,
     ModelGeoInfo,
+    ModelRelatedResearch,
   ];
 
   private viewModelInstances: Map<string, any> = new Map();
