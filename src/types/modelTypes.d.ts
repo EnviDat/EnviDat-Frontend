@@ -21,6 +21,7 @@ export interface Author {
   identifier: string;
   affiliation: string;
   totalDataCredits: DataCreditObject;
+  isSelected: boolean;
 }
 
 export interface Keyword {

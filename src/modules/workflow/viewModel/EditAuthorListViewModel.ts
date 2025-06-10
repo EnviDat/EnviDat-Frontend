@@ -23,6 +23,8 @@ export class EditAuthorListViewModel extends AbstractEditViewModel {
     // doesn't work anymore
     super(datasetViewModel);
     // super(datasetViewModel, EditAuthorListViewModel.mappingRules());
+    // manually assign it
+    this.privateMappingRules = EditAuthorListViewModel.mappingRules();
 
     if (datasetViewModel?.dataset?.author) {
       this.authors = EditAuthorListViewModel.getFormattedAuthors(datasetViewModel.dataset.author, datasetViewModel.dataset.metadata_modified);

@@ -223,21 +223,6 @@ import {
   getAuthorByName,
   getAuthorName,
 } from '@/factories/authorFactory';
-import {
-  getValidationMetadataEditingObject,
-  isFieldValid,
-  isObjectValid,
-} from '@/factories/userEditingValidations';
-
-import {
-  EDITMETADATA_AUTHOR,
-/*
-  EDITMETADATA_CLEAR_PREVIEW,
-  EDITMETADATA_OBJECT_UPDATE,
-  eventBus,
-  REMOVE_EDITING_AUTHOR,
-*/
-} from '@/factories/eventBus';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 
@@ -310,15 +295,6 @@ export default {
     },
   },
   emits: ['validate', 'save', 'removeAuthor'],
-/*
-  mounted() {},
-  created() {
-    eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
-  },
-  beforeUnmount() {
-    eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
-  },
-*/
   computed: {
     loadingColor() {
       if (this.loading) {
@@ -467,7 +443,7 @@ export default {
           authorObject.affiliation,
         );
 
-        this.setAuthorInfo(authorObject);
+        this.saveAuthorInfo(authorObject);
       } else {
         // has to be an empty string here otherwise the old value (via $props)
         // would be shown
@@ -504,33 +480,9 @@ export default {
         if (autoAuthor) {
           authorObject = autoAuthor;
         }
-
-/*
-        if (
-          isFieldValid(property, value, this.validations, this.validationErrors)
-        ) {
-          const autoAuthor = this.getAutoCompletedAuthor(value);
-          if (autoAuthor) {
-            authorObject = autoAuthor;
-          }
-        }
-*/
       }
 
-/*
-      if (
-        isObjectValid(
-          this.validationProperties,
-          authorObject,
-          this.validations,
-          this.validationErrors,
-        )
-      ) {
-        this.setAuthorInfo(authorObject);
-      }
-*/
-
-      this.setAuthorInfo(authorObject);
+      this.saveAuthorInfo(authorObject);
     },
     getAutoCompletedAuthor(email) {
       const autoAuthor = getAuthorByEmail(email, this.existingAuthors);
@@ -554,8 +506,8 @@ export default {
 
       return null;
     },
-    setAuthorInfo(authorObject) {
-      this.$emit('save', authorObject)
+    saveAuthorInfo(authorObject) {
+      this.$emit('save', { author: authorObject })
     },
     fillPreviews(email, firstName, lastName, identifier, affiliation) {
       this.previews.email = email;
@@ -565,13 +517,6 @@ export default {
       this.previews.affiliation = affiliation;
     },
     removeAuthorClick(email) {
-/*
-      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: REMOVE_EDITING_AUTHOR,
-        data: email,
-      });
-*/
-
       this.emit('removeAuthor', email)
     },
     isReadOnly(dateProperty) {

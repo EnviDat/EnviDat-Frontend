@@ -3,7 +3,6 @@ import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 import { Author, DataCreditObject } from '@/types/modelTypes';
 import { convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
-import { isObjectValidCheckAllProps } from '@/factories/userEditingValidations';
 
 
 export class EditAuthorViewModel extends AbstractEditViewModel{
@@ -20,6 +19,8 @@ export class EditAuthorViewModel extends AbstractEditViewModel{
 
   declare affiliation: string;
   declare lastModified: string;
+
+  declare isSelected: boolean;
 
   declare validationErrors: {
     firstName: string,
@@ -100,6 +101,7 @@ export class EditAuthorViewModel extends AbstractEditViewModel{
       affiliation: this.affiliation,
       totalDataCredits: this.totalDataCredits,
       lastModified: this.lastModified,
+      isSelected: this.isSelected,
     }
   }
 

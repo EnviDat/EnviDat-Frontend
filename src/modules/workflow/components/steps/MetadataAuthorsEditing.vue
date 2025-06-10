@@ -84,13 +84,12 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
-import {mdiClose, mdiCursorMove, mdiPencil} from '@mdi/js';
+ */
+import { mdiClose, mdiCursorMove, mdiPencil } from '@mdi/js';
 import {
   AUTHORS_EDIT_CURRENT_DATACREDIT,
   EDIT_METADATA_AUTHORSLIST_TITLE,
   METADATA_AUTHOR_SEQUENCE_PROPERTY,
-  METADATA_AUTHORS_PROPERTY,
   METADATA_DATACREDIT_PROPERTY,
 } from '@/factories/metadataConsts';
 
@@ -98,19 +97,15 @@ import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuth
 import AuthorCard from '@/modules/metadata/components/AuthorCard.vue';
 import EditDataCredits from '@/modules/user/components/edit/EditDataCredits.vue';
 import BaseDraggableList from '@/components/BaseElements/BaseDraggableList.vue';
-import ExpandableLayout from '@/components/Layouts/ExpandableLayout.vue'
+import ExpandableLayout from '@/components/Layouts/ExpandableLayout.vue';
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 import {
   AUTHOR_SEARCH_CLICK,
-  EDITMETADATA_AUTHOR_DATACREDIT,
-  EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CLEAR_PREVIEW,
-  EDITMETADATA_OBJECT_UPDATE,
   eventBus,
 } from '@/factories/eventBus';
 
-import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
 import { getAuthorName } from '@/factories/authorFactory';
 
 export default {
@@ -121,6 +116,10 @@ export default {
       default: () => [],
     },
     authorDetailsConfig: {
+      type: Object,
+      default: () => {},
+    },
+    validationErrors: {
       type: Object,
       default: () => {},
     },
@@ -137,12 +136,15 @@ export default {
       default: false,
     },
   },
+  emits: ['save', 'reorderAuthor', 'editAuthorClick'],
+/*
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   beforeUnmount() {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
+*/
   computed: {
     loadingColor() {
       if (this.loading) {
@@ -159,26 +161,20 @@ export default {
       return this.authorsFields.map((a) => getAuthorName(a));
     },
     authorsFields() {
-      const authors = this.previewAuthors || this.authors;
-
-      isFieldValid(METADATA_AUTHORS_PROPERTY, authors, this.validations, this.validationErrors)
-
-      return authors;
+      return this.previewAuthors || this.authors;
     },
     metadataAuthorsObject() {
       return {
         authors: this.authorsFields,
         authorDetailsConfig: this.authorDetailsConfig,
-        emptyText: 'No author has been added yet. Select authors in the dropdown or create a new author.',
+        emptyText:
+          'No author has been added yet. Select authors in the dropdown or create a new author.',
         emptyTextColor: 'grey',
       };
     },
     authorEditingEnabled() {
       // loading in the config here?
       return true;
-    },
-    validations() {
-      return getValidationMetadataEditingObject(EDITMETADATA_AUTHOR_LIST);
     },
   },
   methods: {
@@ -187,7 +183,9 @@ export default {
 
       for (let i = 0; i < newList.length; i++) {
         const fullName = newList[i];
-        const author = this.authorsFields.filter((a) => getAuthorName(a) === fullName)[0];
+        const author = this.authorsFields.filter(
+          (a) => getAuthorName(a) === fullName,
+        )[0];
         if (author) {
           newAuthors.push(author);
         }
@@ -201,12 +199,8 @@ export default {
         return;
       }
 
-      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: EDITMETADATA_AUTHOR_LIST,
-        data: {
-          ...this.$props,
-          authors: this.previewAuthors,
-       },
+      this.$emit('save', {
+        authors: this.previewAuthors,
       });
 
       // DO NOT clear the preview because than the user isn't able to remove the last author
@@ -221,7 +215,9 @@ export default {
         editingProperties = {
           showGenericOpenButton: true,
           openButtonIcon: author?.isSelected ? mdiClose : mdiPencil,
-          openButtonTooltip: author?.isSelected ? 'Cancel author editing' : 'Edit Author',
+          openButtonTooltip: author?.isSelected
+            ? 'Cancel author editing'
+            : 'Edit Author',
         };
       }
 
@@ -237,14 +233,16 @@ export default {
         instruction: AUTHORS_EDIT_CURRENT_DATACREDIT,
         dataCredit: author.dataCredit,
         authorName: author.fullName,
-        readOnly: this.loading || this.readOnlyFields?.includes(METADATA_DATACREDIT_PROPERTY),
-      }
+        readOnly:
+          this.loading ||
+          this.readOnlyFields?.includes(METADATA_DATACREDIT_PROPERTY),
+      };
     },
     clearPreviews() {
       this.previewAuthors = null;
     },
     toggleDataCredit(author, creditName) {
-      const dCredit = [...author.dataCredit || []];
+      const dCredit = [...(author.dataCredit || [])];
 
       if (!dCredit.includes(creditName)) {
         dCredit.push(creditName);
@@ -258,26 +256,27 @@ export default {
       return author;
     },
     catchCreditClick(author, creditName) {
-
-      let localAuthorCopy = [...this.authors];
-      const authorToChange = localAuthorCopy.filter(a => a.email === author.email)[0];
+      let localAuthorsCopy = [...this.authors];
+      const authorToChange = localAuthorsCopy.filter(
+        (a) => a.email === author.email,
+      )[0];
 
       const authorCopy = { ...authorToChange };
       const newAuthor = this.toggleDataCredit(authorCopy, creditName);
 
       // replaces the existing author with the new one
-      localAuthorCopy = localAuthorCopy.map(a => a.email !== newAuthor.email ? a : newAuthor);
+      localAuthorsCopy = localAuthorsCopy.map((a) =>
+        a.email !== newAuthor.email ? a : newAuthor,
+      );
 
-      this.previewAuthors = localAuthorCopy;
+      this.previewAuthors = localAuthorsCopy;
 
-      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: EDITMETADATA_AUTHOR_DATACREDIT,
-        data: newAuthor,
-      });
-
+      this.$emit('save', {
+        authors: localAuthorsCopy,
+      })
     },
     catchEditAuthorClick(author) {
-      this.$emit('editAuthorClick', author)
+      this.$emit('editAuthorClick', author);
     },
     catchAuthorSearchClick(fullName) {
       eventBus.emit(AUTHOR_SEARCH_CLICK, fullName);
@@ -286,12 +285,10 @@ export default {
   data: () => ({
     METADATA_AUTHOR_SEQUENCE_PROPERTY,
     mdiCursorMove,
-    editingInstructions: 'Here is a preview list of the authors of this dataset. Edit the <a href="https://www.wsl.ch/datacredit/#feat" target="_blank">DataCRediT</a> contributions for each author directly in this list by clicking on the icons. For further editing of authors, select them with the edit icon. ',
+    editingInstructions:
+      'Here is a preview list of the authors of this dataset. Edit the <a href="https://www.wsl.ch/datacredit/#feat" target="_blank">DataCRediT</a> contributions for each author directly in this list by clicking on the icons. For further editing of authors, select them with the edit icon. ',
     title: EDIT_METADATA_AUTHORSLIST_TITLE,
     previewAuthors: null,
-    validationErrors: {
-      authors: '',
-    },
   }),
   components: {
     BaseIcon,

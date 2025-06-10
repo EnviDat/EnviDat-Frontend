@@ -6,7 +6,7 @@
           <v-col v-show="!selectedAuthor" cols="12">
             <AddExistingAuthor
               v-bind="authorPickingGenericProps"
-              @save="save"
+              @save="saveAuthorsList"
             />
           </v-col>
 
@@ -36,7 +36,7 @@
         <MetadataAuthorsEditing
           v-bind="authorListingGenericProps"
           @editAuthorClick="catchEditAuthorClick"
-          @save="save"
+          @save="saveAuthorsList"
         />
       </v-col>
     </v-row>
@@ -84,7 +84,7 @@ import {
 } from '@/factories/metadataConsts';
 
 import { EditAuthorViewModel } from '@/modules/workflow/viewModel/EditAuthorViewModel.ts';
-
+import { Author } from '@/types/modelTypes';
 
 export default {
   name: 'AuthorsInformation',
@@ -100,7 +100,7 @@ export default {
     },
     authors: {
       type: Array, // as PropType<Author>,
-      default: () => ([]),
+      default: () => [],
     },
     // only used for testing via storybook
     authorsMap: {
@@ -122,6 +122,10 @@ export default {
     error: {
       type: String,
       default: '',
+    },
+    validationErrors: {
+      type: Object,
+      default: () => {},
     },
     errorDetails: {
       type: String,
@@ -161,11 +165,13 @@ export default {
       return undefined;
     },
     authorsWrap() {
-      let authors = this.authors;
+      const authors = this.authors;
 
+      /*
       if (!authors && this.$store) {
         authors = this.$store.getters[`${USER_NAMESPACE}/authors`] || [];
       }
+*/
 
       if (!authors) {
         return undefined;
@@ -213,23 +219,13 @@ export default {
           showDataCredits: false,
           showDataCreditScore: false,
         },
+        validationErrors: this.validationErrors,
         readOnlyFields: this.readOnlyFields,
         readOnlyExplanation: this.readOnlyExplanation,
       };
     },
     selectedAuthor() {
-      let selectedAuthor = null;
-      const authors = this.authors;
-
-      if (authors?.length > 0) {
-        const selected = authors.filter((r) => r.isSelected);
-
-        if (selected.length > 0) {
-          selectedAuthor = selected[0];
-        }
-      }
-
-      return selectedAuthor;
+      return this.authors?.filter((r) => r.isSelected)[0];
     },
     editAddAuthorObject() {
       if (!this.selectedAuthor) {
@@ -245,11 +241,14 @@ export default {
         titleLabel: `Editing ${getAuthorName(this.selectedAuthor)}`,
         isEditingAuthor: !!this.selectedAuthor,
         existingAuthors: this.noDataCreditAuthorsWrap,
+        ...this.selectedAuthor,
+        /*
         email: this.selectedAuthor.email,
         firstName: this.selectedAuthor.firstName,
         lastName: this.selectedAuthor.lastName,
         affiliation: this.selectedAuthor.affiliation,
         identifier: this.selectedAuthor.identifier,
+*/
         readOnlyFields: this.readOnlyFields,
         readOnlyExplanation: this.readOnlyExplanation,
       };
@@ -262,17 +261,21 @@ export default {
     readOnlyHint(dateProperty) {
       return readOnlyHint(this.$props, dateProperty);
     },
-    catchEditAuthorClick(author) {
-      if (author.isSelected) {
-        eventBus.emit(CANCEL_EDITING_AUTHOR, author.email);
-      } else {
-        eventBus.emit(SELECT_EDITING_AUTHOR, author.email);
+    markAuthorSelected(authors: Author[], email: string, isSelected: boolean) {
+      const authorToMark = authors.filter(
+        (author) => author.email === email,
+      )[0];
+      if (authorToMark) {
+        authorToMark.isSelected = isSelected;
       }
+    },
+    catchEditAuthorClick(author: Author) {
+      this.markAuthorSelected(this.authors, author.email, !author.isSelected);
     },
     catchEditAuthorClose() {
       eventBus.emit(CANCEL_EDITING_AUTHOR, this.selectedAuthor.email);
     },
-    save(data: unknown) {
+    saveAuthorsList(data: unknown) {
       this.$emit('save', data);
     },
     async saveNewAuthor(data: unknown) {
@@ -280,13 +283,22 @@ export default {
       // because if it's valid, we need to call getAuthor() which means the
       // viewModel has to have the author information assign, which doesn't happen
       // when only validating
-      const validData = await this.addNewAuthorViewModel.save(data);
+      const validData = await this.addNewAuthorViewModel.save(data.author);
 
       if (validData) {
         const newAuthor = this.addNewAuthorViewModel.getAuthor();
         const currentAuthors = [...this.authors];
         currentAuthors.push(newAuthor);
-        this.save(currentAuthors);
+
+        this.saveAuthorsList({
+          authors: currentAuthors,
+        });
+
+        // to reset the addNewAuthors View
+        this.$nextTick(() => {
+          // this.addNewAuthorViewModel = new EditAuthorViewModel();
+          Object.assign(this.addNewAuthorViewModel, new EditAuthorViewModel().getAuthor());
+        });
       }
     },
   },
@@ -298,6 +310,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
