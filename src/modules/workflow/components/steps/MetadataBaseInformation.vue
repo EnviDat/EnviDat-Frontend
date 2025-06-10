@@ -182,7 +182,7 @@ import { getTagColor } from '@/factories/keywordsFactory';
 
 // import { getMetadataUrlFromTitle } from '@/factories/mappingFactory';
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
-// import { type } from '@amcharts/amcharts5';
+import MetadataDescription from '@/modules/metadata/components/Metadata/MetadataDescription.vue';
 
 export default {
   name: 'EditMetadataHeader',
@@ -221,10 +221,7 @@ export default {
   computed: {
     metadataPreviewEntry() {
       const previewEntry = {
-        metadataTitle:
-          this.newDatasetInfo.metadataTitle !== undefined
-            ? this.newDatasetInfo.metadataTitle
-            : 'Dataset Title',
+        metadataTitle: this.metadataTitleField,
         tags: this.keywordsField,
       };
 
@@ -244,7 +241,9 @@ export default {
     },
 
     metadataTitleField() {
-      return this.metadataTitle;
+      return this.newDatasetInfo.metadataTitle !== undefined ?
+        this.newDatasetInfo.metadataTitle :
+        this.metadataTitle;
     },
     metadataDescriptionField() {
       return this.metadataDescription;
@@ -448,12 +447,12 @@ export default {
   data: () => ({
     mdiPaletteSwatch,
     mdiArrowDownDropCircleOutline,
+    mdiBookOpenVariantOutline,
     search: '',
     keywordValidConcise: true,
     keywordValidMin3Characters: true,
     keywordCount: 0,
     rulesKeywords: [],
-    mdiBookOpenVariantOutline,
     newDatasetInfo: {},
     defaultUserEditMetadataConfig: {
       keywordsListWordMax: 2,
@@ -483,6 +482,7 @@ export default {
     },
   }),
   components: {
+    MetadataDescription,
     MetadataHeader,
     TagChip,
     // BaseStatusLabelView,
