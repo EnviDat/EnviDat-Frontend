@@ -294,7 +294,7 @@ export default {
       default: '',
     },
   },
-  emits: ['validate', 'save', 'removeAuthor'],
+  emits: ['validate', 'save', 'removeAuthor', 'closeClicked'],
   computed: {
     loadingColor() {
       if (this.loading) {
@@ -517,7 +517,7 @@ export default {
       this.previews.affiliation = affiliation;
     },
     removeAuthorClick(email) {
-      this.emit('removeAuthor', email)
+      this.$emit('removeAuthor', email)
     },
     isReadOnly(dateProperty) {
       return isFieldReadOnly(this.$props, dateProperty);

@@ -73,15 +73,7 @@
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 
-
-import {
-  EDITMETADATA_AUTHOR_LIST,
-  EDITMETADATA_CLEAR_PREVIEW,
-  EDITMETADATA_OBJECT_UPDATE,
-  eventBus,
-} from '@/factories/eventBus';
 import { getArrayOfFullNames, getAuthorByName } from '@/factories/authorFactory';
-import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
 import { EDIT_METADATA_AUTHORS_TITLE } from '@/factories/metadataConsts';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
@@ -130,12 +122,7 @@ export default {
       default: '',
     },
   },
-  created() {
-    eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
-  },
-  beforeUnmount() {
-    eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
-  },
+  emits: ['save'],
   computed: {
     loadingColor() {
       if (this.loading) {
@@ -153,9 +140,6 @@ export default {
     preselectAuthorNames() {
       return this.previewAuthors ? getArrayOfFullNames(this.previewAuthors) : getArrayOfFullNames(this.authors);
     },
-    validations() {
-      return getValidationMetadataEditingObject(EDITMETADATA_AUTHOR_LIST);
-    },
   },
   methods: {
     clearPreviews() {
@@ -164,9 +148,6 @@ export default {
       // is null and we can show an empty selection box with the error validation
       // not saving the users changes, but reflecting their action and show the error
       this.previewAuthors = null;
-    },
-    validateProperty(property, value){
-      return isFieldValid(property, value, this.validations, this.validationErrors)
     },
     catchRemovedUsers(pickedUsers) {
       this.changePreviews(pickedUsers);
@@ -203,14 +184,9 @@ export default {
         return;
       }
 
-      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: EDITMETADATA_AUTHOR_LIST,
-        data: {
-          ...this.$props,
-          authors: this.previewAuthors,
-        },
+      this.$emit('save', {
+        authors: this.previewAuthors,
       });
-
       // DO NOT clear the preview because than the user isn't able to remove the last author
       // this lead to a UX where the user had to add a second author to then remove the first, it
       // changes want to be made

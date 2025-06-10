@@ -100,12 +100,6 @@ import BaseDraggableList from '@/components/BaseElements/BaseDraggableList.vue';
 import ExpandableLayout from '@/components/Layouts/ExpandableLayout.vue';
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
-import {
-  AUTHOR_SEARCH_CLICK,
-  EDITMETADATA_CLEAR_PREVIEW,
-  eventBus,
-} from '@/factories/eventBus';
-
 import { getAuthorName } from '@/factories/authorFactory';
 
 export default {
@@ -136,15 +130,7 @@ export default {
       default: false,
     },
   },
-  emits: ['save', 'reorderAuthor', 'editAuthorClick'],
-/*
-  created() {
-    eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
-  },
-  beforeUnmount() {
-    eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
-  },
-*/
+  emits: ['save', 'editAuthorClick', 'searchAuthorClick'],
   computed: {
     loadingColor() {
       if (this.loading) {
@@ -279,7 +265,7 @@ export default {
       this.$emit('editAuthorClick', author);
     },
     catchAuthorSearchClick(fullName) {
-      eventBus.emit(AUTHOR_SEARCH_CLICK, fullName);
+      this.$emit('searchAuthorClick', fullName);
     },
   },
   data: () => ({

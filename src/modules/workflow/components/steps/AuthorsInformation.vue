@@ -25,8 +25,10 @@
           <v-col v-else cols="12">
             <AddNewAuthor
               v-bind="editAddAuthorObject"
+              @removeAuthor="catchRemoveAuthor"
               @closeClicked="catchEditAuthorClose"
-              @save="saveNewAuthor"
+              @validate="validateAuthor"
+              @save="saveAuthor"
             />
           </v-col>
         </v-row>
@@ -36,6 +38,7 @@
         <MetadataAuthorsEditing
           v-bind="authorListingGenericProps"
           @editAuthorClick="catchEditAuthorClick"
+          @searchAuthorClick="catchSearchAuthorClick"
           @save="saveAuthorsList"
         />
       </v-col>
@@ -58,8 +61,8 @@
 
 /*
 import { PropType } from 'vue';
-import type { Author } from '@/types/modelTypes';
 */
+import type { Author } from '@/types/modelTypes';
 import AddNewAuthor from '@/modules/workflow/components/steps/AddNewAuthor.vue';
 import AddExistingAuthor from '@/modules/workflow/components/steps/AddExistingAuthor.vue';
 import MetadataAuthorsEditing from '@/modules/workflow/components/steps/MetadataAuthorsEditing.vue';
@@ -70,13 +73,11 @@ import {
 } from '@/factories/authorFactory';
 
 import {
-  CANCEL_EDITING_AUTHOR,
+  AUTHOR_SEARCH_CLICK,
   eventBus,
-  SELECT_EDITING_AUTHOR,
 } from '@/factories/eventBus';
 
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
-import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 import {
   EDIT_METADATA_ADD_AUTHOR_TITLE,
@@ -84,7 +85,6 @@ import {
 } from '@/factories/metadataConsts';
 
 import { EditAuthorViewModel } from '@/modules/workflow/viewModel/EditAuthorViewModel.ts';
-import { Author } from '@/types/modelTypes';
 
 export default {
   name: 'AuthorsInformation',
@@ -225,12 +225,12 @@ export default {
       };
     },
     selectedAuthor() {
-      return this.authors?.filter((r) => r.isSelected)[0];
+      return this.authors?.filter((r: Author) => r.isSelected)[0];
     },
     editAddAuthorObject() {
       if (!this.selectedAuthor) {
         return {
-          ...this.addNewAuthorViewModel,
+          ...this.authorViewModel,
           existingAuthors: this.noDataCreditAuthorsWrap,
           readOnlyFields: this.readOnlyFields,
           readOnlyExplanation: this.readOnlyExplanation,
@@ -241,13 +241,15 @@ export default {
         titleLabel: `Editing ${getAuthorName(this.selectedAuthor)}`,
         isEditingAuthor: !!this.selectedAuthor,
         existingAuthors: this.noDataCreditAuthorsWrap,
-        ...this.selectedAuthor,
+        ...this.authorViewModel,
         /*
+        ...this.selectedAuthor,
         email: this.selectedAuthor.email,
         firstName: this.selectedAuthor.firstName,
         lastName: this.selectedAuthor.lastName,
         affiliation: this.selectedAuthor.affiliation,
         identifier: this.selectedAuthor.identifier,
+        validationErrors: {},
 */
         readOnlyFields: this.readOnlyFields,
         readOnlyExplanation: this.readOnlyExplanation,
@@ -270,23 +272,59 @@ export default {
       }
     },
     catchEditAuthorClick(author: Author) {
+      if(this.selectedAuthor) {
+        this.removeCurrentAuthorSelection();
+      }
+
       this.markAuthorSelected(this.authors, author.email, !author.isSelected);
+      this.authorViewModel.save(author);
+    },
+    removeCurrentAuthorSelection() {
+      if(this.selectedAuthor) {
+        this.selectedAuthor.isSelected = false;
+        this.authorViewModel = new EditAuthorViewModel();
+      }
     },
     catchEditAuthorClose() {
-      eventBus.emit(CANCEL_EDITING_AUTHOR, this.selectedAuthor.email);
+      if(this.selectedAuthor) {
+        this.removeCurrentAuthorSelection();
+      }
+    },
+    catchSearchAuthorClick(fullName: string) {
+      eventBus.emit(AUTHOR_SEARCH_CLICK, fullName);
+    },
+    catchRemoveAuthor(email: string) {
+      if(this.selectedAuthor) {
+        this.removeCurrentAuthorSelection();
+      }
+
+      const currentAuthors = [...this.authors];
+
+      const matches = currentAuthors.filter((auth: Author) => auth.email === email);
+      if (matches.length > 0) {
+        const removeIndex = currentAuthors.indexOf(matches[0]);
+        currentAuthors.splice(removeIndex, 1);
+
+        this.saveAuthorsList({
+          authors: currentAuthors,
+        });
+      }
     },
     saveAuthorsList(data: unknown) {
       this.$emit('save', data);
     },
-    async saveNewAuthor(data: unknown) {
+    validateAuthor(data: unknown) {
+      this.authorViewModel.validate(data);
+    },
+    async saveAuthor(data: unknown) {
       // call the save here to do validation, don't directly call validate()
       // because if it's valid, we need to call getAuthor() which means the
       // viewModel has to have the author information assign, which doesn't happen
       // when only validating
-      const validData = await this.addNewAuthorViewModel.save(data.author);
+      const validData = await this.authorViewModel.save(data.author);
 
       if (validData) {
-        const newAuthor = this.addNewAuthorViewModel.getAuthor();
+        const newAuthor = this.authorViewModel.getAuthor();
         const currentAuthors = [...this.authors];
         currentAuthors.push(newAuthor);
 
@@ -296,14 +334,14 @@ export default {
 
         // to reset the addNewAuthors View
         this.$nextTick(() => {
-          // this.addNewAuthorViewModel = new EditAuthorViewModel();
-          Object.assign(this.addNewAuthorViewModel, new EditAuthorViewModel().getAuthor());
+          // this.authorViewModel = new EditAuthorViewModel();
+          Object.assign(this.authorViewModel, new EditAuthorViewModel().getAuthor());
         });
       }
     },
   },
   data: () => ({
-    addNewAuthorViewModel: new EditAuthorViewModel(),
+    authorViewModel: new EditAuthorViewModel(),
     METADATA_AUTHORS_PROPERTY,
     EDIT_METADATA_ADD_AUTHOR_TITLE,
   }),
