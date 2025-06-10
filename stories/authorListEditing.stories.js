@@ -16,7 +16,7 @@ import {
 } from '@/factories/authorFactory';
 
 import unFormatedMetadataCards from './js/metadata';
-import { EditDatasetServiceLayer } from '@/modules/workflow/viewModel/EditDatasetServiceLayer.js';
+import { EditDatasetBackendService } from '@/modules/workflow/viewModel/EditDatasetBackendService.ts';
 import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.js';
 import EditAuthorList from '@/modules/user/components/edit/EditAuthorList.vue';
 
@@ -29,7 +29,7 @@ unFormatedMetadataCards.forEach((el) => {
 });
 
 
-const serviceLayer = new EditDatasetServiceLayer(unFormatedMetadataCards[0])
+const serviceLayer = new EditDatasetBackendService(unFormatedMetadataCards[0])
 const datasetVM = new DatasetViewModel(serviceLayer);
 
 

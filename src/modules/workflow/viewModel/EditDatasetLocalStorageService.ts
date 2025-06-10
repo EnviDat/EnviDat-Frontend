@@ -8,7 +8,7 @@ import axios from 'axios';
 import { ACTION_METADATA_EDITING_PATCH_DATASET } from '@/modules/user/store/userMutationsConsts';
 import { urlRewrite } from '@/factories/apiFactory';
 import { Dataset } from '@/modules/workflow/viewModel/Dataset.ts';
-import { DatasetServiceLayer } from '@/types/modelTypes';
+import { DatasetService } from '@/types/modelTypes';
 import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 import { ACTION_LOAD_METADATA_CONTENT_BY_ID } from '@/store/metadataMutationsConsts';
@@ -30,7 +30,7 @@ if (!useTestdata) {
   API_ROOT = import.meta.env.VITE_API_ROOT || '';
 }
 
-export class EditDatasetServiceLayer implements DatasetServiceLayer {
+export class EditDatasetLocalStorageService implements DatasetService {
 
   declare dataset: DatasetDTO;
   declare loadingDataset: boolean;

@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia';
 import { EDIT_DATASET_STORE } from '@/store/metadataMutationsConsts';
-import { EditDatasetServiceLayer } from '@/modules/workflow/viewModel/EditDatasetServiceLayer.js';
+import { EditDatasetBackendService } from '@/modules/workflow/viewModel/EditDatasetBackendService.js';
 import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.ts';
 
 
-const datasetViewModel = new DatasetViewModel(new EditDatasetServiceLayer(undefined))
+const datasetViewModel = new DatasetViewModel(new EditDatasetBackendService(undefined))
 
 const initState = {
   datasetViewModel,

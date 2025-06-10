@@ -1,6 +1,6 @@
 import { reactive } from 'vue';
 import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
-import { DatasetServiceLayer } from '@/types/modelTypes';
+import { DatasetService } from '@/types/modelTypes';
 import { EditHeaderViewModel } from '@/modules/workflow/viewModel/EditHeaderViewModel.ts';
 import { EditDescriptionViewModel } from '@/modules/workflow/viewModel/EditDescriptionViewModel.ts';
 import { EditKeywordsViewModel } from '@/modules/workflow/viewModel/EditKeywordsViewModel.ts';
@@ -39,9 +39,9 @@ export class DatasetViewModel {
 
   private viewModelInstances: Map<string, any> = new Map();
 
-  declare serviceLayer: DatasetServiceLayer;
+  declare serviceLayer: DatasetService;
 
-  constructor(serviceLayer: DatasetServiceLayer) {
+  constructor(serviceLayer: DatasetService) {
     this.serviceLayer = serviceLayer;
 
     this.createViewModels();

@@ -58,7 +58,7 @@ export interface UserModel {
 }
 
 
-export interface DatasetServiceLayer {
+export interface DatasetService {
 
   dataset: DatasetDTO;
 

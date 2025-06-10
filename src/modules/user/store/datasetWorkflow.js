@@ -4,7 +4,7 @@ import { defineAsyncComponent } from 'vue';
 import { workflowSteps } from '@/modules/workflow/resources/steps';
 
 import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.js';
-import { EditDatasetServiceLayer } from '@/modules/workflow/viewModel/EditDatasetServiceLayer.js';
+import { EditDatasetBackendService } from '@/modules/workflow/viewModel/EditDatasetBackendService.ts';
 
 /*
 import axios from 'axios';
