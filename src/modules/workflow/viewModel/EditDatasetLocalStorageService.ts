@@ -1,34 +1,20 @@
-
-// subscribe to viewModel and make the patch action?
-// create the datasetDTO
-// update all the viewModel from the datasetDTO
-
-import axios from 'axios';
-
-import { ACTION_METADATA_EDITING_PATCH_DATASET } from '@/modules/user/store/userMutationsConsts';
-import { urlRewrite } from '@/factories/apiFactory';
-import { Dataset } from '@/modules/workflow/viewModel/Dataset.ts';
+import { Dataset } from '@/modules/workflow/viewModel/Dataset';
 import { DatasetService } from '@/types/modelTypes';
-import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
-import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
-import { ACTION_LOAD_METADATA_CONTENT_BY_ID } from '@/store/metadataMutationsConsts';
-
-// don't use an api base url or API_ROOT when using testdata
-let API_BASE = '';
-let API_ROOT = '';
+import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
+import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel';
+import {
+  initCreationDataWithDefaults,
+  readDatasetFromLocalStorage,
+  storeDatasetInLocalStorage,
+} from '@/factories/userCreationFactory';
 
 const useTestdata = import.meta.env?.VITE_USE_TESTDATA === 'true';
 
-let mockDataResponse;
+let mockDataResponse: DatasetDTO;
 if (useTestdata) {
   mockDataResponse = await import('../../../../public/testdata/dataset_10-16904-1');
 }
 
-
-if (!useTestdata) {
-  API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
-  API_ROOT = import.meta.env.VITE_API_ROOT || '';
-}
 
 export class EditDatasetLocalStorageService implements DatasetService {
 
@@ -43,16 +29,9 @@ export class EditDatasetLocalStorageService implements DatasetService {
   async loadDataset(id: string) : Promise<DatasetDTO> {
 
     this.loadingDataset = true;
-    const actionUrl = ACTION_LOAD_METADATA_CONTENT_BY_ID();
-    const url = urlRewrite(`${actionUrl}?id=${id}`, API_BASE, API_ROOT);
 
-    try {
-      const response = await axios.get(url);
-      this.dataset = new Dataset(response.data);
-    } catch (e: Error) {
-      console.error(e);
-      throw e;
-    }
+    const backendData = readDatasetFromLocalStorage(id);
+    this.dataset = new Dataset(backendData);
 
     this.loadingDataset = false;
     return this.dataset;
@@ -60,26 +39,15 @@ export class EditDatasetLocalStorageService implements DatasetService {
 
   async patchDatasetChanges(
     datasetId: string,
-    viewModel: AbstractEditViewModel,
+    data: unknown,
   ) {
     if (useTestdata) {
       return mockDataResponse.dataset.result;
     }
 
-    const actionUrl = ACTION_METADATA_EDITING_PATCH_DATASET();
-    const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
-
-    const postData = viewModel.backendJSON;
-    postData.id = datasetId;
-
     try {
-      const response = await axios.post(url, postData, {
-        headers: {
-          // Authorization: apiKey,
-        },
-      });
-
-      this.dataset = new Dataset(response.data);
+      storeDatasetInLocalStorage(datasetId, data);
+      this.dataset = new Dataset(data);
 
       return this.dataset;
     } catch (e: Error) {

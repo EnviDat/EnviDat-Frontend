@@ -66,7 +66,7 @@ export interface DatasetService {
 
   patchDatasetChanges(
     datasetId: string,
-    viewModel: AbstractEditViewModel,
+    data: unknown,
   ) : Promise<any>;
 
 }

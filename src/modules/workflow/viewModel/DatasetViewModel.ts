@@ -17,6 +17,8 @@ import { ModelMetaDataHeader } from '@/modules/workflow/viewModel/ModelMetaDataH
 import { ModelAdditionalInformation } from '@/modules/workflow/viewModel/ModelAdditionalInformation.ts';
 import { ModelGeoInfo } from '@/modules/workflow/viewModel/ModelGeoInfo.ts';
 import { ModelRelatedResearch } from '@/modules/workflow/viewModel/ModelRelatedResearch.ts';
+import { initCreationDataWithDefaults } from '@/factories/userCreationFactory';
+import { Dataset } from '@/modules/workflow/viewModel/Dataset.ts';
 
 export class DatasetViewModel {
   viewModelClasses = [
@@ -39,10 +41,12 @@ export class DatasetViewModel {
 
   private viewModelInstances: Map<string, any> = new Map();
 
-  declare serviceLayer: DatasetService;
+  declare backendService: DatasetService;
+  declare localStorageService: DatasetService;
 
-  constructor(serviceLayer: DatasetService) {
-    this.serviceLayer = serviceLayer;
+  constructor(backendService: DatasetService, localStorageService: DatasetService) {
+    this.backendService = backendService;
+    this.localStorageService = localStorageService;
 
     this.createViewModels();
   }
@@ -64,16 +68,31 @@ export class DatasetViewModel {
   }
 
   async loadViewModels(datasetId: string): Promise<void> {
-    await this.serviceLayer.loadDataset(datasetId);
+    await this.backendService.loadDataset(datasetId);
 
     this.createViewModels();
   }
+
+  createDataset(user, prefilledOrganizationId) : DatasetDTO {
+
+    const localId = `${user.id}_${prefilledOrganizationId}`;
+    const predefinedData = {
+      id: localId,
+    };
+
+    initCreationDataWithDefaults(predefinedData, user, prefilledOrganizationId);
+
+    const localDataset = new Dataset(predefinedData);
+    this.localStorageService.patchDatasetChanges(localId, localDataset);
+  }
+
 
   async patchViewModel(newModel: AbstractEditViewModel) {
     try {
       newModel.loading = true;
 
-      await this.serviceLayer.patchDatasetChanges(this.dataset.id, newModel);
+      await this.backendService.patchDatasetChanges(this.dataset.id, newModel.backendJSON);
+
       this.updateViewModels();
 
       newModel.savedSuccessful = true;
@@ -97,11 +116,11 @@ export class DatasetViewModel {
 
   updateViewModels() {
     this.viewModelInstances.forEach((model) =>
-      model.updateModel(this.serviceLayer.dataset),
+      model.updateModel(this.backendService.dataset),
     );
   }
 
   get dataset(): DatasetDTO | undefined {
-    return this.serviceLayer?.dataset;
+    return this.backendService?.dataset;
   }
 }

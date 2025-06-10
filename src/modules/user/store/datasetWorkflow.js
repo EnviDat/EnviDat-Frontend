@@ -3,13 +3,10 @@ import { defineAsyncComponent } from 'vue';
 
 import { workflowSteps } from '@/modules/workflow/resources/steps';
 
-import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.js';
-import { EditDatasetBackendService } from '@/modules/workflow/viewModel/EditDatasetBackendService.ts';
+import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel';
+import { EditDatasetBackendService } from '@/modules/workflow/viewModel/EditDatasetBackendService';
+import { EditDatasetLocalStorageService } from '@/modules/workflow/viewModel/EditDatasetLocalStorageService';
 
-/*
-import axios from 'axios';
-import { set } from 'date-fns';
-*/
 
 export const useDatasetWorkflowStore = defineStore({
   id: 'datasetWorkflow',

@@ -60,7 +60,7 @@ export class EditDatasetBackendService implements DatasetService {
 
   async patchDatasetChanges(
     datasetId: string,
-    viewModel: AbstractEditViewModel,
+    data: unknown,
   ) {
     if (useTestdata) {
       return mockDataResponse.dataset.result;
@@ -69,7 +69,7 @@ export class EditDatasetBackendService implements DatasetService {
     const actionUrl = ACTION_METADATA_EDITING_PATCH_DATASET();
     const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
-    const postData = viewModel.backendJSON;
+    const postData = data;
     postData.id = datasetId;
 
     try {
