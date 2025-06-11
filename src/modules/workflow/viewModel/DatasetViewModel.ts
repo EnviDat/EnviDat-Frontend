@@ -1,6 +1,6 @@
 import { reactive } from 'vue';
 import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
-import { DatasetService, UserModel } from '@/types/modelTypes';
+import { DatasetService, User } from '@/types/modelTypes';
 import { EditHeaderViewModel } from '@/modules/workflow/viewModel/EditHeaderViewModel.ts';
 import { EditDescriptionViewModel } from '@/modules/workflow/viewModel/EditDescriptionViewModel.ts';
 import { EditKeywordsViewModel } from '@/modules/workflow/viewModel/EditKeywordsViewModel.ts';
@@ -74,7 +74,7 @@ export class DatasetViewModel {
     this.createViewModels();
   }
 
-  createDataset(user: UserModel, prefilledOrganizationId: string) : DatasetDTO {
+  createDataset(user: User, prefilledOrganizationId: string) : DatasetDTO {
 
     const localId = `${user.id}_${prefilledOrganizationId}`;
     const predefinedData = {

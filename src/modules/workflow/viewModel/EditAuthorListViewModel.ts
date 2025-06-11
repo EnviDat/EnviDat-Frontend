@@ -1,4 +1,3 @@
-import { reactive, watch } from 'vue';
 import * as yup from 'yup';
 
 import { Author } from '@/types/modelTypes';
@@ -79,39 +78,9 @@ export class EditAuthorListViewModel extends AbstractEditViewModel {
   validate(newProps?: Partial<EditAuthorListViewModel>): boolean {
     return super.validate(newProps);
   }
-/*
-  validate(newProps?: any): boolean {
-    return isObjectValidCheckAllProps(
-      {
-        authors: newProps.authors || this.authors,
-      },
-      this.validationRules,
-      this.validationErrors,
-    );
-  }
-*/
 
   static mappingRules() {
     return [['authors', 'author']];
   }
 }
 
-export const createEditAuthorListViewModel = (
-  datasetViewModel: DatasetViewModel,
-  changeCallback = undefined,
-) => {
-  const authorsVM = new EditAuthorListViewModel(datasetViewModel);
-  const reactiveAuthorsVM = reactive(authorsVM);
-
-  watch(
-    () => reactiveAuthorsVM,
-    (newModel) => {
-      if (changeCallback) {
-        changeCallback(newModel);
-      }
-    },
-    { deep: true },
-  );
-
-  return reactiveAuthorsVM;
-};

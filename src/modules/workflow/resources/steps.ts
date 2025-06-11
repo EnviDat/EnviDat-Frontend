@@ -109,8 +109,8 @@ export const workflowSteps: WorkflowStep[] = [
     hasError: false,
     key: 'uploadinformation',
     loader: () =>
-      import('@/modules/workflow/components/steps/AdditionalInformation.vue'),
-    viewModelKey: 'ModelMetaDataHeader',
+      import('@/modules/workflow/components/steps/ResourcesInformation.vue'),
+    viewModelKey: 'EditResourcesListViewModel',
     genericProps: {},
     icon: 'uploadinfo',
     status: 'disabled',

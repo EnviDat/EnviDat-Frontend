@@ -57,6 +57,34 @@ export interface UserModel {
   state: string;
 }
 
+export interface Resource {
+  // cacheLastUpdated: string | null;
+  // cacheUrl: string | null;
+  created: string;
+  datasetId: string;
+  description: string;
+  doi: string;
+  format: string;
+  // hash: string;
+  id: string;
+  lastModified: string;
+  metadataModified: string | null;
+  mimetype: string;
+  mimetypeInner: string | null;
+  name: string;
+  position: number;
+  resourceSize: string;
+  resourceType: string | null;
+  restricted: string;
+  size: number;
+  sizeFormat: string;
+  state: string;
+  url: string;
+  urlType: string;
+  deprecated: boolean;
+  isSelected: boolean;
+}
+
 
 export interface DatasetService {
 

@@ -1,6 +1,8 @@
 import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.ts';
+import { Resource, Resource } from '@/types/modelTypes';
+import { convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
 
 
 const convertEmptyStringToNull = (value: string, originalValue: string) =>
@@ -9,15 +11,14 @@ const convertEmptyStringToNull = (value: string, originalValue: string) =>
 const convertToZero = (value: unknown) => (Number.isNaN(value) ? 0 : value);
 
 
-export class EditResourceViewModel extends AbstractEditViewModel{
+export class EditResourceViewModel extends AbstractEditViewModel implements Resource {
 
-  declare metadataId: string;
+  declare datasetId: string;
   declare description: string;
+
   declare id: string;
   declare doi: string;
-
-  declare url: string;
-  declare urlType: string;
+  declare format: string;
 
   declare created: string;
   declare lastModified: string;
@@ -28,29 +29,36 @@ export class EditResourceViewModel extends AbstractEditViewModel{
 
   declare multipartName: string;
   declare name: string;
+  declare position: number;
 
-  declare position: string;
-
-  declare restricted: string;
-
-  declare size: Number;
-  declare sizeFormat: string;
   declare resourceSize: string;
   declare resourceType: string;
+  declare restricted: string;
 
+  declare size: number;
+  declare sizeFormat: string;
   declare state: string;
 
+  declare url: string;
+  declare urlType: string;
+
   declare deprecated: boolean;
+  declare isSelected: boolean;
 
 
   declare validationErrors: {
-    metadataId: string,
+    name: string,
     description: string,
+    format: string,
+    size: string,
+    sizeFormat: string,
+    url: string,
+/*
     cacheLastUpdated: string,
     cacheUrl: string,
     id: string,
+    datasetId: string,
     doi: string,
-    url: string,
     urlType: string,
     created: string,
     lastModified: string,
@@ -58,14 +66,12 @@ export class EditResourceViewModel extends AbstractEditViewModel{
     mimetypeInner: string,
     metadataModified: string,
     multipartName: string,
-    name: string,
     position: string,
     restricted: string,
-    size: Number,
-    sizeFormat: string,
     resourceSize: string,
     resourceType: string,
     state: string,
+*/
   }
 
 
@@ -74,13 +80,18 @@ export class EditResourceViewModel extends AbstractEditViewModel{
 
 
     this.validationErrors = {
-      metadataId: null,
+      name: null,
       description: null,
+      format: null,
+      size: null,
+      sizeFormat: null,
+      url: null,
+/*
+      datasetId: null,
       cacheLastUpdated: null,
       cacheUrl: null,
       id: null,
       doi: null,
-      url: null,
       urlType: null,
       created: null,
       lastModified: null,
@@ -88,19 +99,17 @@ export class EditResourceViewModel extends AbstractEditViewModel{
       mimetypeInner: null,
       metadataModified: null,
       multipartName: null,
-      name: null,
       position: null,
       restricted: null,
-      size: null,
-      sizeFormat: null,
       resourceSize: null,
       resourceType: null,
       state: null,
+*/
     }
 
     this.validationRules =
       yup.object().shape({
-        isLink: yup.boolean(),
+        // isLink: yup.boolean(),
         name: yup
           .string()
           .required('Resource name is required')
@@ -140,9 +149,13 @@ export class EditResourceViewModel extends AbstractEditViewModel{
       });
   }
 
+  static getFormattedResource(rawResource: any) : Resource {
+    return convertToFrontendJSONWithRules(EditResourceViewModel.mappingRules(), rawResource) as Resource;
+  }
+
   static mappingRules () {
     return [
-      ['metadataId','package_id'],
+      ['datasetId','package_id'],
       ['cacheLastUpdated','cache_last_updated'],
       ['cacheUrl','cache_url'],
       ['created','created'],
@@ -157,7 +170,7 @@ export class EditResourceViewModel extends AbstractEditViewModel{
       ['metadataModified','metadata_modified'],
       ['multipartName','multipart_name'],
       ['name','name'],
-      ['packageId','package_id'],
+      // ['packageId','package_id'], // keep it for compatiblity reasons?
       ['position','position'],
       ['restricted','restricted'],
       ['resourceSize','resource_size'],

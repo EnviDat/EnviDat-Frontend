@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="pa-0" id="EditAuthorList">
+  <v-container fluid class="pa-0" id="AuthorsInformation">
     <v-row>
       <v-col cols="6">
         <v-row>

@@ -7,7 +7,7 @@ import { convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
 const convertEmptyStringToNull = (value: string, originalValue: string) =>
   originalValue === '' ? null : value;
 
-export class EditAuthorViewModel extends AbstractEditViewModel{
+export class EditAuthorViewModel extends AbstractEditViewModel implements Author {
 
   declare firstName: string;
   declare lastName: string;
