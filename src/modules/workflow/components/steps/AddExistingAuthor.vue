@@ -77,6 +77,7 @@ import { getArrayOfFullNames, getAuthorByName } from '@/factories/authorFactory'
 import { EDIT_METADATA_AUTHORS_TITLE } from '@/factories/metadataConsts';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus.js';
 
 export default {
   name: 'EditAddExistingAuthor',
@@ -123,6 +124,12 @@ export default {
     },
   },
   emits: ['save'],
+  created() {
+    eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+  },
+  beforeUnmount() {
+    eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+  },
   computed: {
     loadingColor() {
       if (this.loading) {
@@ -187,6 +194,7 @@ export default {
       this.$emit('save', {
         authors: this.previewAuthors,
       });
+
       // DO NOT clear the preview because than the user isn't able to remove the last author
       // this lead to a UX where the user had to add a second author to then remove the first, it
       // changes want to be made

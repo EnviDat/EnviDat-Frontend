@@ -1,6 +1,6 @@
 import { reactive } from 'vue';
 import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
-import { DatasetService } from '@/types/modelTypes';
+import { DatasetService, UserModel } from '@/types/modelTypes';
 import { EditHeaderViewModel } from '@/modules/workflow/viewModel/EditHeaderViewModel.ts';
 import { EditDescriptionViewModel } from '@/modules/workflow/viewModel/EditDescriptionViewModel.ts';
 import { EditKeywordsViewModel } from '@/modules/workflow/viewModel/EditKeywordsViewModel.ts';
@@ -19,6 +19,7 @@ import { ModelGeoInfo } from '@/modules/workflow/viewModel/ModelGeoInfo.ts';
 import { ModelRelatedResearch } from '@/modules/workflow/viewModel/ModelRelatedResearch.ts';
 import { initCreationDataWithDefaults } from '@/factories/userCreationFactory';
 import { Dataset } from '@/modules/workflow/viewModel/Dataset.ts';
+import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 
 export class DatasetViewModel {
   viewModelClasses = [
@@ -73,7 +74,7 @@ export class DatasetViewModel {
     this.createViewModels();
   }
 
-  createDataset(user, prefilledOrganizationId) : DatasetDTO {
+  createDataset(user: UserModel, prefilledOrganizationId: string) : DatasetDTO {
 
     const localId = `${user.id}_${prefilledOrganizationId}`;
     const predefinedData = {
@@ -83,7 +84,11 @@ export class DatasetViewModel {
     initCreationDataWithDefaults(predefinedData, user, prefilledOrganizationId);
 
     const localDataset = new Dataset(predefinedData);
+
     this.localStorageService.patchDatasetChanges(localId, localDataset);
+
+    // @ts-ignore
+    return localDataset;
   }
 
 
@@ -96,12 +101,20 @@ export class DatasetViewModel {
       this.updateViewModels();
 
       newModel.savedSuccessful = true;
+
+      // send the clearing to the UI components to clear their internal state
+      // this still needs to be resolved in a better way, but for now it's done vie the eventBus
+      // because there is no direct connection to the UI components here (and should not be)
+      // eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
     } catch (e) {
       newModel.savedSuccessful = false;
       newModel.error = e;
 
       console.error(e);
     }
+
+    // TODO: here is only for local testing, should only happen in the success case
+    eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
 
     newModel.loading = false;
   }

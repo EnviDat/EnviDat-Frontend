@@ -72,10 +72,7 @@ import {
   getAuthorName,
 } from '@/factories/authorFactory';
 
-import {
-  AUTHOR_SEARCH_CLICK,
-  eventBus,
-} from '@/factories/eventBus';
+import { AUTHOR_SEARCH_CLICK, EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
@@ -85,6 +82,7 @@ import {
 } from '@/factories/metadataConsts';
 
 import { EditAuthorViewModel } from '@/modules/workflow/viewModel/EditAuthorViewModel.ts';
+import { updateEditingArray } from '@/factories/userEditingFactory';
 
 export default {
   name: 'AuthorsInformation',
@@ -242,15 +240,6 @@ export default {
         isEditingAuthor: !!this.selectedAuthor,
         existingAuthors: this.noDataCreditAuthorsWrap,
         ...this.authorViewModel,
-        /*
-        ...this.selectedAuthor,
-        email: this.selectedAuthor.email,
-        firstName: this.selectedAuthor.firstName,
-        lastName: this.selectedAuthor.lastName,
-        affiliation: this.selectedAuthor.affiliation,
-        identifier: this.selectedAuthor.identifier,
-        validationErrors: {},
-*/
         readOnlyFields: this.readOnlyFields,
         readOnlyExplanation: this.readOnlyExplanation,
       };
@@ -272,7 +261,11 @@ export default {
       }
     },
     catchEditAuthorClick(author: Author) {
-      if(this.selectedAuthor) {
+      // clear the internal state of the UI component in case there was an input
+      // on the adding of a new author
+      eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
+
+      if (this.selectedAuthor) {
         this.removeCurrentAuthorSelection();
       }
 
@@ -280,64 +273,89 @@ export default {
       this.authorViewModel.save(author);
     },
     removeCurrentAuthorSelection() {
-      if(this.selectedAuthor) {
+      if (this.selectedAuthor) {
         this.selectedAuthor.isSelected = false;
-        this.authorViewModel = new EditAuthorViewModel();
+        this.resetAuthorViewModel();
       }
     },
     catchEditAuthorClose() {
-      if(this.selectedAuthor) {
+      if (this.selectedAuthor) {
         this.removeCurrentAuthorSelection();
+
+        this.resetAuthorViewModel();
       }
     },
     catchSearchAuthorClick(fullName: string) {
       eventBus.emit(AUTHOR_SEARCH_CLICK, fullName);
     },
     catchRemoveAuthor(email: string) {
-      if(this.selectedAuthor) {
+      if (this.selectedAuthor) {
         this.removeCurrentAuthorSelection();
       }
 
       const currentAuthors = [...this.authors];
 
-      const matches = currentAuthors.filter((auth: Author) => auth.email === email);
+      const matches = currentAuthors.filter(
+        (auth: Author) => auth.email === email,
+      );
       if (matches.length > 0) {
         const removeIndex = currentAuthors.indexOf(matches[0]);
         currentAuthors.splice(removeIndex, 1);
 
-        this.saveAuthorsList({
-          authors: currentAuthors,
-        });
+        this.saveAuthorsList({ authors: currentAuthors });
       }
     },
-    saveAuthorsList(data: unknown) {
+    saveAuthorsList(data: { authors: Author[] }) {
       this.$emit('save', data);
     },
-    validateAuthor(data: unknown) {
+    validateAuthor(data: { author: Author }) {
       this.authorViewModel.validate(data);
     },
-    async saveAuthor(data: unknown) {
+    async editAuthor(author: Author) {
+
       // call the save here to do validation, don't directly call validate()
       // because if it's valid, we need to call getAuthor() which means the
       // viewModel has to have the author information assign, which doesn't happen
       // when only validating
-      const validData = await this.authorViewModel.save(data.author);
+      const validData = await this.authorViewModel.save(author);
+
+      if (validData) {
+        const updatedAuthors = updateEditingArray(this.authors, author, 'email');
+        this.saveAuthorsList({ authors: updatedAuthors });
+
+        this.resetAuthorViewModel();
+      }
+    },
+    saveAuthor(data: { author: Author }) {
+      if (this.selectedAuthor) {
+        this.editAuthor(data.author);
+      } else {
+        this.saveNewAuthor(data.author);
+      }
+    },
+    async saveNewAuthor(author: Author) {
+
+      // call the save here to do validation, don't directly call validate()
+      // because if it's valid, we need to call getAuthor() which means the
+      // viewModel has to have the author information assigned, which doesn't happen
+      // when only validating
+      const validData = await this.authorViewModel.save(author);
 
       if (validData) {
         const newAuthor = this.authorViewModel.getAuthor();
         const currentAuthors = [...this.authors];
         currentAuthors.push(newAuthor);
 
-        this.saveAuthorsList({
-          authors: currentAuthors,
-        });
+        this.saveAuthorsList({ authors: currentAuthors });
 
-        // to reset the addNewAuthors View
-        this.$nextTick(() => {
-          // this.authorViewModel = new EditAuthorViewModel();
-          Object.assign(this.authorViewModel, new EditAuthorViewModel().getAuthor());
-        });
+        this.resetAuthorViewModel();
       }
+    },
+    resetAuthorViewModel() {
+      // clear the internal state of the UI component
+      eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
+
+      this.authorViewModel = new EditAuthorViewModel();
     },
   },
   data: () => ({

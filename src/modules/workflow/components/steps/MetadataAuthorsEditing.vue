@@ -101,6 +101,7 @@ import ExpandableLayout from '@/components/Layouts/ExpandableLayout.vue';
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 import { getAuthorName } from '@/factories/authorFactory';
+import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus.js';
 
 export default {
   name: 'EditMetadataAuthors',
@@ -131,6 +132,12 @@ export default {
     },
   },
   emits: ['save', 'editAuthorClick', 'searchAuthorClick'],
+  created() {
+    eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+  },
+  beforeUnmount() {
+    eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+  },
   computed: {
     loadingColor() {
       if (this.loading) {

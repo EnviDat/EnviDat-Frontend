@@ -225,6 +225,7 @@ import {
 } from '@/factories/authorFactory';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus.js';
 
 export default {
   name: 'AddNewAuthor',
@@ -294,7 +295,18 @@ export default {
       default: '',
     },
   },
-  emits: ['validate', 'save', 'removeAuthor', 'closeClicked'],
+  emits: [
+    'validate',
+    'save',
+    'removeAuthor',
+    'closeClicked',
+  ],
+  created() {
+    eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+  },
+  beforeUnmount() {
+    eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+  },
   computed: {
     loadingColor() {
       if (this.loading) {
@@ -326,7 +338,9 @@ export default {
     },
     emailField: {
       get() {
-        return this.previews.email !== null ? this.previews.email : this.email;
+        return this.previews.email !== null
+          ? this.previews.email
+          : this.email;
       },
     },
     identifierField: {
@@ -424,7 +438,7 @@ export default {
     },
     changeProperty(property, value) {
       this.previews[property] = value;
-      this.$emit('validate', { property: value });
+      this.$emit('validate', { [property]: value });
     },
     catchPickerAuthorChange(pickedAuthorName, hasAuthor) {
       this.authorPickerTouched = true;
@@ -507,7 +521,7 @@ export default {
       return null;
     },
     saveAuthorInfo(authorObject) {
-      this.$emit('save', { author: authorObject })
+      this.$emit('save', { author: authorObject });
     },
     fillPreviews(email, firstName, lastName, identifier, affiliation) {
       this.previews.email = email;
@@ -517,7 +531,7 @@ export default {
       this.previews.affiliation = affiliation;
     },
     removeAuthorClick(email) {
-      this.$emit('removeAuthor', email)
+      this.$emit('removeAuthor', email);
     },
     isReadOnly(dateProperty) {
       return isFieldReadOnly(this.$props, dateProperty);
