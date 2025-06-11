@@ -4,6 +4,8 @@ import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEdit
 import { Author, DataCreditObject } from '@/types/modelTypes';
 import { convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
 
+const convertEmptyStringToNull = (value: string, originalValue: string) =>
+  originalValue === '' ? null : value;
 
 export class EditAuthorViewModel extends AbstractEditViewModel{
 
@@ -62,9 +64,9 @@ export class EditAuthorViewModel extends AbstractEditViewModel{
           .required('Author email is required'),
         identifier: yup
           .string()
-          // e.g. 0000-0002-3862-8720
-          // .notRequired()
           .nullable()
+          .transform(convertEmptyStringToNull)
+          // e.g. 0000-0002-3862-8720
           .min(
             19,
             'OrcId must be at least 19 characters, like 0000-0002-3862-8720',
