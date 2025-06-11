@@ -1,6 +1,8 @@
 import { reactive } from 'vue';
+
 import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 import { DatasetService, User } from '@/types/modelTypes';
+
 import { EditHeaderViewModel } from '@/modules/workflow/viewModel/EditHeaderViewModel.ts';
 import { EditDescriptionViewModel } from '@/modules/workflow/viewModel/EditDescriptionViewModel.ts';
 import { EditKeywordsViewModel } from '@/modules/workflow/viewModel/EditKeywordsViewModel.ts';
@@ -9,7 +11,8 @@ import { EditAuthorListViewModel } from '@/modules/workflow/viewModel/EditAuthor
 import { EditDataInfoViewModel } from '@/modules/workflow/viewModel/EditDataInfoViewModel.ts';
 import { EditDataLicenseViewModel } from '@/modules/workflow/viewModel/EditDataLicenseViewModel.ts';
 import { EditPublicationViewModel } from '@/modules/workflow/viewModel/EditPublicationViewModel.ts';
-import { EditResourceViewModel } from '@/modules/workflow/viewModel/EditResourceViewModel.ts';
+import { ResourcesListModel } from '@/modules/workflow/viewModel/ResourcesListModel.ts';
+import { ResourceModel } from '@/modules/workflow/viewModel/ResourceModel.ts';
 import { EditOrganizationViewModel } from '@/modules/workflow/viewModel/EditOrganizationViewModel.ts';
 import { EditFundingViewModel } from '@/modules/workflow/viewModel/EditFundingViewModel.ts';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
@@ -17,6 +20,7 @@ import { ModelMetaDataHeader } from '@/modules/workflow/viewModel/ModelMetaDataH
 import { ModelAdditionalInformation } from '@/modules/workflow/viewModel/ModelAdditionalInformation.ts';
 import { ModelGeoInfo } from '@/modules/workflow/viewModel/ModelGeoInfo.ts';
 import { ModelRelatedResearch } from '@/modules/workflow/viewModel/ModelRelatedResearch.ts';
+
 import { initCreationDataWithDefaults } from '@/factories/userCreationFactory';
 import { Dataset } from '@/modules/workflow/viewModel/Dataset.ts';
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
@@ -32,7 +36,8 @@ export class DatasetViewModel {
     EditDataInfoViewModel,
     EditDataLicenseViewModel,
     EditPublicationViewModel,
-    EditResourceViewModel,
+    ResourcesListModel,
+    ResourceModel,
     EditOrganizationViewModel,
     ModelMetaDataHeader,
     ModelAdditionalInformation,

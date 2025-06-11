@@ -2,12 +2,12 @@ import * as yup from 'yup';
 
 import { Resource } from '@/types/modelTypes';
 import { ResourceDTO } from '@/types/dataTransferObjectsTypes';
-import {  EditResourceViewModel } from '@/modules/workflow/viewModel/EditResourceViewModel';
+import {  ResourceModel } from '@/modules/workflow/viewModel/ResourceModel.ts';
 import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel';
 
 
-export class EditResourcesListViewModel extends AbstractEditViewModel {
+export class ResourcesListModel extends AbstractEditViewModel {
 
   declare resources: Resource[];
 
@@ -22,10 +22,10 @@ export class EditResourcesListViewModel extends AbstractEditViewModel {
     super(datasetViewModel);
     // super(datasetViewModel, EditAuthorListViewModel.mappingRules());
     // manually assign it
-    this.privateMappingRules = EditResourcesListViewModel.mappingRules();
+    this.privateMappingRules = ResourcesListModel.mappingRules();
 
     if (datasetViewModel?.dataset?.author) {
-      this.resources = EditResourcesListViewModel.getFormattedResources(datasetViewModel.dataset.resources);
+      this.resources = ResourcesListModel.getFormattedResources(datasetViewModel.dataset.resources);
     } else {
       this.resources = [];
     }
@@ -40,7 +40,7 @@ export class EditResourcesListViewModel extends AbstractEditViewModel {
   }
 
   static getFormattedResources(rawResources: ResourceDTO[]): Resource[] {
-    return rawResources.map((rawResource) => EditResourceViewModel.getFormattedResource(rawResource));
+    return rawResources.map((rawResource) => ResourceModel.getFormattedResource(rawResource));
   }
 
 /*
@@ -59,7 +59,7 @@ export class EditResourcesListViewModel extends AbstractEditViewModel {
   }
 */
 
-  validate(newProps?: Partial<EditResourcesListViewModel>): boolean {
+  validate(newProps?: Partial<ResourcesListModel>): boolean {
     return super.validate(newProps);
   }
 

@@ -11,7 +11,7 @@ const convertEmptyStringToNull = (value: string, originalValue: string) =>
 const convertToZero = (value: unknown) => (Number.isNaN(value) ? 0 : value);
 
 
-export class EditResourceViewModel extends AbstractEditViewModel implements Resource {
+export class ResourceModel extends AbstractEditViewModel implements Resource {
 
   declare datasetId: string;
   declare description: string;
@@ -76,7 +76,7 @@ export class EditResourceViewModel extends AbstractEditViewModel implements Reso
 
 
   constructor(datasetViewModel: DatasetViewModel) {
-    super(datasetViewModel, EditResourceViewModel.mappingRules());
+    super(datasetViewModel, ResourceModel.mappingRules());
 
 
     this.validationErrors = {
@@ -150,7 +150,7 @@ export class EditResourceViewModel extends AbstractEditViewModel implements Reso
   }
 
   static getFormattedResource(rawResource: any) : Resource {
-    return convertToFrontendJSONWithRules(EditResourceViewModel.mappingRules(), rawResource) as Resource;
+    return convertToFrontendJSONWithRules(ResourceModel.mappingRules(), rawResource) as Resource;
   }
 
   static mappingRules () {
@@ -182,7 +182,7 @@ export class EditResourceViewModel extends AbstractEditViewModel implements Reso
     ];
   }
 
-  validate(newProps?: Partial<EditResourceViewModel>): boolean {
+  validate(newProps?: Partial<ResourceModel>): boolean {
     return super.validate(newProps);
   }
 }
