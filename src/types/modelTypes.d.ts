@@ -1,4 +1,3 @@
-import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 
 
@@ -43,7 +42,7 @@ export interface DatasetModel {
 }
 */
 
-export interface UserModel {
+export interface User {
   id: string;
   firstName: string;
   lastName: string;
