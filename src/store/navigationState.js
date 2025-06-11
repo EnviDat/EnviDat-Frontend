@@ -1,8 +1,17 @@
 /* eslint-disable object-curly-newline */
 
 import {
-  mdiEarth, mdiBookOpenPageVariant, mdiPencilRuler, mdiFileTree, mdiLibraryShelves,
-  mdiMagnify, mdiMenuRight, mdiPound, mdiInformation, mdiBookshelf, mdiAccountArrowRight,
+  mdiEarth,
+  mdiBookOpenPageVariant,
+  mdiPencilRuler,
+  mdiFileTree,
+  mdiLibraryShelves,
+  mdiMagnify,
+  mdiMenuRight,
+  mdiPound,
+  mdiInformation,
+  mdiBookshelf,
+  mdiAccountArrowRight,
   mdiPlusBox,
 } from '@mdi/js';
 
@@ -28,7 +37,6 @@ import {
   METADATA_CREATION_PATH,
   METADATA_CREATION_PAGENAME,
 } from '@/router/routeConsts';
-
 
 // const domain = import.meta.env.VITE_DOMAIN;
 const appVersion = import.meta.env.VITE_VERSION;
@@ -117,9 +125,35 @@ export const navigationItems = [
   },
 ];
 
-export const userMenuItems = [
-  { title: 'Dashboard', icon: mdiBookshelf, toolTip: 'My Dashboard', active: false, path: USER_DASHBOARD_PATH, pageName: USER_DASHBOARD_PAGENAME },
-  { title: 'New Dataset', icon: mdiPlusBox, toolTip: 'Create a new dataset', active: false, path: METADATA_CREATION_PATH, pageName: METADATA_CREATION_PAGENAME },
-  // { title: 'Edit Profile', icon: 'edit', toolTip: 'Edit profile', active: false, path: 'profile', pageName: 'EditProfile' },
-  { title: 'Sign out', icon: mdiAccountArrowRight , toolTip: 'Sign out', active: false, path: USER_SIGNOUT_PATH, pageName: '' },
-];
+import { computed } from 'vue';
+import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
+
+export function useUserMenuItems() {
+  const orgStore = useOrganizationsStore();
+
+  return computed(() => [
+    {
+      title: 'Dashboard',
+      icon: mdiBookshelf,
+      toolTip: 'My Dashboard',
+      path: USER_DASHBOARD_PATH,
+      pageName: USER_DASHBOARD_PAGENAME,
+      show: true,
+    },
+    {
+      title: 'New Dataset',
+      icon: mdiPlusBox,
+      toolTip: 'Create a new dataset',
+      path: METADATA_CREATION_PATH,
+      pageName: METADATA_CREATION_PAGENAME,
+      show: orgStore.canCreateDatasets,
+    },
+    {
+      title: 'Sign out',
+      icon: mdiAccountArrowRight,
+      toolTip: 'Sign out',
+      path: USER_SIGNOUT_PATH,
+      show: true,
+    },
+  ]);
+}

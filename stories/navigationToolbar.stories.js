@@ -10,8 +10,7 @@ import TheNavigationToolbar from '@/components/Navigation/TheNavigationToolbar.v
 
 import { SWISSFL_MODE } from '@/store/metadataMutationsConsts';
 
-import { userMenuItems } from '@/store/navigationState';
-
+import { useUserMenuItems } from '@/store/navigationState';
 
 const dominikHaas = {
   fullName: 'Dominik Haas',
@@ -42,13 +41,19 @@ export const WithMode = {
   },
 };
 
-export const Signedin = {
-  args: {
-    signedInUser: dominikHaas,
-    userNavigationItems: userMenuItems,
+export const Signedin = () => ({
+  components: { TheNavigationToolbar },
+  template: `
+    <the-navigation-toolbar
+      :signedInUser="dominikHaas"
+      :userNavigationItems="userMenuItems"
+    />
+  `,
+  setup() {
+    const userMenuItems = useUserMenuItems();
+    return { userMenuItems, dominikHaas };
   },
-};
-
+});
 
 export const DatasetInEditing = {
   args: {
