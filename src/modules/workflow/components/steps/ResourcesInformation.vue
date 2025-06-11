@@ -135,6 +135,10 @@ export default {
       type: String,
       default: null,
     },
+    validationErrors: {
+      type: Object,
+      default: () => ({}),
+    },
     readOnlyFields: {
       type: Array,
       default: () => [],
@@ -228,6 +232,7 @@ export default {
     metadataResourcesGenericProps() {
       return {
         resources: this.resources,
+        validationErrors: this.validationErrors,
         dataLicenseTitle: this.dataLicenseTitle,
         dataLicenseUrl: this.dataLicenseUrl,
         resourcesConfig: {

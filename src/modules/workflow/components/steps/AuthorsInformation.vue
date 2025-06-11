@@ -121,13 +121,13 @@ export default {
       type: String,
       default: '',
     },
-    validationErrors: {
-      type: Object,
-      default: () => {},
-    },
     errorDetails: {
       type: String,
       default: null,
+    },
+    validationErrors: {
+      type: Object,
+      default: () => ({}),
     },
     readOnlyFields: {
       type: Array,

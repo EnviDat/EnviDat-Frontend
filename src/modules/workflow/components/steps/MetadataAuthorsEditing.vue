@@ -12,10 +12,10 @@
       </v-row>
 
       <v-row v-show="validationErrors.authors">
-        <v-col
-          :style="`background-color: ${$vuetify.theme.themes.light.colors.error}; `"
-        >
-          {{ validationErrors.authors }}
+        <v-col>
+          <v-alert type="error">
+            {{ validationErrors.authors }}
+          </v-alert>
         </v-col>
       </v-row>
 

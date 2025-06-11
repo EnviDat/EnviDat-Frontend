@@ -95,7 +95,7 @@ const props = defineProps({
   },
   validationErrors: {
     type: Object,
-    default: () => {},
+    default: () => ({}),
   },
 });
 

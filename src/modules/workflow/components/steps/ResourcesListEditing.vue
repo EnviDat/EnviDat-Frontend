@@ -13,6 +13,14 @@
         </v-col>
       </v-row>
 
+      <v-row v-show="validationErrors.resources">
+        <v-col>
+          <v-alert type="error">
+            {{ validationErrors.resources }}
+          </v-alert>
+        </v-col>
+      </v-row>
+
       <v-row>
         <v-col>
           <ExpandableLayout
@@ -91,6 +99,10 @@ export default {
     dataLicenseUrl: {
       type: String,
       default: undefined,
+    },
+    validationErrors: {
+      type: Object,
+      default: () => ({}),
     },
     readOnlyFields: {
       type: Array,
