@@ -1,7 +1,7 @@
 import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.ts';
-import { Resource, Resource } from '@/types/modelTypes';
+import { Resource } from '@/types/modelTypes';
 import { convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
 
 
