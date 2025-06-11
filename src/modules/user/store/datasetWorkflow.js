@@ -14,7 +14,7 @@ export const useDatasetWorkflowStore = defineStore({
     loading: false,
     currentStep: 0,
     steps: workflowSteps,
-    datasetViewModel: new DatasetViewModel(new EditDatasetServiceLayer()),
+    datasetViewModel: new DatasetViewModel(new EditDatasetBackendService()),
     openSaveDialog: false,
     isStepSaveConfirmed: false,
     isStepSave: 3,
