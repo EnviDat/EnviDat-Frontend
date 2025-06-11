@@ -5,10 +5,11 @@ import { ResourceDTO } from '@/types/dataTransferObjectsTypes';
 import {  ResourceModel } from '@/modules/workflow/viewModel/ResourceModel.ts';
 import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel';
+import { boolean } from 'yup';
+import { METADATA_NEW_RESOURCE_ID } from '@/factories/metadataConsts';
 
 
 export class ResourcesListModel extends AbstractEditViewModel {
-
   declare resources: Resource[];
 
   declare validationErrors: {
@@ -25,7 +26,9 @@ export class ResourcesListModel extends AbstractEditViewModel {
     this.privateMappingRules = ResourcesListModel.mappingRules();
 
     if (datasetViewModel?.dataset?.resources) {
-      this.resources = ResourcesListModel.getFormattedResources(datasetViewModel.dataset.resources);
+      this.resources = ResourcesListModel.getFormattedResources(
+        datasetViewModel.dataset.resources,
+      );
     } else {
       this.resources = [];
     }
@@ -40,10 +43,12 @@ export class ResourcesListModel extends AbstractEditViewModel {
   }
 
   static getFormattedResources(rawResources: ResourceDTO[]): Resource[] {
-    return rawResources.map((rawResource) => ResourceModel.getFormattedResource(rawResource));
+    return rawResources.map((rawResource) =>
+      ResourceModel.getFormattedResource(rawResource),
+    );
   }
 
-/*
+  /*
   getEditResourceViewModels(validateViewModels: boolean): EditResourceViewModel[] | undefined {
     const rawResources = this.datasetViewModel.dataset.resources;
 
@@ -63,6 +68,31 @@ export class ResourcesListModel extends AbstractEditViewModel {
     return super.validate(newProps);
   }
 
+  async save(newData: any): Promise<boolean> {
+
+    if (newData?.resources) {
+
+      const newResource = this.resources.map((res) => res.id === METADATA_NEW_RESOURCE_ID)[0];
+
+      if (newResource) {
+        const model = new ResourceModel();
+        await model.save(newResource);
+        await this.datasetViewModel.createResourceOnExistingDataset(model);
+
+        await this.datasetViewModel.reloadDataset();
+
+        // need a way to update the resources and make sure it correct list the backend shows it?
+        // maybe add to resources and then order based on "position" and depracted props?
+
+        // this.resources.push()
+        return true;
+      }
+
+      return super.save(newData);
+    }
+
+    return super.save(newData);
+  }
 
   static mappingRules() {
     return [['resources', 'resources']];

@@ -12,6 +12,7 @@ export class AuthorsViewModel extends AbstractViewModel {
     // don't provide dataset and mapping rules because authors
     // would get partially unpacked and then the unpacking of the full list
     // doesn't work anymore
+    // @ts-ignore
     super();
 
     if (dataset) {

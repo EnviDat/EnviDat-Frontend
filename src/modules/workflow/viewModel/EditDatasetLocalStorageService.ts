@@ -39,7 +39,7 @@ export class EditDatasetLocalStorageService implements DatasetService {
 
   async patchDatasetChanges(
     datasetId: string,
-    data: unknown,
+    data: object,
   ) {
     if (useTestdata) {
       return mockDataResponse.dataset.result;
@@ -50,7 +50,7 @@ export class EditDatasetLocalStorageService implements DatasetService {
       this.dataset = new Dataset(data);
 
       return this.dataset;
-    } catch (e: Error) {
+    } catch (e: unknown) {
       console.error(e);
       throw e;
     }

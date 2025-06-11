@@ -89,6 +89,8 @@ import { mergeResourceSizeForFrontend } from '@/factories/mappingFactory.js';
 import ResourcesListEditing from '@/modules/workflow/components/steps/ResourcesListEditing.vue';
 import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles.vue';
 import EditResourcePasteUrl from '@/modules/user/components/EditResourcePasteUrl.vue';
+import { ResourceModel } from '@/modules/workflow/viewModel/ResourceModel.js';
+import { EditAuthorViewModel } from '@/modules/workflow/viewModel/EditAuthorViewModel.js';
 
 const ResourceEditing = defineAsyncComponent(() =>
     import('@/modules/workflow/components/steps/ResourceEditing.vue'),
@@ -109,12 +111,10 @@ export default {
       type: String,
       default: undefined,
     },
-/*
-    metadataId: {
+    datasetId: {
       type: String,
       default: '',
     },
-*/
     loading: {
       type: Boolean,
       default: false,
@@ -154,7 +154,7 @@ export default {
   },
   created() {
     // call once to create the uppy instance
-    getUppyInstance(this.metadataId, this.$store);
+    getUppyInstance(this.datasetId, this.$store);
 
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.unselectCurrentResource);
     eventBus.on(UPLOAD_STATE_RESET, this.resetUppy);
@@ -226,9 +226,6 @@ export default {
 
       return this.userEditMetadataConfig?.resourceEditingActive || false;
     },
-    metadataId() {
-      return this.$route?.params?.metadataid || null;
-    },
     metadataResourcesGenericProps() {
       return {
         resources: this.resources,
@@ -269,7 +266,7 @@ export default {
     },
     editDropResourceObject() {
       return {
-        metadataId: this.metadataId,
+        metadataId: this.datasetId,
         legacyUrl: this.linkAddNewResourcesCKAN,
         state: this.uploadState,
         progress: this.uploadProgress,
@@ -281,12 +278,12 @@ export default {
       return getSelectedElement(this.resources);
     },
     linkAddNewResourcesCKAN() {
-      //      return `${this.envidatDomain}/dataset/resources/${this.metadataId}`;
-      return `${this.envidatDomain}/dataset/resources/${this.metadataId}`;
+      //      return `${this.envidatDomain}/dataset/resources/${this.datasetId}`;
+      return `${this.envidatDomain}/dataset/resources/${this.datasetId}`;
     },
     linkEditResourceCKAN() {
-      //      return `${this.envidatDomain}/dataset/${this.metadataId}/resource/${this.selectedResource.id}/edit`;
-      return `${this.envidatDomain}/dataset/${this.metadataId}/resource/${this.selectedResource.id}`;
+      //      return `${this.envidatDomain}/dataset/${this.datasetId}/resource/${this.selectedResource.id}/edit`;
+      return `${this.envidatDomain}/dataset/${this.datasetId}/resource/${this.selectedResource.id}`;
     },
   },
   methods: {
@@ -373,9 +370,18 @@ export default {
     async createResourceFromUrl(url) {
       // console.log(`createResourceFromUrl ${url}`);
 
-      const metadataId = this.metadataId;
+      const datasetId = this.datasetId;
 
-      const newResource = createNewResourceForUrl(metadataId, url);
+      const newResource = createNewResourceForUrl(datasetId, url);
+
+      this.resourceViewModel = new ResourceModel();
+      const validData = this.resourceViewModel.save(newResource);
+      
+      if(!validData) {
+        console.error('Invalid Data for new resources', newResource);
+        return;
+      }
+
 
       // create resource from url
       await this.$store?.dispatch(`${USER_NAMESPACE}/${METADATA_CREATION_RESOURCE}`, {
@@ -403,6 +409,12 @@ export default {
     showFullScreenImage(url) {
       eventBus.emit(OPEN_TEXT_PREVIEW, url);
     },
+    resetResourceViewModel() {
+      // clear the internal state of the UI component
+      eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
+
+      this.resourceViewModel = new ResourceModel();
+    },
   },
   data: () => ({
     EDIT_METADATA_RESOURCES_TITLE,
@@ -419,6 +431,7 @@ export default {
                     the button below.`,
     uploadProgress: 0,
     uploadState: undefined,
+    resourceViewModel: new ResourceModel(),
   }),
   components: {
     ResourcesListEditing,

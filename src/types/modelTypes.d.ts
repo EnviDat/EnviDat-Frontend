@@ -1,4 +1,4 @@
-import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
+import { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 
 
 export interface DataCreditObject {
@@ -93,7 +93,8 @@ export interface DatasetService {
 
   patchDatasetChanges(
     datasetId: string,
-    data: unknown,
+    data: object,
   ) : Promise<any>;
 
+  createResource?(resoureData: ResourceDTO): Promise<ResourceDTO>;
 }

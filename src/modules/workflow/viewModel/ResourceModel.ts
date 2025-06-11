@@ -3,6 +3,7 @@ import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEdit
 import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.ts';
 import { Resource } from '@/types/modelTypes';
 import { convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
+import { ResourceDTO } from '@/types/dataTransferObjectsTypes';
 
 
 const convertEmptyStringToNull = (value: string, originalValue: string) =>
@@ -75,8 +76,11 @@ export class ResourceModel extends AbstractEditViewModel implements Resource {
   }
 
 
-  constructor(datasetViewModel: DatasetViewModel) {
-    super(datasetViewModel, ResourceModel.mappingRules());
+  constructor() {
+    // intentionally not providing parameters, because authors have to be unpacked
+    // from the list of authors, done in the ResourceListModel
+    // @ts-ignore
+    super()
 
 
     this.validationErrors = {
@@ -149,7 +153,7 @@ export class ResourceModel extends AbstractEditViewModel implements Resource {
       });
   }
 
-  static getFormattedResource(rawResource: any) : Resource {
+  static getFormattedResource(rawResource: ResourceDTO) : Resource {
     return convertToFrontendJSONWithRules(ResourceModel.mappingRules(), rawResource) as Resource;
   }
 

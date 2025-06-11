@@ -1,6 +1,7 @@
 import { reactive } from 'vue';
 
-import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
+import axios from 'axios';
+import type { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 import { DatasetService, User } from '@/types/modelTypes';
 
 import { EditHeaderViewModel } from '@/modules/workflow/viewModel/EditHeaderViewModel.ts';
@@ -24,6 +25,7 @@ import { ModelRelatedResearch } from '@/modules/workflow/viewModel/ModelRelatedR
 import { initCreationDataWithDefaults } from '@/factories/userCreationFactory';
 import { Dataset } from '@/modules/workflow/viewModel/Dataset.ts';
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
+
 
 export class DatasetViewModel {
   viewModelClasses = [
@@ -50,7 +52,7 @@ export class DatasetViewModel {
   declare backendService: DatasetService;
   declare localStorageService: DatasetService;
 
-  constructor(backendService: DatasetService, localStorageService: DatasetService) {
+  constructor(backendService: DatasetService, localStorageService?: DatasetService) {
     this.backendService = backendService;
     this.localStorageService = localStorageService;
 
@@ -73,13 +75,23 @@ export class DatasetViewModel {
     }
   }
 
+/*
   async loadViewModels(datasetId: string): Promise<void> {
     await this.backendService.loadDataset(datasetId);
 
     this.createViewModels();
   }
+*/
 
-  createDataset(user: User, prefilledOrganizationId: string) : DatasetDTO {
+  async loadDataset(datasetId: string): Promise<DatasetDTO> {
+    return this.backendService.loadDataset(datasetId);
+  }
+
+  async reloadDataset() : Promise<DatasetDTO> {
+    return this.loadDataset(this.backendService.dataset.id);
+  }
+
+  async createDataset(user: User, prefilledOrganizationId: string) : Promise<DatasetDTO> {
 
     const localId = `${user.id}_${prefilledOrganizationId}`;
     const predefinedData = {
@@ -90,12 +102,33 @@ export class DatasetViewModel {
 
     const localDataset = new Dataset(predefinedData);
 
-    this.localStorageService.patchDatasetChanges(localId, localDataset);
+    await this.localStorageService.patchDatasetChanges(localId, localDataset);
 
     // @ts-ignore
     return localDataset;
   }
 
+  async createResourceOnExistingDataset(resourceModel: AbstractEditViewModel) {
+    
+    resourceModel.loading = true;
+    resourceModel.error = undefined;
+
+    try {
+      const newResourceDTO = await this.backendService.createResource(resourceModel.backendJSON as ResourceDTO);
+
+      const resourceModelData = ResourceModel.getFormattedResource(newResourceDTO);
+
+      // don't use save as it would validate, directly overwrite the properties
+      Object.assign(resourceModel, resourceModelData);
+
+      resourceModel.savedSuccessful = true;
+    } catch(reason) {
+      resourceModel.savedSuccessful = false;
+      resourceModel.error = reason;
+    }
+
+    resourceModel.loading = false;
+  }
 
   async patchViewModel(newModel: AbstractEditViewModel) {
     try {

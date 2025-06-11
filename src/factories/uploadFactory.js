@@ -33,6 +33,7 @@ import {
   UPLOAD_STATE_RESET,
   UPLOAD_STATE_RESOURCE_CREATED,
 } from '@/factories/eventBus';
+import { METADATA_NEW_RESOURCE_ID } from '@/factories/metadataConsts.js';
 
 
 let API_BASE = '';
@@ -73,7 +74,7 @@ export function createNewBaseResource(metadataId) {
     doi: '',
     format: '',
     hast: '',
-    id: '',
+    id: METADATA_NEW_RESOURCE_ID,
     lastModified: '',
     mimetype: null,
     mimetypeInner: null,

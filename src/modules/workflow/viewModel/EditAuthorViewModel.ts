@@ -33,8 +33,6 @@ export class EditAuthorViewModel extends AbstractEditViewModel implements Author
   }
 
   constructor() {
-    // super(datasetViewModel, EditAuthorViewModel.mappingRules());
-
     // intentionally not providing parameters, because authors have to be unpacked
     // from the list of authors, done in the EditAuthorListViewModel
     // @ts-ignore
