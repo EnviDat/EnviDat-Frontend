@@ -12,50 +12,18 @@
             />
           </v-col>
 
-          <v-col v-if="!resourceEditingActive" >
-            <EditResourceRedirect title="Edit Selected Resource"
-                                  :text="editResourceRedirectText"
-                                  buttonText="Edit Resources"
-                                  :buttonUrl="linkEditResourceCKAN"
-            >
-              <BaseRectangleButton
-                  buttonText="Deselect Resource"
-                  color="warning"
-                  @clicked="catchEditResourceClose"
-              />
-
-            </EditResourceRedirect>
-
-          </v-col>
         </v-row>
 
         <v-row v-if="!selectedResource">
-          <!--
-                    <v-col cols="12">
-                      <EditMultiDropResourceFiles @createResources="createResourceFromFiles" />
-                    </v-col>
-          -->
-
-          <v-col v-if="resourceUploadActive"
-                 cols="12">
+          <v-col cols="12">
             <EditDropResourceFiles v-bind="editDropResourceObject" />
 <!--
             No need to listen to events from the component, events are emitted from uppy directly
 -->
           </v-col>
 
-          <v-col v-if="resourceUploadActive"
-                 cols="12">
+          <v-col cols="12">
             <EditResourcePasteUrl @createUrlResources="createResourceFromUrl"/>
-          </v-col>
-
-          <v-col v-if="!resourceUploadActive"
-                 cols="12">
-            <EditResourceRedirect title="Add New Resource"
-                                  :text="addResourceRedirectText"
-                                  buttonText="Add Resources"
-                                  :buttonUrl="linkAddNewResourcesCKAN"
-            />
           </v-col>
 
         </v-row>
@@ -124,12 +92,6 @@ import EditResourcePasteUrl from '@/modules/user/components/EditResourcePasteUrl
 
 const ResourceEditing = defineAsyncComponent(() =>
     import('@/modules/workflow/components/steps/ResourceEditing.vue'),
-);
-const EditResourceRedirect = defineAsyncComponent(() =>
-    import('@/modules/user/components/EditResourceRedirect.vue'),
-);
-const BaseRectangleButton = defineAsyncComponent(() =>
-    import('@/components/BaseElements/BaseRectangleButton.vue'),
 );
 
 export default {
@@ -456,11 +418,8 @@ export default {
   components: {
     ResourcesListEditing,
     EditDropResourceFiles,
-    // EditMultiDropResourceFiles,
     EditResourcePasteUrl,
     ResourceEditing,
-    EditResourceRedirect,
-    BaseRectangleButton,
   },
 };
 </script>
