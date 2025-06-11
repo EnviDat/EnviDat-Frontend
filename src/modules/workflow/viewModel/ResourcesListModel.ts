@@ -24,7 +24,7 @@ export class ResourcesListModel extends AbstractEditViewModel {
     // manually assign it
     this.privateMappingRules = ResourcesListModel.mappingRules();
 
-    if (datasetViewModel?.dataset?.author) {
+    if (datasetViewModel?.dataset?.resources) {
       this.resources = ResourcesListModel.getFormattedResources(datasetViewModel.dataset.resources);
     } else {
       this.resources = [];
