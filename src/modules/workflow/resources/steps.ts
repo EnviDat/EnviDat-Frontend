@@ -1,3 +1,5 @@
+import { ResourcesListModel } from '@/modules/workflow/viewModel/ResourcesListModel.ts';
+
 export type StepStatus = 'active' | 'disabled' | 'completed';
 
 export interface WorkflowStep {
@@ -110,7 +112,7 @@ export const workflowSteps: WorkflowStep[] = [
     key: 'uploadinformation',
     loader: () =>
       import('@/modules/workflow/components/steps/ResourcesInformation.vue'),
-    viewModelKey: 'EditResourcesListViewModel',
+    viewModelKey: 'ResourcesListModel',
     genericProps: {},
     icon: 'uploadinfo',
     status: 'disabled',
