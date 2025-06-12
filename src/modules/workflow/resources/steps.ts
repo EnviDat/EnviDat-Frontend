@@ -57,7 +57,7 @@ export const workflowSteps: WorkflowStep[] = [
     key: 'AuthorsInformation',
     loader: () =>
       import('@/modules/workflow/components/steps/AuthorsInformation.vue'),
-    viewModelKey: 'EditAuthorListViewModel',
+    viewModelKey: 'AuthorListViewModel',
     genericProps: {},
     icon: 'authorsinfo',
     status: 'disabled',

@@ -1,7 +1,7 @@
 import { reactive, watch } from 'vue';
 import { Author } from '@/types/modelTypes';
 import { AuthorDTO, DatasetDTO } from '@/types/dataTransferObjectsTypes';
-import { EditAuthorViewModel } from '@/modules/workflow/viewModel/EditAuthorViewModel.ts';
+import { AuthorViewModel } from '@/modules/workflow/viewModel/AuthorViewModel.ts';
 import { AbstractViewModel } from '@/factories/ViewModels/AbstractViewModel.ts';
 
 export class AuthorsViewModel extends AbstractViewModel {
@@ -25,7 +25,7 @@ export class AuthorsViewModel extends AbstractViewModel {
 
     for (let i = 0; i < rawAuthors.length; i++) {
       const rawAuthor = rawAuthors[i];
-      const author = EditAuthorViewModel.getFormattedAuthor(rawAuthor, lastModified);
+      const author = AuthorViewModel.getFormattedAuthor(rawAuthor, lastModified);
       formattedAuthors.push(author);
     }
 
