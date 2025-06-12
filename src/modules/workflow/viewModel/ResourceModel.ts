@@ -1,9 +1,9 @@
 import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
-import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.ts';
 import { Resource } from '@/types/modelTypes';
 import { convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
 import { ResourceDTO } from '@/types/dataTransferObjectsTypes';
+import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.ts';
 
 
 const convertEmptyStringToNull = (value: string, originalValue: string) =>
@@ -76,11 +76,14 @@ export class ResourceModel extends AbstractEditViewModel implements Resource {
   }
 
 
-  constructor() {
-    // intentionally not providing parameters, because authors have to be unpacked
-    // from the list of authors, done in the ResourceListModel
-    // @ts-ignore
-    super()
+  /**
+   * @param datasetViewModel is optional, if not provided it can be used "isolated" just for other
+   * UI-components to validate and store infos
+   */
+  constructor(datasetViewModel?: DatasetViewModel | undefined) {
+    // intentionally not providing the datasetViewModel, because resource have to be unpacked
+    // from the list of resources, done in the ResourceListModel
+    super(datasetViewModel, ResourceModel.mappingRules())
 
 
     this.validationErrors = {
@@ -156,6 +159,14 @@ export class ResourceModel extends AbstractEditViewModel implements Resource {
   static getFormattedResource(rawResource: ResourceDTO) : Resource {
     return convertToFrontendJSONWithRules(ResourceModel.mappingRules(), rawResource) as Resource;
   }
+
+  /**
+   * Returns a shallow copy of the properties just from this class, nothing inherited
+   */
+  getResource() : Resource {
+    return super.getModelData<Resource>();
+  }
+
 
   static mappingRules () {
     return [

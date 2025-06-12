@@ -68,6 +68,34 @@ export abstract class AbstractEditViewModel {
     return convertJSON(backendFields, true);
   }
 
+  /**
+   * Returns a shallow copy of the properties just from this class, nothing inherited
+   */
+  protected getModelData<T>(): Omit<
+    T,
+    | 'privateMappingRules'
+    | 'datasetViewModel'
+    | 'validationRules'
+    | 'validationErrors'
+    | 'savedSuccessful'
+    | 'error'
+    | 'loading'
+  > {
+    // deconstruct this to remove the model view specific props
+    const {
+      privateMappingRules,
+      datasetViewModel,
+      validationRules,
+      validationErrors,
+      savedSuccessful,
+      error,
+      loading,
+      ...dataOnly
+    } = this;
+
+    return dataOnly as T;
+  }
+
   get frontendProperties() {
     return this.mappingRules.map((rule) => rule[0]);
   }
@@ -93,7 +121,7 @@ export abstract class AbstractEditViewModel {
 
   validate(newProps: any | undefined): boolean {
     if (!newProps) {
-      newProps = this
+      newProps = this;
     }
 
     const propsToValidate = this.getPropsToValidate(newProps);
@@ -117,7 +145,6 @@ export abstract class AbstractEditViewModel {
   }
 
   async save(newData: any | undefined): Promise<boolean> {
-
     if (!newData) {
       // use case for generally storing
       newData = this;
@@ -144,5 +171,4 @@ export abstract class AbstractEditViewModel {
       this.loading = false;
     }
   }
-
 }

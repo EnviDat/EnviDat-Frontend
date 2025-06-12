@@ -1,8 +1,9 @@
 import { reactive, watch } from 'vue';
 import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
-import { Author, DataCreditObject } from '@/types/modelTypes';
+import { Author, DataCreditObject, Resource } from '@/types/modelTypes';
 import { convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
+import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.ts';
 
 const convertEmptyStringToNull = (value: string, originalValue: string) =>
   originalValue === '' ? null : value;
@@ -32,11 +33,11 @@ export class EditAuthorViewModel extends AbstractEditViewModel implements Author
     affiliation: string;
   }
 
-  constructor() {
-    // intentionally not providing parameters, because authors have to be unpacked
-    // from the list of authors, done in the EditAuthorListViewModel
-    // @ts-ignore
-    super()
+  constructor(datasetViewModel?: DatasetViewModel | undefined) {
+    // intentionally not providing the datasetViewModel, because resource have to be unpacked
+    // from the list of resources, done in the ResourceListModel
+    super(datasetViewModel, EditAuthorViewModel.mappingRules())
+
 
     this.validationErrors = {
       firstName: null,
@@ -90,19 +91,11 @@ export class EditAuthorViewModel extends AbstractEditViewModel implements Author
     return author;
   }
 
+  /**
+   * Returns a shallow copy of the properties just from this class, nothing inherited
+   */
   getAuthor() : Author {
-    return {
-      firstName: this.firstName,
-      lastName: this.lastName,
-      email: this.email,
-      dataCredit: this.dataCredit,
-      identifier: this.identifier,
-      identifierType: this.identifierType,
-      affiliation: this.affiliation,
-      totalDataCredits: this.totalDataCredits,
-      lastModified: this.lastModified,
-      isSelected: this.isSelected,
-    }
+    return super.getModelData<Author>();
   }
 
   validate(newProps?: Partial<EditAuthorViewModel>) {
