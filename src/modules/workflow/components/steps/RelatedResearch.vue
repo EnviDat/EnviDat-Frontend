@@ -13,6 +13,7 @@
             {{ labels.instructions }}
           </v-col>
         </v-row>
+        {{ validationErrors }}
 
         <!-- <v-col v-if="message" cols="4" class="pl-16">
           <BaseStatusLabelView
@@ -52,16 +53,23 @@
       </v-row>
 
       <v-row>
-        <v-col v-if="useListResolving" cols="6">
-          <EditRelatedPublicationsList v-bind="editRelatedPublicationsProps" />
-        </v-col>
-        <v-col v-else cols="6">
-          <EditRelatedPublications v-bind="editRelatedPublicationsProps" />
+        <v-col cols="6">
+          <EditRelatedPublicationsListWorkflow
+            @save="save"
+            @validate="validate"
+            :validationErrors="validationErrors"
+            v-bind="editRelatedPublicationsProps"
+          />
         </v-col>
 
         <v-col cols="6">
-          <EditRelatedDatasets v-bind="editRelatedDatasetsProps" />
-          <EditCustomFields v-bind="editCustomFieldsProps" />
+          <EditRelatedDatasetsWorkflow
+            @save="save"
+            @validate="validate"
+            :validationErrors="validationErrors"
+            v-bind="editRelatedDatasetsProps"
+          />
+          <EditCustomFieldsWorkflow v-bind="editCustomFieldsProps" />
         </v-col>
       </v-row>
     </v-container>
@@ -84,17 +92,15 @@ import { mapState } from 'vuex';
 
 import {
   EDITMETADATA_CUSTOMFIELDS,
-  EDITMETADATA_NEXT_MAJOR_STEP,
   EDITMETADATA_RELATED_DATASETS,
   EDITMETADATA_RELATED_PUBLICATIONS,
   eventBus,
 } from '@/factories/eventBus';
 
 import relatedDatasets from '@/modules/user/assets/placeholders/relatedDatasets.jpg';
-import EditCustomFields from '@/modules/user/components/EditCustomFields.vue';
-import EditRelatedDatasets from '@/modules/user/components/EditRelatedDatasets.vue';
-import EditRelatedPublications from '@/modules/user/components/EditRelatedPublications.vue';
-import EditRelatedPublicationsList from '@/modules/user/components/EditRelatedPublicationsList.vue';
+import EditCustomFieldsWorkflow from '@/modules/user/components/EditCustomFieldsWorkflow.vue';
+import EditRelatedDatasetsWorkflow from '@/modules/user/components/EditRelatedDatasetsWorkflow.vue';
+import EditRelatedPublicationsListWorkflow from '@/modules/user/components/EditRelatedPublicationsListWorkflow.vue';
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 
 export default {
@@ -126,8 +132,16 @@ export default {
       type: Boolean,
       default: false,
     },
+    validationErrors: { type: Object, default: () => ({}) },
   },
-
+  methods: {
+    save(payload) {
+      this.$emit('save', payload);
+    },
+    validate(payload) {
+      this.$emit('validate', payload);
+    },
+  },
   computed: {
     ...mapState(['config']),
     metadataConfig() {
@@ -246,10 +260,9 @@ export default {
     },
   }),
   components: {
-    EditRelatedPublicationsList,
-    EditRelatedDatasets,
-    EditRelatedPublications,
-    EditCustomFields,
+    EditRelatedPublicationsListWorkflow,
+    EditRelatedDatasetsWorkflow,
+    EditCustomFieldsWorkflow,
   },
 };
 </script>

@@ -1,65 +1,70 @@
+/* eslint-disable object-curly-newline */
 import * as yup from 'yup';
-import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 
+import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.ts';
-import type { KeywordDTO } from '@/types/dataTransferObjectsTypes';
-import { enhanceKeywords } from '@/factories/keywordsFactory';
-import categoryCards from '@/store/categoryCards';
+
+function convertEmptyStringToNull(v: unknown) {
+  return typeof v === 'string' && v.trim() === '' ? null : v;
+}
 
 export class ModelRelatedResearch extends AbstractEditViewModel {
-  declare metadataTitle: string;
-  declare metadataDescription: string;
-  declare keywords: KeywordDTO[];
-  declare existingKeywords: KeywordDTO[];
+  declare relatedPublicationsText: string | null;
+  declare relatedDatasetsText: string | null;
+  declare customFields: string;
 
   declare validationErrors: {
-    metadataTitle: string;
-    metadataDescription: string;
-    keywords: string;
+    relatedPublicationsText: string | null;
+    relatedDatasetsText: string | null;
+    customFields: string | null;
   };
 
-  constructor(
-    datasetViewModel: DatasetViewModel,
-    existingKeywords: KeywordDTO[],
-  ) {
+  constructor(datasetViewModel: DatasetViewModel) {
     super(datasetViewModel, ModelRelatedResearch.mappingRules());
 
-    enhanceKeywords(this.keywords, categoryCards);
-    this.existingKeywords = existingKeywords;
-
     this.validationErrors = {
-      metadataTitle: null,
-      metadataDescription: null,
-      keywords: null,
+      relatedPublicationsText: null,
+      relatedDatasetsText: null,
+      customFields: null,
     };
 
     this.validationRules = yup.object().shape({
-      metadataTitle: yup
+      relatedPublicationsText: yup
         .string()
-        .required('Dataset title is required')
-        .min(5, 'Dataset title must be at least 5 characters')
-        .max(180, 'Dataset title has a maximum of 180 characters')
-        .matches(/^[\w\söüä-]+$/, 'Use only letters and numbers for the title'),
-      metadataDescription: yup
-        .string()
-        .required('Dataset description is required')
-        .min(20, 'Description must be at least 20 characters'),
-      keywords: yup
-        .array()
-        .required('Keywords is required')
-        .min(5, 'Enter at least 5 keywords.'),
-    });
-  }
+        .nullable()
+        .transform(convertEmptyStringToNull)
+        .min(
+          10,
+          'Write at least 10 characters to describe the related publications.',
+        ),
 
-  validate(newProps?: Partial<ModelRelatedResearch>) {
-    return super.validate(newProps);
+      relatedDatasetsText: yup
+        .string()
+        .nullable()
+        .transform(convertEmptyStringToNull)
+        .min(
+          10,
+          'Write at least 10 characters to describe the related datasets.',
+        ),
+
+      customFields: yup.array().of(
+        yup.object({
+          fieldName: yup.string().required().min(3),
+          content: yup.string(),
+        }),
+      ),
+    });
   }
 
   static mappingRules() {
     return [
-      ['metadataTitle', 'title'],
-      ['metadataDescription', 'notes'],
-      ['keywords', 'tags'],
+      ['relatedPublicationsText', 'extras.related_publications'],
+      ['relatedDatasetsText', 'extras.related_datasets'],
+      ['customFields', 'extras'],
     ];
+  }
+
+  validate(newProps?: Partial<ModelRelatedResearch>) {
+    return super.validate(newProps);
   }
 }
