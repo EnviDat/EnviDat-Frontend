@@ -11,7 +11,6 @@ import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEdit
 import {
   convertJSON,
   convertToBackendJSONWithRules,
-  convertToFrontendJSONWithRules,
 } from '@/factories/mappingFactory';
 
 export class AuthorListViewModel extends AbstractEditViewModel {
@@ -25,6 +24,7 @@ export class AuthorListViewModel extends AbstractEditViewModel {
 
   constructor(datasetViewModel: DatasetViewModel) {
     super(datasetViewModel, AuthorListViewModel.mappingRules());
+
 
     this.validationErrors = {
       authors: null,
@@ -81,7 +81,8 @@ export class AuthorListViewModel extends AbstractEditViewModel {
       convertToBackendJSONWithRules(
         AuthorViewModel.mappingRules(),
         cleanAuthor,
-      ));
+      ),
+    );
 
     // needs to be "author" here check the mappingRules
     return convertJSON({ author: rawAuthors }, true);

@@ -121,8 +121,6 @@ export abstract class AbstractEditViewModel {
 
   validate(newProps: any | undefined): boolean {
     if (!newProps) {
-      // in case there are no props provided as parameters, use this viewModels
-      // properties to validate itself
       newProps = this;
     }
 

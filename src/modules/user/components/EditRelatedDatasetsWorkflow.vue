@@ -165,7 +165,6 @@ export default {
     catchInputedText(value) {
       this.previewText = value;
       this.newDatasetInfo.relatedDatasetsText = this.previewText;
-      console.log(this.newDatasetInfo);
       this.$emit('validate', this.newDatasetInfo);
     },
     catchChangedText(value) {
