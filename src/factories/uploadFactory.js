@@ -128,7 +128,8 @@ export function createNewResourceForUrl(metadataId, url) {
   return {
     ...baseResourceProperties,
     url,
-    format: '',
+    format: 'url',
+    size: 1,
     name: resourceName,
   };
 
@@ -440,7 +441,7 @@ export function unSubscribeOnUppyEvent(event, callback) {
 function createUppyInstance(height = 300, autoProceed = true, restrictions = defaultRestrictions) {
 
   const uppy =  new Uppy();
-  const debug = import.meta.env?.DEV;
+  const debug = import.meta.env?.MODE === 'development';
 
   uppy.setOptions({
     // use different ids multiple instance, e.g. avatar image upload, resource-upload, etc.

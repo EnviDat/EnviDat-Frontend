@@ -334,7 +334,7 @@ export default {
       return fileList;
     },
     baseUrl() {
-      return import.meta.env.PROD
+      return import.meta.env?.MODE === 'production'
         ? this.baseStationURL
         : this.baseStationURLTestdata;
     },
