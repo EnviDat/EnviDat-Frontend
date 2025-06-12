@@ -81,7 +81,7 @@ import {
   METADATA_AUTHORS_PROPERTY,
 } from '@/factories/metadataConsts';
 
-import { EditAuthorViewModel } from '@/modules/workflow/viewModel/EditAuthorViewModel.ts';
+import { AuthorViewModel } from '@/modules/workflow/viewModel/AuthorViewModel.ts';
 import { updateEditingArray } from '@/factories/userEditingFactory';
 
 export default {
@@ -355,11 +355,11 @@ export default {
       // clear the internal state of the UI component
       eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
 
-      this.authorViewModel = new EditAuthorViewModel();
+      this.authorViewModel = new AuthorViewModel();
     },
   },
   data: () => ({
-    authorViewModel: new EditAuthorViewModel(),
+    authorViewModel: new AuthorViewModel(),
     METADATA_AUTHORS_PROPERTY,
     EDIT_METADATA_ADD_AUTHOR_TITLE,
   }),

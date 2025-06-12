@@ -1,6 +1,5 @@
 import { reactive } from 'vue';
 
-import axios from 'axios';
 import type { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 import { DatasetService, User } from '@/types/modelTypes';
 
@@ -8,12 +7,11 @@ import { EditHeaderViewModel } from '@/modules/workflow/viewModel/EditHeaderView
 import { EditDescriptionViewModel } from '@/modules/workflow/viewModel/EditDescriptionViewModel.ts';
 import { EditKeywordsViewModel } from '@/modules/workflow/viewModel/EditKeywordsViewModel.ts';
 import { EditCustomFieldsViewModel } from '@/modules/workflow/viewModel/EditCustomFieldsViewModel.ts';
-import { EditAuthorListViewModel } from '@/modules/workflow/viewModel/EditAuthorListViewModel.ts';
+import { AuthorListViewModel } from '@/modules/workflow/viewModel/AuthorListViewModel.ts';
 import { EditDataInfoViewModel } from '@/modules/workflow/viewModel/EditDataInfoViewModel.ts';
 import { EditDataLicenseViewModel } from '@/modules/workflow/viewModel/EditDataLicenseViewModel.ts';
 import { EditPublicationViewModel } from '@/modules/workflow/viewModel/EditPublicationViewModel.ts';
 import { ResourcesListModel } from '@/modules/workflow/viewModel/ResourcesListModel.ts';
-import { ResourceModel } from '@/modules/workflow/viewModel/ResourceModel.ts';
 import { EditOrganizationViewModel } from '@/modules/workflow/viewModel/EditOrganizationViewModel.ts';
 import { EditFundingViewModel } from '@/modules/workflow/viewModel/EditFundingViewModel.ts';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
@@ -25,6 +23,7 @@ import { ModelRelatedResearch } from '@/modules/workflow/viewModel/ModelRelatedR
 import { initCreationDataWithDefaults } from '@/factories/userCreationFactory';
 import { Dataset } from '@/modules/workflow/viewModel/Dataset.ts';
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
+import { ResourceModel } from '@/modules/workflow/viewModel/ResourceModel.ts';
 
 
 export class DatasetViewModel {
@@ -33,13 +32,12 @@ export class DatasetViewModel {
     EditDescriptionViewModel,
     EditFundingViewModel,
     EditKeywordsViewModel,
-    EditAuthorListViewModel,
+    AuthorListViewModel,
     EditCustomFieldsViewModel,
     EditDataInfoViewModel,
     EditDataLicenseViewModel,
     EditPublicationViewModel,
     ResourcesListModel,
-    ResourceModel,
     EditOrganizationViewModel,
     ModelMetaDataHeader,
     ModelAdditionalInformation,
@@ -84,7 +82,8 @@ export class DatasetViewModel {
 */
 
   async loadDataset(datasetId: string): Promise<DatasetDTO> {
-    return this.backendService.loadDataset(datasetId);
+    await this.backendService.loadDataset(datasetId);
+    this.updateViewModels();
   }
 
   async reloadDataset() : Promise<DatasetDTO> {
@@ -166,7 +165,7 @@ export class DatasetViewModel {
   }
 
   updateViewModels() {
-    this.viewModelInstances.forEach((model) =>
+    this.viewModelInstances.forEach((model: AbstractEditViewModel) =>
       model.updateModel(this.backendService.dataset),
     );
   }

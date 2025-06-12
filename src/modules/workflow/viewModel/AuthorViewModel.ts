@@ -1,14 +1,14 @@
 import { reactive, watch } from 'vue';
 import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
-import { Author, DataCreditObject, Resource } from '@/types/modelTypes';
+import { Author, DataCreditObject } from '@/types/modelTypes';
 import { convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
 import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.ts';
 
 const convertEmptyStringToNull = (value: string, originalValue: string) =>
   originalValue === '' ? null : value;
 
-export class EditAuthorViewModel extends AbstractEditViewModel implements Author {
+export class AuthorViewModel extends AbstractEditViewModel implements Author {
 
   declare firstName: string;
   declare lastName: string;
@@ -36,7 +36,7 @@ export class EditAuthorViewModel extends AbstractEditViewModel implements Author
   constructor(datasetViewModel?: DatasetViewModel | undefined) {
     // intentionally not providing the datasetViewModel, because resource have to be unpacked
     // from the list of resources, done in the ResourceListModel
-    super(datasetViewModel, EditAuthorViewModel.mappingRules())
+    super(datasetViewModel, AuthorViewModel.mappingRules())
 
 
     this.validationErrors = {
@@ -79,7 +79,7 @@ export class EditAuthorViewModel extends AbstractEditViewModel implements Author
   }
 
   static getFormattedAuthor(rawAuthor: any, lastModified: string) : Author {
-    const author = convertToFrontendJSONWithRules(EditAuthorViewModel.mappingRules(), rawAuthor) as Author;
+    const author = convertToFrontendJSONWithRules(AuthorViewModel.mappingRules(), rawAuthor) as Author;
 
     if (typeof author.dataCredit === 'string') {
       author.dataCredit = [author.dataCredit];
@@ -98,7 +98,7 @@ export class EditAuthorViewModel extends AbstractEditViewModel implements Author
     return super.getModelData<Author>();
   }
 
-  validate(newProps?: Partial<EditAuthorViewModel>) {
+  validate(newProps?: Partial<AuthorViewModel>) {
     return super.validate(newProps);
   }
 
@@ -117,7 +117,7 @@ export class EditAuthorViewModel extends AbstractEditViewModel implements Author
 
 
 export const createAuthorViewModel = (author: Author, changeCallback = undefined) => {
-  const authorVM = new EditAuthorViewModel();
+  const authorVM = new AuthorViewModel();
 
   Object.assign(authorVM, author);
 

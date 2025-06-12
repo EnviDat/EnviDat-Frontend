@@ -69,8 +69,8 @@ export const Loading = {
   },
 }
 
-const authorListVM = datasetVM.getViewModel('EditAuthorListViewModel');
-const authorVMs = authorListVM.getEditAuthorViewModels(true);
+const authorListVM = datasetVM.getViewModel('AuthorListViewModel');
+const authorVMs = authorListVM.getAuthorViewModels(true);
 const authorVM = authorVMs[0];
 const authorVM2 = authorVMs[1];
 authorVM2.loading = true;

@@ -4,12 +4,13 @@ import { Author } from '@/types/modelTypes';
 import { AuthorDTO } from '@/types/dataTransferObjectsTypes';
 import {
   createAuthorViewModel,
-  EditAuthorViewModel,
-} from '@/modules/workflow/viewModel/EditAuthorViewModel.ts';
+  AuthorViewModel,
+} from '@/modules/workflow/viewModel/AuthorViewModel.ts';
 import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.ts';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
+import { convertJSON, convertToBackendJSONWithRules, convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
 
-export class EditAuthorListViewModel extends AbstractEditViewModel {
+export class AuthorListViewModel extends AbstractEditViewModel {
   declare authors: Author[];
 
   declare validationErrors: {
@@ -20,13 +21,13 @@ export class EditAuthorListViewModel extends AbstractEditViewModel {
     // don't provide dataset and mapping rules because authors
     // would get partially unpacked and then the unpacking of the full list
     // doesn't work anymore
-    super(datasetViewModel);
-    // super(datasetViewModel, EditAuthorListViewModel.mappingRules());
-    // manually assign it
-    this.privateMappingRules = EditAuthorListViewModel.mappingRules();
+    super(datasetViewModel, undefined);
+    // super(datasetViewModel, AuthorListViewModel.mappingRules());
+    // manually assign it so not to trigger the initial conversion
+    this.privateMappingRules = AuthorListViewModel.mappingRules();
 
     if (datasetViewModel?.dataset?.author) {
-      this.authors = EditAuthorListViewModel.getFormattedAuthors(datasetViewModel.dataset.author, datasetViewModel.dataset.metadata_modified);
+      this.authors = AuthorListViewModel.getFormattedAuthors(datasetViewModel.dataset.author, datasetViewModel.dataset.metadata_modified);
     } else {
       this.authors = [];
     }
@@ -48,7 +49,7 @@ export class EditAuthorListViewModel extends AbstractEditViewModel {
 
     for (let i = 0; i < rawAuthors.length; i++) {
       const rawAuthor = rawAuthors[i];
-      const author = EditAuthorViewModel.getFormattedAuthor(
+      const author = AuthorViewModel.getFormattedAuthor(
         rawAuthor,
         lastModified,
       );
@@ -58,10 +59,10 @@ export class EditAuthorListViewModel extends AbstractEditViewModel {
     return formattedAuthors;
   }
 
-  getEditAuthorViewModels(validateViewModels: boolean): EditAuthorViewModel[] | undefined {
+  getAuthorViewModels(validateViewModels: boolean): AuthorViewModel[] | undefined {
     const rawAuthors = this.datasetViewModel.dataset.author;
 
-    const authors: Author[] = EditAuthorListViewModel.getFormattedAuthors(
+    const authors: Author[] = AuthorListViewModel.getFormattedAuthors(
       rawAuthors,
       undefined,
     );
@@ -75,7 +76,7 @@ export class EditAuthorListViewModel extends AbstractEditViewModel {
     });
   }
 
-  validate(newProps?: Partial<EditAuthorListViewModel>): boolean {
+  validate(newProps?: Partial<AuthorListViewModel>): boolean {
     return super.validate(newProps);
   }
 

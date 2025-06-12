@@ -35,7 +35,7 @@ import {
 import { METADATA_AUTHOR_SEQUENCE_PROPERTY, METADATA_AUTHORS_PROPERTY } from '@/factories/metadataConsts';
 import unFormatedMetadataCards from './js/metadata';
 
-import { EditAuthorListViewModel } from '@/modules/workflow/viewModel/EditAuthorListViewModel.js';
+import { AuthorListViewModel } from '@/modules/workflow/viewModel/AuthorListViewModel.ts';
 import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.js';
 import { EditDatasetBackendService } from '@/modules/workflow/viewModel/EditDatasetBackendService.ts';
 
@@ -263,9 +263,9 @@ export const LoadingAuthorList = {
   },
 }
 
-const vm = datasetVM.getViewModel(EditAuthorListViewModel.name);
+const vm = datasetVM.getViewModel(AuthorListViewModel.name);
 
-export const EditAuthorListViewModels = {
+export const AuthorListViewModels = {
   args: {
     ...vm,
     onSave: (newData) => {
