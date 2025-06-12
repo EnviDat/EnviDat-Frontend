@@ -61,9 +61,9 @@ export const useDatasetWorkflowStore = defineStore({
       const vm = this.currentViewModel;
       if (!vm) return;
 
-      const ok = await vm.validate();
-      // BOTH version here, in my opinion before proceed we should validate all object
-      // const ok = await vm.saveObject(newData);
+      const errorValues = Object.values(vm.validationErrors);
+      const vErrors = errorValues.filter((errProp) => errProp !== null);
+      const ok = vErrors.length <= 0;
 
       if (ok) {
         // only for the step 3, we need to ask to the user to confirm the save
