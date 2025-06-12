@@ -52,7 +52,7 @@ export class EditDatasetBackendService implements DatasetService {
 
     try {
       const response = await axios.get(url);
-      this.dataset = new Dataset(response.data);
+      this.dataset = new Dataset(response.data.result);
     } catch (e: unknown) {
       console.error(e);
       throw e;
@@ -85,7 +85,7 @@ export class EditDatasetBackendService implements DatasetService {
         },
       });
 
-      this.dataset = new Dataset(response.data);
+      this.dataset = new Dataset(response.data.result);
 
       return this.dataset;
     } catch (e: unknown) {
