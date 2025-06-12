@@ -72,7 +72,11 @@ import {
   getAuthorName,
 } from '@/factories/authorFactory';
 
-import { AUTHOR_SEARCH_CLICK, EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
+import {
+  AUTHOR_SEARCH_CLICK,
+  EDITMETADATA_CLEAR_PREVIEW,
+  eventBus,
+} from '@/factories/eventBus';
 
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
@@ -312,7 +316,6 @@ export default {
       this.authorViewModel.validate(data);
     },
     async editAuthor(author: Author) {
-
       // call the save here to do validation, don't directly call validate()
       // because if it's valid, we need to call getAuthor() which means the
       // viewModel has to have the author information assign, which doesn't happen
@@ -320,7 +323,11 @@ export default {
       const validData = await this.authorViewModel.save(author);
 
       if (validData) {
-        const updatedAuthors = updateEditingArray(this.authors, author, 'email');
+        const updatedAuthors = updateEditingArray(
+          this.authors,
+          author,
+          'email',
+        );
         this.saveAuthorsList({ authors: updatedAuthors });
 
         this.resetAuthorViewModel();
@@ -334,7 +341,6 @@ export default {
       }
     },
     async saveNewAuthor(author: Author) {
-
       // call the save here to do validation, don't directly call validate()
       // because if it's valid, we need to call getAuthor() which means the
       // viewModel has to have the author information assigned, which doesn't happen

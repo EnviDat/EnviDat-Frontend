@@ -27,7 +27,7 @@
           />
         </div>
         <div class="pa-4 d-flex align-center justify-end">
-          <v-btn @click="nextStep">Save</v-btn>
+          <v-btn @click="nextStep">Next Step</v-btn>
         </div>
       </v-col>
     </v-row>

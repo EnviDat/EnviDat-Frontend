@@ -357,7 +357,7 @@ export default {
   mounted() {
     eventBus.on(MAP_GEOMETRY_MODIFIED, this.changedGeoViaEditor);
     eventBus.on(EDITMETADATA_DATA_GEO_MAP_ERROR, this.triggerValidationError);
-    this.emitFullGeoInfo();
+    this.$emit('save', this.newGeoInfo);
     const jsonString = this.location?.geoJSON
       ? JSON.stringify(this.location.geoJSON)
       : '';
@@ -383,9 +383,6 @@ export default {
     this.jsonEditor?.destroy();
   },
   methods: {
-    emitFullGeoInfo() {
-      this.$emit('validate', { ...this.newGeoInfo });
-    },
     ensureDateEntry(arr, type, explanation) {
       let obj = arr.find((d) => d.dateType === type);
       if (!obj) {
@@ -402,15 +399,11 @@ export default {
       const copy = [...this.datesField];
       copy[index] = { ...copy[index], [prop]: val };
       this.previewDates = copy;
-      this.setDataInfo('dates', copy);
-      this.newGeoInfo.dates = copy;
-      this.emitFullGeoInfo();
+      this.newGeoInfo.dates = this.previewDates;
+      this.$emit('save', this.newGeoInfo);
     },
     clearDate(index, prop) {
       this.dateChanged(index, prop, '');
-    },
-    setDataInfo(property, value) {
-      this.$emit('save', { ...this.newGeoInfo });
     },
     initEditor(text) {
       this.jsonEditor = createJSONEditor({
@@ -447,8 +440,10 @@ export default {
     changedGeoViaEditor(geoArray) {
       this.geomsForMap = convertGeoJSONToGeoCollection(geoArray);
       if (this.jsonEditor) this.jsonEditor.update({ json: this.geomsForMap });
+
       this.newGeoInfo.geometries = this.geomsForMap.geometries;
-      this.emitFullGeoInfo();
+      this.$emit('validate', this.newGeoInfo);
+
       this.saveButtonEnabled = true;
     },
     changeGeoViaText(text = '', skipSaveFlag = false) {
@@ -491,7 +486,7 @@ export default {
           coll.properties = { name: this.location.name };
         this.geomsForMap = coll;
         this.newGeoInfo.geometries = coll.geometries;
-        this.emitFullGeoInfo();
+        this.$emit('validate', this.newGeoInfo);
         return true;
       }
       return false;

@@ -13,7 +13,6 @@
             {{ labels.instructions }}
           </v-col>
         </v-row>
-        {{ validationErrors }}
 
         <!-- <v-col v-if="message" cols="4" class="pl-16">
           <BaseStatusLabelView
@@ -69,7 +68,10 @@
             :validationErrors="validationErrors"
             v-bind="editRelatedDatasetsProps"
           />
-          <EditCustomFieldsWorkflow v-bind="editCustomFieldsProps" />
+          <!-- <EditCustomFieldsWorkflow
+            @save="save"
+            v-bind="editCustomFieldsProps"
+          /> -->
         </v-col>
       </v-row>
     </v-container>
@@ -98,7 +100,7 @@ import {
 } from '@/factories/eventBus';
 
 import relatedDatasets from '@/modules/user/assets/placeholders/relatedDatasets.jpg';
-import EditCustomFieldsWorkflow from '@/modules/user/components/EditCustomFieldsWorkflow.vue';
+// import EditCustomFieldsWorkflow from '@/modules/user/components/EditCustomFieldsWorkflow.vue';
 import EditRelatedDatasetsWorkflow from '@/modules/user/components/EditRelatedDatasetsWorkflow.vue';
 import EditRelatedPublicationsListWorkflow from '@/modules/user/components/EditRelatedPublicationsListWorkflow.vue';
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
@@ -262,7 +264,7 @@ export default {
   components: {
     EditRelatedPublicationsListWorkflow,
     EditRelatedDatasetsWorkflow,
-    EditCustomFieldsWorkflow,
+    // EditCustomFieldsWorkflow,
   },
 };
 </script>

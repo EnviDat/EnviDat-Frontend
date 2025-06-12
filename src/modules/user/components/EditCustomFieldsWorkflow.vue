@@ -141,6 +141,7 @@ export default {
       fieldName: '',
       content: '',
     },
+    newDatasetInfo: {},
   }),
   props: {
     customFields: {
@@ -266,10 +267,8 @@ export default {
       };
     },
     setCustomFields(value) {
-      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: EDITMETADATA_CUSTOMFIELDS,
-        data: { customFields: value },
-      });
+      this.newDatasetInfo.customFields = value;
+      this.$emit('save', this.customFields);
     },
     deleteEntry(index) {
       const localCopy = [...this.customFieldsProp];
