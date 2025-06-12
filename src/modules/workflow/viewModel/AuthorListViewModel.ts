@@ -116,9 +116,6 @@ export class AuthorListViewModel extends AbstractEditViewModel {
     const frontendJson = convertToFrontendJSONWithRules(
       this.mappingRules,
       dataset,
-      // we need this here to preserve the snake_case, so the mappingRules
-      // of the AuthorViewModel still apply
-      false,
     );
 
     const cleanAuthors = AuthorListViewModel.getFormattedAuthors(
