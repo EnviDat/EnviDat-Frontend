@@ -1,6 +1,6 @@
 import { Dataset } from '@/modules/workflow/viewModel/Dataset';
 import { DatasetService } from '@/types/modelTypes';
-import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
+import { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel';
 import {
   initCreationDataWithDefaults,
@@ -16,17 +16,21 @@ if (useTestdata) {
 }
 
 
-export class EditDatasetLocalStorageService implements DatasetService {
+export class DatasetLocalStorageService implements DatasetService {
 
   declare dataset: DatasetDTO;
   declare loadingDataset: boolean;
 
   constructor(datasetBackend: unknown | undefined) {
-    this.dataset = new Dataset(datasetBackend);
+
+    if (datasetBackend) {
+      this.patchDatasetChanges(datasetBackend?.id, datasetBackend as DatasetDTO)
+    }
+    // this.dataset = new Dataset(datasetBackend);
     this.loadingDataset = false;
   }
 
-  async loadDataset(id: string) : Promise<DatasetDTO> {
+  async loadDataset(id: string): Promise<DatasetDTO> {
 
     this.loadingDataset = true;
 
@@ -41,13 +45,16 @@ export class EditDatasetLocalStorageService implements DatasetService {
     datasetId: string,
     data: object,
   ) {
-    if (useTestdata) {
-      return mockDataResponse.dataset.result;
-    }
 
     try {
-      storeDatasetInLocalStorage(datasetId, data);
-      this.dataset = new Dataset(data);
+      const existingData = readDatasetFromLocalStorage(datasetId);
+
+      const storedData = storeDatasetInLocalStorage(datasetId, {
+        ...existingData,
+        ...data,
+      });
+
+      this.dataset = new Dataset(storedData);
 
       return this.dataset;
     } catch (e: unknown) {
@@ -55,7 +62,18 @@ export class EditDatasetLocalStorageService implements DatasetService {
       throw e;
     }
 
+
   }
 
+  async createResource(resoureData: ResourceDTO): Promise<ResourceDTO> {
+    const currentResources = [...this.dataset.resources];
+    currentResources.push(resoureData);
+
+    await this.patchDatasetChanges(this.dataset.id, {
+      resources: currentResources,
+    })
+
+    return resoureData;
+  }
 
 }

@@ -4,17 +4,20 @@ import { defineAsyncComponent } from 'vue';
 import { workflowSteps } from '@/modules/workflow/resources/steps';
 
 import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel';
-import { EditDatasetBackendService } from '@/modules/workflow/viewModel/EditDatasetBackendService';
-import { EditDatasetLocalStorageService } from '@/modules/workflow/viewModel/EditDatasetLocalStorageService';
+import { DatasetLocalStorageService } from '@/modules/workflow/viewModel/DatasetLocalStorageService.js';
+import datasets from '~/stories/js/metadata.js';
 
+let datasetVM = new DatasetViewModel(new DatasetLocalStorageService());
+if (import.meta.env.MODE === 'development') {
+  datasetVM = new DatasetViewModel(new DatasetLocalStorageService(datasets[2]));
+}
 
-export const useDatasetWorkflowStore = defineStore({
-  id: 'datasetWorkflow',
+export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
   state: () => ({
     loading: false,
     currentStep: 0,
     steps: workflowSteps,
-    datasetViewModel: new DatasetViewModel(new EditDatasetBackendService()),
+    datasetViewModel: datasetVM,
     openSaveDialog: false,
     isStepSaveConfirmed: false,
     isStepSave: 3,

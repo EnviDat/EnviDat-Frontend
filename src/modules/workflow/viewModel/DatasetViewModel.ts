@@ -47,12 +47,10 @@ export class DatasetViewModel {
 
   private viewModelInstances: Map<string, any> = new Map();
 
-  declare backendService: DatasetService;
-  declare localStorageService: DatasetService;
+  declare datasetService: DatasetService;
 
-  constructor(backendService: DatasetService, localStorageService?: DatasetService) {
-    this.backendService = backendService;
-    this.localStorageService = localStorageService;
+  constructor(datasetService: DatasetService) {
+    this.datasetService = datasetService;
 
     this.createViewModels();
   }
@@ -75,19 +73,20 @@ export class DatasetViewModel {
 
 /*
   async loadViewModels(datasetId: string): Promise<void> {
-    await this.backendService.loadDataset(datasetId);
+    await this.datasetService.loadDataset(datasetId);
 
     this.createViewModels();
   }
 */
 
   async loadDataset(datasetId: string): Promise<DatasetDTO> {
-    await this.backendService.loadDataset(datasetId);
+    await this.datasetService.loadDataset(datasetId);
     this.updateViewModels();
+    return this.datasetService.dataset;
   }
 
   async reloadDataset() : Promise<DatasetDTO> {
-    return this.loadDataset(this.backendService.dataset.id);
+    return this.loadDataset(this.datasetService.dataset.id);
   }
 
   async createDataset(user: User, prefilledOrganizationId: string) : Promise<DatasetDTO> {
@@ -101,7 +100,7 @@ export class DatasetViewModel {
 
     const localDataset = new Dataset(predefinedData);
 
-    await this.localStorageService.patchDatasetChanges(localId, localDataset);
+    await this.datasetService.patchDatasetChanges(localId, localDataset);
 
     // @ts-ignore
     return localDataset;
@@ -113,7 +112,7 @@ export class DatasetViewModel {
     resourceModel.error = undefined;
 
     try {
-      const newResourceDTO = await this.backendService.createResource(resourceModel.backendJSON as ResourceDTO);
+      const newResourceDTO = await this.datasetService.createResource(resourceModel.backendJSON as ResourceDTO);
 
       const resourceModelData = ResourceModel.getFormattedResource(newResourceDTO);
 
@@ -133,7 +132,7 @@ export class DatasetViewModel {
     try {
       newModel.loading = true;
 
-      await this.backendService.patchDatasetChanges(this.dataset.id, newModel.backendJSON);
+      await this.datasetService.patchDatasetChanges(this.dataset.id, newModel.backendJSON);
 
       this.updateViewModels();
 
@@ -166,11 +165,11 @@ export class DatasetViewModel {
 
   updateViewModels() {
     this.viewModelInstances.forEach((model: AbstractEditViewModel) =>
-      model.updateModel(this.backendService.dataset),
+      model.updateModel(this.datasetService.dataset),
     );
   }
 
   get dataset(): DatasetDTO | undefined {
-    return this.backendService?.dataset;
+    return this.datasetService?.dataset;
   }
 }
