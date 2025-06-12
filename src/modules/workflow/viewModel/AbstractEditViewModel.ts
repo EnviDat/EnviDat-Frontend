@@ -121,6 +121,8 @@ export abstract class AbstractEditViewModel {
 
   validate(newProps: any | undefined): boolean {
     if (!newProps) {
+      // in case there are no props provided as parameters, use this viewModels
+      // properties to validate itself
       newProps = this;
     }
 
@@ -146,7 +148,8 @@ export abstract class AbstractEditViewModel {
 
   async save(newData: any | undefined): Promise<boolean> {
     if (!newData) {
-      // use case for generally storing
+      // in case there are no props provided as parameters, use this viewModels
+      // properties to validate itself
       newData = this;
     }
 
@@ -158,11 +161,16 @@ export abstract class AbstractEditViewModel {
         return false;
       }
 
+      // only store the props which we validated
+      const propsToStore = this.getPropsToValidate(newData);
+
+      // take over all the data to store it in this viewModel
+      Object.assign(this, propsToStore);
+
       if (this.datasetViewModel) {
         await this.datasetViewModel.patchViewModel(this);
       }
 
-      Object.assign(this, newData);
       return true;
     } catch (e) {
       this.error = e;

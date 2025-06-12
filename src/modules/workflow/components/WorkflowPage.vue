@@ -86,12 +86,12 @@ watch(
   { immediate: true },
 );
 
-const save = (data) => {
-  vm.value.save(data);
+const save = (freshData) => {
+  vm.value.save(freshData);
 };
 
-const validate = (data) => {
-  vm.value?.validate(data);
+const validate = (freshData) => {
+  vm.value?.validate(freshData);
 };
 
 const { currentStepObject, currentAsyncComponent } =
