@@ -448,6 +448,7 @@ export default {
       default: undefined,
     },
   },
+  emits: ['save', 'closeClicked'],
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
@@ -786,7 +787,7 @@ export default {
         },
       };
 
-      this.$emit('saveResource', newResourceProps);
+      this.$emit('save', newResourceProps);
     },
     loadImagePreview(url) {
       this.imagePreviewError = null;

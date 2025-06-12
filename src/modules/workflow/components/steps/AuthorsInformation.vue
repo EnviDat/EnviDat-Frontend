@@ -285,8 +285,6 @@ export default {
     catchEditAuthorClose() {
       if (this.selectedAuthor) {
         this.removeCurrentAuthorSelection();
-
-        this.resetAuthorViewModel();
       }
     },
     catchSearchAuthorClick(fullName: string) {

@@ -1,36 +1,34 @@
 import * as yup from 'yup';
 
-import { Resource } from '@/types/modelTypes';
-import { ResourceDTO } from '@/types/dataTransferObjectsTypes';
+import { Resource, User } from '@/types/modelTypes';
+import { type DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 import {  ResourceModel } from '@/modules/workflow/viewModel/ResourceModel.ts';
 import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel';
 import { METADATA_NEW_RESOURCE_ID } from '@/factories/metadataConsts';
+import { convertJSON, convertToBackendJSONWithRules } from '@/factories/mappingFactory';
+import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
+import { createResources } from '@/factories/metaDataFactory.ts';
 
 
 export class ResourcesListModel extends AbstractEditViewModel {
+
   declare resources: Resource[];
+
+  declare datasetId: string;
+
+/*
+  declare signedInUser: User;
+  declare signedInUserOrganizationIds: string[];
+*/
 
   declare validationErrors: {
     resources: string;
   };
 
   constructor(datasetViewModel: DatasetViewModel) {
-    // don't provide dataset and mapping rules because resources
-    // would get partially unpacked and then the unpacking of the full list
-    // doesn't work anymore
-    super(datasetViewModel);
-    // super(datasetViewModel, AuthorListViewModel.mappingRules());
-    // manually assign it
-    this.privateMappingRules = ResourcesListModel.mappingRules();
+    super(datasetViewModel, ResourcesListModel.mappingRules());
 
-    if (datasetViewModel?.dataset?.resources) {
-      this.resources = ResourcesListModel.getFormattedResources(
-        datasetViewModel.dataset.resources,
-      );
-    } else {
-      this.resources = [];
-    }
 
     this.validationErrors = {
       resources: null,
@@ -47,21 +45,46 @@ export class ResourcesListModel extends AbstractEditViewModel {
     );
   }
 
-  /*
-  getEditResourceViewModels(validateViewModels: boolean): EditResourceViewModel[] | undefined {
-    const rawResources = this.datasetViewModel.dataset.resources;
 
-    const resources: Resource[] = EditResourcesListViewModel.getFormattedResources(rawResources);
+  get backendJSON() {
+    const rawResources = this.resources?.map((cleanResource) =>
+      convertToBackendJSONWithRules(
+        ResourceModel.mappingRules(),
+        cleanResource,
+      ),
+    );
 
-    return resources?.map((resource) => {
-      const vm = createAuthorViewModel(resource);
-      if (validateViewModels) {
-        vm.validate();
-      }
-      return vm;
-    });
+    return convertJSON({ resources: rawResources }, false);
   }
+
+  /**
+   * OVERRIDE the method to make use of the ResourceModel mappingRules
+   * for individual resource
+   * @param dataset
+   */
+  updateModel(dataset: DatasetDTO) {
+
+    const resourceData = createResources(
+      dataset,
+/*
+      this.signedInUser,
+      this.signedInUserOrganizationIds,
 */
+    );
+
+/*
+    const cleanResources = ResourcesListModel.getFormattedResources(dataset.resources);
+*/
+
+    enhanceElementsWithStrategyEvents(
+      resourceData.resources,
+      undefined,
+      true,
+    );
+
+    Object.assign(this, { resources: resourceData.resources });
+  }
+
 
   validate(newProps?: Partial<ResourcesListModel>): boolean {
     return super.validate(newProps);

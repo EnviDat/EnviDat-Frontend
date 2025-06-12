@@ -7,7 +7,7 @@
             <!-- prettier-ignore -->
             <ResourceEditing v-bind="editResourceObject"
                           @closeClicked="catchEditResourceClose"
-                          @saveResource="catchSaveResourceClose"
+                          @save="catchSaveEditResource"
                           @previewImageClicked="showFullScreenImage"
             />
           </v-col>
@@ -30,14 +30,17 @@
       </v-col>
 
       <v-col cols="6">
-        <ResourcesListEditing v-bind="metadataResourcesGenericProps"/>
+        <ResourcesListEditing
+          v-bind="metadataResourcesGenericProps"
+          @save="saveResources"
+        />
       </v-col>
     </v-row>
 
   </v-container>
 </template>
 
-<script>
+<script lang="ts">
 /**
  * ResourcesInformation.vue shows all the resources of a metadata entry in a list.
  *
@@ -91,6 +94,7 @@ import ResourcesListEditing from '@/modules/workflow/components/steps/ResourcesL
 import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles.vue';
 import EditResourcePasteUrl from '@/modules/user/components/EditResourcePasteUrl.vue';
 import { ResourceModel } from '@/modules/workflow/viewModel/ResourceModel.js';
+import { type Author, Resource } from '@/types/modelTypes';
 
 const ResourceEditing = defineAsyncComponent(() =>
     import('@/modules/workflow/components/steps/ResourceEditing.vue'),
@@ -288,6 +292,12 @@ export default {
     },
   },
   methods: {
+    save(data: { resources: Resource[] }) {
+      this.$emit('save', data)
+    },
+    saveResources(data: { resources: Resource[] }) {
+
+    },
     loadEnvidatUsers() {
       if (this.$store && !this.envidatUsers && this.user) {
         this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`,
@@ -401,14 +411,30 @@ export default {
     },
     unselectCurrentResource() {
       if(this.selectedResource) {
-        this.$store.commit(`${USER_NAMESPACE}/${METADATA_CANCEL_RESOURCE_EDITING}`, this.selectedResource?.id);
+        this.selectedResource.isSelected = false;
+        this.resetResourceViewModel();
       }
     },
     catchEditResourceClose() {
-      eventBus.emit(CANCEL_EDITING_RESOURCE, this.selectedResource);
+      this.unselectCurrentResource();
     },
-    catchSaveResourceClose(resourceProps) {
-      eventBus.emit(SAVE_EDITING_RESOURCE, resourceProps);
+    markResourceSelected(resources: Resource[], id: string, isSelected: boolean) {
+      const resToMark = resources.filter(
+        (resource) => resource.id === id,
+      )[0];
+      if (resToMark) {
+        resToMark.isSelected = isSelected;
+      }
+    },
+    catchSaveEditResource(resource: Resource) {
+
+      // clear the internal state of the UI component in case there was an input
+      // on the adding of a new author
+      eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
+      this.unselectCurrentResource();
+
+      this.markResourceSelected(this.resources, resource.id, !rsource.isSelected);
+      this.resourceViewModel.save(resource);
     },
     showFullScreenImage(url) {
       eventBus.emit(OPEN_TEXT_PREVIEW, url);

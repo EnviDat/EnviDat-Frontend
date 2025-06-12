@@ -75,8 +75,6 @@ import { getResourceName } from '@/factories/metaDataFactory.js';
 
 import {
   EDITMETADATA_CLEAR_PREVIEW,
-  EDITMETADATA_DATA_RESOURCES,
-  EDITMETADATA_OBJECT_UPDATE,
   eventBus,
 } from '@/factories/eventBus.js';
 
@@ -168,13 +166,9 @@ export default {
         return;
       }
 
-      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: EDITMETADATA_DATA_RESOURCES,
-        data: {
-          ...this.$props,
-          resources: this.previewResources,
-        },
-      });
+      this.$emit('save', {
+        resources: this.previewResources,
+      })
     },
     clearPreviews() {
       this.previewResources = null;

@@ -76,6 +76,11 @@ export class AuthorListViewModel extends AbstractEditViewModel {
     return super.validate(newProps);
   }
 
+  /**
+   * OVERRIDE the method because if it's done directly with then
+   * e.g given_name get turned into givenName and then other mappingRules
+   * break, like the ones from the AuthorViewModel
+   */
   get backendJSON() {
     const rawAuthors = this.authors.map((cleanAuthor) =>
       convertToBackendJSONWithRules(
@@ -90,7 +95,7 @@ export class AuthorListViewModel extends AbstractEditViewModel {
 
   /**
    * OVERRIDE the method because if it's done directly with then
-   * e.g given_name get turned into givenName and then other mappingRules
+   * e.g. given_name get turned into givenName and then other mappingRules
    * break, like the ones from the AuthorViewModel
    * @param dataset
    */
