@@ -162,6 +162,9 @@ export abstract class AbstractEditViewModel {
       }
 
       // only store the props which we validated
+
+      // THIS is probably not needed because later the mappingRules are applied
+      // by calling the backendJSON() of the viewModel!
       const propsToStore = this.getPropsToValidate(newData);
 
       // take over all the data to store it in this viewModel

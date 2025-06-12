@@ -1,23 +1,32 @@
 import * as yup from 'yup';
 
 import { Author } from '@/types/modelTypes';
-import { AuthorDTO } from '@/types/dataTransferObjectsTypes';
+import { AuthorDTO, type DatasetDTO } from '@/types/dataTransferObjectsTypes';
 import {
-  createAuthorViewModel,
   AuthorViewModel,
+  createAuthorViewModel,
 } from '@/modules/workflow/viewModel/AuthorViewModel.ts';
 import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.ts';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
-import { convertJSON, convertToBackendJSONWithRules, convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
+import {
+  convertJSON,
+  convertToBackendJSONWithRules,
+  convertToFrontendJSONWithRules,
+} from '@/factories/mappingFactory';
 
 export class AuthorListViewModel extends AbstractEditViewModel {
   declare authors: Author[];
+
+  declare lastModified: string;
 
   declare validationErrors: {
     authors: string;
   };
 
   constructor(datasetViewModel: DatasetViewModel) {
+    super(datasetViewModel, AuthorListViewModel.mappingRules());
+
+/*
     // don't provide dataset and mapping rules because authors
     // would get partially unpacked and then the unpacking of the full list
     // doesn't work anymore
@@ -25,9 +34,13 @@ export class AuthorListViewModel extends AbstractEditViewModel {
     // super(datasetViewModel, AuthorListViewModel.mappingRules());
     // manually assign it so not to trigger the initial conversion
     this.privateMappingRules = AuthorListViewModel.mappingRules();
+*/
 
     if (datasetViewModel?.dataset?.author) {
-      this.authors = AuthorListViewModel.getFormattedAuthors(datasetViewModel.dataset.author, datasetViewModel.dataset.metadata_modified);
+      this.authors = AuthorListViewModel.getFormattedAuthors(
+        datasetViewModel.dataset.author,
+        datasetViewModel.dataset.metadata_modified,
+      );
     } else {
       this.authors = [];
     }
@@ -59,7 +72,9 @@ export class AuthorListViewModel extends AbstractEditViewModel {
     return formattedAuthors;
   }
 
-  getAuthorViewModels(validateViewModels: boolean): AuthorViewModel[] | undefined {
+  getAuthorViewModels(
+    validateViewModels: boolean,
+  ): AuthorViewModel[] | undefined {
     const rawAuthors = this.datasetViewModel.dataset.author;
 
     const authors: Author[] = AuthorListViewModel.getFormattedAuthors(
@@ -80,8 +95,44 @@ export class AuthorListViewModel extends AbstractEditViewModel {
     return super.validate(newProps);
   }
 
+  get backendJSON() {
+    const rawAuthors = this.authors.map((cleanAuthor) =>
+      convertToBackendJSONWithRules(
+        AuthorViewModel.mappingRules(),
+        cleanAuthor,
+      ));
+
+    // needs to be "author" here check the mappingRules
+    return convertJSON({ author: rawAuthors }, true);
+  }
+
+  /**
+   * OVERRIDE the method because if it's done directly with then
+   * e.g given_name get turned into givenName and then other mappingRules
+   * break, like the ones from the AuthorViewModel
+   * @param dataset
+   */
+  updateModel(dataset: DatasetDTO) {
+    const frontendJson = convertToFrontendJSONWithRules(
+      this.mappingRules,
+      dataset,
+      // we need this here to preserve the snake_case, so the mappingRules
+      // of the AuthorViewModel still apply
+      false,
+    );
+
+    const cleanAuthors = AuthorListViewModel.getFormattedAuthors(
+      frontendJson.authors,
+      frontendJson.lastModified,
+    );
+
+    Object.assign(this, { authors: cleanAuthors });
+  }
+
   static mappingRules() {
-    return [['authors', 'author']];
+    return [
+      ['authors', 'author'],
+      ['lastModified', 'metadata_modified'],
+    ];
   }
 }
-
