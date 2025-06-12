@@ -50,6 +50,7 @@
 
 import { mapGetters, mapState } from 'vuex';
 import {defineAsyncComponent} from 'vue';
+
 import {
   eventBus,
   CANCEL_EDITING_RESOURCE,
@@ -90,7 +91,6 @@ import ResourcesListEditing from '@/modules/workflow/components/steps/ResourcesL
 import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles.vue';
 import EditResourcePasteUrl from '@/modules/user/components/EditResourcePasteUrl.vue';
 import { ResourceModel } from '@/modules/workflow/viewModel/ResourceModel.js';
-import { EditAuthorViewModel } from '@/modules/workflow/viewModel/EditAuthorViewModel.js';
 
 const ResourceEditing = defineAsyncComponent(() =>
     import('@/modules/workflow/components/steps/ResourceEditing.vue'),
@@ -152,6 +152,7 @@ export default {
       default: undefined,
     },
   },
+  emits: ['save'],
   created() {
     // call once to create the uppy instance
     getUppyInstance(this.datasetId, this.$store);
@@ -371,29 +372,32 @@ export default {
       // console.log(`createResourceFromUrl ${url}`);
 
       const datasetId = this.datasetId;
-
       const newResource = createNewResourceForUrl(datasetId, url);
 
       this.resourceViewModel = new ResourceModel();
-      const validData = this.resourceViewModel.save(newResource);
+      const validData = await this.resourceViewModel.save(newResource);
       
       if(!validData) {
         console.error('Invalid Data for new resources', newResource);
         return;
       }
 
+      const currentResources = [...this.resources];
+      const resourceModelData = this.resourceViewModel.getResource();
+      currentResources.push(resourceModelData);
 
-      // create resource from url
-      await this.$store?.dispatch(`${USER_NAMESPACE}/${METADATA_CREATION_RESOURCE}`, {
-        data: newResource,
-      });
-
+      this.$emit('save', {
+        resources: currentResources,
+      })
+/*
       // resource exists already, get it from uploadResource
       const newRes = this.$store?.getters[`${USER_NAMESPACE}/uploadResource`];
 
       this.$nextTick(() => {
         this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, newRes?.id);
       });
+*/
+
     },
     unselectCurrentResource() {
       if(this.selectedResource) {

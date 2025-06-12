@@ -5,7 +5,6 @@ import { ResourceDTO } from '@/types/dataTransferObjectsTypes';
 import {  ResourceModel } from '@/modules/workflow/viewModel/ResourceModel.ts';
 import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel';
-import { boolean } from 'yup';
 import { METADATA_NEW_RESOURCE_ID } from '@/factories/metadataConsts';
 
 
@@ -21,7 +20,7 @@ export class ResourcesListModel extends AbstractEditViewModel {
     // would get partially unpacked and then the unpacking of the full list
     // doesn't work anymore
     super(datasetViewModel);
-    // super(datasetViewModel, EditAuthorListViewModel.mappingRules());
+    // super(datasetViewModel, AuthorListViewModel.mappingRules());
     // manually assign it
     this.privateMappingRules = ResourcesListModel.mappingRules();
 
@@ -72,19 +71,27 @@ export class ResourcesListModel extends AbstractEditViewModel {
 
     if (newData?.resources) {
 
-      const newResource = this.resources.map((res) => res.id === METADATA_NEW_RESOURCE_ID)[0];
+      const newResource = newData.resources.filter((res: Resource) => res.id === METADATA_NEW_RESOURCE_ID)[0];
 
       if (newResource) {
+        this.loading = true;
+
         const model = new ResourceModel();
         await model.save(newResource);
+
+        // the resourceModel is updated with the latest content of the backend
+        // (further deails of the resource)
         await this.datasetViewModel.createResourceOnExistingDataset(model);
 
+        // this will also update all viewModels with the content from the backend
+        // including this one
         await this.datasetViewModel.reloadDataset();
 
-        // need a way to update the resources and make sure it correct list the backend shows it?
-        // maybe add to resources and then order based on "position" and depracted props?
+        // when everything is updated, selected the latest resource for
+        // editing details (e.g. the user should change the name)
+        model.isSelected = true;
 
-        // this.resources.push()
+        this.loading = false;
         return true;
       }
 
@@ -95,7 +102,10 @@ export class ResourcesListModel extends AbstractEditViewModel {
   }
 
   static mappingRules() {
-    return [['resources', 'resources']];
+    return [
+      ['resources', 'resources'],
+      ['datasetId', 'id'],
+    ];
   }
 }
 
