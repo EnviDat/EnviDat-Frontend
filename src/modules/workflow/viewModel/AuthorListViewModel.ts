@@ -26,7 +26,7 @@ export class AuthorListViewModel extends AbstractEditViewModel {
   constructor(datasetViewModel: DatasetViewModel) {
     super(datasetViewModel, AuthorListViewModel.mappingRules());
 
-/*
+    /*
     // don't provide dataset and mapping rules because authors
     // would get partially unpacked and then the unpacking of the full list
     // doesn't work anymore
@@ -60,7 +60,7 @@ export class AuthorListViewModel extends AbstractEditViewModel {
   ): Author[] {
     const formattedAuthors: Author[] = [];
 
-    for (let i = 0; i < rawAuthors.length; i++) {
+    for (let i = 0; i < rawAuthors?.length; i++) {
       const rawAuthor = rawAuthors[i];
       const author = AuthorViewModel.getFormattedAuthor(
         rawAuthor,
@@ -100,7 +100,8 @@ export class AuthorListViewModel extends AbstractEditViewModel {
       convertToBackendJSONWithRules(
         AuthorViewModel.mappingRules(),
         cleanAuthor,
-      ));
+      ),
+    );
 
     // needs to be "author" here check the mappingRules
     return convertJSON({ author: rawAuthors }, true);
