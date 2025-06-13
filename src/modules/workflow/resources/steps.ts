@@ -141,8 +141,8 @@ export const workflowSteps: WorkflowStep[] = [
     hasError: false,
     key: 'publicationinformation',
     loader: () =>
-      import('@/modules/workflow/components/steps/AdditionalInformation.vue'),
-    viewModelKey: 'ModelMetaDataHeader',
+      import('@/modules/workflow/components/steps/PublishingInformation.vue'),
+    viewModelKey: 'ModelPublicationInformation',
     genericProps: {},
     icon: 'publicationinfo',
     status: 'disabled',

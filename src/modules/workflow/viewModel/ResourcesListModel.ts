@@ -2,22 +2,23 @@ import * as yup from 'yup';
 
 import { Resource, User } from '@/types/modelTypes';
 import { type DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
-import {  ResourceModel } from '@/modules/workflow/viewModel/ResourceModel.ts';
+import { ResourceModel } from '@/modules/workflow/viewModel/ResourceModel.ts';
 import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel';
 import { METADATA_NEW_RESOURCE_ID } from '@/factories/metadataConsts';
-import { convertJSON, convertToBackendJSONWithRules } from '@/factories/mappingFactory';
+import {
+  convertJSON,
+  convertToBackendJSONWithRules,
+} from '@/factories/mappingFactory';
 import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
 import { createResources } from '@/factories/metaDataFactory.ts';
 
-
 export class ResourcesListModel extends AbstractEditViewModel {
-
   declare resources: Resource[];
 
   declare datasetId: string;
 
-/*
+  /*
   declare signedInUser: User;
   declare signedInUserOrganizationIds: string[];
 */
@@ -28,7 +29,6 @@ export class ResourcesListModel extends AbstractEditViewModel {
 
   constructor(datasetViewModel: DatasetViewModel) {
     super(datasetViewModel, ResourcesListModel.mappingRules());
-
 
     this.validationErrors = {
       resources: null,
@@ -44,7 +44,6 @@ export class ResourcesListModel extends AbstractEditViewModel {
       ResourceModel.getFormattedResource(rawResource),
     );
   }
-
 
   get backendJSON() {
     const rawResources = this.resources?.map((cleanResource) =>
@@ -63,38 +62,32 @@ export class ResourcesListModel extends AbstractEditViewModel {
    * @param dataset
    */
   updateModel(dataset: DatasetDTO) {
-
     const resourceData = createResources(
       dataset,
-/*
+      /*
       this.signedInUser,
       this.signedInUserOrganizationIds,
 */
     );
 
-/*
+    /*
     const cleanResources = ResourcesListModel.getFormattedResources(dataset.resources);
 */
 
-    enhanceElementsWithStrategyEvents(
-      resourceData.resources,
-      undefined,
-      true,
-    );
+    enhanceElementsWithStrategyEvents(resourceData.resources, undefined, true);
 
     Object.assign(this, { resources: resourceData.resources });
   }
-
 
   validate(newProps?: Partial<ResourcesListModel>): boolean {
     return super.validate(newProps);
   }
 
   async save(newData: any): Promise<boolean> {
-
     if (newData?.resources) {
-
-      const newResource = newData.resources.filter((res: Resource) => res.id === METADATA_NEW_RESOURCE_ID)[0];
+      const newResource = newData.resources.filter(
+        (res: Resource) => res.id === METADATA_NEW_RESOURCE_ID,
+      )[0];
 
       if (newResource) {
         this.loading = true;
@@ -124,6 +117,12 @@ export class ResourcesListModel extends AbstractEditViewModel {
     return super.save(newData);
   }
 
+  getData() {
+    return {
+      resources: this.resources,
+    };
+  }
+
   static mappingRules() {
     return [
       ['resources', 'resources'],
@@ -131,4 +130,3 @@ export class ResourcesListModel extends AbstractEditViewModel {
     ];
   }
 }
-

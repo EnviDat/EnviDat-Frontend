@@ -30,6 +30,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     },
     currentViewModel(state) {
       const step = state.steps[state.currentStep];
+
       if (!step?.viewModelKey) return null;
 
       // get the viewModel
@@ -60,13 +61,20 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
         this.currentStep = next.id;
       }
     },
-    async validateStepAction(stepId) {
+    async validateStepAction(stepId, freshData) {
       const vm = this.currentViewModel;
       if (!vm) return;
 
+      // check with Dominik for another solution
+      vm.validate(freshData);
+
       const errorValues = Object.values(vm.validationErrors);
-      const vErrors = errorValues.filter((errProp) => errProp !== null);
-      const ok = vErrors.length <= 0;
+
+      const ok = errorValues.every((err) => !err);
+
+      // const errorValues = Object.values(vm.validationErrors);
+      // const vErrors = errorValues.filter((errProp) => errProp !== null);
+      // const ok = vErrors.length <= 0;
 
       if (ok) {
         // only for the step 3, we need to ask to the user to confirm the save

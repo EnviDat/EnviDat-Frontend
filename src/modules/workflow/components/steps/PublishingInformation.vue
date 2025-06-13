@@ -1,141 +1,64 @@
 <template>
-  <v-card
-    id="EditMetadataHeader"
-    elevation="0"
-    class="pa-0"
-    :loading="loadingColor"
-  >
+  <v-card id="MetadataCreationPublicationInfo" class="pa-0" elevation="0">
     <v-container fluid class="pa-4">
       <v-row>
-        <v-col class="text-h5" cols="8">
-          {{ labels.title }}
+        <v-row class="mt-5">
+          <v-col class="text-h5" cols="8">
+            {{ labels.title }}
+          </v-col>
+          <v-col cols="12" class="text-body-1">
+            {{ labels.instructions }}
+          </v-col>
+        </v-row>
+        <v-col cols="6">
+          <!-- prettier-ignore -->
+          <v-row>
+
+          <v-col cols="12">
+            <EditPublicationInfo v-bind="editPublicationsProps" />
+          </v-col>
+          <v-col v-if="blindReviewEditingActive && publicationState !== PUBLICATION_STATE_PUBLISHED" cols="12">
+            <EditReviewInfo v-bind="editReviewProps" />
+          </v-col>
+        </v-row>
         </v-col>
 
-        <v-col v-if="message" cols="4" class="pl-16">
-          <BaseStatusLabelView
-            status="check"
-            statusColor="success"
-            :statusText="message"
-            :expandedText="messageDetails"
-          />
-        </v-col>
-        <v-col v-if="error" cols="4" class="pl-16">
-          <BaseStatusLabelView
-            status="error"
-            statusColor="error"
-            :statusText="error"
-            :expandedText="errorDetails"
-          />
-        </v-col>
-      </v-row>
-
-      <v-row no-gutters class="pt-4">
-        <v-col cols="12" class="text-body-1">
-          {{ labels.instructions }}
-        </v-col>
-      </v-row>
-
-      <v-row>
-        <v-col v-if="$vuetify.display.lgAndUp" cols="12">
+        <v-col cols="6">
           <v-row>
             <v-col cols="12">
-              <MetadataHeader v-bind="metadataPreviewEntry" />
+              <EditContactPerson
+                v-bind="editContactPersonProps"
+                @save="catchContactPersonChange"
+              />
             </v-col>
           </v-row>
         </v-col>
         <v-col cols="12">
           <v-row>
-            <v-col cols="12" class="pt-5">
-              <v-text-field
-                ref="contactEmail"
-                :id="METADATA_CONTACT_EMAIL"
-                :label="labels.labelContactEmail"
-                :error-messages="validationErrors[METADATA_CONTACT_EMAIL]"
-                :readonly="isContactPropertyReadOnly(METADATA_CONTACT_EMAIL)"
-                hide-details="auto"
-                persistent-hint
-                :hint="contactPropertyHint(METADATA_CONTACT_EMAIL)"
-                :prepend-icon="mdiEmail"
-                :placeholder="labels.placeholderContactEmail"
-                :model-value="contactEmailField"
-                @keyup="blurOnEnterKey"
-                @focusin="focusIn($event)"
-                @focusout="focusOut(METADATA_CONTACT_EMAIL, $event)"
-                @input="
-                  changePropertyForPreview(
-                    METADATA_CONTACT_EMAIL,
-                    $event.target.value,
-                  )
-                "
-              />
-            </v-col>
-
-            <v-col cols="12" class="pl-sm-4">
-              <BaseUserPicker
-                :users="fullNameUsers"
-                :preSelected="preselectAuthorNames"
-                :hint="labels.authorPickHint"
-                @removedUsers="catchPickerAuthorChange($event, false)"
-                @pickedUsers="catchPickerAuthorChange($event, true)"
-              />
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col class="text-body-1" v-html="labels.authorAutoComplete">
-            </v-col>
-          </v-row>
-
-          <v-row>
             <v-col cols="12">
-              <v-text-field
-                ref="contactGivenName"
-                :id="METADATA_CONTACT_FIRSTNAME"
-                :label="labels.labelContactGivenName"
-                :error-messages="validationErrors[METADATA_CONTACT_FIRSTNAME]"
-                :readonly="
-                  isContactPropertyReadOnly(METADATA_CONTACT_FIRSTNAME)
-                "
-                hide-details="auto"
-                persistent-hint
-                :hint="contactPropertyHint(METADATA_CONTACT_FIRSTNAME)"
-                :prepend-icon="mdiAccount"
-                :placeholder="labels.placeholderContactGivenName"
-                :model-value="contactGivenNameField"
-                @keyup="blurOnEnterKey"
-                @focusin="focusIn($event)"
-                @focusout="focusOut(METADATA_CONTACT_FIRSTNAME, $event)"
-                @input="
-                  changePropertyForPreview(
-                    METADATA_CONTACT_FIRSTNAME,
-                    $event.target.value,
-                  )
-                "
+              <EditOrganization v-bind="editOrganizationProps" />
+            </v-col>
+          </v-row>
+        </v-col>
+
+        <v-col cols="12">
+          <v-row v-if="doiWorkflowActive">
+            <v-col>
+              <EditPublicationStatus
+                v-bind="editPublicationStatusProps"
+                @clicked="catchPublicationStateChange"
               />
             </v-col>
+          </v-row>
 
-            <v-col cols="12" class="pl-sm-4">
-              <v-text-field
-                ref="contactSurname"
-                :id="METADATA_CONTACT_LASTNAME"
-                :label="labels.labelContactSurname"
-                :error-messages="validationErrors[METADATA_CONTACT_LASTNAME]"
-                :readonly="isContactPropertyReadOnly(METADATA_CONTACT_LASTNAME)"
-                hide-details="auto"
-                persistent-hint
-                :hint="contactPropertyHint(METADATA_CONTACT_LASTNAME)"
-                :prepend-icon="mdiAccount"
-                :placeholder="labels.placeholderContactSurname"
-                :model-value="contactSurnameField"
-                @keyup="blurOnEnterKey"
-                @focusin="focusIn($event)"
-                @focusout="focusOut(METADATA_CONTACT_LASTNAME, $event)"
-                @input="
-                  changePropertyForPreview(
-                    METADATA_CONTACT_LASTNAME,
-                    $event.target.value,
-                  )
-                "
+          <v-row v-if="!doiWorkflowActive">
+            <v-col>
+              <NotFoundCard
+                title="Publication Status editing is disabled"
+                description="There seems to be a problem, make sure you read the message in the banner or go on the <a href='https://www.envidat.ch' target='_blank'>homepage</a> and check the news."
+                actionDescription="Click to open the legacy UI for dataset publication. Use the blue button on the top right of the page."
+                actionButtonText="Request Publication"
+                :actionButtonCallback="openCKANLink"
               />
             </v-col>
           </v-row>
@@ -147,138 +70,101 @@
 
 <script>
 /**
- * EditMetadataHeader.vue shows the title, main contact email, main contact given name,
- * main contact surname, and metadata header preview.
+ * CreatePublicationInfo.vue renders the GenericPlaceholder component with a screenshot image of the Metadata Keywords mockup used in the slot
  *
  *
- * @summary shows the title, main contact information, and header preview
- * @author Dominik Haas-Artho and Rebecca Kurup Buchholz
+ * @summary shows a screenshot placeholder of the editing the Related Info
+ * @author Dominik Haas-Artho
+ *
+ * Created        : 2021-08-31
+ * Last modified  : 2021-10-07 13:12:25
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import { mdiAccount, mdiBookOpenVariantOutline, mdiEmail } from '@mdi/js';
+
+import { mapState } from 'vuex';
+import { defineAsyncComponent } from 'vue';
+
+import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 import {
-  EDITMETADATA_CLEAR_PREVIEW,
-  EDITMETADATA_MAIN_HEADER,
+  EDITMETADATA_FUNDING_INFO,
   EDITMETADATA_OBJECT_UPDATE,
+  EDITMETADATA_ORGANIZATION,
+  EDITMETADATA_PUBLICATION_INFO,
+  EDITMETADATA_PUBLICATION_STATE,
   eventBus,
+  METADATA_EDITING_FINISH_CLICK,
 } from '@/factories/eventBus';
 
 import {
-  METADATA_NAMESPACE,
-  METADATA_UPDATE_EXISTING_TITLE,
-} from '@/store/metadataMutationsConsts';
-
-import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
-import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
-// import ExpandableLayout from '@/components/Layouts/ExpandableLayout.vue';
-
-import { enhanceTitleImg } from '@/factories/metaDataFactory';
-
-import {
-  getValidationMetadataEditingObject,
-  isFieldValid,
-  isObjectValid,
-} from '@/factories/userEditingValidations';
-import {
-  createContact,
-  creationContactFromAuthor,
-  getArrayOfFullNames,
-  getAuthorByEmail,
-  getAuthorByName,
-  getAuthorName,
-} from '@/factories/authorFactory';
-import {
-  //   EDIT_METADATA_TITLE,
-  //   EDIT_METADATA_TITLE_LABEL,
-  EDIT_METADATA_URL_LABEL,
-  EDIT_STEP_TITLE_MAIN_METADATA,
   METADATA_CONTACT_EMAIL,
   METADATA_CONTACT_FIRSTNAME,
   METADATA_CONTACT_LASTNAME,
-  METADATA_TITLE_PROPERTY,
-  METADATA_URL_PROPERTY,
+  BLIND_REVIEW_ON,
+  PUBLICATION_STATE_PUBLISHED,
 } from '@/factories/metadataConsts';
 
-import { getMetadataUrlFromTitle } from '@/factories/mappingFactory';
-import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+import EditOrganization from '@/modules/user/components/edit/EditOrganization.vue';
+import EditContactPerson from '@/modules/user/components/edit/EditContactPerson.vue';
+
+import EditPublicationInfo from '@/modules/user/components/edit/EditPublicationInfo.vue';
+
+import EditPublicationStatus from '@/modules/user/components/edit/EditPublicationStatus.vue';
+import EditReviewInfo from '@/modules/user/components/edit/EditReviewInfo.vue';
+
+import {
+  getArrayOfFullNames,
+  getAuthorByEmail,
+  getAuthorName,
+} from '@/factories/authorFactory';
+
+const NotFoundCard = defineAsyncComponent(
+  () => import('@/components/Cards/NotFoundCard.vue'),
+);
 
 export default {
-  name: 'EditMetadataHeader',
+  name: 'MetadataEditingPublicationInfo',
+  data: () => ({
+    envidatDomain: process.env.VITE_API_ROOT,
+    newDatasetInfo: {},
+    PUBLICATION_STATE_PUBLISHED,
+    labels: {
+      title: 'Research Header Information',
+      instructions:
+        'The header is part of the main metadata information.' +
+        'Together with the other information in the "Metadata" step, it represents the core information for your research dataset.',
+    },
+  }),
   props: {
-    keywords: {
-      type: Array,
-      default: null,
-    },
-    authors: {
-      type: Array,
-      default: () => [],
-    },
-    existingEnviDatUsers: {
-      type: Array,
-      default: () => [],
-    },
-    existingAuthors: {
-      type: Array,
-      default: () => [],
-    },
-    metadataTitle: {
-      type: String,
-      default: '',
-    },
-    contactGivenName: {
-      type: String,
-      default: '',
-    },
-    contactSurname: {
-      type: String,
-      default: '',
-    },
-    contactEmail: {
-      type: String,
-      default: '',
-    },
-    metadataUrl: {
-      type: String,
-      default: null,
-    },
-    pickedUser: {
-      type: Array,
-      default: () => [],
-    },
-    organization: {
+    currentStep: Object,
+    publicationState: {
       type: String,
       default: undefined,
     },
-    organizationTooltip: {
+    visibilityState: {
       type: String,
       default: undefined,
     },
     doi: {
       type: String,
-      default: '',
+      default: undefined,
     },
-    loading: {
-      type: Boolean,
-      default: false,
-    },
-    message: {
+    publisher: {
       type: String,
-      default: '',
+      default: undefined,
     },
-    messageDetails: {
+    publicationYear: {
       type: String,
-      default: null,
+      default: undefined,
     },
-    error: {
-      type: String,
-      default: '',
+    funders: {
+      type: Array,
+      default: undefined,
     },
-    errorDetails: {
+    userRole: {
       type: String,
-      default: null,
+      default: undefined,
     },
     readOnlyFields: {
       type: Array,
@@ -288,447 +174,183 @@ export default {
       type: String,
       default: '',
     },
-  },
-  created() {
-    eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
-  },
-  beforeUnmount() {
-    eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+    existingAuthors: {
+      type: Array,
+      default: () => [],
+    },
+    validationErrors: { type: Object, default: () => ({}) },
   },
   computed: {
-    loadingColor() {
-      if (this.loading) {
-        return 'accent';
-      }
+    ...mapState(['config']),
+    ...mapState(USER_NAMESPACE, ['doiLoading', 'doiSuccess', 'doiError']),
 
-      return undefined;
-    },
-    metadataTitleField: {
-      get() {
-        return this.previews[METADATA_TITLE_PROPERTY] !== null
-          ? this.previews[METADATA_TITLE_PROPERTY]
-          : this.metadataTitle;
-      },
-    },
-    contactGivenNameField: {
-      get() {
-        return this.previews[METADATA_CONTACT_FIRSTNAME] !== null
-          ? this.previews[METADATA_CONTACT_FIRSTNAME]
-          : this.contactGivenName;
-      },
-    },
-    contactSurnameField: {
-      get() {
-        return this.previews[METADATA_CONTACT_LASTNAME] !== null
-          ? this.previews[METADATA_CONTACT_LASTNAME]
-          : this.contactSurname;
-      },
-    },
-    contactEmailField: {
-      get() {
-        return this.previews[METADATA_CONTACT_EMAIL] !== null
-          ? this.previews[METADATA_CONTACT_EMAIL]
-          : this.contactEmail;
-      },
-    },
-    metadataUrlField: {
-      get() {
-        return this.previews[METADATA_URL_PROPERTY] !== null
-          ? this.previews[METADATA_URL_PROPERTY]
-          : this.metadataUrl;
-      },
-    },
-    preselectAuthorNames() {
-      const author = getAuthorByEmail(
-        this.contactEmailField,
-        this.existingAuthorsWrap,
-      );
-      const fullName = getAuthorName(author);
-
-      return fullName ? [fullName] : [];
-    },
-    existingAuthorsWrap() {
-      if (this.$store) {
-        return this.$store.getters[`${METADATA_NAMESPACE}/existingAuthors`];
-      }
-
-      return this.existingAuthors;
-    },
     fullNameUsers() {
       const localAuthors = [...this.existingAuthorsWrap];
       return getArrayOfFullNames(localAuthors);
     },
-    metadataPreviewEntry() {
-      const fullName = getAuthorName({
-        firstName: this.contactGivenNameField,
-        lastName: this.contactSurnameField,
-      });
-
-      const previewEntry = {
-        [METADATA_TITLE_PROPERTY]:
-          this.metadataTitleField || this.labels.placeholderHeaderTitle,
-        title: this.metadataTitleField || this.labels.placeholderHeaderTitle, // is needed for the enhanceTitleImg
-        showCloseButton: false,
-        contactName: fullName,
-        [METADATA_CONTACT_EMAIL]: this.contactEmailField,
-        doi: this.doi,
-        organization: this.organization,
-        organizationTooltip: this.organizationTooltip,
-        tags: this.keywords,
-        authors: this.authors,
-      };
-
-      enhanceTitleImg(previewEntry);
-
-      return previewEntry;
-    },
-    validations() {
-      return getValidationMetadataEditingObject(EDITMETADATA_MAIN_HEADER);
-    },
-    contactInfoReadOnly() {
-      return (
-        (this.authorPickerTouched && this.authorIsPicked) ||
-        (!this.authorPickerTouched && this.authorPickerFoundAuthor)
+    preselectAuthorNames() {
+      const author = getAuthorByEmail(
+        this.contactEmailField,
+        this.existingAuthors,
       );
-    },
-    authorPickerFoundAuthor() {
-      if (
-        this.preselectAuthorNames?.length <= 0 ||
-        this.fullNameUsers?.length <= 0
-      ) {
-        return false;
+
+      if (author) {
+        const fullName = getAuthorName(author);
+        return fullName ? [fullName] : [];
       }
 
-      const matches = this.fullNameUsers.filter(
-        (fullName) => fullName === this.preselectAuthorNames[0],
-      );
-      return matches.length > 0;
+      return undefined;
     },
-    anyUserElementsActive() {
-      return (
-        this.activeElements[METADATA_CONTACT_EMAIL] ||
-        this.activeElements[METADATA_CONTACT_FIRSTNAME] ||
-        this.activeElements[METADATA_CONTACT_LASTNAME]
-      );
+    existingAuthorsWrap() {
+      if (this.$store) {
+        return this.$store.getters['metadata/existingAuthors'];
+      }
+
+      return this.existingAuthors;
     },
-    anyPreviewsChanged() {
-      return (
-        this.previews[METADATA_CONTACT_FIRSTNAME] !== null ||
-        this.previews[METADATA_CONTACT_LASTNAME] !== null ||
-        this.previews[METADATA_CONTACT_EMAIL] !== null
-      );
+    editContactPersonProps() {
+      const headerObj = this.$store
+        ? this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](
+            'EDITMETADATA_HEADER_INFO',
+          )
+        : this.currentStep.genericProps;
+
+      return {
+        contactEmail: headerObj?.contactEmail || '',
+        contactFirstName: headerObj?.contactFirstName,
+        contactLastName: headerObj?.contactLastName,
+        fullNameUsers: this.fullNameUsers || [],
+        authors: this.existingAuthorsWrap,
+        preselectAuthorNames: headerObj?.preselectAuthorNames || [],
+        validationErrors: this.validationErrors || {},
+        isContactPropertyReadOnly: () => false,
+        contactPropertyHint: () => '',
+      };
+    },
+    doiWorkflowActive() {
+      if (this.$store) {
+        return this.config?.userEditMetadataConfig?.doiWorkflowActive;
+      }
+
+      // storybook context
+      return true;
+    },
+    blindReviewEditingActive() {
+      if (this.$store) {
+        return this.config?.userEditMetadataConfig?.blindReviewEditingActive;
+      }
+
+      // storybook context
+      return true;
+    },
+    publicationsInfo() {
+      if (this.$store) {
+        return this.$store.getters[
+          `${USER_NAMESPACE}/getMetadataEditingObject`
+        ](EDITMETADATA_PUBLICATION_INFO);
+      }
+
+      // storybook context
+      const stepData = this.currentStep.genericProps;
+
+      return {
+        publicationState: stepData.publicationState,
+        visibilityState: stepData.visibilityState,
+        doi: stepData.doi,
+        userRole: stepData.userRole,
+        publisher: stepData.publisher,
+        publicationYear: stepData.publicationYear,
+      };
+    },
+    fundingInfo() {
+      if (this.$store) {
+        return this.$store.getters[
+          `${USER_NAMESPACE}/getMetadataEditingObject`
+        ](EDITMETADATA_FUNDING_INFO);
+      }
+
+      return this.currentStep.genericProps;
+    },
+    organizationsInfo() {
+      if (this.$store) {
+        return this.$store.getters[
+          `${USER_NAMESPACE}/getMetadataEditingObject`
+        ](EDITMETADATA_ORGANIZATION);
+      }
+
+      return this.currentStep.genericProps;
+    },
+    editPublicationsProps() {
+      return {
+        ...this.publicationsInfo,
+        readOnlyFields: this.readOnlyFields,
+        readOnlyExplanation: this.readOnlyExplanation,
+      };
+    },
+    editFundingProps() {
+      return {
+        ...this.fundingInfo,
+        readOnlyFields: this.readOnlyFields,
+        readOnlyExplanation: this.readOnlyExplanation,
+      };
+    },
+    editOrganizationProps() {
+      return {
+        ...this.organizationsInfo,
+        readOnlyFields: this.readOnlyFields,
+        readOnlyExplanation: this.readOnlyExplanation,
+      };
+    },
+    editPublicationStatusProps() {
+      return {
+        ...this.publicationsInfo,
+        loading: this.$store ? this.doiLoading : undefined,
+        error: this.$store ? this.doiError?.message : undefined,
+        errorDetails: this.$store ? this.doiError?.details : undefined,
+      };
+    },
+    editReviewProps() {
+      return {
+        ...this.publicationsInfo,
+        isBlindReview: this.publicationsInfo.version === BLIND_REVIEW_ON,
+      };
+    },
+    metadataId() {
+      return this.$route?.params?.metadataid;
+    },
+    linkToDatasetCKAN() {
+      return `${this.envidatDomain}/dataset/${this.metadataId}`;
     },
   },
   methods: {
-    blurOnEnterKey(keyboardEvent) {
-      if (keyboardEvent.key === 'Enter') {
-        keyboardEvent.target.blur();
-      }
+    catchContactPersonChange(updatedContact) {
+      this.newDatasetInfo.contactEmail = updatedContact.contactEmail;
+      this.newDatasetInfo.contactFirstName = updatedContact.contactFirstName;
+      this.newDatasetInfo.contactLastName = updatedContact.contactLastName;
+      this.$emit('save', this.newDatasetInfo);
     },
-    isContactPropertyReadOnly(property) {
-      return this.contactInfoReadOnly || this.isReadOnly(property);
-    },
-    contactPropertyHint(property) {
-      if (this.contactInfoReadOnly) {
-        return 'Not editable, the contact is defined in the drop down';
-      }
 
-      return this.readOnlyHint(property);
-    },
-    clearPreviews() {
-      this.previews[METADATA_CONTACT_FIRSTNAME] = null;
-      this.previews[METADATA_CONTACT_LASTNAME] = null;
-      this.previews[METADATA_CONTACT_EMAIL] = null;
-      this.previews[METADATA_TITLE_PROPERTY] = null;
-      this.previews[METADATA_URL_PROPERTY] = null;
-    },
-    // Validate contact author properties by calling isFieldValid()
-    // Returns true if all properties are valid, else returns false
-    validateAuthor(contactObject) {
-      if (!contactObject) {
-        return false;
-      }
-
-      const properties = [
-        METADATA_CONTACT_EMAIL,
-        METADATA_CONTACT_FIRSTNAME,
-        METADATA_CONTACT_LASTNAME,
-      ];
-
-      // Validate fields corresponding to properties
-      for (let i = 0; i < properties.length; i++) {
-        isFieldValid(
-          properties[i],
-          contactObject[properties[i]],
-          this.validations,
-          this.validationErrors,
-        );
-      }
-
-      // Return false if any of the properties have a validation error
-      for (let i = 0; i < properties.length; i++) {
-        const prop = properties[i];
-        if (this.validationErrors[prop]) {
-          return false;
-        }
-      }
-
-      return true;
-    },
-    focusIn(event) {
-      this.markPropertyActive(event.target, true);
-    },
-    focusOut(property, event) {
-      this.markPropertyActive(event.target, false);
-      this.markPropertyActive(event.relatedTarget, true);
-      // this.delayedNotifyChange(property, event.target.value);
-      this.notifyContactChange(property, event.target.value);
-    },
-    markPropertyActive(toElement, editing) {
-      const toId = toElement?.id || null;
-      if (toId) {
-        this.activeElements[toId] = editing;
-      }
-    },
-    changePropertyForPreview(property, value) {
-      this.previews[property] = value;
-      const valid = this.validateProperty(property, value);
-
-      if (this.$store) {
-        // do it if the store is available otherwise in the storybook context the component breaks
-        // pass the value of the title to preview changes
-        this.$store.commit(
-          `${METADATA_NAMESPACE}/${METADATA_UPDATE_EXISTING_TITLE}`,
-          value,
-        );
-      }
-
-      if (valid && property === METADATA_TITLE_PROPERTY && !this.metadataUrl) {
-        this.previews[METADATA_URL_PROPERTY] = getMetadataUrlFromTitle(value);
-      }
-    },
-    validateProperty(property, value) {
-      return isFieldValid(
-        property,
-        value,
-        this.validations,
-        this.validationErrors,
-      );
-    },
-    catchPickerAuthorChange(pickedAuthorName, hasAuthor) {
-      this.authorPickerTouched = true;
-      this.authorIsPicked = hasAuthor;
-
-      if (this.authorIsPicked) {
-        const author = getAuthorByName(
-          pickedAuthorName,
-          this.existingAuthorsWrap,
-        );
-        const contactObject = creationContactFromAuthor(author);
-
-        this.previews[METADATA_CONTACT_FIRSTNAME] =
-          contactObject[METADATA_CONTACT_FIRSTNAME];
-        this.previews[METADATA_CONTACT_LASTNAME] =
-          contactObject[METADATA_CONTACT_LASTNAME];
-        this.previews[METADATA_CONTACT_EMAIL] =
-          contactObject[METADATA_CONTACT_EMAIL];
-
-        if (this.validateAuthor(contactObject)) {
-          this.setFullContactInfos(contactObject);
-        }
-      } else {
-        // has to be an empty string here otherwise the old value (via $props)
-        // would be shown
-        this.previews[METADATA_CONTACT_FIRSTNAME] = '';
-        this.previews[METADATA_CONTACT_LASTNAME] = '';
-        this.previews[METADATA_CONTACT_EMAIL] = '';
-      }
-    },
-    notifyPropertyChange(property, value) {
-      if (this.previews[property] === null) {
-        return;
-      }
-
-      if (this.validateProperty(property, value)) {
-        this.setHeaderInfo(property, value);
-      }
-    },
-    notifyContactChange(property, value) {
-      if (this.anyUserElementsActive) {
-        return;
-      }
-
-      if (!this.anyPreviewsChanged) {
-        return;
-      }
-
-      // default to filling all the infos from the text-field input
-      let contactObject = createContact(
-        this.contactGivenNameField,
-        this.contactSurnameField,
-        this.contactEmailField,
-      );
-
-      if (property === METADATA_CONTACT_EMAIL) {
-        if (
-          isFieldValid(property, value, this.validations, this.validationErrors)
-        ) {
-          // autocomplete author
-          const author = getAuthorByEmail(value, this.existingAuthorsWrap);
-
-          const autoCompletedContactObject = creationContactFromAuthor(author);
-
-          if (autoCompletedContactObject) {
-            this.previews[METADATA_CONTACT_FIRSTNAME] =
-              autoCompletedContactObject[METADATA_CONTACT_FIRSTNAME];
-            this.previews[METADATA_CONTACT_LASTNAME] =
-              autoCompletedContactObject[METADATA_CONTACT_LASTNAME];
-
-            // overwrite any infos from the text-fields with the author infos
-            // from the autocomplete
-            contactObject = autoCompletedContactObject;
-
-            // this makes the text-fields readonly again
-            this.authorPickerTouched = false;
-          }
-        }
-      }
-
-      // store all the contact infos because notifyChanges is only called
-      // when the user focus leaves any of the fields, therefore all changes
-      // must be stored
-
-      if (
-        isObjectValid(
-          this.contactValidationProperties,
-          contactObject,
-          this.validations,
-          this.validationErrors,
-        )
-      ) {
-        this.setFullContactInfos(contactObject);
-      }
-    },
-    setFullContactInfos(contactObject) {
-      const newHeaderInfo = {
-        ...this.$props,
-        ...contactObject,
-      };
-
+    catchPublicationStateChange(event) {
       eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: EDITMETADATA_MAIN_HEADER,
-        data: newHeaderInfo,
+        object: EDITMETADATA_PUBLICATION_STATE,
+        data: {
+          event,
+          metadataId: this.metadataId,
+        },
       });
     },
-    setHeaderInfo(property, value) {
-      let newHeaderInfo = {
-        ...this.$props,
-        [property]: value,
-      };
-
-      if (
-        property === METADATA_TITLE_PROPERTY &&
-        !this.metadataUrl &&
-        this.metadataUrlField
-      ) {
-        // in the case of typing in the title for the first time, make sure
-        // to store the url as well
-        newHeaderInfo = {
-          ...newHeaderInfo,
-          [METADATA_URL_PROPERTY]: this.metadataUrlField,
-        };
-      }
-
-      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: EDITMETADATA_MAIN_HEADER,
-        data: newHeaderInfo,
-      });
-    },
-    isReadOnly(dateProperty) {
-      return isFieldReadOnly(this.$props, dateProperty);
-    },
-    readOnlyHint(dateProperty) {
-      return readOnlyHint(this.$props, dateProperty);
+    openCKANLink() {
+      window.open(this.linkToDatasetCKAN, '_blank');
     },
   },
-  data: () => ({
-    mdiBookOpenVariantOutline,
-    mdiAccount,
-    mdiEmail,
-    authorIsPicked: false,
-    authorPickerTouched: false,
-    previews: {
-      [METADATA_TITLE_PROPERTY]: null,
-      [METADATA_URL_PROPERTY]: null,
-      [METADATA_CONTACT_FIRSTNAME]: null,
-      [METADATA_CONTACT_LASTNAME]: null,
-      [METADATA_CONTACT_EMAIL]: null,
-    },
-    labels: {
-      title: 'Research Authors Details',
-      contactPerson: 'Contact Person',
-      labelTitle: 'Research Authors Details',
-      labelUrl: EDIT_METADATA_URL_LABEL,
-      labelContactEmail: 'Contact Email',
-      labelContactGivenName: 'Contact Given Name',
-      labelContactSurname: 'Contact Surname',
-      instructions:
-        'Enter an email address or pick a user as the contact person for this dataset.',
-      instructions2:
-        'Enter a title for your research dataset. Please make sure that title is meaningful and specific.',
-      authorInstructions:
-        'Enter an email address or pick a user as the contact person for this dataset.',
-      authorOr: '<strong>Or</strong> pick <br /> an author',
-      authorOr2: '<strong>Or</strong> pick an author',
-      authorAutoComplete:
-        'If an author is picked the name is <strong>autocompleted</strong> otherwise please enter it!',
-      placeholderTitle: 'Enter the title for your research dataset',
-      placeholderUrl: 'Change the url for your dataset',
-      placeholderHeaderTitle: 'Your Metadata Title',
-      placeholderContactEmail: 'Enter contact email address',
-      placeholderContactGivenName: 'Enter contact given (first) name',
-      placeholderContactSurname: 'Enter contact surname name',
-      previewText: 'Metadata Header Preview',
-      authorDropdown:
-        'Click here and start typing to select an existing EnviDat author',
-      authorPickHint:
-        'Start typing the name in the text field to search for an author.',
-    },
-    contactValidationProperties: [
-      METADATA_CONTACT_EMAIL,
-      METADATA_CONTACT_FIRSTNAME,
-      METADATA_CONTACT_LASTNAME,
-    ],
-    validationErrors: {
-      [METADATA_TITLE_PROPERTY]: null,
-      [METADATA_URL_PROPERTY]: null,
-      [METADATA_CONTACT_FIRSTNAME]: null,
-      [METADATA_CONTACT_LASTNAME]: null,
-      [METADATA_CONTACT_EMAIL]: null,
-    },
-    activeElements: {
-      [METADATA_CONTACT_FIRSTNAME]: false,
-      [METADATA_CONTACT_LASTNAME]: false,
-      [METADATA_CONTACT_EMAIL]: false,
-    },
-    METADATA_TITLE_PROPERTY,
-    METADATA_URL_PROPERTY,
-    METADATA_CONTACT_EMAIL,
-    METADATA_CONTACT_FIRSTNAME,
-    METADATA_CONTACT_LASTNAME,
-  }),
+
   components: {
-    MetadataHeader,
-    BaseUserPicker,
-    BaseStatusLabelView,
-    // ExpandableLayout,
+    EditReviewInfo,
+    EditPublicationStatus,
+    EditPublicationInfo,
+    EditOrganization,
+    NotFoundCard,
+    EditContactPerson,
   },
 };
 </script>
-
-<style scoped>
-.compact-form {
-  transform: scale(0.875);
-  transform-origin: left;
-}
-</style>

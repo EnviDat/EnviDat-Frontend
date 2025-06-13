@@ -51,6 +51,13 @@ export class ModelAdditionalInformation extends AbstractEditViewModel {
     return super.validate(newProps);
   }
 
+  getData() {
+    return {
+      dataLicenseId: this.dataLicenseId,
+      funders: this.funders,
+    };
+  }
+
   static mappingRules() {
     return [
       ['dataLicenseId', 'license_id'],

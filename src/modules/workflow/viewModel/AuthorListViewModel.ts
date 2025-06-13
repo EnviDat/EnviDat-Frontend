@@ -108,6 +108,12 @@ export class AuthorListViewModel extends AbstractEditViewModel {
     Object.assign(this, { authors: cleanAuthors });
   }
 
+  getData() {
+    return {
+      authors: this.authors,
+    };
+  }
+
   static mappingRules() {
     return [
       ['authors', 'author'],

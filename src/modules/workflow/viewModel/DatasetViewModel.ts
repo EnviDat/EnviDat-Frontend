@@ -19,12 +19,12 @@ import { ModelMetaDataHeader } from '@/modules/workflow/viewModel/ModelMetaDataH
 import { ModelAdditionalInformation } from '@/modules/workflow/viewModel/ModelAdditionalInformation.ts';
 import { ModelGeoInfo } from '@/modules/workflow/viewModel/ModelGeoInfo.ts';
 import { ModelRelatedResearch } from '@/modules/workflow/viewModel/ModelRelatedResearch.ts';
+import { ModelPublicationInformation } from '@/modules/workflow/viewModel/ModelPublicationInformation.ts';
 
 import { initCreationDataWithDefaults } from '@/factories/userCreationFactory';
 import { Dataset } from '@/modules/workflow/viewModel/Dataset.ts';
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 import { ResourceModel } from '@/modules/workflow/viewModel/ResourceModel.ts';
-
 
 export class DatasetViewModel {
   viewModelClasses = [
@@ -43,6 +43,7 @@ export class DatasetViewModel {
     ModelAdditionalInformation,
     ModelGeoInfo,
     ModelRelatedResearch,
+    ModelPublicationInformation,
   ];
 
   private viewModelInstances: Map<string, any> = new Map();
@@ -71,7 +72,7 @@ export class DatasetViewModel {
     }
   }
 
-/*
+  /*
   async loadViewModels(datasetId: string): Promise<void> {
     await this.datasetService.loadDataset(datasetId);
 
@@ -85,12 +86,14 @@ export class DatasetViewModel {
     return this.datasetService.dataset;
   }
 
-  async reloadDataset() : Promise<DatasetDTO> {
+  async reloadDataset(): Promise<DatasetDTO> {
     return this.loadDataset(this.datasetService.dataset.id);
   }
 
-  async createDataset(user: User, prefilledOrganizationId: string) : Promise<DatasetDTO> {
-
+  async createDataset(
+    user: User,
+    prefilledOrganizationId: string,
+  ): Promise<DatasetDTO> {
     const localId = `${user.id}_${prefilledOrganizationId}`;
     const predefinedData = {
       id: localId,
@@ -107,20 +110,22 @@ export class DatasetViewModel {
   }
 
   async createResourceOnExistingDataset(resourceModel: AbstractEditViewModel) {
-    
     resourceModel.loading = true;
     resourceModel.error = undefined;
 
     try {
-      const newResourceDTO = await this.datasetService.createResource(resourceModel.backendJSON as ResourceDTO);
+      const newResourceDTO = await this.datasetService.createResource(
+        resourceModel.backendJSON as ResourceDTO,
+      );
 
-      const resourceModelData = ResourceModel.getFormattedResource(newResourceDTO);
+      const resourceModelData =
+        ResourceModel.getFormattedResource(newResourceDTO);
 
       // don't use save as it would validate, directly overwrite the properties
       Object.assign(resourceModel, resourceModelData);
 
       resourceModel.savedSuccessful = true;
-    } catch(reason) {
+    } catch (reason) {
       resourceModel.savedSuccessful = false;
       resourceModel.error = reason;
     }
@@ -132,7 +137,10 @@ export class DatasetViewModel {
     try {
       newModel.loading = true;
 
-      await this.datasetService.patchDatasetChanges(this.dataset.id, newModel.backendJSON);
+      await this.datasetService.patchDatasetChanges(
+        this.dataset.id,
+        newModel.backendJSON,
+      );
 
       this.updateViewModels();
 

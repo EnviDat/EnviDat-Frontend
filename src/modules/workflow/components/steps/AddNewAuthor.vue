@@ -295,12 +295,7 @@ export default {
       default: '',
     },
   },
-  emits: [
-    'validate',
-    'save',
-    'removeAuthor',
-    'closeClicked',
-  ],
+  emits: ['validate', 'save', 'removeAuthor', 'closeClicked'],
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
@@ -338,9 +333,7 @@ export default {
     },
     emailField: {
       get() {
-        return this.previews.email !== null
-          ? this.previews.email
-          : this.email;
+        return this.previews.email !== null ? this.previews.email : this.email;
       },
     },
     identifierField: {

@@ -55,6 +55,14 @@ export class ModelMetaDataHeader extends AbstractEditViewModel {
     return super.validate(newProps);
   }
 
+  getData() {
+    return {
+      metadataTitle: this.metadataTitle,
+      metadataDescription: this.metadataDescription,
+      keywords: this.keywords,
+    };
+  }
+
   static mappingRules() {
     return [
       ['metadataTitle', 'title'],

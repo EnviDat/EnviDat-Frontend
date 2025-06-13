@@ -64,6 +64,14 @@ export class ModelRelatedResearch extends AbstractEditViewModel {
     ];
   }
 
+  getData() {
+    return {
+      relatedPublicationsText: this.relatedPublicationsText,
+      relatedDatasetsText: this.relatedDatasetsText,
+      customFields: this.customFields,
+    };
+  }
+
   validate(newProps?: Partial<ModelRelatedResearch>) {
     return super.validate(newProps);
   }
