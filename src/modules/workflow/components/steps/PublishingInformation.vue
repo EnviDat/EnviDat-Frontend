@@ -1,5 +1,9 @@
 <template>
-  <v-card id="MetadataCreationPublicationInfo" class="pt-8" elevation="0">
+  <v-card
+    id="MetadataCreationPublicationInfo"
+    class="pt-md-8 pt-0"
+    elevation="0"
+  >
     <v-container fluid class="pa-4">
       <!-- Title box -->
       <v-row class="mb-0">

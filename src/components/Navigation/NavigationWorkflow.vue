@@ -1,6 +1,6 @@
 <template>
   <v-card
-    class="pa-0 pt-8 pb-8 h-100 flex-column navigationWorkflow"
+    class="pa-0 pt-md-8 pt-0 pb-8 h-100 flex-column navigationWorkflow"
     :elevation="display.mdAndUp.value ? 2 : 0"
     rounded="xl"
   >

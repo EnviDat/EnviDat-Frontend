@@ -1,5 +1,5 @@
 <template>
-  <v-card id="AuthorsInformation" class="pt-8" elevation="0">
+  <v-card id="AuthorsInformation" class="pt-md-8 pt-0" elevation="0">
     <v-container fluid class="pa-4">
       <v-row class="mb-0">
         <v-col class="text-h5 font-weight-bold" cols="8">

@@ -1,5 +1,5 @@
 <template>
-  <v-container class="fill-height" fluid>
+  <v-container ref="appContainer" class="fill-height" fluid>
     <v-row
       class="fill-height"
       :class="{ 'overflow-x-scroll': display.smAndDown.value }"
@@ -12,11 +12,20 @@
         cols="12"
         md="8"
         xl="9"
-        class="workflow-content__wrapper"
+        class="workflow-content__wrapper position-relative"
         :class="{ loading: navigationStore.loading }"
       >
-        <!-- {{ vm?.loading }} -->
-        <!-- {{ vm?.error }} -->
+        <div>
+          <div
+            @click="scrollDown()"
+            class="scrollToSave d-none d-md-flex flex-column justify-center align-center pt-8"
+          >
+            <v-icon :size="32" class="mr-1" :color="'#000'">
+              {{ iconScroll }}
+            </v-icon>
+            <p class="text-caption scroll-text">Scroll to save</p>
+          </div>
+        </div>
         <div>
           <component
             :is="currentAsyncComponent"
@@ -26,7 +35,7 @@
             v-if="currentAsyncComponent"
           />
         </div>
-        <div class="pa-4 d-flex align-center justify-end">
+        <div ref="nextStepBlock" class="pa-4 d-flex align-center justify-end">
           <v-btn @click="nextStep">Next Step</v-btn>
         </div>
       </v-col>
@@ -64,9 +73,10 @@
 import { useDisplay } from 'vuetify';
 import { storeToRefs } from 'pinia';
 
-import { ref, watch } from 'vue';
+import { ref, watch, computed, nextTick } from 'vue';
 
 import NavigationWorkflow from '@/components/Navigation/NavigationWorkflow.vue';
+import { extractIcons } from '@/factories/iconFactory';
 
 import { useDatasetWorkflowStore } from '@/modules/user/store/datasetWorkflow';
 
@@ -86,6 +96,17 @@ watch(
   { immediate: true },
 );
 
+const iconScroll = computed(() => extractIcons('scroll'));
+
+const nextStepBlock = ref(null);
+
+const scrollDown = () => {
+  nextTick(() => {
+    const target = nextStepBlock.value?.$el || nextStepBlock.value;
+    target?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+};
+
 const save = (freshData) => {
   vm.value.save(freshData);
 };
@@ -98,7 +119,6 @@ const { currentStepObject, currentAsyncComponent } =
   storeToRefs(navigationStore);
 
 const nextStep = () => {
-  console.log(vm.value);
   const dataToValidate = vm.value?.getData();
   navigationStore.validateStepAction(
     navigationStore.currentStep,
@@ -110,5 +130,30 @@ const nextStep = () => {
 <style lang="scss">
 .loading {
   opacity: 0.2;
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+.scrollToSave {
+  position: absolute;
+  right: 38px;
+  z-index: 2;
+  opacity: 1;
+  transition: 0.1s linear;
+  animation: bounce 1s infinite ease-in-out;
+  &:hover {
+    cursor: pointer;
+  }
+  // .scroll-text {
+  //   position: relative;
+  //   transform: translateX(-50%);
+  // }
 }
 </style>

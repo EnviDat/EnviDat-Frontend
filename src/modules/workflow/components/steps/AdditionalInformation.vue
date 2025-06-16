@@ -1,5 +1,5 @@
 <template>
-  <v-card id="EditAdditionalInformation" class="pt-8" elevation="0">
+  <v-card id="EditAdditionalInformation" class="pt-md-8 pt-0-8" elevation="0">
     <v-container fluid class="pa-4">
       <!-- Title box -->
       <v-row class="mb-0">
