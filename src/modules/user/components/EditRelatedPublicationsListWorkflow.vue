@@ -1,10 +1,20 @@
 <template>
-  <v-card id="EditRelatedPublicationsList" class="pa-0" :loading="loadingColor">
-    <v-container fluid class="pa-4">
-      <v-row>
-        <v-col cols="12" class="text-h5">
-          {{ EDIT_METADATA_RELATEDPUBLICATIONS_TITLE }}
+  <v-card
+    id="EditRelatedPublicationsList"
+    class="pa-0"
+    elevation="0"
+    :loading="loadingColor"
+  >
+    <v-container fluid class="pa-0">
+      <v-row class="mb-5 mt-5">
+        <v-col>
+          <div class="font-weight-bold">
+            {{ EDIT_METADATA_RELATEDPUBLICATIONS_TITLE }}
+          </div>
+          <div class="text-caption" v-html="labels.cardInstructions"></div>
         </v-col>
+      </v-row>
+      <v-row>
         <v-col v-if="message">
           <BaseStatusLabelView
             statusIcon="check"
@@ -22,13 +32,6 @@
           />
         </v-col>
       </v-row>
-
-      <v-row>
-        <v-col>
-          <div class="text-subtitle-1" v-html="labels.cardInstructions"></div>
-        </v-col>
-      </v-row>
-
       <v-row>
         <v-col>
           <EditAddPublicationWorkflow
@@ -44,9 +47,9 @@
         </v-col>
       </v-row>
 
-      <v-row no-gutters class="pt-4">
+      <v-row class="mt-5">
         <v-col>
-          <div class="text-subtitle-1" v-html="labels.preview"></div>
+          <div class="font-weight-bold" v-html="labels.preview"></div>
         </v-col>
       </v-row>
 

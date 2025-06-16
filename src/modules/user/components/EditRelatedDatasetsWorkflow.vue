@@ -1,11 +1,23 @@
 <template>
-  <v-card id="EditRelatedDatasets" class="pa-0" :loading="loadingColor">
-    <v-container fluid class="pa-4 fill-height">
+  <v-card
+    id="EditRelatedDatasets"
+    class="pa-0"
+    elevation="0"
+    :loading="loadingColor"
+  >
+    <v-container fluid class="pa-0 fill-height">
       <v-row>
-        <v-col cols="6" class="text-h5">
-          {{ EDIT_METADATA_RELATED_DATASETS_TITLE }}
+        <v-col>
+          <div class="font-weight-bold">
+            {{ EDIT_METADATA_RELATED_DATASETS_TITLE }}
+          </div>
+          <div class="text-caption">
+            {{ labels.cardInstructions }}
+          </div>
         </v-col>
+      </v-row>
 
+      <v-row>
         <v-col v-if="message">
           <BaseStatusLabelView
             status="check"
@@ -22,15 +34,7 @@
             :expandedText="errorDetails"
           />
         </v-col>
-      </v-row>
 
-      <v-row>
-        <v-col>
-          <div class="text-subtitle-1" v-html="labels.cardInstructions"></div>
-        </v-col>
-      </v-row>
-
-      <v-row>
         <v-col>
           <GenericTextareaPreviewLayout
             v-bind="genericTextAreaObject"
@@ -40,7 +44,7 @@
             @inputedText="catchInputedText($event)"
             @changedText="catchChangedText($event)"
           >
-            <MetadataRelatedDatasets v-bind="datasetObject" />
+            <!-- <MetadataRelatedDatasets v-bind="datasetObject" /> -->
           </GenericTextareaPreviewLayout>
         </v-col>
       </v-row>
@@ -73,7 +77,7 @@ import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.v
 import { EDIT_METADATA_RELATED_DATASETS_TITLE } from '@/factories/metadataConsts';
 
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout.vue';
-import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue';
+// import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 
@@ -193,12 +197,12 @@ export default {
       placeholder:
         'Example entries: \n * dataset-for-ogrs-2018-publication\n' +
         ' * https://www.envidat.ch/#/metadata/dataset-for-ogrs-2018-publication ',
-      subtitlePreview: 'Related Datasets Preview',
+      // subtitlePreview: 'Related Datasets Preview',
     },
     newDatasetInfo: {},
   }),
   components: {
-    MetadataRelatedDatasets,
+    // MetadataRelatedDatasets,
     GenericTextareaPreviewLayout,
     BaseStatusLabelView,
   },

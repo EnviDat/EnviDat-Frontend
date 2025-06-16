@@ -1,16 +1,28 @@
 <template>
-  <v-card id="MetadataCreationPublicationInfo" class="pa-0" elevation="0">
+  <v-card id="MetadataCreationPublicationInfo" class="pt-8" elevation="0">
     <v-container fluid class="pa-4">
+      <!-- Title box -->
+      <v-row class="mb-0">
+        <v-col class="text-h5 font-weight-bold" cols="8">
+          {{ labels.title }}
+        </v-col>
+        <v-col cols="12" class="text-body-1">
+          {{ labels.instructions }}
+        </v-col>
+      </v-row>
+
+      <!-- Info Banner -->
       <v-row>
-        <v-row class="mt-5">
-          <v-col class="text-h5" cols="8">
-            {{ labels.title }}
-          </v-col>
-          <v-col cols="12" class="text-body-1">
-            {{ labels.instructions }}
-          </v-col>
-        </v-row>
-        <v-col cols="6">
+        <v-col class="mb-5 pt-0 pb-0">
+          <v-alert type="info" closable :icon="false" class="rounded-lg">
+            <v-alert-title>Information</v-alert-title>
+            Lorem Ipsum
+          </v-alert>
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col cols="12" xl="6">
           <!-- prettier-ignore -->
           <v-row>
 
@@ -23,7 +35,7 @@
         </v-row>
         </v-col>
 
-        <v-col cols="6">
+        <v-col cols="12" xl="6">
           <v-row>
             <v-col cols="12">
               <EditContactPerson
@@ -178,6 +190,18 @@ export default {
       type: Array,
       default: () => [],
     },
+    contactEmail: {
+      type: String,
+      default: '',
+    },
+    contactFirstName: {
+      type: String,
+      default: '',
+    },
+    contactLastName: {
+      type: String,
+      default: '',
+    },
     validationErrors: { type: Object, default: () => ({}) },
   },
   computed: {
@@ -188,12 +212,12 @@ export default {
       const localAuthors = [...this.existingAuthorsWrap];
       return getArrayOfFullNames(localAuthors);
     },
+
     preselectAuthorNames() {
       const author = getAuthorByEmail(
-        this.contactEmailField,
-        this.existingAuthors,
+        this.contactEmail,
+        this.existingAuthorsWrap,
       );
-
       if (author) {
         const fullName = getAuthorName(author);
         return fullName ? [fullName] : [];
@@ -216,12 +240,12 @@ export default {
         : this.currentStep.genericProps;
 
       return {
-        contactEmail: headerObj?.contactEmail || '',
-        contactFirstName: headerObj?.contactFirstName,
-        contactLastName: headerObj?.contactLastName,
+        contactEmail: this.contactEmail || '',
+        contactFirstName: this.contactFirstName,
+        contactLastName: this.contactLastName,
         fullNameUsers: this.fullNameUsers || [],
         authors: this.existingAuthorsWrap,
-        preselectAuthorNames: headerObj?.preselectAuthorNames || [],
+        preselectAuthorNames: this.preselectAuthorNames || [],
         validationErrors: this.validationErrors || {},
         isContactPropertyReadOnly: () => false,
         contactPropertyHint: () => '',

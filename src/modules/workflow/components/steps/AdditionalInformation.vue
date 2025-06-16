@@ -1,10 +1,27 @@
 <template>
-  <v-card id="EditAdditionalInformation" class="pa-0" elevation="0">
+  <v-card id="EditAdditionalInformation" class="pt-8" elevation="0">
     <v-container fluid class="pa-4">
-      <v-row>
-        <v-col cols="8" class="text-h5">{{ labels.title }}</v-col>
+      <!-- Title box -->
+      <v-row class="mb-0">
+        <v-col class="text-h5 font-weight-bold" cols="8">
+          {{ labels.title }}
+        </v-col>
+        <v-col cols="12" class="text-body-1">
+          {{ labels.instructions }}
+        </v-col>
+      </v-row>
 
-        <!-- <v-col v-if="message" cols="4" class="pl-16">
+      <!-- Info Banner -->
+      <v-row>
+        <v-col class="mb-5 pt-0 pb-0">
+          <v-alert type="info" closable :icon="false" class="rounded-lg">
+            <v-alert-title>Information</v-alert-title>
+            Lorem Ipsum
+          </v-alert>
+        </v-col>
+      </v-row>
+
+      <!-- <v-col v-if="message" cols="4" class="pl-16">
           <BaseStatusLabelView
             status="check"
             statusColor="success"
@@ -20,24 +37,13 @@
             :expandedText="errorDetails"
           />
         </v-col> -->
-      </v-row>
-
-      <v-row no-gutters class="pt-4">
-        <v-col cols="12" class="text-body-1">{{ labels.instructions }}</v-col>
-      </v-row>
-
-      <v-row>
+      <v-row class="mb-5">
         <v-col>
-          <v-alert type="info" closable :icon="false" class="rounded-lg">
-            <v-alert-title>Information</v-alert-title>
-            Lorem Ipsum
-          </v-alert>
+          <div class="font-weight-bold">{{ labels.cardTitle }}</div>
+          <div class="text-caption">
+            {{ labels.fundingInformation }}
+          </div>
         </v-col>
-      </v-row>
-
-      <v-row>
-        <v-col cols="12" class="text-h6">{{ labels.cardTitle }}</v-col>
-        <v-col cols="12">{{ labels.fundingInformation }}</v-col>
       </v-row>
 
       <v-row
@@ -47,7 +53,7 @@
         no-gutters
       >
         <v-col cols="12">
-          <v-row class="mt-5">
+          <v-row>
             {{ INSTITUTION }}
             <v-col cols="4" class="pr-2">
               <v-text-field
@@ -115,11 +121,14 @@
 
       <v-row>
         <v-col cols="12">
-          <v-row class="mt-5">
-            <v-col cols="12" class="text-h6">{{
-              labelsLicense.cardTitle
-            }}</v-col>
-            <v-col cols="12" v-html="labelsLicense.instructionsLicense" />
+          <v-row class="mb-5">
+            <v-col>
+              <div class="font-weight-bold">{{ labelsLicense.cardTitle }}</div>
+              <div
+                class="text-caption"
+                v-html="labelsLicense.instructionsLicense"
+              ></div>
+            </v-col>
           </v-row>
 
           <v-row>
@@ -300,8 +309,8 @@ export default {
       newDatasetInfo: {},
 
       labels: {
-        title: 'Research Header Information',
-        instructions: 'Header & funding information.',
+        title: 'Additional Information',
+        instructions: 'License and funding information',
         cardTitle: 'Funding Information',
         fundingInformation:
           'Provide information about who funded the research efforts.',

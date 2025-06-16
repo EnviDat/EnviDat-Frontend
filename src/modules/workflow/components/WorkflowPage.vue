@@ -98,6 +98,7 @@ const { currentStepObject, currentAsyncComponent } =
   storeToRefs(navigationStore);
 
 const nextStep = () => {
+  console.log(vm.value);
   const dataToValidate = vm.value?.getData();
   navigationStore.validateStepAction(
     navigationStore.currentStep,

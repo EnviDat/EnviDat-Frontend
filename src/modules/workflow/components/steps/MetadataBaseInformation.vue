@@ -1,20 +1,32 @@
 <template>
-  <v-card id="EditMetadataHeader" class="pa-0" elevation="0">
+  <v-card id="EditMetadataHeader" class="pt-8" elevation="0">
     <v-container fluid class="pa-4">
-      <v-row>
-        <v-col cols="12">
-          <MetadataHeader v-bind="metadataPreviewEntry" />
+      <!-- Title box -->
+      <v-row class="mb-0">
+        <v-col class="text-h5 font-weight-bold" cols="8">
+          {{ labels.stepTitle }}
         </v-col>
-        <v-row class="mt-5">
-          <v-col class="text-h5" cols="8">
-            {{ labels.title }}
-          </v-col>
-          <v-col cols="12" class="text-body-1">
-            {{ labels.instructions }}
-          </v-col>
-        </v-row>
+        <v-col cols="12" class="text-body-1">
+          {{ labels.instructions }}
+        </v-col>
+      </v-row>
 
-        <!-- <v-col v-if="message" cols="4" class="pl-16">
+      <!-- Info Banner -->
+      <v-row>
+        <v-col class="mb-5 pt-0 pb-0">
+          <v-alert type="info" closable :icon="false" class="rounded-lg">
+            <v-alert-title>Information</v-alert-title>
+            Lorem Ipsum
+          </v-alert>
+        </v-col>
+      </v-row>
+
+      <!-- Preview -->
+      <v-col cols="12" class="pa-0 mb-5 mt-5">
+        <MetadataHeader v-bind="metadataPreviewEntry" />
+      </v-col>
+
+      <!-- <v-col v-if="message" cols="4" class="pl-16">
           <BaseStatusLabelView
             status="check"
             statusColor="success"
@@ -30,22 +42,16 @@
             :expandedText="errorDetails"
           />
         </v-col> -->
-      </v-row>
 
       <v-row>
-        <v-col>
-          <v-alert type="info" closable :icon="false" class="rounded-lg">
-            <v-alert-title>Information</v-alert-title>
-            Lorem Ipsum
-          </v-alert>
-        </v-col>
-      </v-row>
-
-      <v-row>
-        <v-col cols="12" md="6">
+        <!-- title -->
+        <v-col cols="12" xl="6" class="mb-5 mt-5">
           <v-row class="mb-5">
-            <v-col class="text-body-1">
-              <div>{{ labels.instructionsTitle }}</div>
+            <v-col>
+              <div class="font-weight-bold">{{ labels.title }}</div>
+              <div class="text-caption">
+                {{ labels.instructionsTitle }}
+              </div>
             </v-col>
           </v-row>
           <v-text-field
@@ -66,10 +72,15 @@
           />
         </v-col>
 
-        <v-col cols="12" md="6">
+        <!-- Keywords -->
+
+        <v-col cols="12" xl="6" class="mb-0">
           <v-row class="mb-5">
-            <v-col class="text-body-1">
-              <div>{{ labelsKeywords.cardInstructions1 }}</div>
+            <v-col>
+              <div class="font-weight-bold">{{ labelsKeywords.title }}</div>
+              <div class="text-caption">
+                {{ labelsKeywords.cardInstructions1 }}
+              </div>
             </v-col>
           </v-row>
           <v-autocomplete
@@ -121,13 +132,17 @@
             </template>
           </v-autocomplete>
         </v-col>
-      </v-row>
-
-      <v-row>
-        <v-col cols="12">
+        <!-- description -->
+        <v-col cols="12" class="mb-5">
           <v-row class="mb-5">
-            <v-col class="text-body-1">
-              <div v-html="labelsDescription.descriptionInstructions"></div>
+            <v-col>
+              <div class="font-weight-bold">
+                {{ labelsDescription.title }}
+              </div>
+              <div
+                v-html="labelsDescription.descriptionInstructions"
+                class="text-caption"
+              ></div>
             </v-col>
           </v-row>
           <GenericTextareaPreviewLayout
@@ -241,9 +256,9 @@ export default {
     },
 
     metadataTitleField() {
-      return this.newDatasetInfo.metadataTitle !== undefined ?
-        this.newDatasetInfo.metadataTitle :
-        this.metadataTitle;
+      return this.newDatasetInfo.metadataTitle !== undefined
+        ? this.newDatasetInfo.metadataTitle
+        : this.metadataTitle;
     },
     metadataDescriptionField() {
       return this.metadataDescription;
@@ -460,18 +475,21 @@ export default {
     },
     previewKeywords: [],
     labelsKeywords: {
-      keywordsLabel: 'Keywords',
+      title: 'Keywords',
       placeholder: 'Pick keywords from the list or type in a new keyword',
       cardInstructions1:
         'Enter at least 5 keywords. Click a keyword to select it, or type to search or create a new one.',
     },
     labelsDescription: {
+      title: 'Description',
       descriptionInstructions:
         'Enter a description which helps other researchers to understand your data. Use <a href="https://www.markdownguide.org/cheat-sheet" target="_blank">markdown </a> to format the description and make it easier to read.',
     },
     labels: {
-      title: 'Research Header Information',
+      stepTitle: 'Research Header Information',
+      title: 'Title',
       labelTitle: 'Research Data Title',
+
       instructions:
         'The header is part of the main metadata information.' +
         'Together with the other information in the "Metadata" step, it represents the core information for your research dataset.',

@@ -47,12 +47,29 @@ export class ModelRelatedResearch extends AbstractEditViewModel {
           'Write at least 10 characters to describe the related datasets.',
         ),
 
-      customFields: yup.array().of(
-        yup.object({
-          fieldName: yup.string().required().min(3),
-          content: yup.string(),
-        }),
-      ),
+      customFields: yup
+        .array()
+        .default(() => [])
+        .of(
+          yup.object({
+            fieldName: yup
+              .string()
+              .trim()
+              .when('content', {
+                is: (val: string | undefined) => val && val.trim() !== '',
+                then: (schema) =>
+                  schema
+                    .required('Field name is required')
+                    .min(3, 'Field name must be at least 3 characters'),
+                otherwise: (schema) => schema.notRequired().nullable(),
+              }),
+            content: yup
+              .string()
+              .nullable()
+              .transform(convertEmptyStringToNull),
+          }),
+        )
+        .notRequired(),
     });
   }
 

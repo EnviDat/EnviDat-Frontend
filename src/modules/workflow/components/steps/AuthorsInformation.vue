@@ -1,49 +1,67 @@
 <template>
-  <v-container fluid class="pa-0" id="AuthorsInformation">
-    <v-row>
-      <v-col cols="6">
-        <v-row>
-          <v-col v-show="!selectedAuthor" cols="12">
-            <AddExistingAuthor
-              v-bind="authorPickingGenericProps"
-              @save="saveAuthorsList"
-            />
-          </v-col>
+  <v-card id="AuthorsInformation" class="pt-8" elevation="0">
+    <v-container fluid class="pa-4">
+      <v-row class="mb-0">
+        <v-col class="text-h5 font-weight-bold" cols="8">
+          {{ labels.title }}
+        </v-col>
+        <v-col cols="12" class="text-body-1"> {{ labels.instructions }} </v-col>
+      </v-row>
 
-          <v-col v-if="isReadOnly(METADATA_AUTHORS_PROPERTY)" cols="12">
-            <v-card>
-              <v-card-title>
-                {{ EDIT_METADATA_ADD_AUTHOR_TITLE }}
-              </v-card-title>
-              <v-card-text>
-                Adding a new Author is readonly, because:
-                {{ readOnlyHint(METADATA_AUTHORS_PROPERTY) }}
-              </v-card-text>
-            </v-card>
-          </v-col>
+      <!-- Info Banner -->
+      <v-row>
+        <v-col class="mb-5 pt-0 pb-0">
+          <v-alert type="info" closable :icon="false" class="rounded-lg">
+            <v-alert-title>Information</v-alert-title>
+            Lorem Ipsum
+          </v-alert>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12" xl="6" class="mb-5">
+          <v-row>
+            <v-col v-show="!selectedAuthor" cols="12">
+              <AddExistingAuthor
+                v-bind="authorPickingGenericProps"
+                @save="saveAuthorsList"
+              />
+            </v-col>
 
-          <v-col v-else cols="12">
-            <AddNewAuthor
-              v-bind="editAddAuthorObject"
-              @removeAuthor="catchRemoveAuthor"
-              @closeClicked="catchEditAuthorClose"
-              @validate="validateAuthor"
-              @save="saveAuthor"
-            />
-          </v-col>
-        </v-row>
-      </v-col>
+            <v-col v-if="isReadOnly(METADATA_AUTHORS_PROPERTY)" cols="12">
+              <v-card>
+                <v-card-title>
+                  {{ EDIT_METADATA_ADD_AUTHOR_TITLE }}
+                </v-card-title>
+                <v-card-text>
+                  Adding a new Author is readonly, because:
+                  {{ readOnlyHint(METADATA_AUTHORS_PROPERTY) }}
+                </v-card-text>
+              </v-card>
+            </v-col>
 
-      <v-col cols="6">
-        <MetadataAuthorsEditing
-          v-bind="authorListingGenericProps"
-          @editAuthorClick="catchEditAuthorClick"
-          @searchAuthorClick="catchSearchAuthorClick"
-          @save="saveAuthorsList"
-        />
-      </v-col>
-    </v-row>
-  </v-container>
+            <v-col v-else cols="12">
+              <AddNewAuthor
+                v-bind="editAddAuthorObject"
+                @removeAuthor="catchRemoveAuthor"
+                @closeClicked="catchEditAuthorClose"
+                @validate="validateAuthor"
+                @save="saveAuthor"
+              />
+            </v-col>
+          </v-row>
+        </v-col>
+
+        <v-col cols="12" xl="6">
+          <MetadataAuthorsEditing
+            v-bind="authorListingGenericProps"
+            @editAuthorClick="catchEditAuthorClick"
+            @searchAuthorClick="catchSearchAuthorClick"
+            @save="saveAuthorsList"
+          />
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-card>
 </template>
 
 <script lang="ts">
@@ -366,6 +384,10 @@ export default {
     authorViewModel: new AuthorViewModel(),
     METADATA_AUTHORS_PROPERTY,
     EDIT_METADATA_ADD_AUTHOR_TITLE,
+    labels: {
+      title: 'Authors Information',
+      instructions: 'Please provide the authors of the dataset.',
+    },
   }),
 };
 </script>

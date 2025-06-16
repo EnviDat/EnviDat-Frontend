@@ -1,7 +1,29 @@
 <template>
-  <v-card id="EditDataGeo" class="pa-0" elevation="0" :loading="loadingColor">
+  <v-card id="EditDataGeo" class="pt-8" elevation="0" :loading="loadingColor">
     <v-container fluid class="pa-4">
-      <v-col cols="12" class="editDataGeo customPadding">
+      <!-- Title box -->
+      <v-row class="mb-0">
+        <v-col
+          class="text-h5 font-weight-bold"
+          cols="8"
+          v-html="labels.cardTitle"
+        >
+        </v-col>
+        <v-col cols="12" class="text-body-1" v-html="labels.cardInstructions">
+        </v-col>
+      </v-row>
+
+      <!-- Info Banner -->
+      <v-row>
+        <v-col class="mb-5 pt-0 pb-0">
+          <v-alert type="info" closable :icon="false" class="rounded-lg">
+            <v-alert-title>Information</v-alert-title>
+            Lorem Ipsum
+          </v-alert>
+        </v-col>
+      </v-row>
+
+      <v-col cols="12" class="editDataGeo customPadding mt-5">
         <MetadataGeo
           :elevation="0"
           :showTitle="false"
@@ -18,47 +40,21 @@
         </v-col>
       </v-col>
 
-      <v-row class="mt-5">
-        <v-col cols="12" v-html="labels.cardTitle" class="text-h5" />
-        <v-col v-html="labels.cardInstructions" class="text-subtitle-1" />
-        <!-- <v-col v-if="message">
-          <BaseStatusLabelView
-            status="check"
-            statusColor="success"
-            :statusText="message"
-            :expandedText="messageDetails"
-          />
-        </v-col>
-        <v-col v-if="error">
-          <BaseStatusLabelView
-            status="error"
-            statusColor="error"
-            :statusText="error"
-            :expandedText="errorDetails"
-          />
-        </v-col> -->
-      </v-row>
-
-      <v-row>
-        <v-col>
-          <v-alert type="info" closable :icon="false" class="rounded-lg">
-            <v-alert-title>Information</v-alert-title>
-            Lorem Ipsum
-          </v-alert>
-        </v-col>
-      </v-row>
-
-      <v-row v-show="isDefaultLocation">
+      <v-row v-show="isDefaultLocation" class="mt-5">
         <v-col>
           <v-alert type="warning">{{ labels.defaultInstructions }}</v-alert>
         </v-col>
       </v-row>
 
       <v-row>
-        <v-col cols="12" md="6">
+        <v-col cols="12" xl="6">
           <v-row>
-            <v-col cols="12" class="text-h6">Editor</v-col>
-            <v-col cols="12">{{ labels.editorInstructions }}</v-col>
+            <v-col>
+              <div class="font-weight-bold">Editor</div>
+              <div class="text-caption">
+                {{ labels.editorInstructions }}
+              </div>
+            </v-col>
 
             <v-col
               cols="12"
@@ -130,10 +126,7 @@
           </v-row>
         </v-col>
 
-        <v-col cols="12" md="6">
-          <v-col cols="12" class="text-h6"
-            >Time information about the research data</v-col
-          >
+        <v-col cols="12" xl="6">
           <v-row
             v-for="(item, index) in datesField"
             :key="index"
@@ -141,9 +134,9 @@
             no-gutters
             dense
           >
-            <v-col cols="11" class="pt-2 px-sm-2 flex-grow-0 mb-3">
+            <v-col cols="11" class="flex-grow-0 mb-3">
               <div class="text-body-1 font-weight-bold text-capitalize">
-                {{ item.dateType }}
+                Time Information - {{ item.dateType }}
               </div>
               <div class="text-body-1 text-caption">
                 {{ item.dateExplanation }}.
@@ -154,7 +147,7 @@
                 }}</b>
               </div>
             </v-col>
-            <v-col cols="11">
+            <v-col cols="12">
               <BaseStartEndDate
                 :startDate="item.dateStart"
                 :startDateLabel="`${item.dateType} start date`"
@@ -267,7 +260,7 @@ export default {
       endDateProperty: 'dateEnd',
       previewDates: [],
       labels: {
-        cardTitle: 'Geospatial Information about the research data',
+        cardTitle: 'Geospatial Information',
         cardInstructions:
           'Define the location(s) where the research data was collected or refers to. Use the map tools or upload a GeoJSON.',
         defaultInstructions:
