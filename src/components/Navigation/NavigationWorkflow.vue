@@ -1,6 +1,6 @@
 <template>
   <v-card
-    class="pa-0 pt-md-8 pt-0 pb-8 h-100 flex-column navigationWorkflow"
+    class="pa-0 pt-md-8 pt-0 pb-8 flex-column navigationWorkflow"
     :elevation="display.lgAndUp.value ? 2 : 0"
     rounded="xl"
   >
@@ -228,8 +228,10 @@ const initDriver = () => {
   @media screen and (min-width: 1280px) {
     // 960 is md for vueitfy
     background-color: #f8f8f8;
+    position: sticky;
+    top: 25px;
   }
-  height: 100%;
+
   position: relative;
   &__list {
     display: flex;
