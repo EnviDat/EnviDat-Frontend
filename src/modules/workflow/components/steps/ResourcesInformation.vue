@@ -433,7 +433,7 @@ export default {
       eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
       this.unselectCurrentResource();
 
-      this.markResourceSelected(this.resources, resource.id, !rsource.isSelected);
+      this.markResourceSelected(this.resources, resource.id, !resource.isSelected);
       this.resourceViewModel.save(resource);
     },
     showFullScreenImage(url) {
