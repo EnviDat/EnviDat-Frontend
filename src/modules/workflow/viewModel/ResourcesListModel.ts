@@ -10,18 +10,20 @@ import {
   convertJSON,
   convertToBackendJSONWithRules,
 } from '@/factories/mappingFactory';
-import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
-import { createResources } from '@/factories/metaDataFactory.ts';
+import {
+  enhanceElementsWithStrategyEvents,
+  enhanceResourcesWithMetadataExtras,
+  SELECT_EDITING_RESOURCE_PROPERTY,
+} from '@/factories/strategyFactory';
+import { createResources } from '@/factories/resourceHelpers';
 
 export class ResourcesListModel extends AbstractEditViewModel {
   declare resources: Resource[];
 
   declare datasetId: string;
 
-  /*
   declare signedInUser: User;
   declare signedInUserOrganizationIds: string[];
-*/
 
   declare validationErrors: {
     resources: string;
@@ -39,9 +41,27 @@ export class ResourcesListModel extends AbstractEditViewModel {
     });
   }
 
-  static getFormattedResources(rawResources: ResourceDTO[]): Resource[] {
-    return rawResources.map((rawResource) =>
-      ResourceModel.getFormattedResource(rawResource),
+  static getFormattedResources(
+    rawResources: ResourceDTO[],
+    datasetName: string,
+    organizationID: string,
+    signedInUserName: string,
+    signedInUserOrganizationIds: string,
+    numberOfDownload?: number,
+  ): Resource[] {
+
+    return rawResources?.map((rawResource: ResourceDTO) => {
+        const res = ResourceModel.getFormattedResource(
+          rawResource,
+          datasetName,
+          organizationID,
+          signedInUserName,
+          signedInUserOrganizationIds,
+          numberOfDownload,
+        );
+
+        return res;
+      },
     );
   }
 
@@ -62,21 +82,34 @@ export class ResourcesListModel extends AbstractEditViewModel {
    * @param dataset
    */
   updateModel(dataset: DatasetDTO) {
+/*
     const resourceData = createResources(
       dataset,
-      /*
       this.signedInUser,
       this.signedInUserOrganizationIds,
+    );
 */
+
+    const cleanResources = ResourcesListModel.getFormattedResources(
+      dataset.resources,
+      dataset.name,
+      dataset.organization.id,
+      this.signedInUser?.name,
+      this.signedInUserOrganizationIds,
     );
 
-    /*
-    const cleanResources = ResourcesListModel.getFormattedResources(dataset.resources);
-*/
+    enhanceElementsWithStrategyEvents(
+      cleanResources,
+      SELECT_EDITING_RESOURCE_PROPERTY,
+      true,
+    );
 
-    enhanceElementsWithStrategyEvents(resourceData.resources, undefined, true);
+    enhanceResourcesWithMetadataExtras(
+      dataset.extras,
+      cleanResources,
+    );
 
-    Object.assign(this, { resources: resourceData.resources });
+    Object.assign(this, { resources: cleanResources });
   }
 
   validate(newProps?: Partial<ResourcesListModel>): boolean {

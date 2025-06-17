@@ -4,6 +4,8 @@ import { Resource } from '@/types/modelTypes';
 import { convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
 import { ResourceDTO } from '@/types/dataTransferObjectsTypes';
 import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.ts';
+import { getResourceName, isResourceProtectedForUser, mergeResourceSizeForFrontend } from '@/factories/resourceHelpers';
+import { formatDate } from '@/factories/dateFactory';
 
 
 const convertEmptyStringToNull = (value: string, originalValue: string) =>
@@ -35,6 +37,7 @@ export class ResourceModel extends AbstractEditViewModel implements Resource {
   declare resourceSize: string;
   declare resourceType: string;
   declare restricted: string;
+  declare restrictedUrl: string;
 
   declare size: number;
   declare sizeFormat: string;
@@ -43,9 +46,21 @@ export class ResourceModel extends AbstractEditViewModel implements Resource {
   declare url: string;
   declare urlType: string;
 
-  declare deprecated: boolean;
-  declare isSelected: boolean;
+  declare numberOfDownload: number;
 
+  declare deprecated: boolean;
+  declare isProtected: boolean;
+  declare isSelected: boolean;
+  declare previewUrl: string;
+
+  declare chartData: any[];
+  declare chartDataLoading: boolean;
+  declare chartLabels: string[];
+
+  declare openEvent: string;
+  declare openProperty: string;
+  declare openButtonIcon: string;
+  declare openButtonTooltip: string;
 
   declare validationErrors: {
     name: string,
@@ -156,8 +171,62 @@ export class ResourceModel extends AbstractEditViewModel implements Resource {
       });
   }
 
-  static getFormattedResource(rawResource: ResourceDTO) : Resource {
-    return convertToFrontendJSONWithRules(ResourceModel.mappingRules(), rawResource) as Resource;
+  static getFormattedResource(
+    rawResource: ResourceDTO,
+    datasetName: string,
+    organizationID: string,
+    signedInUserName: string,
+    signedInUserOrganizationIds: string,
+    numberOfDownload?: number,
+  ) : Resource {
+
+    const frontendResource = convertToFrontendJSONWithRules(ResourceModel.mappingRules(), rawResource) as Resource;
+
+/*
+    const isProtected = isResourceProtectedForUser(
+      rawResource,
+      organizationID,
+      signedInUserName,
+      signedInUserOrganizationIds,
+    );
+*/
+
+    const fileFormat = rawResource.format ? rawResource.format : '';
+    const format = fileFormat.replace('.', '').toLowerCase();
+
+    const created = formatDate(frontendResource.created);
+    const lastModified = formatDate(frontendResource.lastModified);
+    const metadataModified = formatDate(frontendResource.metadataModified);
+
+    const backendDomain = process.env.VITE_API_ROOT;
+
+    let mergedSize = {};
+    try {
+      mergedSize = mergeResourceSizeForFrontend(frontendResource);
+    } catch (e) {
+      console.error('mergeResourceSizeForFrontend failed:');
+      console.error(e);
+      // TODO Error tracking
+    }
+
+    return {
+      ...frontendResource,
+      name: getResourceName(rawResource),
+      restrictedUrl: `${backendDomain}/dataset/${datasetName}/restricted_request_access/${rawResource.id}`,
+      format,
+      created,
+      lastModified,
+      metadataModified,
+      ...mergedSize,
+      deprecated: false,
+      numberOfDownload: numberOfDownload || 0,
+      isProtected: false,
+      previewUrl: undefined,
+      chartLabels: undefined,
+      chartData: undefined,
+      chartDataLoading: false,
+    };
+
   }
 
   /**
@@ -185,7 +254,7 @@ export class ResourceModel extends AbstractEditViewModel implements Resource {
       ['metadataModified','metadata_modified'],
       ['multipartName','multipart_name'],
       ['name','name'],
-      // ['packageId','package_id'], // keep it for compatiblity reasons?
+      // ['packageId','package_id'], // keep it for compatibility reasons?
       ['position','position'],
       ['restricted','restricted'],
       ['resourceSize','resource_size'],

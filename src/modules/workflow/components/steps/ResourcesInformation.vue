@@ -3,29 +3,27 @@
     <v-row>
       <v-col cols="12" lg="6">
         <v-row v-if="selectedResource">
-          <v-col v-if="resourceEditingActive" >
+          <v-col v-if="resourceEditingActive">
             <!-- prettier-ignore -->
             <ResourceEditing v-bind="editResourceObject"
                           @closeClicked="catchEditResourceClose"
-                          @save="catchSaveEditResource"
+                          @save="saveResource"
                           @previewImageClicked="showFullScreenImage"
             />
           </v-col>
-
         </v-row>
 
         <v-row v-if="!selectedResource">
           <v-col cols="12">
             <EditDropResourceFiles v-bind="editDropResourceObject" />
-<!--
+            <!--
             No need to listen to events from the component, events are emitted from uppy directly
 -->
           </v-col>
 
           <v-col cols="12">
-            <EditResourcePasteUrl @createUrlResources="createResourceFromUrl"/>
+            <EditResourcePasteUrl @createUrlResources="createResourceFromUrl" />
           </v-col>
-
         </v-row>
       </v-col>
 
@@ -36,7 +34,6 @@
         />
       </v-col>
     </v-row>
-
   </v-container>
 </template>
 
@@ -52,19 +49,18 @@
  */
 
 import { mapGetters, mapState } from 'vuex';
-import {defineAsyncComponent} from 'vue';
+import { defineAsyncComponent } from 'vue';
 
 import {
   eventBus,
-  CANCEL_EDITING_RESOURCE,
   OPEN_TEXT_PREVIEW,
-  SAVE_EDITING_RESOURCE,
   UPLOAD_STATE_UPLOAD_COMPLETED,
   UPLOAD_STATE_UPLOAD_PROGRESS,
   UPLOAD_STATE_UPLOAD_STARTED,
   UPLOAD_STATE_RESET,
   EDITMETADATA_CLEAR_PREVIEW,
   UPLOAD_STATE_RESOURCE_CREATED,
+  SELECT_EDITING_RESOURCE,
 } from '@/factories/eventBus.js';
 
 import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts.js';
@@ -73,31 +69,33 @@ import {
   getUppyInstance,
   subscribeOnUppyEvent,
   unSubscribeOnUppyEvent,
-  createNewResourceForUrl, destroyUppyInstance,
+  createNewResourceForUrl,
+  destroyUppyInstance,
 } from '@/factories/uploadFactory.js';
 
 import {
   ACTION_GET_USER_LIST,
   FETCH_USER_DATA,
   GET_USER_LIST,
-  METADATA_CANCEL_RESOURCE_EDITING,
-  METADATA_CREATION_RESOURCE,
   METADATA_EDITING_SELECT_RESOURCE,
   USER_NAMESPACE,
   USER_SIGNIN_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts.js';
 
-import { getSelectedElement } from '@/factories/userEditingFactory.js';
-import { mergeResourceSizeForFrontend } from '@/factories/mappingFactory.js';
+import {
+  getSelectedElement,
+  updateEditingArray,
+} from '@/factories/userEditingFactory.js';
+import { mergeResourceSizeForFrontend } from '@/factories/resourceHelpers';
 
 import ResourcesListEditing from '@/modules/workflow/components/steps/ResourcesListEditing.vue';
 import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles.vue';
 import EditResourcePasteUrl from '@/modules/user/components/EditResourcePasteUrl.vue';
 import { ResourceModel } from '@/modules/workflow/viewModel/ResourceModel.js';
-import { type Author, Resource } from '@/types/modelTypes';
+import type { Resource } from '@/types/modelTypes';
 
-const ResourceEditing = defineAsyncComponent(() =>
-    import('@/modules/workflow/components/steps/ResourceEditing.vue'),
+const ResourceEditing = defineAsyncComponent(
+  () => import('@/modules/workflow/components/steps/ResourceEditing.vue'),
 );
 
 export default {
@@ -164,6 +162,7 @@ export default {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.unselectCurrentResource);
     eventBus.on(UPLOAD_STATE_RESET, this.resetUppy);
     eventBus.on(UPLOAD_STATE_RESOURCE_CREATED, this.uploadResourceCreated);
+    eventBus.on(SELECT_EDITING_RESOURCE, this.catchResourceSelection);
   },
   mounted() {
     subscribeOnUppyEvent('file-added', this.uploadResetState);
@@ -182,6 +181,7 @@ export default {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.unselectCurrentResource);
     eventBus.off(UPLOAD_STATE_RESET, this.resetUppy);
     eventBus.off(UPLOAD_STATE_RESOURCE_CREATED, this.uploadResourceCreated);
+    eventBus.off(SELECT_EDITING_RESOURCE, this.catchResourceSelection);
 
     unSubscribeOnUppyEvent('file-added', this.uploadResetState);
     unSubscribeOnUppyEvent('upload', this.uploadStarted);
@@ -195,14 +195,8 @@ export default {
   },
   computed: {
     ...mapState(['config']),
-    ...mapGetters(USER_SIGNIN_NAMESPACE, [
-      'user',
-      'userLoading',
-    ]),
-    ...mapState(USER_NAMESPACE, [
-      'envidatUsers',
-      'uploadError',
-    ]),
+    ...mapGetters(USER_SIGNIN_NAMESPACE, ['user', 'userLoading']),
+    ...mapState(USER_NAMESPACE, ['envidatUsers', 'uploadError']),
     resourceUploadError() {
       if (this.$store) {
         return this.uploadError;
@@ -219,14 +213,18 @@ export default {
     },
     resourceUploadActive() {
       if (this.$store) {
-        return this.config?.userEditMetadataConfig?.resourceUploadActive || false;
+        return (
+          this.config?.userEditMetadataConfig?.resourceUploadActive || false
+        );
       }
 
       return this.userEditMetadataConfig?.resourceUploadActive || false;
     },
     resourceEditingActive() {
       if (this.$store) {
-        return this.config?.userEditMetadataConfig?.resourceEditingActive || false;
+        return (
+          this.config?.userEditMetadataConfig?.resourceEditingActive || false
+        );
       }
 
       return this.userEditMetadataConfig?.resourceEditingActive || false;
@@ -253,18 +251,9 @@ export default {
         userEditMetadataConfig = this.userEditMetadataConfig;
       }
 
-      let mergedSize = {};
-      try {
-        mergedSize = mergeResourceSizeForFrontend(this.selectedResource);
-      } catch (e) {
-        console.error('mergeResourceSizeForFrontend failed:');
-        console.error(e);
-        // TODO Error tracking
-      }
 
       return {
-        ...this.selectedResource,
-        ...mergedSize,
+        ...this.resourceViewModel,
         userEditMetadataConfig,
         envidatUsers: this.allEnviDatUsers,
       };
@@ -276,7 +265,8 @@ export default {
         state: this.uploadState,
         progress: this.uploadProgress,
         error: this.resourceUploadError?.message || this.uppyError?.name,
-        errorDetails: this.resourceUploadError?.details || this.uppyError?.message,
+        errorDetails:
+          this.resourceUploadError?.details || this.uppyError?.message,
       };
     },
     selectedResource() {
@@ -292,24 +282,17 @@ export default {
     },
   },
   methods: {
-    save(data: { resources: Resource[] }) {
-      this.$emit('save', data)
-    },
-    saveResources(data: { resources: Resource[] }) {
-
-    },
     loadEnvidatUsers() {
       if (this.$store && !this.envidatUsers && this.user) {
-        this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`,
-          {
-            action: ACTION_GET_USER_LIST,
-            body: {
-              id: this.user.id,
-              include_datasets: true,
-            },
-            commit: true,
-            mutation: GET_USER_LIST,
-          });
+        this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`, {
+          action: ACTION_GET_USER_LIST,
+          body: {
+            id: this.user.id,
+            include_datasets: true,
+          },
+          commit: true,
+          mutation: GET_USER_LIST,
+        });
       }
     },
     uploadResetState() {
@@ -347,12 +330,14 @@ export default {
 
       setTimeout(() => {
         console.log(METADATA_EDITING_SELECT_RESOURCE, newRes);
-        this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, newRes?.id);
+        this.$store.commit(
+          `${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`,
+          newRes?.id,
+        );
 
         // reset uppy to be able to upload another file
         this.resetUppy();
       }, 500);
-
     },
     uploadUppyError(error) {
       // console.log('uploadUppyError', error);
@@ -375,10 +360,10 @@ export default {
       if (files.length > 0) {
         uppy.cancelAll();
       } else {
-        uppy.clear()
+        uppy.clear();
       }
     },
-    async createResourceFromUrl(url) {
+    async createResourceFromUrl(url: string) {
       // console.log(`createResourceFromUrl ${url}`);
 
       const datasetId = this.datasetId;
@@ -386,8 +371,8 @@ export default {
 
       this.resourceViewModel = new ResourceModel();
       const validData = await this.resourceViewModel.save(newResource);
-      
-      if(!validData) {
+
+      if (!validData) {
         console.error('Invalid Data for new resources', newResource);
         return;
       }
@@ -398,8 +383,8 @@ export default {
 
       this.$emit('save', {
         resources: currentResources,
-      })
-/*
+      });
+      /*
       // resource exists already, get it from uploadResource
       const newRes = this.$store?.getters[`${USER_NAMESPACE}/uploadResource`];
 
@@ -407,10 +392,9 @@ export default {
         this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, newRes?.id);
       });
 */
-
     },
     unselectCurrentResource() {
-      if(this.selectedResource) {
+      if (this.selectedResource) {
         this.selectedResource.isSelected = false;
         this.resetResourceViewModel();
       }
@@ -418,25 +402,56 @@ export default {
     catchEditResourceClose() {
       this.unselectCurrentResource();
     },
-    markResourceSelected(resources: Resource[], id: string, isSelected: boolean) {
-      const resToMark = resources.filter(
-        (resource) => resource.id === id,
-      )[0];
+    markResourceSelected(
+      resources: Resource[],
+      id: string,
+      isSelected: boolean,
+    ) {
+      const resToMark = resources.filter((resource) => resource.id === id)[0];
       if (resToMark) {
         resToMark.isSelected = isSelected;
       }
     },
-    catchSaveEditResource(resource: Resource) {
+    async saveResource(data: { resource: Resource }) {
+      const validData = await this.resourceViewModel.save(data);
+
+      if (validData) {
+        const updatedResources = updateEditingArray(
+          this.resources,
+          data.resource,
+          'id',
+        );
+
+        this.save({ resources: updatedResources });
+
+        this.resetResourceViewModel();
+      }
+    },
+    save(data: { resources: Resource[] }) {
+      this.$emit('save', data);
+    },
+    catchResourceSelection(resourceId: string) {
+
+      const resource = this.resources.filter((res: Resource) => res.id === resourceId)[0];
+
+      if (!resource) {
+        return;
+      }
 
       // clear the internal state of the UI component in case there was an input
       // on the adding of a new author
       eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
       this.unselectCurrentResource();
 
-      this.markResourceSelected(this.resources, resource.id, !resource.isSelected);
+      this.markResourceSelected(
+        this.resources,
+        resource.id,
+        !resource.isSelected,
+      );
+
       this.resourceViewModel.save(resource);
     },
-    showFullScreenImage(url) {
+    showFullScreenImage(url: string) {
       eventBus.emit(OPEN_TEXT_PREVIEW, url);
     },
     resetResourceViewModel() {

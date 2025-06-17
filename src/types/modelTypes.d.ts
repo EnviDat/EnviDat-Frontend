@@ -75,13 +75,24 @@ export interface Resource {
   resourceSize: string;
   resourceType: string | null;
   restricted: string;
+  restrictedUrl: string;
   size: number;
   sizeFormat: string;
   state: string;
   url: string;
   urlType: string;
+  numberOfDownload: number;
   deprecated: boolean;
+  isProtected: boolean;
   isSelected: boolean;
+  previewUrl: string;
+  chartLabels: string[];
+  chartData: any[];
+  chartDataLoading: boolean;
+  openEvent: string;
+  openProperty: string;
+  openButtonIcon: string;
+  openButtonTooltip: string;
 }
 
 

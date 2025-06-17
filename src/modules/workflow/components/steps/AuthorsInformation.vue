@@ -346,6 +346,7 @@ export default {
           author,
           'email',
         );
+
         this.saveAuthorsList({ authors: updatedAuthors });
 
         this.resetAuthorViewModel();
