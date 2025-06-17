@@ -3,7 +3,7 @@ import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEdit
 import { KeywordDTO } from '@/types/dataTransferObjectsTypes';
 import { enhanceKeywords } from '@/factories/keywordsFactory';
 import categoryCards from '@/store/categoryCards';
-import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.ts';
+import { DatasetModel } from '@/modules/workflow/viewModel/DatasetModel.ts';
 
 
 export class EditKeywordsViewModel extends AbstractEditViewModel{
@@ -19,7 +19,7 @@ export class EditKeywordsViewModel extends AbstractEditViewModel{
   }
 
 
-  constructor(datasetViewModel: DatasetViewModel, existingKeywords: KeywordDTO[]) {
+  constructor(datasetViewModel: DatasetModel, existingKeywords: KeywordDTO[]) {
     super(datasetViewModel, EditKeywordsViewModel.mappingRules());
 
     enhanceKeywords(this.keywords, categoryCards)

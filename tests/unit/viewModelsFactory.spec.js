@@ -3,7 +3,7 @@ import { createHeaderViewModel } from '@/factories/ViewModels/HeaderViewModel';
 import { EDITMETADATA_MAIN_HEADER } from '@/factories/eventBus';
 import { convertJSON } from '@/factories/mappingFactory';
 import { EditDatasetBackendService } from '@/modules/workflow/viewModel/EditDatasetBackendService.ts';
-import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.js';
+import { DatasetModel } from '@/modules/workflow/viewModel/DatasetModel.ts';
 
 import {
   METADATA_TITLE_PROPERTY,
@@ -20,7 +20,7 @@ describe('viewModel Factory ', () => {
   const headerVM = createHeaderViewModel(backendJSON, false, 'black', 'url/to/an/img');
 
   const serviceLayer = new EditDatasetBackendService(datasetBackend)
-  const datasetVM = new DatasetViewModel(serviceLayer);
+  const datasetVM = new DatasetModel(serviceLayer);
 
   it('HeaderViewModel backendJSON', () => {
 

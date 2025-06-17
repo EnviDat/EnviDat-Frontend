@@ -1,7 +1,7 @@
 /*  ModelAdditionalInformation.ts  */
 import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
-import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.ts';
+import { DatasetModel } from '@/modules/workflow/viewModel/DatasetModel.ts';
 
 const toNull = (v: string, o: string) => (o === '' ? null : v);
 
@@ -21,7 +21,7 @@ export class ModelAdditionalInformation extends AbstractEditViewModel {
     funders: string;
   };
 
-  constructor(datasetVM: DatasetViewModel) {
+  constructor(datasetVM: DatasetModel) {
     super(datasetVM, ModelAdditionalInformation.mappingRules());
 
     this.validationErrors = { dataLicenseId: null, funders: null };

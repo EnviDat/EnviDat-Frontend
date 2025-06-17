@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
-import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.ts';
+import { DatasetModel } from '@/modules/workflow/viewModel/DatasetModel.ts';
 
 export class ModelPublicationInformation extends AbstractEditViewModel {
   declare contactEmail: string;
@@ -13,7 +13,7 @@ export class ModelPublicationInformation extends AbstractEditViewModel {
     contactLastName: string;
   };
 
-  constructor(datasetViewModel: DatasetViewModel) {
+  constructor(datasetViewModel: DatasetModel) {
     super(datasetViewModel, ModelPublicationInformation.mappingRules());
 
     this.validationErrors = {

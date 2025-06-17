@@ -17,7 +17,7 @@ import {
   mobileViewportParams,
   tabletViewportParams,
 } from './js/envidatViewports';
-import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.js';
+import { DatasetModel } from '@/modules/workflow/viewModel/DatasetModel.ts';
 import { EditDatasetBackendService } from '@/modules/workflow/viewModel/EditDatasetBackendService.ts';
 
 const description = `# Why user stories?
@@ -52,7 +52,7 @@ export default {
   component: EditDescription,
 };
 
-const vm = new EditDescriptionViewModel(new DatasetViewModel(new EditDatasetBackendService({
+const vm = new EditDescriptionViewModel(new DatasetModel(new EditDatasetBackendService({
   notes: description,
 })))
 

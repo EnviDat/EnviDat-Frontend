@@ -3,7 +3,7 @@ import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 import { Author, DataCreditObject } from '@/types/modelTypes';
 import { convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
-import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.ts';
+import { DatasetModel } from '@/modules/workflow/viewModel/DatasetModel.ts';
 
 const convertEmptyStringToNull = (value: string, originalValue: string) =>
   originalValue === '' ? null : value;
@@ -33,7 +33,7 @@ export class AuthorViewModel extends AbstractEditViewModel implements Author {
     affiliation: string;
   }
 
-  constructor(datasetViewModel?: DatasetViewModel | undefined) {
+  constructor(datasetViewModel?: DatasetModel | undefined) {
     // intentionally not providing the datasetViewModel, because resource have to be unpacked
     // from the list of resources, done in the ResourceListModel
     super(datasetViewModel, AuthorViewModel.mappingRules())

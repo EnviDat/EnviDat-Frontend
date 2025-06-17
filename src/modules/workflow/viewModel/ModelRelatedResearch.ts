@@ -2,7 +2,7 @@
 import * as yup from 'yup';
 
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
-import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.ts';
+import { DatasetModel } from '@/modules/workflow/viewModel/DatasetModel.ts';
 
 function convertEmptyStringToNull(v: unknown) {
   return typeof v === 'string' && v.trim() === '' ? null : v;
@@ -19,7 +19,7 @@ export class ModelRelatedResearch extends AbstractEditViewModel {
     customFields: string | null;
   };
 
-  constructor(datasetViewModel: DatasetViewModel) {
+  constructor(datasetViewModel: DatasetModel) {
     super(datasetViewModel, ModelRelatedResearch.mappingRules());
 
     this.validationErrors = {

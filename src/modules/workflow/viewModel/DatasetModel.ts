@@ -26,7 +26,7 @@ import { Dataset } from '@/modules/workflow/viewModel/Dataset.ts';
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 import { ResourceModel } from '@/modules/workflow/viewModel/ResourceModel.ts';
 
-export class DatasetViewModel {
+export class DatasetModel {
   viewModelClasses = [
     EditHeaderViewModel,
     EditDescriptionViewModel,

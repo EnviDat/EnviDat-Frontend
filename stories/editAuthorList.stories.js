@@ -36,11 +36,11 @@ import { METADATA_AUTHOR_SEQUENCE_PROPERTY, METADATA_AUTHORS_PROPERTY } from '@/
 import unFormatedMetadataCards from './js/metadata';
 
 import { AuthorListViewModel } from '@/modules/workflow/viewModel/AuthorListViewModel.ts';
-import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.js';
+import { DatasetModel } from '@/modules/workflow/viewModel/DatasetModel.ts';
 import { EditDatasetBackendService } from '@/modules/workflow/viewModel/EditDatasetBackendService.ts';
 
 const serviceLayer = new EditDatasetBackendService(unFormatedMetadataCards[0]);
-const datasetVM = new DatasetViewModel(serviceLayer);
+const datasetVM = new DatasetModel(serviceLayer);
 
 
 const metadataCards = [];

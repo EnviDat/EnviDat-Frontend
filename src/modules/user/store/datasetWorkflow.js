@@ -3,13 +3,13 @@ import { defineAsyncComponent } from 'vue';
 
 import { workflowSteps } from '@/modules/workflow/resources/steps';
 
-import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel';
-import { DatasetLocalStorageService } from '@/modules/workflow/viewModel/DatasetLocalStorageService.js';
+import { DatasetModel } from '@/modules/workflow/viewModel/DatasetModel';
+import { DatasetLocalStorageService } from '@/modules/workflow/viewModel/DatasetLocalStorageService';
 import datasets from '~/stories/js/metadata.js';
 
-let datasetVM = new DatasetViewModel(new DatasetLocalStorageService());
+let datasetVM = new DatasetModel(new DatasetLocalStorageService());
 if (import.meta.env.MODE === 'development') {
-  datasetVM = new DatasetViewModel(new DatasetLocalStorageService(datasets[2]));
+  datasetVM = new DatasetModel(new DatasetLocalStorageService(datasets[2]));
 }
 
 export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {

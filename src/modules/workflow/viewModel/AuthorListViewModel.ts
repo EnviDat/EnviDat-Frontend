@@ -6,7 +6,7 @@ import {
   AuthorViewModel,
   createAuthorViewModel,
 } from '@/modules/workflow/viewModel/AuthorViewModel.ts';
-import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.ts';
+import { DatasetModel } from '@/modules/workflow/viewModel/DatasetModel.ts';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 import {
   convertJSON,
@@ -22,7 +22,7 @@ export class AuthorListViewModel extends AbstractEditViewModel {
     authors: string;
   };
 
-  constructor(datasetViewModel: DatasetViewModel) {
+  constructor(datasetViewModel: DatasetModel) {
     super(datasetViewModel, AuthorListViewModel.mappingRules());
 
 

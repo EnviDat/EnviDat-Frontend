@@ -1,7 +1,7 @@
 // factories/ViewModels/ModelGeoInfo.ts
 import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
-import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.ts';
+import { DatasetModel } from '@/modules/workflow/viewModel/DatasetModel.ts';
 
 export class ModelGeoInfo extends AbstractEditViewModel {
   declare dates: any[];
@@ -12,7 +12,7 @@ export class ModelGeoInfo extends AbstractEditViewModel {
     geometries: string | null;
   };
 
-  constructor(datasetVM: DatasetViewModel) {
+  constructor(datasetVM: DatasetModel) {
     super(datasetVM, ModelGeoInfo.mappingRules());
 
     this.validationErrors = { dates: null, geometries: null };

@@ -41,10 +41,10 @@ import {
 } from './js/envidatViewports';
 
 import metadataset from './js/metadata';
-import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.ts';
+import { DatasetModel } from '@/modules/workflow/viewModel/DatasetModel.ts';
 
 const serviceLayer = new EditDatasetBackendService(metadataset[0]);
-const datasetVM = new DatasetViewModel(serviceLayer);
+const datasetVM = new DatasetModel(serviceLayer);
 
 const unFormatedMetadataCards = metadataset;
 const tagsFromDatasets = getPopularTags(metadataset, '', 1);
@@ -69,7 +69,7 @@ let existingAuthors = Object.values(authorsMap);
 existingAuthors = sortObjectArray(existingAuthors, 'lastName');
 
 const serviceLayer2 = new EditDatasetBackendService(metadataset[1]);
-const datasetVM2 = new DatasetViewModel(serviceLayer2);
+const datasetVM2 = new DatasetModel(serviceLayer2);
 const reactiveViewModelWithErrors = datasetVM2.getViewModel(
   'EditHeaderViewModel',
 );

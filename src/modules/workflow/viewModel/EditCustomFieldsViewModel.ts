@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
-import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.ts';
+import { DatasetModel } from '@/modules/workflow/viewModel/DatasetModel.ts';
 
 
 export class EditCustomFieldsViewModel extends AbstractEditViewModel{
@@ -11,7 +11,7 @@ export class EditCustomFieldsViewModel extends AbstractEditViewModel{
     customFields: string,
   }
 
-  constructor(datasetViewModel: DatasetViewModel) {
+  constructor(datasetViewModel: DatasetModel) {
     super(datasetViewModel, EditCustomFieldsViewModel.mappingRules());
 
 

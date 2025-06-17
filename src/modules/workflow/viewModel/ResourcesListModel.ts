@@ -3,7 +3,7 @@ import * as yup from 'yup';
 import { Resource, User } from '@/types/modelTypes';
 import { type DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 import { ResourceModel } from '@/modules/workflow/viewModel/ResourceModel.ts';
-import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel';
+import { DatasetModel } from '@/modules/workflow/viewModel/DatasetModel.ts';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel';
 import { METADATA_NEW_RESOURCE_ID } from '@/factories/metadataConsts';
 import {
@@ -15,7 +15,7 @@ import {
   enhanceResourcesWithMetadataExtras,
   SELECT_EDITING_RESOURCE_PROPERTY,
 } from '@/factories/strategyFactory';
-import { createResources } from '@/factories/resourceHelpers';
+
 
 export class ResourcesListModel extends AbstractEditViewModel {
   declare resources: Resource[];
@@ -29,7 +29,7 @@ export class ResourcesListModel extends AbstractEditViewModel {
     resources: string;
   };
 
-  constructor(datasetViewModel: DatasetViewModel) {
+  constructor(datasetViewModel: DatasetModel) {
     super(datasetViewModel, ResourcesListModel.mappingRules());
 
     this.validationErrors = {

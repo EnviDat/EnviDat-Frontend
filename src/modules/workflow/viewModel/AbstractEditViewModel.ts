@@ -6,20 +6,20 @@ import {
 } from '@/factories/mappingFactory';
 
 import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
-import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.ts';
+import { DatasetModel } from '@/modules/workflow/viewModel/DatasetModel.ts';
 import { isFieldValid } from '@/factories/userEditingValidations';
 
 export abstract class AbstractEditViewModel {
   protected privateMappingRules: string[][];
 
-  protected datasetViewModel: DatasetViewModel;
+  protected datasetViewModel: DatasetModel;
 
   abstract validationErrors: object;
 
   declare validationRules: yup.AnyObjectSchema;
 
   protected constructor(
-    datasetViewModel: DatasetViewModel,
+    datasetViewModel: DatasetModel,
     mappingRules: string[][] = undefined,
   ) {
     this.mappingRules = mappingRules;

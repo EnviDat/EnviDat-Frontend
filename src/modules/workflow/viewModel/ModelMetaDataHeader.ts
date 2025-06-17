@@ -1,7 +1,7 @@
 import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 
-import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.ts';
+import { DatasetModel } from '@/modules/workflow/viewModel/DatasetModel.ts';
 import type { KeywordDTO } from '@/types/dataTransferObjectsTypes';
 import { enhanceKeywords } from '@/factories/keywordsFactory';
 import categoryCards from '@/store/categoryCards';
@@ -19,7 +19,7 @@ export class ModelMetaDataHeader extends AbstractEditViewModel {
   };
 
   constructor(
-    datasetViewModel: DatasetViewModel,
+    datasetViewModel: DatasetModel,
     existingKeywords: KeywordDTO[],
   ) {
     super(datasetViewModel, ModelMetaDataHeader.mappingRules());

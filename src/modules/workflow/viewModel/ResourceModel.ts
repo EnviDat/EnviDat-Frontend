@@ -3,7 +3,7 @@ import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEdit
 import { Resource } from '@/types/modelTypes';
 import { convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
 import { ResourceDTO } from '@/types/dataTransferObjectsTypes';
-import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.ts';
+import { DatasetModel } from '@/modules/workflow/viewModel/DatasetModel.ts';
 import { getResourceName, isResourceProtectedForUser, mergeResourceSizeForFrontend } from '@/factories/resourceHelpers';
 import { formatDate } from '@/factories/dateFactory';
 
@@ -95,7 +95,7 @@ export class ResourceModel extends AbstractEditViewModel implements Resource {
    * @param datasetViewModel is optional, if not provided it can be used "isolated" just for other
    * UI-components to validate and store infos
    */
-  constructor(datasetViewModel?: DatasetViewModel | undefined) {
+  constructor(datasetViewModel?: DatasetModel | undefined) {
     // intentionally not providing the datasetViewModel, because resource have to be unpacked
     // from the list of resources, done in the ResourceListModel
     super(datasetViewModel, ResourceModel.mappingRules())

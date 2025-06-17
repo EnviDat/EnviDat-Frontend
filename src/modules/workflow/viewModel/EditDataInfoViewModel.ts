@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
-import { DatasetViewModel } from '@/modules/workflow/viewModel/DatasetViewModel.ts';
+import { DatasetModel } from '@/modules/workflow/viewModel/DatasetModel.ts';
 
 import { DATE_PROPERTY_DATE_TYPE, DATE_PROPERTY_END_DATE, DATE_PROPERTY_START_DATE } from '@/factories/metadataConsts';
 
@@ -13,7 +13,7 @@ export class EditDataInfoViewModel extends AbstractEditViewModel{
     dates: string,
   }
 
-  constructor(datasetViewModel: DatasetViewModel) {
+  constructor(datasetViewModel: DatasetModel) {
     super(datasetViewModel, EditDataInfoViewModel.mappingRules());
 
 
