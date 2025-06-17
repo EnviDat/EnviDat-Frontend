@@ -159,14 +159,8 @@ export abstract class AbstractEditViewModel {
         return false;
       }
 
-      // only store the props which we validated
-
-      // THIS is probably not needed because later the mappingRules are applied
-      // by calling the backendJSON() of the viewModel!
-      const propsToStore = this.getPropsToValidate(newData);
-
       // take over all the data to store it in this viewModel
-      Object.assign(this, propsToStore);
+      Object.assign(this, newData);
 
       if (this.datasetViewModel) {
         await this.datasetViewModel.patchViewModel(this);
