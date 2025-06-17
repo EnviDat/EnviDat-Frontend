@@ -1,34 +1,29 @@
 <template>
-  <v-card
-    id="MetadataCreationPublicationInfo"
-    class="pt-md-8 pt-0"
-    elevation="0"
-  >
-    <v-container fluid class="pa-4">
-      <!-- Title box -->
-      <v-row class="mb-0">
-        <v-col class="text-h5 font-weight-bold" cols="8">
-          {{ labels.title }}
-        </v-col>
-        <v-col cols="12" class="text-body-1">
-          {{ labels.instructions }}
-        </v-col>
-      </v-row>
+  <v-container id="MetadataCreationPublicationInfo" fluid class="pa-4">
+    <!-- Title box -->
+    <v-row class="mb-0">
+      <v-col class="text-h5 font-weight-bold" cols="12">
+        {{ labels.title }}
+      </v-col>
+      <v-col cols="12" class="text-body-1">
+        {{ labels.instructions }}
+      </v-col>
+    </v-row>
 
-      <!-- Info Banner -->
-      <v-row>
-        <v-col class="mb-5 pt-0 pb-0">
-          <v-alert type="info" closable :icon="false" class="rounded-lg">
-            <v-alert-title>Information</v-alert-title>
-            Lorem Ipsum
-          </v-alert>
-        </v-col>
-      </v-row>
+    <!-- Info Banner -->
+    <v-row>
+      <v-col class="mb-5 pt-0 pb-0">
+        <v-alert type="info" closable :icon="false" class="rounded-lg">
+          <v-alert-title>Information</v-alert-title>
+          Lorem Ipsum
+        </v-alert>
+      </v-col>
+    </v-row>
 
-      <v-row>
-        <v-col cols="12" xl="6">
-          <!-- prettier-ignore -->
-          <v-row>
+    <v-row>
+      <v-col cols="12" xl="6">
+        <!-- prettier-ignore -->
+        <v-row>
 
           <v-col cols="12">
             <EditPublicationInfo v-bind="editPublicationsProps" />
@@ -37,27 +32,27 @@
             <EditReviewInfo v-bind="editReviewProps" />
           </v-col>
         </v-row>
-        </v-col>
+      </v-col>
 
-        <v-col cols="12" xl="6">
-          <v-row>
-            <v-col cols="12">
-              <EditContactPerson
-                v-bind="editContactPersonProps"
-                @save="catchContactPersonChange"
-              />
-            </v-col>
-          </v-row>
-        </v-col>
-        <v-col cols="12">
-          <v-row>
-            <v-col cols="12">
-              <EditOrganization v-bind="editOrganizationProps" />
-            </v-col>
-          </v-row>
-        </v-col>
+      <v-col cols="12" xl="6">
+        <v-row>
+          <v-col cols="12">
+            <EditContactPerson
+              v-bind="editContactPersonProps"
+              @save="catchContactPersonChange"
+            />
+          </v-col>
+        </v-row>
+      </v-col>
+      <v-col cols="12">
+        <v-row>
+          <v-col cols="12">
+            <EditOrganization v-bind="editOrganizationProps" />
+          </v-col>
+        </v-row>
+      </v-col>
 
-        <v-col cols="12">
+      <!-- <v-col cols="12">
           <v-row v-if="doiWorkflowActive">
             <v-col>
               <EditPublicationStatus
@@ -78,10 +73,9 @@
               />
             </v-col>
           </v-row>
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-card>
+        </v-col> -->
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -126,7 +120,7 @@ import EditContactPerson from '@/modules/user/components/edit/EditContactPerson.
 
 import EditPublicationInfo from '@/modules/user/components/edit/EditPublicationInfo.vue';
 
-import EditPublicationStatus from '@/modules/user/components/edit/EditPublicationStatus.vue';
+// import EditPublicationStatus from '@/modules/user/components/edit/EditPublicationStatus.vue';
 import EditReviewInfo from '@/modules/user/components/edit/EditReviewInfo.vue';
 
 import {
@@ -135,9 +129,9 @@ import {
   getAuthorName,
 } from '@/factories/authorFactory';
 
-const NotFoundCard = defineAsyncComponent(
-  () => import('@/components/Cards/NotFoundCard.vue'),
-);
+// const NotFoundCard = defineAsyncComponent(
+//   () => import('@/components/Cards/NotFoundCard.vue'),
+// );
 
 export default {
   name: 'MetadataEditingPublicationInfo',
@@ -374,10 +368,10 @@ export default {
 
   components: {
     EditReviewInfo,
-    EditPublicationStatus,
+    // EditPublicationStatus,
     EditPublicationInfo,
     EditOrganization,
-    NotFoundCard,
+    // NotFoundCard,
     EditContactPerson,
   },
 };

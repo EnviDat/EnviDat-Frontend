@@ -1,32 +1,31 @@
 <template>
-  <v-card id="EditMetadataHeader" class="pt-md-8 pt-0" elevation="0">
-    <v-container fluid class="pa-4">
-      <!-- Title box -->
-      <v-row class="mb-0">
-        <v-col class="text-h5 font-weight-bold" cols="8">
-          {{ labels.stepTitle }}
-        </v-col>
-        <v-col cols="12" class="text-body-1">
-          {{ labels.instructions }}
-        </v-col>
-      </v-row>
-
-      <!-- Info Banner -->
-      <v-row>
-        <v-col class="mb-5 pt-0 pb-0">
-          <v-alert type="info" closable :icon="false" class="rounded-lg">
-            <v-alert-title>Information</v-alert-title>
-            Lorem Ipsum
-          </v-alert>
-        </v-col>
-      </v-row>
-
-      <!-- Preview -->
-      <v-col cols="12" class="pa-0 mb-5 mt-5">
-        <MetadataHeader v-bind="metadataPreviewEntry" />
+  <v-container id="EditMetadataHeader" fluid class="pa-4">
+    <!-- Title box -->
+    <v-row class="mb-0">
+      <v-col class="text-h5 font-weight-bold" cols="12">
+        {{ labels.stepTitle }}
       </v-col>
+      <v-col cols="12" class="text-body-1">
+        {{ labels.instructions }}
+      </v-col>
+    </v-row>
 
-      <!-- <v-col v-if="message" cols="4" class="pl-16">
+    <!-- Info Banner -->
+    <v-row>
+      <v-col class="mb-5 pt-0 pb-0">
+        <v-alert type="info" closable :icon="false" class="rounded-lg">
+          <v-alert-title>Information</v-alert-title>
+          Lorem Ipsum
+        </v-alert>
+      </v-col>
+    </v-row>
+
+    <!-- Preview -->
+    <v-col cols="12" class="pa-0 mb-5 mt-5">
+      <MetadataHeader v-bind="metadataPreviewEntry" />
+    </v-col>
+
+    <!-- <v-col v-if="message" cols="4" class="pl-16">
           <BaseStatusLabelView
             status="check"
             statusColor="success"
@@ -43,124 +42,123 @@
           />
         </v-col> -->
 
-      <v-row>
-        <!-- title -->
-        <v-col cols="12" xl="6" class="mb-5 mt-5">
-          <v-row class="mb-5">
-            <v-col>
-              <div class="font-weight-bold">{{ labels.title }}</div>
-              <div class="text-caption">
-                {{ labels.instructionsTitle }}
-              </div>
-            </v-col>
-          </v-row>
-          <v-text-field
-            ref="metadataTitle"
-            :id="'metadataTitle'"
-            :label="labels.labelTitle"
-            :readonly="isReadOnly(false)"
-            :error-messages="validationErrors.metadataTitle"
-            hide-details="auto"
-            persistent-hint
-            :hint="readOnlyHint(false)"
-            :prepend-icon="mdiBookOpenVariantOutline"
-            :placeholder="labels.placeholderTitle"
-            :model-value="metadataTitleField"
-            @keyup="blurOnEnterKey"
-            @input="notifyPropertyInput($event.target.value)"
-            @change="notifyPropertyChange($event.target.value)"
-          />
-        </v-col>
+    <v-row>
+      <!-- title -->
+      <v-col cols="12" xl="6" class="mb-5 mt-5">
+        <v-row class="mb-5">
+          <v-col>
+            <div class="font-weight-bold">{{ labels.title }}</div>
+            <div class="text-caption">
+              {{ labels.instructionsTitle }}
+            </div>
+          </v-col>
+        </v-row>
+        <v-text-field
+          ref="metadataTitle"
+          :id="'metadataTitle'"
+          :label="labels.labelTitle"
+          :readonly="isReadOnly(false)"
+          :error-messages="validationErrors.metadataTitle"
+          hide-details="auto"
+          persistent-hint
+          :hint="readOnlyHint(false)"
+          :prepend-icon="mdiBookOpenVariantOutline"
+          :placeholder="labels.placeholderTitle"
+          :model-value="metadataTitleField"
+          @keyup="blurOnEnterKey"
+          @input="notifyPropertyInput($event.target.value)"
+          @change="notifyPropertyChange($event.target.value)"
+        />
+      </v-col>
 
-        <!-- Keywords -->
+      <!-- Keywords -->
 
-        <v-col cols="12" xl="6" class="mb-0">
-          <v-row class="mb-5">
-            <v-col>
-              <div class="font-weight-bold">{{ labelsKeywords.title }}</div>
-              <div class="text-caption">
-                {{ labelsKeywords.cardInstructions1 }}
-              </div>
-            </v-col>
-          </v-row>
-          <v-autocomplete
-            v-model="keywordsField"
-            item-text="name"
-            item-value="name"
-            :items="existingKeywordItems"
-            :menu-icon="mdiArrowDownDropCircleOutline"
-            :readonly="isReadOnly('keywords')"
-            :hint="readOnlyHint('keywords')"
-            :persistent-hint="!!hint"
-            :prepend-icon="mdiPaletteSwatch"
-            :label="labelsKeywords.placeholder"
-            :clear-on-select="true"
-            multiple
-            :search="search"
-            :error-messages="validationErrors.keywords"
-            @update:search="
-              search = $event;
-              isKeywordValid(search);
-            "
-            @keyup="blurOnEnterKey"
-            @input="isEnoughKeywords()"
-            @change="notifyChange"
-            @keydown="catchKeywordEntered($event)"
-            :rules="rulesKeywords"
-          >
-            <template v-slot:selection="{ item }">
-              <TagChip
-                :name="item.value"
-                selectable
-                closeable
-                @clicked="removeKeyword(item.raw)"
-                :isSmall="false"
-              />
-            </template>
+      <v-col cols="12" xl="6" class="mb-0">
+        <v-row class="mb-5">
+          <v-col>
+            <div class="font-weight-bold">{{ labelsKeywords.title }}</div>
+            <div class="text-caption">
+              {{ labelsKeywords.cardInstructions1 }}
+            </div>
+          </v-col>
+        </v-row>
+        <v-autocomplete
+          v-model="keywordsField"
+          item-text="name"
+          item-value="name"
+          :items="existingKeywordItems"
+          :menu-icon="mdiArrowDownDropCircleOutline"
+          :readonly="isReadOnly('keywords')"
+          :hint="readOnlyHint('keywords')"
+          :persistent-hint="!!hint"
+          :prepend-icon="mdiPaletteSwatch"
+          :label="labelsKeywords.placeholder"
+          :clear-on-select="true"
+          multiple
+          :search="search"
+          :error-messages="validationErrors.keywords"
+          @update:search="
+            search = $event;
+            isKeywordValid(search);
+          "
+          @keyup="blurOnEnterKey"
+          @input="isEnoughKeywords()"
+          @change="notifyChange"
+          @keydown="catchKeywordEntered($event)"
+          :rules="rulesKeywords"
+        >
+          <template v-slot:selection="{ item }">
+            <TagChip
+              :name="item.value"
+              selectable
+              closeable
+              @clicked="removeKeyword(item.raw)"
+              :isSmall="false"
+            />
+          </template>
 
-            <template v-slot:item="{ item, props }">
-              <v-list-item
-                @click="catchKeywordClicked(item.value)"
-                v-bind="props"
-              />
-            </template>
+          <template v-slot:item="{ item, props }">
+            <v-list-item
+              @click="catchKeywordClicked(item.value)"
+              v-bind="props"
+            />
+          </template>
 
-            <template v-slot:no-data>
-              <v-list-item>
-                <div v-html="autocompleteHint"></div>
-              </v-list-item>
-            </template>
-          </v-autocomplete>
-        </v-col>
-        <!-- description -->
-        <v-col cols="12" class="mb-5">
-          <v-row class="mb-5">
-            <v-col>
-              <div class="font-weight-bold">
-                {{ labelsDescription.title }}
-              </div>
-              <div
-                v-html="labelsDescription.descriptionInstructions"
-                class="text-caption"
-              ></div>
-            </v-col>
-          </v-row>
-          <GenericTextareaPreviewLayout
-            :columns="12"
-            v-bind="genericTextAreaObject"
-            :textarea-content="metadataDescriptionField"
-            :validationError="validationErrors.metadataDescription"
-            :readonly="isReadOnly('metadataDescription')"
-            :hint="readOnlyHint('metadataDescription')"
-            @inputedText="onDescriptionInput"
-            @changedText="onDescriptionChange"
-          >
-            <MetadataDescription v-bind="descriptionObject" />
-          </GenericTextareaPreviewLayout>
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-card>
+          <template v-slot:no-data>
+            <v-list-item>
+              <div v-html="autocompleteHint"></div>
+            </v-list-item>
+          </template>
+        </v-autocomplete>
+      </v-col>
+      <!-- description -->
+      <v-col cols="12" class="mb-5">
+        <v-row class="mb-5">
+          <v-col>
+            <div class="font-weight-bold">
+              {{ labelsDescription.title }}
+            </div>
+            <div
+              v-html="labelsDescription.descriptionInstructions"
+              class="text-caption"
+            ></div>
+          </v-col>
+        </v-row>
+        <GenericTextareaPreviewLayout
+          :columns="12"
+          v-bind="genericTextAreaObject"
+          :textarea-content="metadataDescriptionField"
+          :validationError="validationErrors.metadataDescription"
+          :readonly="isReadOnly('metadataDescription')"
+          :hint="readOnlyHint('metadataDescription')"
+          @inputedText="onDescriptionInput"
+          @changedText="onDescriptionChange"
+        >
+          <MetadataDescription v-bind="descriptionObject" />
+        </GenericTextareaPreviewLayout>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>

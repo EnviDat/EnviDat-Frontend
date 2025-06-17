@@ -4,13 +4,13 @@
       class="fill-height"
       :class="{ 'overflow-x-scroll': display.smAndDown.value }"
     >
-      <v-col cols="12" md="4" xl="3" class="workflow-navigation__wrapper">
+      <v-col cols="12" lg="4" xl="3" class="workflow-navigation__wrapper">
         <NavigationWorkflow />
       </v-col>
 
       <v-col
         cols="12"
-        md="8"
+        lg="8"
         xl="9"
         class="workflow-content__wrapper position-relative"
         :class="{ loading: navigationStore.loading }"
@@ -26,18 +26,25 @@
             <p class="text-caption scroll-text">Scroll to save</p>
           </div>
         </div>
-        <div>
-          <component
-            :is="currentAsyncComponent"
-            v-bind="vm"
-            @validate="validate"
-            @save="save"
-            v-if="currentAsyncComponent"
-          />
-        </div>
-        <div ref="nextStepBlock" class="pa-4 d-flex align-center justify-end">
-          <v-btn @click="nextStep">Next Step</v-btn>
-        </div>
+        <v-card
+          id="EditAdditionalInformation"
+          class="pt-md-8 pt-0-8"
+          elevation="2"
+          rounded="xl"
+        >
+          <div>
+            <component
+              :is="currentAsyncComponent"
+              v-bind="vm"
+              @validate="validate"
+              @save="save"
+              v-if="currentAsyncComponent"
+            />
+          </div>
+          <div ref="nextStepBlock" class="pa-4 d-flex align-center justify-end">
+            <v-btn @click="nextStep">Next Step</v-btn>
+          </div>
+        </v-card>
       </v-col>
     </v-row>
     <!-- dialog, TODO make a external component -->
@@ -119,9 +126,7 @@ const { currentStepObject, currentAsyncComponent } =
   storeToRefs(navigationStore);
 
 const nextStep = () => {
-  navigationStore.validateStepAction(
-    navigationStore.currentStep,
-  );
+  navigationStore.validateStepAction(navigationStore.currentStep);
 };
 </script>
 

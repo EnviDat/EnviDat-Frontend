@@ -1,7 +1,7 @@
 <template>
   <v-card
-    class="pa-0 pt-md-8 pt-0 pb-8 h-100 flex-column navigationWorkflow"
-    :elevation="display.mdAndUp.value ? 2 : 0"
+    class="pa-0 pt-md-8 pt-0 pb-8 flex-column navigationWorkflow"
+    :elevation="display.lgAndUp.value ? 2 : 0"
     rounded="xl"
   >
     <v-card-title class="text-h6 font-weight-bold mb-4 pa-md-4 pa-0">
@@ -53,7 +53,7 @@
             />
           </template>
 
-          <template #title v-if="display.mdAndUp.value">
+          <template #title v-if="display.lgAndUp.value">
             <span class="text-subtitle-1">{{ step.title }}</span>
           </template>
 
@@ -70,11 +70,11 @@
             </span>
           </template>
 
-          <template #subtitle v-if="display.mdAndUp.value">
+          <template #subtitle v-if="display.lgAndUp.value">
             <span class="text-body-2">{{ step.description }}</span>
           </template>
 
-          <template #append v-if="display.mdAndUp.value">
+          <template #append v-if="display.lgAndUp.value">
             <div
               class="navigationWorkflow__append mr-1"
               :class="[
@@ -110,7 +110,7 @@
           <div
             class="navigationWorkflow__divider"
             v-if="
-              display.mdAndUp.value &&
+              display.lgAndUp.value &&
               (step.id === 3 || step.id === navigationStore.steps.length - 1)
             "
           ></div>
@@ -124,7 +124,7 @@
         @click="initDriver"
         class="navigationWorkflow__actions--item d-flex flex-column"
       >
-        <BaseIcon :icon="iconName('question')" :color="'black'" />
+        <BaseIcon :large="true" :icon="iconName('question')" :color="'black'" />
         <span class="text-body-2 mt-2">Help mode</span>
       </div>
       <div
@@ -134,6 +134,7 @@
         class="navigationWorkflow__actions--item d-flex flex-column"
       >
         <BaseIcon
+          :large="true"
           @click="reserveDoi"
           :icon="iconName('print')"
           :color="'black'"
@@ -141,7 +142,7 @@
         <span class="text-body-2 mt-2">Reserve DOI</span>
       </div>
       <div class="navigationWorkflow__actions--item d-flex flex-column">
-        <BaseIcon :icon="iconName('draft')" :color="'black'" />
+        <BaseIcon :large="true" :icon="iconName('draft')" :color="'black'" />
         <span class="text-body-2 mt-2">Draft</span>
       </div>
     </v-card-actions>
@@ -224,11 +225,13 @@ const initDriver = () => {
 <style lang="scss">
 .navigationWorkflow {
   background-color: #fff;
-  @media screen and (min-width: 960px) {
+  @media screen and (min-width: 1280px) {
     // 960 is md for vueitfy
     background-color: #f8f8f8;
+    position: sticky;
+    top: 25px;
   }
-  height: 100%;
+
   position: relative;
   &__list {
     display: flex;
@@ -238,7 +241,7 @@ const initDriver = () => {
     scrollbar-width: none;
     background-color: #fff;
 
-    @media screen and (min-width: 960px) {
+    @media screen and (min-width: 1280px) {
       // 960 is md for vueitfy
       flex-direction: column;
       overflow-x: hidden;
@@ -255,7 +258,7 @@ const initDriver = () => {
     left: 0;
   }
   &__actions {
-    @media screen and (max-width: 960px) {
+    @media screen and (max-width: 1280px) {
       // 960 is md for vueitfy
       border-radius: 10px;
       background-color: #f8f8f8;
@@ -280,7 +283,7 @@ const initDriver = () => {
     }
   }
   &__item {
-    @media screen and (max-width: 960px) {
+    @media screen and (max-width: 1280px) {
       // 960 is md for vueitfy
       border-radius: 10px;
       display: flex;
@@ -292,7 +295,7 @@ const initDriver = () => {
 
     // &.disabled {
     //   opacity: 0.5;
-    //   @media screen and (max-width: 960px) {
+    //   @media screen and (max-width: 1280px) {
     //     // 960 is md for vueitfy
     //     background-color: #e8e8e8;
     //   }
@@ -301,7 +304,7 @@ const initDriver = () => {
     //   }
     // }
     &.active {
-      @media screen and (max-width: 960px) {
+      @media screen and (max-width: 1280px) {
         // 960 is md for vueitfy
         // gap: 8px;
         background-color: #499df7;
@@ -314,7 +317,7 @@ const initDriver = () => {
       }
     }
     &.completed {
-      @media screen and (max-width: 960px) {
+      @media screen and (max-width: 1280px) {
         // 960 is md for vueitfy
         background-color: #40c057;
         .navigationWorkflow__append--number,

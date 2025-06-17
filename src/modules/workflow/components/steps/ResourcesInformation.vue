@@ -1,7 +1,25 @@
 <template>
-  <v-container fluid class="pa-0" id="ResourcesInformation">
+  <v-container fluid class="pa-4" id="ResourcesInformation">
+    <v-row class="mb-0">
+      <v-col class="text-h5 font-weight-bold" cols="12">
+        Resources Information
+      </v-col>
+      <v-col cols="12" class="text-body-1">
+        Please provide the resources of the dataset.
+      </v-col>
+    </v-row>
+
+    <!-- Info Banner -->
     <v-row>
-      <v-col cols="12" lg="6">
+      <v-col class="mb-5 pt-0 pb-0">
+        <v-alert type="info" closable :icon="false" class="rounded-lg">
+          <v-alert-title>Information</v-alert-title>
+          Lorem Ipsum
+        </v-alert>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12" xl="6">
         <v-row v-if="selectedResource">
           <v-col v-if="resourceEditingActive">
             <!-- prettier-ignore -->
@@ -27,7 +45,7 @@
         </v-row>
       </v-col>
 
-      <v-col cols="12" lg="6">
+      <v-col cols="12" xl="6">
         <ResourcesListEditing
           v-bind="metadataResourcesGenericProps"
           @save="saveResources"
@@ -448,7 +466,7 @@ export default {
         resource.id,
         !resource.isSelected,
       );
-
+      
       this.resourceViewModel.save(resource);
     },
     showFullScreenImage(url: string) {
