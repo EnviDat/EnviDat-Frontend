@@ -1,9 +1,27 @@
 <template>
-  <v-container fluid class="pa-0" id="ResourcesInformation">
+  <v-container fluid class="pa-4" id="ResourcesInformation">
+    <v-row class="mb-0">
+      <v-col class="text-h5 font-weight-bold" cols="12">
+        Resources Information
+      </v-col>
+      <v-col cols="12" class="text-body-1">
+        Please provide the resources of the dataset.
+      </v-col>
+    </v-row>
+
+    <!-- Info Banner -->
     <v-row>
-      <v-col cols="12" lg="6">
+      <v-col class="mb-5 pt-0 pb-0">
+        <v-alert type="info" closable :icon="false" class="rounded-lg">
+          <v-alert-title>Information</v-alert-title>
+          Lorem Ipsum
+        </v-alert>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12" xl="6">
         <v-row v-if="selectedResource">
-          <v-col v-if="resourceEditingActive" >
+          <v-col v-if="resourceEditingActive">
             <!-- prettier-ignore -->
             <ResourceEditing v-bind="editResourceObject"
                           @closeClicked="catchEditResourceClose"
@@ -11,32 +29,29 @@
                           @previewImageClicked="showFullScreenImage"
             />
           </v-col>
-
         </v-row>
 
         <v-row v-if="!selectedResource">
           <v-col cols="12">
             <EditDropResourceFiles v-bind="editDropResourceObject" />
-<!--
+            <!--
             No need to listen to events from the component, events are emitted from uppy directly
 -->
           </v-col>
 
           <v-col cols="12">
-            <EditResourcePasteUrl @createUrlResources="createResourceFromUrl"/>
+            <EditResourcePasteUrl @createUrlResources="createResourceFromUrl" />
           </v-col>
-
         </v-row>
       </v-col>
 
-      <v-col cols="12" lg="6">
+      <v-col cols="12" xl="6">
         <ResourcesListEditing
           v-bind="metadataResourcesGenericProps"
           @save="saveResources"
         />
       </v-col>
     </v-row>
-
   </v-container>
 </template>
 
@@ -52,7 +67,7 @@
  */
 
 import { mapGetters, mapState } from 'vuex';
-import {defineAsyncComponent} from 'vue';
+import { defineAsyncComponent } from 'vue';
 
 import {
   eventBus,
@@ -73,7 +88,8 @@ import {
   getUppyInstance,
   subscribeOnUppyEvent,
   unSubscribeOnUppyEvent,
-  createNewResourceForUrl, destroyUppyInstance,
+  createNewResourceForUrl,
+  destroyUppyInstance,
 } from '@/factories/uploadFactory.js';
 
 import {
@@ -96,8 +112,8 @@ import EditResourcePasteUrl from '@/modules/user/components/EditResourcePasteUrl
 import { ResourceModel } from '@/modules/workflow/viewModel/ResourceModel.js';
 import { type Author, Resource } from '@/types/modelTypes';
 
-const ResourceEditing = defineAsyncComponent(() =>
-    import('@/modules/workflow/components/steps/ResourceEditing.vue'),
+const ResourceEditing = defineAsyncComponent(
+  () => import('@/modules/workflow/components/steps/ResourceEditing.vue'),
 );
 
 export default {
@@ -195,14 +211,8 @@ export default {
   },
   computed: {
     ...mapState(['config']),
-    ...mapGetters(USER_SIGNIN_NAMESPACE, [
-      'user',
-      'userLoading',
-    ]),
-    ...mapState(USER_NAMESPACE, [
-      'envidatUsers',
-      'uploadError',
-    ]),
+    ...mapGetters(USER_SIGNIN_NAMESPACE, ['user', 'userLoading']),
+    ...mapState(USER_NAMESPACE, ['envidatUsers', 'uploadError']),
     resourceUploadError() {
       if (this.$store) {
         return this.uploadError;
@@ -219,14 +229,18 @@ export default {
     },
     resourceUploadActive() {
       if (this.$store) {
-        return this.config?.userEditMetadataConfig?.resourceUploadActive || false;
+        return (
+          this.config?.userEditMetadataConfig?.resourceUploadActive || false
+        );
       }
 
       return this.userEditMetadataConfig?.resourceUploadActive || false;
     },
     resourceEditingActive() {
       if (this.$store) {
-        return this.config?.userEditMetadataConfig?.resourceEditingActive || false;
+        return (
+          this.config?.userEditMetadataConfig?.resourceEditingActive || false
+        );
       }
 
       return this.userEditMetadataConfig?.resourceEditingActive || false;
@@ -276,7 +290,8 @@ export default {
         state: this.uploadState,
         progress: this.uploadProgress,
         error: this.resourceUploadError?.message || this.uppyError?.name,
-        errorDetails: this.resourceUploadError?.details || this.uppyError?.message,
+        errorDetails:
+          this.resourceUploadError?.details || this.uppyError?.message,
       };
     },
     selectedResource() {
@@ -293,23 +308,20 @@ export default {
   },
   methods: {
     save(data: { resources: Resource[] }) {
-      this.$emit('save', data)
+      this.$emit('save', data);
     },
-    saveResources(data: { resources: Resource[] }) {
-
-    },
+    saveResources(data: { resources: Resource[] }) {},
     loadEnvidatUsers() {
       if (this.$store && !this.envidatUsers && this.user) {
-        this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`,
-          {
-            action: ACTION_GET_USER_LIST,
-            body: {
-              id: this.user.id,
-              include_datasets: true,
-            },
-            commit: true,
-            mutation: GET_USER_LIST,
-          });
+        this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`, {
+          action: ACTION_GET_USER_LIST,
+          body: {
+            id: this.user.id,
+            include_datasets: true,
+          },
+          commit: true,
+          mutation: GET_USER_LIST,
+        });
       }
     },
     uploadResetState() {
@@ -347,12 +359,14 @@ export default {
 
       setTimeout(() => {
         console.log(METADATA_EDITING_SELECT_RESOURCE, newRes);
-        this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, newRes?.id);
+        this.$store.commit(
+          `${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`,
+          newRes?.id,
+        );
 
         // reset uppy to be able to upload another file
         this.resetUppy();
       }, 500);
-
     },
     uploadUppyError(error) {
       // console.log('uploadUppyError', error);
@@ -375,7 +389,7 @@ export default {
       if (files.length > 0) {
         uppy.cancelAll();
       } else {
-        uppy.clear()
+        uppy.clear();
       }
     },
     async createResourceFromUrl(url) {
@@ -386,8 +400,8 @@ export default {
 
       this.resourceViewModel = new ResourceModel();
       const validData = await this.resourceViewModel.save(newResource);
-      
-      if(!validData) {
+
+      if (!validData) {
         console.error('Invalid Data for new resources', newResource);
         return;
       }
@@ -398,8 +412,8 @@ export default {
 
       this.$emit('save', {
         resources: currentResources,
-      })
-/*
+      });
+      /*
       // resource exists already, get it from uploadResource
       const newRes = this.$store?.getters[`${USER_NAMESPACE}/uploadResource`];
 
@@ -407,10 +421,9 @@ export default {
         this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, newRes?.id);
       });
 */
-
     },
     unselectCurrentResource() {
-      if(this.selectedResource) {
+      if (this.selectedResource) {
         this.selectedResource.isSelected = false;
         this.resetResourceViewModel();
       }
@@ -418,22 +431,27 @@ export default {
     catchEditResourceClose() {
       this.unselectCurrentResource();
     },
-    markResourceSelected(resources: Resource[], id: string, isSelected: boolean) {
-      const resToMark = resources.filter(
-        (resource) => resource.id === id,
-      )[0];
+    markResourceSelected(
+      resources: Resource[],
+      id: string,
+      isSelected: boolean,
+    ) {
+      const resToMark = resources.filter((resource) => resource.id === id)[0];
       if (resToMark) {
         resToMark.isSelected = isSelected;
       }
     },
     catchSaveEditResource(resource: Resource) {
-
       // clear the internal state of the UI component in case there was an input
       // on the adding of a new author
       eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
       this.unselectCurrentResource();
 
-      this.markResourceSelected(this.resources, resource.id, !resource.isSelected);
+      this.markResourceSelected(
+        this.resources,
+        resource.id,
+        !resource.isSelected,
+      );
       this.resourceViewModel.save(resource);
     },
     showFullScreenImage(url) {
