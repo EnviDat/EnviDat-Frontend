@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="pa-0" id="ResourcesInformation">
     <v-row>
-      <v-col cols="6">
+      <v-col cols="12" lg="6">
         <v-row v-if="selectedResource">
           <v-col v-if="resourceEditingActive" >
             <!-- prettier-ignore -->
@@ -29,7 +29,7 @@
         </v-row>
       </v-col>
 
-      <v-col cols="6">
+      <v-col cols="12" lg="6">
         <ResourcesListEditing
           v-bind="metadataResourcesGenericProps"
           @save="saveResources"

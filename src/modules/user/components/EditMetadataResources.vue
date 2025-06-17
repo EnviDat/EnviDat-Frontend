@@ -92,6 +92,10 @@ export default {
       type: String,
       default: undefined,
     },
+    compactList: {
+      type: Boolean,
+      default: false,
+    },
     readOnlyFields: {
       type: Array,
       default: () => [],
@@ -128,6 +132,7 @@ export default {
         emptyText:
           'No resources has been added yet. Upload a file or provide a link to a resource.',
         emptyTextColor: 'grey',
+        compactList: this.compactList,
       };
     },
   },

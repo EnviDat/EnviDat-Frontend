@@ -43,7 +43,7 @@
             v-for="author in authors"
             :key="author.fullName"
             cols="12"
-            sm="6"
+            v-bind="listLayout"
             class="pa-2"
           >
             <slot name="editingAuthors" v-bind="author" />
@@ -138,6 +138,10 @@ export default {
       type: String,
       default: 'red',
     },
+    compactList: {
+      type: Boolean,
+      default: false,
+    },
     emptyText: {
       type: String,
       default: 'No authors found for this dataset.',
@@ -168,6 +172,13 @@ export default {
     this.showAuthors = false;
   },
   computed: {
+    listLayout() {
+      return this.compactList ? {
+        sm: 6,
+      } : {
+        xl: 6,
+      }
+    },
     hasEditingAuthorsSlot() {
       // correct refactoring??
       // check https://v3-migration.vuejs.org/breaking-changes/slots-unification.html#_3-x-syntax

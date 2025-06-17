@@ -47,7 +47,7 @@ for (let j = 0; j < deprecatedMetadata.resources.length; j++) {
 const deprecatedResources1 = createResources(deprecatedMetadata);
 
 export default {
-  title: '3 Datasets / 1 Views / Metadata Resources',
+  title: '3 Datasets / 1 Views / Resources',
   component: MetadataResources,
 };
 
@@ -66,6 +66,19 @@ export const WithResources = {
     resources: resources1.resources,
     dates: resources1Dates,
     showPlaceholder: false,
+    compactList: true,
+  }
+}
+
+export const WithResourcesWideList = {
+  args: {
+    dataLicenseId: license1.id,
+    dataLicenseTitle: license1.title,
+    dataLicenseUrl: license1.url,
+    resources: resources1.resources,
+    dates: resources1Dates,
+    showPlaceholder: false,
+    compactList: false,
   }
 }
 

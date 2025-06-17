@@ -607,6 +607,7 @@ export default {
         dataLicenseUrl: license.url,
         resourcesConfig: this.resourcesConfig,
         showPlaceholder: this.showPlaceholder,
+        compactList: true,
       };
     },
     setMetadataContent() {

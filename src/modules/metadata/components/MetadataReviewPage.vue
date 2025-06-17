@@ -312,6 +312,7 @@ export default {
         dataLicenseTitle: license.title,
         dataLicenseUrl: license.url,
         resourcesConfig: this.resourcesConfig,
+        compactList: true,
       };
     },
     setMetadataContent() {
