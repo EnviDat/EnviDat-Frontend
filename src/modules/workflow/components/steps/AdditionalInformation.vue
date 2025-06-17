@@ -1,27 +1,26 @@
 <template>
-  <v-card id="EditAdditionalInformation" class="pt-md-8 pt-0-8" elevation="0">
-    <v-container fluid class="pa-4">
-      <!-- Title box -->
-      <v-row class="mb-0">
-        <v-col class="text-h5 font-weight-bold" cols="8">
-          {{ labels.title }}
-        </v-col>
-        <v-col cols="12" class="text-body-1">
-          {{ labels.instructions }}
-        </v-col>
-      </v-row>
+  <v-container id="EditAdditionalInformation" fluid class="pa-4">
+    <!-- Title box -->
+    <v-row class="mb-0">
+      <v-col class="text-h5 font-weight-bold" cols="12">
+        {{ labels.title }}
+      </v-col>
+      <v-col cols="12" class="text-body-1">
+        {{ labels.instructions }}
+      </v-col>
+    </v-row>
 
-      <!-- Info Banner -->
-      <v-row>
-        <v-col class="mb-5 pt-0 pb-0">
-          <v-alert type="info" closable :icon="false" class="rounded-lg">
-            <v-alert-title>Information</v-alert-title>
-            Lorem Ipsum
-          </v-alert>
-        </v-col>
-      </v-row>
+    <!-- Info Banner -->
+    <v-row>
+      <v-col class="mb-5 pt-0 pb-0">
+        <v-alert type="info" closable :icon="false" class="rounded-lg">
+          <v-alert-title>Information</v-alert-title>
+          Lorem Ipsum
+        </v-alert>
+      </v-col>
+    </v-row>
 
-      <!-- <v-col v-if="message" cols="4" class="pl-16">
+    <!-- <v-col v-if="message" cols="4" class="pl-16">
           <BaseStatusLabelView
             status="check"
             statusColor="success"
@@ -37,150 +36,145 @@
             :expandedText="errorDetails"
           />
         </v-col> -->
-      <v-row class="mb-5">
-        <v-col>
-          <div class="font-weight-bold">{{ labels.cardTitle }}</div>
-          <div class="text-caption">
-            {{ labels.fundingInformation }}
-          </div>
-        </v-col>
-      </v-row>
-
-      <v-row
-        v-for="(item, index) in previewFundersWithEmpty"
-        :key="index"
-        :class="index === 0 ? 'mt-2' : 'py-0'"
-        no-gutters
-      >
-        <v-col cols="12">
-          <v-row>
-            {{ INSTITUTION }}
-            <v-col cols="4" class="pr-2">
-              <v-text-field
-                :label="labels.institution"
-                :model-value="item.institution"
-                :readonly="isFieldReadOnly('institution')"
-                :hint="readOnlyHint('institution')"
-                @keyup.enter="onKeyUp"
-                @change="
-                  changeInstitution(index, 'institution', $event.target.value)
-                "
-              />
-            </v-col>
-
-            <v-col cols="3" class="px-2">
-              <v-text-field
-                :label="labels.grantNumber"
-                :model-value="item.grantNumber"
-                :readonly="isFieldReadOnly('grantNumber')"
-                :hint="readOnlyHint('grantNumber')"
-                @keyup="onKeyUp"
-                @change="
-                  changeInstitution(index, 'grantNumber', $event.target.value)
-                "
-              />
-            </v-col>
-
-            <v-col class="flex-grow-1 pl-2">
-              <v-text-field
-                :label="labels.institutionUrl"
-                :model-value="item.institutionUrl"
-                :readonly="isFieldReadOnly('institutionUrl')"
-                :hint="readOnlyHint('institutionUrl')"
-                @keyup="onKeyUp"
-                @change="
-                  changeInstitution(
-                    index,
-                    'institutionUrl',
-                    $event.target.value,
-                  )
-                "
-              />
-            </v-col>
-
-            <v-col class="flex-grow-0 px-1">
-              <BaseIconButton
-                :icon="mdiMinusCircleOutline"
-                icon-color="red"
-                :disabled="index === previewFunders.length - 1"
-                @clicked="deleteFundersEntry(index)"
-              />
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-row>
-
-      <v-col v-if="validationErrors.funders != null">
-        <div
-          :style="{ color: '#FF847B', fontSize: '0.75rem' }"
-          class="error--text text-caption mt-3"
-        >
-          {{ validationErrors.funders }}
+    <v-row class="mb-5">
+      <v-col>
+        <div class="font-weight-bold">{{ labels.cardTitle }}</div>
+        <div class="text-caption">
+          {{ labels.fundingInformation }}
         </div>
       </v-col>
+    </v-row>
 
-      <v-row>
-        <v-col cols="12">
-          <v-row class="mb-5">
-            <v-col>
-              <div class="font-weight-bold">{{ labelsLicense.cardTitle }}</div>
-              <div
-                class="text-caption"
-                v-html="labelsLicense.instructionsLicense"
-              ></div>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col cols="12">
-              <v-select
-                v-model="selectedLicenseObj"
-                :items="activeLicenses"
-                item-text="title"
-                return-object
-                :label="labelsLicense.dataLicense"
-                :readonly="isDataLicenseReadonly"
-                hide-details
-                persistent-hint
-                :hint="dataLicenseReadonlyExplanation"
-                :prepend-icon="mdiShieldSearch"
-                :menu-icon="mdiArrowDownDropCircleOutline"
-                @update:model-value="changeLicense($event)"
-              />
-            </v-col>
-            <v-col v-if="validationErrors.dataLicenseId != null">
-              <div
-                :style="{ color: '#FF847B', fontSize: '0.75rem' }"
-                class="error--text text-caption mt-3"
-              >
-                {{ validationErrors.dataLicenseId }}
-              </div>
-            </v-col>
-
-            <v-col cols="12">
-              <v-expansion-panels focusable>
-                <v-expansion-panel :title="dataSummaryClickInfo">
-                  <v-expansion-panel-text>
-                    <div v-html="getDataLicenseSummary" />
-                  </v-expansion-panel-text>
-                </v-expansion-panel>
-              </v-expansion-panels>
-            </v-col>
-          </v-row>
-
-          <v-col cols="12" class="text-body-2 mt-5">
-            <div>{{ labelsLicense.dataLicenseUrl }}</div>
-            <a
-              v-if="currentDataLicense?.link"
-              :href="currentDataLicense.link"
-              target="_blank"
-              >{{ currentDataLicense.link }}</a
-            >
+    <v-row
+      v-for="(item, index) in previewFundersWithEmpty"
+      :key="index"
+      :class="index === 0 ? 'mt-2' : 'py-0'"
+      no-gutters
+    >
+      <v-col cols="12">
+        <v-row>
+          {{ INSTITUTION }}
+          <v-col cols="4" class="pr-2">
+            <v-text-field
+              :label="labels.institution"
+              :model-value="item.institution"
+              :readonly="isFieldReadOnly('institution')"
+              :hint="readOnlyHint('institution')"
+              @keyup.enter="onKeyUp"
+              @change="
+                changeInstitution(index, 'institution', $event.target.value)
+              "
+            />
           </v-col>
+
+          <v-col cols="3" class="px-2">
+            <v-text-field
+              :label="labels.grantNumber"
+              :model-value="item.grantNumber"
+              :readonly="isFieldReadOnly('grantNumber')"
+              :hint="readOnlyHint('grantNumber')"
+              @keyup="onKeyUp"
+              @change="
+                changeInstitution(index, 'grantNumber', $event.target.value)
+              "
+            />
+          </v-col>
+
+          <v-col class="flex-grow-1 pl-2">
+            <v-text-field
+              :label="labels.institutionUrl"
+              :model-value="item.institutionUrl"
+              :readonly="isFieldReadOnly('institutionUrl')"
+              :hint="readOnlyHint('institutionUrl')"
+              @keyup="onKeyUp"
+              @change="
+                changeInstitution(index, 'institutionUrl', $event.target.value)
+              "
+            />
+          </v-col>
+
+          <v-col class="flex-grow-0 px-1">
+            <BaseIconButton
+              :icon="mdiMinusCircleOutline"
+              icon-color="red"
+              :disabled="index === previewFunders.length - 1"
+              @clicked="deleteFundersEntry(index)"
+            />
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
+
+    <v-col v-if="validationErrors.funders != null">
+      <div
+        :style="{ color: '#FF847B', fontSize: '0.75rem' }"
+        class="error--text text-caption mt-3"
+      >
+        {{ validationErrors.funders }}
+      </div>
+    </v-col>
+
+    <v-row>
+      <v-col cols="12">
+        <v-row class="mb-5">
+          <v-col>
+            <div class="font-weight-bold">{{ labelsLicense.cardTitle }}</div>
+            <div
+              class="text-caption"
+              v-html="labelsLicense.instructionsLicense"
+            ></div>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col cols="12">
+            <v-select
+              v-model="selectedLicenseObj"
+              :items="activeLicenses"
+              item-text="title"
+              return-object
+              :label="labelsLicense.dataLicense"
+              :readonly="isDataLicenseReadonly"
+              hide-details
+              persistent-hint
+              :hint="dataLicenseReadonlyExplanation"
+              :prepend-icon="mdiShieldSearch"
+              :menu-icon="mdiArrowDownDropCircleOutline"
+              @update:model-value="changeLicense($event)"
+            />
+          </v-col>
+          <v-col v-if="validationErrors.dataLicenseId != null">
+            <div
+              :style="{ color: '#FF847B', fontSize: '0.75rem' }"
+              class="error--text text-caption mt-3"
+            >
+              {{ validationErrors.dataLicenseId }}
+            </div>
+          </v-col>
+
+          <v-col cols="12">
+            <v-expansion-panels focusable>
+              <v-expansion-panel :title="dataSummaryClickInfo">
+                <v-expansion-panel-text>
+                  <div v-html="getDataLicenseSummary" />
+                </v-expansion-panel-text>
+              </v-expansion-panel>
+            </v-expansion-panels>
+          </v-col>
+        </v-row>
+
+        <v-col cols="12" class="text-body-2 mt-5">
+          <div>{{ labelsLicense.dataLicenseUrl }}</div>
+          <a
+            v-if="currentDataLicense?.link"
+            :href="currentDataLicense.link"
+            target="_blank"
+            >{{ currentDataLicense.link }}</a
+          >
         </v-col>
-      </v-row>
-    </v-container>
-  </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>

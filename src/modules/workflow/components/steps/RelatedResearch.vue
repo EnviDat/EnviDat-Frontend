@@ -1,64 +1,62 @@
 <template>
-  <v-card id="EditRelatedResearch" class="pt-md-8 pt-0" elevation="0">
-    <v-container fluid class="pa-4">
-      <!-- Title box -->
-      <v-row class="mb-0">
-        <v-col class="text-h5 font-weight-bold" cols="8">
-          {{ labels.title }}
-        </v-col>
-        <v-col cols="12" class="text-body-1">
-          {{ labels.instructions }}
-        </v-col>
-      </v-row>
+  <v-container id="EditRelatedResearch" fluid class="pa-4">
+    <!-- Title box -->
+    <v-row class="mb-0">
+      <v-col class="text-h5 font-weight-bold" cols="12">
+        {{ labels.title }}
+      </v-col>
+      <v-col cols="12" class="text-body-1">
+        {{ labels.instructions }}
+      </v-col>
+    </v-row>
 
-      <!-- Info Banner -->
-      <v-row>
-        <v-col class="mb-5 pt-0 pb-0">
-          <v-alert type="info" closable :icon="false" class="rounded-lg">
-            <v-alert-title>Information</v-alert-title>
-            Lorem Ipsum
-          </v-alert>
-        </v-col>
-      </v-row>
+    <!-- Info Banner -->
+    <v-row>
+      <v-col class="mb-5 pt-0 pb-0">
+        <v-alert type="info" closable :icon="false" class="rounded-lg">
+          <v-alert-title>Information</v-alert-title>
+          Lorem Ipsum
+        </v-alert>
+      </v-col>
+    </v-row>
 
-      <v-row>
-        <v-col cols="12">
-          <v-alert type="warning" closable :icon="info" class="rounded-lg">
-            <v-alert-title>Related Research</v-alert-title>
-            The information about related publications is
-            <b>not required for publishing</b> — you can continue filling out
-            the form even if you leave these fields empty.
-            <b>However, these fields are still very important</b>, and it's good
-            to remember that you can also fill them in after the publication.
-          </v-alert>
-        </v-col>
-      </v-row>
+    <v-row>
+      <v-col cols="12">
+        <v-alert type="warning" closable :icon="info" class="rounded-lg">
+          <v-alert-title>Related Research</v-alert-title>
+          The information about related publications is
+          <b>not required for publishing</b> — you can continue filling out the
+          form even if you leave these fields empty.
+          <b>However, these fields are still very important</b>, and it's good
+          to remember that you can also fill them in after the publication.
+        </v-alert>
+      </v-col>
+    </v-row>
 
-      <v-row>
-        <v-col cols="12" xl="6">
-          <EditRelatedPublicationsListWorkflow
-            @save="save"
-            @validate="validate"
-            :validationErrors="validationErrors"
-            v-bind="editRelatedPublicationsProps"
-          />
-        </v-col>
+    <v-row>
+      <v-col cols="12" xl="6">
+        <EditRelatedPublicationsListWorkflow
+          @save="save"
+          @validate="validate"
+          :validationErrors="validationErrors"
+          v-bind="editRelatedPublicationsProps"
+        />
+      </v-col>
 
-        <v-col cols="12" xl="6">
-          <EditRelatedDatasetsWorkflow
-            @save="save"
-            @validate="validate"
-            :validationErrors="validationErrors"
-            v-bind="editRelatedDatasetsProps"
-          />
-          <!-- <EditCustomFieldsWorkflow
+      <v-col cols="12" xl="6">
+        <EditRelatedDatasetsWorkflow
+          @save="save"
+          @validate="validate"
+          :validationErrors="validationErrors"
+          v-bind="editRelatedDatasetsProps"
+        />
+        <!-- <EditCustomFieldsWorkflow
             @save="save"
             v-bind="editCustomFieldsProps"
           /> -->
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>

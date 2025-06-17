@@ -1,188 +1,181 @@
 <template>
-  <v-card
-    id="EditDataGeo"
-    class="pt-md-8 pt-0"
-    elevation="0"
-    :loading="loadingColor"
-  >
-    <v-container fluid class="pa-4">
-      <!-- Title box -->
-      <v-row class="mb-0">
-        <v-col
-          class="text-h5 font-weight-bold"
-          cols="8"
-          v-html="labels.cardTitle"
+  <v-container id="EditDataGeo" fluid class="pa-4">
+    <!-- Title box -->
+    <v-row class="mb-0">
+      <v-col
+        class="text-h5 font-weight-bold"
+        cols="12"
+        v-html="labels.cardTitle"
+      >
+      </v-col>
+      <v-col cols="12" class="text-body-1" v-html="labels.cardInstructions">
+      </v-col>
+    </v-row>
+
+    <!-- Info Banner -->
+    <v-row>
+      <v-col class="mb-5 pt-0 pb-0">
+        <v-alert type="info" closable :icon="false" class="rounded-lg">
+          <v-alert-title>Information</v-alert-title>
+          Lorem Ipsum
+        </v-alert>
+      </v-col>
+    </v-row>
+
+    <v-col cols="12" class="editDataGeo customPadding mt-5">
+      <MetadataGeo
+        :elevation="0"
+        :showTitle="false"
+        :showError="false"
+        v-bind="metadataGeoProps"
+      />
+      <v-col class="pl-0" v-if="validationErrors.geometries != null">
+        <div
+          :style="{ color: '#FF847B', fontSize: '0.75rem' }"
+          class="error--text text-caption mt-1"
         >
-        </v-col>
-        <v-col cols="12" class="text-body-1" v-html="labels.cardInstructions">
-        </v-col>
-      </v-row>
+          {{ validationErrors.geometries }}
+        </div>
+      </v-col>
+    </v-col>
 
-      <!-- Info Banner -->
-      <v-row>
-        <v-col class="mb-5 pt-0 pb-0">
-          <v-alert type="info" closable :icon="false" class="rounded-lg">
-            <v-alert-title>Information</v-alert-title>
-            Lorem Ipsum
-          </v-alert>
-        </v-col>
-      </v-row>
+    <v-row v-show="isDefaultLocation" class="mt-5">
+      <v-col>
+        <v-alert type="warning">{{ labels.defaultInstructions }}</v-alert>
+      </v-col>
+    </v-row>
 
-      <v-col cols="12" class="editDataGeo customPadding mt-5">
-        <MetadataGeo
-          :elevation="0"
-          :showTitle="false"
-          :showError="false"
-          v-bind="metadataGeoProps"
-        />
-        <v-col class="pl-0" v-if="validationErrors.geometries != null">
-          <div
-            :style="{ color: '#FF847B', fontSize: '0.75rem' }"
-            class="error--text text-caption mt-1"
+    <v-row>
+      <v-col cols="12" xl="6">
+        <v-row>
+          <v-col>
+            <div class="font-weight-bold">Editor</div>
+            <div class="text-caption">
+              {{ labels.editorInstructions }}
+            </div>
+          </v-col>
+
+          <v-col
+            cols="12"
+            class="editorHeight"
+            :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack};`"
           >
-            {{ validationErrors.geometries }}
-          </div>
-        </v-col>
+            <div class="columns">
+              <div class="column">
+                <div class="jsoneditor-vue" ref="editorRef"></div>
+              </div>
+            </div>
+          </v-col>
+
+          <!-- local parse / validation error -->
+          <v-col v-if="inputError" cols="12">
+            <v-alert type="warning">{{ inputError }}</v-alert>
+          </v-col>
+
+          <!-- hidden file input -->
+          <v-file-input
+            style="display: none"
+            ref="filePicker"
+            accept=".geojson,.json"
+            v-model="geoFile"
+          />
+
+          <v-col cols="12">
+            <v-row no-gutters align="center">
+              <v-col class="mt-5 mb-5">{{ labels.uploadInstructions }}</v-col>
+              <v-col class="flex-grow-0 mr-4">
+                <BaseRectangleButton
+                  color="highlight"
+                  buttonText="Upload File"
+                  tooltipText="File Drop Also Possible"
+                  tooltipPosition="top"
+                  :icon="mdiFileUpload"
+                  icon-color="black"
+                  @clicked="triggerFilePicker"
+                />
+              </v-col>
+              <v-col class="flex-grow-1">
+                <v-row align="center" justify="center" no-gutters>
+                  <v-col>
+                    <div
+                      ref="dropZoneRef"
+                      class="dropZone"
+                      :style="`border-color: ${vuetifyHighlight}; background-color: ${isOverDropZone ? vuetifyHighlight : 'transparent'};`"
+                    >
+                      {{ labels.fileDropLabel }}
+                    </div>
+                  </v-col>
+                </v-row>
+              </v-col>
+            </v-row>
+          </v-col>
+
+          <v-col cols="12" class="mt-4 d-flex justify-end">
+            <BaseRectangleButton
+              :disabled="!saveButtonEnabled"
+              :loading="saveButtonInProgress"
+              :icon="mdiContentSave"
+              color="primary"
+              buttonText="Save Changes"
+              tooltipText="Save the changes you have made"
+              iconColor="black"
+              @clicked="commitGeometriesToAPI"
+            />
+          </v-col>
+        </v-row>
       </v-col>
 
-      <v-row v-show="isDefaultLocation" class="mt-5">
-        <v-col>
-          <v-alert type="warning">{{ labels.defaultInstructions }}</v-alert>
-        </v-col>
-      </v-row>
-
-      <v-row>
-        <v-col cols="12" xl="6">
-          <v-row>
-            <v-col>
-              <div class="font-weight-bold">Editor</div>
-              <div class="text-caption">
-                {{ labels.editorInstructions }}
-              </div>
-            </v-col>
-
-            <v-col
-              cols="12"
-              class="editorHeight"
-              :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack};`"
-            >
-              <div class="columns">
-                <div class="column">
-                  <div class="jsoneditor-vue" ref="editorRef"></div>
-                </div>
-              </div>
-            </v-col>
-
-            <!-- local parse / validation error -->
-            <v-col v-if="inputError" cols="12">
-              <v-alert type="warning">{{ inputError }}</v-alert>
-            </v-col>
-
-            <!-- hidden file input -->
-            <v-file-input
-              style="display: none"
-              ref="filePicker"
-              accept=".geojson,.json"
-              v-model="geoFile"
+      <v-col cols="12" xl="6">
+        <v-row
+          v-for="(item, index) in datesField"
+          :key="index"
+          class="d-flex flex-column"
+          no-gutters
+          dense
+        >
+          <v-col cols="11" class="flex-grow-0 mb-3">
+            <div class="text-body-1 font-weight-bold text-capitalize">
+              Time Information - {{ item.dateType }}
+            </div>
+            <div class="text-body-1 text-caption">
+              {{ item.dateExplanation }}.
+              <b>{{
+                datesField[index].dateType === 'created'
+                  ? 'This field is mandatory'
+                  : ''
+              }}</b>
+            </div>
+          </v-col>
+          <v-col cols="12">
+            <BaseStartEndDate
+              :startDate="item.dateStart"
+              :startDateLabel="`${item.dateType} start date`"
+              :startDateProperty="startDateProperty"
+              :endDate="item.dateEnd"
+              :error-messages="validationErrors.dates"
+              :endDateLabel="`${item.dateType} end date`"
+              :endDateProperty="endDateProperty"
+              :clearableEndDate="false"
+              :clearableStartDate="false"
+              rowLayout
+              @dateChange="(prop, val) => dateChanged(index, prop, val)"
+              @clearClick="(prop) => clearDate(index, prop)"
+              :readOnlyFields="readOnlyFields"
+              :readOnlyExplanation="readOnlyExplanation"
             />
-
-            <v-col cols="12">
-              <v-row no-gutters align="center">
-                <v-col class="mt-5 mb-5">{{ labels.uploadInstructions }}</v-col>
-                <v-col class="flex-grow-0 mr-4">
-                  <BaseRectangleButton
-                    color="highlight"
-                    buttonText="Upload File"
-                    tooltipText="File Drop Also Possible"
-                    tooltipPosition="top"
-                    :icon="mdiFileUpload"
-                    icon-color="black"
-                    @clicked="triggerFilePicker"
-                  />
-                </v-col>
-                <v-col class="flex-grow-1">
-                  <v-row align="center" justify="center" no-gutters>
-                    <v-col>
-                      <div
-                        ref="dropZoneRef"
-                        class="dropZone"
-                        :style="`border-color: ${vuetifyHighlight}; background-color: ${isOverDropZone ? vuetifyHighlight : 'transparent'};`"
-                      >
-                        {{ labels.fileDropLabel }}
-                      </div>
-                    </v-col>
-                  </v-row>
-                </v-col>
-              </v-row>
-            </v-col>
-
-            <v-col cols="12" class="mt-4 d-flex justify-end">
-              <BaseRectangleButton
-                :disabled="!saveButtonEnabled"
-                :loading="saveButtonInProgress"
-                :icon="mdiContentSave"
-                color="primary"
-                buttonText="Save Changes"
-                tooltipText="Save the changes you have made"
-                iconColor="black"
-                @clicked="commitGeometriesToAPI"
-              />
-            </v-col>
-          </v-row>
-        </v-col>
-
-        <v-col cols="12" xl="6">
-          <v-row
-            v-for="(item, index) in datesField"
-            :key="index"
-            class="d-flex flex-column"
-            no-gutters
-            dense
-          >
-            <v-col cols="11" class="flex-grow-0 mb-3">
-              <div class="text-body-1 font-weight-bold text-capitalize">
-                Time Information - {{ item.dateType }}
-              </div>
-              <div class="text-body-1 text-caption">
-                {{ item.dateExplanation }}.
-                <b>{{
-                  datesField[index].dateType === 'created'
-                    ? 'This field is mandatory'
-                    : ''
-                }}</b>
-              </div>
-            </v-col>
-            <v-col cols="12">
-              <BaseStartEndDate
-                :startDate="item.dateStart"
-                :startDateLabel="`${item.dateType} start date`"
-                :startDateProperty="startDateProperty"
-                :endDate="item.dateEnd"
-                :error-messages="validationErrors.dates"
-                :endDateLabel="`${item.dateType} end date`"
-                :endDateProperty="endDateProperty"
-                :clearableEndDate="false"
-                :clearableStartDate="false"
-                rowLayout
-                @dateChange="(prop, val) => dateChanged(index, prop, val)"
-                @clearClick="(prop) => clearDate(index, prop)"
-                :readOnlyFields="readOnlyFields"
-                :readOnlyExplanation="readOnlyExplanation"
-              />
-            </v-col>
-            <v-col v-if="datesField[index].dateType === 'created'">
-              <div
-                :style="{ color: '#FF847B', fontSize: '0.75rem' }"
-                class="error--text text-caption mt-3"
-              >
-                {{ validationErrors.dates }}
-              </div>
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-card>
+          </v-col>
+          <v-col v-if="datesField[index].dateType === 'created'">
+            <div
+              :style="{ color: '#FF847B', fontSize: '0.75rem' }"
+              class="error--text text-caption mt-3"
+            >
+              {{ validationErrors.dates }}
+            </div>
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
