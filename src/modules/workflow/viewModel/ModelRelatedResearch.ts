@@ -81,6 +81,7 @@ export class ModelRelatedResearch extends AbstractEditViewModel {
     ];
   }
 
+/*
   getData() {
     return {
       relatedPublicationsText: this.relatedPublicationsText,
@@ -88,6 +89,7 @@ export class ModelRelatedResearch extends AbstractEditViewModel {
       customFields: this.customFields,
     };
   }
+*/
 
   validate(newProps?: Partial<ModelRelatedResearch>) {
     return super.validate(newProps);

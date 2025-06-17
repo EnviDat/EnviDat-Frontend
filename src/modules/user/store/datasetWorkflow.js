@@ -61,12 +61,17 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
         this.currentStep = next.id;
       }
     },
-    async validateStepAction(stepId, freshData) {
+    async validateStepAction(stepId) {
       const vm = this.currentViewModel;
       if (!vm) return;
 
+      const dataToValidate = vm.value?.getModelData();
+
+      // always validate the data of the model before navigating
+      // to ensure also the initial case when the workflow was justed loaded?
+      
       // check with Dominik for another solution
-      vm.validate(freshData);
+      vm.validate(dataToValidate);
 
       const errorValues = Object.values(vm.validationErrors);
 

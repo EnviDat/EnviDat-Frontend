@@ -42,6 +42,7 @@ export class ModelPublicationInformation extends AbstractEditViewModel {
     return super.validate(newProps);
   }
 
+/*
   getData() {
     return {
       contactEmail: this.contactEmail,
@@ -49,6 +50,7 @@ export class ModelPublicationInformation extends AbstractEditViewModel {
       contactLastName: this.contactLastName,
     };
   }
+*/
 
   static mappingRules() {
     return [

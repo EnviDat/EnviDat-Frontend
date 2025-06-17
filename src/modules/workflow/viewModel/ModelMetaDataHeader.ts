@@ -55,6 +55,7 @@ export class ModelMetaDataHeader extends AbstractEditViewModel {
     return super.validate(newProps);
   }
 
+/*
   getData() {
     return {
       metadataTitle: this.metadataTitle,
@@ -62,6 +63,7 @@ export class ModelMetaDataHeader extends AbstractEditViewModel {
       keywords: this.keywords,
     };
   }
+*/
 
   static mappingRules() {
     return [

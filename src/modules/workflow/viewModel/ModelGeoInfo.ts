@@ -44,12 +44,14 @@ export class ModelGeoInfo extends AbstractEditViewModel {
     return super.validate(newProps);
   }
 
+/*
   getData() {
     return {
       dates: this.dates,
       geometries: this.geometries,
     };
   }
+*/
 
   static mappingRules() {
     return [
