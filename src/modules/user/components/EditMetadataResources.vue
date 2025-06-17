@@ -63,7 +63,7 @@ import MetadataResources from '@/modules/metadata/components/Metadata/MetadataRe
 import ExpandableLayout from '@/components/Layouts/ExpandableLayout.vue';
 import BaseDraggableList from '@/components/BaseElements/BaseDraggableList.vue';
 
-import { getResourceName } from '@/factories/metaDataFactory';
+import { getResourceName } from '@/factories/resourceHelpers';
 
 import {
   EDITMETADATA_CLEAR_PREVIEW,

@@ -4,7 +4,7 @@ import LineChart from '@/components/Charts/LineChart.vue';
 
 import { loadResourcesData } from '@/modules/charts/middelware/chartServiceLayer.ts';
 import { MetaData } from '@/types/dataVizTypes';
-import { getResourceName } from '@/factories/metaDataFactory.ts';
+import { getResourceName } from '@/factories/resourceHelpers';
 
 const { resource } = defineProps<{
   resource: object;

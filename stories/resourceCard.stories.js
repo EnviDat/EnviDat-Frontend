@@ -1,5 +1,5 @@
 import ResourceCard from '@/modules/metadata/components/ResourceCard.vue';
-import { createResource } from '@/factories/metaDataFactory';
+import { createResource } from '@/factories/resourceHelpers';
 import {
   mobileLargeViewportParams,
   mobileViewportParams,
