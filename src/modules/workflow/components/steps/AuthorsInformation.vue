@@ -17,7 +17,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12" xl="6" class="mb-5">
+      <v-col cols="12" lg="6" class="mb-5">
         <v-row>
           <v-col v-show="!selectedAuthor" cols="12">
             <AddExistingAuthor
@@ -50,7 +50,7 @@
         </v-row>
       </v-col>
 
-      <v-col cols="12" xl="6">
+      <v-col cols="12" lg="6">
         <MetadataAuthorsEditing
           v-bind="authorListingGenericProps"
           @editAuthorClick="catchEditAuthorClick"

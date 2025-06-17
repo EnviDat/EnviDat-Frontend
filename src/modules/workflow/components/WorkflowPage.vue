@@ -4,13 +4,13 @@
       class="fill-height"
       :class="{ 'overflow-x-scroll': display.smAndDown.value }"
     >
-      <v-col cols="12" lg="4" xl="3" class="workflow-navigation__wrapper">
+      <v-col cols="12" lg="3" xl="3" class="workflow-navigation__wrapper">
         <NavigationWorkflow />
       </v-col>
 
       <v-col
         cols="12"
-        lg="8"
+        lg="9"
         xl="9"
         class="workflow-content__wrapper position-relative"
         :class="{ loading: navigationStore.loading }"

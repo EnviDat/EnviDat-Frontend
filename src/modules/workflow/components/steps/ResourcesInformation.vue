@@ -18,8 +18,9 @@
         </v-alert>
       </v-col>
     </v-row>
+
     <v-row>
-      <v-col cols="12" xl="6">
+      <v-col cols="12" lg="6">
         <v-row v-if="selectedResource">
           <v-col v-if="resourceEditingActive">
             <!-- prettier-ignore -->
@@ -45,7 +46,7 @@
         </v-row>
       </v-col>
 
-      <v-col cols="12" xl="6">
+      <v-col cols="12" lg="6">
         <ResourcesListEditing
           v-bind="metadataResourcesGenericProps"
           @save="saveResources"
@@ -239,6 +240,8 @@ export default {
       return this.userEditMetadataConfig?.resourceUploadActive || false;
     },
     resourceEditingActive() {
+      return true;
+/*
       if (this.$store) {
         return (
           this.config?.userEditMetadataConfig?.resourceEditingActive || false
@@ -246,6 +249,7 @@ export default {
       }
 
       return this.userEditMetadataConfig?.resourceEditingActive || false;
+*/
     },
     metadataResourcesGenericProps() {
       return {
