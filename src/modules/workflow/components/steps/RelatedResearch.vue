@@ -34,7 +34,7 @@
     </v-row>
 
     <v-row>
-      <v-col cols="12" xl="6">
+      <v-col cols="12" xl="6" data-field="relatedPublicationsText">
         <EditRelatedPublicationsListWorkflow
           @save="save"
           @validate="validate"
@@ -43,7 +43,7 @@
         />
       </v-col>
 
-      <v-col cols="12" xl="6">
+      <v-col cols="12" xl="6" data-field="relatedDatasetsText">
         <EditRelatedDatasetsWorkflow
           @save="save"
           @validate="validate"

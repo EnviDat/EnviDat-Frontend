@@ -56,6 +56,7 @@
           <v-text-field
             ref="email"
             id="email"
+            data-field="email"
             :label="labels.labelEmail"
             :error-messages="validationErrors.email"
             :readonly="isReadOnly('authors')"
@@ -101,6 +102,7 @@
           <v-text-field
             ref="firstName"
             id="firstName"
+            data-field="firstName"
             :label="labels.labelFirstName"
             :error-messages="validationErrors.firstName"
             :prepend-icon="mdiAccount"
@@ -119,6 +121,7 @@
           <v-text-field
             ref="lastName"
             id="lastName"
+            data-field="lastName"
             :label="labels.labelLastName"
             :error-messages="validationErrors.lastName"
             :prepend-icon="mdiAccount"
@@ -139,6 +142,7 @@
           <v-text-field
             ref="affiliation"
             id="affiliation"
+            data-field="affiliation"
             :label="labels.labelAffiliation"
             :error-messages="validationErrors.affiliation"
             :prepend-icon="mdiHandshake"
@@ -157,6 +161,7 @@
           <v-text-field
             ref="identifier"
             id="identifier"
+            data-field="identifier"
             :label="labels.labelIdentifier"
             :error-messages="validationErrors.identifier"
             :prepend-icon="mdiWalletMembership"

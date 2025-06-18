@@ -61,6 +61,7 @@
         <v-text-field
           ref="metadataTitle"
           :id="'metadataTitle'"
+          data-field="metadataTitle"
           :label="labels.labelTitle"
           :readonly="isReadOnly(false)"
           :error-messages="validationErrors.metadataTitle"
@@ -88,6 +89,7 @@
           </v-col>
         </v-row>
         <v-autocomplete
+          data-field="keywords"
           v-model="keywordsField"
           item-text="name"
           item-value="name"
@@ -150,6 +152,7 @@
           </v-col>
         </v-row>
         <GenericTextareaPreviewLayout
+          data-field="metadataDescription"
           :columns="12"
           v-bind="genericTextAreaObject"
           :textarea-content="metadataDescriptionField"

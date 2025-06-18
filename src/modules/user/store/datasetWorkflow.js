@@ -179,40 +179,35 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
       // check with Dominik for another solution
       vm.validate(dataToValidate);
 
-      const errorValues = Object.values(vm.validationErrors);
+      const hasErrors = Object.values(vm.validationErrors).some(Boolean);
 
-      const ok = errorValues.every((err) => !err);
-
-      // const errorValues = Object.values(vm.validationErrors);
-      // const vErrors = errorValues.filter((errProp) => errProp !== null);
-      // const ok = vErrors.length <= 0;
-
-      if (ok) {
-        // REMOVE after Research Day
-        if (stepId === 6) {
-          window.location.reload();
-          return;
-        }
-        // only for the step 3, we need to ask to the user to confirm the save
-        if (stepId === this.isStepSave && !this.isStepSaveConfirmed) {
-          this.openSaveDialog = true;
-          return;
-        } else {
-          Object.assign(this.steps[stepId], {
-            completed: true,
-            hasError: false,
-            status: 'completed',
-            errors: null,
-          });
-          this.setCurrentStepAction();
-        }
-      } else {
+      if (hasErrors) {
         Object.assign(this.steps[stepId], {
           hasError: true,
           status: 'error',
           errors: vm.validationErrors,
         });
+        return false;
       }
+      // REMOVE after Research Day
+      if (stepId === 6) {
+        window.location.reload();
+        return;
+      }
+
+      if (stepId === this.isStepSave && !this.isStepSaveConfirmed) {
+        this.openSaveDialog = true;
+        return false;
+      }
+
+      Object.assign(this.steps[stepId], {
+        completed: true,
+        hasError: false,
+        status: 'completed',
+        errors: null,
+      });
+      this.setCurrentStepAction();
+      return true;
     },
 
     confirmSave(newData) {

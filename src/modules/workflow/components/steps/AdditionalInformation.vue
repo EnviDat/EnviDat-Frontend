@@ -51,6 +51,7 @@
     </v-row>
 
     <v-row
+      data-field="funders"
       v-for="(item, index) in previewFundersWithEmpty"
       :key="index"
       :class="index === 0 ? 'mt-2' : 'py-0'"
@@ -134,6 +135,7 @@
         <v-row>
           <v-col cols="12">
             <v-select
+              data-field="dataLicenseId"
               v-model="selectedLicenseObj"
               :items="activeLicenses"
               item-text="title"

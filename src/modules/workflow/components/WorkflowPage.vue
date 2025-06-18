@@ -110,6 +110,16 @@ const iconScroll = computed(() => extractIcons('scroll'));
 
 const nextStepBlock = ref(null);
 
+const scrollToFirstError = (errors) => {
+  const firstField = Object.keys(errors).find((k) => errors[k]);
+  if (!firstField) return;
+
+  const selector = `[data-field="${firstField}"], #${firstField}`;
+
+  const el = document.querySelector(selector);
+  el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+};
+
 const scrollDown = () => {
   nextTick(() => {
     const target = nextStepBlock.value?.$el || nextStepBlock.value;
@@ -128,8 +138,18 @@ const validate = (freshData) => {
 const { currentStepObject, currentAsyncComponent } =
   storeToRefs(navigationStore);
 
-const nextStep = () => {
-  navigationStore.validateStepAction(navigationStore.currentStep);
+const nextStep = async () => {
+  // remove after test
+  if (navigationStore.currentStep === 6) {
+    window.location.reload();
+  }
+  const ok = await navigationStore.validateStepAction(
+    navigationStore.currentStep,
+  );
+
+  if (!ok && vm.value) {
+    scrollToFirstError(vm.value.validationErrors);
+  }
 };
 </script>
 

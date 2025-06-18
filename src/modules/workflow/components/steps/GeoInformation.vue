@@ -22,7 +22,11 @@
       </v-col>
     </v-row>
 
-    <v-col cols="12" class="editDataGeo customPadding mt-5">
+    <v-col
+      data-field="geometries"
+      cols="12"
+      class="editDataGeo customPadding mt-5"
+    >
       <MetadataGeo
         :elevation="0"
         :showTitle="false"
@@ -148,6 +152,7 @@
           </v-col>
           <v-col cols="12">
             <BaseStartEndDate
+              data-field="dates"
               :startDate="item.dateStart"
               :startDateLabel="`${item.dateType} start date`"
               :startDateProperty="startDateProperty"

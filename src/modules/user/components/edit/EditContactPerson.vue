@@ -12,6 +12,7 @@
         <v-col cols="12" sm="6" class="pt-5">
           <v-text-field
             ref="contactEmail"
+            data-field="contactEmail"
             :id="METADATA_CONTACT_EMAIL"
             :label="labels.labelContactEmail"
             :error-messages="validationErrors[METADATA_CONTACT_EMAIL]"
@@ -49,6 +50,7 @@
         <v-col cols="12" sm="6">
           <v-text-field
             ref="contactFirstName"
+            data-field="contactFirstName"
             :id="METADATA_CONTACT_FIRSTNAME"
             :label="labels.labelContactFirstName"
             :error-messages="validationErrors[METADATA_CONTACT_FIRSTNAME]"
@@ -66,6 +68,7 @@
         <v-col cols="12" sm="6" class="pl-sm-4">
           <v-text-field
             ref="contactLastName"
+            data-field="contactLastName"
             :id="METADATA_CONTACT_LASTNAME"
             :label="labels.labelContactLastName"
             :error-messages="validationErrors[METADATA_CONTACT_LASTNAME]"
