@@ -41,17 +41,19 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
   },
   actions: {
     navigateItemAction(id, status) {
-      // REMOVE after testing
-      // if (status === 'disabled') {
-      //   return;
-      // }
+      if (status === 'disabled') {
+        return;
+      }
       this.currentStep = id;
-      // REMOVE after testing
+
       this.steps.forEach((step) => {
-        step.status = 'disabled';
-        step.hasError = false;
+        if (
+          step.status === 'active' ||
+          step.status === 'completed' ||
+          step.status === 'error'
+        )
+          return;
       });
-      this.steps[id].status = 'active';
     },
     setCurrentStepAction() {
       // find the next element with status != completed
@@ -69,7 +71,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
 
       // always validate the data of the model before navigating
       // to ensure also the initial case when the workflow was justed loaded?
-      
+
       // check with Dominik for another solution
       vm.validate(dataToValidate);
 
@@ -111,50 +113,6 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
       this.validateStepAction(this.isStepSave, newData);
     },
 
-    // async validateStepAction(stepId, newData) {
-    //   this.setCurrentStepAction();
-
-    //   this.loading = true;
-    //   // /!* prendi l’istanza del VM corrente *!/
-    //   const vm = this.currentViewModel;
-
-    //   if (!vm) {
-    //     console.warn('No view‑model for this step');
-    //     this.loading = false;
-    //     return;
-    //   }
-    //   const isValid = vm.validate(newData);
-
-    //   if (isValid) {
-    //     await vm.save(newData);
-
-    //     this.steps[stepId].completed = true;
-    //     this.steps[stepId].hasError = false;
-    //     this.steps[stepId].status = 'completed';
-    //     this.setCurrentStepAction();
-    //   } else {
-    //     this.loading = false;
-    //     this.steps[stepId].hasError = true;
-    //     this.steps[stepId].status = 'error';
-    //   }
-
-    //   this.loading = false;
-    // },
-
-    // async fetchOrganizations(url, params = {}) {
-    //   try {
-    //     const requestUrl = urlRewrite(
-    //       extractBodyIntoUrl(url, params),
-    //       API_BASE,
-    //       API_ROOT,
-    //     );
-    //     const response = await axios.get(requestUrl);
-    //     return response.data.result;
-    //   } catch (error) {
-    //     this.error = error;
-    //     throw error;
-    //   }
-    // },
     setCurrentGuide(step) {},
   },
 });
