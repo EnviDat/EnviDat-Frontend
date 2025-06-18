@@ -189,8 +189,10 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
         });
         return false;
       }
+
       // REMOVE after Research Day
-      if (stepId === 6) {
+      console.log(hasErrors);
+      if (stepId === 6 && !hasErrors) {
         window.location.reload();
         return;
       }

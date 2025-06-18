@@ -139,10 +139,6 @@ const { currentStepObject, currentAsyncComponent } =
   storeToRefs(navigationStore);
 
 const nextStep = async () => {
-  // remove after test
-  if (navigationStore.currentStep === 6) {
-    window.location.reload();
-  }
   const ok = await navigationStore.validateStepAction(
     navigationStore.currentStep,
   );
