@@ -188,6 +188,11 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
       // const ok = vErrors.length <= 0;
 
       if (ok) {
+        // REMOVE after Research Day
+        if (stepId === 6) {
+          window.location.reload();
+          return;
+        }
         // only for the step 3, we need to ask to the user to confirm the save
         if (stepId === this.isStepSave && !this.isStepSaveConfirmed) {
           this.openSaveDialog = true;
