@@ -44,13 +44,13 @@
           </v-col>
         </v-row>
       </v-col>
-      <v-col cols="12">
+      <!-- <v-col cols="12">
         <v-row>
           <v-col cols="12">
             <EditOrganization v-bind="editOrganizationProps" />
           </v-col>
         </v-row>
-      </v-col>
+      </v-col> -->
 
       <!-- <v-col cols="12">
           <v-row v-if="doiWorkflowActive">
@@ -115,7 +115,7 @@ import {
   PUBLICATION_STATE_PUBLISHED,
 } from '@/factories/metadataConsts';
 
-import EditOrganization from '@/modules/user/components/edit/EditOrganization.vue';
+// import EditOrganization from '@/modules/user/components/edit/EditOrganization.vue';
 import EditContactPerson from '@/modules/user/components/edit/EditContactPerson.vue';
 
 import EditPublicationInfo from '@/modules/user/components/edit/EditPublicationInfo.vue';
@@ -266,22 +266,26 @@ export default {
       return true;
     },
     publicationsInfo() {
-      if (this.$store) {
-        return this.$store.getters[
-          `${USER_NAMESPACE}/getMetadataEditingObject`
-        ](EDITMETADATA_PUBLICATION_INFO);
-      }
+      // ACTIVATE this part when the store is available with the backend
+      // if (this.$store) {
+      //   return this.$store.getters[
+      //     `${USER_NAMESPACE}/getMetadataEditingObject`
+      //   ](EDITMETADATA_PUBLICATION_INFO);
+      // }
 
       // storybook context
-      const stepData = this.currentStep.genericProps;
+      // const stepData = this.currentStep.genericProps;
 
       return {
-        publicationState: stepData.publicationState,
-        visibilityState: stepData.visibilityState,
-        doi: stepData.doi,
-        userRole: stepData.userRole,
-        publisher: stepData.publisher,
-        publicationYear: stepData.publicationYear,
+        publicationState: 'Draft',
+        // visibilityState: ' stepData.visibilityState',
+        // doi: stepData.doi,
+        doi: '10.10000/envidat.999',
+        userRole: 'stepData.userRole',
+        // publisher: stepData.publisher,
+        publisher: 'Envidat',
+        // publicationYear: stepData.publicationYear,
+        publicationYear: '2025',
       };
     },
     fundingInfo() {
@@ -370,7 +374,7 @@ export default {
     EditReviewInfo,
     // EditPublicationStatus,
     EditPublicationInfo,
-    EditOrganization,
+    // EditOrganization,
     // NotFoundCard,
     EditContactPerson,
   },

@@ -36,16 +36,16 @@ export const workflowSteps: WorkflowStep[] = [
     genericProps: {},
     icon: 'baseinfo',
     status: 'active',
-    guideLines: [
-      {
-        element: '.navigationWorkflow',
-        popover: { title: 'Title', description: 'Description' },
-      },
-      {
-        element: '.navigationWorkflow__actions',
-        popover: { title: 'Title', description: 'Description' },
-      },
-    ],
+    // guideLines: [
+    //   {
+    //     element: '.navigationWorkflow',
+    //     popover: { title: 'Title', description: 'Description' },
+    //   },
+    //   {
+    //     element: '.navigationWorkflow__actions',
+    //     popover: { title: 'Title', description: 'Description' },
+    //   },
+    // ],
   },
   {
     id: 1,
@@ -61,16 +61,16 @@ export const workflowSteps: WorkflowStep[] = [
     genericProps: {},
     icon: 'authorsinfo',
     status: 'disabled',
-    guideLines: [
-      {
-        element: '.navigationWorkflow__actions',
-        popover: { title: 'Title', description: 'Description' },
-      },
-      {
-        element: '.navigationWorkflow',
-        popover: { title: 'Title', description: 'Description' },
-      },
-    ],
+    // guideLines: [
+    //   {
+    //     element: '.navigationWorkflow__actions',
+    //     popover: { title: 'Title', description: 'Description' },
+    //   },
+    //   {
+    //     element: '.navigationWorkflow',
+    //     popover: { title: 'Title', description: 'Description' },
+    //   },
+    // ],
   },
   {
     id: 2,

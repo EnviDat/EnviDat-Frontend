@@ -28,7 +28,7 @@
         </div>
         <v-card
           id="EditAdditionalInformation"
-          class="pt-md-8 pt-0-8"
+          class="pt-0"
           elevation="2"
           rounded="xl"
         >
@@ -49,7 +49,7 @@
     </v-row>
     <!-- dialog, TODO make a external component -->
     <v-dialog v-model="navigationStore.openSaveDialog" max-width="500">
-      <v-card>
+      <v-card rounded="xl">
         <v-card-text class="font-weight-bold"> Before You Proceed </v-card-text>
 
         <v-card-text>

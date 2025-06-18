@@ -1,6 +1,6 @@
 <template>
   <v-card
-    class="pa-0 pt-md-8 pt-0 pb-8 flex-column navigationWorkflow"
+    class="pa-0 flex-column navigationWorkflow"
     :elevation="display.lgAndUp.value ? 2 : 0"
     rounded="xl"
   >
@@ -124,10 +124,16 @@
         @click="initDriver"
         class="navigationWorkflow__actions--item d-flex flex-column"
       >
-        <BaseIcon :large="true" :icon="iconName('question')" :color="'black'" />
+        <BaseIcon
+          :class="'pulseIcon help-icon'"
+          :large="true"
+          :icon="iconName('question')"
+          :color="'black'"
+        />
         <span class="text-body-2 mt-2">Help mode</span>
       </div>
       <div
+        @click="reserveDoi"
         :class="{
           disabled: !navigationStore.isStepSaveConfirmed,
         }"
@@ -135,15 +141,74 @@
       >
         <BaseIcon
           :large="true"
-          @click="reserveDoi"
           :icon="iconName('print')"
-          :color="'black'"
+          class="doi-icon"
+          :color="navigationStore.isStepSaveConfirmed ? 'primary' : 'black'"
+          :class="
+            navigationStore.isStepSaveConfirmed && doiPlaceholder === null
+              ? 'pulseIcon'
+              : ''
+          "
         />
-        <span class="text-body-2 mt-2">Reserve DOI</span>
+        <span class="text-body-2 mt-2">{{
+          doiPlaceholder != null ? doiPlaceholder : 'Reserve DOI'
+        }}</span>
       </div>
       <div class="navigationWorkflow__actions--item d-flex flex-column">
-        <BaseIcon :large="true" :icon="iconName('draft')" :color="'black'" />
-        <span class="text-body-2 mt-2">Draft</span>
+        <v-menu
+          v-model="showStatusMenu"
+          scrim="false"
+          :close-on-content-click="false"
+          location="bottom"
+        >
+          <!-- attivatore -->
+          <template #activator="{ props }">
+            <div
+              class="navigationWorkflow__actions--item d-flex flex-column"
+              v-bind="props"
+            >
+              <BaseIcon
+                :large="true"
+                :icon="iconName('draft')"
+                class="status-icon"
+                :color="'black'"
+              />
+              <span class="text-body-2 mt-2">
+                {{ doiPlaceholder != null ? 'Reserved DOI' : 'Draft' }}
+              </span>
+            </div>
+          </template>
+
+          <!-- contenuto -->
+          <v-card width="320" rounded="xl" class="pa-4">
+            <div class="d-flex justify-space-between align-center mb-3">
+              <span class="text-subtitle-1 font-weight-bold"
+                >Publication status</span
+              >
+              <BaseIconButton
+                :icon="mdiClose"
+                color="transparent"
+                icon-color="primary"
+                @clicked="showStatusMenu = false"
+              />
+            </div>
+
+            <p class="text-body-2 mb-2">
+              <strong>Draft:</strong> Not saved and DOI not reserved yet
+            </p>
+            <p class="text-body-2 mb-2">
+              <strong>Reserved DOI:</strong> A DOI has been provided, but it’s
+              not published yet
+            </p>
+            <p class="text-body-2 mb-2">
+              <strong>Pending:</strong> Publication in progress. The EnviDat
+              team is reviewing your dataset.
+            </p>
+            <p class="text-body-2">
+              <strong>Published:</strong> Your dataset is published.
+            </p>
+          </v-card>
+        </v-menu>
       </div>
     </v-card-actions>
     <!-- <v-expansion-panels
@@ -189,11 +254,21 @@ import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import { extractIcons } from '@/factories/iconFactory';
 
 import { useDatasetWorkflowStore } from '@/modules/user/store/datasetWorkflow';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import { mdiClose } from '@mdi/js';
+
+import { ref } from 'vue';
 
 // initialize the store
 const store = useStore();
 // define useDisplay
 const display = useDisplay();
+
+// Placeholder for DOI
+const doiPlaceholder = ref(null);
+
+// tooltip activator
+const showStatusMenu = ref(false);
 
 // Extract Icon name from IconFactory
 const iconName = (data) => extractIcons(data);
@@ -209,15 +284,28 @@ const navigateItem = (id, status) => {
 
 const reserveDoi = async () => {
   // TODO metadataID connect with the real ID, see reference initMetadataUsingId - MetadataEditPage
-  await store.dispatch('user/DOI_RESERVE', 'metadataID');
+  // await store.dispatch('user/DOI_RESERVE', 'metadataID');
+  if (navigationStore.isStepSaveConfirmed) {
+    doiPlaceholder.value = '10.10000/envidat.1234';
+  } else {
+    doiPlaceholder.value = null;
+  }
+};
+
+const tooltip = {
+  text: 'Scroll up ↑',
+  scrim: true,
+  persistent: false,
+  openOnClick: true,
+  openOnHover: false,
 };
 
 // init the driver step
 const initDriver = () => {
-  // DEFINE the guidelines on the store for each step
+  // DEFINE the guidelines on the store
   driver({
     showProgress: true,
-    steps: navigationStore.currentStepObject?.guideLines ?? [],
+    steps: navigationStore.workflowGuide,
   }).drive();
 };
 </script>
@@ -375,5 +463,20 @@ const initDriver = () => {
       }
     }
   }
+}
+
+@keyframes pulseIcon {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.06);
+    opacity: 0.55;
+  }
+}
+.pulseIcon {
+  animation: pulseIcon 1.2s ease-in-out infinite;
 }
 </style>

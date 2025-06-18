@@ -13,7 +13,12 @@
     <!-- Info Banner -->
     <v-row>
       <v-col class="mb-5 pt-0 pb-0">
-        <v-alert type="info" closable :icon="false" class="rounded-lg">
+        <v-alert
+          type="info"
+          closable
+          :icon="false"
+          class="rounded-lg info-banner"
+        >
           <v-alert-title>Information</v-alert-title>
           Lorem Ipsum
         </v-alert>
@@ -44,7 +49,7 @@
 
     <v-row>
       <!-- title -->
-      <v-col cols="12" xl="6" class="mb-5 mt-5">
+      <v-col cols="12" xl="6" class="mb-0">
         <v-row class="mb-5">
           <v-col>
             <div class="font-weight-bold">{{ labels.title }}</div>
