@@ -45,7 +45,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
           <div style="margin:10px 0">
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
               <span style="width:20px;height:20px;background:#499df7;border-radius:50%;"></span>
-              Current tep
+              Current step
             </div>
 
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">

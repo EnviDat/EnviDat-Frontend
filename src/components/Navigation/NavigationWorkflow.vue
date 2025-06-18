@@ -174,7 +174,7 @@
                 :color="'black'"
               />
               <span class="text-body-2 mt-2">
-                {{ doiPlaceholder != null ? 'Reserved DOI' : 'Draft' }}
+                {{ doiPlaceholder != null ? 'Reserved' : 'Draft' }}
               </span>
             </div>
           </template>
@@ -197,8 +197,8 @@
               <strong>Draft:</strong> Not saved and DOI not reserved yet
             </p>
             <p class="text-body-2 mb-2">
-              <strong>Reserved DOI:</strong> A DOI has been provided, but it’s
-              not published yet
+              <strong>Reserved:</strong> A DOI has been provided, but it’s not
+              published yet
             </p>
             <p class="text-body-2 mb-2">
               <strong>Pending:</strong> Publication in progress. The EnviDat

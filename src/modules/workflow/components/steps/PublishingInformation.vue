@@ -140,10 +140,9 @@ export default {
     newDatasetInfo: {},
     PUBLICATION_STATE_PUBLISHED,
     labels: {
-      title: 'Research Header Information',
+      title: 'Publishing information',
       instructions:
-        'The header is part of the main metadata information.' +
-        'Together with the other information in the "Metadata" step, it represents the core information for your research dataset.',
+        'Please provide main contact infomation and publication details for your dataset.',
     },
   }),
   props: {
