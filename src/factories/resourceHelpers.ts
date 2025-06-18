@@ -261,13 +261,22 @@ export function formatBytes(a: number, b = 2) {
   return parseFloat((a / c ** f).toFixed(b)) + ' ' + e[f];
 }
 
-export function mergeResourceSizeForFrontend(resource) {
+export function mergeResourceSizeForFrontend(resource: Resource) {
   const mergedResourceSize = {};
 
   const isLink = resource.urlType !== 'upload';
-  const resourceSize = resource.resourceSize || null;
+  let resourceSize = resource.resourceSize || null;
 
   if (resourceSize) {
+
+    if (typeof resourceSize === 'string') {
+      try {
+        resourceSize = JSON.parse(resourceSize);
+      } catch (e) {
+        console.error(`resourceSize parsing failed resource id: ${resource.id}`);
+      }
+    }
+
     let size;
     let sizeFormat;
 

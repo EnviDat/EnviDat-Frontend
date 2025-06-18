@@ -25,31 +25,33 @@
           <v-col v-if="resourceEditingActive">
             <!-- prettier-ignore -->
             <ResourceEditing v-bind="editResourceObject"
-                          @closeClicked="catchEditResourceClose"
-                          @save="saveResource"
-                          @previewImageClicked="showFullScreenImage"
+                             @closeClicked="catchEditResourceClose"
+                             @validate="validateResource"
+                             @save="saveResource"
+                             @previewImageClicked="showFullScreenImage"
             />
           </v-col>
         </v-row>
 
         <v-row v-if="!selectedResource">
-          <v-col cols="12">
-            <EditDropResourceFiles v-bind="editDropResourceObject" />
-            <!--
-            No need to listen to events from the component, events are emitted from uppy directly
--->
-          </v-col>
+          <!--
+                    <v-col cols="12">
+                      <EditDropResourceFiles v-bind="editDropResourceObject" />
+                      &lt;!&ndash; No need to listen to events from the component, events are emitted from uppy directly &ndash;&gt;
+                    </v-col>
+          -->
 
           <v-col cols="12">
             <EditResourcePasteUrl @createUrlResources="createResourceFromUrl" />
           </v-col>
         </v-row>
+
       </v-col>
 
       <v-col cols="12" lg="6">
         <ResourcesListEditing
           v-bind="metadataResourcesGenericProps"
-          @save="saveResources"
+          @save="save"
         />
       </v-col>
     </v-row>
@@ -105,13 +107,13 @@ import {
   getSelectedElement,
   updateEditingArray,
 } from '@/factories/userEditingFactory.js';
-import { mergeResourceSizeForFrontend } from '@/factories/resourceHelpers';
 
 import ResourcesListEditing from '@/modules/workflow/components/steps/ResourcesListEditing.vue';
-import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles.vue';
+// import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles.vue';
 import EditResourcePasteUrl from '@/modules/user/components/EditResourcePasteUrl.vue';
 import { ResourceModel } from '@/modules/workflow/viewModel/ResourceModel.js';
 import type { Resource } from '@/types/modelTypes';
+import { mergeResourceSizeForFrontend } from '@/factories/resourceHelpers.ts';
 
 const ResourceEditing = defineAsyncComponent(
   () => import('@/modules/workflow/components/steps/ResourceEditing.vue'),
@@ -273,9 +275,18 @@ export default {
         userEditMetadataConfig = this.userEditMetadataConfig;
       }
 
+      let mergedSize = {};
+      try {
+        mergedSize = mergeResourceSizeForFrontend(this.selectedResource);
+      } catch (e) {
+        console.error('mergeResourceSizeForFrontend failed:');
+        console.error(e);
+        // TODO Error tracking
+      }
 
       return {
         ...this.resourceViewModel,
+        ...mergedSize,
         userEditMetadataConfig,
         envidatUsers: this.allEnviDatUsers,
       };
@@ -376,6 +387,7 @@ export default {
       this.uploadState = undefined;
       this.uploadProgress = 0;
 
+      // @ts-ignore
       const uppy = getUppyInstance();
 
       const files = uppy.getFiles();
@@ -392,7 +404,7 @@ export default {
       const newResource = createNewResourceForUrl(datasetId, url);
 
       this.resourceViewModel = new ResourceModel();
-      const validData = await this.resourceViewModel.save(newResource);
+      const validData = this.resourceViewModel.validate(newResource);
 
       if (!validData) {
         console.error('Invalid Data for new resources', newResource);
@@ -400,7 +412,7 @@ export default {
       }
 
       const currentResources = [...this.resources];
-      const resourceModelData = this.resourceViewModel.getResource();
+      const resourceModelData = this.resourceViewModel.getModelData<Resource>();
       currentResources.push(resourceModelData);
 
       this.$emit('save', {
@@ -434,13 +446,16 @@ export default {
         resToMark.isSelected = isSelected;
       }
     },
-    async saveResource(data: { resource: Resource }) {
-      const validData = await this.resourceViewModel.save(data);
+    validateResource(resource: Partial<Resource>) {
+      this.resourceViewModel.validate(resource);
+    },
+    saveResource(resource: Resource) {
+      const validData = this.resourceViewModel.validate(resource);
 
       if (validData) {
         const updatedResources = updateEditingArray(
           this.resources,
-          data.resource,
+          resource,
           'id',
         );
 
@@ -471,7 +486,7 @@ export default {
         !resource.isSelected,
       );
       
-      this.resourceViewModel.save(resource);
+      this.resourceViewModel.validate(resource);
     },
     showFullScreenImage(url: string) {
       eventBus.emit(OPEN_TEXT_PREVIEW, url);
@@ -502,7 +517,7 @@ export default {
   }),
   components: {
     ResourcesListEditing,
-    EditDropResourceFiles,
+    // EditDropResourceFiles,
     EditResourcePasteUrl,
     ResourceEditing,
   },

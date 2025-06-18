@@ -293,7 +293,7 @@
   </v-card>
 </template>
 
-<script>
+<script lang="ts">
 /**
  * @summary Show all textfields for a resource
  * @author Dominik Haas-Artho
@@ -316,7 +316,6 @@ import {
 
 import {
   EDITMETADATA_CLEAR_PREVIEW,
-  EDITMETADATA_DATA_RESOURCE,
   eventBus,
 } from '@/factories/eventBus.js';
 
@@ -324,12 +323,6 @@ import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue';
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
-
-import {
-  getValidationMetadataEditingObject,
-  isFieldValid,
-  isObjectValidCheckAllProps,
-} from '@/factories/userEditingValidations.js';
 
 import { formatDateTimeToCKANFormat } from '@/factories/mappingFactory.js';
 import { renderMarkdown } from '@/factories/stringFactory.js';
@@ -435,6 +428,10 @@ export default {
       type: String,
       default: null,
     },
+    validationErrors: {
+      type: Object,
+      default: () => ({}),
+    },
     readOnlyFields: {
       type: Array,
       default: () => [],
@@ -448,7 +445,7 @@ export default {
       default: undefined,
     },
   },
-  emits: ['save', 'closeClicked'],
+  emits: ['save', 'validate', 'closeClicked'],
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
@@ -476,9 +473,9 @@ export default {
       set(value) {
         this.previews.description = value;
 
-        const valid = this.validateField('description', value);
+        this.validateField('description', value);
 
-        this.checkSaveButtonEnabled(valid);
+        this.checkSaveButtonEnabled();
       },
     },
     resourceNameField: {
@@ -488,6 +485,7 @@ export default {
       set(value) {
         this.previews.name = value;
 
+/*
         const nameEqualsUrl = this.isLink ? value === this.url : false;
 
         if (nameEqualsUrl) {
@@ -496,10 +494,11 @@ export default {
           this.checkSaveButtonEnabled(false);
           return;
         }
+*/
 
-        const valid = this.validateField('name', value);
+        this.validateField('name', value);
 
-        this.checkSaveButtonEnabled(valid);
+        this.checkSaveButtonEnabled();
       },
     },
     urlField: {
@@ -515,13 +514,11 @@ export default {
         return this.previews.size !== null ? this.previews.size : this.size;
       },
       set(value) {
-        const valid = this.validateField('size', value);
+        this.previews.size = value;
 
-        if (valid) {
-          this.previews.size = value;
-        }
+        this.validateField('size', value);
 
-        this.checkSaveButtonEnabled(valid);
+        this.checkSaveButtonEnabled();
       },
     },
     sizeFieldText: {
@@ -546,13 +543,11 @@ export default {
           : this.getFileSizeFormat(this.size);
       },
       set(value) {
-        const valid = this.validateField('sizeFormat', value);
+        this.previews.sizeFormat = value;
 
-        if (valid) {
-          this.previews.sizeFormat = value;
-        }
+        this.validateField('sizeFormat', value);
 
-        this.checkSaveButtonEnabled(valid);
+        this.checkSaveButtonEnabled();
       },
     },
     formatField: {
@@ -563,11 +558,11 @@ export default {
         return formatString.toLowerCase();
       },
       set(value) {
-        const valid = this.validateField('format', value);
-        if (valid) {
-          this.previews.format = value;
-        }
-        this.checkSaveButtonEnabled(valid);
+        this.previews.format = value;
+
+        this.validateField('format', value);
+
+        this.checkSaveButtonEnabled();
       },
     },
     checkUppercaseValue() {
@@ -714,9 +709,6 @@ export default {
     isLongUrl() {
       return this.url?.length > 100;
     },
-    validations() {
-      return getValidationMetadataEditingObject(EDITMETADATA_DATA_RESOURCE);
-    },
     fileFormatIcon() {
       return getFileIcon(this.formatField);
     },
@@ -740,12 +732,9 @@ export default {
 
       return index;
     },
-    checkSaveButtonEnabled(validField) {
-      if (!validField) {
-        this.saveButtonEnabled = false;
-        return;
-      }
+    checkSaveButtonEnabled() {
 
+/*
       // not test the preview fields to ensure the content of both fields is valid
       // to show the save button
       const objectToValidate = {
@@ -756,11 +745,12 @@ export default {
         sizeFormat: this.sizeFormatField,
       };
 
-      this.saveButtonEnabled = isObjectValidCheckAllProps(
-        objectToValidate,
-        this.validations,
-        this.validationErrors,
-      );
+      this.$emit('validate', objectToValidate);
+*/
+
+      const errorValues = Object.values(this.validationErrors)
+      const noErrors = errorValues.every((err) => !err);
+      this.saveButtonEnabled = noErrors;
     },
     saveResourceClick() {
       const ckanIsoFormat = formatDateTimeToCKANFormat(new Date());
@@ -781,6 +771,8 @@ export default {
         format: this.formatField.toLowerCase(),
         // don't set the "size" directly because this is done
         // via the file upload
+        // size: this.size, // DEMO
+        // sizeFormat: this.sizeFormatField,  // DEMO
         resourceSize: {
           sizeValue: this.isLink ? this.sizeField.toString() : '',
           sizeUnits: this.isLink ? this.sizeFormatField.toLowerCase() : '',
@@ -822,12 +814,7 @@ export default {
       );
     },
     validateField(property, value) {
-      return isFieldValid(
-        property,
-        value,
-        this.validations,
-        this.validationErrors,
-      );
+      this.$emit('validate', { [property]: value });
     },
     clearPreviews() {
       const keys = Object.keys(this.previews);
@@ -899,14 +886,6 @@ export default {
     },
     saveButtonEnabled: false,
     fileSizeIcon: getIcon('fileSize'),
-    validationErrors: {
-      name: null,
-      description: null,
-      url: null,
-      format: null,
-      size: null,
-      sizeFormat: null,
-    },
     notFoundImg,
   }),
   components: {
