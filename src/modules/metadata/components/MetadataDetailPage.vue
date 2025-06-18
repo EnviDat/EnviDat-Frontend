@@ -128,8 +128,8 @@ import {
   createLicense,
   createPublications,
   createRelatedDatasets,
-  createResources,
 } from '@/factories/metaDataFactory';
+import { createResources } from '@/factories/resourceHelpers';
 
 import { createCitation } from '@/factories/citationFactory';
 

@@ -71,27 +71,39 @@ export abstract class AbstractEditViewModel {
   /**
    * Returns a shallow copy of the properties just from this class, nothing inherited
    */
-  protected getModelData<T>(): Omit<
-    T,
-    | 'privateMappingRules'
-    | 'datasetViewModel'
-    | 'validationRules'
-    | 'validationErrors'
-    | 'savedSuccessful'
-    | 'error'
-    | 'loading'
-  > {
-    // deconstruct this to remove the model view specific props
-    const {
-      privateMappingRules,
-      datasetViewModel,
-      validationRules,
-      validationErrors,
-      savedSuccessful,
-      error,
-      loading,
-      ...dataOnly
-    } = this;
+  // protected getModelData<T>(): Omit<
+  //   T,
+  //   | 'privateMappingRules'
+  //   | 'datasetViewModel'
+  //   | 'validationRules'
+  //   | 'validationErrors'
+  //   | 'savedSuccessful'
+  //   | 'error'
+  //   | 'loading'
+  // > {
+  //   // deconstruct this to remove the model view specific props
+  //   const {
+  //     privateMappingRules,
+  //     datasetViewModel,
+  //     validationRules,
+  //     validationErrors,
+  //     savedSuccessful,
+  //     error,
+  //     loading,
+  //     ...dataOnly
+  //   } = this;
+
+  //   return dataOnly as T;
+  // }
+
+  protected getModelData<T>() {
+    const dataOnly: Record<string, any> = {};
+
+    if (this.mappingRules) {
+      this.mappingRules.forEach(([frontendKey]) => {
+        dataOnly[frontendKey] = (this as any)[frontendKey];
+      });
+    }
 
     return dataOnly as T;
   }

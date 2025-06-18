@@ -6,7 +6,7 @@
     :loading="loadingColor"
   >
     <v-container fluid class="pa-0">
-      <v-row class="mb-5 mt-5">
+      <v-row class="mb-5">
         <v-col>
           <div class="font-weight-bold">
             {{ EDIT_METADATA_RELATEDPUBLICATIONS_TITLE }}
@@ -155,7 +155,10 @@ export default {
     },
     publicationsObject() {
       return {
-        text: this.relatedPublicationsText,
+        text:
+          this.previewText !== null && this.previewText !== undefined
+            ? this.previewText
+            : this.relatedPublicationsText,
         maxTextLength: 2000,
         showPlaceholder: this.loading,
       };
@@ -199,19 +202,26 @@ export default {
 
       if (value) {
         if (!this.relatedPublicationsText?.includes(value)) {
-          const newText = `${this.relatedPublicationsText}\n ${value}`;
+          // old version
+          // const newText = `${this.relatedPublicationsText}\n ${value}`;
+          // new version
+          const base = this.previewText ?? this.relatedPublicationsText ?? '';
+          const newText = `${base}\n${value}`;
 
           this.catchChangedText(newText);
         }
       }
     },
     catchChangedText(value) {
-      if (this.validations.relatedPublicationsText === null) {
+      if (this.validationErrors.relatedPublicationsText === null) {
         this.setRelatedPublicationsText(value);
       }
     },
 
     setRelatedPublicationsText(value) {
+      this.previewText = value;
+      this.newDatasetInfo.relatedPublicationsText = this.previewText;
+      this.$emit('save', this.newDatasetInfo);
       eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_RELATED_PUBLICATIONS,
         data: { [this.editingProperty]: value },
@@ -239,7 +249,7 @@ export default {
     },
     newDatasetInfo: {},
     publicationsMap: null,
-    // previewText: null,
+    previewText: null,
     previewPid: null,
     previewDoi: null,
 
