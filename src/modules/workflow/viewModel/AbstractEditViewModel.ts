@@ -123,7 +123,10 @@ export abstract class AbstractEditViewModel {
     if (!newProps) {
       newProps = this;
     }
-    // we need to assign the newProps, otherwise the validation will not work
+
+    // take over all the data to store it in this viewModel
+    // even if it's wrong, to be up-2-date with the users input
+    // and to keep the users changes even if their are invalid
     Object.assign(this, newProps);
 
     const propsToValidate = this.getPropsToValidate(newProps);
@@ -160,9 +163,6 @@ export abstract class AbstractEditViewModel {
       if (!this.validate(newData)) {
         return false;
       }
-
-      // take over all the data to store it in this viewModel
-      Object.assign(this, newData);
 
       if (this.datasetViewModel) {
         await this.datasetViewModel.patchViewModel(this);
