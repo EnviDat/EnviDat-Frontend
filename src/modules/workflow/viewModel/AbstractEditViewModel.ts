@@ -123,6 +123,8 @@ export abstract class AbstractEditViewModel {
     if (!newProps) {
       newProps = this;
     }
+    // we need to assign the newProps, otherwise the validation will not work
+    Object.assign(this, newProps);
 
     const propsToValidate = this.getPropsToValidate(newProps);
     let allValid = true;

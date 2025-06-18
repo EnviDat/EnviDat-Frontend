@@ -68,7 +68,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
       const vm = this.currentViewModel;
       if (!vm) return;
 
-      const dataToValidate = vm.value?.getModelData();
+      const dataToValidate = vm?.getModelData();
 
       // always validate the data of the model before navigating
       // to ensure also the initial case when the workflow was justed loaded?
