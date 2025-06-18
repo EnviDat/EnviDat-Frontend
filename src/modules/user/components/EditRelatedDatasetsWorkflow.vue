@@ -177,6 +177,8 @@ export default {
       }
     },
     setRelatedDatasetsText(value) {
+      this.previewText = value;
+      this.newDatasetInfo.relatedDatasetsText = this.previewText;
       this.$emit('save', this.newDatasetInfo);
     },
     isReadOnly(dateProperty) {
