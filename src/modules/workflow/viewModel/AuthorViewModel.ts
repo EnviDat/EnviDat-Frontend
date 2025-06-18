@@ -91,13 +91,6 @@ export class AuthorViewModel extends AbstractEditViewModel implements Author {
     return author;
   }
 
-  /**
-   * Returns a shallow copy of the properties just from this class, nothing inherited
-   */
-  getAuthor() : Author {
-    return super.getModelData<Author>();
-  }
-
   validate(newProps?: Partial<AuthorViewModel>) {
     return super.validate(newProps);
   }

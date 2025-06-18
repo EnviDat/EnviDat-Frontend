@@ -290,7 +290,7 @@ export default {
       }
 
       this.markAuthorSelected(this.authors, author.email, !author.isSelected);
-      this.authorViewModel.save(author);
+      this.authorViewModel.validate(author);
     },
     removeCurrentAuthorSelection() {
       if (this.selectedAuthor) {
@@ -330,11 +330,7 @@ export default {
       this.authorViewModel.validate(data);
     },
     async editAuthor(author: Author) {
-      // call the save here to do validation, don't directly call validate()
-      // because if it's valid, we need to call getAuthor() which means the
-      // viewModel has to have the author information assign, which doesn't happen
-      // when only validating
-      const validData = await this.authorViewModel.save(author);
+      const validData = this.authorViewModel.validate(author);
 
       if (validData) {
         const updatedAuthors = updateEditingArray(
@@ -360,10 +356,10 @@ export default {
       // because if it's valid, we need to call getAuthor() which means the
       // viewModel has to have the author information assigned, which doesn't happen
       // when only validating
-      const validData = await this.authorViewModel.save(author);
+      const validData = await this.authorViewModel.validate(author);
 
       if (validData) {
-        const newAuthor = this.authorViewModel.getAuthor();
+        const newAuthor = this.authorViewModel.getModelData<Author>();
         const currentAuthors = [...this.authors];
         currentAuthors.push(newAuthor);
 

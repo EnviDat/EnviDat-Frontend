@@ -229,13 +229,6 @@ export class ResourceModel extends AbstractEditViewModel implements Resource {
 
   }
 
-  /**
-   * Returns a shallow copy of the properties just from this class, nothing inherited
-   */
-  getResource() : Resource {
-    return super.getModelData<Resource>();
-  }
-
 
   static mappingRules () {
     return [
