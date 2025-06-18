@@ -41,11 +41,12 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
   },
   actions: {
     navigateItemAction(id, status) {
+      // REMOVE after testing
       if (status === 'disabled') {
         return;
       }
       this.currentStep = id;
-
+      // REMOVE after testing
       this.steps.forEach((step) => {
         if (
           step.status === 'active' ||
