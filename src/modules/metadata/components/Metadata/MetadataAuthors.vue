@@ -33,11 +33,7 @@
       v-if="showAuthors && !showPlaceholder && hasAuthors"
       class="pa-2 pt-0"
     >
-      <v-container
-        fluid
-        class="pa-0 heightAndScroll"
-        :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}; ${ !showFullscreenButton ? 'max-height: 100% !important;' : ''}`"
-      >
+      <v-container fluid class="pa-0 heightAndScroll" :style="containerStyle">
         <v-row no-gutters>
           <v-col
             v-for="author in authors"
@@ -172,12 +168,20 @@ export default {
     this.showAuthors = false;
   },
   computed: {
+    containerStyle() {
+      const scrollCol = `scrollbar-color: ${this.scrollbarColorFront} ${this.scrollbarColorBack};`;
+      // const maxH = this.showFullscreenButton ? '750px' : '100%';
+      const maxH = '750px';
+      return `${scrollCol} max-height: ${maxH};`;
+    },
     listLayout() {
-      return this.compactList ? {
-        sm: 6,
-      } : {
-        xl: 6,
-      }
+      return this.compactList
+        ? {
+            sm: 6,
+          }
+        : {
+            xl: 6,
+          };
     },
     hasEditingAuthorsSlot() {
       // correct refactoring??
