@@ -1,6 +1,7 @@
 <template>
   <v-card id="AddExistingAuthor"
           class="pa-0"
+          flat
           :loading="loadingColor" >
 
     <v-container fluid

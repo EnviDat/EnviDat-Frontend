@@ -1,5 +1,9 @@
 <template>
-  <v-card id="MetadataAuthorsEditing" class="pa-0" :loading="loadingColor">
+  <v-card id="MetadataAuthorsEditing"
+          class="pa-0"
+          :loading="loadingColor"
+          flat
+  >
     <v-container fluid class="pa-4">
       <v-row>
         <v-col class="text-h5">
@@ -163,6 +167,7 @@ export default {
         emptyText:
           'No author has been added yet. Select authors in the dropdown or create a new author.',
         emptyTextColor: 'grey',
+        showFullscreenButton: false,
       };
     },
     authorEditingEnabled() {

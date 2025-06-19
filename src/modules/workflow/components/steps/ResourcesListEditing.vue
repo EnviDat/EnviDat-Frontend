@@ -1,5 +1,8 @@
 <template>
-  <v-card id="ResourcesListEditing" class="pa-4">
+  <v-card id="ResourcesListEditing"
+          class="pa-4"
+          flat
+  >
     <v-container fluid class="pa-0">
       <v-row>
         <v-col class="text-h5">

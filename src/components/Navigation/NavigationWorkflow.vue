@@ -243,21 +243,19 @@
 <script setup>
 // import { computed } from 'vue';
 import { useStore } from 'vuex';
-
 import { storeToRefs } from 'pinia';
-
 import { useDisplay } from 'vuetify';
-
 import { driver } from 'driver.js';
 import 'driver.js/dist/driver.css';
+import { mdiClose } from '@mdi/js';
+import { ref } from 'vue';
+
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import { extractIcons } from '@/factories/iconFactory';
 
 import { useDatasetWorkflowStore } from '@/modules/user/store/datasetWorkflow';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
-import { mdiClose } from '@mdi/js';
 
-import { ref } from 'vue';
 
 // initialize the store
 const store = useStore();

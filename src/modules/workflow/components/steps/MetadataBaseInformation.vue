@@ -256,7 +256,7 @@ export default {
     },
     descriptionObject() {
       return {
-        description: this.previewText,
+        description: this.metadataDescriptionField,
         maxTextLength: 5000,
       };
     },
@@ -267,7 +267,7 @@ export default {
         : this.metadataTitle;
     },
     metadataDescriptionField() {
-      return this.metadataDescription;
+      return this.newDatasetInfo?.metadataDescription ? this.newDatasetInfo.metadataDescription : this.metadataDescription;
     },
     keywordsField: {
       get() {

@@ -1,5 +1,9 @@
 <template>
-  <v-card id="AddNewAuthor" class="pa-0" :loading="loadingColor">
+  <v-card id="AddNewAuthor"
+          class="pa-0"
+          :loading="loadingColor"
+          flat
+  >
     <BaseIconButton
       v-if="isEditingAuthor"
       class="editResourceCloseButton ma-2"

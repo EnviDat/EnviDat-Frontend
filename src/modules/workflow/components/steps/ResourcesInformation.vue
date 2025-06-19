@@ -42,7 +42,9 @@
           -->
 
           <v-col cols="12">
-            <EditResourcePasteUrl @createUrlResources="createResourceFromUrl" />
+            <EditResourcePasteUrl
+              flat
+              @createUrlResources="createResourceFromUrl" />
           </v-col>
         </v-row>
 

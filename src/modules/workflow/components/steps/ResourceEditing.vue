@@ -2,7 +2,9 @@
   <v-card id="ResourceEditing"
           :key="id"
           :loading="loadingColor"
-          class="pa-0">
+          class="pa-0"
+          flat
+  >
 
     <BaseIconButton
       class="ma-2"

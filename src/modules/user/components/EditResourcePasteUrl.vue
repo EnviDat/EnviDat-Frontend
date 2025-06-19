@@ -1,6 +1,9 @@
 <template>
   <v-card id="EditResourcePasteUrl"
-          class="pa-4" >
+          class="pa-4"
+          :flat
+  >
+
     <v-container fluid class="pa-0">
       <v-row>
         <v-col cols="12">
@@ -64,6 +67,10 @@ import { isObjectValidCheckAllProps } from '@/factories/userEditingValidations';
 export default {
   name: 'EditResourcePasteUrl',
   props: {
+    flat: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {},
   methods: {
