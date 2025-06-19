@@ -1,9 +1,6 @@
 <template>
-  <v-container ref="appContainer" class="fill-height" fluid>
-    <v-row
-      class="fill-height"
-      :class="{ 'overflow-x-scroll': display.smAndDown.value }"
-    >
+  <div ref="appContainer" class="fill-height pa-2 pa-md-6">
+    <v-row class="fill-height">
       <v-col cols="12" lg="4" xl="3" class="workflow-navigation__wrapper">
         <NavigationWorkflow />
       </v-col>
@@ -74,7 +71,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-container>
+  </div>
 </template>
 
 <script setup>
