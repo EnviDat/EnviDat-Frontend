@@ -13,7 +13,12 @@
     <!-- Info Banner -->
     <v-row>
       <v-col class="mb-5 pt-0 pb-0">
-        <v-alert type="info" closable :icon="false" class="rounded-lg">
+        <v-alert
+          type="info"
+          closable
+          :icon="false"
+          class="rounded-lg info-banner"
+        >
           <v-alert-title>Information</v-alert-title>
           Lorem Ipsum
         </v-alert>

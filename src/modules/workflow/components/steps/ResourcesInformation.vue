@@ -12,7 +12,12 @@
     <!-- Info Banner -->
     <v-row>
       <v-col class="mb-5 pt-0 pb-0">
-        <v-alert type="info" closable :icon="false" class="rounded-lg">
+        <v-alert
+          type="info"
+          closable
+          :icon="false"
+          class="rounded-lg info-banner"
+        >
           <v-alert-title>Information</v-alert-title>
           Lorem Ipsum
         </v-alert>
@@ -44,10 +49,10 @@
           <v-col cols="12">
             <EditResourcePasteUrl
               flat
-              @createUrlResources="createResourceFromUrl" />
+              @createUrlResources="createResourceFromUrl"
+            />
           </v-col>
         </v-row>
-
       </v-col>
 
       <v-col cols="12" lg="6">
@@ -245,7 +250,7 @@ export default {
     },
     resourceEditingActive() {
       return true;
-/*
+      /*
       if (this.$store) {
         return (
           this.config?.userEditMetadataConfig?.resourceEditingActive || false
@@ -470,8 +475,9 @@ export default {
       this.$emit('save', data);
     },
     catchResourceSelection(resourceId: string) {
-
-      const resource = this.resources.filter((res: Resource) => res.id === resourceId)[0];
+      const resource = this.resources.filter(
+        (res: Resource) => res.id === resourceId,
+      )[0];
 
       if (!resource) {
         return;
@@ -487,7 +493,7 @@ export default {
         resource.id,
         !resource.isSelected,
       );
-      
+
       this.resourceViewModel.validate(resource);
     },
     showFullScreenImage(url: string) {
