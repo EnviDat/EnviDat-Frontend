@@ -253,7 +253,7 @@ import { ref } from 'vue';
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import { extractIcons } from '@/factories/iconFactory';
 
-import { useDatasetWorkflowStore } from '@/modules/user/store/datasetWorkflow';
+import { useDatasetWorkflowStore } from '@/modules/user/store/datasetWorkflow.js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
 

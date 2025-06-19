@@ -90,10 +90,27 @@ import { extractIcons } from '@/factories/iconFactory';
 
 import { useDatasetWorkflowStore } from '@/modules/user/store/datasetWorkflow';
 
-// define useDisplay
+
+const props = defineProps({
+  datasetId: {
+    type: String,
+    default: undefined,
+  },
+  dataset: {
+    type: Object,
+    default: undefined,
+  },
+})
+
 const display = useDisplay();
 
 const navigationStore = useDatasetWorkflowStore();
+
+if (props.datasetId) {
+  navigationStore.loadDataset(props.datasetId)
+} else if(props.dataset) {
+  navigationStore.initializeDataset(props.dataset);
+}
 
 const vm = ref(null);
 

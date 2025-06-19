@@ -5,19 +5,22 @@ import { workflowSteps } from '@/modules/workflow/resources/steps';
 
 import { DatasetModel } from '@/modules/workflow/viewModel/DatasetModel';
 import { DatasetLocalStorageService } from '@/modules/workflow/viewModel/DatasetLocalStorageService';
+import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
+/*
 import datasets from '~/stories/js/metadata.js';
 
 let datasetVM = new DatasetModel(new DatasetLocalStorageService());
 if (import.meta.env.MODE === 'development') {
   datasetVM = new DatasetModel(new DatasetLocalStorageService(datasets[2]));
 }
+*/
 
 export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
   state: () => ({
     loading: false,
     currentStep: 0,
     steps: workflowSteps,
-    datasetViewModel: datasetVM,
+    datasetViewModel: new DatasetModel(new DatasetLocalStorageService()),
     openSaveDialog: false,
     isStepSaveConfirmed: false,
     isStepSave: 3,
@@ -143,6 +146,12 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     },
   },
   actions: {
+    async loadDataset(datasetId: string) {
+      return this.datasetViewModel.loadDataset(datasetId);
+    },
+    async initializeDataset(dataset: DatasetDTO) {
+      this.datasetViewModel = new DatasetModel(new DatasetLocalStorageService(dataset));
+    },
     navigateItemAction(id, status) {
       // REMOVE after testing
       if (status === 'disabled') {
@@ -156,6 +165,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
           step.status === 'completed' ||
           step.status === 'error'
         )
+          // eslint-disable-next-line no-useless-return
           return;
       });
     },
@@ -167,14 +177,14 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
         this.currentStep = next.id;
       }
     },
-    async validateStepAction(stepId) {
+    validateStepAction(stepId: number): boolean {
       const vm = this.currentViewModel;
-      if (!vm) return;
+      if (!vm) return false;
 
       const dataToValidate = vm?.getModelData();
 
       // always validate the data of the model before navigating
-      // to ensure also the initial case when the workflow was justed loaded?
+      // to ensure also the initial case when the workflow was just loaded?
 
       // check with Dominik for another solution
       vm.validate(dataToValidate);
@@ -187,6 +197,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
           status: 'error',
           errors: vm.validationErrors,
         });
+
         return false;
       }
 
@@ -194,7 +205,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
       console.log(hasErrors);
       if (stepId === 6 && !hasErrors) {
         window.location.reload();
-        return;
+        return false;
       }
 
       if (stepId === this.isStepSave && !this.isStepSaveConfirmed) {
@@ -208,7 +219,9 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
         status: 'completed',
         errors: null,
       });
+
       this.setCurrentStepAction();
+
       return true;
     },
 

@@ -1,19 +1,13 @@
 import { Dataset } from '@/modules/workflow/viewModel/Dataset';
 import { DatasetService } from '@/types/modelTypes';
 import { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
-import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel';
+
 import {
   initCreationDataWithDefaults,
   readDatasetFromLocalStorage,
   storeDatasetInLocalStorage,
 } from '@/factories/userCreationFactory';
 
-const useTestdata = import.meta.env?.VITE_USE_TESTDATA === 'true';
-
-let mockDataResponse: DatasetDTO;
-if (useTestdata) {
-  mockDataResponse = await import('../../../../public/testdata/dataset_10-16904-1');
-}
 
 
 export class DatasetLocalStorageService implements DatasetService {
@@ -21,13 +15,22 @@ export class DatasetLocalStorageService implements DatasetService {
   declare dataset: DatasetDTO;
   declare loadingDataset: boolean;
 
-  constructor(datasetBackend: unknown | undefined) {
+  declare datasetCount: number;
+
+  constructor(datasetBackend?: DatasetDTO | undefined) {
+
+    this.datasetCount = 0;
 
     if (datasetBackend) {
-      this.patchDatasetChanges(datasetBackend?.id, datasetBackend as DatasetDTO)
+      this.patchDatasetChanges(datasetBackend?.id, datasetBackend)
+    } else {
+      // this.dataset = new Dataset(datasetBackend);
+      this.loadingDataset = false;
     }
-    // this.dataset = new Dataset(datasetBackend);
-    this.loadingDataset = false;
+  }
+
+  private getLocalId() {
+    return this.dataset?.id ? this.dataset.id : `local_dataset_${this.datasetCount}`
   }
 
   async loadDataset(id: string): Promise<DatasetDTO> {
@@ -46,18 +49,23 @@ export class DatasetLocalStorageService implements DatasetService {
     data: object,
   ) {
 
-    try {
-      const existingData = readDatasetFromLocalStorage(datasetId);
+    this.loadingDataset = false;
 
-      const storedData = storeDatasetInLocalStorage(datasetId, {
+    try {
+      const existingData = readDatasetFromLocalStorage(datasetId || this.getLocalId());
+
+      const storedData = storeDatasetInLocalStorage(datasetId || this.getLocalId(), {
         ...existingData,
         ...data,
       });
 
       this.dataset = new Dataset(storedData);
 
+      this.loadingDataset = true;
+
       return this.dataset;
     } catch (e: unknown) {
+      this.loadingDataset = false;
       console.error(e);
       throw e;
     }
@@ -69,7 +77,7 @@ export class DatasetLocalStorageService implements DatasetService {
     const currentResources = [...this.dataset.resources];
     currentResources.push(resoureData);
 
-    await this.patchDatasetChanges(this.dataset.id, {
+    await this.patchDatasetChanges(this.getLocalId(), {
       resources: currentResources,
     })
 

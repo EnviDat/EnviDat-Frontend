@@ -7,7 +7,7 @@
  */
 
 import WorkflowPage from '@/modules/workflow/components/WorkflowPage.vue';
-
+import datasets from '~/stories/js/metadata.js';
 
 export default {
   title: '6 Workflows / Combined / WorkflowPage',
@@ -26,4 +26,8 @@ export const Loading = {
   },
 }
 
-
+export const Filled = {
+  args: {
+    dataset: datasets[0],
+  },
+}
