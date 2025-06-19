@@ -227,7 +227,7 @@
         </v-expansion-panel-text>
       </v-expansion-panel>
     </v-expansion-panels> -->
-    <v-card-text
+    <!-- <v-card-text
       v-if="display.smAndUp.value"
       class="pl-4 pr-4 navigationWorkflow__note"
     >
@@ -236,7 +236,7 @@
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
         tempor incididunt ut labore et dolore magna aliqua. ...
       </span>
-    </v-card-text>
+    </v-card-text> -->
   </v-card>
 </template>
 

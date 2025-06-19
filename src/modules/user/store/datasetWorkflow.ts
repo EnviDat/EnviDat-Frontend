@@ -150,7 +150,9 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
       return this.datasetViewModel.loadDataset(datasetId);
     },
     async initializeDataset(dataset: DatasetDTO) {
-      this.datasetViewModel = new DatasetModel(new DatasetLocalStorageService(dataset));
+      this.datasetViewModel = new DatasetModel(
+        new DatasetLocalStorageService(dataset),
+      );
     },
     navigateItemAction(id, status) {
       // REMOVE after testing
@@ -202,7 +204,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
       }
 
       // REMOVE after Research Day
-      console.log(hasErrors);
+
       if (stepId === 6 && !hasErrors) {
         window.location.reload();
         return false;
