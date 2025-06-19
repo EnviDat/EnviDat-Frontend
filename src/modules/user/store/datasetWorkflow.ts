@@ -154,23 +154,40 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
         new DatasetLocalStorageService(dataset),
       );
     },
-    navigateItemAction(id, status) {
-      // REMOVE after testing
-      if (status === 'disabled') {
-        return;
-      }
-      this.currentStep = id;
-      // REMOVE after testing
-      this.steps.forEach((step) => {
-        if (
-          step.status === 'active' ||
-          step.status === 'completed' ||
-          step.status === 'error'
-        )
-          // eslint-disable-next-line no-useless-return
-          return;
+
+    // TEMPORARY QUERY PARAMS OPTION
+    setActiveStep(id: number) {
+      this.steps.forEach((s) => {
+        if (s.id === id) s.status = 'active';
+        else if (s.completed) s.status = 'completed';
+        else if (s.hasError) s.status = 'error';
+        else s.status = '';
       });
+      this.currentStep = id;
     },
+    navigateItemAction(id, status) {
+      if (status === 'disabled') return;
+      this.setActiveStep(id);
+    },
+    // END TEMPORARY QUERY PARAMS OPTION
+
+    // navigateItemAction(id, status) {
+    //   // REMOVE after testing
+    //   if (status === 'disabled') {
+    //     return;
+    //   }
+    //   this.currentStep = id;
+    //   // REMOVE after testing
+    //   this.steps.forEach((step) => {
+    //     if (
+    //       step.status === 'active' ||
+    //       step.status === 'completed' ||
+    //       step.status === 'error'
+    //     )
+    //       // eslint-disable-next-line no-useless-return
+    //       return;
+    //   });
+    // },
     setCurrentStepAction() {
       // find the next element with status != completed
       const next = this.steps.find((el) => el.status !== 'completed');

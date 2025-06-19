@@ -78,7 +78,7 @@
 import { useDisplay } from 'vuetify';
 import { storeToRefs } from 'pinia';
 
-import { ref, watch, computed, nextTick } from 'vue';
+import { ref, watch, computed, nextTick, onMounted } from 'vue';
 
 import NavigationWorkflow from '@/components/Navigation/NavigationWorkflow.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
@@ -86,7 +86,6 @@ import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.v
 import { extractIcons } from '@/factories/iconFactory';
 
 import { useDatasetWorkflowStore } from '@/modules/user/store/datasetWorkflow';
-
 
 const props = defineProps({
   datasetId: {
@@ -97,15 +96,34 @@ const props = defineProps({
     type: Object,
     default: undefined,
   },
-})
+});
 
 const display = useDisplay();
 
 const navigationStore = useDatasetWorkflowStore();
 
+// TEMPORARY QUERY PARAMAMETER
+
+onMounted(() => {
+  const query = window.location.hash.split('?')[1] ?? '';
+
+  const params = new URLSearchParams(query);
+  const stepParam = Number(params.get('step'));
+
+  if (
+    Number.isFinite(stepParam) &&
+    stepParam >= 0 &&
+    stepParam < navigationStore.steps.length
+  ) {
+    navigationStore.setActiveStep(stepParam);
+  }
+});
+
+// END TEMPORARY QUERY PARAMAMETER
+
 if (props.datasetId) {
-  navigationStore.loadDataset(props.datasetId)
-} else if(props.dataset) {
+  navigationStore.loadDataset(props.datasetId);
+} else if (props.dataset) {
   navigationStore.initializeDataset(props.dataset);
 }
 
