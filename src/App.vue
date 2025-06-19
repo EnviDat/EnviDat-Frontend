@@ -729,7 +729,9 @@ export default {
     config() {
       if (!this.loadingConfig) {
         this.setupNavItems();
-        this.loadAllMetadata();
+        this.$nextTick(() => {
+          this.loadAllMetadata();
+        });
       }
     },
     notifications() {

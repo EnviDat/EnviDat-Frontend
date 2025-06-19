@@ -27,10 +27,10 @@ const loadImageUrlMap  = () => {
 
   if (isWebpSupported) {
     imageUrls = import.meta.glob('../**/*.{webp,WEBP}',
-      { eager: true, query: '?url', import: 'default' });
+      { eager: false, query: '?url', import: 'default' });
   } else {
     imageUrls = import.meta.glob('../**/*.{jpg,jpeg,JPEG,JPG,png,PNG}',
-      { eager: true, query: '?url', import: 'default' });
+      { eager: false, query: '?url', import: 'default' });
   }
 
     const keys = Object.keys(imageUrls);
@@ -61,17 +61,17 @@ const { imageMap: imageUrlMap, iconMap: iconImageUrlMap } = loadImageUrlMap();
 /**
  * Gets a single specific image url from the assets directory and automatically uses the most efficient format
  */
-export const getImage = (imagePath) => imageUrlMap[imagePath];
+export const getImage = async (imagePath) => imageUrlMap[imagePath]();
 
 export const getImageList = (pathNeedsToInclude) => {
-  const imagePaths = Object.values(imageUrlMap);
+  const imagePaths = Object.keys(imageUrlMap);
   return imagePaths.filter((path) => path.includes(pathNeedsToInclude));
 }
 /**
  * Gets a specific icon-image url from the assets directory
  * @param {string} iconName The icon name, for example ```'file'```
  */
-export const getIcon = (iconName) => iconImageUrlMap[iconName];
+export const getIcon = async (iconName) => iconImageUrlMap[iconName]();
 
 /**
  * Loads the path to the icon image representing a file extension
@@ -91,8 +91,11 @@ export const getFileIcon = (fileExtension) => {
   }
 
   const fileExt = ext ? `file${ext}` : 'file';
-  const fileExtIcon = getIcon(fileExt);
-  return fileExtIcon || mdiFile;
+  if (fileExt === 'file') {
+    return mdiFile;
+  }
+
+  return getIcon(fileExt);
 };
 
 export const getGeoJSONIcon = (type) => {
