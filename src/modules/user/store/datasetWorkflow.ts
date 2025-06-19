@@ -23,6 +23,9 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     datasetViewModel: new DatasetModel(new DatasetLocalStorageService()),
     openSaveDialog: false,
     isStepSaveConfirmed: false,
+    // TEMPORARY QUERY PARAMS OPTION
+    freeJump: false,
+    // END TEMPORARY QUERY PARAMS OPTION
     isStepSave: 3,
     workflowGuide: [
       {
@@ -156,19 +159,30 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     },
 
     // TEMPORARY QUERY PARAMS OPTION
+    jumpToStep(id: number) {
+      this.freeJump = true;
+      this.setActiveStep(id);
+      this.freeJump = false;
+    },
+    navigateItemAction(id, status) {
+      if (!this.freeJump) {
+        if (status === 'disabled') return;
+        this.currentStep = id;
+        return;
+      }
+
+      this.setActiveStep(id);
+    },
     setActiveStep(id: number) {
       this.steps.forEach((s) => {
         if (s.id === id) s.status = 'active';
         else if (s.completed) s.status = 'completed';
         else if (s.hasError) s.status = 'error';
-        else s.status = '';
+        else s.status = 'disabled';
       });
       this.currentStep = id;
     },
-    navigateItemAction(id, status) {
-      if (status === 'disabled') return;
-      this.setActiveStep(id);
-    },
+
     // END TEMPORARY QUERY PARAMS OPTION
 
     // navigateItemAction(id, status) {

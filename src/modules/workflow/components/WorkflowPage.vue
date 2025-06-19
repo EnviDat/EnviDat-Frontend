@@ -115,7 +115,7 @@ onMounted(() => {
     stepParam >= 0 &&
     stepParam < navigationStore.steps.length
   ) {
-    navigationStore.setActiveStep(stepParam);
+    navigationStore.jumpToStep(stepParam);
   }
 });
 
