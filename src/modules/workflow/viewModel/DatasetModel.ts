@@ -24,7 +24,6 @@ import { ModelPublicationInformation } from '@/modules/workflow/viewModel/ModelP
 import { initCreationDataWithDefaults } from '@/factories/userCreationFactory';
 import { Dataset } from '@/modules/workflow/viewModel/Dataset.ts';
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
-import { ResourceModel } from '@/modules/workflow/viewModel/ResourceModel.ts';
 
 export class DatasetModel {
   viewModelClasses = [
@@ -50,8 +49,11 @@ export class DatasetModel {
 
   declare datasetService: DatasetService;
 
+  declare resourceCounter: number;
+
   constructor(datasetService: DatasetService) {
     this.datasetService = datasetService;
+    this.resourceCounter = 0;
 
     this.createViewModels();
   }
@@ -114,15 +116,33 @@ export class DatasetModel {
     resourceModel.error = undefined;
 
     try {
-      const newResourceDTO = await this.datasetService.createResource(
-        resourceModel.backendJSON as ResourceDTO,
+      await this.datasetService.createResource(
+        {
+          ...resourceModel.backendJSON as ResourceDTO,
+          // DEMO: this is set in the backend, only for local storage is needed
+          id: `resource_id_${ this.resourceCounter }`,
+          'package_id': this.dataset?.id,
+        },
       );
 
+      this.resourceCounter++; // DEMO
+
+      // update specifically the ResourcesListModel with the newly created Resource
+      this.getViewModel('ResourcesListModel').updateModel(this.dataset);
+
+/*
       const resourceModelData =
-        ResourceModel.getFormattedResource(newResourceDTO);
+        ResourceModel.getFormattedResource(
+          newResourceDTO,
+          this.dataset.name,
+          undefined,
+          undefined,
+          undefined,
+        );
 
       // don't use save as it would validate, directly overwrite the properties
       Object.assign(resourceModel, resourceModelData);
+*/
 
       resourceModel.savedSuccessful = true;
     } catch (reason) {

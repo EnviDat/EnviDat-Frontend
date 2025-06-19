@@ -176,7 +176,7 @@ export class ResourceModel extends AbstractEditViewModel implements Resource {
     datasetName: string,
     organizationID: string,
     signedInUserName: string,
-    signedInUserOrganizationIds: string,
+    signedInUserOrganizationIds: string[],
     numberOfDownload?: number,
   ) : Resource {
 

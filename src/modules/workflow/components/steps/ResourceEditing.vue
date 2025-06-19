@@ -736,7 +736,6 @@ export default {
     },
     checkSaveButtonEnabled() {
 
-/*
       // not test the preview fields to ensure the content of both fields is valid
       // to show the save button
       const objectToValidate = {
@@ -748,7 +747,6 @@ export default {
       };
 
       this.$emit('validate', objectToValidate);
-*/
 
       const errorValues = Object.values(this.validationErrors)
       const noErrors = errorValues.every((err) => !err);
@@ -776,8 +774,8 @@ export default {
         // size: this.size, // DEMO
         // sizeFormat: this.sizeFormatField,  // DEMO
         resourceSize: {
-          sizeValue: this.isLink ? this.sizeField.toString() : '',
-          sizeUnits: this.isLink ? this.sizeFormatField.toLowerCase() : '',
+          sizeValue: this.isLink ? this.sizeField?.toString() : '',
+          sizeUnits: this.isLink ? this.sizeFormatField?.toLowerCase() : '',
         },
       };
 

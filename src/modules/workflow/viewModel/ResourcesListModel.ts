@@ -15,6 +15,7 @@ import {
   enhanceResourcesWithMetadataExtras,
   SELECT_EDITING_RESOURCE_PROPERTY,
 } from '@/factories/strategyFactory';
+import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 
 
 export class ResourcesListModel extends AbstractEditViewModel {
@@ -46,7 +47,7 @@ export class ResourcesListModel extends AbstractEditViewModel {
     datasetName: string,
     organizationID: string,
     signedInUserName: string,
-    signedInUserOrganizationIds: string,
+    signedInUserOrganizationIds: string[],
     numberOfDownload?: number,
   ): Resource[] {
 
@@ -100,7 +101,7 @@ export class ResourcesListModel extends AbstractEditViewModel {
     const cleanResources = ResourcesListModel.getFormattedResources(
       dataset.resources,
       dataset.name,
-      dataset.organization.id,
+      dataset.organization?.id,
       this.signedInUser?.name,
       this.signedInUserOrganizationIds,
     );
@@ -139,9 +140,7 @@ export class ResourcesListModel extends AbstractEditViewModel {
         // (further deails of the resource)
         await this.datasetViewModel.createResourceOnExistingDataset(model);
 
-        // this will also update all viewModels with the content from the backend
-        // including this one
-        await this.datasetViewModel.reloadDataset();
+        eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
 
         // when everything is updated, selected the latest resource for
         // editing details (e.g. the user should change the name)
@@ -150,8 +149,6 @@ export class ResourcesListModel extends AbstractEditViewModel {
         this.loading = false;
         return true;
       }
-
-      return super.save(newData);
     }
 
     return super.save(newData);

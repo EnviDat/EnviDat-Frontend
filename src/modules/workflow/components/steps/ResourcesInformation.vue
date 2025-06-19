@@ -113,7 +113,6 @@
  */
 
 import { mapGetters, mapState } from 'vuex';
-import { defineAsyncComponent } from 'vue';
 
 import {
   eventBus,
@@ -157,10 +156,7 @@ import EditResourcePasteUrl from '@/modules/user/components/EditResourcePasteUrl
 import { ResourceModel } from '@/modules/workflow/viewModel/ResourceModel.js';
 import type { Resource } from '@/types/modelTypes';
 import { mergeResourceSizeForFrontend } from '@/factories/resourceHelpers.ts';
-
-const ResourceEditing = defineAsyncComponent(
-  () => import('@/modules/workflow/components/steps/ResourceEditing.vue'),
-);
+import ResourceEditing from '@/modules/workflow/components/steps/ResourceEditing.vue';
 
 export default {
   name: 'ResourcesInformation',

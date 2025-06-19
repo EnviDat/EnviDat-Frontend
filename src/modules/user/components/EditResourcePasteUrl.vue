@@ -63,6 +63,7 @@ import * as yup from 'yup';
 import {mdiClose, mdiLink} from '@mdi/js';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import { isObjectValidCheckAllProps } from '@/factories/userEditingValidations';
+import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus.js';
 
 export default {
   name: 'EditResourcePasteUrl',
@@ -72,8 +73,17 @@ export default {
       default: false,
     },
   },
+  created() {
+    eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
+  },
+  beforeUnmount() {
+    eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
+  },
   computed: {},
   methods: {
+    clearPreview() {
+      this.url = undefined;
+    },
     blurOnEnterKey(keyboardEvent) {
       if (keyboardEvent.key === 'Enter') {
         keyboardEvent.target.blur();

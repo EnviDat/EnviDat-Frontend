@@ -1,15 +1,14 @@
 import { convertJSON } from '@/factories/mappingFactory';
 import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 
-// @ts-ignore TS2420
-export class Dataset implements DatasetDTO {
+export class Dataset {
   
-  constructor(datasetBackend: unknown | undefined) {
-    if (!datasetBackend) {
-      return;
+  constructor(datasetBackend: DatasetDTO, frontendDataset?: unknown) {
+    if (datasetBackend) {
+      this.convertBackendDataset(datasetBackend);
+    } else if (frontendDataset) {
+      Object.assign(this, frontendDataset);
     }
-
-    this.convertBackendDataset(datasetBackend);
   }
 
   convertBackendDataset(datasetBackend: unknown) {

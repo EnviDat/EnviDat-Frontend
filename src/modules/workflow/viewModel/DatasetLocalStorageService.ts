@@ -19,18 +19,42 @@ export class DatasetLocalStorageService implements DatasetService {
 
   constructor(datasetBackend?: DatasetDTO | undefined) {
 
+    this.loadingDataset = true;
     this.datasetCount = 0;
 
     if (datasetBackend) {
-      this.patchDatasetChanges(datasetBackend?.id, datasetBackend)
+      this.patchDatasetChanges(datasetBackend?.id, datasetBackend);
     } else {
-      // this.dataset = new Dataset(datasetBackend);
-      this.loadingDataset = false;
+
+      const defaultDataset = {};
+      initCreationDataWithDefaults(defaultDataset);
+
+      const stepKeys = Object.keys(defaultDataset);
+      let flatDefaultDataset = {
+        resources: [],
+      };
+
+      stepKeys.forEach((key) => {
+        flatDefaultDataset = {
+          ...defaultDataset[key],
+          ...flatDefaultDataset,
+        }
+      })
+
+      this.dataset = new Dataset(
+        undefined,
+        {
+          ...flatDefaultDataset,
+          id: this.getLocalId(),
+        },
+      );
     }
+
+    this.loadingDataset = false;
   }
 
   private getLocalId() {
-    return this.dataset?.id ? this.dataset.id : `local_dataset_${this.datasetCount}`
+    return `local_dataset_${this.dataset?.id ? this.dataset.id : this.datasetCount}`;
   }
 
   async loadDataset(id: string): Promise<DatasetDTO> {
@@ -77,7 +101,7 @@ export class DatasetLocalStorageService implements DatasetService {
     const currentResources = [...this.dataset.resources];
     currentResources.push(resoureData);
 
-    await this.patchDatasetChanges(this.getLocalId(), {
+    await this.patchDatasetChanges(this.dataset.id, {
       resources: currentResources,
     })
 
