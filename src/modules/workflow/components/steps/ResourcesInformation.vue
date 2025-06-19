@@ -18,8 +18,44 @@
           :icon="false"
           class="rounded-lg info-banner"
         >
-          <v-alert-title>Information</v-alert-title>
-          Lorem Ipsum
+          <v-alert-title class="mb-2">Information</v-alert-title>
+
+          <p>
+            This section allows you to provide access to the actual data or
+            related resources of your dataset. These can be files, links to
+            repositories, or online services.
+          </p>
+
+          <p><strong>Tips:</strong></p>
+          <ol>
+            <li>
+              - You can either <strong>upload files directly</strong> or
+              <strong>provide links</strong> to external resources (e.g., data
+              hosted on other platforms).
+            </li>
+            <li>
+              - When adding a resource via a link, make sure to specify its
+              <strong>file format</strong> (e.g., CSV, GeoTIFF) and
+              <strong>file size</strong> to help users assess it.
+            </li>
+            <li>
+              - Use clear and descriptive <strong>titles</strong> for each
+              resource to improve discoverability.
+            </li>
+            <li>
+              - If your resources are DORA publications, please add them in the
+              <em>Related Publications</em> step instead.
+            </li>
+            <li>
+              - You can <strong>reorder resources</strong> using drag-and-drop
+              to reflect importance or logical sequence.
+            </li>
+          </ol>
+
+          <p class="mt-2">
+            Adding meaningful and well-described resources greatly enhances the
+            usability and visibility of your dataset.
+          </p>
         </v-alert>
       </v-col>
     </v-row>

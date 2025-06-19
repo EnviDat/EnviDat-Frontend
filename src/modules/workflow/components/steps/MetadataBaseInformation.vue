@@ -19,8 +19,31 @@
           :icon="false"
           class="rounded-lg info-banner"
         >
-          <v-alert-title>Information</v-alert-title>
-          Lorem Ipsum
+          <v-alert-title class="mb-2">Information</v-alert-title>
+          <p>
+            This section defines the main identification metadata of your
+            dataset. These fields are essential for discovery and citation of
+            your data.
+          </p>
+
+          <p><strong>Tips:</strong></p>
+          <ol>
+            <li>- Choose a clear and descriptive title.</li>
+            <li>
+              - Use keywords that reflect the content, methods, and geography of
+              your data.
+            </li>
+            <li>
+              - In the description, provide enough context so other researchers
+              can understand what your dataset contains, how it was generated,
+              and any limitations.
+            </li>
+          </ol>
+
+          <p class="mt-2">
+            You can format the description using <strong>Markdown</strong>
+            (e.g., lists, links, bold text).
+          </p>
         </v-alert>
       </v-col>
     </v-row>
@@ -267,7 +290,9 @@ export default {
         : this.metadataTitle;
     },
     metadataDescriptionField() {
-      return this.newDatasetInfo?.metadataDescription ? this.newDatasetInfo.metadataDescription : this.metadataDescription;
+      return this.newDatasetInfo?.metadataDescription
+        ? this.newDatasetInfo.metadataDescription
+        : this.metadataDescription;
     },
     keywordsField: {
       get() {

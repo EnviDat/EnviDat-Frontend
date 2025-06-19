@@ -19,8 +19,37 @@
           :icon="false"
           class="rounded-lg info-banner"
         >
-          <v-alert-title>Information</v-alert-title>
-          Lorem Ipsum
+          <v-alert-title class="mb-2">Information</v-alert-title>
+
+          <p>
+            This section defines how your dataset will appear upon publication.
+            It includes contact details and official publication information
+            such as the publisher, publication year, and DOI.
+          </p>
+
+          <p><strong>Tips:</strong></p>
+          <ol>
+            <li>
+              - <strong>DOI (Digital Object Identifier)</strong>: The DOI is
+              generated automatically and becomes active once the dataset is
+              published. You can still copy and use it in advance (e.g., in a
+              paper).
+            </li>
+            <li>
+              - <strong>Publisher</strong>: EnviDat is set as the publisher by
+              default and cannot be changed.
+            </li>
+            <li>
+              - <strong>Contact Information</strong>: Add a valid contact person
+              for future communication about the dataset. If the person is an
+              EnviDat user, pick them from the list to auto-fill their details.
+            </li>
+          </ol>
+
+          <p class="mt-2">
+            These details are part of the final published metadata and will be
+            publicly visible. Make sure they are accurate.
+          </p>
         </v-alert>
       </v-col>
     </v-row>

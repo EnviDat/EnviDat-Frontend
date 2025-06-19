@@ -21,8 +21,44 @@
           :icon="false"
           class="rounded-lg info-banner"
         >
-          <v-alert-title>Information</v-alert-title>
-          Lorem Ipsum
+          <v-alert-title class="mb-2">Information</v-alert-title>
+
+          <p>
+            This section allows you to specify the geographic area relevant to
+            your dataset. Accurate geospatial data improves discoverability and
+            helps users understand the spatial context of your research.
+          </p>
+
+          <p><strong>Tips:</strong></p>
+          <ol>
+            <li>
+              - Use the map tools to draw or adjust geometries directly. You can
+              zoom, pan, and switch tile layers for better accuracy.
+            </li>
+            <li>
+              - If your dataset covers a large or complex area, consider
+              uploading a valid <strong>GeoJSON</strong> file.
+            </li>
+            <li>
+              - The default geometry includes Switzerland. Replace or modify it
+              to better reflect your dataset's scope.
+            </li>
+            <li>
+              - Use the <strong>text editor</strong> for fine-tuned control over
+              coordinates, or switch to the tree/table view for easier
+              navigation.
+            </li>
+            <li>
+              - Ensure the geometry is valid GeoJSON. Invalid JSON will prevent
+              you from proceeding.
+            </li>
+          </ol>
+
+          <p class="mt-2">
+            Also provide <strong>Time Information</strong> about when the data
+            was collected or created. These fields help contextualize your
+            dataset for future reuse.
+          </p>
         </v-alert>
       </v-col>
     </v-row>

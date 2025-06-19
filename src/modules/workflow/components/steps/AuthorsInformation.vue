@@ -16,8 +16,39 @@
           :icon="false"
           class="rounded-lg info-banner"
         >
-          <v-alert-title>Information</v-alert-title>
-          Lorem Ipsum
+          <v-alert-title class="mb-2">Information</v-alert-title>
+
+          <p>
+            This section allows you to manage the authors of your dataset.
+            Adding accurate author information helps ensure proper attribution
+            and visibility.
+          </p>
+
+          <p><strong>Tips:</strong></p>
+          <ol>
+            <li>
+              - To add an existing EnviDat author, start typing their name in
+              the field and select from the list.
+            </li>
+            <li>
+              - To create a new author, provide their email address first. If
+              the author already exists, their details will be filled in
+              automatically.
+            </li>
+            <li>
+              - Fill in all relevant fields such as first name, last name,
+              affiliation, and OrcID for completeness.
+            </li>
+            <li>
+              - Drag and drop authors in the preview list to change their order
+              of appearance.
+            </li>
+          </ol>
+
+          <p class="mt-2">
+            Make sure to include <strong>at least one author</strong> before
+            proceeding to the next step.
+          </p>
         </v-alert>
       </v-col>
     </v-row>

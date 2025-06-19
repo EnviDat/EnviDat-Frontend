@@ -19,8 +19,46 @@
           :icon="false"
           class="rounded-lg info-banner"
         >
-          <v-alert-title>Information</v-alert-title>
-          Lorem Ipsum
+          <v-alert-title class="mb-2">Information</v-alert-title>
+
+          <p>
+            This section includes licensing and funding details that are
+            essential for transparency, reuse, and compliance with data sharing
+            policies.
+          </p>
+
+          <p><strong>Tips:</strong></p>
+          <ol>
+            <li>
+              - Provide accurate <strong>funding information</strong> by naming
+              the institution and including the grant number and a link, if
+              available.
+            </li>
+            <li>
+              - Selecting the correct <strong>data license</strong> is crucial.
+              It defines how others can use, share, or build upon your dataset.
+            </li>
+            <li>
+              - If you're unsure which license to choose,
+              <strong>Creative Commons Attribution (CC-BY 4.0)</strong> is a
+              widely accepted standard for open data.
+            </li>
+            <li>
+              - Make sure you have the rights to apply the selected license,
+              especially if your dataset includes content from third parties.
+            </li>
+          </ol>
+
+          <p class="mt-2">
+            For more details about CC-BY 4.0, visit
+            <a
+              href="https://creativecommons.org/licenses/by/4.0/legalcode"
+              target="_blank"
+              rel="noopener"
+            >
+              the full legal code </a
+            >.
+          </p>
         </v-alert>
       </v-col>
     </v-row>
