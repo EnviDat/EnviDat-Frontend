@@ -198,7 +198,7 @@
   </v-card>
 </template>
 
-<script>
+<script lang="ts">
 /**
  * @summary Show a title, instructions and a button to create a new author
  * @author Dominik Haas-Artho
@@ -235,6 +235,7 @@ import {
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus.js';
+import { useDebounce } from '@/modules/workflow/workflowFunctions.js';
 
 export default {
   name: 'AddNewAuthor',
@@ -307,6 +308,26 @@ export default {
   emits: ['validate', 'save', 'removeAuthor', 'closeClicked'],
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+
+    this.focusOutDebouncing = useDebounce((property: string, value: any) => {
+
+      // only check if the identifier is in focus
+      // because it's optional, so when it's in focus don't auto save
+      // otherwise the input would not been taken
+      // and if any other field is in focus, it's ok to autosave, because this
+      // will trigger the validation
+      if (this.activeElements.identifier) {
+        return;
+      }
+
+      if (!this.anyPreviewsChanged) {
+        return;
+      }
+
+      const authorObject = this.combineInputToAuthorObject(property, value);
+
+      this.saveAuthorInfo(authorObject);
+    }, 3000)
   },
   beforeUnmount() {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
@@ -423,10 +444,10 @@ export default {
     clearPreviews() {
       this.fillPreviews(null, null, null, null, null);
     },
-    focusIn(event) {
+    focusIn(event: Event) {
       this.markPropertyActive(event.target, true);
     },
-    focusOut(property, event) {
+    focusOut(property: string, event: Event) {
       this.markPropertyActive(event.target, false);
       this.markPropertyActive(event.relatedTarget, true);
       // this.delayedNotifyChange(property, event.target.value);
@@ -438,9 +459,11 @@ export default {
         this.activeElements[toId] = editing;
       }
     },
-    changeProperty(property, value) {
+    changeProperty(property: string, value: any) {
       this.previews[property] = value;
       this.$emit('validate', { [property]: value });
+
+      this.focusOutDebouncing(property, value)
     },
     catchPickerAuthorChange(pickedAuthorName, hasAuthor) {
       this.authorPickerTouched = true;
@@ -466,15 +489,7 @@ export default {
         this.fillPreviews('', '', '', '', '');
       }
     },
-    notifyAuthorChange(property, value) {
-      if (this.anyUserElementsActive) {
-        return;
-      }
-
-      if (!this.anyPreviewsChanged) {
-        return;
-      }
-
+    combineInputToAuthorObject(property: string, value: any) {
       const authorObj = {
         firstName: this.firstNameField,
         lastName: this.lastNameField,
@@ -498,9 +513,22 @@ export default {
         }
       }
 
+      return authorObject;
+    },
+    notifyAuthorChange(property: string, value: any) {
+      if (this.anyUserElementsActive) {
+        return;
+      }
+
+      if (!this.anyPreviewsChanged) {
+        return;
+      }
+
+      const authorObject = this.combineInputToAuthorObject(property, value);
+
       this.saveAuthorInfo(authorObject);
     },
-    getAutoCompletedAuthor(email) {
+    getAutoCompletedAuthor(email: string) {
       const autoAuthor = getAuthorByEmail(email, this.existingAuthors);
 
       if (autoAuthor) {
