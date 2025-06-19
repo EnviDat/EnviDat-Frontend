@@ -4,9 +4,9 @@
       <v-col class="text-h5 font-weight-bold" cols="12">
         Resources Information
       </v-col>
-      <v-col cols="12" class="text-body-1">
+      <!-- <v-col cols="12" class="text-body-1">
         Please provide the resources of the dataset.
-      </v-col>
+      </v-col> -->
     </v-row>
 
     <!-- Info Banner -->

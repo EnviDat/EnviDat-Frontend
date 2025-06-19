@@ -8,8 +8,8 @@
         v-html="labels.cardTitle"
       >
       </v-col>
-      <v-col cols="12" class="text-body-1" v-html="labels.cardInstructions">
-      </v-col>
+      <!-- <v-col cols="12" class="text-body-1" v-html="labels.cardInstructions">
+      </v-col> -->
     </v-row>
 
     <!-- Info Banner -->

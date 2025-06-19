@@ -4,7 +4,7 @@
       <v-col class="text-h5 font-weight-bold" cols="12">
         {{ labels.title }}
       </v-col>
-      <v-col cols="12" class="text-body-1"> {{ labels.instructions }} </v-col>
+      <!-- <v-col cols="12" class="text-body-1"> {{ labels.instructions }} </v-col> -->
     </v-row>
 
     <!-- Info Banner -->
