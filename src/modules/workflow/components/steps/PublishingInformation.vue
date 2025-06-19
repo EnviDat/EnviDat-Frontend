@@ -264,11 +264,11 @@ export default {
       return this.existingAuthors;
     },
     editContactPersonProps() {
-      const headerObj = this.$store
-        ? this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](
-            'EDITMETADATA_HEADER_INFO',
-          )
-        : this.currentStep.genericProps;
+      // const headerObj = this.$store
+      //   ? this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](
+      //       'EDITMETADATA_HEADER_INFO',
+      //     )
+      //   : this.currentStep.genericProps;
 
       return {
         contactEmail: this.contactEmail || '',
