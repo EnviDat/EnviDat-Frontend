@@ -118,14 +118,14 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
             'Look here for additional guidance and tips specific to the step you are working on.',
         },
       },
-      {
-        element: '.scrollToSave',
-        popover: {
-          title: 'Scroll-to-Save Button',
-          description:
-            'Click this button to jump straight to the Save section.',
-        },
-      },
+      // {
+      //   element: '.scrollToSave',
+      //   popover: {
+      //     title: 'Scroll-to-Save Button',
+      //     description:
+      //       'Click this button to jump straight to the Save section.',
+      //   },
+      // },
     ],
   }),
   getters: {

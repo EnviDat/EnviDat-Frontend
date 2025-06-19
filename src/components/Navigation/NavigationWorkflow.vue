@@ -256,7 +256,6 @@ import { extractIcons } from '@/factories/iconFactory';
 import { useDatasetWorkflowStore } from '@/modules/user/store/datasetWorkflow.js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
-
 // initialize the store
 const store = useStore();
 // define useDisplay
@@ -406,6 +405,18 @@ const initDriver = () => {
       @media screen and (max-width: 1280px) {
         // 960 is md for vueitfy
         background-color: #40c057;
+        .navigationWorkflow__append--number,
+        .v-list-item-title,
+        .v-icon__svg {
+          color: #fff;
+          font-weight: bold;
+        }
+      }
+    }
+    &.error {
+      @media screen and (max-width: 1280px) {
+        // 960 is md for vueitfy
+        background-color: #e38c2f;
         .navigationWorkflow__append--number,
         .v-list-item-title,
         .v-icon__svg {
