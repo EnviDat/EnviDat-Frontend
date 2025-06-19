@@ -99,7 +99,13 @@ export class AuthorListViewModel extends AbstractEditViewModel {
    * break, like the ones from the AuthorViewModel
    * @param dataset
    */
-  updateModel(dataset: DatasetDTO) {
+  updateModel(dataset: DatasetDTO | undefined) {
+    if (!dataset) {
+      // make sure to initialize for validations to work
+      Object.assign(this, { authors: []});
+      return;
+    }
+
     const cleanAuthors = AuthorListViewModel.getFormattedAuthors(
       dataset.author,
       dataset.metadata_modified,

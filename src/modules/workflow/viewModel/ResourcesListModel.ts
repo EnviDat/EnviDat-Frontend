@@ -81,14 +81,21 @@ export class ResourcesListModel extends AbstractEditViewModel {
    * for individual resource
    * @param dataset
    */
-  updateModel(dataset: DatasetDTO) {
-/*
-    const resourceData = createResources(
-      dataset,
-      this.signedInUser,
-      this.signedInUserOrganizationIds,
-    );
-*/
+  updateModel(dataset: DatasetDTO | undefined) {
+
+    if (!dataset) {
+      // make sure to initialize for validations to work
+      Object.assign(this, { resources: []});
+      return;
+    }
+
+    /*
+        const resourceData = createResources(
+          dataset,
+          this.signedInUser,
+          this.signedInUserOrganizationIds,
+        );
+    */
 
     const cleanResources = ResourcesListModel.getFormattedResources(
       dataset.resources,
