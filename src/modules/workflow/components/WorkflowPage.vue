@@ -80,7 +80,7 @@ import { storeToRefs } from 'pinia';
 
 import { ref, watch, computed, nextTick, onMounted } from 'vue';
 
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import NavigationWorkflow from '@/components/Navigation/NavigationWorkflow.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 
@@ -90,6 +90,7 @@ import { useDatasetWorkflowStore } from '@/modules/user/store/datasetWorkflow';
 import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 
 const route = useRoute();
+const router = useRouter();
 
 const props = defineProps({
   datasetId: {
@@ -121,6 +122,12 @@ const navigateToStep = (stepParam: number | string) => {
 }
 
 onMounted(() => {
+  if (!route.query?.step) {
+    router.push({
+      path: router.currentRoute.value.path,
+      query: { step: 0 },
+    });
+  }
   const stepParam = route.params.step as string;
 
   navigateToStep(stepParam);
@@ -147,7 +154,7 @@ watch(
 
 watch( () => route.query,
   (newQuery) =>   {
-    const step = newQuery?.step as string;
+    const step = newQuery?.step as string || 0;
     navigateToStep(step);
   },
 )
