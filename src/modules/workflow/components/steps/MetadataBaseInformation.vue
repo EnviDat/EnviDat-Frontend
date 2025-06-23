@@ -95,8 +95,8 @@
           :placeholder="labels.placeholderTitle"
           :model-value="metadataTitleField"
           @keyup="blurOnEnterKey"
-          @input="notifyPropertyInput($event.target.value)"
-          @change="notifyPropertyChange($event.target.value)"
+          @input="setTitleInput($event.target.value)"
+          @change="notifyTitleChange($event.target.value)"
         />
       </v-col>
 
@@ -227,6 +227,7 @@ import { getTagColor } from '@/factories/keywordsFactory';
 // import { getMetadataUrlFromTitle } from '@/factories/mappingFactory';
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 import MetadataDescription from '@/modules/metadata/components/Metadata/MetadataDescription.vue';
+import { enhanceTitleImg } from '@/factories/metaDataFactory.js';
 
 export default {
   name: 'EditMetadataHeader',
@@ -268,6 +269,8 @@ export default {
         metadataTitle: this.metadataTitleField,
         tags: this.keywordsField,
       };
+
+      enhanceTitleImg(previewEntry);
 
       return previewEntry;
     },
@@ -351,12 +354,12 @@ export default {
       this.newDatasetInfo.keywords = this.processValues(val);
       this.$emit('save', this.newDatasetInfo);
     },
-    notifyPropertyInput(value) {
+    setTitleInput(value) {
       this.newDatasetInfo.metadataTitle = value;
 
       this.$emit('validate', this.newDatasetInfo);
     },
-    notifyPropertyChange(value) {
+    notifyTitleChange(value) {
       this.newDatasetInfo.metadataTitle = value;
 
       this.$emit('save', this.newDatasetInfo);
@@ -499,7 +502,10 @@ export default {
     keywordValidMin3Characters: true,
     keywordCount: 0,
     rulesKeywords: [],
-    newDatasetInfo: {},
+    newDatasetInfo: {
+      metadataTitle: undefined,
+      keywords: undefined,
+    },
     defaultUserEditMetadataConfig: {
       keywordsListWordMax: 2,
       keywordsCountMin: 5,
