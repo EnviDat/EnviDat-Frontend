@@ -134,8 +134,11 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
   getters: {
     currentStepObject: (state) => state.steps[state.currentStep] ?? null,
     currentAsyncComponent(state) {
+      return state.steps[state.currentStep]?.component;
+/*
       const loader = state.steps[state.currentStep]?.loader;
       return loader ? defineAsyncComponent(loader) : null;
+*/
     },
     currentViewModel(state) {
       const step = state.steps[state.currentStep];

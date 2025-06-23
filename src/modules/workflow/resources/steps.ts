@@ -1,4 +1,10 @@
-import { ResourcesListModel } from '@/modules/workflow/viewModel/ResourcesListModel.ts';
+import AuthorsInformation from '@/modules/workflow/components/steps/AuthorsInformation.vue';
+import MetadataBaseInformation from '@/modules/workflow/components/steps/MetadataBaseInformation.vue';
+import GeoInformation from '@/modules/workflow/components/steps/GeoInformation.vue';
+import AdditionalInformation from '@/modules/workflow/components/steps/AdditionalInformation.vue';
+import ResourcesInformation from '@/modules/workflow/components/steps/ResourcesInformation.vue';
+import RelatedResearch from '@/modules/workflow/components/steps/RelatedResearch.vue';
+import PublishingInformation from '@/modules/workflow/components/steps/PublishingInformation.vue';
 
 export type StepStatus = 'active' | 'disabled' | 'completed';
 
@@ -10,9 +16,10 @@ export interface WorkflowStep {
   completed: boolean;
   hasError: boolean;
   key: string;
-  loader?: () => Promise<unknown>;
+  component: unknown;
+  // loader?: () => Promise<unknown>;
   viewModelKey: string;
-  genericProps: Record<string, unknown>;
+  // genericProps: Record<string, unknown>;
   icon: string;
   status: StepStatus;
   guideLines?: Array<{
@@ -30,10 +37,13 @@ export const workflowSteps: WorkflowStep[] = [
     completed: false,
     hasError: false,
     key: 'MetadataBaseInformation',
+    component: MetadataBaseInformation,
+/*
     loader: () =>
       import('@/modules/workflow/components/steps/MetadataBaseInformation.vue'),
+*/
     viewModelKey: 'ModelMetaDataHeader',
-    genericProps: {},
+    // genericProps: {},
     icon: 'baseinfo',
     status: 'active',
     // guideLines: [
@@ -55,10 +65,13 @@ export const workflowSteps: WorkflowStep[] = [
     completed: false,
     hasError: false,
     key: 'AuthorsInformation',
+    component: AuthorsInformation,
+/*
     loader: () =>
       import('@/modules/workflow/components/steps/AuthorsInformation.vue'),
+*/
     viewModelKey: 'AuthorListViewModel',
-    genericProps: {},
+    // genericProps: {},
     icon: 'authorsinfo',
     status: 'disabled',
     // guideLines: [
@@ -80,10 +93,13 @@ export const workflowSteps: WorkflowStep[] = [
     completed: false,
     hasError: false,
     key: 'GeoInformation',
+    component: GeoInformation,
+/*
     loader: () =>
       import('@/modules/workflow/components/steps/GeoInformation.vue'),
+*/
     viewModelKey: 'ModelGeoInfo',
-    genericProps: {},
+    // genericProps: {},
     icon: 'geoinfo',
     status: 'disabled',
   },
@@ -95,10 +111,13 @@ export const workflowSteps: WorkflowStep[] = [
     completed: false,
     hasError: false,
     key: 'additionalinformation',
+    component: AdditionalInformation,
+/*
     loader: () =>
       import('@/modules/workflow/components/steps/AdditionalInformation.vue'),
+*/
     viewModelKey: 'ModelAdditionalInformation',
-    genericProps: {},
+    // genericProps: {},
     icon: 'additionalinfo',
     status: 'disabled',
   },
@@ -110,10 +129,13 @@ export const workflowSteps: WorkflowStep[] = [
     completed: false,
     hasError: false,
     key: 'uploadinformation',
+    component: ResourcesInformation,
+/*
     loader: () =>
       import('@/modules/workflow/components/steps/ResourcesInformation.vue'),
+*/
     viewModelKey: 'ResourcesListModel',
-    genericProps: {},
+    // genericProps: {},
     icon: 'uploadinfo',
     status: 'disabled',
   },
@@ -125,10 +147,13 @@ export const workflowSteps: WorkflowStep[] = [
     completed: false,
     hasError: false,
     key: 'relatedresearch',
+    component: RelatedResearch,
+/*
     loader: () =>
       import('@/modules/workflow/components/steps/RelatedResearch.vue'),
+*/
     viewModelKey: 'ModelRelatedResearch',
-    genericProps: {},
+    // genericProps: {},
     icon: 'relatedinfo',
     status: 'disabled',
   },
@@ -140,10 +165,13 @@ export const workflowSteps: WorkflowStep[] = [
     completed: false,
     hasError: false,
     key: 'publicationinformation',
+    component: PublishingInformation,
+/*
     loader: () =>
       import('@/modules/workflow/components/steps/PublishingInformation.vue'),
+*/
     viewModelKey: 'ModelPublicationInformation',
-    genericProps: {},
+    // genericProps: {},
     icon: 'publicationinfo',
     status: 'disabled',
   },
