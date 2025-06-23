@@ -245,7 +245,6 @@ import {
   eventBus,
   MAP_GEOMETRY_MODIFIED,
   EDITMETADATA_DATA_GEO_MAP_ERROR,
-  EDITMETADATA_DATA_INFO,
 } from '@/factories/eventBus';
 
 import {

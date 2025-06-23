@@ -74,18 +74,22 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useDisplay } from 'vuetify';
 import { storeToRefs } from 'pinia';
 
 import { ref, watch, computed, nextTick, onMounted } from 'vue';
 
+import { useRoute } from 'vue-router';
 import NavigationWorkflow from '@/components/Navigation/NavigationWorkflow.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 
 import { extractIcons } from '@/factories/iconFactory';
 
 import { useDatasetWorkflowStore } from '@/modules/user/store/datasetWorkflow';
+import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
+
+const route = useRoute();
 
 const props = defineProps({
   datasetId: {
@@ -104,19 +108,22 @@ const navigationStore = useDatasetWorkflowStore();
 
 // TEMPORARY QUERY PARAMAMETER
 
-onMounted(() => {
-  const query = window.location.hash.split('?')[1] ?? '';
-
-  const params = new URLSearchParams(query);
-  const stepParam = Number(params.get('step'));
+const navigateToStep = (stepParam: number | string) => {
+  const step =  typeof stepParam === 'string' ? Number.parseInt(stepParam, 10) : stepParam;
 
   if (
-    Number.isFinite(stepParam) &&
-    stepParam >= 0 &&
-    stepParam < navigationStore.steps.length
+    Number.isFinite(step) &&
+    step >= 0 &&
+    step < navigationStore.steps.length
   ) {
-    navigationStore.jumpToStep(stepParam);
+    navigationStore.jumpToStep(step);
   }
+}
+
+onMounted(() => {
+  const stepParam = route.params.step as string;
+
+  navigateToStep(stepParam);
 });
 
 // END TEMPORARY QUERY PARAMAMETER
@@ -124,7 +131,7 @@ onMounted(() => {
 if (props.datasetId) {
   navigationStore.loadDataset(props.datasetId);
 } else if (props.dataset) {
-  navigationStore.initializeDataset(props.dataset);
+  navigationStore.initializeDataset(props.dataset as DatasetDTO);
 }
 
 const vm = ref(null);
@@ -137,6 +144,13 @@ watch(
   },
   { immediate: true },
 );
+
+watch( () => route.query,
+  (newQuery) =>   {
+    const step = newQuery?.step as string;
+    navigateToStep(step);
+  },
+)
 
 const iconScroll = computed(() => extractIcons('scroll'));
 
