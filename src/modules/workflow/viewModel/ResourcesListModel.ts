@@ -38,7 +38,7 @@ export class ResourcesListModel extends AbstractEditViewModel {
     };
 
     this.validationRules = yup.object().shape({
-      resources: yup.array().min(1, 'Add at least one resource.'),
+      resources: yup.array().required().min(1, 'Add at least one resource.'),
     });
   }
 

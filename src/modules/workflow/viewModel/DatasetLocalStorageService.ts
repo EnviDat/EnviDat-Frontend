@@ -110,8 +110,8 @@ export class DatasetLocalStorageService implements DatasetService {
   }
 
   async createResource(resoureData: ResourceDTO): Promise<ResourceDTO> {
-    const currentResources = [...this.dataset.resources || []];
-    currentResources.push(resoureData);
+    const currentResources = this.dataset.resources ? [...this.dataset.resources] : [];
+    currentResources?.push(resoureData);
 
     await this.patchDatasetChanges(this.dataset.id, {
       resources: currentResources,
