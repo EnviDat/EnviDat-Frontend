@@ -133,7 +133,6 @@
           "
           @keyup="blurOnEnterKey"
           @input="isEnoughKeywords()"
-          @change="notifyChange"
           @keydown="catchKeywordEntered($event)"
           :rules="rulesKeywords"
         >
