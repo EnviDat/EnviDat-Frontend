@@ -197,7 +197,9 @@ const catchConfirmSave = () => {
 }
 
 const catchNavigate = ({ id, status } : { id: number, status: string }) => {
-  navigateRouterToStep(id);
+  if (status !== 'disabled') {
+    navigateRouterToStep(id);
+  }
 }
 
 const nextStep = async () => {
