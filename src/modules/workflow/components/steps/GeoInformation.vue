@@ -75,12 +75,9 @@
         v-bind="metadataGeoProps"
       />
       <v-col class="pl-0" v-if="validationErrors.geometries != null">
-        <div
-          :style="{ color: '#FF847B', fontSize: '0.75rem' }"
-          class="error--text text-caption mt-1"
-        >
+        <v-alert type="error">
           {{ validationErrors.geometries }}
-        </div>
+        </v-alert>
       </v-col>
     </v-col>
 
@@ -174,7 +171,7 @@
         <v-row
           v-for="(item, index) in datesField"
           :key="index"
-          class="d-flex flex-column"
+          :class="`d-flex flex-column ${index > 0 ? 'pt-4' : ''}`"
           no-gutters
           dense
         >
@@ -191,6 +188,7 @@
               }}</b>
             </div>
           </v-col>
+
           <v-col cols="12">
             <BaseStartEndDate
               data-field="dates"
@@ -210,17 +208,22 @@
               :readOnlyExplanation="readOnlyExplanation"
             />
           </v-col>
-          <v-col v-if="datesField[index].dateType === 'created'">
-            <div
-              :style="{ color: '#FF847B', fontSize: '0.75rem' }"
-              class="error--text text-caption mt-3"
-            >
+
+        </v-row>
+
+        <v-row >
+          <v-col v-show="validationErrors.dates"
+                 cols="12"
+          >
+            <v-alert type="error">
               {{ validationErrors.dates }}
-            </div>
+            </v-alert>
           </v-col>
         </v-row>
+
       </v-col>
     </v-row>
+
   </v-container>
 </template>
 
@@ -347,16 +350,19 @@ export default {
       const dates = this.previewDates.length
         ? this.previewDates
         : [...this.dates];
+
       this.ensureDateEntry(
         dates,
         'created',
         'Date range during the research data was finalized or formally created',
       );
+
       this.ensureDateEntry(
         dates,
         'collected',
         'Date range during the research data was gathered or collected.',
       );
+
       const order = ['created', 'collected'];
       dates.sort(
         (a, b) => order.indexOf(a.dateType) - order.indexOf(b.dateType),

@@ -149,14 +149,13 @@
       </v-col>
     </v-row>
 
-    <v-col v-if="validationErrors.funders != null">
-      <div
-        :style="{ color: '#FF847B', fontSize: '0.75rem' }"
-        class="error--text text-caption mt-3"
-      >
-        {{ validationErrors.funders }}
-      </div>
-    </v-col>
+    <v-row v-if="validationErrors.funders != null">
+      <v-col >
+        <v-alert type="error">
+          {{ validationErrors.funders }}
+        </v-alert>
+      </v-col>
+    </v-row>
 
     <v-row>
       <v-col cols="12">
@@ -188,13 +187,12 @@
               @update:model-value="changeLicense($event)"
             />
           </v-col>
-          <v-col v-if="validationErrors.dataLicenseId != null">
-            <div
-              :style="{ color: '#FF847B', fontSize: '0.75rem' }"
-              class="error--text text-caption mt-3"
-            >
+
+          <v-col v-if="validationErrors.dataLicenseId != null"
+                 cols="12">
+            <v-alert type="error">
               {{ validationErrors.dataLicenseId }}
-            </div>
+            </v-alert>
           </v-col>
 
           <v-col cols="12">
