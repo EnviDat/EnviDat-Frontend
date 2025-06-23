@@ -159,6 +159,18 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
       this.datasetViewModel = new DatasetModel(
         new DatasetLocalStorageService(dataset),
       );
+
+      this.steps.forEach((s) => {
+        if (s.id === 0){
+          s.status = 'active';
+        } else {
+          s.status = 'disabled';
+        }
+
+        s.isEditable = true;
+        s.completed = false;
+        s.hasError = false;
+      });
     },
 
     // TEMPORARY QUERY PARAMS OPTION
@@ -166,8 +178,6 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
       this.freeJump = true;
       this.setActiveStep(id);
       this.freeJump = false;
-
-      this.validateStepAction(id);
     },
     navigateItemAction(id, status) {
       if (!this.freeJump) {
