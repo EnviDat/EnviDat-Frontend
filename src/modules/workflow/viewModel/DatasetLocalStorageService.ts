@@ -23,8 +23,12 @@ export class DatasetLocalStorageService implements DatasetService {
     this.datasetCount = 0;
 
     if (datasetBackend) {
-      this.patchDatasetChanges(datasetBackend?.id, datasetBackend);
+      this.patchDatasetChanges(datasetBackend?.id, datasetBackend).then(() => {
+        this.loadingDataset = false;
+      });
     } else {
+
+      localStorage.setItem(this.getLocalId(), '');
 
       const defaultDataset = {};
       initCreationDataWithDefaults(defaultDataset);
@@ -48,9 +52,17 @@ export class DatasetLocalStorageService implements DatasetService {
           id: this.getLocalId(),
         },
       );
+
+      // no need to overwrite it, because it will re-created with the next patch call
+      /*
+            // overwrite the dataset in the local storage
+            const storedData = storeDatasetInLocalStorage(this.dataset.id, {
+              this.dataset,
+            });
+      */
+
     }
 
-    this.loadingDataset = false;
   }
 
   private getLocalId() {
@@ -98,7 +110,7 @@ export class DatasetLocalStorageService implements DatasetService {
   }
 
   async createResource(resoureData: ResourceDTO): Promise<ResourceDTO> {
-    const currentResources = [...this.dataset.resources];
+    const currentResources = [...this.dataset.resources || []];
     currentResources.push(resoureData);
 
     await this.patchDatasetChanges(this.dataset.id, {
