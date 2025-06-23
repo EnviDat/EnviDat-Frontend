@@ -196,8 +196,9 @@
           </v-col>
 
           <v-col cols="12">
-            <v-expansion-panels focusable>
-              <v-expansion-panel :title="dataSummaryClickInfo">
+            <v-expansion-panels focusable v-model="defaultOpenPanels">
+              <v-expansion-panel :title="dataSummaryClickInfo"
+              >
                 <v-expansion-panel-text>
                   <div v-html="getDataLicenseSummary" />
                 </v-expansion-panel-text>
@@ -361,6 +362,7 @@ export default {
         dataLicense: 'Select data license',
         dataLicenseUrl: 'More info:',
       },
+      defaultOpenPanels: [0],
     };
   },
 
