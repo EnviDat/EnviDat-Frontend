@@ -2,7 +2,9 @@
   <div ref="appContainer" class="fill-height pa-2 pa-md-6">
     <v-row class="fill-height">
       <v-col cols="12" lg="4" xl="3" class="workflow-navigation__wrapper">
-        <NavigationWorkflow />
+        <NavigationWorkflow
+          @navigateItem="catchNavigate"
+        />
       </v-col>
 
       <v-col
@@ -40,7 +42,7 @@
           </div>
           <div ref="nextStepBlock" class="pa-4 d-flex align-center justify-end">
             <v-btn @click="nextStep">{{
-              navigationStore.currentStep === 6 ? 'Publish' : 'Next Step'
+              navigationStore.currentStep === 6 ? 'Finish Demo!' : 'Next Step'
             }}</v-btn>
           </div>
         </v-card>
@@ -66,7 +68,7 @@
         <v-card-actions class="pa-7">
           <BaseRectangleButton
             :buttonText="'Save and Proceed'"
-            @clicked="navigationStore.confirmSave(obj)"
+            @clicked="catchConfirmSave"
           />
         </v-card-actions>
       </v-card>
@@ -109,7 +111,7 @@ const navigationStore = useDatasetWorkflowStore();
 
 // TEMPORARY QUERY PARAMAMETER
 
-const navigateToStep = (stepParam: number | string) => {
+const changeNavigationInStore = (stepParam: number | string) => {
   const step =  typeof stepParam === 'string' ? Number.parseInt(stepParam, 10) : stepParam;
 
   if (
@@ -121,17 +123,6 @@ const navigateToStep = (stepParam: number | string) => {
   }
 }
 
-onMounted(() => {
-  if (!route.query?.step) {
-    router.push({
-      path: router.currentRoute.value.path,
-      query: { step: 0 },
-    });
-  }
-  const stepParam = route.params.step as string;
-
-  navigateToStep(stepParam);
-});
 
 // END TEMPORARY QUERY PARAMAMETER
 
@@ -155,7 +146,7 @@ watch(
 watch( () => route.query,
   (newQuery) =>   {
     const step = newQuery?.step as string || 0;
-    navigateToStep(step);
+    changeNavigationInStore(step);
   },
 )
 
@@ -188,18 +179,59 @@ const validate = (freshData) => {
   vm.value?.validate(freshData);
 };
 
-const { currentStepObject, currentAsyncComponent } =
-  storeToRefs(navigationStore);
+const { currentStep, currentAsyncComponent } = storeToRefs(navigationStore);
+
+const navigateRouterToStep = (step: number) => {
+  router.push({
+    path: router.currentRoute.value.path,
+    query: { step },
+  });
+}
+
+const catchConfirmSave = () => {
+  const ok = navigationStore.confirmSave();
+
+  if (ok) {
+    navigateRouterToStep(currentStep.value + 1);
+  }
+}
+
+const catchNavigate = ({ id, status } : { id: number, status: string }) => {
+  navigateRouterToStep(id);
+}
 
 const nextStep = async () => {
-  const ok = await navigationStore.validateStepAction(
-    navigationStore.currentStep,
-  );
+  const ok = await navigationStore.validateStepAction(currentStep.value);
 
-  if (!ok && vm.value) {
+  if (ok) {
+
+    if (currentStep.value === 6) {
+      // reset the worklfow
+      
+      // @ts-ignore
+      navigationStore.initializeDataset();
+
+      currentStep.value = 0;
+
+      navigateRouterToStep(currentStep.value);
+
+      return;
+    }
+
+    navigateRouterToStep( currentStep.value + 1);
+
+  } else if (!ok && vm.value) {
     scrollToFirstError(vm.value.validationErrors);
   }
 };
+
+onMounted(() => {
+
+  // always reset it to 0
+  navigateRouterToStep(0);
+
+});
+
 </script>
 
 <style lang="scss">

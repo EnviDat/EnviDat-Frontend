@@ -261,6 +261,8 @@ const store = useStore();
 // define useDisplay
 const display = useDisplay();
 
+const emit = defineEmits(['navigateItem']);
+
 // Placeholder for DOI
 const doiPlaceholder = ref(null);
 
@@ -276,7 +278,8 @@ const navigationStore = useDatasetWorkflowStore();
 const { currentStepObject } = storeToRefs(navigationStore);
 
 const navigateItem = (id, status) => {
-  navigationStore.navigateItemAction(id, status);
+  // navigationStore.navigateItemAction(id, status);
+  emit('navigateItem', { id, status });
 };
 
 const reserveDoi = async () => {

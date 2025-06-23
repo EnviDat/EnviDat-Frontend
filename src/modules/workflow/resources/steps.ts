@@ -5,6 +5,7 @@ import AdditionalInformation from '@/modules/workflow/components/steps/Additiona
 import ResourcesInformation from '@/modules/workflow/components/steps/ResourcesInformation.vue';
 import RelatedResearch from '@/modules/workflow/components/steps/RelatedResearch.vue';
 import PublishingInformation from '@/modules/workflow/components/steps/PublishingInformation.vue';
+import { markRaw } from 'vue';
 
 export type StepStatus = 'active' | 'disabled' | 'completed';
 
@@ -37,7 +38,7 @@ export const workflowSteps: WorkflowStep[] = [
     completed: false,
     hasError: false,
     key: 'MetadataBaseInformation',
-    component: MetadataBaseInformation,
+    component: markRaw(MetadataBaseInformation),
 /*
     loader: () =>
       import('@/modules/workflow/components/steps/MetadataBaseInformation.vue'),
@@ -65,7 +66,7 @@ export const workflowSteps: WorkflowStep[] = [
     completed: false,
     hasError: false,
     key: 'AuthorsInformation',
-    component: AuthorsInformation,
+    component: markRaw(AuthorsInformation),
 /*
     loader: () =>
       import('@/modules/workflow/components/steps/AuthorsInformation.vue'),
@@ -93,7 +94,7 @@ export const workflowSteps: WorkflowStep[] = [
     completed: false,
     hasError: false,
     key: 'GeoInformation',
-    component: GeoInformation,
+    component: markRaw(GeoInformation),
 /*
     loader: () =>
       import('@/modules/workflow/components/steps/GeoInformation.vue'),
@@ -111,7 +112,7 @@ export const workflowSteps: WorkflowStep[] = [
     completed: false,
     hasError: false,
     key: 'additionalinformation',
-    component: AdditionalInformation,
+    component: markRaw(AdditionalInformation),
 /*
     loader: () =>
       import('@/modules/workflow/components/steps/AdditionalInformation.vue'),
@@ -129,7 +130,7 @@ export const workflowSteps: WorkflowStep[] = [
     completed: false,
     hasError: false,
     key: 'uploadinformation',
-    component: ResourcesInformation,
+    component: markRaw(ResourcesInformation),
 /*
     loader: () =>
       import('@/modules/workflow/components/steps/ResourcesInformation.vue'),
@@ -147,7 +148,7 @@ export const workflowSteps: WorkflowStep[] = [
     completed: false,
     hasError: false,
     key: 'relatedresearch',
-    component: RelatedResearch,
+    component: markRaw(RelatedResearch),
 /*
     loader: () =>
       import('@/modules/workflow/components/steps/RelatedResearch.vue'),
@@ -165,7 +166,7 @@ export const workflowSteps: WorkflowStep[] = [
     completed: false,
     hasError: false,
     key: 'publicationinformation',
-    component: PublishingInformation,
+    component: markRaw(PublishingInformation),
 /*
     loader: () =>
       import('@/modules/workflow/components/steps/PublishingInformation.vue'),

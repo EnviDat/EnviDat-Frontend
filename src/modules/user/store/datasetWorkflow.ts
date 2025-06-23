@@ -166,6 +166,8 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
       this.freeJump = true;
       this.setActiveStep(id);
       this.freeJump = false;
+
+      this.validateStepAction(id);
     },
     navigateItemAction(id, status) {
       if (!this.freeJump) {
@@ -237,13 +239,6 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
         return false;
       }
 
-      // REMOVE after Research Day
-
-      if (stepId === 6 && !hasErrors) {
-        window.location.reload();
-        return false;
-      }
-
       if (stepId === this.isStepSave && !this.isStepSaveConfirmed) {
         this.openSaveDialog = true;
         return false;
@@ -256,16 +251,16 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
         errors: null,
       });
 
-      this.setCurrentStepAction();
+      // this.setCurrentStepAction();
 
       return true;
     },
 
-    confirmSave(newData) {
+    confirmSave() {
       this.isStepSaveConfirmed = true;
       this.openSaveDialog = false;
 
-      this.validateStepAction(this.isStepSave, newData);
+      return this.validateStepAction(this.isStepSave);
     },
 
     // setCurrentGuide(step) {},
