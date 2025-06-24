@@ -118,10 +118,12 @@ export default {
    * @description reset the scrolling to the top,
    * because of the scrolling is set from the browsePage or metaDetailPage
    */
-  mounted() {
-    window.scrollTo(0, 0);
+  async mounted() {
+    this.scrollToTop();
 
     this.checkRouteChanges();
+
+    // this.titleImageResolved = await getImage(this.blogHeaderImg);
   },
   computed: {
     ...mapState(['config']),
@@ -175,9 +177,20 @@ export default {
         });
       }
     },
-    loadPost(postFile) {
+    async loadPost(postFile) {
       if (this.post !== postFile) {
-        this.$store.dispatch(`${BLOG_NAMESPACE}/${GET_BLOG_POST}`, postFile);
+        await this.$store.dispatch(`${BLOG_NAMESPACE}/${GET_BLOG_POST}`, postFile);
+
+        this.$nextTick(() => {
+          this.scrollToTop();
+        });
+      }
+    },
+    scrollToTop() {
+      const appContainer =
+        this.$root.$refs.appContainer?.$el || this.$root.$refs.appContainer;
+      if (appContainer) {
+        appContainer.scrollTop = 0;
       }
     },
     catchClosePost() {
