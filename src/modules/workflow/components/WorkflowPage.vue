@@ -143,7 +143,7 @@ watch(
   { immediate: true },
 );
 
-watch( () => route.query,
+watch( () => route?.query,
   (newQuery) =>   {
     const step = newQuery?.step as string || 0;
     changeNavigationInStore(step);
@@ -182,10 +182,15 @@ const validate = (freshData) => {
 const { currentStep, currentAsyncComponent } = storeToRefs(navigationStore);
 
 const navigateRouterToStep = (step: number) => {
-  router.push({
-    path: router.currentRoute.value.path,
-    query: { step },
-  });
+  if (router) {
+    router.push({
+      path: router.currentRoute.value.path,
+      query: { step },
+    });
+  } else {
+    // storybook context
+    changeNavigationInStore(step);
+  }
 }
 
 const catchConfirmSave = () => {
