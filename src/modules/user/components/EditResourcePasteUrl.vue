@@ -79,6 +79,7 @@ export default {
   beforeUnmount() {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
   },
+  emits: ['createUrlResources'],
   computed: {},
   methods: {
     clearPreview() {

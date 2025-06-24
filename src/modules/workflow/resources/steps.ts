@@ -1,3 +1,4 @@
+import { markRaw } from 'vue';
 import AuthorsInformation from '@/modules/workflow/components/steps/AuthorsInformation.vue';
 import MetadataBaseInformation from '@/modules/workflow/components/steps/MetadataBaseInformation.vue';
 import GeoInformation from '@/modules/workflow/components/steps/GeoInformation.vue';
@@ -5,7 +6,6 @@ import AdditionalInformation from '@/modules/workflow/components/steps/Additiona
 import ResourcesInformation from '@/modules/workflow/components/steps/ResourcesInformation.vue';
 import RelatedResearch from '@/modules/workflow/components/steps/RelatedResearch.vue';
 import PublishingInformation from '@/modules/workflow/components/steps/PublishingInformation.vue';
-import { markRaw } from 'vue';
 
 export type StepStatus = 'active' | 'disabled' | 'completed';
 

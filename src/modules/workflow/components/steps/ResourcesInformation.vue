@@ -106,7 +106,7 @@
  * ResourcesInformation.vue shows all the resources of a metadata entry in a list.
  *
  * @summary shows the resources for a metadata entry
- * @author Dominik Haas-Artho & Sam Woodcock
+ * @author Dominik Haas-Artho
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.

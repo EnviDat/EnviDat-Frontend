@@ -574,15 +574,14 @@ import {
 
 export default {
   name: 'MetadataHeader',
-  components: {
-    MetadataHeaderPlaceholder,
-    BaseIcon,
-    TagChip,
-    TagChipAuthor,
-    BaseIconButton,
-    MetadataOrganizationChip,
-    MetadataStateChip,
-  },
+  emits: [
+    'organizationClicked',
+    'clickedEdit',
+    'clickedBack',
+    'clickedAuthor',
+    'clickedTag',
+    'checkSize',
+  ],
   props: {
     metadataId: String,
     metadataTitle: String,
@@ -787,6 +786,15 @@ export default {
     authorName: getAuthorName,
     authorGivenName: getAuthorGivenName,
     authorLastName: getAuthorLastName,
+  },
+  components: {
+    MetadataHeaderPlaceholder,
+    BaseIcon,
+    TagChip,
+    TagChipAuthor,
+    BaseIconButton,
+    MetadataOrganizationChip,
+    MetadataStateChip,
   },
 };
 </script>

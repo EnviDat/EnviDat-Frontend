@@ -1,5 +1,5 @@
 <template>
-  <v-container id="EditMetadataHeader" fluid class="pa-4">
+  <v-container id="MetadataBaseInformation" fluid class="pa-4">
     <!-- Title box -->
     <v-row class="mb-0">
       <v-col class="text-h5 font-weight-bold" cols="12">
@@ -175,7 +175,7 @@
         </v-row>
         <GenericTextareaPreviewLayout
           data-field="metadataDescription"
-          :columns="12"
+          columns="12"
           v-bind="genericTextAreaObject"
           :textarea-content="metadataDescriptionField"
           :validationError="validationErrors.metadataDescription"
@@ -229,7 +229,7 @@ import MetadataDescription from '@/modules/metadata/components/Metadata/Metadata
 import { enhanceTitleImg } from '@/factories/metaDataFactory.js';
 
 export default {
-  name: 'EditMetadataHeader',
+  name: 'MetadataBaseInformation',
   props: {
     metadataTitle: {
       type: String,
