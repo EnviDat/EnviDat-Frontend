@@ -215,7 +215,6 @@
           </v-col>
         </v-row>
 
-<!--
         <div class="text-h6 mt-6">Data access</div>
 
         <div class="pa-1">
@@ -281,7 +280,6 @@
           </v-row>
 
       </div>
--->
 
         <v-row no-gutters class="pt-4" justify="end">
           <v-col class="flex-grow-0">
@@ -328,9 +326,7 @@ import {
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
-/*
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
-*/
 
 import { formatDateTimeToCKANFormat } from '@/factories/mappingFactory.js';
 import { renderMarkdown } from '@/factories/stringFactory.js';
@@ -895,9 +891,7 @@ export default {
     notFoundImg,
   }),
   components: {
-/*
     BaseUserPicker,
-*/
     BaseRectangleButton,
     BaseIconButton,
     BaseIconSwitch,
