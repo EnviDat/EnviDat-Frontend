@@ -163,7 +163,7 @@ import {
 // );
 
 export default {
-  name: 'MetadataEditingPublicationInfo',
+  name: 'PublishingInformation',
   data: () => ({
     envidatDomain: process.env.VITE_API_ROOT,
     newDatasetInfo: {},

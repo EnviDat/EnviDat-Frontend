@@ -43,7 +43,7 @@ export const workflowSteps: WorkflowStep[] = [
     loader: () =>
       import('@/modules/workflow/components/steps/MetadataBaseInformation.vue'),
 */
-    viewModelKey: 'ModelMetaDataHeader',
+    viewModelKey: 'MetadataBaseViewModel',
     // genericProps: {},
     icon: 'baseinfo',
     status: 'active',
@@ -99,7 +99,7 @@ export const workflowSteps: WorkflowStep[] = [
     loader: () =>
       import('@/modules/workflow/components/steps/GeoInformation.vue'),
 */
-    viewModelKey: 'ModelGeoInfo',
+    viewModelKey: 'GeoInfoViewModel',
     // genericProps: {},
     icon: 'geoinfo',
     status: 'disabled',
@@ -117,7 +117,7 @@ export const workflowSteps: WorkflowStep[] = [
     loader: () =>
       import('@/modules/workflow/components/steps/AdditionalInformation.vue'),
 */
-    viewModelKey: 'ModelAdditionalInformation',
+    viewModelKey: 'AdditionalInfoViewModel',
     // genericProps: {},
     icon: 'additionalinfo',
     status: 'disabled',
@@ -135,7 +135,7 @@ export const workflowSteps: WorkflowStep[] = [
     loader: () =>
       import('@/modules/workflow/components/steps/ResourcesInformation.vue'),
 */
-    viewModelKey: 'ResourcesListModel',
+    viewModelKey: 'ResourcesListViewModel',
     // genericProps: {},
     icon: 'uploadinfo',
     status: 'disabled',
@@ -153,7 +153,7 @@ export const workflowSteps: WorkflowStep[] = [
     loader: () =>
       import('@/modules/workflow/components/steps/RelatedResearch.vue'),
 */
-    viewModelKey: 'ModelRelatedResearch',
+    viewModelKey: 'RelatedResearchViewModel',
     // genericProps: {},
     icon: 'relatedinfo',
     status: 'disabled',
@@ -171,7 +171,7 @@ export const workflowSteps: WorkflowStep[] = [
     loader: () =>
       import('@/modules/workflow/components/steps/PublishingInformation.vue'),
 */
-    viewModelKey: 'ModelPublicationInformation',
+    viewModelKey: 'PublicationInfoViewModel',
     // genericProps: {},
     icon: 'publicationinfo',
     status: 'disabled',

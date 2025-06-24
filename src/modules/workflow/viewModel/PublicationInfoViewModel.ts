@@ -2,7 +2,8 @@ import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 import { DatasetModel } from '@/modules/workflow/viewModel/DatasetModel.ts';
 
-export class ModelPublicationInformation extends AbstractEditViewModel {
+export class PublicationInfoViewModel extends AbstractEditViewModel {
+
   declare contactEmail: string;
   declare contactFirstName: string;
   declare contactLastName: string;
@@ -14,7 +15,7 @@ export class ModelPublicationInformation extends AbstractEditViewModel {
   };
 
   constructor(datasetViewModel: DatasetModel) {
-    super(datasetViewModel, ModelPublicationInformation.mappingRules());
+    super(datasetViewModel, PublicationInfoViewModel.mappingRules());
 
     this.validationErrors = {
       contactEmail: null,
@@ -38,7 +39,7 @@ export class ModelPublicationInformation extends AbstractEditViewModel {
     });
   }
 
-  validate(newProps?: Partial<ModelPublicationInformation>): boolean {
+  validate(newProps?: Partial<PublicationInfoViewModel>): boolean {
     return super.validate(newProps);
   }
 

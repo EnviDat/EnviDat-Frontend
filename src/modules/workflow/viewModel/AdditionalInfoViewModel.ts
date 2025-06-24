@@ -1,11 +1,12 @@
-/*  ModelAdditionalInformation.ts  */
+/*  AdditionalInfoViewModel.ts  */
 import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 import { DatasetModel } from '@/modules/workflow/viewModel/DatasetModel.ts';
 
 const toNull = (v: string, o: string) => (o === '' ? null : v);
 
-export class ModelAdditionalInformation extends AbstractEditViewModel {
+export class AdditionalInfoViewModel extends AbstractEditViewModel {
+
   declare dataLicenseId: string;
   declare dataLicenseTitle: string;
   declare dataLicenseUrl: string;
@@ -22,7 +23,7 @@ export class ModelAdditionalInformation extends AbstractEditViewModel {
   };
 
   constructor(datasetVM: DatasetModel) {
-    super(datasetVM, ModelAdditionalInformation.mappingRules());
+    super(datasetVM, AdditionalInfoViewModel.mappingRules());
 
     this.validationErrors = { dataLicenseId: null, funders: null };
 
@@ -47,7 +48,7 @@ export class ModelAdditionalInformation extends AbstractEditViewModel {
     });
   }
 
-  validate(newProps?: Partial<ModelAdditionalInformation>) {
+  validate(newProps?: Partial<AdditionalInfoViewModel>) {
     return super.validate(newProps);
   }
 

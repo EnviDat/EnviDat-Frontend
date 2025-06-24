@@ -2,7 +2,7 @@ import * as yup from 'yup';
 
 import { Resource, User } from '@/types/modelTypes';
 import { type DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
-import { ResourceModel } from '@/modules/workflow/viewModel/ResourceModel.ts';
+import { ResourceViewModel } from '@/modules/workflow/viewModel/ResourceViewModel.ts';
 import { DatasetModel } from '@/modules/workflow/viewModel/DatasetModel.ts';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel';
 import { METADATA_NEW_RESOURCE_ID } from '@/factories/metadataConsts';
@@ -18,7 +18,7 @@ import {
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 
 
-export class ResourcesListModel extends AbstractEditViewModel {
+export class ResourcesListViewModel extends AbstractEditViewModel {
   declare resources: Resource[];
 
   declare datasetId: string;
@@ -31,7 +31,7 @@ export class ResourcesListModel extends AbstractEditViewModel {
   };
 
   constructor(datasetViewModel: DatasetModel) {
-    super(datasetViewModel, ResourcesListModel.mappingRules());
+    super(datasetViewModel, ResourcesListViewModel.mappingRules());
 
     this.validationErrors = {
       resources: null,
@@ -52,7 +52,7 @@ export class ResourcesListModel extends AbstractEditViewModel {
   ): Resource[] {
 
     return rawResources?.map((rawResource: ResourceDTO) => {
-        const res = ResourceModel.getFormattedResource(
+        const res = ResourceViewModel.getFormattedResource(
           rawResource,
           datasetName,
           organizationID,
@@ -69,7 +69,7 @@ export class ResourcesListModel extends AbstractEditViewModel {
   get backendJSON() {
     const rawResources = this.resources?.map((cleanResource) =>
       convertToBackendJSONWithRules(
-        ResourceModel.mappingRules(),
+        ResourceViewModel.mappingRules(),
         cleanResource,
       ),
     );
@@ -78,7 +78,7 @@ export class ResourcesListModel extends AbstractEditViewModel {
   }
 
   /**
-   * OVERRIDE the method to make use of the ResourceModel mappingRules
+   * OVERRIDE the method to make use of the ResourceViewModel mappingRules
    * for individual resource
    * @param dataset
    */
@@ -98,7 +98,7 @@ export class ResourcesListModel extends AbstractEditViewModel {
         );
     */
 
-    const cleanResources = ResourcesListModel.getFormattedResources(
+    const cleanResources = ResourcesListViewModel.getFormattedResources(
       dataset.resources,
       dataset.name,
       dataset.organization?.id,
@@ -120,7 +120,7 @@ export class ResourcesListModel extends AbstractEditViewModel {
     Object.assign(this, { resources: cleanResources });
   }
 
-  validate(newProps?: Partial<ResourcesListModel>): boolean {
+  validate(newProps?: Partial<ResourcesListViewModel>): boolean {
     return super.validate(newProps);
   }
 
@@ -133,7 +133,7 @@ export class ResourcesListModel extends AbstractEditViewModel {
       if (newResource) {
         this.loading = true;
 
-        const model = new ResourceModel();
+        const model = new ResourceViewModel();
         await model.save(newResource);
 
         // the resourceModel is updated with the latest content of the backend

@@ -6,7 +6,7 @@ import type { KeywordDTO } from '@/types/dataTransferObjectsTypes';
 import { enhanceKeywords } from '@/factories/keywordsFactory';
 import categoryCards from '@/store/categoryCards';
 
-export class ModelMetaDataHeader extends AbstractEditViewModel {
+export class MetadataBaseViewModel extends AbstractEditViewModel {
   declare metadataTitle: string;
   declare metadataDescription: string;
   declare keywords: KeywordDTO[];
@@ -22,7 +22,7 @@ export class ModelMetaDataHeader extends AbstractEditViewModel {
     datasetViewModel: DatasetModel,
     existingKeywords: KeywordDTO[],
   ) {
-    super(datasetViewModel, ModelMetaDataHeader.mappingRules());
+    super(datasetViewModel, MetadataBaseViewModel.mappingRules());
 
     enhanceKeywords(this.keywords, categoryCards);
     this.existingKeywords = existingKeywords;
@@ -51,7 +51,7 @@ export class ModelMetaDataHeader extends AbstractEditViewModel {
     });
   }
 
-  validate(newProps?: Partial<ModelMetaDataHeader>) {
+  validate(newProps?: Partial<MetadataBaseViewModel>) {
     return super.validate(newProps);
   }
 

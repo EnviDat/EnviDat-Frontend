@@ -8,7 +8,7 @@ function convertEmptyStringToNull(v: unknown) {
   return typeof v === 'string' && v.trim() === '' ? null : v;
 }
 
-export class ModelRelatedResearch extends AbstractEditViewModel {
+export class RelatedResearchViewModel extends AbstractEditViewModel {
   declare relatedPublicationsText: string | null;
   declare relatedDatasetsText: string | null;
   declare customFields: string;
@@ -20,7 +20,7 @@ export class ModelRelatedResearch extends AbstractEditViewModel {
   };
 
   constructor(datasetViewModel: DatasetModel) {
-    super(datasetViewModel, ModelRelatedResearch.mappingRules());
+    super(datasetViewModel, RelatedResearchViewModel.mappingRules());
 
     this.validationErrors = {
       relatedPublicationsText: null,
@@ -91,7 +91,7 @@ export class ModelRelatedResearch extends AbstractEditViewModel {
   }
 */
 
-  validate(newProps?: Partial<ModelRelatedResearch>) {
+  validate(newProps?: Partial<RelatedResearchViewModel>) {
     return super.validate(newProps);
   }
 }

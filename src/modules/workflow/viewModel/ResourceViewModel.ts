@@ -14,7 +14,7 @@ const convertEmptyStringToNull = (value: string, originalValue: string) =>
 const convertToZero = (value: unknown) => (Number.isNaN(value) ? 0 : value);
 
 
-export class ResourceModel extends AbstractEditViewModel implements Resource {
+export class ResourceViewModel extends AbstractEditViewModel implements Resource {
 
   declare datasetId: string;
   declare description: string;
@@ -98,7 +98,7 @@ export class ResourceModel extends AbstractEditViewModel implements Resource {
   constructor(datasetViewModel?: DatasetModel | undefined) {
     // intentionally not providing the datasetViewModel, because resource have to be unpacked
     // from the list of resources, done in the ResourceListModel
-    super(datasetViewModel, ResourceModel.mappingRules())
+    super(datasetViewModel, ResourceViewModel.mappingRules())
 
 
     this.validationErrors = {
@@ -180,7 +180,7 @@ export class ResourceModel extends AbstractEditViewModel implements Resource {
     numberOfDownload?: number,
   ) : Resource {
 
-    const frontendResource = convertToFrontendJSONWithRules(ResourceModel.mappingRules(), rawResource) as Resource;
+    const frontendResource = convertToFrontendJSONWithRules(ResourceViewModel.mappingRules(), rawResource) as Resource;
 
 /*
     const isProtected = isResourceProtectedForUser(
@@ -259,7 +259,7 @@ export class ResourceModel extends AbstractEditViewModel implements Resource {
     ];
   }
 
-  validate(newProps?: Partial<ResourceModel>): boolean {
+  validate(newProps?: Partial<ResourceViewModel>): boolean {
     return super.validate(newProps);
   }
 }

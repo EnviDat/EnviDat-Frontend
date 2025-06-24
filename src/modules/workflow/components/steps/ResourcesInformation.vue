@@ -153,7 +153,7 @@ import {
 import ResourcesListEditing from '@/modules/workflow/components/steps/ResourcesListEditing.vue';
 // import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles.vue';
 import EditResourcePasteUrl from '@/modules/user/components/EditResourcePasteUrl.vue';
-import { ResourceModel } from '@/modules/workflow/viewModel/ResourceModel.js';
+import { ResourceViewModel } from '@/modules/workflow/viewModel/ResourceViewModel.js';
 import type { Resource } from '@/types/modelTypes';
 import { mergeResourceSizeForFrontend } from '@/factories/resourceHelpers.ts';
 import ResourceEditing from '@/modules/workflow/components/steps/ResourceEditing.vue';
@@ -442,7 +442,7 @@ export default {
       const datasetId = this.datasetId;
       const newResource = createNewResourceForUrl(datasetId, url);
 
-      this.resourceViewModel = new ResourceModel();
+      this.resourceViewModel = new ResourceViewModel();
       const validData = this.resourceViewModel.validate(newResource);
 
       if (!validData) {
@@ -535,7 +535,7 @@ export default {
       // clear the internal state of the UI component
       eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
 
-      this.resourceViewModel = new ResourceModel();
+      this.resourceViewModel = new ResourceViewModel();
     },
   },
   data: () => ({
@@ -553,7 +553,7 @@ export default {
                     the button below.`,
     uploadProgress: 0,
     uploadState: undefined,
-    resourceViewModel: new ResourceModel(),
+    resourceViewModel: new ResourceViewModel(),
   }),
   components: {
     ResourcesListEditing,

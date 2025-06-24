@@ -1,9 +1,10 @@
-// factories/ViewModels/ModelGeoInfo.ts
+// factories/ViewModels/GeoInfoViewModel.ts
 import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 import { DatasetModel } from '@/modules/workflow/viewModel/DatasetModel.ts';
 
-export class ModelGeoInfo extends AbstractEditViewModel {
+export class GeoInfoViewModel extends AbstractEditViewModel {
+
   declare dates: any[];
   declare geometries: any[];
 
@@ -13,7 +14,7 @@ export class ModelGeoInfo extends AbstractEditViewModel {
   };
 
   constructor(datasetVM: DatasetModel) {
-    super(datasetVM, ModelGeoInfo.mappingRules());
+    super(datasetVM, GeoInfoViewModel.mappingRules());
 
     this.validationErrors = { dates: null, geometries: null };
 
@@ -24,7 +25,7 @@ export class ModelGeoInfo extends AbstractEditViewModel {
         .min(1, 'At least a creation date is required')
         .test(
           'created-date-complete',
-          'Add start **and** end date for “created”',
+          'Add start and end date for “created”',
           (entries?: any[]) => {
             if (!Array.isArray(entries)) return false;
 
@@ -40,7 +41,7 @@ export class ModelGeoInfo extends AbstractEditViewModel {
     });
   }
 
-  validate(newProps?: Partial<ModelGeoInfo>): boolean {
+  validate(newProps?: Partial<GeoInfoViewModel>): boolean {
     return super.validate(newProps);
   }
 

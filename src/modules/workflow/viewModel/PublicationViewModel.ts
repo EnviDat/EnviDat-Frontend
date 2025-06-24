@@ -3,7 +3,7 @@ import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEdit
 import { DatasetModel } from '@/modules/workflow/viewModel/DatasetModel.ts';
 
 
-export class EditPublicationViewModel extends AbstractEditViewModel{
+export class PublicationViewModel extends AbstractEditViewModel{
 
   declare publicationState: string;
   declare doi: string;
@@ -23,7 +23,7 @@ export class EditPublicationViewModel extends AbstractEditViewModel{
 
 
   constructor(datasetViewModel: DatasetModel) {
-    super(datasetViewModel, EditPublicationViewModel.mappingRules());
+    super(datasetViewModel, PublicationViewModel.mappingRules());
 
 
     this.validationErrors = {
@@ -58,7 +58,7 @@ export class EditPublicationViewModel extends AbstractEditViewModel{
     ];
   }
 
-  validate(newProps?: Partial<EditPublicationViewModel>): boolean {
+  validate(newProps?: Partial<PublicationViewModel>): boolean {
     return super.validate(newProps);
   }
 }

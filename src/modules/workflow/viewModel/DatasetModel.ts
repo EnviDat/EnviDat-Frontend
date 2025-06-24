@@ -3,23 +3,19 @@ import { reactive } from 'vue';
 import type { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 import { DatasetService, User } from '@/types/modelTypes';
 
-import { EditHeaderViewModel } from '@/modules/workflow/viewModel/EditHeaderViewModel.ts';
 import { EditDescriptionViewModel } from '@/modules/workflow/viewModel/EditDescriptionViewModel.ts';
-import { EditKeywordsViewModel } from '@/modules/workflow/viewModel/EditKeywordsViewModel.ts';
 import { EditCustomFieldsViewModel } from '@/modules/workflow/viewModel/EditCustomFieldsViewModel.ts';
 import { AuthorListViewModel } from '@/modules/workflow/viewModel/AuthorListViewModel.ts';
 import { EditDataInfoViewModel } from '@/modules/workflow/viewModel/EditDataInfoViewModel.ts';
 import { EditDataLicenseViewModel } from '@/modules/workflow/viewModel/EditDataLicenseViewModel.ts';
-import { EditPublicationViewModel } from '@/modules/workflow/viewModel/EditPublicationViewModel.ts';
-import { ResourcesListModel } from '@/modules/workflow/viewModel/ResourcesListModel.ts';
-import { EditOrganizationViewModel } from '@/modules/workflow/viewModel/EditOrganizationViewModel.ts';
-import { EditFundingViewModel } from '@/modules/workflow/viewModel/EditFundingViewModel.ts';
+import { PublicationViewModel } from '@/modules/workflow/viewModel/PublicationViewModel.ts';
+import { ResourcesListViewModel } from '@/modules/workflow/viewModel/ResourcesListViewModel.ts';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
-import { ModelMetaDataHeader } from '@/modules/workflow/viewModel/ModelMetaDataHeader.ts';
-import { ModelAdditionalInformation } from '@/modules/workflow/viewModel/ModelAdditionalInformation.ts';
-import { ModelGeoInfo } from '@/modules/workflow/viewModel/ModelGeoInfo.ts';
-import { ModelRelatedResearch } from '@/modules/workflow/viewModel/ModelRelatedResearch.ts';
-import { ModelPublicationInformation } from '@/modules/workflow/viewModel/ModelPublicationInformation.ts';
+import { MetadataBaseViewModel } from '@/modules/workflow/viewModel/MetadataBaseViewModel.ts';
+import { AdditionalInfoViewModel } from '@/modules/workflow/viewModel/AdditionalInfoViewModel.ts';
+import { GeoInfoViewModel } from '@/modules/workflow/viewModel/GeoInfoViewModel.ts';
+import { RelatedResearchViewModel } from '@/modules/workflow/viewModel/RelatedResearchViewModel.ts';
+import { PublicationInfoViewModel } from '@/modules/workflow/viewModel/PublicationInfoViewModel.ts';
 
 import { initCreationDataWithDefaults } from '@/factories/userCreationFactory';
 import { Dataset } from '@/modules/workflow/viewModel/Dataset.ts';
@@ -27,22 +23,20 @@ import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 
 export class DatasetModel {
   viewModelClasses = [
-    EditHeaderViewModel,
     EditDescriptionViewModel,
     EditFundingViewModel,
-    EditKeywordsViewModel,
     AuthorListViewModel,
     EditCustomFieldsViewModel,
     EditDataInfoViewModel,
     EditDataLicenseViewModel,
-    EditPublicationViewModel,
-    ResourcesListModel,
+    PublicationViewModel,
+    ResourcesListViewModel,
     EditOrganizationViewModel,
-    ModelMetaDataHeader,
-    ModelAdditionalInformation,
-    ModelGeoInfo,
-    ModelRelatedResearch,
-    ModelPublicationInformation,
+    MetadataBaseViewModel,
+    AdditionalInfoViewModel,
+    GeoInfoViewModel,
+    RelatedResearchViewModel,
+    PublicationInfoViewModel,
   ];
 
   private viewModelInstances: Map<string, any> = new Map();
@@ -127,12 +121,12 @@ export class DatasetModel {
 
       this.resourceCounter++; // DEMO
 
-      // update specifically the ResourcesListModel with the newly created Resource
+      // update specifically the ResourcesListViewModel with the newly created Resource
       this.getViewModel('ResourcesListModel').updateModel(this.dataset);
 
 /*
       const resourceModelData =
-        ResourceModel.getFormattedResource(
+        ResourceViewModel.getFormattedResource(
           newResourceDTO,
           this.dataset.name,
           undefined,
