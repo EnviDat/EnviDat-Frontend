@@ -145,14 +145,12 @@
           class="doi-icon"
           :color="navigationStore.isStepSaveConfirmed ? 'primary' : 'black'"
           :class="
-            navigationStore.isStepSaveConfirmed && doiPlaceholder === null
+            navigationStore.isStepSaveConfirmed && navigationStore.doiPlaceholder === null
               ? 'pulseIcon'
               : ''
           "
         />
-        <span class="text-body-2 mt-2">{{
-          doiPlaceholder != null ? doiPlaceholder : 'Reserve DOI'
-        }}</span>
+        <span class="text-body-2 mt-2">{{ navigationStore.doiPlaceholder || 'Reserve DOI' }}</span>
       </div>
       <div class="navigationWorkflow__actions--item d-flex flex-column">
         <v-menu
@@ -174,7 +172,7 @@
                 :color="'black'"
               />
               <span class="text-body-2 mt-2">
-                {{ doiPlaceholder != null ? 'Reserved' : 'Draft' }}
+                {{ navigationStore.doiPlaceholder != null ? 'Reserved' : 'Draft' }}
               </span>
             </div>
           </template>
@@ -263,9 +261,6 @@ const display = useDisplay();
 
 const emit = defineEmits(['navigateItem']);
 
-// Placeholder for DOI
-const doiPlaceholder = ref(null);
-
 // tooltip activator
 const showStatusMenu = ref(false);
 
@@ -285,11 +280,7 @@ const navigateItem = (id, status) => {
 const reserveDoi = async () => {
   // TODO metadataID connect with the real ID, see reference initMetadataUsingId - MetadataEditPage
   // await store.dispatch('user/DOI_RESERVE', 'metadataID');
-  if (navigationStore.isStepSaveConfirmed) {
-    doiPlaceholder.value = '10.10000/envidat.1234';
-  } else {
-    doiPlaceholder.value = null;
-  }
+  navigationStore.reserveDoi();
 };
 
 const tooltip = {

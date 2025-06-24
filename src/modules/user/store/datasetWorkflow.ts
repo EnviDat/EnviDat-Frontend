@@ -27,6 +27,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     freeJump: false,
     // END TEMPORARY QUERY PARAMS OPTION
     isStepSave: 3,
+    doiPlaceholder: null,
     workflowGuide: [
       {
         element: '#mainPageRow',
@@ -171,6 +172,10 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
         s.completed = false;
         s.hasError = false;
       });
+
+      this.doiPlaceholder = null;
+      this.openSaveDialog = false;
+      this.isStepSaveConfirmed = false;
     },
 
     // TEMPORARY QUERY PARAMS OPTION
@@ -270,7 +275,12 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
       this.isStepSaveConfirmed = true;
       this.openSaveDialog = false;
 
+
       return this.validateStepAction(this.isStepSave);
+    },
+
+    reserveDoi() {
+      this.doiPlaceholder = '10.10000/envidat.1234';
     },
 
     // setCurrentGuide(step) {},
