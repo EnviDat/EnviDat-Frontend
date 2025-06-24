@@ -77,7 +77,6 @@
 </template>
 
 <script setup lang="ts">
-import { useDisplay } from 'vuetify';
 import { storeToRefs } from 'pinia';
 
 import { ref, watch, computed, nextTick, onMounted } from 'vue';
@@ -105,7 +104,6 @@ const props = defineProps({
   },
 });
 
-const display = useDisplay();
 
 const navigationStore = useDatasetWorkflowStore();
 

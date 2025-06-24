@@ -135,16 +135,11 @@ import {
   EDITMETADATA_FUNDING_INFO,
   EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_ORGANIZATION,
-  EDITMETADATA_PUBLICATION_INFO,
   EDITMETADATA_PUBLICATION_STATE,
   eventBus,
-  METADATA_EDITING_FINISH_CLICK,
 } from '@/factories/eventBus';
 
 import {
-  METADATA_CONTACT_EMAIL,
-  METADATA_CONTACT_FIRSTNAME,
-  METADATA_CONTACT_LASTNAME,
   BLIND_REVIEW_ON,
   PUBLICATION_STATE_PUBLISHED,
 } from '@/factories/metadataConsts';
@@ -235,6 +230,7 @@ export default {
     },
     validationErrors: { type: Object, default: () => ({}) },
   },
+  emits: ['save'],
   computed: {
     ...mapState(['config']),
     ...mapState(USER_NAMESPACE, ['doiLoading', 'doiSuccess', 'doiError']),
