@@ -236,6 +236,7 @@ import {
   getAvailableLicensesForEditing,
   dataLicenses,
 } from '@/factories/dataLicense';
+import { renderMarkdown } from '@/factories/stringFactory.js';
 
 export default {
   name: 'EditMetadataHeader',
@@ -265,7 +266,11 @@ export default {
         : 'Show a summary';
     },
     getDataLicenseSummary() {
-      return this.currentDataLicense?.summary || '';
+      if (!this.currentDataLicense) {
+        return 'Please select a data license above to view data license summary.';
+      }
+
+      return renderMarkdown(this.currentDataLicense.summary) || 'Data summary information unavailable';
     },
     previewFundersWithEmpty() {
       const last = this.previewFunders[this.previewFunders.length - 1] || {};
