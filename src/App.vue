@@ -233,6 +233,8 @@ const NotificationCard = defineAsyncComponent(
   () => import('@/components/Cards/NotificationCard.vue'),
 );
 
+let configInterval;
+
 export default {
   name: 'App',
 
@@ -242,7 +244,7 @@ export default {
 
     // define an interval to check again regularly to make sure
     // all users get any changes in the config and version updates
-    setInterval(() => {
+    configInterval = setInterval(() => {
       this.$store.dispatch(SET_CONFIG);
     }, 30000); // 1000 * 3 = 30 seconds
   },
@@ -266,12 +268,11 @@ export default {
       SHOW_REDIRECT_DASHBOARD_DIALOG,
       this.showRedirectDashboardDialog,
     );
+
+    clearInterval(configInterval);
   },
   mounted() {
     this.checkUserSignedIn();
-    window.addEventListener('scroll', this.handleWindowScroll, {
-      passive: true,
-    });
   },
   updated() {
     this.updateActiveStateOnNavItems();

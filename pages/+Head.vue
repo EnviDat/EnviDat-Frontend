@@ -35,7 +35,7 @@ import logoUrl from '@/assets/logo/EnviDat_fav.ico'
 import { getSeoSanitizedDataset } from './seoConversions.ts';
 
 const data = useData<DatasetDTO>()
-const jsonLd = data.jsonLd;
+const jsonLd = data?.jsonLd;
 delete data.jsonLd;
 
 const seoData = getSeoSanitizedDataset(data);
