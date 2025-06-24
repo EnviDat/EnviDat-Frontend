@@ -68,8 +68,6 @@
  */
 import {
   EDITMETADATA_CLEAR_PREVIEW,
-  EDITMETADATA_OBJECT_UPDATE,
-  EDITMETADATA_RELATED_DATASETS,
   eventBus,
 } from '@/factories/eventBus.js';
 
