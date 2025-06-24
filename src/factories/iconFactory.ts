@@ -1,0 +1,78 @@
+import {
+  mdiForest,
+  mdiSnowflake,
+  mdiImageFilterHdr,
+  mdiHazardLights,
+  mdiLeaf,
+  mdiWeatherCloudy,
+  mdiShieldCheck,
+  mdiMapPlus,
+  mdiEarth,
+  mdiAccountGroup,
+  mdiTextBox,
+  mdiAccountHeart,
+  mdiMapMarkerRadius,
+  mdiBeakerPlus,
+  mdiFolderArrowUp,
+  mdiArrowDownThin,
+  mdiBookOpenOutline,
+  mdiVectorLink,
+  mdiCheckCircle,
+  mdiAlertCircle,
+  mdiNumeric1Circle,
+  mdiNumeric2Circle,
+  mdiNumeric3Circle,
+  mdiNumeric4Circle,
+  mdiNumeric5Circle,
+  mdiNumeric6Circle,
+  mdiNumeric7Circle,
+  mdiHelpCircleOutline,
+  mdiInformationOutline,
+  mdiFingerprint,
+  mdiTextBoxEditOutline,
+} from '@mdi/js';
+
+const map = {
+  snow: mdiSnowflake,
+  forest: mdiForest,
+  land: mdiImageFilterHdr,
+  climate: mdiWeatherCloudy,
+  hazard: mdiHazardLights,
+  diversity: mdiLeaf,
+  protected: mdiShieldCheck,
+  create: mdiMapPlus,
+  world: mdiEarth,
+  team: mdiAccountGroup,
+  post: mdiTextBox,
+  heart: mdiAccountHeart,
+  scroll: mdiArrowDownThin,
+  info: mdiInformationOutline,
+  baseinfo: mdiBookOpenOutline,
+  authorsinfo: mdiAccountGroup,
+  geoinfo: mdiMapMarkerRadius,
+  additionalinfo: mdiBeakerPlus,
+  uploadinfo: mdiFolderArrowUp,
+  relatedinfo: mdiVectorLink,
+  publicationinfo: mdiEarth,
+  success: mdiCheckCircle,
+  alert: mdiAlertCircle,
+  firststep: mdiNumeric1Circle,
+  secondstep: mdiNumeric2Circle,
+  thirdstep: mdiNumeric3Circle,
+  fourthstep: mdiNumeric4Circle,
+  fifthstep: mdiNumeric5Circle,
+  sixthstep: mdiNumeric6Circle,
+  seventhstep: mdiNumeric7Circle,
+  question: mdiHelpCircleOutline,
+  print: mdiFingerprint,
+  draft: mdiTextBoxEditOutline,
+};
+
+
+export const extractIcons = (iconName: string) => {
+  if (!iconName) {
+    return null;
+  }
+
+  return map[iconName.toLowerCase()];
+};

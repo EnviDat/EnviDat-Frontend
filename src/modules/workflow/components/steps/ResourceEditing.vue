@@ -330,7 +330,7 @@ import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
 
 import { formatDateTimeToCKANFormat } from '@/factories/mappingFactory.js';
 import { renderMarkdown } from '@/factories/stringFactory.js';
-import {getFileIcon, getIcon} from '@/factories/imageFactory.js';
+import {getFileIcon, getIconImage} from '@/factories/imageFactory';
 
 import notFoundImg from '@/modules/user/assets/imageNotFound.jpg';
 import {
@@ -340,6 +340,7 @@ import {
   ACCESS_LEVEL_SAMEORGANIZATION_VALUE,
   ACCESS_LEVEL_PUBLIC_VALUE,
 } from '@/factories/userEditingFactory.js';
+
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import { formatDate } from '@/factories/dateFactory.js';
@@ -887,7 +888,7 @@ export default {
         'Deprecated resources are grayed out and at the bottom of the list. Make sure you provide an updated replacement!',
     },
     saveButtonEnabled: false,
-    fileSizeIcon: getIcon('fileSize'),
+    fileSizeIcon: getIconImage('fileSize'),
     notFoundImg,
   }),
   components: {

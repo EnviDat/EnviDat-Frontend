@@ -265,7 +265,7 @@ const emit = defineEmits(['navigateItem']);
 const showStatusMenu = ref(false);
 
 // Extract Icon name from IconFactory
-const iconName = (data) => extractIcons(data);
+const iconName = (name) => extractIcons(name);
 
 const navigationStore = useDatasetWorkflowStore();
 

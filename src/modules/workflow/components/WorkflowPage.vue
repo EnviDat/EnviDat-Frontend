@@ -85,7 +85,7 @@ import { useRoute, useRouter } from 'vue-router';
 import NavigationWorkflow from '@/components/Navigation/NavigationWorkflow.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 
-import { extractIcons } from '@/factories/iconFactory';
+import { extractIcons } from '@/factories/iconFactory.ts';
 
 import { useDatasetWorkflowStore } from '@/modules/user/store/datasetWorkflow';
 import { DatasetDTO } from '@/types/dataTransferObjectsTypes';

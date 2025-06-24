@@ -73,7 +73,7 @@ import {
   PROJECTS_NAMESPACE,
   SET_PROJECTDETAIL_PAGE_BACK_URL,
 } from '../store/projectsMutationsConsts';
-import { getImage } from '@/factories/imageFactory';
+import { getImage } from '@/factories/imageFactory.ts';
 
 const display = useDisplay();
 const store = useStore();

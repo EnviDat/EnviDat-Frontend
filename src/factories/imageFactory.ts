@@ -9,7 +9,7 @@ import {LOCATION_TYPE_MULTIPOINT, LOCATION_TYPE_POINT, LOCATION_TYPE_POLYGON} fr
 /*
 const normalizeImagePath = (path) => normalizePath(getExtensionlessPath(path).replace(/^([/\\]?src[/\\])?assets[/\\]?/, ''));
 */
-const normalizeImagePath = (path) => {
+const normalizeImagePath = (path: string) : string => {
   const splits = path.split('/');
   if (splits.length > 0) {
     const fileNameWithExt = splits[splits.length - 1];
@@ -61,9 +61,9 @@ const { imageMap: imageUrlMap, iconMap: iconImageUrlMap } = loadImageUrlMap();
 /**
  * Gets a single specific image url from the assets directory and automatically uses the most efficient format
  */
-export const getImage = (imagePath) => imageUrlMap[imagePath];
+export const getImage = (imagePath: string) => imageUrlMap[imagePath];
 
-export const getImageList = (pathNeedsToInclude) => {
+export const getImageList = (pathNeedsToInclude: string) => {
   const imagePaths = Object.values(imageUrlMap);
   return imagePaths.filter((path) => path.includes(pathNeedsToInclude));
 }
@@ -71,7 +71,7 @@ export const getImageList = (pathNeedsToInclude) => {
  * Gets a specific icon-image url from the assets directory
  * @param {string} iconName The icon name, for example ```'file'```
  */
-export const getIcon = (iconName) => iconImageUrlMap[iconName];
+export const getIconImage = (iconName: string) => iconImageUrlMap[iconName];
 
 /**
  * Loads the path to the icon image representing a file extension
@@ -79,7 +79,7 @@ export const getIcon = (iconName) => iconImageUrlMap[iconName];
  * @param {string} fileExtension filename or extension of the file
  * @return {string|null} relative file path to the icon image file
  */
-export const getFileIcon = (fileExtension) => {
+export const getFileIcon = (fileExtension: string): string | null => {
   const ext = getFileExtension(fileExtension) ?? fileExtension?.toLowerCase();
 
   if(checkIsFileAudio(ext)){
@@ -91,11 +91,11 @@ export const getFileIcon = (fileExtension) => {
   }
 
   const fileExt = ext ? `file${ext}` : 'file';
-  const fileExtIcon = getIcon(fileExt);
+  const fileExtIcon = getIconImage(fileExt);
   return fileExtIcon || mdiFile;
 };
 
-export const getGeoJSONIcon = (type) => {
+export const getGeoJSONIcon = (type: string) => {
   switch(type) {
     case LOCATION_TYPE_POINT:
       return mdiMapMarker;
