@@ -61,7 +61,7 @@ const { imageMap: imageUrlMap, iconMap: iconImageUrlMap } = loadImageUrlMap();
 /**
  * Gets a single specific image url from the assets directory and automatically uses the most efficient format
  */
-export const getImage = async (imagePath: string) => imageUrlMap[imagePath]();
+export const getImage = async (imagePath: string) : Promise<string> => imageUrlMap[imagePath]();
 
 export const getImageList = (pathNeedsToInclude: string) => {
   const imagePaths = Object.keys(imageUrlMap);
@@ -111,14 +111,5 @@ export const getGeoJSONIcon = (type: string) => {
   }
 }
 
-export const swissflImages = {
-  logo: getImage('swissfl_logo'),
-  dataset: getImage('swissfl_0_data'),
-  infrastructure: getImage('swissfl_1_infrastructure'),
-  model: getImage('swissfl_2_model'),
-}
 
-export const ednaImages = {
-  logo: getImage('edna_logo'),
-  dataset: getImage('edna_logo'),
-}
+

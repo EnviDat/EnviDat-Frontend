@@ -81,9 +81,6 @@ export default {
   name: SERVICE_PAGENAME,
   beforeMount() {
     this.loadServiceList();
-
-    this.fallbackCardImg = getImage('contact');
-    this.titleImage = getImage('service_header');
   },
   /**
    * @description reset the scrolling to the top,
@@ -120,8 +117,8 @@ export default {
     pageTitle: 'Tools & Services',
     pageIntroText:
       'List of the Research Data Management (RDM) tools and services currently provided for WSL employees by WSL IT and EnviDat. <a href="mailto:envidat@wsl.ch" >Get in touch</a> with the EnviDat team for consulting on services, tools or any other requests.',
-    fallbackCardImg: null,
-    titleImage: null,
+    fallbackCardImg: 'contact',
+    titleImage: 'service_header',
     SERVICE_PAGENAME,
   }),
 };
