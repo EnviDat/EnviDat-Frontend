@@ -627,13 +627,15 @@ export function canLocalDatasetBeStoredInBackend(steps) {
 }
 
 export function getPreviewDatasetFromLocalStorage() {
+
   const header = readDataFromLocalStorage(EDITMETADATA_MAIN_HEADER);
   const desc = readDataFromLocalStorage(EDITMETADATA_MAIN_DESCRIPTION);
   const keywords = readDataFromLocalStorage(EDITMETADATA_KEYWORDS);
 
   return {
-    ...header,
     ...desc,
     ...keywords,
+    // keywords also contains METADATA_TITLE_PROPERTY, therefore the header needs to be applied afterwards
+    ...header,
   }
 }

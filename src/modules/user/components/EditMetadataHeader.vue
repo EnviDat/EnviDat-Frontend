@@ -59,7 +59,9 @@
       </v-row>
 
       <v-row>
-        <v-col cols="12" lg="6">
+        <v-col cols="12"
+               lg="6">
+
           <v-row>
             <v-col class="text-h6 pb-0">
               {{ labels.contactPerson }}
@@ -98,14 +100,18 @@
               />
             </v-col>
 
-            <v-col cols="12" sm="6" class="pl-sm-4">
-              <BaseUserPicker
-                :users="fullNameUsers"
-                :preSelected="preselectAuthorNames"
-                :hint="labels.authorPickHint"
-                @removedUsers="catchPickerAuthorChange($event, false)"
-                @pickedUsers="catchPickerAuthorChange($event, true)"
-              />
+
+            <v-col cols="12"
+                   sm="6"
+                   class="pl-sm-4"
+            >
+
+              <BaseUserPicker :users="fullNameUsers"
+                              :preSelected="preselectAuthorNames"
+                              :hint="labels.authorPickHint"
+                              @removedUsers="catchPickerAuthorChange($event, false)"
+                              @pickedUsers="catchPickerAuthorChange($event, true)"/>
+
             </v-col>
           </v-row>
 
@@ -240,15 +246,15 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import { mdiAccount, mdiBookOpenVariantOutline, mdiEmail } from '@mdi/js';
-/*
+
+import {mdiAccount, mdiBookOpenVariantOutline, mdiEmail} from '@mdi/js';
+
 import {
   EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_MAIN_HEADER,
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
 } from '@/factories/eventBus';
-*/
 
 import {
   METADATA_NAMESPACE,
@@ -263,6 +269,12 @@ import ExpandableLayout from '@/components/Layouts/ExpandableLayout.vue';
 import { enhanceTitleImg } from '@/factories/metaDataFactory';
 
 import {
+  getValidationMetadataEditingObject,
+  isFieldValid,
+  isObjectValid,
+} from '@/factories/userEditingValidations';
+import {
+  createContact,
   creationContactFromAuthor,
   getArrayOfFullNames,
   getAuthorByEmail,
@@ -359,10 +371,6 @@ export default {
       type: String,
       default: null,
     },
-    validationErrors: {
-      type: Object,
-      default: () => ({}),
-    },
     readOnlyFields: {
       type: Array,
       default: () => [],
@@ -373,14 +381,12 @@ export default {
     },
   },
   emits: ['save'],
-  /*
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   beforeUnmount() {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
-*/
   computed: {
     loadingColor() {
       if (this.loading) {
@@ -468,6 +474,9 @@ export default {
 
       return previewEntry;
     },
+    validations() {
+      return getValidationMetadataEditingObject(EDITMETADATA_MAIN_HEADER);
+    },
     contactInfoReadOnly() {
       return (
         (this.authorPickerTouched && this.authorIsPicked) ||
@@ -488,18 +497,14 @@ export default {
       return matches.length > 0;
     },
     anyUserElementsActive() {
-      return (
-        this.activeElements[METADATA_CONTACT_EMAIL] ||
-        this.activeElements[METADATA_CONTACT_FIRSTNAME] ||
-        this.activeElements[METADATA_CONTACT_LASTNAME]
-      );
+      return this.activeElements[METADATA_CONTACT_EMAIL]
+        || this.activeElements[METADATA_CONTACT_FIRSTNAME]
+        || this.activeElements[METADATA_CONTACT_LASTNAME];
     },
     anyPreviewsChanged() {
-      return (
-        this.previews[METADATA_CONTACT_FIRSTNAME] !== null ||
-        this.previews[METADATA_CONTACT_LASTNAME] !== null ||
-        this.previews[METADATA_CONTACT_EMAIL] !== null
-      );
+      return this.previews[METADATA_CONTACT_FIRSTNAME] !== null
+        || this.previews[METADATA_CONTACT_LASTNAME] !== null
+        || this.previews[METADATA_CONTACT_EMAIL] !== null;
     },
   },
   methods: {
@@ -525,6 +530,30 @@ export default {
       this.previews[METADATA_TITLE_PROPERTY] = null;
       this.previews[METADATA_URL_PROPERTY] = null;
     },
+    // Validate contact author properties by calling isFieldValid()
+    // Returns true if all properties are valid, else returns false
+    validateAuthor(contactObject) {
+      if (!contactObject) {
+        return false;
+      }
+
+      const properties = [METADATA_CONTACT_EMAIL, METADATA_CONTACT_FIRSTNAME, METADATA_CONTACT_LASTNAME];
+
+      // Validate fields corresponding to properties
+      for (let i = 0; i < properties.length; i++) {
+        isFieldValid(properties[i], contactObject[properties[i]], this.validations, this.validationErrors);
+      }
+
+      // Return false if any of the properties have a validation error
+      for (let i = 0; i < properties.length; i++) {
+        const prop = properties[i];
+        if (this.validationErrors[prop]) {
+          return false;
+        }
+      }
+
+      return true;
+    },
     focusIn(event) {
       this.markPropertyActive(event.target, true);
     },
@@ -542,6 +571,7 @@ export default {
     },
     changePropertyForPreview(property, value) {
       this.previews[property] = value;
+      const valid = this.validateProperty(property, value);
 
       if (this.$store) {
         // do it if the store is available otherwise in the storybook context the component breaks
@@ -552,9 +582,13 @@ export default {
         );
       }
 
-      if (property === METADATA_TITLE_PROPERTY && !this.metadataUrl) {
+      if (valid && property === METADATA_TITLE_PROPERTY && !this.metadataUrl) {
+
         this.previews[METADATA_URL_PROPERTY] = getMetadataUrlFromTitle(value);
       }
+    },
+    validateProperty(property, value) {
+      return isFieldValid(property, value, this.validations, this.validationErrors);
     },
     catchPickerAuthorChange(pickedAuthorName, hasAuthor) {
       this.authorPickerTouched = true;
@@ -574,7 +608,9 @@ export default {
         this.previews[METADATA_CONTACT_EMAIL] =
           contactObject[METADATA_CONTACT_EMAIL];
 
-        this.setFullContactInfos(contactObject);
+        if (this.validateAuthor(contactObject)) {
+          this.setFullContactInfos(contactObject);
+        }
       } else {
         // has to be an empty string here otherwise the old value (via $props)
         // would be shown
@@ -588,7 +624,9 @@ export default {
         return;
       }
 
-      this.setHeaderInfo(property, value);
+      if (this.validateProperty(property, value)) {
+        this.setHeaderInfo(property, value);
+      }
     },
     notifyContactChange(property, value) {
       if (this.anyUserElementsActive) {
@@ -599,20 +637,28 @@ export default {
         return;
       }
 
+      // default to filling all the infos from the text-field input
+      let contactObject = createContact(this.contactEmailField, this.contactFirstNameField, this.contactLastNameField);
+
       if (property === METADATA_CONTACT_EMAIL) {
-        // autocomplete author
-        const author = getAuthorByEmail(value, this.existingAuthorsWrap);
+        if (isFieldValid(property, value, this.validations, this.validationErrors)) {
 
-        const autoCompletedContactObject = creationContactFromAuthor(author);
+          // autocomplete author
+          const author = getAuthorByEmail(value, this.existingAuthorsWrap);
 
-        if (autoCompletedContactObject) {
-          this.previews[METADATA_CONTACT_FIRSTNAME] =
-            autoCompletedContactObject[METADATA_CONTACT_FIRSTNAME];
-          this.previews[METADATA_CONTACT_LASTNAME] =
-            autoCompletedContactObject[METADATA_CONTACT_LASTNAME];
+          const autoCompletedContactObject = creationContactFromAuthor(author);
 
-          // this makes the text-fields readonly again
-          this.authorPickerTouched = false;
+          if (autoCompletedContactObject) {
+            this.previews[METADATA_CONTACT_FIRSTNAME] = autoCompletedContactObject[METADATA_CONTACT_FIRSTNAME];
+            this.previews[METADATA_CONTACT_LASTNAME] = autoCompletedContactObject[METADATA_CONTACT_LASTNAME];
+
+            // overwrite any infos from the text-fields with the author infos
+            // from the autocomplete
+            contactObject = autoCompletedContactObject;
+
+            // this makes the text-fields readonly again
+            this.authorPickerTouched = false;
+          }
         }
       }
 
@@ -620,18 +666,33 @@ export default {
       // when the user focus leaves any of the fields, therefore all changes
       // must be stored
 
-      this.setHeaderInfo();
+      if (isObjectValid(this.contactValidationProperties, contactObject, this.validations, this.validationErrors)) {
+        this.setFullContactInfos(contactObject);
+      }
+
     },
-    setHeaderInfo() {
+    setFullContactInfos(contactObject) {
+
       const newHeaderInfo = {
-        metadataTitle: this.metadataTitleField,
-        metadataUrl: this.metadataUrlField,
-        contactEmail: this.contactEmailField,
-        contactFirstName: this.contactFirstNameField,
-        contactLastName: this.contactLastNameField,
+        ...this.$props,
+        ...contactObject,
       };
 
-      /*
+      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
+        object: EDITMETADATA_MAIN_HEADER,
+        data: newHeaderInfo,
+      });
+
+      this.$emit('save', newHeaderInfo);
+    },
+    setHeaderInfo(property, value) {
+
+      let newHeaderInfo = {
+        ...this.$props,
+        [property]: value,
+      };
+
+
       if (property === METADATA_TITLE_PROPERTY && !this.metadataUrl && this.metadataUrlField) {
         // in the case of typing in the title for the first time, make sure
         // to store the url as well
@@ -640,23 +701,19 @@ export default {
           [METADATA_URL_PROPERTY]: this.metadataUrlField,
         }
       }
-*/
 
-      this.$emit('save', newHeaderInfo);
+
+      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
+        object: EDITMETADATA_MAIN_HEADER,
+        data: newHeaderInfo,
+      });
+
     },
     isReadOnly(dateProperty) {
       return isFieldReadOnly(this.$props, dateProperty);
     },
     readOnlyHint(dateProperty) {
       return readOnlyHint(this.$props, dateProperty);
-    },
-  },
-  watch: {
-    loading(newLoading, oldLoading) {
-      if (oldLoading && !newLoading) {
-        this.clearPreviews();
-        console.log('previews?', this.previews);
-      }
     },
   },
   data: () => ({
@@ -680,13 +737,10 @@ export default {
       labelContactEmail: 'Contact Email',
       labelContactFirstName: 'Contact First Name',
       labelContactLastName: 'Contact Last Name',
-      instructions:
-        'The header is part of the main metadata information.' +
+      instructions: 'The header is part of the main metadata information.' +
         ` Together with the other information in the "${EDIT_STEP_TITLE_MAIN_METADATA}" step, it represents the core information for your research dataset.`,
-      instructions2:
-        'Enter a title for your research dataset. Please make sure that title is meaningful and specific.',
-      authorInstructions:
-        'Enter an email address or pick a user as the contact person for this dataset.',
+      instructions2: 'Enter a title for your research dataset. Please make sure that title is meaningful and specific.',
+      authorInstructions: 'Enter an email address or pick a user as the contact person for this dataset.',
       authorOr: '<strong>Or</strong> pick <br /> an author',
       authorOr2: '<strong>Or</strong> pick an author',
       authorAutoComplete:
@@ -708,7 +762,6 @@ export default {
       METADATA_CONTACT_FIRSTNAME,
       METADATA_CONTACT_LASTNAME,
     ],
-    /*
     validationErrors: {
       [METADATA_TITLE_PROPERTY]: null,
       [METADATA_URL_PROPERTY]: null,
@@ -716,7 +769,6 @@ export default {
       [METADATA_CONTACT_LASTNAME]: null,
       [METADATA_CONTACT_EMAIL]: null,
     },
-*/
     activeElements: {
       [METADATA_CONTACT_FIRSTNAME]: false,
       [METADATA_CONTACT_LASTNAME]: false,

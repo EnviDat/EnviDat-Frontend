@@ -14,7 +14,6 @@
         :actionButtonCallback="catchSigninClick"
       />
     </div>
-
     <div v-if="user" class="dashboardGrid">
       <div class="topBoard mt-6 mt-md-0">
         <IntroductionCard
@@ -22,7 +21,9 @@
           :introText="userDashboardConfig.introText"
           :feedbackText="userDashboardConfig.feedbackText"
           :oldDashboardUrl="oldDashboardUrl"
-          :createClickCallback="canCreateDatasets ? createClickCallback : null"
+          :createClickCallback="
+            organizationsStore.canCreateDatasets ? createClickCallback : null
+          "
           :editingClickCallback="editingClickCallback"
           :editingDatasetName="lastEditedDataset"
           :currentLocalDataset="
@@ -281,7 +282,8 @@ import {
   METADATADETAIL_PAGENAME,
   METADATAEDIT_PAGENAME,
   METADATA_CREATION_PATH,
-  METADATA_CREATION_PAGENAME, ORGANIZATIONS_PAGENAME,
+  METADATA_CREATION_PAGENAME,
+  ORGANIZATIONS_PAGENAME,
 } from '@/router/routeConsts';
 
 import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
@@ -536,21 +538,21 @@ export default {
 
       return roles;
     },
-    canCreateDatasets() {
-      const roles = this.organizationRoles;
+    // canCreateDatasets() {
+    //   const roles = this.organizationRoles;
 
-      if (roles) {
-        const matchedRole = roles.filter(
-          (r) =>
-            r.role === USER_ROLE_EDITOR ||
-            r.role === USER_ROLE_ADMIN ||
-            r.role === USER_ROLE_SYSTEM_ADMIN,
-        );
-        return matchedRole.length > 0;
-      }
+    //   if (roles) {
+    //     const matchedRole = roles.filter(
+    //       (r) =>
+    //         r.role === USER_ROLE_EDITOR ||
+    //         r.role === USER_ROLE_ADMIN ||
+    //         r.role === USER_ROLE_SYSTEM_ADMIN,
+    //     );
+    //     return matchedRole.length > 0;
+    //   }
 
-      return false;
-    },
+    //   return false;
+    // },
     isCollaborator() {
       return this.collaboratorDatasets?.length > 0;
     },

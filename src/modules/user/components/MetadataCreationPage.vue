@@ -22,10 +22,11 @@
     />
     <v-snackbar
       id="NotificationSnack"
-      top
-      elevation="0"
+      location="bottom"
+      variant="flat"
       color="transparent"
       timeout="10000"
+      timer
       v-model="showSnack"
     >
       <NotificationCard
@@ -96,6 +97,7 @@ import {
 import { METADATA_TITLE_PROPERTY } from '@/factories/metadataConsts';
 
 import NavigationStepper from '@/components/Navigation/NavigationStepper.vue';
+import NotificationCard from '@/components/Cards/NotificationCard.vue';
 
 import { errorMessage } from '@/factories/notificationFactory';
 import {
@@ -473,6 +475,7 @@ export default {
   },
   components: {
     NavigationStepper,
+    NotificationCard,
   },
   data: () => ({
     isLoadingUserOrganizations: false,
@@ -500,4 +503,10 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+
+#NotificationSnack {
+  padding: 0 !important;
+}
+
+</style>

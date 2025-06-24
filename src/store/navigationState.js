@@ -15,6 +15,7 @@ import {
   mdiPlusBox,
 } from '@mdi/js';
 
+import { computed } from 'vue';
 import {
   BROWSE_PATH,
   BROWSE_PAGENAME,
@@ -39,6 +40,8 @@ import {
   WORKFLOW_PATH,
   WORKFLOW_PAGENAME,
 } from '@/router/routeConsts';
+
+import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
 
 // const domain = import.meta.env.VITE_DOMAIN;
 const appVersion = import.meta.env.VITE_VERSION;
@@ -136,30 +139,32 @@ export const navigationItems = [
   },
 ];
 
-export const userMenuItems = [
-  {
-    title: 'Dashboard',
-    icon: mdiBookshelf,
-    toolTip: 'My Dashboard',
-    active: false,
-    path: USER_DASHBOARD_PATH,
-    pageName: USER_DASHBOARD_PAGENAME,
-  },
-  {
-    title: 'New Dataset',
-    icon: mdiPlusBox,
-    toolTip: 'Create a new dataset',
-    active: false,
-    path: METADATA_CREATION_PATH,
-    pageName: METADATA_CREATION_PAGENAME,
-  },
-  // { title: 'Edit Profile', icon: 'edit', toolTip: 'Edit profile', active: false, path: 'profile', pageName: 'EditProfile' },
-  {
-    title: 'Sign out',
-    icon: mdiAccountArrowRight,
-    toolTip: 'Sign out',
-    active: false,
-    path: USER_SIGNOUT_PATH,
-    pageName: '',
-  },
-];
+export function useUserMenuItems() {
+  const orgStore = useOrganizationsStore();
+
+  return computed(() => [
+    {
+      title: 'Dashboard',
+      icon: mdiBookshelf,
+      toolTip: 'My Dashboard',
+      path: USER_DASHBOARD_PATH,
+      pageName: USER_DASHBOARD_PAGENAME,
+      show: true,
+    },
+    {
+      title: 'New Dataset',
+      icon: mdiPlusBox,
+      toolTip: 'Create a new dataset',
+      path: METADATA_CREATION_PATH,
+      pageName: METADATA_CREATION_PAGENAME,
+      show: orgStore.canCreateDatasets,
+    },
+    {
+      title: 'Sign out',
+      icon: mdiAccountArrowRight,
+      toolTip: 'Sign out',
+      path: USER_SIGNOUT_PATH,
+      show: true,
+    },
+  ]);
+}

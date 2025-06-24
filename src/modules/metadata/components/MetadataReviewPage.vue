@@ -5,6 +5,21 @@
     class="pa-0"
     tag="article">
 
+    <v-row v-if="datasetFound"
+           class="py-2" style="z-index: 0;"
+           no-gutters
+    >
+      <v-col cols="12">
+        <v-alert type="info">
+<!--
+          <div v-html="labels.instructions"></div>
+-->
+          <div style="font-weight: bold;">Double Blind Review</div>
+          <div >{{ labels.instructions }}</div>
+        </v-alert>
+      </v-col>
+    </v-row>
+    
     <v-row no-gutters>
       <!-- prettier-ignore -->
       <v-col class="elevation-5 pa-0"
@@ -30,11 +45,11 @@
            no-gutters
     >
       <v-col cols="12">
-        <v-alert type="info" >{{ labels.instructions }}</v-alert>
+        <v-alert type="info" >{{ labels.notFoundInstructions }}</v-alert>
       </v-col>
     </v-row>
 
-    <v-row v-if="!datasetNotFound"
+    <v-row v-if="datasetFound"
       :style="`position: relative; z-index: 0;`"
       no-gutters
     >
@@ -185,6 +200,9 @@ export default {
     },
     datasetNotFound() {
       return !!this.reviewStore.metadataNotFound;
+    },
+    datasetFound() {
+      return !this.reviewStore.metadataNotFound;
     },
     showPlaceholder() {
       return this.reviewStore.loadingMetadata;
@@ -428,7 +446,8 @@ export default {
     singleCol: [],
     keyHash: '',
     labels: {
-      instructions: 'This content will only load if Blind-review is activated. Blind-review needs to be activated from the edit page of the dataset.',
+      instructions: 'This dataset is active for the double blind review, most of the metadata is redacted to keep it anonym until it is published!',
+      notFoundInstructions: 'This content will only load if Blind-review is activated. Blind-review needs to be activated from the edit page of the dataset.',
     },
   }),
 };

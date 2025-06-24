@@ -11,7 +11,7 @@
 
 /* eslint-disable import/no-extraneous-dependencies */
 
-import {ref} from 'vue';
+import { ref } from 'vue';
 import jazzicon from 'jazzicon-ts';
 import seedrandom from 'seedrandom';
 import { mdiRefresh } from '@mdi/js';
@@ -23,17 +23,14 @@ import UserMenu from '@/modules/user/components/UserMenu.vue';
 import MetadataCube from '@/components/BaseElements/MetadataCube.vue';
 import TitleCard from '@/components/Cards/TitleCard.vue';
 
-import { userMenuItems } from '@/store/navigationState';
+import { useUserMenuItems } from '@/store/navigationState';
 import authorCollection from './testdata/authorCollection.json';
-
 
 export default {
   title: '7 User / User Elements',
   decorators: [],
-  parameters: {
-  },
+  parameters: {},
 };
-
 
 export const TitleCardViews = () => ({
   components: { TitleCard },
@@ -123,12 +120,12 @@ export const UserMenuViews = () => ({
       firstName: 'Guybrush',
       lastName: 'Threepwood',
     },
-    userMenuItems,
+    userMenuItems: useUserMenuItems(),
   }),
 });
 
 export const JazzIconsViews = () => ({
-  components: { },
+  components: {},
   template: `
     <v-row >
 
@@ -150,8 +147,7 @@ export const JazzIconsViews = () => ({
 
     </v-row>
     `,
-  setup()   {
-
+  setup() {
     const jazzIcon = ref(null);
     const jazzIcon2 = ref(null);
     const jazzIcon3 = ref(null);
@@ -160,7 +156,7 @@ export const JazzIconsViews = () => ({
       jazzIcon,
       jazzIcon2,
       jazzIcon3,
-    }
+    };
   },
   mounted() {
     this.createIcon(this.jazzIcon);
@@ -169,7 +165,6 @@ export const JazzIconsViews = () => ({
   },
   methods: {
     createIcon(el) {
-
       if (el) {
         const rng = seedrandom(el.id);
         const randNr = rng.int32();
@@ -179,7 +174,7 @@ export const JazzIconsViews = () => ({
     },
   },
   data: () => ({
-    userMenuItems,
+    userMenuItems: useUserMenuItems(),
   }),
 });
 
@@ -284,7 +279,7 @@ export const UserAvatarViews = () => ({
       </v-col>
 
       <v-col>
-        <UserAvatar nameInitials="DH" 
+        <UserAvatar nameInitials="DH"
                     emailHash="hashWithOutGravatar"/>
       </v-col>
 
@@ -389,7 +384,6 @@ export const UserCardViews = () => ({
   }),
 });
 
-
 export const MetadataCubeViews = () => ({
   components: { MetadataCube },
   template: `
@@ -417,8 +411,6 @@ export const MetadataCubeViews = () => ({
 
     </v-row>
   `,
-  methods: {
-  },
-  data: () => ({
-  }),
+  methods: {},
+  data: () => ({}),
 });

@@ -2,16 +2,22 @@
 
 import path from 'path';
 
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import vike from 'vike/plugin'
 // import vuetify from 'vite-plugin-vuetify';
 
 export default async ({ mode, config }) => {
 
-  const isProd = mode === 'production';
-  const isDev = mode === 'development';
+  const env = loadEnv(mode, process.cwd());
 
+  console.log(`Start ${mode} vike build with:`);
+  console.log(`With VITE_USE_TESTDATA: ${env.VITE_USE_TESTDATA}`);
+  console.log(`With VITE_CONFIG_URL: ${env.VITE_CONFIG_URL}`);
+  console.log(`With VITE_API_ROOT: ${env.VITE_API_ROOT}`);
+  console.log(`With VITE_API_BASE_URL: ${env.VITE_API_BASE_URL}`);
+  console.log(`With VITE_API_DOI_BASE_URL: ${env.VITE_API_DOI_BASE_URL}`);
+  console.log(`With VITE_BUILD_SOURCEMAPS: ${env.VITE_BUILD_SOURCEMAPS}`);
 
   return defineConfig({
     plugins: [
@@ -46,7 +52,7 @@ export default async ({ mode, config }) => {
     },
     // base: isProd ? 'https://s3-zh.os.switch.ch/frontend-static/static_datasets/' : '/',
     // base: 'https://s3-zh.os.switch.ch/frontend-static/static_datasets/',
-    base: 'https://envidat04.wsl.ch/',
+    base: env.VITE_API_ROOT,
     build: {
       assetsDir: '/static',
       chunkSizeWarningLimit: 500,

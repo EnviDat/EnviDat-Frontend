@@ -57,8 +57,6 @@ import {
   EDIT_METADATA_URL_LABEL,
   METADATA_AUTHORS_PROPERTY,
   METADATA_CONTACT_EMAIL,
-  METADATA_CONTACT_FIRSTNAME,
-  METADATA_CONTACT_LASTNAME,
   METADATA_DATALICENSE_PROPERTY,
   METADATA_DEPRECATED_RESOURCES_PROPERTY,
   METADATA_DOI_PROPERTY,
@@ -110,8 +108,6 @@ const JSONFrontendBackendRules = {
   ],
   [EDITMETADATA_KEYWORDS]: [
     ['keywords','tags'],
-    ['metadataTitle','title'],
-    ['metadataDescription','notes'],
   ],
   [EDITMETADATA_AUTHOR]: [
     ['firstName','given_name'],
@@ -764,9 +760,15 @@ function populateEditingMain(commit, backendJSON) {
 
   stepKey = EDITMETADATA_KEYWORDS;
   const keywordsData = getFrontendJSONForStep(stepKey, backendJSON);
-  enhanceKeywords(keywordsData.keywords, categoryCards);
+  const enhancedDatasets = enhanceKeywords(keywordsData, categoryCards);
 
-  commitEditingData(commit, stepKey, keywordsData);
+  const enhancedKeywords = {
+    ...enhancedDatasets,
+    metadataCardTitle: headerData.metadataTitle, // only used for showing a the preview MetadataCard
+    metadataCardSubtitle: descriptionData.description, // only used for showing a the preview MetadataCard
+  }
+
+  commitEditingData(commit, stepKey, enhancedKeywords);
   dataObject.keywordsData = keywordsData;
 
   return dataObject;
