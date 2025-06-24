@@ -8,6 +8,7 @@
 
 import { mdiChevronDown, mdiContentSave, mdiHome } from '@mdi/js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import { getFileIcon } from '@/factories/imageFactory.js';
 
 
 export default {
@@ -99,7 +100,7 @@ IconAndElevatedDisabled.args = {
 
 export const CustomIcon = Template.bind({});
 CustomIcon.args = {
-  icon: 'file',
+  icon: getFileIcon(),
   outlined: true,
   color: 'white',
 }

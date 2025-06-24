@@ -7,6 +7,7 @@
       color: color ? darkenHex(color, 80) : '#000',
     }"
   >
+<!--
     <v-icon
       v-if="icon"
       :size="iconSize"
@@ -16,12 +17,19 @@
       {{ icon }}
     </v-icon>
     <v-img v-if="img" :width="iconSize" :src="img" class="mr-1" />
+-->
+    <!-- unfinished yet! -->
+    <BaseIcon
+      :icon="icon"
+      :color="color ? darkenHex(color, 50) : '#000'"
+    />
     <span>{{ title }}</span>
   </v-card>
 </template>
 
 <script setup>
 import { defineProps } from 'vue';
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 defineProps({
   title: {

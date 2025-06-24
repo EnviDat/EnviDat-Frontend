@@ -27,10 +27,10 @@ const loadImageUrlMap  = () => {
 
   if (isWebpSupported) {
     imageUrls = import.meta.glob('../**/*.{webp,WEBP}',
-      { eager: true, query: '?url', import: 'default' });
+      { eager: false, query: '?url', import: 'default' });
   } else {
     imageUrls = import.meta.glob('../**/*.{jpg,jpeg,JPEG,JPG,png,PNG}',
-      { eager: true, query: '?url', import: 'default' });
+      { eager: false, query: '?url', import: 'default' });
   }
 
     const keys = Object.keys(imageUrls);
@@ -61,17 +61,17 @@ const { imageMap: imageUrlMap, iconMap: iconImageUrlMap } = loadImageUrlMap();
 /**
  * Gets a single specific image url from the assets directory and automatically uses the most efficient format
  */
-export const getImage = (imagePath: string) => imageUrlMap[imagePath];
+export const getImage = async (imagePath: string) => imageUrlMap[imagePath]();
 
 export const getImageList = (pathNeedsToInclude: string) => {
-  const imagePaths = Object.values(imageUrlMap);
+  const imagePaths = Object.keys(imageUrlMap);
   return imagePaths.filter((path) => path.includes(pathNeedsToInclude));
 }
 /**
  * Gets a specific icon-image url from the assets directory
  * @param {string} iconName The icon name, for example ```'file'```
  */
-export const getIconImage = (iconName: string) => iconImageUrlMap[iconName];
+export const getIconImage = async (iconName: string) : Promise<string> => iconImageUrlMap[iconName]();
 
 /**
  * Loads the path to the icon image representing a file extension
@@ -79,7 +79,7 @@ export const getIconImage = (iconName: string) => iconImageUrlMap[iconName];
  * @param {string} fileExtension filename or extension of the file
  * @return {string|null} relative file path to the icon image file
  */
-export const getFileIcon = (fileExtension: string): string | null => {
+export const getFileIcon = (fileExtension: string) : string | Promise<string> => {
   const ext = getFileExtension(fileExtension) ?? fileExtension?.toLowerCase();
 
   if(checkIsFileAudio(ext)){
@@ -91,8 +91,11 @@ export const getFileIcon = (fileExtension: string): string | null => {
   }
 
   const fileExt = ext ? `file${ext}` : 'file';
-  const fileExtIcon = getIconImage(fileExt);
-  return fileExtIcon || mdiFile;
+  if (fileExt === 'file') {
+    return mdiFile;
+  }
+
+  return getIconImage(fileExt);
 };
 
 export const getGeoJSONIcon = (type: string) => {
