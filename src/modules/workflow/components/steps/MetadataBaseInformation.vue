@@ -131,7 +131,6 @@
             search = $event;
             isKeywordValid(search);
           "
-          @keyup="blurOnEnterKey"
           @input="isEnoughKeywords()"
           @keydown="catchKeywordEntered($event)"
           :rules="rulesKeywords"
@@ -265,8 +264,9 @@ export default {
   computed: {
     metadataPreviewEntry() {
       const previewEntry = {
-        metadataTitle: this.metadataTitleField,
+        metadataTitle: this.metadataTitleField || 'Your Research Dataset Title',
         tags: this.keywordsField,
+        showCloseButton: false,
       };
 
       enhanceTitleImg(previewEntry);
@@ -298,12 +298,13 @@ export default {
     },
     keywordsField: {
       get() {
-        return this.previewKeywords.length > 0
-          ? this.previewKeywords
+        return this.newDatasetInfo?.keywords?.length > 0
+          ? this.newDatasetInfo.keywords
           : this.keywords;
       },
       set(v) {
-        this.notifyChange(v);
+        this.newDatasetInfo.keywords = this.processValues(v);
+        this.keywordsChanged();
       },
     },
 
@@ -321,7 +322,7 @@ export default {
       }
 
       if (this.search) {
-        hint += ` No results matching "<strong>${this.search}</strong>". Press <v-btn small variant="tonal" class="mx-1" text>enter</v-btn> to create a new keyword. `;
+        hint += ` No results matching "<strong>${this.search}</strong>". Press <strong>enter</strong> to create a new keyword. `;
       } else {
         hint += ' Start typing for keyword autocompletion.';
       }
@@ -348,28 +349,36 @@ export default {
     },
   },
   methods: {
-    notifyChange(val) {
-      this.previewKeywords = this.processValues(val);
-      this.newDatasetInfo.keywords = this.processValues(val);
-      this.$emit('save', this.newDatasetInfo);
+    keywordsChanged() {
+      this.$emit('save', {
+        keywords: this.newDatasetInfo.keywords,
+      });
     },
     setTitleInput(value) {
       this.newDatasetInfo.metadataTitle = value;
 
-      this.$emit('validate', this.newDatasetInfo);
+      this.$emit('validate', {
+        metadataTitle: value,
+      });
     },
     notifyTitleChange(value) {
       this.newDatasetInfo.metadataTitle = value;
 
-      this.$emit('save', this.newDatasetInfo);
+      this.$emit('save', {
+        metadataTitle: value,
+      });
     },
     onDescriptionInput(value) {
       this.newDatasetInfo.metadataDescription = value;
-      this.$emit('validate', this.newDatasetInfo);
+      this.$emit('validate', {
+        metadataDescription: value,
+      });
     },
     onDescriptionChange(value) {
       this.newDatasetInfo.metadataDescription = value;
-      this.$emit('save', this.newDatasetInfo);
+      this.$emit('save', {
+        metadataDescription: value,
+      });
     },
     blurOnEnterKey(keyboardEvent) {
       if (keyboardEvent.key === 'Enter') {
@@ -382,6 +391,8 @@ export default {
 
         if (this.isKeywordValid(enteredKeyword)) {
           this.catchKeywordClicked(enteredKeyword);
+          this.keywordsChanged();
+          // event.target.focus();
         }
       }
     },
@@ -398,7 +409,7 @@ export default {
         pickedKeywordObj,
       ]);
 
-      this.previewKeywords = this.processValues(selectedKeywords);
+      this.newDatasetInfo.keywords = this.processValues(selectedKeywords);
       this.search = null;
     },
     processValues(valuesArray) {
@@ -448,7 +459,7 @@ export default {
       localKeywords.splice(removeIndex, 1);
 
       // Process and emit localKeywords to eventBus
-      this.previewKeywords = this.processValues(localKeywords);
+      this.newDatasetInfo.keywords = this.processValues(localKeywords);
     },
     // Assign keywordCountEnough to true if keywordCount is greater than or equal to keywordsCountMin
     // Else assigns keywordCountEnough to false
@@ -504,12 +515,12 @@ export default {
     newDatasetInfo: {
       metadataTitle: undefined,
       keywords: undefined,
+      metadataDescription: undefined,
     },
     defaultUserEditMetadataConfig: {
       keywordsListWordMax: 2,
       keywordsCountMin: 5,
     },
-    previewKeywords: [],
     labelsKeywords: {
       title: 'Keywords',
       placeholder: 'Pick keywords from the list or type in a new keyword',
