@@ -34,6 +34,7 @@ import {
   UPLOAD_STATE_RESOURCE_CREATED,
 } from '@/factories/eventBus';
 import { METADATA_NEW_RESOURCE_ID } from '@/factories/metadataConsts.js';
+import { formatDate } from '@/factories/dateFactory.js';
 
 
 let API_BASE = '';
@@ -125,12 +126,15 @@ export function createNewResourceForUrl(metadataId, url) {
 
   const baseResourceProperties = createNewBaseResource(metadataId);
 
+  const now = new Date(Date.now()).toISOString();
+
   return {
     ...baseResourceProperties,
     url,
     format: 'url',
     size: 1,
     name: resourceName,
+    created: formatDate(now),
   };
 
 }
