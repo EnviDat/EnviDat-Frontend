@@ -124,31 +124,37 @@
 
           <v-col cols="12">
             <v-row no-gutters align="center">
-              <v-col class="mt-5 mb-5">{{ labels.uploadInstructions }}</v-col>
-              <v-col class="flex-grow-0 mr-4">
-                <BaseRectangleButton
-                  color="highlight"
-                  buttonText="Upload File"
-                  tooltipText="File Drop Also Possible"
-                  tooltipPosition="top"
-                  :icon="mdiFileUpload"
-                  icon-color="black"
-                  @clicked="triggerFilePicker"
-                />
-              </v-col>
-              <v-col class="flex-grow-1">
-                <v-row align="center" justify="center" no-gutters>
-                  <v-col>
-                    <div
-                      ref="dropZoneRef"
-                      class="dropZone"
-                      :style="`border-color: ${vuetifyHighlight}; background-color: ${isOverDropZone ? vuetifyHighlight : 'transparent'};`"
-                    >
-                      {{ labels.fileDropLabel }}
-                    </div>
-                  </v-col>
+              <v-col cols="6">
+                <v-row no-gutters >
+                <v-col cols="12" >{{ labels.uploadInstructions }}</v-col>
+
+                <v-col cols="12"
+                       class="pt-2"
+                >
+                  <BaseRectangleButton
+                    color="highlight"
+                    buttonText="Upload File"
+                    tooltipText="File Drop Also Possible"
+                    tooltipPosition="top"
+                    :icon="mdiFileUpload"
+                    icon-color="black"
+                    @clicked="triggerFilePicker"
+                  />
+                </v-col>
                 </v-row>
+
               </v-col>
+
+              <v-col cols="6">
+                <div
+                  ref="dropZoneRef"
+                  class="dropZone"
+                  :style="`border-color: ${vuetifyHighlight}; background-color: ${isOverDropZone ? vuetifyHighlight : 'transparent'};`"
+                >
+                  {{ labels.fileDropLabel }}
+                </div>
+              </v-col>
+
             </v-row>
           </v-col>
 
@@ -394,6 +400,9 @@ export default {
           this.inputError = err.message;
         },
       };
+    },
+    vuetifyHighlight() {
+      return this.$vuetify.theme.themes.light.colors.highlight;
     },
   },
   mounted() {
