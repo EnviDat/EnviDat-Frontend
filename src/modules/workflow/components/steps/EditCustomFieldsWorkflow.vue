@@ -99,19 +99,19 @@ import {
   EDITMETADATA_CUSTOMFIELDS,
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
-} from '@/factories/eventBus';
+} from '@/factories/eventBus.js';
 import {
   deleteEmptyObject,
   isMaxLength,
   isObjectEmpty,
-} from '@/factories/userEditingFactory';
+} from '@/factories/userEditingFactory.js';
 import {
   getValidationMetadataEditingObject,
   isArrayContentValid,
   isFieldValid,
-} from '@/factories/userEditingValidations';
+} from '@/factories/userEditingValidations.js';
 
-import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods.js';
 
 export default {
   name: 'EditCustomFields',

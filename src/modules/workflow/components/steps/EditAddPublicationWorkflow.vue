@@ -114,18 +114,16 @@
 import { mapState } from 'vuex';
 
 import { mdiPlus, mdiFingerprint, mdiIdentifier } from '@mdi/js';
-import { EDIT_METADATA_ADD_PUBLICATION_TITLE } from '@/factories/metadataConsts';
+import { EDIT_METADATA_ADD_PUBLICATION_TITLE } from '@/factories/metadataConsts.js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseCitationView from '@/components/BaseElements/BaseCitationView.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout.vue';
 
-import { EDITMETADATA_RELATED_PUBLICATIONS } from '@/factories/eventBus';
-
 import {
   resolveDoiCitationObjectsViaDora,
   resolvePidCitationObjectsViaDora,
-} from '@/factories/citationFactory';
+} from '@/factories/citationFactory.js';
 
 export default {
   name: 'EditAddPublication',

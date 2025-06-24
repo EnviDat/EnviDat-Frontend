@@ -85,13 +85,13 @@ import {
   EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_RELATED_PUBLICATIONS,
   eventBus,
-} from '@/factories/eventBus';
+} from '@/factories/eventBus.js';
 
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 
-import { EDIT_METADATA_RELATEDPUBLICATIONS_TITLE } from '@/factories/metadataConsts';
+import { EDIT_METADATA_RELATEDPUBLICATIONS_TITLE } from '@/factories/metadataConsts.js';
 
-import EditAddPublicationWorkflow from '@/modules/user/components/EditAddPublicationWorkflow.vue';
+import EditAddPublicationWorkflow from '@/modules/workflow/components/steps/EditAddPublicationWorkflow.vue';
 import MetadataPublicationList from '@/modules/metadata/components/Metadata/MetadataPublicationList.vue';
 
 export default {

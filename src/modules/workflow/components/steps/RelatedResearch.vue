@@ -113,10 +113,9 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
-import relatedDatasets from '@/modules/user/assets/placeholders/relatedDatasets.jpg';
 // import EditCustomFieldsWorkflow from '@/modules/user/components/EditCustomFieldsWorkflow.vue';
-import EditRelatedDatasetsWorkflow from '@/modules/user/components/EditRelatedDatasetsWorkflow.vue';
-import EditRelatedPublicationsListWorkflow from '@/modules/user/components/EditRelatedPublicationsListWorkflow.vue';
+import EditRelatedDatasetsWorkflow from '@/modules/workflow/components/steps/EditRelatedDatasetsWorkflow.vue';
+import EditRelatedPublicationsListWorkflow from '@/modules/workflow/components/steps/EditRelatedPublicationsListWorkflow.vue';
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 
 export default {
@@ -268,7 +267,6 @@ export default {
     },
   },
   data: () => ({
-    relatedDatasets,
     labels: {
       title: 'Related Research',
       instructions:

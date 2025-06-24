@@ -70,16 +70,16 @@ import {
   EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_RELATED_DATASETS,
   eventBus,
-} from '@/factories/eventBus';
+} from '@/factories/eventBus.js';
 
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 
-import { EDIT_METADATA_RELATED_DATASETS_TITLE } from '@/factories/metadataConsts';
+import { EDIT_METADATA_RELATED_DATASETS_TITLE } from '@/factories/metadataConsts.js';
 
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout.vue';
 // import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue';
 
-import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods.js';
 
 export default {
   name: 'EditRelatedDatasets',
