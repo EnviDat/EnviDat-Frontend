@@ -5,15 +5,13 @@
     elevation="0"
     :loading="loadingColor"
   >
-    <v-container fluid class="pa-0 fill-height">
+    <v-container fluid class="pa-0">
       <v-row>
         <v-col>
           <div class="font-weight-bold">
             {{ EDIT_METADATA_RELATED_DATASETS_TITLE }}
           </div>
-          <div class="text-caption">
-            {{ labels.cardInstructions }}
-          </div>
+          <div class="text-caption" v-html="labels.cardInstructions" />
         </v-col>
       </v-row>
 
@@ -34,7 +32,9 @@
             :expandedText="errorDetails"
           />
         </v-col>
+      </v-row>
 
+      <v-row>
         <v-col>
           <GenericTextareaPreviewLayout
             v-bind="genericTextAreaObject"
@@ -44,10 +44,11 @@
             @inputedText="catchInputedText($event)"
             @changedText="catchChangedText($event)"
           >
-            <!-- <MetadataRelatedDatasets v-bind="datasetObject" /> -->
+             <MetadataRelatedDatasets v-bind="datasetObject" />
           </GenericTextareaPreviewLayout>
         </v-col>
       </v-row>
+
     </v-container>
   </v-card>
 </template>
@@ -77,7 +78,7 @@ import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.v
 import { EDIT_METADATA_RELATED_DATASETS_TITLE } from '@/factories/metadataConsts.js';
 
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout.vue';
-// import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue';
+import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods.js';
 
@@ -199,12 +200,12 @@ export default {
       placeholder:
         'Example entries: \n * dataset-for-ogrs-2018-publication\n' +
         ' * https://www.envidat.ch/#/metadata/dataset-for-ogrs-2018-publication ',
-      // subtitlePreview: 'Related Datasets Preview',
+      subtitlePreview: 'Related Datasets Preview',
     },
     newDatasetInfo: {},
   }),
   components: {
-    // MetadataRelatedDatasets,
+    MetadataRelatedDatasets,
     GenericTextareaPreviewLayout,
     BaseStatusLabelView,
   },

@@ -106,17 +106,9 @@
  */
 import { mapState } from 'vuex';
 
-import {
-  EDITMETADATA_CUSTOMFIELDS,
-  EDITMETADATA_RELATED_DATASETS,
-  EDITMETADATA_RELATED_PUBLICATIONS,
-  eventBus,
-} from '@/factories/eventBus';
-
 // import EditCustomFieldsWorkflow from '@/modules/user/components/EditCustomFieldsWorkflow.vue';
 import EditRelatedDatasetsWorkflow from '@/modules/workflow/components/steps/EditRelatedDatasetsWorkflow.vue';
 import EditRelatedPublicationsListWorkflow from '@/modules/workflow/components/steps/EditRelatedPublicationsListWorkflow.vue';
-import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 
 export default {
   name: 'EditMetadataHeader',
@@ -147,7 +139,31 @@ export default {
       type: Boolean,
       default: false,
     },
-    validationErrors: { type: Object, default: () => ({}) },
+    validationErrors: {
+      type: Object,
+      default: () => ({}),
+    },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+    message: {
+      type: String,
+      default: '',
+    },
+    messageDetails: {
+      type: String,
+      default: null,
+    },
+    error: {
+      type: String,
+      default: '',
+    },
+    errorDetails: {
+      type: String,
+      default: null,
+    },
+
   },
   methods: {
     save(payload) {
@@ -175,24 +191,12 @@ export default {
         return stepData.relatedPublicationsText;
       }
 
-      if (this.$store) {
-        return this.$store.getters[
-          `${USER_NAMESPACE}/getMetadataEditingObject`
-        ](EDITMETADATA_RELATED_PUBLICATIONS).relatedPublicationsText;
-      }
-
       return this.relatedPublicationsText;
     },
     relatedDatasetsTextWrap() {
       if (this.isCreationWorkflow) {
         const stepData = this.currentStep.genericProps;
         return stepData.relatedDatasetsText;
-      }
-
-      if (this.$store) {
-        return this.$store.getters[
-          `${USER_NAMESPACE}/getMetadataEditingObject`
-        ](EDITMETADATA_RELATED_DATASETS).relatedDatasetsText;
       }
 
       return this.relatedDatasetsText;
@@ -203,66 +207,44 @@ export default {
         return stepData.customFields;
       }
 
-      if (this.$store) {
-        return this.$store.getters[
-          `${USER_NAMESPACE}/getMetadataEditingObject`
-        ](EDITMETADATA_CUSTOMFIELDS).customFields;
-      }
-
       return this.customFields;
     },
     editRelatedPublicationsProps() {
-      const editingObject = this.$store
-        ? this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](
-            EDITMETADATA_RELATED_PUBLICATIONS,
-          )
-        : undefined;
 
       return {
         relatedPublicationsText: this.relatedPublicationsTextWrap,
         readOnlyFields: this.readOnlyFields,
         readOnlyExplanation: this.readOnlyExplanation,
-        loading: editingObject?.loading,
-        message: editingObject?.message,
-        messageDetails: editingObject?.messageDetails,
-        error: editingObject?.error,
-        errorDetails: editingObject?.errorDetails,
+        loading: this.loading,
+        message: this.message,
+        messageDetails: this.messageDetails,
+        error: this.error,
+        errorDetails: this.errorDetails,
       };
     },
     editRelatedDatasetsProps() {
-      const editingObject = this.$store
-        ? this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](
-            EDITMETADATA_RELATED_DATASETS,
-          )
-        : undefined;
-
       return {
         relatedDatasetsText: this.relatedDatasetsTextWrap,
         readOnlyFields: this.readOnlyFields,
         readOnlyExplanation: this.readOnlyExplanation,
-        loading: editingObject?.loading,
-        message: editingObject?.message,
-        messageDetails: editingObject?.messageDetails,
-        error: editingObject?.error,
-        errorDetails: editingObject?.errorDetails,
+        loading: this.loading,
+        message: this.message,
+        messageDetails: this.messageDetails,
+        error: this.error,
+        errorDetails: this.errorDetails,
       };
     },
     editCustomFieldsProps() {
-      const editingObject = this.$store
-        ? this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](
-            EDITMETADATA_CUSTOMFIELDS,
-          )
-        : undefined;
 
       return {
         customFields: this.customFieldsWrap,
         readOnlyFields: this.readOnlyFields,
         readOnlyExplanation: this.readOnlyExplanation,
-        loading: editingObject?.loading,
-        message: editingObject?.message,
-        messageDetails: editingObject?.messageDetails,
-        error: editingObject?.error,
-        errorDetails: editingObject?.errorDetails,
+        loading: this.loading,
+        message: this.message,
+        messageDetails: this.messageDetails,
+        error: this.error,
+        errorDetails: this.errorDetails,
       };
     },
   },

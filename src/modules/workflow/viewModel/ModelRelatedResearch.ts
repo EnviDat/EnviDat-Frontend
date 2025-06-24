@@ -75,8 +75,8 @@ export class ModelRelatedResearch extends AbstractEditViewModel {
 
   static mappingRules() {
     return [
-      ['relatedPublicationsText', 'extras.related_publications'],
-      ['relatedDatasetsText', 'extras.related_datasets'],
+      ['relatedPublicationsText', 'related_publications'],
+      ['relatedDatasetsText', 'related_datasets'],
       ['customFields', 'extras'],
     ];
   }

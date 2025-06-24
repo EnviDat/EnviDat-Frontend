@@ -11,7 +11,7 @@
           <div class="font-weight-bold">
             {{ EDIT_METADATA_RELATEDPUBLICATIONS_TITLE }}
           </div>
-          <div class="text-caption" v-html="labels.cardInstructions"></div>
+          <div class="text-caption" v-html="labels.cardInstructions" />
         </v-col>
       </v-row>
       <v-row>
