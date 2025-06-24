@@ -172,8 +172,10 @@ export abstract class AbstractEditViewModel {
         await this.datasetViewModel.patchViewModel(this);
       }
 
+      this.savedSuccessful = true;
       return true;
     } catch (e) {
+      this.savedSuccessful = false;
       this.error = e;
       return false;
     } finally {

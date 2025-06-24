@@ -154,28 +154,17 @@ export class DatasetModel {
   }
 
   async patchViewModel(newModel: AbstractEditViewModel) {
-    try {
-      newModel.loading = true;
+    await this.datasetService.patchDatasetChanges(
+      this.dataset.id,
+      newModel.backendJSON,
+    );
 
-      await this.datasetService.patchDatasetChanges(
-        this.dataset.id,
-        newModel.backendJSON,
-      );
+    this.updateViewModels();
 
-      this.updateViewModels();
-
-      newModel.savedSuccessful = true;
-
-      // send the clearing to the UI components to clear their internal state
-      // this still needs to be resolved in a better way, but for now it's done vie the eventBus
-      // because there is no direct connection to the UI components here (and should not be)
-      // eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
-    } catch (e) {
-      newModel.savedSuccessful = false;
-      newModel.error = e;
-
-      console.error(e);
-    }
+    // send the clearing to the UI components to clear their internal state
+    // this still needs to be resolved in a better way, but for now it's done vie the eventBus
+    // because there is no direct connection to the UI components here (and should not be)
+    // eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
 
     // TODO: here is only for local testing, should only happen in the success case
     eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
