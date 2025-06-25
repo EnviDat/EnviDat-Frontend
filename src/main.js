@@ -21,7 +21,7 @@ import store from '@/store/store';
 import App from '@/App.vue';
 import { initAxios } from '@/init';
 
-import vuetify from '@/plugins/vuetify';
+import { createSSGVuetify } from '@/plugins/vuetify';
 import router from '@/router';
 
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
@@ -32,6 +32,7 @@ import VueMatomo from 'vue-matomo';
 
 const app = createApp(App);
 const pinia = createPinia();
+const vuetify = createSSGVuetify();
 
 initAxios(app, store);
 

@@ -13,10 +13,20 @@ import { VTreeview } from 'vuetify/labs/VTreeview'
 import config from './vuetifyConfig';
 
 
-export default createVuetify({
-  ...config,
-  ssr: true,
-  components: {
-    VTreeview,
-  },
-});
+export const createSSGVuetify = () =>
+  createVuetify({
+    ...config,
+    ssr: false,
+    components: {
+      VTreeview,
+    },
+  })
+
+export const createSSRVuetify = () =>
+  createVuetify({
+    ...config,
+    ssr: true,
+    components: {
+      VTreeview,
+    },
+  });

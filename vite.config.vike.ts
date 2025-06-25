@@ -5,7 +5,7 @@ import path from 'path';
 import { defineConfig, loadEnv } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import vike from 'vike/plugin'
-// import vuetify from 'vite-plugin-vuetify';
+import vuetify from 'vite-plugin-vuetify';
 
 export default async ({ mode, config }) => {
 
@@ -23,7 +23,7 @@ export default async ({ mode, config }) => {
     plugins: [
       vike(),
       vue(),
-      // vuetify(),
+      vuetify(),
     ],
     resolve: {
       alias: [
@@ -62,6 +62,6 @@ export default async ({ mode, config }) => {
       // sourcemap: buildSourceMaps,
       emptyOutDir: true,
     },
-    // ssr: { noExternal: ['vuetify'] },
+    ssr: { noExternal: ['vuetify'] },
   });
 }
