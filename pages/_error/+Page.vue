@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import { usePageContext } from 'vike-vue/usePageContext';
 
-const pageContext = usePageContext();
+/*
+  Redirection code is in the +Head.vue!
+ */
 
-const queryString = pageContext.urlOriginal?.split('?')[1];
-
-const datasetUrl = queryString || '';
 
 </script>
 
@@ -13,9 +11,9 @@ const datasetUrl = queryString || '';
   <div>
 
     <h1>Site Not Found</h1>
-
-    <div>Did you want to go to </div>
-    <div>{{ datasetUrl }}</div>
+    <div>
+      You're going to be redirected.
+    </div>
 
   </div>
 </template>

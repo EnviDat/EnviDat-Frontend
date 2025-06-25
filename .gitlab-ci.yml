@@ -178,7 +178,15 @@ modify-env:
       key = 'VITE_GOOGLE_VERIFICATION_KEY'
       value = os.getenv('GOOGLE_VERIFICATION_KEY')
       dotenv.set_key(file, key, value, quote_mode='never')
-        
+
+      key = 'VITE_SEO_BASE'
+      value = 'https://envidat04.wsl.ch/seo'
+      
+      if branch == 'main' or branch == 'beta':
+          value = 'https://envidat.ch/seo'
+
+      dotenv.set_key(file, key, value, quote_mode='never')
+      
       "
     - echo "created content for .env.production:"
     - cat .env.production
