@@ -7,15 +7,15 @@
     document.addEventListener('DOMContentLoaded', function () {
 
       const queryString = window.location.href.split('?')[1];
-      const baseUrl = '${baseCanonicalUrl}/#/metadata/';
+      const baseUrl = '${baseCanonicalUrl}/#';
 
       if (queryString) {
-        const urlQueryString = queryString.split('metadata=')[1];
+        const urlQueryString = queryString.split('url=')[1];
 
         if (urlQueryString) {
-          const datasetName = urlQueryString.split('&')[0];
-          if (datasetName) {
-            window.location.href = baseUrl + datasetName;
+          const url = urlQueryString.split('&')[0];
+          if (url) {
+            window.location.href = baseUrl + url;
             return;
           }
         } else {
