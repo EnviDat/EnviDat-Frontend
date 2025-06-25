@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 /*
-  Redirection code is in the +Head.vue!
+  Redirection code is in the old_heading.vue!
  */
 
 
@@ -14,6 +14,8 @@
     <div>
       You're going to be redirected.
     </div>
+
+    <v-alert type="error" > Error Page </v-alert>
 
   </div>
 </template>
