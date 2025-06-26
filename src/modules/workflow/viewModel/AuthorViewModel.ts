@@ -4,6 +4,8 @@ import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEdit
 import { Author, DataCreditObject } from '@/types/modelTypes';
 import { convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
 import { DatasetModel } from '@/modules/workflow/viewModel/DatasetModel.ts';
+import { AUTHOR_ASCII_DEAD } from '@/store/mainMutationsConsts';
+import { getAuthorName } from '@/factories/authorFactory';
 
 const convertEmptyStringToNull = (value: string, originalValue: string) =>
   originalValue === '' ? null : value;
@@ -76,6 +78,14 @@ export class AuthorViewModel extends AbstractEditViewModel implements Author {
           .min(3, 'Affiliation must be at least 3 characters'),
       });
 
+  }
+
+  get fullName() {
+    return getAuthorName({ firstName: this.firstName, lastName: this.lastName });
+  }
+
+  get isAuthorDead() {
+    return this.firstName?.includes(AUTHOR_ASCII_DEAD) || this.lastName?.includes(AUTHOR_ASCII_DEAD);
   }
 
   static getFormattedAuthor(rawAuthor: any, lastModified: string) : Author {
