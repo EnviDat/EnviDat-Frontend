@@ -7,7 +7,6 @@ import { EditDescriptionViewModel } from '@/modules/workflow/viewModel/EditDescr
 import { EditCustomFieldsViewModel } from '@/modules/workflow/viewModel/EditCustomFieldsViewModel.ts';
 import { AuthorListViewModel } from '@/modules/workflow/viewModel/AuthorListViewModel.ts';
 import { EditDataInfoViewModel } from '@/modules/workflow/viewModel/EditDataInfoViewModel.ts';
-import { EditDataLicenseViewModel } from '@/modules/workflow/viewModel/EditDataLicenseViewModel.ts';
 import { PublicationViewModel } from '@/modules/workflow/viewModel/PublicationViewModel.ts';
 import { ResourcesListViewModel } from '@/modules/workflow/viewModel/ResourcesListViewModel.ts';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
@@ -24,14 +23,11 @@ import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 export class DatasetModel {
   viewModelClasses = [
     EditDescriptionViewModel,
-    EditFundingViewModel,
     AuthorListViewModel,
     EditCustomFieldsViewModel,
     EditDataInfoViewModel,
-    EditDataLicenseViewModel,
     PublicationViewModel,
     ResourcesListViewModel,
-    EditOrganizationViewModel,
     MetadataBaseViewModel,
     AdditionalInfoViewModel,
     GeoInfoViewModel,

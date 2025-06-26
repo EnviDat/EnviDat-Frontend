@@ -20,7 +20,6 @@ export interface WorkflowStep {
   component: unknown;
   // loader?: () => Promise<unknown>;
   viewModelKey: string;
-  // genericProps: Record<string, unknown>;
   icon: string;
   status: StepStatus;
   guideLines?: Array<{
@@ -44,7 +43,6 @@ export const workflowSteps: WorkflowStep[] = [
       import('@/modules/workflow/components/steps/MetadataBaseInformation.vue'),
 */
     viewModelKey: 'MetadataBaseViewModel',
-    // genericProps: {},
     icon: 'baseinfo',
     status: 'active',
     // guideLines: [
@@ -72,7 +70,6 @@ export const workflowSteps: WorkflowStep[] = [
       import('@/modules/workflow/components/steps/AuthorsInformation.vue'),
 */
     viewModelKey: 'AuthorListViewModel',
-    // genericProps: {},
     icon: 'authorsinfo',
     status: 'disabled',
     // guideLines: [
@@ -100,7 +97,6 @@ export const workflowSteps: WorkflowStep[] = [
       import('@/modules/workflow/components/steps/GeoInformation.vue'),
 */
     viewModelKey: 'GeoInfoViewModel',
-    // genericProps: {},
     icon: 'geoinfo',
     status: 'disabled',
   },
@@ -118,7 +114,6 @@ export const workflowSteps: WorkflowStep[] = [
       import('@/modules/workflow/components/steps/AdditionalInformation.vue'),
 */
     viewModelKey: 'AdditionalInfoViewModel',
-    // genericProps: {},
     icon: 'additionalinfo',
     status: 'disabled',
   },
@@ -136,7 +131,6 @@ export const workflowSteps: WorkflowStep[] = [
       import('@/modules/workflow/components/steps/ResourcesInformation.vue'),
 */
     viewModelKey: 'ResourcesListViewModel',
-    // genericProps: {},
     icon: 'uploadinfo',
     status: 'disabled',
   },
@@ -154,7 +148,6 @@ export const workflowSteps: WorkflowStep[] = [
       import('@/modules/workflow/components/steps/RelatedResearch.vue'),
 */
     viewModelKey: 'RelatedResearchViewModel',
-    // genericProps: {},
     icon: 'relatedinfo',
     status: 'disabled',
   },
@@ -172,7 +165,6 @@ export const workflowSteps: WorkflowStep[] = [
       import('@/modules/workflow/components/steps/PublishingInformation.vue'),
 */
     viewModelKey: 'PublicationInfoViewModel',
-    // genericProps: {},
     icon: 'publicationinfo',
     status: 'disabled',
   },
