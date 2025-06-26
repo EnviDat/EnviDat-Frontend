@@ -13,6 +13,7 @@
 
         <v-row no-gutters>
           <v-col
+            id="map_column"
             class="pt-4"
             :style="
               useDynamicHeight
@@ -149,6 +150,9 @@ export default {
       default: 0,
     },
   },
+  mounted() {
+    this.setFilteringComponentsHeight();
+  },
   computed: {
     mapLayout() {
       return (
@@ -183,7 +187,7 @@ export default {
       ) {
         searchViewHeight =
           this.$refs.metadataListLayoutFiltering.$el.clientHeight;
-        padding = 16;
+        padding = 20;
       }
 
       this.filteringComponentsHeight =
@@ -219,8 +223,12 @@ export default {
   },
   watch: {
     layoutRecalcTrigger() {
-      this.setFilteringComponentsHeight();
-      this.setKeywordHeight();
+      this.$nextTick(() => {
+        // do it on the next tick because it need to be rendered first for the
+        // heigths to be accurate
+        this.setFilteringComponentsHeight();
+        this.setKeywordHeight();
+      });
     },
   },
   data: () => ({
