@@ -8,10 +8,13 @@ export class PublicationInfoViewModel extends AbstractEditViewModel {
   declare contactFirstName: string;
   declare contactLastName: string;
 
+  declare organizationId: string;
+
   declare validationErrors: {
     contactEmail: string;
     contactFirstName: string;
     contactLastName: string;
+    organizationId: string;
   };
 
   constructor(datasetViewModel: DatasetModel) {
@@ -21,6 +24,7 @@ export class PublicationInfoViewModel extends AbstractEditViewModel {
       contactEmail: null,
       contactFirstName: null,
       contactLastName: null,
+      organizationId: null,
     };
 
     this.validationRules = yup.object().shape({
@@ -58,6 +62,7 @@ export class PublicationInfoViewModel extends AbstractEditViewModel {
       ['contactEmail', 'maintainer.email'],
       ['contactFirstName', 'maintainer.given_name'],
       ['contactLastName', 'maintainer.name'],
+      ['organizationId', 'organization.id'],
     ];
   }
 }

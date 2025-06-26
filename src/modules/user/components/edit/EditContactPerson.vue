@@ -1,5 +1,7 @@
 <template>
-  <v-card class="pa-4">
+  <v-card class="pa-4"
+          :flat
+  >
     <v-container fluid class="pa-0">
       <v-row>
         <v-col cols="12" class="text-h6 pb-0">{{ labels.contactPerson }}</v-col>
@@ -109,6 +111,10 @@ export default {
     isContactPropertyReadOnly: { type: Function, default: () => false },
     contactPropertyHint: { type: Function, default: () => '' },
     authors: { type: Array, default: () => [] },
+    flat: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {

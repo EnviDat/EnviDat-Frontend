@@ -78,15 +78,16 @@
           </v-col>
         </v-row>
       </v-col>
-      <!-- <v-col cols="12">
+
+       <v-col cols="12" xl="6">
         <v-row>
           <v-col cols="12">
             <EditOrganization v-bind="editOrganizationProps" />
           </v-col>
         </v-row>
-      </v-col> -->
+      </v-col>
 
-      <!-- <v-col cols="12">
+       <v-col cols="12" xl="6">
           <v-row v-if="doiWorkflowActive">
             <v-col>
               <EditPublicationStatus
@@ -107,7 +108,7 @@
               />
             </v-col>
           </v-row>
-        </v-col> -->
+        </v-col>
     </v-row>
   </v-container>
 </template>
@@ -128,11 +129,9 @@
  */
 
 import { mapState } from 'vuex';
-import { defineAsyncComponent } from 'vue';
 
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 import {
-  EDITMETADATA_FUNDING_INFO,
   EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_ORGANIZATION,
   EDITMETADATA_PUBLICATION_STATE,
@@ -144,12 +143,12 @@ import {
   PUBLICATION_STATE_PUBLISHED,
 } from '@/factories/metadataConsts';
 
-// import EditOrganization from '@/modules/user/components/edit/EditOrganization.vue';
+import EditOrganization from '@/modules/user/components/edit/EditOrganization.vue';
 import EditContactPerson from '@/modules/user/components/edit/EditContactPerson.vue';
 
 import EditPublicationInfo from '@/modules/user/components/edit/EditPublicationInfo.vue';
 
-// import EditPublicationStatus from '@/modules/user/components/edit/EditPublicationStatus.vue';
+import EditPublicationStatus from '@/modules/user/components/edit/EditPublicationStatus.vue';
 import EditReviewInfo from '@/modules/user/components/edit/EditReviewInfo.vue';
 
 import {
@@ -175,7 +174,6 @@ export default {
     },
   }),
   props: {
-    currentStep: Object,
     publicationState: {
       type: String,
       default: undefined,
@@ -228,6 +226,10 @@ export default {
       type: String,
       default: '',
     },
+    organizationId: {
+      type: String,
+      default: undefined,
+    },
     validationErrors: { type: Object, default: () => ({}) },
   },
   emits: ['save'],
@@ -260,11 +262,6 @@ export default {
       return this.existingAuthors;
     },
     editContactPersonProps() {
-      // const headerObj = this.$store
-      //   ? this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](
-      //       'EDITMETADATA_HEADER_INFO',
-      //     )
-      //   : this.currentStep.genericProps;
 
       return {
         contactEmail: this.contactEmail || '',
@@ -276,6 +273,7 @@ export default {
         validationErrors: this.validationErrors || {},
         isContactPropertyReadOnly: () => false,
         contactPropertyHint: () => '',
+        flat: true,
       };
     },
     doiWorkflowActive() {
@@ -317,43 +315,21 @@ export default {
         publicationYear: '2025',
       };
     },
-    fundingInfo() {
-      if (this.$store) {
-        return this.$store.getters[
-          `${USER_NAMESPACE}/getMetadataEditingObject`
-        ](EDITMETADATA_FUNDING_INFO);
-      }
-
-      return this.currentStep.genericProps;
-    },
-    organizationsInfo() {
-      if (this.$store) {
-        return this.$store.getters[
-          `${USER_NAMESPACE}/getMetadataEditingObject`
-        ](EDITMETADATA_ORGANIZATION);
-      }
-
-      return this.currentStep.genericProps;
+    editOrganizationProps() {
+      return {
+        organizationId: this.organizationId,
+        userOrganizations: undefined,
+        readOnlyFields: this.readOnlyFields,
+        readOnlyExplanation: this.readOnlyExplanation,
+        flat: true,
+      };
     },
     editPublicationsProps() {
       return {
         ...this.publicationsInfo,
         readOnlyFields: this.readOnlyFields,
         readOnlyExplanation: this.readOnlyExplanation,
-      };
-    },
-    editFundingProps() {
-      return {
-        ...this.fundingInfo,
-        readOnlyFields: this.readOnlyFields,
-        readOnlyExplanation: this.readOnlyExplanation,
-      };
-    },
-    editOrganizationProps() {
-      return {
-        ...this.organizationsInfo,
-        readOnlyFields: this.readOnlyFields,
-        readOnlyExplanation: this.readOnlyExplanation,
+        flat: true,
       };
     },
     editPublicationStatusProps() {
@@ -362,12 +338,14 @@ export default {
         loading: this.$store ? this.doiLoading : undefined,
         error: this.$store ? this.doiError?.message : undefined,
         errorDetails: this.$store ? this.doiError?.details : undefined,
+        flat: true,
       };
     },
     editReviewProps() {
       return {
         ...this.publicationsInfo,
         isBlindReview: this.publicationsInfo.version === BLIND_REVIEW_ON,
+        flat: true,
       };
     },
     metadataId() {
@@ -401,9 +379,9 @@ export default {
 
   components: {
     EditReviewInfo,
-    // EditPublicationStatus,
+    EditPublicationStatus,
     EditPublicationInfo,
-    // EditOrganization,
+    EditOrganization,
     // NotFoundCard,
     EditContactPerson,
   },

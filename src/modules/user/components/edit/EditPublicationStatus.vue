@@ -4,6 +4,7 @@
       class="pa-0"
       max-width="100%"
       :loading="loadingColor"
+      :flat
     >
       <v-container fluid class="pa-4">
 
@@ -70,7 +71,7 @@
           </v-row>
 
           <v-row
-            v-if="currentStateInfos.positionIndex === index"
+            v-if="currentStateInfos?.positionIndex === index"
             no-gutters
             class="py-2"
             justify="center"
@@ -80,8 +81,8 @@
 
           <v-row
             v-if="
-              currentStateInfos.positionIndex === index &&
-                currentStateInfos.buttonText
+              currentStateInfos?.positionIndex === index &&
+                currentStateInfos?.buttonText
             "
             no-gutters
             justify="center"
@@ -240,6 +241,10 @@ export default {
     errorDetails: {
       type: String,
       default: null,
+    },
+    flat: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {

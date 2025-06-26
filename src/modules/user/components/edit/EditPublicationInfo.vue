@@ -4,6 +4,7 @@
     class="pa-0"
     max-width="100%"
     :loading="loadingColor"
+    :flat
   >
     <v-container fluid class="pa-4">
       <v-row>
@@ -216,6 +217,10 @@ export default {
     readOnlyExplanation: {
       type: String,
       default: '',
+    },
+    flat: {
+      type: Boolean,
+      default: false,
     },
   },
   mounted () {
