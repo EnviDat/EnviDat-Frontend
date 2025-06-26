@@ -101,7 +101,7 @@
             v-bind="res"
             :downloadActive="resourcesConfig?.downloadActive"
             :showGenericOpenButton="!!res.openEvent"
-            :genericOpenButtonBottom="true"
+            :genericOpenButtonBottom="genericOpenButtonBottom"
             cardColor="primary"
             :autoHeight="s3Store.treeViewIsOpened"
             @openButtonClicked="catchOpenClick(res.openEvent, res.openProperty)"
@@ -212,6 +212,10 @@ export default {
     showPlaceholder: {
       type: Boolean,
       default: false,
+    },
+    genericOpenButtonBottom: {
+      type: Boolean,
+      default: true,
     },
   },
   created() {
