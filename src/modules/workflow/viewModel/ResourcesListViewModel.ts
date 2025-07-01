@@ -164,6 +164,7 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
     return [
       ['resources', 'resources'],
       ['datasetId', 'id'],
+      ['resourceTypeGeneral', 'resource_type_general'], // only need to pass the default 'dataset' to the backend
     ];
   }
 }

@@ -2,6 +2,15 @@
   <div ref="appContainer" class="fill-height pa-2 pa-md-6">
     <v-row class="fill-height">
       <v-col cols="12" lg="4" xl="3" class="workflow-navigation__wrapper">
+
+        <BaseIcon v-if="workflowStore.isDatasetCreation"
+                  :icon="extractIcons('alert')"
+        />
+
+        <BaseIcon v-if="workflowStore.isDatasetEditing"
+                  :icon="extractIcons('success')"
+        />
+
         <NavigationWorkflow
           @navigateItem="catchNavigate"
         />
@@ -12,7 +21,7 @@
         lg="8"
         xl="9"
         class="workflow-content__wrapper position-relative"
-        :class="{ loading: navigationStore.loading }"
+        :class="{ loading: workflowStore.loading }"
       >
         <div>
           <div
@@ -42,14 +51,14 @@
           </div>
           <div ref="nextStepBlock" class="pa-4 d-flex align-center justify-end">
             <v-btn @click="nextStep">{{
-              navigationStore.currentStep === 6 ? 'Finish Demo!' : 'Next Step'
+              workflowStore.currentStep === 6 ? 'Finish Demo!' : 'Next Step'
             }}</v-btn>
           </div>
         </v-card>
       </v-col>
     </v-row>
     <!-- dialog, TODO make a external component -->
-    <v-dialog v-model="navigationStore.openSaveDialog" max-width="500">
+    <v-dialog v-model="workflowStore.openSaveDialog" max-width="500">
       <v-card rounded="xl">
         <v-card-text class="font-weight-bold"> Before You Proceed </v-card-text>
 
@@ -82,13 +91,14 @@ import { storeToRefs } from 'pinia';
 import { ref, watch, computed, nextTick, onMounted } from 'vue';
 
 import { useRoute, useRouter } from 'vue-router';
-import NavigationWorkflow from '@/components/Navigation/NavigationWorkflow.vue';
+import NavigationWorkflow from '@/components/Navigation/TheNavigationWorkflow.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 
 import { extractIcons } from '@/factories/iconFactory.ts';
 
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow.ts';
-import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
+import { StepStatus } from '@/modules/workflow/resources/steps.ts';
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -105,7 +115,7 @@ const props = defineProps({
 });
 
 
-const navigationStore = useDatasetWorkflowStore();
+const workflowStore = useDatasetWorkflowStore();
 
 // TEMPORARY QUERY PARAMAMETER
 
@@ -115,38 +125,30 @@ const changeNavigationInStore = (stepParam: number | string) => {
   if (
     Number.isFinite(step) &&
     step >= 0 &&
-    step < navigationStore.steps.length
+    step < workflowStore.steps.length
   ) {
-    navigationStore.jumpToStep(step);
+    workflowStore.jumpToStep(step);
   }
 }
-
-
 // END TEMPORARY QUERY PARAMAMETER
 
-if (props.datasetId) {
-  navigationStore.loadDataset(props.datasetId);
-} else if (props.dataset) {
-  navigationStore.initializeDataset(props.dataset as DatasetDTO);
+const datasetExistsInLocalStorage = (datasetId: string) => {
+  const localData = localStorage.getItem(datasetId);
+  return !!localData;
+}
+
+const mergedDataset = {
+  ...props.dataset,
+  id: props.datasetId || props.dataset?.id,
+}
+
+if (datasetExistsInLocalStorage(mergedDataset.id)) {
+  workflowStore.initializeWorkflowNewDataset(mergedDataset);
+} else {
+  workflowStore.initializeWorkflow(props.datasetId || props.dataset?.id);
 }
 
 const vm = ref(null);
-
-// load the current view model
-watch(
-  () => navigationStore.currentStep,
-  async () => {
-    vm.value = navigationStore.currentViewModel;
-  },
-  { immediate: true },
-);
-
-watch( () => route?.query,
-  (newQuery) =>   {
-    const step = newQuery?.step as string || 0;
-    changeNavigationInStore(step);
-  },
-)
 
 const iconScroll = computed(() => extractIcons('scroll'));
 
@@ -177,7 +179,7 @@ const validate = (freshData) => {
   vm.value?.validate(freshData);
 };
 
-const { currentStep, currentAsyncComponent } = storeToRefs(navigationStore);
+const { currentStep, currentAsyncComponent } = storeToRefs(workflowStore);
 
 const navigateRouterToStep = (step: number) => {
   if (router) {
@@ -192,7 +194,7 @@ const navigateRouterToStep = (step: number) => {
 }
 
 const catchConfirmSave = () => {
-  const ok = navigationStore.confirmSave();
+  const ok = workflowStore.confirmSave();
 
   if (ok) {
     navigateRouterToStep(currentStep.value + 1);
@@ -200,25 +202,27 @@ const catchConfirmSave = () => {
 }
 
 const catchNavigate = ({ id, status } : { id: number, status: string }) => {
-  if (status !== 'disabled') {
+  if (status !== StepStatus.Disabled) {
     navigateRouterToStep(id);
   }
 }
 
 const nextStep = async () => {
-  const ok = await navigationStore.validateStepAction(currentStep.value);
+  const ok = await workflowStore.validateStepAction(currentStep.value);
 
   if (ok) {
 
     if (currentStep.value === 6) {
-      // reset the worklfow
+      // reset the workflow
       
+/*
       // @ts-ignore
-      navigationStore.initializeDataset();
+      workflowStore.initializeDataset();
 
       currentStep.value = 0;
 
       navigateRouterToStep(currentStep.value);
+*/
 
       return;
     }
@@ -230,7 +234,33 @@ const nextStep = async () => {
   }
 };
 
+// load the current view model
+watch(
+  () => workflowStore.currentStep,
+  async () => {
+    vm.value = workflowStore.currentViewModel;
+  },
+  { immediate: false },
+);
+
+watch( () => route?.query,
+  (newQuery) =>   {
+    const step = newQuery?.step as string || 0;
+    changeNavigationInStore(step);
+  },
+)
+
+/*
+onBeforeMount(() => {
+  vm.value = workflowStore.currentViewModel;
+})
+*/
+
 onMounted(() => {
+
+  nextTick(() => {
+    vm.value = workflowStore.currentViewModel;
+  })
 
   // always reset it to 0
   navigateRouterToStep(0);

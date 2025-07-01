@@ -1,5 +1,5 @@
 import { Dataset } from '@/modules/workflow/Dataset.ts';
-import { DatasetService } from '@/types/modelTypes';
+import { DatasetService, User } from '@/types/modelTypes';
 import { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 
 import {
@@ -7,70 +7,40 @@ import {
   readDatasetFromLocalStorage,
   storeDatasetInLocalStorage,
 } from '@/factories/userCreationFactory';
-
-
+import { getMetadataUrlFromTitle } from '@/factories/mappingFactory';
 
 export class LocalStorageDatasetService implements DatasetService {
-
   declare dataset: DatasetDTO;
   declare loadingDataset: boolean;
 
   declare datasetCount: number;
 
   constructor(datasetBackend?: DatasetDTO | undefined) {
-
     this.loadingDataset = true;
     this.datasetCount = 0;
 
+/*
     if (datasetBackend) {
-      this.patchDatasetChanges(datasetBackend?.id, datasetBackend).then(() => {
-        this.loadingDataset = false;
-      });
+      this.patchDatasetChanges(datasetBackend?.id, datasetBackend);
     } else {
-
-      localStorage.setItem(this.getLocalId(), '');
-
-      const defaultDataset = {};
-      initCreationDataWithDefaults(defaultDataset);
-
-      const stepKeys = Object.keys(defaultDataset);
-      let flatDefaultDataset = {
-        resources: [],
-      };
-
-      stepKeys.forEach((key) => {
-        flatDefaultDataset = {
-          ...defaultDataset[key],
-          ...flatDefaultDataset,
-        }
-      })
-
-      this.dataset = new Dataset(
-        undefined,
-        {
-          ...flatDefaultDataset,
-          id: this.getLocalId(),
-        },
-      );
-
-      // no need to overwrite it, because it will re-created with the next patch call
-      /*
-            // overwrite the dataset in the local storage
-            const storedData = storeDatasetInLocalStorage(this.dataset.id, {
-              this.dataset,
-            });
-      */
-
+      this.createDataset();
     }
+*/
+  }
 
+  private getNewLocalDatasetId() {
+    return `local_dataset_${this.user?.id || '' }_${++this.datasetCount}`;
   }
 
   private getLocalId() {
-    return `local_dataset_${this.dataset?.id ? this.dataset.id : this.datasetCount}`;
+    return `local_dataset_${this.user?.id || '' }_${this.dataset?.id}`;
+  }
+
+  static isLocalId(datasetId: string) {
+    return datasetId?.includes('local_dataset');
   }
 
   async loadDataset(id: string): Promise<DatasetDTO> {
-
     this.loadingDataset = true;
 
     const backendData = readDatasetFromLocalStorage(id);
@@ -83,41 +53,94 @@ export class LocalStorageDatasetService implements DatasetService {
   async patchDatasetChanges(
     datasetId: string,
     data: object,
-  ) {
-
-    this.loadingDataset = false;
+  ): Promise<DatasetDTO> {
+    this.loadingDataset = true;
 
     try {
-      const existingData = readDatasetFromLocalStorage(datasetId || this.getLocalId());
+      const existingData = readDatasetFromLocalStorage(
+        datasetId || this.getLocalId(),
+      );
 
-      const storedData = storeDatasetInLocalStorage(datasetId || this.getLocalId(), {
-        ...existingData,
-        ...data,
-      });
+      const storedData = storeDatasetInLocalStorage(
+        datasetId || this.getLocalId(),
+        {
+          ...existingData,
+          ...data,
+        },
+      );
 
       this.dataset = new Dataset(storedData);
 
-      this.loadingDataset = true;
-
       return this.dataset;
     } catch (e: unknown) {
-      this.loadingDataset = false;
       console.error(e);
       throw e;
+    } finally {
+      this.loadingDataset = false;
     }
-
-
   }
 
-  async createResource(resoureData: ResourceDTO): Promise<ResourceDTO> {
-    const currentResources = this.dataset.resources ? [...this.dataset.resources] : [];
-    currentResources?.push(resoureData);
+  async createResource(resourceData: ResourceDTO): Promise<ResourceDTO> {
+    const currentResources = this.dataset.resources
+      ? [...this.dataset.resources]
+      : [];
+    currentResources?.push(resourceData);
 
     await this.patchDatasetChanges(this.dataset.id, {
       resources: currentResources,
-    })
+    });
 
-    return resoureData;
+    return resourceData;
   }
 
+  private getDatasetWithDefaults(dataset: DatasetDTO): DatasetDTO {
+    // const name = dataset.name ? dataset.name : getMetadataUrlFromTitle(dataset.title);
+
+    const orgaId = dataset.organization?.id || '';
+
+    return {
+      'owner_org': orgaId,
+      'resource_type_general': 'dataset',
+      ...dataset,
+      // name,
+      private: true, // necessary otherwise the dataset would be public directly
+    };
+  }
+
+/*
+  private getLocalDatasetWithDefaults(datasetId: string, user: User, prefilledOrganizationId) {
+
+    const defaultDataset = {};
+    initCreationDataWithDefaults(defaultDataset, user, prefilledOrganizationId);
+
+    const stepKeys = Object.keys(defaultDataset);
+    let flatDefaultDataset = {
+      resources: [],
+    };
+
+    stepKeys.forEach((key) => {
+      flatDefaultDataset = {
+        ...defaultDataset[key],
+        ...flatDefaultDataset,
+      };
+    });
+
+    return new Dataset(undefined, {
+      ...flatDefaultDataset,
+      id: datasetId,
+      resourceTypeGeneral: 'dataset', // default for all datasets
+    });
+  }
+*/
+
+  async createDataset(dataset: DatasetDTO): Promise<DatasetDTO> {
+
+    const datasetId = this.getNewLocalDatasetId();
+    localStorage.setItem(datasetId, '');
+
+    const datasetWithDefaults = this.getDatasetWithDefaults(dataset);
+    this.dataset = new Dataset(datasetWithDefaults);
+
+    return this.patchDatasetChanges(this.dataset.id, this.dataset);
+  }
 }

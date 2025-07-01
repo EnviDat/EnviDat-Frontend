@@ -6,6 +6,7 @@
 import axios from 'axios';
 
 import {
+  ACTION_METADATA_CREATION_DATASET,
   ACTION_METADATA_CREATION_RESOURCE,
   ACTION_METADATA_EDITING_PATCH_DATASET,
 } from '@/modules/user/store/userMutationsConsts';
@@ -14,8 +15,12 @@ import { Dataset } from '@/modules/workflow/Dataset.ts';
 import { DatasetService } from '@/types/modelTypes';
 import { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 import { ACTION_LOAD_METADATA_CONTENT_BY_ID } from '@/store/metadataMutationsConsts';
-import { getBackendJSONForStep, stringifyResourceForBackend } from '@/factories/mappingFactory';
+import {
+  getBackendJSONForStep,
+  stringifyResourceForBackend,
+} from '@/factories/mappingFactory';
 import { EDITMETADATA_DATA_RESOURCE } from '@/factories/eventBus';
+
 
 // don't use an api base url or API_ROOT when using testdata
 let API_BASE = '';
@@ -26,10 +31,7 @@ const useTestdata = import.meta.env?.VITE_USE_TESTDATA === 'true';
 let mockDataResponse;
 if (useTestdata) {
   mockDataResponse = await import('../../../public/testdata/dataset_10-16904-1');
-}
-
-
-if (!useTestdata) {
+} else {
   API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
   API_ROOT = import.meta.env.VITE_API_ROOT || '';
 }
@@ -39,8 +41,8 @@ export class BackendDatasetService implements DatasetService {
   declare dataset: DatasetDTO;
   declare loadingDataset: boolean;
 
-  constructor(datasetBackend: unknown | undefined) {
-    this.dataset = new Dataset(datasetBackend);
+  constructor() {
+    this.dataset = undefined;
     this.loadingDataset = false;
   }
 
@@ -95,12 +97,12 @@ export class BackendDatasetService implements DatasetService {
 
   }
 
-  async createResource(resoureData: ResourceDTO): Promise<ResourceDTO> {
+  async createResource(resourceData: ResourceDTO): Promise<ResourceDTO> {
 
     const actionUrl = ACTION_METADATA_CREATION_RESOURCE();
     const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
-    const cleaned = getBackendJSONForStep(EDITMETADATA_DATA_RESOURCE, resoureData);
+    const cleaned = getBackendJSONForStep(EDITMETADATA_DATA_RESOURCE, resourceData);
     const postData = stringifyResourceForBackend(cleaned);
 
     try {
@@ -114,6 +116,26 @@ export class BackendDatasetService implements DatasetService {
       throw e;
     }
 
+  }
+
+
+
+  async createDataset(dataset: DatasetDTO): Promise<ResourceDTO> {
+
+//    const datasetWithDefault = this.getDatasetWithDefaults(dataset);
+
+    const actionUrl = ACTION_METADATA_CREATION_DATASET();
+    const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
+    const postData = dataset;
+
+    this.loadingDataset = true;
+
+    try {
+      const response = await axios.post(url, postData);
+      return response.data.result;
+    } finally {
+      this.loadingDataset = false;
+    }
   }
 
 }

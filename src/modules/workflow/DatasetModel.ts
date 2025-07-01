@@ -1,7 +1,9 @@
 import { reactive } from 'vue';
 
 import type { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
+/*
 import { DatasetService, User } from '@/types/modelTypes';
+*/
 
 import { EditDescriptionViewModel } from '@/modules/workflow/viewModel/EditDescriptionViewModel.ts';
 import { EditCustomFieldsViewModel } from '@/modules/workflow/viewModel/EditCustomFieldsViewModel.ts';
@@ -16,11 +18,15 @@ import { GeoInfoViewModel } from '@/modules/workflow/viewModel/GeoInfoViewModel.
 import { RelatedResearchViewModel } from '@/modules/workflow/viewModel/RelatedResearchViewModel.ts';
 import { PublicationInfoViewModel } from '@/modules/workflow/viewModel/PublicationInfoViewModel.ts';
 
+/*
 import { initCreationDataWithDefaults } from '@/factories/userCreationFactory';
 import { Dataset } from '@/modules/workflow/Dataset.ts';
+*/
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 
+
 export class DatasetModel {
+
   viewModelClasses = [
     EditDescriptionViewModel,
     AuthorListViewModel,
@@ -37,15 +43,14 @@ export class DatasetModel {
 
   private viewModelInstances: Map<string, any> = new Map();
 
-  declare datasetService: DatasetService;
+  declare datasetWorkflow: any;
 
   declare resourceCounter: number;
 
-  constructor(datasetService: DatasetService) {
-    this.datasetService = datasetService;
-    this.resourceCounter = 0;
 
-    this.createViewModels();
+  constructor(datasetWorkflow: any) {
+    this.datasetWorkflow = datasetWorkflow;
+    this.resourceCounter = 0;
   }
 
   private clearViewModels(): void {
@@ -64,14 +69,15 @@ export class DatasetModel {
     }
   }
 
-  /*
   async loadViewModels(datasetId: string): Promise<void> {
-    await this.datasetService.loadDataset(datasetId);
+    const datasetService = this.datasetWorkflow.getDatasetService();
+    await datasetService.loadDataset(datasetId);
 
     this.createViewModels();
   }
-*/
 
+
+  /*
   async loadDataset(datasetId: string): Promise<DatasetDTO> {
     await this.datasetService.loadDataset(datasetId);
     this.updateViewModels();
@@ -86,27 +92,22 @@ export class DatasetModel {
     user: User,
     prefilledOrganizationId: string,
   ): Promise<DatasetDTO> {
-    const localId = `${user.id}_${prefilledOrganizationId}`;
-    const predefinedData = {
-      id: localId,
-    };
 
-    initCreationDataWithDefaults(predefinedData, user, prefilledOrganizationId);
-
-    const localDataset = new Dataset(predefinedData);
-
-    await this.datasetService.patchDatasetChanges(localId, localDataset);
+    const datasetService = this.datasetWorkflow.getDatasetService();
+    await datasetService.createDataset(localId, localDataset);
 
     // @ts-ignore
     return localDataset;
   }
+*/
 
   async createResourceOnExistingDataset(resourceModel: AbstractEditViewModel) {
     resourceModel.loading = true;
     resourceModel.error = undefined;
 
     try {
-      await this.datasetService.createResource(
+      const datasetService = this.datasetWorkflow.getDatasetService();
+      await datasetService.createResource(
         {
           ...resourceModel.backendJSON as ResourceDTO,
           // DEMO: this is set in the backend, only for local storage is needed
@@ -144,7 +145,9 @@ export class DatasetModel {
   }
 
   async patchViewModel(newModel: AbstractEditViewModel) {
-    await this.datasetService.patchDatasetChanges(
+
+    const datasetService = this.datasetWorkflow.getDatasetService();
+    await datasetService.patchDatasetChanges(
       this.dataset.id,
       newModel.backendJSON,
     );
@@ -171,12 +174,14 @@ export class DatasetModel {
   }
 
   updateViewModels() {
+    const datasetService = this.datasetWorkflow.getDatasetService();
     this.viewModelInstances.forEach((model: AbstractEditViewModel) =>
-      model.updateModel(this.datasetService.dataset),
+      model.updateModel(datasetService.dataset),
     );
   }
 
   get dataset(): DatasetDTO | undefined {
-    return this.datasetService?.dataset;
+    const datasetService = this.datasetWorkflow.getDatasetService();
+    return datasetService?.dataset;
   }
 }

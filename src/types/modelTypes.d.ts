@@ -107,5 +107,8 @@ export interface DatasetService {
     data: object,
   ) : Promise<any>;
 
-  createResource?(resoureData: ResourceDTO): Promise<ResourceDTO>;
+  createResource?(resourceData: ResourceDTO): Promise<ResourceDTO>;
+
+  createDataset() : Promise<DatasetDTO>;
+
 }

@@ -7,7 +7,7 @@
  */
 
 
-import NavigationWorkflow from '@/components/Navigation/NavigationWorkflow.vue';
+import NavigationWorkflow from '@/components/Navigation/TheNavigationWorkflow.vue';
 
 
 export default {

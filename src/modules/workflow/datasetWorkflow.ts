@@ -1,11 +1,12 @@
 import { defineStore } from 'pinia';
-import { defineAsyncComponent } from 'vue';
 
-import { workflowSteps } from '@/modules/workflow/resources/steps.ts';
+import { StepStatus, WorkflowStep, workflowSteps } from '@/modules/workflow/resources/steps.ts';
 
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 import { LocalStorageDatasetService } from '@/modules/workflow/LocalStorageDatasetService.ts';
 import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
+import { DatasetService } from '@/types/modelTypes';
+import { BackendDatasetService } from '@/modules/workflow/BackendDatasetService.ts';
 import { workflowGuide } from '@/modules/workflow/resources/workflowGuides.ts';
 /*
 import datasets from '~/stories/js/metadata.js';
@@ -21,13 +22,15 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     loading: false,
     currentStep: 0,
     steps: workflowSteps,
-    datasetViewModel: new DatasetModel(new LocalStorageDatasetService()),
+    datasetModel: undefined,
+    localStorageService: new LocalStorageDatasetService(),
+    backendStorageService: new BackendDatasetService(),
     openSaveDialog: false,
     isStepSaveConfirmed: false,
     // TEMPORARY QUERY PARAMS OPTION
     freeJump: false,
     // END TEMPORARY QUERY PARAMS OPTION
-    isStepSave: 3,
+    stepForBackendChange: 3,
     doiPlaceholder: null,
     workflowGuide,
   }),
@@ -46,28 +49,82 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
       if (!step?.viewModelKey) return null;
 
       // get the viewModel
-      const vmInstance = state.datasetViewModel.getViewModel(step.viewModelKey);
+      const vmInstance = state.datasetModel.getViewModel(step.viewModelKey);
 
       return vmInstance;
     },
+    firstInCompleteStep(state) {
+      let firstInCompleteIndex = -1;
+
+      for (let i = 0; i < state.steps.length; i++) {
+        const step : WorkflowStep = state.steps[i];
+        if (!step.completed) {
+          firstInCompleteIndex = i;
+          break;
+        }
+      }
+
+      return firstInCompleteIndex;
+    },
+    isDatasetCreation() {
+      return this.firstInCompleteStep < this.stepForBackendChange;
+    },
+    isDatasetEditing() {
+      return this.firstInCompleteStep >= this.stepForBackendChange;
+    },
   },
   actions: {
+    getDatasetService() : DatasetService {
+      if (this.isDatasetCreation) {
+        return this.localStorageService;
+      }
+
+      return this.backendStorageService;
+    },
     async loadDataset(datasetId: string) {
-      return this.datasetViewModel.loadDataset(datasetId);
+      return this.datasetModel.loadDataset(datasetId);
+    },
+    async initializeWorkflowNewDataset(dataset?: DatasetDTO) {
+
+      this.datasetModel = new DatasetModel(this);
+
+      if (dataset === undefined) {
+        // fresh new dataset
+        this.LocalStorageDatasetService = new LocalStorageDatasetService();
+        await this.LocalStorageDatasetService.createDataset();
+
+      // } else if (LocalStorageDatasetService.isLocalId(dataset?.id)) {
+      } else if (dataset.id) {
+        // existing local dataset
+        this.LocalStorageDatasetService = new LocalStorageDatasetService(dataset);
+        await this.LocalStorageDatasetService.patchDatasetChanges(dataset);
+      }
+
+      return this.datasetModel.loadViewModels(dataset.id)
+    },
+    async initializeWorkflow(datasetId: string) {
+      this.datasetModel = new DatasetModel(this);
+
+      await this.state.backendStorageService.loadDataset(datasetId);
+
+      return this.datasetModel.loadViewModels(datasetId)
     },
     async initializeDataset(dataset: DatasetDTO) {
-      this.datasetViewModel = new DatasetModel(
-        new LocalStorageDatasetService(dataset),
-      );
+      this.datasetModel = new DatasetModel(this);
 
-      this.steps.forEach((s) => {
+      if (LocalStorageDatasetService.isLocalId(dataset?.id)) {
+        this.state.LocalStorageDatasetService = new LocalStorageDatasetService(dataset);
+      }
+
+      this.steps.forEach((s: WorkflowStep) => {
         if (s.id === 0){
-          s.status = 'active';
+          s.isEditable = true;
+          s.status = StepStatus.Active;
         } else {
-          s.status = 'disabled';
+          s.isEditable = false;
+          s.status = StepStatus.Disabled;
         }
 
-        s.isEditable = true;
         s.completed = false;
         s.hasError = false;
       });
@@ -85,7 +142,9 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     },
     navigateItemAction(id, status) {
       if (!this.freeJump) {
-        if (status === 'disabled') return;
+
+        if (status === StepStatus.Disabled) return;
+
         this.currentStep = id;
         return;
       }
@@ -94,10 +153,10 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     },
     setActiveStep(id: number) {
       this.steps.forEach((s) => {
-        if (s.id === id) s.status = 'active';
-        else if (s.completed) s.status = 'completed';
-        else if (s.hasError) s.status = 'error';
-        else s.status = 'disabled';
+        if (s.id === id) s.status = StepStatus.Active;
+        else if (s.completed) s.status = StepStatus.Completed;
+        else if (s.hasError) s.status = StepStatus.Error;
+        else s.status = StepStatus.Disabled;
       });
       this.currentStep = id;
     },
@@ -123,9 +182,9 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     // },
     setCurrentStepAction() {
       // find the next element with status != completed
-      const next = this.steps.find((el) => el.status !== 'completed');
+      const next = this.steps.find((el) => el.status !== StepStatus.Completed);
       if (this.steps[next.id]) {
-        this.steps[next.id].status = 'active';
+        this.steps[next.id].status = StepStatus.Active;
         this.currentStep = next.id;
       }
     },
@@ -146,14 +205,14 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
       if (hasErrors) {
         Object.assign(this.steps[stepId], {
           hasError: true,
-          status: 'error',
+          status: StepStatus.Error,
           errors: vm.validationErrors,
         });
 
         return false;
       }
 
-      if (stepId === this.isStepSave && !this.isStepSaveConfirmed) {
+      if (stepId === this.stepForBackendChange && !this.isStepSaveConfirmed) {
         this.openSaveDialog = true;
         return false;
       }
@@ -161,7 +220,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
       Object.assign(this.steps[stepId], {
         completed: true,
         hasError: false,
-        status: 'completed',
+        status: StepStatus.Completed,
         errors: null,
       });
 
@@ -175,14 +234,12 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
       this.openSaveDialog = false;
 
 
-      return this.validateStepAction(this.isStepSave);
+      return this.validateStepAction(this.stepForBackendChange);
     },
 
     reserveDoi() {
       this.doiPlaceholder = '10.10000/envidat.1234';
     },
 
-    // setCurrentGuide(step) {},
-    setCurrentGuide(workflowGuide) {},
   },
 });

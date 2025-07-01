@@ -7,7 +7,14 @@ import ResourcesInformation from '@/modules/workflow/components/steps/ResourcesI
 import RelatedResearch from '@/modules/workflow/components/steps/RelatedResearch.vue';
 import PublishingInformation from '@/modules/workflow/components/steps/PublishingInformation.vue';
 
-export type StepStatus = 'active' | 'disabled' | 'completed';
+// export type StepStatus = 'active' | 'disabled' | 'completed';
+
+export enum StepStatus {
+  Disabled = 'disabled',
+  Active = 'active',
+  Completed = 'completed',
+  Error = 'error',
+}
 
 export interface WorkflowStep {
   id: number;
@@ -44,7 +51,7 @@ export const workflowSteps: WorkflowStep[] = [
 */
     viewModelKey: 'MetadataBaseViewModel',
     icon: 'baseinfo',
-    status: 'active',
+    status: StepStatus.Active,
     // guideLines: [
     //   {
     //     element: '.navigationWorkflow',
@@ -71,7 +78,7 @@ export const workflowSteps: WorkflowStep[] = [
 */
     viewModelKey: 'AuthorListViewModel',
     icon: 'authorsinfo',
-    status: 'disabled',
+    status: StepStatus.Disabled,
     // guideLines: [
     //   {
     //     element: '.navigationWorkflow__actions',
@@ -98,7 +105,7 @@ export const workflowSteps: WorkflowStep[] = [
 */
     viewModelKey: 'GeoInfoViewModel',
     icon: 'geoinfo',
-    status: 'disabled',
+    status: StepStatus.Disabled,
   },
   {
     id: 3,
@@ -115,7 +122,7 @@ export const workflowSteps: WorkflowStep[] = [
 */
     viewModelKey: 'AdditionalInfoViewModel',
     icon: 'additionalinfo',
-    status: 'disabled',
+    status: StepStatus.Disabled,
   },
   {
     id: 4,
@@ -132,7 +139,7 @@ export const workflowSteps: WorkflowStep[] = [
 */
     viewModelKey: 'ResourcesListViewModel',
     icon: 'uploadinfo',
-    status: 'disabled',
+    status: StepStatus.Disabled,
   },
   {
     id: 5,
@@ -149,7 +156,7 @@ export const workflowSteps: WorkflowStep[] = [
 */
     viewModelKey: 'RelatedResearchViewModel',
     icon: 'relatedinfo',
-    status: 'disabled',
+    status: StepStatus.Disabled,
   },
   {
     id: 6,
@@ -166,7 +173,7 @@ export const workflowSteps: WorkflowStep[] = [
 */
     viewModelKey: 'PublicationInfoViewModel',
     icon: 'publicationinfo',
-    status: 'disabled',
+    status: StepStatus.Disabled,
   },
 ];
 
