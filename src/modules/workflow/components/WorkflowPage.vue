@@ -87,7 +87,7 @@ import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.v
 
 import { extractIcons } from '@/factories/iconFactory.ts';
 
-import { useDatasetWorkflowStore } from '@/modules/user/store/datasetWorkflow';
+import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow.ts';
 import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 
 const route = useRoute();

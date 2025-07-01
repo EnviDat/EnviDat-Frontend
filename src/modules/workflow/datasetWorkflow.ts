@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { defineAsyncComponent } from 'vue';
 
-import { workflowSteps } from '@/modules/workflow/resources/steps';
+import { workflowSteps } from '@/modules/workflow/resources/steps.ts';
 
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 import { LocalStorageDatasetService } from '@/modules/workflow/LocalStorageDatasetService.ts';
