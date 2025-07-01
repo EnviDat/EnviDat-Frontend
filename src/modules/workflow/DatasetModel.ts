@@ -17,7 +17,7 @@ import { RelatedResearchViewModel } from '@/modules/workflow/viewModel/RelatedRe
 import { PublicationInfoViewModel } from '@/modules/workflow/viewModel/PublicationInfoViewModel.ts';
 
 import { initCreationDataWithDefaults } from '@/factories/userCreationFactory';
-import { Dataset } from '@/modules/workflow/viewModel/Dataset.ts';
+import { Dataset } from '@/modules/workflow/Dataset.ts';
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 
 export class DatasetModel {

@@ -6,7 +6,7 @@ import {
   AuthorViewModel,
   createAuthorViewModel,
 } from '@/modules/workflow/viewModel/AuthorViewModel.ts';
-import { DatasetModel } from '@/modules/workflow/viewModel/DatasetModel.ts';
+import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 import {
   convertJSON,

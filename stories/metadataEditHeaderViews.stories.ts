@@ -32,7 +32,7 @@ import {
   METADATA_URL_PROPERTY,
 } from '@/factories/metadataConsts';
 
-import { EditDatasetBackendService } from '@/modules/workflow/viewModel/EditDatasetBackendService.ts';
+import { BackendDatasetService } from '@/modules/workflow/BackendDatasetService.ts';
 import { EditHeaderViewModel } from '@/modules/workflow/viewModel/EditHeaderViewModel';
 import {
   mobileLargeViewportParams,
@@ -41,9 +41,9 @@ import {
 } from './js/envidatViewports';
 
 import metadataset from './js/metadata';
-import { DatasetModel } from '@/modules/workflow/viewModel/DatasetModel.ts';
+import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 
-const serviceLayer = new EditDatasetBackendService(metadataset[0]);
+const serviceLayer = new BackendDatasetService(metadataset[0]);
 const datasetVM = new DatasetModel(serviceLayer);
 
 const unFormatedMetadataCards = metadataset;
@@ -68,7 +68,7 @@ const authors = getFullAuthorsFromDataset(authorsMap, metadataCards[1]);
 let existingAuthors = Object.values(authorsMap);
 existingAuthors = sortObjectArray(existingAuthors, 'lastName');
 
-const serviceLayer2 = new EditDatasetBackendService(metadataset[1]);
+const serviceLayer2 = new BackendDatasetService(metadataset[1]);
 const datasetVM2 = new DatasetModel(serviceLayer2);
 const reactiveViewModelWithErrors = datasetVM2.getViewModel(
   'EditHeaderViewModel',

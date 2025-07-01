@@ -1,4 +1,4 @@
-import { Dataset } from '@/modules/workflow/viewModel/Dataset';
+import { Dataset } from '@/modules/workflow/Dataset.ts';
 import { DatasetService } from '@/types/modelTypes';
 import { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 
@@ -10,7 +10,7 @@ import {
 
 
 
-export class DatasetLocalStorageService implements DatasetService {
+export class LocalStorageDatasetService implements DatasetService {
 
   declare dataset: DatasetDTO;
   declare loadingDataset: boolean;

@@ -10,7 +10,7 @@ import {
   ACTION_METADATA_EDITING_PATCH_DATASET,
 } from '@/modules/user/store/userMutationsConsts';
 import { urlRewrite } from '@/factories/apiFactory';
-import { Dataset } from '@/modules/workflow/viewModel/Dataset.ts';
+import { Dataset } from '@/modules/workflow/Dataset.ts';
 import { DatasetService } from '@/types/modelTypes';
 import { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 import { ACTION_LOAD_METADATA_CONTENT_BY_ID } from '@/store/metadataMutationsConsts';
@@ -25,7 +25,7 @@ const useTestdata = import.meta.env?.VITE_USE_TESTDATA === 'true';
 
 let mockDataResponse;
 if (useTestdata) {
-  mockDataResponse = await import('../../../../public/testdata/dataset_10-16904-1');
+  mockDataResponse = await import('../../../public/testdata/dataset_10-16904-1');
 }
 
 
@@ -34,7 +34,7 @@ if (!useTestdata) {
   API_ROOT = import.meta.env.VITE_API_ROOT || '';
 }
 
-export class EditDatasetBackendService implements DatasetService {
+export class BackendDatasetService implements DatasetService {
 
   declare dataset: DatasetDTO;
   declare loadingDataset: boolean;

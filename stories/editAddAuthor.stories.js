@@ -20,14 +20,14 @@ import {
 import { AuthorsViewModel } from '@/factories/ViewModels/AuthorsViewModel';
 
 import unFormatedMetadataCards from './js/metadata';
-import { EditDatasetBackendService } from '@/modules/workflow/viewModel/EditDatasetBackendService.ts';
-import { DatasetModel } from '@/modules/workflow/viewModel/DatasetModel.ts';
+import { BackendDatasetService } from '@/modules/workflow/BackendDatasetService.ts';
+import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 
 
 const metadataCards = [];
 
 
-const serviceLayer = new EditDatasetBackendService(unFormatedMetadataCards[0])
+const serviceLayer = new BackendDatasetService(unFormatedMetadataCards[0])
 const datasetVM = new DatasetModel(serviceLayer);
 const authorsViewModel = new AuthorsViewModel(datasetVM.dataset);
 

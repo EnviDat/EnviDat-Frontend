@@ -1,7 +1,7 @@
 // factories/ViewModels/GeoInfoViewModel.ts
 import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
-import { DatasetModel } from '@/modules/workflow/viewModel/DatasetModel.ts';
+import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 
 export class GeoInfoViewModel extends AbstractEditViewModel {
 

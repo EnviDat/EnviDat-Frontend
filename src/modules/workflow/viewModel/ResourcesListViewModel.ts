@@ -3,7 +3,7 @@ import * as yup from 'yup';
 import { Resource, User } from '@/types/modelTypes';
 import { type DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 import { ResourceViewModel } from '@/modules/workflow/viewModel/ResourceViewModel.ts';
-import { DatasetModel } from '@/modules/workflow/viewModel/DatasetModel.ts';
+import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel';
 import { METADATA_NEW_RESOURCE_ID } from '@/factories/metadataConsts';
 import {

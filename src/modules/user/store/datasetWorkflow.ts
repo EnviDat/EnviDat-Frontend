@@ -3,15 +3,15 @@ import { defineAsyncComponent } from 'vue';
 
 import { workflowSteps } from '@/modules/workflow/resources/steps';
 
-import { DatasetModel } from '@/modules/workflow/viewModel/DatasetModel';
-import { DatasetLocalStorageService } from '@/modules/workflow/viewModel/DatasetLocalStorageService';
+import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
+import { LocalStorageDatasetService } from '@/modules/workflow/LocalStorageDatasetService.ts';
 import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 /*
 import datasets from '~/stories/js/metadata.js';
 
-let datasetVM = new DatasetModel(new DatasetLocalStorageService());
+let datasetVM = new DatasetModel(new LocalStorageDatasetService());
 if (import.meta.env.MODE === 'development') {
-  datasetVM = new DatasetModel(new DatasetLocalStorageService(datasets[2]));
+  datasetVM = new DatasetModel(new LocalStorageDatasetService(datasets[2]));
 }
 */
 
@@ -20,7 +20,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     loading: false,
     currentStep: 0,
     steps: workflowSteps,
-    datasetViewModel: new DatasetModel(new DatasetLocalStorageService()),
+    datasetViewModel: new DatasetModel(new LocalStorageDatasetService()),
     openSaveDialog: false,
     isStepSaveConfirmed: false,
     // TEMPORARY QUERY PARAMS OPTION
@@ -158,7 +158,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     },
     async initializeDataset(dataset: DatasetDTO) {
       this.datasetViewModel = new DatasetModel(
-        new DatasetLocalStorageService(dataset),
+        new LocalStorageDatasetService(dataset),
       );
 
       this.steps.forEach((s) => {

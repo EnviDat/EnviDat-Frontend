@@ -6,7 +6,7 @@ import {
 } from '@/factories/mappingFactory';
 
 import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
-import { DatasetModel } from '@/modules/workflow/viewModel/DatasetModel.ts';
+import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 import { isFieldValid } from '@/factories/userEditingValidations';
 
 export abstract class AbstractEditViewModel {

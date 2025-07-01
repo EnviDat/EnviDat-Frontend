@@ -14,7 +14,7 @@
  */
 
 import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuthors.vue';
-import { Dataset } from '@/modules/workflow/viewModel/Dataset.js';
+import { Dataset } from '@/modules/workflow/Dataset.ts';
 import { AuthorsViewModel } from '@/factories/ViewModels/AuthorsViewModel';
 import { enhanceMetadatasTitleImage } from '@/factories/metaDataFactory';
 

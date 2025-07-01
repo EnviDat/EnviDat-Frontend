@@ -3,7 +3,7 @@ import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEdit
 import { Resource } from '@/types/modelTypes';
 import { convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
 import { ResourceDTO } from '@/types/dataTransferObjectsTypes';
-import { DatasetModel } from '@/modules/workflow/viewModel/DatasetModel.ts';
+import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 import { getResourceName, isResourceProtectedForUser, mergeResourceSizeForFrontend } from '@/factories/resourceHelpers';
 import { formatDate } from '@/factories/dateFactory';
 
