@@ -309,7 +309,7 @@ import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
 
 import S3Tree from '@/modules/s3/components/S3Tree.vue';
-import { useS3Store } from '@/modules/s3/store/s3Store';
+import { useS3Store } from '@/modules/s3/store/s3Store.ts';
 import SparkChart from '@/components/Charts/SparkChart.vue';
 
 import { renderMarkdown, stripMarkdown } from '@/factories/stringFactory';

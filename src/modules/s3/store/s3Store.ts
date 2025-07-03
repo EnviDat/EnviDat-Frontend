@@ -2,9 +2,14 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
 import { XMLParser } from 'fast-xml-parser';
+import { _Object, ListObjectsV2Output } from '@aws-sdk/client-s3/dist-types/models/models_0';
+import { S3Node } from '@/types/s3Types';
+import { CommonPrefix } from '@aws-sdk/client-s3/dist-types/models';
 
 // const TEST_URL =
 //   https://os.zhdk.cloud.switch.ch/envicloud/?prefix=wsl/CORE_S2A/&max-keys=100000&delimiter=/
+
+
 
 export const useS3Store = defineStore('s3Store', {
   state: () => ({
@@ -21,28 +26,30 @@ export const useS3Store = defineStore('s3Store', {
   }),
   getters: {},
   actions: {
-    async fetchS3Content(url, isChild, nodeId, params = {}) {
+    async fetchS3Content(url: string, isChild: boolean, nodeId: number, rootNodes?: S3Node[], params = {}) {
 
       try {
         const response = await axios.get(url, {
           params,
-          forceNoCredentials: true,
+          // forceNoCredentials: true,
+          withCredentials: false,
         });
 
-        const jsonObj = this.parseXmlToJson(response.data);
+        const json = this.parseXmlToJson(response.data);
+        const { ListBucketResult } : { ListBucketResult: ListObjectsV2Output } = json;
 
         if (isChild) {
-          return this.mapChildData(jsonObj, nodeId);
+          return this.mapChildData(ListBucketResult, nodeId, rootNodes);
         }
 
-        return this.mapData(jsonObj);
+        return this.mapData(ListBucketResult);
       } catch (error) {
         this.error = error;
         throw error;
       }
     },
 
-    parseXmlToJson(xmlData) {
+    parseXmlToJson(xmlData: string) {
       const parser = new XMLParser({
         ignoreAttributes: false,
       });
@@ -54,45 +61,80 @@ export const useS3Store = defineStore('s3Store', {
       }
     },
 
-    mapChildData(json, nodeId) {
-      if (!json.ListBucketResult || !json.ListBucketResult.Contents) {
-        return;
+    mapData(listObject: ListObjectsV2Output) : S3Node[] {
+      const rootId = 1;
+
+      const childFolders = listObject.CommonPrefixes?.map<S3Node>(
+        (prefix, index) =>
+          this.createFolderEntry(prefix, index, rootId),
+      );
+
+      // listObject.Contents this can be a single Object not an array
+      // maybe due to the conversion from XML?
+      const contents = listObject.Contents;
+      let childEntires: S3Node[];
+
+      const hasContentList =  contents && (contents instanceof Array);
+
+      if (hasContentList) {
+        childEntires = contents.map<S3Node>(
+          (content, index) =>
+            this.createFileEntry(content, index, rootId),
+        )
       }
 
-      // Rremove first element because is a repetition of the container
-      const contents = Array.isArray(json.ListBucketResult.Contents)
-        ? json.ListBucketResult.Contents.slice(1)
-        : json.ListBucketResult.Contents;
+      return [
+        {
+          id: rootId,
+          isFile: this.isItemFile(listObject.Prefix),
+          title: this.parseString(listObject.Prefix),
+          isChild: false,
+          childrenLoaded: false,
+          children: childFolders || childEntires,
+        },
+      ]
+    },
+
+    mapChildData(listObject: ListObjectsV2Output, nodeId: number, rootNodes: S3Node[]) : S3Node[] | undefined {
+      if (!listObject || !listObject.Contents) {
+        return undefined;
+      }
+
+      const lastId = rootNodes.length;
+
+      // Remove first element because is a repetition of the container
+      const contents = Array.isArray(listObject.Contents)
+        ? listObject.Contents.slice(1)
+        : listObject.Contents;
 
       // map the content
       const children = Array.isArray(contents)
-        ? contents.map((prefix) => ({
-            isChild: true,
-            title: this.parseStringChild(prefix.Key),
-            isFile: this.isItemFile(prefix.Key),
-            link: this.setUrl(prefix.Key),
-            childrenLoaded: false,
-          }))
+        ? contents.map<S3Node>((prefix, index) => this.createFileEntry(prefix, index, lastId))
         : [
             {
+              id: lastId + 1,
               isChild: true,
               title: 'Go to S3',
               // lastItem is needed for manage the last level of deep allowed
               isLastItem: true,
               link: this.s3BucketUrl,
               childrenLoaded: false,
+              children: undefined,
             },
           ];
 
       // Trigger function to add data in the right node
       this.findAndAddChildren(
-        this.contentFromS3,
+        rootNodes,
         children,
         nodeId,
       );
+
+      return rootNodes;
     },
 
-    findAndAddChildren(nodes, children, nodeId) {
+    findAndAddChildren(nodes: S3Node[], children: S3Node[], nodeId: number) {
+
       for (const node of nodes) {
         if (node.id === nodeId) {
           if (node.children && node.children.length > 0) {
@@ -106,8 +148,10 @@ export const useS3Store = defineStore('s3Store', {
             if (child.isFile || child.isLastItem) {
               delete child.children;
             }
+
             return child;
           });
+
           return true;
         }
 
@@ -118,46 +162,21 @@ export const useS3Store = defineStore('s3Store', {
             children,
             nodeId,
           );
+
           // Skip further checks if the node is found
           if (found) return true;
         }
       }
+
       return false;
     },
 
-    mapData(json) {
-      const rootId = 1;
-
-      const children = json.ListBucketResult.CommonPrefixes.map(
-        (prefix, index) => ({
-          id: rootId + index + 1,
-          // define if is child to triggher another function and manage deep level
-          isChild: true,
-          title: this.parseString(prefix.Prefix),
-          isFile: this.isItemFile(prefix.Prefix),
-          childrenLoaded: false,
-          children: [],
-        }),
-      );
-
-      this.contentFromS3 = [
-        {
-          id: rootId,
-          isFile: this.isItemFile(json.ListBucketResult.Prefix),
-          title: this.parseString(json.ListBucketResult.Prefix),
-          children,
-          isChild: false,
-          childrenLoaded: false,
-        },
-      ];
-    },
     // set the URL for download
-    setUrl(url) {
+    getS3Link(url) {
       const cleanedBaseUrl = this.s3Url.replace(/\/$/, '');
       const cleanedUrl = url.replace(/^\//, '');
 
-      const linkUrl = `${cleanedBaseUrl}/${cleanedUrl}`;
-      return linkUrl;
+      return `${cleanedBaseUrl}/${cleanedUrl}`;
     },
     // Clean the string for the fileName to reduce the length of the word
     parseStringChild(str) {
@@ -184,6 +203,28 @@ export const useS3Store = defineStore('s3Store', {
     isItemFile(path) {
       const isFileRegex = /[^/]+\.[^/]+$/;
       return isFileRegex.test(path);
+    },
+    createFolderEntry (prefix: CommonPrefix, index: number, rootId: number) : S3Node {
+      return {
+        id: rootId + index + 1,
+        // define if is child to triggher another function and manage deep level
+        isChild: true,
+        title: this.parseString(prefix.Prefix),
+        isFile: this.isItemFile(prefix.Prefix),
+        childrenLoaded: false,
+        children: [],
+      };
+    },
+    createFileEntry (content: _Object, index: number, rootId: number) : S3Node {
+      return {
+        id: rootId + index + 1,
+        isChild: true,
+        title: this.parseStringChild(content.Key),
+        isFile: this.isItemFile(content.Key),
+        link: this.getS3Link(content.Key),
+        childrenLoaded: false,
+        children: undefined,
+      }
     },
   },
 });

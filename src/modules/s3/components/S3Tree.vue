@@ -67,14 +67,14 @@
 
               <v-chip
                 v-if="
-                  item.isChild && item.numberOfChild && !item.maximumLengthItem
+                  item.isChild && item.numberOfChildren && !item.maximumLengthItem
                 "
                 class="ml-2"
                 size="x-small"
                 color="white"
                 variant="outlined"
               >
-                {{ item.numberOfChild }}
+                {{ item.numberOfChildren }}
               </v-chip>
 
               <v-chip
@@ -127,7 +127,8 @@ import { VTreeview } from 'vuetify/labs/VTreeview';
 import { mdiArrowRight } from '@mdi/js';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 
-import { useS3Store } from '@/modules/s3/store/s3Store';
+import { useS3Store } from '@/modules/s3/store/s3Store.ts';
+import { S3Node } from '@/types/s3Types';
 
 const s3Store = useS3Store();
 
@@ -144,7 +145,7 @@ const childrenObject = ref(0);
 const lastOpenedItemId = ref(0);
 const itemOpened = ref(false);
 
-const s3Content = ref();
+const s3Content = ref<S3Node[]>();
 const error = ref();
 
 
@@ -190,7 +191,7 @@ async function getData(url?: string, isChild?: boolean, nodeId?: number) {
   loading.value = true;
   emit('loadingChanged', loading.value);
 
-  s3Content.value = await s3Store.fetchS3Content(dynamicUrl, isChild, nodeId);
+  s3Content.value = await s3Store.fetchS3Content(dynamicUrl, isChild, nodeId, s3Content.value);
 
   loading.value = false;
   emit('loadingChanged', loading.value);
@@ -199,6 +200,7 @@ async function getData(url?: string, isChild?: boolean, nodeId?: number) {
 function extractS3Url(inputUrl: string) {
   s3Store.s3BucketUrl = inputUrl;
   const url = new URL(decodeURI(inputUrl));
+  // const url = new URL(inputUrl);
   const hash = url.hash.substring(2);
   const hashParams = new URLSearchParams(hash);
 
@@ -236,7 +238,7 @@ function extractS3Url(inputUrl: string) {
   getData(extractedUrl);
 }
 
-function limitAllNodes(nodes) {
+function limitAllNodes(nodes: S3Node[]) {
   const limitResources = 10;
   if (!Array.isArray(nodes)) return [];
 
@@ -247,7 +249,7 @@ function limitAllNodes(nodes) {
       const processedChildren = limitAllNodes(newNode.children);
       if (newNode.isChild) {
         // number of items in the child element
-        newNode.numberOfChild = processedChildren.length;
+        newNode.numberOfChildren = processedChildren.length;
         newNode.isLoaded = true;
       }
       childrenObject.value = processedChildren.length;
@@ -280,7 +282,10 @@ onMounted(() => {
   extractS3Url(props.url);
 });
 
+const limitedItems = computed(() => limitAllNodes(s3Content.value));
+/*
 const limitedItems = computed(() => limitAllNodes(s3Store.contentFromS3));
+*/
 </script>
 
 <style>
