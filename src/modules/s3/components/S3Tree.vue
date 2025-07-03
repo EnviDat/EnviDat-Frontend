@@ -18,7 +18,7 @@
           @click="
             item.isChild
               ? getData(item.title, item.isChild, item.id)
-              : setStatus()
+              : toggleOpenedItem()
           "
         />
       </template>
@@ -30,7 +30,7 @@
           @click="
             item.isChild
               ? getData(item.title, item.isChild, item.id)
-              : setStatus()
+              : toggleOpenedItem()
           "
           align="center"
           justify="space-between"
@@ -58,9 +58,7 @@
               {{ item.title }}
 
               <v-progress-circular
-                v-if="
-                  item.id === itemClicked && loading && !item.isLoaded
-                "
+                v-if="item.id === lastOpenedItemId && loading && !item.isLoaded"
                 :size="18"
                 color="white"
                 class="ml-2"
@@ -143,8 +141,12 @@ const baseUrl = ref('');
 const loading = ref(false);
 
 const childrenObject = ref(0);
-const itemClicked = ref(0);
+const lastOpenedItemId = ref(0);
 const itemOpened = ref(false);
+
+const s3Content = ref();
+const error = ref();
+
 
 const labels = {
   viewAll: 'View all data on the S3 File Browser website',
@@ -153,10 +155,10 @@ const labels = {
 const emit = defineEmits(['loadingChanged', 'changeAutoHeight']);
 
 // set store event for change the style of the resourceCard height if the treeview is opened
-function setStatus() {
+function toggleOpenedItem() {
   itemOpened.value = !itemOpened.value;
   emit('changeAutoHeight', itemOpened.value);
-/*
+  /*
   const value = itemOpened.value;
   s3Store.treeViewIsOpened = value;
 */
@@ -165,14 +167,14 @@ function setStatus() {
 /**
  *
  * @param {string} url
- * @param {boolean} isChild is needed for undestand wich function triggher in the store
- * @param {boolean} nodeId is needed to filter and add the new data to the right node
+ * @param {boolean} isChild is needed for understand which function trigger in the store
+ * @param {number} nodeId is needed to filter and add the new data to the right node
  */
-async function getData(url?: string, isChild?: boolean, nodeId?: boolean) {
+async function getData(url?: string, isChild?: boolean, nodeId?: number) {
   // set clickedID item
-  itemClicked.value = nodeId;
+  lastOpenedItemId.value = nodeId;
 
-  let dynamicUrl;
+  let dynamicUrl: string;
 
   if (url && isChild) {
     // create dynamic URL
@@ -185,16 +187,16 @@ async function getData(url?: string, isChild?: boolean, nodeId?: boolean) {
     dynamicUrl = baseUrl.value;
   }
 
-  this.loading.value = true;
-  emit('loadingChanged', this.loading.value);
+  loading.value = true;
+  emit('loadingChanged', loading.value);
 
-  await s3Store.fetchS3Content(dynamicUrl, isChild, nodeId);
+  s3Content.value = await s3Store.fetchS3Content(dynamicUrl, isChild, nodeId);
 
-  this.loading.value = false
-  emit('loadingChanged', this.loading.value);
+  loading.value = false;
+  emit('loadingChanged', loading.value);
 }
 
-function extractS3Url(inputUrl) {
+function extractS3Url(inputUrl: string) {
   s3Store.s3BucketUrl = inputUrl;
   const url = new URL(decodeURI(inputUrl));
   const hash = url.hash.substring(2);
@@ -213,24 +215,25 @@ function extractS3Url(inputUrl) {
     prefix += '/';
   }
 
-  // If missing 'bucket', fall back to envicloud
   let basePath;
   if (bucket && bucket !== 'null') {
     basePath = bucket; // e.g. "https://envicloud.wsl.ch/edna"
   } else {
+    // If missing 'bucket', fall back to envicloud
     basePath = 'https://os.zhdk.cloud.switch.ch/envicloud';
   }
 
-  const s3DownloadUrl = bucket
-    ? bucket.replace(/\/$/, '')
-    : basePath.replace(/\/$/, ''); // Use basePath if bucket is missing
 
-  s3Store.s3Url = s3DownloadUrl;
+   // Use basePath if bucket is missing
+  s3Store.s3Url = bucket
+    ? bucket.replace(/\/$/, '')
+    : basePath.replace(/\/$/, '');
 
   // Build final direct URL
-  baseUrl.value = `${s3DownloadUrl}/?prefix=${prefix}&max-keys=100000&delimiter=/`;
+  const extractedUrl = `${basePath}?prefix=${prefix}&max-keys=100000&delimiter=/`;
+  baseUrl.value = extractedUrl;
 
-  getData();
+  getData(extractedUrl);
 }
 
 function limitAllNodes(nodes) {

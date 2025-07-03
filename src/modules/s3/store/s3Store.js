@@ -6,8 +6,7 @@ import { XMLParser } from 'fast-xml-parser';
 // const TEST_URL =
 //   https://os.zhdk.cloud.switch.ch/envicloud/?prefix=wsl/CORE_S2A/&max-keys=100000&delimiter=/
 
-export const useS3Store = defineStore({
-  id: 's3Store',
+export const useS3Store = defineStore('s3Store', {
   state: () => ({
     loading: false,
     contentFromS3: [],
@@ -15,13 +14,15 @@ export const useS3Store = defineStore({
     treeData: [],
     s3Url: null,
     s3BucketUrl: null,
+/*
     treeViewIsOpened: false,
+*/
     isS3Resources: false,
   }),
   getters: {},
   actions: {
     async fetchS3Content(url, isChild, nodeId, params = {}) {
-      this.loading = true;
+
       try {
         const response = await axios.get(url, {
           params,
@@ -29,17 +30,15 @@ export const useS3Store = defineStore({
         });
 
         const jsonObj = this.parseXmlToJson(response.data);
+
         if (isChild) {
-          this.mapChildData(jsonObj, nodeId);
-          return;
+          return this.mapChildData(jsonObj, nodeId);
         }
-        this.mapData(jsonObj);
+
+        return this.mapData(jsonObj);
       } catch (error) {
         this.error = error;
-        this.loading = false;
         throw error;
-      } finally {
-        this.loading = false;
       }
     },
 
