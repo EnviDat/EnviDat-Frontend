@@ -59,7 +59,7 @@
 
               <v-progress-circular
                 v-if="
-                  item.id === itemClicked && s3Store.loading && !item.isLoaded
+                  item.id === itemClicked && loading && !item.isLoaded
                 "
                 :size="18"
                 color="white"
@@ -123,8 +123,8 @@
   </div>
 </template>
 
-<script setup>
-import { ref, onMounted, computed } from 'vue';
+<script setup lang="ts">
+import { computed, onMounted, ref } from 'vue';
 import { VTreeview } from 'vuetify/labs/VTreeview';
 import { mdiArrowRight } from '@mdi/js';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
@@ -140,6 +140,7 @@ const props = defineProps({
   },
 });
 const baseUrl = ref('');
+const loading = ref(false);
 
 const childrenObject = ref(0);
 const itemClicked = ref(0);
@@ -149,11 +150,16 @@ const labels = {
   viewAll: 'View all data on the S3 File Browser website',
 };
 
+const emit = defineEmits(['loadingChanged', 'changeAutoHeight']);
+
 // set store event for change the style of the resourceCard height if the treeview is opened
 function setStatus() {
   itemOpened.value = !itemOpened.value;
+  emit('changeAutoHeight', itemOpened.value);
+/*
   const value = itemOpened.value;
   s3Store.treeViewIsOpened = value;
+*/
 }
 
 /**
@@ -162,7 +168,7 @@ function setStatus() {
  * @param {boolean} isChild is needed for undestand wich function triggher in the store
  * @param {boolean} nodeId is needed to filter and add the new data to the right node
  */
-function getData(url, isChild, nodeId) {
+async function getData(url?: string, isChild?: boolean, nodeId?: boolean) {
   // set clickedID item
   itemClicked.value = nodeId;
 
@@ -179,12 +185,18 @@ function getData(url, isChild, nodeId) {
     dynamicUrl = baseUrl.value;
   }
 
-  s3Store.fetchS3Content(dynamicUrl, isChild, nodeId);
+  this.loading.value = true;
+  emit('loadingChanged', this.loading.value);
+
+  await s3Store.fetchS3Content(dynamicUrl, isChild, nodeId);
+
+  this.loading.value = false
+  emit('loadingChanged', this.loading.value);
 }
 
 function extractS3Url(inputUrl) {
   s3Store.s3BucketUrl = inputUrl;
-  const url = new URL(inputUrl);
+  const url = new URL(decodeURI(inputUrl));
   const hash = url.hash.substring(2);
   const hashParams = new URLSearchParams(hash);
 
@@ -216,10 +228,9 @@ function extractS3Url(inputUrl) {
   s3Store.s3Url = s3DownloadUrl;
 
   // Build final direct URL
-  const extractedUrl = `${basePath}/?prefix=${prefix}&max-keys=100000&delimiter=/`;
-  baseUrl.value = extractedUrl;
+  baseUrl.value = `${s3DownloadUrl}/?prefix=${prefix}&max-keys=100000&delimiter=/`;
 
-  getData(baseUrl.value);
+  getData();
 }
 
 function limitAllNodes(nodes) {
