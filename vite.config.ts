@@ -24,9 +24,10 @@ export default async ({ mode, config }) : Promise<UserConfig> => {
 
   if (isVike) {
     console.log('Run with vite.config.vike!');
-    const vikeConfig = await import('./vite.config.vike.ts');
-    console.log(vikeConfig.default);
-    return vikeConfig.default({mode, config});
+    const asyncImport = await import('./vite.config.vike.ts');
+    const vikeConfig = asyncImport.default({mode, config});
+    // console.log(vikeConfig);
+    return vikeConfig;
   }
 
   console.log('Run with vite.config.ts!');

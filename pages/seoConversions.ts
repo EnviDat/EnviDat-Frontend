@@ -4,14 +4,19 @@ function cropString(str: string, maxLength: number, ending: string | undefined) 
   if (!str) { return '' }
 
   if (str.length > maxLength) {
-    return str.substring(0, maxLength);
+    const shortStr = str.substring(0, maxLength);
+    return ending ? shortStr + ending : shortStr;
   }
-  return ending ? str + ending : str;
+
+  return str;
 }
 
 export const getSeoSanitizedDataset = (dataset: DatasetDTO): DatasetDTO => {
   if (!dataset) {
-    return {}
+    return {
+      title: '',
+      notes: '',
+    }
   }
 
   return {

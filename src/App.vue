@@ -29,7 +29,6 @@
     </div>
 
     <MaintenanceBanner v-if="maintenanceBannerVisible" />
-
     <TheNavigationToolbar
       v-if="showToolbar"
       ref="TheNavigationToolbar"
@@ -200,7 +199,7 @@ import {
   USER_GET_DATASETS,
 } from '@/modules/user/store/userMutationsConsts';
 
-import { navigationItems, userMenuItems } from '@/store/navigationState';
+import { navigationItems, useUserMenuItems } from '@/store/navigationState';
 
 import {
   eventBus,
@@ -236,6 +235,7 @@ const NotificationCard = defineAsyncComponent(
 
 export default {
   name: 'App',
+
   beforeCreate() {
     // load the config initially
     this.$store.dispatch(SET_CONFIG);
@@ -767,7 +767,7 @@ export default {
     showMaintenanceBanner: false,
     editMaintenanceBanner: true,
     navigationItems,
-    userMenuItems,
+    userMenuItems: useUserMenuItems(),
     editMaintenanceMessage: `There is maintenance going on, please don't edit anything return to the <a href='./#${USER_DASHBOARD_PATH}' >dashboard page </a> or the <a href='/' >main page</a> for details!.`,
     isScrolled: false,
   }),

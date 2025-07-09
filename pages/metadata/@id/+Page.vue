@@ -3,10 +3,15 @@
     <h1>Environmental Data: {{ seoData.title }}</h1>
 
     <div>
-      {{ seoData.notes }}
+      <h2>Description</h2>
+      <div>{{ seoData.notes }}</div>
     </div>
 
-    <div v-html="citation?.citationText" />
+    <div>
+      <h2>Citation</h2>
+
+      <div v-html="citation?.citationText" />
+    </div>
 
     <div>
       <h2>Resources</h2>

@@ -2,8 +2,7 @@ deploy-chromatic:
   stage: deploy
   environment: $CI_COMMIT_REF_NAME
   image: node:20.15.0-alpine3.20
-  extends:
-    - .normal-rules
+  extends: .manual-deployment-rules
   needs:
     # needs the artifact: config and environment variables
     - modify-env
@@ -14,7 +13,6 @@ deploy-chromatic:
   script:
     # manually deploy the storybook build to chromatic for visual regression testing
     - npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes --storybook-build-dir ./storybook
-  when: manual
   # for manual jobs add allow_failure so the whole pipeline won't show up as "blocked"
   allow_failure: true
 
@@ -22,8 +20,7 @@ publish-build:
   stage: deploy
   environment: $CI_COMMIT_REF_NAME
   image: alpine:3.20
-  extends:
-    - .normal-rules
+  extends: .deployment-rules
   variables:
     GIT_STRATEGY: none
   needs:
@@ -51,8 +48,7 @@ deploy-to-s3-bucket:
   stage: deploy
   environment: $CI_COMMIT_REF_NAME
   image: alpine:3.20
-  extends:
-    - .normal-rules
+  extends: .deployment-rules
   needs:
     # needs the environmental variables for the version number
     - set-vars
@@ -101,10 +97,7 @@ manual-deploy-to-s3-bucket:
   stage: manual-deploy
   environment: $CI_COMMIT_REF_NAME
   image: alpine:3.20
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "pipeline"'
-      when: always
-    - when: manual
+  extends: .manual-deployment-rules
   # for manual jobs add allow_failure so the whole pipeline won't show up as "blocked"
   allow_failure: true
   needs:

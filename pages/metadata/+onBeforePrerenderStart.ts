@@ -3,7 +3,7 @@ import { isFechingDatasets, loadDataset } from '../datasets.ts';
 
 // @ts-ignore
 export async function onBeforePrerenderStart() {
-  console.log('onBeforePrerenderStart index');
+  console.log('onBeforePrerenderStart metadata');
 
   while(isFechingDatasets) {
     console.log('waiting for fetching to finish...');
@@ -16,7 +16,7 @@ export async function onBeforePrerenderStart() {
   // don't enhance datasets with jsonLd, because here they would get overwritten
 
   const routes = [{
-    url: '/',
+    url: '/metadata/',
     pageContext: {
       data: {
         ...datasets,
@@ -24,7 +24,7 @@ export async function onBeforePrerenderStart() {
     },
   }];
 
-  console.log('onBeforePrerenderStart root routes', routes.length);
+  console.log('onBeforePrerenderStart metadata routes', routes.length);
 
   return routes;
 }

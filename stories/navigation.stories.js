@@ -15,15 +15,11 @@
 import TheNavigation from '@/components/Navigation/TheNavigation.vue';
 import TheNavigationToolbar from '@/components/Navigation/TheNavigationToolbar.vue';
 
-import {
-  navigationItems,
-  userMenuItems,
-} from '@/store/navigationState';
+import { navigationItems, useUserMenuItems } from '@/store/navigationState';
 
 import TextBanner from '@/components/Layouts/TextBanner.vue';
 import BaseCitationView from '@/components/BaseElements/BaseCitationView.vue';
 import relatedPublicCitationTesting from './js/relatedPublicCitation';
-
 
 const dominikHaas = {
   fullName: 'Dominik Haas',
@@ -53,7 +49,6 @@ export default {
 
 export const Empty = { args: {} };
 
-
 export const Menu = {
   args: {
     navigationItems,
@@ -62,14 +57,14 @@ export const Menu = {
 };
 
 const changeMainLayout = (parentRefs) => {
-  let currentStyle = parentRefs['storyWrapper--v-main'].$el.getAttribute('style');
+  let currentStyle =
+    parentRefs['storyWrapper--v-main'].$el.getAttribute('style');
   // console.log('navigationStory refs currentStyle', currentStyle);
   currentStyle += '--v-layout-left: 60px !important;';
   // currentStyle = currentStyle.replace('--v-layout-left: 0px;', '--v-layout-left: 60px !important;');
   parentRefs['storyWrapper--v-main'].$el.setAttribute('style', currentStyle);
   // console.log('new style', parentRefs['storyWrapper--v-main'].$el.getAttribute('style'));
-}
-
+};
 
 export const MenuAndToolbar = () => ({
   components: { TheNavigation, TheNavigationToolbar },
@@ -81,7 +76,7 @@ export const MenuAndToolbar = () => ({
       <the-navigation-toolbar :signedInUser="dominikHaas"
                               :userNavigationItems="userMenuItems" />
     </teleport>
-    
+
     <v-container fluid style="position: relative;">
       <v-row style="height: 100vh;">
         <v-col>
@@ -103,10 +98,9 @@ export const MenuAndToolbar = () => ({
   data: () => ({
     dominikHaas,
     navigationItems,
-    userMenuItems,
+    userMenuItems: useUserMenuItems(),
   }),
 });
-
 
 export const MenuToolbarAndBanners = () => ({
   components: { TheNavigation, TheNavigationToolbar, TextBanner },
@@ -118,7 +112,7 @@ export const MenuToolbarAndBanners = () => ({
         <the-navigation-toolbar :signedInUser="dominikHaas"
                                 :userNavigationItems="userMenuItems" />
       </teleport>
-    
+
       <v-container
           fluid
           style="position: relative"
@@ -142,8 +136,8 @@ export const MenuToolbarAndBanners = () => ({
             text="On envidat.ch, cookies are used to enhance your experience and provide features when you're signed in. These cookies are 'technical only' and we ANONYMOUSLY track usage (e.g. page views and downloads)."
             icon="cookie"
             deniedText="Okay"
-        />        
-        
+        />
+
       </v-container>
   `,
   inject: ['getStorybookAppRefs'],
@@ -160,7 +154,7 @@ export const MenuToolbarAndBanners = () => ({
     storybookAppRefs: null,
     dominikHaas,
     navigationItems,
-    userMenuItems,
+    userMenuItems: useUserMenuItems(),
   }),
 });
 
@@ -174,7 +168,7 @@ export const MenuToolbarAndCitation = () => ({
         <the-navigation-toolbar :signedInUser="dominikHaas"
                                 :userNavigationItems="userMenuItems" />
       </teleport>
-    
+
       <v-container
           fluid
           style="position: relative"
@@ -184,7 +178,7 @@ export const MenuToolbarAndCitation = () => ({
             <BaseCitationView v-bind="citation" />
           </v-col>
         </v-row>
-        
+
       </v-container>
   `,
   inject: ['getStorybookAppRefs'],
@@ -201,7 +195,7 @@ export const MenuToolbarAndCitation = () => ({
     storybookAppRefs: null,
     dominikHaas,
     navigationItems,
-    userMenuItems,
+    userMenuItems: useUserMenuItems(),
     citation,
   }),
 });

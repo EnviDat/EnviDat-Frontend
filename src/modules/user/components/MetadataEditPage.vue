@@ -20,10 +20,11 @@
 
     <v-snackbar
       id="NotificationSnack"
-      top
-      elevation="0"
+      location="bottom"
+      variant="flat"
       color="transparent"
       timeout="10000"
+      timer
       v-model="showSnack"
     >
       <NotificationCard

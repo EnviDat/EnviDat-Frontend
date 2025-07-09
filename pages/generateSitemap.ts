@@ -18,6 +18,8 @@ export async function generateSitemap(datasetUrls: string[]) {
 
   sitemap.pipe(writeStream);
 
+  sitemap.write({ url: 'metadata', changefreq: 'daily', priority: 1.0 });
+
   for (const route of datasetUrls) {
     sitemap.write({ url: route, changefreq: 'daily', priority: 1.0 });
   }

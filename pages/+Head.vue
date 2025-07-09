@@ -20,9 +20,9 @@
 
   <meta property="og:image" :content="logoUrl" />
 
-  <script v-if="data.jsonLd"
+  <script v-if="jsonLd"
           type='application/ld+json'
-          v-html="JSON.stringify(data.jsonLd)">
+          v-html="JSON.stringify(jsonLd)">
 
   </script>
 
@@ -35,12 +35,21 @@ import logoUrl from '@/assets/logo/EnviDat_fav.ico'
 import { getSeoSanitizedDataset } from './seoConversions.ts';
 
 const data = useData<DatasetDTO>()
+const jsonLd = data.jsonLd;
+delete data.jsonLd;
+
 const seoData = getSeoSanitizedDataset(data);
 
 
 const baseCanonicalUrl = import.meta.env.PUBLIC_ENV__VIKE_BASE_CANONICAL_URL;
 const datasetName = data?.name;
-const canonicalUrl = datasetName ? `${baseCanonicalUrl}/metadata/${datasetName}` : baseCanonicalUrl;
-const redirectUrl = datasetName ? `${baseCanonicalUrl}/#/metadata/${datasetName}` : baseCanonicalUrl;
+
+let canonicalUrl = `${baseCanonicalUrl}/metadata/${datasetName}`;
+let redirectUrl = `${baseCanonicalUrl}/#/metadata/${datasetName}`;
+
+if (!datasetName) {
+  canonicalUrl = `${baseCanonicalUrl}/metadata`
+  redirectUrl = `${baseCanonicalUrl}/#/browse`
+}
 
 </script>
