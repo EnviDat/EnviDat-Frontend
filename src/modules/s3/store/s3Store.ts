@@ -3,8 +3,8 @@ import { defineStore } from 'pinia';
 import axios from 'axios';
 import { XMLParser } from 'fast-xml-parser';
 import { _Object, ListObjectsV2Output } from '@aws-sdk/client-s3/dist-types/models/models_0';
-import { S3Node } from '@/types/s3Types';
 import { CommonPrefix } from '@aws-sdk/client-s3/dist-types/models';
+import { S3Node } from '@/types/s3Types';
 
 // const TEST_URL =
 //   https://os.zhdk.cloud.switch.ch/envicloud/?prefix=wsl/CORE_S2A/&max-keys=100000&delimiter=/
@@ -111,6 +111,7 @@ export const useS3Store = defineStore('s3Store', {
       const children = Array.isArray(contents)
         ? contents.map<S3Node>((prefix, index) => this.createFileEntry(prefix, index, lastId))
         : [
+          // ENRICO use also the creatFileEntry()
             {
               id: lastId + 1,
               isChild: true,
