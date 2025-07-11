@@ -1,5 +1,5 @@
 export type S3Node = {
-  id: number;
+  id?: number;
   title: string;
   isFile: boolean;
   isChild: boolean;

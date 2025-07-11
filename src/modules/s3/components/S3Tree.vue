@@ -1,6 +1,9 @@
 <template>
   <!-- eslint-disable vue/no-v-model-argument -->
   <div>
+    <span class="d-flex pt-4 text-caption" v-if="error != null">{{
+      error
+    }}</span>
     <v-treeview
       :items="limitedItems"
       item-value="id"
@@ -67,7 +70,9 @@
 
               <v-chip
                 v-if="
-                  item.isChild && item.numberOfChildren && !item.maximumLengthItem
+                  item.isChild &&
+                  item.numberOfChildren &&
+                  !item.maximumLengthItem
                 "
                 class="ml-2"
                 size="x-small"
@@ -146,8 +151,7 @@ const lastOpenedItemId = ref(0);
 const itemOpened = ref(false);
 
 const s3Content = ref<S3Node[]>();
-const error = ref();
-
+const error = ref(null);
 
 const labels = {
   viewAll: 'View all data on the S3 File Browser website',
@@ -188,13 +192,24 @@ async function getData(url?: string, isChild?: boolean, nodeId?: number) {
     dynamicUrl = baseUrl.value;
   }
 
-  loading.value = true;
-  emit('loadingChanged', loading.value);
+  try {
+    loading.value = true;
+    emit('loadingChanged', loading.value);
+    s3Content.value = await s3Store.fetchS3Content(
+      dynamicUrl,
+      isChild,
+      nodeId,
+      s3Content.value,
+    );
 
-  s3Content.value = await s3Store.fetchS3Content(dynamicUrl, isChild, nodeId, s3Content.value);
-
-  loading.value = false;
-  emit('loadingChanged', loading.value);
+    error.value = null;
+  } catch (err) {
+    error.value =
+      'Sorry at the moment we cannot load the data. Please try again later or click on the download/link icon to download the file directly from the bucket.';
+  } finally {
+    loading.value = false;
+    emit('loadingChanged', false);
+  }
 }
 
 function extractS3Url(inputUrl: string) {
@@ -225,8 +240,7 @@ function extractS3Url(inputUrl: string) {
     basePath = 'https://os.zhdk.cloud.switch.ch/envicloud';
   }
 
-
-   // Use basePath if bucket is missing
+  // Use basePath if bucket is missing
   s3Store.s3Url = bucket
     ? bucket.replace(/\/$/, '')
     : basePath.replace(/\/$/, '');

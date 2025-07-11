@@ -9,8 +9,6 @@ import { S3Node } from '@/types/s3Types';
 // const TEST_URL =
 //   https://os.zhdk.cloud.switch.ch/envicloud/?prefix=wsl/CORE_S2A/&max-keys=100000&delimiter=/
 
-
-
 export const useS3Store = defineStore('s3Store', {
   state: () => ({
     loading: false,
@@ -19,34 +17,26 @@ export const useS3Store = defineStore('s3Store', {
     treeData: [],
     s3Url: null,
     s3BucketUrl: null,
-/*
+    /*
     treeViewIsOpened: false,
 */
     isS3Resources: false,
   }),
   getters: {},
   actions: {
-    async fetchS3Content(url: string, isChild: boolean, nodeId: number, rootNodes?: S3Node[], params = {}) {
+    async fetchS3Content(
+      url: string,
+      isChild: boolean,
+      nodeId: number,
+      rootNodes?: S3Node[],
+      params = {},
+    ) {
+      const response = await axios.get(url, { params, withCredentials: false });
+      const { ListBucketResult } = this.parseXmlToJson(response.data);
 
-      try {
-        const response = await axios.get(url, {
-          params,
-          // forceNoCredentials: true,
-          withCredentials: false,
-        });
-
-        const json = this.parseXmlToJson(response.data);
-        const { ListBucketResult } : { ListBucketResult: ListObjectsV2Output } = json;
-
-        if (isChild) {
-          return this.mapChildData(ListBucketResult, nodeId, rootNodes);
-        }
-
-        return this.mapData(ListBucketResult);
-      } catch (error) {
-        this.error = error;
-        throw error;
-      }
+      return isChild
+        ? this.mapChildData(ListBucketResult, nodeId, rootNodes)
+        : this.mapData(ListBucketResult);
     },
 
     parseXmlToJson(xmlData: string) {
@@ -109,33 +99,21 @@ export const useS3Store = defineStore('s3Store', {
 
       // map the content
       const children = Array.isArray(contents)
-        ? contents.map<S3Node>((prefix, index) => this.createFileEntry(prefix, index, lastId))
+        ? contents.map<S3Node>((prefix) => this.createFileEntry(prefix))
         : [
-          // ENRICO use also the creatFileEntry()
-            {
-              id: lastId + 1,
-              isChild: true,
-              title: 'Go to S3',
-              // lastItem is needed for manage the last level of deep allowed
+            this.createFileEntry('Go to S3', undefined, undefined, {
               isLastItem: true,
-              link: this.s3BucketUrl,
-              childrenLoaded: false,
-              children: undefined,
-            },
+              customLink: this.s3BucketUrl,
+            }),
           ];
 
       // Trigger function to add data in the right node
-      this.findAndAddChildren(
-        rootNodes,
-        children,
-        nodeId,
-      );
+      this.findAndAddChildren(rootNodes, children, nodeId);
 
       return rootNodes;
     },
 
     findAndAddChildren(nodes: S3Node[], children: S3Node[], nodeId: number) {
-
       for (const node of nodes) {
         if (node.id === nodeId) {
           if (node.children && node.children.length > 0) {
@@ -216,16 +194,30 @@ export const useS3Store = defineStore('s3Store', {
         children: [],
       };
     },
-    createFileEntry (content: _Object, index: number, rootId: number) : S3Node {
-      return {
-        id: rootId + index + 1,
+
+    createFileEntry(
+      content: _Object | string,
+      index?: number,
+      rootId?: number,
+      opts?: { isLastItem?: boolean; customLink?: string },
+    ): S3Node {
+      const key = typeof content === 'string' ? content : content.Key;
+
+      const node: S3Node = {
         isChild: true,
-        title: this.parseStringChild(content.Key),
-        isFile: this.isItemFile(content.Key),
-        link: this.getS3Link(content.Key),
+        title: this.parseStringChild(key),
+        isFile: this.isItemFile(key),
+        link: opts?.customLink ?? this.getS3Link(key),
         childrenLoaded: false,
         children: undefined,
+        ...(opts?.isLastItem ? { isLastItem: true } : {}),
+      };
+
+      if (index !== undefined && rootId !== undefined) {
+        node.id = rootId + index + 1;
       }
+
+      return node;
     },
   },
 });
