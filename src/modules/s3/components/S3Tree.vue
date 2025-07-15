@@ -1,6 +1,9 @@
 <template>
   <!-- eslint-disable vue/no-v-model-argument -->
   <div>
+    <span class="d-flex pt-4 text-caption" v-if="error != null">{{
+      error
+    }}</span>
     <v-treeview
       :items="limitedItems"
       item-value="id"
@@ -18,7 +21,7 @@
           @click="
             item.isChild
               ? getData(item.title, item.isChild, item.id)
-              : setStatus()
+              : toggleOpenedItem()
           "
         />
       </template>
@@ -30,7 +33,7 @@
           @click="
             item.isChild
               ? getData(item.title, item.isChild, item.id)
-              : setStatus()
+              : toggleOpenedItem()
           "
           align="center"
           justify="space-between"
@@ -58,9 +61,7 @@
               {{ item.title }}
 
               <v-progress-circular
-                v-if="
-                  item.id === itemClicked && s3Store.loading && !item.isLoaded
-                "
+                v-if="item.id === lastOpenedItemId && loading && !item.isLoaded"
                 :size="18"
                 color="white"
                 class="ml-2"
@@ -69,14 +70,16 @@
 
               <v-chip
                 v-if="
-                  item.isChild && item.numberOfChild && !item.maximumLengthItem
+                  item.isChild &&
+                  item.numberOfChildren &&
+                  !item.maximumLengthItem
                 "
                 class="ml-2"
                 size="x-small"
                 color="white"
                 variant="outlined"
               >
-                {{ item.numberOfChild }}
+                {{ item.numberOfChildren }}
               </v-chip>
 
               <v-chip
@@ -123,13 +126,14 @@
   </div>
 </template>
 
-<script setup>
-import { ref, onMounted, computed } from 'vue';
+<script setup lang="ts">
+import { computed, onMounted, ref } from 'vue';
 import { VTreeview } from 'vuetify/labs/VTreeview';
 import { mdiArrowRight } from '@mdi/js';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 
-import { useS3Store } from '@/modules/s3/store/s3Store';
+import { useS3Store } from '@/modules/s3/store/s3Store.ts';
+import { S3Node } from '@/types/s3Types';
 
 const s3Store = useS3Store();
 
@@ -140,33 +144,42 @@ const props = defineProps({
   },
 });
 const baseUrl = ref('');
+const loading = ref(false);
 
 const childrenObject = ref(0);
-const itemClicked = ref(0);
+const lastOpenedItemId = ref(0);
 const itemOpened = ref(false);
+
+const s3Content = ref<S3Node[]>();
+const error = ref(null);
 
 const labels = {
   viewAll: 'View all data on the S3 File Browser website',
 };
 
+const emit = defineEmits(['loadingChanged', 'changeAutoHeight']);
+
 // set store event for change the style of the resourceCard height if the treeview is opened
-function setStatus() {
+function toggleOpenedItem() {
   itemOpened.value = !itemOpened.value;
+  emit('changeAutoHeight', itemOpened.value);
+  /*
   const value = itemOpened.value;
   s3Store.treeViewIsOpened = value;
+*/
 }
 
 /**
  *
  * @param {string} url
- * @param {boolean} isChild is needed for undestand wich function triggher in the store
- * @param {boolean} nodeId is needed to filter and add the new data to the right node
+ * @param {boolean} isChild is needed for understand which function trigger in the store
+ * @param {number} nodeId is needed to filter and add the new data to the right node
  */
-function getData(url, isChild, nodeId) {
+async function getData(url?: string, isChild?: boolean, nodeId?: number) {
   // set clickedID item
-  itemClicked.value = nodeId;
+  lastOpenedItemId.value = nodeId;
 
-  let dynamicUrl;
+  let dynamicUrl: string;
 
   if (url && isChild) {
     // create dynamic URL
@@ -179,12 +192,30 @@ function getData(url, isChild, nodeId) {
     dynamicUrl = baseUrl.value;
   }
 
-  s3Store.fetchS3Content(dynamicUrl, isChild, nodeId);
+  try {
+    loading.value = true;
+    emit('loadingChanged', loading.value);
+    s3Content.value = await s3Store.fetchS3Content(
+      dynamicUrl,
+      isChild,
+      nodeId,
+      s3Content.value,
+    );
+
+    error.value = null;
+  } catch (err) {
+    error.value =
+      'Sorry at the moment we cannot load the data. Please try again later or click on the download/link icon to download the file directly from the bucket.';
+  } finally {
+    loading.value = false;
+    emit('loadingChanged', false);
+  }
 }
 
-function extractS3Url(inputUrl) {
+function extractS3Url(inputUrl: string) {
   s3Store.s3BucketUrl = inputUrl;
-  const url = new URL(inputUrl);
+  const url = new URL(decodeURI(inputUrl));
+  // const url = new URL(inputUrl);
   const hash = url.hash.substring(2);
   const hashParams = new URLSearchParams(hash);
 
@@ -201,28 +232,27 @@ function extractS3Url(inputUrl) {
     prefix += '/';
   }
 
-  // If missing 'bucket', fall back to envicloud
   let basePath;
   if (bucket && bucket !== 'null') {
     basePath = bucket; // e.g. "https://envicloud.wsl.ch/edna"
   } else {
+    // If missing 'bucket', fall back to envicloud
     basePath = 'https://os.zhdk.cloud.switch.ch/envicloud';
   }
 
-  const s3DownloadUrl = bucket
+  // Use basePath if bucket is missing
+  s3Store.s3Url = bucket
     ? bucket.replace(/\/$/, '')
-    : basePath.replace(/\/$/, ''); // Use basePath if bucket is missing
-
-  s3Store.s3Url = s3DownloadUrl;
+    : basePath.replace(/\/$/, '');
 
   // Build final direct URL
-  const extractedUrl = `${basePath}/?prefix=${prefix}&max-keys=100000&delimiter=/`;
+  const extractedUrl = `${basePath}?prefix=${prefix}&max-keys=100000&delimiter=/`;
   baseUrl.value = extractedUrl;
 
-  getData(baseUrl.value);
+  getData(extractedUrl);
 }
 
-function limitAllNodes(nodes) {
+function limitAllNodes(nodes: S3Node[]) {
   const limitResources = 10;
   if (!Array.isArray(nodes)) return [];
 
@@ -233,7 +263,7 @@ function limitAllNodes(nodes) {
       const processedChildren = limitAllNodes(newNode.children);
       if (newNode.isChild) {
         // number of items in the child element
-        newNode.numberOfChild = processedChildren.length;
+        newNode.numberOfChildren = processedChildren.length;
         newNode.isLoaded = true;
       }
       childrenObject.value = processedChildren.length;
@@ -266,7 +296,10 @@ onMounted(() => {
   extractS3Url(props.url);
 });
 
+const limitedItems = computed(() => limitAllNodes(s3Content.value));
+/*
 const limitedItems = computed(() => limitAllNodes(s3Store.contentFromS3));
+*/
 </script>
 
 <style>

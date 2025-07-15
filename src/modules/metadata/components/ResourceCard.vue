@@ -3,7 +3,7 @@
     :id="`resourceCard_${id}`"
     :color="computedCardColor"
     :class="isSelected ? 'highlighted' : ''"
-    :style="{ height: autoHeight ? 'auto' : '100%' }"
+    :style="{ height: useAutoHeight ? 'auto' : '100%' }"
     :loading="loadingColor"
   >
     <v-card-title
@@ -260,18 +260,23 @@
     </v-container>
 
     <v-card-text
-      v-if="!isProtected && !isFile && isEnvicloudUrl"
+      v-if="isEnvicloudUrl && !isProtected"
       class="pa-4 pt-0"
     >
       <v-divider />
-      <S3Tree @setStatus="changeHeight" :url="url" />
+
+      <S3Tree
+        :url="url"
+        @loadingChanged="catchLoadingChanged"
+        @changeAutoHeight="catchChangeHeight"
+      />
     </v-card-text>
 
   </v-card>
 
 </template>
 
-<script>
+<script lang="ts">
 /**
  * ResourceCard.vue create a card with a download link to a specific resource of a dataset.
  *
@@ -304,7 +309,7 @@ import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
 
 import S3Tree from '@/modules/s3/components/S3Tree.vue';
-import { useS3Store } from '@/modules/s3/store/s3Store';
+import { useS3Store } from '@/modules/s3/store/s3Store.ts';
 import SparkChart from '@/components/Charts/SparkChart.vue';
 
 import { renderMarkdown, stripMarkdown } from '@/factories/stringFactory';
@@ -330,7 +335,9 @@ export default {
     id: String,
     doi: String,
     name: String,
+/*
     autoHeight: Boolean,
+*/
     description: String,
     url: String,
     restrictedUrl: String,
@@ -385,27 +392,6 @@ export default {
     },
     canDataViz: Boolean,
   },
-  data: () => ({
-    mdiChartBar,
-    mdiShield,
-    mdiChevronDown,
-    mdiDownload,
-    mdiLink,
-    mdiFingerprint,
-    mdiLock,
-    mdiTimerPlusOutline,
-    mdiUpdate,
-    mdiFileDocumentCheckOutline,
-    mdiCancel,
-    maxDescriptionLength: 175,
-    showFullDescription: false,
-    setAutoHeight: false,
-    audioFormats: ['mp3', 'wav', 'wma', 'ogg'],
-    EDIT_METADATA_DOI_LABEL,
-    s3Store: useS3Store(),
-    chartPreviewTooltip: 'Visualize the data',
-    chartPreviewData,
-  }),
   mounted() {
     // set in the store the isS3Resources property, this property is needed to manage the card style in the sm view
     this.setIfS3isPresent();
@@ -416,11 +402,14 @@ export default {
   },
   computed: {
     loadingColor() {
-      if (this.loading) {
+      if (this.loadingResource) {
         return 'accent';
       }
 
       return undefined;
+    },
+    loadingResource() {
+      return this.loading || this.isLoadingS3Tree;
     },
     isEnvicloudUrl(url) {
       const urlToCheck = url.url;
@@ -528,16 +517,41 @@ export default {
     },
   },
   methods: {
-    trackDownload,
-    changeHeight(value) {
-      this.setAutoHeight = value;
+    catchLoadingChanged(isLoading) {
+      this.isLoadingS3Tree = isLoading
     },
+    catchChangeHeight(useAutoHeight) {
+      this.useAutoHeight = useAutoHeight;
+    },
+    trackDownload,
     setIfS3isPresent() {
-      if (this.isEnvicloudUrl && !this.isProtected && !this.isFile) {
+      if (this.isEnvicloudUrl && !this.isProtected) {
         this.s3Store.isS3Resources = true;
       }
     },
   },
+  data: () => ({
+    mdiChartBar,
+    mdiShield,
+    mdiChevronDown,
+    mdiDownload,
+    mdiLink,
+    mdiFingerprint,
+    mdiLock,
+    mdiTimerPlusOutline,
+    mdiUpdate,
+    mdiFileDocumentCheckOutline,
+    mdiCancel,
+    maxDescriptionLength: 175,
+    showFullDescription: false,
+    audioFormats: ['mp3', 'wav', 'wma', 'ogg'],
+    EDIT_METADATA_DOI_LABEL,
+    s3Store: useS3Store(),
+    chartPreviewTooltip: 'Visualize the data',
+    chartPreviewData,
+    isLoadingS3Tree: false,
+    useAutoHeight: false,
+  }),
 };
 </script>
 
