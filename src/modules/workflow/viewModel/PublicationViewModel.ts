@@ -12,39 +12,35 @@ export class PublicationViewModel extends AbstractEditViewModel{
   declare version: string;
   declare datasetId: string;
 
-  declare validationErrors: {
-    publicationState: string,
-    doi: string,
-    publisher: string,
-    publicationYear: string,
-    version: string,
-    datasetId: string,
+  validationErrors: {
+    publicationState: string | null;
+    doi: string | null;
+    publisher: string | null;
+    publicationYear: string | null;
+    version: string | null;
+    datasetId: string | null;
+  } = {
+    publicationState: null,
+    doi: null,
+    publisher: null,
+    publicationYear: null,
+    version: null,
+    datasetId: null,
   }
 
+  validationRules =
+    yup.object().shape({
+      publicationState: yup.string(),
+      doi: yup.string(),
+      publisher: yup
+        .string()
+        .required('Enter publisher')
+        .min(3),
+      publicationYear: yup.string().required('Enter publication year'),
+    });
 
   constructor(datasetModel: DatasetModel) {
     super(datasetModel, PublicationViewModel.mappingRules());
-
-
-    this.validationErrors = {
-      publicationState: null,
-      doi: null,
-      publisher: null,
-      publicationYear: null,
-      version: null,
-      datasetId: null,
-    }
-
-    this.validationRules =
-      yup.object().shape({
-        publicationState: yup.string(),
-        doi: yup.string(),
-        publisher: yup
-          .string()
-          .required('Enter publisher')
-          .min(3),
-        publicationYear: yup.string().required('Enter publication year'),
-      });
   }
 
   static mappingRules () {

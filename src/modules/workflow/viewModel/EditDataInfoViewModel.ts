@@ -9,34 +9,30 @@ export class EditDataInfoViewModel extends AbstractEditViewModel{
 
   declare dates: string;
 
-  declare validationErrors: {
-    dates: string,
-  }
+  validationErrors: {
+    dates: string | null;
+  } = {
+    dates: null,
+  };
+
+  validationRules =
+    yup.object().shape({
+      // dates validation is done the in the BaseStartEndDate component
+      dates: yup
+        .array()
+        .required('Created date is required')
+        .min(1, 'At least a creation date is required')
+        .test(
+          'empty-check',
+          'Add start and end date',
+          dateEntry =>
+            dateEntry[DATE_PROPERTY_START_DATE] !== '' &&
+            dateEntry[DATE_PROPERTY_END_DATE] !== '',
+        ),
+    });
 
   constructor(datasetModel: DatasetModel) {
     super(datasetModel, EditDataInfoViewModel.mappingRules());
-
-
-    this.validationErrors = {
-      dates: null,
-    }
-
-
-    this.validationRules =
-      yup.object().shape({
-        // dates validation is done the in the BaseStartEndDate component
-        dates: yup
-          .array()
-          .required('Created date is required')
-          .min(1, 'At least a creation date is required')
-          .test(
-            'empty-check',
-            'Add start and end date',
-            dateEntry =>
-              dateEntry[DATE_PROPERTY_START_DATE] !== '' &&
-              dateEntry[DATE_PROPERTY_END_DATE] !== '',
-          ),
-      });
   }
 
   static mappingRules () {

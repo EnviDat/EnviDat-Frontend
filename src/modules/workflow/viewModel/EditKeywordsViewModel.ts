@@ -14,10 +14,16 @@ export class EditKeywordsViewModel extends AbstractEditViewModel{
   declare metadataTitle: string;
   declare metadataDescription: string;
 
-  declare validationErrors: {
-    keywords: string,
-  }
+  validationErrors: {
+    keywords: string | null;
+  } = {
+    keywords: null,
+  };
 
+  validationRules =
+    yup.object().shape({
+      keywords: yup.array().min(5, 'Enter at least 5 keywords.'),
+    });
 
   constructor(datasetModel: DatasetModel, existingKeywords: KeywordDTO[]) {
     super(datasetModel, EditKeywordsViewModel.mappingRules());
@@ -25,14 +31,6 @@ export class EditKeywordsViewModel extends AbstractEditViewModel{
     enhanceKeywords(this.keywords, categoryCards)
     this.existingKeywords = existingKeywords;
 
-    this.validationErrors = {
-      keywords: null,
-    }
-
-    this.validationRules =
-      yup.object().shape({
-        keywords: yup.array().min(5, 'Enter at least 5 keywords.'),
-      });
   }
 
   static mappingRules () {

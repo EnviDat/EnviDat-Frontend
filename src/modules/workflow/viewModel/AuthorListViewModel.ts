@@ -18,21 +18,19 @@ export class AuthorListViewModel extends AbstractEditViewModel {
 
   declare lastModified: string;
 
-  declare validationErrors: {
-    authors: string;
+  validationErrors: {
+    authors: string | null;
+  } = {
+    authors: null,
   };
+
+  validationRules = yup.object().shape({
+    authors: yup.array().min(1, 'Add at least one author.'),
+  });
+
 
   constructor(datasetModel: DatasetModel) {
     super(datasetModel, AuthorListViewModel.mappingRules());
-
-
-    this.validationErrors = {
-      authors: null,
-    };
-
-    this.validationRules = yup.object().shape({
-      authors: yup.array().min(1, 'Add at least one author.'),
-    });
   }
 
   static getFormattedAuthors(

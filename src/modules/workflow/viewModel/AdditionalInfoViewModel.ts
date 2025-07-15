@@ -17,35 +17,35 @@ export class AdditionalInfoViewModel extends AbstractEditViewModel {
     institutionUrl?: string | null;
   }[];
 
-  declare validationErrors: {
-    dataLicenseId: string;
-    funders: string;
+  validationErrors: {
+    dataLicenseId: string | null;
+    funders: string | null;
+  } = {
+    dataLicenseId: null,
+    funders: null,
   };
+
+  validationRules = yup.object().shape({
+    dataLicenseId: yup.string().required('Data licence is required'),
+    funders: yup
+      .array()
+      .required('Enter funding information')
+      .min(1, 'Provide at least one funding entry')
+      .of(
+        yup.object().shape({
+          institution: yup.string().required().min(3),
+          grantNumber: yup.string(),
+          institutionUrl: yup
+            .string()
+            .nullable()
+            .transform(toNull)
+            .url('Provide a valid link / url.'),
+        }),
+      ),
+  });
 
   constructor(datasetVM: DatasetModel) {
     super(datasetVM, AdditionalInfoViewModel.mappingRules());
-
-    this.validationErrors = { dataLicenseId: null, funders: null };
-
-    this.validationRules = yup.object().shape({
-      dataLicenseId: yup.string().required('Data licence is required'),
-
-      funders: yup
-        .array()
-        .required('Enter funding information')
-        .min(1, 'Provide at least one funding entry')
-        .of(
-          yup.object().shape({
-            institution: yup.string().required().min(3),
-            grantNumber: yup.string(),
-            institutionUrl: yup
-              .string()
-              .nullable()
-              .transform(toNull)
-              .url('Provide a valid link / url.'),
-          }),
-        ),
-    });
   }
 
   validate(newProps?: Partial<AdditionalInfoViewModel>) {

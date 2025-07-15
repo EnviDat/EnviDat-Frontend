@@ -8,37 +8,38 @@ export class GeoInfoViewModel extends AbstractEditViewModel {
   declare dates: any[];
   declare geometries: any[];
 
-  declare validationErrors: {
+  validationErrors: {
     dates: string | null;
     geometries: string | null;
-  };
+  } = {
+    dates: null,
+    geometries: null,
+  }
+
+  validationRules = yup.object({
+    dates: yup
+      .array()
+      .required('Created date is required')
+      .min(1, 'At least a creation date is required')
+      .test(
+        'created-date-complete',
+        'Add start and end date for “created”',
+        (entries?: any[]) => {
+          if (!Array.isArray(entries)) return false;
+
+          const created = entries.find((e) => e.dateType === 'created');
+          // deve esistere e avere entrambi i campi
+          return !!created && created.dateStart && created.dateEnd;
+        },
+      ),
+    geometries: yup
+      .array()
+      .required('Geometry is required')
+      .min(1, 'At least one geometry is required'),
+  });
 
   constructor(datasetVM: DatasetModel) {
     super(datasetVM, GeoInfoViewModel.mappingRules());
-
-    this.validationErrors = { dates: null, geometries: null };
-
-    this.validationRules = yup.object({
-      dates: yup
-        .array()
-        .required('Created date is required')
-        .min(1, 'At least a creation date is required')
-        .test(
-          'created-date-complete',
-          'Add start and end date for “created”',
-          (entries?: any[]) => {
-            if (!Array.isArray(entries)) return false;
-
-            const created = entries.find((e) => e.dateType === 'created');
-            // deve esistere e avere entrambi i campi
-            return !!created && created.dateStart && created.dateEnd;
-          },
-        ),
-      geometries: yup
-        .array()
-        .required('Geometry is required')
-        .min(1, 'At least one geometry is required'),
-    });
   }
 
   validate(newProps?: Partial<GeoInfoViewModel>): boolean {

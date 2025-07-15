@@ -26,20 +26,19 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
   declare signedInUser: User;
   declare signedInUserOrganizationIds: string[];
 
-  declare validationErrors: {
-    resources: string;
-  };
+  validationErrors: {
+    resources: string | null;
+  } = {
+    resources: null,
+  }
+
+  validationRules = yup.object().shape({
+    resources: yup.array().required().min(1, 'Add at least one resource.'),
+  });
+
 
   constructor(datasetModel: DatasetModel) {
     super(datasetModel, ResourcesListViewModel.mappingRules());
-
-    this.validationErrors = {
-      resources: null,
-    };
-
-    this.validationRules = yup.object().shape({
-      resources: yup.array().required().min(1, 'Add at least one resource.'),
-    });
   }
 
   static getFormattedResources(
