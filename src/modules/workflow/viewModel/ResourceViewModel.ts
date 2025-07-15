@@ -92,13 +92,13 @@ export class ResourceViewModel extends AbstractEditViewModel implements Resource
 
 
   /**
-   * @param datasetViewModel is optional, if not provided it can be used "isolated" just for other
+   * @param datasetModel is optional, if not provided it can be used "isolated" just for other
    * UI-components to validate and store infos
    */
-  constructor(datasetViewModel?: DatasetModel | undefined) {
-    // intentionally not providing the datasetViewModel, because resource have to be unpacked
+  constructor(datasetModel?: DatasetModel | undefined) {
+    // intentionally not providing the datasetModel, because resource have to be unpacked
     // from the list of resources, done in the ResourceListModel
-    super(datasetViewModel, ResourceViewModel.mappingRules())
+    super(datasetModel, ResourceViewModel.mappingRules())
 
 
     this.validationErrors = {

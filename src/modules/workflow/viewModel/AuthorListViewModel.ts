@@ -22,8 +22,8 @@ export class AuthorListViewModel extends AbstractEditViewModel {
     authors: string;
   };
 
-  constructor(datasetViewModel: DatasetModel) {
-    super(datasetViewModel, AuthorListViewModel.mappingRules());
+  constructor(datasetModel: DatasetModel) {
+    super(datasetModel, AuthorListViewModel.mappingRules());
 
 
     this.validationErrors = {
@@ -56,7 +56,7 @@ export class AuthorListViewModel extends AbstractEditViewModel {
   getAuthorViewModels(
     validateViewModels: boolean,
   ): AuthorViewModel[] | undefined {
-    const rawAuthors = this.datasetViewModel.dataset.author;
+    const rawAuthors = this.datasetModel.dataset.author;
 
     const authors: Author[] = AuthorListViewModel.getFormattedAuthors(
       rawAuthors,

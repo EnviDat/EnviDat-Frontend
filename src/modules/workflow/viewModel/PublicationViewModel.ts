@@ -22,8 +22,8 @@ export class PublicationViewModel extends AbstractEditViewModel{
   }
 
 
-  constructor(datasetViewModel: DatasetModel) {
-    super(datasetViewModel, PublicationViewModel.mappingRules());
+  constructor(datasetModel: DatasetModel) {
+    super(datasetModel, PublicationViewModel.mappingRules());
 
 
     this.validationErrors = {

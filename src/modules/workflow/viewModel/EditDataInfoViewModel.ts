@@ -13,8 +13,8 @@ export class EditDataInfoViewModel extends AbstractEditViewModel{
     dates: string,
   }
 
-  constructor(datasetViewModel: DatasetModel) {
-    super(datasetViewModel, EditDataInfoViewModel.mappingRules());
+  constructor(datasetModel: DatasetModel) {
+    super(datasetModel, EditDataInfoViewModel.mappingRules());
 
 
     this.validationErrors = {

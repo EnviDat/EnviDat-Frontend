@@ -19,10 +19,10 @@ export class MetadataBaseViewModel extends AbstractEditViewModel {
   };
 
   constructor(
-    datasetViewModel: DatasetModel,
+    datasetModel: DatasetModel,
     existingKeywords: KeywordDTO[],
   ) {
-    super(datasetViewModel, MetadataBaseViewModel.mappingRules());
+    super(datasetModel, MetadataBaseViewModel.mappingRules());
 
     enhanceKeywords(this.keywords, categoryCards);
     this.existingKeywords = existingKeywords;

@@ -12,18 +12,18 @@ import { isFieldValid } from '@/factories/userEditingValidations';
 export abstract class AbstractEditViewModel {
   protected privateMappingRules: string[][];
 
-  protected datasetViewModel: DatasetModel;
+  protected datasetModel: DatasetModel;
 
   abstract validationErrors: object;
 
   declare validationRules: yup.AnyObjectSchema;
 
   protected constructor(
-    datasetViewModel: DatasetModel,
+    datasetModel: DatasetModel,
     mappingRules: string[][] = undefined,
   ) {
     this.mappingRules = mappingRules;
-    this.datasetViewModel = datasetViewModel;
+    this.datasetModel = datasetModel;
 
     if (new.target === AbstractEditViewModel) {
       throw new Error('Cannot instantiate an abstract Class');
@@ -31,7 +31,7 @@ export abstract class AbstractEditViewModel {
 
     // enforceAbstractProps(this, ['mappingRules']);
 
-    const dataset = this.datasetViewModel?.dataset;
+    const dataset = this.datasetModel?.dataset;
     if (this.mappingRules) {
       // always do the mapping, even if there is no dataset, because it will
       // initialize the viewModels properties with undefined, which needs
@@ -78,7 +78,7 @@ export abstract class AbstractEditViewModel {
    protected getModelData<T>(): Omit<
      T,
      | 'privateMappingRules'
-     | 'datasetViewModel'
+     | 'datasetModel'
      | 'validationRules'
      | 'validationErrors'
      | 'savedSuccessful'
@@ -88,7 +88,7 @@ export abstract class AbstractEditViewModel {
      // deconstruct this to remove the model view specific props
      const {
        privateMappingRules,
-       datasetViewModel,
+       datasetModel,
        validationRules,
        validationErrors,
        savedSuccessful,
@@ -168,8 +168,8 @@ export abstract class AbstractEditViewModel {
         return false;
       }
 
-      if (this.datasetViewModel) {
-        await this.datasetViewModel.patchViewModel(this);
+      if (this.datasetModel) {
+        await this.datasetModel.patchViewModel(this);
       }
 
       this.savedSuccessful = true;

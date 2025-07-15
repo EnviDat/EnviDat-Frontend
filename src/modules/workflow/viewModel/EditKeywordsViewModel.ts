@@ -19,8 +19,8 @@ export class EditKeywordsViewModel extends AbstractEditViewModel{
   }
 
 
-  constructor(datasetViewModel: DatasetModel, existingKeywords: KeywordDTO[]) {
-    super(datasetViewModel, EditKeywordsViewModel.mappingRules());
+  constructor(datasetModel: DatasetModel, existingKeywords: KeywordDTO[]) {
+    super(datasetModel, EditKeywordsViewModel.mappingRules());
 
     enhanceKeywords(this.keywords, categoryCards)
     this.existingKeywords = existingKeywords;

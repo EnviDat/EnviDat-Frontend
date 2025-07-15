@@ -35,10 +35,10 @@ export class AuthorViewModel extends AbstractEditViewModel implements Author {
     affiliation: string;
   }
 
-  constructor(datasetViewModel?: DatasetModel | undefined) {
-    // intentionally not providing the datasetViewModel, because resource have to be unpacked
+  constructor(datasetModel?: DatasetModel | undefined) {
+    // intentionally not providing the datasetModel, because resource have to be unpacked
     // from the list of resources, done in the ResourceListModel
-    super(datasetViewModel, AuthorViewModel.mappingRules())
+    super(datasetModel, AuthorViewModel.mappingRules())
 
 
     this.validationErrors = {

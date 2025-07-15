@@ -12,8 +12,8 @@ export class EditDescriptionViewModel extends AbstractEditViewModel{
   }
 
 
-  constructor(datasetViewModel: DatasetModel) {
-    super(datasetViewModel, EditDescriptionViewModel.mappingRules());
+  constructor(datasetModel: DatasetModel) {
+    super(datasetModel, EditDescriptionViewModel.mappingRules());
 
     this.validationErrors = {
       description: null,

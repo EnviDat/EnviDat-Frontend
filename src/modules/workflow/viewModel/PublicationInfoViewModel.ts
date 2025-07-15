@@ -17,8 +17,8 @@ export class PublicationInfoViewModel extends AbstractEditViewModel {
     organizationId: string;
   };
 
-  constructor(datasetViewModel: DatasetModel) {
-    super(datasetViewModel, PublicationInfoViewModel.mappingRules());
+  constructor(datasetModel: DatasetModel) {
+    super(datasetModel, PublicationInfoViewModel.mappingRules());
 
     this.validationErrors = {
       contactEmail: null,

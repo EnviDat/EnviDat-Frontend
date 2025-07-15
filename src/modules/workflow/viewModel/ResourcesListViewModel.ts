@@ -30,8 +30,8 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
     resources: string;
   };
 
-  constructor(datasetViewModel: DatasetModel) {
-    super(datasetViewModel, ResourcesListViewModel.mappingRules());
+  constructor(datasetModel: DatasetModel) {
+    super(datasetModel, ResourcesListViewModel.mappingRules());
 
     this.validationErrors = {
       resources: null,
@@ -138,7 +138,7 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
 
         // the resourceModel is updated with the latest content of the backend
         // (further deails of the resource)
-        await this.datasetViewModel.createResourceOnExistingDataset(model);
+        await this.datasetModel.createResourceOnExistingDataset(model);
 
         eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
 

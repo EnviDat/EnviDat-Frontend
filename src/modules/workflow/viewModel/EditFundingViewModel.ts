@@ -16,8 +16,8 @@ export class EditFundingViewModel extends AbstractEditViewModel{
   }
 
 
-  constructor(datasetViewModel: DatasetModel) {
-    super(datasetViewModel, EditFundingViewModel.mappingRules());
+  constructor(datasetModel: DatasetModel) {
+    super(datasetModel, EditFundingViewModel.mappingRules());
 
 
     this.validationErrors = {

@@ -35,12 +35,13 @@ import {
 import { EditDatasetServiceLayer } from '@/factories/ViewModels/EditDatasetServiceLayer';
 import { EditHeaderViewModel } from '@/factories/ViewModels/EditHeaderViewModel';
 import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
+import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 
 import metadataset from './js/metadata';
-import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel.ts';
+
 
 const serviceLayer = new EditDatasetServiceLayer(metadataset[0]);
-const datasetVM = new DatasetViewModel(serviceLayer);
+const datasetVM = new DatasetModel(serviceLayer);
 
 
 const unFormatedMetadataCards = metadataset;
@@ -67,7 +68,7 @@ let existingAuthors = Object.values(authorsMap);
 existingAuthors = sortObjectArray(existingAuthors, 'lastName');
 
 const serviceLayer2 = new EditDatasetServiceLayer(metadataset[1]);
-const datasetVM2 = new DatasetViewModel(serviceLayer2);
+const datasetVM2 = new DatasetModel(serviceLayer2);
 const reactiveViewModelWithErrors = datasetVM2.getViewModel('EditHeaderViewModel');
 
 export default {
@@ -129,7 +130,7 @@ export const FilledAndReadOnly = {
   },
 };
 
-const empty = new EditHeaderViewModel(new DatasetViewModel());
+const empty = new EditHeaderViewModel(new DatasetModel());
 const emptyVM = reactive(empty);
 
 /*

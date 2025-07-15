@@ -1,9 +1,6 @@
 import { reactive } from 'vue';
 
 import type { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
-/*
-import { DatasetService, User } from '@/types/modelTypes';
-*/
 
 import { EditDescriptionViewModel } from '@/modules/workflow/viewModel/EditDescriptionViewModel.ts';
 import { EditCustomFieldsViewModel } from '@/modules/workflow/viewModel/EditCustomFieldsViewModel.ts';
@@ -18,10 +15,6 @@ import { GeoInfoViewModel } from '@/modules/workflow/viewModel/GeoInfoViewModel.
 import { RelatedResearchViewModel } from '@/modules/workflow/viewModel/RelatedResearchViewModel.ts';
 import { PublicationInfoViewModel } from '@/modules/workflow/viewModel/PublicationInfoViewModel.ts';
 
-/*
-import { initCreationDataWithDefaults } from '@/factories/userCreationFactory';
-import { Dataset } from '@/modules/workflow/Dataset.ts';
-*/
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 
 
@@ -51,6 +44,8 @@ export class DatasetModel {
   constructor(datasetWorkflow: any) {
     this.datasetWorkflow = datasetWorkflow;
     this.resourceCounter = 0;
+
+    this.createViewModels();
   }
 
   private clearViewModels(): void {
@@ -69,9 +64,11 @@ export class DatasetModel {
     }
   }
 
-  async loadViewModels(datasetId: string): Promise<void> {
+  loadViewModels() {
+/*
     const datasetService = this.datasetWorkflow.getDatasetService();
     await datasetService.loadDataset(datasetId);
+*/
 
     this.createViewModels();
   }

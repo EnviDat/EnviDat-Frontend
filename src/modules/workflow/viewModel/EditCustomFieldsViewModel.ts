@@ -11,8 +11,8 @@ export class EditCustomFieldsViewModel extends AbstractEditViewModel{
     customFields: string,
   }
 
-  constructor(datasetViewModel: DatasetModel) {
-    super(datasetViewModel, EditCustomFieldsViewModel.mappingRules());
+  constructor(datasetModel: DatasetModel) {
+    super(datasetModel, EditCustomFieldsViewModel.mappingRules());
 
 
     this.validationErrors = {

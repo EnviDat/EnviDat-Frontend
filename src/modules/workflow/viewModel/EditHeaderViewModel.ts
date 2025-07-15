@@ -23,8 +23,8 @@ export class EditHeaderViewModel extends AbstractEditViewModel{
   }
 
 
-  constructor(datasetViewModel: DatasetModel) {
-    super(datasetViewModel, EditHeaderViewModel.mappingRules());
+  constructor(datasetModel: DatasetModel) {
+    super(datasetModel, EditHeaderViewModel.mappingRules());
 
     this.validationErrors = {
       metadataTitle: null,

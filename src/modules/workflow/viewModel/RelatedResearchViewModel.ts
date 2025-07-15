@@ -19,8 +19,8 @@ export class RelatedResearchViewModel extends AbstractEditViewModel {
     customFields: string | null;
   };
 
-  constructor(datasetViewModel: DatasetModel) {
-    super(datasetViewModel, RelatedResearchViewModel.mappingRules());
+  constructor(datasetModel: DatasetModel) {
+    super(datasetModel, RelatedResearchViewModel.mappingRules());
 
     this.validationErrors = {
       relatedPublicationsText: null,
