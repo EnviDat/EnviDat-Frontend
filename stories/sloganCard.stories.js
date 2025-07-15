@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import SloganCard from '@/modules/home/components/SloganCard.vue';
 
-import { action } from '@storybook/addon-actions';
+import { action } from 'storybook/actions';
 import holidaysWinter from '../src/assets/cards/slogan/holidays_winter.webp';
 
 

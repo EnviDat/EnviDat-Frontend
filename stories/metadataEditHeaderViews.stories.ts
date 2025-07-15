@@ -10,7 +10,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import type { Meta } from '@storybook/vue3';
+import { reactive } from 'vue';
+import type { Meta } from '@storybook/vue3-vite';
 
 import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader.vue';
 import { sortObjectArray } from '@/factories/metaDataFactory';
@@ -28,23 +29,19 @@ import {
   METADATA_CONTACT_EMAIL,
   METADATA_CONTACT_FIRSTNAME,
   METADATA_CONTACT_LASTNAME,
-  METADATA_TITLE_PROPERTY,
-  METADATA_URL_PROPERTY,
+  METADATA_TITLE_PROPERTY, METADATA_URL_PROPERTY,
 } from '@/factories/metadataConsts';
 
-import { BackendDatasetService } from '@/modules/workflow/BackendDatasetService.ts';
-import { EditHeaderViewModel } from '@/modules/workflow/viewModel/EditHeaderViewModel';
-import {
-  mobileLargeViewportParams,
-  mobileViewportParams,
-  tabletViewportParams,
-} from './js/envidatViewports';
+import { EditDatasetServiceLayer } from '@/factories/ViewModels/EditDatasetServiceLayer';
+import { EditHeaderViewModel } from '@/factories/ViewModels/EditHeaderViewModel';
+import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
 import metadataset from './js/metadata';
-import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
+import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel.ts';
 
-const serviceLayer = new BackendDatasetService(metadataset[0]);
-const datasetVM = new DatasetModel(serviceLayer);
+const serviceLayer = new EditDatasetServiceLayer(metadataset[0]);
+const datasetVM = new DatasetViewModel(serviceLayer);
+
 
 const unFormatedMetadataCards = metadataset;
 const tagsFromDatasets = getPopularTags(metadataset, '', 1);
@@ -62,17 +59,16 @@ for (let i = 0; i < unFormatedMetadataCards.length; i++) {
   metadataCards.push(el);
 }
 
+
 const authorsMap = extractAuthorsMap(metadataCards);
 const authors = getFullAuthorsFromDataset(authorsMap, metadataCards[1]);
 
 let existingAuthors = Object.values(authorsMap);
 existingAuthors = sortObjectArray(existingAuthors, 'lastName');
 
-const serviceLayer2 = new BackendDatasetService(metadataset[1]);
-const datasetVM2 = new DatasetModel(serviceLayer2);
-const reactiveViewModelWithErrors = datasetVM2.getViewModel(
-  'EditHeaderViewModel',
-);
+const serviceLayer2 = new EditDatasetServiceLayer(metadataset[1]);
+const datasetVM2 = new DatasetViewModel(serviceLayer2);
+const reactiveViewModelWithErrors = datasetVM2.getViewModel('EditHeaderViewModel');
 
 export default {
   title: '3 Datasets / 2 Edit / Metadata Header',
@@ -133,6 +129,9 @@ export const FilledAndReadOnly = {
   },
 };
 
+const empty = new EditHeaderViewModel(new DatasetViewModel());
+const emptyVM = reactive(empty);
+
 /*
 const watcherMethod = watch(() => emptyVM, async (newModel) => {
     newModel.loading = true;
@@ -143,6 +142,7 @@ const watcherMethod = watch(() => emptyVM, async (newModel) => {
   { deep: true },
 );
 */
+
 
 export const EmptyWithViewModel = {
   args: {
@@ -156,7 +156,7 @@ export const EmptyWithViewModel = {
 const vm = datasetVM.getViewModel(EditHeaderViewModel.name);
 
 export const FilledWithViewModel = {
-  args: {
+  args: { 
     ...vm,
     onSave: (newData: any) => {
       vm.save(newData);
@@ -180,12 +180,13 @@ export const MobileFilledEditHeader = {
   parameters: mobileViewportParams,
 };
 
+
 export const MobileLargeFilledEditHeader = {
-  args: { ...FilledEditHeader.args },
+  args: {...FilledEditHeader.args},
   parameters: mobileLargeViewportParams,
 };
 
 export const TabletFilledEditHeader = {
-  args: { ...FilledEditHeader.args },
+  args: {...FilledEditHeader.args},
   parameters: tabletViewportParams,
 };

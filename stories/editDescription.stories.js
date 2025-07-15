@@ -11,14 +11,13 @@
  */
 
 import EditDescription from '@/modules/user/components/EditDescription.vue';
-import { EditDescriptionViewModel } from '@/modules/workflow/viewModel/EditDescriptionViewModel';
+import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionViewModel';
 import {
+  desktopViewportParams,
   mobileLargeViewportParams,
   mobileViewportParams,
   tabletViewportParams,
 } from './js/envidatViewports';
-import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
-import { BackendDatasetService } from '@/modules/workflow/BackendDatasetService.ts';
 
 const description = `# Why user stories?
 &nbsp;
@@ -52,27 +51,40 @@ export default {
   component: EditDescription,
 };
 
-const vm = new EditDescriptionViewModel(new DatasetModel(new BackendDatasetService({
-  notes: description,
-})))
 
 export const Empty = {}
 
 export const Filled = {
-  args: vm,
+  args: createDescriptionViewModel({ notes: description }),
 }
 
 export const FilledMobile = {
-  args: vm,
-  parameters: mobileViewportParams,
+  args: createDescriptionViewModel({ notes: description }, true),
+  globals: {
+    ...mobileViewportParams,
+    // viewport: { value: mobileViewportParams },
+  },
 }
 
 export const FilledLargeMobile = {
-  args: vm,
-  parameters: mobileLargeViewportParams,
+  args: createDescriptionViewModel({ notes: description }, true),
+  globals: {
+    ...mobileLargeViewportParams,
+  },
 }
 
 export const FilledTablet = {
-  args: vm,
-  parameters: tabletViewportParams,
+  args: createDescriptionViewModel({ notes: description }, true),
+  globals: {
+    ...tabletViewportParams,
+  },
 }
+
+export const FilledDesktop = {
+  args: createDescriptionViewModel({ notes: description }, true),
+  globals: {
+    ...desktopViewportParams,
+  },
+}
+
+
