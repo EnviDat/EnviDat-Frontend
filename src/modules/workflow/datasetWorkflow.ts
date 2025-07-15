@@ -86,38 +86,32 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     },
     async initializeWorkflowNewDataset(dataset?: DatasetDTO) {
 
-      this.datasetModel = new DatasetModel(this);
+      let datasetDto : DatasetDTO;
 
       if (dataset === undefined) {
         // fresh new dataset
         this.LocalStorageDatasetService = new LocalStorageDatasetService();
-        await this.LocalStorageDatasetService.createDataset();
+        datasetDto = await this.LocalStorageDatasetService.createDataset();
 
       // } else if (LocalStorageDatasetService.isLocalId(dataset?.id)) {
       } else if (dataset.id) {
         // existing local dataset
-        this.LocalStorageDatasetService = new LocalStorageDatasetService(dataset);
-        await this.LocalStorageDatasetService.patchDatasetChanges(dataset);
+        this.LocalStorageDatasetService = new LocalStorageDatasetService();
+        datasetDto = await this.LocalStorageDatasetService.patchDatasetChanges(dataset);
       }
 
-      return this.datasetModel.loadViewModels(dataset.id)
+      await this.initializeDataset(datasetDto);
     },
     async initializeWorkflow(datasetId: string) {
       this.datasetModel = new DatasetModel(this);
 
-      await this.state.backendStorageService.loadDataset(datasetId);
+      const datasetDto = await this.backendStorageService.loadDataset(datasetId);
 
-      return this.datasetModel.loadViewModels(datasetId)
+      await this.initializeDataset(datasetDto);
     },
-    async initializeDataset(dataset: DatasetDTO) {
-      this.datasetModel = new DatasetModel(this);
-
-      if (LocalStorageDatasetService.isLocalId(dataset?.id)) {
-        this.state.LocalStorageDatasetService = new LocalStorageDatasetService(dataset);
-      }
-
+    resetSteps(){
       this.steps.forEach((s: WorkflowStep) => {
-        if (s.id === 0){
+        if (s.id === 0) {
           s.isEditable = true;
           s.status = StepStatus.Active;
         } else {
@@ -128,6 +122,12 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
         s.completed = false;
         s.hasError = false;
       });
+
+    },
+    async initializeDataset() {
+      this.datasetModel = new DatasetModel(this);
+
+      this.resetSteps();
 
       this.doiPlaceholder = null;
       this.openSaveDialog = false;
@@ -152,12 +152,13 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
       this.setActiveStep(id);
     },
     setActiveStep(id: number) {
-      this.steps.forEach((s) => {
+      this.steps.forEach((s: WorkflowStep) => {
         if (s.id === id) s.status = StepStatus.Active;
         else if (s.completed) s.status = StepStatus.Completed;
         else if (s.hasError) s.status = StepStatus.Error;
         else s.status = StepStatus.Disabled;
       });
+
       this.currentStep = id;
     },
 

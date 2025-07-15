@@ -28,17 +28,17 @@
     <v-card-text class="pa-0">
       <v-list class="pa-0 navigationWorkflow__list" density="comfortable" nav>
         <v-list-item
-          v-for="(step, index) in navigationStore.steps"
+          v-for="(step, index) in workflowStore.steps"
           :key="index"
           :class="[
             'navigationWorkflow__item',
             // step.status can be active, completed, error
             step.status,
 
-            // step.id === navigationStore.currentStep ? 'active' : '',
+            // step.id === workflowStore.currentStep ? 'active' : '',
             // step.completed === true ? 'completed' : '',
             // step.hasError === true ? 'error' : '',
-            // step.completed === false && step.id != navigationStore.currentStep
+            // step.completed === false && step.id != workflowStore.currentStep
             //   ? 'disabled'
             //   : '',
           ]"
@@ -60,10 +60,10 @@
           <template #title v-else>
             <!-- step.status === 'active'  -->
             <span
-              v-if="navigationStore.currentStep === step.id"
+              v-if="workflowStore.currentStep === step.id"
               :class="{
                 'font-weight-bold': display.mdAndDown.value,
-                'ml-2': navigationStore.currentStep === step.id,
+                'ml-2': workflowStore.currentStep === step.id,
               }"
             >
               {{ step.title }}
@@ -79,7 +79,7 @@
               class="navigationWorkflow__append mr-1"
               :class="[
                 step.status,
-                // active: step.id === navigationStore.currentStep,
+                // active: step.id === workflowStore.currentStep,
                 // completed: step.completed,
                 // error: step.hasError,
               ]"
@@ -87,7 +87,7 @@
               <template v-if="step.completed">
                 <!-- If the step has already been completed, but we want to edit it -->
                 <span
-                  v-if="navigationStore.currentStep === step.id"
+                  v-if="workflowStore.currentStep === step.id"
                   class="navigationWorkflow__append--number font-weight-bold"
                 >
                   {{ step.id + 1 }}
@@ -111,7 +111,7 @@
             class="navigationWorkflow__divider"
             v-if="
               display.lgAndUp.value &&
-              (step.id === 3 || step.id === navigationStore.steps.length - 1)
+              (step.id === 3 || step.id === workflowStore.steps.length - 1)
             "
           ></div>
         </v-list-item>
@@ -135,7 +135,7 @@
       <div
         @click="reserveDoi"
         :class="{
-          disabled: !navigationStore.isStepSaveConfirmed,
+          disabled: !workflowStore.isStepSaveConfirmed,
         }"
         class="navigationWorkflow__actions--item d-flex flex-column"
       >
@@ -143,14 +143,14 @@
           :large="true"
           :icon="iconName('print')"
           class="doi-icon"
-          :color="navigationStore.isStepSaveConfirmed ? 'primary' : 'black'"
+          :color="workflowStore.isStepSaveConfirmed ? 'primary' : 'black'"
           :class="
-            navigationStore.isStepSaveConfirmed && navigationStore.doiPlaceholder === null
+            workflowStore.isStepSaveConfirmed && workflowStore.doiPlaceholder === null
               ? 'pulseIcon'
               : ''
           "
         />
-        <span class="text-body-2 mt-2">{{ navigationStore.doiPlaceholder || 'Reserve DOI' }}</span>
+        <span class="text-body-2 mt-2">{{ workflowStore.doiPlaceholder || 'Reserve DOI' }}</span>
       </div>
       <div class="navigationWorkflow__actions--item d-flex flex-column">
         <v-menu
@@ -172,7 +172,7 @@
                 :color="'black'"
               />
               <span class="text-body-2 mt-2">
-                {{ navigationStore.doiPlaceholder != null ? 'Reserved' : 'Draft' }}
+                {{ workflowStore.doiPlaceholder != null ? 'Reserved' : 'Draft' }}
               </span>
             </div>
           </template>
@@ -239,9 +239,6 @@
 </template>
 
 <script setup>
-// import { computed } from 'vue';
-import { useStore } from 'vuex';
-import { storeToRefs } from 'pinia';
 import { useDisplay } from 'vuetify';
 import { driver } from 'driver.js';
 import 'driver.js/dist/driver.css';
@@ -254,9 +251,6 @@ import { extractIcons } from '@/factories/iconFactory';
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow.ts';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
-// initialize the store
-const store = useStore();
-// define useDisplay
 const display = useDisplay();
 
 const emit = defineEmits(['navigateItem']);
@@ -267,20 +261,17 @@ const showStatusMenu = ref(false);
 // Extract Icon name from IconFactory
 const iconName = (name) => extractIcons(name);
 
-const navigationStore = useDatasetWorkflowStore();
-
-// getters from pinia -> navigationStore
-const { currentStepObject } = storeToRefs(navigationStore);
+const workflowStore = useDatasetWorkflowStore();
 
 const navigateItem = (id, status) => {
-  // navigationStore.navigateItemAction(id, status);
+  // workflowStore.navigateItemAction(id, status);
   emit('navigateItem', { id, status });
 };
 
 const reserveDoi = async () => {
   // TODO metadataID connect with the real ID, see reference initMetadataUsingId - MetadataEditPage
   // await store.dispatch('user/DOI_RESERVE', 'metadataID');
-  navigationStore.reserveDoi();
+  workflowStore.reserveDoi();
 };
 
 const tooltip = {
@@ -296,7 +287,7 @@ const initDriver = () => {
   // DEFINE the guidelines on the store
   driver({
     showProgress: true,
-    steps: navigationStore.workflowGuide,
+    steps: workflowStore.workflowGuide,
   }).drive();
 };
 </script>

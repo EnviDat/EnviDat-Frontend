@@ -3,11 +3,10 @@ import { DatasetService, User } from '@/types/modelTypes';
 import { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 
 import {
-  initCreationDataWithDefaults,
   readDatasetFromLocalStorage,
   storeDatasetInLocalStorage,
 } from '@/factories/userCreationFactory';
-import { getMetadataUrlFromTitle } from '@/factories/mappingFactory';
+
 
 export class LocalStorageDatasetService implements DatasetService {
   declare dataset: DatasetDTO;
@@ -15,7 +14,7 @@ export class LocalStorageDatasetService implements DatasetService {
 
   declare datasetCount: number;
 
-  constructor(datasetBackend?: DatasetDTO | undefined) {
+  constructor() {
     this.loadingDataset = true;
     this.datasetCount = 0;
 
