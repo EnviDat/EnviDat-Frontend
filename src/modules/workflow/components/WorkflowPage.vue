@@ -11,7 +11,7 @@
                   :icon="extractIcons('success')"
         />
 
-        <TheNavigationWorkflow
+        <TheWorkflowNavigation
           @navigateItem="catchNavigate"
         />
       </v-col>
@@ -91,7 +91,7 @@ import { storeToRefs } from 'pinia';
 import { ref, watch, computed, nextTick, onMounted } from 'vue';
 
 import { useRoute, useRouter } from 'vue-router';
-import TheNavigationWorkflow from '@/components/Navigation/TheNavigationWorkflow.vue';
+import TheWorkflowNavigation from '@/components/Navigation/TheWorkflowNavigation.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 
 import { extractIcons } from '@/factories/iconFactory.ts';
