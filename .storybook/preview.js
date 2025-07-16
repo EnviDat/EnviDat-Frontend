@@ -1,7 +1,5 @@
-import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import 'vuetify/styles';
-import { VTreeview } from 'vuetify/labs/VTreeview'
 import { createVuetify } from 'vuetify';
 import config from '@/plugins/vuetifyConfig.js';
 
@@ -17,10 +15,6 @@ setup((app) => {
   // Registers your app's plugins into Storybook
   app.use(
     createVuetify({
-      components: {
-        ...components,
-        VTreeview,
-      },
       directives,
       ...config,
     }),
