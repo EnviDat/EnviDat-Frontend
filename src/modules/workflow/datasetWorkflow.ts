@@ -33,12 +33,13 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     stepForBackendChange: 3,
     doiPlaceholder: null,
     workflowGuide,
+    mode: 'create' as 'create' | 'edit',
   }),
   getters: {
     currentStepObject: (state) => state.steps[state.currentStep] ?? null,
     currentAsyncComponent(state) {
       return state.steps[state.currentStep]?.component;
-/*
+      /*
       const loader = state.steps[state.currentStep]?.loader;
       return loader ? defineAsyncComponent(loader) : null;
 */
@@ -66,50 +67,67 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
 
       return firstInCompleteIndex;
     },
-    isDatasetCreation() {
-      return this.firstInCompleteStep < this.stepForBackendChange;
+    isDatasetCreation(): boolean {
+      return this.mode === 'create';
     },
-    isDatasetEditing() {
-      return this.firstInCompleteStep >= this.stepForBackendChange;
+    isDatasetEditing(): boolean {
+      return this.mode === 'edit';
     },
   },
   actions: {
-    getDatasetService() : DatasetService {
-      if (this.isDatasetCreation) {
-        return this.localStorageService;
-      }
-
-      return this.backendStorageService;
+    getDatasetService(): DatasetService {
+      return this.mode === 'create'
+        ? this.localStorageService
+        : this.backendStorageService;
     },
     async loadDataset(datasetId: string) {
       return this.datasetModel.loadDataset(datasetId);
     },
     async initializeWorkflowNewDataset(dataset?: DatasetDTO) {
+      // SET the status edit or create
+      this.mode = 'create';
+      let datasetDto: DatasetDTO;
 
-      let datasetDto : DatasetDTO;
+      this.localStorageService = new LocalStorageDatasetService();
 
-      if (dataset === undefined) {
-        // fresh new dataset
-        this.LocalStorageDatasetService = new LocalStorageDatasetService();
-        datasetDto = await this.LocalStorageDatasetService.createDataset();
-
-      // } else if (LocalStorageDatasetService.isLocalId(dataset?.id)) {
-      } else if (dataset.id) {
-        // existing local dataset
-        this.LocalStorageDatasetService = new LocalStorageDatasetService();
-        datasetDto = await this.LocalStorageDatasetService.patchDatasetChanges(dataset);
+      if (!dataset) {
+        datasetDto = await this.localStorageService.createDataset({});
+      } else {
+        datasetDto =
+          await this.localStorageService.patchDatasetChanges(dataset);
       }
 
+      // if (dataset === undefined) {
+      //   // fresh new dataset
+      //   // DOMINIK Can i define outside?
+      //   this.LocalStorageDatasetService = new LocalStorageDatasetService();
+      //   datasetDto = await this.LocalStorageDatasetService.createDataset();
+
+      //   // } else if (LocalStorageDatasetService.isLocalId(dataset?.id)) {
+      // } else if (dataset.id) {
+      //   // existing local dataset
+      //   this.LocalStorageDatasetService = new LocalStorageDatasetService();
+
+      //   datasetDto =
+      //     await this.LocalStorageDatasetService.patchDatasetChanges(dataset);
+      // }
+
+      // DOMINIK we pass datasetDto but then in the function we didn't use the arg
       await this.initializeDataset(datasetDto);
     },
     async initializeWorkflow(datasetId: string) {
+      // SET the status edit or create
+      this.mode = 'edit';
       this.datasetModel = new DatasetModel(this);
 
-      const datasetDto = await this.backendStorageService.loadDataset(datasetId);
+      console.log(datasetId);
+
+      const datasetDto =
+        await this.backendStorageService.loadDataset(datasetId);
 
       await this.initializeDataset(datasetDto);
     },
-    resetSteps(){
+    resetSteps() {
       this.steps.forEach((s: WorkflowStep) => {
         if (s.id === 0) {
           s.isEditable = true;
@@ -122,12 +140,15 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
         s.completed = false;
         s.hasError = false;
       });
-
     },
-    async initializeDataset() {
-      this.datasetModel = new DatasetModel(this);
+    // async initializeDataset() {
+    async initializeDataset(dataset: DatasetDTO) {
+      this.localStorageService.dataset = dataset;
 
       this.resetSteps();
+
+      this.datasetModel = new DatasetModel(this);
+      await this.datasetModel.loadViewModels();
 
       this.doiPlaceholder = null;
       this.openSaveDialog = false;
@@ -142,7 +163,6 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     },
     navigateItemAction(id, status) {
       if (!this.freeJump) {
-
         if (status === StepStatus.Disabled) return;
 
         this.currentStep = id;
@@ -234,13 +254,11 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
       this.isStepSaveConfirmed = true;
       this.openSaveDialog = false;
 
-
       return this.validateStepAction(this.stepForBackendChange);
     },
 
     reserveDoi() {
       this.doiPlaceholder = '10.10000/envidat.1234';
     },
-
   },
 });

@@ -17,9 +17,7 @@ import { PublicationInfoViewModel } from '@/modules/workflow/viewModel/Publicati
 
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 
-
 export class DatasetModel {
-
   viewModelClasses = [
     EditDescriptionViewModel,
     AuthorListViewModel,
@@ -39,7 +37,6 @@ export class DatasetModel {
   declare datasetWorkflow: any;
 
   declare resourceCounter: number;
-
 
   constructor(datasetWorkflow: any) {
     this.datasetWorkflow = datasetWorkflow;
@@ -65,14 +62,15 @@ export class DatasetModel {
   }
 
   loadViewModels() {
-/*
+    /*
     const datasetService = this.datasetWorkflow.getDatasetService();
     await datasetService.loadDataset(datasetId);
 */
 
     this.createViewModels();
+    // DOMINIK - this is needed to update the viewModels with the current dataset (I GUESS)
+    this.updateViewModels();
   }
-
 
   /*
   async loadDataset(datasetId: string): Promise<DatasetDTO> {
@@ -104,21 +102,19 @@ export class DatasetModel {
 
     try {
       const datasetService = this.datasetWorkflow.getDatasetService();
-      await datasetService.createResource(
-        {
-          ...resourceModel.backendJSON as ResourceDTO,
-          // DEMO: this is set in the backend, only for local storage is needed
-          id: `resource_id_${ this.resourceCounter }`,
-          'package_id': this.dataset?.id,
-        },
-      );
+      await datasetService.createResource({
+        ...(resourceModel.backendJSON as ResourceDTO),
+        // DEMO: this is set in the backend, only for local storage is needed
+        id: `resource_id_${this.resourceCounter}`,
+        package_id: this.dataset?.id,
+      });
 
       this.resourceCounter++; // DEMO
 
       // update specifically the ResourcesListViewModel with the newly created Resource
       this.getViewModel('ResourcesListModel').updateModel(this.dataset);
 
-/*
+      /*
       const resourceModelData =
         ResourceViewModel.getFormattedResource(
           newResourceDTO,
@@ -142,7 +138,6 @@ export class DatasetModel {
   }
 
   async patchViewModel(newModel: AbstractEditViewModel) {
-
     const datasetService = this.datasetWorkflow.getDatasetService();
     await datasetService.patchDatasetChanges(
       this.dataset.id,

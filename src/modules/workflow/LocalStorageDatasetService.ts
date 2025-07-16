@@ -7,7 +7,6 @@ import {
   storeDatasetInLocalStorage,
 } from '@/factories/userCreationFactory';
 
-
 export class LocalStorageDatasetService implements DatasetService {
   declare dataset: DatasetDTO;
   declare loadingDataset: boolean;
@@ -18,7 +17,7 @@ export class LocalStorageDatasetService implements DatasetService {
     this.loadingDataset = true;
     this.datasetCount = 0;
 
-/*
+    /*
     if (datasetBackend) {
       this.patchDatasetChanges(datasetBackend?.id, datasetBackend);
     } else {
@@ -48,12 +47,23 @@ export class LocalStorageDatasetService implements DatasetService {
     this.loadingDataset = false;
     return this.dataset;
   }
-
+  // DOMINIK we need to define patch optional and then extract the id directly from the dataset, or directly pass as an argument the id (This is what I understood from the code)
   async patchDatasetChanges(
-    datasetId: string,
-    data: object,
+    datasetOrId: string | DatasetDTO,
+    patch?: object,
   ): Promise<DatasetDTO> {
     this.loadingDataset = true;
+
+    let datasetId: string;
+    let data: object;
+
+    if (typeof datasetOrId === 'object') {
+      datasetId = datasetOrId.id;
+      data = datasetOrId;
+    } else {
+      datasetId = datasetOrId;
+      data = patch ?? {};
+    }
 
     try {
       const existingData = readDatasetFromLocalStorage(
@@ -106,7 +116,7 @@ export class LocalStorageDatasetService implements DatasetService {
     };
   }
 
-/*
+  /*
   private getLocalDatasetWithDefaults(datasetId: string, user: User, prefilledOrganizationId) {
 
     const defaultDataset = {};
@@ -133,7 +143,6 @@ export class LocalStorageDatasetService implements DatasetService {
 */
 
   async createDataset(dataset: DatasetDTO): Promise<DatasetDTO> {
-
     const datasetId = this.getNewLocalDatasetId();
     localStorage.setItem(datasetId, '');
 

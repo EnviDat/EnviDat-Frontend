@@ -2,18 +2,17 @@
   <div ref="appContainer" class="fill-height pa-2 pa-md-6">
     <v-row class="fill-height">
       <v-col cols="12" lg="4" xl="3" class="workflow-navigation__wrapper">
-
-        <BaseIcon v-if="workflowStore.isDatasetCreation"
-                  :icon="extractIcons('alert')"
+        <BaseIcon
+          v-if="workflowStore.isDatasetCreation"
+          :icon="extractIcons('alert')"
         />
 
-        <BaseIcon v-if="workflowStore.isDatasetEditing"
-                  :icon="extractIcons('success')"
+        <BaseIcon
+          v-if="workflowStore.isDatasetEditing"
+          :icon="extractIcons('success')"
         />
 
-        <TheWorkflowNavigation
-          @navigateItem="catchNavigate"
-        />
+        <TheWorkflowNavigation @navigateItem="catchNavigate" />
       </v-col>
 
       <v-col
@@ -114,7 +113,6 @@ const props = defineProps({
   },
 });
 
-
 const workflowStore = useDatasetWorkflowStore();
 
 // TEMPORARY QUERY PARAMAMETER
@@ -135,14 +133,15 @@ const changeNavigationInStore = (stepParam: number | string) => {
 const datasetExistsInLocalStorage = (datasetId: string) => {
   const localData = localStorage.getItem(datasetId);
   return !!localData;
-}
+};
 
 const mergedDataset = {
   ...props.dataset,
   id: props.datasetId || props.dataset?.id,
-}
+};
 
 if (datasetExistsInLocalStorage(mergedDataset.id)) {
+  // DOMINIK, is this name (initializeWorkflowNewDataset) correct?
   workflowStore.initializeWorkflowNewDataset(mergedDataset);
 } else {
   workflowStore.initializeWorkflow(props.datasetId || props.dataset?.id);
@@ -191,7 +190,7 @@ const navigateRouterToStep = (step: number) => {
     // storybook context
     changeNavigationInStore(step);
   }
-}
+};
 
 const catchConfirmSave = () => {
   const ok = workflowStore.confirmSave();
@@ -211,11 +210,10 @@ const nextStep = async () => {
   const ok = await workflowStore.validateStepAction(currentStep.value);
 
   if (ok) {
-
     if (currentStep.value === 6) {
       // reset the workflow
-      
-/*
+
+      /*
       // @ts-ignore
       workflowStore.initializeDataset();
 
@@ -257,16 +255,13 @@ onBeforeMount(() => {
 */
 
 onMounted(() => {
-
   nextTick(() => {
     vm.value = workflowStore.currentViewModel;
-  })
+  });
 
   // always reset it to 0
   navigateRouterToStep(0);
-
 });
-
 </script>
 
 <style lang="scss">

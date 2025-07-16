@@ -87,7 +87,7 @@
           data-field="metadataTitle"
           :label="labels.labelTitle"
           :readonly="isReadOnly(false)"
-          :error-messages="validationErrors.metadataTitle"
+          :error-messages="validationErrors?.metadataTitle"
           hide-details="auto"
           persistent-hint
           :hint="readOnlyHint(false)"
@@ -126,7 +126,7 @@
           :clear-on-select="true"
           multiple
           :search="search"
-          :error-messages="validationErrors.keywords"
+          :error-messages="validationErrors?.keywords"
           @update:search="
             search = $event;
             isKeywordValid(search);
@@ -177,7 +177,7 @@
           columns="12"
           v-bind="genericTextAreaObject"
           :textarea-content="metadataDescriptionField"
-          :validationError="validationErrors.metadataDescription"
+          :validationError="validationErrors?.metadataDescription"
           :readonly="isReadOnly('metadataDescription')"
           :hint="readOnlyHint('metadataDescription')"
           @inputedText="onDescriptionInput"
