@@ -155,7 +155,7 @@
         <v-col class="flex-grow-0">
           <BaseRectangleButton
             color="primary"
-            :button-text="'dashboardButtonText'"
+            :button-text="dashboardButtonText"
             @clicked="catchOpenDashboard"
           />
         </v-col>
