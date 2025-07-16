@@ -11,9 +11,7 @@ import { S3Node } from '@/types/s3Types';
 
 export const useS3Store = defineStore('s3Store', {
   state: () => ({
-    loading: false,
     contentFromS3: [],
-    error: null,
     treeData: [],
     s3Url: null,
     s3BucketUrl: null,
@@ -29,9 +27,8 @@ export const useS3Store = defineStore('s3Store', {
       isChild: boolean,
       nodeId: number,
       rootNodes?: S3Node[],
-      params = {},
     ) {
-      const response = await axios.get(url, { params, withCredentials: false });
+      const response = await axios.get(url);
       const { ListBucketResult } = this.parseXmlToJson(response.data);
 
       return isChild

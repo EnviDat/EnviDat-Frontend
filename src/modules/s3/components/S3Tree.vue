@@ -1,10 +1,17 @@
 <template>
   <!-- eslint-disable vue/no-v-model-argument -->
   <div>
-    <span class="d-flex pt-4 text-caption" v-if="error != null">{{
-      error
-    }}</span>
+    <span v-if="error"
+          class="d-flex pt-4 text-caption" >
+      <BaseStatusLabelView
+        :status="error.type"
+        :status-text="error.details"
+        :status-color="error.color"
+      />
+    </span>
+
     <v-treeview
+      v-if="!error"
       :items="limitedItems"
       item-value="id"
       class="s3-treeview"
@@ -128,12 +135,13 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
-import { VTreeview } from 'vuetify/labs/VTreeview';
 import { mdiArrowRight } from '@mdi/js';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 
 import { useS3Store } from '@/modules/s3/store/s3Store.ts';
 import { S3Node } from '@/types/s3Types';
+import { warningMessage } from '@/factories/notificationFactory';
 
 const s3Store = useS3Store();
 
@@ -151,11 +159,13 @@ const lastOpenedItemId = ref(0);
 const itemOpened = ref(false);
 
 const s3Content = ref<S3Node[]>();
-const error = ref(null);
+const error = ref();
 
 const labels = {
   viewAll: 'View all data on the S3 File Browser website',
 };
+
+const errorDetailText = 'Sorry at the moment we cannot load the data. Please try again later or click on the download/link icon to download the file directly from the bucket.';
 
 const emit = defineEmits(['loadingChanged', 'changeAutoHeight']);
 
@@ -204,8 +214,8 @@ async function getData(url?: string, isChild?: boolean, nodeId?: number) {
 
     error.value = null;
   } catch (err) {
-    error.value =
-      'Sorry at the moment we cannot load the data. Please try again later or click on the download/link icon to download the file directly from the bucket.';
+
+    error.value = warningMessage(err, errorDetailText, undefined);
   } finally {
     loading.value = false;
     emit('loadingChanged', false);

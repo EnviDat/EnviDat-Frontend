@@ -10,7 +10,8 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package. */
 
-import axios from 'axios';
+import axios, { InternalAxiosRequestConfig } from 'axios';
+
 import {
   handleGenericAPIError,
   handleGenericError,
@@ -43,22 +44,17 @@ export const initAxios = (app, store) => {
   const excludedDomains = [
     process.env.VITE_STATIC_ROOT,
     process.env.VITE_CONFIG_URL,
+    'https://envicloud.wsl.ch/',
+    'https://os.zhdk.cloud.swith.ch',
   ];
 
   axios.interceptors.request.use(
-    (config) => {
+    (config: InternalAxiosRequestConfig) => {
       // Do something before request is sent
 
       const urlIsExcluded = excludedDomains.some((domain) =>
         config.url.includes(domain),
       );
-
-      // If the request signals "forceNoCredentials", override to false
-      if (config.forceNoCredentials) {
-        config.withCredentials = false;
-        // return config because otherwise also config.withCredentials = true; will be run
-        return config;
-      }
 
       if (!urlIsExcluded) {
         config.withCredentials = true;
