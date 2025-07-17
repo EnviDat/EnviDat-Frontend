@@ -10,6 +10,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { reactive } from 'vue';
 import type { Meta } from '@storybook/vue3';
 
 import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader.vue';
@@ -31,9 +32,15 @@ import {
   METADATA_TITLE_PROPERTY, METADATA_URL_PROPERTY,
 } from '@/factories/metadataConsts';
 
+import { EditDatasetServiceLayer } from '@/factories/ViewModels/EditDatasetServiceLayer';
+import { EditHeaderViewModel } from '@/factories/ViewModels/EditHeaderViewModel';
 import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
 import metadataset from './js/metadata';
+import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel.ts';
+
+const serviceLayer = new EditDatasetServiceLayer(metadataset[0]);
+const datasetVM = new DatasetViewModel(serviceLayer);
 
 
 const unFormatedMetadataCards = metadataset;
@@ -59,6 +66,9 @@ const authors = getFullAuthorsFromDataset(authorsMap, metadataCards[1]);
 let existingAuthors = Object.values(authorsMap);
 existingAuthors = sortObjectArray(existingAuthors, 'lastName');
 
+const serviceLayer2 = new EditDatasetServiceLayer(metadataset[1]);
+const datasetVM2 = new DatasetViewModel(serviceLayer2);
+const reactiveViewModelWithErrors = datasetVM2.getViewModel('EditHeaderViewModel');
 
 
 export default {
@@ -66,73 +76,50 @@ export default {
   component: EditMetadataHeader,
 } satisfies Meta<typeof EditMetadataHeader>;
 
-const emptyFirstGenericProps = {
-  id: '1',
-  existingAuthors,
-  metadataTitle: '',
-  [METADATA_CONTACT_EMAIL]: '',
-  [METADATA_CONTACT_FIRSTNAME]: '',
-  [METADATA_CONTACT_LASTNAME]: '',
-  existingEnviDatUsers: authors,
-};
 
-export const EmptyEditHeader = {
-  args: emptyFirstGenericProps,
-};
+// @ts-ignore
+const empty = new EditHeaderViewModel(new DatasetViewModel());
+const emptyVM = reactive(empty);
 
-const filledGenericProps = {
-  id: '2',
-  existingAuthors,
-  metadataTitle: 'My Glorious Title',
-  [METADATA_CONTACT_EMAIL]: 'sarah@smith.com',
-  [METADATA_CONTACT_FIRSTNAME]: 'Sarah',
-  [METADATA_CONTACT_LASTNAME]: 'Miller',
-};
+/*
+const watcherMethod = watch(() => emptyVM, async (newModel) => {
+    newModel.loading = true;
+    setTimeout(() => {
+      newModel.loading = false;
+    }, 2000)
+  },
+  { deep: true },
+);
+*/
 
-export const FilledEditHeader = {
-  args: filledGenericProps,
-};
 
-const filledProps2 = {
-  id: '3',
-  existingAuthors,
-  metadataTitle: 'My Glorious Title',
-  [METADATA_CONTACT_EMAIL]: existingAuthors[3].email,
-  [METADATA_CONTACT_FIRSTNAME]: existingAuthors[3].firstName,
-  [METADATA_CONTACT_LASTNAME]: existingAuthors[3].lastName,
-};
-
-export const FilledWithExistingAuthor = {
-  args: filledProps2,
-};
-
-export const FilledAndReadOnly = {
+export const EmptyWithViewModel = {
   args: {
-    ...filledProps2,
-    readOnlyFields: [
-      METADATA_TITLE_PROPERTY,
-      METADATA_URL_PROPERTY,
-      METADATA_CONTACT_EMAIL,
-      METADATA_CONTACT_FIRSTNAME,
-      METADATA_CONTACT_LASTNAME,
-    ],
-    readOnlyExplanation: 'Fields are readonly for testing!',
+    ...emptyVM,
+    onSave: (newData: any) => {
+      emptyVM.save(newData);
+    },
   },
 };
 
+const vm = datasetVM.getViewModel(EditHeaderViewModel.name);
 
-export const MobileFilledEditHeader = {
-  args: { ...FilledEditHeader.args },
-  parameters: mobileViewportParams,
+export const FilledWithViewModel = {
+  args: { 
+    ...vm,
+    onSave: (newData: any) => {
+      vm.save(newData);
+    },
+  },
 };
 
-
-export const MobileLargeFilledEditHeader = {
-  args: {...FilledEditHeader.args},
-  parameters: mobileLargeViewportParams,
+export const FilledWithViewModelErrors = {
+  args: {
+    ...reactiveViewModelWithErrors,
+    onSave: (newData) => {
+      reactiveViewModelWithErrors.save(newData);
+    },
+  },
 };
 
-export const TabletFilledEditHeader = {
-  args: {...FilledEditHeader.args},
-  parameters: tabletViewportParams,
-};
+reactiveViewModelWithErrors.validate();

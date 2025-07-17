@@ -309,7 +309,6 @@ import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
 
 import S3Tree from '@/modules/s3/components/S3Tree.vue';
-import { useS3Store } from '@/modules/s3/store/s3Store.ts';
 import SparkChart from '@/components/Charts/SparkChart.vue';
 
 import { renderMarkdown, stripMarkdown } from '@/factories/stringFactory';
@@ -393,12 +392,9 @@ export default {
     canDataViz: Boolean,
   },
   mounted() {
-    // set in the store the isS3Resources property, this property is needed to manage the card style in the sm view
-    this.setIfS3isPresent();
   },
   beforeUnmount() {
     // reset store before unmount the component
-    this.s3Store.isS3Resources = false;
   },
   computed: {
     loadingColor() {
@@ -524,11 +520,6 @@ export default {
       this.useAutoHeight = useAutoHeight;
     },
     trackDownload,
-    setIfS3isPresent() {
-      if (this.isEnvicloudUrl && !this.isProtected) {
-        this.s3Store.isS3Resources = true;
-      }
-    },
   },
   data: () => ({
     mdiChartBar,
@@ -546,7 +537,6 @@ export default {
     showFullDescription: false,
     audioFormats: ['mp3', 'wav', 'wma', 'ogg'],
     EDIT_METADATA_DOI_LABEL,
-    s3Store: useS3Store(),
     chartPreviewTooltip: 'Visualize the data',
     chartPreviewData,
     isLoadingS3Tree: false,

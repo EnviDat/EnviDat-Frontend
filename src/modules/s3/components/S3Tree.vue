@@ -151,12 +151,14 @@ const props = defineProps({
     default: '',
   },
 });
-const baseUrl = ref('');
 const loading = ref(false);
 
 const childrenObject = ref(0);
 const lastOpenedItemId = ref(0);
 const itemOpened = ref(false);
+
+const baseUrl = ref('');
+const bucketUrl = ref('');
 
 const s3Content = ref<S3Node[]>();
 const error = ref();
@@ -185,7 +187,7 @@ function toggleOpenedItem() {
  * @param {boolean} isChild is needed for understand which function trigger in the store
  * @param {number} nodeId is needed to filter and add the new data to the right node
  */
-async function getData(url?: string, isChild?: boolean, nodeId?: number) {
+async function getData(url: string, isChild?: boolean, nodeId?: number) {
   // set clickedID item
   lastOpenedItemId.value = nodeId;
 
@@ -206,6 +208,7 @@ async function getData(url?: string, isChild?: boolean, nodeId?: number) {
     loading.value = true;
     emit('loadingChanged', loading.value);
     s3Content.value = await s3Store.fetchS3Content(
+      baseUrl.value,
       dynamicUrl,
       isChild,
       nodeId,
@@ -223,7 +226,6 @@ async function getData(url?: string, isChild?: boolean, nodeId?: number) {
 }
 
 function extractS3Url(inputUrl: string) {
-  s3Store.s3BucketUrl = inputUrl;
   const url = new URL(decodeURI(inputUrl));
   // const url = new URL(inputUrl);
   const hash = url.hash.substring(2);
@@ -251,7 +253,7 @@ function extractS3Url(inputUrl: string) {
   }
 
   // Use basePath if bucket is missing
-  s3Store.s3Url = bucket
+  bucketUrl.value = bucket
     ? bucket.replace(/\/$/, '')
     : basePath.replace(/\/$/, '');
 
@@ -307,9 +309,6 @@ onMounted(() => {
 });
 
 const limitedItems = computed(() => limitAllNodes(s3Content.value));
-/*
-const limitedItems = computed(() => limitAllNodes(s3Store.contentFromS3));
-*/
 </script>
 
 <style>

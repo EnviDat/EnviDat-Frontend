@@ -12,6 +12,9 @@ const urlRes = createResource(metadataCards[0].resources[0]);
 const fileRes = createResource(metadataCards[2].resources[1]);
 const loadingRes = createResource(metadataCards[1].resources[0]);
 const s3Url = createResource(metadataCards[0].resources[3]);
+const S3FolderUrl = createResource(metadataCards[0].resources[3]);
+S3FolderUrl.url = 'https://envicloud.wsl.ch/#/?bucket=https%3A%2F%2Fos.zhdk.cloud.switch.ch%2Fenvicloud%2F&prefix=doi%2F1000001.1%2F2023%2F';
+
 loadingRes.loading = true;
 
 const dataset = metadataCards[2];
@@ -65,6 +68,10 @@ export const UrlLink = {
 
 export const UrlLinkS3bucket = {
   args: { ...s3Url, s3Bucket: true },
+};
+
+export const UrlS3IntoFolder = {
+  args: { ...S3FolderUrl, s3Bucket: true },
 };
 
 export const FileLink = {

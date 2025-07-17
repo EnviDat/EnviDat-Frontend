@@ -230,9 +230,6 @@ export default {
       return res ? res.filter((r) => !r.hideFromResourceList) : [];
     },
     setSmGrid() {
-/*
-      if (this.availableResources.length > 1 && !this.s3Store.isS3Resources) {
-*/
       if (this.availableResources.length > 1) {
         return 6;
       }

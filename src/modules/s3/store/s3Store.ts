@@ -10,19 +10,11 @@ import { S3Node } from '@/types/s3Types';
 //   https://os.zhdk.cloud.switch.ch/envicloud/?prefix=wsl/CORE_S2A/&max-keys=100000&delimiter=/
 
 export const useS3Store = defineStore('s3Store', {
-  state: () => ({
-    contentFromS3: [],
-    treeData: [],
-    s3Url: null,
-    s3BucketUrl: null,
-    /*
-    treeViewIsOpened: false,
-*/
-    isS3Resources: false,
-  }),
+  state: () => ({}),
   getters: {},
   actions: {
     async fetchS3Content(
+      baseUrl: string,
       url: string,
       isChild: boolean,
       nodeId: number,
@@ -32,8 +24,8 @@ export const useS3Store = defineStore('s3Store', {
       const { ListBucketResult } = this.parseXmlToJson(response.data);
 
       return isChild
-        ? this.mapChildData(ListBucketResult, nodeId, rootNodes)
-        : this.mapData(ListBucketResult);
+        ? this.mapChildData(baseUrl, ListBucketResult, nodeId, rootNodes)
+        : this.mapData(baseUrl, ListBucketResult);
     },
 
     parseXmlToJson(xmlData: string) {
@@ -48,7 +40,7 @@ export const useS3Store = defineStore('s3Store', {
       }
     },
 
-    mapData(listObject: ListObjectsV2Output) : S3Node[] {
+    mapData(baseUrl: string, listObject: ListObjectsV2Output) : S3Node[] {
       const rootId = 1;
 
       const childFolders = listObject.CommonPrefixes?.map<S3Node>(
@@ -66,7 +58,7 @@ export const useS3Store = defineStore('s3Store', {
       if (hasContentList) {
         childEntires = contents.map<S3Node>(
           (content, index) =>
-            this.createFileEntry(content, index, rootId),
+            this.createFileEntry(baseUrl, content, index, rootId),
         )
       }
 
@@ -82,12 +74,10 @@ export const useS3Store = defineStore('s3Store', {
       ]
     },
 
-    mapChildData(listObject: ListObjectsV2Output, nodeId: number, rootNodes: S3Node[]) : S3Node[] | undefined {
+    mapChildData(baseUrl: string, listObject: ListObjectsV2Output, nodeId: number, rootNodes: S3Node[]) : S3Node[] | undefined {
       if (!listObject || !listObject.Contents) {
         return undefined;
       }
-
-      const lastId = rootNodes.length;
 
       // Remove first element because is a repetition of the container
       const contents = Array.isArray(listObject.Contents)
@@ -96,13 +86,8 @@ export const useS3Store = defineStore('s3Store', {
 
       // map the content
       const children = Array.isArray(contents)
-        ? contents.map<S3Node>((prefix) => this.createFileEntry(prefix))
-        : [
-            this.createFileEntry('Go to S3', undefined, undefined, {
-              isLastItem: true,
-              customLink: this.s3BucketUrl,
-            }),
-          ];
+        ? contents.map<S3Node>((content) => this.createFileEntry(baseUrl, content))
+        : [];
 
       // Trigger function to add data in the right node
       this.findAndAddChildren(rootNodes, children, nodeId);
@@ -148,14 +133,14 @@ export const useS3Store = defineStore('s3Store', {
     },
 
     // set the URL for download
-    getS3Link(url) {
-      const cleanedBaseUrl = this.s3Url.replace(/\/$/, '');
+    getCleanLink(baseUrl: string, url: string) {
+      const cleanedBaseUrl = baseUrl.replace(/\/$/, '');
       const cleanedUrl = url.replace(/^\//, '');
 
       return `${cleanedBaseUrl}/${cleanedUrl}`;
     },
     // Clean the string for the fileName to reduce the length of the word
-    parseStringChild(str) {
+    parseStringChild(str: string) {
       const childStr = this.parseString(str);
       const splitted = childStr.split('_');
       if (splitted.length >= 2) {
@@ -164,7 +149,7 @@ export const useS3Store = defineStore('s3Store', {
       return childStr;
     },
     // clean the string
-    parseString(str) {
+    parseString(str: string) {
       const trimmedStr = str.replace(/\/$/, '');
 
       const match = trimmedStr.match(/[^/]+$/);
@@ -193,18 +178,20 @@ export const useS3Store = defineStore('s3Store', {
     },
 
     createFileEntry(
+      baseUrl: string,
       content: _Object | string,
       index?: number,
       rootId?: number,
       opts?: { isLastItem?: boolean; customLink?: string },
     ): S3Node {
+
       const key = typeof content === 'string' ? content : content.Key;
 
       const node: S3Node = {
         isChild: true,
         title: this.parseStringChild(key),
         isFile: this.isItemFile(key),
-        link: opts?.customLink ?? this.getS3Link(key),
+        link: opts?.customLink ?? this.getCleanLink(baseUrl, key),
         childrenLoaded: false,
         children: undefined,
         ...(opts?.isLastItem ? { isLastItem: true } : {}),
