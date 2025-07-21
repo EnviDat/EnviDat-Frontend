@@ -1,8 +1,12 @@
 // src/modules/s3/store/s3Store.js
+/* eslint-disable no-irregular-whitespace */
 import { defineStore } from 'pinia';
 import axios from 'axios';
 import { XMLParser } from 'fast-xml-parser';
-import { _Object, ListObjectsV2Output } from '@aws-sdk/client-s3/dist-types/models/models_0';
+import {
+  _Object,
+  ListObjectsV2Output,
+} from '@aws-sdk/client-s3/dist-types/models/models_0';
 import { CommonPrefix } from '@aws-sdk/client-s3/dist-types/models';
 import { S3Node } from '@/types/s3Types';
 
@@ -184,7 +188,6 @@ export const useS3Store = defineStore('s3Store', {
       rootId?: number,
       opts?: { isLastItem?: boolean; customLink?: string },
     ): S3Node {
-
       const key = typeof content === 'string' ? content : content.Key;
 
       const node: S3Node = {
