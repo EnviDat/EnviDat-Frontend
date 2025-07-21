@@ -90,8 +90,15 @@ export const useS3Store = defineStore('s3Store', {
 
       // map the content
       const children = Array.isArray(contents)
-        ? contents.map<S3Node>((content) => this.createFileEntry(baseUrl, content))
-        : [];
+        ? contents.map<S3Node>((content) =>
+            this.createFileEntry(baseUrl, content),
+          )
+        : [
+            this.createFileEntry(baseUrl, 'Go to S3', undefined, undefined, {
+              isLastItem: true,
+              customLink: this.getBrowserLink(baseUrl),
+            }),
+          ];
 
       // Trigger function to add data in the right node
       this.findAndAddChildren(rootNodes, children, nodeId);
@@ -137,12 +144,24 @@ export const useS3Store = defineStore('s3Store', {
     },
 
     // set the URL for download
-    getCleanLink(baseUrl: string, url: string) {
-      const cleanedBaseUrl = baseUrl.replace(/\/$/, '');
-      const cleanedUrl = url.replace(/^\//, '');
+    getCleanLink(baseUrlWithQuery: string, key: string): string {
+      let bucketRoot = baseUrlWithQuery.split('?')[0];
+      if (!bucketRoot.endsWith('/')) bucketRoot += '/';
 
-      return `${cleanedBaseUrl}/${cleanedUrl}`;
+      const cleanKey = key.replace(/^\//, '');
+      return `${bucketRoot}${cleanKey}`;
     },
+    getBrowserLink(baseUrl: string): string {
+      // es. baseUrl = "https://envicloud.wsl.ch/edna/?prefix=fw_sn/dir/&max-keys=..."
+      const urlObj = new URL(baseUrl);
+
+      const hostRoot = urlObj.origin;
+      const bucketRoot = baseUrl.split('?')[0];
+      const prefix = urlObj.searchParams.get('prefix') || '';
+
+      return `${hostRoot}/#/?bucket=${encodeURIComponent(bucketRoot)}&prefix=${encodeURIComponent(prefix)}`;
+    },
+
     // Clean the string for the fileName to reduce the length of the word
     parseStringChild(str: string) {
       const childStr = this.parseString(str);

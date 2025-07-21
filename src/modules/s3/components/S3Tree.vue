@@ -1,8 +1,7 @@
 <template>
   <!-- eslint-disable vue/no-v-model-argument -->
   <div>
-    <span v-if="error"
-          class="d-flex pt-4 text-caption" >
+    <span v-if="error" class="d-flex pt-4 text-caption">
       <BaseStatusLabelView
         :status="error.type"
         :status-text="error.details"
@@ -26,7 +25,7 @@
           :path="mdiArrowRight"
           style="cursor: pointer"
           @click="
-            item.isChild
+            canBeClicked(item)
               ? getData(item.title, item.isChild, item.id)
               : toggleOpenedItem()
           "
@@ -38,7 +37,7 @@
           no-gutters
           dense
           @click="
-            item.isChild
+            canBeClicked(item)
               ? getData(item.title, item.isChild, item.id)
               : toggleOpenedItem()
           "
@@ -206,6 +205,7 @@ async function getData(url: string, isChild?: boolean, nodeId?: number) {
 
   try {
     loading.value = true;
+
     emit('loadingChanged', loading.value);
     s3Content.value = await s3Store.fetchS3Content(
       baseUrl.value,
@@ -217,7 +217,6 @@ async function getData(url: string, isChild?: boolean, nodeId?: number) {
 
     error.value = null;
   } catch (err) {
-
     error.value = warningMessage(err, errorDetailText, undefined);
   } finally {
     loading.value = false;
@@ -244,18 +243,17 @@ function extractS3Url(inputUrl: string) {
     prefix += '/';
   }
 
-  let basePath;
-  if (bucket && bucket !== 'null') {
-    basePath = bucket; // e.g. "https://envicloud.wsl.ch/edna"
-  } else {
-    // If missing 'bucket', fall back to envicloud
-    basePath = 'https://os.zhdk.cloud.switch.ch/envicloud';
-  }
+  let basePath =
+    bucket && bucket !== 'null'
+      ? bucket
+      : 'https://os.zhdk.cloud.switch.ch/envicloud';
 
   // Use basePath if bucket is missing
   bucketUrl.value = bucket
     ? bucket.replace(/\/$/, '')
     : basePath.replace(/\/$/, '');
+
+  if (!basePath.endsWith('/')) basePath += '/';
 
   // Build final direct URL
   const extractedUrl = `${basePath}?prefix=${prefix}&max-keys=100000&delimiter=/`;
@@ -308,7 +306,23 @@ onMounted(() => {
   extractS3Url(props.url);
 });
 
-const limitedItems = computed(() => limitAllNodes(s3Content.value));
+const annotateLevel = (nodes: S3Node[] = [], start = 0): S3Node[] =>
+  nodes.map((node) => {
+    const newNode: S3Node = { ...node, level: start };
+
+    if (Array.isArray(newNode.children) && newNode.children.length > 0) {
+      newNode.children = annotateLevel(newNode.children, start + 1);
+    }
+
+    return newNode;
+  });
+
+const canBeClicked = (item: S3Node) =>
+  item.isChild && item.level <= 1 && !item.isFile;
+
+const limitedItems = computed(() =>
+  annotateLevel(limitAllNodes(s3Content.value)),
+);
 </script>
 
 <style>
