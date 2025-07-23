@@ -8,6 +8,7 @@ import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 import { DatasetService } from '@/types/modelTypes';
 import { BackendDatasetService } from '@/modules/workflow/BackendDatasetService.ts';
 import { workflowGuide } from '@/modules/workflow/resources/workflowGuides.ts';
+
 /*
 import datasets from '~/stories/js/metadata.js';
 
@@ -27,6 +28,12 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     backendStorageService: new BackendDatasetService(),
     openSaveDialog: false,
     isStepSaveConfirmed: false,
+    // define readOnly steps to mange the navigation (UI only)
+    isReadOnly: [
+      'AuthorsInformation',
+      'additionalinformation',
+      'publicationinformation',
+    ],
     // TEMPORARY QUERY PARAMS OPTION
     freeJump: false,
     // END TEMPORARY QUERY PARAMS OPTION
@@ -37,6 +44,9 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
   }),
   getters: {
     currentStepObject: (state) => state.steps[state.currentStep] ?? null,
+    navigationBlocked(state) {
+      return state.mode === 'edit' ? 'free' : 'locked';
+    },
     currentAsyncComponent(state) {
       return state.steps[state.currentStep]?.component;
       /*
@@ -54,11 +64,13 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
 
       return vmInstance;
     },
+
+    // DOMINIK Do we need this getter? Is not used anywhere
     firstInCompleteStep(state) {
       let firstInCompleteIndex = -1;
 
       for (let i = 0; i < state.steps.length; i++) {
-        const step : WorkflowStep = state.steps[i];
+        const step: WorkflowStep = state.steps[i];
         if (!step.completed) {
           firstInCompleteIndex = i;
           break;
@@ -80,12 +92,41 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
         ? this.localStorageService
         : this.backendStorageService;
     },
+
+    // If the mode is edit we unblock the navigation
+    setEditMode(mode: 'create' | 'edit') {
+      this.mode = mode;
+
+      if (mode === 'edit') {
+        this.steps = this.steps.map((s) => {
+          const readOnly = this.isReadOnly.includes(s.key);
+          return {
+            ...s,
+            isEditable: !readOnly,
+            readOnly,
+            status: StepStatus.Completed,
+            completed: s.completed ?? false,
+            hasError: s.hasError ?? false,
+          };
+        });
+        this.freeJump = true;
+      } else {
+        this.steps = this.steps.map((s, idx) => ({
+          ...s,
+          isEditable: idx === 0,
+          readOnly: false,
+          status: idx === 0 ? StepStatus.Active : StepStatus.Disabled,
+          completed: false,
+          hasError: false,
+        }));
+        this.freeJump = false;
+      }
+    },
+
     async loadDataset(datasetId: string) {
       return this.datasetModel.loadDataset(datasetId);
     },
-    async initializeWorkflowNewDataset(dataset?: DatasetDTO) {
-      // SET the status edit or create
-      this.mode = 'create';
+    async initializeWorkflowfromDataset(dataset?: DatasetDTO) {
       let datasetDto: DatasetDTO;
 
       this.localStorageService = new LocalStorageDatasetService();
@@ -113,19 +154,19 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
       // }
 
       // DOMINIK we pass datasetDto but then in the function we didn't use the arg
-      await this.initializeDataset(datasetDto);
+      await this.initializeDataset(datasetDto, 'edit');
     },
     async initializeWorkflow(datasetId: string) {
       // SET the status edit or create
-      this.mode = 'edit';
+
       this.datasetModel = new DatasetModel(this);
 
-      console.log(datasetId);
+      this.localStorageService = new LocalStorageDatasetService();
 
       const datasetDto =
         await this.backendStorageService.loadDataset(datasetId);
 
-      await this.initializeDataset(datasetDto);
+      await this.initializeDataset(datasetDto, 'create');
     },
     resetSteps() {
       this.steps.forEach((s: WorkflowStep) => {
@@ -142,13 +183,15 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
       });
     },
     // async initializeDataset() {
-    async initializeDataset(dataset: DatasetDTO) {
+    async initializeDataset(dataset: DatasetDTO, mode: string) {
       this.localStorageService.dataset = dataset;
 
-      this.resetSteps();
+      // this.resetSteps();
 
       this.datasetModel = new DatasetModel(this);
       await this.datasetModel.loadViewModels();
+
+      this.setEditMode(mode);
 
       this.doiPlaceholder = null;
       this.openSaveDialog = false;
@@ -171,36 +214,29 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
 
       this.setActiveStep(id);
     },
+
+    // setActiveStep differs for create vs edit:
+    // - create: linear wizard. Current step -> Active; others keep their status (Completed/Error) or become Disabled.
+    // - edit: free jump. Only mark the selected step as Active, leave the rest unchanged.
     setActiveStep(id: number) {
-      this.steps.forEach((s: WorkflowStep) => {
-        if (s.id === id) s.status = StepStatus.Active;
-        else if (s.completed) s.status = StepStatus.Completed;
-        else if (s.hasError) s.status = StepStatus.Error;
-        else s.status = StepStatus.Disabled;
-      });
+      if (this.mode === 'create') {
+        this.steps.forEach((s: WorkflowStep) => {
+          if (s.id === id) s.status = StepStatus.Active;
+          else if (s.completed) s.status = StepStatus.Completed;
+          else if (s.hasError) s.status = StepStatus.Error;
+          else s.status = StepStatus.Disabled;
+        });
+      } else {
+        this.steps.forEach((s: WorkflowStep) => {
+          if (s.id === id) s.status = StepStatus.Active;
+        });
+      }
 
       this.currentStep = id;
     },
 
     // END TEMPORARY QUERY PARAMS OPTION
 
-    // navigateItemAction(id, status) {
-    //   // REMOVE after testing
-    //   if (status === 'disabled') {
-    //     return;
-    //   }
-    //   this.currentStep = id;
-    //   // REMOVE after testing
-    //   this.steps.forEach((step) => {
-    //     if (
-    //       step.status === 'active' ||
-    //       step.status === 'completed' ||
-    //       step.status === 'error'
-    //     )
-    //       // eslint-disable-next-line no-useless-return
-    //       return;
-    //   });
-    // },
     setCurrentStepAction() {
       // find the next element with status != completed
       const next = this.steps.find((el) => el.status !== StepStatus.Completed);
@@ -209,7 +245,34 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
         this.currentStep = next.id;
       }
     },
+
+    // EDIT mode: if the user changes something in this step, mark it as "dirty".
+    // We will force a validation before allowing navigation away from this step.
+    markStepDirty(stepId: number, dirty = true) {
+      const step = this.steps[stepId];
+      if (step && !step.readOnly) step.dirty = dirty;
+    },
+
+    // EDIT mode: use this to check if the step must be validated before leaving it.
+    mustValidateOnLeave(stepId: number) {
+      const step = this.steps[stepId];
+      return (
+        this.mode === 'edit' && step && !step.readOnly && step.dirty === true
+      );
+    },
     validateStepAction(stepId: number): boolean {
+      // if we are in create mode we don't validate each step navigation
+
+      const step = this.steps[stepId];
+      if (!step) return false;
+
+      if (this.mode === 'edit' && (!step.dirty || step.readOnly)) {
+        return true;
+      }
+      if (this.mode === 'create' && step.readOnly) {
+        return true;
+      }
+
       const vm = this.currentViewModel;
       if (!vm) return false;
 
@@ -243,6 +306,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
         hasError: false,
         status: StepStatus.Completed,
         errors: null,
+        dirty: false,
       });
 
       // this.setCurrentStepAction();

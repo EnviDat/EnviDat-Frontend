@@ -30,6 +30,8 @@ import {
   mdiInformationOutline,
   mdiFingerprint,
   mdiTextBoxEditOutline,
+  mdiPencil,
+  mdiPencilOff,
 } from '@mdi/js';
 
 const map = {
@@ -66,8 +68,9 @@ const map = {
   question: mdiHelpCircleOutline,
   print: mdiFingerprint,
   draft: mdiTextBoxEditOutline,
+  edit: mdiPencil,
+  noedit: mdiPencilOff,
 };
-
 
 export const extractIcons = (iconName: string) => {
   if (!iconName) {

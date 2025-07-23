@@ -2,17 +2,10 @@
   <div ref="appContainer" class="fill-height pa-2 pa-md-6">
     <v-row class="fill-height">
       <v-col cols="12" lg="4" xl="3" class="workflow-navigation__wrapper">
-        <BaseIcon
-          v-if="workflowStore.isDatasetCreation"
-          :icon="extractIcons('alert')"
+        <TheWorkflowNavigation
+          @navigateItem="catchNavigate"
+          :isDatasetEditing="workflowStore.isDatasetEditing"
         />
-
-        <BaseIcon
-          v-if="workflowStore.isDatasetEditing"
-          :icon="extractIcons('success')"
-        />
-
-        <TheWorkflowNavigation @navigateItem="catchNavigate" />
       </v-col>
 
       <v-col
@@ -118,16 +111,13 @@ const workflowStore = useDatasetWorkflowStore();
 // TEMPORARY QUERY PARAMAMETER
 
 const changeNavigationInStore = (stepParam: number | string) => {
-  const step =  typeof stepParam === 'string' ? Number.parseInt(stepParam, 10) : stepParam;
+  const step =
+    typeof stepParam === 'string' ? Number.parseInt(stepParam, 10) : stepParam;
 
-  if (
-    Number.isFinite(step) &&
-    step >= 0 &&
-    step < workflowStore.steps.length
-  ) {
+  if (Number.isFinite(step) && step >= 0 && step < workflowStore.steps.length) {
     workflowStore.jumpToStep(step);
   }
-}
+};
 // END TEMPORARY QUERY PARAMAMETER
 
 const datasetExistsInLocalStorage = (datasetId: string) => {
@@ -141,13 +131,16 @@ const mergedDataset = {
 };
 
 if (datasetExistsInLocalStorage(mergedDataset.id)) {
-  // DOMINIK, is this name (initializeWorkflowNewDataset) correct?
-  workflowStore.initializeWorkflowNewDataset(mergedDataset);
+  // DOMINIK, is this name (initializeWorkflowfromDataset) correct?
+  console.log('localstorage');
+  workflowStore.initializeWorkflowfromDataset(mergedDataset);
 } else {
+  console.log('nolocalstorage');
   workflowStore.initializeWorkflow(props.datasetId || props.dataset?.id);
 }
 
 const vm = ref(null);
+const savedVM = ref<string | null>(null);
 
 const iconScroll = computed(() => extractIcons('scroll'));
 
@@ -180,14 +173,22 @@ const validate = (freshData) => {
 
 const { currentStep, currentAsyncComponent } = storeToRefs(workflowStore);
 
-const navigateRouterToStep = (step: number) => {
+const navigateRouterToStep = async (step: number) => {
+  const leaving = currentStep.value;
+
+  if (workflowStore.mustValidateOnLeave(leaving)) {
+    const ok = workflowStore.validateStepAction(leaving);
+    if (!ok) {
+      // scroll to the first error
+      if (vm.value) scrollToFirstError(vm.value.validationErrors);
+      return;
+    }
+  }
+
+  // DOMINIK, do we need the router?
   if (router) {
-    router.push({
-      path: router.currentRoute.value.path,
-      query: { step },
-    });
+    router.push({ path: router.currentRoute.value.path, query: { step } });
   } else {
-    // storybook context
     changeNavigationInStore(step);
   }
 };
@@ -241,12 +242,41 @@ watch(
   { immediate: false },
 );
 
-watch( () => route?.query,
-  (newQuery) =>   {
-    const step = newQuery?.step as string || 0;
+watch(
+  () => route?.query,
+  (newQuery) => {
+    const step = (newQuery?.step as string) || 0;
     changeNavigationInStore(step);
   },
-)
+);
+
+// when I change step, save the current view model
+watch(
+  () => workflowStore.currentStep,
+  async () => {
+    vm.value = workflowStore.currentViewModel;
+    savedVM.value = JSON.stringify(vm.value?.getModelData?.() ?? {});
+  },
+  { immediate: false },
+);
+
+watch(
+  () => vm.value?.getModelData?.(),
+  (newVal) => {
+    if (
+      workflowStore.mode === 'edit' &&
+      !workflowStore.steps[workflowStore.currentStep]?.readOnly
+    ) {
+      const currentVm = JSON.stringify(newVal ?? {});
+      // compare with the saved snapshot and block the navigation if they are different
+      workflowStore.markStepDirty(
+        workflowStore.currentStep,
+        currentVm !== savedVM.value,
+      );
+    }
+  },
+  { deep: true },
+);
 
 /*
 onBeforeMount(() => {

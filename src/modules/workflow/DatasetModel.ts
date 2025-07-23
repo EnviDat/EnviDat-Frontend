@@ -59,6 +59,9 @@ export class DatasetModel {
 
       this.viewModelInstances.set(instance.constructor.name, reactiveVM);
     }
+    // handle here the specific cases for authors and keywords
+    // add to the property of the viewModel the kwywords etc
+    // ENRICO for the task
   }
 
   loadViewModels() {

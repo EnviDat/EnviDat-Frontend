@@ -76,6 +76,18 @@
 
           <template #append v-if="display.lgAndUp.value">
             <div
+              class="navigationWorkflow__append--edit"
+              :class="[step.status, { readonly: step.readOnly }]"
+              v-if="props.isDatasetEditing"
+            >
+              <BaseIcon
+                :icon="!step.isEditable ? iconName('noedit') : iconName('edit')"
+                color="null"
+              />
+            </div>
+
+            <div
+              v-else
               class="navigationWorkflow__append mr-1"
               :class="[
                 step.status,
@@ -145,12 +157,15 @@
           class="doi-icon"
           :color="workflowStore.isStepSaveConfirmed ? 'primary' : 'black'"
           :class="
-            workflowStore.isStepSaveConfirmed && workflowStore.doiPlaceholder === null
+            workflowStore.isStepSaveConfirmed &&
+            workflowStore.doiPlaceholder === null
               ? 'pulseIcon'
               : ''
           "
         />
-        <span class="text-body-2 mt-2">{{ workflowStore.doiPlaceholder || 'Reserve DOI' }}</span>
+        <span class="text-body-2 mt-2">{{
+          workflowStore.doiPlaceholder || 'Reserve DOI'
+        }}</span>
       </div>
       <div class="navigationWorkflow__actions--item d-flex flex-column">
         <v-menu
@@ -172,7 +187,9 @@
                 :color="'black'"
               />
               <span class="text-body-2 mt-2">
-                {{ workflowStore.doiPlaceholder != null ? 'Reserved' : 'Draft' }}
+                {{
+                  workflowStore.doiPlaceholder != null ? 'Reserved' : 'Draft'
+                }}
               </span>
             </div>
           </template>
@@ -254,6 +271,11 @@ import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 const display = useDisplay();
 
 const emit = defineEmits(['navigateItem']);
+
+// Props
+const props = defineProps({
+  isDatasetEditing: Boolean,
+});
 
 // tooltip activator
 const showStatusMenu = ref(false);
@@ -456,6 +478,25 @@ const initDriver = () => {
         padding: 10px 0;
       }
     }
+  }
+}
+
+.navigationWorkflow__append--edit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &.active {
+    color: #499df7;
+  }
+  &.completed {
+    color: #40c057;
+  }
+  &.error {
+    color: #e38c2f;
+  }
+  &.readonly {
+    color: #000;
   }
 }
 

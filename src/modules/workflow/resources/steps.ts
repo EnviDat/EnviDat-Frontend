@@ -29,6 +29,8 @@ export interface WorkflowStep {
   viewModelKey: string;
   icon: string;
   status: StepStatus;
+  readOnly?: boolean;
+  dirty?: boolean;
   guideLines?: Array<{
     element: string;
     popover: { title: string; description: string };
@@ -45,7 +47,7 @@ export const workflowSteps: WorkflowStep[] = [
     hasError: false,
     key: 'MetadataBaseInformation',
     component: markRaw(MetadataBaseInformation),
-/*
+    /*
     loader: () =>
       import('@/modules/workflow/components/steps/MetadataBaseInformation.vue'),
 */
@@ -72,7 +74,7 @@ export const workflowSteps: WorkflowStep[] = [
     hasError: false,
     key: 'AuthorsInformation',
     component: markRaw(AuthorsInformation),
-/*
+    /*
     loader: () =>
       import('@/modules/workflow/components/steps/AuthorsInformation.vue'),
 */
@@ -99,7 +101,7 @@ export const workflowSteps: WorkflowStep[] = [
     hasError: false,
     key: 'GeoInformation',
     component: markRaw(GeoInformation),
-/*
+    /*
     loader: () =>
       import('@/modules/workflow/components/steps/GeoInformation.vue'),
 */
@@ -116,7 +118,7 @@ export const workflowSteps: WorkflowStep[] = [
     hasError: false,
     key: 'additionalinformation',
     component: markRaw(AdditionalInformation),
-/*
+    /*
     loader: () =>
       import('@/modules/workflow/components/steps/AdditionalInformation.vue'),
 */
@@ -133,7 +135,7 @@ export const workflowSteps: WorkflowStep[] = [
     hasError: false,
     key: 'uploadinformation',
     component: markRaw(ResourcesInformation),
-/*
+    /*
     loader: () =>
       import('@/modules/workflow/components/steps/ResourcesInformation.vue'),
 */
@@ -150,7 +152,7 @@ export const workflowSteps: WorkflowStep[] = [
     hasError: false,
     key: 'relatedresearch',
     component: markRaw(RelatedResearch),
-/*
+    /*
     loader: () =>
       import('@/modules/workflow/components/steps/RelatedResearch.vue'),
 */
@@ -167,7 +169,7 @@ export const workflowSteps: WorkflowStep[] = [
     hasError: false,
     key: 'publicationinformation',
     component: markRaw(PublishingInformation),
-/*
+    /*
     loader: () =>
       import('@/modules/workflow/components/steps/PublishingInformation.vue'),
 */
