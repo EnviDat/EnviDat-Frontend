@@ -211,12 +211,13 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
           else if (s.hasError) s.status = StepStatus.Error;
           else s.status = StepStatus.Disabled;
         });
-      } else {
-        this.steps.forEach((s: WorkflowStep) => {
-          if (s.id === id) s.status = StepStatus.Active;
-        });
       }
 
+      // else {
+      //   this.steps.forEach((s: WorkflowStep) => {
+      //     // if (s.id === id) s.status = StepStatus.Active;
+      //   });
+      // }
       this.currentStep = id;
     },
 
