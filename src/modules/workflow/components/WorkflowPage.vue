@@ -140,7 +140,6 @@ if (datasetExistsInLocalStorage(mergedDataset.id)) {
 }
 
 const vm = ref(null);
-const savedVM = ref<string | null>(null);
 
 const iconScroll = computed(() => extractIcons('scroll'));
 
@@ -163,11 +162,28 @@ const scrollDown = () => {
   });
 };
 
-const save = (freshData) => {
-  vm.value.save(freshData);
+// const save = (freshData) => {
+//   console.log('save');
+//   vm.value.save(freshData);
+// };
+
+const save = async (freshData) => {
+  const ok = await vm.value.save(freshData);
+
+  // EDIT mode - if we have errors, we block the navigation
+  const step = workflowStore.steps[workflowStore.currentStep];
+  if (workflowStore.mode === 'edit' && !step.readOnly) {
+    if (!ok) {
+      workflowStore.markStepDirty(workflowStore.currentStep, true);
+      scrollToFirstError(vm.value.validationErrors);
+    } else {
+      workflowStore.markStepDirty(workflowStore.currentStep, false);
+    }
+  }
 };
 
 const validate = (freshData) => {
+  console.log('validate');
   vm.value?.validate(freshData);
 };
 
@@ -179,12 +195,10 @@ const navigateRouterToStep = async (step: number) => {
   if (workflowStore.mustValidateOnLeave(leaving)) {
     const ok = workflowStore.validateStepAction(leaving);
     if (!ok) {
-      // scroll to the first error
       if (vm.value) scrollToFirstError(vm.value.validationErrors);
       return;
     }
   }
-
   // DOMINIK, do we need the router?
   if (router) {
     router.push({ path: router.currentRoute.value.path, query: { step } });
@@ -199,13 +213,13 @@ const catchConfirmSave = () => {
   if (ok) {
     navigateRouterToStep(currentStep.value + 1);
   }
-}
+};
 
-const catchNavigate = ({ id, status } : { id: number, status: string }) => {
+const catchNavigate = ({ id, status }: { id: number; status: string }) => {
   if (status !== StepStatus.Disabled) {
     navigateRouterToStep(id);
   }
-}
+};
 
 const nextStep = async () => {
   const ok = await workflowStore.validateStepAction(currentStep.value);
@@ -226,8 +240,7 @@ const nextStep = async () => {
       return;
     }
 
-    navigateRouterToStep( currentStep.value + 1);
-
+    navigateRouterToStep(currentStep.value + 1);
   } else if (!ok && vm.value) {
     scrollToFirstError(vm.value.validationErrors);
   }
@@ -248,34 +261,6 @@ watch(
     const step = (newQuery?.step as string) || 0;
     changeNavigationInStore(step);
   },
-);
-
-// when I change step, save the current view model
-watch(
-  () => workflowStore.currentStep,
-  async () => {
-    vm.value = workflowStore.currentViewModel;
-    savedVM.value = JSON.stringify(vm.value?.getModelData?.() ?? {});
-  },
-  { immediate: false },
-);
-
-watch(
-  () => vm.value?.getModelData?.(),
-  (newVal) => {
-    if (
-      workflowStore.mode === 'edit' &&
-      !workflowStore.steps[workflowStore.currentStep]?.readOnly
-    ) {
-      const currentVm = JSON.stringify(newVal ?? {});
-      // compare with the saved snapshot and block the navigation if they are different
-      workflowStore.markStepDirty(
-        workflowStore.currentStep,
-        currentVm !== savedVM.value,
-      );
-    }
-  },
-  { deep: true },
 );
 
 /*

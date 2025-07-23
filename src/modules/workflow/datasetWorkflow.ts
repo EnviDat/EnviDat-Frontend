@@ -249,17 +249,21 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     // EDIT mode: if the user changes something in this step, mark it as "dirty".
     // We will force a validation before allowing navigation away from this step.
     markStepDirty(stepId: number, dirty = true) {
-      const step = this.steps[stepId];
-      if (step && !step.readOnly) step.dirty = dirty;
+      const s = this.steps[stepId];
+      if (s && !s.readOnly) s.dirty = dirty;
     },
 
     // EDIT mode: use this to check if the step must be validated before leaving it.
     mustValidateOnLeave(stepId: number) {
-      const step = this.steps[stepId];
+      const s = this.steps[stepId];
       return (
-        this.mode === 'edit' && step && !step.readOnly && step.dirty === true
+        this.mode === 'edit' &&
+        s &&
+        !s.readOnly &&
+        (s.dirty === true || s.hasError === true)
       );
     },
+
     validateStepAction(stepId: number): boolean {
       // if we are in create mode we don't validate each step navigation
 
