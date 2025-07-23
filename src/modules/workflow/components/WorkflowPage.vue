@@ -224,26 +224,23 @@ const catchNavigate = ({ id, status }: { id: number; status: string }) => {
 const nextStep = async () => {
   const ok = await workflowStore.validateStepAction(currentStep.value);
 
-  if (ok) {
-    if (currentStep.value === 6) {
-      // reset the workflow
-
-      /*
-      // @ts-ignore
-      workflowStore.initializeDataset();
-
-      currentStep.value = 0;
-
-      navigateRouterToStep(currentStep.value);
-*/
-
-      return;
-    }
-
-    navigateRouterToStep(currentStep.value + 1);
-  } else if (!ok && vm.value) {
-    scrollToFirstError(vm.value.validationErrors);
+  if (!ok) {
+    if (vm.value) scrollToFirstError(vm.value.validationErrors);
+    return;
   }
+  // last step ? return
+  if (currentStep.value === workflowStore.steps.length - 1) return;
+
+  let target: number;
+
+  if (workflowStore.mode === 'create') {
+    target = workflowStore.getNextUncompletedStep(currentStep.value);
+  } else {
+    // math min take the smaller between current step + 1 and the last step.
+    target = Math.min(currentStep.value + 1, workflowStore.steps.length - 1);
+  }
+
+  navigateRouterToStep(target);
 };
 
 // load the current view model

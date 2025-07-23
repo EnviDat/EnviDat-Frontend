@@ -138,21 +138,6 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
           await this.localStorageService.patchDatasetChanges(dataset);
       }
 
-      // if (dataset === undefined) {
-      //   // fresh new dataset
-      //   // DOMINIK Can i define outside?
-      //   this.LocalStorageDatasetService = new LocalStorageDatasetService();
-      //   datasetDto = await this.LocalStorageDatasetService.createDataset();
-
-      //   // } else if (LocalStorageDatasetService.isLocalId(dataset?.id)) {
-      // } else if (dataset.id) {
-      //   // existing local dataset
-      //   this.LocalStorageDatasetService = new LocalStorageDatasetService();
-
-      //   datasetDto =
-      //     await this.LocalStorageDatasetService.patchDatasetChanges(dataset);
-      // }
-
       // DOMINIK we pass datasetDto but then in the function we didn't use the arg
       await this.initializeDataset(datasetDto, 'edit');
     },
@@ -237,13 +222,23 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
 
     // END TEMPORARY QUERY PARAMS OPTION
 
-    setCurrentStepAction() {
+    // setCurrentStepAction() {
+    //   // find the next element with status != completed
+    //   const next = this.steps.find((el) => el.status !== StepStatus.Completed);
+    //   console.log(next);
+    //   if (this.steps[next.id]) {
+    //     this.steps[next.id].status = StepStatus.Active;
+    //     this.currentStep = next.id;
+    //   }
+    // },
+    getNextUncompletedStep(fromId: number) {
       // find the next element with status != completed
-      const next = this.steps.find((el) => el.status !== StepStatus.Completed);
-      if (this.steps[next.id]) {
-        this.steps[next.id].status = StepStatus.Active;
-        this.currentStep = next.id;
+      for (let i = fromId + 1; i < this.steps.length; i++) {
+        const s = this.steps[i];
+        if (!s.completed) return i;
       }
+      // all valid steps are completed, return the last step
+      return Math.min(fromId + 1, this.steps.length - 1);
     },
 
     // EDIT mode: if the user changes something in this step, mark it as "dirty".
