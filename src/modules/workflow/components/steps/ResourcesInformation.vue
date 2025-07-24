@@ -201,14 +201,7 @@ export default {
       type: Object,
       default: () => ({}),
     },
-    readOnlyFields: {
-      type: Array,
-      default: () => [],
-    },
-    readOnlyExplanation: {
-      type: String,
-      default: '',
-    },
+
     userEditMetadataConfig: {
       type: Object,
       default: undefined,
@@ -301,8 +294,6 @@ export default {
         resourcesConfig: {
           downloadActive: false,
         },
-        readOnlyFields: this.readOnlyFields,
-        readOnlyExplanation: this.readOnlyExplanation,
       };
     },
     editResourceObject() {

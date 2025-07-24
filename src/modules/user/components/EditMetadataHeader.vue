@@ -59,9 +59,7 @@
       </v-row>
 
       <v-row>
-        <v-col cols="12"
-               lg="6">
-
+        <v-col cols="12" lg="6">
           <v-row>
             <v-col class="text-h6 pb-0">
               {{ labels.contactPerson }}
@@ -100,18 +98,14 @@
               />
             </v-col>
 
-
-            <v-col cols="12"
-                   sm="6"
-                   class="pl-sm-4"
-            >
-
-              <BaseUserPicker :users="fullNameUsers"
-                              :preSelected="preselectAuthorNames"
-                              :hint="labels.authorPickHint"
-                              @removedUsers="catchPickerAuthorChange($event, false)"
-                              @pickedUsers="catchPickerAuthorChange($event, true)"/>
-
+            <v-col cols="12" sm="6" class="pl-sm-4">
+              <BaseUserPicker
+                :users="fullNameUsers"
+                :preSelected="preselectAuthorNames"
+                :hint="labels.authorPickHint"
+                @removedUsers="catchPickerAuthorChange($event, false)"
+                @pickedUsers="catchPickerAuthorChange($event, true)"
+              />
             </v-col>
           </v-row>
 
@@ -247,7 +241,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import {mdiAccount, mdiBookOpenVariantOutline, mdiEmail} from '@mdi/js';
+import { mdiAccount, mdiBookOpenVariantOutline, mdiEmail } from '@mdi/js';
 
 import {
   EDITMETADATA_CLEAR_PREVIEW,
@@ -497,14 +491,18 @@ export default {
       return matches.length > 0;
     },
     anyUserElementsActive() {
-      return this.activeElements[METADATA_CONTACT_EMAIL]
-        || this.activeElements[METADATA_CONTACT_FIRSTNAME]
-        || this.activeElements[METADATA_CONTACT_LASTNAME];
+      return (
+        this.activeElements[METADATA_CONTACT_EMAIL] ||
+        this.activeElements[METADATA_CONTACT_FIRSTNAME] ||
+        this.activeElements[METADATA_CONTACT_LASTNAME]
+      );
     },
     anyPreviewsChanged() {
-      return this.previews[METADATA_CONTACT_FIRSTNAME] !== null
-        || this.previews[METADATA_CONTACT_LASTNAME] !== null
-        || this.previews[METADATA_CONTACT_EMAIL] !== null;
+      return (
+        this.previews[METADATA_CONTACT_FIRSTNAME] !== null ||
+        this.previews[METADATA_CONTACT_LASTNAME] !== null ||
+        this.previews[METADATA_CONTACT_EMAIL] !== null
+      );
     },
   },
   methods: {
@@ -537,11 +535,20 @@ export default {
         return false;
       }
 
-      const properties = [METADATA_CONTACT_EMAIL, METADATA_CONTACT_FIRSTNAME, METADATA_CONTACT_LASTNAME];
+      const properties = [
+        METADATA_CONTACT_EMAIL,
+        METADATA_CONTACT_FIRSTNAME,
+        METADATA_CONTACT_LASTNAME,
+      ];
 
       // Validate fields corresponding to properties
       for (let i = 0; i < properties.length; i++) {
-        isFieldValid(properties[i], contactObject[properties[i]], this.validations, this.validationErrors);
+        isFieldValid(
+          properties[i],
+          contactObject[properties[i]],
+          this.validations,
+          this.validationErrors,
+        );
       }
 
       // Return false if any of the properties have a validation error
@@ -583,12 +590,16 @@ export default {
       }
 
       if (valid && property === METADATA_TITLE_PROPERTY && !this.metadataUrl) {
-
         this.previews[METADATA_URL_PROPERTY] = getMetadataUrlFromTitle(value);
       }
     },
     validateProperty(property, value) {
-      return isFieldValid(property, value, this.validations, this.validationErrors);
+      return isFieldValid(
+        property,
+        value,
+        this.validations,
+        this.validationErrors,
+      );
     },
     catchPickerAuthorChange(pickedAuthorName, hasAuthor) {
       this.authorPickerTouched = true;
@@ -638,19 +649,26 @@ export default {
       }
 
       // default to filling all the infos from the text-field input
-      let contactObject = createContact(this.contactEmailField, this.contactFirstNameField, this.contactLastNameField);
+      let contactObject = createContact(
+        this.contactEmailField,
+        this.contactFirstNameField,
+        this.contactLastNameField,
+      );
 
       if (property === METADATA_CONTACT_EMAIL) {
-        if (isFieldValid(property, value, this.validations, this.validationErrors)) {
-
+        if (
+          isFieldValid(property, value, this.validations, this.validationErrors)
+        ) {
           // autocomplete author
           const author = getAuthorByEmail(value, this.existingAuthorsWrap);
 
           const autoCompletedContactObject = creationContactFromAuthor(author);
 
           if (autoCompletedContactObject) {
-            this.previews[METADATA_CONTACT_FIRSTNAME] = autoCompletedContactObject[METADATA_CONTACT_FIRSTNAME];
-            this.previews[METADATA_CONTACT_LASTNAME] = autoCompletedContactObject[METADATA_CONTACT_LASTNAME];
+            this.previews[METADATA_CONTACT_FIRSTNAME] =
+              autoCompletedContactObject[METADATA_CONTACT_FIRSTNAME];
+            this.previews[METADATA_CONTACT_LASTNAME] =
+              autoCompletedContactObject[METADATA_CONTACT_LASTNAME];
 
             // overwrite any infos from the text-fields with the author infos
             // from the autocomplete
@@ -666,13 +684,18 @@ export default {
       // when the user focus leaves any of the fields, therefore all changes
       // must be stored
 
-      if (isObjectValid(this.contactValidationProperties, contactObject, this.validations, this.validationErrors)) {
+      if (
+        isObjectValid(
+          this.contactValidationProperties,
+          contactObject,
+          this.validations,
+          this.validationErrors,
+        )
+      ) {
         this.setFullContactInfos(contactObject);
       }
-
     },
     setFullContactInfos(contactObject) {
-
       const newHeaderInfo = {
         ...this.$props,
         ...contactObject,
@@ -686,28 +709,28 @@ export default {
       this.$emit('save', newHeaderInfo);
     },
     setHeaderInfo(property, value) {
-
       let newHeaderInfo = {
         ...this.$props,
         [property]: value,
       };
 
-
-      if (property === METADATA_TITLE_PROPERTY && !this.metadataUrl && this.metadataUrlField) {
+      if (
+        property === METADATA_TITLE_PROPERTY &&
+        !this.metadataUrl &&
+        this.metadataUrlField
+      ) {
         // in the case of typing in the title for the first time, make sure
         // to store the url as well
         newHeaderInfo = {
           ...newHeaderInfo,
           [METADATA_URL_PROPERTY]: this.metadataUrlField,
-        }
+        };
       }
-
 
       eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_MAIN_HEADER,
         data: newHeaderInfo,
       });
-
     },
     isReadOnly(dateProperty) {
       return isFieldReadOnly(this.$props, dateProperty);
@@ -737,10 +760,13 @@ export default {
       labelContactEmail: 'Contact Email',
       labelContactFirstName: 'Contact First Name',
       labelContactLastName: 'Contact Last Name',
-      instructions: 'The header is part of the main metadata information.' +
+      instructions:
+        'The header is part of the main metadata information.' +
         ` Together with the other information in the "${EDIT_STEP_TITLE_MAIN_METADATA}" step, it represents the core information for your research dataset.`,
-      instructions2: 'Enter a title for your research dataset. Please make sure that title is meaningful and specific.',
-      authorInstructions: 'Enter an email address or pick a user as the contact person for this dataset.',
+      instructions2:
+        'Enter a title for your research dataset. Please make sure that title is meaningful and specific.',
+      authorInstructions:
+        'Enter an email address or pick a user as the contact person for this dataset.',
       authorOr: '<strong>Or</strong> pick <br /> an author',
       authorOr2: '<strong>Or</strong> pick an author',
       authorAutoComplete:

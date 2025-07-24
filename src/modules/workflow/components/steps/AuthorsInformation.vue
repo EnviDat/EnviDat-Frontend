@@ -16,7 +16,7 @@
           :icon="false"
           class="rounded-lg info-banner"
         >
-          <v-alert-title class="mb-2">Information</v-alert-title>
+          <v-alert-title class="mb-2">Information </v-alert-title>
 
           <p>
             This section allows you to manage the authors of your dataset.
@@ -63,15 +63,18 @@
             />
           </v-col>
 
-          <v-col v-if="isReadOnly(METADATA_AUTHORS_PROPERTY)" cols="12">
-            <v-card>
-              <v-card-title>
-                {{ EDIT_METADATA_ADD_AUTHOR_TITLE }}
-              </v-card-title>
-              <v-card-text>
-                Adding a new Author is readonly, because:
-                {{ readOnlyHint(METADATA_AUTHORS_PROPERTY) }}
-              </v-card-text>
+          <v-col v-if="isReadOnly('authorsWrapper')" cols="12">
+            <v-card class="rounded-lg pa-6">
+              <v-row>
+                <v-col>
+                  <div class="font-weight-bold">
+                    {{ EDIT_METADATA_ADD_AUTHOR_TITLE }}
+                  </div>
+                  <div class="text-caption text-bold">
+                    {{ readOnlyHint('authorsWrapper') }}
+                  </div>
+                </v-col>
+              </v-row>
             </v-card>
           </v-col>
 
@@ -140,6 +143,11 @@ import {
 
 import { AuthorViewModel } from '@/modules/workflow/viewModel/AuthorViewModel.ts';
 import { updateEditingArray } from '@/factories/userEditingFactory';
+
+import {
+  isReadOnlyField,
+  getReadOnlyHint,
+} from '@/modules/workflow/utils/useReadonly';
 
 export default {
   name: 'AuthorsInformation',
@@ -304,10 +312,10 @@ export default {
   },
   methods: {
     isReadOnly(dateProperty) {
-      return isFieldReadOnly(this.$props, dateProperty);
+      return isReadOnlyField(dateProperty);
     },
     readOnlyHint(dateProperty) {
-      return readOnlyHint(this.$props, dateProperty);
+      return getReadOnlyHint(dateProperty);
     },
     markAuthorSelected(authors: Author[], email: string, isSelected: boolean) {
       const authorToMark = authors.filter(

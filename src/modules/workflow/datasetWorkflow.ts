@@ -1,6 +1,10 @@
 import { defineStore } from 'pinia';
 
-import { StepStatus, WorkflowStep, workflowSteps } from '@/modules/workflow/resources/steps.ts';
+import {
+  StepStatus,
+  WorkflowStep,
+  workflowSteps,
+} from '@/modules/workflow/resources/steps.ts';
 
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 import { LocalStorageDatasetService } from '@/modules/workflow/LocalStorageDatasetService.ts';
@@ -28,12 +32,30 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     backendStorageService: new BackendDatasetService(),
     openSaveDialog: false,
     isStepSaveConfirmed: false,
+    // list of readOnlyFields
+    // if you need to find those items in the code just paste this isReadOnly('visibility')
+    listOfReadOnlyFields: [
+      'authors',
+      'authorsWrapper',
+      'license',
+      'institution',
+      'grantNumber',
+      'institutionUrl',
+      'organizationId',
+      'publicationsInfo',
+      'contactEmail',
+      'contactFirstName',
+      'contactLastName',
+      'visibility',
+      'dateYear',
+    ],
     // define readOnly steps to mange the navigation (UI only)
-    isReadOnly: [
+    isReadOnlyStep: [
       'AuthorsInformation',
       'additionalinformation',
       'publicationinformation',
     ],
+
     // TEMPORARY QUERY PARAMS OPTION
     freeJump: false,
     // END TEMPORARY QUERY PARAMS OPTION
@@ -99,7 +121,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
 
       if (mode === 'edit') {
         this.steps = this.steps.map((s) => {
-          const readOnly = this.isReadOnly.includes(s.key);
+          const readOnly = this.isReadOnlyStep.includes(s.key);
           return {
             ...s,
             isEditable: !readOnly,
@@ -200,6 +222,10 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
       this.setActiveStep(id);
     },
 
+    isFieldReadonly(fieldKey: string): boolean {
+      if (this.mode === 'create') return false;
+      return this.listOfReadOnlyFields.includes(fieldKey);
+    },
     // setActiveStep differs for create vs edit:
     // - create: linear wizard. Current step -> Active; others keep their status (Completed/Error) or become Disabled.
     // - edit: free jump. Only mark the selected step as Active, leave the rest unchanged.

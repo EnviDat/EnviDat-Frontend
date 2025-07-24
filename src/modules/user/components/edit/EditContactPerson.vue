@@ -1,7 +1,5 @@
 <template>
-  <v-card class="pa-4"
-          :flat
-  >
+  <v-card class="pa-4" :flat>
     <v-container fluid class="pa-0">
       <v-row>
         <v-col cols="12" class="text-h6 pb-0">{{ labels.contactPerson }}</v-col>
@@ -18,10 +16,10 @@
             :id="METADATA_CONTACT_EMAIL"
             :label="labels.labelContactEmail"
             :error-messages="validationErrors[METADATA_CONTACT_EMAIL]"
-            :readonly="isContactPropertyReadOnly(METADATA_CONTACT_EMAIL)"
+            :readonly="isReadOnly('contactEmail')"
+            :hint="readOnlyHint('contactEmail')"
             hide-details="auto"
             persistent-hint
-            :hint="contactPropertyHint(METADATA_CONTACT_EMAIL)"
             :prepend-icon="mdiEmail"
             :placeholder="labels.placeholderContactEmail"
             v-model="local.contactEmail"
@@ -56,10 +54,10 @@
             :id="METADATA_CONTACT_FIRSTNAME"
             :label="labels.labelContactFirstName"
             :error-messages="validationErrors[METADATA_CONTACT_FIRSTNAME]"
-            :readonly="isContactPropertyReadOnly(METADATA_CONTACT_FIRSTNAME)"
+            :readonly="isReadOnly('contactFirstName')"
+            :hint="readOnlyHint('contactFirstName')"
             hide-details="auto"
             persistent-hint
-            :hint="contactPropertyHint(METADATA_CONTACT_FIRSTNAME)"
             :prepend-icon="mdiAccount"
             :placeholder="labels.placeholderContactFirstName"
             v-model="local.contactFirstName"
@@ -74,10 +72,10 @@
             :id="METADATA_CONTACT_LASTNAME"
             :label="labels.labelContactLastName"
             :error-messages="validationErrors[METADATA_CONTACT_LASTNAME]"
-            :readonly="isContactPropertyReadOnly(METADATA_CONTACT_LASTNAME)"
+            :readonly="isReadOnly('contactLastName')"
+            :hint="readOnlyHint('contactLastName')"
             hide-details="auto"
             persistent-hint
-            :hint="contactPropertyHint(METADATA_CONTACT_LASTNAME)"
             :prepend-icon="mdiAccount"
             :placeholder="labels.placeholderContactLastName"
             v-model="local.contactLastName"
@@ -92,6 +90,11 @@
 <script>
 import { mdiAccount, mdiEmail } from '@mdi/js';
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
+
+import {
+  isReadOnlyField,
+  getReadOnlyHint,
+} from '@/modules/workflow/utils/useReadonly';
 
 const METADATA_CONTACT_EMAIL = 'contactEmail';
 const METADATA_CONTACT_FIRSTNAME = 'contactFirstName';
@@ -108,8 +111,6 @@ export default {
     fullNameUsers: { type: Array, default: () => [] },
     preselectAuthorNames: { type: Array, default: () => [] },
     validationErrors: { type: Object, default: () => ({}) },
-    isContactPropertyReadOnly: { type: Function, default: () => false },
-    contactPropertyHint: { type: Function, default: () => '' },
     authors: { type: Array, default: () => [] },
     flat: {
       type: Boolean,
@@ -152,6 +153,12 @@ export default {
     },
   },
   methods: {
+    isReadOnly(dateProperty) {
+      return isReadOnlyField(dateProperty);
+    },
+    readOnlyHint(dateProperty) {
+      return getReadOnlyHint(dateProperty);
+    },
     blurOnEnterKey(e) {
       if (e.key === 'Enter') e.target.blur();
     },

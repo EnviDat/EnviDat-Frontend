@@ -1,41 +1,36 @@
 <template>
-  <v-card id="MetadataAuthorsEditing"
-          class="pa-0"
-          :loading="loadingColor"
-          flat
-  >
+  <v-card id="MetadataAuthorsEditing" class="pa-0" :loading="loadingColor" flat>
     <v-container fluid class="pa-4">
-      <v-row>
+      <!-- <v-row>
         <v-col class="text-h5">
           {{ title }}
         </v-col>
-      </v-row>
+      </v-row> -->
 
-      <v-row>
+      <!-- <v-row>
         <v-col class="text-body-1" v-html="editingInstructions"> </v-col>
-      </v-row>
-
-      <v-row v-show="validationErrors.authors">
-        <v-col>
-          <v-alert type="error">
-            {{ validationErrors.authors }}
-          </v-alert>
-        </v-col>
-      </v-row>
-
-      <v-row align="center" class="pt-2">
-        <v-col class="flex-grow-0 px-3 py-0">
-          <BaseIcon :icon="mdiCursorMove" color="grey" />
-        </v-col>
-
-        <v-col class="text-h6 pa-0"> Author Sequence </v-col>
-      </v-row>
+      </v-row> -->
 
       <v-row>
-        <v-col>
+        <v-row v-show="validationErrors.authors">
+          <v-col>
+            <v-alert type="error">
+              {{ validationErrors.authors }}
+            </v-alert>
+          </v-col>
+        </v-row>
+        <v-col class="mb-0 pa-0">
+          <v-row class="mb-2">
+            <v-col>
+              <div class="font-weight-bold">{{ title }}</div>
+              <div v-html="editingInstructions" class="text-caption"></div>
+            </v-col>
+          </v-row>
+          <!-- <BaseIcon :icon="mdiCursorMove" color="grey" /> -->
+
           <ExpandableLayout
             statusText="Click here, drag and drop the authors to change the sequence."
-            :startExpanded="authorFullNames?.length < 10"
+            :startExpanded="authorFullNames?.length < 15"
             highlighted
             isFlat
           >
@@ -43,8 +38,8 @@
               :items="authorFullNames"
               :useAuthorTags="true"
               :draggableProperty="METADATA_AUTHOR_SEQUENCE_PROPERTY"
-              :readOnlyFields="readOnlyFields"
-              :readOnlyExplanation="readOnlyExplanation"
+              :readOnlyFields="isReadOnly('authors')"
+              :readOnlyExplanation="readOnlyHint('authors')"
               @listChanged="reorderList"
             />
           </ExpandableLayout>
@@ -53,7 +48,7 @@
 
       <v-row>
         <v-col cols="12">
-          <MetadataAuthors v-bind="metadataAuthorsObject">
+          <MetadataAuthorsWorkflow v-bind="metadataAuthorsObject">
             <template #editingAuthors="author">
               <AuthorCard
                 v-bind="authorEditingProperties(author)"
@@ -68,7 +63,7 @@
                 </template>
               </AuthorCard>
             </template>
-          </MetadataAuthors>
+          </MetadataAuthorsWorkflow>
         </v-col>
       </v-row>
     </v-container>
@@ -97,15 +92,20 @@ import {
   METADATA_DATACREDIT_PROPERTY,
 } from '@/factories/metadataConsts';
 
-import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuthors.vue';
+import MetadataAuthorsWorkflow from '@/modules/workflow/components/steps/MetadataAuthorsWorkflow.vue';
 import AuthorCard from '@/modules/metadata/components/AuthorCard.vue';
 import EditDataCredits from '@/modules/user/components/edit/EditDataCredits.vue';
 import BaseDraggableList from '@/components/BaseElements/BaseDraggableList.vue';
 import ExpandableLayout from '@/components/Layouts/ExpandableLayout.vue';
-import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
+// import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 import { getAuthorName } from '@/factories/authorFactory';
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus.js';
+
+import {
+  isReadOnlyField,
+  getReadOnlyHint,
+} from '@/modules/workflow/utils/useReadonly';
 
 export default {
   name: 'EditMetadataAuthors',
@@ -176,6 +176,12 @@ export default {
     },
   },
   methods: {
+    isReadOnly(dateProperty) {
+      return isReadOnlyField(dateProperty);
+    },
+    readOnlyHint(dateProperty) {
+      return getReadOnlyHint(dateProperty);
+    },
     reorderList(newList) {
       const newAuthors = [];
 
@@ -271,7 +277,7 @@ export default {
 
       this.$emit('save', {
         authors: localAuthorsCopy,
-      })
+      });
     },
     catchEditAuthorClick(author) {
       this.$emit('editAuthorClick', author);
@@ -289,8 +295,8 @@ export default {
     previewAuthors: null,
   }),
   components: {
-    BaseIcon,
-    MetadataAuthors,
+    // BaseIcon,
+    MetadataAuthorsWorkflow,
     AuthorCard,
     EditDataCredits,
     BaseDraggableList,

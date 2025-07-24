@@ -79,7 +79,7 @@
         </v-row>
       </v-col>
 
-       <v-col cols="12" xl="6">
+      <v-col cols="12" xl="6">
         <v-row>
           <v-col cols="12">
             <EditOrganization v-bind="editOrganizationProps" />
@@ -87,28 +87,28 @@
         </v-row>
       </v-col>
 
-       <v-col cols="12" xl="6">
-          <v-row v-if="doiWorkflowActive">
-            <v-col>
-              <EditPublicationStatus
-                v-bind="editPublicationStatusProps"
-                @clicked="catchPublicationStateChange"
-              />
-            </v-col>
-          </v-row>
+      <v-col cols="12" xl="6">
+        <v-row v-if="doiWorkflowActive">
+          <v-col>
+            <EditPublicationStatus
+              v-bind="editPublicationStatusProps"
+              @clicked="catchPublicationStateChange"
+            />
+          </v-col>
+        </v-row>
 
-          <v-row v-if="!doiWorkflowActive">
-            <v-col>
-              <NotFoundCard
-                title="Publication Status editing is disabled"
-                description="There seems to be a problem, make sure you read the message in the banner or go on the <a href='https://www.envidat.ch' target='_blank'>homepage</a> and check the news."
-                actionDescription="Click to open the legacy UI for dataset publication. Use the blue button on the top right of the page."
-                actionButtonText="Request Publication"
-                :actionButtonCallback="openCKANLink"
-              />
-            </v-col>
-          </v-row>
-        </v-col>
+        <v-row v-if="!doiWorkflowActive">
+          <v-col>
+            <NotFoundCard
+              title="Publication Status editing is disabled"
+              description="There seems to be a problem, make sure you read the message in the banner or go on the <a href='https://www.envidat.ch' target='_blank'>homepage</a> and check the news."
+              actionDescription="Click to open the legacy UI for dataset publication. Use the blue button on the top right of the page."
+              actionButtonText="Request Publication"
+              :actionButtonCallback="openCKANLink"
+            />
+          </v-col>
+        </v-row>
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -156,6 +156,11 @@ import {
   getAuthorByEmail,
   getAuthorName,
 } from '@/factories/authorFactory';
+
+import {
+  isReadOnlyField,
+  getReadOnlyHint,
+} from '@/modules/workflow/utils/useReadonly';
 
 // const NotFoundCard = defineAsyncComponent(
 //   () => import('@/components/Cards/NotFoundCard.vue'),
@@ -262,7 +267,6 @@ export default {
       return this.existingAuthors;
     },
     editContactPersonProps() {
-
       return {
         contactEmail: this.contactEmail || '',
         contactFirstName: this.contactFirstName,
@@ -271,8 +275,6 @@ export default {
         authors: this.existingAuthorsWrap,
         preselectAuthorNames: this.preselectAuthorNames || [],
         validationErrors: this.validationErrors || {},
-        isContactPropertyReadOnly: () => false,
-        contactPropertyHint: () => '',
         flat: true,
       };
     },
@@ -319,16 +321,16 @@ export default {
       return {
         organizationId: this.organizationId,
         userOrganizations: undefined,
-        readOnlyFields: this.readOnlyFields,
-        readOnlyExplanation: this.readOnlyExplanation,
+        readOnlyFields: this.isReadOnly('organizationId'),
+        readOnlyExplanation: this.readOnlyHint('organizationId'),
         flat: true,
       };
     },
     editPublicationsProps() {
       return {
         ...this.publicationsInfo,
-        readOnlyFields: this.readOnlyFields,
-        readOnlyExplanation: this.readOnlyExplanation,
+        readOnlyFields: this.isReadOnly('publicationsInfo'),
+        readOnlyExplanation: this.readOnlyHint('publicationsInfo'),
         flat: true,
       };
     },
@@ -361,6 +363,13 @@ export default {
       this.newDatasetInfo.contactFirstName = updatedContact.contactFirstName;
       this.newDatasetInfo.contactLastName = updatedContact.contactLastName;
       this.$emit('save', this.newDatasetInfo);
+    },
+
+    isReadOnly(dateProperty) {
+      return isReadOnlyField(dateProperty);
+    },
+    readOnlyHint(dateProperty) {
+      return getReadOnlyHint(dateProperty);
     },
 
     catchPublicationStateChange(event) {

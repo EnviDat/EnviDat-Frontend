@@ -102,8 +102,9 @@
             <v-text-field
               :label="labels.institution"
               :model-value="item.institution"
-              :readonly="isFieldReadOnly('institution')"
+              :readonly="isReadOnly('institution')"
               :hint="readOnlyHint('institution')"
+              persistent-hint
               @keyup.enter="onKeyUp"
               @change="
                 changeInstitution(index, 'institution', $event.target.value)
@@ -115,8 +116,9 @@
             <v-text-field
               :label="labels.grantNumber"
               :model-value="item.grantNumber"
-              :readonly="isFieldReadOnly('grantNumber')"
+              :readonly="isReadOnly('grantNumber')"
               :hint="readOnlyHint('grantNumber')"
+              persistent-hint
               @keyup="onKeyUp"
               @change="
                 changeInstitution(index, 'grantNumber', $event.target.value)
@@ -128,7 +130,8 @@
             <v-text-field
               :label="labels.institutionUrl"
               :model-value="item.institutionUrl"
-              :readonly="isFieldReadOnly('institutionUrl')"
+              :readonly="isReadOnly('institutionUrl')"
+              persistent-hint
               :hint="readOnlyHint('institutionUrl')"
               @keyup="onKeyUp"
               @change="
@@ -150,7 +153,7 @@
     </v-row>
 
     <v-row v-if="validationErrors.funders != null">
-      <v-col >
+      <v-col>
         <v-alert type="error">
           {{ validationErrors.funders }}
         </v-alert>
@@ -178,18 +181,16 @@
               item-text="title"
               return-object
               :label="labelsLicense.dataLicense"
-              :readonly="isDataLicenseReadonly"
-              hide-details
+              :readonly="isReadOnly('license')"
               persistent-hint
-              :hint="dataLicenseReadonlyExplanation"
+              :hint="readOnlyHint('license')"
               :prepend-icon="mdiShieldSearch"
               :menu-icon="mdiArrowDownDropCircleOutline"
               @update:model-value="changeLicense($event)"
             />
           </v-col>
 
-          <v-col v-if="validationErrors.dataLicenseId != null"
-                 cols="12">
+          <v-col v-if="validationErrors.dataLicenseId != null" cols="12">
             <v-alert type="error">
               {{ validationErrors.dataLicenseId }}
             </v-alert>
@@ -197,8 +198,7 @@
 
           <v-col cols="12">
             <v-expansion-panels focusable v-model="defaultOpenPanels">
-              <v-expansion-panel :title="dataSummaryClickInfo"
-              >
+              <v-expansion-panel :title="dataSummaryClickInfo">
                 <v-expansion-panel-text>
                   <div v-html="getDataLicenseSummary" />
                 </v-expansion-panel-text>
@@ -231,12 +231,17 @@ import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 // import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import { isObjectEmpty } from '@/factories/userEditingFactory';
 
-import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+// import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 import {
   getAvailableLicensesForEditing,
   dataLicenses,
 } from '@/factories/dataLicense';
 import { renderMarkdown } from '@/factories/stringFactory.js';
+
+import {
+  isReadOnlyField,
+  getReadOnlyHint,
+} from '@/modules/workflow/utils/useReadonly';
 
 export default {
   name: 'EditMetadataHeader',
@@ -270,7 +275,10 @@ export default {
         return 'Please select a data license above to view data license summary.';
       }
 
-      return renderMarkdown(this.currentDataLicense.summary) || 'Data summary information unavailable';
+      return (
+        renderMarkdown(this.currentDataLicense.summary) ||
+        'Data summary information unavailable'
+      );
     },
     previewFundersWithEmpty() {
       const last = this.previewFunders[this.previewFunders.length - 1] || {};
@@ -282,8 +290,15 @@ export default {
   },
 
   methods: {
-    isFieldReadOnly,
-    readOnlyHint,
+    // isFieldReadOnly,
+    // readOnlyHint,
+
+    isReadOnly(dateProperty) {
+      return isReadOnlyField(dateProperty);
+    },
+    readOnlyHint(dateProperty) {
+      return getReadOnlyHint(dateProperty);
+    },
 
     deleteFundersEntry(i) {
       this.previewFunders.splice(i, 1);

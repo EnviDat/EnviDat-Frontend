@@ -31,7 +31,7 @@
       </v-row>
 
       <v-row>
-        <v-col >
+        <v-col>
           {{ labels.instructions }}
         </v-col>
       </v-row>
@@ -50,24 +50,31 @@
             @input="validateProperty('publisher', $event)"
             :model-value="publisherField"
           />
-
         </v-col>
 
         <v-col cols="6">
-          <BaseDatePickerYear
+          <!-- why we use an array for the readOnly opts? we have only one item inside -->
+          <!-- <BaseDatePickerYear
             :year="publicationYearField"
             year-label="PublicationYear"
             :yearProperty="METADATA_PUBLICATION_YEAR_PROPERTY"
             :readOnlyFields="readOnlyFields"
             :readOnlyExplanation="readOnlyExplanation"
             @yearChange="saveYear"
+          /> -->
+          <BaseDatePickerYear
+            :year="publicationYearField"
+            year-label="PublicationYear"
+            :yearProperty="METADATA_PUBLICATION_YEAR_PROPERTY"
+            :readonly="isReadOnly('dateYear')"
+            :hint="readOnlyHint('dateYear')"
+            @yearChange="saveYear"
           />
         </v-col>
       </v-row>
 
-      <v-row >
-
-        <v-col >
+      <v-row>
+        <v-col>
           <v-text-field
             :label="labels.dataObjectIdentifier"
             readonly
@@ -82,7 +89,6 @@
             :append-icon="mdiContentCopy"
             @click:append="catchClipboardCopy"
           />
-
         </v-col>
 
         <v-col>
@@ -90,31 +96,29 @@
             :id="METADATA_STATE_INVISIBLE"
             :model-value="visibilityState"
             :items="possibleVisibilityStates"
-            :readonly="isReadOnly(METADATA_STATE_INVISIBLE)"
+            :readonly="isReadOnly('visibility')"
             hide-details="auto"
             persistent-hint
-            :hint="readOnlyHint(METADATA_STATE_INVISIBLE)"
+            :hint="readOnlyHint('visibility')"
             :prepend-icon="mdiEye"
             :menu-icon="mdiArrowDownDropCircleOutline"
             :label="labels.visibilityState"
           >
             <template v-slot:selection="{ item }">
-              <MetadataStateChip style="font-size: 12px;" :state="item.value" />
+              <MetadataStateChip style="font-size: 12px" :state="item.value" />
             </template>
 
             <template v-slot:item="{ item }">
-              <v-list-item >
-                <MetadataStateChip style="font-size: 12px;" :state="item.value" />
+              <v-list-item>
+                <MetadataStateChip
+                  style="font-size: 12px"
+                  :state="item.value"
+                />
               </v-list-item>
             </template>
-
           </v-autocomplete>
-
         </v-col>
-
       </v-row>
-
-
     </v-container>
   </v-card>
 </template>
@@ -159,16 +163,19 @@ import {
   METADATA_PUBLICATION_YEAR_PROPERTY,
 } from '@/factories/metadataConsts';
 
-
-import {possibleVisibilityStates} from '@/factories/metaDataFactory';
+import { possibleVisibilityStates } from '@/factories/metaDataFactory';
 import BaseDatePickerYear from '@/components/BaseElements/BaseDatePickerYear.vue';
 
 import { readOnlyHint, isFieldReadOnly } from '@/factories/globalMethods';
 
+import {
+  isReadOnlyField,
+  getReadOnlyHint,
+} from '@/modules/workflow/utils/useReadonly';
+
 export default {
   name: 'EditPublicationInfo',
-  created() {
-  },
+  created() {},
   props: {
     publicationState: {
       type: String,
@@ -223,8 +230,7 @@ export default {
       default: false,
     },
   },
-  mounted () {
-
+  mounted() {
     if (this.publicationYear) {
       this.previewYear = this.publicationYear;
     } else {
@@ -243,7 +249,8 @@ export default {
     doiField: {
       get() {
         return this.publicationState === PUBLICATION_STATE_PUBLISHED
-          ? `https://www.doi.org/${this.doi}` : this.doi;
+          ? `https://www.doi.org/${this.doi}`
+          : this.doi;
       },
       set(value) {
         const property = 'doi';
@@ -270,7 +277,9 @@ export default {
     },
     publicationYearField: {
       get() {
-        return this.previewYear !== null ? this.previewYear : this.publicationYear;
+        return this.previewYear !== null
+          ? this.previewYear
+          : this.publicationYear;
       },
       set(value) {
         const property = 'publicationYear';
@@ -286,10 +295,10 @@ export default {
   },
   methods: {
     isReadOnly(dateProperty) {
-      return isFieldReadOnly(this.$props, dateProperty);
+      return isReadOnlyField(dateProperty);
     },
     readOnlyHint(dateProperty) {
-      return readOnlyHint(this.$props, dateProperty);
+      return getReadOnlyHint(dateProperty);
     },
     validateProperty(property, value) {
       return isFieldValid(
@@ -348,7 +357,8 @@ export default {
       dataObjectIdentifier: EDIT_METADATA_DOI_LABEL,
       publisher: 'Publisher',
       year: EDIT_METADATA_PUBLICATION_YEAR_LABEL,
-      instructions: 'Please set the correct publication year. The DOI is only activate once the dataset has been published. You can copy it to already put into a paper.',
+      instructions:
+        'Please set the correct publication year. The DOI is only activate once the dataset has been published. You can copy it to already put into a paper.',
     },
     propertyValidationSuffix: 'Validation',
     validationErrors: {

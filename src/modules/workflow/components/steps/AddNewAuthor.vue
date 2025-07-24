@@ -1,9 +1,5 @@
 <template>
-  <v-card id="AddNewAuthor"
-          class="pa-0"
-          :loading="loadingColor"
-          flat
-  >
+  <v-card id="AddNewAuthor" class="pa-0" :loading="loadingColor" flat>
     <BaseIconButton
       v-if="isEditingAuthor"
       class="editResourceCloseButton ma-2"
@@ -20,7 +16,7 @@
 
     <v-container fluid class="pa-4">
       <v-row>
-        <v-col class="text-h5" cols="8">
+        <!-- <v-col class="text-h5" cols="8">
           {{ titleLabel }}
         </v-col>
 
@@ -40,10 +36,10 @@
             :statusText="error"
             :expandedText="errorDetails"
           />
-        </v-col>
+        </v-col> -->
       </v-row>
 
-      <v-row>
+      <!-- <v-row>
         <v-col class="text-body-1 pb-0">
           {{ editAuthorInstructions }}
         </v-col>
@@ -53,10 +49,19 @@
         <v-col class="text-body-1">
           {{ labels.authorInstructions }}
         </v-col>
-      </v-row>
+      </v-row> -->
 
       <v-row dense class="pt-2">
-        <v-col>
+        <v-col class="mb-0 pa-0">
+          <v-row class="mb-5">
+            <v-col>
+              <div class="font-weight-bold">{{ titleLabel }}</div>
+              <div class="text-caption">
+                {{ editAuthorInstructions }}
+                {{ labels.authorInstructions }}
+              </div>
+            </v-col>
+          </v-row>
           <v-text-field
             ref="email"
             id="email"
@@ -77,7 +82,7 @@
       </v-row>
 
       <v-row v-if="!isEditingAuthor" no-gutters dense>
-        <v-col class="text-body-1" v-html="labels.authorOr"> </v-col>
+        <div v-html="labels.authorOr" class="text-caption" />
       </v-row>
 
       <v-row v-if="!isEditingAuthor" dense class="pt-2">
@@ -85,23 +90,19 @@
           <BaseUserPicker
             :users="fullNameUsers"
             :preSelected="preselectAuthorNames"
-            :readonly="isUserPickerReadOnly"
-            :hint="
-              isUserPickerReadOnly
-                ? readOnlyHint('authors')
-                : labels.authorPickHint
-            "
+            :readonly="isReadOnly('authors')"
+            :hint="ireadOnlyHint('authors')"
             @removedUsers="catchPickerAuthorChange($event, false)"
             @pickedUsers="catchPickerAuthorChange($event, true)"
           />
         </v-col>
       </v-row>
 
-      <v-row class="px-4" dense>
-        <v-col class="text-body-1" v-html="labels.authorAutoComplete"> </v-col>
+      <v-row class="pa-0 pt-2 pb-2" dense>
+        <div v-html="labels.authorAutoComplete" class="text-caption" />
       </v-row>
 
-      <v-row dense class="pt-2 px-4">
+      <v-row dense class="pt-2 pa-0">
         <v-col>
           <v-text-field
             ref="firstName"
@@ -121,7 +122,7 @@
           />
         </v-col>
 
-        <v-col class="pl-4">
+        <v-col class="pl-2">
           <v-text-field
             ref="lastName"
             id="lastName"
@@ -141,7 +142,7 @@
         </v-col>
       </v-row>
 
-      <v-row dense class="px-4">
+      <v-row dense class="pa-0">
         <v-col>
           <v-text-field
             ref="affiliation"
@@ -161,7 +162,7 @@
           />
         </v-col>
 
-        <v-col class="pl-4">
+        <v-col class="pl-2">
           <v-text-field
             ref="identifier"
             id="identifier"
@@ -219,7 +220,7 @@ import {
 } from '@mdi/js';
 
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
+// import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 
@@ -236,6 +237,11 @@ import {
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus.js';
 import { useDebounce } from '@/modules/workflow/workflowFunctions.js';
+
+import {
+  isReadOnlyField,
+  getReadOnlyHint,
+} from '@/modules/workflow/utils/useReadonly';
 
 export default {
   name: 'AddNewAuthor',
@@ -310,7 +316,6 @@ export default {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
 
     this.focusOutDebouncing = useDebounce((property: string, value: any) => {
-
       // only check if the identifier is in focus
       // because it's optional, so when it's in focus don't auto save
       // otherwise the input would not been taken
@@ -327,7 +332,7 @@ export default {
       const authorObject = this.combineInputToAuthorObject(property, value);
 
       this.saveAuthorInfo(authorObject);
-    }, 3000)
+    }, 3000);
   },
   beforeUnmount() {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
@@ -463,7 +468,7 @@ export default {
       this.previews[property] = value;
       this.$emit('validate', { [property]: value });
 
-      this.focusOutDebouncing(property, value)
+      this.focusOutDebouncing(property, value);
     },
     catchPickerAuthorChange(pickedAuthorName, hasAuthor) {
       this.authorPickerTouched = true;
@@ -564,10 +569,10 @@ export default {
       this.$emit('removeAuthor', email);
     },
     isReadOnly(dateProperty) {
-      return isFieldReadOnly(this.$props, dateProperty);
+      return isReadOnlyField(dateProperty);
     },
     readOnlyHint(dateProperty) {
-      return readOnlyHint(this.$props, dateProperty);
+      return getReadOnlyHint(dateProperty);
     },
   },
   data: () => ({
@@ -614,7 +619,7 @@ export default {
   components: {
     BaseRectangleButton,
     BaseUserPicker,
-    BaseStatusLabelView,
+    // BaseStatusLabelView,
     BaseIconButton,
   },
 };

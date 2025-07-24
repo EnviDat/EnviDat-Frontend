@@ -1,60 +1,52 @@
 <template>
-  <v-card id="AddExistingAuthor"
-          class="pa-0"
-          flat
-          :loading="loadingColor" >
-
-    <v-container fluid
-                 class="pa-4" >
-
+  <v-card id="AddExistingAuthor" class="pa-0" flat :loading="loadingColor">
+    <v-container fluid class="pa-4">
       <template slot="progress">
-        <v-progress-linear color="primary"
-                           indeterminate />
+        <v-progress-linear color="primary" indeterminate />
       </template>
 
       <v-row>
-        <v-col cols="6"
-               class="text-h5">
-          {{ labels.title }}
+        <!-- <v-col v-if="message">
+          <BaseStatusLabelView
+            status="check"
+            statusColor="success"
+            :statusText="message"
+            :expandedText="messageDetails"
+          />
         </v-col>
-
-        <v-col v-if="message" >
-          <BaseStatusLabelView status="check"
-                               statusColor="success"
-                               :statusText="message"
-                               :expandedText="messageDetails" />
-        </v-col>
-        <v-col v-if="error"  >
-
-          <BaseStatusLabelView status="error"
-                               statusColor="error"
-                               :statusText="error"
-                               :expandedText="errorDetails" />
-        </v-col>
-
+        <v-col v-if="error">
+          <BaseStatusLabelView
+            status="error"
+            statusColor="error"
+            :statusText="error"
+            :expandedText="errorDetails"
+          />
+        </v-col> -->
       </v-row>
 
       <v-row>
-        <v-col class="text-body-1">
-          {{ labels.instructions }}
+        <v-col class="mb-0 pa-0">
+          <v-row class="mb-5">
+            <v-col>
+              <div class="font-weight-bold">{{ labels.title }}</div>
+              <div class="text-caption">
+                {{ labels.instructions }}, {{ labels.userPickInstructions }}
+              </div>
+            </v-col>
+          </v-row>
+          <BaseUserPicker
+            :users="baseUserPickerObject"
+            :preSelected="preselectAuthorNames"
+            :multiplePick="true"
+            :isClearable="isClearable"
+            :readonly="isReadOnly('authors')"
+            :hint="readOnlyHint('authors')"
+            @blur="notifyChange"
+            @removedUsers="catchRemovedUsers"
+            @pickedUsers="catchPickedUsers"
+          />
         </v-col>
       </v-row>
-
-      <v-row >
-        <v-col >
-          <BaseUserPicker :users="baseUserPickerObject"
-                          :preSelected="preselectAuthorNames"
-                          :multiplePick="true"
-                          :isClearable="isClearable"
-                          :instructions="labels.userPickInstructions"
-                          :readonly="isUserPickerReadOnly"
-                          :hint="isUserPickerReadOnly ? readOnlyHint('authors') : labels.authorPickHint"
-                          @blur="notifyChange"
-                          @removedUsers="catchRemovedUsers"
-                          @pickedUsers="catchPickedUsers"/>
-        </v-col>
-      </v-row>
-
     </v-container>
   </v-card>
 </template>
@@ -69,16 +61,24 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
+// import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 
-import { getArrayOfFullNames, getAuthorByName } from '@/factories/authorFactory';
+import {
+  getArrayOfFullNames,
+  getAuthorByName,
+} from '@/factories/authorFactory';
 import { EDIT_METADATA_AUTHORS_TITLE } from '@/factories/metadataConsts';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus.js';
+
+import {
+  isReadOnlyField,
+  getReadOnlyHint,
+} from '@/modules/workflow/utils/useReadonly';
 
 export default {
   name: 'EditAddExistingAuthor',
@@ -146,7 +146,9 @@ export default {
       return getArrayOfFullNames(this.existingEnviDatUsers);
     },
     preselectAuthorNames() {
-      return this.previewAuthors ? getArrayOfFullNames(this.previewAuthors) : getArrayOfFullNames(this.authors);
+      return this.previewAuthors
+        ? getArrayOfFullNames(this.previewAuthors)
+        : getArrayOfFullNames(this.authors);
     },
   },
   methods: {
@@ -163,7 +165,7 @@ export default {
     catchPickedUsers(pickedUsers) {
       this.changePreviews(pickedUsers);
     },
-    changePreviews(authorsNames){
+    changePreviews(authorsNames) {
       this.previewAuthors = this.getFullAuthors(authorsNames);
     },
     getFullAuthors(authorsNames) {
@@ -187,7 +189,6 @@ export default {
       return fullAuthors;
     },
     notifyChange() {
-
       if (!this.previewAuthors) {
         return;
       }
@@ -201,29 +202,29 @@ export default {
       // changes want to be made
     },
     isReadOnly(dateProperty) {
-      return isFieldReadOnly(this.$props, dateProperty);
+      return isReadOnlyField(dateProperty);
     },
     readOnlyHint(dateProperty) {
-      return readOnlyHint(this.$props, dateProperty);
+      return getReadOnlyHint(dateProperty);
     },
   },
   data: () => ({
     labels: {
       title: EDIT_METADATA_AUTHORS_TITLE,
-      instructions: 'Here are can add authors from other published datasets to your dataset.',
-      userPickInstructions: 'Pick an author from the list to add to your dataset. To remove click on the close icon of an author.',
-      authorPickHint: 'Start typing the name in the text field to search for an author.',
+      instructions:
+        'Here are can add authors from other published datasets to your dataset.',
+      userPickInstructions:
+        'Pick an author from the list to add to your dataset. To remove click on the close icon of an author.',
+      authorPickHint:
+        'Start typing the name in the text field to search for an author.',
     },
     previewAuthors: null,
   }),
   components: {
     BaseUserPicker,
-    BaseStatusLabelView,
+    // BaseStatusLabelView,
   },
 };
 </script>
 
-<style scoped>
-
-
-</style>
+<style scoped></style>

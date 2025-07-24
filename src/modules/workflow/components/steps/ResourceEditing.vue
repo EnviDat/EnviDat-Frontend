@@ -1,11 +1,11 @@
 <template>
-  <v-card id="ResourceEditing"
-          :key="id"
-          :loading="loadingColor"
-          class="pa-0"
-          flat
+  <v-card
+    id="ResourceEditing"
+    :key="id"
+    :loading="loadingColor"
+    class="pa-0"
+    flat
   >
-
     <BaseIconButton
       class="ma-2"
       :class="{ 'mx-1': $vuetify.display.smAndDown }"
@@ -16,29 +16,38 @@
       outlined
       tooltip-text="Cancel Resource Editing"
       tooltip-bottom
-      @clicked="$emit('closeClicked')" />
-
+      @clicked="$emit('closeClicked')"
+    />
 
     <div class="pa-3">
       <v-row>
         <v-col cols="6" class="text-h5 d-flex align-center">
           <BaseIcon v-if="isDataPrivate" color="black" :icon="mdiLock" />
           <BaseIcon v-if="isDataDeprecated" color="black" :icon="mdiCancel" />
-          <span class="pl-2" >{{ labels.title }}</span>
+          <span class="pl-2">{{ labels.title }}</span>
         </v-col>
 
         <v-col v-if="message">
-          <BaseStatusLabelView status="check" statusColor="success" :statusText="message"
-            :expandedText="messageDetails" />
+          <BaseStatusLabelView
+            status="check"
+            statusColor="success"
+            :statusText="message"
+            :expandedText="messageDetails"
+          />
         </v-col>
 
         <v-col v-if="error">
-          <BaseStatusLabelView status="error" statusColor="error" :statusText="error" :expandedText="errorDetails" />
+          <BaseStatusLabelView
+            status="error"
+            statusColor="error"
+            :statusText="error"
+            :expandedText="errorDetails"
+          />
         </v-col>
       </v-row>
 
       <div class="pa-1">
-        <v-alert type="info" >{{ labels.instructions }}</v-alert>
+        <v-alert type="info">{{ labels.instructions }}</v-alert>
 
         <v-row id="resourceName" no-gutters class="pt-4">
           <v-col cols="12">
@@ -48,8 +57,8 @@
               required
               :disabled="loading"
               v-model="resourceNameField"
-              :error-messages="validationErrors.name" />
-
+              :error-messages="validationErrors.name"
+            />
           </v-col>
         </v-row>
 
@@ -74,10 +83,10 @@
             <div
               v-if="loadingImagePreview"
               class="skeleton skeleton-animation-shimmer"
-              style="height: 100%; width: 100%; "
+              style="height: 100%; width: 100%"
             >
               <div
-                style="width: 100%; min-height: 100%; "
+                style="width: 100%; min-height: 100%"
                 class="bone bone-type-image"
               ></div>
             </div>
@@ -86,7 +95,7 @@
               v-show="!imagePreviewError"
               :src="urlField"
               ref="filePreview"
-              style="max-height: 100%; max-width: 100%; cursor: pointer;"
+              style="max-height: 100%; max-width: 100%; cursor: pointer"
               @click="catchImageClick"
               @error="catchImageLoadError"
               @load="loadingImagePreview = false"
@@ -97,14 +106,13 @@
               <v-img
                 id="curtain"
                 :src="notFoundImg"
-                style="max-height: 100%; max-width: 100%; opacity: 0.25;"
+                style="max-height: 100%; max-width: 100%; opacity: 0.25"
                 alt="resource image could not be loaded!"
               />
 
               <div id="backdrop" class="pa-4 text-body-1">
                 Image preview could not be loaded!
               </div>
-
             </div>
           </v-col>
 
@@ -114,20 +122,23 @@
               :label="isLink ? labels.url : labels.fileName"
               outlined
               auto-grow
-              readonly
+              :readonly="isReadOnly('longUrl')"
+              :hint="readOnlyHint('longUrl')"
+              persistent-hint
               dense
-              hide-details
               :disabled="loading"
               v-model="urlField"
               :error-messages="validationErrors.url"
             />
+
             <v-text-field
               v-if="!isLongUrl"
               :label="isLink ? labels.url : labels.fileName"
               outlined
-              readonly
+              :readonly="isReadOnly('noLongUrl')"
+              :hint="readOnlyHint('noLongUrl')"
+              persistent-hint
               dense
-              hide-details
               :disabled="loading"
               v-model="urlField"
               :error-messages="validationErrors.url"
@@ -154,9 +165,7 @@
         </v-row>
 
         <v-row id="format" no-gutters class="pt-5">
-
           <v-col cols="12" md="6" class="pr-md-4">
-
             <v-row no-gutters>
               <v-col class="flex-grow-0 pt-2">
                 <BaseIcon color="gray" :icon="fileFormatIcon"></BaseIcon>
@@ -164,15 +173,18 @@
 
               <v-col class="pl-3">
                 <v-text-field
-                  :label="labels.format" hide-details="auto" :disabled="loading"
+                  :label="labels.format"
+                  hide-details="auto"
+                  :disabled="loading"
                   @blur="formatField = $event.target.value"
-                  :model-value="formatField" :error-messages="validationErrors.format" />
+                  :model-value="formatField"
+                  :error-messages="validationErrors.format"
+                />
               </v-col>
             </v-row>
           </v-col>
 
           <v-col id="size" cols="12" md="6" class="pt-2 pt-md-0">
-
             <v-row no-gutters>
               <v-col class="flex-grow-0 pt-2">
                 <BaseIcon color="gray" :icon="fileSizeIcon"></BaseIcon>
@@ -180,7 +192,9 @@
 
               <v-col class="pl-3">
                 <v-text-field
-                  :label="labels.size" hide-details="auto" :disabled="!isLink || loading"
+                  :label="labels.size"
+                  hide-details="auto"
+                  :disabled="!isLink || loading"
                   :model-value="isLink ? sizeField : sizeFieldText"
                   :error-messages="validationErrors.size"
                   @blur="sizeField = $event.target.value"
@@ -192,26 +206,38 @@
                   v-model="sizeFormatField"
                   label="File size format"
                   hide-details="auto"
-                  :disabled="!isLink || loading" :error-messages="validationErrors.sizeFormat" />
+                  :disabled="!isLink || loading"
+                  :error-messages="validationErrors.sizeFormat"
+                />
               </v-col>
             </v-row>
-
-
           </v-col>
         </v-row>
 
         <v-row id="dates" no-gutters align="center" class="pt-3">
-
           <v-col cols="12" md="6" class="pr-md-4">
             <v-text-field
-              :label="labels.created" :prepend-icon="mdiCalendarRange" readonly hide-details
-              :disabled="loading" :model-value="readableCreated" />
+              :label="labels.created"
+              :prepend-icon="mdiCalendarRange"
+              :readonly="isReadOnly('createdRes')"
+              :hint="readOnlyHint('createdRes')"
+              persistent-hint
+              :disabled="loading"
+              :model-value="readableCreated"
+            />
           </v-col>
 
           <v-col cols="12" md="6" class="pt-2 pt-md-0">
             <v-text-field
-              :label="labels.lastModified" :prepend-icon="mdiUpdate" readonly hide-details
-              :disabled="loading" :model-value="readableLastModified" />
+              :label="labels.lastModified"
+              :prepend-icon="mdiUpdate"
+              :readonly="isReadOnly('lastUpdateRes')"
+              :hint="readOnlyHint('lastUpdateRes')"
+              persistent-hint
+              hide-details
+              :disabled="loading"
+              :model-value="readableLastModified"
+            />
           </v-col>
         </v-row>
 
@@ -219,7 +245,7 @@
 
         <div class="pa-1">
           <v-expand-transition>
-            <v-alert v-if="isDataPrivate" type="warning" >
+            <v-alert v-if="isDataPrivate" type="warning">
               <div v-html="openAccessDetails"></div>
             </v-alert>
           </v-expand-transition>
@@ -231,8 +257,8 @@
             class="mt-2"
             :tooltipText="labels.dataAccessSwitchTooltip"
             @clicked="isDataPrivate = !isDataPrivate"
-            :label="labels.dataAccessSwitchLabel" />
-
+            :label="labels.dataAccessSwitchLabel"
+          />
 
           <BaseIconSwitch
             v-if="isDataPrivate"
@@ -267,31 +293,31 @@
 
           <v-row v-if="!editingRestrictingActive" class="py-2">
             <v-col>
-              <v-alert type="warning" >{{ labels.editingRestrictingUnavailableInfo }}</v-alert>
+              <v-alert type="warning">{{
+                labels.editingRestrictingUnavailableInfo
+              }}</v-alert>
             </v-col>
           </v-row>
 
           <v-row v-if="checkUppercaseValue" class="py-2">
             <v-col>
-              <v-alert type="info" >{{
+              <v-alert type="info">{{
                 labels.editingWarningUppercaseExtension
               }}</v-alert>
             </v-col>
           </v-row>
-
-      </div>
+        </div>
 
         <v-row no-gutters class="pt-4" justify="end">
           <v-col class="flex-grow-0">
-
             <BaseRectangleButton
               :disabled="!saveButtonEnabled"
               :loading="loading"
               :buttonText="labels.createButtonText"
-              @clicked="saveResourceClick" />
+              @clicked="saveResourceClick"
+            />
           </v-col>
         </v-row>
-
       </div>
     </div>
   </v-card>
@@ -318,10 +344,7 @@ import {
   mdiAccountGroup,
 } from '@mdi/js';
 
-import {
-  EDITMETADATA_CLEAR_PREVIEW,
-  eventBus,
-} from '@/factories/eventBus.js';
+import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus.js';
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue';
@@ -330,7 +353,7 @@ import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
 
 import { formatDateTimeToCKANFormat } from '@/factories/mappingFactory.js';
 import { renderMarkdown } from '@/factories/stringFactory.js';
-import {getFileIcon, getIconImage} from '@/factories/imageFactory';
+import { getFileIcon, getIconImage } from '@/factories/imageFactory';
 
 import notFoundImg from '@/modules/user/assets/imageNotFound.jpg';
 import {
@@ -345,6 +368,10 @@ import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import { formatDate } from '@/factories/dateFactory.js';
 
+import {
+  isReadOnlyField,
+  getReadOnlyHint,
+} from '@/modules/workflow/utils/useReadonly';
 
 export default {
   name: 'ResourceEditing',
@@ -437,14 +464,7 @@ export default {
       type: Object,
       default: () => ({}),
     },
-    readOnlyFields: {
-      type: Array,
-      default: () => [],
-    },
-    readOnlyExplanation: {
-      type: String,
-      default: '',
-    },
+
     userEditMetadataConfig: {
       type: Object,
       default: undefined,
@@ -490,7 +510,7 @@ export default {
       set(value) {
         this.previews.name = value;
 
-/*
+        /*
         const nameEqualsUrl = this.isLink ? value === this.url : false;
 
         if (nameEqualsUrl) {
@@ -722,6 +742,14 @@ export default {
     getFileSizeFormat(size) {
       return this.labels.sizeFormatList[this.getFileSizeFormatIndex(size)];
     },
+
+    isReadOnly(dateProperty) {
+      return isReadOnlyField(dateProperty);
+    },
+    readOnlyHint(dateProperty) {
+      return getReadOnlyHint(dateProperty);
+    },
+
     getFileSizeFormatIndex(size) {
       if (!size) {
         return null;
@@ -738,7 +766,6 @@ export default {
       return index;
     },
     checkSaveButtonEnabled() {
-
       // not test the preview fields to ensure the content of both fields is valid
       // to show the save button
       const objectToValidate = {
@@ -751,7 +778,7 @@ export default {
 
       this.$emit('validate', objectToValidate);
 
-      const errorValues = Object.values(this.validationErrors)
+      const errorValues = Object.values(this.validationErrors);
       const noErrors = errorValues.every((err) => !err);
       this.saveButtonEnabled = noErrors;
     },
@@ -821,7 +848,7 @@ export default {
     },
     clearPreviews() {
       const keys = Object.keys(this.previews);
-      keys.forEach(key => {
+      keys.forEach((key) => {
         this.previews[key] = null;
       });
     },

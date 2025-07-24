@@ -121,14 +121,7 @@ export default {
       type: String,
       default: null,
     },
-    readOnlyFields: {
-      type: Array,
-      default: () => [],
-    },
-    readOnlyExplanation: {
-      type: String,
-      default: '',
-    },
+
     validationErrors: {
       type: Object,
       default: () => {},

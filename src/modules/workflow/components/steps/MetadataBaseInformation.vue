@@ -86,11 +86,11 @@
           :id="'metadataTitle'"
           data-field="metadataTitle"
           :label="labels.labelTitle"
-          :readonly="isReadOnly(false)"
+          :readonly="isReadOnly('metadataTitle')"
           :error-messages="validationErrors?.metadataTitle"
           hide-details="auto"
           persistent-hint
-          :hint="readOnlyHint(false)"
+          :hint="readOnlyHint('metadataTitle')"
           :prepend-icon="mdiBookOpenVariantOutline"
           :placeholder="labels.placeholderTitle"
           :model-value="metadataTitleField"
@@ -202,6 +202,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+
 import {
   mdiBookOpenVariantOutline,
   mdiText,
@@ -226,6 +227,11 @@ import { getTagColor } from '@/factories/keywordsFactory';
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 import MetadataDescription from '@/modules/metadata/components/Metadata/MetadataDescription.vue';
 import { enhanceTitleImg } from '@/factories/metaDataFactory.js';
+
+import {
+  isReadOnlyField,
+  getReadOnlyHint,
+} from '@/modules/workflow/utils/useReadonly';
 
 export default {
   name: 'MetadataBaseInformation',
@@ -497,10 +503,10 @@ export default {
     },
 
     isReadOnly(dateProperty) {
-      return isFieldReadOnly(this.$props, dateProperty);
+      return isReadOnlyField(dateProperty);
     },
     readOnlyHint(dateProperty) {
-      return readOnlyHint(this.$props, dateProperty);
+      return getReadOnlyHint(dateProperty);
     },
   },
   data: () => ({
