@@ -14,7 +14,7 @@ import { S3Node } from '@/types/s3Types';
 //   https://os.zhdk.cloud.switch.ch/envicloud/?prefix=wsl/CORE_S2A/&max-keys=100000&delimiter=/
 
 export const useS3Store = defineStore('s3Store', {
-  state: () => ({}),
+  state: () => ({ originUrl: '' as string }),
   getters: {},
   actions: {
     async fetchS3Content(
@@ -44,12 +44,11 @@ export const useS3Store = defineStore('s3Store', {
       }
     },
 
-    mapData(baseUrl: string, listObject: ListObjectsV2Output) : S3Node[] {
+    mapData(baseUrl: string, listObject: ListObjectsV2Output): S3Node[] {
       const rootId = 1;
 
       const childFolders = listObject.CommonPrefixes?.map<S3Node>(
-        (prefix, index) =>
-          this.createFolderEntry(prefix, index, rootId),
+        (prefix, index) => this.createFolderEntry(prefix, index, rootId),
       );
 
       // listObject.Contents this can be a single Object not an array
@@ -57,13 +56,12 @@ export const useS3Store = defineStore('s3Store', {
       const contents = listObject.Contents;
       let childEntires: S3Node[];
 
-      const hasContentList =  contents && (contents instanceof Array);
+      const hasContentList = contents && contents instanceof Array;
 
       if (hasContentList) {
-        childEntires = contents.map<S3Node>(
-          (content, index) =>
-            this.createFileEntry(baseUrl, content, index, rootId),
-        )
+        childEntires = contents.map<S3Node>((content, index) =>
+          this.createFileEntry(baseUrl, content, index, rootId),
+        );
       }
 
       return [
@@ -75,12 +73,27 @@ export const useS3Store = defineStore('s3Store', {
           childrenLoaded: false,
           children: childFolders || childEntires,
         },
-      ]
+      ];
     },
 
-    mapChildData(baseUrl: string, listObject: ListObjectsV2Output, nodeId: number, rootNodes: S3Node[]) : S3Node[] | undefined {
+    mapChildData(
+      baseUrl: string,
+      listObject: ListObjectsV2Output,
+      nodeId: number,
+      rootNodes: S3Node[],
+    ): S3Node[] | undefined {
+      // if the API returns nothing useful, still attach a "Go to S3" link so the UI doesn't break
+      // example metadata/swissrad10-hourly-light-availability-maps-at-10-m-resolution-over-switzerland?search=swissrad
       if (!listObject || !listObject.Contents) {
-        return undefined;
+        const children = [
+          this.createFileEntry(baseUrl, 'Go to S3', undefined, undefined, {
+            isLastItem: true,
+            customLink: this.originUrl,
+          }),
+        ];
+        // Trigger function to add data in the right node
+        this.findAndAddChildren(rootNodes, children, nodeId);
+        return rootNodes;
       }
 
       // Remove first element because is a repetition of the container
@@ -188,7 +201,11 @@ export const useS3Store = defineStore('s3Store', {
       const isFileRegex = /[^/]+\.[^/]+$/;
       return isFileRegex.test(path);
     },
-    createFolderEntry (prefix: CommonPrefix, index: number, rootId: number) : S3Node {
+    createFolderEntry(
+      prefix: CommonPrefix,
+      index: number,
+      rootId: number,
+    ): S3Node {
       return {
         id: rootId + index + 1,
         // define if is child to triggher another function and manage deep level

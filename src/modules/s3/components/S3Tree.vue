@@ -225,6 +225,9 @@ async function getData(url: string, isChild?: boolean, nodeId?: number) {
 }
 
 function extractS3Url(inputUrl: string) {
+  // this URL is for child go to s3
+  s3Store.originUrl = inputUrl;
+
   const url = new URL(decodeURI(inputUrl));
   // const url = new URL(inputUrl);
   const hash = url.hash.substring(2);
