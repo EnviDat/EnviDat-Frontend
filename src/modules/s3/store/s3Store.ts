@@ -14,7 +14,7 @@ import { S3Node } from '@/types/s3Types';
 //   https://os.zhdk.cloud.switch.ch/envicloud/?prefix=wsl/CORE_S2A/&max-keys=100000&delimiter=/
 
 export const useS3Store = defineStore('s3Store', {
-  state: () => ({}),
+  state: () => ({ originUrl: '' as string }),
   getters: {},
   actions: {
     async fetchS3Content(
@@ -83,11 +83,12 @@ export const useS3Store = defineStore('s3Store', {
       rootNodes: S3Node[],
     ): S3Node[] | undefined {
       // if the API returns nothing useful, still attach a "Go to S3" link so the UI doesn't break
+      // example metadata/swissrad10-hourly-light-availability-maps-at-10-m-resolution-over-switzerland?search=swissrad
       if (!listObject || !listObject.Contents) {
         const children = [
           this.createFileEntry(baseUrl, 'Go to S3', undefined, undefined, {
             isLastItem: true,
-            customLink: this.getBrowserLink(baseUrl),
+            customLink: this.originUrl,
           }),
         ];
         // Trigger function to add data in the right node
