@@ -322,7 +322,11 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
         return false;
       }
 
-      if (stepId === this.stepForBackendChange && !this.isStepSaveConfirmed) {
+      if (
+        this.mode === 'create' &&
+        stepId === this.stepForBackendChange &&
+        !this.isStepSaveConfirmed
+      ) {
         this.openSaveDialog = true;
         return false;
       }

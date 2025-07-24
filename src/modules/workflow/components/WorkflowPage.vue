@@ -190,6 +190,7 @@ const validate = (freshData) => {
 const { currentStep, currentAsyncComponent } = storeToRefs(workflowStore);
 
 const navigateRouterToStep = async (step: number) => {
+  // TODO capire e docimentare
   const leaving = currentStep.value;
 
   if (workflowStore.mustValidateOnLeave(leaving)) {
