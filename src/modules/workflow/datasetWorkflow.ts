@@ -1,3 +1,6 @@
+/* The above code is a TypeScript file that defines a Pinia store called `useDatasetWorkflowStore`.
+This store manages the state and actions related to a dataset workflow. Here is a summary of what
+the code is doing: */
 import { defineStore } from 'pinia';
 
 import {
@@ -78,8 +81,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     },
     currentViewModel(state) {
       const step = state.steps[state.currentStep];
-
-      if (!step?.viewModelKey) return null;
+      if (!state.datasetModel || !step?.viewModelKey) return null;
 
       // get the viewModel
       const vmInstance = state.datasetModel.getViewModel(step.viewModelKey);
@@ -109,6 +111,58 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     },
   },
   actions: {
+    async bootstrapWorkflow(datasetId?: string) {
+      this.loading = true;
+      this.datasetModel = new DatasetModel(this);
+      this.localStorageService = new LocalStorageDatasetService();
+
+      let dto: DatasetDTO | null = null;
+      let mode: 'create' | 'edit' = 'create';
+
+      // helper locale, NON nel service
+      const existsInLocalStorage = (id?: string) => {
+        if (!id) return false;
+        try {
+          return !!window.localStorage.getItem(id);
+        } catch {
+          return false;
+        }
+      };
+
+      try {
+        // 1 try backend
+        if (datasetId) {
+          try {
+            dto = await this.backendStorageService.loadDataset(datasetId);
+
+            if (dto) mode = 'edit';
+          } catch (e) {
+            dto = null;
+          }
+        }
+
+        // 2 try localstorage
+        if (!dto && datasetId && existsInLocalStorage(datasetId)) {
+          try {
+            dto = await this.localStorageService.loadDataset(datasetId);
+            mode = 'create';
+          } catch {
+            dto = null;
+          }
+        }
+
+        // 3 create
+        if (!dto) {
+          dto = await this.localStorageService.createDataset({} as DatasetDTO);
+          mode = 'create';
+        }
+
+        await this.initializeDataset(dto, mode);
+      } finally {
+        this.loading = false;
+      }
+    },
+
     getDatasetService(): DatasetService {
       return this.mode === 'create'
         ? this.localStorageService
@@ -148,33 +202,35 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     async loadDataset(datasetId: string) {
       return this.datasetModel.loadDataset(datasetId);
     },
-    async initializeWorkflowfromDataset(dataset?: DatasetDTO) {
-      let datasetDto: DatasetDTO;
+    // async initializeWorkflowfromDataset(dataset?: DatasetDTO) {
+    //   let datasetDto: DatasetDTO;
 
-      this.localStorageService = new LocalStorageDatasetService();
+    //   this.localStorageService = new LocalStorageDatasetService();
 
-      if (!dataset) {
-        datasetDto = await this.localStorageService.createDataset({});
-      } else {
-        datasetDto =
-          await this.localStorageService.patchDatasetChanges(dataset);
-      }
+    //   if (!dataset) {
+    //     datasetDto = await this.localStorageService.createDataset({});
+    //   } else {
+    //     datasetDto =
+    //       await this.localStorageService.patchDatasetChanges(dataset);
+    //   }
 
-      // DOMINIK we pass datasetDto but then in the function we didn't use the arg
-      await this.initializeDataset(datasetDto, 'edit');
-    },
-    async initializeWorkflow(datasetId: string) {
-      // SET the status edit or create
+    //   // DOMINIK we pass datasetDto but then in the function we didn't use the arg
+    //   await this.initializeDataset(datasetDto, 'edit');
+    // },
+    // async initializeWorkflow(datasetId: string) {
+    //   // SET the status edit or create
 
-      this.datasetModel = new DatasetModel(this);
+    //   this.datasetModel = new DatasetModel(this);
 
-      this.localStorageService = new LocalStorageDatasetService();
+    //   this.localStorageService = new LocalStorageDatasetService();
+    //   // title-test-from-locahost
+    //   const datasetDto = await this.backendStorageService.loadDataset(
+    //     'title-test-from-locahost',
+    //   );
+    //   // await this.backendStorageService.loadDataset(datasetId);
 
-      const datasetDto =
-        await this.backendStorageService.loadDataset(datasetId);
-
-      await this.initializeDataset(datasetDto, 'create');
-    },
+    //   await this.initializeDataset(datasetDto, 'create');
+    // },
     resetSteps() {
       this.steps.forEach((s: WorkflowStep) => {
         if (s.id === 0) {
@@ -190,15 +246,16 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
       });
     },
     // async initializeDataset() {
-    async initializeDataset(dataset: DatasetDTO, mode: string) {
+    async initializeDataset(dataset: DatasetDTO, mode: 'create' | 'edit') {
       this.localStorageService.dataset = dataset;
-
-      // this.resetSteps();
 
       this.datasetModel = new DatasetModel(this);
       await this.datasetModel.loadViewModels();
 
       this.setEditMode(mode);
+
+      // forza lo step iniziale
+      this.currentStep = 0;
 
       this.doiPlaceholder = null;
       this.openSaveDialog = false;

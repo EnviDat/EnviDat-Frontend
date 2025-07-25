@@ -35,10 +35,11 @@
           <div>
             <component
               :is="currentAsyncComponent"
+              :key="workflowStore.currentStep"
               v-bind="vm"
               @validate="validate"
               @save="save"
-              v-if="currentAsyncComponent"
+              v-if="currentAsyncComponent && !workflowStore.loading"
             />
           </div>
           <div ref="nextStepBlock" class="pa-4 d-flex align-center justify-end">
@@ -130,16 +131,8 @@ const mergedDataset = {
   id: props.datasetId || props.dataset?.id,
 };
 
-if (datasetExistsInLocalStorage(mergedDataset.id)) {
-  // DOMINIK, is this name (initializeWorkflowfromDataset) correct?
-  console.log('localstorage');
-  workflowStore.initializeWorkflowfromDataset(mergedDataset);
-} else {
-  console.log('nolocalstorage');
-  workflowStore.initializeWorkflow(props.datasetId || props.dataset?.id);
-}
-
-const vm = ref(null);
+// const vm = ref(null);
+const vm = computed(() => workflowStore.currentViewModel);
 
 const iconScroll = computed(() => extractIcons('scroll'));
 
@@ -170,6 +163,7 @@ const scrollDown = () => {
 const save = async (freshData) => {
   const ok = await vm.value.save(freshData);
 
+  console.log('save');
   // EDIT mode - if we have errors, we block the navigation
   const step = workflowStore.steps[workflowStore.currentStep];
   if (workflowStore.mode === 'edit' && !step.readOnly) {
@@ -190,7 +184,6 @@ const validate = (freshData) => {
 const { currentStep, currentAsyncComponent } = storeToRefs(workflowStore);
 
 const navigateRouterToStep = async (step: number) => {
-  // TODO capire e docimentare
   const leaving = currentStep.value;
 
   if (workflowStore.mustValidateOnLeave(leaving)) {
@@ -216,28 +209,40 @@ const catchConfirmSave = () => {
   }
 };
 
-const catchNavigate = ({ id, status }: { id: number; status: string }) => {
+const checkValidation = async (data) => {
+  const ok = await workflowStore.validateStepAction(data);
+  if (!ok) {
+    if (vm.value) scrollToFirstError(vm.value.validationErrors);
+    return false;
+  }
+  return true;
+};
+
+const catchNavigate = async ({
+  id,
+  status,
+}: {
+  id: number;
+  status: string;
+}) => {
+  const valid = await checkValidation(currentStep.value);
+  if (!valid) return;
+
   if (status !== StepStatus.Disabled) {
     navigateRouterToStep(id);
   }
 };
 
 const nextStep = async () => {
-  const ok = await workflowStore.validateStepAction(currentStep.value);
+  const valid = await checkValidation(currentStep.value);
+  if (!valid) return;
 
-  if (!ok) {
-    if (vm.value) scrollToFirstError(vm.value.validationErrors);
-    return;
-  }
-  // last step ? return
   if (currentStep.value === workflowStore.steps.length - 1) return;
 
   let target: number;
-
   if (workflowStore.mode === 'create') {
     target = workflowStore.getNextUncompletedStep(currentStep.value);
   } else {
-    // math min take the smaller between current step + 1 and the last step.
     target = Math.min(currentStep.value + 1, workflowStore.steps.length - 1);
   }
 
@@ -245,13 +250,13 @@ const nextStep = async () => {
 };
 
 // load the current view model
-watch(
-  () => workflowStore.currentStep,
-  async () => {
-    vm.value = workflowStore.currentViewModel;
-  },
-  { immediate: false },
-);
+// watch(
+//   () => workflowStore.currentStep,
+//   async () => {
+//     vm.value = workflowStore.currentViewModel;
+//   },
+//   { immediate: false },
+// );
 
 watch(
   () => route?.query,
@@ -266,15 +271,21 @@ onBeforeMount(() => {
   vm.value = workflowStore.currentViewModel;
 })
 */
-
-onMounted(() => {
-  nextTick(() => {
-    vm.value = workflowStore.currentViewModel;
-  });
-
-  // always reset it to 0
-  navigateRouterToStep(0);
+onMounted(async () => {
+  // await workflowStore.bootstrapWorkflow('title-test-from-locahost');
+  await workflowStore.bootstrapWorkflow(mergedDataset.id);
+  const step = Number(route.query.step ?? 0);
+  workflowStore.setActiveStep(step);
 });
+
+// onMounted(() => {
+//   nextTick(() => {
+//     vm.value = workflowStore.currentViewModel;
+//   });
+
+//   // always reset it to 0
+//   navigateRouterToStep(0);
+// });
 </script>
 
 <style lang="scss">

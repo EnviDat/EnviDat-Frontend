@@ -91,7 +91,7 @@
             :users="fullNameUsers"
             :preSelected="preselectAuthorNames"
             :readonly="isReadOnly('authors')"
-            :hint="ireadOnlyHint('authors')"
+            :hint="readOnlyHint('authors')"
             @removedUsers="catchPickerAuthorChange($event, false)"
             @pickedUsers="catchPickerAuthorChange($event, true)"
           />
