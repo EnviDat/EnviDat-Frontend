@@ -79,20 +79,22 @@
 </template>
 
 <script setup lang="ts">
+/* =========================
+ *  IMPORTS
+ * ========================= */
 import { storeToRefs } from 'pinia';
-
 import { ref, watch, computed, nextTick, onMounted } from 'vue';
-
 import { useRoute, useRouter } from 'vue-router';
 import TheWorkflowNavigation from '@/components/Navigation/TheWorkflowNavigation.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
-
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import { extractIcons } from '@/factories/iconFactory.ts';
-
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow.ts';
 import { StepStatus } from '@/modules/workflow/resources/steps.ts';
-import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
+/* =========================
+ *  ROUTER & PROPS
+ * ========================= */
 const route = useRoute();
 const router = useRouter();
 
@@ -107,43 +109,22 @@ const props = defineProps({
   },
 });
 
+/* =========================
+ *  STORE & REFS/COMPUTEDS
+ * ========================= */
 const workflowStore = useDatasetWorkflowStore();
-
-// TEMPORARY QUERY PARAMAMETER
-
-const changeNavigationInStore = (stepParam: number | string) => {
-  const step =
-    typeof stepParam === 'string' ? Number.parseInt(stepParam, 10) : stepParam;
-
-  if (Number.isFinite(step) && step >= 0 && step < workflowStore.steps.length) {
-    workflowStore.jumpToStep(step);
-  }
-};
-// END TEMPORARY QUERY PARAMAMETER
-
-const datasetExistsInLocalStorage = (datasetId: string) => {
-  const localData = localStorage.getItem(datasetId);
-  return !!localData;
-};
-
-const mergedDataset = {
-  ...props.dataset,
-  id: props.datasetId || props.dataset?.id,
-};
-
-// const vm = ref(null);
+const { currentStep, currentAsyncComponent } = storeToRefs(workflowStore);
 const vm = computed(() => workflowStore.currentViewModel);
-
 const iconScroll = computed(() => extractIcons('scroll'));
-
 const nextStepBlock = ref(null);
 
+/* =========================
+ *  UI HELPERS (SCROLL)
+ * ========================= */
 const scrollToFirstError = (errors) => {
   const firstField = Object.keys(errors).find((k) => errors[k]);
   if (!firstField) return;
-
   const selector = `[data-field="${firstField}"], #${firstField}`;
-
   const el = document.querySelector(selector);
   el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 };
@@ -155,33 +136,35 @@ const scrollDown = () => {
   });
 };
 
-// const save = (freshData) => {
-//   console.log('save');
-//   vm.value.save(freshData);
-// };
+/* =========================
+ *  VALIDATION LOGIC
+ * ========================= */
+const validate = (freshData) => {
+  vm.value?.validate(freshData);
+  // TODO: ticket (https://envicloud.atlassian.net/browse/EN-2431)
+  // workflowStore.markStepTouched(workflowStore.currentStep, true);
+};
 
-const save = async (freshData) => {
-  const ok = await vm.value.save(freshData);
+const checkValidation = async (data) => {
+  const ok = await workflowStore.validateStepAction(data);
+  if (!ok) {
+    if (vm.value) scrollToFirstError(vm.value.validationErrors);
+    return false;
+  }
+  return true;
+};
 
-  console.log('save');
-  // EDIT mode - if we have errors, we block the navigation
-  const step = workflowStore.steps[workflowStore.currentStep];
-  if (workflowStore.mode === 'edit' && !step.readOnly) {
-    if (!ok) {
-      workflowStore.markStepDirty(workflowStore.currentStep, true);
-      scrollToFirstError(vm.value.validationErrors);
-    } else {
-      workflowStore.markStepDirty(workflowStore.currentStep, false);
-    }
+/* =========================
+ *  NAVIGATION LOGIC
+ * ========================= */
+const changeNavigationInStore = (stepParam: number | string) => {
+  const step =
+    typeof stepParam === 'string' ? Number.parseInt(stepParam, 10) : stepParam;
+
+  if (Number.isFinite(step) && step >= 0 && step < workflowStore.steps.length) {
+    workflowStore.jumpToStep(step);
   }
 };
-
-const validate = (freshData) => {
-  console.log('validate');
-  vm.value?.validate(freshData);
-};
-
-const { currentStep, currentAsyncComponent } = storeToRefs(workflowStore);
 
 const navigateRouterToStep = async (step: number) => {
   const leaving = currentStep.value;
@@ -193,29 +176,12 @@ const navigateRouterToStep = async (step: number) => {
       return;
     }
   }
-  // DOMINIK, do we need the router?
+
   if (router) {
     router.push({ path: router.currentRoute.value.path, query: { step } });
   } else {
     changeNavigationInStore(step);
   }
-};
-
-const catchConfirmSave = () => {
-  const ok = workflowStore.confirmSave();
-
-  if (ok) {
-    navigateRouterToStep(currentStep.value + 1);
-  }
-};
-
-const checkValidation = async (data) => {
-  const ok = await workflowStore.validateStepAction(data);
-  if (!ok) {
-    if (vm.value) scrollToFirstError(vm.value.validationErrors);
-    return false;
-  }
-  return true;
 };
 
 const catchNavigate = async ({
@@ -249,15 +215,37 @@ const nextStep = async () => {
   navigateRouterToStep(target);
 };
 
-// load the current view model
-// watch(
-//   () => workflowStore.currentStep,
-//   async () => {
-//     vm.value = workflowStore.currentViewModel;
-//   },
-//   { immediate: false },
-// );
+/* =========================
+ *  SAVE LOGIC
+ * ========================= */
+const save = async (freshData) => {
+  // TODO: ticket (https://envicloud.atlassian.net/browse/EN-2431)
+  // workflowStore.markStepTouched(workflowStore.currentStep, true);
+  const ok = await vm.value.save(freshData);
 
+  // EDIT mode - if we have errors, we block the navigation
+  const step = workflowStore.steps[workflowStore.currentStep];
+  if (workflowStore.mode === 'edit' && !step.readOnly) {
+    if (!ok) {
+      workflowStore.markStepDirty(workflowStore.currentStep, true);
+      scrollToFirstError(vm.value.validationErrors);
+    } else {
+      workflowStore.markStepDirty(workflowStore.currentStep, false);
+    }
+  }
+};
+
+const catchConfirmSave = () => {
+  const ok = workflowStore.confirmSaveToBackend();
+
+  if (ok) {
+    navigateRouterToStep(currentStep.value + 1);
+  }
+};
+
+/* =========================
+ *  WATCHERS
+ * ========================= */
 watch(
   () => route?.query,
   (newQuery) => {
@@ -266,17 +254,76 @@ watch(
   },
 );
 
+/* =========================
+ *  STORYBOOK HELPERS
+ * ========================= */
+const datasetExistsInLocalStorage = (datasetId?: string) => {
+  if (!datasetId) return false;
+  try {
+    return !!window.localStorage.getItem(datasetId);
+  } catch {
+    return false;
+  }
+};
+
+const mergedDataset = {
+  ...props.dataset,
+  id: props.datasetId || props.dataset?.id,
+};
+
+/* =========================
+ *  ON MOUNTED
+ * ========================= */
+onMounted(async () => {
+  const id = mergedDataset.id;
+
+  // STORYBOOK
+  // PLEASE NOTE – We are currently in the development phase, and an exception is present to make Storybook work.
+  if (datasetExistsInLocalStorage(id)) {
+    await workflowStore.initializeWorkflowfromDataset(mergedDataset);
+  } else {
+    // USE title-test-from-locahost for testing purposes
+    // await workflowStore.bootstrapWorkflow('title-test-from-locahost');
+
+    // INIT workflow base on the dataset ID if it exists
+    await workflowStore.bootstrapWorkflow(id);
+  }
+
+  const step = Number(route?.query?.step ?? 0);
+  workflowStore.setActiveStep(step);
+});
+
+/* =========================
+ *  LEGACY / OLD BK LOGIC (COMMENTED)
+ * ========================= */
+// load the current view model
+// watch(
+//   () => workflowStore.currentStep,
+//   async () => {
+//     vm.value = workflowStore.currentViewModel;
+//   },
+//   { immediate: false },
+// );
 /*
 onBeforeMount(() => {
   vm.value = workflowStore.currentViewModel;
 })
 */
-onMounted(async () => {
-  // await workflowStore.bootstrapWorkflow('title-test-from-locahost');
-  await workflowStore.bootstrapWorkflow(mergedDataset.id);
-  const step = Number(route.query.step ?? 0);
-  workflowStore.setActiveStep(step);
-});
+
+// const datasetExistsInLocalStorage = (datasetId: string) => {
+//   const localData = localStorage.getItem(datasetId);
+//   return !!localData;
+// };
+
+// if (datasetExistsInLocalStorage(mergedDataset.id)) {
+//   // DOMINIK, is this name (initializeWorkflowfromDataset) correct?
+//   console.log('localstorage');
+//   workflowStore.initializeWorkflowfromDataset(mergedDataset);
+// } else {
+//   console.log('nolocalstorage');
+//   workflowStore.initializeWorkflow(props.datasetId || props.dataset?.id);
+// }
+// const vm = ref(null);
 
 // onMounted(() => {
 //   nextTick(() => {
