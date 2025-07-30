@@ -32,15 +32,9 @@
           :key="index"
           :class="[
             'navigationWorkflow__item',
+            { readOnly: !step.isEditable },
             // step.status can be active, completed, error
             step.status,
-
-            // step.id === workflowStore.currentStep ? 'active' : '',
-            // step.completed === true ? 'completed' : '',
-            // step.hasError === true ? 'error' : '',
-            // step.completed === false && step.id != workflowStore.currentStep
-            //   ? 'disabled'
-            //   : '',
           ]"
           @click="navigateItem(step.id, step.status)"
           class="pl-4 pr-4 mb-md-4 mb-xl-6 navigationWorkflow__item"
@@ -59,15 +53,22 @@
 
           <template #title v-else>
             <!-- step.status === 'active'  -->
-            <span
-              v-if="workflowStore.currentStep === step.id"
-              :class="{
-                'font-weight-bold': display.mdAndDown.value,
-                'ml-2': workflowStore.currentStep === step.id,
-              }"
-            >
-              {{ step.title }}
-            </span>
+            <div class="d-flex align-center">
+              <span
+                v-if="workflowStore.currentStep === step.id"
+                :class="{
+                  'font-weight-bold': display.mdAndDown.value,
+                  'ml-2': workflowStore.currentStep === step.id,
+                }"
+              >
+                {{ step.title }}
+              </span>
+              <BaseIcon
+                :icon="!step.isEditable ? iconName('noedit') : iconName('edit')"
+                color="null"
+                class="ml-2"
+              />
+            </div>
           </template>
 
           <template #subtitle v-if="display.lgAndUp.value">
@@ -89,12 +90,7 @@
             <div
               v-else
               class="navigationWorkflow__append mr-1"
-              :class="[
-                step.status,
-                // active: step.id === workflowStore.currentStep,
-                // completed: step.completed,
-                // error: step.hasError,
-              ]"
+              :class="[step.status]"
             >
               <template v-if="step.completed">
                 <!-- If the step has already been completed, but we want to edit it -->
@@ -379,6 +375,9 @@ const initDriver = () => {
       // 960 is md for vueitfy
       border-radius: 10px;
       display: flex;
+      &.readOnly {
+        background-color: #888888 !important;
+      }
     }
     &:hover {
       cursor: pointer;

@@ -5,7 +5,7 @@ const hints: Record<string, string> = {
     'The Authors field can’t be edited because this dataset has already been published',
 };
 
-const deafultHint =
+const defultHint =
   'The field can’t be edited because this dataset has already been published.';
 
 export function isReadOnlyField(fieldKey: string): boolean {
@@ -20,5 +20,5 @@ export function getReadOnlyHint(fieldKey: string): string {
   if (store.mode === 'create') return '';
   if (!isReadOnlyField(fieldKey)) return '';
 
-  return hints[fieldKey] ?? deafultHint;
+  return hints[fieldKey] ?? defultHint;
 }
