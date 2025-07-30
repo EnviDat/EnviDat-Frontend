@@ -97,21 +97,31 @@
             </div>
           </v-col>
 
-          <v-col
-            cols="12"
-            class="editorHeight"
-            :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack};`"
-          >
-            <div class="columns">
-              <div class="column">
-                <div class="jsoneditor-vue" ref="editorRef"></div>
-              </div>
-            </div>
-          </v-col>
+          <v-col cols="12">
+            <v-expansion-panels v-model="activePanel" rounded="md">
+              <!-- eager force the render of the json edito even if the accordion is close -->
+              <v-expansion-panel eager>
+                <v-expansion-panel-title>Open Editor</v-expansion-panel-title>
 
-          <!-- local parse / validation error -->
-          <v-col v-if="inputError" cols="12">
-            <v-alert type="warning">{{ inputError }}</v-alert>
+                <v-expansion-panel-text>
+                  <!-- JSON EDITOR -->
+                  <div
+                    class="editorHeight mb-2"
+                    :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack};`"
+                  >
+                    <div class="columns">
+                      <div class="column">
+                        <div class="jsoneditor-vue" ref="editorRef"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- local parse / validation error -->
+                  <divl v-if="inputError">
+                    <v-alert type="warning">{{ inputError }}</v-alert>
+                  </divl>
+                </v-expansion-panel-text>
+              </v-expansion-panel>
+            </v-expansion-panels>
           </v-col>
 
           <!-- hidden file input -->
@@ -125,24 +135,21 @@
           <v-col cols="12">
             <v-row no-gutters align="center">
               <v-col cols="6">
-                <v-row no-gutters >
-                <v-col cols="12" >{{ labels.uploadInstructions }}</v-col>
+                <v-row no-gutters>
+                  <v-col cols="12">{{ labels.uploadInstructions }}</v-col>
 
-                <v-col cols="12"
-                       class="pt-2"
-                >
-                  <BaseRectangleButton
-                    color="highlight"
-                    buttonText="Upload File"
-                    tooltipText="File Drop Also Possible"
-                    tooltipPosition="top"
-                    :icon="mdiFileUpload"
-                    icon-color="black"
-                    @clicked="triggerFilePicker"
-                  />
-                </v-col>
+                  <v-col cols="12" class="pt-2">
+                    <BaseRectangleButton
+                      color="highlight"
+                      buttonText="Upload File"
+                      tooltipText="File Drop Also Possible"
+                      tooltipPosition="top"
+                      :icon="mdiFileUpload"
+                      icon-color="black"
+                      @clicked="triggerFilePicker"
+                    />
+                  </v-col>
                 </v-row>
-
               </v-col>
 
               <v-col cols="6">
@@ -154,7 +161,6 @@
                   {{ labels.fileDropLabel }}
                 </div>
               </v-col>
-
             </v-row>
           </v-col>
 
@@ -214,22 +220,17 @@
               :readOnlyExplanation="readOnlyExplanation"
             />
           </v-col>
-
         </v-row>
 
-        <v-row >
-          <v-col v-show="validationErrors.dates"
-                 cols="12"
-          >
+        <v-row>
+          <v-col v-show="validationErrors.dates" cols="12">
             <v-alert type="error">
               {{ validationErrors.dates }}
             </v-alert>
           </v-col>
         </v-row>
-
       </v-col>
     </v-row>
-
   </v-container>
 </template>
 
@@ -294,6 +295,7 @@ export default {
   data() {
     return {
       mdiContentSave,
+      activePanel: null,
       mdiFileUpload,
       newGeoInfo: {
         geometries:
@@ -426,6 +428,9 @@ export default {
         this.isOverDropZone = false;
       },
     });
+    // if (this.activePanel === 0) {
+    //   this.$nextTick(() => this.initEditor(this.geomsForMapString));
+    // }
   },
   beforeUnmount() {
     if (this.saveButtonEnabled) this.commitGeometriesToAPI();
@@ -457,6 +462,7 @@ export default {
       this.dateChanged(index, prop, '');
     },
     initEditor(text) {
+      console.log('initEditor', text);
       this.jsonEditor = createJSONEditor({
         target: this.$refs.editorRef,
         props: { content: { json: JSON.parse(text) }, ...this.editorOptions },
