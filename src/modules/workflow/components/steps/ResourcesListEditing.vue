@@ -1,55 +1,47 @@
 <template>
-  <v-card id="ResourcesListEditing"
-          class="pa-4"
-          flat
-  >
-    <v-container fluid class="pa-0">
-      <v-row>
-        <v-col class="text-h5">
-          {{ EDIT_METADATA_RESOURCES_TITLE }}
-        </v-col>
-      </v-row>
-
-      <v-row>
-        <v-col class="text-body-1">
+  <v-container id="ResourcesListEditing" fluid class="pa-4">
+    <v-row class="mb-5">
+      <v-col>
+        <div class="font-weight-bold">{{ EDIT_METADATA_RESOURCES_TITLE }}</div>
+        <div class="text-caption">
           {{ editingInstructions }}
-        </v-col>
-      </v-row>
+        </div>
+      </v-col>
+    </v-row>
 
-      <v-row v-show="validationErrors.resources">
-        <v-col>
-          <v-alert type="error">
-            {{ validationErrors.resources }}
-          </v-alert>
-        </v-col>
-      </v-row>
+    <v-row v-show="validationErrors.resources">
+      <v-col>
+        <v-alert type="error">
+          {{ validationErrors.resources }}
+        </v-alert>
+      </v-col>
+    </v-row>
 
-      <v-row>
-        <v-col>
-          <ExpandableLayout
-            statusText="Click here, drag and drop the resources to change the sequence."
-            :startExpanded="resourcesNames?.length < 10"
-            highlighted
-            isFlat
-          >
-            <BaseDraggableList
-              :items="resourcesNames"
-              :draggableProperty="METADATA_RESOURCES_SEQUENCE_PROPERTY"
-              :readOnlyFields="readOnlyFields"
-              :readOnlyExplanation="readOnlyExplanation"
-              @listChanged="reorderList"
-            />
-          </ExpandableLayout>
-        </v-col>
-      </v-row>
+    <v-row>
+      <v-col>
+        <ExpandableLayout
+          statusText="Click here, drag and drop the resources to change the sequence."
+          :startExpanded="resourcesNames?.length < 10"
+          highlighted
+          isFlat
+        >
+          <BaseDraggableList
+            :items="resourcesNames"
+            :draggableProperty="METADATA_RESOURCES_SEQUENCE_PROPERTY"
+            :readOnlyFields="readOnlyFields"
+            :readOnlyExplanation="readOnlyExplanation"
+            @listChanged="reorderList"
+          />
+        </ExpandableLayout>
+      </v-col>
+    </v-row>
 
-      <v-row>
-        <v-col cols="12">
-          <MetadataResources v-bind="metadataResourcesGenericProps" />
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-card>
+    <v-row>
+      <v-col cols="12">
+        <Resources v-bind="metadataResourcesGenericProps" />
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -70,21 +62,18 @@ import {
   METADATA_RESOURCES_SEQUENCE_PROPERTY,
 } from '@/factories/metadataConsts.js';
 
-import MetadataResources from '@/modules/metadata/components/Metadata/MetadataResources.vue';
+import Resources from '@/modules/workflow/components/steps/Resources.vue';
 import ExpandableLayout from '@/components/Layouts/ExpandableLayout.vue';
 import BaseDraggableList from '@/components/BaseElements/BaseDraggableList.vue';
 
 import { getResourceName } from '@/factories/resourceHelpers';
 
-import {
-  EDITMETADATA_CLEAR_PREVIEW,
-  eventBus,
-} from '@/factories/eventBus.js';
+import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus.js';
 
 export default {
   name: 'ResourcesListEditing',
   components: {
-    MetadataResources,
+    Resources,
     ExpandableLayout,
     BaseDraggableList,
   },
@@ -171,7 +160,7 @@ export default {
 
       this.$emit('save', {
         resources: this.previewResources,
-      })
+      });
     },
     clearPreviews() {
       this.previewResources = null;

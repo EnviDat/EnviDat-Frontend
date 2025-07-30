@@ -1,46 +1,42 @@
 <template>
-  <v-card id="EditResourcePasteUrl" class="pa-4" :flat>
-    <v-container fluid class="pa-0">
-      <v-row>
-        <v-col cols="12">
-          <div class="text-h5">{{ labels.title }}</div>
-        </v-col>
-      </v-row>
+  <v-container id="EditResourcePasteUrl" fluid class="pa-4">
+    <v-row>
+      <v-col cols="12" xl="12" class="mb-0">
+        <v-row class="mb-5">
+          <v-col>
+            <div class="font-weight-bold">{{ labels.title }}</div>
+            <div class="text-caption">
+              {{ labels.instructions }}
+            </div>
+          </v-col>
+        </v-row>
+      </v-col>
+      <v-col cols="12">
+        <v-text-field
+          :label="labels.textFieldLabel"
+          v-model="url"
+          ref="urlTextField"
+          :prepend-icon="mdiLink"
+          clearable
+          :clear-icon="mdiClose"
+          :error-messages="validationErrors.url"
+          @keyup="blurOnEnterKey"
+          @input="checkCreateButtonDisabled"
+        />
+      </v-col>
+    </v-row>
 
-      <v-row>
-        <v-col cols="12">
-          <div class="text-body-1">{{ labels.instructions }}</div>
-        </v-col>
-      </v-row>
-
-      <v-row>
-        <v-col cols="12">
-          <v-text-field
-            :label="labels.textFieldLabel"
-            v-model="url"
-            ref="urlTextField"
-            :prepend-icon="mdiLink"
-            clearable
-            :clear-icon="mdiClose"
-            :error-messages="validationErrors.url"
-            @keyup="blurOnEnterKey"
-            @input="checkCreateButtonDisabled"
-          />
-        </v-col>
-      </v-row>
-
-      <v-row no-gutters justify="end">
-        <v-col class="flex-grow-0">
-          <BaseRectangleButton
-            :color="createButtonDisabled ? 'grey' : 'primary'"
-            :disabled="createButtonDisabled"
-            :buttonText="labels.buttonText"
-            @clicked="createButtonClick"
-          />
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-card>
+    <v-row no-gutters justify="end">
+      <v-col class="flex-grow-0">
+        <BaseRectangleButton
+          :color="createButtonDisabled ? 'grey' : 'primary'"
+          :disabled="createButtonDisabled"
+          :buttonText="labels.buttonText"
+          @clicked="createButtonClick"
+        />
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>

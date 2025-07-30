@@ -83,7 +83,7 @@
           -->
 
           <v-col cols="12">
-            <EditResourcePasteUrl
+            <ResourcesPasteUrl
               flat
               @createUrlResources="createResourceFromUrl"
             />
@@ -152,7 +152,7 @@ import {
 
 import ResourcesListEditing from '@/modules/workflow/components/steps/ResourcesListEditing.vue';
 // import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles.vue';
-import EditResourcePasteUrl from '@/modules/user/components/EditResourcePasteUrl.vue';
+import ResourcesPasteUrl from '@/modules/workflow/components/steps/ResourcesPasteUrl.vue';
 import { ResourceViewModel } from '@/modules/workflow/viewModel/ResourceViewModel.js';
 import type { Resource } from '@/types/modelTypes';
 import { mergeResourceSizeForFrontend } from '@/factories/resourceHelpers.ts';
@@ -549,7 +549,7 @@ export default {
   components: {
     ResourcesListEditing,
     // EditDropResourceFiles,
-    EditResourcePasteUrl,
+    ResourcesPasteUrl,
     ResourceEditing,
   },
 };

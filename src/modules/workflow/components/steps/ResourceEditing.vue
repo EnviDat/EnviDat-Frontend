@@ -20,6 +20,7 @@
     />
 
     <div class="pa-3">
+      Create Resource From Link
       <v-row>
         <v-col cols="6" class="text-h5 d-flex align-center">
           <BaseIcon v-if="isDataPrivate" color="black" :icon="mdiLock" />

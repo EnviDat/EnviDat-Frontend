@@ -59,19 +59,17 @@
         <!-- prettier-ignore -->
         <v-row>
 
-          <v-col cols="12">
-            <EditPublicationInfo v-bind="editPublicationsProps" />
+          <v-col cols="12" class="pa-0">
+            <PublicationInfo v-bind="editPublicationsProps" />
           </v-col>
-          <v-col v-if="blindReviewEditingActive && publicationState !== PUBLICATION_STATE_PUBLISHED" cols="12">
-            <EditReviewInfo v-bind="editReviewProps" />
-          </v-col>
+
         </v-row>
       </v-col>
 
-      <v-col cols="12" xl="6">
+      <v-col cols="12" xl="6" class="pa-0">
         <v-row>
           <v-col cols="12">
-            <EditContactPerson
+            <ContactPerson
               v-bind="editContactPersonProps"
               @save="catchContactPersonChange"
             />
@@ -79,18 +77,32 @@
         </v-row>
       </v-col>
 
-      <v-col cols="12" xl="6">
-        <v-row>
-          <v-col cols="12">
-            <EditOrganization v-bind="editOrganizationProps" />
+      <v-col cols="12" xl="6" class="pa-0">
+        <v-row
+          ><v-col cols="12">
+            <Organization v-bind="editOrganizationProps" />
           </v-col>
         </v-row>
       </v-col>
 
-      <v-col cols="12" xl="6">
+      <v-col cols="12" xl="6" class="pa-0">
+        <v-row>
+          <v-col
+            v-if="
+              blindReviewEditingActive &&
+              publicationState !== PUBLICATION_STATE_PUBLISHED
+            "
+            cols="12"
+          >
+            <ReviewInfo v-bind="editReviewProps" />
+          </v-col>
+        </v-row>
+      </v-col>
+
+      <v-col cols="12" class="pa-0">
         <v-row v-if="doiWorkflowActive">
           <v-col>
-            <EditPublicationStatus
+            <PublicationStatus
               v-bind="editPublicationStatusProps"
               @clicked="catchPublicationStateChange"
             />
@@ -143,13 +155,13 @@ import {
   PUBLICATION_STATE_PUBLISHED,
 } from '@/factories/metadataConsts';
 
-import EditOrganization from '@/modules/user/components/edit/EditOrganization.vue';
-import EditContactPerson from '@/modules/user/components/edit/EditContactPerson.vue';
+import Organization from '@/modules/workflow/components/steps/Organization.vue';
+import ContactPerson from '@/modules/workflow/components/steps/ContactPerson.vue';
 
-import EditPublicationInfo from '@/modules/user/components/edit/EditPublicationInfo.vue';
+import PublicationInfo from '@/modules/workflow/components/steps/PublicationInfo.vue';
 
-import EditPublicationStatus from '@/modules/user/components/edit/EditPublicationStatus.vue';
-import EditReviewInfo from '@/modules/user/components/edit/EditReviewInfo.vue';
+import PublicationStatus from '@/modules/workflow/components/steps/PublicationStatus.vue';
+import ReviewInfo from '@/modules/workflow/components/steps/ReviewInfo.vue';
 
 import {
   getArrayOfFullNames,
@@ -387,12 +399,12 @@ export default {
   },
 
   components: {
-    EditReviewInfo,
-    EditPublicationStatus,
-    EditPublicationInfo,
-    EditOrganization,
+    ReviewInfo,
+    PublicationStatus,
+    PublicationInfo,
+    Organization,
     // NotFoundCard,
-    EditContactPerson,
+    ContactPerson,
   },
 };
 </script>
