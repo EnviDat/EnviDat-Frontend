@@ -365,4 +365,11 @@ onBeforeMount(() => {
   //   transform: translateX(-50%);
   // }
 }
+input:read-only,
+.v-input--readonly .v-field {
+  background-color: rgba(234, 234, 234, 0.933);
+  // color: var(--v-input-text-color);
+  cursor: not-allowed;
+  pointer-events: none;
+}
 </style>
