@@ -11,6 +11,7 @@
     </v-row>
 
     <!-- Info Banner -->
+
     <v-row>
       <v-col class="mb-5 pt-0 pb-0">
         <v-alert
@@ -248,6 +249,10 @@ export default {
       type: Object,
       default: () => {},
     },
+    existingKeywords: {
+      type: Array,
+      default: () => {},
+    },
     keywords: {
       type: Array,
       default: null,
@@ -336,10 +341,8 @@ export default {
       return hint.trim();
     },
     existingKeywordItems() {
-      if (this.$store) {
-        const getTag =
-          this.$store.getters[`${METADATA_NAMESPACE}/existingKeywords`];
-        const arrayFromTags = this.getTagName(getTag);
+      if (this.existingKeywords) {
+        const arrayFromTags = this.getTagName(this.existingKeywords);
         return arrayFromTags;
       }
 
