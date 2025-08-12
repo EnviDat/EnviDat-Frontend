@@ -11,12 +11,17 @@
 import axios from 'axios';
 import { getAuthorsCitationString } from '@/factories/authorFactory';
 
-export function sanitizeUrls(url) {
-  if (!url) {
+// regEx to determine if any url contains a PID from DORA
+// /[a-zA-Z]+(:|%3A)\d+/g
+// PID delimiter is typically ':' but this can be changed via browser url and copy paste
+const PidRegExStr = '[a-zA-Z]+(:|%3A)\\d+';
+
+function sanitizePid(pid) {
+  if (!pid) {
     return null;
   }
 
-  return url.replaceAll('%3A', ':');
+  return pid.replaceAll('%3A', ':');
 }
 
 /**
@@ -49,11 +54,7 @@ export function extractPIDsFromUrls(urls) {
     return pidMap;
   }
 
-  // regEx to determine if any url contains a PID from DORA
-  // /[a-zA-Z]+(:|%3A)\d+/g
-  // PID delimiter is typically ':' but this can be changed via browser url and copy paste
-  const regExStr = '[a-zA-Z]+(:|%3A)\\d+';
-  const regEx = new RegExp(regExStr, 'g');
+  const regEx = new RegExp(PidRegExStr, 'g');
 
   for (let i = 0; i < urls.length; i++) {
     const url = urls[i];
@@ -63,7 +64,7 @@ export function extractPIDsFromUrls(urls) {
       const pid = matches[0];
 
       if (pid) {
-        const cleanPID = sanitizeUrls(pid);
+        const cleanPID = sanitizePid(pid);
         pidMap.set(url, cleanPID);
       }
     }
@@ -95,13 +96,13 @@ export function extractPIDsFromText(text) {
     return pidMap;
   }
 
-  const regExStr = '[a-zA-Z]+(:|%3A)\\d+';
-  const regEx = new RegExp(regExStr, 'gm');
+  const regEx = new RegExp(PidRegExStr, 'gm');
 
   const pidMatches = text.match(regEx) || [];
 
   pidMatches.forEach((match) => {
-    pidMap.set(match, match);
+    const cleanPID = sanitizePid(match);
+    pidMap.set(cleanPID, cleanPID);
   });
 
   return pidMap;
@@ -290,7 +291,7 @@ export function extractPIDMapFromText(text) {
   if (urlsPIDValues.length > 0) {
     // in case there are urls in the text, make sure not to overwrite any
     onlyPIDs.forEach((value, key) => {
-      const cleanPID = sanitizeUrls(value);
+      const cleanPID = sanitizePid(value);
 
       if (!urlsPIDValues.includes(cleanPID)) {
         pidMap.set(key, cleanPID);
@@ -299,7 +300,7 @@ export function extractPIDMapFromText(text) {
   } else {
     // in case there are only ids merged as well
     onlyPIDs.forEach((value, key) => {
-      const cleanPID = sanitizeUrls(value);
+      const cleanPID = sanitizePid(value);
 
       pidMap.set(key, cleanPID);
     });
