@@ -1,4 +1,5 @@
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
+import { WorkflowMode } from '@/modules/workflow/utils/mode.ts';
 
 const hints: Record<string, string> = {
   authors:
@@ -11,13 +12,13 @@ const defultHint =
 export function isReadOnlyField(fieldKey: string): boolean {
   const store = useDatasetWorkflowStore();
   //   if we need to build some logic we can do that here (ex if admin - if mode = create but etc - specific field)
-  if (store.mode === 'create') return false;
+  if (store.mode === WorkflowMode.Create) return false;
   return store.listOfReadOnlyFields.includes(fieldKey);
 }
 
 export function getReadOnlyHint(fieldKey: string): string {
   const store = useDatasetWorkflowStore();
-  if (store.mode === 'create') return '';
+  if (store.mode === WorkflowMode.Create) return '';
   if (!isReadOnlyField(fieldKey)) return '';
 
   return hints[fieldKey] ?? defultHint;

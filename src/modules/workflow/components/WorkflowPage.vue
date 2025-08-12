@@ -87,10 +87,11 @@ import { ref, watch, computed, nextTick, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import TheWorkflowNavigation from '@/components/Navigation/TheWorkflowNavigation.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
-import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
+
 import { extractIcons } from '@/factories/iconFactory.ts';
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow.ts';
 import { StepStatus } from '@/modules/workflow/resources/steps.ts';
+import { WorkflowMode } from '@/modules/workflow/utils/mode.ts';
 
 /* =========================
  *  ROUTER & PROPS
@@ -206,7 +207,7 @@ const nextStep = async () => {
   if (currentStep.value === workflowStore.steps.length - 1) return;
 
   let target: number;
-  if (workflowStore.mode === 'create') {
+  if (workflowStore.mode === WorkflowMode.Create) {
     target = workflowStore.getNextUncompletedStep(currentStep.value);
   } else {
     target = Math.min(currentStep.value + 1, workflowStore.steps.length - 1);
@@ -225,7 +226,7 @@ const save = async (freshData) => {
 
   // EDIT mode - if we have errors, we block the navigation
   const step = workflowStore.steps[workflowStore.currentStep];
-  if (workflowStore.mode === 'edit' && !step.readOnly) {
+  if (workflowStore.mode === WorkflowMode.Edit && !step.readOnly) {
     if (!ok) {
       workflowStore.markStepDirty(workflowStore.currentStep, true);
       scrollToFirstError(vm.value.validationErrors);

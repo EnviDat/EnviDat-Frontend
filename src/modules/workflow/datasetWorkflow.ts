@@ -15,7 +15,7 @@ import { workflowGuide } from '@/modules/workflow/resources/workflowGuides.ts';
 
 import { readOnlyFields } from '@/modules/workflow/resources/readOnlyList.ts';
 import { resolveBootstrap } from '@/modules/workflow/utils/workflowBootstrap.ts';
-import { computeStepsForMode } from '@/modules/workflow/utils/mode.ts';
+import { computeStepsForMode, WorkflowMode } from '@/modules/workflow/utils/mode.ts';
 import {
   mustValidateOnLeave as mustValidateOnLeaveUtil,
   setActiveStepForCreate,
@@ -57,7 +57,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     stepForBackendChange: 3,
     doiPlaceholder: null,
     workflowGuide,
-    mode: 'create' as 'create' | 'edit',
+    mode: WorkflowMode.Create,
   }),
   getters: {
     // GET the current step component
@@ -78,7 +78,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
 
     // GET if the dataset is in edit mode - used in TheWorkflowNavigation and WorkFlowPage. We build the logic on it to define which UI we need to use
     isDatasetEditing(): boolean {
-      return this.mode === 'edit';
+      return this.mode === WorkflowMode.Edit;
     },
   },
   actions: {
@@ -88,7 +88,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     },
 
     // INIT dataset workflow with the dataset DTO and mode.
-    async initializeDataset(dataset: DatasetDTO, mode: 'create' | 'edit') {
+    async initializeDataset(dataset: DatasetDTO, mode: WorkflowMode) {
       this.localStorageService.dataset = dataset;
 
       this.datasetModel = new DatasetModel(this);
@@ -109,7 +109,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     // CHECK if the field is readonly based on the mode and the list of readOnlyFields.
     // IMPORTANT - This function is used in all components that where we need to check if the field is readonly or not.
     isFieldReadonly(fieldKey: string): boolean {
-      if (this.mode === 'create') return false;
+      if (this.mode === WorkflowMode.Create) return false;
       return this.listOfReadOnlyFields.includes(fieldKey);
     },
 
@@ -137,18 +137,18 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     },
 
     // RETURN the dataset service to use based on the current mode.
-    //  'create' mode → uses localStorage service
-    // 'edit' mode → uses backend service
+    //  WorkflowMode.Create mode → uses localStorage service
+    // WorkflowMode.Edit mode → uses backend service
     getDatasetService(): DatasetService {
-      return this.mode === 'create'
+      return this.mode === WorkflowMode.Create
         ? this.localStorageService
         : this.backendStorageService;
     },
 
-    // SET the mode to 'create' or 'edit'.
+    // SET the mode to WorkflowMode.Create or WorkflowMode.Edit.
     // Controls navigation flow, read-only UI state, and step editability based on the mode.
-    // EXAMPLE - In 'edit' mode, steps become editable, allowing free navigation.
-    setEditMode(mode: 'create' | 'edit') {
+    // EXAMPLE - In WorkflowMode.Edit mode, steps become editable, allowing free navigation.
+    setEditMode(mode: WorkflowMode) {
       this.mode = mode;
 
       const { steps, freeJump } = computeStepsForMode(
@@ -176,7 +176,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
           await this.localStorageService.patchDatasetChanges(dataset);
       }
 
-      await this.initializeDataset(datasetDto, 'edit');
+      await this.initializeDataset(datasetDto, WorkflowMode.Edit);
     },
 
     // resetSteps() {
@@ -216,7 +216,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     // CREATE linear wizard. Current step -> Active; others keep their status (Completed/Error) or become Disabled.
     // EDIT free jump. Only mark the selected step as Active, leave the rest unchanged.
     setActiveStep(id: number) {
-      if (this.mode === 'create') {
+      if (this.mode === WorkflowMode.Create) {
         this.steps = setActiveStepForCreate(this.steps, id);
       }
       this.currentStep = id;

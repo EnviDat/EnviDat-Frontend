@@ -1,5 +1,6 @@
 // src/modules/workflow/utils/bootstrapWorkflow.ts
-export type WorkflowMode = 'create' | 'edit';
+
+import { WorkflowMode } from '@/modules/workflow/utils/mode.ts';
 
 export interface BootstrapDeps<DatasetDTO> {
   loadBackend: (id: string) => Promise<DatasetDTO | null>;
@@ -28,7 +29,7 @@ export async function resolveBootstrap<DatasetDTO>(
   if (datasetId) {
     try {
       const dto = await deps.loadBackend(datasetId);
-      if (dto) return { dto, mode: 'edit' };
+      if (dto) return { dto, mode: WorkflowMode.Edit };
     } catch (e) {
       console.log(e);
     }
@@ -38,7 +39,7 @@ export async function resolveBootstrap<DatasetDTO>(
   if (datasetId && existsInLocalStorage(datasetId)) {
     try {
       const dto = await deps.loadLocal(datasetId);
-      if (dto) return { dto, mode: 'create' };
+      if (dto) return { dto, mode: WorkflowMode.Create };
     } catch (e) {
       console.log(e);
     }
@@ -46,5 +47,5 @@ export async function resolveBootstrap<DatasetDTO>(
 
   // CHECK if the nothing, it means NEW dataset - SET the mode to create
   const dto = await deps.createLocal({} as Partial<DatasetDTO>);
-  return { dto, mode: 'create' };
+  return { dto, mode: WorkflowMode.Create };
 }

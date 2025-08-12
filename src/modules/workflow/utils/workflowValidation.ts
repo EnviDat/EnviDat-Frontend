@@ -1,7 +1,7 @@
 // src/modules/workflow/utils/workflowValidation.ts
 import { StepStatus, WorkflowStep } from '@/modules/workflow/resources/steps';
+import { WorkflowMode } from '@/modules/workflow/utils/mode.ts';
 
-export type WorkflowMode = 'create' | 'edit';
 
 export interface ValidatableVM {
   getModelData(): any;
@@ -34,13 +34,13 @@ export function validateStepPure({
 }: ValidateStepInput): ValidateStepResult {
   if (!step) return { ok: false };
 
-  if (mode === 'edit' && (!step.dirty || step.readOnly)) {
+  if (mode === WorkflowMode.Edit && (!step.dirty || step.readOnly)) {
     return { ok: true };
   }
 
   // if we are in create mode we don't validate each step navigation click, TODO: ticket (https://envicloud.atlassian.net/browse/EN-2431) ONLY if the touched is true. TOUCHED means that the user has changed something in the step.
   // if (this.mode === 'create' && (step.readOnly || step.touched !== true)) {
-  if (mode === 'create' && step.readOnly) {
+  if (mode === WorkflowMode.Create && step.readOnly) {
     return { ok: true };
   }
 
@@ -64,7 +64,7 @@ export function validateStepPure({
   }
 
   if (
-    mode === 'create' &&
+    mode === WorkflowMode.Create &&
     stepId === stepForBackendChange &&
     !isStepSaveConfirmed
   ) {

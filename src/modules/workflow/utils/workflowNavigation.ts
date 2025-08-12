@@ -1,7 +1,7 @@
 // src/modules/workflow/utils/workflowNavigation.ts
 import { StepStatus, WorkflowStep } from '@/modules/workflow/resources/steps';
+import { WorkflowMode } from '@/modules/workflow/utils/mode.ts';
 
-export type WorkflowMode = 'create' | 'edit';
 
 export function setActiveStepForCreate(
   steps: WorkflowStep[],
@@ -21,7 +21,7 @@ export function mustValidateOnLeave(
   step?: WorkflowStep,
 ): boolean {
   return (
-    mode === 'edit' &&
+    mode === WorkflowMode.Edit &&
     !!step &&
     !step.readOnly &&
     (step.dirty === true || step.hasError === true)

@@ -4,7 +4,10 @@ import {
   type WorkflowStep,
 } from '@/modules/workflow/resources/steps';
 
-export type WorkflowMode = 'create' | 'edit';
+export enum WorkflowMode {
+  Create = 'create',
+  Edit = 'edit'
+}
 
 interface ComputeResult {
   steps: WorkflowStep[];
@@ -16,7 +19,7 @@ export function computeStepsForMode(
   isReadOnlyStepKeys: string[],
   mode: WorkflowMode,
 ): ComputeResult {
-  if (mode === 'edit') {
+  if (mode === WorkflowMode.Edit) {
     const next = steps.map((s) => {
       // CHECK if the step is readOnly based on the list listOfReadOnlyFields - src/modules/workflow/resources/readOnlyFields.ts
       const readOnly = isReadOnlyStepKeys.includes(s.key);
