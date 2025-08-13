@@ -2,6 +2,11 @@ include:
   - local: '.gitlab-ci-deployment.yml'
   - local: '.gitlab-ci-seo.yml'
 
+default:  
+  tags:
+    - frontend
+
+
 stages:
   - config
   - test
@@ -347,11 +352,14 @@ combine-builds:
   needs:
     # needs the artifact: the build of the frontend app
     - job: build-app
+      artifacts: true
     # needs the artifact: storybook
     - job: build-storybook
+      artifacts: true
     # needs the artifact: seo pre-rendered static htmls
     - job: build-seo
       optional: true
+      artifacts: true
   script:
     #- echo "Check for the artifacts in the filesystem"
     # - ls -l
