@@ -46,7 +46,7 @@ variables:
       when: never
 
     # run normal jobs in any other case
-    - when: always
+    - when: on_success
 
 # don't run for scheduled pipelines, to avoid making unnecessary changes in production
 .deployment-rules:
