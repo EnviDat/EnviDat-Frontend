@@ -20,6 +20,10 @@ export default {
     name: '@storybook/vue3-vite',
   },
 
+  managerHead: (head) => `
+    ${head}
+    <meta name="robots" content="noindex" />
+  `,
   // reference
   // https://stackoverflow.com/questions/76297669/nx-16-cant-configure-a-proxy-in-storybook-vite-and-react-library
   // https://storybook.js.org/docs/builders/vite
