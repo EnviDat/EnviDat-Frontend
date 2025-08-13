@@ -67,12 +67,11 @@ import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
 // import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 
 import {
-  getArrayOfFullNames,
+  getUserNameObjects,
   getAuthorByName,
 } from '@/factories/authorFactory';
 import { EDIT_METADATA_AUTHORS_TITLE } from '@/factories/metadataConsts';
 
-import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus.js';
 
 import {
@@ -139,16 +138,13 @@ export default {
 
       return undefined;
     },
-    isUserPickerReadOnly() {
-      return this.isReadOnly('authors');
-    },
     baseUserPickerObject() {
-      return getArrayOfFullNames(this.existingEnviDatUsers);
+      return getUserNameObjects(this.existingEnviDatUsers);
     },
     preselectAuthorNames() {
       return this.previewAuthors
-        ? getArrayOfFullNames(this.previewAuthors)
-        : getArrayOfFullNames(this.authors);
+        ? getUserNameObjects(this.previewAuthors)
+        : getUserNameObjects(this.authors);
     },
   },
   methods: {

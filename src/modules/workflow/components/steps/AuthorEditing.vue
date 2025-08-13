@@ -18,7 +18,7 @@ import { EDIT_METADATA_ADD_AUTHOR_TITLE } from '@/factories/metadataConsts';
 
 import {
   createAuthor,
-  getArrayOfFullNames,
+  getUserNameObjects,
   getAuthorByEmail,
   getAuthorByName,
   getAuthorName,
@@ -182,28 +182,9 @@ const preselectAuthorNames = computed( () => {
 
 const fullNameUsers = computed(() => {
   const localAuthors = [...props.existingAuthors];
-  return getArrayOfFullNames(localAuthors);
+  return getUserNameObjects(localAuthors);
 })
 
-
-const authorPickerFoundAuthor = computed(()=> {
-  if (
-    preselectAuthorNames.value?.length <= 0 ||
-    fullNameUsers.value?.length <= 0
-  ) {
-    return false;
-  }
-
-  const matches = fullNameUsers.value.filter(
-    (fullName) => fullName === preselectAuthorNames.value[0],
-  );
-  return matches.length > 0;
-})
-
-const infoReadOnly = computed(() => (
-  (authorPickerTouched.value && authorIsPicked.value) ||
-  (!authorPickerTouched.value && authorPickerFoundAuthor.value)
-))
 
 const anyUserElementsActive = computed(()=> (
     activeElements.value.email ||

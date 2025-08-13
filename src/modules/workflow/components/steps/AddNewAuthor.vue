@@ -228,13 +228,12 @@ import { EDIT_METADATA_ADD_AUTHOR_TITLE } from '@/factories/metadataConsts';
 
 import {
   createAuthor,
-  getArrayOfFullNames,
+  getUserNameObjects,
   getAuthorByEmail,
   getAuthorByName,
   getAuthorName,
 } from '@/factories/authorFactory';
 
-import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus.js';
 import { useDebounce } from '@/modules/workflow/workflowFunctions.js';
 
@@ -390,26 +389,7 @@ export default {
     },
     fullNameUsers() {
       const localAuthors = [...this.existingAuthors];
-      return getArrayOfFullNames(localAuthors);
-    },
-    infoReadOnly() {
-      return (
-        (this.authorPickerTouched && this.authorIsPicked) ||
-        (!this.authorPickerTouched && this.authorPickerFoundAuthor)
-      );
-    },
-    authorPickerFoundAuthor() {
-      if (
-        this.preselectAuthorNames?.length <= 0 ||
-        this.fullNameUsers?.length <= 0
-      ) {
-        return false;
-      }
-
-      const matches = this.fullNameUsers.filter(
-        (fullName) => fullName === this.preselectAuthorNames[0],
-      );
-      return matches.length > 0;
+      return getUserNameObjects(localAuthors);
     },
     anyUserElementsActive() {
       return (

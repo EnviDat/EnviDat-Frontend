@@ -164,7 +164,7 @@ import PublicationStatus from '@/modules/workflow/components/steps/PublicationSt
 import ReviewInfo from '@/modules/workflow/components/steps/ReviewInfo.vue';
 
 import {
-  getArrayOfFullNames,
+  getUserNameObjects,
   getAuthorByEmail,
   getAuthorName,
 } from '@/factories/authorFactory';
@@ -256,7 +256,7 @@ export default {
 
     fullNameUsers() {
       const localAuthors = [...this.existingAuthorsWrap];
-      return getArrayOfFullNames(localAuthors);
+      return getUserNameObjects(localAuthors);
     },
 
     preselectAuthorNames() {
