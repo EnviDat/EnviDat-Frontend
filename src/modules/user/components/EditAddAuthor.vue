@@ -217,7 +217,7 @@ import { EDIT_METADATA_ADD_AUTHOR_TITLE } from '@/factories/metadataConsts';
 
 import {
   createAuthor,
-  getArrayOfFullNames,
+  getUserNameObjects,
   getAuthorByEmail,
   getAuthorByName,
   getAuthorName,
@@ -362,7 +362,7 @@ export default {
     },
     fullNameUsers() {
       const localAuthors = [...this.existingAuthors];
-      return getArrayOfFullNames(localAuthors);
+      return getUserNameObjects(localAuthors);
     },
     validations() {
       return getValidationMetadataEditingObject(EDITMETADATA_AUTHOR);
@@ -381,9 +381,7 @@ export default {
         return false;
       }
 
-      const matches = this.fullNameUsers.filter(
-        (fullName) => fullName === this.preselectAuthorNames[0],
-      );
+      const matches = this.fullNameUsers.filter(userObj => userObj.title === this.preselectAuthorNames[0]);
       return matches.length > 0;
     },
     anyUserElementsActive() {

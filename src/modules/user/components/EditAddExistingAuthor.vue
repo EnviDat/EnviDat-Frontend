@@ -80,7 +80,7 @@ import {
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
 } from '@/factories/eventBus';
-import { getArrayOfFullNames, getAuthorByName } from '@/factories/authorFactory';
+import { getUserNameObjects, getAuthorByEmail } from '@/factories/authorFactory';
 import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
 import { EDIT_METADATA_AUTHORS_TITLE } from '@/factories/metadataConsts';
 
@@ -148,10 +148,10 @@ export default {
       return this.isReadOnly('authors');
     },
     baseUserPickerObject() {
-      return getArrayOfFullNames(this.existingEnviDatUsers);
+      return getUserNameObjects(this.existingEnviDatUsers);
     },
     preselectAuthorNames() {
-      return this.previewAuthors ? getArrayOfFullNames(this.previewAuthors) : getArrayOfFullNames(this.authors);
+      return this.previewAuthors ? getUserNameObjects(this.previewAuthors) : getUserNameObjects(this.authors);
     },
     validations() {
       return getValidationMetadataEditingObject(EDITMETADATA_AUTHOR_LIST);
@@ -168,26 +168,27 @@ export default {
     validateProperty(property, value){
       return isFieldValid(property, value, this.validations, this.validationErrors)
     },
-    catchRemovedUsers(pickedUsers) {
-      this.changePreviews(pickedUsers);
+    catchRemovedUsers(pickedUsersEmails) {
+      this.changePreviews(pickedUsersEmails);
     },
-    catchPickedUsers(pickedUsers) {
-      this.changePreviews(pickedUsers);
+    catchPickedUsers(pickedUsersEmails) {
+      this.changePreviews(pickedUsersEmails);
     },
-    changePreviews(authorsNames){
-      this.previewAuthors = this.getFullAuthors(authorsNames);
+    changePreviews(pickedUsersEmails){
+      this.previewAuthors = this.getFullAuthors(pickedUsersEmails);
     },
-    getFullAuthors(authorsNames) {
+    getFullAuthors(authorEmails) {
       const fullAuthors = [];
 
-      authorsNames.forEach((name) => {
-        let author = getAuthorByName(name, this.authors);
+      authorEmails.forEach((email) => {
+
+        let author = getAuthorByEmail(email, this.authors);
 
         // if the author is part of the dataset authors, pick it as it is
         // including the existing dataCredits
         if (!author) {
           // if the author is newly picked, use the existing list as reference
-          author = getAuthorByName(name, this.existingEnviDatUsers);
+          author = getAuthorByEmail(email, this.existingEnviDatUsers);
         }
 
         if (author) {

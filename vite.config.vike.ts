@@ -52,7 +52,7 @@ export default async ({ mode, config }) => {
     },
     // base: isProd ? 'https://s3-zh.os.switch.ch/frontend-static/static_datasets/' : '/',
     // base: 'https://s3-zh.os.switch.ch/frontend-static/static_datasets/',
-    base: env.VITE_API_ROOT,
+    base: env.VITE_SEO_BASE,
     build: {
       assetsDir: '/static',
       chunkSizeWarningLimit: 500,

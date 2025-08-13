@@ -227,16 +227,22 @@ const JSONFrontendBackendRules = {
   ],
 };
 
-export function unpackDeprecatedResources(customFields) {
-  let unpackedResourceIds = [];
+function unpackDeprecatedResources(customFields) {
 
-  if (customFields?.length > 0) {
-    const customFieldEntry = customFields.filter((entry) => entry?.fieldName === METADATA_DEPRECATED_RESOURCES_PROPERTY)[0];
-    const stringResourceIds = customFieldEntry?.content || '[]';
-    unpackedResourceIds = JSON.parse(stringResourceIds);
+  let deprecatedResourceEntry = customFields?.filter((entry) => entry?.fieldName === METADATA_DEPRECATED_RESOURCES_PROPERTY)[0];
+  // first check the customFields entries and sanitze them (to at least always start with an empty array)
+
+  if (!deprecatedResourceEntry) {
+
+    deprecatedResourceEntry = {
+      fieldName: METADATA_DEPRECATED_RESOURCES_PROPERTY,
+      content: JSON.stringify([]),
+    }
+
+    customFields.push(deprecatedResourceEntry);
   }
 
-  return unpackedResourceIds;
+  return JSON.parse(deprecatedResourceEntry.content);
 }
 
 export function markResourceDeprecated(resourceId, deprecated, customFields)  {
@@ -249,15 +255,8 @@ export function markResourceDeprecated(resourceId, deprecated, customFields)  {
     deprecatedResources = deprecatedResources.filter(i => i !== resourceId);
   }
 
-  if (customFields.length <= 0) {
-    customFields.push({
-      fieldName: METADATA_DEPRECATED_RESOURCES_PROPERTY,
-      content: JSON.stringify(deprecatedResources),
-    });
-  } else {
-    const deprecatedResourcesEntry = customFields.filter((entry) => entry?.fieldName === METADATA_DEPRECATED_RESOURCES_PROPERTY)[0];
-    deprecatedResourcesEntry.content = JSON.stringify(deprecatedResources);
-  }
+  const deprecatedResourcesEntry = customFields.filter((entry) => entry?.fieldName === METADATA_DEPRECATED_RESOURCES_PROPERTY)[0];
+  deprecatedResourcesEntry.content = JSON.stringify(deprecatedResources);
 
   return customFields;
 }

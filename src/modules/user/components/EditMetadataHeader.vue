@@ -270,9 +270,8 @@ import {
 import {
   createContact,
   creationContactFromAuthor,
-  getArrayOfFullNames,
+  getUserNameObjects,
   getAuthorByEmail,
-  getAuthorByName,
   getAuthorName,
 } from '@/factories/authorFactory';
 import {
@@ -442,7 +441,7 @@ export default {
     },
     fullNameUsers() {
       const localAuthors = [...this.existingAuthorsWrap];
-      return getArrayOfFullNames(localAuthors);
+      return getUserNameObjects(localAuthors);
     },
     metadataPreviewEntry() {
       const fullName = getAuthorName({
@@ -485,9 +484,7 @@ export default {
         return false;
       }
 
-      const matches = this.fullNameUsers.filter(
-        (fullName) => fullName === this.preselectAuthorNames[0],
-      );
+      const matches = this.fullNameUsers.filter(userObj => userObj.title === this.preselectAuthorNames[0]);
       return matches.length > 0;
     },
     anyUserElementsActive() {
@@ -601,15 +598,13 @@ export default {
         this.validationErrors,
       );
     },
-    catchPickerAuthorChange(pickedAuthorName, hasAuthor) {
+    catchPickerAuthorChange(pickedAuthorEmail, hasAuthor) {
+
       this.authorPickerTouched = true;
       this.authorIsPicked = hasAuthor;
 
       if (this.authorIsPicked) {
-        const author = getAuthorByName(
-          pickedAuthorName,
-          this.existingAuthorsWrap,
-        );
+        const author = getAuthorByEmail(pickedAuthorEmail, this.existingAuthorsWrap);
         const contactObject = creationContactFromAuthor(author);
 
         this.previews[METADATA_CONTACT_FIRSTNAME] =

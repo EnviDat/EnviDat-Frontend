@@ -303,9 +303,6 @@ import {
   getUserOrganizationRoleMap,
   hasOrganizationRoles,
   isMember,
-  USER_ROLE_ADMIN,
-  USER_ROLE_EDITOR,
-  USER_ROLE_SYSTEM_ADMIN,
 } from '@/factories/userEditingValidations';
 
 import UserNotFound1 from '@/modules/user/assets/UserNotFound1.jpg';

@@ -101,9 +101,8 @@
             v-bind="res"
             :downloadActive="resourcesConfig?.downloadActive"
             :showGenericOpenButton="!!res.openEvent"
-            :genericOpenButtonBottom="true"
+            :genericOpenButtonBottom="genericOpenButtonBottom"
             cardColor="primary"
-            :autoHeight="s3Store.treeViewIsOpened"
             @openButtonClicked="catchOpenClick(res.openEvent, res.openProperty)"
           />
         </v-col>
@@ -153,8 +152,6 @@ import {
 import { eventBus, GCNET_INJECT_MICRO_CHARTS } from '@/factories/eventBus';
 
 import { dataLicenses, WSL_DATA_LICENSE_ID } from '@/factories/dataLicense';
-
-import { useS3Store } from '@/modules/s3/store/s3Store';
 
 export default {
   name: 'MetadataResources',
@@ -213,6 +210,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    genericOpenButtonBottom: {
+      type: Boolean,
+      default: true,
+    },
   },
   created() {
     this.injectedComponent = null;
@@ -236,7 +237,7 @@ export default {
       return res ? res.filter((r) => !r.hideFromResourceList) : [];
     },
     setSmGrid() {
-      if (this.availableResources.length > 1 && !this.s3Store.isS3Resources) {
+      if (this.availableResources.length > 1) {
         return 6;
       }
       return 12;
@@ -283,7 +284,6 @@ export default {
     DATE_PROPERTY_DATE_TYPE,
     DATE_PROPERTY_START_DATE,
     DATE_PROPERTY_END_DATE,
-    s3Store: useS3Store(),
   }),
 };
 </script>

@@ -33,7 +33,7 @@ variables:
 .normal-rules:
   rules:
     # when ever a pipeline is created run job, even for manual jobs only
-    - when: always
+    - when: on_success
 
 # don't run for deployment only and scheduled pipelines, to avoid making unnecessary changes
 # in production
@@ -55,8 +55,8 @@ variables:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
       when: never
 
-    # run normal jobs in any other case
-    - when: always
+    # run deployment only the other jobs are successful
+    - when: on_success
 
 # don't run for scheduled pipelines, to avoid making unnecessary changes in production
 .manual-deployment-rules:
@@ -178,7 +178,15 @@ modify-env:
       key = 'VITE_GOOGLE_VERIFICATION_KEY'
       value = os.getenv('GOOGLE_VERIFICATION_KEY')
       dotenv.set_key(file, key, value, quote_mode='never')
-        
+
+      key = 'VITE_SEO_BASE'
+      value = 'https://envidat04.wsl.ch/seo'
+      
+      if branch == 'main' or branch == 'beta':
+          value = 'https://envidat.ch/seo'
+
+      dotenv.set_key(file, key, value, quote_mode='never')
+      
       "
     - echo "created content for .env.production:"
     - cat .env.production

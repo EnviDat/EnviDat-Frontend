@@ -2,7 +2,39 @@
   <link rel="icon" :href="logoUrl" />
   <link rel="canonical" :href="canonicalUrl" />
 
-  <script type='application/javascript' v-html="`
+  <script type='application/javascript' v-if="isErrorPage"
+    v-html="`
+    document.addEventListener('DOMContentLoaded', function () {
+
+      const queryString = window.location.href.split('?')[1];
+      const baseUrl = '${baseCanonicalUrl}/#';
+
+      if (queryString) {
+        const urlQueryString = queryString.split('url=')[1];
+
+        if (urlQueryString) {
+          const url = urlQueryString.split('&')[0];
+          if (url) {
+            window.location.href = baseUrl + url;
+            return;
+          }
+        } else {
+          const firstQueryParameter = queryString.split('=')[1];
+
+          if (firstQueryParameter) {
+            window.location.href = '${baseCanonicalUrl}/#/browse?search=' + firstQueryParameter;
+            return;
+          }
+        }
+      }
+
+      window.location.href = '${baseCanonicalUrl}/#/browse'
+    });
+    `">
+  </script>
+
+  <script type='application/javascript' v-if="!isErrorPage"
+          v-html="`
     document.addEventListener('DOMContentLoaded', function () {
       if (!navigator.userAgent.includes('bot')) {
         window.location.href = '${redirectUrl}';
@@ -29,6 +61,7 @@
 </template>
 <script lang="ts" setup>
 import { useData } from 'vike-vue/useData';
+import { usePageContext } from 'vike-vue/usePageContext';
 import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 
 import logoUrl from '@/assets/logo/EnviDat_fav.ico'
@@ -39,7 +72,9 @@ const jsonLd = data?.jsonLd;
 delete data.jsonLd;
 
 const seoData = getSeoSanitizedDataset(data);
+const pageContext = usePageContext();
 
+const isErrorPage = pageContext.is404
 
 const baseCanonicalUrl = import.meta.env.PUBLIC_ENV__VIKE_BASE_CANONICAL_URL;
 const datasetName = data?.name;

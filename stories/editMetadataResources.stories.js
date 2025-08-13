@@ -70,6 +70,7 @@ for (let i = 0; i < unFormatedMetadata.length; i++) {
 
 const deprecatedResources = [...allResources[1], ...allResources[2]];
 
+deprecatedResources[0].url = 'https://envicloud.wsl.ch/#/?bucket=https://envicloud.wsl.ch/edna/&prefix=su_ch/su_ch_birmen_2024';
 deprecatedResources[1].deprecated = true;
 deprecatedResources[2].deprecated = true;
 

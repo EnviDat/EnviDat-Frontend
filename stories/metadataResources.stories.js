@@ -47,6 +47,7 @@ for (let j = 0; j < deprecatedMetadata.resources.length; j++) {
 }
 
 const deprecatedResources1 = createResources(deprecatedMetadata);
+deprecatedResources1.resources[0].url = 'https://envicloud.wsl.ch/#/?bucket=https://envicloud.wsl.ch/edna/&prefix=su_ch/su_ch_birmen_2024';
 
 export default {
   title: '3 Datasets / 1 Views / Resources',

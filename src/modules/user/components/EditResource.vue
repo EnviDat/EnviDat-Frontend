@@ -343,6 +343,7 @@ import {
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import { formatDate } from '@/factories/dateFactory';
+import { getAuthorByEmail, getAuthorName } from '@/factories/authorFactory.js';
 
 
 export default {
@@ -811,7 +812,12 @@ export default {
       this.imagePreviewError = event;
       this.loadingImagePreview = false;
     },
-    changeAllowedUsers(pickedUserNames) {
+    changeAllowedUsers(pickedAuthorEmails) {
+      const pickedUserNames = pickedAuthorEmails.map((email) => {
+        const author = getAuthorByEmail(email, this.envidatUsers);
+        return getAuthorName(author)
+      });
+
       this.allowedUsersField = getAllowedUsersString(
         pickedUserNames,
         this.envidatUsers,
