@@ -51,7 +51,7 @@ variables:
       when: never
 
     # run normal jobs in any other case
-    - when: always
+    - when: on_success
 
 # don't run for scheduled pipelines, to avoid making unnecessary changes in production
 .deployment-rules:
@@ -230,13 +230,13 @@ install-node:
       if [ -d "node_modules" ] && [ -d "node_modules/.bin" ]; then
         if [ "$FORCE_NPM_INSTALL" = "true" ]; then
           echo "FORCE_NPM_INSTALL $FORCE_NPM_INSTALL so going to run npm ci"
-          npm ci --prefer-offline --no-audit
+          npm ci --prefer-offline --no-audit --ignore-scripts
         else
           echo "node_modules and it's .bin directory already exists. Skipping npm ci."
         fi      
       else
         echo "node_modules or it's .bin directory not found. Running npm ci..."
-        npm ci --prefer-offline --no-audit
+        npm ci --prefer-offline --no-audit --ignore-scripts
       fi
     # - echo "Check afterwards how the folders are"
     # - ls -l node_modules
@@ -249,6 +249,19 @@ install-node:
     expire_in: 1 day
   retry:
     max: 2
+
+verify-node:
+  stage: config
+  image: node:20.15.0-alpine3.20
+  environment: $CI_COMMIT_REF_NAME
+  extends: .normal-rules
+  needs:
+    - install-node
+  script:
+    # keep this in seperate job to clearer identify if there is a problem
+    - npm audit --audit-level=high
+
+
 
 run-tests:
   stage: test
