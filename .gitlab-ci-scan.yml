@@ -27,7 +27,7 @@ verify-node-owasp:
       dependency-check.sh
       --project "EnviDat-Frontend"
       --scan "."
-      --out "/reports"
+      --out "reports"
       --format "HTML"
       --format "JSON"
       --failOnCVSS 7
@@ -36,5 +36,5 @@ verify-node-owasp:
       --enableRetired
   artifacts:
     paths:
-      - /reports
+      - reports
 
