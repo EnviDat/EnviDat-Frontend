@@ -1,6 +1,9 @@
 include:
   - local: '.gitlab-ci-deployment.yml'
   - local: '.gitlab-ci-seo.yml'
+  - local: '.gitlab-ci-scan.yml'
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml  
+  - template: Jobs/SAST.gitlab-ci.yml  
 
 default:  
   tags:
@@ -252,30 +255,6 @@ install-node:
   retry:
     max: 2
 
-verify-node-audit:
-  stage: config
-  image: node:20.15.0-alpine3.20
-  environment: $CI_COMMIT_REF_NAME
-  extends: .normal-rules
-  needs:
-    - install-node
-  script:
-    # keep this in seperate job to clearer identify if there is a problem
-    - npm audit --audit-level=high
-
-
-verify-node-owasp:
-  stage: config
-  image: owasp/dependency-check:latest
-  environment: $CI_COMMIT_REF_NAME  
-  extends: .normal-rules
-  needs:
-    - install-node  
-  script:
-    - dependency-check.sh --scan . --format ALL --enableExperimental
-  artifacts:
-    paths:
-      - dependency-check-report.html
 
 run-tests:
   stage: test

@@ -1,0 +1,26 @@
+
+verify-node-audit:
+  stage: test
+  image: node:20.15.0-alpine3.20
+  environment: $CI_COMMIT_REF_NAME
+  extends: .normal-rules
+  needs:
+    - install-node
+  script:
+    # keep this in seperate job to clearer identify if there is a problem
+    - npm audit --audit-level=high
+
+
+verify-node-owasp:
+  stage: test
+  image: owasp/dependency-check:latest
+  environment: $CI_COMMIT_REF_NAME  
+  extends: .normal-rules
+  needs:
+    - install-node  
+  script:
+    - dependency-check.sh --scan . --format ALL --enableExperimental
+  artifacts:
+    paths:
+      - dependency-check-report.html
+

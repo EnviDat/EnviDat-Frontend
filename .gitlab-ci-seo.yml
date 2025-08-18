@@ -109,3 +109,5 @@ schedule-seo-deployment:
     - ls -l
     - echo "going to rclone copy from ./ to switch:${BUCKET_NAME}"
     - rclone copy ./ "switch:${BUCKET_NAME}" --verbose
+  retry:
+    max: 2
