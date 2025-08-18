@@ -17,10 +17,24 @@ verify-node-owasp:
   environment: $CI_COMMIT_REF_NAME  
   extends: .normal-rules
   needs:
-    - install-node  
+    - job: install-node
+      artifacts: false
   script:
-    - dependency-check.sh --scan . --format ALL --enableExperimental
+    # dependency check against the National Vunerablity Database
+    # https://dependency-check.github.io/DependencyCheck/
+    # more about the cli commands https://dependency-check.github.io/DependencyCheck/dependency-check-cli/arguments.html
+    - >
+      dependency-check.sh
+      --project "EnviDat-Frontend"
+      --scan "."
+      --out "/reports"
+      --format "HTML"
+      --format "JSON"
+      --failOnCVSS 7
+      --exclude "**/node_modules/**"
+      --enableExperimental
+      --enableRetired
   artifacts:
     paths:
-      - dependency-check-report.html
+      - /reports
 
