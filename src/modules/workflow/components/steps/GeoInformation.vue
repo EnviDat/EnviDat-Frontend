@@ -462,7 +462,6 @@ export default {
       this.dateChanged(index, prop, '');
     },
     initEditor(text) {
-      console.log('initEditor', text);
       this.jsonEditor = createJSONEditor({
         target: this.$refs.editorRef,
         props: { content: { json: JSON.parse(text) }, ...this.editorOptions },
