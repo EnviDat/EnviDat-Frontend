@@ -10,7 +10,7 @@ import {
   EDITMETADATA_MAIN_DESCRIPTION,
   EDITMETADATA_MAIN_HEADER,
   EDITMETADATA_ORGANIZATION,
-  EDITMETADATA_PUBLICATION_INFO,
+  EDITMETADATA_PUBLICATION_INFO, EDITMETADATA_REVIEW_INFO,
   eventBus,
   REMOVE_EDITING_AUTHOR,
 } from '@/factories/eventBus';
@@ -124,6 +124,10 @@ function initCreationDataWithDefaults(creationData, user, organizationId) {
     publisher: 'EnviDat',
     publicationYear: defaultCurrentYear,
   };
+
+  creationData[EDITMETADATA_REVIEW_INFO] = {
+    version: '1.0',
+  }
 
   creationData[EDITMETADATA_DATA_GEO] = {
     location: {
