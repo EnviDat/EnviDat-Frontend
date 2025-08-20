@@ -1,0 +1,40 @@
+
+verify-node-audit:
+  stage: test
+  image: node:20.15.0-alpine3.20
+  environment: $CI_COMMIT_REF_NAME
+  extends: .normal-rules
+  needs:
+    - install-node
+  script:
+    # keep this in seperate job to clearer identify if there is a problem
+    - npm audit --audit-level=high
+
+
+verify-node-owasp:
+  stage: test
+  image: owasp/dependency-check:latest
+  environment: $CI_COMMIT_REF_NAME  
+  extends: .normal-rules
+  needs:
+    - job: install-node
+      artifacts: false
+  script:
+    # dependency check against the National Vunerablity Database
+    # https://dependency-check.github.io/DependencyCheck/
+    # more about the cli commands https://dependency-check.github.io/DependencyCheck/dependency-check-cli/arguments.html
+    - >
+      dependency-check.sh
+      --project "EnviDat-Frontend"
+      --scan "."
+      --out "reports"
+      --format "HTML"
+      --format "JSON"
+      --failOnCVSS 7
+      --exclude "**/node_modules/**"
+      --enableExperimental
+      --enableRetired
+  artifacts:
+    paths:
+      - reports
+

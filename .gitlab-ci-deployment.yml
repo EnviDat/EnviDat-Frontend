@@ -8,6 +8,9 @@ deploy-chromatic:
     - modify-env
     # needs the artifact: node_modules to build the app
     - install-node
+    - verify-node-audit
+    - job: verify-node-owasp
+      artifacts: false 
     # needs the artifact: storybook
     - build-storybook
   script:
@@ -28,6 +31,9 @@ publish-build:
     - set-vars
     # make sure to wait for the tests to run correctly
     - run-tests
+    - verify-node-audit
+    - job: verify-node-owasp
+      artifacts: false
     # needs the artifact: the build of the frontend app and storybook buildenv
     - combine-builds
   before_script:
@@ -54,6 +60,9 @@ deploy-to-s3-bucket:
     - set-vars
     # needs the published build for the app and it's storybook
     - publish-build
+    - verify-node-audit
+    - job: verify-node-owasp
+      artifacts: false
   variables:
     GIT_STRATEGY: none
     RCLONE_CONFIG_SWITCH_TYPE: 's3'
@@ -103,6 +112,9 @@ manual-deploy-to-s3-bucket:
   needs:
     # needs the environmental variables for the version number
     - set-vars
+    - verify-node-audit
+    - job: verify-node-owasp
+      artifacts: false 
   variables:
     GIT_STRATEGY: none
     RCLONE_CONFIG_SWITCH_TYPE: 's3'
