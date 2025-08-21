@@ -12,7 +12,7 @@
     - if: '$CI_COMMIT_REF_NAME =~ /^(main|staging|develop)$/'
       # run when triggered from the gitlab ui to start a pipeline
     - if: $CI_PIPELINE_SOURCE == "web"
-      when: always
+      when: on_success
 
 
 build-seo:
@@ -23,7 +23,7 @@ build-seo:
     # don't run when triggered from other pipeline (deployment-only-pipeline)
     - if: '$CI_PIPELINE_SOURCE == "pipeline"'
       when: never
-    - when: always
+    - when: on_success
   needs:
     # needs the artifact: config and environment variables
     - modify-env
@@ -65,7 +65,7 @@ schedule-seo-deployment:
   environment: $CI_COMMIT_REF_NAME
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
-      when: always
+      when: on_success
     - when: never  # only run when scheduled
   needs:
     - set-vars
