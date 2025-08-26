@@ -68,9 +68,11 @@ variables:
     # don't run when it's scheduled
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
       when: never
+    - if: '$CI_COMMIT_REF_NAME =~ /^(staging|develop)$/'
+      when: on_success
 
     # run deployment only the other jobs are successful
-    - when: on_success
+    - when: manual
 
 # don't run for scheduled pipelines, to avoid making unnecessary changes in production
 .manual-deployment-rules:

@@ -54,7 +54,7 @@ deploy-to-s3-bucket:
   stage: deploy
   environment: $CI_COMMIT_REF_NAME
   image: alpine:3.20
-  extends: .manual-deployment-rules
+  extends: .deployment-rules
   needs:
     # needs the environmental variables for the version number
     - set-vars
