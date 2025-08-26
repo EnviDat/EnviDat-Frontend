@@ -8,7 +8,13 @@ include:
 default:  
   tags:
     - frontend
-
+  cache:  # Cache modules using lock file
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - .npm/
+      - node_modules/
 
 stages:
   - config
@@ -36,7 +42,7 @@ workflow:
 variables:
   ARTIFACT_COMPRESSION_LEVEL: 'fast'
   CACHE_COMPRESSION_LEVEL: 'fast'
-#  npm_config_cache: '.npm/'
+  npm_config_cache: '.npm/'
 
 .normal-rules:
   rules:
@@ -210,17 +216,17 @@ install-node:
   image: node:20.15.0-alpine3.20
   environment: $CI_COMMIT_REF_NAME
   # overwrite the global caching to use push-pull policy
-  cache:
-    - key:
-        files:
-          - package-lock.json
-        prefix: 'package-lock'
-      paths:
-        - node_modules/
-      # pull-push to be able to update the node_modules in the cache
-      policy: pull-push
-      untracked: true
-      when: on_success
+#  cache:
+#    - key:
+#        files:
+#          - package-lock.json
+#        prefix: 'package-lock'
+#      paths:
+#        - node_modules/
+#      # pull-push to be able to update the node_modules in the cache
+#      policy: pull-push
+#      untracked: true
+#      when: on_success
   extends: .normal-rules
   before_script:
     # disabled the funding check
