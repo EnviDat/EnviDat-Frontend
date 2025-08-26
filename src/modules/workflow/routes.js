@@ -5,7 +5,7 @@ const WorkflowPage = () =>
 
 export const workflowRoutes = [
   {
-    path: WORKFLOW_PATH,
+    path: `${WORKFLOW_PATH}/:id?`,
     name: WORKFLOW_PAGENAME,
     props: (route) => ({ datasetId: route.query.datasetId }),
     component: WorkflowPage,

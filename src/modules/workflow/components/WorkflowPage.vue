@@ -269,7 +269,7 @@ const datasetExistsInLocalStorage = (datasetId?: string) => {
 
 const mergedDataset = {
   ...props.dataset,
-  id: props.datasetId || props.dataset?.id,
+  id: props.datasetId || props.dataset?.id || route.params?.id,
 };
 
 /* =========================
