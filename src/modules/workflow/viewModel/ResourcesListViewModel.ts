@@ -85,7 +85,10 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
 
     if (!dataset) {
       // make sure to initialize for validations to work
-      Object.assign(this, { resources: []});
+      Object.assign(this, {
+        resources: [],
+        datasetId: undefined,
+      });
       return;
     }
 
@@ -116,7 +119,10 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
       cleanResources,
     );
 
-    Object.assign(this, { resources: cleanResources });
+    Object.assign(this, {
+      resources: cleanResources,
+      datasetId: dataset.id,
+    });
   }
 
   validate(newProps?: Partial<ResourcesListViewModel>): boolean {
@@ -136,7 +142,7 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
         await model.save(newResource);
 
         // the resourceModel is updated with the latest content of the backend
-        // (further deails of the resource)
+        // (further details of the resource)
         await this.datasetModel.createResourceOnExistingDataset(model);
 
         eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);

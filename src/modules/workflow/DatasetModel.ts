@@ -67,14 +67,14 @@ export class DatasetModel {
     }
   }
 
-  loadViewModels() {
-    /*
+  async loadViewModels(datasetId:string) {
     const datasetService = this.datasetWorkflow.getDatasetService();
     await datasetService.loadDataset(datasetId);
-*/
 
+/*
     this.createViewModels();
     // DOMINIK - this is needed to update the viewModels with the current dataset (I GUESS)
+*/
     this.updateViewModels();
   }
 

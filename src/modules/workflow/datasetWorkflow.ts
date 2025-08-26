@@ -46,7 +46,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     // list of readOnlyFields
     // if you need to find those items in the code just search for this isReadOnly('visibility')
     listOfReadOnlyFields: [...readOnlyFields],
-    // define readOnly steps to mange the navigation (UI only)
+    // define readOnly steps to manage the navigation (UI only)
     isReadOnlyStep: [
       'AuthorsInformation',
       'additionalinformation',
@@ -67,7 +67,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
 
     // GET the current step viewModel
     currentViewModel(state) {
-      const step = state.steps[state.currentStep];
+      const step = state.steps[state.currentStep] as WorkflowStep;
       if (!state.datasetModel || !step?.viewModelKey) return null;
 
       // get the viewModel
@@ -88,13 +88,8 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     },
 
     // INIT dataset workflow with the dataset DTO and mode.
-    async initializeDataset(dataset: DatasetDTO, mode: WorkflowMode) {
-      this.localStorageService.dataset = dataset;
-
+    async initializeDataset() {
       this.datasetModel = new DatasetModel(this);
-      await this.datasetModel.loadViewModels();
-
-      this.setEditMode(mode);
 
       // SET currentStep to the first step
       this.currentStep = 0;
@@ -119,8 +114,6 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     // We need to fine-tune this logic.
     async bootstrapWorkflow(datasetId?: string) {
       this.loading = true;
-      this.datasetModel = new DatasetModel(this);
-      this.localStorageService = new LocalStorageDatasetService();
 
       try {
         const { dto, mode } = await resolveBootstrap<DatasetDTO>(datasetId, {
@@ -129,6 +122,8 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
           createLocal: (init) =>
             this.localStorageService.createDataset(init as DatasetDTO),
         });
+
+        this.setWorkflowMode(mode);
 
         await this.initializeDataset(dto, mode);
       } finally {
@@ -148,7 +143,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     // SET the mode to WorkflowMode.Create or WorkflowMode.Edit.
     // Controls navigation flow, read-only UI state, and step editability based on the mode.
     // EXAMPLE - In WorkflowMode.Edit mode, steps become editable, allowing free navigation.
-    setEditMode(mode: WorkflowMode) {
+    setWorkflowMode(mode: WorkflowMode) {
       this.mode = mode;
 
       const { steps, freeJump } = computeStepsForMode(
@@ -176,7 +171,9 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
           await this.localStorageService.patchDatasetChanges(dataset);
       }
 
-      await this.initializeDataset(datasetDto, WorkflowMode.Edit);
+      this.setWorkflowMode(WorkflowMode.Edit);
+
+      await this.initializeDataset(datasetDto);
     },
 
     // resetSteps() {
