@@ -1,5 +1,9 @@
 <template>
-  <v-container fluid class="pa-4" id="ResourcesInformation">
+  <v-container
+    fluid
+    class="pa-4"
+    id="ResourcesInformation">
+
     <v-row class="mb-0">
       <v-col class="text-h5 font-weight-bold" cols="12">
         Resources Information
@@ -75,12 +79,12 @@
         </v-row>
 
         <v-row v-if="!selectedResource">
-          <!--
-                    <v-col cols="12">
-                      <EditDropResourceFiles v-bind="editDropResourceObject" />
-                      &lt;!&ndash; No need to listen to events from the component, events are emitted from uppy directly &ndash;&gt;
-                    </v-col>
-          -->
+          <v-col cols="12">
+            <ResourceUpload
+              flat
+              v-bind="editDropResourceObject" />
+            <!-- No need to listen to events from the component, events are emitted from uppy directly -->
+          </v-col>
 
           <v-col cols="12">
             <ResourcesPasteUrl
@@ -151,7 +155,7 @@ import {
 } from '@/factories/userEditingFactory.js';
 
 import ResourcesListEditing from '@/modules/workflow/components/steps/ResourcesListEditing.vue';
-// import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles.vue';
+import ResourceUpload from '@/modules/workflow/components/steps/ResourceUpload.vue';
 import ResourcesPasteUrl from '@/modules/workflow/components/steps/ResourcesPasteUrl.vue';
 import { ResourceViewModel } from '@/modules/workflow/viewModel/ResourceViewModel.js';
 import type { Resource } from '@/types/modelTypes';
@@ -548,7 +552,7 @@ export default {
   }),
   components: {
     ResourcesListEditing,
-    // EditDropResourceFiles,
+    ResourceUpload,
     ResourcesPasteUrl,
     ResourceEditing,
   },
