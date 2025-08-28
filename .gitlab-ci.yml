@@ -15,6 +15,7 @@ default:
     paths:
       - .npm/
       - node_modules/
+    policy: pull
 
 stages:
   - config
@@ -218,18 +219,17 @@ install-node:
   image: node:20.15.0-alpine3.20
   environment: $CI_COMMIT_REF_NAME
   # overwrite the global caching to use push-pull policy
-#  cache:
-#    - key:
-#        files:
-#          - package-lock.json
-#        prefix: 'package-lock'
-#      paths:
-#        - node_modules/
-#      # pull-push to be able to update the node_modules in the cache
-#      policy: pull-push
-#      untracked: true
-#      when: on_success
-  extends: .normal-rules
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - .npm/
+      - node_modules/
+    # pull-push to be able to update the node_modules in the cache
+    policy: pull-push
+    untracked: true
+    when: on_success
   before_script:
     # disabled the funding check
     - npm config set fund false
