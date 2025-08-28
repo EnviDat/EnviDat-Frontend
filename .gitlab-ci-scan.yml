@@ -9,6 +9,8 @@ verify-node-audit:
   script:
     # keep this in seperate job to clearer identify if there is a problem
     - npm audit --audit-level=high
+  retry:
+    max: 2
 
 
 verify-node-owasp:
@@ -37,4 +39,6 @@ verify-node-owasp:
   artifacts:
     paths:
       - reports
+  retry:
+    max: 2
 

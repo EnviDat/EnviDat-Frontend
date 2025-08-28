@@ -33,7 +33,9 @@ import {
   EDITMETADATA_ORGANIZATION,
   EDITMETADATA_PUBLICATION_INFO,
   EDITMETADATA_RELATED_DATASETS,
-  EDITMETADATA_RELATED_PUBLICATIONS, METADATA_MAIN_HEADER,
+  EDITMETADATA_RELATED_PUBLICATIONS,
+  EDITMETADATA_REVIEW_INFO,
+  METADATA_MAIN_HEADER,
   USER_OBJECT,
 } from '@/factories/eventBus';
 
@@ -202,6 +204,9 @@ const JSONFrontendBackendRules = {
     ['publicationYear','publication.publication_year'],
     ['version', 'version'],
     ['datasetId', 'id'],
+  ],
+  [EDITMETADATA_REVIEW_INFO]: [
+    ['version', 'version'],
   ],
   [EDITMETADATA_FUNDING_INFO]: [
     ['funders','funding'],
