@@ -40,8 +40,8 @@ workflow:
 
 
 variables:
-  ARTIFACT_COMPRESSION_LEVEL: 'fast'
-  CACHE_COMPRESSION_LEVEL: 'fast'
+  ARTIFACT_COMPRESSION_LEVEL: 'fastest'
+  CACHE_COMPRESSION_LEVEL: 'fastest'
   npm_config_cache: '.npm/'
 
 .normal-rules:
