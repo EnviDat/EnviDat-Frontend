@@ -224,7 +224,6 @@ install-node:
       files:
         - package-lock.json
     paths:
-      - .npm/
       - node_modules/
     # pull-push to be able to update the node_modules in the cache
     policy: pull-push
