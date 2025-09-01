@@ -15,7 +15,7 @@ deploy-chromatic:
     - build-storybook
   before_script:
     - |
-      if [ -d "node_modules" ]; then
+      if [ -d "node_modules" ] && [ -d "node_modules/.bin" ]; then
         echo "node_modules directory already exists."
         ls node_modules/.bin/storybook || echo "/.bin/storybook not found"
       else
