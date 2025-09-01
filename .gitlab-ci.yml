@@ -8,6 +8,13 @@ include:
 default:  
   tags:
     - frontend
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - .npm/
+    policy: pull-push
 
 stages:
   - config
@@ -35,7 +42,8 @@ workflow:
 variables:
   ARTIFACT_COMPRESSION_LEVEL: 'fastest'
   CACHE_COMPRESSION_LEVEL: 'fastest'
-  npm_config_cache: '.npm/'
+  NPM_CONFIG_CACHE: '.npm/'
+  GIT_CLEAN_FLAGS: "-ffdx -e .npm/" # don't delete the .npm/ for each job
 
 .normal-rules:
   rules:
