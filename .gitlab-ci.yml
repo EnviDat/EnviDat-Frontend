@@ -8,13 +8,6 @@ include:
 default:  
   tags:
     - frontend
-  cache:  # Cache modules using lock file
-    key:
-      files:
-        - package-lock.json
-    paths:
-      - node_modules/
-    policy: pull
 
 stages:
   - config
@@ -226,7 +219,6 @@ install-node:
       - node_modules/
     # pull-push to be able to update the node_modules in the cache
     policy: pull-push
-    untracked: false
     when: on_success
   before_script:
     # disabled the funding check
