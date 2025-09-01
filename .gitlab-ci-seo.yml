@@ -30,14 +30,7 @@ build-seo:
     # needs the artifact: node_modules to build the app
     #- install-node
   before_script:
-    - |
-      if [ -d "node_modules" ]; then
-        echo "node_modules directory already exists."
-        ls node_modules/.bin/vike || echo "/.bin/vike not found"
-      else
-        echo "node_modules directory not found. Install it!"
-        npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
-      fi
+    - npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
   script:
     - npm run build-vike
     # rename the dist/client output folder
