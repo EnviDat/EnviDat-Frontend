@@ -226,7 +226,7 @@ install-node:
       - node_modules/
     # pull-push to be able to update the node_modules in the cache
     policy: pull-push
-    untracked: true
+    untracked: false
     when: on_success
   before_script:
     # disabled the funding check
