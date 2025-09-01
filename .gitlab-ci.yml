@@ -13,7 +13,6 @@ default:
       files:
         - package-lock.json
     paths:
-      - .npm/
       - node_modules/
     policy: pull
 
