@@ -7,9 +7,11 @@ import {
   createLicense,
   createPublications,
   createDetails,
-  createResource,
   enhanceTitleImg,
 } from '@/factories/metaDataFactory';
+
+import { createResource } from '@/factories/resourceHelpers';
+
 import {
   createCitation,
   extractPIDMapFromText,

@@ -483,7 +483,7 @@ function createUppyInstance(height = 300, autoProceed = true, restrictions = def
     completeMultipartUpload: completeMultipart,
   });
 
-  console.log('createUppyInstance', uppy);
+  // console.log('createUppyInstance', uppy);
 
   return uppy;
 }
