@@ -28,18 +28,16 @@ build-seo:
     # needs the artifact: config and environment variables
     - modify-env
     # needs the artifact: node_modules to build the app
-    - install-node
+    #- install-node
   before_script:
     - |
       if [ -d "node_modules" ]; then
         echo "node_modules directory already exists."
         ls node_modules/.bin/vike || echo "/.bin/vike not found"
       else
-        echo "node_modules directory not found. Should have got them from the install-node artifact!"
-        ls -a
+        echo "node_modules directory not found. Install it!"
+        npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
       fi
-    # - ls node_modules/ -a
-    # - ls node_modules/.bin/ -a
   script:
     - npm run build-vike
     # rename the dist/client output folder
@@ -68,9 +66,11 @@ schedule-seo-deployment:
       when: on_success
     - when: never  # only run when scheduled
   needs:
-    - set-vars
     # needs the artifact: config and environment variables
     - modify-env
+    - run-tests
+    - verify-node-audit
+    - verify-node-owasp
     # needs the artifact: node_modules to build the app
     - build-seo
   variables:

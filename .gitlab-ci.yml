@@ -225,7 +225,7 @@ install-node:
     - npm config set fund false
   script:
     # always run the install
-      - npm ci --prefer-offline --no-audit --ignore-scripts
+      - npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
     # - echo "the cache work if node_modules and it's .bin directory are available"
     # - ls -a
     # Only run npm ci if node_modules don't come from the cache
@@ -261,18 +261,16 @@ run-tests:
   extends: .normal-rules
   needs:
     - modify-env
-    - install-node
+    #- install-node
   before_script:
     - |
       if [ -d "node_modules" ]; then
         echo "node_modules directory already exists."
         ls node_modules/.bin/vitest || echo "/.bin/vitest not found"
       else
-        echo "node_modules directory not found. Should have got them from the install-node artifact!"
-        ls -a
+        echo "node_modules directory not found. Install it!"
+        npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
       fi
-    # - ls node_modules/ -a
-    # - ls node_modules/.bin/ -a
   script:
     - npm run test
   retry:
@@ -287,21 +285,17 @@ build-storybook:
     # needs the artifact: config and environment variables
     - modify-env
     # needs the artifact: node_modules to build storybook
-    - install-node
+    #- install-node
   before_script:
     - |
       if [ -d "node_modules" ]; then
         echo "node_modules directory already exists."
         ls node_modules/.bin/storybook || echo "/.bin/storybook not found"
       else
-        echo "node_modules directory not found. Should have got them from the install-node artifact!"
-        ls -a
+        echo "node_modules directory not found. Install it!"
+        npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
       fi
-    # - ls node_modules/ -a
-    # - ls node_modules/.bin/ -a
   script:
-    # - npm config set cache .npm/
-    # - npm cache verify || true
     - npm run build-storybook -- -o ./storybook --loglevel warn --disable-telemetry
   artifacts:
     name: 'storybook build'
@@ -322,18 +316,16 @@ build-app:
     # needs the artifact: config and environment variables
     - modify-env
     # needs the artifact: node_modules to build the app
-    - install-node
+    #- install-node
   before_script:
     - |
       if [ -d "node_modules" ]; then
         echo "node_modules directory already exists."
         ls node_modules/.bin/vite || echo "/.bin/vite not found"
       else
-        echo "node_modules directory not found. Should have got them from the install-node artifact!"
-        ls -a
+        echo "node_modules directory not found. Install it!"
+        npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
       fi
-    # - ls node_modules/ -a
-    # - ls node_modules/.bin/ -a
   script:
     - npm run build -- --logLevel warn
   artifacts:

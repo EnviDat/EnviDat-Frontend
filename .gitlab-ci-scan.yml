@@ -5,9 +5,10 @@ verify-node-audit:
   environment: $CI_COMMIT_REF_NAME
   extends: .normal-rules
   needs:
-    - install-node
+    - job: modify-env
+      artifacts: false
   script:
-    # keep this in seperate job to clearer identify if there is a problem
+    # keep this in separate job to clearer identify if there is a problem
     - npm audit --audit-level=high
   retry:
     max: 2
@@ -19,10 +20,10 @@ verify-node-owasp:
   environment: $CI_COMMIT_REF_NAME  
   extends: .normal-rules
   needs:
-    - job: install-node
+    - job: modify-env
       artifacts: false
   script:
-    # dependency check against the National Vunerablity Database
+    # dependency check against the National Vulnerability Database
     # https://dependency-check.github.io/DependencyCheck/
     # more about the cli commands https://dependency-check.github.io/DependencyCheck/dependency-check-cli/arguments.html
     - >

@@ -7,12 +7,21 @@ deploy-chromatic:
     # needs the artifact: config and environment variables
     - modify-env
     # needs the artifact: node_modules to build the app
-    - install-node
+    #- install-node
     - verify-node-audit
     - job: verify-node-owasp
       artifacts: false 
     # needs the artifact: storybook
     - build-storybook
+  before_script:
+    - |
+      if [ -d "node_modules" ]; then
+        echo "node_modules directory already exists."
+        ls node_modules/.bin/storybook || echo "/.bin/storybook not found"
+      else
+        echo "node_modules directory not found. Install it!"
+        npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
+      fi
   script:
     # manually deploy the storybook build to chromatic for visual regression testing
     - npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes --storybook-build-dir ./storybook
