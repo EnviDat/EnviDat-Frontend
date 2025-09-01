@@ -13,6 +13,7 @@
 import EditDescription from '@/modules/user/components/EditDescription.vue';
 import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionViewModel';
 import {
+  desktopViewportParams,
   mobileLargeViewportParams,
   mobileViewportParams,
   tabletViewportParams,
@@ -59,15 +60,31 @@ export const Filled = {
 
 export const FilledMobile = {
   args: createDescriptionViewModel({ notes: description }, true),
-  parameters: mobileViewportParams,
+  globals: {
+    ...mobileViewportParams,
+    // viewport: { value: mobileViewportParams },
+  },
 }
 
 export const FilledLargeMobile = {
   args: createDescriptionViewModel({ notes: description }, true),
-  parameters: mobileLargeViewportParams,
+  globals: {
+    ...mobileLargeViewportParams,
+  },
 }
 
 export const FilledTablet = {
   args: createDescriptionViewModel({ notes: description }, true),
-  parameters: tabletViewportParams,
+  globals: {
+    ...tabletViewportParams,
+  },
 }
+
+export const FilledDesktop = {
+  args: createDescriptionViewModel({ notes: description }, true),
+  globals: {
+    ...desktopViewportParams,
+  },
+}
+
+

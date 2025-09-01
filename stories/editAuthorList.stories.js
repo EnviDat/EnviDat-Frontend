@@ -35,6 +35,14 @@ import {
 import { METADATA_AUTHOR_SEQUENCE_PROPERTY, METADATA_AUTHORS_PROPERTY } from '@/factories/metadataConsts';
 import unFormatedMetadataCards from './js/metadata';
 
+import { AuthorListViewModel } from '@/modules/workflow/viewModel/AuthorListViewModel.ts';
+import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
+import { BackendDatasetService } from '@/modules/workflow/BackendDatasetService.ts';
+
+const serviceLayer = new BackendDatasetService(unFormatedMetadataCards[0]);
+const datasetVM = new DatasetModel(serviceLayer);
+
+
 const metadataCards = [];
 
 unFormatedMetadataCards.forEach((el) => {
@@ -228,6 +236,7 @@ const Template = {
   }),
 }
 
+
 export const EmptyAuthorList = {
   ...Template,
   args: {
@@ -251,6 +260,17 @@ export const LoadingAuthorList = {
   args: {
     ...EditExistingAuthors.args,
     loading: true,
+  },
+}
+
+const vm = datasetVM.getViewModel(AuthorListViewModel.name);
+
+export const AuthorListViewModels = {
+  args: {
+    ...vm,
+    onSave: (newData) => {
+      vm.save(newData);
+    },
   },
 }
 

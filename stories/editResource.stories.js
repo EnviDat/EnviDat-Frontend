@@ -24,11 +24,11 @@ import {
 import {
   cleanListForFrontend,
   enhanceUserObject,
-  mergeResourceSizeForFrontend,
 } from '@/factories/mappingFactory';
 
 import unFormatedMetadata from './js/metadata';
 import userList from './testdata/user_list.json';
+import { mergeResourceSizeForFrontend } from '@/factories/resourceHelpers';
 
 const envidatUsers = userList?.result || [];
 

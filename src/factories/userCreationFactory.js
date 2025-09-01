@@ -15,10 +15,7 @@ import {
   REMOVE_EDITING_AUTHOR,
 } from '@/factories/eventBus';
 
-import {
-  createAuthor,
-  mergeAuthorsDataCredit,
-} from '@/factories/authorFactory';
+import { createAuthor, mergeAuthorsDataCredit } from '@/factories/authorFactory';
 
 import { getValidationMetadataEditingObject } from '@/factories/userEditingValidations';
 import { updateEditingArray } from '@/factories/userEditingFactory';
@@ -82,7 +79,7 @@ export function getNewDatasetDefaults(userEditMetadataConfig) {
   };
 }
 
-function initCreationDataWithDefaults(creationData, user, organizationId) {
+export function initCreationDataWithDefaults(creationData, user, organizationId) {
   const fullName = user?.fullName || user?.name || '';
   const nameSplits = fullName.split(' ');
 
@@ -211,7 +208,24 @@ export function readDataFromLocalStorage(dataKey) {
   }
 }
 
+export function readDatasetFromLocalStorage(datasetId) {
+  if (!datasetId) {
+    return undefined;
+  }
 
+  try {
+    const localData = localStorage.getItem(datasetId);
+
+    if (!localData) {
+      return undefined;
+    }
+
+    return JSON.parse(localData);
+  } catch (e) {
+    console.error(`Failed to parse json of ${datasetId} : ${e}`);
+    return null;
+  }
+}
 
 
 function initStepDataInLocalStorage(stepKey, data) {
@@ -535,6 +549,22 @@ function combineAuthorDataChanges(dataKey, data) {
   return data;
 }
 
+export function storeDatasetInLocalStorage(datasetId, data) {
+
+  if (!datasetId) {
+    return null;
+  }
+
+  try {
+    const stringData = JSON.stringify(data);
+    localStorage.setItem(datasetId, stringData);
+  } catch (e) {
+    console.error(`Failed to stringify json of ${datasetId} : ${e}`);
+    return null;
+  }
+
+  return data;
+}
 
 export function storeCreationStepsData(dataKey, data, steps, resetMessages = true, clearUIPreviews = true) {
 

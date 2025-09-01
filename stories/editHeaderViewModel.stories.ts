@@ -25,22 +25,15 @@ import {
 import categoryCards from '@/store/categoryCards';
 import { getPopularTags, getTagColor } from '@/factories/keywordsFactory';
 
-import {
-  METADATA_CONTACT_EMAIL,
-  METADATA_CONTACT_FIRSTNAME,
-  METADATA_CONTACT_LASTNAME,
-  METADATA_TITLE_PROPERTY, METADATA_URL_PROPERTY,
-} from '@/factories/metadataConsts';
 
-import { EditDatasetServiceLayer } from '@/factories/ViewModels/EditDatasetServiceLayer';
-import { EditHeaderViewModel } from '@/factories/ViewModels/EditHeaderViewModel';
-import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
+import { LocalStorageDatasetService } from '@/modules/workflow/LocalStorageDatasetService.ts';
+import { EditHeaderViewModel } from '@/modules/workflow/ViewModel/EditHeaderViewModel';
 
 import metadataset from './js/metadata';
-import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel.ts';
+import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 
-const serviceLayer = new EditDatasetServiceLayer(metadataset[0]);
-const datasetVM = new DatasetViewModel(serviceLayer);
+const serviceLayer = new LocalStorageDatasetService();
+const datasetVM = new DatasetModel(serviceLayer);
 
 
 const unFormatedMetadataCards = metadataset;
@@ -66,8 +59,8 @@ const authors = getFullAuthorsFromDataset(authorsMap, metadataCards[1]);
 let existingAuthors = Object.values(authorsMap);
 existingAuthors = sortObjectArray(existingAuthors, 'lastName');
 
-const serviceLayer2 = new EditDatasetServiceLayer(metadataset[1]);
-const datasetVM2 = new DatasetViewModel(serviceLayer2);
+const serviceLayer2 = new LocalStorageDatasetService();
+const datasetVM2 = new DatasetModel(serviceLayer2);
 const reactiveViewModelWithErrors = datasetVM2.getViewModel('EditHeaderViewModel');
 
 
@@ -78,7 +71,7 @@ export default {
 
 
 // @ts-ignore
-const empty = new EditHeaderViewModel(new DatasetViewModel());
+const empty = new EditHeaderViewModel(new DatasetModel());
 const emptyVM = reactive(empty);
 
 /*

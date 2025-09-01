@@ -101,7 +101,8 @@ import {
   getUppyInstance,
   subscribeOnUppyEvent,
   unSubscribeOnUppyEvent,
-  createNewResourceForUrl, destroyUppyInstance,
+  createNewResourceForUrl,
+  destroyUppyInstance,
 } from '@/factories/uploadFactory';
 
 import {
@@ -116,7 +117,7 @@ import {
 } from '@/modules/user/store/userMutationsConsts';
 
 import { getSelectedElement } from '@/factories/userEditingFactory';
-import { mergeResourceSizeForFrontend } from '@/factories/mappingFactory';
+import { mergeResourceSizeForFrontend } from '@/factories/resourceHelpers';
 
 import EditMetadataResources from '@/modules/user/components/EditMetadataResources.vue';
 import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles.vue';

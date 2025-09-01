@@ -1,5 +1,5 @@
-// import defaults from '@storybook/addon-viewport/dist/modern/defaults';
-import { MINIMAL_VIEWPORTS } from '@storybook/addon-viewport';
+// import defaults from 'storybook/viewport/dist/modern/defaults';
+import { MINIMAL_VIEWPORTS } from 'storybook/viewport';
 
 const smallMobile = 'mobile1';
 let sWidth = MINIMAL_VIEWPORTS[smallMobile].styles.width;
@@ -13,17 +13,23 @@ const tablet = 'tablet';
 let tWidth = MINIMAL_VIEWPORTS[tablet].styles.width;
 tWidth = Number.parseInt(tWidth.substring(0, tWidth.length - 2), 10);
 
+const desktop = 'desktop';
+
 export const mobileViewportParams = {
-  viewport: { defaultViewport: smallMobile },
+  viewport: { value: smallMobile },
   chromatic: { viewports: [ sWidth ] },
 };
 export const mobileLargeViewportParams = {
-  viewport: { defaultViewport: largeMobile },
+  viewport: { value: largeMobile },
   chromatic: { viewports: [ lWidth ] },
 };
 export const tabletViewportParams = {
-  viewport: { defaultViewport: tablet },
+  viewport: { value: tablet },
   chromatic: { viewports: [ tWidth ] },
+};
+
+export const desktopViewportParams = {
+  viewport: { value: desktop },
 };
 
 export const envidatViewportParameters = {

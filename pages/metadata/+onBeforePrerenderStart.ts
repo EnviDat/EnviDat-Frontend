@@ -1,4 +1,4 @@
-import { DatasetDTO } from '@/types/modelTypes';
+import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 import { isFechingDatasets, loadDataset } from '../datasets.ts';
 
 // @ts-ignore

@@ -29,7 +29,7 @@
 
 <script setup lang='ts'>
   import { useData } from 'vike-vue/useData'
-  import { DatasetDTO } from '@/types/modelTypes';
+  import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
   import { createCitation } from '@/factories/citationFactory';
   import { getSeoSanitizedDataset } from '../../seoConversions.ts';
 

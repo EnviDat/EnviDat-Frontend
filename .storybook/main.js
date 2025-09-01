@@ -11,9 +11,10 @@ export default {
     },
   },
   addons: [
-    '@storybook/addon-storysource',
-    '@storybook/addon-essentials',
-    '@chromatic-com/storybook'
+    '@chromatic-com/storybook',
+    '@storybook/addon-docs',
+    '@storybook/addon-vitest',
+    '@storybook/addon-a11y'
   ],
 
   framework: {

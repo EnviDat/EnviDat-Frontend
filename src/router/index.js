@@ -31,6 +31,7 @@ import { integrationRoutes } from '@/modules/integration/routes';
 import { aboutRoutes } from '@/modules/about/routes';
 import { trackEvent } from '@/utils/matomoTracking';
 import { userRoutes } from '@/modules/user/routes';
+import { workflowRoutes } from '@/modules/workflow/routes';
 import { blogRoutes } from '@/modules/blog/routes';
 import { organizationsRoutes } from '@/modules/organizations/routes';
 
@@ -69,6 +70,7 @@ const router = createRouter({
     ...organizationsRoutes,
     ...aboutRoutes,
     ...userRoutes,
+    ...workflowRoutes,
     ...serviceRoutes,
     ...integrationRoutes,
     ...blogRoutes,

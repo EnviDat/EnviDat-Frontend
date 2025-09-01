@@ -4,6 +4,7 @@
       class="pa-0"
       max-width="100%"
       :loading="loadingColor"
+      :flat
   >
     <v-container fluid class="pa-4">
       <v-row>
@@ -180,6 +181,10 @@ export default {
        type: Boolean,
        default: undefined,// can be kept null
      },
+    flat: {
+      type: Boolean,
+      default: false,
+    },
   },
   mounted () {
     this.isBlindActive = this.isBlindReview;

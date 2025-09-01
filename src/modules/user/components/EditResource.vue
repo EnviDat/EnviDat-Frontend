@@ -330,7 +330,7 @@ import {
 
 import { formatDateTimeToCKANFormat } from '@/factories/mappingFactory';
 import { renderMarkdown } from '@/factories/stringFactory';
-import {getFileIcon, getIcon} from '@/factories/imageFactory';
+import {getFileIcon, getIconImage} from '@/factories/imageFactory';
 
 import notFoundImg from '@/modules/user/assets/imageNotFound.jpg';
 import {
@@ -900,7 +900,7 @@ export default {
         'Deprecated resources are grayed out and at the bottom of the list. Make sure you provide an updated replacement!',
     },
     saveButtonEnabled: false,
-    fileSizeIcon: getIcon('fileSize'),
+    fileSizeIcon: getIconImage('fileSize'),
     validationErrors: {
       name: null,
       description: null,

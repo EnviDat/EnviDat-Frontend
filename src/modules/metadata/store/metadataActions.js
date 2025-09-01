@@ -224,6 +224,7 @@ export default {
         });
       });
   },
+  // ENRICO - 'master' call for all data
   async [BULK_LOAD_METADATAS_CONTENT]({ dispatch, commit }, config = {}) {
     commit(BULK_LOAD_METADATAS_CONTENT);
 

@@ -1,7 +1,8 @@
 import ResourceCard from '@/modules/metadata/components/ResourceCard.vue';
 import ResourceCardPlaceholder from '@/modules/metadata/components/ResourceCardPlaceholder.vue';
 
-import { createResources } from '@/factories/metaDataFactory';
+import { createResources } from '@/factories/resourceHelpers';
+
 import unFormatedMetadataCards from './js/metadata';
 
 

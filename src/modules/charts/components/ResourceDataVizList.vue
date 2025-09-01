@@ -4,8 +4,8 @@ import { useTheme } from 'vuetify';
 import ResourceDataViz from '@/modules/charts/components/ResourceDataViz.vue';
 
 import { DataVizSupportedExtensions } from '@/modules/charts/middelware/chartServiceLayer.ts';
-import { getResourceName } from '@/factories/metaDataFactory.ts';
-import { ResourceDTO } from '../../../types/modelTypes';
+import { getResourceName } from '@/factories/resourceHelpers';
+import { ResourceDTO } from '@/types/dataTransferObjectsTypes';
 
 const theme = useTheme();
 

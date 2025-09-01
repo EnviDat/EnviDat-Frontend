@@ -94,7 +94,7 @@
           v-for="res in availableResources"
           :key="`${res.id}_${res.name}`"
           cols="12"
-          :sm="setSmGrid"
+          v-bind="listLayout"
           class="pa-2"
         >
           <ResourceCard
@@ -178,7 +178,7 @@ export default {
       type: Object,
       default: () => {},
     },
-    twoColumnLayout: {
+    compactList: {
       type: Boolean,
       default: false,
     },
@@ -224,6 +224,13 @@ export default {
     eventBus.off(GCNET_INJECT_MICRO_CHARTS, this.injectComponent);
   },
   computed: {
+    listLayout() {
+      return this.compactList ? {
+        sm: 6,
+      } : {
+        xl: 6,
+      }
+    },
     availableResources() {
       const res = this.resources;
 

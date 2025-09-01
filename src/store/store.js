@@ -89,7 +89,7 @@ function createStore() {
   return new Vuex.Store({
     // strict is for getting error about the state mutations outside of mutations
     // is very performance heavy, don't use it in production!
-    strict: false, // process.env.NODE_ENV !== 'production',
+    strict: false, // import.meta.env?.MODE !== 'production',
     state: initialState,
     getters: {
       appBGImage: (state) => state.appBGImage,

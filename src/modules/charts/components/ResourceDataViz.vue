@@ -4,8 +4,8 @@ import LineChart from '@/components/Charts/LineChart.vue';
 
 import { loadResourcesData } from '@/modules/charts/middelware/chartServiceLayer.ts';
 import { MetaData } from '@/types/dataVizTypes';
-import { getResourceName } from '@/factories/metaDataFactory.ts';
-import { ResourceDTO } from '@/types/modelTypes';
+import { getResourceName } from '@/factories/resourceHelpers';
+import { ResourceDTO } from '@/types/dataTransferObjectsTypes';
 
 const props = defineProps<{
   resource: object;

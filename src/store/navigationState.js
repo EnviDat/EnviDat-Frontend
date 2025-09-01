@@ -15,6 +15,7 @@ import {
   mdiPlusBox,
 } from '@mdi/js';
 
+import { computed } from 'vue';
 import {
   BROWSE_PATH,
   BROWSE_PAGENAME,
@@ -36,7 +37,11 @@ import {
   ORGANIZATIONS_PAGENAME,
   METADATA_CREATION_PATH,
   METADATA_CREATION_PAGENAME,
+  WORKFLOW_PATH,
+  WORKFLOW_PAGENAME,
 } from '@/router/routeConsts';
+
+import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
 
 // const domain = import.meta.env.VITE_DOMAIN;
 const appVersion = import.meta.env.VITE_VERSION;
@@ -123,10 +128,16 @@ export const navigationItems = [
     disabled: false,
     isMenuIcon: true,
   },
+  {
+    title: 'About',
+    icon: mdiInformation,
+    toolTip: 'Information about EnviDat',
+    active: false,
+    path: WORKFLOW_PATH,
+    pageName: WORKFLOW_PAGENAME,
+    disabled: false,
+  },
 ];
-
-import { computed } from 'vue';
-import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
 
 export function useUserMenuItems() {
   const orgStore = useOrganizationsStore();

@@ -43,7 +43,7 @@ export default {
     const errObj = getSpecificApiError(details, reason);
     state.guidelinesMarkdown = `${details}: ${reason}`;
 
-    if (import.meta.env?.DEV) {
+    if (import.meta.env?.MODE === 'development') {
       state.guidelinesMarkdown +=
         ' \nThis is normal when developing locally on localhost:8080';
     }
@@ -65,7 +65,7 @@ export default {
 
     state.policiesMarkdown = `${details}: ${reason}`;
 
-    if (import.meta.env?.DEV) {
+    if (import.meta.env?.MODE === 'development') {
       state.policiesMarkdown +=
         ' \nThis is normal when developing locally on localhost:8080';
     }
@@ -86,7 +86,7 @@ export default {
     const errObj = getSpecificApiError(details, reason);
     state.dmpMarkdown = `${details}: ${reason}`;
 
-    if (import.meta.env?.DEV) {
+    if (import.meta.env?.MODE === 'development') {
       state.dmpMarkdown +=
         ' \nThis is normal when developing locally on localhost:8080';
     }
@@ -107,7 +107,7 @@ export default {
     const errObj = getSpecificApiError(details, reason);
     state.imprintMarkdown = `${details}: ${reason}`;
 
-    if (import.meta.env?.DEV) {
+    if (import.meta.env?.MODE === 'development') {
       state.imprintMarkdown +=
         ' \nThis is normal when developing locally on localhost:8080';
     }

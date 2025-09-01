@@ -15,7 +15,9 @@
 
 import MetadataResources from '@/modules/metadata/components/Metadata/MetadataResources.vue';
 
-import { createLicense, createResources } from '@/factories/metaDataFactory';
+import { createLicense } from '@/factories/metaDataFactory';
+import { createResources } from '@/factories/resourceHelpers';
+
 import { getFrontendDates } from '@/factories/mappingFactory';
 
 // metadata gets enhance in the storybook config
@@ -48,7 +50,7 @@ const deprecatedResources1 = createResources(deprecatedMetadata);
 deprecatedResources1.resources[0].url = 'https://envicloud.wsl.ch/#/?bucket=https://envicloud.wsl.ch/edna/&prefix=su_ch/su_ch_birmen_2024';
 
 export default {
-  title: '3 Datasets / 1 Views / Metadata Resources',
+  title: '3 Datasets / 1 Views / Resources',
   component: MetadataResources,
 };
 
@@ -67,6 +69,19 @@ export const WithResources = {
     resources: resources1.resources,
     dates: resources1Dates,
     showPlaceholder: false,
+    compactList: true,
+  }
+}
+
+export const WithResourcesWideList = {
+  args: {
+    dataLicenseId: license1.id,
+    dataLicenseTitle: license1.title,
+    dataLicenseUrl: license1.url,
+    resources: resources1.resources,
+    dates: resources1Dates,
+    showPlaceholder: false,
+    compactList: false,
   }
 }
 

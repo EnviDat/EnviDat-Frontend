@@ -312,7 +312,7 @@ import S3Tree from '@/modules/s3/components/S3Tree.vue';
 import SparkChart from '@/components/Charts/SparkChart.vue';
 
 import { renderMarkdown, stripMarkdown } from '@/factories/stringFactory';
-import { formatBytes, getResourceName } from '@/factories/metaDataFactory';
+import { formatBytes, getResourceName } from '@/factories/resourceHelpers';
 import { EDIT_METADATA_DOI_LABEL } from '@/factories/metadataConsts';
 import { getFileIcon } from '@/factories/imageFactory';
 

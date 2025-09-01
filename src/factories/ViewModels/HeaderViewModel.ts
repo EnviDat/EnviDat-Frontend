@@ -4,7 +4,8 @@ import { getAuthorName } from '@/factories/authorFactory';
 import { formatDate } from '@/factories/dateFactory';
 import { getMetadataVisibilityState } from '@/factories/publicationFactory';
 import { AuthorsViewModel } from '@/factories/ViewModels/AuthorsViewModel';
-import { Author, DatasetDTO } from '@/types/modelTypes';
+import { Author } from '@/types/modelTypes';
+import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 import { AbstractViewModel } from '@/factories/ViewModels/AbstractViewModel';
 
 

@@ -138,8 +138,8 @@ import {
   createLicense,
   createPublications,
   createRelatedDatasets,
-  createResources,
 } from '@/factories/metaDataFactory';
+import { createResources } from '@/factories/resourceHelpers';
 
 import { createCitation } from '@/factories/citationFactory';
 
@@ -345,7 +345,7 @@ export default {
       return fileList;
     },
     baseUrl() {
-      return import.meta.env.PROD
+      return import.meta.env?.MODE === 'production'
         ? this.baseStationURL
         : this.baseStationURLTestdata;
     },
@@ -616,6 +616,7 @@ export default {
         dataLicenseTitle: license.title,
         dataLicenseUrl: license.url,
         resourcesConfig: this.resourcesConfig,
+        compactList: true,
       };
     },
     setMetadataContent() {

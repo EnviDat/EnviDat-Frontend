@@ -17,7 +17,7 @@
             :cover="!contain"
             :height="height"
             style="border-bottom-left-radius: 4px; border-top-left-radius: 4px"
-            :src="img"
+            :src="imgResolved"
           />
         </v-col>
 
@@ -41,8 +41,7 @@
   </v-card>
 </template>
 
-<script>
-/**
+<script>/**
  * BaseClickCard.vue creates a small card with a title and an image, it emits the
  * 'clicked' event with the title a parameter.
  *
@@ -55,6 +54,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import { getImage } from '@/factories/imageFactory.js';
 
 // un blurry zooming
 // https://stackoverflow.com/questions/36143337/how-to-prevent-blur-from-css-transform
@@ -82,11 +82,19 @@ export default {
       default: '65',
     },
   },
+  async mounted() {
+    if (this.img) {
+      this.imgResolved = await getImage(this.img);
+    }
+  },
   methods: {
     clicked() {
       this.$emit('click', this.title.toLowerCase());
     },
   },
+  data: () => ({
+    imgResolved: undefined,
+  }),
 };
 </script>
 

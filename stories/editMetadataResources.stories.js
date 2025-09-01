@@ -88,12 +88,24 @@ export const WithResources = {
     resourcesConfig: {
       downloadActive: false,
     },
+    compactList: true,
+  },
+}
+
+export const WithResourcesWideList = {
+  args: {
+    resources: allResources[2],
+    resourcesConfig: {
+      downloadActive: false,
+    },
+    compactList: false,
   },
 }
 
 export const WithDeprecatedResources = {
   args: {
     resources: deprecatedResources,
+    compactList: true,
   },
 }
 

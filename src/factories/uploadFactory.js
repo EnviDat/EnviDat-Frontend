@@ -34,6 +34,8 @@ import {
   UPLOAD_STATE_RESOURCE_CREATED,
 } from '@/factories/eventBus';
 
+import { formatDate } from '@/factories/dateFactory.js';
+
 
 let API_BASE = '';
 let API_ROOT = '';
@@ -63,7 +65,7 @@ const defaultRestrictions = {
  * @param metadataId
  * @returns {{cacheLastUpdated: null, cacheUrl: null, created: string, format: string, packageId, description: string, hast: string, url: string, urlType: null, mimetypeInner: null, size: null, restricted: {level: string, allowedUsers: string, sharedSecret: string}, name: string, resourceSize: {sizeUnits: string, sizeValue: string}, mimetype: null, id: string, lastModified: string, position: number, state: string, doi: string, resourceType: null}}
  */
-export function createNewBaseResource(metadataId) {
+function createNewBaseResource(metadataId) {
 
   return {
     cacheLastUpdated: null,
@@ -124,11 +126,15 @@ export function createNewResourceForUrl(metadataId, url) {
 
   const baseResourceProperties = createNewBaseResource(metadataId);
 
+  const now = new Date(Date.now()).toISOString();
+
   return {
     ...baseResourceProperties,
     url,
-    format: '',
+    format: 'url',
+    size: 1,
     name: resourceName,
+    created: formatDate(now),
   };
 
 }
@@ -140,8 +146,8 @@ export async function initiateMultipart(file) {
   eventBus.emit(UPLOAD_STATE_RESET);
 */
 
-  const metadataId = storeReference?.getters[`${USER_NAMESPACE}/uploadMetadataId`];
-  const newResource = createNewResourceForFileUpload(metadataId, file);
+  const datasetId = storeReference?.getters[`${USER_NAMESPACE}/uploadMetadataId`];
+  const newResource= createNewResourceForFileUpload(datasetId, file);
 
   await storeReference?.dispatch(`${USER_NAMESPACE}/${METADATA_CREATION_RESOURCE}`, {
     data: newResource,
@@ -439,7 +445,7 @@ export function unSubscribeOnUppyEvent(event, callback) {
 function createUppyInstance(height = 300, autoProceed = true, restrictions = defaultRestrictions) {
 
   const uppy =  new Uppy();
-  const debug = import.meta.env?.DEV;
+  const debug = import.meta.env?.MODE === 'development';
 
   uppy.setOptions({
     // use different ids multiple instance, e.g. avatar image upload, resource-upload, etc.
@@ -482,15 +488,15 @@ function createUppyInstance(height = 300, autoProceed = true, restrictions = def
   return uppy;
 }
 
-export function getUppyInstance(metadataId, store, height = 300, autoProceed = true, restrictions = undefined) {
+export function getUppyInstance(datasetId, store, height = 300, autoProceed = true, restrictions = undefined) {
 
   if (store) {
     storeReference = store;
 
     const currentMetadataId = storeReference.getters[`${USER_NAMESPACE}/uploadMetadataId`];
-    if (currentMetadataId !== metadataId) {
+    if (currentMetadataId !== datasetId) {
       // needs to be stored for later usage for some multipart functions
-      storeReference.commit(`${USER_NAMESPACE}/${METADATA_UPLOAD_FILE_INIT}`, metadataId);
+      storeReference.commit(`${USER_NAMESPACE}/${METADATA_UPLOAD_FILE_INIT}`, datasetId);
     }
   }
 

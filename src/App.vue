@@ -2,7 +2,7 @@
   <v-app
     class="application envidat-font-overwrite"
     :class="{
-      'bg-dark': !isLandingPage && !isDashboardPage,
+      'bg-dark': !isLandingPage && !isDashboardPage && !isWorkFlowPage,
       'bg-dark-dashboard': isDashboardPage,
       'hide-after': isScrolled,
     }"
@@ -233,6 +233,8 @@ const NotificationCard = defineAsyncComponent(
   () => import('@/components/Cards/NotificationCard.vue'),
 );
 
+let configInterval;
+
 export default {
   name: 'App',
 
@@ -242,7 +244,7 @@ export default {
 
     // define an interval to check again regularly to make sure
     // all users get any changes in the config and version updates
-    setInterval(() => {
+    configInterval = setInterval(() => {
       this.$store.dispatch(SET_CONFIG);
     }, 30000); // 1000 * 3 = 30 seconds
   },
@@ -266,12 +268,11 @@ export default {
       SHOW_REDIRECT_DASHBOARD_DIALOG,
       this.showRedirectDashboardDialog,
     );
+
+    clearInterval(configInterval);
   },
   mounted() {
     this.checkUserSignedIn();
-    window.addEventListener('scroll', this.handleWindowScroll, {
-      passive: true,
-    });
   },
   updated() {
     this.updateActiveStateOnNavItems();
@@ -609,6 +610,9 @@ export default {
     isLandingPage() {
       return this.currentRoute.name === 'LandingPage';
     },
+    isWorkFlowPage() {
+      return this.currentRoute.name === 'WorkflowPage';
+    },
     isDashboardPage() {
       return this.currentRoute.name === 'DashboardPage';
     },
@@ -729,7 +733,9 @@ export default {
     config() {
       if (!this.loadingConfig) {
         this.setupNavItems();
-        this.loadAllMetadata();
+        this.$nextTick(() => {
+          this.loadAllMetadata();
+        });
       }
     },
     notifications() {
@@ -811,6 +817,11 @@ export default {
   50% {
     transform: translateY(-5px);
   }
+}
+
+// TODO check if this works for all pages - REDESIGN WORKFLOW fix
+#mainPageRow {
+  height: 100%;
 }
 
 #app-container {

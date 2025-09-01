@@ -329,7 +329,7 @@ export function convertJSON(data, stringify, recursive = false) {
           }
         } catch (e) {
 
-          if (import.meta.env?.DEV) {
+          if (import.meta.env?.MODE === 'development') {
             console.error(`Json parse error on property: ${prop} with value: ${value} had error: ${e}`);
           }
         }
@@ -1123,39 +1123,6 @@ export function parseDateStringToReadableFormat(dateString) {
   }
 
   return formatDate(parsedDate);
-}
-
-export function mergeResourceSizeForFrontend(resource) {
-  const mergedResourceSize = {};
-
-  const isLink = resource.urlType !== 'upload';
-  const resourceSize = resource.resourceSize || null;
-
-  if (resourceSize) {
-    let size;
-    let sizeFormat;
-
-    if (isLink) {
-      sizeFormat = resourceSize.sizeUnits?.toUpperCase() || '';
-
-      try {
-        size = Number.parseFloat(resourceSize.sizeValue);
-      } catch (e) {
-        console.error(`sizeValue parsing failed resource id: ${resource.id}`);
-      }
-
-      if (Number.isNaN(size)) {
-        size = undefined;
-      }
-    } else {
-      size = resource.size;
-    }
-
-    mergedResourceSize.size = size;
-    mergedResourceSize.sizeFormat = sizeFormat;
-  }
-  
-  return mergedResourceSize;
 }
 
 export function enhanceUserObject(user) {

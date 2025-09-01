@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { DatasetDTO } from '@/types/modelTypes';
+import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 import { Dataset } from '@/types/jsonLdTypes';
 
 const fetchDatasets = async (url: string): Promise<DatasetDTO[]> => {

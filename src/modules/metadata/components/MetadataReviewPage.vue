@@ -106,7 +106,8 @@ import {
   METADATA_NAMESPACE,
 } from '@/store/metadataMutationsConsts';
 
-import { createLicense, createResources } from '@/factories/metaDataFactory';
+import { createLicense } from '@/factories/metaDataFactory';
+import { createResources } from '@/factories/resourceHelpers';
 
 import { getConfigFiles, getConfigUrls } from '@/factories/chartFactory';
 
@@ -330,6 +331,7 @@ export default {
         dataLicenseTitle: license.title,
         dataLicenseUrl: license.url,
         resourcesConfig: this.resourcesConfig,
+        compactList: true,
       };
     },
     setMetadataContent() {

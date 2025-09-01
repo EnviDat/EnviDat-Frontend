@@ -21,9 +21,20 @@ import {
 
 import { ednaTag } from '@/modules/metadata/store/ednaLabTags';
 import { createTag, tagsIncludedInSelectedTags } from '@/factories/keywordsFactory';
-import { ednaImages, swissflImages } from '@/factories/imageFactory';
 
 export const MODE_STORE = 'MODE_STORE';
+
+const swissflImages = {
+  logo: 'swissfl_logo',
+  dataset: 'swissfl_0_data',
+  infrastructure: 'swissfl_1_infrastructure',
+  model: 'swissfl_2_model',
+}
+
+const ednaImages = {
+  logo: 'edna_logo',
+  dataset: 'edna_logo',
+}
 
 /**
  * loads the dataset specific for a mode based on the mainTag property on its modeMetadata
@@ -88,6 +99,9 @@ const loadEDNADatasets = async modeMetadata => {
 
   return loadModeDatasetsWithMainTag(modeMetadata);
 };
+
+
+
 
 export const modes = [
   {

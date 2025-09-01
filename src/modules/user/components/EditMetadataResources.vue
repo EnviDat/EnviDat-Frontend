@@ -63,7 +63,7 @@ import MetadataResources from '@/modules/metadata/components/Metadata/MetadataRe
 import ExpandableLayout from '@/components/Layouts/ExpandableLayout.vue';
 import BaseDraggableList from '@/components/BaseElements/BaseDraggableList.vue';
 
-import { getResourceName } from '@/factories/metaDataFactory';
+import { getResourceName } from '@/factories/resourceHelpers';
 
 import {
   EDITMETADATA_CLEAR_PREVIEW,
@@ -91,6 +91,10 @@ export default {
     dataLicenseUrl: {
       type: String,
       default: undefined,
+    },
+    compactList: {
+      type: Boolean,
+      default: false,
     },
     readOnlyFields: {
       type: Array,
@@ -128,7 +132,7 @@ export default {
         emptyText:
           'No resources has been added yet. Upload a file or provide a link to a resource.',
         emptyTextColor: 'grey',
-        genericOpenButtonBottom: false,
+        compactList: this.compactList,
       };
     },
   },
