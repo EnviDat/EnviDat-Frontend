@@ -95,11 +95,7 @@ import { mapState } from 'vuex';
 import { mdiMinusCircleOutline } from '@mdi/js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
-import {
-  EDITMETADATA_CUSTOMFIELDS,
-  EDITMETADATA_OBJECT_UPDATE,
-  eventBus,
-} from '@/factories/eventBus.js';
+import { EDITMETADATA_CUSTOMFIELDS } from '@/factories/eventBus.js';
 import {
   deleteEmptyObject,
   isMaxLength,
@@ -112,6 +108,7 @@ import {
 } from '@/factories/userEditingValidations.js';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods.js';
+
 
 export default {
   name: 'EditCustomFields',

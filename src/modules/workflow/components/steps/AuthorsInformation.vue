@@ -115,9 +115,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-/*
-import { PropType } from 'vue';
-*/
 import type { Author } from '@/types/modelTypes';
 import AddNewAuthor from '@/modules/workflow/components/steps/AddNewAuthor.vue';
 import AddExistingAuthor from '@/modules/workflow/components/steps/AddExistingAuthor.vue';
@@ -135,7 +132,7 @@ import {
 } from '@/factories/eventBus';
 
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
-import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+
 import {
   EDIT_METADATA_ADD_AUTHOR_TITLE,
   METADATA_AUTHORS_PROPERTY,
@@ -148,6 +145,7 @@ import {
   isReadOnlyField,
   getReadOnlyHint,
 } from '@/modules/workflow/utils/useReadonly';
+
 
 export default {
   name: 'AuthorsInformation',

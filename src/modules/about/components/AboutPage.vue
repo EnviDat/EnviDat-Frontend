@@ -141,7 +141,6 @@ import {
   GET_POLICIES,
 } from '@/modules/about/store/aboutMutationsConsts';
 
-import { getImage } from '@/factories/imageFactory';
 import AboutTabLayout from '@/modules/about/components/AboutTabLayout.vue';
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 

@@ -166,12 +166,11 @@ import {
 import { possibleVisibilityStates } from '@/factories/metaDataFactory';
 import BaseDatePickerYear from '@/components/BaseElements/BaseDatePickerYear.vue';
 
-import { readOnlyHint, isFieldReadOnly } from '@/factories/globalMethods';
-
 import {
   isReadOnlyField,
   getReadOnlyHint,
 } from '@/modules/workflow/utils/useReadonly';
+
 
 export default {
   name: 'EditPublicationInfo',

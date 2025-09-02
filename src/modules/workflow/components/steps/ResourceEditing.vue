@@ -374,6 +374,7 @@ import {
   getReadOnlyHint,
 } from '@/modules/workflow/utils/useReadonly';
 
+
 export default {
   name: 'ResourceEditing',
   props: {
@@ -629,7 +630,7 @@ export default {
           ? ACCESS_LEVEL_SAMEORGANIZATION_VALUE
           : ACCESS_LEVEL_PUBLIC_VALUE;
 
-        this.checkSaveButtonEnabled(true);
+        this.checkSaveButtonEnabled();
       },
     },
     isDataDeprecated: {
@@ -640,7 +641,7 @@ export default {
       },
       set(value) {
         this.previews.deprecated = value;
-        this.checkSaveButtonEnabled(true);
+        this.checkSaveButtonEnabled();
       },
     },
     allowedUsers() {
@@ -671,7 +672,7 @@ export default {
       },
       set(value) {
         this.previews.hasAllowedUsers = value;
-        this.checkSaveButtonEnabled(true);
+        this.checkSaveButtonEnabled();
       },
     },
     allowedUsersField: {
@@ -682,7 +683,7 @@ export default {
       },
       set(value) {
         this.previews.allowedUsers = value;
-        this.checkSaveButtonEnabled(true);
+        this.checkSaveButtonEnabled();
       },
     },
     writeRestrictionLvl() {
@@ -780,8 +781,7 @@ export default {
       this.$emit('validate', objectToValidate);
 
       const errorValues = Object.values(this.validationErrors);
-      const noErrors = errorValues.every((err) => !err);
-      this.saveButtonEnabled = noErrors;
+      this.saveButtonEnabled = errorValues.every((err) => !err);
     },
     saveResourceClick() {
       const ckanIsoFormat = formatDateTimeToCKANFormat(new Date());

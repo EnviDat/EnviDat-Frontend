@@ -232,10 +232,6 @@ const blurOnEnterKey = (keyboardEvent) => {
   }
 }
 
-const clearPreviews = () => {
-  fillPreviews(null, null, null, null, null);
-}
-
 const markPropertyActive = (toElement, editing) => {
   const toId = toElement?.id || null;
   if (toId) {
@@ -278,20 +274,7 @@ const catchPickerAuthorChange = (pickedAuthorName, hasAuthor) => {
     );
 
     saveAuthorInfo(authorObject);
-    
-/*
-    if (
-      isObjectValid(
-        this.validationProperties,
-        authorObject,
-        this.validations,
-        this.validationErrors,
-      )
-    ) {
-      saveAuthorInfo(authorObject);
-    }
-*/
-    
+
   } else {
     // has to be an empty string here otherwise the old value (via $props)
     // would be shown
@@ -322,7 +305,7 @@ const getAutoCompletedAuthor = (email) => {
   return null;
 }
 
-const notifyAuthorChange = (property, value) => {
+const notifyAuthorChange = (value) => {
   if (anyUserElementsActive.value) {
     return;
   }
@@ -360,7 +343,7 @@ const focusOut = (property: string, event: Event) => {
   markPropertyActive(event.target, false);
   markPropertyActive(event.relatedTarget, true);
   // this.delayedNotifyChange(property, event.target.value);
-  notifyAuthorChange(property, event.target.value);
+  notifyAuthorChange(event.target.value);
 }
 
 

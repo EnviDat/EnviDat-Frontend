@@ -211,21 +211,14 @@ import {
   mdiArrowDownDropCircleOutline,
 } from '@mdi/js';
 
-import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
-
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout.vue';
 import TagChip from '@/components/Chips/TagChip.vue';
 
 import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
-// import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
-// import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
-// import ExpandableLayout from '@/components/Layouts/ExpandableLayout.vue';
 import categoryCards from '@/store/categoryCards';
 
 import { getTagColor } from '@/factories/keywordsFactory';
 
-// import { getMetadataUrlFromTitle } from '@/factories/mappingFactory';
-import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 import MetadataDescription from '@/modules/metadata/components/Metadata/MetadataDescription.vue';
 import { enhanceTitleImg } from '@/factories/metaDataFactory.js';
 

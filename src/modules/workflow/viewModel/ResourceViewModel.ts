@@ -4,7 +4,7 @@ import { Resource } from '@/types/modelTypes';
 import { convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
 import { ResourceDTO } from '@/types/dataTransferObjectsTypes';
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
-import { getResourceName, isResourceProtectedForUser, mergeResourceSizeForFrontend } from '@/factories/resourceHelpers';
+import { getResourceName, mergeResourceSizeForFrontend } from '@/factories/resourceHelpers';
 import { formatDate } from '@/factories/dateFactory';
 
 

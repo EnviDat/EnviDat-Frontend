@@ -186,7 +186,7 @@
               :hint="readOnlyHint('license')"
               :prepend-icon="mdiShieldSearch"
               :menu-icon="mdiArrowDownDropCircleOutline"
-              @update:model-value="changeLicense($event)"
+              @update:model-value="changeLicense()"
             />
           </v-col>
 
@@ -227,11 +227,8 @@ import {
   mdiArrowDownDropCircleOutline,
   mdiShieldSearch,
 } from '@mdi/js';
-import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
-// import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
-import { isObjectEmpty } from '@/factories/userEditingFactory';
 
-// import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import {
   getAvailableLicensesForEditing,
   dataLicenses,
@@ -242,6 +239,7 @@ import {
   isReadOnlyField,
   getReadOnlyHint,
 } from '@/modules/workflow/utils/useReadonly';
+
 
 export default {
   name: 'EditMetadataHeader',

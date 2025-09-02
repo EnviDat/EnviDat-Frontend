@@ -292,6 +292,7 @@ const reserveDoi = async () => {
   workflowStore.reserveDoi();
 };
 
+/*
 const tooltip = {
   text: 'Scroll up ↑',
   scrim: true,
@@ -299,6 +300,7 @@ const tooltip = {
   openOnClick: true,
   openOnHover: false,
 };
+*/
 
 // init the driver step
 const initDriver = () => {
@@ -314,7 +316,7 @@ const initDriver = () => {
 .navigationWorkflow {
   background-color: #fff;
   @media screen and (min-width: 1280px) {
-    // 960 is md for vueitfy
+    // 960 is md for vuetify
     background-color: #f8f8f8;
     position: sticky;
     top: 25px;

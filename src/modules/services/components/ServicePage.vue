@@ -75,7 +75,7 @@ import ImgAndTextLayout from '@/components/Layouts/ImgAndTextLayout.vue';
 import TextCardListLayout from '@/components/Layouts/TextCardListLayout.vue';
 import ImageTextCard from '@/components/Layouts/ImageTextCard.vue';
 import { renderMarkdown } from '@/factories/stringFactory';
-import { getImage } from '@/factories/imageFactory';
+
 
 export default {
   name: SERVICE_PAGENAME,
