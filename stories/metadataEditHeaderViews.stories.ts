@@ -11,7 +11,7 @@
  */
 
 
-import type { Meta } from '@storybook/vue3';
+// import type { Meta } from '@storybook/vue3';
 
 
 import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader.vue';
@@ -67,7 +67,7 @@ existingAuthors = sortObjectArray(existingAuthors, 'lastName');
 export default {
   title: '3 Datasets / 2 Edit / Metadata Header',
   component: EditMetadataHeader,
-} satisfies Meta<typeof EditMetadataHeader>;
+} // satisfies Meta<typeof EditMetadataHeader>;
 
 const emptyFirstGenericProps = {
   id: '1',

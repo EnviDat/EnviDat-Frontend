@@ -5,9 +5,7 @@ import vue from '@vitejs/plugin-vue';
 import vuetify from 'vite-plugin-vuetify';
 
 import { defineConfig, loadEnv, UserConfig } from 'vite';
-import { configDefaults } from 'vitest/dist/config.js';
 import eslint from 'vite-plugin-eslint';
-
 import webfontDownload from 'vite-plugin-webfont-dl';
 import vueDevTools from 'vite-plugin-vue-devtools';
 import { visualizer } from 'rollup-plugin-visualizer';
@@ -124,12 +122,6 @@ export default async ({ mode, config }): Promise<UserConfig> => {
     define: {
       'process.env': loadEnv(mode, process.cwd()),
       'import.meta.env.VITE_VERSION': JSON.stringify(version),
-    },
-    test: {
-      exclude: [
-        ...configDefaults.exclude,
-        './tests/unit/ckanRegression.spec.js',
-      ],
     },
     base: './',
     build: {

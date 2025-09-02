@@ -9,7 +9,7 @@ import {
   METADATA_TITLE_PROPERTY,
 } from '@/factories/metadataConsts';
 
-import metadatas from '../../stories/js/metadata';
+import metadatas from '@/../stories/js/metadata';
 
 
 describe('viewModel Factory ', () => {
