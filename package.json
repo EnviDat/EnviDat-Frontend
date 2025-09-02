@@ -8,6 +8,7 @@
   "scripts": {
     "serve": "vite",
     "serve-debug": "vite --debug",
+    "serve-local": "concurrently \"cross-env VITE_USE_HTTPS=true npm run serve\" \"open-cli https://dev.envidat04.wsl.ch:8080/#/\"",
     "build": "vite build",
     "serve-vike": "vike dev",
     "build-vike": "vike build",
@@ -26,7 +27,6 @@
     "test-storybook": "test-storybook",
     "build-storybook": "storybook build",
     "format-project": "npx prettier . --write",
-    "serve-local": "concurrently \"cross-env VITE_USE_HTTPS=true npm run serve\" \"open-cli https://dev.envidat04.wsl.ch:8080/#/\"",
     "test:browser": "vitest --config=vitest.browser.config.ts"
   },
   "dependencies": {
@@ -123,7 +123,7 @@
     "vite": "^6.3.5",
     "vite-plugin-eslint": "^1.8.1",
     "vite-plugin-vuetify": "^2.1.1",
-    "vite-plugin-webfont-dl": "^3.10.4",
+    "vite-plugin-webfont-dl": "^3.11.1",
     "vitest": "^3.2.0",
     "vitest-browser-vue": "^1.0.0",
     "vue-tsc": "^2.2.10"

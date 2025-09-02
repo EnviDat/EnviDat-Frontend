@@ -8,7 +8,7 @@ import { defineConfig, loadEnv, UserConfig } from 'vite';
 import { configDefaults } from 'vitest/dist/config.js';
 import eslint from 'vite-plugin-eslint';
 
-import Unfonts from 'unplugin-fonts/vite';
+import webfontDownload from 'vite-plugin-webfont-dl';
 import vueDevTools from 'vite-plugin-vue-devtools';
 import { visualizer } from 'rollup-plugin-visualizer';
 
@@ -86,17 +86,10 @@ export default async ({ mode, config }): Promise<UserConfig> => {
       vuetify({
         autoImport: true,
       }),
-      Unfonts({
-        google: {
-          families: [
-            'Baskervville',
-            {
-              name: 'Raleway',
-              styles: 'wght@400;500;700',
-            },
-          ],
-        },
-      }),
+      webfontDownload([
+        'https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;700&display=swap',
+        'https://fonts.googleapis.com/css2?family=Baskervville&display=swap',
+      ]),
       visualizer({
         filename: './dist/buildStats.html',
         title: 'EnviDat Build Visualizer',
