@@ -10,8 +10,7 @@ import {
   getKeywordsForFiltering,
   tagsIncludedInSelectedTags,
 } from '@/factories/keywordsFactory';
-import { EDNA_MODE } from '@/store/metadataMutationsConsts';
-
+import { EDNA_MODE, FOREST_3D } from '@/store/metadataMutationsConsts';
 
 const initState = {
   modeMetadata: [],
@@ -131,15 +130,17 @@ export const useModeStore = defineStore(MODE_STORE, {
      * @returns {Promise<object>} enhancedDatasetsDictionary
      */
     async loadModeDatasets(mode) {
-
       const modeMetadata = this.getModeMetadata(mode);
-      const data = await modeMetadata.loadDatasets(modeMetadata);
 
-      const index = this.modeMetadata.findIndex((modeInfo) => modeInfo.name === mode);
+      const data = await modeMetadata.loadDatasets(modeMetadata);
+      const index = this.modeMetadata.findIndex(
+        (modeInfo) => modeInfo.name === mode,
+      );
       if (index >= 0) {
         let enhancedDatasets = data;
-        if (mode === EDNA_MODE) {
+        if (mode === EDNA_MODE || mode === FOREST_3D) {
           // eDNA shallow datasets need enhancement
+
           const enhancedDatasetsDictionary = enhanceMetadatas(data, mode);
           enhancedDatasets = Object.values(enhancedDatasetsDictionary);
         }

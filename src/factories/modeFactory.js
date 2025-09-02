@@ -7,9 +7,12 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 
-import { swissFLExtraTags, swissFLTag } from '@/modules/metadata/store/swissForestLabTags';
+import {
+  swissFLExtraTags,
+  swissFLTag,
+} from '@/modules/metadata/store/swissForestLabTags';
 
 import {
   EDNA_MODE,
@@ -17,10 +20,16 @@ import {
   METADATA_NAMESPACE,
   SWISSFL_MODE,
   SWISSFL_MODE_EXTRAS_KEY,
+  FOREST_3D,
+  FOREST_3D_URL,
+  FOREST_3D_EXTRAS_KEY,
 } from '@/store/metadataMutationsConsts';
 
 import { ednaTag } from '@/modules/metadata/store/ednaLabTags';
-import { createTag, tagsIncludedInSelectedTags } from '@/factories/keywordsFactory';
+import {
+  createTag,
+  tagsIncludedInSelectedTags,
+} from '@/factories/keywordsFactory';
 
 export const MODE_STORE = 'MODE_STORE';
 
@@ -29,12 +38,12 @@ const swissflImages = {
   dataset: 'swissfl_0_data',
   infrastructure: 'swissfl_1_infrastructure',
   model: 'swissfl_2_model',
-}
+};
 
 const ednaImages = {
   logo: 'edna_logo',
   dataset: 'edna_logo',
-}
+};
 
 /**
  * loads the dataset specific for a mode based on the mainTag property on its modeMetadata
@@ -42,19 +51,17 @@ const ednaImages = {
  * @param {object} modeMetadata
  * @returns {Promise<any>}
  */
-const loadModeDatasetsWithMainTag = async modeMetadata => {
+const loadModeDatasetsWithMainTag = async (modeMetadata) => {
   // eslint-disable-next-line import/no-cycle
   const store = await import('@/modules/metadata/store/metadataStore');
   const state = store.metadata.state;
-  const isSearchResultContent = store[
-    METADATA_NAMESPACE
-  ].getters.searchingMetadatasContentOK(state);
+  const isSearchResultContent =
+    store[METADATA_NAMESPACE].getters.searchingMetadatasContentOK(state);
   let content = [];
 
   if (isSearchResultContent) {
-    const searchContent = store[
-      METADATA_NAMESPACE
-    ].getters.searchedMetadatasContent(state);
+    const searchContent =
+      store[METADATA_NAMESPACE].getters.searchedMetadatasContent(state);
 
     if (Object.keys(searchContent).length > 0) {
       content = Object.values(searchContent);
@@ -62,8 +69,7 @@ const loadModeDatasetsWithMainTag = async modeMetadata => {
   } else {
     content = store[METADATA_NAMESPACE].getters.allMetadatas(state);
   }
-
-  return content.filter(entry =>
+  return content.filter((entry) =>
     tagsIncludedInSelectedTags(entry.tags, [modeMetadata.mainTag.name]),
   );
 };
@@ -80,7 +86,7 @@ const ednaFallback = async () => {
   return data;
 };
 
-const loadEDNADatasets = async modeMetadata => {
+const loadEDNADatasets = async (modeMetadata) => {
   if (modeMetadata.isShallow) {
     const url = modeMetadata.datasetUrl;
     try {
@@ -89,8 +95,8 @@ const loadEDNADatasets = async modeMetadata => {
       if (!response.ok) {
         return ednaFallback();
       }
-
       const data = await response.json();
+
       return data;
     } catch (e) {
       return ednaFallback();
@@ -100,8 +106,48 @@ const loadEDNADatasets = async modeMetadata => {
   return loadModeDatasetsWithMainTag(modeMetadata);
 };
 
+// ASK FOREST3D team to align the tags with the other modes
+const normalizeTags = (tags) =>
+  (tags || []).map((t) => {
+    const raw = t && typeof t === 'object' ? t.name : t;
+    const upper = String(raw ?? '')
+      .trim()
+      .toUpperCase();
+    return {
+      display_name: upper,
+      name: upper,
+      state: 'active',
+      vocabulary_id: null,
+    };
+  });
 
+const loadFOREST3DDataset = async (modeMetadata) => {
+  if (!modeMetadata) return [];
+  const url = modeMetadata.datasetUrl;
 
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      console.error(
+        'loadFOREST3DDataset: bad response',
+        response.status,
+        response.statusText,
+      );
+      return [];
+    }
+
+    const data = await response.json();
+    const arr = Array.isArray(data) ? data : [data];
+
+    return arr.map((entry) => ({
+      ...entry,
+      tags: normalizeTags(entry.tags),
+    }));
+  } catch (e) {
+    console.error('loadFOREST3DDataset error:', e);
+    return [];
+  }
+};
 
 export const modes = [
   {
@@ -132,6 +178,18 @@ export const modes = [
     loadDatasets: loadEDNADatasets,
     isShallow: false,
   },
+  {
+    name: FOREST_3D,
+    title: 'Forest3D Data',
+    mainTag: ednaTag,
+    extraTags: [],
+    logo: ednaImages.logo,
+    icons: ednaImages,
+    minTagAmount: 1,
+    extrasKey: FOREST_3D_EXTRAS_KEY,
+    datasetUrl: FOREST_3D_URL,
+    loadDatasets: loadFOREST3DDataset,
+  },
 ];
 
 /**
@@ -140,7 +198,7 @@ export const modes = [
  * @returns {{externalUrl: string, datasetUrl: string, loadDatasets: (function(Object): Promise<*[]>), name: string, extrasKey: string, mainTag: {name: string, enabled: boolean}, logo: {}, title: string, icons: {infrastructure: any, model: any, dataset: any}, extraTags: [{color: string, name: string, enabled: boolean},{color: string, name: string, enabled: boolean}]}|{externalUrl: string, datasetUrl: string, loadDatasets: (function(Object): Promise<{}>), name: string, extrasKey: string, mainTag: {name: string, enabled: boolean}, logo: {}, title: string, icons: Record<string, unknown>, extraTags: *[]}}
  */
 export function getModeData(mode) {
-  const modeData = modes.filter(m => m.name === mode)[0];
+  const modeData = modes.filter((m) => m.name === mode)[0];
 
   if (modeData) {
     return modeData;
@@ -182,9 +240,10 @@ let tempModeData = null;
 export function enhanceMetadataWithModeExtras(mode, metadataEntry) {
   if (!mode || !metadataEntry) return metadataEntry;
 
-  if (typeof metadataEntry.extras === 'object'
-    && metadataEntry.extras instanceof Array) {
-
+  if (
+    typeof metadataEntry.extras === 'object' &&
+    metadataEntry.extras instanceof Array
+  ) {
     if (!tempModeData || (tempModeData && tempModeData.name !== mode)) {
       tempModeData = getModeData(mode);
     }
@@ -198,7 +257,9 @@ export function enhanceMetadataWithModeExtras(mode, metadataEntry) {
         metadataEntry[key] = extra.value;
 
         const extraTag = createTag(extra.value.toUpperCase());
-        const tagIndex = metadataEntry.tags.findIndex(t => t.name === extraTag.name);
+        const tagIndex = metadataEntry.tags.findIndex(
+          (t) => t.name === extraTag.name,
+        );
 
         if (tagIndex < 0) {
           metadataEntry.tags.push(extraTag);
