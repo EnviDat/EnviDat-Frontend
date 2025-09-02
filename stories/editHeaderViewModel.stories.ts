@@ -10,17 +10,15 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { reactive } from 'vue';
-// import type { Meta } from '@storybook/vue3';
-
 import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader.vue';
-import { sortObjectArray } from '@/factories/metaDataFactory';
 
+/*
 import {
   createAuthors,
   getFullAuthorsFromDataset,
   extractAuthorsMap,
 } from '@/factories/authorFactory';
+*/
 
 import categoryCards from '@/store/categoryCards';
 import { getPopularTags, getTagColor } from '@/factories/keywordsFactory';
@@ -31,11 +29,6 @@ import { LocalStorageDatasetService } from '@/modules/workflow/LocalStorageDatas
 import metadataset from './js/metadata';
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 
-const serviceLayer = new LocalStorageDatasetService();
-const datasetVM = new DatasetModel(serviceLayer);
-
-
-const unFormatedMetadataCards = metadataset;
 const tagsFromDatasets = getPopularTags(metadataset, '', 1);
 
 for (let i = 0; i < tagsFromDatasets.length; i++) {
@@ -43,6 +36,8 @@ for (let i = 0; i < tagsFromDatasets.length; i++) {
   tag.color = getTagColor(categoryCards, tag.name);
 }
 
+/*
+const unFormatedMetadataCards = metadataset;
 const metadataCards = [];
 
 for (let i = 0; i < unFormatedMetadataCards.length; i++) {
@@ -51,12 +46,11 @@ for (let i = 0; i < unFormatedMetadataCards.length; i++) {
   metadataCards.push(el);
 }
 
-
 const authorsMap = extractAuthorsMap(metadataCards);
-const authors = getFullAuthorsFromDataset(authorsMap, metadataCards[1]);
 
 let existingAuthors = Object.values(authorsMap);
 existingAuthors = sortObjectArray(existingAuthors, 'lastName');
+*/
 
 const serviceLayer2 = new LocalStorageDatasetService();
 const datasetVM2 = new DatasetModel(serviceLayer2);

@@ -145,7 +145,6 @@ import { mapState } from 'vuex';
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 import {
   EDITMETADATA_OBJECT_UPDATE,
-  EDITMETADATA_ORGANIZATION,
   EDITMETADATA_PUBLICATION_STATE,
   eventBus,
 } from '@/factories/eventBus';
