@@ -30,7 +30,8 @@ import {
   METADATA_CONTACT_EMAIL,
   METADATA_CONTACT_FIRSTNAME,
   METADATA_CONTACT_LASTNAME,
-  METADATA_TITLE_PROPERTY, METADATA_URL_PROPERTY,
+  METADATA_TITLE_PROPERTY,
+  METADATA_URL_PROPERTY,
 } from '@/factories/metadataConsts';
 
 import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';

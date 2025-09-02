@@ -11,7 +11,7 @@
  */
 
 import { reactive } from 'vue';
-import type { Meta } from '@storybook/vue3';
+// import type { Meta } from '@storybook/vue3';
 
 import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader.vue';
 import { sortObjectArray } from '@/factories/metaDataFactory';
@@ -27,7 +27,7 @@ import { getPopularTags, getTagColor } from '@/factories/keywordsFactory';
 
 
 import { LocalStorageDatasetService } from '@/modules/workflow/LocalStorageDatasetService.ts';
-import { EditHeaderViewModel } from '@/modules/workflow/ViewModel/EditHeaderViewModel';
+import { EditHeaderViewModel } from '@/modules/workflow/ViewModel/EditHeaderViewModel.ts';
 
 import metadataset from './js/metadata';
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
@@ -67,7 +67,7 @@ const reactiveViewModelWithErrors = datasetVM2.getViewModel('EditHeaderViewModel
 export default {
   title: '3 Datasets / 2 Edit / Metadata Header',
   component: EditMetadataHeader,
-} satisfies Meta<typeof EditMetadataHeader>;
+} // satisfies Meta<typeof EditMetadataHeader>;
 
 
 // @ts-ignore
