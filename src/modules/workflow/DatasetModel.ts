@@ -56,6 +56,7 @@ export class DatasetModel {
 
     for (let i = 0; i < this.viewModelClasses.length; i++) {
       const VMClass = this.viewModelClasses[i];
+      // @ts-ignore
       const instance = new VMClass(this);
 
       if (instance instanceof MetadataBaseViewModel) {

@@ -27,7 +27,6 @@ import { getPopularTags, getTagColor } from '@/factories/keywordsFactory';
 
 
 import { LocalStorageDatasetService } from '@/modules/workflow/LocalStorageDatasetService.ts';
-import { EditHeaderViewModel } from '@/modules/workflow/ViewModel/EditHeaderViewModel.ts';
 
 import metadataset from './js/metadata';
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
@@ -61,7 +60,7 @@ existingAuthors = sortObjectArray(existingAuthors, 'lastName');
 
 const serviceLayer2 = new LocalStorageDatasetService();
 const datasetVM2 = new DatasetModel(serviceLayer2);
-const reactiveViewModelWithErrors = datasetVM2.getViewModel('EditHeaderViewModel');
+const reactiveViewModelWithErrors = datasetVM2.getViewModel('MetadataBaseViewModel');
 
 
 export default {
@@ -69,10 +68,6 @@ export default {
   component: EditMetadataHeader,
 } // satisfies Meta<typeof EditMetadataHeader>;
 
-
-// @ts-ignore
-const empty = new EditHeaderViewModel(new DatasetModel());
-const emptyVM = reactive(empty);
 
 /*
 const watcherMethod = watch(() => emptyVM, async (newModel) => {
@@ -86,6 +81,7 @@ const watcherMethod = watch(() => emptyVM, async (newModel) => {
 */
 
 
+/*
 export const EmptyWithViewModel = {
   args: {
     ...emptyVM,
@@ -105,6 +101,7 @@ export const FilledWithViewModel = {
     },
   },
 };
+*/
 
 export const FilledWithViewModelErrors = {
   args: {
