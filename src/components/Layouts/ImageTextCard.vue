@@ -124,7 +124,7 @@ export default {
       default: undefined,
     },
   },
-  async beforeMounted() {
+  async beforeMount() {
     // don't load image it's a external url
 
     if (this.loadingImg) {
