@@ -10,7 +10,7 @@ deploy-chromatic:
     #- install-node
     - verify-node-audit
     - job: verify-node-owasp
-      artifacts: false 
+      artifacts: false
     # needs the artifact: storybook
     - build-storybook
   before_script:
@@ -32,7 +32,14 @@ publish-build:
   stage: deploy
   environment: $CI_COMMIT_REF_NAME
   image: alpine:3.20
-  extends: .deployment-rules
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
+    - if: '$CI_COMMIT_REF_NAME == "develop"'
+      when: never
+    - if: '$CI_COMMIT_REF_NAME =~ /^(staging|main)$/'
+      when: on_success
+    - when: never
   variables:
     GIT_STRATEGY: none
   needs:
@@ -63,7 +70,17 @@ deploy-to-s3-bucket:
   stage: deploy
   environment: $CI_COMMIT_REF_NAME
   image: alpine:3.20
-  extends: .deployment-rules
+  rules:
+    # don't run when it's scheduled
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
+    - if: '$CI_COMMIT_REF_NAME == "staging"'
+      when: on_success
+    - if: '$CI_COMMIT_REF_NAME == "develop"'
+      when: never
+    - if: '$CI_COMMIT_REF_NAME == "main"'
+      when: manual
+    - when: never
   needs:
     # needs the environmental variables for the version number
     - set-vars
@@ -123,7 +140,7 @@ manual-deploy-to-s3-bucket:
     - set-vars
     - verify-node-audit
     - job: verify-node-owasp
-      artifacts: false 
+      artifacts: false
   variables:
     GIT_STRATEGY: none
     RCLONE_CONFIG_SWITCH_TYPE: 's3'
