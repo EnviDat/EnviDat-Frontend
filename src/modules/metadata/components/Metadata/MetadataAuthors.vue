@@ -47,7 +47,6 @@
             <AuthorCard
               v-if="!hasEditingAuthorsSlot"
               :author="author"
-              :hideDataCredit="true"
               :authorDetailsConfig="authorDetailsConfig"
               :showGenericOpenButton="!!author.openEvent"
               :openButtonTooltip="author.openButtonTooltip"
