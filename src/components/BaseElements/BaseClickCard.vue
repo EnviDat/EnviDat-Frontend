@@ -24,7 +24,7 @@
         <!-- Text -->
         <v-col class="px-0" cols="8" sm="7">
           <div
-            class="px-2 px-sm-3 baseClickCardTitle"
+            class="px-1 baseClickCardTitle"
             :class="{ compactTitle: $vuetify.display.xl }"
           >
             {{ title }}
