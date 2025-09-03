@@ -126,15 +126,12 @@ export function createNewResourceForUrl(metadataId, url) {
 
   const baseResourceProperties = createNewBaseResource(metadataId);
 
-  const now = new Date(Date.now()).toISOString();
-
   return {
     ...baseResourceProperties,
     url,
     format: 'url',
     size: 1,
     name: resourceName,
-    created: formatDate(now),
   };
 
 }
