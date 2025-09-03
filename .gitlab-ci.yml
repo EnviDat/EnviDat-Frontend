@@ -62,7 +62,7 @@ variables:
     # don't run when it's scheduled
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
       when: never
-    - if: '$CI_COMMIT_REF_NAME == "staging"
+    - if: '$CI_COMMIT_REF_NAME == "staging"'
       when: on_success
     - if: '$CI_COMMIT_REF_NAME == "develop"'
       when: never
