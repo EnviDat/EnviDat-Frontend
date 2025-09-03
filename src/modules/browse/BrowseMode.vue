@@ -1,6 +1,5 @@
 <template>
   <article class="ma-0 pa-0 fill-height" id="BrowsePage" key="BrowsePage">
-    {{ tagsFromDatasets }}
     <MetadataList
       ref="metadataList"
       :listContent="filteredDatasets"
