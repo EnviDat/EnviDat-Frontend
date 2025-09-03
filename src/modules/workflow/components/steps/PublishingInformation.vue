@@ -210,10 +210,6 @@ export default {
       type: String,
       default: undefined,
     },
-    funders: {
-      type: Array,
-      default: undefined,
-    },
     userRole: {
       type: String,
       default: undefined,
