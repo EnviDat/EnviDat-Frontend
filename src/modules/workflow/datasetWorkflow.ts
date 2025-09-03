@@ -15,7 +15,10 @@ import { workflowGuide } from '@/modules/workflow/resources/workflowGuides.ts';
 
 import { readOnlyFields } from '@/modules/workflow/resources/readOnlyList.ts';
 import { resolveBootstrap } from '@/modules/workflow/utils/workflowBootstrap.ts';
-import { computeStepsForMode, WorkflowMode } from '@/modules/workflow/utils/mode.ts';
+import {
+  computeStepsForMode,
+  WorkflowMode,
+} from '@/modules/workflow/utils/mode.ts';
 import {
   mustValidateOnLeave as mustValidateOnLeaveUtil,
   setActiveStepForCreate,
@@ -82,18 +85,73 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     },
   },
   actions: {
+    // CHECK if the value has data
+    hasDtData(val: any): boolean {
+      if (val == null) return false;
+      if (Array.isArray(val)) return val.length > 0;
+      if (typeof val === 'object')
+        return Object.values(val).some(this.hasDtData);
+      return String(val).trim().length > 0;
+    },
     // LOAD the dataset from the backend service
     async loadDataset(datasetId: string) {
       return this.datasetModel.loadDataset(datasetId);
     },
 
-    // INIT dataset workflow with the dataset DTO and mode.
-    async initializeDataset() {
+    async initializeDataset(dataset: DatasetDTO, mode: WorkflowMode) {
+      // put the dataset into the correct service based on mode
+      if (mode === WorkflowMode.Edit) {
+        (this.backendStorageService as any).dataset = dataset;
+      } else {
+        this.localStorageService.dataset = dataset;
+      }
+
       this.datasetModel = new DatasetModel(this);
 
-      // SET currentStep to the first step
-      this.currentStep = 0;
-      // SET doi to null
+      if (mode === WorkflowMode.Create) {
+        const seeded = this.steps.map((s: WorkflowStep) => {
+          const vm = s.viewModelKey
+            ? (this.datasetModel as any).getViewModel(s.viewModelKey)
+            : null;
+          if (!vm) return { ...s, completed: false, hasError: false };
+          const data = vm.getModelData?.();
+          const filled = this.hasDtData(data);
+          if (!filled)
+            return {
+              ...s,
+              completed: false,
+              hasError: false,
+              status: StepStatus.Disabled,
+            };
+          // vm.validate?.(data);
+          // const hasErrors = Object.values(vm.validationErrors || {}).some(
+          //   Boolean,
+          // );
+          // if (hasErrors) {
+          //   return {
+          //     ...s,
+          //     completed: false,
+          //     hasError: true,
+          //     status: StepStatus.Error,
+          //     errors: vm.validationErrors,
+          //   };
+          // }
+          return {
+            ...s,
+            completed: true,
+            hasError: false,
+            status: StepStatus.Completed,
+            errors: null,
+          };
+        });
+        this.steps = seeded;
+        const startIdx = this.steps.findIndex((s) => !s.completed);
+        this.setActiveStep(startIdx === -1 ? 0 : startIdx);
+      } else {
+        this.currentStep = 0;
+      }
+
+      // SET doi
       this.doiPlaceholder = null;
       // SET the dialog for the step 4 to false
       this.openSaveDialog = false;

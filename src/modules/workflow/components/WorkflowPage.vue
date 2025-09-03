@@ -281,17 +281,21 @@ onMounted(async () => {
   // STORYBOOK
   // PLEASE NOTE – We are currently in the development phase, and an exception is present to make Storybook work.
   if (datasetExistsInLocalStorage(id)) {
-    await workflowStore.initializeWorkflowfromDataset(mergedDataset);
+    // await workflowStore.initializeWorkflowfromDataset(mergedDataset);
   } else {
+    await workflowStore.bootstrapWorkflow('local_dataset__');
     // USE title-test-from-locahost for testing purposes
     // await workflowStore.bootstrapWorkflow('title-test-from-locahost');
-
     // INIT workflow base on the dataset ID if it exists
-    await workflowStore.bootstrapWorkflow(id);
+    // await workflowStore.bootstrapWorkflow(id);
   }
 
-  const step = Number(route?.query?.step ?? 0);
-  workflowStore.setActiveStep(step);
+  // const step = Number(route?.query?.step ?? 0);
+  // workflowStore.setActiveStep(step);
+  const stepParam = route?.query?.step;
+  if (stepParam !== undefined) {
+    workflowStore.setActiveStep(Number(stepParam));
+  }
 });
 
 /* =========================
