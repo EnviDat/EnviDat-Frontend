@@ -128,15 +128,6 @@ export const navigationItems = [
     disabled: false,
     isMenuIcon: true,
   },
-  {
-    title: 'About',
-    icon: mdiInformation,
-    toolTip: 'Information about EnviDat',
-    active: false,
-    path: WORKFLOW_PATH,
-    pageName: WORKFLOW_PAGENAME,
-    disabled: false,
-  },
 ];
 
 export function useUserMenuItems() {
