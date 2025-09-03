@@ -57,20 +57,6 @@ variables:
     - when: on_success
 
 # don't run for scheduled pipelines, to avoid making unnecessary changes in production
-.deployment-rules:
-  rules:
-    # don't run when it's scheduled
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
-      when: never
-    - if: '$CI_COMMIT_REF_NAME == "staging"'
-      when: on_success
-    - if: '$CI_COMMIT_REF_NAME == "develop"'
-      when: never
-
-    # run deployment only the other jobs are successful
-    - when: manual
-
-# don't run for scheduled pipelines, to avoid making unnecessary changes in production
 .manual-deployment-rules:
   rules:
     # don't run when it's scheduled
