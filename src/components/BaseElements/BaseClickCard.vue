@@ -1,5 +1,6 @@
 <template>
   <v-card
+    id="BaseClickCard"
     max-width="500px"
     :height="height"
     :disabled="disabled"

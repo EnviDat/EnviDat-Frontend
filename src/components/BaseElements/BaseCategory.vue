@@ -1,7 +1,8 @@
 <template>
   <v-card
+    id="BaseCategory"
     flat
-    class="d-flex align-center px-2 px-sm-3 baseClickCardTitle font-weight-bold"
+    class="d-flex align-center px-1 baseClickCardTitle font-weight-bold"
     :style="{
       backgroundColor: 'transparent',
       color: color ? darkenHex(color, 80) : '#000',

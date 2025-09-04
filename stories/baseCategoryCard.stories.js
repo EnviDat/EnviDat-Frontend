@@ -8,13 +8,16 @@ import {
   mobileViewportParams,
   tabletViewportParams,
 } from './js/envidatViewports';
+
 const noModeCards = categoryCards.filter((card) => !card.isMode);
 const modeCards = categoryCards.filter((card) => card.isMode);
 const baseInfo = noModeCards[0];
+
 export default {
   title: '1 Base / Cards / Category Cards',
   component: BaseCategoryCard,
 };
+
 export const Basic = {
   args: {
     title: baseInfo.title,
@@ -27,6 +30,7 @@ export const Basic = {
     elevation: baseInfo.isMode ? 5 : 0,
   },
 };
+
 const Template = (args, { argTypes }) => ({
   components: { BaseCategoryCard },
   props: Object.keys(argTypes),
@@ -53,9 +57,11 @@ const Template = (args, { argTypes }) => ({
 
 export const CategoryCardCollection = Template.bind({});
 CategoryCardCollection.args = { categoryCards };
+
 export const CategoryCardNoModeCollection = Template.bind({});
 CategoryCardNoModeCollection.args = { categoryCards: noModeCards };
 CategoryCardNoModeCollection.storyName = 'Category Cards (No Mode)';
+
 export const CategoryCardModeCollection = Template.bind({});
 CategoryCardModeCollection.args = { categoryCards: modeCards };
 CategoryCardModeCollection.storyName = 'Category Cards (Mode Only)';
@@ -99,14 +105,17 @@ export const BothModes = () => ({
     </v-container>
   `,
 });
+
 export const MobileCategoryCardCollection = Template.bind({});
 MobileCategoryCardCollection.args = { ...CategoryCardCollection.args };
 MobileCategoryCardCollection.parameters = mobileViewportParams;
+
 export const MobileLargeCategoryCardCollection = Template.bind({});
 MobileLargeCategoryCardCollection.args = {
   ...MobileCategoryCardCollection.args,
 };
 MobileLargeCategoryCardCollection.parameters = mobileLargeViewportParams;
+
 export const TabletCategoryCardCollection = Template.bind({});
 TabletCategoryCardCollection.args = { ...MobileCategoryCardCollection.args };
 TabletCategoryCardCollection.parameters = tabletViewportParams;
