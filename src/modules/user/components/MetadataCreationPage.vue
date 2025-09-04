@@ -119,7 +119,7 @@ import {
 } from '@/factories/workflowFactory';
 
 import { metadataCreationSteps } from '@/factories/workflowCreation';
-import { getReadOnlyFieldsObject } from '@/factories/mappingFactory';
+import { getReadOnlyFieldsObject } from '@/factories/userEditingValidations';
 import { replaceAuthorDeadAscii } from '@/factories/authorFactory';
 
 export default {

@@ -110,7 +110,16 @@ export const Filled3 = {
   },
 }
 
-export const FilledAndDisabled = {
+export const FilledReadOnly = {
+  args: {
+    ...Filled.args,
+    ...allResources[2][0],
+    ...mergeResourceSizeForFrontend(allResources[2][0]),
+  },
+}
+
+
+export const FilledAndLoading = {
   args: {
     ...allResources[2][2],
     loading: true,

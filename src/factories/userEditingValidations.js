@@ -36,9 +36,19 @@ import {
 import {
   DATE_PROPERTY_END_DATE,
   DATE_PROPERTY_START_DATE,
+  EDIT_METADATA_AUTHORS_LABEL, EDIT_METADATA_DATALICENSE_LABEL, EDIT_METADATA_DOI_LABEL,
+  EDIT_METADATA_ORGANIZATION_LABEL, EDIT_METADATA_PUBLICATION_YEAR_LABEL, EDIT_METADATA_PUBLISHER_LABEL,
+  EDIT_METADATA_TITLE_LABEL,
+  EDIT_METADATA_URL_LABEL,
+  METADATA_AUTHORS_PROPERTY,
   METADATA_CONTACT_EMAIL,
   METADATA_CONTACT_FIRSTNAME,
   METADATA_CONTACT_LASTNAME,
+  METADATA_DATALICENSE_PROPERTY,
+  METADATA_DOI_PROPERTY,
+  METADATA_ORGANIZATION_PROPERTY,
+  METADATA_PUBLICATION_YEAR_PROPERTY,
+  METADATA_PUBLISHER_PROPERTY,
   METADATA_TITLE_PROPERTY,
   METADATA_URL_PROPERTY,
 } from '@/factories/metadataConsts';
@@ -477,4 +487,70 @@ export function getCollaboratorCapacity(datasetId, collaboratorIdEntries) {
   }
 
   return '';
+}
+
+export const metadataPublishedReadOnlyFields = [
+  // EditMetadataHeader
+  METADATA_TITLE_PROPERTY,
+  METADATA_URL_PROPERTY,
+  // EditAuthorList
+  METADATA_AUTHORS_PROPERTY,
+  // EditPublicationInfo
+  METADATA_ORGANIZATION_PROPERTY,
+  METADATA_PUBLICATION_YEAR_PROPERTY,
+  METADATA_PUBLISHER_PROPERTY,
+  METADATA_DOI_PROPERTY,
+  METADATA_DATALICENSE_PROPERTY,
+];
+
+export const readablePublishedReadOnlyFields = {
+  [METADATA_TITLE_PROPERTY]: EDIT_METADATA_TITLE_LABEL,
+  [METADATA_URL_PROPERTY]: EDIT_METADATA_URL_LABEL,
+  [METADATA_ORGANIZATION_PROPERTY]: EDIT_METADATA_ORGANIZATION_LABEL,
+  [METADATA_AUTHORS_PROPERTY]: EDIT_METADATA_AUTHORS_LABEL,
+  [METADATA_DOI_PROPERTY]: EDIT_METADATA_DOI_LABEL,
+  [METADATA_PUBLISHER_PROPERTY]: EDIT_METADATA_PUBLISHER_LABEL,
+  [METADATA_PUBLICATION_YEAR_PROPERTY]: EDIT_METADATA_PUBLICATION_YEAR_LABEL,
+  [METADATA_DATALICENSE_PROPERTY]: EDIT_METADATA_DATALICENSE_LABEL,
+};
+
+const readOnlyMappingRules = [
+  {
+    triggerRule: ['published'],
+    explanation: 'This field is "readonly" because the dataset is already published.',
+    readOnlyFields: metadataPublishedReadOnlyFields,
+  },
+  /*
+    {
+      triggerRule: ['draft'],
+      explanation: 'This is "readonly" because the dataset is still a draft.',
+      readOnlyFields: [
+        'resources',
+      ],
+    },
+  */
+  /*
+    {
+      triggerRule: USER_ROLE_ADMIN,
+      readOnlyFields: [],
+    },
+  */
+];
+
+export function getReadOnlyFieldsObject(trigger) {
+  if (!trigger) {
+    return null;
+  }
+
+  const lowCaseTrigger = trigger?.toLowerCase() || '';
+
+  for (let i = 0; i < readOnlyMappingRules.length; i++) {
+    const mappingObj = readOnlyMappingRules[i];
+
+    if (mappingObj.triggerRule.includes(lowCaseTrigger)) {
+      return mappingObj;
+    }
+  }
+
+  return null;
 }

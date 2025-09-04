@@ -12,7 +12,7 @@
 
 import EditOrganization from '@/modules/user/components/edit/EditOrganization.vue';
 
-import { getReadOnlyFieldsObject } from '@/factories/mappingFactory';
+import { getReadOnlyFieldsObject } from '@/factories/userEditingValidations';
 import testOrganizations from './js/organizations';
 
 const editingReadOnlyObj = getReadOnlyFieldsObject('published');

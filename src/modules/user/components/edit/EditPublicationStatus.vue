@@ -195,15 +195,13 @@ import BaseShinyBadge from '@/components/BaseElements/BaseShinyBadge.vue';
 
 import { possiblePublicationStates } from '@/factories/metaDataFactory';
 import {
-  metadataPublishedReadOnlyFields,
-  readablePublishedReadOnlyFields,
-} from '@/factories/mappingFactory';
-import {
   DOI_PUBLISH,
   DOI_REQUEST,
   DOI_RESERVE,
 } from '@/modules/user/store/doiMutationsConsts';
 import {
+  metadataPublishedReadOnlyFields,
+  readablePublishedReadOnlyFields,
   USER_ROLE_ADMIN,
   USER_ROLE_EDITOR,
   USER_ROLE_MEMBER,
