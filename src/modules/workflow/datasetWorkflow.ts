@@ -1,9 +1,6 @@
 import { defineStore } from 'pinia';
 
-import {
-  StepStatus,
-  workflowSteps,
-} from '@/modules/workflow/resources/steps.ts';
+import { workflowSteps } from '@/modules/workflow/resources/steps';
 
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 import { LocalStorageDatasetService } from '@/modules/workflow/LocalStorageDatasetService.ts';
@@ -14,10 +11,7 @@ import { workflowGuide } from '@/modules/workflow/resources/workflowGuides.ts';
 
 import { readOnlyFields } from '@/modules/workflow/resources/readOnlyList.ts';
 import { resolveBootstrap } from '@/modules/workflow/utils/workflowBootstrap.ts';
-import {
-  computeStepsForMode,
-
-} from '@/modules/workflow/utils/mode.ts';
+import { computeStepsForMode } from '@/modules/workflow/utils/mode.ts';
 import {
   mustValidateOnLeave as mustValidateOnLeaveUtil,
   setActiveStepForCreate,
@@ -25,7 +19,8 @@ import {
 } from '@/modules/workflow/utils/workflowNavigation';
 
 import { validateStepPure } from '@/modules/workflow/utils/workflowValidation';
-import { WorkflowMode, WorkflowStep } from '@/types/workflow';
+import type { WorkflowStep } from '@/types/workflow';
+import { StepStatus, WorkflowMode } from '@/modules/workflow/utils/workflowEnums';
 
 /*
 import datasets from '~/stories/js/metadata.js';

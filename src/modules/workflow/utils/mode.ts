@@ -1,7 +1,7 @@
 // src/modules/workflow/utils/mode.ts
 
-import { StepStatus } from '@/modules/workflow/resources/steps';
-import { ComputeResult, WorkflowMode, WorkflowStep } from '@/types/workflow';
+import type { ComputeResult, WorkflowStep } from '@/types/workflow';
+import { StepStatus, WorkflowMode } from '@/modules/workflow/utils/workflowEnums';
 
 export function computeStepsForMode(
   steps: WorkflowStep[],

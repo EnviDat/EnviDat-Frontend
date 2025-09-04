@@ -6,16 +6,8 @@ import AdditionalInformation from '@/modules/workflow/components/steps/Additiona
 import ResourcesInformation from '@/modules/workflow/components/steps/ResourcesInformation.vue';
 import RelatedResearch from '@/modules/workflow/components/steps/RelatedResearch.vue';
 import PublishingInformation from '@/modules/workflow/components/steps/PublishingInformation.vue';
+import { StepStatus } from '@/modules/workflow/utils/workflowEnums';
 import { WorkflowStep } from '@/types/workflow';
-
-// export type StepStatus = 'active' | 'disabled' | 'completed';
-
-export enum StepStatus {
-  Disabled = 'disabled',
-  Active = 'active',
-  Completed = 'completed',
-  Error = 'error',
-}
 
 export const workflowSteps: WorkflowStep[] = [
   {

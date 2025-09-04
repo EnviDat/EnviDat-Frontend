@@ -1,6 +1,6 @@
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
 
-import { WorkflowMode } from '@/types/workflow';
+import type { WorkflowMode } from '@/types/workflow';
 
 const hints: Record<string, string> = {
   authors:

@@ -1,11 +1,4 @@
-/* eslint-disable no-unused-vars */
-
-import { StepStatus } from '@/modules/workflow/resources/steps.ts';
-
-export enum WorkflowMode {
-  Create = 'create',
-  Edit = 'edit',
-}
+import { StepStatus } from '@/modules/workflow/utils/workflowEnums';
 
 export interface WorkflowStep {
   id: number;
