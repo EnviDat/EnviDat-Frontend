@@ -7,6 +7,7 @@ import {
 } from './js/envidatViewports';
 
 import metadataCards from './js/metadata';
+import { Default } from '~/stories/resourceCardGenerated.stories.js';
 
 const urlRes = createResource(metadataCards[0].resources[0]);
 const fileRes = createResource(metadataCards[2].resources[1]);
@@ -73,6 +74,22 @@ export const UrlLinkS3bucket = {
 export const UrlS3IntoFolder = {
   args: { ...S3FolderUrl, s3Bucket: true },
 };
+
+export const UrlS3IntoFolderWithGenericButtonTop = {
+  args: {
+    ...UrlS3IntoFolder.args,
+    showGenericOpenButton: true,
+  },
+};
+
+export const WithGenericOpenButtonBottom = {
+  args: {
+    ...UrlLinkS3bucket.args,
+    showGenericOpenButton: true,
+    genericOpenButtonBottom: true,
+  },
+};
+
 
 export const FileLink = {
   args: { ...fileRes },

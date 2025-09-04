@@ -167,7 +167,7 @@
     <v-container
       v-if="showGenericOpenButton && !isProtected && !sparkChartData"
       class="pa-4"
-      :style="`position: absolute; right: 0; width: 68px; ${genericOpenButtonBottom ? 'bottom: 52px;' : 'top: 0;'}`"
+      :style="`position: absolute; right: 0; width: 68px; ${genericButtonYPos}`"
     >
       <v-row>
         <v-col cols="12">
@@ -510,6 +510,13 @@ export default {
     },
     extensionIcon() {
       return getFileIcon(this.format);
+    },
+    genericButtonYPos() {
+      if (this.genericOpenButtonBottom) {
+        return this.isEnvicloudUrl ? 'bottom: 0;' : 'bottom: 52px';
+      }
+
+      return 'top: 0;'
     },
   },
   methods: {

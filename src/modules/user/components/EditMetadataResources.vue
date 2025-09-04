@@ -133,6 +133,7 @@ export default {
           'No resources has been added yet. Upload a file or provide a link to a resource.',
         emptyTextColor: 'grey',
         compactList: this.compactList,
+        genericOpenButtonBottom: false,
       };
     },
   },
