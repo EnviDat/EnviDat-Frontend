@@ -91,7 +91,8 @@ import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.v
 import { extractIcons } from '@/factories/iconFactory.ts';
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow.ts';
 import { StepStatus } from '@/modules/workflow/resources/steps.ts';
-import { WorkflowMode } from '@/modules/workflow/utils/mode.ts';
+
+import { WorkflowMode } from '@/types/workflow';
 
 /* =========================
  *  ROUTER & PROPS

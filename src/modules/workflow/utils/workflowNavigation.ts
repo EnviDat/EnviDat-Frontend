@@ -1,6 +1,7 @@
 // src/modules/workflow/utils/workflowNavigation.ts
-import { StepStatus, WorkflowStep } from '@/modules/workflow/resources/steps';
-import { WorkflowMode } from '@/modules/workflow/utils/mode.ts';
+import { StepStatus } from '@/modules/workflow/resources/steps';
+
+import { WorkflowMode, WorkflowStep } from '@/types/workflow';
 
 
 export function setActiveStepForCreate(

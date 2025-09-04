@@ -1,6 +1,7 @@
 // src/modules/workflow/utils/bootstrapWorkflow.ts
 
-import { WorkflowMode } from '@/modules/workflow/utils/mode.ts';
+
+import { WorkflowMode } from '@/types/workflow';
 
 export interface BootstrapDeps<DatasetDTO> {
   loadBackend: (id: string) => Promise<DatasetDTO | null>;

@@ -1,18 +1,7 @@
 // src/modules/workflow/utils/mode.ts
-import {
-  StepStatus,
-  type WorkflowStep,
-} from '@/modules/workflow/resources/steps';
 
-export enum WorkflowMode {
-  Create = 'create',
-  Edit = 'edit'
-}
-
-interface ComputeResult {
-  steps: WorkflowStep[];
-  freeJump: boolean;
-}
+import { StepStatus } from '@/modules/workflow/resources/steps';
+import { ComputeResult, WorkflowMode, WorkflowStep } from '@/types/workflow';
 
 export function computeStepsForMode(
   steps: WorkflowStep[],

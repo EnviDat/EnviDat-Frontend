@@ -6,6 +6,7 @@ import AdditionalInformation from '@/modules/workflow/components/steps/Additiona
 import ResourcesInformation from '@/modules/workflow/components/steps/ResourcesInformation.vue';
 import RelatedResearch from '@/modules/workflow/components/steps/RelatedResearch.vue';
 import PublishingInformation from '@/modules/workflow/components/steps/PublishingInformation.vue';
+import { WorkflowStep } from '@/types/workflow';
 
 // export type StepStatus = 'active' | 'disabled' | 'completed';
 
@@ -14,28 +15,6 @@ export enum StepStatus {
   Active = 'active',
   Completed = 'completed',
   Error = 'error',
-}
-
-export interface WorkflowStep {
-  id: number;
-  title: string;
-  description: string;
-  isEditable: boolean;
-  completed: boolean;
-  hasError: boolean;
-  key: string;
-  component: unknown;
-  // loader?: () => Promise<unknown>;
-  viewModelKey: string;
-  icon: string;
-  status: StepStatus;
-  readOnly?: boolean;
-  dirty?: boolean;
-  touched?: false;
-  guideLines?: Array<{
-    element: string;
-    popover: { title: string; description: string };
-  }>;
 }
 
 export const workflowSteps: WorkflowStep[] = [

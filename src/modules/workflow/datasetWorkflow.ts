@@ -2,7 +2,6 @@ import { defineStore } from 'pinia';
 
 import {
   StepStatus,
-  WorkflowStep,
   workflowSteps,
 } from '@/modules/workflow/resources/steps.ts';
 
@@ -17,7 +16,7 @@ import { readOnlyFields } from '@/modules/workflow/resources/readOnlyList.ts';
 import { resolveBootstrap } from '@/modules/workflow/utils/workflowBootstrap.ts';
 import {
   computeStepsForMode,
-  WorkflowMode,
+
 } from '@/modules/workflow/utils/mode.ts';
 import {
   mustValidateOnLeave as mustValidateOnLeaveUtil,
@@ -26,6 +25,7 @@ import {
 } from '@/modules/workflow/utils/workflowNavigation';
 
 import { validateStepPure } from '@/modules/workflow/utils/workflowValidation';
+import { WorkflowMode, WorkflowStep } from '@/types/workflow';
 
 /*
 import datasets from '~/stories/js/metadata.js';
