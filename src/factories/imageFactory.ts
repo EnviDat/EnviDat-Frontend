@@ -95,7 +95,11 @@ export const getFileIcon = (fileExtension: string) : string | Promise<string> =>
     return mdiFile;
   }
 
-  return getIconImage(fileExt);
+  try {
+    return getIconImage(fileExt);
+  } catch (e: Error) {
+    return mdiFile;
+  }
 };
 
 export const getGeoJSONIcon = (type: string) => {
