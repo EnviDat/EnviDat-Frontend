@@ -16,7 +16,7 @@
 
     <div class="pa-3">
       <v-row>
-        <v-col cols="6" class="text-h5 d-flex align-center">
+        <v-col class="text-h6 text-md-h5 d-flex align-center">
           <BaseIcon v-if="isDataPrivate" color="black" :icon="mdiLock" />
           <BaseIcon v-if="isDataDeprecated" color="black" :icon="mdiCancel" />
           <span class="pl-2" >{{ labels.title }}</span>
@@ -32,8 +32,8 @@
         </v-col>
       </v-row>
 
-      <div class="pa-1">
-        <v-alert type="info" >{{ labels.instructions }}</v-alert>
+      <div class="pa-1 ">
+        <v-alert class="my-2" type="info" >{{ labels.instructions }}</v-alert>
 
         <v-row id="resourceName" no-gutters class="pt-4">
           <v-col cols="12">
@@ -60,11 +60,13 @@
           </v-col>
         </v-row>
 
-        <v-row id="resourceUrl" no-gutters class="pt-2">
+        <v-row id="resourceUrl"
+               no-gutters class="pt-2">
           <v-col
             v-if="showImagePreview"
-            cols="4"
-            class="pt-3 pb-4 pr-4 flex-grow-0 flex-shrink-1"
+            cols="12"
+            sm="4"
+            class="pt-3 pb-4 pr-0 pr-sm-4 flex-grow-0 flex-shrink-1"
           >
             <div
               v-if="loadingImagePreview"
@@ -103,13 +105,18 @@
             </div>
           </v-col>
 
-          <v-col :class="showImagePreview ? 'pt-3 pb-4' : ''">
+          <v-col
+            cols="12"
+            :sm="showImagePreview ? 8 : 12"
+            :class="showImagePreview ? 'pt-3 pb-4' : ''"
+          >
             <v-textarea
               v-if="isLongUrl"
               :label="isLink ? labels.url : labels.fileName"
               outlined
               auto-grow
-              readonly
+              :readonly="urlReadOnly"
+              :hint="readOnlyHint('url')"
               dense
               hide-details
               :disabled="loading"
@@ -120,7 +127,8 @@
               v-if="!isLongUrl"
               :label="isLink ? labels.url : labels.fileName"
               outlined
-              readonly
+              :readonly="urlReadOnly"
+              :hint="readOnlyHint('url')"
               dense
               hide-details
               :disabled="loading"
@@ -131,7 +139,7 @@
         </v-row>
 
         <v-row>
-          <v-col>
+          <v-col cols="12" md="3">
             <BaseIconSwitch
               :active="isDataDeprecated"
               :disabled="!editingRestrictingActive"
@@ -143,7 +151,7 @@
             />
           </v-col>
 
-          <v-col v-show="isDataDeprecated">
+          <v-col cols="12" md="9" v-show="isDataDeprecated">
             {{ labels.dataDeprecatedSwitchInfo }}
           </v-col>
         </v-row>
@@ -214,7 +222,7 @@
 
         <div class="pa-1">
           <v-expand-transition>
-            <v-alert v-if="isDataPrivate" type="warning" >
+            <v-alert v-if="isDataPrivate" type="warning" class="my-2">
               <div v-html="openAccessDetails"></div>
             </v-alert>
           </v-expand-transition>
@@ -262,13 +270,13 @@
 
           <v-row v-if="!editingRestrictingActive" class="py-2">
             <v-col>
-              <v-alert type="warning" >{{ labels.editingRestrictingUnavailableInfo }}</v-alert>
+              <v-alert type="warning" class="my-2" >{{ labels.editingRestrictingUnavailableInfo }}</v-alert>
             </v-col>
           </v-row>
 
           <v-row v-if="checkUppercaseValue" class="py-2">
             <v-col>
-              <v-alert type="info" >{{
+              <v-alert type="info" class="my-2" >{{
                 labels.editingWarningUppercaseExtension
               }}</v-alert>
             </v-col>
@@ -344,6 +352,9 @@ import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import { formatDate } from '@/factories/dateFactory';
 import { getAuthorByEmail, getAuthorName } from '@/factories/authorFactory.js';
+import { getFileExtension } from '@/factories/fileFactory.js';
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods.js';
+import { RESOURCE_FORMAT_LINK } from '@/factories/metadataConsts.js';
 
 
 export default {
@@ -504,7 +515,17 @@ export default {
         if (this.url && this.showImagePreview) {
           this.loadImagePreview(this.url);
         }
-        return this.url;
+
+        return this.previews.url !== null ? this.previews.url : this.url;
+      },
+      set(value) {
+        const valid = this.validateField('url', value);
+
+        if (valid) {
+          this.previews.url = value;
+        }
+
+        this.checkSaveButtonEnabled(valid);
       },
     },
     sizeField: {
@@ -566,6 +587,21 @@ export default {
         }
         this.checkSaveButtonEnabled(valid);
       },
+    },
+    urlAndFileExtensionMatch() {
+      const ext = getFileExtension(this.urlField);
+      return ext === this.formatField;
+    },
+    urlReadOnly() {
+      if(this.urlAndFileExtensionMatch) {
+        return true;
+      }
+
+      if (this.formatField !== RESOURCE_FORMAT_LINK) {
+        return true;
+      }
+
+      return this.isReadOnly('url')
     },
     checkUppercaseValue() {
       // shows a warning message if the form receives an uppercase character in the file name
@@ -751,6 +787,7 @@ export default {
         format: this.formatField,
         size: this.sizeField || 0,
         sizeFormat: this.sizeFormatField,
+        url: this.urlField,
       };
 
       this.saveButtonEnabled = isObjectValidCheckAllProps(
@@ -776,6 +813,7 @@ export default {
         },
         deprecated: this.isDataDeprecated,
         format: this.formatField.toLowerCase(),
+        url: this.urlField,
         // don't set the "size" directly because this is done
         // via the file upload
         resourceSize: {
@@ -837,6 +875,12 @@ export default {
         this.previews[key] = null;
       });
     },
+    isReadOnly(property) {
+      return isFieldReadOnly(this.$props, property);
+    },
+    readOnlyHint(property) {
+      return readOnlyHint(this.$props, property);
+    },
   },
   data: () => ({
     mdiCancel,
@@ -858,14 +902,14 @@ export default {
       size: null,
       sizeFormat: null,
       deprecated: null,
+      url: null,
     },
-    isExtensionUppercase: false,
     loadingImagePreview: false,
     imagePreviewError: null,
     labels: {
       title: 'Edit Selected Resource',
       instructions:
-        'Include an apt name and description others will understand',
+        'Make sure the resource name is descriptive and the description helps others understand what the data is about.',
       subInstructions: 'For files larger then 5GB contact the EnviDat team.',
       createButtonText: 'Save Resource',
       description: 'Resource description',

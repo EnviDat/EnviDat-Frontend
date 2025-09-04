@@ -10,11 +10,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import {
-  EDITMETADATA_DATA_RESOURCE,
-} from '@/factories/eventBus';
-
 import EditResource from '@/modules/user/components/EditResource.vue';
+import { EDITMETADATA_DATA_RESOURCE } from '@/factories/eventBus';
 
 import {
   enhanceElementsWithStrategyEvents,
@@ -29,6 +26,7 @@ import {
 import unFormatedMetadata from './js/metadata';
 import userList from './testdata/user_list.json';
 import { mergeResourceSizeForFrontend } from '@/factories/resourceHelpers';
+import { getReadOnlyFieldsObject } from '@/factories/userEditingValidations.js';
 
 const envidatUsers = userList?.result || [];
 
@@ -74,6 +72,9 @@ const deprecatedResources = [...allResources[1], ...allResources[2]];
 deprecatedResources[1].deprecated = true;
 deprecatedResources[2].deprecated = true;
 
+const editingReadOnlyObj = getReadOnlyFieldsObject('published');
+
+
 export default {
   title: '3 Datasets / 2 Edit / Resource',
   component: EditResource,
@@ -112,9 +113,9 @@ export const Filled3 = {
 
 export const FilledReadOnly = {
   args: {
-    ...Filled.args,
-    ...allResources[2][0],
-    ...mergeResourceSizeForFrontend(allResources[2][0]),
+    ...Filled3.args,
+    readOnlyFields: editingReadOnlyObj.readOnlyFields,
+    readOnlyExplanation: editingReadOnlyObj.explanation,
   },
 }
 

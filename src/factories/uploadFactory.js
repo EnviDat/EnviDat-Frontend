@@ -34,7 +34,7 @@ import {
   UPLOAD_STATE_RESOURCE_CREATED,
 } from '@/factories/eventBus';
 
-import { formatDate } from '@/factories/dateFactory.js';
+import { RESOURCE_FORMAT_LINK } from '@/factories/metadataConsts.js';
 
 
 let API_BASE = '';
@@ -129,7 +129,7 @@ export function createNewResourceForUrl(metadataId, url) {
   return {
     ...baseResourceProperties,
     url,
-    format: 'url',
+    format: RESOURCE_FORMAT_LINK,
     size: 1,
     name: resourceName,
   };
@@ -137,7 +137,7 @@ export function createNewResourceForUrl(metadataId, url) {
 }
 
 export async function initiateMultipart(file) {
-  console.log('initiateMultipart', file);
+  // // console.log('initiateMultipart', file);
 
 /*
   eventBus.emit(UPLOAD_STATE_RESET);
@@ -155,7 +155,7 @@ export async function initiateMultipart(file) {
   if (resourceId) {
     eventBus.emit(UPLOAD_STATE_RESOURCE_CREATED, { id: UPLOAD_STATE_RESOURCE_CREATED, resourceId});
   } else {
-    eventBus.emit(UPLOAD_ERROR, { error: 'Resource creation failed', metadataId });
+    eventBus.emit(UPLOAD_ERROR, { error: 'Resource creation failed', metadataId: datasetId });
     return null;
   }
 
@@ -245,7 +245,7 @@ export async function getSinglePresignedUrl(file) {
 }
 
 export async function requestPresignedUrl(file, partData) {
-  console.log('requestPresignedUrl', file, partData);
+  // console.log('requestPresignedUrl', file, partData);
 
   const actionUrl = 'cloudstorage_get_presigned_url_multipart';
   const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
@@ -302,7 +302,7 @@ export async function updateResourceWithFileUrl(fileUrl, store) {
 */
 
 export async function completeMultipart(file, uploadData) {
-  console.log('completeMultipart', file, uploadData);
+  // console.log('completeMultipart', file, uploadData);
 
   const actionUrl = 'cloudstorage_finish_multipart';
   const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
@@ -331,7 +331,7 @@ export async function completeMultipart(file, uploadData) {
 }
 
 export async function abortMultipart(file, uploadData) {
-  console.log('abortMultipart', file, uploadData);
+  // console.log('abortMultipart', file, uploadData);
 
   const actionUrl = 'cloudstorage_abort_multipart';
   const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
@@ -347,12 +347,12 @@ export async function abortMultipart(file, uploadData) {
 
   try {
     const response = await axios.post(url, payload);
-    console.log(`Multipart upload aborted. Resource ID ${resourceId} | S3 Upload ID ${uploadData.uploadId}`);
-    console.log(response);
+    // console.log(`Multipart upload aborted. Resource ID ${resourceId} | S3 Upload ID ${uploadData.uploadId}`);
+    // console.log(response);
 
     return {};
   } catch (error) {
-    console.log(`Multipart abort failed for Resource ID ${resourceId}: ${error}`);
+    // console.log(`Multipart abort failed for Resource ID ${resourceId}: ${error}`);
     return error;
   } finally {
     eventBus.emit(UPLOAD_STATE_RESET);
@@ -372,11 +372,11 @@ export async function listUploadedParts(file, { uploadId, key }) {
   try {
     const res = await axios.post(url, payload);
 
-    console.log(`Multipart parts: ${res.data.result}`);
+    // console.log(`Multipart parts: ${res.data.result}`);
 
     return res.data.result;
   } catch (error) {
-    console.log(`Listing multipart parts failed: ${error}`);
+    // console.log(`Listing multipart parts failed: ${error}`);
     return error;
   }
 }
@@ -392,11 +392,11 @@ export async  function getPresignedUrlForDownload(resourceId) {
 
     const preSignedUrl = res.data.result.signed_url || res.data.result;
 
-    console.log(`Presigned Url: ${preSignedUrl}`);
+    // console.log(`Presigned Url: ${preSignedUrl}`);
     return preSignedUrl;
 
   } catch (error) {
-    console.log(`Getting presigned url for download failed: ${error}`);
+    // console.log(`Getting presigned url for download failed: ${error}`);
     return error;
   }
 
@@ -480,7 +480,7 @@ function createUppyInstance(height = 300, autoProceed = true, restrictions = def
     completeMultipartUpload: completeMultipart,
   });
 
-  // console.log('createUppyInstance', uppy);
+  // // console.log('createUppyInstance', uppy);
 
   return uppy;
 }

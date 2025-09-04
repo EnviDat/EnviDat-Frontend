@@ -299,6 +299,8 @@ export default {
         ...mergedSize,
         userEditMetadataConfig,
         envidatUsers: this.allEnviDatUsers,
+        readOnlyFields: this.readOnlyFields,
+        readOnlyExplanation: this.readOnlyExplanation,
       };
     },
     editDropResourceObject() {

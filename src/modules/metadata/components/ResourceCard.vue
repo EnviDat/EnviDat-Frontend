@@ -313,7 +313,7 @@ import SparkChart from '@/components/Charts/SparkChart.vue';
 
 import { renderMarkdown, stripMarkdown } from '@/factories/stringFactory';
 import { formatBytes, getResourceName } from '@/factories/resourceHelpers';
-import { EDIT_METADATA_DOI_LABEL } from '@/factories/metadataConsts';
+import { EDIT_METADATA_DOI_LABEL, RESOURCE_FORMAT_LINK } from '@/factories/metadataConsts';
 import { getFileIcon } from '@/factories/imageFactory';
 
 import { trackDownload } from '@/utils/matomoTracking';
@@ -477,7 +477,7 @@ export default {
       return (
         this.format &&
         (this.format.toLowerCase() === 'link' ||
-          this.format.toLowerCase() === 'url')
+          this.format.toLowerCase() === RESOURCE_FORMAT_LINK)
       );
     },
     isFile() {
@@ -485,7 +485,7 @@ export default {
         !this.format ||
         !(
           this.format.toLowerCase() === 'link' ||
-          this.format.toLowerCase() === 'url'
+          this.format.toLowerCase() === RESOURCE_FORMAT_LINK
         );
 
       if (isFile && this.url) {

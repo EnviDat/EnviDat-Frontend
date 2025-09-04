@@ -120,3 +120,6 @@ export const BLIND_REVIEW_ON = 'double-blind';
 export const BLIND_REVIEW_OFF = '1.0';
 
 export const METADATA_NEW_RESOURCE_ID = 'localResourceId';
+
+export const RESOURCE_FORMAT_LINK = 'url';
+
