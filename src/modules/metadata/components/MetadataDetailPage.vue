@@ -1,10 +1,5 @@
 <template>
-  <v-container
-    id="MetadataDetailPage"
-    fluid
-    class="pa-0"
-    tag="article">
-
+  <v-container id="MetadataDetailPage" fluid class="pa-0" tag="article">
     <v-row no-gutters>
       <!-- prettier-ignore -->
       <v-col class="elevation-5 pa-0"
@@ -12,7 +7,6 @@
              ref="header"
              style="z-index: 1; left: 0"
              >
-
         <!-- prettier-ignore -->
         <MetadataHeader v-bind="header"
                           :metadataId="metadataId"
@@ -52,8 +46,7 @@
           :key="`left_${index}_${keyHash}`"
           no-gutters
         >
-          <v-col v-if="entry"
-                 class="mb-2 px-0">
+          <v-col v-if="entry" class="mb-2 px-0">
             <component
               :component="entry"
               :is="entry"
@@ -70,9 +63,7 @@
           :key="`right_${index}_${keyHash}`"
           no-gutters
         >
-          <v-col v-if="entry"
-                 class="mb-2 px-0">
-
+          <v-col v-if="entry" class="mb-2 px-0">
             <component
               :component="entry"
               :is="entry"
@@ -82,7 +73,6 @@
           </v-col>
         </v-row>
       </v-col>
-
     </v-row>
   </v-container>
 </template>
@@ -181,7 +171,6 @@ import { createHeaderViewModel } from '@/factories/ViewModels/HeaderViewModel';
 import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionViewModel';
 import { getResourcesForDataViz } from '@/modules/charts/middelware/chartServiceLayer.ts';
 
-
 const MetadataDescription = defineAsyncComponent(
   () =>
     import('@/modules/metadata/components/Metadata/MetadataDescription.vue'),
@@ -216,9 +205,9 @@ const MetadataRelatedDatasets = defineAsyncComponent(
     ),
 );
 
-const ResourceDataVizListAsync = defineAsyncComponent(() =>
-  import('@/modules/charts/components/ResourceDataVizList.vue'),
-)
+const ResourceDataVizListAsync = defineAsyncComponent(
+  () => import('@/modules/charts/components/ResourceDataVizList.vue'),
+);
 
 // Might want to check https://css-tricks.com/use-cases-fixed-backgrounds-css/
 // for animations between the different parts of the Metadata
@@ -248,7 +237,6 @@ export default {
    * @description reset the scrolling to the top.
    */
   async mounted() {
-
     // await this.setPageViews(this.$route.fullPath, 'Visit');
 
     window.scrollTo(0, 0);
@@ -603,11 +591,11 @@ export default {
 
         this.resourceData.dates = getFrontendDates(this.metadataContent.date);
 
-
         if (this.resourcesConfig.loadDataViz) {
-          this.resourcesForDataViz = getResourcesForDataViz(this.resourceData.resources);
+          this.resourcesForDataViz = getResourcesForDataViz(
+            this.resourceData.resources,
+          );
         }
-
       }
 
       this.MetadataResources.props = {
@@ -645,6 +633,7 @@ export default {
 
       this.MetadataCitation.props = {
         ...this.citation,
+        showCitation: this.metadataContent.showShallowCitation,
       };
 
       let publicationList;
@@ -675,10 +664,10 @@ export default {
       let resourceDataViz;
 
       if (this.resourcesConfig.loadDataViz) {
-        resourceDataViz = ResourceDataVizListAsync
+        resourceDataViz = ResourceDataVizListAsync;
         resourceDataViz.props = {
           resources: this.resourcesForDataViz,
-        }
+        };
       }
 
       this.firstCol = [
@@ -1032,6 +1021,4 @@ export default {
 };
 </script>
 
-<style>
-
-</style>
+<style></style>

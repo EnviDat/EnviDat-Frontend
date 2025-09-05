@@ -35,6 +35,7 @@
       :showScrollTopButton="true"
       :updatingTags="updatingTags"
       :loading="loading"
+      :loadingDetailSwitch="loadingDetailSwitch"
       :metadatasContent="allDatasets"
       :categoryCards="categoryCards"
     >
@@ -528,6 +529,7 @@ export default {
         return false;
       },
       async set(showShallow) {
+        this.loadingDetailSwitch = true;
         if (this.mode === EDNA_MODE) {
           const modeMetadata = this.modeStore.getModeMetadata(EDNA_MODE);
           modeMetadata.isShallow = showShallow;
@@ -536,6 +538,7 @@ export default {
           // based on the isShallow property
           await this.loadModeDatasets();
           this.filterContent();
+          this.loadingDetailSwitch = false;
         }
       },
     },
@@ -596,6 +599,7 @@ export default {
       LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
     ],
     oldIsAuthorSearch: false,
+    loadingDetailSwitch: false,
   }),
 };
 </script>
