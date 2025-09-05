@@ -60,7 +60,11 @@
 
 import { mapGetters, mapState } from 'vuex';
 
-import { BROWSE_PATH, METADATADETAIL_PAGENAME } from '@/router/routeConsts';
+import {
+  BROWSE_PATH,
+  METADATADETAIL_PAGENAME,
+  BROWSE_MODE_PATH,
+} from '@/router/routeConsts';
 
 import {
   CLEAR_SEARCH_METADATA,
@@ -175,7 +179,7 @@ export default {
         this.$router.options.additiveChangeRoute(
           this.$route,
           this.$router,
-          BROWSE_PATH,
+          BROWSE_MODE_PATH,
           undefined,
           stringTags,
           undefined,
@@ -195,7 +199,7 @@ export default {
       this.$router.options.additiveChangeRoute(
         this.$route,
         this.$router,
-        BROWSE_PATH,
+        BROWSE_MODE_PATH,
         undefined,
         stringTags,
         undefined,
@@ -215,7 +219,7 @@ export default {
       this.$router.options.additiveChangeRoute(
         this.$route,
         this.$router,
-        BROWSE_PATH,
+        BROWSE_MODE_PATH,
         undefined,
         undefined,
         undefined,
@@ -378,7 +382,7 @@ export default {
       this.$router.options.additiveChangeRoute(
         this.$route,
         this.$router,
-        BROWSE_PATH,
+        BROWSE_MODE_PATH,
         search,
         undefined,
         this.mode,
@@ -390,7 +394,7 @@ export default {
       this.$router.options.additiveChangeRoute(
         this.$route,
         this.$router,
-        BROWSE_PATH,
+        BROWSE_MODE_PATH,
         '',
         undefined,
         this.mode,
@@ -405,7 +409,7 @@ export default {
       this.$router.options.additiveChangeRoute(
         this.$route,
         this.$router,
-        BROWSE_PATH,
+        BROWSE_MODE_PATH,
         this.currentSearchTerm,
         undefined,
         undefined,
