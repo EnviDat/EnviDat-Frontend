@@ -46,6 +46,11 @@ const ednaImages = {
   dataset: 'edna_logo',
 };
 
+const forest3dImages = {
+  logo: 'forest3d_logo',
+  dataset: 'forest3d_logo',
+};
+
 /**
  * loads the dataset specific for a mode based on the mainTag property on its modeMetadata
  *
@@ -389,10 +394,10 @@ const loadFOREST3DDataset = async (modeMetadata) => {
     // const data = testJson;
     // console.log(data);
     const arr = Array.isArray(data) ? data : [data];
-
     return arr.map((entry) => ({
       ...entry,
       tags: normalizeTags(entry.tags),
+      num_resources: entry.resources.length,
     }));
   } catch (e) {
     console.error('loadFOREST3DDataset error:', e);
@@ -434,7 +439,8 @@ export const modes = [
     title: 'Forest3D Data',
     mainTag: forest3dTags,
     extraTags: [],
-    logo: ednaImages.logo,
+    logo: forest3dImages.logo,
+    icons: forest3dImages,
     minTagAmount: 1,
     extrasKey: FOREST_3D_EXTRAS_KEY,
     datasetUrl: FOREST_3D_URL,

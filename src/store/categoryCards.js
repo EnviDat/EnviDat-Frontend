@@ -125,7 +125,7 @@ export default [
     title: `${forest3D.title}`,
     type: `mode_${FOREST_3D}`,
     alias: [],
-    imgPath: 'edna_logo_small',
+    imgPath: 'forest3d_logo',
     color: '#254117',
     darkColor: '#182D09',
     contain: true,
