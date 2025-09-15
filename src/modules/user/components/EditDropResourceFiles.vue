@@ -165,7 +165,7 @@ export default {
       return this.getIndicatorLoading(state) ? undefined : 100;
     },
     resetState() {
-      console.log('resetState');
+      // console.log('resetState');
       this.currentState = null;
       this.states = this.initStates;
     },
@@ -174,7 +174,7 @@ export default {
         return;
       }
 
-      console.log('Change State', id, progress);
+      // console.log('Change State', id, progress);
 
       const index = this.states.findIndex(((s) => s.id === id));
 
