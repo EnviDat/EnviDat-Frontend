@@ -141,6 +141,7 @@ import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.v
 import { useS3Store } from '@/modules/s3/store/s3Store.ts';
 import { S3Node } from '@/types/s3Types';
 import { warningMessage } from '@/factories/notificationFactory';
+import { VTreeview } from 'vuetify/labs/VTreeview';
 
 const s3Store = useS3Store();
 
@@ -166,7 +167,8 @@ const labels = {
   viewAll: 'View all data on the S3 File Browser website',
 };
 
-const errorDetailText = 'Sorry at the moment we cannot load the data. Please try again later or click on the download/link icon to download the file directly from the bucket.';
+const errorDetailText =
+  'Sorry at the moment we cannot load the data. Please try again later or click on the download/link icon to download the file directly from the bucket.';
 
 const emit = defineEmits(['loadingChanged', 'changeAutoHeight']);
 
