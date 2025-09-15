@@ -165,11 +165,7 @@ import {
 
 import { possibleVisibilityStates } from '@/factories/metaDataFactory';
 import BaseDatePickerYear from '@/components/BaseElements/BaseDatePickerYear.vue';
-
-import {
-  isReadOnlyField,
-  getReadOnlyHint,
-} from '@/modules/workflow/utils/useReadonly';
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 
 
 export default {
@@ -294,10 +290,10 @@ export default {
   },
   methods: {
     isReadOnly(dateProperty) {
-      return isReadOnlyField(dateProperty);
+      return isFieldReadOnly(this.$props, dateProperty);
     },
     readOnlyHint(dateProperty) {
-      return getReadOnlyHint(dateProperty);
+      return readOnlyHint(this.$props, dateProperty);
     },
     validateProperty(property, value) {
       return isFieldValid(
