@@ -131,6 +131,7 @@ export function createNewResourceForUrl(metadataId, url) {
     url,
     format: RESOURCE_FORMAT_LINK,
     size: 1,
+    sizeFormat: 'B',
     name: resourceName,
   };
 

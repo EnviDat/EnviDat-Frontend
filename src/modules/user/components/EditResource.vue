@@ -785,10 +785,18 @@ export default {
         description: this.descriptionField,
         name: this.resourceNameField,
         format: this.formatField,
-        size: this.sizeField || 0,
+        size: this.formatField === RESOURCE_FORMAT_LINK ? 0 : this.sizeField || 0,
         sizeFormat: this.sizeFormatField,
         url: this.urlField,
       };
+
+      const validations = this.validations;
+      if (this.formatField === RESOURCE_FORMAT_LINK) {
+        delete validations.size;
+        delete validations.sizeFormat;
+        objectToValidate.size = 1;
+        objectToValidate.sizeFormat = this.getFileSizeFormat(1);
+      }
 
       this.saveButtonEnabled = isObjectValidCheckAllProps(
         objectToValidate,
