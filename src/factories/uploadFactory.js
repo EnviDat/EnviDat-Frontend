@@ -121,7 +121,8 @@ function createNewResourceForFileUpload(metadataId, file) {
 
 export function createNewResourceForUrl(metadataId, url) {
 
-  const splits = url.split('/');
+  const cleanUrlForName = url.endsWith('/') ? url.substring(0, url.length - 1) : url;
+  const splits = cleanUrlForName.split('/');
   const resourceName = splits.length > 0 ? splits[splits.length - 1] : url;
 
   const baseResourceProperties = createNewBaseResource(metadataId);
@@ -131,6 +132,7 @@ export function createNewResourceForUrl(metadataId, url) {
     url,
     format: RESOURCE_FORMAT_LINK,
     size: 1,
+    sizeFormat: 'B',
     name: resourceName,
   };
 

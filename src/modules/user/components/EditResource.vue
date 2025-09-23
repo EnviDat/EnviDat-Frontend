@@ -1,5 +1,9 @@
 <template>
-  <v-card id="EditResource" :key="id" :loading="loadingColor" class="pa-0">
+  <v-card
+    id="EditResource"
+    :key="id"
+    :loading="loadingColor"
+    class="pa-4">
 
     <BaseIconButton
       class="editResourceCloseButton ma-2"
@@ -14,14 +18,17 @@
       @clicked="$emit('closeClicked')" />
 
 
+<!--
     <div class="pa-3">
+-->
       <v-row>
-        <v-col class="text-h6 text-md-h5 d-flex align-center">
+        <v-col class="text-h6 text-md-h5 d-flex">
           <BaseIcon v-if="isDataPrivate" color="black" :icon="mdiLock" />
           <BaseIcon v-if="isDataDeprecated" color="black" :icon="mdiCancel" />
-          <span class="pl-2" >{{ labels.title }}</span>
+          <span :class="isDataPrivate || isDataDeprecated ? 'pl-2' : ''" >{{ labels.title }}</span>
         </v-col>
 
+<!--
         <v-col v-if="message">
           <BaseStatusLabelView status="check" statusColor="success" :statusText="message"
             :expandedText="messageDetails" />
@@ -30,6 +37,7 @@
         <v-col v-if="error">
           <BaseStatusLabelView status="error" statusColor="error" :statusText="error" :expandedText="errorDetails" />
         </v-col>
+-->
       </v-row>
 
       <div class="pa-1 ">
@@ -138,8 +146,8 @@
           </v-col>
         </v-row>
 
-        <v-row>
-          <v-col cols="12" md="3">
+        <v-row no-gutters class="pt-4">
+          <v-col cols="12" :md="isDataDeprecated ? 4 : 6">
             <BaseIconSwitch
               :active="isDataDeprecated"
               :disabled="!editingRestrictingActive"
@@ -151,7 +159,7 @@
             />
           </v-col>
 
-          <v-col cols="12" md="9" v-show="isDataDeprecated">
+          <v-col cols="12" md="8" v-show="isDataDeprecated">
             {{ labels.dataDeprecatedSwitchInfo }}
           </v-col>
         </v-row>
@@ -294,7 +302,11 @@
           </v-row>
         </div>
       </div>
+
+<!--
     </div>
+-->
+
   </v-card>
 </template>
 
@@ -349,7 +361,7 @@ import {
   ACCESS_LEVEL_PUBLIC_VALUE,
 } from '@/factories/userEditingFactory';
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
+// import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import { formatDate } from '@/factories/dateFactory';
 import { getAuthorByEmail, getAuthorName } from '@/factories/authorFactory.js';
 import { getFileExtension } from '@/factories/fileFactory.js';
@@ -785,10 +797,18 @@ export default {
         description: this.descriptionField,
         name: this.resourceNameField,
         format: this.formatField,
-        size: this.sizeField || 0,
+        size: this.formatField === RESOURCE_FORMAT_LINK ? 0 : this.sizeField || 0,
         sizeFormat: this.sizeFormatField,
         url: this.urlField,
       };
+
+      const validations = this.validations;
+      if (this.formatField === RESOURCE_FORMAT_LINK) {
+        delete validations.size;
+        delete validations.sizeFormat;
+        objectToValidate.size = 1;
+        objectToValidate.sizeFormat = this.getFileSizeFormat(1);
+      }
 
       this.saveButtonEnabled = isObjectValidCheckAllProps(
         objectToValidate,
@@ -817,8 +837,8 @@ export default {
         // don't set the "size" directly because this is done
         // via the file upload
         resourceSize: {
-          sizeValue: this.isLink ? this.sizeField.toString() : '',
-          sizeUnits: this.isLink ? this.sizeFormatField.toLowerCase() : '',
+          sizeValue: this.isLink ? this.sizeField?.toString() : '1',
+          sizeUnits: this.isLink ? this.sizeFormatField?.toLowerCase() : this.getFileSizeFormat(1),
         },
       };
 
@@ -961,7 +981,7 @@ export default {
     BaseIconButton,
     BaseIconSwitch,
     BaseIcon,
-    BaseStatusLabelView,
+    // BaseStatusLabelView,
   },
 };
 </script>

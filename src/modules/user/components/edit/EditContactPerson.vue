@@ -91,10 +91,8 @@
 import { mdiAccount, mdiEmail } from '@mdi/js';
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
 
-import {
-  isReadOnlyField,
-  getReadOnlyHint,
-} from '@/modules/workflow/utils/useReadonly';
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+
 
 const METADATA_CONTACT_EMAIL = 'contactEmail';
 const METADATA_CONTACT_FIRSTNAME = 'contactFirstName';
@@ -154,10 +152,10 @@ export default {
   },
   methods: {
     isReadOnly(dateProperty) {
-      return isReadOnlyField(dateProperty);
+      return isFieldReadOnly(this.$props, dateProperty);
     },
     readOnlyHint(dateProperty) {
-      return getReadOnlyHint(dateProperty);
+      return readOnlyHint(this.$props, dateProperty);
     },
     blurOnEnterKey(e) {
       if (e.key === 'Enter') e.target.blur();

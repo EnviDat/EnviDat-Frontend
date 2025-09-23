@@ -264,8 +264,10 @@ export default {
     eventBus.on(MAP_GEOMETRY_MODIFIED, this.changedGeoViaEditor);
     eventBus.on(EDITMETADATA_DATA_GEO_MAP_ERROR, this.triggerValidationError);
 
+/*
     console.log(this.location);
     console.log(this.location?.geoJSON);
+*/
 
     const jsonString = this.location?.geoJSON
       ? JSON.stringify(this.location?.geoJSON)
@@ -368,8 +370,8 @@ export default {
     this.validationErrors.input = err.message;
 
     // console.error('Error captured in parent:', err);
-    console.log('Error source component:', vm.$options.name);
-    console.log('Error info:', info);
+    console.error('Error source component:', vm.$options.name);
+    console.error('Error info:', info);
 
     // return `false` to stop the error from propagating to further ancestors.
     return false;
