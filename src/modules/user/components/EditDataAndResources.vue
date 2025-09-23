@@ -3,7 +3,7 @@
     <v-row>
       <v-col cols="6">
         <v-row v-if="selectedResource">
-          <v-col v-if="resourceEditingActive" >
+          <v-col v-if="resourceEditingActive">
             <!-- prettier-ignore -->
             <EditResource v-bind="editResourceObject"
                           @closeClicked="catchEditResourceClose"
@@ -12,20 +12,19 @@
             />
           </v-col>
 
-          <v-col v-if="!resourceEditingActive" >
-            <EditResourceRedirect title="Edit Selected Resource"
-                                  :text="editResourceRedirectText"
-                                  buttonText="Edit Resources"
-                                  :buttonUrl="linkEditResourceCKAN"
+          <v-col v-if="!resourceEditingActive">
+            <EditResourceRedirect
+              title="Edit Selected Resource"
+              :text="editResourceRedirectText"
+              buttonText="Edit Resources"
+              :buttonUrl="linkEditResourceCKAN"
             >
               <BaseRectangleButton
-                  buttonText="Deselect Resource"
-                  color="warning"
-                  @clicked="catchEditResourceClose"
+                buttonText="Deselect Resource"
+                color="warning"
+                @clicked="catchEditResourceClose"
               />
-
             </EditResourceRedirect>
-
           </v-col>
         </v-row>
 
@@ -36,36 +35,32 @@
                     </v-col>
           -->
 
-          <v-col v-if="resourceUploadActive"
-                 cols="12">
+          <v-col v-if="resourceUploadActive" cols="12">
             <EditDropResourceFiles v-bind="editDropResourceObject" />
-<!--
+            <!--
             No need to listen to events from the component, events are emitted from uppy directly
 -->
           </v-col>
 
-          <v-col v-if="resourceUploadActive"
-                 cols="12">
-            <EditResourcePasteUrl @createUrlResources="createResourceFromUrl"/>
+          <v-col v-if="resourceUploadActive" cols="12">
+            <EditResourcePasteUrl @createUrlResources="createResourceFromUrl" />
           </v-col>
 
-          <v-col v-if="!resourceUploadActive"
-                 cols="12">
-            <EditResourceRedirect title="Add New Resource"
-                                  :text="addResourceRedirectText"
-                                  buttonText="Add Resources"
-                                  :buttonUrl="linkAddNewResourcesCKAN"
+          <v-col v-if="!resourceUploadActive" cols="12">
+            <EditResourceRedirect
+              title="Add New Resource"
+              :text="addResourceRedirectText"
+              buttonText="Add Resources"
+              :buttonUrl="linkAddNewResourcesCKAN"
             />
           </v-col>
-
         </v-row>
       </v-col>
 
       <v-col cols="6">
-        <EditMetadataResources v-bind="metadataResourcesGenericProps"/>
+        <EditMetadataResources v-bind="metadataResourcesGenericProps" />
       </v-col>
     </v-row>
-
   </v-container>
 </template>
 
@@ -92,7 +87,7 @@ import {
   UPLOAD_STATE_UPLOAD_STARTED,
   UPLOAD_STATE_RESET,
   EDITMETADATA_CLEAR_PREVIEW,
-  UPLOAD_STATE_RESOURCE_CREATED,
+  UPLOAD_STATE_RESOURCE_CREATED, EDITMETADATA_DATA_RESOURCES,
 } from '@/factories/eventBus';
 
 import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
@@ -232,7 +227,27 @@ export default {
     ...mapState(USER_NAMESPACE, [
       'envidatUsers',
       'uploadError',
+      'metadataInEditing',
     ]),
+    statusInfos() {
+      if (this.$store) {
+        const stepData = this.metadataInEditing[EDITMETADATA_DATA_RESOURCES];
+
+        return {
+          error: stepData.error,
+          errorDetails: stepData.errorDetails,
+          message: stepData.message,
+          messageDetails: stepData.messageDetails,
+        };
+      }
+
+      return {
+        error: this.resourceUploadError?.message || this.error,
+        errorDetails: this.resourceUploadError?.details || this.errorDetails,
+        message: this.message,
+        messageDetails: this.messageDetails,
+      };
+    },
     resourceUploadError() {
       if (this.$store) {
         return this.uploadError;
@@ -274,6 +289,7 @@ export default {
         },
         readOnlyFields: this.readOnlyFields,
         readOnlyExplanation: this.readOnlyExplanation,
+        ...this.statusInfos,
       };
     },
     editResourceObject() {
