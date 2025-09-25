@@ -113,6 +113,7 @@ export default {
 
     setTimeout(() => {
       this.commit(`${USER_NAMESPACE}/resetMessage`, EDITMETADATA_DATA_RESOURCES);
+      state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].message = undefined;
     }, state.metadataSavingMessageTimeoutTime);
   },
   [METADATA_EDITING_PATCH_RESOURCE_ERROR](state, { stepKey, reason }) {
@@ -132,6 +133,8 @@ export default {
 
     setTimeout(() => {
       this.commit(`${USER_NAMESPACE}/resetMessage`, EDITMETADATA_DATA_RESOURCES);
+      state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].error = undefined;
+      state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].errorDetails = undefined;
     }, state.metadataSavingErrorTimeoutTime);
   },
   [METADATA_EDITING_SELECT_RESOURCE](state, id) {
