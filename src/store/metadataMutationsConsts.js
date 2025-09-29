@@ -23,6 +23,14 @@ export const ACTION_BULK_LOAD_METADATAS_CONTENT = () => {
   return 'current_package_list_with_resources?limit=1000&offset=0';
 };
 
+export const ACTION_PARALELL_BULK_LOAD_METADATAS_CONTENT = () => {
+  if (import.meta.env?.MODE === 'development' && useTestdata) {
+    return './testdata/packagelist.json';
+  }
+
+  return 'current_package_list_with_resources';
+};
+
 export const LOAD_METADATA_CONTENT_BY_ID = 'LOAD_METADATA_CONTENT_BY_ID';
 export const LOAD_METADATA_CONTENT_BY_ID_SUCCESS =
   'LOAD_METADATA_CONTENT_BY_ID_SUCCESS';

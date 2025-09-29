@@ -38,7 +38,7 @@ import {
   ACTION_BULK_LOAD_METADATAS_CONTENT,
   ACTION_LOAD_METADATA_CONTENT_BY_ID,
   ACTION_METADATA_UPDATE_EXISTING_KEYWORDS,
-  ACTION_SEARCH_METADATA,
+  ACTION_SEARCH_METADATA, ACTION_PARALELL_BULK_LOAD_METADATAS_CONTENT,
 } from '@/store/metadataMutationsConsts';
 
 import { urlRewrite } from '@/factories/apiFactory';
@@ -230,6 +230,7 @@ export default {
 
     const metadataConfig = config.metadataConfig || {};
 
+/*
     const actionUrl = ACTION_BULK_LOAD_METADATAS_CONTENT();
     let url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
@@ -258,6 +259,56 @@ export default {
       .catch(reason => {
         commit(BULK_LOAD_METADATAS_CONTENT_ERROR, reason);
       });
+*/
+
+
+
+    const listUrl = urlRewrite('package_list', API_BASE, API_ROOT);
+    const response = await axios.get(listUrl);
+    const totalDatasets = response.data.result.length;
+
+    const requests = [];
+
+    const amount = 300;
+    let offset = 0;
+    const requestAmount = Math.ceil(totalDatasets / amount);
+
+    for (let i = 0; i < requestAmount; i++) {
+
+      const actionUrl = ACTION_PARALELL_BULK_LOAD_METADATAS_CONTENT();
+      const url = urlRewrite(`${actionUrl}?limit=${amount}&offset=${offset}`, API_BASE, API_ROOT);
+
+      const request = axios.get(url);
+
+      requests.push(request);
+
+      offset += amount;
+    }
+
+    await axios.all(requests)
+      .then(responses => {
+
+        let datasets = [];
+        for (let i = 0; i < responses.length; i++) {
+          datasets = [...datasets, ...responses[i].data.result];
+        }
+
+        // commit(BULK_LOAD_METADATAS_CONTENT_SUCCESS, response.data.response.docs, showRestrictedContent);
+        commit(BULK_LOAD_METADATAS_CONTENT_SUCCESS, datasets);
+
+        // make sure the existingAuthors list is up-2-date
+        dispatch(METADATA_UPDATE_EXISTING_AUTHORS);
+
+        // make sure the existingKeywords list is up-2-date
+        return dispatch(
+          METADATA_UPDATE_EXISTING_KEYWORDS,
+          config.userEditMetadataConfig,
+        );
+      })
+      .catch(reason => {
+        commit(BULK_LOAD_METADATAS_CONTENT_ERROR, reason);
+      });
+
   },
   [UPDATE_TAGS]({ commit }) {
     // if (this.getters[`${METADATA_NAMESPACE}/updatingTags`]) {
