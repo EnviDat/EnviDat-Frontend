@@ -94,13 +94,6 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     },
 
     async initializeDataset(dataset: DatasetDTO, mode: WorkflowMode) {
-      // put the dataset into the correct service based on mode
-      if (mode === WorkflowMode.Edit) {
-        (this.backendStorageService as any).dataset = dataset;
-      } else {
-        this.localStorageService.dataset = dataset;
-      }
-
       this.datasetModel = new DatasetModel(this);
 
       if (mode === WorkflowMode.Create) {
@@ -108,9 +101,11 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
           const vm = s.viewModelKey
             ? (this.datasetModel as any).getViewModel(s.viewModelKey)
             : null;
+
           if (!vm) return { ...s, completed: false, hasError: false };
           const data = vm.getModelData?.();
           const filled = this.hasDtData(data);
+
           if (!filled)
             return {
               ...s,
@@ -139,6 +134,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
             errors: null,
           };
         });
+
         this.steps = seeded;
         const startIdx = this.steps.findIndex((s) => !s.completed);
         this.setActiveStep(startIdx === -1 ? 0 : startIdx);
@@ -213,20 +209,15 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     // PLEASE NOTE – We are currently in the development phase, and an exception is present to make Storybook work.
     // initializeWorkflowfromDataset is used on WorkflowPage.vue
     async initializeWorkflowfromDataset(dataset?: DatasetDTO) {
-      let datasetDto: DatasetDTO;
-
       this.localStorageService = new LocalStorageDatasetService();
 
       if (!dataset) {
-        datasetDto = await this.localStorageService.createDataset({});
+        await this.localStorageService.createDataset({});
       } else {
-        datasetDto =
-          await this.localStorageService.patchDatasetChanges(dataset);
+        await this.localStorageService.patchDatasetChanges(dataset);
       }
 
       this.setWorkflowMode(WorkflowMode.Edit);
-
-      await this.initializeDataset(datasetDto);
     },
 
     // resetSteps() {

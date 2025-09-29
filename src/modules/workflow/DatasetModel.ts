@@ -18,6 +18,7 @@ import { PublicationInfoViewModel } from '@/modules/workflow/viewModel/Publicati
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 
 import store from '@/store/store';
+import { User } from '@/types/modelTypes';
 
 export class DatasetModel {
   viewModelClasses = [
@@ -45,6 +46,10 @@ export class DatasetModel {
     this.resourceCounter = 0;
 
     this.createViewModels();
+
+    if (this.datasetWorkflow?.getDatasetService()) {
+      this.updateViewModels();
+    }
   }
 
   private clearViewModels(): void {
@@ -68,24 +73,14 @@ export class DatasetModel {
     }
   }
 
-  async loadViewModels(datasetId:string) {
+  async loadDataset(datasetId: string): Promise<DatasetDTO> {
     const datasetService = this.datasetWorkflow.getDatasetService();
     await datasetService.loadDataset(datasetId);
+    this.updateViewModels();
+    return datasetService.dataset;
+  }
 
 /*
-    this.createViewModels();
-    // DOMINIK - this is needed to update the viewModels with the current dataset (I GUESS)
-*/
-    this.updateViewModels();
-  }
-
-  /*
-  async loadDataset(datasetId: string): Promise<DatasetDTO> {
-    await this.datasetService.loadDataset(datasetId);
-    this.updateViewModels();
-    return this.datasetService.dataset;
-  }
-
   async reloadDataset(): Promise<DatasetDTO> {
     return this.loadDataset(this.datasetService.dataset.id);
   }
@@ -174,6 +169,7 @@ export class DatasetModel {
 
   updateViewModels() {
     const datasetService = this.datasetWorkflow.getDatasetService();
+
     this.viewModelInstances.forEach((model: AbstractEditViewModel) =>
       model.updateModel(datasetService.dataset),
     );

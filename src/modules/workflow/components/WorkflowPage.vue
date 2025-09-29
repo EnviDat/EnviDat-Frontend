@@ -254,9 +254,18 @@ watch(
   },
 );
 
-/* =========================
+watch(
+  () => route?.params,
+  (newParams) => {
+    if (newParams.id) {
+      workflowStore.loadDataset(newParams.id as string);
+    }
+})
+
+/*
+/!* =========================
  *  STORYBOOK HELPERS
- * ========================= */
+ * ========================= *!/
 const datasetExistsInLocalStorage = (datasetId?: string) => {
   if (!datasetId) return false;
   try {
@@ -266,28 +275,24 @@ const datasetExistsInLocalStorage = (datasetId?: string) => {
   }
 };
 
-const mergedDataset = {
-  ...props.dataset,
-  id: props.datasetId || props.dataset?.id || route.params?.id,
-};
+*/
 
 /* =========================
  *  ON MOUNTED
  * ========================= */
 onMounted(async () => {
-  const id = mergedDataset.id;
+  let id = props.datasetId;
 
-  // STORYBOOK
-  // PLEASE NOTE – We are currently in the development phase, and an exception is present to make Storybook work.
-  if (datasetExistsInLocalStorage(id)) {
-    // await workflowStore.initializeWorkflowfromDataset(mergedDataset);
-  } else {
-    await workflowStore.bootstrapWorkflow('local_dataset__');
-    // USE title-test-from-locahost for testing purposes
-    // await workflowStore.bootstrapWorkflow('title-test-from-locahost');
-    // INIT workflow base on the dataset ID if it exists
-    // await workflowStore.bootstrapWorkflow(id);
+  if (props.dataset) {
+    // STORYBOOK
+    // PLEASE NOTE – We are currently in the development phase, and an exception is present to make Storybook work.
+    await workflowStore.initializeWorkflowfromDataset(props.dataset);
+    id = props.dataset.id;
+  } else if(!id) {
+    id = route?.params?.id as string;
   }
+
+  await workflowStore.bootstrapWorkflow(id);
 
   // const step = Number(route?.query?.step ?? 0);
   // workflowStore.setActiveStep(step);
