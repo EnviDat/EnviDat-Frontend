@@ -1,5 +1,5 @@
 import { Dataset } from '@/modules/workflow/Dataset.ts';
-import { DatasetService, User } from '@/types/modelTypes';
+import { DatasetService } from '@/types/modelTypes';
 import { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 
 import {
