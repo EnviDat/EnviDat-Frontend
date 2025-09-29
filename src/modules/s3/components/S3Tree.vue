@@ -166,7 +166,8 @@ const labels = {
   viewAll: 'View all data on the S3 File Browser website',
 };
 
-const errorDetailText = 'Sorry at the moment we cannot load the data. Please try again later or click on the download/link icon to download the file directly from the bucket.';
+const errorDetailText =
+  'Sorry at the moment we cannot load the data. Please try again later or click on the download/link icon to download the file directly from the bucket.';
 
 const emit = defineEmits(['loadingChanged', 'changeAutoHeight']);
 
