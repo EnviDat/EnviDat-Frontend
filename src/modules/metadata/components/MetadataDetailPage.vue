@@ -774,6 +774,9 @@ export default {
 
       query.search = `${given} ${lastName}`;
       query.isAuthorSearch = true;
+      if (query.mode) {
+        query.mode = undefined;
+      }
 
       this.$router.push({
         path: BROWSE_PATH,
