@@ -23,6 +23,7 @@ import {
   METADATA_CONTACT_LASTNAME,
 } from '@/factories/metadataConsts';
 import { AUTHOR_ASCII_DEAD } from '@/store/mainMutationsConsts';
+import { UserPickerObject } from '@/types/modelTypes';
 
 const authorDataCreditLevels = [
   { score: 160, lvl: 6 },
@@ -75,20 +76,20 @@ export function getAuthorNameCitation(author) {
 }
 /**
  *
- * @param userObjects {Array}
- * @returns {[{ title: string, value: string}]}
+ * @param userObjects | authorObjects {Array}
+ * @returns {[{ name: string, email: string}]}
  */
-export function getUserNameObjects(userObjects) {
+export function getUserNameObjects(userObjects: { name: string, email: string }[]) : UserPickerObject[] {
   if (!userObjects || !(userObjects instanceof Array) || userObjects.length <= 0) {
     return [];
   }
 
   return userObjects
     .map((user) => ({
-      title: getAuthorName(user),
-      value: user.email,
+      name: getAuthorName(user),
+      email: user.email,
     }))
-    .sort((a, b) => a.title.localeCompare(b.title));
+    .sort((a, b) => a.name.localeCompare(b.name));
 }
 
 export function getAuthorsString(dataset) {

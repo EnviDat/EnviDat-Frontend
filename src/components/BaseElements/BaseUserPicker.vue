@@ -15,6 +15,8 @@
         <v-autocomplete
           v-model="pickedUsers"
           :items="users"
+          item-title="name"
+          item-value="email"
           :menu-icon="mdiArrowDownDropCircleOutline"
           :readonly="readonly"
           :hint="hint"
@@ -58,7 +60,7 @@
   </v-card>
 </template>
 
-<script>
+<script lang="ts">
 /**
  * @summary UserPicker component
  * @author Dominik Haas-Artho
@@ -70,14 +72,19 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import {mdiAccountBox, mdiArrowDownDropCircleOutline, mdiClose} from '@mdi/js';
+import { PropType } from 'vue';
 import TagChipAuthor from '@/components/Chips/TagChipAuthor.vue';
+import { UserPickerObject } from '@/types/modelTypes.js';
 
 export default {
   name: 'BaseUserPicker',
   props: {
-    users: Array,
+    users: {
+      type: Array as PropType<UserPickerObject>[],
+      default: undefined,
+    },
     preSelected: {
-      type: Array,
+      type: Array as PropType<UserPickerObject>[],
       default: undefined,
     },
     multiplePick: Boolean,
@@ -160,7 +167,7 @@ export default {
       }
 
       if (this.multiplePick) {
-        const remains = this.pickedUsers.filter(value => value !== authorName);
+        const remains = this.pickedUsers.filter(obj => obj.name !== authorName);
 
         if (remains?.length > 0) {
           this.pickedUsers = remains;
@@ -171,7 +178,7 @@ export default {
         this.pickedUsers = undefined;
       }
 
-      this.$emit('removedUsers', this.pickedUsers);
+      this.$emit('removedUsers', this.pickedUsers as UserPickerObject[]);
     },
     catchPickClicked(pickedItem) {
       if (this.multiplePick) {
@@ -181,10 +188,10 @@ export default {
       } else {
         this.pickedUsers = pickedItem;
       }
-      this.$emit('pickedUsers', this.pickedUsers);
+      this.$emit('pickedUsers', this.pickedUsers as UserPickerObject[]);
     },
     catchPicks() {
-      this.$emit('pickedUsers', this.pickedUsers);
+      this.$emit('pickedUsers', this.pickedUsers as UserPickerObject[]);
       this.search = '';
     },
   },

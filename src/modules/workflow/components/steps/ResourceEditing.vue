@@ -345,15 +345,15 @@ import {
   mdiAccountGroup,
 } from '@mdi/js';
 
-import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus.js';
+import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
 
-import { formatDateTimeToCKANFormat } from '@/factories/mappingFactory.js';
-import { renderMarkdown } from '@/factories/stringFactory.js';
+import { formatDateTimeToCKANFormat } from '@/factories/mappingFactory';
+import { renderMarkdown } from '@/factories/stringFactory';
 import { getFileIcon, getIconImage } from '@/factories/imageFactory';
 
 import notFoundImg from '@/modules/user/assets/imageNotFound.jpg';
@@ -363,16 +363,20 @@ import {
   getUserAutocompleteList,
   ACCESS_LEVEL_SAMEORGANIZATION_VALUE,
   ACCESS_LEVEL_PUBLIC_VALUE,
-} from '@/factories/userEditingFactory.js';
+} from '@/factories/userEditingFactory';
 
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
-import { formatDate } from '@/factories/dateFactory.js';
+import { formatDate } from '@/factories/dateFactory';
 
 import {
   isReadOnlyField,
   getReadOnlyHint,
 } from '@/modules/workflow/utils/useReadonly';
+import { RESOURCE_FORMAT_LINK } from '@/factories/metadataConsts';
+import { getFileExtension } from '@/factories/fileFactory';
+import { RestrictedDTO } from '@/types/dataTransferObjectsTypes';
+import { getAuthorByEmail, getAuthorName } from '@/factories/authorFactory';
 
 
 export default {
@@ -838,11 +842,17 @@ export default {
       this.imagePreviewError = event;
       this.loadingImagePreview = false;
     },
-    changeAllowedUsers(pickedUserNames) {
+    changeAllowedUsers(pickedAuthorEmails: string[]) {
+      const pickedUserNames = pickedAuthorEmails.map((email) => {
+        const author = getAuthorByEmail(email, this.envidatUsers);
+        return getAuthorName(author)
+      });
+
       this.allowedUsersField = getAllowedUsersString(
         pickedUserNames,
         this.envidatUsers,
       );
+
     },
     validateField(property, value) {
       this.$emit('validate', { [property]: value });

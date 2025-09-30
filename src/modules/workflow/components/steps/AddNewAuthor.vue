@@ -241,6 +241,7 @@ import {
   isReadOnlyField,
   getReadOnlyHint,
 } from '@/modules/workflow/utils/useReadonly';
+import { UserPickerObject } from '@/types/modelTypes';
 
 export default {
   name: 'AddNewAuthor',
@@ -382,7 +383,7 @@ export default {
 
       if (author) {
         const fullName = getAuthorName(author);
-        return fullName ? [fullName] : [];
+        return fullName ? [{name: fullName, email: author.email }] : [];
       }
 
       return undefined;
@@ -450,7 +451,8 @@ export default {
 
       this.focusOutDebouncing(property, value);
     },
-    catchPickerAuthorChange(pickedAuthorName, hasAuthor) {
+    catchPickerAuthorChange(pickedUsers: UserPickerObject[], hasAuthor: boolean) {
+      const pickedAuthorName = pickedUsers[0].name;
       this.authorPickerTouched = true;
       this.authorIsPicked = hasAuthor;
 

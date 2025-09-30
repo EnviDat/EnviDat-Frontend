@@ -484,7 +484,7 @@ export default {
         return false;
       }
 
-      const matches = this.fullNameUsers.filter(userObj => userObj.title === this.preselectAuthorNames[0]);
+      const matches = this.fullNameUsers.filter(userObj => userObj.name === this.preselectAuthorNames[0].name);
       return matches.length > 0;
     },
     anyUserElementsActive() {

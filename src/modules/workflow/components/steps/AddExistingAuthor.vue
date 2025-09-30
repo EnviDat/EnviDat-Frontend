@@ -51,7 +51,7 @@
   </v-card>
 </template>
 
-<script>
+<script lang="ts">
 /**
  * @summary Show a title, instructions and a button to create a new author
  * @author Dominik Haas-Artho
@@ -64,11 +64,10 @@
  */
 
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
-// import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 
 import {
   getUserNameObjects,
-  getAuthorByName,
+  getAuthorByEmail,
 } from '@/factories/authorFactory';
 import { EDIT_METADATA_AUTHORS_TITLE } from '@/factories/metadataConsts';
 
@@ -78,6 +77,7 @@ import {
   isReadOnlyField,
   getReadOnlyHint,
 } from '@/modules/workflow/utils/useReadonly';
+import { UserPickerObject } from '@/types/modelTypes';
 
 export default {
   name: 'EditAddExistingAuthor',
@@ -155,26 +155,26 @@ export default {
       // not saving the users changes, but reflecting their action and show the error
       this.previewAuthors = null;
     },
-    catchRemovedUsers(pickedUsers) {
+    catchRemovedUsers(pickedUsers: UserPickerObject[]) {
       this.changePreviews(pickedUsers);
     },
-    catchPickedUsers(pickedUsers) {
+    catchPickedUsers(pickedUsers: UserPickerObject[]) {
       this.changePreviews(pickedUsers);
     },
-    changePreviews(authorsNames) {
-      this.previewAuthors = this.getFullAuthors(authorsNames);
+    changePreviews(pickedUsers: UserPickerObject[]) {
+      this.previewAuthors = this.getFullAuthors(pickedUsers);
     },
-    getFullAuthors(authorsNames) {
+    getFullAuthors(pickedUsers: UserPickerObject[]) {
       const fullAuthors = [];
 
-      authorsNames.forEach((name) => {
-        let author = getAuthorByName(name, this.authors);
+      pickedUsers.forEach((userObj) => {
+        let author = getAuthorByEmail(userObj.email, this.authors);
 
         // if the author is part of the dataset authors, pick it as it is
         // including the existing dataCredits
         if (!author) {
           // if the author is newly picked, use the existing list as reference
-          author = getAuthorByName(name, this.existingEnviDatUsers);
+          author = getAuthorByEmail(userObj.email, this.existingEnviDatUsers);
         }
 
         if (author) {
@@ -218,7 +218,6 @@ export default {
   }),
   components: {
     BaseUserPicker,
-    // BaseStatusLabelView,
   },
 };
 </script>

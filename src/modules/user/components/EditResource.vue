@@ -364,9 +364,9 @@ import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 // import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import { formatDate } from '@/factories/dateFactory';
 import { getAuthorByEmail, getAuthorName } from '@/factories/authorFactory.js';
-import { getFileExtension } from '@/factories/fileFactory.js';
-import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods.js';
-import { RESOURCE_FORMAT_LINK } from '@/factories/metadataConsts.js';
+import { getFileExtension } from '@/factories/fileFactory';
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+import { RESOURCE_FORMAT_LINK } from '@/factories/metadataConsts';
 
 
 export default {

@@ -1,5 +1,9 @@
 import { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 
+export type UserPickerObject = {
+  name: string,
+  email: string,
+}
 
 export interface DataCreditObject {
   curation: number;
