@@ -67,7 +67,7 @@ import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 import logoUrl from '@/assets/logo/EnviDat_fav.ico'
 import { getSeoSanitizedDataset } from './seoConversions.ts';
 
-const data = useData<DatasetDTO>()
+const data = useData<DatasetDTO | { jsonLd: object }>()
 const jsonLd = data?.jsonLd;
 delete data.jsonLd;
 
