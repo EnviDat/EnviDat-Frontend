@@ -381,7 +381,7 @@ export default {
 
       if (author) {
         const fullName = getAuthorName(author);
-        return fullName ? [{name: fullName, email: author.email }] : [];
+        return fullName ? [fullName] : [];
       }
 
       return undefined;

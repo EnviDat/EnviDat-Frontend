@@ -78,7 +78,6 @@ import {
   getReadOnlyHint,
 } from '@/modules/workflow/utils/useReadonly';
 
-
 export default {
   name: 'EditAddExistingAuthor',
   props: {
@@ -143,8 +142,8 @@ export default {
     },
     preselectAuthorNames() {
       return this.previewAuthors
-        ? getUserPickerObjects(this.previewAuthors)
-        : getUserPickerObjects(this.authors);
+        ? this.previewAuthors.map((author) => author.fullName)
+        : this.authors.map((author) => author.fullName);
     },
   },
   methods: {
@@ -161,8 +160,12 @@ export default {
     catchPickedUsers(pickedUsersEmails: string[]) {
       this.changePreviews(pickedUsersEmails);
     },
-    changePreviews(pickedUsersEmails: string[]){
-      this.previewAuthors = getFullAuthorsForUserPicker(pickedUsersEmails, this.authors, this.existingEnviDatUsers);
+    changePreviews(pickedUsersEmails: string[]) {
+      this.previewAuthors = getFullAuthorsForUserPicker(
+        pickedUsersEmails,
+        this.authors,
+        this.existingEnviDatUsers,
+      );
     },
     notifyChange() {
       if (!this.previewAuthors) {
