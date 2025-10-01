@@ -100,7 +100,7 @@
 
             <v-col cols="12" sm="6" class="pl-sm-4">
               <BaseUserPicker
-                :users="fullNameUsers"
+                :users="allUsersForUserPicker"
                 :preSelected="preselectAuthorNames"
                 :hint="labels.authorPickHint"
                 @removedUsers="catchPickerAuthorChange($event, false)"
@@ -228,7 +228,7 @@
   </v-card>
 </template>
 
-<script>
+<script lang="ts">
 /**
  * EditMetadataHeader.vue shows the title, main contact email, main contact given name,
  * main contact surname, and metadata header preview.
@@ -270,7 +270,7 @@ import {
 import {
   createContact,
   creationContactFromAuthor,
-  getUserNameObjects,
+  getUserPickerObjects,
   getAuthorByEmail,
   getAuthorName,
 } from '@/factories/authorFactory';
@@ -288,6 +288,7 @@ import {
 
 import { getMetadataUrlFromTitle } from '@/factories/mappingFactory';
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+import { UserPickerObject } from '@/types/modelTypes.js';
 
 export default {
   name: 'EditMetadataHeader',
@@ -439,9 +440,9 @@ export default {
 
       return this.existingAuthors;
     },
-    fullNameUsers() {
+    allUsersForUserPicker() {
       const localAuthors = [...this.existingAuthorsWrap];
-      return getUserNameObjects(localAuthors);
+      return getUserPickerObjects(localAuthors);
     },
     metadataPreviewEntry() {
       const fullName = getAuthorName({
@@ -479,12 +480,12 @@ export default {
     authorPickerFoundAuthor() {
       if (
         this.preselectAuthorNames?.length <= 0 ||
-        this.fullNameUsers?.length <= 0
+        this.allUsersForUserPicker?.length <= 0
       ) {
         return false;
       }
 
-      const matches = this.fullNameUsers.filter(userObj => userObj.name === this.preselectAuthorNames[0].name);
+      const matches = this.allUsersForUserPicker.filter((userObj : UserPickerObject) => userObj.fullName === this.preselectAuthorNames[0].name);
       return matches.length > 0;
     },
     anyUserElementsActive() {
@@ -598,7 +599,7 @@ export default {
         this.validationErrors,
       );
     },
-    catchPickerAuthorChange(pickedAuthorEmail, hasAuthor) {
+    catchPickerAuthorChange(pickedAuthorEmail: string, hasAuthor) {
 
       this.authorPickerTouched = true;
       this.authorIsPicked = hasAuthor;

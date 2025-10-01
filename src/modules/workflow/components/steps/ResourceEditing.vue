@@ -123,8 +123,8 @@
               :label="isLink ? labels.url : labels.fileName"
               outlined
               auto-grow
-              :readonly="isReadOnly('longUrl')"
-              :hint="readOnlyHint('longUrl')"
+              :readonly="readOnlyHint('url')"
+              :hint="readOnlyHint('url')"
               persistent-hint
               dense
               :disabled="loading"
@@ -136,8 +136,8 @@
               v-if="!isLongUrl"
               :label="isLink ? labels.url : labels.fileName"
               outlined
-              :readonly="isReadOnly('noLongUrl')"
-              :hint="readOnlyHint('noLongUrl')"
+              :readonly="urlReadOnly"
+              :hint="readOnlyHint('url')"
               persistent-hint
               dense
               :disabled="loading"
@@ -279,13 +279,13 @@
           >
             <v-col cols="12" class="pt-2">
               <BaseUserPicker
-                :users="envidatUserNameStrings"
+                :users="envidatUsersPicker"
+                :preSelected="preSelectedAllowedUsers"
                 :pickerLabel="labels.restrictedAllowedUsersInfo"
                 multiplePick
                 :prependIcon="mdiKey"
                 userTagsCloseable
                 :placeholder="labels.allowedUsersTypingInfo"
-                :preSelected="preSelectedAllowedUsers"
                 @removedUsers="changeAllowedUsers"
                 @pickedUsers="changeAllowedUsers"
               />
@@ -376,7 +376,7 @@ import {
 import { RESOURCE_FORMAT_LINK } from '@/factories/metadataConsts';
 import { getFileExtension } from '@/factories/fileFactory';
 import { RestrictedDTO } from '@/types/dataTransferObjectsTypes';
-import { getAuthorByEmail, getAuthorName } from '@/factories/authorFactory';
+import { getAuthorByEmail, getAuthorName, getUserPickerObjects } from '@/factories/authorFactory';
 
 
 export default {
@@ -606,7 +606,7 @@ export default {
 
         if (this.restricted) {
           if (typeof this.restricted === 'string') {
-            let restrictedObj = {};
+            let restrictedObj = {} as RestrictedDTO;
             try {
               restrictedObj = JSON.parse(this.restricted);
             } catch (e) {
@@ -653,16 +653,20 @@ export default {
 
       if (this.restricted) {
         if (typeof this.restricted === 'string') {
-          let restrictedObj = {};
+          let restrictedObj = {} as RestrictedDTO;
           try {
             restrictedObj = JSON.parse(this.restricted);
           } catch (e) {
             console.error(`Error while parsing allowedUsers info: ${e}`);
           }
 
-          users = restrictedObj.allowedUsers || restrictedObj.allowed_users;
+          users = restrictedObj.allowed_users
+            // @ts-ignore
+            || restrictedObj.allowedUsers;
         } else {
-          users = this.restricted.allowedUsers || this.restricted.allowed_users;
+          users = this.restricted.allowed_users
+            // @ts-ignore
+            || this.restricted.allowedUsers;
         }
       }
 
@@ -696,8 +700,9 @@ export default {
       }
       return ACCESS_LEVEL_PUBLIC_VALUE;
     },
-    envidatUserNameStrings() {
-      return getUserAutocompleteList(this.envidatUsers);
+    envidatUsersPicker() {
+      const users = getUserAutocompleteList(this.envidatUsers);
+      return getUserPickerObjects(users);
     },
     preSelectedAllowedUsers() {
       // match with the user.name but make sure the fullname or display_name is shown
@@ -714,6 +719,21 @@ export default {
     },
     isImage() {
       return this.mimetype?.includes('image') || false;
+    },
+    urlAndFileExtensionMatch() {
+      const ext = getFileExtension(this.urlField);
+      return ext === this.formatField;
+    },
+    urlReadOnly() {
+      if(this.urlAndFileExtensionMatch) {
+        return true;
+      }
+
+      if (this.formatField !== RESOURCE_FORMAT_LINK) {
+        return true;
+      }
+
+      return this.isReadOnly('url')
     },
     isLink() {
       return this.urlType !== 'upload';
@@ -778,7 +798,7 @@ export default {
         description: this.descriptionField,
         name: this.resourceNameField,
         format: this.formatField,
-        size: this.sizeField || 0,
+        size: this.formatField === RESOURCE_FORMAT_LINK ? 1 : this.sizeField || 1,
         sizeFormat: this.sizeFormatField,
       };
 
@@ -809,8 +829,8 @@ export default {
         // size: this.size, // DEMO
         // sizeFormat: this.sizeFormatField,  // DEMO
         resourceSize: {
-          sizeValue: this.isLink ? this.sizeField?.toString() : '',
-          sizeUnits: this.isLink ? this.sizeFormatField?.toLowerCase() : '',
+          sizeValue: this.isLink ? this.sizeField?.toString() : '1',
+          sizeUnits: this.isLink ? this.sizeFormatField?.toLowerCase() : this.getFileSizeFormat(1),
         },
       };
 
@@ -842,8 +862,8 @@ export default {
       this.imagePreviewError = event;
       this.loadingImagePreview = false;
     },
-    changeAllowedUsers(pickedAuthorEmails: string[]) {
-      const pickedUserNames = pickedAuthorEmails.map((email) => {
+    changeAllowedUsers(pickedUsersEmails: string[]) {
+      const pickedUserNames = pickedUsersEmails.map((email) => {
         const author = getAuthorByEmail(email, this.envidatUsers);
         return getAuthorName(author)
       });

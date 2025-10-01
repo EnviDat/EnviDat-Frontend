@@ -18,9 +18,8 @@ import { EDIT_METADATA_ADD_AUTHOR_TITLE } from '@/factories/metadataConsts';
 
 import {
   createAuthor,
-  getUserNameObjects,
+  getUserPickerObjects,
   getAuthorByEmail,
-  getAuthorByName,
   getAuthorName,
 } from '@/factories/authorFactory';
 
@@ -31,7 +30,7 @@ import {
 } from '@/factories/eventBus';
 
 import { isFieldReadOnly, readOnlyHint as getReadOnlyHint } from '@/factories/globalMethods';
-import { UserPickerObject } from '@/types/modelTypes';
+import { Author, UserPickerObject } from '@/types/modelTypes';
 
 const props = defineProps({
   titleLabel: {
@@ -171,7 +170,7 @@ const affiliationField = computed(() => previews.value.affiliation !== null
   : props.affiliation)
 
 const preselectAuthorNames = computed( () => {
-  const author = getAuthorByEmail(emailField.value, props.existingAuthors);
+  const author = getAuthorByEmail(emailField.value, props.existingAuthors as Author[]);
 
   if (author) {
     const fullName = getAuthorName(author);
@@ -181,9 +180,9 @@ const preselectAuthorNames = computed( () => {
   return undefined;
 })
 
-const fullNameUsers = computed(() => {
-  const localAuthors = [...props.existingAuthors];
-  return getUserNameObjects(localAuthors);
+const authorPickerObjects = computed(() => {
+  const localAuthors = [...props.existingAuthors] as Author[];
+  return getUserPickerObjects(localAuthors);
 })
 
 
@@ -265,7 +264,7 @@ const catchPickerAuthorChange = (authorObjects: UserPickerObject[], hasAuthor: b
 
   if (authorIsPicked.value) {
     const author =
-      getAuthorByEmail(pickedAuthorEmail, props.existingAuthors) || {};
+      getAuthorByEmail(pickedAuthorEmail, props.existingAuthors as Author[]) || {};
     const authorObject = createAuthor(author);
 
     fillPreviews(
@@ -286,7 +285,7 @@ const catchPickerAuthorChange = (authorObjects: UserPickerObject[], hasAuthor: b
 }
 
 const getAutoCompletedAuthor = (email: string) => {
-  const autoAuthor = getAuthorByEmail(email, props.existingAuthors);
+  const autoAuthor = getAuthorByEmail(email, props.existingAuthors as Author[]);
 
   if (autoAuthor) {
     const autoAuthorObj = createAuthor(autoAuthor);
@@ -443,7 +442,7 @@ const removeAuthorClick = (email: string) => {
       <v-row v-if="!isEditingAuthor" dense class="pt-2">
         <v-col>
           <BaseUserPicker
-            :users="fullNameUsers"
+            :users="authorPickerObjects"
             :preSelected="preselectAuthorNames"
             :readonly="isUserPickerReadOnly"
             :hint="

@@ -1,7 +1,7 @@
 import { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 
 export type UserPickerObject = {
-  name: string,
+  fullName: string,
   email: string,
 }
 

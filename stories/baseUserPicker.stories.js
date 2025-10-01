@@ -51,20 +51,20 @@ export default {
 
 export const AuthorPicking = {
   args: {
-    users: authorsStrings,
+    users: authorsObjs,
   },
 }
 
 export const WithPreselection = {
   args: {
-    users: authorsStrings,
+    users: authorsObjs,
     preSelected: preSelectedAuthor,
   },
 }
 
 export const WithMultiplePick = {
   args: {
-    users: authorsStrings,
+    users: authorsObjs,
     multiplePick: true,
     isClearable: true,
     showAsCard: true,
@@ -75,7 +75,7 @@ export const WithMultiplePick = {
 export const MultiplePickPreselection = {
   args: {
     ...WithMultiplePick.args,
-    users: authorsStrings,
+    users: authorsObjs,
     preSelected: preSelectedAuthors3,
   },
 }

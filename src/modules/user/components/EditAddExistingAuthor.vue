@@ -41,7 +41,7 @@
 
       <v-row >
         <v-col >
-          <BaseUserPicker :users="baseUserPickerObject"
+          <BaseUserPicker :users="allUsersForUserPicker"
                           :preSelected="preselectAuthorNames"
                           :multiplePick="true"
                           :isClearable="isClearable"
@@ -58,7 +58,7 @@
   </v-card>
 </template>
 
-<script>
+<script lang="ts">
 /**
  * @summary Show a title, instructions and a button to create a new author
  * @author Dominik Haas-Artho
@@ -80,11 +80,12 @@ import {
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
 } from '@/factories/eventBus';
-import { getUserNameObjects, getAuthorByEmail } from '@/factories/authorFactory';
+import { getUserPickerObjects, getFullAuthorsForUserPicker } from '@/factories/authorFactory';
 import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
 import { EDIT_METADATA_AUTHORS_TITLE } from '@/factories/metadataConsts';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+
 
 export default {
   name: 'EditAddExistingAuthor',
@@ -147,11 +148,11 @@ export default {
     isUserPickerReadOnly() {
       return this.isReadOnly('authors');
     },
-    baseUserPickerObject() {
-      return getUserNameObjects(this.existingEnviDatUsers);
+    allUsersForUserPicker() {
+      return getUserPickerObjects(this.existingEnviDatUsers);
     },
     preselectAuthorNames() {
-      return this.previewAuthors ? getUserNameObjects(this.previewAuthors) : getUserNameObjects(this.authors);
+      return this.previewAuthors ? getUserPickerObjects(this.previewAuthors) : getUserPickerObjects(this.authors);
     },
     validations() {
       return getValidationMetadataEditingObject(EDITMETADATA_AUTHOR_LIST);
@@ -168,35 +169,14 @@ export default {
     validateProperty(property, value){
       return isFieldValid(property, value, this.validations, this.validationErrors)
     },
-    catchRemovedUsers(pickedUsersEmails) {
+    catchRemovedUsers(pickedUsersEmails: string[]) {
       this.changePreviews(pickedUsersEmails);
     },
-    catchPickedUsers(pickedUsersEmails) {
+    catchPickedUsers(pickedUsersEmails: string[]) {
       this.changePreviews(pickedUsersEmails);
     },
-    changePreviews(pickedUsersEmails){
-      this.previewAuthors = this.getFullAuthors(pickedUsersEmails);
-    },
-    getFullAuthors(authorEmails) {
-      const fullAuthors = [];
-
-      authorEmails.forEach((email) => {
-
-        let author = getAuthorByEmail(email, this.authors);
-
-        // if the author is part of the dataset authors, pick it as it is
-        // including the existing dataCredits
-        if (!author) {
-          // if the author is newly picked, use the existing list as reference
-          author = getAuthorByEmail(email, this.existingEnviDatUsers);
-        }
-
-        if (author) {
-          fullAuthors.push(author);
-        }
-      });
-
-      return fullAuthors;
+    changePreviews(pickedUsersEmails: string[]){
+      this.previewAuthors = getFullAuthorsForUserPicker(pickedUsersEmails, this.authors, this.existingEnviDatUsers);
     },
     notifyChange() {
 

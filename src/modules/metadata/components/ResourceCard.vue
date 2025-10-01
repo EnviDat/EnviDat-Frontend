@@ -113,7 +113,7 @@
           <v-col v-if="format" cols="12" class="py-1">
             <BaseIconLabelView
               :text="formatedBytes ? `${format} - ${formatedBytes}` : format"
-              :icon="extensionIcon"
+              :icon="extensionIcon()"
               :icon-tooltip="
                 formatedBytes ? 'Resource type and size' : 'Resource type'
               "
@@ -508,9 +508,6 @@ export default {
 
       return `Could not load the resource, please contact ${this.metadataContact} for getting access or envidat@wsl.ch for support.`;
     },
-    extensionIcon() {
-      return getFileIcon(this.format);
-    },
     genericButtonYPos() {
       if (this.genericOpenButtonBottom) {
         return this.isEnvicloudUrl ? 'bottom: 0;' : 'bottom: 52px';
@@ -520,6 +517,15 @@ export default {
     },
   },
   methods: {
+    async extensionIcon() {
+      const icon = getFileIcon(this.format);
+
+      if (!!icon && (typeof icon === 'object' || typeof icon === 'function') && typeof icon.then === 'function') {
+        return icon();
+      }
+
+      return icon;
+    },
     catchLoadingChanged(isLoading) {
       this.isLoadingS3Tree = isLoading
     },

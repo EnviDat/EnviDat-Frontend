@@ -92,6 +92,7 @@ import { mdiAccount, mdiEmail } from '@mdi/js';
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+import { createAuthor, getAuthorByEmail } from '@/factories/authorFactory.js';
 
 
 const METADATA_CONTACT_EMAIL = 'contactEmail';
@@ -160,24 +161,16 @@ export default {
     blurOnEnterKey(e) {
       if (e.key === 'Enter') e.target.blur();
     },
-    catchPickerAuthorChange(fullName, hasAuthor) {
+    catchPickerAuthorChange(pickedUserEmail, hasAuthor) {
       if (!hasAuthor) return;
 
-      /* cerca l'autore completo (con e-mail) */
-      const authorObj = this.authors.find(
-        (a) => `${a.firstName} ${a.lastName}` === fullName,
-      );
+      const author =
+        getAuthorByEmail(pickedUserEmail, this.existingAuthors) || {};
+      const authorObj = createAuthor(author);
 
-      if (authorObj) {
-        this.local.contactFirstName = authorObj.firstName;
-        this.local.contactLastName = authorObj.lastName;
-        this.local.contactEmail = authorObj.email || '';
-      } else {
-        /* fallback – mantieni la vecchia split() se non trovi match */
-        const [first, ...rest] = fullName.split(' ');
-        this.local.contactFirstName = first || '';
-        this.local.contactLastName = rest.join(' ');
-      }
+      this.local.contactFirstName = authorObj.firstName;
+      this.local.contactLastName = authorObj.lastName;
+      this.local.contactEmail = authorObj.email || '';
     },
   },
 };

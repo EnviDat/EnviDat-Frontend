@@ -78,7 +78,7 @@
       <v-row v-if="!isEditingAuthor" dense class="pt-2">
         <v-col>
           <BaseUserPicker
-            :users="fullNameUsers"
+            :users="allUsersForUserPicker"
             :preSelected="preselectAuthorNames"
             :readonly="isUserPickerReadOnly"
             :hint="
@@ -189,7 +189,7 @@
   </v-card>
 </template>
 
-<script>
+<script lang="ts">
 /**
  * @summary Show a title, instructions and a button to create a new author
  * @author Dominik Haas-Artho
@@ -217,9 +217,8 @@ import { EDIT_METADATA_ADD_AUTHOR_TITLE } from '@/factories/metadataConsts';
 
 import {
   createAuthor,
-  getUserNameObjects,
+  getUserPickerObjects,
   getAuthorByEmail,
-  getAuthorByName,
   getAuthorName,
 } from '@/factories/authorFactory';
 import {
@@ -238,8 +237,9 @@ import {
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 
+
 export default {
-  name: 'EditAddAuthor',
+  // name: 'EditAddAuthor',
   props: {
     titleLabel: {
       type: String,
@@ -360,9 +360,9 @@ export default {
 
       return undefined;
     },
-    fullNameUsers() {
+    allUsersForUserPicker() {
       const localAuthors = [...this.existingAuthors];
-      return getUserNameObjects(localAuthors);
+      return getUserPickerObjects(localAuthors);
     },
     validations() {
       return getValidationMetadataEditingObject(EDITMETADATA_AUTHOR);
@@ -432,13 +432,13 @@ export default {
         this.validationErrors,
       );
     },
-    catchPickerAuthorChange(pickedAuthorName, hasAuthor) {
+    catchPickerAuthorChange(pickedUserEmail: string, hasAuthor: boolean) {
       this.authorPickerTouched = true;
       this.authorIsPicked = hasAuthor;
 
       if (this.authorIsPicked) {
         const author =
-          getAuthorByName(pickedAuthorName, this.existingAuthors) || {};
+          getAuthorByEmail(pickedUserEmail, this.existingAuthors) || {};
         const authorObject = createAuthor(author);
 
         this.fillPreviews(

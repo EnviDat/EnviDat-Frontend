@@ -93,12 +93,12 @@ export default {
 
       if (this.url) {
         axios
-/*
           .get(this.url, {
-            headers: {
+            /*
+                        headers: {
 
-            },
-*/
+                        },
+            */
           })
           .then(response => {
             this.loading = false;

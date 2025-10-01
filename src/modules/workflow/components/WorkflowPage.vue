@@ -83,7 +83,7 @@
  *  IMPORTS
  * ========================= */
 import { storeToRefs } from 'pinia';
-import { ref, watch, computed, nextTick, onMounted } from 'vue';
+import { ref, watch, computed, nextTick, onMounted, toRaw } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import TheWorkflowNavigation from '@/components/Navigation/TheWorkflowNavigation.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
@@ -221,6 +221,7 @@ const nextStep = async () => {
 const save = async (freshData) => {
   // TODO: ticket (https://envicloud.atlassian.net/browse/EN-2431)
   // workflowStore.markStepTouched(workflowStore.currentStep, true);
+  // const ok = await vm.value.save(toRaw(freshData));
   const ok = await vm.value.save(freshData);
 
   // EDIT mode - if we have errors, we block the navigation

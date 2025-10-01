@@ -66,8 +66,8 @@
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
 
 import {
-  getUserNameObjects,
-  getAuthorByEmail,
+  getUserPickerObjects,
+  getFullAuthorsForUserPicker,
 } from '@/factories/authorFactory';
 import { EDIT_METADATA_AUTHORS_TITLE } from '@/factories/metadataConsts';
 
@@ -77,7 +77,7 @@ import {
   isReadOnlyField,
   getReadOnlyHint,
 } from '@/modules/workflow/utils/useReadonly';
-import { UserPickerObject } from '@/types/modelTypes';
+
 
 export default {
   name: 'EditAddExistingAuthor',
@@ -139,12 +139,12 @@ export default {
       return undefined;
     },
     baseUserPickerObject() {
-      return getUserNameObjects(this.existingEnviDatUsers);
+      return getUserPickerObjects(this.existingEnviDatUsers);
     },
     preselectAuthorNames() {
       return this.previewAuthors
-        ? getUserNameObjects(this.previewAuthors)
-        : getUserNameObjects(this.authors);
+        ? getUserPickerObjects(this.previewAuthors)
+        : getUserPickerObjects(this.authors);
     },
   },
   methods: {
@@ -155,34 +155,14 @@ export default {
       // not saving the users changes, but reflecting their action and show the error
       this.previewAuthors = null;
     },
-    catchRemovedUsers(pickedUsers: UserPickerObject[]) {
-      this.changePreviews(pickedUsers);
+    catchRemovedUsers(pickedUsersEmails: string[]) {
+      this.changePreviews(pickedUsersEmails);
     },
-    catchPickedUsers(pickedUsers: UserPickerObject[]) {
-      this.changePreviews(pickedUsers);
+    catchPickedUsers(pickedUsersEmails: string[]) {
+      this.changePreviews(pickedUsersEmails);
     },
-    changePreviews(pickedUsers: UserPickerObject[]) {
-      this.previewAuthors = this.getFullAuthors(pickedUsers);
-    },
-    getFullAuthors(pickedUsers: UserPickerObject[]) {
-      const fullAuthors = [];
-
-      pickedUsers.forEach((userObj) => {
-        let author = getAuthorByEmail(userObj.email, this.authors);
-
-        // if the author is part of the dataset authors, pick it as it is
-        // including the existing dataCredits
-        if (!author) {
-          // if the author is newly picked, use the existing list as reference
-          author = getAuthorByEmail(userObj.email, this.existingEnviDatUsers);
-        }
-
-        if (author) {
-          fullAuthors.push(author);
-        }
-      });
-
-      return fullAuthors;
+    changePreviews(pickedUsersEmails: string[]){
+      this.previewAuthors = getFullAuthorsForUserPicker(pickedUsersEmails, this.authors, this.existingEnviDatUsers);
     },
     notifyChange() {
       if (!this.previewAuthors) {
