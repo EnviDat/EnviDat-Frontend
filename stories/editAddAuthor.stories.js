@@ -15,7 +15,7 @@ import {
   createAuthors,
   extractAuthorsMap,
   getFullAuthorsFromDataset,
-} from '@/factories/authorFactory.js';
+} from '@/factories/authorFactory';
 
 import unFormatedMetadataCards from './js/metadata';
 

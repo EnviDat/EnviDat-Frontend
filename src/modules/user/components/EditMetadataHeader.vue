@@ -288,10 +288,10 @@ import {
 
 import { getMetadataUrlFromTitle } from '@/factories/mappingFactory';
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
-import { UserPickerObject } from '@/types/modelTypes.js';
+import { UserPickerObject } from '@/types/modelTypes';
 
 export default {
-  name: 'EditMetadataHeader',
+  // name: 'EditMetadataHeader',
   props: {
     keywords: {
       type: Array,
