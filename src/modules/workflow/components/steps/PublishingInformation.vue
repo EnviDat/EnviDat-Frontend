@@ -102,6 +102,7 @@
       <v-col cols="12" class="pa-0">
         <v-row v-if="doiWorkflowActive">
           <v-col>
+            {{ editPublicationStatusProps }}
             <PublicationStatus
               v-bind="editPublicationStatusProps"
               @clicked="catchPublicationStateChange"
@@ -146,6 +147,7 @@ import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 import {
   EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_PUBLICATION_STATE,
+  EDITMETADATA_PUBLICATION_INFO,
   eventBus,
 } from '@/factories/eventBus';
 
@@ -303,25 +305,25 @@ export default {
     },
     publicationsInfo() {
       // ACTIVATE this part when the store is available with the backend
-      // if (this.$store) {
-      //   return this.$store.getters[
-      //     `${USER_NAMESPACE}/getMetadataEditingObject`
-      //   ](EDITMETADATA_PUBLICATION_INFO);
-      // }
+      if (this.$store) {
+        return this.$store.getters[
+          `${USER_NAMESPACE}/getMetadataEditingObject`
+        ](EDITMETADATA_PUBLICATION_INFO);
+      }
 
       // storybook context
-      // const stepData = this.currentStep.genericProps;
+      const stepData = this.currentStep.genericProps;
 
       return {
         publicationState: 'Draft',
-        // visibilityState: ' stepData.visibilityState',
-        // doi: stepData.doi,
-        doi: '10.10000/envidat.999',
-        userRole: 'stepData.userRole',
-        // publisher: stepData.publisher,
-        publisher: 'Envidat',
-        // publicationYear: stepData.publicationYear,
-        publicationYear: '2025',
+        visibilityState: stepData.visibilityState,
+        doi: stepData.doi,
+        // doi: '10.10000/envidat.999',
+        userRole: stepData.userRole,
+        publisher: stepData.publisher,
+        // publisher: 'Envidat',
+        publicationYear: stepData.publicationYear,
+        // publicationYear: '2025',
       };
     },
     editOrganizationProps() {
