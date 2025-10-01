@@ -159,7 +159,6 @@ export default {
     catchPickerAuthorChange(pickedUserEmail, hasAuthor) {
       if (!hasAuthor) return;
 
-      console.log(this.authors);
       const author = getAuthorByEmail(pickedUserEmail, this.authors) || {};
       const authorObj = createAuthor(author);
 
