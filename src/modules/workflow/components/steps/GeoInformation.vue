@@ -204,10 +204,10 @@
           <v-col cols="12">
             <BaseStartEndDate
               data-field="dates"
-              :startDate="item.dateStart"
+              :startDate="item.date"
               :startDateLabel="`${item.dateType} start date`"
               :startDateProperty="startDateProperty"
-              :endDate="item.dateEnd"
+              :endDate="item.endDate"
               :error-messages="validationErrors.dates"
               :endDateLabel="`${item.dateType} end date`"
               :endDateProperty="endDateProperty"
