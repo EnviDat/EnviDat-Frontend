@@ -2,10 +2,8 @@
   <v-chip class="authorTag text-black"
           :class="{
             'text-white': highlighted,
-            smallChip: $vuetify.display.smAndDown,
             authorTagDraggable: draggable,
            }"
-          :style="{ height: $vuetify.display.xs ? '15px' : '' }"
           :color="highlighted ? 'primary' : color"
           @click.stop="clicked"
           :draggable="draggable"
