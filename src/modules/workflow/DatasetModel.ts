@@ -1,5 +1,3 @@
-import { reactive } from 'vue';
-
 import type { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 
 import { EditDescriptionViewModel } from '@/modules/workflow/viewModel/EditDescriptionViewModel.ts';
@@ -83,7 +81,7 @@ export class DatasetModel {
     return datasetService.dataset;
   }
 
-/*
+  /*
   async reloadDataset(): Promise<DatasetDTO> {
     return this.loadDataset(this.datasetService.dataset.id);
   }
