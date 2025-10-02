@@ -251,7 +251,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2020-07-14 14:18:32
- * Last modified  : 2020-10-13 12:49:34
+ * Last modified  : 2025-10-02 13:16:20
  */
 
 import { mapState, mapGetters } from 'vuex';
@@ -281,9 +281,9 @@ import {
   USER_SIGNIN_PATH,
   METADATADETAIL_PAGENAME,
   METADATAEDIT_PAGENAME,
-  METADATA_CREATION_PATH,
   METADATA_CREATION_PAGENAME,
   ORGANIZATIONS_PAGENAME,
+  WORKFLOW_PAGENAME,
 } from '@/router/routeConsts';
 
 import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
@@ -707,7 +707,13 @@ export default {
     },
     createClickCallback() {
       if (this.datasetCreationActive) {
-        this.$router.push({ path: METADATA_CREATION_PATH, query: '' });
+
+        const name = this.userEditMetadataConfig?.newWorkflowActive ? WORKFLOW_PAGENAME : METADATA_CREATION_PAGENAME;
+
+        this.$router.push({
+          name,
+          query: '',
+        });
       } else {
         window.open(`${this.ckanDomain}${this.createCKANUrl}`, '_blank');
       }
@@ -726,12 +732,22 @@ export default {
         // this.catchEditingClick(this.lastEditedDataset);
       }
     },
-    catchEditingClick(selectedDataset) {
+    catchEditingClick(selectedDatasetId) {
+
+      let name = METADATAEDIT_PAGENAME;
+      const params = {
+        metadataid: selectedDatasetId,
+      }
+
+      if (this.userEditMetadataConfig?.newWorkflowActive) {
+        name = WORKFLOW_PAGENAME;
+        params.id = selectedDatasetId;
+        delete params.metadataid;
+      }
+
       this.$router.push({
-        name: METADATAEDIT_PAGENAME,
-        params: {
-          metadataid: selectedDataset,
-        },
+        name,
+        params,
         query: {
           backPath: this.$route.fullPath,
         },
@@ -777,9 +793,9 @@ export default {
       }
     },
     catchLocalCardClick() {
-      this.$router.push({
-        name: METADATA_CREATION_PAGENAME,
-      });
+      const name = this.userEditMetadataConfig?.newWorkflowActive ? WORKFLOW_PAGENAME : METADATA_CREATION_PAGENAME;
+
+      this.$router.push({ name });
     },
     catchClearLocalStorage() {
       eventBus.emit(SHOW_DIALOG, {

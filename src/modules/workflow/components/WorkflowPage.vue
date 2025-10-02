@@ -25,7 +25,20 @@
             </v-icon>
             <p class="text-caption scroll-text">Save</p>
           </div>
+
+          <BaseIconButton
+            class="metadataEditCloseButton"
+            :icon="mdiClose"
+            icon-color="black"
+            color="black"
+            outlined
+            tooltip-text="Close Workflow"
+            tooltip-bottom
+            @clicked="catchCloseClick"
+          />        
+
         </div>
+
         <v-card
           id="EditAdditionalInformation"
           class="pt-0"
@@ -85,12 +98,16 @@
 import { storeToRefs } from 'pinia';
 import { ref, watch, computed, nextTick, onMounted, toRaw } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { mdiClose } from '@mdi/js';
+
 import TheWorkflowNavigation from '@/components/Navigation/TheWorkflowNavigation.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
 import { extractIcons } from '@/factories/iconFactory.ts';
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow.ts';
 import { StepStatus, WorkflowMode } from '@/modules/workflow/utils/workflowEnums';
+import { USER_DASHBOARD_PAGENAME } from '@/router/routeConsts';
 
 /* =========================
  *  ROUTER & PROPS
@@ -243,6 +260,10 @@ const catchConfirmSave = () => {
     navigateRouterToStep(currentStep.value + 1);
   }
 };
+
+const catchCloseClick = () => {
+  router.push({ name: USER_DASHBOARD_PAGENAME })
+}
 
 /* =========================
  *  WATCHERS
