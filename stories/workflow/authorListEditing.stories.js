@@ -7,8 +7,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-
-import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
+/* eslint-disable import/no-extraneous-dependencies */
 
 import {
   createAuthors,
@@ -17,6 +16,10 @@ import {
 } from '@/factories/authorFactory';
 
 import unFormatedMetadataCards from '@/../stories/js/metadata';
+import { BackendDatasetService } from '@/modules/workflow/BackendDatasetService.ts';
+import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
+import EditAuthorList from '@/modules/user/components/edit/EditAuthorList.vue';
+
 
 const metadataCards = [];
 
@@ -24,6 +27,11 @@ unFormatedMetadataCards.forEach((el) => {
   el.author = createAuthors(el);
   metadataCards.push(el);
 });
+
+
+const serviceLayer = new BackendDatasetService(unFormatedMetadataCards[0])
+const datasetVM = new DatasetModel(serviceLayer);
+
 
 const authorsMap = extractAuthorsMap(metadataCards);
 const authorsObjs = getFullAuthorsFromDataset(authorsMap, metadataCards[1]);
@@ -38,52 +46,49 @@ authorsObjs.forEach((author) => {
   authorsStrings.push(author.fullName);
 });
 
-const preSelectedAuthor = authorsStrings.filter(value => value.includes('Fischer'));
-// const preSelectedAuthors2 = extractedAuthors.filter(value => value.fullName.includes('A'));
-const preSelectedAuthors3 = authorsStrings.filter(value => value.includes('B'));
-
 
 export default {
-  title: '1 Base / Pickers / User Picker',
-  component: BaseUserPicker,
+  title: '6 Workflows / Combined / Author List Editing',
+  component: EditAuthorList,
 };
 
-
-export const AuthorPicking = {
+export const Empty = {
   args: {
-    users: authorsObjs,
+    existingAuthors: extractedAuthors,
   },
 }
 
-export const WithPreselection = {
+export const Loading = {
   args: {
-    users: authorsObjs,
-    preSelected: preSelectedAuthor,
+    ...Empty.args,
+    loading: true,
   },
 }
 
-export const WithMultiplePick = {
+const authorListVM = datasetVM.getViewModel('AuthorListViewModel');
+const authorVMs = authorListVM.getAuthorViewModels(true);
+const authorVM = authorVMs[0];
+const authorVM2 = authorVMs[1];
+authorVM2.loading = true;
+
+export const Filled = {
   args: {
-    users: authorsObjs,
-    multiplePick: true,
-    isClearable: true,
-    showAsCard: true,
-    instructions: 'Pick an EnviDat user to add as an author.',
+    authorsMap,
+    existingAuthors: extractedAuthors,
+    ...authorVM,
+    onSave: async (newData) => {
+      await authorVM.save(newData);
+    },
   },
 }
 
-export const MultiplePickPreselection = {
+export const FilledAndLoading = {
   args: {
-    ...WithMultiplePick.args,
-    users: authorsObjs,
-    preSelected: preSelectedAuthors3,
-  },
-}
-
-export const MultiplePickReadonly = {
-  args: {
-    ...MultiplePickPreselection.args,
-    readonly: true,
-    hint: 'Testing readonly',
+    authorsMap,
+    existingAuthors: extractedAuthors,
+    ...authorVM2,
+    onSave: async (newData) => {
+      await authorVM2.save(newData);
+    },
   },
 }
