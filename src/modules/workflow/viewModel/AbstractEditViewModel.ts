@@ -124,16 +124,16 @@ export abstract class AbstractEditViewModel {
   }
 
   validate(newProps: any | undefined): boolean {
-    if (!newProps) {
-      newProps = this;
-    }
+    const source = newProps ?? this;
+
+    const propsToValidate = this.getPropsToValidate(source);
 
     // take over all the data to store it in this viewModel
     // even if it's wrong, to be up-2-date with the users input
     // and to keep the users changes even if their are invalid
-    Object.assign(this, newProps);
+    Object.assign(this, propsToValidate);
 
-    const propsToValidate = this.getPropsToValidate(newProps);
+    // const propsToValidate = this.getPropsToValidate(newProps);
     let allValid = true;
 
     // reset validationErrors ?

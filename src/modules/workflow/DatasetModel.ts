@@ -1,5 +1,3 @@
-import { reactive } from 'vue';
-
 import type { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 
 import { EditDescriptionViewModel } from '@/modules/workflow/viewModel/EditDescriptionViewModel.ts';
@@ -18,6 +16,7 @@ import { PublicationInfoViewModel } from '@/modules/workflow/viewModel/Publicati
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 
 import store from '@/store/store';
+import { reactive, computed } from 'vue';
 import { User } from '@/types/modelTypes';
 
 export class DatasetModel {
@@ -59,14 +58,16 @@ export class DatasetModel {
   private createViewModels() {
     this.clearViewModels();
 
-    for (let i = 0; i < this.viewModelClasses.length; i++) {
-      const VMClass = this.viewModelClasses[i];
+    for (const VMClass of this.viewModelClasses) {
       // @ts-ignore
       const instance = new VMClass(this);
 
       if (instance instanceof MetadataBaseViewModel) {
-        instance.existingKeywords = store.getters['metadata/existingKeywords'];
+        instance.existingKeywords = computed(
+          () => store.getters['metadata/existingKeywords'] ?? [],
+        );
       }
+      // TODO ENRICO handle here authors as well
 
       const reactiveVM = reactive(instance);
       this.viewModelInstances.set(instance.constructor.name, reactiveVM);
@@ -80,7 +81,7 @@ export class DatasetModel {
     return datasetService.dataset;
   }
 
-/*
+  /*
   async reloadDataset(): Promise<DatasetDTO> {
     return this.loadDataset(this.datasetService.dataset.id);
   }
