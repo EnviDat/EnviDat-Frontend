@@ -321,10 +321,10 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
 
     // SET the step as touched.
     // TODO: ticket (https://envicloud.atlassian.net/browse/EN-2431)
-    // markStepTouched(stepId: number, touched = true) {
-    //   const s = this.steps[stepId];
-    //   if (s) s.touched = touched;
-    // },
+    markStepTouched(stepId: number, touched = true) {
+      const s = this.steps[stepId];
+      if (s) s.touched = touched;
+    },
 
     // CHECK - Validate the current step.
     // CONFIRM- If confirmed, save to the backend, close the dialog, and mark the step as validated.

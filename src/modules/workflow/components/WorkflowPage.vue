@@ -35,8 +35,7 @@
             tooltip-text="Close Workflow"
             tooltip-bottom
             @clicked="catchCloseClick"
-          />        
-
+          />
         </div>
 
         <v-card
@@ -96,18 +95,46 @@
  *  IMPORTS
  * ========================= */
 import { storeToRefs } from 'pinia';
-import { ref, watch, computed, nextTick, onMounted, toRaw } from 'vue';
+import { ref, watch, computed, nextTick, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { mdiClose } from '@mdi/js';
 
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+
+import { USER_DASHBOARD_PAGENAME } from '@/router/routeConsts';
+import { useStore } from 'vuex';
 import TheWorkflowNavigation from '@/components/Navigation/TheWorkflowNavigation.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
-import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
+
+import {
+  UPDATE_METADATA_EDITING,
+  USER_NAMESPACE,
+  FETCH_USER_DATA,
+  USER_GET_DATASETS,
+  USER_SIGNIN_NAMESPACE,
+  METADATA_EDITING_LOAD_DATASET,
+} from '@/modules/user/store/userMutationsConsts';
+import { DOI_RESERVE } from '@/modules/user/store/doiMutationsConsts';
+
+import {
+  getUserOrganizationRoleMap,
+  USER_ROLE_EDITOR,
+  USER_ROLE_MEMBER,
+  USER_ROLE_SYSTEM_ADMIN,
+} from '@/factories/userEditingValidations';
+
+import {
+  EDITMETADATA_ORGANIZATION,
+  EDITMETADATA_PUBLICATION_INFO,
+} from '@/factories/eventBus';
 
 import { extractIcons } from '@/factories/iconFactory.ts';
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow.ts';
-import { StepStatus, WorkflowMode } from '@/modules/workflow/utils/workflowEnums';
-import { USER_DASHBOARD_PAGENAME } from '@/router/routeConsts';
+import {
+  StepStatus,
+  WorkflowMode,
+} from '@/modules/workflow/utils/workflowEnums';
 
 /* =========================
  *  ROUTER & PROPS
@@ -129,11 +156,36 @@ const props = defineProps({
 /* =========================
  *  STORE & REFS/COMPUTEDS
  * ========================= */
+const store = useStore();
+const organizationsStore = useOrganizationsStore();
 const workflowStore = useDatasetWorkflowStore();
 const { currentStep, currentAsyncComponent } = storeToRefs(workflowStore);
 const vm = computed(() => workflowStore.currentViewModel);
 const iconScroll = computed(() => extractIcons('scroll'));
 const nextStepBlock = ref(null);
+
+const user = computed<any | null>(
+  () =>
+    (store.state as any)[USER_SIGNIN_NAMESPACE]?.user ??
+    (store.state as any)[USER_NAMESPACE]?.user ??
+    null,
+);
+
+const userDatasets = computed<any[]>(
+  () => ((store.state as any)[USER_NAMESPACE]?.userDatasets as any[]) ?? [],
+);
+
+const currentEditingContent = computed<any | null>(
+  () => (store.state as any)[USER_NAMESPACE]?.currentEditingContent ?? null,
+);
+
+const userId = computed<string | undefined>(() => user.value?.id);
+
+const doiWorkflowActive = computed<boolean>(() =>
+  Boolean(
+    (store.state as any)?.config?.userEditMetadataConfig?.doiWorkflowActive,
+  ),
+);
 
 /* =========================
  *  UI HELPERS (SCROLL)
@@ -148,8 +200,11 @@ const scrollToFirstError = (errors) => {
 
 const scrollDown = () => {
   nextTick(() => {
-    const target = nextStepBlock.value?.$el || nextStepBlock.value;
-    target?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const target = (nextStepBlock.value as any)?.$el || nextStepBlock.value;
+    (target as HTMLElement | undefined)?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+    });
   });
 };
 
@@ -175,11 +230,15 @@ const checkValidation = async (data) => {
  *  NAVIGATION LOGIC
  * ========================= */
 const changeNavigationInStore = (stepParam: number | string) => {
-  const step =
+  const stepNum =
     typeof stepParam === 'string' ? Number.parseInt(stepParam, 10) : stepParam;
 
-  if (Number.isFinite(step) && step >= 0 && step < workflowStore.steps.length) {
-    workflowStore.jumpToStep(step);
+  if (
+    Number.isFinite(stepNum) &&
+    (stepNum as number) >= 0 &&
+    (stepNum as number) < workflowStore.steps.length
+  ) {
+    workflowStore.jumpToStep(stepNum as number);
   }
 };
 
@@ -262,8 +321,8 @@ const catchConfirmSave = () => {
 };
 
 const catchCloseClick = () => {
-  router.push({ name: USER_DASHBOARD_PAGENAME })
-}
+  router.push({ name: USER_DASHBOARD_PAGENAME });
+};
 
 /* =========================
  *  WATCHERS
@@ -282,7 +341,8 @@ watch(
     if (newParams.id) {
       workflowStore.loadDataset(newParams.id as string);
     }
-})
+  },
+);
 
 /*
 /!* =========================
@@ -302,6 +362,145 @@ const datasetExistsInLocalStorage = (datasetId?: string) => {
 /* =========================
  *  ON MOUNTED
  * ========================= */
+
+async function fetchUserDatasets() {
+  if (!userId.value) return;
+  await store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`, {
+    action: 'USER_SHOW',
+    body: {
+      id: userId.value,
+      include_datasets: true,
+    },
+    commit: true,
+    mutation: USER_GET_DATASETS,
+  });
+}
+
+async function loadUserOrganizations() {
+  if (!userId.value) return;
+  try {
+    if (!organizationsStore.userOrganizations?.length) {
+      await organizationsStore.UserGetOrgIds(userId.value);
+    }
+  } catch (err) {
+    console.error('[workflow] loadUserOrganizations failed:', err);
+  }
+}
+
+async function initMetadataUsingId(id: string) {
+  if (id !== currentEditingContent.value?.name) {
+    await store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_LOAD_DATASET}`, {
+      metadataId: id,
+      forceBackendReload: true,
+    });
+  }
+
+  const c = currentEditingContent.value;
+  if (
+    doiWorkflowActive.value &&
+    c &&
+    !c.doi &&
+    (c.publicationState === '' || c.publicationState == null)
+  ) {
+    await store.dispatch(`${USER_NAMESPACE}/${DOI_RESERVE}`, id);
+  }
+}
+
+function updatePublicationStatus(datasetOrgaId) {
+  const userOrganizations = organizationsStore.userOrganizations;
+
+  const roleMap = getUserOrganizationRoleMap(user.value?.id, userOrganizations);
+  const datasetOrga = userOrganizations.filter(
+    (orga) => orga.id === datasetOrgaId,
+  )[0];
+
+  // use member as default, which means no editing of the publicationstatus is possible
+  let userRole = USER_ROLE_MEMBER;
+
+  if (user.value?.sysadmin === true) {
+    userRole = USER_ROLE_SYSTEM_ADMIN;
+  } else if (datasetOrga) {
+    const orgaName = datasetOrga.name;
+    userRole = (roleMap as any)[orgaName];
+
+    if (userRole === USER_ROLE_EDITOR) {
+      // check if the current dataset is part of the dataset the user owns (this.userDatasets)
+      const userIsOwner =
+        userDatasets.value?.length > 0
+          ? userDatasets.value.filter(
+              (d) => d.id === currentEditingContent.value?.id,
+            )[0]
+          : false;
+      if (!userIsOwner) {
+        userRole = USER_ROLE_MEMBER;
+      }
+    }
+  } else {
+    console.error(
+      'Not organization datasets available to determine the users role!',
+    );
+  }
+
+  const editPublicationInfo = store.getters[
+    `${USER_NAMESPACE}/getMetadataEditingObject`
+  ](EDITMETADATA_PUBLICATION_INFO);
+
+  // udpate the EDITMETADATA_PUBLICATION_INFO so the component has the userRole assigned for the
+  // different usecases
+  store.commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`, {
+    object: EDITMETADATA_PUBLICATION_INFO,
+    data: {
+      ...editPublicationInfo,
+      userRole,
+      loadingProps: true,
+    },
+  });
+}
+
+function updateStepsOrganizations() {
+  const userOrganizations = organizationsStore.userOrganizations ?? [];
+
+  const editOrgaData = store.getters[
+    `${USER_NAMESPACE}/getMetadataEditingObject`
+  ](EDITMETADATA_ORGANIZATION);
+  store.commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`, {
+    object: EDITMETADATA_ORGANIZATION,
+    data: {
+      ...editOrgaData,
+      userOrganizations,
+    },
+  });
+
+  const datasetOrgaId = editOrgaData?.organizationId;
+  // assuming you have this method on your workflow store instance
+  updatePublicationStatus(datasetOrgaId);
+}
+
+// onMounted(async () => {
+//   let id = props.datasetId;
+
+//   if (props.dataset) {
+//     // STORYBOOK
+//     // PLEASE NOTE – We are currently in the development phase, and an exception is present to make Storybook work.
+//     await workflowStore.initializeWorkflowfromDataset(props.dataset);
+//     id = props.dataset.id;
+//   } else if (!id) {
+//     id = route?.query?.id as string;
+//   }
+
+//   // await workflowStore.bootstrapWorkflow('local_dataset__');
+//   // await workflowStore.bootstrapWorkflow('testcollaboration');
+//   // https://dev.envidat04.wsl.ch:8080/#/workflow?step=2&id=testing-a-new-dataset-for-projects (admin)
+//   await workflowStore.bootstrapWorkflow(id);
+
+//   // const step = Number(route?.query?.step ?? 0);
+//   // workflowStore.setActiveStep(step);
+//   const stepParam = route?.query?.step;
+//   if (stepParam !== undefined) {
+//     workflowStore.setActiveStep(Number(stepParam));
+//   }
+// });
+
 onMounted(async () => {
   let id = props.datasetId;
 
@@ -310,14 +509,18 @@ onMounted(async () => {
     // PLEASE NOTE – We are currently in the development phase, and an exception is present to make Storybook work.
     await workflowStore.initializeWorkflowfromDataset(props.dataset);
     id = props.dataset.id;
-  } else if(!id) {
-    id = route?.params?.id as string;
+  } else if (!id) {
+    id = route?.query?.id as string;
   }
 
   await workflowStore.bootstrapWorkflow(id);
 
-  // const step = Number(route?.query?.step ?? 0);
-  // workflowStore.setActiveStep(step);
+  await initMetadataUsingId(id);
+
+  await Promise.all([loadUserOrganizations(), fetchUserDatasets()]);
+
+  updateStepsOrganizations();
+
   const stepParam = route?.query?.step;
   if (stepParam !== undefined) {
     workflowStore.setActiveStep(Number(stepParam));

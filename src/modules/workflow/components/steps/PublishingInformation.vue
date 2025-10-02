@@ -305,6 +305,11 @@ export default {
     publicationsInfo() {
       // ACTIVATE this part when the store is available with the backend
       if (this.$store) {
+        console.log(
+          this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](
+            EDITMETADATA_PUBLICATION_INFO,
+          ),
+        );
         return this.$store.getters[
           `${USER_NAMESPACE}/getMetadataEditingObject`
         ](EDITMETADATA_PUBLICATION_INFO);
@@ -314,15 +319,12 @@ export default {
       const stepData = this.currentStep.genericProps;
 
       return {
-        publicationState: 'Draft',
+        publicationState: stepData.publicationState,
         visibilityState: stepData.visibilityState,
         doi: stepData.doi,
-        // doi: '10.10000/envidat.999',
         userRole: stepData.userRole,
         publisher: stepData.publisher,
-        // publisher: 'Envidat',
         publicationYear: stepData.publicationYear,
-        // publicationYear: '2025',
       };
     },
     editOrganizationProps() {
