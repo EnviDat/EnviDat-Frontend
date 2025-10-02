@@ -1,6 +1,5 @@
 // src/modules/workflow/utils/bootstrapWorkflow.ts
 
-
 import { WorkflowMode } from '@/modules/workflow/utils/workflowEnums';
 
 export interface BootstrapDeps<DatasetDTO> {
@@ -20,6 +19,7 @@ function existsInLocalStorage(id?: string): boolean {
   }
 }
 
+// TODO ENRICO use the correct pros here
 function isPublished(dto: any): boolean {
   return Boolean(
     dto?.published === true ||
