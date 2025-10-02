@@ -510,7 +510,7 @@ onMounted(async () => {
     await workflowStore.initializeWorkflowfromDataset(props.dataset);
     id = props.dataset.id;
   } else if (!id) {
-    id = route?.query?.id as string;
+    id = route?.params?.id as string;
   }
 
   await workflowStore.bootstrapWorkflow(id);
