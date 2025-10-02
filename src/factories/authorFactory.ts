@@ -22,6 +22,7 @@ import {
   METADATA_CONTACT_FIRSTNAME,
   METADATA_CONTACT_LASTNAME,
 } from '@/factories/metadataConsts';
+
 import { AUTHOR_ASCII_DEAD } from '@/store/mainMutationsConsts';
 import { Author, User, UserPickerObject } from '@/types/modelTypes';
 
@@ -81,7 +82,7 @@ export function getAuthorNameCitation(author) {
  * @returns {[{ fullName: string, email: string}]}
  */
 export function getUserPickerObjects(
-  userObjects: Author[] | User [] | { fullName: string, email: string }[]
+  userObjects: Author[] | User [] | { fullName: string, email: string }[],
 ) : UserPickerObject[] {
   if (!userObjects || !(userObjects instanceof Array) || userObjects.length <= 0) {
     return [];
