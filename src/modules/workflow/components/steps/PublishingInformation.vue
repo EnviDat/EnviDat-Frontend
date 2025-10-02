@@ -102,7 +102,6 @@
       <v-col cols="12" class="pa-0">
         <v-row v-if="doiWorkflowActive">
           <v-col>
-            {{ editPublicationStatusProps }}
             <PublicationStatus
               v-bind="editPublicationStatusProps"
               @clicked="catchPublicationStateChange"
