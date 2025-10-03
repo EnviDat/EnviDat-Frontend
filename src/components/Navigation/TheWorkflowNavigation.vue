@@ -61,7 +61,7 @@
           :key="index"
           :class="[
             'navigationWorkflow__item',
-            { readOnly: !step.isEditable },
+            { readOnly: !step.isEditable, unlocked: isUnlocked(step) },
             // step.status can be active, completed, error
             step.status,
           ]"
@@ -329,6 +329,14 @@ const tooltip = {
   openOnHover: false,
 };
 */
+// Unlock the step
+const isUnlocked = (step) => {
+  if (workflowStore.mode !== 'create' && workflowStore.mode !== 'Create')
+    return false;
+  if (step.id <= 0) return false;
+  const prev = workflowStore.steps[step.id - 1];
+  return !!prev?.completed;
+};
 
 // init the driver step
 const initDriver = () => {
@@ -422,6 +430,13 @@ const initDriver = () => {
       }
       &:hover {
         cursor: not-allowed;
+      }
+    }
+    &.unlocked {
+      opacity: 1;
+
+      &:hover {
+        cursor: pointer;
       }
     }
     &.active {

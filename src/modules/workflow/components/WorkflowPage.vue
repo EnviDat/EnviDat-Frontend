@@ -208,6 +208,14 @@ const navigateRouterToStep = async (step: number) => {
   }
 };
 
+// if the step is completed, the next one can be jumped to
+const canJumpFromDisabled = (id: number) => {
+  if (workflowStore.mode !== WorkflowMode.Create) return false;
+  if (id <= 0) return false;
+  const prev = workflowStore.steps[id - 1];
+  return !!prev?.completed;
+};
+
 const catchNavigate = async ({
   id,
   status,
@@ -218,7 +226,7 @@ const catchNavigate = async ({
   const valid = await checkValidation(currentStep.value);
   if (!valid) return;
 
-  if (status !== StepStatus.Disabled) {
+  if (status !== StepStatus.Disabled || canJumpFromDisabled(id)) {
     navigateRouterToStep(id);
   }
 };
