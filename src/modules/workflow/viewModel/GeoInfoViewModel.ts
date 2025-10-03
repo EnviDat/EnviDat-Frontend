@@ -4,7 +4,6 @@ import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEdit
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 
 export class GeoInfoViewModel extends AbstractEditViewModel {
-
   declare dates: any[];
   declare geometries: any[];
 
@@ -14,11 +13,12 @@ export class GeoInfoViewModel extends AbstractEditViewModel {
   } = {
     dates: null,
     geometries: null,
-  }
+  };
 
   validationRules = yup.object({
     dates: yup
       .array()
+      .ensure()
       .required('Created date is required')
       .min(1, 'At least a creation date is required')
       .test(
@@ -46,7 +46,7 @@ export class GeoInfoViewModel extends AbstractEditViewModel {
     return super.validate(newProps);
   }
 
-/*
+  /*
   getData() {
     return {
       dates: this.dates,
