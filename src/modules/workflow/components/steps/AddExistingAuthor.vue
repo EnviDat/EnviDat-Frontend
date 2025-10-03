@@ -37,6 +37,7 @@
           <BaseUserPicker
             :users="baseUserPickerObject"
             :preSelected="preselectAuthorNames"
+            :error-messages="validationErrors?.authors"
             :multiplePick="true"
             :isClearable="isClearable"
             :readonly="isReadOnly('authors')"
@@ -86,6 +87,10 @@ export default {
       default: () => [],
     },
     authors: {
+      type: Array,
+      default: () => [],
+    },
+    validationErrors: {
       type: Array,
       default: () => [],
     },
