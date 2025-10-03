@@ -5,6 +5,7 @@
         <TheWorkflowNavigation
           @navigateItem="catchNavigate"
           :isDatasetEditing="workflowStore.isDatasetEditing"
+          @catchCloseClick="catchCloseClick"
         />
       </v-col>
 
@@ -25,17 +26,6 @@
             </v-icon>
             <p class="text-caption scroll-text">Save</p>
           </div> -->
-
-          <BaseIconButton
-            class="metadataEditCloseButton"
-            :icon="mdiClose"
-            icon-color="black"
-            color="black"
-            outlined
-            tooltip-text="Close Workflow"
-            tooltip-bottom
-            @clicked="catchCloseClick"
-          />
         </div>
 
         <v-card
@@ -97,9 +87,6 @@
 import { storeToRefs } from 'pinia';
 import { ref, watch, computed, nextTick, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { mdiClose } from '@mdi/js';
-
-import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
 import { USER_DASHBOARD_PAGENAME } from '@/router/routeConsts';
 import TheWorkflowNavigation from '@/components/Navigation/TheWorkflowNavigation.vue';
@@ -107,7 +94,7 @@ import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.v
 
 import { useWorkflowExternal } from '@/modules/workflow/utils/useWorkflowExternal.ts';
 
-import { extractIcons } from '@/factories/iconFactory.ts';
+// import { extractIcons } from '@/factories/iconFactory.ts';
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow.ts';
 import {
   StepStatus,
@@ -137,7 +124,7 @@ const props = defineProps({
 const workflowStore = useDatasetWorkflowStore();
 const { currentStep, currentAsyncComponent } = storeToRefs(workflowStore);
 const vm = computed(() => workflowStore.currentViewModel);
-const iconScroll = computed(() => extractIcons('scroll'));
+// const iconScroll = computed(() => extractIcons('scroll'));
 const nextStepBlock = ref(null);
 
 /* use external orchestration */

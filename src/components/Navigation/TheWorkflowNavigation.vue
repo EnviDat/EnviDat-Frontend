@@ -5,7 +5,36 @@
     rounded="xl"
   >
     <v-card-title class="text-h6 font-weight-bold mb-4 pa-md-4 pa-0">
-      Create your Dataset
+      <v-row class="w-100" no-gutters align="center" justify="space-between">
+        <!-- Left: title + inline icon(s) -->
+        <v-col cols="auto" class="d-flex align-center">
+          <span class="text-h6 font-weight-bold mr-2">Create your Dataset</span>
+        </v-col>
+
+        <!-- Right: close icon -->
+        <v-col cols="auto" class="d-flex justify-end">
+          <BaseIconButton
+            class="metadataEditCloseButton ma-1 ma-md-0 ml-md-2"
+            :icon="iconName('eye')"
+            icon-color="black"
+            color="black"
+            outlined
+            tooltip-text="Show Preview"
+            tooltip-bottom
+            @clicked="emit('catchCloseClick')"
+          />
+          <BaseIconButton
+            class="metadataEditCloseButton ma-1 ma-md-0 ml-md-2"
+            :icon="iconName('close')"
+            icon-color="black"
+            color="black"
+            outlined
+            tooltip-text="Close Workflow"
+            tooltip-bottom
+            @clicked="emit('catchCloseClick')"
+          />
+        </v-col>
+      </v-row>
     </v-card-title>
 
     <v-expansion-panels
@@ -265,7 +294,7 @@ import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
 const display = useDisplay();
 
-const emit = defineEmits(['navigateItem']);
+const emit = defineEmits(['navigateItem', 'catchCloseClick']);
 
 // Props
 const props = defineProps({
