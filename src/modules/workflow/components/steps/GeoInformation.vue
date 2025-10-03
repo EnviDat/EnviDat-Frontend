@@ -204,10 +204,10 @@
           <v-col cols="12">
             <BaseStartEndDate
               data-field="dates"
-              :startDate="item.date"
+              :startDate="getMode === 'create' ? item.dateStart : item.date"
               :startDateLabel="`${item.dateType} start date`"
               :startDateProperty="startDateProperty"
-              :endDate="item.endDate"
+              :endDate="getMode === 'create' ? item.dateEnd : item.endDate"
               :error-messages="validationErrors.dates"
               :endDateLabel="`${item.dateType} end date`"
               :endDateProperty="endDateProperty"
@@ -264,6 +264,8 @@ import {
   defaultSwissLocation,
 } from '@/factories/geoFactory';
 
+import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
+
 export default {
   name: 'EditDataGeo',
   components: {
@@ -296,6 +298,7 @@ export default {
     return {
       mdiContentSave,
       activePanel: null,
+      workflowStore: null,
       mdiFileUpload,
       newGeoInfo: {
         geometries:
@@ -327,6 +330,9 @@ export default {
     };
   },
   computed: {
+    getMode() {
+      return this.workflowStore?.mode;
+    },
     loadingColor() {
       return this.loading ? 'accent' : undefined;
     },
@@ -376,6 +382,7 @@ export default {
       );
       return dates;
     },
+
     metadataGeoProps() {
       return {
         mapDivId: this.mapDivId,
@@ -410,6 +417,7 @@ export default {
   mounted() {
     eventBus.on(MAP_GEOMETRY_MODIFIED, this.changedGeoViaEditor);
     eventBus.on(EDITMETADATA_DATA_GEO_MAP_ERROR, this.triggerValidationError);
+
     this.$emit('save', this.newGeoInfo);
     const jsonString = this.location?.geoJSON
       ? JSON.stringify(this.location.geoJSON)
@@ -590,6 +598,9 @@ export default {
     geoFile() {
       this.triggerFileUpload(this.geoFile);
     },
+  },
+  created() {
+    this.workflowStore = useDatasetWorkflowStore();
   },
 };
 </script>

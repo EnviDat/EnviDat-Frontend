@@ -1,7 +1,10 @@
 // src/modules/workflow/utils/mode.ts
 
 import type { ComputeResult, WorkflowStep } from '@/types/workflow';
-import { StepStatus, WorkflowMode } from '@/modules/workflow/utils/workflowEnums';
+import {
+  StepStatus,
+  WorkflowMode,
+} from '@/modules/workflow/utils/workflowEnums';
 
 export function computeStepsForMode(
   steps: WorkflowStep[],
@@ -22,7 +25,7 @@ export function computeStepsForMode(
         // IMPORTANT for step validation in edit mode:
         // if the step has not been modified, we can skip validation, otherwise, we must validate it.
         // TODO: ticket (https://envicloud.atlassian.net/browse/EN-2431)
-        // touched: false,
+        touched: false,
       };
     });
     // SET allow navigation in edit mode
@@ -37,7 +40,7 @@ export function computeStepsForMode(
     completed: false,
     hasError: false,
     // TODO: ticket (https://envicloud.atlassian.net/browse/EN-2431)
-    // touched: false,
+    touched: false,
   }));
   // SET block navigation in create mode
   return { steps: next, freeJump: false };

@@ -16,7 +16,7 @@
         :class="{ loading: workflowStore.loading }"
       >
         <div>
-          <div
+          <!-- <div
             @click="scrollDown()"
             class="scrollToSave d-none d-md-flex flex-column justify-center align-center pt-8"
           >
@@ -24,7 +24,7 @@
               {{ iconScroll }}
             </v-icon>
             <p class="text-caption scroll-text">Save</p>
-          </div>
+          </div> -->
 
           <BaseIconButton
             class="metadataEditCloseButton"
@@ -174,6 +174,8 @@ const scrollDown = () => {
  * ========================= */
 const validate = (freshData) => {
   vm.value?.validate(freshData);
+  // FIX Validation during navigation
+  workflowStore.markStepTouched(workflowStore.currentStep, true);
 };
 
 const checkValidation = async (data) => {
@@ -235,6 +237,8 @@ const catchNavigate = async ({
 };
 
 const nextStep = async () => {
+  // FIX Validation during navigation
+  workflowStore.markStepTouched(workflowStore.currentStep, true);
   const valid = await checkValidation(currentStep.value);
   if (!valid) return;
 
@@ -254,6 +258,8 @@ const nextStep = async () => {
  *  SAVE LOGIC
  * ========================= */
 const save = async (freshData) => {
+  // FIX Validation during navigation
+  workflowStore.markStepTouched(workflowStore.currentStep, true);
   const ok = await vm.value.save(freshData);
 
   const step = workflowStore.steps[workflowStore.currentStep];

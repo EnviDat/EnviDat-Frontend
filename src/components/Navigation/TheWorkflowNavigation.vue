@@ -61,7 +61,6 @@
                   'ml-2': workflowStore.currentStep === step.id,
                 }"
               >
-                {{ step.title }}
               </span>
               <BaseIcon
                 :icon="!step.isEditable ? iconName('noedit') : iconName('edit')"
