@@ -27,7 +27,7 @@ import {
 } from '@/factories/mappingFactory';
 
 import unFormatedMetadata from '@/../stories/js/metadata';
-import userList from './testdata/user_list.json';
+import userList from '@/../stories/testdata/user_list.json';
 
 const envidatUsers = userList?.result || [];
 
