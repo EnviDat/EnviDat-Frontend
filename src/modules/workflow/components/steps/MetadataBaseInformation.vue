@@ -121,7 +121,6 @@
           :menu-icon="mdiArrowDownDropCircleOutline"
           :readonly="isReadOnly('keywords')"
           :hint="readOnlyHint('keywords')"
-          :persistent-hint="!!hint"
           :prepend-icon="mdiPaletteSwatch"
           :label="labelsKeywords.placeholder"
           :clear-on-select="true"

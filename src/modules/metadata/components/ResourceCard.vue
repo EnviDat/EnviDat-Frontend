@@ -113,7 +113,7 @@
           <v-col v-if="format" cols="12" class="py-1">
             <BaseIconLabelView
               :text="formatedBytes ? `${format} - ${formatedBytes}` : format"
-              :icon="extensionIcon()"
+              :icon="extensionIcon"
               :icon-tooltip="
                 formatedBytes ? 'Resource type and size' : 'Resource type'
               "
@@ -515,17 +515,11 @@ export default {
 
       return 'top: 0;'
     },
+    extensionIcon() {
+      return getFileIcon(this.format);
+    },
   },
   methods: {
-    async extensionIcon() {
-      const icon = getFileIcon(this.format);
-
-      if (!!icon && (typeof icon === 'object' || typeof icon === 'function') && typeof icon.then === 'function') {
-        return icon();
-      }
-
-      return icon;
-    },
     catchLoadingChanged(isLoading) {
       this.isLoadingS3Tree = isLoading
     },

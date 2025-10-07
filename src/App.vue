@@ -261,7 +261,7 @@ export default {
     this.showCookieInfo = strShowCookieInfo !== 'false';
   },
   beforeUnmount() {
-    eventBus.on(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
+    eventBus.off(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
     eventBus.off(SHOW_DIALOG, this.openGenericDialog);
     eventBus.off(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
     eventBus.off(
