@@ -309,7 +309,18 @@
           </v-row>
         </div>
 
-        <v-row no-gutters class="pt-4" justify="end">
+        <v-row no-gutters class="pt-4"
+               :justify="isSystemAdmin ? 'space-between' : 'end'"
+        >
+          <v-col v-if="isSystemAdmin"
+            class="flex-grow-0">
+            <BaseRectangleButton
+              :loading="loading"
+              :buttonText="labels.deleteButtonText"
+              color="error"
+              @clicked="() => $emit('delete')"
+            />
+          </v-col>
           <v-col class="flex-grow-0">
             <BaseRectangleButton
               :disabled="!saveButtonEnabled"
@@ -377,6 +388,7 @@ import { RESOURCE_FORMAT_LINK } from '@/factories/metadataConsts';
 import { getFileExtension } from '@/factories/fileFactory';
 import { RestrictedDTO } from '@/types/dataTransferObjectsTypes';
 import { getAuthorByEmail, getAuthorName, getUserPickerObjects } from '@/factories/authorFactory';
+import { USER_ROLE_SYSTEM_ADMIN } from '@/factories/userEditingValidations';
 
 
 export default {
@@ -470,13 +482,16 @@ export default {
       type: Object,
       default: () => ({}),
     },
-
     userEditMetadataConfig: {
       type: Object,
       default: undefined,
     },
+    userRole: {
+      type: String,
+      default: null,
+    },
   },
-  emits: ['save', 'validate', 'closeClicked'],
+  emits: ['save', 'validate', 'closeClicked', 'previewImageClicked', 'delete'],
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
@@ -763,6 +778,9 @@ export default {
     fileFormatIcon() {
       return getFileIcon(this.formatField);
     },
+    isSystemAdmin() {
+      return this.userRole === USER_ROLE_SYSTEM_ADMIN;
+    },
   },
   methods: {
     getFileSizeFormat(size) {
@@ -914,6 +932,7 @@ export default {
         'Include an apt name and description others will understand',
       subInstructions: 'For files larger then 5GB contact the EnviDat team.',
       createButtonText: 'Save Resource',
+      deleteButtonText: 'Delete Resource',
       description: 'Resource description',
       resourceName: 'Name of the resource',
       fileName: 'File',

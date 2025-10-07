@@ -120,7 +120,7 @@ import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.v
 
 
 export default {
-  name: 'EditDropResourceFiles',
+  name: 'ResourceUpload',
   props: {
     metadataId: String,
     legacyUrl: {

@@ -104,7 +104,7 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
       dataset.resources,
       dataset.name,
       dataset.organization?.id,
-      this.signedInUser?.name,
+      this.signedInUser?.fullName,
       this.signedInUserOrganizationIds,
     );
 

@@ -41,6 +41,7 @@
               v-bind="vm"
               @validate="validate"
               @save="save"
+              @reload="reloadDataset"
               v-if="currentAsyncComponent && !workflowStore.loading"
             />
           </div>
@@ -280,6 +281,9 @@ const catchCloseClick = () => {
   router.push({ name: USER_DASHBOARD_PAGENAME });
 };
 
+const reloadDataset = () => {
+  workflowStore.loadDataset(route?.params?.id as string);
+}
 /* =========================
  *  WATCHERS
  * ========================= */

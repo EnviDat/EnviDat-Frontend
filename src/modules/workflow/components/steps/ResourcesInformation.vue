@@ -69,11 +69,12 @@
         <v-row v-if="selectedResource">
           <v-col v-if="resourceEditingActive">
             <!-- prettier-ignore -->
-            <ResourceEditing v-bind="editResourceObject"
+            <ResourceEditing v-bind="resourceEditingProps"
                              @closeClicked="catchEditResourceClose"
                              @validate="validateResource"
                              @save="saveResource"
                              @previewImageClicked="showFullScreenImage"
+                             @delete="() => $emit('delete', selectedResource)"
             />
           </v-col>
         </v-row>
@@ -82,7 +83,7 @@
           <v-col cols="12">
             <ResourceUpload
               flat
-              v-bind="editDropResourceObject" />
+              v-bind="resourceUploadProps" />
             <!-- No need to listen to events from the component, events are emitted from uppy directly -->
           </v-col>
 
@@ -211,7 +212,7 @@ export default {
       default: undefined,
     },
   },
-  emits: ['save'],
+  emits: ['save', 'reload', 'delete'],
   created() {
     // call once to create the uppy instance
     getUppyInstance(this.datasetId, this.$store);
@@ -300,7 +301,7 @@ export default {
         },
       };
     },
-    editResourceObject() {
+    resourceEditingProps() {
       let userEditMetadataConfig;
 
       if (this.$store) {
@@ -325,7 +326,7 @@ export default {
         envidatUsers: this.allEnviDatUsers,
       };
     },
-    editDropResourceObject() {
+    resourceUploadProps() {
       return {
         metadataId: this.datasetId,
         legacyUrl: this.linkAddNewResourcesCKAN,
@@ -394,6 +395,9 @@ export default {
 
       // resource exists already, get it from uploadResource
       const newRes = this.$store?.getters[`${USER_NAMESPACE}/uploadResource`];
+
+      // trigger reload of datasets to get the new resource
+      this.$emit('reload');
 
       setTimeout(() => {
         console.log(METADATA_EDITING_SELECT_RESOURCE, newRes);
@@ -548,6 +552,7 @@ export default {
                     the button below.`,
     uploadProgress: 0,
     uploadState: undefined,
+    // resourceViewModel is only used for mapping
     resourceViewModel: new ResourceViewModel(),
   }),
   components: {
