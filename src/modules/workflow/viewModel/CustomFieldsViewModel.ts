@@ -3,7 +3,7 @@ import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEdit
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 
 
-export class EditCustomFieldsViewModel extends AbstractEditViewModel{
+export class CustomFieldsViewModel extends AbstractEditViewModel{
 
   declare customFields: string;
 
@@ -28,7 +28,7 @@ export class EditCustomFieldsViewModel extends AbstractEditViewModel{
 
 
   constructor(datasetModel: DatasetModel) {
-    super(datasetModel, EditCustomFieldsViewModel.mappingRules());
+    super(datasetModel, CustomFieldsViewModel.mappingRules());
   }
 
   static mappingRules () {
@@ -37,7 +37,7 @@ export class EditCustomFieldsViewModel extends AbstractEditViewModel{
     ];
   }
 
-  validate(newProps?: Partial<EditCustomFieldsViewModel>): boolean {
+  validate(newProps?: Partial<CustomFieldsViewModel>): boolean {
     return super.validate(newProps);
   }
 }

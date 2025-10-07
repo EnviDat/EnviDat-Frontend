@@ -11,6 +11,7 @@ export function computeStepsForMode(
   isReadOnlyStepKeys: string[],
   mode: WorkflowMode,
 ): ComputeResult {
+
   if (mode === WorkflowMode.Edit) {
     const next = steps.map((s) => {
       // CHECK if the step is readOnly based on the list listOfReadOnlyFields - src/modules/workflow/resources/readOnlyFields.ts
@@ -28,6 +29,7 @@ export function computeStepsForMode(
         touched: false,
       };
     });
+
     // SET allow navigation in edit mode
     return { steps: next, freeJump: true };
   }
@@ -42,6 +44,7 @@ export function computeStepsForMode(
     // TODO: ticket (https://envicloud.atlassian.net/browse/EN-2431)
     touched: false,
   }));
+
   // SET block navigation in create mode
   return { steps: next, freeJump: false };
 }

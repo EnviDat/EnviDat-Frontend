@@ -1,7 +1,7 @@
 import type { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 
 import { EditDescriptionViewModel } from '@/modules/workflow/viewModel/EditDescriptionViewModel.ts';
-import { EditCustomFieldsViewModel } from '@/modules/workflow/viewModel/EditCustomFieldsViewModel.ts';
+import { CustomFieldsViewModel } from '@/modules/workflow/viewModel/CustomFieldsViewModel.ts';
 import { AuthorListViewModel } from '@/modules/workflow/viewModel/AuthorListViewModel.ts';
 import { EditDataInfoViewModel } from '@/modules/workflow/viewModel/EditDataInfoViewModel.ts';
 import { PublicationViewModel } from '@/modules/workflow/viewModel/PublicationViewModel.ts';
@@ -17,13 +17,12 @@ import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 
 import store from '@/store/store';
 import { reactive, computed } from 'vue';
-import { User } from '@/types/modelTypes';
 
 export class DatasetModel {
   viewModelClasses = [
     EditDescriptionViewModel,
     AuthorListViewModel,
-    EditCustomFieldsViewModel,
+    CustomFieldsViewModel,
     EditDataInfoViewModel,
     PublicationViewModel,
     ResourcesListViewModel,
@@ -80,24 +79,6 @@ export class DatasetModel {
     this.updateViewModels();
     return datasetService.dataset;
   }
-
-  /*
-  async reloadDataset(): Promise<DatasetDTO> {
-    return this.loadDataset(this.datasetService.dataset.id);
-  }
-
-  async createDataset(
-    user: User,
-    prefilledOrganizationId: string,
-  ): Promise<DatasetDTO> {
-
-    const datasetService = this.datasetWorkflow.getDatasetService();
-    await datasetService.createDataset(localId, localDataset);
-
-    // @ts-ignore
-    return localDataset;
-  }
-*/
 
   async createResourceOnExistingDataset(resourceModel: AbstractEditViewModel) {
     resourceModel.loading = true;

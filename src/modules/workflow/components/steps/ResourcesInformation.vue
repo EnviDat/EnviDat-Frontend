@@ -302,7 +302,7 @@ export default {
       };
     },
     resourceEditingProps() {
-      let userEditMetadataConfig;
+      let userEditMetadataConfig: object;
 
       if (this.$store) {
         userEditMetadataConfig = this.config?.userEditMetadataConfig;

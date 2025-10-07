@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia';
 
-import { workflowSteps } from '@/modules/workflow/resources/steps';
+import { enhanceAdminWorkflowStep, workflowSteps } from '@/modules/workflow/resources/steps';
 
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 import { LocalStorageDatasetService } from '@/modules/workflow/LocalStorageDatasetService.ts';
 import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
-import { DatasetService } from '@/types/modelTypes';
+import { DatasetService, User } from '@/types/modelTypes';
 import { BackendDatasetService } from '@/modules/workflow/BackendDatasetService.ts';
 import { workflowGuide } from '@/modules/workflow/resources/workflowGuides.ts';
 
@@ -21,6 +21,9 @@ import {
 import { validateStepPure } from '@/modules/workflow/utils/workflowValidation';
 import type { WorkflowStep } from '@/types/workflow';
 import { StepStatus, WorkflowMode } from '@/modules/workflow/utils/workflowEnums';
+import PublishingInformation from '@/modules/workflow/components/steps/PublishingInformation.vue';
+import CustomFieldsWorkflow from '@/modules/workflow/components/steps/CustomFieldsWorkflow.vue';
+import { USER_ROLE_SYSTEM_ADMIN } from '@/factories/userEditingValidations';
 
 /*
 import datasets from '~/stories/js/metadata.js';
@@ -56,8 +59,12 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     doiPlaceholder: null,
     workflowGuide,
     mode: WorkflowMode.Create,
+    userRole: undefined as string | undefined,
   }),
   getters: {
+    steps(state) {
+      return enhanceAdminWorkflowStep(state.userRole);
+    },
     // GET the current step component
     currentAsyncComponent(state) {
       return state.steps[state.currentStep]?.component;
@@ -103,6 +110,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
             : null;
 
           if (!vm) return { ...s, completed: false, hasError: false };
+
           const data = vm.getModelData?.();
           const filled = this.hasDtData(data);
 
@@ -135,7 +143,8 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
           };
         });
 
-        this.steps = seeded;
+        this.steps = enhanceAdminWorkflowStep(this.userRole, seeded);
+
         const startIdx = this.steps.findIndex((s) => !s.completed);
         this.setActiveStep(startIdx === -1 ? 0 : startIdx);
       } else {

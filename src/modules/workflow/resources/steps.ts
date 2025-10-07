@@ -8,6 +8,8 @@ import RelatedResearch from '@/modules/workflow/components/steps/RelatedResearch
 import PublishingInformation from '@/modules/workflow/components/steps/PublishingInformation.vue';
 import { StepStatus } from '@/modules/workflow/utils/workflowEnums';
 import { WorkflowStep } from '@/types/workflow';
+import { USER_ROLE_SYSTEM_ADMIN } from '@/factories/userEditingValidations';
+import CustomFieldsWorkflow from '@/modules/workflow/components/steps/CustomFieldsWorkflow.vue';
 
 export const workflowSteps: WorkflowStep[] = [
   {
@@ -152,3 +154,27 @@ export const workflowSteps: WorkflowStep[] = [
 ];
 
 export default workflowSteps;
+
+
+export function enhanceAdminWorkflowStep(userRole: string, steps: WorkflowStep[]) {
+  if (userRole !== USER_ROLE_SYSTEM_ADMIN) {
+    return [
+      ...steps,
+      {
+        id: steps.length + 1,
+        title: 'Admin Information',
+        description: 'Custom fields, Project Assignment',
+        isEditable: true,
+        completed: false,
+        hasError: false,
+        key: 'admininformation',
+        component: markRaw(CustomFieldsWorkflow),
+        viewModelKey: 'CustomFieldsViewModel',
+        icon: 'publicationinfo',
+        status: StepStatus.Disabled,
+      } satisfies WorkflowStep,
+    ];
+  }
+
+  return steps;
+}
