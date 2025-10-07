@@ -20,7 +20,10 @@ import {
 
 import { validateStepPure } from '@/modules/workflow/utils/workflowValidation';
 import type { WorkflowStep } from '@/types/workflow';
-import { StepStatus, WorkflowMode } from '@/modules/workflow/utils/workflowEnums';
+import {
+  StepStatus,
+  WorkflowMode,
+} from '@/modules/workflow/utils/workflowEnums';
 
 /*
 import datasets from '~/stories/js/metadata.js';
@@ -96,6 +99,15 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     async initializeDataset(dataset: DatasetDTO, mode: WorkflowMode) {
       this.datasetModel = new DatasetModel(this);
 
+      if (mode === WorkflowMode.Create && dataset) {
+        // SEED the local storage with the provided dataset
+        if (this.localStorageService?.patchDatasetChanges) {
+          await this.localStorageService.patchDatasetChanges(dataset);
+        } else {
+          await this.localStorageService.createDataset(dataset as any);
+        }
+      }
+
       if (mode === WorkflowMode.Create) {
         const seeded = this.steps.map((s: WorkflowStep) => {
           const vm = s.viewModelKey
@@ -105,7 +117,6 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
           if (!vm) return { ...s, completed: false, hasError: false };
           const data = vm.getModelData?.();
           const filled = this.hasDtData(data);
-
           if (!filled)
             return {
               ...s,

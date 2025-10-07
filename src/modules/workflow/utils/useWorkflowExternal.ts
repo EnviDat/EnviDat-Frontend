@@ -57,7 +57,7 @@ export function useWorkflowExternal() {
   async function fetchUserDatasets() {
     if (!userId.value) return;
     await store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`, {
-      action: 'USER_SHOW',
+      action: 'user_show',
       body: {
         id: userId.value,
         include_datasets: true,

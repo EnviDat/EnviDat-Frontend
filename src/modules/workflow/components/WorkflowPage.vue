@@ -279,6 +279,7 @@ const catchConfirmSave = () => {
 
 const catchCloseClick = () => {
   router.push({ name: USER_DASHBOARD_PAGENAME });
+  localStorage.clear();
 };
 
 const reloadDataset = () => {
