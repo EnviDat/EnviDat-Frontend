@@ -1,7 +1,7 @@
 import type { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 
 import { EditDescriptionViewModel } from '@/modules/workflow/viewModel/EditDescriptionViewModel.ts';
-import { CustomFieldsViewModel } from '@/modules/workflow/viewModel/CustomFieldsViewModel.ts';
+import { AdminViewModel } from '@/modules/workflow/viewModel/AdminViewModel.ts';
 import { AuthorListViewModel } from '@/modules/workflow/viewModel/AuthorListViewModel.ts';
 import { EditDataInfoViewModel } from '@/modules/workflow/viewModel/EditDataInfoViewModel.ts';
 import { PublicationViewModel } from '@/modules/workflow/viewModel/PublicationViewModel.ts';
@@ -22,7 +22,7 @@ export class DatasetModel {
   viewModelClasses = [
     EditDescriptionViewModel,
     AuthorListViewModel,
-    CustomFieldsViewModel,
+    AdminViewModel,
     EditDataInfoViewModel,
     PublicationViewModel,
     ResourcesListViewModel,

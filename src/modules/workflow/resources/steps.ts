@@ -9,7 +9,8 @@ import PublishingInformation from '@/modules/workflow/components/steps/Publishin
 import { StepStatus } from '@/modules/workflow/utils/workflowEnums';
 import { WorkflowStep } from '@/types/workflow';
 import { USER_ROLE_SYSTEM_ADMIN } from '@/factories/userEditingValidations';
-import CustomFieldsWorkflow from '@/modules/workflow/components/steps/CustomFieldsWorkflow.vue';
+import AdminInformation from '@/modules/workflow/components/steps/AdminInformation.vue';
+import { AdminViewModel } from '@/modules/workflow/viewModel/AdminViewModel.ts';
 
 export const workflowSteps: WorkflowStep[] = [
   {
@@ -168,8 +169,8 @@ export function enhanceAdminWorkflowStep(userRole: string, steps: WorkflowStep[]
         completed: false,
         hasError: false,
         key: 'admininformation',
-        component: markRaw(CustomFieldsWorkflow),
-        viewModelKey: 'CustomFieldsViewModel',
+        component: markRaw(AdminInformation),
+        viewModelKey: 'AdminViewModel',
         icon: 'publicationinfo',
         status: StepStatus.Disabled,
       } satisfies WorkflowStep,
