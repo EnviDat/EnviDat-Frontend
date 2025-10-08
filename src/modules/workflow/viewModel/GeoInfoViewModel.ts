@@ -42,6 +42,18 @@ export class GeoInfoViewModel extends AbstractEditViewModel {
     super(datasetVM, GeoInfoViewModel.mappingRules());
   }
 
+  public override getModelData(): {
+    dates: string;
+  } {
+    const data = super.getModelData<GeoInfoViewModel>() as any;
+
+    const { geometries, ...rest } = data;
+
+    return rest as {
+      dates: string;
+    };
+  }
+
   validate(newProps?: Partial<GeoInfoViewModel>): boolean {
     return super.validate(newProps);
   }

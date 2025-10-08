@@ -45,6 +45,22 @@ export class MetadataBaseViewModel extends AbstractEditViewModel {
     enhanceKeywords(this.keywords, categoryCards);
   }
 
+  public override getModelData(): {
+    metadataTitle: string;
+    metadataDescription: string;
+    keywords: KeywordDTO[];
+  } {
+    const data = super.getModelData<MetadataBaseViewModel>() as any;
+
+    const { existingKeywords, ...rest } = data;
+
+    return rest as {
+      metadataTitle: string;
+      metadataDescription: string;
+      keywords: KeywordDTO[];
+    };
+  }
+
   validate(newProps?: Partial<MetadataBaseViewModel>) {
     return super.validate(newProps);
   }
