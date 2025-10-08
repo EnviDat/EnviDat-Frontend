@@ -146,9 +146,12 @@ export class LocalStorageDatasetService implements DatasetService {
     const datasetId = this.getNewLocalDatasetId();
     localStorage.setItem(datasetId, '');
 
-    const datasetWithDefaults = this.getDatasetWithDefaults(dataset);
+    const datasetWithDefaults = this.getDatasetWithDefaults({
+      id: datasetId,
+      ...dataset,
+    });
     this.dataset = new Dataset(datasetWithDefaults);
 
-    return this.patchDatasetChanges(this.dataset.id, this.dataset);
+    return this.patchDatasetChanges(datasetId, this.dataset);
   }
 }

@@ -14,7 +14,8 @@
         :actionButtonCallback="catchSigninClick"
       />
     </div>
-    <div v-if="user" class="dashboardGrid">
+    <div v-if="user"
+         class="dashboardGrid">
       <div class="topBoard mt-6 mt-md-0">
         <IntroductionCard
           :userName="user.fullName"
@@ -25,7 +26,7 @@
             organizationsStore.canCreateDatasets ? createClickCallback : null
           "
           :editingClickCallback="editingClickCallback"
-          :editingDatasetName="lastEditedDataset"
+          :editingDatasetName="lastDataset"
           :currentLocalDataset="
             hasLocalDataset ? currentLocalDataset : undefined
           "
@@ -333,6 +334,7 @@ import EditUserProfile from '@/modules/user/components/edit/EditUserProfile.vue'
 import FlipLayout from '@/components/Layouts/FlipLayout.vue';
 
 import { getMetadataVisibilityState } from '@/factories/publicationFactory';
+import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
 
 const IntroductionCard = defineAsyncComponent(
   () => import('@/components/Cards/IntroductionCard.vue'),
@@ -346,6 +348,8 @@ const NotificationCard = defineAsyncComponent(
 const UserOrganizationInfo = defineAsyncComponent(
   () => import('@/components/Cards/UserOrganizationInfo.vue'),
 );
+
+const workflowStore = useDatasetWorkflowStore();
 
 export default {
   name: 'DashboardPage',
@@ -396,6 +400,9 @@ export default {
       'updatingTags',
       'metadatasContent',
     ]),
+    lastDataset() {
+      return this.lastEditedDataset;
+    },
     userDashboardConfig() {
       return this.config?.userDashboardConfig || {};
     },
@@ -407,6 +414,9 @@ export default {
     },
     datasetCreationActive() {
       return this.userEditMetadataConfig?.datasetCreationActive || false;
+    },
+    newWorkflowActive() {
+      return this.userEditMetadataConfig?.newWorkflowActive || false;
     },
     loading() {
       return (
@@ -580,6 +590,11 @@ export default {
       return this.user?.fullName?.split(' ')[1] || '';
     },
     hasLocalDataset() {
+      if (this.newWorkflowActive) {
+        const localDataset = this.workflowStore.localStorageService.dataset;
+        return !!localDataset;
+      }
+
       const localStorageData = getPreviewDatasetFromLocalStorage();
 
       // eslint-disable-next-line no-unused-expressions
@@ -590,14 +605,15 @@ export default {
       return properties.length > 0;
     },
     currentLocalDataset() {
-      const localStorageData = getPreviewDatasetFromLocalStorage();
+      let localDataset = this.newWorkflowActive ? this.workflowStore.localStorageService.dataset : getPreviewDatasetFromLocalStorage();
 
-      const localDataset = {
-        title: localStorageData[METADATA_TITLE_PROPERTY]
-          ? localStorageData[METADATA_TITLE_PROPERTY]
+      localDataset = {
+        ...localDataset,
+        title: localDataset.title
+          ? localDataset.title
           : '[Untitled Dataset]',
-        subTitle: localStorageData.description,
-        tags: localStorageData.keywords,
+        subTitle: localDataset.description,
+        tags: localDataset.keywords,
         flatLayout: true,
       };
 
@@ -708,7 +724,7 @@ export default {
     createClickCallback() {
       if (this.datasetCreationActive) {
 
-        const name = this.userEditMetadataConfig?.newWorkflowActive ? WORKFLOW_PAGENAME : METADATA_CREATION_PAGENAME;
+        const name = this.newWorkflowActive ? WORKFLOW_PAGENAME : METADATA_CREATION_PAGENAME;
 
         this.$router.push({
           name,
@@ -739,7 +755,7 @@ export default {
         metadataid: selectedDatasetId,
       }
 
-      if (this.userEditMetadataConfig?.newWorkflowActive) {
+      if (this.newWorkflowActive) {
         name = WORKFLOW_PAGENAME;
         params.id = selectedDatasetId;
         delete params.metadataid;
@@ -793,9 +809,20 @@ export default {
       }
     },
     catchLocalCardClick() {
-      const name = this.userEditMetadataConfig?.newWorkflowActive ? WORKFLOW_PAGENAME : METADATA_CREATION_PAGENAME;
+      const name = this.newWorkflowActive ? WORKFLOW_PAGENAME : METADATA_CREATION_PAGENAME;
+      const params = {};
 
-      this.$router.push({ name });
+      if (this.newWorkflowActive) {
+        params.id = this.currentLocalDataset.id;
+      }
+
+      this.$router.push({
+        name,
+        params,
+        query: {
+          backPath: this.$route.fullPath,
+        },
+      });
     },
     catchClearLocalStorage() {
       eventBus.emit(SHOW_DIALOG, {
@@ -804,7 +831,11 @@ export default {
           'This dataset is not stored on the server yet! Are you sure you want to delete it?',
         callback: () => {},
         cancelCallback: () => {
-          localStorage.clear();
+          if (this.newWorkflowActive) {
+            this.workflowStore.clearLocalStorage();
+          } else {
+            localStorage.clear();
+          }
 
           // increase this number to force the computed property to recalulate because the
           // localstorage is cleared. Localstorage isn't reactive so the computed prop
@@ -881,6 +912,7 @@ export default {
     ],
     localDatasetUpdateCount: 0,
     mdiRefresh,
+    workflowStore,
   }),
   components: {
     MetadataList,

@@ -352,5 +352,17 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     reserveDoi() {
       this.doiPlaceholder = '10.10000/envidat.1234';
     },
+
+    clearLocalStorage() {
+      const localDataset = this.localStorageService.dataset;
+
+      if (localDataset?.id) {
+        localStorage.removeItem(localDataset.id);
+      } else {
+        localStorage.clear();
+      }
+
+      this.localStorageService = new LocalStorageDatasetService();
+    },
   },
 });
