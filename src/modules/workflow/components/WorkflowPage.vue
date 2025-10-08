@@ -270,11 +270,11 @@ const save = async (freshData) => {
 };
 
 const catchConfirmSave = () => {
-  const ok = workflowStore.confirmSaveToBackend();
+  const dataset = workflowStore.datasetModel.dataset;
 
-  if (ok) {
-    navigateRouterToStep(currentStep.value + 1);
-  }
+  const ok = workflowStore.confirmSaveToBackend(dataset);
+  // TODO Mange the error here and block the navigation, and show the error
+  navigateRouterToStep(currentStep.value + 1);
 };
 
 const catchCloseClick = () => {
@@ -283,7 +283,7 @@ const catchCloseClick = () => {
 
 const reloadDataset = () => {
   workflowStore.loadDataset(route?.params?.id as string);
-}
+};
 /* =========================
  *  WATCHERS
  * ========================= */

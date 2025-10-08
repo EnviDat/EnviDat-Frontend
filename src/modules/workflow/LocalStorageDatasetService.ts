@@ -1,6 +1,10 @@
 import { Dataset } from '@/modules/workflow/Dataset.ts';
 import { DatasetService } from '@/types/modelTypes';
 import { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
+import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
+import { getMetadataUrlFromTitle } from '@/factories/mappingFactory';
+
+import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
 
 import {
   readDatasetFromLocalStorage,
@@ -27,11 +31,11 @@ export class LocalStorageDatasetService implements DatasetService {
   }
 
   private getNewLocalDatasetId() {
-    return `local_dataset_${this.user?.id || '' }_${++this.datasetCount}`;
+    return `local_dataset_${this.user?.id || ''}_${++this.datasetCount}`;
   }
 
   private getLocalId() {
-    return `local_dataset_${this.user?.id || '' }_${this.dataset?.id}`;
+    return `local_dataset_${this.user?.id || ''}_${this.dataset?.id}`;
   }
 
   static isLocalId(datasetId: string) {
@@ -102,55 +106,64 @@ export class LocalStorageDatasetService implements DatasetService {
     return resourceData;
   }
 
-  private getDatasetWithDefaults(dataset: DatasetDTO): DatasetDTO {
-    // const name = dataset.name ? dataset.name : getMetadataUrlFromTitle(dataset.title);
+  // private getDatasetWithDefaults(dataset: DatasetDTO): DatasetDTO {
+  //   // const name = dataset.name ? dataset.name : getMetadataUrlFromTitle(dataset.title);
+  //   const organizationsStore = useOrganizationsStore();
+  //   // Enhance default data
+  //   const orgaId = organizationsStore.userOrganizations?.[0]?.id || '';
+  //   const organization = organizationsStore.userOrganizations?.[0] || '';
+  //   const name = dataset.name ? getMetadataUrlFromTitle(dataset.title) : '';
 
-    const orgaId = dataset.organization?.id || '';
+  //   // const orgaId = dataset.organization?.id || '';
 
-    return {
-      'owner_org': orgaId,
-      'resource_type_general': 'dataset',
-      ...dataset,
-      // name,
-      private: true, // necessary otherwise the dataset would be public directly
-    };
-  }
+  //   return {
+  //     owner_org: orgaId,
+  //     organization,
+  //     name,
+  //     resource_type_general: 'dataset',
+  //     ...dataset,
+  //     // name,
+  //     private: true, // necessary otherwise the dataset would be public directly
+  //   };
+  // }
 
-  /*
-  private getLocalDatasetWithDefaults(datasetId: string, user: User, prefilledOrganizationId) {
+  // private getLocalDatasetWithDefaults(datasetId: string, user: User, prefilledOrganizationId) {
 
-    const defaultDataset = {};
-    initCreationDataWithDefaults(defaultDataset, user, prefilledOrganizationId);
+  //   const defaultDataset = {};
+  //   initCreationDataWithDefaults(defaultDataset, user, prefilledOrganizationId);
 
-    const stepKeys = Object.keys(defaultDataset);
-    let flatDefaultDataset = {
-      resources: [],
-    };
+  //   const stepKeys = Object.keys(defaultDataset);
+  //   let flatDefaultDataset = {
+  //     resources: [],
+  //   };
 
-    stepKeys.forEach((key) => {
-      flatDefaultDataset = {
-        ...defaultDataset[key],
-        ...flatDefaultDataset,
-      };
-    });
+  //   stepKeys.forEach((key) => {
+  //     flatDefaultDataset = {
+  //       ...defaultDataset[key],
+  //       ...flatDefaultDataset,
+  //     };
+  //   });
 
-    return new Dataset(undefined, {
-      ...flatDefaultDataset,
-      id: datasetId,
-      resourceTypeGeneral: 'dataset', // default for all datasets
-    });
-  }
-*/
+  //   return new Dataset(undefined, {
+  //     ...flatDefaultDataset,
+  //     id: datasetId,
+  //     resourceTypeGeneral: 'dataset', // default for all datasets
+  //   });
+  // }
+
+  // TRY to implemente initCreationDataWithDefaults
 
   async createDataset(dataset: DatasetDTO): Promise<DatasetDTO> {
+    const datasetWorkflowStore = useDatasetWorkflowStore();
     const datasetId = this.getNewLocalDatasetId();
     localStorage.setItem(datasetId, '');
 
-    const datasetWithDefaults = this.getDatasetWithDefaults({
+    const datasetWithDefault = datasetWorkflowStore.applyDatasetDefaults({
       id: datasetId,
       ...dataset,
     });
-    this.dataset = new Dataset(datasetWithDefaults);
+
+    this.dataset = new Dataset(datasetWithDefault);
 
     return this.patchDatasetChanges(datasetId, this.dataset);
   }

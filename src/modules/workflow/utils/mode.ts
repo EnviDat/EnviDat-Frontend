@@ -6,6 +6,7 @@ import {
   WorkflowMode,
 } from '@/modules/workflow/utils/workflowEnums';
 
+// TODO Enrico, can we merge with initializeDataset ???
 export function computeStepsForMode(
   steps: WorkflowStep[],
   isReadOnlyStepKeys: string[],

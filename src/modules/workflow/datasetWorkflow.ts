@@ -1,6 +1,9 @@
 import { defineStore } from 'pinia';
 
-import { enhanceAdminWorkflowStep, workflowSteps } from '@/modules/workflow/resources/steps';
+import {
+  enhanceAdminWorkflowStep,
+  workflowSteps,
+} from '@/modules/workflow/resources/steps';
 
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 import { LocalStorageDatasetService } from '@/modules/workflow/LocalStorageDatasetService.ts';
@@ -25,12 +28,16 @@ import {
   WorkflowMode,
 } from '@/modules/workflow/utils/workflowEnums';
 
+import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
+import { getMetadataUrlFromTitle } from '@/factories/mappingFactory';
+
 /*
 import datasets from '~/stories/js/metadata.js';
 
 let datasetVM = new DatasetModel(new LocalStorageDatasetService());
 if (import.meta.env.MODE === 'development') {
-  datasetVM = new DatasetModel(new LocalStorageDatasetService(datasets[2]));
+  daimport { dataset } from '../../../public/testdata/dataset_10-16904-1';
+tasetVM = new DatasetModel(new LocalStorageDatasetService(datasets[2]));
 }
 */
 
@@ -88,8 +95,9 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     hasDtData(val: any): boolean {
       if (val == null) return false;
       if (Array.isArray(val)) return val.length > 0;
-      if (typeof val === 'object')
+      if (typeof val === 'object') {
         return Object.values(val).some(this.hasDtData);
+      }
       return String(val).trim().length > 0;
     },
     // LOAD the dataset from the backend service
@@ -342,11 +350,24 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
 
     // CHECK - Validate the current step.
     // CONFIRM- If confirmed, save to the backend, close the dialog, and mark the step as validated.
-    confirmSaveToBackend() {
+    confirmSaveToBackend(dataset: object) {
       this.isStepSaveConfirmed = true;
       this.openSaveDialog = false;
+      const test = this.backendStorageService.createDataset(dataset);
+      console.log(test);
 
-      return this.validateStepAction(this.stepForBackendChange);
+      // if (ok) {
+      //   this.isStepSaveConfirmed = true;
+      //   this.openSaveDialog = false;
+      //   console.log('Resource created successfully');
+      // } else {
+      //   this.isStepSaveConfirmed = false;
+      //   this.openSaveDialog = true;
+      // }
+
+      // this.backendStorageService.createResource()
+
+      // return this.validateStepAction(this.stepForBackendChange);
     },
     // TODO implement the real function for get the DOI
     reserveDoi() {
@@ -363,6 +384,33 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
       }
 
       this.localStorageService = new LocalStorageDatasetService();
+    },
+    // Ehnance the default properties of the dataset
+    applyDatasetDefaults(dataset: DatasetDTO, id: string) {
+      const orgStore = useOrganizationsStore();
+      const firstOrg = orgStore.userOrganizations?.[0];
+
+      // const ownerOrg = firstOrg?.id ?? '';
+      // dataset.owner_org = ownerOrg;
+      // const organization = dataset.organization ? firstOrg : undefined;
+      // dataset.organization = organization;
+
+      // const name = dataset.title ? getMetadataUrlFromTitle(dataset.title) : '';
+      // dataset.name = name;
+      // dataset.private = true;
+      // dataset.resource_type_general = 'dataset';
+      // const setId = id;
+      // dataset.id = setId !== '' ? setId : '';
+
+      return {
+        ...dataset,
+        id: id || '',
+        owner_org: firstOrg?.id ?? '',
+        organization: dataset.organization ? firstOrg : undefined,
+        name: dataset.title ? getMetadataUrlFromTitle(dataset.title) : '',
+        private: true,
+        resource_type_general: 'dataset',
+      };
     },
   },
 });
