@@ -102,6 +102,18 @@ export class LocalStorageDatasetService implements DatasetService {
     return resourceData;
   }
 
+  async deleteResource(resourceId: string): Promise<boolean> {
+    const newResources = this.dataset.resources?.filter((res) => res.id !== resourceId) || [];
+
+    try {
+      await this.patchDatasetChanges(this.dataset.id, { resources: newResources });
+    } catch(e) {
+      return false;
+    }
+
+    return true;
+  }
+
   private getDatasetWithDefaults(dataset: DatasetDTO): DatasetDTO {
     // const name = dataset.name ? dataset.name : getMetadataUrlFromTitle(dataset.title);
 

@@ -113,6 +113,8 @@ export interface DatasetService {
 
   createResource?(resourceData: ResourceDTO): Promise<ResourceDTO>;
 
+  deleteResource(resourceId: string): Promise<boolean>;
+
   createDataset() : Promise<DatasetDTO>;
 
 }

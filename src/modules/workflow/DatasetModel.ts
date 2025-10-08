@@ -80,45 +80,34 @@ export class DatasetModel {
     return datasetService.dataset;
   }
 
-  async createResourceOnExistingDataset(resourceModel: AbstractEditViewModel) {
+  async createResourceOnExistingDataset(resourceModel: AbstractEditViewModel) : Promise<ResourceDTO | undefined> {
+    let newResource;
     resourceModel.loading = true;
     resourceModel.error = undefined;
 
     try {
       const datasetService = this.datasetWorkflow.getDatasetService();
-      await datasetService.createResource({
-        ...(resourceModel.backendJSON as ResourceDTO),
-        // DEMO: this is set in the backend, only for local storage is needed
-        id: `resource_id_${this.resourceCounter}`,
-        package_id: this.dataset?.id,
-      });
+      newResource = await datasetService.createResource(resourceModel.backendJSON);
 
-      this.resourceCounter++; // DEMO
+      // reload dataset to update all viewModels
+      await this.loadDataset(this.dataset.id);
 
       // update specifically the ResourcesListViewModel with the newly created Resource
-      this.getViewModel('ResourcesListModel').updateModel(this.dataset);
-
-      /*
-      const resourceModelData =
-        ResourceViewModel.getFormattedResource(
-          newResourceDTO,
-          this.dataset.name,
-          undefined,
-          undefined,
-          undefined,
-        );
-
-      // don't use save as it would validate, directly overwrite the properties
-      Object.assign(resourceModel, resourceModelData);
-*/
+      // this.getViewModel('ResourcesListModel').updateModel(this.dataset);
 
       resourceModel.savedSuccessful = true;
+
     } catch (reason) {
       resourceModel.savedSuccessful = false;
       resourceModel.error = reason;
     }
 
     resourceModel.loading = false;
+    return newResource;
+  }
+
+  async deleteResourceOnExistingDataset(resourceId: string) : Promise<boolean> {
+    return this.datasetWorkflow.getDatasetService().deleteResource(resourceId);
   }
 
   async patchViewModel(newModel: AbstractEditViewModel) {

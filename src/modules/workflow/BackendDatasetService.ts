@@ -8,6 +8,7 @@ import axios from 'axios';
 import {
   ACTION_METADATA_CREATION_DATASET,
   ACTION_METADATA_CREATION_RESOURCE,
+  ACTION_METADATA_DELETE_RESOURCE,
   ACTION_METADATA_EDITING_PATCH_DATASET,
 } from '@/modules/user/store/userMutationsConsts';
 import { urlRewrite } from '@/factories/apiFactory';
@@ -118,7 +119,29 @@ export class BackendDatasetService implements DatasetService {
 
   }
 
+  async deleteResource(resourceId: string) : Promise<boolean> {
+    const postData = {
+      id: resourceId,
+    };
 
+    const actionUrl = ACTION_METADATA_DELETE_RESOURCE();
+    const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
+
+    try{
+      await axios.post(url, postData,
+        {
+          headers: {
+            // Authorization: apiKey,
+          },
+        })
+
+      return true;
+    } catch (err: Error) {
+      console.error(err);
+    }
+
+    return false;
+  }
 
   async createDataset(dataset: DatasetDTO): Promise<ResourceDTO> {
 

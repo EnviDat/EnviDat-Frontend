@@ -34,12 +34,46 @@ if (import.meta.env.MODE === 'development') {
 }
 */
 
+export interface DatasetWorkflowState {
+  loading: boolean;
+  currentStep: number;
+  steps: WorkflowStep[];
+  datasetModel: DatasetModel;
+  isStepSaveConfirmed: boolean;
+  freeJump: boolean;
+  stepForBackendChange: number;
+  mode: WorkflowMode;
+  isReadOnlyStep: string[];
+  backendStorageService: BackendDatasetService;
+  doiPlaceholder: null;
+  listOfReadOnlyFields: string[];
+  openSaveDialog: boolean;
+  localStorageService: LocalStorageDatasetService;
+  userRole?: string;
+  uploadingResourceId?: string;
+/*
+  workflowGuide: ({ popover: { description: string; title: string }; element: string } | {
+    popover: { description: string; title: string };
+    element: string
+  } | { popover: { description: string; title: string }; element: string } | {
+    popover: { description: string; title: string };
+    element: string
+  } | { popover: { description: string; title: string }; element: string } | {
+    popover: { description: string; title: string };
+    element: string
+  } | { popover: { description: string; title: string }; element: string } | {
+    popover: { description: string; title: string };
+    element: string
+  })[];
+*/
+}
+
 export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
-  state: () => ({
+  state: (): DatasetWorkflowState => ({
     loading: false,
     currentStep: 0,
     steps: workflowSteps,
-    datasetModel: undefined,
+    datasetModel: undefined, // needs to be initialized during runtime, because it needs a reference to the store
     localStorageService: new LocalStorageDatasetService(),
     backendStorageService: new BackendDatasetService(),
     openSaveDialog: false,
@@ -59,7 +93,8 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     doiPlaceholder: null,
     workflowGuide,
     mode: WorkflowMode.Create,
-    userRole: undefined as string | undefined,
+    userRole: undefined,
+    uploadingResourceId: undefined,
   }),
   getters: {
     // GET the current step component
@@ -364,5 +399,8 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
 
       this.localStorageService = new LocalStorageDatasetService();
     },
+    setUploadResource(resourceId: string | undefined) {
+      this.uploadingResourceId = resourceId;
+    }
   },
 });

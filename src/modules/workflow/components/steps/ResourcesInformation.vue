@@ -139,7 +139,7 @@ import {
   unSubscribeOnUppyEvent,
   createNewResourceForUrl,
   destroyUppyInstance,
-} from '@/factories/uploadFactory.js';
+} from '@/modules/workflow/utils/workflowUpload';
 
 import {
   ACTION_GET_USER_LIST,
@@ -215,7 +215,7 @@ export default {
   emits: ['save', 'reload', 'delete'],
   created() {
     // call once to create the uppy instance
-    getUppyInstance(this.datasetId, this.$store);
+    getUppyInstance(this.datasetId);
 
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.unselectCurrentResource);
     eventBus.on(UPLOAD_STATE_RESET, this.resetUppy);
