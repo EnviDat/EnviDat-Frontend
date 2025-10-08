@@ -18,6 +18,7 @@ import { ACTION_LOAD_METADATA_CONTENT_BY_ID } from '@/store/metadataMutationsCon
 import {
   getBackendJSONForStep,
   stringifyResourceForBackend,
+  convertJSON,
 } from '@/factories/mappingFactory';
 import { EDITMETADATA_DATA_RESOURCE } from '@/factories/eventBus';
 
@@ -39,15 +40,6 @@ if (useTestdata) {
   API_ROOT = import.meta.env.VITE_API_ROOT || '';
 }
 
-type ConvertJsonOptions = {
-  exclude?: Array<string | RegExp>;
-  predicate?: (args: {
-    key: string;
-    path: string;
-    value: unknown;
-    stringify: boolean;
-  }) => boolean;
-};
 export class BackendDatasetService implements DatasetService {
   declare dataset: DatasetDTO;
   declare loadingDataset: boolean;
@@ -150,78 +142,34 @@ export class BackendDatasetService implements DatasetService {
   }
 
   // Local JSON converter with exclude support
+
   private getBackendJson(
-    data: Record<string, any>,
-    stringify: boolean,
-    options?: ConvertJsonOptions,
-    recursive = false,
+    dataset: Record<string, any>,
+    excluded: string[] = [],
   ): Record<string, any> {
-    const jsonStartRegex = /^\s*[[{]/;
-    const ex = options?.exclude ?? [];
-    const asStringSet = new Set(
-      ex.filter((x): x is string => typeof x === 'string'),
-    );
-    const regexes = ex.filter((x): x is RegExp => x instanceof RegExp);
+    // Save originals
+    const saved: Record<string, any> = {};
+    for (const key of excluded) {
+      if (key in dataset) saved[key] = dataset[key];
+    }
 
-    const shouldSkip = (key: string, path: string, value: unknown): boolean => {
-      if (asStringSet.has(key) || asStringSet.has(path)) return true;
-      if (regexes.some((r) => r.test(key) || r.test(path))) return true;
-      if (options?.predicate?.({ key, path, value, stringify })) return true;
-      return false;
-    };
+    // Convert everything )
+    const obj = convertJSON(dataset, true);
 
-    const process = (obj: any, pathParts: string[] = []): any => {
-      if (Array.isArray(obj)) {
-        if (!recursive) return obj;
-        return obj.map((item, i) => process(item, pathParts.concat(String(i))));
+    // Restore excluded keys as original
+    for (const key of excluded) {
+      if (key in saved) obj[key] = saved[key];
+    }
+
+    // remove null or indefined properties
+    for (const k of Object.keys(obj)) {
+      const v = obj[k];
+      if (v === null || v === undefined || v === 'null') {
+        delete obj[k];
       }
+    }
 
-      if (obj === null || typeof obj !== 'object') return obj;
-
-      const out: Record<string, any> = {};
-      for (const key of Object.keys(obj)) {
-        const path = [...pathParts, key].join('.');
-        const skip = shouldSkip(key, path, obj[key]);
-        let v = obj[key];
-
-        if (stringify) {
-          if (skip) {
-            out[key] = v;
-          } else if (Array.isArray(v)) {
-            out[key] = JSON.stringify(v);
-          } else if (v && typeof v === 'object') {
-            out[key] = recursive
-              ? process(v, pathParts.concat(key))
-              : JSON.stringify(v);
-          } else {
-            out[key] = v;
-          }
-        } else {
-          if (!skip && typeof v === 'string' && jsonStartRegex.test(v)) {
-            try {
-              v = JSON.parse(v);
-            } catch (e) {
-              console.error(e);
-            }
-          }
-
-          if (!skip && recursive) {
-            if (Array.isArray(v)) {
-              v = v.map((item, i) =>
-                process(item, pathParts.concat(key, String(i))),
-              );
-            } else if (v && typeof v === 'object') {
-              v = process(v, pathParts.concat(key));
-            }
-          }
-
-          out[key] = v;
-        }
-      }
-      return out;
-    };
-
-    return process(data);
+    return obj;
   }
 
   async createDataset(dataset: DatasetDTO): Promise<ResourceDTO> {
@@ -233,13 +181,12 @@ export class BackendDatasetService implements DatasetService {
 
     const actionUrl = ACTION_METADATA_CREATION_DATASET();
     const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
-
-    const postData = this.getBackendJson(
-      datasetWithDefault,
-      true,
-      { exclude: ['tags', 'resources', 'extras', 'organization'] },
-      false,
-    );
+    const postData = this.getBackendJson(datasetWithDefault, [
+      'tags',
+      'resources',
+      'extras',
+      'organization',
+    ]);
 
     this.loadingDataset = true;
     try {
