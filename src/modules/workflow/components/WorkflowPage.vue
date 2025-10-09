@@ -53,31 +53,15 @@
         </v-card>
       </v-col>
     </v-row>
-    <!-- dialog, TODO make a external component -->
-    <v-dialog v-model="workflowStore.openSaveDialog" max-width="500">
-      <v-card rounded="xl">
-        <v-card-text class="font-weight-bold"> Before You Proceed </v-card-text>
 
-        <v-card-text>
-          Saving your data now will <b>store your dataset in our system</b>, but
-          it will not be published yet. Before publication, you will need to
-          complete the remaining steps. However, from this point,
-          <b>you can request a DOI for your dataset.</b>
-        </v-card-text>
-
-        <v-card-text>
-          For any questions or clarifications, please contact the team at
-          <a href="mailto:envidat@wsl.ch">envidat@wsl.ch</a>
-        </v-card-text>
-
-        <v-card-actions class="pa-7">
-          <BaseRectangleButton
-            :buttonText="'Save and Proceed'"
-            @clicked="catchConfirmSave"
-          />
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <WorkflowSaveDialog
+      v-model="workflowStore.openSaveDialog"
+      :ready-to-save="workflowStore.readyToSaveToBackend"
+      :error-message="workflowStore.saveErrorMessage"
+      :loading="workflowStore.backendStorageService.loadingDataset"
+      @close="closeModal"
+      @confirm="catchConfirmSave"
+    />
   </div>
 </template>
 
@@ -97,6 +81,7 @@ import { useWorkflowExternal } from '@/modules/workflow/utils/useWorkflowExterna
 
 // import { extractIcons } from '@/factories/iconFactory.ts';
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow.ts';
+import WorkflowSaveDialog from '@/modules/workflow/components/steps/WorkflowSaveDialog.vue';
 import {
   StepStatus,
   WorkflowMode,
@@ -269,12 +254,29 @@ const save = async (freshData) => {
   }
 };
 
-const catchConfirmSave = () => {
+// CONFIRM- If confirmed, save to the backend, close the dialog, and mark the step as validated.
+const closeModal = () => {
+  workflowStore.openSaveDialog = false;
+  workflowStore.readyToSaveToBackend = true;
+};
+const catchConfirmSave = async () => {
   const dataset = workflowStore.datasetModel.dataset;
 
-  const ok = workflowStore.confirmSaveToBackend(dataset);
-  // TODO Mange the error here and block the navigation, and show the error
-  navigateRouterToStep(currentStep.value + 1);
+  workflowStore.readyToSaveToBackend = true;
+  try {
+    const created =
+      await workflowStore.backendStorageService.createDataset(dataset);
+
+    workflowStore.isStepSaveConfirmed = true;
+    workflowStore.openSaveDialog = false;
+    workflowStore.readyToSaveToBackend = true;
+    navigateRouterToStep(currentStep.value + 1);
+  } catch (e: any) {
+    workflowStore.isStepSaveConfirmed = false;
+    workflowStore.readyToSaveToBackend = false;
+    workflowStore.openSaveDialog = true;
+    workflowStore.saveErrorMessage = 'Error saving the dataset';
+  }
 };
 
 const catchCloseClick = () => {

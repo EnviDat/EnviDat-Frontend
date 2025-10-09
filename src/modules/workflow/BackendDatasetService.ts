@@ -172,7 +172,7 @@ export class BackendDatasetService implements DatasetService {
     return obj;
   }
 
-  async createDataset(dataset: DatasetDTO): Promise<ResourceDTO> {
+  async createDataset(dataset: DatasetDTO): Promise<DatasetDTO> {
     const datasetWorkflowStore = useDatasetWorkflowStore();
     const datasetWithDefault = datasetWorkflowStore.applyDatasetDefaults(
       dataset,
@@ -191,7 +191,9 @@ export class BackendDatasetService implements DatasetService {
     this.loadingDataset = true;
     try {
       const response = await axios.post(url, postData);
-      return response.data.result;
+      return new Dataset(response.data.result);
+    } catch (e) {
+      return Promise.reject(e);
     } finally {
       this.loadingDataset = false;
     }

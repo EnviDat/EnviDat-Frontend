@@ -58,6 +58,8 @@ export interface DatasetWorkflowState {
   localStorageService: LocalStorageDatasetService;
   userRole?: string;
   uploadingResourceId?: string;
+  saveErrorMessage?: string;
+  readyToSaveToBackend?: boolean;
   /*
   workflowGuide: ({ popover: { description: string; title: string }; element: string } | {
     popover: { description: string; title: string };
@@ -383,27 +385,6 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
       if (s) s.touched = touched;
     },
 
-    // CHECK - Validate the current step.
-    // CONFIRM- If confirmed, save to the backend, close the dialog, and mark the step as validated.
-    confirmSaveToBackend(dataset: object) {
-      this.isStepSaveConfirmed = true;
-      this.openSaveDialog = false;
-      const test = this.backendStorageService.createDataset(dataset);
-      console.log(test);
-
-      // if (ok) {
-      //   this.isStepSaveConfirmed = true;
-      //   this.openSaveDialog = false;
-      //   console.log('Resource created successfully');
-      // } else {
-      //   this.isStepSaveConfirmed = false;
-      //   this.openSaveDialog = true;
-      // }
-
-      // this.backendStorageService.createResource()
-
-      // return this.validateStepAction(this.stepForBackendChange);
-    },
     // TODO implement the real function for get the DOI
     reserveDoi() {
       this.doiPlaceholder = '10.10000/envidat.1234';
