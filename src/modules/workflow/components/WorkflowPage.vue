@@ -294,15 +294,15 @@ watch(
     changeNavigationInStore(step);
   },
 );
-
-watch(
-  () => route?.params,
-  (newParams) => {
-    if (newParams.id) {
-      workflowStore.loadDataset(newParams.id as string);
-    }
-  },
-);
+// TODO check with dominik, this creates double loading
+// watch(
+//   () => route?.params,
+//   (newParams) => {
+//     if (newParams.id) {
+//       workflowStore.loadDataset(newParams.id as string);
+//     }
+//   },
+// );
 
 /*
 /!* =========================
