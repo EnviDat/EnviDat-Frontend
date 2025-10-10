@@ -47,6 +47,7 @@ export function computeStepsForMode(
 }
 
 // SET the step based on the data available in the datasetModel
+// src/modules/workflow/utils/mode.ts
 export function enhanceStepsFromData(
   steps: WorkflowStep[],
   datasetModel: any,
@@ -56,35 +57,60 @@ export function enhanceStepsFromData(
   if (mode === WorkflowMode.Edit) {
     return { steps, startIdx: 0 };
   }
+
   const next = steps.map((s, idx) => {
     const vm = s.viewModelKey
       ? datasetModel.getViewModel(s.viewModelKey)
       : null;
+
+    // No VM
     if (!vm) {
       return {
         ...s,
         completed: false,
         hasError: false,
         status: idx === 0 ? StepStatus.Active : StepStatus.Disabled,
+        errors: null,
       };
     }
+
     const data = vm.getModelData?.();
-    const filled = hasDtData(data);
-    return filled
-      ? {
-          ...s,
-          completed: true,
-          hasError: false,
-          status: StepStatus.Completed,
-          errors: null,
-        }
-      : {
-          ...s,
-          completed: false,
-          hasError: false,
-          status: idx === 0 ? StepStatus.Active : StepStatus.Disabled,
-        };
+    const hasAnything = hasDtData(data);
+
+    // VM - but incomplete
+    if (!hasAnything) {
+      return {
+        ...s,
+        completed: false,
+        hasError: false,
+        status: idx === 0 ? StepStatus.Active : StepStatus.Disabled,
+        errors: null,
+      };
+    }
+
+    // Validate the VM data
+    vm.validate?.(data);
+    const hasErrors = Object.values(vm.validationErrors || {}).some(Boolean);
+
+    if (hasErrors) {
+      return {
+        ...s,
+        completed: false,
+        hasError: true,
+        status: StepStatus.Error,
+        errors: vm.validationErrors,
+      };
+    }
+
+    return {
+      ...s,
+      completed: true,
+      hasError: false,
+      status: StepStatus.Completed,
+      errors: null,
+    };
   });
+
   const startIdx = next.findIndex((s) => !s.completed);
   return { steps: next, startIdx: startIdx === -1 ? 0 : startIdx };
 }
