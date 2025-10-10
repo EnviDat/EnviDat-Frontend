@@ -172,10 +172,11 @@
         />
         <span class="text-body-2 mt-2">Help mode</span>
       </div>
+      <!-- TODO get from the backend the status of the dataset and not use workflowStore.isStepSaveConfirmed -->
       <div
         @click="reserveDoi"
         :class="{
-          disabled: !workflowStore.isStepSaveConfirmed,
+          disabled: workflowStore.isStepSaveConfirmed,
         }"
         class="navigationWorkflow__actions--item d-flex flex-column"
       >
@@ -305,6 +306,10 @@ const emit = defineEmits(['navigateItem', 'catchCloseClick']);
 // Props
 const props = defineProps({
   isDatasetEditing: Boolean,
+  currentDataset: {
+    type: Object,
+    default: undefined,
+  },
 });
 
 // tooltip activator
@@ -322,8 +327,14 @@ const navigateItem = (id, status) => {
 
 const reserveDoi = async () => {
   // TODO metadataID connect with the real ID, see reference initMetadataUsingId - MetadataEditPage
+  // IMPORTANT initMetadataUsingId!!!!
   // await store.dispatch('user/DOI_RESERVE', 'metadataID');
-  workflowStore.reserveDoi();
+
+  // if (!currentDataset) {
+  //   return workflowStore.triggerErrorAlert();
+  // }
+  const id = props.currentDataset.name;
+  workflowStore.reserveDoi(id);
 };
 
 /*

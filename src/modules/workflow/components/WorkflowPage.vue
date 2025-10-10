@@ -5,6 +5,7 @@
         <TheWorkflowNavigation
           @navigateItem="catchNavigate"
           :isDatasetEditing="workflowStore.isDatasetEditing"
+          :currentDataset="workflowStore.datasetModel.dataset"
           @catchCloseClick="catchCloseClick"
         />
       </v-col>

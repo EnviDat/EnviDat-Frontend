@@ -10,6 +10,7 @@ import {
   ACTION_METADATA_DELETE_RESOURCE,
   ACTION_METADATA_EDITING_PATCH_DATASET,
 } from '@/modules/user/store/userMutationsConsts';
+import { ACTION_DOI_RESERVE } from '@/modules/user/store/doiMutationsConsts';
 import { urlRewrite } from '@/factories/apiFactory';
 import { Dataset } from '@/modules/workflow/Dataset.ts';
 import { DatasetService } from '@/types/modelTypes';
@@ -22,11 +23,15 @@ import {
 } from '@/factories/mappingFactory';
 import { EDITMETADATA_DATA_RESOURCE } from '@/factories/eventBus';
 
+import { extractBodyIntoUrl } from '@/factories/stringFactory';
+
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
 
 // don't use an api base url or API_ROOT when using testdata
 let API_BASE = '';
 let API_ROOT = '';
+
+let API_DOI_BASE = '';
 
 const useTestdata = import.meta.env?.VITE_USE_TESTDATA === 'true';
 
@@ -36,6 +41,7 @@ if (useTestdata) {
     '../../../public/testdata/dataset_10-16904-1'
   );
 } else {
+  API_DOI_BASE = import.meta.env.VITE_API_DOI_BASE_URL || '/doi-api/datacite/';
   API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
   API_ROOT = import.meta.env.VITE_API_ROOT || '';
 }
@@ -117,7 +123,7 @@ export class BackendDatasetService implements DatasetService {
     }
   }
 
-  async deleteResource(resourceId: string) : Promise<boolean> {
+  async deleteResource(resourceId: string): Promise<boolean> {
     const postData = {
       id: resourceId,
     };
@@ -126,12 +132,11 @@ export class BackendDatasetService implements DatasetService {
     const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
     try {
-      await axios.post(url, postData,
-        {
-          headers: {
-            // Authorization: apiKey,
-          },
-        })
+      await axios.post(url, postData, {
+        headers: {
+          // Authorization: apiKey,
+        },
+      });
 
       return true;
     } catch (err: Error) {
@@ -170,6 +175,25 @@ export class BackendDatasetService implements DatasetService {
     }
 
     return obj;
+  }
+
+  async requestDoi(id) {
+    const actionUrl = ACTION_DOI_RESERVE();
+    let url = extractBodyIntoUrl(actionUrl, { 'package-id': id });
+    url = urlRewrite(url, API_DOI_BASE, API_ROOT);
+    console.log(url);
+    try {
+      const response = await axios.get(url);
+      const result = response.data.result;
+      const reservedDOI = result?.data?.id;
+      return console.log(reservedDOI);
+
+      // reload the metadata entry to get the changes to the publicationState
+      // TODO Implemente refresh if we need it
+      // await reloadMetadataForEditing(dispatch, metadataId);
+    } catch (e) {
+      return Promise.reject(e);
+    }
   }
 
   async createDataset(dataset: DatasetDTO): Promise<DatasetDTO> {

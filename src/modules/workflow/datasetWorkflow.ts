@@ -60,6 +60,7 @@ export interface DatasetWorkflowState {
   uploadingResourceId?: string;
   saveErrorMessage?: string;
   readyToSaveToBackend?: boolean;
+  workflowGuide?: any[];
   /*
   workflowGuide: ({ popover: { description: string; title: string }; element: string } | {
     popover: { description: string; title: string };
@@ -386,8 +387,9 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     },
 
     // TODO implement the real function for get the DOI
-    reserveDoi() {
-      this.doiPlaceholder = '10.10000/envidat.1234';
+    reserveDoi(datasetId: string) {
+      this.backendStorageService.requestDoi(datasetId);
+      // this.doiPlaceholder = '10.10000/envidat.1234';
     },
 
     clearLocalStorage() {
