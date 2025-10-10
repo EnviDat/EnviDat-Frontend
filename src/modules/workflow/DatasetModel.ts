@@ -12,6 +12,7 @@ import { AdditionalInfoViewModel } from '@/modules/workflow/viewModel/Additional
 import { GeoInfoViewModel } from '@/modules/workflow/viewModel/GeoInfoViewModel.ts';
 import { RelatedResearchViewModel } from '@/modules/workflow/viewModel/RelatedResearchViewModel.ts';
 import { PublicationInfoViewModel } from '@/modules/workflow/viewModel/PublicationInfoViewModel.ts';
+import { LOCAL_DATASET_KEY } from '@/factories/metadataConsts';
 
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 
@@ -80,14 +81,18 @@ export class DatasetModel {
     return datasetService.dataset;
   }
 
-  async createResourceOnExistingDataset(resourceModel: AbstractEditViewModel) : Promise<ResourceDTO | undefined> {
+  async createResourceOnExistingDataset(
+    resourceModel: AbstractEditViewModel,
+  ): Promise<ResourceDTO | undefined> {
     let newResource;
     resourceModel.loading = true;
     resourceModel.error = undefined;
 
     try {
       const datasetService = this.datasetWorkflow.getDatasetService();
-      newResource = await datasetService.createResource(resourceModel.backendJSON);
+      newResource = await datasetService.createResource(
+        resourceModel.backendJSON,
+      );
 
       // reload dataset to update all viewModels
       await this.loadDataset(this.dataset.id);
@@ -96,7 +101,6 @@ export class DatasetModel {
       // this.getViewModel('ResourcesListModel').updateModel(this.dataset);
 
       resourceModel.savedSuccessful = true;
-
     } catch (reason) {
       resourceModel.savedSuccessful = false;
       resourceModel.error = reason;
@@ -106,16 +110,17 @@ export class DatasetModel {
     return newResource;
   }
 
-  async deleteResourceOnExistingDataset(resourceId: string) : Promise<boolean> {
+  async deleteResourceOnExistingDataset(resourceId: string): Promise<boolean> {
     return this.datasetWorkflow.getDatasetService().deleteResource(resourceId);
   }
 
   async patchViewModel(newModel: AbstractEditViewModel) {
+    const id: string =
+      this.datasetWorkflow.currentDatasetId?.trim() || LOCAL_DATASET_KEY;
+
+    console.log(id);
     const datasetService = this.datasetWorkflow.getDatasetService();
-    await datasetService.patchDatasetChanges(
-      this.dataset.id,
-      newModel.backendJSON,
-    );
+    await datasetService.patchDatasetChanges(id, newModel.backendJSON);
 
     this.updateViewModels();
 

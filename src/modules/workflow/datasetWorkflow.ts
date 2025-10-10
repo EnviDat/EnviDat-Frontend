@@ -64,6 +64,7 @@ export interface DatasetWorkflowState {
   saveErrorMessage?: string;
   readyToSaveToBackend?: boolean;
   workflowGuide?: any[];
+  currentDatasetId?: string;
   /*
   workflowGuide: ({ popover: { description: string; title: string }; element: string } | {
     popover: { description: string; title: string };
@@ -150,14 +151,14 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
       this.mode = mode;
       this.datasetModel = new DatasetModel(this);
 
-      // 1) SET localstorage with data
-      if (mode === WorkflowMode.Create && dataset) {
-        if (this.localStorageService?.patchDatasetChanges) {
-          await this.localStorageService.patchDatasetChanges(dataset);
-        } else {
-          await this.localStorageService.createDataset(dataset as any);
-        }
-      }
+      // SET default values for the dataset
+      // if (mode === WorkflowMode.Create && dataset) {
+      //   if (this.localStorageService?.patchDatasetChanges) {
+      //     await this.localStorageService.patchDatasetChanges(dataset);
+      //   } else {
+      //     await this.localStorageService.createDataset(dataset as any);
+      //   }
+      // }
 
       // SET Admin role if the user is admin
       const baseSteps = enhanceAdminWorkflowStep(this.userRole, this.steps);
@@ -216,6 +217,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
         });
         // this.setWorkflowMode(mode);
         await this.initializeDataset(dto, mode);
+        return { id: dto.id, mode };
       } finally {
         this.loading = false;
       }

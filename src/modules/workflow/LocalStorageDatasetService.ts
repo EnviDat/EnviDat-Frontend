@@ -2,6 +2,8 @@ import { Dataset } from '@/modules/workflow/Dataset.ts';
 import { DatasetService } from '@/types/modelTypes';
 import { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 
+import { LOCAL_DATASET_KEY } from '@/factories/metadataConsts';
+
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
 
 import {
@@ -28,12 +30,16 @@ export class LocalStorageDatasetService implements DatasetService {
 */
   }
 
+  // private getNewLocalDatasetId() {
+  //   return `local_dataset__${++this.datasetCount}`;
+  // }
+
   private getNewLocalDatasetId() {
-    return `local_dataset_${this.user?.id || ''}_${++this.datasetCount}`;
+    return LOCAL_DATASET_KEY;
   }
 
   private getLocalId() {
-    return `local_dataset_${this.user?.id || ''}_${this.dataset?.id}`;
+    return LOCAL_DATASET_KEY;
   }
 
   static isLocalId(datasetId: string) {
@@ -104,19 +110,20 @@ export class LocalStorageDatasetService implements DatasetService {
     return resourceData;
   }
 
-
   async deleteResource(resourceId: string): Promise<boolean> {
-    const newResources = this.dataset.resources?.filter((res) => res.id !== resourceId) || [];
+    const newResources =
+      this.dataset.resources?.filter((res) => res.id !== resourceId) || [];
 
     try {
-      await this.patchDatasetChanges(this.dataset.id, { resources: newResources });
-    } catch(e) {
+      await this.patchDatasetChanges(this.dataset.id, {
+        resources: newResources,
+      });
+    } catch (e) {
       return false;
     }
 
     return true;
   }
-
 
   // private getDatasetWithDefaults(dataset: DatasetDTO): DatasetDTO {
   //   // const name = dataset.name ? dataset.name : getMetadataUrlFromTitle(dataset.title);
@@ -125,7 +132,6 @@ export class LocalStorageDatasetService implements DatasetService {
   //   const orgaId = organizationsStore.userOrganizations?.[0]?.id || '';
   //   const organization = organizationsStore.userOrganizations?.[0] || '';
   //   const name = dataset.name ? getMetadataUrlFromTitle(dataset.title) : '';
-
 
   //   // const orgaId = dataset.organization?.id || '';
 
@@ -168,7 +174,14 @@ export class LocalStorageDatasetService implements DatasetService {
 
   async createDataset(dataset: DatasetDTO): Promise<DatasetDTO> {
     const datasetWorkflowStore = useDatasetWorkflowStore();
+    // IF already present, remove the existing local dataset
+    if (localStorage.getItem(LOCAL_DATASET_KEY)) {
+      localStorage.removeItem(LOCAL_DATASET_KEY);
+    }
+
     const datasetId = this.getNewLocalDatasetId();
+    // CREATE an empty entry in localStorage to mark the existence of this dataset
+    console.log(datasetId);
     localStorage.setItem(datasetId, '');
 
     const datasetWithDefault = datasetWorkflowStore.applyDatasetDefaults({
@@ -177,7 +190,7 @@ export class LocalStorageDatasetService implements DatasetService {
     });
 
     this.dataset = new Dataset(datasetWithDefault);
-
+    // SET the datasetModel in the localStorage
     return this.patchDatasetChanges(datasetId, this.dataset);
   }
 }

@@ -1,6 +1,7 @@
 // src/modules/workflow/utils/bootstrapWorkflow.ts
 
 import { WorkflowMode } from '@/modules/workflow/utils/workflowEnums';
+import { LOCAL_DATASET_KEY } from '@/factories/metadataConsts';
 
 /* eslint-disable no-unused-vars */
 export interface BootstrapDeps<DatasetDTO> {
@@ -49,16 +50,17 @@ export async function resolveBootstrap<DatasetDTO>(
       console.log(e);
     }
   }
-
-  if (datasetId && existsInLocalStorage(datasetId)) {
+  // IF LOCAL_DATASET_KEY is present in localStorage
+  if (existsInLocalStorage(LOCAL_DATASET_KEY)) {
     try {
-      const dto = await deps.loadLocal(datasetId);
+      const dto = await deps.loadLocal(LOCAL_DATASET_KEY);
       if (dto) return { dto, mode: WorkflowMode.Create };
     } catch (e) {
       console.log(e);
     }
   }
 
+  // CREATE a new local dataset
   const dto = await deps.createLocal({} as Partial<DatasetDTO>);
   return { dto, mode: WorkflowMode.Create };
 }
