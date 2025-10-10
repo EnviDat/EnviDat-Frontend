@@ -333,7 +333,7 @@ const reserveDoi = async () => {
   // if (!currentDataset) {
   //   return workflowStore.triggerErrorAlert();
   // }
-  const id = props.currentDataset.name;
+  const id = props.currentDataset.dataset.name;
   workflowStore.reserveDoi(id);
 };
 

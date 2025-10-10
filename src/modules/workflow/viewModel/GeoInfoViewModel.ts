@@ -28,8 +28,12 @@ export class GeoInfoViewModel extends AbstractEditViewModel {
           if (!Array.isArray(entries)) return false;
 
           const created = entries.find((e) => e.dateType === 'created');
-          // deve esistere e avere entrambi i campi
-          return !!created && created.dateStart && created.dateEnd;
+          if (!created) return false;
+
+          const start = created.date ?? created.dateStart;
+          const end = created.endDate ?? created.dateEnd;
+
+          return Boolean(start && end);
         },
       ),
     geometries: yup

@@ -208,7 +208,6 @@ export class BackendDatasetService implements DatasetService {
     const postData = this.getBackendJson(datasetWithDefault, [
       'tags',
       'resources',
-      'extras',
       'organization',
     ]);
 

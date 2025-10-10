@@ -200,17 +200,23 @@
               }}</b>
             </div>
           </v-col>
-
           <v-col cols="12">
             <BaseStartEndDate
               data-field="dates"
-              :startDate="getMode === 'create' ? item.dateStart : item.date"
-              :startDateLabel="`${item.dateType} start date`"
-              :startDateProperty="startDateProperty"
-              :endDate="getMode === 'create' ? item.dateEnd : item.endDate"
+              :startDate="
+                item.dateType === 'created' ? item.date : item.dateStart
+              "
+              :endDate="
+                item.dateType === 'created' ? item.endDate : item.dateEnd
+              "
+              :startDateProperty="
+                item.dateType === 'created' ? 'date' : 'dateStart'
+              "
+              :endDateProperty="
+                item.dateType === 'created' ? 'endDate' : 'dateEnd'
+              "
               :error-messages="validationErrors.dates"
               :endDateLabel="`${item.dateType} end date`"
-              :endDateProperty="endDateProperty"
               :clearableEndDate="false"
               :clearableStartDate="false"
               rowLayout
