@@ -6,7 +6,6 @@ import {
   WorkflowMode,
 } from '@/modules/workflow/utils/workflowEnums';
 
-// TODO Enrico, can we merge with initializeDataset ???
 export function computeStepsForMode(
   steps: WorkflowStep[],
   isReadOnlyStepKeys: string[],
@@ -45,4 +44,47 @@ export function computeStepsForMode(
 
   // SET block navigation in create mode
   return { steps: next, freeJump: false };
+}
+
+// SET the step based on the data available in the datasetModel
+export function enhanceStepsFromData(
+  steps: WorkflowStep[],
+  datasetModel: any,
+  hasDtData: (v: any) => boolean,
+  mode: WorkflowMode,
+) {
+  if (mode === WorkflowMode.Edit) {
+    return { steps, startIdx: 0 };
+  }
+  const next = steps.map((s, idx) => {
+    const vm = s.viewModelKey
+      ? datasetModel.getViewModel(s.viewModelKey)
+      : null;
+    if (!vm) {
+      return {
+        ...s,
+        completed: false,
+        hasError: false,
+        status: idx === 0 ? StepStatus.Active : StepStatus.Disabled,
+      };
+    }
+    const data = vm.getModelData?.();
+    const filled = hasDtData(data);
+    return filled
+      ? {
+          ...s,
+          completed: true,
+          hasError: false,
+          status: StepStatus.Completed,
+          errors: null,
+        }
+      : {
+          ...s,
+          completed: false,
+          hasError: false,
+          status: idx === 0 ? StepStatus.Active : StepStatus.Disabled,
+        };
+  });
+  const startIdx = next.findIndex((s) => !s.completed);
+  return { steps: next, startIdx: startIdx === -1 ? 0 : startIdx };
 }

@@ -14,7 +14,10 @@ import { workflowGuide } from '@/modules/workflow/resources/workflowGuides.ts';
 
 import { readOnlyFields } from '@/modules/workflow/resources/readOnlyList.ts';
 import { resolveBootstrap } from '@/modules/workflow/utils/workflowBootstrap.ts';
-import { computeStepsForMode } from '@/modules/workflow/utils/mode.ts';
+import {
+  computeStepsForMode,
+  enhanceStepsFromData,
+} from '@/modules/workflow/utils/mode.ts';
 import {
   mustValidateOnLeave as mustValidateOnLeaveUtil,
   setActiveStepForCreate,
@@ -144,10 +147,11 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     },
 
     async initializeDataset(dataset: DatasetDTO, mode: WorkflowMode) {
+      this.mode = mode;
       this.datasetModel = new DatasetModel(this);
 
+      // 1) SET localstorage with data
       if (mode === WorkflowMode.Create && dataset) {
-        // SEED the local storage with the provided dataset
         if (this.localStorageService?.patchDatasetChanges) {
           await this.localStorageService.patchDatasetChanges(dataset);
         } else {
@@ -155,58 +159,37 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
         }
       }
 
+      // SET Admin role if the user is admin
+      const baseSteps = enhanceAdminWorkflowStep(this.userRole, this.steps);
+
+      // SET the navigation based on the mode
+      const { steps: shapedByMode, freeJump } = computeStepsForMode(
+        baseSteps,
+        this.isReadOnlyStep,
+        mode,
+      );
+
+      // SET navigation based on the data available in the datasetModel
+      const { steps: evaluated, startIdx } = enhanceStepsFromData(
+        shapedByMode,
+        this.datasetModel,
+        this.hasDtData,
+        mode,
+      );
+
+      this.steps = evaluated;
+      this.freeJump = freeJump;
+
       if (mode === WorkflowMode.Create) {
-        const seeded = this.steps.map((s: WorkflowStep) => {
-          const vm = s.viewModelKey
-            ? (this.datasetModel as any).getViewModel(s.viewModelKey)
-            : null;
-
-          if (!vm) return { ...s, completed: false, hasError: false };
-
-          const data = vm.getModelData?.();
-          const filled = this.hasDtData(data);
-          if (!filled)
-            return {
-              ...s,
-              completed: false,
-              hasError: false,
-              status: StepStatus.Disabled,
-            };
-          // vm.validate?.(data);
-          // const hasErrors = Object.values(vm.validationErrors || {}).some(
-          //   Boolean,
-          // );
-          // if (hasErrors) {
-          //   return {
-          //     ...s,
-          //     completed: false,
-          //     hasError: true,
-          //     status: StepStatus.Error,
-          //     errors: vm.validationErrors,
-          //   };
-          // }
-          return {
-            ...s,
-            completed: true,
-            hasError: false,
-            status: StepStatus.Completed,
-            errors: null,
-          };
-        });
-
-        this.steps = enhanceAdminWorkflowStep(this.userRole, seeded);
-
-        const startIdx = this.steps.findIndex((s) => !s.completed);
-        this.setActiveStep(startIdx === -1 ? 0 : startIdx);
+        this.setActiveStep(startIdx);
       } else {
         this.currentStep = 0;
       }
 
-      // SET doi
+      // RESET
+      // TODO Create function for reset status
       this.doiPlaceholder = null;
-      // SET the dialog for the step 4 to false
       this.openSaveDialog = false;
-      // SET the step save confirmation to false
       this.isStepSaveConfirmed = false;
     },
 
@@ -231,9 +214,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
           createLocal: (init) =>
             this.localStorageService.createDataset(init as DatasetDTO),
         });
-
-        this.setWorkflowMode(mode);
-
+        // this.setWorkflowMode(mode);
         await this.initializeDataset(dto, mode);
       } finally {
         this.loading = false;
@@ -249,21 +230,21 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
         : this.backendStorageService;
     },
 
-    // SET the mode to WorkflowMode.Create or WorkflowMode.Edit.
-    // Controls navigation flow, read-only UI state, and step editability based on the mode.
-    // EXAMPLE - In WorkflowMode.Edit mode, steps become editable, allowing free navigation.
-    setWorkflowMode(mode: WorkflowMode) {
-      this.mode = mode;
+    // // SET the mode to WorkflowMode.Create or WorkflowMode.Edit.
+    // // Controls navigation flow, read-only UI state, and step editability based on the mode.
+    // // EXAMPLE - In WorkflowMode.Edit mode, steps become editable, allowing free navigation.
+    // setWorkflowMode(mode: WorkflowMode) {
+    //   this.mode = mode;
 
-      const { steps, freeJump } = computeStepsForMode(
-        this.steps,
-        this.isReadOnlyStep,
-        mode,
-      );
+    //   const { steps, freeJump } = computeStepsForMode(
+    //     this.steps,
+    //     this.isReadOnlyStep,
+    //     mode,
+    //   );
 
-      this.steps = steps;
-      this.freeJump = freeJump;
-    },
+    //   this.steps = steps;
+    //   this.freeJump = freeJump;
+    // },
 
     // STORYBOOK
     // PLEASE NOTE – We are currently in the development phase, and an exception is present to make Storybook work.
