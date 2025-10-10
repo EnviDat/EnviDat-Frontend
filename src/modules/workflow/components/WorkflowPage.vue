@@ -266,7 +266,7 @@ const catchConfirmSave = async () => {
   try {
     const created =
       await workflowStore.backendStorageService.createDataset(dataset);
-
+    // TODO create function to handle this part
     workflowStore.isStepSaveConfirmed = true;
     workflowStore.openSaveDialog = false;
     workflowStore.readyToSaveToBackend = true;

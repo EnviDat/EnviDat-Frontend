@@ -32,9 +32,12 @@
 
       <v-col cols="12" sm="6" class="pl-sm-4">
         <BaseUserPicker
+          ref="contactUserPicker"
+          data-field="contactUserPicker"
           :users="fullNameUsers"
           :preSelected="preselectAuthorNames"
-          :hint="labels.authorPickHint"
+          :readonly="isReadOnly('contactUserPicker')"
+          :hint="readOnlyHint('contactUserPicker')"
           @removedUsers="catchPickerAuthorChange($event, false)"
           @pickedUsers="catchPickerAuthorChange($event, true)"
         />

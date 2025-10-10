@@ -61,7 +61,11 @@
           :key="index"
           :class="[
             'navigationWorkflow__item',
-            { readOnly: !step.isEditable, unlocked: isUnlocked(step) },
+            {
+              readOnly:
+                !step.isEditable && workflowStore.mode !== WorkflowMode.Create,
+              unlocked: isUnlocked(step),
+            },
             // step.status can be active, completed, error
             step.status,
           ]"
@@ -292,6 +296,8 @@ import { extractIcons } from '@/factories/iconFactory';
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow.ts';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
+import { WorkflowMode } from '@/modules/workflow/utils/workflowEnums';
+
 const display = useDisplay();
 
 const emit = defineEmits(['navigateItem', 'catchCloseClick']);
@@ -331,8 +337,7 @@ const tooltip = {
 */
 // Unlock the step
 const isUnlocked = (step) => {
-  if (workflowStore.mode !== 'create' && workflowStore.mode !== 'Create')
-    return false;
+  if (workflowStore.mode !== WorkflowMode.Create) return false;
   if (step.id <= 0) return false;
   const prev = workflowStore.steps[step.id - 1];
   return !!prev?.completed;

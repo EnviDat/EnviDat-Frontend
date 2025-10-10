@@ -13,4 +13,5 @@ export const readOnlyFields = [
   'contactLastName',
   'visibility',
   'dateYear',
+  'contactUserPicker',
 ];
