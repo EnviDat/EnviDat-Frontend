@@ -22,7 +22,6 @@ function existsInLocalStorage(id?: string): boolean {
   }
 }
 
-// TODO ENRICO use the correct props here
 function isPublished(dto: any): boolean {
   return Boolean(dto?.publication_state === 'published');
 }

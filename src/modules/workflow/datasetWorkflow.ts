@@ -146,6 +146,12 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
       }
       return String(val).trim().length > 0;
     },
+    // RESET status of the workflow
+    resetStatus() {
+      this.doiPlaceholder = null;
+      this.openSaveDialog = false;
+      this.isStepSaveConfirmed = false;
+    },
     // LOAD the dataset from the backend service
     async loadDataset(datasetId: string) {
       return this.datasetModel.loadDataset(datasetId);
@@ -192,10 +198,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
       }
 
       // RESET
-      // TODO Create function for reset status
-      this.doiPlaceholder = null;
-      this.openSaveDialog = false;
-      this.isStepSaveConfirmed = false;
+      this.resetStatus();
     },
 
     // CHECK if the field is readonly based on the mode and the list of readOnlyFields.
@@ -369,7 +372,6 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     },
 
     // SET the step as touched.
-    // TODO: ticket (https://envicloud.atlassian.net/browse/EN-2431)
     markStepTouched(stepId: number, touched = true) {
       const s = this.steps[stepId];
       if (s) s.touched = touched;

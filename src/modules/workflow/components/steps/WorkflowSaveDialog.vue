@@ -30,7 +30,7 @@
       <v-card-actions class="pa-7">
         <BaseRectangleButton
           :buttonText="closeText"
-          :color="readyToSave ? 'secondary' : undefined"
+          :color="readyToSave ? 'gray' : undefined"
           :disabled="loading"
           @clicked="onClose"
         />

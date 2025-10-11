@@ -4,8 +4,8 @@
       <v-col cols="12" lg="4" xl="3" class="workflow-navigation__wrapper">
         <TheWorkflowNavigation
           @navigateItem="catchNavigate"
-          :isDatasetEditing="workflowStore.isDatasetEditing"
-          :currentDataset="workflowStore.datasetModel"
+          :isDatasetEditing="isDatasetEditing"
+          :currentDataset="workflowStore?.datasetModel"
           @catchCloseClick="catchCloseClick"
         />
       </v-col>
@@ -15,7 +15,7 @@
         lg="8"
         xl="9"
         class="workflow-content__wrapper position-relative"
-        :class="{ loading: workflowStore.loading }"
+        :class="{ loading: storeLoading }"
       >
         <div>
           <!-- <div
@@ -37,18 +37,18 @@
         >
           <div>
             <component
-              :is="currentAsyncComponent"
-              :key="workflowStore.currentStep"
+              :is="resolvedComponent"
+              :key="currentStepNum"
               v-bind="vm"
               @validate="validate"
               @save="save"
               @reload="reloadDataset"
-              v-if="currentAsyncComponent && !workflowStore.loading"
+              v-if="resolvedComponent && !storeLoading"
             />
           </div>
           <div ref="nextStepBlock" class="pa-4 d-flex align-center justify-end">
             <v-btn @click="nextStep">{{
-              workflowStore.currentStep === 6 ? 'Finish Demo!' : 'Next Step'
+              currentStepNum === 6 ? 'Close' : 'Next Step'
             }}</v-btn>
           </div>
         </v-card>
@@ -56,11 +56,10 @@
     </v-row>
 
     <WorkflowSaveDialog
-      v-if="workflowStore"
-      v-model="workflowStore.openSaveDialog"
-      :ready-to-save="workflowStore.readyToSaveToBackend"
-      :error-message="workflowStore.saveErrorMessage"
-      :loading="workflowStore.backendStorageService.loadingDataset"
+      v-model="openSaveDialog"
+      :ready-to-save="readyToSaveFlag"
+      :error-message="saveErrMsg"
+      :loading="savingLoading"
       @close="closeModal"
       @confirm="catchConfirmSave"
     />
@@ -71,13 +70,20 @@
 /* =========================
  *  IMPORTS
  * ========================= */
-import { storeToRefs } from 'pinia';
-import { ref, watch, computed, nextTick, onMounted } from 'vue';
+// import { storeToRefs } from 'pinia';
+import {
+  ref,
+  watch,
+  computed,
+  nextTick,
+  onMounted,
+  onBeforeUnmount,
+  defineAsyncComponent,
+} from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { USER_DASHBOARD_PAGENAME } from '@/router/routeConsts';
 import TheWorkflowNavigation from '@/components/Navigation/TheWorkflowNavigation.vue';
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 
 import { useWorkflowExternal } from '@/modules/workflow/utils/useWorkflowExternal.ts';
 
@@ -89,6 +95,7 @@ import {
   WorkflowMode,
 } from '@/modules/workflow/utils/workflowEnums';
 
+const workflowStore = useDatasetWorkflowStore();
 /* =========================
  *  ROUTER & PROPS
  * ========================= */
@@ -109,8 +116,10 @@ const props = defineProps({
 /* =========================
  *  STORE & REFS/COMPUTEDS
  * ========================= */
-const workflowStore = useDatasetWorkflowStore();
-const { currentStep, currentAsyncComponent } = storeToRefs(workflowStore);
+const currentStep = computed(() => workflowStore?.currentStep ?? 0);
+const currentAsyncComponent = computed(
+  () => workflowStore?.currentAsyncComponent ?? null,
+);
 const vm = computed(() => workflowStore.currentViewModel);
 // const iconScroll = computed(() => extractIcons('scroll'));
 const nextStepBlock = ref(null);
@@ -133,6 +142,42 @@ const scrollToFirstError = (errors) => {
   const el = document.querySelector(selector);
   el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 };
+
+const openSaveDialog = computed({
+  get: () => workflowStore?.openSaveDialog ?? false,
+  set: (val: boolean) => {
+    if (workflowStore) workflowStore.openSaveDialog = val;
+  },
+});
+const readyToSaveFlag = computed(
+  () => workflowStore?.readyToSaveToBackend ?? false,
+);
+const saveErrMsg = computed(() => workflowStore?.saveErrorMessage ?? undefined);
+const savingLoading = computed(
+  () => workflowStore?.backendStorageService?.loadingDataset ?? false,
+);
+const isDatasetEditing = computed(
+  () => workflowStore?.isDatasetEditing ?? false,
+);
+
+const storeLoading = computed(() => !!workflowStore?.loading);
+const currentStepNum = computed(() => workflowStore?.currentStep ?? 0);
+
+const resolvedComponent = computed(() => {
+  const c = currentAsyncComponent.value;
+  if (!c) return null;
+  // already component
+  if (
+    typeof c === 'object' &&
+    ('setup' in (c as any) || 'render' in (c as any))
+  )
+    return c as any;
+  // load
+  if (typeof c === 'function') return defineAsyncComponent(c as any);
+  // promise
+  if ((c as any)?.then) return defineAsyncComponent(() => c as Promise<any>);
+  return null;
+});
 
 const scrollDown = () => {
   nextTick(() => {
@@ -259,25 +304,34 @@ const save = async (freshData) => {
 // CONFIRM- If confirmed, save to the backend, close the dialog, and mark the step as validated.
 const closeModal = () => {
   workflowStore.openSaveDialog = false;
-  workflowStore.readyToSaveToBackend = true;
+  workflowStore.readyToSaveToBackend = false;
 };
 const catchConfirmSave = async () => {
   const dataset = workflowStore.datasetModel.dataset;
 
+  if (workflowStore.backendStorageService.loadingDataset) {
+    return;
+  }
+
   workflowStore.readyToSaveToBackend = true;
+  workflowStore.saveErrorMessage = undefined;
+
   try {
-    const created =
-      await workflowStore.backendStorageService.createDataset(dataset);
-    // TODO create function to handle this part
+    await workflowStore.backendStorageService.createDataset(dataset);
+
     workflowStore.isStepSaveConfirmed = true;
     workflowStore.openSaveDialog = false;
-    workflowStore.readyToSaveToBackend = true;
     navigateRouterToStep(currentStep.value + 1);
   } catch (e: any) {
     workflowStore.isStepSaveConfirmed = false;
-    workflowStore.readyToSaveToBackend = false;
     workflowStore.openSaveDialog = true;
-    workflowStore.saveErrorMessage = 'Error saving the dataset';
+    workflowStore.readyToSaveToBackend = false;
+    workflowStore.saveErrorMessage =
+      e?.message ??
+      e?.response?.data?.error?.message ??
+      'Error saving the dataset';
+  } finally {
+    workflowStore.readyToSaveToBackend = false;
   }
 };
 
@@ -296,6 +350,17 @@ watch(
   (newQuery) => {
     const step = (newQuery?.step as string) || 0;
     changeNavigationInStore(step);
+  },
+);
+
+// Handle save modal opening
+watch(
+  () => workflowStore.openSaveDialog,
+  (open) => {
+    if (open) {
+      workflowStore.readyToSaveToBackend = true;
+      workflowStore.saveErrorMessage = undefined;
+    }
   },
 );
 // TODO check with dominik, this creates double loading
@@ -351,6 +416,13 @@ onMounted(async () => {
   if (stepParam !== undefined) {
     workflowStore.setActiveStep(Number(stepParam));
   }
+});
+
+onBeforeUnmount(() => {
+  if (!workflowStore) return;
+  workflowStore.openSaveDialog = false;
+  workflowStore.readyToSaveToBackend = false;
+  workflowStore.saveErrorMessage = undefined;
 });
 
 /* =========================

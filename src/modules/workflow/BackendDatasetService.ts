@@ -205,7 +205,7 @@ export class BackendDatasetService implements DatasetService {
     }
   }
 
-  async createDataset(dataset: DatasetDTO, user: any): Promise<DatasetDTO> {
+  async createDataset(dataset?: DatasetDTO): Promise<DatasetDTO> {
     const datasetWorkflowStore = useDatasetWorkflowStore();
     // GET default value for the dataset
     // id
@@ -217,7 +217,7 @@ export class BackendDatasetService implements DatasetService {
     // publication,
     // maintainer TODO DOMINIK check if we need it
     const datasetWithDefault = datasetWorkflowStore.applyDatasetDefaults(
-      dataset,
+      dataset ?? ({} as DatasetDTO),
       '',
     );
 
@@ -235,8 +235,12 @@ export class BackendDatasetService implements DatasetService {
     try {
       const response = await axios.post(url, postData);
       return new Dataset(response.data.result);
-    } catch (e) {
-      return Promise.reject(e);
+    } catch (e: any) {
+      const message =
+        e?.response?.data?.error?.message ?? e?.message ?? 'Unknown error';
+      const err = new Error(message) as any;
+      err.status = e?.response?.status;
+      throw err;
     } finally {
       this.loadingDataset = false;
     }
