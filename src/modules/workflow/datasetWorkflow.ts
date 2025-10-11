@@ -69,6 +69,8 @@ export interface DatasetWorkflowState {
   readyToSaveToBackend?: boolean;
   workflowGuide?: any[];
   currentDatasetId?: string;
+  dataSource: 'local' | 'backend';
+
   /*
   workflowGuide: ({ popover: { description: string; title: string }; element: string } | {
     popover: { description: string; title: string };
@@ -113,6 +115,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     mode: WorkflowMode.Create,
     userRole: undefined,
     uploadingResourceId: undefined,
+    dataSource: 'local' as const,
   }),
   getters: {
     // GET the current step component
@@ -216,15 +219,18 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
       this.loading = true;
 
       try {
-        const { dto, mode } = await resolveBootstrap<DatasetDTO>(datasetId, {
-          loadBackend: (id) => this.backendStorageService.loadDataset(id),
-          loadLocal: (id) => this.localStorageService.loadDataset(id),
-          createLocal: (init) =>
-            this.localStorageService.createDataset(init as DatasetDTO),
-          createBackend: (init) =>
-            this.backendStorageService.createDataset(init as DatasetDTO),
-        });
+        const { dto, mode, source } = await resolveBootstrap<DatasetDTO>(
+          datasetId,
+          {
+            loadBackend: (id) => this.backendStorageService.loadDataset(id),
+            loadLocal: (id) => this.localStorageService.loadDataset(id),
+            createLocal: (init) =>
+              this.localStorageService.createDataset(init as DatasetDTO),
+          },
+        );
         // this.setWorkflowMode(mode);
+        console.log(source);
+        this.dataSource = source;
         await this.initializeDataset(dto, mode);
         return { id: dto.id, mode };
       } finally {
@@ -233,12 +239,12 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     },
 
     // RETURN the dataset service to use based on the current mode.
-    //  WorkflowMode.Create mode → uses localStorage service
-    // WorkflowMode.Edit mode → uses backend service
+    // Based on the dataSource we will use the local or the backend service.
+    // The source is defined in the bootstrapWorkflow function -> resolveBootstrap()
     getDatasetService(): DatasetService {
-      return this.mode === WorkflowMode.Create
-        ? this.localStorageService
-        : this.backendStorageService;
+      return this.dataSource === 'backend'
+        ? this.backendStorageService
+        : this.localStorageService;
     },
 
     // // SET the mode to WorkflowMode.Create or WorkflowMode.Edit.

@@ -8,7 +8,6 @@ export interface BootstrapDeps<DatasetDTO> {
   loadBackend: (id: string) => Promise<DatasetDTO | null>;
   loadLocal: (id: string) => Promise<DatasetDTO | null>;
   createLocal: (init: Partial<DatasetDTO>) => Promise<DatasetDTO>;
-  createBackend: (init: Partial<DatasetDTO>) => Promise<DatasetDTO>;
 }
 /* eslint-enable no-unused-vars */
 
@@ -31,20 +30,33 @@ function isPublished(dto: any): boolean {
 export async function resolveBootstrap<DatasetDTO>(
   datasetId: string | undefined,
   deps: BootstrapDeps<DatasetDTO>,
-): Promise<{ dto: DatasetDTO; mode: WorkflowMode }> {
+): Promise<{
+  dto: DatasetDTO;
+  mode: WorkflowMode;
+  source: 'local' | 'backend';
+}> {
   if (datasetId) {
     try {
       const backendDto = await deps.loadBackend(datasetId);
       if (backendDto) {
         if (isPublished(backendDto)) {
           // Case 2: published → edit directly from backend
-          return { dto: backendDto, mode: WorkflowMode.Edit };
+          return {
+            dto: backendDto,
+            mode: WorkflowMode.Edit,
+            source: 'backend',
+          };
         }
         // Case 3: NOT published → seed local with backend data, then use Create mode
-        const seededLocal = await deps.createLocal(
-          backendDto as Partial<DatasetDTO>,
-        );
-        return { dto: seededLocal, mode: WorkflowMode.Create };
+        // const seededLocal = await deps.createBackend(
+        //   backendDto as Partial<DatasetDTO>,
+        // );
+        // return { dto: seededLocal, mode: WorkflowMode.Create };
+        return {
+          dto: backendDto,
+          mode: WorkflowMode.Create,
+          source: 'backend',
+        };
       }
     } catch (e) {
       console.log(e);
@@ -54,7 +66,7 @@ export async function resolveBootstrap<DatasetDTO>(
   if (existsInLocalStorage(LOCAL_DATASET_KEY)) {
     try {
       const dto = await deps.loadLocal(LOCAL_DATASET_KEY);
-      if (dto) return { dto, mode: WorkflowMode.Create };
+      if (dto) return { dto, mode: WorkflowMode.Create, source: 'local' };
     } catch (e) {
       console.log(e);
     }
@@ -62,5 +74,5 @@ export async function resolveBootstrap<DatasetDTO>(
 
   // CREATE a new local dataset
   const dto = await deps.createLocal({} as Partial<DatasetDTO>);
-  return { dto, mode: WorkflowMode.Create };
+  return { dto, mode: WorkflowMode.Create, source: 'local' };
 }
