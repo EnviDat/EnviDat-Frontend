@@ -55,7 +55,7 @@
       </v-col>
     </v-row>
 
-    <!-- <WorkflowSaveDialog
+    <WorkflowSaveDialog
       v-if="workflowStore"
       v-model="workflowStore.openSaveDialog"
       :ready-to-save="workflowStore.readyToSaveToBackend"
@@ -63,7 +63,7 @@
       :loading="workflowStore.backendStorageService.loadingDataset"
       @close="closeModal"
       @confirm="catchConfirmSave"
-    /> -->
+    />
   </div>
 </template>
 
@@ -83,7 +83,7 @@ import { useWorkflowExternal } from '@/modules/workflow/utils/useWorkflowExterna
 
 // import { extractIcons } from '@/factories/iconFactory.ts';
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow.ts';
-// import WorkflowSaveDialog from '@/modules/workflow/components/steps/WorkflowSaveDialog.vue';
+import WorkflowSaveDialog from '@/modules/workflow/components/steps/WorkflowSaveDialog.vue';
 import {
   StepStatus,
   WorkflowMode,

@@ -240,7 +240,6 @@ import {
   getReadOnlyHint,
 } from '@/modules/workflow/utils/useReadonly';
 
-
 export default {
   name: 'EditMetadataHeader',
   props: {
@@ -333,8 +332,12 @@ export default {
     },
 
     changeLicense() {
-      this.newDatasetInfo.dataLicenseId = this.selectedLicenseObj?.id;
+      // this.newDatasetInfo.dataLicenseId = this.selectedLicenseObj?.id;
 
+      const lic = this.selectedLicenseObj || null;
+      this.newDatasetInfo.dataLicenseId = lic?.id || '';
+      this.newDatasetInfo.dataLicenseTitle = lic?.title || '';
+      this.newDatasetInfo.dataLicenseUrl = lic?.link || '';
       this.$emit('save', this.newDatasetInfo);
       //   const payload = {
       //     funders: this.previewFunders,

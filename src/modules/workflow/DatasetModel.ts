@@ -1,6 +1,5 @@
 import type { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 
-import { EditDescriptionViewModel } from '@/modules/workflow/viewModel/EditDescriptionViewModel.ts';
 import { AdminViewModel } from '@/modules/workflow/viewModel/AdminViewModel.ts';
 import { AuthorListViewModel } from '@/modules/workflow/viewModel/AuthorListViewModel.ts';
 import { EditDataInfoViewModel } from '@/modules/workflow/viewModel/EditDataInfoViewModel.ts';
@@ -21,7 +20,6 @@ import { reactive, computed } from 'vue';
 
 export class DatasetModel {
   viewModelClasses = [
-    EditDescriptionViewModel,
     AuthorListViewModel,
     AdminViewModel,
     EditDataInfoViewModel,
@@ -118,7 +116,6 @@ export class DatasetModel {
     const id: string =
       this.datasetWorkflow.currentDatasetId?.trim() || LOCAL_DATASET_KEY;
 
-    console.log(id);
     const datasetService = this.datasetWorkflow.getDatasetService();
     await datasetService.patchDatasetChanges(id, newModel.backendJSON);
 

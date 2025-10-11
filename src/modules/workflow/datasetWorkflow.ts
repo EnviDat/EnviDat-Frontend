@@ -11,6 +11,7 @@ import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 import { DatasetService, User } from '@/types/modelTypes';
 import { BackendDatasetService } from '@/modules/workflow/BackendDatasetService.ts';
 import { workflowGuide } from '@/modules/workflow/resources/workflowGuides.ts';
+import { getYear } from 'date-fns';
 
 import { readOnlyFields } from '@/modules/workflow/resources/readOnlyList.ts';
 import { resolveBootstrap } from '@/modules/workflow/utils/workflowBootstrap.ts';
@@ -33,6 +34,9 @@ import {
 
 import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
 import { getMetadataUrlFromTitle } from '@/factories/mappingFactory';
+
+import { makeMaintainerFromUser } from '@/modules/workflow/utils/formatPostData';
+import { useWorkflowExternal } from '@/modules/workflow/utils/useWorkflowExternal.ts';
 
 /*
 import datasets from '~/stories/js/metadata.js';
@@ -214,6 +218,8 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
           loadLocal: (id) => this.localStorageService.loadDataset(id),
           createLocal: (init) =>
             this.localStorageService.createDataset(init as DatasetDTO),
+          createBackend: (init) =>
+            this.backendStorageService.createDataset(init as DatasetDTO),
         });
         // this.setWorkflowMode(mode);
         await this.initializeDataset(dto, mode);
@@ -392,20 +398,20 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     // Ehnance the default properties of the dataset
     applyDatasetDefaults(dataset: DatasetDTO, id: string) {
       const orgStore = useOrganizationsStore();
+      const { user } = useWorkflowExternal();
       const firstOrg = orgStore.userOrganizations?.[0];
 
-      // const ownerOrg = firstOrg?.id ?? '';
-      // dataset.owner_org = ownerOrg;
-      // const organization = dataset.organization ? firstOrg : undefined;
-      // dataset.organization = organization;
+      const publicationObj = {
+        publisher: 'EnviDat',
+        publication_year: String(getYear(new Date())),
+      };
+      const publication = JSON.stringify(publicationObj);
 
-      // const name = dataset.title ? getMetadataUrlFromTitle(dataset.title) : '';
-      // dataset.name = name;
-      // dataset.private = true;
-      // dataset.resource_type_general = 'dataset';
-      // const setId = id;
-      // dataset.id = setId !== '' ? setId : '';
+      const maintainer = user
+        ? makeMaintainerFromUser(user)
+        : ((dataset as any)?.maintainer ?? '');
 
+      // '{"email":"enrico.peruselli@wsl.ch","given_name":"Enrico","name":"Peruselli"}',
       return {
         ...dataset,
         id: id || '',
@@ -414,6 +420,8 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
         name: dataset.title ? getMetadataUrlFromTitle(dataset.title) : '',
         private: true,
         resource_type_general: 'dataset',
+        publication,
+        maintainer,
       };
     },
   },

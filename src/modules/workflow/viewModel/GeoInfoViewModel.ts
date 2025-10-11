@@ -74,7 +74,7 @@ export class GeoInfoViewModel extends AbstractEditViewModel {
   static mappingRules() {
     return [
       ['dates', 'date'],
-      ['geometries', 'geometries'],
+      ['geometries', 'spatial'],
     ];
   }
 }

@@ -23,6 +23,11 @@ import {
 } from '@/factories/mappingFactory';
 import { EDITMETADATA_DATA_RESOURCE } from '@/factories/eventBus';
 
+import {
+  cleanDatesForBackend,
+  cleanPostData,
+} from '@/modules/workflow/utils/formatPostData';
+
 import { extractBodyIntoUrl } from '@/factories/stringFactory';
 
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
@@ -158,30 +163,34 @@ export class BackendDatasetService implements DatasetService {
       if (key in dataset) saved[key] = dataset[key];
     }
 
+    const local: Record<string, any> = { ...dataset };
+    if (local.date != null) {
+      const cleanedDates = cleanDatesForBackend(local.date);
+      if (cleanedDates.length > 0) {
+        local.date = cleanedDates;
+      }
+    }
+
     // Convert everything )
-    const obj = convertJSON(dataset, true);
+    const obj = convertJSON(local, true);
 
     // Restore excluded keys as original
     for (const key of excluded) {
       if (key in saved) obj[key] = saved[key];
     }
 
-    // remove null or indefined properties
-    for (const k of Object.keys(obj)) {
-      const v = obj[k];
-      if (v === null || v === undefined || v === 'null') {
-        delete obj[k];
-      }
-    }
-
-    return obj;
+    return cleanPostData(obj, {
+      keepEmptyKeys: ['doi', 'publication_state'],
+      wrapSpatial: true,
+      dropEmptyJsonBraces: true,
+    });
   }
 
   async requestDoi(id) {
     const actionUrl = ACTION_DOI_RESERVE();
     let url = extractBodyIntoUrl(actionUrl, { 'package-id': id });
     url = urlRewrite(url, API_DOI_BASE, API_ROOT);
-    console.log(url);
+
     try {
       const response = await axios.get(url);
       const result = response.data.result;
@@ -196,8 +205,17 @@ export class BackendDatasetService implements DatasetService {
     }
   }
 
-  async createDataset(dataset: DatasetDTO): Promise<DatasetDTO> {
+  async createDataset(dataset: DatasetDTO, user: any): Promise<DatasetDTO> {
     const datasetWorkflowStore = useDatasetWorkflowStore();
+    // GET default value for the dataset
+    // id
+    // owner_org
+    // organization
+    // name
+    // private
+    // resource_type_general
+    // publication,
+    // maintainer TODO DOMINIK check if we need it
     const datasetWithDefault = datasetWorkflowStore.applyDatasetDefaults(
       dataset,
       '',
@@ -205,10 +223,12 @@ export class BackendDatasetService implements DatasetService {
 
     const actionUrl = ACTION_METADATA_CREATION_DATASET();
     const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
+
     const postData = this.getBackendJson(datasetWithDefault, [
       'tags',
       'resources',
       'organization',
+      'extras',
     ]);
 
     this.loadingDataset = true;

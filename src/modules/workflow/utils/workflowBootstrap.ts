@@ -8,6 +8,7 @@ export interface BootstrapDeps<DatasetDTO> {
   loadBackend: (id: string) => Promise<DatasetDTO | null>;
   loadLocal: (id: string) => Promise<DatasetDTO | null>;
   createLocal: (init: Partial<DatasetDTO>) => Promise<DatasetDTO>;
+  createBackend: (init: Partial<DatasetDTO>) => Promise<DatasetDTO>;
 }
 /* eslint-enable no-unused-vars */
 
