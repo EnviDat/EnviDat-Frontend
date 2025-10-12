@@ -1,6 +1,12 @@
 import { defineStore } from 'pinia';
 
 import {
+  USER_ROLE_MEMBER,
+  USER_ROLE_EDITOR,
+  USER_ROLE_SYSTEM_ADMIN,
+} from '@/factories/userEditingValidations';
+
+import {
   enhanceAdminWorkflowStep,
   workflowSteps,
 } from '@/modules/workflow/resources/steps';
@@ -145,6 +151,11 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     // SET the current user
     setCurrentUser(u: any) {
       this.currentUser = u ?? undefined;
+    },
+    // SET the user role
+    setUserRole(role?: string) {
+      debugger;
+      this.userRole = role;
     },
     // CHECK if the value has data
     hasDtData(val: any): boolean {
@@ -436,6 +447,32 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
         publication,
         maintainer,
       };
+    },
+    computeUserRole(args: {
+      user?: any;
+      userOrganizations?: Array<{ id: string; name?: string }>;
+      userDatasets?: Array<{ id: string }>;
+    }) {
+      const { user, userOrganizations = [], userDatasets = [] } = args || {};
+      const ds = this.datasetModel?.dataset;
+
+      if (!user || !ds) {
+        this.userRole = USER_ROLE_MEMBER;
+        return this.userRole;
+      }
+
+      if (user.sysadmin === true) {
+        this.userRole = USER_ROLE_SYSTEM_ADMIN;
+        return this.userRole;
+      }
+
+      const inOrg = userOrganizations.some(
+        (o) => o.id === ds?.organization?.id,
+      );
+      const isOwner = userDatasets.some((d) => d.id === ds?.id);
+
+      this.userRole = inOrg && isOwner ? USER_ROLE_EDITOR : USER_ROLE_MEMBER;
+      return this.userRole;
     },
   },
 });

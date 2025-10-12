@@ -10,7 +10,11 @@ import {
   ACTION_METADATA_DELETE_RESOURCE,
   ACTION_METADATA_EDITING_PATCH_DATASET,
 } from '@/modules/user/store/userMutationsConsts';
-import { ACTION_DOI_RESERVE } from '@/modules/user/store/doiMutationsConsts';
+import {
+  ACTION_DOI_RESERVE,
+  ACTION_DOI_REQUEST,
+  ACTION_DOI_PUBLISH,
+} from '@/modules/user/store/doiMutationsConsts';
 import { urlRewrite } from '@/factories/apiFactory';
 import { Dataset } from '@/modules/workflow/Dataset.ts';
 import { DatasetService } from '@/types/modelTypes';
@@ -207,23 +211,38 @@ export class BackendDatasetService implements DatasetService {
     });
   }
 
-  async requestDoi(id) {
-    const actionUrl = ACTION_DOI_RESERVE();
-    let url = extractBodyIntoUrl(actionUrl, { 'package-id': id });
+  private async runDoiAction(actionFactory: () => string, metadataId: string) {
+    const actionUrl = actionFactory();
+    let url = extractBodyIntoUrl(actionUrl, { 'package-id': metadataId });
     url = urlRewrite(url, API_DOI_BASE, API_ROOT);
 
     try {
-      const response = await axios.get(url);
-      const result = response.data.result;
-      const reservedDOI = result?.data?.id;
-      return console.log(reservedDOI);
+      await axios.get(url);
 
-      // reload the metadata entry to get the changes to the publicationState
-      // TODO Implemente refresh if we need it
-      // await reloadMetadataForEditing(dispatch, metadataId);
+      // Reload dataset used in the UI
+      const workflowStore = useDatasetWorkflowStore();
+      await workflowStore.loadDataset(metadataId);
+
+      // Refresh the service's cached dataset
+      this.dataset = workflowStore.datasetModel?.dataset ?? this.dataset;
+
+      return this.dataset;
     } catch (e) {
+      // Bubble up so caller can surface error
       return Promise.reject(e);
     }
+  }
+
+  async requestDoi(metadataId: string) {
+    return this.runDoiAction(ACTION_DOI_RESERVE, metadataId);
+  }
+
+  async requestPublication(metadataId: string) {
+    return this.runDoiAction(ACTION_DOI_REQUEST, metadataId);
+  }
+
+  async publishDataset(metadataId: string) {
+    return this.runDoiAction(ACTION_DOI_PUBLISH, metadataId);
   }
 
   async createDataset(dataset?: DatasetDTO, user?: any): Promise<DatasetDTO> {

@@ -40,6 +40,7 @@
               :is="resolvedComponent"
               :key="currentStepNum"
               v-bind="vm"
+              :user-role="workflowStore.userRole ?? 'member'"
               @validate="validate"
               @save="save"
               @reload="reloadDataset"
@@ -86,6 +87,7 @@ import { USER_DASHBOARD_PAGENAME } from '@/router/routeConsts';
 import TheWorkflowNavigation from '@/components/Navigation/TheWorkflowNavigation.vue';
 
 import { useWorkflowExternal } from '@/modules/workflow/utils/useWorkflowExternal.ts';
+import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
 
 // import { extractIcons } from '@/factories/iconFactory.ts';
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow.ts';
@@ -96,6 +98,7 @@ import {
 } from '@/modules/workflow/utils/workflowEnums';
 
 const workflowStore = useDatasetWorkflowStore();
+const orgStore = useOrganizationsStore();
 /* =========================
  *  ROUTER & PROPS
  * ========================= */
@@ -131,6 +134,7 @@ const {
   initMetadataUsingId,
   updateStepsOrganizations,
   user,
+  userDatasets,
 } = useWorkflowExternal();
 
 /* =========================
@@ -354,6 +358,23 @@ watch(
   },
 );
 
+watch(
+  () => [
+    workflowStore.datasetModel?.dataset?.id,
+    orgStore.userOrganizations,
+    userDatasets.value,
+    user.value,
+  ],
+  () => {
+    workflowStore.computeUserRole({
+      user: user.value,
+      userOrganizations: orgStore.userOrganizations,
+      userDatasets: userDatasets.value,
+    });
+  },
+  { deep: true },
+);
+
 watch(user, (u) => {
   workflowStore.setCurrentUser(u);
 });
@@ -410,11 +431,17 @@ onMounted(async () => {
 
   await workflowStore.bootstrapWorkflow(id);
 
-  await initMetadataUsingId(id);
+  // await initMetadataUsingId(id);
 
   await Promise.all([loadUserOrganizations(), fetchUserDatasets()]);
   // SET currentUser
   workflowStore.setCurrentUser(user.value);
+  // SET user role
+  workflowStore.computeUserRole({
+    user: user.value,
+    userOrganizations: orgStore.userOrganizations,
+    userDatasets: userDatasets.value,
+  });
 
   workflowStore.currentDatasetId = id;
   updateStepsOrganizations();

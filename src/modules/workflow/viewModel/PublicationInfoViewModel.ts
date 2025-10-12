@@ -6,7 +6,8 @@ export class PublicationInfoViewModel extends AbstractEditViewModel {
   declare contactEmail: string;
   declare contactFirstName: string;
   declare contactLastName: string;
-  declare organizationId: string;
+  declare organizationId: string | undefined;
+  declare organization?: { id?: string; title?: string; name?: string };
 
   declare publicationState: string;
   declare doi: string;
@@ -75,6 +76,7 @@ export class PublicationInfoViewModel extends AbstractEditViewModel {
       ['contactFirstName', 'maintainer.given_name'],
       ['contactLastName', 'maintainer.name'],
       ['organizationId', 'organization.id'],
+      ['organization', 'organization'],
       ['publicationState', 'publication_state'],
       ['doi', 'doi'],
       ['publisher', 'publication.publisher'],
