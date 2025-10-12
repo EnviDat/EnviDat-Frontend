@@ -139,24 +139,25 @@ export function useWorkflowExternal() {
     });
   }
 
-  function updateStepsOrganizations() {
-    const userOrganizations = organizationsStore.userOrganizations ?? [];
+  // TODO remove?
+  // function updateStepsOrganizations() {
+  //   const userOrganizations = organizationsStore.userOrganizations ?? [];
 
-    const editOrgaData = store.getters[
-      `${USER_NAMESPACE}/getMetadataEditingObject`
-    ](EDITMETADATA_ORGANIZATION);
+  //   const editOrgaData = store.getters[
+  //     `${USER_NAMESPACE}/getMetadataEditingObject`
+  //   ](EDITMETADATA_ORGANIZATION);
 
-    store.commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`, {
-      object: EDITMETADATA_ORGANIZATION,
-      data: {
-        ...editOrgaData,
-        userOrganizations,
-      },
-    });
+  //   store.commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`, {
+  //     object: EDITMETADATA_ORGANIZATION,
+  //     data: {
+  //       ...editOrgaData,
+  //       userOrganizations,
+  //     },
+  //   });
 
-    const datasetOrgaId = editOrgaData?.organizationId;
-    updatePublicationStatus(datasetOrgaId);
-  }
+  //   const datasetOrgaId = editOrgaData?.organizationId;
+  //   updatePublicationStatus(datasetOrgaId);
+  // }
 
   return {
     user,
@@ -165,8 +166,9 @@ export function useWorkflowExternal() {
     fetchUserDatasets,
     loadUserOrganizations,
     initMetadataUsingId,
-    updatePublicationStatus,
-    updateStepsOrganizations,
+    // updatePublicationStatus,
+    // updateStepsOrganizations,
     workflowStore,
+    userDatasets,
   };
 }

@@ -131,8 +131,8 @@ const nextStepBlock = ref(null);
 const {
   fetchUserDatasets,
   loadUserOrganizations,
-  initMetadataUsingId,
-  updateStepsOrganizations,
+  // initMetadataUsingId,
+  // updateStepsOrganizations,
   user,
   userDatasets,
 } = useWorkflowExternal();
@@ -444,7 +444,7 @@ onMounted(async () => {
   });
 
   workflowStore.currentDatasetId = id;
-  updateStepsOrganizations();
+  // updateStepsOrganizations();
 
   const stepParam = route?.query?.step;
   if (stepParam !== undefined) {
