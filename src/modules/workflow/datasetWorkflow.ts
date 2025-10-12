@@ -198,6 +198,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
         baseSteps,
         this.isReadOnlyStep,
         mode,
+        this.dataSource,
       );
 
       // SET navigation based on the data available in the datasetModel
@@ -246,7 +247,6 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
           },
         );
         // this.setWorkflowMode(mode);
-        console.log(source);
         this.dataSource = source;
         await this.initializeDataset(dto, mode);
         return { id: dto.id, mode };
@@ -381,7 +381,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
         isStepSaveConfirmed: this.isStepSaveConfirmed,
       });
 
-      if (openSaveDialog) {
+      if (openSaveDialog && this.dataSource === 'local') {
         this.openSaveDialog = true;
         return false;
       }

@@ -10,7 +10,9 @@ export function computeStepsForMode(
   steps: WorkflowStep[],
   isReadOnlyStepKeys: string[],
   mode: WorkflowMode,
+  dataSource: 'local' | 'backend',
 ): ComputeResult {
+  const isBackendSource = dataSource === 'backend';
   if (mode === WorkflowMode.Edit) {
     const next = steps.map((s) => {
       // CHECK if the step is readOnly based on the list listOfReadOnlyFields - src/modules/workflow/resources/readOnlyFields.ts
@@ -43,7 +45,8 @@ export function computeStepsForMode(
   }));
 
   // SET block navigation in create mode
-  return { steps: next, freeJump: false };
+  // IF backend source, we allow free navigation
+  return { steps: next, freeJump: isBackendSource };
 }
 
 // SET the step based on the data available in the datasetModel

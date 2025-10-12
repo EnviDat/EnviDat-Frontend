@@ -322,11 +322,24 @@ const catchConfirmSave = async () => {
   workflowStore.saveErrorMessage = undefined;
 
   try {
-    await workflowStore.backendStorageService.createDataset(dataset);
+    // CREATE Backend Dataset
+    const created =
+      await workflowStore.backendStorageService.createDataset(dataset);
+    // Get and save the new ID
+    const newId = created?.id || workflowStore.currentDatasetId;
 
+    // CLEANUP localStorage for the new backend dataset
+    workflowStore.clearLocalStorage();
+
+    workflowStore.loading = true;
+    workflowStore.currentDatasetId = newId;
+    // SET source to backend
+    workflowStore.dataSource = 'backend';
     workflowStore.isStepSaveConfirmed = true;
     workflowStore.openSaveDialog = false;
-    navigateRouterToStep(currentStep.value + 1);
+    const freshDto =
+      await workflowStore.backendStorageService.loadDataset(newId);
+    await workflowStore.bootstrapWorkflow(newId);
   } catch (e: any) {
     workflowStore.isStepSaveConfirmed = false;
     workflowStore.openSaveDialog = true;
