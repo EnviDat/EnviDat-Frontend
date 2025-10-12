@@ -70,6 +70,20 @@ export class PublicationInfoViewModel extends AbstractEditViewModel {
     super(datasetModel, PublicationInfoViewModel.mappingRules());
   }
 
+  getModelDataForInit() {
+    const full = (this as any).getModelData?.() || {};
+    const {
+      contactEmail,
+      contactFirstName,
+      contactLastName,
+      publisher,
+      publicationYear,
+      ...rest
+    } = full;
+
+    return rest;
+  }
+
   static mappingRules() {
     return [
       ['contactEmail', 'maintainer.email'],

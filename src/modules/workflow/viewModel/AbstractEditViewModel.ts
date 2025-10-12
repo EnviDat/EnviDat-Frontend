@@ -56,6 +56,11 @@ export abstract class AbstractEditViewModel {
     this.privateMappingRules = mappingRules;
   }
 
+  // HOOKS to exclude some validation at the first load, ex - MANTAINER in the last step
+  getModelDataForInit(): any {
+    return (this as any).getModelData?.();
+  }
+
   updateModel(dataset: DatasetDTO) {
     const frontendJson = convertToFrontendJSONWithRules(
       this.mappingRules,

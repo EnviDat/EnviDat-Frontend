@@ -77,8 +77,11 @@ export function enhanceStepsFromData(
       };
     }
 
-    const data = vm.getModelData?.();
-    const hasAnything = hasDtData(data);
+    // Get the data from the VM, check if we have some exclusion getModelDataForInit
+    const dataForInit = vm.getModelDataForInit
+      ? vm.getModelDataForInit()
+      : vm.getModelData?.();
+    const hasAnything = hasDtData(dataForInit);
 
     // VM - but incomplete
     if (!hasAnything) {
@@ -92,7 +95,7 @@ export function enhanceStepsFromData(
     }
 
     // Validate the VM data
-    vm.validate?.(data);
+    vm.validate?.(dataForInit);
     const hasErrors = Object.values(vm.validationErrors || {}).some(Boolean);
 
     if (hasErrors) {
