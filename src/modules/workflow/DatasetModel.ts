@@ -3,7 +3,6 @@ import type { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 import { AdminViewModel } from '@/modules/workflow/viewModel/AdminViewModel.ts';
 import { AuthorListViewModel } from '@/modules/workflow/viewModel/AuthorListViewModel.ts';
 import { EditDataInfoViewModel } from '@/modules/workflow/viewModel/EditDataInfoViewModel.ts';
-import { PublicationViewModel } from '@/modules/workflow/viewModel/PublicationViewModel.ts';
 import { ResourcesListViewModel } from '@/modules/workflow/viewModel/ResourcesListViewModel.ts';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 import { MetadataBaseViewModel } from '@/modules/workflow/viewModel/MetadataBaseViewModel.ts';
@@ -23,7 +22,6 @@ export class DatasetModel {
     AuthorListViewModel,
     AdminViewModel,
     EditDataInfoViewModel,
-    PublicationViewModel,
     ResourcesListViewModel,
     MetadataBaseViewModel,
     AdditionalInfoViewModel,

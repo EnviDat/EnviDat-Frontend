@@ -130,6 +130,7 @@ const {
   loadUserOrganizations,
   initMetadataUsingId,
   updateStepsOrganizations,
+  user,
 } = useWorkflowExternal();
 
 /* =========================
@@ -353,6 +354,10 @@ watch(
   },
 );
 
+watch(user, (u) => {
+  workflowStore.setCurrentUser(u);
+});
+
 // Handle save modal opening
 watch(
   () => workflowStore.openSaveDialog,
@@ -408,6 +413,8 @@ onMounted(async () => {
   await initMetadataUsingId(id);
 
   await Promise.all([loadUserOrganizations(), fetchUserDatasets()]);
+  // SET currentUser
+  workflowStore.setCurrentUser(user.value);
 
   workflowStore.currentDatasetId = id;
   updateStepsOrganizations();

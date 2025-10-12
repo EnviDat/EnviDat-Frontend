@@ -36,7 +36,6 @@ import { useOrganizationsStore } from '@/modules/organizations/store/organizatio
 import { getMetadataUrlFromTitle } from '@/factories/mappingFactory';
 
 import { makeMaintainerFromUser } from '@/modules/workflow/utils/formatPostData';
-import { useWorkflowExternal } from '@/modules/workflow/utils/useWorkflowExternal.ts';
 
 /*
 import datasets from '~/stories/js/metadata.js';
@@ -44,7 +43,8 @@ import datasets from '~/stories/js/metadata.js';
 let datasetVM = new DatasetModel(new LocalStorageDatasetService());
 if (import.meta.env.MODE === 'development') {
   daimport { dataset } from '../../../public/testdata/dataset_10-16904-1';
-tasetVM = new DatasetModel(new LocalStorageDatasetService(datasets[2]));
+taseimport { user } from '../user/store/userStore';
+tVM = new DatasetModel(new LocalStorageDatasetService(datasets[2]));
 }
 */
 
@@ -70,6 +70,7 @@ export interface DatasetWorkflowState {
   workflowGuide?: any[];
   currentDatasetId?: string;
   dataSource: 'local' | 'backend';
+  currentUser?: any;
 
   /*
   workflowGuide: ({ popover: { description: string; title: string }; element: string } | {
@@ -116,6 +117,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     userRole: undefined,
     uploadingResourceId: undefined,
     dataSource: 'local' as const,
+    currentUser: undefined,
   }),
   getters: {
     // GET the current step component
@@ -140,6 +142,10 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     },
   },
   actions: {
+    // SET the current user
+    setCurrentUser(u: any) {
+      this.currentUser = u ?? undefined;
+    },
     // CHECK if the value has data
     hasDtData(val: any): boolean {
       if (val == null) return false;
@@ -406,7 +412,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     // Ehnance the default properties of the dataset
     applyDatasetDefaults(dataset: DatasetDTO, id: string) {
       const orgStore = useOrganizationsStore();
-      const { user } = useWorkflowExternal();
+
       const firstOrg = orgStore.userOrganizations?.[0];
 
       const publicationObj = {
@@ -414,9 +420,8 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
         publication_year: String(getYear(new Date())),
       };
       const publication = JSON.stringify(publicationObj);
-
-      const maintainer = user
-        ? makeMaintainerFromUser(user)
+      const maintainer = this.currentUser
+        ? makeMaintainerFromUser(this.currentUser)
         : ((dataset as any)?.maintainer ?? '');
 
       // '{"email":"enrico.peruselli@wsl.ch","given_name":"Enrico","name":"Peruselli"}',

@@ -147,3 +147,33 @@ export function makeMaintainerFromUser(u: any): string {
     name: family,
   });
 }
+
+// GET the tags string and convert into object array
+export function normalizeTagsForPatch(
+  input: Record<string, any>,
+): Record<string, any> {
+  const out: any = { ...input };
+  if (out.tags == null) return out;
+
+  let tags = out.tags;
+  if (typeof tags === 'string') {
+    try {
+      tags = JSON.parse(tags);
+    } catch {
+      tags = null;
+    }
+  }
+
+  if (Array.isArray(tags)) {
+    out.tags = tags
+      .map((t: any) => ({
+        name: t?.name ?? t?.display_name ?? String(t ?? '').trim(),
+        ...(t?.color ? { color: t.color } : {}),
+      }))
+      .filter((t: any) => !!t.name);
+  } else {
+    delete out.tags;
+  }
+
+  return out;
+}
