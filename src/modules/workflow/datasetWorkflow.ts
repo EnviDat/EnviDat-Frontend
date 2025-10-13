@@ -422,7 +422,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     },
     setUploadResource(resourceId: string | undefined) {
       this.uploadingResourceId = resourceId;
-    }
+    },
     // Ehnance the default properties of the dataset
     applyDatasetDefaults(dataset: DatasetDTO, id: string) {
       const orgStore = useOrganizationsStore();

@@ -10,7 +10,7 @@ import { StepStatus } from '@/modules/workflow/utils/workflowEnums';
 import { WorkflowStep } from '@/types/workflow';
 import { USER_ROLE_SYSTEM_ADMIN } from '@/factories/userEditingValidations';
 import AdminInformation from '@/modules/workflow/components/steps/AdminInformation.vue';
-import { AdminViewModel } from '@/modules/workflow/viewModel/AdminViewModel.ts';
+
 
 export const workflowSteps: WorkflowStep[] = [
   {
@@ -157,13 +157,21 @@ export const workflowSteps: WorkflowStep[] = [
 export default workflowSteps;
 
 
+const adminStepTitle = 'Admin Information';
+
 export function enhanceAdminWorkflowStep(userRole: string, steps: WorkflowStep[]) {
-  if (userRole !== USER_ROLE_SYSTEM_ADMIN) {
+  if (userRole === USER_ROLE_SYSTEM_ADMIN) {
+    const alreadyContainsAdminStep = steps.filter((step) => step.title === adminStepTitle).length > 0;
+
+    if (alreadyContainsAdminStep) {
+      return steps;
+    }
+
     return [
       ...steps,
       {
         id: steps.length + 1,
-        title: 'Admin Information',
+        title: adminStepTitle,
         description: 'Custom fields, Project Assignment',
         isEditable: true,
         completed: false,

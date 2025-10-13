@@ -289,9 +289,10 @@ import { ref } from 'vue';
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import { extractIcons } from '@/factories/iconFactory';
 
-import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow.ts';
+import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
+const workflowStore = useDatasetWorkflowStore();
 const display = useDisplay();
 
 const emit = defineEmits(['navigateItem', 'catchCloseClick']);
@@ -307,7 +308,6 @@ const showStatusMenu = ref(false);
 // Extract Icon name from IconFactory
 const iconName = (name) => extractIcons(name);
 
-const workflowStore = useDatasetWorkflowStore();
 
 const navigateItem = (id, status) => {
   // workflowStore.navigateItemAction(id, status);
