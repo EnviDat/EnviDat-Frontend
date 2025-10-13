@@ -38,6 +38,7 @@ export class LocalStorageDatasetService implements DatasetService {
     return LOCAL_DATASET_KEY;
   }
 
+  // TODO make it public and import
   private getLocalId() {
     return LOCAL_DATASET_KEY;
   }

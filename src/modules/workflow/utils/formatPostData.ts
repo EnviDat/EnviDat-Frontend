@@ -34,6 +34,8 @@ export function cleanDatesForBackend(datesLike: unknown): BackendDate[] {
     return [];
   }
 
+  // TODO ENRICO improve this function
+
   return arr
     .map((e: any) => {
       const type = pick(e.dateType, e.date_type);

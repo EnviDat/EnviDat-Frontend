@@ -406,6 +406,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
       // this.doiPlaceholder = '10.10000/envidat.1234';
     },
 
+    // TODO remove only the dataset with the ID
     clearLocalStorage() {
       const localDataset = this.localStorageService.dataset;
 
