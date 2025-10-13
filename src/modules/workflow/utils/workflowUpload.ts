@@ -6,7 +6,7 @@
 * @author Dominik Haas-Artho
 *
 * Created at     : 2020-07-14 16:51:52
-* Last modified  : 2021-08-18 10:14:35
+ * Last modified  : 2025-10-13 07:48:37
 *
 * This file is subject to the terms and conditions defined in
 * file 'LICENSE.txt', which is part of this source code package.
@@ -372,7 +372,7 @@ export function unSubscribeOnUppyEvent(event, callback) {
 function createUppyInstance(
   height = 300,
   autoProceed = true,
-  restrictions = defaultRestrictions
+  restrictions = defaultRestrictions,
 ) {
 
   const uppy =  new Uppy();
@@ -391,18 +391,7 @@ function createUppyInstance(
   uppy.use(awsS3, {
     id: 'multipart-aws',
     limit: 4,
-/*
-    getUploadParameters(file) {
-      return getSinglePresignedUrl(file);
-    },
-*/
-    shouldUseMultipart() {
-      // Use multipart only for files larger than 100MiB.
-      // return file.size > 100 * 2 ** 20;
-
-      // always set to true because there isn't a connection for small files
-      return true;
-    },
+    shouldUseMultipart: true,
     getChunkSize(file) {
       // at least 25MB per request, at most 500 requests
       return Math.max(1024 * 1024 * 25, Math.ceil(file.size / 500));
