@@ -54,7 +54,12 @@
         >
           <v-col v-if="entry"
                  class="mb-2 px-0">
-            <component :component="entry" :is="entry" v-bind="entry.props" />
+            <component
+              :component="entry"
+              :is="entry"
+              v-bind="entry.props"
+              :showPlaceholder="showPlaceholder"
+            />
           </v-col>
         </v-row>
       </v-col>
@@ -67,8 +72,13 @@
         >
           <v-col v-if="entry"
                  class="mb-2 px-0">
-            <!-- prettier-ignore -->
-            <component :component="entry" :is="entry" v-bind="entry.props" />
+
+            <component
+              :component="entry"
+              :is="entry"
+              v-bind="entry.props"
+              :showPlaceholder="showPlaceholder"
+            />
           </v-col>
         </v-row>
       </v-col>
@@ -86,7 +96,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 16:12:30
- * Last modified  : 2021-02-11 13:31:07
+ * Last modified  : 2025-10-13 12:27:59
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -128,8 +138,8 @@ import {
   createLicense,
   createPublications,
   createRelatedDatasets,
-  createResources,
 } from '@/factories/metaDataFactory';
+import { createResources } from '@/factories/resourceHelpers';
 
 import { createCitation } from '@/factories/citationFactory';
 
@@ -225,6 +235,8 @@ export default {
 
     eventBus.on(GCNET_PREPARE_DETAIL_CHARTS, this.prepareGCNetChartModal);
     eventBus.on(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
+
+    this.loadMetaDataContent();
   },
   /**
    * @description load all the icons once before the first component's rendering.
@@ -236,7 +248,6 @@ export default {
    * @description reset the scrolling to the top.
    */
   async mounted() {
-    this.loadMetaDataContent();
 
     // await this.setPageViews(this.$route.fullPath, 'Visit');
 
@@ -334,7 +345,7 @@ export default {
       return fileList;
     },
     baseUrl() {
-      return import.meta.env.PROD
+      return import.meta.env?.MODE === 'production'
         ? this.baseStationURL
         : this.baseStationURLTestdata;
     },
@@ -350,7 +361,7 @@ export default {
         : undefined;
     },
     showPlaceholder() {
-      return this.loadingMetadatasContent || this.loadingCurrentMetadataContent;
+      return this.loadingCurrentMetadataContent || this.loadingMetadatasContent;
     },
     firstColumn() {
       return this.$vuetify.display.mdAndUp ? this.firstCol : this.singleCol;
@@ -561,7 +572,6 @@ export default {
       this.MetadataAuthors.props = {
         authors: this.authors,
         authorDetailsConfig: this.authorDetailsConfig,
-        showPlaceholder: this.showPlaceholder,
       };
     },
     loadResources() {
@@ -606,7 +616,7 @@ export default {
         dataLicenseTitle: license.title,
         dataLicenseUrl: license.url,
         resourcesConfig: this.resourcesConfig,
-        showPlaceholder: this.showPlaceholder,
+        compactList: true,
       };
     },
     setMetadataContent() {
@@ -631,12 +641,10 @@ export default {
 
       this.MetadataDescription.props = {
         ...this.descriptionData,
-        showPlaceholder: this.showPlaceholder,
       };
 
       this.MetadataCitation.props = {
         ...this.citation,
-        showPlaceholder: this.showPlaceholder,
       };
 
       let publicationList;
@@ -646,26 +654,22 @@ export default {
         this.MetadataPublicationList.props = {
           ...this.publications,
           metadataConfig: this.metadataConfig,
-          showPlaceholder: this.showPlaceholder,
         };
         publicationList = this.MetadataPublicationList;
       } else {
         this.MetadataPublications.props = {
           ...this.publications,
           metadataConfig: this.metadataConfig,
-          showPlaceholder: this.showPlaceholder,
         };
         publicationList = this.MetadataPublications;
       }
 
       this.MetadataRelatedDatasets.props = {
         ...this.relatedDatasets,
-        showPlaceholder: this.showPlaceholder,
       };
 
       this.MetadataFunding.props = {
         funding: this.funding,
-        showPlaceholder: this.showPlaceholder,
       };
 
       let resourceDataViz;

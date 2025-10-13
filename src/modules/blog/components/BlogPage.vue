@@ -4,7 +4,7 @@
       <v-col cols="12" md="10" offset-md="1">
         <BlogHeader
           :title="blogHeaderTitle"
-          :titleImage="post ? post.titleImg : blogHeaderImg"
+          :titleImage="titleImage"
           :height="$vuetify.display.smAndDown ? 100 : 150"
           :showCloseButton="!!showBlogPost"
           @clickedBack="catchClosePost"
@@ -97,7 +97,7 @@ import {
 import BlogHeader from '@/modules/blog/components/BlogHeader.vue';
 import BlogPost from '@/modules/blog/components/BlogPost.vue';
 import BlogPostCard from '@/modules/blog/components/BlogPostCard.vue';
-import { getImage } from '@/factories/imageFactory';
+
 
 export default {
   name: BLOG_PAGENAME,
@@ -113,17 +113,17 @@ export default {
   },
   beforeMount() {
     this.$store.dispatch(`${BLOG_NAMESPACE}/${GET_BLOG_LIST}`);
-
-    this.fallbackCardImg = getImage('contact');
   },
   /**
    * @description reset the scrolling to the top,
    * because of the scrolling is set from the browsePage or metaDetailPage
    */
-  mounted() {
-    window.scrollTo(0, 0);
+  async mounted() {
+    this.scrollToTop();
 
     this.checkRouteChanges();
+
+    // this.titleImageResolved = await getImage(this.blogHeaderImg);
   },
   computed: {
     ...mapState(['config']),
@@ -137,6 +137,13 @@ export default {
     showBlogPost() {
       return !this.loadingPost && this.post && this.postContent;
     },
+    titleImage() {
+      if (!this.loadingPost && this.post) {
+        return this.post.titleImg;
+      }
+
+      return this.blogHeaderImg;
+    },
     blogHeaderTitle() {
       if (this.showBlogPost) {
         return this.post.title;
@@ -146,10 +153,10 @@ export default {
     },
     blogHeaderImg() {
       if (this.showBlogPost) {
-        return getImage('postHeader');
+        return 'postHeader';
       }
 
-      return getImage('blogHeader');
+      return 'blogHeader';
     },
   },
   methods: {
@@ -170,9 +177,20 @@ export default {
         });
       }
     },
-    loadPost(postFile) {
+    async loadPost(postFile) {
       if (this.post !== postFile) {
-        this.$store.dispatch(`${BLOG_NAMESPACE}/${GET_BLOG_POST}`, postFile);
+        await this.$store.dispatch(`${BLOG_NAMESPACE}/${GET_BLOG_POST}`, postFile);
+
+        this.$nextTick(() => {
+          this.scrollToTop();
+        });
+      }
+    },
+    scrollToTop() {
+      const appContainer =
+        this.$root.$refs.appContainer?.$el || this.$root.$refs.appContainer;
+      if (appContainer) {
+        appContainer.scrollTop = 0;
       }
     },
     catchClosePost() {
@@ -193,8 +211,9 @@ export default {
     BlogPostCard,
   },
   data: () => ({
+    titleImageResolved: undefined,
     BLOG_PAGENAME,
-    fallbackCardImg: null,
+    fallbackCardImg: 'contact',
     pageIntroText:
       'The EnviDat blog page provides news and information from the EnviDat team. Click on a card to read the blog post, click the close icon in the top right to go back to the overview.',
     blogModuleLoaded: false,

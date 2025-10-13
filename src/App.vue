@@ -2,7 +2,7 @@
   <v-app
     class="application envidat-font-overwrite"
     :class="{
-      'bg-dark': !isLandingPage && !isDashboardPage,
+      'bg-dark': !isLandingPage && !isDashboardPage && !isWorkFlowPage,
       'bg-dark-dashboard': isDashboardPage,
       'hide-after': isScrolled,
     }"
@@ -29,7 +29,6 @@
     </div>
 
     <MaintenanceBanner v-if="maintenanceBannerVisible" />
-
     <TheNavigationToolbar
       v-if="showToolbar"
       ref="TheNavigationToolbar"
@@ -200,7 +199,7 @@ import {
   USER_GET_DATASETS,
 } from '@/modules/user/store/userMutationsConsts';
 
-import { navigationItems, userMenuItems } from '@/store/navigationState';
+import { navigationItems, useUserMenuItems } from '@/store/navigationState';
 
 import {
   eventBus,
@@ -234,15 +233,18 @@ const NotificationCard = defineAsyncComponent(
   () => import('@/components/Cards/NotificationCard.vue'),
 );
 
+let configInterval;
+
 export default {
   name: 'App',
+
   beforeCreate() {
     // load the config initially
     this.$store.dispatch(SET_CONFIG);
 
     // define an interval to check again regularly to make sure
     // all users get any changes in the config and version updates
-    setInterval(() => {
+    configInterval = setInterval(() => {
       this.$store.dispatch(SET_CONFIG);
     }, 30000); // 1000 * 3 = 30 seconds
   },
@@ -266,12 +268,11 @@ export default {
       SHOW_REDIRECT_DASHBOARD_DIALOG,
       this.showRedirectDashboardDialog,
     );
+
+    clearInterval(configInterval);
   },
   mounted() {
     this.checkUserSignedIn();
-    window.addEventListener('scroll', this.handleWindowScroll, {
-      passive: true,
-    });
   },
   updated() {
     this.updateActiveStateOnNavItems();
@@ -609,6 +610,9 @@ export default {
     isLandingPage() {
       return this.currentRoute.name === 'LandingPage';
     },
+    isWorkFlowPage() {
+      return this.currentRoute.name === 'WorkflowPage';
+    },
     isDashboardPage() {
       return this.currentRoute.name === 'DashboardPage';
     },
@@ -729,7 +733,9 @@ export default {
     config() {
       if (!this.loadingConfig) {
         this.setupNavItems();
-        this.loadAllMetadata();
+        this.$nextTick(() => {
+          this.loadAllMetadata();
+        });
       }
     },
     notifications() {
@@ -767,7 +773,7 @@ export default {
     showMaintenanceBanner: false,
     editMaintenanceBanner: true,
     navigationItems,
-    userMenuItems,
+    userMenuItems: useUserMenuItems(),
     editMaintenanceMessage: `There is maintenance going on, please don't edit anything return to the <a href='./#${USER_DASHBOARD_PATH}' >dashboard page </a> or the <a href='/' >main page</a> for details!.`,
     isScrolled: false,
   }),
@@ -811,6 +817,11 @@ export default {
   50% {
     transform: translateY(-5px);
   }
+}
+
+// TODO check if this works for all pages - REDESIGN WORKFLOW fix
+#mainPageRow {
+  height: 100%;
 }
 
 #app-container {

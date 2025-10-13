@@ -4,9 +4,10 @@ import LineChart from '@/components/Charts/LineChart.vue';
 
 import { loadResourcesData } from '@/modules/charts/middelware/chartServiceLayer.ts';
 import { MetaData } from '@/types/dataVizTypes';
-import { getResourceName } from '@/factories/metaDataFactory.ts';
+import { getResourceName } from '@/factories/resourceHelpers';
+import { ResourceDTO } from '@/types/dataTransferObjectsTypes';
 
-const { resource } = defineProps<{
+const props = defineProps<{
   resource: object;
   flat: boolean,
 }>();
@@ -41,8 +42,8 @@ const defaultOptions = {
 };
 
 const title = computed(() =>
-  resource
-    ? `Data Visualization of "${ getResourceName(resource) }"`
+  props.resource
+    ? `Data Visualization of "${ getResourceName(props.resource as ResourceDTO) }"`
     : 'Data Visualization of "Unnamed" resource',
 );
 
@@ -181,7 +182,7 @@ const assignYParameter = (parameter: string) => {
   );
 };
 
-watch(() => resource,
+watch(() => props.resource,
   (newResource) => {
     loadData(newResource);
   },

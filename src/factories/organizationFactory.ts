@@ -1,5 +1,6 @@
 import { toRaw } from 'vue';
-import { DatasetDTO, DatasetOrganizationMapEntry, OrganizationDTO } from '@/types/modelTypes';
+import { DatasetOrganizationMapEntry } from '@/types/modelTypes';
+import type { DatasetDTO, OrganizationDTO } from '@/types/dataTransferObjectsTypes';
 
 const toPascalCase = (text, trimSpace=false) => text.split(' ').map((t) => t[0].toUpperCase() + t.slice(1).toLowerCase()).join(trimSpace?'':' ');
 
@@ -361,7 +362,8 @@ export const researchUnitDatasetChartOptions = {
       text: 'Dataset Publication per Research Unit History',
     },
     legend: {
-      position: 'right',
+      position: (ctx: { chart: { width: number; }; }) => ctx.chart.width < 968 ? 'bottom' : 'right',
+      reverse: 'true',
     },
     datalabels: {
       color: '#d9f3f3',
@@ -373,6 +375,7 @@ export const researchUnitDatasetChartOptions = {
     colors: 'show',
   },
   responsive: true,
+  maintainAspectRatio: false,
   scales: {
     x: {
       stacked: true,

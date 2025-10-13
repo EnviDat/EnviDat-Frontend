@@ -34,7 +34,7 @@
     </div>
 
     <v-row v-if="!isVerticalLayout">
-      <v-col>
+      <v-col :cols="columns">
         <v-textarea
           class="heightAndScroll pt-1"
           :label="labelTextarea"

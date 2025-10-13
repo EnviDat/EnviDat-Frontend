@@ -1,46 +1,39 @@
 <template>
-
-  <v-card id="EditKeywords"
-          class="pa-0"
-          :loading="loadingColor">
-
-    <v-container fluid
-                class="pa-4">
-
+  <v-card id="EditKeywords" class="pa-0" :loading="loadingColor">
+    <v-container fluid class="pa-4">
       <v-row>
-        <v-col cols="6"
-               class="text-h5">
+        <v-col cols="6" class="text-h5">
           {{ labels.title }}
         </v-col>
 
-        <v-col v-if="message" >
-          <BaseStatusLabelView status="check"
-                               statusColor="success"
-                               :statusText="message"
-                               :expandedText="messageDetails" />
+        <v-col v-if="message">
+          <BaseStatusLabelView
+            status="check"
+            statusColor="success"
+            :statusText="message"
+            :expandedText="messageDetails"
+          />
         </v-col>
-        <v-col v-if="error"  >
-
-          <BaseStatusLabelView status="error"
-                               statusColor="error"
-                               :statusText="error"
-                               :expandedText="errorDetails" />
+        <v-col v-if="error">
+          <BaseStatusLabelView
+            status="error"
+            statusColor="error"
+            :statusText="error"
+            :expandedText="errorDetails"
+          />
         </v-col>
-
       </v-row>
-
 
       <v-row>
         <v-col class="text-body-1">
-          <div >{{ labels.cardInstructions1 }}</div>
-          <div >{{ labels.cardInstructions2 }}</div>
+          <div>{{ labels.cardInstructions1 }}</div>
+          <div>{{ labels.cardInstructions2 }}</div>
         </v-col>
 
         <v-col class="text-subtitle-1">
           {{ labels.previewText }}
         </v-col>
       </v-row>
-
 
       <v-row>
         <v-col>
@@ -52,14 +45,17 @@
             :menu-icon="mdiArrowDownDropCircleOutline"
             :readonly="isReadOnly('keywords')"
             :hint="readOnlyHint('keywords')"
-            :persistent-hint="!!hint"
+            :persistent-hint="!!readOnlyHint('keywords')"
             :prepend-icon="mdiPaletteSwatch"
             :label="labels.placeholder"
             :clear-on-select="true"
             multiple
             :search="search"
             :error-messages="validationErrors.keywords"
-            @update:search="search = $event; isKeywordValid(search)"
+            @update:search="
+              search = $event;
+              isKeywordValid(search);
+            "
             @keyup="blurOnEnterKey"
             @input="isEnoughKeywords()"
             @change="notifyChange($event)"
@@ -67,8 +63,7 @@
             @keydown="catchKeywordEntered($event)"
             :rules="rulesKeywords"
           >
-
-            <template v-slot:selection="{ item }" >
+            <template v-slot:selection="{ item }">
               <TagChip
                 :name="item.value"
                 selectable
@@ -79,7 +74,10 @@
             </template>
 
             <template v-slot:item="{ item, props }">
-              <v-list-item @click="catchKeywordClicked(item.value)" v-bind="props" />
+              <v-list-item
+                @click="catchKeywordClicked(item.value)"
+                v-bind="props"
+              />
             </template>
 
             <template v-slot:no-data>
@@ -93,18 +91,12 @@
         <v-col>
           <MetadataCard v-bind="metadataPreviewEntry" />
         </v-col>
-
       </v-row>
-
-
     </v-container>
   </v-card>
-
 </template>
 
-
 <script>
-
 /**
  * EditKeywords.vue renders Metadata Keywords combobox and a MetadataCard preview
  *
@@ -120,7 +112,7 @@
  */
 import { mapState } from 'vuex';
 
-import {mdiArrowDownDropCircleOutline, mdiPaletteSwatch} from '@mdi/js';
+import { mdiArrowDownDropCircleOutline, mdiPaletteSwatch } from '@mdi/js';
 import {
   EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_KEYWORDS,
@@ -143,7 +135,6 @@ import {
 import { getTagColor } from '@/factories/keywordsFactory';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
-
 
 export default {
   name: 'EditKeywords',
@@ -200,9 +191,7 @@ export default {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   computed: {
-    ...mapState([
-      'config',
-    ]),
+    ...mapState(['config']),
     loadingColor() {
       if (this.loading) {
         return 'accent';
@@ -215,7 +204,10 @@ export default {
         return this.defaultUserEditMetadataConfig;
       }
 
-      return this.config?.userEditMetadataConfig || this.defaultUserEditMetadataConfig;
+      return (
+        this.config?.userEditMetadataConfig ||
+        this.defaultUserEditMetadataConfig
+      );
     },
     keywordsCountMin() {
       return this.userEditMetadataConfig.keywordsCountMin;
@@ -225,11 +217,12 @@ export default {
     },
     keywordsField: {
       get() {
-        return this.previewKeywords.length > 0 ? this.previewKeywords : this.keywords;
+        return this.previewKeywords.length > 0
+          ? this.previewKeywords
+          : this.keywords;
       },
     },
     metadataPreviewEntry() {
-
       const previewEntry = {
         title: this.metadataCardTitle,
         tags: this.keywordsField,
@@ -251,7 +244,8 @@ export default {
       let hint = '';
 
       if (!this.keywordValidMin3Characters) {
-        hint += '<span class="font-italic">Keyword must be at least <strong>3 characters</strong>. </span> ';
+        hint +=
+          '<span class="font-italic">Keyword must be at least <strong>3 characters</strong>. </span> ';
       }
 
       if (this.search) {
@@ -264,9 +258,8 @@ export default {
     },
     existingKeywordItems() {
       if (this.$store) {
-        const getTag = this.$store.getters[`${METADATA_NAMESPACE}/existingKeywords`]
-        const arrayFromTags = this.getTagName(getTag)
-        return arrayFromTags
+        const getTag = this.$store.getters[`${METADATA_NAMESPACE}/existingKeywords`];
+        return this.getTagName(getTag);
       }
 
       return this.getTagName(this.existingKeywords);
@@ -277,7 +270,7 @@ export default {
   },
   methods: {
     getTagName(arr) {
-      return arr.map(item => item.name);
+      return arr.map((item) => item.name);
     },
     blurOnEnterKey(keyboardEvent) {
       if (keyboardEvent.key === 'Enter' && keyboardEvent.target.value === '') {
@@ -286,19 +279,23 @@ export default {
     },
     saveChange() {
       if (this.previewKeywords.length > 0) {
-        if (this.validateProperty('keywords', this.previewKeywords)) {
-          this.setKeywords('keywords', this.previewKeywords);
+        if (this.validateProperty(this.previewKeywords)) {
+          this.setKeywords(this.previewKeywords);
         }
       }
     },
     clearPreviews() {
       this.previewKeywords = [];
     },
-    validateProperty(property, value){
-      return isFieldValid(property, value, this.validations, this.validationErrors)
+    validateProperty(value) {
+      return isFieldValid(
+        'keywords',
+        value,
+        this.validations,
+        this.validationErrors,
+      );
     },
     catchKeywordEntered(event) {
-
       if (event.key === 'Enter') {
         const enteredKeyword = event.target.value;
 
@@ -308,7 +305,6 @@ export default {
       }
     },
     catchKeywordClicked(pickedKeyword) {
-
       // Use pickedKeyword to create pickedKeywordObj
       const pickedKeywordObj = {
         name: pickedKeyword.toUpperCase().trim(),
@@ -322,15 +318,12 @@ export default {
       this.search = null;
     },
     processValues(valuesArray) {
-
       // Iterate through valuesArray
       for (let i = 0; i < valuesArray.length; i++) {
-
         // If user enters keyword string and keyword is valid then push keyword object with these key value pairs:
         //    name: <user string capitalized and white space removed)
         //    color: <dynamically assigned vie getTagColor()>
         if (typeof valuesArray[i] === 'string') {
-
           // Check if keyword is valid, if not remove keyword entry from valuesArray and continue loop
           const keywordValid = this.isKeywordValid(valuesArray[i]);
 
@@ -338,19 +331,18 @@ export default {
             valuesArray.splice(i, 1);
             i--; // decrease to ensure not skipping the next entry because splice changes the index
           } else {
-
             valuesArray[i] = {
-              name: valuesArray[i].toUpperCase()
-                  .trim(),
+              name: valuesArray[i].toUpperCase().trim(),
               color: getTagColor(categoryCards, valuesArray[i]),
             };
           }
         }
-
       }
 
       // Remove duplicates from valuesArray
-      valuesArray = [...new Set(valuesArray.map(a => JSON.stringify(a)))].map(a => JSON.parse(a));
+      valuesArray = [...new Set(valuesArray.map((a) => JSON.stringify(a)))].map(
+        (a) => JSON.parse(a),
+      );
 
       // Assign keywordCount to length of valuesArray
       this.keywordCount = valuesArray.length;
@@ -361,7 +353,6 @@ export default {
       return valuesArray;
     },
     removeKeyword(item) {
-
       // Assign removeIndex to index of keywords object that match item
       const removeIndex = this.keywordsField.indexOf(item);
       // console.log(removeIndex);
@@ -381,7 +372,9 @@ export default {
       const keywordCountEnough = this.keywordCount >= this.keywordsCountMin;
 
       if (!keywordCountEnough) {
-        this.rulesKeywords = [`Please enter at least ${this.keywordsCountMin} keywords.`];
+        this.rulesKeywords = [
+          `Please enter at least ${this.keywordsCountMin} keywords.`,
+        ];
       } else {
         this.rulesKeywords = [true];
       }
@@ -389,9 +382,7 @@ export default {
     // Sets keyword validity variables
     // Returns true if keyword is valid, else returns false
     isKeywordValid(search) {
-
       if (search !== null) {
-
         // Sets keywordValidMin3Characters to true if trimmed search has more than two characters
         // Else sets keywordValidMin3Characters to false
         this.keywordValidMin3Characters = search.trim().length > 2;
@@ -399,7 +390,8 @@ export default {
         // Sets keywordValidConcise to true if trimmed search is less than or equal to keywordsListWordMax words (split by space ' ')
         // Else sets keywordValidConcise to false
         const inputSplit = search.trim().split(' ');
-        this.keywordValidConcise = inputSplit.length <= this.keywordsListWordMax;
+        this.keywordValidConcise =
+          inputSplit.length <= this.keywordsListWordMax;
       }
 
       return this.keywordValidMin3Characters && this.keywordValidConcise;
@@ -408,17 +400,15 @@ export default {
       const mergedKeywordsField = [...this.keywordsField, ...value];
       this.previewKeywords = this.processValues(mergedKeywordsField);
     },
-    setKeywords(property, value) {
+    setKeywords(value) {
       const newKeywords = {
-        ...this.$props,
-        [property]: value,
+        keywords: value,
       };
 
       eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_KEYWORDS,
         data: newKeywords,
       });
-
     },
     isReadOnly(dateProperty) {
       return isFieldReadOnly(this.$props, dateProperty);
@@ -440,7 +430,8 @@ export default {
       keywordsLabel: 'Keywords',
       placeholder: 'Pick keywords from the list or type in a new keyword',
       cardInstructions1: 'Please enter at least 5 keywords.',
-      cardInstructions2: 'To pick a keyword click into the list, you can start typing to search for a existing keywords.' +
+      cardInstructions2:
+        'To pick a keyword click into the list, you can start typing to search for a existing keywords.' +
         ' To create a new keyword type it and press enter.',
       previewText: 'Dataset entry preview',
     },
@@ -460,5 +451,4 @@ export default {
     BaseStatusLabelView,
   },
 };
-
 </script>

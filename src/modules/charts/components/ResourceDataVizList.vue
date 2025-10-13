@@ -4,11 +4,12 @@ import { useTheme } from 'vuetify';
 import ResourceDataViz from '@/modules/charts/components/ResourceDataViz.vue';
 
 import { DataVizSupportedExtensions } from '@/modules/charts/middelware/chartServiceLayer.ts';
-import { getResourceName } from '@/factories/metaDataFactory.ts';
+import { getResourceName } from '@/factories/resourceHelpers';
+import { ResourceDTO } from '@/types/dataTransferObjectsTypes';
 
 const theme = useTheme();
 
-const {resources, maxHeight} = withDefaults(
+const props = withDefaults(
   defineProps<{
     resources: object[];
     maxHeight?: number;
@@ -23,7 +24,7 @@ const selectResource = (resourceIndex: number) => {
   selectedId.value = resourceIndex;
 }
 
-const hasResources = computed(() => resources?.length > 0);
+const hasResources = computed(() => props.resources?.length > 0);
 
 const allowedFormatText = () : string => {
   let text = 'Currently only ';
@@ -54,7 +55,7 @@ const scrollbarColorBack = computed(() => theme ? '#F0F0F0' : 'auto');
 
 <template>
 
-  <v-card :max-height="maxHeight">
+  <v-card :max-height="props.maxHeight">
     <v-card-title>
       Resource Data Visualization
     </v-card-title>
@@ -76,16 +77,16 @@ const scrollbarColorBack = computed(() => theme ? '#F0F0F0' : 'auto');
             >
               <v-row no-gutters>
                 <v-list
-                  :style="`max-height: ${maxHeight - 100}px; overflow: auto; scroll-behavior: smooth; scrollbar-width: thin;
+                  :style="`max-height: ${props.maxHeight - 100}px; overflow: auto; scroll-behavior: smooth; scrollbar-width: thin;
                   scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack};`"
                 >
                   <v-list-item
-                    v-for="(resource, index) in resources"
+                    v-for="(resource, index) in props.resources"
                     :key="resource.id"
                     @click="selectResource(index)"
-                    :style="`background-color: ${selectedId === index ? $vuetify.theme.themes.light.colors.highlight : 'transparent'};`"
+                    :style="`background-color: ${selectedId === index ? theme.themes.value.light.colors.highlight : 'transparent'};`"
                   >
-                    {{ getResourceName(resource) }}
+                    {{ getResourceName(resource as ResourceDTO) }}
                   </v-list-item>
                 </v-list>
 

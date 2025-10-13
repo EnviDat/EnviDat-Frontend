@@ -33,7 +33,9 @@ import {
   EDITMETADATA_ORGANIZATION,
   EDITMETADATA_PUBLICATION_INFO,
   EDITMETADATA_RELATED_DATASETS,
-  EDITMETADATA_RELATED_PUBLICATIONS, METADATA_MAIN_HEADER,
+  EDITMETADATA_RELATED_PUBLICATIONS,
+  EDITMETADATA_REVIEW_INFO,
+  METADATA_MAIN_HEADER,
   USER_OBJECT,
 } from '@/factories/eventBus';
 
@@ -57,8 +59,6 @@ import {
   EDIT_METADATA_URL_LABEL,
   METADATA_AUTHORS_PROPERTY,
   METADATA_CONTACT_EMAIL,
-  METADATA_CONTACT_FIRSTNAME,
-  METADATA_CONTACT_LASTNAME,
   METADATA_DATALICENSE_PROPERTY,
   METADATA_DEPRECATED_RESOURCES_PROPERTY,
   METADATA_DOI_PROPERTY,
@@ -70,7 +70,7 @@ import {
 } from '@/factories/metadataConsts';
 
 import { createAuthor } from '@/factories/authorFactory';
-import { enhanceTags } from '@/factories/keywordsFactory';
+import { enhanceKeywords } from '@/factories/keywordsFactory';
 import categoryCards from '@/store/categoryCards';
 import { createLocation } from '@/factories/geoFactory';
 import { getMetadataVisibilityState } from '@/factories/publicationFactory';
@@ -101,8 +101,8 @@ const JSONFrontendBackendRules = {
     [METADATA_TITLE_PROPERTY,'title'],
     [METADATA_URL_PROPERTY,'name'],
     [METADATA_CONTACT_EMAIL,'maintainer.email'],
-    [METADATA_CONTACT_FIRSTNAME,'maintainer.given_name'],
-    [METADATA_CONTACT_LASTNAME,'maintainer.name'],
+    ['contactFirstName','maintainer.given_name'],
+    ['contactLastName','maintainer.name'],
     ['license','license_title'],
   ],
   [EDITMETADATA_MAIN_DESCRIPTION]: [
@@ -205,6 +205,9 @@ const JSONFrontendBackendRules = {
     ['version', 'version'],
     ['datasetId', 'id'],
   ],
+  [EDITMETADATA_REVIEW_INFO]: [
+    ['version', 'version'],
+  ],
   [EDITMETADATA_FUNDING_INFO]: [
     ['funders','funding'],
   ],
@@ -229,16 +232,22 @@ const JSONFrontendBackendRules = {
   ],
 };
 
-export function unpackDeprecatedResources(customFields) {
-  let unpackedResourceIds = [];
+function unpackDeprecatedResources(customFields) {
 
-  if (customFields?.length > 0) {
-    const customFieldEntry = customFields.filter((entry) => entry?.fieldName === METADATA_DEPRECATED_RESOURCES_PROPERTY)[0];
-    const stringResourceIds = customFieldEntry?.content || '[]';
-    unpackedResourceIds = JSON.parse(stringResourceIds);
+  let deprecatedResourceEntry = customFields?.filter((entry) => entry?.fieldName === METADATA_DEPRECATED_RESOURCES_PROPERTY)[0];
+  // first check the customFields entries and sanitze them (to at least always start with an empty array)
+
+  if (!deprecatedResourceEntry) {
+
+    deprecatedResourceEntry = {
+      fieldName: METADATA_DEPRECATED_RESOURCES_PROPERTY,
+      content: JSON.stringify([]),
+    }
+
+    customFields.push(deprecatedResourceEntry);
   }
 
-  return unpackedResourceIds;
+  return JSON.parse(deprecatedResourceEntry.content);
 }
 
 export function markResourceDeprecated(resourceId, deprecated, customFields)  {
@@ -251,15 +260,8 @@ export function markResourceDeprecated(resourceId, deprecated, customFields)  {
     deprecatedResources = deprecatedResources.filter(i => i !== resourceId);
   }
 
-  if (customFields.length <= 0) {
-    customFields.push({
-      fieldName: METADATA_DEPRECATED_RESOURCES_PROPERTY,
-      content: JSON.stringify(deprecatedResources),
-    });
-  } else {
-    const deprecatedResourcesEntry = customFields.filter((entry) => entry?.fieldName === METADATA_DEPRECATED_RESOURCES_PROPERTY)[0];
-    deprecatedResourcesEntry.content = JSON.stringify(deprecatedResources);
-  }
+  const deprecatedResourcesEntry = customFields.filter((entry) => entry?.fieldName === METADATA_DEPRECATED_RESOURCES_PROPERTY)[0];
+  deprecatedResourcesEntry.content = JSON.stringify(deprecatedResources);
 
   return customFields;
 }
@@ -327,7 +329,7 @@ export function convertJSON(data, stringify, recursive = false) {
           }
         } catch (e) {
 
-          if (import.meta.env?.DEV) {
+          if (import.meta.env?.MODE === 'development') {
             console.error(`Json parse error on property: ${prop} with value: ${value} had error: ${e}`);
           }
         }
@@ -624,72 +626,6 @@ export function cleanResourceForFrontend(resource) {
   }
 }
 
-export const metadataPublishedReadOnlyFields = [
-  // EditMetadataHeader
-  METADATA_TITLE_PROPERTY,
-  METADATA_URL_PROPERTY,
-  // EditAuthorList
-  METADATA_AUTHORS_PROPERTY,
-  // EditPublicationInfo
-  METADATA_ORGANIZATION_PROPERTY,
-  METADATA_PUBLICATION_YEAR_PROPERTY,
-  METADATA_PUBLISHER_PROPERTY,
-  METADATA_DOI_PROPERTY,
-  METADATA_DATALICENSE_PROPERTY,
-];
-
-export const readablePublishedReadOnlyFields = {
-  [METADATA_TITLE_PROPERTY]: EDIT_METADATA_TITLE_LABEL,
-  [METADATA_URL_PROPERTY]: EDIT_METADATA_URL_LABEL,
-  [METADATA_ORGANIZATION_PROPERTY]: EDIT_METADATA_ORGANIZATION_LABEL,
-  [METADATA_AUTHORS_PROPERTY]: EDIT_METADATA_AUTHORS_LABEL,
-  [METADATA_DOI_PROPERTY]: EDIT_METADATA_DOI_LABEL,
-  [METADATA_PUBLISHER_PROPERTY]: EDIT_METADATA_PUBLISHER_LABEL,
-  [METADATA_PUBLICATION_YEAR_PROPERTY]: EDIT_METADATA_PUBLICATION_YEAR_LABEL,
-  [METADATA_DATALICENSE_PROPERTY]: EDIT_METADATA_DATALICENSE_LABEL,
-};
-
-const readOnlyMappingRules = [
-  {
-    triggerRule: ['published'],
-    explanation: 'This field is "readonly" because the dataset is already published.',
-    readOnlyFields: metadataPublishedReadOnlyFields,
-  },
-/*
-  {
-    triggerRule: ['draft'],
-    explanation: 'This is "readonly" because the dataset is still a draft.',
-    readOnlyFields: [
-      'resources',
-    ],
-  },
-*/
-/*
-  {
-    triggerRule: USER_ROLE_ADMIN,
-    readOnlyFields: [],
-  },
-*/
-];
-
-export function getReadOnlyFieldsObject(trigger) {
-  if (!trigger) {
-    return null;
-  }
-
-  const lowCaseTrigger = trigger?.toLowerCase() || '';
-
-  for (let i = 0; i < readOnlyMappingRules.length; i++) {
-    const mappingObj = readOnlyMappingRules[i];
-
-    if (mappingObj.triggerRule.includes(lowCaseTrigger)) {
-      return mappingObj;
-    }
-  }
-
-  return null;
-}
-
 function commitEditingData(commit, eventName, data) {
   if(!commit) {
     return;
@@ -762,12 +698,12 @@ function populateEditingMain(commit, backendJSON) {
 
   stepKey = EDITMETADATA_KEYWORDS;
   const keywordsData = getFrontendJSONForStep(stepKey, backendJSON);
-  const enhanceDatasets = enhanceTags(keywordsData, categoryCards);
+  const enhancedDatasets = enhanceKeywords(keywordsData, categoryCards);
 
   const enhancedKeywords = {
-    ...enhanceDatasets,
-    metadataCardTitle: headerData.metadataTitle,
-    metadataCardSubtitle: descriptionData.description,
+    ...enhancedDatasets,
+    metadataCardTitle: headerData.metadataTitle, // only used for showing a the preview MetadataCard
+    metadataCardSubtitle: descriptionData.description, // only used for showing a the preview MetadataCard
   }
 
   commitEditingData(commit, stepKey, enhancedKeywords);
@@ -1121,39 +1057,6 @@ export function parseDateStringToReadableFormat(dateString) {
   }
 
   return formatDate(parsedDate);
-}
-
-export function mergeResourceSizeForFrontend(resource) {
-  const mergedResourceSize = {};
-
-  const isLink = resource.urlType !== 'upload';
-  const resourceSize = resource.resourceSize || null;
-
-  if (resourceSize) {
-    let size;
-    let sizeFormat;
-
-    if (isLink) {
-      sizeFormat = resourceSize.sizeUnits?.toUpperCase() || '';
-
-      try {
-        size = Number.parseFloat(resourceSize.sizeValue);
-      } catch (e) {
-        console.error(`sizeValue parsing failed resource id: ${resource.id}`);
-      }
-
-      if (Number.isNaN(size)) {
-        size = undefined;
-      }
-    } else {
-      size = resource.size;
-    }
-
-    mergedResourceSize.size = size;
-    mergedResourceSize.sizeFormat = sizeFormat;
-  }
-  
-  return mergedResourceSize;
 }
 
 export function enhanceUserObject(user) {

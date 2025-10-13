@@ -96,8 +96,12 @@ export default {
       default: false,
     },
   },
+  async mounted() {
+    this.userCardBanner = await getImage('data_creator');
+  },
   data: () => ({
     avatarHeight: 64,
+    userCardBanner: undefined,
   }),
   computed: {
     loadingColor() {
@@ -106,9 +110,6 @@ export default {
       }
 
       return undefined;
-    },
-    userCardBanner() {
-      return getImage('data_creator');
     },
     headerHeight() {
       return this.height >= 350 ? this.height * 0.2 : this.height * 0.4;

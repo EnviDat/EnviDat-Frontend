@@ -10,7 +10,7 @@
 
           <v-img :height="imageHeight"
                  contain
-                 :lazy-src="loadingImg"
+                 :lazy-src="loadingImgResolved"
                  :src="image"  />
 
 <!--          style="border-top-left-radius: 4px; border-top-right-radius: 4px;"-->
@@ -54,7 +54,7 @@
                  :aspect-ratio="1"
                  cover
                  style="height: 100%; border-bottom-left-radius: 4px; border-top-left-radius: 4px;"
-                 :lazy-src="loadingImg"
+                 :lazy-src="loadingImgResolved"
                  :src="image"  />
 
         </v-col>
@@ -82,6 +82,7 @@
 
 <script>
 import { renderMarkdown } from '@/factories/stringFactory';
+import { getImage } from '@/factories/imageFactory.js';
 
 /**
  * ImageTextCard shows the content the title of a post
@@ -123,6 +124,13 @@ export default {
       default: undefined,
     },
   },
+  async beforeMount() {
+    // don't load image it's a external url
+
+    if (this.loadingImg) {
+      this.loadingImgResolved = await getImage(this.loadingImg);
+    }
+  },
   methods: {
     markdownText(text) {
       return renderMarkdown(text);
@@ -133,6 +141,9 @@ export default {
       return this.height * 0.3;
     },
   },
+  data: () => ({
+    loadingImgResolved: undefined,
+  }),
 };
 </script>
 

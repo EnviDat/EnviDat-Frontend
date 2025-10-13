@@ -35,15 +35,16 @@
 
           <template v-slot:selection="{ item }">
             <TagChipAuthor
-                v-if="item.value"
-                :name="item.value"
+                v-if="item.title"
+                :name="item.title"
                 :closable="userTagsCloseable && !readonly"
                 @closeClicked="catchCloseClicked"
             />
           </template>
 
           <template v-slot:item="{ props, item }">
-            <v-list-item v-bind="props"  @click="catchPickClicked(item.value)" />
+            <v-list-item v-bind="props"
+                         @click="catchPickClicked(item.value)" />
           </template>
 
           <template v-slot:no-data>

@@ -76,24 +76,19 @@ export function getAuthorNameCitation(author) {
 /**
  *
  * @param userObjects {Array}
- * @returns {String[]}
+ * @returns {[{ title: string, value: string}]}
  */
-export function getArrayOfFullNames(userObjects) {
+export function getUserNameObjects(userObjects) {
   if (!userObjects || !(userObjects instanceof Array) || userObjects.length <= 0) {
     return [];
   }
-  const fullNameArray = [];
 
-  userObjects.forEach((user) => {
-    if (user) {
-      const fullName = getAuthorName(user);
-      if (fullName) {
-        fullNameArray.push(fullName);
-      }
-    }
-  });
-
-  return fullNameArray;
+  return userObjects
+    .map((user) => ({
+      title: getAuthorName(user),
+      value: user.email,
+    }))
+    .sort((a, b) => a.title.localeCompare(b.title));
 }
 
 export function getAuthorsString(dataset) {

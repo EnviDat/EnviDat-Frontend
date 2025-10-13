@@ -167,25 +167,6 @@ export default {
       default: '',
     },
   },
-  beforeUnmount() {
-    // Validate all entries to ensure validationErrors are up to date
-    this.validate();
-
-    // Check if there are any validation errors
-    const hasErrors = this.validationErrors.funders.some(errors =>
-      Object.values(errors).some(error => error),
-    );
-
-    if (hasErrors) {
-      // There are validation errors: restore previewFunders to previous valid state
-      this.previewFunders = JSON.parse(JSON.stringify(this.prevValidPreviewFunders));
-      console.log('Data not saved due to validation errors. State restored to previous valid values.');
-    } else {
-      // No validation errors: update prevValidPreviewFunders and save data
-      this.prevValidPreviewFunders = JSON.parse(JSON.stringify(this.previewFunders));
-      this.setFundersInfo('funders', this.previewFunders);
-    }
-  },
   mounted() {
     this.previewFunders = JSON.parse(JSON.stringify(this.funders));
     this.prevValidPreviewFunders = JSON.parse(JSON.stringify(this.previewFunders));

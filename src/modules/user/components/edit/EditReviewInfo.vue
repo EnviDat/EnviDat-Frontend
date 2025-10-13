@@ -4,6 +4,7 @@
       class="pa-0"
       max-width="100%"
       :loading="loadingColor"
+      :flat
   >
     <v-container fluid class="pa-4">
       <v-row>
@@ -28,16 +29,19 @@
           />
         </v-col>
       </v-row>
+
       <v-row>
-        <v-col cols="12">
-          <div class="text-body-1" v-html="labels.purpose"></div>
+        <v-col >
+          {{ labels.purpose }}
         </v-col>
       </v-row>
-      <v-row>
+
+      <v-row v-if="!isBlindReviewValid">
         <v-col>
           <v-alert type="info" >{{ labels.instructions }}</v-alert>
         </v-col>
       </v-row>
+
       <v-row class="pt-2">
         <v-col class="ml-sm-0 mr-3 flex-grow-0 d-flex align-center">
           <!-- Icon (Aligned to Match v-text-field) -->
@@ -47,10 +51,10 @@
 
             <!-- BaseIconSwitch Component -->
             <BaseIconSwitch
-                :tooltipText="'Click here to enable blind review'"
+                :tooltipText="`${isBlindReviewActive ? 'Disable' : 'Enable'} blind review`"
                 :icon="mdiAccountCircle()"
                 :active="isBlindReviewActive"
-                :disabled="!isBlindReviewValid"
+                :disabled="loading || !isBlindReviewValid"
                 @clicked="catchBlindReviewClick()"
             />
 
@@ -114,7 +118,7 @@ import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.v
 import {
   EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_OBJECT_UPDATE,
-  EDITMETADATA_PUBLICATION_INFO,
+  EDITMETADATA_REVIEW_INFO,
   eventBus,
 } from '@/factories/eventBus';
 
@@ -177,6 +181,10 @@ export default {
        type: Boolean,
        default: undefined,// can be kept null
      },
+    flat: {
+      type: Boolean,
+      default: false,
+    },
   },
   mounted () {
     this.isBlindActive = this.isBlindReview;
@@ -230,7 +238,7 @@ export default {
       if (this.isBlindReviewValid) {
         this.isBlindActive = !this.isBlindActive;
         const value = this.isBlindActive? BLIND_REVIEW_ON : BLIND_REVIEW_OFF;
-        this.changeBlindReviewStatus('version', value);
+        this.changeBlindReviewStatus(value);
         this.generateBlindReviewUrl();
       }
     },
@@ -245,13 +253,12 @@ export default {
       
       return this.blindUrl;
     },
-    changeBlindReviewStatus(property, value) {
+    changeBlindReviewStatus(value) {
       const newBlindReviewInfo = {
-        ...this.$props,
-        [property]: value,
+        version: value,
       };
       eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: EDITMETADATA_PUBLICATION_INFO,
+        object: EDITMETADATA_REVIEW_INFO,
         data: newBlindReviewInfo,
       });
     },
@@ -280,13 +287,13 @@ export default {
       institutionUrl: '',
     },
     labels: {
-      cardTitle: 'Review Information',
+      cardTitle: 'Blind Review',
       reviewState: 'Dataset blind-review type',
       blindUrl: 'Url to view blind-review dataset',
       dataObjectIdentifier: EDIT_METADATA_DOI_LABEL,
       instructions: 'DOI needs to be reserved to enable this feature',
       buttonText: 'Preview',
-      purpose: 'This feature grants anonymized metadata and data file access to reviewers for a scientific journal before the dataset has been set to public in the CKAN instance',
+      purpose: 'Only activate the blind-review if you need to provide anonymized access to your research data files to reviewers for a scientific journal before the dataset has been published. Once enabled, copy the link below and provide it to the reviewers (the DOI is not be activate until the dataset is published).',
     },
     isBlindActive: null,
     allowedPublicationStates: [PUBLICATION_STATE_RESERVED, PUBLICATION_STATE_PENDING],
