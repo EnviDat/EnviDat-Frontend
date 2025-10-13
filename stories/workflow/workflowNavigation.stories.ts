@@ -8,17 +8,16 @@
 
 
 import { Meta, StoryObj } from '@storybook/vue3-vite';
-import NavigationWorkflow from '@/components/Navigation/TheWorkflowNavigation.vue';
+import { onMounted } from 'vue';
 import { USER_ROLE_SYSTEM_ADMIN } from '@/factories/userEditingValidations';
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
-import { onMounted } from 'vue';
 import TheWorkflowNavigation from '@/components/Navigation/TheWorkflowNavigation.vue';
 import { WorkflowMode } from '@/modules/workflow/utils/workflowEnums';
 
 
 export default {
   title: '6 Workflows / Combined / NavigationWorkflow',
-  component: NavigationWorkflow,
+  component: TheWorkflowNavigation,
 } satisfies Meta;
 
 export const Empty = {
