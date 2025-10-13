@@ -17,13 +17,12 @@
 </template>
 
 <script setup lang="ts">
-  import { getDatasetMap } from '@/../pages/datasets';
-  import type { DatasetDTO } from '@/types/modelTypes';
+  const config = useRuntimeConfig();
+  import { loadCachedDatasetMap } from '@/utils';
 
-  const datasetMap: Map<string, DatasetDTO> = getDatasetMap();
-  const datasets = Object.values(datasetMap)
-
-  const baseCanonicalUrl = import.meta.env.PUBLIC_ENV__VIKE_BASE_CANONICAL_URL;
+  const datasetMap = await loadCachedDatasetMap();
+  const datasets = datasetMap ? Array.from(datasetMap.values()) : [];
+  const baseCanonicalUrl = config.public.seoBaseCanonicalUrl;
 
   // const canonicalUrl = data && data.name ? `${baseCanonicalUrl}/#/metadata/${data.name}` : baseCanonicalUrl;
 

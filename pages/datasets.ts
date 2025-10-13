@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
-import { Dataset } from '@/types/jsonLdTypes';
+import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
+import type { Dataset } from '@/types/jsonLdTypes';
 
 const fetchDatasets = async (url: string): Promise<DatasetDTO[]> => {
   const response = await fetch(url);
@@ -18,13 +18,14 @@ export async function loadDataset(): Promise<DatasetDTO[]> {
   let datasets;
 
   if (!datasetMap) {
+    datasetMap = new Map<string, DatasetDTO>();
     console.log('loading datasets...');
     isFechingDatasets = true;
 
     datasets = await fetchDatasets(
       'https://s3-zh.os.switch.ch/frontend-static/metadata/packagelist/packagelist.json',
+      // './packagelist.json',
     );
-    datasetMap = new Map<string, DatasetDTO>();
 
     for (let i = 0; i < datasets.length; i++) {
       const dataset = datasets[i];
@@ -43,6 +44,11 @@ export async function loadDataset(): Promise<DatasetDTO[]> {
   console.log('loaded datasets ', datasets.length);
 
   return datasets;
+}
+
+export function getDatasetMap() : Map<string, DatasetDTO> | undefined {
+  console.log('getDatasetMap', datasetMap.size);
+  return datasetMap;
 }
 
 export async function loadJSONLD(id: string, doi: string) : Promise<Dataset> {

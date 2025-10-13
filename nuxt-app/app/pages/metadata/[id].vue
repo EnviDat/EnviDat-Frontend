@@ -28,24 +28,28 @@
 </template>
 
 <script setup lang='ts'>
+  const config = useRuntimeConfig();
   import { useRoute } from 'vue-router';
-  import { getDatasetMap } from '@/../pages/datasets';
-  import { getSeoSanitizedDataset } from '@/../pages/seoConversions.ts';
-  import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
-  import { createCitation } from '@/factories/citationFactory';
+  import { createCitation, loadCachedDatasetMap, getSeoSanitizedDataset } from '@/utils';
 
   const route = useRoute();
   const id = route.params.id as string;
   console.log('get data for', id);
   
-  const datasetMap: Map<string, DatasetDTO> = getDatasetMap();
+  const datasetMap = await loadCachedDatasetMap();
 
-  const dataset = datasetMap.get(id);  
-  const seoData = getSeoSanitizedDataset(dataset);
+  console.log('datasetMap', datasetMap?.size);
 
-  const citation = createCitation(dataset);
+  const dataset = datasetMap?.get(id);
+  const seoData = dataset ? getSeoSanitizedDataset(dataset) : {};
+
+  const citation = dataset ? createCitation(dataset) : {};
 
 //  console.log(`dataset ${data.name} has jsonld ${!!data.jsonLd}`);
+
+  // console.log('config', config);
+
+  const baseCanonicalUrl = config.public.seoBaseCanonicalUrl;
 
 /*
   const baseCanonicalUrl = import.meta.env.PUBLIC_ENV__VIKE_BASE_CANONICAL_URL;

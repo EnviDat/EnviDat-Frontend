@@ -5,14 +5,29 @@ import { loadDataset } from '../pages/datasets';
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  modules: ['@nuxt/eslint'],
+  // modules: ['@nuxt/eslint'],
+  sourcemap: {
+    server: true,
+    // client: true,
+  },
+  runtimeConfig: {
+    public: {
+      seoBaseCanonicalUrl: '', // define here so it's overwritten by the .env file
+    },
+  },
+  experimental: {
+    // noVueServer: true,
+  },
   hooks: {
     async 'prerender:routes' (ctx) {
       const datasets: DatasetDTO[] = await loadDataset();
 
-      for (const dataset of datasets) {
+      ctx.routes.add('/metadata');
+
+      for (const dataset of datasets.slice(0, 2)) {
         ctx.routes.add(`/metadata/${dataset.name}`)
       }
+
     },
   },  
   // prerender: {
