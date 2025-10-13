@@ -42,6 +42,7 @@ import { useOrganizationsStore } from '@/modules/organizations/store/organizatio
 import { getMetadataUrlFromTitle } from '@/factories/mappingFactory';
 
 import { makeMaintainerFromUser } from '@/modules/workflow/utils/formatPostData';
+import { LOCAL_DATASET_KEY } from '@/factories/metadataConsts';
 
 /*
 import datasets from '~/stories/js/metadata.js';
@@ -408,10 +409,9 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
 
     // TODO remove only the dataset with the ID
     clearLocalStorage() {
-      const localDataset = this.localStorageService.dataset;
-
-      if (localDataset?.id) {
-        localStorage.removeItem(localDataset.id);
+      const localDataset = this.localStorageService;
+      if (localDataset) {
+        localStorage.removeItem(LOCAL_DATASET_KEY);
       } else {
         localStorage.clear();
       }

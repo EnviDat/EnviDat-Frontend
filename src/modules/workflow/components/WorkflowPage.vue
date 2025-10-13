@@ -326,8 +326,16 @@ const catchConfirmSave = async () => {
     const created =
       await workflowStore.backendStorageService.createDataset(dataset);
     // Get and save the new ID
-    const newId = created?.id || workflowStore.currentDatasetId;
+    const newId = created?.name || workflowStore.currentDatasetId;
 
+    await router.push({
+      name: router.currentRoute.value.name as string,
+      params: {
+        ...router.currentRoute.value.params,
+        id: newId,
+      },
+      query: router.currentRoute.value.query,
+    });
     // CLEANUP localStorage for the new backend dataset
     workflowStore.clearLocalStorage();
 
@@ -337,8 +345,8 @@ const catchConfirmSave = async () => {
     workflowStore.dataSource = 'backend';
     workflowStore.isStepSaveConfirmed = true;
     workflowStore.openSaveDialog = false;
-    const freshDto =
-      await workflowStore.backendStorageService.loadDataset(newId);
+
+    // INIT datasetWith new ID
     await workflowStore.bootstrapWorkflow(newId);
   } catch (e: any) {
     workflowStore.isStepSaveConfirmed = false;
