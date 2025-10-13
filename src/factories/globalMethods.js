@@ -17,7 +17,7 @@ export const isFieldReadOnly = (props, property) => {
   return false;
 }
 
- export const readOnlyHint = (props, property) => {
+export const readOnlyHint = (props, property) => {
   let hint = '';
 
   if (isFieldReadOnly(props, property)) {

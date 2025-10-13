@@ -54,12 +54,13 @@
  */
 import {mdiCog} from '@mdi/js';
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
-
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 
 export default {
   name: 'EditResourceRedirect',
   components: {
     BaseIcon,
+    BaseRectangleButton,
   },
   props: {
     title: {

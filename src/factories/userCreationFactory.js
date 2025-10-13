@@ -10,15 +10,12 @@ import {
   EDITMETADATA_MAIN_DESCRIPTION,
   EDITMETADATA_MAIN_HEADER,
   EDITMETADATA_ORGANIZATION,
-  EDITMETADATA_PUBLICATION_INFO,
+  EDITMETADATA_PUBLICATION_INFO, EDITMETADATA_REVIEW_INFO,
   eventBus,
   REMOVE_EDITING_AUTHOR,
 } from '@/factories/eventBus';
 
-import {
-  createAuthor,
-  mergeAuthorsDataCredit,
-} from '@/factories/authorFactory';
+import { createAuthor, mergeAuthorsDataCredit } from '@/factories/authorFactory';
 
 import { getValidationMetadataEditingObject } from '@/factories/userEditingValidations';
 import { updateEditingArray } from '@/factories/userEditingFactory';
@@ -82,7 +79,7 @@ export function getNewDatasetDefaults(userEditMetadataConfig) {
   };
 }
 
-function initCreationDataWithDefaults(creationData, user, organizationId) {
+export function initCreationDataWithDefaults(creationData, user, organizationId) {
   const fullName = user?.fullName || user?.name || '';
   const nameSplits = fullName.split(' ');
 
@@ -124,6 +121,10 @@ function initCreationDataWithDefaults(creationData, user, organizationId) {
     publisher: 'EnviDat',
     publicationYear: defaultCurrentYear,
   };
+
+  creationData[EDITMETADATA_REVIEW_INFO] = {
+    version: '1.0',
+  }
 
   creationData[EDITMETADATA_DATA_GEO] = {
     location: {
@@ -207,7 +208,24 @@ export function readDataFromLocalStorage(dataKey) {
   }
 }
 
+export function readDatasetFromLocalStorage(datasetId) {
+  if (!datasetId) {
+    return undefined;
+  }
 
+  try {
+    const localData = localStorage.getItem(datasetId);
+
+    if (!localData) {
+      return undefined;
+    }
+
+    return JSON.parse(localData);
+  } catch (e) {
+    console.error(`Failed to parse json of ${datasetId} : ${e}`);
+    return null;
+  }
+}
 
 
 function initStepDataInLocalStorage(stepKey, data) {
@@ -531,6 +549,22 @@ function combineAuthorDataChanges(dataKey, data) {
   return data;
 }
 
+export function storeDatasetInLocalStorage(datasetId, data) {
+
+  if (!datasetId) {
+    return null;
+  }
+
+  try {
+    const stringData = JSON.stringify(data);
+    localStorage.setItem(datasetId, stringData);
+  } catch (e) {
+    console.error(`Failed to stringify json of ${datasetId} : ${e}`);
+    return null;
+  }
+
+  return data;
+}
 
 export function storeCreationStepsData(dataKey, data, steps, resetMessages = true, clearUIPreviews = true) {
 
@@ -597,13 +631,15 @@ export function canLocalDatasetBeStoredInBackend(steps) {
 }
 
 export function getPreviewDatasetFromLocalStorage() {
+
   const header = readDataFromLocalStorage(EDITMETADATA_MAIN_HEADER);
   const desc = readDataFromLocalStorage(EDITMETADATA_MAIN_DESCRIPTION);
   const keywords = readDataFromLocalStorage(EDITMETADATA_KEYWORDS);
 
   return {
-    ...header,
     ...desc,
     ...keywords,
+    // keywords also contains METADATA_TITLE_PROPERTY, therefore the header needs to be applied afterwards
+    ...header,
   }
 }

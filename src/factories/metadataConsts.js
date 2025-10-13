@@ -82,8 +82,8 @@ export const DATE_PROPERTY_COLLECTED_TYPE_EXPLANATION =
 export const METADATA_TITLE_PROPERTY = 'metadataTitle';
 export const METADATA_URL_PROPERTY = 'metadataUrl';
 export const METADATA_CONTACT_EMAIL = 'contactEmail';
-export const METADATA_CONTACT_FIRSTNAME = 'contactGivenName';
-export const METADATA_CONTACT_LASTNAME = 'contactSurname';
+export const METADATA_CONTACT_FIRSTNAME = 'contactFirstName';
+export const METADATA_CONTACT_LASTNAME = 'contactLastName';
 export const METADATA_CONTACT_FULLNAME = 'contactName';
 
 export const METADATA_AUTHORS_PROPERTY = 'authors';
@@ -118,3 +118,8 @@ export const LOCATION_TYPE_FEATURE = 'Feature';
 
 export const BLIND_REVIEW_ON = 'double-blind';
 export const BLIND_REVIEW_OFF = '1.0';
+
+export const METADATA_NEW_RESOURCE_ID = 'localResourceId';
+
+export const RESOURCE_FORMAT_LINK = 'url';
+

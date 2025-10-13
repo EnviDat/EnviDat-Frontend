@@ -138,16 +138,16 @@ export function enhanceElementsWithStrategyEvents(elementList, previewProperty =
   return elementList;
 }
 
-export function enhanceResourcesWithMetadataExtras(metdataExtras, resources) {
-  if (!metdataExtras || !resources) return null;
+export function enhanceResourcesWithMetadataExtras(metadataExtras, resources) {
+  if (!metadataExtras || !resources) return null;
 
-  if (typeof metdataExtras === 'object'
-    && metdataExtras instanceof Array) {
+  if (typeof metadataExtras === 'object'
+    && metadataExtras instanceof Array) {
 
     let deprecatedResources = [];
 
-    if (metdataExtras?.length > 0) {
-      const customFieldEntry = metdataExtras.filter((entry) => entry?.key === METADATA_DEPRECATED_RESOURCES_PROPERTY)[0];
+    if (metadataExtras?.length > 0) {
+      const customFieldEntry = metadataExtras.filter((entry) => entry?.key === METADATA_DEPRECATED_RESOURCES_PROPERTY)[0];
       deprecatedResources = JSON.parse(customFieldEntry?.value || '[]');
     }
 
@@ -156,11 +156,10 @@ export function enhanceResourcesWithMetadataExtras(metdataExtras, resources) {
       resource.deprecated = deprecatedResources?.includes(resource.id);
 
       const enhanceKey = `${SHOW_DATA_PREVIEW_KEY_PREFIX}_${resource.id}`;
+      const match = metadataExtras.filter((entry) => entry.key === enhanceKey)[0];
 
-      const matches = metdataExtras.filter((entry) => entry.key === enhanceKey);
-
-      if (matches.length > 0) {
-        resource[SHOW_DATA_PREVIEW_PROPERTY] = matches[0].value;
+      if (match) {
+        resource[SHOW_DATA_PREVIEW_PROPERTY] = match.value;
       }
     }
 

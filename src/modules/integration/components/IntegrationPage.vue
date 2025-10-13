@@ -74,15 +74,11 @@ import {
 import ImgAndTextLayout from '@/components/Layouts/ImgAndTextLayout.vue';
 import TextCardListLayout from '@/components/Layouts/TextCardListLayout.vue';
 import ImageTextCard from '@/components/Layouts/ImageTextCard.vue';
-import { getImage } from '@/factories/imageFactory';
 
 export default {
   name: INTEGRATION_PAGENAME,
   beforeMount() {
     this.loadCommunityList();
-
-    this.fallbackCardImg = getImage('contact');
-    this.titleImage = getImage('integration_header');
   },
   /**
    * @description reset the scrolling to the top,
@@ -112,8 +108,8 @@ export default {
     pageTitle: 'Community Integration',
     pageIntroText: `With EnviDat, WSL aims to disseminate its data sets as broadly as possible in order to foster international research cooperation in the field of environmental science and contribute to the ongoing cultural evolution in research towards openness, shared data and opportunities for collaboration.
     Consequently, we are officially registered in re3data.org and FAIRsharing.org and a contributor community to NASA Earthdata, ESA's GEOSS Portal and data.europa.eu via opendata.swiss.`,
-    fallbackCardImg: null,
-    titleImage: null,
+    fallbackCardImg: 'contact',
+    titleImage: 'integration_header',
   }),
 };
 </script>

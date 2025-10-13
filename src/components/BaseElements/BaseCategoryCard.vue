@@ -1,5 +1,6 @@
 <template>
   <v-card
+    id="BaseCategoryCard"
     ripple
     hover
     raised

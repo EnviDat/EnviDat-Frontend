@@ -1,5 +1,10 @@
 <template>
-  <v-container id="MetadataDetailPage" fluid class="pa-0" tag="article">
+  <v-container
+    id="MetadataDetailPage"
+    fluid
+    class="pa-0"
+    tag="article">
+
     <v-row no-gutters>
       <!-- prettier-ignore -->
       <v-col class="elevation-5 pa-0"
@@ -49,8 +54,12 @@
         >
           <v-col v-if="entry"
                  class="mb-2 px-0">
-            <!-- prettier-ignore -->
-            <component :component="entry" :is="entry" v-bind="entry.props" />
+            <component
+              :component="entry"
+              :is="entry"
+              v-bind="entry.props"
+              :showPlaceholder="showPlaceholder"
+            />
           </v-col>
         </v-row>
       </v-col>
@@ -63,8 +72,13 @@
         >
           <v-col v-if="entry"
                  class="mb-2 px-0">
-            <!-- prettier-ignore -->
-            <component :component="entry" :is="entry" v-bind="entry.props" />
+
+            <component
+              :component="entry"
+              :is="entry"
+              v-bind="entry.props"
+              :showPlaceholder="showPlaceholder"
+            />
           </v-col>
         </v-row>
       </v-col>
@@ -133,8 +147,8 @@ import {
   createLicense,
   createPublications,
   createRelatedDatasets,
-  createResources,
 } from '@/factories/metaDataFactory';
+import { createResources } from '@/factories/resourceHelpers';
 
 import { createCitation } from '@/factories/citationFactory';
 
@@ -243,6 +257,8 @@ export default {
 
     eventBus.on(GCNET_PREPARE_DETAIL_CHARTS, this.prepareGCNetChartModal);
     eventBus.on(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
+
+    this.loadMetaDataContent();
   },
   /**
    * @description load all the icons once before the first component's rendering.
@@ -254,7 +270,6 @@ export default {
    * @description reset the scrolling to the top.
    */
   async mounted() {
-    this.loadMetaDataContent();
 
     // await this.setPageViews(this.$route.fullPath, 'Visit');
 
@@ -263,8 +278,6 @@ export default {
     this.$nextTick(() => {
       this.fetchUserOrganisationData();
       this.fetchUserDatasets();
-
-      // this.headerHeight = this.getHeaderHeight();
     });
   },
   /**
@@ -354,7 +367,7 @@ export default {
       return fileList;
     },
     baseUrl() {
-      return import.meta.env.PROD
+      return import.meta.env?.MODE === 'production'
         ? this.baseStationURL
         : this.baseStationURLTestdata;
     },
@@ -370,7 +383,7 @@ export default {
         : undefined;
     },
     showPlaceholder() {
-      return this.loadingMetadatasContent || this.loadingCurrentMetadataContent;
+      return this.loadingCurrentMetadataContent || this.loadingMetadatasContent;
     },
     firstColumn() {
       return this.$vuetify.display.mdAndUp ? this.firstCol : this.singleCol;
@@ -513,20 +526,6 @@ export default {
     resize() {
       this.reRenderComponents();
     },
-    // getHeaderHeight() {
-    //   let height = -2;
-
-    //   if (
-    //     (this.$vuetify.display.smAndDown && this.appScrollPosition > 20) ||
-    //     this.$vuetify.display.mdAndUp
-    //   ) {
-    //     if (this.$refs?.header) {
-    //       height = this.$refs.header.$el.clientHeight;
-    //     }
-    //   }
-
-    //   return height;
-    // },
     /**
      * @description
      */
@@ -600,7 +599,6 @@ export default {
       this.MetadataAuthors.props = {
         authors: this.authors,
         authorDetailsConfig: this.authorDetailsConfig,
-        showPlaceholder: this.showPlaceholder,
       };
     },
     loadResources() {
@@ -645,7 +643,7 @@ export default {
         dataLicenseTitle: license.title,
         dataLicenseUrl: license.url,
         resourcesConfig: this.resourcesConfig,
-        showPlaceholder: this.showPlaceholder,
+        compactList: true,
       };
     },
     setMetadataContent() {
@@ -670,12 +668,10 @@ export default {
 
       this.MetadataDescription.props = {
         ...this.descriptionData,
-        showPlaceholder: this.showPlaceholder,
       };
 
       this.MetadataCitation.props = {
         ...this.citation,
-        showPlaceholder: this.showPlaceholder,
       };
 
       let publicationList;
@@ -685,26 +681,22 @@ export default {
         this.MetadataPublicationList.props = {
           ...this.publications,
           metadataConfig: this.metadataConfig,
-          showPlaceholder: this.showPlaceholder,
         };
         publicationList = this.MetadataPublicationList;
       } else {
         this.MetadataPublications.props = {
           ...this.publications,
           metadataConfig: this.metadataConfig,
-          showPlaceholder: this.showPlaceholder,
         };
         publicationList = this.MetadataPublications;
       }
 
       this.MetadataRelatedDatasets.props = {
         ...this.relatedDatasets,
-        showPlaceholder: this.showPlaceholder,
       };
 
       this.MetadataFunding.props = {
         funding: this.funding,
-        showPlaceholder: this.showPlaceholder,
       };
 
       let resourceDataViz;
@@ -1016,7 +1008,6 @@ export default {
   },
   data: () => ({
     organizationsStore: null,
-    // headerHeight: 0,
     mdiClose,
     MetadataDescription: markRaw(MetadataDescription),
     MetadataResources: markRaw(MetadataResources),

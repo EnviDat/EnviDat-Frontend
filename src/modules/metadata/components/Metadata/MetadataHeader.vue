@@ -571,18 +571,18 @@ import {
   getAuthorGivenName,
   getAuthorLastName,
 } from '@/factories/authorFactory';
+import { getImage } from '@/factories/imageFactory.js';
 
 export default {
   name: 'MetadataHeader',
-  components: {
-    MetadataHeaderPlaceholder,
-    BaseIcon,
-    TagChip,
-    TagChipAuthor,
-    BaseIconButton,
-    MetadataOrganizationChip,
-    MetadataStateChip,
-  },
+  emits: [
+    'organizationClicked',
+    'clickedEdit',
+    'clickedBack',
+    'clickedAuthor',
+    'clickedTag',
+    'checkSize',
+  ],
   props: {
     metadataId: String,
     metadataTitle: String,
@@ -639,6 +639,11 @@ export default {
       default: undefined,
     },
   },
+  async mounted() {
+    if (this.titleImg) {
+      this.titleImgResolved = await getImage(this.titleImg);
+    }
+  },
   data: () => ({
     mdiClose,
     mdiEmail,
@@ -666,6 +671,7 @@ export default {
     authorTagsMaxHeight: 75,
     showAuthors: false,
     limitAuthors: 1,
+    titleImgResolved: undefined,
   }),
   watch: {
     breakpoint: {
@@ -673,6 +679,11 @@ export default {
         this.updateAuthorsBasedOnBreakpoint();
       },
       immediate: true,
+    },
+    async titleImg() {
+      if (this.titleImg) {
+        this.titleImgResolved = await getImage(this.titleImg);
+      }
     },
   },
   computed: {
@@ -725,8 +736,8 @@ export default {
                     background-repeat: initial;
                     z-index: 0;`;
 
-      if (this.titleImg) {
-        style += `background-image: linear-gradient(0deg, ${gradient}), url(${this.titleImg});
+      if (this.titleImgResolved) {
+        style += `background-image: linear-gradient(0deg, ${gradient}), url(${this.titleImgResolved});
         filter: blur(2px);`;
       } else {
         style += `background-color: ${this.categoryColor};`;
@@ -787,6 +798,15 @@ export default {
     authorName: getAuthorName,
     authorGivenName: getAuthorGivenName,
     authorLastName: getAuthorLastName,
+  },
+  components: {
+    MetadataHeaderPlaceholder,
+    BaseIcon,
+    TagChip,
+    TagChipAuthor,
+    BaseIconButton,
+    MetadataOrganizationChip,
+    MetadataStateChip,
   },
 };
 </script>

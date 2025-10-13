@@ -10,7 +10,6 @@
       :offset-y="$vuetify?.display?.mdAndUp"
       min-width="280px"
     >
-
       <template v-slot:activator="{ props }">
         <v-text-field
           v-bind="props"
@@ -21,7 +20,7 @@
           persistent-clear
           :readonly="readonly"
           persistent-hint
-          :hint="readOnlyExplanation"
+          :hint="hint"
           :model-value="yearField"
         />
       </template>
@@ -33,11 +32,10 @@
         no-title
         :next-icon="mdiSkipNext"
         :prev-icon="mdiSkipPrevious"
-        :year='yearField'
+        :year="yearField"
         @update:year="saveYear"
       >
-        <template #title
-                  v-if="yearField">
+        <template #title v-if="yearField">
           {{ yearField }}
         </template>
       </v-date-picker>
@@ -50,14 +48,11 @@ import { isDate, parse } from 'date-fns';
 import * as yup from 'yup';
 
 import { mdiCalendarRange, mdiSkipNext, mdiSkipPrevious } from '@mdi/js';
-import {
-  ckanDateFormat,
-} from '@/factories/mappingFactory';
+import { ckanDateFormat } from '@/factories/mappingFactory';
 
-import { isFieldReadOnly } from '@/factories/globalMethods';
 
 // eslint-disable-next-line func-names
-yup.addMethod(yup.date, 'parseDateString', function() {
+yup.addMethod(yup.date, 'parseDateString', function () {
   // Helper function for yup date string parsing
   // eslint-disable-next-line func-names
 
@@ -91,11 +86,11 @@ export default {
       type: Boolean,
       default: false,
     },
-    readOnlyFields: {
-      type: Array,
-      default: () => [],
+    readonly: {
+      type: Boolean,
+      default: false,
     },
-    readOnlyExplanation: {
+    hint: {
       type: String,
       default: undefined,
     },
@@ -115,23 +110,21 @@ export default {
   computed: {
     yearField: {
       get() {
-        const yearString = this.previewYear !== null ? this.previewYear : this.year;
+        const yearString =
+          this.previewYear !== null ? this.previewYear : this.year;
         if (yearString) {
           // vuetify component needs the year to be a number
           return Number.parseInt(yearString, 10);
         }
 
-        return undefined
+        return undefined;
       },
       set(value) {
-/*
+        /*
         console.log('yearField set', typeof value);
 */
         this.$emit('yearChange', value);
       },
-    },
-    readonly() {
-      return isFieldReadOnly(this.$props, this.yearProperty);
     },
   },
   methods: {

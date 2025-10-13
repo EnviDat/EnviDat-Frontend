@@ -16,7 +16,7 @@ export const BULK_LOAD_METADATAS_CONTENT_ERROR =
   'BULK_LOAD_METADATAS_CONTENT_ERROR';
 
 export const ACTION_BULK_LOAD_METADATAS_CONTENT = () => {
-  if (import.meta.env?.DEV && useTestdata) {
+  if (import.meta.env?.MODE === 'development' && useTestdata) {
     return './testdata/packagelist.json';
   }
 
@@ -30,7 +30,7 @@ export const LOAD_METADATA_CONTENT_BY_ID_ERROR =
   'LOAD_METADATA_CONTENT_BY_ID_ERROR';
 
 export const ACTION_LOAD_METADATA_CONTENT_BY_ID = () => {
-  if (import.meta.env?.DEV && useTestdata) {
+  if (import.meta.env?.MODE === 'development' && useTestdata) {
     return './testdata/package_show.json';
   }
 
@@ -46,7 +46,7 @@ export const SEARCH_METADATA_ERROR = 'SEARCH_METADATA_ERROR';
 export const CLEAR_SEARCH_METADATA = 'CLEAR_SEARCH_METADATA';
 
 export const ACTION_SEARCH_METADATA = () => {
-  if (import.meta.env?.DEV && useTestdata) {
+  if (import.meta.env?.MODE === 'development' && useTestdata) {
     return './testdata/query.json';
   }
 
@@ -93,7 +93,7 @@ export const METADATA_UPDATE_EXISTING_KEYWORDS_ERROR =
   'METADATA_UPDATE_EXISTING_KEYWORDS_ERROR';
 
 export const ACTION_METADATA_UPDATE_EXISTING_KEYWORDS = () => {
-  if (import.meta.env?.DEV && useTestdata) {
+  if (import.meta.env?.MODE === 'development' && useTestdata) {
     return './testdata/tag_list.json';
   }
 
@@ -101,9 +101,10 @@ export const ACTION_METADATA_UPDATE_EXISTING_KEYWORDS = () => {
 };
 
 export const METADATA_REVIEW_STORE = 'METADATA_REVIEW_STORE';
+export const EDIT_DATASET_STORE = 'EDIT_DATASET_STORE';
 
 export const ACTION_METADATA_REVIEW = () => {
-  if (import.meta.env?.DEV && useTestdata) {
+  if (import.meta.env?.MODE === 'development' && useTestdata) {
     return './testdata/review.json';
   }
 

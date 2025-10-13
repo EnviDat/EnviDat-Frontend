@@ -1,8 +1,6 @@
 <template>
-  <v-card id="MetadataGeo"
-          class="pa-0"
-  >
-    <v-card-title class="py-4">
+  <v-card id="MetadataGeo" class="pa-0" :elevation="elevation">
+    <v-card-title v-if="showTitle" class="py-4">
       <v-row justify="end" align="center" no-gutters>
         <v-col class="text-h6 metadata_title grow" align-self="start">
           {{ METADATA_LOCATION_TITLE }}
@@ -22,16 +20,14 @@
     </v-card-title>
 
     <v-card-text
-      v-if="error"
+      v-if="error && showError"
       class="py-1 text-caption readableText"
-      :style="
-        `line-height: 1rem; background-color: ${$vuetify.theme.themes.light.colors.error};`
-      "
+      :style="`line-height: 1rem; background-color: ${$vuetify.theme.themes.light.colors.error};`"
     >
       {{ error }}
     </v-card-text>
 
-    <v-card-text style="position: relative">
+    <v-card-text class="map-wrapper" style="position: relative">
       <MapRoot
         :layer-config="layerConfig"
         :mapDivId="mapDivId"
@@ -108,9 +104,20 @@ export default {
       type: Boolean,
       default: false,
     },
+    showTitle: {
+      type: Boolean,
+      default: true,
+    },
+    showError: {
+      type: Boolean,
+      default: true,
+    },
+    elevation: {
+      type: Number,
+      default: 2,
+    },
   },
-  computed: {
-  },
+  computed: {},
   methods: {
     triggerFullscreen() {
       eventBus.emit(INJECT_MAP_FULLSCREEN, {

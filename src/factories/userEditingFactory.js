@@ -233,7 +233,7 @@ export function getAllowedUserNames(allowedUsersString, envidatUsers) {
  * Returns a string of the allowed users names (only the name attribute of the user object)
  * separted by ","
  *
- * @param userFullNameArray
+ * @param {string[]} userFullNameArray
  * @param envidatUsers
  * @returns {string}
  */

@@ -16,7 +16,7 @@
 
         <v-col cols="12">
           <router-link :to="{ path: BROWSE_PATH }"
-            >I want to go back to the browse page!</router-link
+            >Back to the list of datasets!</router-link
           >
         </v-col>
       </v-row>

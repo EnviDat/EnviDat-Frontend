@@ -37,7 +37,7 @@ export default {
 
     let url = `${staticRoot}/guidelines/guidelines.md?nocache=${new Date().getTime()}`;
 
-    if (import.meta.env?.DEV && useTestdata) {
+    if (import.meta.env?.MODE === 'development' && useTestdata) {
       url = './testdata/guidelines.md';
     }
 
@@ -54,7 +54,7 @@ export default {
 
     let url = `${staticRoot}/policies/policies.md?nocache=${new Date().getTime()}`;
 
-    if (import.meta.env?.DEV && useTestdata) {
+    if (import.meta.env?.MODE === 'development' && useTestdata) {
       url = './testdata/policies.md';
     }
 
@@ -72,7 +72,7 @@ export default {
 
     let url = `${staticRoot}/guidelines/dmp.md?nocache=${new Date().getTime()}`;
 
-    if (import.meta.env?.DEV && useTestdata) {
+    if (import.meta.env?.MODE === 'development' && useTestdata) {
       url = './testdata/dmp.md';
     }
 
@@ -90,7 +90,7 @@ export default {
 
     let url = `${staticRoot}/guidelines/imprint.md?nocache=${new Date().getTime()}`;
 
-    if (import.meta.env?.DEV && useTestdata) {
+    if (import.meta.env?.MODE === 'development' && useTestdata) {
       url = './testdata/imprint.md';
     }
 

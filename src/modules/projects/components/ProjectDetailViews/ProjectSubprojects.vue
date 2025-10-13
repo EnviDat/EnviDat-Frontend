@@ -19,7 +19,6 @@
               :id="project.name"
               :title="project.title"
               :img="project.image_display_url"
-              :defaultImg="defaultImg"
               :description="project.description"
               :subProjects="project.subProjects"
               @cardClick="onCardClick"
@@ -66,7 +65,6 @@ export default {
       type: String,
       default: 'Subprojects',
     },
-    defaultImg: String,
     subProjects: Array,
     dark: Boolean,
     showPlaceholder: Boolean,

@@ -45,6 +45,7 @@ export const loadContentFromUrl = async (url: string) : Promise<LoadingContent> 
   }
 }
 
+// eslint-disable-next-line no-unused-vars
 export const getConfigAndEditorProps = async (configUrl: string, mode: ChartAppMode) => {
   let editorProps: ChartProps | undefined;
   let chartConfig: ChartConfiguration | undefined;
