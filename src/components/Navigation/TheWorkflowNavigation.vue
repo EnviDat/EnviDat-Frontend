@@ -61,7 +61,11 @@
           :key="index"
           :class="[
             'navigationWorkflow__item',
-            { readOnly: !step.isEditable, unlocked: isUnlocked(step) },
+            {
+              readOnly:
+                !step.isEditable && workflowStore.mode !== WorkflowMode.Create,
+              unlocked: isUnlocked(step),
+            },
             // step.status can be active, completed, error
             step.status,
           ]"
@@ -168,10 +172,11 @@
         />
         <span class="text-body-2 mt-2">Help mode</span>
       </div>
+      <!-- TODO get from the backend the status of the dataset and not use workflowStore.isStepSaveConfirmed -->
       <div
         @click="reserveDoi"
         :class="{
-          disabled: !workflowStore.isStepSaveConfirmed,
+          disabled: workflowStore.isStepSaveConfirmed,
         }"
         class="navigationWorkflow__actions--item d-flex flex-column"
       >
@@ -291,6 +296,7 @@ import { extractIcons } from '@/factories/iconFactory';
 
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import { WorkflowMode } from '@/modules/workflow/utils/workflowEnums';
 
 const workflowStore = useDatasetWorkflowStore();
 const display = useDisplay();
@@ -300,6 +306,10 @@ const emit = defineEmits(['navigateItem', 'catchCloseClick']);
 // Props
 const props = defineProps({
   isDatasetEditing: Boolean,
+  currentDataset: {
+    type: Object,
+    default: undefined,
+  },
 });
 
 // tooltip activator
@@ -316,8 +326,14 @@ const navigateItem = (id, status) => {
 
 const reserveDoi = async () => {
   // TODO metadataID connect with the real ID, see reference initMetadataUsingId - MetadataEditPage
+  // IMPORTANT initMetadataUsingId!!!!
   // await store.dispatch('user/DOI_RESERVE', 'metadataID');
-  workflowStore.reserveDoi();
+
+  // if (!currentDataset) {
+  //   return workflowStore.triggerErrorAlert();
+  // }
+  const id = props.currentDataset.dataset.name;
+  workflowStore.reserveDoi(id);
 };
 
 /*
@@ -331,8 +347,7 @@ const tooltip = {
 */
 // Unlock the step
 const isUnlocked = (step) => {
-  if (workflowStore.mode !== 'create' && workflowStore.mode !== 'Create')
-    return false;
+  if (workflowStore.mode !== WorkflowMode.Create) return false;
   if (step.id <= 0) return false;
   const prev = workflowStore.steps[step.id - 1];
   return !!prev?.completed;

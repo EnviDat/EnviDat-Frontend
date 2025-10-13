@@ -6,7 +6,6 @@ import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 const toNull = (v: string, o: string) => (o === '' ? null : v);
 
 export class AdditionalInfoViewModel extends AbstractEditViewModel {
-
   declare dataLicenseId: string;
   declare dataLicenseTitle: string;
   declare dataLicenseUrl: string;
@@ -27,6 +26,8 @@ export class AdditionalInfoViewModel extends AbstractEditViewModel {
 
   validationRules = yup.object().shape({
     dataLicenseId: yup.string().required('Data licence is required'),
+    dataLicenseTitle: yup.string().nullable(),
+    dataLicenseUrl: yup.string().nullable().url(),
     funders: yup
       .array()
       .required('Enter funding information')
@@ -52,7 +53,7 @@ export class AdditionalInfoViewModel extends AbstractEditViewModel {
     return super.validate(newProps);
   }
 
-/*
+  /*
   getData() {
     return {
       dataLicenseId: this.dataLicenseId,

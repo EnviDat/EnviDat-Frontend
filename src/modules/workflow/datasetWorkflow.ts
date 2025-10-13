@@ -1,6 +1,12 @@
 import { defineStore } from 'pinia';
 
 import {
+  USER_ROLE_MEMBER,
+  USER_ROLE_EDITOR,
+  USER_ROLE_SYSTEM_ADMIN,
+} from '@/factories/userEditingValidations';
+
+import {
   enhanceAdminWorkflowStep,
   workflowSteps,
 } from '@/modules/workflow/resources/steps';
@@ -11,10 +17,14 @@ import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 import { DatasetService, User } from '@/types/modelTypes';
 import { BackendDatasetService } from '@/modules/workflow/BackendDatasetService.ts';
 import { workflowGuide } from '@/modules/workflow/resources/workflowGuides.ts';
+import { getYear } from 'date-fns';
 
 import { readOnlyFields } from '@/modules/workflow/resources/readOnlyList.ts';
 import { resolveBootstrap } from '@/modules/workflow/utils/workflowBootstrap.ts';
-import { computeStepsForMode } from '@/modules/workflow/utils/mode.ts';
+import {
+  computeStepsForMode,
+  enhanceStepsFromData,
+} from '@/modules/workflow/utils/mode.ts';
 import {
   mustValidateOnLeave as mustValidateOnLeaveUtil,
   setActiveStepForCreate,
@@ -31,13 +41,16 @@ import {
 import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
 import { getMetadataUrlFromTitle } from '@/factories/mappingFactory';
 
+import { makeMaintainerFromUser } from '@/modules/workflow/utils/formatPostData';
+
 /*
 import datasets from '~/stories/js/metadata.js';
 
 let datasetVM = new DatasetModel(new LocalStorageDatasetService());
 if (import.meta.env.MODE === 'development') {
   daimport { dataset } from '../../../public/testdata/dataset_10-16904-1';
-tasetVM = new DatasetModel(new LocalStorageDatasetService(datasets[2]));
+taseimport { user } from '../user/store/userStore';
+tVM = new DatasetModel(new LocalStorageDatasetService(datasets[2]));
 }
 */
 
@@ -58,7 +71,14 @@ export interface DatasetWorkflowState {
   localStorageService: LocalStorageDatasetService;
   userRole?: string;
   uploadingResourceId?: string;
-/*
+  saveErrorMessage?: string;
+  readyToSaveToBackend?: boolean;
+  workflowGuide?: any[];
+  currentDatasetId?: string;
+  dataSource: 'local' | 'backend';
+  currentUser?: any;
+
+  /*
   workflowGuide: ({ popover: { description: string; title: string }; element: string } | {
     popover: { description: string; title: string };
     element: string
@@ -102,6 +122,8 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     mode: WorkflowMode.Create,
     userRole: undefined,
     uploadingResourceId: undefined,
+    dataSource: 'local' as const,
+    currentUser: undefined,
   }),
   getters: {
     // GET the current step component
@@ -126,6 +148,15 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     },
   },
   actions: {
+    // SET the current user
+    setCurrentUser(u: any) {
+      this.currentUser = u ?? undefined;
+    },
+    // SET the user role
+    setUserRole(role?: string) {
+      debugger;
+      this.userRole = role;
+    },
     // CHECK if the value has data
     hasDtData(val: any): boolean {
       if (val == null) return false;
@@ -135,76 +166,60 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
       }
       return String(val).trim().length > 0;
     },
+    // RESET status of the workflow
+    resetStatus() {
+      this.doiPlaceholder = null;
+      this.openSaveDialog = false;
+      this.isStepSaveConfirmed = false;
+    },
     // LOAD the dataset from the backend service
     async loadDataset(datasetId: string) {
       return this.datasetModel.loadDataset(datasetId);
     },
 
     async initializeDataset(dataset: DatasetDTO, mode: WorkflowMode) {
+      this.mode = mode;
       this.datasetModel = new DatasetModel(this);
 
-      if (mode === WorkflowMode.Create && dataset) {
-        // SEED the local storage with the provided dataset
-        if (this.localStorageService?.patchDatasetChanges) {
-          await this.localStorageService.patchDatasetChanges(dataset);
-        } else {
-          await this.localStorageService.createDataset(dataset as any);
-        }
-      }
+      // SET default values for the dataset
+      // if (mode === WorkflowMode.Create && dataset) {
+      //   if (this.localStorageService?.patchDatasetChanges) {
+      //     await this.localStorageService.patchDatasetChanges(dataset);
+      //   } else {
+      //     await this.localStorageService.createDataset(dataset as any);
+      //   }
+      // }
+
+      // SET Admin role if the user is admin
+      const baseSteps = enhanceAdminWorkflowStep(this.userRole, this.steps);
+
+      // SET the navigation based on the mode
+      const { steps: shapedByMode, freeJump } = computeStepsForMode(
+        baseSteps,
+        this.isReadOnlyStep,
+        mode,
+        this.dataSource,
+      );
+
+      // SET navigation based on the data available in the datasetModel
+      const { steps: evaluated, startIdx } = enhanceStepsFromData(
+        shapedByMode,
+        this.datasetModel,
+        this.hasDtData,
+        mode,
+      );
+
+      this.steps = evaluated;
+      this.freeJump = freeJump;
 
       if (mode === WorkflowMode.Create) {
-        const seeded = this.steps.map((s: WorkflowStep) => {
-          const vm = s.viewModelKey
-            ? (this.datasetModel as any).getViewModel(s.viewModelKey)
-            : null;
-
-          if (!vm) return { ...s, completed: false, hasError: false };
-
-          const data = vm.getModelData?.();
-          const filled = this.hasDtData(data);
-          if (!filled)
-            return {
-              ...s,
-              completed: false,
-              hasError: false,
-              status: StepStatus.Disabled,
-            };
-          // vm.validate?.(data);
-          // const hasErrors = Object.values(vm.validationErrors || {}).some(
-          //   Boolean,
-          // );
-          // if (hasErrors) {
-          //   return {
-          //     ...s,
-          //     completed: false,
-          //     hasError: true,
-          //     status: StepStatus.Error,
-          //     errors: vm.validationErrors,
-          //   };
-          // }
-          return {
-            ...s,
-            completed: true,
-            hasError: false,
-            status: StepStatus.Completed,
-            errors: null,
-          };
-        });
-
-        this.steps = enhanceAdminWorkflowStep(this.userRole, seeded);
-
-        const startIdx = this.steps.findIndex((s) => !s.completed);
-        this.setActiveStep(startIdx === -1 ? 0 : startIdx);
+        this.setActiveStep(startIdx);
       } else {
         this.currentStep = 0;
       }
 
-      // SET doi
-      this.doiPlaceholder = null;
-      // SET the dialog for the step 4 to false
-      this.openSaveDialog = false;
-      // SET the step save confirmation to false
-      this.isStepSaveConfirmed = false;
+      // RESET
+      this.resetStatus();
     },
 
     // CHECK if the field is readonly based on the mode and the list of readOnlyFields.
@@ -222,45 +237,48 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
       this.loading = true;
 
       try {
-        const { dto, mode } = await resolveBootstrap<DatasetDTO>(datasetId, {
-          loadBackend: (id) => this.backendStorageService.loadDataset(id),
-          loadLocal: (id) => this.localStorageService.loadDataset(id),
-          createLocal: (init) =>
-            this.localStorageService.createDataset(init as DatasetDTO),
-        });
-
-        this.setWorkflowMode(mode);
-
+        const { dto, mode, source } = await resolveBootstrap<DatasetDTO>(
+          datasetId,
+          {
+            loadBackend: (id) => this.backendStorageService.loadDataset(id),
+            loadLocal: (id) => this.localStorageService.loadDataset(id),
+            createLocal: (init) =>
+              this.localStorageService.createDataset(init as DatasetDTO),
+          },
+        );
+        // this.setWorkflowMode(mode);
+        this.dataSource = source;
         await this.initializeDataset(dto, mode);
+        return { id: dto.id, mode };
       } finally {
         this.loading = false;
       }
     },
 
     // RETURN the dataset service to use based on the current mode.
-    //  WorkflowMode.Create mode → uses localStorage service
-    // WorkflowMode.Edit mode → uses backend service
+    // Based on the dataSource we will use the local or the backend service.
+    // The source is defined in the bootstrapWorkflow function -> resolveBootstrap()
     getDatasetService(): DatasetService {
-      return this.mode === WorkflowMode.Create
-        ? this.localStorageService
-        : this.backendStorageService;
+      return this.dataSource === 'backend'
+        ? this.backendStorageService
+        : this.localStorageService;
     },
 
-    // SET the mode to WorkflowMode.Create or WorkflowMode.Edit.
-    // Controls navigation flow, read-only UI state, and step editability based on the mode.
-    // EXAMPLE - In WorkflowMode.Edit mode, steps become editable, allowing free navigation.
-    setWorkflowMode(mode: WorkflowMode) {
-      this.mode = mode;
+    // // SET the mode to WorkflowMode.Create or WorkflowMode.Edit.
+    // // Controls navigation flow, read-only UI state, and step editability based on the mode.
+    // // EXAMPLE - In WorkflowMode.Edit mode, steps become editable, allowing free navigation.
+    // setWorkflowMode(mode: WorkflowMode) {
+    //   this.mode = mode;
 
-      const { steps, freeJump } = computeStepsForMode(
-        this.steps,
-        this.isReadOnlyStep,
-        mode,
-      );
+    //   const { steps, freeJump } = computeStepsForMode(
+    //     this.steps,
+    //     this.isReadOnlyStep,
+    //     mode,
+    //   );
 
-      this.steps = steps;
-      this.freeJump = freeJump;
-    },
+    //   this.steps = steps;
+    //   this.freeJump = freeJump;
+    // },
 
     // STORYBOOK
     // PLEASE NOTE – We are currently in the development phase, and an exception is present to make Storybook work.
@@ -363,7 +381,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
         isStepSaveConfirmed: this.isStepSaveConfirmed,
       });
 
-      if (openSaveDialog) {
+      if (openSaveDialog && this.dataSource === 'local') {
         this.openSaveDialog = true;
         return false;
       }
@@ -377,36 +395,15 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     },
 
     // SET the step as touched.
-    // TODO: ticket (https://envicloud.atlassian.net/browse/EN-2431)
     markStepTouched(stepId: number, touched = true) {
       const s = this.steps[stepId];
       if (s) s.touched = touched;
     },
 
-    // CHECK - Validate the current step.
-    // CONFIRM- If confirmed, save to the backend, close the dialog, and mark the step as validated.
-    confirmSaveToBackend(dataset: object) {
-      this.isStepSaveConfirmed = true;
-      this.openSaveDialog = false;
-      const test = this.backendStorageService.createDataset(dataset);
-      console.log(test);
-
-      // if (ok) {
-      //   this.isStepSaveConfirmed = true;
-      //   this.openSaveDialog = false;
-      //   console.log('Resource created successfully');
-      // } else {
-      //   this.isStepSaveConfirmed = false;
-      //   this.openSaveDialog = true;
-      // }
-
-      // this.backendStorageService.createResource()
-
-      // return this.validateStepAction(this.stepForBackendChange);
-    },
     // TODO implement the real function for get the DOI
-    reserveDoi() {
-      this.doiPlaceholder = '10.10000/envidat.1234';
+    reserveDoi(datasetId: string) {
+      this.backendStorageService.requestDoi(datasetId);
+      // this.doiPlaceholder = '10.10000/envidat.1234';
     },
 
     clearLocalStorage() {
@@ -426,20 +423,19 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     // Ehnance the default properties of the dataset
     applyDatasetDefaults(dataset: DatasetDTO, id: string) {
       const orgStore = useOrganizationsStore();
+
       const firstOrg = orgStore.userOrganizations?.[0];
 
-      // const ownerOrg = firstOrg?.id ?? '';
-      // dataset.owner_org = ownerOrg;
-      // const organization = dataset.organization ? firstOrg : undefined;
-      // dataset.organization = organization;
+      const publicationObj = {
+        publisher: 'EnviDat',
+        publication_year: String(getYear(new Date())),
+      };
+      const publication = JSON.stringify(publicationObj);
+      const maintainer = this.currentUser
+        ? makeMaintainerFromUser(this.currentUser)
+        : ((dataset as any)?.maintainer ?? '');
 
-      // const name = dataset.title ? getMetadataUrlFromTitle(dataset.title) : '';
-      // dataset.name = name;
-      // dataset.private = true;
-      // dataset.resource_type_general = 'dataset';
-      // const setId = id;
-      // dataset.id = setId !== '' ? setId : '';
-
+      // '{"email":"enrico.peruselli@wsl.ch","given_name":"Enrico","name":"Peruselli"}',
       return {
         ...dataset,
         id: id || '',
@@ -448,7 +444,35 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
         name: dataset.title ? getMetadataUrlFromTitle(dataset.title) : '',
         private: true,
         resource_type_general: 'dataset',
+        publication,
+        maintainer,
       };
+    },
+    computeUserRole(args: {
+      user?: any;
+      userOrganizations?: Array<{ id: string; name?: string }>;
+      userDatasets?: Array<{ id: string }>;
+    }) {
+      const { user, userOrganizations = [], userDatasets = [] } = args || {};
+      const ds = this.datasetModel?.dataset;
+
+      if (!user || !ds) {
+        this.userRole = USER_ROLE_MEMBER;
+        return this.userRole;
+      }
+
+      if (user.sysadmin === true) {
+        this.userRole = USER_ROLE_SYSTEM_ADMIN;
+        return this.userRole;
+      }
+
+      const inOrg = userOrganizations.some(
+        (o) => o.id === ds?.organization?.id,
+      );
+      const isOwner = userDatasets.some((d) => d.id === ds?.id);
+
+      this.userRole = inOrg && isOwner ? USER_ROLE_EDITOR : USER_ROLE_MEMBER;
+      return this.userRole;
     },
   },
 });

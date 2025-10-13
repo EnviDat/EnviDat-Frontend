@@ -33,7 +33,6 @@ import {
 import { RESOURCE_FORMAT_LINK } from '@/factories/metadataConsts';
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
 
-
 let API_BASE = '';
 let API_ROOT = '';
 
@@ -63,7 +62,6 @@ const defaultRestrictions = {
  * @returns {{cacheLastUpdated: null, cacheUrl: null, created: string, format: string, packageId, description: string, hast: string, url: string, urlType: null, mimetypeInner: null, size: null, restricted: {level: string, allowedUsers: string, sharedSecret: string}, name: string, resourceSize: {sizeUnits: string, sizeValue: string}, mimetype: null, id: string, lastModified: string, position: number, state: string, doi: string, resourceType: null}}
  */
 function createNewBaseResource(datasetId) {
-
   return {
     cacheLastUpdated: null,
     cacheUrl: null,
@@ -97,7 +95,6 @@ function createNewBaseResource(datasetId) {
 }
 
 function createNewResourceForFileUpload(datasetId, file) {
-
   const baseResourceProperties = createNewBaseResource(datasetId);
 
   const name = file.name || file;
@@ -132,13 +129,12 @@ export function createNewResourceForUrl(datasetId, url) {
     sizeFormat: 'B',
     name: resourceName,
   };
-
 }
 
 async function initiateMultipart(file) {
   // // console.log('initiateMultipart', file);
 
-/*
+  /*
   eventBus.emit(UPLOAD_STATE_RESET);
 */
 
@@ -182,8 +178,7 @@ async function initiateMultipart(file) {
 }
 
 export async function getSinglePresignedUrl(file) {
-
-/*
+  /*
   eventBus.emit(UPLOAD_STATE_RESET);
 */
 
@@ -208,7 +203,7 @@ export async function getSinglePresignedUrl(file) {
     id: resourceId,
     partNumber: 0,
     filename: file.name,
-/*
+    /*
     // uploadId,
     // partNumber: partNumbers,
     upload: {
@@ -228,13 +223,11 @@ export async function getSinglePresignedUrl(file) {
       headers: {
         'Content-Type': file.type,
       },
-    }
-
+    };
   } catch (error) {
     console.error(`getSinglePresignedUrl failed: ${error}`);
     return error;
   }
-
 }
 
 async function requestPresignedUrl(file, partData) {
@@ -260,15 +253,14 @@ async function requestPresignedUrl(file, partData) {
     const presignedUrl = res.data.result;
 
     return {
-      'url': presignedUrl,
-      'headers': {},
+      url: presignedUrl,
+      headers: {},
     };
   } catch (error) {
     console.error(`requestPresignedUrl failed: ${error}`);
     return error;
   }
 }
-
 
 async function completeMultipart(file, uploadData) {
   // console.log('completeMultipart', file, uploadData);
@@ -287,13 +279,16 @@ async function completeMultipart(file, uploadData) {
 
   try {
     const res = await axios.post(url, payload);
-    const fileUrl = res.data?.result?.url || null
+    const fileUrl = res.data?.result?.url || null;
 
     storeReference?.setUploadResource(undefined);
 
     return { location: fileUrl };
   } catch (error) {
-    storeReference?.commit(`${USER_NAMESPACE}/${METADATA_UPLOAD_FILE_ERROR}`, error);
+    storeReference?.commit(
+      `${USER_NAMESPACE}/${METADATA_UPLOAD_FILE_ERROR}`,
+      error,
+    );
     console.error(`Multipart completion failed: ${error}`);
     return error;
   }
@@ -329,7 +324,6 @@ async function abortMultipart(file, uploadData) {
 }
 
 async function listUploadedParts(file, { uploadId, key }) {
-
   const actionUrl = 'cloudstorage_multipart_list_parts';
   const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
@@ -350,11 +344,9 @@ async function listUploadedParts(file, { uploadId, key }) {
   }
 }
 
-
-export function hasUppyInstance () {
+export function hasUppyInstance() {
   return uppyInstance !== null;
 }
-
 
 export function subscribeOnUppyEvent(event, callback) {
   if (hasUppyInstance()) {
@@ -368,19 +360,15 @@ export function unSubscribeOnUppyEvent(event, callback) {
   }
 }
 
-
 function createUppyInstance(
   height = 300,
   autoProceed = true,
   restrictions = defaultRestrictions,
 ) {
-
-  const uppy =  new Uppy();
+  const uppy = new Uppy();
   const debug = import.meta.env?.MODE === 'development';
 
   uppy.setOptions({
-    // use different ids multiple instance, e.g. avatar image upload, resource-upload, etc.
-    // in this case the singleton creation (prevention of multiple instances) via getUppyInstance() needs to be changed
     id: uppyId,
     autoProceed,
     debug,
@@ -393,7 +381,6 @@ function createUppyInstance(
     limit: 4,
     shouldUseMultipart: true,
     getChunkSize(file) {
-      // at least 25MB per request, at most 500 requests
       return Math.max(1024 * 1024 * 25, Math.ceil(file.size / 500));
     },
     createMultipartUpload: initiateMultipart,
@@ -403,13 +390,15 @@ function createUppyInstance(
     completeMultipartUpload: completeMultipart,
   });
 
-  // // console.log('createUppyInstance', uppy);
-
   return uppy;
 }
 
-export function getUppyInstance(datasetId: string, height = 300, autoProceed = true, restrictions = undefined) {
-
+export function getUppyInstance(
+  datasetId: string,
+  height = 300,
+  autoProceed = true,
+  restrictions = undefined,
+) {
   storeReference = useDatasetWorkflowStore();
 
   if (hasUppyInstance()) {
@@ -429,4 +418,3 @@ export function destroyUppyInstance() {
 
   storeReference = null;
 }
-
