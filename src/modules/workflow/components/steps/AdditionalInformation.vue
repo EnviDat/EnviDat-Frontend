@@ -170,10 +170,20 @@
     <v-row>
       <v-col cols="12">
         <v-row>
-          <Organization :showTitle="false" v-bind="editOrganizationProps" />
+          <Organization
+            :showTitle="false"
+            v-bind="editOrganizationProps"
+            @save="catchOrgChange"
+          />
         </v-row>
       </v-col>
     </v-row>
+
+    <v-col v-if="validationErrors.organizationId != null" cols="12">
+      <v-alert type="error">
+        {{ validationErrors.organizationId }}
+      </v-alert>
+    </v-col>
 
     <v-row>
       <v-col cols="12">
@@ -276,6 +286,7 @@ export default {
     readOnlyExplanation: String,
     validationErrors: { type: Object, default: () => ({}) },
     organizationId: { type: String, default: undefined },
+    organizationName: { type: String, default: undefined },
     /* Can be either a single organization object or an array; we normalize it. */
     organization: { type: [Object, Array], default: () => [] },
   },
@@ -311,7 +322,8 @@ export default {
     },
     editOrganizationProps() {
       return {
-        organizationId: this.selectedOrganizationId,
+        organizationId: this.organizationId,
+        organizationName: this.organizationName,
         userOrganizations: this.userOrganizationsList,
         readOnlyFields: this.isReadOnly('organizationId'),
         readOnlyExplanation: this.readOnlyHint('organizationId'),
@@ -326,17 +338,6 @@ export default {
     },
 
     userOrganizationsList() {
-      // IF we have data from viewModel use them, otherwise get org from the store
-      const org = this.organization;
-
-      if (Array.isArray(org) && org.length > 0) {
-        return org;
-      }
-
-      if (org && typeof org === 'object' && Object.keys(org).length > 0) {
-        return [org];
-      }
-
       const storeList = this.orgStore?.userOrganizations;
       if (Array.isArray(storeList) && storeList.length > 0) {
         return storeList;
@@ -348,7 +349,11 @@ export default {
   methods: {
     // isFieldReadOnly,
     // readOnlyHint,
-
+    catchOrgChange(updatedOrg) {
+      this.newDatasetInfo.organizationName = updatedOrg.name;
+      this.newDatasetInfo.organizationId = updatedOrg.id;
+      this.$emit('save', this.newDatasetInfo);
+    },
     isReadOnly(dateProperty) {
       return isReadOnlyField(dateProperty);
     },

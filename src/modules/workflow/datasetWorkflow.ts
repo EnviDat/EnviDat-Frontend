@@ -440,8 +440,8 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
       return {
         ...dataset,
         id: id || '',
-        owner_org: firstOrg?.id ?? '',
-        organization: dataset.organization ? firstOrg : undefined,
+        // owner_org: dataset.owner_org,
+        // organization: dataset.organization ? organizations : undefined,
         name: dataset.title ? getMetadataUrlFromTitle(dataset.title) : '',
         private: true,
         resource_type_general: 'dataset',
