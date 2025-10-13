@@ -182,7 +182,7 @@ export class LocalStorageDatasetService implements DatasetService {
 
     const datasetId = this.getNewLocalDatasetId();
     // CREATE an empty entry in localStorage to mark the existence of this dataset
-    console.log(datasetId);
+
     localStorage.setItem(datasetId, '');
 
     const datasetWithDefault = datasetWorkflowStore.applyDatasetDefaults({

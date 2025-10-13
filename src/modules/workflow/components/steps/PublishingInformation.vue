@@ -76,14 +76,6 @@
 
       <v-col cols="12" xl="6" class="pa-0">
         <v-row>
-          <v-col cols="12">
-            <Organization v-bind="editOrganizationProps" />
-          </v-col>
-        </v-row>
-      </v-col>
-
-      <v-col cols="12" xl="6" class="pa-0">
-        <v-row>
           <v-col
             v-if="
               blindReviewEditingActive &&
@@ -138,7 +130,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import Organization from '@/modules/workflow/components/steps/Organization.vue';
 import ContactPerson from '@/modules/workflow/components/steps/ContactPerson.vue';
 import PublicationInfo from '@/modules/workflow/components/steps/PublicationInfo.vue';
 import PublicationStatus from '@/modules/workflow/components/steps/PublicationStatus.vue';
@@ -146,7 +137,7 @@ import ReviewInfo from '@/modules/workflow/components/steps/ReviewInfo.vue';
 import NotFoundCard from '@/components/Cards/NotFoundCard.vue';
 
 import { mapStores } from 'pinia';
-import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
+
 import {
   getUserPickerObjects,
   getAuthorByEmail,
@@ -178,10 +169,6 @@ import {
 export default {
   name: 'PublishingInformation',
 
-  setup() {
-    const workflowStore = useDatasetWorkflowStore();
-    return { workflowStore };
-  },
   data: () => ({
     envidatDomain: process.env.VITE_API_ROOT,
     newDatasetInfo: {},
@@ -206,10 +193,6 @@ export default {
     contactEmail: { type: String, default: '' },
     contactFirstName: { type: String, default: '' },
     contactLastName: { type: String, default: '' },
-
-    organizationId: { type: String, default: undefined },
-    /* Can be either a single organization object or an array; we normalize it. */
-    organization: { type: [Object, Array], default: () => [] },
 
     /* UI/Validation support */
     validationErrors: { type: Object, default: () => ({}) },
@@ -266,14 +249,6 @@ export default {
       };
     },
 
-    userOrganizationsList() {
-      if (Array.isArray(this.organization)) return this.organization;
-      if (this.organization && typeof this.organization === 'object') {
-        return [this.organization];
-      }
-      return [];
-    },
-
     editContactPersonProps() {
       return {
         contactEmail: this.contactEmail || '',
@@ -283,16 +258,6 @@ export default {
         authors: this.existingAuthorsWrap,
         preselectAuthorNames: this.preselectAuthorNames || [],
         validationErrors: this.validationErrors || {},
-        flat: true,
-      };
-    },
-
-    editOrganizationProps() {
-      return {
-        organizationId: this.organizationId,
-        userOrganizations: this.userOrganizationsList,
-        readOnlyFields: this.isReadOnly('organizationId'),
-        readOnlyExplanation: this.readOnlyHint('organizationId'),
         flat: true,
       };
     },
@@ -376,7 +341,7 @@ export default {
     ReviewInfo,
     PublicationStatus,
     PublicationInfo,
-    Organization,
+
     NotFoundCard,
     ContactPerson,
   },

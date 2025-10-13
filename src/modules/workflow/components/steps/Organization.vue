@@ -1,7 +1,7 @@
 <template>
   <v-container id="EditOrganization" fluid class="pa-4">
     <v-row>
-      <v-col cols="12" xl="12" class="mb-0">
+      <v-col v-if="showTitle" cols="12" xl="12" class="mb-0">
         <v-row class="mb-5">
           <v-col>
             <div class="font-weight-bold">{{ EDIT_ORGANIZATION_TITLE }}</div>
@@ -144,6 +144,10 @@ export default {
     loading: {
       type: Boolean,
       default: false,
+    },
+    showTitle: {
+      type: Boolean,
+      default: true,
     },
     message: {
       type: String,

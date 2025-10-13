@@ -422,8 +422,7 @@ export default {
 
     // GET initial geometry
     const initial = this.resolveInitialGeo();
-    console.log(this.geometries);
-    console.log(initial);
+
     this.applyCollection(initial, { emit: false });
 
     this.initEditor(this.geomsForMapString);

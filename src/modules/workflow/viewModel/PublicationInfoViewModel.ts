@@ -6,8 +6,6 @@ export class PublicationInfoViewModel extends AbstractEditViewModel {
   declare contactEmail: string;
   declare contactFirstName: string;
   declare contactLastName: string;
-  declare organizationId: string | undefined;
-  declare organization?: { id?: string; title?: string; name?: string };
 
   declare publicationState: string;
   declare doi: string;
@@ -20,7 +18,6 @@ export class PublicationInfoViewModel extends AbstractEditViewModel {
     contactEmail: string | null;
     contactFirstName: string | null;
     contactLastName: string | null;
-    organizationId: string | null;
 
     publicationState: string | null;
     doi: string | null;
@@ -32,7 +29,6 @@ export class PublicationInfoViewModel extends AbstractEditViewModel {
     contactEmail: null,
     contactFirstName: null,
     contactLastName: null,
-    organizationId: null,
 
     publicationState: null,
     doi: null,
@@ -62,8 +58,6 @@ export class PublicationInfoViewModel extends AbstractEditViewModel {
     publicationYear: yup.string().required('Enter publication year'),
     version: yup.string().nullable(),
     datasetId: yup.string().nullable(),
-
-    organizationId: yup.string().nullable(),
   });
 
   constructor(datasetModel: DatasetModel) {
@@ -89,8 +83,6 @@ export class PublicationInfoViewModel extends AbstractEditViewModel {
       ['contactEmail', 'maintainer.email'],
       ['contactFirstName', 'maintainer.given_name'],
       ['contactLastName', 'maintainer.name'],
-      ['organizationId', 'organization.id'],
-      ['organization', 'organization'],
       ['publicationState', 'publication_state'],
       ['doi', 'doi'],
       ['publisher', 'publication.publisher'],

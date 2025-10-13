@@ -9,6 +9,8 @@ export class AdditionalInfoViewModel extends AbstractEditViewModel {
   declare dataLicenseId: string;
   declare dataLicenseTitle: string;
   declare dataLicenseUrl: string;
+  declare organizationId: string | undefined;
+  declare organization?: { id?: string; title?: string; name?: string };
 
   declare funders: {
     institution: string;
@@ -19,15 +21,18 @@ export class AdditionalInfoViewModel extends AbstractEditViewModel {
   validationErrors: {
     dataLicenseId: string | null;
     funders: string | null;
+    organizationId: string | null;
   } = {
     dataLicenseId: null,
     funders: null,
+    organizationId: null,
   };
 
   validationRules = yup.object().shape({
     dataLicenseId: yup.string().required('Data licence is required'),
     dataLicenseTitle: yup.string().nullable(),
     dataLicenseUrl: yup.string().nullable().url(),
+    organizationId: yup.string().nullable(),
     funders: yup
       .array()
       .required('Enter funding information')
@@ -65,6 +70,8 @@ export class AdditionalInfoViewModel extends AbstractEditViewModel {
   static mappingRules() {
     return [
       ['dataLicenseId', 'license_id'],
+      ['organizationId', 'organization.id'],
+      ['organization', 'organization'],
       ['dataLicenseTitle', 'license_title'],
       ['dataLicenseUrl', 'license_url'],
       ['funders', 'funding'],

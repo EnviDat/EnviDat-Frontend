@@ -97,7 +97,6 @@
     >
       <v-col cols="12">
         <v-row>
-          {{ INSTITUTION }}
           <v-col cols="4" class="pr-2">
             <v-text-field
               :label="labels.institution"
@@ -157,6 +156,22 @@
         <v-alert type="error">
           {{ validationErrors.funders }}
         </v-alert>
+      </v-col>
+    </v-row>
+
+    <v-row class="mb-5">
+      <v-col>
+        <div class="font-weight-bold">{{ labelOrg.cardTitle }}</div>
+        <div class="text-caption">
+          {{ labelOrg.orgInformation }}
+        </div>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12">
+        <v-row>
+          <Organization :showTitle="false" v-bind="editOrganizationProps" />
+        </v-row>
       </v-col>
     </v-row>
 
@@ -222,6 +237,7 @@
 </template>
 
 <script>
+import Organization from '@/modules/workflow/components/steps/Organization.vue';
 import {
   mdiMinusCircleOutline,
   mdiArrowDownDropCircleOutline,
@@ -240,8 +256,14 @@ import {
   getReadOnlyHint,
 } from '@/modules/workflow/utils/useReadonly';
 
+import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
+
 export default {
   name: 'EditMetadataHeader',
+  setup() {
+    const orgStore = useOrganizationsStore();
+    return { orgStore };
+  },
   props: {
     funders: Array,
     dataLicenseId: String,
@@ -253,6 +275,9 @@ export default {
     readOnlyFields: Array,
     readOnlyExplanation: String,
     validationErrors: { type: Object, default: () => ({}) },
+    organizationId: { type: String, default: undefined },
+    /* Can be either a single organization object or an array; we normalize it. */
+    organization: { type: [Object, Array], default: () => [] },
   },
 
   computed: {
@@ -283,6 +308,40 @@ export default {
       return isEmpty
         ? this.previewFunders
         : [...this.previewFunders, { ...this.emptyEntry }];
+    },
+    editOrganizationProps() {
+      return {
+        organizationId: this.selectedOrganizationId,
+        userOrganizations: this.userOrganizationsList,
+        readOnlyFields: this.isReadOnly('organizationId'),
+        readOnlyExplanation: this.readOnlyHint('organizationId'),
+        flat: true,
+      };
+    },
+
+    selectedOrganizationId() {
+      if (this.organizationId) return this.organizationId;
+      const list = this.userOrganizationsList;
+      return list.length === 1 ? list[0].id : undefined;
+    },
+
+    userOrganizationsList() {
+      // IF we have data from viewModel use them, otherwise get org from the store
+      const org = this.organization;
+
+      if (Array.isArray(org) && org.length > 0) {
+        return org;
+      }
+
+      if (org && typeof org === 'object' && Object.keys(org).length > 0) {
+        return [org];
+      }
+
+      const storeList = this.orgStore?.userOrganizations;
+      if (Array.isArray(storeList) && storeList.length > 0) {
+        return storeList;
+      }
+      return [];
     },
   },
 
@@ -377,6 +436,11 @@ export default {
         grantNumber: 'Grant Number',
         institutionUrl: 'Link',
       },
+      labelOrg: {
+        cardTitle: 'Organization',
+        orgInformation:
+          'Select your organization. If you belong to only one, it will be selected by default.',
+      },
       labelsLicense: {
         cardTitle: 'Data License',
         instructionsLicense: 'Select a data license reflecting usage terms.',
@@ -389,6 +453,7 @@ export default {
 
   components: {
     BaseIconButton,
+    Organization,
     // BaseStatusLabelView,
   },
 };
