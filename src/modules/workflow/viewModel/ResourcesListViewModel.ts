@@ -9,6 +9,7 @@ import { METADATA_NEW_RESOURCE_ID } from '@/factories/metadataConsts';
 import {
   convertJSON,
   convertToBackendJSONWithRules,
+  formatDateTimeToCKANFormat, stringifyResourceForBackend,
 } from '@/factories/mappingFactory';
 import {
   enhanceElementsWithStrategyEvents,
@@ -65,12 +66,24 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
     );
   }
 
+  private convertDatesToBackendFormat(resource: Resource) {
+    resource.created = resource.created ? formatDateTimeToCKANFormat(resource.created) : '';
+    resource.lastModified = resource.lastModified ? formatDateTimeToCKANFormat(resource.lastModified) : '';
+    resource.metadataModified = resource.metadataModified ? formatDateTimeToCKANFormat(resource.metadataModified) : '';
+  }
+
   get backendJSON() {
-    const rawResources = this.resources?.map((cleanResource) =>
-      convertToBackendJSONWithRules(
-        ResourceViewModel.mappingRules(),
-        cleanResource,
-      ),
+    const rawResources = this.resources?.map((frontendRes: Resource) =>
+      {
+        this.convertDatesToBackendFormat(frontendRes);
+
+        const jsonBackendResource = convertToBackendJSONWithRules(
+          ResourceViewModel.mappingRules(),
+          frontendRes,
+        );
+
+        return stringifyResourceForBackend(jsonBackendResource);
+      },
     );
 
     return convertJSON({ resources: rawResources }, false);

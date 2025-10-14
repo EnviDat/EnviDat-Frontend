@@ -145,7 +145,6 @@ import {
   ACTION_GET_USER_LIST,
   FETCH_USER_DATA,
   GET_USER_LIST,
-  METADATA_EDITING_SELECT_RESOURCE,
   USER_NAMESPACE,
   USER_SIGNIN_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts.js';
@@ -158,10 +157,12 @@ import {
 import ResourcesListEditing from '@/modules/workflow/components/steps/ResourcesListEditing.vue';
 import ResourceUpload from '@/modules/workflow/components/steps/ResourceUpload.vue';
 import ResourcesPasteUrl from '@/modules/workflow/components/steps/ResourcesPasteUrl.vue';
-import { ResourceViewModel } from '@/modules/workflow/viewModel/ResourceViewModel.js';
+import { ResourceViewModel } from '@/modules/workflow/viewModel/ResourceViewModel';
 import type { Resource } from '@/types/modelTypes';
 import { mergeResourceSizeForFrontend } from '@/factories/resourceHelpers.ts';
 import ResourceEditing from '@/modules/workflow/components/steps/ResourceEditing.vue';
+import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow.ts';
+
 
 export default {
   name: 'ResourcesInformation',
@@ -215,7 +216,7 @@ export default {
   emits: ['save', 'reload', 'delete'],
   created() {
     // call once to create the uppy instance
-    getUppyInstance(this.datasetId);
+    getUppyInstance(this.workflowStore);
 
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.unselectCurrentResource);
     eventBus.on(UPLOAD_STATE_RESET, this.resetUppy);
@@ -254,10 +255,10 @@ export default {
   computed: {
     ...mapState(['config']),
     ...mapGetters(USER_SIGNIN_NAMESPACE, ['user', 'userLoading']),
-    ...mapState(USER_NAMESPACE, ['envidatUsers', 'uploadError']),
+    ...mapState(USER_NAMESPACE, ['envidatUsers']),
     resourceUploadError() {
-      if (this.$store) {
-        return this.uploadError;
+      if (this.workflowStore) {
+        return this.workflowStore.uploadError;
       }
 
       return null;
@@ -279,8 +280,6 @@ export default {
       return this.userEditMetadataConfig?.resourceUploadActive || false;
     },
     resourceEditingActive() {
-      return true;
-      /*
       if (this.$store) {
         return (
           this.config?.userEditMetadataConfig?.resourceEditingActive || false
@@ -288,7 +287,6 @@ export default {
       }
 
       return this.userEditMetadataConfig?.resourceEditingActive || false;
-*/
     },
     metadataResourcesGenericProps() {
       return {
@@ -371,47 +369,50 @@ export default {
       // data object consists of `id` with upload ID and `fileIDs` array
       // with file IDs in current upload
       // data: { id, fileIDs }
-      // console.log(`Starting upload ${uploadID } for files ${files}`);
+      console.log(`Starting upload ${uploadID } for files ${files}`);
 
       this.uppyError = null;
       this.uploadState = UPLOAD_STATE_UPLOAD_STARTED;
       this.uploadProgress = 0;
     },
     uploadResourceCreated(event) {
-      // console.log(`Resource created ${event.resourceId}`);
+      console.log(`Resource created ${event.resourceId}`);
       this.uploadState = UPLOAD_STATE_RESOURCE_CREATED;
     },
     uploadStateProgress(progress) {
-      // console.log(`upload progress: ${progress}`);
+      console.log(`upload progress: ${progress}`);
 
       this.uploadState = UPLOAD_STATE_UPLOAD_PROGRESS;
       this.uploadProgress = progress;
     },
     async uploadCompleted() {
-      // console.log('upload complete');
+      console.log('upload complete');
 
       this.uploadState = UPLOAD_STATE_UPLOAD_COMPLETED;
       this.uploadProgress = 0;
 
       // resource exists already, get it from uploadResource
-      const newRes = this.$store?.getters[`${USER_NAMESPACE}/uploadResource`];
+      const newResId = this.workflowStore.uploadingResourceId;
 
       // trigger reload of datasets to get the new resource
       this.$emit('reload');
 
       setTimeout(() => {
-        console.log(METADATA_EDITING_SELECT_RESOURCE, newRes);
-        this.$store.commit(
-          `${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`,
-          newRes?.id,
-        );
+        // console.log(METADATA_EDITING_SELECT_RESOURCE, newRes);
+
+        // select the uploaded resource for editing
+        this.markResourceSelected(
+          this.resources,
+          newResId,
+          true,
+        )
 
         // reset uppy to be able to upload another file
         this.resetUppy();
-      }, 500);
+      }, 1000);
     },
     uploadUppyError(error) {
-      // console.log('uploadUppyError', error);
+      console.log('uploadUppyError', error);
 
       this.uppyError = error;
     },
@@ -419,14 +420,13 @@ export default {
       this.resetUppy();
     },
     resetUppy() {
-      // console.log('resetUppy');
+      console.log('resetUppy');
 
       this.uppyError = null;
       this.uploadState = undefined;
       this.uploadProgress = 0;
 
-      // @ts-ignore
-      const uppy = getUppyInstance();
+      const uppy = getUppyInstance(this.workflowStore);
 
       const files = uppy.getFiles();
       if (files.length > 0) {
@@ -442,7 +442,8 @@ export default {
       const newResource = createNewResourceForUrl(datasetId, url);
 
       this.resourceViewModel = new ResourceViewModel();
-      const validData = this.resourceViewModel.validate(newResource);
+      Object.assign(this.resourceViewModel, newResource);
+      const validData = this.resourceViewModel.validate();
 
       if (!validData) {
         console.error('Invalid Data for new resources', newResource);
@@ -488,7 +489,8 @@ export default {
       this.resourceViewModel.validate(resource);
     },
     saveResource(resource: Resource) {
-      const validData = this.resourceViewModel.validate(resource);
+      // Object.assign(this.resourceViewModel, resource);
+      const validData = this.resourceViewModel.validate();
 
       if (validData) {
         const updatedResources = updateEditingArray(
@@ -525,7 +527,8 @@ export default {
         !resource.isSelected,
       );
 
-      this.resourceViewModel.validate(resource);
+      Object.assign(this.resourceViewModel, resource);
+      this.resourceViewModel.validate();
     },
     showFullScreenImage(url: string) {
       eventBus.emit(OPEN_TEXT_PREVIEW, url);
@@ -554,6 +557,7 @@ export default {
     uploadState: undefined,
     // resourceViewModel is only used for mapping
     resourceViewModel: new ResourceViewModel(),
+    workflowStore: useDatasetWorkflowStore(),
   }),
   components: {
     ResourcesListEditing,

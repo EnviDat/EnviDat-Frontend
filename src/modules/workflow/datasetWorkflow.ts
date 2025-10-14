@@ -72,6 +72,7 @@ export interface DatasetWorkflowState {
   localStorageService: LocalStorageDatasetService;
   userRole?: string;
   uploadingResourceId?: string;
+  uploadError: Error | undefined;
   saveErrorMessage?: string;
   readyToSaveToBackend?: boolean;
   workflowGuide?: any[];
@@ -123,6 +124,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     mode: WorkflowMode.Create,
     userRole: undefined,
     uploadingResourceId: undefined,
+    uploadError: undefined,
     dataSource: 'local' as const,
     currentUser: undefined,
   }),
@@ -420,6 +422,9 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     },
     setUploadResource(resourceId: string | undefined) {
       this.uploadingResourceId = resourceId;
+    },
+    setUploadError(error: Error) {
+      this.uploadError = error;
     },
     // Ehnance the default properties of the dataset
     applyDatasetDefaults(dataset: DatasetDTO, id: string) {

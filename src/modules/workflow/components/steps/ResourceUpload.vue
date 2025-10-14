@@ -103,7 +103,7 @@ import '@uppy/core/dist/style.min.css';
 import '@uppy/drag-drop/dist/style.min.css';
 import '@uppy/status-bar/dist/style.min.css';
 
-import { getUppyInstance } from '@/factories/uploadFactory.js';
+import { getUppyInstance } from '@/modules/workflow/utils/workflowUpload';
 import {
 /*
   eventBus,
@@ -117,6 +117,7 @@ import {
 
 import TagChip from '@/components/Chips/TagChip.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
+import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow.js';
 
 
 export default {
@@ -138,7 +139,8 @@ export default {
   },
   computed: {
     uppy () {
-      return getUppyInstance(this.metadataId, this.$store);
+      const workflowStore = useDatasetWorkflowStore();
+      return getUppyInstance(workflowStore);
     },
     legacyInstruction() {
       return `Please retry uploading, if it still doesn't work please let us know! And give it a try via the <a href="${this.legacyUrl}" target="_blank">legacy website </a>. To upload a new file cancel it first via the little close-icon (x).`;

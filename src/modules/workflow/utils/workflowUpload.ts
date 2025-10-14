@@ -12,15 +12,9 @@
 * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import Uppy from '@uppy/core';
+import { Uppy, debugLogger, type Meta, type UppyFile } from '@uppy/core';
 import axios from 'axios';
-import awsS3 from '@uppy/aws-s3';
-
-import {
-  METADATA_UPLOAD_FILE_ERROR,
-  METADATA_UPLOAD_FILE_SUCCESS,
-  USER_NAMESPACE,
-} from '@/modules/user/store/userMutationsConsts';
+import awsS3, { type AwsS3MultipartOptions } from '@uppy/aws-s3';
 
 import { urlRewrite } from '@/factories/apiFactory';
 import {
@@ -31,7 +25,7 @@ import {
 } from '@/factories/eventBus';
 
 import { RESOURCE_FORMAT_LINK } from '@/factories/metadataConsts';
-import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
+import { ResourceViewModel } from '@/modules/workflow/viewModel/ResourceViewModel.ts';
 
 let API_BASE = '';
 let API_ROOT = '';
@@ -43,10 +37,10 @@ if (!useTestdata) {
   API_ROOT = import.meta.env.VITE_API_ROOT;
 }
 
-let uppyInstance = null;
+let uppyInstance : Uppy = null;
 let storeReference = null;
 
-const uppyId = 'resource-upload';
+const uppyId = 'workflow-resource-upload';
 const defaultRestrictions = {
   maxFileSize: 1024 * 1024 * 1024 * 20, // KB * MB * GB * 20 = 20 GB
   maxNumberOfFiles: 1,
@@ -61,11 +55,8 @@ const defaultRestrictions = {
  * @param datasetId
  * @returns {{cacheLastUpdated: null, cacheUrl: null, created: string, format: string, packageId, description: string, hast: string, url: string, urlType: null, mimetypeInner: null, size: null, restricted: {level: string, allowedUsers: string, sharedSecret: string}, name: string, resourceSize: {sizeUnits: string, sizeValue: string}, mimetype: null, id: string, lastModified: string, position: number, state: string, doi: string, resourceType: null}}
  */
-function createNewBaseResource(datasetId) {
+function createNewBaseResource(datasetId: string) {
   return {
-    cacheLastUpdated: null,
-    cacheUrl: null,
-    created: '', // set by the backend
     description: '',
     doi: '',
     format: '',
@@ -94,7 +85,7 @@ function createNewBaseResource(datasetId) {
   };
 }
 
-function createNewResourceForFileUpload(datasetId, file) {
+function createNewResourceForFileUpload(datasetId: string, file: UppyFile) {
   const baseResourceProperties = createNewBaseResource(datasetId);
 
   const name = file.name || file;
@@ -131,7 +122,25 @@ export function createNewResourceForUrl(datasetId, url) {
   };
 }
 
-async function initiateMultipart(file) {
+async function createResourceInBackend(datasetId: string, file: UppyFile) {
+  const newResource= createNewResourceForFileUpload(datasetId, file);
+
+  const resourceVm = new ResourceViewModel();
+  Object.assign(resourceVm, newResource);
+  const backendResource = await storeReference?.datasetModel.createResourceOnExistingDataset(resourceVm);
+  const resourceId = backendResource.id;
+
+  if (resourceId) {
+    storeReference?.setUploadResource(resourceId);
+    eventBus.emit(UPLOAD_STATE_RESOURCE_CREATED, { id: UPLOAD_STATE_RESOURCE_CREATED, resourceId});
+  } else {
+    storeReference.setUploadError(new Error(`Resource creation failed datasetId: ${datasetId}`));
+  }
+
+  return resourceId;
+}
+
+async function initiateMultipart(file: UppyFile) {
   // // console.log('initiateMultipart', file);
 
   /*
@@ -139,17 +148,7 @@ async function initiateMultipart(file) {
 */
 
   const datasetId = storeReference?.datasetModel.dataset.id;
-  const newResource= createNewResourceForFileUpload(datasetId, file);
-
-  const backendResource = await storeReference?.datasetModel.createResourceOnExistingDataset(newResource);
-  const resourceId = backendResource.id;
-
-  if (resourceId) {
-    eventBus.emit(UPLOAD_STATE_RESOURCE_CREATED, { id: UPLOAD_STATE_RESOURCE_CREATED, resourceId});
-  } else {
-    eventBus.emit(UPLOAD_ERROR, { error: 'Resource creation failed', metadataId: datasetId });
-    return null;
-  }
+  const resourceId = await createResourceInBackend(datasetId, file);
 
   const actionUrl = 'cloudstorage_initiate_multipart';
   const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
@@ -177,24 +176,13 @@ async function initiateMultipart(file) {
   }
 }
 
-export async function getSinglePresignedUrl(file) {
+export async function getSinglePresignedUrl(file: UppyFile) {
   /*
   eventBus.emit(UPLOAD_STATE_RESET);
 */
 
   const datasetId = storeReference?.datasetModel.dataset.id;
-  const newResource= createNewResourceForFileUpload(datasetId, file);
-
-  const backendResource = await storeReference?.datasetModel.createResourceOnExistingDataset(newResource);
-  const resourceId = backendResource?.id;
-  storeReference?.setUploadResource(resourceId);
-
-  if (resourceId) {
-    eventBus.emit(UPLOAD_STATE_RESOURCE_CREATED, { id: UPLOAD_STATE_RESOURCE_CREATED });
-  } else {
-    eventBus.emit(UPLOAD_ERROR, { error: 'Resource creation failed', metadataId: datasetId });
-    return null;
-  }
+  const resourceId = await createResourceInBackend(datasetId, file);
 
   const actionUrl = 'cloudstorage_get_presigned_url_multipart';
   const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
@@ -230,7 +218,7 @@ export async function getSinglePresignedUrl(file) {
   }
 }
 
-async function requestPresignedUrl(file, partData) {
+async function requestPresignedUrl(file: UppyFile, partData) {
   // console.log('requestPresignedUrl', file, partData);
 
   const actionUrl = 'cloudstorage_get_presigned_url_multipart';
@@ -262,7 +250,7 @@ async function requestPresignedUrl(file, partData) {
   }
 }
 
-async function completeMultipart(file, uploadData) {
+async function completeMultipart(file: UppyFile, uploadData) {
   // console.log('completeMultipart', file, uploadData);
 
   const actionUrl = 'cloudstorage_finish_multipart';
@@ -281,20 +269,17 @@ async function completeMultipart(file, uploadData) {
     const res = await axios.post(url, payload);
     const fileUrl = res.data?.result?.url || null;
 
-    storeReference?.setUploadResource(undefined);
+    // don't reset the resourceId in the store, it is still used for selecting
 
     return { location: fileUrl };
   } catch (error) {
-    storeReference?.commit(
-      `${USER_NAMESPACE}/${METADATA_UPLOAD_FILE_ERROR}`,
-      error,
-    );
+    storeReference?.setUploadError(error);
     console.error(`Multipart completion failed: ${error}`);
     return error;
   }
 }
 
-async function abortMultipart(file, uploadData) {
+async function abortMultipart(file: UppyFile, uploadData) {
   // console.log('abortMultipart', file, uploadData);
 
   const actionUrl = 'cloudstorage_abort_multipart';
@@ -323,7 +308,7 @@ async function abortMultipart(file, uploadData) {
   }
 }
 
-async function listUploadedParts(file, { uploadId, key }) {
+async function listUploadedParts(file: UppyFile, { uploadId, key }) {
   const actionUrl = 'cloudstorage_multipart_list_parts';
   const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
@@ -361,51 +346,50 @@ export function unSubscribeOnUppyEvent(event, callback) {
 }
 
 function createUppyInstance(
-  height = 300,
+  // height = 300,
   autoProceed = true,
   restrictions = defaultRestrictions,
 ) {
-  const uppy = new Uppy();
   const debug = import.meta.env?.MODE === 'development';
 
-  uppy.setOptions({
-    id: uppyId,
-    autoProceed,
-    debug,
-    restrictions,
-    height,
-  });
-
-  uppy.use(awsS3, {
-    id: 'multipart-aws',
-    limit: 4,
-    shouldUseMultipart: true,
-    getChunkSize(file) {
-      return Math.max(1024 * 1024 * 25, Math.ceil(file.size / 500));
+  const uppy = new Uppy<Meta, AwsS3MultipartOptions>(
+    {
+      id: uppyId,
+      autoProceed,
+      debug: true,
+      logger: debugLogger,
+      restrictions,
+      // height,
     },
-    createMultipartUpload: initiateMultipart,
-    signPart: requestPresignedUrl,
-    listParts: listUploadedParts,
-    abortMultipartUpload: abortMultipart,
-    completeMultipartUpload: completeMultipart,
-  });
+  );
+
+  uppy.use(awsS3,
+    {
+      id: 'workflow-multipart-aws',
+      limit: 4,
+      shouldUseMultipart: true,
+      getChunkSize(file) {
+        return Math.max(1024 * 1024 * 25, Math.ceil(file.size / 500));
+      },
+      createMultipartUpload: initiateMultipart,
+      signPart: requestPresignedUrl,
+      listParts: listUploadedParts,
+      abortMultipartUpload: abortMultipart,
+      completeMultipartUpload: completeMultipart,
+    } satisfies AwsS3MultipartOptions,
+  );
 
   return uppy;
 }
 
-export function getUppyInstance(
-  datasetId: string,
-  height = 300,
-  autoProceed = true,
-  restrictions = undefined,
-) {
-  storeReference = useDatasetWorkflowStore();
+export function getUppyInstance(store: object) {
+  storeReference = store;
 
   if (hasUppyInstance()) {
     return uppyInstance;
   }
 
-  uppyInstance = createUppyInstance(height, autoProceed, restrictions);
+  uppyInstance = createUppyInstance(true, undefined);
 
   return uppyInstance;
 }

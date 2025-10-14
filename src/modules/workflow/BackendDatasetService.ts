@@ -112,12 +112,7 @@ export class BackendDatasetService implements DatasetService {
   async createResource(resourceData: ResourceDTO): Promise<ResourceDTO> {
     const actionUrl = ACTION_METADATA_CREATION_RESOURCE();
     const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
-
-    const cleaned = getBackendJSONForStep(
-      EDITMETADATA_DATA_RESOURCE,
-      resourceData,
-    );
-    const postData = stringifyResourceForBackend(cleaned);
+    const postData = stringifyResourceForBackend(resourceData);
 
     try {
       const response = await axios.post(url, postData);
