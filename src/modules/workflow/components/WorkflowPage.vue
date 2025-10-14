@@ -2,7 +2,14 @@
   <div ref="appContainer" class="fill-height pa-2 pa-md-6">
     <v-row class="fill-height">
       <v-col cols="12" lg="4" xl="3" class="workflow-navigation__wrapper">
+        <CardLoader
+          v-if="workflowStore.loading"
+          :typeOfLoader="'list-item-avatar'"
+          :numberOfLoader="7"
+          :title="'Create your dataset'"
+        />
         <TheWorkflowNavigation
+          v-else
           @navigateItem="catchNavigate"
           :isDatasetEditing="isDatasetEditing"
           :currentDataset="workflowStore?.datasetModel"
@@ -15,21 +22,15 @@
         lg="8"
         xl="9"
         class="workflow-content__wrapper position-relative"
-        :class="{ loading: storeLoading }"
       >
-        <div>
-          <!-- <div
-            @click="scrollDown()"
-            class="scrollToSave d-none d-md-flex flex-column justify-center align-center pt-8"
-          >
-            <v-icon :size="32" class="mr-1" :color="'#000'">
-              {{ iconScroll }}
-            </v-icon>
-            <p class="text-caption scroll-text">Save</p>
-          </div> -->
-        </div>
-
+        <CardLoader
+          v-if="workflowStore.loading"
+          :showLogo="true"
+          :typeOfLoader="'article'"
+          :numberOfLoader="4"
+        />
         <v-card
+          v-else
           id="EditAdditionalInformation"
           class="pt-0"
           elevation="2"
@@ -44,7 +45,7 @@
               @validate="validate"
               @save="save"
               @reload="reloadDataset"
-              v-if="resolvedComponent && !storeLoading"
+              v-if="resolvedComponent && !workflowStore.loading"
             />
           </div>
           <div ref="nextStepBlock" class="pa-4 d-flex align-center justify-end">
@@ -86,8 +87,11 @@ import { useRoute, useRouter } from 'vue-router';
 import { USER_DASHBOARD_PAGENAME } from '@/router/routeConsts';
 import TheWorkflowNavigation from '@/components/Navigation/TheWorkflowNavigation.vue';
 
+import CardLoader from '@/modules/workflow/components/steps/CardLoader.vue';
+
 import { useWorkflowExternal } from '@/modules/workflow/utils/useWorkflowExternal.ts';
 import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
+import { storeToRefs } from 'pinia';
 
 // import { extractIcons } from '@/factories/iconFactory.ts';
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow.ts';
@@ -99,6 +103,7 @@ import {
 
 const workflowStore = useDatasetWorkflowStore();
 const orgStore = useOrganizationsStore();
+
 /* =========================
  *  ROUTER & PROPS
  * ========================= */
@@ -119,6 +124,7 @@ const props = defineProps({
 /* =========================
  *  STORE & REFS/COMPUTEDS
  * ========================= */
+
 const currentStep = computed(() => workflowStore?.currentStep ?? 0);
 const currentAsyncComponent = computed(
   () => workflowStore?.currentAsyncComponent ?? null,
@@ -165,7 +171,6 @@ const isDatasetEditing = computed(
   () => workflowStore?.isDatasetEditing ?? false,
 );
 
-const storeLoading = computed(() => !!workflowStore?.loading);
 const currentStepNum = computed(() => workflowStore?.currentStep ?? 0);
 
 const resolvedComponent = computed(() => {
@@ -184,15 +189,15 @@ const resolvedComponent = computed(() => {
   return null;
 });
 
-const scrollDown = () => {
-  nextTick(() => {
-    const target = (nextStepBlock.value as any)?.$el || nextStepBlock.value;
-    (target as HTMLElement | undefined)?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'center',
-    });
-  });
-};
+// const scrollDown = () => {
+//   nextTick(() => {
+//     const target = (nextStepBlock.value as any)?.$el || nextStepBlock.value;
+//     (target as HTMLElement | undefined)?.scrollIntoView({
+//       behavior: 'smooth',
+//       block: 'center',
+//     });
+//   });
+// };
 
 /* =========================
  *  VALIDATION LOGIC
@@ -312,8 +317,6 @@ const closeModal = () => {
   workflowStore.readyToSaveToBackend = false;
 };
 const catchConfirmSave = async () => {
-  const dataset = workflowStore.datasetModel.dataset;
-
   if (workflowStore.backendStorageService.loadingDataset) {
     return;
   }
@@ -322,32 +325,29 @@ const catchConfirmSave = async () => {
   workflowStore.saveErrorMessage = undefined;
 
   try {
-    // CREATE Backend Dataset
-    const created =
-      await workflowStore.backendStorageService.createDataset(dataset);
-    // Get and save the new ID
-    const newId = created?.name || workflowStore.currentDatasetId;
+    await workflowStore.withLoading(async () => {
+      // CREATE Backend Dataset
+      const dataset = workflowStore.datasetModel.dataset;
+      // Get and save the new ID
+      const created =
+        await workflowStore.backendStorageService.createDataset(dataset);
+      const newId = created?.name || workflowStore.currentDatasetId;
 
-    await router.push({
-      name: router.currentRoute.value.name as string,
-      params: {
-        ...router.currentRoute.value.params,
-        id: newId,
-      },
-      query: router.currentRoute.value.query,
+      await router.push({
+        name: router.currentRoute.value.name as string,
+        params: { ...router.currentRoute.value.params, id: newId },
+        query: router.currentRoute.value.query,
+      });
+      // CLEANUP localStorage for the new backend dataset
+      workflowStore.clearLocalStorage();
+      workflowStore.currentDatasetId = newId;
+      // SET source to backend
+      workflowStore.dataSource = 'backend';
+      workflowStore.isStepSaveConfirmed = true;
+      workflowStore.openSaveDialog = false;
+      // INIT datasetWith new ID
+      await workflowStore.bootstrapWorkflow(newId);
     });
-    // CLEANUP localStorage for the new backend dataset
-    workflowStore.clearLocalStorage();
-
-    workflowStore.loading = true;
-    workflowStore.currentDatasetId = newId;
-    // SET source to backend
-    workflowStore.dataSource = 'backend';
-    workflowStore.isStepSaveConfirmed = true;
-    workflowStore.openSaveDialog = false;
-
-    // INIT datasetWith new ID
-    await workflowStore.bootstrapWorkflow(newId);
   } catch (e: any) {
     workflowStore.isStepSaveConfirmed = false;
     workflowStore.openSaveDialog = true;
@@ -439,38 +439,39 @@ const datasetExistsInLocalStorage = (datasetId?: string) => {
  *  ON MOUNTED
  * ========================= */
 onMounted(async () => {
-  let id = props.datasetId;
-
-  if (props.dataset) {
+  await workflowStore.withLoading(async () => {
+    let id = props.datasetId;
     // STORYBOOK
     // PLEASE NOTE – We are currently in the development phase, and an exception is present to make Storybook work.
-    await workflowStore.initializeWorkflowfromDataset(props.dataset);
-    id = props.dataset.id;
-  } else if (!id) {
-    id = route?.params?.id as string;
-  }
+    if (props.dataset) {
+      await workflowStore.initializeWorkflowfromDataset(props.dataset);
+      id = props.dataset.id;
+    } else if (!id) {
+      id = route?.params?.id as string;
+    }
 
-  await workflowStore.bootstrapWorkflow(id);
+    await workflowStore.bootstrapWorkflow(id);
 
-  // await initMetadataUsingId(id);
+    // SET loader for organizations and datasets
+    await workflowStore.withLoadingAll([
+      loadUserOrganizations(),
+      fetchUserDatasets(),
+    ]);
 
-  await Promise.all([loadUserOrganizations(), fetchUserDatasets()]);
-  // SET currentUser
-  workflowStore.setCurrentUser(user.value);
-  // SET user role
-  workflowStore.computeUserRole({
-    user: user.value,
-    userOrganizations: orgStore.userOrganizations,
-    userDatasets: userDatasets.value,
+    workflowStore.setCurrentUser(user.value);
+    workflowStore.computeUserRole({
+      user: user.value,
+      userOrganizations: orgStore.userOrganizations,
+      userDatasets: userDatasets.value,
+    });
+
+    workflowStore.currentDatasetId = id;
+
+    const stepParam = route?.query?.step;
+    if (stepParam !== undefined) {
+      workflowStore.setActiveStep(Number(stepParam));
+    }
   });
-
-  workflowStore.currentDatasetId = id;
-  // updateStepsOrganizations();
-
-  const stepParam = route?.query?.step;
-  if (stepParam !== undefined) {
-    workflowStore.setActiveStep(Number(stepParam));
-  }
 });
 
 onBeforeUnmount(() => {
@@ -535,21 +536,5 @@ onBeforeMount(() => {
   50% {
     transform: translateY(-3px);
   }
-}
-.scrollToSave {
-  position: absolute;
-  right: 38px;
-  z-index: 2;
-  opacity: 1;
-  top: 0;
-  transition: 0.1s linear;
-  animation: bounce 1s infinite ease-in-out;
-  &:hover {
-    cursor: pointer;
-  }
-  // .scroll-text {
-  //   position: relative;
-  //   transform: translateX(-50%);
-  // }
 }
 </style>

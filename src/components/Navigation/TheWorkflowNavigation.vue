@@ -318,7 +318,6 @@ const showStatusMenu = ref(false);
 // Extract Icon name from IconFactory
 const iconName = (name) => extractIcons(name);
 
-
 const navigateItem = (id, status) => {
   // workflowStore.navigateItemAction(id, status);
   emit('navigateItem', { id, status });
