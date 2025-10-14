@@ -71,7 +71,7 @@ export function validateStepPure({
     stepId === stepForBackendChange &&
     !isStepSaveConfirmed
   ) {
-    return { ok: false, openSaveDialog: true };
+    return { ok: true, openSaveDialog: true };
   }
 
   return {

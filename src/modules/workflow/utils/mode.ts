@@ -16,12 +16,16 @@ export function computeStepsForMode(
   if (mode === WorkflowMode.Edit) {
     const next = steps.map((s) => {
       // CHECK if the step is readOnly based on the list listOfReadOnlyFields - src/modules/workflow/resources/readOnlyFields.ts
+      // Those step are always disable if the source is from local, this is IMPORTANT if we have some error in the save the backend the step 4,5,6 should not be active
+      const DISABLED_IN_EDIT_LOCAL_BY_ID = new Set([4, 5, 6]);
+      const forceDisabled =
+        !isBackendSource && DISABLED_IN_EDIT_LOCAL_BY_ID.has(s.id);
       const readOnly = isReadOnlyStepKeys.includes(s.key);
       return {
         ...s,
         isEditable: !readOnly,
         readOnly,
-        status: StepStatus.Completed,
+        status: forceDisabled ? StepStatus.Disabled : StepStatus.Completed,
         completed: s.completed ?? false,
         hasError: s.hasError ?? false,
         // IMPORTANT for step validation in edit mode:

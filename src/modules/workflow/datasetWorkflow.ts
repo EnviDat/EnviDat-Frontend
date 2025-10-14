@@ -393,7 +393,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     },
 
     // SET the step as completed and validate the data.
-    validateStepAction(stepId: number): boolean {
+    validateStepAction(stepId: number, validateStepAction: boolean): boolean {
       const step = this.steps[stepId];
       const vm = this.currentViewModel as any;
 
@@ -406,7 +406,12 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
         isStepSaveConfirmed: this.isStepSaveConfirmed,
       });
 
-      if (openSaveDialog && this.dataSource === 'local') {
+      // validateStepAction is true when the user clicks on "Next" or "Save and Next" but not when the user want navigate from the navigation step
+      if (
+        openSaveDialog &&
+        this.dataSource === 'local' &&
+        !validateStepAction
+      ) {
         this.openSaveDialog = true;
         return false;
       }
