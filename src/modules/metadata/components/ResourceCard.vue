@@ -407,8 +407,8 @@ export default {
     loadingResource() {
       return this.loading || this.isLoadingS3Tree;
     },
-    isEnvicloudUrl(url) {
-      const urlToCheck = url.url;
+    isEnvicloudUrl() {
+      const urlToCheck = this.url;
       return urlToCheck.includes('envicloud');
     },
     isDownloaded() {
