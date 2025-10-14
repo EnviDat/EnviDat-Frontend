@@ -67,7 +67,7 @@ export interface DatasetWorkflowState {
   mode: WorkflowMode;
   isReadOnlyStep: string[];
   backendStorageService: BackendDatasetService;
-  doiPlaceholder: null;
+
   listOfReadOnlyFields: string[];
   openSaveDialog: boolean;
   localStorageService: LocalStorageDatasetService;
@@ -121,7 +121,6 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
 
     freeJump: false,
     stepForBackendChange: 3,
-    doiPlaceholder: null,
     workflowGuide,
     mode: WorkflowMode.Create,
     userRole: undefined,
