@@ -57,6 +57,7 @@ tVM = new DatasetModel(new LocalStorageDatasetService(datasets[2]));
 
 export interface DatasetWorkflowState {
   loading: boolean;
+  loadingCount: number;
   currentStep: number;
   steps: WorkflowStep[];
   datasetModel: DatasetModel;
@@ -100,6 +101,7 @@ export interface DatasetWorkflowState {
 export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
   state: (): DatasetWorkflowState => ({
     loading: false,
+    loadingCount: 0,
     currentStep: 0,
     steps: workflowSteps,
     datasetModel: undefined, // needs to be initialized during runtime, because it needs a reference to the store
@@ -151,10 +153,35 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     },
   },
   actions: {
+    startLoading() {
+      this.loadingCount++;
+      this.loading = this.loadingCount > 0;
+    },
+    stopLoading() {
+      if (this.loadingCount > 0) this.loadingCount--;
+      this.loading = this.loadingCount > 0;
+    },
+    async withLoading<T>(fn: () => Promise<T>): Promise<T> {
+      this.startLoading();
+      try {
+        return await fn();
+      } finally {
+        this.stopLoading();
+      }
+    },
+    async withLoadingAll<T>(promises: Promise<T>[]): Promise<T[]> {
+      this.startLoading();
+      try {
+        return await Promise.all(promises);
+      } finally {
+        this.stopLoading();
+      }
+    },
     // SET the current user
     setCurrentUser(u: any) {
       this.currentUser = u ?? undefined;
     },
+
     // SET the user role
     setUserRole(role?: string) {
       debugger;
@@ -237,9 +264,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     // PLEASE NOTE – We are currently in the development phase, and an exception is present to make Storybook work.
     // We need to fine-tune this logic.
     async bootstrapWorkflow(datasetId?: string) {
-      this.loading = true;
-
-      try {
+      return this.withLoading(async () => {
         const { dto, mode, source } = await resolveBootstrap<DatasetDTO>(
           datasetId,
           {
@@ -249,13 +274,10 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
               this.localStorageService.createDataset(init as DatasetDTO),
           },
         );
-        // this.setWorkflowMode(mode);
         this.dataSource = source;
         await this.initializeDataset(dto, mode);
         return { id: dto.id, mode };
-      } finally {
-        this.loading = false;
-      }
+      });
     },
 
     // RETURN the dataset service to use based on the current mode.
