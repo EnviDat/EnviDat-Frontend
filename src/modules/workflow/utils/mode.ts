@@ -60,7 +60,9 @@ export function enhanceStepsFromData(
   datasetModel: any,
   hasDtData: (v: any) => boolean,
   mode: WorkflowMode,
+  dataSource: 'local' | 'backend',
 ) {
+  const isBackend = dataSource === 'backend';
   if (mode === WorkflowMode.Edit) {
     return { steps, startIdx: 0 };
   }
@@ -70,13 +72,24 @@ export function enhanceStepsFromData(
       ? datasetModel.getViewModel(s.viewModelKey)
       : null;
 
+    // SET status after save backend
+    // IF we have the data from backedn all steps are active (FreeJump)
+    let status: StepStatus;
+    if (idx === 0) {
+      status = StepStatus.Active;
+    } else if (isBackend) {
+      status = StepStatus.Active;
+    } else {
+      status = StepStatus.Disabled;
+    }
+
     // No VM
     if (!vm) {
       return {
         ...s,
         completed: false,
         hasError: false,
-        status: idx === 0 ? StepStatus.Active : StepStatus.Disabled,
+        status,
         errors: null,
       };
     }
@@ -93,7 +106,7 @@ export function enhanceStepsFromData(
         ...s,
         completed: false,
         hasError: false,
-        status: idx === 0 ? StepStatus.Active : StepStatus.Disabled,
+        status,
         errors: null,
       };
     }

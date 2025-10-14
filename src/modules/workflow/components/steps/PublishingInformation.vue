@@ -135,6 +135,7 @@ import PublicationInfo from '@/modules/workflow/components/steps/PublicationInfo
 import PublicationStatus from '@/modules/workflow/components/steps/PublicationStatus.vue';
 import ReviewInfo from '@/modules/workflow/components/steps/ReviewInfo.vue';
 import NotFoundCard from '@/components/Cards/NotFoundCard.vue';
+import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
 
 import { mapStores } from 'pinia';
 
@@ -168,6 +169,10 @@ import {
 
 export default {
   name: 'PublishingInformation',
+  setup() {
+    const workflowStore = useDatasetWorkflowStore();
+    return { workflowStore };
+  },
 
   data: () => ({
     envidatDomain: process.env.VITE_API_ROOT,

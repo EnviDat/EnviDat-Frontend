@@ -237,6 +237,8 @@
               />
             </div>
 
+            <!-- publication_state -->
+
             <p class="text-body-2 mb-2">
               <strong>Draft:</strong> Not saved and DOI not reserved yet
             </p>
