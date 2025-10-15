@@ -131,7 +131,8 @@ export default async ({ mode, config }): Promise<UserConfig> => {
       chunkSizeWarningLimit: 500,
       //         assetsInlineLimit: 4096 / 2, // Reduce the amount of image inlining so the chunks don't get huge
       cssCodeSplit: true,
-      minify: !buildSourceMaps,
+      minify: true,
+      cssMinify: true,
       sourcemap: buildSourceMaps,
       emptyOutDir: true,
       rollupOptions: isProd
@@ -139,6 +140,15 @@ export default async ({ mode, config }): Promise<UserConfig> => {
             output: {
               manualChunks: (id) => {
                 if (id.includes('node_modules')) {
+
+                  if (id.includes('src/assets')) {
+                    return 'envidat_assets';
+                  }
+
+                  if (id.includes('imageFactory')) {
+                    return 'envidat_imageFactory';
+                  }
+
                   if (id.includes('vuetify')) {
                     return 'vendor_vuetify';
                   }
@@ -160,7 +170,11 @@ export default async ({ mode, config }): Promise<UserConfig> => {
                     return 'vendor_uppy';
                   }
 
-                  if (id.includes('chart') || id.includes('uplot')) {
+                  if (id.includes('uplot')) {
+                    return 'vendor_uplot';
+                  }
+                  
+                  if (id.includes('chart')) {
                     return 'vendor_charts';
                   }
 
@@ -168,9 +182,19 @@ export default async ({ mode, config }): Promise<UserConfig> => {
                     return 'vendor_validation';
                   }
 
+                  if (id.includes('date-fns')) {
+                    return 'vendor_date';
+                  }
+
+                  if (id.includes('fast-xml-parser') || id.includes('papaparse')) {
+                    return 'vendor_parser';
+                  }
+
+                  if (id.includes('axios')) {
+                    return 'vendor_axios';
+                  }
+
                   if (
-                    id.includes('axios') ||
-                    id.includes('date-fns') ||
                     id.includes('mitt') ||
                     id.includes('seedrandom') ||
                     id.includes('tiny-js-md5')
@@ -189,12 +213,13 @@ export default async ({ mode, config }): Promise<UserConfig> => {
                     return 'vendor_jsoneditor';
                   }
 
+                  if (id.includes('lodash')) {
+                    return 'vendor_lodash';
+                  }
+
                   return 'vendors';
                 }
 
-                if (id.includes('src/assets')) {
-                  return 'envidat_assets';
-                }
 
                 // Let Rollup handle the rest
                 return undefined;
