@@ -9,7 +9,8 @@ import { METADATA_NEW_RESOURCE_ID } from '@/factories/metadataConsts';
 import {
   convertJSON,
   convertToBackendJSONWithRules,
-  formatDateTimeToCKANFormat, stringifyResourceForBackend,
+  formatDateTimeToCKANFormat,
+  stringifyResourceForBackend,
 } from '@/factories/mappingFactory';
 import {
   enhanceElementsWithStrategyEvents,
