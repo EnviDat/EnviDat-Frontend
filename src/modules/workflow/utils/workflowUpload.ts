@@ -19,7 +19,6 @@ import awsS3, { type AwsS3MultipartOptions } from '@uppy/aws-s3';
 import { urlRewrite } from '@/factories/apiFactory';
 import {
   eventBus,
-  UPLOAD_ERROR,
   UPLOAD_STATE_RESET,
   UPLOAD_STATE_RESOURCE_CREATED,
 } from '@/factories/eventBus';
@@ -279,7 +278,7 @@ async function completeMultipart(file: UppyFile, uploadData) {
   }
 }
 
-async function abortMultipart(file: UppyFile, uploadData) {
+async function abortMultipart(file: UppyFile, { uploadId, key }: { uploadId: string, key: string }) {
   // console.log('abortMultipart', file, uploadData);
 
   const actionUrl = 'cloudstorage_abort_multipart';
@@ -400,5 +399,5 @@ export function destroyUppyInstance() {
     uppyInstance = null;
   }
 
-  storeReference = null;
+  // storeReference = null;
 }

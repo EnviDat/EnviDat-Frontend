@@ -508,6 +508,5 @@ export function destroyUppyInstance() {
     uppyInstance = null;
   }
 
-  storeReference = null;
 }
 
