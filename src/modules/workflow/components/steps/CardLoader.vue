@@ -1,12 +1,18 @@
 <template>
   <v-card rounded="xl" class="fill-height" :elevation="elevation">
     <v-card-text>
-      <v-row class="w-100" no-gutters align="center" justify="space-between">
+      <v-row class="w-100" no-gutters align="center">
         <v-col v-if="title" cols="auto" class="d-flex align-center">
           <span class="text-h6 font-weight-bold mr-2">{{ title }}</span>
         </v-col>
-        <v-col v-if="showLogo" cols="auto" class="d-flex justify-end">
-          <v-img :src="EnviDatLogo" height="32" width="32" alt="envidat_logo" />
+        <v-col v-if="showLogo" class="d-flex justify-end">
+          <v-img
+            style="flex: none"
+            :src="EnviDatLogo"
+            height="32"
+            width="32"
+            alt="envidat_logo"
+          />
         </v-col>
       </v-row>
     </v-card-text>
