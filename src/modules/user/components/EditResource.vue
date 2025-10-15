@@ -263,13 +263,13 @@
           >
             <v-col cols="12" class="pt-2">
               <BaseUserPicker
-                :users="envidatUserNameStrings"
+                :users="envidatUsersPicker"
+                :preSelected="preSelectedAllowedUsers"
                 :pickerLabel="labels.restrictedAllowedUsersInfo"
                 multiplePick
                 :prependIcon="mdiKey"
                 userTagsCloseable
                 :placeholder="labels.allowedUsersTypingInfo"
-                :preSelected="preSelectedAllowedUsers"
                 @removedUsers="changeAllowedUsers"
                 @pickedUsers="changeAllowedUsers"
               />
@@ -363,10 +363,10 @@ import {
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 // import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import { formatDate } from '@/factories/dateFactory';
-import { getAuthorByEmail, getAuthorName } from '@/factories/authorFactory.js';
-import { getFileExtension } from '@/factories/fileFactory.js';
-import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods.js';
-import { RESOURCE_FORMAT_LINK } from '@/factories/metadataConsts.js';
+import { getAuthorByEmail, getAuthorName, getUserPickerObjects } from '@/factories/authorFactory.js';
+import { getFileExtension } from '@/factories/fileFactory';
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+import { RESOURCE_FORMAT_LINK } from '@/factories/metadataConsts';
 
 
 export default {
@@ -715,8 +715,9 @@ export default {
       }
       return ACCESS_LEVEL_PUBLIC_VALUE;
     },
-    envidatUserNameStrings() {
-      return getUserAutocompleteList(this.envidatUsers);
+    envidatUsersPicker() {
+      const users = getUserAutocompleteList(this.envidatUsers);
+      return getUserPickerObjects(users);
     },
     preSelectedAllowedUsers() {
       // match with the user.name but make sure the fullname or display_name is shown
@@ -870,8 +871,8 @@ export default {
       this.imagePreviewError = event;
       this.loadingImagePreview = false;
     },
-    changeAllowedUsers(pickedAuthorEmails) {
-      const pickedUserNames = pickedAuthorEmails.map((email) => {
+    changeAllowedUsers(pickedUsersEmails) {
+      const pickedUserNames = pickedUsersEmails.map((email) => {
         const author = getAuthorByEmail(email, this.envidatUsers);
         return getAuthorName(author)
       });

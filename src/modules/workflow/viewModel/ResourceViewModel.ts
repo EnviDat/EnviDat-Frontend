@@ -32,6 +32,7 @@ export class ResourceViewModel extends AbstractEditViewModel implements Resource
 
   declare multipartName: string;
   declare name: string;
+  declare packageId: string;
   declare position: number;
 
   declare resourceSize: string;
@@ -243,7 +244,7 @@ export class ResourceViewModel extends AbstractEditViewModel implements Resource
       ['metadataModified','metadata_modified'],
       ['multipartName','multipart_name'],
       ['name','name'],
-      // ['packageId','package_id'], // keep it for compatibility reasons?
+      ['packageId','package_id'],
       ['position','position'],
       ['restricted','restricted'],
       ['resourceSize','resource_size'],

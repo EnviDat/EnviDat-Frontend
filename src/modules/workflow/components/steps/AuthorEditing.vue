@@ -18,9 +18,8 @@ import { EDIT_METADATA_ADD_AUTHOR_TITLE } from '@/factories/metadataConsts';
 
 import {
   createAuthor,
-  getUserNameObjects,
+  getUserPickerObjects,
   getAuthorByEmail,
-  getAuthorByName,
   getAuthorName,
 } from '@/factories/authorFactory';
 
@@ -31,6 +30,7 @@ import {
 } from '@/factories/eventBus';
 
 import { isFieldReadOnly, readOnlyHint as getReadOnlyHint } from '@/factories/globalMethods';
+import { Author, UserPickerObject } from '@/types/modelTypes';
 
 const props = defineProps({
   titleLabel: {
@@ -170,19 +170,19 @@ const affiliationField = computed(() => previews.value.affiliation !== null
   : props.affiliation)
 
 const preselectAuthorNames = computed( () => {
-  const author = getAuthorByEmail(emailField.value, props.existingAuthors);
+  const author = getAuthorByEmail(emailField.value, props.existingAuthors as Author[]);
 
   if (author) {
     const fullName = getAuthorName(author);
-    return fullName ? [fullName] : [];
+    return fullName ? [{ name: fullName, email: author.email }] : [];
   }
 
   return undefined;
 })
 
-const fullNameUsers = computed(() => {
-  const localAuthors = [...props.existingAuthors];
-  return getUserNameObjects(localAuthors);
+const authorPickerObjects = computed(() => {
+  const localAuthors = [...props.existingAuthors] as Author[];
+  return getUserPickerObjects(localAuthors);
 })
 
 
@@ -256,13 +256,15 @@ const saveAuthorInfo = (authorObject) => {
 }
 
 
-const catchPickerAuthorChange = (pickedAuthorName, hasAuthor) => {
+const catchPickerAuthorChange = (authorObjects: UserPickerObject[], hasAuthor: boolean) => {
+  const pickedAuthorEmail = authorObjects[0].email;
+
   authorPickerTouched.value = true;
   authorIsPicked.value = hasAuthor;
 
   if (authorIsPicked.value) {
     const author =
-      getAuthorByName(pickedAuthorName, props.existingAuthors) || {};
+      getAuthorByEmail(pickedAuthorEmail, props.existingAuthors as Author[]) || {};
     const authorObject = createAuthor(author);
 
     fillPreviews(
@@ -282,8 +284,8 @@ const catchPickerAuthorChange = (pickedAuthorName, hasAuthor) => {
   }
 }
 
-const getAutoCompletedAuthor = (email) => {
-  const autoAuthor = getAuthorByEmail(email, props.existingAuthors);
+const getAutoCompletedAuthor = (email: string) => {
+  const autoAuthor = getAuthorByEmail(email, props.existingAuthors as Author[]);
 
   if (autoAuthor) {
     const autoAuthorObj = createAuthor(autoAuthor);
@@ -305,7 +307,7 @@ const getAutoCompletedAuthor = (email) => {
   return null;
 }
 
-const notifyAuthorChange = (value) => {
+const notifyAuthorChange = (value: string) => {
   if (anyUserElementsActive.value) {
     return;
   }
@@ -347,7 +349,7 @@ const focusOut = (property: string, event: Event) => {
 }
 
 
-const removeAuthorClick = (email) => {
+const removeAuthorClick = (email: string) => {
   eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
     object: REMOVE_EDITING_AUTHOR,
     data: email,
@@ -440,7 +442,7 @@ const removeAuthorClick = (email) => {
       <v-row v-if="!isEditingAuthor" dense class="pt-2">
         <v-col>
           <BaseUserPicker
-            :users="fullNameUsers"
+            :users="authorPickerObjects"
             :preSelected="preselectAuthorNames"
             :readonly="isUserPickerReadOnly"
             :hint="

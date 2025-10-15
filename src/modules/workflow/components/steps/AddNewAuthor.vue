@@ -88,7 +88,7 @@
       <v-row v-if="!isEditingAuthor" dense class="pt-2">
         <v-col>
           <BaseUserPicker
-            :users="fullNameUsers"
+            :users="authorPickerObjects"
             :preSelected="preselectAuthorNames"
             :readonly="isReadOnly('authors')"
             :hint="readOnlyHint('authors')"
@@ -228,9 +228,8 @@ import { EDIT_METADATA_ADD_AUTHOR_TITLE } from '@/factories/metadataConsts';
 
 import {
   createAuthor,
-  getUserNameObjects,
+  getUserPickerObjects,
   getAuthorByEmail,
-  getAuthorByName,
   getAuthorName,
 } from '@/factories/authorFactory';
 
@@ -243,7 +242,7 @@ import {
 } from '@/modules/workflow/utils/useReadonly';
 
 export default {
-  name: 'AddNewAuthor',
+  // name: 'AddNewAuthor',
   props: {
     titleLabel: {
       type: String,
@@ -387,9 +386,9 @@ export default {
 
       return undefined;
     },
-    fullNameUsers() {
+    authorPickerObjects() {
       const localAuthors = [...this.existingAuthors];
-      return getUserNameObjects(localAuthors);
+      return getUserPickerObjects(localAuthors);
     },
     anyUserElementsActive() {
       return (
@@ -450,13 +449,13 @@ export default {
 
       this.focusOutDebouncing(property, value);
     },
-    catchPickerAuthorChange(pickedAuthorName, hasAuthor) {
+    catchPickerAuthorChange(pickedUserEmail: string, hasAuthor: boolean) {
       this.authorPickerTouched = true;
       this.authorIsPicked = hasAuthor;
 
       if (this.authorIsPicked) {
         const author =
-          getAuthorByName(pickedAuthorName, this.existingAuthors) || {};
+          getAuthorByEmail(pickedUserEmail, this.existingAuthors) || {};
         const authorObject = createAuthor(author);
 
         this.fillPreviews(

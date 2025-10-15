@@ -21,7 +21,7 @@ import {
 
 import metadatas from '@/../public/packagelist.json';
 import researchUnits from '@/../public/researchUnits.json';
-import testOrganizations from './js/organizations';
+import testOrganizations from '@/../stories/js/organizations';
 
 const datasets = enhanceDatasetWithResearchUnit(metadatas.result, researchUnits);
 const orgaMap = getOrganizationRelationMap(testOrganizations);

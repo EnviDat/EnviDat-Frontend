@@ -6,10 +6,7 @@
         class="text-h5 font-weight-bold"
         cols="12"
         v-html="labels.cardTitle"
-      >
-      </v-col>
-      <!-- <v-col cols="12" class="text-body-1" v-html="labels.cardInstructions">
-      </v-col> -->
+      />
     </v-row>
 
     <!-- Info Banner -->
@@ -63,6 +60,7 @@
       </v-col>
     </v-row>
 
+    <!-- Map + errors -->
     <v-col
       data-field="geometries"
       cols="12"
@@ -87,6 +85,7 @@
       </v-col>
     </v-row>
 
+    <!-- Editor + Dates -->
     <v-row>
       <v-col cols="12" xl="6">
         <v-row>
@@ -99,10 +98,8 @@
 
           <v-col cols="12">
             <v-expansion-panels v-model="activePanel" rounded="md">
-              <!-- eager force the render of the json edito even if the accordion is close -->
               <v-expansion-panel eager>
                 <v-expansion-panel-title>Open Editor</v-expansion-panel-title>
-
                 <v-expansion-panel-text>
                   <!-- JSON EDITOR -->
                   <div
@@ -116,9 +113,9 @@
                     </div>
                   </div>
                   <!-- local parse / validation error -->
-                  <divl v-if="inputError">
+                  <div v-if="inputError">
                     <v-alert type="warning">{{ inputError }}</v-alert>
-                  </divl>
+                  </div>
                 </v-expansion-panel-text>
               </v-expansion-panel>
             </v-expansion-panels>
@@ -137,7 +134,6 @@
               <v-col cols="6">
                 <v-row no-gutters>
                   <v-col cols="12">{{ labels.uploadInstructions }}</v-col>
-
                   <v-col cols="12" class="pt-2">
                     <BaseRectangleButton
                       color="highlight"
@@ -200,17 +196,23 @@
               }}</b>
             </div>
           </v-col>
-
           <v-col cols="12">
             <BaseStartEndDate
               data-field="dates"
-              :startDate="item.dateStart"
-              :startDateLabel="`${item.dateType} start date`"
-              :startDateProperty="startDateProperty"
-              :endDate="item.dateEnd"
+              :startDate="
+                item.dateType === 'created' ? item.date : item.dateStart
+              "
+              :endDate="
+                item.dateType === 'created' ? item.endDate : item.dateEnd
+              "
+              :startDateProperty="
+                item.dateType === 'created' ? 'date' : 'dateStart'
+              "
+              :endDateProperty="
+                item.dateType === 'created' ? 'endDate' : 'dateEnd'
+              "
               :error-messages="validationErrors.dates"
               :endDateLabel="`${item.dateType} end date`"
-              :endDateProperty="endDateProperty"
               :clearableEndDate="false"
               :clearableStartDate="false"
               rowLayout
@@ -240,7 +242,6 @@ import { check } from '@placemarkio/check-geojson';
 import { createJSONEditor, SelectionType } from 'vanilla-jsoneditor';
 import { useDropZone } from '@vueuse/core';
 
-// import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo.vue';
 import BaseStartEndDate from '@/components/BaseElements/BaseStartEndDate.vue';
@@ -264,17 +265,19 @@ import {
   defaultSwissLocation,
 } from '@/factories/geoFactory';
 
+import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
+
 export default {
   name: 'EditDataGeo',
   components: {
     MetadataGeo,
-    // BaseStatusLabelView,
     BaseRectangleButton,
     BaseStartEndDate,
   },
   props: {
     mapDivId: { type: String, default: 'map-small' },
     dates: { type: Array, default: () => [] },
+    geometries: { type: [Array, Object], default: () => [] },
     mapHeight: { type: Number, default: 450 },
     mapEditable: { type: Boolean, default: true },
     showFullscreenButton: { type: Boolean, default: false },
@@ -295,8 +298,10 @@ export default {
   data() {
     return {
       mdiContentSave,
-      activePanel: null,
       mdiFileUpload,
+      activePanel: null,
+      workflowStore: null,
+
       newGeoInfo: {
         geometries:
           convertGeoJSONToGeoCollection(defaultSwissLocation).geometries,
@@ -324,9 +329,13 @@ export default {
         uploadInstructions: 'Upload GeoJSON if you have many geometries.',
         fileDropLabel: '…or drop a GeoJSON file here',
       },
+      initializing: true,
     };
   },
   computed: {
+    getMode() {
+      return this.workflowStore?.mode;
+    },
     loadingColor() {
       return this.loading ? 'accent' : undefined;
     },
@@ -410,12 +419,15 @@ export default {
   mounted() {
     eventBus.on(MAP_GEOMETRY_MODIFIED, this.changedGeoViaEditor);
     eventBus.on(EDITMETADATA_DATA_GEO_MAP_ERROR, this.triggerValidationError);
-    this.$emit('save', this.newGeoInfo);
-    const jsonString = this.location?.geoJSON
-      ? JSON.stringify(this.location.geoJSON)
-      : '';
-    this.changeGeoViaText(jsonString, true);
+
+    // GET initial geometry
+    const initial = this.resolveInitialGeo();
+
+    this.applyCollection(initial, { emit: false });
+
     this.initEditor(this.geomsForMapString);
+    this.initializing = false;
+
     useDropZone(this.$refs.dropZoneRef, {
       onDrop: (files) => {
         if (files?.length) this.triggerFileUpload(files[0]);
@@ -428,9 +440,6 @@ export default {
         this.isOverDropZone = false;
       },
     });
-    // if (this.activePanel === 0) {
-    //   this.$nextTick(() => this.initEditor(this.geomsForMapString));
-    // }
   },
   beforeUnmount() {
     if (this.saveButtonEnabled) this.commitGeometriesToAPI();
@@ -439,18 +448,56 @@ export default {
     this.jsonEditor?.destroy();
   },
   methods: {
+    toCollection(input) {
+      if (!input) return convertGeoJSONToGeoCollection(defaultSwissLocation);
+
+      let val = input;
+      if (typeof val === 'string') {
+        try {
+          val = JSON.parse(val);
+        } catch {
+          // fallBack to default
+        }
+      }
+
+      if (Array.isArray(val)) {
+        return { type: 'GeometryCollection', geometries: val };
+      }
+
+      return convertGeoJSONToGeoCollection(val);
+    },
+
+    // GET initial geometry
+    resolveInitialGeo() {
+      if (
+        this.geometries &&
+        (Array.isArray(this.geometries) || this.geometries.type)
+      ) {
+        return this.toCollection(this.geometries);
+      }
+
+      if (this.location?.geoJSON) {
+        return this.toCollection(this.location.geoJSON);
+      }
+      return convertGeoJSONToGeoCollection(defaultSwissLocation);
+    },
+
+    applyCollection(coll, { emit = false } = {}) {
+      this.geomsForMap = coll;
+      this.newGeoInfo.geometries = coll.geometries;
+      if (this.jsonEditor) this.jsonEditor.update({ json: this.geomsForMap });
+      if (emit && !this.initializing) this.$emit('save', this.newGeoInfo);
+    },
+
     ensureDateEntry(arr, type, explanation) {
       let obj = arr.find((d) => d.dateType === type);
       if (!obj) {
-        obj = {
-          dateType: type,
-          dateStart: '',
-          dateEnd: '',
-        };
+        obj = { dateType: type, dateStart: '', dateEnd: '' };
         arr.push(obj);
       }
       obj.dateExplanation = explanation;
     },
+
     dateChanged(index, prop, val) {
       const copy = [...this.datesField];
       copy[index] = { ...copy[index], [prop]: val };
@@ -461,14 +508,20 @@ export default {
     clearDate(index, prop) {
       this.dateChanged(index, prop, '');
     },
+
     initEditor(text) {
+      const json = text
+        ? JSON.parse(text)
+        : convertGeoJSONToGeoCollection(defaultSwissLocation);
       this.jsonEditor = createJSONEditor({
         target: this.$refs.editorRef,
-        props: { content: { json: JSON.parse(text) }, ...this.editorOptions },
+        props: { content: { json }, ...this.editorOptions },
       });
     },
+
     jsonEditorOnChange(updated, previous, status) {
       this.inputError = null;
+
       if (status.contentErrors?.parseError) {
         const pErr = status.contentErrors.parseError;
         this.inputError = Array.isArray(pErr)
@@ -476,6 +529,7 @@ export default {
           : pErr.message || String(pErr);
         return;
       }
+
       let accept = false;
       if (this.editorSelection) {
         if (this.editorSelection.type === SelectionType.value) {
@@ -488,31 +542,35 @@ export default {
       } else {
         accept = true;
       }
+
       if (accept) {
         const tex = updated.text || JSON.stringify(updated.json);
         this.changeGeoViaText(tex);
       }
     },
+
     changedGeoViaEditor(geoArray) {
-      this.geomsForMap = convertGeoJSONToGeoCollection(geoArray);
-      if (this.jsonEditor) this.jsonEditor.update({ json: this.geomsForMap });
-
-      this.newGeoInfo.geometries = this.geomsForMap.geometries;
-      this.$emit('validate', this.newGeoInfo);
-
+      const coll = convertGeoJSONToGeoCollection(geoArray);
+      this.applyCollection(coll, { emit: !this.initializing });
       this.saveButtonEnabled = true;
     },
+
     changeGeoViaText(text = '', skipSaveFlag = false) {
       if (typeof text === 'object') {
         const ok = this.parseGeoCollection(convertGeoJSONToGeoCollection(text));
         if (!skipSaveFlag) this.saveButtonEnabled = ok;
         return;
       }
+
       if (typeof text !== 'string') text = text ? JSON.stringify(text) : '';
       if (!text.trim()) {
-        this.geomsForMap = convertGeoJSONToGeoCollection(defaultSwissLocation);
+        this.applyCollection(
+          convertGeoJSONToGeoCollection(defaultSwissLocation),
+          { emit: false },
+        );
         return;
       }
+
       let parsed;
       try {
         parsed = JSON.parse(text);
@@ -520,76 +578,102 @@ export default {
         this.inputError = `Invalid JSON: ${e.message}`;
         return;
       }
+
       try {
         check(parsed);
       } catch (e) {
         this.inputError = e.message;
         return;
       }
+
       const ok = this.parseGeoCollection(convertGeoJSONToGeoCollection(parsed));
       if (!skipSaveFlag) this.saveButtonEnabled = ok;
     },
+
     parseGeoCollection(coll) {
-      if (
-        isFieldValid(
-          'geometries',
-          coll.geometries,
-          this.validations,
-          this.validationErrors,
-        )
-      ) {
-        if (!coll.properties || !Object.keys(coll.properties).length)
+      const valid = isFieldValid(
+        'geometries',
+        coll.geometries,
+        this.validations,
+        this.validationErrors,
+      );
+      if (valid) {
+        if (!coll.properties || !Object.keys(coll.properties).length) {
           coll.properties = { name: this.location.name };
-        this.geomsForMap = coll;
-        this.newGeoInfo.geometries = coll.geometries;
-        this.$emit('validate', this.newGeoInfo);
+        }
+        this.applyCollection(coll, { emit: !this.initializing });
         return true;
       }
       return false;
     },
+
     triggerFilePicker() {
       const el =
         this.$refs.filePicker?.$el?.querySelector('input[type="file"]');
       if (el) el.click();
     },
+
     triggerFileUpload(file) {
       const reader = new FileReader();
-      reader.onload = () => {
-        this.changeGeoViaText(reader.result);
-      };
+      reader.onload = () => this.changeGeoViaText(reader.result);
       reader.onerror = () => {
         this.inputError = 'Could not load file. Is it GeoJSON?';
       };
       reader.readAsText(file);
     },
+
     onFileDrop(files) {
       if (files?.length) this.triggerFileUpload(files[0]);
     },
+
     commitGeometriesToAPI() {
       this.saveButtonInProgress = true;
       this.saveButtonEnabled = false;
+
       eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_DATA_GEO,
         data: { location: { ...this.location, geoJSON: this.geomsForMap } },
       });
+
+      this.$emit('save', this.newGeoInfo);
+
       setTimeout(() => {
         this.saveButtonInProgress = false;
       }, 400);
     },
+
     triggerValidationError(msg) {
       this.geometryError = msg;
     },
   },
   watch: {
     geomsForMapString() {
-      this.jsonEditor.update({ json: this.geomsForMap });
+      if (this.jsonEditor) this.jsonEditor.update({ json: this.geomsForMap });
     },
-    location() {
-      this.saveButtonInProgress = false;
+
+    location: {
+      deep: true,
+      handler(nv) {
+        const g = nv?.geoJSON;
+        if (g) this.applyCollection(this.toCollection(g), { emit: false });
+      },
     },
+
+    geometries: {
+      deep: true,
+      handler(nv) {
+        if (!nv) return;
+        const coll = this.toCollection(nv);
+        this.applyCollection(coll, { emit: false });
+      },
+    },
+
     geoFile() {
       this.triggerFileUpload(this.geoFile);
     },
+  },
+  created() {
+    this.workflowStore = useDatasetWorkflowStore();
   },
 };
 </script>
@@ -600,6 +684,7 @@ export default {
   width: 32px;
   height: 32px;
 }
+
 .dropZone {
   min-height: 100px;
   border-radius: 5px;
@@ -608,14 +693,17 @@ export default {
   align-content: center;
   transition: background-color 0.15s ease-in-out;
 }
+
 .editorHeight {
   max-height: 600px;
   overflow: auto auto;
   scrollbar-width: thin;
 }
+
 .editDataGeo {
   padding: 0;
 }
+
 .customPadding {
   .v-card-text.map-wrapper {
     padding: 0;

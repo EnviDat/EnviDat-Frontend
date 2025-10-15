@@ -32,9 +32,12 @@
 
       <v-col cols="12" sm="6" class="pl-sm-4">
         <BaseUserPicker
+          ref="contactUserPicker"
+          data-field="contactUserPicker"
           :users="fullNameUsers"
           :preSelected="preselectAuthorNames"
-          :hint="labels.authorPickHint"
+          :readonly="isReadOnly('contactUserPicker')"
+          :hint="readOnlyHint('contactUserPicker')"
           @removedUsers="catchPickerAuthorChange($event, false)"
           @pickedUsers="catchPickerAuthorChange($event, true)"
         />
@@ -84,6 +87,7 @@
 <script>
 import { mdiAccount, mdiEmail } from '@mdi/js';
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
+import { createAuthor, getAuthorByEmail } from '@/factories/authorFactory.js';
 
 import {
   isReadOnlyField,
@@ -155,24 +159,15 @@ export default {
     blurOnEnterKey(e) {
       if (e.key === 'Enter') e.target.blur();
     },
-    catchPickerAuthorChange(fullName, hasAuthor) {
+    catchPickerAuthorChange(pickedUserEmail, hasAuthor) {
       if (!hasAuthor) return;
 
-      /* cerca l'autore completo (con e-mail) */
-      const authorObj = this.authors.find(
-        (a) => `${a.firstName} ${a.lastName}` === fullName,
-      );
+      const author = getAuthorByEmail(pickedUserEmail, this.authors) || {};
+      const authorObj = createAuthor(author);
 
-      if (authorObj) {
-        this.local.contactFirstName = authorObj.firstName;
-        this.local.contactLastName = authorObj.lastName;
-        this.local.contactEmail = authorObj.email || '';
-      } else {
-        /* fallback – mantieni la vecchia split() se non trovi match */
-        const [first, ...rest] = fullName.split(' ');
-        this.local.contactFirstName = first || '';
-        this.local.contactLastName = rest.join(' ');
-      }
+      this.local.contactFirstName = authorObj.firstName;
+      this.local.contactLastName = authorObj.lastName;
+      this.local.contactEmail = authorObj.email || '';
     },
   },
 };

@@ -13,8 +13,10 @@
     <v-row no-gutters>
       <v-col class="pt-2 tagAuthorFix">
         <v-autocomplete
-          v-model="pickedUsers"
+          v-model="pickedUsersEmail"
           :items="users"
+          item-title="fullName"
+          item-value="email"
           :menu-icon="mdiArrowDownDropCircleOutline"
           :readonly="readonly"
           :hint="hint"
@@ -29,7 +31,6 @@
           :menu-props="menuOptions"
           :clear-icon="mdiClose"
           v-bind="$props"
-          @change="catchPicks"
           @blur="$emit('blur', $event)"
         >
 
@@ -37,14 +38,16 @@
             <TagChipAuthor
                 v-if="item.title"
                 :name="item.title"
+                :class="userTagsCloseable && !readonly ? 'pl-0' : 'px-0'"
                 :closable="userTagsCloseable && !readonly"
-                @closeClicked="catchCloseClicked"
+                @closeClicked="catchCloseClicked(item.value)"
             />
           </template>
 
           <template v-slot:item="{ props, item }">
             <v-list-item v-bind="props"
-                         @click="catchPickClicked(item.value)" />
+                         @click="catchPickClicked(item.value)" >
+            </v-list-item>
           </template>
 
           <template v-slot:no-data>
@@ -58,7 +61,7 @@
   </v-card>
 </template>
 
-<script>
+<script lang="ts">
 /**
  * @summary UserPicker component
  * @author Dominik Haas-Artho
@@ -70,14 +73,19 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import {mdiAccountBox, mdiArrowDownDropCircleOutline, mdiClose} from '@mdi/js';
+// import { PropType } from 'vue';
 import TagChipAuthor from '@/components/Chips/TagChipAuthor.vue';
+import type { UserPickerObject } from '@/types/modelTypes';
 
 export default {
-  name: 'BaseUserPicker',
+  // name: 'BaseUserPicker',
   props: {
-    users: Array,
+    users: {
+      type: Array, // as PropType<UserPickerObject>[],
+      default: undefined,
+    },
     preSelected: {
-      type: Array,
+      type: Array, // as PropType<string>[],
       default: undefined,
     },
     multiplePick: Boolean,
@@ -113,6 +121,7 @@ export default {
       default: '',
     },
   },
+  emits: ['pickedUsers', 'removedUsers'],
   mounted() {
     this.updatePreselection();
   },
@@ -141,55 +150,45 @@ export default {
   methods: {
     updatePreselection() {
       if (this.preSelected?.length > 0) {
-        if (this.multiplePick) {
-          this.pickedUsers = [];
-
-          this.preSelected.forEach(authorName => {
-            this.pickedUsers.push(authorName);
-          });
-        } else {
-          this.pickedUsers = this.preSelected[0];
-        }
+        const filteredUsers = this.users.filter((userObj : UserPickerObject) => this.preSelected.includes(userObj.fullName));
+        this.pickedUsersEmail = this.multiplePick ? filteredUsers.map((userObj : UserPickerObject) => userObj.email) : filteredUsers[0].email;
       } else {
-        this.pickedUsers = this.multiplePick ? [] : undefined;
+        this.pickedUsersEmail = this.multiplePick ? [] : undefined;
       }
     },
-    catchCloseClicked(authorName) {
+    catchCloseClicked(pickedEmail: string) {
       if (this.readonly) {
         return;
       }
 
       if (this.multiplePick) {
-        const remains = this.pickedUsers.filter(value => value !== authorName);
+        const remains = this.pickedUsersEmail.filter((email : string) => email !== pickedEmail);
 
         if (remains?.length > 0) {
-          this.pickedUsers = remains;
+          this.pickedUsersEmail = remains;
         } else {
-          this.pickedUsers = [];
+          this.pickedUsersEmail = [];
         }
       } else {
-        this.pickedUsers = undefined;
+        this.pickedUsersEmail = undefined;
       }
 
-      this.$emit('removedUsers', this.pickedUsers);
+      this.$emit('removedUsers', this.pickedUsersEmail as string | string[]);
     },
-    catchPickClicked(pickedItem) {
+    catchPickClicked(pickedEmail: string) {
       if (this.multiplePick) {
-        if (!this.pickedUsers.includes(pickedItem)) {
-          this.pickedUsers.push(pickedItem);
+        if (!this.pickedUsersEmail.includes(pickedEmail)) {
+          this.pickedUsersEmail.push(pickedEmail);
         }
       } else {
-        this.pickedUsers = pickedItem;
+        this.pickedUsersEmail = pickedEmail;
       }
-      this.$emit('pickedUsers', this.pickedUsers);
-    },
-    catchPicks() {
-      this.$emit('pickedUsers', this.pickedUsers);
-      this.search = '';
+
+      this.$emit('pickedUsers', this.pickedUsersEmail as string | string[]);
     },
   },
   data: () => ({
-    pickedUsers: undefined,
+    pickedUsersEmail: undefined,
     search: '',
     mdiArrowDownDropCircleOutline,
     mdiClose,

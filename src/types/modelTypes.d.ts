@@ -1,5 +1,9 @@
 import { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 
+export type UserPickerObject = {
+  fullName: string,
+  email: string,
+}
 
 export interface DataCreditObject {
   curation: number;
@@ -108,6 +112,8 @@ export interface DatasetService {
   ) : Promise<any>;
 
   createResource?(resourceData: ResourceDTO): Promise<ResourceDTO>;
+
+  deleteResource(resourceId: string): Promise<boolean>;
 
   createDataset() : Promise<DatasetDTO>;
 

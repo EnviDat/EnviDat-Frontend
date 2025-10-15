@@ -97,7 +97,6 @@
     >
       <v-col cols="12">
         <v-row>
-          {{ INSTITUTION }}
           <v-col cols="4" class="pr-2">
             <v-text-field
               :label="labels.institution"
@@ -159,6 +158,32 @@
         </v-alert>
       </v-col>
     </v-row>
+
+    <v-row class="mb-5">
+      <v-col>
+        <div class="font-weight-bold">{{ labelOrg.cardTitle }}</div>
+        <div class="text-caption">
+          {{ labelOrg.orgInformation }}
+        </div>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12">
+        <v-row>
+          <Organization
+            :showTitle="false"
+            v-bind="editOrganizationProps"
+            @save="catchOrgChange"
+          />
+        </v-row>
+      </v-col>
+    </v-row>
+
+    <v-col v-if="validationErrors.organizationId != null" cols="12">
+      <v-alert type="error">
+        {{ validationErrors.organizationId }}
+      </v-alert>
+    </v-col>
 
     <v-row>
       <v-col cols="12">
@@ -222,6 +247,7 @@
 </template>
 
 <script>
+import Organization from '@/modules/workflow/components/steps/Organization.vue';
 import {
   mdiMinusCircleOutline,
   mdiArrowDownDropCircleOutline,
@@ -240,9 +266,14 @@ import {
   getReadOnlyHint,
 } from '@/modules/workflow/utils/useReadonly';
 
+import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
 
 export default {
   name: 'EditMetadataHeader',
+  setup() {
+    const orgStore = useOrganizationsStore();
+    return { orgStore };
+  },
   props: {
     funders: Array,
     dataLicenseId: String,
@@ -254,6 +285,10 @@ export default {
     readOnlyFields: Array,
     readOnlyExplanation: String,
     validationErrors: { type: Object, default: () => ({}) },
+    organizationId: { type: String, default: undefined },
+    organizationName: { type: String, default: undefined },
+    /* Can be either a single organization object or an array; we normalize it. */
+    organization: { type: [Object, Array], default: () => [] },
   },
 
   computed: {
@@ -285,12 +320,40 @@ export default {
         ? this.previewFunders
         : [...this.previewFunders, { ...this.emptyEntry }];
     },
+    editOrganizationProps() {
+      return {
+        organizationId: this.organizationId,
+        organizationName: this.organizationName,
+        userOrganizations: this.userOrganizationsList,
+        readOnlyFields: this.isReadOnly('organizationId'),
+        readOnlyExplanation: this.readOnlyHint('organizationId'),
+        flat: true,
+      };
+    },
+
+    selectedOrganizationId() {
+      if (this.organizationId) return this.organizationId;
+      const list = this.userOrganizationsList;
+      return list.length === 1 ? list[0].id : undefined;
+    },
+
+    userOrganizationsList() {
+      const storeList = this.orgStore?.userOrganizations;
+      if (Array.isArray(storeList) && storeList.length > 0) {
+        return storeList;
+      }
+      return [];
+    },
   },
 
   methods: {
     // isFieldReadOnly,
     // readOnlyHint,
-
+    catchOrgChange(updatedOrg) {
+      this.newDatasetInfo.organizationName = updatedOrg.name;
+      this.newDatasetInfo.organizationId = updatedOrg.id;
+      this.$emit('save', this.newDatasetInfo);
+    },
     isReadOnly(dateProperty) {
       return isReadOnlyField(dateProperty);
     },
@@ -333,8 +396,12 @@ export default {
     },
 
     changeLicense() {
-      this.newDatasetInfo.dataLicenseId = this.selectedLicenseObj?.id;
+      // this.newDatasetInfo.dataLicenseId = this.selectedLicenseObj?.id;
 
+      const lic = this.selectedLicenseObj || null;
+      this.newDatasetInfo.dataLicenseId = lic?.id || '';
+      this.newDatasetInfo.dataLicenseTitle = lic?.title || '';
+      this.newDatasetInfo.dataLicenseUrl = lic?.link || '';
       this.$emit('save', this.newDatasetInfo);
       //   const payload = {
       //     funders: this.previewFunders,
@@ -374,6 +441,11 @@ export default {
         grantNumber: 'Grant Number',
         institutionUrl: 'Link',
       },
+      labelOrg: {
+        cardTitle: 'Organization',
+        orgInformation:
+          'Select your organization. If you belong to only one, it will be selected by default.',
+      },
       labelsLicense: {
         cardTitle: 'Data License',
         instructionsLicense: 'Select a data license reflecting usage terms.',
@@ -386,6 +458,7 @@ export default {
 
   components: {
     BaseIconButton,
+    Organization,
     // BaseStatusLabelView,
   },
 };

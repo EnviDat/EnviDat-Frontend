@@ -121,7 +121,6 @@
           :menu-icon="mdiArrowDownDropCircleOutline"
           :readonly="isReadOnly('keywords')"
           :hint="readOnlyHint('keywords')"
-          :persistent-hint="!!hint"
           :prepend-icon="mdiPaletteSwatch"
           :label="labelsKeywords.placeholder"
           :clear-on-select="true"
@@ -452,7 +451,6 @@ export default {
     removeKeyword(item) {
       // Assign removeIndex to index of keywords object that match item
       const removeIndex = this.keywordsField.indexOf(item);
-      // console.log(removeIndex);
 
       // Assign localKeywords to copy of keywords
       const localKeywords = [...this.keywordsField];
@@ -462,6 +460,7 @@ export default {
 
       // Process and emit localKeywords to eventBus
       this.newDatasetInfo.keywords = this.processValues(localKeywords);
+      this.keywordsChanged();
     },
     // Assign keywordCountEnough to true if keywordCount is greater than or equal to keywordsCountMin
     // Else assigns keywordCountEnough to false

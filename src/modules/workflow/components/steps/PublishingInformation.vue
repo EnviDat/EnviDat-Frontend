@@ -56,13 +56,10 @@
 
     <v-row>
       <v-col cols="12" xl="6">
-        <!-- prettier-ignore -->
         <v-row>
-
           <v-col cols="12" class="pa-0">
             <PublicationInfo v-bind="editPublicationsProps" />
           </v-col>
-
         </v-row>
       </v-col>
 
@@ -73,14 +70,6 @@
               v-bind="editContactPersonProps"
               @save="catchContactPersonChange"
             />
-          </v-col>
-        </v-row>
-      </v-col>
-
-      <v-col cols="12" xl="6" class="pa-0">
-        <v-row
-          ><v-col cols="12">
-            <Organization v-bind="editOrganizationProps" />
           </v-col>
         </v-row>
       </v-col>
@@ -103,13 +92,14 @@
         <v-row v-if="doiWorkflowActive">
           <v-col>
             <PublicationStatus
+              :user-role="userRole"
               v-bind="editPublicationStatusProps"
               @clicked="catchPublicationStateChange"
             />
           </v-col>
         </v-row>
 
-        <v-row v-if="!doiWorkflowActive">
+        <v-row v-else>
           <v-col>
             <NotFoundCard
               title="Publication Status editing is disabled"
@@ -140,30 +130,17 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { mapState } from 'vuex';
-
-import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
-import {
-  EDITMETADATA_OBJECT_UPDATE,
-  EDITMETADATA_PUBLICATION_STATE,
-  eventBus,
-} from '@/factories/eventBus';
-
-import {
-  BLIND_REVIEW_ON,
-  PUBLICATION_STATE_PUBLISHED,
-} from '@/factories/metadataConsts';
-
-import Organization from '@/modules/workflow/components/steps/Organization.vue';
 import ContactPerson from '@/modules/workflow/components/steps/ContactPerson.vue';
-
 import PublicationInfo from '@/modules/workflow/components/steps/PublicationInfo.vue';
-
 import PublicationStatus from '@/modules/workflow/components/steps/PublicationStatus.vue';
 import ReviewInfo from '@/modules/workflow/components/steps/ReviewInfo.vue';
+import NotFoundCard from '@/components/Cards/NotFoundCard.vue';
+import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
+
+import { mapStores } from 'pinia';
 
 import {
-  getUserNameObjects,
+  getUserPickerObjects,
   getAuthorByEmail,
   getAuthorName,
 } from '@/factories/authorFactory';
@@ -173,12 +150,30 @@ import {
   getReadOnlyHint,
 } from '@/modules/workflow/utils/useReadonly';
 
-// const NotFoundCard = defineAsyncComponent(
-//   () => import('@/components/Cards/NotFoundCard.vue'),
-// );
+import {
+  BLIND_REVIEW_ON,
+  PUBLICATION_STATE_PUBLISHED,
+} from '@/factories/metadataConsts';
+
+import {
+  EDITMETADATA_OBJECT_UPDATE,
+  EDITMETADATA_PUBLICATION_STATE,
+  eventBus,
+} from '@/factories/eventBus';
+
+import {
+  USER_ROLE_EDITOR,
+  USER_ROLE_MEMBER,
+  USER_ROLE_SYSTEM_ADMIN,
+} from '@/factories/userEditingValidations';
 
 export default {
   name: 'PublishingInformation',
+  setup() {
+    const workflowStore = useDatasetWorkflowStore();
+    return { workflowStore };
+  },
+
   data: () => ({
     envidatDomain: process.env.VITE_API_ROOT,
     newDatasetInfo: {},
@@ -189,69 +184,49 @@ export default {
         'Please provide main contact infomation and publication details for your dataset.',
     },
   }),
+
   props: {
-    publicationState: {
-      type: String,
-      default: undefined,
-    },
-    visibilityState: {
-      type: String,
-      default: undefined,
-    },
-    doi: {
-      type: String,
-      default: undefined,
-    },
-    publisher: {
-      type: String,
-      default: undefined,
-    },
-    publicationYear: {
-      type: String,
-      default: undefined,
-    },
-    userRole: {
-      type: String,
-      default: undefined,
-    },
-    readOnlyFields: {
-      type: Array,
-      default: () => [],
-    },
-    readOnlyExplanation: {
-      type: String,
-      default: '',
-    },
-    existingAuthors: {
-      type: Array,
-      default: () => [],
-    },
-    contactEmail: {
-      type: String,
-      default: '',
-    },
-    contactFirstName: {
-      type: String,
-      default: '',
-    },
-    contactLastName: {
-      type: String,
-      default: '',
-    },
-    organizationId: {
-      type: String,
-      default: undefined,
-    },
+    /* ViewModel-bound props */
+    publicationState: { type: String, default: undefined },
+    visibilityState: { type: String, default: undefined },
+    doi: { type: String, default: undefined },
+    publisher: { type: String, default: undefined },
+    publicationYear: { type: String, default: undefined },
+    version: { type: String, default: undefined },
+    datasetId: { type: String, default: undefined },
+
+    contactEmail: { type: String, default: '' },
+    contactFirstName: { type: String, default: '' },
+    contactLastName: { type: String, default: '' },
+
+    /* UI/Validation support */
     validationErrors: { type: Object, default: () => ({}) },
+    existingAuthors: { type: Array, default: () => [] },
+
+    /* Feature flags & async states provided by parent */
+    doiWorkflowActive: { type: Boolean, default: true },
+    blindReviewEditingActive: { type: Boolean, default: true },
+    doiLoading: { type: Boolean, default: false },
+    doiError: { type: [String, Object], default: undefined },
+
+    /* Read-only controls */
+    readOnlyFields: { type: Array, default: () => [] },
+    readOnlyExplanation: { type: String, default: '' },
+
+    /* Optional user role */
+    userRole: { type: String, default: undefined },
   },
+
   emits: ['save'],
+
   computed: {
-    ...mapState(['config']),
-    ...mapState(USER_NAMESPACE, ['doiLoading', 'doiSuccess', 'doiError']),
+    existingAuthorsWrap() {
+      return this.existingAuthors || [];
+    },
 
     fullNameUsers() {
       const localAuthors = [...this.existingAuthorsWrap];
-      return getUserNameObjects(localAuthors);
+      return getUserPickerObjects(localAuthors);
     },
 
     preselectAuthorNames() {
@@ -263,16 +238,22 @@ export default {
         const fullName = getAuthorName(author);
         return fullName ? [fullName] : [];
       }
-
       return undefined;
     },
-    existingAuthorsWrap() {
-      if (this.$store) {
-        return this.$store.getters['metadata/existingAuthors'];
-      }
 
-      return this.existingAuthors;
+    publicationsInfo() {
+      return {
+        publicationState: this.publicationState,
+        visibilityState: this.visibilityState,
+        doi: this.doi,
+        userRole: this.userRole,
+        publisher: this.publisher,
+        publicationYear: this.publicationYear,
+        version: this.version,
+        datasetId: this.datasetId,
+      };
     },
+
     editContactPersonProps() {
       return {
         contactEmail: this.contactEmail || '',
@@ -285,54 +266,7 @@ export default {
         flat: true,
       };
     },
-    doiWorkflowActive() {
-      if (this.$store) {
-        return this.config?.userEditMetadataConfig?.doiWorkflowActive;
-      }
 
-      // storybook context
-      return true;
-    },
-    blindReviewEditingActive() {
-      if (this.$store) {
-        return this.config?.userEditMetadataConfig?.blindReviewEditingActive;
-      }
-
-      // storybook context
-      return true;
-    },
-    publicationsInfo() {
-      // ACTIVATE this part when the store is available with the backend
-      // if (this.$store) {
-      //   return this.$store.getters[
-      //     `${USER_NAMESPACE}/getMetadataEditingObject`
-      //   ](EDITMETADATA_PUBLICATION_INFO);
-      // }
-
-      // storybook context
-      // const stepData = this.currentStep.genericProps;
-
-      return {
-        publicationState: 'Draft',
-        // visibilityState: ' stepData.visibilityState',
-        // doi: stepData.doi,
-        doi: '10.10000/envidat.999',
-        userRole: 'stepData.userRole',
-        // publisher: stepData.publisher,
-        publisher: 'Envidat',
-        // publicationYear: stepData.publicationYear,
-        publicationYear: '2025',
-      };
-    },
-    editOrganizationProps() {
-      return {
-        organizationId: this.organizationId,
-        userOrganizations: undefined,
-        readOnlyFields: this.isReadOnly('organizationId'),
-        readOnlyExplanation: this.readOnlyHint('organizationId'),
-        flat: true,
-      };
-    },
     editPublicationsProps() {
       return {
         ...this.publicationsInfo,
@@ -341,15 +275,24 @@ export default {
         flat: true,
       };
     },
+
     editPublicationStatusProps() {
+      const err =
+        typeof this.doiError === 'string'
+          ? this.doiError
+          : this.doiError?.message;
+      const errDetails =
+        typeof this.doiError === 'object' ? this.doiError?.details : undefined;
+
       return {
         ...this.publicationsInfo,
-        loading: this.$store ? this.doiLoading : undefined,
-        error: this.$store ? this.doiError?.message : undefined,
-        errorDetails: this.$store ? this.doiError?.details : undefined,
+        loading: this.workflowStore.isLoading('doi'),
+        error: err,
+        errorDetails: errDetails,
         flat: true,
       };
     },
+
     editReviewProps() {
       return {
         ...this.publicationsInfo,
@@ -357,13 +300,16 @@ export default {
         flat: true,
       };
     },
+
     metadataId() {
       return this.$route?.params?.metadataid;
     },
+
     linkToDatasetCKAN() {
       return `${this.envidatDomain}/dataset/${this.metadataId}`;
     },
   },
+
   methods: {
     catchContactPersonChange(updatedContact) {
       this.newDatasetInfo.contactEmail = updatedContact.contactEmail;
@@ -372,22 +318,44 @@ export default {
       this.$emit('save', this.newDatasetInfo);
     },
 
-    isReadOnly(dateProperty) {
-      return isReadOnlyField(dateProperty);
+    isReadOnly(fieldKey) {
+      return isReadOnlyField(fieldKey, this.readOnlyFields);
     },
-    readOnlyHint(dateProperty) {
-      return getReadOnlyHint(dateProperty);
+    readOnlyHint(fieldKey) {
+      return getReadOnlyHint(fieldKey, this.readOnlyExplanation);
     },
 
-    catchPublicationStateChange(event) {
-      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: EDITMETADATA_PUBLICATION_STATE,
-        data: {
-          event,
-          metadataId: this.metadataId,
-        },
-      });
+    async catchPublicationStateChange(event) {
+      const id = this.metadataId || this.datasetId;
+      this.doiErrorLocal = undefined;
+      this.doiMsgLocal = '';
+
+      try {
+        if (event === 'DOI_RESERVE') {
+          await this.workflowStore.withLoading(
+            () => this.workflowStore.backendStorageService.requestDoi(id),
+            'doi',
+          );
+          this.doiMsgLocal = 'DOI reserved successfully.';
+        } else if (event === 'DOI_REQUEST') {
+          await this.workflowStore.withLoading(
+            () =>
+              this.workflowStore.backendStorageService.requestPublication(id),
+            'doi',
+          );
+          this.doiMsgLocal = 'Publication requested. An admin will review it.';
+        } else if (event === 'DOI_PUBLISH') {
+          await this.workflowStore.withLoading(
+            () => this.workflowStore.backendStorageService.publishDataset(id),
+            'doi',
+          );
+          this.doiMsgLocal = 'Dataset published.';
+        }
+      } catch (e) {
+        this.doiErrorLocal = e?.message ?? 'Unexpected error';
+      }
     },
+
     openCKANLink() {
       window.open(this.linkToDatasetCKAN, '_blank');
     },
@@ -397,9 +365,41 @@ export default {
     ReviewInfo,
     PublicationStatus,
     PublicationInfo,
-    Organization,
-    // NotFoundCard,
+
+    NotFoundCard,
     ContactPerson,
   },
 };
 </script>
+
+<style lang="scss">
+.loading {
+  opacity: 0.2;
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+.scrollToSave {
+  position: absolute;
+  right: 38px;
+  z-index: 2;
+  opacity: 1;
+  top: 0;
+  transition: 0.1s linear;
+  animation: bounce 1s infinite ease-in-out;
+  &:hover {
+    cursor: pointer;
+  }
+  // .scroll-text {
+  //   position: relative;
+  //   transform: translateX(-50%);
+  // }
+}
+</style>

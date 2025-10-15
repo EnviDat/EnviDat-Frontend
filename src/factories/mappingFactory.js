@@ -1028,7 +1028,7 @@ export const ckanDateTimeFormat = 'yyyy-MM-dd\'T\'HH:mm:ss.SSSSSS';
 
 /**
  *
- * @param {Date} date
+ * @param {Date|string} date
  * @returns {string|null}
  */
 export function formatDateTimeToCKANFormat(date) {

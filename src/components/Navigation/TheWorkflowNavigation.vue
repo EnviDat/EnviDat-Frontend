@@ -5,7 +5,36 @@
     rounded="xl"
   >
     <v-card-title class="text-h6 font-weight-bold mb-4 pa-md-4 pa-0">
-      Create your Dataset
+      <v-row class="w-100" no-gutters align="center" justify="space-between">
+        <!-- Left: title + inline icon(s) -->
+        <v-col cols="auto" class="d-flex align-center">
+          <span class="text-h6 font-weight-bold mr-2">Create your Dataset</span>
+        </v-col>
+
+        <!-- Right: close icon -->
+        <v-col cols="auto" class="d-flex justify-end">
+          <BaseIconButton
+            class="metadataEditCloseButton ma-1 ma-md-0 ml-md-2"
+            :icon="iconName('eye')"
+            icon-color="black"
+            color="black"
+            outlined
+            tooltip-text="Show Preview"
+            tooltip-bottom
+            @clicked="emit('catchCloseClick')"
+          />
+          <BaseIconButton
+            class="metadataEditCloseButton ma-1 ma-md-0 ml-md-2"
+            :icon="iconName('close')"
+            icon-color="black"
+            color="black"
+            outlined
+            tooltip-text="Close Workflow"
+            tooltip-bottom
+            @clicked="emit('catchCloseClick')"
+          />
+        </v-col>
+      </v-row>
     </v-card-title>
 
     <v-expansion-panels
@@ -32,7 +61,11 @@
           :key="index"
           :class="[
             'navigationWorkflow__item',
-            { readOnly: !step.isEditable },
+            {
+              readOnly:
+                !step.isEditable && workflowStore.mode !== WorkflowMode.Create,
+              unlocked: isUnlocked(step),
+            },
             // step.status can be active, completed, error
             step.status,
           ]"
@@ -61,7 +94,6 @@
                   'ml-2': workflowStore.currentStep === step.id,
                 }"
               >
-                {{ step.title }}
               </span>
               <BaseIcon
                 :icon="!step.isEditable ? iconName('noedit') : iconName('edit')"
@@ -140,28 +172,27 @@
         />
         <span class="text-body-2 mt-2">Help mode</span>
       </div>
+      <!-- TODO get from the backend the status of the dataset and not use workflowStore.isStepSaveConfirmed -->
       <div
         @click="reserveDoi"
-        :class="{
-          disabled: !workflowStore.isStepSaveConfirmed,
-        }"
+        :class="{ disabled: !isBackend }"
         class="navigationWorkflow__actions--item d-flex flex-column"
       >
+        <v-progress-circular
+          v-if="doiLoading"
+          color="primary"
+          indeterminate
+        ></v-progress-circular>
+
         <BaseIcon
+          v-else
           :large="true"
           :icon="iconName('print')"
           class="doi-icon"
-          :color="workflowStore.isStepSaveConfirmed ? 'primary' : 'black'"
-          :class="
-            workflowStore.isStepSaveConfirmed &&
-            workflowStore.doiPlaceholder === null
-              ? 'pulseIcon'
-              : ''
-          "
+          :class="{ pulseIcon: !hasDoi && isBackend }"
+          :color="isBackend ? (hasDoi ? 'primary' : 'primary') : 'black'"
         />
-        <span class="text-body-2 mt-2">{{
-          workflowStore.doiPlaceholder || 'Reserve DOI'
-        }}</span>
+        <span class="text-body-2 mt-2">{{ doi ?? 'Reserve DOI' }}</span>
       </div>
       <div class="navigationWorkflow__actions--item d-flex flex-column">
         <v-menu
@@ -182,10 +213,9 @@
                 class="status-icon"
                 :color="'black'"
               />
+
               <span class="text-body-2 mt-2">
-                {{
-                  workflowStore.doiPlaceholder != null ? 'Reserved' : 'Draft'
-                }}
+                {{ publicationState }}
               </span>
             </div>
           </template>
@@ -256,40 +286,80 @@ import { useDisplay } from 'vuetify';
 import { driver } from 'driver.js';
 import 'driver.js/dist/driver.css';
 import { mdiClose } from '@mdi/js';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import { extractIcons } from '@/factories/iconFactory';
 
-import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow.ts';
+import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import {
+  WorkflowMode,
+  StepStatus,
+} from '@/modules/workflow/utils/workflowEnums';
 
+const workflowStore = useDatasetWorkflowStore();
 const display = useDisplay();
 
-const emit = defineEmits(['navigateItem']);
+const emit = defineEmits(['navigateItem', 'catchCloseClick']);
 
 // Props
 const props = defineProps({
   isDatasetEditing: Boolean,
+  currentDataset: {
+    type: Object,
+    default: undefined,
+  },
 });
+
+const isBackend = computed(() => workflowStore.dataSource === 'backend');
+const doi = computed(() => {
+  if (!isBackend.value) return undefined;
+  const d = workflowStore.backendStorageService?.dataset?.doi;
+  return typeof d === 'string' && d.trim() === '' ? undefined : d;
+});
+
+const hasDoi = computed(() => !!(doi.value && doi.value.trim()));
+const publicationState = computed(() =>
+  isBackend.value
+    ? (workflowStore.backendStorageService?.dataset?.publication_state ??
+      'Draft')
+    : 'Draft',
+);
+
+const doiLoading = computed(() => workflowStore.isLoading?.('doi') === true);
 
 // tooltip activator
 const showStatusMenu = ref(false);
 
 // Extract Icon name from IconFactory
 const iconName = (name) => extractIcons(name);
+const DISABLED_IN_CREATE_LOCAL_BY_ID = new Set([4, 5, 6]);
 
-const workflowStore = useDatasetWorkflowStore();
+const isDisabledBySource = (step) =>
+  workflowStore.mode === WorkflowMode.Create &&
+  workflowStore.dataSource !== 'backend' &&
+  DISABLED_IN_CREATE_LOCAL_BY_ID.has(step.id);
 
 const navigateItem = (id, status) => {
   // workflowStore.navigateItemAction(id, status);
+  const step = workflowStore.steps[id];
+  if (isDisabledBySource(step)) return;
   emit('navigateItem', { id, status });
 };
 
 const reserveDoi = async () => {
-  // TODO metadataID connect with the real ID, see reference initMetadataUsingId - MetadataEditPage
-  // await store.dispatch('user/DOI_RESERVE', 'metadataID');
-  workflowStore.reserveDoi();
+  if (!isBackend.value || hasDoi.value || doiLoading.value) return;
+  const id = props.currentDataset.dataset.name;
+
+  try {
+    await workflowStore.withLoading(
+      () => workflowStore.backendStorageService.requestDoi(id),
+      'doi',
+    );
+  } catch (e) {
+    console.error(e);
+  }
 };
 
 /*
@@ -301,6 +371,15 @@ const tooltip = {
   openOnHover: false,
 };
 */
+
+// Unlock the step
+const isUnlocked = (step) => {
+  if (workflowStore.mode !== WorkflowMode.Create) return false;
+  if (isDisabledBySource(step)) return false;
+  if (step.id <= 0) return false;
+  const prev = workflowStore.steps[step.id - 1];
+  return !!prev?.completed;
+};
 
 // init the driver step
 const initDriver = () => {
@@ -394,6 +473,13 @@ const initDriver = () => {
       }
       &:hover {
         cursor: not-allowed;
+      }
+    }
+    &.unlocked {
+      opacity: 1;
+
+      &:hover {
+        cursor: pointer;
       }
     }
     &.active {

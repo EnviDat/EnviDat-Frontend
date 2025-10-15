@@ -1,4 +1,4 @@
-import { DatasetDTO } from '@/types/modelTypes';
+import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 
 function cropString(str: string, maxLength: number, ending: string | undefined) {
   if (!str) { return '' }

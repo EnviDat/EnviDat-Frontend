@@ -174,7 +174,7 @@ export function isMaxLength(maximum, localObjects) {
 const exludeRegEx = /(\d+\w+\S\-\w+)|(\d+\S*\d+)/gm
 export function getUserAutocompleteList(userList) {
 
-  const cleanedList = userList.filter((user) => {
+  return userList.filter((user) => {
 
     const match = user.name?.match(exludeRegEx);
 
@@ -184,9 +184,6 @@ export function getUserAutocompleteList(userList) {
 
     return !(user.sysadmin || user.name.toLowerCase() === USER_ROLE_ADMIN || user.fullName?.toLowerCase() === USER_ROLE_ADMIN);
   });
-
-
-  return cleanedList.map((user) => user.fullName || user.displayName);
 }
 
 /**

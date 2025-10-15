@@ -56,6 +56,11 @@ export abstract class AbstractEditViewModel {
     this.privateMappingRules = mappingRules;
   }
 
+  // HOOKS to exclude some validation at the first load, ex - MANTAINER in the last step
+  getModelDataForInit(): any {
+    return (this as any).getModelData?.();
+  }
+
   updateModel(dataset: DatasetDTO) {
     const frontendJson = convertToFrontendJSONWithRules(
       this.mappingRules,
@@ -124,16 +129,16 @@ export abstract class AbstractEditViewModel {
   }
 
   validate(newProps: any | undefined): boolean {
-    if (!newProps) {
-      newProps = this;
-    }
+    const source = newProps ?? this;
+
+    const propsToValidate = this.getPropsToValidate(source);
 
     // take over all the data to store it in this viewModel
     // even if it's wrong, to be up-2-date with the users input
     // and to keep the users changes even if their are invalid
-    Object.assign(this, newProps);
+    Object.assign(this, propsToValidate);
 
-    const propsToValidate = this.getPropsToValidate(newProps);
+    // const propsToValidate = this.getPropsToValidate(newProps);
     let allValid = true;
 
     // reset validationErrors ?

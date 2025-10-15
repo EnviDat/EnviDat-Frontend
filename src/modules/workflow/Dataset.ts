@@ -26,6 +26,7 @@ export class Dataset implements DatasetDTO {
   owner_org: string = '';
   private: boolean = false;
   publication: string = '';
+  publication_state: string = '';
   resource_type: string = '';
   resource_type_general: string = '';
   spatial: string = '';
