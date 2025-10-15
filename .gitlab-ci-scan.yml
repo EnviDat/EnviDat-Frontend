@@ -27,7 +27,7 @@ verify-node-owasp:
     # https://dependency-check.github.io/DependencyCheck/
     # more about the cli commands https://dependency-check.github.io/DependencyCheck/dependency-check-cli/arguments.html
     - >
-      dependency-check
+      dependency-check core
       --project "EnviDat-Frontend"
       --scan .
       --out reports
