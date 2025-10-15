@@ -75,7 +75,7 @@
 import {mdiAccountBox, mdiArrowDownDropCircleOutline, mdiClose} from '@mdi/js';
 // import { PropType } from 'vue';
 import TagChipAuthor from '@/components/Chips/TagChipAuthor.vue';
-import { UserPickerObject } from '@/types/modelTypes.js';
+import type { UserPickerObject } from '@/types/modelTypes';
 
 export default {
   // name: 'BaseUserPicker',
