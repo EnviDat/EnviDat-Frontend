@@ -16,12 +16,16 @@ export function computeStepsForMode(
   if (mode === WorkflowMode.Edit) {
     const next = steps.map((s) => {
       // CHECK if the step is readOnly based on the list listOfReadOnlyFields - src/modules/workflow/resources/readOnlyFields.ts
+      // Those step are always disable if the source is from local, this is IMPORTANT if we have some error in the save the backend the step 4,5,6 should not be active
+      const DISABLED_IN_EDIT_LOCAL_BY_ID = new Set([4, 5, 6]);
+      const forceDisabled =
+        !isBackendSource && DISABLED_IN_EDIT_LOCAL_BY_ID.has(s.id);
       const readOnly = isReadOnlyStepKeys.includes(s.key);
       return {
         ...s,
         isEditable: !readOnly,
         readOnly,
-        status: StepStatus.Completed,
+        status: forceDisabled ? StepStatus.Disabled : StepStatus.Completed,
         completed: s.completed ?? false,
         hasError: s.hasError ?? false,
         // IMPORTANT for step validation in edit mode:
@@ -56,7 +60,9 @@ export function enhanceStepsFromData(
   datasetModel: any,
   hasDtData: (v: any) => boolean,
   mode: WorkflowMode,
+  dataSource: 'local' | 'backend',
 ) {
+  const isBackend = dataSource === 'backend';
   if (mode === WorkflowMode.Edit) {
     return { steps, startIdx: 0 };
   }
@@ -66,13 +72,24 @@ export function enhanceStepsFromData(
       ? datasetModel.getViewModel(s.viewModelKey)
       : null;
 
+    // SET status after save backend
+    // IF we have the data from backedn all steps are active (FreeJump)
+    let status: StepStatus;
+    if (idx === 0) {
+      status = StepStatus.Active;
+    } else if (isBackend) {
+      status = StepStatus.Active;
+    } else {
+      status = StepStatus.Disabled;
+    }
+
     // No VM
     if (!vm) {
       return {
         ...s,
         completed: false,
         hasError: false,
-        status: idx === 0 ? StepStatus.Active : StepStatus.Disabled,
+        status,
         errors: null,
       };
     }
@@ -89,7 +106,7 @@ export function enhanceStepsFromData(
         ...s,
         completed: false,
         hasError: false,
-        status: idx === 0 ? StepStatus.Active : StepStatus.Disabled,
+        status,
         errors: null,
       };
     }

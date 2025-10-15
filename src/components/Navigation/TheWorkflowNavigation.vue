@@ -175,26 +175,16 @@
       <!-- TODO get from the backend the status of the dataset and not use workflowStore.isStepSaveConfirmed -->
       <div
         @click="reserveDoi"
-        :class="{
-          disabled: workflowStore.isStepSaveConfirmed,
-        }"
+        :class="{ disabled: !isBackend }"
         class="navigationWorkflow__actions--item d-flex flex-column"
       >
         <BaseIcon
           :large="true"
           :icon="iconName('print')"
           class="doi-icon"
-          :color="workflowStore.isStepSaveConfirmed ? 'primary' : 'black'"
-          :class="
-            workflowStore.isStepSaveConfirmed &&
-            workflowStore.doiPlaceholder === null
-              ? 'pulseIcon'
-              : ''
-          "
+          :color="isBackend ? (hasDoi ? 'primary' : 'black') : 'black'"
         />
-        <span class="text-body-2 mt-2">{{
-          workflowStore.doiPlaceholder || 'Reserve DOI'
-        }}</span>
+        <span class="text-body-2 mt-2">{{ doi ?? 'Reserve DOI' }}</span>
       </div>
       <div class="navigationWorkflow__actions--item d-flex flex-column">
         <v-menu
@@ -215,10 +205,9 @@
                 class="status-icon"
                 :color="'black'"
               />
+
               <span class="text-body-2 mt-2">
-                {{
-                  workflowStore.doiPlaceholder != null ? 'Reserved' : 'Draft'
-                }}
+                {{ publicationState }}
               </span>
             </div>
           </template>
@@ -289,7 +278,7 @@ import { useDisplay } from 'vuetify';
 import { driver } from 'driver.js';
 import 'driver.js/dist/driver.css';
 import { mdiClose } from '@mdi/js';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import { extractIcons } from '@/factories/iconFactory';
@@ -312,6 +301,20 @@ const props = defineProps({
   },
 });
 
+const isBackend = computed(() => workflowStore.dataSource === 'backend');
+const doi = computed(() => {
+  if (!isBackend.value) return undefined;
+  const d = workflowStore.backendStorageService?.dataset?.doi;
+  return typeof d === 'string' && d.trim() === '' ? undefined : d;
+});
+
+const hasDoi = computed(() => !!(doi.value && doi.value.trim()));
+const publicationState = computed(() =>
+  isBackend.value
+    ? (workflowStore.backendStorageService?.dataset?.publication_state ??
+      'Draft')
+    : 'Draft',
+);
 // tooltip activator
 const showStatusMenu = ref(false);
 
@@ -324,15 +327,10 @@ const navigateItem = (id, status) => {
 };
 
 const reserveDoi = async () => {
-  // TODO metadataID connect with the real ID, see reference initMetadataUsingId - MetadataEditPage
-  // IMPORTANT initMetadataUsingId!!!!
-  // await store.dispatch('user/DOI_RESERVE', 'metadataID');
-
-  // if (!currentDataset) {
-  //   return workflowStore.triggerErrorAlert();
-  // }
+  if (!isBackend.value) return;
+  if (hasDoi.value) return;
   const id = props.currentDataset.dataset.name;
-  workflowStore.reserveDoi(id);
+  workflowStore.backendStorageService.requestDoi(id);
 };
 
 /*

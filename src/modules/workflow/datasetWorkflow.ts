@@ -67,7 +67,7 @@ export interface DatasetWorkflowState {
   mode: WorkflowMode;
   isReadOnlyStep: string[];
   backendStorageService: BackendDatasetService;
-  doiPlaceholder: null;
+
   listOfReadOnlyFields: string[];
   openSaveDialog: boolean;
   localStorageService: LocalStorageDatasetService;
@@ -121,7 +121,6 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
 
     freeJump: false,
     stepForBackendChange: 3,
-    doiPlaceholder: null,
     workflowGuide,
     mode: WorkflowMode.Create,
     userRole: undefined,
@@ -237,13 +236,20 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
         this.datasetModel,
         this.hasDtData,
         mode,
+        this.dataSource,
       );
 
       this.steps = evaluated;
       this.freeJump = freeJump;
 
       if (mode === WorkflowMode.Create) {
-        this.setActiveStep(startIdx);
+        if (this.dataSource === 'backend') {
+          // SET the current index, data from backend
+          this.currentStep = startIdx;
+        } else {
+          // SET the calculated startIdx, data from LocalStorage
+          this.setActiveStep(startIdx);
+        }
       } else {
         this.currentStep = 0;
       }
@@ -357,7 +363,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     // CREATE linear wizard. Current step -> Active; others keep their status (Completed/Error) or become Disabled.
     // EDIT free jump. Only mark the selected step as Active, leave the rest unchanged.
     setActiveStep(id: number) {
-      if (this.mode === WorkflowMode.Create) {
+      if (this.mode === WorkflowMode.Create && this.dataSource !== 'backend') {
         this.steps = setActiveStepForCreate(this.steps, id);
       }
       this.currentStep = id;
@@ -393,7 +399,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     },
 
     // SET the step as completed and validate the data.
-    validateStepAction(stepId: number): boolean {
+    validateStepAction(stepId: number, validateStepAction: boolean): boolean {
       const step = this.steps[stepId];
       const vm = this.currentViewModel as any;
 
@@ -406,7 +412,12 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
         isStepSaveConfirmed: this.isStepSaveConfirmed,
       });
 
-      if (openSaveDialog && this.dataSource === 'local') {
+      // validateStepAction is true when the user clicks on "Next" or "Save and Next" but not when the user want navigate from the navigation step
+      if (
+        openSaveDialog &&
+        this.dataSource === 'local' &&
+        !validateStepAction
+      ) {
         this.openSaveDialog = true;
         return false;
       }

@@ -19,7 +19,6 @@ import {
 } from '@/factories/strategyFactory';
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 
-
 export class ResourcesListViewModel extends AbstractEditViewModel {
   declare resources: Resource[];
 
@@ -32,12 +31,15 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
     resources: string | null;
   } = {
     resources: null,
-  }
+  };
 
   validationRules = yup.object().shape({
-    resources: yup.array().required().min(1, 'Add at least one resource.'),
+    resources: yup
+      .array()
+      .required()
+      .min(1, 'Add at least one resource.')
+      .nullable(),
   });
-
 
   constructor(datasetModel: DatasetModel) {
     super(datasetModel, ResourcesListViewModel.mappingRules());
@@ -51,41 +53,43 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
     signedInUserOrganizationIds: string[],
     numberOfDownload?: number,
   ): Resource[] {
-
     return rawResources?.map((rawResource: ResourceDTO) => {
-        const res = ResourceViewModel.getFormattedResource(
-          rawResource,
-          datasetName,
-          organizationID,
-          signedInUserName,
-          signedInUserOrganizationIds,
-          numberOfDownload,
-        );
+      const res = ResourceViewModel.getFormattedResource(
+        rawResource,
+        datasetName,
+        organizationID,
+        signedInUserName,
+        signedInUserOrganizationIds,
+        numberOfDownload,
+      );
 
-        return res;
-      },
-    );
+      return res;
+    });
   }
 
   private convertDatesToBackendFormat(resource: Resource) {
-    resource.created = resource.created ? formatDateTimeToCKANFormat(resource.created) : '';
-    resource.lastModified = resource.lastModified ? formatDateTimeToCKANFormat(resource.lastModified) : '';
-    resource.metadataModified = resource.metadataModified ? formatDateTimeToCKANFormat(resource.metadataModified) : '';
+    resource.created = resource.created
+      ? formatDateTimeToCKANFormat(resource.created)
+      : '';
+    resource.lastModified = resource.lastModified
+      ? formatDateTimeToCKANFormat(resource.lastModified)
+      : '';
+    resource.metadataModified = resource.metadataModified
+      ? formatDateTimeToCKANFormat(resource.metadataModified)
+      : '';
   }
 
   get backendJSON() {
-    const rawResources = this.resources?.map((frontendRes: Resource) =>
-      {
-        this.convertDatesToBackendFormat(frontendRes);
+    const rawResources = this.resources?.map((frontendRes: Resource) => {
+      this.convertDatesToBackendFormat(frontendRes);
 
-        const jsonBackendResource = convertToBackendJSONWithRules(
-          ResourceViewModel.mappingRules(),
-          frontendRes,
-        );
+      const jsonBackendResource = convertToBackendJSONWithRules(
+        ResourceViewModel.mappingRules(),
+        frontendRes,
+      );
 
-        return stringifyResourceForBackend(jsonBackendResource);
-      },
-    );
+      return stringifyResourceForBackend(jsonBackendResource);
+    });
 
     return convertJSON({ resources: rawResources }, false);
   }
@@ -96,7 +100,6 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
    * @param dataset
    */
   updateModel(dataset: DatasetDTO | undefined) {
-
     if (!dataset) {
       // make sure to initialize for validations to work
       Object.assign(this, {
@@ -128,10 +131,7 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
       true,
     );
 
-    enhanceResourcesWithMetadataExtras(
-      dataset.extras,
-      cleanResources,
-    );
+    enhanceResourcesWithMetadataExtras(dataset.extras, cleanResources);
 
     Object.assign(this, {
       resources: cleanResources,

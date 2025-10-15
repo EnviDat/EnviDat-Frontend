@@ -91,7 +91,6 @@ import CardLoader from '@/modules/workflow/components/steps/CardLoader.vue';
 
 import { useWorkflowExternal } from '@/modules/workflow/utils/useWorkflowExternal.ts';
 import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
-import { storeToRefs } from 'pinia';
 
 // import { extractIcons } from '@/factories/iconFactory.ts';
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow.ts';
@@ -208,8 +207,8 @@ const validate = (freshData) => {
   workflowStore.markStepTouched(workflowStore.currentStep, true);
 };
 
-const checkValidation = async (data) => {
-  const ok = await workflowStore.validateStepAction(data);
+const checkValidation = async (data, fromNavigationClick) => {
+  const ok = await workflowStore.validateStepAction(data, fromNavigationClick);
   if (!ok) {
     if (vm.value) scrollToFirstError(vm.value.validationErrors);
     return false;
@@ -266,7 +265,8 @@ const catchNavigate = async ({
   id: number;
   status: string;
 }) => {
-  const valid = await checkValidation(currentStep.value);
+  const fromNavigationClick = true;
+  const valid = await checkValidation(currentStep.value, fromNavigationClick);
   if (!valid) return;
 
   if (status !== StepStatus.Disabled || canJumpFromDisabled(id)) {
@@ -277,7 +277,8 @@ const catchNavigate = async ({
 const nextStep = async () => {
   // FIX Validation during navigation
   workflowStore.markStepTouched(workflowStore.currentStep, true);
-  const valid = await checkValidation(currentStep.value);
+  const fromNavigationClick = false;
+  const valid = await checkValidation(currentStep.value, fromNavigationClick);
   if (!valid) return;
 
   if (currentStep.value === workflowStore.steps.length - 1) return;
