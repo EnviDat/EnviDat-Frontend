@@ -178,11 +178,19 @@
         :class="{ disabled: !isBackend }"
         class="navigationWorkflow__actions--item d-flex flex-column"
       >
+        <v-progress-circular
+          v-if="doiLoading"
+          color="primary"
+          indeterminate
+        ></v-progress-circular>
+
         <BaseIcon
+          v-else
           :large="true"
           :icon="iconName('print')"
           class="doi-icon"
-          :color="isBackend ? (hasDoi ? 'primary' : 'black') : 'black'"
+          :class="{ pulseIcon: !hasDoi && isBackend }"
+          :color="isBackend ? (hasDoi ? 'primary' : 'primary') : 'black'"
         />
         <span class="text-body-2 mt-2">{{ doi ?? 'Reserve DOI' }}</span>
       </div>
@@ -315,6 +323,9 @@ const publicationState = computed(() =>
       'Draft')
     : 'Draft',
 );
+
+const doiLoading = computed(() => workflowStore.isLoading?.('doi') === true);
+
 // tooltip activator
 const showStatusMenu = ref(false);
 
@@ -327,10 +338,17 @@ const navigateItem = (id, status) => {
 };
 
 const reserveDoi = async () => {
-  if (!isBackend.value) return;
-  if (hasDoi.value) return;
+  if (!isBackend.value || hasDoi.value || doiLoading.value) return;
   const id = props.currentDataset.dataset.name;
-  workflowStore.backendStorageService.requestDoi(id);
+
+  try {
+    await workflowStore.withLoading(
+      () => workflowStore.backendStorageService.requestDoi(id),
+      'doi',
+    );
+  } catch (e) {
+    console.error(e);
+  }
 };
 
 /*
