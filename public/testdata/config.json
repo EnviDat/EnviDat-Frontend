@@ -171,6 +171,9 @@
     },
     "showOldDashboardUrl": true
   },
+  "modeConfig": {
+    "excludeMode": null
+  },
   "signinPageConfig": {
     "wslSigninEnabled": false,
     "disclaimerText": "Please note that by publishing data, you allow EnviDat to store, copy and transform any deposited digital objects for preservation purposes, as well as to provide long-term access to them. All EnviDat datasets will be published with a Digital Object Identifier (DOI) and consequently, every <b>data provider</b>:",

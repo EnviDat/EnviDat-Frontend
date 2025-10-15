@@ -58,6 +58,7 @@
           cols="auto"
         >
           <BaseCategoryCard
+            v-if="isNotHideMode(card.type)"
             height="45"
             :elevation="5"
             :title="card.title"
@@ -322,6 +323,7 @@ const router = useRouter();
 // computed
 const categoryCards = computed(() => store.state.categoryCards);
 const config = computed(() => store.state.config);
+
 const loadingMetadatasContent = computed(
   () => store.getters[`${METADATA_NAMESPACE}/loadingMetadatasContent`],
 );
@@ -422,6 +424,14 @@ const catchPostClick = (post) => {
       params: { post },
     });
   }
+};
+
+const isNotHideMode = (mode) => {
+  if (config.value.modeConfig.excludeMode == null) return true;
+  if (config.value.modeConfig.excludeMode.includes(mode)) {
+    return false;
+  }
+  return true;
 };
 
 const catchCategoryClicked = (cardType) => {
