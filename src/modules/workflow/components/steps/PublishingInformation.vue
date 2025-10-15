@@ -286,7 +286,7 @@ export default {
 
       return {
         ...this.publicationsInfo,
-        loading: this.doiLoading || false,
+        loading: this.workflowStore.isLoading('doi'),
         error: err,
         errorDetails: errDetails,
         flat: true,
@@ -325,15 +325,34 @@ export default {
       return getReadOnlyHint(fieldKey, this.readOnlyExplanation);
     },
 
-    catchPublicationStateChange(event) {
+    async catchPublicationStateChange(event) {
       const id = this.metadataId || this.datasetId;
+      this.doiErrorLocal = undefined;
+      this.doiMsgLocal = '';
 
-      if (event === 'DOI_RESERVE') {
-        this.workflowStore.backendStorageService.requestDoi(id);
-      } else if (event === 'DOI_REQUEST') {
-        this.workflowStore.backendStorageService.requestPublication(id);
-      } else if (event === 'DOI_PUBLISH') {
-        this.workflowStore.backendStorageService.publishDataset(id);
+      try {
+        if (event === 'DOI_RESERVE') {
+          await this.workflowStore.withLoading(
+            () => this.workflowStore.backendStorageService.requestDoi(id),
+            'doi',
+          );
+          this.doiMsgLocal = 'DOI reserved successfully.';
+        } else if (event === 'DOI_REQUEST') {
+          await this.workflowStore.withLoading(
+            () =>
+              this.workflowStore.backendStorageService.requestPublication(id),
+            'doi',
+          );
+          this.doiMsgLocal = 'Publication requested. An admin will review it.';
+        } else if (event === 'DOI_PUBLISH') {
+          await this.workflowStore.withLoading(
+            () => this.workflowStore.backendStorageService.publishDataset(id),
+            'doi',
+          );
+          this.doiMsgLocal = 'Dataset published.';
+        }
+      } catch (e) {
+        this.doiErrorLocal = e?.message ?? 'Unexpected error';
       }
     },
 

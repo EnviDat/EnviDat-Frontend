@@ -14,4 +14,5 @@ export const readOnlyFields = [
   'visibility',
   'dateYear',
   'contactUserPicker',
+  'metadataTitle',
 ];

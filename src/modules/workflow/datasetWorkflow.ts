@@ -58,6 +58,7 @@ tVM = new DatasetModel(new LocalStorageDatasetService(datasets[2]));
 export interface DatasetWorkflowState {
   loading: boolean;
   loadingCount: number;
+  loaders: Record<string, number>;
   currentStep: number;
   steps: WorkflowStep[];
   datasetModel: DatasetModel;
@@ -102,6 +103,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
   state: (): DatasetWorkflowState => ({
     loading: false,
     loadingCount: 0,
+    loaders: {} as Record<string, number>,
     currentStep: 0,
     steps: workflowSteps,
     datasetModel: undefined, // needs to be initialized during runtime, because it needs a reference to the store
@@ -150,30 +152,47 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     isDatasetEditing(): boolean {
       return this.mode === WorkflowMode.Edit;
     },
+    isLoading: (state) => (key?: string) => {
+      if (!key) return state.loading;
+      return (state.loaders[key] ?? 0) > 0;
+    },
   },
   actions: {
-    startLoading() {
+    startLoading(key?: string) {
+      if (key) {
+        this.loaders[key] = (this.loaders[key] ?? 0) + 1;
+        return;
+      }
       this.loadingCount++;
       this.loading = this.loadingCount > 0;
     },
-    stopLoading() {
+    stopLoading(key?: string) {
+      if (key) {
+        const val = (this.loaders[key] ?? 0) - 1;
+        this.loaders[key] = Math.max(0, val);
+        if (this.loaders[key] === 0) delete this.loaders[key];
+        return;
+      }
       if (this.loadingCount > 0) this.loadingCount--;
       this.loading = this.loadingCount > 0;
     },
-    async withLoading<T>(fn: () => Promise<T>): Promise<T> {
-      this.startLoading();
+    async withLoading<T>(fn: () => Promise<T>, key?: string): Promise<T> {
+      this.startLoading(key);
       try {
         return await fn();
       } finally {
-        this.stopLoading();
+        this.stopLoading(key);
       }
     },
-    async withLoadingAll<T>(promises: Promise<T>[]): Promise<T[]> {
-      this.startLoading();
+    async withLoadingAll<T>(
+      promises: Promise<T>[],
+      key?: string,
+    ): Promise<T[]> {
+      this.startLoading(key);
       try {
         return await Promise.all(promises);
       } finally {
-        this.stopLoading();
+        this.stopLoading(key);
       }
     },
     // SET the current user
@@ -183,7 +202,6 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
 
     // SET the user role
     setUserRole(role?: string) {
-      debugger;
       this.userRole = role;
     },
     // CHECK if the value has data
