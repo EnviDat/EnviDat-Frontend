@@ -202,7 +202,6 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
 
     // SET the user role
     setUserRole(role?: string) {
-      debugger;
       this.userRole = role;
     },
     // CHECK if the value has data
