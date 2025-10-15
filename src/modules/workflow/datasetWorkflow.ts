@@ -44,6 +44,8 @@ import { getMetadataUrlFromTitle } from '@/factories/mappingFactory';
 import { makeMaintainerFromUser } from '@/modules/workflow/utils/formatPostData';
 import { LOCAL_DATASET_KEY } from '@/factories/metadataConsts';
 
+const MAX_LOCAL_CREATE_STEP_ID = 3;
+
 /*
 import datasets from '~/stories/js/metadata.js';
 
@@ -530,6 +532,26 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
 
       this.userRole = inOrg && isOwner ? USER_ROLE_EDITOR : USER_ROLE_MEMBER;
       return this.userRole;
+    },
+    getNextAllowedStep(fromId: number): number {
+      const isCreate = this.mode === WorkflowMode.Create;
+      const isBackend = this.dataSource === 'backend';
+      const maxIdx =
+        isCreate && !isBackend
+          ? MAX_LOCAL_CREATE_STEP_ID
+          : this.steps.length - 1;
+
+      for (let i = fromId + 1; i <= maxIdx; i++) {
+        const s = this.steps[i];
+        if (s && !s.completed) return i;
+      }
+
+      for (let i = fromId + 1; i <= maxIdx; i++) {
+        if (this.steps[i]) return i;
+      }
+
+      // 3) fallback: resta dov'eri (o clamp al limite)
+      return Math.min(fromId, maxIdx);
     },
   },
 });

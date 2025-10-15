@@ -33,7 +33,7 @@ export class MetadataBaseViewModel extends AbstractEditViewModel {
     metadataDescription: yup
       .string()
       .required('Dataset description is required')
-      .min(100, 'Description must be at least 20 characters'),
+      .min(100, 'Description must be at least 100 characters'),
     keywords: yup
       .array()
       .required('Keywords is required')

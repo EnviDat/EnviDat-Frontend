@@ -285,7 +285,9 @@ const nextStep = async () => {
 
   let target: number;
   if (workflowStore.mode === WorkflowMode.Create) {
-    target = workflowStore.getNextUncompletedStep(currentStep.value);
+    // TODO ENrico Improve this function, reactivate the old one and create the correct logic
+    // target = workflowStore.getNextUncompletedStep(currentStep.value);
+    target = workflowStore.getNextAllowedStep(currentStep.value);
   } else {
     target = Math.min(currentStep.value + 1, workflowStore.steps.length - 1);
   }

@@ -293,7 +293,10 @@ import { extractIcons } from '@/factories/iconFactory';
 
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
-import { WorkflowMode } from '@/modules/workflow/utils/workflowEnums';
+import {
+  WorkflowMode,
+  StepStatus,
+} from '@/modules/workflow/utils/workflowEnums';
 
 const workflowStore = useDatasetWorkflowStore();
 const display = useDisplay();
@@ -331,9 +334,17 @@ const showStatusMenu = ref(false);
 
 // Extract Icon name from IconFactory
 const iconName = (name) => extractIcons(name);
+const DISABLED_IN_CREATE_LOCAL_BY_ID = new Set([4, 5, 6]);
+
+const isDisabledBySource = (step) =>
+  workflowStore.mode === WorkflowMode.Create &&
+  workflowStore.dataSource !== 'backend' &&
+  DISABLED_IN_CREATE_LOCAL_BY_ID.has(step.id);
 
 const navigateItem = (id, status) => {
   // workflowStore.navigateItemAction(id, status);
+  const step = workflowStore.steps[id];
+  if (isDisabledBySource(step)) return;
   emit('navigateItem', { id, status });
 };
 
@@ -360,9 +371,11 @@ const tooltip = {
   openOnHover: false,
 };
 */
+
 // Unlock the step
 const isUnlocked = (step) => {
   if (workflowStore.mode !== WorkflowMode.Create) return false;
+  if (isDisabledBySource(step)) return false;
   if (step.id <= 0) return false;
   const prev = workflowStore.steps[step.id - 1];
   return !!prev?.completed;
