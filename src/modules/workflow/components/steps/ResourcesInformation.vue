@@ -401,11 +401,7 @@ export default {
         // console.log(METADATA_EDITING_SELECT_RESOURCE, newRes);
 
         // select the uploaded resource for editing
-        this.markResourceSelected(
-          this.resources,
-          newResId,
-          true,
-        )
+        this.selectResource(newResId);
 
         // reset uppy to be able to upload another file
         this.resetUppy();
@@ -507,7 +503,8 @@ export default {
     save(data: { resources: Resource[] }) {
       this.$emit('save', data);
     },
-    catchResourceSelection(resourceId: string) {
+    selectResource(resourceId: string) {
+
       const resource = this.resources.filter(
         (res: Resource) => res.id === resourceId,
       )[0];
@@ -529,6 +526,10 @@ export default {
 
       Object.assign(this.resourceViewModel, resource);
       this.resourceViewModel.validate();
+
+    },
+    catchResourceSelection(resourceId: string) {
+      this.selectResource(resourceId);
     },
     showFullScreenImage(url: string) {
       eventBus.emit(OPEN_TEXT_PREVIEW, url);
