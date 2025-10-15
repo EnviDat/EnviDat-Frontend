@@ -141,6 +141,7 @@ import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.v
 import { useS3Store } from '@/modules/s3/store/s3Store.ts';
 import { S3Node } from '@/types/s3Types';
 import { warningMessage } from '@/factories/notificationFactory';
+import { VTreeview } from 'vuetify/labs/VTreeview';
 
 const s3Store = useS3Store();
 
