@@ -27,12 +27,13 @@ verify-node-owasp:
     # https://dependency-check.github.io/DependencyCheck/
     # more about the cli commands https://dependency-check.github.io/DependencyCheck/dependency-check-cli/arguments.html
     - >
-      dependency-check.sh
+      dependency-check
       --project "EnviDat-Frontend"
-      --scan "."
-      --out "reports"
-      --format "HTML"
-      --format "JSON"
+      --scan .
+      --out reports
+      --format HTML
+      --format JSON
+      --prettyPrint
       --failOnCVSS 7
       --exclude "**/node_modules/**"
       --enableExperimental
