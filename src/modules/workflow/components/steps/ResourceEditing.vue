@@ -497,7 +497,6 @@ export default {
   beforeUnmount() {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
-  mounted() {},
   computed: {
     loadingColor() {
       if (this.loading) {
@@ -843,8 +842,8 @@ export default {
         format: this.formatField.toLowerCase(),
         // don't set the "size" directly because this is done
         // via the file upload
-        // size: this.size, // DEMO
-        // sizeFormat: this.sizeFormatField,  // DEMO
+        size: this.size,
+        sizeFormat: this.sizeFormatField,
         resourceSize: {
           sizeValue: this.isLink ? this.sizeField?.toString() : '1',
           sizeUnits: this.isLink ? this.sizeFormatField?.toLowerCase() : this.getFileSizeFormat(1),
@@ -992,3 +991,4 @@ export default {
   opacity: 0.5;
 }
 </style>
+
