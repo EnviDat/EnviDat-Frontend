@@ -6,13 +6,13 @@
 * @author Dominik Haas-Artho
 *
 * Created at     : 2020-07-14 16:51:52
- * Last modified  : 2025-10-13 07:48:37
+ * Last modified  : 2025-10-15 14:39:47
 *
 * This file is subject to the terms and conditions defined in
 * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import { Uppy, debugLogger, type Meta, type UppyFile } from '@uppy/core';
+import { Uppy, debugLogger, type Meta, type Body, type UppyOptions, type Restrictions, type UppyFile } from '@uppy/core';
 import axios from 'axios';
 import awsS3, { type AwsS3MultipartOptions } from '@uppy/aws-s3';
 
@@ -36,11 +36,11 @@ if (!useTestdata) {
   API_ROOT = import.meta.env.VITE_API_ROOT;
 }
 
-let uppyInstance : Uppy = null;
+let uppyInstance : Uppy<Meta, Body> = null;
 let storeReference = null;
 
 const uppyId = 'workflow-resource-upload';
-const defaultRestrictions = {
+const defaultRestrictions: Restrictions = {
   maxFileSize: 1024 * 1024 * 1024 * 20, // KB * MB * GB * 20 = 20 GB
   maxNumberOfFiles: 1,
   minNumberOfFiles: 1,
@@ -84,7 +84,7 @@ function createNewBaseResource(datasetId: string) {
   };
 }
 
-function createNewResourceForFileUpload(datasetId: string, file: UppyFile) {
+function createNewResourceForFileUpload(datasetId: string, file: UppyFile<Meta, Body>) {
   const baseResourceProperties = createNewBaseResource(datasetId);
 
   const name = file.name || file;
@@ -121,7 +121,7 @@ export function createNewResourceForUrl(datasetId, url) {
   };
 }
 
-async function createResourceInBackend(datasetId: string, file: UppyFile) {
+async function createResourceInBackend(datasetId: string, file: UppyFile<Meta, Body>) {
   const newResource= createNewResourceForFileUpload(datasetId, file);
 
   const resourceVm = new ResourceViewModel();
@@ -139,7 +139,7 @@ async function createResourceInBackend(datasetId: string, file: UppyFile) {
   return resourceId;
 }
 
-async function initiateMultipart(file: UppyFile) {
+async function initiateMultipart(file: UppyFile<Meta, Body>) {
   // // console.log('initiateMultipart', file);
 
   /*
@@ -175,7 +175,7 @@ async function initiateMultipart(file: UppyFile) {
   }
 }
 
-export async function getSinglePresignedUrl(file: UppyFile) {
+export async function getSinglePresignedUrl(file: UppyFile<Meta, Body>) {
   /*
   eventBus.emit(UPLOAD_STATE_RESET);
 */
@@ -217,7 +217,7 @@ export async function getSinglePresignedUrl(file: UppyFile) {
   }
 }
 
-async function requestPresignedUrl(file: UppyFile, partData) {
+async function requestPresignedUrl(file: UppyFile<Meta, Body>, partData) {
   // console.log('requestPresignedUrl', file, partData);
 
   const actionUrl = 'cloudstorage_get_presigned_url_multipart';
@@ -249,7 +249,7 @@ async function requestPresignedUrl(file: UppyFile, partData) {
   }
 }
 
-async function completeMultipart(file: UppyFile, uploadData) {
+async function completeMultipart(file: UppyFile<Meta, Body>, uploadData) {
   // console.log('completeMultipart', file, uploadData);
 
   const actionUrl = 'cloudstorage_finish_multipart';
@@ -278,7 +278,7 @@ async function completeMultipart(file: UppyFile, uploadData) {
   }
 }
 
-async function abortMultipart(file: UppyFile, { uploadId, key }: { uploadId: string, key: string }) {
+async function abortMultipart(file: UppyFile<Meta, Body>, { uploadId, key }: { uploadId: string, key: string }) {
   // console.log('abortMultipart', file, uploadData);
 
   const actionUrl = 'cloudstorage_abort_multipart';
@@ -307,7 +307,7 @@ async function abortMultipart(file: UppyFile, { uploadId, key }: { uploadId: str
   }
 }
 
-async function listUploadedParts(file: UppyFile, { uploadId, key }) {
+async function listUploadedParts(file: UppyFile<Meta, Body>, { uploadId, key }) {
   const actionUrl = 'cloudstorage_multipart_list_parts';
   const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
@@ -351,7 +351,7 @@ function createUppyInstance(
 ) {
   const debug = import.meta.env?.MODE === 'development';
 
-  const uppy = new Uppy<Meta, AwsS3MultipartOptions>(
+  const uppy = new Uppy<Meta, Body>(
     {
       id: uppyId,
       autoProceed,
@@ -359,7 +359,7 @@ function createUppyInstance(
       logger: debugLogger,
       restrictions,
       // height,
-    },
+    } satisfies UppyOptions<Meta, Body>,
   );
 
   uppy.use(awsS3,
@@ -375,7 +375,7 @@ function createUppyInstance(
       listParts: listUploadedParts,
       abortMultipartUpload: abortMultipart,
       completeMultipartUpload: completeMultipart,
-    } satisfies AwsS3MultipartOptions,
+    } satisfies AwsS3MultipartOptions<Meta, Body>,
   );
 
   return uppy;
