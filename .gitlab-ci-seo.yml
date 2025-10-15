@@ -103,6 +103,7 @@ schedule-seo-deployment:
     # use -q for quiet to not list all the files
     - ls -l
     - echo "going to rclone copy from ./ to switch:${BUCKET_NAME}"
-    - rclone copy ./ "switch:${BUCKET_NAME}" --verbose
+    - rclone copy ./sitemap.xml "switch:${BUCKET_NAME}" --verbose
+    - rclone sync ./seo/ "switch:${BUCKET_NAME}"/seo/ --verbose    
   retry:
     max: 2
