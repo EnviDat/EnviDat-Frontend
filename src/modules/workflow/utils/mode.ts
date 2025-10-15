@@ -16,16 +16,13 @@ export function computeStepsForMode(
   if (mode === WorkflowMode.Edit) {
     const next = steps.map((s) => {
       // CHECK if the step is readOnly based on the list listOfReadOnlyFields - src/modules/workflow/resources/readOnlyFields.ts
-      // Those step are always disable if the source is from local, this is IMPORTANT if we have some error in the save the backend the step 4,5,6 should not be active
-      const DISABLED_IN_EDIT_LOCAL_BY_ID = new Set([4, 5, 6]);
-      const forceDisabled =
-        !isBackendSource && DISABLED_IN_EDIT_LOCAL_BY_ID.has(s.id);
+
       const readOnly = isReadOnlyStepKeys.includes(s.key);
       return {
         ...s,
         isEditable: !readOnly,
         readOnly,
-        status: forceDisabled ? StepStatus.Disabled : StepStatus.Completed,
+        status: StepStatus.Completed,
         completed: s.completed ?? false,
         hasError: s.hasError ?? false,
         // IMPORTANT for step validation in edit mode:
@@ -37,16 +34,26 @@ export function computeStepsForMode(
     // SET allow navigation in edit mode
     return { steps: next, freeJump: true };
   }
+  // Those step are always disable if the source is from local, this is IMPORTANT if we have some error in the save the backend the step 4,5,6 should not be active
+  const DISABLED_IN_CREATE_LOCAL_BY_ID = new Set([4, 5, 6]);
 
-  const next = steps.map((s, idx) => ({
-    ...s,
-    isEditable: idx === 0,
-    readOnly: false,
-    status: idx === 0 ? StepStatus.Active : StepStatus.Disabled,
-    completed: false,
-    hasError: false,
-    touched: false,
-  }));
+  const next = steps.map((s, idx) => {
+    const isFirst = idx === 0;
+    const forceDisabled =
+      !isBackendSource && DISABLED_IN_CREATE_LOCAL_BY_ID.has(s.id);
+
+    const canBeActive = (isBackendSource || isFirst) && !forceDisabled;
+
+    return {
+      ...s,
+      isEditable: canBeActive,
+      readOnly: false,
+      status: canBeActive ? StepStatus.Active : StepStatus.Disabled,
+      completed: false,
+      hasError: false,
+      touched: false,
+    };
+  });
 
   // SET block navigation in create mode
   // IF backend source, we allow free navigation
