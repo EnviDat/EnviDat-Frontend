@@ -25,7 +25,8 @@
         </v-col>
 
         <v-col cols="12">
-          <StatusBar :uppy="uppy" />
+          <!-- unmount of Statusbar from uppy-vue throws an error therefore use it directly -->
+          <div id="uppy-status-bar"> </div>
         </v-col>
 
         <v-col v-show="error"
@@ -88,16 +89,14 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2021-06-28 15:55:22
- * Last modified  : 2021-08-11 15:45:56
+ * Last modified  : 2025-10-15 14:30:33
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import {
-  DragDrop,
-  StatusBar,
-} from '@uppy/vue';
+import { DragDrop } from '@uppy/vue';
+import StatusBar from '@uppy/status-bar';
 
 import '@uppy/core/dist/style.min.css';
 import '@uppy/drag-drop/dist/style.min.css';
@@ -119,6 +118,7 @@ import TagChip from '@/components/Chips/TagChip.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow.js';
 
+const statusBarId = 'workflow-statusBar-plugin';
 
 export default {
   name: 'ResourceUpload',
@@ -145,6 +145,14 @@ export default {
     legacyInstruction() {
       return `Please retry uploading, if it still doesn't work please let us know! And give it a try via the <a href="${this.legacyUrl}" target="_blank">legacy website </a>. To upload a new file cancel it first via the little close-icon (x).`;
     },
+  },
+  mounted() {
+    if (!this.uppy.getPlugin(statusBarId)) {
+      this.uppy.use(StatusBar, {
+        id: statusBarId,
+        target: '#uppy-status-bar',
+      });
+    }
   },
   methods: {
     getStateColor(state) {
@@ -175,33 +183,54 @@ export default {
       return this.getIndicatorLoading(state) ? undefined : 100;
     },
     resetState() {
-      console.log('resetState');
+      // console.log('resetState');
       this.currentState = null;
-      this.states = this.initStates;
+      this.states = [
+        {
+          id: UPLOAD_STATE_UPLOAD_STARTED,
+          name: 'upload started',
+        },
+        {
+          id: UPLOAD_STATE_RESOURCE_CREATED,
+          name: 'resource created',
+        },
+        {
+          id: UPLOAD_STATE_UPLOAD_PROGRESS,
+          name: 'uploading file',
+        },
+        {
+          id: UPLOAD_STATE_UPLOAD_COMPLETED,
+          name: 'upload finished',
+        },
+      ];
     },
     changeState(id, progress) {
       if (!this.states) {
         return;
       }
 
-      console.log('Change State', id, progress);
+      // console.log('Change State', id, progress);
 
       const index = this.states.findIndex(((s) => s.id === id));
 
       if (index >= 0) {
-        this.currentState = this.states[index];
+        const state = this.states[index];
 
-        if (progress !== 0) {
-          this.currentState = {
-            ...this.currentState,
-            name: `${this.currentState.name} ${progress}%`,
-          };
+        if (id === UPLOAD_STATE_UPLOAD_PROGRESS) {
+          state.name = `uploading file ${progress}%`;
+          // console.log('Change progress', state.name);
         }
+
+        this.states[index] = state;
+        this.currentState = state;
       }
 
     },
   },
   watch: {
+    progress() {
+      this.changeState(this.currentState.id, this.progress)
+    },
     state: {
       handler(newState) {
         if (newState) {
@@ -241,28 +270,9 @@ export default {
         name: 'upload finished',
       },
     ],
-    initStates: [
-      {
-        id: UPLOAD_STATE_UPLOAD_STARTED,
-        name: 'upload started',
-      },
-      {
-        id: UPLOAD_STATE_RESOURCE_CREATED,
-        name: 'resource created',
-      },
-      {
-        id: UPLOAD_STATE_UPLOAD_PROGRESS,
-        name: 'uploading file',
-      },
-      {
-        id: UPLOAD_STATE_UPLOAD_COMPLETED,
-        name: 'upload finished',
-      },
-    ],
   }),
   components: {
     DragDrop,
-    StatusBar,
     TagChip,
     BaseStatusLabelView,
   },
