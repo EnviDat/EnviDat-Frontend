@@ -229,16 +229,13 @@ export default {
       return getUserPickerObjects(localAuthors);
     },
 
-    preselectAuthorNames() {
+    preselectAuthorEmails() {
       const author = getAuthorByEmail(
         this.contactEmail,
         this.existingAuthorsWrap,
       );
-      if (author) {
-        const fullName = getAuthorName(author);
-        return fullName ? [fullName] : [];
-      }
-      return undefined;
+
+      return author ? [author.email] : [];
     },
 
     publicationsInfo() {
@@ -261,7 +258,7 @@ export default {
         contactLastName: this.contactLastName,
         fullNameUsers: this.fullNameUsers || [],
         authors: this.existingAuthorsWrap,
-        preselectAuthorNames: this.preselectAuthorNames || [],
+        preselectAuthorEmails: this.preselectAuthorEmails || [],
         validationErrors: this.validationErrors || {},
         flat: true,
       };

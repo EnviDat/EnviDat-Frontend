@@ -35,7 +35,7 @@
           ref="contactUserPicker"
           data-field="contactUserPicker"
           :users="fullNameUsers"
-          :preSelected="preselectAuthorNames"
+          :preSelectedEmails="preselectAuthorEmails"
           :readonly="isReadOnly('contactUserPicker')"
           :hint="readOnlyHint('contactUserPicker')"
           @removedUsers="catchPickerAuthorChange($event, false)"
@@ -107,7 +107,7 @@ export default {
     contactFirstName: String,
     contactLastName: String,
     fullNameUsers: { type: Array, default: () => [] },
-    preselectAuthorNames: { type: Array, default: () => [] },
+    preselectAuthorEmails: { type: Array, default: () => [] },
     validationErrors: { type: Object, default: () => ({}) },
     authors: { type: Array, default: () => [] },
     flat: {

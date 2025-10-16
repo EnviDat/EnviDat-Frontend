@@ -126,7 +126,7 @@ export default {
     this.updatePreselection();
   },
   watch: {
-    preSelected() {
+    preSelectedEmails() {
       this.updatePreselection();
     },
   },
@@ -149,9 +149,9 @@ export default {
   },
   methods: {
     updatePreselection() {
-      if (this.preSelected?.length > 0) {
-        const filteredUsers = this.users.filter((userObj : UserPickerObject) => this.preSelected.includes(userObj.fullName));
-        this.pickedUsersEmail = this.multiplePick ? filteredUsers.map((userObj : UserPickerObject) => userObj.email) : filteredUsers[0].email;
+      if (this.preSelectedEmails?.length > 0) {
+        const filteredEmails = this.users.filter((userObj : UserPickerObject) => this.preSelectedEmails.includes(userObj.email));
+        this.pickedUsersEmail = this.multiplePick ? filteredEmails.map((userObj : UserPickerObject) => userObj.email) : filteredEmails[0].email;
       } else {
         this.pickedUsersEmail = this.multiplePick ? [] : undefined;
       }
