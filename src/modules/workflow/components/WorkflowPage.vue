@@ -350,6 +350,14 @@ const catchConfirmSave = async () => {
       workflowStore.openSaveDialog = false;
       // INIT datasetWith new ID
       await workflowStore.bootstrapWorkflow(newId);
+      // LOAD UserDataset to SET the ROLE
+      await workflowStore.withLoadingAll([fetchUserDatasets()]);
+
+      workflowStore.computeUserRole({
+        user: user.value,
+        userOrganizations: orgStore.userOrganizations,
+        userDatasets: userDatasets.value,
+      });
     });
   } catch (e: any) {
     workflowStore.isStepSaveConfirmed = false;

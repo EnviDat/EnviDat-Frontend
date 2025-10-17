@@ -186,7 +186,6 @@ export default {
   }),
 
   props: {
-    /* ViewModel-bound props */
     publicationState: { type: String, default: undefined },
     visibilityState: { type: String, default: undefined },
     doi: { type: String, default: undefined },
@@ -199,21 +198,17 @@ export default {
     contactFirstName: { type: String, default: '' },
     contactLastName: { type: String, default: '' },
 
-    /* UI/Validation support */
     validationErrors: { type: Object, default: () => ({}) },
     existingAuthors: { type: Array, default: () => [] },
 
-    /* Feature flags & async states provided by parent */
     doiWorkflowActive: { type: Boolean, default: true },
     blindReviewEditingActive: { type: Boolean, default: true },
     doiLoading: { type: Boolean, default: false },
     doiError: { type: [String, Object], default: undefined },
 
-    /* Read-only controls */
     readOnlyFields: { type: Array, default: () => [] },
     readOnlyExplanation: { type: String, default: '' },
 
-    /* Optional user role */
     userRole: { type: String, default: undefined },
   },
 
