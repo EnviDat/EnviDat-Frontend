@@ -169,14 +169,20 @@ export function deleteEmptyObject(index, localObjects) {
 export function isMaxLength(maximum, localObjects) {
   return localObjects.length >= maximum;
 }
-// const exludeRegEx = /(?:\d+\w+\S\-\w+)/gm
+// const excludeRegEX = /(?:\d+\w+\S\-\w+)/gm
 // eslint-disable-next-line no-useless-escape
-const exludeRegEx = /(\d+\w+\S\-\w+)|(\d+\S*\d+)/gm
+const excludeRegEX = /(\d+\w+\S\-\w+)|(\d+\S*\d+)/gm
+
+/**
+ *
+ * @param {User []} userList
+ * @returns {User []}
+ */
 export function getUserAutocompleteList(userList) {
 
   return userList.filter((user) => {
 
-    const match = user.name?.match(exludeRegEx);
+    const match = user.name?.match(excludeRegEX);
 
     if (match && match[0] && match[0].length === user.name?.length) {
       return false;
@@ -187,7 +193,7 @@ export function getUserAutocompleteList(userList) {
 }
 
 /**
- * Spilts the allowed users string into an array
+ * Splits the allowed users string into an array
  * @param allowedUsersString
  * @returns {*[]}
  */
@@ -208,10 +214,10 @@ export function getAllowedUserNamesArray(allowedUsersString) {
 }
 
 /**
- * Return an array of the full names of the allowed users
+ * Return an array of emails the allowed users
  *
- * @param allowedUsersString
- * @param envidatUsers
+ * @param {string} allowedUsersString
+ * @param {User[]} envidatUsers
  * @returns {*[]}
  */
 export function getAllowedUserNames(allowedUsersString, envidatUsers) {
@@ -228,7 +234,7 @@ export function getAllowedUserNames(allowedUsersString, envidatUsers) {
 
 /**
  * Returns a string of the allowed users names (only the name attribute of the user object)
- * separted by ","
+ * separated by ","
  *
  * @param {string[]} userFullNameArray
  * @param envidatUsers

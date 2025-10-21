@@ -279,7 +279,7 @@
             <v-col cols="12" class="pt-2">
               <BaseUserPicker
                 :users="envidatUsersPicker"
-                :preSelected="preSelectedAllowedUsers"
+                :preSelectedNames="preSelectedAllowedUsers"
                 :pickerLabel="labels.restrictedAllowedUsersInfo"
                 multiplePick
                 :prependIcon="mdiKey"
@@ -386,7 +386,7 @@ import {
 import { RESOURCE_FORMAT_LINK } from '@/factories/metadataConsts';
 import { getFileExtension } from '@/factories/fileFactory';
 import { RestrictedDTO } from '@/types/dataTransferObjectsTypes';
-import { getAuthorByEmail, getAuthorName, getUserPickerObjects } from '@/factories/authorFactory';
+import { getAuthorByName, getUserPickerObjects } from '@/factories/authorFactory';
 import { USER_ROLE_SYSTEM_ADMIN } from '@/factories/userEditingValidations';
 
 
@@ -878,17 +878,16 @@ export default {
       this.imagePreviewError = event;
       this.loadingImagePreview = false;
     },
-    changeAllowedUsers(pickedUsersEmails: string[]) {
-      const pickedUserNames = pickedUsersEmails.map((email) => {
-        const author = getAuthorByEmail(email, this.envidatUsers);
-        return getAuthorName(author)
+    changeAllowedUsers(pickedUsersNames: string[]) {
+      const pickedUserNames = pickedUsersNames.map((fullName) => {
+        const author = getAuthorByName(fullName, this.envidatUsers);
+        return author.fullName;
       });
 
       this.allowedUsersField = getAllowedUsersString(
         pickedUserNames,
         this.envidatUsers,
       );
-
     },
     validateField(property, value) {
       this.$emit('validate', { [property]: value });

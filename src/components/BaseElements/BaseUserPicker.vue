@@ -88,6 +88,10 @@ export default {
       type: Array, // as PropType<string>[],
       default: undefined,
     },
+    preSelectedNames: {
+      type: Array, // as PropType<string>[],
+      default: undefined,
+    },
     multiplePick: Boolean,
     placeholder: {type: String, default: undefined},
     pickerLabel: {
@@ -129,6 +133,9 @@ export default {
     preSelectedEmails() {
       this.updatePreselection();
     },
+    preSelectedNames() {
+      this.updatePreselection();
+    },
   },
   computed: {
     autocompleteHint() {
@@ -149,9 +156,14 @@ export default {
   },
   methods: {
     updatePreselection() {
+      let filteredUsers;
+
       if (this.preSelectedEmails?.length > 0) {
-        const filteredEmails = this.users.filter((userObj : UserPickerObject) => this.preSelectedEmails.includes(userObj.email));
-        this.pickedUsersEmail = this.multiplePick ? filteredEmails.map((userObj : UserPickerObject) => userObj.email) : filteredEmails[0].email;
+        filteredUsers = this.users.filter((userObj : UserPickerObject) => this.preSelectedEmails.includes(userObj.email));
+        this.pickedUsersEmail = this.multiplePick ? filteredUsers.map((userObj : UserPickerObject) => userObj.email) : filteredUsers[0].email;
+      } else if (this.preSelectedNames?.length > 0) {
+        filteredUsers = this.users.filter((userObj : UserPickerObject) => this.preSelectedNames.includes(userObj.fullName));
+        this.pickedUsersEmail = this.multiplePick ? filteredUsers.map((userObj : UserPickerObject) => userObj.email) : filteredUsers[0].email;
       } else {
         this.pickedUsersEmail = this.multiplePick ? [] : undefined;
       }

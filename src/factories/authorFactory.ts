@@ -651,7 +651,16 @@ export function enhanceAuthorsFromAuthorMap(authors: Author[], authorMap) {
   return enhancedAuthors;
 }
 
-export function getAuthorByEmail(email: string, authors: Author[] | User[]) {
+export function getAuthorByName(fullName: string, authors: Author[] | User[]) : Author | User {
+  if (!fullName) {
+    return null;
+  }
+
+  const found = authors.filter(auth => getAuthorName(auth) === fullName);
+  return found.length > 0 ? found[0] : null;
+}
+
+export function getAuthorByEmail(email: string, authors: Author[] | User[]) : Author | User {
   if (!email) {
     return null;
   }
