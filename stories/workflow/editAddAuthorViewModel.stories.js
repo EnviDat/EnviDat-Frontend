@@ -15,11 +15,11 @@ import {
   createAuthors,
   extractAuthorsMap,
   getFullAuthorsFromDataset,
-} from '@/factories/authorFactory.js';
+} from '@/factories/authorFactory.ts';
 
-import { AuthorsViewModel } from '@/factories/ViewModels/AuthorsViewModel';
+import { AuthorsViewModel } from '@/factories/ViewModels/AuthorsViewModel.js';
 
-import unFormatedMetadataCards from './js/metadata';
+import unFormatedMetadataCards from '../js/metadata.js';
 import { BackendDatasetService } from '@/modules/workflow/BackendDatasetService.ts';
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 

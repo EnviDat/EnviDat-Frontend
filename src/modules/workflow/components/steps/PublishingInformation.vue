@@ -137,12 +137,9 @@ import ReviewInfo from '@/modules/workflow/components/steps/ReviewInfo.vue';
 import NotFoundCard from '@/components/Cards/NotFoundCard.vue';
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
 
-import { mapStores } from 'pinia';
-
 import {
   getUserPickerObjects,
   getAuthorByEmail,
-  getAuthorName,
 } from '@/factories/authorFactory';
 
 import {
@@ -155,17 +152,7 @@ import {
   PUBLICATION_STATE_PUBLISHED,
 } from '@/factories/metadataConsts';
 
-import {
-  EDITMETADATA_OBJECT_UPDATE,
-  EDITMETADATA_PUBLICATION_STATE,
-  eventBus,
-} from '@/factories/eventBus';
-
-import {
-  USER_ROLE_EDITOR,
-  USER_ROLE_MEMBER,
-  USER_ROLE_SYSTEM_ADMIN,
-} from '@/factories/userEditingValidations';
+import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
 export default {
   name: 'PublishingInformation',
@@ -201,7 +188,7 @@ export default {
 
     /* UI/Validation support */
     validationErrors: { type: Object, default: () => ({}) },
-    existingAuthors: { type: Array, default: () => [] },
+    existingAuthors: { type: Array, default: undefined },
 
     /* Feature flags & async states provided by parent */
     doiWorkflowActive: { type: Boolean, default: true },
@@ -221,10 +208,18 @@ export default {
 
   computed: {
     existingAuthorsWrap() {
-      return this.existingAuthors || [];
+      if (this.existingAuthors) {
+        return this.existingAuthors;
+      }
+
+      if (this.$store) {
+        return this.$store.getters[`${METADATA_NAMESPACE}/existingAuthors`];
+      }
+
+      return undefined;
     },
 
-    fullNameUsers() {
+    userPickerObjects() {
       const localAuthors = [...this.existingAuthorsWrap];
       return getUserPickerObjects(localAuthors);
     },
@@ -256,7 +251,7 @@ export default {
         contactEmail: this.contactEmail || '',
         contactFirstName: this.contactFirstName,
         contactLastName: this.contactLastName,
-        fullNameUsers: this.fullNameUsers || [],
+        userPickerObjects: this.userPickerObjects || [],
         authors: this.existingAuthorsWrap,
         preselectAuthorEmails: this.preselectAuthorEmails || [],
         validationErrors: this.validationErrors || {},

@@ -34,7 +34,7 @@
         <BaseUserPicker
           ref="contactUserPicker"
           data-field="contactUserPicker"
-          :users="fullNameUsers"
+          :users="userPickerObjects"
           :preSelectedEmails="preselectAuthorEmails"
           :readonly="isReadOnly('contactUserPicker')"
           :hint="readOnlyHint('contactUserPicker')"
@@ -87,7 +87,7 @@
 <script>
 import { mdiAccount, mdiEmail } from '@mdi/js';
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
-import { createAuthor, getAuthorByEmail } from '@/factories/authorFactory.js';
+import { createAuthor, getAuthorByEmail } from '@/factories/authorFactory';
 
 import {
   isReadOnlyField,
@@ -99,14 +99,14 @@ const METADATA_CONTACT_FIRSTNAME = 'contactFirstName';
 const METADATA_CONTACT_LASTNAME = 'contactLastName';
 
 export default {
-  name: 'EditContactPerson',
+  name: 'ContactPerson',
   emits: ['save'],
   components: { BaseUserPicker },
   props: {
     contactEmail: String,
     contactFirstName: String,
     contactLastName: String,
-    fullNameUsers: { type: Array, default: () => [] },
+    userPickerObjects: { type: Array, default: () => [] },
     preselectAuthorEmails: { type: Array, default: () => [] },
     validationErrors: { type: Object, default: () => ({}) },
     authors: { type: Array, default: () => [] },

@@ -84,7 +84,7 @@ export default {
       type: Array, // as PropType<UserPickerObject>[],
       default: undefined,
     },
-    preSelected: {
+    preSelectedEmails: {
       type: Array, // as PropType<string>[],
       default: undefined,
     },
