@@ -386,7 +386,7 @@ import {
 import { RESOURCE_FORMAT_LINK } from '@/factories/metadataConsts';
 import { getFileExtension } from '@/factories/fileFactory';
 import { RestrictedDTO } from '@/types/dataTransferObjectsTypes';
-import { getAuthorByName, getUserPickerObjects } from '@/factories/authorFactory';
+import { getUserPickerObjects } from '@/factories/authorFactory';
 import { USER_ROLE_SYSTEM_ADMIN } from '@/factories/userEditingValidations';
 
 
@@ -718,8 +718,12 @@ export default {
       return getUserPickerObjects(users);
     },
     preSelectedAllowedUsers() {
-      // match with the user.name but make sure the fullname or display_name is shown
-      return getAllowedUserNames(this.allowedUsersField, this.envidatUsers);
+      if (this.allowedUsersField) {
+        // match with the user.name but make sure the fullName or display_name is shown
+        return getAllowedUserNames(this.allowedUsersField, this.envidatUsers);
+      }
+
+      return undefined;
     },
     openAccessDetails() {
       return renderMarkdown(this.labels.openAccessPreferedInstructions);
@@ -878,12 +882,7 @@ export default {
       this.imagePreviewError = event;
       this.loadingImagePreview = false;
     },
-    changeAllowedUsers(pickedUsersNames: string[]) {
-      const pickedUserNames = pickedUsersNames.map((fullName) => {
-        const author = getAuthorByName(fullName, this.envidatUsers);
-        return author.fullName;
-      });
-
+    changeAllowedUsers(pickedUserNames: string[]) {
       this.allowedUsersField = getAllowedUsersString(
         pickedUserNames,
         this.envidatUsers,

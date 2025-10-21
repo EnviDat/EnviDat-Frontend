@@ -871,12 +871,7 @@ export default {
       this.imagePreviewError = event;
       this.loadingImagePreview = false;
     },
-    changeAllowedUsers(pickedUsersNames: string[]) {
-      const pickedUserNames = pickedUsersNames.map((fullName) => {
-        const author = getAuthorByName(fullName, this.envidatUsers);
-        return author.fullName;
-      });
-
+    changeAllowedUsers(pickedUserNames: string[]) {
       this.allowedUsersField = getAllowedUsersString(
         pickedUserNames,
         this.envidatUsers,
