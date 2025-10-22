@@ -336,7 +336,8 @@ export default {
       };
     },
     selectedResource() {
-      return getSelectedElement(this.resources);
+      return this.resourceViewModel;
+      // return getSelectedElement(this.resources);
     },
     linkAddNewResourcesCKAN() {
       //      return `${this.envidatDomain}/dataset/resources/${this.datasetId}`;
@@ -438,8 +439,7 @@ export default {
       const newResource = createNewResourceForUrl(datasetId, url);
 
       this.resourceViewModel = new ResourceViewModel();
-      Object.assign(this.resourceViewModel, newResource);
-      const validData = this.resourceViewModel.validate();
+      const validData = this.resourceViewModel.validate(newResource);
 
       if (!validData) {
         console.error('Invalid Data for new resources', newResource);
@@ -462,12 +462,6 @@ export default {
       });
 */
     },
-    unselectCurrentResource() {
-      if (this.selectedResource) {
-        this.selectedResource.isSelected = false;
-        this.resetResourceViewModel();
-      }
-    },
     catchEditResourceClose() {
       this.unselectCurrentResource();
     },
@@ -485,13 +479,13 @@ export default {
       this.resourceViewModel.validate(resource);
     },
     saveResource(resource: Resource) {
-      // Object.assign(this.resourceViewModel, resource);
-      const validData = this.resourceViewModel.validate();
+
+      const validData = this.resourceViewModel.validate(resource);
 
       if (validData) {
         const updatedResources = updateEditingArray(
           this.resources,
-          resource,
+          this.resourceViewModel.backendJSON,
           'id',
         );
 
@@ -516,6 +510,7 @@ export default {
       // clear the internal state of the UI component in case there was an input
       // on the adding of a new author
       eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
+/*
       this.unselectCurrentResource();
 
       this.markResourceSelected(
@@ -523,10 +518,17 @@ export default {
         resource.id,
         !resource.isSelected,
       );
+*/
 
-      Object.assign(this.resourceViewModel, resource);
-      this.resourceViewModel.validate();
+      this.resourceViewModel = new ResourceViewModel();
+      this.resourceViewModel.validate(resource);
 
+    },
+    unselectCurrentResource() {
+      if (this.selectedResource) {
+        // this.selectedResource.isSelected = false;
+        this.resetResourceViewModel();
+      }
     },
     catchResourceSelection(resourceId: string) {
       this.selectResource(resourceId);
@@ -535,10 +537,10 @@ export default {
       eventBus.emit(OPEN_TEXT_PREVIEW, url);
     },
     resetResourceViewModel() {
+      this.resourceViewModel = undefined;
+
       // clear the internal state of the UI component
       eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
-
-      this.resourceViewModel = new ResourceViewModel();
     },
   },
   data: () => ({
@@ -557,7 +559,7 @@ export default {
     uploadProgress: 0,
     uploadState: undefined,
     // resourceViewModel is only used for mapping
-    resourceViewModel: new ResourceViewModel(),
+    resourceViewModel: undefined,
     workflowStore: useDatasetWorkflowStore(),
   }),
   components: {

@@ -13,7 +13,7 @@
     <v-row no-gutters>
       <v-col class="pt-2 tagAuthorFix">
         <v-autocomplete
-          v-model="pickedUsersEmail"
+          v-model="pickedUsers"
           :items="users"
           item-title="fullName"
           item-value="email"
@@ -156,51 +156,59 @@ export default {
   },
   methods: {
     updatePreselection() {
-      let filteredUsers;
+      let filteredUsers: UserPickerObject[];
 
       if (this.preSelectedEmails?.length > 0) {
-        filteredUsers = this.users.filter((userObj : UserPickerObject) => this.preSelectedEmails.includes(userObj.email));
-        this.pickedUsersEmail = this.multiplePick ? filteredUsers.map((userObj : UserPickerObject) => userObj.email) : filteredUsers[0].email;
-      } else if (this.preSelectedNames?.length > 0) {
-        filteredUsers = this.users.filter((userObj : UserPickerObject) => this.preSelectedNames.includes(userObj.fullName));
-        this.pickedUsersEmail = this.multiplePick ? filteredUsers.map((userObj : UserPickerObject) => userObj.email) : filteredUsers[0].email;
+        filteredUsers = this.users.filter((userObj: UserPickerObject) => this.preSelectedEmails.includes(userObj.email));
+      }
+      if (this.preSelectedNames?.length > 0) {
+        filteredUsers = this.users.filter((userObj: UserPickerObject) => this.preSelectedNames.includes(userObj.fullName));
+      }
+
+      if (filteredUsers) {
+        // have fallback on the fullName because when the UserPicker is used for Users
+        // (not Authors) then there is no email available
+        this.pickedUsers = this.multiplePick
+          ? filteredUsers.map((userObj : UserPickerObject) => userObj.email || userObj.fullName)
+          : filteredUsers[0].email || filteredUsers[0].fullName;
+
       } else {
-        this.pickedUsersEmail = this.multiplePick ? [] : undefined;
+        this.pickedUsers = this.multiplePick ? [] : undefined;
       }
     },
-    catchCloseClicked(pickedEmail: string) {
+    catchCloseClicked(picked: string) {
       if (this.readonly) {
         return;
       }
 
       if (this.multiplePick) {
-        const remains = this.pickedUsersEmail.filter((email : string) => email !== pickedEmail);
+        const remains = this.pickedUsers.filter((userEmailOrName : string) => userEmailOrName !== picked);
 
         if (remains?.length > 0) {
-          this.pickedUsersEmail = remains;
+          this.pickedUsers = remains;
         } else {
-          this.pickedUsersEmail = [];
+          this.pickedUsers = [];
         }
       } else {
-        this.pickedUsersEmail = undefined;
+        this.pickedUsers = undefined;
       }
 
-      this.$emit('removedUsers', this.pickedUsersEmail as string | string[]);
+      this.$emit('removedUsers', this.pickedUsers as string | string[]);
     },
-    catchPickClicked(pickedEmail: string) {
+    catchPickClicked(picked: string) {
       if (this.multiplePick) {
-        if (!this.pickedUsersEmail.includes(pickedEmail)) {
-          this.pickedUsersEmail.push(pickedEmail);
+        if (!this.pickedUsers.includes(picked)) {
+          this.pickedUsers.push(picked);
         }
       } else {
-        this.pickedUsersEmail = pickedEmail;
+        this.pickedUsers = picked;
       }
 
-      this.$emit('pickedUsers', this.pickedUsersEmail as string | string[]);
+      this.$emit('pickedUsers', this.pickedUsers as string | string[]);
     },
   },
   data: () => ({
-    pickedUsersEmail: undefined,
+    pickedUsers: undefined,
     search: '',
     mdiArrowDownDropCircleOutline,
     mdiClose,
