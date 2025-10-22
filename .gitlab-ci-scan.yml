@@ -18,7 +18,7 @@ verify-node-owasp:
   stage: test
   image: owasp/dependency-check:latest
   environment: $CI_COMMIT_REF_NAME  
-  extends: .normal-rules
+  rules: manual
   needs:
     - job: modify-env
       artifacts: false
@@ -27,19 +27,22 @@ verify-node-owasp:
     # https://dependency-check.github.io/DependencyCheck/
     # more about the cli commands https://dependency-check.github.io/DependencyCheck/dependency-check-cli/arguments.html
     - >
-      dependency-check.sh
-      --project "EnviDat-Frontend"
-      --scan "."
-      --out "reports"
-      --format "HTML"
-      --format "JSON"
-      --failOnCVSS 7
-      --exclude "**/node_modules/**"
-      --enableExperimental
-      --enableRetired
+      sh /usr/dependency-check/bin/dependency-check.sh \
+      --project "EnviDat-Frontend" \
+      --scan "." \
+      --out "reports" \
+      --format "HTML" \
+      --format "JSON" \
+      --failOnCVSS 7 \
+      --exclude "**/node_modules/**" \
+      --enableExperimental \
+      --enableRetired \
+      --nvdApiKey "$NVD_API_KEY"
   artifacts:
     paths:
       - reports
   retry:
     max: 2
+  volumes:
+    - dependency-check-data:/usr/share/dependency-check/data
 
