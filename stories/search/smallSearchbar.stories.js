@@ -10,7 +10,7 @@
  */
 
 import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from '@/../stories/js/envidatViewports';
-import SmallSearchBarView from '../src/components/Filtering/SmallSearchBarView.vue';
+import SmallSearchBarView from '@/components/Filtering/SmallSearchBarView.vue';
 
 export default {
   title: '2 Search / Small SearchBar View',

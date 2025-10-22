@@ -1,6 +1,6 @@
 import { addons } from 'storybook/manager-api';
 import { create } from 'storybook/theming';
-import { lightColorblind } from '../src/plugins/colorThemes';
+import { lightColorblind } from '@/plugins/colorThemes';
 
 addons.setConfig({
   theme: create({
