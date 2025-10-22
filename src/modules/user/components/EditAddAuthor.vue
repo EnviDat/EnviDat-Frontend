@@ -79,7 +79,7 @@
         <v-col>
           <BaseUserPicker
             :users="allUsersForUserPicker"
-            :preSelected="preselectAuthorNames"
+            :preSelectedEmails="preselectAuthorEmails"
             :readonly="isUserPickerReadOnly"
             :hint="
               isUserPickerReadOnly
@@ -350,15 +350,9 @@ export default {
           : this.identifier;
       },
     },
-    preselectAuthorNames() {
+    preselectAuthorEmails() {
       const author = getAuthorByEmail(this.emailField, this.existingAuthors);
-
-      if (author) {
-        const fullName = getAuthorName(author);
-        return fullName ? [fullName] : [];
-      }
-
-      return undefined;
+      return author ? [author.email] : [];
     },
     allUsersForUserPicker() {
       const localAuthors = [...this.existingAuthors];

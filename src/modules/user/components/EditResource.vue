@@ -264,7 +264,7 @@
             <v-col cols="12" class="pt-2">
               <BaseUserPicker
                 :users="envidatUsersPicker"
-                :preSelected="preSelectedAllowedUsers"
+                :preSelectedNames="preSelectedAllowedUsers"
                 :pickerLabel="labels.restrictedAllowedUsersInfo"
                 multiplePick
                 :prependIcon="mdiKey"
@@ -310,7 +310,7 @@
   </v-card>
 </template>
 
-<script>
+<script lang="ts">
 /**
  * @summary Show all textfields for a resource
  * @author Dominik Haas-Artho
@@ -363,7 +363,7 @@ import {
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 // import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import { formatDate } from '@/factories/dateFactory';
-import { getAuthorByEmail, getAuthorName, getUserPickerObjects } from '@/factories/authorFactory.js';
+import { getAuthorByName, getUserPickerObjects } from '@/factories/authorFactory.js';
 import { getFileExtension } from '@/factories/fileFactory';
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 import { RESOURCE_FORMAT_LINK } from '@/factories/metadataConsts';
@@ -871,12 +871,7 @@ export default {
       this.imagePreviewError = event;
       this.loadingImagePreview = false;
     },
-    changeAllowedUsers(pickedUsersEmails) {
-      const pickedUserNames = pickedUsersEmails.map((email) => {
-        const author = getAuthorByEmail(email, this.envidatUsers);
-        return getAuthorName(author)
-      });
-
+    changeAllowedUsers(pickedUserNames: string[]) {
       this.allowedUsersField = getAllowedUsersString(
         pickedUserNames,
         this.envidatUsers,

@@ -101,7 +101,7 @@
             <v-col cols="12" sm="6" class="pl-sm-4">
               <BaseUserPicker
                 :users="allUsersForUserPicker"
-                :preSelected="preselectAuthorNames"
+                :preSelectedEmails="preselectAuthorEmails"
                 :hint="labels.authorPickHint"
                 @removedUsers="catchPickerAuthorChange($event, false)"
                 @pickedUsers="catchPickerAuthorChange($event, true)"
@@ -424,14 +424,13 @@ export default {
           : this.metadataUrl;
       },
     },
-    preselectAuthorNames() {
+    preselectAuthorEmails() {
       const author = getAuthorByEmail(
         this.contactEmailField,
         this.existingAuthorsWrap,
       );
-      const fullName = getAuthorName(author);
 
-      return fullName ? [fullName] : [];
+      return author ? [author.email] : [];
     },
     existingAuthorsWrap() {
       if (this.$store) {

@@ -16,13 +16,18 @@ export interface DataCreditObject {
 
 export interface Author {
   lastModified: string;
+  /* firstName is enhanced by the frontend */
   firstName: string;
+  /* lastName is enhanced by the frontend */
   lastName: string;
+  /* fullName is enhanced by the frontend */
+  fullName: string;
   email: string;
   dataCredit: string[];
   identifierType: string;
   identifier: string;
   affiliation: string;
+  datasetCount: number;
   totalDataCredits: DataCreditObject;
   isSelected: boolean;
 }
@@ -48,15 +53,22 @@ export interface DatasetModel {
 
 export interface User {
   id: string;
+  /* firstName is enhanced by the frontend */
   firstName: string;
+  /* lastName is enhanced by the frontend */
   lastName: string;
   fullName: string;
+  /* dataset are only loaded if the api is given "include_datasets=true" */
+  datasets: DatasetDTO[] | undefined;
+  name: string;
   email: string;
   emailHash: string;
   created: string;
   modified: string;
+  imageUrl: string;
+  imageDisplayUrl: string;
   about: string;
-  sysAdmin: boolean;
+  sysadmin: boolean;
   state: string;
 }
 

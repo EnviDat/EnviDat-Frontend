@@ -38,7 +38,7 @@
         <v-col>
           <BaseUserPicker
             :users="allUsersForUserPicker"
-            :preSelected="preselectAuthorNames"
+            :preSelectedEmails="preselectAuthorEmails"
             :multiplePick="true"
             :isClearable="isClearable"
             :instructions="labels.userPickInstructions"
@@ -90,6 +90,7 @@ import {
 import { EDIT_METADATA_AUTHORS_TITLE } from '@/factories/metadataConsts';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+import { Author } from '@/types/modelTypes';
 
 export default {
   name: 'EditAddExistingAuthor',
@@ -155,10 +156,10 @@ export default {
     allUsersForUserPicker() {
       return getUserPickerObjects(this.existingEnviDatUsers);
     },
-    preselectAuthorNames() {
+    preselectAuthorEmails() {
       return this.previewAuthors
-        ? this.previewAuthors.map((author) => author.fullName)
-        : this.authors.map((author) => author.fullName);
+        ? this.previewAuthors.map((author: Author) => author.email)
+        : this.authors.map((author: Author) => author.email);
     },
     validations() {
       return getValidationMetadataEditingObject(EDITMETADATA_AUTHOR_LIST);

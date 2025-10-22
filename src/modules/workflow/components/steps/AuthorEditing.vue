@@ -169,15 +169,9 @@ const affiliationField = computed(() => previews.value.affiliation !== null
   ? previews.value.affiliation
   : props.affiliation)
 
-const preselectAuthorNames = computed( () => {
+const preselectAuthorEmails = computed( () => {
   const author = getAuthorByEmail(emailField.value, props.existingAuthors as Author[]);
-
-  if (author) {
-    const fullName = getAuthorName(author);
-    return fullName ? [{ name: fullName, email: author.email }] : [];
-  }
-
-  return undefined;
+  return author ? [author.email] : [];
 })
 
 const authorPickerObjects = computed(() => {
@@ -443,7 +437,7 @@ const removeAuthorClick = (email: string) => {
         <v-col>
           <BaseUserPicker
             :users="authorPickerObjects"
-            :preSelected="preselectAuthorNames"
+            :preSelectedEmails="preselectAuthorEmails"
             :readonly="isUserPickerReadOnly"
             :hint="
               isUserPickerReadOnly

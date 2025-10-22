@@ -25,6 +25,7 @@ import {
 
 import { AUTHOR_ASCII_DEAD } from '@/store/mainMutationsConsts';
 import { Author, User, UserPickerObject } from '@/types/modelTypes';
+import { AuthorDTO } from '@/types/dataTransferObjectsTypes';
 
 const authorDataCreditLevels = [
   { score: 160, lvl: 6 },
@@ -35,17 +36,17 @@ const authorDataCreditLevels = [
   { score: 1, lvl: 1 },
 ];
 
-export function getAuthorGivenName(author) {
+export function getAuthorGivenName(author: AuthorDTO | Author) {
   const firstName = author?.given_name || author?.firstName || '';
   return firstName.trim() || null;
 }
 
-export function getAuthorLastName(author) {
+export function getAuthorLastName(author: AuthorDTO | Author) {
   const lastName = author.name || author.lastName || '';
   return lastName.trim() || null;
 }
 
-export function getAuthorName(author) {
+export function getAuthorName(author: AuthorDTO | Author): string | undefined {
   let fullName = author?.fullName;
 
   if (!fullName) {
@@ -57,10 +58,10 @@ export function getAuthorName(author) {
 
   fullName = fullName.trim();
 
-  return fullName || null;
+  return fullName || undefined;
 }
 
-export function getAuthorNameCitation(author) {
+export function getAuthorNameCitation(author: Author | AuthorDTO) {
 
   const firstName = author.given_name || author.firstName || '';
 
@@ -227,12 +228,12 @@ export function creationContactFromAuthor(author) {
   return undefined;
 }
 
-export function createAuthor(author, lastModified = '') {
+export function createAuthor(author: Author | AuthorDTO, lastModified: string = '') {
 
   // const nameSplits = fullName.split(' ');
   const firstName = author.given_name || author.firstName || '';
   const lastName = author.name || author.lastName || '';
-  const fullName = getAuthorName({ firstName, lastName });
+  const fullName = getAuthorName({ firstName, lastName } as Author);
 
   // if (nameSplits.length > 0) {
   //   if (nameSplits.length === 1) {
@@ -278,7 +279,7 @@ export function createAuthor(author, lastModified = '') {
     dataCredit,
     totalDataCredits: author.totalDataCredits || {},
     lastModified,
-  };
+  } satisfies Author;
 }
 
 /**
@@ -293,7 +294,15 @@ export function mergeEditingAuthor(newAuthor: Author, existingAuthor: Author) : 
   return {
     ...createAuthor(newAuthor),
     datasetCount: existingAuthor.datasetCount,
-    totalDataCredits: existingAuthor.totalDataCredits || [],
+    totalDataCredits: existingAuthor.totalDataCredits ||
+      {
+        curation: 0,
+        publication: 0,
+        software: 0,
+        supervision: 0,
+        validation: 0,
+        collection: 0,
+      },
   }
 }
 
@@ -651,7 +660,16 @@ export function enhanceAuthorsFromAuthorMap(authors: Author[], authorMap) {
   return enhancedAuthors;
 }
 
-export function getAuthorByEmail(email: string, authors: Author[] | User[]) {
+export function getAuthorByName(fullName: string, authors: Author[] | User[]) : Author | User {
+  if (!fullName) {
+    return null;
+  }
+
+  const found = authors.filter(auth => getAuthorName(auth) === fullName);
+  return found.length > 0 ? found[0] : null;
+}
+
+export function getAuthorByEmail(email: string, authors: Author[] | User[]) : Author | User {
   if (!email) {
     return null;
   }

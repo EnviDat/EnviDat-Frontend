@@ -36,7 +36,7 @@
           </v-row>
           <BaseUserPicker
             :users="baseUserPickerObject"
-            :preSelected="preselectAuthorNames"
+            :preSelectedEmails="preselectAuthorEmails"
             :error-messages="validationErrors?.authors"
             :multiplePick="true"
             :isClearable="isClearable"
@@ -78,6 +78,7 @@ import {
   isReadOnlyField,
   getReadOnlyHint,
 } from '@/modules/workflow/utils/useReadonly';
+import { Author } from '@/types/modelTypes';
 
 export default {
   name: 'EditAddExistingAuthor',
@@ -145,10 +146,10 @@ export default {
     baseUserPickerObject() {
       return getUserPickerObjects(this.existingEnviDatUsers);
     },
-    preselectAuthorNames() {
+    preselectAuthorEmails() {
       return this.previewAuthors
-        ? this.previewAuthors.map((author) => author.fullName)
-        : this.authors.map((author) => author.fullName);
+        ? this.previewAuthors.map((author: Author) => author.email)
+        : this.authors.map((author: Author) => author.email);
     },
   },
   methods: {
