@@ -51,7 +51,7 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
     super(datasetModel, ResourcesListViewModel.mappingRules());
   }
 
-  static getFormattedResources(
+  getFormattedResources(
     rawResources: ResourceDTO[],
     datasetName: string,
     organizationID: string,
@@ -59,7 +59,10 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
     signedInUserOrganizationIds: string[],
     numberOfDownload?: number,
   ): Resource[] {
+
     return rawResources?.map((rawResource: ResourceDTO) => {
+      const customFieldsVm = this.datasetModel.getViewModel('CustomFieldsViewModel');
+
       const res = ResourceViewModel.getFormattedResource(
         rawResource,
         datasetName,
@@ -68,6 +71,8 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
         signedInUserOrganizationIds,
         numberOfDownload,
       );
+
+      res.deprecated = customFieldsVm?.isResourceDeprecated(res.id);
 
       return res;
     });
@@ -123,7 +128,7 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
         );
     */
 
-    const cleanResources = ResourcesListViewModel.getFormattedResources(
+    const cleanResources = this.getFormattedResources(
       dataset.resources,
       dataset.name,
       dataset.organization?.id,

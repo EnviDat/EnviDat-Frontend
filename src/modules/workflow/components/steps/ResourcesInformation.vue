@@ -485,7 +485,11 @@ export default {
       if (validData) {
         const updatedResources = updateEditingArray(
           this.resources,
-          this.resourceViewModel.backendJSON,
+          // make sure keep the deprecated flag
+          {
+            ...this.resourceViewModel.backendJSON,
+            deprecated: resource.deprecated,
+          },
           'id',
         );
 

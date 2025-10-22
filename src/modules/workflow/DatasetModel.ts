@@ -1,4 +1,8 @@
+import { computed, reactive } from 'vue';
+import store from '@/store/store';
+
 import type { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
+import { DatasetService, Resource } from '@/types/modelTypes';
 
 import { AdminViewModel } from '@/modules/workflow/viewModel/AdminViewModel.ts';
 import { AuthorListViewModel } from '@/modules/workflow/viewModel/AuthorListViewModel.ts';
@@ -10,24 +14,25 @@ import { AdditionalInfoViewModel } from '@/modules/workflow/viewModel/Additional
 import { GeoInfoViewModel } from '@/modules/workflow/viewModel/GeoInfoViewModel.ts';
 import { RelatedResearchViewModel } from '@/modules/workflow/viewModel/RelatedResearchViewModel.ts';
 import { PublicationInfoViewModel } from '@/modules/workflow/viewModel/PublicationInfoViewModel.ts';
+import { CustomFieldsViewModel } from '@/modules/workflow/viewModel/CustomFieldsViewModel.ts';
+
 import { LOCAL_DATASET_KEY } from '@/factories/metadataConsts';
 
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 
-import store from '@/store/store';
-import { reactive, computed } from 'vue';
 
 export class DatasetModel {
   viewModelClasses = [
+    CustomFieldsViewModel, // needs to before ResourcesListViewModel as this is used by the ResourcesListViewModel
     AuthorListViewModel,
     AdminViewModel,
     EditDataInfoViewModel,
-    ResourcesListViewModel,
     MetadataBaseViewModel,
     AdditionalInfoViewModel,
     GeoInfoViewModel,
     RelatedResearchViewModel,
     PublicationInfoViewModel,
+    ResourcesListViewModel,
   ];
 
   private viewModelInstances: Map<string, any> = new Map();
@@ -80,7 +85,7 @@ export class DatasetModel {
   async createResourceOnExistingDataset(
     resourceModel: AbstractEditViewModel,
   ): Promise<ResourceDTO | undefined> {
-    let newResource;
+    let newResource: ResourceDTO;
     resourceModel.loading = true;
     resourceModel.error = undefined;
 
@@ -110,12 +115,28 @@ export class DatasetModel {
     return this.datasetWorkflow.getDatasetService().deleteResource(resourceId);
   }
 
+  async saveDeprecatedResources(
+    datasetId: string,
+    resources: Resource[],
+    datasetService: DatasetService,
+  ) {
+    const customFieldsVM = this.getViewModel('CustomFieldsViewModel');
+
+    customFieldsVM.storeDeprecatedResources(resources.filter((res) => res.deprecated));
+
+    await datasetService.patchDatasetChanges(datasetId, customFieldsVM.backendJSON);
+  }
+
   async patchViewModel(newModel: AbstractEditViewModel) {
     const id: string =
       this.datasetWorkflow.currentDatasetId?.trim() || LOCAL_DATASET_KEY;
 
     const datasetService = this.datasetWorkflow.getDatasetService();
     await datasetService.patchDatasetChanges(id, newModel.backendJSON);
+
+    if (newModel instanceof ResourcesListViewModel) {
+      await this.saveDeprecatedResources(id, newModel.resources, datasetService);
+    }
 
     this.updateViewModels();
 
