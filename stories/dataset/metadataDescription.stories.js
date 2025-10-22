@@ -16,7 +16,7 @@
 import MetadataDescription from '@/modules/metadata/components/Metadata/MetadataDescription.vue';
 
 import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionViewModel';
-import { convertJSON } from '@/factories/mappingFactory';
+import { convertJSON } from '@/factories/convertJSON';
 import { enhanceMetadatasTitleImage } from '@/factories/metaDataFactory';
 
 import metadata from '@/../stories/js/metadata';

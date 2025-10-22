@@ -1,4 +1,4 @@
-import { convertJSON } from '@/factories/mappingFactory';
+import { convertJSON } from '@/factories/convertJSON';
 import type { AuthorDTO, DatasetDTO, OrganizationDTO, KeywordDTO, ExtrasDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 
 export class Dataset implements DatasetDTO {

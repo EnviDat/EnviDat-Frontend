@@ -3,10 +3,10 @@ import {
   convertJSON,
   convertToBackendJSONWithRules,
   convertToFrontendJSONWithRules,
-} from '@/factories/mappingFactory';
+} from '@/factories/convertJSON';
 
 import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
-import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
+import { DatasetModel } from '@/modules/workflow/DatasetModel';
 import { isFieldValid } from '@/factories/userEditingValidations';
 
 export abstract class AbstractEditViewModel {

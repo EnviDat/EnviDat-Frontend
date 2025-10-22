@@ -124,10 +124,11 @@ import {
 } from '@/factories/strategyFactory';
 
 import {
-  convertJSON,
   getFrontendDates,
   getFrontendJSONForStep,
 } from '@/factories/mappingFactory';
+
+import { convertJSON } from '@/factories/convertJSON';
 
 import { useReviewStore } from '@/modules/metadata/store/reviewStore';
 import { convertArrayToUrlString } from '@/factories/stringFactory';

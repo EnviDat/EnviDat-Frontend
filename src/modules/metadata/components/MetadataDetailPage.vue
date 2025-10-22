@@ -160,7 +160,8 @@ import {
 
 import { getEventsForPageAndName } from '@/modules/matomo/store/matomoStore';
 
-import { convertJSON, getFrontendDates } from '@/factories/mappingFactory';
+import { convertJSON } from '@/factories/convertJSON';
+import { getFrontendDates } from '@/factories/mappingFactory';
 
 import { convertArrayToUrlString } from '@/factories/stringFactory';
 
@@ -172,8 +173,7 @@ import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionVi
 import { getResourcesForDataViz } from '@/modules/charts/middelware/chartServiceLayer.ts';
 
 const MetadataDescription = defineAsyncComponent(
-  () =>
-    import('@/modules/metadata/components/Metadata/MetadataDescription.vue'),
+  () => import('@/modules/metadata/components/Metadata/MetadataDescription.vue'),
 );
 
 const MetadataResources = defineAsyncComponent(
@@ -199,10 +199,7 @@ const MetadataGeo = defineAsyncComponent(
   () => import('@/modules/metadata/components/Geoservices/MetadataGeo.vue'),
 );
 const MetadataRelatedDatasets = defineAsyncComponent(
-  () =>
-    import(
-      '@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue'
-    ),
+  () => import('@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue'),
 );
 
 const ResourceDataVizListAsync = defineAsyncComponent(
