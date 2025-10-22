@@ -1,4 +1,4 @@
-import { convertJSON, convertToBackendJSONWithRules, convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
+import { convertJSON, convertToBackendJSONWithRules, convertToFrontendJSONWithRules } from '@/factories/convertJSON';
 import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 
 /*

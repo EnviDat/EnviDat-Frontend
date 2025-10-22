@@ -6,17 +6,23 @@ import { ResourceViewModel } from '@/modules/workflow/viewModel/ResourceViewMode
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel';
 import { METADATA_NEW_RESOURCE_ID } from '@/factories/metadataConsts';
+
 import {
-  convertJSON,
-  convertToBackendJSONWithRules,
   formatDateTimeToCKANFormat,
   stringifyResourceForBackend,
 } from '@/factories/mappingFactory';
+
+import {
+  convertJSON,
+  convertToBackendJSONWithRules,
+} from '@/factories/convertJSON';
+
 import {
   enhanceElementsWithStrategyEvents,
   enhanceResourcesWithMetadataExtras,
   SELECT_EDITING_RESOURCE_PROPERTY,
 } from '@/factories/strategyFactory';
+
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 
 export class ResourcesListViewModel extends AbstractEditViewModel {

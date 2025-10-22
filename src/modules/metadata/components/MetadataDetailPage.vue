@@ -160,7 +160,8 @@ import {
 
 import { getEventsForPageAndName } from '@/modules/matomo/store/matomoStore';
 
-import { convertJSON, getFrontendDates } from '@/factories/mappingFactory';
+import { convertJSON, } from '@/factories/convertJSON';
+import { getFrontendDates } from '@/factories/mappingFactory';
 
 import { convertArrayToUrlString } from '@/factories/stringFactory';
 
