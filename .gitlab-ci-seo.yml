@@ -65,7 +65,9 @@ schedule-seo-deployment:
     - modify-env
     - run-tests
     - verify-node-audit
-    - verify-node-owasp
+    - job: verify-node-owasp
+      optional: true
+      artifacts: false
     # needs the artifact: node_modules to build the app
     - build-seo
   variables:

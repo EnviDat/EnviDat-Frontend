@@ -44,6 +44,4 @@ verify-node-owasp:
       - reports
   retry:
     max: 2
-  volumes:
-    - dependency-check-data:/usr/share/dependency-check/data
 
