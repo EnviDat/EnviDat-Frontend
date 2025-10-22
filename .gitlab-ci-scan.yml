@@ -18,7 +18,8 @@ verify-node-owasp:
   stage: test
   image: owasp/dependency-check:latest
   environment: $CI_COMMIT_REF_NAME  
-  rules: manual
+  rules:
+    - when: manual
   needs:
     - job: modify-env
       artifacts: false
