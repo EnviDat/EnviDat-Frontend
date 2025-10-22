@@ -20,12 +20,8 @@ import { Dataset } from '@/modules/workflow/Dataset.ts';
 import { DatasetService } from '@/types/modelTypes';
 import { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 import { ACTION_LOAD_METADATA_CONTENT_BY_ID } from '@/store/metadataMutationsConsts';
-import {
-  getBackendJSONForStep,
-  stringifyResourceForBackend,
-  convertJSON,
-} from '@/factories/mappingFactory';
-import { EDITMETADATA_DATA_RESOURCE } from '@/factories/eventBus';
+import { stringifyResourceForBackend } from '@/factories/mappingFactory';
+import { convertJSON } from '@/factories/convertJSON';
 
 import {
   cleanDatesForBackend,

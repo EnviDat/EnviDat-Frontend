@@ -20,11 +20,12 @@ import { createAuthor, mergeAuthorsDataCredit } from '@/factories/authorFactory'
 import { getValidationMetadataEditingObject } from '@/factories/userEditingValidations';
 import { updateEditingArray } from '@/factories/userEditingFactory';
 import {
-  convertToBackendJSONWithRules,
   getMetadataUrlFromTitle,
   mapBackendToFrontend,
   mapFrontendToBackend,
 } from '@/factories/mappingFactory';
+
+import { convertToBackendJSONWithRules } from '@/factories/convertJSON';
 
 import {
   getDataKeysToStepKey,

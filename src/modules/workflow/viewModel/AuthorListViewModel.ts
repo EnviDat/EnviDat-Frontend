@@ -11,7 +11,7 @@ import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEdit
 import {
   convertJSON,
   convertToBackendJSONWithRules,
-} from '@/factories/mappingFactory';
+} from '@/factories/convertJSON';
 
 export class AuthorListViewModel extends AbstractEditViewModel {
   declare authors: Author[];
