@@ -12,7 +12,8 @@
 * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import { Uppy, debugLogger, type Meta, type Body, type UppyOptions, type Restrictions, type UppyFile } from '@uppy/core';
+import { Uppy, debugLogger } from '@uppy/core';
+import type { Meta, Body, UppyOptions, Restrictions, UppyFile } from '@uppy/core';
 import axios from 'axios';
 import awsS3, { type AwsS3MultipartOptions } from '@uppy/aws-s3';
 
@@ -103,7 +104,7 @@ function createNewResourceForFileUpload(datasetId: string, file: UppyFile<Meta, 
 
 }
 
-export function createNewResourceForUrl(datasetId, url) {
+export function createNewResourceForUrl(datasetId: string, url: string) {
 
   const cleanUrlForName = url.endsWith('/') ? url.substring(0, url.length - 1) : url;
   const splits = cleanUrlForName.split('/');
@@ -332,13 +333,13 @@ export function hasUppyInstance() {
   return uppyInstance !== null;
 }
 
-export function subscribeOnUppyEvent(event, callback) {
+export function subscribeOnUppyEvent(event: any, callback: any) {
   if (hasUppyInstance()) {
     uppyInstance.on(event, callback);
   }
 }
 
-export function unSubscribeOnUppyEvent(event, callback) {
+export function unSubscribeOnUppyEvent(event: any, callback: any) {
   if (hasUppyInstance()) {
     uppyInstance.off(event, callback);
   }
