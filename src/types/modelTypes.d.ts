@@ -1,9 +1,9 @@
 import { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 
 export type UserPickerObject = {
-  fullName: string,
-  email: string,
-}
+  fullName: string;
+  email: string;
+};
 
 export interface DataCreditObject {
   curation: number;
@@ -35,6 +35,10 @@ export interface Author {
 
 export interface Keyword {
   name: string;
+  enabled: boolean;
+  color?: string;
+  count: number;
+  active?: boolean;
 }
 
 /*
@@ -112,22 +116,22 @@ export interface Resource {
   openButtonTooltip: string;
 }
 
-
 export interface DatasetService {
-
   dataset: DatasetDTO;
 
-  loadDataset(id: string) : Promise<DatasetDTO>;
+  loadDataset(id: string): Promise<DatasetDTO>;
 
-  patchDatasetChanges(
-    datasetId: string,
-    data: object,
-  ) : Promise<any>;
+  patchDatasetChanges(datasetId: string, data: object): Promise<any>;
 
   createResource?(resourceData: ResourceDTO): Promise<ResourceDTO>;
 
   deleteResource(resourceId: string): Promise<boolean>;
 
-  createDataset() : Promise<DatasetDTO>;
-
+  createDataset(): Promise<DatasetDTO>;
 }
+
+export type Tag = {
+  name: string;
+  enabled: boolean;
+  color?: string;
+};

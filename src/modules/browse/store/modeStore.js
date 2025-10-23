@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 
-import { MODE_STORE, modes } from '@/factories/modeFactory';
+import { MODE_STORE, modes } from '@/factories/modeData';
 
 import { enhanceMetadatas, localSearch } from '@/factories/metaDataFactory';
 import {
@@ -32,21 +32,21 @@ export const useModeStore = defineStore(MODE_STORE, {
     },
     /**
      * returns the metadata object for a mode name
-     * @param {string} mode
+     * @param {string} modeName
      * @returns {*|null}
      */
-    getModeMetadata(mode) {
-      if (!mode) return null;
+    getModeMetadata(modeName) {
+      if (!modeName) return null;
 
       const index = this.modeMetadata.findIndex(
-        (modeInfo) => modeInfo.name === mode,
+        (modeInfo) => modeInfo.name === modeName,
       );
 
       if (index >= 0) {
         return this.modeMetadata[index];
       }
 
-      throw new Error(`No Mode Data for mode: "${mode}" implemented`);
+      throw new Error(`No Mode Data for mode: "${modeName}" implemented`);
     },
     searchModeDatasets(searchTerm, mode) {
       // get filtered datasets based on the selected tags
@@ -74,6 +74,7 @@ export const useModeStore = defineStore(MODE_STORE, {
       const index = this.modeMetadata.findIndex(
         (modeInfo) => modeInfo.name === mode,
       );
+
       const metaData = this.modeMetadata[index];
       const currentFilteredKeywords = this.modeFilters[index];
 
@@ -81,11 +82,12 @@ export const useModeStore = defineStore(MODE_STORE, {
         currentFilteredKeywords,
         mode,
       );
+
       const updatedTags = getKeywordsForFiltering(filteredContent, metaData);
 
       return updatedTags;
     },
-    getFilteredDatasets(selectedTagNames = [], mode = undefined) {
+    getFilteredDatasets(selectedTagNames = [], modeName = undefined) {
       /*
       const mergedWithHiddenNames = getSelectedTagsMergedWithHidden(mode, selectedTagNames);
       if (mergedWithHiddenNames) {
@@ -93,15 +95,18 @@ export const useModeStore = defineStore(MODE_STORE, {
       }
 */
 
-      const datasetObject = this.getDatasets(mode);
+      const datasetObject = this.getDatasets(modeName);
       const content = Object.values(datasetObject);
+
       let filteredContent = [];
       const index = this.modeMetadata.findIndex(
-        (modeInfo) => modeInfo.name === mode,
+        (modeInfo) => modeInfo.name === modeName,
       );
+
       try {
         if (selectedTagNames.length > 0) {
           this.modeFilters[index] = selectedTagNames;
+
           for (let i = 0; i < content.length; i++) {
             const entry = content[i];
 
@@ -120,39 +125,41 @@ export const useModeStore = defineStore(MODE_STORE, {
 
       return filteredContent;
     },
-    getDatasets(mode) {
-      if (!mode) return null;
+    getDatasets(modeName) {
+      if (!modeName) return null;
 
       const index = this.modeMetadata.findIndex(
-        (modeInfo) => modeInfo.name === mode,
+        (modeInfo) => modeInfo.name === modeName,
       );
 
       if (index >= 0) {
         return this.modeDatasets[index];
       }
 
-      throw new Error(`No Mode Datasets for mode: "${mode}" implemented`);
+      throw new Error(`No Mode Datasets for mode: "${modeName}" implemented`);
     },
     /**
      *
-     * @param {string} mode
+     * @param {string} modeName
      * @returns {Promise<object>} enhancedDatasetsDictionary
      */
-    async loadModeDatasets(mode) {
-      const modeMetadata = this.getModeMetadata(mode);
+    async loadModeDatasets(modeName) {
+      const modeMetadata = this.getModeMetadata(modeName);
 
       const data = await modeMetadata.loadDatasets(modeMetadata);
       const index = this.modeMetadata.findIndex(
-        (modeInfo) => modeInfo.name === mode,
+        (modeInfo) => modeInfo.name === modeName,
       );
+
       if (index >= 0) {
         let enhancedDatasets = data;
-        if (mode === EDNA_MODE || mode === FOREST_3D) {
-          // eDNA shallow datasets need enhancement
 
-          const enhancedDatasetsDictionary = enhanceMetadatas(data, mode);
+        if (modeName === EDNA_MODE || modeName === FOREST_3D) {
+          // eDNA shallow datasets need enhancement
+          const enhancedDatasetsDictionary = enhanceMetadatas(data, modeName);
           enhancedDatasets = Object.values(enhancedDatasetsDictionary);
         }
+
         this.modeDatasets[index] = enhancedDatasets;
       }
 
