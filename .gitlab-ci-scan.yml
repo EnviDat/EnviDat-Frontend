@@ -20,6 +20,8 @@ verify-node-owasp:
   environment: $CI_COMMIT_REF_NAME  
   rules:
     - when: manual
+  # for manual jobs add allow_failure so the whole pipeline won't show up as "blocked"
+  allow_failure: true
   needs:
     - job: modify-env
       artifacts: false
