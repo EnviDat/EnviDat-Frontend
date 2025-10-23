@@ -36,17 +36,35 @@ const authorDataCreditLevels = [
   { score: 1, lvl: 1 },
 ];
 
-export function getAuthorGivenName(author: AuthorDTO | Author) {
+export function getAuthorGivenName(author:
+  {
+    given_name?: string,
+    firstName?: string,
+  }
+) {
   const firstName = author?.given_name || author?.firstName || '';
   return firstName.trim() || null;
 }
 
-export function getAuthorLastName(author: AuthorDTO | Author) {
+export function getAuthorLastName(author:
+  {
+    name?: string,
+    lastName?: string,
+  }
+) {
   const lastName = author.name || author.lastName || '';
   return lastName.trim() || null;
 }
 
-export function getAuthorName(author: AuthorDTO | Author): string | undefined {
+export function getAuthorName(author:
+  {
+    fullName?: string,
+    given_name?: string,
+    firstName?: string,
+    name?: string,
+    lastName?: string,
+  }
+): string | undefined {
   let fullName = author?.fullName;
 
   if (!fullName) {
@@ -61,14 +79,22 @@ export function getAuthorName(author: AuthorDTO | Author): string | undefined {
   return fullName || undefined;
 }
 
-export function getAuthorNameCitation(author: Author | AuthorDTO) {
+export function getAuthorNameCitation(author:
+  {
+    fullName?: string,
+    given_name?: string,
+    firstName?: string,
+    name?: string,
+    lastName?: string,
+  }
+) {
 
   const firstName = author.given_name || author.firstName || '';
 
   const splits = firstName.trim().split(' ');
   let firstnameInitials = '';
 
-  splits.forEach((name) => {
+  splits.forEach((name: string) => {
     firstnameInitials += `${name.substring(0, 1)}. `;
   })
 
