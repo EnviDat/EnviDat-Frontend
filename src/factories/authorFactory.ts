@@ -24,7 +24,7 @@ import {
 } from '@/factories/metadataConsts';
 
 import { AUTHOR_ASCII_DEAD } from '@/store/mainMutationsConsts';
-import { Author, User, UserPickerObject } from '@/types/modelTypes';
+import { Author, DataCreditObject, User, UserPickerObject } from '@/types/modelTypes';
 import { AuthorDTO } from '@/types/dataTransferObjectsTypes';
 
 const authorDataCreditLevels = [
@@ -35,6 +35,18 @@ const authorDataCreditLevels = [
   { score: 10, lvl: 2 },
   { score: 1, lvl: 1 },
 ];
+
+
+const defaultTotalDataCredit = () : DataCreditObject => {
+  return {
+    curation: 0,
+    publication: 0,
+    software: 0,
+    supervision: 0,
+    validation: 0,
+    collection: 0,
+  };
+}
 
 export function getAuthorGivenName(author:
   {
@@ -257,8 +269,8 @@ export function creationContactFromAuthor(author) {
 export function createAuthor(author: Author | AuthorDTO, lastModified: string = '') {
 
   // const nameSplits = fullName.split(' ');
-  const firstName = author.given_name || author.firstName || '';
-  const lastName = author.name || author.lastName || '';
+  const firstName = 'given_name' in author ? author.given_name : author.firstName || '';
+  const lastName = 'name' in author ? author.name : author.lastName || '';
   const fullName = getAuthorName({ firstName, lastName } as Author);
 
   // if (nameSplits.length > 0) {
@@ -274,7 +286,7 @@ export function createAuthor(author: Author | AuthorDTO, lastModified: string = 
   // }
 
 //    const dataCredit = author.data_credit ? getDataCredit(author) : author.dataCredit;
-  let dataCredit = author.dataCredit || author.data_credit || [];
+  let dataCredit = 'dataCredit' in author ? author.dataCredit : author.data_credit || [];
 
   if (typeof dataCredit === 'string') {
     dataCredit = [dataCredit];
@@ -282,14 +294,15 @@ export function createAuthor(author: Author | AuthorDTO, lastModified: string = 
 
   // console.log(`creating author from ${fullName} dataCredit: ${dataCredit} datasetCount: ${author.datasetCount}`);
 
-  const isAuthorDead = firstName?.includes(AUTHOR_ASCII_DEAD) ||
+  const isAuthorDead =
+    firstName?.includes(AUTHOR_ASCII_DEAD) ||
     lastName?.includes(AUTHOR_ASCII_DEAD);
 
   return {
     firstName: firstName.trim(),
     lastName: lastName.trim(),
     fullName,
-    datasetCount: author.datasetCount || 1,
+    datasetCount: ('datasetCount' in author && author.datasetCount) || 1,
     affiliation: author.affiliation,
     /*
           // this is probably old
@@ -303,8 +316,11 @@ export function createAuthor(author: Author | AuthorDTO, lastModified: string = 
     isSelected: false,
     isAuthorDead,
     dataCredit,
-    totalDataCredits: author.totalDataCredits || {},
+    totalDataCredits:
+      ('totalDataCredits' in author && author.totalDataCredits) ||
+      defaultTotalDataCredit(),
     lastModified,
+    identifierType: '',
   } satisfies Author;
 }
 
@@ -320,19 +336,11 @@ export function mergeEditingAuthor(newAuthor: Author, existingAuthor: Author) : 
   return {
     ...createAuthor(newAuthor),
     datasetCount: existingAuthor.datasetCount,
-    totalDataCredits: existingAuthor.totalDataCredits ||
-      {
-        curation: 0,
-        publication: 0,
-        software: 0,
-        supervision: 0,
-        validation: 0,
-        collection: 0,
-      },
+    totalDataCredits: existingAuthor.totalDataCredits || defaultTotalDataCredit(),
   }
 }
 
-export function createAuthors(dataset) {
+export function createAuthors(dataset: { author: string | object, metadata_modified: string }) {
   if (!dataset) {
     return null;
   }
@@ -361,19 +369,20 @@ export function createAuthors(dataset) {
   return authorObjs;
 }
 
-function overwriteDataCredit(author, existingAuthor) {
-  let credits = author.dataCredit || author.data_credit || [];
+function overwriteDataCredit(author: Author | AuthorDTO, existingAuthor: Author) {
 
-  if (typeof credits === 'string') {
-    credits = [credits];
+  let dataCredit = 'dataCredit' in author ? author.dataCredit : author.data_credit || [];
+
+  if (typeof dataCredit === 'string') {
+    dataCredit = [dataCredit];
   }
 
   if (!existingAuthor.totalDataCredits) {
-    existingAuthor.totalDataCredits = {};
+    existingAuthor.totalDataCredits = defaultTotalDataCredit();
   }
 
-  for (let i = 0; i < credits.length; i++) {
-    const key = credits[i];
+  for (let i = 0; i < dataCredit.length; i++) {
+    const key = dataCredit[i];
 
     let existingValue = existingAuthor.totalDataCredits[key];
 

@@ -1,3 +1,4 @@
+import type { Component } from 'vue';
 import { getYear } from 'date-fns';
 
 import {
@@ -10,7 +11,8 @@ import {
   EDITMETADATA_MAIN_DESCRIPTION,
   EDITMETADATA_MAIN_HEADER,
   EDITMETADATA_ORGANIZATION,
-  EDITMETADATA_PUBLICATION_INFO, EDITMETADATA_REVIEW_INFO,
+  EDITMETADATA_PUBLICATION_INFO,
+  EDITMETADATA_REVIEW_INFO,
   eventBus,
   REMOVE_EDITING_AUTHOR,
 } from '@/factories/eventBus';
@@ -31,8 +33,8 @@ import {
   getDataKeysToStepKey,
   getEmptyMetadataInEditingObject,
   getStepByName,
-  getStepKeyToDataKey,
-} from '@/factories/workflowFactory';
+  getStepKeyToDataKey, WorkflowStep,
+} from '@/factories/workflowFactory.ts';
 
 
 import { defaultSwissLocation } from '@/factories/geoFactory';
@@ -41,6 +43,7 @@ import {
   METADATA_CONTACT_FIRSTNAME,
   METADATA_CONTACT_LASTNAME,
 } from '@/factories/metadataConsts';
+import { Author, User } from '@/types/modelTypes';
 
 /*
 export const ckanRequiredPropsForDatasetCreation = [
@@ -60,7 +63,7 @@ export const ckanRequiredPropsForDatasetCreation = [
 ];
 */
 
-export function getNewDatasetDefaults(userEditMetadataConfig) {
+export function getNewDatasetDefaults(userEditMetadataConfig: { defaultLocation : any }) {
 
   const geoJSON = userEditMetadataConfig?.defaultLocation || defaultSwissLocation;
   const defaults = {
@@ -80,7 +83,7 @@ export function getNewDatasetDefaults(userEditMetadataConfig) {
   };
 }
 
-export function initCreationDataWithDefaults(creationData, user, organizationId) {
+export function initCreationDataWithDefaults(creationData: any, user: User, organizationId: string) {
   const fullName = user?.fullName || user?.name || '';
   const nameSplits = fullName.split(' ');
 
@@ -108,7 +111,7 @@ export function initCreationDataWithDefaults(creationData, user, organizationId)
       firstName,
       lastName,
       email,
-    });
+    } satisfies Partial<Author>);
     userAuthor.push(author);
   }
 
@@ -159,7 +162,7 @@ export function initCreationDataWithDefaults(creationData, user, organizationId)
  * @param data
  * @returns {*|null}
  */
-function writeStepDataInLocalStorage(stepKey, data) {
+function writeStepDataInLocalStorage(stepKey: string, data: any) {
 
   if (!stepKey) {
     return null;
@@ -188,7 +191,7 @@ function writeStepDataInLocalStorage(stepKey, data) {
  * @param dataKey
  * @returns {*|null}
  */
-export function readDataFromLocalStorage(dataKey) {
+export function readDataFromLocalStorage(dataKey: string) {
   if (!dataKey) {
     return null;
   }
@@ -209,7 +212,7 @@ export function readDataFromLocalStorage(dataKey) {
   }
 }
 
-export function readDatasetFromLocalStorage(datasetId) {
+export function readDatasetFromLocalStorage(datasetId: string) {
   if (!datasetId) {
     return undefined;
   }
@@ -229,7 +232,7 @@ export function readDatasetFromLocalStorage(datasetId) {
 }
 
 
-function initStepDataInLocalStorage(stepKey, data) {
+function initStepDataInLocalStorage(stepKey: string, data: any) {
 
   const localData = readDataFromLocalStorage(stepKey);
 
@@ -240,7 +243,7 @@ function initStepDataInLocalStorage(stepKey, data) {
   return localData;
 }
 
-function getFlatBackendDataFromSteps(steps) {
+function getFlatBackendDataFromSteps(steps: WorkflowStep[]) : any {
   let flatData = {};
 
   for (let i = 0; i < steps.length; i++) {
@@ -285,7 +288,7 @@ function getFlatBackendDataFromSteps(steps) {
  * @param userEditMetadataConfig
  * @returns {object} dataset in a json structure as the backend expects it
  */
-export function createNewDatasetFromSteps(steps, userEditMetadataConfig) {
+export function createNewDatasetFromSteps(steps: WorkflowStep[], userEditMetadataConfig: any) {
 
   const bData = getFlatBackendDataFromSteps(steps);
   const bDefaults = getNewDatasetDefaults(userEditMetadataConfig);
@@ -302,7 +305,7 @@ export function createNewDatasetFromSteps(steps, userEditMetadataConfig) {
   };
 }
 
-export function loadAllStepDataFromLocalStorage(steps, creationData) {
+export function loadAllStepDataFromLocalStorage(steps: WorkflowStep[], creationData: any) {
 
   const keys = Object.keys(creationData);
 
@@ -318,6 +321,7 @@ export function loadAllStepDataFromLocalStorage(steps, creationData) {
       if (step) {
         step.genericProps = {
           ...step.genericProps,
+          // @ts-ignore
           ...storeData,
         };
       }
@@ -326,11 +330,19 @@ export function loadAllStepDataFromLocalStorage(steps, creationData) {
   }
 }
 
-export function initializeStepsInUrl(steps, routeStep, routeSubStep, vm) {
+export function initializeStepsInUrl(
+  steps: WorkflowStep[],
+  routeStep: string,
+  routeSubStep: string,
+  vm: Component & { $router: any, $route: any },
+) {
   const initialStep = steps[0]?.title || '';
   const initialSubStep = steps[0]?.detailSteps[0]?.title || '';
 
-  const params = {};
+  const params = {
+    step: '',
+    substep: '',
+  };
 
   if (!routeStep && !routeSubStep) {
     // when no parameter are given in the url, fallback the first ones
@@ -345,14 +357,14 @@ export function initializeStepsInUrl(steps, routeStep, routeSubStep, vm) {
   }
 }
 
-export function initStepDataOnLocalStorage(steps, user, prefilledOrganizationId) {
+export function initStepDataOnLocalStorage(steps: WorkflowStep[], user: User, prefilledOrganizationId: string) {
   const creationData = getEmptyMetadataInEditingObject();
 
   initCreationDataWithDefaults(creationData, user, prefilledOrganizationId);
   loadAllStepDataFromLocalStorage(steps, creationData);
 }
 
-export function updateStepsWithReadOnlyFields(steps, readOnlyObj) {
+export function updateStepsWithReadOnlyFields(steps: WorkflowStep[], readOnlyObj) {
 
   for (let i = 0; i < steps.length; i++) {
     const step = steps[i];
@@ -366,7 +378,7 @@ export function updateStepsWithReadOnlyFields(steps, readOnlyObj) {
   }
 }
 
-function stepValidation(step, stepData, validationRules, skipError = false) {
+function stepValidation(step: WorkflowStep, stepData, validationRules, skipError = false) {
   if (!validationRules) {
     return false;
   }
@@ -390,7 +402,7 @@ function stepValidation(step, stepData, validationRules, skipError = false) {
   return true;
 }
 
-export function updateStepValidation(step, steps) {
+export function updateStepValidation(step: WorkflowStep, steps: WorkflowStep[]) {
   if (!step) {
     return;
   }
@@ -434,7 +446,7 @@ export function updateStepValidation(step, steps) {
 
 }
 
-export function updateAllStepsForCompletion(steps) {
+export function updateAllStepsForCompletion(steps: WorkflowStep[]) {
   if (!steps) {
     return 0;
   }
@@ -490,7 +502,7 @@ export function updateAllStepsForCompletion(steps) {
   return countCompleted;
 }
 
-export function countSteps(steps, onlyCompleted) {
+export function countSteps(steps: WorkflowStep[], onlyCompleted: boolean = false) {
   if (!steps) {
     return 0;
   }
@@ -511,7 +523,7 @@ export function countSteps(steps, onlyCompleted) {
   return count;
 }
 
-function combineAuthorDataChanges(dataKey, data) {
+function combineAuthorDataChanges(dataKey: string, data) {
   if (dataKey === EDITMETADATA_AUTHOR) {
 
     const authorsStepData = readDataFromLocalStorage(EDITMETADATA_AUTHOR_LIST);
@@ -550,7 +562,7 @@ function combineAuthorDataChanges(dataKey, data) {
   return data;
 }
 
-export function storeDatasetInLocalStorage(datasetId, data) {
+export function storeDatasetInLocalStorage(datasetId: string, data: any) {
 
   if (!datasetId) {
     return null;
@@ -567,11 +579,11 @@ export function storeDatasetInLocalStorage(datasetId, data) {
   return data;
 }
 
-export function storeCreationStepsData(dataKey, data, steps, resetMessages = true, clearUIPreviews = true) {
+export function storeCreationStepsData(dataKey: string, data: any, steps: WorkflowStep[], resetMessages: boolean = true, clearUIPreviews: boolean = true) {
 
   let storedData;
-  let stepData;
-  let stepKey;
+  let stepData: any;
+  let stepKey: string;
 
   if (dataKey.includes('AUTHOR')) {
     // any author information is stored in the author list
@@ -619,7 +631,7 @@ export function storeCreationStepsData(dataKey, data, steps, resetMessages = tru
   return stepData;
 }
 
-export function canLocalDatasetBeStoredInBackend(steps) {
+export function canLocalDatasetBeStoredInBackend(steps: WorkflowStep[]) {
 
   if (!steps) {
     return false;
