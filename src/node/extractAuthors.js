@@ -164,11 +164,11 @@ function extractAuthorsMap(datasets) {
           authorCount++;
         }
       }
-    } else {
-      console.log(`Dataset ${dataset.title} id ${dataset.id} has no authors?`);
+    // } else {
+      // console.log(`Dataset ${dataset.title} id ${dataset.id} has no authors?`);
     }
 
-    console.log(`extracted ${authorCount} authors`);
+    // console.log(`extracted ${authorCount} authors`);
   }
 
   return mapAuthors;

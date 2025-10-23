@@ -105,9 +105,7 @@ const loadEDNADatasets = async (modeMetadata) => {
 
       const arr = Array.isArray(data) ? data : [data];
 
-      const result = arr.map((entry) => {
-        return { ...entry, showShallowCitation: false };
-      });
+      const result = arr.map((entry) => ({ ...entry, showShallowCitation: false }));
 
       return result;
     } catch (e) {

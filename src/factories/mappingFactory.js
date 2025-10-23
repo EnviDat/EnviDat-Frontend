@@ -62,7 +62,7 @@ import categoryCards from '@/store/categoryCards';
 import { createLocation } from '@/factories/geoFactory';
 import { getMetadataVisibilityState } from '@/factories/publicationFactory';
 import { formatDate } from '@/factories/dateFactory';
-import { convertToBackendJSONWithRules, convertToFrontendJSONWithRules } from '@/factories/convertJSON';
+import { convertJSON, convertToBackendJSONWithRules, convertToFrontendJSONWithRules } from '@/factories/convertJSON';
 
 /**
  * Json conversion rules from frontend to backend and vise versa

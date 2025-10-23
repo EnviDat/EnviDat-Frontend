@@ -116,7 +116,7 @@ export default {
       state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].message = undefined;
     }, state.metadataSavingMessageTimeoutTime);
   },
-  [METADATA_EDITING_PATCH_RESOURCE_ERROR](state, { stepKey, reason }) {
+  [METADATA_EDITING_PATCH_RESOURCE_ERROR](state, { reason }) {
 
     state.loadingEditingData = false;
 
