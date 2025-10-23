@@ -20,7 +20,7 @@ export class CustomFieldsViewModel extends AbstractEditViewModel{
     customFields: {
       fieldName: string | null;
       content: string | null;
-    },
+    }[],
   } = {
     customFields: [
       {
@@ -156,7 +156,7 @@ export class CustomFieldsViewModel extends AbstractEditViewModel{
   }
 
   isResourceDeprecated(resourceId: string) {
-    const deprecatedResourcesEntry = this.deprecatedResources;
+    const deprecatedResourcesEntry = this.deprecatedResourcesEntry;
 
     if (!deprecatedResourcesEntry) {
       return false;
