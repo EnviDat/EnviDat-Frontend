@@ -113,7 +113,7 @@ export abstract class AbstractEditViewModel {
     return this.mappingRules.map((rule) => rule[1]);
   }
 
-  private getPropsToValidate(newProps) {
+  protected getPropsToValidate(newProps) {
     if (!newProps) {
       return {};
     }
