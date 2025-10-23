@@ -106,6 +106,7 @@ import {
   BROWSE_PATH,
   METADATAEDIT_PAGENAME,
   ORGANIZATIONS_PAGENAME,
+  WORKFLOW_PAGENAME,
 } from '@/router/routeConsts';
 
 import {
@@ -798,11 +799,20 @@ export default {
       });
     },
     catchEditClicked() {
+      let name = METADATAEDIT_PAGENAME;
+      const params = {
+        metadataid: this.metadataId,
+      }
+
+      if (this.newWorkflowActive) {
+        name = WORKFLOW_PAGENAME;
+        params.id = this.metadataId;
+        delete params.metadataid;
+      }
+
       this.$router.push({
-        name: METADATAEDIT_PAGENAME,
-        params: {
-          metadataid: this.metadataId,
-        },
+        name,
+        params,
         query: {
           backPath: this.$route.fullPath,
         },

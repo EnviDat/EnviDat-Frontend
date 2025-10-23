@@ -478,13 +478,13 @@ export default {
     },
     authorPickerFoundAuthor() {
       if (
-        this.preselectAuthorNames?.length <= 0 ||
+        this.preselectAuthorEmails?.length <= 0 ||
         this.allUsersForUserPicker?.length <= 0
       ) {
         return false;
       }
 
-      const matches = this.allUsersForUserPicker.filter((userObj : UserPickerObject) => userObj.fullName === this.preselectAuthorNames[0].name);
+      const matches = this.allUsersForUserPicker.filter((userObj : UserPickerObject) => userObj.fullName === this.preselectAuthorEmails[0]?.name);
       return matches.length > 0;
     },
     anyUserElementsActive() {
