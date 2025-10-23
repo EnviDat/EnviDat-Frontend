@@ -30,6 +30,7 @@ export interface Author {
   datasetCount: number;
   totalDataCredits: DataCreditObject;
   isSelected: boolean;
+  isAuthorDead: boolean;
 }
 
 export interface Keyword {

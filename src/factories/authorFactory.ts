@@ -40,7 +40,7 @@ export function getAuthorGivenName(author:
   {
     given_name?: string,
     firstName?: string,
-  }
+  },
 ) {
   const firstName = author?.given_name || author?.firstName || '';
   return firstName.trim() || null;
@@ -50,7 +50,7 @@ export function getAuthorLastName(author:
   {
     name?: string,
     lastName?: string,
-  }
+  },
 ) {
   const lastName = author.name || author.lastName || '';
   return lastName.trim() || null;
@@ -63,7 +63,7 @@ export function getAuthorName(author:
     firstName?: string,
     name?: string,
     lastName?: string,
-  }
+  },
 ): string | undefined {
   let fullName = author?.fullName;
 
@@ -86,7 +86,7 @@ export function getAuthorNameCitation(author:
     firstName?: string,
     name?: string,
     lastName?: string,
-  }
+  },
 ) {
 
   const firstName = author.given_name || author.firstName || '';
