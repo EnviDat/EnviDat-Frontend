@@ -1,7 +1,7 @@
 
 verify-node-audit:
   stage: test
-  image: node:20.15.0-alpine3.20
+  image: node:lts
   environment: $CI_COMMIT_REF_NAME
   extends: .normal-rules
   needs:

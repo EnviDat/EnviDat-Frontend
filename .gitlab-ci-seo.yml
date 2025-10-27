@@ -17,7 +17,7 @@
 
 build-seo:
   stage: build
-  image: node:20.15.0-alpine3.20
+  image: node:lts
   environment: $CI_COMMIT_REF_NAME
   rules:
     # don't run when triggered from other pipeline (deployment-only-pipeline)

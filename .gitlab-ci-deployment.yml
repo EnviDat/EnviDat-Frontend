@@ -1,7 +1,7 @@
 deploy-chromatic:
   stage: deploy
   environment: $CI_COMMIT_REF_NAME
-  image: node:20.15.0-alpine3.20
+  image: node:lts
   extends: .manual-deployment-rules
   needs:
     # needs the artifact: config and environment variables
