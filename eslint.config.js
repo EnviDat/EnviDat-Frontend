@@ -47,7 +47,7 @@ export default typescriptEslint.config(
       'import/order': 'warn',
       // allow debugger during development
       'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-      'no-unused-vars': 'warn',
+      // ' ': 'warn',
       'no-console': ['warn', { allow: ['warn', 'error'] }],
       'max-len': 'off',
       'no-plusplus': 'off',
@@ -70,6 +70,8 @@ export default typescriptEslint.config(
       'vue/order-in-components': 'off',
       'vue/max-attributes-per-line': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
+      'no-unused-vars': 'off',
+      'vue/no-unused-vars': 'warn',
       '@typescript-eslint/no-unused-vars': [
         'warn',
         {
@@ -83,7 +85,6 @@ export default typescriptEslint.config(
       '@typescript-eslint/no-unsafe-function-type': 'off',
       '@typescript-eslint/ban-ts-comment': 'off',
       '@typescript-eslint/no-this-alias': 'warn',
-      'vue/no-unused-vars': 'warn'
     },
   },
   // eslintConfigPrettier

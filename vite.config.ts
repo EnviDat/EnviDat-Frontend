@@ -79,7 +79,7 @@ export default async ({ mode, config }): Promise<UserConfig> => {
         eslintPath: 'eslint',
         failOnWarning: false,
         failOnError: true,
-        include: ['src/**/*.js', 'src/**/*.ts', 'src/**/*.vue'], // Include TypeScript files
+        include: ['src/**/*.js', 'src/**/*.ts', 'src/**/*.vue'],
         // https://github.com/storybookjs/builder-vite/issues/367#issuecomment-1938214165
         // Remove warnings because Vite falesly tries to lint folders it should not
         exclude: ['/virtual:/**', 'node_modules/**', '/sb-preview/**'],
