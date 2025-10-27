@@ -1,9 +1,8 @@
 import eslint from '@eslint/js';
-// import eslintConfigPrettier from 'eslint-config-prettier';
+import eslintConfigPrettier from 'eslint-config-prettier';
 import vue from 'eslint-plugin-vue';
 import vuetify from 'eslint-plugin-vuetify';
 import importPlugin from 'eslint-plugin-import';
-// import importResolverPlugin from 'eslint-import-resolver-alias';
 import globals from 'globals';
 import typescriptEslint from 'typescript-eslint';
 
@@ -87,5 +86,5 @@ export default typescriptEslint.config(
       '@typescript-eslint/no-this-alias': 'warn',
     },
   },
-  // eslintConfigPrettier
+  eslintConfigPrettier
 );
