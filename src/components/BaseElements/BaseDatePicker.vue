@@ -8,8 +8,7 @@
       v-model="datePickerOpen"
       :close-on-content-click="false"
       transition="scale-transition"
-      :left="$vuetify?.display?.smAndDown"
-      :offset-y="$vuetify?.display?.mdAndUp"
+      :location="$vuetify?.display?.smAndDown ? 'left' : undefined"
       min-width="280px"
     >
       <template v-slot:activator="{ props }">
@@ -34,7 +33,6 @@
         show-adjacent-months
         elevation="2"
         ref="datePicker"
-        locale="en-in"
         color="secondary"
         :next-icon="mdiSkipNext"
         :prev-icon="mdiSkipPrevious"
@@ -143,12 +141,14 @@ export default {
   methods: {
     // eslint-disable-next-line consistent-return,no-unused-vars
     getValidation(dateProperty) {
+      // @ts-ignore @typescript-eslint/no-this-alias
       const component = this;
       const validation = {
         [component.dateProperty]: yup
-          .date('Date must be a valid date.')
+          .date()
           // .required()
           .nullable()
+          // @ts-ignore
           .parseDateString()
           .test(
             'date-range-validation',

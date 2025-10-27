@@ -15,7 +15,6 @@
       v-if="!parallax"
       :height="height"
       :src="img"
-      :dark="dark"
       :class="{ blur_parallax: blur }"
       :style="blur ? 'opacity: 0.8' : ''"
     />

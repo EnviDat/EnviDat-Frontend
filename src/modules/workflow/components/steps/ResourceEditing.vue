@@ -13,7 +13,7 @@
       :icon="mdiClose"
       icon-color="primary"
       outline-color="primary"
-      outlined
+      variant="outlined"
       tooltip-text="Cancel Resource Editing"
       tooltip-bottom
       @clicked="$emit('closeClicked')"
@@ -120,12 +120,12 @@
             <v-textarea
               v-if="isLongUrl"
               :label="isLink ? labels.url : labels.fileName"
-              outlined
+              variant="outlined"
               auto-grow
               :readonly="readOnlyHint('url')"
               :hint="readOnlyHint('url')"
               persistent-hint
-              dense
+              density="compact"
               :disabled="loading"
               v-model="urlField"
               :error-messages="validationErrors.url"
@@ -134,11 +134,11 @@
             <v-text-field
               v-if="!isLongUrl"
               :label="isLink ? labels.url : labels.fileName"
-              outlined
+              variant="outlined"
               :readonly="urlReadOnly"
               :hint="readOnlyHint('url')"
               persistent-hint
-              dense
+              density="compact"
               :disabled="loading"
               v-model="urlField"
               :error-messages="validationErrors.url"
@@ -859,7 +859,7 @@ export default {
     loadImagePreview(url) {
       this.imagePreviewError = null;
       this.loadingImagePreview = true;
-      const vm = this;
+      // const vm = this;
 
       this.$nextTick(() => {
         try {
@@ -868,8 +868,8 @@ export default {
             imageRefs instanceof Array ? imageRefs[0] : imageRefs;
           imageRef.$el.src = url;
         } catch (e) {
-          vm.imagePreviewError = e;
-          vm.loadingImagePreview = false;
+          this.imagePreviewError = e;
+          this.loadingImagePreview = false;
 
           console.error(`Loading image preview failed: ${e}`);
         }

@@ -67,7 +67,7 @@
 
           <v-overlay
             absolute
-            :value="elementVisible"
+            :model-value="elementVisible"
             style="z-index: 5 !important"
           >
             <div

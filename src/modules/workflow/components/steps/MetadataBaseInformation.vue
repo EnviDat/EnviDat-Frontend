@@ -96,7 +96,7 @@
           :placeholder="labels.placeholderTitle"
           :model-value="metadataTitleField"
           @keyup="blurOnEnterKey"
-          @input="setTitleInput($event.target.value)"
+          @update:model-value="setTitleInput($event.target.value)"
           @change="notifyTitleChange($event.target.value)"
         />
       </v-col>
@@ -115,7 +115,7 @@
         <v-autocomplete
           data-field="keywords"
           v-model="keywordsField"
-          item-text="name"
+          item-title="name"
           item-value="name"
           :items="existingKeywordItems"
           :menu-icon="mdiArrowDownDropCircleOutline"
@@ -131,7 +131,7 @@
             search = $event;
             isKeywordValid(search);
           "
-          @input="isEnoughKeywords()"
+          @update:model-value="isEnoughKeywords()"
           @keydown="catchKeywordEntered($event)"
           :rules="rulesKeywords"
         >

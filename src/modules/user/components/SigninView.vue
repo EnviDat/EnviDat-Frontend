@@ -44,7 +44,7 @@
               :error-messages="backendErrors.email"
               label="Email"
               :prepend-icon="mdiEmail"
-              @input="isEmailValid()"
+              @update:model-value="isEmailValid()"
               @keyup.enter="catchRequestToken"
               tabindex="0"
             />
@@ -96,7 +96,7 @@
               :prepend-icon="mdiKey"
               :clear-icon="mdiClose"
               persistent-clear
-              @input="isTokenValid()"
+              @update:model-value="isTokenValid()"
               @keyup.enter="catchEmailSignIn"
               tabindex="0"
             />

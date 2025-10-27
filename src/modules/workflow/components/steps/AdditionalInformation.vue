@@ -203,7 +203,7 @@
               data-field="dataLicenseId"
               v-model="selectedLicenseObj"
               :items="activeLicenses"
-              item-text="title"
+              item-title="title"
               return-object
               :label="labelsLicense.dataLicense"
               :readonly="isReadOnly('license')"
@@ -222,7 +222,7 @@
           </v-col>
 
           <v-col cols="12">
-            <v-expansion-panels focusable v-model="defaultOpenPanels">
+            <v-expansion-panels v-model="defaultOpenPanels">
               <v-expansion-panel :title="dataSummaryClickInfo">
                 <v-expansion-panel-text>
                   <div v-html="getDataLicenseSummary" />

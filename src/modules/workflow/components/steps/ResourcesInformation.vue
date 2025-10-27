@@ -149,10 +149,7 @@ import {
   USER_SIGNIN_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts.js';
 
-import {
-  getSelectedElement,
-  updateEditingArray,
-} from '@/factories/userEditingFactory.js';
+import {  updateEditingArray } from '@/factories/userEditingFactory.js';
 
 import ResourcesListEditing from '@/modules/workflow/components/steps/ResourcesListEditing.vue';
 import ResourceUpload from '@/modules/workflow/components/steps/ResourceUpload.vue';
@@ -370,24 +367,24 @@ export default {
       // data object consists of `id` with upload ID and `fileIDs` array
       // with file IDs in current upload
       // data: { id, fileIDs }
-      console.log(`Starting upload ${uploadID } for files ${files}`);
+      // console.log(`Starting upload ${uploadID } for files ${files}`);
 
       this.uppyError = null;
       this.uploadState = UPLOAD_STATE_UPLOAD_STARTED;
       this.uploadProgress = 0;
     },
     uploadResourceCreated(event) {
-      console.log(`Resource created ${event.resourceId}`);
+      // console.log(`Resource created ${event.resourceId}`);
       this.uploadState = UPLOAD_STATE_RESOURCE_CREATED;
     },
     uploadStateProgress(progress) {
-      console.log(`upload progress: ${progress}`);
+      // console.log(`upload progress: ${progress}`);
 
       this.uploadState = UPLOAD_STATE_UPLOAD_PROGRESS;
       this.uploadProgress = progress;
     },
     async uploadCompleted() {
-      console.log('upload complete');
+      // console.log('upload complete');
 
       this.uploadState = UPLOAD_STATE_UPLOAD_COMPLETED;
       this.uploadProgress = 0;
@@ -409,7 +406,7 @@ export default {
       }, 1000);
     },
     uploadUppyError(error) {
-      console.log('uploadUppyError', error);
+      // console.log('uploadUppyError', error);
 
       this.uppyError = error;
     },
@@ -417,7 +414,7 @@ export default {
       this.resetUppy();
     },
     resetUppy() {
-      console.log('resetUppy');
+      // console.log('resetUppy');
 
       this.uppyError = null;
       this.uploadState = undefined;

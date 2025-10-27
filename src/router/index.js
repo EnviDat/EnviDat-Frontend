@@ -11,7 +11,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-/* eslint-disable prefer-template */
 import { createRouter, createWebHashHistory } from 'vue-router';
 
 import {

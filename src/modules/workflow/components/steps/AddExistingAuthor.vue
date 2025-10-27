@@ -1,10 +1,6 @@
 <template>
   <v-card id="AddExistingAuthor" class="pa-0" flat :loading="loadingColor">
     <v-container fluid class="pa-4">
-      <template slot="progress">
-        <v-progress-linear color="primary" indeterminate />
-      </template>
-
       <v-row>
         <!-- <v-col v-if="message">
           <BaseStatusLabelView

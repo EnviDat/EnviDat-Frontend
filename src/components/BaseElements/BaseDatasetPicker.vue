@@ -28,7 +28,7 @@
           :menu-props="menuOptions"
           :clear-icon="mdiClose"
           v-bind="$props"
-          @change="catchPicks"
+          @update:model-value="catchPicks"
           @blur="$emit('blur', $event)"
         >
           <template v-slot:selection="{ item }">

@@ -320,8 +320,6 @@ import {
 
 import { getPreviewDatasetFromLocalStorage } from '@/factories/userCreationFactory';
 
-import { METADATA_TITLE_PROPERTY } from '@/factories/metadataConsts';
-
 import { loadRouteTags } from '@/factories/stringFactory';
 import categoryCards from '@/store/categoryCards';
 
@@ -597,7 +595,7 @@ export default {
 
       const localStorageData = getPreviewDatasetFromLocalStorage();
 
-      // eslint-disable-next-line no-unused-expressions
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       this.localDatasetUpdateCount;
 
       const properties = Object.keys(localStorageData);

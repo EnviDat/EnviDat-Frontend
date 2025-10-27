@@ -424,7 +424,7 @@ const removeAuthorClick = (email: string) => {
             @keyup="blurOnEnterKey"
             @focusin="focusIn($event)"
             @focusout="focusOut('email', $event)"
-            @input="changeProperty('email', $event.target.value)"
+            @update:modelValue="changeProperty('email', $event.target.value)"
           />
         </v-col>
       </v-row>
@@ -469,7 +469,7 @@ const removeAuthorClick = (email: string) => {
             @keyup="blurOnEnterKey"
             @focusin="focusIn($event)"
             @focusout="focusOut('firstName', $event)"
-            @input="changeProperty('firstName', $event.target.value)"
+            @update:modelValue="changeProperty('firstName', $event.target.value)"
           />
         </v-col>
 
@@ -487,7 +487,7 @@ const removeAuthorClick = (email: string) => {
             @keyup="blurOnEnterKey"
             @focusin="focusIn($event)"
             @focusout="focusOut('lastName', $event)"
-            @input="changeProperty('lastName', $event.target.value)"
+            @update:modelValue="changeProperty('lastName', $event.target.value)"
           />
         </v-col>
       </v-row>
@@ -507,7 +507,7 @@ const removeAuthorClick = (email: string) => {
             @keyup="blurOnEnterKey"
             @focusin="focusIn($event)"
             @focusout="focusOut('affiliation', $event)"
-            @input="changeProperty('affiliation', $event.target.value)"
+            @update:modelValue="changeProperty('affiliation', $event.target.value)"
           />
         </v-col>
 
@@ -525,7 +525,7 @@ const removeAuthorClick = (email: string) => {
             @keyup="blurOnEnterKey"
             @focusin="focusIn($event)"
             @focusout="focusOut('identifier', $event)"
-            @input="changeProperty('identifier', $event.target.value)"
+            @update:modelValue="changeProperty('identifier', $event.target.value)"
           />
         </v-col>
       </v-row>

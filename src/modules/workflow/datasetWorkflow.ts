@@ -14,7 +14,7 @@ import {
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 import { LocalStorageDatasetService } from '@/modules/workflow/LocalStorageDatasetService.ts';
 import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
-import { DatasetService, User } from '@/types/modelTypes';
+import { DatasetService } from '@/types/modelTypes';
 import { BackendDatasetService } from '@/modules/workflow/BackendDatasetService.ts';
 import { workflowGuide } from '@/modules/workflow/resources/workflowGuides.ts';
 import { getYear } from 'date-fns';

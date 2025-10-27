@@ -76,7 +76,7 @@
             @keyup="blurOnEnterKey"
             @focusin="focusIn($event)"
             @focusout="focusOut('email', $event)"
-            @input="changeProperty('email', $event.target.value)"
+            @update:model-value="changeProperty('email', $event.target.value)"
           />
         </v-col>
       </v-row>
@@ -118,7 +118,7 @@
             @keyup="blurOnEnterKey"
             @focusin="focusIn($event)"
             @focusout="focusOut('firstName', $event)"
-            @input="changeProperty('firstName', $event.target.value)"
+            @update:model-value="changeProperty('firstName', $event.target.value)"
           />
         </v-col>
 
@@ -137,7 +137,7 @@
             @keyup="blurOnEnterKey"
             @focusin="focusIn($event)"
             @focusout="focusOut('lastName', $event)"
-            @input="changeProperty('lastName', $event.target.value)"
+            @update:model-value="changeProperty('lastName', $event.target.value)"
           />
         </v-col>
       </v-row>
@@ -158,7 +158,7 @@
             @keyup="blurOnEnterKey"
             @focusin="focusIn($event)"
             @focusout="focusOut('affiliation', $event)"
-            @input="changeProperty('affiliation', $event.target.value)"
+            @update:model-value="changeProperty('affiliation', $event.target.value)"
           />
         </v-col>
 
@@ -177,7 +177,7 @@
             @keyup="blurOnEnterKey"
             @focusin="focusIn($event)"
             @focusout="focusOut('identifier', $event)"
-            @input="changeProperty('identifier', $event.target.value)"
+            @update:model-value="changeProperty('identifier', $event.target.value)"
           />
         </v-col>
       </v-row>

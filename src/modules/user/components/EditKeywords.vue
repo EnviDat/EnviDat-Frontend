@@ -39,7 +39,7 @@
         <v-col>
           <v-autocomplete
             v-model="keywordsField"
-            item-text="name"
+            item-title="name"
             item-value="name"
             :items="existingKeywordItems"
             :menu-icon="mdiArrowDownDropCircleOutline"
@@ -57,8 +57,8 @@
               isKeywordValid(search);
             "
             @keyup="blurOnEnterKey"
-            @input="isEnoughKeywords()"
-            @change="notifyChange($event)"
+            @update:focused="isEnoughKeywords()"
+            @update:model-value="notifyChange($event)"
             @blur="saveChange()"
             @keydown="catchKeywordEntered($event)"
             :rules="rulesKeywords"

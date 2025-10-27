@@ -63,16 +63,27 @@ export default typescriptEslint.config(
       'operator-linebreak': ['off', 'before'],
       'vuetify/no-deprecated-classes': 'error',
       'vuetify/grid-unknown-attributes': 'error',
+      'vuetify/no-deprecated-colors': 'warn',
       'vue/no-v-text-v-html-on-component': 'off',
       'class-methods-use-this': 'off',
       'lines-between-class-members': 'off',
       'vue/order-in-components': 'off',
       'vue/max-attributes-per-line': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          // this should avoid showing warning for the omit pattern of getModelData() in AbstractEditViewModel
+          vars: 'all',
+          args: 'after-used',
+          ignoreRestSiblings: true,
+          varsIgnorePattern: '^_',
+        },
+      ],
       '@typescript-eslint/no-unsafe-function-type': 'off',
-      '@typescript-eslint/ban-ts-comment': 'off'
-      // 'vue/multi-word-component-names': 'off'
+      '@typescript-eslint/ban-ts-comment': 'off',
+      '@typescript-eslint/no-this-alias': 'warn',
+      'vue/no-unused-vars': 'warn'
     },
   },
   // eslintConfigPrettier

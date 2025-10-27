@@ -136,7 +136,7 @@ import { convertArrayToUrlString } from '@/factories/stringFactory';
 import { formatDate } from '@/factories/dateFactory';
 import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionViewModel';
 
-import MetadataHeader from './Metadata/MetadataHeader.vue';
+import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
 
 const MetadataDescription = defineAsyncComponent(
   () => import('./Metadata/MetadataDescription.vue'),

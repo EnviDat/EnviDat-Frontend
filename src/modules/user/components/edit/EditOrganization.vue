@@ -34,7 +34,7 @@
 
           <v-select :model-value="selectedOrganization"
                     :items="userOrganizations"
-                    item-text="title"
+                    item-title="title"
                     item-value="id"
                     readonly
                     :prepend-icon="mdiHome"
@@ -55,7 +55,7 @@
 
           <v-select :model-value="selectedOrganization"
                     :items="userOrganizations"
-                    item-text="title"
+                    item-title="title"
                     item-value="id"
                     :prepend-icon="mdiHome"
                     :menu-icon="isEditOrganizationReadonly ? '' : mdiArrowDownDropCircleOutline"

@@ -76,7 +76,6 @@ import {
   eventBus, EDITMETADATA_CLEAR_PREVIEW,
 } from '@/factories/eventBus';
 
-// eslint-disable-next-line import/no-cycle
 import {
   getValidationMetadataEditingObject,
   isFieldValid,

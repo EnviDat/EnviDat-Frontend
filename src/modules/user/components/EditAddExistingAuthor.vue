@@ -1,9 +1,6 @@
 <template>
   <v-card id="EditAddExistingAuthor" class="pa-0" :loading="loadingColor">
     <v-container fluid class="pa-4">
-      <template slot="progress">
-        <v-progress-linear color="primary" indeterminate />
-      </template>
 
       <v-row>
         <v-col cols="6" class="text-h5">

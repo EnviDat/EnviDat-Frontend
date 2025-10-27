@@ -45,7 +45,7 @@
             :placeholder="labels.placeholderTitle"
             :model-value="metadataTitleField"
             @keyup="blurOnEnterKey"
-            @input="
+            @update:model-value="
               changePropertyForPreview(
                 METADATA_TITLE_PROPERTY,
                 $event.target.value,
@@ -89,7 +89,7 @@
                 @keyup="blurOnEnterKey"
                 @focusin="focusIn($event)"
                 @focusout="focusOut(METADATA_CONTACT_EMAIL, $event)"
-                @input="
+                @update:model-value="
                   changePropertyForPreview(
                     METADATA_CONTACT_EMAIL,
                     $event.target.value,
@@ -133,7 +133,7 @@
                 @keyup="blurOnEnterKey"
                 @focusin="focusIn($event)"
                 @focusout="focusOut(METADATA_CONTACT_FIRSTNAME, $event)"
-                @input="
+                @update:model-value="
                   changePropertyForPreview(
                     METADATA_CONTACT_FIRSTNAME,
                     $event.target.value,
@@ -158,7 +158,7 @@
                 @keyup="blurOnEnterKey"
                 @focusin="focusIn($event)"
                 @focusout="focusOut(METADATA_CONTACT_LASTNAME, $event)"
-                @input="
+                @update:model-value="
                   changePropertyForPreview(
                     METADATA_CONTACT_LASTNAME,
                     $event.target.value,
@@ -201,7 +201,7 @@
               :model-value="metadataUrlField"
               @keyup="blurOnEnterKey"
               @click.stop
-              @input="
+              @update:model-value="
                 changePropertyForPreview(
                   METADATA_URL_PROPERTY,
                   $event.target.value,

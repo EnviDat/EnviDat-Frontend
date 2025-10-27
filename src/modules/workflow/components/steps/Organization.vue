@@ -31,7 +31,7 @@
         <v-select
           :model-value="selectedOrganization"
           :items="userOrganizations"
-          item-text="title"
+          item-title="title"
           item-value="id"
           :readonly="isReadOnly('organizationId')"
           :prepend-icon="mdiHome"
@@ -49,7 +49,7 @@
         <v-select
           :model-value="selectedOrganization"
           :items="userOrganizations"
-          item-text="title"
+          item-title="title"
           item-value="id"
           :readonly="isReadOnly('organizationId')"
           :prepend-icon="mdiHome"
@@ -101,7 +101,6 @@ import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChi
 
 import {
   EDITMETADATA_CLEAR_PREVIEW,
-  EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_ORGANIZATION,
   eventBus,
 } from '@/factories/eventBus';

@@ -60,7 +60,6 @@ export class DatasetModel {
     this.clearViewModels();
 
     for (const VMClass of this.viewModelClasses) {
-      // @ts-ignore
       const instance = new VMClass(this);
 
       if (instance instanceof MetadataBaseViewModel) {
@@ -68,7 +67,6 @@ export class DatasetModel {
           () => store.getters['metadata/existingKeywords'] ?? [],
         );
       }
-      // TODO ENRICO handle here authors as well
 
       const reactiveVM = reactive(instance);
       this.viewModelInstances.set(instance.constructor.name, reactiveVM);
