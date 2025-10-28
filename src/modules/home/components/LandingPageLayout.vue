@@ -18,8 +18,8 @@
       <section fluid class="metadata-wrapper">
         <BaseTitle
           style="text-align: center"
-          :text="datasetsTitle"
-          :className="'text-md-h4 text-h5 mt-10 margin-asd font-weight-bold mb-6 position-relative'"
+          :text="newsTitle"
+          :className="'text-md-h4 text-h5 mt-10 font-weight-bold mb-6 position-relative'"
           cardClass="pa-2"
           titleClass="titleCardClass"
         />
@@ -28,7 +28,7 @@
           class="pt-2"
           :class="{ 'pa-0': $vuetify.display.smAndDown }"
         >
-          <slot name="datasets"></slot>
+          <slot name="news"></slot>
         </v-container>
       </section>
     </v-container>
@@ -58,20 +58,22 @@
       class="newsGrid mt-4"
       :class="paddings"
     >
-      <BaseTitle
-        style="text-align: center"
-        :text="newsTitle"
-        :className="'text-md-h4 text-h5 font-weight-bold mb-6'"
-        cardClass="pa-2"
-        titleClass="titleCardClass"
-      />
-      <v-container
-        :fluid="$vuetify.display.lgAndDown"
-        class="pt-2"
-        :class="{ 'pa-0': $vuetify.display.smAndDown }"
-      >
-        <slot name="news"></slot>
-      </v-container>
+      <section fluid>
+        <BaseTitle
+          style="text-align: center"
+          :text="datasetsTitle"
+          :className="'text-md-h4 text-h5 font-weight-bold mb-6'"
+          cardClass="pa-2"
+          titleClass="titleCardClass"
+        />
+        <v-container
+          :fluid="$vuetify.display.lgAndDown"
+          class="pt-2"
+          :class="{ 'pa-0': $vuetify.display.smAndDown }"
+        >
+          <slot name="datasets"></slot>
+        </v-container>
+      </section>
     </v-container>
 
     <!-- Contact Slot -->
@@ -148,7 +150,7 @@ const paddings = 'pa-md-2 pt-4 pt-sm-6';
     transform: translateX(-50%);
     width: 100vw; // full viewport width
     height: 100%;
-    background-image: url('https://envidat.ch/beta/static/app_b_landingpage-BjXUE1sY.webp');
+    background-image: url('@/assets/app_b_landingpage.webp');
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;

@@ -1,9 +1,11 @@
 <template>
-  <div class="baseIconSwitch" :style="`z-index:  ${zIndex};
+  <div
+    class="baseIconSwitch"
+    :style="`z-index:  ${zIndex};
                                       position: relative;
-                                      background-color: white;`">
-
-    <v-tooltip :disabled="!tooltipText" location='bottom'>
+                                      background-color: white;`"
+  >
+    <v-tooltip :disabled="!tooltipText" location="bottom">
       <template v-slot:activator="{ props }">
         <div class="d-flex" v-bind="props">
           <div class="iconSwitch">
@@ -12,18 +14,27 @@
               type="button"
               :disabled="disabled"
               class="iconSwitchButton"
-              :id="'iconSwitchButton' + $.uid" :class="classList"
+              :id="'iconSwitchButton' + $.uid"
+              :class="classList"
               role="switch"
               :aria-describedby="'iconSwitchLabel' + $.uid"
-              :aria-checked="active" @click="emitClick">
-
-              <BaseIcon
-                :icon="icon"
-                :color="iconColor"
-              />
+              :aria-checked="active"
+              @click="emitClick"
+            >
+              <template v-if="loading">
+                <v-progress-circular indeterminate size="20" :color="color" />
+              </template>
+              <template v-else>
+                <BaseIcon :icon="icon" :color="iconColor" />
+              </template>
             </button>
           </div>
-          <label v-if="label" :for="'iconSwitchButton' + $.uid" class="iconSwitchLabel" :class="{ disabled }">
+          <label
+            v-if="label"
+            :for="'iconSwitchButton' + $.uid"
+            class="iconSwitchLabel"
+            :class="{ disabled }"
+          >
             {{ label }}
           </label>
         </div>
@@ -62,6 +73,7 @@ export default {
     disabled: { type: Boolean, default: false },
     tooltipText: { type: String, default: undefined },
     zIndex: { type: Number, default: undefined },
+    loading: { type: Boolean, default: false },
   },
   watch: {
     active: {
@@ -96,7 +108,6 @@ export default {
     },
   },
 };
-
 </script>
 
 <style scoped lang="scss">
@@ -135,9 +146,11 @@ $slide-duration: 0.2s;
       width: $button-size;
       left: 0;
       box-shadow: $button-shadow;
-      background-color: #FFF;
+      background-color: #fff;
       transition: none;
       display: grid;
+      justify-content: center;
+      align-items: center;
 
       .baseIcon {
         justify-self: center;
@@ -182,7 +195,6 @@ $slide-duration: 0.2s;
         z-index: -1; // Behind the button
         box-shadow: inset 1px 1px 3px rgba(33, 33, 33, 0.2);
       }
-
     }
   }
 }

@@ -1,17 +1,15 @@
 import { it, describe, expect } from 'vitest';
 import { createHeaderViewModel } from '@/factories/ViewModels/HeaderViewModel';
 import { EDITMETADATA_MAIN_HEADER } from '@/factories/eventBus';
-import { convertJSON } from '@/factories/mappingFactory';
-import { EditDatasetServiceLayer } from '@/factories/ViewModels/EditDatasetServiceLayer';
+import { convertJSON } from '@/factories/convertJSON';
+import { BackendDatasetService } from '@/modules/workflow/BackendDatasetService.ts';
+import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 
 import {
-  METADATA_CONTACT_EMAIL,
-  METADATA_CONTACT_FIRSTNAME,
-  METADATA_CONTACT_LASTNAME,
   METADATA_TITLE_PROPERTY,
 } from '@/factories/metadataConsts';
 
-import metadatas from '../../stories/js/metadata';
+import metadatas from '@/../stories/js/metadata';
 
 
 describe('viewModel Factory ', () => {
@@ -21,7 +19,10 @@ describe('viewModel Factory ', () => {
 
   const headerVM = createHeaderViewModel(backendJSON, false, 'black', 'url/to/an/img');
 
-  it(`${EDITMETADATA_MAIN_HEADER} backendJSON`, () => {
+  const serviceLayer = new BackendDatasetService(datasetBackend)
+  const datasetVM = new DatasetModel(serviceLayer);
+
+  it('HeaderViewModel backendJSON', () => {
 
     expect(headerVM).toBeDefined();
 
@@ -59,21 +60,40 @@ describe('viewModel Factory ', () => {
     headerVM2[METADATA_TITLE_PROPERTY] = 'Some new title for testing';
   });
 
-  it(`${EDITMETADATA_MAIN_HEADER} reactivity`, () => {
+  it('EditHeaderViewModel reactivity', () => {
 
-    const serviceLayer = new EditDatasetServiceLayer(datasetBackend)
-
-    const instances = serviceLayer.viewModels;
-
+    const instances = datasetVM.viewModels;
     const vm = instances.get('EditHeaderViewModel');
 
     expect(vm).toBeDefined();
 
-    vm[METADATA_CONTACT_EMAIL] = 'dominik.haas@wsl.ch';
-    vm[METADATA_CONTACT_FIRSTNAME] = 'Dominik';
-    vm[METADATA_CONTACT_LASTNAME] = 'Haas';
+    vm.metadataTitle = 'Some Title';
+    vm.metadataUrl = 'some-title';
+    vm.contactEmail = 'dominik.haas@wsl.ch';
+    vm.contactFirstName = 'Dominik';
+    vm.contactLastName = 'Haas';
+
+    const valid = vm.validate();
+
+    expect(valid).toBeTruthy();
 
     // serviceLayer.datasetDTO.unsubscribeFromViewModels();
   });
+
+  it('EditKeywordsViewModel reactivity', () => {
+
+    const instances = datasetVM.viewModels;
+    const vm = instances.get('EditKeywordsViewModel');
+
+    expect(vm).toBeDefined();
+    expect(vm.keywords).toBeDefined();
+    expect(vm.metadataTitle).toBeDefined();
+    expect(vm.metadataDescription).toBeDefined();
+
+    expect(vm.validate()).toBeTruthy();
+
+    // serviceLayer.datasetDTO.unsubscribeFromViewModels();
+  });
+  
 
 });

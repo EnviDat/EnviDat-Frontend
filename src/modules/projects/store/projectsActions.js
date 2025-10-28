@@ -45,7 +45,7 @@ export default {
     //     { root: true });
     // }
 
-    // if (import.meta.env?.DEV) {
+    // if (import.meta.env?.MODE === 'development') {
     //   url = './testdata/projects.json';
     // }
 

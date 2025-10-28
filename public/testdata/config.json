@@ -59,7 +59,7 @@
       "showDataCreditScore": false
     },
     "resourcesConfig": {
-      "loadDataViz": false,
+      "loadDataViz": true,
       "downloadActive": true
     }
   },
@@ -153,7 +153,8 @@
     "customFieldsMax": 10,
     "keywordsListWordMax": 2,
     "keywordsCountMin": 5,
-    "blindReviewEditingActive": false
+    "blindReviewEditingActive": true,
+    "newWorkflowActive": true
   },
   "userDashboardConfig": {
     "dashboardRedirect": false,
@@ -170,6 +171,9 @@
       "collaboratorText": "You are added as collaborator to datasets, you can edit these datasets. They are listed under 'Collaborator Datasets'."
     },
     "showOldDashboardUrl": true
+  },
+  "modeConfig": {
+    "excludeMode": null
   },
   "signinPageConfig": {
     "wslSigninEnabled": false,

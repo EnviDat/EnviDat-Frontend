@@ -1,7 +1,9 @@
 <template>
   <v-card id="EditOrganization"
           class="pa-0"
-          :loading="loadingColor">
+          :loading="loadingColor"
+          :flat
+  >
     <v-container fluid class="pa-4">
 
       <v-row>
@@ -28,11 +30,11 @@
       </v-row>
 
       <v-row>
-        <v-col v-if="onlyOneUserOrganization">
+        <v-col v-if="onlyOneUserOrganization && selectedOrganization">
 
           <v-select :model-value="selectedOrganization"
                     :items="userOrganizations"
-                    item-text="title"
+                    item-title="title"
                     item-value="id"
                     readonly
                     :prepend-icon="mdiHome"
@@ -49,11 +51,11 @@
 
         </v-col>
 
-        <v-col v-if="!onlyOneUserOrganization">
+        <v-col v-else>
 
           <v-select :model-value="selectedOrganization"
                     :items="userOrganizations"
-                    item-text="title"
+                    item-title="title"
                     item-value="id"
                     :prepend-icon="mdiHome"
                     :menu-icon="isEditOrganizationReadonly ? '' : mdiArrowDownDropCircleOutline"
@@ -159,6 +161,10 @@ export default {
     readOnlyExplanation: {
       type: String,
       default: '',
+    },
+    flat: {
+      type: Boolean,
+      default: false,
     },
   },
   created() {

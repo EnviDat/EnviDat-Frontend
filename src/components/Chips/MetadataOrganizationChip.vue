@@ -79,10 +79,6 @@ export default {
 .organizationChip {
   height: 1.5rem;
   font-size: 0.75rem;
-  max-width: 250px;
-  /*
-  background-color: #e0e0e0 !important;
-  */
 }
 
 .organizationChip > .v-chip__content > div:nth-child(1) {

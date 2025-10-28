@@ -13,7 +13,7 @@
             :prepend-icon="prependIcon"
             :error-messages="validationError"
             :model-value="textareaContent"
-            @input="catchInputedText($event.target.value)"
+            @update:model-value="catchInputedText($event.target.value)"
             @change="catchChangedText($event.target.value)"
           >
           </v-textarea>
@@ -34,7 +34,7 @@
     </div>
 
     <v-row v-if="!isVerticalLayout">
-      <v-col>
+      <v-col :cols="columns">
         <v-textarea
           class="heightAndScroll pt-1"
           :label="labelTextarea"
@@ -45,7 +45,7 @@
           :prepend-icon="prependIcon"
           :error-messages="validationError"
           :model-value="textareaContent"
-          @input="catchInputedText($event.target.value)"
+          @update:model-value="catchInputedText($event.target.value)"
           @change="catchChangedText($event.target.value)"
         >
         </v-textarea>

@@ -7,16 +7,18 @@ import {
   createLicense,
   createPublications,
   createDetails,
-  createResource,
   enhanceTitleImg,
 } from '@/factories/metaDataFactory';
+
+import { createResource } from '@/factories/resourceHelpers';
+
 import {
   createCitation,
   extractPIDMapFromText,
 } from '@/factories/citationFactory';
 
 import packagelist from '@/../stories/testdata/packagelist.json';
-import { enhanceTags } from '@/factories/keywordsFactory';
+import { enhanceKeywords } from '@/factories/keywordsFactory';
 import categoryCards from '@/store/categoryCards';
 import { formatDate } from '@/factories/dateFactory';
 import {
@@ -216,14 +218,14 @@ describe('metaDataFactory - createDetails', () => {
 
 describe('metaDataFactory - enhanceTags', () => {
   it('empty', () => {
-    const enhancedDataset = enhanceTags();
+    const enhancedDataset = enhanceKeywords();
     expect(enhancedDataset).toBeNull();
   });
 
   it('with dataset', () => {
-    const dataset = packagelist.result[6];
+    const enhancedDataset = packagelist.result[6];
 
-    const enhancedDataset = enhanceTags(dataset, categoryCards);
+    enhanceKeywords(enhancedDataset.tags, categoryCards);
 
     expect(enhancedDataset).toBeDefined();
 

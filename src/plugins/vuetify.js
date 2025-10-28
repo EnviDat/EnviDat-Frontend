@@ -9,13 +9,10 @@
  */
 import 'vuetify/styles';
 import { createVuetify } from 'vuetify';
-import { VTreeview } from 'vuetify/labs/VTreeview'
 import config from './vuetifyConfig';
 
 
 export default createVuetify({
   ...config,
-  components: {
-    VTreeview,
-  },
+  ssr: false,
 });

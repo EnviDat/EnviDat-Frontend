@@ -9,6 +9,8 @@
 export const WSL_DATA_LICENSE_ID = 'wsl-data';
 export const CC_BY_LICENSE_ID = 'cc-by';
 export const CC_BY_SA_LICENSE_ID = 'cc-by-sa';
+export const CC_BY_NC_LICENSE_ID = 'cc-by-nc';
+export const CC_BY_NC_SA_LICENSE_ID = 'cc-by-nc-sa';
 export const CC_ZERO_LICENSE_ID = 'CC0-1.0';
 export const ODBL_LICENSE_ID = 'odc-odbl';
 export const OTHER_UNDEFINED_LICENSE_ID = 'other-undefined';
@@ -45,7 +47,9 @@ No warranties are given. The license may not give you all of the permissions nec
 <br /> <br />
 **You are free to:**  
 - *Share*: copy and redistribute the material in any medium or format
-- *Adapt*: remix, transform, and build upon the material for any purpose, even commercially. The licensor cannot revoke these freedoms as long as you follow the license terms.  
+- *Adapt*: remix, transform, and build upon the material for any purpose, even commercially.
+
+The licensor cannot revoke these freedoms as long as you follow the license terms.  
 
 <br /> <br />
 **Under the following terms:**  
@@ -77,6 +81,57 @@ You can copy, modify, distribute and perform the work, even for commercial purpo
 - When using or citing the work, you should not imply endorsement by the author or the affirmer.  
     `,
     link: 'https://creativecommons.org/publicdomain/zero/1.0/legalcode',
+  },
+  {
+    id: CC_BY_NC_LICENSE_ID,
+    title: 'Creative Commons Attribution-NonCommercial (CC-BY-NC 4.0)',
+    summary: ` This is a human-readable summary of (and not a substitute for) the license.    
+
+<br /> <br />
+**You are free to:**  
+- *Share*: copy and redistribute the material in any medium or format
+- *Adapt*: remix, transform, and build upon the material.
+
+The licensor cannot revoke these freedoms as long as you follow the license terms.  
+
+<br /> <br />
+**Under the following terms:**  
+-*Attribution*: You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
+-*NonCommercial*: You may not use the material for commercial purposes .
+-*No additional restrictions*: You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.  
+
+<br /> <br />
+**Notices:**
+You do not have to comply with the license for elements of the material in the public domain or where your use is permitted by an applicable exception or limitation.
+No warranties are given. The license may not give you all of the permissions necessary for your intended use. For example, other rights such as publicity, privacy, or moral rights may limit how you use the material.
+    `,
+    link: 'https://creativecommons.org/licenses/by-nc/4.0/legalcode',
+  },
+  {
+    id: CC_BY_NC_SA_LICENSE_ID,
+    title: 'Creative Commons Attribution-NonCommercial-ShareAlike (CC-BY-NC-SA 4.0)',
+    summary: ` This is a human-readable summary of (and not a substitute for) the license.    
+
+<br /> <br />
+**You are free to:**  
+- *Share*: copy and redistribute the material in any medium or format
+- *Adapt*: remix, transform, and build upon the material
+
+The licensor cannot revoke these freedoms as long as you follow the license terms.  
+
+<br /> <br />
+**Under the following terms:**  
+-*Attribution*: You must give appropriate credit , provide a link to the license, and indicate if changes were made . You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
+-*NonCommercial*: You may not use the material for commercial purposes.
+-*ShareAlike*: If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.
+-*No additional restrictions*: You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.  
+
+<br /> <br />
+**Notices:**
+You do not have to comply with the license for elements of the material in the public domain or where your use is permitted by an applicable exception or limitation.
+No warranties are given. The license may not give you all of the permissions necessary for your intended use. For example, other rights such as publicity, privacy, or moral rights may limit how you use the material.
+    `,
+    link: 'https://creativecommons.org/licenses/by-nc/4.0/legalcode',
   },
   {
     id: WSL_DATA_LICENSE_ID,

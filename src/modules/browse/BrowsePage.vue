@@ -60,7 +60,6 @@
 import { mapGetters, mapState } from 'vuex';
 
 import {
-  BROWSE_PAGENAME,
   BROWSE_PATH,
   METADATADETAIL_PAGENAME,
 } from '@/router/routeConsts';
@@ -551,7 +550,6 @@ export default {
 
       this.filterContent();
     },
-    /* eslint-disable no-unused-vars */
     $route: async function watchRouteChanges(to, from) {
       // react on changes of the route (browser back / forward click)
 

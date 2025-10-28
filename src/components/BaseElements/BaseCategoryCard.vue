@@ -1,8 +1,8 @@
 <template>
   <v-card
+    id="BaseCategoryCard"
     ripple
     hover
-    raised
     :height="height"
     :disabled="disabled"
     @click="clicked"

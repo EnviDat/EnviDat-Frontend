@@ -3,7 +3,7 @@
     :id="`resourceCard_${id}`"
     :color="computedCardColor"
     :class="isSelected ? 'highlighted' : ''"
-    :style="{ height: autoHeight ? 'auto' : '100%' }"
+    :style="{ height: useAutoHeight ? 'auto' : '100%' }"
     :loading="loadingColor"
   >
     <v-card-title
@@ -80,10 +80,10 @@
             />
           </v-col>
 
-          <v-col v-if="sparkChartData" cols="12" class="py-1">
+          <v-col v-if="canDataViz" cols="12" class="py-1">
             <v-row no-gutters style="opacity: 1 !important" align="center">
               <v-col class="flex-grow-1">
-                <SparkChart :data="sparkChartData" />
+                <SparkChart :data="chartPreviewData" />
               </v-col>
 
               <v-col class="flex-grow-0">
@@ -167,7 +167,7 @@
     <v-container
       v-if="showGenericOpenButton && !isProtected && !sparkChartData"
       class="pa-4"
-      :style="`position: absolute; right: 0; width: 68px; ${genericOpenButtonBottom ? 'bottom: 52px;' : 'top: 0;'}`"
+      :style="`position: absolute; right: 0; width: 68px; ${genericButtonYPos}`"
     >
       <v-row>
         <v-col cols="12">
@@ -260,18 +260,23 @@
     </v-container>
 
     <v-card-text
-      v-if="!isProtected && !isFile && isEnvicloudUrl"
+      v-if="isEnvicloudUrl && !isProtected"
       class="pa-4 pt-0"
     >
       <v-divider />
-      <S3Tree @setStatus="changeHeight" :url="url" />
+
+      <S3Tree
+        :url="url"
+        @loadingChanged="catchLoadingChanged"
+        @changeAutoHeight="catchChangeHeight"
+      />
     </v-card-text>
 
   </v-card>
 
 </template>
 
-<script>
+<script lang="ts">
 /**
  * ResourceCard.vue create a card with a download link to a specific resource of a dataset.
  *
@@ -304,17 +309,17 @@ import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
 
 import S3Tree from '@/modules/s3/components/S3Tree.vue';
-import { useS3Store } from '@/modules/s3/store/s3Store';
 import SparkChart from '@/components/Charts/SparkChart.vue';
 
 import { renderMarkdown, stripMarkdown } from '@/factories/stringFactory';
-import { formatBytes, getResourceName } from '@/factories/metaDataFactory';
-import { EDIT_METADATA_DOI_LABEL } from '@/factories/metadataConsts';
+import { formatBytes, getResourceName } from '@/factories/resourceHelpers';
+import { EDIT_METADATA_DOI_LABEL, RESOURCE_FORMAT_LINK } from '@/factories/metadataConsts';
 import { getFileIcon } from '@/factories/imageFactory';
 
 import { trackDownload } from '@/utils/matomoTracking';
 
 import { formatDate } from '@/factories/dateFactory';
+import { chartPreviewData } from '@/modules/charts/middelware/chartServiceLayer';
 
 export default {
   name: 'ResourceCard',
@@ -329,7 +334,9 @@ export default {
     id: String,
     doi: String,
     name: String,
+/*
     autoHeight: Boolean,
+*/
     description: String,
     url: String,
     restrictedUrl: String,
@@ -382,50 +389,26 @@ export default {
       required: false,
       default: undefined,
     },
-    sparkChartData: {
-      type: Array,
-      required: false,
-      default: undefined,
-    },
+    canDataViz: Boolean,
   },
-  data: () => ({
-    mdiChartBar,
-    mdiShield,
-    mdiChevronDown,
-    mdiDownload,
-    mdiLink,
-    mdiFingerprint,
-    mdiLock,
-    mdiTimerPlusOutline,
-    mdiUpdate,
-    mdiFileDocumentCheckOutline,
-    mdiCancel,
-    maxDescriptionLength: 175,
-    showFullDescription: false,
-    setAutoHeight: false,
-    audioFormats: ['mp3', 'wav', 'wma', 'ogg'],
-    EDIT_METADATA_DOI_LABEL,
-    s3Store: useS3Store(),
-    chartPreviewTooltip: 'Visualize the data',
-  }),
   mounted() {
-    // set in the store the isS3Resources property, this property is needed to manage the card style in the sm view
-    this.setIfS3isPresent();
   },
   beforeUnmount() {
     // reset store before unmount the component
-    this.s3Store.isS3Resources = false;
   },
   computed: {
     loadingColor() {
-      if (this.loading) {
+      if (this.loadingResource) {
         return 'accent';
       }
 
       return undefined;
     },
-    isEnvicloudUrl(url) {
-      const urlToCheck = url.url;
+    loadingResource() {
+      return this.loading || this.isLoadingS3Tree;
+    },
+    isEnvicloudUrl() {
+      const urlToCheck = this.url;
       return urlToCheck.includes('envicloud');
     },
     isDownloaded() {
@@ -494,7 +477,7 @@ export default {
       return (
         this.format &&
         (this.format.toLowerCase() === 'link' ||
-          this.format.toLowerCase() === 'url')
+          this.format.toLowerCase() === RESOURCE_FORMAT_LINK)
       );
     },
     isFile() {
@@ -502,7 +485,7 @@ export default {
         !this.format ||
         !(
           this.format.toLowerCase() === 'link' ||
-          this.format.toLowerCase() === 'url'
+          this.format.toLowerCase() === RESOURCE_FORMAT_LINK
         );
 
       if (isFile && this.url) {
@@ -525,21 +508,47 @@ export default {
 
       return `Could not load the resource, please contact ${this.metadataContact} for getting access or envidat@wsl.ch for support.`;
     },
+    genericButtonYPos() {
+      if (this.genericOpenButtonBottom) {
+        return this.isEnvicloudUrl ? 'bottom: 0;' : 'bottom: 52px';
+      }
+
+      return 'top: 0;'
+    },
     extensionIcon() {
       return getFileIcon(this.format);
     },
   },
   methods: {
+    catchLoadingChanged(isLoading) {
+      this.isLoadingS3Tree = isLoading
+    },
+    catchChangeHeight(useAutoHeight) {
+      this.useAutoHeight = useAutoHeight;
+    },
     trackDownload,
-    changeHeight(value) {
-      this.setAutoHeight = value;
-    },
-    setIfS3isPresent() {
-      if (this.isEnvicloudUrl && !this.isProtected && !this.isFile) {
-        this.s3Store.isS3Resources = true;
-      }
-    },
   },
+  data: () => ({
+    mdiChartBar,
+    mdiShield,
+    mdiChevronDown,
+    mdiDownload,
+    mdiLink,
+    mdiFingerprint,
+    mdiLock,
+    mdiTimerPlusOutline,
+    mdiUpdate,
+    mdiFileDocumentCheckOutline,
+    mdiCancel,
+    maxDescriptionLength: 175,
+    showFullDescription: false,
+    audioFormats: ['mp3', 'wav', 'wma', 'ogg'],
+    EDIT_METADATA_DOI_LABEL,
+    chartPreviewTooltip: 'Visualize the data',
+    chartPreviewData,
+    isLoadingS3Tree: false,
+    useAutoHeight: false,
+  }),
 };
 </script>
 

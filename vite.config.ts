@@ -5,15 +5,13 @@ import path from 'path';
 import vue from '@vitejs/plugin-vue';
 import vuetify from 'vite-plugin-vuetify';
 
-import { defineConfig, loadEnv } from 'vite';
-import { configDefaults } from 'vitest/dist/config.js';
+import { defineConfig, loadEnv, UserConfig } from 'vite';
 import eslint from 'vite-plugin-eslint';
-
-import Unfonts from 'unplugin-fonts/vite';
+import webfontDownload from 'vite-plugin-webfont-dl';
 import vueDevTools from 'vite-plugin-vue-devtools';
 import { visualizer } from 'rollup-plugin-visualizer';
 
-import { getFilesWithPrefix } from './src/factories/enhancementsFactoryNode.js';
+import { getFilesWithPrefix } from './src/factories/enhancementsFactoryNode';
 
 // envidat docker issue with crypto$2.getRandomValues
 import { webcrypto } from 'crypto';
@@ -29,7 +27,19 @@ const version = process.env.npm_package_version;
 
 const useHttps = process.env.VITE_USE_HTTPS === 'true';
 
-export default ({ mode, config }) => {
+const isVike = process.argv.some((arg) => arg.includes('vike'));
+
+export default async ({ mode, config }): Promise<UserConfig> => {
+  if (isVike) {
+    console.log('Run with vite.config.vike!');
+    const asyncImport = await import('./vite.config.vike.ts');
+    const vikeConfig = asyncImport.default({mode, config});
+    // console.log(vikeConfig);
+    return vikeConfig;
+  }
+
+  console.log('Run with vite.config.ts!');
+
   const isProd = mode === 'production';
   const isDev = mode === 'development';
 
@@ -69,6 +79,8 @@ export default ({ mode, config }) => {
   console.log(`With VITE_API_BASE_URL: ${env.VITE_API_BASE_URL}`);
   console.log(`With VITE_API_DOI_BASE_URL: ${env.VITE_API_DOI_BASE_URL}`);
   console.log(`With VITE_BUILD_SOURCEMAPS: ${env.VITE_BUILD_SOURCEMAPS}`);
+  console.log(`With PUBLIC_ENV__VIKE_BASE_CANONICAL_URL: ${env.PUBLIC_ENV__VIKE_BASE_CANONICAL_URL}`);
+  console.log(`With VITE_SEO_BASE: ${env.VITE_SEO_BASE}`);
   console.log(`starting ${mode} | version: ${version} | prod: ${isProd}`);
 
   const buildSourceMaps = env.VITE_BUILD_SOURCEMAPS === 'true';
@@ -77,25 +89,21 @@ export default ({ mode, config }) => {
     plugins: [
       vue(),
       eslint({
-        include: ['src/**/*.ts', 'src/**/*.vue'], // Include TypeScript files
+        eslintPath: 'eslint',
+        failOnWarning: false,
+        failOnError: true,
+        include: ['src/**/*.js', 'src/**/*.ts', 'src/**/*.vue'],
         // https://github.com/storybookjs/builder-vite/issues/367#issuecomment-1938214165
         // Remove warnings because Vite falesly tries to lint folders it should not
-        // exclude: ['/virtual:/**', 'node_modules/**', '/sb-preview/**'],
+        exclude: ['/virtual:/**', 'node_modules/**', '/sb-preview/**'],
       }),
       vuetify({
         autoImport: true,
       }),
-      Unfonts({
-        google: {
-          families: [
-            'Baskervville',
-            {
-              name: 'Raleway',
-              styles: 'wght@400;500;700',
-            },
-          ],
-        },
-      }),
+      webfontDownload([
+        'https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;700&display=swap',
+        'https://fonts.googleapis.com/css2?family=Baskervville&display=swap',
+      ]),
       visualizer({
         filename: './dist/buildStats.html',
         title: 'EnviDat Build Visualizer',
@@ -131,33 +139,30 @@ export default ({ mode, config }) => {
       'process.env': loadEnv(mode, process.cwd()),
       'import.meta.env.VITE_VERSION': JSON.stringify(version),
     },
-    test: {
-      exclude: [
-        ...configDefaults.exclude,
-        './tests/unit/ckanRegression.spec.js',
-      ],
-    },
     base: './',
     build: {
       assetsDir: './static',
       chunkSizeWarningLimit: 500,
       //         assetsInlineLimit: 4096 / 2, // Reduce the amount of image inlining so the chunks don't get huge
       cssCodeSplit: true,
-      minify: !buildSourceMaps,
+      minify: true,
+      cssMinify: true,
       sourcemap: buildSourceMaps,
       emptyOutDir: true,
       rollupOptions: isProd
         ? {
             output: {
-              // [name].[hash] to avoid the build to change the hash every time?
-              // https://rollupjs.org/configuration-options/#output-entryfilenames
-              // we need to so that when creating a new build, only the files which have changed
-              // get a new hash to breaking caching of the browser
-              entryFileNames: 'assets/[name].[hash].js',
-              chunkFileNames: 'assets/[name].[hash].js',
-              assetFileNames: 'assets/[name].[hash].[ext]',
               manualChunks: (id) => {
                 if (id.includes('node_modules')) {
+
+                  if (id.includes('src/assets')) {
+                    return 'envidat_assets';
+                  }
+
+                  if (id.includes('imageFactory')) {
+                    return 'envidat_imageFactory';
+                  }
+
                   if (id.includes('vuetify')) {
                     return 'vendor_vuetify';
                   }
@@ -179,7 +184,11 @@ export default ({ mode, config }) => {
                     return 'vendor_uppy';
                   }
 
-                  if (id.includes('chart') || id.includes('uplot')) {
+                  if (id.includes('uplot')) {
+                    return 'vendor_uplot';
+                  }
+                  
+                  if (id.includes('chart')) {
                     return 'vendor_charts';
                   }
 
@@ -187,9 +196,19 @@ export default ({ mode, config }) => {
                     return 'vendor_validation';
                   }
 
+                  if (id.includes('date-fns')) {
+                    return 'vendor_date';
+                  }
+
+                  if (id.includes('fast-xml-parser') || id.includes('papaparse')) {
+                    return 'vendor_parser';
+                  }
+
+                  if (id.includes('axios')) {
+                    return 'vendor_axios';
+                  }
+
                   if (
-                    id.includes('axios') ||
-                    id.includes('date-fns') ||
                     id.includes('mitt') ||
                     id.includes('seedrandom') ||
                     id.includes('tiny-js-md5')
@@ -208,12 +227,13 @@ export default ({ mode, config }) => {
                     return 'vendor_jsoneditor';
                   }
 
+                  if (id.includes('lodash')) {
+                    return 'vendor_lodash';
+                  }
+
                   return 'vendors';
                 }
 
-                if (id.includes('src/assets')) {
-                  return 'envidat_assets';
-                }
 
                 // Let Rollup handle the rest
                 return undefined;
@@ -226,6 +246,10 @@ export default ({ mode, config }) => {
       ? {
           host: '0.0.0.0',
           port: 8080,
+          hmr: {
+            host: 'dev.envidat04.wsl.ch',
+            port: 8080,
+          },
           allowedHosts: ['dev.envidat04.wsl.ch:8080'],
           https: useHttps
             ? {

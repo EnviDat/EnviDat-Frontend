@@ -1,13 +1,10 @@
 <template>
-  <v-card id="EditAddAuthor"
-          class="pa-0"
-          :loading="loadingColor">
-
+  <v-card id="EditAddAuthor" class="pa-0" :loading="loadingColor">
     <BaseIconButton
       v-if="isEditingAuthor"
       class="editResourceCloseButton ma-2"
-      :class="{ 'mx-1' : $vuetify.display.smAndDown }"
-      style="position: absolute; top: 0; right: 0; z-index: 2;"
+      :class="{ 'mx-1': $vuetify.display.smAndDown }"
+      style="position: absolute; top: 0; right: 0; z-index: 2"
       :icon="mdiClose"
       icon-color="black"
       color="black"
@@ -24,19 +21,22 @@
         </v-col>
 
         <v-col v-if="message" cols="4" class="pl-16">
-          <BaseStatusLabelView status="check"
-                               statusColor="success"
-                               :statusText="message"
-                               :expandedText="messageDetails"/>
+          <BaseStatusLabelView
+            status="check"
+            statusColor="success"
+            :statusText="message"
+            :expandedText="messageDetails"
+          />
         </v-col>
 
         <v-col v-if="error" cols="4" class="pl-16">
-          <BaseStatusLabelView status="error"
-                               statusColor="error"
-                               :statusText="error"
-                               :expandedText="errorDetails"/>
+          <BaseStatusLabelView
+            status="error"
+            statusColor="error"
+            :statusText="error"
+            :expandedText="errorDetails"
+          />
         </v-col>
-
       </v-row>
 
       <v-row>
@@ -51,168 +51,145 @@
         </v-col>
       </v-row>
 
-      <v-row dense
-             class="pt-2">
+      <v-row dense class="pt-2">
         <v-col>
-
-          <v-text-field ref="email"
-                        id="email"
-                        :label="labels.labelEmail"
-                        :error-messages="validationErrors.email"
-                        :readonly="isReadOnly('authors')"
-                        :hint="readOnlyHint('authors')"
-                        :prepend-icon="mdiEmail"
-                        :placeholder="labels.placeholderEmail"
-                        :model-value="emailField"
-                        @keyup="blurOnEnterKey"
-                        @focusin="focusIn($event)"
-                        @focusout="focusOut('email', $event)"
-                        @input="changeProperty('email', $event.target.value)"
+          <v-text-field
+            ref="email"
+            id="email"
+            :label="labels.labelEmail"
+            :error-messages="validationErrors.email"
+            :readonly="isReadOnly('authors')"
+            :hint="readOnlyHint('authors')"
+            :prepend-icon="mdiEmail"
+            :placeholder="labels.placeholderEmail"
+            :model-value="emailField"
+            @keyup="blurOnEnterKey"
+            @focusin="focusIn($event)"
+            @focusout="focusOut('email', $event)"
+            @update:model-value="changeProperty('email', $event.target.value)"
           />
-
         </v-col>
       </v-row>
 
-      <v-row v-if="!isEditingAuthor"
-             no-gutters
-             dense >
-
-        <v-col class="text-body-1"
-               v-html="labels.authorOr">
-
-        </v-col>
-
+      <v-row v-if="!isEditingAuthor" no-gutters dense>
+        <v-col class="text-body-1" v-html="labels.authorOr"> </v-col>
       </v-row>
 
-      <v-row v-if="!isEditingAuthor"
-             dense
-             class="pt-2">
-
+      <v-row v-if="!isEditingAuthor" dense class="pt-2">
         <v-col>
-
-          <BaseUserPicker :users="fullNameUsers"
-                          :preSelected="preselectAuthorNames"
-                          :readonly="isUserPickerReadOnly"
-                          :hint="isUserPickerReadOnly ? readOnlyHint('authors') : labels.authorPickHint"
-                          @removedUsers="catchPickerAuthorChange($event, false)"
-                          @pickedUsers="catchPickerAuthorChange($event, true)"/>
-        </v-col>
-
-      </v-row>
-
-      <v-row class="px-4"
-             dense>
-
-        <v-col class="text-body-1"
-               v-html="labels.authorAutoComplete">
-        </v-col>
-      </v-row>
-
-      <v-row dense
-             class="pt-2 px-4">
-
-        <v-col>
-
-          <v-text-field ref="firstName"
-                        id="firstName"
-                        :label="labels.labelFirstName"
-                        :error-messages="validationErrors.firstName"
-                        :prepend-icon="mdiAccount"
-                        :placeholder="labels.placeholderFirstName"
-                        :model-value="firstNameField"
-                        :readonly="isReadOnly('authors')"
-                        :hint="readOnlyHint('authors')"
-                        @keyup="blurOnEnterKey"
-                        @focusin="focusIn($event)"
-                        @focusout="focusOut('firstName', $event)"
-                        @input="changeProperty('firstName', $event.target.value)"
+          <BaseUserPicker
+            :users="allUsersForUserPicker"
+            :preSelectedEmails="preselectAuthorEmails"
+            :readonly="isUserPickerReadOnly"
+            :hint="
+              isUserPickerReadOnly
+                ? readOnlyHint('authors')
+                : labels.authorPickHint
+            "
+            @removedUsers="catchPickerAuthorChange($event, false)"
+            @pickedUsers="catchPickerAuthorChange($event, true)"
           />
+        </v-col>
+      </v-row>
 
+      <v-row class="px-4" dense>
+        <v-col class="text-body-1" v-html="labels.authorAutoComplete"> </v-col>
+      </v-row>
+
+      <v-row dense class="pt-2 px-4">
+        <v-col>
+          <v-text-field
+            ref="firstName"
+            id="firstName"
+            :label="labels.labelFirstName"
+            :error-messages="validationErrors.firstName"
+            :prepend-icon="mdiAccount"
+            :placeholder="labels.placeholderFirstName"
+            :model-value="firstNameField"
+            :readonly="isReadOnly('authors')"
+            :hint="readOnlyHint('authors')"
+            @keyup="blurOnEnterKey"
+            @focusin="focusIn($event)"
+            @focusout="focusOut('firstName', $event)"
+            @update:model-value="changeProperty('firstName', $event.target.value)"
+          />
         </v-col>
 
         <v-col class="pl-4">
-
-          <v-text-field ref="lastName"
-                        id="lastName"
-                        :label="labels.labelLastName"
-                        :error-messages="validationErrors.lastName"
-                        :prepend-icon="mdiAccount"
-                        :placeholder="labels.placeholderLastName"
-                        :model-value="lastNameField"
-                        :readonly="isReadOnly('authors')"
-                        :hint="readOnlyHint('authors')"
-                        @keyup="blurOnEnterKey"
-                        @focusin="focusIn($event)"
-                        @focusout="focusOut('lastName', $event)"
-                        @input="changeProperty('lastName', $event.target.value)"
+          <v-text-field
+            ref="lastName"
+            id="lastName"
+            :label="labels.labelLastName"
+            :error-messages="validationErrors.lastName"
+            :prepend-icon="mdiAccount"
+            :placeholder="labels.placeholderLastName"
+            :model-value="lastNameField"
+            :readonly="isReadOnly('authors')"
+            :hint="readOnlyHint('authors')"
+            @keyup="blurOnEnterKey"
+            @focusin="focusIn($event)"
+            @focusout="focusOut('lastName', $event)"
+            @update:model-value="changeProperty('lastName', $event.target.value)"
           />
-
         </v-col>
-
       </v-row>
 
-      <v-row dense
-             class="px-4">
-
+      <v-row dense class="px-4">
         <v-col>
-
-          <v-text-field ref="affiliation"
-                        id="affiliation"
-                        :label="labels.labelAffiliation"
-                        :error-messages="validationErrors.affiliation"
-                        :prepend-icon="mdiHandshake"
-                        :placeholder="labels.placeholderAffiliation"
-                        :model-value="affiliationField"
-                        :readonly="isReadOnly('authors')"
-                        :hint="readOnlyHint('authors')"
-                        @keyup="blurOnEnterKey"
-                        @focusin="focusIn($event)"
-                        @focusout="focusOut('affiliation', $event)"
-                        @input="changeProperty('affiliation', $event.target.value)"
+          <v-text-field
+            ref="affiliation"
+            id="affiliation"
+            :label="labels.labelAffiliation"
+            :error-messages="validationErrors.affiliation"
+            :prepend-icon="mdiHandshake"
+            :placeholder="labels.placeholderAffiliation"
+            :model-value="affiliationField"
+            :readonly="isReadOnly('authors')"
+            :hint="readOnlyHint('authors')"
+            @keyup="blurOnEnterKey"
+            @focusin="focusIn($event)"
+            @focusout="focusOut('affiliation', $event)"
+            @update:model-value="changeProperty('affiliation', $event.target.value)"
           />
-
         </v-col>
 
         <v-col class="pl-4">
-
-          <v-text-field ref="identifier"
-                        id="identifier"
-                        :label="labels.labelIdentifier"
-                        :error-messages="validationErrors.identifier"
-                        :prepend-icon="mdiWalletMembership"
-                        :placeholder="labels.placeholderIdentifier"
-                        :model-value="identifierField"
-                        :readonly="isReadOnly('authors')"
-                        :hint="readOnlyHint('authors')"
-                        @keyup="blurOnEnterKey"
-                        @focusin="focusIn($event)"
-                        @focusout="focusOut('identifier', $event)"
-                        @input="changeProperty('identifier', $event.target.value)"
+          <v-text-field
+            ref="identifier"
+            id="identifier"
+            :label="labels.labelIdentifier"
+            :error-messages="validationErrors.identifier"
+            :prepend-icon="mdiWalletMembership"
+            :placeholder="labels.placeholderIdentifier"
+            :model-value="identifierField"
+            :readonly="isReadOnly('authors')"
+            :hint="readOnlyHint('authors')"
+            @keyup="blurOnEnterKey"
+            @focusin="focusIn($event)"
+            @focusout="focusOut('identifier', $event)"
+            @update:model-value="changeProperty('identifier', $event.target.value)"
           />
-
         </v-col>
-
       </v-row>
 
-      <v-row v-if="isEditingAuthor" >
+      <v-row v-if="isEditingAuthor">
         <v-col>
-          <BaseRectangleButton :icon="mdiClose"
-                               icon-color="white"
-                               color="error"
-                               :disabled="isReadOnly('authors')"
-                               button-text="Remove Author"
-                               tooltip-text="Remove this author from the dataset"
-                               @clicked="removeAuthorClick(email)"/>
-
+          <BaseRectangleButton
+            :icon="mdiClose"
+            icon-color="white"
+            color="error"
+            :disabled="isReadOnly('authors')"
+            button-text="Remove Author"
+            tooltip-text="Remove this author from the dataset"
+            @clicked="removeAuthorClick(email)"
+          />
         </v-col>
       </v-row>
-
     </v-container>
-
   </v-card>
 </template>
 
-<script>
+<script lang="ts">
 /**
  * @summary Show a title, instructions and a button to create a new author
  * @author Dominik Haas-Artho
@@ -222,9 +199,15 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 
-import { mdiAccount, mdiClose, mdiEmail, mdiHandshake, mdiWalletMembership } from '@mdi/js';
+import {
+  mdiAccount,
+  mdiClose,
+  mdiEmail,
+  mdiHandshake,
+  mdiWalletMembership,
+} from '@mdi/js';
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
@@ -234,9 +217,8 @@ import { EDIT_METADATA_ADD_AUTHOR_TITLE } from '@/factories/metadataConsts';
 
 import {
   createAuthor,
-  getArrayOfFullNames,
+  getUserPickerObjects,
   getAuthorByEmail,
-  getAuthorByName,
   getAuthorName,
 } from '@/factories/authorFactory';
 import {
@@ -246,7 +228,8 @@ import {
 } from '@/factories/userEditingValidations';
 
 import {
-  EDITMETADATA_AUTHOR, EDITMETADATA_CLEAR_PREVIEW,
+  EDITMETADATA_AUTHOR,
+  EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
   REMOVE_EDITING_AUTHOR,
@@ -256,7 +239,7 @@ import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 
 
 export default {
-  name: 'EditAddAuthor',
+  // name: 'EditAddAuthor',
   props: {
     titleLabel: {
       type: String,
@@ -319,8 +302,7 @@ export default {
       default: '',
     },
   },
-  mounted() {
-  },
+  mounted() {},
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
@@ -337,17 +319,23 @@ export default {
     },
     affiliationField: {
       get() {
-        return this.previews.affiliation !== null ? this.previews.affiliation : this.affiliation;
+        return this.previews.affiliation !== null
+          ? this.previews.affiliation
+          : this.affiliation;
       },
     },
     firstNameField: {
       get() {
-        return this.previews.firstName !== null ? this.previews.firstName : this.firstName;
+        return this.previews.firstName !== null
+          ? this.previews.firstName
+          : this.firstName;
       },
     },
     lastNameField: {
       get() {
-        return this.previews.lastName !== null ? this.previews.lastName : this.lastName;
+        return this.previews.lastName !== null
+          ? this.previews.lastName
+          : this.lastName;
       },
     },
     emailField: {
@@ -357,53 +345,42 @@ export default {
     },
     identifierField: {
       get() {
-        return this.previews.identifier !== null ? this.previews.identifier : this.identifier;
+        return this.previews.identifier !== null
+          ? this.previews.identifier
+          : this.identifier;
       },
     },
-    preselectAuthorNames() {
+    preselectAuthorEmails() {
       const author = getAuthorByEmail(this.emailField, this.existingAuthors);
-
-      if (author) {
-        const fullName = getAuthorName(author);
-        return fullName ? [fullName] : [];
-      }
-
-      return undefined;
+      return author ? [author.email] : [];
     },
-    fullNameUsers() {
+    allUsersForUserPicker() {
       const localAuthors = [...this.existingAuthors];
-      return getArrayOfFullNames(localAuthors);
+      return getUserPickerObjects(localAuthors);
     },
     validations() {
       return getValidationMetadataEditingObject(EDITMETADATA_AUTHOR);
     },
-    infoReadOnly() {
-      return (this.authorPickerTouched && this.authorIsPicked) || (!this.authorPickerTouched && this.authorPickerFoundAuthor);
-    },
-    authorPickerFoundAuthor() {
-      if (this.preselectAuthorNames?.length <= 0 || this.fullNameUsers?.length <= 0) {
-        return false;
-      }
-
-      const matches = this.fullNameUsers.filter(fullName => fullName === this.preselectAuthorNames[0]);
-      return matches.length > 0;
-    },
     anyUserElementsActive() {
-      return this.activeElements.email
-          || this.activeElements.firstName
-          || this.activeElements.lastName
-          || this.activeElements.affiliation
-          || this.activeElements.identifier;
+      return (
+        this.activeElements.email ||
+        this.activeElements.firstName ||
+        this.activeElements.lastName ||
+        this.activeElements.affiliation ||
+        this.activeElements.identifier
+      );
     },
     anyPreviewsChanged() {
-      return this.previews.email !== null
-          || this.previews.firstName !== null
-          || this.previews.lastName !== null
-          || this.previews.affiliation !== null
-          || this.previews.identifier !== null;
+      return (
+        this.previews.email !== null ||
+        this.previews.firstName !== null ||
+        this.previews.lastName !== null ||
+        this.previews.affiliation !== null ||
+        this.previews.identifier !== null
+      );
     },
     editAuthorInstructions() {
-      if (this.isEditingAuthor){
+      if (this.isEditingAuthor) {
         return `Change the information of ${getAuthorName({ firstName: this.firstName, lastName: this.lastName })} for this dataset.`;
       }
 
@@ -442,21 +419,38 @@ export default {
       this.validateProperty(property, value);
     },
     validateProperty(property, value) {
-      return isFieldValid(property, value, this.validations, this.validationErrors);
+      return isFieldValid(
+        property,
+        value,
+        this.validations,
+        this.validationErrors,
+      );
     },
-    catchPickerAuthorChange(pickedAuthorName, hasAuthor) {
-
+    catchPickerAuthorChange(pickedUserEmail: string, hasAuthor: boolean) {
       this.authorPickerTouched = true;
       this.authorIsPicked = hasAuthor;
 
       if (this.authorIsPicked) {
-        const author = getAuthorByName(pickedAuthorName, this.existingAuthors) || {};
+        const author =
+          getAuthorByEmail(pickedUserEmail, this.existingAuthors) || {};
         const authorObject = createAuthor(author);
 
-        this.fillPreviews(authorObject.email, authorObject.firstName,
-            authorObject.lastName, authorObject.identifier, authorObject.affiliation);
+        this.fillPreviews(
+          authorObject.email,
+          authorObject.firstName,
+          authorObject.lastName,
+          authorObject.identifier,
+          authorObject.affiliation,
+        );
 
-        if (isObjectValid(this.validationProperties, authorObject, this.validations, this.validationErrors)) {
+        if (
+          isObjectValid(
+            this.validationProperties,
+            authorObject,
+            this.validations,
+            this.validationErrors,
+          )
+        ) {
           this.setAuthorInfo(authorObject);
         }
       } else {
@@ -464,7 +458,6 @@ export default {
         // would be shown
         this.fillPreviews('', '', '', '', '');
       }
-
     },
     notifyAuthorChange(property, value) {
       if (this.anyUserElementsActive) {
@@ -491,30 +484,40 @@ export default {
       });
 
       if (property === 'email') {
-
-        if (isFieldValid(property, value, this.validations, this.validationErrors)) {
+        if (
+          isFieldValid(property, value, this.validations, this.validationErrors)
+        ) {
           const autoAuthor = this.getAutoCompletedAuthor(value);
           if (autoAuthor) {
             authorObject = autoAuthor;
           }
         }
-
       }
 
-      if (isObjectValid(this.validationProperties, authorObject, this.validations, this.validationErrors)) {
+      if (
+        isObjectValid(
+          this.validationProperties,
+          authorObject,
+          this.validations,
+          this.validationErrors,
+        )
+      ) {
         this.setAuthorInfo(authorObject);
       }
-
     },
     getAutoCompletedAuthor(email) {
-
       const autoAuthor = getAuthorByEmail(email, this.existingAuthors);
 
       if (autoAuthor) {
         const autoAuthorObj = createAuthor(autoAuthor);
 
-        this.fillPreviews(autoAuthorObj.email, autoAuthorObj.firstName,
-            autoAuthorObj.lastName, autoAuthorObj.identifier, autoAuthorObj.affiliation);
+        this.fillPreviews(
+          autoAuthorObj.email,
+          autoAuthorObj.firstName,
+          autoAuthorObj.lastName,
+          autoAuthorObj.identifier,
+          autoAuthorObj.affiliation,
+        );
 
         // this makes the text-fields readonly again
         this.authorPickerTouched = false;
@@ -525,7 +528,6 @@ export default {
       return null;
     },
     setAuthorInfo(authorObject) {
-
       const newAuthorInfo = {
         ...authorObject,
       };
@@ -572,7 +574,7 @@ export default {
     },
     labels: {
       labelEmail: 'Email',
-      labelFirstName: 'Fist Name',
+      labelFirstName: 'First Name',
       labelLastName: 'Last Name',
       labelIdentifier: 'Identifier - OrcId',
       labelAffiliation: 'Affiliation',
@@ -583,8 +585,10 @@ export default {
       placeholderAffiliation: 'Enter authors affiliation',
       authorInstructions: 'Enter an email address of the author.',
       authorOr: '<strong>Or</strong> pick an existing author',
-      authorAutoComplete: 'If an author is picked or found with the email address these fields are <strong>autocompleted</strong>!',
-      authorPickHint: 'Start typing the name in the text field to search for an author.',
+      authorAutoComplete:
+        'If an author is picked or found with the email address these fields are <strong>autocompleted</strong>!',
+      authorPickHint:
+        'Start typing the name in the text field to search for an author.',
     },
     validationProperties: [
       'email',
@@ -617,7 +621,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-
-</style>
+<style scoped></style>

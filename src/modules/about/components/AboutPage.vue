@@ -92,9 +92,9 @@
           <v-window-item :key="tabs[4].name">
             <about-tab-layout
               title="Imprint"
-              :titleImage="mdiFingerprint"
-              :loading="dmpLoading"
-              loadingText="Loading Data Management Plan infos..."
+              :titleImage="imprintImg"
+              :loading="false"
+              loadingText="Loading Imprint infos..."
               :markdownContent="imprintMarkdownText"
             />
           </v-window-item>
@@ -121,8 +121,6 @@
  */
 import { mapGetters, mapState } from 'vuex';
 
-import { ABOUT_PAGENAME } from '@/router/routeConsts';
-
 import {
   mdiBookOpenVariant,
   mdiInformation,
@@ -130,6 +128,8 @@ import {
   mdiShieldCheckOutline,
   mdiFingerprint,
 } from '@mdi/js';
+
+import { ABOUT_PAGENAME } from '@/router/routeConsts';
 import orga from '@/assets/about/EnviDat_organigram.png';
 import { renderMarkdown } from '@/factories/stringFactory';
 import ExpandableCard from '@/modules/about/components/ExpandableCard.vue';
@@ -141,7 +141,6 @@ import {
   GET_POLICIES,
 } from '@/modules/about/store/aboutMutationsConsts';
 
-import { getImage } from '@/factories/imageFactory';
 import AboutTabLayout from '@/modules/about/components/AboutTabLayout.vue';
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
@@ -251,45 +250,37 @@ export default {
     aboutCardInfo() {
       const backendAboutInfos = this.config?.aboutInfo || null;
 
-      const contact = getImage('contact');
-      const handsSmall = getImage('hands_small');
-      const conceptImg = getImage('concept_small');
-
-      const communityImg = getImage('community_small');
-      const wslLogoImg = getImage('wslLogo');
-      const teamImg = getImage('team_small');
-
       const defaultWidthClass = 'v-col-12 v-col-sm-6 v-col-md-4 v-col-xl-3';
 
       const defaultAboutInfo = [
         {
           title: 'Contact',
           text: 'Contact the EnviDat team by <a href="mailto:envidat@wsl.ch">envidat@wsl.ch</a> for support, quesitons or feedback.',
-          img: contact,
+          img: 'contact',
           defaultWidthClass,
         },
         {
           title: 'Our Mission',
           text: 'EnviDat is the environmental data portal and repository developed by the Swiss Federal Research Institute WSL. We have the capability to integrate, host and publish data sets. We make environmental monitoring and research data accessible. <p><a href="https://www.wsl.ch/en/about-wsl/programmes-and-initiatives/envidat.html" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" >More about EnviDat as Program of WSL</a></p>',
-          img: handsSmall,
+          img: 'hands_small',
           defaultWidthClass,
         },
         {
           title: 'Concept',
           text: 'EnviDat supports the user-friendly registration, documentation, storage, publication, search and retrieval of data sets from the environmental domain. We provide various services to our users and we follow a set of principles as summarized in our concept image below. Additional detailed information can be found in our <a href="https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:18703" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" >concept paper on DORA</a>.',
-          img: conceptImg,
+          img: 'concept_small',
           defaultWidthClass,
         },
         {
           title: 'Community',
           text: 'With EnviDat, WSL aims to disseminate its data sets as broadly as possible in order to foster international research cooperation in the field of environmental science and contribute to the ongoing cultural evolution in research towards openness, shared data and opportunities for collaboration. Consequently, we are registered in <a href="https://fairsharing.org/biodbcore-001178/" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" >FAIRsharing.org</a> and <a href="https://www.re3data.org/repository/r3d100012587" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" >re3data.org</a> and a contributor community to <a href="https://geoportal.org/community/envidat-community" target="_blank" onclick="event.stopPropagation();" >ESA Geoportal </a>, <a href="https://gcmd.nasa.gov/search/Titles.do?AutoDisplayTitles=true&subset=envidat#titles" target="_blank" onclick="event.stopPropagation();" >NASA GCMD, <a href="https://opendata.swiss/en/organization/envidat" target="_blank" onclick="event.stopPropagation();" >OPENDATA Swiss</a></a> and <a href="https://b2find.eudat.eu/organization/envidat" target="_blank" onclick="event.stopPropagation();" >EOSC-Hub via B2FIND</a>. ',
-          img: communityImg,
+          img: 'community_small',
           defaultWidthClass,
         },
         {
           title: 'WSL',
           text: 'The Swiss Federal Institute for Forest, Snow and Landscape Research is concerned with the use, development and protection of natural and urban spaces. The focus of our research is on solving problems to do with the responsible use of landscapes and forests and a prudent approach to natural hazards, especially those common in mountainous countries. WSL occupies a leading position internationally in these research areas. We also provide groundwork for sustainable environmental policies in Switzerland. <p><a href="https://www.wsl.ch" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" >For more information have a look at the Website of WSL</a></p>',
-          img: wslLogoImg,
+          img: 'wslLogo',
           defaultWidthClass,
         },
         {
@@ -299,7 +290,7 @@ export default {
             '<img src="' +
             this.orga +
             '" style="width: 100%; height: 100%;" />',
-          img: teamImg,
+          img: 'team_small',
           defaultWidthClass: 'v-col-12 v-col-sm-12 v-col-md-8',
         },
       ];
@@ -315,32 +306,31 @@ export default {
       );
     },
     missionImg() {
-      const imgPath = this.$vuetify.display.mdAndUp
+      return this.$vuetify.display.mdAndUp
         ? 'mission'
         : 'mission_small';
-      return getImage(imgPath);
     },
     policiesMarkdownText() {
       return renderMarkdown(this.policiesMarkdown);
     },
     policiesImg() {
-      const imgPath = this.$vuetify.display.mdAndUp
+      return this.$vuetify.display.mdAndUp
         ? 'policies'
         : 'policies_small';
-      return getImage(imgPath);
     },
     guidelinesMarkdownText() {
       return renderMarkdown(this.guidelinesMarkdown);
     },
     guidelineImg() {
-      const imgPath = this.$vuetify.display.mdAndUp
+      return this.$vuetify.display.mdAndUp
         ? 'guidelines'
         : 'guidelines_small';
-      return getImage(imgPath);
     },
     dmpImg() {
-      const imgPath = this.$vuetify.display.mdAndUp ? 'dmp' : 'dmp_small';
-      return getImage(imgPath);
+      return this.$vuetify.display.mdAndUp ? 'dmp' : 'dmp_small';
+    },
+    imprintImg() {
+      return this.$vuetify.display.mdAndUp ? 'team' : 'team_small';
     },
     dmpMarkdownText() {
       return renderMarkdown(this.dmpMarkdown);

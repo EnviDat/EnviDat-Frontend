@@ -63,23 +63,6 @@ if (!useTestdata) {
   API_ROOT = import.meta.env?.VITE_API_ROOT;
 }
 
-function contentSize(content) {
-  return content !== undefined ? Object.keys(content).length : 0;
-}
-
-function contentFilterAccessibility(value) {
-  // don't make a check for now
-  return true;
-
-  // if (value.capacity && value.capacity !== 'public') {
-  //   // unpublished entries have 'private'
-  //   return false;
-  // } else if (value.private && value.private === true) {
-  //   return false;
-  // }
-
-  // return true;
-}
 
 function contentFilteredByTags(value, selectedTagNames) {
   return value.tags && tagsIncludedInSelectedTags(value.tags, selectedTagNames);
@@ -214,10 +197,11 @@ export default {
         ];
       const contents = Object.values(metadatasContent);
 
-      const localEntry = contents.filter(entry => entry.name === metadataId);
-      if (localEntry.length === 1) {
+      // needs to be compared with the name of the dataset!
+      const localEntry = contents.filter(entry => entry.name === metadataId || entry.id === metadataId)[0];
+      if (localEntry) {
         // filter() always return an array
-        commit(`${commitMethodPrefix}_SUCCESS`, localEntry[0], {
+        commit(`${commitMethodPrefix}_SUCCESS`, localEntry, {
           root: !!commitMethod,
         });
         return;
@@ -240,6 +224,7 @@ export default {
         });
       });
   },
+  // ENRICO - 'master' call for all data
   async [BULK_LOAD_METADATAS_CONTENT]({ dispatch, commit }, config = {}) {
     commit(BULK_LOAD_METADATAS_CONTENT);
 
@@ -322,9 +307,8 @@ export default {
           `${METADATA_NAMESPACE}/searchedMetadatasContent`
         ];
 
-        if (contentSize(searchContent) > 0) {
-          datasets = Object.values(searchContent);
-        }
+        // always overwrite the values also when nothing was found, so the "search not fount" can show up
+        datasets = Object.values(searchContent);
       }
 
       let filteredDatasets = [];

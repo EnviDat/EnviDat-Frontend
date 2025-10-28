@@ -20,10 +20,11 @@
 
     <v-snackbar
       id="NotificationSnack"
-      top
-      elevation="0"
+      location="bottom"
+      variant="flat"
       color="transparent"
       timeout="10000"
+      timer
       v-model="showSnack"
     >
       <NotificationCard
@@ -112,10 +113,14 @@ import {
   METADATA_UPDATE_AN_EXISTING_AUTHOR,
 } from '@/store/metadataMutationsConsts';
 
+import { populateEditingComponents } from '@/factories/mappingFactory';
 import {
-  getReadOnlyFieldsObject,
-  populateEditingComponents,
-} from '@/factories/mappingFactory';
+  getReadOnlyFieldsObject ,
+  getUserOrganizationRoleMap,
+  USER_ROLE_EDITOR,
+  USER_ROLE_MEMBER,
+  USER_ROLE_SYSTEM_ADMIN,
+} from '@/factories/userEditingValidations';
 
 import NavigationStepper from '@/components/Navigation/NavigationStepper.vue';
 import NotificationCard from '@/components/Cards/NotificationCard.vue';
@@ -142,12 +147,7 @@ import {
   DOI_RESERVE,
 } from '@/modules/user/store/doiMutationsConsts';
 
-import {
-  getUserOrganizationRoleMap,
-  USER_ROLE_EDITOR,
-  USER_ROLE_MEMBER,
-  USER_ROLE_SYSTEM_ADMIN,
-} from '@/factories/userEditingValidations';
+
 import { replaceAuthorDeadAscii } from '@/factories/authorFactory';
 
 export default {

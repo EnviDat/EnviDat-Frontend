@@ -32,8 +32,8 @@ async function reloadMetadataForEditing(dispatch, metadataId) {
 }
 
 export default {
-  async [DOI_API_ACTIONS]({ dispatch }, { data: { event, metadataId } }) {
-    await dispatch(event, metadataId);
+  async [DOI_API_ACTIONS]({ dispatch }, { data: { doiAction, metadataId } }) {
+    await dispatch(doiAction, metadataId);
   },
   async [DOI_RESERVE]({ dispatch, commit }, metadataId) {
     commit(DOI_RESERVE, { key: DOI_RESERVED_PROPERTY })

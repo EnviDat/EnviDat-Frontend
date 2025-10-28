@@ -6,25 +6,27 @@
     tag="article"
   >
     <!-- prettier-ignore -->
-    <NavigationStepper :steps="creationSteps"
-                       :step="routeStep"
-                       :subStep="routeSubStep"
-                       stepColor="highlight"
-                       :saving="metadataCreationLoading"
-                       :showSaveButton="canSaveInBackend"
-                       :isCreationWorkflow="true"
-                       :showProgress="true"
-                       :loading="isLoadingUserOrganizations"
-                       :dataset-title="currentDatasetTitle"
-                       @clickedSaveDataset="catchSaveNewDataset"
-                       @clickedClose="catchBackClicked" />
-
+    <NavigationStepper
+      :steps="creationSteps"
+      :step="routeStep"
+      :subStep="routeSubStep"
+      stepColor="highlight"
+      :saving="metadataCreationLoading"
+      :showSaveButton="canSaveInBackend"
+      :isCreationWorkflow="true"
+      :showProgress="true"
+      :loading="isLoadingUserOrganizations"
+      :dataset-title="currentDatasetTitle"
+      @clickedSaveDataset="catchSaveNewDataset"
+      @clickedClose="catchBackClicked"
+    />
     <v-snackbar
       id="NotificationSnack"
-      top
-      elevation="0"
+      location="bottom"
+      variant="flat"
       color="transparent"
       timeout="10000"
+      timer
       v-model="showSnack"
     >
       <NotificationCard
@@ -53,6 +55,8 @@
  */
 import { mapState } from 'vuex';
 import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
+
+// new workflow
 
 import {
   eventBus,
@@ -93,6 +97,7 @@ import {
 import { METADATA_TITLE_PROPERTY } from '@/factories/metadataConsts';
 
 import NavigationStepper from '@/components/Navigation/NavigationStepper.vue';
+import NotificationCard from '@/components/Cards/NotificationCard.vue';
 
 import { errorMessage } from '@/factories/notificationFactory';
 import {
@@ -114,7 +119,7 @@ import {
 } from '@/factories/workflowFactory';
 
 import { metadataCreationSteps } from '@/factories/workflowCreation';
-import { getReadOnlyFieldsObject } from '@/factories/mappingFactory';
+import { getReadOnlyFieldsObject } from '@/factories/userEditingValidations';
 import { replaceAuthorDeadAscii } from '@/factories/authorFactory';
 
 export default {
@@ -150,10 +155,8 @@ export default {
       this,
     );
 
-    const prefilledOrganizationId =
-      this.organizationsStore.userOrganizationIds?.length === 1
-        ? this.organizationsStore.userOrganizationIds[0]
-        : undefined;
+    const prefilledOrganizationId = this.autoPreSelectedOrganizationId;
+
     initStepDataOnLocalStorage(
       this.creationSteps,
       this.user,
@@ -180,6 +183,11 @@ export default {
       'metadataCreationError',
       'metadataCreationLoading',
     ]),
+    autoPreSelectedOrganizationId() {
+      return this.organizationsStore.userOrganizationIds?.length === 1
+          ? this.organizationsStore.userOrganizationIds[0]
+          : undefined;
+    },
     currentDatasetTitle() {
       const step = getStepByName(EDITMETADATA_MAIN_HEADER, this.creationSteps);
       return step?.genericProps[METADATA_TITLE_PROPERTY];
@@ -263,8 +271,13 @@ export default {
         EDITMETADATA_ORGANIZATION,
       );
 
+      const prefilledOrganizationId = this.autoPreSelectedOrganizationId;
+
       const data = {
-        ...existingOrganizationData,
+        // if the case that nothing comes from the localstorage, check if the user has only one
+        // organization and use it as preselected (this is the case when entering this page directly without
+        // navigating first over the dashboard)
+        organizationId: existingOrganizationData.organizationId || prefilledOrganizationId,
         userOrganizations,
       };
 
@@ -462,6 +475,7 @@ export default {
   },
   components: {
     NavigationStepper,
+    NotificationCard,
   },
   data: () => ({
     isLoadingUserOrganizations: false,
@@ -489,4 +503,10 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+
+#NotificationSnack {
+  padding: 0 !important;
+}
+
+</style>

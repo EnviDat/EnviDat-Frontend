@@ -2,9 +2,6 @@
   <v-card id="EditFunding" class="pa-0" max-width="100%" :loading="loading">
 
     <v-container fluid class="pa-4">
-      <template slot="progress">
-        <v-progress-linear color="primary" indeterminate />
-      </template>
 
       <v-row>
         <v-col cols="6" class="text-h5">
@@ -166,25 +163,6 @@ export default {
       type: String,
       default: '',
     },
-  },
-  beforeUnmount() {
-    // Validate all entries to ensure validationErrors are up to date
-    this.validate();
-
-    // Check if there are any validation errors
-    const hasErrors = this.validationErrors.funders.some(errors =>
-      Object.values(errors).some(error => error),
-    );
-
-    if (hasErrors) {
-      // There are validation errors: restore previewFunders to previous valid state
-      this.previewFunders = JSON.parse(JSON.stringify(this.prevValidPreviewFunders));
-      console.log('Data not saved due to validation errors. State restored to previous valid values.');
-    } else {
-      // No validation errors: update prevValidPreviewFunders and save data
-      this.prevValidPreviewFunders = JSON.parse(JSON.stringify(this.previewFunders));
-      this.setFundersInfo('funders', this.previewFunders);
-    }
   },
   mounted() {
     this.previewFunders = JSON.parse(JSON.stringify(this.funders));

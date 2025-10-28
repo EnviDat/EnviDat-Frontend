@@ -19,8 +19,8 @@ import DetailChart from '@/modules/metadata/components/GC-Net/GcNetDetailChart.v
 import { defaultSeriesSettings } from '@/factories/chartFactory';
 import DetailChartsList from '@/modules/metadata/components/GC-Net/GcNetDetailChartsList.vue';
 
-import stationParameters from './testdata/stationParameters.json';
-import stationsConfig from './testdata/stationsConfig.json';
+import stationParameters from '@/../stories/testdata/stationParameters.json';
+import stationsConfig from '@/../stories/testdata/stationsConfig.json';
 
 
 const stations = stationsConfig;

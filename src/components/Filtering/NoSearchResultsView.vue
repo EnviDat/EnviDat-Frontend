@@ -12,18 +12,39 @@
 
     <v-col cols="12">
       <v-container class="pa-0" fluid>
-        <v-row no-gutters>
+        <v-row justify="center" no-gutters>
           <v-col
-            v-for="card in categoryCards"
+            v-for="card in categoryCardsNoMode"
             :key="card.title"
-            cols="6"
-            md="4"
-            class="pa-2"
+            class="pa-2 d-block"
+            cols="auto"
           >
-            <BaseClickCard
+            <BaseCategoryCard
+              height="45"
+              :elevation="5"
+              :title="card.title"
+              :icon="card.iconPath"
+              :color="card.darkColor"
+              :isMode="card.isMode"
+              :contain="card.contain"
+              :disabled="card.disabled"
+              @click="catchCategoryClicked(card.type)"
+            />
+          </v-col>
+          <v-col
+            v-for="card in categoryCardsMode"
+            :key="card.title"
+            class="pa-2 d-block"
+            cols="auto"
+          >
+            <BaseCategoryCard
+              height="45"
+              :elevation="5"
               :title="card.title"
               :img="card.imgPath"
+              :icon="card.iconPath"
               :color="card.darkColor"
+              :isMode="card.isMode"
               :contain="card.contain"
               :disabled="card.disabled"
               @click="catchCategoryClicked(card.type)"
@@ -50,7 +71,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import BaseClickCard from '@/components/BaseElements/BaseClickCard.vue';
+// import BaseClickCard from '@/components/BaseElements/BaseClickCard.vue';
+import BaseCategoryCard from '@/components/BaseElements/BaseCategoryCard.vue';
 
 export default {
   name: 'NoSearchResultView',
@@ -59,6 +81,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    categoryColor: {
+      type: String,
+      default: '#35A89D',
+    },
   },
   data() {
     return {
@@ -66,14 +92,22 @@ export default {
       suggestionText: 'Change the criteria or try one of these categories',
     };
   },
-  computed: {},
+  computed: {
+    categoryCardsNoMode() {
+      return this.categoryCards.filter((el) => !el.isMode);
+    },
+    categoryCardsMode() {
+      return this.categoryCards.filter((el) => el.isMode);
+    },
+  },
   methods: {
     catchCategoryClicked(cardTitle) {
       this.$emit('clicked', cardTitle);
     },
   },
   components: {
-    BaseClickCard,
+    // BaseClickCard,
+    BaseCategoryCard,
   },
 };
 </script>

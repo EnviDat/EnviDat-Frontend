@@ -7,7 +7,6 @@
              ref="header"
              style="z-index: 1; left: 0"
              >
-
         <!-- prettier-ignore -->
         <MetadataHeader v-bind="header"
                           :metadataId="metadataId"
@@ -47,9 +46,13 @@
           :key="`left_${index}_${keyHash}`"
           no-gutters
         >
-          <v-col class="mb-2 px-0">
-            <!-- prettier-ignore -->
-            <component :component="entry" :is="entry" v-bind="entry.props" />
+          <v-col v-if="entry" class="mb-2 px-0">
+            <component
+              :component="entry"
+              :is="entry"
+              v-bind="entry.props"
+              :showPlaceholder="showPlaceholder"
+            />
           </v-col>
         </v-row>
       </v-col>
@@ -60,9 +63,13 @@
           :key="`right_${index}_${keyHash}`"
           no-gutters
         >
-          <v-col class="mb-2 px-0">
-            <!-- prettier-ignore -->
-            <component :component="entry" :is="entry" v-bind="entry.props" />
+          <v-col v-if="entry" class="mb-2 px-0">
+            <component
+              :component="entry"
+              :is="entry"
+              v-bind="entry.props"
+              :showPlaceholder="showPlaceholder"
+            />
           </v-col>
         </v-row>
       </v-col>
@@ -99,6 +106,7 @@ import {
   BROWSE_PATH,
   METADATAEDIT_PAGENAME,
   ORGANIZATIONS_PAGENAME,
+  WORKFLOW_PAGENAME,
 } from '@/router/routeConsts';
 
 import {
@@ -121,8 +129,8 @@ import {
   createLicense,
   createPublications,
   createRelatedDatasets,
-  createResources,
 } from '@/factories/metaDataFactory';
+import { createResources } from '@/factories/resourceHelpers';
 
 import { createCitation } from '@/factories/citationFactory';
 
@@ -153,19 +161,20 @@ import {
 
 import { getEventsForPageAndName } from '@/modules/matomo/store/matomoStore';
 
-import { convertJSON, getFrontendDates } from '@/factories/mappingFactory';
+import { convertJSON } from '@/factories/convertJSON';
+import { getFrontendDates } from '@/factories/mappingFactory';
 
 import { convertArrayToUrlString } from '@/factories/stringFactory';
 
 import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
 import { createLocation } from '@/factories/geoFactory';
+
 import { createHeaderViewModel } from '@/factories/ViewModels/HeaderViewModel';
 import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionViewModel';
-import { loadResourcesPreview } from '@/modules/charts/middelware/chartServiceLayer.ts';
+import { getResourcesForDataViz } from '@/modules/charts/middelware/chartServiceLayer.ts';
 
 const MetadataDescription = defineAsyncComponent(
-  () =>
-    import('@/modules/metadata/components/Metadata/MetadataDescription.vue'),
+  () => import('@/modules/metadata/components/Metadata/MetadataDescription.vue'),
 );
 
 const MetadataResources = defineAsyncComponent(
@@ -191,10 +200,11 @@ const MetadataGeo = defineAsyncComponent(
   () => import('@/modules/metadata/components/Geoservices/MetadataGeo.vue'),
 );
 const MetadataRelatedDatasets = defineAsyncComponent(
-  () =>
-    import(
-      '@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue'
-    ),
+  () => import('@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue'),
+);
+
+const ResourceDataVizListAsync = defineAsyncComponent(
+  () => import('@/modules/charts/components/ResourceDataVizList.vue'),
 );
 
 // Might want to check https://css-tricks.com/use-cases-fixed-backgrounds-css/
@@ -212,6 +222,8 @@ export default {
 
     eventBus.on(GCNET_PREPARE_DETAIL_CHARTS, this.prepareGCNetChartModal);
     eventBus.on(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
+
+    this.loadMetaDataContent();
   },
   /**
    * @description load all the icons once before the first component's rendering.
@@ -223,8 +235,6 @@ export default {
    * @description reset the scrolling to the top.
    */
   async mounted() {
-    this.loadMetaDataContent();
-
     // await this.setPageViews(this.$route.fullPath, 'Visit');
 
     window.scrollTo(0, 0);
@@ -232,8 +242,6 @@ export default {
     this.$nextTick(() => {
       this.fetchUserOrganisationData();
       this.fetchUserDatasets();
-
-      // this.headerHeight = this.getHeaderHeight();
     });
   },
   /**
@@ -323,7 +331,7 @@ export default {
       return fileList;
     },
     baseUrl() {
-      return import.meta.env.PROD
+      return import.meta.env?.MODE === 'production'
         ? this.baseStationURL
         : this.baseStationURLTestdata;
     },
@@ -339,7 +347,7 @@ export default {
         : undefined;
     },
     showPlaceholder() {
-      return this.loadingMetadatasContent || this.loadingCurrentMetadataContent;
+      return this.loadingCurrentMetadataContent || this.loadingMetadatasContent;
     },
     firstColumn() {
       return this.$vuetify.display.mdAndUp ? this.firstCol : this.singleCol;
@@ -482,20 +490,6 @@ export default {
     resize() {
       this.reRenderComponents();
     },
-    // getHeaderHeight() {
-    //   let height = -2;
-
-    //   if (
-    //     (this.$vuetify.display.smAndDown && this.appScrollPosition > 20) ||
-    //     this.$vuetify.display.mdAndUp
-    //   ) {
-    //     if (this.$refs?.header) {
-    //       height = this.$refs.header.$el.clientHeight;
-    //     }
-    //   }
-
-    //   return height;
-    // },
     /**
      * @description
      */
@@ -507,7 +501,7 @@ export default {
       this.header = null;
       this.descriptionData = null;
       this.citation = null;
-      this.resources = null;
+      this.resourceData = null;
       this.location = null;
       this.publications = null;
       this.relatedDatasets = null;
@@ -564,50 +558,51 @@ export default {
       this.MetadataAuthors.props = {
         authors: this.authors,
         authorDetailsConfig: this.authorDetailsConfig,
-        showPlaceholder: this.showPlaceholder,
       };
     },
     loadResources() {
       const currentContent = this.metadataContent;
 
-      this.resources =
+      this.resourceData =
         createResources(currentContent, this.user, this.userOrganizationIds) ||
         {};
 
       const license = createLicense(currentContent);
 
-      if (this.resources.resources) {
-        this.configInfos = getConfigFiles(this.resources.resources);
+      if (this.resourceData.resources) {
+        this.configInfos = getConfigFiles(this.resourceData.resources);
 
         enhanceElementsWithStrategyEvents(
-          this.resources.resources,
+          this.resourceData.resources,
           undefined,
           true,
         );
         enhanceResourcesWithMetadataExtras(
           this.metadataContent.extras,
-          this.resources.resources,
+          this.resourceData.resources,
         );
 
         enhanceElementsWithStrategyEvents(
-          this.resources.resources,
+          this.resourceData.resources,
           SHOW_DATA_PREVIEW_PROPERTY,
         );
 
-        this.resources.dates = getFrontendDates(this.metadataContent.date);
-      }
+        this.resourceData.dates = getFrontendDates(this.metadataContent.date);
 
-      if (this.resourcesConfig.loadDataViz) {
-        loadResourcesPreview(this.resources.resources);
+        if (this.resourcesConfig.loadDataViz) {
+          this.resourcesForDataViz = getResourcesForDataViz(
+            this.resourceData.resources,
+          );
+        }
       }
 
       this.MetadataResources.props = {
-        ...this.resources,
+        ...this.resourceData,
         dataLicenseId: license.id,
         dataLicenseTitle: license.title,
         dataLicenseUrl: license.url,
         resourcesConfig: this.resourcesConfig,
-        showPlaceholder: this.showPlaceholder,
+        compactList: true,
       };
     },
     setMetadataContent() {
@@ -632,12 +627,11 @@ export default {
 
       this.MetadataDescription.props = {
         ...this.descriptionData,
-        showPlaceholder: this.showPlaceholder,
       };
 
       this.MetadataCitation.props = {
         ...this.citation,
-        showPlaceholder: this.showPlaceholder,
+        showCitation: this.metadataContent.showShallowCitation,
       };
 
       let publicationList;
@@ -647,44 +641,54 @@ export default {
         this.MetadataPublicationList.props = {
           ...this.publications,
           metadataConfig: this.metadataConfig,
-          showPlaceholder: this.showPlaceholder,
         };
         publicationList = this.MetadataPublicationList;
       } else {
         this.MetadataPublications.props = {
           ...this.publications,
           metadataConfig: this.metadataConfig,
-          showPlaceholder: this.showPlaceholder,
         };
         publicationList = this.MetadataPublications;
       }
 
       this.MetadataRelatedDatasets.props = {
         ...this.relatedDatasets,
-        showPlaceholder: this.showPlaceholder,
       };
 
       this.MetadataFunding.props = {
         funding: this.funding,
-        showPlaceholder: this.showPlaceholder,
       };
+
+      let resourceDataViz;
+
+      if (this.resourcesConfig.loadDataViz) {
+        resourceDataViz = ResourceDataVizListAsync;
+        resourceDataViz.props = {
+          resources: this.resourcesForDataViz,
+        };
+      }
 
       this.firstCol = [
         this.MetadataDescription,
         this.MetadataCitation,
         publicationList,
-        this.MetadataRelatedDatasets,
         this.MetadataFunding,
         this.MetadataAuthors,
       ];
 
-      this.secondCol = [this.MetadataResources, this.MetadataGeo];
+      this.secondCol = [
+        this.MetadataResources,
+        resourceDataViz,
+        this.MetadataGeo,
+        this.MetadataRelatedDatasets,
+      ];
 
       if (this.$vuetify.display.smAndDown) {
         this.singleCol = [
           this.MetadataDescription,
           this.MetadataCitation,
           this.MetadataResources,
+          resourceDataViz,
           this.MetadataGeo,
           this.MetadataAuthors,
           this.MetadataFunding,
@@ -768,6 +772,9 @@ export default {
 
       query.search = `${given} ${lastName}`;
       query.isAuthorSearch = true;
+      if (query.mode) {
+        query.mode = undefined;
+      }
 
       this.$router.push({
         path: BROWSE_PATH,
@@ -792,11 +799,20 @@ export default {
       });
     },
     catchEditClicked() {
+      let name = METADATAEDIT_PAGENAME;
+      const params = {
+        metadataid: this.metadataId,
+      }
+
+      if (this.newWorkflowActive) {
+        name = WORKFLOW_PAGENAME;
+        params.id = this.metadataId;
+        delete params.metadataid;
+      }
+
       this.$router.push({
-        name: METADATAEDIT_PAGENAME,
-        params: {
-          metadataid: this.metadataId,
-        },
+        name,
+        params,
         query: {
           backPath: this.$route.fullPath,
         },
@@ -964,7 +980,6 @@ export default {
   },
   data: () => ({
     organizationsStore: null,
-    // headerHeight: 0,
     mdiClose,
     MetadataDescription: markRaw(MetadataDescription),
     MetadataResources: markRaw(MetadataResources),
@@ -992,7 +1007,8 @@ export default {
     header: null,
     descriptionData: null,
     citation: null,
-    resources: null,
+    resourceData: null,
+    resourcesForDataViz: [],
     location: null,
     publications: null,
     relatedDatasets: null,
@@ -1015,6 +1031,4 @@ export default {
 };
 </script>
 
-<style>
-
-</style>
+<style></style>
