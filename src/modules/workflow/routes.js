@@ -1,7 +1,6 @@
 import { WORKFLOW_PATH, WORKFLOW_PAGENAME } from '@/router/routeConsts';
 
-const WorkflowPage = () =>
-  import('@/modules/workflow/components/WorkflowPage.vue');
+const WorkflowPage = () => import('@/modules/workflow/components/WorkflowPage.vue');
 
 export const workflowRoutes = [
   {

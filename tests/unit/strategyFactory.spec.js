@@ -2,19 +2,16 @@ import { it, describe, expect } from 'vitest';
 
 import { getPreviewStrategy } from '@/factories/strategyFactory';
 
-
 // import dataset from '@/../public/testdata/testResoures';
 
 describe('PreviewStrategies - getPreviewStrategy()', () => {
   it('empty', () => {
-
     const strategy = getPreviewStrategy();
 
     expect(strategy).toBeNull();
   });
 
   it('text file extension .txt', () => {
-
     const strategy = getPreviewStrategy('txt');
 
     expect(strategy).toBeDefined();
@@ -24,7 +21,6 @@ describe('PreviewStrategies - getPreviewStrategy()', () => {
   });
 
   it('markdown file extension .md', () => {
-
     const strategy = getPreviewStrategy('md');
 
     expect(strategy).toBeDefined();
@@ -34,10 +30,8 @@ describe('PreviewStrategies - getPreviewStrategy()', () => {
   });
 
   it('unkown file extension .xyz', () => {
-
     const strategy = getPreviewStrategy(['xyz']);
 
     expect(strategy).toBeNull();
   });
-
 });

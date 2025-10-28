@@ -15,28 +15,21 @@ import PieChart from '@/components/Charts/PieChart.vue';
 export default {
   title: '1 Base / Charts / PieChart',
   component: PieChart,
-//  decorators: [() => ({ template: '<div style="height: 500px;"><story/></div>' })],
+  //  decorators: [() => ({ template: '<div style="height: 500px;"><story/></div>' })],
 };
-
 
 export const Basic = {
   args: {
     data: {
-      labels: [
-        'Red',
-        'Blue',
-        'Yellow',
+      labels: ['Red', 'Blue', 'Yellow'],
+      datasets: [
+        {
+          label: 'My First Dataset',
+          data: [300, 50, 100],
+          backgroundColor: ['rgb(255, 99, 132)', 'rgb(54, 162, 235)', 'rgb(255, 205, 86)'],
+          hoverOffset: 4,
+        },
       ],
-      datasets: [{
-        label: 'My First Dataset',
-        data: [300, 50, 100],
-        backgroundColor: [
-          'rgb(255, 99, 132)',
-          'rgb(54, 162, 235)',
-          'rgb(255, 205, 86)',
-        ],
-        hoverOffset: 4,
-      }],
     },
     options: {
       responsive: true,
@@ -51,4 +44,4 @@ export const Basic = {
       },
     },
   },
-}
+};

@@ -2,16 +2,10 @@ import * as yup from 'yup';
 
 import { Author } from '@/types/modelTypes';
 import { AuthorDTO, type DatasetDTO } from '@/types/dataTransferObjectsTypes';
-import {
-  AuthorViewModel,
-  createAuthorViewModel,
-} from '@/modules/workflow/viewModel/AuthorViewModel.ts';
+import { AuthorViewModel, createAuthorViewModel } from '@/modules/workflow/viewModel/AuthorViewModel.ts';
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
-import {
-  convertJSON,
-  convertToBackendJSONWithRules,
-} from '@/factories/convertJSON';
+import { convertJSON, convertToBackendJSONWithRules } from '@/factories/convertJSON';
 
 export class AuthorListViewModel extends AbstractEditViewModel {
   declare authors: Author[];
@@ -28,38 +22,26 @@ export class AuthorListViewModel extends AbstractEditViewModel {
     authors: yup.array().min(1, 'Add at least one author.'),
   });
 
-
   constructor(datasetModel: DatasetModel) {
     super(datasetModel, AuthorListViewModel.mappingRules());
   }
 
-  static getFormattedAuthors(
-    rawAuthors: AuthorDTO[],
-    lastModified: string,
-  ): Author[] {
+  static getFormattedAuthors(rawAuthors: AuthorDTO[], lastModified: string): Author[] {
     const formattedAuthors: Author[] = [];
 
     for (let i = 0; i < rawAuthors?.length; i++) {
       const rawAuthor = rawAuthors[i];
-      const author = AuthorViewModel.getFormattedAuthor(
-        rawAuthor,
-        lastModified,
-      );
+      const author = AuthorViewModel.getFormattedAuthor(rawAuthor, lastModified);
       formattedAuthors.push(author);
     }
 
     return formattedAuthors;
   }
 
-  getAuthorViewModels(
-    validateViewModels: boolean,
-  ): Author[] | undefined {
+  getAuthorViewModels(validateViewModels: boolean): Author[] | undefined {
     const rawAuthors = this.datasetModel.dataset.author;
 
-    const authors: Author[] = AuthorListViewModel.getFormattedAuthors(
-      rawAuthors,
-      undefined,
-    );
+    const authors: Author[] = AuthorListViewModel.getFormattedAuthors(rawAuthors, undefined);
 
     return authors?.map((author) => {
       const authorVM = new AuthorViewModel();
@@ -88,10 +70,7 @@ export class AuthorListViewModel extends AbstractEditViewModel {
    */
   get backendJSON() {
     const rawAuthors = this.authors.map((cleanAuthor) =>
-      convertToBackendJSONWithRules(
-        AuthorViewModel.mappingRules(),
-        cleanAuthor,
-      ),
+      convertToBackendJSONWithRules(AuthorViewModel.mappingRules(), cleanAuthor),
     );
 
     // needs to be "author" here check the mappingRules
@@ -107,14 +86,11 @@ export class AuthorListViewModel extends AbstractEditViewModel {
   updateModel(dataset: DatasetDTO | undefined) {
     if (!dataset) {
       // make sure to initialize for validations to work
-      Object.assign(this, { authors: []});
+      Object.assign(this, { authors: [] });
       return;
     }
 
-    const cleanAuthors = AuthorListViewModel.getFormattedAuthors(
-      dataset.author,
-      dataset.metadata_modified,
-    );
+    const cleanAuthors = AuthorListViewModel.getFormattedAuthors(dataset.author, dataset.metadata_modified);
 
     Object.assign(this, { authors: cleanAuthors });
   }

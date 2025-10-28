@@ -1,12 +1,7 @@
 <template>
-  <v-banner density="compact"
-            class="noPaddingForActions"  >
+  <v-banner density="compact" class="noPaddingForActions">
     <template v-slot:icon>
-      <v-icon
-        color="white"
-        size="24"
-        style="animation: progress-circular-rotate 3s linear infinite;"
-      >
+      <v-icon color="white" size="24" style="animation: progress-circular-rotate 3s linear infinite">
         {{ icon }}
       </v-icon>
     </template>
@@ -16,31 +11,29 @@
     </template>
 
     <template v-slot:actions>
+      <BaseRectangleButton
+        v-if="confirmText"
+        marginClass="mx-1 mt-4 mt-sm-0"
+        color="primary"
+        :buttonText="confirmText"
+        @clicked="confirmClick"
+      />
 
-        <BaseRectangleButton
-          v-if="confirmText"
-          marginClass="mx-1 mt-4 mt-sm-0"
-          color="primary"
-          :buttonText="confirmText"
-          @clicked="confirmClick"
-        />
+      <BaseRectangleButton
+        v-if="deniedText"
+        marginClass="mx-1 mt-4 mt-sm-0"
+        color="error"
+        :buttonText="deniedText"
+        @clicked="deniedClick"
+      />
 
-        <BaseRectangleButton
-          v-if="deniedText"
-          marginClass="mx-1 mt-4 mt-sm-0"
-          color="error"
-          :buttonText="deniedText"
-          @clicked="deniedClick"
-        />
-
-        <BaseRectangleButton
-          v-if="cancelText"
-          marginClass="mx-1 mt-4"
-          :buttonText="cancelText"
-          :isFlat="true"
-          @clicked="cancelClick"
-        />
-
+      <BaseRectangleButton
+        v-if="cancelText"
+        marginClass="mx-1 mt-4"
+        :buttonText="cancelText"
+        :isFlat="true"
+        @clicked="cancelClick"
+      />
     </template>
   </v-banner>
 </template>

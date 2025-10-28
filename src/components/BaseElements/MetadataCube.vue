@@ -1,15 +1,7 @@
 <template>
-  <div
-    class="cube_wrapper"
-    :style="`transform: rotateX(-30deg) translateX(${positionOffset}%);`"
-  >
+  <div class="cube_wrapper" :style="`transform: rotateX(-30deg) translateX(${positionOffset}%);`">
     <div class="cube">
-      <div
-        v-for="index in 6"
-        :key="index"
-        class="cube_face"
-        :style="`background-color: ${color}`"
-      />
+      <div v-for="index in 6" :key="index" class="cube_face" :style="`background-color: ${color}`" />
     </div>
   </div>
 </template>

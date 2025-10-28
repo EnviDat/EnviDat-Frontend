@@ -9,7 +9,7 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 
 import md5 from 'tiny-js-md5';
 import remark from 'remark';
@@ -24,11 +24,12 @@ export function renderMarkdown(markdownString, sanitizeHTML = true) {
   }
 
   const strippedMDFile = remark({
-      gfm: true,
-      commonmark: true,
+    gfm: true,
+    commonmark: true,
   })
-  .use(remarkBreaks)
-  .use(htmlLib, { sanitize: sanitizeHTML}).processSync(markdownString);
+    .use(remarkBreaks)
+    .use(htmlLib, { sanitize: sanitizeHTML })
+    .processSync(markdownString);
 
   return strippedMDFile.contents;
 }
@@ -60,11 +61,11 @@ export function stripMarkdown(markdownString, stripHtml = false) {
 export function getSOLRStringForElements(property, elements, elementProperty = undefined) {
   let query = `${property}:(`; // 'id:(';
   const objectProperty = elementProperty || property;
-  
+
   for (let i = 0; i < elements.length; i++) {
     const element = elements[i];
     let entry = element;
-    
+
     if (typeof element === 'object') {
       entry = element[objectProperty];
     }
@@ -119,7 +120,6 @@ let tempLastRuName = '';
 let tempLastOrgaName = '';
 
 function getResearchUnitName(orgaName, researchUnits) {
-
   const lowerOrgaName = orgaName.toLowerCase();
 
   if (lowerOrgaName === tempLastOrgaName) {
@@ -149,31 +149,27 @@ function getResearchUnitName(orgaName, researchUnits) {
         }
       }
     }
-
   }
 
   tempLastRuName = 'others';
   return 'others';
 }
 
-export function getResearchUnitDatasets (researchUnitStructure, datasets) {
+export function getResearchUnitDatasets(researchUnitStructure, datasets) {
   if (!researchUnitStructure || !datasets) {
     return null;
   }
 
   const orgaMap = new Map();
 
-  datasets.forEach(dSet => {
-
+  datasets.forEach((dSet) => {
     const orgaName = dSet.organization.title;
     fillMapWithArray(orgaName, dSet, orgaMap);
-
   });
 
   const ruMap = new Map();
 
   for (const [orgaName] of orgaMap) {
-
     const orgaDatasets = orgaMap.get(orgaName);
     const ruName = getResearchUnitName(orgaName, researchUnitStructure.researchUnits);
     fillMapWithArray(ruName, orgaDatasets, ruMap);
@@ -190,7 +186,6 @@ export function getResearchUnitDatasets (researchUnitStructure, datasets) {
  * @return {String} encoded string usable for urls
  */
 export function encodeArrayToUrlString(array) {
-
   if (array && array.length > 0) {
     const jsonString = JSON.stringify(array);
 
@@ -249,7 +244,6 @@ export function convertUrlStringToArray(string, toUpperCase = true, toLowerCase 
 }
 
 export function convertArrayToUrlString(array, toUpperCase = true, toLowerCase = false) {
-
   let str = '';
   for (let i = 0; i < array.length; i++) {
     if (toUpperCase) {
@@ -268,7 +262,6 @@ export function convertArrayToUrlString(array, toUpperCase = true, toLowerCase =
 }
 
 export function loadRouteTags(tags, selectedTagNames) {
-
   if (tags && !(tags instanceof Array)) {
     if (tags.includes(',')) {
       tags = tags.split(',');

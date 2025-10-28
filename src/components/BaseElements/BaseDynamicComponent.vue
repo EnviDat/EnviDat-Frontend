@@ -1,6 +1,5 @@
 <template>
   <Suspense>
-
     <template #default>
       <component :is="component" v-bind="componentProps || component.props || {}" />
     </template>
@@ -8,7 +7,6 @@
     <template #fallback>
       <v-skeleton-loader v-if="showLoader" :type="skeletonType"></v-skeleton-loader>
     </template>
-
   </Suspense>
 </template>
 
@@ -33,5 +31,4 @@ defineProps({
     default: false,
   },
 });
-
 </script>

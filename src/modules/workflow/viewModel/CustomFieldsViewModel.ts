@@ -6,21 +6,19 @@ import { Resource } from '@/types/modelTypes';
 import { convertJSON, convertToBackendJSONWithRules, convertToFrontendJSONWithRules } from '@/factories/convertJSON';
 import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 
-
 export type CustomFieldEntry = {
   fieldName: string;
   content: string;
-}
+};
 
-export class CustomFieldsViewModel extends AbstractEditViewModel{
-
+export class CustomFieldsViewModel extends AbstractEditViewModel {
   declare customFields: CustomFieldEntry[];
 
   validationErrors: {
     customFields: {
       fieldName: string | null;
       content: string | null;
-    }[],
+    }[];
   } = {
     customFields: [
       {
@@ -30,25 +28,21 @@ export class CustomFieldsViewModel extends AbstractEditViewModel{
     ],
   };
 
-
-  validationRules =
-    yup.object().shape({
-      customFields: yup.array().of(
-        yup.object({
-          fieldName: yup.string().required().min(3),
-          content: yup.string(),
-        }),
-      ),
-    })
+  validationRules = yup.object().shape({
+    customFields: yup.array().of(
+      yup.object({
+        fieldName: yup.string().required().min(3),
+        content: yup.string(),
+      }),
+    ),
+  });
 
   constructor(datasetModel: DatasetModel) {
     super(datasetModel, CustomFieldsViewModel.mappingRules());
   }
 
-  static mappingRules () {
-    return [
-      ['customFields', 'extras'],
-    ];
+  static mappingRules() {
+    return [['customFields', 'extras']];
   }
 
   static entryMappingRules = [
@@ -56,38 +50,34 @@ export class CustomFieldsViewModel extends AbstractEditViewModel{
     ['content', 'value'],
   ];
 
-
   validate(newProps?: Partial<CustomFieldsViewModel>): boolean {
     return super.validate(newProps);
   }
 
   updateModel(dataset: DatasetDTO) {
-    const frontendJson = convertToFrontendJSONWithRules(
-      this.mappingRules,
-      dataset,
-    );
+    const frontendJson = convertToFrontendJSONWithRules(this.mappingRules, dataset);
 
-    const convertedEntries = frontendJson?.customFields.map((entry) => convertToFrontendJSONWithRules(CustomFieldsViewModel.entryMappingRules, entry))
+    const convertedEntries = frontendJson?.customFields.map((entry) =>
+      convertToFrontendJSONWithRules(CustomFieldsViewModel.entryMappingRules, entry),
+    );
     Object.assign(this, {
       customFields: convertedEntries,
     });
   }
 
   get backendJSON() {
-
-    const convertedEntries = this.customFields?.map((entry) => convertToBackendJSONWithRules(CustomFieldsViewModel.entryMappingRules, entry))
-
-    const backendFields = convertToBackendJSONWithRules(
-      this.mappingRules,
-      {
-        customFields: convertedEntries,
-      },
+    const convertedEntries = this.customFields?.map((entry) =>
+      convertToBackendJSONWithRules(CustomFieldsViewModel.entryMappingRules, entry),
     );
+
+    const backendFields = convertToBackendJSONWithRules(this.mappingRules, {
+      customFields: convertedEntries,
+    });
 
     return convertJSON(backendFields, false);
   }
 
-/*
+  /*
   private unpackDeprecatedResources(customFields: CustomFieldEntry[]) {
 
     let deprecatedResourceEntry = customFields?.filter((entry) => entry?.fieldName === METADATA_DEPRECATED_RESOURCES_PROPERTY)[0];
@@ -136,7 +126,6 @@ export class CustomFieldsViewModel extends AbstractEditViewModel{
   }
 
   storeDeprecatedResources(resourcesForDeprecation: Resource[]) {
-
     const ids = resourcesForDeprecation.map((res) => res.id);
 
     // find deprecated entry or create one
@@ -146,13 +135,12 @@ export class CustomFieldsViewModel extends AbstractEditViewModel{
       deprecatedResourcesEntry = {
         fieldName: METADATA_DEPRECATED_RESOURCES_PROPERTY,
         content: JSON.stringify(ids),
-      }
+      };
 
       this.customFields.push(deprecatedResourcesEntry);
     } else {
       deprecatedResourcesEntry.content = JSON.stringify(ids);
     }
-
   }
 
   isResourceDeprecated(resourceId: string) {
@@ -164,6 +152,4 @@ export class CustomFieldsViewModel extends AbstractEditViewModel{
 
     return deprecatedResourcesEntry.content.includes(resourceId);
   }
-
 }
-

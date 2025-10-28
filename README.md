@@ -1,4 +1,4 @@
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/01f1c3e5efb84ce2a39a515682d6e136)](https://www.codacy.com/gh/EnviDat/EnviDat-Frontend/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=EnviDat/EnviDat-Frontend&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/01f1c3e5efb84ce2a39a515682d6e136)](https://www.codacy.com/gh/EnviDat/EnviDat-Frontend/dashboard?utm_source=github.com&utm_medium=referral&utm_content=EnviDat/EnviDat-Frontend&utm_campaign=Badge_Grade)
 [![DeepScan grade](https://deepscan.io/api/teams/6114/projects/7972/branches/89555/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=6114&pid=7972&bid=89555)
 ![Travis (.com) branch](https://img.shields.io/travis/com/EnviDat/envidat_frontend/develop)
 
@@ -10,7 +10,7 @@ However, collaborations with external researchers are possible and encouraged.
 The frontend connects to the backend API to load research datasets, projects and organizations via CKAN based actions ([CKAN version 2.9](https://docs.ckan.org/en/2.9/api/index.html)).
 
 This main goal of this custom frontend is to improve the UI / UX for the regular usage of researchers looking for environmental research data
-and managing their data publications. 
+and managing their data publications.
 
 Since version 0.6.x includes features for dataset management, by version 0.8.x mainly creating and editing dataset.
 It doesn't replace all the features of the ckan UI.
@@ -33,8 +33,8 @@ Local Storybook: <code>npm run storybook-dev</code>
 You **have to change the environment variables** in the .env.development / .env.production files.
 The .env.production is used when creating a build via <code>npm run build</code>.
 
-
 ### .env.development (release 0.8.0):
+
 ```
 # enabled using local testdata, files from public/testdata/
 VITE_USE_TESTDATA=false
@@ -66,7 +66,6 @@ For more details about the actions check '\*actions.js' files in the respective 
 E.g. './src/modules/meatadata/store/metadataAction.js' for metadata / dataset actions
 './src/modules/projects/store/projectsAction.js' for projects actions.
 
-
 ### .env.production (release 0.8.0):
 
 For a **productive build** you have to change the VITE_API_ROOT variable to point to your CKAN backend.
@@ -92,11 +91,13 @@ Check the CKAN actions and their details here: <https://docs.ckan.org/en/2.9/api
 - Alternatively, if the CKAN instance is running on a remote server, the traffic can be proxied to be accessible from localhost.
 
 - Create the file `.ckan-proxy.secret`:
+
 ```dotenv
 CKAN_HOST=<DOMAIN_OR_IP>:<PORT>
 ```
 
 - Run the proxy:
+
 ```bash
 docker compose -f docker-compose.proxy.yml up -d
 ```
@@ -114,7 +115,6 @@ That can be a simple as changing the welcome text in the dashboard, to completel
 from the backend and load the datasets (metadata only) from a static file as backup. Helpful when doing maintenance or hotfixes on the server-side.
 In that sense, the config provides some basic feature flags for some frontend components.
 
-
 Minimal config.json setup on server side is:
 <code>
 { "version": "0.8.0" }
@@ -125,7 +125,7 @@ The version is used to check if the user has to reload the frontend to get the l
 ## Configuration Options (version 0.8.0)
 
 | Option                                   | Usage                                                                                                                                                                                                                                                                                                                        | Type    | Required | Default                                                                                                                                                                                                                                                                                                      |
-|------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | version                                  | Prompts the user to reload the page when a newer build is available. Make sure to increase along your with the version in the package.json this is extracted into a build and compared with the version of the config.                                                                                                       | String  | true     | -                                                                                                                                                                                                                                                                                                            |
 | welcomeInfo                              | Object with different titles and texts for the Homepage / Landingpage.                                                                                                                                                                                                                                                       | Object  | false    | Defaults are hard coded in the landing page and are only used if nothing is provide from the backend.                                                                                                                                                                                                        |
 | aboutInfo                                | Is a list of json objects which are represented in the about info cards. At least provide strings for card "title" and card "text". Title should be kept short. Text can include html / markdown. Overwrite the "img" via an url to provide a different image. Reference [About Page](https://www.envidat.ch/#/about/about). | Array   | false    | Default infos are hard coded in the about page and are only used if nothing is provide from the backend. Once something is provide via server side config, only the about card infos from the backend config are used. Default cards are 'Contact', 'Our Mission', 'Concept', 'Community', 'WSL' and 'Team'. |
@@ -214,7 +214,6 @@ The version is used to check if the user has to reload the frontend to get the l
 }
 ```
 
-
 # Missing Major Features vs CKAN UI
 
 - Organizations-Page which lists all the organizations
@@ -223,4 +222,4 @@ The version is used to check if the user has to reload the frontend to get the l
 
 # Known issues
 
--   When using the text search on the BrowsePage (route /#/browse), the 'query' action which is being called, isn't a standard ckan action it's custom built. That has to be replace manually to the 'package_search' action from ckan, with the respective parameters for a solr query and the repsonse maybe have to be handled differently.
+- When using the text search on the BrowsePage (route /#/browse), the 'query' action which is being called, isn't a standard ckan action it's custom built. That has to be replace manually to the 'package_search' action from ckan, with the respective parameters for a solr query and the repsonse maybe have to be handled differently.

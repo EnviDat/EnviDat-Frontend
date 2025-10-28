@@ -7,14 +7,7 @@
     <v-card-text v-if="subProjects">
       <v-container class="pa-0" fluid>
         <v-row>
-          <v-col
-            v-for="(project, index) in subProjects"
-            :key="'sub_' + index"
-            cols="12"
-            sm="6"
-            md="4"
-            xl="3"
-          >
+          <v-col v-for="(project, index) in subProjects" :key="'sub_' + index" cols="12" sm="6" md="4" xl="3">
             <project-card
               :id="project.name"
               :title="project.title"
@@ -33,7 +26,7 @@
       <v-skeleton-loader type="paragraph" />
     </v-card-text>
 
-    <v-card-text v-if="!showPlaceholder && !subProjects" style="color: red;">
+    <v-card-text v-if="!showPlaceholder && !subProjects" style="color: red">
       {{ emptyText }}
     </v-card-text>
   </v-card>

@@ -6,10 +6,7 @@ import { LOCAL_DATASET_KEY } from '@/factories/metadataConsts';
 
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
 
-import {
-  readDatasetFromLocalStorage,
-  storeDatasetInLocalStorage,
-} from '@/factories/userCreationFactory';
+import { readDatasetFromLocalStorage, storeDatasetInLocalStorage } from '@/factories/userCreationFactory';
 
 export class LocalStorageDatasetService implements DatasetService {
   declare dataset: DatasetDTO;
@@ -57,10 +54,7 @@ export class LocalStorageDatasetService implements DatasetService {
     return this.dataset;
   }
   // DOMINIK we need to define patch optional and then extract the id directly from the dataset, or directly pass as an argument the id (This is what I understood from the code)
-  async patchDatasetChanges(
-    datasetOrId: string | DatasetDTO,
-    patch?: object,
-  ): Promise<DatasetDTO> {
+  async patchDatasetChanges(datasetOrId: string | DatasetDTO, patch?: object): Promise<DatasetDTO> {
     this.loadingDataset = true;
 
     let datasetId: string;
@@ -75,17 +69,12 @@ export class LocalStorageDatasetService implements DatasetService {
     }
 
     try {
-      const existingData = readDatasetFromLocalStorage(
-        datasetId || this.getLocalId(),
-      );
+      const existingData = readDatasetFromLocalStorage(datasetId || this.getLocalId());
 
-      const storedData = storeDatasetInLocalStorage(
-        datasetId || this.getLocalId(),
-        {
-          ...existingData,
-          ...data,
-        },
-      );
+      const storedData = storeDatasetInLocalStorage(datasetId || this.getLocalId(), {
+        ...existingData,
+        ...data,
+      });
 
       this.dataset = new Dataset(storedData);
 
@@ -99,9 +88,7 @@ export class LocalStorageDatasetService implements DatasetService {
   }
 
   async createResource(resourceData: ResourceDTO): Promise<ResourceDTO> {
-    const currentResources = this.dataset.resources
-      ? [...this.dataset.resources]
-      : [];
+    const currentResources = this.dataset.resources ? [...this.dataset.resources] : [];
     currentResources?.push(resourceData);
 
     await this.patchDatasetChanges(this.dataset.id, {
@@ -112,8 +99,7 @@ export class LocalStorageDatasetService implements DatasetService {
   }
 
   async deleteResource(resourceId: string): Promise<boolean> {
-    const newResources =
-      this.dataset.resources?.filter((res) => res.id !== resourceId) || [];
+    const newResources = this.dataset.resources?.filter((res) => res.id !== resourceId) || [];
 
     try {
       await this.patchDatasetChanges(this.dataset.id, {

@@ -24,8 +24,8 @@ export const projects = {
   namespaced: true,
   state: projectsState,
   getters: {
-    projects: state => state.projects,
-    projectsCardsParents: state => {
+    projects: (state) => state.projects,
+    projectsCardsParents: (state) => {
       const noSubs = [];
       const pros = state.projects;
 
@@ -42,8 +42,8 @@ export const projects = {
 
       return noSubs;
     },
-    projectsPageBackRoute: state => state.projectsPageBackRoute,
-    loading: state => state.loading,
+    projectsPageBackRoute: (state) => state.projectsPageBackRoute,
+    loading: (state) => state.loading,
   },
   mutations,
   actions,

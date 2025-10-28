@@ -1,32 +1,22 @@
 <template>
-  <v-container id="EditDataCredits"
-               class="px-0 py-1 readableText"
-               fluid
-               style="min-height: 67px;">
-
+  <v-container id="EditDataCredits" class="px-0 py-1 readableText" fluid style="min-height: 67px">
     <v-row no-gutters>
-      <v-col cols="12"
-             :class="dark ? 'text-white' : 'text-black'" >
+      <v-col cols="12" :class="dark ? 'text-white' : 'text-black'">
         {{ instruction }}
       </v-col>
     </v-row>
 
-    <v-row no-gutters
-            justify='start'>
-
-      <v-col v-for="(creditName, index) in allDataCredits"
-             :key="index"
-              class='flex-grow-0 mt-3 mt-md-4 mx-md-1'>
-
-        <BaseIconToggleButton :active="isActive(creditName)"
-                              :icon='iconLookup(creditName)'
-                              :value='creditName'
-                              :tooltip="iconTooltip(creditName)"
-                              :disabled="readOnly"
-                              :dark="dark"
-                              @clicked="catchCreditClick"
-                              />
-
+    <v-row no-gutters justify="start">
+      <v-col v-for="(creditName, index) in allDataCredits" :key="index" class="flex-grow-0 mt-3 mt-md-4 mx-md-1">
+        <BaseIconToggleButton
+          :active="isActive(creditName)"
+          :icon="iconLookup(creditName)"
+          :value="creditName"
+          :tooltip="iconTooltip(creditName)"
+          :disabled="readOnly"
+          :dark="dark"
+          @clicked="catchCreditClick"
+        />
       </v-col>
     </v-row>
   </v-container>
@@ -46,8 +36,7 @@ import BaseIconToggleButton from '@/components/BaseElements/BaseIconToggleButton
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
-
+ */
 
 export default {
   name: 'EditDataCredits',
@@ -60,16 +49,9 @@ export default {
       type: Array,
       default: () => [],
     },
-    allDataCredits:  {
+    allDataCredits: {
       type: Array,
-      default: () => [
-        'software',
-        'supervision',
-        'curation',
-        'collection',
-        'validation',
-        'publication',
-      ],
+      default: () => ['software', 'supervision', 'curation', 'collection', 'validation', 'publication'],
     },
     authorName: {
       type: String,
@@ -102,7 +84,6 @@ export default {
       return 'black';
     },
     iconTooltip(creditName) {
-
       const active = this.isActive(creditName);
 
       if (!active) {
@@ -111,10 +92,10 @@ export default {
 
       return `${this.authorName ? this.authorName : 'Author'} has <b>${creditName}</b> contribution for this dataset`;
     },
-    catchCreditClick(creditName){
-      this.$emit('creditClick', creditName)
+    catchCreditClick(creditName) {
+      this.$emit('creditClick', creditName);
     },
-    isActive(creditName){
+    isActive(creditName) {
       return this.dataCredit?.includes(creditName) || false;
     },
     iconLookup(creditName) {
@@ -131,7 +112,6 @@ export default {
 </script>
 
 <style scoped>
-
 .dataCreditIcon {
   opacity: 0.75;
 }

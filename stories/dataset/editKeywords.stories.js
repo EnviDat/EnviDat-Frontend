@@ -20,7 +20,6 @@ import { convertJSON } from '@/factories/convertJSON';
 import metadata from '~/stories/js/metadata.js';
 import { EditKeywordsViewModel } from '@/modules/workflow/viewModel/EditKeywordsViewModel.js';
 
-
 const parsedDataset1 = convertJSON(metadata[2], false);
 const tagsFromDatasets = getPopularTags(metadataset, '', 1);
 
@@ -33,9 +32,7 @@ const editKeywordsViewModel = new EditKeywordsViewModel(parsedDataset1, tagsFrom
 const parsedDataset2 = convertJSON(metadata[0], false);
 const editKeywordsViewModel2 = new EditKeywordsViewModel(parsedDataset2, tagsFromDatasets);
 
-
 function getKeywordsSource(tagsSource) {
-
   const keywordsArray = [...tagsSource];
 
   for (let i = 0; i < keywordsArray.length; i++) {
@@ -46,7 +43,6 @@ function getKeywordsSource(tagsSource) {
 }
 
 const storyTags5 = getKeywordsSource(storyTags).slice(0, 5);
-
 
 export default {
   title: '3 Datasets / 2 Edit / Keywords',
@@ -62,16 +58,16 @@ export const Filled = {
     existingKeywords: tagsFromDatasets,
     keywords: storyTags5,
   },
-}
+};
 
 export const FromViewModel = {
   args: {
     ...editKeywordsViewModel,
   },
-}
+};
 
 export const ManyKeywords = {
   args: {
     ...editKeywordsViewModel2,
   },
-}
+};

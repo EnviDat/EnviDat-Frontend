@@ -1,9 +1,6 @@
 <template>
-  <v-app
-    class="application envidat-font-overwrite"
-    id="app-container"
-  >
-<!--
+  <v-app class="application envidat-font-overwrite" id="app-container">
+    <!--
     :class="{
     'bg-dark': !isLandingPage && !isDashboardPage,
     'bg-dark-dashboard': isDashboardPage,
@@ -11,7 +8,7 @@
     }"
 -->
 
-<!--
+    <!--
     <div
       v-for="(notification, index) in visibleNotifications()"
       :key="`notification_${index}`"
@@ -35,7 +32,7 @@
     <MaintenanceBanner v-if="maintenanceBannerVisible" />
 -->
 
-<!--
+    <!--
     <TheNavigationToolbar
       ref="TheNavigationToolbar"
       class="envidatToolbar"
@@ -54,24 +51,15 @@
     />
 -->
 
-    <TheNavigation
-      style="z-index: 1100;"
-      :navigationItems="navigationItems"
-      version="1.0.0-vike"
-    />
+    <TheNavigation style="z-index: 1100" :navigationItems="navigationItems" version="1.0.0-vike" />
 
     <v-main class="pt-13 pt-md-9 custom-v-main">
-      <v-container
-        class="mainPageContainer"
-        fluid
-        id="appContainer"
-        ref="appContainer"
-      >
+      <v-container class="mainPageContainer" fluid id="appContainer" ref="appContainer">
         <v-row id="mainPageRow" no-gutters>
           <v-col cols="12">
             <div class="content"><slot /></div>
 
-<!--
+            <!--
             <router-view v-slot="{ Component }">
               <transition name="fade" mode="out-in">
                 <component :is="Component" />
@@ -81,7 +69,7 @@
           </v-col>
         </v-row>
 
-<!--
+        <!--
         <TextBanner
           v-if="showMaintenanceBanner"
           id="maintenanceBanner"
@@ -105,7 +93,7 @@
 -->
       </v-container>
 
-<!--
+      <!--
       <v-dialog
         v-model="showReloadDialog"
         persistent
@@ -146,8 +134,7 @@
 -->
     </v-main>
 
-
-<!--
+    <!--
     <div v-if="isLandingPage" class="scroll-icon">
       <v-icon @click="scrollDown()" :size="46" class="mr-1" :color="'#000'">
         {{ iconScroll }}
@@ -155,18 +142,16 @@
       <p class="font-weight-bold">Scroll</p>
     </div>
 -->
-
   </v-app>
 </template>
 
 <script setup lang="ts">
-
 import TheNavigation from '@/components/Navigation/TheNavigation.vue';
 import { navigationItems } from '@/store/navigationState';
 
 return {
   navigationItems,
-}
+};
 </script>
 
 <style>

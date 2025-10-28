@@ -44,7 +44,7 @@ const Template = {
     },
     methods: {
       updateRelatedtext(updatedObject) {
-        eventBus.emit(EDITMETADATA_CLEAR_PREVIEW)
+        eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
         setTimeout(() => {
           this.newText = updatedObject.data.relatedPublicationsText;
         }, 1000);
@@ -87,4 +87,3 @@ export const MobileFilledList = {
   args: { ...FilledList.args },
   parameters: mobileViewportParams,
 };
-

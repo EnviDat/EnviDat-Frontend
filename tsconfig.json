@@ -20,7 +20,7 @@
     "noImplicitAny": false, // Allow implicit 'any' types
     "strictNullChecks": false, // Allow assigning null/undefined to variables
     "strictFunctionTypes": false, // Relax function type compatibility
-    "noImplicitThis": false, // Allow 'this' implicitly
+    "noImplicitThis": false // Allow 'this' implicitly
   },
   "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.vue"]
 }

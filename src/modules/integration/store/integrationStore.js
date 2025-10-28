@@ -55,7 +55,8 @@ export const integration = {
         url = '@/../stories/testdata/integrationlist.json';
       }
 
-      axios.get(url)
+      axios
+        .get(url)
         .then((response) => {
           commit(GET_INTEGRATION_LIST_SUCCESS, response.data);
         })

@@ -22,12 +22,7 @@
         />
       </v-col>
       <v-col v-if="error">
-        <BaseStatusLabelView
-          status="error"
-          statusColor="error"
-          :statusText="error"
-          :expandedText="errorDetails"
-        />
+        <BaseStatusLabelView status="error" statusColor="error" :statusText="error" :expandedText="errorDetails" />
       </v-col>
     </v-row>
 
@@ -40,12 +35,7 @@
     <v-row class="pt-2">
       <v-col class="ml-sm-0 mr-3 flex-grow-0 d-flex align-center">
         <!-- Icon (Aligned to Match v-text-field) -->
-        <v-icon
-          :icon="mdiMessageDraw"
-          class="mr-3"
-          style="align-self: center"
-          color="grey"
-        ></v-icon>
+        <v-icon :icon="mdiMessageDraw" class="mr-3" style="align-self: center" color="grey"></v-icon>
         <!-- Text -->
         <span class="mr-3 text-no-wrap">Blind review </span>
 
@@ -202,15 +192,10 @@ export default {
       return this.isBlindReviewActive ? this.generateBlindReviewUrl() : '';
     },
     isBlindReviewActive() {
-      return this.isBlindActive === null
-        ? this.isBlindReview
-        : this.isBlindActive;
+      return this.isBlindActive === null ? this.isBlindReview : this.isBlindActive;
     },
     isBlindReviewValid() {
-      return (
-        this.doi &&
-        this.allowedPublicationStates.includes(this.publicationState)
-      );
+      return this.doi && this.allowedPublicationStates.includes(this.publicationState);
     },
     isPreviewAvailable() {
       return this.isBlindReviewValid && this.urlField.length > 0;
@@ -296,10 +281,7 @@ export default {
         'Only activate the blind-review if you need to provide anonymized access to your research data files to reviewers for a scientific journal before the dataset has been published. Once enabled, copy the link below and provide it to the reviewers (the DOI is not be activate until the dataset is published).',
     },
     isBlindActive: null,
-    allowedPublicationStates: [
-      PUBLICATION_STATE_RESERVED,
-      PUBLICATION_STATE_PENDING,
-    ],
+    allowedPublicationStates: [PUBLICATION_STATE_RESERVED, PUBLICATION_STATE_PENDING],
     envidatDomain: process.env.VITE_API_ROOT,
     buttonColor: '#269697',
     previewYear: null,

@@ -21,25 +21,18 @@ export class GeoInfoViewModel extends AbstractEditViewModel {
       .ensure()
       .required('Created date is required')
       .min(1, 'At least a creation date is required')
-      .test(
-        'created-date-complete',
-        'Add start and end date for “created”',
-        (entries?: any[]) => {
-          if (!Array.isArray(entries)) return false;
+      .test('created-date-complete', 'Add start and end date for “created”', (entries?: any[]) => {
+        if (!Array.isArray(entries)) return false;
 
-          const created = entries.find((e) => e.dateType === 'created');
-          if (!created) return false;
+        const created = entries.find((e) => e.dateType === 'created');
+        if (!created) return false;
 
-          const start = created.date ?? created.dateStart;
-          const end = created.endDate ?? created.dateEnd;
+        const start = created.date ?? created.dateStart;
+        const end = created.endDate ?? created.dateEnd;
 
-          return Boolean(start && end);
-        },
-      ),
-    geometries: yup
-      .array()
-      .required('Geometry is required')
-      .min(1, 'At least one geometry is required'),
+        return Boolean(start && end);
+      }),
+    geometries: yup.array().required('Geometry is required').min(1, 'At least one geometry is required'),
   });
 
   constructor(datasetVM: DatasetModel) {

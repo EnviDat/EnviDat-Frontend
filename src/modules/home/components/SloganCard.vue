@@ -2,11 +2,7 @@
   <v-container class="pa-0">
     <v-row no-gutters class="align-center">
       <v-col cols="12">
-        <v-img
-          class="envidat-img"
-          alt="envidat_logo"
-          :style="[backgroundStyle, dynamicImgStyle]"
-        />
+        <v-img class="envidat-img" alt="envidat_logo" :style="[backgroundStyle, dynamicImgStyle]" />
 
         <div
           class="envidatSlogan text-h4 text-md-h3 text-xl-h2 pb-5 mb-md-5 mb-md-0 font-weight-bold envidat-slogan"
@@ -27,11 +23,7 @@
         ></div>
       </v-col>
 
-      <base-rectangle-button
-        v-if="buttonText && buttonCallback"
-        :button-text="buttonText"
-        @clicked="buttonCallback"
-      />
+      <base-rectangle-button v-if="buttonText && buttonCallback" :button-text="buttonText" @clicked="buttonCallback" />
     </v-row>
   </v-container>
 </template>
@@ -117,9 +109,7 @@ const dynamicSloganStyle = computed(() => {
 });
 
 const hasButtons = computed(
-  () =>
-    (props.moreButtonText && props.moreButtonCallback) ||
-    (props.buttonText && props.buttonCallback),
+  () => (props.moreButtonText && props.moreButtonCallback) || (props.buttonText && props.buttonCallback),
 );
 </script>
 

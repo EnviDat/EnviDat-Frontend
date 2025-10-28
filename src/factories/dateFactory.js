@@ -6,11 +6,7 @@ import { format, parse } from 'date-fns';
  * @param {boolean} formatNoTime, if true, only the date is returned in dd.MM.yyyy format
  * @return {string} Returns a date string; if formatNoTime is true, returns "dd.MM.yyyy", otherwise returns date and hours:minutes
  */
-export function formatDate(
-  date,
-  inputFormat = 'yyyy-MM-dd',
-  formatNoTime = false,
-) {
+export function formatDate(date, inputFormat = 'yyyy-MM-dd', formatNoTime = false) {
   let formatedDate = '';
 
   if (typeof date === 'string' && date.trim() !== '') {

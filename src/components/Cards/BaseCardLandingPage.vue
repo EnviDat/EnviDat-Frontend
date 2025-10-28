@@ -1,14 +1,7 @@
 <template>
-  <v-card
-    ripple
-    @mouseover="hover = true"
-    @mouseleave="hover = false"
-    class="fill-height elevation-5 rounded-xl"
-  >
+  <v-card ripple @mouseover="hover = true" @mouseleave="hover = false" class="fill-height elevation-5 rounded-xl">
     <v-container class="fill-height category-card">
-      <v-card
-        class="pa-3 fill-height elevation-0 rounded-xl d-flex flex-column bgcCard"
-      >
+      <v-card class="pa-3 fill-height elevation-0 rounded-xl d-flex flex-column bgcCard">
         <!-- Category above if active -->
         <v-row v-if="categoryAbove">
           <v-col cols="auto">
@@ -50,9 +43,7 @@
         <!-- Subtitle / Text -->
         <v-row class="category-subtitle pt-3" no-gutters v-if="hasSubtitle">
           <v-col class="pa-0">
-            <div
-              v-html="!truncateSubTilte ? subtitle : truncatedSubtitle"
-            ></div>
+            <div v-html="!truncateSubTilte ? subtitle : truncatedSubtitle"></div>
           </v-col>
         </v-row>
       </v-card>
@@ -146,16 +137,12 @@ const truncatedSubtitle = computed(() => {
   return cleanSubtitle;
 });
 
-const formattedDate = computed(() =>
-  props.date ? formatDate(props.date, 'yyyy-MM-dd', true) : '',
-);
+const formattedDate = computed(() => (props.date ? formatDate(props.date, 'yyyy-MM-dd', true) : ''));
 
 const getCategoryName = computed(() =>
   props.categoryName
     .split(' ')
-    .map((word) =>
-      word.length > 0 ? word.charAt(0).toUpperCase() + word.slice(1) : word,
-    )
+    .map((word) => (word.length > 0 ? word.charAt(0).toUpperCase() + word.slice(1) : word))
     .join(' '),
 );
 

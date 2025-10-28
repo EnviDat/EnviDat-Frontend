@@ -2,10 +2,10 @@ include:
   - local: '.gitlab-ci-deployment.yml'
   - local: '.gitlab-ci-seo.yml'
   - local: '.gitlab-ci-scan.yml'
-  - template: Jobs/Dependency-Scanning.gitlab-ci.yml  
-  - template: Jobs/SAST.gitlab-ci.yml  
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
 
-default:  
+default:
   tags:
     - frontend
 
@@ -31,12 +31,11 @@ workflow:
     # Block pipeline creation for all other cases (e.g. feature branches, tags, merge requests)
     - when: never
 
-
 variables:
   ARTIFACT_COMPRESSION_LEVEL: 'fastest'
   CACHE_COMPRESSION_LEVEL: 'fastest'
   NPM_CONFIG_CACHE: '.npm/'
-  GIT_CLEAN_FLAGS: "-ffdx -e .npm/" # don't delete the .npm/ for each job
+  GIT_CLEAN_FLAGS: '-ffdx -e .npm/' # don't delete the .npm/ for each job
 
 .normal-rules:
   rules:
@@ -64,7 +63,6 @@ variables:
       when: never
 
     - when: manual
-
 
 set-vars:
   stage: .pre
@@ -135,15 +133,15 @@ modify-env:
 
       key = 'VITE_DOMAIN'
       value = 'https://envidat04.wsl.ch'
-      
+
       if branch == 'main' or branch == 'beta':
           value = 'https://envidat.ch'
-      
+
       dotenv.set_key(file, key, value, quote_mode='never')
 
       key = 'VITE_API_ROOT'
       value = 'https://envidat04.wsl.ch'
-      
+
       if branch == 'main' or branch == 'beta':
           value = 'https://envidat.ch'
 
@@ -167,10 +165,10 @@ modify-env:
 
       key = 'VITE_BUILD_SOURCEMAPS'
       value = 'false'
-      
+
       if branch == 'staging' or branch == 'develop' or branch == 'dev':
           value = 'true'
-      
+
       dotenv.set_key(file, key, value, quote_mode='never')
 
       key = 'VITE_GOOGLE_VERIFICATION_KEY'
@@ -179,12 +177,12 @@ modify-env:
 
       key = 'VITE_SEO_BASE'
       value = 'https://envidat04.wsl.ch/seo'
-      
+
       if branch == 'main' or branch == 'beta':
           value = 'https://envidat.ch/seo'
 
       dotenv.set_key(file, key, value, quote_mode='never')
-      
+
       "
     - echo "created content for .env.production:"
     - cat .env.production
@@ -256,7 +254,6 @@ build-app:
       - dist
   retry:
     max: 2
-
 
 combine-builds:
   stage: build

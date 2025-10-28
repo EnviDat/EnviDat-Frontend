@@ -11,13 +11,12 @@
 
 import { SelectionType } from 'vanilla-jsoneditor';
 import BaseJsonEditor from '@/components/BaseJsonEditor.vue';
-import metadata from '@/../stories/js/metadata.js'
+import metadata from '@/../stories/js/metadata.js';
 
 export default {
   title: '1 Base / Json Editor',
   component: BaseJsonEditor,
 };
-
 
 const jsonContent = {
   some: 'testdata',
@@ -26,13 +25,13 @@ const jsonContent = {
     moreThings: true,
     moreValues: -1,
   },
-}
+};
 
 export const Empty = {
   args: {
     title: 'Empty Json Editor',
   },
-}
+};
 
 export const FilledJSONContent = {
   args: {
@@ -40,7 +39,7 @@ export const FilledJSONContent = {
     instructions: 'Here you can change the configuration of something',
     jsonContent,
   },
-}
+};
 
 export const FilledJSONKeyEditingAllowed = {
   args: {
@@ -49,7 +48,7 @@ export const FilledJSONKeyEditingAllowed = {
     jsonContent,
     allowedSelection: SelectionType.key,
   },
-}
+};
 
 export const FilledJSONMultiEditingAllowed = {
   args: {
@@ -58,18 +57,16 @@ export const FilledJSONMultiEditingAllowed = {
     jsonContent,
     allowedSelection: SelectionType.multi,
   },
-}
-
+};
 
 export const FilledLargeJSONContent = {
   args: {
     title: 'Json Editor',
-    instructions: 'What you see here is system admin stuff, only change things if you know what you\'re doing',
+    instructions: "What you see here is system admin stuff, only change things if you know what you're doing",
     maxHeight: 700,
     jsonContent: metadata[0],
   },
-}
-
+};
 
 export const FilledTextContent = {
   args: {
@@ -77,7 +74,7 @@ export const FilledTextContent = {
     instructions: 'Here you can change the configuration of something',
     textContent: JSON.stringify(jsonContent),
   },
-}
+};
 
 export const FilledTextContentError = {
   args: {
@@ -85,4 +82,4 @@ export const FilledTextContentError = {
     instructions: 'Here you can change the configuration of something',
     textContent: `${JSON.stringify(jsonContent)} randomstuff`,
   },
-}
+};

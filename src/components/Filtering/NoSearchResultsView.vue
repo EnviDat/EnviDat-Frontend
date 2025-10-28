@@ -13,12 +13,7 @@
     <v-col cols="12">
       <v-container class="pa-0" fluid>
         <v-row justify="center" no-gutters>
-          <v-col
-            v-for="card in categoryCardsNoMode"
-            :key="card.title"
-            class="pa-2 d-block"
-            cols="auto"
-          >
+          <v-col v-for="card in categoryCardsNoMode" :key="card.title" class="pa-2 d-block" cols="auto">
             <BaseCategoryCard
               height="45"
               :elevation="5"
@@ -31,12 +26,7 @@
               @click="catchCategoryClicked(card.type)"
             />
           </v-col>
-          <v-col
-            v-for="card in categoryCardsMode"
-            :key="card.title"
-            class="pa-2 d-block"
-            cols="auto"
-          >
+          <v-col v-for="card in categoryCardsMode" :key="card.title" class="pa-2 d-block" cols="auto">
             <BaseCategoryCard
               height="45"
               :elevation="5"

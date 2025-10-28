@@ -1,14 +1,10 @@
 <template>
-  <v-card id="MetadataDetails"
-  >
+  <v-card id="MetadataDetails">
     <v-card-title class="text-h6 metadata_title py-4">
       {{ METADATA_DETAILS_TITLE }}
     </v-card-title>
 
-    <v-card-text
-      v-if="details && details.length > 0"
-      class="pa-4 pt-0 readableText"
-    >
+    <v-card-text v-if="details && details.length > 0" class="pa-4 pt-0 readableText">
       <v-form>
         <div v-for="val in details" :key="val.label" class="mt-2">
           <v-text-field
@@ -44,16 +40,12 @@
 
     <v-card-text v-if="showPlaceholder" class="pa-4 pt-0">
       <v-row v-for="n in 5" :key="n + 'label'" no-gutters>
-        <div
-          class="flex xs2 pr-2 skeleton skeleton-size-normal skeleton-color-concrete skeleton-animation-shimmer"
-        >
-          <div class="bone bone-type-text " />
+        <div class="flex xs2 pr-2 skeleton skeleton-size-normal skeleton-color-concrete skeleton-animation-shimmer">
+          <div class="bone bone-type-text" />
         </div>
 
-        <div
-          class="flex xs10 pl-2 skeleton skeleton-size-normal skeleton-color-concrete skeleton-animation-shimmer"
-        >
-          <div class="bone bone-type-text " />
+        <div class="flex xs10 pl-2 skeleton skeleton-size-normal skeleton-color-concrete skeleton-animation-shimmer">
+          <div class="bone bone-type-text" />
         </div>
       </v-row>
     </v-card-text>
@@ -104,17 +96,14 @@ export default {
     maxSingleTextLengthXs: 70,
     METADATA_DETAILS_TITLE,
   }),
-  computed: {
-  },
+  computed: {},
   methods: {
     replaceAuthorDeadInfo(text) {
       if (!text) {
         return '';
       }
 
-      return text
-        .replace(`(${AUTHOR_ASCII_DEAD})`, '')
-        .trim();
+      return text.replace(`(${AUTHOR_ASCII_DEAD})`, '').trim();
     },
     isSingleText: function isSingleText(text) {
       if (!text || text.length <= 0) {

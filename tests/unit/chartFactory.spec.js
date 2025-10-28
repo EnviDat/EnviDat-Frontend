@@ -1,12 +1,8 @@
 import { it, describe, expect } from 'vitest';
 
-import {
-  getConfigFiles,
-  getConfigUrls,
-} from '@/factories/chartFactory';
+import { getConfigFiles, getConfigUrls } from '@/factories/chartFactory';
 
 import dataset from '@/../public/testdata/testResoures.json';
-
 
 describe('chartFactory - getConfigFiles()', () => {
   it('with testResources', () => {
@@ -19,5 +15,4 @@ describe('chartFactory - getConfigFiles()', () => {
     // expect(resources[0].hideFromResourceList).toBeTruthy();
     // expect(resources[1].hideFromResourceList).toBeTruthy();
   });
-
 });

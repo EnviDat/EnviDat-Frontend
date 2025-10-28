@@ -11,11 +11,16 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { compareAsc, parseISO } from 'date-fns';
 import {
-  compareAsc,
-  parseISO,
-} from 'date-fns';
-import { mdiAccountSupervisor, mdiAccountVoice, mdiBookOpenVariant, mdiCodeTags, mdiInformation, mdiLibrary, mdiWidgets } from '@mdi/js';
+  mdiAccountSupervisor,
+  mdiAccountVoice,
+  mdiBookOpenVariant,
+  mdiCodeTags,
+  mdiInformation,
+  mdiLibrary,
+  mdiWidgets,
+} from '@mdi/js';
 import { toRaw } from 'vue';
 import {
   METADATA_CONTACT_EMAIL,
@@ -36,8 +41,7 @@ const authorDataCreditLevels = [
   { score: 1, lvl: 1 },
 ];
 
-
-const defaultTotalDataCredit = () : DataCreditObject => {
+const defaultTotalDataCredit = (): DataCreditObject => {
   return {
     curation: 0,
     publication: 0,
@@ -46,37 +50,25 @@ const defaultTotalDataCredit = () : DataCreditObject => {
     validation: 0,
     collection: 0,
   };
-}
+};
 
-export function getAuthorGivenName(author:
-  {
-    given_name?: string,
-    firstName?: string,
-  },
-) {
+export function getAuthorGivenName(author: { given_name?: string; firstName?: string }) {
   const firstName = author?.given_name || author?.firstName || '';
   return firstName.trim() || null;
 }
 
-export function getAuthorLastName(author:
-  {
-    name?: string,
-    lastName?: string,
-  },
-) {
+export function getAuthorLastName(author: { name?: string; lastName?: string }) {
   const lastName = author.name || author.lastName || '';
   return lastName.trim() || null;
 }
 
-export function getAuthorName(author:
-  {
-    fullName?: string,
-    given_name?: string,
-    firstName?: string,
-    name?: string,
-    lastName?: string,
-  },
-): string | undefined {
+export function getAuthorName(author: {
+  fullName?: string;
+  given_name?: string;
+  firstName?: string;
+  name?: string;
+  lastName?: string;
+}): string | undefined {
   let fullName = author?.fullName;
 
   if (!fullName) {
@@ -91,16 +83,13 @@ export function getAuthorName(author:
   return fullName || undefined;
 }
 
-export function getAuthorNameCitation(author:
-  {
-    fullName?: string,
-    given_name?: string,
-    firstName?: string,
-    name?: string,
-    lastName?: string,
-  },
-) {
-
+export function getAuthorNameCitation(author: {
+  fullName?: string;
+  given_name?: string;
+  firstName?: string;
+  name?: string;
+  lastName?: string;
+}) {
   const firstName = author.given_name || author.firstName || '';
 
   const splits = firstName.trim().split(' ');
@@ -108,7 +97,7 @@ export function getAuthorNameCitation(author:
 
   splits.forEach((name: string) => {
     firstnameInitials += `${name.substring(0, 1)}. `;
-  })
+  });
 
   const lastName = author.name || author.lastName || '';
 
@@ -121,8 +110,8 @@ export function getAuthorNameCitation(author:
  * @returns {[{ fullName: string, email: string}]}
  */
 export function getUserPickerObjects(
-  userObjects: Author[] | User [] | { fullName: string, email: string }[],
-) : UserPickerObject[] {
+  userObjects: Author[] | User[] | { fullName: string; email: string }[],
+): UserPickerObject[] {
   if (!userObjects || !(userObjects instanceof Array) || userObjects.length <= 0) {
     return [];
   }
@@ -191,7 +180,6 @@ export function getAuthorsCitationString(dataset) {
     if (authors.length > 19) {
       authorString += ' et al.';
     }
-
   }
 
   return authorString.trim();
@@ -236,7 +224,6 @@ export function getDataCredit(author) {
         dataCredit[credit] = 1;
       }
     }
-
   } else if (typeof author.data_credit === 'string') {
     dataCredit[author.data_credit] = 1;
   } else {
@@ -251,7 +238,7 @@ export function createContact(email, firstName, lastName) {
     [METADATA_CONTACT_FIRSTNAME]: firstName,
     [METADATA_CONTACT_LASTNAME]: lastName,
     [METADATA_CONTACT_EMAIL]: email,
-  }
+  };
 }
 
 export function creationContactFromAuthor(author) {
@@ -267,7 +254,6 @@ export function creationContactFromAuthor(author) {
 }
 
 export function createAuthor(author: Author | AuthorDTO, lastModified: string = '') {
-
   // const nameSplits = fullName.split(' ');
   const firstName = 'given_name' in author ? author.given_name : author.firstName || '';
   const lastName = 'name' in author ? author.name : author.lastName || '';
@@ -285,7 +271,7 @@ export function createAuthor(author: Author | AuthorDTO, lastModified: string = 
   //   }
   // }
 
-//    const dataCredit = author.data_credit ? getDataCredit(author) : author.dataCredit;
+  //    const dataCredit = author.data_credit ? getDataCredit(author) : author.dataCredit;
   let dataCredit = 'dataCredit' in author ? author.dataCredit : author.data_credit || [];
 
   if (typeof dataCredit === 'string') {
@@ -294,9 +280,7 @@ export function createAuthor(author: Author | AuthorDTO, lastModified: string = 
 
   // console.log(`creating author from ${fullName} dataCredit: ${dataCredit} datasetCount: ${author.datasetCount}`);
 
-  const isAuthorDead =
-    firstName?.includes(AUTHOR_ASCII_DEAD) ||
-    lastName?.includes(AUTHOR_ASCII_DEAD);
+  const isAuthorDead = firstName?.includes(AUTHOR_ASCII_DEAD) || lastName?.includes(AUTHOR_ASCII_DEAD);
 
   return {
     firstName: firstName.trim(),
@@ -316,9 +300,7 @@ export function createAuthor(author: Author | AuthorDTO, lastModified: string = 
     isSelected: false,
     isAuthorDead,
     dataCredit,
-    totalDataCredits:
-      ('totalDataCredits' in author && author.totalDataCredits) ||
-      defaultTotalDataCredit(),
+    totalDataCredits: ('totalDataCredits' in author && author.totalDataCredits) || defaultTotalDataCredit(),
     lastModified,
     identifierType: '',
   } satisfies Author;
@@ -332,15 +314,15 @@ export function createAuthor(author: Author | AuthorDTO, lastModified: string = 
  * @param existingAuthor
  * @returns {{firstName: *, lastName: *, identifier: *, datasetCount: (number|(function(): number)|*), affiliation: *, isSelected, fullName: *, email: *, dataCredit: *, totalDataCredits: (*|*[])}}
  */
-export function mergeEditingAuthor(newAuthor: Author, existingAuthor: Author) : Author {
+export function mergeEditingAuthor(newAuthor: Author, existingAuthor: Author): Author {
   return {
     ...createAuthor(newAuthor),
     datasetCount: existingAuthor.datasetCount,
     totalDataCredits: existingAuthor.totalDataCredits || defaultTotalDataCredit(),
-  }
+  };
 }
 
-export function createAuthors(dataset: { author: string | object, metadata_modified: string }) {
+export function createAuthors(dataset: { author: string | object; metadata_modified: string }) {
   if (!dataset) {
     return null;
   }
@@ -370,7 +352,6 @@ export function createAuthors(dataset: { author: string | object, metadata_modif
 }
 
 function overwriteDataCredit(author: Author | AuthorDTO, existingAuthor: Author) {
-
   let dataCredit = 'dataCredit' in author ? author.dataCredit : author.data_credit || [];
 
   if (typeof dataCredit === 'string') {
@@ -398,7 +379,6 @@ function overwriteDataCredit(author: Author | AuthorDTO, existingAuthor: Author)
 }
 
 export function getAuthorKey(author: Author) {
-
   if (author?.email) {
     return author.email.trim().toLowerCase();
   }
@@ -412,7 +392,9 @@ export function getAuthorKey(author: Author) {
 // of the dataCredit
 // let noDataCredit = 0;
 export function extractAuthorsMap(datasets) {
-  if (!datasets) { return null; }
+  if (!datasets) {
+    return null;
+  }
 
   const authorMap = {};
   // let authorCount = 0;
@@ -554,7 +536,7 @@ export function getLevelProgress(dataCreditScore) {
   let progress = 100;
 
   if (next >= 0 && next < levels.length) {
-    progress = dataCreditScore / levels[next].score * 100;
+    progress = (dataCreditScore / levels[next].score) * 100;
     // console.log(`progress: ${progress}`);
   }
 
@@ -590,7 +572,6 @@ export function getNameInitials(userObject) {
   return '';
 }
 
-
 export function UnwrapEditingAuthors(wrappedAuthors, authorsMap) {
   const authorWithFullInfos = [];
 
@@ -620,24 +601,23 @@ export function combineAuthorLists(currentAuthors, newAuthors = [], removedAutho
   for (let i = 0; i < removedAuthors.length; i++) {
     const authToRemove = removedAuthors[i];
 
-    let deleteIndex = authors.findIndex(a => a.email === authToRemove.email);
+    let deleteIndex = authors.findIndex((a) => a.email === authToRemove.email);
 
     if (deleteIndex >= 0) {
       authors.splice(deleteIndex, 1);
     }
 
-    deleteIndex = newAuthors.findIndex(a => a.email === authToRemove.email);
+    deleteIndex = newAuthors.findIndex((a) => a.email === authToRemove.email);
 
     if (deleteIndex >= 0) {
       newAuthors.splice(deleteIndex, 1);
     }
-
   }
 
   for (let i = 0; i < newAuthors.length; i++) {
     const auth = newAuthors[i];
 
-    if (!authors.some(a => a.email === auth.email)) {
+    if (!authors.some((a) => a.email === auth.email)) {
       authors.push(auth);
     }
   }
@@ -645,7 +625,7 @@ export function combineAuthorLists(currentAuthors, newAuthors = [], removedAutho
   return authors;
 }
 
-export function mergeAuthorsDataCredit(currentAuthors: Author[], newAuthors: Author[]) : Author[] {
+export function mergeAuthorsDataCredit(currentAuthors: Author[], newAuthors: Author[]): Author[] {
   const authors = [...currentAuthors];
 
   let toMerge = newAuthors;
@@ -653,12 +633,12 @@ export function mergeAuthorsDataCredit(currentAuthors: Author[], newAuthors: Aut
     toMerge = [newAuthors];
   }
 
-  const authorsToMerge = toMerge.filter((auth: Author) => authors.some(a => a.email === auth.email))
+  const authorsToMerge = toMerge.filter((auth: Author) => authors.some((a) => a.email === auth.email));
 
   for (let i = 0; i < authorsToMerge.length; i++) {
     const auth = authorsToMerge[i];
 
-    const mergeIndex = authors.findIndex(a => a.email === auth.email);
+    const mergeIndex = authors.findIndex((a) => a.email === auth.email);
     // treat the newAuthor as the "existingAuthor" so it's dataCredit are being used
     authors[mergeIndex] = {
       ...authors[mergeIndex],
@@ -670,12 +650,11 @@ export function mergeAuthorsDataCredit(currentAuthors: Author[], newAuthors: Aut
 }
 
 export function enhanceAuthorsFromAuthorMap(authors: Author[], authorMap) {
-  
-  const canEnhance = (authorMap && Object.keys(authorMap).length > 0);
+  const canEnhance = authorMap && Object.keys(authorMap).length > 0;
   if (!canEnhance || authors?.length <= 0) {
     return authors;
   }
-  
+
   const enhancedAuthors = [];
 
   for (let i = 0; i < authors.length; i++) {
@@ -695,16 +674,16 @@ export function enhanceAuthorsFromAuthorMap(authors: Author[], authorMap) {
   return enhancedAuthors;
 }
 
-export function getAuthorByName(fullName: string, authors: Author[] | User[]) : Author | User {
+export function getAuthorByName(fullName: string, authors: Author[] | User[]): Author | User {
   if (!fullName) {
     return null;
   }
 
-  const found = authors.filter(auth => getAuthorName(auth) === fullName);
+  const found = authors.filter((auth) => getAuthorName(auth) === fullName);
   return found.length > 0 ? found[0] : null;
 }
 
-export function getAuthorByEmail(email: string, authors: Author[] | User[]) : Author | User {
+export function getAuthorByEmail(email: string, authors: Author[] | User[]): Author | User {
   if (!email) {
     return null;
   }
@@ -720,7 +699,11 @@ export function replaceAuthorDeadAscii(name: string) {
   return rawName.trim();
 }
 
-export function getFullAuthorsForUserPicker(pickedUsersEmails: string[], authors: Author[], existingEnviDatUsers: User[]) {
+export function getFullAuthorsForUserPicker(
+  pickedUsersEmails: string[],
+  authors: Author[],
+  existingEnviDatUsers: User[],
+) {
   const fullAuthors = [];
 
   pickedUsersEmails.forEach((email) => {

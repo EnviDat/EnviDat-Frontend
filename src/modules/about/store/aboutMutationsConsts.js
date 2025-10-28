@@ -13,7 +13,6 @@ export const GET_DMP = 'GET_DMP';
 export const GET_DMP_SUCCESS = 'GET_DMP_SUCCESS';
 export const GET_DMP_ERROR = 'GET_DMP_ERROR';
 
-
 export const GET_IMPRINT = 'GET_IMPRINT';
 export const GET_IMPRINT_SUCCESS = 'GET_IMPRINT_SUCCESS';
 export const GET_IMPRINT_ERROR = 'GET_IMPRINT_ERROR';

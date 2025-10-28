@@ -10,12 +10,10 @@ enhanceMetadatasTitleImage(metadata);
 const parsedDataset1 = convertJSON(metadata[0], false);
 const headerViewModel = createHeaderViewModel(parsedDataset1, true, 'primary', metadata[0].titleImg);
 
-
 const parsedDataset2 = convertJSON(metadata[3], false);
 const largeHeader = createHeaderViewModel(parsedDataset2, true, 'primary', metadata[3].titleImg);
 // const largeHeader = createHeader(metadata[3], false);
 const longAuthorsListHeader = createHeader(metadata[3], false);
-
 
 export default {
   title: '3 Datasets / 1 Views / Header',

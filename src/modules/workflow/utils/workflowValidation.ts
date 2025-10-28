@@ -1,10 +1,7 @@
 // src/modules/workflow/utils/workflowValidation.ts
 
 import type { WorkflowStep } from '@/types/workflow';
-import {
-  StepStatus,
-  WorkflowMode,
-} from '@/modules/workflow/utils/workflowEnums';
+import { StepStatus, WorkflowMode } from '@/modules/workflow/utils/workflowEnums';
 
 export interface ValidatableVM {
   getModelData(): any;
@@ -66,11 +63,7 @@ export function validateStepPure({
     };
   }
 
-  if (
-    mode === WorkflowMode.Create &&
-    stepId === stepForBackendChange &&
-    !isStepSaveConfirmed
-  ) {
+  if (mode === WorkflowMode.Create && stepId === stepForBackendChange && !isStepSaveConfirmed) {
     return {
       ok: true,
       openSaveDialog: true,

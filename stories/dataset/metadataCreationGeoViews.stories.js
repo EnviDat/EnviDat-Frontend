@@ -20,8 +20,6 @@ import {
   LOCATION_TYPE_POLYGON,
 } from '@/factories/metadataConsts';
 
-
-
 const testMetadata = {
   id: 1,
   name: 'test_site',
@@ -169,8 +167,8 @@ const geoJsonErrorLocation = createLocation({
   spatial: geojsonErrorPolygon,
 });
 
-
-const multiPolygonError = '{"type":"GeometryCollection","geometries":[{"type":"Polygon","coordinates":[[[8.419304,46.608177],[8.421364,46.638122],[8.457413,46.639773],[8.464279,46.609592],[8.419304,46.608177]]]},{"type":"Polygon","coordinates":[[[9.937134,46.472862],[9.937134,46.534776],[10.016785,46.534776],[10.016785,46.472862],[9.937134,46.472862]]]},{"type":"Polygon","coordinates":[[[-16.858521,81.493931],[-16.858521,81.578822],[-16.221313,81.578822],[-16.221313,81.493931],[-16.858521,81.493931]]]},{"type":"Polygon","coordinates":[[[14.018555,78.134493],[14.018555,79.253586],[20.961914,79.253586],[20.961914,78.134493],[14.018555,78.134493]]]},{"type":"Polygon","coordinates":[[[89.648438,77.934055],[89.648438,81.255032],[106.962891,81.255032],[106.962891,77.934055],[89.648438,77.934055]]]}],"properties":{"name":"life-at-chilly-temperatures---a-collection-of-microorganisms-from-extreme-habita"}}';
+const multiPolygonError =
+  '{"type":"GeometryCollection","geometries":[{"type":"Polygon","coordinates":[[[8.419304,46.608177],[8.421364,46.638122],[8.457413,46.639773],[8.464279,46.609592],[8.419304,46.608177]]]},{"type":"Polygon","coordinates":[[[9.937134,46.472862],[9.937134,46.534776],[10.016785,46.534776],[10.016785,46.472862],[9.937134,46.472862]]]},{"type":"Polygon","coordinates":[[[-16.858521,81.493931],[-16.858521,81.578822],[-16.221313,81.578822],[-16.221313,81.493931],[-16.858521,81.493931]]]},{"type":"Polygon","coordinates":[[[14.018555,78.134493],[14.018555,79.253586],[20.961914,79.253586],[20.961914,78.134493],[14.018555,78.134493]]]},{"type":"Polygon","coordinates":[[[89.648438,77.934055],[89.648438,81.255032],[106.962891,81.255032],[106.962891,77.934055],[89.648438,77.934055]]]}],"properties":{"name":"life-at-chilly-temperatures---a-collection-of-microorganisms-from-extreme-habita"}}';
 
 const multiPolyErrorLocation = createLocation({
   ...testMetadata,
@@ -240,5 +238,3 @@ export const GeoJSONMultiPolyError = {
     location: multiPolyErrorLocation,
   },
 };
-
-

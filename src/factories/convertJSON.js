@@ -1,4 +1,3 @@
-
 export function convertJSONArray(array, recursive) {
   const parsedArray = [];
 
@@ -34,7 +33,6 @@ export function convertJSON(data, stringify, recursive = false) {
     if (stringify) {
       if (value instanceof Array) {
         value = JSON.stringify(value);
-
       } else if (typeof value === 'object') {
         if (recursive) {
           value = convertJSON(value, stringify, recursive);
@@ -43,7 +41,6 @@ export function convertJSON(data, stringify, recursive = false) {
         }
       }
     } else {
-
       // eslint-disable-next-line no-lonely-if
       if (typeof value === 'string' && jsonStartRegex.test(value)) {
         try {
@@ -52,7 +49,6 @@ export function convertJSON(data, stringify, recursive = false) {
             value = parsedValue;
           }
         } catch (e) {
-
           if (import.meta.env?.MODE === 'development') {
             console.error(`Json parse error on property: ${prop} with value: ${value} had error: ${e}`);
           }
@@ -66,7 +62,6 @@ export function convertJSON(data, stringify, recursive = false) {
       if (recursive && typeof value === 'object') {
         value = convertJSON(value, stringify, recursive);
       }
-
     }
 
     flatObj[prop] = value;
@@ -75,21 +70,22 @@ export function convertJSON(data, stringify, recursive = false) {
   return flatObj;
 }
 
-
-
 /**
  * Code from https://stackoverflow.com/questions/54246477/how-to-convert-camelcase-to-snake-case-in-javascript
  * @param {String} inputString camelCaseString
  * @returns {String} snake_case_string
  */
 export function toSnakeCase(inputString) {
-  return inputString.split('').map((character) => {
-    if (character === character.toUpperCase() && character !== '_') {
-      return `_${character.toLowerCase()}`;
-    }
+  return inputString
+    .split('')
+    .map((character) => {
+      if (character === character.toUpperCase() && character !== '_') {
+        return `_${character.toLowerCase()}`;
+      }
 
-    return character;
-  }).join('');
+      return character;
+    })
+    .join('');
 }
 
 /**
@@ -99,12 +95,16 @@ export function toSnakeCase(inputString) {
  */
 // eslint-disable-next-line camelcase
 export function toCamelCase(snakeCaseString) {
-  return snakeCaseString
+  return (
+    snakeCaseString
       // .toLowerCase()
-      .replace(/([-_][a-z])/g, group => group
+      .replace(/([-_][a-z])/g, (group) =>
+        group
           .toUpperCase()
           //        .replace('-', '')
-          .replace('_', ''));
+          .replace('_', ''),
+      )
+  );
 }
 
 export function getObjectInOtherCase(fromCaseObject, caseConversionFunc) {
@@ -174,10 +174,12 @@ function convertPut(entity, property, value) {
 }
 
 function convertGet(entity, property) {
-  return property.split('.').reduce((entry, key) => 
-    // Check if entry is an object and the key exists in the entry
-     (entry && typeof entry === 'object' && key in entry) ? entry[key] : undefined
-  , entity);
+  return property.split('.').reduce(
+    (entry, key) =>
+      // Check if entry is an object and the key exists in the entry
+      entry && typeof entry === 'object' && key in entry ? entry[key] : undefined,
+    entity,
+  );
 }
 
 export function convertToBackendJSONWithRules(rules, data) {
@@ -227,4 +229,3 @@ export function convertToFrontendJSONWithRules(rules, data) {
   frontendJson = getObjectInOtherCase(frontendJson, toCamelCase);
   return frontendJson;
 }
-

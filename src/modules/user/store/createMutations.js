@@ -1,34 +1,24 @@
 /* eslint-disable no-underscore-dangle */
 /**
-* user store mutations
-*
-* @summary user store mutations
-* @author Dominik Haas-Artho
-*
-* Created at     : 2020-07-14 16:51:52
+ * user store mutations
+ *
+ * @summary user store mutations
+ * @author Dominik Haas-Artho
+ *
+ * Created at     : 2020-07-14 16:51:52
  * Last modified  : 2021-08-18 10:14:35
-*
-* This file is subject to the terms and conditions defined in
-* file 'LICENSE.txt', which is part of this source code package.
-*/
+ *
+ * This file is subject to the terms and conditions defined in
+ * file 'LICENSE.txt', which is part of this source code package.
+ */
 
-import {
-  EDITMETADATA_CLEAR_PREVIEW,
-  EDITMETADATA_DATA_RESOURCES,
-  eventBus,
-} from '@/factories/eventBus';
+import { EDITMETADATA_CLEAR_PREVIEW, EDITMETADATA_DATA_RESOURCES, eventBus } from '@/factories/eventBus';
 
 import { createErrorMessage, updateResources } from '@/modules/user/store/mutationFactory';
 
-import {
-  enhanceElementsWithStrategyEvents,
-  SELECT_EDITING_RESOURCE_PROPERTY,
-} from '@/factories/strategyFactory';
+import { enhanceElementsWithStrategyEvents, SELECT_EDITING_RESOURCE_PROPERTY } from '@/factories/strategyFactory';
 
-import {
-  cleanResourceForFrontend,
-  getFrontendJSONForStep,
-} from '@/factories/mappingFactory';
+import { cleanResourceForFrontend, getFrontendJSONForStep } from '@/factories/mappingFactory';
 
 import {
   METADATA_CREATION_RESOURCE,
@@ -44,7 +34,6 @@ import {
   METADATA_UPLOAD_FILE_ERROR,
 } from './userMutationsConsts';
 
-
 export default {
   [METADATA_CREATION_RESOURCE](state) {
     state.uploadNewResourceLoading = true;
@@ -52,7 +41,6 @@ export default {
     state.uploadError = null;
   },
   [METADATA_CREATION_RESOURCE_SUCCESS](state, { resource, stepKey, message }) {
-
     state.uploadNewResourceLoading = false;
 
     // convert properties and stringified json to match the frontend structure
@@ -60,18 +48,14 @@ export default {
     resource = cleanResourceForFrontend(resource);
 
     // make resource selectable
-    enhanceElementsWithStrategyEvents(
-      [resource],
-      SELECT_EDITING_RESOURCE_PROPERTY,
-      true,
-    );
+    enhanceElementsWithStrategyEvents([resource], SELECT_EDITING_RESOURCE_PROPERTY, true);
 
     resource.loading = false;
 
     state.uploadResource = resource;
     state.metadataInEditing[stepKey] = resource;
 
-    updateResources(this, state, resource)
+    updateResources(this, state, resource);
 
     eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
 
@@ -80,10 +64,8 @@ export default {
     setTimeout(() => {
       this.commit(`${USER_NAMESPACE}/resetMessage`, EDITMETADATA_DATA_RESOURCES);
     }, state.metadataSavingMessageTimeoutTime);
-
   },
   [METADATA_CREATION_RESOURCE_ERROR](state, reason) {
-
     state.uploadNewResourceLoading = false;
 
     const errorObj = createErrorMessage(reason, 'Resource Creation failed');
@@ -91,7 +73,6 @@ export default {
       message: errorObj.message,
       details: errorObj.details,
     };
-
   },
   [METADATA_UPLOAD_FILE_INIT](state, metadataId) {
     state.uploadMetadataId = metadataId;
@@ -123,12 +104,11 @@ export default {
 
     eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
 
-/*
+    /*
     setTimeout(() => {
       this.commit(`${USER_NAMESPACE}/resetMessage`, stepKey);
     }, state.metadataSavingMessageTimeoutTime);
 */
-
   },
   [METADATA_CREATION_DATASET_ERROR](state, reason) {
     state.metadataCreationLoading = false;
@@ -138,6 +118,5 @@ export default {
       message: errorObj.message,
       details: errorObj.details,
     };
-
   },
 };

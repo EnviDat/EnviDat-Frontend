@@ -9,8 +9,6 @@
 import { mdiHome } from '@mdi/js';
 import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
 
-
-
 export default {
   title: '1 Base / Icons / Icon Count View',
   component: BaseIconCountView,
@@ -23,4 +21,3 @@ export const IconCount = {
     tooltipText: 'This is the tooltip of the icon count view',
   },
 };
-

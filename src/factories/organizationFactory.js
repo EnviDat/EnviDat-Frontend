@@ -1,23 +1,37 @@
 import { toRaw } from 'vue';
 
-const toPascalCase = (text, trimSpace=false) => text.split(' ').map((t) => t[0].toUpperCase() + t.slice(1).toLowerCase()).join(trimSpace?'':' ');
+const toPascalCase = (text, trimSpace = false) =>
+  text
+    .split(' ')
+    .map((t) => t[0].toUpperCase() + t.slice(1).toLowerCase())
+    .join(trimSpace ? '' : ' ');
 
 const ruBarColors = () => {
   const barColors = [
-    '#874540','#954D59','#9C5A74','#9B6A90','#907DA8','#7D92BC','#62A5C7','#45B8C8','#38C9C1','#4DD8B1','#75E59C','#A3EF86','#D5F673',
-//  "#3F1D1E","#512933","#5E374A","#644964","#635D7D","#597392","#4989A2","#369FA9","#31B4A9","#4AC8A0","#72DA92","#A1E981","#D5F673"
-//  "#F0807D","#F3859B","#ED90B8","#DC9ED3","#C2AFE7","#A0C0F3","#7ACFF4","#57DCEC","#49E6DA","#5CEEC1","#81F3A6","#ABF68B","#D6F675"  
+    '#874540',
+    '#954D59',
+    '#9C5A74',
+    '#9B6A90',
+    '#907DA8',
+    '#7D92BC',
+    '#62A5C7',
+    '#45B8C8',
+    '#38C9C1',
+    '#4DD8B1',
+    '#75E59C',
+    '#A3EF86',
+    '#D5F673',
+    //  "#3F1D1E","#512933","#5E374A","#644964","#635D7D","#597392","#4989A2","#369FA9","#31B4A9","#4AC8A0","#72DA92","#A1E981","#D5F673"
+    //  "#F0807D","#F3859B","#ED90B8","#DC9ED3","#C2AFE7","#A0C0F3","#7ACFF4","#57DCEC","#49E6DA","#5CEEC1","#81F3A6","#ABF68B","#D6F675"
   ];
   return barColors.reverse();
-}
+};
 
 export const getYearDatasetMap = (datasets) => {
-
   const yearMap = new Map();
 
   for (const dSet of datasets) {
-
-    let year
+    let year;
     try {
       year = JSON.parse(dSet.publication).publication_year;
     } catch (e) {
@@ -26,7 +40,7 @@ export const getYearDatasetMap = (datasets) => {
 
     if (year) {
       if (typeof year === 'number') {
-        year = year.toString()
+        year = year.toString();
       }
 
       if (yearMap.has(year)) {
@@ -39,10 +53,9 @@ export const getYearDatasetMap = (datasets) => {
   }
 
   return yearMap;
-}
+};
 
 export const getTopOraganizations = (orgas) => {
-
   const top = [];
 
   if (!orgas) {
@@ -56,7 +69,7 @@ export const getTopOraganizations = (orgas) => {
   }
 
   return top;
-}
+};
 
 export const getOrgaDatasetsMap = (datasets, groupForResearchUnit = false) => {
   const datasetMap = new Map();
@@ -72,14 +85,13 @@ export const getOrgaDatasetsMap = (datasets, groupForResearchUnit = false) => {
     if (key) {
       const orgaDatasets = datasetMap.get(key);
       if (orgaDatasets) {
-
-        orgaDatasets.count += 1
+        orgaDatasets.count += 1;
         orgaDatasets.datasets.push(dataset);
       } else {
         datasetMap.set(key, {
           count: 1,
           datasets: [dataset],
-/*
+          /*
           organization: dataset.organization,
           name: dataset.organization.name,
           title: dataset.organization.title,
@@ -98,10 +110,9 @@ export const getOrgaDatasetsMap = (datasets, groupForResearchUnit = false) => {
   }
 
   return datasetMap;
-}
+};
 
 export const organizationSeries = (orgaDatasetsMap, yearLabels) => {
-
   const series = [];
   const keys = Array.from(orgaDatasetsMap.keys());
 
@@ -123,7 +134,7 @@ export const organizationSeries = (orgaDatasetsMap, yearLabels) => {
   }
 
   return series;
-}
+};
 
 export function getResearchUnit(orgaTitle, researchUnits) {
   const units = researchUnits.researchUnits;
@@ -148,7 +159,6 @@ export function getResearchUnit(orgaTitle, researchUnits) {
         }
       }
     }
-
   }
 
   return 'Others';
@@ -170,9 +180,7 @@ export function enhanceDatasetWithResearchUnit(datasets, researchUnits) {
   return ruDatasets;
 }
 
-
 export function getOrganizationRelationMap(organizations) {
-
   const organizationRelationMap = new Map();
 
   if (!organizations) {
@@ -192,7 +200,7 @@ export function getOrganizationRelationMap(organizations) {
       orgaEntry.push(orga);
     } else {
       organizationRelationMap.set(key, [orga]);
-/*
+      /*
       organizationRelationMap.set(key, {
         name: orgaName,
         title: orga.title,
@@ -206,7 +214,6 @@ export function getOrganizationRelationMap(organizations) {
 }
 
 export const getOrganitzionTreeItem = (entries, id) => {
-
   for (let i = 0; i < entries.length; i++) {
     const entry = entries[i];
 
@@ -223,15 +230,9 @@ export const getOrganitzionTreeItem = (entries, id) => {
   }
 
   return null;
-}
+};
 
-function getTreeItem(
-organizationRelationMap,
-  organizationDatasetMap,
-  organization,
-  index,
-  ) {
-
+function getTreeItem(organizationRelationMap, organizationDatasetMap, organization, index) {
   const orgaName = organization.name;
   const orgaTitle = organization.title;
 
@@ -244,7 +245,6 @@ organizationRelationMap,
   let childDatasetsCount = 0;
 
   if (childrendOrgas?.length > 0) {
-
     for (let i = 0; i < childrendOrgas.length; i++) {
       const childOrga = childrendOrgas[i];
 
@@ -266,7 +266,7 @@ organizationRelationMap,
     children: childItems,
   };
 
-/*
+  /*
   if (childItems?.length > 0) {
     item.children = childItems;
   }
@@ -276,7 +276,6 @@ organizationRelationMap,
 }
 
 export function getOrganizationTree(topOrganizations, organizationRelationMap, organizationDatasetMap = undefined) {
-
   // const orgaNames = Array.from(organizationRelationMap.keys()).sort();
   const organizations = topOrganizations.sort();
 
@@ -291,7 +290,7 @@ export function getOrganizationTree(topOrganizations, organizationRelationMap, o
     const orgaDatasetEntry = organizationDatasetMap?.get(orgaName);
     const datasetCount = orgaDatasetEntry?.count || 0;
 
-    const childItems = []
+    const childItems = [];
     let childDatasetsCount = 0;
 
     if (childOrganizations.length > 0) {
@@ -316,7 +315,7 @@ export function getOrganizationTree(topOrganizations, organizationRelationMap, o
       children: childItems,
     };
 
-/*
+    /*
     if (childItems?.length > 0) {
       item.children = childItems;
     }
@@ -328,7 +327,6 @@ export function getOrganizationTree(topOrganizations, organizationRelationMap, o
   return treeItems;
 }
 
-
 export const researchUnitDatasetChartOptions = {
   plugins: {
     title: {
@@ -336,7 +334,7 @@ export const researchUnitDatasetChartOptions = {
       text: 'Dataset Publication per Research Unit History',
     },
     legend: {
-      position: (ctx) => ctx?.chart?.width < 968 ? 'bottom' : 'right',
+      position: (ctx) => (ctx?.chart?.width < 968 ? 'bottom' : 'right'),
       reverse: 'true',
     },
     datalabels: {
@@ -358,7 +356,7 @@ export const researchUnitDatasetChartOptions = {
       stacked: true,
     },
   },
-}
+};
 
 export const getResearchUnitDatasetSeries = (orgaDatasetsMap) => {
   if (!orgaDatasetsMap) {
@@ -387,4 +385,4 @@ export const getResearchUnitDatasetSeries = (orgaDatasetsMap) => {
     labels: yearsSorted,
     datasets: series,
   };
-}
+};

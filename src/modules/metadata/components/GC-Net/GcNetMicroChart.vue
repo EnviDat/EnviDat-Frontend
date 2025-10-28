@@ -10,12 +10,7 @@
   >
     <v-container fluid class="pa-0">
       <v-row no-gutters>
-        <v-col
-          v-show="image"
-          cols="3"
-          id="image_col"
-          @click="catchDetailClick(station.alias)"
-        >
+        <v-col v-show="image" cols="3" id="image_col" @click="catchDetailClick(station.alias)">
           <v-img
             :src="image"
             cover
@@ -23,40 +18,28 @@
             @error="imageLoadError"
             :height="200"
             :width="100"
-            style="border-bottom-left-radius: 4px; border-top-left-radius: 4px; cursor: pointer;"
+            style="border-bottom-left-radius: 4px; border-top-left-radius: 4px; cursor: pointer"
           />
 
           <v-skeleton-loader v-show="imageLoading" type="image"></v-skeleton-loader>
-
         </v-col>
 
         <v-col :cols="currentColumnNum" class="pa-2">
           <v-row no-gutters>
-            <v-col class="text-h5 v-card__title" >
+            <v-col class="text-h5 v-card__title">
               {{ station.name }}
             </v-col>
           </v-row>
 
           <v-row no-gutters>
-            <v-col
-              v-if="!dataError && dataAvailable()"
-              id="chartSubText"
-              class="smallChartSubText px-0 pt-2 pb-1"
-            >
+            <v-col v-if="!dataError && dataAvailable()" id="chartSubText" class="smallChartSubText px-0 pt-2 pb-1">
               {{ chartSubText }}
             </v-col>
           </v-row>
 
           <v-row no-gutters>
-            <v-col
-              v-if="chartIsLoading"
-              class="py-0"
-              cols="12"
-              style="width: 100%"
-            >
-
+            <v-col v-if="chartIsLoading" class="py-0" cols="12" style="width: 100%">
               <v-skeleton-loader type="image"></v-skeleton-loader>
-
             </v-col>
 
             <v-col
@@ -72,28 +55,18 @@
               :id="microChartId"
               ref="microChart"
               class="mircoChart"
-              :style="
-                `background-color: #f5f5f5; height: ${chartHeight}; border: ${
-                  chartIsLoading ? 0 : 1
-                }px solid #eee;`
-              "
+              :style="`background-color: #f5f5f5; height: ${chartHeight}; border: ${
+                chartIsLoading ? 0 : 1
+              }px solid #eee;`"
             >
-
-              <UplotVue
-                v-if="!dataError && dataAvailable()"
-                :data="sparkData" :options="sparkLineOptions"
-              />
+              <UplotVue v-if="!dataError && dataAvailable()" :data="sparkData" :options="sparkLineOptions" />
             </v-col>
           </v-row>
 
           <v-row no-gutters>
             <v-col class="flex-grow-1 pt-1 pr-1" id="statusInfo" cols="10">
               <v-row no-gutters>
-                <v-col
-                  v-if="firstParameterData"
-                  id="FirstDate"
-                  class="smallChartSubText pa-0 pt-2"
-                >
+                <v-col v-if="firstParameterData" id="FirstDate" class="smallChartSubText pa-0 pt-2">
                   {{ `First Data point: ${firstParameterData}` }}
                 </v-col>
               </v-row>
@@ -134,7 +107,7 @@
               </v-row>
             </v-col>
 
-            <v-col class="flex-grow-1 pt-1" style="align-self: flex-end;" cols="2">
+            <v-col class="flex-grow-1 pt-1" style="align-self: flex-end" cols="2">
               <v-row no-gutters justify="end" class="pb-2">
                 <BaseIconButton
                   :icon="mdiChartBar"
@@ -166,7 +139,7 @@
 
 <script>
 import axios from 'axios';
-import {format, min} from 'date-fns';
+import { format, min } from 'date-fns';
 
 import UplotVue from 'uplot-vue';
 import 'uplot/dist/uPlot.min.css';
@@ -216,9 +189,7 @@ export default {
       return `${this.stationId}_microChart`;
     },
     stationId() {
-      return `${this.station.id}_${
-        this.station.alias ? this.station.alias : this.station.name
-      }`;
+      return `${this.station.id}_${this.station.alias ? this.station.alias : this.station.name}`;
     },
     chartSubText() {
       return `${this.chartIsLoading ? 'Loading' : ''} ${
@@ -229,10 +200,7 @@ export default {
     },
     currentColumnNum() {
       // return this.image && this.imageSuccess ? 9 : 12;
-      return (this.image && this.imageLoading) ||
-        (this.image && this.imageSuccess)
-        ? 9
-        : 12;
+      return (this.image && this.imageLoading) || (this.image && this.imageSuccess) ? 9 : 12;
     },
     infoObject() {
       if (this.isFallback) {
@@ -314,7 +282,7 @@ export default {
 
       axios
         .get(apiUrl)
-        .then(response => {
+        .then((response) => {
           this.chartIsLoading = false;
           const rawData = response.data;
 
@@ -328,7 +296,7 @@ export default {
             this.loadJsonFiles(url, true);
           }
         })
-        .catch(error => {
+        .catch((error) => {
           if (isFallback) {
             this.chartIsLoading = false;
             this.dataError = error.message;
@@ -349,7 +317,7 @@ export default {
       if (!firstEntryWithData || firstEntryWithData < 0) {
         firstEntryWithData = 0;
       }
-      
+
       let firstDate = new Date(data[firstEntryWithData][dataParam]);
       let lastDate = new Date(data[data.length - 1][dataParam]);
 

@@ -12,13 +12,11 @@
 // import bark2 from '@/assets/cards/forest/c_b_forest_texture_bark2.jpg';
 import ProjectCardPlaceholder from '@/modules/projects/components/ProjectCardPlaceholder.vue';
 
-
 export default {
   title: '1 Base / Cards /  Projects Cards',
   component: ProjectCardPlaceholder,
 };
 
 export const ProjectCardLoading = {
-  args: {
-  },
-}
+  args: {},
+};

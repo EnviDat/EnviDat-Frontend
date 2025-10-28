@@ -3,8 +3,7 @@ export default [
     pid: 'wsl:23144',
     object_url: 'https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:23144',
     citation: {
-      WSL:
-        'Neff F., Resch M.C., Marty A., Rolley J.D., Sch\u00fctz M., Risch A.C., Gossner M.M.  (2020). Long\u2010term restoration success of insect herbivore communities in semi\u2010natural grasslands: a functional approach. Ecol. Appl. \u003Cspan style=\u0022font-style: normal;\u0022 \u003E30\u003C/span\u003E(6), e02133 (12 pp.). \u003Ca href=\u0022https://doi.org/10.1002/eap.2133\u0022 target=\u0022_blank\u0022\u003Ehttps://doi.org/10.1002/eap.2133\u003C/a\u003E',
+      WSL: 'Neff F., Resch M.C., Marty A., Rolley J.D., Sch\u00fctz M., Risch A.C., Gossner M.M.  (2020). Long\u2010term restoration success of insect herbivore communities in semi\u2010natural grasslands: a functional approach. Ecol. Appl. \u003Cspan style=\u0022font-style: normal;\u0022 \u003E30\u003C/span\u003E(6), e02133 (12 pp.). \u003Ca href=\u0022https://doi.org/10.1002/eap.2133\u0022 target=\u0022_blank\u0022\u003Ehttps://doi.org/10.1002/eap.2133\u003C/a\u003E',
     },
     doi: '10.1002/eap.2133',
     abstract:
