@@ -22,7 +22,7 @@ import {
   LISTCONTROL_MAP_ACTIVE,
 } from '@/store/metadataMutationsConsts';
 
-import projectJSON from './testdata/projects.json';
+import projectJSON from '@/../stories/testdata/projects.json';
 import metadata from '@/../stories/js/metadata';
 
 const enhancedProjects = enhanceSubprojectsFromExtras(projectJSON.result);

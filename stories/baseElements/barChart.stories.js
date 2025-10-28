@@ -13,7 +13,7 @@
 import BarChart from '@/components/Charts/BarChart.vue';
 import { getOrgaDatasetsMap, getResearchUnitDatasetSeries, organizationSeries } from '@/factories/organizationFactory';
 
-import metadataFile from './testdata/packagelist.json'
+import metadataFile from '@/../stories/testdata/packagelist.json'
 
 const metadatas = metadataFile.result;
 

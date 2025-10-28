@@ -24,7 +24,7 @@
             :clear-icon="mdiClose"
             :error-messages="validationErrors.url"
             @keyup="blurOnEnterKey"
-            @input="checkCreateButtonDisabled"
+            @update:model-value="checkCreateButtonDisabled"
           />
         </v-col>
       </v-row>

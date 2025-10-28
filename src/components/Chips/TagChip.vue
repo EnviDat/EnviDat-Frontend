@@ -7,7 +7,7 @@
     }"
     :style="{ height: $vuetify.display.xs ? '15px' : '' }"
     :color="highlighted ? 'primary' : color"
-    :small="isSmall"
+    :size="isSmall ? 'small': undefined"
     @click.stop="clicked"
   >
     <BaseIcon

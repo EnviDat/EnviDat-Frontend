@@ -17,7 +17,7 @@ import {
   getFullAuthorsFromDataset,
 } from '@/factories/authorFactory';
 
-import unFormatedMetadataCards from '@/../stories/js/metadata';
+import unFormatedMetadataCards from '../js/metadata.js';
 
 const metadataCards = [];
 

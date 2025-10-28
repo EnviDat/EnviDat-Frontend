@@ -37,7 +37,6 @@ export const ACTION_LOAD_METADATA_CONTENT_BY_ID = () => {
   return 'package_show';
 };
 
-
 export const CLEAN_CURRENT_METADATA = 'CLEAN_CURRENT_METADATA';
 
 export const SEARCH_METADATA = 'SEARCH_METADATA';
@@ -53,7 +52,6 @@ export const ACTION_SEARCH_METADATA = () => {
   return 'query';
 };
 
-
 export const UPDATE_TAGS = 'UPDATE_TAGS';
 export const UPDATE_TAGS_SUCCESS = 'UPDATE_TAGS_SUCCESS';
 export const UPDATE_TAGS_ERROR = 'UPDATE_TAGS_ERROR';
@@ -67,6 +65,11 @@ export const SWISSFL_MODE_EXTRAS_KEY = 'swissFL_type';
 
 export const EDNA_MODE = 'edna';
 export const EDNA_MODE_EXTRAS_KEY = 'edna_type';
+
+export const FOREST_3D = 'forest3d';
+export const FOREST_3D_EXTRAS_KEY = 'forest3d_type';
+export const FOREST_3D_URL =
+  'https://forest3d.os.zhdk.cloud.switch.ch/forest3d/data.json';
 
 export const PIN_METADATA = 'PIN_METADATA';
 export const CLEAR_PINNED_METADATA = 'CLEAR_PINNED_METADATA';

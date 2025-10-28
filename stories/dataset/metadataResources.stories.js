@@ -17,7 +17,6 @@ import MetadataResources from '@/modules/metadata/components/Metadata/MetadataRe
 
 import { createLicense } from '@/factories/metaDataFactory';
 import { createResources } from '@/factories/resourceHelpers';
-
 import { getFrontendDates } from '@/factories/mappingFactory';
 
 // metadata gets enhance in the storybook config

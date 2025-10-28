@@ -1,3 +1,4 @@
+import type { RouteLocationNamedRaw } from 'vue-router';
 import {
   EDITMETADATA_CUSTOMFIELDS,
   EDITMETADATA_DATA_LICENSE,
@@ -6,8 +7,23 @@ import {
   EDITMETADATA_RELATED_DATASETS,
 } from '@/factories/eventBus';
 
-import {emptyMetadataInEditing} from '@/factories/workflowData';
+import { emptyMetadataInEditing } from '@/factories/workflowData';
 
+
+export type WorkflowStep = {
+  key: string;
+  title: string;
+  readOnlyFields: string | null;
+  readOnlyExplanation: string | null;
+  loading: boolean;
+  completed: boolean;
+  genericProps: any;
+  message: string | null;
+  messageDetails: string | null;
+  error: string | null;
+  errorDetails: string | null;
+  detailSteps: WorkflowStep[];
+}
 
 /**
  * A mapping use to combine flat data structure elements with the hierarchy of the steps structure
@@ -37,7 +53,7 @@ export const stepKeyToDataKeyMap = {
 };
 
 
-export function initializeSteps(steps) {
+export function initializeSteps(steps: WorkflowStep[]) {
 
   for (let i = 0; i < steps.length; i++) {
     const step = steps[i];
@@ -61,13 +77,7 @@ export function initializeSteps(steps) {
   return steps;
 }
 
-/**
- *
- * @param stepKey {string}
- * @param steps {step[]}
- * @returns {step | null}
- */
-export function getStepByName(stepKey, steps) {
+export function getStepByName(stepKey: string, steps: WorkflowStep[]): WorkflowStep | null {
   if (!stepKey || !steps) {
     return null;
   }
@@ -90,7 +100,7 @@ export function getStepByName(stepKey, steps) {
   return null;
 }
 
-export function getStepFromRoute(route, steps) {
+export function getStepFromRoute(route: RouteLocationNamedRaw, steps: WorkflowStep[]) {
 
   const stepTitle = route?.params?.step || null;
   const currentStep = steps?.filter(step => step.title === stepTitle)[0];
@@ -120,8 +130,7 @@ export function getEmptyMetadataInEditingObject() {
  * @param stepKey
  * @returns {[]}
  */
-export function getDataKeysToStepKey(stepKey) {
-
+export function getDataKeysToStepKey(stepKey: string)  {
   const stepKeys = Object.keys(stepKeyToDataKeyMap);
 
   for (let i = 0; i < stepKeys.length; i++) {
@@ -142,7 +151,7 @@ export function getDataKeysToStepKey(stepKey) {
  * @param dataKey {string}
  * @returns {string}
  */
-export function getStepKeyToDataKey(dataKey) {
+export function getStepKeyToDataKey(dataKey: string) {
   // merged the data from these localstorage objects
   // on to a single step object because it's one step with multiple components
   // not sub steps aka. details steps

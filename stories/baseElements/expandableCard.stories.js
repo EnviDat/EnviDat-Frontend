@@ -10,14 +10,14 @@
  */
 
 /* eslint-disable import/no-extraneous-dependencies */
-import ExpandableCard from '../src/modules/about/components/ExpandableCard.vue';
-import teamSmall from '../src/assets/about/team_small.jpg';
-import mission from '../src/assets/projects/mission.jpg';
-import missionSmall from '../src/assets/projects/mission_small.jpg';
-import handsSmall from '../src/assets/about/hands_small.jpg';
-import orga from '../src/assets/about/EnviDat_organigram.png';
-import conceptSmall from '../src/assets/about/concept_small.jpg';
-import communitySmall from '../src/assets/about/community_small.jpg';
+import ExpandableCard from '@/modules/about/components/ExpandableCard.vue';
+import teamSmall from '@/assets/about/team_small.jpg';
+import mission from '@/assets/projects/mission.jpg';
+import missionSmall from '@/assets/projects/mission_small.jpg';
+import handsSmall from '@/assets/about/hands_small.jpg';
+import orga from '@/assets/about/EnviDat_organigram.png';
+import conceptSmall from '@/assets/about/concept_small.jpg';
+import communitySmall from '@/assets/about/community_small.jpg';
 
 const computed = {
   missionImg() {

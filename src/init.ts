@@ -20,7 +20,6 @@ import {
 export const initAxios = (app, store) => {
   const storeRef = store;
 
-  /* eslint-disable prefer-template */
   app.config.errorHandler = (err, vm, info) => {
     // `info` is a Vue-specific error info, e.g. which lifecycle hook
     // the error was found in. Only available in 2.2.0+
