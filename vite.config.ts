@@ -10,7 +10,7 @@ import webfontDownload from 'vite-plugin-webfont-dl';
 import vueDevTools from 'vite-plugin-vue-devtools';
 import { visualizer } from 'rollup-plugin-visualizer';
 
-import { getFilesWithPrefix } from './src/factories/enhancementsFactoryNode.js';
+import { getFilesWithPrefix } from './src/factories/enhancementsFactoryNode';
 
 const version = process.env.npm_package_version;
 
@@ -78,10 +78,13 @@ export default async ({ mode, config }): Promise<UserConfig> => {
     plugins: [
       vue(),
       eslint({
-        include: ['src/**/*.ts', 'src/**/*.vue'], // Include TypeScript files
+        eslintPath: 'eslint',
+        failOnWarning: false,
+        failOnError: true,
+        include: ['src/**/*.js', 'src/**/*.ts', 'src/**/*.vue'],
         // https://github.com/storybookjs/builder-vite/issues/367#issuecomment-1938214165
         // Remove warnings because Vite falesly tries to lint folders it should not
-        // exclude: ['/virtual:/**', 'node_modules/**', '/sb-preview/**'],
+        exclude: ['/virtual:/**', 'node_modules/**', '/sb-preview/**'],
       }),
       vuetify({
         autoImport: true,

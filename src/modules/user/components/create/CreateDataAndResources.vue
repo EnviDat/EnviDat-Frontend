@@ -17,7 +17,7 @@
         <v-col class='flex-grow-0 pr-2'>
           <v-icon
             :icon="mdiPen"
-            x-large
+            size="x-large"
             />
 
         </v-col>

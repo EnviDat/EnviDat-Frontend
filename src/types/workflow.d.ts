@@ -15,7 +15,7 @@ export interface WorkflowStep {
   status: StepStatus;
   readOnly?: boolean;
   dirty?: boolean;
-  touched?: false;
+  touched?: boolean;
   guideLines?: Array<{
     element: string;
     popover: { title: string; description: string };

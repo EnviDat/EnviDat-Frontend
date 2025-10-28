@@ -45,7 +45,7 @@
             :placeholder="labels.placeholderTitle"
             :model-value="metadataTitleField"
             @keyup="blurOnEnterKey"
-            @input="
+            @update:model-value="
               changePropertyForPreview(
                 METADATA_TITLE_PROPERTY,
                 $event.target.value,
@@ -89,7 +89,7 @@
                 @keyup="blurOnEnterKey"
                 @focusin="focusIn($event)"
                 @focusout="focusOut(METADATA_CONTACT_EMAIL, $event)"
-                @input="
+                @update:model-value="
                   changePropertyForPreview(
                     METADATA_CONTACT_EMAIL,
                     $event.target.value,
@@ -100,8 +100,8 @@
 
             <v-col cols="12" sm="6" class="pl-sm-4">
               <BaseUserPicker
-                :users="fullNameUsers"
-                :preSelected="preselectAuthorNames"
+                :users="allUsersForUserPicker"
+                :preSelectedEmails="preselectAuthorEmails"
                 :hint="labels.authorPickHint"
                 @removedUsers="catchPickerAuthorChange($event, false)"
                 @pickedUsers="catchPickerAuthorChange($event, true)"
@@ -133,7 +133,7 @@
                 @keyup="blurOnEnterKey"
                 @focusin="focusIn($event)"
                 @focusout="focusOut(METADATA_CONTACT_FIRSTNAME, $event)"
-                @input="
+                @update:model-value="
                   changePropertyForPreview(
                     METADATA_CONTACT_FIRSTNAME,
                     $event.target.value,
@@ -158,7 +158,7 @@
                 @keyup="blurOnEnterKey"
                 @focusin="focusIn($event)"
                 @focusout="focusOut(METADATA_CONTACT_LASTNAME, $event)"
-                @input="
+                @update:model-value="
                   changePropertyForPreview(
                     METADATA_CONTACT_LASTNAME,
                     $event.target.value,
@@ -201,7 +201,7 @@
               :model-value="metadataUrlField"
               @keyup="blurOnEnterKey"
               @click.stop
-              @input="
+              @update:model-value="
                 changePropertyForPreview(
                   METADATA_URL_PROPERTY,
                   $event.target.value,
@@ -228,7 +228,7 @@
   </v-card>
 </template>
 
-<script>
+<script lang="ts">
 /**
  * EditMetadataHeader.vue shows the title, main contact email, main contact given name,
  * main contact surname, and metadata header preview.
@@ -270,7 +270,7 @@ import {
 import {
   createContact,
   creationContactFromAuthor,
-  getUserNameObjects,
+  getUserPickerObjects,
   getAuthorByEmail,
   getAuthorName,
 } from '@/factories/authorFactory';
@@ -288,9 +288,10 @@ import {
 
 import { getMetadataUrlFromTitle } from '@/factories/mappingFactory';
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+import { UserPickerObject } from '@/types/modelTypes';
 
 export default {
-  name: 'EditMetadataHeader',
+  // name: 'EditMetadataHeader',
   props: {
     keywords: {
       type: Array,
@@ -423,14 +424,13 @@ export default {
           : this.metadataUrl;
       },
     },
-    preselectAuthorNames() {
+    preselectAuthorEmails() {
       const author = getAuthorByEmail(
         this.contactEmailField,
         this.existingAuthorsWrap,
       );
-      const fullName = getAuthorName(author);
 
-      return fullName ? [fullName] : [];
+      return author ? [author.email] : [];
     },
     existingAuthorsWrap() {
       if (this.$store) {
@@ -439,9 +439,9 @@ export default {
 
       return this.existingAuthors;
     },
-    fullNameUsers() {
+    allUsersForUserPicker() {
       const localAuthors = [...this.existingAuthorsWrap];
-      return getUserNameObjects(localAuthors);
+      return getUserPickerObjects(localAuthors);
     },
     metadataPreviewEntry() {
       const fullName = getAuthorName({
@@ -478,13 +478,13 @@ export default {
     },
     authorPickerFoundAuthor() {
       if (
-        this.preselectAuthorNames?.length <= 0 ||
-        this.fullNameUsers?.length <= 0
+        this.preselectAuthorEmails?.length <= 0 ||
+        this.allUsersForUserPicker?.length <= 0
       ) {
         return false;
       }
 
-      const matches = this.fullNameUsers.filter(userObj => userObj.title === this.preselectAuthorNames[0]);
+      const matches = this.allUsersForUserPicker.filter((userObj : UserPickerObject) => userObj.fullName === this.preselectAuthorEmails[0]?.name);
       return matches.length > 0;
     },
     anyUserElementsActive() {
@@ -598,7 +598,7 @@ export default {
         this.validationErrors,
       );
     },
-    catchPickerAuthorChange(pickedAuthorEmail, hasAuthor) {
+    catchPickerAuthorChange(pickedAuthorEmail: string, hasAuthor) {
 
       this.authorPickerTouched = true;
       this.authorIsPicked = hasAuthor;

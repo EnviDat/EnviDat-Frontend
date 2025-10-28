@@ -20,7 +20,7 @@
 
 <script setup lang="ts">
   import { useData } from 'vike-vue/useData'
-  import { DatasetDTO } from '@/types/modelTypes';
+  import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 
   const data = useData<DatasetDTO>();
   const datasets = Object.values(data);

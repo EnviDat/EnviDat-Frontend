@@ -35,7 +35,7 @@ import { createLocation } from '@/factories/geoFactory';
 import { getMetadataVisibilityState } from '@/factories/publicationFactory';
 import { formatDate } from '@/factories/dateFactory';
 import { enhanceMetadataWithModeExtras } from '@/factories/modeFactory';
-import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
+import { DatasetDTO, PublicationDTO } from '@/types/dataTransferObjectsTypes';
 
 /**
  * Create a pseudo random integer based on a given seed using the 'seedrandom' lib.
@@ -200,10 +200,13 @@ export function createPublishingInfo(dataset: DatasetDTO) {
     return null;
   }
 
-  let { publication } = dataset;
+  const publicationStr: unknown = dataset.publication;
 
+  let publication: PublicationDTO;
   if (typeof publication === 'string') {
-    publication = JSON.parse(dataset.publication);
+    publication = JSON.parse(publication);
+  } else {
+    publication = publicationStr as PublicationDTO;
   }
 
   return {

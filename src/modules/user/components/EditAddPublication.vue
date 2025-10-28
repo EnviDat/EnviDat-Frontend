@@ -8,7 +8,7 @@
           :disabled="!!doiField"
           hide-details
           :prepend-icon="mdiIdentifier"
-          @input="(event) => pidChange(event.target.value)"
+          @update:model-value="(event) => pidChange(event.target.value)"
         />
       </v-col>
 
@@ -28,7 +28,7 @@
           :disabled="!!pidField"
           hide-details
           :prepend-icon="mdiFingerprint"
-          @input="(event) => doiChange(event.target.value)"
+          @update:model-value="(event) => doiChange(event.target.value)"
         />
       </v-col>
 

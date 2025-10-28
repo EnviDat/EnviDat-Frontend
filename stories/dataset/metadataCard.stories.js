@@ -29,9 +29,9 @@ import {
   tabletViewportParams,
 } from '@/../stories/js/envidatViewports';
 
-import pinIcon from '../src/assets/icons/marker.webp';
-import multiPinIcon from '../src/assets/icons/markerMulti.webp';
-import polygonIcon from '../src/assets/icons/polygons.webp';
+import pinIcon from '@/assets/icons/marker.webp';
+import multiPinIcon from '@/assets/icons/markerMulti.webp';
+import polygonIcon from '@/assets/icons/polygons.webp';
 
 import metadataCards from '@/../stories/js/metadata';
 

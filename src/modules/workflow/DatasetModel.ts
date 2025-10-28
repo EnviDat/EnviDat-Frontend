@@ -1,12 +1,12 @@
-import { reactive } from 'vue';
+import { computed, reactive } from 'vue';
+import store from '@/store/store';
 
 import type { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
+import { DatasetService, Resource } from '@/types/modelTypes';
 
-import { EditDescriptionViewModel } from '@/modules/workflow/viewModel/EditDescriptionViewModel.ts';
-import { EditCustomFieldsViewModel } from '@/modules/workflow/viewModel/EditCustomFieldsViewModel.ts';
+import { AdminViewModel } from '@/modules/workflow/viewModel/AdminViewModel.ts';
 import { AuthorListViewModel } from '@/modules/workflow/viewModel/AuthorListViewModel.ts';
 import { EditDataInfoViewModel } from '@/modules/workflow/viewModel/EditDataInfoViewModel.ts';
-import { PublicationViewModel } from '@/modules/workflow/viewModel/PublicationViewModel.ts';
 import { ResourcesListViewModel } from '@/modules/workflow/viewModel/ResourcesListViewModel.ts';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 import { MetadataBaseViewModel } from '@/modules/workflow/viewModel/MetadataBaseViewModel.ts';
@@ -14,24 +14,25 @@ import { AdditionalInfoViewModel } from '@/modules/workflow/viewModel/Additional
 import { GeoInfoViewModel } from '@/modules/workflow/viewModel/GeoInfoViewModel.ts';
 import { RelatedResearchViewModel } from '@/modules/workflow/viewModel/RelatedResearchViewModel.ts';
 import { PublicationInfoViewModel } from '@/modules/workflow/viewModel/PublicationInfoViewModel.ts';
+import { CustomFieldsViewModel } from '@/modules/workflow/viewModel/CustomFieldsViewModel.ts';
+
+import { LOCAL_DATASET_KEY } from '@/factories/metadataConsts';
 
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 
-import store from '@/store/store';
 
 export class DatasetModel {
   viewModelClasses = [
-    EditDescriptionViewModel,
+    CustomFieldsViewModel, // needs to before ResourcesListViewModel as this is used by the ResourcesListViewModel
     AuthorListViewModel,
-    EditCustomFieldsViewModel,
+    AdminViewModel,
     EditDataInfoViewModel,
-    PublicationViewModel,
-    ResourcesListViewModel,
     MetadataBaseViewModel,
     AdditionalInfoViewModel,
     GeoInfoViewModel,
     RelatedResearchViewModel,
     PublicationInfoViewModel,
+    ResourcesListViewModel,
   ];
 
   private viewModelInstances: Map<string, any> = new Map();
@@ -45,6 +46,10 @@ export class DatasetModel {
     this.resourceCounter = 0;
 
     this.createViewModels();
+
+    if (this.datasetWorkflow?.getDatasetService()) {
+      this.updateViewModels();
+    }
   }
 
   private clearViewModels(): void {
@@ -54,13 +59,13 @@ export class DatasetModel {
   private createViewModels() {
     this.clearViewModels();
 
-    for (let i = 0; i < this.viewModelClasses.length; i++) {
-      const VMClass = this.viewModelClasses[i];
-      // @ts-ignore
+    for (const VMClass of this.viewModelClasses) {
       const instance = new VMClass(this);
 
       if (instance instanceof MetadataBaseViewModel) {
-        instance.existingKeywords = store.getters['metadata/existingKeywords'];
+        instance.existingKeywords = computed(
+          () => store.getters['metadata/existingKeywords'] ?? [],
+        );
       }
 
       const reactiveVM = reactive(instance);
@@ -68,72 +73,31 @@ export class DatasetModel {
     }
   }
 
-  async loadViewModels(datasetId:string) {
+  async loadDataset(datasetId: string): Promise<DatasetDTO> {
     const datasetService = this.datasetWorkflow.getDatasetService();
     await datasetService.loadDataset(datasetId);
-
-/*
-    this.createViewModels();
-    // DOMINIK - this is needed to update the viewModels with the current dataset (I GUESS)
-*/
     this.updateViewModels();
+    return datasetService.dataset;
   }
 
-  /*
-  async loadDataset(datasetId: string): Promise<DatasetDTO> {
-    await this.datasetService.loadDataset(datasetId);
-    this.updateViewModels();
-    return this.datasetService.dataset;
-  }
-
-  async reloadDataset(): Promise<DatasetDTO> {
-    return this.loadDataset(this.datasetService.dataset.id);
-  }
-
-  async createDataset(
-    user: User,
-    prefilledOrganizationId: string,
-  ): Promise<DatasetDTO> {
-
-    const datasetService = this.datasetWorkflow.getDatasetService();
-    await datasetService.createDataset(localId, localDataset);
-
-    // @ts-ignore
-    return localDataset;
-  }
-*/
-
-  async createResourceOnExistingDataset(resourceModel: AbstractEditViewModel) {
+  async createResourceOnExistingDataset(
+    resourceModel: AbstractEditViewModel,
+  ): Promise<ResourceDTO | undefined> {
+    let newResource: ResourceDTO;
     resourceModel.loading = true;
     resourceModel.error = undefined;
 
     try {
       const datasetService = this.datasetWorkflow.getDatasetService();
-      await datasetService.createResource({
-        ...(resourceModel.backendJSON as ResourceDTO),
-        // DEMO: this is set in the backend, only for local storage is needed
-        id: `resource_id_${this.resourceCounter}`,
-        package_id: this.dataset?.id,
-      });
+      newResource = await datasetService.createResource(
+        resourceModel.backendJSON,
+      );
 
-      this.resourceCounter++; // DEMO
+      // reload dataset to update all viewModels
+      await this.loadDataset(this.dataset.id);
 
       // update specifically the ResourcesListViewModel with the newly created Resource
-      this.getViewModel('ResourcesListModel').updateModel(this.dataset);
-
-      /*
-      const resourceModelData =
-        ResourceViewModel.getFormattedResource(
-          newResourceDTO,
-          this.dataset.name,
-          undefined,
-          undefined,
-          undefined,
-        );
-
-      // don't use save as it would validate, directly overwrite the properties
-      Object.assign(resourceModel, resourceModelData);
-*/
+      // this.getViewModel('ResourcesListModel').updateModel(this.dataset);
 
       resourceModel.savedSuccessful = true;
     } catch (reason) {
@@ -142,14 +106,35 @@ export class DatasetModel {
     }
 
     resourceModel.loading = false;
+    return newResource;
+  }
+
+  async deleteResourceOnExistingDataset(resourceId: string): Promise<boolean> {
+    return this.datasetWorkflow.getDatasetService().deleteResource(resourceId);
+  }
+
+  async saveDeprecatedResources(
+    datasetId: string,
+    resources: Resource[],
+    datasetService: DatasetService,
+  ) {
+    const customFieldsVM = this.getViewModel('CustomFieldsViewModel');
+
+    customFieldsVM.storeDeprecatedResources(resources.filter((res) => res.deprecated));
+
+    await datasetService.patchDatasetChanges(datasetId, customFieldsVM.backendJSON);
   }
 
   async patchViewModel(newModel: AbstractEditViewModel) {
+    const id: string =
+      this.datasetWorkflow.currentDatasetId?.trim() || LOCAL_DATASET_KEY;
+
     const datasetService = this.datasetWorkflow.getDatasetService();
-    await datasetService.patchDatasetChanges(
-      this.dataset.id,
-      newModel.backendJSON,
-    );
+    await datasetService.patchDatasetChanges(id, newModel.backendJSON);
+
+    if (newModel instanceof ResourcesListViewModel) {
+      await this.saveDeprecatedResources(id, newModel.resources, datasetService);
+    }
 
     this.updateViewModels();
 
@@ -174,6 +159,7 @@ export class DatasetModel {
 
   updateViewModels() {
     const datasetService = this.datasetWorkflow.getDatasetService();
+
     this.viewModelInstances.forEach((model: AbstractEditViewModel) =>
       model.updateModel(datasetService.dataset),
     );

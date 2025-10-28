@@ -16,7 +16,7 @@ import storyTags from '@/modules/metadata/store/metadataTags';
 import categoryCards from '@/store/categoryCards';
 import { getPopularTags, getTagColor } from '@/factories/keywordsFactory';
 import metadataset from '@/../stories/js/metadata';
-import { convertJSON } from '@/factories/mappingFactory.js';
+import { convertJSON } from '@/factories/convertJSON';
 import metadata from '~/stories/js/metadata.js';
 import { EditKeywordsViewModel } from '@/modules/workflow/viewModel/EditKeywordsViewModel.js';
 

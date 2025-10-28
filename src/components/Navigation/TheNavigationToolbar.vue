@@ -5,7 +5,7 @@
         <v-col cols="auto" sm="2">
           <v-row no-gutters class="align-center">
             <v-col class="flex-grow-0">
-              <v-btn icon small @click.stop="catchHomeClicked">
+              <v-btn icon size="small" @click.stop="catchHomeClicked">
                 <!-- :style="`background-color: ${ item.active ? $vuetify.theme.themes.light.colors.accent : 'transparent' }`" -->
                 <v-img
                   :src="EnviDatLogo"
@@ -103,7 +103,7 @@
                     icon
                     :disabled="signInDisabled"
                     color="black"
-                    small
+                    size="small"
                     @click="catchSigninClicked"
                     v-bind="props"
                   >

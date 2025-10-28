@@ -37,8 +37,6 @@ import {
   ORGANIZATIONS_PAGENAME,
   METADATA_CREATION_PATH,
   METADATA_CREATION_PAGENAME,
-  WORKFLOW_PATH,
-  WORKFLOW_PAGENAME,
 } from '@/router/routeConsts';
 
 import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';

@@ -2,7 +2,6 @@ import fs from 'fs';
 import axios from 'axios';
 // const JSONStream = require('JSONStream');
 
-// eslint-disable-next-line import/no-dynamic-require
 // const packagelist = require(packagePath);
 // const dateFns = require('date-fns');
 // const StreamArray = require('stream-json/streamers/StreamArray');

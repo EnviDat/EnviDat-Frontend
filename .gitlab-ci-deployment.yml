@@ -10,6 +10,7 @@ deploy-chromatic:
     #- install-node
     - verify-node-audit
     - job: verify-node-owasp
+      optional: true
       artifacts: false
     # needs the artifact: storybook
     - build-storybook
@@ -49,6 +50,7 @@ publish-build:
     - run-tests
     - verify-node-audit
     - job: verify-node-owasp
+      optional: true
       artifacts: false
     # needs the artifact: the build of the frontend app and storybook buildenv
     - combine-builds
@@ -88,6 +90,7 @@ deploy-to-s3-bucket:
     - publish-build
     - verify-node-audit
     - job: verify-node-owasp
+      optional: true
       artifacts: false
   variables:
     GIT_STRATEGY: none
@@ -140,6 +143,7 @@ manual-deploy-to-s3-bucket:
     - set-vars
     - verify-node-audit
     - job: verify-node-owasp
+      optional: true
       artifacts: false
   variables:
     GIT_STRATEGY: none

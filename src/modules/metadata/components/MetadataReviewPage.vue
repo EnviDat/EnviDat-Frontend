@@ -124,10 +124,11 @@ import {
 } from '@/factories/strategyFactory';
 
 import {
-  convertJSON,
   getFrontendDates,
   getFrontendJSONForStep,
 } from '@/factories/mappingFactory';
+
+import { convertJSON } from '@/factories/convertJSON';
 
 import { useReviewStore } from '@/modules/metadata/store/reviewStore';
 import { convertArrayToUrlString } from '@/factories/stringFactory';
@@ -135,7 +136,7 @@ import { convertArrayToUrlString } from '@/factories/stringFactory';
 import { formatDate } from '@/factories/dateFactory';
 import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionViewModel';
 
-import MetadataHeader from './Metadata/MetadataHeader.vue';
+import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
 
 const MetadataDescription = defineAsyncComponent(
   () => import('./Metadata/MetadataDescription.vue'),

@@ -7,9 +7,7 @@ import {
 } from '@/factories/stringFactory';
 import { enhanceTagsOrganizationDatasetFromAllDatasets } from '@/factories/keywordsFactory';
 import { enhanceMetadataFromCategories } from '@/modules/user/store/mutationFactory';
-import { isUserGroupAdmin } from '@/factories/userEditingValidations';
-
-import { getUserOrganizationRoleMap } from '@/factories/userEditingValidations';
+import { isUserGroupAdmin, getUserOrganizationRoleMap } from '@/factories/userEditingValidations';
 import {
   enhanceElementsWithStrategyEvents,
   SELECT_EDITING_DATASET_PROPERTY,

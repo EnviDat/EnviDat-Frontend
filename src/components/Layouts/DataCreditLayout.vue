@@ -25,14 +25,16 @@
               :key="index"
               class="flex-grow-0 pt-3 pt-md-4 px-1" >
 
-      <v-hover v-slot="{ isHovering, props }" >
+      <v-hover v-slot="{ props }" >
         <v-badge v-bind="props"
                  class="dataCreditIcon"
                  bordered
-                 :overlap="!isHovering"
                  :color="badgeColor"
                  :content="dataCreditCounts[index]"
         >
+<!--
+          :overlap="!isHovering"
+-->
 
           <v-tooltip location='bottom' >
             <template v-slot:activator="{ props }">

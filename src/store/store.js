@@ -111,7 +111,6 @@ function createStore() {
   });
 }
 
-// eslint-disable-next-line import/no-mutable-exports
 let store;
 
 try {

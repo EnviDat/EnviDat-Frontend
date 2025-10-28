@@ -18,9 +18,8 @@ import { EDIT_METADATA_ADD_AUTHOR_TITLE } from '@/factories/metadataConsts';
 
 import {
   createAuthor,
-  getUserNameObjects,
+  getUserPickerObjects,
   getAuthorByEmail,
-  getAuthorByName,
   getAuthorName,
 } from '@/factories/authorFactory';
 
@@ -31,6 +30,7 @@ import {
 } from '@/factories/eventBus';
 
 import { isFieldReadOnly, readOnlyHint as getReadOnlyHint } from '@/factories/globalMethods';
+import { Author, UserPickerObject } from '@/types/modelTypes';
 
 const props = defineProps({
   titleLabel: {
@@ -169,20 +169,14 @@ const affiliationField = computed(() => previews.value.affiliation !== null
   ? previews.value.affiliation
   : props.affiliation)
 
-const preselectAuthorNames = computed( () => {
-  const author = getAuthorByEmail(emailField.value, props.existingAuthors);
-
-  if (author) {
-    const fullName = getAuthorName(author);
-    return fullName ? [fullName] : [];
-  }
-
-  return undefined;
+const preselectAuthorEmails = computed( () => {
+  const author = getAuthorByEmail(emailField.value, props.existingAuthors as Author[]);
+  return author ? [author.email] : [];
 })
 
-const fullNameUsers = computed(() => {
-  const localAuthors = [...props.existingAuthors];
-  return getUserNameObjects(localAuthors);
+const authorPickerObjects = computed(() => {
+  const localAuthors = [...props.existingAuthors] as Author[];
+  return getUserPickerObjects(localAuthors);
 })
 
 
@@ -256,13 +250,15 @@ const saveAuthorInfo = (authorObject) => {
 }
 
 
-const catchPickerAuthorChange = (pickedAuthorName, hasAuthor) => {
+const catchPickerAuthorChange = (authorObjects: UserPickerObject[], hasAuthor: boolean) => {
+  const pickedAuthorEmail = authorObjects[0].email;
+
   authorPickerTouched.value = true;
   authorIsPicked.value = hasAuthor;
 
   if (authorIsPicked.value) {
     const author =
-      getAuthorByName(pickedAuthorName, props.existingAuthors) || {};
+      getAuthorByEmail(pickedAuthorEmail, props.existingAuthors as Author[]) || {};
     const authorObject = createAuthor(author);
 
     fillPreviews(
@@ -282,8 +278,8 @@ const catchPickerAuthorChange = (pickedAuthorName, hasAuthor) => {
   }
 }
 
-const getAutoCompletedAuthor = (email) => {
-  const autoAuthor = getAuthorByEmail(email, props.existingAuthors);
+const getAutoCompletedAuthor = (email: string) => {
+  const autoAuthor = getAuthorByEmail(email, props.existingAuthors as Author[]);
 
   if (autoAuthor) {
     const autoAuthorObj = createAuthor(autoAuthor);
@@ -305,7 +301,7 @@ const getAutoCompletedAuthor = (email) => {
   return null;
 }
 
-const notifyAuthorChange = (value) => {
+const notifyAuthorChange = (value: string) => {
   if (anyUserElementsActive.value) {
     return;
   }
@@ -347,7 +343,7 @@ const focusOut = (property: string, event: Event) => {
 }
 
 
-const removeAuthorClick = (email) => {
+const removeAuthorClick = (email: string) => {
   eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
     object: REMOVE_EDITING_AUTHOR,
     data: email,
@@ -428,7 +424,7 @@ const removeAuthorClick = (email) => {
             @keyup="blurOnEnterKey"
             @focusin="focusIn($event)"
             @focusout="focusOut('email', $event)"
-            @input="changeProperty('email', $event.target.value)"
+            @update:modelValue="changeProperty('email', $event.target.value)"
           />
         </v-col>
       </v-row>
@@ -440,8 +436,8 @@ const removeAuthorClick = (email) => {
       <v-row v-if="!isEditingAuthor" dense class="pt-2">
         <v-col>
           <BaseUserPicker
-            :users="fullNameUsers"
-            :preSelected="preselectAuthorNames"
+            :users="authorPickerObjects"
+            :preSelectedEmails="preselectAuthorEmails"
             :readonly="isUserPickerReadOnly"
             :hint="
               isUserPickerReadOnly
@@ -473,7 +469,7 @@ const removeAuthorClick = (email) => {
             @keyup="blurOnEnterKey"
             @focusin="focusIn($event)"
             @focusout="focusOut('firstName', $event)"
-            @input="changeProperty('firstName', $event.target.value)"
+            @update:modelValue="changeProperty('firstName', $event.target.value)"
           />
         </v-col>
 
@@ -491,7 +487,7 @@ const removeAuthorClick = (email) => {
             @keyup="blurOnEnterKey"
             @focusin="focusIn($event)"
             @focusout="focusOut('lastName', $event)"
-            @input="changeProperty('lastName', $event.target.value)"
+            @update:modelValue="changeProperty('lastName', $event.target.value)"
           />
         </v-col>
       </v-row>
@@ -511,7 +507,7 @@ const removeAuthorClick = (email) => {
             @keyup="blurOnEnterKey"
             @focusin="focusIn($event)"
             @focusout="focusOut('affiliation', $event)"
-            @input="changeProperty('affiliation', $event.target.value)"
+            @update:modelValue="changeProperty('affiliation', $event.target.value)"
           />
         </v-col>
 
@@ -529,7 +525,7 @@ const removeAuthorClick = (email) => {
             @keyup="blurOnEnterKey"
             @focusin="focusIn($event)"
             @focusout="focusOut('identifier', $event)"
-            @input="changeProperty('identifier', $event.target.value)"
+            @update:modelValue="changeProperty('identifier', $event.target.value)"
           />
         </v-col>
       </v-row>

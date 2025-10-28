@@ -23,9 +23,9 @@ import { createLocation } from '@/factories/geoFactory';
 import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from '@/../stories/js/envidatViewports';
 import txtPreviewFile from '@/../stories/js/previewTextFile.txt';
 
-import stationsConfig from './testdata/stationsConfig.json';
+import stationsConfig from '@/../stories/testdata/stationsConfig.json';
 import gcnetDataset from '@/../stories/js/gcnetDataset';
-import stationParameters from './testdata/stationParameters.json'
+import stationParameters from '@/../stories/testdata/stationParameters.json'
 
 const gcNetLocation = createLocation(gcnetDataset);
 const fileObjects = stationParameters.fileObjects;

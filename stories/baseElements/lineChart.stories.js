@@ -13,7 +13,7 @@
 import LineChart from '@/components/Charts/LineChart.vue';
 import { getOrgaDatasetsMap, organizationSeries } from '@/factories/organizationFactory';
 
-import metadataFile from './testdata/packagelist.json'
+import metadataFile from '@/../stories/testdata/packagelist.json'
 
 const metadatas = metadataFile.result;
 

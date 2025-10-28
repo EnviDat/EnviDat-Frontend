@@ -13,7 +13,7 @@ import {
 import ProjectCard from '@/modules/projects/components/ProjectCard.vue';
 
 // get Project test data and enhance it
-import projectJSON from './testdata/projects.json';
+import projectJSON from '@/../stories/testdata/projects.json';
 
 const enhancedProjects = enhanceSubprojectsFromExtras(projectJSON.result);
 

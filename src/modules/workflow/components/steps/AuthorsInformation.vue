@@ -59,6 +59,7 @@
           <v-col v-show="!selectedAuthor" cols="12">
             <AddExistingAuthor
               v-bind="authorPickingGenericProps"
+              :validationErrors="authorListingGenericProps.validationErrors"
               @save="saveAuthorsList"
             />
           </v-col>

@@ -382,7 +382,6 @@ export default {
         },
       });
     },
-    // eslint-disable-next-line no-unused-vars
     setCurrentStep(stepTitle) {
       if (this.steps) {
         for (let i = 0; i < this.steps.length; i++) {
