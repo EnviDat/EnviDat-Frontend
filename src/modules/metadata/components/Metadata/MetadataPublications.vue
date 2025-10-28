@@ -8,7 +8,7 @@
     :maxTextLength="maxTextLength"
     :sanitizeHTML="false"
     :statusText="resolvingStatusText"
-    class="relatedPubList"
+    class="relatedPubList "
   />
 </template>
 
@@ -100,6 +100,10 @@ export default {
   },
   methods: {
     resolvedCitations(text) {
+      if (!text) {
+        return '';
+      }
+
       if (
         !this.isResolving &&
         !this.resolveError &&

@@ -1,5 +1,25 @@
 <template>
-  <v-container id="MetadataReviewPage" fluid class="pa-0" tag="article">
+  <v-container
+    id="MetadataReviewPage"
+    fluid
+    class="pa-0"
+    tag="article">
+
+    <v-row v-if="datasetFound"
+           class="py-2" style="z-index: 0;"
+           no-gutters
+    >
+      <v-col cols="12">
+        <v-alert type="info">
+<!--
+          <div v-html="labels.instructions"></div>
+-->
+          <div style="font-weight: bold;">Double Blind Review</div>
+          <div >{{ labels.instructions }}</div>
+        </v-alert>
+      </v-col>
+    </v-row>
+    
     <v-row no-gutters>
       <!-- prettier-ignore -->
       <v-col class="elevation-5 pa-0"
@@ -19,16 +39,18 @@
 -->
       </v-col>
     </v-row>
+
     <v-row v-if="datasetNotFound"
            class="pt-4" style="z-index: 0;"
            no-gutters
     >
       <v-col cols="12">
-        <v-alert type="info" >{{ labels.instructions }}</v-alert>
+        <v-alert type="info" >{{ labels.notFoundInstructions }}</v-alert>
       </v-col>
     </v-row>
-    <v-row v-if="!datasetNotFound"
-      :style="`position: relative; top: ${headerHeight}px; z-index: 0;`"
+
+    <v-row v-if="datasetFound"
+      :style="`position: relative; z-index: 0;`"
       no-gutters
     >
       <v-col :class="firstColWidth" class="pt-0">
@@ -38,9 +60,7 @@
           no-gutters
         >
           <v-col class="mb-2 px-0">
-            <!-- prettier-ignore -->
-            <component :is="entry"
-                       v-bind="entry.props" />
+            <component :component="entry" :is="entry" v-bind="entry.props" />
           </v-col>
         </v-row>
       </v-col>
@@ -86,7 +106,8 @@ import {
   METADATA_NAMESPACE,
 } from '@/store/metadataMutationsConsts';
 
-import { createLicense, createResources } from '@/factories/metaDataFactory';
+import { createLicense } from '@/factories/metaDataFactory';
+import { createResources } from '@/factories/resourceHelpers';
 
 import { getConfigFiles, getConfigUrls } from '@/factories/chartFactory';
 
@@ -103,10 +124,11 @@ import {
 } from '@/factories/strategyFactory';
 
 import {
-  convertJSON,
   getFrontendDates,
   getFrontendJSONForStep,
 } from '@/factories/mappingFactory';
+
+import { convertJSON } from '@/factories/convertJSON';
 
 import { useReviewStore } from '@/modules/metadata/store/reviewStore';
 import { convertArrayToUrlString } from '@/factories/stringFactory';
@@ -114,7 +136,7 @@ import { convertArrayToUrlString } from '@/factories/stringFactory';
 import { formatDate } from '@/factories/dateFactory';
 import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionViewModel';
 
-import MetadataHeader from './Metadata/MetadataHeader.vue';
+import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
 
 const MetadataDescription = defineAsyncComponent(
   () => import('./Metadata/MetadataDescription.vue'),
@@ -150,10 +172,6 @@ export default {
     this.loadReviewMetadataContent();
 
     window.scrollTo(0, 0);
-
-    this.$nextTick(() => {
-      this.headerHeight = this.getHeaderHeight();
-    });
   },
   /**
    * @description
@@ -184,6 +202,9 @@ export default {
     datasetNotFound() {
       return !!this.reviewStore.metadataNotFound;
     },
+    datasetFound() {
+      return !this.reviewStore.metadataNotFound;
+    },
     showPlaceholder() {
       return this.reviewStore.loadingMetadata;
     },
@@ -203,66 +224,30 @@ export default {
     firstColWidth() {
       let bindings =
         this.secondColumn && this.secondColumn.length > 0
-          ? { 'v-col-6': true }
-          : { 'v-col-12': true };
+          ? {
+            'v-col-6': true,
+            'pr-1': this.$vuetify.display.mdAndUp,
+          }
+          : {
+            'v-col-12': true,
+          };
 
-      bindings = { ...bindings, ...this.leftOrFullWidth };
+      bindings = { ...bindings };
 
       return bindings;
     },
     secondColWidth() {
       let bindings =
         this.secondColumn && this.secondColumn.length > 0
-          ? { 'v-col-6': true }
+          ? {
+            'v-col-6': true,
+            'pl-1': this.$vuetify.display.mdAndUp,
+          }
           : {};
 
-      bindings = { ...bindings, ...this.rightOrFullWidth };
+      bindings = { ...bindings };
 
       return bindings;
-    },
-    leftOrFullWidth() {
-      return this.firstColumn && this.firstColumn.length > 0
-        ? this.halfWidthLeft
-        : this.fullWidthPadding;
-    },
-    rightOrFullWidth() {
-      return this.secondColumn && this.secondColumn.length > 0
-        ? this.halfWidthRight
-        : this.fullWidthPadding;
-    },
-    fullWidthPadding() {
-      const cssClasses = {};
-
-      if (this.$vuetify.display.mdAndUp && this.$vuetify.display.lgAndDown) {
-        cssClasses['px-2'] = true;
-      } else if (this.$vuetify.display.lgAndUp) {
-        cssClasses['px-3'] = true;
-      }
-
-      return cssClasses;
-    },
-    halfWidthLeft() {
-      const cssClasses = {
-        'v-col-lg-5': true,
-        'offset-lg-1': true,
-      };
-
-      if (this.$vuetify.display.mdAndUp) {
-        cssClasses['pr-1'] = true;
-      }
-
-      return cssClasses;
-    },
-    halfWidthRight() {
-      const cssClasses = {
-        'v-col-lg-5': true,
-      };
-
-      if (this.$vuetify.display.mdAndUp) {
-        cssClasses['pl-1'] = true;
-      }
-
-      return cssClasses;
     },
   },
   methods: {
@@ -272,20 +257,6 @@ export default {
     },
     resize() {
       this.reRenderComponents();
-    },
-    getHeaderHeight() {
-      let height = -2;
-
-      if (
-        (this.$vuetify.display.smAndDown && this.appScrollPosition > 20) ||
-        this.$vuetify.display.mdAndUp
-      ) {
-        if (this.$refs && this.$refs.header) {
-          height = this.$refs.header.$el.clientHeight;
-        }
-      }
-
-      return height;
     },
     /**
      * @description
@@ -304,11 +275,6 @@ export default {
       if (currentContent && currentContent.title !== undefined) {
         // const subDataset = currentContent;
         const parsedContent = convertJSON(currentContent, false);
-        /*
-        delete parsedContent.author;
-        delete parsedContent.maintainer;
-        delete parsedContent.organization;
-*/
 
         this.header = getFrontendJSONForStep(
           METADATA_MAIN_HEADER,
@@ -319,60 +285,17 @@ export default {
         this.header.created = formatDate(this.header.created);
         this.header.modified = formatDate(this.header.modified);
 
-        /*
-        this.header = createHeader(
-          subDataset,
-          this.$vuetify.display.smAndDown,
-        );
-
-        {
-          metadataTitle: dataset.title,
-            doi: dataset.doi,
-            contactName: maintainer ? getAuthorName(maintainer) : '',
-            [METADATA_CONTACT_EMAIL]: contactEmail,
-            tags: dataset.tags,
-            titleImg: dataset.titleImg,
-            maxTags: smallScreen ? 5 : 12,
-            authors,
-            categoryColor: dataset.categoryColor,
-            organization: dataset.organization?.name || '',
-            organizationTooltip: dataset.organization?.title || '',
-            metadataState: visibility,
-            spatialInfo: dataset.spatial_info,
-            created,
-            modified,
-        };
-*/
-
         const publicationData = getFrontendJSONForStep(
           EDITMETADATA_PUBLICATION_INFO,
           parsedContent,
         );
         this.header.publicationYear = publicationData.publicationYear;
 
-        /*
-        const parsedContent = convertJSON(currentContent, false);
-        const isSmallScreen = this.$vuetify.display.smAndDown;
-
-        const headerVW = createHeaderViewModel(
-            parsedContent,
-            isSmallScreen,
-            currentContent.categoryColor,
-            currentContent.titleImg,
-            this.authorDeadInfo,
-        );
-        this.header = {...headerVW}
-*/
-
         // this.body = createBody(currentContent, this.$vuetify.display.smAndDown);
         this.body = createDescriptionViewModel(
           parsedContent,
           this.$vuetify.display.smAndDown,
         );
-
-        /*
-        this.citation = createCitation(currentContent);
-*/
 
         this.loadResources(currentContent);
       }
@@ -409,6 +332,7 @@ export default {
         dataLicenseTitle: license.title,
         dataLicenseUrl: license.url,
         resourcesConfig: this.resourcesConfig,
+        compactList: true,
       };
     },
     setMetadataContent() {
@@ -422,10 +346,6 @@ export default {
 
       this.firstCol = [
         this.MetadataDescription,
-        /*
-        this.MetadataCitation,
-        this.MetadataAuthors,
-*/
       ];
 
       this.secondCol = [this.MetadataResources];
@@ -433,10 +353,6 @@ export default {
       this.singleCol = [
         this.MetadataDescription,
         this.MetadataResources,
-        /*
-        this.MetadataCitation,
-        this.MetadataAuthors,
-*/
       ];
     },
     /**
@@ -506,7 +422,6 @@ export default {
     MetadataHeader,
   },
   data: () => ({
-    headerHeight: 0,
     MetadataDescription: markRaw(MetadataDescription),
     MetadataResources: markRaw(MetadataResources),
     MetadataCitation: markRaw(MetadataCitation),
@@ -532,7 +447,8 @@ export default {
     singleCol: [],
     keyHash: '',
     labels: {
-      instructions: 'This content will only load if Blind-review is activated. Blind-review needs to be activated from the edit page of the dataset.',
+      instructions: 'This dataset is active for the double blind review, most of the metadata is redacted to keep it anonym until it is published!',
+      notFoundInstructions: 'This content will only load if Blind-review is activated. Blind-review needs to be activated from the edit page of the dataset.',
     },
   }),
 };

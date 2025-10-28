@@ -1,0 +1,38 @@
+import * as yup from 'yup';
+import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
+import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
+
+
+export class EditDescriptionViewModel extends AbstractEditViewModel{
+
+  declare description: string;
+
+  validationErrors: {
+    description: string | null;
+  } = {
+    description: null,
+  };
+
+  validationRules =
+    yup.object().shape({
+      description: yup
+        .string()
+        .required('Description is required')
+        .min(100, 'Write at least a description with 100 characters.'),
+    });
+
+  constructor(datasetModel: DatasetModel) {
+    super(datasetModel, EditDescriptionViewModel.mappingRules());
+  }
+
+  static mappingRules () {
+    return [
+      ['description','notes'],
+    ];
+  }
+
+  validate(newProps?: Partial<EditDescriptionViewModel>): boolean {
+    return super.validate(newProps);
+  }
+}
+

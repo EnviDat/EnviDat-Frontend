@@ -36,9 +36,19 @@ import {
 import {
   DATE_PROPERTY_END_DATE,
   DATE_PROPERTY_START_DATE,
+  EDIT_METADATA_AUTHORS_LABEL, EDIT_METADATA_DATALICENSE_LABEL, EDIT_METADATA_DOI_LABEL,
+  EDIT_METADATA_ORGANIZATION_LABEL, EDIT_METADATA_PUBLICATION_YEAR_LABEL, EDIT_METADATA_PUBLISHER_LABEL,
+  EDIT_METADATA_TITLE_LABEL,
+  EDIT_METADATA_URL_LABEL,
+  METADATA_AUTHORS_PROPERTY,
   METADATA_CONTACT_EMAIL,
   METADATA_CONTACT_FIRSTNAME,
   METADATA_CONTACT_LASTNAME,
+  METADATA_DATALICENSE_PROPERTY,
+  METADATA_DOI_PROPERTY,
+  METADATA_ORGANIZATION_PROPERTY,
+  METADATA_PUBLICATION_YEAR_PROPERTY,
+  METADATA_PUBLISHER_PROPERTY,
   METADATA_TITLE_PROPERTY,
   METADATA_URL_PROPERTY,
 } from '@/factories/metadataConsts';
@@ -48,7 +58,7 @@ import {
 const convertEmptyStringToNull = (value, originalValue) =>
   originalValue === '' ? null : value;
 
-const convertToZero = value => (Number.isNaN(value) ? 0 : value);
+const convertToZero = (value) => (Number.isNaN(value) ? 0 : value);
 
 const geoValidationMessage = 'Geometry is required';
 
@@ -130,7 +140,7 @@ const metadataInEditingValidations = {
         .test(
           'empty-check',
           'File size must be a number greater than 0',
-          size => size !== 0,
+          (size) => size !== 0,
         )
         .moreThan(0, 'File size be more than 0'),
       sizeFormat: yup.string().required('Pick a file size'),
@@ -153,7 +163,7 @@ const metadataInEditingValidations = {
         .test(
           'empty-check',
           'Add start and end date',
-          dateEntry =>
+          (dateEntry) =>
             dateEntry[DATE_PROPERTY_START_DATE] !== '' &&
             dateEntry[DATE_PROPERTY_END_DATE] !== '',
         ),
@@ -175,7 +185,7 @@ const metadataInEditingValidations = {
             .test(
               'empty-check',
               geoValidationMessage,
-              geoObj => Object.keys(geoObj)?.length > 0,
+              (geoObj) => Object.keys(geoObj)?.length > 0,
             ),
         }),
     }),
@@ -216,7 +226,7 @@ const metadataInEditingValidations = {
         .test(
           'empty-check',
           'An organization must be selected.',
-          organizationId => organizationId !== '',
+          (organizationId) => organizationId !== '',
           // Add validation - one of items in list
         ),
     }),
@@ -224,10 +234,7 @@ const metadataInEditingValidations = {
     yup.object().shape({
       customFields: yup.array().of(
         yup.object({
-          fieldName: yup
-            .string()
-            .required()
-            .min(3),
+          fieldName: yup.string().required().min(3),
           content: yup.string(),
         }),
       ),
@@ -236,10 +243,7 @@ const metadataInEditingValidations = {
     yup.object().shape({
       publicationState: yup.string(),
       doi: yup.string(),
-      publisher: yup
-        .string()
-        .required('Enter publisher')
-        .min(3),
+      publisher: yup.string().required('Enter publisher').min(3),
       publicationYear: yup.string().required('Enter publication year'),
     }),
   [EDITMETADATA_FUNDING_INFO]: () =>
@@ -250,17 +254,14 @@ const metadataInEditingValidations = {
         .min(1, 'Provide at least one funding entry')
         .of(
           yup.object().shape({
-            institution: yup
-              .string()
-              .required()
-              .min(3),
+            institution: yup.string().required().min(3),
             grantNumber: yup.string(),
             institutionUrl: yup
               .string()
               .nullable()
               .transform(convertEmptyStringToNull)
               .url(),
-//              .matches(urlRegex, 'Provide a valid link / url.'),
+            //              .matches(urlRegex, 'Provide a valid link / url.'),
           }),
         ),
     }),
@@ -366,7 +367,7 @@ export function isFieldValid(
     return false;
   }
 
-  errorObject[errProperty] = '';
+  errorObject[errProperty] = null;
 
   return true;
 }
@@ -425,7 +426,7 @@ export function getUserOrganizationRoleMap(userId, organizations) {
     return roleMap;
   }
 
-  organizations.forEach(orga => {
+  organizations.forEach((orga) => {
     roleMap[orga.name] = orga.capacity;
   });
 
@@ -437,7 +438,7 @@ export function hasRole(roleName, organizationRoles) {
     return false;
   }
 
-  const matchedRole = organizationRoles.filter(r => r.role === roleName);
+  const matchedRole = organizationRoles.filter((r) => r.role === roleName);
   return matchedRole.length > 0 && !!matchedRole[0];
 }
 
@@ -469,7 +470,7 @@ export function hasOrganizationRoles(organizationRoles) {
 export function isUserGroupAdmin(userId, organization) {
   if (organization?.users?.length > 0) {
     const matches = organization.users.filter(
-      user => user.id === userId && user.capacity === USER_ROLE_ADMIN,
+      (user) => user.id === userId && user.capacity === USER_ROLE_ADMIN,
     );
     return matches.length > 0;
   }
@@ -480,10 +481,76 @@ export function isUserGroupAdmin(userId, organization) {
 export function getCollaboratorCapacity(datasetId, collaboratorIdEntries) {
   if (collaboratorIdEntries?.length > 0) {
     const matches = collaboratorIdEntries.filter(
-      entry => entry.id === datasetId,
+      (entry) => entry.id === datasetId,
     );
     return matches[0]?.role || '';
   }
 
   return '';
+}
+
+export const metadataPublishedReadOnlyFields = [
+  // EditMetadataHeader
+  METADATA_TITLE_PROPERTY,
+  METADATA_URL_PROPERTY,
+  // EditAuthorList
+  METADATA_AUTHORS_PROPERTY,
+  // EditPublicationInfo
+  METADATA_ORGANIZATION_PROPERTY,
+  METADATA_PUBLICATION_YEAR_PROPERTY,
+  METADATA_PUBLISHER_PROPERTY,
+  METADATA_DOI_PROPERTY,
+  METADATA_DATALICENSE_PROPERTY,
+];
+
+export const readablePublishedReadOnlyFields = {
+  [METADATA_TITLE_PROPERTY]: EDIT_METADATA_TITLE_LABEL,
+  [METADATA_URL_PROPERTY]: EDIT_METADATA_URL_LABEL,
+  [METADATA_ORGANIZATION_PROPERTY]: EDIT_METADATA_ORGANIZATION_LABEL,
+  [METADATA_AUTHORS_PROPERTY]: EDIT_METADATA_AUTHORS_LABEL,
+  [METADATA_DOI_PROPERTY]: EDIT_METADATA_DOI_LABEL,
+  [METADATA_PUBLISHER_PROPERTY]: EDIT_METADATA_PUBLISHER_LABEL,
+  [METADATA_PUBLICATION_YEAR_PROPERTY]: EDIT_METADATA_PUBLICATION_YEAR_LABEL,
+  [METADATA_DATALICENSE_PROPERTY]: EDIT_METADATA_DATALICENSE_LABEL,
+};
+
+const readOnlyMappingRules = [
+  {
+    triggerRule: ['published'],
+    explanation: 'This field is "readonly" because the dataset is already published.',
+    readOnlyFields: metadataPublishedReadOnlyFields,
+  },
+  /*
+    {
+      triggerRule: ['draft'],
+      explanation: 'This is "readonly" because the dataset is still a draft.',
+      readOnlyFields: [
+        'resources',
+      ],
+    },
+  */
+  /*
+    {
+      triggerRule: USER_ROLE_ADMIN,
+      readOnlyFields: [],
+    },
+  */
+];
+
+export function getReadOnlyFieldsObject(trigger) {
+  if (!trigger) {
+    return null;
+  }
+
+  const lowCaseTrigger = trigger?.toLowerCase() || '';
+
+  for (let i = 0; i < readOnlyMappingRules.length; i++) {
+    const mappingObj = readOnlyMappingRules[i];
+
+    if (mappingObj.triggerRule.includes(lowCaseTrigger)) {
+      return mappingObj;
+    }
+  }
+
+  return null;
 }

@@ -1,17 +1,19 @@
 import { reactive, watch } from 'vue';
-import { AbstractBaseViewModel } from '@/factories/ViewModels/AbstractBaseViewModel.ts';
+import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
+import { AbstractViewModel } from '@/factories/ViewModels/AbstractViewModel.ts';
 
-export class DescriptionViewModel extends AbstractBaseViewModel{
+export class DescriptionViewModel extends AbstractViewModel {
 
   maxTextLength: number;
 
   declare description: string;
 
-  constructor(datasetDTO, smallScreen) {
-    super(datasetDTO, DescriptionViewModel.mappingRules());
+  constructor(dataset: DatasetDTO, smallScreen: boolean) {
+    super(dataset, DescriptionViewModel.mappingRules());
 
     this.maxTextLength = smallScreen ? 900 : 1000;
   }
+
 
   static mappingRules () {
     return [

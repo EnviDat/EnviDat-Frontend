@@ -8,7 +8,7 @@
   >
     <v-col class="pt-3" cols="12">
       <img-and-text-layout
-        :img="titleImage"
+        :img="titleImageResolved"
         :height="$vuetify.display.smAndDown ? 100 : 150"
         :title="title"
       />
@@ -41,7 +41,9 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import { mdiChevronDown } from '@mdi/js';
 import ImgAndTextLayout from '@/components/Layouts/ImgAndTextLayout.vue';
+import { getImage } from '@/factories/imageFactory.js';
 
 export default {
   name: 'AboutTabLayout',
@@ -52,6 +54,11 @@ export default {
     loadingText: String,
     markdownContent: String,
   },
+  async mounted() {
+    if (this.titleImage) {
+      this.titleImageResolved = await getImage(this.titleImage);
+    }
+  },  
   computed: {
     hasSlotContent() {
       // correct refactoring??
@@ -68,5 +75,10 @@ export default {
   components: {
     ImgAndTextLayout,
   },
+  data: () => ({
+    expanded: false,
+    mdiChevronDown,
+    titleImageResolved: undefined,
+  }),  
 };
 </script>

@@ -1,6 +1,7 @@
 <template id="MetadataPublications">
-  <v-card class="relatedPubList">
-    <v-card-title class="metadata_title text-h6 pa-4">
+  <v-card class="relatedPubList pa-0"
+  >
+    <v-card-title class="metadata_title text-h6 py-4">
       {{ METADATA_PUBLICATIONS_TITLE }}
     </v-card-title>
 
@@ -8,7 +9,13 @@
       v-if="loading || showPlaceholder"
       type="list-item-two-line"
     />
+
+    <v-card-text v-if="!text && !showPlaceholder">
+      No related publications available for this dataset.
+    </v-card-text>
+
     <v-card-text
+      v-if="text"
       ref="text"
       class="pa-4 pt-0 heightAndScroll readableText"
       :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
@@ -22,6 +29,7 @@
         <p class="font-weight-bold" v-if="isPreview && n.title">
           {{ n.title }}
         </p>
+
         <p class="font-weight-bold" v-if="isPreview && n.pid">{{ n.pid }}</p>
         <p class="font-weight-bold" v-if="isPreview && n.doi">{{ n.doi }}</p>
 
@@ -362,6 +370,11 @@ export default {
      * Processes the entire text line-by-line in parallel.
      */
     async resolvedCitations(text) {
+      if (!text){
+        // return '';
+        return;
+      }
+
       // You may decide to keep empty lines or not
       const lines = text
         .split('\n')
@@ -480,7 +493,7 @@ export default {
     pidPublications: null,
     doiPublications: null,
     emptyCitation: null,
-    loading: true,
+    loading: false,
     showFullText: false,
   }),
 };

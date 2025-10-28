@@ -23,7 +23,7 @@
               :large="large"
               :rotated="rotated"
               :color="computedIconColor"
-              :small="small"
+              :size="small ? 'small' : undefined"
               :count="count">
             </base-icon>
           </v-btn>
@@ -49,7 +49,7 @@
         :large="large"
         :rotated="rotated"
         :color="computedIconColor"
-        :small="small"
+        :size="small ? 'small' : undefined"
         :count="count">
       </base-icon>
     </v-btn>

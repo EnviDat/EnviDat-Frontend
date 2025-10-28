@@ -4,6 +4,7 @@
       class="pa-0"
       max-width="100%"
       :loading="loadingColor"
+      :flat
   >
     <v-container fluid class="pa-4">
       <v-row>
@@ -30,10 +31,17 @@
       </v-row>
 
       <v-row>
+        <v-col >
+          {{ labels.purpose }}
+        </v-col>
+      </v-row>
+
+      <v-row v-if="!isBlindReviewValid">
         <v-col>
           <v-alert type="info" >{{ labels.instructions }}</v-alert>
         </v-col>
       </v-row>
+
       <v-row class="pt-2">
         <v-col class="ml-sm-0 mr-3 flex-grow-0 d-flex align-center">
           <!-- Icon (Aligned to Match v-text-field) -->
@@ -43,10 +51,10 @@
 
             <!-- BaseIconSwitch Component -->
             <BaseIconSwitch
-                :tooltipText="'Click here to enable blind review'"
+                :tooltipText="`${isBlindReviewActive ? 'Disable' : 'Enable'} blind review`"
                 :icon="mdiAccountCircle()"
                 :active="isBlindReviewActive"
-                :disabled="!isBlindReviewValid()"
+                :disabled="loading || !isBlindReviewValid"
                 @clicked="catchBlindReviewClick()"
             />
 
@@ -62,10 +70,8 @@
               :hint="readOnlyHint('Blind Url of Dataset')"
               hide-details="auto"
               persistent-hint
-              :error-messages="validationErrors.doi"
-              :disabled="!isBlindReviewValid()"
+              :disabled="!isBlindReviewValid"
               :prepend-icon="mdiLink"
-              @input="validateProperty('blindUrl', $event)"
               :model-value="urlField"
               :append-icon="mdiContentCopy"
               @click:append="catchClipboardCopy"
@@ -75,7 +81,7 @@
         <v-col :cols="12" :md="6">
           <BaseRectangleButton
               :button-text=labels.buttonText
-              :disabled="!isPreviewAvailable()"
+              :disabled="!isPreviewAvailable"
               :loading="loading"
               @clicked="previewClicked" />
         </v-col>
@@ -100,7 +106,9 @@ import {
   mdiLink,
   mdiContentCopy,
   mdiCalendarRange,
-  mdiArrowDownDropCircleOutline, mdiAccountCircle, mdiClose,
+  mdiArrowDownDropCircleOutline,
+  mdiAccountCircle,
+  mdiClose,
 } from '@mdi/js';
 
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
@@ -110,25 +118,21 @@ import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.v
 import {
   EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_OBJECT_UPDATE,
-  EDITMETADATA_PUBLICATION_INFO,
+  EDITMETADATA_REVIEW_INFO,
   eventBus,
 } from '@/factories/eventBus';
-
-import {
-  getValidationMetadataEditingObject,
-  isFieldValid, USER_ROLE_MEMBER,
-} from '@/factories/userEditingValidations';
 
 import {
   EDIT_METADATA_DOI_LABEL,
   PUBLICATION_STATE_RESERVED,
   PUBLICATION_STATE_PENDING,
-  BLIND_REVIEW_ON, BLIND_REVIEW_OFF,
+  BLIND_REVIEW_ON,
+  BLIND_REVIEW_OFF,
 } from '@/factories/metadataConsts';
 
 
 import { readOnlyHint, isFieldReadOnly } from '@/factories/globalMethods';
-import {METADATAREVIEW_PATH} from '@/router/routeConsts';
+import { METADATAREVIEW_PATH } from '@/router/routeConsts';
 
 export default {
   name: 'EditReviewInfo',
@@ -144,10 +148,6 @@ export default {
     loading: {
       type: Boolean,
       default: false,
-    },
-    userRole: {
-      type: String,
-      default: USER_ROLE_MEMBER,
     },
     message: {
       type: String,
@@ -181,6 +181,10 @@ export default {
        type: Boolean,
        default: undefined,// can be kept null
      },
+    flat: {
+      type: Boolean,
+      default: false,
+    },
   },
   mounted () {
     this.isBlindActive = this.isBlindReview;
@@ -205,12 +209,11 @@ export default {
     isBlindReviewActive() {
       return this.isBlindActive === null? this.isBlindReview : this.isBlindActive;
     },
-
-    validations() {
-      return getValidationMetadataEditingObject(this.stepKey);
+    isBlindReviewValid() {
+      return (this.doi && this.allowedPublicationStates.includes(this.publicationState));
     },
-    loadingBlindReview() {
-      return false;
+    isPreviewAvailable() {
+      return (this.isBlindReviewValid && this.urlField.length > 0);
     },
   },
   watch: {
@@ -231,52 +234,32 @@ export default {
     readOnlyHint(dateProperty) {
       return readOnlyHint(this.$props, dateProperty);
     },
-    validateProperty(property, value) {
-      return isFieldValid(
-          property,
-          value,
-          this.validations,
-          this.validationErrors,
-      );
-    },
-    isBlindReviewValid() {
-      if (this.doi && this.allowedPublicationStates.includes(this.publicationState)) {
-        return true;
-      }
-      return false;
-    },
-    isPreviewAvailable() {
-      if (this.isBlindReviewValid() && this.urlField.length > 0) {
-        return true;
-      }
-      return false;
-    },
     catchBlindReviewClick() {
-      if (this.isBlindReviewValid()) {
+      if (this.isBlindReviewValid) {
         this.isBlindActive = !this.isBlindActive;
         const value = this.isBlindActive? BLIND_REVIEW_ON : BLIND_REVIEW_OFF;
-        this.changeBlindReviewStatus('version', value);
+        this.changeBlindReviewStatus(value);
         this.generateBlindReviewUrl();
       }
     },
     generateBlindReviewUrl() {
+      
       if (this.datasetId && this.isBlindReview) {
-        this.blindUrl = `${this.ckanDomain}/#${METADATAREVIEW_PATH}/${this.datasetId}`;
+        this.blindUrl = `${this.envidatDomain}/#${METADATAREVIEW_PATH}/${this.datasetId}`;
       }
       else {
         this.blindUrl = '';
       }
+      
       return this.blindUrl;
     },
-    changeBlindReviewStatus(property, value) {
+    changeBlindReviewStatus(value) {
       const newBlindReviewInfo = {
-        ...this.$props,
-        [property]: value,
+        version: value,
       };
       eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: EDITMETADATA_PUBLICATION_INFO,
+        object: EDITMETADATA_REVIEW_INFO,
         data: newBlindReviewInfo,
-        property: property.toString(),
       });
     },
     catchClipboardCopy() {
@@ -304,27 +287,19 @@ export default {
       institutionUrl: '',
     },
     labels: {
-      cardTitle: 'Review Information',
+      cardTitle: 'Blind Review',
       reviewState: 'Dataset blind-review type',
       blindUrl: 'Url to view blind-review dataset',
       dataObjectIdentifier: EDIT_METADATA_DOI_LABEL,
       instructions: 'DOI needs to be reserved to enable this feature',
       buttonText: 'Preview',
+      purpose: 'Only activate the blind-review if you need to provide anonymized access to your research data files to reviewers for a scientific journal before the dataset has been published. Once enabled, copy the link below and provide it to the reviewers (the DOI is not be activate until the dataset is published).',
     },
-    propertyValidationSuffix: 'Validation',
-    // blindReviewMode: false,
     isBlindActive: null,
-    // datasetId: null,
     allowedPublicationStates: [PUBLICATION_STATE_RESERVED, PUBLICATION_STATE_PENDING],
-    ckanDomain: process.env.VITE_API_ROOT,
-
-    validationErrors: {
-      doi: null,
-      blindUrl: null,
-    },
+    envidatDomain: process.env.VITE_API_ROOT,
     buttonColor: '#269697',
     previewYear: null,
-    stepKey: EDITMETADATA_PUBLICATION_INFO,
   }),
   components: {
     BaseStatusLabelView,

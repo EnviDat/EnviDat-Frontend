@@ -1,5 +1,5 @@
 <template>
-  <v-card id="EditMetadataResources" class="pa-0" :loading="loadingColor">
+  <v-card id="EditMetadataAuthors" class="pa-0" :loading="loadingColor">
     <v-container fluid class="pa-4">
       <v-row>
         <v-col class="text-h5">

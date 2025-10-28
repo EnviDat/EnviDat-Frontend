@@ -15,6 +15,8 @@ export const LANDING_PATH = '/';
 export const LANDING_PAGENAME = 'LandingPage';
 export const BROWSE_PATH = '/browse';
 export const BROWSE_PAGENAME = 'BrowsePage';
+export const BROWSE_MODE_PATH = '/browse/mode';
+export const BROWSE_MODE_PAGENAME = 'BrowsePageMode';
 export const METADATA_MODULE_PATH = '/metadata';
 export const METADATA_MODULE_PAGENAME = 'MetadataModule';
 export const METADATADETAIL_PATH = '/metadata';
@@ -59,3 +61,7 @@ export const INTEGRATION_PATH = '/integration';
 export const INTEGRATION_PAGENAME = 'IntegrationPage';
 export const SERVICE_PATH = '/services';
 export const SERVICE_PAGENAME = 'ServicePage';
+
+// route new workflow
+export const WORKFLOW_PATH = '/workflow';
+export const WORKFLOW_PAGENAME = 'WorkflowPage';

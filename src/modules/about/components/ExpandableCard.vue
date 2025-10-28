@@ -16,7 +16,7 @@
                 expanded ? 0 : 4
               }px; border-top-left-radius: 4px;`
             "
-            :src="img"
+            :src="imgResolved"
           />
         </v-col>
 
@@ -67,6 +67,7 @@
 import { mdiChevronDown } from '@mdi/js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import { renderMarkdown } from '@/factories/stringFactory';
+import { getImage } from '@/factories/imageFactory.js';
 
 export default {
   name: 'ExpandableCard',
@@ -81,10 +82,11 @@ export default {
     minHeight: Number,
     maxHeight: Number,
   },
-  data: () => ({
-    expanded: false,
-    mdiChevronDown,
-  }),
+  async mounted() {
+    if (this.img) {
+      this.imgResolved = await getImage(this.img);
+    }
+  },
   computed: {
     markdownText() {
       return renderMarkdown(this.text.trim(), false);
@@ -95,5 +97,10 @@ export default {
       this.expanded = !this.expanded;
     },
   },
+  data: () => ({
+    expanded: false,
+    mdiChevronDown,
+    imgResolved: undefined,
+  }),
 };
 </script>

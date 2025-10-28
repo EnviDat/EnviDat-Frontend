@@ -1,6 +1,6 @@
 
 export const barChartTemplate = {
-  type: "bar",
+  type: 'bar',
 }
 
 export const lineChartTemplate = {
@@ -8,6 +8,6 @@ export const lineChartTemplate = {
   plugins: {
     decimate: {
 
-    }
-  }
+    },
+  },
 }

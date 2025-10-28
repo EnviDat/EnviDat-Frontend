@@ -6,8 +6,9 @@
     :closable="closable"
     :title="config?.maintenanceConfig?.title"
     :rounded="rounded"
-    :text="config?.maintenanceConfig?.message"
-  ></v-alert>
+  >
+    <div class="text-body-1" v-html="config?.maintenanceConfig?.message"></div>
+  </v-alert>
 </template>
 
 <script setup>

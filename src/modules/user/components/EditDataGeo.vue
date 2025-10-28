@@ -1,10 +1,6 @@
 <template>
-  <v-card id="EditDataGeo"
-          class="pa-0"
-          :loading="loadingColor">
-
+  <v-card id="EditDataGeo" class="pa-0" :loading="loadingColor">
     <v-container fluid class="pa-4">
-
       <v-row>
         <v-col cols="6" class="text-h5">
           {{ labels.cardTitle }}
@@ -44,18 +40,14 @@
 
       <v-row>
         <v-col cols="5">
-          <v-row >
-            <v-col cols="12"
-                   class="text-h6">
-              Editor
-            </v-col>
+          <v-row>
+            <v-col cols="12" class="text-h6"> Editor </v-col>
 
             <v-col cols="12">
               {{ labels.uploadInstructions }}
             </v-col>
 
-            <v-col v-show="false"
-                   cols="12" md="12">
+            <v-col v-show="false" cols="12" md="12">
               <!-- intentionally use v-show="false" here to hide it, but make it accessible
                    when clicking the button -->
               <v-file-input
@@ -63,13 +55,10 @@
                 accept=".geojson,.json"
                 v-model="geoFile"
               />
-
             </v-col>
 
             <v-col cols="12">
-              <v-row no-gutters
-                     align="center"
-              >
+              <v-row no-gutters align="center">
                 <v-col class="flex-grow-0 mr-4">
                   <BaseRectangleButton
                     color="highlight"
@@ -83,54 +72,52 @@
                 </v-col>
 
                 <v-col class="flex-grow-1">
-
-                  <v-row align="center"
-                         justify="center"
-                         no-gutters
-                  >
-                    <v-col >
-                      <div ref="dropZoneRef"
-                           class="dropZone"
-                           :style="`border-color: ${$vuetify.theme.themes.light.colors.highlight};
-                                    background-color: ${ isOverDropZone ? $vuetify.theme.themes.light.colors.highlight : 'transparent' };
-                                  `">
+                  <v-row align="center" justify="center" no-gutters>
+                    <v-col>
+                      <div
+                        ref="dropZoneRef"
+                        class="dropZone"
+                        :style="`border-color: ${$vuetify.theme.themes.light.colors.highlight};
+                                    background-color: ${isOverDropZone ? $vuetify.theme.themes.light.colors.highlight : 'transparent'};
+                                  `"
+                      >
                         {{ labels.fileDropLabel }}
                       </div>
-
                     </v-col>
                   </v-row>
                 </v-col>
               </v-row>
-
             </v-col>
 
             <v-col cols="12">
               {{ labels.editorInstructions }}
             </v-col>
 
-            <v-col cols="12"
-                   class="editorHeight"
-                  :style="`scrollbar-color: ${this.scrollbarColorFront} ${this.scrollbarColorBack};`"
+            <v-col
+              cols="12"
+              class="editorHeight"
+              :style="`scrollbar-color: ${this.scrollbarColorFront} ${this.scrollbarColorBack};`"
             >
               <div class="columns">
                 <div class="column">
-                  <div class="jsoneditor-vue" id="jsoneditor-vue" ref="editorRef"></div>
+                  <div
+                    class="jsoneditor-vue"
+                    id="jsoneditor-vue"
+                    ref="editorRef"
+                  ></div>
                 </div>
               </div>
             </v-col>
 
-            <v-col v-show="validationErrors.input"
-                   cols="12">
+            <v-col v-show="validationErrors.input" cols="12">
               <v-alert type="warning">
                 {{ validationErrors.input }}
               </v-alert>
             </v-col>
-
           </v-row>
 
-          <v-row no-gutters
-            class="mt-4">
-            <v-col >
+          <v-row no-gutters class="mt-4">
+            <v-col>
               <BaseRectangleButton
                 :disabled="!saveButtonEnabled"
                 :loading="saveButtonInProgress"
@@ -142,17 +129,12 @@
                 @clicked="commitGeometriesToAPI"
               />
             </v-col>
-
           </v-row>
         </v-col>
 
         <v-col cols="7">
-          <v-row >
-
-            <v-col cols="12"
-                   class="text-h6">
-              Preview
-            </v-col>
+          <v-row>
+            <v-col cols="12" class="text-h6"> Preview </v-col>
 
             <v-col cols="12">
               {{ labels.mapInstructions }}
@@ -163,10 +145,9 @@
             </v-col>
           </v-row>
         </v-col>
-
       </v-row>
 
-<!--
+      <!--
         <v-row >
           <v-col >
             <ExpandableTextLayout title="Text Preview of Geospatial Information"
@@ -175,7 +156,6 @@
           </v-col>
         </v-row>
 -->
-
     </v-container>
   </v-card>
 </template>
@@ -212,17 +192,17 @@ import {
   EDITMETADATA_DATA_GEO_SPATIAL,
 } from '@/factories/eventBus';
 
-import {
-  EDIT_METADATA_GEODATA_TITLE,
-} from '@/factories/metadataConsts';
+import { EDIT_METADATA_GEODATA_TITLE } from '@/factories/metadataConsts';
 
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
 } from '@/factories/userEditingValidations';
 
-import { convertGeoJSONToGeoCollection, defaultSwissLocation } from '@/factories/geoFactory';
-
+import {
+  convertGeoJSONToGeoCollection,
+  defaultSwissLocation,
+} from '@/factories/geoFactory';
 
 export default {
   name: 'EditDataGeo',
@@ -284,7 +264,14 @@ export default {
     eventBus.on(MAP_GEOMETRY_MODIFIED, this.changedGeoViaEditor);
     eventBus.on(EDITMETADATA_DATA_GEO_MAP_ERROR, this.triggerValidationError);
 
-    const jsonString = this.location?.geoJSON ? JSON.stringify(this.location?.geoJSON) : '';
+/*
+    console.log(this.location);
+    console.log(this.location?.geoJSON);
+*/
+
+    const jsonString = this.location?.geoJSON
+      ? JSON.stringify(this.location?.geoJSON)
+      : '';
 
     this.changeGeoViaText(jsonString, true);
 
@@ -305,8 +292,7 @@ export default {
       onLeave: () => {
         this.isOverDropZone = false;
       },
-    })
-
+    });
   },
   beforeUnmount() {
     if (this.saveButtonEnabled) {
@@ -315,7 +301,7 @@ export default {
     eventBus.off(MAP_GEOMETRY_MODIFIED, this.changedGeoViaEditor);
     eventBus.off(EDITMETADATA_DATA_GEO_MAP_ERROR, this.triggerValidationError);
 
-    this.jsonEditor?.destroy()
+    this.jsonEditor?.destroy();
   },
   computed: {
     loadingColor() {
@@ -349,7 +335,7 @@ export default {
     geomsForMapString() {
       return this.geomsForMap ? JSON.stringify(this.geomsForMap) : '';
     },
-    editorOptions(){
+    editorOptions() {
       return {
         mode: 'tree',
         indentation: 2,
@@ -366,13 +352,15 @@ export default {
         onError: (err) => {
           this.validationErrors.input = err.message;
 
-          console.error(err)
+          console.error(err);
           // emit('editorError', err);
         },
-      }
+      };
     },
     scrollbarColorFront() {
-      return this.$vuetify ? this.$vuetify.theme.themes.light.colors.highlight : 'auto';
+      return this.$vuetify
+        ? this.$vuetify.theme.themes.light.colors.highlight
+        : 'auto';
     },
     scrollbarColorBack() {
       return this.$vuetify ? '#F0F0F0' : 'auto';
@@ -382,15 +370,14 @@ export default {
     this.validationErrors.input = err.message;
 
     // console.error('Error captured in parent:', err);
-    console.log('Error source component:', vm.$options.name);
-    console.log('Error info:', info);
+    console.error('Error source component:', vm.$options.name);
+    console.error('Error info:', info);
 
     // return `false` to stop the error from propagating to further ancestors.
-    return false
+    return false;
   },
   methods: {
     initEditor(textContent) {
-
       const content = { text: textContent }; // ? { text: textContent } : { json: jsonContent };
 
       try {
@@ -407,7 +394,6 @@ export default {
         console.error(err);
         // emit('editorError', err);
       }
-
     },
     jsonEditorOnChange(updatedContent, previousContent, status) {
       this.validationErrors.input = undefined;
@@ -417,7 +403,7 @@ export default {
         // patchResult,
       } = status;
 
-/*
+      /*
       console.log('onChange', {
         updatedContent,
         previousContent,
@@ -427,10 +413,7 @@ export default {
 */
 
       if (contentErrors) {
-        const {
-          parseError,
-          validationErrors,
-        } = contentErrors;
+        const { parseError, validationErrors } = contentErrors;
 
         if (parseError) {
           this.validationErrors.input = parseError.toString();
@@ -449,7 +432,6 @@ export default {
         if (this.editorSelection.type === SelectionType.value) {
           acceptChange = true;
           this.editorSelection = undefined;
-
         } else {
           acceptChange = false;
           this.validationErrors.input = 'Only editing of values is allowed';
@@ -463,7 +445,9 @@ export default {
       }
 
       if (acceptChange) {
-        const contentAsString = updatedContent.text ? updatedContent.text : JSON.stringify(updatedContent.json);
+        const contentAsString = updatedContent.text
+          ? updatedContent.text
+          : JSON.stringify(updatedContent.json);
         this.changeGeoViaText(contentAsString);
         return true;
       }
@@ -471,12 +455,12 @@ export default {
       return false;
     },
     changedGeoViaEditor(geoJSONArray) {
-      const geoJsonStr = JSON.stringify(geoJSONArray)
+      const geoJsonStr = JSON.stringify(geoJSONArray);
       this.changeGeoViaText(geoJsonStr);
     },
     changeGeoFromFileUpload(text) {
       this.isValidateGeoJSON(text);
-      this.changeGeoViaText(text)
+      this.changeGeoViaText(text);
     },
     changeGeoViaText(text, skipUpdateSaveButton) {
       const inputGeoJSON = JSON.parse(text);
@@ -514,18 +498,19 @@ export default {
           this.validationErrors,
         )
       ) {
-
-        const propsKeys = geoCollection.properties ? Object.keys(geoCollection.properties) : [];
+        const propsKeys = geoCollection.properties
+          ? Object.keys(geoCollection.properties)
+          : [];
         if (propsKeys?.length <= 0) {
-          geoCollection.properties = { name: this.location.name }
+          geoCollection.properties = { name: this.location.name };
         }
 
         this.geomsForMap = geoCollection;
 
-        return true
+        return true;
       }
 
-      return false
+      return false;
     },
     /**
      * Update spatial metadata in API via event bus
@@ -534,7 +519,7 @@ export default {
       this.saveButtonInProgress = true;
       this.saveButtonEnabled = false;
 
-      const obj = this.geomsForMap
+      const obj = this.geomsForMap;
 
       eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_DATA_GEO,
@@ -548,7 +533,8 @@ export default {
     },
     triggerFilePicker() {
       // select the hidden file input
-      const fileInputElement = this.$refs.filePicker?.$el.querySelector('input[type="file"]');
+      const fileInputElement =
+        this.$refs.filePicker?.$el.querySelector('input[type="file"]');
 
       if (fileInputElement) {
         fileInputElement.click();
@@ -561,18 +547,17 @@ export default {
       }
     },
     triggerFileUpload(file) {
-
       const reader = new FileReader();
       reader.onload = () => {
         this.changeGeoFromFileUpload(reader.result);
-      }
+      };
 
       reader.onerror = (e) => {
         this.validationErrors.geometries = `Could not load file. Is it GeoJSON? ${e}`;
-      }
+      };
 
       reader.readAsText(file);
-   },
+    },
     triggerValidationError(errorMsg) {
       this.validationErrors.geometries = errorMsg;
     },
@@ -585,7 +570,7 @@ export default {
       this.saveButtonInProgress = false;
     },
     geoFile() {
-      this.triggerFileUpload(this.geoFile)
+      this.triggerFileUpload(this.geoFile);
     },
   },
   components: {
@@ -606,11 +591,15 @@ export default {
       cardTitle: EDIT_METADATA_GEODATA_TITLE,
       cardInstructions:
         'Define the location(s) where the research data was collected or were it is refeering to.',
-      defaultInstructions: 'You are using the default location (Switzerland). Consider adjusting the geo information to represent your research data as accurate as possible.',
-      editorInstructions: 'Use the text editor for fine adjustments, Undo or Redo. Only changing the values of geometries is allowed to edit. If you need to make needs of the structure upload a new file or change it on the map.',
-      uploadInstructions: 'Upload geo-JSON from a file if you have large changes or many geometries.',
-      mapInstructions: 'Use the tools on the right side of the map to define locations. You can mix Points and Polygons. Or pick predefined locations. Use the eraser icon to remove geometries.',
-      fileDropLabel : 'Or drop a file with geo-JSON here',
+      defaultInstructions:
+        'You are using the default location (Switzerland). Consider adjusting the geo information to represent your research data as accurate as possible.',
+      editorInstructions:
+        'Use the text editor for fine adjustments, Undo or Redo. Only changing the values of geometries is allowed to edit. If you need to make needs of the structure upload a new file or change it on the map.',
+      uploadInstructions:
+        'Upload geo-JSON from a file if you have large changes or many geometries.',
+      mapInstructions:
+        'Use the tools on the right side of the map to define locations. You can mix Points and Polygons. Or pick predefined locations. Use the eraser icon to remove geometries.',
+      fileDropLabel: 'Or drop a file with geo-JSON here',
     },
     validationErrors: {
       input: null,

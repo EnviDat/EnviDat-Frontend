@@ -5,7 +5,7 @@
         <v-col cols="auto" sm="2">
           <v-row no-gutters class="align-center">
             <v-col class="flex-grow-0">
-              <v-btn icon small @click.stop="catchHomeClicked">
+              <v-btn icon size="small" @click.stop="catchHomeClicked">
                 <!-- :style="`background-color: ${ item.active ? $vuetify.theme.themes.light.colors.accent : 'transparent' }`" -->
                 <v-img
                   :src="EnviDatLogo"
@@ -103,7 +103,7 @@
                     icon
                     :disabled="signInDisabled"
                     color="black"
-                    small
+                    size="small"
                     @click="catchSigninClicked"
                     v-bind="props"
                   >
@@ -135,6 +135,7 @@ import ModeView from '@/components/Layouts/ModeView.vue';
 import EnviDatLogo from '@/assets/logo/EnviDat_logo_32.png';
 import UserMenu from '@/modules/user/components/UserMenu.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
 
 export default {
   name: 'TheNavigationToolbar',
@@ -166,6 +167,9 @@ export default {
     hasModeData() {
       return !!this.mode;
     },
+    hasLoggedUser() {
+      return this.signedInUser || {};
+    },
   },
   methods: {
     catchUserMenuItemClicked(item) {
@@ -182,9 +186,27 @@ export default {
     catchContinueClick() {
       this.$emit('continueClick');
     },
+    // Load organization IDs for the logged-in user. This is used to determine whether the "Create Dataset" item should be shown in the dropdown menu.
+    async fetchUserOrganizationId(forceReload = false) {
+      if (
+        forceReload ||
+        (!forceReload && this.organizationsStore.userOrganizations?.length > 0)
+      ) {
+        await this.organizationsStore.UserGetOrgIds(this.hasLoggedUser.id);
+      }
+    },
+  },
+  mounted() {
+    if (this.hasLoggedUser?.id) {
+      this.fetchUserOrganizationId(true);
+    }
+  },
+  created() {
+    this.organizationsStore = useOrganizationsStore();
   },
   data: () => ({
     mdiAccountCircle,
+    organizationsStore: null,
     mdiPencil,
     EnviDatLogo,
     logoText: 'EnviDat',

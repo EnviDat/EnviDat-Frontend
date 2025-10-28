@@ -23,7 +23,7 @@ import {
 
 import { updateEditingArray } from '@/factories/userEditingFactory';
 
-import { enhanceTags } from '@/factories/keywordsFactory';
+import { enhanceKeywords } from '@/factories/keywordsFactory';
 import { USER_NAMESPACE, VALIDATION_ERROR } from './userMutationsConsts';
 
 
@@ -120,7 +120,7 @@ export function enhanceMetadataFromCategories(store, metadatas) {
     datasets = [datasets];
   }
 
-  datasets.forEach(dataset => enhanceTags(dataset));
+  datasets.forEach(dataset => enhanceKeywords(dataset.tags));
 
   const enhanced = enhanceMetadatasTitleImage(datasets);
   return isArrayInput ? enhanced : enhanced[0];
