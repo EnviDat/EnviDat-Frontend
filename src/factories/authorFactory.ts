@@ -22,7 +22,10 @@ import {
   METADATA_CONTACT_FIRSTNAME,
   METADATA_CONTACT_LASTNAME,
 } from '@/factories/metadataConsts';
+
 import { AUTHOR_ASCII_DEAD } from '@/store/mainMutationsConsts';
+import { Author, DataCreditObject, User, UserPickerObject } from '@/types/modelTypes';
+import { AuthorDTO } from '@/types/dataTransferObjectsTypes';
 
 const authorDataCreditLevels = [
   { score: 160, lvl: 6 },
@@ -33,17 +36,47 @@ const authorDataCreditLevels = [
   { score: 1, lvl: 1 },
 ];
 
-export function getAuthorGivenName(author) {
+
+const defaultTotalDataCredit = () : DataCreditObject => {
+  return {
+    curation: 0,
+    publication: 0,
+    software: 0,
+    supervision: 0,
+    validation: 0,
+    collection: 0,
+  };
+}
+
+export function getAuthorGivenName(author:
+  {
+    given_name?: string,
+    firstName?: string,
+  },
+) {
   const firstName = author?.given_name || author?.firstName || '';
   return firstName.trim() || null;
 }
 
-export function getAuthorLastName(author) {
+export function getAuthorLastName(author:
+  {
+    name?: string,
+    lastName?: string,
+  },
+) {
   const lastName = author.name || author.lastName || '';
   return lastName.trim() || null;
 }
 
-export function getAuthorName(author) {
+export function getAuthorName(author:
+  {
+    fullName?: string,
+    given_name?: string,
+    firstName?: string,
+    name?: string,
+    lastName?: string,
+  },
+): string | undefined {
   let fullName = author?.fullName;
 
   if (!fullName) {
@@ -55,17 +88,25 @@ export function getAuthorName(author) {
 
   fullName = fullName.trim();
 
-  return fullName || null;
+  return fullName || undefined;
 }
 
-export function getAuthorNameCitation(author) {
+export function getAuthorNameCitation(author:
+  {
+    fullName?: string,
+    given_name?: string,
+    firstName?: string,
+    name?: string,
+    lastName?: string,
+  },
+) {
 
   const firstName = author.given_name || author.firstName || '';
 
   const splits = firstName.trim().split(' ');
   let firstnameInitials = '';
 
-  splits.forEach((name) => {
+  splits.forEach((name: string) => {
     firstnameInitials += `${name.substring(0, 1)}. `;
   })
 
@@ -73,22 +114,25 @@ export function getAuthorNameCitation(author) {
 
   return `${lastName.trim()}, ${firstnameInitials.trim()}`;
 }
+
 /**
  *
- * @param userObjects {Array}
- * @returns {[{ title: string, value: string}]}
+ * @param userObjects | authorObjects {Array}
+ * @returns {[{ fullName: string, email: string}]}
  */
-export function getUserNameObjects(userObjects) {
+export function getUserPickerObjects(
+  userObjects: Author[] | User [] | { fullName: string, email: string }[],
+) : UserPickerObject[] {
   if (!userObjects || !(userObjects instanceof Array) || userObjects.length <= 0) {
     return [];
   }
 
   return userObjects
     .map((user) => ({
-      title: getAuthorName(user),
-      value: user.email,
+      fullName: getAuthorName(user),
+      email: user.email,
     }))
-    .sort((a, b) => a.title.localeCompare(b.title));
+    .sort((a, b) => a.fullName.localeCompare(b.fullName));
 }
 
 export function getAuthorsString(dataset) {
@@ -222,12 +266,12 @@ export function creationContactFromAuthor(author) {
   return undefined;
 }
 
-export function createAuthor(author, lastModified = '') {
+export function createAuthor(author: Author | AuthorDTO, lastModified: string = '') {
 
   // const nameSplits = fullName.split(' ');
-  const firstName = author.given_name || author.firstName || '';
-  const lastName = author.name || author.lastName || '';
-  const fullName = getAuthorName({ firstName, lastName });
+  const firstName = 'given_name' in author ? author.given_name : author.firstName || '';
+  const lastName = 'name' in author ? author.name : author.lastName || '';
+  const fullName = getAuthorName({ firstName, lastName } as Author);
 
   // if (nameSplits.length > 0) {
   //   if (nameSplits.length === 1) {
@@ -242,7 +286,7 @@ export function createAuthor(author, lastModified = '') {
   // }
 
 //    const dataCredit = author.data_credit ? getDataCredit(author) : author.dataCredit;
-  let dataCredit = author.dataCredit || author.data_credit || [];
+  let dataCredit = 'dataCredit' in author ? author.dataCredit : author.data_credit || [];
 
   if (typeof dataCredit === 'string') {
     dataCredit = [dataCredit];
@@ -250,14 +294,15 @@ export function createAuthor(author, lastModified = '') {
 
   // console.log(`creating author from ${fullName} dataCredit: ${dataCredit} datasetCount: ${author.datasetCount}`);
 
-  const isAuthorDead = firstName?.includes(AUTHOR_ASCII_DEAD) ||
+  const isAuthorDead =
+    firstName?.includes(AUTHOR_ASCII_DEAD) ||
     lastName?.includes(AUTHOR_ASCII_DEAD);
 
   return {
     firstName: firstName.trim(),
     lastName: lastName.trim(),
     fullName,
-    datasetCount: author.datasetCount || 1,
+    datasetCount: ('datasetCount' in author && author.datasetCount) || 1,
     affiliation: author.affiliation,
     /*
           // this is probably old
@@ -271,9 +316,12 @@ export function createAuthor(author, lastModified = '') {
     isSelected: false,
     isAuthorDead,
     dataCredit,
-    totalDataCredits: author.totalDataCredits || {},
+    totalDataCredits:
+      ('totalDataCredits' in author && author.totalDataCredits) ||
+      defaultTotalDataCredit(),
     lastModified,
-  };
+    identifierType: '',
+  } satisfies Author;
 }
 
 /**
@@ -284,15 +332,15 @@ export function createAuthor(author, lastModified = '') {
  * @param existingAuthor
  * @returns {{firstName: *, lastName: *, identifier: *, datasetCount: (number|(function(): number)|*), affiliation: *, isSelected, fullName: *, email: *, dataCredit: *, totalDataCredits: (*|*[])}}
  */
-export function mergeEditingAuthor(newAuthor, existingAuthor) {
+export function mergeEditingAuthor(newAuthor: Author, existingAuthor: Author) : Author {
   return {
     ...createAuthor(newAuthor),
     datasetCount: existingAuthor.datasetCount,
-    totalDataCredits: existingAuthor.totalDataCredits || [],
+    totalDataCredits: existingAuthor.totalDataCredits || defaultTotalDataCredit(),
   }
 }
 
-export function createAuthors(dataset) {
+export function createAuthors(dataset: { author: string | object, metadata_modified: string }) {
   if (!dataset) {
     return null;
   }
@@ -321,19 +369,20 @@ export function createAuthors(dataset) {
   return authorObjs;
 }
 
-function overwriteDataCredit(author, existingAuthor) {
-  let credits = author.dataCredit || author.data_credit || [];
+function overwriteDataCredit(author: Author | AuthorDTO, existingAuthor: Author) {
 
-  if (typeof credits === 'string') {
-    credits = [credits];
+  let dataCredit = 'dataCredit' in author ? author.dataCredit : author.data_credit || [];
+
+  if (typeof dataCredit === 'string') {
+    dataCredit = [dataCredit];
   }
 
   if (!existingAuthor.totalDataCredits) {
-    existingAuthor.totalDataCredits = {};
+    existingAuthor.totalDataCredits = defaultTotalDataCredit();
   }
 
-  for (let i = 0; i < credits.length; i++) {
-    const key = credits[i];
+  for (let i = 0; i < dataCredit.length; i++) {
+    const key = dataCredit[i];
 
     let existingValue = existingAuthor.totalDataCredits[key];
 
@@ -348,7 +397,7 @@ function overwriteDataCredit(author, existingAuthor) {
   }
 }
 
-export function getAuthorKey(author) {
+export function getAuthorKey(author: Author) {
 
   if (author?.email) {
     return author.email.trim().toLowerCase();
@@ -596,7 +645,7 @@ export function combineAuthorLists(currentAuthors, newAuthors = [], removedAutho
   return authors;
 }
 
-export function mergeAuthorsDataCredit(currentAuthors, newAuthors) {
+export function mergeAuthorsDataCredit(currentAuthors: Author[], newAuthors: Author[]) : Author[] {
   const authors = [...currentAuthors];
 
   let toMerge = newAuthors;
@@ -604,7 +653,7 @@ export function mergeAuthorsDataCredit(currentAuthors, newAuthors) {
     toMerge = [newAuthors];
   }
 
-  const authorsToMerge = toMerge.filter(auth => authors.some(a => a.email === auth.email))
+  const authorsToMerge = toMerge.filter((auth: Author) => authors.some(a => a.email === auth.email))
 
   for (let i = 0; i < authorsToMerge.length; i++) {
     const auth = authorsToMerge[i];
@@ -620,7 +669,7 @@ export function mergeAuthorsDataCredit(currentAuthors, newAuthors) {
   return authors;
 }
 
-export function enhanceAuthorsFromAuthorMap(authors, authorMap) {
+export function enhanceAuthorsFromAuthorMap(authors: Author[], authorMap) {
   
   const canEnhance = (authorMap && Object.keys(authorMap).length > 0);
   if (!canEnhance || authors?.length <= 0) {
@@ -634,7 +683,7 @@ export function enhanceAuthorsFromAuthorMap(authors, authorMap) {
     const key = getAuthorKey(auth);
     const existingAuthor = authorMap[key];
 
-    let enhanced = auth;
+    let enhanced: Author = auth;
 
     if (existingAuthor) {
       enhanced = mergeEditingAuthor(auth, existingAuthor);
@@ -646,7 +695,7 @@ export function enhanceAuthorsFromAuthorMap(authors, authorMap) {
   return enhancedAuthors;
 }
 
-export function getAuthorByName(fullName, authors) {
+export function getAuthorByName(fullName: string, authors: Author[] | User[]) : Author | User {
   if (!fullName) {
     return null;
   }
@@ -655,18 +704,39 @@ export function getAuthorByName(fullName, authors) {
   return found.length > 0 ? found[0] : null;
 }
 
-export function getAuthorByEmail(email, authors) {
+export function getAuthorByEmail(email: string, authors: Author[] | User[]) : Author | User {
   if (!email) {
     return null;
   }
 
-  const found = authors.filter(auth => auth.email === email);
+  const found = authors.filter((author: Author) => author.email === email);
   return found[0] || null;
 }
 
-export function replaceAuthorDeadAscii(name) {
+export function replaceAuthorDeadAscii(name: string) {
   let rawName = toRaw(name);
   rawName = rawName.replace(`(${AUTHOR_ASCII_DEAD})`, '');
   rawName = rawName.replace(AUTHOR_ASCII_DEAD, '');
   return rawName.trim();
+}
+
+export function getFullAuthorsForUserPicker(pickedUsersEmails: string[], authors: Author[], existingEnviDatUsers: User[]) {
+  const fullAuthors = [];
+
+  pickedUsersEmails.forEach((email) => {
+    let author = getAuthorByEmail(email, authors);
+
+    // if the author is part of the dataset authors, pick it as it is
+    // including the existing dataCredits
+    if (!author) {
+      // if the author is newly picked, use the existing list as reference
+      author = getAuthorByEmail(email, existingEnviDatUsers);
+    }
+
+    if (author) {
+      fullAuthors.push(author);
+    }
+  });
+
+  return fullAuthors;
 }

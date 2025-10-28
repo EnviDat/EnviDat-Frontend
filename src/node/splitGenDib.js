@@ -2,7 +2,6 @@ const fs = require('fs');
 
 const inputPath = `${__dirname}/../../public/testdata/`;
 const userListPath = `${inputPath}gendib_13_12_2023.json`;
-// eslint-disable-next-line import/no-dynamic-require
 const geoJSONContent = require(userListPath);
 
 const outputFileName = 'gendib_small.json';

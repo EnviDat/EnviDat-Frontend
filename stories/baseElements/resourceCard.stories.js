@@ -7,7 +7,6 @@ import {
 } from '@/../stories/js/envidatViewports';
 
 import metadataCards from '@/../stories/js/metadata';
-import { Default } from '~/stories/resourceCardGenerated.stories.js';
 
 const urlRes = createResource(metadataCards[0].resources[0]);
 const fileRes = createResource(metadataCards[2].resources[1]);

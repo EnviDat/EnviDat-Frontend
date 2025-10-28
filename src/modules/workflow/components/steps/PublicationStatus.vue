@@ -1,11 +1,5 @@
 <template>
-  <v-card
-    id="EditPublicationStatus"
-    class="pa-0"
-    max-width="100%"
-    :loading="loadingColor"
-    :flat
-  >
+  <v-card id="EditPublicationStatus" class="pa-0" max-width="100%" :flat>
     <v-container fluid class="pa-4">
       <v-row>
         <v-col cols="12" xl="12" class="mb-0">

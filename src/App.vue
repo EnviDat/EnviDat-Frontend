@@ -144,7 +144,7 @@
   </v-app>
 </template>
 
-<script>
+<script lang="ts">
 /**
  * The App.vue bootstraps all the other components.
  *
@@ -261,7 +261,7 @@ export default {
     this.showCookieInfo = strShowCookieInfo !== 'false';
   },
   beforeUnmount() {
-    eventBus.on(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
+    eventBus.off(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
     eventBus.off(SHOW_DIALOG, this.openGenericDialog);
     eventBus.off(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
     eventBus.off(
@@ -419,7 +419,6 @@ export default {
     deniedTracking() {
       localStorage.setItem(ENVIDAT_SHOW_COOKIE_BANNER, 'false');
       localStorage.setItem('matomoConsentGiven', 'false');
-      /* eslint-disable no-underscore-dangle */
       window._paq.push(['forgetConsentGiven']);
       this.showCookieInfo = false;
     },
@@ -467,7 +466,6 @@ export default {
     showRedirectDashboardDialog() {
       this.handleRedirectCallBack(true);
     },
-    // eslint-disable-next-line default-param-last
     openGenericDialog({
       title = 'Redirect to Legacy Website!',
       message,
@@ -747,7 +745,6 @@ export default {
       }
     },
   },
-  /* eslint-disable object-curly-newline */
   data: () => ({
     ckanDomain: process.env.VITE_API_ROOT,
     reloadDialogCanceled: false,

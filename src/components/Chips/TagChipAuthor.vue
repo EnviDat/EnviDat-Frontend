@@ -2,20 +2,18 @@
   <v-chip class="authorTag text-black"
           :class="{
             'text-white': highlighted,
-            smallChip: $vuetify.display.smAndDown,
             authorTagDraggable: draggable,
            }"
-          :style="{ height: $vuetify.display.xs ? '15px' : '' }"
           :color="highlighted ? 'primary' : color"
           @click.stop="clicked"
           :draggable="draggable"
-          :small="isSmall"
+          :size="isSmall ? 'small': undefined"
           :density="isSmall ? 'compact' : 'default'"
           :close-icon="mdiClose"
           :closeable="closeable"
           @click:close="$emit('closeClicked', authorName)"
           >
-    <v-avatar left class="pr-1">
+    <v-avatar start class="pr-1">
       <v-icon size="24px" :icon="mdiAccountCircle" />
     </v-avatar>
 

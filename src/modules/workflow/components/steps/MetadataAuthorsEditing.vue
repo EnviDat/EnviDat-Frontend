@@ -13,13 +13,13 @@
 
       <v-row>
         <v-col class="mb-0 pa-0">
-          <v-row v-show="validationErrors.authors">
+          <!-- <v-row v-show="validationErrors.authors">
             <v-col>
               <v-alert type="error">
                 {{ validationErrors.authors }}
               </v-alert>
             </v-col>
-          </v-row>
+          </v-row> -->
 
           <v-row class="mb-2">
             <v-col>

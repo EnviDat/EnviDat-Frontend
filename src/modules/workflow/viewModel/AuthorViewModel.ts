@@ -2,7 +2,7 @@ import { reactive, watch } from 'vue';
 import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 import { Author, DataCreditObject } from '@/types/modelTypes';
-import { convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
+import { convertToFrontendJSONWithRules } from '@/factories/convertJSON';
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 import { AUTHOR_ASCII_DEAD } from '@/store/mainMutationsConsts';
 import { getAuthorName } from '@/factories/authorFactory';
@@ -100,6 +100,10 @@ export class AuthorViewModel extends AbstractEditViewModel implements Author {
 
   validate(newProps?: Partial<AuthorViewModel>) {
     return super.validate(newProps);
+  }
+
+  getModelData() {
+    return super.getModelData<AuthorViewModel>();
   }
 
   static mappingRules () {

@@ -59,6 +59,7 @@
           cols="auto"
         >
           <BaseCategoryCard
+            v-if="isNotHideMode(card.type)"
             height="45"
             :elevation="5"
             :title="card.title"
@@ -217,6 +218,7 @@ import {
   BROWSE_PATH,
   METADATADETAIL_PAGENAME,
   USER_SIGNIN_PATH,
+  BROWSE_MODE_PATH,
 } from '@/router/routeConsts';
 
 import {
@@ -322,6 +324,7 @@ const router = useRouter();
 // computed
 const categoryCards = computed(() => store.state.categoryCards);
 const config = computed(() => store.state.config);
+
 const loadingMetadatasContent = computed(
   () => store.getters[`${METADATA_NAMESPACE}/loadingMetadatasContent`],
 );
@@ -382,7 +385,7 @@ const mixinMethodsAdditiveChangeRoute = (path, query, tags) => {
 
 const catchModeClicked = (mode) => {
   router.push({
-    path: BROWSE_PATH,
+    path: BROWSE_MODE_PATH,
     query: { mode },
   });
 };
@@ -422,6 +425,14 @@ const catchPostClick = (post) => {
       params: { post },
     });
   }
+};
+
+const isNotHideMode = (mode) => {
+  if (config.value.modeConfig.excludeMode == null) return true;
+  if (config.value.modeConfig.excludeMode.includes(mode)) {
+    return false;
+  }
+  return true;
 };
 
 const catchCategoryClicked = (cardType) => {

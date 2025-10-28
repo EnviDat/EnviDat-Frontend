@@ -28,7 +28,6 @@ import router from '@/router';
 
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
 
-// eslint-disable-next-line import/order
 import VueMatomo from 'vue-matomo';
 
 const app = createApp(App);

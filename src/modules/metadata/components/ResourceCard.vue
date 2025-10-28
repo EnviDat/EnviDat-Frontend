@@ -407,8 +407,8 @@ export default {
     loadingResource() {
       return this.loading || this.isLoadingS3Tree;
     },
-    isEnvicloudUrl(url) {
-      const urlToCheck = url.url;
+    isEnvicloudUrl() {
+      const urlToCheck = this.url;
       return urlToCheck.includes('envicloud');
     },
     isDownloaded() {
@@ -508,15 +508,15 @@ export default {
 
       return `Could not load the resource, please contact ${this.metadataContact} for getting access or envidat@wsl.ch for support.`;
     },
-    extensionIcon() {
-      return getFileIcon(this.format);
-    },
     genericButtonYPos() {
       if (this.genericOpenButtonBottom) {
         return this.isEnvicloudUrl ? 'bottom: 0;' : 'bottom: 52px';
       }
 
       return 'top: 0;'
+    },
+    extensionIcon() {
+      return getFileIcon(this.format);
     },
   },
   methods: {

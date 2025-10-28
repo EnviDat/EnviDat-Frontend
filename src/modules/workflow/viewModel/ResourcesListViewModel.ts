@@ -6,17 +6,24 @@ import { ResourceViewModel } from '@/modules/workflow/viewModel/ResourceViewMode
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel';
 import { METADATA_NEW_RESOURCE_ID } from '@/factories/metadataConsts';
+
+import {
+  formatDateTimeToCKANFormat,
+  stringifyResourceForBackend,
+} from '@/factories/mappingFactory';
+
 import {
   convertJSON,
   convertToBackendJSONWithRules,
-} from '@/factories/mappingFactory';
+} from '@/factories/convertJSON';
+
 import {
   enhanceElementsWithStrategyEvents,
   enhanceResourcesWithMetadataExtras,
   SELECT_EDITING_RESOURCE_PROPERTY,
 } from '@/factories/strategyFactory';
-import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 
+import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 
 export class ResourcesListViewModel extends AbstractEditViewModel {
   declare resources: Resource[];
@@ -30,18 +37,21 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
     resources: string | null;
   } = {
     resources: null,
-  }
+  };
 
   validationRules = yup.object().shape({
-    resources: yup.array().required().min(1, 'Add at least one resource.'),
+    resources: yup
+      .array()
+      .required()
+      .min(1, 'Add at least one resource.')
+      .nullable(),
   });
-
 
   constructor(datasetModel: DatasetModel) {
     super(datasetModel, ResourcesListViewModel.mappingRules());
   }
 
-  static getFormattedResources(
+  getFormattedResources(
     rawResources: ResourceDTO[],
     datasetName: string,
     organizationID: string,
@@ -51,27 +61,46 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
   ): Resource[] {
 
     return rawResources?.map((rawResource: ResourceDTO) => {
-        const res = ResourceViewModel.getFormattedResource(
-          rawResource,
-          datasetName,
-          organizationID,
-          signedInUserName,
-          signedInUserOrganizationIds,
-          numberOfDownload,
-        );
+      const customFieldsVm = this.datasetModel.getViewModel('CustomFieldsViewModel');
 
-        return res;
-      },
-    );
+      const res = ResourceViewModel.getFormattedResource(
+        rawResource,
+        datasetName,
+        organizationID,
+        signedInUserName,
+        signedInUserOrganizationIds,
+        numberOfDownload,
+      );
+
+      res.deprecated = customFieldsVm?.isResourceDeprecated(res.id);
+
+      return res;
+    });
+  }
+
+  private convertDatesToBackendFormat(resource: Resource) {
+    resource.created = resource.created
+      ? formatDateTimeToCKANFormat(resource.created)
+      : '';
+    resource.lastModified = resource.lastModified
+      ? formatDateTimeToCKANFormat(resource.lastModified)
+      : '';
+    resource.metadataModified = resource.metadataModified
+      ? formatDateTimeToCKANFormat(resource.metadataModified)
+      : '';
   }
 
   get backendJSON() {
-    const rawResources = this.resources?.map((cleanResource) =>
-      convertToBackendJSONWithRules(
+    const rawResources = this.resources?.map((frontendRes: Resource) => {
+      this.convertDatesToBackendFormat(frontendRes);
+
+      const jsonBackendResource = convertToBackendJSONWithRules(
         ResourceViewModel.mappingRules(),
-        cleanResource,
-      ),
-    );
+        frontendRes,
+      );
+
+      return stringifyResourceForBackend(jsonBackendResource);
+    });
 
     return convertJSON({ resources: rawResources }, false);
   }
@@ -82,7 +111,6 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
    * @param dataset
    */
   updateModel(dataset: DatasetDTO | undefined) {
-
     if (!dataset) {
       // make sure to initialize for validations to work
       Object.assign(this, {
@@ -100,11 +128,11 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
         );
     */
 
-    const cleanResources = ResourcesListViewModel.getFormattedResources(
+    const cleanResources = this.getFormattedResources(
       dataset.resources,
       dataset.name,
       dataset.organization?.id,
-      this.signedInUser?.name,
+      this.signedInUser?.fullName,
       this.signedInUserOrganizationIds,
     );
 
@@ -114,10 +142,7 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
       true,
     );
 
-    enhanceResourcesWithMetadataExtras(
-      dataset.extras,
-      cleanResources,
-    );
+    enhanceResourcesWithMetadataExtras(dataset.extras, cleanResources);
 
     Object.assign(this, {
       resources: cleanResources,

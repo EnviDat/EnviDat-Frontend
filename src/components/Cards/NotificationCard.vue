@@ -105,13 +105,12 @@ export default {
   computed: {},
   methods: {
     setTimeout() {
-      const that = this;
       window.clearTimeout(this.activeTimeout);
 
-      if (that.notification.timeout) {
-        that.activeTimeout = window.setTimeout(() => {
-          that.$emit('clickedClose');
-        }, that.notification.timeout);
+      if (this.notification.timeout) {
+        this.activeTimeout = window.setTimeout(() => {
+          this.$emit('clickedClose');
+        }, this.notification.timeout);
       }
     },
   },

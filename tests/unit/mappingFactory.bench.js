@@ -3,11 +3,14 @@ import { describe, expect, bench } from 'vitest';
 import {
   getBackendJSONForStep,
   getFrontendJSONForStep,
+  populateEditingComponents,
+} from '@/factories/mappingFactory';
+
+import {
   convertJSON,
   getObjectInOtherCase,
   toCamelCase,
-  populateEditingComponents,
-} from '@/factories/mappingFactory';
+} from '@/factories/convertJSON';
 
 import {
   EDITMETADATA_AUTHOR_LIST,

@@ -2,7 +2,7 @@
 import SloganCard from '@/modules/home/components/SloganCard.vue';
 
 import { action } from 'storybook/actions';
-import holidaysWinter from '../src/assets/cards/slogan/holidays_winter.webp';
+import holidaysWinter from '@/assets/cards/slogan/holidays_winter.webp';
 
 
 export default {

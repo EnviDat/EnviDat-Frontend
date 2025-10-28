@@ -550,7 +550,6 @@ export default {
 
       this.filterContent();
     },
-    /* eslint-disable no-unused-vars */
     $route: async function watchRouteChanges(to, from) {
       // react on changes of the route (browser back / forward click)
 

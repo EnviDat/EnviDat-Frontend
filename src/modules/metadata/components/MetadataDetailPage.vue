@@ -1,10 +1,5 @@
 <template>
-  <v-container
-    id="MetadataDetailPage"
-    fluid
-    class="pa-0"
-    tag="article">
-
+  <v-container id="MetadataDetailPage" fluid class="pa-0" tag="article">
     <v-row no-gutters>
       <!-- prettier-ignore -->
       <v-col class="elevation-5 pa-0"
@@ -12,7 +7,6 @@
              ref="header"
              style="z-index: 1; left: 0"
              >
-
         <!-- prettier-ignore -->
         <MetadataHeader v-bind="header"
                           :metadataId="metadataId"
@@ -52,8 +46,7 @@
           :key="`left_${index}_${keyHash}`"
           no-gutters
         >
-          <v-col v-if="entry"
-                 class="mb-2 px-0">
+          <v-col v-if="entry" class="mb-2 px-0">
             <component
               :component="entry"
               :is="entry"
@@ -70,9 +63,7 @@
           :key="`right_${index}_${keyHash}`"
           no-gutters
         >
-          <v-col v-if="entry"
-                 class="mb-2 px-0">
-
+          <v-col v-if="entry" class="mb-2 px-0">
             <component
               :component="entry"
               :is="entry"
@@ -82,7 +73,6 @@
           </v-col>
         </v-row>
       </v-col>
-
     </v-row>
   </v-container>
 </template>
@@ -125,6 +115,7 @@ import {
   BROWSE_PATH,
   METADATAEDIT_PAGENAME,
   ORGANIZATIONS_PAGENAME,
+  WORKFLOW_PAGENAME,
 } from '@/router/routeConsts';
 
 import {
@@ -179,7 +170,8 @@ import {
 
 import { getEventsForPageAndName } from '@/modules/matomo/store/matomoStore';
 
-import { convertJSON, getFrontendDates } from '@/factories/mappingFactory';
+import { convertJSON } from '@/factories/convertJSON';
+import { getFrontendDates } from '@/factories/mappingFactory';
 
 import { convertArrayToUrlString } from '@/factories/stringFactory';
 
@@ -191,8 +183,7 @@ import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionVi
 import { getResourcesForDataViz } from '@/modules/charts/middelware/chartServiceLayer.ts';
 
 const MetadataDescription = defineAsyncComponent(
-  () =>
-    import('@/modules/metadata/components/Metadata/MetadataDescription.vue'),
+  () => import('@/modules/metadata/components/Metadata/MetadataDescription.vue'),
 );
 
 const MetadataResources = defineAsyncComponent(
@@ -218,10 +209,7 @@ const MetadataGeo = defineAsyncComponent(
   () => import('@/modules/metadata/components/Geoservices/MetadataGeo.vue'),
 );
 const MetadataRelatedDatasets = defineAsyncComponent(
-  () =>
-    import(
-      '@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue'
-    ),
+  () => import('@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue'),
 );
 
 const ResourceDataVizListAsync = defineAsyncComponent(
@@ -270,7 +258,6 @@ export default {
    * @description reset the scrolling to the top.
    */
   async mounted() {
-
     // await this.setPageViews(this.$route.fullPath, 'Visit');
 
     window.scrollTo(0, 0);
@@ -672,6 +659,7 @@ export default {
 
       this.MetadataCitation.props = {
         ...this.citation,
+        showCitation: this.metadataContent.showShallowCitation,
       };
 
       let publicationList;
@@ -812,6 +800,9 @@ export default {
 
       query.search = `${given} ${lastName}`;
       query.isAuthorSearch = true;
+      if (query.mode) {
+        query.mode = undefined;
+      }
 
       this.$router.push({
         path: BROWSE_PATH,
@@ -836,11 +827,20 @@ export default {
       });
     },
     catchEditClicked() {
+      let name = METADATAEDIT_PAGENAME;
+      const params = {
+        metadataid: this.metadataId,
+      }
+
+      if (this.newWorkflowActive) {
+        name = WORKFLOW_PAGENAME;
+        params.id = this.metadataId;
+        delete params.metadataid;
+      }
+
       this.$router.push({
-        name: METADATAEDIT_PAGENAME,
-        params: {
-          metadataid: this.metadataId,
-        },
+        name,
+        params,
         query: {
           backPath: this.$route.fullPath,
         },

@@ -1,5 +1,5 @@
 <template>
-  <v-chip class="userRoleChip" small :color="roleColor">
+  <v-chip class="userRoleChip" size="small" :color="roleColor">
     {{ roleText }}
   </v-chip>
 </template>

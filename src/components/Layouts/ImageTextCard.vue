@@ -9,7 +9,7 @@
         <v-col cols="12" >
 
           <v-img :height="imageHeight"
-                 contain
+                 cover
                  :lazy-src="loadingImgResolved"
                  :src="image"  />
 

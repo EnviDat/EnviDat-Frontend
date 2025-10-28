@@ -35,7 +35,6 @@ export function guessTagCategory(tags) {
       case name.includes('AVALANCHE'):
         return SNOW;
       case name.includes('CLIMATE'):
-      case name.includes('SNOW'):
         return CLIMATE;
       case name.includes('LAND'):
         return LAND;
