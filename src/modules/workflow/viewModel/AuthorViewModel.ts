@@ -102,6 +102,10 @@ export class AuthorViewModel extends AbstractEditViewModel implements Author {
     return super.validate(newProps);
   }
 
+  getModelData() {
+    return super.getModelData<AuthorViewModel>();
+  }
+
   static mappingRules () {
     return [
       ['firstName','given_name'],
