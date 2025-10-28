@@ -53,7 +53,7 @@ export class AuthorListViewModel extends AbstractEditViewModel {
 
   getAuthorViewModels(
     validateViewModels: boolean,
-  ): AuthorViewModel[] | undefined {
+  ): Author[] | undefined {
     const rawAuthors = this.datasetModel.dataset.author;
 
     const authors: Author[] = AuthorListViewModel.getFormattedAuthors(
@@ -62,11 +62,18 @@ export class AuthorListViewModel extends AbstractEditViewModel {
     );
 
     return authors?.map((author) => {
-      const vm = createAuthorViewModel(author);
+      const authorVM = new AuthorViewModel();
+
+      Object.assign(authorVM, author);
+
       if (validateViewModels) {
-        vm.validate();
+        authorVM.validate();
       }
-      return vm;
+
+      return {
+        ...authorVM.getModelData(),
+        datasetCount: 0,
+      };
     });
   }
 
