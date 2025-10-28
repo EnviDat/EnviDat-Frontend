@@ -18,39 +18,39 @@ export const EditFontIcon = {
   args: {
     icon: mdiPencil,
   },
-}
+};
 
 export const EditBlackFontIcon = {
   args: {
     ...EditFontIcon.args,
     color: 'black',
   },
-}
+};
 
 export const CustomColorFontIcon = {
   args: {
     ...EditFontIcon.args,
     color: '#FFAA00',
   },
-}
+};
 
 export const ErrorFontIcon = {
   args: {
     icon: mdiAccount,
     color: 'error',
   },
-}
+};
 
 export const CustomPinIcon = {
   args: {
     color: '#00AAFF',
     icon: mdiPaletteSwatch,
   },
-}
+};
 
 export const CustomMultiPinIcon = {
   args: {
     color: 'secondary',
     icon: mdiTagMultiple,
   },
-}
+};

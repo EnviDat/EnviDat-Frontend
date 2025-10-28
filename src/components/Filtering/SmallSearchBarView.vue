@@ -1,39 +1,24 @@
 <template>
-  <v-card style="width: 100%;" >
+  <v-card style="width: 100%">
     <v-container
-      class=" fill-height"
+      class="fill-height"
       fluid
       :class="{
         'pa-0': compactLayout,
         'pa-2': !compactLayout,
       }"
     >
-      <v-row
-        align="center"
-        justify="space-between"
-        no-gutters
-        class="fill-height"
-      >
-        <v-col
-          v-if="loading"
-          class="flex-grow-0 py-0 mx-sm-2"
-          style="min-width: 45px; text-align: center;"
-        >
-          <v-progress-circular
-            indeterminate
-            size="20"
-            width="2"
-            color="primary"
-          />
+      <v-row align="center" justify="space-between" no-gutters class="fill-height">
+        <v-col v-if="loading" class="flex-grow-0 py-0 mx-sm-2" style="min-width: 45px; text-align: center">
+          <v-progress-circular indeterminate size="20" width="2" color="primary" />
         </v-col>
 
         <v-col
           v-if="showSearchCount && !loading"
           class="flex-grow-0 py-0 mx-sm-2"
-          style="min-width: 45px; text-align: center;"
+          style="min-width: 45px; text-align: center"
         >
-          <v-tooltip location='bottom'
-                     :disabled="$vuetify.display.xs">
+          <v-tooltip location="bottom" :disabled="$vuetify.display.xs">
             <template v-slot:activator="{ props }">
               <tag-chip
                 v-bind="props"
@@ -50,26 +35,16 @@
         </v-col>
 
         <v-col v-if="showSearch && !hasButton" class="flex-grow-0 pa-0 hidden-xs">
-          <BaseIconButton
-            :icon="mdiMagnify"
-            color="transparent"
-            @clicked="clicked"
-          />
+          <BaseIconButton :icon="mdiMagnify" color="transparent" @clicked="clicked" />
         </v-col>
 
-        <v-col v-if="showSearch"
-               class="flex-grow-1 py-0 mr-sm-2"
-              :class="hasButton ? 'ml-4 ' : 'ml-2 ml-xs-0'"
-        >
-          <v-tooltip
-            location='bottom'
-            :disabled="$vuetify.display.xs || !searchToolTipText"
-          >
+        <v-col v-if="showSearch" class="flex-grow-1 py-0 mr-sm-2" :class="hasButton ? 'ml-4 ' : 'ml-2 ml-xs-0'">
+          <v-tooltip location="bottom" :disabled="$vuetify.display.xs || !searchToolTipText">
             <template v-slot:activator="{ props }">
               <v-text-field
                 v-bind="props"
                 class="envidatSmallSearch"
-                style="align-items: center;"
+                style="align-items: center"
                 :class="{ small: compactLayout }"
                 v-model="searchText"
                 single-line
@@ -117,7 +92,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import {mdiClose, mdiMagnify} from '@mdi/js';
+import { mdiClose, mdiMagnify } from '@mdi/js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import TagChip from '@/components/Chips/TagChip.vue';
@@ -153,8 +128,7 @@ export default {
     searchText: '',
     lastSearch: '',
     placeHolderText: 'Enter research term, topic or author',
-    searchToolTipText:
-      'The full text search works for research terms, topics or authors',
+    searchToolTipText: 'The full text search works for research terms, topics or authors',
   }),
   computed: {
     height() {

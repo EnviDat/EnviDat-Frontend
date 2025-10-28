@@ -1,10 +1,5 @@
 <template>
-  <v-container
-    id="ActiveDataCredits"
-    class="px-0 py-1 readableText"
-    fluid
-    style="min-height: 67px;"
-  >
+  <v-container id="ActiveDataCredits" class="px-0 py-1 readableText" fluid style="min-height: 67px">
     <v-row no-gutters>
       <v-col cols="12" :class="dark ? 'text-white' : 'text-black'">
         {{ instruction }}
@@ -18,16 +13,15 @@
         class="flex-grow-0 pt-3 pt-md-4 px-md-1"
         v-show="isActive(creditName)"
       >
-        <BaseIconToggleButton :active="isActive(creditName)"
-                              :icon='iconLookup(creditName)'
-                              :value='creditName'
-                              :elevation="0"
-                              :tooltip="iconTooltip(creditName)"
-                              :dark="dark"
-                              @clicked="catchCreditClick"
+        <BaseIconToggleButton
+          :active="isActive(creditName)"
+          :icon="iconLookup(creditName)"
+          :value="creditName"
+          :elevation="0"
+          :tooltip="iconTooltip(creditName)"
+          :dark="dark"
+          @clicked="catchCreditClick"
         />
-
-
       </v-col>
     </v-row>
   </v-container>
@@ -62,14 +56,7 @@ export default {
     },
     allDataCredits: {
       type: Array,
-      default: () => [
-        'software',
-        'supervision',
-        'curation',
-        'collection',
-        'validation',
-        'publication',
-      ],
+      default: () => ['software', 'supervision', 'curation', 'collection', 'validation', 'publication'],
     },
     authorName: {
       type: String,
@@ -106,9 +93,7 @@ export default {
         return `No <b>${creditName}</b> contribution`;
       }
 
-      return `${
-        this.authorName ? this.authorName : 'Author'
-      } has <b>${creditName}</b> contribution for this dataset`;
+      return `${this.authorName ? this.authorName : 'Author'} has <b>${creditName}</b> contribution for this dataset`;
     },
     catchCreditClick(creditName) {
       this.$emit('creditClick', creditName);
@@ -120,8 +105,7 @@ export default {
       return getDataCreditIcon(creditName);
     },
   },
-  data: () => ({
-  }),
+  data: () => ({}),
   components: { BaseIconToggleButton },
 };
 </script>

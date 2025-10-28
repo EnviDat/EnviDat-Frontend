@@ -14,21 +14,15 @@ export const matomo = {
   state: matomoState,
   actions: {
     async getResourcesDownloads({ state }, name) {
-      const url = `${
-        state.baseUrl
-      }/index.php?module=API&method=Events.getName&idSite=${
+      const url = `${state.baseUrl}/index.php?module=API&method=Events.getName&idSite=${
         state.siteId
       }&period=range&date=${state.startDate},${
         state.endDate
-      }&format=json&token_auth=${state.token}&label=${encodeURIComponent(
-        name,
-      )}`;
-
+      }&format=json&token_auth=${state.token}&label=${encodeURIComponent(name)}`;
 
       try {
         const response = await axios.get(url);
-        const downloadCount =
-          response.data.length > 0 ? response.data[0]?.nb_events : null;
+        const downloadCount = response.data.length > 0 ? response.data[0]?.nb_events : null;
         return downloadCount;
       } catch (error) {
         console.error('Error fetching resource downloads:', error);
@@ -44,9 +38,7 @@ export const matomo = {
         const eventNames = await axios.get(getName);
 
         // Find idsuitable for get the Actions
-        const idSuitable = eventNames.data.find(
-          event => event.label === pageName,
-        )?.idsubdatatable;
+        const idSuitable = eventNames.data.find((event) => event.label === pageName)?.idsubdatatable;
 
         if (!idSuitable) return null;
 
@@ -55,9 +47,7 @@ export const matomo = {
         const actionsPage = await axios.get(getActionspage);
 
         // filter event with eventAction
-        return eventAction
-          ? actionsPage.data.filter(event => event.label === eventAction)
-          : actionsPage.data;
+        return eventAction ? actionsPage.data.filter((event) => event.label === eventAction) : actionsPage.data;
       } catch (error) {
         console.error('Error fetching events:', error);
         return null;
@@ -72,11 +62,7 @@ export function getResourcesDownloads(name) {
 }
 
 export function getEventsForPageAndName(pageName, eventAction) {
-  return matomo.actions.getEventsForPageAndName(
-    { state: matomoState },
-    pageName,
-    eventAction,
-  );
+  return matomo.actions.getEventsForPageAndName({ state: matomoState }, pageName, eventAction);
 }
 
 // example how to use inside the component/page

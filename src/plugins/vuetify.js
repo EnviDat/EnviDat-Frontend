@@ -11,7 +11,6 @@ import 'vuetify/styles';
 import { createVuetify } from 'vuetify';
 import config from './vuetifyConfig';
 
-
 export default createVuetify({
   ...config,
   ssr: false,

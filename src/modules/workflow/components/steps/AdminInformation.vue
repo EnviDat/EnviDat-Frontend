@@ -1,19 +1,13 @@
 <template>
-  <v-container id="AdminInformation"
-               fluid
-               class="pa-4">
+  <v-container id="AdminInformation" fluid class="pa-4">
     <v-row>
       <v-col cols="12">
-        <CustomFields
-          :custom-fields="props.customFields"
-        />
+        <CustomFields :custom-fields="props.customFields" />
       </v-col>
 
       <v-col cols="12">
         <v-row>
-          <v-col class="text-h5">
-            Dataset in Projects
-          </v-col>
+          <v-col class="text-h5"> Dataset in Projects </v-col>
         </v-row>
 
         <v-row>
@@ -28,7 +22,6 @@
         </v-row>
       </v-col>
     </v-row>
-
   </v-container>
 </template>
 
@@ -80,10 +73,7 @@ const props = defineProps({
   },
 });
 
-const catchProjectChange = () => {
-
-}
-
+const catchProjectChange = () => {};
 </script>
 
 <style scoped></style>

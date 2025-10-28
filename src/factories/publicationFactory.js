@@ -1,8 +1,4 @@
-import {
-  METADATA_STATE_DRAFT,
-  METADATA_STATE_INVISIBLE,
-  METADATA_STATE_VISIBLE,
-} from '@/factories/metadataConsts';
+import { METADATA_STATE_DRAFT, METADATA_STATE_INVISIBLE, METADATA_STATE_VISIBLE } from '@/factories/metadataConsts';
 
 export function getMetadataVisibilityState(metadata) {
   const state = metadata?.state || null;

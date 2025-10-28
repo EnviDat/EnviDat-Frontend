@@ -13,7 +13,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-
 import MetadataCitation from '@/modules/metadata/components/Metadata/MetadataCitation.vue';
 import MetadataDetails from '@/modules/metadata/components/Metadata/MetadataDetails.vue';
 import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications.vue';
@@ -143,7 +142,6 @@ const genericProps3 = {
   details: details1,
 };
 
-
 export const MetadataCitationViews = () => ({
   components: { MetadataCitation },
   template: `
@@ -176,7 +174,7 @@ export const MetadataCitationViews = () => ({
   </v-row>
   `,
   updated() {
-    this.$children.forEach(child => {
+    this.$children.forEach((child) => {
       child.$forceUpdate();
     });
   },
@@ -214,7 +212,7 @@ export const MetadataDetailsViews = () => ({
   </v-row>
   `,
   updated() {
-    this.$children.forEach(child => {
+    this.$children.forEach((child) => {
       child.$forceUpdate();
     });
   },
@@ -228,7 +226,6 @@ export const MetadataDetailsViews = () => ({
     },
   }),
 });
-
 
 export const MetadataRelatedPublicationsViews = () => ({
   components: { MetadataPublications },
@@ -307,16 +304,13 @@ export const MetadataRelatedPublicationsViews = () => ({
       text: 'https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:14249\n',
     },
     publications4: {
-      text:
-        'https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:14249 \n https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:21248 \n https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:32593 \n https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:32246 \n https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:32611 ',
+      text: 'https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:14249 \n https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:21248 \n https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:32593 \n https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:32246 \n https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:32611 ',
     },
     publications5: {
-      text:
-        '* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A22390\r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 \r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A30382',
+      text: '* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A22390\r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 \r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A30382',
     },
     publications6: {
-      text:
-        '* wsl:21835 wsl%3A22390 \n * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 ',
+      text: '* wsl:21835 wsl%3A22390 \n * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 ',
     },
     allDatasets: envidat_packages.result,
     genericPropsPublications: {
@@ -396,20 +390,16 @@ export const MetadataRelatedPublicationsListViews = () => ({
       text: 'null\n- 10.1016/j.scitotenv.2023.162167"',
     },
     publications3: {
-      text:
-        'Gessler A., Zweifel R. (2024) Beyond source and sink control – toward an integrated approach to understand the carbon balance in plants. New Phytol. 242(3), 858-869. https://doi.org/10.1111/nph.19611 \nEtzold S., Eugster W., Braun S., Thimonier A., Waldner P., Zweifel R. (2021) Stickstoffdeposition - ab wann ist es zu viel für das Baumwachstum? Wald Holz. 102(11), 15-18.\n Shekhar A., Hörtnagl L., Paul-Limoges E., Etzold S., Zweifel R., Buchmann N., Gharun M. (2024) Contrasting impact of extreme soil and atmospheric dryness on the functioning of trees and forests. Sci. Total Environ. 916, 169931 (14 pp.). https://doi.org/10.1016/j.scitotenv.2024.169931\n Zweifel R., Pappas C., Peters R.L., Babst F., Balanzategui D., Basler D., … Sterck F. (2023) Networking the forest infrastructure towards near real-time monitoring - a white paper. Sci. Total Environ. 872, 162167 (11 pp.). https://doi.org/10.1016/j.scitotenv.2023.162167\n Etzold S., Sterck F., Bose A.K., Braun S., Buchmann N., Eugster W., … Zweifel R. (2022) Number of growth days and not length of the growth period determines radial stem growth of temperate trees. Ecol. Lett. 25(2), 427-439. https://doi.org/10.1111/ele.13933\nLuković M., Zweifel R., Thiry G., Zhang C., Schubert M. (2022) Reconstructing radial stem size changes of trees with machine learning. J. R. Soc. Interface. 19(194), 20220349 (13 pp.). https://doi.org/10.1098/rsif.2022.0349\nSalomón R.L., Peters R.L., Zweifel R., Sass-Klaassen U.G.W., Stegehuis A.I., Smiljanic M., … Steppe K. (2022) The 2018 European heatwave led to stem dehydration but not to consistent growth reductions in forests. Nat. Commun. 13(1), 28 (11 pp.). https://doi.org/10.1038/s41467-021-27579-9\nEtzold S., Eugster W., Braun S., Thimonier A., Waldner P., Zweifel R. (2021) Stickstoffdeposition - ab wann ist es zu viel für das Baumwachstum? Wald Holz. 102(11), 15-18.\nZweifel R., Etzold S., Basler D., Bischoff R., Braun S., Buchmann N., … Eugster W. (2021) TreeNet - the biological drought and growth indicator network. Front. For. Glob. Change. 4, 776905 (14 pp.). https://doi.org/10.3389/ffgc.2021.776905\nGharun M., Hörtnagl L., Paul-Limoges E., Ghiasi S., Feigenwinter I., Burri S., … Buchmann N. (2020) Physiological response of Swiss ecosystems to 2018 drought across plant types and elevation. Philos. Trans. R. Soc. B. 375(1810), 20190521 (10 pp.). https://doi.org/10.1098/rstb.2019.0521\n',
+      text: 'Gessler A., Zweifel R. (2024) Beyond source and sink control – toward an integrated approach to understand the carbon balance in plants. New Phytol. 242(3), 858-869. https://doi.org/10.1111/nph.19611 \nEtzold S., Eugster W., Braun S., Thimonier A., Waldner P., Zweifel R. (2021) Stickstoffdeposition - ab wann ist es zu viel für das Baumwachstum? Wald Holz. 102(11), 15-18.\n Shekhar A., Hörtnagl L., Paul-Limoges E., Etzold S., Zweifel R., Buchmann N., Gharun M. (2024) Contrasting impact of extreme soil and atmospheric dryness on the functioning of trees and forests. Sci. Total Environ. 916, 169931 (14 pp.). https://doi.org/10.1016/j.scitotenv.2024.169931\n Zweifel R., Pappas C., Peters R.L., Babst F., Balanzategui D., Basler D., … Sterck F. (2023) Networking the forest infrastructure towards near real-time monitoring - a white paper. Sci. Total Environ. 872, 162167 (11 pp.). https://doi.org/10.1016/j.scitotenv.2023.162167\n Etzold S., Sterck F., Bose A.K., Braun S., Buchmann N., Eugster W., … Zweifel R. (2022) Number of growth days and not length of the growth period determines radial stem growth of temperate trees. Ecol. Lett. 25(2), 427-439. https://doi.org/10.1111/ele.13933\nLuković M., Zweifel R., Thiry G., Zhang C., Schubert M. (2022) Reconstructing radial stem size changes of trees with machine learning. J. R. Soc. Interface. 19(194), 20220349 (13 pp.). https://doi.org/10.1098/rsif.2022.0349\nSalomón R.L., Peters R.L., Zweifel R., Sass-Klaassen U.G.W., Stegehuis A.I., Smiljanic M., … Steppe K. (2022) The 2018 European heatwave led to stem dehydration but not to consistent growth reductions in forests. Nat. Commun. 13(1), 28 (11 pp.). https://doi.org/10.1038/s41467-021-27579-9\nEtzold S., Eugster W., Braun S., Thimonier A., Waldner P., Zweifel R. (2021) Stickstoffdeposition - ab wann ist es zu viel für das Baumwachstum? Wald Holz. 102(11), 15-18.\nZweifel R., Etzold S., Basler D., Bischoff R., Braun S., Buchmann N., … Eugster W. (2021) TreeNet - the biological drought and growth indicator network. Front. For. Glob. Change. 4, 776905 (14 pp.). https://doi.org/10.3389/ffgc.2021.776905\nGharun M., Hörtnagl L., Paul-Limoges E., Ghiasi S., Feigenwinter I., Burri S., … Buchmann N. (2020) Physiological response of Swiss ecosystems to 2018 drought across plant types and elevation. Philos. Trans. R. Soc. B. 375(1810), 20190521 (10 pp.). https://doi.org/10.1098/rstb.2019.0521\n',
     },
     publications4: {
-      text:
-        'Lechler, L.., Rixen, C., Bebi, P., Bavay, M., Marty, M., Barbeito, I., Dawes, M.A., Hagedorn, F., Krumm, F., Möhl, P., Schaub, M. & Frei, E.R. 2023. Fifty years of data enhance the mechanistic understanding of ecological processes in treeline ecotones under global change. In preparation.\nBavay, M., Reisecker, M., Egger, T. & Korhammer, D. 2022. Inishell 2.0: semantically driven automatic GUI generation for scientific models. Geoscientific Model Development 15(2): 365-378. https://doi.org/10.5194/gmd-15-365-2022\nBavay, M. & Egger, T. 2014. MeteoIO 2.4.2: a preprocessing library for meteorological data. Geoscientific Model Development 7(6): 3135-3151. https://doi.org/10.5194/gmd-7-3135-2014\nSchönenberger, W. & Frey, W. 1988. Untersuchungen zur Ökologie und Technik der Hochlagenaufforstung. Forschungsergebnisse aus dem Lawinenanrissgebiet Stillberg. Schweizerische Zeitschrift für Forstwesen 139(9):735-820. https://doi.org/10.5169/seals-766744\nSchönenberger, W. 1975. Standortseinflüsse auf Versuchsaufforstungen an der alpinen Waldgrenze (Stillberg, Davos), Eidg. Anst. forstl. Versuchswes. Mitt. 51(4): 358-428. Schönenberger W. (1975) Standortseinflüsse auf Versuchsaufforstungen an der alpinen Waldgrenze. (Stillberg, Davos). Gebirgsprogramm: 13. Beitrag. Mitteilungen / Eidgenössische Anstalt für das Forstliche Versuchswesen: Vol. 51/4. Birmensdorf: Eidgenössische Anstalt für das Forstliche Versuchswesen. 358-428 p.',
+      text: 'Lechler, L.., Rixen, C., Bebi, P., Bavay, M., Marty, M., Barbeito, I., Dawes, M.A., Hagedorn, F., Krumm, F., Möhl, P., Schaub, M. & Frei, E.R. 2023. Fifty years of data enhance the mechanistic understanding of ecological processes in treeline ecotones under global change. In preparation.\nBavay, M., Reisecker, M., Egger, T. & Korhammer, D. 2022. Inishell 2.0: semantically driven automatic GUI generation for scientific models. Geoscientific Model Development 15(2): 365-378. https://doi.org/10.5194/gmd-15-365-2022\nBavay, M. & Egger, T. 2014. MeteoIO 2.4.2: a preprocessing library for meteorological data. Geoscientific Model Development 7(6): 3135-3151. https://doi.org/10.5194/gmd-7-3135-2014\nSchönenberger, W. & Frey, W. 1988. Untersuchungen zur Ökologie und Technik der Hochlagenaufforstung. Forschungsergebnisse aus dem Lawinenanrissgebiet Stillberg. Schweizerische Zeitschrift für Forstwesen 139(9):735-820. https://doi.org/10.5169/seals-766744\nSchönenberger, W. 1975. Standortseinflüsse auf Versuchsaufforstungen an der alpinen Waldgrenze (Stillberg, Davos), Eidg. Anst. forstl. Versuchswes. Mitt. 51(4): 358-428. Schönenberger W. (1975) Standortseinflüsse auf Versuchsaufforstungen an der alpinen Waldgrenze. (Stillberg, Davos). Gebirgsprogramm: 13. Beitrag. Mitteilungen / Eidgenössische Anstalt für das Forstliche Versuchswesen: Vol. 51/4. Birmensdorf: Eidgenössische Anstalt für das Forstliche Versuchswesen. 358-428 p.',
     },
     publications5: {
-      text:
-        '* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A22390\r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 \r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A30382',
+      text: '* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A22390\r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 \r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A30382',
     },
     publications6: {
-      text:
-        '* wsl:21835 wsl%3A22390 \n * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 ',
+      text: '* wsl:21835 wsl%3A22390 \n * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 ',
     },
     allDatasets: envidat_packages.result,
     genericPropsPublications: {

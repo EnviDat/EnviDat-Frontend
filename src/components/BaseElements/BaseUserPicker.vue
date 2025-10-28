@@ -1,9 +1,5 @@
 <template>
-  <v-card
-    id="BaseUserPicker"
-    :class="showAsCard ? 'pa-4' : 'pa-0'"
-    :flat="!showAsCard"
-  >
+  <v-card id="BaseUserPicker" :class="showAsCard ? 'pa-4' : 'pa-0'" :flat="!showAsCard">
     <v-row v-if="instructions" no-gutters>
       <v-col class="text-body-1 pa-0 pb-4">
         {{ instructions }}
@@ -33,21 +29,18 @@
           v-bind="$props"
           @blur="$emit('blur', $event)"
         >
-
           <template v-slot:selection="{ item }">
             <TagChipAuthor
-                v-if="item.title"
-                :name="item.title"
-                :class="userTagsCloseable && !readonly ? 'pl-0' : 'px-0'"
-                :closable="userTagsCloseable && !readonly"
-                @closeClicked="catchCloseClicked(item.value)"
+              v-if="item.title"
+              :name="item.title"
+              :class="userTagsCloseable && !readonly ? 'pl-0' : 'px-0'"
+              :closable="userTagsCloseable && !readonly"
+              @closeClicked="catchCloseClicked(item.value)"
             />
           </template>
 
           <template v-slot:item="{ props, item }">
-            <v-list-item v-bind="props"
-                         @click="catchPickClicked(item.value)" >
-            </v-list-item>
+            <v-list-item v-bind="props" @click="catchPickClicked(item.value)"> </v-list-item>
           </template>
 
           <template v-slot:no-data>
@@ -72,7 +65,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import {mdiAccountBox, mdiArrowDownDropCircleOutline, mdiClose} from '@mdi/js';
+import { mdiAccountBox, mdiArrowDownDropCircleOutline, mdiClose } from '@mdi/js';
 // import { PropType } from 'vue';
 import TagChipAuthor from '@/components/Chips/TagChipAuthor.vue';
 import type { UserPickerObject } from '@/types/modelTypes';
@@ -93,7 +86,7 @@ export default {
       default: undefined,
     },
     multiplePick: Boolean,
-    placeholder: {type: String, default: undefined},
+    placeholder: { type: String, default: undefined },
     pickerLabel: {
       type: String,
       default: 'Click here to pick an EnviDat author',
@@ -139,7 +132,7 @@ export default {
   },
   computed: {
     autocompleteHint() {
-      if(this.placeholder){
+      if (this.placeholder) {
         return this.placeholder;
       }
       if (!this.search) {
@@ -151,7 +144,7 @@ export default {
     menuOptions() {
       return {
         transition: 'fade-transition',
-      }
+      };
     },
   },
   methods: {
@@ -159,19 +152,22 @@ export default {
       let filteredUsers: UserPickerObject[];
 
       if (this.preSelectedEmails?.length > 0) {
-        filteredUsers = this.users.filter((userObj: UserPickerObject) => this.preSelectedEmails.includes(userObj.email));
+        filteredUsers = this.users.filter((userObj: UserPickerObject) =>
+          this.preSelectedEmails.includes(userObj.email),
+        );
       }
       if (this.preSelectedNames?.length > 0) {
-        filteredUsers = this.users.filter((userObj: UserPickerObject) => this.preSelectedNames.includes(userObj.fullName));
+        filteredUsers = this.users.filter((userObj: UserPickerObject) =>
+          this.preSelectedNames.includes(userObj.fullName),
+        );
       }
 
       if (filteredUsers) {
         // have fallback on the fullName because when the UserPicker is used for Users
         // (not Authors) then there is no email available
         this.pickedUsers = this.multiplePick
-          ? filteredUsers.map((userObj : UserPickerObject) => userObj.email || userObj.fullName)
+          ? filteredUsers.map((userObj: UserPickerObject) => userObj.email || userObj.fullName)
           : filteredUsers[0].email || filteredUsers[0].fullName;
-
       } else {
         this.pickedUsers = this.multiplePick ? [] : undefined;
       }
@@ -182,7 +178,7 @@ export default {
       }
 
       if (this.multiplePick) {
-        const remains = this.pickedUsers.filter((userEmailOrName : string) => userEmailOrName !== picked);
+        const remains = this.pickedUsers.filter((userEmailOrName: string) => userEmailOrName !== picked);
 
         if (remains?.length > 0) {
           this.pickedUsers = remains;
@@ -227,5 +223,4 @@ export default {
   */
   padding: 0 11px !important;
 }
-
 </style>

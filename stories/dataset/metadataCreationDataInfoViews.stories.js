@@ -18,14 +18,16 @@ import {
 } from '@/factories/metadataConsts';
 import { EDITMETADATA_OBJECT_UPDATE, eventBus } from '@/factories/eventBus';
 import { CC_BY_SA_LICENSE_ID, OTHER_UNDEFINED_LICENSE_ID, WSL_DATA_LICENSE_ID } from '@/factories/dataLicense';
-import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from '@/../stories/js/envidatViewports';
-
+import {
+  mobileLargeViewportParams,
+  mobileViewportParams,
+  tabletViewportParams,
+} from '@/../stories/js/envidatViewports';
 
 export default {
   title: '3 Datasets / 2 Edit / Data Info',
   component: EditDataInfo,
 };
-
 
 const Template = {
   render: (args, { argTypes }) => ({
@@ -46,7 +48,7 @@ const Template = {
       },
     },
   }),
-}
+};
 
 const datesArrayFilled = [
   {
@@ -89,15 +91,10 @@ export const EditDataInfoReadonly = {
   args: {
     dates: datesArrayFilled,
     dataLicenseId: CC_BY_SA_LICENSE_ID,
-    readOnlyFields: [
-      METADATA_DATALICENSE_PROPERTY,
-      DATE_PROPERTY_START_DATE,
-      DATE_PROPERTY_END_DATE,
-    ],
+    readOnlyFields: [METADATA_DATALICENSE_PROPERTY, DATE_PROPERTY_START_DATE, DATE_PROPERTY_END_DATE],
     readOnlyExplanation: 'Fields are readonly for testing!',
   },
 };
-
 
 export const EditDataInfoReadonlyWslDataPolicy = {
   ...Template,

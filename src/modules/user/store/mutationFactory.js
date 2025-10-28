@@ -1,16 +1,16 @@
 /* eslint-disable no-underscore-dangle */
 /**
-* user store mutations
-*
-* @summary user store mutations
-* @author Dominik Haas-Artho
-*
-* Created at     : 2020-07-14 16:51:52
+ * user store mutations
+ *
+ * @summary user store mutations
+ * @author Dominik Haas-Artho
+ *
+ * Created at     : 2020-07-14 16:51:52
  * Last modified  : 2021-08-18 10:14:35
-*
-* This file is subject to the terms and conditions defined in
-* file 'LICENSE.txt', which is part of this source code package.
-*/
+ *
+ * This file is subject to the terms and conditions defined in
+ * file 'LICENSE.txt', which is part of this source code package.
+ */
 
 import { enhanceMetadatasTitleImage } from '@/factories/metaDataFactory';
 
@@ -26,9 +26,7 @@ import { updateEditingArray } from '@/factories/userEditingFactory';
 import { enhanceKeywords } from '@/factories/keywordsFactory';
 import { USER_NAMESPACE, VALIDATION_ERROR } from './userMutationsConsts';
 
-
 export function extractUserError(store, reason, errorProperty = 'error') {
-
   let type = '';
   let field = '';
   let msg = 'There was an error. Please try again. If it persists, please contact envidat@wsl.ch for assistance.';
@@ -66,14 +64,14 @@ export function extractUserError(store, reason, errorProperty = 'error') {
   store.state.user[errorProperty] = msg;
 }
 
-const defaultMessage = 'There was an error. Please try again. If it persists, please contact envidat@wsl.ch for assistance.';
+const defaultMessage =
+  'There was an error. Please try again. If it persists, please contact envidat@wsl.ch for assistance.';
 export function createErrorMessage(reason, message = defaultMessage) {
   let msg = message;
   let details = '';
   let status = 500;
 
   if (reason?.response) {
-
     status = reason.response.status;
 
     if (status === 403) {
@@ -90,16 +88,14 @@ export function createErrorMessage(reason, message = defaultMessage) {
       const errKeys = Object.keys(errorObj);
       for (let i = 0; i < errKeys.length; i++) {
         const key = errKeys[i];
-        details += `${key}: ${ JSON.stringify(errorObj[key]) } `;
+        details += `${key}: ${JSON.stringify(errorObj[key])} `;
       }
-
     } else {
       details += reason.response.statusText;
     }
   } else if (reason?.message) {
     details = reason.message;
   }
-
 
   eventBus.emit(EDITMETADATA_NETWORK_ERROR, {
     status,
@@ -120,7 +116,7 @@ export function enhanceMetadataFromCategories(store, metadatas) {
     datasets = [datasets];
   }
 
-  datasets.forEach(dataset => enhanceKeywords(dataset.tags));
+  datasets.forEach((dataset) => enhanceKeywords(dataset.tags));
 
   const enhanced = enhanceMetadatasTitleImage(datasets);
   return isArrayInput ? enhanced : enhanced[0];

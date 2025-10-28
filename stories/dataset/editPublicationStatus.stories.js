@@ -10,11 +10,7 @@
  */
 
 import EditPublicationStatus from '@/modules/user/components/edit/EditPublicationStatus.vue';
-import {
-  USER_ROLE_ADMIN,
-  USER_ROLE_EDITOR,
-  USER_ROLE_MEMBER,
-} from '@/factories/userEditingValidations';
+import { USER_ROLE_ADMIN, USER_ROLE_EDITOR, USER_ROLE_MEMBER } from '@/factories/userEditingValidations';
 import {
   PUBLICATION_STATE_DRAFT,
   PUBLICATION_STATE_RESERVED,

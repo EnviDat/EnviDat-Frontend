@@ -73,9 +73,7 @@ yup.addMethod(yup.date, 'parseDateString', function () {
       return null;
     }
 
-    return isDate(originalValue)
-      ? originalValue
-      : parse(originalValue, ckanDateFormat, new Date());
+    return isDate(originalValue) ? originalValue : parse(originalValue, ckanDateFormat, new Date());
   });
 });
 
@@ -121,12 +119,7 @@ export default {
     };
   },
   mounted() {
-    isFieldValid(
-      this.dateProperty,
-      this.dateField,
-      this.getValidation(this.dateProperty),
-      this.validationErrors,
-    );
+    isFieldValid(this.dateProperty, this.dateField, this.getValidation(this.dateProperty), this.validationErrors);
   },
   computed: {
     readonly() {
@@ -150,55 +143,41 @@ export default {
           .nullable()
           // @ts-ignore
           .parseDateString()
-          .test(
-            'date-range-validation',
-            `${component.dateLabel} can't be after ${component.maxDate}`,
-            (value) => {
-              // if is null skip the validation
-              if (value === null) {
-                return true;
+          .test('date-range-validation', `${component.dateLabel} can't be after ${component.maxDate}`, (value) => {
+            // if is null skip the validation
+            if (value === null) {
+              return true;
+            }
+
+            const parsedDate = isDate(value) ? value : parse(value, ckanDateFormat, new Date());
+
+            const maxDate = component.maxDate;
+            const minDate = component.minDate;
+
+            if (!maxDate && !minDate) {
+              return true;
+            }
+
+            let valid = true;
+
+            if (maxDate) {
+              const parsedMaxDate = isDate(maxDate) ? maxDate : parse(maxDate, ckanDateFormat, new Date());
+              valid = parsedMaxDate >= parsedDate;
+              if (!valid) {
+                return new ValidationError(`${component.dateLabel} can't be after ${maxDate}`);
               }
+            }
 
-              const parsedDate = isDate(value)
-                ? value
-                : parse(value, ckanDateFormat, new Date());
-
-              const maxDate = component.maxDate;
-              const minDate = component.minDate;
-
-              if (!maxDate && !minDate) {
-                return true;
+            if (minDate) {
+              const parsedMinDate = isDate(minDate) ? minDate : parse(minDate, ckanDateFormat, new Date());
+              valid = parsedMinDate <= parsedDate;
+              if (!valid) {
+                return new ValidationError(`${component.dateLabel} can't be before ${minDate}`);
               }
+            }
 
-              let valid = true;
-
-              if (maxDate) {
-                const parsedMaxDate = isDate(maxDate)
-                  ? maxDate
-                  : parse(maxDate, ckanDateFormat, new Date());
-                valid = parsedMaxDate >= parsedDate;
-                if (!valid) {
-                  return new ValidationError(
-                    `${component.dateLabel} can't be after ${maxDate}`,
-                  );
-                }
-              }
-
-              if (minDate) {
-                const parsedMinDate = isDate(minDate)
-                  ? minDate
-                  : parse(minDate, ckanDateFormat, new Date());
-                valid = parsedMinDate <= parsedDate;
-                if (!valid) {
-                  return new ValidationError(
-                    `${component.dateLabel} can't be before ${minDate}`,
-                  );
-                }
-              }
-
-              return valid;
-            },
-          ),
+            return valid;
+          }),
       };
 
       return yup.object().shape(validation);
@@ -214,33 +193,18 @@ export default {
         this.previewDate = dateString;
       }
 
-      if (
-        isFieldValid(
-          dateProperty,
-          dateString,
-          this.getValidation(dateProperty),
-          this.validationErrors,
-        )
-      ) {
+      if (isFieldValid(dateProperty, dateString, this.getValidation(dateProperty), this.validationErrors)) {
         this.changeDate(dateProperty, dateString);
       }
     },
     changedDateTextField(dateProperty, dateString) {
       try {
         const dateValue = parseDateStringToCKANFormat(dateString);
-        if (
-          isFieldValid(
-            dateProperty,
-            dateValue,
-            this.getValidation(dateProperty),
-            this.validationErrors,
-          )
-        ) {
+        if (isFieldValid(dateProperty, dateValue, this.getValidation(dateProperty), this.validationErrors)) {
           this.changeDate(dateProperty, dateValue);
         }
       } catch (e) {
-        this.validationErrors[dateProperty] =
-          `Invalid date format, use ${enviDatDateFormat.toUpperCase()}`;
+        this.validationErrors[dateProperty] = `Invalid date format, use ${enviDatDateFormat.toUpperCase()}`;
       }
     },
     changeDate(dateProperty, newDate) {
@@ -263,8 +227,7 @@ export default {
         return parseDateStringToEnviDatFormat(dateString);
       } catch (e) {
         console.error(e);
-        this.validationErrors[dateProperty] =
-          `Invalid date format, use ${enviDatDateFormat.toUpperCase()}`;
+        this.validationErrors[dateProperty] = `Invalid date format, use ${enviDatDateFormat.toUpperCase()}`;
       }
 
       return '';

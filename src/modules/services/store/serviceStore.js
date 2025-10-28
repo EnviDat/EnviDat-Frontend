@@ -55,7 +55,8 @@ export const service = {
         url = './testdata/servicelist.json';
       }
 
-      axios.get(url)
+      axios
+        .get(url)
         .then((response) => {
           commit(GET_SERVICE_LIST_SUCCESS, response.data);
         })

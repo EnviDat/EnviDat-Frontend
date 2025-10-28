@@ -36,8 +36,12 @@ import {
 import {
   DATE_PROPERTY_END_DATE,
   DATE_PROPERTY_START_DATE,
-  EDIT_METADATA_AUTHORS_LABEL, EDIT_METADATA_DATALICENSE_LABEL, EDIT_METADATA_DOI_LABEL,
-  EDIT_METADATA_ORGANIZATION_LABEL, EDIT_METADATA_PUBLICATION_YEAR_LABEL, EDIT_METADATA_PUBLISHER_LABEL,
+  EDIT_METADATA_AUTHORS_LABEL,
+  EDIT_METADATA_DATALICENSE_LABEL,
+  EDIT_METADATA_DOI_LABEL,
+  EDIT_METADATA_ORGANIZATION_LABEL,
+  EDIT_METADATA_PUBLICATION_YEAR_LABEL,
+  EDIT_METADATA_PUBLISHER_LABEL,
   EDIT_METADATA_TITLE_LABEL,
   EDIT_METADATA_URL_LABEL,
   METADATA_AUTHORS_PROPERTY,
@@ -55,8 +59,7 @@ import {
 
 // const urlRegex = /^(https?:\/\/)?(www\.)?[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/[\w-]*)*(\/[\w-]+\.(html|htm))?)?$/gm;
 
-const convertEmptyStringToNull = (value, originalValue) =>
-  originalValue === '' ? null : value;
+const convertEmptyStringToNull = (value, originalValue) => (originalValue === '' ? null : value);
 
 const convertToZero = (value) => (Number.isNaN(value) ? 0 : value);
 
@@ -76,10 +79,7 @@ const metadataInEditingValidations = {
         .nullable()
         .min(5, 'Dataset url must be at least 5 characters')
         .max(80, 'Dataset url has a maximum of 80 characters')
-        .matches(
-          /^[\w-]+$/,
-          'Use only letters, numbers and dashes for the url (not spaces)',
-        ),
+        .matches(/^[\w-]+$/, 'Use only letters, numbers and dashes for the url (not spaces)'),
       [METADATA_TITLE_PROPERTY]: yup
         .string()
         .required('Dataset title is required')
@@ -121,35 +121,22 @@ const metadataInEditingValidations = {
         .string()
         .required('Resource name is required')
         .min(5, 'Resource name must be at least 5 characters')
-        .notOneOf(
-          [yup.ref('url')],
-          'Title cannot be the same as the resource url',
-        ),
+        .notOneOf([yup.ref('url')], 'Title cannot be the same as the resource url'),
       description: yup
         .string()
         .nullable()
         .transform(convertEmptyStringToNull)
         .min(20, 'Write at least a minimal description with 20 characters.'),
-      format: yup
-        .string()
-        .nullable()
-        .min(1, 'Format has to be at least 1 characters long.'),
+      format: yup.string().nullable().min(1, 'Format has to be at least 1 characters long.'),
       size: yup
         .number('size must be a number')
         .transform(convertToZero)
-        .test(
-          'empty-check',
-          'File size must be a number greater than 0',
-          (size) => size !== 0,
-        )
+        .test('empty-check', 'File size must be a number greater than 0', (size) => size !== 0)
         .moreThan(0, 'File size be more than 0'),
       sizeFormat: yup.string().required('Pick a file size'),
       url: yup.string().when('isLink', {
         is: true,
-        then: yup
-          .string()
-          .url('Resource url must be valid')
-          .required('Resource url is required'),
+        then: yup.string().url('Resource url must be valid').required('Resource url is required'),
         otherwise: yup.string().notRequired(),
       }),
     }),
@@ -163,9 +150,7 @@ const metadataInEditingValidations = {
         .test(
           'empty-check',
           'Add start and end date',
-          (dateEntry) =>
-            dateEntry[DATE_PROPERTY_START_DATE] !== '' &&
-            dateEntry[DATE_PROPERTY_END_DATE] !== '',
+          (dateEntry) => dateEntry[DATE_PROPERTY_START_DATE] !== '' && dateEntry[DATE_PROPERTY_END_DATE] !== '',
         ),
     }),
   [EDITMETADATA_DATA_LICENSE]: () =>
@@ -182,19 +167,12 @@ const metadataInEditingValidations = {
           geoJSON: yup
             .object()
             .required(geoValidationMessage)
-            .test(
-              'empty-check',
-              geoValidationMessage,
-              (geoObj) => Object.keys(geoObj)?.length > 0,
-            ),
+            .test('empty-check', geoValidationMessage, (geoObj) => Object.keys(geoObj)?.length > 0),
         }),
     }),
   [EDITMETADATA_DATA_GEO_SPATIAL]: () =>
     yup.object().shape({
-      geometries: yup
-        .array()
-        .required(geoValidationMessage)
-        .min(1, 'At least one geometry is required'),
+      geometries: yup.array().required(geoValidationMessage).min(1, 'At least one geometry is required'),
     }),
   [EDITMETADATA_RELATED_PUBLICATIONS]: () =>
     yup.object().shape({
@@ -202,10 +180,7 @@ const metadataInEditingValidations = {
         .string()
         .nullable()
         .transform(convertEmptyStringToNull)
-        .min(
-          10,
-          'Write at least 10 characters to describe the related publications.',
-        ),
+        .min(10, 'Write at least 10 characters to describe the related publications.'),
     }),
   [EDITMETADATA_RELATED_DATASETS]: () =>
     yup.object().shape({
@@ -213,10 +188,7 @@ const metadataInEditingValidations = {
         .string()
         .nullable()
         .transform(convertEmptyStringToNull)
-        .min(
-          10,
-          'Write at least 10 characters to describe the related datasets.',
-        ),
+        .min(10, 'Write at least 10 characters to describe the related datasets.'),
     }),
   [EDITMETADATA_ORGANIZATION]: () =>
     yup.object().shape({
@@ -256,29 +228,16 @@ const metadataInEditingValidations = {
           yup.object().shape({
             institution: yup.string().required().min(3),
             grantNumber: yup.string(),
-            institutionUrl: yup
-              .string()
-              .nullable()
-              .transform(convertEmptyStringToNull)
-              .url(),
+            institutionUrl: yup.string().nullable().transform(convertEmptyStringToNull).url(),
             //              .matches(urlRegex, 'Provide a valid link / url.'),
           }),
         ),
     }),
   [EDIT_USER_PROFILE]: () =>
     yup.object().shape({
-      firstName: yup
-        .string()
-        .required('First name is required')
-        .min(2, 'First name must be at least 2 characters'),
-      lastName: yup
-        .string()
-        .required('Last name is required')
-        .min(3, 'Last name must be at least 3 characters'),
-      email: yup
-        .string()
-        .email('Please enter a valid email address')
-        .required('Email is required'),
+      firstName: yup.string().required('First name is required').min(2, 'First name must be at least 2 characters'),
+      lastName: yup.string().required('Last name is required').min(3, 'Last name must be at least 3 characters'),
+      email: yup.string().email('Please enter a valid email address').required('Email is required'),
     }),
   [EDITMETADATA_AUTHOR]: () =>
     yup.object().shape({
@@ -290,18 +249,12 @@ const metadataInEditingValidations = {
         .string()
         .required('Author last name is required')
         .min(3, 'Author last name must be at least 3 characters'),
-      email: yup
-        .string()
-        .email('Author email must be a valid email address')
-        .required('Author email is required'),
+      email: yup.string().email('Author email must be a valid email address').required('Author email is required'),
       identifier: yup
         .string()
         // e.g. 0000-0002-3862-8720
         .notRequired()
-        .min(
-          19,
-          'OrcId must be at least 19 characters, like 0000-0002-3862-8720',
-        ),
+        .min(19, 'OrcId must be at least 19 characters, like 0000-0002-3862-8720'),
       affiliation: yup
         .string()
         // .required('Author affiliation is required')
@@ -314,14 +267,7 @@ export function getValidationMetadataEditingObject(key) {
   return validationEntry ? validationEntry() : null;
 }
 
-export function isArrayContentValid(
-  array,
-  arrayProperty,
-  index,
-  valueProperty,
-  validations,
-  errorArray,
-) {
+export function isArrayContentValid(array, arrayProperty, index, valueProperty, validations, errorArray) {
   const arrayPrefix = `${arrayProperty}[${index}].${valueProperty}`;
 
   try {
@@ -345,13 +291,7 @@ export function isArrayContentValid(
   return true;
 }
 
-export function isFieldValid(
-  property,
-  value,
-  validations,
-  errorObject,
-  errorProperty = undefined,
-) {
+export function isFieldValid(property, value, validations, errorObject, errorProperty = undefined) {
   const errProperty = errorProperty || property;
 
   try {
@@ -383,20 +323,10 @@ export function isFieldValid(
  *
  * @returns {boolean} false if any of the validation rules got an error
  */
-export function isObjectValid(
-  properties,
-  objectToValidate,
-  validations,
-  errorObject,
-) {
+export function isObjectValid(properties, objectToValidate, validations, errorObject) {
   // Validate fields corresponding to properties
   for (let i = 0; i < properties.length; i++) {
-    isFieldValid(
-      properties[i],
-      objectToValidate[properties[i]],
-      validations,
-      errorObject,
-    );
+    isFieldValid(properties[i], objectToValidate[properties[i]], validations, errorObject);
   }
 
   // Return false if any of the properties have a validation error
@@ -410,11 +340,7 @@ export function isObjectValid(
   return true;
 }
 
-export function isObjectValidCheckAllProps(
-  objectToValidate,
-  validations,
-  errorObject,
-) {
+export function isObjectValidCheckAllProps(objectToValidate, validations, errorObject) {
   const keys = Object.keys(objectToValidate);
   return isObjectValid(keys, objectToValidate, validations, errorObject);
 }
@@ -469,9 +395,7 @@ export function hasOrganizationRoles(organizationRoles) {
 
 export function isUserGroupAdmin(userId, organization) {
   if (organization?.users?.length > 0) {
-    const matches = organization.users.filter(
-      (user) => user.id === userId && user.capacity === USER_ROLE_ADMIN,
-    );
+    const matches = organization.users.filter((user) => user.id === userId && user.capacity === USER_ROLE_ADMIN);
     return matches.length > 0;
   }
 
@@ -480,9 +404,7 @@ export function isUserGroupAdmin(userId, organization) {
 
 export function getCollaboratorCapacity(datasetId, collaboratorIdEntries) {
   if (collaboratorIdEntries?.length > 0) {
-    const matches = collaboratorIdEntries.filter(
-      (entry) => entry.id === datasetId,
-    );
+    const matches = collaboratorIdEntries.filter((entry) => entry.id === datasetId);
     return matches[0]?.role || '';
   }
 

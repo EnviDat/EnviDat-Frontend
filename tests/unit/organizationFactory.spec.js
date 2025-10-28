@@ -6,7 +6,6 @@ import orgaMapProd from '../../stories/testdata/orgaMapProd.json';
 
 describe('organizationFactory - getOrganizationTree', () => {
   it('recursive OrganizationTree', () => {
-
     const orgaEntries = Object.values(orgaMapProd);
     let orgas = [];
     orgaEntries.forEach((entry) => {
@@ -20,6 +19,4 @@ describe('organizationFactory - getOrganizationTree', () => {
     expect(tree).toBeDefined();
     expect(tree.length > 0).toBeTruthy();
   });
-
 });
-

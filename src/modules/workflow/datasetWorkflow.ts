@@ -1,15 +1,8 @@
 import { defineStore } from 'pinia';
 
-import {
-  USER_ROLE_MEMBER,
-  USER_ROLE_EDITOR,
-  USER_ROLE_SYSTEM_ADMIN,
-} from '@/factories/userEditingValidations';
+import { USER_ROLE_MEMBER, USER_ROLE_EDITOR, USER_ROLE_SYSTEM_ADMIN } from '@/factories/userEditingValidations';
 
-import {
-  enhanceAdminWorkflowStep,
-  workflowSteps,
-} from '@/modules/workflow/resources/steps';
+import { enhanceAdminWorkflowStep, workflowSteps } from '@/modules/workflow/resources/steps';
 
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 import { LocalStorageDatasetService } from '@/modules/workflow/LocalStorageDatasetService.ts';
@@ -21,10 +14,7 @@ import { getYear } from 'date-fns';
 
 import { readOnlyFields } from '@/modules/workflow/resources/readOnlyList.ts';
 import { resolveBootstrap } from '@/modules/workflow/utils/workflowBootstrap.ts';
-import {
-  computeStepsForMode,
-  enhanceStepsFromData,
-} from '@/modules/workflow/utils/mode.ts';
+import { computeStepsForMode, enhanceStepsFromData } from '@/modules/workflow/utils/mode.ts';
 import {
   mustValidateOnLeave as mustValidateOnLeaveUtil,
   setActiveStepForCreate,
@@ -33,10 +23,7 @@ import {
 
 import { validateStepPure } from '@/modules/workflow/utils/workflowValidation';
 import type { WorkflowStep } from '@/types/workflow';
-import {
-  StepStatus,
-  WorkflowMode,
-} from '@/modules/workflow/utils/workflowEnums';
+import { StepStatus, WorkflowMode } from '@/modules/workflow/utils/workflowEnums';
 
 import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
 import { getMetadataUrlFromTitle } from '@/factories/mappingFactory';
@@ -117,11 +104,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     // if you need to find those items in the code just search for this isReadOnly('visibility')
     listOfReadOnlyFields: [...readOnlyFields],
     // define readOnly steps to manage the navigation (UI only)
-    isReadOnlyStep: [
-      'AuthorsInformation',
-      'additionalinformation',
-      'publicationinformation',
-    ],
+    isReadOnlyStep: ['AuthorsInformation', 'additionalinformation', 'publicationinformation'],
 
     freeJump: false,
     stepForBackendChange: 3,
@@ -186,10 +169,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
         this.stopLoading(key);
       }
     },
-    async withLoadingAll<T>(
-      promises: Promise<T>[],
-      key?: string,
-    ): Promise<T[]> {
+    async withLoadingAll<T>(promises: Promise<T>[], key?: string): Promise<T[]> {
       this.startLoading(key);
       try {
         return await Promise.all(promises);
@@ -291,15 +271,11 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     // We need to fine-tune this logic.
     async bootstrapWorkflow(datasetId?: string) {
       return this.withLoading(async () => {
-        const { dto, mode, source } = await resolveBootstrap<DatasetDTO>(
-          datasetId,
-          {
-            loadBackend: (id) => this.backendStorageService.loadDataset(id),
-            loadLocal: (id) => this.localStorageService.loadDataset(id),
-            createLocal: (init) =>
-              this.localStorageService.createDataset(init as DatasetDTO),
-          },
-        );
+        const { dto, mode, source } = await resolveBootstrap<DatasetDTO>(datasetId, {
+          loadBackend: (id) => this.backendStorageService.loadDataset(id),
+          loadLocal: (id) => this.localStorageService.loadDataset(id),
+          createLocal: (init) => this.localStorageService.createDataset(init as DatasetDTO),
+        });
         this.dataSource = source;
         await this.initializeDataset(dto, mode);
         return { id: dto.id, mode };
@@ -310,9 +286,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     // Based on the dataSource we will use the local or the backend service.
     // The source is defined in the bootstrapWorkflow function -> resolveBootstrap()
     getDatasetService(): DatasetService {
-      return this.dataSource === 'backend'
-        ? this.backendStorageService
-        : this.localStorageService;
+      return this.dataSource === 'backend' ? this.backendStorageService : this.localStorageService;
     },
 
     // // SET the mode to WorkflowMode.Create or WorkflowMode.Edit.
@@ -433,11 +407,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
       });
 
       // validateStepAction is true when the user clicks on "Next" or "Save and Next" but not when the user want navigate from the navigation step
-      if (
-        openSaveDialog &&
-        this.dataSource === 'local' &&
-        !validateStepAction
-      ) {
+      if (openSaveDialog && this.dataSource === 'local' && !validateStepAction) {
         this.openSaveDialog = true;
         return false;
       }
@@ -525,9 +495,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
         return this.userRole;
       }
 
-      const inOrg = userOrganizations.some(
-        (o) => o.id === ds?.organization?.id,
-      );
+      const inOrg = userOrganizations.some((o) => o.id === ds?.organization?.id);
       const isOwner = userDatasets.some((d) => d.id === ds?.id);
 
       this.userRole = inOrg && isOwner ? USER_ROLE_EDITOR : USER_ROLE_MEMBER;
@@ -536,10 +504,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     getNextAllowedStep(fromId: number): number {
       const isCreate = this.mode === WorkflowMode.Create;
       const isBackend = this.dataSource === 'backend';
-      const maxIdx =
-        isCreate && !isBackend
-          ? MAX_LOCAL_CREATE_STEP_ID
-          : this.steps.length - 1;
+      const maxIdx = isCreate && !isBackend ? MAX_LOCAL_CREATE_STEP_ID : this.steps.length - 1;
 
       for (let i = fromId + 1; i <= maxIdx; i++) {
         const s = this.steps[i];

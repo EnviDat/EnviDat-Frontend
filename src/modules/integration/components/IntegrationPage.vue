@@ -12,27 +12,13 @@
     </v-row>
 
     <v-row no-gutters id="pageSubHeader" class="py-2">
-      <v-col
-        cols="12"
-        offset-md="1"
-        md="10"
-        class="text-body-1"
-        v-html="pageIntroText"
-      >
-      </v-col>
+      <v-col cols="12" offset-md="1" md="10" class="text-body-1" v-html="pageIntroText"> </v-col>
     </v-row>
 
     <v-row no-gutters id="pageBody" class="py-4">
       <v-col cols="12" offset-md="1" md="10">
-        <TextCardListLayout
-          :listItems="list"
-          :smallCols="4"
-          :loading="loadingList"
-          :loadingImg="fallbackCardImg"
-        >
-          <template
-            #entry="{ entry, loadingImg, titleCssClass, subtitleCssClass }"
-          >
+        <TextCardListLayout :listItems="list" :smallCols="4" :loading="loadingList" :loadingImg="fallbackCardImg">
+          <template #entry="{ entry, loadingImg, titleCssClass, subtitleCssClass }">
             <ImageTextCard
               :height="cardHeight"
               :title="entry.title"
@@ -66,10 +52,7 @@ import { mapState } from 'vuex';
 
 import { INTEGRATION_PAGENAME } from '@/router/routeConsts';
 
-import {
-  INTEGRATION_NAMESPACE,
-  GET_INTEGRATION_LIST,
-} from '@/modules/integration/store/integrationMutationsConsts';
+import { INTEGRATION_NAMESPACE, GET_INTEGRATION_LIST } from '@/modules/integration/store/integrationMutationsConsts';
 
 import ImgAndTextLayout from '@/components/Layouts/ImgAndTextLayout.vue';
 import TextCardListLayout from '@/components/Layouts/TextCardListLayout.vue';

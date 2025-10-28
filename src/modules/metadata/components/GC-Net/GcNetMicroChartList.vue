@@ -1,13 +1,7 @@
 <template>
   <v-container fluid class="fill-height pa-0" id="MicroChartList">
     <v-row no-gutters>
-      <v-col
-        v-for="station in stations"
-        :key="`${station.id}_${station.alias}`"
-        class="pa-2"
-        cols="12"
-        sm="6"
-      >
+      <v-col v-for="station in stations" :key="`${station.id}_${station.alias}`" class="pa-2" cols="12" sm="6">
         <GcNetMicroChart
           :station="station"
           :image="station.envidatConfig.previewImageUrl"
@@ -17,7 +11,7 @@
           :parameter="station.envidatConfig.graphParameter"
           :chartHeight="45"
           @detailClick="
-            stationID => {
+            (stationID) => {
               changeCurrentStation(stationID);
             }
           "

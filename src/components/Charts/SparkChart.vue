@@ -6,42 +6,41 @@
     value: [],
   })
 */
-  const {
-    type = 'trend',
-    labels = [],
-    data = [],
-    width = 200,
-    loading = false,
-    showCardBorder = false,
-  } = defineProps({
-    type: {
-      type: String,
-      required: false,
-    },
-    labels: {
-      type: Array,
-      required: false,
-    },
-    data: {
-      type: Array,
-      required: false,
-    },
-    width: {
-      type: Number,
-      required: false,
-    },
-    loading: {
-      type: Boolean,
-      required: false,
-    },
-    showCardBorder: {
-      type: Boolean,
-      required: false,
-    },
-  })
+const {
+  type = 'trend',
+  labels = [],
+  data = [],
+  width = 200,
+  loading = false,
+  showCardBorder = false,
+} = defineProps({
+  type: {
+    type: String,
+    required: false,
+  },
+  labels: {
+    type: Array,
+    required: false,
+  },
+  data: {
+    type: Array,
+    required: false,
+  },
+  width: {
+    type: Number,
+    required: false,
+  },
+  loading: {
+    type: Boolean,
+    required: false,
+  },
+  showCardBorder: {
+    type: Boolean,
+    required: false,
+  },
+});
 
-  const height = width * 0.25;
-
+const height = width * 0.25;
 </script>
 
 <template>
@@ -53,11 +52,7 @@
     class="pa-0"
     @click="$emit('clicked')"
   >
-    <v-skeleton-loader
-      v-if="loading"
-      type="image"
-      :height
-    />
+    <v-skeleton-loader v-if="loading" type="image" :height />
 
     <v-sparkline
       v-if="!loading"
@@ -78,6 +73,4 @@
   </v-card>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

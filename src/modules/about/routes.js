@@ -1,20 +1,16 @@
-import {
-  ABOUT_PAGENAME,
-  ABOUT_PATH,
-  DMP_PATH,
-  GUIDELINES_PATH,
-  POLICIES_PATH,
-} from '@/router/routeConsts';
+import { ABOUT_PAGENAME, ABOUT_PATH, DMP_PATH, GUIDELINES_PATH, POLICIES_PATH } from '@/router/routeConsts';
 import { importStoreModule } from '@/factories/enhancementsFactory';
 import store from '@/store/store';
 
 const AboutPage = () => import('@/modules/about/components/AboutPage.vue');
 
-const beforeEnter = (to, from, next)=> {
+const beforeEnter = (to, from, next) => {
   const moduleKey = 'about';
   const importFun = () => import('@/modules/about/store/aboutStore');
-  importStoreModule(store, moduleKey, importFun).then(() => { next() });
-}
+  importStoreModule(store, moduleKey, importFun).then(() => {
+    next();
+  });
+};
 
 export const aboutRoutes = [
   {

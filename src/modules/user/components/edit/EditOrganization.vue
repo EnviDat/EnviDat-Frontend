@@ -1,11 +1,6 @@
 <template>
-  <v-card id="EditOrganization"
-          class="pa-0"
-          :loading="loadingColor"
-          :flat
-  >
+  <v-card id="EditOrganization" class="pa-0" :loading="loadingColor" :flat>
     <v-container fluid class="pa-4">
-
       <v-row>
         <v-col cols="6" class="text-h5">
           {{ EDIT_ORGANIZATION_TITLE }}
@@ -20,67 +15,56 @@
           />
         </v-col>
         <v-col v-if="error">
-          <BaseStatusLabelView
-            status="error"
-            statusColor="error"
-            :statusText="error"
-            :expandedText="errorDetails"
-          />
+          <BaseStatusLabelView status="error" statusColor="error" :statusText="error" :expandedText="errorDetails" />
         </v-col>
       </v-row>
 
       <v-row>
         <v-col v-if="onlyOneUserOrganization && selectedOrganization">
-
-          <v-select :model-value="selectedOrganization"
-                    :items="userOrganizations"
-                    item-title="title"
-                    item-value="id"
-                    readonly
-                    :prepend-icon="mdiHome"
-                    :menu-icon="isEditOrganizationReadonly ? '' : mdiArrowDownDropCircleOutline"
-                    :hint="readOnlyHint(METADATA_ORGANIZATION_PROPERTY) || 'Your Organization was autocompleted'"
-                    persistent-hint
-                    :label="EDIT_METADATA_ORGANIZATION_LABEL"
+          <v-select
+            :model-value="selectedOrganization"
+            :items="userOrganizations"
+            item-title="title"
+            item-value="id"
+            readonly
+            :prepend-icon="mdiHome"
+            :menu-icon="isEditOrganizationReadonly ? '' : mdiArrowDownDropCircleOutline"
+            :hint="readOnlyHint(METADATA_ORGANIZATION_PROPERTY) || 'Your Organization was autocompleted'"
+            persistent-hint
+            :label="EDIT_METADATA_ORGANIZATION_LABEL"
           >
             <template v-slot:selection="{ item }">
-              <MetadataOrganizationChip v-if="item?.title"
-                                        :organization="item.title"/>
+              <MetadataOrganizationChip v-if="item?.title" :organization="item.title" />
             </template>
           </v-select>
-
         </v-col>
 
         <v-col v-else>
-
-          <v-select :model-value="selectedOrganization"
-                    :items="userOrganizations"
-                    item-title="title"
-                    item-value="id"
-                    :prepend-icon="mdiHome"
-                    :menu-icon="isEditOrganizationReadonly ? '' : mdiArrowDownDropCircleOutline"
-                    :readonly="isEditOrganizationReadonly"
-                    :hint="readOnlyHint(METADATA_ORGANIZATION_PROPERTY)"
-                    :persistent-hint="isEditOrganizationReadonly"
-                    :label="EDIT_METADATA_ORGANIZATION_LABEL"
-                    :error-messages="validationErrors.organizationId"
+          <v-select
+            :model-value="selectedOrganization"
+            :items="userOrganizations"
+            item-title="title"
+            item-value="id"
+            :prepend-icon="mdiHome"
+            :menu-icon="isEditOrganizationReadonly ? '' : mdiArrowDownDropCircleOutline"
+            :readonly="isEditOrganizationReadonly"
+            :hint="readOnlyHint(METADATA_ORGANIZATION_PROPERTY)"
+            :persistent-hint="isEditOrganizationReadonly"
+            :label="EDIT_METADATA_ORGANIZATION_LABEL"
+            :error-messages="validationErrors.organizationId"
           >
             <template v-slot:selection="{ item }">
-              <MetadataOrganizationChip v-if="item?.title"
-                                        :organization="item.title"/>
+              <MetadataOrganizationChip v-if="item?.title" :organization="item.title" />
             </template>
 
             <template v-slot:item="{ item }">
-              <v-list-item v-if="item?.title" density='compact' >
-                <MetadataOrganizationChip @click="setOrganization(item.value)"
-                                          :organization="item.title"/>
+              <v-list-item v-if="item?.title" density="compact">
+                <MetadataOrganizationChip @click="setOrganization(item.value)" :organization="item.title" />
               </v-list-item>
             </template>
           </v-select>
         </v-col>
-
       </v-row>
-
     </v-container>
   </v-card>
 </template>
@@ -116,10 +100,7 @@ import {
   EDIT_ORGANIZATION_TITLE,
   METADATA_ORGANIZATION_PROPERTY,
 } from '@/factories/metadataConsts';
-import {
-  getValidationMetadataEditingObject,
-  isFieldValid,
-} from '@/factories/userEditingValidations';
+import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 
@@ -193,7 +174,6 @@ export default {
       return this.userOrganizations?.length === 1;
     },
     selectedOrganization() {
-
       const id = this.organizationField;
 
       if (!id) {
@@ -220,13 +200,8 @@ export default {
 
       this.previewOrganizationId = orgId;
 
-      if (isFieldValid(
-          'organizationId',
-          orgId,
-          this.validations,
-          this.validationErrors,
-        )) {
-        const newOrgId = this.userOrganizations.filter(x => x.id === orgId)[0].id;
+      if (isFieldValid('organizationId', orgId, this.validations, this.validationErrors)) {
+        const newOrgId = this.userOrganizations.filter((x) => x.id === orgId)[0].id;
 
         eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
           object: EDITMETADATA_ORGANIZATION,
@@ -235,12 +210,7 @@ export default {
       }
     },
     validateProperty(property, value) {
-      return isFieldValid(
-        property,
-        value,
-        this.validations,
-        this.validationErrors,
-      );
+      return isFieldValid(property, value, this.validations, this.validationErrors);
     },
     readOnlyHint(property) {
       return readOnlyHint(this.$props, property);

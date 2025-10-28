@@ -39,10 +39,7 @@
       <v-container class="pa-0" fluid>
         <v-row no-gutters>
           <v-col
-            v-if="
-              showFullDescription ||
-              (!showFullDescription && !maxDescriptionLengthReached)
-            "
+            v-if="showFullDescription || (!showFullDescription && !maxDescriptionLengthReached)"
             class="readableText heightAndScroll"
             :class="{
               'text-white': !dark,
@@ -50,15 +47,10 @@
             }"
             :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
           >
-            <div class="resourceCardText"
-                 v-html="markdownText"
-            />
+            <div class="resourceCardText" v-html="markdownText" />
           </v-col>
 
-          <v-col
-            v-if="!showFullDescription && maxDescriptionLengthReached"
-            class="readableText resourceCardText"
-          >
+          <v-col v-if="!showFullDescription && maxDescriptionLengthReached" class="readableText resourceCardText">
             {{ markdownTextTruncated }}
           </v-col>
         </v-row>
@@ -114,9 +106,7 @@
             <BaseIconLabelView
               :text="formatedBytes ? `${format} - ${formatedBytes}` : format"
               :icon="extensionIcon"
-              :icon-tooltip="
-                formatedBytes ? 'Resource type and size' : 'Resource type'
-              "
+              :icon-tooltip="formatedBytes ? 'Resource type and size' : 'Resource type'"
               :light="dark"
               :dark="!dark"
             />
@@ -187,24 +177,11 @@
     <!-- it's not possible to always use directly v-card-actions
     because for the S3 bucket file list, the list should appear
     beneath the icon buttons, there the wrapper with the relative positioning -->
-    <v-container fluid
-                 :style="`position: ${ isEnvicloudUrl ? 'relative' : 'initial'}`"
-                 class="py-0"
-    >
-
+    <v-container fluid :style="`position: ${isEnvicloudUrl ? 'relative' : 'initial'}`" class="py-0">
       <!-- moved inside the relative container for resolve the issue of positioning -->
-      <v-card-actions
-        class="ma-0"
-        style="position: absolute; bottom: 0; right: 0; width: 120px; z-index: 2;"
-      >
-
-        <v-row no-gutters
-               justify="end"
-        >
-          <v-col v-if="maxDescriptionLengthReached"
-                 cols="6"
-                 class="pa-2"
-          >
+      <v-card-actions class="ma-0" style="position: absolute; bottom: 0; right: 0; width: 120px; z-index: 2">
+        <v-row no-gutters justify="end">
+          <v-col v-if="maxDescriptionLengthReached" cols="6" class="pa-2">
             <base-icon-button
               :icon="mdiChevronDown"
               :icon-color="showFullDescription ? 'primary' : 'accent'"
@@ -212,19 +189,12 @@
               :outlined="true"
               outline-color="accent"
               :rotated="showFullDescription"
-              :tooltipText="
-            showFullDescription
-              ? 'Hide full description'
-              : 'Show full description'
-            "
+              :tooltipText="showFullDescription ? 'Hide full description' : 'Show full description'"
               @clicked="showFullDescription = !showFullDescription"
             />
           </v-col>
 
-          <v-col v-if="!isProtected"
-                 cols="6"
-                 class="pa-2"
-          >
+          <v-col v-if="!isProtected" cols="6" class="pa-2">
             <!-- New version with S3 Component -->
             <base-icon-button
               :icon="isFile ? mdiDownload : mdiLink"
@@ -238,42 +208,27 @@
             />
           </v-col>
 
-          <v-col v-if="isProtected"
-                 cols="6"
-          >
+          <v-col v-if="isProtected" cols="6">
             <div
               class="fabMenu fabPosition elevation-5 ma-4"
               :class="downloadActive ? 'fabMenuHover' : 'fabMenuDisabled'"
             >
               <BaseIcon :icon="mdiShield" color="grey-darken-3" />
-              <div
-                v-if="downloadActive"
-                class="pt-2 lockedText text-black protectedLink"
-              >
+              <div v-if="downloadActive" class="pt-2 lockedText text-black protectedLink">
                 <p v-html="protectedText"></p>
               </div>
             </div>
           </v-col>
         </v-row>
-
       </v-card-actions>
     </v-container>
 
-    <v-card-text
-      v-if="isEnvicloudUrl && !isProtected"
-      class="pa-4 pt-0"
-    >
+    <v-card-text v-if="isEnvicloudUrl && !isProtected" class="pa-4 pt-0">
       <v-divider />
 
-      <S3Tree
-        :url="url"
-        @loadingChanged="catchLoadingChanged"
-        @changeAutoHeight="catchChangeHeight"
-      />
+      <S3Tree :url="url" @loadingChanged="catchLoadingChanged" @changeAutoHeight="catchChangeHeight" />
     </v-card-text>
-
   </v-card>
-
 </template>
 
 <script lang="ts">
@@ -334,7 +289,7 @@ export default {
     id: String,
     doi: String,
     name: String,
-/*
+    /*
     autoHeight: Boolean,
 */
     description: String,
@@ -391,8 +346,7 @@ export default {
     },
     canDataViz: Boolean,
   },
-  mounted() {
-  },
+  mounted() {},
   beforeUnmount() {
     // reset store before unmount the component
   },
@@ -427,9 +381,7 @@ export default {
       return getResourceName(this);
     },
     scrollbarColorFront() {
-      return this.$vuetify
-        ? this.$vuetify.theme.themes.light.colors.highlight
-        : 'auto';
+      return this.$vuetify ? this.$vuetify.theme.themes.light.colors.highlight : 'auto';
     },
     scrollbarColorBack() {
       return this.$vuetify ? '#F0F0F0' : 'auto';
@@ -450,10 +402,7 @@ export default {
         const strippedMarkdown = stripMarkdown(this.description.trim());
 
         if (strippedMarkdown) {
-          return `${strippedMarkdown.substring(
-            0,
-            this.maxDescriptionLength,
-          )}...`;
+          return `${strippedMarkdown.substring(0, this.maxDescriptionLength)}...`;
         }
 
         return '';
@@ -475,18 +424,12 @@ export default {
 
     isLink() {
       return (
-        this.format &&
-        (this.format.toLowerCase() === 'link' ||
-          this.format.toLowerCase() === RESOURCE_FORMAT_LINK)
+        this.format && (this.format.toLowerCase() === 'link' || this.format.toLowerCase() === RESOURCE_FORMAT_LINK)
       );
     },
     isFile() {
       let isFile =
-        !this.format ||
-        !(
-          this.format.toLowerCase() === 'link' ||
-          this.format.toLowerCase() === RESOURCE_FORMAT_LINK
-        );
+        !this.format || !(this.format.toLowerCase() === 'link' || this.format.toLowerCase() === RESOURCE_FORMAT_LINK);
 
       if (isFile && this.url) {
         const splits = this.url.split('/');
@@ -497,9 +440,7 @@ export default {
       return isFile;
     },
     maxDescriptionLengthReached() {
-      return (
-        this.description && this.description.length > this.maxDescriptionLength
-      );
+      return this.description && this.description.length > this.maxDescriptionLength;
     },
     protectedText() {
       if (this.restrictedUrl && this.restrictedUrl.length > 0) {
@@ -513,7 +454,7 @@ export default {
         return this.isEnvicloudUrl ? 'bottom: 0;' : 'bottom: 52px';
       }
 
-      return 'top: 0;'
+      return 'top: 0;';
     },
     extensionIcon() {
       return getFileIcon(this.format);
@@ -521,7 +462,7 @@ export default {
   },
   methods: {
     catchLoadingChanged(isLoading) {
-      this.isLoadingS3Tree = isLoading
+      this.isLoadingS3Tree = isLoading;
     },
     catchChangeHeight(useAutoHeight) {
       this.useAutoHeight = useAutoHeight;
@@ -641,6 +582,4 @@ export default {
 .highlighted {
   box-shadow: #ffd740 0 0 5px 5px !important;
 }
-
-
 </style>

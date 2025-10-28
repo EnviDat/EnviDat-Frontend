@@ -9,7 +9,7 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 import { format, isValid, parse } from 'date-fns';
 
 import {
@@ -70,167 +70,143 @@ import { convertJSON, convertToBackendJSONWithRules, convertToFrontendJSONWithRu
  */
 const JSONFrontendBackendRules = {
   [METADATA_MAIN_HEADER]: [
-    [METADATA_TITLE_PROPERTY,'title'],
-    [METADATA_CONTACT_EMAIL,'maintainer.email'],
-    ['firstName','maintainer.given_name'],
-    ['lastName','maintainer.name'],
-    ['doi','doi'],
-    ['tags','tags'],
-    ['authors','author'],
-    ['organization','organization.name'],
-    ['organizationTooltip','organization.title'],
-    ['spatialInfo','spatial_info'],
-    ['created','metadata_created'],
-    ['modified','metadata_modified'],
-    ['state','state'],
-    ['private','private'],
+    [METADATA_TITLE_PROPERTY, 'title'],
+    [METADATA_CONTACT_EMAIL, 'maintainer.email'],
+    ['firstName', 'maintainer.given_name'],
+    ['lastName', 'maintainer.name'],
+    ['doi', 'doi'],
+    ['tags', 'tags'],
+    ['authors', 'author'],
+    ['organization', 'organization.name'],
+    ['organizationTooltip', 'organization.title'],
+    ['spatialInfo', 'spatial_info'],
+    ['created', 'metadata_created'],
+    ['modified', 'metadata_modified'],
+    ['state', 'state'],
+    ['private', 'private'],
   ],
   [EDITMETADATA_MAIN_HEADER]: [
-    [METADATA_TITLE_PROPERTY,'title'],
-    [METADATA_URL_PROPERTY,'name'],
-    [METADATA_CONTACT_EMAIL,'maintainer.email'],
-    ['contactFirstName','maintainer.given_name'],
-    ['contactLastName','maintainer.name'],
-    ['license','license_title'],
+    [METADATA_TITLE_PROPERTY, 'title'],
+    [METADATA_URL_PROPERTY, 'name'],
+    [METADATA_CONTACT_EMAIL, 'maintainer.email'],
+    ['contactFirstName', 'maintainer.given_name'],
+    ['contactLastName', 'maintainer.name'],
+    ['license', 'license_title'],
   ],
-  [EDITMETADATA_MAIN_DESCRIPTION]: [
-    ['description','notes'],
-  ],
-  [EDITMETADATA_KEYWORDS]: [
-    ['keywords','tags'],
-  ],
+  [EDITMETADATA_MAIN_DESCRIPTION]: [['description', 'notes']],
+  [EDITMETADATA_KEYWORDS]: [['keywords', 'tags']],
   [EDITMETADATA_AUTHOR]: [
-    ['firstName','given_name'],
-    ['lastName','name'],
-    ['email','email'],
-    ['dataCredit','data_credit'],
-    ['identifierType','identifier_scheme'],
-    ['identifier','identifier'],
-    ['affiliation','affiliation'],
+    ['firstName', 'given_name'],
+    ['lastName', 'name'],
+    ['email', 'email'],
+    ['dataCredit', 'data_credit'],
+    ['identifierType', 'identifier_scheme'],
+    ['identifier', 'identifier'],
+    ['affiliation', 'affiliation'],
   ],
-  [EDITMETADATA_AUTHOR_LIST]: [
-    ['authors','author'],
-  ],
+  [EDITMETADATA_AUTHOR_LIST]: [['authors', 'author']],
   [EDITMETADATA_DATA_RESOURCE]: [
-    ['metadataId','package_id'],
-    ['cacheLastUpdated','cache_last_updated'],
-    ['cacheUrl','cache_url'],
-    ['created','created'],
-    ['description','description'],
-    ['doi','doi'],
-    ['format','format'],
-    ['hash','hash'],
-    ['id','id'],
-    ['lastModified','last_modified'],
-    ['mimetype','mimetype'],
-    ['mimetypeInner','mimetype_inner'],
-    ['metadataModified','metadata_modified'],
-    ['multipartName','multipart_name'],
-    ['name','name'],
-    ['packageId','package_id'],
-    ['position','position'],
-    ['restricted','restricted'],
-    ['resourceSize','resource_size'],
-    ['resourceType','resource_type'],
-    ['size','size'],
-    ['state','state'],
-    ['url','url'],
-    ['urlType','url_type'],
+    ['metadataId', 'package_id'],
+    ['cacheLastUpdated', 'cache_last_updated'],
+    ['cacheUrl', 'cache_url'],
+    ['created', 'created'],
+    ['description', 'description'],
+    ['doi', 'doi'],
+    ['format', 'format'],
+    ['hash', 'hash'],
+    ['id', 'id'],
+    ['lastModified', 'last_modified'],
+    ['mimetype', 'mimetype'],
+    ['mimetypeInner', 'mimetype_inner'],
+    ['metadataModified', 'metadata_modified'],
+    ['multipartName', 'multipart_name'],
+    ['name', 'name'],
+    ['packageId', 'package_id'],
+    ['position', 'position'],
+    ['restricted', 'restricted'],
+    ['resourceSize', 'resource_size'],
+    ['resourceType', 'resource_type'],
+    ['size', 'size'],
+    ['state', 'state'],
+    ['url', 'url'],
+    ['urlType', 'url_type'],
   ],
   [EDITMETADATA_DATA_RESOURCE_SIZE]: [
-    ['sizeValue','size_value'],
-    ['sizeUnits','size_units'],
+    ['sizeValue', 'size_value'],
+    ['sizeUnits', 'size_units'],
   ],
   [EDITMETADATA_DATA_RESTRICTED]: [
-    ['allowedUsers','allowed_users'],
-    ['level','level'],
-    ['sharedSecret','shared_secret'],
+    ['allowedUsers', 'allowed_users'],
+    ['level', 'level'],
+    ['sharedSecret', 'shared_secret'],
   ],
-  [EDITMETADATA_DATA_RESOURCES]: [
-    ['resources','resources'],
-  ],
-  [EDITMETADATA_DATA_INFO]: [
-    ['dates','date'],
-  ],
+  [EDITMETADATA_DATA_RESOURCES]: [['resources', 'resources']],
+  [EDITMETADATA_DATA_INFO]: [['dates', 'date']],
   [EDITMETADATA_DATA_LICENSE]: [
-    [METADATA_DATALICENSE_PROPERTY,'license_id'],
-    ['dataLicenseTitle','license_title'],
-    ['dataLicenseUrl','license_url'],
+    [METADATA_DATALICENSE_PROPERTY, 'license_id'],
+    ['dataLicenseTitle', 'license_title'],
+    ['dataLicenseUrl', 'license_url'],
   ],
   [EDITMETADATA_DATA_INFO_DATES]: [
     [DATE_PROPERTY_DATE_TYPE, 'date_type'],
     [DATE_PROPERTY_START_DATE, 'date'],
     [DATE_PROPERTY_END_DATE, 'end_date'],
   ],
-  [EDITMETADATA_DATA_GEO]: [
-    ['location.geoJSON','spatial'],
-  ],
+  [EDITMETADATA_DATA_GEO]: [['location.geoJSON', 'spatial']],
   [EDITMETADATA_DATA_GEO_SPATIAL]: [
-    ['type','type'],
-    ['coordinates','coordinates'],
+    ['type', 'type'],
+    ['coordinates', 'coordinates'],
   ],
-  [EDITMETADATA_RELATED_PUBLICATIONS]: [
-    ['relatedPublicationsText', 'related_publications'],
-  ],
-  [EDITMETADATA_RELATED_DATASETS]: [
-    ['relatedDatasetsText', 'related_datasets'],
-  ],
-  [EDITMETADATA_CUSTOMFIELDS]: [
-    ['customFields', 'extras'],
-  ],
+  [EDITMETADATA_RELATED_PUBLICATIONS]: [['relatedPublicationsText', 'related_publications']],
+  [EDITMETADATA_RELATED_DATASETS]: [['relatedDatasetsText', 'related_datasets']],
+  [EDITMETADATA_CUSTOMFIELDS]: [['customFields', 'extras']],
   [EDITMETADATA_CUSTOMFIELDS_ENTRY]: [
     ['fieldName', 'key'],
     ['content', 'value'],
   ],
-  [EDITMETADATA_ORGANIZATION]: [
-    ['organizationId', 'organization.id'],
-  ],
+  [EDITMETADATA_ORGANIZATION]: [['organizationId', 'organization.id']],
   [EDITMETADATA_PUBLICATION_INFO]: [
-    ['publicationState','publication_state'],
-    ['doi','doi'],
-    ['publisher','publication.publisher'],
-    ['publicationYear','publication.publication_year'],
+    ['publicationState', 'publication_state'],
+    ['doi', 'doi'],
+    ['publisher', 'publication.publisher'],
+    ['publicationYear', 'publication.publication_year'],
     ['version', 'version'],
     ['datasetId', 'id'],
   ],
-  [EDITMETADATA_REVIEW_INFO]: [
-    ['version', 'version'],
-  ],
-  [EDITMETADATA_FUNDING_INFO]: [
-    ['funders','funding'],
-  ],
+  [EDITMETADATA_REVIEW_INFO]: [['version', 'version']],
+  [EDITMETADATA_FUNDING_INFO]: [['funders', 'funding']],
   [USER_OBJECT]: [
-    ['id','id'],
-    ['name','name'],
-    ['fullName','fullname'],
-    ['email','email'],
-    ['apikey','apikey'],
-    ['resetKey','reset_key'],
-    ['created','created'],
-    ['about','about'],
-    ['activityStreamsEmailNotifications','activity_streams_email_notifications'],
-    ['sysadmin','sysadmin'],
-    ['state','state'],
-    ['imageUrl','image_url'],
-    ['displayName','display_name'],
-    ['emailHash','email_hash'],
-    ['numberCreatedPackages','number_created_packages'],
-    ['pluginExtras','plugin_extras'],
-    ['imageDisplayUrl','image_display_url'],
+    ['id', 'id'],
+    ['name', 'name'],
+    ['fullName', 'fullname'],
+    ['email', 'email'],
+    ['apikey', 'apikey'],
+    ['resetKey', 'reset_key'],
+    ['created', 'created'],
+    ['about', 'about'],
+    ['activityStreamsEmailNotifications', 'activity_streams_email_notifications'],
+    ['sysadmin', 'sysadmin'],
+    ['state', 'state'],
+    ['imageUrl', 'image_url'],
+    ['displayName', 'display_name'],
+    ['emailHash', 'email_hash'],
+    ['numberCreatedPackages', 'number_created_packages'],
+    ['pluginExtras', 'plugin_extras'],
+    ['imageDisplayUrl', 'image_display_url'],
   ],
 };
 
 function unpackDeprecatedResources(customFields) {
-
-  let deprecatedResourceEntry = customFields?.filter((entry) => entry?.fieldName === METADATA_DEPRECATED_RESOURCES_PROPERTY)[0];
+  let deprecatedResourceEntry = customFields?.filter(
+    (entry) => entry?.fieldName === METADATA_DEPRECATED_RESOURCES_PROPERTY,
+  )[0];
   // first check the customFields entries and sanitze them (to at least always start with an empty array)
 
   if (!deprecatedResourceEntry) {
-
     deprecatedResourceEntry = {
       fieldName: METADATA_DEPRECATED_RESOURCES_PROPERTY,
       content: JSON.stringify([]),
-    }
+    };
 
     customFields.push(deprecatedResourceEntry);
   }
@@ -251,23 +227,24 @@ function unpackDeprecatedResources(customFields) {
  *   content: string;
  * }[]}
  */
-export function markResourceDeprecatedInCustomFields(resourceId, deprecated, customFields)  {
-
+export function markResourceDeprecatedInCustomFields(resourceId, deprecated, customFields) {
   let deprecatedResources = unpackDeprecatedResources(customFields);
 
   if (deprecated) {
     deprecatedResources.push(resourceId);
   } else {
-    deprecatedResources = deprecatedResources.filter(i => i !== resourceId);
+    deprecatedResources = deprecatedResources.filter((i) => i !== resourceId);
   }
 
-  const deprecatedResourcesEntry = customFields.filter((entry) => entry?.fieldName === METADATA_DEPRECATED_RESOURCES_PROPERTY)[0];
+  const deprecatedResourcesEntry = customFields.filter(
+    (entry) => entry?.fieldName === METADATA_DEPRECATED_RESOURCES_PROPERTY,
+  )[0];
   deprecatedResourcesEntry.content = JSON.stringify(deprecatedResources);
 
   return customFields;
 }
 
-export function deprecatedResourceChanged(resourceId, isDeprecated, customFields){
+export function deprecatedResourceChanged(resourceId, isDeprecated, customFields) {
   const deprecatedResources = unpackDeprecatedResources(customFields);
 
   const isDeprecatedOnServer = deprecatedResources?.includes(resourceId);
@@ -286,7 +263,6 @@ export function getFrontendJSONForStep(stepKey, data) {
 
   return convertToFrontendJSONWithRules(rules, data);
 }
-
 
 export function stringifyResourceForBackend(resource) {
   let resourceSize = resource.resource_size;
@@ -329,11 +305,10 @@ export function stringifyResourceForBackend(resource) {
     ...resource,
     resource_size: resourceSize,
     restricted,
-  }
+  };
 }
 
 export function cleanListForBackend(elementList, mappingKey) {
-
   const cleanedElements = [];
   for (let i = 0; i < elementList.length; i++) {
     const element = elementList[i];
@@ -350,7 +325,6 @@ export function cleanListForBackend(elementList, mappingKey) {
 }
 
 export function cleanListForFrontend(elementList, mappingKey) {
-
   const cleanedElements = [];
   for (let i = 0; i < elementList.length; i++) {
     const element = elementList[i];
@@ -362,7 +336,6 @@ export function cleanListForFrontend(elementList, mappingKey) {
 }
 
 export function cleanResourceForFrontend(resource) {
-
   let resSize = resource.resourceSize;
 
   if (typeof resSize === 'string') {
@@ -388,20 +361,21 @@ export function cleanResourceForFrontend(resource) {
   }
 
   const cleanedRestricted = getFrontendJSONForStep(EDITMETADATA_DATA_RESTRICTED, restricted);
-  
+
   return {
     ...resource,
     resourceSize: cleanedResSize,
     restricted: cleanedRestricted,
-  }
+  };
 }
 
 function commitEditingData(commit, eventName, data) {
-  if(!commit) {
+  if (!commit) {
     return;
   }
 
-  commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`,
+  commit(
+    `${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`,
     {
       object: eventName,
       data,
@@ -450,7 +424,6 @@ function formatDatesForFrontend(dates) {
 }
 
 function populateEditingMain(commit, backendJSON) {
-
   const dataObject = {};
 
   let stepKey = EDITMETADATA_MAIN_HEADER;
@@ -474,7 +447,7 @@ function populateEditingMain(commit, backendJSON) {
     ...enhancedDatasets,
     metadataCardTitle: headerData.metadataTitle, // only used for showing a the preview MetadataCard
     metadataCardSubtitle: descriptionData.description, // only used for showing a the preview MetadataCard
-  }
+  };
 
   commitEditingData(commit, stepKey, enhancedKeywords);
   dataObject.keywordsData = keywordsData;
@@ -484,7 +457,7 @@ function populateEditingMain(commit, backendJSON) {
 
 export function getFrontendDates(backendDates) {
   let dates = backendDates;
-  if(typeof backendDates === 'string') {
+  if (typeof backendDates === 'string') {
     dates = JSON.parse(backendDates);
   }
 
@@ -492,17 +465,16 @@ export function getFrontendDates(backendDates) {
 }
 
 function populateEditingAuthors(commit, backendJSON) {
-
   const dataObject = {};
 
   const stepKey = EDITMETADATA_AUTHOR_LIST;
-  const authors = []
+  const authors = [];
 
   backendJSON.author.forEach((bAuthor) => {
     const author = getFrontendJSONForStep(EDITMETADATA_AUTHOR, bAuthor);
-    const fAuthor = createAuthor(author)
+    const fAuthor = createAuthor(author);
     authors.push(fAuthor);
-  })
+  });
 
   commitEditingData(commit, stepKey, { authors });
   dataObject.authors = authors;
@@ -511,7 +483,6 @@ function populateEditingAuthors(commit, backendJSON) {
 }
 
 function populateEditingDataInfo(commit, backendJSON) {
-
   const dataObject = {};
 
   // Stepper 2: Data Resources, Info, Location
@@ -559,7 +530,6 @@ function populateEditingDataInfo(commit, backendJSON) {
 }
 
 function populateEditingResources(commit, backendJSON, dataLicenseInfo, customFields) {
-
   const dataObject = {};
 
   // Stepper 2: Data Resources, Info, Location
@@ -585,20 +555,15 @@ function populateEditingResources(commit, backendJSON, dataLicenseInfo, customFi
     resources[i].deprecated = deprecatedResources?.includes(resources[i].id);
   }
 
-  enhanceElementsWithStrategyEvents(
-    resources,
-    SELECT_EDITING_RESOURCE_PROPERTY,
-    true,
-  );
+  enhanceElementsWithStrategyEvents(resources, SELECT_EDITING_RESOURCE_PROPERTY, true);
 
   commitEditingData(commit, stepKey, resourceData);
   dataObject.resourceData = resourceData;
-  
+
   return dataObject;
 }
 
 function populateEditingRelatedResearch(commit, backendJSON) {
-
   const dataObject = {};
 
   let stepKey = EDITMETADATA_RELATED_PUBLICATIONS;
@@ -624,7 +589,6 @@ function populateEditingRelatedResearch(commit, backendJSON) {
 }
 
 function populateEditingPublicationInfo(commit, metadataRecord, backendJSON) {
-
   const dataObject = {};
 
   let stepKey = EDITMETADATA_PUBLICATION_INFO;
@@ -650,7 +614,6 @@ function populateEditingPublicationInfo(commit, metadataRecord, backendJSON) {
 }
 
 export function populateEditingComponents(commit, metadataRecord) {
-
   const backendJSON = convertJSON(metadataRecord, false);
 
   const { headerData, keywordsData } = populateEditingMain(commit, backendJSON);
@@ -662,7 +625,6 @@ export function populateEditingComponents(commit, metadataRecord) {
   const { customFieldsData } = populateEditingRelatedResearch(commit, backendJSON);
 
   populateEditingResources(commit, backendJSON, dataLicenseInfo, customFieldsData.customFields);
-
 
   const { publicationData } = populateEditingPublicationInfo(commit, metadataRecord, backendJSON);
 
@@ -685,8 +647,7 @@ export function populateEditingComponents(commit, metadataRecord) {
 }
 
 function mapDatesForBackend(datesArray, initializeDefaults = true) {
-
-  if (!Array.isArray(datesArray) || datesArray.length <= 0 && initializeDefaults) {
+  if (!Array.isArray(datesArray) || (datesArray.length <= 0 && initializeDefaults)) {
     const entry = getBackendJSONForStep(EDITMETADATA_DATA_INFO_DATES, {
       [DATE_PROPERTY_DATE_TYPE]: DATE_PROPERTY_CREATED_TYPE,
       [DATE_PROPERTY_START_DATE]: '',
@@ -708,7 +669,6 @@ function mapDatesForBackend(datesArray, initializeDefaults = true) {
   return mappedDates;
 }
 
-
 const dataNeedsStringify = [
   EDITMETADATA_MAIN_HEADER,
   EDITMETADATA_AUTHOR_LIST,
@@ -719,7 +679,6 @@ const dataNeedsStringify = [
 ];
 
 export function mapBackendToFrontend(stepKey, backendData) {
-
   // dataNeedsStringify.includes(stepKey)
   const backendJSON = convertJSON(backendData, false);
 
@@ -737,7 +696,6 @@ export function mapBackendToFrontend(stepKey, backendData) {
 }
 
 export function mapFrontendToBackend(stepKey, frontendData, initializeDefaults = true) {
-
   // create a local copy to avoid mutation of vuex store objects / properties
   const localData = { ...frontendData };
 
@@ -764,7 +722,6 @@ export const ckanDateFormat = 'yyyy-MM-dd';
 export const enviDatDateFormat = 'dd-MM-yyyy';
 
 export function parseDateStringToCKANFormat(dateString) {
-
   if (!dateString) {
     return null;
   }
@@ -779,7 +736,6 @@ export function parseDateStringToCKANFormat(dateString) {
 }
 
 export function parseDateStringToEnviDatFormat(dateString) {
-
   if (!dateString) {
     return null;
   }
@@ -794,7 +750,7 @@ export function parseDateStringToEnviDatFormat(dateString) {
 }
 
 // ex. 2023-02-14T11:00:31.518140
-export const ckanDateTimeFormat = 'yyyy-MM-dd\'T\'HH:mm:ss.SSSSSS';
+export const ckanDateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS";
 
 /**
  *
@@ -802,7 +758,6 @@ export const ckanDateTimeFormat = 'yyyy-MM-dd\'T\'HH:mm:ss.SSSSSS';
  * @returns {string|null}
  */
 export function formatDateTimeToCKANFormat(date) {
-
   if (!date) {
     return null;
   }
@@ -830,7 +785,6 @@ export function parseDateStringToReadableFormat(dateString) {
 }
 
 export function enhanceUserObject(user) {
-
   const cleanUser = getFrontendJSONForStep(USER_OBJECT, user);
 
   const email = cleanUser?.email || null;
@@ -863,4 +817,3 @@ export function getMetadataUrlFromTitle(title) {
 
   return urlName;
 }
-

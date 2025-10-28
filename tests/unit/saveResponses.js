@@ -36,8 +36,6 @@ import { ACTION_GET_PROJECTS } from '@/modules/projects/store/projectsMutationsC
 import { urlRewrite } from '@/factories/apiFactory.js';
 import { extractBodyIntoUrl } from '@/factories/stringFactory';
 
-
-
 /*
 if (process.argv.length <= 2) {
   console.error('Expected at least the version (-v number) argument!');
@@ -58,7 +56,7 @@ const ckanRequests = {
     method: 'GET',
     body: {
       id: 'alpine-remote-sensing',
-      'include_datasets': true,
+      include_datasets: true,
     },
   },
   [ACTION_GET_ORGANIZATIONS()]: {
@@ -68,52 +66,52 @@ const ckanRequests = {
     method: 'POST',
     body: {
       id: '',
-      maintainer: '{"affiliation": "WSL", "email": "yi.liu@wsl.ch", "given_name": "Yi", "identifier": "0000-0002-0839-2518", "name": "Liu"}',
+      maintainer:
+        '{"affiliation": "WSL", "email": "yi.liu@wsl.ch", "given_name": "Yi", "identifier": "0000-0002-0839-2518", "name": "Liu"}',
     },
   },
   [ACTION_METADATA_EDITING_PATCH_RESOURCE()]: {
     method: 'POST',
-    body: { 
+    body: {
       id: 'b2aad61d-11f6-48ca-94d3-056c95916c7c',
-      description: 'This upload contains the data (species checklist, species range maps, time-calibrated phylogenies, topographic change, etc.)  generated, analyzed, and presented in the paper "Escarpment evolution drives the diversification of the Madagascar flora".',
+      description:
+        'This upload contains the data (species checklist, species range maps, time-calibrated phylogenies, topographic change, etc.)  generated, analyzed, and presented in the paper "Escarpment evolution drives the diversification of the Madagascar flora".',
     },
   },
   [ACTION_METADATA_EDITING_PATCH_DATASET_ORGANIZATION()]: {
     method: 'POST',
     body: {
-      'id': '94beec87-58ce-4c49-a876-dbb4b192f074', // package_id
-      'organization_id': 'a5d8660c-7635-4620-8289-fb6181c34e0c', // org id
+      id: '94beec87-58ce-4c49-a876-dbb4b192f074', // package_id
+      organization_id: 'a5d8660c-7635-4620-8289-fb6181c34e0c', // org id
     },
   },
   [ACTION_GET_PROJECTS()]: {
     method: 'GET',
     body: {
-      'all_fields': true,
-      'include_groups': true,
-      'include_extras': true,
-      'include_datasets': true,
+      all_fields: true,
+      include_groups: true,
+      include_extras: true,
+      include_datasets: true,
     },
   },
   [ACTION_USER_EDITING_UPDATE()]: {
     method: 'GET',
-    body: {
-
-    },
+    body: {},
   },
-/*
+  /*
   [ACTION_USER_COLLABORATOR_DATASETS()]: {
     method: 'POST',
     params: ['id', 'organization_id'],
   },
 */
-}
+};
 
 const ckanRequestsSignedIn = {
   [ACTION_COLLABORATOR_DATASET_IDS()]: {
     method: 'GET',
     body: {
       id: '',
-      'include_datasets': true,
+      include_datasets: true,
     },
   },
   [ACTION_METADATA_CREATION_DATASET()]: {
@@ -125,15 +123,15 @@ const ckanRequestsSignedIn = {
   [ACTION_METADATA_CREATION_RESOURCE()]: {
     method: 'POST',
     body: {
-      'package_id': '',
-      'url': '',
+      package_id: '',
+      url: '',
     },
   },
   [ACTION_METADATA_DELETE_RESOURCE()]: {
     method: 'POST',
     params: ['id'],
   },
-}
+};
 
 export const getEndpoints = (body = {}) => {
   const endpoints = [];
@@ -144,7 +142,7 @@ export const getEndpoints = (body = {}) => {
   endpoints.push(ACTION_GET_ORGANIZATIONS());
   endpoints.push(ACTION_COLLABORATOR_DATASET_IDS());
 
-/*
+  /*
   endpoints.push(ACTION_METADATA_CREATION_DATASET());
   endpoints.push(ACTION_METADATA_CREATION_RESOURCE());
 
@@ -168,26 +166,24 @@ export const getEndpoints = (body = {}) => {
   endpoints.push(ACTION_GET_USER_LIST());
 */
 
-
   const fullUrls = [];
 
-  endpoints.forEach(actionUrl => {
+  endpoints.forEach((actionUrl) => {
     let url = extractBodyIntoUrl(actionUrl, body);
     url = urlRewrite(url, '/api/action/', 'http://localhost:8989');
-    fullUrls.push(url)
+    fullUrls.push(url);
   });
 
   const doiActions = [ACTION_DOI_RESERVE(), ACTION_DOI_REQUEST(), ACTION_DOI_PUBLISH()];
 
-  doiActions.forEach(actionUrl => {
+  doiActions.forEach((actionUrl) => {
     let url = extractBodyIntoUrl(actionUrl, body);
     url = urlRewrite(url, '/doi-api/datacite/', 'http://localhost:8989');
-    fullUrls.push(url)
+    fullUrls.push(url);
   });
 
-
   return fullUrls;
-}
+};
 
 export const getSigninEndpoints = (useTokenSignin) => {
   const endpoints = [];
@@ -201,7 +197,6 @@ export const getSigninEndpoints = (useTokenSignin) => {
 
     endpoints.push(ACTION_USER_SHOW());
     endpoints.push(ACTION_USER_SIGNOUT_REVOKE_TOKEN());
-
   } else {
     endpoints.push(ACTION_OLD_GET_USER_CONTEXT());
     endpoints.push(ACTION_OLD_REQUEST_TOKEN());
@@ -214,30 +209,28 @@ export const getSigninEndpoints = (useTokenSignin) => {
   }
 
   return endpoints;
-}
+};
 
 export const getFileFromUrl = (url, version) => {
-
   const slashSplits = url.split('/');
   url = slashSplits[slashSplits.length - 1];
-//  console.log(`url after slashSplits ${url}`);
+  //  console.log(`url after slashSplits ${url}`);
 
   const querySplits = url.split('?');
   let fileName = querySplits.length >= 2 ? querySplits[0] : url;
-//  console.log(`fileName after querySplits ${fileName}`);
+  //  console.log(`fileName after querySplits ${fileName}`);
 
   fileName = `${fileName}_${version}`;
 
   return fileName;
-}
+};
 
 export const saveResponseToFile = (filePath, fileName, dataAsString) => {
-
   const absoluteFilePath = `${filePath + fileName}.json`;
 
-//  console.log(`absoluteFilePath ${absoluteFilePath}`);
+  //  console.log(`absoluteFilePath ${absoluteFilePath}`);
 
-  let fileDescriptor = null
+  let fileDescriptor = null;
 
   try {
     const createDir = fs.mkdirSync(filePath, { recursive: true });
@@ -247,14 +240,13 @@ export const saveResponseToFile = (filePath, fileName, dataAsString) => {
     }
 
     fileDescriptor = fs.openSync(absoluteFilePath, 'w+');
-
   } catch (err) {
     console.error('file opening error');
     console.error(err.message);
     return false;
   }
 
-//  console.log(`opened file ${absoluteFilePath}`);
+  //  console.log(`opened file ${absoluteFilePath}`);
 
   try {
     fs.writeFileSync(fileDescriptor, dataAsString);
@@ -267,4 +259,4 @@ export const saveResponseToFile = (filePath, fileName, dataAsString) => {
   console.log(`Saved ${absoluteFilePath}`);
 
   return true;
-}
+};

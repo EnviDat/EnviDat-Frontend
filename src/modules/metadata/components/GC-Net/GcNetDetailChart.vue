@@ -11,10 +11,7 @@
       </v-row>
 
       <v-row no-gutters>
-        <v-col
-          v-if="chartIsLoading && preloading"
-          :style="`height: ${$vuetify.display.xs ? 300 : 350}px;`"
-        >
+        <v-col v-if="chartIsLoading && preloading" :style="`height: ${$vuetify.display.xs ? 300 : 350}px;`">
           <v-row class="fill-height" justify="center" align="center">
             <v-col class="flex-grow-0">
               <v-progress-circular :size="50" color="primary" indeterminate />
@@ -30,24 +27,16 @@
           {{ noDataText }}
         </v-col>
 
-        <v-col
-          v-if="dataError"
-          class="text-h6"
-          :style="`color: ${$vuetify.theme.error};`"
-        >
+        <v-col v-if="dataError" class="text-h6" :style="`color: ${$vuetify.theme.error};`">
           {{ dataError }}
         </v-col>
 
-        <v-col
-          v-if="!preloading"
-          :style="`height: ${$vuetify.display.xs ? 300 : 350}px;`"
-        >
+        <v-col v-if="!preloading" :style="`height: ${$vuetify.display.xs ? 300 : 350}px;`">
           <!-- <v-row class="fill-height" column
                     justify="center" align="center"> -->
           <v-row class="fill-height" justify="center" align="center">
             <v-col class="flex-grow-0">
-              Historical datasets can be very large and take a while to load,
-              therefore aren't loaded by default.
+              Historical datasets can be very large and take a while to load, therefore aren't loaded by default.
             </v-col>
             <v-col class="flex-grow-0 pt-3">
               <BaseRectangleButton
@@ -65,19 +54,12 @@
           </v-row>
         </v-col>
 
-        <v-col
-          v-if="showDisclaimer && showChart"
-          class="text-h6"
-          style="color: red;"
-        >
+        <v-col v-if="showDisclaimer && showChart" class="text-h6" style="color: red">
           {{ disclaimerText }}
         </v-col>
 
         <v-col v-show="showChart">
-          <div
-            :id="chartId"
-            :style="`height: ${$vuetify.display.xs ? 300 : 350}px;`"
-          ></div>
+          <div :id="chartId" :style="`height: ${$vuetify.display.xs ? 300 : 350}px;`"></div>
         </v-col>
       </v-row>
     </v-container>
@@ -89,12 +71,7 @@ import axios from 'axios';
 
 import { mdiRefresh } from '@mdi/js';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
-import {
-  addStartEndDateUrl,
-  createSerialChart,
-  defaultSeriesSettings,
-  hasData,
-} from '@/factories/chartFactory';
+import { addStartEndDateUrl, createSerialChart, defaultSeriesSettings, hasData } from '@/factories/chartFactory';
 
 /* eslint-disable no-tabs */
 
@@ -173,12 +150,7 @@ export default {
   },
   computed: {
     showChart() {
-      return (
-        this.intersected &&
-        !this.chartIsLoading &&
-        this.dataAvailable &&
-        !this.dataError
-      );
+      return this.intersected && !this.chartIsLoading && this.dataAvailable && !this.dataError;
     },
     isRecentDataChart() {
       return this.chartId.includes('_v');
@@ -227,32 +199,20 @@ export default {
           dayRange = 45;
         }
 
-        urlParam = addStartEndDateUrl(
-          urlParam,
-          dayRange,
-          undefined,
-        );
-
+        urlParam = addStartEndDateUrl(urlParam, dayRange, undefined);
       } else {
         urlParam = `${urlParam}/1995-01-01T00:00:00/2021-12-31T00:00:00/`;
       }
 
-
       axios
         .get(urlParam)
-        .then(response => {
+        .then((response) => {
           // createChart() gets called due to the watch on the records
           this.records = response.data;
 
-          this.dataAvailable = hasData(
-            this.records,
-            this.fileObject.parameters[0],
-          );
+          this.dataAvailable = hasData(this.records, this.fileObject.parameters[0]);
           if (!this.dataAvailable && this.fileObject.parameters.length > 1) {
-            this.dataAvailable = hasData(
-              this.records,
-              this.fileObject.parameters[1],
-            );
+            this.dataAvailable = hasData(this.records, this.fileObject.parameters[1]);
           }
 
           this.chartIsLoading = this.dataAvailable;
@@ -264,7 +224,7 @@ export default {
             this.loadJsonFiles(true);
           }
         })
-        .catch(error => {
+        .catch((error) => {
           if (fallback) {
             this.chartIsLoading = false;
             this.dataError = `Error loading data: ${error} for ${urlParam}`;
@@ -330,7 +290,7 @@ export default {
       }
     },
     registeryIntersectionObserver() {
-      this.ISObserver = new IntersectionObserver(entries => {
+      this.ISObserver = new IntersectionObserver((entries) => {
         const entry = entries[0];
         if (entry.isIntersecting) {
           if (!this.intersected) {
@@ -368,8 +328,7 @@ export default {
       ISObserver: null,
       intersected: false,
       noDataText: 'No data available',
-      disclaimerText:
-        'Please note: this data is a daily average for visualisation purposes.',
+      disclaimerText: 'Please note: this data is a daily average for visualisation purposes.',
       records: [],
       seriesSettings: { ...defaultSeriesSettings },
     };

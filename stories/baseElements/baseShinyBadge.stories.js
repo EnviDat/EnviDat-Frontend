@@ -14,8 +14,8 @@ export default {
 };
 
 export const BaseShinyBadgeViews = () => ({
-    components: { BaseShinyBadge },
-    template: `
+  components: { BaseShinyBadge },
+  template: `
     <v-row style="border: solid 1px; background-color: grey;">
     
       <v-col >
@@ -39,8 +39,7 @@ export const BaseShinyBadgeViews = () => ({
       </v-col>
     
     </v-row>`,
-    data: () => ({
-      version : 'version',
-    }),
-  });
-
+  data: () => ({
+    version: 'version',
+  }),
+});

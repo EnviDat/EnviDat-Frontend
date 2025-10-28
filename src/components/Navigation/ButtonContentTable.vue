@@ -2,7 +2,7 @@
   <v-card>
     <v-container class="pa-3" fluid>
       <v-row>
-        <v-col class="text-h4" style="text-align: center;">
+        <v-col class="text-h4" style="text-align: center">
           {{ title }}
         </v-col>
       </v-row>
@@ -14,12 +14,7 @@
       </v-row>
 
       <v-row no-gutters class="pt-2">
-        <v-col
-          v-for="(buttonObj, index) in buttonList"
-          :key="index"
-          cols="12"
-          class="py-1"
-        >
+        <v-col v-for="(buttonObj, index) in buttonList" :key="index" cols="12" class="py-1">
           <v-btn
             color="secondary"
             :size="$vuetify.display.mdAndUp ? 'small' : undefined"

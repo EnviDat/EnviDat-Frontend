@@ -5,7 +5,6 @@ import { createResources } from '@/factories/resourceHelpers';
 
 import unFormatedMetadataCards from '@/../stories/js/metadata';
 
-
 const metadataCards = unFormatedMetadataCards;
 
 const resources1 = createResources(metadataCards[2]);
@@ -14,10 +13,9 @@ const previewResources = [];
 
 for (let i = 0; i < metadataCards[2].resources.length; i++) {
   const res = metadataCards[2].resources[i];
-  res.chartData = [10, 54, 23, 20, 3, 40, 320 , 323,234 ,10];
-  previewResources.push(res)
+  res.chartData = [10, 54, 23, 20, 3, 40, 320, 323, 234, 10];
+  previewResources.push(res);
 }
-
 
 export default {
   title: '1 Base / Cards /  Resource Cards / 3 Collections From Datasets',
@@ -68,11 +66,10 @@ export const ResourceCardCollection = () => ({
 
     </v-row>
   `,
-data: () => ({
-  metadataCards,
+  data: () => ({
+    metadataCards,
   }),
 });
-
 
 export const ResourceCardWithPreview = () => ({
   components: { ResourceCard },
@@ -94,14 +91,14 @@ export const ResourceCardWithPreview = () => ({
       </v-col>
     </v-row>
     `,
-    data: () => ({
-      previewResources,
-    }),
-  });
+  data: () => ({
+    previewResources,
+  }),
+});
 
 export const ResourceCardPlaceholders = () => ({
-    components: { ResourceCardPlaceholder },
-    template: `
+  components: { ResourceCardPlaceholder },
+  template: `
     <v-row >
       <v-col 
         cols="3" 

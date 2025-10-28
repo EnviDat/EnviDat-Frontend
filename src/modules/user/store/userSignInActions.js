@@ -51,8 +51,7 @@ export default {
     const method = requestMethodsForLoginActions(action);
 
     // unpack the action because it might be wrapped to provide a test url
-    const actionUrl =
-      typeof payload.action === 'function' ? payload.action() : payload.action;
+    const actionUrl = typeof payload.action === 'function' ? payload.action() : payload.action;
 
     let url = actionUrl;
     if (method.toLowerCase() === 'get' && data) {
@@ -91,10 +90,7 @@ export default {
         commit(`${payload.mutation}_ERROR`, error);
       });
   },
-  async [USER_EDITING_UPDATE](
-    { commit, dispatch },
-    { userId, firstName, lastName, email },
-  ) {
+  async [USER_EDITING_UPDATE]({ commit, dispatch }, { userId, firstName, lastName, email }) {
     commit(USER_EDITING_UPDATE);
 
     const actionUrl = ACTION_USER_EDITING_UPDATE();

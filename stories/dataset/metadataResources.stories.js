@@ -24,7 +24,7 @@ import metadata from '@/../stories/js/metadata';
 import {
   mobileLargeViewportParams,
   mobileViewportParams,
-  tabletViewportParams
+  tabletViewportParams,
 } from '@/../stories/js/envidatViewports';
 
 const resources1 = createResources(metadata[0]);
@@ -46,7 +46,8 @@ for (let j = 0; j < deprecatedMetadata.resources.length; j++) {
 }
 
 const deprecatedResources1 = createResources(deprecatedMetadata);
-deprecatedResources1.resources[0].url = 'https://envicloud.wsl.ch/#/?bucket=https://envicloud.wsl.ch/edna/&prefix=su_ch/su_ch_birmen_2024';
+deprecatedResources1.resources[0].url =
+  'https://envicloud.wsl.ch/#/?bucket=https://envicloud.wsl.ch/edna/&prefix=su_ch/su_ch_birmen_2024';
 
 export default {
   title: '3 Datasets / 1 Views / Resources',
@@ -57,8 +58,8 @@ export const ShowingPlaceholders = {
   args: {
     resources: null,
     showPlaceholder: true,
-  }
-}
+  },
+};
 
 export const WithResources = {
   args: {
@@ -69,8 +70,8 @@ export const WithResources = {
     dates: resources1Dates,
     showPlaceholder: false,
     compactList: true,
-  }
-}
+  },
+};
 
 export const WithResourcesWideList = {
   args: {
@@ -81,15 +82,15 @@ export const WithResourcesWideList = {
     dates: resources1Dates,
     showPlaceholder: false,
     compactList: false,
-  }
-}
+  },
+};
 
 export const WithDeprecatedResources = {
   args: {
     ...WithResources.args,
     resources: deprecatedResources1.resources,
-  }
-}
+  },
+};
 
 export const WithResourcesCC0License = {
   args: {
@@ -97,8 +98,8 @@ export const WithResourcesCC0License = {
     dataLicenseId: license2.id,
     dataLicenseTitle: license2.title,
     dataLicenseUrl: license2.url,
-  }
-}
+  },
+};
 
 export const WithProtectedResources = {
   args: {
@@ -108,19 +109,19 @@ export const WithProtectedResources = {
     resources: resources2.resources,
     dates: resources2Dates,
     showPlaceholder: false,
-  }
-}
+  },
+};
 
 export const WithResourcesCC0LicenseMobile = {
   args: WithResourcesCC0License.args,
   parameters: mobileViewportParams,
-}
+};
 
 export const WithResourcesCC0LicenseLargeMobile = {
   args: WithResourcesCC0License.args,
   parameters: mobileLargeViewportParams,
-}
+};
 export const WithResourcesCC0LicenseTable = {
   args: WithResourcesCC0License.args,
   parameters: tabletViewportParams,
-}
+};

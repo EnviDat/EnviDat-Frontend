@@ -1,21 +1,13 @@
 <template>
-  <v-card :expanded="expanded" >
-    <v-container class="pa-0"
-                 @click="toggleExpand">
-
+  <v-card :expanded="expanded">
+    <v-container class="pa-0" @click="toggleExpand">
       <v-row no-gutters class="pa-0">
         <v-col cols="5">
           <v-img
             class="imagezoom"
             :cover="!contain"
-            :height="
-              $vuetify.display.xs ? minHeight + 'px' : maxHeight + 'px'
-            "
-            :style="
-              `border-bottom-left-radius: ${
-                expanded ? 0 : 4
-              }px; border-top-left-radius: 4px;`
-            "
+            :height="$vuetify.display.xs ? minHeight + 'px' : maxHeight + 'px'"
+            :style="`border-bottom-left-radius: ${expanded ? 0 : 4}px; border-top-left-radius: 4px;`"
             :src="imgResolved"
           />
         </v-col>
@@ -26,17 +18,12 @@
       </v-row>
 
       <v-slide-y-transition>
-      <v-card-text
-        v-if="expanded"
-        class="pb-1 readableText"
-      >
-        <div v-html="markdownText"></div>
-      </v-card-text>
-    </v-slide-y-transition>
+        <v-card-text v-if="expanded" class="pb-1 readableText">
+          <div v-html="markdownText"></div>
+        </v-card-text>
+      </v-slide-y-transition>
 
-      <v-card-actions
-        :style="expanded ? undefined : 'position: absolute; right: 0; bottom: 0;'"
-      >
+      <v-card-actions :style="expanded ? undefined : 'position: absolute; right: 0; bottom: 0;'">
         <v-spacer></v-spacer>
         <base-icon-button
           :icon="mdiChevronDown"

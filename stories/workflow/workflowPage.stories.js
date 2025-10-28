@@ -15,19 +15,18 @@ export default {
 };
 
 export const Empty = {
-  args: {
-  },
-}
+  args: {},
+};
 
 export const Loading = {
   args: {
     ...Empty.args,
     loading: true,
   },
-}
+};
 
 export const Filled = {
   args: {
     dataset: datasets[0],
   },
-}
+};

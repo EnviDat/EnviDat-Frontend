@@ -27,11 +27,8 @@ module.exports = {
     },
   },
   // // required to lint *.vue files
-  plugins: [
-    'vuetify',
-    '@typescript-eslint'
-  ],
-  'ignorePatterns': ['particles.js'],
+  plugins: ['vuetify', '@typescript-eslint'],
+  ignorePatterns: ['particles.js'],
   // add your custom rules here
   rules: {
     'import/no-unresolved': 'off',
@@ -64,7 +61,6 @@ module.exports = {
     'import/order': 'warn',
     'class-methods-use-this': 'off',
     'lines-between-class-members': 'off',
-    'vue/multi-word-component-names': 'off'
+    'vue/multi-word-component-names': 'off',
   },
 };
-
