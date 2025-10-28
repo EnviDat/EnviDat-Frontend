@@ -9,24 +9,16 @@
  */
 import 'vuetify/styles';
 import { createVuetify } from 'vuetify';
-import { VTreeview } from 'vuetify/labs/VTreeview'
 import config from './vuetifyConfig';
-
 
 export const createSSGVuetify = () =>
   createVuetify({
     ...config,
     ssr: false,
-    components: {
-      VTreeview,
-    },
   })
 
 export const createSSRVuetify = () =>
   createVuetify({
     ...config,
     ssr: true,
-    components: {
-      VTreeview,
-    },
   });

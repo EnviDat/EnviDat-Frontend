@@ -1,5 +1,9 @@
 <template>
-  <v-card id="EditResource" :key="id" :loading="loadingColor" class="pa-0">
+  <v-card
+    id="EditResource"
+    :key="id"
+    :loading="loadingColor"
+    class="pa-4">
 
     <BaseIconButton
       class="editResourceCloseButton ma-2"
@@ -8,20 +12,23 @@
       :icon="mdiClose"
       icon-color="primary"
       outline-color="primary"
-      outlined
+      variant="outlined"
       tooltip-text="Cancel Resource Editing"
       tooltip-bottom
       @clicked="$emit('closeClicked')" />
 
 
+<!--
     <div class="pa-3">
+-->
       <v-row>
-        <v-col cols="6" class="text-h5 d-flex align-center">
+        <v-col class="text-h6 text-md-h5 d-flex">
           <BaseIcon v-if="isDataPrivate" color="black" :icon="mdiLock" />
           <BaseIcon v-if="isDataDeprecated" color="black" :icon="mdiCancel" />
-          <span class="pl-2" >{{ labels.title }}</span>
+          <span :class="isDataPrivate || isDataDeprecated ? 'pl-2' : ''" >{{ labels.title }}</span>
         </v-col>
 
+<!--
         <v-col v-if="message">
           <BaseStatusLabelView status="check" statusColor="success" :statusText="message"
             :expandedText="messageDetails" />
@@ -30,10 +37,11 @@
         <v-col v-if="error">
           <BaseStatusLabelView status="error" statusColor="error" :statusText="error" :expandedText="errorDetails" />
         </v-col>
+-->
       </v-row>
 
-      <div class="pa-1">
-        <v-alert type="info" >{{ labels.instructions }}</v-alert>
+      <div class="pa-1 ">
+        <v-alert class="my-2" type="info" >{{ labels.instructions }}</v-alert>
 
         <v-row id="resourceName" no-gutters class="pt-4">
           <v-col cols="12">
@@ -60,11 +68,13 @@
           </v-col>
         </v-row>
 
-        <v-row id="resourceUrl" no-gutters class="pt-2">
+        <v-row id="resourceUrl"
+               no-gutters class="pt-2">
           <v-col
             v-if="showImagePreview"
-            cols="4"
-            class="pt-3 pb-4 pr-4 flex-grow-0 flex-shrink-1"
+            cols="12"
+            sm="4"
+            class="pt-3 pb-4 pr-0 pr-sm-4 flex-grow-0 flex-shrink-1"
           >
             <div
               v-if="loadingImagePreview"
@@ -103,14 +113,19 @@
             </div>
           </v-col>
 
-          <v-col :class="showImagePreview ? 'pt-3 pb-4' : ''">
+          <v-col
+            cols="12"
+            :sm="showImagePreview ? 8 : 12"
+            :class="showImagePreview ? 'pt-3 pb-4' : ''"
+          >
             <v-textarea
               v-if="isLongUrl"
               :label="isLink ? labels.url : labels.fileName"
-              outlined
+              variant="outlined"
               auto-grow
-              readonly
-              dense
+              :readonly="urlReadOnly"
+              :hint="readOnlyHint('url')"
+              density="compact"
               hide-details
               :disabled="loading"
               v-model="urlField"
@@ -119,9 +134,10 @@
             <v-text-field
               v-if="!isLongUrl"
               :label="isLink ? labels.url : labels.fileName"
-              outlined
-              readonly
-              dense
+              variant="outlined"
+              :readonly="urlReadOnly"
+              :hint="readOnlyHint('url')"
+              density="compact"
               hide-details
               :disabled="loading"
               v-model="urlField"
@@ -130,8 +146,8 @@
           </v-col>
         </v-row>
 
-        <v-row>
-          <v-col>
+        <v-row no-gutters class="pt-4">
+          <v-col cols="12" :md="isDataDeprecated ? 4 : 6">
             <BaseIconSwitch
               :active="isDataDeprecated"
               :disabled="!editingRestrictingActive"
@@ -143,7 +159,7 @@
             />
           </v-col>
 
-          <v-col v-show="isDataDeprecated">
+          <v-col cols="12" md="8" v-show="isDataDeprecated">
             {{ labels.dataDeprecatedSwitchInfo }}
           </v-col>
         </v-row>
@@ -214,7 +230,7 @@
 
         <div class="pa-1">
           <v-expand-transition>
-            <v-alert v-if="isDataPrivate" type="warning" >
+            <v-alert v-if="isDataPrivate" type="warning" class="my-2">
               <div v-html="openAccessDetails"></div>
             </v-alert>
           </v-expand-transition>
@@ -247,13 +263,13 @@
           >
             <v-col cols="12" class="pt-2">
               <BaseUserPicker
-                :users="envidatUserNameStrings"
+                :users="envidatUsersPicker"
+                :preSelectedNames="preSelectedAllowedUsers"
                 :pickerLabel="labels.restrictedAllowedUsersInfo"
                 multiplePick
                 :prependIcon="mdiKey"
                 userTagsCloseable
                 :placeholder="labels.allowedUsersTypingInfo"
-                :preSelected="preSelectedAllowedUsers"
                 @removedUsers="changeAllowedUsers"
                 @pickedUsers="changeAllowedUsers"
               />
@@ -262,13 +278,13 @@
 
           <v-row v-if="!editingRestrictingActive" class="py-2">
             <v-col>
-              <v-alert type="warning" >{{ labels.editingRestrictingUnavailableInfo }}</v-alert>
+              <v-alert type="warning" class="my-2" >{{ labels.editingRestrictingUnavailableInfo }}</v-alert>
             </v-col>
           </v-row>
 
           <v-row v-if="checkUppercaseValue" class="py-2">
             <v-col>
-              <v-alert type="info" >{{
+              <v-alert type="info" class="my-2" >{{
                 labels.editingWarningUppercaseExtension
               }}</v-alert>
             </v-col>
@@ -286,11 +302,15 @@
           </v-row>
         </div>
       </div>
+
+<!--
     </div>
+-->
+
   </v-card>
 </template>
 
-<script>
+<script lang="ts">
 /**
  * @summary Show all textfields for a resource
  * @author Dominik Haas-Artho
@@ -330,7 +350,7 @@ import {
 
 import { formatDateTimeToCKANFormat } from '@/factories/mappingFactory';
 import { renderMarkdown } from '@/factories/stringFactory';
-import {getFileIcon, getIcon} from '@/factories/imageFactory';
+import {getFileIcon, getIconImage} from '@/factories/imageFactory';
 
 import notFoundImg from '@/modules/user/assets/imageNotFound.jpg';
 import {
@@ -341,8 +361,12 @@ import {
   ACCESS_LEVEL_PUBLIC_VALUE,
 } from '@/factories/userEditingFactory';
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
+// import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import { formatDate } from '@/factories/dateFactory';
+import { getUserPickerObjects } from '@/factories/authorFactory.js';
+import { getFileExtension } from '@/factories/fileFactory';
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+import { RESOURCE_FORMAT_LINK } from '@/factories/metadataConsts';
 
 
 export default {
@@ -503,7 +527,17 @@ export default {
         if (this.url && this.showImagePreview) {
           this.loadImagePreview(this.url);
         }
-        return this.url;
+
+        return this.previews.url !== null ? this.previews.url : this.url;
+      },
+      set(value) {
+        const valid = this.validateField('url', value);
+
+        if (valid) {
+          this.previews.url = value;
+        }
+
+        this.checkSaveButtonEnabled(valid);
       },
     },
     sizeField: {
@@ -565,6 +599,21 @@ export default {
         }
         this.checkSaveButtonEnabled(valid);
       },
+    },
+    urlAndFileExtensionMatch() {
+      const ext = getFileExtension(this.urlField);
+      return ext === this.formatField;
+    },
+    urlReadOnly() {
+      if(this.urlAndFileExtensionMatch) {
+        return true;
+      }
+
+      if (this.formatField !== RESOURCE_FORMAT_LINK) {
+        return true;
+      }
+
+      return this.isReadOnly('url')
     },
     checkUppercaseValue() {
       // shows a warning message if the form receives an uppercase character in the file name
@@ -666,8 +715,9 @@ export default {
       }
       return ACCESS_LEVEL_PUBLIC_VALUE;
     },
-    envidatUserNameStrings() {
-      return getUserAutocompleteList(this.envidatUsers);
+    envidatUsersPicker() {
+      const users = getUserAutocompleteList(this.envidatUsers);
+      return getUserPickerObjects(users);
     },
     preSelectedAllowedUsers() {
       // match with the user.name but make sure the fullname or display_name is shown
@@ -748,9 +798,18 @@ export default {
         description: this.descriptionField,
         name: this.resourceNameField,
         format: this.formatField,
-        size: this.sizeField || 0,
+        size: this.formatField === RESOURCE_FORMAT_LINK ? 0 : this.sizeField || 0,
         sizeFormat: this.sizeFormatField,
+        url: this.urlField,
       };
+
+      const validations = this.validations;
+      if (this.formatField === RESOURCE_FORMAT_LINK) {
+        delete validations.size;
+        delete validations.sizeFormat;
+        objectToValidate.size = 1;
+        objectToValidate.sizeFormat = this.getFileSizeFormat(1);
+      }
 
       this.saveButtonEnabled = isObjectValidCheckAllProps(
         objectToValidate,
@@ -775,11 +834,12 @@ export default {
         },
         deprecated: this.isDataDeprecated,
         format: this.formatField.toLowerCase(),
+        url: this.urlField,
         // don't set the "size" directly because this is done
         // via the file upload
         resourceSize: {
-          sizeValue: this.isLink ? this.sizeField.toString() : '',
-          sizeUnits: this.isLink ? this.sizeFormatField.toLowerCase() : '',
+          sizeValue: this.isLink ? this.sizeField?.toString() : '1',
+          sizeUnits: this.isLink ? this.sizeFormatField?.toLowerCase() : this.getFileSizeFormat(1),
         },
       };
 
@@ -788,6 +848,8 @@ export default {
     loadImagePreview(url) {
       this.imagePreviewError = null;
       this.loadingImagePreview = true;
+
+      // @ts-ignore @typescript-eslint/no-this-alias
       const vm = this;
 
       this.$nextTick(() => {
@@ -811,7 +873,7 @@ export default {
       this.imagePreviewError = event;
       this.loadingImagePreview = false;
     },
-    changeAllowedUsers(pickedUserNames) {
+    changeAllowedUsers(pickedUserNames: string[]) {
       this.allowedUsersField = getAllowedUsersString(
         pickedUserNames,
         this.envidatUsers,
@@ -830,6 +892,12 @@ export default {
       keys.forEach(key => {
         this.previews[key] = null;
       });
+    },
+    isReadOnly(property) {
+      return isFieldReadOnly(this.$props, property);
+    },
+    readOnlyHint(property) {
+      return readOnlyHint(this.$props, property);
     },
   },
   data: () => ({
@@ -852,14 +920,14 @@ export default {
       size: null,
       sizeFormat: null,
       deprecated: null,
+      url: null,
     },
-    isExtensionUppercase: false,
     loadingImagePreview: false,
     imagePreviewError: null,
     labels: {
       title: 'Edit Selected Resource',
       instructions:
-        'Include an apt name and description others will understand',
+        'Make sure the resource name is descriptive and the description helps others understand what the data is about.',
       subInstructions: 'For files larger then 5GB contact the EnviDat team.',
       createButtonText: 'Save Resource',
       description: 'Resource description',
@@ -894,7 +962,7 @@ export default {
         'Deprecated resources are grayed out and at the bottom of the list. Make sure you provide an updated replacement!',
     },
     saveButtonEnabled: false,
-    fileSizeIcon: getIcon('fileSize'),
+    fileSizeIcon: getIconImage('fileSize'),
     validationErrors: {
       name: null,
       description: null,
@@ -911,7 +979,7 @@ export default {
     BaseIconButton,
     BaseIconSwitch,
     BaseIcon,
-    BaseStatusLabelView,
+    // BaseStatusLabelView,
   },
 };
 </script>

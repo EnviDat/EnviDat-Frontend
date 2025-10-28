@@ -1,5 +1,5 @@
-import { convertJSON, convertToBackendJSONWithRules, convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
-import type { DatasetDTO } from '@/types/modelTypes';
+import { convertJSON, convertToBackendJSONWithRules, convertToFrontendJSONWithRules } from '@/factories/convertJSON';
+import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 
 /*
 function enforceAbstractProps(instance, requiredProps) {

@@ -1,5 +1,5 @@
 <template>
-  <v-card id="UserOrganizationInfo" raised :width="width" :height="height">
+  <v-card id="UserOrganizationInfo" elevation="8" :width="width" :height="height">
     <div class="cardGrid fill-height">
       <div class="avatarGrid py-4 pl-4 pr-2">
         <div class="text-h6">
@@ -44,7 +44,7 @@
 
         <div  class="textGrid mt-2 text-caption">
           <div>
-            <v-icon small :icon="mdiInformation" />
+            <v-icon size="small" :icon="mdiInformation" />
           </div>
           <div v-html="markdownText"></div>
         </div>

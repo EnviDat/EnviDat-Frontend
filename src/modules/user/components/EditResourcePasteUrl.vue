@@ -1,6 +1,5 @@
 <template>
-  <v-card id="EditResourcePasteUrl"
-          class="pa-4" >
+  <v-card id="EditResourcePasteUrl" class="pa-4" :flat>
     <v-container fluid class="pa-0">
       <v-row>
         <v-col cols="12">
@@ -25,7 +24,7 @@
             :clear-icon="mdiClose"
             :error-messages="validationErrors.url"
             @keyup="blurOnEnterKey"
-            @input="checkCreateButtonDisabled"
+            @update:model-value="checkCreateButtonDisabled"
           />
         </v-col>
       </v-row>
@@ -57,30 +56,47 @@
  */
 import * as yup from 'yup';
 
-import {mdiClose, mdiLink} from '@mdi/js';
+import { mdiClose, mdiLink } from '@mdi/js';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import { isObjectValidCheckAllProps } from '@/factories/userEditingValidations';
+import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus.js';
 
 export default {
   name: 'EditResourcePasteUrl',
   props: {
+    flat: {
+      type: Boolean,
+      default: false,
+    },
   },
+  created() {
+    eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
+  },
+  beforeUnmount() {
+    eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
+  },
+  emits: ['createUrlResources'],
   computed: {},
   methods: {
+    clearPreview() {
+      this.url = undefined;
+    },
     blurOnEnterKey(keyboardEvent) {
       if (keyboardEvent.key === 'Enter') {
         keyboardEvent.target.blur();
       }
     },
     checkCreateButtonDisabled() {
-
       const urlSchema = yup.object({
-        url: yup.string()
-            .url('Please enter a valid URL.'),
+        url: yup.string().url('Please enter a valid URL.'),
       });
       const objToValidate = { url: this.url };
 
-      this.createButtonDisabled = !isObjectValidCheckAllProps(objToValidate, urlSchema, this.validationErrors);
+      this.createButtonDisabled = !isObjectValidCheckAllProps(
+        objToValidate,
+        urlSchema,
+        this.validationErrors,
+      );
     },
     createButtonClick() {
       this.$emit('createUrlResources', this.url);
@@ -92,7 +108,8 @@ export default {
     url: '',
     labels: {
       title: 'Create Resource From Link',
-      instructions: 'Paste a link to create a new resource. Make sure to add the file format and size afterwards. If you have links to DORA publications, please add them under in \'Related Publications\' in the related information step.',
+      instructions:
+        "Paste a link to create a new resource. Make sure to add the file format and size afterwards. If you have links to DORA publications, please add them under in 'Related Publications' in the related information step.",
       buttonText: 'Create Resource',
       textFieldLabel: 'Link',
     },

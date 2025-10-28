@@ -12,7 +12,7 @@
     - if: '$CI_COMMIT_REF_NAME =~ /^(main|staging|develop)$/'
       # run when triggered from the gitlab ui to start a pipeline
     - if: $CI_PIPELINE_SOURCE == "web"
-      when: always
+      when: on_success
 
 
 build-seo:
@@ -23,24 +23,17 @@ build-seo:
     # don't run when triggered from other pipeline (deployment-only-pipeline)
     - if: '$CI_PIPELINE_SOURCE == "pipeline"'
       when: never
-    - when: always
+    - when: on_success
   needs:
     # needs the artifact: config and environment variables
-    - modify-env
+    - job: modify-env
+      artifacts: true
     # needs the artifact: node_modules to build the app
-    - install-node
+    #- install-node
   before_script:
-    - |
-      if [ -d "node_modules" ]; then
-        echo "node_modules directory already exists."
-        ls node_modules/.bin/vike || echo "/.bin/vike not found"
-      else
-        echo "node_modules directory not found. Should have got them from the install-node artifact!"
-        ls -a
-      fi
-    # - ls node_modules/ -a
-    # - ls node_modules/.bin/ -a
+    - npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
   script:
+    - cat .env.production
     - npm run build-vike
     # rename the dist/client output folder
     - mv dist/client dist/seo
@@ -65,12 +58,16 @@ schedule-seo-deployment:
   environment: $CI_COMMIT_REF_NAME
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
-      when: always
+      when: on_success
     - when: never  # only run when scheduled
   needs:
-    - set-vars
     # needs the artifact: config and environment variables
     - modify-env
+    - run-tests
+    - verify-node-audit
+    - job: verify-node-owasp
+      optional: true
+      artifacts: false
     # needs the artifact: node_modules to build the app
     - build-seo
   variables:
@@ -108,4 +105,7 @@ schedule-seo-deployment:
     # use -q for quiet to not list all the files
     - ls -l
     - echo "going to rclone copy from ./ to switch:${BUCKET_NAME}"
-    - rclone copy ./ "switch:${BUCKET_NAME}" --verbose
+    - rclone copy ./sitemap.xml "switch:${BUCKET_NAME}" --verbose
+    - rclone sync ./seo/ "switch:${BUCKET_NAME}"/seo/ --verbose    
+  retry:
+    max: 2

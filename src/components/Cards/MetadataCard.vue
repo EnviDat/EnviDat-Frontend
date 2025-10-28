@@ -143,7 +143,7 @@
               icon-color="black"
               color="accent"
               elevated
-              small
+              size="small"
               :tooltip-text="openButtonTooltip"
               @clicked="$emit('openButtonClicked')" />
         </v-col>
@@ -174,6 +174,7 @@ import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
 import TagChip from '@/components/Chips/TagChip.vue';
 import UserRoleChip from '@/components/Chips/UserRoleChip.vue';
 import { stripMarkdown } from '@/factories/stringFactory';
+import { getImage } from '@/factories/imageFactory.js';
 
 // Header Sleek design
 // https://codepen.io/GeorgeGedox/pen/NQrxrY
@@ -254,14 +255,14 @@ export default {
         ? this.blackTopToBottom
         : this.whiteTopToBottom;
 
-      const hasImage = !this.flatLayout && this.titleImg && this.$vuetify.display.mdAndUp;
+      const hasImage = !this.flatLayout && this.titleImgResolved && this.$vuetify.display.mdAndUp;
 
       const styles = {
         'border-radius': this.showCardBody ? '4px 4px 0 0' : '4px',
         'height': this.flatLayout ? '55px' : '115px',
 
         // Has image
-        'background-image': hasImage ? `linear-gradient(0deg, ${gradient}), url(${this.titleImg})` : undefined,
+        'background-image': hasImage ? `linear-gradient(0deg, ${gradient}), url(${this.titleImgResolved})` : undefined,
         'background-position': hasImage ? 'center, center' : undefined,
         'background-size': hasImage ? 'cover' : undefined,
         'background-repeat': hasImage ? 'initial' : undefined,
@@ -392,22 +393,31 @@ export default {
         white_title: this.dark,
       };
     },
-    modeEntryIcon() {
+  },
+  created() { },
+  async mounted() {
+    if (this.titleImg) {
+      this.titleImgResolved = await getImage(this.titleImg);
+    }
+
+    if (this.modeData) {
+      this.modeEntryIcon = await this.resolveModeEntryIcon();
+    }
+  },
+  methods: {
+    async resolveModeEntryIcon() {
       const keys = Object.keys(this.modeData.icons);
 
       for (let i = 0; i < keys.length; i++) {
         const key = keys[i];
 
         if (this.tags?.findIndex(t => t.name === key.toUpperCase()) >= 0) {
-          return this.modeData.icons[key];
+          return getImage(this.modeData.icons[key]);
         }
       }
 
-      return this.modeData.icons[keys[0]];
+      return getImage(this.modeData.icons[keys[0]]);
     },
-  },
-  created() { },
-  methods: {
     flatAndMaxReached(textLength) {
       return this.flatLayout && textLength >= this.flatTagtextLength;
     },
@@ -426,6 +436,13 @@ export default {
     },
     catchTagClicked(tagId) {
       this.$emit('clickedTag', tagId);
+    },
+  },
+  watch: {
+    async titleImg() {
+      if (this.titleImg) {
+        this.titleImgResolved = await getImage(this.titleImg);
+      }
     },
   },
   components: {
@@ -451,6 +468,8 @@ export default {
     flatTagtextLength: 70,
     blackTopToBottom: 'rgba(20,20,20, 0.1) 0%, rgba(20,20,20, 0.9) 60%',
     whiteTopToBottom: 'rgba(255,255,255, 0.6) 0%, rgba(255,255,255, 0.99) 70%',
+    titleImgResolved: undefined,
+    modeEntryIcon: undefined,
   }),
 };
 </script>

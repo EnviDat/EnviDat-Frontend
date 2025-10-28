@@ -40,6 +40,7 @@
         @controlsChanged="controlsChanged"
         @authorSearchClick="catchAuthorSearchClick"
         @shallowRealClick="catchShallowRealClick"
+        :loadingDetailSwitch="loadingDetailSwitch"
       />
     </template>
 
@@ -81,7 +82,7 @@
         id="datasetList"
         fluid
         class="pa-0"
-        :style="`height: ${metadataListHeight}px;`"
+        :style="`${useDynamicHeight ? `height: ${metadataListHeight}px` : 'max-height: 750px;'};`"
       >
         <v-row v-if="!loading && hasContent" no-gutters>
           <RecycleScroller
@@ -223,7 +224,10 @@ export default {
     defaultListControls: Array,
     enabledControls: Array,
     useDynamicHeight: Boolean,
-    minMapHeight: Number,
+    minMapHeight: {
+      type: Number,
+      default: 0,
+    },
     topFilteringLayout: {
       type: Boolean,
       default: false,
@@ -262,6 +266,10 @@ export default {
       default: false,
     },
     loading: {
+      type: Boolean,
+      default: false,
+    },
+    loadingDetailSwitch: {
       type: Boolean,
       default: false,
     },
@@ -615,6 +623,9 @@ export default {
     },
   },
   watch: {
+    allTags() {
+      this.layoutRecalcTrigger += 1;
+    },
     content: {
       handler() {
         this.$nextTick(() => {

@@ -18,6 +18,8 @@ export default async ({ mode, config }) => {
   console.log(`With VITE_API_BASE_URL: ${env.VITE_API_BASE_URL}`);
   console.log(`With VITE_API_DOI_BASE_URL: ${env.VITE_API_DOI_BASE_URL}`);
   console.log(`With VITE_BUILD_SOURCEMAPS: ${env.VITE_BUILD_SOURCEMAPS}`);
+  console.log(`With PUBLIC_ENV__VIKE_BASE_CANONICAL_URL: ${env.PUBLIC_ENV__VIKE_BASE_CANONICAL_URL}`);
+  console.log(`With VITE_SEO_BASE: ${env.VITE_SEO_BASE}`);
 
   return defineConfig({
     plugins: [

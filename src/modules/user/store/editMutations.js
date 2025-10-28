@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 /**
 * user store mutations
 *
@@ -28,6 +27,7 @@ import {
 import {
   EDITMETADATA_AUTHOR,
   EDITMETADATA_CLEAR_PREVIEW,
+  EDITMETADATA_DATA_RESOURCES,
   eventBus,
 } from '@/factories/eventBus';
 
@@ -108,11 +108,14 @@ export default {
 
     eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
 
+    state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].message = message;
+
     setTimeout(() => {
-      this.commit(`${USER_NAMESPACE}/resetMessage`, stepKey);
+      this.commit(`${USER_NAMESPACE}/resetMessage`, EDITMETADATA_DATA_RESOURCES);
+      state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].message = undefined;
     }, state.metadataSavingMessageTimeoutTime);
   },
-  [METADATA_EDITING_PATCH_RESOURCE_ERROR](state, { stepKey, reason }) {
+  [METADATA_EDITING_PATCH_RESOURCE_ERROR](state, { reason }) {
 
     state.loadingEditingData = false;
 
@@ -122,12 +125,15 @@ export default {
     if (selectedResource) {
       selectedResource.loading = false;
       const errorObj = createErrorMessage(reason);
-      selectedResource.error = errorObj.message;
-      selectedResource.errorDetails = errorObj.details;
+
+      state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].error = errorObj.message;
+      state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].errorDetails = errorObj.details;
     }
 
     setTimeout(() => {
-      this.commit(`${USER_NAMESPACE}/resetError`, stepKey);
+      this.commit(`${USER_NAMESPACE}/resetMessage`, EDITMETADATA_DATA_RESOURCES);
+      state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].error = undefined;
+      state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].errorDetails = undefined;
     }, state.metadataSavingErrorTimeoutTime);
   },
   [METADATA_EDITING_SELECT_RESOURCE](state, id) {

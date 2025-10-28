@@ -43,15 +43,15 @@ import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
 export default {
   name: 'BlogHeader',
-  data: ()=>({
-    mdiClose,
-  }),
   props: {
     title: String,
     titleImage: String,
     height: Number,
     showCloseButton: Boolean,
   },
+  data: () => ({
+    mdiClose,
+  }),
   components: {
     ImgAndTextLayout,
     BaseIconButton,

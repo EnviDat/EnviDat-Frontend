@@ -28,7 +28,7 @@
           :menu-props="menuOptions"
           :clear-icon="mdiClose"
           v-bind="$props"
-          @change="catchPicks"
+          @update:model-value="catchPicks"
           @blur="$emit('blur', $event)"
         >
           <template v-slot:selection="{ item }">
@@ -83,10 +83,6 @@ export default {
       type: String,
       default: mdiInvoiceListOutline,
     },
-    userTagsCloseable: {
-      type: Boolean,
-      default: true,
-    },
     errorMessages: {
       type: String,
       default: '',
@@ -100,6 +96,7 @@ export default {
       default: '',
     },
   },
+  emits:['pickedProject'],
   mounted() {
     this.updatePreselection();
   },
@@ -159,7 +156,7 @@ export default {
         this.pickedDataset = '';
       }
 
-      this.$emit('removedUsers', this.pickedDataset);
+      this.$emit('pickedProject', this.pickedDataset);
     },
     catchPickClicked(pickedItem) {
       if (this.multiplePick) {
@@ -170,10 +167,10 @@ export default {
         this.pickedDataset = pickedItem;
       }
 
-      this.$emit('pickedDataset', this.pickedDataset);
+      this.$emit('pickedProject', this.pickedDataset);
     },
     catchPicks(picks) {
-      this.$emit('pickedDataset', picks);
+      this.$emit('pickedProject', picks);
       this.search = '';
     },
   },

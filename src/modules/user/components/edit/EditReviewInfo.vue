@@ -4,6 +4,7 @@
       class="pa-0"
       max-width="100%"
       :loading="loadingColor"
+      :flat
   >
     <v-container fluid class="pa-4">
       <v-row>
@@ -117,7 +118,7 @@ import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.v
 import {
   EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_OBJECT_UPDATE,
-  EDITMETADATA_PUBLICATION_INFO,
+  EDITMETADATA_REVIEW_INFO,
   eventBus,
 } from '@/factories/eventBus';
 
@@ -180,6 +181,10 @@ export default {
        type: Boolean,
        default: undefined,// can be kept null
      },
+    flat: {
+      type: Boolean,
+      default: false,
+    },
   },
   mounted () {
     this.isBlindActive = this.isBlindReview;
@@ -233,7 +238,7 @@ export default {
       if (this.isBlindReviewValid) {
         this.isBlindActive = !this.isBlindActive;
         const value = this.isBlindActive? BLIND_REVIEW_ON : BLIND_REVIEW_OFF;
-        this.changeBlindReviewStatus('version', value);
+        this.changeBlindReviewStatus(value);
         this.generateBlindReviewUrl();
       }
     },
@@ -248,13 +253,12 @@ export default {
       
       return this.blindUrl;
     },
-    changeBlindReviewStatus(property, value) {
+    changeBlindReviewStatus(value) {
       const newBlindReviewInfo = {
-        ...this.$props,
-        [property]: value,
+        version: value,
       };
       eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: EDITMETADATA_PUBLICATION_INFO,
+        object: EDITMETADATA_REVIEW_INFO,
         data: newBlindReviewInfo,
       });
     },

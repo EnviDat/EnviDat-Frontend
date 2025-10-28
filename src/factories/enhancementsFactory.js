@@ -36,7 +36,7 @@ export const importStoreModule = async (store, moduleKey, importFunction) => {
  * @returns {boolean} ```true``` if the browser supports webp rendering
  */
 export const checkWebpSupport = () => {
-  if (import.meta.env.MODE === 'test') {
+  if (import.meta.env?.MODE === 'test') {
     // don't execute canvas test of webp support because in test (unit-testing)
     // the document isn't available because it's running on node (vitest)
     return false;

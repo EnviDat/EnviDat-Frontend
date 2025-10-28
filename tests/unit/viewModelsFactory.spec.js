@@ -1,18 +1,15 @@
 import { it, describe, expect } from 'vitest';
 import { createHeaderViewModel } from '@/factories/ViewModels/HeaderViewModel';
 import { EDITMETADATA_MAIN_HEADER } from '@/factories/eventBus';
-import { convertJSON } from '@/factories/mappingFactory';
-import { EditDatasetServiceLayer } from '@/factories/ViewModels/EditDatasetServiceLayer';
-import { DatasetViewModel } from '@/factories/ViewModels/DatasetViewModel';
+import { convertJSON } from '@/factories/convertJSON';
+import { BackendDatasetService } from '@/modules/workflow/BackendDatasetService.ts';
+import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 
 import {
-  METADATA_CONTACT_EMAIL,
-  METADATA_CONTACT_FIRSTNAME,
-  METADATA_CONTACT_LASTNAME,
   METADATA_TITLE_PROPERTY,
 } from '@/factories/metadataConsts';
 
-import metadatas from '../../stories/js/metadata';
+import metadatas from '@/../stories/js/metadata';
 
 
 describe('viewModel Factory ', () => {
@@ -22,8 +19,8 @@ describe('viewModel Factory ', () => {
 
   const headerVM = createHeaderViewModel(backendJSON, false, 'black', 'url/to/an/img');
 
-  const serviceLayer = new EditDatasetServiceLayer(datasetBackend)
-  const datasetVM = new DatasetViewModel(serviceLayer);
+  const serviceLayer = new BackendDatasetService(datasetBackend)
+  const datasetVM = new DatasetModel(serviceLayer);
 
   it('HeaderViewModel backendJSON', () => {
 

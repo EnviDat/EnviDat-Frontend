@@ -6,19 +6,20 @@
     tag="article"
   >
     <!-- prettier-ignore -->
-    <NavigationStepper :steps="creationSteps"
-                       :step="routeStep"
-                       :subStep="routeSubStep"
-                       stepColor="highlight"
-                       :saving="metadataCreationLoading"
-                       :showSaveButton="canSaveInBackend"
-                       :isCreationWorkflow="true"
-                       :showProgress="true"
-                       :loading="isLoadingUserOrganizations"
-                       :dataset-title="currentDatasetTitle"
-                       @clickedSaveDataset="catchSaveNewDataset"
-                       @clickedClose="catchBackClicked" />
-
+    <NavigationStepper
+      :steps="creationSteps"
+      :step="routeStep"
+      :subStep="routeSubStep"
+      stepColor="highlight"
+      :saving="metadataCreationLoading"
+      :showSaveButton="canSaveInBackend"
+      :isCreationWorkflow="true"
+      :showProgress="true"
+      :loading="isLoadingUserOrganizations"
+      :dataset-title="currentDatasetTitle"
+      @clickedSaveDataset="catchSaveNewDataset"
+      @clickedClose="catchBackClicked"
+    />
     <v-snackbar
       id="NotificationSnack"
       location="bottom"
@@ -54,6 +55,8 @@
  */
 import { mapState } from 'vuex';
 import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
+
+// new workflow
 
 import {
   eventBus,
@@ -116,7 +119,7 @@ import {
 } from '@/factories/workflowFactory';
 
 import { metadataCreationSteps } from '@/factories/workflowCreation';
-import { getReadOnlyFieldsObject } from '@/factories/mappingFactory';
+import { getReadOnlyFieldsObject } from '@/factories/userEditingValidations';
 import { replaceAuthorDeadAscii } from '@/factories/authorFactory';
 
 export default {

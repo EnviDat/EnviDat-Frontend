@@ -1,4 +1,4 @@
-import { DatasetDTO } from '@/types/modelTypes';
+import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 import { enhanceJSONLd, isFechingDatasets, loadDataset } from '../../datasets.ts';
 import { generateSitemap } from '../../generateSitemap.ts';
 

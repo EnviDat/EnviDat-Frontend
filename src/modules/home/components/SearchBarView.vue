@@ -12,7 +12,7 @@
       <v-col class="grow py-1">
         <v-text-field
           class="ma-0 main-search-bar"
-          outlined
+          variant="outlined"
           bg-color="#fff"
           rounded="lg"
           density="comfortable"

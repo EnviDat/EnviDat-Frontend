@@ -39,7 +39,6 @@
                 :id="project.name"
                 :title="project.title"
                 :img="project.image_display_url"
-                :defaultImg="creatorImg"
                 :description="project.description"
                 :subProjects="project.subProjects"
                 @cardClick="onCardClick"
@@ -61,8 +60,8 @@ import { useRouter, useRoute } from 'vue-router';
 // Import components
 import { useDisplay } from 'vuetify';
 import ImgAndTextLayout from '@/components/Layouts/ImgAndTextLayout.vue';
-import ProjectCard from './ProjectCard.vue';
-import ProjectCardPlaceholder from './ProjectCardPlaceholder.vue';
+import ProjectCard from '@/modules/projects/components/ProjectCard.vue';
+import ProjectCardPlaceholder from '@/modules/projects/components/ProjectCardPlaceholder.vue';
 
 // Import constants
 import {
@@ -73,7 +72,6 @@ import {
   PROJECTS_NAMESPACE,
   SET_PROJECTDETAIL_PAGE_BACK_URL,
 } from '../store/projectsMutationsConsts';
-import { getImage } from '@/factories/imageFactory';
 
 const display = useDisplay();
 const store = useStore();
@@ -96,22 +94,9 @@ const projectsCardsParents = computed(
 // Derived config for projects
 const projectsConfig = computed(() => config.value?.projectsConfig || {});
 
-// Image paths using getImage factory. Note: this example assumes that $vuetify is available globally.
-const missionImg = computed(() => {
-  const imgPath =
-    display.mdAndUp
-      ? 'mission'
-      : 'mission_small';
-  return getImage(imgPath);
-});
-
-const creatorImg = computed(() => {
-  const imgPath =
-    display.mdAndUp
-      ? 'data_creator'
-      : 'data_creator_small';
-  return getImage(imgPath);
-});
+const missionImg = computed(() => display.mdAndUp
+                                        ? 'mission'
+                                        : 'mission_small');
 
 const loadProjects = () => {
   store.dispatch(`${PROJECTS_NAMESPACE}/${GET_PROJECTS}`, projectsConfig.value);

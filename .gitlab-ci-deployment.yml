@@ -7,9 +7,22 @@ deploy-chromatic:
     # needs the artifact: config and environment variables
     - modify-env
     # needs the artifact: node_modules to build the app
-    - install-node
+    #- install-node
+    - verify-node-audit
+    - job: verify-node-owasp
+      optional: true
+      artifacts: false
     # needs the artifact: storybook
     - build-storybook
+  before_script:
+    - |
+      if [ -d "node_modules" ] && [ -d "node_modules/.bin" ]; then
+        echo "node_modules directory already exists."
+        ls node_modules/.bin/storybook || echo "/.bin/storybook not found"
+      else
+        echo "node_modules directory not found. Install it!"
+        npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
+      fi
   script:
     # manually deploy the storybook build to chromatic for visual regression testing
     - npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes --storybook-build-dir ./storybook
@@ -20,7 +33,14 @@ publish-build:
   stage: deploy
   environment: $CI_COMMIT_REF_NAME
   image: alpine:3.20
-  extends: .deployment-rules
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
+    - if: '$CI_COMMIT_REF_NAME == "develop"'
+      when: never
+    - if: '$CI_COMMIT_REF_NAME =~ /^(staging|main)$/'
+      when: on_success
+    - when: never
   variables:
     GIT_STRATEGY: none
   needs:
@@ -28,6 +48,10 @@ publish-build:
     - set-vars
     # make sure to wait for the tests to run correctly
     - run-tests
+    - verify-node-audit
+    - job: verify-node-owasp
+      optional: true
+      artifacts: false
     # needs the artifact: the build of the frontend app and storybook buildenv
     - combine-builds
   before_script:
@@ -48,12 +72,26 @@ deploy-to-s3-bucket:
   stage: deploy
   environment: $CI_COMMIT_REF_NAME
   image: alpine:3.20
-  extends: .deployment-rules
+  rules:
+    # don't run when it's scheduled
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
+    - if: '$CI_COMMIT_REF_NAME == "staging"'
+      when: on_success
+    - if: '$CI_COMMIT_REF_NAME == "develop"'
+      when: never
+    - if: '$CI_COMMIT_REF_NAME == "main"'
+      when: manual
+    - when: never
   needs:
     # needs the environmental variables for the version number
     - set-vars
     # needs the published build for the app and it's storybook
     - publish-build
+    - verify-node-audit
+    - job: verify-node-owasp
+      optional: true
+      artifacts: false
   variables:
     GIT_STRATEGY: none
     RCLONE_CONFIG_SWITCH_TYPE: 's3'
@@ -103,6 +141,10 @@ manual-deploy-to-s3-bucket:
   needs:
     # needs the environmental variables for the version number
     - set-vars
+    - verify-node-audit
+    - job: verify-node-owasp
+      optional: true
+      artifacts: false
   variables:
     GIT_STRATEGY: none
     RCLONE_CONFIG_SWITCH_TYPE: 's3'

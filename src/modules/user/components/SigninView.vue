@@ -44,7 +44,7 @@
               :error-messages="backendErrors.email"
               label="Email"
               :prepend-icon="mdiEmail"
-              @input="isEmailValid()"
+              @update:model-value="isEmailValid()"
               @keyup.enter="catchRequestToken"
               tabindex="0"
             />
@@ -96,7 +96,7 @@
               :prepend-icon="mdiKey"
               :clear-icon="mdiClose"
               persistent-clear
-              @input="isTokenValid()"
+              @update:model-value="isTokenValid()"
               @keyup.enter="catchEmailSignIn"
               tabindex="0"
             />
@@ -155,7 +155,7 @@
         <v-col class="flex-grow-0">
           <BaseRectangleButton
             color="primary"
-            :button-text="'dashboardButtonText'"
+            :button-text="dashboardButtonText"
             @clicked="catchOpenDashboard"
           />
         </v-col>
@@ -233,7 +233,7 @@ import {
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import { isFieldValid } from '@/factories/userEditingValidations';
 import signInPic from '@/modules/user/assets/signin.jpg';
-import { getIcon } from '@/factories/imageFactory';
+import { getIconImage } from '@/factories/imageFactory';
 
 const keyLength = 32;
 
@@ -282,7 +282,7 @@ export default {
       return this.requestSuccess ? 'Get another token' : 'Request token';
     },
     wslLogo() {
-      return getIcon('wslLogo');
+      return getIconImage('wslLogo');
     },
     yupValidations: () =>
       yup.object().shape({

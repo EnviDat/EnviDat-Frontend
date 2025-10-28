@@ -106,7 +106,8 @@ import {
   METADATA_NAMESPACE,
 } from '@/store/metadataMutationsConsts';
 
-import { createLicense, createResources } from '@/factories/metaDataFactory';
+import { createLicense } from '@/factories/metaDataFactory';
+import { createResources } from '@/factories/resourceHelpers';
 
 import { getConfigFiles, getConfigUrls } from '@/factories/chartFactory';
 
@@ -123,10 +124,11 @@ import {
 } from '@/factories/strategyFactory';
 
 import {
-  convertJSON,
   getFrontendDates,
   getFrontendJSONForStep,
 } from '@/factories/mappingFactory';
+
+import { convertJSON } from '@/factories/convertJSON';
 
 import { useReviewStore } from '@/modules/metadata/store/reviewStore';
 import { convertArrayToUrlString } from '@/factories/stringFactory';
@@ -134,7 +136,7 @@ import { convertArrayToUrlString } from '@/factories/stringFactory';
 import { formatDate } from '@/factories/dateFactory';
 import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionViewModel';
 
-import MetadataHeader from './Metadata/MetadataHeader.vue';
+import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
 
 const MetadataDescription = defineAsyncComponent(
   () => import('./Metadata/MetadataDescription.vue'),
@@ -330,6 +332,7 @@ export default {
         dataLicenseTitle: license.title,
         dataLicenseUrl: license.url,
         resourcesConfig: this.resourcesConfig,
+        compactList: true,
       };
     },
     setMetadataContent() {

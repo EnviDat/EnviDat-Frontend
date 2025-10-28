@@ -62,13 +62,13 @@
 <script lang="ts" setup>
 import { useData } from 'vike-vue/useData';
 import { usePageContext } from 'vike-vue/usePageContext';
-import { DatasetDTO } from '@/types/modelTypes';
+import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 
 import logoUrl from '@/assets/logo/EnviDat_fav.ico'
 import { getSeoSanitizedDataset } from './seoConversions.ts';
 
-const data = useData<DatasetDTO>()
-const jsonLd = data.jsonLd;
+const data = useData<DatasetDTO | { jsonLd: object }>()
+const jsonLd = data?.jsonLd;
 delete data.jsonLd;
 
 const seoData = getSeoSanitizedDataset(data);
@@ -81,6 +81,12 @@ const datasetName = data?.name;
 
 let canonicalUrl = `${baseCanonicalUrl}/metadata/${datasetName}`;
 let redirectUrl = `${baseCanonicalUrl}/#/metadata/${datasetName}`;
+
+if (jsonLd) {
+  // overwrite for testing if the matching the jsonLd url with the canonical
+  // to make sure google uses it to index the page. By now the jsonLd.url is still using /#/metadata/[dataset-id]
+  jsonLd.url = canonicalUrl;
+}
 
 if (!datasetName) {
   canonicalUrl = `${baseCanonicalUrl}/metadata`

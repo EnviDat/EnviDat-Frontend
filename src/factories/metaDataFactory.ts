@@ -14,11 +14,6 @@ import seedrandom from 'seedrandom';
 import { getAuthorName, getAuthorsString } from '@/factories/authorFactory';
 
 import {
-  ACCESS_LEVEL_PUBLIC_VALUE,
-  getAllowedUserNamesArray,
-} from '@/factories/userEditingFactory';
-
-import {
   METADATA_CONTACT_EMAIL,
   METADATA_CONTACT_FULLNAME,
   METADATA_STATE_DRAFT,
@@ -40,7 +35,7 @@ import { createLocation } from '@/factories/geoFactory';
 import { getMetadataVisibilityState } from '@/factories/publicationFactory';
 import { formatDate } from '@/factories/dateFactory';
 import { enhanceMetadataWithModeExtras } from '@/factories/modeFactory';
-import { DatasetDTO, ResourceDTO } from '@/types/modelTypes.js';
+import { DatasetDTO, PublicationDTO } from '@/types/dataTransferObjectsTypes';
 
 /**
  * Create a pseudo random integer based on a given seed using the 'seedrandom' lib.
@@ -64,8 +59,8 @@ export function randomInt(min: number, max: number, seed: string = 'For the Hord
 }
 
 // TODO: check with Dominik
-export function getPublicationStatus(metadata) {
-  const publicationStatus = metadata.publication_state;
+export function getPublicationStatus(dataset: DatasetDTO) {
+  const publicationStatus = dataset.publication_state;
 
   return publicationStatus;
 }
@@ -205,10 +200,13 @@ export function createPublishingInfo(dataset: DatasetDTO) {
     return null;
   }
 
-  let { publication } = dataset;
+  const publicationStr: unknown = dataset.publication;
 
+  let publication: PublicationDTO;
   if (typeof publication === 'string') {
-    publication = JSON.parse(dataset.publication);
+    publication = JSON.parse(publication);
+  } else {
+    publication = publicationStr as PublicationDTO;
   }
 
   return {
@@ -219,225 +217,8 @@ export function createPublishingInfo(dataset: DatasetDTO) {
   };
 }
 
-export function getFileFormat(file) {
-  let fileFormat = '';
-  let fileName = '';
 
-  if (typeof file === 'object' && !!file.format) {
-    // if the input is a resource object
-    fileName = file.format;
-  } else if (typeof file === 'object') {
-    fileName = file.name ? file.name : '';
-  } else if (typeof file === 'string') {
-    fileName = file;
-  }
-
-  const splits = fileName.split('.');
-  fileFormat = splits[splits.length - 1];
-  /*  const last = splits[splits.length - 1];
-
-  if (last?.length > 4) {
-    fileFormat = 'url';
-  } else {
-    fileFormat = last;
-  }
-*/
-
-  fileFormat = fileFormat.toLowerCase();
-
-  return fileFormat;
-}
-
-/**
- * public case: "{"allowed_users": "", "level": "public", "shared_secret": ""}"
- * public (used to be restricted) case: "{"allowed_users": "adrian_meyer,zweifel", "level": "public", "shared_secret": ""}"
- * restricted signin & same organization case: "{"allowed_users": "", "level": "same_organization", "shared_secret": ""}"
- * restricted signin & same organization & specific users case: "{"allowed_users": "zhichao_he,zeljka_vulovic", "level": "same_organization", "shared_secret": ""}"
- *
- * @param resource {object}
- * @param resourceOrganizationID {string}
- * @param signedInUserName {string}
- * @param signedInUserOrganizationIds {string[]}
- * @returns {boolean|null}
- */
-export function isResourceProtectedForUser(
-  resource: ResourceDTO,
-  resourceOrganizationID: string,
-  signedInUserName: any,
-  signedInUserOrganizationIds: string | any[],
-) {
-  if (!resource) return null;
-
-  let allowedUsers = '';
-  const restrictedInfo = resource.restricted;
-  let isProtected = false;
-  let isPublic = false;
-
-  if (typeof restrictedInfo === 'string' && restrictedInfo.length > 0) {
-    try {
-      const restrictedObj = JSON.parse(restrictedInfo);
-      isPublic = restrictedObj.level === ACCESS_LEVEL_PUBLIC_VALUE;
-      isProtected =
-        !!restrictedObj.level &&
-        restrictedObj.level !== ACCESS_LEVEL_PUBLIC_VALUE;
-      allowedUsers =
-        restrictedObj.allowed_users || restrictedObj.allowedUsers || '';
-      // "{"allowed_users": "", "level": "public", "shared_secret": ""}"
-    } catch (err) {
-      isPublic = restrictedInfo.includes(ACCESS_LEVEL_PUBLIC_VALUE);
-      isProtected = !isPublic;
-    }
-  }
-
-  if (isPublic) {
-    return false;
-  }
-
-  if (!signedInUserOrganizationIds) {
-    return isProtected;
-  }
-
-  if (resourceOrganizationID && signedInUserOrganizationIds.length > 0) {
-    isProtected = !signedInUserOrganizationIds.includes(resourceOrganizationID);
-  }
-
-  if (!signedInUserName) {
-    return isProtected;
-  }
-
-  if (allowedUsers) {
-    const names = getAllowedUserNamesArray(allowedUsers);
-    isProtected = !names.includes(signedInUserName);
-  }
-
-  return isProtected;
-}
-
-export function getResourceName(resource: ResourceDTO) {
-  let name = resource.name ?? 'Unnamed resource';
-
-  const isUrl = !resource.name && !!resource.url;
-  if (isUrl) {
-    const splits = resource.url.split('/');
-    name = splits[splits.length - 1];
-  }
-
-  // @ts-ignore
-  return resource.deprecated ? `[DEPRECATED] - ${name}` : name;
-}
-
-export function createResource(
-  resource: ResourceDTO,
-  datasetName: string,
-  resourceOrganizationID: string,
-  signedInUserName: any,
-  signedInUserOrganizationIds: any,
-  numberOfDownload?: number,
-) {
-  if (!resource) {
-    return null;
-  }
-  const isProtected = isResourceProtectedForUser(
-    resource,
-    resourceOrganizationID,
-    signedInUserName,
-    signedInUserOrganizationIds,
-  );
-
-  let fileFormat = resource.format ? resource.format : '';
-  fileFormat = fileFormat.replace('.', '').toLowerCase();
-
-  const created = formatDate(resource.created);
-  const modified = formatDate(resource.last_modified);
-
-  const ckanDomain = process.env.VITE_API_ROOT;
-
-  return {
-    // "hash": "",
-    description: resource.description,
-    // "cache_last_updated": null,
-    metadataId: resource.package_id,
-    // "mimetype_inner": null,
-    // url_type: "upload",
-    id: resource.id,
-    size: resource.size ? resource.size : 0,
-    mimetype: resource.mimetype || '',
-    doi: resource.doi,
-    name: getResourceName(resource),
-    url: resource.url,
-    urlType: resource.url_type,
-    restrictedUrl: `${ckanDomain}/dataset/${datasetName}/restricted_request_access/${resource.id}`,
-    restricted: resource.restricted || '',
-    format: fileFormat,
-    numberOfDownload,
-    state: resource.state || '',
-    created,
-    deprecated: !!resource.deprecated,
-    lastModified: modified,
-    position: resource.position || '',
-    isProtected,
-    previewUrl: resource.previewUrl || null,
-    chartLabels: null,
-    chartData: null,
-    chartDataLoading: false,
-  };
-}
-
-export function createResources(
-  dataset: DatasetDTO,
-  signedInUser: { name: any },
-  signedInUserOrganizationIds: any,
-) {
-  if (!dataset) {
-    return null;
-  }
-
-  const organizationID = dataset.organization?.id;
-  const signedInUserName = signedInUser?.name;
-
-  const resources = [];
-
-  let { maintainer } = dataset;
-
-  if (typeof dataset.maintainer === 'string') {
-    maintainer = JSON.parse(dataset.maintainer);
-  }
-
-  let contactEmail = maintainer.email;
-  if (!contactEmail && dataset.maintainer_email) {
-    contactEmail = dataset.maintainer_email;
-  }
-
-  if (dataset.resources) {
-    dataset.resources.forEach(async (element) => {
-      // get the number of download from matomo API
-      // const numberOfDownload = await getResourcesDownloads(element.name);
-      const res = createResource(
-        element,
-        dataset.name,
-        organizationID,
-        signedInUserName,
-        signedInUserOrganizationIds,
-        // numberOfDownload,
-      );
-      // numberOfDownload,
-
-      // @ts-ignore
-      res.metadataContact = contactEmail;
-
-      resources.push(res);
-    });
-  }
-
-  return {
-    metadataId: dataset.id,
-    [METADATA_TITLE_PROPERTY]: dataset.title,
-    doi: dataset.doi,
-    resources,
-  };
-}
-
-export function createDetails(dataset) {
+export function createDetails(dataset: DatasetDTO) {
   if (!dataset) {
     return null;
   }
@@ -608,24 +389,6 @@ export function sortObjectArray(
   );
 }
 
-/**
- *
- * for details: https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
- * @param {*} a
- * @param {*} b
- */
-export function formatBytes(a, b = 2) {
-  /* eslint-disable prefer-template */
-  /* eslint-disable no-restricted-properties */
-  if (a === 0) return '0 Bytes';
-
-  const c = 1024;
-
-  const e = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-  const f = Math.floor(Math.log(a) / Math.log(c));
-
-  return parseFloat((a / c ** f).toFixed(b)) + ' ' + e[f];
-}
 
 /**
  * Different States of dataset publication (on DataCite for a DOI registration) not to confuse with the different

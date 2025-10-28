@@ -16,6 +16,8 @@ export const METADATA_PUBLICATIONS_TITLE = 'Related Publications';
 export const METADATA_DATASETS_TITLE = 'Related Datasets';
 export const METADATA_KEYWORDS_TITLE = 'Keywords';
 
+export const LOCAL_DATASET_KEY = 'local_dataset_editing';
+
 export const METADATA_AUTHORS_TITLE = 'Author Details';
 export const AUTHORS_PUBLISHED_DATACOUNT = 'Published datasets';
 export const AUTHORS_DATACREDIT_CONTRIBUTION =
@@ -118,3 +120,7 @@ export const LOCATION_TYPE_FEATURE = 'Feature';
 
 export const BLIND_REVIEW_ON = 'double-blind';
 export const BLIND_REVIEW_OFF = '1.0';
+
+export const METADATA_NEW_RESOURCE_ID = 'localResourceId';
+
+export const RESOURCE_FORMAT_LINK = 'url';

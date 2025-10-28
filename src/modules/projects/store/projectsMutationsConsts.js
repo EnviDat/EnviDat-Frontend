@@ -14,7 +14,7 @@ export const GET_PROJECTS_ERROR = 'GET_PROJECTS_ERROR';
 export const SET_PROJECTDETAIL_PAGE_BACK_URL = 'SET_PROJECTDETAIL_PAGE_BACK_URL';
 
 export const ACTION_GET_PROJECTS = () => {
-  if (import.meta.env?.DEV && useTestdata) {
+  if (import.meta.env?.MODE === 'development' && useTestdata) {
     return './testdata/group_list.json';
   }
 

@@ -2,34 +2,48 @@
   <div>
     <h1>Environmental Data: {{ seoData.title }}</h1>
 
+
+    <div>
+      <strong>Keywords:</strong> 
+
+      <div v-for="(keyword, index) in data.tags"
+          :key="`${index}_keyword`"
+      >
+        {{ keyword.name }}
+      </div>
+    </div>
+
     <div>
       <h2>Description</h2>
-      <div>{{ seoData.notes }}</div>
+      <p>{{ seoData.notes }}</p>
     </div>
 
     <div>
       <h2>Citation</h2>
 
-      <div v-html="citation?.citationText" />
+      <p v-html="citation?.citationText" />
     </div>
 
     <div>
       <h2>Resources</h2>
-      <div v-for="(resource, index) in data.resources"
-           :key="index">
-      >
-        <div>{{ resource.name }}</div>
-        <div>{{ resource.description }}</div>
+      <ul>
+        <li v-for="(resource, index) in data.resources"
+            :key="`${index}_resource`"
+        >
+          <h3>{{ resource.name }}</h3>
 
-        <a :href='resource.url'>{{ resource.name }}</a>
-      </div>
+          <p>{{ resource.description }}</p>
+
+          <a :href='resource.url'>{{ resource.name }}</a>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
 
 <script setup lang='ts'>
   import { useData } from 'vike-vue/useData'
-  import { DatasetDTO } from '@/types/modelTypes';
+  import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
   import { createCitation } from '@/factories/citationFactory';
   import { getSeoSanitizedDataset } from '../../seoConversions.ts';
 

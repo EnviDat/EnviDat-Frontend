@@ -2,7 +2,7 @@
   <v-app
     class="application envidat-font-overwrite"
     :class="{
-      'bg-dark': !isLandingPage && !isDashboardPage,
+      'bg-dark': !isLandingPage && !isDashboardPage && !isWorkFlowPage,
       'bg-dark-dashboard': isDashboardPage,
       'hide-after': isScrolled,
     }"
@@ -144,7 +144,7 @@
   </v-app>
 </template>
 
-<script>
+<script lang="ts">
 /**
  * The App.vue bootstraps all the other components.
  *
@@ -233,6 +233,8 @@ const NotificationCard = defineAsyncComponent(
   () => import('@/components/Cards/NotificationCard.vue'),
 );
 
+let configInterval;
+
 export default {
   name: 'App',
 
@@ -242,7 +244,7 @@ export default {
 
     // define an interval to check again regularly to make sure
     // all users get any changes in the config and version updates
-    setInterval(() => {
+    configInterval = setInterval(() => {
       this.$store.dispatch(SET_CONFIG);
     }, 30000); // 1000 * 3 = 30 seconds
   },
@@ -259,19 +261,18 @@ export default {
     this.showCookieInfo = strShowCookieInfo !== 'false';
   },
   beforeUnmount() {
-    eventBus.on(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
+    eventBus.off(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
     eventBus.off(SHOW_DIALOG, this.openGenericDialog);
     eventBus.off(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
     eventBus.off(
       SHOW_REDIRECT_DASHBOARD_DIALOG,
       this.showRedirectDashboardDialog,
     );
+
+    clearInterval(configInterval);
   },
   mounted() {
     this.checkUserSignedIn();
-    window.addEventListener('scroll', this.handleWindowScroll, {
-      passive: true,
-    });
   },
   updated() {
     this.updateActiveStateOnNavItems();
@@ -418,7 +419,6 @@ export default {
     deniedTracking() {
       localStorage.setItem(ENVIDAT_SHOW_COOKIE_BANNER, 'false');
       localStorage.setItem('matomoConsentGiven', 'false');
-      /* eslint-disable no-underscore-dangle */
       window._paq.push(['forgetConsentGiven']);
       this.showCookieInfo = false;
     },
@@ -466,7 +466,6 @@ export default {
     showRedirectDashboardDialog() {
       this.handleRedirectCallBack(true);
     },
-    // eslint-disable-next-line default-param-last
     openGenericDialog({
       title = 'Redirect to Legacy Website!',
       message,
@@ -609,6 +608,9 @@ export default {
     isLandingPage() {
       return this.currentRoute.name === 'LandingPage';
     },
+    isWorkFlowPage() {
+      return this.currentRoute.name === 'WorkflowPage';
+    },
     isDashboardPage() {
       return this.currentRoute.name === 'DashboardPage';
     },
@@ -729,7 +731,9 @@ export default {
     config() {
       if (!this.loadingConfig) {
         this.setupNavItems();
-        this.loadAllMetadata();
+        this.$nextTick(() => {
+          this.loadAllMetadata();
+        });
       }
     },
     notifications() {
@@ -741,7 +745,6 @@ export default {
       }
     },
   },
-  /* eslint-disable object-curly-newline */
   data: () => ({
     ckanDomain: process.env.VITE_API_ROOT,
     reloadDialogCanceled: false,
@@ -811,6 +814,11 @@ export default {
   50% {
     transform: translateY(-5px);
   }
+}
+
+// TODO check if this works for all pages - REDESIGN WORKFLOW fix
+#mainPageRow {
+  height: 100%;
 }
 
 #app-container {

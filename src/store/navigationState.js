@@ -15,6 +15,7 @@ import {
   mdiPlusBox,
 } from '@mdi/js';
 
+import { computed } from 'vue';
 import {
   BROWSE_PATH,
   BROWSE_PAGENAME,
@@ -37,6 +38,8 @@ import {
   METADATA_CREATION_PATH,
   METADATA_CREATION_PAGENAME,
 } from '@/router/routeConsts';
+
+import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
 
 // const domain = import.meta.env.VITE_DOMAIN;
 const appVersion = import.meta.env.VITE_VERSION;
@@ -124,9 +127,6 @@ export const navigationItems = [
     isMenuIcon: true,
   },
 ];
-
-import { computed } from 'vue';
-import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
 
 export function useUserMenuItems() {
   const orgStore = useOrganizationsStore();

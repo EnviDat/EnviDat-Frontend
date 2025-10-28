@@ -1,19 +1,23 @@
 import { reactive, watch } from 'vue';
-import { Author, AuthorDTO, DatasetDTO } from '@/types/modelTypes';
-import { EditAuthorViewModel } from '@/factories/ViewModels/EditAuthorViewModel.ts';
+import { Author } from '@/types/modelTypes';
+import { AuthorDTO, DatasetDTO } from '@/types/dataTransferObjectsTypes';
+import { AuthorViewModel } from '@/modules/workflow/viewModel/AuthorViewModel.ts';
 import { AbstractViewModel } from '@/factories/ViewModels/AbstractViewModel.ts';
 
 export class AuthorsViewModel extends AbstractViewModel {
 
   declare authors: Author[];
 
-  constructor(dataset: DatasetDTO) {
+  constructor(dataset: DatasetDTO | undefined) {
     // don't provide dataset and mapping rules because authors
     // would get partially unpacked and then the unpacking of the full list
     // doesn't work anymore
+    // @ts-ignore
     super();
 
-    this.authors = AuthorsViewModel.getFormattedAuthors(dataset.author, dataset.metadata_modified);
+    if (dataset) {
+      this.authors = AuthorsViewModel.getFormattedAuthors(dataset.author, dataset.metadata_modified);
+    }
   }
 
   static getFormattedAuthors(rawAuthors: AuthorDTO[], lastModified: string) : Author[] {
@@ -21,7 +25,7 @@ export class AuthorsViewModel extends AbstractViewModel {
 
     for (let i = 0; i < rawAuthors.length; i++) {
       const rawAuthor = rawAuthors[i];
-      const author = EditAuthorViewModel.getFormattedAuthor(rawAuthor, lastModified);
+      const author = AuthorViewModel.getFormattedAuthor(rawAuthor, lastModified);
       formattedAuthors.push(author);
     }
 
