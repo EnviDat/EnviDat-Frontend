@@ -26,8 +26,7 @@ build-seo:
     # needs the artifact: config and environment variables
     - job: modify-env
       artifacts: true
-    # needs the artifact: node_modules to build the app
-    #- install-node
+    - verify-node-audit
   before_script:
     - npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
   script:

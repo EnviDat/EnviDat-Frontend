@@ -200,7 +200,7 @@ run-tests:
   extends: .normal-rules
   needs:
     - modify-env
-    #- install-node
+    - verify-node-audit
   before_script:
     - npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
   script:
@@ -216,8 +216,7 @@ build-storybook:
   needs:
     # needs the artifact: config and environment variables
     - modify-env
-    # needs the artifact: node_modules to build storybook
-    #- install-node
+    - verify-node-audit
   before_script:
     - npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
   script:
@@ -240,8 +239,7 @@ build-app:
   needs:
     # needs the artifact: config and environment variables
     - modify-env
-    # needs the artifact: node_modules to build the app
-    #- install-node
+    - verify-node-audit
   before_script:
     - npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
   script:
