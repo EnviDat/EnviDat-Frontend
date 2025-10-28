@@ -2,7 +2,7 @@
   <filter-map-widget-layout
     :title="title"
     :highlightedText="highlightedText"
-    :pinnedAmount="pinnedIds.length"
+    :pinnedAmount="pinnedIds ? pinnedIds.length : 0"
     :hasPins="hasPins"
     :hasMultiPins="hasMultiPins"
     :hasPolygons="hasPolygons"
@@ -13,25 +13,24 @@
   >
     <template v-slot:clearPins>
       <base-icon-button
-        materialIconName="close"
-        iconColor="red"
-        :color="topLayout ? 'transparent' : 'primary'"
-        :outlined="!topLayout && pinnedIds.length > 0"
-        :isSmall="mdScreen || topLayout"
+        :icon="mdiClose"
+        icon-color="red"
+        color="transparent"
+        :outlined="pinnedIds.length > 0"
+        outline-color="highlight"
         :disabled="pinnedIds.length <= 0"
-        :tooltipText="clearButtonTooltipText"
+        :tooltip-text="clearButtonTooltipText"
         @clicked="catchClearClicked()"
       />
     </template>
 
     <template v-slot:focus>
       <base-icon-button
-        materialIconName="remove_red_eye"
-        iconColor="black"
-        color="highlight"
-        :isSmall="mdScreen"
+        :icon="mdiEye"
+        icon-color="black"
         outlined
-        :tooltipText="focusText"
+        outline-color="highlight"
+        :tooltip-text="focusText"
         @clicked="catchFocusClicked()"
       />
     </template>
@@ -39,13 +38,11 @@
     <template v-slot:pinEnabled>
       <base-icon-button
         :count="pinNumber"
-        :customIcon="pinIcon"
-        color="secondary"
-        :fillColor="
-          pinEnabled ? $vuetify.theme.themes.light.primary : 'transparent'
-        "
-        :isSmall="mdScreen"
+        :icon="mdiMapMarker"
+        icon-color="black"
+        :color="pinEnabled ? 'secondary' : 'transparent'"
         outlined
+        outline-color="highlight"
         :tooltipText="pinText"
         @clicked="catchPinClicked()"
       />
@@ -54,14 +51,12 @@
     <template v-slot:multiPinEnabled>
       <base-icon-button
         :count="multiPinNumber"
-        :customIcon="multiPinIcon"
-        color="secondary"
-        :fillColor="
-          multiPinEnabled ? $vuetify.theme.themes.light.primary : 'transparent'
-        "
+        :icon="mdiMapMarkerMultiple"
+        icon-color="black"
+        :color="multiPinEnabled ? 'secondary' : 'transparent'"
         outlined
-        :isSmall="mdScreen"
-        :tooltipText="multiPinText"
+        outline-color="highlight"
+        :tooltip-text="multiPinText"
         @clicked="catchMultipinClicked()"
       />
     </template>
@@ -69,15 +64,12 @@
     <template v-slot:polygonEnabled>
       <base-icon-button
         :count="polygonNumber"
-        materialIconName="layers"
-        iconColor="black"
-        color="secondary"
-        :fillColor="
-          polygonEnabled ? $vuetify.theme.themes.light.primary : 'transparent'
-        "
-        :isSmall="mdScreen"
+        :icon="mdiLayers"
+        icon-color="black"
+        :color="polygonEnabled ? 'secondary' : 'transparent'"
         outlined
-        :tooltipText="polygonText"
+        outline-color="highlight"
+        :tooltip-text="polygonText"
         @clicked="catchPolygonClicked()"
       />
     </template>
@@ -98,6 +90,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import {mdiClose, mdiEye, mdiLayers, mdiMapMarker, mdiMapMarkerMultiple} from '@mdi/js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import FilterMapWidgetLayout from '@/components/Filtering/FilterMapWidgetLayout.vue';
 
@@ -130,15 +123,13 @@ export default {
     topLayout: Boolean,
   },
   beforeMount() {
-    this.pinIcon = this.mixinMethods_getIcon('marker');
-    this.multiPinIcon = this.mixinMethods_getIcon('markerMulti');
   },
   computed: {
     smScreen() {
-      return this.$vuetify.breakpoint.smAndDown;
+      return this.$vuetify.display.smAndDown;
     },
     mdScreen() {
-      return this.$vuetify.breakpoint.mdAndDown;
+      return this.$vuetify.display.mdAndDown;
     },
     pinText() {
       return this.pinEnabled ? 'Hide single markers' : 'Show single markers';
@@ -168,6 +159,11 @@ export default {
     },
   },
   data: () => ({
+    mdiClose,
+    mdiEye,
+    mdiMapMarker,
+    mdiMapMarkerMultiple,
+    mdiLayers,
     filterText: 'Pinned: ',
     highlightedText: 'Select markers to pin entries to the top of the list',
     clearButtonText: 'Clear Pins',

@@ -1,0 +1,185 @@
+deploy-chromatic:
+  stage: deploy
+  environment: $CI_COMMIT_REF_NAME
+  image: node:20.15.0-alpine3.20
+  extends: .manual-deployment-rules
+  needs:
+    # needs the artifact: config and environment variables
+    - modify-env
+    # needs the artifact: node_modules to build the app
+    #- install-node
+    - verify-node-audit
+    - job: verify-node-owasp
+      optional: true
+      artifacts: false
+    # needs the artifact: storybook
+    - build-storybook
+  before_script:
+    - |
+      if [ -d "node_modules" ] && [ -d "node_modules/.bin" ]; then
+        echo "node_modules directory already exists."
+        ls node_modules/.bin/storybook || echo "/.bin/storybook not found"
+      else
+        echo "node_modules directory not found. Install it!"
+        npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
+      fi
+  script:
+    # manually deploy the storybook build to chromatic for visual regression testing
+    - npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes --storybook-build-dir ./storybook
+  # for manual jobs add allow_failure so the whole pipeline won't show up as "blocked"
+  allow_failure: true
+
+publish-build:
+  stage: deploy
+  environment: $CI_COMMIT_REF_NAME
+  image: alpine:3.20
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
+    - if: '$CI_COMMIT_REF_NAME == "develop"'
+      when: never
+    - if: '$CI_COMMIT_REF_NAME =~ /^(staging|main)$/'
+      when: on_success
+    - when: never
+  variables:
+    GIT_STRATEGY: none
+  needs:
+    # needs the environmental variables for the version number
+    - set-vars
+    # make sure to wait for the tests to run correctly
+    - run-tests
+    - verify-node-audit
+    - job: verify-node-owasp
+      optional: true
+      artifacts: false
+    # needs the artifact: the build of the frontend app and storybook buildenv
+    - combine-builds
+  before_script:
+    - apk add curl zip --no-cache
+  script:
+    - export PUBLISH_LOCATION="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/envidat-frontend/${BUILD_VERSION}.${CI_COMMIT_REF_NAME}/${BUILD_ZIP_NAME}"
+    - echo "Going to publish build ${BUILD_NAME} with zip name ${BUILD_ZIP_NAME}"
+    - echo "to location ${PUBLISH_LOCATION}"
+    - zip -r ${BUILD_ZIP_NAME} ./
+    # - ls -l
+    - |
+      curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
+      --user "${CI_DEPLOY_USER}:${CI_DEPLOY_PASSWORD}" \
+      --upload-file ${BUILD_ZIP_NAME} \
+      "${PUBLISH_LOCATION}"
+
+deploy-to-s3-bucket:
+  stage: deploy
+  environment: $CI_COMMIT_REF_NAME
+  image: alpine:3.20
+  rules:
+    # don't run when it's scheduled
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
+    - if: '$CI_COMMIT_REF_NAME == "staging"'
+      when: on_success
+    - if: '$CI_COMMIT_REF_NAME == "develop"'
+      when: never
+    - if: '$CI_COMMIT_REF_NAME == "main"'
+      when: manual
+    - when: never
+  needs:
+    # needs the environmental variables for the version number
+    - set-vars
+    # needs the published build for the app and it's storybook
+    - publish-build
+    - verify-node-audit
+    - job: verify-node-owasp
+      optional: true
+      artifacts: false
+  variables:
+    GIT_STRATEGY: none
+    RCLONE_CONFIG_SWITCH_TYPE: 's3'
+    RCLONE_S3_PROVIDER: 'Other'
+    RCLONE_S3_ENV_AUTH: 'true'
+  before_script:
+    - apk add curl unzip --no-cache
+    - curl -O https://downloads.rclone.org/v1.59.0/rclone-v1.59.0-linux-amd64.zip
+    - unzip rclone-v1.59.0-linux-amd64.zip
+    - cp rclone-v1.59.0-linux-amd64/rclone /usr/bin/
+    - rm rclone-v1.59.0-linux-amd64.zip
+    - rm -rf rclone-v1.59.0-linux-amd64
+    - |
+      if [ "${CI_COMMIT_REF_NAME}" == "main" ]; then
+        BUCKET_NAME="frontend"
+      else
+        BUCKET_NAME="frontend-${CI_COMMIT_REF_NAME}"
+      fi
+      if [ "${CI_COMMIT_REF_NAME}" == "develop" ]; then
+        BUCKET_NAME="frontend-dev"
+      fi
+      echo "Target for rclone sync is the bucket: '${BUCKET_NAME}'"
+  script:
+    - export PUBLISH_LOCATION="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/envidat-frontend/${BUILD_VERSION}.${CI_COMMIT_REF_NAME}/${BUILD_ZIP_NAME}"
+    - echo "Going to pull build ${BUILD_NAME} with zip name ${BUILD_ZIP_NAME}"
+    - echo "from location ${PUBLISH_LOCATION}"
+    # - ls -l
+    - |
+      curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
+      --user "${CI_DEPLOY_USER}:${CI_DEPLOY_PASSWORD}" \
+      "${PUBLISH_LOCATION}" \
+      -o ${BUILD_ZIP_NAME}
+    # use -q for quiet to not list all the files
+    - unzip -q ${BUILD_ZIP_NAME}
+    - rm ${BUILD_ZIP_NAME}
+    - ls -l
+    - echo "going to rclone sync from ./ to switch:${BUCKET_NAME}"
+    - rclone sync ./ "switch:${BUCKET_NAME}" --verbose
+
+manual-deploy-to-s3-bucket:
+  stage: manual-deploy
+  environment: $CI_COMMIT_REF_NAME
+  image: alpine:3.20
+  extends: .manual-deployment-rules
+  # for manual jobs add allow_failure so the whole pipeline won't show up as "blocked"
+  allow_failure: true
+  needs:
+    # needs the environmental variables for the version number
+    - set-vars
+    - verify-node-audit
+    - job: verify-node-owasp
+      optional: true
+      artifacts: false
+  variables:
+    GIT_STRATEGY: none
+    RCLONE_CONFIG_SWITCH_TYPE: 's3'
+    RCLONE_S3_PROVIDER: 'Other'
+    RCLONE_S3_ENV_AUTH: 'true'
+  before_script:
+    - apk add curl unzip --no-cache
+    - curl -O https://downloads.rclone.org/v1.59.0/rclone-v1.59.0-linux-amd64.zip
+    - unzip rclone-v1.59.0-linux-amd64.zip
+    - cp rclone-v1.59.0-linux-amd64/rclone /usr/bin/
+    - rm rclone-v1.59.0-linux-amd64.zip
+    - rm -rf rclone-v1.59.0-linux-amd64
+    - |
+      if [ "${CI_COMMIT_REF_NAME}" == "main" ]; then
+        BUCKET_NAME="frontend"
+      else
+        BUCKET_NAME="frontend-${CI_COMMIT_REF_NAME}"
+      fi
+      if [ "${CI_COMMIT_REF_NAME}" == "develop" ]; then
+        BUCKET_NAME="frontend-dev"
+      fi
+      echo "Target for rclone sync is the bucket: '${BUCKET_NAME}'"
+  script:
+    - export PUBLISH_LOCATION="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/envidat-frontend/${BUILD_VERSION}.${CI_COMMIT_REF_NAME}/${BUILD_ZIP_NAME}"
+    - echo "Going to pull build ${BUILD_NAME} with zip name ${BUILD_ZIP_NAME}"
+    - echo "from location ${PUBLISH_LOCATION}"
+    # - ls -l
+    - |
+      curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
+      --user "${CI_DEPLOY_USER}:${CI_DEPLOY_PASSWORD}" \
+      "${PUBLISH_LOCATION}" \
+      -o ${BUILD_ZIP_NAME}
+    # use -q for quiet to not list all the files
+    - unzip -q ${BUILD_ZIP_NAME}
+    - rm ${BUILD_ZIP_NAME}
+    - ls -l
+    - echo "going to rclone sync from ./ to switch:${BUCKET_NAME}"
+    - rclone sync ./ "switch:${BUCKET_NAME}" --verbose

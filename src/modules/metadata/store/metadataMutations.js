@@ -34,14 +34,13 @@ import {
   CLEAR_PINNED_METADATA,
   SET_DETAIL_PAGE_BACK_URL,
   SET_ABOUT_PAGE_BACK_URL,
-  SET_VIRTUAL_LIST_INDEX,
-  SWISSFL_MODE,
   METADATA_UPDATE_EXISTING_AUTHORS,
   METADATA_UPDATE_EXISTING_KEYWORDS,
   METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS,
   METADATA_UPDATE_EXISTING_KEYWORDS_ERROR,
   METADATA_UPDATE_AN_EXISTING_AUTHOR,
   METADATA_NAMESPACE,
+  METADATA_UPDATE_EXISTING_TITLE,
 } from '@/store/metadataMutationsConsts';
 
 import {
@@ -51,48 +50,11 @@ import {
 
 import { ADD_USER_NOTIFICATION } from '@/store/mainMutationsConsts';
 
-import {
-  enhanceMetadataEntry,
-  enhanceTags,
-  createLocation,
-} from '@/factories/metaDataFactory';
-
-import globalMethods from '@/factories/globalMethods';
-
 import { METADATA_KEYWORDS_TITLE } from '@/factories/metadataConsts';
 
-import { checkWebpFeature } from '@/factories/enhancementsFactory';
 import { extractAuthorsMap } from '@/factories/authorFactory';
 import { solrResultToCKANJSON } from '@/factories/apiFactory';
-import { enhanceMetadataWithModeExtras } from '@/factories/modeFactory';
-
-
-
-function enhanceMetadatas(store, datasets, mode) {
-  if (!(datasets instanceof Array)) {
-    throw new Error(`enhanceMetadatas() expects an array of datasets got ${typeof datasets}`);
-  }
-
-  // const rootBGImgs = store.rootState?.getters?.cardBGImages;
-  let cardBGImgs = store.state.cardBGImages; // || rootBGImgs;
-  cardBGImgs = cardBGImgs || globalMethods.methods.mixinMethods_getCardBackgrounds(checkWebpFeature());
-  const categoryCards = store.state.categoryCards;
-  const enhancedContent = {};
-
-  for (let i = 0; i < datasets.length; i++) {
-    let dataset = datasets[i];
-    dataset = enhanceMetadataEntry(dataset, cardBGImgs, categoryCards);
-    dataset = enhanceMetadataWithModeExtras(mode, dataset);
-
-    dataset = enhanceTags(dataset, categoryCards);
-
-    dataset.location = createLocation(dataset);
-
-    enhancedContent[dataset.id] = dataset;
-  }
-
-  return enhancedContent;
-}
+import { enhanceMetadatas } from '@/factories/metaDataFactory';
 
 
 export default {
@@ -102,12 +64,10 @@ export default {
     state.searchedMetadatasContent = {};
     state.currentSearchTerm = searchTerm;
   },
-  [SEARCH_METADATA_SUCCESS](state, {
-    payload,
-    isLocalSearch = false,
-    mode = undefined,
-  }) {
-
+  [SEARCH_METADATA_SUCCESS](
+    state,
+    { payload, isLocalSearch = false, mode = undefined },
+  ) {
     let convertedPayload = [];
     if (isLocalSearch) {
       convertedPayload = payload;
@@ -118,7 +78,7 @@ export default {
       }
     }
 
-    state.searchedMetadatasContent = enhanceMetadatas(this, convertedPayload, mode);
+    state.searchedMetadatasContent = enhanceMetadatas(convertedPayload, mode);
 
     state.searchingMetadatasContentOK = true;
     state.searchingMetadatasContent = false;
@@ -127,7 +87,10 @@ export default {
     state.searchingMetadatasContent = false;
     state.searchingMetadatasContentOK = false;
 
-    const errObj = getSpecificApiError('The searching cause an error. Try again or use Keywords for filtering. Please report if the error persists!', reason);
+    const errObj = getSpecificApiError(
+      'The searching cause an error. Try again or use Keywords for filtering. Please report if the error persists!',
+      reason,
+    );
 
     this.commit(ADD_USER_NOTIFICATION, errObj);
   },
@@ -143,13 +106,18 @@ export default {
   },
   [LOAD_METADATA_CONTENT_BY_ID_SUCCESS](state, payload) {
     state.loadingCurrentMetadataContent = false;
-    const enhancedPayload = enhanceMetadatas(this, [payload]);
+
+    const enhancedPayload = enhanceMetadatas([payload]);
+
     state.currentMetadataContent = Object.values(enhancedPayload)[0];
   },
   [LOAD_METADATA_CONTENT_BY_ID_ERROR](state, reason) {
     state.loadingCurrentMetadataContent = false;
 
-    const errObj = getSpecificApiError('For this entry no Metadata could be loaded, please report if the error persists!', reason);
+    const errObj = getSpecificApiError(
+      'For this entry no Metadata could be loaded, please report if the error persists!',
+      reason,
+    );
 
     this.commit(ADD_USER_NOTIFICATION, errObj);
   },
@@ -162,7 +130,8 @@ export default {
     state.metadatasContent = {};
   },
   [BULK_LOAD_METADATAS_CONTENT_SUCCESS](state, payload) {
-    state.metadatasContent = enhanceMetadatas(this, payload);
+
+    state.metadatasContent = enhanceMetadatas(payload);
     state.authorsMap = extractAuthorsMap(payload);
 
     state.metadatasContentOK = true;
@@ -172,7 +141,10 @@ export default {
     state.loadingMetadatasContent = false;
     state.metadatasContentOK = false;
 
-    const errObj = getSpecificApiError('Metadata could not be loaded, please report if the error persists!', reason);
+    const errObj = getSpecificApiError(
+      'Metadata could not be loaded, please report if the error persists!',
+      reason,
+    );
 
     this.commit(ADD_USER_NOTIFICATION, errObj);
   },
@@ -186,7 +158,11 @@ export default {
   [UPDATE_TAGS_ERROR](state, reason) {
     state.updatingTags = false;
 
-    const errObj = warningMessage('Keyword update error', `Error: ${reason.message}. \n Filtering might not work properly try reloading the page`, reason.stack);
+    const errObj = warningMessage(
+      'Keyword update error',
+      `Error: ${reason.message}. \n Filtering might not work properly try reloading the page`,
+      reason.stack,
+    );
     this.commit(ADD_USER_NOTIFICATION, errObj);
   },
   [FILTER_METADATA](state) {
@@ -198,7 +174,11 @@ export default {
   },
   [FILTER_METADATA_ERROR](state, reason) {
     state.isFilteringContent = false;
-    const errObj = warningMessage('Filtering error', `Error: ${reason.message}. \n Filtering might not work properly try reloading the page`, reason.stack);
+    const errObj = warningMessage(
+      'Filtering error',
+      `Error: ${reason.message}. \n Filtering might not work properly try reloading the page`,
+      reason.stack,
+    );
     this.commit(ADD_USER_NOTIFICATION, errObj);
   },
   [PIN_METADATA](state, payload) {
@@ -212,21 +192,19 @@ export default {
     state.pinnedIds = [];
   },
   [SET_DETAIL_PAGE_BACK_URL](state, payload) {
-    state.detailPageBackRoute = payload;
+    // make a copy to avoid using a reactive object, otherwise with every navigation the backRoute is also updated!
+    state.detailPageBackRoute = { ...payload };
   },
   [SET_ABOUT_PAGE_BACK_URL](state, payload) {
-    state.aboutPageBackRoute = payload;
+    // make a copy to avoid using a reactive object, otherwise with every navigation the backRoute is also updated!
+    state.aboutPageBackRoute = { ...payload };
   },
-  [SET_VIRTUAL_LIST_INDEX](state, payload) {
-    state.vIndex = payload;
-  },
-/*
+  /*
   [METADATA_CREATE_NEW_AUTHOR](state, newAuthor) {
 
   },
 */
   [METADATA_UPDATE_AN_EXISTING_AUTHOR](state, modifiedAuthor) {
-
     let authorToUpdate = {};
     const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
 
@@ -238,7 +216,9 @@ export default {
 
     if (!authorToUpdate) {
       const existingAuthors = Object.values(authorsMap);
-      const subSelection = existingAuthors.filter(a => a.fullName === modifiedAuthor.fullName);
+      const subSelection = existingAuthors.filter(
+        a => a.fullName === modifiedAuthor.fullName,
+      );
 
       if (subSelection.length > 0) {
         key = modifiedAuthor.email;
@@ -250,13 +230,10 @@ export default {
     }
 
     if (authorToUpdate) {
-      // use $set to overwrite the entry and make sure the update event of
-      // vue is triggered
-      this._vm.$set(authorsMap, key,
-        {
-          ...authorToUpdate,
-          ...modifiedAuthor,
-        });
+      this.authorsMap[key] = {
+        ...authorToUpdate,
+        ...modifiedAuthor,
+      };
     }
   },
   [METADATA_UPDATE_EXISTING_AUTHORS](state, existingAuthors) {
@@ -268,8 +245,15 @@ export default {
   [METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS](state, payload) {
     state.existingKeywords = payload;
   },
+  [METADATA_UPDATE_EXISTING_TITLE](state, payload) {
+    state.titleEditing = payload;
+  },
   [METADATA_UPDATE_EXISTING_KEYWORDS_ERROR](state, reason) {
-    const errObj = warningMessage(`${METADATA_KEYWORDS_TITLE} Error`, `Error while processing keywords: ${reason.message}.`, reason.stack);
+    const errObj = warningMessage(
+      `${METADATA_KEYWORDS_TITLE} Error`,
+      `Error while processing keywords: ${reason.message}.`,
+      reason.stack,
+    );
     this.commit(ADD_USER_NOTIFICATION, errObj);
   },
 };

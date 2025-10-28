@@ -1,380 +1,347 @@
 <template>
-  <v-card id="EditResource"
-          :key="id"
-          :loading="loading"
-          class="pa-0">
+  <v-card
+    id="EditResource"
+    :key="id"
+    :loading="loadingColor"
+    class="pa-4">
 
-    <!-- prettier-ignore -->
-    <BaseIconButton id="EditResourceCloseButton"
-                    class="ma-2"
-                    :class="{ 'mx-1': $vuetify.breakpoint.smAndDown }"
-                    style="position: absolute; top: 0; right: 0; z-index: 2"
-                    material-icon-name="close"
-                    icon-color="primary"
-                    color="primary"
-                    outlined
-                    tooltipText="Cancel Resource Editing"
-                    :tooltipBottom="true"
-                    @clicked="$emit('closeClicked')"/>
+    <BaseIconButton
+      class="editResourceCloseButton ma-2"
+      :class="{ 'mx-1': $vuetify.display.smAndDown }"
+      style="position: absolute; top: 0; right: 0; z-index: 2"
+      :icon="mdiClose"
+      icon-color="primary"
+      outline-color="primary"
+      variant="outlined"
+      tooltip-text="Cancel Resource Editing"
+      tooltip-bottom
+      @clicked="$emit('closeClicked')" />
 
-
-    <v-container fluid class="pa-4">
-
-      <template slot="progress">
-        <v-progress-linear color="primary" indeterminate/>
-      </template>
-
-      <v-row>
-        <v-col cols="6" class="text-h5">
-          {{ labels.title }}
-        </v-col>
-
-        <v-col v-if="message">
-          <BaseStatusLabelView
-              statusIcon="check"
-              statusColor="success"
-              :statusText="message"
-              :expandedText="messageDetails"
-          />
-        </v-col>
-        <v-col v-if="error">
-          <BaseStatusLabelView
-              statusIcon="error"
-              statusColor="error"
-              :statusText="error"
-              :expandedText="errorDetails"
-          />
-        </v-col>
-      </v-row>
-
-      <v-row>
-        <v-col cols="12">
-          <div class="text-subtitle-1">{{ labels.instructions }}</div>
-        </v-col>
-      </v-row>
-
-
-      <v-row id="resourceName"
-             no-gutters class="pt-4">
-        <v-col cols="12">
-          <v-text-field
-            :label="labels.resourceName"
-            ref="resourceName"
-            outlined
-            required
-            :disabled="loading"
-            v-model="resourceNameField"
-            :error-messages="validationErrors.name"
-          />
 
 <!--
-          :readonly="mixinMethods_isFieldReadOnly('resourceName')"
+    <div class="pa-3">
+-->
+      <v-row>
+        <v-col class="text-h6 text-md-h5 d-flex">
+          <BaseIcon v-if="isDataPrivate" color="black" :icon="mdiLock" />
+          <BaseIcon v-if="isDataDeprecated" color="black" :icon="mdiCancel" />
+          <span :class="isDataPrivate || isDataDeprecated ? 'pl-2' : ''" >{{ labels.title }}</span>
+        </v-col>
+
+<!--
+        <v-col v-if="message">
+          <BaseStatusLabelView status="check" statusColor="success" :statusText="message"
+            :expandedText="messageDetails" />
+        </v-col>
+
+        <v-col v-if="error">
+          <BaseStatusLabelView status="error" statusColor="error" :statusText="error" :expandedText="errorDetails" />
+        </v-col>
+-->
+      </v-row>
+
+      <div class="pa-1 ">
+        <v-alert class="my-2" type="info" >{{ labels.instructions }}</v-alert>
+
+        <v-row id="resourceName" no-gutters class="pt-4">
+          <v-col cols="12">
+            <v-text-field
+              :label="labels.resourceName"
+              ref="resourceName"
+              required
+              :disabled="loading"
+              v-model="resourceNameField"
+              :error-messages="validationErrors.name" />
+
+          </v-col>
+        </v-row>
+
+        <v-row id="description" no-gutters class="pt-2">
+          <v-col cols="12">
+            <v-textarea
+              :label="labels.description"
+              auto-grow
+              :disabled="loading"
+              v-model="descriptionField"
+              :error-messages="validationErrors.description"
+            />
+          </v-col>
+        </v-row>
+
+        <v-row id="resourceUrl"
+               no-gutters class="pt-2">
+          <v-col
+            v-if="showImagePreview"
+            cols="12"
+            sm="4"
+            class="pt-3 pb-4 pr-0 pr-sm-4 flex-grow-0 flex-shrink-1"
+          >
+            <div
+              v-if="loadingImagePreview"
+              class="skeleton skeleton-animation-shimmer"
+              style="height: 100%; width: 100%; "
+            >
+              <div
+                style="width: 100%; min-height: 100%; "
+                class="bone bone-type-image"
+              ></div>
+            </div>
+
+            <v-img
+              v-show="!imagePreviewError"
+              :src="urlField"
+              ref="filePreview"
+              style="max-height: 100%; max-width: 100%; cursor: pointer;"
+              @click="catchImageClick"
+              @error="catchImageLoadError"
+              @load="loadingImagePreview = false"
+              alt="resource image preview"
+            />
+
+            <div v-if="imagePreviewError" class="imagePreviewErrorContainer">
+              <v-img
+                id="curtain"
+                :src="notFoundImg"
+                style="max-height: 100%; max-width: 100%; opacity: 0.25;"
+                alt="resource image could not be loaded!"
+              />
+
+              <div id="backdrop" class="pa-4 text-body-1">
+                Image preview could not be loaded!
+              </div>
+
+            </div>
+          </v-col>
+
+          <v-col
+            cols="12"
+            :sm="showImagePreview ? 8 : 12"
+            :class="showImagePreview ? 'pt-3 pb-4' : ''"
+          >
+            <v-textarea
+              v-if="isLongUrl"
+              :label="isLink ? labels.url : labels.fileName"
+              variant="outlined"
+              auto-grow
+              :readonly="urlReadOnly"
+              :hint="readOnlyHint('url')"
+              density="compact"
+              hide-details
+              :disabled="loading"
+              v-model="urlField"
+              :error-messages="validationErrors.url"
+            />
+            <v-text-field
+              v-if="!isLongUrl"
+              :label="isLink ? labels.url : labels.fileName"
+              variant="outlined"
+              :readonly="urlReadOnly"
+              :hint="readOnlyHint('url')"
+              density="compact"
+              hide-details
+              :disabled="loading"
+              v-model="urlField"
+              :error-messages="validationErrors.url"
+            />
+          </v-col>
+        </v-row>
+
+        <v-row no-gutters class="pt-4">
+          <v-col cols="12" :md="isDataDeprecated ? 4 : 6">
+            <BaseIconSwitch
+              :active="isDataDeprecated"
+              :disabled="!editingRestrictingActive"
+              :icon="mdiCancel"
+              class="mt-2"
+              :tooltipText="labels.dataDeprecatedSwitchTooltip"
+              @clicked="isDataDeprecated = !isDataDeprecated"
+              :label="labels.dataDeprecatedSwitchLabel"
+            />
+          </v-col>
+
+          <v-col cols="12" md="8" v-show="isDataDeprecated">
+            {{ labels.dataDeprecatedSwitchInfo }}
+          </v-col>
+        </v-row>
+
+        <v-row id="format" no-gutters class="pt-5">
+
+          <v-col cols="12" md="6" class="pr-md-4">
+
+            <v-row no-gutters>
+              <v-col class="flex-grow-0 pt-2">
+                <BaseIcon color="gray" :icon="fileFormatIcon"></BaseIcon>
+              </v-col>
+
+              <v-col class="pl-3">
+                <v-text-field
+                  :label="labels.format" hide-details="auto" :disabled="loading"
+                  @blur="formatField = $event.target.value"
+                  :model-value="formatField" :error-messages="validationErrors.format" />
+              </v-col>
+            </v-row>
+          </v-col>
+
+          <v-col id="size" cols="12" md="6" class="pt-2 pt-md-0">
+
+            <v-row no-gutters>
+              <v-col class="flex-grow-0 pt-2">
+                <BaseIcon color="gray" :icon="fileSizeIcon"></BaseIcon>
+              </v-col>
+
+              <v-col class="pl-3">
+                <v-text-field
+                  :label="labels.size" hide-details="auto" :disabled="!isLink || loading"
+                  :model-value="isLink ? sizeField : sizeFieldText"
+                  :error-messages="validationErrors.size"
+                  @blur="sizeField = $event.target.value"
+                />
+              </v-col>
+              <v-col class="px-2">
+                <v-select
+                  :items="labels.sizeFormatList"
+                  v-model="sizeFormatField"
+                  label="File size format"
+                  hide-details="auto"
+                  :disabled="!isLink || loading" :error-messages="validationErrors.sizeFormat" />
+              </v-col>
+            </v-row>
+
+
+          </v-col>
+        </v-row>
+
+        <v-row id="dates" no-gutters align="center" class="pt-3">
+
+          <v-col cols="12" md="6" class="pr-md-4">
+            <v-text-field
+              :label="labels.created" :prepend-icon="mdiCalendarRange" readonly hide-details
+              :disabled="loading" :model-value="readableCreated" />
+          </v-col>
+
+          <v-col cols="12" md="6" class="pt-2 pt-md-0">
+            <v-text-field
+              :label="labels.lastModified" :prepend-icon="mdiUpdate" readonly hide-details
+              :disabled="loading" :model-value="readableLastModified" />
+          </v-col>
+        </v-row>
+
+        <div class="text-h6 mt-6">Data access</div>
+
+        <div class="pa-1">
+          <v-expand-transition>
+            <v-alert v-if="isDataPrivate" type="warning" class="my-2">
+              <div v-html="openAccessDetails"></div>
+            </v-alert>
+          </v-expand-transition>
+
+          <BaseIconSwitch
+            :active="isDataPrivate"
+            :disabled="!editingRestrictingActive"
+            :icon="isDataPrivate ? mdiLock : mdiLockOpen"
+            class="mt-2"
+            :tooltipText="labels.dataAccessSwitchTooltip"
+            @clicked="isDataPrivate = !isDataPrivate"
+            :label="labels.dataAccessSwitchLabel" />
+
+
+          <BaseIconSwitch
+            v-if="isDataPrivate"
+            :active="hasAllowedUsers"
+            :disabled="!editingRestrictingActive"
+            :icon="mdiAccountGroup"
+            class="mt-2"
+            :tooltipText="labels.hasAllowedUsersSwitchTooltip"
+            @clicked="hasAllowedUsers = !hasAllowedUsers"
+            :label="labels.hasAllowedUsersSwitchLabel"
+          />
+
+          <v-row
+            v-if="isDataPrivate && hasAllowedUsers"
+            no-gutters
+            class="px-2 pt-3"
+          >
+            <v-col cols="12" class="pt-2">
+              <BaseUserPicker
+                :users="envidatUsersPicker"
+                :preSelectedNames="preSelectedAllowedUsers"
+                :pickerLabel="labels.restrictedAllowedUsersInfo"
+                multiplePick
+                :prependIcon="mdiKey"
+                userTagsCloseable
+                :placeholder="labels.allowedUsersTypingInfo"
+                @removedUsers="changeAllowedUsers"
+                @pickedUsers="changeAllowedUsers"
+              />
+            </v-col>
+          </v-row>
+
+          <v-row v-if="!editingRestrictingActive" class="py-2">
+            <v-col>
+              <v-alert type="warning" class="my-2" >{{ labels.editingRestrictingUnavailableInfo }}</v-alert>
+            </v-col>
+          </v-row>
+
+          <v-row v-if="checkUppercaseValue" class="py-2">
+            <v-col>
+              <v-alert type="info" class="my-2" >{{
+                labels.editingWarningUppercaseExtension
+              }}</v-alert>
+            </v-col>
+          </v-row>
+
+          <v-row no-gutters class="pt-4" justify="end">
+            <v-col class="flex-grow-0">
+              <!-- prettier-ignore -->
+              <BaseRectangleButton
+                  :disabled="!saveButtonEnabled"
+                  :loading="loading"
+                  :buttonText="labels.createButtonText"
+                @clicked="saveResourceClick" />
+            </v-col>
+          </v-row>
+        </div>
+      </div>
+
+<!--
+    </div>
 -->
 
-        </v-col>
-      </v-row>
-
-      <v-row id="description"
-             no-gutters
-              class="pt-2">
-        <v-col cols="12">
-
-          <v-textarea
-            :label="labels.description"
-            outlined
-            auto-grow
-            :disabled="loading"
-            v-model="descriptionField"
-            :error-messages="validationErrors.description"
-          />
-
-        </v-col>
-      </v-row>
-
-      <v-row id="resourceUrl"
-             no-gutters
-             class="pt-2">
-        <v-col v-if="showImagePreview"
-               cols="4"
-               class="pt-3 pb-4 pr-4 flex-grow-0 flex-shrink-1">
-
-          <div v-if="loadingImagePreview"
-               class="skeleton skeleton-animation-shimmer"
-              style="height: 100%; width: 100%; " >
-            <div style="width: 100%; min-height: 100%; "
-                class="bone bone-type-image">
-            </div>
-          </div>
-
-
-          <v-img v-show="!imagePreviewError"
-                 :src="urlField"
-                 ref="filePreview"
-                 style="max-height: 100%; max-width: 100%; cursor: pointer;"
-                 @click="catchImageClick"
-                 @error="catchImageLoadError"
-                 @load="loadingImagePreview = false"
-                 alt="resource image preview"/>
-
-          <div v-if="imagePreviewError"
-               class="imagePreviewErrorContainer">
-
-            <v-img id="curtain"
-                   :src="notFoundImg"
-                   style="max-height: 100%; max-width: 100%; opacity: 0.25;"
-                   alt="resource image could not be loaded!"/>
-
-            <div id="backdrop"
-                 class="pa-4 text-body-1">Image preview could not be loaded! </div>
-          </div>
-
-
-        </v-col>
-
-        <v-col :class="showImagePreview ? 'pt-3 pb-4' : ''">
-          <v-textarea v-if="isLongUrl"
-                      :label="isLink ? labels.url : labels.fileName"
-                      outlined
-                      auto-grow
-                      readonly
-                      dense
-                      hide-details
-                      :disabled="loading"
-                      :value="urlField"
-                      :error-messages="validationErrors.url"
-          />
-
-          <v-text-field v-if="!isLongUrl"
-                        :label="isLink ? labels.url : labels.fileName"
-                        outlined
-                        readonly
-                        dense
-                        hide-details
-                        :disabled="loading"
-                        :value="urlField"
-                        :error-messages="validationErrors.url"
-          />
-
-        </v-col>
-      </v-row>
-
-      <v-row id="format"
-             no-gutters
-            class="pt-5">
-
-        <v-col cols="12"
-                md="6"
-                class="pr-md-4">
-
-          <v-row no-gutters >
-            <v-col class="shrink pt-2">
-              <img class="customIcon"
-                   :src="fileFormatIcon"
-                   width="24"
-                   height="24"
-                   alt="file extension icon" />
-            </v-col>
-
-            <v-col class="pl-2">
-              <v-text-field
-                  :label="labels.format"
-                  outlined
-                  dense
-                  hide-details="auto"
-                  :disabled="loading"
-                  @change="formatField = $event"
-                  :value="formatField"
-                  :error-messages="validationErrors.format"
-              />
-            </v-col>
-          </v-row>
-        </v-col>
-
-        <v-col id="size"
-               cols="12"
-               md="6"
-               class="pt-2 pt-md-0">
-
-          <v-row no-gutters >
-            <v-col class="shrink pt-2">
-              <img class="customIcon"
-                   :src="fileSizeIcon"
-                   width="24"
-                   height="24"
-                   alt="file size icon" />
-            </v-col>
-
-            <v-col class="pl-2" >
-              <v-text-field
-                  :label="labels.size"
-                  outlined
-                  dense
-                  hide-details="auto"
-                  :disabled="!isLink || loading"
-                  @change="sizeField = $event"
-                  :value="isLink ? sizeField : sizeFieldText"
-                  :error-messages="validationErrors.size"
-              />
-            </v-col>
-            <v-col class="pl-2">
-              <v-select :items="labels.sizeFormatList"
-                        v-model="sizeFormatField"
-                        label="File size format"
-                        outlined
-                        dense
-                        hide-details="auto"
-                        :disabled="!isLink || loading"
-                        :error-messages="validationErrors.sizeFormat"
-              />
-            </v-col>
-          </v-row>
-
-
-        </v-col>
-      </v-row>
-
-      <v-row id="dates"
-             no-gutters
-             align="center"
-             class="pt-3">
-
-        <v-col cols="12"
-               md="6"
-               class="pr-md-4">
-          <v-text-field
-            :label="labels.created"
-            prepend-icon="date_range"
-            outlined
-            readonly
-            dense
-            hide-details
-            :disabled="loading"
-            :value="readableCreated"
-          />
-        </v-col>
-
-        <v-col cols="12"
-               md="6"
-                class="pt-2 pt-md-0">
-          <v-text-field
-            :label="labels.lastModified"
-            prepend-icon="update"
-            outlined
-            readonly
-            dense
-            hide-details
-            :disabled="loading"
-            :value="readableLastModified"
-          />
-        </v-col>
-      </v-row>
-
-      <v-row no-gutters
-             class="pt-5 ">
-        <v-col v-html="openAccessDetails">
-        </v-col>
-      </v-row>
-
-      <v-row no-gutters
-             class="pt-3 px-2"
-             align="center">
-        <v-col class="shrink pl-1 pr-4">
-          <BaseIconSwitch :active="isPublicField"
-                          :disabled="!editingRestrictingActive"
-                          :materialIconName="isPublicField ? 'check_circle' : 'check_circle_outline'"
-                          :tooltipText="isPublicField ? labels.isPublicInfo : labels.isNotPublicInfo"
-                          @clicked="isPublicField = !isPublicField"
-          />
-        </v-col>
-
-        <v-col>
-          {{ isPublicField ? labels.isPublicInfo : labels.isNotPublicInfo }}
-        </v-col>
-
-      </v-row>
-
-      <v-row v-if="isRestrictedField"
-             no-gutters
-             class="px-2 pt-3"
-             align="center">
-
-        <v-col class="shrink pl-1 pr-4">
-          <BaseIconSwitch :active="hasAllowedUsersField"
-                          :disabled="!editingRestrictingActive"
-                          materialIconName="lock_person"
-                          :tooltipText="hasAllowedUsersField ? labels.isRestrictedAllowedUsersInfo : labels.restrictedNotAllowedUsersInfo"
-                          @clicked="hasAllowedUsersField = !hasAllowedUsersField"
-          />
-        </v-col>
-
-        <v-col>
-          {{ hasAllowedUsersField ? labels.restrictedAllowedUsersInfo : labels.restrictedNotAllowedUsersInfo }}
-        </v-col>
-      </v-row>
-
-      <v-row v-if="isRestrictedField && hasAllowedUsersField"
-             no-gutters
-             class="px-2 pt-3">
-
-        <v-col cols="12"
-                class="pt-2">
-          <BaseUserPicker :users="envidatUserNameStrings"
-                          :pickerLabel="labels.isRestrictedAllowedUsersInfo"
-                          multiplePick
-                          prependIcon="key"
-                          userTagsCloseable
-                          :hint="labels.allowedUsersTypingInfo"
-                          :preSelected="preSelectedAllowedUsers"
-                          @removedUsers="changeAllowedUsers"
-                          @pickedUsers="changeAllowedUsers"
-          />
-        </v-col>
-
-      </v-row>
-
-      <v-row v-if="!editingRestrictingActive"
-             class="py-2">
-        <v-col :style="`background-color: ${$vuetify.theme.themes.light.warning};`" >
-          {{ labels.editingRestrictingUnavailableInfo }}
-        </v-col>
-      </v-row>
-
-      <v-row no-gutters
-             class="pt-4"
-             justify="end">
-        <v-col class="shrink">
-          <!-- prettier-ignore -->
-          <BaseRectangleButton :disabled="!saveButtonEnabled"
-                               :loading="loading"
-                               :buttonText="labels.createButtonText"
-                               @clicked="saveResourceClick"/>
-        </v-col>
-      </v-row>
-    </v-container>
   </v-card>
 </template>
 
-<script>
+<script lang="ts">
 /**
  * @summary Show all textfields for a resource
  * @author Dominik Haas-Artho
- *
- * Created at     : 2021-06-28 15:55:22
- * Last modified  : 2021-08-18 16:09:39
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { EDITMETADATA_DATA_RESOURCE } from '@/factories/eventBus';
+import {
+  mdiAccount,
+  mdiCalendarRange,
+  mdiClose,
+  mdiKey,
+  mdiLock,
+  mdiLockOpen,
+  mdiUpdate,
+  mdiCancel,
+  mdiAccountGroup,
+} from '@mdi/js';
+
+import {
+  EDITMETADATA_CLEAR_PREVIEW,
+  EDITMETADATA_DATA_RESOURCE,
+  eventBus,
+} from '@/factories/eventBus';
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue';
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
 
-import fileSizeIcon from '@/assets/icons/fileSize.png';
-import fileIcon from '@/assets/icons/file.png';
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
@@ -382,8 +349,8 @@ import {
 } from '@/factories/userEditingValidations';
 
 import { formatDateTimeToCKANFormat } from '@/factories/mappingFactory';
-import { formatDate } from '@/factories/metaDataFactory';
 import { renderMarkdown } from '@/factories/stringFactory';
+import {getFileIcon, getIconImage} from '@/factories/imageFactory';
 
 import notFoundImg from '@/modules/user/assets/imageNotFound.jpg';
 import {
@@ -393,6 +360,13 @@ import {
   ACCESS_LEVEL_SAMEORGANIZATION_VALUE,
   ACCESS_LEVEL_PUBLIC_VALUE,
 } from '@/factories/userEditingFactory';
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
+// import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
+import { formatDate } from '@/factories/dateFactory';
+import { getUserPickerObjects } from '@/factories/authorFactory.js';
+import { getFileExtension } from '@/factories/fileFactory';
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+import { RESOURCE_FORMAT_LINK } from '@/factories/metadataConsts';
 
 
 export default {
@@ -458,6 +432,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    deprecated: {
+      type: Boolean,
+      default: false,
+    },
     loading: {
       type: Boolean,
       default: false,
@@ -491,15 +469,29 @@ export default {
       default: undefined,
     },
   },
-  mounted() {
+  created() {
+    eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
+  beforeUnmount() {
+    eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+  },
+  mounted() {},
   computed: {
+    loadingColor() {
+      if (this.loading) {
+        return 'accent';
+      }
+
+      return undefined;
+    },
     editingRestrictingActive() {
       return this.userEditMetadataConfig?.editingRestrictingActive || false;
     },
     descriptionField: {
       get() {
-        return this.previews.description !== null ? this.previews.description : this.description;
+        return this.previews.description !== null
+          ? this.previews.description
+          : this.description;
       },
       set(value) {
         this.previews.description = value;
@@ -519,7 +511,8 @@ export default {
         const nameEqualsUrl = this.isLink ? value === this.url : false;
 
         if (nameEqualsUrl) {
-          this.validationErrors.name = 'Resource name can not be the same as the link.';
+          this.validationErrors.name =
+            'Resource name can not be the same as the link.';
           this.checkSaveButtonEnabled(false);
           return;
         }
@@ -534,7 +527,17 @@ export default {
         if (this.url && this.showImagePreview) {
           this.loadImagePreview(this.url);
         }
-        return this.url;
+
+        return this.previews.url !== null ? this.previews.url : this.url;
+      },
+      set(value) {
+        const valid = this.validateField('url', value);
+
+        if (valid) {
+          this.previews.url = value;
+        }
+
+        this.checkSaveButtonEnabled(valid);
       },
     },
     sizeField: {
@@ -563,10 +566,14 @@ export default {
     sizeFormatField: {
       get() {
         if (this.isLink) {
-          return this.previews.sizeFormat !== null ? this.previews.sizeFormat : this.sizeFormat;
+          return this.previews.sizeFormat !== null
+            ? this.previews.sizeFormat
+            : this.sizeFormat;
         }
 
-        return this.previews.sizeFormat !== null ? this.previews.sizeFormat : this.getFileSizeFormat(this.size);
+        return this.previews.sizeFormat !== null
+          ? this.previews.sizeFormat
+          : this.getFileSizeFormat(this.size);
       },
       set(value) {
         const valid = this.validateField('sizeFormat', value);
@@ -586,21 +593,37 @@ export default {
         return formatString.toLowerCase();
       },
       set(value) {
-
         const valid = this.validateField('format', value);
         if (valid) {
           this.previews.format = value;
         }
-
         this.checkSaveButtonEnabled(valid);
       },
+    },
+    urlAndFileExtensionMatch() {
+      const ext = getFileExtension(this.urlField);
+      return ext === this.formatField;
+    },
+    urlReadOnly() {
+      if(this.urlAndFileExtensionMatch) {
+        return true;
+      }
+
+      if (this.formatField !== RESOURCE_FORMAT_LINK) {
+        return true;
+      }
+
+      return this.isReadOnly('url')
+    },
+    checkUppercaseValue() {
+      // shows a warning message if the form receives an uppercase character in the file name
+      return /[A-Z]/.test(this.resourceNameField);
     },
     accessRestrictionLvl: {
       get() {
         let restrictionLvl;
 
         if (this.restricted) {
-
           if (typeof this.restricted === 'string') {
             let restrictedObj = {};
             try {
@@ -617,29 +640,38 @@ export default {
         return restrictionLvl || ACCESS_LEVEL_PUBLIC_VALUE;
       },
     },
-    isPublicField: {
+    isDataPrivate: {
       get() {
-        const level = this.previews.restrictedLevel !== null ? this.previews.restrictedLevel : this.accessRestrictionLvl;
-        return level === ACCESS_LEVEL_PUBLIC_VALUE; // && !this.hasAllowedUsersField;
+        const level =
+          this.previews.restrictedLevel !== null
+            ? this.previews.restrictedLevel
+            : this.accessRestrictionLvl;
+        return level !== ACCESS_LEVEL_PUBLIC_VALUE; // && !this.hasAllowedUsers;
       },
       set(value) {
-        this.previews.restrictedLevel = value ? ACCESS_LEVEL_PUBLIC_VALUE : ACCESS_LEVEL_SAMEORGANIZATION_VALUE;
+        this.previews.restrictedLevel = value
+          ? ACCESS_LEVEL_SAMEORGANIZATION_VALUE
+          : ACCESS_LEVEL_PUBLIC_VALUE;
 
         this.checkSaveButtonEnabled(true);
       },
     },
-    isRestrictedField: {
+    isDataDeprecated: {
       get() {
-        return !this.isPublicField;
+        return this.previews.deprecated !== null
+          ? this.previews.deprecated
+          : this.deprecated;
+      },
+      set(value) {
+        this.previews.deprecated = value;
+        this.checkSaveButtonEnabled(true);
       },
     },
     allowedUsers() {
       let users;
 
       if (this.restricted) {
-
         if (typeof this.restricted === 'string') {
-
           let restrictedObj = {};
           try {
             restrictedObj = JSON.parse(this.restricted);
@@ -655,9 +687,11 @@ export default {
 
       return users;
     },
-    hasAllowedUsersField: {
+    hasAllowedUsers: {
       get() {
-        return this.previews.hasAllowedUsers !== null ? this.previews.hasAllowedUsers : !!this.allowedUsers;
+        return this.previews.hasAllowedUsers !== null
+          ? this.previews.hasAllowedUsers
+          : !!this.allowedUsers;
       },
       set(value) {
         this.previews.hasAllowedUsers = value;
@@ -666,7 +700,9 @@ export default {
     },
     allowedUsersField: {
       get() {
-        return this.previews.allowedUsers !== null ? this.previews.allowedUsers : this.allowedUsers;
+        return this.previews.allowedUsers !== null
+          ? this.previews.allowedUsers
+          : this.allowedUsers;
       },
       set(value) {
         this.previews.allowedUsers = value;
@@ -674,23 +710,21 @@ export default {
       },
     },
     writeRestrictionLvl() {
-      if (this.isPublicField) {
-        return ACCESS_LEVEL_PUBLIC_VALUE;
+      if (this.isDataPrivate) {
+        return ACCESS_LEVEL_SAMEORGANIZATION_VALUE;
       }
-
-      return ACCESS_LEVEL_SAMEORGANIZATION_VALUE;
+      return ACCESS_LEVEL_PUBLIC_VALUE;
     },
-    envidatUserNameStrings() {
-      return getUserAutocompleteList(this.envidatUsers);
+    envidatUsersPicker() {
+      const users = getUserAutocompleteList(this.envidatUsers);
+      return getUserPickerObjects(users);
     },
     preSelectedAllowedUsers() {
       // match with the user.name but make sure the fullname or display_name is shown
       return getAllowedUserNames(this.allowedUsersField, this.envidatUsers);
     },
     openAccessDetails() {
-      const text = this.isPublicField ? this.labels.openAccessInstructions : this.labels.openAccessPreferedInstructions;
-
-      return renderMarkdown(text);
+      return renderMarkdown(this.labels.openAccessPreferedInstructions);
     },
     readableCreated() {
       return formatDate(this.created) || this.created;
@@ -730,31 +764,22 @@ export default {
       return getValidationMetadataEditingObject(EDITMETADATA_DATA_RESOURCE);
     },
     fileFormatIcon() {
-      // isLink ? 'link' : 'insert_drive_file'
-      if (!this.$store) {
-        return this.fileIcon;
-      }
-
-      return this.mixinMethods_getIconFileExtension(this.formatField) || this.fileIcon;
+      return getFileIcon(this.formatField);
     },
   },
   methods: {
     getFileSizeFormat(size) {
-      return this.labels.sizeFormatList[this.getFileSizeFormatIndex(size) - 1];
+      return this.labels.sizeFormatList[this.getFileSizeFormatIndex(size)];
     },
     getFileSizeFormatIndex(size) {
       if (!size) {
         return null;
       }
 
-      if (size < 1024) {
-        return 0;
-      }
-
       let convertedSized = size / 1024;
       let index = 0;
 
-      while(convertedSized > 1) {
+      while (convertedSized > 1) {
         convertedSized /= 1024;
         index++;
       }
@@ -773,16 +798,26 @@ export default {
         description: this.descriptionField,
         name: this.resourceNameField,
         format: this.formatField,
-        size: this.sizeField || 0,
+        size: this.formatField === RESOURCE_FORMAT_LINK ? 0 : this.sizeField || 0,
         sizeFormat: this.sizeFormatField,
+        url: this.urlField,
+      };
+
+      const validations = this.validations;
+      if (this.formatField === RESOURCE_FORMAT_LINK) {
+        delete validations.size;
+        delete validations.sizeFormat;
+        objectToValidate.size = 1;
+        objectToValidate.sizeFormat = this.getFileSizeFormat(1);
       }
 
       this.saveButtonEnabled = isObjectValidCheckAllProps(
-          objectToValidate,
-          this.validations, this.validationErrors);
+        objectToValidate,
+        this.validations,
+        this.validationErrors,
+      );
     },
     saveResourceClick() {
-
       const ckanIsoFormat = formatDateTimeToCKANFormat(new Date());
 
       const newResourceProps = {
@@ -791,16 +826,20 @@ export default {
         name: this.resourceNameField,
         lastModified: ckanIsoFormat,
         restricted: {
-          allowedUsers: this.hasAllowedUsersField ? this.allowedUsersField || '' : '',
+          allowedUsers: this.hasAllowedUsers
+            ? this.allowedUsersField || ''
+            : '',
           level: this.writeRestrictionLvl,
           sharedSecret: '',
         },
+        deprecated: this.isDataDeprecated,
         format: this.formatField.toLowerCase(),
+        url: this.urlField,
         // don't set the "size" directly because this is done
         // via the file upload
         resourceSize: {
-          sizeValue: this.isLink ? this.sizeField.toString() : '',
-          sizeUnits: this.isLink ? this.sizeFormatField.toLowerCase() : '',
+          sizeValue: this.isLink ? this.sizeField?.toString() : '1',
+          sizeUnits: this.isLink ? this.sizeFormatField?.toLowerCase() : this.getFileSizeFormat(1),
         },
       };
 
@@ -809,14 +848,16 @@ export default {
     loadImagePreview(url) {
       this.imagePreviewError = null;
       this.loadingImagePreview = true;
+
+      // @ts-ignore @typescript-eslint/no-this-alias
       const vm = this;
 
       this.$nextTick(() => {
         try {
           const imageRefs = vm.$refs.filePreview;
-          const imageRef = (imageRefs instanceof Array) ? imageRefs[0] : imageRefs;
-          imageRef.src = url;
-
+          const imageRef =
+            imageRefs instanceof Array ? imageRefs[0] : imageRefs;
+          imageRef.$el.src = url;
         } catch (e) {
           vm.imagePreviewError = e;
           vm.loadingImagePreview = false;
@@ -832,25 +873,43 @@ export default {
       this.imagePreviewError = event;
       this.loadingImagePreview = false;
     },
-    changeAllowedUsers(pickedUserNames) {
-      this.allowedUsersField = getAllowedUsersString(pickedUserNames, this.envidatUsers);
+    changeAllowedUsers(pickedUserNames: string[]) {
+      this.allowedUsersField = getAllowedUsersString(
+        pickedUserNames,
+        this.envidatUsers,
+      );
     },
     validateField(property, value) {
       return isFieldValid(
-          property,
-          value,
-          this.validations,
-          this.validationErrors,
+        property,
+        value,
+        this.validations,
+        this.validationErrors,
       );
     },
     clearPreviews() {
       const keys = Object.keys(this.previews);
-      keys.forEach((key) => {
+      keys.forEach(key => {
         this.previews[key] = null;
       });
     },
+    isReadOnly(property) {
+      return isFieldReadOnly(this.$props, property);
+    },
+    readOnlyHint(property) {
+      return readOnlyHint(this.$props, property);
+    },
   },
   data: () => ({
+    mdiCancel,
+    mdiKey,
+    mdiAccount,
+    mdiLock,
+    mdiLockOpen,
+    mdiClose,
+    mdiCalendarRange,
+    mdiUpdate,
+    mdiAccountGroup,
     previews: {
       name: null,
       description: null,
@@ -860,40 +919,50 @@ export default {
       format: null,
       size: null,
       sizeFormat: null,
+      deprecated: null,
+      url: null,
     },
     loadingImagePreview: false,
     imagePreviewError: null,
     labels: {
       title: 'Edit Selected Resource',
       instructions:
-        'Change information about this resource, make sure to describe all the details so others know what this resource contains.',
-      subInstructions: 'For files larger then 5GB contact the envidat team.',
+        'Make sure the resource name is descriptive and the description helps others understand what the data is about.',
+      subInstructions: 'For files larger then 5GB contact the EnviDat team.',
       createButtonText: 'Save Resource',
       description: 'Resource description',
       resourceName: 'Name of the resource',
       fileName: 'File',
       url: 'Link',
-      created: 'Create at',
+      created: 'Created at',
       lastModified: 'Last modified time',
       size: 'File size',
-      sizeFormatList: ['KB', 'MB', 'GB', 'TB', 'PB'],
+      sizeFormatList: ['B', 'KB', 'MB', 'GB', 'TB', 'PB'],
       format: 'File format',
-      restricted: 'Access restrictions',
-      openAccessInstructions: 'Resource is Open Access, great!',
-      openAccessPreferedInstructions: 'Resource is **NOT** Open Access! \n EnviDat recommends providing "Open Access" to research data! Please make your data available to everyone without a barrier, unless it contains sensitive data.',
-      isPublicInfo: 'Resource openly accessible to everyone',
-      isNotPublicInfo: 'Resource has restricted accessibility, only signed in users from the same organization have access',
-      isRestrictedInfo: 'Resource is only accessible to users which are signed in',
-      isRestrictedAllowedUsersInfo: 'Grant specific users access',
-      allowedUsersTypingInfo: 'Start typing the name in the text field to search for an envidat user.',
-      isSameOrganizationInfo: 'Resource is accessible to users in the same organization as the dataset',
-      restrictedAllowedUsersInfo: 'Additional access is granted to the following users',
-      restrictedNotAllowedUsersInfo: 'No access is granted on a per user basis',
-      editingRestrictingUnavailableInfo: 'Editing the accessibility of resources is not available at the moment. Please contact the EnviDat team if you need to make changes.',
+      openAccessPreferedInstructions:
+        'Resource is **NOT** Open Access!\nPlease make your data available to everyone unless it contains sensitive data.\nData is **always** accessible by people in the same organization.',
+      dataAccessSwitchLabel: 'Data is private',
+      dataAccessSwitchTooltip:
+        'If the resource is private, only signed in users from the same organization have access',
+      hasAllowedUsersSwitchLabel: 'Grant specific users access',
+      hasAllowedUsersSwitchTooltip:
+        'Grant access to a specific list of users even if the resource is marked as private',
+      allowedUsersTypingInfo:
+        'Start typing the name in the text field to search for an EnviDat user.',
+      restrictedAllowedUsersInfo:
+        'Additional access is granted to the following users',
+      editingRestrictingUnavailableInfo:
+        'Editing the accessibility of resources is not available at the moment. Please contact the EnviDat team if you need to make changes.',
+      editingWarningUppercaseExtension:
+        'EnviDat automatically converts filename/extension to lowercase. To preserve uppercase extensions (e.g., .R), please upload a compressed (.zip) version of your file.',
+      dataDeprecatedSwitchLabel: 'Data is deprecated',
+      dataDeprecatedSwitchTooltip:
+        'Deprecated resources are grayed out and at the bottom of the list',
+      dataDeprecatedSwitchInfo:
+        'Deprecated resources are grayed out and at the bottom of the list. Make sure you provide an updated replacement!',
     },
     saveButtonEnabled: false,
-    fileSizeIcon,
-    fileIcon,
+    fileSizeIcon: getIconImage('fileSize'),
     validationErrors: {
       name: null,
       description: null,
@@ -909,6 +978,8 @@ export default {
     BaseRectangleButton,
     BaseIconButton,
     BaseIconSwitch,
+    BaseIcon,
+    // BaseStatusLabelView,
   },
 };
 </script>
@@ -918,15 +989,12 @@ export default {
   display: grid;
 }
 
-#backdrop, #curtain {
+#backdrop,
+#curtain {
   grid-area: 1/1;
 }
-
-#backdrop {  }
-#curtain {  }
 
 .customIcon {
   opacity: 0.5;
 }
-
 </style>

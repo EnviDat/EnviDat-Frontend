@@ -9,9 +9,9 @@
              class="py-1 py-md-0"
         >
 
-            <v-divider v-if="!step && $vuetify.breakpoint.smAndUp"
-                       color="accent"
+            <v-divider v-if="!step && $vuetify.display.smAndUp"
                        class="mx-2 mx-md-5"
+                       :opacity="0.3"
                        style="align-self: center; "
             />
 
@@ -23,7 +23,7 @@
                         :complete="step.completed"
                         :number="step.number"
                         :error="step.error"
-                        :showNumberOnly="$vuetify.breakpoint.smAndDown"
+                        :showNumberOnly="$vuetify.display.xs"
                         @stepClick="catchStepClick(step.title)"
             />
 
@@ -36,17 +36,16 @@
 
 <script>
 /**
-
  * @summary Stepper for structuring a workflow
  * @author Dominik Haas-Artho
  *
  * Created at     : 2021-06-29 13:51:43
  * Last modified  : 2021-07-28 07:54:13
-
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
+import StepButton from '@/components/Navigation/StepButton.vue';
 
 export default {
   name: 'StepperHeader',
@@ -78,7 +77,7 @@ export default {
 
         if ((i + 1) % 2 !== 0) {
           step = {
-            ... this.steps[stepCount],
+            ...this.steps[stepCount],
             number: (stepCount + 1),
           };
           stepCount++;
@@ -107,7 +106,9 @@ export default {
       this.$emit('stepClick', title);
     },
   },
-  components: {},
+  components: {
+    StepButton,
+  },
 };
 </script>
 

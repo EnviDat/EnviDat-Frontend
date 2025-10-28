@@ -1,21 +1,20 @@
 <template>
-  <div>
+  <div :id="id">
     <div v-if="isVerticalLayout">
       <v-row>
         <v-col :cols="columns">
           <v-textarea
-              class="heightAndScroll pt-1"
+            class="heightAndScroll pt-1"
             :label="labelTextarea"
             :placeholder="placeholderTextarea"
-            outlined
             auto-grow
             :readonly="readonly"
             :hint="hint"
             :prepend-icon="prependIcon"
             :error-messages="validationError"
-            :value="textareaContent"
-            @input="catchInputedText($event)"
-            @change="catchChangedText($event)"
+            :model-value="textareaContent"
+            @update:model-value="catchInputedText($event.target.value)"
+            @change="catchChangedText($event.target.value)"
           >
           </v-textarea>
         </v-col>
@@ -35,19 +34,19 @@
     </div>
 
     <v-row v-if="!isVerticalLayout">
-      <v-col>
+      <v-col :cols="columns">
         <v-textarea
           class="heightAndScroll pt-1"
           :label="labelTextarea"
           :placeholder="placeholderTextarea"
-          outlined
           auto-grow
           :readonly="readonly"
           :hint="hint"
+          :prepend-icon="prependIcon"
           :error-messages="validationError"
-          :value="textareaContent"
-          @input="catchInputedText($event)"
-          @change="catchChangedText($event)"
+          :model-value="textareaContent"
+          @update:model-value="catchInputedText($event.target.value)"
+          @change="catchChangedText($event.target.value)"
         >
         </v-textarea>
       </v-col>
@@ -86,6 +85,10 @@
 export default {
   name: 'GenericTextareaPreviewLayout',
   props: {
+    id: {
+      type: String,
+      default: null,
+    },
     isVerticalLayout: {
       type: Boolean,
       default: false,

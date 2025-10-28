@@ -3,15 +3,10 @@
           class="pa-0"
           :height="height"
           :width="minWidth"
-          :loading="loading">
+          :loading="loadingColor">
 
     <v-container fluid
                  class="pa-4">
-
-      <template slot="progress">
-        <v-progress-linear color="primary"
-                           indeterminate />
-      </template>
 
       <v-row>
         <v-col class="text-h5">
@@ -19,13 +14,13 @@
         </v-col>
 
         <v-col v-if="message" >
-          <BaseStatusLabelView statusIcon="check"
+          <BaseStatusLabelView status="check"
                                statusColor="success"
                                :statusText="message"
                                :expandedText="messageDetails" />
         </v-col>
         <v-col v-if="error"  >
-          <BaseStatusLabelView statusIcon="error"
+          <BaseStatusLabelView status="error"
                                statusColor="error"
                                :statusText="error"
                                :expandedText="errorDetails" />
@@ -45,17 +40,15 @@
           <v-text-field ref="firstName"
                         id="firstName"
                         :label="labels.firstName"
-                        outlined
-                        dense
-                        :readonly="checkReadOnly('firstName')"
-                        :hint="checkReadOnlyHint('firstName')"
-                        prepend-icon="person"
+                        :readonly="isReadOnly('firstName')"
+                        :hint="readOnlyHint('firstName')"
+                        :prepend-icon="mdiAccount"
                         :error-messages="validationErrors.firstName"
                         :placeholder="labels.firstName"
-                        :value="firstNameField"
+                        :model-value="firstNameField"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('firstName', $event)"
-                        @input="previewChange('firstName', $event)"
+                        @update:model-value="previewChange('firstName', $event.target.value)"
           />
         </v-col>
       </v-row>
@@ -65,17 +58,15 @@
           <v-text-field ref="lastName"
                         id="lastName"
                         :label="labels.lastName"
-                        outlined
-                        dense
-                        :readonly="checkReadOnly('lastName')"
-                        :hint="checkReadOnlyHint('lastName')"
-                        prepend-icon="person"
+                        :readonly="isReadOnly('lastName')"
+                        :hint="readOnlyHint('lastName')"
+                        :prepend-icon="mdiAccount"
                         :error-messages="validationErrors.lastName"
                         :placeholder="labels.lastName"
-                        :value="lastNameField"
+                        :model-value="lastNameField"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('lastName', $event)"
-                        @input="previewChange('lastName', $event)"
+                        @update:model-value="previewChange('lastName', $event.target.value)"
           />
         </v-col>
       </v-row>
@@ -85,17 +76,15 @@
           <v-text-field ref="email"
                         id="email"
                         :label="labels.email"
-                        outlined
-                        dense
-                        :readonly="checkReadOnly('email')"
-                        :hint="checkReadOnlyHint('email')"
-                        prepend-icon="email"
+                        :readonly="isReadOnly('email')"
+                        :hint="readOnlyHint('email')"
+                        :prepend-icon="mdiEmail"
                         :error-messages="validationErrors.email"
                         :placeholder="labels.email"
-                        :value="emailField"
+                        :model-value="emailField"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('email', $event)"
-                        @input="previewChange('email', $event)"
+                        @update:model-value="previewChange('email', $event.target.value)"
           />
         </v-col>
 
@@ -127,6 +116,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import {mdiAccount, mdiEmail} from '@mdi/js';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import UserCard from '@/components/Cards/UserCard.vue';
 import { getAuthorName, getNameInitials } from '@/factories/authorFactory';
@@ -143,6 +133,7 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 
 export default {
   name: 'EditUserProfile',
@@ -207,10 +198,17 @@ export default {
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   computed: {
+    loadingColor() {
+      if (this.loading) {
+        return 'accent';
+      }
+
+      return undefined;
+    },
     firstNameField() {
       return this.previews.firstName !== null ? this.previews.firstName : this.firstName;
     },
@@ -256,20 +254,6 @@ export default {
     },
   },
   methods: {
-    checkReadOnly(property) {
-      if (!this.$store) {
-        return false;
-      }
-
-      return this.mixinMethods_isFieldReadOnly(property);
-    },
-    checkReadOnlyHint(property) {
-      if (!this.$store) {
-        return '';
-      }
-
-      return this.mixinMethods_readOnlyHint(property);
-    },
     focusIn(event) {
       this.markPropertyActive(event.target, true);
     },
@@ -326,6 +310,12 @@ export default {
       this.previews.lastName = null;
       this.previews.email = null;
     },
+    isReadOnly(dateProperty) {
+      return isFieldReadOnly(this.$props, dateProperty);
+    },
+    readOnlyHint(dateProperty) {
+      return readOnlyHint(this.$props, dateProperty);
+    },
   },
   data: () => ({
     editingProperty: 'description',
@@ -356,6 +346,8 @@ export default {
       lastName: false,
       email: false,
     },
+    mdiEmail,
+    mdiAccount,
   }),
   components: {
     UserCard,

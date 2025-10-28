@@ -12,48 +12,53 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import {
-  ADD_USER_NOTIFICATION,
-} from '@/store/mainMutationsConsts';
+import { mdiInformation, mdiCheckCircle, mdiAlert, mdiAlertOctagram } from '@mdi/js';
+import { ADD_USER_NOTIFICATION } from '@/store/mainMutationsConsts';
 
-function defaultNotification() {
+
+export function infoMessage(message = undefined, details = undefined) {
   return {
-    message: 'short text for the user',
-    details: 'the full error text',
-    stack: 'the Stack Trace',
-    color: 'success',
-    icon: 'check_circle',
+    message: message || 'short text for the user',
+    details: details || 'the full error text',
+    stack: undefined,
+    color: 'white',
+    icon: mdiInformation,
     type: 'info',
     timeout: 4000,
     show: true,
   };
 }
+
 export function successMessage(message, details) {
-  const notification = defaultNotification();
+  const notification = infoMessage();
   notification.message = message;
   notification.details = details;
+  notification.icon = mdiCheckCircle;
+  notification.color = 'success';
+  notification.type = 'success';
+
   return notification;
 }
 
 export function errorMessage(message, details, stack) {
-  const notification = defaultNotification();
+  const notification = infoMessage();
   notification.message = message;
   notification.details = details;
   notification.stack = stack;
   notification.color = 'error';
-  notification.icon = 'error';
+  notification.icon = mdiAlertOctagram;
   notification.type = 'error';
   notification.timeout = 8000;
   return notification;
 }
 
 export function warningMessage(message, details, stack) {
-  const notification = defaultNotification();
+  const notification = infoMessage();
   notification.message = message;
   notification.details = details;
   notification.stack = stack;
   notification.color = 'warning';
-  notification.icon = 'warning';
+  notification.icon = mdiAlert;
   notification.type = 'warning';
   notification.timeout = 6000;
   return notification;
@@ -83,10 +88,14 @@ function genericMessage(status) {
 export function getSpecificApiError(details, reason) {
   let errObj = errorMessage(reason, details);
 
-  if (reason && reason.response) {
-    const status = `${reason.response.status} ${reason.response.statusText}`;
-    details += `\n ${reason.request ? reason.request.responseURL : ''}`;
-    errObj = errorMessage(status, details, reason.response.stack);
+  if (reason) {
+    if (reason.response) {
+      const status = `${reason.response.status} ${reason.response.statusText}`;
+      details += `\n ${reason.request ? reason.request.responseURL : ''}`;
+      errObj = errorMessage(status, details, reason.response.stack);
+    } else {
+      errObj.message = reason.message;
+    }
   }
 
   return errObj;

@@ -1,84 +1,17 @@
 <template>
-  <div id="BaseIconCountView">
-    <v-tooltip v-if="$vuetify.breakpoint.mdAndUp && tooltipText" bottom>
-      <template v-slot:activator="{ on }">
-        <div v-on="on" class="iconCountView">
-          <v-container fluid class="pa-0">
-            <v-row
-              @mouseover="hoverBadge = true"
-              @mouseleave="hoverBadge = false"
-              no-gutters
-            >
-              <v-col class="pa-0">
-                <v-badge
-                  :left="!hoverBadge"
-                  overlap
-                  color="secondary"
-                  :class="{
-                    envidatBadgeBigNumber: count > 9,
-                    envidatBadge: count <= 9,
-                  }"
-                >
-                  <span slot="badge">{{ count }}</span>
-                </v-badge>
-              </v-col>
-
-              <v-col v-if="iconString"
-                     class="pa-0">
-                <img
-                  class="envidatIcon"
-                  :src="iconString"
-                  :alt="`${iconString} icon`"
-                />
-              </v-col>
-
-              <v-col v-if="materialIconName">
-                <v-icon>{{ materialIconName }}</v-icon>
-              </v-col>
-            </v-row>
-          </v-container>
-        </div>
-      </template>
-
-      <span>{{ tooltipText }}</span>
-    </v-tooltip>
-
-    <div v-else class="iconCountView">
-      <v-container fluid class="pa-0">
-        <v-row
-          @mouseover="hoverBadge = true"
-          @mouseleave="hoverBadge = false"
-          no-gutters
-        >
-          <v-col class="pa-0">
-            <v-badge
-              :left="!hoverBadge"
-              overlap
-              color="secondary"
-              style="z-index: 2;"
-              :class="{
-                envidatBadgeBigNumber: count > 9,
-                envidatBadge: count <= 9,
-              }"
-            >
-              <span slot="badge">{{ count }}</span>
-            </v-badge>
-          </v-col>
-
-          <v-col class="pa-0" style="z-index: 1;">
-            <img
-              class="envidatIcon"
-              :src="iconString"
-              :alt="`${iconString} icon`"
-            />
-          </v-col>
-        </v-row>
-      </v-container>
-    </div>
+  <div class="BaseIconCountView">
+    <base-icon
+      :icon="icon"
+      :count="count"
+      color="grey-darken-4"
+      v-bind="$props"
+    />
   </div>
 </template>
 
 <script>
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
+
 /**
  * BaseIconCountView.vue creates a round with an icon with a badge which shows a number
  * Similar to @class BaseIconButton but without the click event.
@@ -94,9 +27,9 @@
  */
 export default {
   name: 'BaseIconCountView',
+  components: { BaseIcon },
   props: {
-    iconString: String,
-    materialIconName: String,
+    icon: String,
     count: Number,
     tooltipText: String,
   },
@@ -106,10 +39,5 @@ export default {
 };
 </script>
 
-<style>
-.iconCountView {
-  /* line-height has to be based on the root (1rem) because of the
-    use in ex. v-card-title */
-  line-height: 1rem;
-}
+<style scoped>
 </style>

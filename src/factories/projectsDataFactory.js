@@ -37,9 +37,11 @@ function assignSubprojects(project, extra, projects) {
   for (let k = 0; k < splits.length; k++) {
     const sub = splits[k].trim();
 
-    const matchedProject = projects.filter(p => p.title.includes(sub));
-    if (matchedProject.length >= 1) {
-      project.subProjects.push(matchedProject[0]);
+    if (sub) {
+      const matchedProject = projects.filter(p => p.title.includes(sub));
+      if (matchedProject.length >= 1) {
+        project.subProjects.push(matchedProject[0]);
+      }
     }
   }
 

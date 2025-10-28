@@ -2,21 +2,26 @@
   <v-chip
     class="stateChip"
     :class="{
-        stateChipHover: !this.showContent,
-        'px-3': true,
-      }"
+      'stateChipHover': !this.showContent,
+      'px-2': true,
+    }"
     @mouseover="hover = true"
     @mouseleave="hover = false"
     :color="stateColor"
     :style="!showContent ? 'font-size: 0.9rem;' : ''"
   >
-    <v-tooltip bottom>
-      <template v-slot:activator="{ on }">
-        <v-row v-on="on"
+    <v-tooltip location='bottom'>
+      <template v-slot:activator="{ props }">
+        <v-row v-bind="props"
                align="center"
-                no-gutters>
-          <v-col >{{ showContent ? stateText : stateText.substring(0, 1) }}</v-col>
-          <v-col v-show="showContent" class="pl-1"><v-icon>{{ stateIcon }}</v-icon></v-col>
+               no-gutters
+               class="flex-nowrap">
+          <v-col >
+            <v-icon :icon="stateIcon" />
+          </v-col>
+          <v-col :class="showContent ? 'px-1' : ''" >
+            {{ showContent ? stateText : ''  }}
+          </v-col>
         </v-row>
       </template>
 
@@ -25,7 +30,8 @@
   </v-chip>
 </template>
 
-<script>/**
+<script>
+/**
  * MetadataStateChip.vue show the publication state of a metadata entry
  *
  * @summary show the publication state
@@ -37,10 +43,11 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import { mdiEye, mdiEyeOff, mdiPlaylistEdit } from '@mdi/js';
 import {
   METADATA_STATE_DRAFT,
-  METADATA_STATE_INVISILBE,
-  METADATA_STATE_VISILBE,
+  METADATA_STATE_INVISIBLE,
+  METADATA_STATE_VISIBLE,
 } from '@/factories/metadataConsts';
 
 export default {
@@ -54,25 +61,26 @@ export default {
       type: Object,
       default: () => ({
         [METADATA_STATE_DRAFT]: 'Draft datasets are only visible to you',
-        [METADATA_STATE_INVISILBE]:
+        [METADATA_STATE_INVISIBLE]:
           'Dataset is hidden, only you and members from your organization can see it',
-        [METADATA_STATE_VISILBE]: 'Visible datasets are publicly visible for everyone',
+        [METADATA_STATE_VISIBLE]:
+          'Visible datasets are publicly visible for everyone',
       }),
     },
     colorMap: {
       type: Object,
       default: () => ({
-        [METADATA_STATE_DRAFT]: 'gray',
-        [METADATA_STATE_INVISILBE]: 'warning',
-        [METADATA_STATE_VISILBE]: 'green',
+        [METADATA_STATE_DRAFT]: '#e0e0e0',
+        [METADATA_STATE_INVISIBLE]: 'warning',
+        [METADATA_STATE_VISIBLE]: 'green',
       }),
     },
     iconMap: {
       type: Object,
       default: () => ({
-        [METADATA_STATE_DRAFT]: 'edit_note',
-        [METADATA_STATE_INVISILBE]: 'visibility_off',
-        [METADATA_STATE_VISILBE]: 'visibility',
+        [METADATA_STATE_DRAFT]: mdiPlaylistEdit,
+        [METADATA_STATE_INVISIBLE]: mdiEyeOff,
+        [METADATA_STATE_VISIBLE]: mdiEye,
       }),
     },
     showOnHover: {
@@ -110,6 +118,7 @@ export default {
 .stateChip {
   height: 1.65rem;
   font-size: 0.75rem;
+  width: auto;
 }
 
 .stateChipHover > .v-chip__content > div:nth-child(1) {

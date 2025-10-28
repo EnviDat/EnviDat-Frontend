@@ -12,15 +12,14 @@
       <v-col>
         <v-text-field
           readonly
-          outlined
           label="Organization"
-          :value="organization"
+          :model-value="organization"
         />
       </v-col>
     </v-row>
 
     <OrganizationTree
-      :organizationsMap="organizationsMap"
+      :organizationsTree="organizationsTree"
       :preSelectedOrganization="organization"
       :selectionDisabled="selectionDisabled"
       @organizationChanged="catchOrganizationChanged"
@@ -58,9 +57,9 @@ export default {
       type: String,
       default: '',
     },
-    organizationsMap: {
-      type: Object,
-      default: () => {},
+    organizationsTree: {
+      type: Array,
+      default: () => [],
     },
     selectionDisabled: {
       type: Boolean,

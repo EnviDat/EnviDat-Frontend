@@ -1,9 +1,8 @@
 <template>
-  <v-card id="EditDataLicense" class="pa-0" :loading="loading">
-    <v-container fluid class="pa-4 fill-height">
-      <template slot="progress">
-        <v-progress-linear color="primary" indeterminate />
-      </template>
+  <v-card id="EditDataLicense"
+          class="pa-0"
+          :loading="loadingColor">
+    <v-container fluid class="pa-4">
 
       <v-row>
         <v-col cols="8" class="text-h5">
@@ -12,7 +11,7 @@
 
         <v-col v-if="message">
           <BaseStatusLabelView
-            statusIcon="check"
+            status="check"
             statusColor="success"
             :statusText="message"
             :expandedText="messageDetails"
@@ -20,7 +19,7 @@
         </v-col>
         <v-col v-if="error">
           <BaseStatusLabelView
-            statusIcon="error"
+            status="error"
             statusColor="error"
             :statusText="error"
             :expandedText="errorDetails"
@@ -38,36 +37,34 @@
       <v-row>
         <v-col>
           <v-select
-            :items="dataLicenses"
+            :items="activeLicenses"
             item-value="id"
-            item-text="title"
-            outlined
-            hide-details
+            item-title="title"
             :label="labels.dataLicense"
-            :readonly="mixinMethods_isFieldReadOnly('dataLicenseId')"
-            :hint="mixinMethods_readOnlyHint('dataLicenseId')"
-            prepend-icon="policy"
-            append-icon="arrow_drop_down"
-            :value="selectedLicense"
-            @input="changeLicense($event)"
+            :readonly="isDataLicenseReadonly"
+            hide-details="auto"
+            persistent-hint
+            :hint="dataLicenseReadonlyExplanation"
+            :prepend-icon="mdiShieldSearch"
+            :menu-icon="mdiArrowDownDropCircleOutline"
+            :model-value="selectedLicense"
+            @update:model-value="changeLicense($event)"
             :error-messages="validationErrors.dataLicense"
           />
+
         </v-col>
       </v-row>
 
       <v-row class="pl-md-8">
         <v-col>
-          <v-expansion-panels focusable>
-            <v-expansion-panel>
-              <v-expansion-panel-header expand-icon="arrow_drop_down"
-              class="py-2 px-3">
-                {{ dataSummaryClickInfo }}
-              </v-expansion-panel-header>
-              <!--              <v-expansion-panel-content>{{ this.getDataLicenseSummary }}</v-expansion-panel-content>-->
-              <v-expansion-panel-content
-                  class="pa-1 pa-md-2 licensePanel">
+          <v-expansion-panels >
+            <v-expansion-panel
+              :title='dataSummaryClickInfo'
+            >
+              <v-expansion-panel-text>
                 <div v-html="getDataLicenseSummary" />
-              </v-expansion-panel-content>
+              </v-expansion-panel-text>
+
             </v-expansion-panel>
           </v-expansion-panels>
         </v-col>
@@ -76,12 +73,12 @@
       <v-row>
         <v-col class="text-body-2">
           <div>{{ labels.dataLicenseUrl }}</div>
-          
+
           <a v-if="dataLicenseLinkExists"
              :href="getDataLicenseLink" target="_blank">
             {{ getDataLicenseLink }}
           </a>
-          
+
           <div v-if="!dataLicenseLinkExists" >
             {{ getDataLicenseLink }}
           </div>
@@ -107,6 +104,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { mdiArrowDownDropCircleOutline, mdiShieldSearch } from '@mdi/js';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import {
   EDITMETADATA_CLEAR_PREVIEW,
@@ -122,7 +120,16 @@ import {
   isFieldValid,
 } from '@/factories/userEditingValidations';
 
-import { dataLicenses } from '@/factories/dataLicense';
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+
+import {
+  getAvailableLicensesForEditing,
+  dataLicenses,
+  OTHER_UNDEFINED_LICENSE_ID,
+  WSL_DATA_LICENSE_ID,
+} from '@/factories/dataLicense';
+
+import { EDIT_METADATA_DATALICENSE_TITLE, METADATA_DATALICENSE_PROPERTY } from '@/factories/metadataConsts';
 
 export default {
   name: 'EditDataLicense',
@@ -163,10 +170,17 @@ export default {
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   computed: {
+    loadingColor() {
+      if (this.loading) {
+        return 'accent';
+      }
+
+      return undefined;
+    },
     dataSummaryClickInfo() {
       if (this.currentDataLicense) {
         return `${this.labels.dataLicenseSummary} of ${this.currentDataLicense.title}`;
@@ -212,6 +226,28 @@ export default {
     dataLicenseLinkExists() {
       return !!this.currentDataLicense?.link;
     },
+    activeLicenses() {
+      return getAvailableLicensesForEditing();
+    },
+    isDataLicenseReadonly() {
+      const readonlyBecausePublished = this.readOnlyFields?.includes(METADATA_DATALICENSE_PROPERTY) || false;
+
+      if (readonlyBecausePublished) {
+        if (this.dataLicenseId === WSL_DATA_LICENSE_ID
+          || this.dataLicenseId === OTHER_UNDEFINED_LICENSE_ID) {
+          // overwrite the readonly so license can still be changned from these to the other
+          // available license
+          return false;
+        }
+
+        return true;
+      }
+
+      return false;
+    },
+    dataLicenseReadonlyExplanation() {
+      return this.isDataLicenseReadonly ? this.readOnlyExplanation : undefined;
+    },
   },
   methods: {
     clearPreviews() {
@@ -222,7 +258,9 @@ export default {
         return null;
       }
 
-      const dataLicense = this.dataLicenses.filter(x => x.id === id)[0];
+      // make sure to pick from all licenses because older one still be to be shown, even though
+      // they can't be picked anymore
+      const dataLicense = dataLicenses.filter(x => x.id === id)[0];
 
       return dataLicense || null;
     },
@@ -257,16 +295,25 @@ export default {
         this.setDataLicenseInfo(value);
       }
     },
+    isReadOnly(dateProperty) {
+      return isFieldReadOnly(this.$props, dateProperty);
+    },
+    readOnlyHint(dateProperty) {
+      return readOnlyHint(this.$props, dateProperty);
+    },
   },
   components: {
     BaseStatusLabelView,
   },
   data: () => ({
+    mdiArrowDownDropCircleOutline,
+    mdiShieldSearch,
+    METADATA_DATALICENSE_PROPERTY,
     validationErrors: {
       dataLicense: null,
     },
     labels: {
-      cardTitle: 'Data License of the Resources',
+      cardTitle: EDIT_METADATA_DATALICENSE_TITLE,
       instructionsLicense: 'Select a data license which reflects the terms of usage of your research data. CC-BY-SA is the recommend license, read the blog post about <a href="https://envidat.ch/#/blog/EnviDat_WSLIntern_2022q4.md" target="_blank">Data license</a> for more information. ',
       dataLicense: 'Click here to select a data license',
       dataLicenseSummary: 'Show a summary',
@@ -274,7 +321,6 @@ export default {
         'Link for more detailed information about selected Data License:',
     },
     previewDataLicenses: null,
-    dataLicenses,
   }),
 };
 </script>

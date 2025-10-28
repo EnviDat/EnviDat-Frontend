@@ -7,7 +7,7 @@
     <v-row v-if="instructions"
            no-gutters>
       <v-col class="text-body-2 pb-1">
-        {{ instructions }}
+        {{ draggableItems?.length > 0 ? instructions :  emptyInstructionsText }}
       </v-col>
     </v-row>
 
@@ -17,7 +17,7 @@
       <v-col v-for="(item, index) in draggableItems"
            :key="`${index}_${item}`"
            class="flex-grow-0"
-           :draggable="true"
+           :draggable="!isReadOnly"
            @dragenter.prevent
            @dragover="onDragOver($event, item)"
            @dragleave="onDragLeave($event)"
@@ -27,7 +27,7 @@
 
         <TagChipAuthor v-if="useAuthorTags"
                        :name="item"
-                       :color="currentHoverItem === item ? $vuetify.theme.themes.light.accent : undefined"
+                       :color="currentHoverItem === item ? $vuetify.theme.themes.light.colors.accent : undefined"
                        :highlighted="currentDragItem === item"
                        :isSmall="true"
                        :draggable="true"
@@ -35,10 +35,18 @@
 
         <TagChip v-if="!useAuthorTags"
                  :name="item"
-                 :color="currentHoverItem === item ? $vuetify.theme.themes.light.accent : undefined"
+                 :color="currentHoverItem === item ? $vuetify.theme.themes.light.colors.accent : undefined"
                  :highlighted="currentDragItem === item"
                  :isSmall="false"
         />
+      </v-col>
+    </v-row>
+
+    <v-row v-if="isReadOnly"
+           class="ma-0 v-messages v-messages__message"
+    >
+      <v-col>
+        {{ readOnlyHint }}
       </v-col>
     </v-row>
   </v-container>
@@ -60,6 +68,9 @@
  */
 
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
+import TagChipAuthor from '@/components/Chips/TagChipAuthor.vue';
+import TagChip from '@/components/Chips/TagChip.vue';
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 
 export default {
   name: 'BaseDraggableList',
@@ -67,6 +78,7 @@ export default {
     items: {
       type: Array,
       default: () => [],
+      required: true,
     },
     useAuthorTags: {
       type: Boolean,
@@ -76,11 +88,24 @@ export default {
       type: String,
       default: undefined,
     },
+    draggableProperty: {
+      type: String,
+      default: undefined,
+      required: true,
+    },
+    readOnlyFields: {
+      type: Array,
+      default: () => [],
+    },
+    readOnlyExplanation: {
+      type: String,
+      default: '',
+    },
   },
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   computed: {
@@ -92,20 +117,41 @@ export default {
         this.previewItems = value;
       },
     },
+    isReadOnly() {
+      return isFieldReadOnly(this.$props, this.draggableProperty);
+    },
+    readOnlyHint() {
+      return readOnlyHint(this.$props, this.draggableProperty);
+    },
   },
   methods: {
     onDragOver(event, item) {
+      if (this.readOnlyHint) {
+        return;
+      }
+
       event.preventDefault();
       this.currentHoverItem = item
     },
     onDragStart(event, item) {
+      if (this.readOnlyHint) {
+        return;
+      }
+
       this.currentDragItem = item
     },
     onDragLeave(event) {
+      if (this.readOnlyHint) {
+        return;
+      }
+
       event.preventDefault();
       this.currentHoverItem = ''
     },
     onDrop(event, item) {
+      if (this.readOnlyHint) {
+        return;
+      }
 
       const dragItem = this.draggableItems.filter((author) => author === this.currentDragItem)[0];
       const dragIndex = this.draggableItems.findIndex((author) => author === this.currentDragItem);
@@ -147,8 +193,11 @@ export default {
     },
   },
   components: {
+    TagChip,
+    TagChipAuthor,
   },
   data: () => ({
+    emptyInstructionsText: 'No items to change the sequence, add items first.',
     currentDragItem: '',
     currentHoverItem: '',
     previewItems: null,

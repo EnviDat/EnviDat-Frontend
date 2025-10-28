@@ -1,0 +1,120 @@
+modify-box-env:
+  when: manual
+  stage: config
+  image: python:3.9-alpine3.17
+  environment: $CI_COMMIT_REF_NAME  
+  needs:
+    - set-vars
+  before_script:
+    - pip install --upgrade pip
+    - pip install python-dotenv==0.19.*
+  script:
+    # specific setup for 'envidat in a box' which runs
+    # the frontend locally, that's why it needs the VITE_API_ROOT and VITE_CONFIG_URL
+    # set to work from the local file system / connect to localhost for the backend
+    - |
+      python -c "import os
+      import dotenv
+
+      file = '.env.production'
+      branch = os.getenv('CI_COMMIT_REF_NAME')
+
+      key = 'VITE_DOMAIN'
+      value = f'https://www.envidat.ch'
+      dotenv.set_key(file, key, value, quote_mode='never')
+
+      key = 'VITE_API_ROOT'
+      value = f'http://envidat-prod01.wsl.ch:8989'
+      dotenv.set_key(file, key, value, quote_mode='never')
+
+      key = 'VITE_CONFIG_URL'
+      value = f'./config.json'
+      dotenv.set_key(file, key, value, quote_mode='never')
+      
+      key = 'VITE_BUILD_SOURCEMAPS'
+      value = 'false'
+      dotenv.set_key(file, key, value, quote_mode='never') "
+    - echo "created content for .env.production:"
+    - cat .env.production
+  artifacts:
+    name: "frontend-in-a-box environment variables"
+    paths:
+      - .env.production
+
+build-box-app:
+  stage: build
+  image: node:20.15.0-alpine3.20
+  environment: $CI_COMMIT_REF_NAME  
+  extends:
+    - .normal-rules
+  # image: node:18.18.2-alpine3.17
+  needs:
+    # needs environment variables from the frontend in a box setup
+    - modify-box-env
+    # needs the artifact: node_modules to build the app
+    #- install-node
+  script:
+    - echo "checked content for .env.production:"
+    - cat .env.production
+    - npm run build -- --logLevel error
+  artifacts:
+    name: "frontend envidat-in-a-box build"
+    expire_in: 1 day
+    paths:
+      - dist
+
+combine-box-builds:
+  stage: build
+  image: alpine:3.20
+  environment: $CI_COMMIT_REF_NAME  
+  extends: .normal-rules
+  variables:
+    GIT_STRATEGY: none
+  needs:
+    # needs the artifact: the build of the frontend app
+    - build-box-app
+  script:
+    # - echo "Check for the artifacts in the filesystem"
+    # - ls -l
+    # - ls dist/ -l
+    # - ls storybook/ -l
+    # copy all files from the dist folder into root
+    - cp -r dist/* ./
+    # - ls -l
+    # remove the dist folder recursively
+    - rm -rf dist
+    - ls -l
+  artifacts:
+    name: "frontend-in-a-box build"
+    # stores the combined built code
+    paths:
+      - ./
+
+publish-box-build:
+  stage: deploy
+  image: alpine:3.20
+  environment: $CI_COMMIT_REF_NAME  
+  extends: .normal-rules
+  variables:
+    GIT_STRATEGY: none
+    BOX_BUILD_ZIP_NAME: 'frontend-in-a-box.zip'
+  needs:
+    # needs the enviromental variables for the version number
+    - set-vars
+    # make sure to wait for the tests to run correctly
+    - run-tests
+    # needs the artifact: of the frontend in a box build
+    - combine-box-builds
+  before_script:
+    - apk add curl zip --no-cache
+  script:
+    - export BOX_PUBLISH_LOCATION="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/frontend-in-a-box/frontend-in-a-box-${CI_COMMIT_REF_NAME}/${BOX_BUILD_ZIP_NAME}"
+    - echo "Going to publish build an frotend build for 'envidat in a box' ${BUILD_NAME} with zip name ${BOX_BUILD_ZIP_NAME}"
+    - echo "to build location ${BOX_PUBLISH_LOCATION}"
+    - zip -r ${BOX_BUILD_ZIP_NAME} ./
+    # - ls -l
+    - |
+      curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
+      --user "${CI_DEPLOY_USER}:${CI_DEPLOY_PASSWORD}" \
+      --upload-file ${BOX_BUILD_ZIP_NAME} \
+      "${BOX_PUBLISH_LOCATION}"

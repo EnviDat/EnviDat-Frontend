@@ -10,19 +10,23 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-
 export const METADATA_BODY_TITLE = 'Description';
 export const METADATA_CITATION_TITLE = 'Citation';
 export const METADATA_PUBLICATIONS_TITLE = 'Related Publications';
 export const METADATA_DATASETS_TITLE = 'Related Datasets';
 export const METADATA_KEYWORDS_TITLE = 'Keywords';
 
+export const LOCAL_DATASET_KEY = 'local_dataset_editing';
+
 export const METADATA_AUTHORS_TITLE = 'Author Details';
 export const AUTHORS_PUBLISHED_DATACOUNT = 'Published datasets';
-export const AUTHORS_DATACREDIT_CONTRIBUTION = 'Overall Data Credit Contributions';
-export const AUTHORS_DATACREDIT_CONTRIBUTION_CURRENT = 'Data Credits for this dataset';
+export const AUTHORS_DATACREDIT_CONTRIBUTION =
+  'Overall Data Credit Contributions';
+export const AUTHORS_DATACREDIT_CONTRIBUTION_CURRENT =
+  'Data Credits for this dataset';
 export const AUTHORS_DATACREDIT_SCORE = 'Data Credit Score';
-export const AUTHORS_EDIT_CURRENT_DATACREDIT = 'Edit DataCRediT contributions here:';
+export const AUTHORS_EDIT_CURRENT_DATACREDIT =
+  'Edit DataCRediT contributions here:';
 
 export const METADATA_DETAILS_TITLE = 'Further Information';
 export const METADATA_FUNDING_TITLE = 'Funding Information';
@@ -47,44 +51,76 @@ export const EDIT_METADATA_DOI_LABEL = 'Data Object Identifier';
 export const EDIT_METADATA_RELATEDPUBLICATIONS_TITLE = 'Related Publications';
 export const EDIT_METADATA_ADD_PUBLICATION_TITLE = 'Add a Related Publications';
 export const EDIT_METADATA_RELATED_DATASETS_TITLE = 'Related Datasets';
-export const EDIT_METADATA_GEODATA_TITLE = 'Geospatial Information about the research data';
+export const EDIT_METADATA_GEODATA_TITLE =
+  'Geospatial Information about the research data';
+export const EDIT_METADATA_DATALICENSE_TITLE = 'Data License of the Resources';
+export const EDIT_METADATA_DATALICENSE_LABEL = 'Data License';
 
 export const EDIT_STEP_TITLE_MAIN_METADATA = 'Metadata';
-export const EDIT_STEP_TITLE_MAIN_RESOURCES = 'Data & Resources';
+export const EDIT_STEP_TITLE_MAIN_RESOURCES = 'Research Data';
 export const EDIT_STEP_TITLE_MAIN_RELATED = 'Related Research';
 export const EDIT_STEP_TITLE_MAIN_PUBLICATION = 'Publication Information';
 export const EDIT_METADATA_PUBLISHER_LABEL = 'Publisher';
 export const EDIT_METADATA_PUBLICATION_YEAR_LABEL = 'Publication Year';
 
-export const EDIT_STEP_TITLE_SUB_HEADER = 'Header Information';
+export const EDIT_STEP_TITLE_SUB_HEADER = 'Title & Contact';
 export const EDIT_STEP_TITLE_SUB_DESC = 'Description';
 export const EDIT_STEP_TITLE_SUB_KEYWORDS = 'Keywords';
 export const EDIT_STEP_TITLE_SUB_AUTHORS = 'Authors';
 
-export const EDIT_STEP_TITLE_SUB_DATA = 'Manage Resources';
-export const EDIT_STEP_TITLE_SUB_DATES = 'Data License & Time';
-export const EDIT_STEP_TITLE_SUB_GEO = 'Geospatial Information';
+export const EDIT_STEP_TITLE_SUB_DATA = 'Manage Data';
+export const EDIT_STEP_TITLE_SUB_DATES = 'License & Time';
+export const EDIT_STEP_TITLE_SUB_GEO = 'Geo Information';
+
 export const DATE_PROPERTY_DATE_TYPE = 'dateType';
 export const DATE_PROPERTY_START_DATE = 'dateStart';
 export const DATE_PROPERTY_END_DATE = 'dateEnd';
 export const DATE_PROPERTY_CREATED_TYPE = 'created';
+export const DATE_PROPERTY_CREATED_TYPE_EXPLANATION =
+  'Date range during the research data was finalized or formally created';
 export const DATE_PROPERTY_COLLECTED_TYPE = 'collected';
+export const DATE_PROPERTY_COLLECTED_TYPE_EXPLANATION =
+  'Date range during the research data was gathered or collected.';
 export const METADATA_TITLE_PROPERTY = 'metadataTitle';
 export const METADATA_URL_PROPERTY = 'metadataUrl';
+export const METADATA_CONTACT_EMAIL = 'contactEmail';
+export const METADATA_CONTACT_FIRSTNAME = 'contactFirstName';
+export const METADATA_CONTACT_LASTNAME = 'contactLastName';
+export const METADATA_CONTACT_FULLNAME = 'contactName';
+
 export const METADATA_AUTHORS_PROPERTY = 'authors';
-export const METADATA_ORGANIZATION_PROPERTY = 'organization';
+export const METADATA_AUTHOR_SEQUENCE_PROPERTY = 'authorSequence';
+export const METADATA_ORGANIZATION_PROPERTY = 'organizationId';
 export const METADATA_DOI_PROPERTY = 'doi';
 export const METADATA_PUBLISHER_PROPERTY = 'publisher';
 export const METADATA_PUBLICATION_YEAR_PROPERTY = 'publicationYear';
+export const METADATA_DATALICENSE_PROPERTY = 'dataLicenseId';
+export const METADATA_DEPRECATED_RESOURCES_PROPERTY = 'deprecatedResources';
+export const METADATA_RESOURCES_SEQUENCE_PROPERTY = 'resourceSequence';
+export const METADATA_DATACREDIT_PROPERTY = 'dataCredit';
 
 export const ENVIDAT_SHOW_COOKIE_BANNER = 'ENVIDAT_SHOW_COOKIE_BANNER';
 
 export const METADATA_STATE_DRAFT = 'draft';
-export const METADATA_STATE_INVISILBE = 'hidden';
-export const METADATA_STATE_VISILBE = 'visible';
+export const METADATA_STATE_INVISIBLE = 'hidden';
+export const METADATA_STATE_VISIBLE = 'visible';
 
 export const PUBLICATION_STATE_DRAFT = 'draft';
 export const PUBLICATION_STATE_RESERVED = 'reserved';
 export const PUBLICATION_STATE_PENDING = 'pub_pending';
 export const PUBLICATION_STATE_PUBLISHED = 'published';
 
+export const LOCATION_TYPE_POINT = 'Point';
+export const LOCATION_TYPE_MULTIPOINT = 'MultiPoint';
+export const LOCATION_TYPE_POLYGON = 'Polygon';
+export const LOCATION_TYPE_MULTIPOLYGON = 'MultiPolygon';
+export const LOCATION_TYPE_GEOMCOLLECTION = 'GeometryCollection';
+export const LOCATION_TYPE_FEATCOLLECTION = 'FeatureCollection';
+export const LOCATION_TYPE_FEATURE = 'Feature';
+
+export const BLIND_REVIEW_ON = 'double-blind';
+export const BLIND_REVIEW_OFF = '1.0';
+
+export const METADATA_NEW_RESOURCE_ID = 'localResourceId';
+
+export const RESOURCE_FORMAT_LINK = 'url';

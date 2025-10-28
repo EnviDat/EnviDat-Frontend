@@ -21,19 +21,17 @@
     </div>
 
     <span v-if="showInitials"
-          class="white--text"
+          class="text-white"
           style="position: absolute;"
           :class="initialsTextClass"
           >{{ nameInitials }}</span
     >
 
-    <v-icon v-if="showFallbackAccountIcon"
-            color="black"
-            :small="size <= 20"
-            :large="size > 40 && size < 128"
-            :x-large="size >= 128"
-            >account_circle</v-icon
-    >
+    <base-icon v-if="showFallbackAccountIcon"
+               color="black"
+               :small="size <= 20"
+               :large="size > 40"
+               :icon='mdiAccountCircle' />
   </v-avatar>
 </template>
 
@@ -50,13 +48,15 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
-import jazzicons from '@metamask/jazzicon';
+import jazzicon from 'jazzicon-ts';
 import seedrandom from 'seedrandom';
 
+import { mdiAccountCircle } from '@mdi/js';
 import { getAvataaarUrl } from '@/store/avataaars';
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 export default {
-  components: {},
+  components: { BaseIcon },
   props: {
     nameInitials: String,
     emailHash: String,
@@ -125,7 +125,7 @@ export default {
       if (jazzIconElement) {
         const rng = seedrandom(this.nameInitials);
         const randNr = rng.int32();
-        const icon = jazzicons(this.size, randNr);
+        const icon = jazzicon(this.size, randNr);
         jazzIconElement.appendChild(icon);
       }
     },
@@ -149,6 +149,7 @@ export default {
     gravatarNotLoaded: false,
     avataaarNotLoaded: false,
     avataaarUrl: '',
+    mdiAccountCircle,
   }),
 };
 </script>

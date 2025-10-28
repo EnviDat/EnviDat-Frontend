@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "Bundler",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "types": ["vite/client"],
+    "jsx": "preserve",
+    "strict": false,
+    "checkJs": true,
+    "allowJs": true,
+    "allowImportingTsExtensions": true,
+    "noUncheckedSideEffectImports": false,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "noImplicitAny": false, // Allow implicit 'any' types
+    "strictNullChecks": false, // Allow assigning null/undefined to variables
+    "strictFunctionTypes": false, // Relax function type compatibility
+    "noImplicitThis": false, // Allow 'this' implicitly
+  },
+  "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.vue"]
+}

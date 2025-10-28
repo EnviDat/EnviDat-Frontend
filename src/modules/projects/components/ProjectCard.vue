@@ -10,7 +10,7 @@
       :height="headerCardHeight"
       :class="`elevation-${hovered ? 5 : 3}`"
       style="z-index: 1;"
-      @click.native="cardClick"
+      @click="cardClick"
     >
       <v-row
         style="max-width: 100%; background-color: white; border-radius: 2px;"
@@ -21,11 +21,10 @@
           <v-img
             class="imagezoom"
             style="border-radius: 2px 0 0 2px;"
-            :contain="headerImg ? headerImg.width > headerImg.height : false"
-            :cover="headerImg ? headerImg.width < headerImg.height : false"
+            :cover="headerImg ? headerImg.height <= headerImg.width : true"
             :height="headerCardHeight"
-            :src="headerImg ? headerImg.src : ''"
-            :lazy-src="defaultImg"
+            :src="headerImg ? headerImg.src : undefined"
+            :lazy-src="defaultImgResolved"
           />
         </v-col>
 
@@ -33,7 +32,7 @@
           <div
             class="text-h6"
             style="word-break: break-word; line-height: 1!important; letter-spacing: .02em !important;"
-            :class="dark ? 'white--text' : 'black--text'"
+            :class="dark ? 'text-white' : 'text-black'"
           >
             {{ truncatedTitle }}
           </div>
@@ -48,7 +47,7 @@
       style="z-index: 0; top: -2px;"
       :class="`elevation-${hovered ? 5 : 2}`"
       class="mx-2"
-      @click.native="cardClick"
+      @click="cardClick"
     >
       <v-card-text class="text">
         {{ truncatedDescription }}
@@ -70,12 +69,12 @@
 
           <v-col class="py-0" cols="1">
             <base-icon-button
-              materialIconName="find_in_page"
+              :icon="mdiFileFind"
               color="transparent"
-              iconColor="secondary"
-              :tooltipText="`Open Subproject ${sub.title}`"
-              tooltipBottom
-              :isSmall="true"
+              icon-color="secondary"
+              :tooltip-text="`Open Subproject ${sub.title}`"
+              outline-color="secondary"
+              tooltip-bottom
               @clicked="subprojectClick(sub.name)"
             />
           </v-col>
@@ -99,11 +98,16 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import { mdiFileFind } from '@mdi/js';
+import { useDisplay } from 'vuetify';
+
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import { stripMarkdown } from '@/factories/stringFactory';
+import { getImage } from '@/factories/imageFactory';
 
 // checkout skeleton
 // https://github.com/ToxicJojo/SkeletonPlaceholder
+
 
 export default {
   name: 'ProjectCard',
@@ -112,7 +116,6 @@ export default {
   },
   props: {
     id: String,
-    defaultImg: String,
     img: String,
     title: String,
     subtitle: String,
@@ -120,16 +123,19 @@ export default {
     subProjects: Array,
     dark: Boolean,
   },
+  async mounted() {
+    this.defaultImgResolved = await getImage('data_creator_small');
+  },
   computed: {
     headerImg() {
-      const img = new Image();
-      let imgSrc = this.defaultImg;
+      // load img from url and keep it to measure width & height
 
-      if (this.img) {
-        imgSrc = this.img;
+      if (!this.img) {
+        return undefined;
       }
 
-      img.src = imgSrc;
+      const img = new Image();
+      img.src = this.img;
       img.onload = () => {
         // forced to make the check with for the contain property again
         this.$forceUpdate();
@@ -177,10 +183,13 @@ export default {
     },
   },
   data: () => ({
+    mdiFileFind,
     maxDescriptionLength: 290,
     maxTitleLength: 100,
     hovered: false,
     headerCardHeight: 150,
+    defaultImgResolved: undefined,
+    display: useDisplay(),
   }),
 };
 </script>

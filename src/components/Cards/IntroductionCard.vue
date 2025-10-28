@@ -41,11 +41,12 @@
             </v-col>
 
             <v-col cols="5" style="display: inline-flex; justify-content: center;">
-              <base-icon-button material-icon-name="clear"
-                                :fill-color="$vuetify.theme.themes.light.error"
-                                icon-color="black"
-                                tooltip-text="Delete your local dataset"
-                                @clicked="$emit('clearButtonClicked', $event)"
+              <BaseIconButton
+                :icon="mdiClose"
+                color="error"
+                icon-color="black"
+                tooltip-text="Delete your local dataset"
+                @clicked="$emit('clearButtonClicked', $event)"
               />
             </v-col>
 
@@ -57,10 +58,10 @@
               {{ createText }}
             </v-col>
 
-            <v-col cols="3">
-              <base-rectangle-button
+            <v-col cols="auto">
+              <BaseRectangleButton
                 color="accent"
-                marginClass="black--text"
+                marginClass="text-black"
                 :button-text="createButtonText"
                 :disabled="createClickCallback === null"
                 @clicked="createClickCallback ? createClickCallback() : ''"
@@ -79,9 +80,9 @@
 
             <v-col cols="5"
                     class="pl-4">
-              <base-rectangle-button
+              <BaseRectangleButton
                 color="accent"
-                marginClass="black--text"
+                marginClass="text-black"
                 :button-text="editingButtonText"
                 :disabled="editingClickCallback === null"
                 @clicked="editingClickCallback ? editingClickCallback() : ''"
@@ -107,7 +108,11 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import { mdiClose } from '@mdi/js';
+import MetadataCardLocal from '@/components/Cards/MetadataCardLocal.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+
 
 export default {
   name: 'IntroductionCard',
@@ -171,6 +176,7 @@ export default {
   },
   methods: {},
   data: () => ({
+    mdiClose,
     introTextFallback:
       'Manage your datasets and create new ones. <br/>',
     createText: 'Create a dataset',
@@ -179,6 +185,8 @@ export default {
   }),
   components: {
     BaseRectangleButton,
+    MetadataCardLocal,
+    BaseIconButton,
   },
 };
 </script>

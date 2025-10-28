@@ -1,37 +1,25 @@
 <template>
   <v-tooltip
-    v-bind="{ [tooltipPosition]: true }"
-    :disabled="$vuetify.breakpoint.smAndDown || !tooltipText"
+    v-bind="{ tooltipPosition: true }"
+    :disabled="$vuetify.display.smAndDown || !tooltipText"
   >
-    <template v-slot:activator="{ on }">
+    <template #activator="{ props }">
       <v-btn
-        v-on="on"
-        :small="isSmall"
-        :x-small="isXsSmall"
+        :style="{ background: bgcWhite ? '#fff' : '' }"
+        v-bind="props"
+        :size="buttonSize"
         :class="marginClass"
-        :outlined="isOutlined"
-        :text="isFlat"
-        :color="color"
+        :color="disabled ? 'grey' : color"
+        :variant="buttonVariant"
         :disabled="disabled"
         :href="url"
         :loading="loading"
+        :elevation="elevation"
         rel="noopener noreferrer"
         target="_blank"
         @click.stop="onClick"
       >
-        <div v-if="customIcon"
-             :class="customIconSpace ? 'iconCentering pr-2' : 'iconCentering'">
-          <img
-            class="envidatIcon"
-            :src="customIcon"
-            :style="customIconWhiten ? 'filter: brightness(0) invert(1);' : ''"
-          />
-        </div>
-
-        <v-icon v-if="materialIconName" left :color="iconColor">
-          {{ materialIconName }}
-        </v-icon>
-
+        <BaseIcon v-if="icon" :icon="icon" :color="iconColor" class="mr-1" />
         {{ buttonText }}
       </v-btn>
     </template>
@@ -53,8 +41,6 @@
  * Otherwise the whole button as that color.
  * The @prop iconColor only works for material icons.
  *
- * Set the @prop rotateOnClick to true for the icon to rotate 180° once clicked
- *
  * Use @prop marginClass to apply any css-class to the button, because it's wrapped in the tooltip element.
  *
  * When @prop disabled is true clicks won't do anything.
@@ -62,41 +48,54 @@
  * @summary the base EnviDat rectangle button
  * @author Dominik Haas-Artho
  *
- * Created at     : 2019-10-02 11:24:00
- * Last modified  : 2021-08-18 10:26:45
- *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 export default {
   name: 'BaseRectangleButton',
   props: {
-    customIcon: String,
-    customIconWhiten: Boolean,
-    customIconSpace: Boolean,
-    materialIconName: String,
+    icon: String,
     buttonText: String,
     tooltipText: String,
     isOutlined: Boolean,
+    bgcWhite: Boolean,
+    isTonal: Boolean,
     isFlat: Boolean,
-    color: {
-      type: String,
-      default: 'primary',
-    },
-    iconColor: {
-      type: String,
-      default: 'primary',
-    },
+    color: { type: String, default: 'primary' },
+    iconColor: { type: String, default: undefined },
     isSmall: Boolean,
+    isXLarge: Boolean,
     isXsSmall: Boolean,
     url: String,
     marginClass: String,
     disabled: Boolean,
     loading: Boolean,
-    tooltipPosition: {
-      type: String,
-      default: 'bottom',
+    tooltipPosition: { type: String, default: 'bottom' },
+    elevation: { type: Number, default: undefined },
+  },
+  computed: {
+    buttonSize() {
+      if (this.isSmall) {
+        return 'small';
+      }
+      if (this.isXsSmall) {
+        return 'x-small';
+      }
+      if (this.isXLarge) {
+        return 'x-large';
+      }
+      return 'default';
+    },
+    buttonVariant() {
+      if (this.isFlat) return 'plain';
+
+      if (this.isTonal) return 'tonal';
+
+      if (this.isOutlined) return 'outlined';
+
+      return 'elevated';
     },
   },
   methods: {
@@ -104,5 +103,6 @@ export default {
       this.$emit('clicked');
     },
   },
+  components: { BaseIcon },
 };
 </script>

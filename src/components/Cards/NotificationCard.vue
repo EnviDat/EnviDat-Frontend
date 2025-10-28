@@ -8,8 +8,11 @@
   >
     <v-card-title>
       <v-row align="start">
-        <v-col class="shrink">
-          <v-icon>{{ notification.icon }}</v-icon>
+        <v-col class="flex-grow-0">
+          <BaseIcon
+            :icon="notification.icon"
+            color="black"
+            />
         </v-col>
 
         <v-col>
@@ -76,15 +79,14 @@
  */
 
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
+
 
 // checkout skeleton
 // https://github.com/ToxicJojo/SkeletonPlaceholder
 
 export default {
   name: 'NotificationCard',
-  components: {
-    BaseRectangleButton,
-  },
   props: {
     notification: Object,
     showReportButton: {
@@ -103,12 +105,11 @@ export default {
   computed: {},
   methods: {
     setTimeout() {
-      const that = this;
       window.clearTimeout(this.activeTimeout);
 
       if (this.notification.timeout) {
         this.activeTimeout = window.setTimeout(() => {
-          that.$emit('clickedClose');
+          this.$emit('clickedClose');
         }, this.notification.timeout);
       }
     },
@@ -116,5 +117,9 @@ export default {
   data: () => ({
     activeTimeout: -1,
   }),
+  components: {
+    BaseRectangleButton,
+    BaseIcon,
+  },
 };
 </script>

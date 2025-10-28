@@ -5,12 +5,30 @@
     <v-row>
       <v-col cols="12"
              md="5" >
-        <EditDataDates :dates="dates" />
+        <EditDataDates :dates="dates"
+                       :loading="loading"
+                       :read-only-fields="readOnlyFields"
+                       :read-only-explanation="readOnlyExplanation"
+                       :message="message"
+                       :message-details="messageDetails"
+                       :error="error"
+                       :error-details="errorDetails"
+        />
+
+
       </v-col>
 
       <v-col cols="12"
              md="7" >
-        <EditDataLicense :dataLicenseId="dataLicenseId" />
+        <EditDataLicense :dataLicenseId="dataLicenseId"
+                         :loading="loading"
+                         :read-only-fields="readOnlyFields"
+                         :read-only-explanation="readOnlyExplanation"
+                         :message="message"
+                         :message-details="messageDetails"
+                         :error="error"
+                         :error-details="errorDetails"
+        />
       </v-col>
     </v-row>
 

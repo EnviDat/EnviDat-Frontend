@@ -22,6 +22,9 @@ import {
   GET_POLICIES,
   GET_POLICIES_ERROR,
   GET_POLICIES_SUCCESS,
+  GET_IMPRINT,
+  GET_IMPRINT_SUCCESS,
+  GET_IMPRINT_ERROR,
 } from '@/modules/about/store/aboutMutationsConsts';
 import { ADD_USER_NOTIFICATION } from '@/store/mainMutationsConsts';
 
@@ -40,7 +43,7 @@ export default {
     const errObj = getSpecificApiError(details, reason);
     state.guidelinesMarkdown = `${details}: ${reason}`;
 
-    if (import.meta.env?.DEV) {
+    if (import.meta.env?.MODE === 'development') {
       state.guidelinesMarkdown +=
         ' \nThis is normal when developing locally on localhost:8080';
     }
@@ -62,7 +65,7 @@ export default {
 
     state.policiesMarkdown = `${details}: ${reason}`;
 
-    if (import.meta.env?.DEV) {
+    if (import.meta.env?.MODE === 'development') {
       state.policiesMarkdown +=
         ' \nThis is normal when developing locally on localhost:8080';
     }
@@ -83,8 +86,29 @@ export default {
     const errObj = getSpecificApiError(details, reason);
     state.dmpMarkdown = `${details}: ${reason}`;
 
-    if (import.meta.env?.DEV) {
+    if (import.meta.env?.MODE === 'development') {
       state.dmpMarkdown +=
+        ' \nThis is normal when developing locally on localhost:8080';
+    }
+
+    this.commit(ADD_USER_NOTIFICATION, errObj);
+  },
+  [GET_IMPRINT](state) {
+    state.loading = true;
+  },
+  [GET_IMPRINT_SUCCESS](state, payload) {
+    state.imprintMarkdown = payload;
+    state.imprintLoading = false;
+  },
+  [GET_IMPRINT_ERROR](state, reason) {
+    state.imprintLoading = false;
+
+    const details = 'An error occurred while loading the imprint infos!';
+    const errObj = getSpecificApiError(details, reason);
+    state.imprintMarkdown = `${details}: ${reason}`;
+
+    if (import.meta.env?.MODE === 'development') {
+      state.imprintMarkdown +=
         ' \nThis is normal when developing locally on localhost:8080';
     }
 

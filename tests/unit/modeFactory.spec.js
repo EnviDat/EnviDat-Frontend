@@ -2,7 +2,6 @@ import { it, describe, expect } from 'vitest';
 
 import {
   getModeData,
-  getTagsMergedWithExtras,
   enhanceMetadataWithModeExtras,
 } from '@/factories/modeFactory';
 
@@ -12,11 +11,8 @@ import {
   SWISSFL_MODE,
   SWISSFL_MODE_EXTRAS_KEY,
 } from '@/store/metadataMutationsConsts';
-import {
-  swissFLExtraTags,
-} from '@/modules/metadata/store/swissForestLabTags';
 
-import metadataTags from '@/modules/metadata/store/metadataTags';
+import packagelist from '@/../stories/testdata/packagelist.json';
 
 describe('modeFactory - getModeData', () => {
   it('empty', () => {
@@ -57,33 +53,6 @@ describe('modeFactory - getModeData', () => {
   });
 });
 
-describe('modeFactory - getTagsMergedWithExtras', () => {
-  it('empty', () => {
-    const mergedTags = getTagsMergedWithExtras(undefined, undefined);
-
-    expect(mergedTags).toBeNull();
-  });
-
-  it('with SwissFL mode with empty tags', () => {
-
-    const tags = [];
-    const mergedTags = getTagsMergedWithExtras(SWISSFL_MODE, tags);
-
-    expect(mergedTags).toBeDefined();
-    expect(mergedTags).toBeInstanceOf(Array);
-    expect(mergedTags.length).toBeLessThanOrEqual(swissFLExtraTags.length);
-  });
-
-  it('with SwissFL mode with tags', () => {
-
-    const tags = metadataTags;
-    const mergedTags = getTagsMergedWithExtras(SWISSFL_MODE, tags);
-
-    expect(mergedTags).toBeDefined();
-    expect(mergedTags).toBeInstanceOf(Array);
-    expect(mergedTags.length).toBeLessThanOrEqual(swissFLExtraTags.length + metadataTags.length);
-  });
-});
 
 describe('modeFactory - enhanceMetadataFromExtras', () => {
   it('empty', () => {
@@ -92,13 +61,13 @@ describe('modeFactory - enhanceMetadataFromExtras', () => {
     expect(enhancedMetadata).toBeUndefined();
   });
 
-  // it('with SwissFL mode', () => {
-  //   const metdataEntry = {};
+  it('with SwissFL mode', () => {
+    const metdataEntry = packagelist.result[9];
 
-  //   const enhancedMetadata = enhanceMetadataFromExtras(SWISSFL_MODE, metdataEntry);
+    const enhancedMetadata = enhanceMetadataWithModeExtras(SWISSFL_MODE, metdataEntry);
 
-  //   expect(enhancedMetadata).toBeDefined();
-  //   expect(enhancedMetadata.extras).toBeDefined();
-  //   expect(enhancedMetadata.extras).toBeInstanceOf(Array);
-  // });
+    expect(enhancedMetadata).toBeDefined();
+    expect(enhancedMetadata.extras).toBeDefined();
+    expect(enhancedMetadata.extras).toBeInstanceOf(Array);
+  });
 });

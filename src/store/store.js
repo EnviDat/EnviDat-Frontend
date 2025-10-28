@@ -11,30 +11,31 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import Vue from 'vue';
 import Vuex from 'vuex';
 
 import { metadata } from '@/modules/metadata/store/metadataStore';
 import { user } from '@/modules/user/store/userStore';
 import { userSignIn } from '@/modules/user/store/userSignInStore';
-import { organizations } from '@/modules/organizations/store/organizationsStore';
+import { matomo } from '@/modules/matomo/store/matomoStore';
 
 import mutations from '@/store/mainMutations';
 import actions from '@/store/mainActions';
 
-
 import { LISTCONTROL_MAP_ACTIVE } from '@/store/metadataMutationsConsts';
-import {
-  checkWebpFeatureAsync,
-  loadImages,
-} from '@/factories/enhancementsFactory';
 
-import globalMethods from '@/factories/globalMethods';
+import { importStoreModule } from '@/factories/enhancementsFactory';
+
 import categoryCards from './categoryCards';
 
-const iconImgPath = require.context('@/assets/icons/', false, /\.png$/);
-const iconImages = globalMethods.methods.mixinMethods_importImages(iconImgPath);
-
+const moduleImportMap = {
+  metadata: () => import('@/modules/metadata/store/metadataStore'),
+  user: () => import('@/modules/user/store/userStore'),
+  userSignIn: () => import('@/modules/user/store/userSignInStore'),
+  blog: () => import('@/modules/blog/store/blogStore'),
+  integration: () => import('@/modules/integration/store/integrationStore'),
+  service: () => import('@/modules/services/store/serviceStore'),
+  projects: () => import('@/modules/projects/store/projectsStore'),
+};
 
 /*
 const errReport = process.env.VITE_ERROR_REPORTING_ENABLED;
@@ -46,24 +47,14 @@ if (typeof errReport === 'string') {
 }
 */
 
-Vue.use(Vuex);
+let storeRef;
 
 const initialState = {
-  webpIsSupported: false,
-  currentPage: '',
-  // use a './' before the img for the img name for the local path
   appBGImage: '',
-  webpAssets: null,
-  jpgAssets: null,
-  cardBGImages: null,
-  iconImages,
-  /**
-   * static category cards for the suggestions of search categories
-   */
-  categoryCards,
   /**
    * default "list controls" for the metdata list
    */
+  categoryCards,
   defaultControls: [LISTCONTROL_MAP_ACTIVE],
   appScrollPosition: 0,
   browseScrollPosition: 0,
@@ -74,68 +65,70 @@ const initialState = {
   config: {},
   notifications: {},
   maxNotifications: 6,
+  asyncLoadStoreModule: async (module) => {
+    const importFun = moduleImportMap[module];
+
+    if (!importFun) {
+      throw new Error(
+        `Error lazyLoadStoreModule, not import defined for ${module}`,
+      );
+    }
+
+    return importStoreModule(storeRef, module, importFun);
+  },
 };
 
-const modules = {
+const preloadedModules = {
   metadata,
   user,
   userSignIn,
-  organizations,
+  matomo,
 };
 
 function createStore() {
   return new Vuex.Store({
-    strict: true,
+    // strict is for getting error about the state mutations outside of mutations
+    // is very performance heavy, don't use it in production!
+    strict: false, // import.meta.env?.MODE !== 'production',
     state: initialState,
     getters: {
-      currentPage: state => state.currentPage,
-      appBGImage: state => state.appBGImage,
-      cardBGImages: state => state.cardBGImages,
-      iconImages: state => state.iconImages,
-      aboutText: state => state.aboutText,
-      categoryCards: state => state.categoryCards,
-      defaultControls: state => state.defaultControls,
-      appScrollPosition: state => state.appScrollPosition,
-      browseScrollPosition: state => state.browseScrollPosition,
-      outdatedVersion: state => state.outdatedVersion,
-      newVersion: state => state.newVersion,
-      config: state => state.config,
-      notifications: state => state.notifications,
-      maxNotifications: state => state.maxNotifications,
+      appBGImage: (state) => state.appBGImage,
+      aboutText: (state) => state.aboutText,
+      categoryCards: (state) => state.categoryCards,
+      defaultControls: (state) => state.defaultControls,
+      appScrollPosition: (state) => state.appScrollPosition,
+      browseScrollPosition: (state) => state.browseScrollPosition,
+      outdatedVersion: (state) => state.outdatedVersion,
+      newVersion: (state) => state.newVersion,
+      config: (state) => state.config,
+      notifications: (state) => state.notifications,
+      maxNotifications: (state) => state.maxNotifications,
     },
     mutations,
     actions,
-    modules,
+    modules: preloadedModules,
     plugins: [],
   });
 }
 
-// eslint-disable-next-line import/no-mutable-exports
-let store = null;
+let store;
 
 try {
   store = createStore();
+  storeRef = store;
 } catch (e) {
   if (e instanceof SyntaxError) {
     // if there is an error for the initial loading
     // Syntax Error from parsing the json
 
-    // eslint-disable-next-line no-console
-    console.log('restoreState error');
-    // eslint-disable-next-line no-console
+    console.error('restoreState error');
     console.error(e);
 
     store = createStore();
+    storeRef = store;
+  } else {
+    console.error(e);
   }
 }
-
-if (import.meta.env.MODE === 'test') {
-  loadImages(store);
-} else {
-  checkWebpFeatureAsync('lossy', (feature, isSupported) => {
-    loadImages(store, isSupported);
-  });
-}
-
 
 export default store;

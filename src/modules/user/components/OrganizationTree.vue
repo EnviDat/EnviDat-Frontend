@@ -1,52 +1,61 @@
 <template>
-  <v-card id="OrganizationTree" class="pa-4">
-    <v-sheet class="pa-4 primary lighten-2">
+  <v-card
+      id="OrganizationTree"
+      flat
+      class="pa-0">
+    <v-sheet class="pa-2 bg-secondary">
       <v-text-field
         v-model="search"
-        label="Search Company Directory"
-        dark
+        label="Search Organization"
         flat
-        solo-inverted
+        variant="solo-inverted"
         hide-details
         clearable
-        clear-icon="close"
+        persistent-clear
+        :clear-icon="mdiClose"
       />
     </v-sheet>
+
     <v-card-text>
       <v-treeview
-        :items="items"
-        :search="search"
-        :open.sync="open"
-        :active.sync="active"
+        :style="`scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
+        :items
+        :search
+        :open
+        :activated
+        color="secondary"
+        open-on-click
+        item-value="id"
         item-disabled="locked"
-        dense
         activatable
-        rounded
         hoverable
-        @update:active="catchActiveClick"
+        expand-icon=""
+        collapse-icon=""
+        :max-height="maxHeight"
+        @click:active="catchActiveClick"
+        @click:open="item => catchItemClick(item)"
       >
-        <template v-slot:prepend="{ item }">
-          <v-btn
-            v-if="item.children && item.children.length > 0"
-            icon
-            @click.stop="catchOpenClick(item)"
-          >
-            <v-icon
-              :style="
-                !open.includes(item.id) ? '' : 'transform: rotate(90deg);'
-              "
-              >arrow_right</v-icon
-            >
-          </v-btn>
+
+        <template v-slot:prepend="{ item, isOpen, isActive }">
+          <v-icon
+            v-if="item?.children?.length > 0"
+            :icon="isOpen ? mdiFolderOpen : mdiFolder"
+          />
+
+          <v-icon
+            v-if="item?.children?.length <= 0"
+            :icon="isActive ? mdiFolderOpenOutline : mdiFolderOutline"
+          />
         </template>
 
-        <!-- <template v-slot:label="{ item, active }"> -->
-        <template v-slot:label="{ item }">
-          <!-- <div @click="catchActiveClick(item)"> -->
-          <div>
-            {{ item.name }}
-          </div>
+        <template v-slot:item="{ item }">
+          <slot name="item" :item="item" />
         </template>
+
+        <template v-slot:append="{ item }">
+          <slot name="append" :item="item" />
+        </template>
+
       </v-treeview>
     </v-card-text>
   </v-card>
@@ -64,51 +73,48 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import {
+  mdiClose,
+  mdiMenuDown,
+  mdiMenuRight,
+  mdiFolder,
+  mdiFolderOpen,
+  mdiFolderOutline,
+  mdiFolderOpenOutline,
+} from '@mdi/js';
+import { getOrganitzionTreeItem } from '@/factories/organizationFactory';
+
 export default {
   name: 'OrganizationTree',
   props: {
+    predefinedSearch: String,
     preSelectedOrganization: String,
-    organizationsMap: Object,
+    organizationsTree: Array,
     selectionDisabled: Boolean,
+    maxHeight: {
+      type: Number,
+      default: 500,
+    },
   },
+  emits: ['click', 'clickAppend'],
   mounted() {
     if (this.preSelectedOrganization) {
       this.setActiveItem(this.items, this.preSelectedOrganization);
     }
+
+    if (this.predefinedSearch) {
+      this.search = this.predefinedSearch;
+    }
   },
   computed: {
-    items: {
-      get() {
-        const map = this.organizationsMap;
-        const mainKeys = Object.keys(map);
-
-        const orgItems = [];
-
-        for (let i = 0; i < mainKeys.length; i++) {
-          const mainOrg = mainKeys[i];
-          const childs = map[mainOrg];
-
-          const children = [];
-
-          for (let j = 0; j < childs.length; j++) {
-            const c = childs[j];
-            children.push({
-              id: `${this.childIdPrefix}_${i}_${j}`,
-              name: c.name,
-              locked: this.selectionDisabled,
-            });
-          }
-
-          orgItems.push({
-            id: `${this.parentIdPrefix}_${i}`,
-            name: mainOrg,
-            children,
-            locked: this.selectionDisabled,
-          });
-        }
-
-        return orgItems;
-      },
+    items() {
+      return this.organizationsTree;
+    },
+    scrollbarColorFront() {
+      return this.$vuetify ? this.$vuetify.theme.themes.light.colors.highlight : 'auto';
+    },
+    scrollbarColorBack() {
+      return this.$vuetify ? '#F0F0F0' : 'auto';
     },
   },
   methods: {
@@ -117,14 +123,9 @@ export default {
         for (let i = 0; i < items.length; i++) {
           const item = items[i];
 
-          if (item.name === name) {
-            // if (item.children?.length > 0) {
-            //   this.catchOpenClick(item);
-            // }
-
-            // this.catchActiveClick([item.id]);
-            if (!this.active.includes(item.id)) {
-              this.active.push(item.id);
+          if (item.title === name) {
+            if (!this.activated.includes(item.id)) {
+              this.activated.push(item.id);
             }
 
             return true;
@@ -140,6 +141,22 @@ export default {
       }
 
       return false;
+    },
+    catchItemClick({ id }) {
+
+      let orgaName;
+
+      const entry = getOrganitzionTreeItem(this.organizationsTree, id);
+      if (entry) {
+        orgaName = entry.name;
+      }
+
+/*
+      const activeItem = this.getItemFromId(id);
+      this.setActiveItem(this.items, activeItem.title);
+*/
+
+      this.$emit('click', orgaName);
     },
     catchOpenClick(item) {
       if (this.open.includes(item.id)) {
@@ -158,22 +175,23 @@ export default {
         activeItem = this.getItemFromId(activeId);
       }
 
+/*
+      this.setActiveItem(this.items, activeItem);
+*/
+
       this.$emit('organizationChanged', activeItem ? activeItem.name : '');
     },
     getItemFromId(activeId) {
-      const isChild = activeId.includes(this.childIdPrefix);
-      let itemId = activeId;
+      return this.getItemById(this.items, activeId);
 
-      let activeItem = this.getItemById(this.items, itemId);
-
-      if (isChild) {
+/*
         itemId = this.getParentIdFromChild(activeId);
         const parentItem = this.getItemById(this.items, itemId);
 
         activeItem = this.getItemById(parentItem.children, activeId);
-      }
 
       return activeItem;
+*/
     },
     getItemById(items, itemId) {
       const itemSelection = items.filter(i => i.id === itemId);
@@ -186,13 +204,21 @@ export default {
     },
   },
   data: () => ({
-    search: '',
+    search: null,
     open: [],
-    active: [],
+    activated: [],
     childIdPrefix: 'child',
     parentIdPrefix: 'parent',
+    mdiClose,
+    mdiMenuDown,
+    mdiMenuRight,
+    mdiFolder,
+    mdiFolderOpen,
+    mdiFolderOutline,
+    mdiFolderOpenOutline,
   }),
-  components: {},
+  components: {
+  },
 };
 </script>
 

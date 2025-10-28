@@ -19,7 +19,6 @@
               :id="project.name"
               :title="project.title"
               :img="project.image_display_url"
-              :defaultImg="defaultImg"
               :description="project.description"
               :subProjects="project.subProjects"
               @cardClick="onCardClick"
@@ -31,11 +30,7 @@
     </v-card-text>
 
     <v-card-text v-if="showPlaceholder && !subProjects">
-      <div
-        class="skeleton skeleton-size-normal skeleton-color-concrete skeleton-animation-shimmer"
-      >
-        <div class="bone bone-type-multiline bone-style-paragraph" />
-      </div>
+      <v-skeleton-loader type="paragraph" />
     </v-card-text>
 
     <v-card-text v-if="!showPlaceholder && !subProjects" style="color: red;">
@@ -70,7 +65,6 @@ export default {
       type: String,
       default: 'Subprojects',
     },
-    defaultImg: String,
     subProjects: Array,
     dark: Boolean,
     showPlaceholder: Boolean,

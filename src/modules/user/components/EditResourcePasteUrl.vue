@@ -1,6 +1,5 @@
 <template>
-  <v-card id="EditResourcePasteUrl"
-          class="pa-4" >
+  <v-card id="EditResourcePasteUrl" class="pa-4" :flat>
     <v-container fluid class="pa-0">
       <v-row>
         <v-col cols="12">
@@ -20,19 +19,20 @@
             :label="labels.textFieldLabel"
             v-model="url"
             ref="urlTextField"
-            prepend-icon="link"
+            :prepend-icon="mdiLink"
             clearable
-            clear-icon="close"
+            :clear-icon="mdiClose"
             :error-messages="validationErrors.url"
             @keyup="blurOnEnterKey"
-            @input="checkCreateButtonDisabled"
+            @update:model-value="checkCreateButtonDisabled"
           />
         </v-col>
       </v-row>
 
       <v-row no-gutters justify="end">
-        <v-col class="shrink">
+        <v-col class="flex-grow-0">
           <BaseRectangleButton
+            :color="createButtonDisabled ? 'grey' : 'primary'"
             :disabled="createButtonDisabled"
             :buttonText="labels.buttonText"
             @clicked="createButtonClick"
@@ -56,40 +56,60 @@
  */
 import * as yup from 'yup';
 
+import { mdiClose, mdiLink } from '@mdi/js';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import { isObjectValidCheckAllProps } from '@/factories/userEditingValidations';
+import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus.js';
 
 export default {
   name: 'EditResourcePasteUrl',
   props: {
-    genericProps: Object,
+    flat: {
+      type: Boolean,
+      default: false,
+    },
   },
+  created() {
+    eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
+  },
+  beforeUnmount() {
+    eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
+  },
+  emits: ['createUrlResources'],
   computed: {},
   methods: {
+    clearPreview() {
+      this.url = undefined;
+    },
     blurOnEnterKey(keyboardEvent) {
       if (keyboardEvent.key === 'Enter') {
         keyboardEvent.target.blur();
       }
     },
     checkCreateButtonDisabled() {
-
       const urlSchema = yup.object({
-        url: yup.string()
-            .url('Please enter a valid URL.'),
+        url: yup.string().url('Please enter a valid URL.'),
       });
       const objToValidate = { url: this.url };
 
-      this.createButtonDisabled = !isObjectValidCheckAllProps(objToValidate, urlSchema, this.validationErrors);
+      this.createButtonDisabled = !isObjectValidCheckAllProps(
+        objToValidate,
+        urlSchema,
+        this.validationErrors,
+      );
     },
     createButtonClick() {
       this.$emit('createUrlResources', this.url);
     },
   },
   data: () => ({
+    mdiLink,
+    mdiClose,
     url: '',
     labels: {
       title: 'Create Resource From Link',
-      instructions: 'Paste a link to create a new resource. Make sure add the file format and size afterwards.',
+      instructions:
+        "Paste a link to create a new resource. Make sure to add the file format and size afterwards. If you have links to DORA publications, please add them under in 'Related Publications' in the related information step.",
       buttonText: 'Create Resource',
       textFieldLabel: 'Link',
     },

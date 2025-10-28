@@ -9,12 +9,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-/* eslint-disable object-property-newline */
-// noinspection JSUnusedGlobalSymbols
-
-import MicroChart from '@/modules/metadata/components/GC-Net/MicroChart.vue';
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
-
+import GcNetMicroChart from '@/modules/metadata/components/GC-Net/GcNetMicroChart.vue';
 
 const stations = [
   {
@@ -32,7 +27,7 @@ const stations = [
       graphParameter: 'airtemp1',
       fallbackUrl: 'https://www.envidat.ch/data-files/1temp.json',
       fallbackParameter: 'airtemp1',
-      previewImageUrl: 'https://upload.wikimedia.org/wikipedia/en/9/95/Test_image.jpg',
+      previewImageUrl: 'https://www.envidat.ch/gcnet/assets/stations/small/swisscamp.jpg',
     },
   },
   {
@@ -50,7 +45,7 @@ const stations = [
       graphParameter: 'airtemp1',
       fallbackUrl: 'https://www.envidat.ch/data-files/3temp.json',
       fallbackParameter: 'airtemp1',
-      previewImageUrl: 'https://www.gstatic.com/webp/gallery/1.jpg',
+      previewImageUrl: 'https://www.envidat.ch/gcnet/assets/stations/small/nasau.jpg',
     },
   },
   {
@@ -68,15 +63,14 @@ const stations = [
       graphParameter: 'airtemp1',
       fallbackUrl: 'https://www.envidat.ch/data-files/4temp.json',
       fallbackParameter: 'airtemp1',
-      previewImageUrl: 'https://upload.wikimedia.org/wikipedia/en/9/95/Test_image.jpg',
+      previewImageUrl: 'https://www.envidat.ch/gcnet/assets/stations/small/gits.jpg',
     },
   },
 ];
 
 export default {
-  title: '8 GC-Net Views / Micro Charts',
-  component: MicroChart,
-  decorators: [],
+  title: '17 GC-Net Views / Micro Charts',
+  component: GcNetMicroChart,
   parameters: {
     // disable the snapshots for the MicroCharts because they pull in recent data and
     // will change almost everytime
@@ -84,105 +78,43 @@ export default {
   },
 };
 
+export const GcNetMicroChartWithImage = {
+  args: {
+    station: stations[0],
+    apiUrl: stations[0].envidatConfig.apiUrl,
+    fallbackUrl: stations[0].envidatConfig.fallbackUrl,
+    parameter: stations[0].envidatConfig.graphParameter,
+    image: stations[0].envidatConfig.previewImageUrl,
+  },
+}
+
+export const GcNetMicroChartWithout = {
+  args: {
+    station: stations[1],
+    apiUrl: stations[1].envidatConfig.apiUrl,
+    fallbackUrl: stations[1].envidatConfig.fallbackUrl,
+    parameter: stations[1].envidatConfig.graphParameter,
+    // image: stations[1].envidatConfig.previewImageUrl,
+  },
+}
+
 /*
-export const EmptyMicroChart = () => ({
-  components: { MicroChart },
-  template: '<MicroChart />',
-});
-*/
-
-export const BaseStatusLabelViews = () => ({
-  components: { BaseStatusLabelView },
-  template: `
-  <v-col >
-
-    <v-row >
-      Empty BaseStatusLabelView
-    </v-row>
-
-    <v-row class="py-1">
-      <v-col class="pa-0"
-             style="border: solid 1px;" >
-        <BaseStatusLabelView />
-      </v-col>
-    </v-row>
-
-    <v-row>
-      Loading BaseStatusLabelView
-    </v-row>
-
-    <v-row class="py-1">
-      <v-col class="pa-0"
-             style="border: solid 1px;" >
-        <BaseStatusLabelView :loading="true" />
-      </v-col>
-    </v-row>
-
-    <v-row>
-      Info BaseStatusLabelView
-    </v-row>
-
-    <v-row class="py-1">
-      <v-col class="pa-0"
-             style="border: solid 1px;" >
-        <BaseStatusLabelView :loading="false"
-                              statusIcon="info"
-                              statusColor="info"
-                              statusText="Here you see a info title"
-                              expandedText="Here you see more details about the info" />
-      </v-col>
-    </v-row>
-
-    <v-row>
-      Warning BaseStatusLabelView
-    </v-row>
-
-    <v-row class="py-1">
-      <v-col class="pa-0"
-             style="border: solid 1px;" >
-        <BaseStatusLabelView :loading="false"
-                              statusIcon="warning"
-                              statusColor="warning"
-                              statusText="Warning Title Here"
-                              expandedText="Some longer text about the details of the warning" />
-      </v-col>
-    </v-row>
-
-    <v-row>
-      Error BaseStatusLabelView
-    </v-row>
-
-    <v-row class="py-1">
-      <v-col class="pa-0"
-             style="border: solid 1px;" >
-        <BaseStatusLabelView :loading="false"
-                              statusIcon="error"
-                              statusColor="error"
-                              statusText="Error title message"
-                              expandedText="Details about the error probably with a stack of the coder and it will be very long and not meant to be seen be the users that's why you need to catch the error and return a meaningfull text for the users" />
-      </v-col>
-    </v-row>
-
-  </v-col>
-  `,
-});
-
-export const MicroChartViews = () => ({
-  components: { MicroChart },
+export const GcNetMicroChartViews = () => ({
+  components: { GcNetMicroChart },
   parameters: {
-    // disable the snapshots for the MicroCharts because they pull in recent data and
+    // disable the snapshots for the GcNetMicroCharts because they pull in recent data and
     // will change almost everytime
     chromatic: { disableSnapshot: false },
   },
   template: `
     <v-col class="chromatic-ignore">
       <v-row>
-        Station 1 MicroChart with test image
+        Station 1 GcNetMicroChart with test image
       </v-row>
 
       <v-row class="py-3" >
         <v-col >
-          <MicroChart :station="station1"
+          <GcNetMicroChart :station="station1"
                       :apiUrl="station1.envidatConfig.apiUrl"
                       :fallbackUrl="station1.envidatConfig.fallbackUrl"
                       :parameter="station1.envidatConfig.graphParameter"
@@ -192,12 +124,12 @@ export const MicroChartViews = () => ({
       </v-row>
 
       <v-row>
-        Station 1 MicroChart without image
+        Station 1 GcNetMicroChart without image
       </v-row>
 
       <v-row class="py-3" >
         <v-col >
-          <MicroChart :station="station1"
+          <GcNetMicroChart :station="station1"
                       :apiUrl="station1.envidatConfig.apiUrl"
                       :fallbackUrl="station1.envidatConfig.fallbackUrl"
                       :parameter="station1.envidatConfig.graphParameter"
@@ -206,12 +138,12 @@ export const MicroChartViews = () => ({
       </v-row>
 
       <v-row>
-        Station 2 MicroChart with only fallback url
+        Station 2 GcNetMicroChart with only fallback url
       </v-row>
 
       <v-row class="py-3" >
         <v-col >
-          <MicroChart :station="station2"
+          <GcNetMicroChart :station="station2"
                       :apiUrl="station2.envidatConfig.wrongProperty"
                       :fallbackUrl="station2.envidatConfig.fallbackUrl"
                       :parameter="station2.envidatConfig.graphParameter"
@@ -221,12 +153,12 @@ export const MicroChartViews = () => ({
       </v-row>
 
       <v-row>
-        Station 1 MicroChart with a wrong image url
+        Station 1 GcNetMicroChart with a wrong image url
       </v-row>
 
       <v-row class="py-3" >
         <v-col >
-          <MicroChart :station="station1"
+          <GcNetMicroChart :station="station1"
                       :apiUrl="station1.envidatConfig.apiUrl"
                       :fallbackUrl="station1.envidatConfig.fallbackUrl"
                       :parameter="station1.envidatConfig.graphParameter"
@@ -236,12 +168,12 @@ export const MicroChartViews = () => ({
       </v-row>
 
       <v-row>
-        Station 2 MicroChart with errors
+        Station 2 GcNetMicroChart with errors
       </v-row>
 
       <v-row class="py-3" >
         <v-col >
-          <MicroChart :station="station2"
+          <GcNetMicroChart :station="station2"
                       :apiUrl="station2.envidatConfig.wrongProperty"
                       :fallbackUrl="station2.envidatConfig.wrongProperty"
                       :parameter="station2.envidatConfig.graphParameter"
@@ -251,12 +183,12 @@ export const MicroChartViews = () => ({
       </v-row>
 
       <v-row>
-        Station 2 MicroChart api url
+        Station 2 GcNetMicroChart api url
       </v-row>
 
       <v-row class="py-3" >
         <v-col >
-          <MicroChart :station="station2"
+          <GcNetMicroChart :station="station2"
                       :apiUrl="station2.envidatConfig.apiUrl"
                       :fallbackUrl="station2.envidatConfig.fallbackUrl"
                       :parameter="station2.envidatConfig.graphParameter"
@@ -266,12 +198,12 @@ export const MicroChartViews = () => ({
       </v-row>
 
       <v-row>
-        Station 3 MicroChart
+        Station 3 GcNetMicroChart
       </v-row>
 
       <v-row class="py-3" >
         <v-col >
-          <MicroChart :station="station3"
+          <GcNetMicroChart :station="station3"
                       :apiUrl="station3.envidatConfig.apiUrl"
                       :fallbackUrl="station3.envidatConfig.fallbackUrl"
                       :parameter="station3.envidatConfig.graphParameter"
@@ -302,3 +234,4 @@ export const MicroChartViews = () => ({
     stations,
   }),
 });
+*/

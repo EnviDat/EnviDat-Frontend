@@ -1,22 +1,33 @@
 <template>
   <v-card
     :id="`resourceCard_${id}`"
-    :color="cardColor"
-    class="metadataResourceCard"
+    :color="computedCardColor"
     :class="isSelected ? 'highlighted' : ''"
-    style="height: 100%;"
-    :loading="loading"
+    :style="{ height: useAutoHeight ? 'auto' : '100%' }"
+    :loading="loadingColor"
   >
-    <template slot="progress">
-      <v-progress-linear color="accent" indeterminate />
-    </template>
-
-    <v-card-title class="text-h5 resourceHeadline white--text">
-      {{ resourceName }}
+    <v-card-title
+      class="text-h5 resourceHeadline pt-4"
+      :class="{
+        'text-white': !dark,
+        'text-black': dark,
+      }"
+    >
+      <v-row no-gutters justify="start">
+        <v-col v-if="isProtected" class="flex-grow-0 pr-2">
+          <BaseIcon color="grey-darken-3" :icon="mdiLock"></BaseIcon>
+        </v-col>
+        <v-col v-if="deprecated" class="flex-grow-0 pr-2">
+          <BaseIcon color="white" :icon="mdiCancel"></BaseIcon>
+        </v-col>
+        <v-col style="text-wrap: balance">
+          {{ resourceName }}
+        </v-col>
+      </v-row>
     </v-card-title>
 
     <v-card-text
-      class="pt-0 white--text"
+      class="pt-0 mt-2"
       :class="{
         'pb-5': !showFullDescription,
         'pb-10': showFullDescription,
@@ -30,14 +41,18 @@
           <v-col
             v-if="
               showFullDescription ||
-                (!showFullDescription && !maxDescriptionLengthReached)
+              (!showFullDescription && !maxDescriptionLengthReached)
             "
-            class="readableText resourceCardText heightAndScroll"
-            :style="
-              `scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`
-            "
+            class="readableText heightAndScroll"
+            :class="{
+              'text-white': !dark,
+              'text-black': dark,
+            }"
+            :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
           >
-            <div v-html="markdownText"></div>
+            <div class="resourceCardText"
+                 v-html="markdownText"
+            />
           </v-col>
 
           <v-col
@@ -46,165 +61,222 @@
           >
             {{ markdownTextTruncated }}
           </v-col>
-
-          <!-- <v-col v-if="maxDescriptionLengthReached && !showFullDescription"
-                  style="width: 30px;"
-                  class="shrink"
-                  align-self="end" >
-
-            <base-icon-button material-icon-name="expand_more"
-                              iconColor="accent"
-                              color="accent"
-                              outlined
-                              tooltipText="Show full description"
-                              @clicked="showFullDescription = !showFullDescription" />
-          </v-col> -->
         </v-row>
 
         <v-row v-if="!showFullDescription" no-gutters>
           <v-col>
-            <v-divider :dark="dark" class="my-2" />
+            <v-divider :dark="dark" class="mt-4 mb-2" />
           </v-col>
         </v-row>
 
-        <v-row v-if="!showFullDescription" no-gutters>
-          <v-col class="resourceInfo">
-            <base-icon-label-view
-              v-if="doi"
+        <v-row v-if="!showFullDescription" no-gutters class="resourceInfo">
+          <v-col v-if="isProtected" cols="12" class="py-1">
+            <BaseIconLabelView
+              text="This resource is private"
+              :icon="mdiLock"
+              :light="dark"
+              :dark="!dark"
+              class="mb-1"
+            />
+          </v-col>
+
+          <v-col v-if="canDataViz" cols="12" class="py-1">
+            <v-row no-gutters style="opacity: 1 !important" align="center">
+              <v-col class="flex-grow-1">
+                <SparkChart :data="chartPreviewData" />
+              </v-col>
+
+              <v-col class="flex-grow-0">
+                <base-icon-button
+                  :icon="mdiChartBar"
+                  icon-color="black"
+                  color="accent"
+                  elevated
+                  :tooltip-text="chartPreviewTooltip"
+                  @clicked="$emit('openButtonClicked')"
+                />
+              </v-col>
+            </v-row>
+          </v-col>
+
+          <v-col v-if="doi" cols="12" class="py-1">
+            <BaseIconLabelView
               :text="doi"
-              :label="doiIcon ? '' : 'DOI:'"
-              :icon="doiIcon"
+              :icon="mdiFingerprint"
               :icon-tooltip="EDIT_METADATA_DOI_LABEL"
-              :align-left="twoColumnLayout"
+              :light="dark"
+              :dark="!dark"
+              class="mb-1"
             />
+          </v-col>
 
-            <base-icon-label-view
-              v-if="format"
-              :text="format"
-              :label="extensionIcon ? '' : 'File format:'"
+          <v-col v-if="format" cols="12" class="py-1">
+            <BaseIconLabelView
+              :text="formatedBytes ? `${format} - ${formatedBytes}` : format"
               :icon="extensionIcon"
-              icon-tooltip="Format of the file"
-              :align-left="twoColumnLayout"
+              :icon-tooltip="
+                formatedBytes ? 'Resource type and size' : 'Resource type'
+              "
+              :light="dark"
+              :dark="!dark"
             />
+          </v-col>
 
-            <base-icon-label-view
-              v-if="size"
-              :text="formatedBytes"
-              :label="fileSizeIcon ? '' : 'File size:'"
-              :icon="fileSizeIcon"
-              icon-tooltip="Filesize"
-              :align-left="twoColumnLayout"
-            />
-
-            <base-icon-label-view
-              v-if="created"
+          <v-col v-if="created" cols="12" class="py-1">
+            <BaseIconLabelView
               :text="readableCreated"
-              :label="dateCreatedIcon ? '' : 'Created at:'"
-              :icon="dateCreatedIcon"
-              icon-tooltip="Date of file creation"
-              :align-left="twoColumnLayout"
+              :icon="mdiTimerPlusOutline"
+              icon-tooltip="Date of resource creation"
+              :light="dark"
+              :dark="!dark"
+              class="mb-1"
+            />
+          </v-col>
+
+          <v-col v-if="lastModified" cols="12" class="py-1">
+            <BaseIconLabelView
+              :text="readableLastModified"
+              :icon="mdiUpdate"
+              icon-tooltip="Date of last modification"
+              :light="dark"
+              :dark="!dark"
+              class="mb-1"
             />
 
-            <base-icon-label-view
-              v-if="lastModified"
-              :text="readableLastModified"
-              :label="lastModifiedIcon ? '' : 'Modified at:'"
-              :icon="lastModifiedIcon"
-              icon-tooltip="Date of last modification"
-              :align-left="twoColumnLayout"
+            <!-- <base-icon-label-view
+              v-if="isDownloaded"
             />
+          </v-col>
+
+          <v-col v-if="isDownloaded"
+                 cols="12"
+                 class="py-1"
+          >
+             <base-icon-label-view
+              :text="'Number of Downloads: ' + String(numberOfDownload)"
+              material-icon-name="download"
+              icon-tooltip="Number of downloads"
+              dark
+              class="mb-1"
+            /> -->
           </v-col>
         </v-row>
       </v-container>
     </v-card-text>
 
-    <v-card-actions
-      class="ma-0 pa-2"
-      style="position: absolute; bottom: 0; right: 55px;"
-    >
-      <base-icon-button v-if="maxDescriptionLengthReached"
-                        :class="isProtected ? 'mr-2' : ''"
-                        material-icon-name="expand_more"
-                        :iconColor="showFullDescription ? 'primary' : 'accent'"
-                        color="accent"
-                        :fillColor="showFullDescription ? $vuetify.theme.themes.light.accent : ''"
-                        outlined
-                        :rotateOnClick="true"
-                        :rotateToggle="showFullDescription"
-                        :tooltipText="
-                          showFullDescription
-                            ? 'Hide full description'
-                            : 'Show full description'
-                        "
-                        @clicked="showFullDescription = !showFullDescription"
-      />
-    </v-card-actions>
-
     <v-container
-      v-if="showGenericOpenButton && !isProtected"
-      class="pa-2"
-      style="position: absolute; right: 0; width: 55px;"
-      :style="`${genericOpenButtonBottom ? 'bottom: 55px;' : 'top: 0;'}`"
+      v-if="showGenericOpenButton && !isProtected && !sparkChartData"
+      class="pa-4"
+      :style="`position: absolute; right: 0; width: 68px; ${genericButtonYPos}`"
     >
       <v-row>
         <v-col cols="12">
           <base-icon-button
-            :materialIconName="openButtonIcon"
-            iconColor="black"
+            :icon="openButtonIcon"
+            icon-color="black"
             color="accent"
-            :isElevated="true"
-            :tooltipText="openButtonTooltip"
+            elevated
+            :tooltip-text="openButtonTooltip"
+            :disabled="!downloadActive"
             @clicked="$emit('openButtonClicked')"
           />
         </v-col>
       </v-row>
     </v-container>
 
-    <v-container
-      class="pa-2"
-      style="position: absolute; bottom: 0; right: 0; width: 55px;"
+    <!-- it's not possible to always use directly v-card-actions
+    because for the S3 bucket file list, the list should appear
+    beneath the icon buttons, there the wrapper with the relative positioning -->
+    <v-container fluid
+                 :style="`position: ${ isEnvicloudUrl ? 'relative' : 'initial'}`"
+                 class="py-0"
     >
-      <v-row v-if="!isProtected">
-        <v-col cols="12">
-          <base-icon-button
-            :materialIconName="isFile ? 'file_download' : 'link'"
-            iconColor="black"
-            color="accent"
-            :isElevated="true"
-            :tooltipText="isFile ? 'Download file' : 'Open link'"
-            :url="url"
-            :disabled="!downloadActive"
-          />
-        </v-col>
-      </v-row>
 
-      <v-row v-if="isProtected">
-        <v-col>
-          <div
-            class="fabMenu fabPosition elevation-2 ma-2 pl-2 pt-2"
-            :class="downloadActive ? 'fabMenuHover' : 'fabMenuDisabled'"
+      <!-- moved inside the relative container for resolve the issue of positioning -->
+      <v-card-actions
+        class="ma-0"
+        style="position: absolute; bottom: 0; right: 0; width: 120px; z-index: 2;"
+      >
+
+        <v-row no-gutters
+               justify="end"
+        >
+          <v-col v-if="maxDescriptionLengthReached"
+                 cols="6"
+                 class="pa-2"
           >
-            <v-icon
-              class="pl-1 pt-1"
-              :class="downloadActive ? 'iconCircle' : ''"
-              :disabled="!downloadActive"
-              >shield</v-icon
-            >
+            <base-icon-button
+              :icon="mdiChevronDown"
+              :icon-color="showFullDescription ? 'primary' : 'accent'"
+              :color="showFullDescription ? 'accent' : 'black'"
+              :outlined="true"
+              outline-color="accent"
+              :rotated="showFullDescription"
+              :tooltipText="
+            showFullDescription
+              ? 'Hide full description'
+              : 'Show full description'
+            "
+              @clicked="showFullDescription = !showFullDescription"
+            />
+          </v-col>
 
+          <v-col v-if="!isProtected"
+                 cols="6"
+                 class="pa-2"
+          >
+            <!-- New version with S3 Component -->
+            <base-icon-button
+              :icon="isFile ? mdiDownload : mdiLink"
+              icon-color="black"
+              @clicked="trackDownload(url, resourceName)"
+              color="accent"
+              elevated
+              :tooltip-text="isFile ? 'Download resource' : 'Open link'"
+              :url="url"
+              :disabled="!downloadActive"
+            />
+          </v-col>
+
+          <v-col v-if="isProtected"
+                 cols="6"
+          >
             <div
-              v-if="downloadActive"
-              class="pt-2 lockedText black--text protectedLink"
+              class="fabMenu fabPosition elevation-5 ma-4"
+              :class="downloadActive ? 'fabMenuHover' : 'fabMenuDisabled'"
             >
-              <p v-html="protectedText"></p>
+              <BaseIcon :icon="mdiShield" color="grey-darken-3" />
+              <div
+                v-if="downloadActive"
+                class="pt-2 lockedText text-black protectedLink"
+              >
+                <p v-html="protectedText"></p>
+              </div>
             </div>
-          </div>
-        </v-col>
-      </v-row>
+          </v-col>
+        </v-row>
+
+      </v-card-actions>
     </v-container>
+
+    <v-card-text
+      v-if="isEnvicloudUrl && !isProtected"
+      class="pa-4 pt-0"
+    >
+      <v-divider />
+
+      <S3Tree
+        :url="url"
+        @loadingChanged="catchLoadingChanged"
+        @changeAutoHeight="catchChangeHeight"
+      />
+    </v-card-text>
+
   </v-card>
+
 </template>
 
-<script>
+<script lang="ts">
 /**
  * ResourceCard.vue create a card with a download link to a specific resource of a dataset.
  *
@@ -217,22 +289,54 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import {
+  mdiCancel,
+  mdiChevronDown,
+  mdiDownload,
+  mdiFingerprint,
+  mdiLink,
+  mdiLock,
+  mdiMonitorEye,
+  mdiShield,
+  mdiTimerPlusOutline,
+  mdiUpdate,
+  mdiFileDocumentCheckOutline,
+  mdiChartBar,
+} from '@mdi/js';
+
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
-import { renderMarkdown,stripMarkdown } from '@/factories/stringFactory';
-import { formatBytes, formatDate } from '@/factories/metaDataFactory';
-import { EDIT_METADATA_DOI_LABEL } from '@/factories/metadataConsts';
+
+import S3Tree from '@/modules/s3/components/S3Tree.vue';
+import SparkChart from '@/components/Charts/SparkChart.vue';
+
+import { renderMarkdown, stripMarkdown } from '@/factories/stringFactory';
+import { formatBytes, getResourceName } from '@/factories/resourceHelpers';
+import { EDIT_METADATA_DOI_LABEL, RESOURCE_FORMAT_LINK } from '@/factories/metadataConsts';
+import { getFileIcon } from '@/factories/imageFactory';
+
+import { trackDownload } from '@/utils/matomoTracking';
+
+import { formatDate } from '@/factories/dateFactory';
+import { chartPreviewData } from '@/modules/charts/middelware/chartServiceLayer';
 
 export default {
   name: 'ResourceCard',
   components: {
+    SparkChart,
+    BaseIcon,
     BaseIconLabelView,
     BaseIconButton,
+    S3Tree,
   },
   props: {
     id: String,
     doi: String,
     name: String,
+/*
+    autoHeight: Boolean,
+*/
     description: String,
     url: String,
     restrictedUrl: String,
@@ -242,14 +346,18 @@ export default {
     format: String,
     twoColumnLayout: Boolean,
     height: String,
-    dark: Boolean,
-    doiIcon: String,
-    fileSizeIcon: String,
-    dateCreatedIcon: String,
-    lastModifiedIcon: String,
+    s3Bucket: {
+      type: Boolean,
+      default: true,
+    },
+    dark: {
+      type: Boolean,
+      default: false,
+    },
     isProtected: Boolean,
-    fileExtensionIcon: Object,
     metadataContact: String,
+    deprecated: Boolean,
+    numberOfDownload: Number,
     downloadActive: {
       type: Boolean,
       default: true,
@@ -265,7 +373,7 @@ export default {
     openButtonTooltip: String,
     openButtonIcon: {
       type: String,
-      default: 'preview',
+      default: mdiMonitorEye,
     },
     cardColor: {
       type: String,
@@ -276,14 +384,39 @@ export default {
       default: false,
     },
     loading: Boolean,
+    sparkChartLabels: {
+      type: Array,
+      required: false,
+      default: undefined,
+    },
+    canDataViz: Boolean,
   },
-  data: () => ({
-    maxDescriptionLength: 175,
-    showFullDescription: false,
-    audioFormats: ['mp3', 'wav', 'wma', 'ogg'],
-    EDIT_METADATA_DOI_LABEL,
-  }),
+  mounted() {
+  },
+  beforeUnmount() {
+    // reset store before unmount the component
+  },
   computed: {
+    loadingColor() {
+      if (this.loadingResource) {
+        return 'accent';
+      }
+
+      return undefined;
+    },
+    loadingResource() {
+      return this.loading || this.isLoadingS3Tree;
+    },
+    isEnvicloudUrl() {
+      const urlToCheck = this.url;
+      return urlToCheck.includes('envicloud');
+    },
+    isDownloaded() {
+      return this.numberOfDownload > 0;
+    },
+    computedCardColor() {
+      return this.deprecated ? 'grey' : this.cardColor;
+    },
     readableCreated() {
       return formatDate(this.created) || this.created;
     },
@@ -291,16 +424,11 @@ export default {
       return formatDate(this.lastModified) || this.lastModified;
     },
     resourceName() {
-      if (!this.name && !!this.url) {
-        const splits = this.url.split('/');
-        return splits[splits.length - 1];
-      }
-
-      return this.name ? this.name : 'Unnamed resource';
+      return getResourceName(this);
     },
     scrollbarColorFront() {
       return this.$vuetify
-        ? this.$vuetify.theme.themes.light.highlight
+        ? this.$vuetify.theme.themes.light.colors.highlight
         : 'auto';
     },
     scrollbarColorBack() {
@@ -344,11 +472,12 @@ export default {
 
       return formatBytes(sizeNumber);
     },
+
     isLink() {
       return (
         this.format &&
         (this.format.toLowerCase() === 'link' ||
-          this.format.toLowerCase() === 'url')
+          this.format.toLowerCase() === RESOURCE_FORMAT_LINK)
       );
     },
     isFile() {
@@ -356,7 +485,7 @@ export default {
         !this.format ||
         !(
           this.format.toLowerCase() === 'link' ||
-          this.format.toLowerCase() === 'url'
+          this.format.toLowerCase() === RESOURCE_FORMAT_LINK
         );
 
       if (isFile && this.url) {
@@ -379,50 +508,100 @@ export default {
 
       return `Could not load the resource, please contact ${this.metadataContact} for getting access or envidat@wsl.ch for support.`;
     },
-    extensionIcon() {
-      if (this.$store) {
-        if (this.audioFormats.includes(this.format)) {
-          return this.mixinMethods_getIcon('Audio');
-        }
-
-        let extIcon = this.mixinMethods_getIconFileExtension(this.format);
-
-        if (!extIcon && this.format.toLowerCase() === 'url') {
-          extIcon = this.linkIcon;
-        }
-
-        if (extIcon) {
-          return extIcon;
-        }
-
-        return this.mixinMethods_getIcon('file');
+    genericButtonYPos() {
+      if (this.genericOpenButtonBottom) {
+        return this.isEnvicloudUrl ? 'bottom: 0;' : 'bottom: 52px';
       }
 
-      if (this.fileExtensionIcon) {
-        return this.lookupExtensionIcon;
-      }
-
-      return null;
+      return 'top: 0;'
     },
-    lookupExtensionIcon() {
-      const lookUp = `file${this.format.toLowerCase()}`;
-      let icon = this.fileExtensionIcon[`./${lookUp}`];
-
-      if (!icon && this.audioFormats.includes(this.format)) {
-        icon = this.fileExtensionIcon['./fileAudio'];
-      }
-
-      if (!icon) {
-        icon = this.fileExtensionIcon['./file'];
-      }
-
-      // console.log(`icon ${icon}`);
-      return icon;
+    extensionIcon() {
+      return getFileIcon(this.format);
     },
   },
-  methods: {},
+  methods: {
+    catchLoadingChanged(isLoading) {
+      this.isLoadingS3Tree = isLoading
+    },
+    catchChangeHeight(useAutoHeight) {
+      this.useAutoHeight = useAutoHeight;
+    },
+    trackDownload,
+  },
+  data: () => ({
+    mdiChartBar,
+    mdiShield,
+    mdiChevronDown,
+    mdiDownload,
+    mdiLink,
+    mdiFingerprint,
+    mdiLock,
+    mdiTimerPlusOutline,
+    mdiUpdate,
+    mdiFileDocumentCheckOutline,
+    mdiCancel,
+    maxDescriptionLength: 175,
+    showFullDescription: false,
+    audioFormats: ['mp3', 'wav', 'wma', 'ogg'],
+    EDIT_METADATA_DOI_LABEL,
+    chartPreviewTooltip: 'Visualize the data',
+    chartPreviewData,
+    isLoadingS3Tree: false,
+    useAutoHeight: false,
+  }),
 };
 </script>
+
+<style lang="scss" scoped>
+.fabPosition {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.fabMenu {
+  width: 48px;
+  height: 48px;
+  background-color: #ffd740;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fabMenuDisabled {
+  opacity: 0.5;
+  background-color: grey !important;
+}
+
+.fabMenuHover:hover,
+.fabMenuHover:active {
+  background: #fff;
+  color: black !important;
+  min-width: 160px;
+  min-height: 160px;
+  width: 100%;
+  height: 100%;
+  border-radius: 3px 3px;
+  display: inherit;
+  padding: 8px;
+
+  a {
+    color: rgb(var(--v-theme-primary)) !important;
+  }
+
+  .lockedText {
+    display: inherit;
+    opacity: 1;
+  }
+}
+</style>
+
+<style>
+.resourceCardText p a {
+  color: #ffd740 !important;
+}
+</style>
 
 <style scoped>
 .resourceHeadline {
@@ -443,52 +622,9 @@ export default {
   scrollbar-width: thin;
 }
 
-.fabPosition {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-}
-
-.fabMenu {
-  width: 48px;
-  height: 48px;
-  background-color: #ffd740;
-  border-radius: 50%;
-  /* transition: .1s; */
-}
-
-.fabMenuDisabled {
-  opacity: 0.5;
-  background-color: grey !important;
-}
-
-.fabMenuHover:hover,
-.fabMenuHover:active {
-  background: #fff;
-  min-width: 160px;
-  min-height: 160px;
-  width: 100%;
-  height: 100%;
-  border-radius: 3px 3px;
-  display: inherit;
-}
-
-.fabMenuHover:hover .v-icon,
-.fabMenuHover:active .v-icon {
-  border: 1px solid grey;
-  border-radius: 50%;
-  padding: 0 4px 4px 0;
-}
-
 .lockedText {
   display: none;
   opacity: 0;
-}
-
-.fabMenuHover:hover .lockedText,
-.fabMenuHover:active .lockedText {
-  display: inherit;
-  opacity: 1;
 }
 
 .resourceInfo {
@@ -505,4 +641,6 @@ export default {
 .highlighted {
   box-shadow: #ffd740 0 0 5px 5px !important;
 }
+
+
 </style>

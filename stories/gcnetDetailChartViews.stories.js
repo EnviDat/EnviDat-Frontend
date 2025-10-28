@@ -15,12 +15,13 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable object-property-newline */
 
-import DetailChart from '@/modules/metadata/components/GC-Net/DetailChart.vue';
+import DetailChart from '@/modules/metadata/components/GC-Net/GcNetDetailChart.vue';
 import { defaultSeriesSettings } from '@/factories/chartFactory';
-import stationParameters from './testdata/stationParameters.json';
-import stationsConfig from './testdata/stationsConfig.json';
+import DetailChartsList from '@/modules/metadata/components/GC-Net/GcNetDetailChartsList.vue';
 
-import DetailChartsList from '../src/modules/metadata/components/GC-Net/DetailChartsList.vue';
+import stationParameters from '@/../stories/testdata/stationParameters.json';
+import stationsConfig from '@/../stories/testdata/stationsConfig.json';
+
 
 const stations = stationsConfig;
 const fileObjects = stationParameters.fileObjects;

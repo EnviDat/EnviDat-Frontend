@@ -1,16 +1,16 @@
 <template>
   <expandable-text-layout
-      id="MetadataRelatedDatasets"
-      :title="METADATA_DATASETS_TITLE"
-      :text="getCitationsFromRelatedDatasets(text)"
-      :showPlaceholder="showPlaceholder"
-      :emptyTextColor="emptyTextColor"
-      :emptyText="emptyText"
-      :maxTextLength="maxTextLength"
-      :sanitizeHTML="false"
-      class="relatedPubList"
+    id="MetadataRelatedDatasets"
+    :title="METADATA_DATASETS_TITLE"
+    :text="getCitationsFromRelatedDatasets(text)"
+    :showPlaceholder="showPlaceholder"
+    :emptyTextColor="emptyTextColor"
+    :emptyText="emptyText"
+    :maxTextLength="maxTextLength"
+    :sanitizeHTML="false"
+    class="relatedPubList"
   />
-<!--
+  <!--
   <v-card flat>
 
     <v-card-text>
@@ -38,7 +38,6 @@
     </v-card-text>
   </v-card>
 -->
-
 </template>
 
 <script>
@@ -59,7 +58,10 @@ import { mapGetters } from 'vuex';
 import ExpandableTextLayout from '@/components/Layouts/ExpandableTextLayout.vue';
 import { METADATA_DATASETS_TITLE } from '@/factories/metadataConsts';
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
-import { extractDatasetIdsFromText, getCitationList } from '@/factories/metaDataFactory';
+import {
+  extractDatasetIdsFromText,
+  getCitationList,
+} from '@/factories/citationFactory';
 
 export default {
   name: 'MetadataRelatedDatasets',
@@ -67,7 +69,6 @@ export default {
     ExpandableTextLayout,
   },
   props: {
-    showPlaceholder: Boolean,
     text: {
       type: String,
       default: '',
@@ -89,11 +90,13 @@ export default {
       type: Array,
       default: () => [],
     },
+    showPlaceholder: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
-    ...mapGetters(METADATA_NAMESPACE, [
-      'getCitationListFromIds',
-    ]),
+    ...mapGetters(METADATA_NAMESPACE, ['getCitationListFromIds']),
     relatedDatasetIds() {
       return extractDatasetIdsFromText(this.text);
     },
@@ -106,7 +109,7 @@ export default {
 
       const ids = this.relatedDatasetIds;
 
-      if (ids.length <= 0){
+      if (ids.length <= 0) {
         return text;
       }
 

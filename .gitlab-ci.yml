@@ -1,75 +1,128 @@
+include:
+  - local: '.gitlab-ci-deployment.yml'
+  - local: '.gitlab-ci-seo.yml'
+  - local: '.gitlab-ci-scan.yml'
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml  
+  - template: Jobs/SAST.gitlab-ci.yml  
+
+default:  
+  tags:
+    - frontend
+
 stages:
   - config
-  - install
   - test
-  - visual-regression
   - build
-  - package
   - deploy
-  - release
+  - manual-deploy
+
+workflow:
+  rules:
+    # Allow pipeline when triggered from other pipelines (deployment-only-pipeline)
+    - if: '$CI_PIPELINE_SOURCE == "pipeline"'
+    # Allow pipeline when triggered from the gitlab ui to start a pipeline
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+    # Allow Pipeline run when it's scheduled
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    # Allow pipeline for pushing to develop, staging, main branches
+    - if: '$CI_COMMIT_REF_NAME =~ /^(main|staging|develop)$/'
+      when: always
+
+    # Block pipeline creation for all other cases (e.g. feature branches, tags, merge requests)
+    - when: never
+
 
 variables:
-  ARTIFACT_COMPRESSION_LEVEL: "fast"
-  CACHE_COMPRESSION_LEVEL: "fast"
-  npm_config_cache: '$CI_PROJECT_DIR/.npm'
+  ARTIFACT_COMPRESSION_LEVEL: 'fastest'
+  CACHE_COMPRESSION_LEVEL: 'fastest'
+  NPM_CONFIG_CACHE: '.npm/'
+  GIT_CLEAN_FLAGS: "-ffdx -e .npm/" # don't delete the .npm/ for each job
 
-.trigger-rules:
+.normal-rules:
   rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^(main|staging|develop|beta)$/'
-      changes:
-        - 'src/**/*'
-        - 'public/**/*'
-        - 'tests/**/*'
-        - 'nginx/**/*'
-        - 'chart/**/*'
-        - '.env*'
-        - 'package.json*'
-        - 'vue.*'
-        - 'Dockerfile'
-        - '.gitlab-ci.yml'
-      when: always
-    - if: $CI_PIPELINE_SOURCE == "web"
-      when: always
+    # when ever a pipeline is created run job, even for manual jobs only
+    - when: on_success
+
+# don't run for deployment only and scheduled pipelines, to avoid making unnecessary changes
+# in production
+.build-rules:
+  rules:
+    # don't run when triggered from other pipeline (deployment-only-pipeline)
+    - if: '$CI_PIPELINE_SOURCE == "pipeline"'
+    # don't run when it's scheduled
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
+
+    # run normal jobs in any other case
+    - when: on_success
+
+# don't run for scheduled pipelines, to avoid making unnecessary changes in production
+.manual-deployment-rules:
+  rules:
+    # don't run when it's scheduled
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
+
+    - when: manual
+
 
 set-vars:
   stage: .pre
-  image: docker.io/alpine:3.15
-  rules:
-    - !reference [.trigger-rules, rules]
-    - if: $CI_COMMIT_TAG
+  image: alpine:3.20
+  environment: $CI_COMMIT_REF_NAME
+  extends: .normal-rules
+  # for manual jobs add allow_failure so the whole pipeline won't show up as "blocked"
+  allow_failure: false
   before_script:
     - >
       apk add jq yq --no-cache
       --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community
   script:
+    - VERSION=$(jq '.version' package.json --raw-output)
+    # if BUILD_VERSION is already set it's overwritten from another pipeline and this has to be used
     # extract version number from package.json, to make it available in the app
-    - >
-      echo "VERSION=$(jq '.version' package.json --raw-output)" >> build.env
-    # move all variables from the from the CI / CD into the build variables
-    - cat .env >> build.env
+    # use unset"${BUILD_VERSION" to check if variable is set, will cover both cases null and "unset" / empty string
+    - |
+      if [ unset"${BUILD_VERSION}" == "unset" ]; then
+        echo "BUILD_VERSION=${VERSION}" >> build.env
+        echo "BUILD_VERSION was unset. Set to ${VERSION}."
+        cat build.env
+      else
+        echo "BUILD_VERSION=${BUILD_VERSION}" >> build.env
+        echo "BUILD_VERSION is already set to ${BUILD_VERSION}."
+        cat build.env
+      fi
+    - echo "information environment ${CI_COMMIT_REF_NAME}"
     - |
       if [ "${CI_COMMIT_REF_NAME}" == "develop" ]; then
         echo "CI_COMMIT_REF_NAME=dev" >> build.env
       fi
+    # move all variables from the CI / CD into the build variables
+    - cat .env >> build.env
     # bash "source" command loads all the variables from the file
     - source build.env
-    # extract version number from package.json, to make it available in the app
-    - >
-      echo "IMAGE_NAME=${INTERNAL_REG}/envidat-frontend:${VERSION}-${CI_COMMIT_REF_NAME}"
-      >> build.env
+    # set build variables for the package registry
+    - echo "BUILD_NAME=${BUILD_VERSION}.${CI_COMMIT_REF_NAME}" >> build.env
+    - echo "BUILD_ZIP_NAME=envidat-frontend-${BUILD_VERSION}.${CI_COMMIT_REF_NAME}.zip" >> build.env
+    - echo "Matomo token ${MATOMO_TOKEN}."
+    - echo "Matomo siteId ${MATOMO_SITEID}."
     - echo "content of build.env"
+    - echo "information environment ${CI_COMMIT_REF_NAME}"
     - cat build.env
   artifacts:
     reports:
       dotenv: build.env
 
 modify-env:
-  extends: .trigger-rules
   stage: config
-  image: docker.io/python:3.9-alpine3.17
-  dependencies:
+  image: python:3.9-alpine3.17
+  environment: $CI_COMMIT_REF_NAME
+  extends: .normal-rules
+  needs:
     - set-vars
   before_script:
+    - if [ -z "$CI_COMMIT_REF_NAME" ]; then echo "CI_COMMIT_REF_NAME is empty!"; exit 1; fi
+    - echo "CI_COMMIT_REF_NAME is set to $CI_COMMIT_REF_NAME"
     - pip install --upgrade pip
     - pip install python-dotenv==0.19.*
   script:
@@ -81,177 +134,179 @@ modify-env:
       branch = os.getenv('CI_COMMIT_REF_NAME')
 
       key = 'VITE_DOMAIN'
-      value = f'https://{branch}.envidat.ch'
+      value = 'https://envidat04.wsl.ch'
+      
       if branch == 'main' or branch == 'beta':
           value = 'https://envidat.ch'
+      
       dotenv.set_key(file, key, value, quote_mode='never')
 
       key = 'VITE_API_ROOT'
-      value = f'https://{branch}.envidat.ch'
+      value = 'https://envidat04.wsl.ch'
+      
       if branch == 'main' or branch == 'beta':
           value = 'https://envidat.ch'
+
       dotenv.set_key(file, key, value, quote_mode='never')
+
+      # also set the canonical url with same value as the api root
+      key = 'PUBLIC_ENV__VIKE_BASE_CANONICAL_URL'
+      dotenv.set_key(file, key, value, quote_mode='never')
+
+      key = 'VITE_MATOMO_TOKEN'
+      token = os.getenv('MATOMO_TOKEN')
+      dotenv.set_key(file, key, token, quote_mode='never')
+
+      key = 'VITE_MATOMO_SITEID'
+      token = os.getenv('MATOMO_SITEID')
+      dotenv.set_key(file, key, token, quote_mode='never')
 
       key = 'VITE_CONFIG_URL'
       value = f'https://frontend-config.s3-zh.os.switch.ch/{branch}.json'
-      dotenv.set_key(file, key, value, quote_mode='never')"
+      dotenv.set_key(file, key, value, quote_mode='never')
+
+      key = 'VITE_BUILD_SOURCEMAPS'
+      value = 'false'
+      
+      if branch == 'staging' or branch == 'develop' or branch == 'dev':
+          value = 'true'
+      
+      dotenv.set_key(file, key, value, quote_mode='never')
+
+      key = 'VITE_GOOGLE_VERIFICATION_KEY'
+      value = os.getenv('GOOGLE_VERIFICATION_KEY')
+      dotenv.set_key(file, key, value, quote_mode='never')
+
+      key = 'VITE_SEO_BASE'
+      value = 'https://envidat04.wsl.ch/seo'
+      
+      if branch == 'main' or branch == 'beta':
+          value = 'https://envidat.ch/seo'
+
+      dotenv.set_key(file, key, value, quote_mode='never')
+      
+      "
     - echo "created content for .env.production:"
     - cat .env.production
   artifacts:
-    name: "environment variables"
+    name: 'environment variables'
     paths:
       - .env.production
-
-install-node:
-  extends: .trigger-rules
-  stage: install
-  image: docker.io/node:18.18.2-alpine3.17
-  script:
-    # - npm ci
-    - npm ci --cache .npm --prefer-offline
-  cache:
-    # uses the package-lock.json to determine if the node_mdules can be used from cache
-    key:
-      files:
-        - package-lock.json
-    paths:
-      - .npm/
-    policy: pull-push
-  artifacts:
-    name: "node dependencies"
-    # stores node_modules as an artifact to be used in the next stages
-    paths:
-      - node_modules
+  retry:
+    max: 2
 
 run-tests:
-  extends: .trigger-rules
   stage: test
-  image: docker.io/node:18.18.2-alpine3.17
-  dependencies:
+  image: node:20.15.0-alpine3.20
+  environment: $CI_COMMIT_REF_NAME
+  extends: .normal-rules
+  needs:
     - modify-env
-    - install-node
+    #- install-node
+  before_script:
+    - npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
   script:
     - npm run test
+  retry:
+    max: 2
 
 build-storybook:
-  extends: .trigger-rules
-  stage: visual-regression
-  image: docker.io/node:18.18.2-alpine3.17
-  dependencies:
+  stage: build
+  image: node:20.15.0-alpine3.20
+  environment: $CI_COMMIT_REF_NAME
+  extends: .build-rules
+  needs:
+    # needs the artifact: config and environment variables
     - modify-env
-    - install-node
+    # needs the artifact: node_modules to build storybook
+    #- install-node
+  before_script:
+    - npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
   script:
-    - npm run build-storybook -- -o ./storybook
+    - npm run build-storybook -- -o ./storybook --loglevel warn --disable-telemetry
   artifacts:
-    name: "storybook build"
+    name: 'storybook build'
+    # keep the storybook for 7 days to be able to trigger the chromatic-deployment
+    expire_in: 1 day
     # stores the storybook build as an artifact to be used in the next stages
     paths:
       - storybook
+  retry:
+    max: 2
 
-visual-regression:
-  stage: visual-regression
-  image: docker.io/node:18.18.2-alpine3.17
-  dependencies:
-    - modify-env
-    - install-node
-    - build-storybook
-  script:
-    - npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes --storybook-build-dir ./storybook
-  when: manual
-
-#build-app:
-#  extends: .trigger-rules
-#  stage: build
-#  image: docker.io/node:18.18.2-alpine3.17
-#  dependencies:
-#    - modify-env
-#    - install
-#  script:
-#    - npm run build
-#  artifacts:
-#    name: "frontend build $CI_COMMIT_REF_NAME"
-#    # stores the built app code
-#    paths:
-#      - dist
-
-image-build:
-  extends: .trigger-rules
+build-app:
   stage: build
-  image:
-    name: gcr.io/kaniko-project/executor:v1.9.1-debug
-    entrypoint: [""]
-  dependencies:
+  image: node:20.15.0-alpine3.20
+  environment: $CI_COMMIT_REF_NAME
+  extends: .build-rules
+  needs:
     # needs the artifact: config and environment variables
-    - set-vars
     - modify-env
-    # needs the artifact: node_modules, not this could be removed when the build-app is used
-    - install-node
-    # needs the artifact: node_modules, not this could be removed when the build-app is used
-    #- build-app
-    - build-storybook
+    # needs the artifact: node_modules to build the app
+    #- install-node
   before_script:
-    - mkdir -p /kaniko/.docker
-    - >
-      echo "{\"auths\":{\"${INTERNAL_REG}\":{\"auth\":\"$(printf
-      "%s:%s" "${IMAGE_REGISTRY_USER}" "${IMAGE_REGISTRY_PASS}"
-      | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
+    - npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
   script:
-    - echo "With content of .env.production"
-    - cat .env.production
-    - echo "Going to build image '${IMAGE_NAME}'"
-    - >
-      /kaniko/executor
-      --force
-      --context "${CI_PROJECT_DIR}"
-      --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
-      --target prod
-      --cache=true
-      --destination "${IMAGE_NAME}"
-      --build-arg APP_VERSION="${VERSION}"
-      --build-arg MAINTAINER_APP="${MAINTAINER_APP}"
-      --build-arg MAINTAINER_CD="${MAINTAINER_CD}"
-      --build-arg INTERNAL_REG="${INTERNAL_REG}"
-      --build-arg EXTERNAL_REG="${EXTERNAL_REG}"
+    - npm run build -- --logLevel warn
+  artifacts:
+    name: 'frontend build '
+    expire_in: 1 day
+    # stores the built app code
+    paths:
+      - dist
+  retry:
+    max: 2
 
-tag-commit-sha:
-  extends: .trigger-rules
-  stage: package
-  image: docker.io/regclient/regctl:v0.3-alpine
+
+combine-builds:
+  stage: build
+  image: alpine:3.20
+  environment: $CI_COMMIT_REF_NAME
+  extends: .build-rules
   variables:
     GIT_STRATEGY: none
-  before_script:
-    - export REG_HOST=${INTERNAL_REG%/*}
-    - >
-      echo "{\"hosts\":{\"${REG_HOST}\":{\"tls\":\"enabled\",\"hostname\":
-      \"${REG_HOST}\",\"user\":\"${IMAGE_REGISTRY_USER}\",\"pass\":
-      \"${IMAGE_REGISTRY_PASS}\"}}}" >> /home/appuser/.regctl/config.json
+  needs:
+    # needs the artifact: the build of the frontend app
+    - job: build-app
+      artifacts: true
+    # needs the artifact: storybook
+    - job: build-storybook
+      artifacts: true
+    # needs the artifact: seo pre-rendered static htmls
+    - job: build-seo
+      optional: true
+      artifacts: true
   script:
-      - >
-        regctl --verbosity debug image copy
-        "${IMAGE_NAME}" "${INTERNAL_REG}/envidat-frontend:${CI_COMMIT_SHA}"
+    #- echo "Check for the artifacts in the filesystem"
+    # - ls -l
+    # - ls dist/ -l
+    # - ls storybook/ -l
+    # copy all files from the dist folder into root
+    - cp -r dist/* ./
+    # - ls -l
+    # remove the dist folder recursively
+    - rm -rf dist
+    # - ls -la
+  artifacts:
+    name: 'frontend build $CI_COMMIT_REF_NAME'
+    expire_in: 1 day
+    # stores the combined built code
+    paths:
+      - ./
+#tag-commit-sha:
+#  extends: .normal-rules
+#  stage: package
+#  image: regclient/regctl:v0.3-alpine
+#  variables:
+#    GIT_STRATEGY: none
+#  before_script:
+#    - export REG_HOST=${INTERNAL_REG%/*}
+#    - >
+#      echo "{\"hosts\":{\"${REG_HOST}\":{\"tls\":\"enabled\",\"hostname\":
+#      \"${REG_HOST}\",\"user\":\"${IMAGE_REGISTRY_USER}\",\"pass\":
+#      \"${IMAGE_REGISTRY_PASS}\"}}}" >> /home/appuser/.regctl/config.json
+#  script:
+#      - >
+#        regctl --verbosity debug image copy
+#        "${IMAGE_NAME}" "${INTERNAL_REG}/envidat-frontend:${CI_COMMIT_SHA}"
 
-rclone-sync:
-  extends: .trigger-rules
-  stage: deploy
-  image: "${INTERNAL_REG}/envidat-frontend:${CI_COMMIT_SHA}"
-  variables:
-    GIT_STRATEGY: none
-    RCLONE_CONFIG_SWITCH_TYPE: 's3'
-    RCLONE_S3_PROVIDER: 'Other'
-    RCLONE_S3_ENV_AUTH: 'true'
-  before_script:
-    - apk add curl unzip --no-cache
-    - curl -O https://downloads.rclone.org/v1.59.0/rclone-v1.59.0-linux-amd64.zip
-    - unzip rclone-v1.59.0-linux-amd64.zip
-    - cp rclone-v1.59.0-linux-amd64/rclone /usr/bin/
-    - |
-      if [ "${CI_COMMIT_REF_NAME}" == "main" ]; then
-        BUCKET_NAME="frontend"
-      else
-        BUCKET_NAME="frontend-${CI_COMMIT_REF_NAME}"
-      fi
-      echo "Going to rclone sync to the bucket: '${BUCKET_NAME}'"
-  script:
-    - >
-      rclone --verbose sync
-      /usr/share/nginx/html/ "switch:${BUCKET_NAME}"

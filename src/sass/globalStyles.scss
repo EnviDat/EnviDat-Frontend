@@ -1,0 +1,375 @@
+.envidat-font-overwrite {
+  font-family: 'Raleway', sans-serif, sans-serif !important;
+
+  [class*='display-'],
+  [class*='text-'] {
+    font-family: 'Raleway', sans-serif, sans-serif !important;
+  }
+
+  [class*='headerTitle'] {
+    font-family: 'Baskervville', serif !important;
+    font-weight: 400;
+    opacity: 1;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
+  }
+
+  [class*='envidatTitle'] {
+    font-family: 'Baskervville', serif !important;
+  }
+}
+
+.v-dialog:not(.v-dialog--fullscreen) {
+  max-height: 95% !important;
+}
+
+.envidatNavbar {
+  position: sticky;
+  top: 8px;
+  z-index: 1000;
+}
+
+.envidatNavbar.small {
+  top: 0;
+}
+
+/*** General Typography styles ***/
+
+.v-application p {
+  margin-bottom: 16px;
+}
+.v-application ul {
+  padding-left: 24px;
+}
+
+/*** General Card styles ***/
+
+.card .subheading {
+  /* font-family: 'Baskervville', serif; */
+  font-weight: 400;
+  /* color: #555; */
+  opacity: 0.75;
+  line-height: 1.25em;
+}
+
+.readableText {
+  line-height: 1.2rem;
+  /*
+  color: rgba(0, 0, 0, 0.87) !important;
+  */
+}
+
+/*
+  ReadOnly style
+*/
+
+input:read-only,
+.v-input--readonly .v-field {
+  background-color: rgba(234, 234, 234, 0.933);
+  // color: var(--v-input-text-color);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/*
+  End ReadOnly style
+*/
+
+.readableText img {
+  max-width: 100%;
+}
+
+a {
+  color: #00897b !important;
+}
+
+.accentLink a {
+  color: #3966d0 !important;
+}
+
+.imagezoom {
+  img {
+    transition: all 0.2s ease-in-out;
+    &:hover {
+      transform: scale(1.2);
+      transition: all 0.2s ease-in-out;
+    }
+  }
+}
+
+.envidatSmallNavigation {
+  position: fixed;
+  top: auto;
+  right: 10px;
+  bottom: 10px;
+}
+
+.envidatToolbar > .v-toolbar__content {
+  padding: 0 8px !important;
+}
+
+.envidatIcon {
+  height: 24px !important;
+  width: 24px !important;
+}
+
+.envidatIcon.small {
+  height: 20px !important;
+  width: 20px !important;
+}
+
+.envidatTitle {
+  letter-spacing: 0 !important;
+}
+
+.metadataInfoIcon,
+.metadataInfoIcon .v-icon,
+.metadataInfoIcon .v-image {
+  opacity: 0.8;
+}
+
+.metadataTitleIcons {
+  opacity: 0.5;
+}
+
+.envidatBadge {
+  font-size: 0.8rem !important;
+  &.bigNumber {
+    font-size: 0.7rem !important;
+  }
+}
+
+.envidatChip {
+  height: 1.1rem !important;
+  font-size: 0.65rem !important;
+  margin: 1px 2px !important;
+  /* opacity: 0.85 !important; */
+}
+
+.enviDatSnackbar > .v-snack__wrapper > .v-snack__content {
+  height: 100%;
+  padding: 12px;
+}
+
+.smallChip {
+  height: 1.25rem !important;
+  font-size: 0.55rem !important;
+}
+
+.smallChip > .v-chip__content > .v-chip__close > .v-icon {
+  font-size: 15px !important;
+}
+
+.authorTag span,
+.envidatChip span {
+  cursor: pointer !important;
+}
+
+.authorTag span {
+  font-size: 14px !important;
+}
+
+.chip__content span {
+  cursor: pointer !important;
+}
+
+.v-skeleton-loader > .v-skeleton-loader__chip {
+  height: 100%;
+  margin: 0;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition-duration: 0.1s;
+  transition-property: height, opacity;
+  transition-timing-function: ease;
+  /* overflow: hidden; */
+}
+
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
+}
+
+.application .v-overlay.v-overlay--active {
+  z-index: 1025 !important;
+}
+
+.mainPageContainer {
+  position: relative;
+}
+
+.leaflet-marker-pane .leaflet-div-icon {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+.leaflet-popup-content-wrapper .leaflet-popup-content {
+  font-family: 'Raleway', sans-serif !important;
+}
+
+.leaflet-marker-icon.rounded-circle.green {
+  background-color: lightgreen !important;
+}
+
+.leaflet-marker-icon.rounded-circle.red {
+  background-color: indianred !important;
+}
+
+.leaflet-marker-icon.rounded-circle.grey {
+  background-color: grey !important;
+}
+
+.v-input--horizontal .v-input__prepend {
+  margin-inline-end: 12px !important;
+}
+
+.v-input--horizontal .v-input__append {
+  margin-inline-start: 12px !important;
+}
+
+/*! pretty-print-json v3.0.4 ~~ https://pretty-print-json.js.org ~~ MIT License */
+
+/* Layout */
+.json-container {
+  font-family: menlo, consolas, monospace;
+  font-style: normal;
+  font-weight: bold;
+  line-height: 1.4em;
+  font-size: 0.9rem;
+  transition: background-color 400ms;
+}
+a.json-link {
+  text-decoration: none;
+  border-bottom: 1px solid;
+  outline: none;
+}
+a.json-link:hover {
+  background-color: transparent;
+  outline: none;
+}
+ol.json-lines {
+  white-space: normal;
+  padding-inline-start: 3em;
+  margin: 0px;
+}
+ol.json-lines > li {
+  white-space: pre;
+  text-indent: 0.7em;
+  line-height: 1.5em;
+  padding: 0px;
+}
+ol.json-lines > li::marker {
+  font-family: system-ui, sans-serif;
+  font-weight: normal;
+}
+.json-key,
+.json-string,
+.json-number,
+.json-boolean,
+.json-null,
+.json-mark,
+a.json-link,
+ol.json-lines > li {
+  transition: all 400ms;
+}
+
+/* Custom Colors */
+ol.json-lines {
+  --colorGraphite: #303030;
+  --colorCharcoal: #222222;
+  --colorTar: #161616;
+}
+
+/* Colors */
+.json-container {
+  background-color: white;
+}
+.json-key {
+  color: brown;
+}
+.json-string {
+  color: olive;
+}
+.json-number {
+  color: navy;
+}
+.json-boolean {
+  color: teal;
+}
+.json-null {
+  color: dimgray;
+}
+.json-mark {
+  color: black;
+}
+a.json-link {
+  color: purple;
+}
+a.json-link:visited {
+  color: slategray;
+}
+a.json-link:hover {
+  color: blueviolet;
+}
+a.json-link:active {
+  color: slategray;
+}
+ol.json-lines > li::marker {
+  color: dimgray;
+}
+ol.json-lines > li:nth-child(odd) {
+  background-color: gainsboro;
+}
+ol.json-lines > li:nth-child(even) {
+  background-color: whitesmoke;
+}
+ol.json-lines > li:hover {
+  background-color: lemonchiffon;
+}
+
+/* Dark Mode */
+.dark-mode .json-container {
+  background-color: black;
+}
+.dark-mode .json-key {
+  color: indianred;
+}
+.dark-mode .json-string {
+  color: khaki;
+}
+.dark-mode .json-number {
+  color: deepskyblue;
+}
+.dark-mode .json-boolean {
+  color: mediumseagreen;
+}
+.dark-mode .json-null {
+  color: darkorange;
+}
+.dark-mode .json-mark {
+  color: silver;
+}
+.dark-mode a.json-link {
+  color: mediumorchid;
+}
+.dark-mode a.json-link:visited {
+  color: slategray;
+}
+.dark-mode a.json-link:hover {
+  color: violet;
+}
+.dark-mode a.json-link:active {
+  color: slategray;
+}
+.dark-mode ol.json-lines > li::marker {
+  color: silver;
+}
+.dark-mode ol.json-lines > li:nth-child(odd) {
+  background-color: var(--colorCharcoal);
+}
+.dark-mode ol.json-lines > li:nth-child(even) {
+  background-color: var(--colorTar);
+}
+.dark-mode ol.json-lines > li:hover {
+  background-color: dimgray;
+}

@@ -1,6 +1,22 @@
 /* eslint-disable object-curly-newline */
 
 import {
+  mdiEarth,
+  mdiBookOpenPageVariant,
+  mdiPencilRuler,
+  mdiFileTree,
+  mdiLibraryShelves,
+  mdiMagnify,
+  mdiMenuRight,
+  mdiPound,
+  mdiInformation,
+  mdiBookshelf,
+  mdiAccountArrowRight,
+  mdiPlusBox,
+} from '@mdi/js';
+
+import { computed } from 'vue';
+import {
   BROWSE_PATH,
   BROWSE_PAGENAME,
   PROJECTS_PATH,
@@ -17,15 +33,22 @@ import {
   INTEGRATION_PAGENAME,
   SERVICE_PATH,
   SERVICE_PAGENAME,
+  ORGANIZATIONS_PATH,
+  ORGANIZATIONS_PAGENAME,
+  METADATA_CREATION_PATH,
+  METADATA_CREATION_PAGENAME,
 } from '@/router/routeConsts';
 
-const domain = import.meta.env.VITE_DOMAIN;
+import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
+
+// const domain = import.meta.env.VITE_DOMAIN;
+const appVersion = import.meta.env.VITE_VERSION;
 
 export const navigationItems = [
   // { title: 'Home', icon: 'envidat', toolTip: 'Back to the start page', active: false, path: LANDING_PATH, pageName: LANDING_PAGENAME },
   {
     title: 'Explore',
-    icon: 'search',
+    icon: mdiMagnify,
     toolTip: 'Explore research data',
     active: false,
     path: BROWSE_PATH,
@@ -34,7 +57,7 @@ export const navigationItems = [
   },
   {
     title: 'Projects',
-    icon: 'library_books',
+    icon: mdiLibraryShelves,
     toolTip: 'Overview of the research projects on Envidat',
     active: false,
     path: PROJECTS_PATH,
@@ -44,27 +67,16 @@ export const navigationItems = [
   },
   {
     title: 'Organizations',
-    icon: 'account_tree',
-    toolTip: 'Overview of the different organizations',
+    icon: mdiFileTree,
+    toolTip: 'Overview of the organizations of WSL',
     active: false,
-    path: `${domain}/organization`,
-    pageName: 'external',
+    path: ORGANIZATIONS_PATH,
+    pageName: ORGANIZATIONS_PAGENAME,
     disabled: false,
   },
-/*
-  {
-    title: 'Sign In',
-    icon: 'person',
-    toolTip: 'Sign in to manage your research data',
-    active: false,
-    path: USER_SIGNIN_PATH,
-    pageName: USER_SIGNIN_PAGENAME,
-    disabled: false,
-  },
-*/
   {
     title: 'Tools & Services',
-    icon: 'design_services',
+    icon: mdiPencilRuler,
     toolTip: 'Research data tools and services',
     active: false,
     path: SERVICE_PATH,
@@ -72,8 +84,8 @@ export const navigationItems = [
     disabled: false,
   },
   {
-    title: 'Community Integration',
-    icon: 'public',
+    title: 'Integrations',
+    icon: mdiEarth,
     toolTip: 'EnviDat is integrated in the various research data platforms',
     active: false,
     path: INTEGRATION_PATH,
@@ -82,7 +94,7 @@ export const navigationItems = [
   },
   {
     title: 'Blog',
-    icon: 'auto_stories',
+    icon: mdiBookOpenPageVariant,
     toolTip: 'News and articles from the EnviDat team',
     active: false,
     path: BLOG_PATH,
@@ -91,7 +103,7 @@ export const navigationItems = [
   },
   {
     title: 'About',
-    icon: 'info',
+    icon: mdiInformation,
     toolTip: 'Information about EnviDat',
     active: false,
     path: ABOUT_PATH,
@@ -99,16 +111,49 @@ export const navigationItems = [
     disabled: false,
   },
   {
-    title: 'Menu',
-    icon: 'menu',
+    title: `Version: ${appVersion}`,
+    icon: mdiPound,
+    toolTip: `Version: ${appVersion}`,
+    active: false,
+    path: '',
+    pageName: '',
+    disabled: false,
+  },
+  {
+    // title: 'Menu',
+    icon: mdiMenuRight,
     active: false,
     disabled: false,
+    isMenuIcon: true,
   },
 ];
 
-export const userMenuItems = [
-  { title: 'Dashboard', icon: 'dashboard', toolTip: 'My Dashboard', active: false, path: USER_DASHBOARD_PATH, pageName: USER_DASHBOARD_PAGENAME },
-  // { title: 'Create Dataset', icon: 'add_cricle_outline', toolTip: 'Create a new dataset', active: false, path: 'createDataset', pageName: 'CreateDataset' },
-  // { title: 'Edit Profile', icon: 'edit', toolTip: 'Edit profile', active: false, path: 'profile', pageName: 'EditProfile' },
-  { title: 'Sign out', icon: 'logout', toolTip: 'Sign out', active: false, path: USER_SIGNOUT_PATH, pageName: '' },
-];
+export function useUserMenuItems() {
+  const orgStore = useOrganizationsStore();
+
+  return computed(() => [
+    {
+      title: 'Dashboard',
+      icon: mdiBookshelf,
+      toolTip: 'My Dashboard',
+      path: USER_DASHBOARD_PATH,
+      pageName: USER_DASHBOARD_PAGENAME,
+      show: true,
+    },
+    {
+      title: 'New Dataset',
+      icon: mdiPlusBox,
+      toolTip: 'Create a new dataset',
+      path: METADATA_CREATION_PATH,
+      pageName: METADATA_CREATION_PAGENAME,
+      show: orgStore.canCreateDatasets,
+    },
+    {
+      title: 'Sign out',
+      icon: mdiAccountArrowRight,
+      toolTip: 'Sign out',
+      path: USER_SIGNOUT_PATH,
+      show: true,
+    },
+  ]);
+}

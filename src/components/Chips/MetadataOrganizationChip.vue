@@ -1,17 +1,16 @@
 <template>
   <v-chip
     class="organizationChip text--black px-2"
-    :outlined="!showContent"
-    color="black"
+    :variant="!showContent ? 'outlined' : undefined"
     style="cursor: default;"
     @mouseover="hover = true"
     @mouseleave="hover = false"
     @click="$emit('organizationClicked', organization)"
   >
-    <v-tooltip v-if="tooltip" bottom>
-      <template v-slot:activator="{ on }">
-        <div v-on="on">
-          <v-icon size="18">home_filled</v-icon>
+    <v-tooltip v-if="tooltip" location='bottom'>
+      <template v-slot:activator="{ props }">
+        <div v-bind="props" >
+          <v-icon :icon="mdiHome" color="black" />
           {{ showContent ? organizationText : '' }}
         </div>
       </template>
@@ -20,7 +19,7 @@
     </v-tooltip>
 
     <div v-if="!tooltip">
-      <v-icon size="18">home_filled</v-icon>
+      <v-icon :icon="mdiHome" color="black" />
       {{ showContent ? organizationText : '' }}
     </div>
   </v-chip>
@@ -40,6 +39,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+ import { mdiHome } from '@mdi/js';
+
 export default {
   name: 'MetadataOrganizationChip',
   props: {
@@ -55,7 +56,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    clickCallback: Function,
   },
   computed: {
     organizationText() {
@@ -69,6 +69,7 @@ export default {
     },
   },
   data: () => ({
+    mdiHome,
     hover: false,
   }),
 };
@@ -78,8 +79,6 @@ export default {
 .organizationChip {
   height: 1.5rem;
   font-size: 0.75rem;
-  max-width: 250px;
-  background-color: #e0e0e0 !important;
 }
 
 .organizationChip > .v-chip__content > div:nth-child(1) {

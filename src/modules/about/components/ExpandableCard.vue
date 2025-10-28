@@ -1,20 +1,22 @@
 <template>
-  <v-card ripple hover :expanded="expanded">
-    <v-container class="pa-0" @click="toggleExpand">
+  <v-card :expanded="expanded" >
+    <v-container class="pa-0"
+                 @click="toggleExpand">
+
       <v-row no-gutters class="pa-0">
         <v-col cols="5">
           <v-img
             class="imagezoom"
-            :contain="contain"
+            :cover="!contain"
             :height="
-              $vuetify.breakpoint.xsOnly ? minHeight + 'px' : maxHeight + 'px'
+              $vuetify.display.xs ? minHeight + 'px' : maxHeight + 'px'
             "
             :style="
               `border-bottom-left-radius: ${
                 expanded ? 0 : 4
               }px; border-top-left-radius: 4px;`
             "
-            :src="img"
+            :src="imgResolved"
           />
         </v-col>
 
@@ -23,31 +25,28 @@
         </v-col>
       </v-row>
 
-      <v-card-actions
-        class="ma-0 pa-2"
-        style="position: absolute; bottom: 5px; right: 5px;"
-      >
-        <base-icon-button
-          materialIconName="expand_more"
-          :outlined="true"
-          color="transparent"
-          :iconColor="expanded ? 'accent' : 'primary'"
-          :rotateOnClick="true"
-          :rotateToggle="expanded"
-          :tooltipText="expanded ? 'Hide info' : 'Show info'"
-          @clicked="toggleExpand"
-        />
-      </v-card-actions>
-    </v-container>
-
-    <v-slide-y-transition>
+      <v-slide-y-transition>
       <v-card-text
         v-if="expanded"
-        class="py-4 readableText"
+        class="pb-1 readableText"
       >
         <div v-html="markdownText"></div>
       </v-card-text>
     </v-slide-y-transition>
+
+      <v-card-actions
+        :style="expanded ? undefined : 'position: absolute; right: 0; bottom: 0;'"
+      >
+        <v-spacer></v-spacer>
+        <base-icon-button
+          :icon="mdiChevronDown"
+          :icon-color="expanded ? 'accent' : 'primary'"
+          :rotated="expanded"
+          :tooltip-text="expanded ? 'Hide info' : 'Show info'"
+          @clicked="toggleExpand"
+        />
+      </v-card-actions>
+    </v-container>
   </v-card>
 </template>
 
@@ -65,8 +64,10 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import { mdiChevronDown } from '@mdi/js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import { renderMarkdown } from '@/factories/stringFactory';
+import { getImage } from '@/factories/imageFactory.js';
 
 export default {
   name: 'ExpandableCard',
@@ -81,9 +82,11 @@ export default {
     minHeight: Number,
     maxHeight: Number,
   },
-  data: () => ({
-    expanded: false,
-  }),
+  async mounted() {
+    if (this.img) {
+      this.imgResolved = await getImage(this.img);
+    }
+  },
   computed: {
     markdownText() {
       return renderMarkdown(this.text.trim(), false);
@@ -94,12 +97,10 @@ export default {
       this.expanded = !this.expanded;
     },
   },
+  data: () => ({
+    expanded: false,
+    mdiChevronDown,
+    imgResolved: undefined,
+  }),
 };
 </script>
-
-<style scoped>
-
-.v-card__media img {
-  width: inherit !important;
-}
-</style>

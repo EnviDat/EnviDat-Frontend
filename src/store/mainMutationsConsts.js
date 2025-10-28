@@ -9,15 +9,9 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-export const SET_APP_BACKGROUND = 'SET_APP_BACKGROUND';
 export const SET_WEBP_ASSETS = 'SET_WEBP_ASSETS';
 export const SET_JPG_ASSETS = 'SET_JPG_ASSETS';
 export const SET_WEBP_SUPPORT = 'SET_WEBP_SUPPORT';
-export const SET_CARD_IMAGES = 'SET_CARD_IMAGES';
-export const UPDATE_CATEGORYCARD_IMAGES = 'UPDATE_CATEGORYCARD_IMAGES';
-export const SET_CURRENT_PAGE = 'SET_CURRENT_PAGE';
-export const ADD_CARD_IMAGES = 'ADD_CARD_IMAGES';
-export const ADD_ICON_IMAGE = 'ADD_ICON_IMAGE';
 export const SET_CONTROLS = 'SET_CONTROLS';
 export const SET_APP_SCROLL_POSITION = 'SET_APP_SCROLL_POSITION';
 export const SET_BROWSE_SCROLL_POSITION = 'SET_BROWSE_SCROLL_POSITION';
@@ -30,3 +24,6 @@ export const GENERIC_API_ERROR = 'GENERIC_API_ERROR';
 export const ADD_USER_NOTIFICATION = 'ADD_USER_NOTIFICATION';
 export const TRIM_NOTIFICATIONS = 'TRIM_NOTIFICATIONS';
 export const HIDE_NOTIFICATIONS = 'HIDE_NOTIFICATIONS';
+
+export const AUTHOR_ASCII_DEAD = '&#8224;';
+export const AUTHOR_PASSED_INFO = 'Sadly this author has passed away.';

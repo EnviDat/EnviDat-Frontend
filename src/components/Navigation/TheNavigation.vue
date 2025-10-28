@@ -1,140 +1,56 @@
 <template>
   <span>
-    <v-btn v-if="smallScreen && !show"
-            fab
-            left
-            fixed
-            bottom
-            color="secondary"
-            @click="setShow(true)">
-      <v-icon>menu</v-icon>
+    <v-btn
+      v-if="smallScreen && !show"
+      color="secondary"
+      @click="setShow(true)"
+      style="
+        bottom: 15px;
+        left: 15px;
+        border-radius: 50%;
+        height: 60px;
+        width: 60px;
+      "
+      class="position-fixed"
+    >
+      <v-icon size="x-large" :icon="mdiMenu" />
     </v-btn>
 
-  <v-navigation-drawer app
-                        :permanent="!smallScreen"
-                        clipped
-                        :style="smallScreen ? 'top: 36px; max-height: calc(100% - 36px);' : ''"
-                        :mini-variant="mini"
-                        :value="show"
-                        @change="setShow"
-                        @input="onInput"
-                        overlay-color="highlight"
-                        mini-variant-width="60"
-                        width="190" >
-
-    <v-list dense >
-
-      <v-list-item v-for="(item, index) in navItemsMenuExcluded"
-                    :key="index"
-                    link
-                    :color="item.disabled ? 'grey' : 'primary'"
-                    :disabled="item.disabled"
-                    :class="`${item.icon === 'envidat' ? mini ? 'px-2' : 'px-3' : '' }`"
-                    @click.stop="itemClick(item)" >
-
-        <v-list-item-action v-if="item.icon === 'envidat'"
-                            @click.stop="itemClick(item)" >
-          <v-btn icon
-                  class="ma-0"
-                  :style="`background-color: ${ item.active ? $vuetify.theme.themes.light.accent : 'transparent' }`"
-                  @click.stop="itemClick(item)" >
-            <v-img :src="Logo"
-                 height="32"
-                 width="32"
-                  alt="envidat_logo" />
-          </v-btn>
-        </v-list-item-action>
-
-        <v-list-item-content v-if="item.icon === 'envidat'"
-                              @click.stop="itemClick(item)">
-          <v-row no-gutters
-                  class="fill-height"
-                  align="start"
-                  justify="end" >
-
-            <v-col cols="12"
-                   class="text-h5 envidatNavbarTitleSmall py-0">
-              {{ logoText }}
-            </v-col>
-
-            <v-col v-if="version"
-                    cols="12"
-                    class="py-0"
-                    style="font-size: 8px; position: relative; left: 2px;">
-              {{ versionText }}
-            </v-col>
-          </v-row>
-        </v-list-item-content>
-
-        <v-list-item-icon v-if="item.icon !== 'envidat'"
-                          :color="item.disabled ? 'grey' : 'primary'"
-                          @click.stop="itemClick(item)" >
-                          <!-- @click="item.icon === 'menu' ? item.active = !item.active : itemClick(item)" > -->
-
-          <v-tooltip right
-                      style="z-index: 1150;"
-                      :disabled="$vuetify.breakpoint.smAndDown || !item.toolTip">
-            <template v-slot:activator="{ on }">
-
-              <v-icon v-on="on"
-                      :color="item.disabled ? 'grey' : item.active ? 'accent' :  'secondary'" >
-                {{ item.icon }}
-              </v-icon>
-            </template>
-
-            <span>{{ item.toolTip }}</span>
-          </v-tooltip>
-
-        </v-list-item-icon>
-
-        <v-list-item-content v-if="item.icon !== 'envidat'"
-                              class=""
-                              @click.stop="itemClick(item)" >
-          {{ item.title }}
-        </v-list-item-content>
-      </v-list-item>
-
-      <v-list-item >
-        <v-list-item-icon >
-          <v-tooltip right
-                     style="z-index: 1150;" >
-            <template v-slot:activator="{ on }">
-
-              <v-icon v-on="on"
-                      color="secondary">
-                tag
-              </v-icon>
-            </template>
-
-            <span>{{ versionText }}</span>
-          </v-tooltip>
-
-        </v-list-item-icon>
-
-        <v-list-item-content class="text-caption">
-          {{ versionText }}
-        </v-list-item-content>
-
-      </v-list-item>
-
-      <v-list-item link
-                    @click.stop="setShow(!show)">
-        <v-list-item-icon >
-
-          <v-icon color="secondary">
-            {{ mini ? 'chevron_right' : 'chevron_left' }}
-          </v-icon>
-
-        </v-list-item-icon>
-      </v-list-item>
-
-    </v-list>
-
-  </v-navigation-drawer>
+    <v-navigation-drawer
+      :mode="smallScreen ? 'temporary' : 'permanent'"
+      :style="smallScreen ? 'top: 45px; max-height: calc(100% - 45px);' : ''"
+      :rail="!show"
+      v-model="drawerModel"
+      expand-on-hover
+      @change="setShow"
+      @update:modelValue="onInput"
+      scrim="highlight"
+      :rail-width="60"
+      width="220"
+    >
+      <v-list density="compact">
+        <v-list-item
+          v-for="(item, index) in navItemsMenuExcluded"
+          :key="index"
+          :prepend-icon="item.icon"
+          :title="item.title"
+          density="compact"
+          :class="[
+            item.disabled ? 'text-grey' : item.active ? 'text-secondary' : '',
+            item.icon === 'envidat' ? (mini ? 'px-2' : 'px-3') : '',
+            item.isMenuIcon === true ? 'd-flex d-lg-none rotateIcon' : '',
+          ]"
+          :disabled="item.disabled"
+          @click.stop="itemClick(item)"
+        >
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
   </span>
 </template>
 
 <script>
+import { mdiMenu } from '@mdi/js';
 import Logo from '@/assets/logo/EnviDat_logo_32.png';
 
 export default {
@@ -142,22 +58,33 @@ export default {
     navigationItems: Array,
     version: String,
   },
+  // mounted() {
+  //   this.updateShowBasedOnViewport();
+  //   window.addEventListener('resize', this.updateShowBasedOnViewport);
+  // },
+  // beforeUnmount() {
+  //   window.removeEventListener('resize', this.updateShowBasedOnViewport);
+  // },
   data: () => ({
     Logo,
+    mdiMenu,
     logoText: 'EnviDat',
     show: false,
   }),
   computed: {
+    drawerModel() {
+      return this.smallScreen ? this.show : true;
+    },
     mini() {
       return !this.smallScreen && !this.show;
     },
     smallScreen() {
-      return this.$vuetify.breakpoint.smAndDown;
+      return this.$vuetify.display.smAndDown;
     },
     navItemsMenuExcluded() {
       const actives = [];
 
-      this.navigationItems.forEach((el) => {
+      this.navigationItems?.forEach((el) => {
         if (el.icon !== 'menu') {
           actives.push(el);
         }
@@ -170,8 +97,13 @@ export default {
     },
   },
   methods: {
+    // updateShowBasedOnViewport() {
+    //   this.show = window.innerWidth >= this.$vuetify.display.smAndUp;
+    // },
     setShow(value) {
-      this.show = value;
+      if (this.smallScreen) {
+        this.show = value;
+      }
     },
     // Hack: NavigationDrawer Input events should only take effect on smallScreen
     onInput(value) {
@@ -180,6 +112,14 @@ export default {
       }
     },
     itemClick(item) {
+      // manage active status
+      this.navItemsMenuExcluded.forEach((i) => {
+        i.active = false;
+      });
+      item.active = true;
+      if (item.isMenuIcon) {
+        this.setShow(false);
+      }
       if (!item.disabled) {
         this.$emit('itemClick', item);
       }
@@ -189,8 +129,7 @@ export default {
 </script>
 
 <style>
-
-.narrowNavigation > div[role="listitem"] > div {
+.narrowNavigation > div[role='listitem'] > div {
   padding: 0;
   margin: 0;
 }
@@ -210,4 +149,13 @@ export default {
   font-size: 18px !important;
 }
 
+.rotateIcon {
+  transform: rotate(180deg);
+}
+
+@media (min-width: 767px) {
+  .v-navigation-drawer__scrim {
+    display: none;
+  }
+}
 </style>

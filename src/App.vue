@@ -1,129 +1,150 @@
 <template>
-  <v-app class="application envidat-font-overwrite"
-         :style="dynamicBackground">
-
-    <div v-show="showDecemberParticles"
-         id="christmas-canvas"
-         style="position: absolute; width: 100%; height: 100%;"></div>
-
-    <link v-if="showDecemberParticles"
-          rel="stylesheet"
-          href="./particles/decemberEffects.css">
-
-    <div v-for="(notification, index) in visibleNotifications()"
-         :key="`notification_${index}`"
-         :style="`position: absolute;
-                  right: ${$vuetify.breakpoint.xsOnly ? 0 : 15}px;
-                  top: ${35 + index * 175}px;
-                  z-index: ${NotificationZIndex};`">
-
-      <notification-card v-if="notification.show"
-                         :notification="notification"
-                         :height="165"
-                         :showReportButton="config.errorReportingEnabled && notification.type === 'error'"
-                         :showCloseButton="true"
-                         @clickedClose="catchCloseClicked(notification.key)"
-                         @clickedReport="catchReportClicked(notification.key)"/>
+  <v-app
+    class="application envidat-font-overwrite"
+    :class="{
+      'bg-dark': !isLandingPage && !isDashboardPage && !isWorkFlowPage,
+      'bg-dark-dashboard': isDashboardPage,
+      'hide-after': isScrolled,
+    }"
+    id="app-container"
+  >
+    <div
+      v-for="(notification, index) in visibleNotifications()"
+      :key="`notification_${index}`"
+      :style="`position: absolute;
+                right: ${$vuetify.display.xs ? 0 : 15}px;
+                top: ${35 + index * 175}px;
+                z-index: ${NotificationZIndex};`"
+    >
+      <NotificationCard
+        :notification="notification"
+        :height="165"
+        :showReportButton="
+          config.errorReportingEnabled && notification.type === 'error'
+        "
+        :showCloseButton="true"
+        @clickedClose="catchCloseClicked(notification.key)"
+        @clickedReport="catchReportClicked(notification.key)"
+      />
     </div>
 
-    <TheNavigation :style="`z-index: ${NavigationZIndex}`"
-                    :navigationItems="navigationItems"
-                    :version="appVersion"
-                    @menuClick="catchMenuClicked"
-                    @itemClick="catchItemClicked"/>
+    <MaintenanceBanner v-if="maintenanceBannerVisible" />
+    <TheNavigationToolbar
+      v-if="showToolbar"
+      ref="TheNavigationToolbar"
+      class="envidatToolbar"
+      :style="`z-index: ${NavToolbarZIndex}`"
+      :loading="loading"
+      :mode="mode"
+      :modeCloseCallback="catchModeClose"
+      :signedInUser="user"
+      :signInDisabled="signinDisabled"
+      :userNavigationItems="userMenuItems"
+      :editingDatasetName="lastEditedDataset"
+      @userMenuItemClick="catchUserItemClicked"
+      @signinClick="catchSigninClicked"
+      @homeClick="catchHomeClicked"
+      @continueClick="catchContinueClick"
+    />
 
-    <TheNavigationToolbar v-if="showToolbar"
-                            ref="TheNavigationToolbar"
-                            class="envidatToolbar"
-                            :style="`z-index: ${NavToolbarZIndex}`"
-                            :loading="loading"
-                            :mode="mode"
-                            :modeCloseCallback="catchModeClose"
-                            :signedInUser="user"
-                            :signInDisabled="signinDisabled"
-                            :userNavigationItems="userMenuItems"
-                            :editingDatasetName="lastEditedDataset"
-                            @userMenuItemClick="catchUserItemClicked"
-                            @signinClick="catchSigninClicked"
-                            @homeClick="catchHomeClicked"
-                            @continueClick="catchContinueClick"/>
+    <TheNavigation
+      :style="`z-index: ${NavigationZIndex}`"
+      :navigationItems="navigationItems"
+      :version="appVersion"
+      @menuClick="catchMenuClicked"
+      @itemClick="catchItemClicked"
+    />
 
-    <v-main>
-
-      <v-container class="pa-2 pa-sm-3 fill-height"
-                   fluid
-                   v-on:scroll="updateScroll()"
-                   id="appContainer"
-                   ref="appContainer"
-                   :style="pageStyle">
-
-        <v-row class="fill-height"
-               id="mainPageRow">
-          <v-col class="mx-0 py-0"
-                 cols="12">
-
-            <transition name="fade" mode="out-in">
-              <router-view/>
-            </transition>
-
+    <v-main class="pt-13 pt-md-9 custom-v-main">
+      <v-container
+        class="mainPageContainer"
+        :class="[isLandingPage ? 'pa-0' : 'pa-2']"
+        fluid
+        @scroll="updateScroll()"
+        id="appContainer"
+        ref="appContainer"
+        :style="pageStyle"
+      >
+        <v-row id="mainPageRow" no-gutters>
+          <v-col cols="12">
+            <router-view v-slot="{ Component }">
+              <transition name="fade" mode="out-in">
+                <component :is="Component" />
+              </transition>
+            </router-view>
           </v-col>
         </v-row>
+
+        <TextBanner
+          v-if="showMaintenanceBanner"
+          id="maintenanceBanner"
+          :style="`position: absolute; top: 0; left: 0; z-index: 1001; width: 100%; background-color: ${maintenanceBannerColor};`"
+          :text="maintenanceBannerText"
+          confirmText="Okay"
+          :confirmClick="catchMaintenanceConfirmClick"
+        />
+
+        <TextBanner
+          v-if="showCookieInfo"
+          id="cookieBanner"
+          :style="bannerStyle"
+          :text="cookieInfoTextMatomo"
+          icon="cookie"
+          deniedText="Reject"
+          confirmText="Accept"
+          :confirmClick="catchCookieInfoOk"
+          :deniedClick="deniedTracking"
+        />
       </v-container>
 
-      <TextBanner v-if="maintenanceBannerVisible"
-                  id="maintenanceBanner"
-                  style="position: absolute; top: 0; z-index: 1001; width: 100%; "
-                  :text="maintenanceBannerText"
-                  confirmText="Okay"
-                  :bannerColor="maintenanceBannerColor"
-                  :confirmClick="catchMaintenanceConfirmClick"/>
-
-      <TextBanner v-if="showCookieInfo"
-                  id="cookieBanner"
-                  style="position: absolute; bottom: 0; z-index: 1001; width: 100%; "
-                  :text="cookieInfoText"
-                  icon="cookie"
-                  confirmText="Okay"
-                  bannerColor="highlight"
-                  :confirmClick="catchCookieInfoOk"/>
-
-      <v-dialog v-model="showReloadDialog"
-                persistent
-                :style="`z-index: ${NotificationZIndex};`"
-                max-width="450">
-
-        <ConfirmTextCard title="New Version Available!"
-                         :text="dialogVersionText()"
-                         confirmText="Reload"
-                         :confirmClick="reloadApp"
-                         cancelText="Cancel"
-                         :cancelClick="() => { reloadDialogCanceled = true }"
+      <v-dialog
+        v-model="showReloadDialog"
+        persistent
+        :style="`z-index: ${NotificationZIndex};`"
+        max-width="450"
+      >
+        <ConfirmTextCard
+          title="New Version Available!"
+          :text="dialogVersionText()"
+          confirmText="Reload"
+          :confirmClick="reloadApp"
+          cancelText="Cancel"
+          :cancelClick="
+            () => {
+              this.reloadDialogCanceled = true;
+            }
+          "
         />
-
       </v-dialog>
 
-      <v-dialog v-model="showInfoDialog"
-                persistent
-                :style="`z-index: ${NotificationZIndex};`"
-                max-width="500">
-
-        <ConfirmTextCard :title="dialogTitle"
-                         :text="dialogMessage"
-                         :confirmText="dialogConfirmText"
-                         :confirmClick="dialogCallback"
-                         :cancelText="dialogCancelText"
-                         :cancelClick="dialogCancelCallback"
+      <v-dialog
+        v-model="showInfoDialog"
+        persistent
+        :style="`z-index: ${NotificationZIndex};`"
+        max-width="500"
+      >
+        <ConfirmTextCard
+          :title="dialogTitle"
+          :text="dialogMessage"
+          :confirmText="dialogConfirmText"
+          :confirmClick="dialogCallback"
+          :cancelText="dialogCancelText"
+          :cancelClick="dialogCancelCallback"
         />
-
       </v-dialog>
 
-      <GenericFullScreenModal :auto-scroll="true"/>
+      <GenericFullScreenModal :auto-scroll="true" />
     </v-main>
-
+    <div v-if="isLandingPage" class="scroll-icon">
+      <v-icon @click="scrollDown()" :size="46" class="mr-1" :color="'#000'">
+        {{ iconScroll }}
+      </v-icon>
+      <p class="font-weight-bold">Scroll</p>
+    </div>
   </v-app>
 </template>
 
-<script>
+<script lang="ts">
 /**
  * The App.vue bootstraps all the other components.
  *
@@ -137,16 +158,13 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import {
-  mapState,
-  mapGetters,
-} from 'vuex';
+import { mapState, mapGetters } from 'vuex';
+import { defineAsyncComponent } from 'vue';
 
-import { getMonth } from 'date-fns';
+import { extractIcons } from '@/factories/iconFactory';
 
 import {
   LANDING_PATH,
-  LANDING_PAGENAME,
   BROWSE_PATH,
   BROWSE_PAGENAME,
   REPORT_PATH,
@@ -170,22 +188,18 @@ import {
 } from '@/store/mainMutationsConsts';
 
 import {
+  ACTION_OLD_GET_USER_CONTEXT,
+  ACTION_GET_USER_CONTEXT_TOKEN,
+  ACTION_USER_SHOW,
   USER_SIGNIN_NAMESPACE,
   GET_USER_CONTEXT,
-  ACTION_OLD_GET_USER_CONTEXT,
   SIGNIN_USER_ACTION,
   USER_NAMESPACE,
-  ACTION_GET_USER_CONTEXT_TOKEN,
   FETCH_USER_DATA,
-  ACTION_USER_SHOW,
   USER_GET_DATASETS,
 } from '@/modules/user/store/userMutationsConsts';
 
-
-import {
-  navigationItems,
-  userMenuItems,
-} from '@/store/navigationState';
+import { navigationItems, useUserMenuItems } from '@/store/navigationState';
 
 import {
   eventBus,
@@ -195,104 +209,93 @@ import {
   SHOW_REDIRECT_SIGNIN_DIALOG,
 } from '@/factories/eventBus';
 
-import TheNavigation from '@/components/Navigation/TheNavigation.vue';
-import TheNavigationToolbar from '@/components/Navigation/TheNavigationToolbar.vue';
-import '@/../node_modules/skeleton-placeholder/dist/bone.min.css';
+import MaintenanceBanner from '@/modules/home/components/MaintenanceBanner.vue';
 
 import { ENVIDAT_SHOW_COOKIE_BANNER } from '@/factories/metadataConsts';
 
-const GenericFullScreenModal = () => import('@/components/Layouts/GenericFullScreenModal.vue');
-const ConfirmTextCard = () => import('@/components/Cards/ConfirmTextCard.vue');
-const TextBanner = () => import('@/components/Layouts/TextBanner.vue');
-const NotificationCard = () => import('@/components/Cards/NotificationCard.vue');
+const TheNavigation = defineAsyncComponent(
+  () => import('@/components/Navigation/TheNavigation.vue'),
+);
+const TheNavigationToolbar = defineAsyncComponent(
+  () => import('@/components/Navigation/TheNavigationToolbar.vue'),
+);
+
+const GenericFullScreenModal = defineAsyncComponent(
+  () => import('@/components/Layouts/GenericFullScreenModal.vue'),
+);
+const ConfirmTextCard = defineAsyncComponent(
+  () => import('@/components/Cards/ConfirmTextCard.vue'),
+);
+const TextBanner = defineAsyncComponent(
+  () => import('@/components/Layouts/TextBanner.vue'),
+);
+const NotificationCard = defineAsyncComponent(
+  () => import('@/components/Cards/NotificationCard.vue'),
+);
+
+let configInterval;
 
 export default {
   name: 'App',
+
   beforeCreate() {
-    // in beforeCreate none of the vue component exists, so not method can be called
-    // the this.$store does exist, so call it here directly, then in created setup the reloadConfigTimer
+    // load the config initially
     this.$store.dispatch(SET_CONFIG);
+
+    // define an interval to check again regularly to make sure
+    // all users get any changes in the config and version updates
+    configInterval = setInterval(() => {
+      this.$store.dispatch(SET_CONFIG);
+    }, 30000); // 1000 * 3 = 30 seconds
   },
   created() {
-    this.reloadConfigTimer = window.setInterval(this.loadConfig, 60000);
     eventBus.on(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
     eventBus.on(SHOW_DIALOG, this.openGenericDialog);
     eventBus.on(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
-    eventBus.on(SHOW_REDIRECT_DASHBOARD_DIALOG, this.showRedirectDashboardDialog);
+    eventBus.on(
+      SHOW_REDIRECT_DASHBOARD_DIALOG,
+      this.showRedirectDashboardDialog,
+    );
 
     const strShowCookieInfo = localStorage.getItem(ENVIDAT_SHOW_COOKIE_BANNER);
-    this.showCookieInfo = strShowCookieInfo!== 'false';
+    this.showCookieInfo = strShowCookieInfo !== 'false';
   },
-  beforeDestroy() {
-    window.clearInterval(this.reloadConfigTimer);
+  beforeUnmount() {
     eventBus.off(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
     eventBus.off(SHOW_DIALOG, this.openGenericDialog);
     eventBus.off(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
-    eventBus.off(SHOW_REDIRECT_DASHBOARD_DIALOG, this.showRedirectDashboardDialog);
+    eventBus.off(
+      SHOW_REDIRECT_DASHBOARD_DIALOG,
+      this.showRedirectDashboardDialog,
+    );
+
+    clearInterval(configInterval);
   },
   mounted() {
     this.checkUserSignedIn();
-
-    this.$nextTick(() => {
-      this.startParticles();
-    })
   },
   updated() {
     this.updateActiveStateOnNavItems();
   },
   methods: {
-    loadConfig() {
-      // check for the backend version
-      this.$store.dispatch(SET_CONFIG);
-    },
-    startParticles() {
-      if (!this.currentParticles) {
-        if (this.showDecemberParticles) {
-          this.initChristmasParticles();
-        } else {
-          this.stopParticles();
-        }
+    scrollDown() {
+      const appContainer =
+        this.$refs.appContainer?.$el || this.$refs.appContainer;
+      if (appContainer) {
+        // TBD: define where to scroll to
+        appContainer.scrollTop += 600;
       }
-    },
-    stopParticles(fullClean = true) {
-
-      try {
-
-        if (this.currentParticles) {
-          this.currentParticles.particles.move.enable = false;
-          this.currentParticles.particles.opcacity.anim.enable = false;
-          this.currentParticles.particles.size.anim.enable = false;
-        }
-
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.log(`Error during particle stop: ${error}`);
-      } finally {
-        this.currentParticles = null;
-        if (fullClean) {
-          window.pJS = null;
-        }
-      }
-    },
-    initChristmasParticles() {
-      // particleOptions have to be in the folder public/particles/christmasParticleOptions.json for development
-      // in production they have to be in same folder as the index.html there -> ./particles/christmasParticleOptions.json
-      // eslint-disable-next-line no-undef
-      particlesJS.load('christmas-canvas', './particles/christmasParticleOptions.json', () => {
-        // console.log('christmas-canvas - particles.js config loaded');
-        if (this.currentParticles) {
-          this.stopParticles(false);
-        }
-        this.currentParticles = window.pJS;
-      });
-
     },
     updateScroll() {
-      if (this.$refs && this.$refs.appContainer) {
-        this.storeScroll(this.$refs.appContainer.scrollTop);
+      const appContainer =
+        this.$refs.appContainer?.$el || this.$refs.appContainer;
+
+      if (appContainer) {
+        this.storeScroll(appContainer.scrollTop);
       }
     },
     storeScroll(scrollY) {
+      this.isScrolled = scrollY >= 10;
       this.$store.commit(SET_APP_SCROLL_POSITION, scrollY);
     },
     updateActiveStateOnNavItems() {
@@ -304,14 +307,14 @@ export default {
         const item = this.navigationItems[i];
 
         if (item.icon !== 'menu') {
-          const isActive = this.currentPage === item.pageName;
+          const isActive = this.$router.name === item.pageName;
 
           if (item.subpages && item.subpages instanceof Array) {
             let subIsActive = false;
 
             item.subpages.forEach((sub) => {
               if (!subIsActive) {
-                subIsActive = this.currentPage === sub;
+                subIsActive = this.$router.name === sub;
               }
             });
 
@@ -321,15 +324,16 @@ export default {
           }
         }
       }
-
     },
     visibleNotifications() {
       const notis = Object.values(this.notifications);
-      return notis.filter(n => n.show);
+      return notis.filter((n) => n.show);
     },
     catchContinueClick() {
       if (this.lastEditedDatasetPath) {
-        this.$router.push({ path: `${this.lastEditedDatasetPath}?backPath=${this.$route.fullPath}` });
+        this.$router.push({
+          path: `${this.lastEditedDatasetPath}?backPath=${this.$route.fullPath}`,
+        });
       }
     },
     catchMenuClicked() {
@@ -354,7 +358,6 @@ export default {
       this.navigateTo(item.path);
     },
     catchUserItemClicked(item) {
-
       // make a redirect in case we need to disable the editing in the frontend
       if (this.dashboardRedirect && item.pageName === USER_DASHBOARD_PAGENAME) {
         this.showRedirectDashboardDialog();
@@ -365,11 +368,21 @@ export default {
       this.$router.push({ name: item.pageName });
     },
     catchSearchClicked(search) {
-      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search);
+      this.$router.options.additiveChangeRoute(
+        this.$route,
+        this.$router,
+        BROWSE_PATH,
+        search,
+      );
     },
     catchSearchCleared() {
       // the search parameter needs to be '' to clear it
-      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, '');
+      this.$router.options.additiveChangeRoute(
+        this.$route,
+        this.$router,
+        BROWSE_PATH,
+        '',
+      );
     },
     catchModeClose() {
       this.$router.push({
@@ -377,11 +390,6 @@ export default {
       });
     },
     catchMaintenanceConfirmClick() {
-      if (this.userIsOnEditPage) {
-        this.editMaintenanceBanner = false;
-        return;
-      }
-
       this.showMaintenanceBanner = false;
     },
     navigateTo(path) {
@@ -408,7 +416,17 @@ export default {
         query: index,
       });
     },
+    deniedTracking() {
+      localStorage.setItem(ENVIDAT_SHOW_COOKIE_BANNER, 'false');
+      localStorage.setItem('matomoConsentGiven', 'false');
+      window._paq.push(['forgetConsentGiven']);
+      this.showCookieInfo = false;
+    },
     catchCookieInfoOk() {
+      // handledeniedTracking consent with Matomo
+      localStorage.setItem('matomoConsentGiven', 'true');
+      window._paq.push(['rememberConsentGiven']);
+
       localStorage.setItem(ENVIDAT_SHOW_COOKIE_BANNER, 'false');
       this.showCookieInfo = false;
     },
@@ -417,7 +435,6 @@ export default {
       return `Hello ${userName}, we are urgently working on the "${componentName}" to fix an issue.\n We are going to open a new tab with the legacy website, so you can do any dataset editing there.\n (if it doesn't work please disable popup blocking and try again).`;
     },
     handleRedirectCallBack(redirectToDashboard) {
-
       let message = this.redirectMessage();
       let callback = this.redirectToLegacySignin;
 
@@ -449,8 +466,14 @@ export default {
     showRedirectDashboardDialog() {
       this.handleRedirectCallBack(true);
     },
-    // eslint-disable-next-line default-param-last
-    openGenericDialog({ title = 'Redirect to Legacy Website!', message, callback, cancelCallback, confirmText = 'Ok', cancelText = 'Cancel' }) {
+    openGenericDialog({
+      title = 'Redirect to Legacy Website!',
+      message,
+      callback,
+      cancelCallback,
+      confirmText = 'Ok',
+      cancelText = 'Cancel',
+    }) {
       this.dialogTitle = title;
 
       if (!message) {
@@ -463,7 +486,7 @@ export default {
         this.dialogCancelCallback = () => {
           cancelCallback();
           this.showInfoDialog = false;
-        }
+        };
       } else {
         this.dialogCancelCallback = undefined;
       }
@@ -472,7 +495,7 @@ export default {
         this.dialogCallback = () => {
           callback();
           this.showInfoDialog = false;
-        }
+        };
       } else {
         this.dialogCallback = undefined;
       }
@@ -486,7 +509,6 @@ export default {
       this.showModal = true;
     },
     catchSigninClicked() {
-
       // make a redirect to the legacy website in case the sign in via the frontend doesn't work
       if (this.signinRedirectActive) {
         this.showRedirectSignDialog();
@@ -504,33 +526,35 @@ export default {
     },
     loadAllMetadata() {
       if (!this.loadingMetadatasContent && this.metadatasContentSize <= 0) {
-        this.$store.dispatch(`${METADATA_NAMESPACE}/${BULK_LOAD_METADATAS_CONTENT}`, this.config);
+        this.$store.dispatch(
+          `${METADATA_NAMESPACE}/${BULK_LOAD_METADATAS_CONTENT}`,
+          this.config,
+        );
       }
     },
     dialogVersionText() {
       return `You are using the version ${this.appVersion}, but there is are newer version available (${this.newVersion}). Please reload to get the latest verison of EnviDat.`;
     },
     setupNavItems() {
-
       if (this.signinDisabled) {
-        const signItem = this.navigationItems.filter(item => item.path === USER_SIGNIN_PATH)[0];
+        const signItem = this.navigationItems.filter(
+          (item) => item.path === USER_SIGNIN_PATH,
+        )[0];
         if (signItem) {
           signItem.disabled = true;
         }
       }
-
     },
     fetchUserDatasets() {
-      this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`,
-        {
-          action: ACTION_USER_SHOW,
-          body: {
-            id: this.user.id,
-            include_datasets: true,
-          },
-          commit: true,
-          mutation: USER_GET_DATASETS,
-        });
+      this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`, {
+        action: ACTION_USER_SHOW,
+        body: {
+          id: this.user.id,
+          include_datasets: true,
+        },
+        commit: true,
+        mutation: USER_GET_DATASETS,
+      });
     },
     async checkUserSignedIn() {
       let action = ACTION_GET_USER_CONTEXT_TOKEN;
@@ -538,16 +562,18 @@ export default {
       if (this.config?.userDashboardConfig && !this.useTokenSignin) {
         action = ACTION_OLD_GET_USER_CONTEXT;
       }
-      
-      await this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`,
+
+      await this.$store.dispatch(
+        `${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`,
         {
           action,
           data: {
-            'include_datasets': true,
+            include_datasets: true,
           },
           commit: true,
           mutation: GET_USER_CONTEXT,
-        });
+        },
+      );
 
       if (this.user) {
         this.fetchUserDatasets();
@@ -555,38 +581,42 @@ export default {
     },
   },
   computed: {
-    ...mapState([
-      'loadingConfig',
-      'config',
-      'webpIsSupported',
-    ]),
+    ...mapState(['loadingConfig', 'config', 'webpIsSupported']),
     ...mapState(USER_SIGNIN_NAMESPACE, ['user']),
-    ...mapState(USER_NAMESPACE, [
-      'lastEditedDataset',
-      'lastEditedDatasetPath',
+    ...mapState(USER_NAMESPACE, ['lastEditedDataset', 'lastEditedDatasetPath']),
+    ...mapGetters(METADATA_NAMESPACE, [
+      'metadataIds',
+      'metadatasContent',
+      'metadatasContentSize',
+      'loadingMetadataIds',
+      'loadingMetadatasContent',
+      'loadingCurrentMetadataContent',
+      'searchingMetadatasContent',
+      'currentMetadataContent',
+      'filteredContent',
+      'isFilteringContent',
     ]),
-    ...mapGetters(
-        METADATA_NAMESPACE, [
-          'metadataIds',
-          'metadatasContent',
-          'metadatasContentSize',
-          'loadingMetadataIds',
-          'loadingMetadatasContent',
-          'loadingCurrentMetadataContent',
-          'searchingMetadatasContent',
-          'currentMetadataContent',
-          'filteredContent',
-          'isFilteringContent',
-        ],
-    ),
     ...mapGetters({
-      currentPage: 'currentPage',
-      appBGImage: 'appBGImage',
       outdatedVersion: 'outdatedVersion',
       newVersion: 'newVersion',
       notifications: 'notifications',
       maxNotifications: 'maxNotifications',
     }),
+    currentRoute() {
+      return this.$route;
+    },
+    isLandingPage() {
+      return this.currentRoute.name === 'LandingPage';
+    },
+    isWorkFlowPage() {
+      return this.currentRoute.name === 'WorkflowPage';
+    },
+    isDashboardPage() {
+      return this.currentRoute.name === 'DashboardPage';
+    },
+    iconScroll() {
+      return extractIcons('scroll');
+    },
     effectsConfig() {
       return this.config?.effectsConfig || {};
     },
@@ -606,19 +636,9 @@ export default {
       return this.userDashboardConfig?.useTokenSignin || false;
     },
     maintenanceBannerVisible() {
-      if (!this.maintenanceConfig.messageActive){
-        return false;
-
+      if (this.maintenanceConfig.messageActive) {
+        return true;
       }
-
-      if (this.userIsOnEditPage) {
-        return this.editMaintenanceBanner;
-      }
-
-      if (this.currentPage !== LANDING_PAGENAME) {
-        return this.showMaintenanceBanner;
-      }
-
       return false;
     },
     maintenanceBannerText() {
@@ -629,79 +649,46 @@ export default {
       return this.maintenanceConfig.message;
     },
     maintenanceBannerColor() {
-      if (this.userIsOnEditPage) {
-        return 'error';
-      }
-
-      // this will use the default defined by the TextBanner component
-      return undefined;
+      return this.$vuetify.theme.themes.light.colors.warning;
     },
     signinDisabled() {
       return this.maintenanceConfig?.signinDisabled || false;
     },
-    showDecemberParticles() {
-      return this.$vuetify.breakpoint.mdAndUp && this.effectsConfig.decemberParticles && this.itIsDecember;
-    },
     userIsOnEditPage() {
-      return this.currentPage === METADATAEDIT_PAGENAME;
-    },
-    itIsDecember() {
-      return getMonth(Date.now()) === 11;
-    },
-    polygonParticlesActive() {
-      return this.$vuetify.breakpoint.mdAndUp && this.currentPage && this.currentPage === LANDING_PAGENAME;
+      return this.$route.name === METADATAEDIT_PAGENAME;
     },
     loading() {
-      return this.loadingMetadatasContent || this.searchingMetadatasContent || this.isFilteringContent;
+      return (
+        this.loadingMetadatasContent ||
+        this.searchingMetadatasContent ||
+        this.isFilteringContent
+      );
     },
     searchTerm() {
       return this.$route.query.search;
     },
-    mainPageIsScrollable() {
-      return this.currentPage === BROWSE_PAGENAME;
-    },
+
     showToolbar() {
       // return this.mainPageIsScrollable && this.mode;
       return true;
     },
     pageStyle() {
-      const heightStyle = this.showToolbar ? 'height: calc(100vh - 36px);' : 'height: 100vh;';
-      return this.mainPageIsScrollable ? '' : `${heightStyle} overflow-y: auto; scroll-behavior: smooth; scrollbar-width: thin; `;
+      const heightStyle = `height: calc(100vh - ${this.$vuetify.display.smAndDown ? 50 : 36}px);`;
+
+      return this.$route.name === BROWSE_PAGENAME
+        ? heightStyle
+        : `${heightStyle} overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth; scrollbar-width: thin; `;
     },
     showSmallNavigation() {
-      return this.$vuetify.breakpoint.smAndDown;
+      return this.$vuetify.display.smAndDown;
     },
     searchCount() {
-      return this.filteredContent !== undefined ? Object.keys(this.filteredContent).length : 0;
+      return this.filteredContent !== undefined
+        ? Object.keys(this.filteredContent).length
+        : 0;
     },
     showReloadDialog() {
       return this.outdatedVersion && !this.reloadDialogCanceled;
-    },
-    dynamicBackground() {
-      const imageKey = this.appBGImage;
-      if (!imageKey) {
-        return '';
-      }
-
-      const bgImg = this.mixinMethods_getWebpImage(imageKey, this.$store.state);
-      if (!bgImg) {
-        return '';
-      }
-
-      let gradient = `background: linear-gradient(to bottom, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.25) 100%), url(${bgImg}) !important;`;
-      let bgStyle = 'background-position: center top !important;';
-
-      if (bgImg.includes(LANDING_PAGENAME.toLowerCase())) {
-        bgStyle += `background-size: cover !important;
-                    background-repeat: no-repeat !important; `;
-      }
-
-      if (bgImg.includes(BROWSE_PAGENAME.toLowerCase())) {
-        gradient = `background: linear-gradient(to bottom, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.3) 100%), url(${bgImg}) !important;
-                    background-repeat: repeat !important; `;
-      }
-
-      return gradient + bgStyle;
     },
     menuItem() {
       let menuItem = { active: true };
@@ -714,7 +701,21 @@ export default {
       return menuItem;
     },
     mode() {
-      return this.$route.query.mode ? this.$route.query.mode.toLowerCase() : null;
+      return this.$route.query.mode
+        ? this.$route.query.mode.toLowerCase()
+        : null;
+    },
+    bannerStyle() {
+      const isDesktop = window.innerWidth >= 768;
+
+      return {
+        position: 'fixed',
+        bottom: '0',
+        left: isDesktop ? '60px' : '0',
+        zIndex: '1001',
+        width: isDesktop ? 'calc(100vw - 60px)' : '100%',
+        backgroundColor: this.$vuetify.theme.themes.light.colors.highlight,
+      };
     },
   },
   components: {
@@ -724,15 +725,14 @@ export default {
     ConfirmTextCard,
     TextBanner,
     GenericFullScreenModal,
+    MaintenanceBanner,
   },
   watch: {
     config() {
       if (!this.loadingConfig) {
         this.setupNavItems();
-        this.loadAllMetadata();
-
         this.$nextTick(() => {
-          this.startParticles();
+          this.loadAllMetadata();
         });
       }
     },
@@ -745,7 +745,6 @@ export default {
       }
     },
   },
-  /* eslint-disable object-curly-newline */
   data: () => ({
     ckanDomain: process.env.VITE_API_ROOT,
     reloadDialogCanceled: false,
@@ -758,184 +757,96 @@ export default {
     dialogCallback: () => {},
     dialogCancelCallback: () => {},
     showCookieInfo: true,
-    cookieInfoText: 'On envidat.ch cookies are used to enhance your experience and provide features when you\'re signed in. These cookies are "technical only" and are NOT used for tracking or monitoring you.',
+    cookieInfoText:
+      "On envidat.ch cookies are used to enhance your experience and provide features when you're signed in. These cookies are 'technical only' and are NOT used for tracking or monitoring you.",
+    cookieInfoTextMatomo:
+      "On envidat.ch, essential cookies are used to enhance your experience and provide features when you're signed in. By accepting additional cookies, you consent to anonymized monitoring to improve the usability of EnviDat.<b> The anonymized data is stored on WSL infrastructure and is not sold or shared with any third party. </b>If you reject, only essential technical cookies will be used.",
     redirectToDashboard: false,
     appVersion: import.meta.env.VITE_VERSION,
     showMenu: true,
     NavToolbarZIndex: 1150,
     NavigationZIndex: 1100,
     NotificationZIndex: 1500,
-    showMaintenanceBanner: true,
+    showMaintenanceBanner: false,
     editMaintenanceBanner: true,
-    currentParticles: null,
     navigationItems,
-    userMenuItems,
+    userMenuItems: useUserMenuItems(),
     editMaintenanceMessage: `There is maintenance going on, please don't edit anything return to the <a href='./#${USER_DASHBOARD_PATH}' >dashboard page </a> or the <a href='/' >main page</a> for details!.`,
-    reloadConfigTimer: null,
+    isScrolled: false,
   }),
 };
 </script>
 
-
 <style lang="scss">
-$font-family: 'Raleway', sans-serif;
+@import url(./sass/globalStyles.scss);
 
-.envidat-font-overwrite {
-  font-family: $font-family, sans-serif !important;
+.custom-v-main {
+  position: relative;
+  // --v-layout-left: 0 !important;
+}
 
-  [class*='display-'],
-  [class*='text-'] {
-    font-family: $font-family, sans-serif !important;
-  }
-
-  [class*='headerTitle'] {
-    font-family: 'Baskervville', serif !important;
-    font-weight: 400;
-    opacity: 1;
-    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
-  }
-
-  [class*='envidatTitle'] {
-    font-family: 'Baskervville', serif !important;
+@media (min-width: 960px) and (max-width: 1279px) {
+  .custom-v-main {
+    --v-layout-left: 60px !important;
   }
 }
-</style>
 
-<style>
-
-.v-dialog:not(.v-dialog--fullscreen) {
-  max-height: 95% !important;
+.bg-dark {
+  // background-color: #e0e0e0 !important;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.3) 100%)
+      center top repeat,
+    url('@/assets/app_b_browsepage.webp') !important;
+}
+.bg-dark-dashboard {
+  // background-color: #9c9c9c !important;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.3) 100%)
+      center top repeat,
+    url('@/assets/app_b_dashboardpage.webp') !important;
 }
 
-.envidatNavbar {
-  position: sticky;
-  top: 8px;
-  z-index: 1000;
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
 }
 
-.envidatNavbar.small {
-  top: 0px;
-}
-
-/*** General Card styles ***/
-
-.card .subheading {
-  /* font-family: 'Baskervville', serif; */
-  font-weight: 400;
-  /* color: #555; */
-  opacity: 0.75;
-  line-height: 1.25em;
-}
-
-.readableText {
-  line-height: 1.2rem;
-  color: rgba(0, 0, 0, 0.87) !important;
-}
-
-.readableText img {
-  max-width: 100%;
-}
-
-.accentLink a {
-  color: #FFD740 !important;
-}
-
-.imagezoom,
-.imagezoom .v-image__image {
-  transition: all 0.2s;
-}
-
-.imagezoom:hover .v-image__image,
-.imagezoom:focus .v-image__image {
-  transform: scale(1.2);
-}
-
-.envidatSmallNavigation {
-  position: fixed;
-  top: auto;
-  right: 10px;
-  bottom: 10px;
-}
-
-.envidatToolbar > .v-toolbar__content {
-  padding: 0px 8px !important;
-}
-
-.envidatIcon {
-  height: 24px !important;
-  width: 24px !important;
-}
-
-.envidatIcon.small {
-  height: 20px !important;
-  width: 20px !important;
-}
-
-.envidatTitle {
-  letter-spacing: 0 !important;
-}
-
-.metadataInfoIcon,
-.metadataInfoIcon .v-icon,
-.metadataInfoIcon .v-image {
-  opacity: 0.8;
-}
-
-.metadataTitleIcons {
-  opacity: 0.5;
-}
-
-.envidatBadge span {
-  font-size: 0.8rem !important;
-}
-
-.envidatBadgeBigNumber span {
-  font-size: 0.7rem !important;
-}
-
-.envidatChip {
-  height: 1.1rem !important;
-  font-size: 0.65rem !important;
-  margin: 1px 2px !important;
-  /* opacity: 0.85 !important; */
-}
-
-.enviDatSnackbar > .v-snack__wrapper > .v-snack__content {
+// TODO check if this works for all pages - REDESIGN WORKFLOW fix
+#mainPageRow {
   height: 100%;
-  padding: 12px;
 }
 
-.smallChip {
-  height: 1.25rem !important;
-  font-size: 0.55rem !important;
+#app-container {
+  position: relative;
+
+  .scroll-icon {
+    content: '';
+    display: none;
+    position: absolute;
+    bottom: -10px;
+    left: 45%;
+    transform: translateX(-50%);
+    opacity: 1;
+    transition: 0.1s linear;
+    z-index: 999;
+    animation: bounce 1s infinite ease-in-out;
+    @media (min-width: 1024px) {
+      display: block;
+      left: 50%;
+    }
+    &:hover {
+      cursor: pointer;
+    }
+  }
 }
 
-.smallChip > .v-chip__content > .v-chip__close > .v-icon {
-  font-size: 15px !important;
-}
-
-.authorTag span {
-  font-size: 14px !important;
-}
-
-.chip__content span {
-  cursor: pointer !important;
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition-duration: 0.1s;
-  transition-property: height, opacity;
-  transition-timing-function: ease;
-  /* overflow: hidden; */
-}
-
-.fade-enter,
-.fade-leave-active {
+#app-container.hide-after .scroll-icon {
   opacity: 0;
-}
-
-.application .v-overlay.v-overlay--active {
-  z-index: 1025 !important;
+  z-index: -1;
 }
 </style>

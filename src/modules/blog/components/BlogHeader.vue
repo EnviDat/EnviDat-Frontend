@@ -2,17 +2,19 @@
   <div id="BlogHeader"
        style="position: relative;">
 
-    <BaseIconButton v-if="showCloseButton"
-                    id="BlogHeaderCloseButton"
-                    class="ma-2"
-                    :class="{ 'mx-1' : $vuetify.breakpoint.smAndDown }"
-                    style="position: absolute; top: 0; right: 0; z-index: 2;"
-                    material-icon-name="close"
-                    icon-color="white"
-                    isElevated
-                    tooltipText="Close post and return to blog overview"
-                    :tooltipBottom="true"
-                    @clicked="$emit('clickedBack')" />
+    <BaseIconButton 
+      v-if="showCloseButton"
+      class="blogHeaderCloseButton ma-2"
+      :class="{ 'mx-1' : $vuetify.display.smAndDown }"
+      style="position: absolute; top: 0; right: 0; z-index: 2;"
+      :icon="mdiClose"
+      icon-color="white"
+      color="primary"
+      isElevated
+      tooltipText="Close post and return to blog overview"
+      tooltipBottom
+      @clicked="$emit('clickedBack')"
+    />
 
     <ImgAndTextLayout style="position: relative; z-index: 0;"
                       :title="title"
@@ -35,6 +37,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { mdiClose } from '@mdi/js';
 import ImgAndTextLayout from '@/components/Layouts/ImgAndTextLayout.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
@@ -46,6 +49,9 @@ export default {
     height: Number,
     showCloseButton: Boolean,
   },
+  data: () => ({
+    mdiClose,
+  }),
   components: {
     ImgAndTextLayout,
     BaseIconButton,

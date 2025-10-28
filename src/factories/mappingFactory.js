@@ -34,25 +34,14 @@ import {
   EDITMETADATA_PUBLICATION_INFO,
   EDITMETADATA_RELATED_DATASETS,
   EDITMETADATA_RELATED_PUBLICATIONS,
+  EDITMETADATA_REVIEW_INFO,
+  METADATA_MAIN_HEADER,
   USER_OBJECT,
 } from '@/factories/eventBus';
 
-import {
-  UPDATE_METADATA_EDITING,
-  USER_NAMESPACE,
-} from '@/modules/user/store/userMutationsConsts';
+import { UPDATE_METADATA_EDITING, USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 
-import {
-  createLocation,
-  enhanceTags,
-  formatDate,
-  getMetadataVisibilityState,
-} from '@/factories/metaDataFactory';
-
-import {
-  enhanceElementsWithStrategyEvents,
-  SELECT_EDITING_RESOURCE_PROPERTY,
-} from '@/factories/strategyFactory';
+import { enhanceElementsWithStrategyEvents, SELECT_EDITING_RESOURCE_PROPERTY } from '@/factories/strategyFactory';
 
 import { md5Hash } from '@/factories/stringFactory';
 import {
@@ -60,33 +49,48 @@ import {
   DATE_PROPERTY_DATE_TYPE,
   DATE_PROPERTY_END_DATE,
   DATE_PROPERTY_START_DATE,
-  EDIT_METADATA_AUTHORS_LABEL,
-  EDIT_METADATA_DOI_LABEL,
-  EDIT_METADATA_ORGANIZATION_LABEL,
-  EDIT_METADATA_PUBLICATION_YEAR_LABEL,
-  EDIT_METADATA_TITLE_LABEL,
-  EDIT_METADATA_URL_LABEL,
-  METADATA_AUTHORS_PROPERTY,
-  METADATA_DOI_PROPERTY,
-  METADATA_ORGANIZATION_PROPERTY,
-  METADATA_PUBLISHER_PROPERTY,
-  METADATA_PUBLICATION_YEAR_PROPERTY,
+  METADATA_CONTACT_EMAIL,
+  METADATA_DATALICENSE_PROPERTY,
+  METADATA_DEPRECATED_RESOURCES_PROPERTY,
   METADATA_TITLE_PROPERTY,
-  METADATA_URL_PROPERTY, EDIT_METADATA_PUBLISHER_LABEL,
+  METADATA_URL_PROPERTY,
 } from '@/factories/metadataConsts';
+
 import { createAuthor } from '@/factories/authorFactory';
+import { enhanceKeywords } from '@/factories/keywordsFactory';
+import categoryCards from '@/store/categoryCards';
+import { createLocation } from '@/factories/geoFactory';
+import { getMetadataVisibilityState } from '@/factories/publicationFactory';
+import { formatDate } from '@/factories/dateFactory';
+import { convertJSON, convertToBackendJSONWithRules, convertToFrontendJSONWithRules } from '@/factories/convertJSON';
 
 /**
  * Json conversion rules from frontend to backend and vise versa
  * https://stackoverflow.com/questions/50081462/javascript-how-to-map-a-backend-entity-to-a-frontend-entity-and-the-opposite
  */
 const JSONFrontendBackendRules = {
+  [METADATA_MAIN_HEADER]: [
+    [METADATA_TITLE_PROPERTY,'title'],
+    [METADATA_CONTACT_EMAIL,'maintainer.email'],
+    ['firstName','maintainer.given_name'],
+    ['lastName','maintainer.name'],
+    ['doi','doi'],
+    ['tags','tags'],
+    ['authors','author'],
+    ['organization','organization.name'],
+    ['organizationTooltip','organization.title'],
+    ['spatialInfo','spatial_info'],
+    ['created','metadata_created'],
+    ['modified','metadata_modified'],
+    ['state','state'],
+    ['private','private'],
+  ],
   [EDITMETADATA_MAIN_HEADER]: [
     [METADATA_TITLE_PROPERTY,'title'],
     [METADATA_URL_PROPERTY,'name'],
-    ['contactEmail','maintainer.email'],
-    ['contactGivenName','maintainer.given_name'],
-    ['contactSurname','maintainer.name'],
+    [METADATA_CONTACT_EMAIL,'maintainer.email'],
+    ['contactFirstName','maintainer.given_name'],
+    ['contactLastName','maintainer.name'],
     ['license','license_title'],
   ],
   [EDITMETADATA_MAIN_DESCRIPTION]: [
@@ -103,11 +107,6 @@ const JSONFrontendBackendRules = {
     ['identifierType','identifier_scheme'],
     ['identifier','identifier'],
     ['affiliation','affiliation'],
-/*
-    ['affiliations.affiliation1','affiliation'],
-    ['affiliations.affiliation2','affiliation_02'],
-    ['affiliations.affiliation3','affiliation_03'],
-*/
   ],
   [EDITMETADATA_AUTHOR_LIST]: [
     ['authors','author'],
@@ -154,7 +153,7 @@ const JSONFrontendBackendRules = {
     ['dates','date'],
   ],
   [EDITMETADATA_DATA_LICENSE]: [
-    ['dataLicenseId','license_id'],
+    [METADATA_DATALICENSE_PROPERTY,'license_id'],
     ['dataLicenseTitle','license_title'],
     ['dataLicenseUrl','license_url'],
   ],
@@ -191,6 +190,11 @@ const JSONFrontendBackendRules = {
     ['doi','doi'],
     ['publisher','publication.publisher'],
     ['publicationYear','publication.publication_year'],
+    ['version', 'version'],
+    ['datasetId', 'id'],
+  ],
+  [EDITMETADATA_REVIEW_INFO]: [
+    ['version', 'version'],
   ],
   [EDITMETADATA_FUNDING_INFO]: [
     ['funders','funding'],
@@ -216,239 +220,59 @@ const JSONFrontendBackendRules = {
   ],
 };
 
+function unpackDeprecatedResources(customFields) {
 
-export function convertJSONArray(array, recursive) {
-  const parsedArray = [];
+  let deprecatedResourceEntry = customFields?.filter((entry) => entry?.fieldName === METADATA_DEPRECATED_RESOURCES_PROPERTY)[0];
+  // first check the customFields entries and sanitze them (to at least always start with an empty array)
 
-  for (let i = 0; i < array.length; i++) {
-    const entry = array[i];
-    let parsedValue = JSON.parse(entry);
+  if (!deprecatedResourceEntry) {
 
-    if (recursive) {
-      if (parsedValue instanceof Array) {
-        convertJSONArray(parsedValue, recursive);
-      } else if (typeof parsedValue === 'object') {
-        // eslint-disable-next-line no-use-before-define
-        parsedValue = convertJSON(parsedValue, false, recursive);
-      }
+    deprecatedResourceEntry = {
+      fieldName: METADATA_DEPRECATED_RESOURCES_PROPERTY,
+      content: JSON.stringify([]),
     }
 
-    parsedArray.push(parsedValue);
+    customFields.push(deprecatedResourceEntry);
   }
 
-  return parsedArray;
-}
-
-const jsonStartRegex = /^\s*(\{|\[)/;
-
-export function convertJSON(data, stringify, recursive = false) {
-  const properties = Object.keys(data);
-  const flatObj = {};
-
-  for (let i = 0; i < properties.length; i++) {
-    const prop = properties[i];
-    let value = data[prop];
-
-    if (stringify) {
-      if (value instanceof Array) {
-        value = JSON.stringify(value);
-
-      } else if (typeof value === 'object') {
-        if (recursive) {
-          value = convertJSON(value, stringify, recursive);
-        } else {
-          value = JSON.stringify(value);
-        }
-      }
-    } else {
-
-      // eslint-disable-next-line no-lonely-if
-      if (typeof value === 'string' && jsonStartRegex.test(value)) {
-        try {
-          const parsedValue = JSON.parse(value);
-          if (parsedValue && typeof parsedValue === 'object') {
-            value = parsedValue;
-          }
-        } catch (e) {
-
-          if (import.meta.env?.DEV) {
-            if (e instanceof SyntaxError) {
-              // eslint-disable-next-line no-console
-              console.log(`Json parse error on property: ${prop} with value: ${value} had error: ${e}`);
-            } else {
-              // eslint-disable-next-line no-console
-              console.error(`Json parse error on property: ${prop} with value: ${value} had error: ${e}`);
-            }
-          }
-        }
-      }
-
-      if (recursive && value instanceof Array) {
-        value = convertJSONArray(value, recursive);
-      }
-
-      if (recursive && typeof value === 'object') {
-        value = convertJSON(value, stringify, recursive);
-      }
-
-    }
-
-    flatObj[prop] = value;
-  }
-
-  return flatObj;
-}
-
-
-
-/**
- * Code from https://stackoverflow.com/questions/54246477/how-to-convert-camelcase-to-snake-case-in-javascript
- * @param {String} inputString camelCaseString
- * @returns {String} snake_case_string
- */
-export function toSnakeCase(inputString) {
-  return inputString.split('').map((character) => {
-    if (character === character.toUpperCase() && character !== '_') {
-      return `_${character.toLowerCase()}`;
-    }
-
-    return character;
-  }).join('');
+  return JSON.parse(deprecatedResourceEntry.content);
 }
 
 /**
- * Code from https://stackoverflow.com/a/61375162/2733509
- * @param {String} snakeCaseString
- * @returns {String} camelCaseString
+ *
+ * @param {string} resourceId
+ * @param {boolean} deprecated
+ * @param {{
+ *   fieldName: string;
+ *   content: string;
+ * }[]} customFields
+ * @returns {{
+ *   fieldName: string;
+ *   content: string;
+ * }[]}
  */
-// eslint-disable-next-line camelcase
-export function toCamelCase(snakeCaseString) {
-  return snakeCaseString
-      // .toLowerCase()
-      .replace(/([-_][a-z])/g, group => group
-          .toUpperCase()
-          //        .replace('-', '')
-          .replace('_', ''));
+export function markResourceDeprecatedInCustomFields(resourceId, deprecated, customFields)  {
+
+  let deprecatedResources = unpackDeprecatedResources(customFields);
+
+  if (deprecated) {
+    deprecatedResources.push(resourceId);
+  } else {
+    deprecatedResources = deprecatedResources.filter(i => i !== resourceId);
+  }
+
+  const deprecatedResourcesEntry = customFields.filter((entry) => entry?.fieldName === METADATA_DEPRECATED_RESOURCES_PROPERTY)[0];
+  deprecatedResourcesEntry.content = JSON.stringify(deprecatedResources);
+
+  return customFields;
 }
 
-export function getObjectInOtherCase(fromCaseObject, caseConversionFunc) {
-  const properties = Object.keys(fromCaseObject);
-  const toCaseObject = {};
+export function deprecatedResourceChanged(resourceId, isDeprecated, customFields){
+  const deprecatedResources = unpackDeprecatedResources(customFields);
 
-  for (let i = 0; i < properties.length; i++) {
-    const fromCaseProp = properties[i];
-    const otherCaseProp = caseConversionFunc(fromCaseProp);
-
-    let value = fromCaseObject[fromCaseProp];
-
-    if (value) {
-      if (value instanceof Array) {
-        // eslint-disable-next-line no-use-before-define
-        value = getArrayInOtherCase(value, caseConversionFunc);
-      } else if (typeof value === 'object') {
-        value = getObjectInOtherCase(value, caseConversionFunc);
-      }
-    }
-
-    toCaseObject[otherCaseProp] = value;
-  }
-
-  return toCaseObject;
-}
-
-export function getArrayInOtherCase(fromCaseArray, caseConversionFunc) {
-  if (fromCaseArray.length <= 0 || typeof fromCaseArray[0] !== 'object') {
-    return fromCaseArray;
-  }
-
-  const otherCaseArray = [];
-  for (let i = 0; i < fromCaseArray.length; i++) {
-    let arrayValue = fromCaseArray[i];
-
-    if (arrayValue) {
-      if (arrayValue instanceof Array) {
-        arrayValue = getArrayInOtherCase(arrayValue, caseConversionFunc);
-      } else if (typeof arrayValue === 'object') {
-        // eslint-disable-next-line no-use-before-define
-        arrayValue = getObjectInOtherCase(arrayValue, caseConversionFunc);
-      }
-    }
-
-    otherCaseArray[i] = arrayValue;
-  }
-
-  return otherCaseArray;
-}
-
-function convertPut(entity, property, v) {
-  const path = property.split('.');
-  const key = path.pop();
-
-  const o = path.reduce((entry, prop) => {
-    // if (!entry.hasOwnProperty(prop)) {
-    if (!entry[prop]) {
-      entry[prop] = {};
-    }
-    return entry[prop];
-  }, entity);
-
-  o[key] = v;
-
-  return entity;
-}
-
-function convertGet(entity, property) {
-  return property.split('.').reduce( (entry, b) => entry[b], entity);
-}
-
-export function convertToBackendJSONWithRules(rules, data) {
-  if (!rules) {
-    return null;
-  }
-
-  let backendJson = {};
-
-  for (let i = 0; i < rules.length; i++) {
-    const rule = rules[i];
-
-    try {
-      const value = convertGet(data, rule[0]);
-      convertPut(backendJson, rule[1], value);
-    } catch (e) {
-      console.log(i);
-      console.log(rule);
-      console.error(e);
-    }
-  }
-  // rules.forEach(rule => convertPut(backendJson, rule[1], convertGet(data, rule[0])));
-
-  backendJson = getObjectInOtherCase(backendJson, toSnakeCase);
-  return backendJson;
-}
-
-function convertToFrontendJSONWithRules(rules, data) {
-  if (!rules) {
-    return null;
-  }
-
-  let frontendJson = {};
-
-  for (let i = 0; i < rules.length; i++) {
-    const rule = rules[i];
-
-    try {
-      const value = convertGet(data, rule[1]);
-      convertPut(frontendJson, rule[0], value);
-    } catch (e) {
-      console.log(i);
-      console.log(rule);
-      console.error(e);
-    }
-  }
-  // rules.forEach(rule => convertPut(frontendJson, rule[0], convertGet(data, rule[1])));
-
-  frontendJson = getObjectInOtherCase(frontendJson, toCamelCase);
-  return frontendJson;
+  const isDeprecatedOnServer = deprecatedResources?.includes(resourceId);
+  const isDeprecatedLocally = isDeprecated === true;
+  return isDeprecatedLocally !== isDeprecatedOnServer;
 }
 
 export function getBackendJSONForStep(stepKey, data) {
@@ -462,6 +286,7 @@ export function getFrontendJSONForStep(stepKey, data) {
 
   return convertToFrontendJSONWithRules(rules, data);
 }
+
 
 export function stringifyResourceForBackend(resource) {
   let resourceSize = resource.resource_size;
@@ -544,7 +369,7 @@ export function cleanResourceForFrontend(resource) {
     try {
       resSize = JSON.parse(resSize);
     } catch (e) {
-      console.log(`resourceSize parsing failed (fallback used!) resource id: ${resource.id}`);
+      console.error(`resourceSize parsing failed (fallback used!) resource id: ${resource.id}`);
       resSize = { size_value: '', size_units: '' };
     }
   }
@@ -557,7 +382,7 @@ export function cleanResourceForFrontend(resource) {
     try {
       restricted = JSON.parse(restricted);
     } catch (e) {
-      console.log(`restricted parsing failed (fallback used!) resource id: ${resource.id}`);
+      console.error(`restricted parsing failed (fallback used!) resource id: ${resource.id}`);
       restricted = { allowed_users: '', level: 'public', shared_secret: '' };
     }
   }
@@ -569,67 +394,6 @@ export function cleanResourceForFrontend(resource) {
     resourceSize: cleanedResSize,
     restricted: cleanedRestricted,
   }
-}
-
-export const metadataPublishedReadOnlyFields = [
-  // EditMetadataHeader
-  METADATA_TITLE_PROPERTY,
-  METADATA_URL_PROPERTY,
-  // EditAuthorList
-  METADATA_AUTHORS_PROPERTY,
-  // EditPublicationInfo
-  METADATA_ORGANIZATION_PROPERTY,
-  METADATA_PUBLICATION_YEAR_PROPERTY,
-  METADATA_PUBLISHER_PROPERTY,
-  METADATA_DOI_PROPERTY,
-];
-
-export const readablePublishedReadOnlyFields = {
-  [METADATA_TITLE_PROPERTY]: EDIT_METADATA_TITLE_LABEL,
-  [METADATA_URL_PROPERTY]: EDIT_METADATA_URL_LABEL,
-  [METADATA_ORGANIZATION_PROPERTY]: EDIT_METADATA_ORGANIZATION_LABEL,
-  [METADATA_AUTHORS_PROPERTY]: EDIT_METADATA_AUTHORS_LABEL,
-  [METADATA_DOI_PROPERTY]: EDIT_METADATA_DOI_LABEL,
-  [METADATA_PUBLISHER_PROPERTY]: EDIT_METADATA_PUBLISHER_LABEL,
-  [METADATA_PUBLICATION_YEAR_PROPERTY]: EDIT_METADATA_PUBLICATION_YEAR_LABEL,
-};
-
-const readOnlyMappingRules = [
-  {
-    triggerRule: ['published'],
-    explanation: 'This field is "readonly" because the dataset is already published.',
-    readOnlyFields: metadataPublishedReadOnlyFields,
-  },
-/*
-  {
-    triggerRule: ['draft'],
-    explanation: 'This is "readonly" because the dataset is still a draft.',
-    readOnlyFields: [
-      'resources',
-    ],
-  },
-*/
-/*
-  {
-    triggerRule: USER_ROLE_ADMIN,
-    readOnlyFields: [],
-  },
-*/
-];
-
-export function getReadOnlyFieldsObject(trigger) {
-
-  const lowCaseTrigger = trigger?.toLowerCase() || '';
-
-  for (let i = 0; i < readOnlyMappingRules.length; i++) {
-    const mappingObj = readOnlyMappingRules[i];
-
-    if (mappingObj.triggerRule.includes(lowCaseTrigger)) {
-      return mappingObj;
-    }
-  }
-
-  return null;
 }
 
 function commitEditingData(commit, eventName, data) {
@@ -667,6 +431,8 @@ function mapCustomFields(fields, frontendToBackend = true) {
 }
 
 function formatDatesForFrontend(dates) {
+  if (!dates) return [];
+
   const formattedDates = [];
 
   for (let i = 0; i < dates.length; i++) {
@@ -683,31 +449,31 @@ function formatDatesForFrontend(dates) {
   return formattedDates;
 }
 
-function populateEditingMain(commit, categoryCards, snakeCaseJSON) {
+function populateEditingMain(commit, backendJSON) {
 
   const dataObject = {};
 
   let stepKey = EDITMETADATA_MAIN_HEADER;
-  const headerData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
+  const headerData = getFrontendJSONForStep(stepKey, backendJSON);
   // the commiting of the EDITMETADATA_MAIN_HEADER is done later on,
   // with additional data from other "steps"
 
   dataObject.headerData = headerData;
 
   stepKey = EDITMETADATA_MAIN_DESCRIPTION;
-  const descriptionData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
+  const descriptionData = getFrontendJSONForStep(stepKey, backendJSON);
 
   commitEditingData(commit, stepKey, descriptionData);
   dataObject.descriptionData = descriptionData;
 
   stepKey = EDITMETADATA_KEYWORDS;
-  const enhanceDataset = enhanceTags(snakeCaseJSON, categoryCards);
-  const keywordsData = getFrontendJSONForStep(stepKey, enhanceDataset);
+  const keywordsData = getFrontendJSONForStep(stepKey, backendJSON);
+  const enhancedDatasets = enhanceKeywords(keywordsData, categoryCards);
 
   const enhancedKeywords = {
-    ...keywordsData,
-    metadataCardTitle: headerData.metadataTitle,
-    metadataCardSubtitle: descriptionData.description,
+    ...enhancedDatasets,
+    metadataCardTitle: headerData.metadataTitle, // only used for showing a the preview MetadataCard
+    metadataCardSubtitle: descriptionData.description, // only used for showing a the preview MetadataCard
   }
 
   commitEditingData(commit, stepKey, enhancedKeywords);
@@ -725,14 +491,14 @@ export function getFrontendDates(backendDates) {
   return formatDatesForFrontend(dates);
 }
 
-function populateEditingAuthors(commit, snakeCaseJSON) {
+function populateEditingAuthors(commit, backendJSON) {
 
   const dataObject = {};
 
   const stepKey = EDITMETADATA_AUTHOR_LIST;
   const authors = []
 
-  snakeCaseJSON.author.forEach((bAuthor) => {
+  backendJSON.author.forEach((bAuthor) => {
     const author = getFrontendJSONForStep(EDITMETADATA_AUTHOR, bAuthor);
     const fAuthor = createAuthor(author)
     authors.push(fAuthor);
@@ -744,7 +510,7 @@ function populateEditingAuthors(commit, snakeCaseJSON) {
   return dataObject;
 }
 
-function populateEditingDataInfo(commit, snakeCaseJSON) {
+function populateEditingDataInfo(commit, backendJSON) {
 
   const dataObject = {};
 
@@ -752,8 +518,8 @@ function populateEditingDataInfo(commit, snakeCaseJSON) {
   // const resources = createResources(metadataRecord).resources;
 
   let stepKey = EDITMETADATA_DATA_INFO;
-  const bDates = snakeCaseJSON.date;
-  const dateInfoData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
+  const bDates = backendJSON.date;
+  const dateInfoData = getFrontendJSONForStep(stepKey, backendJSON);
 
   // special case here to use the backend structure json directly to format the entries
   // this is done for consistency. When calling getFrontendJSONForStep() the dateInfoData.dates
@@ -768,18 +534,19 @@ function populateEditingDataInfo(commit, snakeCaseJSON) {
   dataObject.dataInfo = dateInfoData;
 
   stepKey = EDITMETADATA_DATA_LICENSE;
-  const dataLicenseInfo = getFrontendJSONForStep(stepKey, snakeCaseJSON);
+  const dataLicenseInfo = getFrontendJSONForStep(stepKey, backendJSON);
 
   commitEditingData(commit, stepKey, dataLicenseInfo);
   dataObject.dataLicenseInfo = dataLicenseInfo;
 
   stepKey = EDITMETADATA_DATA_GEO;
-  const geoData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
+  const geoData = getFrontendJSONForStep(stepKey, backendJSON);
 
   const location = createLocation({
-    ...snakeCaseJSON,
-    // don't pass location directly as property because it would be
-    // returned without the parsing of geo spatial infos
+    id: backendJSON.id,
+    name: backendJSON.name,
+    title: backendJSON.title,
+    // don't pass location directly as the mapping to the fontend location only contains the geoJSON
     spatial: geoData.location.geoJSON,
   });
 
@@ -791,7 +558,7 @@ function populateEditingDataInfo(commit, snakeCaseJSON) {
   return dataObject;
 }
 
-function populateEditingResources(commit, snakeCaseJSON, dataLicenseInfo) {
+function populateEditingResources(commit, backendJSON, dataLicenseInfo, customFields) {
 
   const dataObject = {};
 
@@ -799,14 +566,23 @@ function populateEditingResources(commit, snakeCaseJSON, dataLicenseInfo) {
   // const resources = createResources(metadataRecord).resources;
 
   const stepKey = EDITMETADATA_DATA_RESOURCES;
-  const resourceData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
+  const resourceData = getFrontendJSONForStep(stepKey, backendJSON);
   const resources = resourceData.resources;
 
   resourceData.dataLicenseTitle = dataLicenseInfo.dataLicenseTitle;
   resourceData.dataLicenseUrl = dataLicenseInfo.dataLicenseUrl;
 
+  const deprecatedResources = unpackDeprecatedResources(customFields);
+
   for (let i = 0; i < resources.length; i++) {
     resources[i] = cleanResourceForFrontend(resources[i]);
+
+    // HACK: Due to the lack of proper mapping in the frontend
+    // and the inability to change the schema in the backend
+    // the mapping of the deprecated field is performed here in a very inefficient and unmaintainable way
+    // The counterpart is found in editActions -> METADATA_EDITING_PATCH_RESOURCE
+    // change this ASAP (move to centralised mapping, or simply adjust backend)!
+    resources[i].deprecated = deprecatedResources?.includes(resources[i].id);
   }
 
   enhanceElementsWithStrategyEvents(
@@ -821,24 +597,24 @@ function populateEditingResources(commit, snakeCaseJSON, dataLicenseInfo) {
   return dataObject;
 }
 
-function populateEditingRelatedResearch(commit, snakeCaseJSON) {
+function populateEditingRelatedResearch(commit, backendJSON) {
 
   const dataObject = {};
 
   let stepKey = EDITMETADATA_RELATED_PUBLICATIONS;
-  const rPublicationData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
+  const rPublicationData = getFrontendJSONForStep(stepKey, backendJSON);
 
   commitEditingData(commit, stepKey, rPublicationData);
   dataObject.relatedPublicationData = rPublicationData;
 
   stepKey = EDITMETADATA_RELATED_DATASETS;
-  const rDatasetsData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
+  const rDatasetsData = getFrontendJSONForStep(stepKey, backendJSON);
 
   commitEditingData(commit, stepKey, rDatasetsData);
   dataObject.relatedDatasetsData = rDatasetsData;
 
   stepKey = EDITMETADATA_CUSTOMFIELDS;
-  const customFieldsData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
+  const customFieldsData = getFrontendJSONForStep(stepKey, backendJSON);
   customFieldsData.customFields = mapCustomFields(customFieldsData.customFields, false);
 
   commitEditingData(commit, stepKey, customFieldsData);
@@ -847,25 +623,25 @@ function populateEditingRelatedResearch(commit, snakeCaseJSON) {
   return dataObject;
 }
 
-function populateEditingPublicationInfo(commit, metadataRecord, snakeCaseJSON) {
+function populateEditingPublicationInfo(commit, metadataRecord, backendJSON) {
 
   const dataObject = {};
 
   let stepKey = EDITMETADATA_PUBLICATION_INFO;
-  const publicationData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
+  const publicationData = getFrontendJSONForStep(stepKey, backendJSON);
   publicationData.visibilityState = getMetadataVisibilityState(metadataRecord);
 
   commitEditingData(commit, stepKey, publicationData);
   dataObject.publicationData = publicationData;
 
   stepKey = EDITMETADATA_FUNDING_INFO;
-  const fundingData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
+  const fundingData = getFrontendJSONForStep(stepKey, backendJSON);
 
   commitEditingData(commit, stepKey, fundingData);
   dataObject.fundingData = fundingData;
 
   stepKey = EDITMETADATA_ORGANIZATION;
-  const organizationData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
+  const organizationData = getFrontendJSONForStep(stepKey, backendJSON);
 
   commitEditingData(commit, stepKey, organizationData);
   dataObject.organizationData = organizationData;
@@ -873,27 +649,28 @@ function populateEditingPublicationInfo(commit, metadataRecord, snakeCaseJSON) {
   return dataObject;
 }
 
-export function populateEditingComponents(commit, metadataRecord, categoryCards) {
+export function populateEditingComponents(commit, metadataRecord) {
 
-  const snakeCaseJSON = convertJSON(metadataRecord, false);
+  const backendJSON = convertJSON(metadataRecord, false);
 
-  const { headerData, keywordsData } = populateEditingMain(commit, categoryCards, snakeCaseJSON);
+  const { headerData, keywordsData } = populateEditingMain(commit, backendJSON);
 
-  const { authors } = populateEditingAuthors(commit, snakeCaseJSON);
+  const { authors } = populateEditingAuthors(commit, backendJSON);
 
-  const { dataLicenseInfo } = populateEditingDataInfo(commit, snakeCaseJSON);
+  const { dataLicenseInfo } = populateEditingDataInfo(commit, backendJSON);
 
-  populateEditingResources(commit, snakeCaseJSON, dataLicenseInfo);
+  const { customFieldsData } = populateEditingRelatedResearch(commit, backendJSON);
 
-  populateEditingRelatedResearch(commit, snakeCaseJSON);
+  populateEditingResources(commit, backendJSON, dataLicenseInfo, customFieldsData.customFields);
 
-  const { publicationData } = populateEditingPublicationInfo(commit, metadataRecord, snakeCaseJSON);
+
+  const { publicationData } = populateEditingPublicationInfo(commit, metadataRecord, backendJSON);
 
   // enhanced Header for the preview infos
   const stepKey = EDITMETADATA_MAIN_HEADER;
 
-  const organization = snakeCaseJSON.organization.name;
-  const organizationTooltip = snakeCaseJSON.organization.title;
+  const organization = backendJSON.organization.name;
+  const organizationTooltip = backendJSON.organization.title;
 
   const enhanceHeader = {
     ...headerData,
@@ -1021,7 +798,7 @@ export const ckanDateTimeFormat = 'yyyy-MM-dd\'T\'HH:mm:ss.SSSSSS';
 
 /**
  *
- * @param {Date} date
+ * @param {Date|string} date
  * @returns {string|null}
  */
 export function formatDateTimeToCKANFormat(date) {
@@ -1050,39 +827,6 @@ export function parseDateStringToReadableFormat(dateString) {
   }
 
   return formatDate(parsedDate);
-}
-
-export function mergeResourceSizeForFrontend(resource) {
-  const mergedResourceSize = {};
-
-  const isLink = resource.urlType !== 'upload';
-  const resourceSize = resource.resourceSize || null;
-
-  if (resourceSize) {
-    let size;
-    let sizeFormat;
-
-    if (isLink) {
-      sizeFormat = resourceSize.sizeUnits?.toUpperCase() || '';
-
-      try {
-        size = Number.parseFloat(resourceSize.sizeValue);
-      } catch (e) {
-        console.log(`sizeValue parsing failed resource id: ${resource.id}`);
-      }
-
-      if (Number.isNaN(size)) {
-        size = undefined;
-      }
-    } else {
-      size = resource.size;
-    }
-
-    mergedResourceSize.size = size;
-    mergedResourceSize.sizeFormat = sizeFormat;
-  }
-  
-  return mergedResourceSize;
 }
 
 export function enhanceUserObject(user) {
@@ -1119,3 +863,4 @@ export function getMetadataUrlFromTitle(title) {
 
   return urlName;
 }
+

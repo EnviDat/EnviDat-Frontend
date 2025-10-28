@@ -5,7 +5,8 @@
             scrollable
             fullscreen
             class="pa-2"
-            style="z-index: 2030;">
+            :style="`z-index: 2030; scrollbar-width: thin; scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack};`"
+            >
 
     <v-card class="fill-height pa-0" >
 
@@ -23,16 +24,18 @@
             {{ modalTitle }}
           </v-col>
 
-          <v-col class="shrink" >
+          <v-col class="flex-grow-0" >
 
-            <BaseIconButton id="GenericFullScreenModalCloseButton"
-                              material-icon-name="close"
-                              icon-color="white"
-                              color="white"
-                              outlined
-                              tooltipText="Close fullscreen view"
-                              :tooltipBottom="true"
-                              @clicked="closeClicked" />
+            <BaseIconButton
+              class="genericFullScreenModalCloseButton"
+              :icon="mdiClose"
+              icon-color="white"
+              color="white"
+              outlined
+              tooltip-text="Close fullscreen view"
+              :tooltip-bottom="true"
+              @clicked="closeClicked"
+            />
 
           </v-col>
         </v-row>
@@ -42,7 +45,7 @@
                     style="overflow: auto;" >
 
           <component :is="currentComponent"
-                    v-bind="genericProps" />
+                      v-bind="genericProps" />
 
       </v-card-text>
     </v-card>
@@ -62,6 +65,8 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
+import { mdiClose } from '@mdi/js';
+import { defineAsyncComponent } from 'vue';
 import {
   eventBus,
   OPEN_FULLSCREEN_MODAL,
@@ -71,6 +76,7 @@ import {
   OPEN_DATA_PREVIEW_IFRAME,
   INJECT_MAP_FULLSCREEN,
   OPEN_VIDEO_PREVIEW,
+  INJECT_GENERIC_COMPONENT,
 } from '@/factories/eventBus';
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
@@ -80,8 +86,13 @@ import {
   SHOW_DATA_PREVIEW_PROPERTY,
 } from '@/factories/strategyFactory';
 
-const MetadataMapFullscreen = () => import('@/modules/metadata/components/Geoservices/MetadataMapFullscreen.vue');
-const DetailChartsList = () => import('@/modules/metadata/components/GC-Net/DetailChartsList.vue');
+const GcNetDetailChartsList = defineAsyncComponent(() =>
+  import('@/modules/metadata/components/GC-Net/GcNetDetailChartsList.vue'),
+)
+
+const MetadataMapFullscreen = defineAsyncComponent(() =>
+  import('@/modules/metadata/components/Geoservices/MetadataMapFullscreen.vue'),
+)
 
 export default {
   name: 'GenericFullScreenModal',
@@ -99,8 +110,9 @@ export default {
     eventBus.on(OPEN_VIDEO_PREVIEW, this.showGenericPreview);
     eventBus.on(OPEN_DATA_PREVIEW_IFRAME, this.showDataPreviewIframe);
     eventBus.on(INJECT_MAP_FULLSCREEN, this.showFullscreenMapModal);
+    eventBus.on(INJECT_GENERIC_COMPONENT, this.showGenericComponent);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(OPEN_FULLSCREEN_MODAL, this.openModal);
     eventBus.off(CLOSE_FULLSCREEN_MODAL, this.closeModal);
     eventBus.off(GCNET_OPEN_DETAIL_CHARTS, this.showGCNetModal);
@@ -108,16 +120,22 @@ export default {
     eventBus.off(OPEN_VIDEO_PREVIEW, this.showGenericPreview);
     eventBus.off(OPEN_DATA_PREVIEW_IFRAME, this.showDataPreviewIframe);
     eventBus.off(INJECT_MAP_FULLSCREEN, this.showFullscreenMapModal);
+    eventBus.on(INJECT_GENERIC_COMPONENT, this.showGenericComponent);
   },
   computed: {
+    scrollbarColorFront() {
+      return this.$vuetify ? this.$vuetify.theme.themes.light.colors.highlight : 'auto';
+    },
+    scrollbarColorBack() {
+      return this.$vuetify ? '#F0F0F0' : 'auto';
+    },
   },
   methods: {
     closeClicked() {
       eventBus.emit(CLOSE_FULLSCREEN_MODAL);
     },
     showGCNetModal({ currentStation, fileObjects, graphStyling, config }) {
-      this.currentComponent = DetailChartsList;
-      this.modalTitle = `Sensor measurements for ${currentStation ? currentStation.name : '' } station`;
+      this.currentComponent = GcNetDetailChartsList;
 
       this.genericProps = {
         currentStation,
@@ -125,6 +143,8 @@ export default {
         graphStyling,
         config,
       };
+
+      this.modalTitle = `Sensor measurements for ${currentStation ? currentStation.name : '' } station`;
 
       eventBus.emit(OPEN_FULLSCREEN_MODAL);
     },
@@ -165,11 +185,20 @@ export default {
       // this.modalTitle = `Fullscreen Map for ${metadataTitle}`;
       this.modalTitle = 'Fullscreen Map';
 
-      this.currentComponent = MetadataMapFullscreen;
       this.genericProps = {
         site,
         layerConfig,
       };
+
+      this.currentComponent = MetadataMapFullscreen;
+
+      eventBus.emit(OPEN_FULLSCREEN_MODAL);
+    },
+    showGenericComponent({ asyncComponent, props }) {
+      this.genericProps = props;
+      this.modalTitle = 'Fullscreen';
+      
+      this.currentComponent = asyncComponent;
 
       eventBus.emit(OPEN_FULLSCREEN_MODAL);
     },
@@ -185,6 +214,7 @@ export default {
   },
   components: { BaseIconButton },
   data: () => ({
+    mdiClose,
     showModal: false,
     genericProps: {},
     currentComponent: null,

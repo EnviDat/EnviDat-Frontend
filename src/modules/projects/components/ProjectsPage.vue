@@ -2,9 +2,9 @@
   <v-container id="ProjectsPage" tag="article" fluid class="pa-0">
     <v-row>
       <v-col cols="12" lg="10" offset-lg="1">
-        <img-and-text-layout
+        <ImgAndTextLayout
           :img="missionImg"
-          :height="$vuetify.breakpoint.smAndDown ? 100 : 150"
+          :height="$vuetify.display.smAndDown ? 100 : 150"
           title="Research Projects"
         />
       </v-col>
@@ -20,7 +20,7 @@
               md="4"
               xl="3"
             >
-              <project-card-placeholder />
+              <ProjectCardPlaceholder />
             </v-col>
           </v-row>
         </v-container>
@@ -35,11 +35,10 @@
               md="4"
               xl="3"
             >
-              <project-card
+              <ProjectCard
                 :id="project.name"
                 :title="project.title"
                 :img="project.image_display_url"
-                :defaultImg="creatorImg"
                 :description="project.description"
                 :subProjects="project.subProjects"
                 @cardClick="onCardClick"
@@ -53,132 +52,104 @@
   </v-container>
 </template>
 
-<script>
-/**
- * The ProjectsPage shows an overview (list of ProjectCards) all the projects
- * and their subprojects.
- *
- * @summary projects page
- * @author Dominik Haas-Artho
- *
- * Created at     : 2019-10-23 16:12:30
- * Last modified  : 2020-11-03 17:20:56
- *
- * This file is subject to the terms and conditions defined in
- * file 'LICENSE.txt', which is part of this source code package.
- */
+<script setup lang="ts">
+import { computed, onBeforeMount, onMounted, watch } from 'vue';
+import { useStore } from 'vuex';
+import { useRouter, useRoute } from 'vue-router';
 
-import { mapGetters,mapState } from 'vuex';
-
+// Import components
+import { useDisplay } from 'vuetify';
 import ImgAndTextLayout from '@/components/Layouts/ImgAndTextLayout.vue';
+import ProjectCard from '@/modules/projects/components/ProjectCard.vue';
+import ProjectCardPlaceholder from '@/modules/projects/components/ProjectCardPlaceholder.vue';
+
+// Import constants
 import {
   PROJECT_DETAIL_PAGENAME,
-  PROJECTS_PAGENAME,
 } from '@/router/routeConsts';
-import {
-  SET_APP_BACKGROUND,
-  SET_CURRENT_PAGE,
-} from '@/store/mainMutationsConsts';
-
 import {
   GET_PROJECTS,
   PROJECTS_NAMESPACE,
   SET_PROJECTDETAIL_PAGE_BACK_URL,
 } from '../store/projectsMutationsConsts';
-import ProjectCard from './ProjectCard.vue';
-import ProjectCardPlaceholder from './ProjectCardPlaceholder.vue';
 
-export default {
-  name: 'ProjectsPage',
-  /**
-   * @description beforeRouteEnter is used to change background image of this page.
-   * It's called via vue-router.
-   */
-  beforeRouteEnter(to, from, next) {
-    next(vm => {
-      vm.$store.commit(SET_CURRENT_PAGE, PROJECTS_PAGENAME);
-      vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
-    });
-  },
-  /**
-   * @description reset the scrolling to the top,
-   * because of the scrolling is set from the browsePage or metaDetailPage
-   */
-  beforeMount() {
-    if (!this.loadingConfig && !this.loading) {
-      this.loadProjects();
-    }
-  },
-  mounted() {
-    window.scrollTo(0, 0);
-  },
-  watch: {
-    config() {
-      if (!this.loadingConfig && !this.loading) {
-        this.loadProjects();
-      }
-    },
-  },
-  computed: {
-    ...mapState(['loadingConfig', 'config']),
-    ...mapGetters({
-      projects: `${PROJECTS_NAMESPACE}/projects`,
-      loading: `${PROJECTS_NAMESPACE}/loading`,
-      projectsCardsParents: `${PROJECTS_NAMESPACE}/projectsCardsParents`,
-    }),
-    projectsConfig() {
-      return this.config?.projectsConfig || {};
-    },
-    missionImg() {
-      const imgPath = this.$vuetify.breakpoint.mdAndUp
-        ? 'projects/mission'
-        : 'about/mission_small';
-      return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
-    },
-    creatorImg() {
-      const imgPath = this.$vuetify.breakpoint.mdAndUp
-        ? 'projects/data_creator'
-        : 'projects/data_creator_small';
-      return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
-    },
-  },
-  methods: {
-    loadProjects() {
-      this.$store.dispatch(
-        `${PROJECTS_NAMESPACE}/${GET_PROJECTS}`,
-        this.projectsConfig,
-      );
-    },
-    onCardClick(projectId) {
-      this.$store.commit(
-        `${PROJECTS_NAMESPACE}/${SET_PROJECTDETAIL_PAGE_BACK_URL}`,
-        this.$route,
-      );
+const display = useDisplay();
+const store = useStore();
+const router = useRouter();
+const route = useRoute();
 
-      this.$router.push({
-        name: PROJECT_DETAIL_PAGENAME,
-        params: { id: projectId },
-      });
-    },
-    onSubprojectClick(subprojectId) {
-      this.$store.commit(
-        `${PROJECTS_NAMESPACE}/${SET_PROJECTDETAIL_PAGE_BACK_URL}`,
-        this.$route,
-      );
+// Map state from Vuex
+const loadingConfig = computed(() => store.state.loadingConfig);
+const config = computed(() => store.state.config);
+const projects = computed(
+  () => store.getters[`${PROJECTS_NAMESPACE}/projects`],
+);
 
-      this.$router.push({
-        name: PROJECT_DETAIL_PAGENAME,
-        params: { id: subprojectId },
-      });
-    },
-  },
-  components: {
-    ImgAndTextLayout,
-    ProjectCard,
-    ProjectCardPlaceholder,
-  },
-  data: () => ({
-    PageBGImage: 'app_b_browsepage',
-  }),
+const loading = computed(() => store.getters[`${PROJECTS_NAMESPACE}/loading`]);
+
+const projectsCardsParents = computed(
+  () => store.getters[`${PROJECTS_NAMESPACE}/projectsCardsParents`],
+);
+
+// Derived config for projects
+const projectsConfig = computed(() => config.value?.projectsConfig || {});
+
+const missionImg = computed(() => display.mdAndUp
+                                        ? 'mission'
+                                        : 'mission_small');
+
+const loadProjects = () => {
+  store.dispatch(`${PROJECTS_NAMESPACE}/${GET_PROJECTS}`, projectsConfig.value);
+};
+
+
+// Local data
+
+onBeforeMount(() => {
+  if (
+    !loadingConfig.value &&
+    !loading.value &&
+    (!projects.value || projects.value.length <= 0)
+  ) {
+    loadProjects();
+  }
+});
+
+onMounted(() => {
+  window.scrollTo(0, 0);
+});
+
+watch(config, () => {
+  if (
+    !loadingConfig.value &&
+    !loading.value &&
+    (!projects.value || projects.value.length <= 0)
+  ) {
+    loadProjects();
+  }
+});
+
+
+const onCardClick = (projectId: string) => {
+  store.commit(
+    `${PROJECTS_NAMESPACE}/${SET_PROJECTDETAIL_PAGE_BACK_URL}`,
+    route,
+  );
+  router.push({
+    name: PROJECT_DETAIL_PAGENAME,
+    params: { id: projectId },
+  });
+};
+
+const onSubprojectClick = (subprojectId: string) => {
+  store.commit(
+    `${PROJECTS_NAMESPACE}/${SET_PROJECTDETAIL_PAGE_BACK_URL}`,
+    route,
+  );
+  router.push({
+    name: PROJECT_DETAIL_PAGENAME,
+    params: { id: subprojectId },
+  });
 };
 </script>
+

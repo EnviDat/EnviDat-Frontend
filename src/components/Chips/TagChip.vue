@@ -1,25 +1,30 @@
 <template>
   <v-chip
-    class="envidatChip"
+    class="envidatChip text-black"
     :class="{
-      'white--text': highlighted,
-      smallChip: $vuetify.breakpoint.smAndDown,
+      'text-white': highlighted,
+      smallChip: $vuetify.display.smAndDown,
     }"
+    :style="{ height: $vuetify.display.xs ? '15px' : '' }"
     :color="highlighted ? 'primary' : color"
-    :style="{ height: $vuetify.breakpoint.xsOnly ? '15px' : '' }"
-    :small="isSmall"
-    close-icon="close"
+    :size="isSmall ? 'small': undefined"
     @click.stop="clicked"
-    :close="closeable"
-    @click:close="$emit('clickedClose', name)"
   >
+    <BaseIcon
+      v-if="isAccordion"
+      :icon="!isOpen ? mdiChevronDown : mdiChevronUp"
+      small
+    />
+
     {{ name }}
 
-    <!-- <span v-if="closeable"
-          style="margin: 0 -5px 3px 5px;"
-          class="" >
-      <v-icon small >close</v-icon>
-    </span> -->
+    <BaseIcon
+      v-if="closeable"
+      class="ml-1"
+      :color="highlighted ? 'white' : 'black'"
+      :icon="mdiClose"
+      small
+    />
   </v-chip>
 </template>
 
@@ -36,8 +41,11 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import { mdiClose, mdiChevronDown, mdiChevronUp } from '@mdi/js';
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 export default {
+  components: { BaseIcon },
   props: {
     name: String,
     closeable: Boolean,
@@ -52,10 +60,18 @@ export default {
       type: Boolean,
       default: true,
     },
+    isAccordion: {
+      type: Boolean,
+      default: false,
+    },
+    isOpen: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {},
   methods: {
-    clicked: function clicked() {
+    clicked() {
       if (!this.selectable) {
         return;
       }
@@ -66,5 +82,10 @@ export default {
     //   this.$emit('clickedClose', this.name);
     // },
   },
+  data: () => ({
+    mdiClose,
+    mdiChevronDown,
+    mdiChevronUp,
+  }),
 };
 </script>

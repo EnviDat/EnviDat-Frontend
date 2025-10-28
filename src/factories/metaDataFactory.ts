@@ -1,0 +1,489 @@
+/**
+ * function factory for metadata object creation methods by parsing
+ * the json from the backend.
+ *
+ * @summary function factory for metadata object creation methods
+ * @author Dominik Haas-Artho
+ *
+ * This file is subject to the terms and conditions defined in
+ * file 'LICENSE.txt', which is part of this source code package.
+ */
+
+import seedrandom from 'seedrandom';
+
+import { getAuthorName, getAuthorsString } from '@/factories/authorFactory';
+
+import {
+  METADATA_CONTACT_EMAIL,
+  METADATA_CONTACT_FULLNAME,
+  METADATA_STATE_DRAFT,
+  METADATA_STATE_INVISIBLE,
+  METADATA_STATE_VISIBLE,
+  METADATA_TITLE_PROPERTY,
+  PUBLICATION_STATE_PENDING,
+  PUBLICATION_STATE_PUBLISHED,
+  PUBLICATION_STATE_RESERVED,
+} from '@/factories/metadataConsts';
+
+import categoryCards, { cardImageBgs } from '@/store/categoryCards';
+import {
+  enhanceKeywords,
+  getCategoryColor,
+  guessTagCategory,
+} from '@/factories/keywordsFactory';
+import { createLocation } from '@/factories/geoFactory';
+import { getMetadataVisibilityState } from '@/factories/publicationFactory';
+import { formatDate } from '@/factories/dateFactory';
+import { enhanceMetadataWithModeExtras } from '@/factories/modeFactory';
+import { DatasetDTO, PublicationDTO } from '@/types/dataTransferObjectsTypes';
+
+/**
+ * Create a pseudo random integer based on a given seed using the 'seedrandom' lib.
+ *
+ * @param {Number} min
+ * @param {Number} max
+ * @param {String} seed
+ */
+export function randomInt(min: number, max: number, seed: string = 'For the Horde!') {
+  const rng = seedrandom(seed);
+  const r = Math.floor(rng() * 10);
+
+  if (r > max) {
+    return max;
+  }
+  if (r < min) {
+    return min;
+  }
+
+  return r;
+}
+
+// TODO: check with Dominik
+export function getPublicationStatus(dataset: DatasetDTO) {
+  const publicationStatus = dataset.publication_state;
+
+  return publicationStatus;
+}
+
+export function createLicense(dataset: DatasetDTO) {
+  if (!dataset) {
+    return null;
+  }
+
+  return {
+    id: dataset.license_id,
+    title: dataset.license_title,
+    url: dataset.license_url,
+  };
+}
+
+export function createHeader(dataset: DatasetDTO, smallScreen: boolean) {
+  if (!dataset) {
+    return null;
+  }
+
+  let { maintainer } = dataset;
+
+  if (typeof dataset.maintainer === 'string') {
+    try {
+      maintainer = JSON.parse(dataset.maintainer);
+    } catch (e) {
+      console.error(`Maintainer json parse err: ${e}`);
+    }
+  }
+
+  const contactEmail = maintainer?.email || '';
+
+  let authors = null;
+
+  if (typeof dataset.author === 'string') {
+    try {
+      authors = JSON.parse(dataset.author);
+    } catch (e) {
+      console.error(`Author json parse err: ${e}`);
+    }
+  } else if (dataset.author instanceof Array) {
+    authors = dataset.author;
+  }
+
+  const visibility = getMetadataVisibilityState(dataset);
+  const publicationStatus = getPublicationStatus(dataset);
+  const created = formatDate(dataset.metadata_created);
+  const modified = formatDate(dataset.metadata_modified);
+
+  return {
+    [METADATA_TITLE_PROPERTY]: dataset.title,
+    [METADATA_CONTACT_FULLNAME]: maintainer ? getAuthorName(maintainer) : '',
+    [METADATA_CONTACT_EMAIL]: contactEmail,
+    doi: dataset.doi,
+    tags: dataset.tags,
+    authors,
+    organization: dataset.organization?.name || '',
+    organizationTooltip: dataset.organization?.title || '',
+    spatialInfo: dataset.spatial_info,
+    metadataState: visibility,
+    publicationStatus,
+    created,
+    modified,
+    categoryColor: dataset.categoryColor,
+    titleImg: dataset.titleImg,
+    maxTags: smallScreen ? 1 : 12,
+  };
+}
+
+export function createBody(dataset: DatasetDTO, smallScreen = false) {
+  if (!dataset) {
+    return null;
+  }
+
+  return {
+    // id: dataset.id,
+    // doi: dataset.doi,
+    text: dataset.notes,
+    maxTextLength: smallScreen ? 900 : 1000,
+  };
+}
+
+export function createPublications(dataset: DatasetDTO) {
+  if (!dataset) {
+    return null;
+  }
+
+  return {
+    text: dataset.related_publications,
+    maxTextLength: 500,
+  };
+}
+
+export function createRelatedDatasets(dataset: DatasetDTO) {
+  if (!dataset) {
+    return null;
+  }
+
+  return {
+    text: dataset.related_datasets,
+    maxTextLength: 1000,
+  };
+}
+
+export function createFunding(dataset: DatasetDTO) {
+  if (!dataset) {
+    return null;
+  }
+
+  if (typeof dataset.funding === 'string') {
+    try {
+      const fundingArray = JSON.parse(dataset.funding);
+
+      const funding = [];
+
+      for (let i = 0; i < fundingArray.length; i++) {
+        const fund = fundingArray[i];
+        funding.push({
+          institution: fund.institution,
+          grantNumber: fund.grant_number,
+          institutionUrl: fund.institution_url,
+        });
+      }
+
+      return funding;
+    } catch (e) {
+      console.error(`Error JSON Parse of Funding: ${e}`);
+    }
+  }
+
+  return dataset.funding;
+}
+
+export function createPublishingInfo(dataset: DatasetDTO) {
+  if (!dataset) {
+    return null;
+  }
+
+  const publicationStr: unknown = dataset.publication;
+
+  let publication: PublicationDTO;
+  if (typeof publication === 'string') {
+    publication = JSON.parse(publication);
+  } else {
+    publication = publicationStr as PublicationDTO;
+  }
+
+  return {
+    publisher: publication.publisher,
+    publicationYear: publication.publication_year,
+    publicationState: dataset.publication_state,
+    doi: dataset.doi,
+  };
+}
+
+
+export function createDetails(dataset: DatasetDTO) {
+  if (!dataset) {
+    return null;
+  }
+
+  const details = [];
+
+  details.push({
+    label: 'Title',
+    text: dataset.title,
+  });
+
+  const authors = getAuthorsString(dataset);
+  details.push({
+    label: 'Authors',
+    text: authors,
+  });
+
+  // TODO DataCRedit
+
+  details.push({
+    label: 'DOI',
+    text: dataset.doi,
+    url: `https://doi.org/${dataset.doi}`,
+  });
+
+  const created = formatDate(dataset.metadata_created);
+  details.push({
+    label: 'Created',
+    text: created,
+  });
+
+  const modified = formatDate(dataset.metadata_modified);
+  details.push({
+    label: 'Last Modified',
+    text: modified,
+  });
+
+  const license = createLicense(dataset);
+  details.push({
+    label: 'License',
+    text: license.title,
+    url: license.url,
+  });
+
+  details.push({
+    label: 'MetadataId',
+    text: dataset.id,
+  });
+
+  if (dataset.swissFL_type) {
+    details.push({
+      label: 'swissFL_type',
+      text: dataset.swissFL_type,
+    });
+  }
+
+  return details;
+}
+
+let lastCategory = '';
+let tempImgKeys = [];
+let tempImgValues = [];
+
+/**
+ * @param {object} metadata
+ *
+ * @return {object} metadata entry enhanced with a title image based on its tags
+ */
+export function enhanceTitleImg(metadata) {
+  if (!metadata) {
+    return null;
+  }
+
+  /* eslint-disable no-param-reassign */
+  const category = guessTagCategory(metadata.tags);
+
+  if (cardImageBgs) {
+    if (category !== lastCategory) {
+      const categoryImages = cardImageBgs[category];
+      tempImgKeys = Object.keys(categoryImages);
+      tempImgValues = Object.values(categoryImages);
+      lastCategory = category;
+    }
+
+    const max = tempImgKeys.length - 1;
+    const randomIndex = randomInt(0, max, metadata.title);
+
+    metadata.titleImg = randomIndex >= 0 ? tempImgValues[randomIndex] : 0;
+  }
+
+  metadata.categoryColor = getCategoryColor(category, categoryCards);
+
+  return metadata;
+}
+
+/**
+ * @param {object} metadata
+ *
+ * @return {object} metadata entry enhanced with the name of the category
+ */
+export function enhanceCategoryName(metadata) {
+  if (!metadata) {
+    return null;
+  }
+
+  /* eslint-disable no-param-reassign */
+  const category = guessTagCategory(metadata.tags);
+
+  metadata.categoryName = category;
+
+  return metadata;
+}
+
+/**
+ * @param {object} metadataEntry
+ *
+ * @return {object} metadataEntry enhanced with a title image based on the entrys tags
+ */
+export function enhanceMetadataEntry(metadataEntry: object) : object {
+  if (!metadataEntry || !cardImageBgs) {
+    return null;
+  }
+
+  if (!metadataEntry.titleImg) {
+    enhanceTitleImg(metadataEntry);
+  }
+
+  enhanceCategoryName(metadataEntry);
+
+  return metadataEntry;
+}
+
+/**
+ * @param {Array} metadatas
+ * @return {Array} metadatas enhanced with a title image based on the metadatas tags
+ */
+export function enhanceMetadatasTitleImage(metadatas) {
+  if (metadatas === undefined) {
+    return undefined;
+  }
+
+  if (Array.isArray(metadatas)) {
+    for (let i = 0; i < metadatas.length; i++) {
+      const el = metadatas[i];
+
+      if (!el.titleImg) {
+        metadatas[i] = enhanceTitleImg(el);
+      }
+    }
+  }
+
+  return metadatas;
+}
+
+export function sortObjectArray(
+  arrOfObjects: any[],
+  sortProperty: string,
+  sort = 'ASC',
+) {
+  if (sort === 'ASC') {
+    return arrOfObjects.sort((a, b) =>
+      a[sortProperty].toUpperCase() > b[sortProperty].toUpperCase() ? 1 : -1,
+    );
+  }
+
+  return arrOfObjects.sort((a, b) =>
+    b[sortProperty].toUpperCase() > a[sortProperty].toUpperCase() ? 1 : -1,
+  );
+}
+
+
+/**
+ * Different States of dataset publication (on DataCite for a DOI registration) not to confuse with the different
+ * dataset visibility!
+ *
+ * @type {string[]}
+ */
+export const possiblePublicationStates = [
+  '', // defaults to 'draft' in the components
+  PUBLICATION_STATE_RESERVED,
+  PUBLICATION_STATE_PENDING,
+  PUBLICATION_STATE_PUBLISHED,
+];
+
+export const possibleVisibilityStates = [
+  METADATA_STATE_DRAFT,
+  METADATA_STATE_INVISIBLE,
+  METADATA_STATE_VISIBLE,
+];
+
+/**
+ *
+ * @param {object[]}datasets
+ * @param {string}mode
+ * @returns {{}}
+ */
+export function enhanceMetadatas(datasets, mode = undefined) {
+  if (!(datasets instanceof Array)) {
+    throw new Error(
+      `enhanceMetadatas() expects an array of datasets got ${typeof datasets}`,
+    );
+  }
+
+  const enhancedContent = {};
+
+  for (let i = 0; i < datasets.length; i++) {
+    let dataset = datasets[i];
+    dataset = enhanceMetadataEntry(dataset);
+
+    if (mode) {
+      dataset = enhanceMetadataWithModeExtras(mode, dataset);
+    }
+
+    enhanceKeywords(dataset.tags, categoryCards);
+
+    if (!dataset.location || typeof dataset.location === 'string') {
+      dataset.location = createLocation(dataset);
+    }
+
+    enhancedContent[dataset.id] = dataset;
+  }
+
+  return enhancedContent;
+}
+
+export function localSearch(searchTerm, datasets) {
+  const foundDatasets = [];
+
+  let term1 = searchTerm.toLowerCase();
+  let term2 = '';
+  const check2Terms = searchTerm.includes(' ');
+
+  if (check2Terms) {
+    const splits = searchTerm.toLowerCase().split(' ');
+    term1 = splits[0];
+    term2 = splits[1];
+  }
+
+  for (let i = 0; i < datasets.length; i++) {
+    const dataset = datasets[i];
+    const match1 =
+      dataset.title?.toLowerCase().includes(term1) ||
+      dataset.author?.toLowerCase().includes(term1) ||
+      dataset.notes?.toLowerCase().includes(term1);
+
+    let match2 = true;
+    if (check2Terms) {
+      match2 =
+        dataset.title?.toLowerCase().includes(term2) ||
+        dataset.author?.toLowerCase().includes(term2) ||
+        dataset.notes?.toLowerCase().includes(term2);
+    }
+
+    if (match1 && match2) {
+      foundDatasets.push(dataset);
+    }
+  }
+
+  return foundDatasets;
+}
+
+export function isTagSelected(tagName, selectedTagNames) {
+  if (!tagName || selectedTagNames === undefined) {
+    return false;
+  }
+
+  return selectedTagNames.indexOf(tagName) >= 0;
+}

@@ -1,68 +1,52 @@
 <template>
+  <v-card id="EditRelatedPublications" class="pa-0" :loading="loadingColor">
+    <v-container fluid class="pa-4 fill-height">
+      <v-row>
+        <v-col cols="12" class="text-h5">
+          {{ EDIT_METADATA_RELATEDPUBLICATIONS_TITLE }}
+        </v-col>
 
-<v-card id="EditRelatedPublications"
-        class="pa-0"
-        :loading="loading">
+        <v-col v-if="message">
+          <BaseStatusLabelView
+            statusIcon="check"
+            statusColor="success"
+            :statusText="message"
+            :expandedText="messageDetails"
+          />
+        </v-col>
+        <v-col v-if="error">
+          <BaseStatusLabelView
+            statusIcon="error"
+            statusColor="error"
+            :statusText="error"
+            :expandedText="errorDetails"
+          />
+        </v-col>
+      </v-row>
 
-  <v-container fluid
-                class="pa-4 fill-height" >
+      <v-row>
+        <v-col>
+          <div class="text-subtitle-1" v-html="labels.cardInstructions"></div>
+        </v-col>
+      </v-row>
 
-    <template slot="progress">
-      <v-progress-linear color="primary"
-                         indeterminate />
-    </template>
-
-    <v-row>
-      <v-col cols="6" class="text-h5">
-        {{ EDIT_METADATA_RELATEDPUBLICATIONS_TITLE }}
-      </v-col>
-
-      <v-col v-if="message" >
-        <BaseStatusLabelView statusIcon="check"
-                             statusColor="success"
-                             :statusText="message"
-                             :expandedText="messageDetails" />
-      </v-col>
-      <v-col v-if="error"  >
-
-        <BaseStatusLabelView statusIcon="error"
-                             statusColor="error"
-                             :statusText="error"
-                             :expandedText="errorDetails" />
-      </v-col>
-
-    </v-row>
-
-    <v-row>
-      <v-col >
-        <div class="text-subtitle-1"
-              v-html="labels.cardInstructions">
-
-        </div>
-      </v-col>
-    </v-row>
-
-
-    <v-row>
-      <v-col >
-
-        <GenericTextareaPreviewLayout v-bind="genericTextAreaObject"
-                                      :validationError="validationErrors[editingProperty]"
-                                      :readonly="mixinMethods_isFieldReadOnly(editingProperty)"
-                                      :hint="mixinMethods_readOnlyHint(editingProperty)"
-                                      @inputedText="catchInputedText($event)"
-                                      @changedText="catchChangedText($event)">
-          <MetadataPublications v-bind="publicationsObject" />
-        </GenericTextareaPreviewLayout>
-
-      </v-col>
-    </v-row>
-
- </v-container>
-</v-card>
-
+      <v-row>
+        <v-col>
+          <GenericTextareaPreviewLayout
+            v-bind="genericTextAreaObject"
+            :validationError="validationErrors[editingProperty]"
+            :readonly="isReadOnly(editingProperty)"
+            :hint="readOnlyHint(editingProperty)"
+            @inputedText="catchInputedText($event)"
+            @changedText="catchChangedText($event)"
+          >
+            <MetadataPublications v-bind="publicationsObject" />
+          </GenericTextareaPreviewLayout>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-card>
 </template>
-
 
 <script>
 /**
@@ -77,7 +61,7 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 import {
   EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_OBJECT_UPDATE,
@@ -95,6 +79,8 @@ import {
   getValidationMetadataEditingObject,
   isFieldValid,
 } from '@/factories/userEditingValidations';
+
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 
 export default {
   name: 'EditRelatedPublications',
@@ -135,10 +121,17 @@ export default {
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
   },
   computed: {
+    loadingColor() {
+      if (this.loading) {
+        return 'accent';
+      }
+
+      return undefined;
+    },
     genericTextAreaObject() {
       return {
         subtitlePreview: this.labels.subtitlePreview,
@@ -155,7 +148,9 @@ export default {
       };
     },
     validations() {
-      return getValidationMetadataEditingObject(EDITMETADATA_RELATED_PUBLICATIONS);
+      return getValidationMetadataEditingObject(
+        EDITMETADATA_RELATED_PUBLICATIONS,
+      );
     },
     previewPublicationsText() {
       return this.previewText ? this.previewText : this.relatedPublicationsText;
@@ -165,8 +160,13 @@ export default {
     clearPreview() {
       this.previewText = null;
     },
-    validateProperty(property, value){
-      return isFieldValid(property, value, this.validations, this.validationErrors)
+    validateProperty(property, value) {
+      return isFieldValid(
+        property,
+        value,
+        this.validations,
+        this.validationErrors,
+      );
     },
     catchInputedText(value) {
       this.previewText = value;
@@ -178,11 +178,16 @@ export default {
       }
     },
     setRelatedPublicationsText(value) {
-
       eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_RELATED_PUBLICATIONS,
         data: { [this.editingProperty]: value },
       });
+    },
+    isReadOnly(dateProperty) {
+      return isFieldReadOnly(this.$props, dateProperty);
+    },
+    readOnlyHint(dateProperty) {
+      return readOnlyHint(this.$props, dateProperty);
     },
   },
   data: () => ({
@@ -191,9 +196,11 @@ export default {
     EDIT_METADATA_RELATEDPUBLICATIONS_TITLE,
     labels: {
       labelTextarea: EDIT_METADATA_RELATEDPUBLICATIONS_TITLE,
-      cardInstructions: 'Add DORA links to other publications, you can find them on <a href="https://www.dora.lib4ri.ch/wsl/" target="_blank">dora lib4ri</a> or directly enter DORA permanent IDs ex. wsl:29664). Click into the text arena for examples.',
-      placeholder: 'Example entries: \n  * wsl:18753 \n' +
-          ' * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:18753 ',
+      cardInstructions:
+        'Add DORA links to other publications, you can find them on <a href="https://www.dora.lib4ri.ch/wsl/" target="_blank">dora lib4ri</a> or directly enter DORA permanent IDs ex. wsl:29664). Click into the text arena for examples.',
+      placeholder:
+        'Example entries: \n  * wsl:18753 \n' +
+        ' * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:18753 ',
       subtitlePreview: 'Related Publications Preview',
     },
     validationErrors: {
@@ -206,6 +213,4 @@ export default {
     BaseStatusLabelView,
   },
 };
-
-
 </script>

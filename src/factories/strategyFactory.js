@@ -1,3 +1,6 @@
+import { defineAsyncComponent } from 'vue';
+import { mdiFileEye, mdiPencil } from '@mdi/js';
+import { METADATA_DEPRECATED_RESOURCES_PROPERTY } from '@/factories/metadataConsts';
 import {
   OPEN_DATA_PREVIEW_IFRAME,
   OPEN_TEXT_PREVIEW,
@@ -25,14 +28,14 @@ export const clickStrategies = [
     strategyKeys: ['txt', 'md'],
     component: TextPreviewCard,
     openEvent: OPEN_TEXT_PREVIEW,
-    icon: 'preview',
+    icon: mdiFileEye,
     tooltip: 'Click for a preview of this resource',
   },
   {
-    strategyKeys: ['jpg', 'png', 'jpeg'],
+    strategyKeys: ['jpg', 'png', 'jpeg', 'gif', 'webp'],
     component: ImagePreviewCard,
     openEvent: OPEN_TEXT_PREVIEW,
-    icon: 'preview',
+    icon: mdiFileEye,
     tooltip: 'Click for a preview of this image',
   },
   {
@@ -45,26 +48,26 @@ export const clickStrategies = [
   {
     strategyKeys: [SELECT_EDITING_RESOURCE_PROPERTY],
     openEvent: SELECT_EDITING_RESOURCE,
-    icon: 'edit',
+    icon: mdiPencil,
     tooltip: 'Click to select this resource for editing',
   },
   {
     strategyKeys: [SELECT_EDITING_AUTHOR_PROPERTY],
     openEvent: SELECT_EDITING_AUTHOR,
-    icon: 'edit',
+    icon: mdiPencil,
     tooltip: 'Click to select this author for editing',
   },
   {
     strategyKeys: [SELECT_EDITING_DATASET_PROPERTY],
     openEvent: SELECT_EDITING_DATASET,
-    icon: 'edit',
+    icon: mdiPencil,
     tooltip: 'Click to edit this dataset',
   },
   {
     strategyKeys: [SHOW_DATA_PREVIEW_PROPERTY],
     component: DataPreviewIframe,
     openEvent: OPEN_DATA_PREVIEW_IFRAME,
-    icon: 'preview',
+    icon: mdiFileEye,
     tooltip: 'Click for a preview of this resource',
   },
 ];
@@ -143,26 +146,34 @@ export function enhanceElementsWithStrategyEvents(elementList, previewProperty =
   return elementList;
 }
 
-export function enhanceResourcesWithMetadataExtras(metdataExtras, resources) {
-  if (!metdataExtras || !resources) return null;
+export function enhanceResourcesWithMetadataExtras(metadataExtras, resources) {
+  if (!metadataExtras || !resources) return null;
 
-  if (typeof metdataExtras === 'object'
-    && metdataExtras instanceof Array) {
+  if (typeof metadataExtras === 'object'
+    && metadataExtras instanceof Array) {
+
+    let deprecatedResources = [];
+
+    if (metadataExtras?.length > 0) {
+      const customFieldEntry = metadataExtras.filter((entry) => entry?.key === METADATA_DEPRECATED_RESOURCES_PROPERTY)[0];
+      deprecatedResources = JSON.parse(customFieldEntry?.value || '[]');
+    }
 
     for (let i = 0; i < resources.length; i++) {
       const resource = resources[i];
+      resource.deprecated = deprecatedResources?.includes(resource.id);
+
       const enhanceKey = `${SHOW_DATA_PREVIEW_KEY_PREFIX}_${resource.id}`;
+      const match = metadataExtras.filter((entry) => entry.key === enhanceKey)[0];
 
-      const matches = metdataExtras.filter((entry) => entry.key === enhanceKey);
-
-      if (matches.length > 0) {
-        resource[SHOW_DATA_PREVIEW_PROPERTY] = matches[0].value;
+      if (match) {
+        resource[SHOW_DATA_PREVIEW_PROPERTY] = match.value;
       }
     }
 
+    // the deprecated resources have to be at the bottom of the list
+    resources.sort((a, b) => a.deprecated && !b.deprecated ? 1 : -1);
   }
-
-  enhanceElementsWithStrategyEvents(resources, SHOW_DATA_PREVIEW_PROPERTY);
 
   return resources;
 }

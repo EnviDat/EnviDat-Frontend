@@ -1,30 +1,33 @@
 <template>
-  <v-card raised id="FilterKeywordsView">
+  <v-card elevation="8" id="FilterKeywordsView">
     <v-container class="pa-2 fill-height" fluid>
-      <v-row class="fill-height" :no-gutters="$vuetify.breakpoint.smAndUp">
+      <v-row class="fill-height" :no-gutters="$vuetify.display.smAndUp">
         <v-col v-if="!filterExpanded" class="hidden-sm-and-up px-2" cols="12">
           <div class="mx-3">Filter for Keywords</div>
         </v-col>
 
-        <v-col v-if="filterExpanded || $vuetify.breakpoint.smAndUp" cols="12">
+        <v-col v-if="filterExpanded || $vuetify.display.smAndUp" cols="12">
           <v-row>
-            <v-col class="metadataInfoIcon shrink">
-              <v-icon size="24px" color="black">style</v-icon>
+            <v-col class="metadataInfoIcon flex-grow-0">
+              <BaseIcon :icon="mdiPaletteSwatch" color='black' />
             </v-col>
 
-            <v-col v-if="showPlaceholder" class="grow pl-0">
-              <tag-chip-placeholder
-                v-for="n in 6"
-                :key="n"
-                class="envidatChip"
-              />
+            <v-col v-if="showPlaceholder" class="flex-grow-1 pl-0">
+              <v-row no-gutters >
+                <v-col v-for="n in 6"
+                       :key="n"
+                       class="flex-grow-0"
+                >
+                  <TagChipPlaceholder class="envidatChip" />
+                </v-col>
+              </v-row>
             </v-col>
 
-            <v-col v-if="!showPlaceholder" class="grow pl-0">
-              <tag-chip
+            <v-col v-if="!showPlaceholder" class="flex-grow-1 pl-0">
+              <TagChip
                 v-for="tag in unselectedTags"
                 :key="tag.name"
-                :name="tag.name"
+                :name="tag.count ? `${tag.name} (${tag.count})` : tag.name"
                 :selectable="tag.enabled"
                 :highlighted="false"
                 :closeable="false"
@@ -36,16 +39,16 @@
         </v-col>
 
         <v-col
-          v-if="filterExpanded || $vuetify.breakpoint.smAndUp"
+          v-if="filterExpanded || $vuetify.display.smAndUp"
           class="pt-1"
           cols="12"
         >
           <v-row>
-            <v-col class="metadataInfoIcon shrink">
-              <v-img :src="tagIcon" height="24" width="24" />
+            <v-col class="metadataInfoIcon flex-grow-0">
+              <BaseIcon :icon="mdiTagMultiple" color='black' />
             </v-col>
 
-            <v-col v-if="selectedTags.length > 0" class="grow pl-0">
+            <v-col v-if="selectedTags.length > 0" class="flex-grow-1 pl-0">
               <tag-chip
                 v-for="tag in selectedTags"
                 :key="tag.name"
@@ -62,18 +65,17 @@
       </v-row>
     </v-container>
 
-    <base-icon-button
-      v-if="$vuetify.breakpoint.xsOnly"
+    <BaseIconButton
+      v-if="$vuetify.display.xs"
       :count="selectedTags.length"
       style="position: absolute; bottom: 0; right: 0;"
-      material-icon-name="expand_more"
-      color="secondary"
+      :icon="mdiChevronDown"
+      outline-color="secondary"
       icon-color="secondary"
       class="ma-1"
-      :outlined="true"
-      :is-small="true"
-      :rotate-on-click="true"
-      :rotate-toggle="filterExpanded"
+      outlined
+      small
+      :rotated="filterExpanded"
       @clicked="catchExpandClicked"
     />
   </v-card>
@@ -94,14 +96,18 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import { mdiChevronDown, mdiPaletteSwatch, mdiTagMultiple } from '@mdi/js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import TagChip from '@/components/Chips/TagChip.vue';
 import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder.vue';
-import { createTag } from '@/factories/metadataFilterMethods';
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
+import { createTag } from '@/factories/keywordsFactory';
+import { isTagSelected } from '@/factories/metaDataFactory';
 
 export default {
   name: 'FilterKeywordsView',
   components: {
+    BaseIcon,
     BaseIconButton,
     TagChip,
     TagChipPlaceholder,
@@ -116,27 +122,29 @@ export default {
     compactLayout: Boolean,
   },
   data: () => ({
+    mdiChevronDown,
+    mdiPaletteSwatch,
+    mdiTagMultiple,
     maxSelectedTagsTextLength: 25,
     maxUnselectedTagsTextLength: 250,
     xsTextLength: 25,
     smTextLength: 50,
     mdTextLength: 65,
-    tagIcon: null,
-    tagsIcon: null,
     filterExpanded: false,
   }),
   computed: {
     unselectedTags() {
-      if (!this.allTags){
+      if (!this.allTagWithMax){
         return [];
       }
 
-      return this.allTags.filter((element) => element.enabled && !this.mixinMethods_isTagSelected(element.name) );
+      const topList = this.allTagWithMax;
+      return topList.filter((element) => element.enabled && !isTagSelected(element.name, this.selectedTagNames));
 /*
       const unselectedTags = [];
 
       this.allTags.forEach(element => {
-        if (element.enabled && !this.mixinMethods_isTagSelected(element.name)) {
+        if (element.enabled && !isTagSelected(element.name, this.selectedTagNames)) {
           unselectedTags.push(element);
         }
       });
@@ -149,10 +157,9 @@ export default {
       // tag JSON object
       const selecteds = [];
 
-      if (
-        this.selectedTagNames !== undefined &&
-        this.selectedTagNames.length > 0
-      ) {
+      if (this.selectedTagNames !== undefined
+          && this.selectedTagNames.length > 0) {
+
         for (let i = 0; i < this.selectedTagNames.length; i++) {
           const element = this.selectedTagNames[i];
 
@@ -160,62 +167,72 @@ export default {
         }
       }
 
-      return selecteds;
+      return selecteds.toSpliced(0, this.maxTagNumber(this.selectedTagNames));
     },
-    maxTagNumber() {
-      return this.getTagMaxAmout(
-        this.selectedTags,
-        this.maxSelectedTagsTextLength,
-      );
+    allTagWithMax() {
+      return this.allTags?.toSpliced(0, this.maxTagNumber(this.minTagCountToBeVisible));
     },
     maxUnselectedTagNumber() {
       let maxTextLength = this.maxUnselectedTagsTextLength;
 
-      if (this.$vuetify.breakpoint.xsOnly) {
+      if (this.$vuetify.display.xs) {
         maxTextLength = this.xsTextLength;
-      } else if (this.$vuetify.breakpoint.smAndDown) {
+      } else if (this.$vuetify.display.smAndDown) {
         maxTextLength = this.smTextLength;
-      } else if (this.$vuetify.breakpoint.mdAndDown) {
+      } else if (this.$vuetify.display.mdAndDown) {
         maxTextLength = this.mdTextLength;
-      } else if (this.$vuetify.breakpoint.lgAndDown) {
+      } else if (this.$vuetify.display.lgAndDown) {
         maxTextLength = this.mdTextLength;
       }
 
-      const maxNumber = this.getTagMaxAmout(this.allTags, maxTextLength);
+      const maxNumber = this.getTagMaxAmount(this.allTags, maxTextLength);
       const combinedMax = maxNumber - this.selectedTags.length;
 
       return combinedMax >= 0 ? combinedMax : 0;
     },
-  },
-  beforeMount: function beforeMount() {
-    this.tagIcon = this.mixinMethods_getIcon('tag');
-    this.tagsIcon = this.mixinMethods_getIcon('tags');
+    minTagCountToBeVisible() {
+      let minCount = 5;
+
+      if (this.$vuetify.display.xs) {
+        minCount = 25;
+      } else if (this.$vuetify.display.smAndDown) {
+        minCount = 20;
+      } else if (this.$vuetify.display.mdAndDown) {
+        minCount = 10;
+      }
+
+      return minCount;
+    },
   },
   methods: {
+    maxTagNumber(list) {
+      return this.getTagMaxAmount(list, this.minTagCountToBeVisible);
+    },
     clearTags() {
       this.$emit('clickedClear');
     },
     isCleanTag(tagName) {
       let maxWordsPerTag = 3;
 
-      if (this.$vuetify.breakpoint.xsOnly) {
+      if (this.$vuetify.display.xs) {
         maxWordsPerTag = 2;
-      } else if (this.$vuetify.breakpoint.smAndDown) {
+      } else if (this.$vuetify.display.smAndDown) {
         maxWordsPerTag = 20;
       }
 
       return tagName.split(' ').length <= maxWordsPerTag;
     },
-    getTagMaxAmout(list, maxTextLength) {
+    getTagMaxAmount(list, maxTextLength) {
       let textLength = 0;
       let numberOfTags = 0;
 
       if (list && list.length > 0) {
         for (let i = 0; i < list.length; i++) {
           const tag = list[i];
+          const tagName = tag?.name ? tag.name : tag;
 
-          if (tag) {
-            textLength += tag.name.length + 1;
+          if (tagName) {
+            textLength += tagName.length + 1;
 
             if (textLength >= maxTextLength) {
               break;
@@ -238,19 +255,6 @@ export default {
     },
     catchTagCloseClicked(tagId) {
       this.$emit('clickedTagClose', tagId);
-    },
-    minTagCountToBeVisible() {
-      let minCount = 5;
-
-      if (this.$vuetify.breakpoint.xsOnly) {
-        minCount = 25;
-      } else if (this.$vuetify.breakpoint.smAndDown) {
-        minCount = 20;
-      } else if (this.$vuetify.breakpoint.mdAndDown) {
-        minCount = 10;
-      }
-
-      return minCount;
     },
   },
 };

@@ -1,72 +1,35 @@
 <template>
-  <v-tooltip bottom :disabled="$vuetify.breakpoint.xsOnly || !iconTooltip">
-    <template v-slot:activator="{ on }">
-      <v-row
-        v-on="on"
-        id="BaseIconLabelView"
-        no-gutters
-        style="min-height: 24px;"
-        align="center"
-      >
-        <v-col
-          v-if="icon && iconTooltip"
-          :class="alignClass"
-          class="iconCentering shrink"
-          style="position: relative; top: 2px; max-width: 100%"
-        >
-          <img
-            class="envidatIcon"
-            :class="compactLayout ? 'small' : ''"
-            :src="icon"
-            :alt="iconTooltip ? iconTooltip : `${icon} icon`"
-          />
-        </v-col>
-
-        <v-col v-if="icon && !iconTooltip" cols="3" style="max-width: 100%">
-          <div class="iconCentering">
-            <img
-              class="envidatIcon"
-              :class="compactLayout ? 'small' : ''"
-              :src="icon"
-              :alt="label ? label : `${icon} icon`"
-            />
+  <div class="baseIconLabelView">
+    <v-tooltip location='bottom' :disabled="$vuetify.display.xs || !iconTooltip">
+      <template v-slot:activator="{ props }">
+        <div v-bind="props" class="baseIconLabelViewWrapper" :class="{
+          dark,
+          'text-white': dark,
+          'text-black': !dark,
+        }">
+          <div class="baseIconLabelViewIcon">
+            <BaseIcon :icon="icon" :dark="dark" :light="light" :color="iconColor" />
           </div>
-        </v-col>
 
-        <v-col v-if="materialIconName"
-                class="flex-grow-0">
-          <v-icon class="pr-2">{{ materialIconName }}</v-icon>
-        </v-col>
-
-        <v-col v-if="label" cols="3" :style="textStyle">
-          {{ label }}
-        </v-col>
-
-        <v-col v-if="text && !url" :style="textStyle">
-          {{ text }}
-        </v-col>
-
-        <v-col v-if="url" :style="textStyle">
-          <a :href="url" target="_blank" rel="noopener noreferrer">{{
-            text ? text : url
-          }}</a>
-        </v-col>
-
-        <v-col v-if="!text && usePlaceholder">
-          <div
-            class="pr-1 skeleton skeleton-size-normal skeleton-color-concrete skeleton-animation-shimmer"
-          >
-            <div class="bone bone-type-text bone-style-steps" />
+          <div :style="textStyle">
+            <a v-if="url" :href="url" target="_blank" rel="noopener noreferrer">
+              {{ text ? text : url }}
+            </a>
+            <span v-else>
+              {{ text }}
+            </span>
           </div>
-        </v-col>
-      </v-row>
-    </template>
+        </div>
+      </template>
 
-    <span>{{ iconTooltip }}</span>
-  </v-tooltip>
+      <span>{{ iconTooltip }}</span>
+    </v-tooltip>
+  </div>
 </template>
 
 <script>
+import BaseIcon from './BaseIcon.vue';
+
 /**
  * BaseIconLabelView.vue creates a field with a label (text or icon) with the given
  * text as well a tooltip.
@@ -83,53 +46,61 @@
 
 export default {
   name: 'BaseIconLabelView',
+  components: { BaseIcon },
   props: {
     icon: String,
-    materialIconName: String,
+    iconColor: String,
     iconTooltip: String,
-    label: String,
     text: String,
     url: String,
-    alignLeft: Boolean,
-    bold: Boolean,
-    usePlaceholder: Boolean,
-    wordBreak: Boolean,
-    compactLayout: Boolean,
+    dark: Boolean,
+    light: Boolean,
   },
   computed: {
-    alignClass() {
-      return {
-        'col-2': !this.alignLeft,
-        'col-sm-3': !this.alignLeft,
-        'pl-1': !this.alignLeft,
-        'px-1': this.alignLeft,
-        //        'pr-2 pr-sm-1': this.alignLeft,
-      };
+    iconAlt() {
+      return this.iconTooltip ?? this.label ?? `${this.icon} + icon`;
     },
     textStyle() {
-      let style = '';
-
-      if (this.bold) {
-        style = 'font-weight: 700 !important;';
-      }
-
-      if (this.wordBreak) {
-        style += 'word-break: break-word;';
-      }
-
-      if (this.$vuetify.breakpoint.smAndDown) {
-        style += 'font-size: 0.85rem;';
-      }
-
-      return style;
+      return {
+        'font-size': this.$vuetify.display.smAndDown ? 'font-size: 0.85rem;' : undefined,
+      };
     },
   },
 };
 </script>
 
-<style>
-.iconCentering {
-  position: relative;
-  top: 2px;
+<style lang="scss" scoped>
+$icon-size: 24px;
+
+.baseIconLabelViewWrapper {
+  display: inline-flex;
+  align-items: center;
+}
+
+
+.baseIconLabelViewIcon {
+  height: $icon-size;
+  width: $icon-size;
+  margin-right: 12px;
+
+/*
+=======
+.BaseIconLabelViewIcon {
+  &.dark {
+    // Make the icon white
+    filter: brightness(0) invert(1);
+  }
+  height: $icon-size;
+  width: $icon-size;
+  margin-right: 12px;
+>>>>>>> develop
+*/
+
+  img {
+    user-select: none;
+    object-fit: contain;
+    height: $icon-size;
+    width: $icon-size;
+  }
 }
 </style>

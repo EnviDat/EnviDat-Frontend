@@ -1,9 +1,8 @@
 <template>
-  <v-card id="EditCustomFields" class="pa-0" :loading="loading">
+  <v-card id="EditCustomFields"
+          class="pa-0"
+          :loading="loadingColor">
     <v-container fluid class="pa-4">
-      <template slot="progress">
-        <v-progress-linear color="primary" indeterminate />
-      </template>
 
       <v-row>
         <v-col cols="6" class="text-h5">
@@ -12,7 +11,7 @@
 
         <v-col v-if="message">
           <BaseStatusLabelView
-            statusIcon="check"
+            status="check"
             statusColor="success"
             :statusText="message"
             :expandedText="messageDetails"
@@ -21,7 +20,7 @@
 
         <v-col v-if="error">
           <BaseStatusLabelView
-            statusIcon="error"
+            status="error"
             statusColor="error"
             :statusText="error"
             :expandedText="errorDetails"
@@ -44,32 +43,28 @@
         <v-col class="pr-2">
           <v-text-field
             :label="labels.labelFieldName"
-            outlined
-            dense
-            :readonly="mixinMethods_isFieldReadOnly('fieldName')"
-            :hint="mixinMethods_readOnlyHint('fieldName')"
+            :readonly="isReadOnly('fieldName')"
+            :hint="readOnlyHint('fieldName')"
             :error-messages="validationErrors.customFieldsList[index].fieldName"
-            :value="item.fieldName"
-            @change="notifyChange(index, 'fieldName', $event)"
+            :model-value="item.fieldName"
+            @change="notifyChange(index, 'fieldName', $event.target.value)"
           />
         </v-col>
 
         <v-col class="pl-2">
           <v-text-field
             :label="labels.labelContent"
-            outlined
-            dense
-            :readonly="mixinMethods_isFieldReadOnly('content')"
-            :hint="mixinMethods_readOnlyHint('content')"
+            :readonly="isReadOnly('content')"
+            :hint="readOnlyHint('content')"
             :error-messages="validationErrors.customFieldsList[index].content"
-            :value="item.content"
-            @change="notifyChange(index, 'content', $event)"
+            :model-value="item.content"
+            @change="notifyChange(index, 'content', $event.target.value)"
           />
         </v-col>
 
-        <v-col class="shrink px-1">
+        <v-col class="flex-grow-0 px-1">
           <BaseIconButton
-            material-icon-name="clear"
+            :icon="mdiMinusCircleOutline"
             icon-color="red"
             :disabled="index >= customFieldsProp.length - 1"
             @clicked="deleteEntry(index)"
@@ -80,7 +75,7 @@
       <v-row v-if="maxCustomFieldsReached">
         <v-col cols="12">
           <div class="text-subtitle-2">
-            <span class="red--text">{{ this.maxCustomFieldsMessage }}</span>
+            <span class="text-red">{{ this.maxCustomFieldsMessage }}</span>
           </div>
         </v-col>
       </v-row>
@@ -100,6 +95,7 @@
  */
 import { mapState } from 'vuex';
 
+import { mdiMinusCircleOutline } from '@mdi/js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import {
@@ -118,9 +114,12 @@ import {
   isFieldValid,
 } from '@/factories/userEditingValidations';
 
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+
 export default {
   name: 'EditCustomFields',
   data: () => ({
+    mdiMinusCircleOutline ,
     maxCustomFieldsReached: false,
     labels: {
       cardTitle: 'Custom Fields',
@@ -182,6 +181,13 @@ export default {
   },
   computed: {
     ...mapState(['config']),
+    loadingColor() {
+      if (this.loading) {
+        return 'accent';
+      }
+
+      return undefined;
+    },
     maxCustomFields() {
       let max = this.defaultUserEditMetadataConfig.customFieldsMax;
 
@@ -356,6 +362,12 @@ export default {
         this.maxCustomFields,
         localCopy,
       );
+    },
+    isReadOnly(dateProperty) {
+      return isFieldReadOnly(this.$props, dateProperty);
+    },
+    readOnlyHint(dateProperty) {
+      return readOnlyHint(this.$props, dateProperty);
     },
   },
   components: {

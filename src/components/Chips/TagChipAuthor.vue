@@ -1,30 +1,31 @@
 <template>
-  <v-chip class="authorTag"
+  <v-chip class="authorTag text-black"
           :class="{
-            'white--text': highlighted,
-            smallChip: $vuetify.breakpoint.smAndDown,
+            'text-white': highlighted,
+            authorTagDraggable: draggable,
            }"
           :color="highlighted ? 'primary' : color"
           @click.stop="clicked"
           :draggable="draggable"
-          :small="isSmall"
-          close-icon="close"
-          :close="isCloseable"
+          :size="isSmall ? 'small': undefined"
+          :density="isSmall ? 'compact' : 'default'"
+          :close-icon="mdiClose"
+          :closeable="closeable"
           @click:close="$emit('closeClicked', authorName)"
           >
-    <v-avatar left>
-      <v-icon size="24px" >account_circle</v-icon>
+    <v-avatar start class="pr-1">
+      <v-icon size="24px" :icon="mdiAccountCircle" />
     </v-avatar>
 
     {{ authorName }}
 
-    <v-tooltip v-if="authorIsDead"
-                bottom>
-      <template v-slot:activator="{ on }">
-        <v-icon v-on="on" x-small >hourglass_bottom</v-icon>
+    <v-tooltip v-if="isAuthorDead"
+               location='bottom'>
+      <template v-slot:activator="{ props }">
+        <v-icon v-bind="props" size='small' :icon="mdiTimerSand" />
       </template>
 
-      {{ authorPassedInfo }}
+      {{ AUTHOR_PASSED_INFO }}
     </v-tooltip>
 
   </v-chip>
@@ -45,33 +46,49 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
+import { mdiTimerSand, mdiAccountCircle, mdiClose } from '@mdi/js';
+import { replaceAuthorDeadAscii } from '@/factories/authorFactory';
+import { AUTHOR_ASCII_DEAD, AUTHOR_PASSED_INFO } from '@/store/mainMutationsConsts';
+
 export default {
   props: {
     name: String,
     tooltipText: String,
     highlighted: Boolean,
+    colorIcon: {
+      type: String,
+      default: 'dark',
+    },
     color: {
       type: String,
       default: '#f8f8f8',
     },
-    asciiDead: String,
-    authorPassedInfo: String,
     isSmall: {
       type: Boolean,
       default: false,
     },
-    isCloseable: Boolean,
+    closeable: Boolean,
     draggable: {
       type: Boolean,
       default: undefined,
     },
   },
+  data: ()=>({
+    mdiTimerSand,
+    mdiAccountCircle,
+    mdiClose,
+    AUTHOR_PASSED_INFO,
+  }),
   computed: {
-    authorIsDead() {
-      return this.asciiDead && this.name ? this.name.includes(this.asciiDead) : false;
+    isAuthorDead() {
+      return this.name?.includes(AUTHOR_ASCII_DEAD);
     },
     authorName() {
-      return this.authorIsDead ? this.name.replace(`(${this.asciiDead})`, '') : this.name;
+      if (this.isAuthorDead) {
+        return replaceAuthorDeadAscii(this.name);
+      }
+
+      return this.name;
     },
   },
   methods: {
@@ -85,7 +102,10 @@ export default {
 <style scoped>
 
   .authorTag {
+    /*
+    Remove opacity because with vuetify 3 chip are harder to read
     opacity: 0.85;
+    */
     /*
     background-color: #f8f8f8 !important;
     */
@@ -96,8 +116,17 @@ export default {
     margin-left: -12px !important;
   }
 
-  .authorTag > .v-chip__content > .v-avatar > .v-icon {
+  .authorTag > .v-chip__content > .v-avatar > .v-icon.dark {
     color: rgba(0, 0, 0, 0.87) !important;
+  }
+  
+  .authorTag > .v-chip__content > .v-avatar > .v-icon.white {
+    background-color: #00897b !important;
+  }
+  
+
+  .authorTagDraggable  {
+    cursor: move !important;
   }
 
 </style>

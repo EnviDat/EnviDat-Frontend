@@ -9,7 +9,7 @@
     <v-container fluid class="pa-0">
       <v-row justify="center" no-gutters>
         <v-col cols="12" class="text-body-2">
-          <v-icon>upload_file</v-icon> {{ labels.instructions }}
+          <v-icon :icon="mdiUpload" /> {{ labels.instructions }}
         </v-col>
       </v-row>
 
@@ -33,13 +33,13 @@
             @change="onChange"
           >
             <template v-slot:selection="{ index, text }">
-              <v-chip v-if="index < 2" small label color="highlight">
+              <v-chip v-if="index < 2" size="small" label color="highlight">
                 {{ text }}
               </v-chip>
 
               <span
                 v-else-if="index === 2"
-                class="text-overline grey--text text--darken-3 mx-2"
+                class="text-overline text-grey text--darken-3 mx-2"
               >
                 +{{ files.length - 2 }} File(s)
               </span>
@@ -68,6 +68,8 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+
+ import { mdiUpload } from '@mdi/js';
 
 export default {
   name: 'BaseFileDropField',
@@ -103,6 +105,7 @@ export default {
     },
   },
   data: () => ({
+    mdiUpload,
     labels: {
       instructions: 'Drag and drop a file here',
       subInstructions: 'Or use the file picker to select files',

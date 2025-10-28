@@ -11,13 +11,13 @@
     </v-row>
 
     <v-row no-gutters>
-      <v-col>
+      <v-col class="pt-2 tagAuthorFix">
         <v-autocomplete
           v-model="pickedUsers"
           :items="users"
-          outlined
-          :dense="dense"
-          append-icon="arrow_drop_down"
+          item-title="fullName"
+          item-value="email"
+          :menu-icon="mdiArrowDownDropCircleOutline"
           :readonly="readonly"
           :hint="hint"
           :persistent-hint="!!hint"
@@ -25,30 +25,29 @@
           :label="pickerLabel"
           :multiple="multiplePick"
           :clearable="isClearable"
-          :search-input.sync="search"
+          :clear-on-select="true"
+          :search="search"
           :error-messages="errorMessages"
           :menu-props="menuOptions"
-          clear-icon="close"
-          @change="catchPicks"
+          :clear-icon="mdiClose"
+          v-bind="$props"
           @blur="$emit('blur', $event)"
         >
+
           <template v-slot:selection="{ item }">
             <TagChipAuthor
-              v-if="item"
-              :name="item"
-              :isSmall="true"
-              :isCloseable="userTagsCloseable"
-              @closeClicked="catchCloseClicked"
+                v-if="item.title"
+                :name="item.title"
+                :class="userTagsCloseable && !readonly ? 'pl-0' : 'px-0'"
+                :closable="userTagsCloseable && !readonly"
+                @closeClicked="catchCloseClicked(item.value)"
             />
           </template>
 
-          <template v-slot:item="{ item }">
-            <TagChipAuthor
-              v-if="item"
-              :name="item"
-              @clicked="catchPickClicked"
-              :isSmall="true"
-            />
+          <template v-slot:item="{ props, item }">
+            <v-list-item v-bind="props"
+                         @click="catchPickClicked(item.value)" >
+            </v-list-item>
           </template>
 
           <template v-slot:no-data>
@@ -62,7 +61,7 @@
   </v-card>
 </template>
 
-<script>
+<script lang="ts">
 /**
  * @summary UserPicker component
  * @author Dominik Haas-Artho
@@ -73,14 +72,28 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import {mdiAccountBox, mdiArrowDownDropCircleOutline, mdiClose} from '@mdi/js';
+// import { PropType } from 'vue';
 import TagChipAuthor from '@/components/Chips/TagChipAuthor.vue';
+import type { UserPickerObject } from '@/types/modelTypes';
 
 export default {
-  name: 'BaseUserPicker',
+  // name: 'BaseUserPicker',
   props: {
-    users: Array,
-    preSelected: Array,
+    users: {
+      type: Array, // as PropType<UserPickerObject>[],
+      default: undefined,
+    },
+    preSelectedEmails: {
+      type: Array, // as PropType<string>[],
+      default: undefined,
+    },
+    preSelectedNames: {
+      type: Array, // as PropType<string>[],
+      default: undefined,
+    },
     multiplePick: Boolean,
+    placeholder: {type: String, default: undefined},
     pickerLabel: {
       type: String,
       default: 'Click here to pick an EnviDat author',
@@ -93,15 +106,11 @@ export default {
     instructions: String,
     prependIcon: {
       type: String,
-      default: 'account_box',
+      default: mdiAccountBox,
     },
     userTagsCloseable: {
       type: Boolean,
       default: true,
-    },
-    dense: {
-      type: Boolean,
-      default: false,
     },
     errorMessages: {
       type: String,
@@ -116,16 +125,23 @@ export default {
       default: '',
     },
   },
+  emits: ['pickedUsers', 'removedUsers'],
   mounted() {
     this.updatePreselection();
   },
   watch: {
-    preSelected() {
+    preSelectedEmails() {
+      this.updatePreselection();
+    },
+    preSelectedNames() {
       this.updatePreselection();
     },
   },
   computed: {
     autocompleteHint() {
+      if(this.placeholder){
+        return this.placeholder;
+      }
       if (!this.search) {
         return 'Start typing for autocompletion.';
       }
@@ -140,31 +156,33 @@ export default {
   },
   methods: {
     updatePreselection() {
-      if (this.preSelected?.length > 0) {
-        if (this.multiplePick) {
-          this.pickedUsers = [];
+      let filteredUsers: UserPickerObject[];
 
-          this.preSelected.forEach(authorName => {
-            // if (typeof author === 'object') {
-            this.pickedUsers.push(authorName);
-            // } else {
-            //   this.pickedUsers.push(author);
-            // }
-          });
-        } else {
-          this.pickedUsers = this.preSelected[0];
-        }
+      if (this.preSelectedEmails?.length > 0) {
+        filteredUsers = this.users.filter((userObj: UserPickerObject) => this.preSelectedEmails.includes(userObj.email));
+      }
+      if (this.preSelectedNames?.length > 0) {
+        filteredUsers = this.users.filter((userObj: UserPickerObject) => this.preSelectedNames.includes(userObj.fullName));
+      }
+
+      if (filteredUsers) {
+        // have fallback on the fullName because when the UserPicker is used for Users
+        // (not Authors) then there is no email available
+        this.pickedUsers = this.multiplePick
+          ? filteredUsers.map((userObj : UserPickerObject) => userObj.email || userObj.fullName)
+          : filteredUsers[0].email || filteredUsers[0].fullName;
+
       } else {
-        this.pickedUsers = this.multiplePick ? [] : '';
+        this.pickedUsers = this.multiplePick ? [] : undefined;
       }
     },
-    catchCloseClicked(authorName) {
+    catchCloseClicked(picked: string) {
       if (this.readonly) {
         return;
       }
 
       if (this.multiplePick) {
-        const remains = this.pickedUsers.filter(value => value !== authorName);
+        const remains = this.pickedUsers.filter((userEmailOrName : string) => userEmailOrName !== picked);
 
         if (remains?.length > 0) {
           this.pickedUsers = remains;
@@ -172,37 +190,28 @@ export default {
           this.pickedUsers = [];
         }
       } else {
-        this.pickedUsers = '';
+        this.pickedUsers = undefined;
       }
 
-      this.$emit('removedUsers', this.pickedUsers);
+      this.$emit('removedUsers', this.pickedUsers as string | string[]);
     },
-    catchPickClicked(pickedItem) {
+    catchPickClicked(picked: string) {
       if (this.multiplePick) {
-        // if (Array.isArray(this.pickedUsers)) {
-        if (!this.pickedUsers.includes(pickedItem)) {
-          this.pickedUsers.push(pickedItem);
-          /*
-          } else {
-            const index = this.pickedUsers.indexOf(pickedItem);
-            this.pickedUsers.splice(index, 1);
-*/
+        if (!this.pickedUsers.includes(picked)) {
+          this.pickedUsers.push(picked);
         }
-        // }
       } else {
-        this.pickedUsers = pickedItem;
+        this.pickedUsers = picked;
       }
 
-      this.$emit('pickedUsers', this.pickedUsers);
-    },
-    catchPicks(picks) {
-      this.$emit('pickedUsers', picks);
-      this.search = '';
+      this.$emit('pickedUsers', this.pickedUsers as string | string[]);
     },
   },
   data: () => ({
-    pickedUsers: [],
+    pickedUsers: undefined,
     search: '',
+    mdiArrowDownDropCircleOutline,
+    mdiClose,
   }),
   components: {
     TagChipAuthor,
@@ -210,4 +219,13 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style>
+.tagAuthorFix .v-chip__content {
+  /*
+  a fix for now because there is a overlay coming in the way of the author icon
+  but the chips are getting wider which isn't good
+  */
+  padding: 0 11px !important;
+}
+
+</style>

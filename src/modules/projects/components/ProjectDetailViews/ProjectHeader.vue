@@ -1,25 +1,27 @@
 <template>
   <v-card :height="height"
           :class="{
-            'pa-4': $vuetify.breakpoint.smAndUp,
-            'pa-3': $vuetify.breakpoint.xsOnly,
+            'pa-4': $vuetify.display.smAndUp,
+            'pa-3': $vuetify.display.xs,
           }"
           :dark="dark"
           :color="showPlaceholder ? 'primary' : 'white'" >
 
-    <div v-bind="{['style'] : dynamicCardBackground }" >
+    <div :style="dynamicCardBackground" >
       <!-- this loads the background image -->
     </div>
 
-    <base-icon-button class="ma-2"
-                      style="position: absolute; top: 0; right: 0; z-index: 2;"
-                      material-icon-name="close"
-                      icon-color="primary"
-                      color="primary"
-                      outlined
-                      tooltipText="Close project detail view"
-                      :tooltipBottom="true"
-                      @clicked="catchBackClicked" />
+    <base-icon-button 
+      class="ma-2"
+      style="position: absolute; top: 0; right: 0; z-index: 2;"
+      :icon="mdiClose"
+      icon-color="primary"
+      outline-color="primary"
+      outlined
+      tooltip-text="Close project detail view"
+      tooltip-bottom
+      @clicked="catchBackClicked"
+    />
 
 
     <div v-if="title"
@@ -27,9 +29,9 @@
                   height: ${height}px; width: 100%;
                   z-index: 1;`"
           class="headerTitle pa-4"
-          :class="{ 'text-h3': $vuetify.breakpoint.lgAndUp,
-                    'text-h4': $vuetify.breakpoint.mdAndDown,
-                    'text-h5': $vuetify.breakpoint.smAndDown,
+          :class="{ 'text-h3': $vuetify.display.lgAndUp,
+                    'text-h4': $vuetify.display.mdAndDown,
+                    'text-h5': $vuetify.display.smAndDown,
                   }" >
       {{ title }}
     </div>
@@ -38,21 +40,20 @@
     <div v-if="!title && !showPlaceholder"
           :style="`position: absolute; top: 0px; right: 0px;
                   height: ${height}px; width: 100%;
-                  z-index: 1; color: ${$vuetify.theme.themes.light.error};`"
+                  z-index: 1; color: ${$vuetify.theme.themes.light.colors.error};`"
           class="headerTitle pa-4"
-          :class="{ 'text-h3': $vuetify.breakpoint.lgAndUp,
-                    'text-h4': $vuetify.breakpoint.mdAndDown,
-                    'text-h5': $vuetify.breakpoint.smAndDown,
+          :class="{ 'text-h3': $vuetify.display.lgAndUp,
+                    'text-h4': $vuetify.display.mdAndDown,
+                    'text-h5': $vuetify.display.smAndDown,
                   }" >
       {{ NotFoundTitle }}
     </div>
 
 
-    <div v-if="!title && showPlaceholder"
-          style="z-index: 1;"
-          class="skeleton skeleton-size-big skeleton-color-concrete skeleton-animation-shimmer" >
-      <div class="bone bone-type-multiline bone-style-steps" />
-    </div>
+    <v-skeleton-loader v-if="!title && showPlaceholder"
+                       style="z-index: 1;"
+                       :height="height - 20"
+                       type="article" color="transparent" />
 
   </v-card>
 </template>
@@ -72,6 +73,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
+import { mdiClose } from '@mdi/js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
 export default {
@@ -127,6 +129,7 @@ export default {
     },
   },
   data: () => ({
+    mdiClose,
     height: 150,
     dark: false,
     blackTopToBottom: 'rgba(80,80,80, 0.1) 0%, rgba(80,80,80, 0.9) 70%',

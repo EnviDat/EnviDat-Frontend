@@ -22,19 +22,21 @@ import {
   GET_PROJECTS_SUCCESS,
 } from './projectsMutationsConsts';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
-const API_ROOT = import.meta.env.VITE_API_ROOT;
+let API_BASE = '';
+let API_ROOT = '';
 
+const useTestdata = import.meta.env?.VITE_USE_TESTDATA === 'true';
+
+if (!useTestdata) {
+  API_BASE = import.meta.env?.VITE_API_BASE_URL;
+  API_ROOT = import.meta.env?.VITE_API_ROOT;
+}
 export default {
   // eslint-disable-next-line no-unused-vars
   async [GET_PROJECTS]({ dispatch, commit }, projectsConfig = {}) {
     commit(GET_PROJECTS);
 
-    let url = urlRewrite(
-      ACTION_GET_PROJECTS(),
-      API_BASE,
-      API_ROOT,
-    );
+    let url = urlRewrite(ACTION_GET_PROJECTS(), API_BASE, API_ROOT);
 
     // if (this.getters[`${METADATA_NAMESPACE}/metadatasContentSize`] === 0) {
     //   const metadataConfig = this.state.config.metadataConfig;
@@ -43,7 +45,7 @@ export default {
     //     { root: true });
     // }
 
-    // if (import.meta.env?.DEV) {
+    // if (import.meta.env?.MODE === 'development') {
     //   url = './testdata/projects.json';
     // }
 

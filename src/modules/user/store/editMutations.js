@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 /**
 * user store mutations
 *
@@ -28,6 +27,7 @@ import {
 import {
   EDITMETADATA_AUTHOR,
   EDITMETADATA_CLEAR_PREVIEW,
+  EDITMETADATA_DATA_RESOURCES,
   eventBus,
 } from '@/factories/eventBus';
 
@@ -106,11 +106,16 @@ export default {
 
     updateResources(this, state, fResource);
 
+    eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
+
+    state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].message = message;
+
     setTimeout(() => {
-      this.commit(`${USER_NAMESPACE}/resetMessage`, stepKey);
+      this.commit(`${USER_NAMESPACE}/resetMessage`, EDITMETADATA_DATA_RESOURCES);
+      state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].message = undefined;
     }, state.metadataSavingMessageTimeoutTime);
   },
-  [METADATA_EDITING_PATCH_RESOURCE_ERROR](state, { stepKey, reason }) {
+  [METADATA_EDITING_PATCH_RESOURCE_ERROR](state, { reason }) {
 
     state.loadingEditingData = false;
 
@@ -120,12 +125,15 @@ export default {
     if (selectedResource) {
       selectedResource.loading = false;
       const errorObj = createErrorMessage(reason);
-      selectedResource.error = errorObj.message;
-      selectedResource.errorDetails = errorObj.details;
+
+      state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].error = errorObj.message;
+      state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].errorDetails = errorObj.details;
     }
 
     setTimeout(() => {
-      this.commit(`${USER_NAMESPACE}/resetError`, stepKey);
+      this.commit(`${USER_NAMESPACE}/resetMessage`, EDITMETADATA_DATA_RESOURCES);
+      state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].error = undefined;
+      state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].errorDetails = undefined;
     }, state.metadataSavingErrorTimeoutTime);
   },
   [METADATA_EDITING_SELECT_RESOURCE](state, id) {
@@ -165,6 +173,11 @@ export default {
 
     updateAuthors(this, state, author);
 
+    // maybe necessary here too?
+    // like on the METADATA_EDITING_PATCH_RESOURCE_SUCCESS ?
+    // not tested yet
+    // eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
+
     resetErrorObject(state);
   },
   [METADATA_EDITING_REMOVE_AUTHOR](state, email) {
@@ -198,6 +211,8 @@ export default {
     editingObject.loading = false;
     editingObject.message = message;
 
+    // always clear the previews to make sure that the components
+    // show the latest datasets from the backend
     eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
 
     setTimeout(() => {
@@ -257,9 +272,7 @@ export default {
     if (currentEntry) {
 //      const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
 
-      const { categoryCards } = this.getters;
-
-      populateEditingComponents(this.commit, currentEntry, categoryCards);
+      populateEditingComponents(this.commit, currentEntry);
     }
   },
   [METADATA_EDITING_LOAD_DATASET_ERROR](state, reason) {

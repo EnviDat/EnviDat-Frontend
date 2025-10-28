@@ -2,14 +2,14 @@
   <v-row
     no-gutters
     :class="{
-      'px-4': $vuetify.breakpoint.mdAndUp,
-      'px-3': $vuetify.breakpoint.sm,
+      'px-4': $vuetify.display.mdAndUp,
+      'px-3': $vuetify.display.sm,
     }"
   >
     <v-col class="pt-3" cols="12">
       <img-and-text-layout
-        :img="titleImage"
-        :height="$vuetify.breakpoint.smAndDown ? 100 : 150"
+        :img="titleImageResolved"
+        :height="$vuetify.display.smAndDown ? 100 : 150"
         :title="title"
       />
     </v-col>
@@ -26,7 +26,7 @@
       <div v-html="markdownContent"></div>
     </v-col>
 
-    <slot v-if="hasSoltConent" />
+    <slot v-if="hasSlotContent" />
   </v-row>
 </template>
 
@@ -41,7 +41,9 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import { mdiChevronDown } from '@mdi/js';
 import ImgAndTextLayout from '@/components/Layouts/ImgAndTextLayout.vue';
+import { getImage } from '@/factories/imageFactory.js';
 
 export default {
   name: 'AboutTabLayout',
@@ -52,13 +54,31 @@ export default {
     loadingText: String,
     markdownContent: String,
   },
+  async mounted() {
+    if (this.titleImage) {
+      this.titleImageResolved = await getImage(this.titleImage);
+    }
+  },  
   computed: {
-    hasSoltConent() {
-      return !!this.$slots.default && !!this.$slots.default[0];
+    hasSlotContent() {
+      // correct refactoring??
+      // https://v3-migration.vuejs.org/breaking-changes/slots-unification.html#_3-x-syntax
+      const slotAmount = Object.values(this.$slots).length;
+      if (slotAmount > 0) {
+        const def = this.$slots.default();
+        return def?.length > 0;
+      }
+
+      return false;
     },
   },
   components: {
     ImgAndTextLayout,
   },
+  data: () => ({
+    expanded: false,
+    mdiChevronDown,
+    titleImageResolved: undefined,
+  }),  
 };
 </script>

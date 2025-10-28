@@ -8,7 +8,7 @@
     :maxTextLength="maxTextLength"
     :sanitizeHTML="false"
     :statusText="resolvingStatusText"
-    class="relatedPubList"
+    class="relatedPubList "
   />
 </template>
 
@@ -36,7 +36,7 @@ import {
   getDoraPidsUrl,
   replacePIDsInText,
   resolvedCitationText,
-} from '@/factories/metaDataFactory';
+} from '@/factories/citationFactory';
 
 export default {
   name: 'MetadataPublications',
@@ -44,7 +44,6 @@ export default {
     ExpandableTextLayout,
   },
   props: {
-    showPlaceholder: Boolean,
     text: {
       type: String,
       default: '',
@@ -66,14 +65,15 @@ export default {
       type: Array,
       default: () => [],
     },
+    showPlaceholder: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     ...mapState(['config']),
     loading() {
       return this.isResolving || this.showPlaceholder;
-    },
-    publications() {
-      return this.mixinMethods_getGenericProp('publications');
     },
     metadataConfig() {
       return this.$store ? this.config?.metadataConfig || {} : {};
@@ -82,7 +82,10 @@ export default {
       return this.metadataConfig?.publicationsConfig || {};
     },
     resolveBaseUrl() {
-      return this.publicationsConfig?.resolveBaseUrl || 'https://www.dora.lib4ri.ch/wsl/islandora/search/json_cit_pids_wsl/';
+      return (
+        this.publicationsConfig?.resolveBaseUrl ||
+        'https://www.dora.lib4ri.ch/wsl/islandora/search/json_cit_pids_wsl/'
+      );
     },
     extractedPIDMap() {
       return extractPIDMapFromText(this.text);
@@ -96,21 +99,26 @@ export default {
     },
   },
   methods: {
-    resolvedCitations(text){
+    resolvedCitations(text) {
+      if (!text) {
+        return '';
+      }
 
-      if (!this.isResolving && !this.resolveError
-          && this.extractedPIDMap?.size > 0) {
-
+      if (
+        !this.isResolving &&
+        !this.resolveError &&
+        this.extractedPIDMap?.size > 0
+      ) {
         this.isResolving = true;
         this.$nextTick(() => {
           this.resolvePIDs(text, this.extractedPIDMap);
-        })
+        });
       }
 
       return text;
     },
     /**
-     * 
+     *
      * @param text
      * @param {null|Map<string, string>} pidMap
      * @returns {Promise<void>}
@@ -134,7 +142,6 @@ export default {
 
         const citationMap = resolvedCitationText(response.data, pidMap);
         newText = replacePIDsInText(text, citationMap, pidMap);
-
       } catch (e) {
         this.resolveError = e;
       } finally {

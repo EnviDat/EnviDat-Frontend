@@ -3,52 +3,44 @@
           id="AuthorCard"
           :class="cardClass"
           :style="dynamicCardBackground"
-          :loading="loading">
+          :loading="loadingColor">
 
     <v-container fluid
                  class="pa-4">
 
-      <template slot="progress">
-        <v-progress-linear color="primary"
-                           indeterminate/>
-      </template>
-
       <v-row no-gutters
              class="pb-3">
 
-        <v-col class="grow py-0">
+        <v-col class="flex-grow-1 py-0">
           <div class="authorTitle"
-               :class="dark ? 'white--text' : 'black--text'">
-            {{ author.firstName }}
+               :class="dark ? 'text-white' : 'text-black'">
+            {{ firstName }}
           </div>
         </v-col>
 
-        <v-col v-if="authorIsDead"
-               class="shrink py-0">
+        <v-col v-if="author.isAuthorDead"
+               class="flex-grow-0 py-0">
 
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-              <v-icon v-on="on"
-                      dark
-                      small
-                      :class="dark ? 'white--text' : 'black--text'">
-                hourglass_bottom
-              </v-icon>
+          <v-tooltip location='bottom'>
+            <template v-slot:activator="{ props }">
+              <BaseIcon 
+                v-bind="props"
+                color="black"
+                :icon="mdiTimerSandComplete"
+              />
             </template>
 
-            {{ authorPassedInfo }}
+            {{ AUTHOR_PASSED_INFO }}
           </v-tooltip>
-
         </v-col>
 
         <v-col class="py-0"
                cols="12">
           <div class="authorTitle"
-               :class="dark ? 'white--text' : 'black--text'">
-            {{ authorIsDead ? author.lastName.replace(`(${asciiDead})`, '') : author.lastName }}
+               :class="dark ? 'text-white' : 'text-black'">
+            {{ lastName }}
           </div>
         </v-col>
-
       </v-row>
 
       <v-row v-if="authorDetailsConfig.showDatasetCount"
@@ -57,42 +49,41 @@
              align="center"
              justify="space-between">
 
-        <v-col cols="6"
-               :class="dark ? 'white--text' : 'black--text'">
+        <v-col class="flex-grow-1"
+               :class="dark ? 'text-white' : 'text-black'">
           {{ dataCountLabel }}
         </v-col>
 
-        <v-col class="shrink py-0"
+        <v-col class="flex-grow-0 py-0"
                style="max-height: 36px;">
 
-          <base-icon-button class="ma-0"
-                            material-icon-name="search"
-                            :iconColor="dark ? 'white' : darkColor"
-                            outlined
-                            :color="dark ? 'white' : darkColor"
-                            :tooltipText="`Search for the datasets of ${author.firstName} ${author.lastName}`"
-                            @clicked="catchSearchAuthor(author)"/>
+          <BaseIconButton 
+            class="ma-0"
+            :icon="mdiMagnify"
+            :outline-color="dark ? 'white' : darkColor"
+            :icon-color="dark ? 'white' : darkColor"
+            outlined
+            :tooltip-text="`Search for the datasets of ${author.firstName} ${author.lastName}`"
+            @clicked="catchSearchAuthor(author)"
+          />
 
           <v-badge :color="dark ? 'white' : darkColor"
-                   overlap
-                   style="top: -25px; right: -2px;">
-              <span slot="badge"
-                    :class="!dark ? 'white--text' : 'black--text'">
-                    {{ author.datasetCount }}
-              </span>
+                   style="position:relative; top: -20px; right: -2px;"
+                   :content="author.datasetCount || 0">
           </v-badge>
-
         </v-col>
       </v-row>
 
-      <slot name="dataCreditCurrentDataset"/>
+      <slot name="dataCreditCurrentDataset" />
 
-      <DataCreditLayout v-if="authorDetailsConfig.showDataCredits"
-                        :totalDataCredits="author.totalDataCredits"
-                        :badgesLabel="dataCreditBadgeLabel"
-                        :iconColor="dark ? 'white' : 'black'"
-                        :badgeColor="dark ? 'white' : darkColor"
-                        :dark="dark"/>
+      <DataCreditLayout
+        v-if="authorDetailsConfig.showDataCredits && !hideDataCredit"
+        :totalDataCredits="author.totalDataCredits"
+        :badgesLabel="dataCreditBadgeLabel"
+        :iconColor="dark ? 'white' : 'black'"
+        :badgeColor="dark ? 'white' : darkColor"
+        :dark="dark"
+      />
 
       <v-row v-if="authorDetailsConfig.showDataCreditScore"
              no-gutters
@@ -100,75 +91,93 @@
              justify="space-between"
              align="center">
 
-        <v-col class="grow"
-               :class="dark ? 'white--text' : 'black--text'">
+        <v-col class="flex-grow-1"
+               :class="dark ? 'text-white' : 'text-black'">
           {{ dataScoreLabel }}
         </v-col>
 
-        <v-col class="shrink">
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-              <v-icon v-on="on"
-                      class="badgesIcon"
-                      dark
-                      :class="dark ? 'white--text' : 'black--text'">
-                info_outline
-              </v-icon>
+        <v-col class="flex-grow-0">
+          <v-tooltip location='bottom'>
+            <template v-slot:activator="{ props }">
+              <BaseIcon v-bind="props"
+                        :color="dark ? 'white' : 'black'"
+                        :icon="mdiInformationOutline"
+              />
             </template>
 
             {{ dataCreditScoreInfo }}
           </v-tooltip>
         </v-col>
 
-        <v-col class="shrink pl-2">
-          <div :style="`background-color: ${ !this.dark ? darkColor : whiteColor };`"
+        <v-col class="flex-grow-0 pl-2">
+          <div :style="`background-color: ${ dark ? whiteColor : darkColor };`"
                class="dataCreditScore elevation-5">
 
             <div :style="bigCountStyling"
-                 :class="!this.dark ? 'white--text' : 'black--text'">
+                 :class="dark ? 'text-black' : 'text-white'">
               {{ dataCreditScore }}
             </div>
           </div>
         </v-col>
       </v-row>
 
-      <v-row v-if="authorDetailsConfig.showAuthorInfos"
-             no-gutters
-             class="pt-1 readableText"
-             align="center">
-
-        <v-col class="grow pr-5" @click="infosExpanded = !infosExpanded">
-          <v-divider :dark="dark"/>
+      <v-row
+        v-if="authorDetailsConfig.showAuthorInfos"
+        no-gutters
+        class="pt-1 readableText"
+        align="center"
+      >
+        <v-col class="flex-grow-1 pr-5" @click="infosExpanded = !infosExpanded">
+          <v-divider :dark="dark" />
         </v-col>
 
-        <v-col class="shrink">
-          <v-btn icon
-                 :color="dark ? 'white' : 'black'"
-                 outlined
-                 class="ma-0 badgesIcon"
-                 @click="infosExpanded = !infosExpanded">
-            <v-icon> {{ infosExpanded ? 'keyboard_arrow_down' : 'keyboard_arrow_left' }}</v-icon>
-          </v-btn>
+        <v-col class="flex-grow-0">
+          <BaseIconButton 
+            :icon="infosExpanded ? mdiChevronDown : mdiChevronLeft"
+            :icon-color="dark ? 'white' : darkColor"
+            :outline-color="dark ? 'white' : darkColor"
+            outlined
+            small
+            class="ma-0 badgesIcon"
+            @clicked="infosExpanded = !infosExpanded"
+          />
         </v-col>
       </v-row>
 
-      <v-row v-if="authorDetailsConfig.showAuthorInfos && infosExpanded"
-             class="pa-0 readableText"
-             no-gutters
-             align="start">
-
-        <v-col class="pa-1"
-               cols="6">
+      <v-row
+        v-if="authorDetailsConfig.showAuthorInfos && infosExpanded"
+        class="pa-0 readableText"
+        no-gutters
+        align="start"
+      >
+        <v-col class="pa-1" sm="12" cols="12">
           <v-row no-gutters>
-            <v-col cols="12"
-                   class="authorInfoLabel py-0"
-                   :class="dark ? 'white--text' : 'black--text'">
+            <DataCreditLayout
+              v-if="authorDetailsConfig.showDataCredits && hideDataCredit"
+              :totalDataCredits="author.totalDataCredits"
+              :badgesLabel="dataCreditBadgeLabel"
+              :iconColor="dark ? 'white' : 'black'"
+              :badgeColor="dark ? 'white' : darkColor"
+              :dark="dark"
+            />
+          </v-row>
+        </v-col>
+
+        <v-col class="pa-1" sm="6" cols="12">
+          <v-row no-gutters>
+            <v-col
+              cols="12"
+              class="authorInfoLabel py-0"
+              :class="dark ? 'text-white' : 'text-black'"
+            >
               {{ emailLabel }}
             </v-col>
 
-            <v-col cols="12"
-                   class="authorInfo py-0"
-                   :class="dark ? 'white--text' : 'black--text'">
+            <v-col
+              cols="12"
+              class="authorInfo py-0"
+              :class="dark ? 'text-white' : 'text-black'"
+            >
               <a :href="`mailto:${author.email}`">
                 {{ author.email }}
               </a>
@@ -176,68 +185,80 @@
           </v-row>
         </v-col>
 
-        <v-col class="pa-1"
-               cols="6">
+        <v-col class="pa-1" sm="6" cols="12" v-if="author?.identifier">
           <v-row no-gutters>
-            <v-col cols="12"
-                   class="authorInfoLabel py-0"
-                   :class="dark ? 'white--text' : 'black--text'">
+
+            <v-col
+              cols="12"
+              class="authorInfoLabel py-0"
+              :class="dark ? 'text-white' : 'text-black'"
+            >
               {{ idLabel }}
             </v-col>
 
-            <v-col cols="12"
-                   class="authorInfo py-0"
-                   :class="dark ? 'white--text' : 'black--text'">
-
-              <a v-if="(author.identifierType && author.identifierType === 'orcid') || isOrcId(author.identifier)"
-                 :href="`https://orcid.org/${formatIdentifier(author.identifier)}`"
-                 rel="noopener noreferrer"
-                 target="_blank">
+            <v-col
+              cols="12"
+              class="authorInfo py-0"
+              :class="dark ? 'text-white' : 'text-black'"
+            >
+              <a
+                v-if="
+                  (author.identifierType &&
+                    author.identifierType === 'orcid') ||
+                    isOrcId(author.identifier)
+                "
+                :href="
+                  `https://orcid.org/${formatIdentifier(author.identifier)}`
+                "
+                rel="noopener noreferrer"
+                target="_blank"
+              >
                 {{ formatIdentifier(author.identifier) }}
               </a>
               <div v-else>{{ formatIdentifier(author.identifier) }}</div>
-
             </v-col>
           </v-row>
         </v-col>
 
-        <v-col class="pa-1"
-               cols="6">
+        <v-col class="pa-1" sm="6" cols="12" v-if="author.affiliation">
           <v-row no-gutters>
             <v-col cols="12"
                    class="authorInfoLabel py-0"
-                   :class="dark ? 'white--text' : 'black--text'">
+                   :class="dark ? 'text-white' : 'text-black'">
               {{ affiliationLabel }}
             </v-col>
 
             <v-col cols="12"
                    class="authorInfo py-0"
-                   :class="dark ? 'white--text' : 'black--text'">
+                   :class="dark ? 'text-white' : 'text-black'">
               {{ author.affiliation }}
             </v-col>
           </v-row>
         </v-col>
       </v-row>
-
     </v-container>
 
-    <v-container v-if="showGenericOpenButton"
-                 class="ma-2 pa-0"
-                 style="position: absolute; top: 0; right: 0; width: 40px;">
+    <v-container
+      v-if="showGenericOpenButton"
+      class="ma-2 pa-0"
+      style="position: absolute; top: 0; right: 0; width: 40px;"
+    >
       <v-row>
         <v-col cols="12">
-          <base-icon-button :materialIconName="openButtonIcon"
-                            iconColor="black"
-                            color="accent"
-                            :disabled="loading"
-                            :isElevated="true"
-                            :tooltipText="openButtonTooltip"
-                            @clicked="$emit('openButtonClicked')"/>
+
+          <base-icon-button 
+            :icon="openButtonIcon"
+            icon-color="black"
+            color="accent"
+            :disabled="loading"
+            elevated
+            :tooltip-text="openButtonTooltip"
+            @clicked="$emit('openButtonClicked')"
+          />
+
         </v-col>
       </v-row>
-
     </v-container>
-
 
     <!-- <div id="wrapper"
           style="position: absolute; top: 0; right: 0;"
@@ -266,13 +287,19 @@
         </text>
       </svg>
     </div> -->
-
   </v-card>
-
 </template>
 
-
 <script>
+import {
+  mdiChevronDown,
+  mdiChevronLeft,
+  mdiFileEye,
+  mdiInformationOutline,
+  mdiMagnify,
+  mdiTimerSandComplete,
+} from '@mdi/js';
+
 import {
   AUTHORS_PUBLISHED_DATACOUNT,
   AUTHORS_DATACREDIT_CONTRIBUTION,
@@ -281,24 +308,23 @@ import {
 
 import DataCreditLayout from '@/components/Layouts/DataCreditLayout.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import {
   getLevelProgress,
-  getDataCreditLevel, getAuthorName,
+  getDataCreditLevel,
+  getAuthorName,
+  replaceAuthorDeadAscii,
 } from '@/factories/authorFactory';
+
+import { AUTHOR_PASSED_INFO } from '@/store/mainMutationsConsts';
 
 // checkout skeleton
 // https://github.com/ToxicJojo/SkeletonPlaceholder
 
 export default {
   name: 'AuthorCard',
-  components: {
-    DataCreditLayout,
-    BaseIconButton,
-  },
   props: {
     author: Object,
-    asciiDead: String,
-    authorPassedInfo: String,
     authorDetailsConfig: {
       type: Object,
       default: () => ({
@@ -312,10 +338,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    hideDataCredit: {
+      type: Boolean,
+      default: false,
+    },
     openButtonTooltip: String,
     openButtonIcon: {
       type: String,
-      default: 'preview',
+      default: mdiFileEye,
     },
     isSelected: {
       type: Boolean,
@@ -335,6 +365,13 @@ export default {
     this.infosExpanded = this.overrideAuthorInfosExpanded;
   },
   computed: {
+    loadingColor() {
+      if (this.loading) {
+        return 'accent';
+      }
+
+      return undefined;
+    },
     // getDataCreditLevel(currentScore) {
     //   const entires = this.authorDataCreditLevels;
 
@@ -399,7 +436,8 @@ export default {
       return style;
     },
     smallCountStyling() {
-      let style = `width: ${this.dataCreditSize * 0.55}px; height: ${this.dataCreditSize * 0.55}px;`;
+      let style = `width: ${this.dataCreditSize * 0.55}px; height: ${this
+        .dataCreditSize * 0.55}px;`;
 
       if (this.dataCreditScore >= 100) {
         style = `${style}position: relative; top: 3px;`;
@@ -428,22 +466,33 @@ export default {
       const color = this.colorPalette[from];
       const toColor = this.colorPaletteTo[to];
 
-      return `background-image: linear-gradient(45deg, ${color} 10%, ${toColor} 90%);
+      return `background-image: linear-gradient(310deg, ${color} 10%, ${toColor} 45%);
               background-position: center, center; background-size: cover;`;
     },
-    authorIsDead() {
-      if (!this.asciiDead) {
-        return false;
+    firstName() {
+      if (this.author.isAuthorDead) {
+        return replaceAuthorDeadAscii(this.author.firstName);
       }
 
-      return this.author?.firstName?.includes(this.asciiDead) || this.author?.lastName?.includes(this.asciiDead) || false;
+      return this.author.firstName;
+    },
+    lastName() {
+      if (this.author.isAuthorDead) {
+        return replaceAuthorDeadAscii(this.author.lastName);
+      }
+
+      return this.author.lastName;
     },
   },
   methods: {
     setLevelProgress() {
       const max = 2160;
-      let style = `stroke-dashoffset: ${((100 - this.levelProgress) / 100) * max}; stroke: ${this.$vuetify.theme.themes.light.accent} !important;`;
+
+      let style = `stroke-dashoffset: ${((100 - this.levelProgress) / 100) * max};
+                   stroke: ${this.$vuetify.theme.themes.light.colors.accent} !important;`;
+
       this.$refs.progressFill.setAttribute('style', style);
+
       style = `stroke: ${this.dataCreditLevelColor} !important;`;
       this.$refs.progressTrack.setAttribute('style', style);
     },
@@ -452,7 +501,9 @@ export default {
         return false;
       }
 
-      return id.match(/^[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}$/g);
+      return id.match(
+        /^[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}$/g,
+      );
     },
     formatIdentifier(id) {
       if (!id) {
@@ -467,7 +518,9 @@ export default {
       return id;
     },
     dataCreditsCount(credit) {
-      return this.author.totalDataCredits ? this.author.totalDataCredits[credit] : '';
+      return this.author.totalDataCredits
+        ? this.author.totalDataCredits[credit]
+        : '';
     },
     catchSearchAuthor(author) {
       const fullName = getAuthorName(author);
@@ -478,9 +531,17 @@ export default {
     },
   },
   data: () => ({
+    AUTHOR_PASSED_INFO,
+    mdiFileEye,
+    mdiInformationOutline,
+    mdiTimerSandComplete,
+    mdiChevronDown,
+    mdiChevronLeft,
+    mdiMagnify,
     dataScoreLabel: AUTHORS_DATACREDIT_SCORE,
     dataCountLabel: AUTHORS_PUBLISHED_DATACOUNT,
-    dataCreditScoreInfo: 'Data Credit Score: represents the dedication of an author to publish data and declare how on their involvement was in a dataset.',
+    dataCreditScoreInfo:
+      'Data Credit Score: represents the dedication of an author to publish data and declare how on their involvement was in a dataset.',
     dataCreditBadgeLabel: AUTHORS_DATACREDIT_CONTRIBUTION,
     emailLabel: 'Email',
     affiliationLabel: 'Affiliation',
@@ -491,15 +552,33 @@ export default {
     // darkColor: '#231F20',
     darkColor: '#384753',
     whiteColor: '#EFEFEF',
-    colorPalette: ['rgb(226, 242, 124)', 'rgb(158, 219, 129)', 'rgb(0, 191, 173)', 'rgb(8, 135, 124)', 'rgb(153, 88, 209)', 'rgb(55, 55, 55)'],
-    colorPaletteTo: ['rgba(226, 242, 124, 0.4)', 'rgba(158, 219, 129, 0.4)', 'rgba(0, 191, 173, 0.4)', 'rgba(8, 135, 124, 0.4)', 'rgba(153, 88, 209, 0.4)', 'rgba(55, 55, 55, 0.4)'],
+    colorPalette: [
+      'rgb(226, 242, 124)',
+      'rgb(158, 219, 129)',
+      'rgb(0, 191, 173)',
+      'rgb(8, 135, 124)',
+      'rgb(153, 88, 209)',
+      'rgb(55, 55, 55)',
+    ],
+    colorPaletteTo: [
+      'rgba(226, 242, 124, 0.4)',
+      'rgba(158, 219, 129, 0.4)',
+      'rgba(0, 191, 173, 0.4)',
+      'rgba(8, 135, 124, 0.4)',
+      'rgba(153, 88, 209, 0.4)',
+      'rgba(55, 55, 55, 0.4)',
+    ],
     // colorsPalette: ['#E2F27C', '#9EDB81', '#00BFAD', '#08877C', '#111111'],
   }),
+  components: {
+    BaseIcon,
+    DataCreditLayout,
+    BaseIconButton,
+  },
 };
 </script>
 
 <style scoped>
-
 div.v-card__title {
   position: relative;
   z-index: 10;
@@ -547,7 +626,8 @@ div.v-card__title {
   height: 40px;
 }
 
-.progress .track, .progress .fill {
+.progress .track,
+.progress .fill {
   stroke-width: 65;
   transform: translate(290px, 800px) rotate(-120deg);
 }
@@ -565,7 +645,8 @@ div.v-card__title {
   transition: stroke-dashoffset 1s;
 }
 
-.progress .value, .progress .text {
+.progress .value,
+.progress .text {
   /* fill: 'black'; */
   text-anchor: middle;
 }
@@ -577,5 +658,4 @@ div.v-card__title {
 .highlighted {
   box-shadow: #71c5bd 0 0 5px 5px !important;
 }
-
 </style>

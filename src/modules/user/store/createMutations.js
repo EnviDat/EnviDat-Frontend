@@ -14,6 +14,7 @@
 
 import {
   EDITMETADATA_CLEAR_PREVIEW,
+  EDITMETADATA_DATA_RESOURCES,
   eventBus,
 } from '@/factories/eventBus';
 
@@ -66,7 +67,6 @@ export default {
     );
 
     resource.loading = false;
-    resource.message = message;
 
     state.uploadResource = resource;
     state.metadataInEditing[stepKey] = resource;
@@ -75,8 +75,10 @@ export default {
 
     eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
 
+    state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].message = message;
+
     setTimeout(() => {
-      this.commit(`${USER_NAMESPACE}/resetMessage`, stepKey);
+      this.commit(`${USER_NAMESPACE}/resetMessage`, EDITMETADATA_DATA_RESOURCES);
     }, state.metadataSavingMessageTimeoutTime);
 
   },
@@ -111,7 +113,7 @@ export default {
     state.newMetadatasetName = null;
     state.metadataCreationError = null;
   },
-  [METADATA_CREATION_DATASET_SUCCESS](state, { dataset, message }) {
+  [METADATA_CREATION_DATASET_SUCCESS](state, { dataset }) {
     state.metadataCreationLoading = false;
 
     // convert properties and stringified json to match the frontend structure

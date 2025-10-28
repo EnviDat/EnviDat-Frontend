@@ -3,7 +3,7 @@
     <v-row>
       <v-col cols="6">
         <v-row v-if="selectedResource">
-          <v-col v-if="resourceEditingActive" >
+          <v-col v-if="resourceEditingActive">
             <!-- prettier-ignore -->
             <EditResource v-bind="editResourceObject"
                           @closeClicked="catchEditResourceClose"
@@ -12,20 +12,19 @@
             />
           </v-col>
 
-          <v-col v-if="!resourceEditingActive" >
-            <EditResourceRedirect title="Edit Selected Resource"
-                                  :text="editResourceRedirectText"
-                                  buttonText="Edit Resources"
-                                  :buttonUrl="linkEditResourceCKAN"
+          <v-col v-if="!resourceEditingActive">
+            <EditResourceRedirect
+              title="Edit Selected Resource"
+              :text="editResourceRedirectText"
+              buttonText="Edit Resources"
+              :buttonUrl="linkEditResourceCKAN"
             >
               <BaseRectangleButton
-                  buttonText="Deselect Resource"
-                  color="warning"
-                  @clicked="catchEditResourceClose"
+                buttonText="Deselect Resource"
+                color="warning"
+                @clicked="catchEditResourceClose"
               />
-
             </EditResourceRedirect>
-
           </v-col>
         </v-row>
 
@@ -36,48 +35,32 @@
                     </v-col>
           -->
 
-          <v-col v-if="resourceUploadActive"
-                 cols="12">
+          <v-col v-if="resourceUploadActive" cols="12">
             <EditDropResourceFiles v-bind="editDropResourceObject" />
-<!--
+            <!--
             No need to listen to events from the component, events are emitted from uppy directly
 -->
           </v-col>
 
-          <v-col v-if="resourceUploadActive"
-                 cols="12">
-            <EditResourcePasteUrl @createUrlResources="createResourceFromUrl"/>
+          <v-col v-if="resourceUploadActive" cols="12">
+            <EditResourcePasteUrl @createUrlResources="createResourceFromUrl" />
           </v-col>
 
-          <v-col v-if="!resourceUploadActive"
-                 cols="12">
-            <EditResourceRedirect title="Add New Resource"
-                                  :text="addResourceRedirectText"
-                                  buttonText="Add Resources"
-                                  :buttonUrl="linkAddNewResourcesCKAN"
+          <v-col v-if="!resourceUploadActive" cols="12">
+            <EditResourceRedirect
+              title="Add New Resource"
+              :text="addResourceRedirectText"
+              buttonText="Add Resources"
+              :buttonUrl="linkAddNewResourcesCKAN"
             />
           </v-col>
-
         </v-row>
       </v-col>
 
       <v-col cols="6">
-        <EditMetadataResources v-bind="metadataResourcesGenericProps"/>
+        <EditMetadataResources v-bind="metadataResourcesGenericProps" />
       </v-col>
     </v-row>
-
-<!--
-    <v-snackbar
-        :value="!!uploadProgessText"
-        bottom
-        elevation="24"
-    >
-      <v-icon color="highlight">checkmark</v-icon>
-      {{ uploadProgessText }}
-
-    </v-snackbar>
--->
-
   </v-container>
 </template>
 
@@ -93,6 +76,7 @@
  */
 
 import { mapGetters, mapState } from 'vuex';
+import {defineAsyncComponent} from 'vue';
 import {
   eventBus,
   CANCEL_EDITING_RESOURCE,
@@ -102,27 +86,25 @@ import {
   UPLOAD_STATE_UPLOAD_PROGRESS,
   UPLOAD_STATE_UPLOAD_STARTED,
   UPLOAD_STATE_RESET,
+  EDITMETADATA_CLEAR_PREVIEW,
+  UPLOAD_STATE_RESOURCE_CREATED, EDITMETADATA_DATA_RESOURCES,
 } from '@/factories/eventBus';
 
 import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
-
-import EditMetadataResources from '@/modules/user/components/EditMetadataResources.vue';
-import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles.vue';
-import EditResourcePasteUrl from '@/modules/user/components/EditResourcePasteUrl.vue';
-import EditResource from '@/modules/user/components/EditResource.vue';
-import EditResourceRedirect from '@/modules/user/components/EditResourceRedirect.vue';
 
 import {
   getUppyInstance,
   subscribeOnUppyEvent,
   unSubscribeOnUppyEvent,
   createNewResourceForUrl,
+  destroyUppyInstance,
 } from '@/factories/uploadFactory';
 
 import {
   ACTION_GET_USER_LIST,
   FETCH_USER_DATA,
   GET_USER_LIST,
+  METADATA_CANCEL_RESOURCE_EDITING,
   METADATA_CREATION_RESOURCE,
   METADATA_EDITING_SELECT_RESOURCE,
   USER_NAMESPACE,
@@ -130,22 +112,24 @@ import {
 } from '@/modules/user/store/userMutationsConsts';
 
 import { getSelectedElement } from '@/factories/userEditingFactory';
+import { mergeResourceSizeForFrontend } from '@/factories/resourceHelpers';
 
-import { mergeResourceSizeForFrontend } from '@/factories/mappingFactory';
+import EditMetadataResources from '@/modules/user/components/EditMetadataResources.vue';
+import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles.vue';
+import EditResourcePasteUrl from '@/modules/user/components/EditResourcePasteUrl.vue';
 
-const BaseRectangleButton = () => import('@/components/BaseElements/BaseRectangleButton.vue');
+const EditResource = defineAsyncComponent(() =>
+    import('@/modules/user/components/EditResource.vue'),
+);
+const EditResourceRedirect = defineAsyncComponent(() =>
+    import('@/modules/user/components/EditResourceRedirect.vue'),
+);
+const BaseRectangleButton = defineAsyncComponent(() =>
+    import('@/components/BaseElements/BaseRectangleButton.vue'),
+);
 
 export default {
   name: 'EditDataAndResources',
-  components: {
-    EditMetadataResources,
-    EditDropResourceFiles,
-    // EditMultiDropResourceFiles,
-    EditResourcePasteUrl,
-    EditResource,
-    EditResourceRedirect,
-    BaseRectangleButton,
-  },
   props: {
     resources: {
       type: Array,
@@ -198,23 +182,41 @@ export default {
       default: undefined,
     },
   },
+  created() {
+    // call once to create the uppy instance
+    getUppyInstance(this.metadataId, this.$store);
+
+    eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.unselectCurrentResource);
+    eventBus.on(UPLOAD_STATE_RESET, this.resetUppy);
+    eventBus.on(UPLOAD_STATE_RESOURCE_CREATED, this.uploadResourceCreated);
+  },
   mounted() {
+    subscribeOnUppyEvent('file-added', this.uploadResetState);
     subscribeOnUppyEvent('upload', this.uploadStarted);
-    subscribeOnUppyEvent('progress', this.uploadProgress);
-    subscribeOnUppyEvent('complete', this.uploadCompleted);
-    subscribeOnUppyEvent('cancel-all', this.cancelUpload);
+    subscribeOnUppyEvent('progress', this.uploadStateProgress);
+
+    subscribeOnUppyEvent('upload-success', this.uploadCompleted);
+    subscribeOnUppyEvent('file-removed', this.cancelUpload);
     subscribeOnUppyEvent('error', this.uploadUppyError);
 
     this.$nextTick(() => {
       this.loadEnvidatUsers();
     });
   },
-  beforeDestroy() {
+  beforeUnmount() {
+    eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.unselectCurrentResource);
+    eventBus.off(UPLOAD_STATE_RESET, this.resetUppy);
+    eventBus.off(UPLOAD_STATE_RESOURCE_CREATED, this.uploadResourceCreated);
+
+    unSubscribeOnUppyEvent('file-added', this.uploadResetState);
     unSubscribeOnUppyEvent('upload', this.uploadStarted);
-    unSubscribeOnUppyEvent('progress', this.uploadProgress);
-    unSubscribeOnUppyEvent('complete', this.uploadCompleted);
-    unSubscribeOnUppyEvent('cancel-all', this.cancelUpload);
+    unSubscribeOnUppyEvent('progress', this.uploadStateProgress);
+
+    unSubscribeOnUppyEvent('upload-success', this.uploadCompleted);
+    unSubscribeOnUppyEvent('file-removed', this.cancelUpload);
     unSubscribeOnUppyEvent('error', this.uploadUppyError);
+
+    destroyUppyInstance();
   },
   computed: {
     ...mapState(['config']),
@@ -225,7 +227,27 @@ export default {
     ...mapState(USER_NAMESPACE, [
       'envidatUsers',
       'uploadError',
+      'metadataInEditing',
     ]),
+    statusInfos() {
+      if (this.$store) {
+        const stepData = this.metadataInEditing[EDITMETADATA_DATA_RESOURCES];
+
+        return {
+          error: stepData.error,
+          errorDetails: stepData.errorDetails,
+          message: stepData.message,
+          messageDetails: stepData.messageDetails,
+        };
+      }
+
+      return {
+        error: this.resourceUploadError?.message || this.error,
+        errorDetails: this.resourceUploadError?.details || this.errorDetails,
+        message: this.message,
+        messageDetails: this.messageDetails,
+      };
+    },
     resourceUploadError() {
       if (this.$store) {
         return this.uploadError;
@@ -267,6 +289,7 @@ export default {
         },
         readOnlyFields: this.readOnlyFields,
         readOnlyExplanation: this.readOnlyExplanation,
+        ...this.statusInfos,
       };
     },
     editResourceObject() {
@@ -282,7 +305,7 @@ export default {
       try {
         mergedSize = mergeResourceSizeForFrontend(this.selectedResource);
       } catch (e) {
-        console.log('mergeResourceSizeForFrontend failed:');
+        console.error('mergeResourceSizeForFrontend failed:');
         console.error(e);
         // TODO Error tracking
       }
@@ -292,12 +315,16 @@ export default {
         ...mergedSize,
         userEditMetadataConfig,
         envidatUsers: this.allEnviDatUsers,
+        readOnlyFields: this.readOnlyFields,
+        readOnlyExplanation: this.readOnlyExplanation,
       };
     },
     editDropResourceObject() {
       return {
         metadataId: this.metadataId,
         legacyUrl: this.linkAddNewResourcesCKAN,
+        state: this.uploadState,
+        progress: this.uploadProgress,
         error: this.resourceUploadError?.message || this.uppyError?.name,
         errorDetails: this.resourceUploadError?.details || this.uppyError?.message,
       };
@@ -329,81 +356,70 @@ export default {
           });
       }
     },
-    uploadStarted() {
-    // uploadStarted({ id, fileIDs }) {
+    uploadResetState() {
+      this.uploadState = undefined;
+      this.uploadProgress = 0;
+    },
+    uploadStarted({ uploadID, files }) {
       // data object consists of `id` with upload ID and `fileIDs` array
       // with file IDs in current upload
       // data: { id, fileIDs }
-      // console.log(`Starting upload ${id} for files ${fileIDs}`);
+      // console.log(`Starting upload ${uploadID } for files ${files}`);
 
       this.uppyError = null;
-      this.uploadProgessText = 'Starting upload file';
-      this.uploadProgressIcon = 'check_box_outline_blank';
-
-      eventBus.emit(UPLOAD_STATE_UPLOAD_STARTED, { id: UPLOAD_STATE_UPLOAD_STARTED });
+      this.uploadState = UPLOAD_STATE_UPLOAD_STARTED;
+      this.uploadProgress = 0;
     },
-    uploadProgress(progress) {
+    uploadResourceCreated(event) {
+      // console.log(`Resource created ${event.resourceId}`);
+      this.uploadState = UPLOAD_STATE_RESOURCE_CREATED;
+    },
+    uploadStateProgress(progress) {
       // console.log(`upload progress: ${progress}`);
-      this.uploadProgessText = `upload progress: ${progress}`;
-      this.uploadProgressIcon = 'check';
 
-      eventBus.emit(UPLOAD_STATE_UPLOAD_PROGRESS, { id: UPLOAD_STATE_UPLOAD_PROGRESS, progress });
+      this.uploadState = UPLOAD_STATE_UPLOAD_PROGRESS;
+      this.uploadProgress = progress;
     },
-    async uploadCompleted(result) {
-      const oks = result.successful?.length || 0;
-      const fails = result.failed?.length || 0;
+    async uploadCompleted() {
+      // console.log('upload complete');
 
-      // console.log('successful files:', result.successful)
-      // console.log('failed files:', result.failed)
-
-      let message = '';
-
-      if (oks > 0) {
-        message += `${oks} uploads successful`;
-        this.uploadProgressIcon = 'check_circle';
-      }
-
-      if (fails > 0) {
-        message += `${fails} failed uploads`;
-        this.uploadProgressIcon = 'report_gmailerrorred';
-      }
-
-      eventBus.emit(UPLOAD_STATE_UPLOAD_COMPLETED, { id: UPLOAD_STATE_UPLOAD_COMPLETED });
-
-      this.uploadProgessText = message;
-
-      // reset uppy to be able to upload another file
-      this.resetUppy();
+      this.uploadState = UPLOAD_STATE_UPLOAD_COMPLETED;
+      this.uploadProgress = 0;
 
       // resource exists already, get it from uploadResource
       const newRes = this.$store?.getters[`${USER_NAMESPACE}/uploadResource`];
 
       setTimeout(() => {
+        console.log(METADATA_EDITING_SELECT_RESOURCE, newRes);
         this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, newRes?.id);
+
+        // reset uppy to be able to upload another file
+        this.resetUppy();
       }, 500);
 
     },
     uploadUppyError(error) {
+      // console.log('uploadUppyError', error);
+
       this.uppyError = error;
-
-      this.uploadProgessText = `Upload failed ${error}`;
-      this.uploadProgressIcon = 'report_gmailerrorred';
-
-      eventBus.emit(UPLOAD_STATE_RESET);
     },
     cancelUpload() {
       this.resetUppy();
     },
     resetUppy() {
-      eventBus.emit(UPLOAD_STATE_RESET);
+      // console.log('resetUppy');
+
       this.uppyError = null;
+      this.uploadState = undefined;
+      this.uploadProgress = 0;
 
       const uppy = getUppyInstance();
+
       const files = uppy.getFiles();
-      if (files.length === 1) {
-        uppy.removeFile(files[0].id);
-      } else if(files.length > 1) {
+      if (files.length > 0) {
         uppy.cancelAll();
+      } else {
+        uppy.clear()
       }
     },
     async createResourceFromUrl(url) {
@@ -425,6 +441,11 @@ export default {
         this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, newRes?.id);
       });
     },
+    unselectCurrentResource() {
+      if(this.selectedResource) {
+        this.$store.commit(`${USER_NAMESPACE}/${METADATA_CANCEL_RESOURCE_EDITING}`, this.selectedResource?.id);
+      }
+    },
     catchEditResourceClose() {
       eventBus.emit(CANCEL_EDITING_RESOURCE, this.selectedResource);
     },
@@ -439,18 +460,27 @@ export default {
     EDIT_METADATA_RESOURCES_TITLE,
     localResCounter: 0,
     envidatDomain: import.meta.env.VITE_API_ROOT,
-    uploadProgessText: null,
-    uploadProgressIcon: '',
     uppyError: null,
     editResourceRedirectText: `Editing metadata and uploading resources is not available right now.
                     <br />
                     Please edit resources via the legacy website by clicking on
                     the button below.`,
-    addResourceRedirectText: `Adding new resources is not available.
+    addResourceRedirectText: `Adding new resources is not available right now.
                     <br />
                     Please add resources via the legacy website by clicking on
                     the button below.`,
+    uploadProgress: 0,
+    uploadState: undefined,
   }),
+  components: {
+    EditMetadataResources,
+    EditDropResourceFiles,
+    // EditMultiDropResourceFiles,
+    EditResourcePasteUrl,
+    EditResource,
+    EditResourceRedirect,
+    BaseRectangleButton,
+  },
 };
 </script>
 

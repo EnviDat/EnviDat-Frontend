@@ -4,26 +4,76 @@
  * @summary Vuetify plugin definitions.
  * @author Dominik Haas-Artho
  *
- * Created at     : 2019-10-23 16:11:52
- * Last modified  : 2021-01-26 09:11:25
- *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import { md2 } from 'vuetify/blueprints';
+import { aliases, mdi } from 'vuetify/iconsets/mdi-svg'
 import { lightColorblind } from './colorThemes';
 
-// Icons list: https://jossef.github.io/material-design-icons-iconfont/
+const colors = { ...lightColorblind };
+
+const overallVariant = 'outlined';
+const overallDensity = 'compact';
+
+const selectionStyling = {
+  variant: overallVariant,
+  density: overallDensity,
+};
 
 export default {
-  theme: {
-    themes: {
-      light: lightColorblind,
+  blueprint: md2,
+  defaults: {
+    VTextField: {
+      variant: overallVariant,
+      density: overallDensity,
+      color: colors.primary,
+    },
+    VTextarea: {
+      variant: overallVariant,
+      density: overallDensity,
+      color: colors.primary,
+    },
+    VSelect: {
+      ...selectionStyling,
+      color: colors.primary,
+    },
+    VAutocomplete: {
+      ...selectionStyling,
+      color: colors.primary,
+    },
+    VCombobox: {
+      ...selectionStyling,
+      color: colors.primary,
+    },
+    VAlert: {
+      variant: 'flat',
+      density: overallDensity,
+    },
+    VChip: {
+      variant: 'flat',
+      color: '#e0e0e0',
+    },
+    VList: {
+      density: overallDensity,
     },
   },
-  options: {
-    customProperties: true,
+  theme: {
+    variations: {
+      colors: ['primary', 'secondary'],
+      lighten: 2,
+      darken: 2,
+    },
+    themes: {
+      light: { colors },
+    },
   },
   icons: {
-    iconfont: 'mdi',
+    defaultSet: 'mdi',
+    aliases,
+    sets: {
+      mdi,
+    },
   },
 };
+

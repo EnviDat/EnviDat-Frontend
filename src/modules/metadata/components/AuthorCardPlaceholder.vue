@@ -3,32 +3,15 @@
     <v-container class="fill-height pb-0">
       <v-row>
         <v-col cols="12">
-          <div
-            class="skeleton skeleton-size-big skeleton-color-concrete skeleton-animation-shimmer"
-          >
-            <div class="bone bone-type-heading bone-style-paragraph" />
-          </div>
+          <v-skeleton-loader type='heading' color='gray' />
         </v-col>
       </v-row>
     </v-container>
 
     <v-card-text>
-      <div
-        class="skeleton skeleton-color-silver skeleton-animation-shimmer"
-        style="width: 100%;"
-      >
-        <div class="bone bone-type-multiline bone-style-paragraph" />
-      </div>
+      <v-skeleton-loader type='paragraph' color='gray' />
     </v-card-text>
 
-    <v-card-text>
-      <div
-        class="skeleton skeleton-color-silver skeleton-animation-shimmer"
-        style="width: 100%;"
-      >
-        <div class="bone bone-type-multiline bone-style-paragraph" />
-      </div>
-    </v-card-text>
   </v-card>
 </template>
 
@@ -55,7 +38,7 @@ export default {
         ? this.blackTopToBottom
         : this.whiteTopToBottom;
 
-      if (this.$vuetify.breakpoint.mdAndUp && this.defaultTexture) {
+      if (this.$vuetify.display.mdAndUp && this.defaultTexture) {
         return `background-image: linear-gradient(0deg, ${gradient}), url(${this.defaultTexture});
                 background-position: center, center;
                 background-size: cover; background-repeat: initial; `;

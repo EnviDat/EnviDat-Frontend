@@ -3,13 +3,10 @@
     id="EditPublicationInfo"
     class="pa-0"
     max-width="100%"
-    :loading="loading"
+    :loading="loadingColor"
+    :flat
   >
     <v-container fluid class="pa-4">
-      <template slot="progress">
-        <v-progress-linear color="primary" indeterminate />
-      </template>
-
       <v-row>
         <v-col cols="6" class="text-h5">
           {{ labels.cardTitle }}
@@ -17,7 +14,7 @@
 
         <v-col v-if="message">
           <BaseStatusLabelView
-            statusIcon="check"
+            status="check"
             statusColor="success"
             :statusText="message"
             :expandedText="messageDetails"
@@ -25,7 +22,7 @@
         </v-col>
         <v-col v-if="error">
           <BaseStatusLabelView
-            statusIcon="error"
+            status="error"
             statusColor="error"
             :statusText="error"
             :expandedText="errorDetails"
@@ -33,86 +30,95 @@
         </v-col>
       </v-row>
 
-
-      <v-row class="pt-2">
-
-        <v-col >
-          <v-text-field
-            :label="labels.dataObjectIdentifier"
-            outlined
-            dense
-            readonly
-            hint="DOI can be changed at the Dataset Publication Status"
-            :error-messages="validationErrors.doi"
-            prepend-icon="fingerprint"
-            @change="doiField = $event"
-            @input="validateProperty('doi', $event)"
-            :value="doiField"
-            append-icon="content_copy"  @click:append="catchClipboardCopy"
-          />
-<!--
-          :hint="mixinMethods_readOnlyHint('doi')"
--->
-        </v-col>
-
+      <v-row>
         <v-col>
-          <v-autocomplete :value="visibilityState"
-                          :items="[visibilityState]"
-                          outlined
-                          dense
-                          chips
-                          readonly
-                          prepend-icon="remove_red_eye"
-                          persistent-hint
-                          :label="labels.visibilityState"
-          >
-            <template v-slot:selection="{ item }">
-              <MetadataStateChip style="font-size: 12px;" :state="item" />
-            </template>
-          </v-autocomplete>
-
+          {{ labels.instructions }}
         </v-col>
-
       </v-row>
 
       <v-row>
         <v-col cols="6">
           <v-text-field
             :label="labels.publisher"
-            outlined
-            dense
             readonly
             hint="Publisher can't be changed"
+            hide-details="auto"
+            persistent-hint
             :error-messages="validationErrors.publisher"
-            prepend-icon="public"
+            :prepend-icon="mdiEarth"
             @change="publisherField = $event"
-            @input="validateProperty('publisher', $event)"
-            :value="publisherField"
+            @update:model-value="validateProperty('publisher', $event)"
+            :model-value="publisherField"
           />
-<!--
-          :readonly="mixinMethods_isFieldReadOnly('publisher')"
-            :hint="mixinMethods_readOnlyHint('publisher')"
--->
-
         </v-col>
 
         <v-col cols="6">
-          <v-select
-            :items="yearList"
-            outlined
-            dense
-            :label="labels.year"
-            :error-messages="validationErrors.publicationYear"
-            :readonly="mixinMethods_isFieldReadOnly('publicationYear')"
-            :hint="mixinMethods_readOnlyHint('publicationYear')"
-            prepend-icon="date_range"
-            @change="publicationYearField = $event"
-            @input="validateProperty('publicationYear', $event)"
-            :value="publicationYearField"
+          <!-- why we use an array for the readOnly opts? we have only one item inside -->
+          <!-- <BaseDatePickerYear
+            :year="publicationYearField"
+            year-label="PublicationYear"
+            :yearProperty="METADATA_PUBLICATION_YEAR_PROPERTY"
+            :readOnlyFields="readOnlyFields"
+            :readOnlyExplanation="readOnlyExplanation"
+            @yearChange="saveYear"
+          /> -->
+          <BaseDatePickerYear
+            :year="publicationYearField"
+            year-label="PublicationYear"
+            :yearProperty="METADATA_PUBLICATION_YEAR_PROPERTY"
+            :readonly="isReadOnly('dateYear')"
+            :hint="readOnlyHint('dateYear')"
+            @yearChange="saveYear"
           />
         </v-col>
       </v-row>
 
+      <v-row>
+        <v-col>
+          <v-text-field
+            :label="labels.dataObjectIdentifier"
+            readonly
+            hint="DOI can be changed in the Publication Status of the dataset"
+            hide-details="auto"
+            persistent-hint
+            :error-messages="validationErrors.doi"
+            :prepend-icon="mdiFingerprint"
+            @change="doiField = $event"
+            @update:model-value="validateProperty('doi', $event)"
+            :model-value="doiField"
+            :append-icon="mdiContentCopy"
+            @click:append="catchClipboardCopy"
+          />
+        </v-col>
+
+        <v-col>
+          <v-autocomplete
+            :id="METADATA_STATE_INVISIBLE"
+            :model-value="visibilityState"
+            :items="possibleVisibilityStates"
+            :readonly="isReadOnly('visibility')"
+            hide-details="auto"
+            persistent-hint
+            :hint="readOnlyHint('visibility')"
+            :prepend-icon="mdiEye"
+            :menu-icon="mdiArrowDownDropCircleOutline"
+            :label="labels.visibilityState"
+          >
+            <template v-slot:selection="{ item }">
+              <MetadataStateChip style="font-size: 12px" :state="item.value" />
+            </template>
+
+            <template v-slot:item="{ item }">
+              <v-list-item>
+                <MetadataStateChip
+                  style="font-size: 12px"
+                  :state="item.value"
+                />
+              </v-list-item>
+            </template>
+          </v-autocomplete>
+        </v-col>
+      </v-row>
     </v-container>
   </v-card>
 </template>
@@ -120,17 +126,23 @@
 <script>
 /**
  * @summary Shows Publication Information (publication state, DOI, publisher, and funding information)
- * @author Rebecca Kurup Buchholz
- * Created        : 2021-08-13
- * Last modified  : 2021-09-01 16:53:36
+ * @author Rebecca Kurup Buchholz, Ranita Pal, Dominik Haas
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import { mapState } from 'vuex';
+import {
+  mdiEarth,
+  mdiEye,
+  mdiFingerprint,
+  mdiContentCopy,
+  mdiCalendarRange,
+  mdiArrowDownDropCircleOutline,
+} from '@mdi/js';
 
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
-// import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
+import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
 
 import {
   EDITMETADATA_OBJECT_UPDATE,
@@ -142,14 +154,23 @@ import {
   getValidationMetadataEditingObject,
   isFieldValid,
 } from '@/factories/userEditingValidations';
-import { EDIT_METADATA_DOI_LABEL, EDIT_METADATA_PUBLICATION_YEAR_LABEL } from '@/factories/metadataConsts';
+
+import {
+  EDIT_METADATA_DOI_LABEL,
+  EDIT_METADATA_PUBLICATION_YEAR_LABEL,
+  PUBLICATION_STATE_PUBLISHED,
+  METADATA_STATE_INVISIBLE,
+  METADATA_PUBLICATION_YEAR_PROPERTY,
+} from '@/factories/metadataConsts';
+
+import { possibleVisibilityStates } from '@/factories/metaDataFactory';
+import BaseDatePickerYear from '@/components/BaseElements/BaseDatePickerYear.vue';
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+
 
 export default {
   name: 'EditPublicationInfo',
-  created() {
-    this.getCurrentYear();
-    this.getYearList();
-  },
+  created() {},
   props: {
     publicationState: {
       type: String,
@@ -169,7 +190,7 @@ export default {
     },
     publicationYear: {
       type: String,
-      default: '',
+      default: undefined,
     },
     loading: {
       type: Boolean,
@@ -199,34 +220,32 @@ export default {
       type: String,
       default: '',
     },
+    flat: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  mounted() {
+    if (this.publicationYear) {
+      this.previewYear = this.publicationYear;
+    } else {
+      this.previewYear = null;
+    }
   },
   computed: {
     ...mapState(['config']),
-    maxYears() {
-      let maxYears = this.defaultUserEditMetadataConfig.publicationYearsList;
-
-      if (this.$store) {
-        maxYears =
-          this.config?.userEditMetadataConfig?.publicationYearsList || maxYears;
+    loadingColor() {
+      if (this.loading) {
+        return 'accent';
       }
 
-      return maxYears;
-    },
-    publicationStateField: {
-      get() {
-        return this.publicationState;
-      },
-      set(value) {
-        const property = 'publicationState';
-
-        if (this.validateProperty(property, value)) {
-          this.setPublicationInfo(property, value);
-        }
-      },
+      return undefined;
     },
     doiField: {
       get() {
-        return this.doi;
+        return this.publicationState === PUBLICATION_STATE_PUBLISHED
+          ? `https://www.doi.org/${this.doi}`
+          : this.doi;
       },
       set(value) {
         const property = 'doi';
@@ -253,7 +272,9 @@ export default {
     },
     publicationYearField: {
       get() {
-        return this.publicationYear;
+        return this.previewYear !== null
+          ? this.previewYear
+          : this.publicationYear;
       },
       set(value) {
         const property = 'publicationYear';
@@ -268,6 +289,12 @@ export default {
     },
   },
   methods: {
+    isReadOnly(dateProperty) {
+      return isFieldReadOnly(this.$props, dateProperty);
+    },
+    readOnlyHint(dateProperty) {
+      return readOnlyHint(this.$props, dateProperty);
+    },
     validateProperty(property, value) {
       return isFieldValid(
         property,
@@ -275,20 +302,6 @@ export default {
         this.validations,
         this.validationErrors,
       );
-    },
-    getCurrentYear() {
-      const date = new Date();
-      const year = date.getFullYear();
-      this.currentYear = year.toString();
-    },
-    getYearList() {
-      const date = new Date();
-      let year = date.getFullYear();
-
-      for (let i = 0; i < this.maxYears; i++) {
-        this.yearList[i] = year.toString();
-        year--;
-      }
     },
     editEntry(array, index, property, value) {
       if (array.length <= index) {
@@ -316,45 +329,46 @@ export default {
     catchClipboardCopy() {
       navigator.clipboard.writeText(this.doiField);
     },
+    saveYear(year) {
+      const yearString = year.toString();
+      this.previewYear = yearString;
+      this.publicationYearField = yearString;
+    },
   },
   data: () => ({
+    METADATA_STATE_INVISIBLE,
+    METADATA_PUBLICATION_YEAR_PROPERTY,
+    possibleVisibilityStates,
+    mdiFingerprint,
+    mdiEarth,
+    mdiEye,
+    mdiContentCopy,
+    mdiCalendarRange,
+    mdiArrowDownDropCircleOutline,
     previewPublisher: null,
-    emptyEntry: {
-      institution: '',
-      grantNumber: '',
-      institutionUrl: '',
-    },
     labels: {
       cardTitle: 'Publication Information',
-      publicationState: 'Publication State',
       visibilityState: 'Dataset visibility',
       dataObjectIdentifier: EDIT_METADATA_DOI_LABEL,
       publisher: 'Publisher',
       year: EDIT_METADATA_PUBLICATION_YEAR_LABEL,
-      fundingInformation: 'Funding Information',
-      institution: 'Institution',
-      grantNumber: 'Grant Number',
-      institutionUrl: 'Link',
+      instructions:
+        'Please set the correct publication year. The DOI is only activate once the dataset has been published. You can copy it to already put into a paper.',
     },
     propertyValidationSuffix: 'Validation',
     validationErrors: {
-      publicationState: null,
       doi: null,
       publisher: null,
       publicationYear: null,
     },
-    dataIsValid: true,
     buttonColor: '#269697',
-    currentYear: '',
-    yearList: [],
-    defaultUserEditMetadataConfig: {
-      publicationYearsList: 30,
-    },
+    previewYear: null,
     stepKey: EDITMETADATA_PUBLICATION_INFO,
   }),
   components: {
+    BaseDatePickerYear,
     BaseStatusLabelView,
-//    MetadataStateChip,
+    MetadataStateChip,
   },
 };
 </script>

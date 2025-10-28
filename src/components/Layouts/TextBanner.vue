@@ -1,8 +1,6 @@
 <template>
-  <v-banner two-line
-            class="noPaddingForActions"
-            :color="bannerColor">
-
+  <v-banner density="compact"
+            class="noPaddingForActions"  >
     <template v-slot:icon>
       <v-icon
         color="white"
@@ -17,22 +15,32 @@
       <span v-html="text" />
     </template>
 
-    <template v-slot:actions >
-      <BaseRectangleButton
-        v-if="confirmText"
-        marginClass="mx-1"
-        color="secondary"
-        :buttonText="confirmText"
-        @clicked="confirmClick"
-      />
+    <template v-slot:actions>
 
-      <BaseRectangleButton
-        v-if="cancelText"
-        marginClass="mx-1"
-        :buttonText="cancelText"
-        :isFlat="true"
-        @clicked="cancelClick"
-      />
+        <BaseRectangleButton
+          v-if="confirmText"
+          marginClass="mx-1 mt-4 mt-sm-0"
+          color="primary"
+          :buttonText="confirmText"
+          @clicked="confirmClick"
+        />
+
+        <BaseRectangleButton
+          v-if="deniedText"
+          marginClass="mx-1 mt-4 mt-sm-0"
+          color="error"
+          :buttonText="deniedText"
+          @clicked="deniedClick"
+        />
+
+        <BaseRectangleButton
+          v-if="cancelText"
+          marginClass="mx-1 mt-4"
+          :buttonText="cancelText"
+          :isFlat="true"
+          @clicked="cancelClick"
+        />
+
     </template>
   </v-banner>
 </template>
@@ -62,7 +70,9 @@ export default {
       default: 'settings',
     },
     confirmText: String,
+    deniedText: String,
     confirmClick: Function,
+    deniedClick: Function,
     cancelText: String,
     cancelClick: Function,
     bannerColor: {
@@ -88,8 +98,11 @@ export default {
 </script>
 
 <style>
-  .noPaddingForActions > .v-banner__wrapper > .v-banner__actions {
-    padding-top: 8px !important;
-    padding-bottom: 12px !important;
-  }
+.noPaddingForActions .v-banner-actions {
+  margin: 0 !important;
+}
+.v-banner-actions {
+  display: flex;
+  align-items: center;
+}
 </style>

@@ -2,17 +2,18 @@
   <v-card id="EditAuthor"
             class="pa-4" >
 
-    <BaseIconButton id="EditResourceCloseButton"
-                    class="ma-2"
-                    :class="{ 'mx-1' : $vuetify.breakpoint.smAndDown }"
-                    style="position: absolute; top: 0; right: 0; z-index: 2;"
-                    material-icon-name="close"
-                    icon-color="primary"
-                    color="primary"
-                    outlined
-                    tooltipText="Cancel author editing"
-                    :tooltipBottom="true"
-                    @clicked="$emit('closeClicked')" />
+    <BaseIconButton
+      class="editResourceCloseButton ma-2"
+      :class="{ 'mx-1' : $vuetify.display.smAndDown }"
+      style="position: absolute; top: 0; right: 0; z-index: 2;"
+      :icon="mdiClose"
+      icon-color="black"
+      color="black"
+      outlined
+      tooltip-text="Cancel author editing"
+      tooltip-bottom
+      @clicked="$emit('closeClicked')"
+    />
 
     <v-form ref="editAuthorForm">
 
@@ -34,7 +35,6 @@
 
           <v-text-field :label="labels.firstName"
                         ref="firstName"
-                        outlined
                         required
                         :disabled="loading"
                         :rules="[ v => !!v || `${labels.firstName} is required` ]"
@@ -46,7 +46,6 @@
 
           <v-text-field :label="labels.lastName"
                         ref="lastName"
-                        outlined
                         required
                         :disabled="loading"
                         :rules="[ v => !!v || `${labels.lastName} is required` ]"
@@ -59,7 +58,6 @@
         <v-col cols="12">
           <v-text-field :label="labels.email"
                         ref="email"
-                        outlined
                         required
                         :disabled="loading"
                         v-model="emailField" />
@@ -72,7 +70,6 @@
 
           <v-text-field :label="labels.affiliation"
                         ref="affiliation"
-                        outlined
                         required
                         :disabled="loading"
                         :rules="[ v => !!v || `${labels.affiliation} is required` ]"
@@ -84,7 +81,6 @@
 
           <v-text-field :label="labels.identifier"
                         ref="identifier"
-                        outlined
                         required
                         :disabled="loading"
                         v-model="identifierField"
@@ -95,7 +91,7 @@
 
       <v-row no-gutters
               justify="end">
-        <v-col class="shrink">
+        <v-col class="flex-grow-0">
           <BaseRectangleButton :disabled="!saveButtonEnabled"
                                 :loading="loading"
                                 :buttonText="labels.createButtonText"
@@ -122,6 +118,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
+import { mdiClose } from '@mdi/js';
 import {
   EDITMETADATA_AUTHOR,
   EDITMETADATA_OBJECT_UPDATE,
@@ -258,6 +255,7 @@ export default {
       this.$emit('saveAuthor');
     },
     loadImagePreview(file) {
+      // @ts-ignore @typescript-eslint/no-this-alias
       const vm = this;
       if (file.type.includes('image')) {
         const reader = new FileReader();
@@ -273,6 +271,7 @@ export default {
     },
   },
   data: () => ({
+    mdiClose,
     labels: {
       title: 'Edit Selected Author',
       instructions: 'Change information about this author.',

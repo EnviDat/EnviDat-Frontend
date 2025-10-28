@@ -16,7 +16,7 @@ export const BULK_LOAD_METADATAS_CONTENT_ERROR =
   'BULK_LOAD_METADATAS_CONTENT_ERROR';
 
 export const ACTION_BULK_LOAD_METADATAS_CONTENT = () => {
-  if (import.meta.env?.DEV && useTestdata) {
+  if (import.meta.env?.MODE === 'development' && useTestdata) {
     return './testdata/packagelist.json';
   }
 
@@ -30,13 +30,12 @@ export const LOAD_METADATA_CONTENT_BY_ID_ERROR =
   'LOAD_METADATA_CONTENT_BY_ID_ERROR';
 
 export const ACTION_LOAD_METADATA_CONTENT_BY_ID = () => {
-  if (import.meta.env?.DEV && useTestdata) {
+  if (import.meta.env?.MODE === 'development' && useTestdata) {
     return './testdata/package_show.json';
   }
 
   return 'package_show';
 };
-
 
 export const CLEAN_CURRENT_METADATA = 'CLEAN_CURRENT_METADATA';
 
@@ -46,13 +45,12 @@ export const SEARCH_METADATA_ERROR = 'SEARCH_METADATA_ERROR';
 export const CLEAR_SEARCH_METADATA = 'CLEAR_SEARCH_METADATA';
 
 export const ACTION_SEARCH_METADATA = () => {
-  if (import.meta.env?.DEV && useTestdata) {
+  if (import.meta.env?.MODE === 'development' && useTestdata) {
     return './testdata/query.json';
   }
 
   return 'query';
 };
-
 
 export const UPDATE_TAGS = 'UPDATE_TAGS';
 export const UPDATE_TAGS_SUCCESS = 'UPDATE_TAGS_SUCCESS';
@@ -68,11 +66,16 @@ export const SWISSFL_MODE_EXTRAS_KEY = 'swissFL_type';
 export const EDNA_MODE = 'edna';
 export const EDNA_MODE_EXTRAS_KEY = 'edna_type';
 
+export const FOREST_3D = 'forest3d';
+export const FOREST_3D_EXTRAS_KEY = 'forest3d_type';
+export const FOREST_3D_URL =
+  'https://forest3d.os.zhdk.cloud.switch.ch/forest3d/data.json';
+
 export const PIN_METADATA = 'PIN_METADATA';
 export const CLEAR_PINNED_METADATA = 'CLEAR_PINNED_METADATA';
 export const SET_DETAIL_PAGE_BACK_URL = 'SET_DETAIL_PAGE_BACK_URL';
 export const SET_ABOUT_PAGE_BACK_URL = 'SET_ABOUT_PAGE_BACK_URL';
-export const SET_VIRTUAL_LIST_INDEX = 'SET_VIRTUAL_LIST_INDEX';
+export const METADATA_UPDATE_EXISTING_TITLE = 'METADATA_UPDATE_EXISTING_TITLE';
 
 export const METADATA_NAMESPACE = 'metadata';
 
@@ -93,9 +96,20 @@ export const METADATA_UPDATE_EXISTING_KEYWORDS_ERROR =
   'METADATA_UPDATE_EXISTING_KEYWORDS_ERROR';
 
 export const ACTION_METADATA_UPDATE_EXISTING_KEYWORDS = () => {
-  if (import.meta.env?.DEV && useTestdata) {
+  if (import.meta.env?.MODE === 'development' && useTestdata) {
     return './testdata/tag_list.json';
   }
 
   return 'tag_list';
+};
+
+export const METADATA_REVIEW_STORE = 'METADATA_REVIEW_STORE';
+export const EDIT_DATASET_STORE = 'EDIT_DATASET_STORE';
+
+export const ACTION_METADATA_REVIEW = () => {
+  if (import.meta.env?.MODE === 'development' && useTestdata) {
+    return './testdata/review.json';
+  }
+
+  return 'review';
 };

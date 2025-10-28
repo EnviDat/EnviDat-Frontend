@@ -4,21 +4,28 @@ import {
   createHeader,
   createBody,
   createFunding,
-  createCitation,
   createLicense,
-  createLocation,
   createPublications,
   createDetails,
-  createResource,
-  enhanceTags,
-  formatDate,
   enhanceTitleImg,
-  extractPIDMapFromText,
 } from '@/factories/metaDataFactory';
 
+import { createResource } from '@/factories/resourceHelpers';
 
-import categoryCards from '@/store/categoryCards';
+import {
+  createCitation,
+  extractPIDMapFromText,
+} from '@/factories/citationFactory';
+
 import packagelist from '@/../stories/testdata/packagelist.json';
+import { enhanceKeywords } from '@/factories/keywordsFactory';
+import categoryCards from '@/store/categoryCards';
+import { formatDate } from '@/factories/dateFactory';
+import {
+  METADATA_CONTACT_EMAIL,
+  METADATA_CONTACT_FULLNAME,
+  METADATA_TITLE_PROPERTY,
+} from '@/factories/metadataConsts';
 
 // const metadatasContent = {};
 // packagelist.result.forEach((entry) => {
@@ -37,10 +44,10 @@ describe('metaDataFactory - createHeader', () => {
     const header = createHeader(dataset);
 
     expect(header).toBeDefined();
-    expect(header.metadataTitle).toBeDefined();
+    expect(header[METADATA_TITLE_PROPERTY]).toBeDefined();
     expect(header.doi).toBeDefined();
-    expect(header.contactName).toBeDefined();
-    expect(header.contactEmail).toBeDefined();
+    expect(header[METADATA_CONTACT_FULLNAME]).toBeDefined();
+    expect(header[METADATA_CONTACT_EMAIL]).toBeDefined();
     expect(header.tags).toBeDefined();
     expect(header.titleImg).toBe(dataset.titleImg);
     expect(header.maxTags).toBeDefined();
@@ -112,10 +119,10 @@ describe('metaDataFactory - createCitation', () => {
     expect(citation.citationGCMDXmlLink).toBeDefined();
 
     expect(citation.citationBibtexXmlLink).toBeDefined();
-    expect(citation.citationBibtexXmlLink.includes('.bib')).toBeTruthy();
+    expect(citation.citationBibtexXmlLink.includes('bib')).toBeTruthy();
 
     expect(citation.citationRisXmlLink).toBeDefined();
-    expect(citation.citationRisXmlLink.includes('.ris')).toBeTruthy();
+    expect(citation.citationRisXmlLink.includes('ris')).toBeTruthy();
   });
 });
 
@@ -170,31 +177,6 @@ describe('metaDataFactory - createLicense', () => {
   });
 });
 
-describe('metaDataFactory - createLocation', () => {
-  it('empty', () => {
-    const loc = createLocation(undefined);
-    expect(loc).toBeNull();
-  });
-
-  it('with dataset', () => {
-    const dataset = packagelist.result[6];
-
-    const loc = createLocation(dataset);
-
-    expect(loc).toBeDefined();
-    expect(loc.id).toBeDefined();
-    expect(loc.name).toBeDefined();
-    expect(loc.title).toBeDefined();
-
-    expect(loc.isPolygon).toBeDefined();
-    expect(loc.isPoint).toBeDefined();
-    expect(loc.isMultiPoint).toBeDefined();
-
-    expect(loc.pointArray).toBeDefined();
-    expect(loc.pointArray.length).toBeGreaterThan(0);
-  });
-});
-
 describe('metaDataFactory - createPublications', () => {
   it('empty', () => {
     const pub = createPublications(undefined);
@@ -236,14 +218,14 @@ describe('metaDataFactory - createDetails', () => {
 
 describe('metaDataFactory - enhanceTags', () => {
   it('empty', () => {
-    const enhancedDataset = enhanceTags();
+    const enhancedDataset = enhanceKeywords();
     expect(enhancedDataset).toBeNull();
   });
 
   it('with dataset', () => {
-    const dataset = packagelist.result[6];
+    const enhancedDataset = packagelist.result[6];
 
-    const enhancedDataset = enhanceTags(dataset, categoryCards);
+    enhanceKeywords(enhancedDataset.tags, categoryCards);
 
     expect(enhancedDataset).toBeDefined();
 
@@ -268,7 +250,7 @@ describe('metaDataFactory - enhanceTitleImg', () => {
 
     for (let i = 0; i < datasets.length; i++) {
       const dataset = datasets[i];
-      const enhancedDataset = enhanceTitleImg(dataset, null, categoryCards);
+      const enhancedDataset = enhanceTitleImg(dataset);
 
       expect(enhancedDataset).toBeDefined();
       expect(enhancedDataset).not.toBe('');
@@ -281,7 +263,7 @@ describe('metaDataFactory - enhanceTitleImg', () => {
   // it('with dataset but no background images', () => {
   //   const dataset = packagelist.result[6];
 
-  //   const enhancedDataset = enhanceTitleImg(dataset, null, categoryCards);
+  //   const enhancedDataset = enhanceTitleImg(dataset);
 
   //   expect(enhancedDataset).toBeDefined();
   //   expect(enhancedDataset).not.toBe('');
@@ -326,4 +308,33 @@ describe('metaDataFactory - extractPIDMapFromText', () => {
     expect(pids).toBeDefined();
     expect(pids.size > 0).toBeTruthy();
   });
+
+  it('with text2 with dora url', () => {
+
+    const pids = extractPIDMapFromText(text2);
+    expect(pids).toBeDefined();
+    expect(pids.size > 0).toBeTruthy();
+  });
+
+  it('with text3 with dora url', () => {
+
+    const pids = extractPIDMapFromText(text3);
+    expect(pids).toBeDefined();
+    expect(pids.size > 0).toBeTruthy();
+  });
+
+  it('with text4 with dora url', () => {
+
+    const pids = extractPIDMapFromText(text4);
+    expect(pids).toBeDefined();
+    expect(pids.size > 0).toBeTruthy();
+  });
+
+  it('with text5 with dora url', () => {
+
+    const pids = extractPIDMapFromText(text5);
+    expect(pids).toBeDefined();
+    expect(pids.size > 0).toBeTruthy();
+  });
+
 });

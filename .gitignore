@@ -51,9 +51,6 @@ typings/
 # Optional npm cache directory
 .npm
 
-# PNPM
-pnpm-lock.yaml
-
 # Optional eslint cache
 .eslintcache
 
@@ -92,6 +89,7 @@ pnpm-lock.yaml
 
 # envidat frontend
 dist/
+certs/
 storybook-static/
 /.idea/
 
@@ -103,3 +101,4 @@ public/testdata/config.json
 public/testdata/*user*.json
 public/testdata/*password*.json
 tests/unit/regression
+reports

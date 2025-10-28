@@ -32,7 +32,7 @@
     </v-row>
 
     <v-row justify="end" align="end">
-      <v-col class="shrink">
+      <v-col class="flex-grow-0">
         <!-- prettier-ignore -->
         <BaseRectangleButton buttonText="Next Step"
                              @clicked="nextStep" />
@@ -96,8 +96,7 @@ export default {
         this.setCurrentStep(stepTitle);
         return;
       }
-
-      const params = this.$route.params;
+      const params = { ...this.$route.params };
       params.substep = stepTitle;
 
       this.$router.push(
@@ -123,7 +122,8 @@ export default {
         return;
       }
 
-      const params = this.$route.params;
+
+      const params = { ...this.$route.params };
       params.substep = this.steps[nextIndex].title;
 
       this.$router.push({ params });

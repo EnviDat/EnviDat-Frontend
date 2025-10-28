@@ -1,597 +1,470 @@
 <template>
-  <v-container fluid class="pa-0" tag="article" id="LandingPage">
-    <div
-      v-show="showPolygonParticles"
-      id="polygon-canvas"
-      style="position: absolute; width: 99%; height: 325px; bottom: 0; left: 0;"
-    />
-
-<!--
-    <div
-      v-show="showPolygonParticles"
-      id="polygon-canvas2"
-      style="position: absolute; width: 400px; height: 300px; bottom: 30%; left: 22.5%;"
-    />
--->
-
-    <LandingPageLayout
-      :categoriesTitle="welcomeInfo.categoriesTitle"
-      :datasetsTitle="welcomeInfo.datasetsTitle"
-      :datasetsTotal="datasetsTotal"
-      :newsTitle="welcomeInfo.newsTitle"
-      :articlesTitle="welcomeInfo.articlesTitle"
-    >
-      <template v-if="$vuetify.breakpoint.mdAndUp" v-slot:logo>
-        <v-row no-gutters
-               align="center">
-          <v-col class="hidden-sm-and-down" cols="4" lg="3">
-            <v-img :src="mdLogo" height="128" width="128" :alt="alternativeText" />
-
-          </v-col>
-
-          <v-col class="hidden-xs-only hidden-md-and-up" cols="2">
-            <v-img :src="smLogo" height="64" width="64" :alt="alternativeText" />
-          </v-col>
-
-          <v-col class="hidden-sm-and-up" cols="3">
-            <v-img :src="smLogo" height="64" width="64" :alt="alternativeText" />
-          </v-col>
-
-          <v-col
-            class="envidatTitle text-h1 pl-5 hidden-md-and-down"
-            style="font-size: 80px !important;"
-          >
-            {{ welcomeInfo.titleText }}
-          </v-col>
-
-          <v-col
-            class="envidatTitle text-h2 pl-2 hidden-sm-and-down hidden-lg-and-up"
-          >
-            {{ welcomeInfo.titleText }}
-          </v-col>
-
-          <v-col
-            class="envidatTitle text-h3 pl-2 hidden-xs-only hidden-md-and-up"
-          >
-            {{ welcomeInfo.titleText }}
-          </v-col>
-
-          <v-col class="envidatTitle text-h2 hidden-sm-and-up">
-            {{ welcomeInfo.titleText }}
-          </v-col>
-        </v-row>
-      </template>
-
-      <template v-slot:welcome>
-        <SloganCard
-          :slogan="welcomeInfo.Slogan"
-          :subSlogan="welcomeInfo.SubSlogan"
-          :maxHeight="200"
-          :buttonText="sloganButtonText"
-          :buttonCallback="catchBrowseClicked"
-          :moreButtonText="sloganMoreButtonText"
-          :moreButtonCallback="catchMoreClicked"
-        />
-      </template>
-
-      <template v-slot:search>
-        <SearchBarView
-          v-if="$vuetify.breakpoint.smAndUp"
-          :labelText="welcomeInfo.searchLabelText"
-          :buttonText="buttonText"
-          :hasButton="true"
-          @clicked="catchSearchClicked"
-        />
-
-        <SmallSearchBarView
-          v-if="$vuetify.breakpoint.xsOnly"
-          :labelText="welcomeInfo.smallSearchLabelText"
-          :buttonText="buttonText"
-          @clicked="catchSearchClicked"
-        />
-      </template>
-
-      <template v-slot:datasets>
-        <v-row v-if="loadingMetadatasContent" no-gutters>
-          <v-col v-for="index in 2" :key="index" cols="6" class="pa-2">
-            <MetadataCardPlaceholder id="orgaDataset" class="mx-2" />
-          </v-col>
-        </v-row>
-
-        <v-row v-if="!loadingMetadatasContent" no-gutters>
-          <v-col
-            v-for="(metadata, index) in recentMetadata"
-            :key="index"
-            cols="6"
-            class="pa-2"
-          >
-            <MetadataCard
-              :key="index"
-              :id="metadata.id"
-              :title="metadata.title"
-              :subtitle="metadata.notes"
-              :name="metadata.name"
-              :titleImg="metadata.titleImg"
-              :resourceCount="metadata.num_resources"
-              :fileIconString="fileIconString"
-              :categoryColor="metadata.categoryColor"
-              :compactLayout="true"
-              @clickedEvent="catchMetadataClicked"
-            />
-          </v-col>
-        </v-row>
-      </template>
-
-      <template v-slot:categories>
-        <v-row no-gutters>
-          <v-col
-            v-for="card in categoryCards"
-            :key="card.title"
-            cols="6"
-            class="pa-2"
-          >
-            <BaseClickCard
-              :height="$vuetify.breakpoint.lgAndDown ? '65' : '90'"
-              :title="card.title"
-              :img="card.img"
-              :color="card.darkColor"
-              :contain="card.contain"
-              :disabled="card.disabled"
-              @click="catchCategoryClicked(card.type)"
-            />
-          </v-col>
-        </v-row>
-      </template>
-
-      <template v-slot:articles>
-        <v-row no-gutters>
-          <v-col
-            v-for="(post, index) in blogPosts"
-            :key="index"
-            cols="6"
-            class="pa-2"
-          >
-            <BlogPostCard
-              :postTitle="post.title"
-              :titleImg="post.titleImg"
-              :loadingImg="fallbackCardImg"
-              titleCssClass="compactBlogPostCard"
-              subtitleCssClass="text-caption"
-              :height="$vuetify.breakpoint.lgAndDown ? '75' : '100'"
-              @clicked="catchPostClick(post.postFile)"
-            />
-          </v-col>
-        </v-row>
-      </template>
-
-      <template v-slot:news v-if="hasActiveNews">
-        <TitleCard
-          :title="welcomeInfo.newsTitle"
-          cardClass="pa-2"
-          titleClass="titleCardClass"
-        />
-
-        <div
-          v-for="(entry, index) in newsEntries"
-          :key="index"
-          class="pt-4 px-1"
+  <LandingPageLayout
+    :categoriesTitle="welcomeInfo.categoriesTitle"
+    :datasetsTitle="welcomeInfo.datasetsTitle"
+    :datasetsTotal="datasetsTotal"
+    :newsTitle="welcomeInfo.newsTitle"
+    :infoTitle="welcomeInfo.infoTitle"
+    :articlesTitle="welcomeInfo.articlesTitle"
+  >
+    <!-- Welcome slot -->
+    <template #welcome>
+      <SloganCard
+        class="pa-md-6 pt-md-0"
+        :slogan="welcomeInfo.Slogan"
+        :subSlogan="welcomeInfo.SubSlogan"
+        :maxHeight="200"
+        :buttonText="sloganButtonText"
+        :moreButtonText="sloganMoreButtonText"
+        :moreButtonCallback="catchMoreClicked"
+      />
+      <SearchBarView
+        v-if="isMediumScreenAndDown"
+        :labelText="
+          display.xs
+            ? welcomeInfo.smallSearchLabelText
+            : welcomeInfo.searchLabelText
+        "
+        :buttonText="buttonsActions"
+        :hasButton="true"
+        @clicked="catchActionsButton"
+      />
+      <v-row justify="center" class="flex-grow-0" no-gutters>
+        <!-- noMode Category -->
+        <v-col
+          v-for="card in categoryCardsNoMode"
+          :key="card.title"
+          class="pa-2"
+          cols="auto"
         >
-          <SloganCard
-            :slogan="entry.title"
-            :subSlogan="entry.text"
-            :sloganImg="entry.image"
+          <BaseCategoryCard
+            height="45"
+            :title="card.title"
+            :icon="card.iconPath"
+            :color="card.darkColor"
+            :isMode="card.isMode"
+            :contain="card.contain"
+            :disabled="card.disabled"
+            @click="catchCategoryClicked(card.type)"
           />
-        </div>
-
-        <div v-if="showWinterHolidayWishs" class="pt-4 px-1">
-          <SloganCard
-            slogan="Happy Holidays!"
-            :sloganImg="winterHolidayImage"
-            :subSlogan="decemberWishes"
+        </v-col>
+      </v-row>
+      <v-row justify="center" class="flex-grow-0" no-gutters>
+        <!-- Mode Category -->
+        <v-col
+          v-for="card in categoryCardsMode"
+          :key="card.title"
+          class="pa-2 d-block"
+          cols="auto"
+        >
+          <BaseCategoryCard
+            v-if="isNotHideMode(card.type)"
+            height="45"
+            :elevation="5"
+            :title="card.title"
+            :img="card.imgPath"
+            :icon="card.iconPath"
+            :color="card.darkColor"
+            :isMode="card.isMode"
+            :contain="card.contain"
+            :disabled="card.disabled"
+            @click="catchCategoryClicked(card.type)"
           />
-        </div>
+        </v-col>
+      </v-row>
+    </template>
 
-        <div v-if="showNewYearWishs" class="pt-4 px-1">
-          <SloganCard
-            slogan="Happy New Year!"
-            :sloganImg="newYearImage"
-            :subSlogan="newYearWishes"
+    <!-- Search slot -->
+    <template #search>
+      <SearchBarView
+        v-if="isMediumScreenAndUp"
+        :labelText="welcomeInfo.searchLabelText"
+        :buttonText="buttonsActions"
+        :hasButton="true"
+        @clicked="catchActionsButton"
+      />
+    </template>
+
+    <!-- Datasets slot -->
+    <template #datasets>
+      <v-row v-if="loadingMetadatasContent">
+        <v-col
+          v-for="index in 4"
+          :key="index"
+          cols="12"
+          md="6"
+          xl="3"
+          class="pt-3 pb-3"
+        >
+          <MetadataCardPlaceholder id="orgaDataset" class="mx-2" />
+        </v-col>
+      </v-row>
+      <v-row v-else>
+        <v-col
+          v-for="(metadata, index) in recentMetadata"
+          :key="index"
+          cols="12"
+          md="6"
+          xl="3"
+        >
+          <BaseCardLandingPage
+            :cardType="'metadata'"
+            :truncateSubTilte="true"
+            :categoryBelow="true"
+            :id="metadata.id"
+            :title="metadata.title"
+            :subtitle="metadata.notes"
+            :categoryName="metadata.categoryName"
+            :categoryColor="metadata.categoryColor"
+            :date="metadata.metadata_created"
+            @clickedEvent="catchMetadataClicked"
           />
-        </div>
-      </template>
-    </LandingPageLayout>
+        </v-col>
+      </v-row>
+    </template>
 
-  </v-container>
+    <!-- Info slot -->
+    <template v-if="showInfo" #info>
+      <v-row class="justify-center">
+        <v-col v-for="(info, i) in infoCards" :key="i" cols="12" lg="4">
+          <InfoCards :index="i" :info="info" />
+        </v-col>
+      </v-row>
+    </template>
+
+    <!-- News slot -->
+    <template v-if="showNews" #news>
+      <v-row>
+        <v-col
+          v-for="(post, index) in newsEntries"
+          :key="index"
+          cols="12"
+          md="6"
+          xl="3"
+        >
+          <BaseCardLandingPage
+            :cardType="'team'"
+            :showButton="false"
+            :id="post.id"
+            :title="post.title"
+            :subtitle="post.text"
+            :date="post.date"
+            :categoryName="'Envidat Team'"
+            :categoryColor="'#aab2ff'"
+            :categoryAbove="true"
+            buttonText="View"
+            @clickedEvent="catchPostClick(post.postFile)"
+          />
+        </v-col>
+        <v-col
+          v-for="(post, index) in blogPosts"
+          :key="index"
+          cols="12"
+          md="6"
+          xl="3"
+        >
+          <BaseCardLandingPage
+            :cardType="'blog'"
+            :id="post.id"
+            :title="post.title"
+            :subtitle="post.preview"
+            :date="post.date"
+            :truncateSubTilte="true"
+            :categoryName="'Blog article'"
+            :categoryColor="'#E0EF45E6'"
+            :categoryAbove="true"
+            :categoryBelow="false"
+            buttonText="Read"
+            @clickedEvent="catchPostClick(post.postFile)"
+          />
+        </v-col>
+      </v-row>
+    </template>
+
+    <template v-if="showContact" #contact>
+      <v-row>
+        <v-col cols="12">
+          <v-container> <LandingPageContactForm /> </v-container>
+        </v-col>
+      </v-row>
+    </template>
+  </LandingPageLayout>
 </template>
 
-<script>
-/**
- * The landing page of EnviDat is the root page ("./") first page shown
- * It consists of:
- * - TheTitleScreenLayout
- * - SearchBarView
- * - and show a list of category cards (baseClickCard)
- *
- * @summary landing page
- * @author Dominik Haas-Artho
- *
- * Created at     : 2019-10-23 16:12:30
- * Last modified  : 2021-01-06 21:12:38
- *
- * This file is subject to the terms and conditions defined in
- * file 'LICENSE.txt', which is part of this source code package.
- */
+<script setup>
+import { computed, ref, onMounted } from 'vue';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
+import { useDisplay } from 'vuetify';
 
-import { getMonth } from 'date-fns';
-import { mapGetters, mapState } from 'vuex';
-
-import smLogo from '@/assets/logo/EnviDat_logo_64.png';
-import mdLogo from '@/assets/logo/EnviDat_logo_128.png';
-
-import BaseClickCard from '@/components/BaseElements/BaseClickCard.vue';
-import MetadataCard from '@/components/Cards/MetadataCard.vue';
-import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
-import TitleCard from '@/components/Cards/TitleCard.vue';
-import SmallSearchBarView from '@/components/Filtering/SmallSearchBarView.vue';
 import { eventBus, SHOW_REDIRECT_SIGNIN_DIALOG } from '@/factories/eventBus';
-import BlogPostCard from '@/modules/blog/components/BlogPostCard.vue';
-import {
-  BLOG_NAMESPACE,
-  GET_BLOG_LIST,
-} from '@/modules/blog/store/blogMutationsConsts';
 import LandingPageLayout from '@/modules/home/components/LandingPageLayout.vue';
-// import TheTitleScreenLayout from '@/modules/home/components/TheTitleScreenLayout.vue';
 import SearchBarView from '@/modules/home/components/SearchBarView.vue';
+import LandingPageContactForm from '@/modules/home/components/LandingPageContactForm.vue';
 import SloganCard from '@/modules/home/components/SloganCard.vue';
+import BaseCategoryCard from '@/components/BaseElements/BaseCategoryCard.vue';
+
+import BaseCardLandingPage from '@/components/Cards/BaseCardLandingPage.vue';
+import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
+import InfoCards from '@/components/Cards/InfoCards.vue';
+
+import { importStoreModule } from '@/factories/enhancementsFactory';
+
+// Import route constants and Vuex constants
 import {
   ABOUT_PATH,
   BLOG_PAGENAME,
   BROWSE_PATH,
-  LANDING_PAGENAME,
   METADATADETAIL_PAGENAME,
   USER_SIGNIN_PATH,
+  BROWSE_MODE_PATH,
 } from '@/router/routeConsts';
+
 import {
-  SET_APP_BACKGROUND,
-  SET_CURRENT_PAGE,
-} from '@/store/mainMutationsConsts';
+  BLOG_NAMESPACE,
+  GET_BLOG_LIST,
+} from '@/modules/blog/store/blogMutationsConsts';
 import {
   METADATA_NAMESPACE,
   SET_DETAIL_PAGE_BACK_URL,
 } from '@/store/metadataMutationsConsts';
-import store from '@/store/store';
-import { importStoreModule } from '@/factories/enhancementsFactory';
 
-// Login & Register form and animation
-// https://codepen.io/yusufbkr/pen/RPBQqg
-
-// This animation is a bit smoother
-// https://codepen.io/andytran/pen/RPBdgM
-
-// Here is one with a progress button/bar
-// https://codepen.io/suez/pen/dPqxoM
-
-export default {
-  name: 'LandingPage',
-  beforeRouteEnter(to, from, next) {
-    next(vm => {
-      // console.log("landing beforeRouteEnter to: " + to + " from: " + from + " next: " + next);
-      vm.$store.commit(SET_CURRENT_PAGE, LANDING_PAGENAME);
-      const bgimg = vm.$vuetify.breakpoint.smAndDown
-        ? vm.MobileBGImage
-        : vm.PageBGImage;
-      vm.$store.commit(SET_APP_BACKGROUND, bgimg);
-    });
+// data
+const buttonsActions = ref([
+  { text: 'Search', class: 'primary', action: 'search' },
+  {
+    text: 'Explore all',
+    class: 'primary',
+    outlined: true,
+    bgcWhite: true,
+    action: 'explore',
   },
-  beforeCreate() {
-    const importFun = () => import('@/modules/blog/store/blogStore');
-    importStoreModule(store, 'blog', importFun)
-    .then(() => {
-      this.$store.dispatch(`${BLOG_NAMESPACE}/${GET_BLOG_LIST}`);
-    });
-
+]);
+const defaultWelcomeInfo = ref({
+  titleText: 'EnviDat',
+  Slogan: 'Environmental Research Data\n\rat your Fingertips',
+  SubSlogan:
+    'EnviDat provides research data from Switzerland and around the world.<br/> The data is provided by researchers from various research units of the Swiss Federal Institute for Forest, Snow and Landscape WSL.',
+  searchLabelText:
+    'Looking for something specific? Enter research term, topic or author here!',
+  smallSearchLabelText: 'Enter research term, topic or author',
+  searchText: 'Looking for something specific?',
+  categoryText:
+    'Have a look at one of these categories or sign in to upload your data',
+  articlesTitle: 'Recent EnviDat Blog Articles',
+  newsTitle: 'News From The EnviDat Team',
+  infoTitle: 'How does EnviDat work?',
+  categoriesTitle: 'Research Data Categories',
+  datasetsTitle: 'Recently Published Research Datasets',
+  showContact: {
+    contactActive: true,
   },
-  created() {
-    this.blogModuleLoaded = !!this.$store?.state?.blog;
-
-    this.$store?.watch((state) => state.blog,(value) => {
-      this.blogModuleLoaded = !!value;
-    });
+  infoConfig: {
+    infoActive: true,
+    info: [
+      {
+        title: 'Designed for researcher needs',
+        subtitle:
+          'EnviDat is a user-friendly and open-source platform, specifically designed to meet the needs of researchers for storing, managing, and publishing environmental datasets. It provides structured metadata, integration with international data repositories, and long-term accessibility to support open science and reproducible research.',
+        icon: 'heart',
+        points: [],
+        image: '',
+        action: '/new',
+        actionTitle: 'Create Dataset',
+      },
+      {
+        title: 'FAIR data repository',
+        subtitle:
+          "EnviDat is supporting environmental researchers to share data according to the Findability, Accessibility, Interoperability, and Reusability (FAIR) principles. EnviDat is registered in <a href='https://fairsharing.org/biodbcore-001178/'>FAIRsharing.org</a> and <a href='https://www.re3data.org/repository/r3d100012587'>re3data.org</a> to enhance scientific collaboration and ensure that datasets remain discoverable and reusable by the global research community.",
+        icon: 'protected',
+        points: [],
+        image: '',
+        action:
+          'https://www.ub.uzh.ch/en/wissenschaftlich-arbeiten/mit-daten-arbeiten/FAIR-und-Open-Data.html',
+      },
+      {
+        title: 'Connected to the world',
+        subtitle:
+          "EnviDat disseminates its datasets globally in order to promote international research cooperation in the field of environmental science. EnviDat datasets are listed in the <a href='https://search.earthdata.nasa.gov/search?fdc=WSL&ac=true'>NASA EarthData portal</a>, the data.europa.eu <a href='https://data.europa.eu/data/datasets?country=ch&publisher=EnviDat'>European Open Data portal</a>, <a href='https://b2find9.cloud.dkrz.de/organization/envidat'>European Open Science Cloud Hub</a>, <a href='https://commons.datacite.org/doi.org?query=client.uid:ethz.wsl'>DataCite</a>, or <a href='https://opendata.swiss/en/organization/envidat'>opendata.swiss</a> so that scientific data is found and cited.",
+        icon: 'world',
+        points: [],
+        image: '',
+        action: '/browse',
+        actionTitle: 'Browse all datasets',
+      },
+    ],
   },
-  beforeMount() {
+});
 
-    this.fileIconString = this.mixinMethods_getIcon('file');
-    this.fallbackCardImg = this.mixinMethods_getWebpImage(
-      'about/contact',
-      this.$store.state,
-    );
+// beforeCreate
+const store = useStore();
+importStoreModule(
+  store,
+  'blog',
+  () => import('@/modules/blog/store/blogStore'),
+).then(() => {
+  store.dispatch(`${BLOG_NAMESPACE}/${GET_BLOG_LIST}`);
+});
+
+// created
+const blogModuleLoaded = ref(false);
+blogModuleLoaded.value = !!store.state.blog;
+store.watch(
+  (state) => state.blog,
+  (value) => {
+    blogModuleLoaded.value = !!value;
   },
-  mounted() {
-    window.scrollTo(0, 0);
+);
 
-    this.initPolygonParticles();
-  },
-  destroyed() {
-    this.stopParticles();
-  },
-  computed: {
-    ...mapState(['categoryCards', 'config', 'loadingConfig']),
-    ...mapGetters(METADATA_NAMESPACE, [
-      'loadingMetadatasContent',
-      'metadatasContentSize',
-      'recentMetadata',
-    ]),
-    ...mapState(BLOG_NAMESPACE, ['list']),
-    blogPosts() {
-      if (this.blogModuleLoaded) {
-        if (this.list?.length > 0) {
-          return this.list.slice(0, 4);
-        }
-      }
+// setup
+const display = useDisplay();
+const router = useRouter();
 
-      return [];
-    },
-    welcomeInfo() {
-      return this.config?.welcomeInfo || this.defaultWelcomeInfo;
-    },
-    datasetsTotal() {
-      return this.loadingMetadatasContent ? 0 : this.metadatasContentSize;
-    },
-    hasActiveNews() {
-      return (
-        (this.config?.newsConfig?.newsActive && this.newsEntries.length > 0) ||
-        this.showNewYearWishs ||
-        this.showWinterHolidayWishs
-      );
-    },
-    newsEntries() {
-      return this.config?.newsConfig?.entries || [];
-    },
-    showPolygonParticles() {
-      return (
-        this.$vuetify.breakpoint.lgAndUp &&
-        this.effectsConfig.landingPageParticles &&
-        !this.showDecemberParticles
-      );
-    },
-    maintenanceConfig() {
-      return this.config?.maintenanceConfig || {};
-    },
-    signinRedirectActive() {
-      return this.maintenanceConfig?.signinRedirectActive || false;
-    },
-    showDecemberParticles() {
-      return this.effectsConfig.decemberParticles && this.itIsDecember;
-    },
-    itIsDecember() {
-      return getMonth(Date.now()) === 11;
-    },
-    showNewYearWishs() {
-      return this.effectsConfig.showNewYearWishes && getMonth(Date.now()) === 0;
-    },
-    showWinterHolidayWishs() {
-      return this.effectsConfig.showDecemberWishes && this.itIsDecember;
-    },
-    decemberWishes() {
-      return this.effectsConfig.decemberWishes;
-    },
-    winterHolidayImage() {
-      return this.mixinMethods_getWebpImage(
-        'cards/slogan/holidays_winter',
-        this.$store.state,
-      );
-    },
-    newYearWishes() {
-      return this.effectsConfig.newYearWishes || '';
-    },
-    newYearImage() {
-      return this.mixinMethods_getWebpImage(
-        'cards/slogan/new_year',
-        this.$store.state,
-      );
-    },
-    effectsConfig() {
-      return this.config?.effectsConfig || {};
-    },
-    sloganButtonText() {
-      /*
-      if (this.$vuetify.breakpoint.lgAndDown) {
-        return 'EXPLORE';
-      }
-*/
+// computed
+const categoryCards = computed(() => store.state.categoryCards);
+const config = computed(() => store.state.config);
 
-      return 'EXPLORE DATA';
-    },
-    sloganMoreButtonText() {
-      if (this.$vuetify.breakpoint.lgAndDown) {
-        return 'ABOUT';
-      }
+const loadingMetadatasContent = computed(
+  () => store.getters[`${METADATA_NAMESPACE}/loadingMetadatasContent`],
+);
+const metadatasContentSize = computed(
+  () => store.getters[`${METADATA_NAMESPACE}/metadatasContentSize`],
+);
+const recentMetadata = computed(
+  () => store.getters[`${METADATA_NAMESPACE}/recentMetadata`],
+);
+const blogList = computed(() => store.state[BLOG_NAMESPACE].list);
 
-      return 'ABOUT ENVIDAT';
-    },
-  },
-  watch: {
-    config() {
-      if (!this.loadingConfig) {
-        this.initPolygonParticles();
-      }
-    },
-  },
-  methods: {
-    stopParticles(fullClean = true) {
-      try {
-        if (this.currentParticles) {
-          this.currentParticles.particles.move.enable = false;
-          this.currentParticles.particles.opacity.anim.enable = false;
-          this.currentParticles.particles.size.anim.enable = false;
-        }
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.log(`Error during particle stop: ${error}`);
-      } finally {
-        this.currentParticles = null;
-        if (fullClean) {
-          window.pJS = null;
-        }
-      }
-    },
-    initPolygonParticles() {
-      if (this.showPolygonParticles) {
-        // particleOptions have to be in the folder public/particles/polygonParticleOptions.json for development
-        // in production they have to be in same folder as the index.html there -> ./particles/polygonParticleOptions.json
-        // eslint-disable-next-line no-undef
-        particlesJS.load(
-          'polygon-canvas',
-          './particles/polygonParticleOptions.json',
-          () => {
-            // console.log('polygon-canvas - particles.js config loaded');
-            if (this.currentParticles) {
-              this.stopParticles(false);
-            }
-            this.currentParticles = window.pJS;
-          },
-        );
+const isLargeScreen = computed(() => display.large);
+const isMediumScreenAndDown = computed(
+  () => display.sm.value || display.xs.value,
+);
+const categoryCardsNoMode = computed(() =>
+  categoryCards.value.filter((el) => !el.isMode),
+);
+const categoryCardsMode = computed(() =>
+  categoryCards.value.filter((el) => el.isMode),
+);
+const isMediumScreenAndUp = computed(
+  () =>
+    display.md.value ||
+    display.lg.value ||
+    display.xl.value ||
+    display.xxl.value,
+);
+const blogPosts = computed(() =>
+  blogModuleLoaded.value && blogList.value?.length > 0
+    ? blogList.value.slice(0, 3)
+    : [],
+);
+const welcomeInfo = computed(
+  () => config.value?.welcomeInfo || defaultWelcomeInfo.value,
+);
+const infoCards = computed(() => config.value?.infoConfig?.info);
+const showInfo = computed(() => config.value?.infoConfig?.infoActive);
+const showNews = computed(() => config.value?.newsConfig?.newsActive);
+const showContact = computed(() => config.value?.showContact?.contactActive);
+const datasetsTotal = computed(() =>
+  loadingMetadatasContent.value ? 0 : metadatasContentSize.value,
+);
+const newsEntries = computed(() => config.value?.newsConfig?.entries || []);
+const sloganButtonText = 'EXPLORE DATA';
+const sloganMoreButtonText = computed(() =>
+  isLargeScreen.value ? 'ABOUT ENVIDAT' : 'ABOUT',
+);
 
-        // eslint-disable-next-line no-undef
-/*
-        particlesJS.load(
-          'polygon-canvas2',
-          './particles/polygonParticleOptions2.json',
-          () => {
-            // console.log('polygon-canvas - particles.js config loaded');
-            if (this.currentParticles) {
-              this.stopParticles(false);
-            }
-            this.currentParticles = window.pJS;
-          },
-        );
-*/
-      }
-    },
-    catchCategoryClicked(cardType) {
-      if (cardType.includes('login')) {
-        this.catchSigninClick();
-        return;
-      }
+const mixinMethodsConvertArrayToUrlString = (array) => array.join(',');
 
-      if (cardType.includes('mode')) {
-        const splits = cardType.split('_');
-        const modeName = splits[1];
-        this.catchModeClicked(modeName);
-        return;
-      }
-
-      const newTags = [cardType];
-      const stringTags = this.mixinMethods_convertArrayToUrlString(newTags);
-
-      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, '', stringTags);
-    },
-    catchModeClicked(mode) {
-      this.$router.push({
-        path: BROWSE_PATH,
-        query: { mode },
-      });
-    },
-    catchSearchClicked(search) {
-      this.$router.push({
-        path: BROWSE_PATH,
-        query: { search },
-      });
-    },
-    catchBrowseClicked() {
-      this.$router.push({ path: BROWSE_PATH });
-    },
-    catchMoreClicked() {
-      this.$router.push({ path: ABOUT_PATH });
-    },
-    catchSigninClick() {
-      if (this.signinRedirectActive) {
-        // don't pass any parameters to show the default message for Sign In redirect
-        eventBus.emit(SHOW_REDIRECT_SIGNIN_DIALOG);
-        return;
-      }
-
-      if (this.$route.path === USER_SIGNIN_PATH) {
-        return;
-      }
-
-      this.$router.push({ path: USER_SIGNIN_PATH, query: '' });
-    },
-    redirectToDashboard() {
-      window.open('https://www.envidat.ch/user/reset', '_blank');
-    },
-    catchMetadataClicked(datasetname) {
-      this.$store.commit(
-        `${METADATA_NAMESPACE}/${SET_DETAIL_PAGE_BACK_URL}`,
-        this.$route,
-      );
-
-      this.$router.push({
-        name: METADATADETAIL_PAGENAME,
-        params: {
-          metadataid: datasetname,
-        },
-      });
-    },
-    catchPostClick(post) {
-      if (this.$route.params?.post !== post) {
-        this.$router.push({
-          name: BLOG_PAGENAME,
-          params: { post },
-        });
-      }
-    },
-  },
-  components: {
-    LandingPageLayout,
-    // TheTitleScreenLayout,
-    SearchBarView,
-    SmallSearchBarView,
-    BaseClickCard,
-    SloganCard,
-    MetadataCard,
-    MetadataCardPlaceholder,
-    TitleCard,
-    BlogPostCard,
-  },
-  data: () => ({
-    blogModuleLoaded: false,
-    PageBGImage: 'app_b_landingpage',
-    MobileBGImage: 'app_b_browsepage',
-    buttonText: 'SEARCH',
-    defaultWelcomeInfo: {
-      titleText: 'EnviDat',
-      Slogan: 'Environmental Research Data at your Fingertips',
-      SubSlogan:
-        'EnviDat provides research data from Switzerland and all over the world. The data is being provided by researchers of the many research units of the Swiss Federal Institute for Forest, Snow and Landscape WSL.',
-      searchLabelText:
-        'Looking for something specific? Enter research term, topic or author here!',
-      smallSearchLabelText: 'Enter research term, topic or author',
-      searchText: 'Looking for something specific?',
-      categoryText:
-        'Have a look at one of theses categories or sign in to upload your data',
-      articlesTitle: 'Recent EnviDat Blog Articles',
-      newsTitle: 'News From The EnviDat Team',
-      categoriesTitle: 'Research Data Categories',
-      datasetsTitle: 'Recently Published Research Datasets',
-    },
-    fileIconString: '',
-    alternativeText: 'EnviDat logo',
-    fallbackCardImg: null,
-    smLogo,
-    mdLogo,
-  }),
+const mixinMethodsAdditiveChangeRoute = (path, query, tags) => {
+  router.push({
+    path,
+    query: { ...query, tags },
+  });
 };
+
+const catchModeClicked = (mode) => {
+  router.push({
+    path: BROWSE_MODE_PATH,
+    query: { mode },
+  });
+};
+
+const catchActionsButton = (event, search) => {
+  const query = event === 'search' ? { search } : {};
+  router.push({ path: BROWSE_PATH, query });
+};
+
+const catchMoreClicked = () => {
+  router.push({ path: ABOUT_PATH });
+};
+
+const catchSigninClick = () => {
+  if (config.value?.maintenanceConfig?.signinRedirectActive) {
+    eventBus.emit(SHOW_REDIRECT_SIGNIN_DIALOG);
+  } else if (router.currentRoute.value.path !== USER_SIGNIN_PATH) {
+    router.push({ path: USER_SIGNIN_PATH });
+  }
+};
+
+const catchMetadataClicked = (datasetname) => {
+  store.commit(
+    `${METADATA_NAMESPACE}/${SET_DETAIL_PAGE_BACK_URL}`,
+    router.currentRoute.value,
+  );
+  router.push({
+    name: METADATADETAIL_PAGENAME,
+    params: { metadataid: datasetname },
+  });
+};
+
+const catchPostClick = (post) => {
+  if (router.currentRoute.value.params?.post !== post) {
+    router.push({
+      name: BLOG_PAGENAME,
+      params: { post },
+    });
+  }
+};
+
+const isNotHideMode = (mode) => {
+  if (config.value.modeConfig.excludeMode == null) return true;
+  if (config.value.modeConfig.excludeMode.includes(mode)) {
+    return false;
+  }
+  return true;
+};
+
+const catchCategoryClicked = (cardType) => {
+  if (cardType.includes('login')) {
+    catchSigninClick();
+    return;
+  }
+  if (cardType.includes('mode')) {
+    const [, modeName] = cardType.split('_');
+    catchModeClicked(modeName);
+    return;
+  }
+  const stringTags = mixinMethodsConvertArrayToUrlString([cardType]);
+  mixinMethodsAdditiveChangeRoute(BROWSE_PATH, '', stringTags);
+};
+
+onMounted(() => {
+  window.scrollTo(0, 0);
+});
 </script>
 
 <style scoped>
-
-</style>
-
-<style>
 .compactBlogPostCard {
   font-size: 0.9rem;
   font-weight: 500;
   line-height: 1rem;
 }
+.background-grey {
+  background-color: rgba(245, 245, 245, 0.75);
+}
+</style>
+
+<!-- Global styles if needed -->
+<style>
+/* Global styles */
 </style>

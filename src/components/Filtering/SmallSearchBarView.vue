@@ -1,9 +1,12 @@
 <template>
-  <v-card style="width: 100%;">
+  <v-card style="width: 100%;" >
     <v-container
-      class="pa-0 fill-height"
+      class=" fill-height"
       fluid
-      :class="{ 'py-2': !compactLayout }"
+      :class="{
+        'pa-0': compactLayout,
+        'pa-2': !compactLayout,
+      }"
     >
       <v-row
         align="center"
@@ -13,7 +16,7 @@
       >
         <v-col
           v-if="loading"
-          class="shrink py-0 mx-sm-2"
+          class="flex-grow-0 py-0 mx-sm-2"
           style="min-width: 45px; text-align: center;"
         >
           <v-progress-circular
@@ -26,18 +29,15 @@
 
         <v-col
           v-if="showSearchCount && !loading"
-          class="shrink py-0 mx-sm-2"
+          class="flex-grow-0 py-0 mx-sm-2"
           style="min-width: 45px; text-align: center;"
         >
-          <v-tooltip bottom :disabled="$vuetify.breakpoint.xsOnly">
-            <template v-slot:activator="{ on }">
+          <v-tooltip location='bottom'
+                     :disabled="$vuetify.display.xs">
+            <template v-slot:activator="{ props }">
               <tag-chip
-                v-on="on"
-                :style="
-                  $vuetify.breakpoint.xsOnly
-                    ? 'font-size: 0.65rem !important;'
-                    : 'font-size: 0.8rem !important;'
-                "
+                v-bind="props"
+                :style="`font-size: ${$vuetify.display.xs ? '0.65rem' : '0.8rem'} !important;`"
                 :name="searchCount ? searchCount.toString() : '0'"
                 :selectable="false"
                 :highlighted="searchCount > 0"
@@ -49,25 +49,25 @@
           </v-tooltip>
         </v-col>
 
-        <v-col v-if="showSearch && !hasButton"
-               class="shrink pa-0 hidden-xs-only">
-          <base-icon-button
-            materialIconName="search"
-            marginClass="ma-0"
+        <v-col v-if="showSearch && !hasButton" class="flex-grow-0 pa-0 hidden-xs">
+          <BaseIconButton
+            :icon="mdiMagnify"
             color="transparent"
-            :outlined="!searchTerm"
             @clicked="clicked"
           />
         </v-col>
 
-        <v-col v-if="showSearch" class="grow py-0 ml-2 ml-sm-0 mr-sm-2">
+        <v-col v-if="showSearch"
+               class="flex-grow-1 py-0 mr-sm-2"
+              :class="hasButton ? 'ml-4 ' : 'ml-2 ml-xs-0'"
+        >
           <v-tooltip
-            bottom
-            :disabled="$vuetify.breakpoint.xsOnly || !searchToolTipText"
+            location='bottom'
+            :disabled="$vuetify.display.xs || !searchToolTipText"
           >
-            <template v-slot:activator="{ on }">
+            <template v-slot:activator="{ props }">
               <v-text-field
-                v-on="on"
+                v-bind="props"
                 class="envidatSmallSearch"
                 style="align-items: center;"
                 :class="{ small: compactLayout }"
@@ -75,12 +75,14 @@
                 single-line
                 hide-details
                 primary
-                :clearable="$vuetify.breakpoint.smAndUp && searchText && searchText.length > 0"
+                variant="underlined"
+                :clearable="$vuetify.display.smAndUp && searchText && searchText.length > 0"
                 :flat="isFlat"
                 :placeholder="labelText"
                 @keyup.enter="clicked"
-                :append-icon="$vuetify.breakpoint.smAndUp ? 'clear' : ''"
-                @click:append="clearClicked"
+                :clear-icon="mdiClose"
+                persitent-clear
+                @click:clear="clearClicked"
               />
             </template>
 
@@ -88,8 +90,8 @@
           </v-tooltip>
         </v-col>
 
-        <v-col v-if="showSearch && hasButton" class="shrink">
-          <base-rectangle-button
+        <v-col v-if="showSearch && hasButton" class="flex-grow-0">
+          <BaseRectangleButton
             :button-text="buttonText"
             :is-small="!compactLayout"
             :isXsSmall="compactLayout"
@@ -115,6 +117,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import {mdiClose, mdiMagnify} from '@mdi/js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import TagChip from '@/components/Chips/TagChip.vue';
@@ -145,6 +148,8 @@ export default {
     this.searchText = this.searchTerm;
   },
   data: () => ({
+    mdiMagnify,
+    mdiClose,
     searchText: '',
     lastSearch: '',
     placeHolderText: 'Enter research term, topic or author',
@@ -160,7 +165,7 @@ export default {
       }
 
       if (this.compactLayout) {
-        height = this.$vuetify.breakpoint.sm ? 38 : 32;
+        height = this.$vuetify.display.sm ? 38 : 32;
       } else {
         height = 40;
       }

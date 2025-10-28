@@ -1,47 +1,44 @@
 <template>
-  <article class="ma-0 pa-0 fill-height"
-            id="BrowsePage"
-            key="BrowsePage">
-
-    <metadata-list ref="metadataList"
-                    :listContent="filteredContent"
-                    :mapFilteringPossible="mapFilteringPossible"
-                    :placeHolderAmount="placeHolderAmount"
-                    @clickedTag="catchTagClicked"
-                    :selectedTagNames="selectedTagNames"
-                    :allTags="allTags"
-                    @clickedExpand="catchFilterExpandClicked"
-                    @clickedTagClose="catchTagCloseClicked"
-                    @clickedClear="catchTagCleared"
-                    @clickedCard="catchMetadataClicked"
-                    :prePinnedIds="selectedPins"
-                    @pinnedIds="catchPinnedIds"
-                    :mode="mode"
-                    :defaultListControls="defaultControls"
-                    :enabledControls="enabledControls"
-                    :useDynamicHeight="true"
-                    :minMapHeight="310"
-                    :mapTopLayout="$vuetify.breakpoint.lgAndUp"
-                    :topFilteringLayout="$vuetify.breakpoint.mdAndDown"
-                    @onScroll="storeScroll"
-                    :showSearch="true"
-                    :isAuthorSearch="isAuthorSearch"
-                    :searchTerm="currentSearchTerm"
-                    :searchCount="searchCount"
-                    :searchBarPlaceholder="searchBarPlaceholder"
-                    @searchClick="catchSearchClicked"
-                    @searchCleared="catchSearchCleared"
-                    @authorSearchClick="catchAuthorSearchClick"
-                    @organizationClicked="catchOrganizationClicked"
-                    :showScrollTopButton="true"
-                    :reloadAmount="reloadAmount"
-                    :reloadDelay="vReloadDelay"
-                    :updatingTags="updatingTags"
-                    :loading="loading"
-                    :metadatasContent="metadatasContent"
-                    :categoryCards="categoryCards"
-    />
-
+  <article class="ma-0 pa-0 fill-height" id="BrowsePage" key="BrowsePage">
+    <MetadataList
+      ref="metadataList"
+      :listContent="filteredDatasets"
+      :mapFilteringPossible="mapFilteringPossible"
+      @clickedTag="catchTagClicked"
+      :selectedTagNames="selectedTagNames"
+      :allTags="tagsFromDatasets"
+      @clickedExpand="catchFilterExpandClicked"
+      @clickedTagClose="catchTagCloseClicked"
+      @clickedClear="catchTagCleared"
+      @clickedCard="catchMetadataClicked"
+      :prePinnedIds="selectedPins"
+      @pinnedIds="catchPinnedIds"
+      :modeData="modeData"
+      :defaultListControls="defaultControls"
+      :enabledControls="enabledControls"
+      :useDynamicHeight="true"
+      :minMapHeight="310"
+      :mapTopLayout="$vuetify.display.lgAndUp"
+      :topFilteringLayout="$vuetify.display.mdAndDown"
+      @onScroll="storeScroll"
+      :showSearch="true"
+      :isAuthorSearch="isAuthorSearch"
+      :isShallow="showShallowData"
+      :searchTerm="currentSearchTerm"
+      :searchCount="searchCount"
+      :searchBarPlaceholder="searchBarPlaceholder"
+      @searchClick="catchSearchClicked"
+      @searchCleared="catchSearchCleared"
+      @authorSearchClick="catchAuthorSearchClick"
+      @shallowRealClick="catchShallowRealClick"
+      @organizationClicked="catchOrganizationClicked"
+      :showScrollTopButton="true"
+      :updatingTags="updatingTags"
+      :loading="loading"
+      :metadatasContent="allDatasets"
+      :categoryCards="categoryCards"
+    >
+    </MetadataList>
   </article>
 </template>
 
@@ -60,17 +57,16 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { mapGetters, mapState } from 'vuex';
+
 import {
-  mapGetters,
-  mapState,
-} from 'vuex';
-import {
-  BROWSE_PAGENAME,
   BROWSE_PATH,
   METADATADETAIL_PAGENAME,
 } from '@/router/routeConsts';
+
 import {
   CLEAR_SEARCH_METADATA,
+  EDNA_MODE,
   FILTER_METADATA,
   LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
   LISTCONTROL_LIST_ACTIVE,
@@ -80,34 +76,55 @@ import {
   SET_DETAIL_PAGE_BACK_URL,
 } from '@/store/metadataMutationsConsts';
 
-import {
-  SET_APP_BACKGROUND,
-  SET_BROWSE_SCROLL_POSITION,
-  SET_CURRENT_PAGE,
-} from '@/store/mainMutationsConsts';
+import { SET_BROWSE_SCROLL_POSITION } from '@/store/mainMutationsConsts';
 
 import MetadataList from '@/components/MetadataList.vue';
+import { useModeStore } from '@/modules/browse/store/modeStore';
+import {
+  areArraysIdentical,
+  convertArrayToUrlString,
+  convertUrlStringToArray,
+} from '@/factories/stringFactory';
+import { isTagSelected } from '@/factories/metaDataFactory';
+import categoryCards from '@/store/categoryCards';
 
 export default {
   name: 'BrowsePage',
-  beforeRouteEnter(to, from, next) {
-    next((vm) => {
-      vm.$store.commit(SET_CURRENT_PAGE, BROWSE_PAGENAME);
-      vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
-    });
+  created() {
+    this.modeStore = useModeStore();
+    this.modeStore.init();
   },
-  mounted() {
+  async mounted() {
     this.oldIsAuthorSearch = this.isAuthorSearch;
+
+    if (this.mode) {
+      await this.loadModeDatasets();
+    }
 
     this.checkRouteChanges(null);
   },
   methods: {
-    loadRouteTags() {
+    /**
+     * @param {array} datasets
+     * return {object} dictionary
+     */
+    getContentDictionary(datasets) {
+      if (!datasets) return {};
+
+      const dictionary = {};
+
+      for (let i = 0; i < datasets.length; i++) {
+        const dataset = datasets[i];
+        dictionary[dataset.id] = dataset;
+      }
+
+      return dictionary;
+    },
+    routeKeyworsChanged() {
       let tags = this.$route.query.tags || '';
 
-      if (!this.mixinMethods_areArraysIdentical(this.selectedTagNames, tags)) {
-
-        tags = this.mixinMethods_convertUrlStringToArray(tags);
+      if (!areArraysIdentical(this.selectedTagNames, tags)) {
+        tags = convertUrlStringToArray(tags);
         this.selectedTagNames = tags;
         return true;
       }
@@ -118,29 +135,55 @@ export default {
       let pins = this.$route.query.pins || '';
 
       if (pins.length > 0) {
-        pins = this.mixinMethods_convertUrlStringToArray(pins, false, true);
+        pins = convertUrlStringToArray(pins, false, true);
 
         this.selectedPins = pins;
+        return true;
       }
+
+      return false;
+    },
+    async loadModeDatasets() {
+      const datasets = await this.modeStore.loadModeDatasets(this.mode);
+
+      const contentDictionary = {};
+      for (let i = 0; i < datasets.length; i++) {
+        const dataset = datasets[i];
+        contentDictionary[dataset.id] = dataset;
+      }
+
+      this.modeContent = contentDictionary;
     },
     catchMetadataClicked(datasetname) {
-      this.$store.commit(`${METADATA_NAMESPACE}/${SET_DETAIL_PAGE_BACK_URL}`, this.$route);
+      this.$store.commit(
+        `${METADATA_NAMESPACE}/${SET_DETAIL_PAGE_BACK_URL}`,
+        this.$route,
+      );
 
       this.$router.push({
         name: METADATADETAIL_PAGENAME,
+        query: this.$route.query,
         params: {
           metadataid: datasetname,
         },
       });
     },
     catchTagClicked(tagName) {
-      if (!this.mixinMethods_isTagSelected(tagName)) {
+      if (!isTagSelected(tagName, this.selectedTagNames)) {
         const newTags = [...this.selectedTagNames, tagName];
 
-        const stringTags = this.mixinMethods_convertArrayToUrlString(newTags);
+        const stringTags = convertArrayToUrlString(newTags);
 
-        this.mixinMethods_additiveChangeRoute(BROWSE_PATH, undefined,
-            stringTags, undefined, undefined, this.isAuthorSearch);
+        this.$router.options.additiveChangeRoute(
+          this.$route,
+          this.$router,
+          BROWSE_PATH,
+          undefined,
+          stringTags,
+          undefined,
+          undefined,
+          this.isAuthorSearch,
+        );
       }
     },
     catchTagCloseClicked(tagId) {
@@ -148,25 +191,39 @@ export default {
         return;
       }
 
-      const newTags = this.selectedTagNames.filter(tag => tag !== tagId);
-      const stringTags = this.mixinMethods_convertArrayToUrlString(newTags);
+      const newTags = this.selectedTagNames.filter((tag) => tag !== tagId);
+      const stringTags = convertArrayToUrlString(newTags);
 
-      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, undefined,
-          stringTags, undefined, undefined, this.isAuthorSearch);
+      this.$router.options.additiveChangeRoute(
+        this.$route,
+        this.$router,
+        BROWSE_PATH,
+        undefined,
+        stringTags,
+        undefined,
+        undefined,
+        this.isAuthorSearch,
+      );
     },
     catchTagCleared() {
       this.selectedTagNames = [];
       this.filterContent();
     },
     catchPinnedIds(pins) {
-
       this.selectedPins = pins;
 
-      const stringPins = this.mixinMethods_convertArrayToUrlString(this.selectedPins);
+      const stringPins = convertArrayToUrlString(this.selectedPins);
 
-      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, undefined, undefined,
-          undefined, stringPins,
-          this.isAuthorSearch);
+      this.$router.options.additiveChangeRoute(
+        this.$route,
+        this.$router,
+        BROWSE_PATH,
+        undefined,
+        undefined,
+        undefined,
+        stringPins,
+        this.isAuthorSearch,
+      );
     },
     catchMapFilterChanged(visibleIds) {
       this.mapFilterVisibleIds = visibleIds;
@@ -191,11 +248,19 @@ export default {
       return visibleContent;
     },
     filterContent() {
-      this.$store.dispatch(`${METADATA_NAMESPACE}/${FILTER_METADATA}`,
-        {
-          selectedTagNames: this.selectedTagNames,
-          mode: this.mode,
-        });
+      if (this.mode) {
+        this.filteredModeContent = this.modeStore.getFilteredDatasets(
+          this.selectedTagNames,
+          this.mode,
+        );
+        this.modeTags = this.modeStore.getModeKeywords(this.mode);
+
+        return;
+      }
+
+      this.$store.dispatch(`${METADATA_NAMESPACE}/${FILTER_METADATA}`, {
+        selectedTagNames: this.selectedTagNames,
+      });
     },
     checkRouteChanges(fromRoute) {
       let triggerClearSearch = false;
@@ -209,21 +274,29 @@ export default {
         }
       }
 
-      const isBackNavigation = this.$router.options.isSameRoute(this.$route, fromRoute);
-      const tagsChanged = this.loadRouteTags();
+      const isBackNavigation = this.$router.options.isSameRoute(
+        this.$route,
+        fromRoute,
+      );
+      const tagsChanged = this.routeKeyworsChanged();
 
-      this.loadRoutePins();
+      const pinsChanged = this.loadRoutePins();
 
       // Assign searchParameter so that it can be checked for full text searches
       const searchParameter = this.$route.query.search || '';
 
       // True is searchParameter does not equal currentSearchTerm, else False
-      const checkSearchTriggering = searchParameter !== this.currentSearchTerm || this.isAuthorSearch !== this.oldIsAuthorSearch;
+      const searchChanged =
+        searchParameter !== this.currentSearchTerm ||
+        this.isAuthorSearch !== this.oldIsAuthorSearch;
 
-      if (!checkSearchTriggering) {
+      if (!searchChanged) {
         // use the search parameter from the url in any case
         // if it's a back navigation it has to be set that is will appear in the searchBar component
-        triggerClearSearch = (this.currentSearchTerm !== '' && !searchParameter) && (this.filteredContentSize !== this.metadatasContentSize);
+        triggerClearSearch =
+          this.currentSearchTerm !== '' &&
+          !searchParameter &&
+          this.filteredDatasetsSize !== this.allDatasetsSize;
       }
 
       if (isBackNavigation) {
@@ -233,11 +306,17 @@ export default {
         }, this.scrollPositionDelay);
       }
 
-      if (checkSearchTriggering) {
-
+      if (searchChanged) {
         if (searchParameter && searchParameter.length > 0) {
+          if (this.mode) {
+            this.filteredModeContent = this.modeStore.searchModeDatasets(
+              searchParameter,
+              this.mode,
+            );
+          } else {
+            this.metadataSearch(searchParameter, this.metadataConfig);
+          }
 
-          this.metadataSearch(searchParameter, this.metadataConfig);
           this.resetScrollPos();
 
           // prevent immediately filtering, the search results
@@ -262,6 +341,11 @@ export default {
 
       if (triggerClearSearch) {
         this.clearSearchResults();
+      }
+
+      if (pinsChanged && !tagsChanged && fromRoute) {
+        // don't filter in case only pinsChanged and we aren't in the initial check
+        return;
       }
 
       // always filter changes of the url except a change of the search term
@@ -292,35 +376,46 @@ export default {
       });
     },
     catchSearchClicked(search) {
-      // this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search);
-      if (this.currentSearchTerm.trim() !== search) {
-        // the search parameter needs to be '' to clear it
-
-        this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search,
-          undefined, undefined, undefined,
-            this.isAuthorSearch);
-      }
+      this.$router.options.additiveChangeRoute(
+        this.$route,
+        this.$router,
+        BROWSE_PATH,
+        search,
+        undefined,
+        this.mode,
+        undefined,
+        this.isAuthorSearch,
+      );
     },
     catchSearchCleared() {
-      // Only change route if state currentSearchTrim is not equal to an empty string
-      // to avoid redundant navigation when there are no search terms
-      if (this.currentSearchTerm.trim() !== '') {
-
-        // the search parameter needs to be '' to clear it
-        this.mixinMethods_additiveChangeRoute(BROWSE_PATH, '',
-        undefined, undefined, undefined,
-          this.isAuthorSearch);
-      }
+      this.$router.options.additiveChangeRoute(
+        this.$route,
+        this.$router,
+        BROWSE_PATH,
+        '',
+        undefined,
+        this.mode,
+        undefined,
+        this.isAuthorSearch,
+      );
     },
     catchAuthorSearchClick() {
       this.oldIsAuthorSearch = this.isAuthorSearch;
       const newIsAuthorSearchParameter = this.isAuthorSearch ? 'false' : 'true';
 
-      this.mixinMethods_additiveChangeRoute(BROWSE_PATH,
-          this.currentSearchTerm,
-          undefined, undefined, undefined,
-          newIsAuthorSearchParameter);
-
+      this.$router.options.additiveChangeRoute(
+        this.$route,
+        this.$router,
+        BROWSE_PATH,
+        this.currentSearchTerm,
+        undefined,
+        undefined,
+        undefined,
+        newIsAuthorSearchParameter,
+      );
+    },
+    catchShallowRealClick() {
+      this.showShallowData = !this.showShallowData;
     },
     // eslint-disable-next-line no-unused-vars
     catchOrganizationClicked(organization) {
@@ -328,14 +423,9 @@ export default {
     },
   },
   computed: {
-    ...mapState([
-      'config',
-      'categoryCards',
-    ]),
+    ...mapState(['config']),
     ...mapGetters({
       metadatasContent: `${METADATA_NAMESPACE}/metadatasContent`,
-      metadatasContentSize: `${METADATA_NAMESPACE}/metadatasContentSize`,
-      filteredContentSize: `${METADATA_NAMESPACE}/filteredContentSize`,
       searchedMetadatasContent: `${METADATA_NAMESPACE}/searchedMetadatasContent`,
       searchingMetadatasContent: `${METADATA_NAMESPACE}/searchingMetadatasContent`,
       searchingMetadatasContentOK: `${METADATA_NAMESPACE}/searchingMetadatasContentOK`,
@@ -351,18 +441,13 @@ export default {
       browseScrollPosition: 'browseScrollPosition',
       defaultControls: 'defaultControls',
       currentSearchTerm: `${METADATA_NAMESPACE}/currentSearchTerm`,
-      vReloadAmount: `${METADATA_NAMESPACE}/vReloadAmount`,
-      vReloadAmountMobile: `${METADATA_NAMESPACE}/vReloadAmountMobile`,
-      vReloadDelay: `${METADATA_NAMESPACE}/vReloadDelay`,
     }),
     loading() {
-      return (this.loadingMetadatasContent
-          || this.isFilteringContent
-          || this.searchingMetadatasContent
+      return (
+        this.loadingMetadatasContent ||
+        this.isFilteringContent ||
+        this.searchingMetadatasContent
       );
-    },
-    reloadAmount() {
-      return this.$vuetify.breakpoint.smAndUp ? this.vReloadAmount : this.vReloadAmountMobile;
     },
     metadataConfig() {
       return this.config?.metadataConfig || {};
@@ -373,67 +458,111 @@ export default {
     enabledControls() {
       let enableds = this.preenabledControls;
 
-      if (this.$vuetify.breakpoint.smAndDown) {
-        enableds = enableds.filter(i => i !== LISTCONTROL_COMPACT_LAYOUT_ACTIVE);
+      if (this.$vuetify.display.smAndDown) {
+        enableds = enableds.filter(
+          (i) => i !== LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
+        );
       }
 
       return enableds;
     },
     searchBarPlaceholder() {
-      if (this.$vuetify.breakpoint.smAndDown) {
+      if (this.$vuetify.display.smAndDown) {
         return this.searchPlaceholderTextSmall;
       }
 
-      return this.isAuthorSearch ? this.authorSearchPlaceholderText : this.searchPlaceholderText;
-    },
-    // keywordsPlaceholder() {
-    //   return this.searchingMetadatasContent || this.updatingTags;
-    // },
-    searchMetadatasContentSize() {
-      return this.searchedMetadatasContent !== undefined ? Object.keys(this.searchedMetadatasContent).length : 0;
-    },
-    mapFilterHeight() {
-      const sHeight = document.documentElement.clientHeight;
-
-      let height = this.maxMapFilterHeight;
-
-      if (sHeight < this.maxMapFilterHeight) {
-        height = sHeight - 165;
-      }
-
-      return height;
-    },
-    metadataListStyling() {
-      return {
-        xs8: this.mapFilteringPossible && this.showMapFilter,
-        xs12: this.mapFilteringPossible && !this.showMapFilter,
-        'mt-2': !this.showMapFilter,
-        // style: this.showMapFilter ? `margin-top: -${this.mapFilterHeight}px;` : '',
-      };
+      return this.isAuthorSearch
+        ? this.authorSearchPlaceholderText
+        : this.searchPlaceholderText;
     },
     mapFilteringPossible() {
-      return this.$vuetify.breakpoint.smAndUp;
+      return this.$vuetify.display.smAndUp;
     },
     searchCount() {
-      return this.filteredContent !== undefined ? Object.keys(this.filteredContent).length : 0;
+      return this.filteredDatasets?.length > 0
+        ? Object.keys(this.filteredDatasets).length
+        : 0;
     },
     mode() {
-      return this.$route.query.mode ? this.$route.query.mode.toLowerCase() : undefined;
+      return this.$route.query.mode
+        ? this.$route.query.mode.toLowerCase()
+        : undefined;
+    },
+    modeData() {
+      return this.modeStore.getModeMetadata(this.mode);
+    },
+    filteredDatasets() {
+      if (this.mode) {
+        return this.filteredModeContent;
+      }
+
+      return this.filteredContent;
+    },
+    filteredDatasetsSize() {
+      return this.filteredDatasets?.length;
+    },
+    allDatasets() {
+      if (this.mode) {
+        return this.modeContent;
+      }
+
+      return this.metadatasContent;
+    },
+    allDatasetsSize() {
+      return this.allDatasets !== undefined
+        ? Object.keys(this.allDatasets).length
+        : 0;
+    },
+    tagsFromDatasets() {
+      if (this.mode) {
+        return this.modeTags;
+      }
+
+      return this.allTags;
+    },
+    showShallowData: {
+      get() {
+        if (this.mode === EDNA_MODE) {
+          const modeMetadata = this.modeStore.getModeMetadata(EDNA_MODE);
+          return modeMetadata.isShallow;
+        }
+
+        return false;
+      },
+      async set(showShallow) {
+        if (this.mode === EDNA_MODE) {
+          const modeMetadata = this.modeStore.getModeMetadata(EDNA_MODE);
+          modeMetadata.isShallow = showShallow;
+
+          // reload the datasets again because there is a different behavior
+          // based on the isShallow property
+          await this.loadModeDatasets();
+          this.filterContent();
+        }
+      },
     },
   },
   watch: {
-    /* eslint-disable no-unused-vars */
-    $route: function watchRouteChanges(to, from) {
+    async metadatasContent() {
+      if (this.mode) {
+        await this.loadModeDatasets();
+      }
+
+      this.filterContent();
+    },
+    $route: async function watchRouteChanges(to, from) {
       // react on changes of the route (browser back / forward click)
+
+      if (this.mode) {
+        await this.loadModeDatasets();
+      }
+
       this.checkRouteChanges(from);
     },
     isFilteringContent() {
       if (!this.isFilteringContent) {
         this.setScrollPos(this.browseScrollPosition);
       }
-    },
-    metadatasContent() {
-      this.filterContent();
     },
     searchedMetadatasContent() {
       if (!this.searchingMetadatasContent && this.searchingMetadatasContentOK) {
@@ -445,8 +574,12 @@ export default {
     MetadataList,
   },
   data: () => ({
-    PageBGImage: 'app_b_browsepage',
-    placeHolderAmount: 4,
+    categoryCards,
+    EDNA_MODE,
+    modeStore: null,
+    modeContent: {},
+    filteredModeContent: [],
+    modeTags: [],
     suggestionText: 'Try one of these categories',
     searchPlaceholderTextSmall: 'Enter research search term',
     searchPlaceholderText: 'Enter research term or topic ',
@@ -468,13 +601,10 @@ export default {
 };
 </script>
 
-
 <style scoped>
-
-  .stickyFilterBar {
-    position: sticky;
-    top: 50px;
-    z-index: 1000;
-  }
-
+.stickyFilterBar {
+  position: sticky;
+  top: 50px;
+  z-index: 1000;
+}
 </style>

@@ -8,13 +8,13 @@
 
     <v-row>
       <v-col>
-        <!-- <MicroChart :station="station"
+        <!-- <GcNetMicroChart :station="station"
                       :image="stationImg(station.alias)"
                       :fileValueMapping="fileValueMapping"
                       :delay="index * 100"
                       @detailClick="(stationID) => { changeCurrentStation(stationID); }" /> -->
 
-        <MicroChart />
+        <GcNetMicroChart />
       </v-col>
 
       <v-col>
@@ -45,15 +45,15 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import DetailChart from '@/modules/metadata/components/GC-Net/DetailChart.vue';
-import DetailChartsList from '@/modules/metadata/components/GC-Net/DetailChartsList.vue';
-import MicroChart from '@/modules/metadata/components/GC-Net/MicroChart.vue';
+import DetailChart from '@/modules/metadata/components/GC-Net/GcNetDetailChart.vue';
+import DetailChartsList from '@/modules/metadata/components/GC-Net/GcNetDetailChartsList.vue';
+import GcNetMicroChart from '@/modules/metadata/components/GC-Net/GcNetMicroChart.vue';
 
 export default {
   name: 'GcNetPage',
   beforeMount() {},
   mounted() {},
-  beforeDestroy() {},
+  beforeUnmount() {},
   computed: {
     // ...mapGetters({
     //   metadatasContent: `${METADATA_NAMESPACE}/metadatasContent`,
@@ -63,7 +63,7 @@ export default {
   methods: {},
   components: {
     DetailChart,
-    MicroChart,
+    GcNetMicroChart,
     DetailChartsList,
   },
   data: () => ({}),

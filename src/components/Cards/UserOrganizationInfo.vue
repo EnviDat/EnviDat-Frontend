@@ -1,5 +1,5 @@
 <template>
-  <v-card id="UserOrganizationInfo" raised :width="width" :height="height">
+  <v-card id="UserOrganizationInfo" elevation="8" :width="width" :height="height">
     <div class="cardGrid fill-height">
       <div class="avatarGrid py-4 pl-4 pr-2">
         <div class="text-h6">
@@ -28,8 +28,12 @@
           <div v-for="(roles,index) in organizationRoles"
                 :key="index"
                 class="pt-1">
-            <div class="text-body-1" >
-              <a :href="`${ckanDomain}/organization/${roles.organization}`" target="_blank">{{ roles.organization }}</a>
+            <div>
+              <MetadataOrganizationChip
+                style="cursor: pointer !important;"
+                :organization="roles.organization"
+                @organizationClicked="$emit('organizationClick', $event)"
+              />
             </div>
 
             <div class="text-body-1">
@@ -38,13 +42,11 @@
           </div>
         </div>
 
-        <div class="textGrid mt-2 text-caption">
+        <div  class="textGrid mt-2 text-caption">
           <div>
-            <v-icon small>info</v-icon>
+            <v-icon size="small" :icon="mdiInformation" />
           </div>
-          <div>
-            {{ organizationInfoText }}
-          </div>
+          <div v-html="markdownText"></div>
         </div>
       </div>
     </div>
@@ -66,8 +68,13 @@
  */
 import { mapState } from 'vuex';
 
+import { mdiInformation } from '@mdi/js';
+
 import UserRoleChip from '@/components/Chips/UserRoleChip.vue';
 import UserAvatar from '@/components/Layouts/UserAvatar.vue';
+import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip.vue';
+
+
 import {
   hasOrganizationRoles,
   isAdmin,
@@ -76,8 +83,11 @@ import {
   isSysadmin,
 } from '@/factories/userEditingValidations';
 
+import { renderMarkdown } from '@/factories/stringFactory';
+
 export default {
   name: 'UserOrganizationInfo',
+  emit: ['organizationClick'],
   props: {
     width: {
       type: Number,
@@ -103,12 +113,27 @@ export default {
 
       return {};
     },
+    markdownText() {
+      return renderMarkdown(this.organizationInfoText.trim(), false);
+    },
+    noOrganizationInfoText() {
+      const infoText = 'If you are an employee of WSL or affiliated with WSL, please contact <a href="mailto:envidat@wsl.ch">envidat@wsl.ch</a> to receive editing rights for publishing datasets.';
+      return (infoText);
+    },
     organizationInfoText() {
-      if (isSysadmin(this.organizationRoles)) {
+      if (isMember(this.organizationRoles)) {
+        return this.userDashboardConfig.organizationRolesText?.memberOrganizationText || this.memberOrganizationText;
+      }
+
+      if (isEditor(this.organizationRoles)) {
         return (
-          this.userDashboardConfig.organizationRolesText
-            ?.sysadminOrganizationText || this.sysadminOrganizationText
+            this.userDashboardConfig.organizationRolesText
+                ?.editorOrganizationText || this.editorOrganizationText
         );
+      }
+
+      if (this.isCollaborator) {
+        return this.userDashboardConfig.organizationRolesText?.collaboratorText || this.collaboratorText;
       }
 
       if (isAdmin(this.organizationRoles)) {
@@ -118,25 +143,10 @@ export default {
         );
       }
 
-      if (isEditor(this.organizationRoles)) {
+      if (isSysadmin(this.organizationRoles)) {
         return (
-          this.userDashboardConfig.organizationRolesText
-            ?.editorOrganizationText || this.editorOrganizationText
-        );
-      }
-
-      if (this.isCollaborator) {
-        return this.userDashboardConfig.organizationRolesText?.collaboratorText || this.collaboratorText;
-      }
-
-      if (isMember(this.organizationRoles)) {
-        return this.userDashboardConfig.organizationRolesText?.memberOrganizationText || this.memberOrganizationText;
-      }
-
-      if (isMember(this.organizationRoles)) {
-        return (
-          this.userDashboardConfig.organizationRolesText
-            ?.memberOrganizationText || this.memberOrganizationText
+            this.userDashboardConfig.organizationRolesText
+                ?.sysadminOrganizationText || this.sysadminOrganizationText
         );
       }
 
@@ -151,11 +161,10 @@ export default {
   },
   methods: {},
   data: () => ({
+    mdiInformation,
     avatarHeight: 32,
     title: 'Organization Roles',
-    noOrganizationText: `You aren't assigned to an organisation yet.
-      If you are working at WSL ask your group leader to assign editor rights, so you can create dataset within your organisation.
-      If you aren't working at WSL you can ask for being added as a collaborator to a dataset, get in contact with the datasets main contact.`,
+    noOrganizationText: 'If you are an employee of WSL or affiliated with WSL, please contact <a href="mailto:envidat@wsl.ch">envidat@wsl.ch</a> to receive editing rights for publishing datasets.',
     memberOrganizationText: 'As a member of an organisation you can see its datasets but not edit or create new ones. Get in contact with your group leader to get editor rights.',
     editorOrganizationText: 'As an editor of an organisation you can edit datasets and create new ones.',
     adminOrganizationText: 'As an admin of an organisation you can manage the organisation users, datasets and information. ',
@@ -166,6 +175,7 @@ export default {
   components: {
     UserAvatar,
     UserRoleChip,
+    MetadataOrganizationChip,
   },
 };
 </script>
@@ -195,6 +205,7 @@ export default {
   display: grid;
   grid-template-rows: 32px auto;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .roleGrid > div {
@@ -209,5 +220,12 @@ export default {
   overflow-y: auto;
   grid-template-columns: 1fr auto;
   gap: 8px;
+}
+
+</style>
+
+<style>
+.textGrid p {
+  margin: 0;
 }
 </style>
