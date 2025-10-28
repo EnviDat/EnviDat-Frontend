@@ -11,11 +11,7 @@
 
 import EditDataCredits from '@/modules/user/components/edit/EditDataCredits.vue';
 
-import {
-  createAuthors,
-  extractAuthorsMap,
-  getFullAuthorsFromDataset,
-} from '@/factories/authorFactory';
+import { createAuthors, extractAuthorsMap, getFullAuthorsFromDataset } from '@/factories/authorFactory';
 
 import { AUTHORS_EDIT_CURRENT_DATACREDIT } from '@/factories/metadataConsts';
 import unFormatedMetadataCards from '@/../stories/js/metadata';
@@ -40,13 +36,10 @@ authorsObjs.forEach((author) => {
   authorsStrings.push(author.fullName);
 });
 
-
 export default {
   title: '3 Datasets / 2 Edit / Data Credits',
   component: EditDataCredits,
 };
-
-
 
 export const EditingDataCreditViews = () => ({
   components: { EditDataCredits },
@@ -116,7 +109,7 @@ export const EditingDataCreditViews = () => ({
     catchCreditClick(author, creditName) {
       let dCredit = author.dataCredit;
 
-      if (!dCredit){
+      if (!dCredit) {
         dCredit = [];
       }
 
@@ -136,4 +129,3 @@ export const EditingDataCreditViews = () => ({
     instruction: AUTHORS_EDIT_CURRENT_DATACREDIT,
   }),
 });
-

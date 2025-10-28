@@ -1,63 +1,49 @@
 <template>
-  <v-card class="authorCard pa-0"
-          id="AuthorCard"
-          :class="cardClass"
-          :style="dynamicCardBackground"
-          :loading="loadingColor">
-
-    <v-container fluid
-                 class="pa-4">
-
-      <v-row no-gutters
-             class="pb-3">
-
+  <v-card
+    class="authorCard pa-0"
+    id="AuthorCard"
+    :class="cardClass"
+    :style="dynamicCardBackground"
+    :loading="loadingColor"
+  >
+    <v-container fluid class="pa-4">
+      <v-row no-gutters class="pb-3">
         <v-col class="flex-grow-1 py-0">
-          <div class="authorTitle"
-               :class="dark ? 'text-white' : 'text-black'">
+          <div class="authorTitle" :class="dark ? 'text-white' : 'text-black'">
             {{ firstName }}
           </div>
         </v-col>
 
-        <v-col v-if="author.isAuthorDead"
-               class="flex-grow-0 py-0">
-
-          <v-tooltip location='bottom'>
+        <v-col v-if="author.isAuthorDead" class="flex-grow-0 py-0">
+          <v-tooltip location="bottom">
             <template v-slot:activator="{ props }">
-              <BaseIcon 
-                v-bind="props"
-                color="black"
-                :icon="mdiTimerSandComplete"
-              />
+              <BaseIcon v-bind="props" color="black" :icon="mdiTimerSandComplete" />
             </template>
 
             {{ AUTHOR_PASSED_INFO }}
           </v-tooltip>
         </v-col>
 
-        <v-col class="py-0"
-               cols="12">
-          <div class="authorTitle"
-               :class="dark ? 'text-white' : 'text-black'">
+        <v-col class="py-0" cols="12">
+          <div class="authorTitle" :class="dark ? 'text-white' : 'text-black'">
             {{ lastName }}
           </div>
         </v-col>
       </v-row>
 
-      <v-row v-if="authorDetailsConfig.showDatasetCount"
-             no-gutters
-             class="py-1 readableText"
-             align="center"
-             justify="space-between">
-
-        <v-col class="flex-grow-1"
-               :class="dark ? 'text-white' : 'text-black'">
+      <v-row
+        v-if="authorDetailsConfig.showDatasetCount"
+        no-gutters
+        class="py-1 readableText"
+        align="center"
+        justify="space-between"
+      >
+        <v-col class="flex-grow-1" :class="dark ? 'text-white' : 'text-black'">
           {{ dataCountLabel }}
         </v-col>
 
-        <v-col class="flex-grow-0 py-0"
-               style="max-height: 36px;">
-
-          <BaseIconButton 
+        <v-col class="flex-grow-0 py-0" style="max-height: 36px">
+          <BaseIconButton
             class="ma-0"
             :icon="mdiMagnify"
             :outline-color="dark ? 'white' : darkColor"
@@ -67,9 +53,11 @@
             @clicked="catchSearchAuthor(author)"
           />
 
-          <v-badge :color="dark ? 'white' : darkColor"
-                   style="position:relative; top: -20px; right: -2px;"
-                   :content="author.datasetCount || 0">
+          <v-badge
+            :color="dark ? 'white' : darkColor"
+            style="position: relative; top: -20px; right: -2px"
+            :content="author.datasetCount || 0"
+          >
           </v-badge>
         </v-col>
       </v-row>
@@ -85,24 +73,21 @@
         :dark="dark"
       />
 
-      <v-row v-if="authorDetailsConfig.showDataCreditScore"
-             no-gutters
-             class="py-1 readableText"
-             justify="space-between"
-             align="center">
-
-        <v-col class="flex-grow-1"
-               :class="dark ? 'text-white' : 'text-black'">
+      <v-row
+        v-if="authorDetailsConfig.showDataCreditScore"
+        no-gutters
+        class="py-1 readableText"
+        justify="space-between"
+        align="center"
+      >
+        <v-col class="flex-grow-1" :class="dark ? 'text-white' : 'text-black'">
           {{ dataScoreLabel }}
         </v-col>
 
         <v-col class="flex-grow-0">
-          <v-tooltip location='bottom'>
+          <v-tooltip location="bottom">
             <template v-slot:activator="{ props }">
-              <BaseIcon v-bind="props"
-                        :color="dark ? 'white' : 'black'"
-                        :icon="mdiInformationOutline"
-              />
+              <BaseIcon v-bind="props" :color="dark ? 'white' : 'black'" :icon="mdiInformationOutline" />
             </template>
 
             {{ dataCreditScoreInfo }}
@@ -110,29 +95,21 @@
         </v-col>
 
         <v-col class="flex-grow-0 pl-2">
-          <div :style="`background-color: ${ dark ? whiteColor : darkColor };`"
-               class="dataCreditScore elevation-5">
-
-            <div :style="bigCountStyling"
-                 :class="dark ? 'text-black' : 'text-white'">
+          <div :style="`background-color: ${dark ? whiteColor : darkColor};`" class="dataCreditScore elevation-5">
+            <div :style="bigCountStyling" :class="dark ? 'text-black' : 'text-white'">
               {{ dataCreditScore }}
             </div>
           </div>
         </v-col>
       </v-row>
 
-      <v-row
-        v-if="authorDetailsConfig.showAuthorInfos"
-        no-gutters
-        class="pt-1 readableText"
-        align="center"
-      >
+      <v-row v-if="authorDetailsConfig.showAuthorInfos" no-gutters class="pt-1 readableText" align="center">
         <v-col class="flex-grow-1 pr-5" @click="infosExpanded = !infosExpanded">
           <v-divider :dark="dark" />
         </v-col>
 
         <v-col class="flex-grow-0">
-          <BaseIconButton 
+          <BaseIconButton
             :icon="infosExpanded ? mdiChevronDown : mdiChevronLeft"
             :icon-color="dark ? 'white' : darkColor"
             :outline-color="dark ? 'white' : darkColor"
@@ -165,19 +142,11 @@
 
         <v-col class="pa-1" sm="6" cols="12">
           <v-row no-gutters>
-            <v-col
-              cols="12"
-              class="authorInfoLabel py-0"
-              :class="dark ? 'text-white' : 'text-black'"
-            >
+            <v-col cols="12" class="authorInfoLabel py-0" :class="dark ? 'text-white' : 'text-black'">
               {{ emailLabel }}
             </v-col>
 
-            <v-col
-              cols="12"
-              class="authorInfo py-0"
-              :class="dark ? 'text-white' : 'text-black'"
-            >
+            <v-col cols="12" class="authorInfo py-0" :class="dark ? 'text-white' : 'text-black'">
               <a :href="`mailto:${author.email}`">
                 {{ author.email }}
               </a>
@@ -187,29 +156,14 @@
 
         <v-col class="pa-1" sm="6" cols="12" v-if="author?.identifier">
           <v-row no-gutters>
-
-            <v-col
-              cols="12"
-              class="authorInfoLabel py-0"
-              :class="dark ? 'text-white' : 'text-black'"
-            >
+            <v-col cols="12" class="authorInfoLabel py-0" :class="dark ? 'text-white' : 'text-black'">
               {{ idLabel }}
             </v-col>
 
-            <v-col
-              cols="12"
-              class="authorInfo py-0"
-              :class="dark ? 'text-white' : 'text-black'"
-            >
+            <v-col cols="12" class="authorInfo py-0" :class="dark ? 'text-white' : 'text-black'">
               <a
-                v-if="
-                  (author.identifierType &&
-                    author.identifierType === 'orcid') ||
-                    isOrcId(author.identifier)
-                "
-                :href="
-                  `https://orcid.org/${formatIdentifier(author.identifier)}`
-                "
+                v-if="(author.identifierType && author.identifierType === 'orcid') || isOrcId(author.identifier)"
+                :href="`https://orcid.org/${formatIdentifier(author.identifier)}`"
                 rel="noopener noreferrer"
                 target="_blank"
               >
@@ -222,15 +176,11 @@
 
         <v-col class="pa-1" sm="6" cols="12" v-if="author.affiliation">
           <v-row no-gutters>
-            <v-col cols="12"
-                   class="authorInfoLabel py-0"
-                   :class="dark ? 'text-white' : 'text-black'">
+            <v-col cols="12" class="authorInfoLabel py-0" :class="dark ? 'text-white' : 'text-black'">
               {{ affiliationLabel }}
             </v-col>
 
-            <v-col cols="12"
-                   class="authorInfo py-0"
-                   :class="dark ? 'text-white' : 'text-black'">
+            <v-col cols="12" class="authorInfo py-0" :class="dark ? 'text-white' : 'text-black'">
               {{ author.affiliation }}
             </v-col>
           </v-row>
@@ -241,12 +191,11 @@
     <v-container
       v-if="showGenericOpenButton"
       class="ma-2 pa-0"
-      style="position: absolute; top: 0; right: 0; width: 40px;"
+      style="position: absolute; top: 0; right: 0; width: 40px"
     >
       <v-row>
         <v-col cols="12">
-
-          <base-icon-button 
+          <base-icon-button
             :icon="openButtonIcon"
             icon-color="black"
             color="accent"
@@ -255,7 +204,6 @@
             :tooltip-text="openButtonTooltip"
             @clicked="$emit('openButtonClicked')"
           />
-
         </v-col>
       </v-row>
     </v-container>
@@ -309,12 +257,7 @@ import {
 import DataCreditLayout from '@/components/Layouts/DataCreditLayout.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
-import {
-  getLevelProgress,
-  getDataCreditLevel,
-  getAuthorName,
-  replaceAuthorDeadAscii,
-} from '@/factories/authorFactory';
+import { getLevelProgress, getDataCreditLevel, getAuthorName, replaceAuthorDeadAscii } from '@/factories/authorFactory';
 
 import { AUTHOR_PASSED_INFO } from '@/store/mainMutationsConsts';
 
@@ -436,8 +379,7 @@ export default {
       return style;
     },
     smallCountStyling() {
-      let style = `width: ${this.dataCreditSize * 0.55}px; height: ${this
-        .dataCreditSize * 0.55}px;`;
+      let style = `width: ${this.dataCreditSize * 0.55}px; height: ${this.dataCreditSize * 0.55}px;`;
 
       if (this.dataCreditScore >= 100) {
         style = `${style}position: relative; top: 3px;`;
@@ -501,9 +443,7 @@ export default {
         return false;
       }
 
-      return id.match(
-        /^[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}$/g,
-      );
+      return id.match(/^[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}$/g);
     },
     formatIdentifier(id) {
       if (!id) {
@@ -518,9 +458,7 @@ export default {
       return id;
     },
     dataCreditsCount(credit) {
-      return this.author.totalDataCredits
-        ? this.author.totalDataCredits[credit]
-        : '';
+      return this.author.totalDataCredits ? this.author.totalDataCredits[credit] : '';
     },
     catchSearchAuthor(author) {
       const fullName = getAuthorName(author);

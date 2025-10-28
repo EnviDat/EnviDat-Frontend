@@ -48,15 +48,15 @@ const getMetadata = (station, callback) => {
 
   axios
     .get(url)
-    .then(res => {
+    .then((res) => {
       callback(res.data);
     })
-    .catch(err => {
+    .catch((err) => {
       console.error(`${station} has error: ${err}`);
     });
 };
 
-const saveMetadataForStations = callback => {
+const saveMetadataForStations = (callback) => {
   if (!stationConfig) {
     console.log('Not stationConfig to work with!');
     return;
@@ -70,7 +70,7 @@ const saveMetadataForStations = callback => {
     console.log(`Saving metadata for ${configEntry.aliasApi}`);
 
     // eslint-disable-next-line no-loop-func
-    getMetadata(configEntry.aliasApi, data => {
+    getMetadata(configEntry.aliasApi, (data) => {
       metadataMap.set(configEntry.aliasApi, data);
       console.log(`Saved metadata for ${configEntry.aliasApi}`);
 
@@ -81,7 +81,7 @@ const saveMetadataForStations = callback => {
   }
 };
 
-const extractDates = data => {
+const extractDates = (data) => {
   const parameterDates = [];
   const keys = Object.keys(data);
 

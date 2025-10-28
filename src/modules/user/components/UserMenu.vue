@@ -2,23 +2,12 @@
   <v-menu transition="slide-y-transition" location="bottom" id="UserMenu">
     <template v-slot:activator="{ props }">
       <div v-bind="props">
-        <UserAvatar
-          style="cursor: pointer"
-          :size="size"
-          :nameInitials="nameInitials"
-          :emailHash="emailHash"
-        />
+        <UserAvatar style="cursor: pointer" :size="size" :nameInitials="nameInitials" :emailHash="emailHash" />
       </div>
     </template>
     <v-list>
       <template v-for="(item, i) in navItems">
-        <v-list-item
-          :key="i"
-          @click="menuClick(item)"
-          :prepend-icon="item.icon"
-          :title="item.title"
-          v-if="item.show"
-        >
+        <v-list-item :key="i" @click="menuClick(item)" :prepend-icon="item.icon" :title="item.title" v-if="item.show">
         </v-list-item>
       </template>
     </v-list>
@@ -80,27 +69,19 @@ export default {
   methods: {
     async menuClick(item) {
       if (item?.path === USER_SIGNOUT_PATH) {
-        let action = this.useTokenSignin
-          ? ACTION_USER_SIGNOUT_REVOKE_TOKEN
-          : ACTION_OLD_USER_SIGNOUT;
+        let action = this.useTokenSignin ? ACTION_USER_SIGNOUT_REVOKE_TOKEN : ACTION_OLD_USER_SIGNOUT;
 
         // In case where useTokenSignIn===false, but Azure login is used
-        const ckanCookie = `; ${document.cookie}`
-          .split('; ckan-beaker=')
-          .pop()
-          .split(';')[0];
+        const ckanCookie = `; ${document.cookie}`.split('; ckan-beaker=').pop().split(';')[0];
         if (action === ACTION_OLD_USER_SIGNOUT && !ckanCookie) {
           action = ACTION_USER_SIGNOUT_REVOKE_TOKEN;
         }
 
-        await this.$store.dispatch(
-          `${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`,
-          {
-            action,
-            commit: true,
-            mutation: USER_SIGNOUT,
-          },
-        );
+        await this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`, {
+          action,
+          commit: true,
+          mutation: USER_SIGNOUT,
+        });
 
         if (this.$route.path !== LANDING_PATH) {
           await this.$router?.push(LANDING_PATH);

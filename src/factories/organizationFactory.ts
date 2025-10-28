@@ -2,24 +2,38 @@ import { toRaw } from 'vue';
 import { DatasetOrganizationMapEntry } from '@/types/modelTypes';
 import type { DatasetDTO, OrganizationDTO } from '@/types/dataTransferObjectsTypes';
 
-const toPascalCase = (text, trimSpace=false) => text.split(' ').map((t) => t[0].toUpperCase() + t.slice(1).toLowerCase()).join(trimSpace?'':' ');
+const toPascalCase = (text, trimSpace = false) =>
+  text
+    .split(' ')
+    .map((t) => t[0].toUpperCase() + t.slice(1).toLowerCase())
+    .join(trimSpace ? '' : ' ');
 
 const ruBarColors = () => {
   const barColors = [
-    '#874540','#954D59','#9C5A74','#9B6A90','#907DA8','#7D92BC','#62A5C7','#45B8C8','#38C9C1','#4DD8B1','#75E59C','#A3EF86','#D5F673',
-//  "#3F1D1E","#512933","#5E374A","#644964","#635D7D","#597392","#4989A2","#369FA9","#31B4A9","#4AC8A0","#72DA92","#A1E981","#D5F673"
-//  "#F0807D","#F3859B","#ED90B8","#DC9ED3","#C2AFE7","#A0C0F3","#7ACFF4","#57DCEC","#49E6DA","#5CEEC1","#81F3A6","#ABF68B","#D6F675"  
+    '#874540',
+    '#954D59',
+    '#9C5A74',
+    '#9B6A90',
+    '#907DA8',
+    '#7D92BC',
+    '#62A5C7',
+    '#45B8C8',
+    '#38C9C1',
+    '#4DD8B1',
+    '#75E59C',
+    '#A3EF86',
+    '#D5F673',
+    //  "#3F1D1E","#512933","#5E374A","#644964","#635D7D","#597392","#4989A2","#369FA9","#31B4A9","#4AC8A0","#72DA92","#A1E981","#D5F673"
+    //  "#F0807D","#F3859B","#ED90B8","#DC9ED3","#C2AFE7","#A0C0F3","#7ACFF4","#57DCEC","#49E6DA","#5CEEC1","#81F3A6","#ABF68B","#D6F675"
   ];
   return barColors.reverse();
-}
+};
 
 export const getYearDatasetMap = (datasets: DatasetDTO[]) => {
-
   const yearMap: Map<string, DatasetDTO[]> = new Map();
 
   for (const dSet of datasets) {
-
-    let year
+    let year;
     try {
       year = JSON.parse(dSet.publication).publication_year;
     } catch (e) {
@@ -28,7 +42,7 @@ export const getYearDatasetMap = (datasets: DatasetDTO[]) => {
 
     if (year) {
       if (typeof year === 'number') {
-        year = year.toString()
+        year = year.toString();
       }
 
       if (yearMap.has(year)) {
@@ -41,10 +55,9 @@ export const getYearDatasetMap = (datasets: DatasetDTO[]) => {
   }
 
   return yearMap;
-}
+};
 
 export const getTopOrganizations = (orgas: OrganizationDTO[]) => {
-
   const top = [];
 
   if (!orgas) {
@@ -58,7 +71,7 @@ export const getTopOrganizations = (orgas: OrganizationDTO[]) => {
   }
 
   return top;
-}
+};
 
 export const getOrgaDatasetsMap = (datasets, groupForResearchUnit = false) => {
   const datasetMap: Map<string, DatasetOrganizationMapEntry> = new Map();
@@ -74,14 +87,13 @@ export const getOrgaDatasetsMap = (datasets, groupForResearchUnit = false) => {
     if (key) {
       const orgaDatasets = datasetMap.get(key);
       if (orgaDatasets) {
-
-        orgaDatasets.count += 1
+        orgaDatasets.count += 1;
         orgaDatasets.datasets.push(dataset);
       } else {
         datasetMap.set(key, {
           count: 1,
           datasets: [dataset],
-/*
+          /*
           organization: dataset.organization,
           name: dataset.organization.name,
           title: dataset.organization.title,
@@ -100,10 +112,9 @@ export const getOrgaDatasetsMap = (datasets, groupForResearchUnit = false) => {
   }
 
   return datasetMap;
-}
+};
 
-export const organizationSeries = (orgaDatasetsMap : Map<string, DatasetOrganizationMapEntry>, yearLabels) => {
-
+export const organizationSeries = (orgaDatasetsMap: Map<string, DatasetOrganizationMapEntry>, yearLabels) => {
   const series = [];
   const keys = Array.from(orgaDatasetsMap.keys());
 
@@ -125,7 +136,7 @@ export const organizationSeries = (orgaDatasetsMap : Map<string, DatasetOrganiza
   }
 
   return series;
-}
+};
 
 export function getResearchUnit(orgaTitle, researchUnits) {
   const units = researchUnits.researchUnits;
@@ -150,7 +161,6 @@ export function getResearchUnit(orgaTitle, researchUnits) {
         }
       }
     }
-
   }
 
   return 'Others';
@@ -172,10 +182,8 @@ export function enhanceDatasetWithResearchUnit(datasets, researchUnits) {
   return ruDatasets;
 }
 
-
-export function getOrganizationRelationMap(organizations : OrganizationDTO[]) {
-
-  const organizationRelationMap : Map<string, OrganizationDTO[]> = new Map();
+export function getOrganizationRelationMap(organizations: OrganizationDTO[]) {
+  const organizationRelationMap: Map<string, OrganizationDTO[]> = new Map();
 
   if (!organizations) {
     return organizationRelationMap;
@@ -194,7 +202,7 @@ export function getOrganizationRelationMap(organizations : OrganizationDTO[]) {
       orgaEntry.push(orga);
     } else {
       organizationRelationMap.set(key, [orga]);
-/*
+      /*
       organizationRelationMap.set(key, {
         name: orgaName,
         title: orga.title,
@@ -208,7 +216,6 @@ export function getOrganizationRelationMap(organizations : OrganizationDTO[]) {
 }
 
 export const getOrganitzionTreeItem = (entries, id) => {
-
   for (let i = 0; i < entries.length; i++) {
     const entry = entries[i];
 
@@ -225,15 +232,14 @@ export const getOrganitzionTreeItem = (entries, id) => {
   }
 
   return null;
-}
+};
 
 function getTreeItem(
-  organizationRelationMap : Map<string, OrganizationDTO[]>,
-  organizationDatasetMap : Map<string, DatasetOrganizationMapEntry>,
+  organizationRelationMap: Map<string, OrganizationDTO[]>,
+  organizationDatasetMap: Map<string, DatasetOrganizationMapEntry>,
   organization: OrganizationDTO,
   index,
-  ) {
-
+) {
   const orgaName = organization.name;
   const orgaTitle = organization.title;
 
@@ -246,7 +252,6 @@ function getTreeItem(
   let childDatasetsCount = 0;
 
   if (childrendOrgas?.length > 0) {
-
     for (let i = 0; i < childrendOrgas.length; i++) {
       const childOrga = childrendOrgas[i];
 
@@ -268,7 +273,7 @@ function getTreeItem(
     children: childItems,
   };
 
-/*
+  /*
   if (childItems?.length > 0) {
     item.children = childItems;
   }
@@ -278,11 +283,10 @@ function getTreeItem(
 }
 
 export function getOrganizationTree(
-  topOrganizations : OrganizationDTO[],
-  organizationRelationMap : Map<string, OrganizationDTO[]>,
-  organizationDatasetMap : Map<string, DatasetOrganizationMapEntry> = undefined,
+  topOrganizations: OrganizationDTO[],
+  organizationRelationMap: Map<string, OrganizationDTO[]>,
+  organizationDatasetMap: Map<string, DatasetOrganizationMapEntry> = undefined,
 ) {
-
   // const orgaNames = Array.from(organizationRelationMap.keys()).sort();
   const organizations = topOrganizations.sort();
 
@@ -297,7 +301,7 @@ export function getOrganizationTree(
     const orgaDatasetEntry = organizationDatasetMap?.get(orgaName);
     const datasetCount = orgaDatasetEntry?.count || 0;
 
-    const childItems = []
+    const childItems = [];
     let childDatasetsCount = 0;
 
     if (childOrganizations.length > 0) {
@@ -322,7 +326,7 @@ export function getOrganizationTree(
       children: childItems,
     };
 
-/*
+    /*
     if (childItems?.length > 0) {
       item.children = childItems;
     }
@@ -353,7 +357,7 @@ export const organizationDatasetHistoryOptions = {
     colors: 'show',
   },
   responsive: true,
-}
+};
 
 export const researchUnitDatasetChartOptions = {
   plugins: {
@@ -362,7 +366,7 @@ export const researchUnitDatasetChartOptions = {
       text: 'Dataset Publication per Research Unit History',
     },
     legend: {
-      position: (ctx: { chart: { width: number; }; }) => ctx?.chart?.width < 968 ? 'bottom' : 'right',
+      position: (ctx: { chart: { width: number } }) => (ctx?.chart?.width < 968 ? 'bottom' : 'right'),
       reverse: 'true',
     },
     datalabels: {
@@ -384,9 +388,9 @@ export const researchUnitDatasetChartOptions = {
       stacked: true,
     },
   },
-}
+};
 
-export const getResearchUnitDatasetSeries = (orgaDatasetsMap : Map<string, DatasetOrganizationMapEntry>) => {
+export const getResearchUnitDatasetSeries = (orgaDatasetsMap: Map<string, DatasetOrganizationMapEntry>) => {
   if (!orgaDatasetsMap) {
     return {
       labels: [],
@@ -413,10 +417,12 @@ export const getResearchUnitDatasetSeries = (orgaDatasetsMap : Map<string, Datas
     labels: yearsSorted,
     datasets: series,
   };
-}
+};
 
-export function getOrganizationFromRelationMap(orgaNameToFind :string, orgaRelationMap : Map<string, OrganizationDTO[]>) : OrganizationDTO | null {
-
+export function getOrganizationFromRelationMap(
+  orgaNameToFind: string,
+  orgaRelationMap: Map<string, OrganizationDTO[]>,
+): OrganizationDTO | null {
   if (!orgaNameToFind || !orgaRelationMap) {
     return null;
   }

@@ -1,13 +1,5 @@
 <template>
-  <v-card
-    id="BaseClickCard"
-    max-width="500px"
-    :height="height"
-    :disabled="disabled"
-    link
-    hover
-    @click="clicked"
-  >
+  <v-card id="BaseClickCard" max-width="500px" :height="height" :disabled="disabled" link hover @click="clicked">
     <v-container class="pa-0">
       <v-row align="center" no-gutters>
         <!-- Image -->
@@ -24,25 +16,19 @@
 
         <!-- Text -->
         <v-col class="px-0" cols="8" sm="7">
-          <div
-            class="px-1 baseClickCardTitle"
-            :class="{ compactTitle: $vuetify.display.xl }"
-          >
+          <div class="px-1 baseClickCardTitle" :class="{ compactTitle: $vuetify.display.xl }">
             {{ title }}
           </div>
 
-          <div
-            v-if="color"
-            class="py-0 my-0"
-            :style="`height: 5px; background-color: ${color};`"
-          ></div>
+          <div v-if="color" class="py-0 my-0" :style="`height: 5px; background-color: ${color};`"></div>
         </v-col>
       </v-row>
     </v-container>
   </v-card>
 </template>
 
-<script>/**
+<script>
+/**
  * BaseClickCard.vue creates a small card with a title and an image, it emits the
  * 'clicked' event with the title a parameter.
  *

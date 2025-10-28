@@ -6,13 +6,7 @@
           <span class="text-h6 font-weight-bold mr-2">{{ title }}</span>
         </v-col>
         <v-col v-if="showLogo" class="d-flex justify-end">
-          <v-img
-            style="flex: none"
-            :src="EnviDatLogo"
-            height="32"
-            width="32"
-            alt="envidat_logo"
-          />
+          <v-img style="flex: none" :src="EnviDatLogo" height="32" width="32" alt="envidat_logo" />
         </v-col>
       </v-row>
     </v-card-text>

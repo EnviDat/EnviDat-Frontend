@@ -34,12 +34,8 @@ function getDataCredit(author) {
   } else if (typeof author.data_credit === 'string') {
     dataCredit[author.data_credit] = 1;
   } else {
-    console.log(
-      `Unexpected type for author.data_credit ${typeof author.data_credit}`,
-    );
-    throw new Error(
-      `Unexpected type for author.data_credit ${typeof author.data_credit}`,
-    );
+    console.log(`Unexpected type for author.data_credit ${typeof author.data_credit}`);
+    throw new Error(`Unexpected type for author.data_credit ${typeof author.data_credit}`);
   }
 
   return dataCredit;
@@ -164,7 +160,7 @@ function extractAuthorsMap(datasets) {
           authorCount++;
         }
       }
-    // } else {
+      // } else {
       // console.log(`Dataset ${dataset.title} id ${dataset.id} has no authors?`);
     }
 
@@ -177,14 +173,12 @@ function extractAuthorsMap(datasets) {
 function writeAuthorsToFile(authorMap) {
   const authorJson = JSON.stringify(authorMap, null, 2);
 
-  fs.writeFile(outputPath + outputFileName, authorJson, err => {
+  fs.writeFile(outputPath + outputFileName, authorJson, (err) => {
     if (err) {
       return console.log(err);
     }
 
-    return console.log(
-      `Authors extracted to ${outputPath}${outputFileName}. Wrote ${authorJson.length} lines.`,
-    );
+    return console.log(`Authors extracted to ${outputPath}${outputFileName}. Wrote ${authorJson.length} lines.`);
   });
 }
 

@@ -1,10 +1,7 @@
 // src/modules/workflow/utils/mode.ts
 
 import type { ComputeResult, WorkflowStep } from '@/types/workflow';
-import {
-  StepStatus,
-  WorkflowMode,
-} from '@/modules/workflow/utils/workflowEnums';
+import { StepStatus, WorkflowMode } from '@/modules/workflow/utils/workflowEnums';
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 
 export function computeStepsForMode(
@@ -40,8 +37,7 @@ export function computeStepsForMode(
 
   const next = steps.map((s, idx) => {
     const isFirst = idx === 0;
-    const forceDisabled =
-      !isBackendSource && DISABLED_IN_CREATE_LOCAL_BY_ID.has(s.id);
+    const forceDisabled = !isBackendSource && DISABLED_IN_CREATE_LOCAL_BY_ID.has(s.id);
 
     const canBeActive = (isBackendSource || isFirst) && !forceDisabled;
 
@@ -68,32 +64,31 @@ function updateStepStatusAndErrors(
   hasDtData: (v: any) => boolean,
   dataSource: 'local' | 'backend',
 ): WorkflowStep {
-
   const isBackend = dataSource === 'backend';
   const vm = datasetModel.getViewModel(viewModelKey);
 
-  const newStep = existingStep ? existingStep : {
-    completed: false,
-    component: undefined,
-    description: '',
-    dirty: false,
-    guideLines: undefined,
-    hasError: false,
-    icon: '',
-    id: 0,
-    isEditable: false,
-    key: viewModelKey,
-    readOnly: false,
-    status: undefined,
-    title: '',
-    touched: false,
-    viewModelKey: '',
-    errors: null,
-  }
+  const newStep = existingStep
+    ? existingStep
+    : {
+        completed: false,
+        component: undefined,
+        description: '',
+        dirty: false,
+        guideLines: undefined,
+        hasError: false,
+        icon: '',
+        id: 0,
+        isEditable: false,
+        key: viewModelKey,
+        readOnly: false,
+        status: undefined,
+        title: '',
+        touched: false,
+        viewModelKey: '',
+        errors: null,
+      };
 
-  const dataForInit = vm.getModelDataForInit
-    ? vm.getModelDataForInit()
-    : vm.getModelData?.();
+  const dataForInit = vm.getModelDataForInit ? vm.getModelDataForInit() : vm.getModelData?.();
   const hasAnything = hasDtData(dataForInit);
 
   if (!vm || !hasAnything) {
@@ -110,7 +105,7 @@ function updateStepStatusAndErrors(
 
     newStep.completed = !hasErrors;
     newStep.hasError = hasErrors;
-    newStep.status = hasErrors ? StepStatus.Error : StepStatus.Completed
+    newStep.status = hasErrors ? StepStatus.Error : StepStatus.Completed;
     newStep.errors = hasErrors ? vm.validationErrors : null;
   }
 
@@ -126,12 +121,13 @@ export function enhanceStepsFromData(
   mode: WorkflowMode,
   dataSource: 'local' | 'backend',
 ) {
-
   if (mode === WorkflowMode.Edit) {
     return { steps, startIdx: 0 };
   }
 
-  const next = steps.map((step, idx) => updateStepStatusAndErrors(step, step.viewModelKey, datasetModel, hasDtData, dataSource));
+  const next = steps.map((step, idx) =>
+    updateStepStatusAndErrors(step, step.viewModelKey, datasetModel, hasDtData, dataSource),
+  );
 
   const startIdx = next.findIndex((step) => !step.completed);
   return { steps: next, startIdx: startIdx === -1 ? 0 : startIdx };

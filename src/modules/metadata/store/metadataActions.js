@@ -44,11 +44,7 @@ import {
 import { urlRewrite } from '@/factories/apiFactory';
 import { localSearch, sortObjectArray } from '@/factories/metaDataFactory';
 
-import {
-  getKeywordsForFiltering,
-  getTagColor,
-  tagsIncludedInSelectedTags,
-} from '@/factories/keywordsFactory';
+import { getKeywordsForFiltering, getTagColor, tagsIncludedInSelectedTags } from '@/factories/keywordsFactory';
 
 import categoryCards from '@/store/categoryCards';
 
@@ -63,14 +59,13 @@ if (!useTestdata) {
   API_ROOT = import.meta.env?.VITE_API_ROOT;
 }
 
-
 function contentFilteredByTags(value, selectedTagNames) {
   return value.tags && tagsIncludedInSelectedTags(value.tags, selectedTagNames);
 }
 
 function createSolrQuery(searchTerm) {
   return `title:"*${searchTerm}*"~2 OR notes:"*${searchTerm}*"~2`;
-/*
+  /*
   const splits = searchTerm.split(' ');
   if (splits.length <= 0) {
     return overallSearchString;
@@ -93,9 +88,7 @@ function createSolrQuery(searchTerm) {
 
 // Returns array with strings that are both only maxWords or less and do not start with a number
 function getfilteredArray(arr, maxWords) {
-  return arr?.filter(
-    item => item.trim().split(' ').length <= maxWords && !/^\d/.test(item),
-  );
+  return arr?.filter((item) => item.trim().split(' ').length <= maxWords && !/^\d/.test(item));
 }
 
 // Return array with each element converted to object with name and assigned color
@@ -116,10 +109,7 @@ function getAuthorSolrQuery(author) {
   // Trim author string
   const authorTrimmed = author.trim();
 
-  const authorSpecialChars = authorTrimmed
-    .replace('ü', 'ue')
-    .replace('ä', 'ae')
-    .replace('ö', 'oe');
+  const authorSpecialChars = authorTrimmed.replace('ü', 'ue').replace('ä', 'ae').replace('ö', 'oe');
 
   if (authorTrimmed === authorSpecialChars) {
     return `author:"*${authorTrimmed}*"~1000`;
@@ -132,15 +122,7 @@ function getAuthorSolrQuery(author) {
 // Name values converted to upper case so that comparisons are case insensitive
 
 export default {
-  async [SEARCH_METADATA](
-    { commit },
-    {
-      searchTerm,
-      metadataConfig = {},
-      isAuthorSearch = false,
-      mode = undefined,
-    },
-  ) {
+  async [SEARCH_METADATA]({ commit }, { searchTerm, metadataConfig = {}, isAuthorSearch = false, mode = undefined }) {
     const originalTerm = searchTerm.trim();
 
     commit(SEARCH_METADATA, searchTerm);
@@ -159,9 +141,7 @@ export default {
       return;
     }
 
-    const solrQuery = isAuthorSearch
-      ? getAuthorSolrQuery(originalTerm)
-      : createSolrQuery(originalTerm);
+    const solrQuery = isAuthorSearch ? getAuthorSolrQuery(originalTerm) : createSolrQuery(originalTerm);
     const query = `${ACTION_SEARCH_METADATA()}?q=${solrQuery}`;
     const queryAdditions = '&wt=json&rows=1000';
     const publicOnlyQuery = `${query}${queryAdditions}&fq=capacity:public&fq=state:active`;
@@ -169,20 +149,17 @@ export default {
 
     await axios
       .get(url)
-      .then(response => {
+      .then((response) => {
         commit(SEARCH_METADATA_SUCCESS, {
           payload: response.data.response.docs,
           mode,
         });
       })
-      .catch(reason => {
+      .catch((reason) => {
         commit(SEARCH_METADATA_ERROR, reason);
       });
   },
-  async [LOAD_METADATA_CONTENT_BY_ID](
-    { commit },
-    { metadataId, commitMethod, forceBackendReload = false },
-  ) {
+  async [LOAD_METADATA_CONTENT_BY_ID]({ commit }, { metadataId, commitMethod, forceBackendReload = false }) {
     // commitMethod can be given from the caller of the action to direct
     // the output to a different store mutation then one from this module (metadataMutations)
     const commitMethodPrefix = commitMethod || LOAD_METADATA_CONTENT_BY_ID;
@@ -192,13 +169,11 @@ export default {
     });
 
     if (!forceBackendReload) {
-      const metadatasContent = this.getters[
-        `${METADATA_NAMESPACE}/metadatasContent`
-        ];
+      const metadatasContent = this.getters[`${METADATA_NAMESPACE}/metadatasContent`];
       const contents = Object.values(metadatasContent);
 
       // needs to be compared with the name of the dataset!
-      const localEntry = contents.filter(entry => entry.name === metadataId || entry.id === metadataId)[0];
+      const localEntry = contents.filter((entry) => entry.name === metadataId || entry.id === metadataId)[0];
       if (localEntry) {
         // filter() always return an array
         commit(`${commitMethodPrefix}_SUCCESS`, localEntry, {
@@ -213,12 +188,12 @@ export default {
 
     await axios
       .get(url)
-      .then(response => {
+      .then((response) => {
         commit(`${commitMethodPrefix}_SUCCESS`, response.data.result, {
           root: !!commitMethod,
         });
       })
-      .catch(reason => {
+      .catch((reason) => {
         commit(`${commitMethodPrefix}_ERROR`, reason, {
           root: !!commitMethod,
         });
@@ -242,7 +217,7 @@ export default {
 
     await axios
       .get(url)
-      .then(response => {
+      .then((response) => {
         // commit(BULK_LOAD_METADATAS_CONTENT_SUCCESS, response.data.response.docs, showRestrictedContent);
         commit(BULK_LOAD_METADATAS_CONTENT_SUCCESS, response.data.result);
 
@@ -250,12 +225,9 @@ export default {
         dispatch(METADATA_UPDATE_EXISTING_AUTHORS);
 
         // make sure the existingKeywords list is up-2-date
-        return dispatch(
-          METADATA_UPDATE_EXISTING_KEYWORDS,
-          config.userEditMetadataConfig,
-        );
+        return dispatch(METADATA_UPDATE_EXISTING_KEYWORDS, config.userEditMetadataConfig);
       })
-      .catch(reason => {
+      .catch((reason) => {
         commit(BULK_LOAD_METADATAS_CONTENT_ERROR, reason);
       });
   },
@@ -264,9 +236,7 @@ export default {
     //   return;
     // }
 
-    const filteredDatasets = this.getters[
-      `${METADATA_NAMESPACE}/filteredContent`
-    ];
+    const filteredDatasets = this.getters[`${METADATA_NAMESPACE}/filteredContent`];
     const allTags = this.getters[`${METADATA_NAMESPACE}/allTags`];
 
     if (!filteredDatasets || !allTags) {
@@ -276,11 +246,7 @@ export default {
     commit(UPDATE_TAGS);
 
     try {
-      const updatedTags = getKeywordsForFiltering(
-        filteredDatasets,
-        undefined,
-        35,
-      );
+      const updatedTags = getKeywordsForFiltering(filteredDatasets, undefined, 35);
 
       commit(UPDATE_TAGS_SUCCESS, updatedTags);
     } catch (error) {
@@ -288,24 +254,16 @@ export default {
     }
   },
   // eslint-disable-next-line consistent-return
-  [FILTER_METADATA](
-    { dispatch, commit },
-    { selectedTagNames = [] },
-  ) {
+  [FILTER_METADATA]({ dispatch, commit }, { selectedTagNames = [] }) {
     commit(FILTER_METADATA);
 
-    const isSearchResultContent = this.getters[
-      `${METADATA_NAMESPACE}/searchingMetadatasContentOK`
-    ];
+    const isSearchResultContent = this.getters[`${METADATA_NAMESPACE}/searchingMetadatasContentOK`];
 
     try {
-
       let datasets = this.getters[`${METADATA_NAMESPACE}/allMetadatas`];
 
       if (isSearchResultContent) {
-        const searchContent = this.getters[
-          `${METADATA_NAMESPACE}/searchedMetadatasContent`
-        ];
+        const searchContent = this.getters[`${METADATA_NAMESPACE}/searchedMetadatasContent`];
 
         // always overwrite the values also when nothing was found, so the "search not fount" can show up
         datasets = Object.values(searchContent);
@@ -344,10 +302,7 @@ export default {
 
     commit(METADATA_UPDATE_EXISTING_AUTHORS, existingAuthors);
   },
-  async [METADATA_UPDATE_EXISTING_KEYWORDS](
-    { commit },
-    userEditMetadataConfig = {},
-  ) {
+  async [METADATA_UPDATE_EXISTING_KEYWORDS]({ commit }, userEditMetadataConfig = {}) {
     commit(METADATA_UPDATE_EXISTING_KEYWORDS);
 
     const existingKeywords = this.getters[`${METADATA_NAMESPACE}/allTags`];
@@ -358,12 +313,11 @@ export default {
 
     await axios
       .get(url)
-      .then(response => {
+      .then((response) => {
         const tags = response.data.result;
 
         if (tags) {
-          const keywordsListWordMax =
-            userEditMetadataConfig?.keywordsListWordMax || 2;
+          const keywordsListWordMax = userEditMetadataConfig?.keywordsListWordMax || 2;
           const filteredTags = getfilteredArray(tags, keywordsListWordMax);
 
           const keywordObjects = getKeywordObjects(filteredTags);
@@ -375,7 +329,7 @@ export default {
           commit(METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS, sortedKeywords);
         }
       })
-      .catch(reason => {
+      .catch((reason) => {
         commit(METADATA_UPDATE_EXISTING_KEYWORDS_ERROR, reason);
       });
   },

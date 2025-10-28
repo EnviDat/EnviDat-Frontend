@@ -22,7 +22,6 @@ import storyTags from '@/modules/metadata/store/metadataTags';
 import categoryCards from '@/store/categoryCards';
 import { getPopularTags, getTagColor } from '@/factories/keywordsFactory';
 
-
 import metadataset from '@/../stories/js/metadata';
 
 const unFormatedMetadataCards = metadataset;
@@ -33,9 +32,7 @@ for (let i = 0; i < tagsFromDatasets.length; i++) {
   tag.color = getTagColor(categoryCards, tag.name);
 }
 
-
 function getKeywordsSource(tagsSource) {
-
   const keywordsArray = [...tagsSource];
 
   for (let i = 0; i < keywordsArray.length; i++) {
@@ -52,8 +49,7 @@ const placeholderKeywordsGenericProps = {
   metadataCardSubtitle: 'My metadata description is pleasant to read.',
   existingKeywords: tagsFromDatasets,
   componentTitle: 'Metadata Keywords',
-  disclaimer:
-    'Please note that the screenshot below will serve as a template for the future component.',
+  disclaimer: 'Please note that the screenshot below will serve as a template for the future component.',
 };
 
 export default {

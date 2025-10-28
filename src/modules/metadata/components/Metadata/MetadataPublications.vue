@@ -8,7 +8,7 @@
     :maxTextLength="maxTextLength"
     :sanitizeHTML="false"
     :statusText="resolvingStatusText"
-    class="relatedPubList "
+    class="relatedPubList"
   />
 </template>
 
@@ -83,8 +83,7 @@ export default {
     },
     resolveBaseUrl() {
       return (
-        this.publicationsConfig?.resolveBaseUrl ||
-        'https://www.dora.lib4ri.ch/wsl/islandora/search/json_cit_pids_wsl/'
+        this.publicationsConfig?.resolveBaseUrl || 'https://www.dora.lib4ri.ch/wsl/islandora/search/json_cit_pids_wsl/'
       );
     },
     extractedPIDMap() {
@@ -104,11 +103,7 @@ export default {
         return '';
       }
 
-      if (
-        !this.isResolving &&
-        !this.resolveError &&
-        this.extractedPIDMap?.size > 0
-      ) {
+      if (!this.isResolving && !this.resolveError && this.extractedPIDMap?.size > 0) {
         this.isResolving = true;
         this.$nextTick(() => {
           this.resolvePIDs(text, this.extractedPIDMap);

@@ -7,12 +7,10 @@ import axios from 'axios';
 import packages from '../../public/testdata/admin_packages_27092023.json';
 import { getEndpoints, getFileFromUrl, saveResponseToFile } from './saveResponses';
 
-
 // import { ACTION_BULK_LOAD_METADATAS_CONTENT } from '@/store/metadataMutationsConsts';
 
 // const testDataPath = `${__dirname}/../../public/testdata/`;
 const testDataPath = `${__dirname}/regression/`;
-
 
 /**
  * Regression tests for the different api actions from CKAN 2.9 vs 2.10
@@ -21,7 +19,6 @@ const testDataPath = `${__dirname}/regression/`;
  * in the vite.config.json
  */
 describe('ckanRegression - preparation', () => {
-
   it('gathering actions - version 2_9', async () => {
     const version = '2_9';
 
@@ -30,7 +27,7 @@ describe('ckanRegression - preparation', () => {
     });
 
     expect(endpointsUrls).toBeDefined();
-    expect(endpointsUrls.length).greaterThan(0)
+    expect(endpointsUrls.length).greaterThan(0);
 
     // console.log(endpointsUrls);
     // const url = endpointsUrls[0];
@@ -39,22 +36,23 @@ describe('ckanRegression - preparation', () => {
 
     for (let i = 0; i < endpointsUrls.length; i++) {
       const url = endpointsUrls[i];
-      requests.push(axios.get(url, {
-        validateStatus: (status) => status < 500, // Resolve only if the status code is 500
-      }));
+      requests.push(
+        axios.get(url, {
+          validateStatus: (status) => status < 500, // Resolve only if the status code is 500
+        }),
+      );
     }
 
-    const responses= await Promise.all(requests);
+    const responses = await Promise.all(requests);
 
     for (const response of responses) {
-
       const responseString = JSON.stringify(response.data);
       const url = axios.getUri(response.config);
-//      console.log(`url: ${url}`);
-      const fileName = getFileFromUrl(url, version)
+      //      console.log(`url: ${url}`);
+      const fileName = getFileFromUrl(url, version);
 
       expect(fileName).toBeDefined();
-/*
+      /*
       console.log(`testDataPath: ${testDataPath}`);
       console.log(`fileName: ${fileName}`);
 */
@@ -64,22 +62,19 @@ describe('ckanRegression - preparation', () => {
 
       expect(ok).toBe(true);
     }
-
   });
-
 });
 
 describe('ckanRegression - save subset of dataset', () => {
-
   it('save subset to new file', async () => {
-
     const datasets = packages.result;
     console.log(`amount of input datasets: ${datasets.length}`);
 
-    const condition = (d) => d.publication_state === 'reserved' &&
+    const condition = (d) =>
+      d.publication_state === 'reserved' &&
       (d.metadata_modified.includes('2023-09-27') || d.metadata_modified.includes('2023-09-26'));
 
-/*
+    /*
     const condition = (d) => (d.metadata_modified.includes('2023-09-27') || d.metadata_modified.includes('2023-09-26'));
 */
 
@@ -110,7 +105,5 @@ describe('ckanRegression - save subset of dataset', () => {
       console.log(`writing to the file ${fileName}`);
       saveResponseToFile(testDataPath, fileName, subsetString);
     }
-
   });
-
 });

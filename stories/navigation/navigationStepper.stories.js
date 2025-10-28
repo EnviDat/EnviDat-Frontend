@@ -14,15 +14,19 @@
 
 import NavigationStepper from '@/components/Navigation/NavigationStepper.vue';
 import { metadataEditingSteps } from '@/factories/workflowEditing';
-import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from '@/../stories/js/envidatViewports';
+import {
+  mobileLargeViewportParams,
+  mobileViewportParams,
+  tabletViewportParams,
+} from '@/../stories/js/envidatViewports';
 
-const datasetTitle = 'Lens, Switzerland: Long-term forest meteorological data from the Long-term Forest Ecosystem Research Programme (LWF), from 1997 onwards';
+const datasetTitle =
+  'Lens, Switzerland: Long-term forest meteorological data from the Long-term Forest Ecosystem Research Programme (LWF), from 1997 onwards';
 
 export default {
   title: '6 Workflows / Editing Workflow',
   component: NavigationStepper,
 };
-
 
 export const EditingSteps = {
   args: {
@@ -30,26 +34,26 @@ export const EditingSteps = {
     initialStepTitle: metadataEditingSteps[0].title,
     datasetTitle,
   },
-}
+};
 
 export const EditingStepsLoading = {
   args: {
     ...EditingSteps.args,
     loading: true,
   },
-}
+};
 
 export const MobileEditingSteps = {
   args: EditingSteps.args,
   parameters: mobileViewportParams,
-}
+};
 
 export const LargeMobileEditingSteps = {
   args: EditingSteps.args,
   parameters: mobileLargeViewportParams,
-}
+};
 
 export const TabletEditingSteps = {
   args: EditingSteps.args,
   parameters: tabletViewportParams,
-}
+};

@@ -2,7 +2,7 @@
   <v-chip
     class="stateChip"
     :class="{
-      'stateChipHover': !this.showContent,
+      stateChipHover: !this.showContent,
       'px-2': true,
     }"
     @mouseover="hover = true"
@@ -10,17 +10,14 @@
     :color="stateColor"
     :style="!showContent ? 'font-size: 0.9rem;' : ''"
   >
-    <v-tooltip location='bottom'>
+    <v-tooltip location="bottom">
       <template v-slot:activator="{ props }">
-        <v-row v-bind="props"
-               align="center"
-               no-gutters
-               class="flex-nowrap">
-          <v-col >
+        <v-row v-bind="props" align="center" no-gutters class="flex-nowrap">
+          <v-col>
             <v-icon :icon="stateIcon" />
           </v-col>
-          <v-col :class="showContent ? 'px-1' : ''" >
-            {{ showContent ? stateText : ''  }}
+          <v-col :class="showContent ? 'px-1' : ''">
+            {{ showContent ? stateText : '' }}
           </v-col>
         </v-row>
       </template>
@@ -44,11 +41,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import { mdiEye, mdiEyeOff, mdiPlaylistEdit } from '@mdi/js';
-import {
-  METADATA_STATE_DRAFT,
-  METADATA_STATE_INVISIBLE,
-  METADATA_STATE_VISIBLE,
-} from '@/factories/metadataConsts';
+import { METADATA_STATE_DRAFT, METADATA_STATE_INVISIBLE, METADATA_STATE_VISIBLE } from '@/factories/metadataConsts';
 
 export default {
   name: 'MetadataStateChip',
@@ -61,10 +54,8 @@ export default {
       type: Object,
       default: () => ({
         [METADATA_STATE_DRAFT]: 'Draft datasets are only visible to you',
-        [METADATA_STATE_INVISIBLE]:
-          'Dataset is hidden, only you and members from your organization can see it',
-        [METADATA_STATE_VISIBLE]:
-          'Visible datasets are publicly visible for everyone',
+        [METADATA_STATE_INVISIBLE]: 'Dataset is hidden, only you and members from your organization can see it',
+        [METADATA_STATE_VISIBLE]: 'Visible datasets are publicly visible for everyone',
       }),
     },
     colorMap: {

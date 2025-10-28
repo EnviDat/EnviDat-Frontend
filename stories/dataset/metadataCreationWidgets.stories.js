@@ -9,11 +9,14 @@
 /* eslint-disable object-property-newline */
 import EditAddPublication from '@/modules/user/components/EditAddPublication.vue';
 import relatedPublicCitationTesting from '@/../stories/js/relatedPublicCitation';
-import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from '@/../stories/js/envidatViewports';
+import {
+  mobileLargeViewportParams,
+  mobileViewportParams,
+  tabletViewportParams,
+} from '@/../stories/js/envidatViewports';
 
 export default {
   title: '3 Datasets / 2 Edit / Add Related Publication Widget',
-
 };
 
 const keys = Object.keys(relatedPublicCitationTesting);
@@ -45,22 +48,22 @@ export const Empty = Template.bind({});
 export const FilledPid = Template.bind({});
 FilledPid.args = {
   pid: 'wsl:21835',
-}
+};
 
 export const FilledDoi = Template.bind({});
 FilledDoi.args = {
   doi: '10.1002/eap.2133',
-}
+};
 
 export const FilledPidWithPreview = Template.bind({});
 FilledPidWithPreview.args = {
   ...citation1,
-}
+};
 
 export const FilledDoiWithPreview = Template.bind({});
 FilledDoiWithPreview.args = {
   ...citation2,
-}
+};
 
 export const MobileFilledDoiWithPreview = Template.bind({});
 MobileFilledDoiWithPreview.args = { ...FilledDoiWithPreview.args };

@@ -22,15 +22,14 @@ import {
 
 import { mobileViewportParams, tabletViewportParams } from '@/../stories/js/envidatViewports';
 
-
- export default {
-   title: '3 Datasets / 2 Edit / Publication Status',
-   // component: don't specify here,
-   // because the template needs to be a neutral component for the interaction
+export default {
+  title: '3 Datasets / 2 Edit / Publication Status',
+  // component: don't specify here,
+  // because the template needs to be a neutral component for the interaction
 };
 
- const allStates = possiblePublicationStates;
- allStates[0] = METADATA_STATE_DRAFT;
+const allStates = possiblePublicationStates;
+allStates[0] = METADATA_STATE_DRAFT;
 
 /*
  export const SimluateWorkflow = {
@@ -51,7 +50,7 @@ import { mobileViewportParams, tabletViewportParams } from '@/../stories/js/envi
  }
 */
 
-const Template = (args, {argTypes}) => ({
+const Template = (args, { argTypes }) => ({
   components: { EditPublicationStatus },
   template: `<EditPublicationStatus v-bind="editPublicationProps"
                                      @clicked="catchClicked" />`,
@@ -64,7 +63,7 @@ const Template = (args, {argTypes}) => ({
       setTimeout(() => {
         const index = this.allStates.findIndex((value) => value === this.state);
         if (index < this.allStates.length) {
-          this.message = `Successfully ${ this.successMessageMap.get(this.state) }`;
+          this.message = `Successfully ${this.successMessageMap.get(this.state)}`;
 
           setTimeout(() => {
             this.message = '';
@@ -108,24 +107,23 @@ const Template = (args, {argTypes}) => ({
     message: '',
     messageDetails: '',
     successMessageMap: new Map([
-        [METADATA_STATE_DRAFT, 'Reserved a DOI'],
-        [PUBLICATION_STATE_RESERVED, 'Requested publication'],
-        [PUBLICATION_STATE_PENDING, 'Requested publication'],
-        [PUBLICATION_STATE_PUBLISHED, 'Published Dataset '],
-      ]),
-    }),
-  });
-
+      [METADATA_STATE_DRAFT, 'Reserved a DOI'],
+      [PUBLICATION_STATE_RESERVED, 'Requested publication'],
+      [PUBLICATION_STATE_PENDING, 'Requested publication'],
+      [PUBLICATION_STATE_PUBLISHED, 'Published Dataset '],
+    ]),
+  }),
+});
 
 export const DOIWorkflowInteraction = Template.bind({});
 DOIWorkflowInteraction.args = {
   userRole: USER_ROLE_EDITOR,
-}
+};
 
 export const DOIWorkflowInteractionAdmin = Template.bind({});
 DOIWorkflowInteractionAdmin.args = {
   userRole: USER_ROLE_ADMIN,
-}
+};
 
 export const DOIWorkflowInteractionMobile = Template.bind({});
 DOIWorkflowInteractionMobile.args = DOIWorkflowInteraction.args;

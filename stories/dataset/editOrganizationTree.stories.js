@@ -32,7 +32,7 @@ export const Default = {
     organizationsTree,
     selectionDisabled: false,
   },
-}
+};
 
 export const PreselectedOrganization = {
   args: {
@@ -40,4 +40,4 @@ export const PreselectedOrganization = {
     organization: 'community-ecology',
     selectionDisabled: true,
   },
-}
+};

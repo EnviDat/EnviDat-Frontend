@@ -8,29 +8,11 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import {
-  mdiForest,
-  mdiSnowflake,
-  mdiImageFilterHdr,
-  mdiHazardLights,
-  mdiLeaf,
-  mdiWeatherCloudy,
-} from '@mdi/js';
+import { mdiForest, mdiSnowflake, mdiImageFilterHdr, mdiHazardLights, mdiLeaf, mdiWeatherCloudy } from '@mdi/js';
 
-import {
-  DIVERSITY,
-  FOREST,
-  HAZARD,
-  LAND,
-  CLIMATE,
-  SNOW,
-} from '@/store/categoriesConsts';
+import { DIVERSITY, FOREST, HAZARD, LAND, CLIMATE, SNOW } from '@/store/categoriesConsts';
 
-import {
-  EDNA_MODE,
-  SWISSFL_MODE,
-  FOREST_3D,
-} from '@/store/metadataMutationsConsts';
+import { EDNA_MODE, SWISSFL_MODE, FOREST_3D } from '@/store/metadataMutationsConsts';
 import { getModeData } from '@/factories/modeFactory';
 import { getImageList } from '@/factories/imageFactory';
 

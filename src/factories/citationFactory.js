@@ -116,8 +116,7 @@ export function extractDOIsFromText(text) {
   }
 
   // reGex for get doi from text/url
-  const doiRegEx =
-    /(?:https:\/\/doi\.org\/)?\b(10\.\d{4,9}\/[-._;()/:A-Z0-9]+)\b/gi;
+  const doiRegEx = /(?:https:\/\/doi\.org\/)?\b(10\.\d{4,9}\/[-._;()/:A-Z0-9]+)\b/gi;
 
   const doiMatches = text.match(doiRegEx) || [];
 
@@ -139,19 +138,14 @@ export function extractedNoPidDoiText(text) {
 
   const doiMap = extractDOIsFromText(text);
 
-  const urlRegEx =
-    /https:\/\/www\.dora\.lib4ri\.ch\/wsl\/islandora\/object\/[^\s]+/g;
+  const urlRegEx = /https:\/\/www\.dora\.lib4ri\.ch\/wsl\/islandora\/object\/[^\s]+/g;
   const urlMatches = text.match(urlRegEx) || [];
 
   const allLines = text.split('\n').map((line) => line.trim());
 
   result = allLines.filter((line) => {
-    const containsPID = Array.from(pidMap.keys()).some((pid) =>
-      line.includes(pid),
-    );
-    const containsDOI = Array.from(doiMap.keys()).some((doi) =>
-      line.includes(doi),
-    );
+    const containsPID = Array.from(pidMap.keys()).some((pid) => line.includes(pid));
+    const containsDOI = Array.from(doiMap.keys()).some((doi) => line.includes(doi));
     const isURL = urlMatches.includes(line);
     return !containsPID && !containsDOI && !isURL && line.length > 0;
   });
@@ -204,15 +198,11 @@ function getGenericCitationObject(citationInfo, pid, doi) {
   return {
     citation: genericCitation,
     // always use the title for the abstract, so there is at least the link to refer to
-    abstract: citationInfo.abstract
-      ? `${abstractTitle} \n ${citationInfo.abstract}`
-      : abstractTitle,
+    abstract: citationInfo.abstract ? `${abstractTitle} \n ${citationInfo.abstract}` : abstractTitle,
     doraSiteUrl: citationInfo.object_url,
     pid: citationInfo.pid || pid,
     doi: citationInfo.doi || doi,
-    doiUrl: citationInfo.doi
-      ? `https://www.doi.org/${citationInfo.doi}`
-      : undefined,
+    doiUrl: citationInfo.doi ? `https://www.doi.org/${citationInfo.doi}` : undefined,
   };
 }
 
@@ -309,8 +299,7 @@ export function extractPIDMapFromText(text) {
   return pidMap;
 }
 
-const fallbackPIDUrl =
-  'https://www.dora.lib4ri.ch/wsl/islandora/search/json_cit_pids_wsl/';
+const fallbackPIDUrl = 'https://www.dora.lib4ri.ch/wsl/islandora/search/json_cit_pids_wsl/';
 
 export function getDoraPidsUrl(pidMap, resolveBaseUrl) {
   let fullUrl = resolveBaseUrl || fallbackPIDUrl;
@@ -322,8 +311,7 @@ export function getDoraPidsUrl(pidMap, resolveBaseUrl) {
   return fullUrl;
 }
 
-const fallbackDoiUrl =
-  'https://www.dora.lib4ri.ch/wsl/islandora/search/json_cit_wsl/mods_identifier_doi_mt:';
+const fallbackDoiUrl = 'https://www.dora.lib4ri.ch/wsl/islandora/search/json_cit_wsl/mods_identifier_doi_mt:';
 
 export function getDoraDoisUrl(doiMap, resolveBaseUrl) {
   let fullUrl = resolveBaseUrl || fallbackDoiUrl;
@@ -363,10 +351,7 @@ export async function resolvePidCitationObjectsViaDora(pidMap, resolveBaseUrl) {
   return getCitationObjectMap(pidMap, responseObj);
 }
 
-export async function resolveDoiCitationObjectsViaDora(
-  doiMap,
-  resolveBaseDOIUrl,
-) {
+export async function resolveDoiCitationObjectsViaDora(doiMap, resolveBaseDOIUrl) {
   const requests = [];
   const citationObjMap = new Map();
 
@@ -377,10 +362,7 @@ export async function resolveDoiCitationObjectsViaDora(
     const request = axios
       .get(doraUrl)
       .then((citationObj) => {
-        const doiCitationObjectMap = getCitationObjectMap(
-          singleMap,
-          citationObj,
-        );
+        const doiCitationObjectMap = getCitationObjectMap(singleMap, citationObj);
 
         for (const [doi, citation] of doiCitationObjectMap) {
           citationObjMap.set(doi, citation);
@@ -444,8 +426,7 @@ export function createCitation(dataset) {
   }
 
   const publisher = publication?.publisher || '';
-  const year =
-    publication?.publication_year || publication?.publicationYear || '';
+  const year = publication?.publication_year || publication?.publicationYear || '';
   const doi = dataset.doi || '';
   const doiUrl = `https://www.doi.org/${doi}`;
 
@@ -479,9 +460,7 @@ export function getCitationList(datasets, datasetIds) {
     return citations;
   }
 
-  const datasetMatches = datasets.filter(
-    (d) => datasetIds.includes(d.name) || datasetIds.includes(d.id),
-  );
+  const datasetMatches = datasets.filter((d) => datasetIds.includes(d.name) || datasetIds.includes(d.id));
 
   for (let i = 0; i < datasetMatches.length; i++) {
     const c = createCitation(datasetMatches[i]);

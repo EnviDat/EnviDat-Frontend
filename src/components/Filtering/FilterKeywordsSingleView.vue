@@ -9,19 +9,12 @@
         <v-col v-if="filterExpanded || $vuetify.display.smAndUp" cols="12">
           <v-row>
             <v-col class="metadataInfoIcon flex-grow-0">
-              <BaseIcon :icon="mdiPaletteSwatch" color='black' />
+              <BaseIcon :icon="mdiPaletteSwatch" color="black" />
             </v-col>
 
-            <div v-if="showPlaceholder"
-                 style="display: flex; flex-direction: row;"
-            >
-              <v-col class="flex-grow-0 pl-0"
-                     v-for="n in 3"
-                     :key="n"
-              >
-                <TagChipPlaceholder
-                  class="envidatChip"
-                />
+            <div v-if="showPlaceholder" style="display: flex; flex-direction: row">
+              <v-col class="flex-grow-0 pl-0" v-for="n in 3" :key="n">
+                <TagChipPlaceholder class="envidatChip" />
               </v-col>
             </div>
 
@@ -39,14 +32,13 @@
             </v-col>
           </v-row>
         </v-col>
-
       </v-row>
     </v-container>
 
     <BaseIconButton
       v-if="$vuetify.display.xs"
       :count="selectedTags.length"
-      style="position: absolute; bottom: 0; right: 0;"
+      style="position: absolute; bottom: 0; right: 0"
       :icon="mdiChevronDown"
       outline-color="secondary"
       icon-color="secondary"
@@ -96,7 +88,7 @@ export default {
   computed: {
     tagList() {
       const mergedTags = [...this.selectedTags, ...this.unselectedTags];
-      return mergedTags.filter((item, pos, self) => self.findIndex(v => v.name === item.name) === pos);
+      return mergedTags.filter((item, pos, self) => self.findIndex((v) => v.name === item.name) === pos);
     },
     selectedTags() {
       // always get the selected as a subset of the allTags because they are the full
@@ -104,7 +96,6 @@ export default {
       const selecteds = [];
 
       if (this.selectedTagNames?.length > 0) {
-
         for (let i = 0; i < this.selectedTagNames.length; i++) {
           const element = this.selectedTagNames[i];
 
@@ -116,11 +107,11 @@ export default {
       return selecteds;
     },
     unselectedTags() {
-      if (!this.allTagWithMax){
+      if (!this.allTagWithMax) {
         return [];
       }
 
-      if(!this.selectedTagNames || this.selectedTagNames.length <= 0) {
+      if (!this.selectedTagNames || this.selectedTagNames.length <= 0) {
         return this.allTagWithMax;
       }
 

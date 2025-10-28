@@ -10,19 +10,18 @@ import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
 import { possibleVisibilityStates } from '@/factories/metaDataFactory';
 import { METADATA_STATE_DRAFT, METADATA_STATE_INVISIBLE, METADATA_STATE_VISIBLE } from '@/factories/metadataConsts';
 
-
 export default {
-    title: '1 Base / Chips / MetadataStateChip',
-    component: MetadataStateChip,
-    decorators: [],
-    parameters: {},
+  title: '1 Base / Chips / MetadataStateChip',
+  component: MetadataStateChip,
+  decorators: [],
+  parameters: {},
 };
 
 const states = possibleVisibilityStates;
 
 export const MetadataStateAllStates = () => ({
-    components: { MetadataStateChip },
-    template: `
+  components: { MetadataStateChip },
+  template: `
      <div>
        <v-row v-for="(state, index) in states"
               :key="index">
@@ -35,15 +34,15 @@ export const MetadataStateAllStates = () => ({
        </v-row>
      </div>
    `,
-    data: () => ({
-      states,
-    }),
-})
+  data: () => ({
+    states,
+  }),
+});
 
-const Template = (args, {argTypes}) => ({
-    components: { MetadataStateChip },
-    props: Object.keys(argTypes),
-    template: `
+const Template = (args, { argTypes }) => ({
+  components: { MetadataStateChip },
+  props: Object.keys(argTypes),
+  template: `
      <v-container fluid>
        <v-row>
         <MetadataStateChip v-bind="$props" />
@@ -62,19 +61,17 @@ const Template = (args, {argTypes}) => ({
    `,
 });
 
-
 export const Draft = Template.bind({});
 Draft.args = {
-    state: METADATA_STATE_DRAFT,
-}
+  state: METADATA_STATE_DRAFT,
+};
 
 export const Hidden = Template.bind({});
 Hidden.args = {
-    state: METADATA_STATE_INVISIBLE,
-}
-
+  state: METADATA_STATE_INVISIBLE,
+};
 
 export const Visible = Template.bind({});
 Visible.args = {
-    state: METADATA_STATE_VISIBLE,
-}
+  state: METADATA_STATE_VISIBLE,
+};

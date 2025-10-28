@@ -23,7 +23,6 @@ import {
 import categoryCards from '@/store/categoryCards';
 import { getPopularTags, getTagColor } from '@/factories/keywordsFactory';
 
-
 import { LocalStorageDatasetService } from '@/modules/workflow/LocalStorageDatasetService.ts';
 
 import metadataset from '@/../stories/js/metadata';
@@ -56,12 +55,10 @@ const serviceLayer2 = new LocalStorageDatasetService();
 const datasetVM2 = new DatasetModel(serviceLayer2);
 const reactiveViewModelWithErrors = datasetVM2.getViewModel('MetadataBaseViewModel');
 
-
 export default {
   title: '3 Datasets / 2 Edit / Metadata Header',
   component: EditMetadataHeader,
-} // satisfies Meta<typeof EditMetadataHeader>;
-
+}; // satisfies Meta<typeof EditMetadataHeader>;
 
 /*
 const watcherMethod = watch(() => emptyVM, async (newModel) => {
@@ -73,7 +70,6 @@ const watcherMethod = watch(() => emptyVM, async (newModel) => {
   { deep: true },
 );
 */
-
 
 /*
 export const EmptyWithViewModel = {

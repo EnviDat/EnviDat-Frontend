@@ -86,5 +86,5 @@ export default typescriptEslint.config(
       '@typescript-eslint/no-this-alias': 'warn',
     },
   },
-  eslintConfigPrettier
+  eslintConfigPrettier,
 );

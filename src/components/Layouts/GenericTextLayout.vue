@@ -1,11 +1,6 @@
 <template>
   <v-row>
-    <v-col
-      class="my-2"
-      v-for="(info, index) in textArray"
-      :key="index"
-      cols="12"
-    >
+    <v-col class="my-2" v-for="(info, index) in textArray" :key="index" cols="12">
       <div v-html="markdownText(info)"></div>
     </v-col>
   </v-row>

@@ -21,9 +21,7 @@ export async function loadDataset(): Promise<DatasetDTO[]> {
     console.log('loading datasets...');
     isFechingDatasets = true;
 
-    datasets = await fetchDatasets(
-      'https://s3-zh.os.switch.ch/frontend-static/metadata/packagelist/packagelist.json',
-    );
+    datasets = await fetchDatasets('https://s3-zh.os.switch.ch/frontend-static/metadata/packagelist/packagelist.json');
     datasetMap = new Map<string, DatasetDTO>();
 
     for (let i = 0; i < datasets.length; i++) {
@@ -45,12 +43,12 @@ export async function loadDataset(): Promise<DatasetDTO[]> {
   return datasets;
 }
 
-export async function loadJSONLD(id: string, doi: string) : Promise<Dataset> {
+export async function loadJSONLD(id: string, doi: string): Promise<Dataset> {
   let jsonLd: any;
 
   try {
     const cleanDoi = doi.replace('/', '_');
-/*
+    /*
     const response = await fetch(
       `https://os.zhdk.cloud.switch.ch/envidat-doi/${cleanDoi}/metadata.json`,
     );
@@ -69,11 +67,10 @@ export async function loadJSONLD(id: string, doi: string) : Promise<Dataset> {
     // console.log(`DOI ${doi} jsonld found`);
     jsonLd = response.data;
 
-//    const responseType = response.headers['Content-Type'];
+    //    const responseType = response.headers['Content-Type'];
 
-//     console.log(`responseType ${responseType}`, response.data);
+    //     console.log(`responseType ${responseType}`, response.data);
   } catch (error) {
-
     if (error.response.status === 404) {
       // console.log(`DOI ${doi} Error: Resource not found (404)`);
     } else {
@@ -131,7 +128,7 @@ export async function enhanceJSONLd(datasets: DatasetDTO | { jsonLd: object }[])
     for (let i = 0; i < datasets.length; i++) {
       const dataset = datasets[i];
       dataset.jsonLd = map.get(dataset.id);
-//      console.log(`jsonLd dataset ${dataset.name} has jsonld ${!!dataset.jsonLd}`);
+      //      console.log(`jsonLd dataset ${dataset.name} has jsonld ${!!dataset.jsonLd}`);
     }
 
     console.log(`Enhanced ${datasets.length} datasets with jsonLd`);

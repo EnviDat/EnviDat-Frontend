@@ -1,9 +1,5 @@
 <template>
-  <v-card
-    id="BaseDatasetPicker"
-    :class="showAsCard ? 'pa-4' : 'pa-0'"
-    :flat="!showAsCard"
-  >
+  <v-card id="BaseDatasetPicker" :class="showAsCard ? 'pa-4' : 'pa-0'" :flat="!showAsCard">
     <v-row v-if="instructions" no-gutters>
       <v-col class="text-body-1 pa-0 pb-4">
         {{ instructions }}
@@ -59,7 +55,7 @@
 </template>
 
 <script>
-import {mdiInvoiceListOutline, mdiArrowDownDropCircleOutline, mdiClose} from '@mdi/js';
+import { mdiInvoiceListOutline, mdiArrowDownDropCircleOutline, mdiClose } from '@mdi/js';
 import TagChipProject from '@/components/Chips/TagChipProject.vue';
 
 export default {
@@ -96,7 +92,7 @@ export default {
       default: '',
     },
   },
-  emits:['pickedProject'],
+  emits: ['pickedProject'],
   mounted() {
     this.updatePreselection();
   },
@@ -128,7 +124,7 @@ export default {
         if (this.multiplePick) {
           this.pickedDataset = [];
 
-          this.preSelected.forEach(projectName => {
+          this.preSelected.forEach((projectName) => {
             this.pickedDataset.push(projectName);
           });
         } else {
@@ -143,9 +139,7 @@ export default {
         return;
       }
       if (this.multiplePick) {
-        const remains = this.pickedDataset.filter(
-          value => value !== projectName,
-        );
+        const remains = this.pickedDataset.filter((value) => value !== projectName);
 
         if (remains?.length > 0) {
           this.pickedDataset = remains;

@@ -39,5 +39,4 @@ export const Default = {
     organizationsTree,
     selectionDisabled: false,
   },
-}
-
+};

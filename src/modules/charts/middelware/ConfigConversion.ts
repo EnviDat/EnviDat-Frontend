@@ -1,18 +1,21 @@
 import _ from 'lodash';
 
-import {de} from 'date-fns/locale';
-import type {ChartConfiguration} from 'chart.js';
+import { de } from 'date-fns/locale';
+import type { ChartConfiguration } from 'chart.js';
 import {
   chartTitle,
   chartTitleVisible,
   chartType,
   scaleStacked,
-  xScaleProperty, xScaleDescription,
-  yScaleProperty, yScaleDescription,
-  enableGapsInLineCharts, enableLineDrawing,
+  xScaleProperty,
+  xScaleDescription,
+  yScaleProperty,
+  yScaleDescription,
+  enableGapsInLineCharts,
+  enableLineDrawing,
 } from '@/modules/charts/middelware/propertyConst.ts';
 
-import type {ChartProps} from '@/types/dataVizTypes';
+import type { ChartProps } from '@/types/dataVizTypes';
 
 /**
  * First array entry is the "from" property, the second is the "to" property
@@ -39,7 +42,7 @@ export const zoomPluginTemplate = {
       zoom: {
         pan: {
           enabled: true,
-//      modifierKey: 'alt',
+          //      modifierKey: 'alt',
           mode: 'x',
         },
         zoom: {
@@ -59,7 +62,7 @@ export const zoomPluginTemplate = {
       },
     },
   },
-}
+};
 
 export const largeDataTemplate = {
   options: {
@@ -68,7 +71,7 @@ export const largeDataTemplate = {
       decimation: {
         enabled: true,
         algorithm: 'min-max',
-//    algorithm: 'lttb',
+        //    algorithm: 'lttb',
         // samples: 500,
         // threshold: 10000,
       },
@@ -84,8 +87,7 @@ export const largeDataTemplate = {
       },
     },
   },
-}
-
+};
 
 const chartJsDefaults: Partial<ChartConfiguration> = {
   options: {
@@ -101,7 +103,7 @@ const chartJsDefaults: Partial<ChartConfiguration> = {
       },
     },
   },
-}
+};
 
 function convertPut(entity: any, property: string, value: any): void {
   if (value === undefined) {
@@ -127,10 +129,12 @@ function convertPut(entity: any, property: string, value: any): void {
 }
 
 function convertGet(entity: any, property: string) {
-  return property.split('.').reduce((entry, key) =>
+  return property.split('.').reduce(
+    (entry, key) =>
       // Check if entry is an object and the key exists in the entry
-      (entry && typeof entry === 'object' && key in entry) ? entry[key] : undefined
-    , entity);
+      entry && typeof entry === 'object' && key in entry ? entry[key] : undefined,
+    entity,
+  );
 }
 
 function convertToJSON(rules: string[][], data: any): any {
@@ -184,12 +188,15 @@ export function convertToChartConfig(editorProps: Partial<ChartProps>): Partial<
   const type = chartOptions.type || 'line';
   delete chartOptions.type;
 
-  const newConfig: Partial<ChartConfiguration> = _.merge({
-    type,
-    ...chartJsDefaults,
-  }, {
-    ...chartOptions,
-  });
+  const newConfig: Partial<ChartConfiguration> = _.merge(
+    {
+      type,
+      ...chartJsDefaults,
+    },
+    {
+      ...chartOptions,
+    },
+  );
 
   return newConfig;
 }

@@ -31,5 +31,4 @@ export const ACTION_DOI_PUBLISH = () => {
   return 'publish';
 };
 
-
 export const DOI_RESERVED_PROPERTY = 'doiReversed';

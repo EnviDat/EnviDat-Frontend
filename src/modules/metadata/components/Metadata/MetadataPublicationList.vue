@@ -1,18 +1,12 @@
 <template id="MetadataPublications">
-  <v-card class="relatedPubList pa-0"
-  >
+  <v-card class="relatedPubList pa-0">
     <v-card-title class="metadata_title text-h6 py-4">
       {{ METADATA_PUBLICATIONS_TITLE }}
     </v-card-title>
 
-    <v-skeleton-loader
-      v-if="loading || showPlaceholder"
-      type="list-item-two-line"
-    />
+    <v-skeleton-loader v-if="loading || showPlaceholder" type="list-item-two-line" />
 
-    <v-card-text v-if="!text && !showPlaceholder">
-      No related publications available for this dataset.
-    </v-card-text>
+    <v-card-text v-if="!text && !showPlaceholder"> No related publications available for this dataset. </v-card-text>
 
     <v-card-text
       v-if="text"
@@ -20,11 +14,7 @@
       class="pa-4 pt-0 heightAndScroll readableText"
       :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
     >
-      <v-col
-        v-for="(n, index) in dataSliced"
-        :key="'n_' + index"
-        class="px-0 py-1"
-      >
+      <v-col v-for="(n, index) in dataSliced" :key="'n_' + index" class="px-0 py-1">
         <!-- title visible only in preview mode -->
         <p class="font-weight-bold" v-if="isPreview && n.title">
           {{ n.title }}
@@ -35,29 +25,17 @@
 
         <v-row no-gutters :class="{ 'align-center': isPreview }">
           <v-col class="flex-grow-1">
-            <BaseCitationView
-              :abstract="n.abstract"
-              :citation="setCitation(n)"
-              :doi="n.doi"
-              :doiUrl="n.doiUrl"
-            />
+            <BaseCitationView :abstract="n.abstract" :citation="setCitation(n)" :doi="n.doi" :doiUrl="n.doiUrl" />
           </v-col>
           <!-- Show buttons only in preview mode -->
-          <v-col
-            v-if="isPreview"
-            class="flex-grow-0 px-1 d-flex flex-column flex-md-row"
-          >
+          <v-col v-if="isPreview" class="flex-grow-0 px-1 d-flex flex-column flex-md-row">
             <BaseIconButton
               v-if="isPlainText(n)"
               :icon="mdiPencil"
               icon-color="yellow"
               @clicked="sendEditItemData(n.citation, index)"
             />
-            <BaseIconButton
-              :icon="mdiMinusCircleOutline"
-              icon-color="red"
-              @clicked="sendRemoveItem(index)"
-            />
+            <BaseIconButton :icon="mdiMinusCircleOutline" icon-color="red" @clicked="sendRemoveItem(index)" />
           </v-col>
         </v-row>
       </v-col>
@@ -188,8 +166,8 @@ export default {
       });
     },
     getEditItemData(object) {
-      this.dataRelatedPublications = this.dataRelatedPublications.map(
-        (obj, i) => (i === object.index ? object.object : obj),
+      this.dataRelatedPublications = this.dataRelatedPublications.map((obj, i) =>
+        i === object.index ? object.object : obj,
       );
     },
     sendRemoveItem(index) {
@@ -203,9 +181,7 @@ export default {
       }
     },
     rightPos() {
-      return this.$refs.text && this.$refs.text.$el.clientHeight >= 500
-        ? '0px'
-        : '10px';
+      return this.$refs.text && this.$refs.text.$el.clientHeight >= 500 ? '0px' : '10px';
     },
     setCitation(n) {
       return n.citation?.WSL ?? n.citation ?? 'No citation available';
@@ -214,9 +190,7 @@ export default {
       this.showFullText = !this.showFullText;
     },
     scrollbarColorFront() {
-      return this.$vuetify
-        ? this.$vuetify.theme.themes.light.colors.highlight
-        : 'auto';
+      return this.$vuetify ? this.$vuetify.theme.themes.light.colors.highlight : 'auto';
     },
 
     /**
@@ -299,10 +273,7 @@ export default {
       let pidCitationMap = new Map();
       if (linePidMap.size > 0) {
         try {
-          pidCitationMap = await resolvePidCitationObjectsViaDora(
-            linePidMap,
-            resolveBaseUrl,
-          );
+          pidCitationMap = await resolvePidCitationObjectsViaDora(linePidMap, resolveBaseUrl);
         } catch (err) {
           console.warn('Error resolving PIDs for line:', line, err);
         }
@@ -311,10 +282,7 @@ export default {
       let doiCitationMap = new Map();
       if (lineDoiMap.size > 0) {
         try {
-          doiCitationMap = await resolveDoiCitationObjectsViaDora(
-            lineDoiMap,
-            resolveBaseDOIUrl,
-          );
+          doiCitationMap = await resolveDoiCitationObjectsViaDora(lineDoiMap, resolveBaseDOIUrl);
         } catch (err) {
           console.warn('Error resolving DOIs for line:', line, err);
         }
@@ -370,7 +338,7 @@ export default {
      * Processes the entire text line-by-line in parallel.
      */
     async resolvedCitations(text) {
-      if (!text){
+      if (!text) {
         // return '';
         return;
       }
@@ -384,9 +352,7 @@ export default {
 
       this.loading = true;
       try {
-        const linePromises = lines.map((line) =>
-          this.processLine(line, this.resolveBaseUrl, this.resolveBaseDOIUrl),
-        );
+        const linePromises = lines.map((line) => this.processLine(line, this.resolveBaseUrl, this.resolveBaseDOIUrl));
         const arrayOfArrays = await Promise.all(linePromises);
         const finalItems = arrayOfArrays.flat();
         this.dataRelatedPublications = finalItems;
@@ -465,10 +431,7 @@ export default {
         this.addPlainTextLine(newVal);
       } else {
         // We update the line at [updatedCitationIndex]
-        if (
-          this.dataRelatedPublications &&
-          this.dataRelatedPublications[this.updatedCitationIndex]
-        ) {
+        if (this.dataRelatedPublications && this.dataRelatedPublications[this.updatedCitationIndex]) {
           const item = this.dataRelatedPublications[this.updatedCitationIndex];
           // If it's PID-based, you might want a different approach,
           // but let's assume we just replace the citation

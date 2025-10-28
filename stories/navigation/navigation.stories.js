@@ -57,8 +57,7 @@ export const Menu = {
 };
 
 const changeMainLayout = (parentRefs) => {
-  let currentStyle =
-    parentRefs['storyWrapper--v-main'].$el.getAttribute('style');
+  let currentStyle = parentRefs['storyWrapper--v-main'].$el.getAttribute('style');
   // console.log('navigationStory refs currentStyle', currentStyle);
   currentStyle += '--v-layout-left: 60px !important;';
   // currentStyle = currentStyle.replace('--v-layout-left: 0px;', '--v-layout-left: 60px !important;');

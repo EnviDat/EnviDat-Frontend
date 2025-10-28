@@ -15,12 +15,7 @@
           />
         </v-col>
         <v-col v-if="error" cols="4" class="pl-16">
-          <BaseStatusLabelView
-            status="error"
-            statusColor="error"
-            :statusText="error"
-            :expandedText="errorDetails"
-          />
+          <BaseStatusLabelView status="error" statusColor="error" :statusText="error" :expandedText="errorDetails" />
         </v-col>
       </v-row>
 
@@ -45,15 +40,8 @@
             :placeholder="labels.placeholderTitle"
             :model-value="metadataTitleField"
             @keyup="blurOnEnterKey"
-            @update:model-value="
-              changePropertyForPreview(
-                METADATA_TITLE_PROPERTY,
-                $event.target.value,
-              )
-            "
-            @change="
-              notifyPropertyChange(METADATA_TITLE_PROPERTY, $event.target.value)
-            "
+            @update:model-value="changePropertyForPreview(METADATA_TITLE_PROPERTY, $event.target.value)"
+            @change="notifyPropertyChange(METADATA_TITLE_PROPERTY, $event.target.value)"
           />
         </v-col>
       </v-row>
@@ -89,12 +77,7 @@
                 @keyup="blurOnEnterKey"
                 @focusin="focusIn($event)"
                 @focusout="focusOut(METADATA_CONTACT_EMAIL, $event)"
-                @update:model-value="
-                  changePropertyForPreview(
-                    METADATA_CONTACT_EMAIL,
-                    $event.target.value,
-                  )
-                "
+                @update:model-value="changePropertyForPreview(METADATA_CONTACT_EMAIL, $event.target.value)"
               />
             </v-col>
 
@@ -110,8 +93,7 @@
           </v-row>
 
           <v-row>
-            <v-col class="text-body-1" v-html="labels.authorAutoComplete">
-            </v-col>
+            <v-col class="text-body-1" v-html="labels.authorAutoComplete"> </v-col>
           </v-row>
 
           <v-row>
@@ -121,9 +103,7 @@
                 :id="METADATA_CONTACT_FIRSTNAME"
                 :label="labels.labelContactFirstName"
                 :error-messages="validationErrors[METADATA_CONTACT_FIRSTNAME]"
-                :readonly="
-                  isContactPropertyReadOnly(METADATA_CONTACT_FIRSTNAME)
-                "
+                :readonly="isContactPropertyReadOnly(METADATA_CONTACT_FIRSTNAME)"
                 hide-details="auto"
                 persistent-hint
                 :hint="contactPropertyHint(METADATA_CONTACT_FIRSTNAME)"
@@ -133,12 +113,7 @@
                 @keyup="blurOnEnterKey"
                 @focusin="focusIn($event)"
                 @focusout="focusOut(METADATA_CONTACT_FIRSTNAME, $event)"
-                @update:model-value="
-                  changePropertyForPreview(
-                    METADATA_CONTACT_FIRSTNAME,
-                    $event.target.value,
-                  )
-                "
+                @update:model-value="changePropertyForPreview(METADATA_CONTACT_FIRSTNAME, $event.target.value)"
               />
             </v-col>
 
@@ -158,12 +133,7 @@
                 @keyup="blurOnEnterKey"
                 @focusin="focusIn($event)"
                 @focusout="focusOut(METADATA_CONTACT_LASTNAME, $event)"
-                @update:model-value="
-                  changePropertyForPreview(
-                    METADATA_CONTACT_LASTNAME,
-                    $event.target.value,
-                  )
-                "
+                @update:model-value="changePropertyForPreview(METADATA_CONTACT_LASTNAME, $event.target.value)"
               />
             </v-col>
           </v-row>
@@ -201,15 +171,8 @@
               :model-value="metadataUrlField"
               @keyup="blurOnEnterKey"
               @click.stop
-              @update:model-value="
-                changePropertyForPreview(
-                  METADATA_URL_PROPERTY,
-                  $event.target.value,
-                )
-              "
-              @change="
-                notifyPropertyChange(METADATA_URL_PROPERTY, $event.target.value)
-              "
+              @update:model-value="changePropertyForPreview(METADATA_URL_PROPERTY, $event.target.value)"
+              @change="notifyPropertyChange(METADATA_URL_PROPERTY, $event.target.value)"
             />
           </ExpandableLayout>
         </v-col>
@@ -250,10 +213,7 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
-import {
-  METADATA_NAMESPACE,
-  METADATA_UPDATE_EXISTING_TITLE,
-} from '@/store/metadataMutationsConsts';
+import { METADATA_NAMESPACE, METADATA_UPDATE_EXISTING_TITLE } from '@/store/metadataMutationsConsts';
 
 import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
@@ -262,11 +222,7 @@ import ExpandableLayout from '@/components/Layouts/ExpandableLayout.vue';
 
 import { enhanceTitleImg } from '@/factories/metaDataFactory';
 
-import {
-  getValidationMetadataEditingObject,
-  isFieldValid,
-  isObjectValid,
-} from '@/factories/userEditingValidations';
+import { getValidationMetadataEditingObject, isFieldValid, isObjectValid } from '@/factories/userEditingValidations';
 import {
   createContact,
   creationContactFromAuthor,
@@ -419,16 +375,11 @@ export default {
     },
     metadataUrlField: {
       get() {
-        return this.previews[METADATA_URL_PROPERTY] !== null
-          ? this.previews[METADATA_URL_PROPERTY]
-          : this.metadataUrl;
+        return this.previews[METADATA_URL_PROPERTY] !== null ? this.previews[METADATA_URL_PROPERTY] : this.metadataUrl;
       },
     },
     preselectAuthorEmails() {
-      const author = getAuthorByEmail(
-        this.contactEmailField,
-        this.existingAuthorsWrap,
-      );
+      const author = getAuthorByEmail(this.contactEmailField, this.existingAuthorsWrap);
 
       return author ? [author.email] : [];
     },
@@ -450,8 +401,7 @@ export default {
       });
 
       const previewEntry = {
-        [METADATA_TITLE_PROPERTY]:
-          this.metadataTitleField || this.labels.placeholderHeaderTitle,
+        [METADATA_TITLE_PROPERTY]: this.metadataTitleField || this.labels.placeholderHeaderTitle,
         title: this.metadataTitleField || this.labels.placeholderHeaderTitle, // is needed for the enhanceTitleImg
         showCloseButton: false,
         contactName: fullName,
@@ -472,19 +422,17 @@ export default {
     },
     contactInfoReadOnly() {
       return (
-        (this.authorPickerTouched && this.authorIsPicked) ||
-        (!this.authorPickerTouched && this.authorPickerFoundAuthor)
+        (this.authorPickerTouched && this.authorIsPicked) || (!this.authorPickerTouched && this.authorPickerFoundAuthor)
       );
     },
     authorPickerFoundAuthor() {
-      if (
-        this.preselectAuthorEmails?.length <= 0 ||
-        this.allUsersForUserPicker?.length <= 0
-      ) {
+      if (this.preselectAuthorEmails?.length <= 0 || this.allUsersForUserPicker?.length <= 0) {
         return false;
       }
 
-      const matches = this.allUsersForUserPicker.filter((userObj : UserPickerObject) => userObj.fullName === this.preselectAuthorEmails[0]?.name);
+      const matches = this.allUsersForUserPicker.filter(
+        (userObj: UserPickerObject) => userObj.fullName === this.preselectAuthorEmails[0]?.name,
+      );
       return matches.length > 0;
     },
     anyUserElementsActive() {
@@ -532,20 +480,11 @@ export default {
         return false;
       }
 
-      const properties = [
-        METADATA_CONTACT_EMAIL,
-        METADATA_CONTACT_FIRSTNAME,
-        METADATA_CONTACT_LASTNAME,
-      ];
+      const properties = [METADATA_CONTACT_EMAIL, METADATA_CONTACT_FIRSTNAME, METADATA_CONTACT_LASTNAME];
 
       // Validate fields corresponding to properties
       for (let i = 0; i < properties.length; i++) {
-        isFieldValid(
-          properties[i],
-          contactObject[properties[i]],
-          this.validations,
-          this.validationErrors,
-        );
+        isFieldValid(properties[i], contactObject[properties[i]], this.validations, this.validationErrors);
       }
 
       // Return false if any of the properties have a validation error
@@ -580,10 +519,7 @@ export default {
       if (this.$store) {
         // do it if the store is available otherwise in the storybook context the component breaks
         // pass the value of the title to preview changes
-        this.$store.commit(
-          `${METADATA_NAMESPACE}/${METADATA_UPDATE_EXISTING_TITLE}`,
-          value,
-        );
+        this.$store.commit(`${METADATA_NAMESPACE}/${METADATA_UPDATE_EXISTING_TITLE}`, value);
       }
 
       if (valid && property === METADATA_TITLE_PROPERTY && !this.metadataUrl) {
@@ -591,15 +527,9 @@ export default {
       }
     },
     validateProperty(property, value) {
-      return isFieldValid(
-        property,
-        value,
-        this.validations,
-        this.validationErrors,
-      );
+      return isFieldValid(property, value, this.validations, this.validationErrors);
     },
     catchPickerAuthorChange(pickedAuthorEmail: string, hasAuthor) {
-
       this.authorPickerTouched = true;
       this.authorIsPicked = hasAuthor;
 
@@ -607,12 +537,9 @@ export default {
         const author = getAuthorByEmail(pickedAuthorEmail, this.existingAuthorsWrap);
         const contactObject = creationContactFromAuthor(author);
 
-        this.previews[METADATA_CONTACT_FIRSTNAME] =
-          contactObject[METADATA_CONTACT_FIRSTNAME];
-        this.previews[METADATA_CONTACT_LASTNAME] =
-          contactObject[METADATA_CONTACT_LASTNAME];
-        this.previews[METADATA_CONTACT_EMAIL] =
-          contactObject[METADATA_CONTACT_EMAIL];
+        this.previews[METADATA_CONTACT_FIRSTNAME] = contactObject[METADATA_CONTACT_FIRSTNAME];
+        this.previews[METADATA_CONTACT_LASTNAME] = contactObject[METADATA_CONTACT_LASTNAME];
+        this.previews[METADATA_CONTACT_EMAIL] = contactObject[METADATA_CONTACT_EMAIL];
 
         if (this.validateAuthor(contactObject)) {
           this.setFullContactInfos(contactObject);
@@ -644,26 +571,18 @@ export default {
       }
 
       // default to filling all the infos from the text-field input
-      let contactObject = createContact(
-        this.contactEmailField,
-        this.contactFirstNameField,
-        this.contactLastNameField,
-      );
+      let contactObject = createContact(this.contactEmailField, this.contactFirstNameField, this.contactLastNameField);
 
       if (property === METADATA_CONTACT_EMAIL) {
-        if (
-          isFieldValid(property, value, this.validations, this.validationErrors)
-        ) {
+        if (isFieldValid(property, value, this.validations, this.validationErrors)) {
           // autocomplete author
           const author = getAuthorByEmail(value, this.existingAuthorsWrap);
 
           const autoCompletedContactObject = creationContactFromAuthor(author);
 
           if (autoCompletedContactObject) {
-            this.previews[METADATA_CONTACT_FIRSTNAME] =
-              autoCompletedContactObject[METADATA_CONTACT_FIRSTNAME];
-            this.previews[METADATA_CONTACT_LASTNAME] =
-              autoCompletedContactObject[METADATA_CONTACT_LASTNAME];
+            this.previews[METADATA_CONTACT_FIRSTNAME] = autoCompletedContactObject[METADATA_CONTACT_FIRSTNAME];
+            this.previews[METADATA_CONTACT_LASTNAME] = autoCompletedContactObject[METADATA_CONTACT_LASTNAME];
 
             // overwrite any infos from the text-fields with the author infos
             // from the autocomplete
@@ -679,14 +598,7 @@ export default {
       // when the user focus leaves any of the fields, therefore all changes
       // must be stored
 
-      if (
-        isObjectValid(
-          this.contactValidationProperties,
-          contactObject,
-          this.validations,
-          this.validationErrors,
-        )
-      ) {
+      if (isObjectValid(this.contactValidationProperties, contactObject, this.validations, this.validationErrors)) {
         this.setFullContactInfos(contactObject);
       }
     },
@@ -709,11 +621,7 @@ export default {
         [property]: value,
       };
 
-      if (
-        property === METADATA_TITLE_PROPERTY &&
-        !this.metadataUrl &&
-        this.metadataUrlField
-      ) {
+      if (property === METADATA_TITLE_PROPERTY && !this.metadataUrl && this.metadataUrlField) {
         // in the case of typing in the title for the first time, make sure
         // to store the url as well
         newHeaderInfo = {
@@ -758,10 +666,8 @@ export default {
       instructions:
         'The header is part of the main metadata information.' +
         ` Together with the other information in the "${EDIT_STEP_TITLE_MAIN_METADATA}" step, it represents the core information for your research dataset.`,
-      instructions2:
-        'Enter a title for your research dataset. Please make sure that title is meaningful and specific.',
-      authorInstructions:
-        'Enter an email address or pick a user as the contact person for this dataset.',
+      instructions2: 'Enter a title for your research dataset. Please make sure that title is meaningful and specific.',
+      authorInstructions: 'Enter an email address or pick a user as the contact person for this dataset.',
       authorOr: '<strong>Or</strong> pick <br /> an author',
       authorOr2: '<strong>Or</strong> pick an author',
       authorAutoComplete:
@@ -773,16 +679,10 @@ export default {
       placeholderContactFirstName: 'Enter contact first name',
       placeholderContactLastName: 'Enter contact last name',
       previewText: 'Metadata Header Preview',
-      authorDropdown:
-        'Click here and start typing to select an existing EnviDat author',
-      authorPickHint:
-        'Start typing the name in the text field to search for an author.',
+      authorDropdown: 'Click here and start typing to select an existing EnviDat author',
+      authorPickHint: 'Start typing the name in the text field to search for an author.',
     },
-    contactValidationProperties: [
-      METADATA_CONTACT_EMAIL,
-      METADATA_CONTACT_FIRSTNAME,
-      METADATA_CONTACT_LASTNAME,
-    ],
+    contactValidationProperties: [METADATA_CONTACT_EMAIL, METADATA_CONTACT_FIRSTNAME, METADATA_CONTACT_LASTNAME],
     validationErrors: {
       [METADATA_TITLE_PROPERTY]: null,
       [METADATA_URL_PROPERTY]: null,

@@ -1,43 +1,36 @@
 <template>
-  <v-row >
-    <v-col :cols="defaultCols"
-            :md="mdCols">
-
+  <v-row>
+    <v-col :cols="defaultCols" :md="mdCols">
       <BaseDatePicker
-          :date="startDate"
-          :date-property="startDateProperty"
-          :date-label="startDateLabel || labels.startDate"
-          :max-date="endDate"
-          :isClearable="clearableStartDate"
-          :readOnlyFields="readOnlyFields"
-          :readOnlyExplanation="readOnlyExplanation"
-          @dateChange="changeDate"
-          @clearClick="$emit('clearClick', $event)"
+        :date="startDate"
+        :date-property="startDateProperty"
+        :date-label="startDateLabel || labels.startDate"
+        :max-date="endDate"
+        :isClearable="clearableStartDate"
+        :readOnlyFields="readOnlyFields"
+        :readOnlyExplanation="readOnlyExplanation"
+        @dateChange="changeDate"
+        @clearClick="$emit('clearClick', $event)"
       />
-
     </v-col>
 
-    <v-col :cols="defaultCols"
-           :md="mdCols"
-           :class="paddingSecondCol">
+    <v-col :cols="defaultCols" :md="mdCols" :class="paddingSecondCol">
       <BaseDatePicker
-          :date="endDate"
-          :date-property="endDateProperty"
-          :date-label="endDateLabel || labels.endDate"
-          :min-date="startDate"
-          :isClearable="clearableEndDate"
-          :readOnlyFields="readOnlyFields"
-          :readOnlyExplanation="readOnlyExplanation"
-          @dateChange="changeDate"
-          @clearClick="$emit('clearClick', $event)"
+        :date="endDate"
+        :date-property="endDateProperty"
+        :date-label="endDateLabel || labels.endDate"
+        :min-date="startDate"
+        :isClearable="clearableEndDate"
+        :readOnlyFields="readOnlyFields"
+        :readOnlyExplanation="readOnlyExplanation"
+        @dateChange="changeDate"
+        @clearClick="$emit('clearClick', $event)"
       />
-
     </v-col>
   </v-row>
 </template>
 
 <script>
-
 import BaseDatePicker from './BaseDatePicker.vue';
 
 export default {

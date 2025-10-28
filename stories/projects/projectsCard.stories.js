@@ -7,9 +7,7 @@
  */
 
 import bark2 from '@/assets/cards/forest/c_b_forest_texture_bark2.jpg';
-import {
-  enhanceSubprojectsFromExtras,
-} from '@/factories/projectsDataFactory';
+import { enhanceSubprojectsFromExtras } from '@/factories/projectsDataFactory';
 import ProjectCard from '@/modules/projects/components/ProjectCard.vue';
 
 // get Project test data and enhance it
@@ -50,7 +48,7 @@ function projectsCardsChilds() {
     if (project.subProjects) {
       project.subProjects.forEach((p) => {
         subProjects.push(p);
-      })
+      });
     }
   }
 
@@ -74,9 +72,9 @@ export const ProjectCardParent = {
     img: projectCardForParent.image_url,
     defaultImg: bark2,
   },
-}
+};
 
-const projectCardForChildren = projectsCardsChilds()[0]
+const projectCardForChildren = projectsCardsChilds()[0];
 // console.log(projectCardForChildren);
 
 export const ProjectCardChildren = {
@@ -88,7 +86,7 @@ export const ProjectCardChildren = {
     img: projectCardForChildren.image_url,
     defaultImg: bark2,
   },
-}
+};
 
 /*
 export const ProjectCardsParents = () => ({

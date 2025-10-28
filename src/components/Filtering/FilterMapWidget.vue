@@ -90,7 +90,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import {mdiClose, mdiEye, mdiLayers, mdiMapMarker, mdiMapMarkerMultiple} from '@mdi/js';
+import { mdiClose, mdiEye, mdiLayers, mdiMapMarker, mdiMapMarkerMultiple } from '@mdi/js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import FilterMapWidgetLayout from '@/components/Filtering/FilterMapWidgetLayout.vue';
 
@@ -122,8 +122,7 @@ export default {
     },
     topLayout: Boolean,
   },
-  beforeMount() {
-  },
+  beforeMount() {},
   computed: {
     smScreen() {
       return this.$vuetify.display.smAndDown;

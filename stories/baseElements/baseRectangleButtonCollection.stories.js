@@ -28,7 +28,7 @@ SingleButton.args = {
   buttonText: 'Single Button',
   isOutlined: true,
   icon: mdiPencil,
-}
+};
 
 /*
 SingleButton.play = async ({canvasElement}) => {
@@ -42,15 +42,14 @@ SingleButton.play = async ({canvasElement}) => {
 }
 */
 
-
 export const ButtonsCollectionViews = () => ({
-    components: { BaseRectangleButton },
-    data: ()=>({
-      mdiPencil,
-      mdiMagnify,
-      mdiPlus,
-    }),
-    template: `
+  components: { BaseRectangleButton },
+  data: () => ({
+    mdiPencil,
+    mdiMagnify,
+    mdiPlus,
+  }),
+  template: `
     <v-row >
 
       <v-col cols="4">
@@ -231,4 +230,4 @@ export const ButtonsCollectionViews = () => ({
       </v-col>
 
     </v-row>`,
-  });
+});

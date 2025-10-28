@@ -13,15 +13,9 @@
 import EditResource from '@/modules/user/components/EditResource.vue';
 import { EDITMETADATA_DATA_RESOURCE } from '@/factories/eventBus';
 
-import {
-  enhanceElementsWithStrategyEvents,
-  SELECT_EDITING_RESOURCE_PROPERTY,
-} from '@/factories/strategyFactory';
+import { enhanceElementsWithStrategyEvents, SELECT_EDITING_RESOURCE_PROPERTY } from '@/factories/strategyFactory';
 
-import {
-  cleanListForFrontend,
-  enhanceUserObject,
-} from '@/factories/mappingFactory';
+import { cleanListForFrontend, enhanceUserObject } from '@/factories/mappingFactory';
 
 import unFormatedMetadata from '@/../stories/js/metadata';
 import userList from '@/../stories/testdata/user_list.json';
@@ -40,10 +34,7 @@ const allResources = [];
 
 for (let i = 0; i < unFormatedMetadata.length; i++) {
   const dataset = unFormatedMetadata[i];
-  let resources = cleanListForFrontend(
-    dataset.resources,
-    EDITMETADATA_DATA_RESOURCE,
-  );
+  let resources = cleanListForFrontend(dataset.resources, EDITMETADATA_DATA_RESOURCE);
 
   for (let j = 0; j < resources.length; j++) {
     const resource = resources[j];
@@ -51,19 +42,13 @@ for (let i = 0; i < unFormatedMetadata.length; i++) {
       try {
         resource.restricted = JSON.parse(resource.restricted);
       } catch (e) {
-        console.log(
-          `resource failed ${resource.name} restricted ${resource.restricted}`,
-        );
+        console.log(`resource failed ${resource.name} restricted ${resource.restricted}`);
         console.error(e);
       }
     }
   }
 
-  resources = enhanceElementsWithStrategyEvents(
-    resources,
-    SELECT_EDITING_RESOURCE_PROPERTY,
-    true,
-  );
+  resources = enhanceElementsWithStrategyEvents(resources, SELECT_EDITING_RESOURCE_PROPERTY, true);
   allResources.push(resources);
 }
 
@@ -74,7 +59,6 @@ deprecatedResources[2].deprecated = true;
 
 const editingReadOnlyObj = getReadOnlyFieldsObject('published');
 
-
 export default {
   title: '3 Datasets / 2 Edit / Resource',
   component: EditResource,
@@ -84,7 +68,7 @@ const userEditMetadataConfig = {
   editingRestrictingActive: true,
 };
 
-export const Empty = {}
+export const Empty = {};
 
 export const Filled = {
   args: {
@@ -93,7 +77,7 @@ export const Filled = {
     userEditMetadataConfig,
     envidatUsers,
   },
-}
+};
 
 export const Filled2 = {
   args: {
@@ -101,7 +85,7 @@ export const Filled2 = {
     ...allResources[0][1],
     ...mergeResourceSizeForFrontend(allResources[0][1]),
   },
-}
+};
 
 export const Filled3 = {
   args: {
@@ -109,7 +93,7 @@ export const Filled3 = {
     ...allResources[2][0],
     ...mergeResourceSizeForFrontend(allResources[2][0]),
   },
-}
+};
 
 export const FilledReadOnly = {
   args: {
@@ -117,8 +101,7 @@ export const FilledReadOnly = {
     readOnlyFields: editingReadOnlyObj.readOnlyFields,
     readOnlyExplanation: editingReadOnlyObj.explanation,
   },
-}
-
+};
 
 export const FilledAndLoading = {
   args: {
@@ -126,4 +109,4 @@ export const FilledAndLoading = {
     loading: true,
     envidatUsers,
   },
-}
+};

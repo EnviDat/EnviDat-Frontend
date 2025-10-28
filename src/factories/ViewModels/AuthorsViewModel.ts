@@ -5,7 +5,6 @@ import { AuthorViewModel } from '@/modules/workflow/viewModel/AuthorViewModel.ts
 import { AbstractViewModel } from '@/factories/ViewModels/AbstractViewModel.ts';
 
 export class AuthorsViewModel extends AbstractViewModel {
-
   declare authors: Author[];
 
   constructor(dataset: DatasetDTO | undefined) {
@@ -20,8 +19,8 @@ export class AuthorsViewModel extends AbstractViewModel {
     }
   }
 
-  static getFormattedAuthors(rawAuthors: AuthorDTO[], lastModified: string) : Author[] {
-    const formattedAuthors : Author[] = [];
+  static getFormattedAuthors(rawAuthors: AuthorDTO[], lastModified: string): Author[] {
+    const formattedAuthors: Author[] = [];
 
     for (let i = 0; i < rawAuthors.length; i++) {
       const rawAuthor = rawAuthors[i];
@@ -31,19 +30,21 @@ export class AuthorsViewModel extends AbstractViewModel {
 
     return formattedAuthors;
   }
-
 }
 
 export const createAuthorsViewModel = (datasetDTO: DatasetDTO, changeCallback = undefined) => {
   const authorsVM = new AuthorsViewModel(datasetDTO);
   const reactiveAuthorsVM = reactive(authorsVM);
 
-  watch(() => reactiveAuthorsVM, (newModel) => {
-    if (changeCallback) {
-      changeCallback(newModel);
-    }
-  }, { deep: true });
+  watch(
+    () => reactiveAuthorsVM,
+    (newModel) => {
+      if (changeCallback) {
+        changeCallback(newModel);
+      }
+    },
+    { deep: true },
+  );
 
   return reactiveAuthorsVM;
-}
-
+};

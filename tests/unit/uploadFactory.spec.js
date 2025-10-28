@@ -1,16 +1,10 @@
 import { it, describe, expect } from 'vitest';
-import {
-  getUppyInstance,
-  subscribeOnUppyEvent,
-} from '@/factories/uploadFactory';
+import { getUppyInstance, subscribeOnUppyEvent } from '@/factories/uploadFactory';
 
 const fs = require('fs');
 
-
 describe('uploadFactory - renderMarkdown', () => {
-
   it('renderMarkdown - getUppyInstance() no apiKey', () => {
-
     const uppy = getUppyInstance();
     const uppy2 = getUppyInstance();
 
@@ -20,7 +14,6 @@ describe('uploadFactory - renderMarkdown', () => {
   });
 
   it('renderMarkdown - subscribe on events', () => {
-
     const filePath = `${__dirname}/../../src/assets/`;
     const pngFile = 'noisy_pattern.png';
 
@@ -31,13 +24,10 @@ describe('uploadFactory - renderMarkdown', () => {
     subscribeOnUppyEvent('file-added', (file) => {
       console.log(`added file: ${file.name}`);
       expect(file).toBeDefined();
-    })
+    });
 
     // addFile(pngFile, filePath, dataString);
-
-
   });
-
 });
 
 /*
@@ -52,4 +42,3 @@ describe('stringFactory - stripMarkdown', () => {
 
 });
 */
-

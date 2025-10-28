@@ -1,4 +1,3 @@
-
 import {
   divIcon as createDivIcon,
   geoJSON,
@@ -29,11 +28,10 @@ import {
   LOCATION_TYPE_POLYGON,
 } from '@/factories/metadataConsts';
 
-
 export const pointStyle = (selected) => ({
   color: selected ? '#00897b' : 'black',
   riseOnHover: true,
-})
+});
 
 export const polygonStyle = (selected, editing) => ({
   color: selected ? '#00897b' : '#ffd740',
@@ -41,18 +39,8 @@ export const polygonStyle = (selected, editing) => ({
   fillOpacity: editing ? 0.25 : 0,
 });
 
-export function getPointIcon(
-  selected,
-  multiMarker = false,
-  modeData = undefined,
-  dataset = undefined,
-) {
-  if (
-    modeData &&
-    modeData.name !== EDNA_MODE &&
-    modeData.name !== FOREST_3D &&
-    modeData.icons
-  ) {
+export function getPointIcon(selected, multiMarker = false, modeData = undefined, dataset = undefined) {
+  if (modeData && modeData.name !== EDNA_MODE && modeData.name !== FOREST_3D && modeData.icons) {
     let iconUrl = Object.values(modeData.icons)[0];
     let extraValue = dataset?.[modeData.extrasKey];
 
@@ -90,9 +78,7 @@ export function getPointIcon(
         isSelected="${selected}"
         style="color: ${style.color}"
       >
-        <path d="${
-          multiMarker ? mdiMapMarkerMultiple : mdiMapMarker
-        }" transform="scale(1.25, 1.25)"></path>
+        <path d="${multiMarker ? mdiMapMarkerMultiple : mdiMapMarker}" transform="scale(1.25, 1.25)"></path>
       </svg>
     `,
   };
@@ -105,7 +91,7 @@ function ensureLngLatCoords(coords) {
   // always flip coords for leaflet
   return [y, x];
 
-/*
+  /*
   // If x is within the latitude range (-90..90)
   // and y is within the longitude range (-180..180),
   // and the absolute value of y is greater than x (common for many coords),
@@ -124,7 +110,16 @@ function ensureLngLatCoords(coords) {
 */
 }
 
-export function getPointLayer(coords, id, title, selected, onClick, multiMarker = false, modeData = undefined, dataset = undefined) {
+export function getPointLayer(
+  coords,
+  id,
+  title,
+  selected,
+  onClick,
+  multiMarker = false,
+  modeData = undefined,
+  dataset = undefined,
+) {
   const icon = getPointIcon(selected, multiMarker, modeData, dataset);
 
   let opacity = null;
@@ -148,7 +143,7 @@ export function getPointLayer(coords, id, title, selected, onClick, multiMarker 
 
   point.on({
     click: (e) => {
-      if(onClick) {
+      if (onClick) {
         onClick(e.target.id);
       }
     },
@@ -156,8 +151,7 @@ export function getPointLayer(coords, id, title, selected, onClick, multiMarker 
       if (!e.target?.title) {
         return;
       }
-      e.target.bindPopup(`<p>${e.target.title}</p>`)
-        .openPopup();
+      e.target.bindPopup(`<p>${e.target.title}</p>`).openPopup();
     },
     mouseout: (e) => {
       e.target.closePopup();
@@ -190,7 +184,7 @@ export function getPolygonLayer(coords, id, title, selected, onClick) {
 
   polygon.on({
     click: (e) => {
-      if(onClick) {
+      if (onClick) {
         onClick(e.target.id);
       }
     },
@@ -198,8 +192,7 @@ export function getPolygonLayer(coords, id, title, selected, onClick) {
       if (!e.target?.title) {
         return;
       }
-      e.target.bindPopup(`<p>${e.target.title}</p>`)
-        .openPopup();
+      e.target.bindPopup(`<p>${e.target.title}</p>`).openPopup();
     },
     mouseout: (e) => {
       e.target.closePopup();
@@ -235,21 +228,22 @@ export function getMultiPolygonLayer(coords, id, title, selected, onClick) {
 
 export function createTopoLayer() {
   return tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
-    attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community',
+    attribution:
+      'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community',
     maxZoom: 19,
   });
 }
 
 export function createImageryLayer() {
   return tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+    attribution:
+      'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
     maxZoom: 19,
   });
 }
 
-function createGcNetLayers(feature, latlng, vueInstance){
-
-  let style = vueInstance?.getCustomLeafletStyle?.gcnetStyle
+function createGcNetLayers(feature, latlng, vueInstance) {
+  let style = vueInstance?.getCustomLeafletStyle?.gcnetStyle;
 
   if (feature.properties) {
     if (feature.properties.active === null || feature.properties.active === undefined) {
@@ -273,9 +267,8 @@ function createGcNetLayers(feature, latlng, vueInstance){
 }
 
 export function createLeafletLayerViaGeoJson(geoJSONArray, id, title, vueInstance) {
-
-  const layerId = id
-  const layerTitle = title
+  const layerId = id;
+  const layerTitle = title;
 
   return geoJSON(geoJSONArray, {
     style: vueInstance?.getCustomLeafletStyle,
@@ -287,24 +280,23 @@ export function createLeafletLayerViaGeoJson(geoJSONArray, id, title, vueInstanc
       const layerType = feature.geometry.type || feature.type;
       let layer;
 
-      if(layerType === LOCATION_TYPE_MULTIPOINT) {
+      if (layerType === LOCATION_TYPE_MULTIPOINT) {
         layer = getMultiPointLayer(feature.geometry.coordinates, layerId, layerTitle, false, undefined);
-      } else if(layerType === LOCATION_TYPE_POLYGON) {
+      } else if (layerType === LOCATION_TYPE_POLYGON) {
         layer = getPolygonLayer(feature.geometry.coordinates, layerId, layerTitle, false, undefined);
       } else {
         layer = getPointLayer(feature.geometry.coordinates, layerId, layerTitle, false, undefined);
       }
 
-      layer.type = layerType
+      layer.type = layerType;
       return layer;
     },
   });
 }
 
-
 export function createLeafletLayerCollections(geometry, dataset, selected, onClick, isGcnet, modeData, vueInstance) {
   let layers = [];
-  const geometryType = geometry.type
+  const geometryType = geometry.type;
 
   if (isGcnet) {
     return createLeafletLayerViaGeoJson(geometry, dataset.id, dataset.title, vueInstance);
@@ -312,45 +304,41 @@ export function createLeafletLayerCollections(geometry, dataset, selected, onCli
 
   if (geometry.type === LOCATION_TYPE_POINT) {
     const l = getPointLayer(
-      geometry.coordinates, dataset.id, dataset.title,
-      selected, onClick,
-      undefined, modeData, dataset,
-    );
-    layers.push(l);
-  } else if (geometry.type === LOCATION_TYPE_MULTIPOINT) {
-    layers = getMultiPointLayer(
-      geometry.coordinates, dataset.id, dataset.title,
-      selected, onClick,
-      modeData, dataset,
-    );
-  } else if (geometry.type === LOCATION_TYPE_POLYGON) {
-    const l = getPolygonLayer(
-      geometry.coordinates, dataset.id, dataset.title,
-      selected, onClick,
-    );
-    layers.push(l);
-  } else if (geometry.type === LOCATION_TYPE_MULTIPOLYGON) {
-    layers = getMultiPolygonLayer(
       geometry.coordinates,
       dataset.id,
       dataset.title,
       selected,
       onClick,
+      undefined,
+      modeData,
+      dataset,
     );
+    layers.push(l);
+  } else if (geometry.type === LOCATION_TYPE_MULTIPOINT) {
+    layers = getMultiPointLayer(geometry.coordinates, dataset.id, dataset.title, selected, onClick, modeData, dataset);
+  } else if (geometry.type === LOCATION_TYPE_POLYGON) {
+    const l = getPolygonLayer(geometry.coordinates, dataset.id, dataset.title, selected, onClick);
+    layers.push(l);
+  } else if (geometry.type === LOCATION_TYPE_MULTIPOLYGON) {
+    layers = getMultiPolygonLayer(geometry.coordinates, dataset.id, dataset.title, selected, onClick);
 
     // don't manually rewind (change the sequence of the coordination) it's done via the geoJSON from leaflet
     // layers = createLeafletLayerViaGeoJson(geometry, id, title, vueInstance)
   } else if (geometry.type === LOCATION_TYPE_GEOMCOLLECTION) {
-    const subLayers = []
+    const subLayers = [];
 
     for (let i = 0; i < geometry.geometries.length; i++) {
       const subGeometry = geometry.geometries[i];
 
       const { layers: subs } = createLeafletLayerCollections(
-        subGeometry, dataset,
-        selected, onClick, isGcnet,
-        modeData, vueInstance,
-      )
+        subGeometry,
+        dataset,
+        selected,
+        onClick,
+        isGcnet,
+        modeData,
+        vueInstance,
+      );
 
       for (let j = 0; j < subs.length; j++) {
         subLayers.push(subs[j]);
@@ -360,7 +348,7 @@ export function createLeafletLayerCollections(geometry, dataset, selected, onCli
     }
   } else {
     console.log(geometry);
-    throw new Error(`Unknown Geometry type: '${geometry.type}'`)
+    throw new Error(`Unknown Geometry type: '${geometry.type}'`);
   }
 
   return {
@@ -383,5 +371,3 @@ export function createLeafletLayerCollectionsGeoJSON(geoJson, isGcnet, vueInstan
     vueInstance,
   );
 }
-
-

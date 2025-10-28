@@ -11,17 +11,19 @@
 
 import BaseCitationView from '@/components/BaseElements/BaseCitationView.vue';
 import { createCitation } from '@/factories/citationFactory';
-import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from '@/../stories/js/envidatViewports';
+import {
+  mobileLargeViewportParams,
+  mobileViewportParams,
+  tabletViewportParams,
+} from '@/../stories/js/envidatViewports';
 
 import metadata from '@/../stories/js/metadata';
 import relatedPublicCitationTesting from '@/../stories/js/relatedPublicCitation';
-
 
 export default {
   title: '1 Base / Citation View',
   component: BaseCitationView,
 };
-
 
 const citation1 = createCitation(metadata[0]);
 
@@ -35,7 +37,6 @@ const citation2 = {
   doi: pubCitation.doi,
   doiUrl: `https://www.doi.org/${pubCitation.doi}`,
 };
-
 
 /*
 const citation2 = createCitation(metadata[2]);

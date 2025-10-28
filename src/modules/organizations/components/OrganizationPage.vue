@@ -4,10 +4,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { computed, ComputedRef, nextTick, onMounted, ref, watch } from 'vue';
 import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
 
-import {
-  METADATA_NAMESPACE,
-  SET_DETAIL_PAGE_BACK_URL,
-} from '@/store/metadataMutationsConsts';
+import { METADATA_NAMESPACE, SET_DETAIL_PAGE_BACK_URL } from '@/store/metadataMutationsConsts';
 import {
   enhanceDatasetWithResearchUnit,
   getOrgaDatasetsMap,
@@ -27,10 +24,7 @@ import OrganizationTree from '@/modules/user/components/OrganizationTree.vue';
 
 import researchUnits from '@/../public/researchUnits.json';
 
-import {
-  METADATADETAIL_PAGENAME,
-  ORGANIZATIONS_PAGENAME,
-} from '@/router/routeConsts';
+import { METADATADETAIL_PAGENAME, ORGANIZATIONS_PAGENAME } from '@/router/routeConsts';
 import store from '@/store/store';
 import { DatasetOrganizationMapEntry } from '@/types/modelTypes';
 
@@ -61,7 +55,7 @@ const enhancedResearchUnitDatasets = () => {
   return enhanceDatasetWithResearchUnit(allDatasets, researchUnits);
 };
 
-const catchOrganizationClick = (orgaName : string) => {
+const catchOrganizationClick = (orgaName: string) => {
   router.push({
     name: ORGANIZATIONS_PAGENAME,
     query: route.query,
@@ -83,9 +77,11 @@ const catchMetadataClicked = (datasetName: string) => {
   });
 };
 
-const selectedOrgaName : ComputedRef<string> = computed(() => route?.params?.organization) as ComputedRef<string>;
+const selectedOrgaName: ComputedRef<string> = computed(() => route?.params?.organization) as ComputedRef<string>;
 
-const selectedOrganization = computed(() => getOrganizationFromRelationMap(selectedOrgaName.value, orgaRelationMap.value));
+const selectedOrganization = computed(() =>
+  getOrganizationFromRelationMap(selectedOrgaName.value, orgaRelationMap.value),
+);
 
 const datasetListTitle = computed(() => {
   const organEntry = selectedOrganization.value;
@@ -114,8 +110,7 @@ const orgaHistoryOptions = computed(() => {
 })
 */
 
-
-const getPredefinedSearch = () : string => {
+const getPredefinedSearch = (): string => {
   const orgFromUrl = route?.params?.organization as string;
 
   if (!orgFromUrl) {
@@ -125,7 +120,7 @@ const getPredefinedSearch = () : string => {
   return orgFromUrl.replaceAll('-', ' ');
 };
 
-const loadOrganizationDatasetSeries = (orgaName : string) => {
+const loadOrganizationDatasetSeries = (orgaName: string) => {
   if (!orgaDatasetsMap.value) {
     return;
   }
@@ -137,9 +132,8 @@ const loadOrganizationDatasetSeries = (orgaName : string) => {
     return;
   }
 
-  orgaDataseries.value = getResearchUnitDatasetSeries(new Map([[orgaName, datasetEntry]]))
-}
-
+  orgaDataseries.value = getResearchUnitDatasetSeries(new Map([[orgaName, datasetEntry]]));
+};
 
 onMounted(async () => {
   // const orgas = organizations.result;
@@ -158,34 +152,26 @@ onMounted(async () => {
     const topOrgas = getTopOrganizations(orgas);
 
     orgaDatasetsMap.value = getOrgaDatasetsMap(datasets);
-    organizationsTree.value = getOrganizationTree(
-      topOrgas,
-      orgaRelationMap.value,
-      orgaDatasetsMap.value,
-    );
+    organizationsTree.value = getOrganizationTree(topOrgas, orgaRelationMap.value, orgaDatasetsMap.value);
   });
 
   loading.value = false;
 
-  loadOrganizationDatasetSeries(selectedOrgaName.value)
+  loadOrganizationDatasetSeries(selectedOrgaName.value);
 });
 
-
-watch(() => route,
+watch(
+  () => route,
   () => {
-    loadOrganizationDatasetSeries(selectedOrgaName.value)
+    loadOrganizationDatasetSeries(selectedOrgaName.value);
   },
   { immediate: true, deep: true },
-)
+);
 </script>
 
 <template>
-  <v-container
-    fluid
-    class="pa-0"
-    style="scroll-behavior: auto; scrollbar-width: thin"
-  >
-    <v-row >
+  <v-container fluid class="pa-0" style="scroll-behavior: auto; scrollbar-width: thin">
+    <v-row>
       <v-col>
         <v-card class="pa-4">
           <v-card-title class="px-0 pt-0">
@@ -193,12 +179,7 @@ watch(() => route,
           </v-card-title>
 
           <v-card-text class="pa-0">
-            <v-row
-              v-show="loading"
-              justify="center"
-              align="center"
-              style="height: 600px"
-            >
+            <v-row v-show="loading" justify="center" align="center" style="height: 600px">
               <v-col class="flex-grow-0">
                 <v-progress-circular indeterminate />
               </v-col>
@@ -219,12 +200,10 @@ watch(() => route,
     <v-row>
       <v-col>
         <v-card class="pa-4">
-          <v-card-title class="px-0 pt-0">
-            List of Organizations in EnviDat
-          </v-card-title>
+          <v-card-title class="px-0 pt-0"> List of Organizations in EnviDat </v-card-title>
 
           <v-card-text>
-            <v-row >
+            <v-row>
               <v-col cols="8">
                 <OrganizationTree
                   :predefinedSearch="getPredefinedSearch()"
@@ -237,9 +216,7 @@ watch(() => route,
                       <BaseIconCountView
                         class="ma-0"
                         :icon="mdiEarth"
-                        :count="
-                          item?.datasetCount + item?.childDatasetsCount || 0
-                        "
+                        :count="item?.datasetCount + item?.childDatasetsCount || 0"
                       />
                     </v-col>
                   </template>
