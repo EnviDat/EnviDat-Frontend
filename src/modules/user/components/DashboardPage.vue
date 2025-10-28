@@ -9,27 +9,19 @@
       color="accent"
     />
     <div v-if="!user" class="notSignedinGrid">
-      <NotFoundCard
-        v-bind="notSignedInInfos"
-        :actionButtonCallback="catchSigninClick"
-      />
+      <NotFoundCard v-bind="notSignedInInfos" :actionButtonCallback="catchSigninClick" />
     </div>
-    <div v-if="user"
-         class="dashboardGrid">
+    <div v-if="user" class="dashboardGrid">
       <div class="topBoard mt-6 mt-md-0">
         <IntroductionCard
           :userName="user.fullName"
           :introText="userDashboardConfig.introText"
           :feedbackText="userDashboardConfig.feedbackText"
           :oldDashboardUrl="oldDashboardUrl"
-          :createClickCallback="
-            organizationsStore.canCreateDatasets ? createClickCallback : null
-          "
+          :createClickCallback="organizationsStore.canCreateDatasets ? createClickCallback : null"
           :editingClickCallback="editingClickCallback"
           :editingDatasetName="lastDataset"
-          :currentLocalDataset="
-            hasLocalDataset ? currentLocalDataset : undefined
-          "
+          :currentLocalDataset="hasLocalDataset ? currentLocalDataset : undefined"
           @localCardClicked="catchLocalCardClick"
           @clearButtonClicked="catchClearLocalStorage"
         />
@@ -46,12 +38,7 @@
           @organizationClick="catchOrganizationClick"
         />
 
-        <FlipLayout
-          v-if="userEditingEnabled"
-          :height="userCardHeight"
-          :width="userCardWidth"
-          :autoButtonFlip="true"
-        >
+        <FlipLayout v-if="userEditingEnabled" :height="userCardHeight" :width="userCardWidth" :autoButtonFlip="true">
           <template v-slot:front>
             <UserCard
               :height="userCardHeight"
@@ -99,18 +86,9 @@
           :clickCallback="catchRefreshClick"
         />
 
-        <div
-          v-if="hasUserDatasets && userDatasetsLoading"
-          id="collaboratorPlaceholders"
-          class="datasetsOverflow"
-        >
+        <div v-if="hasUserDatasets && userDatasetsLoading" id="collaboratorPlaceholders" class="datasetsOverflow">
           <v-row no-gutters>
-            <v-col
-              v-for="n in placeHolderAmount"
-              :key="`userDatasetsPlaceholder_${n}`"
-              cols="2"
-              class="pa-2"
-            >
+            <v-col v-for="n in placeHolderAmount" :key="`userDatasetsPlaceholder_${n}`" cols="2" class="pa-2">
               <MetadataCardPlaceholder />
             </v-col>
           </v-row>
@@ -143,31 +121,19 @@
         <div v-if="!hasUserDatasets" class="noUserDatasetsGrid px-1">
           <NotFoundCard
             v-bind="noDatasetsInfos"
-            :actionButtonCallback="
-              isEditorAndAbove ? createClickCallback : null
-            "
+            :actionButtonCallback="isEditorAndAbove ? createClickCallback : null"
           />
 
-          <NotificationCard
-            v-if="noUserDatasetsError"
-            v-bind="noUserDatasetsError"
-            :showCloseButton="false"
-          />
+          <NotificationCard v-if="noUserDatasetsError" v-bind="noUserDatasetsError" :showCloseButton="false" />
         </div>
       </div>
 
-      <div
-        class="midBoard pt-4"
-        id="collaboratorDatasets"
-        ref="collaboratorDatasets"
-      >
+      <div class="midBoard pt-4" id="collaboratorDatasets" ref="collaboratorDatasets">
         <TitleCard
           title="My Collaborator Datasets"
           :icon="mdiRefresh"
           :tooltipText="refreshButtonText"
-          :loading="
-            collaboratorDatasetIdsLoading || collaboratorDatasetsLoading
-          "
+          :loading="collaboratorDatasetIdsLoading || collaboratorDatasetsLoading"
           :clickCallback="catchCollaboratorRefreshClick"
         />
 
@@ -177,23 +143,14 @@
           class="datasetsOverflow"
         >
           <v-row no-gutters>
-            <v-col
-              v-for="n in orgaDatasetsPreview"
-              :key="`orgaDatasetsPlaceholder_${n}`"
-              cols="2"
-              class="pa-2"
-            >
+            <v-col v-for="n in orgaDatasetsPreview" :key="`orgaDatasetsPlaceholder_${n}`" cols="2" class="pa-2">
               <MetadataCardPlaceholder id="orgaDataset" />
             </v-col>
           </v-row>
         </div>
 
         <div
-          v-if="
-            !collaboratorDatasetIdsLoading &&
-            !collaboratorDatasetsLoading &&
-            hasCollaboratorDatasets
-          "
+          v-if="!collaboratorDatasetIdsLoading && !collaboratorDatasetsLoading && hasCollaboratorDatasets"
           id="collaboratorDatasetCards"
           class="datasetsOverflow"
         >
@@ -230,11 +187,7 @@
         </div>
 
         <div
-          v-if="
-            !collaboratorDatasetIdsLoading &&
-            !collaboratorDatasetsLoading &&
-            !hasCollaboratorDatasets
-          "
+          v-if="!collaboratorDatasetIdsLoading && !collaboratorDatasetsLoading && !hasCollaboratorDatasets"
           class="noUserDatasetsGrid px-1"
         >
           <NotFoundCard v-bind="noCollaboratorDatasetsInfos" />
@@ -290,21 +243,10 @@ import {
 import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
 import { getNameInitials } from '@/factories/authorFactory';
 import { errorMessage } from '@/factories/notificationFactory';
-import {
-  getTagColor,
-  getPopularTags,
-  tagsIncludedInSelectedTags,
-} from '@/factories/keywordsFactory';
-import {
-  enhanceMetadataEntry,
-  isTagSelected,
-} from '@/factories/metaDataFactory';
+import { getTagColor, getPopularTags, tagsIncludedInSelectedTags } from '@/factories/keywordsFactory';
+import { enhanceMetadataEntry, isTagSelected } from '@/factories/metaDataFactory';
 
-import {
-  getUserOrganizationRoleMap,
-  hasOrganizationRoles,
-  isMember,
-} from '@/factories/userEditingValidations';
+import { getUserOrganizationRoleMap, hasOrganizationRoles, isMember } from '@/factories/userEditingValidations';
 
 import UserNotFound1 from '@/modules/user/assets/UserNotFound1.jpg';
 import UserNotFound2 from '@/modules/user/assets/UserNotFound2.jpg';
@@ -334,18 +276,10 @@ import FlipLayout from '@/components/Layouts/FlipLayout.vue';
 import { getMetadataVisibilityState } from '@/factories/publicationFactory';
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
 
-const IntroductionCard = defineAsyncComponent(
-  () => import('@/components/Cards/IntroductionCard.vue'),
-);
-const NotFoundCard = defineAsyncComponent(
-  () => import('@/components/Cards/NotFoundCard.vue'),
-);
-const NotificationCard = defineAsyncComponent(
-  () => import('@/components/Cards/NotificationCard.vue'),
-);
-const UserOrganizationInfo = defineAsyncComponent(
-  () => import('@/components/Cards/UserOrganizationInfo.vue'),
-);
+const IntroductionCard = defineAsyncComponent(() => import('@/components/Cards/IntroductionCard.vue'));
+const NotFoundCard = defineAsyncComponent(() => import('@/components/Cards/NotFoundCard.vue'));
+const NotificationCard = defineAsyncComponent(() => import('@/components/Cards/NotificationCard.vue'));
+const UserOrganizationInfo = defineAsyncComponent(() => import('@/components/Cards/UserOrganizationInfo.vue'));
 
 const workflowStore = useDatasetWorkflowStore();
 
@@ -377,11 +311,7 @@ export default {
   },
   computed: {
     ...mapState(['config']),
-    ...mapState(USER_SIGNIN_NAMESPACE, [
-      'user',
-      'userLoading',
-      'userEditLoading',
-    ]),
+    ...mapState(USER_SIGNIN_NAMESPACE, ['user', 'userLoading', 'userEditLoading']),
     ...mapState(USER_NAMESPACE, [
       'collaboratorDatasetIdsLoading',
       'collaboratorDatasetIds',
@@ -393,11 +323,7 @@ export default {
       'lastEditedDataset',
       'lastEditedDatasetPath',
     ]),
-    ...mapGetters(METADATA_NAMESPACE, [
-      'allTags',
-      'updatingTags',
-      'metadatasContent',
-    ]),
+    ...mapGetters(METADATA_NAMESPACE, ['allTags', 'updatingTags', 'metadatasContent']),
     lastDataset() {
       return this.lastEditedDataset;
     },
@@ -432,10 +358,7 @@ export default {
 
       const errorDetail = `${this.userDatasetsError}<br /> <strong>Try reloading the datasets. If the problem persists please let use know via envidat@wsl.ch!</strong>`;
 
-      const notification = errorMessage(
-        'Error Loading Your Datasets',
-        errorDetail,
-      );
+      const notification = errorMessage('Error Loading Your Datasets', errorDetail);
       notification.timeout = 0;
 
       return notification;
@@ -521,10 +444,7 @@ export default {
         return null;
       }
 
-      return getUserOrganizationRoleMap(
-        this.user.id,
-        this.organizationsStore.userOrganizations,
-      );
+      return getUserOrganizationRoleMap(this.user.id, this.organizationsStore.userOrganizations);
     },
     organizationRoles() {
       if (!this.userOrganizationRoles) {
@@ -562,18 +482,13 @@ export default {
       return this.collaboratorDatasets?.length > 0;
     },
     isEditorAndAbove() {
-      return (
-        hasOrganizationRoles(this.organizationRoles) &&
-        !isMember(this.organizationRoles)
-      );
+      return hasOrganizationRoles(this.organizationRoles) && !isMember(this.organizationRoles);
     },
     noDatasetsInfos() {
       return {
         title: 'No Datasets',
         description: "It seems you don't have any datasets.",
-        actionDescription: this.isEditorAndAbove
-          ? 'Get started and create a new dataset'
-          : '',
+        actionDescription: this.isEditorAndAbove ? 'Get started and create a new dataset' : '',
         actionButtonText: 'New Dataset',
         image: UserNotFound2,
       };
@@ -603,13 +518,13 @@ export default {
       return properties.length > 0;
     },
     currentLocalDataset() {
-      let localDataset = this.newWorkflowActive ? this.workflowStore.localStorageService.dataset : getPreviewDatasetFromLocalStorage();
+      let localDataset = this.newWorkflowActive
+        ? this.workflowStore.localStorageService.dataset
+        : getPreviewDatasetFromLocalStorage();
 
       localDataset = {
         ...localDataset,
-        title: localDataset.title
-          ? localDataset.title
-          : '[Untitled Dataset]',
+        title: localDataset.title ? localDataset.title : '[Untitled Dataset]',
         subTitle: localDataset.description,
         tags: localDataset.keywords,
         flatLayout: true,
@@ -621,12 +536,7 @@ export default {
     },
   },
   methods: {
-    getPopularTagsFromDatasets(
-      datasets,
-      minCount = undefined,
-      maxCount = undefined,
-      maxTagAmount = 30,
-    ) {
+    getPopularTagsFromDatasets(datasets, minCount = undefined, maxCount = undefined, maxTagAmount = 30) {
       let tags = getPopularTags(datasets, '', minCount, maxCount);
 
       if (tags.length <= 0) {
@@ -634,10 +544,7 @@ export default {
       }
 
       if (tags.length > this.maxFilterTags) {
-        tags = tags.splice(
-          this.maxFilterTags,
-          tags.length - this.maxFilterTags,
-        );
+        tags = tags.splice(this.maxFilterTags, tags.length - this.maxFilterTags);
       }
 
       for (let j = 0; j < tags.length; j++) {
@@ -654,16 +561,10 @@ export default {
       return getMetadataVisibilityState(metadata);
     },
     contentFilteredByTags(value, selectedUserTagNames) {
-      return (
-        value.tags &&
-        tagsIncludedInSelectedTags(value.tags, selectedUserTagNames)
-      );
+      return value.tags && tagsIncludedInSelectedTags(value.tags, selectedUserTagNames);
     },
     loadRouteWithTags() {
-      const routeTags = loadRouteTags(
-        this.$route.query.tags,
-        this.selectedUserTagNames,
-      );
+      const routeTags = loadRouteTags(this.$route.query.tags, this.selectedUserTagNames);
 
       if (routeTags?.length > 0) {
         this.selectedUserTagNames = routeTags;
@@ -692,16 +593,10 @@ export default {
       });
 
       // always call the USER_GET_COLLABORATOR_DATASETS action because it resolves the store & state also when collaboratorDatasetIds is empty
-      await this.$store.dispatch(
-        `${USER_NAMESPACE}/${USER_GET_COLLABORATOR_DATASETS}`,
-        this.collaboratorDatasetIds,
-      );
+      await this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_COLLABORATOR_DATASETS}`, this.collaboratorDatasetIds);
     },
     async fetchUserOrganizationId(forceReload = false) {
-      if (
-        forceReload ||
-        (!forceReload && this.organizationsStore.userOrganizations?.length > 0)
-      ) {
+      if (forceReload || (!forceReload && this.organizationsStore.userOrganizations?.length > 0)) {
         await this.organizationsStore.UserGetOrgIds(this.user.id);
       }
     },
@@ -721,7 +616,6 @@ export default {
     },
     createClickCallback() {
       if (this.datasetCreationActive) {
-
         const name = this.newWorkflowActive ? WORKFLOW_PAGENAME : METADATA_CREATION_PAGENAME;
 
         this.$router.push({
@@ -747,11 +641,10 @@ export default {
       }
     },
     catchEditingClick(selectedDatasetId) {
-
       let name = METADATAEDIT_PAGENAME;
       const params = {
         metadataid: selectedDatasetId,
-      }
+      };
 
       if (this.newWorkflowActive) {
         name = WORKFLOW_PAGENAME;
@@ -774,15 +667,10 @@ export default {
     },
 
     catchTagCloseClicked(tagName) {
-      this.selectedUserTagNames = this.selectedUserTagNames.filter(
-        (tag) => tag !== tagName,
-      );
+      this.selectedUserTagNames = this.selectedUserTagNames.filter((tag) => tag !== tagName);
     },
     catchMetadataClicked(datasetname) {
-      this.$store.commit(
-        `${METADATA_NAMESPACE}/${SET_DETAIL_PAGE_BACK_URL}`,
-        this.$route,
-      );
+      this.$store.commit(`${METADATA_NAMESPACE}/${SET_DETAIL_PAGE_BACK_URL}`, this.$route);
 
       this.$router.push({
         name: METADATADETAIL_PAGENAME,
@@ -800,10 +688,7 @@ export default {
           email: updateObject.data.email,
         };
 
-        this.$store.dispatch(
-          `${USER_SIGNIN_NAMESPACE}/${USER_EDITING_UPDATE}`,
-          payload,
-        );
+        this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${USER_EDITING_UPDATE}`, payload);
       }
     },
     catchLocalCardClick() {
@@ -825,8 +710,7 @@ export default {
     catchClearLocalStorage() {
       eventBus.emit(SHOW_DIALOG, {
         title: 'Clear your dataset in creation?',
-        message:
-          'This dataset is not stored on the server yet! Are you sure you want to delete it?',
+        message: 'This dataset is not stored on the server yet! Are you sure you want to delete it?',
         callback: () => {},
         cancelCallback: () => {
           if (this.newWorkflowActive) {
@@ -892,8 +776,7 @@ export default {
     },
     noCollaboratorDatasetsInfos: {
       title: 'No Collaborator Datasets',
-      description:
-        "It seems you don't have datasets where you are added as a collaborator.",
+      description: "It seems you don't have datasets where you are added as a collaborator.",
       image: UserNotFound2,
     },
     noOrganizationsInfos: {

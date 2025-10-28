@@ -27,8 +27,12 @@ it('metadataFilterMethods Tag - creation - defaults', () => {
 
 it('metadataFilterMethods Tag - creation - options tag overload', () => {
   const existingTag = {
- name: 'dude', enabled: false, color: '#ffffff', count: 5, active: true,
-};
+    name: 'dude',
+    enabled: false,
+    color: '#ffffff',
+    count: 5,
+    active: true,
+  };
   const tag = createTag('newName', { tag: existingTag });
   expect(tag.name).toBe('newName');
   expect(tag.enabled).toBe(existingTag.enabled);
@@ -36,7 +40,6 @@ it('metadataFilterMethods Tag - creation - options tag overload', () => {
   expect(tag.count).toBe(existingTag.count);
   expect(tag.active).toBe(existingTag.active);
 });
-
 
 it('metadataFilterMethods Tag - countTags - empty', () => {
   const count = getCountedKeywords();
@@ -87,7 +90,6 @@ it('metadataFilterMethods Tag - getEnabledTags - empty', () => {
 });
 
 it('metadataFilterMethods Tag - getEnabledTags - check enabled tags', () => {
-
   const tag1 = createTag('tag1');
   const tag2 = createTag('tag2');
   const tag3 = createTag('tag3');
@@ -112,14 +114,12 @@ it('metadataFilterMethods Tag - getEnabledTags - check enabled tags', () => {
 });
 
 it('metadataFilterMethods Tag - tagsIncludedInSelectedTags - empty', () => {
-
   const included = tagsIncludedInSelectedTags();
 
   expect(included).toBeFalsy();
 });
 
 it('metadataFilterMethods Tag - tagsIncludedInSelectedTags - check included', () => {
-
   const tag1 = createTag('tag1');
   const tag2 = createTag('tag2');
   const tag3 = createTag('tag3');

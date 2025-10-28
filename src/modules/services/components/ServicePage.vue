@@ -12,14 +12,7 @@
     </v-row>
 
     <v-row no-gutters id="pageSubHeader" class="py-2">
-      <v-col
-        cols="12"
-        offset-md="1"
-        md="10"
-        class="text-body-1"
-        v-html="pageIntroText"
-      >
-      </v-col>
+      <v-col cols="12" offset-md="1" md="10" class="text-body-1" v-html="pageIntroText"> </v-col>
     </v-row>
 
     <v-row no-gutters id="pageBody" class="py-4">
@@ -32,9 +25,7 @@
           :loading="loadingList"
           :loadingImg="fallbackCardImg"
         >
-          <template
-            #entry="{ entry, loadingImg, titleCssClass, subtitleCssClass }"
-          >
+          <template #entry="{ entry, loadingImg, titleCssClass, subtitleCssClass }">
             <ImageTextCard
               :height="cardHeight"
               :title="entry.title"
@@ -66,16 +57,12 @@
 import { mapState } from 'vuex';
 import { SERVICE_PAGENAME } from '@/router/routeConsts';
 
-import {
-  SERVICE_NAMESPACE,
-  GET_SERVICE_LIST,
-} from '@/modules/services/store/serviceMutationsConsts';
+import { SERVICE_NAMESPACE, GET_SERVICE_LIST } from '@/modules/services/store/serviceMutationsConsts';
 
 import ImgAndTextLayout from '@/components/Layouts/ImgAndTextLayout.vue';
 import TextCardListLayout from '@/components/Layouts/TextCardListLayout.vue';
 import ImageTextCard from '@/components/Layouts/ImageTextCard.vue';
 import { renderMarkdown } from '@/factories/stringFactory';
-
 
 export default {
   name: SERVICE_PAGENAME,

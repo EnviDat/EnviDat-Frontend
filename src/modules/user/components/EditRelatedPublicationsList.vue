@@ -86,10 +86,7 @@ import {
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 
 import { EDIT_METADATA_RELATEDPUBLICATIONS_TITLE } from '@/factories/metadataConsts';
-import {
-  getValidationMetadataEditingObject,
-  isFieldValid,
-} from '@/factories/userEditingValidations';
+import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
 
 import EditAddPublication from '@/modules/user/components/EditAddPublication.vue';
 import MetadataPublicationList from '@/modules/metadata/components/Metadata/MetadataPublicationList.vue';
@@ -160,9 +157,7 @@ export default {
     //   return this.previewText ? this.previewText : this.relatedPublicationsText;
     // },
     validations() {
-      return getValidationMetadataEditingObject(
-        EDITMETADATA_RELATED_PUBLICATIONS,
-      );
+      return getValidationMetadataEditingObject(EDITMETADATA_RELATED_PUBLICATIONS);
     },
   },
   methods: {
@@ -206,12 +201,7 @@ export default {
       }
     },
     validateProperty(property, value) {
-      return isFieldValid(
-        property,
-        value,
-        this.validations,
-        this.validationErrors,
-      );
+      return isFieldValid(property, value, this.validations, this.validationErrors);
     },
     setRelatedPublicationsText(value) {
       eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
@@ -235,8 +225,7 @@ export default {
       cardInstructions:
         'Add DORA links to other publications, you can find them on <a href="https://www.dora.lib4ri.ch/wsl/" target="_blank">dora lib4ri</a> or directly enter DORA permanent IDs ex. wsl:29664). Click into the text arena for examples.',
       placeholder:
-        'Example entries: \n  * wsl:18753 \n' +
-        ' * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:18753 ',
+        'Example entries: \n  * wsl:18753 \n' + ' * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:18753 ',
       preview: 'Preview of the Related Publications',
     },
     publicationsMap: null,

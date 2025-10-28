@@ -1,26 +1,22 @@
 <template>
-  <div
-    @mouseover="hovered = true"
-    @mouseleave="hovered = false"
-    style="cursor: pointer;"
-  >
+  <div @mouseover="hovered = true" @mouseleave="hovered = false" style="cursor: pointer">
     <!-- Top of Card -->
     <v-card
       ripple
       :height="headerCardHeight"
       :class="`elevation-${hovered ? 5 : 3}`"
-      style="z-index: 1;"
+      style="z-index: 1"
       @click="cardClick"
     >
       <v-row
-        style="max-width: 100%; background-color: white; border-radius: 2px;"
+        style="max-width: 100%; background-color: white; border-radius: 2px"
         no-gutters
         class="ma-0 fill-height pa-0 no-gutters"
       >
         <v-col class="pa-0" cols="6">
           <v-img
             class="imagezoom"
-            style="border-radius: 2px 0 0 2px;"
+            style="border-radius: 2px 0 0 2px"
             :cover="headerImg ? headerImg.height <= headerImg.width : true"
             :height="headerCardHeight"
             :src="headerImg ? headerImg.src : undefined"
@@ -31,7 +27,7 @@
         <v-col class="ma-auto px-4" cols="6">
           <div
             class="text-h6"
-            style="word-break: break-word; line-height: 1!important; letter-spacing: .02em !important;"
+            style="word-break: break-word; line-height: 1 !important; letter-spacing: 0.02em !important"
             :class="dark ? 'text-white' : 'text-black'"
           >
             {{ truncatedTitle }}
@@ -44,7 +40,7 @@
     <v-card
       ripple
       height="100%"
-      style="z-index: 0; top: -2px;"
+      style="z-index: 0; top: -2px"
       :class="`elevation-${hovered ? 5 : 2}`"
       class="mx-2"
       @click="cardClick"
@@ -58,13 +54,7 @@
       </v-card-text>
 
       <v-card-text v-if="subProjects" class="heightScrollProjectCard">
-        <v-row
-          v-for="sub in subProjects"
-          :key="sub.id"
-          align="center"
-          class="pr-2"
-          no-gutters
-        >
+        <v-row v-for="sub in subProjects" :key="sub.id" align="center" class="pr-2" no-gutters>
           <v-col cols="11" class="py-0 text">{{ sub.title }}</v-col>
 
           <v-col class="py-0" cols="1">
@@ -107,7 +97,6 @@ import { getImage } from '@/factories/imageFactory';
 
 // checkout skeleton
 // https://github.com/ToxicJojo/SkeletonPlaceholder
-
 
 export default {
   name: 'ProjectCard',

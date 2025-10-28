@@ -2,7 +2,7 @@ modify-box-env:
   when: manual
   stage: config
   image: python:3.9-alpine3.17
-  environment: $CI_COMMIT_REF_NAME  
+  environment: $CI_COMMIT_REF_NAME
   needs:
     - set-vars
   before_script:
@@ -30,21 +30,21 @@ modify-box-env:
       key = 'VITE_CONFIG_URL'
       value = f'./config.json'
       dotenv.set_key(file, key, value, quote_mode='never')
-      
+
       key = 'VITE_BUILD_SOURCEMAPS'
       value = 'false'
       dotenv.set_key(file, key, value, quote_mode='never') "
     - echo "created content for .env.production:"
     - cat .env.production
   artifacts:
-    name: "frontend-in-a-box environment variables"
+    name: 'frontend-in-a-box environment variables'
     paths:
       - .env.production
 
 build-box-app:
   stage: build
-  image: node:20.15.0-alpine3.20
-  environment: $CI_COMMIT_REF_NAME  
+  image: node:lts
+  environment: $CI_COMMIT_REF_NAME
   extends:
     - .normal-rules
   # image: node:18.18.2-alpine3.17
@@ -58,7 +58,7 @@ build-box-app:
     - cat .env.production
     - npm run build -- --logLevel error
   artifacts:
-    name: "frontend envidat-in-a-box build"
+    name: 'frontend envidat-in-a-box build'
     expire_in: 1 day
     paths:
       - dist
@@ -66,7 +66,7 @@ build-box-app:
 combine-box-builds:
   stage: build
   image: alpine:3.20
-  environment: $CI_COMMIT_REF_NAME  
+  environment: $CI_COMMIT_REF_NAME
   extends: .normal-rules
   variables:
     GIT_STRATEGY: none
@@ -85,7 +85,7 @@ combine-box-builds:
     - rm -rf dist
     - ls -l
   artifacts:
-    name: "frontend-in-a-box build"
+    name: 'frontend-in-a-box build'
     # stores the combined built code
     paths:
       - ./
@@ -93,7 +93,7 @@ combine-box-builds:
 publish-box-build:
   stage: deploy
   image: alpine:3.20
-  environment: $CI_COMMIT_REF_NAME  
+  environment: $CI_COMMIT_REF_NAME
   extends: .normal-rules
   variables:
     GIT_STRATEGY: none

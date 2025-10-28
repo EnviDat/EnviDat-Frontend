@@ -1,8 +1,14 @@
 import { convertJSON } from '@/factories/convertJSON';
-import type { AuthorDTO, DatasetDTO, OrganizationDTO, KeywordDTO, ExtrasDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
+import type {
+  AuthorDTO,
+  DatasetDTO,
+  OrganizationDTO,
+  KeywordDTO,
+  ExtrasDTO,
+  ResourceDTO,
+} from '@/types/dataTransferObjectsTypes';
 
 export class Dataset implements DatasetDTO {
-
   author: AuthorDTO[] = [];
   author_email: string | null = null;
   creator_user_id: string = '';
@@ -51,5 +57,4 @@ export class Dataset implements DatasetDTO {
     const unpackedJson = convertJSON(datasetBackend, false);
     Object.assign(this, unpackedJson);
   }
-
 }

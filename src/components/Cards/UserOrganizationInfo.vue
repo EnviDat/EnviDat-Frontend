@@ -6,31 +6,21 @@
           {{ title }}
         </div>
 
-        <UserAvatar
-          :size="avatarHeight"
-          :nameInitials="nameInitials"
-          :emailHash="emailHash"
-          class="elevation-5"
-        />
+        <UserAvatar :size="avatarHeight" :nameInitials="nameInitials" :emailHash="emailHash" class="elevation-5" />
       </div>
 
-      <div
-        class="infoGrid pa-4 pt-0"
-        :style="!hasARole ? 'grid-template-rows: auto !important;' : ''"
-      >
-        <div v-if="hasARole" class="roleGrid ">
+      <div class="infoGrid pa-4 pt-0" :style="!hasARole ? 'grid-template-rows: auto !important;' : ''">
+        <div v-if="hasARole" class="roleGrid">
           <div class="pb-1">
             <div class="text-body-1">Organization</div>
 
             <div class="text-body-1">Role</div>
           </div>
 
-          <div v-for="(roles,index) in organizationRoles"
-                :key="index"
-                class="pt-1">
+          <div v-for="(roles, index) in organizationRoles" :key="index" class="pt-1">
             <div>
               <MetadataOrganizationChip
-                style="cursor: pointer !important;"
+                style="cursor: pointer !important"
                 :organization="roles.organization"
                 @organizationClicked="$emit('organizationClick', $event)"
               />
@@ -42,7 +32,7 @@
           </div>
         </div>
 
-        <div  class="textGrid mt-2 text-caption">
+        <div class="textGrid mt-2 text-caption">
           <div>
             <v-icon size="small" :icon="mdiInformation" />
           </div>
@@ -74,14 +64,7 @@ import UserRoleChip from '@/components/Chips/UserRoleChip.vue';
 import UserAvatar from '@/components/Layouts/UserAvatar.vue';
 import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip.vue';
 
-
-import {
-  hasOrganizationRoles,
-  isAdmin,
-  isEditor,
-  isMember,
-  isSysadmin,
-} from '@/factories/userEditingValidations';
+import { hasOrganizationRoles, isAdmin, isEditor, isMember, isSysadmin } from '@/factories/userEditingValidations';
 
 import { renderMarkdown } from '@/factories/stringFactory';
 
@@ -117,8 +100,9 @@ export default {
       return renderMarkdown(this.organizationInfoText.trim(), false);
     },
     noOrganizationInfoText() {
-      const infoText = 'If you are an employee of WSL or affiliated with WSL, please contact <a href="mailto:envidat@wsl.ch">envidat@wsl.ch</a> to receive editing rights for publishing datasets.';
-      return (infoText);
+      const infoText =
+        'If you are an employee of WSL or affiliated with WSL, please contact <a href="mailto:envidat@wsl.ch">envidat@wsl.ch</a> to receive editing rights for publishing datasets.';
+      return infoText;
     },
     organizationInfoText() {
       if (isMember(this.organizationRoles)) {
@@ -126,10 +110,7 @@ export default {
       }
 
       if (isEditor(this.organizationRoles)) {
-        return (
-            this.userDashboardConfig.organizationRolesText
-                ?.editorOrganizationText || this.editorOrganizationText
-        );
+        return this.userDashboardConfig.organizationRolesText?.editorOrganizationText || this.editorOrganizationText;
       }
 
       if (this.isCollaborator) {
@@ -137,23 +118,16 @@ export default {
       }
 
       if (isAdmin(this.organizationRoles)) {
-        return (
-          this.userDashboardConfig.organizationRolesText
-            ?.adminOrganizationText || this.adminOrganizationText
-        );
+        return this.userDashboardConfig.organizationRolesText?.adminOrganizationText || this.adminOrganizationText;
       }
 
       if (isSysadmin(this.organizationRoles)) {
         return (
-            this.userDashboardConfig.organizationRolesText
-                ?.sysadminOrganizationText || this.sysadminOrganizationText
+          this.userDashboardConfig.organizationRolesText?.sysadminOrganizationText || this.sysadminOrganizationText
         );
       }
 
-      return (
-        this.userDashboardConfig.organizationRolesText?.noOrganizationText ||
-        this.noOrganizationText
-      );
+      return this.userDashboardConfig.organizationRolesText?.noOrganizationText || this.noOrganizationText;
     },
     hasARole() {
       return hasOrganizationRoles(this.organizationRoles);
@@ -164,12 +138,16 @@ export default {
     mdiInformation,
     avatarHeight: 32,
     title: 'Organization Roles',
-    noOrganizationText: 'If you are an employee of WSL or affiliated with WSL, please contact <a href="mailto:envidat@wsl.ch">envidat@wsl.ch</a> to receive editing rights for publishing datasets.',
-    memberOrganizationText: 'As a member of an organisation you can see its datasets but not edit or create new ones. Get in contact with your group leader to get editor rights.',
+    noOrganizationText:
+      'If you are an employee of WSL or affiliated with WSL, please contact <a href="mailto:envidat@wsl.ch">envidat@wsl.ch</a> to receive editing rights for publishing datasets.',
+    memberOrganizationText:
+      'As a member of an organisation you can see its datasets but not edit or create new ones. Get in contact with your group leader to get editor rights.',
     editorOrganizationText: 'As an editor of an organisation you can edit datasets and create new ones.',
-    adminOrganizationText: 'As an admin of an organisation you can manage the organisation users, datasets and information. ',
+    adminOrganizationText:
+      'As an admin of an organisation you can manage the organisation users, datasets and information. ',
     sysadminOrganizationText: 'You have System Administrator rights, be careful!',
-    collaboratorText: 'You are added as collaborator to datasets, you can edit datasets which are listed under "Collaborator Datasets".',
+    collaboratorText:
+      'You are added as collaborator to datasets, you can edit datasets which are listed under "Collaborator Datasets".',
     ckanDomain: process.env.VITE_API_ROOT,
   }),
   components: {
@@ -221,7 +199,6 @@ export default {
   grid-template-columns: 1fr auto;
   gap: 8px;
 }
-
 </style>
 
 <style>

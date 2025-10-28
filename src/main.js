@@ -28,13 +28,12 @@ import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
 
 import VueMatomo from 'vue-matomo';
 
-
 const app = createApp(App);
 const pinia = createPinia();
 
 initAxios(app, store);
 
-const siteMatomoId = process.env.VITE_MATOMO_SITEID
+const siteMatomoId = process.env.VITE_MATOMO_SITEID;
 
 // matomo part to manage the refresh issue
 if (localStorage.getItem('matomoConsentGiven') === 'true') {
@@ -43,7 +42,6 @@ if (localStorage.getItem('matomoConsentGiven') === 'true') {
   window._paq.push(['rememberConsentGiven']);
   /* eslint-enable no-underscore-dangle */
 }
-
 
 app
   .use(store)
@@ -67,4 +65,3 @@ app
   })
 
   .mount('#app');
-

@@ -131,7 +131,7 @@ export default {
     // Load and parse external data
     am5.net
       .load(this.apiUrl)
-      .then(result => {
+      .then((result) => {
         // Get responseType 'type' from response header, this indicates if external data is in JSON or CSV format
         const responseType = this.getResponseType(result.type);
 
@@ -161,7 +161,7 @@ export default {
         // Assign parsed/processed data to series
         series.data.setAll(data);
       })
-      .catch(result => {
+      .catch((result) => {
         console.log(`Error loading ${result.xhr.responseURL}`);
       });
 
@@ -203,15 +203,11 @@ export default {
       let lines = csv.split('\n');
 
       // TEST DEV BLOCK //
-      const displayDescription = lines.filter(line =>
-        line.startsWith('# display_description = '),
-      );
+      const displayDescription = lines.filter((line) => line.startsWith('# display_description = '));
 
       let keys = [];
       if (displayDescription.length === 1) {
-        keys = displayDescription[0]
-          .replace('# display_description = ', '')
-          .split(',');
+        keys = displayDescription[0].replace('# display_description = ', '').split(',');
       }
       // TODO refine error handling
       else {
@@ -222,7 +218,7 @@ export default {
       }
 
       // TEST code for removing NEAD metadata header lines that start with '#'
-      lines = lines.filter(line => !line.startsWith('#'));
+      lines = lines.filter((line) => !line.startsWith('#'));
 
       // TEST END DEV BLOCK //
 
@@ -234,7 +230,7 @@ export default {
       // TEST comment this out
       // const keys = lines[0].split(',');
 
-      return lines.slice(1).map(line =>
+      return lines.slice(1).map((line) =>
         line.split(',').reduce((acc, cur, i) => {
           // TODO possible add logic that tests that keys.length equals length of comma separated line before adding JSON object
 
@@ -257,8 +253,9 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
-    Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol';
 }
 
 .chart {

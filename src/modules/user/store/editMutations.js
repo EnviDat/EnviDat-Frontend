@@ -1,22 +1,17 @@
 /**
-* user store mutations
-*
-* @summary user store mutations
-* @author Dominik Haas-Artho
-*
-* Created at     : 2020-07-14 16:51:52
+ * user store mutations
+ *
+ * @summary user store mutations
+ * @author Dominik Haas-Artho
+ *
+ * Created at     : 2020-07-14 16:51:52
  * Last modified  : 2021-08-18 10:14:35
-*
-* This file is subject to the terms and conditions defined in
-* file 'LICENSE.txt', which is part of this source code package.
-*/
+ *
+ * This file is subject to the terms and conditions defined in
+ * file 'LICENSE.txt', which is part of this source code package.
+ */
 
-
-import {
-  getSelectedElement,
-  selectForEditing,
-  setSelected,
-} from '@/factories/userEditingFactory';
+import { getSelectedElement, selectForEditing, setSelected } from '@/factories/userEditingFactory';
 
 import {
   cleanResourceForFrontend,
@@ -63,17 +58,14 @@ import {
   USER_NAMESPACE,
 } from './userMutationsConsts';
 
-
 function resetErrorObject(state) {
   state.error = null;
   state.errorType = '';
   state.errorField = '';
 }
 
-
 export default {
   [UPDATE_METADATA_EDITING](state, payload) {
-
     if (payload.object === EDITMETADATA_AUTHOR) {
       updateAuthors(this, state, payload.data);
     } else {
@@ -83,11 +75,9 @@ export default {
         ...current,
         ...payload.data,
       };
-
     }
   },
   [METADATA_EDITING_PATCH_RESOURCE](state, resource) {
-
     state.loadingEditingData = true;
 
     resource.loading = true;
@@ -96,11 +86,10 @@ export default {
     resetErrorObject(state);
   },
   [METADATA_EDITING_PATCH_RESOURCE_SUCCESS](state, { stepKey, resource, message }) {
-
     state.loadingEditingData = false;
 
     let fResource = getFrontendJSONForStep(stepKey, resource);
-    fResource = cleanResourceForFrontend(fResource)
+    fResource = cleanResourceForFrontend(fResource);
     fResource.loading = false;
     fResource.message = message;
 
@@ -116,7 +105,6 @@ export default {
     }, state.metadataSavingMessageTimeoutTime);
   },
   [METADATA_EDITING_PATCH_RESOURCE_ERROR](state, { reason }) {
-
     state.loadingEditingData = false;
 
     const resources = this.getters[`${USER_NAMESPACE}/resources`];
@@ -168,7 +156,6 @@ export default {
     resetErrorObject(state);
   },
   [METADATA_EDITING_SAVE_AUTHOR_SUCCESS](state, author) {
-
     author.loading = false;
 
     updateAuthors(this, state, author);
@@ -183,7 +170,7 @@ export default {
   [METADATA_EDITING_REMOVE_AUTHOR](state, email) {
     const authors = this.getters[`${USER_NAMESPACE}/authors`];
 
-    const matches = authors.filter(auth => auth.email === email);
+    const matches = authors.filter((auth) => auth.email === email);
     if (matches.length > 0) {
       const removeIndex = authors.indexOf(matches[0]);
       authors.splice(removeIndex, 1);
@@ -193,7 +180,6 @@ export default {
     state.metadataInEditing = {};
   },
   [METADATA_EDITING_PATCH_DATASET_OBJECT](state, stepKey) {
-
     state.loadingEditingData = true;
 
     const editingObject = state.metadataInEditing[stepKey];
@@ -204,7 +190,6 @@ export default {
     editingObject.errorDetails = null;
   },
   [METADATA_EDITING_PATCH_DATASET_OBJECT_SUCCESS](state, { stepKey, message }) {
-
     state.loadingEditingData = false;
 
     const editingObject = state.metadataInEditing[stepKey];
@@ -220,7 +205,6 @@ export default {
     }, state.metadataSavingMessageTimeoutTime);
   },
   [METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR](state, { stepKey, reason }) {
-
     state.loadingEditingData = false;
 
     const editingObject = state.metadataInEditing[stepKey];
@@ -267,10 +251,10 @@ export default {
 
     const currentEntry = enhanceMetadataFromCategories(this, payload);
     state.currentEditingContent = currentEntry;
-//    state.currentEditingContent = Object.values(enhancedPayload)[0];
+    //    state.currentEditingContent = Object.values(enhancedPayload)[0];
 
     if (currentEntry) {
-//      const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
+      //      const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
 
       populateEditingComponents(this.commit, currentEntry);
     }

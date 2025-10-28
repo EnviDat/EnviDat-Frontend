@@ -1,10 +1,5 @@
 <template>
-  <v-card
-    id="EditCustomFields"
-    :class="showAsCard ? 'pa-4' : 'pa-0'"
-    :flat="!showAsCard"
-    :loading="loadingColor"
-  >
+  <v-card id="EditCustomFields" :class="showAsCard ? 'pa-4' : 'pa-0'" :flat="!showAsCard" :loading="loadingColor">
     <v-container fluid class="pa-0">
       <v-row>
         <v-col cols="6" class="text-h5">
@@ -21,12 +16,7 @@
         </v-col>
 
         <v-col v-if="error">
-          <BaseStatusLabelView
-            status="error"
-            statusColor="error"
-            :statusText="error"
-            :expandedText="errorDetails"
-          />
+          <BaseStatusLabelView status="error" statusColor="error" :statusText="error" :expandedText="errorDetails" />
         </v-col>
       </v-row>
 
@@ -101,11 +91,7 @@ import { mdiMinusCircleOutline } from '@mdi/js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import { EDITMETADATA_CUSTOMFIELDS } from '@/factories/eventBus.js';
-import {
-  deleteEmptyObject,
-  isMaxLength,
-  isObjectEmpty,
-} from '@/factories/userEditingFactory.js';
+import { deleteEmptyObject, isMaxLength, isObjectEmpty } from '@/factories/userEditingFactory.js';
 import {
   getValidationMetadataEditingObject,
   isArrayContentValid,
@@ -114,7 +100,6 @@ import {
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods.js';
 
-
 export default {
   name: 'EditCustomFields',
   data: () => ({
@@ -122,8 +107,7 @@ export default {
     maxCustomFieldsReached: false,
     labels: {
       cardTitle: 'Custom Fields',
-      cardInstructions:
-        'Advanced custom data fields. These are fields for special internal use cases.',
+      cardInstructions: 'Advanced custom data fields. These are fields for special internal use cases.',
       labelFieldName: 'Field Name',
       labelContent: 'Content',
     },
@@ -237,8 +221,7 @@ export default {
       if (addCustomField && localFields.length < this.maxCustomFields) {
         localFields.push({ ...this.emptyEntry });
 
-        const sizeDiff =
-          localFields.length - this.validationErrors.customFieldsList.length;
+        const sizeDiff = localFields.length - this.validationErrors.customFieldsList.length;
 
         for (let i = 0; i < sizeDiff; i++) {
           this.validationErrors.customFieldsList.push({ ...this.emptyEntry });
@@ -336,14 +319,7 @@ export default {
           'customFieldArray',
         );
       } else {
-        arrayIsValid = isArrayContentValid(
-          localCopy,
-          'customFields',
-          index,
-          property,
-          this.validations,
-          errorArray,
-        );
+        arrayIsValid = isArrayContentValid(localCopy, 'customFields', index, property, this.validations, errorArray);
       }
 
       if (arrayIsValid) {
@@ -357,10 +333,7 @@ export default {
         }
       }
 
-      this.maxCustomFieldsReached = isMaxLength(
-        this.maxCustomFields,
-        localCopy,
-      );
+      this.maxCustomFieldsReached = isMaxLength(this.maxCustomFields, localCopy);
     },
     isReadOnly(dateProperty) {
       return isFieldReadOnly(this.$props, dateProperty);

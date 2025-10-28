@@ -12,20 +12,16 @@
       </v-col>
 
       <v-col cols="6">
-
         <v-row>
-          <v-col >
-
+          <v-col>
             <!--        <EditOrganizationTree v-bind="editOrganizationProps" />-->
             <!-- prettier-ignore -->
             <EditOrganization v-bind="editOrganizationProps" />
-          </v-col >
+          </v-col>
         </v-row>
 
-        <v-row >
-
-          <v-col >
-
+        <v-row>
+          <v-col>
             <!-- TEMPORARY PLACEHOLDER START -->
             <v-card class="pa-4">
               <v-container fluid class="pa-0">
@@ -36,30 +32,21 @@
                 </v-row>
 
                 <v-row no-gutters align="center" class="pt-6">
-
-                  <v-col >
-                    <v-alert
-                      type="warning"
-                      class="text-body-1"
-                    >
+                  <v-col>
+                    <v-alert type="warning" class="text-body-1">
                       <div v-html="publicationInstructions"></div>
                     </v-alert>
                   </v-col>
                 </v-row>
-
               </v-container>
             </v-card>
             <!-- TEMPORARY PLACEHOLDER END -->
-
-          </v-col >
-
+          </v-col>
         </v-row>
-
-
       </v-col>
     </v-row>
 
-    <v-row justify="end" >
+    <v-row justify="end">
       <v-col class="flex-grow-0">
         <!-- prettier-ignore -->
         <BaseRectangleButton buttonText="Save Dataset"
@@ -70,12 +57,8 @@
       </v-col>
     </v-row>
 
-    <v-row v-if="!showSaveButton"
-           justify="end"
-    >
-      <v-col class="text-body-2 flex-grow-0"
-             style="white-space: nowrap"
-      >
+    <v-row v-if="!showSaveButton" justify="end">
+      <v-col class="text-body-2 flex-grow-0" style="white-space: nowrap">
         Fill out all fields to save the dataset. Have a look at the progress on the top right!
       </v-col>
     </v-row>
@@ -102,10 +85,7 @@ import EditOrganization from '@/modules/user/components/edit/EditOrganization.vu
 import EditFunding from '@/modules/user/components/EditFunding.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 
-import {
-  eventBus,
-  METADATA_EDITING_FINISH_CLICK,
-} from '@/factories/eventBus';
+import { eventBus, METADATA_EDITING_FINISH_CLICK } from '@/factories/eventBus';
 
 export default {
   name: 'MetadataCreationPublicationInfo',
@@ -150,7 +130,6 @@ export default {
   },
   computed: {
     publicationsInfo() {
-
       const stepData = this.currentStep.genericProps;
 
       if (stepData) {
@@ -160,7 +139,7 @@ export default {
           doi: stepData.doi,
           publisher: stepData.publisher,
           publicationYear: stepData.publicationYear,
-        }
+        };
       }
 
       return {};

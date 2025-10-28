@@ -14,15 +14,19 @@
 
 import NavigationStepper from '@/components/Navigation/NavigationStepper.vue';
 import { metadataCreationSteps } from '@/factories/workflowCreation';
-import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from '@/../stories/js/envidatViewports';
+import {
+  mobileLargeViewportParams,
+  mobileViewportParams,
+  tabletViewportParams,
+} from '@/../stories/js/envidatViewports';
 
-const datasetTitle = 'Lens, Switzerland: Long-term forest meteorological data from the Long-term Forest Ecosystem Research Programme (LWF), from 1997 onwards';
+const datasetTitle =
+  'Lens, Switzerland: Long-term forest meteorological data from the Long-term Forest Ecosystem Research Programme (LWF), from 1997 onwards';
 
 export default {
   title: '6 Workflows / Creation Workflow',
   component: NavigationStepper,
 };
-
 
 export const CreationSteps = {
   args: {
@@ -32,7 +36,7 @@ export const CreationSteps = {
     isCreationWorkflow: true,
     showProgress: true,
   },
-}
+};
 
 export const CreationStepsMessage = {
   args: {
@@ -40,7 +44,7 @@ export const CreationStepsMessage = {
     message: 'Saved successfull',
     messageDetails: 'Saved Metadataheader',
   },
-}
+};
 
 export const CreationStepsError = {
   args: {
@@ -48,26 +52,26 @@ export const CreationStepsError = {
     error: 'Network Error',
     errorDetails: 'Could not save the dataset',
   },
-}
+};
 
 export const CreationStepsLoading = {
   args: {
     ...CreationSteps.args,
     loading: true,
   },
-}
+};
 
 export const MobileCreationSteps = {
   args: CreationSteps.args,
   parameters: mobileViewportParams,
-}
+};
 
 export const LargeMobileCreationSteps = {
   args: CreationSteps.args,
   parameters: mobileLargeViewportParams,
-}
+};
 
 export const TabletCreationSteps = {
   args: CreationSteps.args,
   parameters: tabletViewportParams,
-}
+};

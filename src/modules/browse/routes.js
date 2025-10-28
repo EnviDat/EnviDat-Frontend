@@ -1,9 +1,4 @@
-import {
-  BROWSE_PAGENAME,
-  BROWSE_PATH,
-  BROWSE_MODE_PATH,
-  BROWSE_MODE_PAGENAME,
-} from '@/router/routeConsts';
+import { BROWSE_PAGENAME, BROWSE_PATH, BROWSE_MODE_PATH, BROWSE_MODE_PAGENAME } from '@/router/routeConsts';
 
 const BrowsePage = () => import('@/modules/browse/BrowsePage.vue');
 const BrowseMode = () => import('@/modules/browse/BrowseMode.vue');

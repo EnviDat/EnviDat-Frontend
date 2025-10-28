@@ -2,7 +2,7 @@ import type { Config } from 'vike/types';
 import vikeVue from 'vike-vue/config';
 
 export default {
-/*
+  /*
   clientRouting: true,
   meta: {
     title: {
@@ -17,7 +17,7 @@ export default {
     enable: true,
     keepDistServer: false,
   },
-/*
+  /*
   prerender: {
     // default values.
     partial: false,
@@ -29,4 +29,4 @@ export default {
   },
 */
   extends: vikeVue,
-} satisfies Config
+} satisfies Config;

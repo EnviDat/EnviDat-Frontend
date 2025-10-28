@@ -11,11 +11,7 @@
 
 import EditAddAuthor from '@/modules/user/components/EditAddAuthor.vue';
 
-import {
-  createAuthors,
-  extractAuthorsMap,
-  getFullAuthorsFromDataset,
-} from '@/factories/authorFactory';
+import { createAuthors, extractAuthorsMap, getFullAuthorsFromDataset } from '@/factories/authorFactory';
 
 import unFormatedMetadataCards from '../js/metadata.js';
 
@@ -25,8 +21,6 @@ unFormatedMetadataCards.forEach((el) => {
   el.author = createAuthors(el);
   metadataCards.push(el);
 });
-
-
 
 const authorsMap = extractAuthorsMap(metadataCards);
 const authorsObjs = getFullAuthorsFromDataset(authorsMap, metadataCards[1]);
@@ -41,8 +35,7 @@ authorsObjs.forEach((author) => {
   authorsStrings.push(author.fullName);
 });
 
-const preSelectedAuthors2 = extractedAuthors.filter(value => value.fullName.includes('A'))[0];
-
+const preSelectedAuthors2 = extractedAuthors.filter((value) => value.fullName.includes('A'))[0];
 
 export default {
   title: '3 Datasets / 2 Edit / Add New Author',
@@ -53,22 +46,21 @@ export const Empty = {
   args: {
     existingAuthors: extractedAuthors,
   },
-}
+};
 
 export const Loading = {
   args: {
     ...Empty.args,
     loading: true,
   },
-}
+};
 
 export const Filled = {
   args: {
     ...preSelectedAuthors2,
     existingAuthors: extractedAuthors,
   },
-}
-
+};
 
 /*
 export const EditAddAuthorViews = () => ({

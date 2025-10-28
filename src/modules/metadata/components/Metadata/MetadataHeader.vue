@@ -1,9 +1,5 @@
 <template>
-  <v-card
-    id="MetadataHeader"
-    :dark="dark"
-    :color="showPlaceholder || !hasContent ? 'primary' : 'transparent'"
-  >
+  <v-card id="MetadataHeader" :dark="dark" :color="showPlaceholder || !hasContent ? 'primary' : 'transparent'">
     <div id="headerBackground" :style="dynamicCardBackground">
       <!-- this loads the background image -->
     </div>
@@ -13,7 +9,7 @@
       id="MetadataHeaderCloseButton"
       class="ma-2"
       :class="{ 'mx-1': $vuetify.display.smAndDown }"
-      style="position: absolute; top: 0; right: 0; z-index: 2;"
+      style="position: absolute; top: 0; right: 0; z-index: 2"
       :icon="mdiClose"
       icon-color="primary"
       outline-color="primary"
@@ -28,7 +24,7 @@
       id="MetadataHeaderEditButton"
       class="ma-2"
       :class="{ 'mx-1': $vuetify.display.smAndDown }"
-      style="position: absolute; top: 0; right: 46px; z-index: 2;"
+      style="position: absolute; top: 0; right: 46px; z-index: 2"
       :icon="mdiPencil"
       icon-color="black"
       color="accent"
@@ -40,7 +36,7 @@
     <MetadataHeaderPlaceholder v-if="showPlaceholder" />
 
     <v-container v-if="!showPlaceholder" fluid class="pa-4">
-      <v-row no-gutters style="position: relative; z-index: 1;">
+      <v-row no-gutters style="position: relative; z-index: 1">
         <v-col v-if="hasContent" cols="12">
           <div
             class="headerTitle"
@@ -73,17 +69,8 @@
         <v-row v-show="expanded" no-gutters>
           <v-col cols="12">
             <!-- author list -->
-            <v-row
-              v-if="hasAuthors"
-              no-gutters
-              style="position: relative; z-index: 1;"
-            >
-              <v-col
-                cols="12"
-                class="pa-0"
-                id="authors_divier"
-                key="authors_divier"
-              >
+            <v-row v-if="hasAuthors" no-gutters style="position: relative; z-index: 1">
+              <v-col cols="12" class="pa-0" id="authors_divier" key="authors_divier">
                 <v-divider
                   :dark="dark"
                   :class="{
@@ -94,12 +81,7 @@
               </v-col>
 
               <v-col cols="12" class="py-0" id="authors" key="authors">
-                <v-row
-                  no-gutters
-                  :style="
-                    `max-height: ${authorTagsMaxHeight}px; overflow-y: auto;`
-                  "
-                >
+                <v-row no-gutters :style="`max-height: ${authorTagsMaxHeight}px; overflow-y: auto;`">
                   <v-col
                     v-for="(author, index) in isAuthorsLonger"
                     :key="index"
@@ -113,12 +95,7 @@
                       :name="authorName(author)"
                       :tooltipText="authorToolTipText"
                       isSmall
-                      @clicked="
-                        catchAuthorClicked(
-                          authorGivenName(author),
-                          authorLastName(author),
-                        )
-                      "
+                      @clicked="catchAuthorClicked(authorGivenName(author), authorLastName(author))"
                     />
                   </v-col>
 
@@ -130,14 +107,8 @@
                     class="flex-grow-0"
                   >
                     <TagChipAuthor
-                      v-if="
-                        (authorsDifference > 0 && !showAuthors) || showAuthors
-                      "
-                      :name="
-                        !showAuthors
-                          ? 'show more ' + authorsDifference + ' authors'
-                          : 'show less authors'
-                      "
+                      v-if="(authorsDifference > 0 && !showAuthors) || showAuthors"
+                      :name="!showAuthors ? 'show more ' + authorsDifference + ' authors' : 'show less authors'"
                       color="highlight"
                       color-icon="white"
                       isSmall
@@ -149,13 +120,8 @@
             </v-row>
 
             <!-- divier -->
-            <v-row no-gutters style="position: relative; z-index: 1;">
-              <v-col
-                cols="12"
-                class="pa-0"
-                id="headerinfo_divier"
-                key="headerinfo_divier"
-              >
+            <v-row no-gutters style="position: relative; z-index: 1">
+              <v-col cols="12" class="pa-0" id="headerinfo_divier" key="headerinfo_divier">
                 <v-divider
                   :dark="dark"
                   :class="{
@@ -172,18 +138,14 @@
               no-gutters
               id="headerinfos"
               key="headerinfos"
-              style="position: relative; z-index: 1;"
+              style="position: relative; z-index: 1"
             >
               <v-col cols="12" sm="6" lg="3" class="headerInfo py-1 py-sm-0">
                 <v-tooltip location="bottom">
                   <template v-slot:activator="{ props }">
                     <v-row no-gutters align="center" v-bind="props">
                       <v-col class="flex-grow-0 pr-2">
-                        <BaseIcon
-                          :icon="mdiAccountCog"
-                          :small="$vuetify.display.xs"
-                          color="black"
-                        />
+                        <BaseIcon :icon="mdiAccountCog" :small="$vuetify.display.xs" color="black" />
                       </v-col>
                       <v-col>
                         {{ contactName }}
@@ -200,11 +162,7 @@
                   <template v-slot:activator="{ props }">
                     <v-row no-gutters v-bind="props" align="center">
                       <v-col class="flex-grow-0 pr-2">
-                        <BaseIcon
-                          color="black"
-                          :icon="mdiFingerprint"
-                          :small="$vuetify.display.xs"
-                        />
+                        <BaseIcon color="black" :icon="mdiFingerprint" :small="$vuetify.display.xs" />
                       </v-col>
                       <v-col>
                         <a :href="doiUrl" target="_blank">{{ doi }}</a>
@@ -216,24 +174,14 @@
                 </v-tooltip>
               </v-col>
 
-              <v-col
-                v-if="hasContent && !isMobile"
-                cols="12"
-                sm="6"
-                lg="3"
-                class="headerInfo py-1 py-sm-0"
-              >
+              <v-col v-if="hasContent && !isMobile" cols="12" sm="6" lg="3" class="headerInfo py-1 py-sm-0">
                 <v-tooltip location="bottom">
                   <template v-slot:activator="{ props }">
                     <v-row no-gutters v-bind="props" align="center">
                       <v-col class="flex-grow-0 pr-2">
-                        <BaseIcon
-                          color="black"
-                          :icon="mdiClockPlusOutline"
-                          :small="$vuetify.display.xs"
-                        />
+                        <BaseIcon color="black" :icon="mdiClockPlusOutline" :small="$vuetify.display.xs" />
                       </v-col>
-                      <v-col style="font-size: 0.9rem;">
+                      <v-col style="font-size: 0.9rem">
                         {{ created }}
                       </v-col>
                     </v-row>
@@ -253,13 +201,9 @@
                   <template v-slot:activator="{ props }">
                     <v-row no-gutters v-bind="props" align="center">
                       <v-col class="flex-grow-0 pr-2">
-                        <BaseIcon
-                          color="black"
-                          :small="$vuetify.display.xs"
-                          :icon="mdiMapMarker"
-                        />
+                        <BaseIcon color="black" :small="$vuetify.display.xs" :icon="mdiMapMarker" />
                       </v-col>
-                      <v-col style="font-size: 0.9rem;">
+                      <v-col style="font-size: 0.9rem">
                         {{ spatialInfo }}
                       </v-col>
                     </v-row>
@@ -277,21 +221,10 @@
                   <template v-slot:activator="{ props }">
                     <v-row no-gutters v-bind="props" align="center">
                       <v-col class="flex-grow-0 pr-2">
-                        <BaseIcon
-                          color="black"
-                          :small="$vuetify.display.xs"
-                          :icon="mdiEmail"
-                        />
+                        <BaseIcon color="black" :small="$vuetify.display.xs" :icon="mdiEmail" />
                       </v-col>
                       <v-col>
-                        <a
-                          :href="
-                            contactEmailLowerCase
-                              ? `mailto:${contactEmailLowerCase}`
-                              : ''
-                          "
-                          target="_blank"
-                        >
+                        <a :href="contactEmailLowerCase ? `mailto:${contactEmailLowerCase}` : ''" target="_blank">
                           {{ contactEmailLowerCase }}
                         </a>
                       </v-col>
@@ -306,24 +239,14 @@
                 <!-- empty col to match the cols with row before -->
               </v-col>
 
-              <v-col
-                v-if="hasContent && !isMobile"
-                cols="12"
-                sm="6"
-                lg="3"
-                class="headerInfo py-1 py-sm-0"
-              >
+              <v-col v-if="hasContent && !isMobile" cols="12" sm="6" lg="3" class="headerInfo py-1 py-sm-0">
                 <v-tooltip location="bottom">
                   <template v-slot:activator="{ props }">
                     <v-row no-gutters v-bind="props" align="center">
                       <v-col class="flex-grow-0 pr-2">
-                        <BaseIcon
-                          color="black"
-                          :small="$vuetify.display.xs"
-                          :icon="mdiUpdate"
-                        />
+                        <BaseIcon color="black" :small="$vuetify.display.xs" :icon="mdiUpdate" />
                       </v-col>
-                      <v-col style="font-size: 0.9rem;">
+                      <v-col style="font-size: 0.9rem">
                         {{ modified }}
                       </v-col>
                     </v-row>
@@ -342,9 +265,9 @@
               </v-col>
             </v-row>
 
-             <!-- info list Mobile -->
+            <!-- info list Mobile -->
 
-             <v-row  style="position: relative; z-index: 1;" no-gutters v-if="hasContent && isMobile">
+            <v-row style="position: relative; z-index: 1" no-gutters v-if="hasContent && isMobile">
               <tag-chip
                 class="headerTag flex-grow-0 mt-sm-4"
                 color="highlight"
@@ -352,29 +275,18 @@
                 :isOpen="showHeaderInformation"
                 :name="'SHOW MORE INFORMATION'"
                 @click="showHeaderInformation = !showHeaderInformation"
-                />
-
+              />
             </v-row>
 
             <v-row v-if="showHeaderInformation">
-              <v-col
-                v-if="hasContent"
-                cols="12"
-                sm="6"
-                lg="3"
-                class="headerInfo py-1 py-sm-0"
-              >
+              <v-col v-if="hasContent" cols="12" sm="6" lg="3" class="headerInfo py-1 py-sm-0">
                 <v-tooltip location="bottom">
                   <template v-slot:activator="{ props }">
                     <v-row no-gutters v-bind="props" align="center">
                       <v-col class="flex-grow-0 pr-2">
-                        <BaseIcon
-                          color="black"
-                          :icon="mdiClockPlusOutline"
-                          :small="$vuetify.display.xs"
-                        />
+                        <BaseIcon color="black" :icon="mdiClockPlusOutline" :small="$vuetify.display.xs" />
                       </v-col>
-                      <v-col style="font-size: 0.9rem;">
+                      <v-col style="font-size: 0.9rem">
                         {{ created }}
                       </v-col>
                     </v-row>
@@ -383,24 +295,14 @@
                 </v-tooltip>
               </v-col>
 
-              <v-col
-                v-if="hasContent && spatialInfo"
-                cols="12"
-                sm="6"
-                lg="3"
-                class="headerInfo py-1 py-sm-0"
-              >
+              <v-col v-if="hasContent && spatialInfo" cols="12" sm="6" lg="3" class="headerInfo py-1 py-sm-0">
                 <v-tooltip location="bottom">
                   <template v-slot:activator="{ props }">
                     <v-row no-gutters v-bind="props" align="center">
                       <v-col class="flex-grow-0 pr-2">
-                        <BaseIcon
-                          color="black"
-                          :small="$vuetify.display.xs"
-                          :icon="mdiMapMarker"
-                        />
+                        <BaseIcon color="black" :small="$vuetify.display.xs" :icon="mdiMapMarker" />
                       </v-col>
-                      <v-col style="font-size: 0.9rem;">
+                      <v-col style="font-size: 0.9rem">
                         {{ spatialInfo }}
                       </v-col>
                     </v-row>
@@ -409,24 +311,14 @@
                   <span>{{ locationToolTipText }}</span>
                 </v-tooltip>
               </v-col>
-              <v-col
-                v-if="hasContent"
-                cols="12"
-                sm="6"
-                lg="3"
-                class="headerInfo py-1 py-sm-0"
-              >
+              <v-col v-if="hasContent" cols="12" sm="6" lg="3" class="headerInfo py-1 py-sm-0">
                 <v-tooltip location="bottom">
                   <template v-slot:activator="{ props }">
                     <v-row no-gutters v-bind="props" align="center">
                       <v-col class="flex-grow-0 pr-2">
-                        <BaseIcon
-                          color="black"
-                          :small="$vuetify.display.xs"
-                          :icon="mdiUpdate"
-                        />
+                        <BaseIcon color="black" :small="$vuetify.display.xs" :icon="mdiUpdate" />
                       </v-col>
-                      <v-col style="font-size: 0.9rem;">
+                      <v-col style="font-size: 0.9rem">
                         {{ modified }}
                       </v-col>
                     </v-row>
@@ -444,11 +336,7 @@
               </v-col>
             </v-row>
 
-            <v-row
-              v-if="tags"
-              no-gutters
-              style="position: relative; z-index: 1;"
-            >
+            <v-row v-if="tags" no-gutters style="position: relative; z-index: 1">
               <v-col cols="12" class="pa-0" id="tags_divier" key="tags_divier">
                 <v-divider
                   :dark="dark"
@@ -461,11 +349,7 @@
 
               <v-col cols="12" sm="9" class="py-0" id="tags" key="tags">
                 <v-row no-gutters>
-                  <v-col
-                    v-for="tag in slicedTags"
-                    :key="tag.name"
-                    class="flex-grow-0"
-                  >
+                  <v-col v-for="tag in slicedTags" :key="tag.name" class="flex-grow-0">
                     <tag-chip
                       :name="tag.name"
                       :selectable="true"
@@ -474,22 +358,13 @@
                       @clicked="catchTagClicked(tag.name)"
                     />
                   </v-col>
-                  <v-col
-                    v-if="
-                      (maxTagsReached && !showTagsExpanded) || showTagsExpanded
-                    "
-                    class="flex-grow-0"
-                  >
+                  <v-col v-if="(maxTagsReached && !showTagsExpanded) || showTagsExpanded" class="flex-grow-0">
                     <tag-chip
                       class="headerTag flex-grow-0"
                       color="highlight"
                       :isAccordion="true"
                       :isOpen="showTagsExpanded"
-                      :name="
-                        !showTagsExpanded
-                          ? 'SHOW MORE ' + tagsDifference + ' TAGS'
-                          : 'SHOW LESS TAGS'
-                      "
+                      :name="!showTagsExpanded ? 'SHOW MORE ' + tagsDifference + ' TAGS' : 'SHOW LESS TAGS'"
                       @click="showTagsExpanded = !showTagsExpanded"
                     />
                   </v-col>
@@ -504,10 +379,10 @@
     <v-card-actions
       v-show="expanded"
       class="orgaChipFullWidth"
-      style="position: absolute; bottom: 0; right: 0; z-index: 2;"
+      style="position: absolute; bottom: 0; right: 0; z-index: 2"
     >
       <v-row no-gutters align="center">
-        <v-col v-if="metadataState && showEditButton" class=" flex-grow-1 px-1">
+        <v-col v-if="metadataState && showEditButton" class="flex-grow-1 px-1">
           <MetadataStateChip :state="metadataState" />
         </v-col>
 
@@ -517,7 +392,7 @@
           >
         </v-col> -->
         <v-col v-if="publicationYear" class="flex-grow-0 px-1">
-          <v-tooltip location='bottom'>
+          <v-tooltip location="bottom">
             <template v-slot:activator="{ props }">
               <v-chip v-bind="props" size="small">{{ publicationYear }}</v-chip>
             </template>
@@ -566,23 +441,12 @@ import MetadataHeaderPlaceholder from '@/modules/metadata/components/Metadata/Me
 import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip.vue';
 import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
 
-import {
-  getAuthorName,
-  getAuthorGivenName,
-  getAuthorLastName,
-} from '@/factories/authorFactory';
+import { getAuthorName, getAuthorGivenName, getAuthorLastName } from '@/factories/authorFactory';
 import { getImage } from '@/factories/imageFactory.js';
 
 export default {
   name: 'MetadataHeader',
-  emits: [
-    'organizationClicked',
-    'clickedEdit',
-    'clickedBack',
-    'clickedAuthor',
-    'clickedTag',
-    'checkSize',
-  ],
+  emits: ['organizationClicked', 'clickedEdit', 'clickedBack', 'clickedAuthor', 'clickedTag', 'checkSize'],
   props: {
     metadataId: String,
     metadataTitle: String,
@@ -691,15 +555,13 @@ export default {
       return this.authors?.length > 0;
     },
     isMobile() {
-      return this.breakpoint.smAndDown
+      return this.breakpoint.smAndDown;
     },
     breakpoint() {
       return this.$vuetify.display;
     },
     isAuthorsLonger() {
-      return this.authors.length > this.limitAuthors
-        ? this.authors.slice(0, this.limitAuthors)
-        : this.authors;
+      return this.authors.length > this.limitAuthors ? this.authors.slice(0, this.limitAuthors) : this.authors;
     },
     authorsDifference() {
       return this.authors.length - this.limitAuthors;
@@ -725,9 +587,7 @@ export default {
       return this.tags.slice(0, this.maxTags);
     },
     dynamicCardBackground() {
-      const gradient = this.dark
-        ? this.blackTopToBottom
-        : this.whiteTopToBottom;
+      const gradient = this.dark ? this.blackTopToBottom : this.whiteTopToBottom;
 
       let style = `position: absolute; top: 0px; right: 0px;
                     height: 100%; width: 100%;

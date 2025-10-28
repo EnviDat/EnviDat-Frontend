@@ -1,11 +1,5 @@
 <template>
-  <v-card
-    id="ResourceEditing"
-    :key="id"
-    :loading="loadingColor"
-    class="pa-0"
-    flat
-  >
+  <v-card id="ResourceEditing" :key="id" :loading="loadingColor" class="pa-0" flat>
     <BaseIconButton
       class="ma-2"
       :class="{ 'mx-1': $vuetify.display.smAndDown }"
@@ -37,12 +31,7 @@
         </v-col>
 
         <v-col v-if="error">
-          <BaseStatusLabelView
-            status="error"
-            statusColor="error"
-            :statusText="error"
-            :expandedText="errorDetails"
-          />
+          <BaseStatusLabelView status="error" statusColor="error" :statusText="error" :expandedText="errorDetails" />
         </v-col>
       </v-row>
 
@@ -75,20 +64,13 @@
         </v-row>
 
         <v-row id="resourceUrl" no-gutters class="pt-2">
-          <v-col
-            v-if="showImagePreview"
-            cols="4"
-            class="pt-3 pb-4 pr-4 flex-grow-0 flex-shrink-1"
-          >
+          <v-col v-if="showImagePreview" cols="4" class="pt-3 pb-4 pr-4 flex-grow-0 flex-shrink-1">
             <div
               v-if="loadingImagePreview"
               class="skeleton skeleton-animation-shimmer"
               style="height: 100%; width: 100%"
             >
-              <div
-                style="width: 100%; min-height: 100%"
-                class="bone bone-type-image"
-              ></div>
+              <div style="width: 100%; min-height: 100%" class="bone bone-type-image"></div>
             </div>
 
             <v-img
@@ -110,9 +92,7 @@
                 alt="resource image could not be loaded!"
               />
 
-              <div id="backdrop" class="pa-4 text-body-1">
-                Image preview could not be loaded!
-              </div>
+              <div id="backdrop" class="pa-4 text-body-1">Image preview could not be loaded!</div>
             </div>
           </v-col>
 
@@ -271,11 +251,7 @@
             :label="labels.hasAllowedUsersSwitchLabel"
           />
 
-          <v-row
-            v-if="isDataPrivate && hasAllowedUsers"
-            no-gutters
-            class="px-2 pt-3"
-          >
+          <v-row v-if="isDataPrivate && hasAllowedUsers" no-gutters class="px-2 pt-3">
             <v-col cols="12" class="pt-2">
               <BaseUserPicker
                 :users="envidatUsersPicker"
@@ -293,26 +269,19 @@
 
           <v-row v-if="!editingRestrictingActive" class="py-2">
             <v-col>
-              <v-alert type="warning">{{
-                labels.editingRestrictingUnavailableInfo
-              }}</v-alert>
+              <v-alert type="warning">{{ labels.editingRestrictingUnavailableInfo }}</v-alert>
             </v-col>
           </v-row>
 
           <v-row v-if="checkUppercaseValue" class="py-2">
             <v-col>
-              <v-alert type="info">{{
-                labels.editingWarningUppercaseExtension
-              }}</v-alert>
+              <v-alert type="info">{{ labels.editingWarningUppercaseExtension }}</v-alert>
             </v-col>
           </v-row>
         </div>
 
-        <v-row no-gutters class="pt-4"
-               :justify="isSystemAdmin ? 'space-between' : 'end'"
-        >
-          <v-col v-if="isSystemAdmin"
-            class="flex-grow-0">
+        <v-row no-gutters class="pt-4" :justify="isSystemAdmin ? 'space-between' : 'end'">
+          <v-col v-if="isSystemAdmin" class="flex-grow-0">
             <BaseRectangleButton
               :loading="loading"
               :buttonText="labels.deleteButtonText"
@@ -379,16 +348,12 @@ import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import { formatDate } from '@/factories/dateFactory';
 
-import {
-  isReadOnlyField,
-  getReadOnlyHint,
-} from '@/modules/workflow/utils/useReadonly';
+import { isReadOnlyField, getReadOnlyHint } from '@/modules/workflow/utils/useReadonly';
 import { RESOURCE_FORMAT_LINK } from '@/factories/metadataConsts';
 import { getFileExtension } from '@/factories/fileFactory';
 import { RestrictedDTO } from '@/types/dataTransferObjectsTypes';
 import { getUserPickerObjects } from '@/factories/authorFactory';
 import { USER_ROLE_SYSTEM_ADMIN } from '@/factories/userEditingValidations';
-
 
 export default {
   name: 'ResourceEditing',
@@ -510,9 +475,7 @@ export default {
     },
     descriptionField: {
       get() {
-        return this.previews.description !== null
-          ? this.previews.description
-          : this.description;
+        return this.previews.description !== null ? this.previews.description : this.description;
       },
       set(value) {
         this.previews.description = value;
@@ -577,14 +540,10 @@ export default {
     sizeFormatField: {
       get() {
         if (this.isLink) {
-          return this.previews.sizeFormat !== null
-            ? this.previews.sizeFormat
-            : this.sizeFormat;
+          return this.previews.sizeFormat !== null ? this.previews.sizeFormat : this.sizeFormat;
         }
 
-        return this.previews.sizeFormat !== null
-          ? this.previews.sizeFormat
-          : this.getFileSizeFormat(this.size);
+        return this.previews.sizeFormat !== null ? this.previews.sizeFormat : this.getFileSizeFormat(this.size);
       },
       set(value) {
         this.previews.sizeFormat = value;
@@ -637,24 +596,18 @@ export default {
     isDataPrivate: {
       get() {
         const level =
-          this.previews.restrictedLevel !== null
-            ? this.previews.restrictedLevel
-            : this.accessRestrictionLvl;
+          this.previews.restrictedLevel !== null ? this.previews.restrictedLevel : this.accessRestrictionLvl;
         return level !== ACCESS_LEVEL_PUBLIC_VALUE; // && !this.hasAllowedUsers;
       },
       set(value) {
-        this.previews.restrictedLevel = value
-          ? ACCESS_LEVEL_SAMEORGANIZATION_VALUE
-          : ACCESS_LEVEL_PUBLIC_VALUE;
+        this.previews.restrictedLevel = value ? ACCESS_LEVEL_SAMEORGANIZATION_VALUE : ACCESS_LEVEL_PUBLIC_VALUE;
 
         this.checkSaveButtonEnabled();
       },
     },
     isDataDeprecated: {
       get() {
-        return this.previews.deprecated !== null
-          ? this.previews.deprecated
-          : this.deprecated;
+        return this.previews.deprecated !== null ? this.previews.deprecated : this.deprecated;
       },
       set(value) {
         this.previews.deprecated = value;
@@ -673,13 +626,15 @@ export default {
             console.error(`Error while parsing allowedUsers info: ${e}`);
           }
 
-          users = restrictedObj.allowed_users
+          users =
+            restrictedObj.allowed_users ||
             // @ts-ignore
-            || restrictedObj.allowedUsers;
+            restrictedObj.allowedUsers;
         } else {
-          users = this.restricted.allowed_users
+          users =
+            this.restricted.allowed_users ||
             // @ts-ignore
-            || this.restricted.allowedUsers;
+            this.restricted.allowedUsers;
         }
       }
 
@@ -687,9 +642,7 @@ export default {
     },
     hasAllowedUsers: {
       get() {
-        return this.previews.hasAllowedUsers !== null
-          ? this.previews.hasAllowedUsers
-          : !!this.allowedUsers;
+        return this.previews.hasAllowedUsers !== null ? this.previews.hasAllowedUsers : !!this.allowedUsers;
       },
       set(value) {
         this.previews.hasAllowedUsers = value;
@@ -698,9 +651,7 @@ export default {
     },
     allowedUsersField: {
       get() {
-        return this.previews.allowedUsers !== null
-          ? this.previews.allowedUsers
-          : this.allowedUsers;
+        return this.previews.allowedUsers !== null ? this.previews.allowedUsers : this.allowedUsers;
       },
       set(value) {
         this.previews.allowedUsers = value;
@@ -742,7 +693,7 @@ export default {
       return ext === this.formatField;
     },
     urlReadOnly() {
-      if(this.urlAndFileExtensionMatch) {
+      if (this.urlAndFileExtensionMatch) {
         return true;
       }
 
@@ -750,7 +701,7 @@ export default {
         return true;
       }
 
-      return this.isReadOnly('url')
+      return this.isReadOnly('url');
     },
     isLink() {
       return this.urlType !== 'upload';
@@ -836,9 +787,7 @@ export default {
         name: this.resourceNameField,
         lastModified: ckanIsoFormat,
         restricted: {
-          allowedUsers: this.hasAllowedUsers
-            ? this.allowedUsersField || ''
-            : '',
+          allowedUsers: this.hasAllowedUsers ? this.allowedUsersField || '' : '',
           level: this.writeRestrictionLvl,
           sharedSecret: '',
         },
@@ -864,8 +813,7 @@ export default {
       this.$nextTick(() => {
         try {
           const imageRefs = vm.$refs.filePreview;
-          const imageRef =
-            imageRefs instanceof Array ? imageRefs[0] : imageRefs;
+          const imageRef = imageRefs instanceof Array ? imageRefs[0] : imageRefs;
           imageRef.$el.src = url;
         } catch (e) {
           this.imagePreviewError = e;
@@ -883,10 +831,7 @@ export default {
       this.loadingImagePreview = false;
     },
     changeAllowedUsers(pickedUserNames: string[]) {
-      this.allowedUsersField = getAllowedUsersString(
-        pickedUserNames,
-        this.envidatUsers,
-      );
+      this.allowedUsersField = getAllowedUsersString(pickedUserNames, this.envidatUsers);
     },
     validateField(property, value) {
       this.$emit('validate', { [property]: value });
@@ -924,8 +869,7 @@ export default {
     imagePreviewError: null,
     labels: {
       title: 'Edit Selected Resource',
-      instructions:
-        'Include an apt name and description others will understand',
+      instructions: 'Include an apt name and description others will understand',
       subInstructions: 'For files larger then 5GB contact the EnviDat team.',
       createButtonText: 'Save Resource',
       deleteButtonText: 'Delete Resource',
@@ -946,17 +890,14 @@ export default {
       hasAllowedUsersSwitchLabel: 'Grant specific users access',
       hasAllowedUsersSwitchTooltip:
         'Grant access to a specific list of users even if the resource is marked as private',
-      allowedUsersTypingInfo:
-        'Start typing the name in the text field to search for an EnviDat user.',
-      restrictedAllowedUsersInfo:
-        'Additional access is granted to the following users',
+      allowedUsersTypingInfo: 'Start typing the name in the text field to search for an EnviDat user.',
+      restrictedAllowedUsersInfo: 'Additional access is granted to the following users',
       editingRestrictingUnavailableInfo:
         'Editing the accessibility of resources is not available at the moment. Please contact the EnviDat team if you need to make changes.',
       editingWarningUppercaseExtension:
         'EnviDat automatically converts filename/extension to lowercase. To preserve uppercase extensions (e.g., .R), please upload a compressed (.zip) version of your file.',
       dataDeprecatedSwitchLabel: 'Data is deprecated',
-      dataDeprecatedSwitchTooltip:
-        'Deprecated resources are grayed out and at the bottom of the list',
+      dataDeprecatedSwitchTooltip: 'Deprecated resources are grayed out and at the bottom of the list',
       dataDeprecatedSwitchInfo:
         'Deprecated resources are grayed out and at the bottom of the list. Make sure you provide an updated replacement!',
     },
@@ -989,4 +930,3 @@ export default {
   opacity: 0.5;
 }
 </style>
-

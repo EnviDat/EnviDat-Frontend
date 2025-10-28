@@ -1,50 +1,43 @@
 <template>
-  <v-container class="pa-0"
-               id="BaseDraggableList"
-               fluid
-               @click.stop
-  >
-    <v-row v-if="instructions"
-           no-gutters>
+  <v-container class="pa-0" id="BaseDraggableList" fluid @click.stop>
+    <v-row v-if="instructions" no-gutters>
       <v-col class="text-body-2 pb-1">
-        {{ draggableItems?.length > 0 ? instructions :  emptyInstructionsText }}
+        {{ draggableItems?.length > 0 ? instructions : emptyInstructionsText }}
       </v-col>
     </v-row>
 
-    <v-row no-gutters
-           class="draggableList pa-2">
-
-      <v-col v-for="(item, index) in draggableItems"
-           :key="`${index}_${item}`"
-           class="flex-grow-0"
-           :draggable="!isReadOnly"
-           @dragenter.prevent
-           @dragover="onDragOver($event, item)"
-           @dragleave="onDragLeave($event)"
-           @dragstart="onDragStart($event, item)"
-           @drop="onDrop($event, item)"
+    <v-row no-gutters class="draggableList pa-2">
+      <v-col
+        v-for="(item, index) in draggableItems"
+        :key="`${index}_${item}`"
+        class="flex-grow-0"
+        :draggable="!isReadOnly"
+        @dragenter.prevent
+        @dragover="onDragOver($event, item)"
+        @dragleave="onDragLeave($event)"
+        @dragstart="onDragStart($event, item)"
+        @drop="onDrop($event, item)"
       >
+        <TagChipAuthor
+          v-if="useAuthorTags"
+          :name="item"
+          :color="currentHoverItem === item ? $vuetify.theme.themes.light.colors.accent : undefined"
+          :highlighted="currentDragItem === item"
+          :isSmall="true"
+          :draggable="true"
+        />
 
-        <TagChipAuthor v-if="useAuthorTags"
-                       :name="item"
-                       :color="currentHoverItem === item ? $vuetify.theme.themes.light.colors.accent : undefined"
-                       :highlighted="currentDragItem === item"
-                       :isSmall="true"
-                       :draggable="true"
-                        />
-
-        <TagChip v-if="!useAuthorTags"
-                 :name="item"
-                 :color="currentHoverItem === item ? $vuetify.theme.themes.light.colors.accent : undefined"
-                 :highlighted="currentDragItem === item"
-                 :isSmall="false"
+        <TagChip
+          v-if="!useAuthorTags"
+          :name="item"
+          :color="currentHoverItem === item ? $vuetify.theme.themes.light.colors.accent : undefined"
+          :highlighted="currentDragItem === item"
+          :isSmall="false"
         />
       </v-col>
     </v-row>
 
-    <v-row v-if="isReadOnly"
-           class="ma-0 v-messages v-messages__message"
-    >
+    <v-row v-if="isReadOnly" class="ma-0 v-messages v-messages__message">
       <v-col>
         {{ readOnlyHint }}
       </v-col>
@@ -52,7 +45,8 @@
   </v-container>
 </template>
 
-<script>/**
+<script>
+/**
  * BaseDraggableListBaseDraggableList.vue shows a taglist for the given string array.
  * The entries can be dragged and dropped to change their sequence.
  * Use the optional @prop useAuthorTags to shoe the tags as the tagChipAuthor component
@@ -110,7 +104,7 @@ export default {
   },
   computed: {
     draggableItems: {
-      get(){
+      get() {
         return this.previewItems?.length > 0 ? this.previewItems : this.items;
       },
       set(value) {
@@ -131,14 +125,14 @@ export default {
       }
 
       event.preventDefault();
-      this.currentHoverItem = item
+      this.currentHoverItem = item;
     },
     onDragStart(event, item) {
       if (this.readOnlyHint) {
         return;
       }
 
-      this.currentDragItem = item
+      this.currentDragItem = item;
     },
     onDragLeave(event) {
       if (this.readOnlyHint) {
@@ -146,7 +140,7 @@ export default {
       }
 
       event.preventDefault();
-      this.currentHoverItem = ''
+      this.currentHoverItem = '';
     },
     onDrop(event, item) {
       if (this.readOnlyHint) {
@@ -162,16 +156,16 @@ export default {
         this.delayedReset();
         return;
       }
-/*
+      /*
       const dropItem = this.draggableItems.filter((author) => author === item)[0];
       console.log(`dragged ${dragItem} to ${dropItem}`);
       console.log(`dragged ${dragIndex} to ${dropIndex}`);
 */
       const newItems = [...this.draggableItems];
-      newItems.splice(dragIndex, 1)
-//      console.log(`remove ${dragIndex} ${newItems.length}`);
+      newItems.splice(dragIndex, 1);
+      //      console.log(`remove ${dragIndex} ${newItems.length}`);
       newItems.splice(dropIndex, 0, dragItem);
-//        console.log(`inserted ${dragItem} at ${dropIndex} ${newItems.length}`);
+      //        console.log(`inserted ${dragItem} at ${dropIndex} ${newItems.length}`);
 
       this.draggableItems = newItems;
 
@@ -205,8 +199,7 @@ export default {
 };
 </script>
 
-<style scoped >
-
+<style scoped>
 .draggableList {
   border-width: thin;
   border-color: black;
@@ -218,6 +211,4 @@ export default {
 .draggableList:hover {
   border-color: rgba(0, 0, 0, 1);
 }
-
-
 </style>

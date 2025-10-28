@@ -1,19 +1,18 @@
 <template>
-  <v-card
-    hover
-    :dark="false"
-    @click="cardClick"
-    height="100%"
-  >
+  <v-card hover :dark="false" @click="cardClick" height="100%">
     <v-container fluid class="pa-0">
       <v-row no-gutters>
         <v-col>
           <div role="img" :style="headerImageStyle">
-            <div v-if="!maxTitleLengthReached || $vuetify.display.xs" class="pa-4 metadataTitle mb-0" :class="titleClass">
+            <div
+              v-if="!maxTitleLengthReached || $vuetify.display.xs"
+              class="pa-4 metadataTitle mb-0"
+              :class="titleClass"
+            >
               {{ truncatedTitle }}
             </div>
 
-            <v-tooltip v-if="maxTitleLengthReached && !$vuetify.display.xs" location='bottom'>
+            <v-tooltip v-if="maxTitleLengthReached && !$vuetify.display.xs" location="bottom">
               <template v-slot:activator="{ props }">
                 <div v-bind="props" class="pa-4 metadataTitle mb-0" :class="titleClass">
                   {{ isFlatLayout ? title : truncatedTitle }}
@@ -29,7 +28,7 @@
 
     <v-card-text
       v-if="showCardBody"
-     :class="{
+      :class="{
         cardText: $vuetify.display.mdAndUp,
         compactText: flatLayout || $vuetify.display.smAndDown,
         'pr-5': flatLayout,
@@ -42,15 +41,15 @@
           </v-col>
         </v-row>
 
-        <v-row v-if="tags"
-           no-gutters
-           class="pr-11">
-          <v-col
-            v-for="(tag, index) in tags.slice(0, maxTagNumber)"
-            :key="index"
-            class="flex-grow-0">
-            <TagChip class="py-0" :name="tag.name || tag" :selectable="true" :color="tag.color"
-              @clicked="catchTagClicked(tag.name)" />
+        <v-row v-if="tags" no-gutters class="pr-11">
+          <v-col v-for="(tag, index) in tags.slice(0, maxTagNumber)" :key="index" class="flex-grow-0">
+            <TagChip
+              class="py-0"
+              :name="tag.name || tag"
+              :selectable="true"
+              :color="tag.color"
+              @clicked="catchTagClicked(tag.name)"
+            />
           </v-col>
           <v-col v-if="maxTagsReached" class="flex-grow-0">
             <TagChip class="py-0" name="..." />
@@ -59,12 +58,13 @@
       </v-container>
     </v-card-text>
 
-    <v-card-actions class="ma-0 pa-2" :style="`position: absolute; bottom: 0; right: 0;
+    <v-card-actions
+      class="ma-0 pa-2"
+      :style="`position: absolute; bottom: 0; right: 0;
                               background-color: ${showCardBody ? 'white' : 'transparent'};
-                              border-radius: 10px;`
-      ">
+                              border-radius: 10px;`"
+    >
       <v-container v-if="showCardBody" class="pa-0">
-
         <v-row v-if="state" class="pb-1" no-gutters justify="end">
           <v-col class="cardIcons flex-grow-0">
             <MetadataStateChip :state="state" :showOnHover="!hover" />
@@ -114,9 +114,12 @@
           </v-col>
 
           <v-col v-if="organization" class="pl-1 flex-grow-0">
-            <MetadataOrganizationChip :organization="organization" :tooltip="organizationTooltip" :showOnHover="showOrganizationOnHover === true ||
-              (showOrganizationOnHover === undefined && !hover)
-              " @organizationClicked="$emit('organizationClicked', $event)" />
+            <MetadataOrganizationChip
+              :organization="organization"
+              :tooltip="organizationTooltip"
+              :showOnHover="showOrganizationOnHover === true || (showOrganizationOnHover === undefined && !hover)"
+              @organizationClicked="$emit('organizationClicked', $event)"
+            />
           </v-col>
 
           <v-col v-if="modeData" class="pl-1 flex-grow-0 cardIcons">
@@ -134,18 +137,22 @@
       </v-container>
     </v-card-actions>
 
-    <v-container v-if="showGenericOpenButton" class="ma-2 pa-0"
-      style="position: absolute; top: 0; right: 0; width: 30px;">
+    <v-container
+      v-if="showGenericOpenButton"
+      class="ma-2 pa-0"
+      style="position: absolute; top: 0; right: 0; width: 30px"
+    >
       <v-row>
         <v-col cols="12">
           <base-icon-button
-              :icon="openButtonIcon"
-              icon-color="black"
-              color="accent"
-              elevated
-              size="small"
-              :tooltip-text="openButtonTooltip"
-              @clicked="$emit('openButtonClicked')" />
+            :icon="openButtonIcon"
+            icon-color="black"
+            color="accent"
+            elevated
+            size="small"
+            :tooltip-text="openButtonTooltip"
+            @clicked="$emit('openButtonClicked')"
+          />
         </v-col>
       </v-row>
     </v-container>
@@ -251,15 +258,13 @@ export default {
       return !!this.tags || !this.compactLayout;
     },
     headerImageStyle() {
-      const gradient = this.dark
-        ? this.blackTopToBottom
-        : this.whiteTopToBottom;
+      const gradient = this.dark ? this.blackTopToBottom : this.whiteTopToBottom;
 
       const hasImage = !this.flatLayout && this.titleImgResolved && this.$vuetify.display.mdAndUp;
 
       const styles = {
         'border-radius': this.showCardBody ? '4px 4px 0 0' : '4px',
-        'height': this.flatLayout ? '55px' : '115px',
+        height: this.flatLayout ? '55px' : '115px',
 
         // Has image
         'background-image': hasImage ? `linear-gradient(0deg, ${gradient}), url(${this.titleImgResolved})` : undefined,
@@ -269,7 +274,7 @@ export default {
 
         // Has no image
         'background-color': !hasImage ? this.categoryColor : undefined,
-      }
+      };
 
       return styles;
     },
@@ -293,9 +298,7 @@ export default {
         if (
           this.flatAndMaxReached(textLength) ||
           this.compactAndMaxReached(textLength) ||
-          (!this.isCompactLayout &&
-            !this.flatLayout &&
-            textLength >= this.tagtextLength)
+          (!this.isCompactLayout && !this.flatLayout && textLength >= this.tagtextLength)
         ) {
           break;
         }
@@ -309,13 +312,11 @@ export default {
       return (
         (this.flatLayout && this.title?.length > this.flatTagtextLength) ||
         (this.isCompactLayout && this.title?.length > this.compactTitleLength) ||
-        (!this.isCompactLayout &&
-          !this.flatLayout &&
-          this.title?.length > this.titleLength)
+        (!this.isCompactLayout && !this.flatLayout && this.title?.length > this.titleLength)
       );
     },
-    isFlatLayout () {
-      return this.flatLayout
+    isFlatLayout() {
+      return this.flatLayout;
     },
     isCompactLayout() {
       return this.compactLayout || this.$vuetify.display.smAndDown;
@@ -353,7 +354,7 @@ export default {
     },
     truncatedSubtitle() {
       if (!this.subtitle) {
-        return undefined
+        return undefined;
       }
 
       const maxLength = this.maxDescriptionLength;
@@ -394,7 +395,7 @@ export default {
       };
     },
   },
-  created() { },
+  created() {},
   async mounted() {
     if (this.titleImg) {
       this.titleImgResolved = await getImage(this.titleImg);
@@ -411,7 +412,7 @@ export default {
       for (let i = 0; i < keys.length; i++) {
         const key = keys[i];
 
-        if (this.tags?.findIndex(t => t.name === key.toUpperCase()) >= 0) {
+        if (this.tags?.findIndex((t) => t.name === key.toUpperCase()) >= 0) {
           return getImage(this.modeData.icons[key]);
         }
       }

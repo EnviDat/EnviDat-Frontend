@@ -4,10 +4,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { computed, nextTick, onMounted, ref } from 'vue';
 import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
 
-import {
-  METADATA_NAMESPACE,
-  SET_DETAIL_PAGE_BACK_URL,
-} from '@/store/metadataMutationsConsts';
+import { METADATA_NAMESPACE, SET_DETAIL_PAGE_BACK_URL } from '@/store/metadataMutationsConsts';
 import {
   enhanceDatasetWithResearchUnit,
   getOrgaDatasetsMap,
@@ -25,10 +22,7 @@ import OrganizationTree from '@/modules/user/components/OrganizationTree.vue';
 
 import researchUnits from '@/../public/researchUnits.json';
 
-import {
-  METADATADETAIL_PAGENAME,
-  ORGANIZATIONS_PAGENAME,
-} from '@/router/routeConsts';
+import { METADATADETAIL_PAGENAME, ORGANIZATIONS_PAGENAME } from '@/router/routeConsts';
 import store from '@/store/store';
 
 const router = useRouter();
@@ -81,7 +75,7 @@ const listContent = computed(() => {
   return orgaDatasetsMap.value.get(orgaName)?.datasets || [];
 });
 
-const getPredefinedSearch = () : string => {
+const getPredefinedSearch = (): string => {
   const orgFromUrl = route?.params?.organization as string;
 
   if (!orgFromUrl) {
@@ -89,7 +83,7 @@ const getPredefinedSearch = () : string => {
   }
 
   return orgFromUrl.replaceAll('-', ' ');
-}
+};
 
 onMounted(async () => {
   // const orgas = organizations.result;
@@ -113,15 +107,10 @@ onMounted(async () => {
 
   loading.value = false;
 });
-
 </script>
 
 <template>
-  <v-container
-    fluid
-    class="pa-0"
-    style="scroll-behavior: auto; scrollbar-width: thin"
-  >
+  <v-container fluid class="pa-0" style="scroll-behavior: auto; scrollbar-width: thin">
     <v-row no-gutters>
       <v-col>
         <v-card class="pa-4">
@@ -130,24 +119,13 @@ onMounted(async () => {
           </v-card-title>
 
           <v-card-text class="pa-0">
-            <v-row
-              v-show="loading"
-              justify="center"
-              align="center"
-              style="height: 600px"
-            >
+            <v-row v-show="loading" justify="center" align="center" style="height: 600px">
               <v-col class="flex-grow-0">
                 <v-progress-circular indeterminate />
               </v-col>
             </v-row>
 
-            <BarChart
-              v-if="!loading"
-              id="DatasetBarChart"
-              :height="600"
-              :data
-              :options
-            />
+            <BarChart v-if="!loading" id="DatasetBarChart" :height="600" :data :options />
           </v-card-text>
         </v-card>
       </v-col>
@@ -156,9 +134,7 @@ onMounted(async () => {
     <v-row>
       <v-col>
         <v-card class="pa-4">
-          <v-card-title class="px-0 pt-0">
-            List of Organizations in EnviDat
-          </v-card-title>
+          <v-card-title class="px-0 pt-0"> List of Organizations in EnviDat </v-card-title>
 
           <v-card-text class="px-0">
             <OrganizationTree
@@ -166,7 +142,7 @@ onMounted(async () => {
               :organizationsTree
               @click="catchOrganizationClick"
             >
-<!--
+              <!--
               <template v-slot:prepend="{ item, isOpen }">
                 <v-icon v-if="item?.childDatasetsCount > 0"
                         :icon="isOpen ? mdiMenuDown : mdiMenuRight"
@@ -178,9 +154,9 @@ onMounted(async () => {
                 <v-col> Datasets published </v-col>
                 <v-col class="flex-grow-0">
                   <BaseIconCountView
-                      class="ma-0"
-                      :icon="mdiEarth"
-                      :count="item?.datasetCount + item?.childDatasetsCount || 0"
+                    class="ma-0"
+                    :icon="mdiEarth"
+                    :count="item?.datasetCount + item?.childDatasetsCount || 0"
                   />
                 </v-col>
               </template>
@@ -193,9 +169,7 @@ onMounted(async () => {
     <v-row>
       <v-col>
         <v-card class="pa-4">
-          <v-card-title class="px-0 pt-0">
-            Datasets of the selected organization
-          </v-card-title>
+          <v-card-title class="px-0 pt-0"> Datasets of the selected organization </v-card-title>
 
           <v-card-text class="px-0">
             <MetadataList

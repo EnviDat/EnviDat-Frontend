@@ -10,44 +10,29 @@
     <!-- Info Banner -->
     <v-row>
       <v-col class="mb-5 pt-0 pb-0">
-        <v-alert
-          type="info"
-          closable
-          :icon="false"
-          class="rounded-lg info-banner"
-        >
+        <v-alert type="info" closable :icon="false" class="rounded-lg info-banner">
           <v-alert-title class="mb-2">Information </v-alert-title>
 
           <p>
-            This section allows you to manage the authors of your dataset.
-            Adding accurate author information helps ensure proper attribution
-            and visibility.
+            This section allows you to manage the authors of your dataset. Adding accurate author information helps
+            ensure proper attribution and visibility.
           </p>
 
           <p><strong>Tips:</strong></p>
           <ol>
+            <li>- To add an existing EnviDat author, start typing their name in the field and select from the list.</li>
             <li>
-              - To add an existing EnviDat author, start typing their name in
-              the field and select from the list.
+              - To create a new author, provide their email address first. If the author already exists, their details
+              will be filled in automatically.
             </li>
             <li>
-              - To create a new author, provide their email address first. If
-              the author already exists, their details will be filled in
-              automatically.
+              - Fill in all relevant fields such as first name, last name, affiliation, and OrcID for completeness.
             </li>
-            <li>
-              - Fill in all relevant fields such as first name, last name,
-              affiliation, and OrcID for completeness.
-            </li>
-            <li>
-              - Drag and drop authors in the preview list to change their order
-              of appearance.
-            </li>
+            <li>- Drag and drop authors in the preview list to change their order of appearance.</li>
           </ol>
 
           <p class="mt-2">
-            Make sure to include <strong>at least one author</strong> before
-            proceeding to the next step.
+            Make sure to include <strong>at least one author</strong> before proceeding to the next step.
           </p>
         </v-alert>
       </v-col>
@@ -121,32 +106,18 @@ import AddNewAuthor from '@/modules/workflow/components/steps/AddNewAuthor.vue';
 import AddExistingAuthor from '@/modules/workflow/components/steps/AddExistingAuthor.vue';
 import MetadataAuthorsEditing from '@/modules/workflow/components/steps/MetadataAuthorsEditing.vue';
 
-import {
-  enhanceAuthorsFromAuthorMap,
-  getAuthorName,
-} from '@/factories/authorFactory';
+import { enhanceAuthorsFromAuthorMap, getAuthorName } from '@/factories/authorFactory';
 
-import {
-  AUTHOR_SEARCH_CLICK,
-  EDITMETADATA_CLEAR_PREVIEW,
-  eventBus,
-} from '@/factories/eventBus';
+import { AUTHOR_SEARCH_CLICK, EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
-import {
-  EDIT_METADATA_ADD_AUTHOR_TITLE,
-  METADATA_AUTHORS_PROPERTY,
-} from '@/factories/metadataConsts';
+import { EDIT_METADATA_ADD_AUTHOR_TITLE, METADATA_AUTHORS_PROPERTY } from '@/factories/metadataConsts';
 
 import { AuthorViewModel } from '@/modules/workflow/viewModel/AuthorViewModel.ts';
 import { updateEditingArray } from '@/factories/userEditingFactory';
 
-import {
-  isReadOnlyField,
-  getReadOnlyHint,
-} from '@/modules/workflow/utils/useReadonly';
-
+import { isReadOnlyField, getReadOnlyHint } from '@/modules/workflow/utils/useReadonly';
 
 export default {
   name: 'AuthorsInformation',
@@ -243,9 +214,7 @@ export default {
       return enhanceAuthorsFromAuthorMap(authors, authorsMap);
     },
     noDataCreditAuthorsWrap() {
-      const authors = this.existingAuthorsWrap
-        ? [...this.existingAuthorsWrap]
-        : [];
+      const authors = this.existingAuthorsWrap ? [...this.existingAuthorsWrap] : [];
 
       for (let i = 0; i < authors.length; i++) {
         authors[i] = {
@@ -317,9 +286,7 @@ export default {
       return getReadOnlyHint(dateProperty);
     },
     markAuthorSelected(authors: Author[], email: string, isSelected: boolean) {
-      const authorToMark = authors.filter(
-        (author) => author.email === email,
-      )[0];
+      const authorToMark = authors.filter((author) => author.email === email)[0];
       if (authorToMark) {
         authorToMark.isSelected = isSelected;
       }
@@ -357,9 +324,7 @@ export default {
 
       const currentAuthors = [...this.authors];
 
-      const matches = currentAuthors.filter(
-        (auth: Author) => auth.email === email,
-      );
+      const matches = currentAuthors.filter((auth: Author) => auth.email === email);
       if (matches.length > 0) {
         const removeIndex = currentAuthors.indexOf(matches[0]);
         currentAuthors.splice(removeIndex, 1);
@@ -377,11 +342,7 @@ export default {
       const validData = this.authorViewModel.validate(author);
 
       if (validData) {
-        const updatedAuthors = updateEditingArray(
-          this.authors,
-          author,
-          'email',
-        );
+        const updatedAuthors = updateEditingArray(this.authors, author, 'email');
 
         this.saveAuthorsList({ authors: updatedAuthors });
 

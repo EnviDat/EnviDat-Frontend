@@ -18,12 +18,7 @@
         />
       </v-col>
       <v-col v-if="error">
-        <BaseStatusLabelView
-          status="error"
-          statusColor="error"
-          :statusText="error"
-          :expandedText="errorDetails"
-        />
+        <BaseStatusLabelView status="error" statusColor="error" :statusText="error" :expandedText="errorDetails" />
       </v-col>
     </v-row>
     <v-row>
@@ -35,9 +30,7 @@
           item-value="id"
           :readonly="isReadOnly('organizationId')"
           :prepend-icon="mdiHome"
-          :menu-icon="
-            isReadOnly('organizationId') ? '' : mdiArrowDownDropCircleOutline
-          "
+          :menu-icon="isReadOnly('organizationId') ? '' : mdiArrowDownDropCircleOutline"
           :hint="readOnlyHint('organizationId')"
           persistent-hint
           :label="EDIT_METADATA_ORGANIZATION_LABEL"
@@ -53,19 +46,14 @@
           item-value="id"
           :readonly="isReadOnly('organizationId')"
           :prepend-icon="mdiHome"
-          :menu-icon="
-            isReadOnly('organizationId') ? '' : mdiArrowDownDropCircleOutline
-          "
+          :menu-icon="isReadOnly('organizationId') ? '' : mdiArrowDownDropCircleOutline"
           :hint="readOnlyHint('organizationId')"
           :label="EDIT_METADATA_ORGANIZATION_LABEL"
           :error-messages="validationErrors.organizationId"
           @update:model-value="onSelectOrg"
         >
           <template v-slot:selection="{ item }">
-            <MetadataOrganizationChip
-              v-if="item?.title"
-              :organization="item.title"
-            />
+            <MetadataOrganizationChip v-if="item?.title" :organization="item.title" />
           </template>
 
           <template v-slot:item="{ item }">
@@ -99,25 +87,15 @@ import { mdiArrowDownDropCircleOutline, mdiHome } from '@mdi/js';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip.vue';
 
-import {
-  EDITMETADATA_CLEAR_PREVIEW,
-  EDITMETADATA_ORGANIZATION,
-  eventBus,
-} from '@/factories/eventBus';
+import { EDITMETADATA_CLEAR_PREVIEW, EDITMETADATA_ORGANIZATION, eventBus } from '@/factories/eventBus';
 import {
   EDIT_METADATA_ORGANIZATION_LABEL,
   EDIT_ORGANIZATION_TITLE,
   METADATA_ORGANIZATION_PROPERTY,
 } from '@/factories/metadataConsts';
-import {
-  getValidationMetadataEditingObject,
-  isFieldValid,
-} from '@/factories/userEditingValidations';
+import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
 
-import {
-  isReadOnlyField,
-  getReadOnlyHint,
-} from '@/modules/workflow/utils/useReadonly';
+import { isReadOnlyField, getReadOnlyHint } from '@/modules/workflow/utils/useReadonly';
 
 export default {
   name: 'EditOrganization',
@@ -172,11 +150,7 @@ export default {
   },
 
   mounted() {
-    if (
-      !this.organizationId &&
-      this.onlyOneUserOrganization &&
-      !this.isReadOnly('organizationId')
-    ) {
+    if (!this.organizationId && this.onlyOneUserOrganization && !this.isReadOnly('organizationId')) {
       const org = this.userOrganizations[0];
       this.$emit('save', { id: org.id, name: org.title });
     }
@@ -194,16 +168,11 @@ export default {
     },
 
     onlyOneUserOrganization() {
-      return (
-        Array.isArray(this.userOrganizations) &&
-        this.userOrganizations.length === 1
-      );
+      return Array.isArray(this.userOrganizations) && this.userOrganizations.length === 1;
     },
     selectedOrgId() {
       if (this.organizationId) return this.organizationId;
-      return this.onlyOneUserOrganization
-        ? this.userOrganizations[0].id
-        : undefined;
+      return this.onlyOneUserOrganization ? this.userOrganizations[0].id : undefined;
     },
     selectedOrganization() {
       const id = this.organizationId;
@@ -212,8 +181,7 @@ export default {
         return undefined;
       }
 
-      const userOrg =
-        this.userOrganizations.filter((orga) => orga.id === id)[0] || {};
+      const userOrg = this.userOrganizations.filter((orga) => orga.id === id)[0] || {};
 
       return {
         id: userOrg.id,
@@ -244,9 +212,7 @@ export default {
 
       this.previewOrganizationId = value.value;
 
-      const newOrg = this.userOrganizations.filter(
-        (x) => x.id === value.value,
-      )[0];
+      const newOrg = this.userOrganizations.filter((x) => x.id === value.value)[0];
 
       const obj = {
         id: newOrg.id,
@@ -255,12 +221,7 @@ export default {
       this.$emit('save', obj);
     },
     validateProperty(property, value) {
-      return isFieldValid(
-        property,
-        value,
-        this.validations,
-        this.validationErrors,
-      );
+      return isFieldValid(property, value, this.validations, this.validationErrors);
     },
   },
   data: () => ({

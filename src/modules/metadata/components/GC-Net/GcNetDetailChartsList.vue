@@ -28,24 +28,24 @@
         </v-row>
       </v-col>
 
-      <v-col v-show="currentStation && fileObjects.length > 0"
+      <v-col
+        v-show="currentStation && fileObjects.length > 0"
         cols="9"
         class="px-1 scrollableList"
         ref="scrollableList"
         id="scrollableList"
         v-scroll.self="onScroll"
       >
-        <v-row v-for="fileObject in fileObjects"
-               :key="fileObject.fileName"
-               :ref="chartCardId(fileObject)"
-               :id="chartCardId(fileObject)"
-               no-gutters
+        <v-row
+          v-for="fileObject in fileObjects"
+          :key="fileObject.fileName"
+          :ref="chartCardId(fileObject)"
+          :id="chartCardId(fileObject)"
+          no-gutters
         >
           <!-- :ref="fileObject.fileName" -->
 
-          <v-col cols="12"
-                  class="py-2"
-          >
+          <v-col cols="12" class="py-2">
             <GcNetDetailChart
               :apiUrl="currentStation.envidatConfig.apiUrl"
               :fallbackUrl="currentStation.envidatConfig.fallbackUrl"
@@ -65,9 +65,7 @@
         </v-row>
 
         <v-row v-if="fileObjects.length <= 0">
-          <v-col>{{
-            `FileObject: ${fileObjects} graphStyling: ${graphStyling}`
-          }}</v-col>
+          <v-col>{{ `FileObject: ${fileObjects} graphStyling: ${graphStyling}` }}</v-col>
         </v-row>
       </v-col>
     </v-row>
@@ -141,12 +139,8 @@ export default {
         lineThickness: this.seriesSettings.lineStrokeWidth,
         connect: false,
         gridAboveGraphs: true,
-        negativeLineColor: infoObj.negativeColor
-          ? infoObj.negativeColor
-          : infoObj.color,
-        negativeFillColors: infoObj.negativeColor
-          ? infoObj.negativeColor
-          : infoObj.color,
+        negativeLineColor: infoObj.negativeColor ? infoObj.negativeColor : infoObj.color,
+        negativeFillColors: infoObj.negativeColor ? infoObj.negativeColor : infoObj.color,
         precision: infoObj.precision ? infoObj.precision : 0,
       };
     },
@@ -157,9 +151,7 @@ export default {
       return `${this.stationId}_${fileName}`;
     },
     chartCardId(fileObject) {
-      return `${fileObject.parameters[0]}_${
-        fileObject.chartTitle.includes('Recent') ? '1' : '2'
-      }`;
+      return `${fileObject.parameters[0]}_${fileObject.chartTitle.includes('Recent') ? '1' : '2'}`;
     },
     // catchParamClick(fileName) {
     //   let scrollToChart = null;
@@ -197,11 +189,7 @@ export default {
         for (let i = 0; i < stations.length; i++) {
           const station = stations[i];
 
-          if (
-            station.id === stationToFind ||
-            station.alias === stationToFind ||
-            station.name === stationToFind
-          ) {
+          if (station.id === stationToFind || station.alias === stationToFind || station.name === stationToFind) {
             return station;
           }
         }
@@ -284,9 +272,7 @@ export default {
         return null;
       }
 
-      const matches = this.currentStation.envidatConfig.parameterDates.filter(
-        dateObj => dateObj.parameter === param,
-      );
+      const matches = this.currentStation.envidatConfig.parameterDates.filter((dateObj) => dateObj.parameter === param);
       return matches[0];
     },
   },
@@ -339,9 +325,7 @@ export default {
     },
     stationId() {
       return `${this.currentStation.id}_${
-        this.currentStation.alias
-          ? this.currentStation.alias
-          : this.currentStation.name
+        this.currentStation.alias ? this.currentStation.alias : this.currentStation.name
       }`;
     },
     downloadSubtitle() {

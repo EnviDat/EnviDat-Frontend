@@ -26,8 +26,7 @@ export default [
     language: 'en',
     license_id: 'wsl-data',
     license_title: 'WSL Data Policy',
-    license_url:
-      'https://www.wsl.ch/en/about-wsl/programmes-and-initiatives/envidat.html',
+    license_url: 'https://www.wsl.ch/en/about-wsl/programmes-and-initiatives/envidat.html',
     maintainer:
       '{"affiliation": "WSL", "identifier": "", "given_name": "Urs-Beat", "email": "urs-beat.braendli@wsl.ch", "name": "Brändli"}',
     maintainer_email: null,
@@ -53,8 +52,7 @@ export default [
     },
     owner_org: '49192b11-adac-4e68-ad64-be15a4321347',
     private: false,
-    publication:
-      '{"publisher": "Swiss Federal Research Institute WSL", "publication_year": "2014"}',
+    publication: '{"publisher": "Swiss Federal Research Institute WSL", "publication_year": "2014"}',
     resource_type: 'Dataset',
     resource_type_general: 'dataset',
     spatial:
@@ -91,8 +89,7 @@ export default [
         position: 0,
         resource_type: null,
         resource_size: '{"size_value": "506", "size_units": "kb"}',
-        restricted:
-          '{"allowed_users": "adrian_meyer,zweifel", "level": "public"}',
+        restricted: '{"allowed_users": "adrian_meyer,zweifel", "level": "public"}',
         size: null,
         state: 'active',
         url: 'http://www.lfi.ch/resultate/resultateliste-en.php?p=theme&zigrNr=2&invNr=250',
@@ -115,8 +112,7 @@ export default [
         position: 1,
         resource_type: null,
         resource_size: '{"size_value": "4.56", "size_units": "gb"}',
-        restricted:
-          '{"allowed_users": "zhichao_he,zeljka_vulovic", "level": "same_organization"}',
+        restricted: '{"allowed_users": "zhichao_he,zeljka_vulovic", "level": "same_organization"}',
         size: null,
         state: 'active',
         url: 'http://www.lfi.ch/resultate/resultateliste-en.php?p=theme&zigrNr=2&invNr=350',
@@ -185,8 +181,7 @@ export default [
         vocabulary_id: null,
       },
       {
-        display_name:
-          'ACCESSIBLE FOREST WITHOUT SHRUB FOREST NFI1-NFI2-NFI3-NFI4',
+        display_name: 'ACCESSIBLE FOREST WITHOUT SHRUB FOREST NFI1-NFI2-NFI3-NFI4',
         id: 'bb187fcd-0638-4b9d-9013-d3df341ecc54',
         name: 'ACCESSIBLE FOREST WITHOUT SHRUB FOREST NFI1-NFI2-NFI3-NFI4',
         state: 'active',
@@ -323,8 +318,7 @@ export default [
     language: 'en',
     license_id: 'wsl-data',
     license_title: 'WSL Data Policy',
-    license_url:
-      'https://www.wsl.ch/en/about-wsl/programmes-and-initiatives/envidat.html',
+    license_url: 'https://www.wsl.ch/en/about-wsl/programmes-and-initiatives/envidat.html',
     maintainer:
       '{"affiliation": "WSL", "identifier": "", "given_name": "Urs-Beat", "email": "urs-beat.braendli@wsl.ch", "name": "Brändli"}',
     maintainer_email: null,
@@ -350,8 +344,7 @@ export default [
     },
     owner_org: '49192b11-adac-4e68-ad64-be15a4321347',
     private: false,
-    publication:
-      '{"publisher": "Swiss Federal Research Institute WSL", "publication_year": "2014"}',
+    publication: '{"publisher": "Swiss Federal Research Institute WSL", "publication_year": "2014"}',
     resource_type: 'Dataset',
     resource_type_general: 'dataset',
     spatial:
@@ -425,8 +418,7 @@ export default [
         vocabulary_id: null,
       },
       {
-        display_name:
-          'ACCESSIBLE FOREST WITHOUT SHRUB FOREST NFI1-NFI2-NFI3-NFI4',
+        display_name: 'ACCESSIBLE FOREST WITHOUT SHRUB FOREST NFI1-NFI2-NFI3-NFI4',
         id: 'bb187fcd-0638-4b9d-9013-d3df341ecc54',
         name: 'ACCESSIBLE FOREST WITHOUT SHRUB FOREST NFI1-NFI2-NFI3-NFI4',
         state: 'active',
@@ -563,8 +555,7 @@ export default [
     creator_user_id: '11dc6637-cf6e-4c83-ab01-c708cc742b27',
     date: '[{"date": "2018-05-25", "date_type": "created", "end_date": ""}]',
     doi: '10.16904/envidat.102',
-    funding:
-      '[{"grant_number": "", "institution": "WSL", "institution_url": ""}]',
+    funding: '[{"grant_number": "", "institution": "WSL", "institution_url": ""}]',
     id: 'fea7c28b-0a5b-4f38-b3df-c1ce66c2cf43',
     isopen: true,
     language: 'en',
@@ -622,8 +613,7 @@ export default [
           'The SwissForestLab will be established as a worldwide unique research platform and infrastructural network to assess the effects of a dynamically changing environment on forests and trees worldwide. \r\n\r\n### Key Topics of the Network Research: \r\nThe SwissForestLab will work on the most pressing and challenging topics in forest research: \r\n\r\n1.  Climate Change effects on forest ecosystems\r\n2.  Biodiversity and ecosystem functioning\r\n3.  Land-use change and its long-term legacy\r\n\r\nPresentation: http://www.wsl.ch/fe/walddynamik/projekte/irrigationpfynwald/Metadata/2015LWFPfynWorkshop/Gessler\r\n\r\nMore Information: http://intra.wsl.ch/forschung/swissforestlab/Information_SwissForestLab_EN\r\n',
         display_name: 'SwissForestLab',
         id: '18c1d406-c1a6-47de-909a-2f69948fb2af',
-        image_display_url:
-          'https://www.envidat.ch/uploads/group/2019-08-20-145343.943547Swiss-Forest-Lab.png',
+        image_display_url: 'https://www.envidat.ch/uploads/group/2019-08-20-145343.943547Swiss-Forest-Lab.png',
         name: 'swissforestlab',
         title: 'SwissForestLab',
       },
@@ -633,8 +623,7 @@ export default [
         cache_last_updated: null,
         cache_url: null,
         created: '2016-11-09T15:33:09.567402',
-        description:
-          'Site photo of the forest station from below (viewing upwards the slope)',
+        description: 'Site photo of the forest station from below (viewing upwards the slope)',
         doi: '',
         format: 'JPEG',
         hash: '',
@@ -647,8 +636,7 @@ export default [
         package_id: 'fea7c28b-0a5b-4f38-b3df-c1ce66c2cf43',
         position: 0,
         resource_type: null,
-        restricted:
-          '{ "allowed_users": "", "level": "same_organization", "shared_secret": ""}',
+        restricted: '{ "allowed_users": "", "level": "same_organization", "shared_secret": ""}',
         size: 382534,
         state: 'active',
         url: 'https://www.envidat.ch/dataset/fea7c28b-0a5b-4f38-b3df-c1ce66c2cf43/resource/15eb26e6-46a4-43e6-8cdb-fd7072968eb3/download/leb.jpg',
@@ -658,8 +646,7 @@ export default [
         cache_last_updated: null,
         cache_url: null,
         created: '2016-11-14T15:59:29.603830',
-        description:
-          'Data overview for air temperature, relative humidity, precipitation, PAR, wind speed.',
+        description: 'Data overview for air temperature, relative humidity, precipitation, PAR, wind speed.',
         doi: '',
         format: 'PDF',
         hash: '',
@@ -695,8 +682,7 @@ export default [
         package_id: 'fea7c28b-0a5b-4f38-b3df-c1ce66c2cf43',
         position: 2,
         resource_type: null,
-        restricted:
-          '{ "allowed_users": "", "level": "same_organization", "shared_secret": ""}',
+        restricted: '{ "allowed_users": "", "level": "same_organization", "shared_secret": ""}',
         size: 9240564,
         state: 'active',
         url: 'https://www.envidat.ch/dataset/fea7c28b-0a5b-4f38-b3df-c1ce66c2cf43/resource/21e6ffa5-4cc5-4310-be18-91c2d579163c/download/lebforest.csv',
@@ -785,8 +771,7 @@ export default [
     creator_user_id: '11dc6637-cf6e-4c83-ab01-c708cc742b27',
     date: '[{"date": "2018-05-25", "date_type": "created", "end_date": ""}]',
     doi: '10.16904/envidat.102',
-    funding:
-      '[{"grant_number": "", "institution": "WSL", "institution_url": ""}]',
+    funding: '[{"grant_number": "", "institution": "WSL", "institution_url": ""}]',
     id: 'fea7c28b-0a5b-4f38-b3df-c1ce66c2cf43',
     isopen: true,
     language: 'en',
@@ -844,8 +829,7 @@ export default [
           'The SwissForestLab will be established as a worldwide unique research platform and infrastructural network to assess the effects of a dynamically changing environment on forests and trees worldwide. \r\n\r\n### Key Topics of the Network Research: \r\nThe SwissForestLab will work on the most pressing and challenging topics in forest research: \r\n\r\n1.  Climate Change effects on forest ecosystems\r\n2.  Biodiversity and ecosystem functioning\r\n3.  Land-use change and its long-term legacy\r\n\r\nPresentation: http://www.wsl.ch/fe/walddynamik/projekte/irrigationpfynwald/Metadata/2015LWFPfynWorkshop/Gessler\r\n\r\nMore Information: http://intra.wsl.ch/forschung/swissforestlab/Information_SwissForestLab_EN\r\n',
         display_name: 'SwissForestLab',
         id: '18c1d406-c1a6-47de-909a-2f69948fb2af',
-        image_display_url:
-          'https://www.envidat.ch/uploads/group/2019-08-20-145343.943547Swiss-Forest-Lab.png',
+        image_display_url: 'https://www.envidat.ch/uploads/group/2019-08-20-145343.943547Swiss-Forest-Lab.png',
         name: 'swissforestlab',
         title: 'SwissForestLab',
       },
@@ -855,8 +839,7 @@ export default [
         cache_last_updated: null,
         cache_url: null,
         created: '2016-11-09T15:33:09.567402',
-        description:
-          'Site photo of the forest station from below (viewing upwards the slope)',
+        description: 'Site photo of the forest station from below (viewing upwards the slope)',
         doi: '',
         format: 'JPEG',
         hash: '',
@@ -869,8 +852,7 @@ export default [
         package_id: 'fea7c28b-0a5b-4f38-b3df-c1ce66c2cf43',
         position: 0,
         resource_type: null,
-        restricted:
-          '{ "allowed_users": "", "level": "same_organization", "shared_secret": ""}',
+        restricted: '{ "allowed_users": "", "level": "same_organization", "shared_secret": ""}',
         size: 382534,
         state: 'active',
         url: 'https://www.envidat.ch/dataset/fea7c28b-0a5b-4f38-b3df-c1ce66c2cf43/resource/15eb26e6-46a4-43e6-8cdb-fd7072968eb3/download/leb.jpg',
@@ -880,8 +862,7 @@ export default [
         cache_last_updated: null,
         cache_url: null,
         created: '2016-11-14T15:59:29.603830',
-        description:
-          'Data overview for air temperature, relative humidity, precipitation, PAR, wind speed.',
+        description: 'Data overview for air temperature, relative humidity, precipitation, PAR, wind speed.',
         doi: '',
         format: 'PDF',
         hash: '',
@@ -917,8 +898,7 @@ export default [
         package_id: 'fea7c28b-0a5b-4f38-b3df-c1ce66c2cf43',
         position: 2,
         resource_type: null,
-        restricted:
-          '{ "allowed_users": "", "level": "same_organization", "shared_secret": ""}',
+        restricted: '{ "allowed_users": "", "level": "same_organization", "shared_secret": ""}',
         size: 9240564,
         state: 'active',
         url: 'https://www.envidat.ch/dataset/fea7c28b-0a5b-4f38-b3df-c1ce66c2cf43/resource/21e6ffa5-4cc5-4310-be18-91c2d579163c/download/lebforest.csv',

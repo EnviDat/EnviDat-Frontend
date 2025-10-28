@@ -9,31 +9,22 @@
 
 /* eslint-disable import/no-extraneous-dependencies */
 
-import {
-  createAuthors,
-  extractAuthorsMap,
-  getFullAuthorsFromDataset,
-} from '@/factories/authorFactory.js';
+import { createAuthors, extractAuthorsMap, getFullAuthorsFromDataset } from '@/factories/authorFactory.js';
 
 import unFormatedMetadataCards from '@/../stories/js/metadata.js';
 import { BackendDatasetService } from '@/modules/workflow/BackendDatasetService.ts';
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 import AuthorEditing from '@/modules/workflow/components/steps/AuthorEditing.vue';
 
-
 const metadataCards = [];
 
-
-const serviceLayer = new BackendDatasetService(unFormatedMetadataCards[0])
+const serviceLayer = new BackendDatasetService(unFormatedMetadataCards[0]);
 const datasetVM = new DatasetModel(serviceLayer);
-
 
 unFormatedMetadataCards.forEach((el) => {
   el.author = createAuthors(el);
   metadataCards.push(el);
 });
-
-
 
 const authorsMap = extractAuthorsMap(metadataCards);
 const authorsObjs = getFullAuthorsFromDataset(authorsMap, metadataCards[1]);
@@ -48,8 +39,7 @@ authorsObjs.forEach((author) => {
   authorsStrings.push(author.fullName);
 });
 
-const preSelectedAuthors2 = extractedAuthors.filter(value => value.fullName.includes('A'))[0];
-
+const preSelectedAuthors2 = extractedAuthors.filter((value) => value.fullName.includes('A'))[0];
 
 export default {
   title: '6 Workflows / Combined / Author Editing',
@@ -60,14 +50,14 @@ export const Empty = {
   args: {
     existingAuthors: extractedAuthors,
   },
-}
+};
 
 export const Loading = {
   args: {
     ...Empty.args,
     loading: true,
   },
-}
+};
 
 const authorListVM = datasetVM.getViewModel('AuthorListViewModel');
 const authorVMs = authorListVM.getAuthorViewModels(true);
@@ -82,7 +72,7 @@ export const Filled = {
       await authorVM.save(newData);
     },
   },
-}
+};
 
 export const FilledAndLoading = {
   args: {
@@ -91,4 +81,4 @@ export const FilledAndLoading = {
       await authorVM2.save(newData);
     },
   },
-}
+};

@@ -1,9 +1,5 @@
 <template>
-  <v-card
-    class="pa-0 flex-column navigationWorkflow"
-    :elevation="display.lgAndUp.value ? 2 : 0"
-    rounded="xl"
-  >
+  <v-card class="pa-0 flex-column navigationWorkflow" :elevation="display.lgAndUp.value ? 2 : 0" rounded="xl">
     <v-card-title class="text-h6 font-weight-bold mb-4 pa-md-4 pa-0">
       <v-row class="w-100" no-gutters align="center" justify="space-between">
         <!-- Left: title + inline icon(s) -->
@@ -37,19 +33,15 @@
       </v-row>
     </v-card-title>
 
-    <v-expansion-panels
-      class="mb-4 navigationWorkflow__note--mobile"
-      elevation="0"
-      v-if="display.smAndDown.value"
-    >
+    <v-expansion-panels class="mb-4 navigationWorkflow__note--mobile" elevation="0" v-if="display.smAndDown.value">
       <v-expansion-panel>
         <v-expansion-panel-title class="pa-0">
           <BaseIcon :icon="iconName('info')" color="black" class="mr-4" />Note
         </v-expansion-panel-title>
 
         <v-expansion-panel-text class="pa-0">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua…
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+          magna aliqua…
         </v-expansion-panel-text>
       </v-expansion-panel>
     </v-expansion-panels>
@@ -62,8 +54,7 @@
           :class="[
             'navigationWorkflow__item',
             {
-              readOnly:
-                !step.isEditable && workflowStore.mode !== WorkflowMode.Create,
+              readOnly: !step.isEditable && workflowStore.mode !== WorkflowMode.Create,
               unlocked: isUnlocked(step),
             },
             // step.status can be active, completed, error
@@ -73,11 +64,7 @@
           class="pl-4 pr-4 mb-md-4 mb-xl-6 navigationWorkflow__item"
         >
           <template #prepend>
-            <BaseIcon
-              :icon="iconName(step.icon)"
-              color="black"
-              class="mr-md-4"
-            />
+            <BaseIcon :icon="iconName(step.icon)" color="black" class="mr-md-4" />
           </template>
 
           <template #title v-if="display.lgAndUp.value">
@@ -95,11 +82,7 @@
                 }"
               >
               </span>
-              <BaseIcon
-                :icon="!step.isEditable ? iconName('noedit') : iconName('edit')"
-                color="null"
-                class="ml-2"
-              />
+              <BaseIcon :icon="!step.isEditable ? iconName('noedit') : iconName('edit')" color="null" class="ml-2" />
             </div>
           </template>
 
@@ -113,17 +96,10 @@
               :class="[step.status, { readonly: step.readOnly }]"
               v-if="props.isDatasetEditing"
             >
-              <BaseIcon
-                :icon="!step.isEditable ? iconName('noedit') : iconName('edit')"
-                color="null"
-              />
+              <BaseIcon :icon="!step.isEditable ? iconName('noedit') : iconName('edit')" color="null" />
             </div>
 
-            <div
-              v-else
-              class="navigationWorkflow__append mr-1"
-              :class="[step.status]"
-            >
+            <div v-else class="navigationWorkflow__append mr-1" :class="[step.status]">
               <template v-if="step.completed">
                 <!-- If the step has already been completed, but we want to edit it -->
                 <span
@@ -133,12 +109,7 @@
                   {{ step.id + 1 }}
                 </span>
                 <!-- If the step has been completed-->
-                <BaseIcon
-                  v-else
-                  :icon="iconName('success')"
-                  class="navigationWorkflow__append--number"
-                  color="#fff"
-                />
+                <BaseIcon v-else :icon="iconName('success')" class="navigationWorkflow__append--number" color="#fff" />
               </template>
 
               <span v-else class="navigationWorkflow__append--number">
@@ -149,27 +120,14 @@
 
           <div
             class="navigationWorkflow__divider"
-            v-if="
-              display.lgAndUp.value &&
-              (step.id === 3 || step.id === workflowStore.steps.length - 1)
-            "
+            v-if="display.lgAndUp.value && (step.id === 3 || step.id === workflowStore.steps.length - 1)"
           ></div>
         </v-list-item>
       </v-list>
     </v-card-text>
-    <v-card-actions
-      class="d-flex mt-4 navigationWorkflow__actions justify-space-between pl-4 pr-4"
-    >
-      <div
-        @click="initDriver"
-        class="navigationWorkflow__actions--item d-flex flex-column"
-      >
-        <BaseIcon
-          :class="'pulseIcon help-icon'"
-          :large="true"
-          :icon="iconName('question')"
-          :color="'black'"
-        />
+    <v-card-actions class="d-flex mt-4 navigationWorkflow__actions justify-space-between pl-4 pr-4">
+      <div @click="initDriver" class="navigationWorkflow__actions--item d-flex flex-column">
+        <BaseIcon :class="'pulseIcon help-icon'" :large="true" :icon="iconName('question')" :color="'black'" />
         <span class="text-body-2 mt-2">Help mode</span>
       </div>
       <!-- TODO get from the backend the status of the dataset and not use workflowStore.isStepSaveConfirmed -->
@@ -178,11 +136,7 @@
         :class="{ disabled: !isBackend }"
         class="navigationWorkflow__actions--item d-flex flex-column"
       >
-        <v-progress-circular
-          v-if="doiLoading"
-          color="primary"
-          indeterminate
-        ></v-progress-circular>
+        <v-progress-circular v-if="doiLoading" color="primary" indeterminate></v-progress-circular>
 
         <BaseIcon
           v-else
@@ -195,24 +149,11 @@
         <span class="text-body-2 mt-2">{{ doi ?? 'Reserve DOI' }}</span>
       </div>
       <div class="navigationWorkflow__actions--item d-flex flex-column">
-        <v-menu
-          v-model="showStatusMenu"
-          scrim="false"
-          :close-on-content-click="false"
-          location="bottom"
-        >
+        <v-menu v-model="showStatusMenu" scrim="false" :close-on-content-click="false" location="bottom">
           <!-- attivatore -->
           <template #activator="{ props }">
-            <div
-              class="navigationWorkflow__actions--item d-flex flex-column"
-              v-bind="props"
-            >
-              <BaseIcon
-                :large="true"
-                :icon="iconName('draft')"
-                class="status-icon"
-                :color="'black'"
-              />
+            <div class="navigationWorkflow__actions--item d-flex flex-column" v-bind="props">
+              <BaseIcon :large="true" :icon="iconName('draft')" class="status-icon" :color="'black'" />
 
               <span class="text-body-2 mt-2">
                 {{ publicationState }}
@@ -223,9 +164,7 @@
           <!-- contenuto -->
           <v-card width="320" rounded="xl" class="pa-4">
             <div class="d-flex justify-space-between align-center mb-3">
-              <span class="text-subtitle-1 font-weight-bold"
-                >Publication status</span
-              >
+              <span class="text-subtitle-1 font-weight-bold">Publication status</span>
               <BaseIconButton
                 :icon="mdiClose"
                 color="transparent"
@@ -234,20 +173,14 @@
               />
             </div>
 
+            <p class="text-body-2 mb-2"><strong>Draft:</strong> Not saved and DOI not reserved yet</p>
             <p class="text-body-2 mb-2">
-              <strong>Draft:</strong> Not saved and DOI not reserved yet
-            </p>
-            <p class="text-body-2 mb-2">
-              <strong>Reserved:</strong> A DOI has been provided, but it’s not
-              published yet
+              <strong>Reserved:</strong> A DOI has been provided, but it’s not published yet
             </p>
             <p class="text-body-2 mb-2">
-              <strong>Pending:</strong> Publication in progress. The EnviDat
-              team is reviewing your dataset.
+              <strong>Pending:</strong> Publication in progress. The EnviDat team is reviewing your dataset.
             </p>
-            <p class="text-body-2">
-              <strong>Published:</strong> Your dataset is published.
-            </p>
+            <p class="text-body-2"><strong>Published:</strong> Your dataset is published.</p>
           </v-card>
         </v-menu>
       </div>
@@ -318,10 +251,7 @@ const doi = computed(() => {
 
 const hasDoi = computed(() => !!(doi.value && doi.value.trim()));
 const publicationState = computed(() =>
-  isBackend.value
-    ? (workflowStore.backendStorageService?.dataset?.publication_state ??
-      'Draft')
-    : 'Draft',
+  isBackend.value ? (workflowStore.backendStorageService?.dataset?.publication_state ?? 'Draft') : 'Draft',
 );
 
 const doiLoading = computed(() => workflowStore.isLoading?.('doi') === true);
@@ -350,10 +280,7 @@ const reserveDoi = async () => {
   const id = props.currentDataset.dataset.name;
 
   try {
-    await workflowStore.withLoading(
-      () => workflowStore.backendStorageService.requestDoi(id),
-      'doi',
-    );
+    await workflowStore.withLoading(() => workflowStore.backendStorageService.requestDoi(id), 'doi');
   } catch (e) {
     console.error(e);
   }

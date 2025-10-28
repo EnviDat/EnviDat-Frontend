@@ -20,7 +20,6 @@ import { LOCAL_DATASET_KEY } from '@/factories/metadataConsts';
 
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 
-
 export class DatasetModel {
   viewModelClasses = [
     CustomFieldsViewModel, // needs to before ResourcesListViewModel as this is used by the ResourcesListViewModel
@@ -63,9 +62,7 @@ export class DatasetModel {
       const instance = new VMClass(this);
 
       if (instance instanceof MetadataBaseViewModel) {
-        instance.existingKeywords = computed(
-          () => store.getters['metadata/existingKeywords'] ?? [],
-        );
+        instance.existingKeywords = computed(() => store.getters['metadata/existingKeywords'] ?? []);
       }
 
       const reactiveVM = reactive(instance);
@@ -80,18 +77,14 @@ export class DatasetModel {
     return datasetService.dataset;
   }
 
-  async createResourceOnExistingDataset(
-    resourceModel: AbstractEditViewModel,
-  ): Promise<ResourceDTO | undefined> {
+  async createResourceOnExistingDataset(resourceModel: AbstractEditViewModel): Promise<ResourceDTO | undefined> {
     let newResource: ResourceDTO;
     resourceModel.loading = true;
     resourceModel.error = undefined;
 
     try {
       const datasetService = this.datasetWorkflow.getDatasetService();
-      newResource = await datasetService.createResource(
-        resourceModel.backendJSON,
-      );
+      newResource = await datasetService.createResource(resourceModel.backendJSON);
 
       // reload dataset to update all viewModels
       await this.loadDataset(this.dataset.id);
@@ -113,11 +106,7 @@ export class DatasetModel {
     return this.datasetWorkflow.getDatasetService().deleteResource(resourceId);
   }
 
-  async saveDeprecatedResources(
-    datasetId: string,
-    resources: Resource[],
-    datasetService: DatasetService,
-  ) {
+  async saveDeprecatedResources(datasetId: string, resources: Resource[], datasetService: DatasetService) {
     const customFieldsVM = this.getViewModel('CustomFieldsViewModel');
 
     customFieldsVM.storeDeprecatedResources(resources.filter((res) => res.deprecated));
@@ -126,8 +115,7 @@ export class DatasetModel {
   }
 
   async patchViewModel(newModel: AbstractEditViewModel) {
-    const id: string =
-      this.datasetWorkflow.currentDatasetId?.trim() || LOCAL_DATASET_KEY;
+    const id: string = this.datasetWorkflow.currentDatasetId?.trim() || LOCAL_DATASET_KEY;
 
     const datasetService = this.datasetWorkflow.getDatasetService();
     await datasetService.patchDatasetChanges(id, newModel.backendJSON);
@@ -160,9 +148,7 @@ export class DatasetModel {
   updateViewModels() {
     const datasetService = this.datasetWorkflow.getDatasetService();
 
-    this.viewModelInstances.forEach((model: AbstractEditViewModel) =>
-      model.updateModel(datasetService.dataset),
-    );
+    this.viewModelInstances.forEach((model: AbstractEditViewModel) => model.updateModel(datasetService.dataset));
   }
 
   get dataset(): DatasetDTO | undefined {

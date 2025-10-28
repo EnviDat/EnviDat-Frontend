@@ -89,26 +89,20 @@ export const metadata = {
     metadataIds: (state) => state.metadataIds,
     metadatasContent: (state) => state.metadatasContent,
     recentMetadata: (state, getters) => {
-      if (
-        state.loadingMetadatasContent ||
-        (!state.loadingMetadatasContent && !state.metadatasContentOK)
-      ) {
+      if (state.loadingMetadatasContent || (!state.loadingMetadatasContent && !state.metadatasContentOK)) {
         return [];
       }
       return getters.allMetadatas.slice(0, 4);
     },
     allMetadatas: (state) => Object.values(state.metadatasContent),
     metadatasContentSize: (state) =>
-      state.metadatasContent !== undefined
-        ? Object.keys(state.metadatasContent).length
-        : 0,
+      state.metadatasContent !== undefined ? Object.keys(state.metadatasContent).length : 0,
     authorsMap: (state) => state.authorsMap,
     searchedMetadatasContent: (state) => state.searchedMetadatasContent,
     searchingMetadatasContent: (state) => state.searchingMetadatasContent,
     searchingMetadatasContentOK: (state) => state.searchingMetadatasContentOK,
     currentSearchTerm: (state) => state.currentSearchTerm,
-    loadingCurrentMetadataContent: (state) =>
-      state.loadingCurrentMetadataContent,
+    loadingCurrentMetadataContent: (state) => state.loadingCurrentMetadataContent,
     currentMetadataContent: (state) => state.currentMetadataContent,
     isFilteringContent: (state) => state.isFilteringContent,
     filteredContent: (state) => state.filteredContent,

@@ -92,11 +92,7 @@ export default {
       });
       const objToValidate = { url: this.url };
 
-      this.createButtonDisabled = !isObjectValidCheckAllProps(
-        objToValidate,
-        urlSchema,
-        this.validationErrors,
-      );
+      this.createButtonDisabled = !isObjectValidCheckAllProps(objToValidate, urlSchema, this.validationErrors);
     },
     createButtonClick() {
       this.$emit('createUrlResources', this.url);

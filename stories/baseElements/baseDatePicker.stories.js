@@ -7,7 +7,11 @@
  */
 
 import BaseDatePicker from '@/components/BaseElements/BaseDatePicker.vue';
-import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from '@/../stories/js/envidatViewports';
+import {
+  mobileLargeViewportParams,
+  mobileViewportParams,
+  tabletViewportParams,
+} from '@/../stories/js/envidatViewports';
 
 export default {
   title: '1 Base / Pickers / Date picker',
@@ -50,7 +54,6 @@ export const WithMinDateError = {
   },
 };
 
-
 export const WithMaxDate = {
   args: {
     ...FilledAndClearable.args,
@@ -81,7 +84,6 @@ export const WithMinAndMaxDateError = {
   },
 };
 
-
 export const MobileWithMinAndMax = {
   args: {
     ...FilledAndClearable.args,
@@ -97,4 +99,3 @@ MobileLargeWithMinAndMax.parameters = mobileLargeViewportParams;
 export const TabletWithMinAndMax = {};
 TabletWithMinAndMax.args = { ...MobileWithMinAndMax.args };
 TabletWithMinAndMax.parameters = tabletViewportParams;
-

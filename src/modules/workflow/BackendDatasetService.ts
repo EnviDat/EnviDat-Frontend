@@ -10,11 +10,7 @@ import {
   ACTION_METADATA_DELETE_RESOURCE,
   ACTION_METADATA_EDITING_PATCH_DATASET,
 } from '@/modules/user/store/userMutationsConsts';
-import {
-  ACTION_DOI_RESERVE,
-  ACTION_DOI_REQUEST,
-  ACTION_DOI_PUBLISH,
-} from '@/modules/user/store/doiMutationsConsts';
+import { ACTION_DOI_RESERVE, ACTION_DOI_REQUEST, ACTION_DOI_PUBLISH } from '@/modules/user/store/doiMutationsConsts';
 import { urlRewrite } from '@/factories/apiFactory';
 import { Dataset } from '@/modules/workflow/Dataset.ts';
 import { DatasetService } from '@/types/modelTypes';
@@ -23,11 +19,7 @@ import { ACTION_LOAD_METADATA_CONTENT_BY_ID } from '@/store/metadataMutationsCon
 import { stringifyResourceForBackend } from '@/factories/mappingFactory';
 import { convertJSON } from '@/factories/convertJSON';
 
-import {
-  cleanDatesForBackend,
-  cleanPostData,
-  normalizeTagsForPatch,
-} from '@/modules/workflow/utils/formatPostData';
+import { cleanDatesForBackend, cleanPostData, normalizeTagsForPatch } from '@/modules/workflow/utils/formatPostData';
 
 import { extractBodyIntoUrl } from '@/factories/stringFactory';
 
@@ -43,9 +35,7 @@ const useTestdata = import.meta.env?.VITE_USE_TESTDATA === 'true';
 
 let mockDataResponse;
 if (useTestdata) {
-  mockDataResponse = await import(
-    '../../../public/testdata/dataset_10-16904-1'
-  );
+  mockDataResponse = await import('../../../public/testdata/dataset_10-16904-1');
 } else {
   API_DOI_BASE = import.meta.env.VITE_API_DOI_BASE_URL || '/doi-api/datacite/';
   API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
@@ -145,9 +135,7 @@ export class BackendDatasetService implements DatasetService {
     return false;
   }
 
-  private createBackendPatchJson(
-    dataset: Record<string, any>,
-  ): Record<string, any> {
+  private createBackendPatchJson(dataset: Record<string, any>): Record<string, any> {
     let parseData = dataset;
     // GET the tags string and convert into object array
     if ('tags' in parseData) {
@@ -156,10 +144,7 @@ export class BackendDatasetService implements DatasetService {
 
     // GET the spatial and convert into geometry collection string
     if ('spatial' in parseData) {
-      const wrapped = cleanPostData(
-        { spatial: parseData.spatial },
-        { wrapSpatial: true },
-      );
+      const wrapped = cleanPostData({ spatial: parseData.spatial }, { wrapSpatial: true });
       if (wrapped.spatial !== undefined) parseData.spatial = wrapped.spatial;
       else delete parseData.spatial;
     }
@@ -169,10 +154,7 @@ export class BackendDatasetService implements DatasetService {
 
   // Local JSON converter with exclude support
 
-  private createBackendJson(
-    dataset: Record<string, any>,
-    excluded: string[] = [],
-  ): Record<string, any> {
+  private createBackendJson(dataset: Record<string, any>, excluded: string[] = []): Record<string, any> {
     // Save originals
     const saved: Record<string, any> = {};
     for (const key of excluded) {
@@ -247,28 +229,19 @@ export class BackendDatasetService implements DatasetService {
     // resource_type_general
     // publication,
     // maintainer TODO DOMINIK check if we need it
-    const datasetWithDefault = datasetWorkflowStore.applyDatasetDefaults(
-      dataset ?? ({} as DatasetDTO),
-      '',
-    );
+    const datasetWithDefault = datasetWorkflowStore.applyDatasetDefaults(dataset ?? ({} as DatasetDTO), '');
 
     const actionUrl = ACTION_METADATA_CREATION_DATASET();
     const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
-    const postData = this.createBackendJson(datasetWithDefault, [
-      'tags',
-      'resources',
-      'organization',
-      'extras',
-    ]);
+    const postData = this.createBackendJson(datasetWithDefault, ['tags', 'resources', 'organization', 'extras']);
 
     this.loadingDataset = true;
     try {
       const response = await axios.post(url, postData);
       return new Dataset(response.data.result);
     } catch (e: any) {
-      const message =
-        e?.response?.data?.error?.message ?? e?.message ?? 'Unknown error';
+      const message = e?.response?.data?.error?.message ?? e?.message ?? 'Unknown error';
       const err = new Error(message) as any;
       err.status = e?.response?.status;
       throw err;

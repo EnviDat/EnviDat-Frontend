@@ -17,15 +17,15 @@ const desktop = 'desktop';
 
 export const mobileViewportParams = {
   viewport: { value: smallMobile },
-  chromatic: { viewports: [ sWidth ] },
+  chromatic: { viewports: [sWidth] },
 };
 export const mobileLargeViewportParams = {
   viewport: { value: largeMobile },
-  chromatic: { viewports: [ lWidth ] },
+  chromatic: { viewports: [lWidth] },
 };
 export const tabletViewportParams = {
   viewport: { value: tablet },
-  chromatic: { viewports: [ tWidth ] },
+  chromatic: { viewports: [tWidth] },
 };
 
 export const desktopViewportParams = {

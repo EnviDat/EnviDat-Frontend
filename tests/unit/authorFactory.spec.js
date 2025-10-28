@@ -1,10 +1,6 @@
 import { it, describe, expect } from 'vitest';
 
-import {
-  createAuthors,
-  extractAuthorsMap,
-  getFullAuthorsFromDataset,
-} from '@/factories/authorFactory';
+import { createAuthors, extractAuthorsMap, getFullAuthorsFromDataset } from '@/factories/authorFactory';
 
 import packagelist from '@/../stories/testdata/packagelist.json';
 
@@ -80,7 +76,7 @@ describe('authorFactory - getFullAuthorsFromDataset', () => {
 
   it('with datasets', () => {
     const datasets = packagelist.result;
-    const authorMap = (datasets);
+    const authorMap = datasets;
 
     expect(authorMap).toBeDefined();
 

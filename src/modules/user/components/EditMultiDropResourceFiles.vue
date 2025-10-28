@@ -1,5 +1,5 @@
 <template>
-  <v-card id="EditMultiDropResourceFiles" class="pa-4" >
+  <v-card id="EditMultiDropResourceFiles" class="pa-4">
     <v-container fluid class="pa-0">
       <v-row>
         <v-col cols="12">
@@ -15,11 +15,7 @@
 
       <v-row>
         <v-col cols="12">
-
-          <dashboard :uppy="uppy"
-                     :props="{theme: 'light'}" />
-
-
+          <dashboard :uppy="uppy" :props="{ theme: 'light' }" />
         </v-col>
       </v-row>
 
@@ -28,7 +24,6 @@
           <div class="text-body-1 highlight">{{ labels.instruction2 }}</div>
         </v-col>
       </v-row>
-
     </v-container>
   </v-card>
 </template>
@@ -45,36 +40,31 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-
 import { Dashboard } from '@uppy/vue';
 import '@uppy/core/dist/style.css';
 import '@uppy/dashboard/dist/style.css';
 import { destroyUppyInstance, getUppyInstance } from '@/factories/uploadFactory';
-
 
 export default {
   name: 'EditMultiDropResourceFiles',
   props: {
     metadataId: String,
   },
-  mounted() {
-  },
+  mounted() {},
   beforeUnmount() {
     destroyUppyInstance();
   },
   computed: {
-
-    uppy () {
+    uppy() {
       return getUppyInstance(this.metadataId, this.$store, 300, false, this.multiUploadRestrictions);
 
-/*
+      /*
       return new Uppy({ logger: debugLogger })
           .use(Tus, { endpoint: 'https://tusd.tusdemo.net/files/' }); // .use(DropTarget, { target: document.body });
 */
     },
   },
   methods: {
-
     logEvent(event) {
       console.log(`Got event ${event}`);
       console.log(event);
@@ -83,7 +73,7 @@ export default {
   data: () => ({
     labels: {
       title: 'Create Multiple Resources from Files',
-      instructions: 'Drag and drop multiple files to upload or click on \'browse\' to pick files.',
+      instructions: "Drag and drop multiple files to upload or click on 'browse' to pick files.",
       instruction2: 'After uploading make sure to rename the resources!',
     },
     resourceId: null,

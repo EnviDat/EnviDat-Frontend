@@ -18,7 +18,6 @@ import {
   tabletViewportParams,
 } from '@/../stories/js/envidatViewports';
 
-
 export default {
   title: '1 Base / Cards /  Click Cards',
   component: BaseClickCard,
@@ -55,7 +54,6 @@ const Template = (args, { argTypes }) => ({
   `,
 });
 
-
 export const CategoryCardCollection = Template.bind({});
 CategoryCardCollection.args = { categoryCards };
 
@@ -70,4 +68,3 @@ MobileLargeCategoryCardCollection.parameters = mobileLargeViewportParams;
 export const TabletCategoryCardCollection = Template.bind({});
 TabletCategoryCardCollection.args = { ...MobileCategoryCardCollection.args };
 TabletCategoryCardCollection.parameters = tabletViewportParams;
-

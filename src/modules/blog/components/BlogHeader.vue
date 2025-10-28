@@ -1,12 +1,10 @@
 <template>
-  <div id="BlogHeader"
-       style="position: relative;">
-
-    <BaseIconButton 
+  <div id="BlogHeader" style="position: relative">
+    <BaseIconButton
       v-if="showCloseButton"
       class="blogHeaderCloseButton ma-2"
-      :class="{ 'mx-1' : $vuetify.display.smAndDown }"
-      style="position: absolute; top: 0; right: 0; z-index: 2;"
+      :class="{ 'mx-1': $vuetify.display.smAndDown }"
+      style="position: absolute; top: 0; right: 0; z-index: 2"
       :icon="mdiClose"
       icon-color="white"
       color="primary"
@@ -16,11 +14,7 @@
       @clicked="$emit('clickedBack')"
     />
 
-    <ImgAndTextLayout style="position: relative; z-index: 0;"
-                      :title="title"
-                      :img="titleImage"
-                      :height="height" />
-
+    <ImgAndTextLayout style="position: relative; z-index: 0" :title="title" :img="titleImage" :height="height" />
   </div>
 </template>
 
@@ -59,6 +53,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

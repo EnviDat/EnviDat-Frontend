@@ -17,7 +17,6 @@ export function getMatomoInstance() {
 
 // tracking download
 export async function trackDownload(url, label) {
-
   const consentGiven = localStorage.getItem('matomoConsentGiven');
 
   if (consentGiven === 'true') {

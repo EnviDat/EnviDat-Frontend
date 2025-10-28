@@ -19,12 +19,10 @@ import EditMultiDropResourceFiles from '@/modules/user/components/EditMultiDropR
 export default {
   title: '3 Datasets / 2 Edit / Upload Elements',
   decorators: [],
-  parameters: {
-  },
+  parameters: {},
 };
 
 const metadataId = 'storybook_testing_metadataId';
-
 
 export const EditMultiDropResourceFilesView = () => ({
   components: { EditMultiDropResourceFiles },
@@ -41,4 +39,3 @@ const EditResourcePasteUrlTemplate = (args, { argTypes }) => ({
 });
 
 export const EmptyEditResourcePasteUrl = EditResourcePasteUrlTemplate.bind({});
-
