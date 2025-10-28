@@ -2,7 +2,7 @@ import * as yup from 'yup';
 
 import { Author } from '@/types/modelTypes';
 import { AuthorDTO, type DatasetDTO } from '@/types/dataTransferObjectsTypes';
-import { AuthorViewModel, createAuthorViewModel } from '@/modules/workflow/viewModel/AuthorViewModel.ts';
+import { AuthorViewModel } from '@/modules/workflow/viewModel/AuthorViewModel.ts';
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 import { convertJSON, convertToBackendJSONWithRules } from '@/factories/convertJSON';

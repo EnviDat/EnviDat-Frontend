@@ -144,7 +144,7 @@
           :icon="iconName('print')"
           class="doi-icon"
           :class="{ pulseIcon: !hasDoi && isBackend }"
-          :color="isBackend ? (hasDoi ? 'primary' : 'primary') : 'black'"
+          :color="isBackend ? (hasDoi ? 'primary' : 'secondary') : 'black'"
         />
         <span class="text-body-2 mt-2">{{ doi ?? 'Reserve DOI' }}</span>
       </div>
