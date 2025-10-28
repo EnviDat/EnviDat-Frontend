@@ -18,33 +18,29 @@
       </v-col>
 
       <v-col cols="6">
-
         <v-row>
-          <v-col >
+          <v-col>
             <EditOrganization v-bind="editOrganizationProps" />
-          </v-col >
+          </v-col>
         </v-row>
 
         <v-row v-if="doiWorkflowActive">
-          <v-col >
-            <EditPublicationStatus v-bind="editPublicationStatusProps"
-                                   @clicked="catchPublicationStateChange"/>
-          </v-col >
+          <v-col>
+            <EditPublicationStatus v-bind="editPublicationStatusProps" @clicked="catchPublicationStateChange" />
+          </v-col>
         </v-row>
 
         <v-row v-if="!doiWorkflowActive">
           <v-col>
-
-            <NotFoundCard title="Publication Status editing is disabled"
-                          description="There seems to be a problem, make sure you read the message in the banner or go on the <a href='https://www.envidat.ch' target='_blank'>homepage</a> and check the news."
-                          actionDescription="Click to open the legacy UI for dataset publication. Use the blue button on the top right of the page."
-                          actionButtonText="Request Publication"
-                          :actionButtonCallback="openCKANLink"
-                          />
-
+            <NotFoundCard
+              title="Publication Status editing is disabled"
+              description="There seems to be a problem, make sure you read the message in the banner or go on the <a href='https://www.envidat.ch' target='_blank'>homepage</a> and check the news."
+              actionDescription="Click to open the legacy UI for dataset publication. Use the blue button on the top right of the page."
+              actionButtonText="Request Publication"
+              :actionButtonCallback="openCKANLink"
+            />
           </v-col>
         </v-row>
-
       </v-col>
     </v-row>
 
@@ -75,7 +71,7 @@
  */
 
 import { mapState } from 'vuex';
-import {defineAsyncComponent} from 'vue';
+import { defineAsyncComponent } from 'vue';
 
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 import {
@@ -94,12 +90,9 @@ import EditFunding from '@/modules/user/components/EditFunding.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import EditPublicationStatus from '@/modules/user/components/edit/EditPublicationStatus.vue';
 import EditReviewInfo from '@/modules/user/components/edit/EditReviewInfo.vue';
-import {BLIND_REVIEW_ON, PUBLICATION_STATE_PUBLISHED} from '@/factories/metadataConsts';
+import { BLIND_REVIEW_ON, PUBLICATION_STATE_PUBLISHED } from '@/factories/metadataConsts';
 
-const NotFoundCard = defineAsyncComponent(() =>
-  import('@/components/Cards/NotFoundCard.vue'),
-);
-
+const NotFoundCard = defineAsyncComponent(() => import('@/components/Cards/NotFoundCard.vue'));
 
 export default {
   name: 'MetadataEditingPublicationInfo',
@@ -143,14 +136,8 @@ export default {
     },
   },
   computed: {
-    ...mapState([
-      'config',
-    ]),
-    ...mapState(USER_NAMESPACE, [
-      'doiLoading',
-      'doiSuccess',
-      'doiError',
-    ]),
+    ...mapState(['config']),
+    ...mapState(USER_NAMESPACE, ['doiLoading', 'doiSuccess', 'doiError']),
     doiWorkflowActive() {
       if (this.$store) {
         return this.config?.userEditMetadataConfig?.doiWorkflowActive;
@@ -182,7 +169,7 @@ export default {
         userRole: stepData.userRole,
         publisher: stepData.publisher,
         publicationYear: stepData.publicationYear,
-      }
+      };
     },
     fundingInfo() {
       if (this.$store) {
@@ -230,7 +217,7 @@ export default {
     editReviewProps() {
       return {
         ...this.publicationsInfo,
-        isBlindReview: (this.publicationsInfo.version === BLIND_REVIEW_ON),
+        isBlindReview: this.publicationsInfo.version === BLIND_REVIEW_ON,
       };
     },
     metadataId() {

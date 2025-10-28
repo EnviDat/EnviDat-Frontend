@@ -7,22 +7,14 @@
     }"
   >
     <v-col class="pt-3" cols="12">
-      <img-and-text-layout
-        :img="titleImageResolved"
-        :height="$vuetify.display.smAndDown ? 100 : 150"
-        :title="title"
-      />
+      <img-and-text-layout :img="titleImageResolved" :height="$vuetify.display.smAndDown ? 100 : 150" :title="title" />
     </v-col>
 
     <v-col v-show="loading" class="pt-5" cols="12">
       {{ loadingText }}
     </v-col>
 
-    <v-col
-      v-if="!loading && markdownContent"
-      cols="12"
-      class="pt-5"
-    >
+    <v-col v-if="!loading && markdownContent" cols="12" class="pt-5">
       <div v-html="markdownContent"></div>
     </v-col>
 
@@ -58,7 +50,7 @@ export default {
     if (this.titleImage) {
       this.titleImageResolved = await getImage(this.titleImage);
     }
-  },  
+  },
   computed: {
     hasSlotContent() {
       // correct refactoring??
@@ -79,6 +71,6 @@ export default {
     expanded: false,
     mdiChevronDown,
     titleImageResolved: undefined,
-  }),  
+  }),
 };
 </script>

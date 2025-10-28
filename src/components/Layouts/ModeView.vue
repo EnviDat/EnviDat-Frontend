@@ -1,8 +1,6 @@
 <template>
-
   <v-row align="center" justify="center" no-gutters>
     <v-col v-if="compact" class="flex-grow-0 text-body-2 mx-1 text-no-wrap">
-
       {{ modeInfoPrefix }}: {{ modeTitle }}
     </v-col>
 
@@ -10,22 +8,12 @@
       {{ modeInfo }}
     </v-col>
 
-    <v-col v-if="modeLogo"
-            class="flex-grow-0 mx-1" >
-      <a
-        v-if="modeExternalUrl"
-        :href="modeExternalUrl"
-        rel="noopener noreferrer"
-        target="_blank"
-      >
-        <v-img :src="modeLogo"
-               :height="size"
-               :width="size" />
+    <v-col v-if="modeLogo" class="flex-grow-0 mx-1">
+      <a v-if="modeExternalUrl" :href="modeExternalUrl" rel="noopener noreferrer" target="_blank">
+        <v-img :src="modeLogo" :height="size" :width="size" />
       </a>
 
-      <v-img v-else :src="modeLogo"
-                     :height="size"
-                     :width="size" />
+      <v-img v-else :src="modeLogo" :height="size" :width="size" />
     </v-col>
 
     <v-col class="flex-grow-0 mx-1">
@@ -39,7 +27,6 @@
     </v-col>
 
     <v-col v-if="closeCallback" class="flex-grow-0 mx-1">
-
       <BaseIconButton
         :icon="mdiClose"
         :tooltip-text="`Exit ${modeTitle} ${modeInfoPrefix}`"

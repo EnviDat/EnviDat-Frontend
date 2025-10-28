@@ -6,6 +6,7 @@ networks:
 
 services:
   envidat-frontend:
+    image: '${INTERNAL_REG}/envidat-frontend:debug'
     build:
       context: .
       target: debug

@@ -10,21 +10,13 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import {
-  EDITMETADATA_DATA_RESOURCE,
-} from '@/factories/eventBus';
+import { EDITMETADATA_DATA_RESOURCE } from '@/factories/eventBus';
 
 import EditDataAndResources from '@/modules/user/components/EditDataAndResources.vue';
 
-import {
-  enhanceElementsWithStrategyEvents,
-  SELECT_EDITING_RESOURCE_PROPERTY,
-} from '@/factories/strategyFactory';
+import { enhanceElementsWithStrategyEvents, SELECT_EDITING_RESOURCE_PROPERTY } from '@/factories/strategyFactory';
 
-import {
-  cleanListForFrontend,
-  enhanceUserObject,
-} from '@/factories/mappingFactory';
+import { cleanListForFrontend, enhanceUserObject } from '@/factories/mappingFactory';
 
 import unFormatedMetadata from '@/../stories/js/metadata';
 import userList from '@/../stories/testdata/user_list.json';
@@ -41,10 +33,7 @@ const allResources = [];
 
 for (let i = 0; i < unFormatedMetadata.length; i++) {
   const dataset = unFormatedMetadata[i];
-  let resources = cleanListForFrontend(
-    dataset.resources,
-    EDITMETADATA_DATA_RESOURCE,
-  );
+  let resources = cleanListForFrontend(dataset.resources, EDITMETADATA_DATA_RESOURCE);
 
   for (let j = 0; j < resources.length; j++) {
     const resource = resources[j];
@@ -52,19 +41,13 @@ for (let i = 0; i < unFormatedMetadata.length; i++) {
       try {
         resource.restricted = JSON.parse(resource.restricted);
       } catch (e) {
-        console.log(
-          `resource failed ${resource.name} restricted ${resource.restricted}`,
-        );
+        console.log(`resource failed ${resource.name} restricted ${resource.restricted}`);
         console.error(e);
       }
     }
   }
 
-  resources = enhanceElementsWithStrategyEvents(
-    resources,
-    SELECT_EDITING_RESOURCE_PROPERTY,
-    true,
-  );
+  resources = enhanceElementsWithStrategyEvents(resources, SELECT_EDITING_RESOURCE_PROPERTY, true);
   allResources.push(resources);
 }
 
@@ -78,8 +61,7 @@ export default {
   component: EditDataAndResources,
 };
 
-
-export const Empty = {}
+export const Empty = {};
 
 export const WithResourcesDisabledNew = {
   args: {
@@ -91,7 +73,7 @@ export const WithResourcesDisabledNew = {
       downloadActive: false,
     },
   },
-}
+};
 
 export const WithResourcesEnabled = {
   args: {
@@ -108,7 +90,7 @@ export const WithResourcesEnabled = {
       editingRestrictingActive: true,
     },
   },
-}
+};
 
 /*
 export const EditDataAndResourcesListViews = () => ({

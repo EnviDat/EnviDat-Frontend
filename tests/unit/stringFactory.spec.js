@@ -1,10 +1,6 @@
 import { it, describe, expect } from 'vitest';
 
-import {
-  getResearchUnitDatasets,
-  renderMarkdown,
-  stripMarkdown,
-} from '@/factories/stringFactory';
+import { getResearchUnitDatasets, renderMarkdown, stripMarkdown } from '@/factories/stringFactory';
 
 // import metadatas from '@/../public/testdata/full_packagelist.json';
 import researchUnits from '@/../public/researchUnits.json';
@@ -29,15 +25,12 @@ const hrTag = '<h3';
 const aTag = '<a';
 
 describe('stringFactory - renderMarkdown', () => {
-
   it('renderMarkdown - empty', () => {
-
     const emptyOutput = renderMarkdown();
     expect(emptyOutput).toBe('');
   });
 
   it('renderMarkdown - markdown input with url link', () => {
-
     const markOut = renderMarkdown(markdownString);
     expect(markOut).toBeDefined();
     expect(markOut).not.toBe('');
@@ -45,19 +38,15 @@ describe('stringFactory - renderMarkdown', () => {
     expect(markOut.includes(hrTag)).toBeTruthy();
     expect(markOut.includes(aTag)).toBeTruthy();
   });
-
 });
 
 describe('stringFactory - stripMarkdown', () => {
-
   it('stripMarkdown - empty', () => {
-
     const emptyOutput = stripMarkdown();
     expect(emptyOutput).toBe('');
   });
 
   it('stripMarkdown - markdown input with url link', () => {
-
     const markOut = stripMarkdown(markdownString);
     expect(markOut).toBeDefined();
     expect(markOut).not.toBe('');
@@ -67,7 +56,6 @@ describe('stringFactory - stripMarkdown', () => {
   });
 
   it('stripMarkdown - markdown input and strip html', () => {
-
     const stripHtmlTags = true;
     const markOut = stripMarkdown(markdownString, stripHtmlTags);
     expect(markOut).toBeDefined();
@@ -78,10 +66,10 @@ describe('stringFactory - stripMarkdown', () => {
   });
 
   // const imgText = '![alt text](https://www.envidat.ch/dataset/6480bbef-06bf-4da8-8502-96f4def23358/resource/0a9d712c-38ad-4f55-842e-36b21a7e1b97/download/isotopelab_wsl.jpg "Isotope Laboratory WSL") Isotope Laboratory WSL For more information see: https://www.wsl.ch/en/about-wsl/instrumented-field-sites-and-laboratories/laboratories/isotope-laboratory.html';
-  const imgText = '![alt text](https://www.envidat.ch/dataset/6480bbef-06bf-4da8-8502-96f4def23358/resource/0a9d712c-38ad-4f55-842e-36b21a7e1b97/download/isotopelab_wsl.jpg "Isotope Laboratory WSL")\r\n\r\nThe lab uses stable isotope ratios of the light elements hydrogen, carbon, nitrogen and oxygen as a universal tool for studying physical, chemical and biological processes in forests and other ecosystems. Due to natural isotope fractionations, environmental changes leave unique fingerprints in organic matter, like tree-rings. It is, therefore, possible to detect the influence of ongoing climate changes on plant physiology. By applying isotopically labelled substrate, matter fluxes through plants and soil can be traced and better understood. The facility has isotope-Ratio mass-spectrometers and dedicated periphery for the analysis of organic matter, gas samples and water samples. With HPLC and GC we apply compound-specific isotope ratio analysis of sugars and organic acids. Additional isotope mass-spectrometers are operated by the Zentrallabor WSL.';
+  const imgText =
+    '![alt text](https://www.envidat.ch/dataset/6480bbef-06bf-4da8-8502-96f4def23358/resource/0a9d712c-38ad-4f55-842e-36b21a7e1b97/download/isotopelab_wsl.jpg "Isotope Laboratory WSL")\r\n\r\nThe lab uses stable isotope ratios of the light elements hydrogen, carbon, nitrogen and oxygen as a universal tool for studying physical, chemical and biological processes in forests and other ecosystems. Due to natural isotope fractionations, environmental changes leave unique fingerprints in organic matter, like tree-rings. It is, therefore, possible to detect the influence of ongoing climate changes on plant physiology. By applying isotopically labelled substrate, matter fluxes through plants and soil can be traced and better understood. The facility has isotope-Ratio mass-spectrometers and dedicated periphery for the analysis of organic matter, gas samples and water samples. With HPLC and GC we apply compound-specific isotope ratio analysis of sugars and organic acids. Additional isotope mass-spectrometers are operated by the Zentrallabor WSL.';
 
   it('stripMarkdown - markdown image url and strip html', () => {
-
     const stripHtmlTags = true;
     const markOut = stripMarkdown(imgText, stripHtmlTags);
     expect(markOut).toBeDefined();
@@ -90,10 +78,10 @@ describe('stringFactory - stripMarkdown', () => {
     expect(markOut.includes(aTag)).toBeFalsy();
   });
 
-  const malformattedImgText = '! [alt text] (https://www.envidat.ch/dataset/6480bbef-06bf-4da8-8502-96f4def23358/resource/0a9d712c-38ad-4f55-842e-36b21a7e1b97/download/isotopelab_wsl.jpg "Isotope Laboratory WSL") Isotope Laboratory WSL For more information see: https://www.wsl.ch/en/about-wsl/instrumented-field-sites-and-laboratories/laboratories/isotope-laboratory.html';
+  const malformattedImgText =
+    '! [alt text] (https://www.envidat.ch/dataset/6480bbef-06bf-4da8-8502-96f4def23358/resource/0a9d712c-38ad-4f55-842e-36b21a7e1b97/download/isotopelab_wsl.jpg "Isotope Laboratory WSL") Isotope Laboratory WSL For more information see: https://www.wsl.ch/en/about-wsl/instrumented-field-sites-and-laboratories/laboratories/isotope-laboratory.html';
 
   it('stripMarkdown - malformatted image url and strip html', () => {
-
     const stripHtmlTags = true;
     const markOut = stripMarkdown(malformattedImgText, stripHtmlTags);
     expect(markOut).toBeDefined();
@@ -101,19 +89,15 @@ describe('stringFactory - stripMarkdown', () => {
     expect(markOut.includes('[alt text]')).toBeTruthy();
     expect(markOut.includes(aTag)).toBeFalsy();
   });
-
 });
 
 describe('stringFactory - getResearchUnitDatasets', () => {
-
   it('getResearchUnitDatasets - empty', () => {
-
     const emptyOutput = getResearchUnitDatasets();
     expect(emptyOutput).toBe(null);
   });
 
   it('getResearchUnitDatasets - with input', () => {
-
     if (!datasets) {
       // to test it the full_package.json has to be added, which
       // I don't want to have in the git repo! Add it manually
@@ -133,12 +117,11 @@ describe('stringFactory - getResearchUnitDatasets', () => {
     }
 
     if (datasets.length !== ruDatasetsCount) {
-      console.warn(`Tested getResearchUnitDatasets() input datasets: ${datasets.length} total output: ${ruDatasetsCount}`);
+      console.warn(
+        `Tested getResearchUnitDatasets() input datasets: ${datasets.length} total output: ${ruDatasetsCount}`,
+      );
     }
 
     expect(datasets.length === ruDatasetsCount).toBeTruthy();
-
-
   });
-
 });

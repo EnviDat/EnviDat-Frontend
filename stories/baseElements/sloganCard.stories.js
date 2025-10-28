@@ -4,10 +4,9 @@ import SloganCard from '@/modules/home/components/SloganCard.vue';
 import { action } from 'storybook/actions';
 import holidaysWinter from '@/assets/cards/slogan/holidays_winter.webp';
 
-
 export default {
   title: '1 Base / Cards /  Slogan Card',
-  component: SloganCard ,
+  component: SloganCard,
 };
 
 export const Default = {
@@ -18,21 +17,21 @@ export const Default = {
       action('button click');
     },
   },
-}
+};
 
 export const WithSubSlogan = {
   args: {
     ...Default.args,
     subSlogan: 'Subslogan normally longer than the slogan',
   },
-}
+};
 
 export const WithImage = {
   args: {
     ...WithSubSlogan.args,
     sloganImg: holidaysWinter,
   },
-}
+};
 
 export const WithMoreButton = {
   args: {
@@ -42,5 +41,4 @@ export const WithMoreButton = {
       action('more button clicked');
     },
   },
-}
-
+};

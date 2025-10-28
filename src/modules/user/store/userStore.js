@@ -11,10 +11,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import {
-  EDITMETADATA_AUTHOR_LIST,
-  EDITMETADATA_DATA_RESOURCES,
-} from '@/factories/eventBus';
+import { EDITMETADATA_AUTHOR_LIST, EDITMETADATA_DATA_RESOURCES } from '@/factories/eventBus';
 
 import { getEmptyMetadataInEditingObject } from '@/factories/workflowFactory.js';
 import { DOI_RESERVED_PROPERTY } from '@/modules/user/store/doiMutationsConsts';
@@ -29,7 +26,6 @@ import mutations from './userMutations';
 import editMutations from './editMutations';
 import createMutations from './createMutations';
 import doiMutations from './doiMutations';
-
 
 const userState = {
   error: null,
@@ -70,14 +66,13 @@ const userState = {
   doiError: null,
 };
 
-
 export const user = {
   namespaced: true,
   state: userState,
   getters: {
-    resources: state => state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].resources,
-    authors: state => state.metadataInEditing[EDITMETADATA_AUTHOR_LIST].authors,
-    getMetadataEditingObject: state => key => state.metadataInEditing[key],
+    resources: (state) => state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].resources,
+    authors: (state) => state.metadataInEditing[EDITMETADATA_AUTHOR_LIST].authors,
+    getMetadataEditingObject: (state) => (key) => state.metadataInEditing[key],
     filteredDatasets: (state, getters) => {
       const filteredContent = [];
       const content = getters.userDatasets;
@@ -94,9 +89,9 @@ export const user = {
 
       return filteredContent;
     },
-    uploadResource: state => state.uploadResource,
-    uploadResourceId: state => state.uploadResource?.id,
-    uploadMetadataId: state => state.uploadMetadataId,
+    uploadResource: (state) => state.uploadResource,
+    uploadResourceId: (state) => state.uploadResource?.id,
+    uploadMetadataId: (state) => state.uploadMetadataId,
   },
   mutations: {
     ...mutations,

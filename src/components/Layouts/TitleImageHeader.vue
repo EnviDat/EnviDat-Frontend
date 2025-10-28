@@ -1,12 +1,6 @@
 <template>
-  <div id="TitleImageHeader"
-       style="position: relative;">
-
-    <ImgAndTextLayout style="position: relative; z-index: 0;"
-                      :title="title"
-                      :img="titleImage"
-                      :height="height" />
-
+  <div id="TitleImageHeader" style="position: relative">
+    <ImgAndTextLayout style="position: relative; z-index: 0" :title="title" :img="titleImage" :height="height" />
   </div>
 </template>
 
@@ -39,6 +33,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

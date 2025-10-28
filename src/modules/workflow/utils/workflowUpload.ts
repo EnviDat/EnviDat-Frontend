@@ -1,16 +1,16 @@
 /* eslint-disable no-underscore-dangle,no-console */
 /**
-* uploading with uppy for the redesigned workflow
-*
-* @summary user store mutations
-* @author Dominik Haas-Artho
-*
-* Created at     : 2020-07-14 16:51:52
+ * uploading with uppy for the redesigned workflow
+ *
+ * @summary user store mutations
+ * @author Dominik Haas-Artho
+ *
+ * Created at     : 2020-07-14 16:51:52
  * Last modified  : 2025-10-15 14:39:47
-*
-* This file is subject to the terms and conditions defined in
-* file 'LICENSE.txt', which is part of this source code package.
-*/
+ *
+ * This file is subject to the terms and conditions defined in
+ * file 'LICENSE.txt', which is part of this source code package.
+ */
 
 import { Uppy, debugLogger } from '@uppy/core';
 import type { Meta, Body, UppyOptions, Restrictions, UppyFile } from '@uppy/core';
@@ -18,11 +18,7 @@ import axios from 'axios';
 import awsS3, { type AwsS3MultipartOptions } from '@uppy/aws-s3';
 
 import { urlRewrite } from '@/factories/apiFactory';
-import {
-  eventBus,
-  UPLOAD_STATE_RESET,
-  UPLOAD_STATE_RESOURCE_CREATED,
-} from '@/factories/eventBus';
+import { eventBus, UPLOAD_STATE_RESET, UPLOAD_STATE_RESOURCE_CREATED } from '@/factories/eventBus';
 
 import { RESOURCE_FORMAT_LINK } from '@/factories/metadataConsts';
 import { ResourceViewModel } from '@/modules/workflow/viewModel/ResourceViewModel.ts';
@@ -37,7 +33,7 @@ if (!useTestdata) {
   API_ROOT = import.meta.env.VITE_API_ROOT;
 }
 
-let uppyInstance : Uppy<Meta, Body> = null;
+let uppyInstance: Uppy<Meta, Body> = null;
 let storeReference = null;
 
 const uppyId = 'workflow-resource-upload';
@@ -101,11 +97,9 @@ function createNewResourceForFileUpload(datasetId: string, file: UppyFile<Meta, 
     urlType: 'upload',
     multipartName: file.name,
   };
-
 }
 
 export function createNewResourceForUrl(datasetId: string, url: string) {
-
   const cleanUrlForName = url.endsWith('/') ? url.substring(0, url.length - 1) : url;
   const splits = cleanUrlForName.split('/');
   const resourceName = splits.length > 0 ? splits[splits.length - 1] : url;
@@ -123,7 +117,7 @@ export function createNewResourceForUrl(datasetId: string, url: string) {
 }
 
 async function createResourceInBackend(datasetId: string, file: UppyFile<Meta, Body>) {
-  const newResource= createNewResourceForFileUpload(datasetId, file);
+  const newResource = createNewResourceForFileUpload(datasetId, file);
 
   const resourceVm = new ResourceViewModel();
   Object.assign(resourceVm, newResource);
@@ -132,7 +126,7 @@ async function createResourceInBackend(datasetId: string, file: UppyFile<Meta, B
 
   if (resourceId) {
     storeReference?.setUploadResource(resourceId);
-    eventBus.emit(UPLOAD_STATE_RESOURCE_CREATED, { id: UPLOAD_STATE_RESOURCE_CREATED, resourceId});
+    eventBus.emit(UPLOAD_STATE_RESOURCE_CREATED, { id: UPLOAD_STATE_RESOURCE_CREATED, resourceId });
   } else {
     storeReference.setUploadError(new Error(`Resource creation failed datasetId: ${datasetId}`));
   }
@@ -279,7 +273,7 @@ async function completeMultipart(file: UppyFile<Meta, Body>, uploadData) {
   }
 }
 
-async function abortMultipart(file: UppyFile<Meta, Body>, { uploadId, key }: { uploadId: string, key: string }) {
+async function abortMultipart(file: UppyFile<Meta, Body>, { uploadId, key }: { uploadId: string; key: string }) {
   // console.log('abortMultipart', file, uploadData);
 
   const actionUrl = 'cloudstorage_abort_multipart';
@@ -352,32 +346,28 @@ function createUppyInstance(
 ) {
   const debug = import.meta.env?.MODE === 'development';
 
-  const uppy = new Uppy<Meta, Body>(
-    {
-      id: uppyId,
-      autoProceed,
-      debug: true,
-      logger: debugLogger,
-      restrictions,
-      // height,
-    } satisfies UppyOptions<Meta, Body>,
-  );
+  const uppy = new Uppy<Meta, Body>({
+    id: uppyId,
+    autoProceed,
+    debug: true,
+    logger: debugLogger,
+    restrictions,
+    // height,
+  } satisfies UppyOptions<Meta, Body>);
 
-  uppy.use(awsS3,
-    {
-      id: 'workflow-multipart-aws',
-      limit: 4,
-      shouldUseMultipart: true,
-      getChunkSize(file) {
-        return Math.max(1024 * 1024 * 25, Math.ceil(file.size / 500));
-      },
-      createMultipartUpload: initiateMultipart,
-      signPart: requestPresignedUrl,
-      listParts: listUploadedParts,
-      abortMultipartUpload: abortMultipart,
-      completeMultipartUpload: completeMultipart,
-    } satisfies AwsS3MultipartOptions<Meta, Body>,
-  );
+  uppy.use(awsS3, {
+    id: 'workflow-multipart-aws',
+    limit: 4,
+    shouldUseMultipart: true,
+    getChunkSize(file) {
+      return Math.max(1024 * 1024 * 25, Math.ceil(file.size / 500));
+    },
+    createMultipartUpload: initiateMultipart,
+    signPart: requestPresignedUrl,
+    listParts: listUploadedParts,
+    abortMultipartUpload: abortMultipart,
+    completeMultipartUpload: completeMultipart,
+  } satisfies AwsS3MultipartOptions<Meta, Body>);
 
   return uppy;
 }

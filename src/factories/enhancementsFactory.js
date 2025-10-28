@@ -9,10 +9,9 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 
 export const importStoreModule = async (store, moduleKey, importFunction) => {
-
   if (store.state[moduleKey]) {
     return store.state[moduleKey];
   }
@@ -29,7 +28,7 @@ export const importStoreModule = async (store, moduleKey, importFunction) => {
   }
 
   return null;
-}
+};
 
 /**
  * Checks to see if the browser can render webp
@@ -48,9 +47,8 @@ export const checkWebpSupport = () => {
       return false;
     }
   } catch (e) {
-    return false
+    return false;
   }
-
 
   const elem = document.createElement('canvas');
 

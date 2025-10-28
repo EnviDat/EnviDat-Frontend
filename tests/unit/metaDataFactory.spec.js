@@ -12,20 +12,13 @@ import {
 
 import { createResource } from '@/factories/resourceHelpers';
 
-import {
-  createCitation,
-  extractPIDMapFromText,
-} from '@/factories/citationFactory';
+import { createCitation, extractPIDMapFromText } from '@/factories/citationFactory';
 
 import packagelist from '@/../stories/testdata/packagelist.json';
 import { enhanceKeywords } from '@/factories/keywordsFactory';
 import categoryCards from '@/store/categoryCards';
 import { formatDate } from '@/factories/dateFactory';
-import {
-  METADATA_CONTACT_EMAIL,
-  METADATA_CONTACT_FULLNAME,
-  METADATA_TITLE_PROPERTY,
-} from '@/factories/metadataConsts';
+import { METADATA_CONTACT_EMAIL, METADATA_CONTACT_FULLNAME, METADATA_TITLE_PROPERTY } from '@/factories/metadataConsts';
 
 // const metadatasContent = {};
 // packagelist.result.forEach((entry) => {
@@ -257,7 +250,6 @@ describe('metaDataFactory - enhanceTitleImg', () => {
       expect(enhancedDataset.categoryColor).toBeDefined();
       expect(enhancedDataset.categoryColor).not.toBe('');
     }
-
   });
 
   // it('with dataset but no background images', () => {
@@ -270,7 +262,6 @@ describe('metaDataFactory - enhanceTitleImg', () => {
   //   expect(enhancedDataset.categoryColor).toBeDefined();
   //   expect(enhancedDataset.categoryColor).not.toBe('');
   // });
-
 });
 
 describe('metaDataFactory - formatDate', () => {
@@ -289,11 +280,12 @@ describe('metaDataFactory - formatDate', () => {
 });
 
 const text = 'https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:14249\n';
-const text2 = 'https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:14249 \n https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:21248 \n https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:32593 \n https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:32246 \n https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:32611 ';
-const text3 = '* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A22390\r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 \r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A30382';
+const text2 =
+  'https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:14249 \n https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:21248 \n https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:32593 \n https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:32246 \n https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:32611 ';
+const text3 =
+  '* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A22390\r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 \r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A30382';
 const text4 = '* wsl:21835 * wsl%3A22390';
 const text5 = '* wsl:21835 \n * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 ';
-
 
 describe('metaDataFactory - extractPIDMapFromText', () => {
   it('empty', () => {
@@ -303,38 +295,32 @@ describe('metaDataFactory - extractPIDMapFromText', () => {
   });
 
   it('with text with dora url', () => {
-
     const pids = extractPIDMapFromText(text);
     expect(pids).toBeDefined();
     expect(pids.size > 0).toBeTruthy();
   });
 
   it('with text2 with dora url', () => {
-
     const pids = extractPIDMapFromText(text2);
     expect(pids).toBeDefined();
     expect(pids.size > 0).toBeTruthy();
   });
 
   it('with text3 with dora url', () => {
-
     const pids = extractPIDMapFromText(text3);
     expect(pids).toBeDefined();
     expect(pids.size > 0).toBeTruthy();
   });
 
   it('with text4 with dora url', () => {
-
     const pids = extractPIDMapFromText(text4);
     expect(pids).toBeDefined();
     expect(pids.size > 0).toBeTruthy();
   });
 
   it('with text5 with dora url', () => {
-
     const pids = extractPIDMapFromText(text5);
     expect(pids).toBeDefined();
     expect(pids.size > 0).toBeTruthy();
   });
-
 });

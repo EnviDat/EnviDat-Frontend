@@ -30,12 +30,7 @@
         </v-col>
 
         <v-col v-if="error" cols="4" class="pl-16">
-          <BaseStatusLabelView
-            status="error"
-            statusColor="error"
-            :statusText="error"
-            :expandedText="errorDetails"
-          />
+          <BaseStatusLabelView status="error" statusColor="error" :statusText="error" :expandedText="errorDetails" />
         </v-col>
       </v-row>
 
@@ -81,11 +76,7 @@
             :users="allUsersForUserPicker"
             :preSelectedEmails="preselectAuthorEmails"
             :readonly="isUserPickerReadOnly"
-            :hint="
-              isUserPickerReadOnly
-                ? readOnlyHint('authors')
-                : labels.authorPickHint
-            "
+            :hint="isUserPickerReadOnly ? readOnlyHint('authors') : labels.authorPickHint"
             @removedUsers="catchPickerAuthorChange($event, false)"
             @pickedUsers="catchPickerAuthorChange($event, true)"
           />
@@ -201,13 +192,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import {
-  mdiAccount,
-  mdiClose,
-  mdiEmail,
-  mdiHandshake,
-  mdiWalletMembership,
-} from '@mdi/js';
+import { mdiAccount, mdiClose, mdiEmail, mdiHandshake, mdiWalletMembership } from '@mdi/js';
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
@@ -215,17 +200,8 @@ import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.v
 
 import { EDIT_METADATA_ADD_AUTHOR_TITLE } from '@/factories/metadataConsts';
 
-import {
-  createAuthor,
-  getUserPickerObjects,
-  getAuthorByEmail,
-  getAuthorName,
-} from '@/factories/authorFactory';
-import {
-  getValidationMetadataEditingObject,
-  isFieldValid,
-  isObjectValid,
-} from '@/factories/userEditingValidations';
+import { createAuthor, getUserPickerObjects, getAuthorByEmail, getAuthorName } from '@/factories/authorFactory';
+import { getValidationMetadataEditingObject, isFieldValid, isObjectValid } from '@/factories/userEditingValidations';
 
 import {
   EDITMETADATA_AUTHOR,
@@ -236,7 +212,6 @@ import {
 } from '@/factories/eventBus';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
-
 
 export default {
   // name: 'EditAddAuthor',
@@ -319,23 +294,17 @@ export default {
     },
     affiliationField: {
       get() {
-        return this.previews.affiliation !== null
-          ? this.previews.affiliation
-          : this.affiliation;
+        return this.previews.affiliation !== null ? this.previews.affiliation : this.affiliation;
       },
     },
     firstNameField: {
       get() {
-        return this.previews.firstName !== null
-          ? this.previews.firstName
-          : this.firstName;
+        return this.previews.firstName !== null ? this.previews.firstName : this.firstName;
       },
     },
     lastNameField: {
       get() {
-        return this.previews.lastName !== null
-          ? this.previews.lastName
-          : this.lastName;
+        return this.previews.lastName !== null ? this.previews.lastName : this.lastName;
       },
     },
     emailField: {
@@ -345,9 +314,7 @@ export default {
     },
     identifierField: {
       get() {
-        return this.previews.identifier !== null
-          ? this.previews.identifier
-          : this.identifier;
+        return this.previews.identifier !== null ? this.previews.identifier : this.identifier;
       },
     },
     preselectAuthorEmails() {
@@ -419,20 +386,14 @@ export default {
       this.validateProperty(property, value);
     },
     validateProperty(property, value) {
-      return isFieldValid(
-        property,
-        value,
-        this.validations,
-        this.validationErrors,
-      );
+      return isFieldValid(property, value, this.validations, this.validationErrors);
     },
     catchPickerAuthorChange(pickedUserEmail: string, hasAuthor: boolean) {
       this.authorPickerTouched = true;
       this.authorIsPicked = hasAuthor;
 
       if (this.authorIsPicked) {
-        const author =
-          getAuthorByEmail(pickedUserEmail, this.existingAuthors) || {};
+        const author = getAuthorByEmail(pickedUserEmail, this.existingAuthors) || {};
         const authorObject = createAuthor(author);
 
         this.fillPreviews(
@@ -443,14 +404,7 @@ export default {
           authorObject.affiliation,
         );
 
-        if (
-          isObjectValid(
-            this.validationProperties,
-            authorObject,
-            this.validations,
-            this.validationErrors,
-          )
-        ) {
+        if (isObjectValid(this.validationProperties, authorObject, this.validations, this.validationErrors)) {
           this.setAuthorInfo(authorObject);
         }
       } else {
@@ -484,9 +438,7 @@ export default {
       });
 
       if (property === 'email') {
-        if (
-          isFieldValid(property, value, this.validations, this.validationErrors)
-        ) {
+        if (isFieldValid(property, value, this.validations, this.validationErrors)) {
           const autoAuthor = this.getAutoCompletedAuthor(value);
           if (autoAuthor) {
             authorObject = autoAuthor;
@@ -494,14 +446,7 @@ export default {
         }
       }
 
-      if (
-        isObjectValid(
-          this.validationProperties,
-          authorObject,
-          this.validations,
-          this.validationErrors,
-        )
-      ) {
+      if (isObjectValid(this.validationProperties, authorObject, this.validations, this.validationErrors)) {
         this.setAuthorInfo(authorObject);
       }
     },
@@ -587,8 +532,7 @@ export default {
       authorOr: '<strong>Or</strong> pick an existing author',
       authorAutoComplete:
         'If an author is picked or found with the email address these fields are <strong>autocompleted</strong>!',
-      authorPickHint:
-        'Start typing the name in the text field to search for an author.',
+      authorPickHint: 'Start typing the name in the text field to search for an author.',
     },
     validationProperties: [
       'email',

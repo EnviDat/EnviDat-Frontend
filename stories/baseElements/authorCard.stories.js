@@ -1,12 +1,15 @@
-import { mdiBookOpenVariantOutline, mdiLibraryOutline, mdiCodeTags, mdiWidgetsOutline, mdiAccountVoice, mdiAccountSupervisorOutline } from '@mdi/js';
+import {
+  mdiBookOpenVariantOutline,
+  mdiLibraryOutline,
+  mdiCodeTags,
+  mdiWidgetsOutline,
+  mdiAccountVoice,
+  mdiAccountSupervisorOutline,
+} from '@mdi/js';
 
 import AuthorCard from '@/modules/metadata/components/AuthorCard.vue';
 
-import {
-  createAuthors,
-  extractAuthorsMap,
-  getFullAuthorsFromDataset,
-} from '@/factories/authorFactory';
+import { createAuthors, extractAuthorsMap, getFullAuthorsFromDataset } from '@/factories/authorFactory';
 
 import {
   mobileLargeViewportParams,
@@ -18,24 +21,19 @@ import unFormatedMetadataCards from '@/../stories/js/metadata';
 
 const metadataCards = [];
 
-unFormatedMetadataCards.forEach(el => {
+unFormatedMetadataCards.forEach((el) => {
   el.author = createAuthors(el);
   metadataCards.push(el);
 });
 
 const authorsMap = extractAuthorsMap(metadataCards);
 
-const authorFromCollection = getFullAuthorsFromDataset(
-  authorsMap,
-  metadataCards[0],
-)[1];
-
+const authorFromCollection = getFullAuthorsFromDataset(authorsMap, metadataCards[0])[1];
 
 export default {
   title: '1 Base / Cards / Author Cards',
   component: AuthorCard,
 };
-
 
 export const Default = {
   args: { author: authorFromCollection },
@@ -67,18 +65,18 @@ export const DeadAuthor = {
   args: {
     author: authorWhichIsDead,
   },
-}
+};
 
 export const AuthorManyDataCredit = {
   args: { author: authorLoadsOfDatacredit },
-}
+};
 
 export const AuthorCardInfosExpanded = {
   args: {
     ...AuthorManyDataCredit.args,
     overrideAuthorInfosExpanded: true,
   },
-}
+};
 
 export const AuthorCardOverallHide = {
   args: {
@@ -86,35 +84,33 @@ export const AuthorCardOverallHide = {
     overrideAuthorInfosExpanded: true,
     hideDataCredit: true,
   },
-}
+};
 
 export const MobileAuthorCard = {
   args: AuthorCardInfosExpanded.args,
   parameters: mobileViewportParams,
-}
+};
 
 export const MobileLargeAuthorCard = {
   args: AuthorCardInfosExpanded.args,
   parameters: mobileLargeViewportParams,
-}
+};
 
 export const TabletAuthorCard = {
   args: AuthorCardInfosExpanded.args,
   parameters: tabletViewportParams,
-}
-
+};
 
 export const BackgroundTest = () => ({
-  data: ()=>({
-    mdiBookOpenVariantOutline, 
-    mdiLibraryOutline, 
-    mdiCodeTags, 
-    mdiWidgetsOutline, 
-    mdiAccountVoice, 
+  data: () => ({
+    mdiBookOpenVariantOutline,
+    mdiLibraryOutline,
+    mdiCodeTags,
+    mdiWidgetsOutline,
+    mdiAccountVoice,
     mdiAccountSupervisorOutline,
   }),
-  components: {
-  },
+  components: {},
 
   template: `
     <v-row>

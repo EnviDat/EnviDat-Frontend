@@ -1,9 +1,6 @@
 import { it, describe, expect } from 'vitest';
 
-import {
-  getModeData,
-  enhanceMetadataWithModeExtras,
-} from '@/factories/modeFactory';
+import { getModeData, enhanceMetadataWithModeExtras } from '@/factories/modeFactory';
 
 import {
   EDNA_MODE,
@@ -16,7 +13,6 @@ import packagelist from '@/../stories/testdata/packagelist.json';
 
 describe('modeFactory - getModeData', () => {
   it('empty', () => {
-
     try {
       getModeData(undefined);
     } catch (e) {
@@ -25,7 +21,6 @@ describe('modeFactory - getModeData', () => {
   });
 
   it('with SwissFL mode', () => {
-
     const mode = getModeData(SWISSFL_MODE);
 
     expect(mode).toBeDefined();
@@ -39,7 +34,6 @@ describe('modeFactory - getModeData', () => {
   });
 
   it('with eDNA mode', () => {
-
     const mode = getModeData(EDNA_MODE);
 
     expect(mode).toBeDefined();
@@ -52,7 +46,6 @@ describe('modeFactory - getModeData', () => {
     expect(mode.extrasKey).toBe(EDNA_MODE_EXTRAS_KEY);
   });
 });
-
 
 describe('modeFactory - enhanceMetadataFromExtras', () => {
   it('empty', () => {

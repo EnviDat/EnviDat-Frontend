@@ -1,31 +1,21 @@
 <template>
-  <v-dialog v-model="showModal"
-            id="GenericFullScreenModalF"
-            transition="dialog-bottom-transition"
-            scrollable
-            fullscreen
-            class="pa-2"
-            :style="`z-index: 2030; scrollbar-width: thin; scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack};`"
-            >
-
-    <v-card class="fill-height pa-0" >
-
-      <v-sheet flat
-               dark
-               color="primary"
-               class="pa-4"
-              style="height: 64px;">
-
-        <v-row no-gutters
-               justify="space-between"
-                align-content="center">
-
+  <v-dialog
+    v-model="showModal"
+    id="GenericFullScreenModalF"
+    transition="dialog-bottom-transition"
+    scrollable
+    fullscreen
+    class="pa-2"
+    :style="`z-index: 2030; scrollbar-width: thin; scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack};`"
+  >
+    <v-card class="fill-height pa-0">
+      <v-sheet flat dark color="primary" class="pa-4" style="height: 64px">
+        <v-row no-gutters justify="space-between" align-content="center">
           <v-col class="text-xs-body-1 text-sm-h6">
             {{ modalTitle }}
           </v-col>
 
-          <v-col class="flex-grow-0" >
-
+          <v-col class="flex-grow-0">
             <BaseIconButton
               class="genericFullScreenModalCloseButton"
               :icon="mdiClose"
@@ -36,21 +26,14 @@
               :tooltip-bottom="true"
               @clicked="closeClicked"
             />
-
           </v-col>
         </v-row>
       </v-sheet>
 
-      <v-card-text class="pa-0"
-                    style="overflow: auto;" >
-
-          <component :is="currentComponent"
-                      v-bind="genericProps" />
-
+      <v-card-text class="pa-0" style="overflow: auto">
+        <component :is="currentComponent" v-bind="genericProps" />
       </v-card-text>
     </v-card>
-
-
   </v-dialog>
 </template>
 
@@ -64,7 +47,7 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 import { mdiClose } from '@mdi/js';
 import { defineAsyncComponent } from 'vue';
 import {
@@ -86,13 +69,13 @@ import {
   SHOW_DATA_PREVIEW_PROPERTY,
 } from '@/factories/strategyFactory';
 
-const GcNetDetailChartsList = defineAsyncComponent(() =>
-  import('@/modules/metadata/components/GC-Net/GcNetDetailChartsList.vue'),
-)
+const GcNetDetailChartsList = defineAsyncComponent(
+  () => import('@/modules/metadata/components/GC-Net/GcNetDetailChartsList.vue'),
+);
 
-const MetadataMapFullscreen = defineAsyncComponent(() =>
-  import('@/modules/metadata/components/Geoservices/MetadataMapFullscreen.vue'),
-)
+const MetadataMapFullscreen = defineAsyncComponent(
+  () => import('@/modules/metadata/components/Geoservices/MetadataMapFullscreen.vue'),
+);
 
 export default {
   name: 'GenericFullScreenModal',
@@ -144,12 +127,11 @@ export default {
         config,
       };
 
-      this.modalTitle = `Sensor measurements for ${currentStation ? currentStation.name : '' } station`;
+      this.modalTitle = `Sensor measurements for ${currentStation ? currentStation.name : ''} station`;
 
       eventBus.emit(OPEN_FULLSCREEN_MODAL);
     },
     showGenericPreview(url) {
-
       const previewStrat = getPreviewStrategyFromUrlExtension(url);
 
       if (previewStrat) {
@@ -165,7 +147,6 @@ export default {
       }
     },
     showDataPreviewIframe(url) {
-
       const previewStrat = getPreviewStrategy(SHOW_DATA_PREVIEW_PROPERTY);
 
       if (previewStrat) {
@@ -181,7 +162,6 @@ export default {
       }
     },
     showFullscreenMapModal({ site, layerConfig }) {
-
       // this.modalTitle = `Fullscreen Map for ${metadataTitle}`;
       this.modalTitle = 'Fullscreen Map';
 
@@ -197,7 +177,7 @@ export default {
     showGenericComponent({ asyncComponent, props }) {
       this.genericProps = props;
       this.modalTitle = 'Fullscreen';
-      
+
       this.currentComponent = asyncComponent;
 
       eventBus.emit(OPEN_FULLSCREEN_MODAL);
@@ -223,7 +203,4 @@ export default {
 };
 </script>
 
-
-<style scoped>
-
-</style>
+<style scoped></style>

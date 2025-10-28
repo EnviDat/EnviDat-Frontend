@@ -12,9 +12,7 @@
       </v-row>
 
       <v-row v-show="validationErrors.authors">
-        <v-col
-          :style="`background-color: ${$vuetify.theme.themes.light.colors.error}; `"
-        >
+        <v-col :style="`background-color: ${$vuetify.theme.themes.light.colors.error}; `">
           {{ validationErrors.authors }}
         </v-col>
       </v-row>
@@ -57,10 +55,7 @@
                 @catchSearchAuthor="catchAuthorSearchClick"
               >
                 <template #dataCreditCurrentDataset>
-                  <EditDataCredits
-                    v-bind="dataCreditProps(author)"
-                    @creditClick="catchCreditClick(author, $event)"
-                  />
+                  <EditDataCredits v-bind="dataCreditProps(author)" @creditClick="catchCreditClick(author, $event)" />
                 </template>
               </AuthorCard>
             </template>
@@ -84,8 +79,8 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
-import {mdiClose, mdiCursorMove, mdiPencil} from '@mdi/js';
+ */
+import { mdiClose, mdiCursorMove, mdiPencil } from '@mdi/js';
 import {
   AUTHORS_EDIT_CURRENT_DATACREDIT,
   EDIT_METADATA_AUTHORSLIST_TITLE,
@@ -98,7 +93,7 @@ import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuth
 import AuthorCard from '@/modules/metadata/components/AuthorCard.vue';
 import EditDataCredits from '@/modules/user/components/edit/EditDataCredits.vue';
 import BaseDraggableList from '@/components/BaseElements/BaseDraggableList.vue';
-import ExpandableLayout from '@/components/Layouts/ExpandableLayout.vue'
+import ExpandableLayout from '@/components/Layouts/ExpandableLayout.vue';
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 import {
@@ -161,7 +156,7 @@ export default {
     authorsFields() {
       const authors = this.previewAuthors || this.authors;
 
-      isFieldValid(METADATA_AUTHORS_PROPERTY, authors, this.validations, this.validationErrors)
+      isFieldValid(METADATA_AUTHORS_PROPERTY, authors, this.validations, this.validationErrors);
 
       return authors;
     },
@@ -206,7 +201,7 @@ export default {
         data: {
           ...this.$props,
           authors: this.previewAuthors,
-       },
+        },
       });
 
       // DO NOT clear the preview because than the user isn't able to remove the last author
@@ -238,13 +233,13 @@ export default {
         dataCredit: author.dataCredit,
         authorName: author.fullName,
         readOnly: this.loading || this.readOnlyFields?.includes(METADATA_DATACREDIT_PROPERTY),
-      }
+      };
     },
     clearPreviews() {
       this.previewAuthors = null;
     },
     toggleDataCredit(author, creditName) {
-      const dCredit = [...author.dataCredit || []];
+      const dCredit = [...(author.dataCredit || [])];
 
       if (!dCredit.includes(creditName)) {
         dCredit.push(creditName);
@@ -258,15 +253,14 @@ export default {
       return author;
     },
     catchCreditClick(author, creditName) {
-
       let localAuthorCopy = [...this.authors];
-      const authorToChange = localAuthorCopy.filter(a => a.email === author.email)[0];
+      const authorToChange = localAuthorCopy.filter((a) => a.email === author.email)[0];
 
       const authorCopy = { ...authorToChange };
       const newAuthor = this.toggleDataCredit(authorCopy, creditName);
 
       // replaces the existing author with the new one
-      localAuthorCopy = localAuthorCopy.map(a => a.email !== newAuthor.email ? a : newAuthor);
+      localAuthorCopy = localAuthorCopy.map((a) => (a.email !== newAuthor.email ? a : newAuthor));
 
       this.previewAuthors = localAuthorCopy;
 
@@ -274,10 +268,9 @@ export default {
         object: EDITMETADATA_AUTHOR_DATACREDIT,
         data: newAuthor,
       });
-
     },
     catchEditAuthorClick(author) {
-      this.$emit('editAuthorClick', author)
+      this.$emit('editAuthorClick', author);
     },
     catchAuthorSearchClick(fullName) {
       eventBus.emit(AUTHOR_SEARCH_CLICK, fullName);
@@ -286,7 +279,8 @@ export default {
   data: () => ({
     METADATA_AUTHOR_SEQUENCE_PROPERTY,
     mdiCursorMove,
-    editingInstructions: 'Here is a preview list of the authors of this dataset. Edit the <a href="https://www.wsl.ch/datacredit/#feat" target="_blank">DataCRediT</a> contributions for each author directly in this list by clicking on the icons. For further editing of authors, select them with the edit icon. ',
+    editingInstructions:
+      'Here is a preview list of the authors of this dataset. Edit the <a href="https://www.wsl.ch/datacredit/#feat" target="_blank">DataCRediT</a> contributions for each author directly in this list by clicking on the icons. For further editing of authors, select them with the edit icon. ',
     title: EDIT_METADATA_AUTHORSLIST_TITLE,
     previewAuthors: null,
     validationErrors: {

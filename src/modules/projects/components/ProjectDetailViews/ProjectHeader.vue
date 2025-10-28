@@ -1,19 +1,20 @@
 <template>
-  <v-card :height="height"
-          :class="{
-            'pa-4': $vuetify.display.smAndUp,
-            'pa-3': $vuetify.display.xs,
-          }"
-          :dark="dark"
-          :color="showPlaceholder ? 'primary' : 'white'" >
-
-    <div :style="dynamicCardBackground" >
+  <v-card
+    :height="height"
+    :class="{
+      'pa-4': $vuetify.display.smAndUp,
+      'pa-3': $vuetify.display.xs,
+    }"
+    :dark="dark"
+    :color="showPlaceholder ? 'primary' : 'white'"
+  >
+    <div :style="dynamicCardBackground">
       <!-- this loads the background image -->
     </div>
 
-    <base-icon-button 
+    <base-icon-button
       class="ma-2"
-      style="position: absolute; top: 0; right: 0; z-index: 2;"
+      style="position: absolute; top: 0; right: 0; z-index: 2"
       :icon="mdiClose"
       icon-color="primary"
       outline-color="primary"
@@ -23,38 +24,43 @@
       @clicked="catchBackClicked"
     />
 
-
-    <div v-if="title"
-          :style="`position: absolute; top: 0px; right: 0px;
+    <div
+      v-if="title"
+      :style="`position: absolute; top: 0px; right: 0px;
                   height: ${height}px; width: 100%;
                   z-index: 1;`"
-          class="headerTitle pa-4"
-          :class="{ 'text-h3': $vuetify.display.lgAndUp,
-                    'text-h4': $vuetify.display.mdAndDown,
-                    'text-h5': $vuetify.display.smAndDown,
-                  }" >
+      class="headerTitle pa-4"
+      :class="{
+        'text-h3': $vuetify.display.lgAndUp,
+        'text-h4': $vuetify.display.mdAndDown,
+        'text-h5': $vuetify.display.smAndDown,
+      }"
+    >
       {{ title }}
     </div>
 
-
-    <div v-if="!title && !showPlaceholder"
-          :style="`position: absolute; top: 0px; right: 0px;
+    <div
+      v-if="!title && !showPlaceholder"
+      :style="`position: absolute; top: 0px; right: 0px;
                   height: ${height}px; width: 100%;
                   z-index: 1; color: ${$vuetify.theme.themes.light.colors.error};`"
-          class="headerTitle pa-4"
-          :class="{ 'text-h3': $vuetify.display.lgAndUp,
-                    'text-h4': $vuetify.display.mdAndDown,
-                    'text-h5': $vuetify.display.smAndDown,
-                  }" >
+      class="headerTitle pa-4"
+      :class="{
+        'text-h3': $vuetify.display.lgAndUp,
+        'text-h4': $vuetify.display.mdAndDown,
+        'text-h5': $vuetify.display.smAndDown,
+      }"
+    >
       {{ NotFoundTitle }}
     </div>
 
-
-    <v-skeleton-loader v-if="!title && showPlaceholder"
-                       style="z-index: 1;"
-                       :height="height - 20"
-                       type="article" color="transparent" />
-
+    <v-skeleton-loader
+      v-if="!title && showPlaceholder"
+      style="z-index: 1"
+      :height="height - 20"
+      type="article"
+      color="transparent"
+    />
   </v-card>
 </template>
 
@@ -71,7 +77,7 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 
 import { mdiClose } from '@mdi/js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
@@ -140,6 +146,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

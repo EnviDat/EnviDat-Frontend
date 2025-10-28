@@ -1,5 +1,5 @@
 <template>
-  <v-row align="center" justify="end" no-gutters >
+  <v-row align="center" justify="end" no-gutters>
     <v-btn-toggle
       v-if="isEnabledControl(LISTCONTROL_MAP_ACTIVE)"
       :model-value="controlsActive"
@@ -9,20 +9,19 @@
       rounded="0"
     >
       <v-btn
-          v-if="isEnabledControl(LISTCONTROL_MAP_ACTIVE)"
-          :active="mapActive"
-          :color="mapActive ? 'secondary' : 'white'"
-          :value="LISTCONTROL_MAP_ACTIVE"
-          @click="catchControlClick(LISTCONTROL_MAP_ACTIVE)"
+        v-if="isEnabledControl(LISTCONTROL_MAP_ACTIVE)"
+        :active="mapActive"
+        :color="mapActive ? 'secondary' : 'white'"
+        :value="LISTCONTROL_MAP_ACTIVE"
+        @click="catchControlClick(LISTCONTROL_MAP_ACTIVE)"
         class="controlButton"
       >
-        <BaseIcon :icon='mdiMap' color='grey-darken-3' />
+        <BaseIcon :icon="mdiMap" color="grey-darken-3" />
       </v-btn>
     </v-btn-toggle>
 
     <v-btn-toggle
-      v-if="isEnabledControl(LISTCONTROL_LIST_ACTIVE) ||
-            isEnabledControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE)"
+      v-if="isEnabledControl(LISTCONTROL_LIST_ACTIVE) || isEnabledControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE)"
       :model-value="controlsActive"
       class="fill-height ml-2"
       divided
@@ -37,7 +36,7 @@
         @click="catchControlClick(LISTCONTROL_LIST_ACTIVE)"
         class="controlButton"
       >
-        <BaseIcon :icon='mdiViewHeadline' color='grey-darken-3' />
+        <BaseIcon :icon="mdiViewHeadline" color="grey-darken-3" />
       </v-btn>
 
       <v-btn
@@ -51,7 +50,7 @@
         <BaseIcon :icon="mdiViewComfy" color="grey-darken-3" />
       </v-btn>
 
-<!--
+      <!--
       <v-btn
         v-if="isEnabledControl(3)"
         @click="catchControlClick(3)"
@@ -61,7 +60,6 @@
         <BaseIcon :icon="mdiViewAgenda" color="grey-darken-3" />
       </v-btn>
 -->
-
     </v-btn-toggle>
   </v-row>
 </template>
@@ -130,7 +128,7 @@ export default {
       },
       set(value) {
         this.catchControlClick(value);
-/*
+        /*
         if (!this.previewControls) {
           this.previewControls = [];
         }
@@ -141,7 +139,7 @@ export default {
       },
     },
   },
-/*
+  /*
   watch: {
     controls() {
       this.controlsActive = this.controls;
@@ -153,9 +151,7 @@ export default {
       return this.controlsActive ? this.controlsActive.includes(number) : false;
     },
     isEnabledControl(number) {
-      return this.enabledControls
-        ? this.enabledControls.includes(number)
-        : false;
+      return this.enabledControls ? this.enabledControls.includes(number) : false;
     },
     catchControlClick(number) {
       this.$emit('controlsChanged', number);

@@ -24,16 +24,9 @@ import {
   deprecatedResourceChanged,
 } from '@/factories/mappingFactory';
 
-import {
-  LOAD_METADATA_CONTENT_BY_ID,
-  METADATA_NAMESPACE,
-} from '@/store/metadataMutationsConsts';
+import { LOAD_METADATA_CONTENT_BY_ID, METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
-import {
-  EDITMETADATA_AUTHOR_LIST,
-  EDITMETADATA_CUSTOMFIELDS,
-  EDITMETADATA_DATA_RESOURCE,
-} from '@/factories/eventBus';
+import { EDITMETADATA_AUTHOR_LIST, EDITMETADATA_CUSTOMFIELDS, EDITMETADATA_DATA_RESOURCE } from '@/factories/eventBus';
 
 import {
   ACTION_METADATA_EDITING_PATCH_DATASET,
@@ -73,10 +66,10 @@ export default {
     await dispatch(METADATA_EDITING_PATCH_DATASET_OBJECT, {
       stepKey: EDITMETADATA_AUTHOR_LIST,
       data: newAuthorList,
-      id });
+      id,
+    });
 
     commit(METADATA_EDITING_SAVE_AUTHOR_SUCCESS, author);
-
   },
   [METADATA_EDITING_REMOVE_AUTHOR]({ commit, dispatch }, { data, id }) {
     commit(METADATA_EDITING_REMOVE_AUTHOR, data);
@@ -86,23 +79,23 @@ export default {
     dispatch(METADATA_EDITING_PATCH_DATASET_OBJECT, {
       stepKey: EDITMETADATA_AUTHOR_LIST,
       data: newAuthorList,
-      id });
+      id,
+    });
   },
   async [METADATA_EDITING_LOAD_DATASET]({ dispatch }, { metadataId, forceBackendReload = false }) {
-
     // defining the commitMethod has the effect that mutations of this
     // module are being used with the output of the action from the metadata module
-    await dispatch(`${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`, {
-      metadataId,
-      commitMethod: `${USER_NAMESPACE}/${METADATA_EDITING_LOAD_DATASET}`,
-      forceBackendReload,
-    },
-    { root: true },
+    await dispatch(
+      `${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`,
+      {
+        metadataId,
+        commitMethod: `${USER_NAMESPACE}/${METADATA_EDITING_LOAD_DATASET}`,
+        forceBackendReload,
+      },
+      { root: true },
     );
-
   },
   async [METADATA_EDITING_PATCH_DATASET_OBJECT]({ commit }, { stepKey, data, id }) {
-
     commit(METADATA_EDITING_PATCH_DATASET_OBJECT, stepKey);
 
     const actionUrl = ACTION_METADATA_EDITING_PATCH_DATASET();
@@ -111,8 +104,8 @@ export default {
     const postData = mapFrontendToBackend(stepKey, data);
     postData.id = id;
 
-    await axios.post(url, postData,
-      {
+    await axios
+      .post(url, postData, {
         headers: {
           // Authorization: apiKey,
         },
@@ -134,7 +127,6 @@ export default {
       });
   },
   async [METADATA_EDITING_PATCH_RESOURCE]({ commit, dispatch }, { stepKey, data }) {
-
     commit(METADATA_EDITING_PATCH_RESOURCE, data);
 
     const actionUrl = ACTION_METADATA_EDITING_PATCH_RESOURCE();
@@ -149,7 +141,7 @@ export default {
     try {
       const response = await axios.post(url, postData);
       const resource = getFrontendJSONForStep(EDITMETADATA_DATA_RESOURCE, response.data.result);
-      const resourceId  =  resource.id;
+      const resourceId = resource.id;
 
       const customFieldsData = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_CUSTOMFIELDS);
 
@@ -161,7 +153,11 @@ export default {
         // change this ASAP (move to centralised mapping, or simply adjust backend)!
 
         if (deprecatedResourceChanged(resourceId, isDeprecated, customFieldsData.customFields)) {
-          customFieldsData.customFields = markResourceDeprecatedInCustomFields(resourceId, isDeprecated, customFieldsData.customFields);
+          customFieldsData.customFields = markResourceDeprecatedInCustomFields(
+            resourceId,
+            isDeprecated,
+            customFieldsData.customFields,
+          );
 
           await dispatch(METADATA_EDITING_PATCH_DATASET_OBJECT, {
             data: customFieldsData,
@@ -169,7 +165,6 @@ export default {
             id: resource.packageId,
           });
         }
-
       }
       commit(METADATA_EDITING_PATCH_RESOURCE_SUCCESS, {
         stepKey,
@@ -177,8 +172,7 @@ export default {
         message: 'Resource saved',
         // details: `Changes saved ${stepKey} data for ${id}`,
       });
-
-    } catch(reason) {
+    } catch (reason) {
       commit(METADATA_EDITING_PATCH_RESOURCE_ERROR, {
         stepKey,
         reason,
@@ -186,7 +180,6 @@ export default {
     }
   },
   async [METADATA_EDITING_PATCH_DATASET_ORGANIZATION]({ commit }, { stepKey, id, data }) {
-
     commit(METADATA_EDITING_PATCH_DATASET_OBJECT, stepKey);
 
     const apiKey = this.state.userSignIn.user?.apikey || null;
@@ -199,8 +192,8 @@ export default {
       organization_id: data.organizationId,
     };
 
-    await axios.post(url, postData,
-      {
+    await axios
+      .post(url, postData, {
         headers: {
           Authorization: apiKey,
         },

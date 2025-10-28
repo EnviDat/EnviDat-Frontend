@@ -7,19 +7,11 @@
             <v-col class="flex-grow-0">
               <v-btn icon size="small" @click.stop="catchHomeClicked">
                 <!-- :style="`background-color: ${ item.active ? $vuetify.theme.themes.light.colors.accent : 'transparent' }`" -->
-                <v-img
-                  :src="EnviDatLogo"
-                  height="32"
-                  width="32"
-                  alt="envidat_logo"
-                />
+                <v-img :src="EnviDatLogo" height="32" width="32" alt="envidat_logo" />
               </v-btn>
             </v-col>
             <v-col class="flex-grow-0 py-0">
-              <div
-                class="text-md-h5 envidatText clickable mt-1 mt-sm-0"
-                @click.stop="catchHomeClicked"
-              >
+              <div class="text-md-h5 envidatText clickable mt-1 mt-sm-0" @click.stop="catchHomeClicked">
                 {{ showAdditionalText ? logoText : '' }}
               </div>
             </v-col>
@@ -27,25 +19,12 @@
         </v-col>
 
         <v-col v-if="hasModeData">
-          <ModeView
-            :mode="mode"
-            :compact="compact"
-            :closeCallback="modeCloseCallback"
-          />
+          <ModeView :mode="mode" :compact="compact" :closeCallback="modeCloseCallback" />
         </v-col>
 
-        <v-col
-          v-if="signedInUser"
-          class="flex-grow-0"
-          cols="4"
-          sm="4"
-          md="3"
-          xl="2"
-        >
+        <v-col v-if="signedInUser" class="flex-grow-0" cols="4" sm="4" md="3" xl="2">
           <v-row align="center" justify="end">
-            <v-col
-              :style="`text-align: right; ${$vuetify.display.xs ? 'line-height: 1rem;' : ''}`"
-            >
+            <v-col :style="`text-align: right; ${$vuetify.display.xs ? 'line-height: 1rem;' : ''}`">
               {{ signedInUser.fullName }}
             </v-col>
 
@@ -83,11 +62,7 @@
             >
               <v-tooltip location="bottom">
                 <template v-slot:activator="{ props }">
-                  <div
-                    v-bind="props"
-                    style="text-align: right"
-                    class="text-body-2"
-                  >
+                  <div v-bind="props" style="text-align: right" class="text-body-2">
                     {{ showAdditionalText ? signInText : '' }}
                   </div>
                 </template>
@@ -117,13 +92,7 @@
           </v-row>
         </v-col>
 
-        <v-progress-linear
-          v-show="loading"
-          indeterminate
-          absolute
-          height="2"
-          color="primary"
-        />
+        <v-progress-linear v-show="loading" indeterminate absolute height="2" color="primary" />
       </v-row>
     </v-container>
   </v-app-bar>
@@ -156,10 +125,7 @@ export default {
   },
   computed: {
     showAdditionalText() {
-      return (
-        (this.$vuetify.display.xs && !this.hasModeData) ||
-        this.$vuetify.display.smAndUp
-      );
+      return (this.$vuetify.display.xs && !this.hasModeData) || this.$vuetify.display.smAndUp;
     },
     compact() {
       return this.$vuetify.display.xs;
@@ -188,10 +154,7 @@ export default {
     },
     // Load organization IDs for the logged-in user. This is used to determine whether the "Create Dataset" item should be shown in the dropdown menu.
     async fetchUserOrganizationId(forceReload = false) {
-      if (
-        forceReload ||
-        (!forceReload && this.organizationsStore.userOrganizations?.length > 0)
-      ) {
+      if (forceReload || (!forceReload && this.organizationsStore.userOrganizations?.length > 0)) {
         await this.organizationsStore.UserGetOrgIds(this.hasLoggedUser.id);
       }
     },

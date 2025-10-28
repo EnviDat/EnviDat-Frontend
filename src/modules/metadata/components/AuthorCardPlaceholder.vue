@@ -3,15 +3,14 @@
     <v-container class="fill-height pb-0">
       <v-row>
         <v-col cols="12">
-          <v-skeleton-loader type='heading' color='gray' />
+          <v-skeleton-loader type="heading" color="gray" />
         </v-col>
       </v-row>
     </v-container>
 
     <v-card-text>
-      <v-skeleton-loader type='paragraph' color='gray' />
+      <v-skeleton-loader type="paragraph" color="gray" />
     </v-card-text>
-
   </v-card>
 </template>
 
@@ -34,9 +33,7 @@ export default {
   }),
   computed: {
     dynamicCardBackground: function dynamicCardBackground() {
-      const gradient = this.dark
-        ? this.blackTopToBottom
-        : this.whiteTopToBottom;
+      const gradient = this.dark ? this.blackTopToBottom : this.whiteTopToBottom;
 
       if (this.$vuetify.display.mdAndUp && this.defaultTexture) {
         return `background-image: linear-gradient(0deg, ${gradient}), url(${this.defaultTexture});

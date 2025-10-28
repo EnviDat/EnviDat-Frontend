@@ -1,4 +1,3 @@
-
 /**
  * @summary story for editing users elements for sandbox testing
  * @author Dominik Haas-Artho
@@ -17,16 +16,12 @@ import UserCard from '@/components/Cards/UserCard.vue';
 import { getNameInitials } from '@/factories/authorFactory';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import FlipLayout from '@/components/Layouts/FlipLayout.vue';
-import {
-  EDIT_USER_PROFILE_EVENT,
-  eventBus,
-} from '@/factories/eventBus';
+import { EDIT_USER_PROFILE_EVENT, eventBus } from '@/factories/eventBus';
 import authorCollection from '@/../stories/testdata/authorCollection.json';
 
 const keys = Object.keys(authorCollection);
-const user1 =  authorCollection[keys[1]];
-const user2 =  authorCollection[keys[2]];
-
+const user1 = authorCollection[keys[1]];
+const user2 = authorCollection[keys[2]];
 
 export default {
   title: '7 User / Edit User Profile',

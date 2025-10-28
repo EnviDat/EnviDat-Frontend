@@ -1,12 +1,7 @@
 <template>
   <v-container class="pa-0" tag="article" ref="projectDetail">
     <v-row no-gutters>
-      <v-col
-        class="elevation-5 pa-0"
-        cols="12"
-        ref="header"
-        style="z-index: 1; left: 0"
-      >
+      <v-col class="elevation-5 pa-0" cols="12" ref="header" style="z-index: 1; left: 0">
         <ProjectHeader
           :title="currentProject ? currentProject.title : null"
           :titleImg="currentProject ? currentProject.image_display_url : null"
@@ -26,12 +21,7 @@
         />
       </v-col>
 
-      <v-col
-        v-if="loading || (!loading && subProjects)"
-        class="pb-2"
-        cols="12"
-        lg="12"
-      >
+      <v-col v-if="loading || (!loading && subProjects)" class="pb-2" cols="12" lg="12">
         <ProjectSubprojects
           :subProjects="subProjects"
           :defaultImg="creatorImg"
@@ -86,11 +76,7 @@
 import { mapGetters, mapState } from 'vuex';
 import { defineAsyncComponent } from 'vue';
 
-import {
-  METADATADETAIL_PAGENAME,
-  PROJECT_DETAIL_PAGENAME,
-  PROJECTS_PATH,
-} from '@/router/routeConsts';
+import { METADATADETAIL_PAGENAME, PROJECT_DETAIL_PAGENAME, PROJECTS_PATH } from '@/router/routeConsts';
 import {
   LISTCONTROL_LIST_ACTIVE,
   LISTCONTROL_MAP_ACTIVE,
@@ -98,37 +84,21 @@ import {
   SET_DETAIL_PAGE_BACK_URL,
 } from '@/store/metadataMutationsConsts';
 
-import {
-  convertArrayToUrlString,
-  convertUrlStringToArray,
-} from '@/factories/stringFactory';
+import { convertArrayToUrlString, convertUrlStringToArray } from '@/factories/stringFactory';
 import { getImage } from '@/factories/imageFactory';
-import {
-  createTag,
-  tagsIncludedInSelectedTags,
-} from '@/factories/keywordsFactory';
+import { createTag, tagsIncludedInSelectedTags } from '@/factories/keywordsFactory';
 import { isTagSelected } from '@/factories/metaDataFactory';
-import {
-  GET_PROJECTS,
-  PROJECTS_NAMESPACE,
-  SET_PROJECTDETAIL_PAGE_BACK_URL,
-} from '../store/projectsMutationsConsts';
+import { GET_PROJECTS, PROJECTS_NAMESPACE, SET_PROJECTDETAIL_PAGE_BACK_URL } from '../store/projectsMutationsConsts';
 
 import ProjectBody from './ProjectDetailViews/ProjectBody.vue';
 import ProjectHeader from './ProjectDetailViews/ProjectHeader.vue';
 
 const ProjectSubprojects = defineAsyncComponent(
-  () =>
-    import(
-      '@/modules/projects/components/ProjectDetailViews/ProjectSubprojects.vue'
-    ),
+  () => import('@/modules/projects/components/ProjectDetailViews/ProjectSubprojects.vue'),
 );
 
 const ProjectDatasets = defineAsyncComponent(
-  () =>
-    import(
-      '@/modules/projects/components/ProjectDetailViews/ProjectDatasets.vue'
-    ),
+  () => import('@/modules/projects/components/ProjectDetailViews/ProjectDatasets.vue'),
 );
 
 export default {
@@ -148,10 +118,7 @@ export default {
         };
       }
 
-      vm.$store.commit(
-        `${PROJECTS_NAMESPACE}/${SET_PROJECTDETAIL_PAGE_BACK_URL}`,
-        backRoute,
-      );
+      vm.$store.commit(`${PROJECTS_NAMESPACE}/${SET_PROJECTDETAIL_PAGE_BACK_URL}`, backRoute);
 
       // reset scroll for every new load of project details
       if (from.name === METADATADETAIL_PAGENAME) {
@@ -172,10 +139,7 @@ export default {
         params: { id: toProject.parent.name },
       };
     }
-    this.$store.commit(
-      `${PROJECTS_NAMESPACE}/${SET_PROJECTDETAIL_PAGE_BACK_URL}`,
-      backRoute,
-    );
+    this.$store.commit(`${PROJECTS_NAMESPACE}/${SET_PROJECTDETAIL_PAGE_BACK_URL}`, backRoute);
     if (from.name === METADATADETAIL_PAGENAME) {
       this.setScrollPos('projectDatasetsList');
     } else {
@@ -227,22 +191,14 @@ export default {
       return this.$vuetify.display.smAndUp;
     },
     hasMetadatas() {
-      return (
-        this.currentProject &&
-        this.currentProject.packages &&
-        this.currentProject.packages.length > 0
-      );
+      return this.currentProject && this.currentProject.packages && this.currentProject.packages.length > 0;
     },
     creatorImg() {
-      const imgPath = this.$vuetify.display.mdAndUp
-        ? 'data_creator'
-        : 'data_creator_small';
+      const imgPath = this.$vuetify.display.mdAndUp ? 'data_creator' : 'data_creator_small';
       return getImage(imgPath);
     },
     missionImg() {
-      const imgPath = this.$vuetify.display.mdAndUp
-        ? 'mission'
-        : 'mission_small';
+      const imgPath = this.$vuetify.display.mdAndUp ? 'mission' : 'mission_small';
       return getImage(imgPath);
     },
     allMetadataTags() {
@@ -323,10 +279,7 @@ export default {
       );
     },
     catchMetadataClicked(datasetname) {
-      this.$store.commit(
-        `${METADATA_NAMESPACE}/${SET_DETAIL_PAGE_BACK_URL}`,
-        this.$route,
-      );
+      this.$store.commit(`${METADATA_NAMESPACE}/${SET_DETAIL_PAGE_BACK_URL}`, this.$route);
 
       this.$router.push({
         name: METADATADETAIL_PAGENAME,
@@ -337,10 +290,7 @@ export default {
     },
     loadProjects() {
       if (this.projects.length <= 0) {
-        this.$store.dispatch(
-          `${PROJECTS_NAMESPACE}/${GET_PROJECTS}`,
-          this.projectsConfig,
-        );
+        this.$store.dispatch(`${PROJECTS_NAMESPACE}/${GET_PROJECTS}`, this.projectsConfig);
       }
     },
     getMetadataContent(id) {
@@ -379,10 +329,7 @@ export default {
       this.$router.push({ path: PROJECTS_PATH });
     },
     catchProjectClick(projectId) {
-      this.$store.commit(
-        `${PROJECTS_NAMESPACE}/${SET_PROJECTDETAIL_PAGE_BACK_URL}`,
-        this.$route,
-      );
+      this.$store.commit(`${PROJECTS_NAMESPACE}/${SET_PROJECTDETAIL_PAGE_BACK_URL}`, this.$route);
 
       this.$router.push({
         name: PROJECT_DETAIL_PAGENAME,
@@ -390,10 +337,7 @@ export default {
       });
     },
     catchSubprojectClick(subprojectId) {
-      this.$store.commit(
-        `${PROJECTS_NAMESPACE}/${SET_PROJECTDETAIL_PAGE_BACK_URL}`,
-        this.$route,
-      );
+      this.$store.commit(`${PROJECTS_NAMESPACE}/${SET_PROJECTDETAIL_PAGE_BACK_URL}`, this.$route);
 
       this.$router.push({
         name: PROJECT_DETAIL_PAGENAME,
@@ -411,9 +355,7 @@ export default {
       }
 
       if (isTagSelected(tagId, this.selectedTagNames)) {
-        this.selectedTagNames = this.selectedTagNames.filter(
-          (tag) => tag !== tagId,
-        );
+        this.selectedTagNames = this.selectedTagNames.filter((tag) => tag !== tagId);
       }
     },
     catchTagCleared() {

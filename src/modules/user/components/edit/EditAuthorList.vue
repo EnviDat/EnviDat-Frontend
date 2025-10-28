@@ -1,50 +1,34 @@
 <template>
-
-  <v-container fluid
-               class="pa-0"
-               id="EditAuthorList" >
-
-    <v-row >
-      <v-col cols="6" >
-
-        <v-row >
-          <v-col v-show="!selectedAuthor"
-                 cols="12">
-
-              <EditAddExistingAuthor v-bind="authorPickingGenericProps" />
+  <v-container fluid class="pa-0" id="EditAuthorList">
+    <v-row>
+      <v-col cols="6">
+        <v-row>
+          <v-col v-show="!selectedAuthor" cols="12">
+            <EditAddExistingAuthor v-bind="authorPickingGenericProps" />
           </v-col>
 
-          <v-col v-if="isReadOnly(METADATA_AUTHORS_PROPERTY)"
-                 cols="12">
-
-              <v-card>
-                <v-card-title>
-                  {{ EDIT_METADATA_ADD_AUTHOR_TITLE }}
-                </v-card-title>
-                <v-card-text>
-                  Adding a new Author is readonly, because: {{ readOnlyHint(METADATA_AUTHORS_PROPERTY) }}
-                </v-card-text>
-              </v-card>
+          <v-col v-if="isReadOnly(METADATA_AUTHORS_PROPERTY)" cols="12">
+            <v-card>
+              <v-card-title>
+                {{ EDIT_METADATA_ADD_AUTHOR_TITLE }}
+              </v-card-title>
+              <v-card-text>
+                Adding a new Author is readonly, because: {{ readOnlyHint(METADATA_AUTHORS_PROPERTY) }}
+              </v-card-text>
+            </v-card>
           </v-col>
 
-          <v-col v-else
-                 cols="12">
-
-            <EditAddAuthor v-bind="editAddAuthorObject"
-                           @closeClicked="catchEditAuthorClose" />
+          <v-col v-else cols="12">
+            <EditAddAuthor v-bind="editAddAuthorObject" @closeClicked="catchEditAuthorClose" />
           </v-col>
-
         </v-row>
       </v-col>
 
-      <v-col cols="6" >
-        <EditMetadataAuthors v-bind="authorListingGenericProps"
-                              @editAuthorClick="catchEditAuthorClick"/>
+      <v-col cols="6">
+        <EditMetadataAuthors v-bind="authorListingGenericProps" @editAuthorClick="catchEditAuthorClick" />
       </v-col>
     </v-row>
-
   </v-container>
-
 </template>
 
 <script>
@@ -59,28 +43,20 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 
 import EditAddAuthor from '@/modules/user/components/EditAddAuthor.vue';
 import EditAddExistingAuthor from '@/modules/user/components/EditAddExistingAuthor.vue';
 import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors.vue';
 
-import {
-  enhanceAuthorsFromAuthorMap,
-  getAuthorName,
-} from '@/factories/authorFactory';
+import { enhanceAuthorsFromAuthorMap, getAuthorName } from '@/factories/authorFactory';
 
-import {
-  CANCEL_EDITING_AUTHOR,
-  eventBus,
-  SELECT_EDITING_AUTHOR,
-} from '@/factories/eventBus';
+import { CANCEL_EDITING_AUTHOR, eventBus, SELECT_EDITING_AUTHOR } from '@/factories/eventBus';
 
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 import { EDIT_METADATA_ADD_AUTHOR_TITLE, METADATA_AUTHORS_PROPERTY } from '@/factories/metadataConsts';
-
 
 export default {
   name: 'EditAuthorList',
@@ -156,7 +132,7 @@ export default {
       return undefined;
     },
     authorsWrap() {
-      let authors = this.authors
+      let authors = this.authors;
 
       if (!authors && this.$store) {
         authors = this.$store.getters[`${USER_NAMESPACE}/authors`] || [];
@@ -167,7 +143,7 @@ export default {
       }
 
       const authorsMap = this.authorsMapWrap;
-      return enhanceAuthorsFromAuthorMap(authors, authorsMap)
+      return enhanceAuthorsFromAuthorMap(authors, authorsMap);
     },
     noDataCreditAuthorsWrap() {
       const authors = this.existingAuthorsWrap ? [...this.existingAuthorsWrap] : [];
@@ -176,10 +152,10 @@ export default {
         authors[i] = {
           ...authors[i],
           dataCredit: [],
-        }
+        };
       }
 
-      return authors
+      return authors;
     },
     authorPickingGenericProps() {
       return {
@@ -196,7 +172,6 @@ export default {
       };
     },
     authorListingGenericProps() {
-
       return {
         authors: this.authorsWrap,
         existingAuthors: this.existingAuthorsWrap,
@@ -216,7 +191,7 @@ export default {
       const authors = this.authors;
 
       if (authors?.length > 0) {
-        const selected = authors.filter(r => r.isSelected);
+        const selected = authors.filter((r) => r.isSelected);
 
         if (selected.length > 0) {
           selectedAuthor = selected[0];
@@ -275,6 +250,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

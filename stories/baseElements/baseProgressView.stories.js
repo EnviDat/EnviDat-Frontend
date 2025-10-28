@@ -12,11 +12,9 @@
 import BaseProgressView from '@/components/BaseElements/BaseProgressView.vue';
 import { mobileViewportParams } from '@/../stories/js/envidatViewports';
 
-
 export default {
   title: '1 Base / Labels / Progress View',
 };
-
 
 const Template = (args, { argTypes }) => ({
   components: { BaseProgressView },
@@ -32,7 +30,7 @@ SomeProgress.args = {
   text: 'A few steps more to do',
   progressPct: 45.33,
   color: 'secondary',
-}
+};
 
 export const MoreProgress = Template.bind({});
 
@@ -40,8 +38,7 @@ MoreProgress.args = {
   text: 'A few steps more to do',
   progressPct: 96.88,
   color: 'warning',
-}
-
+};
 
 export const MobileSomeProgress = Template.bind({});
 MobileSomeProgress.args = { ...SomeProgress.args };

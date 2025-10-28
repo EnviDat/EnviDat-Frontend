@@ -1,33 +1,19 @@
 <template>
   <div :style="`height: ${height}px; width: ${width}px; position: relative; `">
-
-    <div :style="`position: absolute; z-index: 2; top: 10px; left: ${ width - 50}px; width: 40px;`">
-
-      <base-icon-button 
-        :icon="buttonIcon"
-        icon-color="black"
-        :color="buttonColor"
-        elevated
-        small
-        @clicked="flipCard"
-      />
+    <div :style="`position: absolute; z-index: 2; top: 10px; left: ${width - 50}px; width: 40px;`">
+      <base-icon-button :icon="buttonIcon" icon-color="black" :color="buttonColor" elevated small @clicked="flipCard" />
     </div>
 
-    <div class="flipAnimation"
-         :class="animationFlip()" >
-
-      <div class="front" >
+    <div class="flipAnimation" :class="animationFlip()">
+      <div class="front">
         <slot name="front"></slot>
       </div>
 
-      <div class="back" >
+      <div class="back">
         <slot name="back"></slot>
       </div>
     </div>
-
   </div>
-
-
 </template>
 
 <script>
@@ -42,9 +28,8 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import {mdiCheck, mdiPencil} from '@mdi/js';
+import { mdiCheck, mdiPencil } from '@mdi/js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
-
 
 export default {
   name: 'FlipLayout',
@@ -101,8 +86,7 @@ export default {
 };
 </script>
 
-<style scoped >
-
+<style scoped>
 .flipAnimation {
   transition: 0.3s ease-in-out;
   transform-style: preserve-3d;
@@ -135,7 +119,8 @@ export default {
   transform: rotateY(180deg);
 }
 
-.front, .back {
+.front,
+.back {
   position: absolute;
   height: 100%;
   backface-visibility: hidden;
@@ -143,16 +128,15 @@ export default {
 }
 
 .front {
-/*
+  /*
   background-color: red;
 */
 }
 
 .back {
   transform: rotateY(180deg);
-/*
+  /*
   background-color: blue;
 */
 }
-
 </style>

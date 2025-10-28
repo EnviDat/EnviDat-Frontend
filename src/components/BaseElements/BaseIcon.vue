@@ -9,7 +9,7 @@
       :dot="badgeDot"
       :floating="small"
       :class="{
-        bigNumber: count > 9
+        bigNumber: count > 9,
       }"
     >
       <div
@@ -19,20 +19,20 @@
         class="baseIconCustomIcon"
         :style="customIconStyle"
         :class="{ ['bg-' + color]: true }"
-        >
-      </div>
+      ></div>
       <v-icon
         v-else
         class="baseIconFontIcon"
         :size="large ? 'x-large' : small ? 'small' : undefined"
         :color="color"
-        :icon="icon" />
-
+        :icon="icon"
+      />
     </v-badge>
   </div>
 </template>
 
-<script>/**
+<script>
+/**
  * The @class BaseIcon wraps v-icon or <i /> to make icons visible
  * With the possibility of icon font and custom icons
  *
@@ -64,20 +64,20 @@ export default {
       return {
         'background-color': this.color,
         '-webkit-mask': `url("${this.customIconResolved}") center/contain`,
-        'mask': `url("${this.customIconResolved}") center/contain`,
-      }
+        mask: `url("${this.customIconResolved}") center/contain`,
+      };
     },
     classList() {
       return {
-        'rotated': this.rotated,
-        'small': this.small,
-        'large': this.large,
-        'left': this.left,
-        'right': this.right,
-        'dark': this.dark,
-        'light': this.light,
+        rotated: this.rotated,
+        small: this.small,
+        large: this.large,
+        left: this.left,
+        right: this.right,
+        dark: this.dark,
+        light: this.light,
         [`text-${this.color}`]: this.color,
-      }
+      };
     },
     customIcon() {
       if (typeof this.icon === 'object') {
@@ -86,7 +86,7 @@ export default {
         return this.icon;
       }
 
-      if (this.icon?.includes('/')){
+      if (this.icon?.includes('/')) {
         return this.icon;
       }
 

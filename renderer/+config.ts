@@ -9,4 +9,4 @@ export default {
       env: { server: true, client: true },
     },
   },
-} satisfies Config
+} satisfies Config;

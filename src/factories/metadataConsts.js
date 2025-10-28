@@ -20,13 +20,10 @@ export const LOCAL_DATASET_KEY = 'local_dataset_editing';
 
 export const METADATA_AUTHORS_TITLE = 'Author Details';
 export const AUTHORS_PUBLISHED_DATACOUNT = 'Published datasets';
-export const AUTHORS_DATACREDIT_CONTRIBUTION =
-  'Overall Data Credit Contributions';
-export const AUTHORS_DATACREDIT_CONTRIBUTION_CURRENT =
-  'Data Credits for this dataset';
+export const AUTHORS_DATACREDIT_CONTRIBUTION = 'Overall Data Credit Contributions';
+export const AUTHORS_DATACREDIT_CONTRIBUTION_CURRENT = 'Data Credits for this dataset';
 export const AUTHORS_DATACREDIT_SCORE = 'Data Credit Score';
-export const AUTHORS_EDIT_CURRENT_DATACREDIT =
-  'Edit DataCRediT contributions here:';
+export const AUTHORS_EDIT_CURRENT_DATACREDIT = 'Edit DataCRediT contributions here:';
 
 export const METADATA_DETAILS_TITLE = 'Further Information';
 export const METADATA_FUNDING_TITLE = 'Funding Information';
@@ -51,8 +48,7 @@ export const EDIT_METADATA_DOI_LABEL = 'Data Object Identifier';
 export const EDIT_METADATA_RELATEDPUBLICATIONS_TITLE = 'Related Publications';
 export const EDIT_METADATA_ADD_PUBLICATION_TITLE = 'Add a Related Publications';
 export const EDIT_METADATA_RELATED_DATASETS_TITLE = 'Related Datasets';
-export const EDIT_METADATA_GEODATA_TITLE =
-  'Geospatial Information about the research data';
+export const EDIT_METADATA_GEODATA_TITLE = 'Geospatial Information about the research data';
 export const EDIT_METADATA_DATALICENSE_TITLE = 'Data License of the Resources';
 export const EDIT_METADATA_DATALICENSE_LABEL = 'Data License';
 

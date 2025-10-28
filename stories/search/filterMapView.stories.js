@@ -29,8 +29,7 @@ export default {
 export const Empty = {};
 
 export const WithEntries = {
-  args:{
+  args: {
     content: metadata,
   },
 };
-

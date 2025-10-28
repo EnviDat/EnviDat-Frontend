@@ -1,11 +1,5 @@
 <template>
-  <v-card
-      id="EditReviewInfo"
-      class="pa-0"
-      max-width="100%"
-      :loading="loadingColor"
-      :flat
-  >
+  <v-card id="EditReviewInfo" class="pa-0" max-width="100%" :loading="loadingColor" :flat>
     <v-container fluid class="pa-4">
       <v-row>
         <v-col cols="6" class="text-h5">
@@ -14,79 +8,71 @@
 
         <v-col v-if="message">
           <BaseStatusLabelView
-              status="check"
-              statusColor="success"
-              :statusText="message"
-              :expandedText="messageDetails"
+            status="check"
+            statusColor="success"
+            :statusText="message"
+            :expandedText="messageDetails"
           />
         </v-col>
         <v-col v-if="error">
-          <BaseStatusLabelView
-              status="error"
-              statusColor="error"
-              :statusText="error"
-              :expandedText="errorDetails"
-          />
+          <BaseStatusLabelView status="error" statusColor="error" :statusText="error" :expandedText="errorDetails" />
         </v-col>
       </v-row>
 
       <v-row>
-        <v-col >
+        <v-col>
           {{ labels.purpose }}
         </v-col>
       </v-row>
 
       <v-row v-if="!isBlindReviewValid">
         <v-col>
-          <v-alert type="info" >{{ labels.instructions }}</v-alert>
+          <v-alert type="info">{{ labels.instructions }}</v-alert>
         </v-col>
       </v-row>
 
       <v-row class="pt-2">
         <v-col class="ml-sm-0 mr-3 flex-grow-0 d-flex align-center">
           <!-- Icon (Aligned to Match v-text-field) -->
-          <v-icon :icon="mdiMessageDraw" class="mr-3" style="align-self: center;" color="grey"></v-icon>
-            <!-- Text -->
-            <span class="mr-3 text-no-wrap">Blind review </span>
+          <v-icon :icon="mdiMessageDraw" class="mr-3" style="align-self: center" color="grey"></v-icon>
+          <!-- Text -->
+          <span class="mr-3 text-no-wrap">Blind review </span>
 
-            <!-- BaseIconSwitch Component -->
-            <BaseIconSwitch
-                :tooltipText="`${isBlindReviewActive ? 'Disable' : 'Enable'} blind review`"
-                :icon="mdiAccountCircle()"
-                :active="isBlindReviewActive"
-                :disabled="loading || !isBlindReviewValid"
-                @clicked="catchBlindReviewClick()"
-            />
-
-
+          <!-- BaseIconSwitch Component -->
+          <BaseIconSwitch
+            :tooltipText="`${isBlindReviewActive ? 'Disable' : 'Enable'} blind review`"
+            :icon="mdiAccountCircle()"
+            :active="isBlindReviewActive"
+            :disabled="loading || !isBlindReviewValid"
+            @clicked="catchBlindReviewClick()"
+          />
         </v-col>
       </v-row>
 
       <v-row>
         <v-col :cols="12" :md="6">
           <v-text-field
-              :label="labels.blindUrl"
-              :readonly=true
-              :hint="readOnlyHint('Blind Url of Dataset')"
-              hide-details="auto"
-              persistent-hint
-              :disabled="!isBlindReviewValid"
-              :prepend-icon="mdiLink"
-              :model-value="urlField"
-              :append-icon="mdiContentCopy"
-              @click:append="catchClipboardCopy"
+            :label="labels.blindUrl"
+            :readonly="true"
+            :hint="readOnlyHint('Blind Url of Dataset')"
+            hide-details="auto"
+            persistent-hint
+            :disabled="!isBlindReviewValid"
+            :prepend-icon="mdiLink"
+            :model-value="urlField"
+            :append-icon="mdiContentCopy"
+            @click:append="catchClipboardCopy"
           />
-
         </v-col>
         <v-col :cols="12" :md="6">
           <BaseRectangleButton
-              :button-text=labels.buttonText
-              :disabled="!isPreviewAvailable"
-              :loading="loading"
-              @clicked="previewClicked" />
+            :button-text="labels.buttonText"
+            :disabled="!isPreviewAvailable"
+            :loading="loading"
+            @clicked="previewClicked"
+          />
         </v-col>
       </v-row>
-
     </v-container>
   </v-card>
 </template>
@@ -112,7 +98,7 @@ import {
 } from '@mdi/js';
 
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
-import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue'
+import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 
 import {
@@ -129,7 +115,6 @@ import {
   BLIND_REVIEW_ON,
   BLIND_REVIEW_OFF,
 } from '@/factories/metadataConsts';
-
 
 import { readOnlyHint, isFieldReadOnly } from '@/factories/globalMethods';
 import { METADATAREVIEW_PATH } from '@/router/routeConsts';
@@ -178,15 +163,15 @@ export default {
       default: null,
     },
     isBlindReview: {
-       type: Boolean,
-       default: undefined,// can be kept null
-     },
+      type: Boolean,
+      default: undefined, // can be kept null
+    },
     flat: {
       type: Boolean,
       default: false,
     },
   },
-  mounted () {
+  mounted() {
     this.isBlindActive = this.isBlindReview;
   },
   created() {
@@ -204,16 +189,16 @@ export default {
       return undefined;
     },
     urlField() {
-      return this.isBlindReviewActive? this.generateBlindReviewUrl(): '';
+      return this.isBlindReviewActive ? this.generateBlindReviewUrl() : '';
     },
     isBlindReviewActive() {
-      return this.isBlindActive === null? this.isBlindReview : this.isBlindActive;
+      return this.isBlindActive === null ? this.isBlindReview : this.isBlindActive;
     },
     isBlindReviewValid() {
-      return (this.doi && this.allowedPublicationStates.includes(this.publicationState));
+      return this.doi && this.allowedPublicationStates.includes(this.publicationState);
     },
     isPreviewAvailable() {
-      return (this.isBlindReviewValid && this.urlField.length > 0);
+      return this.isBlindReviewValid && this.urlField.length > 0;
     },
   },
   watch: {
@@ -223,10 +208,10 @@ export default {
   },
   methods: {
     mdiClose() {
-      return mdiClose
+      return mdiClose;
     },
     mdiAccountCircle() {
-      return mdiAccountCircle
+      return mdiAccountCircle;
     },
     isReadOnly(dateProperty) {
       return isFieldReadOnly(this.$props, dateProperty);
@@ -237,20 +222,18 @@ export default {
     catchBlindReviewClick() {
       if (this.isBlindReviewValid) {
         this.isBlindActive = !this.isBlindActive;
-        const value = this.isBlindActive? BLIND_REVIEW_ON : BLIND_REVIEW_OFF;
+        const value = this.isBlindActive ? BLIND_REVIEW_ON : BLIND_REVIEW_OFF;
         this.changeBlindReviewStatus(value);
         this.generateBlindReviewUrl();
       }
     },
     generateBlindReviewUrl() {
-      
       if (this.datasetId && this.isBlindReview) {
         this.blindUrl = `${this.envidatDomain}/#${METADATAREVIEW_PATH}/${this.datasetId}`;
-      }
-      else {
+      } else {
         this.blindUrl = '';
       }
-      
+
       return this.blindUrl;
     },
     changeBlindReviewStatus(value) {
@@ -293,7 +276,8 @@ export default {
       dataObjectIdentifier: EDIT_METADATA_DOI_LABEL,
       instructions: 'DOI needs to be reserved to enable this feature',
       buttonText: 'Preview',
-      purpose: 'Only activate the blind-review if you need to provide anonymized access to your research data files to reviewers for a scientific journal before the dataset has been published. Once enabled, copy the link below and provide it to the reviewers (the DOI is not be activate until the dataset is published).',
+      purpose:
+        'Only activate the blind-review if you need to provide anonymized access to your research data files to reviewers for a scientific journal before the dataset has been published. Once enabled, copy the link below and provide it to the reviewers (the DOI is not be activate until the dataset is published).',
     },
     isBlindActive: null,
     allowedPublicationStates: [PUBLICATION_STATE_RESERVED, PUBLICATION_STATE_PENDING],

@@ -14,13 +14,11 @@ import {
   EDITMETADATA_PUBLICATION_INFO,
 } from '@/factories/eventBus';
 
-
 import EditDataInfo from '@/modules/user/components/EditDataInfo.vue';
 import EditDataGeo from '@/modules/user/components/EditDataGeo.vue';
 import MetadataGenericSubStepper from '@/modules/user/components/MetadataGenericSubStepper.vue';
 import MetadataCreationPublicationInfo from '@/modules/user/components/create/CreatePublicationInfo.vue';
-import {mainDetailSteps} from '@/factories/workflowData';
-
+import { mainDetailSteps } from '@/factories/workflowData';
 
 /**
  * detail steps for the "data and resources" major step only for the creation workflow

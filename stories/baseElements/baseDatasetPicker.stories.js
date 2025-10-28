@@ -10,13 +10,13 @@ export default {
 
 const formattedProject = [];
 
-const formatString = str =>
+const formatString = (str) =>
   str
     .replace(/[-_]/g, ' ')
     .toLowerCase()
-    .replace(/\b\w/g, char => char.toUpperCase());
+    .replace(/\b\w/g, (char) => char.toUpperCase());
 
-unFormatedProjects.forEach(prj => {
+unFormatedProjects.forEach((prj) => {
   formattedProject.push(formatString(prj));
 });
 

@@ -1,37 +1,35 @@
 <template>
   <v-card id="ImagePreviewCard">
-
-    <v-card-text >
-      <v-row no-gutters >
-        <v-col >
-
-
-          <v-img v-show="!loadingImagePreview && !imagePreviewError"
-                 ref="imagePreview"
-                 style="max-height: 100%; max-width: 100%; cursor: pointer;"
-                 @click="catchImageClick"
-                 @load="loadingImagePreview = false"
-                 :src="urlImage"
-                 @error="catchImageLoadError"
-                 alt="resource image preview"/>
+    <v-card-text>
+      <v-row no-gutters>
+        <v-col>
+          <v-img
+            v-show="!loadingImagePreview && !imagePreviewError"
+            ref="imagePreview"
+            style="max-height: 100%; max-width: 100%; cursor: pointer"
+            @click="catchImageClick"
+            @load="loadingImagePreview = false"
+            :src="urlImage"
+            @error="catchImageLoadError"
+            alt="resource image preview"
+          />
 
           <div class="imagePreviewErrorContainer">
+            <v-img
+              v-show="!loadingImagePreview && imagePreviewError"
+              id="curtain"
+              :src="notFoundImg"
+              style="max-height: 100%; max-width: 100%; opacity: 0.25"
+              alt="resource image could not be loaded!"
+            />
 
-            <v-img v-show="!loadingImagePreview && imagePreviewError"
-                   id="curtain"
-                   :src="notFoundImg"
-                   style="max-height: 100%; max-width: 100%; opacity: 0.25;"
-                   alt="resource image could not be loaded!"/>
+            <v-skeleton-loader v-show="loadingImagePreview" height="100%" width="100%" type="image" />
 
-            <v-skeleton-loader v-show="loadingImagePreview" height='100%' width='100%' type="image" />
-
-            <div v-show="!loadingImagePreview && imagePreviewError"
-                 id="backdrop"
-                 class="pa-4 text-body-1">Image preview could not be loaded! {{ imagePreviewError }} </div>
+            <div v-show="!loadingImagePreview && imagePreviewError" id="backdrop" class="pa-4 text-body-1">
+              Image preview could not be loaded! {{ imagePreviewError }}
+            </div>
           </div>
-
         </v-col>
-
       </v-row>
     </v-card-text>
   </v-card>
@@ -57,8 +55,7 @@ export default {
   mounted() {
     this.loadImagePreview(this.url);
   },
-  computed: {
-  },
+  computed: {},
   methods: {
     loadImagePreview(url) {
       this.imagePreviewError = null;
@@ -101,12 +98,12 @@ export default {
   display: grid;
 }
 
-#backdrop, #curtain {
+#backdrop,
+#curtain {
   grid-area: 1/1;
 }
 
 .customIcon {
   opacity: 0.5;
 }
-
 </style>

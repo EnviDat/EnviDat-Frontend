@@ -74,12 +74,10 @@ export default {
       publication_state: '',
       resource_size: '{"size_units": "kb", "size_value": ""}',
       resource_type: null,
-      restricted:
-        '{"allowed_users": "", "level": "public", "shared_secret": ""}',
+      restricted: '{"allowed_users": "", "level": "public", "shared_secret": ""}',
       size: null,
       state: 'active',
-      url:
-        'https://dataverse.geus.dk/dataset.xhtml?persistentId=doi:10.22008/FK2/VVXGUT',
+      url: 'https://dataverse.geus.dk/dataset.xhtml?persistentId=doi:10.22008/FK2/VVXGUT',
       url_type: null,
     },
     {
@@ -102,12 +100,10 @@ export default {
       publication_state: '',
       resource_size: '{"size_units": "kb", "size_value": ""}',
       resource_type: null,
-      restricted:
-        '{"allowed_users": "", "level": "public", "shared_secret": ""}',
+      restricted: '{"allowed_users": "", "level": "public", "shared_secret": ""}',
       size: null,
       state: 'active',
-      url:
-        'https://envicloud.wsl.ch/#/?prefix=gcnet/data/wsl-geus-cooperation/',
+      url: 'https://envicloud.wsl.ch/#/?prefix=gcnet/data/wsl-geus-cooperation/',
       url_type: null,
     },
     {
@@ -129,12 +125,10 @@ export default {
       publication_state: '',
       resource_size: '{"size_units": "kb", "size_value": ""}',
       resource_type: null,
-      restricted:
-        '{"allowed_users": "", "level": "public", "shared_secret": ""}',
+      restricted: '{"allowed_users": "", "level": "public", "shared_secret": ""}',
       size: 42123942,
       state: 'active',
-      url:
-        'https://dataverse.geus.dk/api/access/datafile/:persistentId?persistentId=doi:10.22008/FK2/VVXGUT/7ELDZR',
+      url: 'https://dataverse.geus.dk/api/access/datafile/:persistentId?persistentId=doi:10.22008/FK2/VVXGUT/7ELDZR',
       url_type: '',
     },
     {
@@ -156,12 +150,10 @@ export default {
       publication_state: '',
       resource_size: '{"size_units": "kb", "size_value": ""}',
       resource_type: null,
-      restricted:
-        '{"allowed_users": "", "level": "public", "shared_secret": ""}',
+      restricted: '{"allowed_users": "", "level": "public", "shared_secret": ""}',
       size: 80269102,
       state: 'active',
-      url:
-        'https://dataverse.geus.dk/api/access/datafile/:persistentId?persistentId=doi:10.22008/FK2/VVXGUT/DZSKEM',
+      url: 'https://dataverse.geus.dk/api/access/datafile/:persistentId?persistentId=doi:10.22008/FK2/VVXGUT/DZSKEM',
       url_type: '',
     },
     {
@@ -183,12 +175,10 @@ export default {
       publication_state: '',
       resource_size: '{"size_units": "kb", "size_value": ""}',
       resource_type: null,
-      restricted:
-        '{"allowed_users": "", "level": "public", "shared_secret": ""}',
+      restricted: '{"allowed_users": "", "level": "public", "shared_secret": ""}',
       size: 61973379,
       state: 'active',
-      url:
-        'https://dataverse.geus.dk/api/access/datafile/:persistentId?persistentId=doi:10.22008/FK2/VVXGUT/IAHZYS',
+      url: 'https://dataverse.geus.dk/api/access/datafile/:persistentId?persistentId=doi:10.22008/FK2/VVXGUT/IAHZYS',
       url_type: '',
     },
     {
@@ -210,12 +200,10 @@ export default {
       publication_state: '',
       resource_size: '{"size_units": "kb", "size_value": ""}',
       resource_type: null,
-      restricted:
-        '{"allowed_users": "", "level": "public", "shared_secret": ""}',
+      restricted: '{"allowed_users": "", "level": "public", "shared_secret": ""}',
       size: 86554893,
       state: 'active',
-      url:
-        'https://dataverse.geus.dk/api/access/datafile/:persistentId?persistentId=doi:10.22008/FK2/VVXGUT/XOMPZ0',
+      url: 'https://dataverse.geus.dk/api/access/datafile/:persistentId?persistentId=doi:10.22008/FK2/VVXGUT/XOMPZ0',
       url_type: '',
     },
     {
@@ -237,12 +225,10 @@ export default {
       publication_state: '',
       resource_size: '{"size_units": "kb", "size_value": ""}',
       resource_type: null,
-      restricted:
-        '{"allowed_users": "", "level": "public", "shared_secret": ""}',
+      restricted: '{"allowed_users": "", "level": "public", "shared_secret": ""}',
       size: 63894886,
       state: 'active',
-      url:
-        'https://dataverse.geus.dk/api/access/datafile/:persistentId?persistentId=doi:10.22008/FK2/VVXGUT/SJRCOC',
+      url: 'https://dataverse.geus.dk/api/access/datafile/:persistentId?persistentId=doi:10.22008/FK2/VVXGUT/SJRCOC',
       url_type: '',
     },
     {
@@ -264,12 +250,10 @@ export default {
       publication_state: '',
       resource_size: '{"size_units": "kb", "size_value": ""}',
       resource_type: null,
-      restricted:
-        '{"allowed_users": "", "level": "public", "shared_secret": ""}',
+      restricted: '{"allowed_users": "", "level": "public", "shared_secret": ""}',
       size: 63987342,
       state: 'active',
-      url:
-        'https://dataverse.geus.dk/api/access/datafile/:persistentId?persistentId=doi:10.22008/FK2/VVXGUT/BUOC7Y',
+      url: 'https://dataverse.geus.dk/api/access/datafile/:persistentId?persistentId=doi:10.22008/FK2/VVXGUT/BUOC7Y',
       url_type: '',
     },
     {
@@ -291,12 +275,10 @@ export default {
       publication_state: '',
       resource_size: '{"size_units": "kb", "size_value": ""}',
       resource_type: null,
-      restricted:
-        '{"allowed_users": "", "level": "public", "shared_secret": ""}',
+      restricted: '{"allowed_users": "", "level": "public", "shared_secret": ""}',
       size: 88354682,
       state: 'active',
-      url:
-        'https://dataverse.geus.dk/api/access/datafile/:persistentId?persistentId=doi:10.22008/FK2/VVXGUT/UFCSAS',
+      url: 'https://dataverse.geus.dk/api/access/datafile/:persistentId?persistentId=doi:10.22008/FK2/VVXGUT/UFCSAS',
       url_type: '',
     },
     {
@@ -318,12 +300,10 @@ export default {
       publication_state: '',
       resource_size: '{"size_units": "kb", "size_value": ""}',
       resource_type: null,
-      restricted:
-        '{"allowed_users": "", "level": "public", "shared_secret": ""}',
+      restricted: '{"allowed_users": "", "level": "public", "shared_secret": ""}',
       size: 57976839,
       state: 'active',
-      url:
-        'https://dataverse.geus.dk/api/access/datafile/:persistentId?persistentId=doi:10.22008/FK2/VVXGUT/H2MOL7',
+      url: 'https://dataverse.geus.dk/api/access/datafile/:persistentId?persistentId=doi:10.22008/FK2/VVXGUT/H2MOL7',
       url_type: '',
     },
     {
@@ -345,12 +325,10 @@ export default {
       publication_state: '',
       resource_size: '{"size_units": "kb", "size_value": ""}',
       resource_type: null,
-      restricted:
-        '{"allowed_users": "", "level": "public", "shared_secret": ""}',
+      restricted: '{"allowed_users": "", "level": "public", "shared_secret": ""}',
       size: 92384540,
       state: 'active',
-      url:
-        'https://dataverse.geus.dk/api/access/datafile/:persistentId?persistentId=doi:10.22008/FK2/VVXGUT/WAYCGA',
+      url: 'https://dataverse.geus.dk/api/access/datafile/:persistentId?persistentId=doi:10.22008/FK2/VVXGUT/WAYCGA',
       url_type: '',
     },
     {
@@ -372,12 +350,10 @@ export default {
       publication_state: '',
       resource_size: '{"size_units": "kb", "size_value": ""}',
       resource_type: null,
-      restricted:
-        '{"allowed_users": "", "level": "public", "shared_secret": ""}',
+      restricted: '{"allowed_users": "", "level": "public", "shared_secret": ""}',
       size: 113751799,
       state: 'active',
-      url:
-        'https://dataverse.geus.dk/api/access/datafile/:persistentId?persistentId=doi:10.22008/FK2/VVXGUT/9RJ9SC',
+      url: 'https://dataverse.geus.dk/api/access/datafile/:persistentId?persistentId=doi:10.22008/FK2/VVXGUT/9RJ9SC',
       url_type: '',
     },
     {
@@ -399,12 +375,10 @@ export default {
       publication_state: '',
       resource_size: '{"size_units": "kb", "size_value": ""}',
       resource_type: null,
-      restricted:
-        '{"allowed_users": "", "level": "public", "shared_secret": ""}',
+      restricted: '{"allowed_users": "", "level": "public", "shared_secret": ""}',
       size: 85106917,
       state: 'active',
-      url:
-        'https://dataverse.geus.dk/api/access/datafile/:persistentId?persistentId=doi:10.22008/FK2/VVXGUT/MPAAGY',
+      url: 'https://dataverse.geus.dk/api/access/datafile/:persistentId?persistentId=doi:10.22008/FK2/VVXGUT/MPAAGY',
       url_type: '',
     },
     {
@@ -426,12 +400,10 @@ export default {
       publication_state: '',
       resource_size: '{"size_units": "kb", "size_value": ""}',
       resource_type: null,
-      restricted:
-        '{"allowed_users": "", "level": "public", "shared_secret": ""}',
+      restricted: '{"allowed_users": "", "level": "public", "shared_secret": ""}',
       size: 105216949,
       state: 'active',
-      url:
-        'https://dataverse.geus.dk/api/access/datafile/:persistentId?persistentId=doi:10.22008/FK2/VVXGUT/4ONGVQ',
+      url: 'https://dataverse.geus.dk/api/access/datafile/:persistentId?persistentId=doi:10.22008/FK2/VVXGUT/4ONGVQ',
       url_type: '',
     },
     {
@@ -453,12 +425,10 @@ export default {
       publication_state: '',
       resource_size: '{"size_units": "kb", "size_value": ""}',
       resource_type: null,
-      restricted:
-        '{"allowed_users": "", "level": "public", "shared_secret": ""}',
+      restricted: '{"allowed_users": "", "level": "public", "shared_secret": ""}',
       size: 73642934,
       state: 'active',
-      url:
-        'https://dataverse.geus.dk/api/access/datafile/:persistentId?persistentId=doi:10.22008/FK2/VVXGUT/FFJIRB',
+      url: 'https://dataverse.geus.dk/api/access/datafile/:persistentId?persistentId=doi:10.22008/FK2/VVXGUT/FFJIRB',
       url_type: '',
     },
     {
@@ -480,12 +450,10 @@ export default {
       publication_state: '',
       resource_size: '{"size_units": "kb", "size_value": ""}',
       resource_type: null,
-      restricted:
-        '{"allowed_users": "", "level": "public", "shared_secret": ""}',
+      restricted: '{"allowed_users": "", "level": "public", "shared_secret": ""}',
       size: 121694130,
       state: 'active',
-      url:
-        'https://dataverse.geus.dk/api/access/datafile/:persistentId?persistentId=doi:10.22008/FK2/VVXGUT/DD4FR3',
+      url: 'https://dataverse.geus.dk/api/access/datafile/:persistentId?persistentId=doi:10.22008/FK2/VVXGUT/DD4FR3',
       url_type: '',
     },
     {
@@ -507,12 +475,10 @@ export default {
       publication_state: '',
       resource_size: '{"size_units": "kb", "size_value": ""}',
       resource_type: null,
-      restricted:
-        '{"allowed_users": "", "level": "public", "shared_secret": ""}',
+      restricted: '{"allowed_users": "", "level": "public", "shared_secret": ""}',
       size: 55732780,
       state: 'active',
-      url:
-        'https://dataverse.geus.dk/api/access/datafile/:persistentId?persistentId=doi:10.22008/FK2/VVXGUT/ZIOAIX',
+      url: 'https://dataverse.geus.dk/api/access/datafile/:persistentId?persistentId=doi:10.22008/FK2/VVXGUT/ZIOAIX',
       url_type: '',
     },
     {
@@ -534,12 +500,10 @@ export default {
       publication_state: '',
       resource_size: '{"size_units": "kb", "size_value": ""}',
       resource_type: null,
-      restricted:
-        '{"allowed_users": "", "level": "public", "shared_secret": ""}',
+      restricted: '{"allowed_users": "", "level": "public", "shared_secret": ""}',
       size: 65661066,
       state: 'active',
-      url:
-        'https://dataverse.geus.dk/api/access/datafile/:persistentId?persistentId=doi:10.22008/FK2/VVXGUT/XQGUP7',
+      url: 'https://dataverse.geus.dk/api/access/datafile/:persistentId?persistentId=doi:10.22008/FK2/VVXGUT/XQGUP7',
       url_type: '',
     },
     {
@@ -561,12 +525,10 @@ export default {
       publication_state: '',
       resource_size: '{"size_units": "kb", "size_value": ""}',
       resource_type: null,
-      restricted:
-        '{"allowed_users": "", "level": "public", "shared_secret": ""}',
+      restricted: '{"allowed_users": "", "level": "public", "shared_secret": ""}',
       size: 26425867,
       state: 'active',
-      url:
-        'https://dataverse.geus.dk/api/access/datafile/:persistentId?persistentId=doi:10.22008/FK2/VVXGUT/B6HOFS',
+      url: 'https://dataverse.geus.dk/api/access/datafile/:persistentId?persistentId=doi:10.22008/FK2/VVXGUT/B6HOFS',
       url_type: '',
     },
     {
@@ -588,12 +550,10 @@ export default {
       publication_state: '',
       resource_size: '{"size_value": "", "size_units": "kb"}',
       resource_type: null,
-      restricted:
-        '{"level": "public", "allowed_users": "", "shared_secret": ""}',
+      restricted: '{"level": "public", "allowed_users": "", "shared_secret": ""}',
       size: 101726,
       state: 'active',
-      url:
-        'https://www.envidat.ch/dataset/4be8caec-be03-4500-810b-3002c964d3b7/resource/deed64b5-e4ea-427e-98d6-45a6f0f26d96/download/stationsconfig.json',
+      url: 'https://www.envidat.ch/dataset/4be8caec-be03-4500-810b-3002c964d3b7/resource/deed64b5-e4ea-427e-98d6-45a6f0f26d96/download/stationsconfig.json',
       url_type: 'upload',
     },
     {
@@ -614,12 +574,10 @@ export default {
       position: 20,
       resource_size: '{"size_value": "", "size_units": "kb"}',
       resource_type: null,
-      restricted:
-        '{"level": "public", "allowed_users": "", "shared_secret": ""}',
+      restricted: '{"level": "public", "allowed_users": "", "shared_secret": ""}',
       size: 7866,
       state: 'active',
-      url:
-        'https://www.envidat.ch/dataset/4be8caec-be03-4500-810b-3002c964d3b7/resource/f4a612b8-6bb0-4343-aecc-3656f70136eb/download/stationparameters.json',
+      url: 'https://www.envidat.ch/dataset/4be8caec-be03-4500-810b-3002c964d3b7/resource/f4a612b8-6bb0-4343-aecc-3656f70136eb/download/stationparameters.json',
       url_type: 'upload',
     },
   ],

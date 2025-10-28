@@ -12,8 +12,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 
 import { mdiAccountCircleOutline, mdiLock, mdiHome, mdiInformationOutline } from '@mdi/js';
-import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue'
-
+import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue';
 
 export default {
   title: '1 Base / Icons / Icon Switch',
@@ -106,4 +105,4 @@ export const InteractiveSwitches = () => ({
     mdiHome,
     mdiInformationOutline,
   }),
-})
+});

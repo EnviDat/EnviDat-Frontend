@@ -1,4 +1,3 @@
-
 import NoSearchResultsView from '@/components/Filtering/NoSearchResultsView.vue';
 import categoryCards from '@/store/categoryCards';
 import {
@@ -32,27 +31,25 @@ export const DefaultCards = {
   args: {
     categoryCards,
   },
-}
+};
 
 export const DisabledCards = {
   args: {
     categoryCards: disabledCards,
   },
-}
+};
 
 export const MobileNoSearchResult = {
   args: { ...DefaultCards.args },
   parameters: mobileViewportParams,
-}
+};
 
 export const MobileLargeCategoryCardCollection = {
   args: { ...DefaultCards.args },
   parameters: mobileLargeViewportParams,
-}
+};
 
 export const TabletCategoryCardCollection = {
   args: { ...DefaultCards.args },
   parameters: tabletViewportParams,
-}
-
-
+};

@@ -18,10 +18,7 @@ import { Dataset } from '@/modules/workflow/Dataset.ts';
 import { AuthorsViewModel } from '@/factories/ViewModels/AuthorsViewModel';
 import { enhanceMetadatasTitleImage } from '@/factories/metaDataFactory';
 
-import {
-  extractAuthorsMap,
-  getFullAuthorsFromDataset,
-} from '@/factories/authorFactory';
+import { extractAuthorsMap, getFullAuthorsFromDataset } from '@/factories/authorFactory';
 
 import metadata from '@/../stories/js/metadata';
 
@@ -29,11 +26,10 @@ import metadataset from '~/stories/js/metadata.js';
 
 export default {
   title: '3 Datasets / 1 Views / Authors',
-  component: MetadataAuthors
+  component: MetadataAuthors,
 };
 
 enhanceMetadatasTitleImage(metadata);
-
 
 const authorsMap = extractAuthorsMap(metadata);
 const fullAuthors = getFullAuthorsFromDataset(authorsMap, metadata[1]);
@@ -48,7 +44,7 @@ export const WithPlaceholders = {
     authors: [],
     showPlaceholder: true,
   },
-}
+};
 
 export const Filled = {
   args: {
@@ -61,7 +57,7 @@ export const Filled = {
       showDatasetCount: false,
     },
   },
-}
+};
 
 export const FromViewModel = {
   args: {
@@ -73,4 +69,4 @@ export const FromViewModel = {
       showDatasetCount: true,
     },
   },
-}
+};

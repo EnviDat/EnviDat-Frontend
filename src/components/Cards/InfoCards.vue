@@ -10,17 +10,9 @@
       <v-row>
         <v-col cols="12" class="d-md-flex">
           <v-row class="info-action mt-6 mt-md-0">
-            <v-col
-              cols="12"
-              v-if="info.icon"
-              class="d-flex flex-column align-center justify-center"
-            >
+            <v-col cols="12" v-if="info.icon" class="d-flex flex-column align-center justify-center">
               <!-- Display icon based on info type using extractIcons -->
-              <v-icon
-                class="mr-1 mb-md-10 info-icon"
-                :size="100"
-                :color="'#000'"
-              >
+              <v-icon class="mr-1 mb-md-10 info-icon" :size="100" :color="'#000'">
                 {{ computedIcon }}
               </v-icon>
             </v-col>
@@ -31,9 +23,7 @@
         <v-col cols="12">
           <v-row class="info-text h-100 ga-4">
             <v-col cols="12" class="pa-0 info-title" v-if="info.title">
-              <span class="text-h6 text-md-h5 font-weight-bold">{{
-                info.title
-              }}</span>
+              <span class="text-h6 text-md-h5 font-weight-bold">{{ info.title }}</span>
             </v-col>
 
             <v-col
@@ -70,9 +60,7 @@ const props = defineProps({
 
 const router = useRouter();
 
-const computedIcon = computed(
-  () => extractIcons(props.info?.icon) || mdiMapPlus,
-);
+const computedIcon = computed(() => extractIcons(props.info?.icon) || mdiMapPlus);
 
 const hover = ref(false);
 

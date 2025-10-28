@@ -17,25 +17,9 @@
         />
       </v-col>
 
-      <v-col
-        cols="12"
-        lg="8"
-        xl="9"
-        class="workflow-content__wrapper position-relative"
-      >
-        <CardLoader
-          v-if="workflowStore.loading"
-          :showLogo="true"
-          :typeOfLoader="'article'"
-          :numberOfLoader="4"
-        />
-        <v-card
-          v-else
-          id="EditAdditionalInformation"
-          class="pt-0"
-          elevation="2"
-          rounded="xl"
-        >
+      <v-col cols="12" lg="8" xl="9" class="workflow-content__wrapper position-relative">
+        <CardLoader v-if="workflowStore.loading" :showLogo="true" :typeOfLoader="'article'" :numberOfLoader="4" />
+        <v-card v-else id="EditAdditionalInformation" class="pt-0" elevation="2" rounded="xl">
           <div>
             <component
               :is="resolvedComponent"
@@ -49,9 +33,7 @@
             />
           </div>
           <div ref="nextStepBlock" class="pa-4 d-flex align-center justify-end">
-            <v-btn @click="nextStep">{{
-              currentStepNum === 6 ? 'Close' : 'Next Step'
-            }}</v-btn>
+            <v-btn @click="nextStep">{{ currentStepNum === 6 ? 'Close' : 'Next Step' }}</v-btn>
           </div>
         </v-card>
       </v-col>
@@ -73,14 +55,7 @@
  *  IMPORTS
  * ========================= */
 // import { storeToRefs } from 'pinia';
-import {
-  ref,
-  watch,
-  computed,
-  onMounted,
-  onBeforeUnmount,
-  defineAsyncComponent,
-} from 'vue';
+import { ref, watch, computed, onMounted, onBeforeUnmount, defineAsyncComponent } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { USER_DASHBOARD_PAGENAME } from '@/router/routeConsts';
@@ -94,10 +69,7 @@ import { useOrganizationsStore } from '@/modules/organizations/store/organizatio
 // import { extractIcons } from '@/factories/iconFactory.ts';
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow.ts';
 import WorkflowSaveDialog from '@/modules/workflow/components/steps/WorkflowSaveDialog.vue';
-import {
-  StepStatus,
-  WorkflowMode,
-} from '@/modules/workflow/utils/workflowEnums';
+import { StepStatus, WorkflowMode } from '@/modules/workflow/utils/workflowEnums';
 
 const workflowStore = useDatasetWorkflowStore();
 const orgStore = useOrganizationsStore();
@@ -124,9 +96,7 @@ const props = defineProps({
  * ========================= */
 
 const currentStep = computed(() => workflowStore?.currentStep ?? 0);
-const currentAsyncComponent = computed(
-  () => workflowStore?.currentAsyncComponent ?? null,
-);
+const currentAsyncComponent = computed(() => workflowStore?.currentAsyncComponent ?? null);
 const vm = computed(() => workflowStore.currentViewModel);
 // const iconScroll = computed(() => extractIcons('scroll'));
 const nextStepBlock = ref(null);
@@ -158,16 +128,10 @@ const openSaveDialog = computed({
     if (workflowStore) workflowStore.openSaveDialog = val;
   },
 });
-const readyToSaveFlag = computed(
-  () => workflowStore?.readyToSaveToBackend ?? false,
-);
+const readyToSaveFlag = computed(() => workflowStore?.readyToSaveToBackend ?? false);
 const saveErrMsg = computed(() => workflowStore?.saveErrorMessage ?? undefined);
-const savingLoading = computed(
-  () => workflowStore?.backendStorageService?.loadingDataset ?? false,
-);
-const isDatasetEditing = computed(
-  () => workflowStore?.isDatasetEditing ?? false,
-);
+const savingLoading = computed(() => workflowStore?.backendStorageService?.loadingDataset ?? false);
+const isDatasetEditing = computed(() => workflowStore?.isDatasetEditing ?? false);
 
 const currentStepNum = computed(() => workflowStore?.currentStep ?? 0);
 
@@ -175,11 +139,7 @@ const resolvedComponent = computed(() => {
   const c = currentAsyncComponent.value;
   if (!c) return null;
   // already component
-  if (
-    typeof c === 'object' &&
-    ('setup' in (c as any) || 'render' in (c as any))
-  )
-    return c as any;
+  if (typeof c === 'object' && ('setup' in (c as any) || 'render' in (c as any))) return c as any;
   // load
   if (typeof c === 'function') return defineAsyncComponent(c as any);
   // promise
@@ -219,14 +179,9 @@ const checkValidation = async (data, fromNavigationClick) => {
  *  NAVIGATION LOGIC
  * ========================= */
 const changeNavigationInStore = (stepParam: number | string) => {
-  const stepNum =
-    typeof stepParam === 'string' ? Number.parseInt(stepParam, 10) : stepParam;
+  const stepNum = typeof stepParam === 'string' ? Number.parseInt(stepParam, 10) : stepParam;
 
-  if (
-    Number.isFinite(stepNum) &&
-    (stepNum as number) >= 0 &&
-    (stepNum as number) < workflowStore.steps.length
-  ) {
+  if (Number.isFinite(stepNum) && (stepNum as number) >= 0 && (stepNum as number) < workflowStore.steps.length) {
     workflowStore.jumpToStep(stepNum as number);
   }
 };
@@ -257,13 +212,7 @@ const canJumpFromDisabled = (id: number) => {
   return !!prev?.completed;
 };
 
-const catchNavigate = async ({
-  id,
-  status,
-}: {
-  id: number;
-  status: string;
-}) => {
+const catchNavigate = async ({ id, status }: { id: number; status: string }) => {
   const fromNavigationClick = true;
   const valid = await checkValidation(currentStep.value, fromNavigationClick);
   if (!valid) return;
@@ -331,8 +280,7 @@ const catchConfirmSave = async () => {
       // CREATE Backend Dataset
       const dataset = workflowStore.datasetModel.dataset;
       // Get and save the new ID
-      const created =
-        await workflowStore.backendStorageService.createDataset(dataset);
+      const created = await workflowStore.backendStorageService.createDataset(dataset);
       const newId = created?.name || workflowStore.currentDatasetId;
 
       await router.push({
@@ -362,10 +310,7 @@ const catchConfirmSave = async () => {
     workflowStore.isStepSaveConfirmed = false;
     workflowStore.openSaveDialog = true;
     workflowStore.readyToSaveToBackend = false;
-    workflowStore.saveErrorMessage =
-      e?.message ??
-      e?.response?.data?.error?.message ??
-      'Error saving the dataset';
+    workflowStore.saveErrorMessage = e?.message ?? e?.response?.data?.error?.message ?? 'Error saving the dataset';
   } finally {
     workflowStore.readyToSaveToBackend = false;
   }
@@ -390,12 +335,7 @@ watch(
 );
 
 watch(
-  () => [
-    workflowStore.datasetModel?.dataset?.id,
-    orgStore.userOrganizations,
-    userDatasets.value,
-    user.value,
-  ],
+  () => [workflowStore.datasetModel?.dataset?.id, orgStore.userOrganizations, userDatasets.value, user.value],
   () => {
     workflowStore.computeUserRole({
       user: user.value,
@@ -463,10 +403,7 @@ onMounted(async () => {
     await workflowStore.bootstrapWorkflow(id);
 
     // SET loader for organizations and datasets
-    await workflowStore.withLoadingAll([
-      loadUserOrganizations(),
-      fetchUserDatasets(),
-    ]);
+    await workflowStore.withLoadingAll([loadUserOrganizations(), fetchUserDatasets()]);
 
     workflowStore.setCurrentUser(user.value);
     workflowStore.computeUserRole({

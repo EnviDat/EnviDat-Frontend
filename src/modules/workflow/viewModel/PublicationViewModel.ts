@@ -2,9 +2,7 @@ import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 
-
-export class PublicationViewModel extends AbstractEditViewModel{
-
+export class PublicationViewModel extends AbstractEditViewModel {
   declare publicationState: string;
   declare doi: string;
   declare publisher: string;
@@ -26,29 +24,25 @@ export class PublicationViewModel extends AbstractEditViewModel{
     publicationYear: null,
     version: null,
     datasetId: null,
-  }
+  };
 
-  validationRules =
-    yup.object().shape({
-      publicationState: yup.string(),
-      doi: yup.string(),
-      publisher: yup
-        .string()
-        .required('Enter publisher')
-        .min(3),
-      publicationYear: yup.string().required('Enter publication year'),
-    });
+  validationRules = yup.object().shape({
+    publicationState: yup.string(),
+    doi: yup.string(),
+    publisher: yup.string().required('Enter publisher').min(3),
+    publicationYear: yup.string().required('Enter publication year'),
+  });
 
   constructor(datasetModel: DatasetModel) {
     super(datasetModel, PublicationViewModel.mappingRules());
   }
 
-  static mappingRules () {
+  static mappingRules() {
     return [
-      ['publicationState','publication_state'],
-      ['doi','doi'],
-      ['publisher','publication.publisher'],
-      ['publicationYear','publication.publication_year'],
+      ['publicationState', 'publication_state'],
+      ['doi', 'doi'],
+      ['publisher', 'publication.publisher'],
+      ['publicationYear', 'publication.publication_year'],
       ['version', 'version'],
       ['datasetId', 'id'],
     ];
@@ -58,4 +52,3 @@ export class PublicationViewModel extends AbstractEditViewModel{
     return super.validate(newProps);
   }
 }
-

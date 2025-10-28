@@ -1,13 +1,7 @@
 <template>
-  <v-container
-    fluid
-    class="pa-4"
-    id="ResourcesInformation">
-
+  <v-container fluid class="pa-4" id="ResourcesInformation">
     <v-row class="mb-0">
-      <v-col class="text-h5 font-weight-bold" cols="12">
-        Resources Information
-      </v-col>
+      <v-col class="text-h5 font-weight-bold" cols="12"> Resources Information </v-col>
       <!-- <v-col cols="12" class="text-body-1">
         Please provide the resources of the dataset.
       </v-col> -->
@@ -16,49 +10,38 @@
     <!-- Info Banner -->
     <v-row>
       <v-col class="mb-5 pt-0 pb-0">
-        <v-alert
-          type="info"
-          closable
-          :icon="false"
-          class="rounded-lg info-banner"
-        >
+        <v-alert type="info" closable :icon="false" class="rounded-lg info-banner">
           <v-alert-title class="mb-2">Information</v-alert-title>
 
           <p>
-            This section allows you to provide access to the actual data or
-            related resources of your dataset. These can be files, links to
-            repositories, or online services.
+            This section allows you to provide access to the actual data or related resources of your dataset. These can
+            be files, links to repositories, or online services.
           </p>
 
           <p><strong>Tips:</strong></p>
           <ol>
             <li>
-              - You can either <strong>upload files directly</strong> or
-              <strong>provide links</strong> to external resources (e.g., data
-              hosted on other platforms).
+              - You can either <strong>upload files directly</strong> or <strong>provide links</strong> to external
+              resources (e.g., data hosted on other platforms).
             </li>
             <li>
               - When adding a resource via a link, make sure to specify its
-              <strong>file format</strong> (e.g., CSV, GeoTIFF) and
-              <strong>file size</strong> to help users assess it.
+              <strong>file format</strong> (e.g., CSV, GeoTIFF) and <strong>file size</strong> to help users assess it.
             </li>
-            <li>
-              - Use clear and descriptive <strong>titles</strong> for each
-              resource to improve discoverability.
-            </li>
+            <li>- Use clear and descriptive <strong>titles</strong> for each resource to improve discoverability.</li>
             <li>
               - If your resources are DORA publications, please add them in the
               <em>Related Publications</em> step instead.
             </li>
             <li>
-              - You can <strong>reorder resources</strong> using drag-and-drop
-              to reflect importance or logical sequence.
+              - You can <strong>reorder resources</strong> using drag-and-drop to reflect importance or logical
+              sequence.
             </li>
           </ol>
 
           <p class="mt-2">
-            Adding meaningful and well-described resources greatly enhances the
-            usability and visibility of your dataset.
+            Adding meaningful and well-described resources greatly enhances the usability and visibility of your
+            dataset.
           </p>
         </v-alert>
       </v-col>
@@ -81,26 +64,18 @@
 
         <v-row v-if="!selectedResource">
           <v-col cols="12">
-            <ResourceUpload
-              flat
-              v-bind="resourceUploadProps" />
+            <ResourceUpload flat v-bind="resourceUploadProps" />
             <!-- No need to listen to events from the component, events are emitted from uppy directly -->
           </v-col>
 
           <v-col cols="12">
-            <ResourcesPasteUrl
-              flat
-              @createUrlResources="createResourceFromUrl"
-            />
+            <ResourcesPasteUrl flat @createUrlResources="createResourceFromUrl" />
           </v-col>
         </v-row>
       </v-col>
 
       <v-col cols="12" lg="6">
-        <ResourcesListEditing
-          v-bind="metadataResourcesGenericProps"
-          @save="save"
-        />
+        <ResourcesListEditing v-bind="metadataResourcesGenericProps" @save="save" />
       </v-col>
     </v-row>
   </v-container>
@@ -149,7 +124,7 @@ import {
   USER_SIGNIN_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts.js';
 
-import {  updateEditingArray } from '@/factories/userEditingFactory.js';
+import { updateEditingArray } from '@/factories/userEditingFactory.js';
 
 import ResourcesListEditing from '@/modules/workflow/components/steps/ResourcesListEditing.vue';
 import ResourceUpload from '@/modules/workflow/components/steps/ResourceUpload.vue';
@@ -159,7 +134,6 @@ import type { Resource } from '@/types/modelTypes';
 import { mergeResourceSizeForFrontend } from '@/factories/resourceHelpers.ts';
 import ResourceEditing from '@/modules/workflow/components/steps/ResourceEditing.vue';
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow.ts';
-
 
 export default {
   name: 'ResourcesInformation',
@@ -269,18 +243,14 @@ export default {
     },
     resourceUploadActive() {
       if (this.$store) {
-        return (
-          this.config?.userEditMetadataConfig?.resourceUploadActive || false
-        );
+        return this.config?.userEditMetadataConfig?.resourceUploadActive || false;
       }
 
       return this.userEditMetadataConfig?.resourceUploadActive || false;
     },
     resourceEditingActive() {
       if (this.$store) {
-        return (
-          this.config?.userEditMetadataConfig?.resourceEditingActive || false
-        );
+        return this.config?.userEditMetadataConfig?.resourceEditingActive || false;
       }
 
       return this.userEditMetadataConfig?.resourceEditingActive || false;
@@ -328,8 +298,7 @@ export default {
         state: this.uploadState,
         progress: this.uploadProgress,
         error: this.resourceUploadError?.message || this.uppyError?.name,
-        errorDetails:
-          this.resourceUploadError?.details || this.uppyError?.message,
+        errorDetails: this.resourceUploadError?.details || this.uppyError?.message,
       };
     },
     selectedResource() {
@@ -462,11 +431,7 @@ export default {
     catchEditResourceClose() {
       this.unselectCurrentResource();
     },
-    markResourceSelected(
-      resources: Resource[],
-      id: string,
-      isSelected: boolean,
-    ) {
+    markResourceSelected(resources: Resource[], id: string, isSelected: boolean) {
       const resToMark = resources.filter((resource) => resource.id === id)[0];
       if (resToMark) {
         resToMark.isSelected = isSelected;
@@ -476,7 +441,6 @@ export default {
       this.resourceViewModel.validate(resource);
     },
     saveResource(resource: Resource) {
-
       const validData = this.resourceViewModel.validate(resource);
 
       if (validData) {
@@ -499,10 +463,7 @@ export default {
       this.$emit('save', data);
     },
     selectResource(resourceId: string) {
-
-      const resource = this.resources.filter(
-        (res: Resource) => res.id === resourceId,
-      )[0];
+      const resource = this.resources.filter((res: Resource) => res.id === resourceId)[0];
 
       if (!resource) {
         return;
@@ -511,7 +472,7 @@ export default {
       // clear the internal state of the UI component in case there was an input
       // on the adding of a new author
       eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
-/*
+      /*
       this.unselectCurrentResource();
 
       this.markResourceSelected(
@@ -523,7 +484,6 @@ export default {
 
       this.resourceViewModel = new ResourceViewModel();
       this.resourceViewModel.validate(resource);
-
     },
     unselectCurrentResource() {
       if (this.selectedResource) {

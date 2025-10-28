@@ -3,13 +3,7 @@
     <v-row no-gutters ref="aboutHeader" class="py-1 py-md-4">
       <v-col cols="12" md="10" offset-md="1">
         <!-- Tabs -->
-        <v-tabs
-          :model-value="activeTab"
-          slider-color="accent"
-          color="white"
-          grow
-          bg-color="highlight"
-        >
+        <v-tabs :model-value="activeTab" slider-color="accent" color="white" grow bg-color="highlight">
           <v-tab
             v-for="(tab, index) in tabs"
             :key="tab.name"
@@ -19,11 +13,7 @@
           >
             {{ $vuetify.display.smAndUp ? tab.name : '' }}
 
-            <BaseIcon
-              :icon="tab.icon"
-              :color="activeTab === index ? 'white' : 'grey-darken-3'"
-              class="px-sm-3"
-            />
+            <BaseIcon :icon="tab.icon" :color="activeTab === index ? 'white' : 'grey-darken-3'" class="px-sm-3" />
           </v-tab>
         </v-tabs>
       </v-col>
@@ -36,12 +26,7 @@
           <v-window-item :key="tabs[0].name">
             <about-tab-layout title="About EnviDat" :titleImage="missionImg">
               <v-row no-gutters>
-                <v-col
-                  v-for="(card, index) in aboutCardInfo"
-                  :key="index"
-                  class="pa-3"
-                  :class="card.widthClass"
-                >
+                <v-col v-for="(card, index) in aboutCardInfo" :key="index" class="pa-3" :class="card.widthClass">
                   <expandable-card
                     :title="card.title"
                     :text="card.text"
@@ -121,13 +106,7 @@
  */
 import { mapGetters, mapState } from 'vuex';
 
-import {
-  mdiBookOpenVariant,
-  mdiInformation,
-  mdiLibrary,
-  mdiShieldCheckOutline,
-  mdiFingerprint,
-} from '@mdi/js';
+import { mdiBookOpenVariant, mdiInformation, mdiLibrary, mdiShieldCheckOutline, mdiFingerprint } from '@mdi/js';
 
 import { ABOUT_PAGENAME } from '@/router/routeConsts';
 import orga from '@/assets/about/EnviDat_organigram.png';
@@ -167,9 +146,7 @@ export default {
   },
   methods: {
     checkRouteChanges() {
-      const paramTab = this.$route.params.tab
-        ? this.$route.params.tab.toLowerCase()
-        : null;
+      const paramTab = this.$route.params.tab ? this.$route.params.tab.toLowerCase() : null;
 
       if (paramTab) {
         this.navigateTab(paramTab);
@@ -206,8 +183,7 @@ export default {
               title: bInfo.title,
               text: bInfo.text || dInfo.text,
               img: bInfo.img || dInfo.img,
-              widthClass:
-                bInfo.widthClass || dInfo.widthClass || defaultWidthClass,
+              widthClass: bInfo.widthClass || dInfo.widthClass || defaultWidthClass,
             };
 
             mergedAboutInfo.push(mergedInfo);
@@ -286,10 +262,7 @@ export default {
         {
           title: 'Team',
           /* eslint-disable prefer-template */
-          text:
-            '<img src="' +
-            this.orga +
-            '" style="width: 100%; height: 100%;" />',
+          text: '<img src="' + this.orga + '" style="width: 100%; height: 100%;" />',
           img: 'team_small',
           defaultWidthClass: 'v-col-12 v-col-sm-12 v-col-md-8',
         },
@@ -299,32 +272,22 @@ export default {
         return defaultAboutInfo;
       }
 
-      return this.mergeAboutInfo(
-        defaultAboutInfo,
-        backendAboutInfos,
-        defaultWidthClass,
-      );
+      return this.mergeAboutInfo(defaultAboutInfo, backendAboutInfos, defaultWidthClass);
     },
     missionImg() {
-      return this.$vuetify.display.mdAndUp
-        ? 'mission'
-        : 'mission_small';
+      return this.$vuetify.display.mdAndUp ? 'mission' : 'mission_small';
     },
     policiesMarkdownText() {
       return renderMarkdown(this.policiesMarkdown);
     },
     policiesImg() {
-      return this.$vuetify.display.mdAndUp
-        ? 'policies'
-        : 'policies_small';
+      return this.$vuetify.display.mdAndUp ? 'policies' : 'policies_small';
     },
     guidelinesMarkdownText() {
       return renderMarkdown(this.guidelinesMarkdown);
     },
     guidelineImg() {
-      return this.$vuetify.display.mdAndUp
-        ? 'guidelines'
-        : 'guidelines_small';
+      return this.$vuetify.display.mdAndUp ? 'guidelines' : 'guidelines_small';
     },
     dmpImg() {
       return this.$vuetify.display.mdAndUp ? 'dmp' : 'dmp_small';
