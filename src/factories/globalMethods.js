@@ -15,7 +15,7 @@ export const isFieldReadOnly = (props, property) => {
   }
 
   return false;
-}
+};
 
 export const readOnlyHint = (props, property) => {
   let hint = '';
@@ -25,5 +25,4 @@ export const readOnlyHint = (props, property) => {
   }
 
   return hint;
-}
-
+};

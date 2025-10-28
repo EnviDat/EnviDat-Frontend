@@ -8,9 +8,7 @@ import { Author } from '@/types/modelTypes';
 import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 import { AbstractViewModel } from '@/factories/ViewModels/AbstractViewModel';
 
-
 export class HeaderViewModel extends AbstractViewModel {
-
   declare metadataTitle: string;
 
   declare contactEmail: string;
@@ -45,7 +43,6 @@ export class HeaderViewModel extends AbstractViewModel {
 
   declare maxTags: number;
 
-
   constructor(dataset: DatasetDTO, smallScreen: boolean, categoryColor: string, titleImg: string) {
     super(dataset, HeaderViewModel.mappingRules());
 
@@ -66,39 +63,48 @@ export class HeaderViewModel extends AbstractViewModel {
     this.metadataState = getMetadataVisibilityState(this);
   }
 
-  static mappingRules () {
+  static mappingRules() {
     return [
-      ['metadataTitle','title'],
-      ['contactEmail','maintainer.email'],
-      ['contactFirstName','maintainer.given_name'],
-      ['contactLastName','maintainer.name'],
-      ['doi','doi'],
-      ['tags','tags'],
-//      ['rawAuthors','author'],
-//      ['authors','author'],
-      ['organization','organization.name'],
-      ['organizationTooltip','organization.title'],
-      ['spatialInfo','spatial_info'],
-      ['state','state'],
-      ['private','private'],
-      ['publicationYear','publication.publication_year'],
-      ['publicationStatus','publication_state'],
-      ['created','metadata_created'],
-      ['modified','metadata_modified'],
+      ['metadataTitle', 'title'],
+      ['contactEmail', 'maintainer.email'],
+      ['contactFirstName', 'maintainer.given_name'],
+      ['contactLastName', 'maintainer.name'],
+      ['doi', 'doi'],
+      ['tags', 'tags'],
+      //      ['rawAuthors','author'],
+      //      ['authors','author'],
+      ['organization', 'organization.name'],
+      ['organizationTooltip', 'organization.title'],
+      ['spatialInfo', 'spatial_info'],
+      ['state', 'state'],
+      ['private', 'private'],
+      ['publicationYear', 'publication.publication_year'],
+      ['publicationStatus', 'publication_state'],
+      ['created', 'metadata_created'],
+      ['modified', 'metadata_modified'],
     ];
   }
 }
 
-export const createHeaderViewModel = (dataset: DatasetDTO, smallScreen: boolean, categoryColor: string, titleImg: string, changeCallback = undefined) => {
+export const createHeaderViewModel = (
+  dataset: DatasetDTO,
+  smallScreen: boolean,
+  categoryColor: string,
+  titleImg: string,
+  changeCallback = undefined,
+) => {
   const headerVM = new HeaderViewModel(dataset, smallScreen, categoryColor, titleImg);
   const reactiveVM = reactive(headerVM);
 
   if (changeCallback) {
-    watch(() => reactiveVM, (newModel) => {
+    watch(
+      () => reactiveVM,
+      (newModel) => {
         changeCallback(newModel);
-    }, { deep: true });
+      },
+      { deep: true },
+    );
   }
 
   return reactiveVM;
-}
-
+};

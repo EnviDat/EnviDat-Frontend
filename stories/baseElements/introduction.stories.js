@@ -18,7 +18,6 @@ import { enhanceMetadatasTitleImage } from '@/factories/metaDataFactory';
 
 import metadataCards from '@/../stories/js/metadata';
 
-
 const dataset = metadataCards[0];
 export default {
   title: '1 Base / Cards /  Introduction Card',
@@ -77,13 +76,13 @@ export const IntroductionCardViews = () => ({
     currentLocalDataset,
   }),
   methods: {
-    createClickMethod(){
+    createClickMethod() {
       console.log('clicked create button');
     },
     existingClickCallback() {
       console.log('clicked existing button');
     },
-    editingClickMethod(){
+    editingClickMethod() {
       console.log('clicked editing button');
     },
   },

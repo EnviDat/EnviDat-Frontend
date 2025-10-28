@@ -18,10 +18,8 @@ import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 import { mergeAuthorsDataCredit } from '@/factories/authorFactory';
 import { USER_ROLE_ADMIN } from '@/factories/userEditingValidations';
 
-
 export const ACCESS_LEVEL_PUBLIC_VALUE = 'public';
 export const ACCESS_LEVEL_SAMEORGANIZATION_VALUE = 'same_organization';
-
 
 /**
  *
@@ -64,7 +62,6 @@ export function updateEditingArray(elementList, newElement, propertyToCompare) {
   return localCopy;
 }
 
-
 /**
  *
  * @param store
@@ -74,13 +71,7 @@ export function updateEditingArray(elementList, newElement, propertyToCompare) {
  * @param selected
  * @returns {object|null}
  */
-export function setSelected(
-  store,
-  elementList,
-  id,
-  propertyToCompare,
-  selected,
-) {
+export function setSelected(store, elementList, id, propertyToCompare, selected) {
   if (!id) {
     return null;
   }
@@ -113,13 +104,7 @@ export function setSelected(
  * @param propertyToCompare
  * @returns {Object|null}
  */
-export function selectForEditing(
-  store,
-  elementList,
-  id,
-  previousId,
-  propertyToCompare,
-) {
+export function selectForEditing(store, elementList, id, previousId, propertyToCompare) {
   if (previousId !== '') {
     setSelected(store, elementList, previousId, propertyToCompare, false);
   }
@@ -132,7 +117,7 @@ export function getSelectedElement(elementList) {
     return null;
   }
 
-  const selected = elementList.filter(r => r.isSelected);
+  const selected = elementList.filter((r) => r.isSelected);
 
   if (selected.length > 0) {
     return selected[0];
@@ -143,7 +128,7 @@ export function getSelectedElement(elementList) {
 
 // Returns true if all values in obj are null or empty strings, else returns false
 export function isObjectEmpty(obj) {
-  return Object.values(obj).every(x => x === null || x === '');
+  return Object.values(obj).every((x) => x === null || x === '');
 }
 
 export function deleteEmptyObject(index, localObjects) {
@@ -171,7 +156,7 @@ export function isMaxLength(maximum, localObjects) {
 }
 // const excludeRegEX = /(?:\d+\w+\S\-\w+)/gm
 // eslint-disable-next-line no-useless-escape
-const excludeRegEX = /(\d+\w+\S\-\w+)|(\d+\S*\d+)/gm
+const excludeRegEX = /(\d+\w+\S\-\w+)|(\d+\S*\d+)/gm;
 
 /**
  *
@@ -179,16 +164,18 @@ const excludeRegEX = /(\d+\w+\S\-\w+)|(\d+\S*\d+)/gm
  * @returns {User []}
  */
 export function getUserAutocompleteList(userList) {
-
   return userList.filter((user) => {
-
     const match = user.name?.match(excludeRegEX);
 
     if (match && match[0] && match[0].length === user.name?.length) {
       return false;
     }
 
-    return !(user.sysadmin || user.name.toLowerCase() === USER_ROLE_ADMIN || user.fullName?.toLowerCase() === USER_ROLE_ADMIN);
+    return !(
+      user.sysadmin ||
+      user.name.toLowerCase() === USER_ROLE_ADMIN ||
+      user.fullName?.toLowerCase() === USER_ROLE_ADMIN
+    );
   });
 }
 
@@ -207,7 +194,7 @@ export function getAllowedUserNamesArray(allowedUsersString) {
   if (splits.length > 0) {
     usersString = splits;
   } else {
-    usersString = [allowedUsersString]
+    usersString = [allowedUsersString];
   }
 
   return usersString;
@@ -253,7 +240,6 @@ export function getAllowedUsersString(userFullNameArray, envidatUsers) {
 }
 
 export function componentChangedEvent(updateObj, vm) {
-
   const payload = {
     stepKey: updateObj.object,
     data: updateObj.data,

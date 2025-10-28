@@ -14,11 +14,7 @@ import type { Meta, StoryObj } from '@storybook/vue3-vite';
 import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader.vue';
 import { sortObjectArray } from '@/factories/metaDataFactory';
 
-import {
-  createAuthors,
-  getFullAuthorsFromDataset,
-  extractAuthorsMap,
-} from '@/factories/authorFactory';
+import { createAuthors, getFullAuthorsFromDataset, extractAuthorsMap } from '@/factories/authorFactory';
 
 import categoryCards from '@/store/categoryCards';
 import { getPopularTags, getTagColor } from '@/factories/keywordsFactory';
@@ -31,7 +27,11 @@ import {
   METADATA_URL_PROPERTY,
 } from '@/factories/metadataConsts';
 
-import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from '@/../stories/js/envidatViewports';
+import {
+  mobileLargeViewportParams,
+  mobileViewportParams,
+  tabletViewportParams,
+} from '@/../stories/js/envidatViewports';
 
 import metadataset from '@/../stories/js/metadata';
 
@@ -51,20 +51,18 @@ for (let i = 0; i < unFormatedMetadataCards.length; i++) {
   metadataCards.push(el);
 }
 
-
 const authorsMap = extractAuthorsMap(metadataCards);
 const authors = getFullAuthorsFromDataset(authorsMap, metadataCards[1]);
 
 let existingAuthors = Object.values(authorsMap);
 existingAuthors = sortObjectArray(existingAuthors, 'lastName');
 
-
 const meta = {
   title: '3 Datasets / 2 Edit / Metadata Header',
   component: EditMetadataHeader,
 } satisfies Meta<typeof EditMetadataHeader>;
 
-export default meta
+export default meta;
 type Story = StoryObj<typeof meta>;
 
 const emptyFirstGenericProps = {
@@ -76,7 +74,6 @@ const emptyFirstGenericProps = {
   [METADATA_CONTACT_LASTNAME]: '',
   existingEnviDatUsers: authors,
 };
-
 
 export const EmptyEditHeader: Story = {
   args: emptyFirstGenericProps,
@@ -122,19 +119,17 @@ export const FilledAndReadOnly: Story = {
   },
 };
 
-
 export const MobileFilledEditHeader: Story = {
   args: { ...FilledEditHeader.args },
   parameters: mobileViewportParams,
 };
 
-
 export const MobileLargeFilledEditHeader: Story = {
-  args: {...FilledEditHeader.args},
+  args: { ...FilledEditHeader.args },
   parameters: mobileLargeViewportParams,
 };
 
 export const TabletFilledEditHeader: Story = {
-  args: {...FilledEditHeader.args},
+  args: { ...FilledEditHeader.args },
   parameters: tabletViewportParams,
 };

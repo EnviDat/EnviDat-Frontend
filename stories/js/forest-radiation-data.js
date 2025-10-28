@@ -8,8 +8,7 @@ export default {
     creator_user_id: '62923e3a-28a0-4d27-b022-6191a8d8ab26',
     date: '[{"date": "2018-10-01", "date_type": "collected", "end_date": "2018-06-15"}]',
     doi: '10.16904/envidat.588',
-    funding:
-      '[{"grant_number":"","institution":"Funding information not available.","institution_url":""}]',
+    funding: '[{"grant_number":"","institution":"Funding information not available.","institution_url":""}]',
     id: '908d28a2-f3b4-4397-8c38-a02db92caaf4',
     isopen: true,
     language: 'en',
@@ -52,8 +51,7 @@ export default {
     spatial_info: 'Switzerland',
     state: 'active',
     subtitle: '',
-    title:
-      'Shading by Trees and Fractional Snow Cover Control the Subcanopy Radiation Budget',
+    title: 'Shading by Trees and Fractional Snow Cover Control the Subcanopy Radiation Budget',
     type: 'dataset',
     url: null,
     version: '1.0',
@@ -71,8 +69,7 @@ export default {
         id: 'd4eb8eda-a195-49ec-a478-0acf5e94337a',
         last_modified: '2019-03-07T13:14:52.235385',
         metadata_modified: '2025-02-05T12:58:03.247141',
-        mimetype:
-          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        mimetype: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         mimetype_inner: null,
         name: 'Radiation Data 18.04.2019',
         package_id: '908d28a2-f3b4-4397-8c38-a02db92caaf4',
@@ -97,8 +94,7 @@ export default {
         id: '63d731a5-6cab-4ddb-8768-8dbcb053141a',
         last_modified: '2019-03-07T13:18:38.777471',
         metadata_modified: '2025-02-05T12:58:03.247257',
-        mimetype:
-          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        mimetype: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         mimetype_inner: null,
         name: 'Radiation Data 25.4.2018',
         package_id: '908d28a2-f3b4-4397-8c38-a02db92caaf4',
@@ -123,8 +119,7 @@ export default {
         id: 'cd65875d-c705-4f35-be6f-4f14d584b4c6',
         last_modified: '2019-03-07T13:24:24.540084',
         metadata_modified: '2025-02-05T12:58:03.247348',
-        mimetype:
-          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        mimetype: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         mimetype_inner: null,
         name: 'Seasonal sub-canopy radiation data ',
         package_id: '908d28a2-f3b4-4397-8c38-a02db92caaf4',

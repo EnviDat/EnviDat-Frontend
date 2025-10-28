@@ -10,10 +10,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import {
-  EDITMETADATA_OBJECT_UPDATE,
-  eventBus,
-} from '@/factories/eventBus';
+import { EDITMETADATA_OBJECT_UPDATE, eventBus } from '@/factories/eventBus';
 
 import EditReviewInfo from '@/modules/user/components/edit/EditReviewInfo.vue';
 import {
@@ -44,7 +41,6 @@ const Template = {
     },
     methods: {
       editComponentsChanged(updateObj) {
-
         this.genericPropsFilled = {
           ...this.genericPropsFilled,
           loading: true,
@@ -53,7 +49,6 @@ const Template = {
         console.log('EditPublicationInfo EDITMETADATA_OBJECT_UPDATE event', this.genericPropsFilled);
 
         setTimeout(() => {
-
           this.genericPropsFilled = {
             ...this.genericPropsFilled,
             ...updateObj.data,
@@ -61,8 +56,7 @@ const Template = {
           };
 
           console.log('EditPublicationInfo EDITMETADATA_OBJECT_UPDATE event', this.genericPropsFilled);
-
-        }, 1000)
+        }, 1000);
       },
     },
     data: () => ({
@@ -109,7 +103,7 @@ export const FilledAndActive = {
     isBlindReview: true,
     publicationState: PUBLICATION_STATE_RESERVED,
   },
-}
+};
 
 export const FilledAndNotActive = {
   ...Template,
@@ -117,7 +111,7 @@ export const FilledAndNotActive = {
     ...FilledAndActive.args,
     isBlindReview: false,
   },
-}
+};
 
 export const FilledWithLoading = {
   ...Template,
@@ -128,6 +122,4 @@ export const FilledWithLoading = {
     isBlindReview: true,
     publicationState: PUBLICATION_STATE_RESERVED,
   },
-}
-
-
+};

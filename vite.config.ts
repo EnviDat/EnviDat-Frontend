@@ -17,12 +17,13 @@ const version = process.env.npm_package_version;
 const useHttps = process.env.VITE_USE_HTTPS === 'true';
 
 const isVike = process.argv.some((arg) => arg.includes('vike'));
+const isStorybookBuild = process.argv.some((arg) => arg.includes('storybook'));
 
 export default async ({ mode, config }): Promise<UserConfig> => {
   if (isVike) {
     console.log('Run with vite.config.vike!');
     const asyncImport = await import('./vite.config.vike.ts');
-    const vikeConfig = asyncImport.default({mode, config});
+    const vikeConfig = asyncImport.default({ mode, config });
     // console.log(vikeConfig);
     return vikeConfig;
   }
@@ -35,10 +36,7 @@ export default async ({ mode, config }): Promise<UserConfig> => {
   const fileName = `version_${version}.txt`;
   const existingFilePaths = path.resolve(__dirname, 'public/');
 
-  const existingVersionFiles = getFilesWithPrefix(
-    existingFilePaths,
-    'version_',
-  );
+  const existingVersionFiles = getFilesWithPrefix(existingFilePaths, 'version_');
 
   // delete any existing files with version_ as prefix to make sure only the latest version is created
   for (let i = 0; i < existingVersionFiles.length; i++) {
@@ -52,13 +50,9 @@ export default async ({ mode, config }): Promise<UserConfig> => {
 
   try {
     fs.writeFileSync(filePath, version);
-    console.log(
-      `Created version file ${fileName} for easy build version highlight in ${filePath}`,
-    );
+    console.log(`Created version file ${fileName} for easy build version highlight in ${filePath}`);
   } catch (err) {
-    console.log(
-      `Tried to created file ${fileName} in ${filePath}. Error: ${err}`,
-    );
+    console.log(`Tried to created file ${fileName} in ${filePath}. Error: ${err}`);
   }
 
   const env = loadEnv(mode, process.cwd());
@@ -72,7 +66,7 @@ export default async ({ mode, config }): Promise<UserConfig> => {
   console.log(`With VITE_SEO_BASE: ${env.VITE_SEO_BASE}`);
   console.log(`starting ${mode} | version: ${version} | prod: ${isProd}`);
 
-  const buildSourceMaps = env.VITE_BUILD_SOURCEMAPS === 'true';
+  const buildSourceMaps = !isStorybookBuild && env.VITE_BUILD_SOURCEMAPS === 'true';
 
   return defineConfig({
     plugins: [
@@ -143,7 +137,6 @@ export default async ({ mode, config }): Promise<UserConfig> => {
             output: {
               manualChunks: (id) => {
                 if (id.includes('node_modules')) {
-
                   if (id.includes('src/assets')) {
                     return 'envidat_assets';
                   }
@@ -176,7 +169,7 @@ export default async ({ mode, config }): Promise<UserConfig> => {
                   if (id.includes('uplot')) {
                     return 'vendor_uplot';
                   }
-                  
+
                   if (id.includes('chart')) {
                     return 'vendor_charts';
                   }
@@ -197,11 +190,7 @@ export default async ({ mode, config }): Promise<UserConfig> => {
                     return 'vendor_axios';
                   }
 
-                  if (
-                    id.includes('mitt') ||
-                    id.includes('seedrandom') ||
-                    id.includes('tiny-js-md5')
-                  ) {
+                  if (id.includes('mitt') || id.includes('seedrandom') || id.includes('tiny-js-md5')) {
                     return 'vendor_utils';
                   }
 
@@ -209,10 +198,7 @@ export default async ({ mode, config }): Promise<UserConfig> => {
                     return 'vendor_icons';
                   }
 
-                  if (
-                    id.includes('vanilla-jsoneditor') ||
-                    id.includes('codemirror')
-                  ) {
+                  if (id.includes('vanilla-jsoneditor') || id.includes('codemirror')) {
                     return 'vendor_jsoneditor';
                   }
 
@@ -222,7 +208,6 @@ export default async ({ mode, config }): Promise<UserConfig> => {
 
                   return 'vendors';
                 }
-
 
                 // Let Rollup handle the rest
                 return undefined;
@@ -243,9 +228,7 @@ export default async ({ mode, config }): Promise<UserConfig> => {
           https: useHttps
             ? {
                 key: fs.readFileSync(path.resolve(__dirname, 'certs/key.pem')),
-                cert: fs.readFileSync(
-                  path.resolve(__dirname, 'certs/cert.pem'),
-                ),
+                cert: fs.readFileSync(path.resolve(__dirname, 'certs/cert.pem')),
               }
             : false,
           proxy: {

@@ -15,10 +15,7 @@ import axios from 'axios';
 import { urlRewrite } from '@/factories/apiFactory';
 
 import { EDITMETADATA_DATA_RESOURCE } from '@/factories/eventBus';
-import {
-  getBackendJSONForStep,
-  stringifyResourceForBackend,
-} from '@/factories/mappingFactory';
+import { getBackendJSONForStep, stringifyResourceForBackend } from '@/factories/mappingFactory';
 
 import {
   METADATA_CREATION_RESOURCE,
@@ -33,7 +30,6 @@ import {
   ACTION_METADATA_CREATION_DATASET,
 } from './userMutationsConsts';
 
-
 // don't use an api base url or API_ROOT when using testdata
 let API_BASE = '';
 let API_ROOT = '';
@@ -45,11 +41,9 @@ if (!useTestdata) {
   API_ROOT = import.meta.env.VITE_API_ROOT;
 }
 
-
 export default {
   // async [METADATA_CREATION_RESOURCE]({ commit }, { stepKey, data, id }) {
   async [METADATA_CREATION_RESOURCE]({ commit }, { data }) {
-
     commit(METADATA_CREATION_RESOURCE);
 
     const actionUrl = ACTION_METADATA_CREATION_RESOURCE();
@@ -69,8 +63,7 @@ export default {
         message: 'Resource created',
         // details: `Changes saved ${stepKey} data for ${id}`,
       });
-
-    } catch(reason) {
+    } catch (reason) {
       commit(METADATA_CREATION_RESOURCE_ERROR, reason);
     }
   },
@@ -84,17 +77,16 @@ export default {
     const actionUrl = ACTION_METADATA_DELETE_RESOURCE();
     const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
-    await axios.post(url, postData,
-      {
+    await axios
+      .post(url, postData, {
         headers: {
           // Authorization: apiKey,
         },
       })
       .then(() => true)
-      .catch(() => false)
+      .catch(() => false);
   },
   async [METADATA_CREATION_DATASET]({ commit }, data) {
-
     commit(METADATA_CREATION_DATASET);
 
     const actionUrl = ACTION_METADATA_CREATION_DATASET();
@@ -111,10 +103,8 @@ export default {
         dataset,
         message: 'Dataset created',
       });
-
-    } catch(reason) {
+    } catch (reason) {
       commit(METADATA_CREATION_DATASET_ERROR, reason);
     }
-
   },
 };

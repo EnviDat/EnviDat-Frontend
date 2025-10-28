@@ -15,12 +15,7 @@
           />
         </v-col>
         <v-col v-if="error">
-          <BaseStatusLabelView
-            status="error"
-            statusColor="error"
-            :statusText="error"
-            :expandedText="errorDetails"
-          />
+          <BaseStatusLabelView status="error" statusColor="error" :statusText="error" :expandedText="errorDetails" />
         </v-col>
       </v-row>
 
@@ -50,11 +45,7 @@
             <v-col v-show="false" cols="12" md="12">
               <!-- intentionally use v-show="false" here to hide it, but make it accessible
                    when clicking the button -->
-              <v-file-input
-                ref="filePicker"
-                accept=".geojson,.json"
-                v-model="geoFile"
-              />
+              <v-file-input ref="filePicker" accept=".geojson,.json" v-model="geoFile" />
             </v-col>
 
             <v-col cols="12">
@@ -100,11 +91,7 @@
             >
               <div class="columns">
                 <div class="column">
-                  <div
-                    class="jsoneditor-vue"
-                    id="jsoneditor-vue"
-                    ref="editorRef"
-                  ></div>
+                  <div class="jsoneditor-vue" id="jsoneditor-vue" ref="editorRef"></div>
                 </div>
               </div>
             </v-col>
@@ -194,15 +181,9 @@ import {
 
 import { EDIT_METADATA_GEODATA_TITLE } from '@/factories/metadataConsts';
 
-import {
-  getValidationMetadataEditingObject,
-  isFieldValid,
-} from '@/factories/userEditingValidations';
+import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
 
-import {
-  convertGeoJSONToGeoCollection,
-  defaultSwissLocation,
-} from '@/factories/geoFactory';
+import { convertGeoJSONToGeoCollection, defaultSwissLocation } from '@/factories/geoFactory';
 
 export default {
   name: 'EditDataGeo',
@@ -264,14 +245,12 @@ export default {
     eventBus.on(MAP_GEOMETRY_MODIFIED, this.changedGeoViaEditor);
     eventBus.on(EDITMETADATA_DATA_GEO_MAP_ERROR, this.triggerValidationError);
 
-/*
+    /*
     console.log(this.location);
     console.log(this.location?.geoJSON);
 */
 
-    const jsonString = this.location?.geoJSON
-      ? JSON.stringify(this.location?.geoJSON)
-      : '';
+    const jsonString = this.location?.geoJSON ? JSON.stringify(this.location?.geoJSON) : '';
 
     this.changeGeoViaText(jsonString, true);
 
@@ -358,9 +337,7 @@ export default {
       };
     },
     scrollbarColorFront() {
-      return this.$vuetify
-        ? this.$vuetify.theme.themes.light.colors.highlight
-        : 'auto';
+      return this.$vuetify ? this.$vuetify.theme.themes.light.colors.highlight : 'auto';
     },
     scrollbarColorBack() {
       return this.$vuetify ? '#F0F0F0' : 'auto';
@@ -445,9 +422,7 @@ export default {
       }
 
       if (acceptChange) {
-        const contentAsString = updatedContent.text
-          ? updatedContent.text
-          : JSON.stringify(updatedContent.json);
+        const contentAsString = updatedContent.text ? updatedContent.text : JSON.stringify(updatedContent.json);
         this.changeGeoViaText(contentAsString);
         return true;
       }
@@ -490,17 +465,8 @@ export default {
      * @param {Array} geoCollection array of valid GeoJSON geometries
      */
     parseGeoCollection(geoCollection) {
-      if (
-        isFieldValid(
-          'geometries',
-          geoCollection.geometries,
-          this.validations,
-          this.validationErrors,
-        )
-      ) {
-        const propsKeys = geoCollection.properties
-          ? Object.keys(geoCollection.properties)
-          : [];
+      if (isFieldValid('geometries', geoCollection.geometries, this.validations, this.validationErrors)) {
+        const propsKeys = geoCollection.properties ? Object.keys(geoCollection.properties) : [];
         if (propsKeys?.length <= 0) {
           geoCollection.properties = { name: this.location.name };
         }
@@ -533,8 +499,7 @@ export default {
     },
     triggerFilePicker() {
       // select the hidden file input
-      const fileInputElement =
-        this.$refs.filePicker?.$el.querySelector('input[type="file"]');
+      const fileInputElement = this.$refs.filePicker?.$el.querySelector('input[type="file"]');
 
       if (fileInputElement) {
         fileInputElement.click();
@@ -589,14 +554,12 @@ export default {
     geoJSONValid: false,
     labels: {
       cardTitle: EDIT_METADATA_GEODATA_TITLE,
-      cardInstructions:
-        'Define the location(s) where the research data was collected or were it is refeering to.',
+      cardInstructions: 'Define the location(s) where the research data was collected or were it is refeering to.',
       defaultInstructions:
         'You are using the default location (Switzerland). Consider adjusting the geo information to represent your research data as accurate as possible.',
       editorInstructions:
         'Use the text editor for fine adjustments, Undo or Redo. Only changing the values of geometries is allowed to edit. If you need to make needs of the structure upload a new file or change it on the map.',
-      uploadInstructions:
-        'Upload geo-JSON from a file if you have large changes or many geometries.',
+      uploadInstructions: 'Upload geo-JSON from a file if you have large changes or many geometries.',
       mapInstructions:
         'Use the tools on the right side of the map to define locations. You can mix Points and Polygons. Or pick predefined locations. Use the eraser icon to remove geometries.',
       fileDropLabel: 'Or drop a file with geo-JSON here',

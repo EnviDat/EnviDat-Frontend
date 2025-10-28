@@ -22,15 +22,14 @@ import {
   USER_SIGNIN_PATH,
 } from '@/router/routeConsts';
 
-
 const SigninPage = () => import('@/modules/user/components/SigninPage.vue');
 const DashboardPage = () => import('@/modules/user/components/DashboardPage.vue');
 const MetadataEditPage = () => import('@/modules/user/components/MetadataEditPage.vue');
 const MetadataCreationPage = () => import('@/modules/user/components/MetadataCreationPage.vue');
 
-const beforeEnter = async (to, from, next)=> {
+const beforeEnter = async (to, from, next) => {
   next();
-}
+};
 
 export const userRoutes = [
   {

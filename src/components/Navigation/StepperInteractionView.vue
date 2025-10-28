@@ -1,9 +1,7 @@
 /* eslint-disable vue/no-unused-vars */
 <template>
-  <v-container fluid class="pa-0" >
-
+  <v-container fluid class="pa-0">
     <v-row justify="end">
-
       <v-col v-if="showPreviewButton" class="flex-grow-0">
         <BaseIconButton
           class="previewMetadataButton"
@@ -33,18 +31,12 @@
         />
       </v-col>
 
-      <v-col v-if="showProgress && isCreationWorkflow" >
-        <BaseProgressView :text="creationProgressInfo"
-                          :progress-pct="completedPct"
-                          color="secondary"
-        />
+      <v-col v-if="showProgress && isCreationWorkflow">
+        <BaseProgressView :text="creationProgressInfo" :progress-pct="completedPct" color="secondary" />
       </v-col>
 
-      <v-col v-if="showProgress && !isCreationWorkflow" >
-          <BaseProgressView :text="editingProgressInfo"
-                            :progress-pct="completedPct"
-                            color="secondary"
-          />
+      <v-col v-if="showProgress && !isCreationWorkflow">
+        <BaseProgressView :text="editingProgressInfo" :progress-pct="completedPct" color="secondary" />
       </v-col>
 
       <v-col class="flex-grow-0">
@@ -59,22 +51,20 @@
           @clicked="catchCloseClick"
         />
       </v-col>
-
     </v-row>
 
     <v-row no-gutters class="mt-2">
-      <v-col v-if="message" >
-        <BaseStatusLabelView status="check"
-                             statusColor="success"
-                             :statusText="message"
-                             :expandedText="messageDetails" />
+      <v-col v-if="message">
+        <BaseStatusLabelView
+          status="check"
+          statusColor="success"
+          :statusText="message"
+          :expandedText="messageDetails"
+        />
       </v-col>
 
-      <v-col v-if="error" >
-        <BaseStatusLabelView status="error"
-                             statusColor="error"
-                             :statusText="error"
-                             :expandedText="errorDetails" />
+      <v-col v-if="error">
+        <BaseStatusLabelView status="error" statusColor="error" :statusText="error" :expandedText="errorDetails" />
       </v-col>
     </v-row>
   </v-container>
@@ -92,9 +82,8 @@
 
 import { mdiClose, mdiContentSave, mdiEye } from '@mdi/js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
-import BaseProgressView from '@/components/BaseElements/BaseProgressView.vue'
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue'
-
+import BaseProgressView from '@/components/BaseElements/BaseProgressView.vue';
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 
 import { countSteps } from '@/factories/userCreationFactory';
 
@@ -149,25 +138,25 @@ export default {
     },
     creationProgressInfo() {
       if (this.completedPct >= 100) {
-        return 'Ready to save!'
+        return 'Ready to save!';
       }
 
       if (this.completedPct >= 50) {
-        return 'A few infos more!'
+        return 'A few infos more!';
       }
 
-      return 'Enter all info to save!'
+      return 'Enter all info to save!';
     },
     editingProgressInfo() {
       if (this.completedPct >= 100) {
-        return 'Excellent!'
+        return 'Excellent!';
       }
 
       if (this.completedPct >= 70) {
-        return 'Almost there!'
+        return 'Almost there!';
       }
 
-      return 'Provide more info!'
+      return 'Provide more info!';
     },
     allStepsAmount() {
       return countSteps(this.steps);
@@ -184,7 +173,7 @@ export default {
       this.$emit('clickedSaveDataset');
     },
   },
-  data: ()=>({
+  data: () => ({
     mdiClose,
     mdiContentSave,
     mdiEye,
@@ -222,21 +211,20 @@ export default {
   grid-template-columns: auto;
   gap: 0;
   grid-template-areas:
-  'instructions'
-  'interaction';
+    'instructions'
+    'interaction';
 }
 
 .infoPanelGrid-md {
   display: grid;
   grid-template-columns: 5fr auto;
   gap: 30px;
-  grid-template-areas:
-  'instructions interaction';
+  grid-template-areas: 'instructions interaction';
 }
 
 .instructions {
-    display: flex;
-    justify-content: start;
+  display: flex;
+  justify-content: start;
 }
 
 .interaction {

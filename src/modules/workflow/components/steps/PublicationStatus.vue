@@ -20,12 +20,7 @@
           />
         </v-col>
         <v-col v-if="error">
-          <BaseStatusLabelView
-            status="error"
-            statusColor="error"
-            :statusText="error"
-            :expandedText="errorDetails"
-          />
+          <BaseStatusLabelView status="error" statusColor="error" :statusText="error" :expandedText="errorDetails" />
         </v-col>
       </v-row>
 
@@ -37,19 +32,14 @@
         >
           <v-row no-gutters justify="center">
             <BaseShinyBadge
-              v-if="
-                state === PUBLICATION_STATE_PUBLISHED &&
-                activeStateIndex === index
-              "
+              v-if="state === PUBLICATION_STATE_PUBLISHED && activeStateIndex === index"
               :text="getStateText(state)"
             />
 
             <v-chip
               v-if="
-                (!!getStateText(state) &&
-                  state !== PUBLICATION_STATE_PUBLISHED) ||
-                (state === PUBLICATION_STATE_PUBLISHED &&
-                  activeStateIndex !== index)
+                (!!getStateText(state) && state !== PUBLICATION_STATE_PUBLISHED) ||
+                (state === PUBLICATION_STATE_PUBLISHED && activeStateIndex !== index)
               "
               density="compact"
               :disabled="activeStateIndex > index"
@@ -59,27 +49,15 @@
               {{ getStateText(state) }}
             </v-chip>
 
-            <BaseIcon
-              v-if="!getStateText(state)"
-              :icon="mdiArrowRight"
-              :color="'grey'"
-            />
+            <BaseIcon v-if="!getStateText(state)" :icon="mdiArrowRight" :color="'grey'" />
           </v-row>
 
-          <v-row
-            v-if="currentStateInfos?.positionIndex === index"
-            no-gutters
-            class="py-2"
-            justify="center"
-          >
+          <v-row v-if="currentStateInfos?.positionIndex === index" no-gutters class="py-2" justify="center">
             <BaseIcon :icon="mdiArrowUp" :color="'grey'" class="mr-1" />
           </v-row>
 
           <v-row
-            v-if="
-              currentStateInfos?.positionIndex === index &&
-              currentStateInfos?.buttonText
-            "
+            v-if="currentStateInfos?.positionIndex === index && currentStateInfos?.buttonText"
             no-gutters
             justify="center"
           >
@@ -89,11 +67,7 @@
               :icon="currentStateInfos.buttonIcon"
               iconColor="white"
               :loading="loading"
-              :url="
-                publicationState === PUBLICATION_STATE_PUBLISHED
-                  ? doiUrl
-                  : undefined
-              "
+              :url="publicationState === PUBLICATION_STATE_PUBLISHED ? doiUrl : undefined"
               :disabled="!currentStateInfos.buttonEvent || !isUserAllowedToEdit"
               tooltipPosition="bottom"
               :tooltipText="`Click to ${currentStateInfos.infoText}`"
@@ -126,9 +100,7 @@
   -->
 
           <v-row
-            v-if="
-              currentStateInfos?.positionIndex === index && !isUserAllowedToEdit
-            "
+            v-if="currentStateInfos?.positionIndex === index && !isUserAllowedToEdit"
             class="pt-2 readOnlyHint"
             no-gutters
             justify="center"
@@ -138,11 +110,7 @@
         </v-col>
       </v-row>
 
-      <v-alert
-        type="warning"
-        :text="labels.instructions2"
-        class="text-body-1 mt-10"
-      >
+      <v-alert type="warning" :text="labels.instructions2" class="text-body-1 mt-10">
         <v-row class="text-body-2 mt-5 px-2">
           <v-col
             v-for="(field, index) of metadataPublishedReadOnlyFields"
@@ -174,14 +142,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import { mapState } from 'vuex';
-import {
-  mdiArrowUp,
-  mdiArrowRight,
-  mdiEarth,
-  mdiFingerprint,
-  mdiNewspaper,
-  mdiOpenInNew,
-} from '@mdi/js';
+import { mdiArrowUp, mdiArrowRight, mdiEarth, mdiFingerprint, mdiNewspaper, mdiOpenInNew } from '@mdi/js';
 
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
@@ -189,11 +150,7 @@ import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.v
 import BaseShinyBadge from '@/components/BaseElements/BaseShinyBadge.vue';
 
 import { possiblePublicationStates } from '@/factories/metaDataFactory';
-import {
-  DOI_PUBLISH,
-  DOI_REQUEST,
-  DOI_RESERVE,
-} from '@/modules/user/store/doiMutationsConsts';
+import { DOI_PUBLISH, DOI_REQUEST, DOI_RESERVE } from '@/modules/user/store/doiMutationsConsts';
 import {
   metadataPublishedReadOnlyFields,
   readablePublishedReadOnlyFields,
@@ -266,8 +223,7 @@ export default {
       }
 
       for (let i = 0; i < this.possiblePublicationStates.length; i++) {
-        const pState =
-          this.possiblePublicationStates[i] || PUBLICATION_STATE_DRAFT;
+        const pState = this.possiblePublicationStates[i] || PUBLICATION_STATE_DRAFT;
         pStateWithDiv.push(pState);
         pStateWithDiv.push('mdiArrowRight');
       }
@@ -277,14 +233,10 @@ export default {
       return pStateWithDiv;
     },
     activeStateIndex() {
-      return this.pStatesAndArrows.findIndex(
-        (v) => v === this.publicationState,
-      );
+      return this.pStatesAndArrows.findIndex((v) => v === this.publicationState);
     },
     currentStateInfos() {
-      return this.stateTextMap.get(
-        this.publicationState || PUBLICATION_STATE_DRAFT,
-      );
+      return this.stateTextMap.get(this.publicationState || PUBLICATION_STATE_DRAFT);
     },
     doiUrl() {
       return this.doi ? `https://www.doi.org/${this.doi}` : undefined;
@@ -371,8 +323,7 @@ export default {
         PUBLICATION_STATE_PENDING,
         {
           chipText: 'Publication Pending',
-          infoText:
-            'Please make sure you reviewed the dataset before publishing it!',
+          infoText: 'Please make sure you reviewed the dataset before publishing it!',
           buttonIcon: mdiEarth,
           buttonText: 'Publish Dataset',
           buttonEvent: DOI_PUBLISH,
@@ -392,8 +343,7 @@ export default {
     },
     metadataPublishedReadOnlyFields,
     readablePublishedReadOnlyFields,
-    readOnlyExplanation:
-      'Only dataset owners and admins can change the publication status',
+    readOnlyExplanation: 'Only dataset owners and admins can change the publication status',
     PUBLICATION_STATE_PUBLISHED,
   }),
   components: {

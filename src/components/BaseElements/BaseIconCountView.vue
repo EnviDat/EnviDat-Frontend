@@ -1,11 +1,6 @@
 <template>
   <div class="BaseIconCountView">
-    <base-icon
-      :icon="icon"
-      :count="count"
-      color="grey-darken-4"
-      v-bind="$props"
-    />
+    <base-icon :icon="icon" :count="count" color="grey-darken-4" v-bind="$props" />
   </div>
 </template>
 
@@ -39,5 +34,4 @@ export default {
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

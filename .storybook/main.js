@@ -26,12 +26,7 @@ export default {
       disableSourcemaps: false,
     },
   },
-  addons: [
-    '@chromatic-com/storybook',
-    '@storybook/addon-docs',
-    '@storybook/addon-vitest',
-    '@storybook/addon-a11y'
-  ],
+  addons: ['@chromatic-com/storybook', '@storybook/addon-docs', '@storybook/addon-vitest', '@storybook/addon-a11y'],
 
   framework: {
     name: '@storybook/vue3-vite',
@@ -47,15 +42,14 @@ export default {
 
   async viteFinal(config) {
     return mergeConfig(config, {
-      optimizeDeps: {
-      },
+      optimizeDeps: {},
       server: {
         proxy: {
           '/api': {
             target: 'https://statistics.wsl.ch',
             changeOrigin: true,
             secure: false,
-            rewrite: path => path.replace(/^\/api/, ''),
+            rewrite: (path) => path.replace(/^\/api/, ''),
           },
         },
       },

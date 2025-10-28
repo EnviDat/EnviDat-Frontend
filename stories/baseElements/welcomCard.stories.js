@@ -20,18 +20,18 @@ export default {
 
 export const Empty = {
   args: {},
-}
+};
 
 export const WithDatasets = {
   args: {
     userName: 'userName',
     welcomeText: 'welcomeText',
     publishedDatasetCount: 123,
-    createClickCallback: (() => {
+    createClickCallback: () => {
       console.log('clicked on new dataset');
-    }),
+    },
   },
-}
+};
 
 export const WithDatasetsDisabled = {
   args: {
@@ -39,24 +39,23 @@ export const WithDatasetsDisabled = {
     welcomeText: 'welcomeText',
     publishedDatasetCount: 123,
   },
-}
+};
 export const WithUnpublishedDatasets = {
   args: {
     ...WithDatasets.args,
     unpublishedDatasetCount: 2,
-    unpublishedClickCallback: (() => {
+    unpublishedClickCallback: () => {
       console.log('clicked on unpublished button');
-    }),
+    },
   },
-}
+};
 
 export const WithEditingDatasets = {
   args: {
     ...WithUnpublishedDatasets.args,
     editingDatasetCount: 1,
-    editingClickCallback: (() => {
+    editingClickCallback: () => {
       console.log('clicked on edit dataset');
-    }),
+    },
   },
-}
-
+};

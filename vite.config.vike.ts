@@ -4,11 +4,10 @@ import path from 'path';
 
 import { defineConfig, loadEnv } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import vike from 'vike/plugin'
+import vike from 'vike/plugin';
 import vuetify from 'vite-plugin-vuetify';
 
 export default async ({ mode, config }) => {
-
   const env = loadEnv(mode, process.cwd());
 
   console.log(`Start ${mode} vike build with:`);
@@ -22,11 +21,7 @@ export default async ({ mode, config }) => {
   console.log(`With VITE_SEO_BASE: ${env.VITE_SEO_BASE}`);
 
   return defineConfig({
-    plugins: [
-      vike(),
-      vue(),
-      vuetify(),
-    ],
+    plugins: [vike(), vue(), vuetify()],
     resolve: {
       alias: [
         { find: '@', replacement: path.resolve(__dirname, 'src') },
@@ -66,4 +61,4 @@ export default async ({ mode, config }) => {
     },
     ssr: { noExternal: ['vuetify'] },
   });
-}
+};

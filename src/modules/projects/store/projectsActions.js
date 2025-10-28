@@ -15,12 +15,7 @@ import axios from 'axios';
 
 import { urlRewrite } from '@/factories/apiFactory';
 
-import {
-  ACTION_GET_PROJECTS,
-  GET_PROJECTS,
-  GET_PROJECTS_ERROR,
-  GET_PROJECTS_SUCCESS,
-} from './projectsMutationsConsts';
+import { ACTION_GET_PROJECTS, GET_PROJECTS, GET_PROJECTS_ERROR, GET_PROJECTS_SUCCESS } from './projectsMutationsConsts';
 
 let API_BASE = '';
 let API_ROOT = '';
@@ -58,10 +53,10 @@ export default {
 
     await axios
       .get(url)
-      .then(response => {
+      .then((response) => {
         commit(GET_PROJECTS_SUCCESS, response.data.result);
       })
-      .catch(reason => {
+      .catch((reason) => {
         commit(GET_PROJECTS_ERROR, reason);
       });
   },

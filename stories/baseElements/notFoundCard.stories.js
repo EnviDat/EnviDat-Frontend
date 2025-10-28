@@ -18,7 +18,7 @@ export default {
 
 export const Empty = {
   args: {},
-}
+};
 
 export const NotSignedIn = {
   args: {
@@ -27,7 +27,7 @@ export const NotSignedIn = {
     actionButtonText: 'Sign in',
     image: UserNotFound1,
   },
-}
+};
 
 export const NoDatasets = {
   args: {
@@ -37,4 +37,4 @@ export const NoDatasets = {
     actionButtonText: 'New Dataset',
     image: UserNotFound2,
   },
-}
+};

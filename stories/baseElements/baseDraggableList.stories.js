@@ -11,8 +11,11 @@
 
 import BaseDraggableList from '@/components/BaseElements/BaseDraggableList.vue';
 import { METADATA_AUTHOR_SEQUENCE_PROPERTY } from '@/factories/metadataConsts';
-import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from '@/../stories/js/envidatViewports';
-
+import {
+  mobileLargeViewportParams,
+  mobileViewportParams,
+  tabletViewportParams,
+} from '@/../stories/js/envidatViewports';
 
 export default {
   title: '1 Base / Draggable List',
@@ -20,21 +23,15 @@ export default {
   argTypes: { listChanged: { action: 'listChanged' } },
 };
 
-
-export const EmptyList = { args: {
+export const EmptyList = {
+  args: {
     instructions: 'Empty Drag and Drop items',
   },
 };
 
 export const FilledList = {
   args: {
-    items: [
-      'Dominik Haas-Artho',
-      'Ionut Iosifescu',
-      'Samuel Woodcock',
-      'Gian-Kasper Plattner',
-      'Ranita Pal',
-    ],
+    items: ['Dominik Haas-Artho', 'Ionut Iosifescu', 'Samuel Woodcock', 'Gian-Kasper Plattner', 'Ranita Pal'],
     instructions: 'Drag and Drop authors to change order',
   },
 };
@@ -47,9 +44,7 @@ export const FilledAuthorsListReadOnly = {
   args: {
     ...FilledAuthorsList.args,
     draggableProperty: METADATA_AUTHOR_SEQUENCE_PROPERTY,
-    readOnlyFields: [
-      METADATA_AUTHOR_SEQUENCE_PROPERTY,
-    ],
+    readOnlyFields: [METADATA_AUTHOR_SEQUENCE_PROPERTY],
     readOnlyExplanation: 'Fields are readonly for testing!',
   },
 };

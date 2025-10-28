@@ -47,16 +47,14 @@ export const Amcharts5SingleChart = () => ({
 
     </v-col>
     `,
-  computed: {
-  },
+  computed: {},
   data: () => ({
     chartdiv: 'chartdiv1',
-      //  apiUrl: 'https://www.envidat.ch/data-api/gcnet/csv/swisscamp/airtemp2/end/-999/2019-11-04/2020-11-06/',
+    //  apiUrl: 'https://www.envidat.ch/data-api/gcnet/csv/swisscamp/airtemp2/end/-999/2019-11-04/2020-11-06/',
     apiUrl: 'https://www.envidat.ch/data-api/gcnet/nead/swisscamp/end/empty/2020-11-03/2020-11-06/',
     yAxisName: 'air_temperature_2',
   }),
 });
-
 
 export const Amcharts5MultipleCharts = () => ({
   components: { Amcharts5 },
@@ -101,8 +99,7 @@ export const Amcharts5MultipleCharts = () => ({
       </v-col>
     </div>
     `,
-  computed: {
-  },
+  computed: {},
   data: () => ({
     chartdiv1: 'chartdiv1',
     apiUrl1: 'https://www.envidat.ch/data-api/gcnet/json/swisscamp/airtemp2/2018-11-04T17:00:00/2020-11-10T00:00:00/',
@@ -113,7 +110,6 @@ export const Amcharts5MultipleCharts = () => ({
     yAxisName: 'airtemp2',
   }),
 });
-
 
 export const Amcharts5LargeData = () => ({
   components: { Amcharts5 },
@@ -140,8 +136,7 @@ export const Amcharts5LargeData = () => ({
     </v-col>
     </div>
   `,
-  computed: {
-  },
+  computed: {},
   data: () => ({
     chartdiv1: 'chartdiv1',
     apiUrl1: 'https://www.envidat.ch/data-api/gcnet/json/swisscamp/airtemp2/2000-11-04T17:00:00/2020-11-10T00:00:00/',

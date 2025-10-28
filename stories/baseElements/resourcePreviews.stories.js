@@ -12,8 +12,11 @@
  */
 
 import TextPreviewCard from '@/modules/metadata/components/ResourcePreviews/TextPreviewCard.vue';
-import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from '@/../stories/js/envidatViewports';
-
+import {
+  mobileLargeViewportParams,
+  mobileViewportParams,
+  tabletViewportParams,
+} from '@/../stories/js/envidatViewports';
 
 // const readme1 = './testdata/bender2020_readme.txt';
 // const readme2 = './testdata/10-16904-envidat-30_readme.txt';
@@ -21,7 +24,6 @@ import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams }
 export default {
   title: '1 Base / Cards /  Resource Previews',
 };
-
 
 const Template = (args, { argTypes }) => ({
   components: { TextPreviewCard },
@@ -34,17 +36,17 @@ export const Empty = Template.bind({});
 export const WithUrl = Template.bind({});
 WithUrl.args = {
   url: 'https://os.zhdk.cloud.switch.ch/envicloud/wsl/ros_data/readme.txt',
-}
+};
 
 export const WithInvalidUrl = Template.bind({});
 WithInvalidUrl.args = {
   url: 'https://os.zhdk.cloud.switch.ch/envicloud/wsl/ros_data/fasdfasdfasdfas.txt',
-}
+};
 
 export const WithMarkdownUrl = Template.bind({});
 WithMarkdownUrl.args = {
   url: 'http://s3-zh.os.switch.ch/frontend-static/blog/EnviDat_WSLIntern_2020q1.md',
-}
+};
 
 /*
 export const WithRelativeUrl = Template.bind({});

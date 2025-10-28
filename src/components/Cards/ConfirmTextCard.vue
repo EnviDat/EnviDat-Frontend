@@ -4,19 +4,12 @@
       {{ title }}
     </v-card-title>
 
-    <v-card-text class="pa-4 pt-0 readableText"
-                  v-html="text">
-
-    </v-card-text>
+    <v-card-text class="pa-4 pt-0 readableText" v-html="text"> </v-card-text>
 
     <v-card-actions class="pa-4 pt-0">
       <v-spacer />
 
-      <BaseRectangleButton
-        marginClass="mx-1"
-        :buttonText="confirmText"
-        @clicked="confirmClick"
-      />
+      <BaseRectangleButton marginClass="mx-1" :buttonText="confirmText" @clicked="confirmClick" />
 
       <BaseRectangleButton
         v-if="cancelClick"
@@ -80,6 +73,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

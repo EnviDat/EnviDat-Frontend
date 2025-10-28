@@ -2,8 +2,6 @@ import type { Config } from 'vike/types';
 // import vikeVue from 'vike-vue/config';
 // import { onRenderClient } from '../renderer/+onRenderClient.ts'; //  with { type: 'pointer' };
 
-
-
 export default {
   ssr: false,
   prerender: {
@@ -24,7 +22,7 @@ export default {
       env: { server: true },
     },
   },
-} satisfies Config
+} satisfies Config;
 
 /*
 

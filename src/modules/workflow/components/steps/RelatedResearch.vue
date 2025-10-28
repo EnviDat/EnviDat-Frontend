@@ -13,54 +13,38 @@
     <!-- Info Banner -->
     <v-row>
       <v-col class="mb-5 pt-0 pb-0">
-        <v-alert
-          type="info"
-          closable
-          :icon="false"
-          class="rounded-lg info-banner"
-        >
+        <v-alert type="info" closable :icon="false" class="rounded-lg info-banner">
           <v-alert-title class="mb-2">Information</v-alert-title>
 
           <p>
-            This section allows you to link your dataset to related research
-            outputs such as scientific publications or other datasets. Although
-            not required for publishing, this information significantly improves
-            the discoverability and scientific value of your dataset.
+            This section allows you to link your dataset to related research outputs such as scientific publications or
+            other datasets. Although not required for publishing, this information significantly improves the
+            discoverability and scientific value of your dataset.
           </p>
 
           <p><strong>Tips:</strong></p>
           <ol>
             <li>
               - Add links to publications by inserting
-              <strong>DORA permanent IDs</strong> (e.g., <code>wsl:29664</code>)
-              or DOIs. You can find DORA links at
-              <a href="https://www.dora.lib4ri.ch" target="_blank"
-                >dora.lib4ri.ch</a
-              >.
+              <strong>DORA permanent IDs</strong> (e.g., <code>wsl:29664</code>) or DOIs. You can find DORA links at
+              <a href="https://www.dora.lib4ri.ch" target="_blank">dora.lib4ri.ch</a>.
             </li>
             <li>
-              - If a publication doesn’t have a persistent identifier, you can
-              enter the <strong>citation in plain text</strong>.
+              - If a publication doesn’t have a persistent identifier, you can enter the
+              <strong>citation in plain text</strong>.
             </li>
             <li>
               - Related datasets can be linked by using either their
               <strong>EnviDat identifier</strong> or full URL. You can also use
-              <a
-                href="https://www.markdownguide.org/basic-syntax/#links"
-                target="_blank"
-                >Markdown</a
-              >
+              <a href="https://www.markdownguide.org/basic-syntax/#links" target="_blank">Markdown</a>
               to create clickable links.
             </li>
-            <li>
-              - <b>This section can be updated later</b>, even after your
-              dataset has been published.
-            </li>
+            <li>- <b>This section can be updated later</b>, even after your dataset has been published.</li>
           </ol>
 
           <p class="mt-2">
-            Adding related research helps users understand the context of your
-            dataset and supports proper citation and reuse.
+            Adding related research helps users understand the context of your dataset and supports proper citation and
+            reuse.
           </p>
         </v-alert>
       </v-col>
@@ -154,7 +138,6 @@ export default {
       type: String,
       default: null,
     },
-
   },
   methods: {
     save(payload) {
@@ -193,7 +176,6 @@ export default {
       return this.relatedDatasetsText;
     },
     editRelatedPublicationsProps() {
-
       return {
         relatedPublicationsText: this.relatedPublicationsTextWrap,
         readOnlyFields: this.readOnlyFields,
@@ -221,8 +203,7 @@ export default {
   data: () => ({
     labels: {
       title: 'Related Research',
-      instructions:
-        'Link related research and publications that support or reference your dataset.',
+      instructions: 'Link related research and publications that support or reference your dataset.',
     },
   }),
   components: {

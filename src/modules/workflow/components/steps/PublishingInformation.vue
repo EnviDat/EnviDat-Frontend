@@ -13,42 +13,30 @@
     <!-- Info Banner -->
     <v-row>
       <v-col class="mb-5 pt-0 pb-0">
-        <v-alert
-          type="info"
-          closable
-          :icon="false"
-          class="rounded-lg info-banner"
-        >
+        <v-alert type="info" closable :icon="false" class="rounded-lg info-banner">
           <v-alert-title class="mb-2">Information</v-alert-title>
 
           <p>
-            This section defines how your dataset will appear upon publication.
-            It includes contact details and official publication information
-            such as the publisher, publication year, and DOI.
+            This section defines how your dataset will appear upon publication. It includes contact details and official
+            publication information such as the publisher, publication year, and DOI.
           </p>
 
           <p><strong>Tips:</strong></p>
           <ol>
             <li>
-              - <strong>DOI (Digital Object Identifier)</strong>: The DOI is
-              generated automatically and becomes active once the dataset is
-              published. You can still copy and use it in advance (e.g., in a
-              paper).
+              - <strong>DOI (Digital Object Identifier)</strong>: The DOI is generated automatically and becomes active
+              once the dataset is published. You can still copy and use it in advance (e.g., in a paper).
             </li>
+            <li>- <strong>Publisher</strong>: EnviDat is set as the publisher by default and cannot be changed.</li>
             <li>
-              - <strong>Publisher</strong>: EnviDat is set as the publisher by
-              default and cannot be changed.
-            </li>
-            <li>
-              - <strong>Contact Information</strong>: Add a valid contact person
-              for future communication about the dataset. If the person is an
-              EnviDat user, pick them from the list to auto-fill their details.
+              - <strong>Contact Information</strong>: Add a valid contact person for future communication about the
+              dataset. If the person is an EnviDat user, pick them from the list to auto-fill their details.
             </li>
           </ol>
 
           <p class="mt-2">
-            These details are part of the final published metadata and will be
-            publicly visible. Make sure they are accurate.
+            These details are part of the final published metadata and will be publicly visible. Make sure they are
+            accurate.
           </p>
         </v-alert>
       </v-col>
@@ -66,23 +54,14 @@
       <v-col cols="12" xl="6" class="pa-0">
         <v-row>
           <v-col cols="12">
-            <ContactPerson
-              v-bind="editContactPersonProps"
-              @save="catchContactPersonChange"
-            />
+            <ContactPerson v-bind="editContactPersonProps" @save="catchContactPersonChange" />
           </v-col>
         </v-row>
       </v-col>
 
       <v-col cols="12" xl="6" class="pa-0">
         <v-row>
-          <v-col
-            v-if="
-              blindReviewEditingActive &&
-              publicationState !== PUBLICATION_STATE_PUBLISHED
-            "
-            cols="12"
-          >
+          <v-col v-if="blindReviewEditingActive && publicationState !== PUBLICATION_STATE_PUBLISHED" cols="12">
             <ReviewInfo v-bind="editReviewProps" />
           </v-col>
         </v-row>
@@ -137,20 +116,11 @@ import ReviewInfo from '@/modules/workflow/components/steps/ReviewInfo.vue';
 import NotFoundCard from '@/components/Cards/NotFoundCard.vue';
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
 
-import {
-  getUserPickerObjects,
-  getAuthorByEmail,
-} from '@/factories/authorFactory';
+import { getUserPickerObjects, getAuthorByEmail } from '@/factories/authorFactory';
 
-import {
-  isReadOnlyField,
-  getReadOnlyHint,
-} from '@/modules/workflow/utils/useReadonly';
+import { isReadOnlyField, getReadOnlyHint } from '@/modules/workflow/utils/useReadonly';
 
-import {
-  BLIND_REVIEW_ON,
-  PUBLICATION_STATE_PUBLISHED,
-} from '@/factories/metadataConsts';
+import { BLIND_REVIEW_ON, PUBLICATION_STATE_PUBLISHED } from '@/factories/metadataConsts';
 
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
@@ -167,8 +137,7 @@ export default {
     PUBLICATION_STATE_PUBLISHED,
     labels: {
       title: 'Publishing information',
-      instructions:
-        'Please provide main contact infomation and publication details for your dataset.',
+      instructions: 'Please provide main contact infomation and publication details for your dataset.',
     },
   }),
 
@@ -220,10 +189,7 @@ export default {
     },
 
     preselectAuthorEmails() {
-      const author = getAuthorByEmail(
-        this.contactEmail,
-        this.existingAuthorsWrap,
-      );
+      const author = getAuthorByEmail(this.contactEmail, this.existingAuthorsWrap);
 
       return author ? [author.email] : [];
     },
@@ -264,12 +230,8 @@ export default {
     },
 
     editPublicationStatusProps() {
-      const err =
-        typeof this.doiError === 'string'
-          ? this.doiError
-          : this.doiError?.message;
-      const errDetails =
-        typeof this.doiError === 'object' ? this.doiError?.details : undefined;
+      const err = typeof this.doiError === 'string' ? this.doiError : this.doiError?.message;
+      const errDetails = typeof this.doiError === 'object' ? this.doiError?.details : undefined;
 
       return {
         ...this.publicationsInfo,
@@ -319,15 +281,11 @@ export default {
 
       try {
         if (event === 'DOI_RESERVE') {
-          await this.workflowStore.withLoading(
-            () => this.workflowStore.backendStorageService.requestDoi(id),
-            'doi',
-          );
+          await this.workflowStore.withLoading(() => this.workflowStore.backendStorageService.requestDoi(id), 'doi');
           this.doiMsgLocal = 'DOI reserved successfully.';
         } else if (event === 'DOI_REQUEST') {
           await this.workflowStore.withLoading(
-            () =>
-              this.workflowStore.backendStorageService.requestPublication(id),
+            () => this.workflowStore.backendStorageService.requestPublication(id),
             'doi',
           );
           this.doiMsgLocal = 'Publication requested. An admin will review it.';

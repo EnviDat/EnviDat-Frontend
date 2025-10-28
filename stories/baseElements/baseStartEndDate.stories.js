@@ -17,7 +17,6 @@ export default {
   component: BaseStartEndDate,
 };
 
-
 export const BaseStartEndDateViews = () => ({
   components: { BaseStartEndDate },
   template: `
@@ -82,15 +81,12 @@ export const BaseStartEndDateViews = () => ({
   `,
   computed: {
     readOnlyFields() {
-      return [
-        this.startDateProperty,
-        this.endDateProperty,
-      ];
+      return [this.startDateProperty, this.endDateProperty];
     },
   },
   methods: {
     catchClearClick(dateProperty) {
-/*
+      /*
       console.log('Got catchClearClick');
       console.log(dateProperty);
 */
@@ -103,7 +99,7 @@ export const BaseStartEndDateViews = () => ({
       }
     },
     dateChange(index, dateProperty, newDate) {
-/*
+      /*
       console.log('Got new date');
       console.log(index);
       console.log(dateProperty);

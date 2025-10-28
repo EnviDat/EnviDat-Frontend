@@ -1,4 +1,3 @@
-
 export interface Person {
   '@type': 'Person';
   name: string;

@@ -10,11 +10,12 @@ export default {
 export const Empty = {};
 
 export const Default = {
-  args: { 
+  args: {
     id: 'default-id',
     doi: '10.1000/xyz123',
     name: 'Default Resource',
-    description: 'A brief description of the default resource. **Markdown?** [https://www.google.com](https://www.google.com)',
+    description:
+      'A brief description of the default resource. **Markdown?** [https://www.google.com](https://www.google.com)',
     url: 'http://example.com',
     restrictedUrl: '',
     created: '2022-01-01',
@@ -34,13 +35,13 @@ export const Default = {
     openButtonIcon: mdiFileEye,
     cardColor: 'primary',
     isSelected: false,
-    loading: false, 
+    loading: false,
   },
 };
 
 export const DefaultSelected = {
-  args: { 
-    ...Default.args, 
+  args: {
+    ...Default.args,
     description: 'A brief description of the default resource, selected by the user.',
     isSelected: true,
   },
@@ -108,7 +109,6 @@ export const LoadingState = {
     description: 'Resource card showcasing the loading state.',
   },
 };
-
 
 export const TwoColumnLayout = {
   args: {

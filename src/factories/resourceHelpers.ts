@@ -9,18 +9,13 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import {
-  ACCESS_LEVEL_PUBLIC_VALUE,
-  getAllowedUserNamesArray,
-} from '@/factories/userEditingFactory';
+import { ACCESS_LEVEL_PUBLIC_VALUE, getAllowedUserNamesArray } from '@/factories/userEditingFactory';
 
 import { METADATA_TITLE_PROPERTY } from '@/factories/metadataConsts';
 
 import { formatDate } from '@/factories/dateFactory';
 import { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 import { Resource } from '@/types/modelTypes';
-
-
 
 /*
 export function getFileFormat(file) {
@@ -82,11 +77,8 @@ export function isResourceProtectedForUser(
     try {
       const restrictedObj = JSON.parse(restrictedInfo);
       isPublic = restrictedObj.level === ACCESS_LEVEL_PUBLIC_VALUE;
-      isProtected =
-        !!restrictedObj.level &&
-        restrictedObj.level !== ACCESS_LEVEL_PUBLIC_VALUE;
-      allowedUsers =
-        restrictedObj.allowed_users || restrictedObj.allowedUsers || '';
+      isProtected = !!restrictedObj.level && restrictedObj.level !== ACCESS_LEVEL_PUBLIC_VALUE;
+      allowedUsers = restrictedObj.allowed_users || restrictedObj.allowedUsers || '';
       // "{"allowed_users": "", "level": "public", "shared_secret": ""}"
     } catch (err) {
       isPublic = restrictedInfo.includes(ACCESS_LEVEL_PUBLIC_VALUE);
@@ -188,11 +180,7 @@ export function createResource(
   };
 }
 
-export function createResources(
-  dataset: DatasetDTO,
-  signedInUser: string,
-  signedInUserOrganizationIds: string,
-) {
+export function createResources(dataset: DatasetDTO, signedInUser: string, signedInUserOrganizationIds: string) {
   if (!dataset) {
     return null;
   }
@@ -268,7 +256,6 @@ export function mergeResourceSizeForFrontend(resource: Resource) {
   let resourceSize = resource.resourceSize || null;
 
   if (resourceSize) {
-
     if (typeof resourceSize === 'string') {
       try {
         resourceSize = JSON.parse(resourceSize);
