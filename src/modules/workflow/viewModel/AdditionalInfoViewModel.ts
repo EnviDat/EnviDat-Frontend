@@ -36,10 +36,7 @@ export class AdditionalInfoViewModel extends AbstractEditViewModel {
     organizationName: yup.string().nullable(),
     dataLicenseTitle: yup.string().nullable(),
     dataLicenseUrl: yup.string().nullable().url(),
-    organizationId: yup
-      .string()
-      .nullable()
-      .required('Organization is required'),
+    organizationId: yup.string().nullable().required('Organization is required'),
     funders: yup
       .array()
       .required('Enter funding information')
@@ -48,11 +45,7 @@ export class AdditionalInfoViewModel extends AbstractEditViewModel {
         yup.object().shape({
           institution: yup.string().required().min(3),
           grantNumber: yup.string(),
-          institutionUrl: yup
-            .string()
-            .nullable()
-            .transform(toNull)
-            .url('Provide a valid link / url.'),
+          institutionUrl: yup.string().nullable().transform(toNull).url('Provide a valid link / url.'),
         }),
       ),
   });

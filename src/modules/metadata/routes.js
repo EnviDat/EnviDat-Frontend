@@ -12,7 +12,7 @@ const MetadataDetailPage = () => import('@/modules/metadata/components/MetadataD
 const MetadataReviewPage = () => import('@/modules/metadata/components/MetadataReviewPage.vue');
 
 export const metadataRoutes = [
-/*
+  /*
   {
     path: METADATA_MODULE_PATH,
     name: METADATA_MODULE_PAGENAME,

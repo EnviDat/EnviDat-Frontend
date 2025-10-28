@@ -11,7 +11,6 @@
 
 import BlogHeader from '@/modules/blog/components/BlogHeader.vue';
 
-
 export default {
   title: '16 Blog Page / Blog Elements',
   component: BlogHeader,
@@ -24,7 +23,6 @@ export const BlogPageHeader = {
     height: 150,
   },
 };
-
 
 export const NormalBlogPostHeader = {
   args: {
@@ -43,4 +41,3 @@ export const LargeBlogPostHeader = {
     showCloseButton: true,
   },
 };
-

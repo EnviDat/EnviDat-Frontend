@@ -13,13 +13,12 @@ import { createTag } from '@/factories/keywordsFactory';
 import { ModeData, modes } from '@/factories/modeData';
 import { Keyword } from '@/types/modelTypes';
 
-
 /**
  * Get the metadata of a mode
  * @param {string} modeName
  * @returns {{externalUrl: string, datasetUrl: string, loadDatasets: (function(Object): Promise<*[]>), name: string, extrasKey: string, mainTag: {name: string, enabled: boolean}, logo: {}, title: string, icons: {infrastructure: any, model: any, dataset: any}, extraTags: [{color: string, name: string, enabled: boolean},{color: string, name: string, enabled: boolean}]}|{externalUrl: string, datasetUrl: string, loadDatasets: (function(Object): Promise<{}>), name: string, extrasKey: string, mainTag: {name: string, enabled: boolean}, logo: {}, title: string, icons: Record<string, unknown>, extraTags: *[]}}
  */
-export function getModeData(modeName: string) : ModeData {
+export function getModeData(modeName: string): ModeData {
   const modeData = modes.filter((m) => m.name === modeName)[0];
 
   if (modeData) {
@@ -62,10 +61,7 @@ let tempModeData = null;
 export function enhanceMetadataWithModeExtras(modeName: string, metadataEntry: any) {
   if (!modeName || !metadataEntry) return metadataEntry;
 
-  if (
-    typeof metadataEntry.extras === 'object' &&
-    metadataEntry.extras instanceof Array
-  ) {
+  if (typeof metadataEntry.extras === 'object' && metadataEntry.extras instanceof Array) {
     if (!tempModeData || (tempModeData && tempModeData.name !== modeName)) {
       tempModeData = getModeData(modeName);
     }
@@ -79,9 +75,7 @@ export function enhanceMetadataWithModeExtras(modeName: string, metadataEntry: a
         metadataEntry[key] = extra.value;
 
         const extraTag = createTag(extra.value.toUpperCase()) as Keyword;
-        const tagIndex = metadataEntry.tags.findIndex(
-          (t) => t.name === extraTag.name,
-        );
+        const tagIndex = metadataEntry.tags.findIndex((t) => t.name === extraTag.name);
 
         if (tagIndex < 0) {
           metadataEntry.tags.push(extraTag);

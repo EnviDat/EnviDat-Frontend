@@ -3,10 +3,7 @@
     <v-row v-if="mapLayout" class="fill-height">
       <v-col class="py-0 pr-2 flex-column" cols="4">
         <v-row no-gutters>
-          <v-col
-            id="metadataListLayoutFiltering_map"
-            ref="metadataListLayoutFiltering"
-          >
+          <v-col id="metadataListLayoutFiltering_map" ref="metadataListLayoutFiltering">
             <slot name="filterKeywords" />
           </v-col>
         </v-row>
@@ -15,11 +12,7 @@
           <v-col
             id="map_column"
             class="pt-4"
-            :style="
-              useDynamicHeight
-                ? `height: calc(100vh - ${keywordHeight}px);`
-                : ''
-            "
+            :style="useDynamicHeight ? `height: calc(100vh - ${keywordHeight}px);` : ''"
           >
             <slot name="filterMap" />
           </v-col>
@@ -41,19 +34,14 @@
             class="mapLayoutContainers listScroll mt-2 mb-4 pr-1"
             :style="{
               'scrollbar-color': `${this.scrollbarColorFront} ${this.scrollbarColorBack}`,
-              height: useDynamicHeight
-                ? `calc(100vh - ${this.filteringComponentsHeight}px)`
-                : undefined,
+              height: useDynamicHeight ? `calc(100vh - ${this.filteringComponentsHeight}px)` : undefined,
               'max-height': !useDynamicHeight ? '650px' : undefined,
             }"
             v-on:scrollend="onScroll()"
           >
             <slot name="metadataListPlaceholder" />
 
-            <slot
-              name="metadataListLayout"
-              :metadataListHeight="metadataListHeight"
-            />
+            <slot name="metadataListLayout" :metadataListHeight="metadataListHeight" />
           </v-col>
         </v-row>
       </v-col>
@@ -66,11 +54,7 @@
       class="w-100"
       no-gutters
     >
-      <v-col
-        class="hidden-sm-and-up pb-2"
-        cols="12"
-        key="controlPanel_smallscreen"
-      >
+      <v-col class="hidden-sm-and-up pb-2" cols="12" key="controlPanel_smallscreen">
         <slot name="controlPanel" />
       </v-col>
 
@@ -85,9 +69,7 @@
       <v-col
         v-if="showMapFilter && mapFilteringPossible"
         cols="12"
-        :style="
-          minMapHeight ? `min-height: ${minMapHeight}px;` : 'height: 100%;'
-        "
+        :style="minMapHeight ? `min-height: ${minMapHeight}px;` : 'height: 100%;'"
         key="filterMap"
       >
         <slot name="filterMap" />
@@ -101,19 +83,14 @@
         class="noMapLayoutContainers listScroll mt-2 mb-4 pr-1"
         :style="{
           'scrollbar-color': `${this.scrollbarColorFront} ${this.scrollbarColorBack}`,
-          height: useDynamicHeight
-            ? `calc(100vh - ${this.filteringComponentsHeight}px)`
-            : undefined,
+          height: useDynamicHeight ? `calc(100vh - ${this.filteringComponentsHeight}px)` : undefined,
           'max-height': !useDynamicHeight ? '650px' : undefined,
         }"
         v-on:scrollend="onScroll()"
       >
         <slot name="metadataListPlaceholder" />
 
-        <slot
-          name="metadataListLayout"
-          :metadataListHeight="metadataListHeight"
-        />
+        <slot name="metadataListLayout" :metadataListHeight="metadataListHeight" />
       </v-col>
     </v-row>
   </v-container>
@@ -155,16 +132,10 @@ export default {
   },
   computed: {
     mapLayout() {
-      return (
-        !this.topFilteringLayout &&
-        this.showMapFilter &&
-        this.$vuetify.display.mdAndUp
-      );
+      return !this.topFilteringLayout && this.showMapFilter && this.$vuetify.display.mdAndUp;
     },
     scrollbarColorFront() {
-      return this.$vuetify
-        ? this.$vuetify.theme.themes.light.colors.highlight
-        : 'auto';
+      return this.$vuetify ? this.$vuetify.theme.themes.light.colors.highlight : 'auto';
     },
     scrollbarColorBack() {
       return this.$vuetify ? '#F0F0F0' : 'auto';
@@ -180,18 +151,12 @@ export default {
         searchViewHeight = this.$refs.controlPanel.$el.clientHeight;
       }
 
-      if (
-        !this.mapLayout &&
-        this.$refs &&
-        this.$refs.metadataListLayoutFiltering
-      ) {
-        searchViewHeight =
-          this.$refs.metadataListLayoutFiltering.$el.clientHeight;
+      if (!this.mapLayout && this.$refs && this.$refs.metadataListLayoutFiltering) {
+        searchViewHeight = this.$refs.metadataListLayoutFiltering.$el.clientHeight;
         padding = 20;
       }
 
-      this.filteringComponentsHeight =
-        searchViewHeight + TheNavigationToolbar + padding;
+      this.filteringComponentsHeight = searchViewHeight + TheNavigationToolbar + padding;
 
       const viewportHeight = window.innerHeight;
       this.metadataListHeight = viewportHeight - this.filteringComponentsHeight;
@@ -201,11 +166,7 @@ export default {
       const padding = 16;
       let keywordHeight = 150;
 
-      if (
-        this.showMapFilter &&
-        this.$refs &&
-        this.$refs.metadataListLayoutFiltering
-      ) {
+      if (this.showMapFilter && this.$refs && this.$refs.metadataListLayoutFiltering) {
         // use the offset Height here to measure the padding as well
         keywordHeight = this.$refs.metadataListLayoutFiltering.$el.offsetHeight;
       }

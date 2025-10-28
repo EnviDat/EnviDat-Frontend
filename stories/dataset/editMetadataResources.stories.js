@@ -10,21 +10,13 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import {
-  EDITMETADATA_DATA_RESOURCE,
-} from '@/factories/eventBus';
+import { EDITMETADATA_DATA_RESOURCE } from '@/factories/eventBus';
 
 import EditMetadataResources from '@/modules/user/components/EditMetadataResources.vue';
 
-import {
-  enhanceElementsWithStrategyEvents,
-  SELECT_EDITING_RESOURCE_PROPERTY,
-} from '@/factories/strategyFactory';
+import { enhanceElementsWithStrategyEvents, SELECT_EDITING_RESOURCE_PROPERTY } from '@/factories/strategyFactory';
 
-import {
-  cleanListForFrontend,
-  enhanceUserObject,
-} from '@/factories/mappingFactory';
+import { cleanListForFrontend, enhanceUserObject } from '@/factories/mappingFactory';
 
 import unFormatedMetadata from '@/../stories/js/metadata';
 import userList from '@/../stories/testdata/user_list.json';
@@ -41,10 +33,7 @@ const allResources = [];
 
 for (let i = 0; i < unFormatedMetadata.length; i++) {
   const dataset = unFormatedMetadata[i];
-  let resources = cleanListForFrontend(
-    dataset.resources,
-    EDITMETADATA_DATA_RESOURCE,
-  );
+  let resources = cleanListForFrontend(dataset.resources, EDITMETADATA_DATA_RESOURCE);
 
   for (let j = 0; j < resources.length; j++) {
     const resource = resources[j];
@@ -52,25 +41,20 @@ for (let i = 0; i < unFormatedMetadata.length; i++) {
       try {
         resource.restricted = JSON.parse(resource.restricted);
       } catch (e) {
-        console.log(
-          `resource failed ${resource.name} restricted ${resource.restricted}`,
-        );
+        console.log(`resource failed ${resource.name} restricted ${resource.restricted}`);
         console.error(e);
       }
     }
   }
 
-  resources = enhanceElementsWithStrategyEvents(
-    resources,
-    SELECT_EDITING_RESOURCE_PROPERTY,
-    true,
-  );
+  resources = enhanceElementsWithStrategyEvents(resources, SELECT_EDITING_RESOURCE_PROPERTY, true);
   allResources.push(resources);
 }
 
 const deprecatedResources = [...allResources[1], ...allResources[2]];
 
-deprecatedResources[0].url = 'https://envicloud.wsl.ch/#/?bucket=https://envicloud.wsl.ch/edna/&prefix=su_ch/su_ch_birmen_2024';
+deprecatedResources[0].url =
+  'https://envicloud.wsl.ch/#/?bucket=https://envicloud.wsl.ch/edna/&prefix=su_ch/su_ch_birmen_2024';
 deprecatedResources[1].deprecated = true;
 deprecatedResources[2].deprecated = true;
 
@@ -79,8 +63,7 @@ export default {
   component: EditMetadataResources,
 };
 
-
-export const Empty = {}
+export const Empty = {};
 
 export const WithResources = {
   args: {
@@ -90,7 +73,7 @@ export const WithResources = {
     },
     compactList: true,
   },
-}
+};
 
 export const WithResourcesWideList = {
   args: {
@@ -100,12 +83,11 @@ export const WithResourcesWideList = {
     },
     compactList: false,
   },
-}
+};
 
 export const WithDeprecatedResources = {
   args: {
     resources: deprecatedResources,
     compactList: true,
   },
-}
-
+};

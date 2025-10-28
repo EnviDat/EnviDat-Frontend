@@ -7,8 +7,12 @@
         </v-col>
 
         <v-col v-if="message">
-          <BaseStatusLabelView status="check" statusColor="success" :statusText="message"
-                               :expandedText="messageDetails" />
+          <BaseStatusLabelView
+            status="check"
+            statusColor="success"
+            :statusText="message"
+            :expandedText="messageDetails"
+          />
         </v-col>
 
         <v-col v-if="error">
@@ -63,10 +67,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import {
-  EDIT_METADATA_RESOURCES_TITLE,
-  METADATA_RESOURCES_SEQUENCE_PROPERTY,
-} from '@/factories/metadataConsts';
+import { EDIT_METADATA_RESOURCES_TITLE, METADATA_RESOURCES_SEQUENCE_PROPERTY } from '@/factories/metadataConsts';
 
 import MetadataResources from '@/modules/metadata/components/Metadata/MetadataResources.vue';
 import ExpandableLayout from '@/components/Layouts/ExpandableLayout.vue';
@@ -160,8 +161,7 @@ export default {
         resources: this.resourcesField,
         dataLicenseTitle: this.dataLicenseTitle,
         dataLicenseUrl: this.dataLicenseUrl,
-        emptyText:
-          'No resources has been added yet. Upload a file or provide a link to a resource.',
+        emptyText: 'No resources has been added yet. Upload a file or provide a link to a resource.',
         emptyTextColor: 'grey',
         compactList: this.compactList,
         genericOpenButtonBottom: false,
@@ -175,9 +175,7 @@ export default {
       for (let i = 0; i < newList.length; i++) {
         const resName = newList[i];
 
-        const res = this.resourcesField.filter(
-          (r) => getResourceName(r) === resName,
-        )[0];
+        const res = this.resourcesField.filter((r) => getResourceName(r) === resName)[0];
 
         if (res) {
           res.position = i;

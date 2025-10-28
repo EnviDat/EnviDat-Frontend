@@ -9,10 +9,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import {
-  swissFLExtraTags,
-  swissFLTag,
-} from '@/modules/metadata/store/swissForestLabTags';
+import { swissFLExtraTags, swissFLTag } from '@/modules/metadata/store/swissForestLabTags';
 
 import {
   EDNA_MODE,
@@ -36,7 +33,6 @@ export type ModeIcons = {
   infrastructure?: string;
   model?: string;
 };
-
 
 export const MODE_STORE = 'MODE_STORE';
 
@@ -67,13 +63,11 @@ const loadModeDatasetsWithMainTag = async (modeMetadata: ModeData): Promise<any>
   // eslint-disable-next-line import/no-cycle
   const store = await import('@/modules/metadata/store/metadataStore');
   const state = store.metadata.state;
-  const isSearchResultContent =
-    store[METADATA_NAMESPACE].getters.searchingMetadatasContentOK(state);
+  const isSearchResultContent = store[METADATA_NAMESPACE].getters.searchingMetadatasContentOK(state);
   let content = [];
 
   if (isSearchResultContent) {
-    const searchContent =
-      store[METADATA_NAMESPACE].getters.searchedMetadatasContent(state);
+    const searchContent = store[METADATA_NAMESPACE].getters.searchedMetadatasContent(state);
 
     if (Object.keys(searchContent).length > 0) {
       content = Object.values(searchContent);
@@ -81,9 +75,7 @@ const loadModeDatasetsWithMainTag = async (modeMetadata: ModeData): Promise<any>
   } else {
     content = store[METADATA_NAMESPACE].getters.allMetadatas(state);
   }
-  return content.filter((entry) =>
-    tagsIncludedInSelectedTags(entry.tags, [modeMetadata.mainTag.name]),
-  );
+  return content.filter((entry) => tagsIncludedInSelectedTags(entry.tags, [modeMetadata.mainTag.name]));
 };
 
 /**
@@ -123,7 +115,6 @@ const loadEDNADatasets = async (modeMetadata: ModeData): Promise<any> => {
 
 // ASK FOREST3D team to align the tags with the other modes
 const normalizeTags = (tags: Tag[]) =>
-
   (tags || []).map((t) => {
     const raw = t && typeof t === 'object' ? t.name : t;
     const upper = String(raw ?? '')
@@ -145,11 +136,7 @@ const loadFOREST3DDataset = async (modeMetadata: ModeData): Promise<any> => {
   try {
     const response = await fetch(url);
     if (!response.ok) {
-      console.error(
-        'loadFOREST3DDataset: bad response',
-        response.status,
-        response.statusText,
-      );
+      console.error('loadFOREST3DDataset: bad response', response.status, response.statusText);
       return [];
     }
 
@@ -166,7 +153,6 @@ const loadFOREST3DDataset = async (modeMetadata: ModeData): Promise<any> => {
     return [];
   }
 };
-
 
 export type ModeData = {
   name: string;

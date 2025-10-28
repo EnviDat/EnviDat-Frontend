@@ -1,37 +1,20 @@
 <template>
-  <v-card class="datasetTitleCard"
-          :class="cardClass"
-          style="align-self: center;" >
+  <v-card class="datasetTitleCard" :class="cardClass" style="align-self: center">
+    <v-progress-linear v-if="loading" color="primary" absolute indeterminate />
 
-    <v-progress-linear v-if="loading"
-                       color="primary"
-                       absolute
-                       indeterminate />
-
-    <v-container fluid
-                 class="px-2 py-0 fill-height">
-
-      <v-row no-gutters >
+    <v-container fluid class="px-2 py-0 fill-height">
+      <v-row no-gutters>
         <v-col cols="12">
-          <div :class="titleClass" >{{ title }}</div>
+          <div :class="titleClass">{{ title }}</div>
         </v-col>
-
       </v-row>
     </v-container>
 
-    <div v-if="clickCallback" style="position: absolute; right: 8px;">
-
-      <BaseIconButton
-        :icon="icon"
-        :tooltipText="tooltipText"
-        @clicked="clickCallback"
-      />
+    <div v-if="clickCallback" style="position: absolute; right: 8px">
+      <BaseIconButton :icon="icon" :tooltipText="tooltipText" @clicked="clickCallback" />
     </div>
-
-
   </v-card>
 </template>
-
 
 <script>
 /**
@@ -67,12 +50,9 @@ export default {
     tooltipText: String,
     clickCallback: Function,
   },
-  computed: {
-  },
-  methods: {
-  },
-  data: () => ({
-  }),
+  computed: {},
+  methods: {},
+  data: () => ({}),
   components: {
     BaseIconButton,
   },
@@ -80,10 +60,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
-  .datasetTitleCard {
-    display: grid;
-    grid-template-columns: 11fr 1fr;
-  }
-
+.datasetTitleCard {
+  display: grid;
+  grid-template-columns: 11fr 1fr;
+}
 </style>

@@ -59,18 +59,8 @@
     <template v-slot:metadataListPlaceholder>
       <v-container v-show="loading" class="px-0 pt-0 px-sm-1" fluid>
         <!-- don't use class with paddings here, it's being used in the MetadataListLayout component -->
-        <v-row
-          no-gutters
-          id="metadataListPlaceholder"
-          ref="metadataListPlaceholder"
-        >
-          <v-col
-            v-for="(n, index) in placeHolderAmount"
-            :key="'placeHolder_' + index"
-            cols="12"
-            sm="3"
-            class="pa-2"
-          >
+        <v-row no-gutters id="metadataListPlaceholder" ref="metadataListPlaceholder">
+          <v-col v-for="(n, index) in placeHolderAmount" :key="'placeHolder_' + index" cols="12" sm="3" class="pa-2">
             <MetadataCardPlaceholder :dark="false" />
           </v-col>
         </v-row>
@@ -122,17 +112,13 @@
                     :organization="metadata.organization?.name"
                     :organizationTooltip="metadata.organization?.title"
                     :showOrganizationOnHover="showOrganizationOnHover"
-                    @organizationClicked="
-                      $emit('organizationClicked', metadata.organization)
-                    "
+                    @organizationClicked="$emit('organizationClicked', metadata.organization)"
                     @clickedEvent="metaDataClicked"
                     @clickedTag="catchTagClicked"
                     :showGenericOpenButton="!!metadata.openEvent"
                     :openButtonTooltip="metadata.openButtonTooltip"
                     :openButtonIcon="metadata.openButtonIcon"
-                    @openButtonClicked="
-                      catchOpenClick(metadata.openEvent, metadata.openProperty)
-                    "
+                    @openButtonClicked="catchOpenClick(metadata.openEvent, metadata.openProperty)"
                   />
                 </v-col>
               </v-row>
@@ -141,16 +127,8 @@
         </v-row>
 
         <v-row v-if="!loading && !hasContent">
-          <v-col
-            class="mx-2"
-            id="noSearchResultsView"
-            key="noSearchResultsView"
-            cols="12"
-          >
-            <NoSearchResultsView
-              :categoryCards="categoryCards"
-              @clicked="catchCategoryClicked"
-            />
+          <v-col class="mx-2" id="noSearchResultsView" key="noSearchResultsView" cols="12">
+            <NoSearchResultsView :categoryCards="categoryCards" @clicked="catchCategoryClicked" />
           </v-col>
         </v-row>
       </v-container>
@@ -198,9 +176,7 @@ import MetadataCard from '@/components/Cards/MetadataCard.vue';
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
 import { getMetadataVisibilityState } from '@/factories/publicationFactory';
 
-const NoSearchResultsView = defineAsyncComponent(
-  () => import('@/components/Filtering/NoSearchResultsView.vue'),
-);
+const NoSearchResultsView = defineAsyncComponent(() => import('@/components/Filtering/NoSearchResultsView.vue'));
 
 export default {
   name: 'MetadataList',
@@ -291,9 +267,7 @@ export default {
   },
   computed: {
     hasMetadatasContent() {
-      return this.metadatasContent
-        ? Object.keys(this.metadatasContent)?.length > 0
-        : false;
+      return this.metadatasContent ? Object.keys(this.metadatasContent)?.length > 0 : false;
     },
     hasPinnedContent() {
       if (this.prePinnedIds?.length > 0) {
@@ -311,10 +285,7 @@ export default {
       return false;
     },
     pinnedContent() {
-      if (
-        !this.metadatasContent ||
-        Object.keys(this.metadatasContent)?.length <= 0
-      ) {
+      if (!this.metadatasContent || Object.keys(this.metadatasContent)?.length <= 0) {
         return [];
       }
 
@@ -335,9 +306,7 @@ export default {
       const pins = this.pinnedContent;
 
       if (pins.length > 0) {
-        const content = this.listContent.filter(
-          (dataset) => !this.prePinnedIds.includes(dataset.id),
-        );
+        const content = this.listContent.filter((dataset) => !this.prePinnedIds.includes(dataset.id));
         return [...pins, ...content];
       }
 
@@ -347,9 +316,7 @@ export default {
       return this.content?.length > 0;
     },
     showPinnedElements() {
-      return (
-        !this.loading && this.showMapFilter && this.prePinnedIds?.length > 0
-      );
+      return !this.loading && this.showMapFilter && this.prePinnedIds?.length > 0;
     },
     amountOfRowsItems() {
       const mapActive = this.isActiveControl(LISTCONTROL_MAP_ACTIVE);
@@ -414,11 +381,7 @@ export default {
       return this.isActiveControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE);
     },
     mapLayout() {
-      return (
-        !this.topFilteringLayout &&
-        this.showMapFilter &&
-        this.$vuetify.display.mdAndUp
-      );
+      return !this.topFilteringLayout && this.showMapFilter && this.$vuetify.display.mdAndUp;
     },
   },
   methods: {
@@ -450,9 +413,7 @@ export default {
       eventBus.emit(event, eventProperty);
     },
     getGeoJSONIcon(location) {
-      return location?.geoJSON?.type
-        ? getGeoJSONIcon(location.geoJSON.type)
-        : null;
+      return location?.geoJSON?.type ? getGeoJSONIcon(location.geoJSON.type) : null;
     },
     catchTagClicked(tagName) {
       this.$emit('clickedTag', tagName);
@@ -477,13 +438,7 @@ export default {
       }
 
       const stringTags = convertArrayToUrlString([cardType]);
-      this.$router.options.additiveChangeRoute(
-        this.$route,
-        this.$router,
-        BROWSE_PATH,
-        '',
-        stringTags,
-      );
+      this.$router.options.additiveChangeRoute(this.$route, this.$router, BROWSE_PATH, '', stringTags);
     },
     catchModeClicked(mode) {
       this.$router.push({
@@ -532,8 +487,7 @@ export default {
 
         if (
           res.restricted !== undefined &&
-          (res.restricted.allowed_users !== undefined ||
-            res.restricted.level !== 'public')
+          (res.restricted.allowed_users !== undefined || res.restricted.level !== 'public')
         ) {
           return true;
         }
@@ -555,15 +509,11 @@ export default {
       }
 
       if (number === LISTCONTROL_LIST_ACTIVE) {
-        controlsActive = controlsActive.filter(
-          (n) => n !== LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
-        );
+        controlsActive = controlsActive.filter((n) => n !== LISTCONTROL_COMPACT_LAYOUT_ACTIVE);
       }
 
       if (number === LISTCONTROL_COMPACT_LAYOUT_ACTIVE) {
-        controlsActive = controlsActive.filter(
-          (n) => n !== LISTCONTROL_LIST_ACTIVE,
-        );
+        controlsActive = controlsActive.filter((n) => n !== LISTCONTROL_LIST_ACTIVE);
       }
 
       let listActive = false;

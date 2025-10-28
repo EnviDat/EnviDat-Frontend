@@ -1,10 +1,11 @@
 <template>
-  <div class="localCard"
-       :style="`border: 2px dashed ${$vuetify.theme.themes.light.colors.secondary};`">
-    <MetadataCard v-bind="$props"
-                  @clickedEvent="$emit('clickedEvent')"
-                  @clickedTag="$emit('clickedTag')"
-                  @openButtonClicked="$emit('openButtonClicked')"/>
+  <div class="localCard" :style="`border: 2px dashed ${$vuetify.theme.themes.light.colors.secondary};`">
+    <MetadataCard
+      v-bind="$props"
+      @clickedEvent="$emit('clickedEvent')"
+      @clickedTag="$emit('clickedTag')"
+      @openButtonClicked="$emit('openButtonClicked')"
+    />
   </div>
 </template>
 
@@ -71,21 +72,17 @@ export default {
       default: undefined,
     },
   },
-  computed: {
-  },
-  methods: {
-  },
+  computed: {},
+  methods: {},
   components: {
     MetadataCard,
   },
-  data: () => ({
-  }),
+  data: () => ({}),
 };
 </script>
 
 <style scoped>
-
-  .localCard {
-    background-color: white;
-  }
+.localCard {
+  background-color: white;
+}
 </style>

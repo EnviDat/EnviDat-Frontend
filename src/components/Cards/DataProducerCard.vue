@@ -1,5 +1,5 @@
 <template>
-  <v-card >
+  <v-card>
     <v-card-media
       class="imagezoom"
       v-bind="{
@@ -10,9 +10,7 @@
       <v-container class="fill-height" fluid>
         <v-row class="fill-height">
           <v-col cols="12">
-            <span class="text-h3 dataproducer_title text-white">{{
-              titleText
-            }}</span>
+            <span class="text-h3 dataproducer_title text-white">{{ titleText }}</span>
           </v-col>
         </v-row>
       </v-container>
@@ -77,6 +75,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

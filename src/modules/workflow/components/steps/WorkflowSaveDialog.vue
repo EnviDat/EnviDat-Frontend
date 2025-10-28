@@ -1,9 +1,5 @@
 <template>
-  <v-dialog
-    :model-value="modelValue"
-    @update:model-value="(val) => emit('update:modelValue', val)"
-    max-width="500"
-  >
+  <v-dialog :model-value="modelValue" @update:model-value="(val) => emit('update:modelValue', val)" max-width="500">
     <v-card rounded="xl">
       <v-card-text class="font-weight-bold">
         {{ title }}
@@ -16,9 +12,8 @@
       </v-card-text>
 
       <v-card-text v-else>
-        Saving your data now will <b>store your dataset in our system</b>, but
-        it will not be published yet. Before publication, you will need to
-        complete the remaining steps. However, from this point,
+        Saving your data now will <b>store your dataset in our system</b>, but it will not be published yet. Before
+        publication, you will need to complete the remaining steps. However, from this point,
         <b>you can request a DOI for your dataset.</b>
       </v-card-text>
 

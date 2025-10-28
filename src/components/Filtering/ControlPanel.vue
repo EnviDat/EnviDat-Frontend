@@ -2,13 +2,7 @@
   <v-card :style="`height: ${fixedHeight}px;`" class="controlPanel">
     <v-container class="px-1 px-sm-2 py-0 fill-height" fluid>
       <v-row align="center" justify="space-between" no-gutters>
-        <v-col
-          class="py-0"
-          cols="8"
-          :sm="hasEnabledControls ? 8 : 10"
-          md="8"
-          lg="8"
-        >
+        <v-col class="py-0" cols="8" :sm="hasEnabledControls ? 8 : 10" md="8" lg="8">
           <SmallSearchBarView
             class="elevation-0"
             :compactLayout="compactLayout"
@@ -25,10 +19,7 @@
           />
         </v-col>
 
-        <v-col
-          v-if="showSearch && mode !== EDNA_MODE"
-          class="ml-sm-4 flex-grow-0"
-        >
+        <v-col v-if="showSearch && mode !== EDNA_MODE" class="ml-sm-4 flex-grow-0">
           <BaseIconSwitch
             :active="isAuthorSearch"
             :tooltipText="`Author search is ${isAuthorSearch ? 'active' : 'NOT active'}`"
@@ -37,11 +28,7 @@
           />
         </v-col>
 
-        <v-col
-          v-if="showSearch"
-          class="py-0 px-sm-1 flex-grow-0"
-          id="shareSearchResult"
-        >
+        <v-col v-if="showSearch" class="py-0 px-sm-1 flex-grow-0" id="shareSearchResult">
           <BaseIconButton
             style="opacity: 0.8"
             :icon="mdiShareVariant"
@@ -52,10 +39,7 @@
           />
         </v-col>
 
-        <v-col
-          v-if="showSearch && mode === EDNA_MODE"
-          class="ml-sm-4 flex-grow-0"
-        >
+        <v-col v-if="showSearch && mode === EDNA_MODE" class="ml-sm-4 flex-grow-0">
           <BaseIconSwitch
             :active="isShallow"
             :zIndex="elementVisible ? 6 : undefined"
@@ -65,11 +49,7 @@
             @clicked="catchShallowRealClick"
           />
 
-          <v-overlay
-            absolute
-            :model-value="elementVisible"
-            style="z-index: 5 !important"
-          >
+          <v-overlay absolute :model-value="elementVisible" style="z-index: 5 !important">
             <div
               class="dialog"
               :style="`left: ${$vuetify.display.smAndDown ? '-20' : '45'}px;`"

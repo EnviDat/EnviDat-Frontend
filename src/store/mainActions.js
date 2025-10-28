@@ -11,12 +11,7 @@
 
 import axios from 'axios';
 
-import {
-  CHECK_FRONTEND_VERSION,
-  SET_CONFIG,
-  SET_CONFIG_ERROR,
-  SET_CONFIG_SUCCESS,
-} from '@/store/mainMutationsConsts';
+import { CHECK_FRONTEND_VERSION, SET_CONFIG, SET_CONFIG_ERROR, SET_CONFIG_SUCCESS } from '@/store/mainMutationsConsts';
 
 const configURL = import.meta.env.VITE_CONFIG_URL;
 
@@ -29,7 +24,7 @@ export default {
 
       axios
         .get(url)
-        .then(response => {
+        .then((response) => {
           try {
             let config;
             if (typeof response.data === 'string') {
@@ -47,7 +42,7 @@ export default {
             console.error(`tried loading config, error: ${error}`);
           }
         })
-        .catch(reason => {
+        .catch((reason) => {
           commit(SET_CONFIG_ERROR, reason);
         });
     }

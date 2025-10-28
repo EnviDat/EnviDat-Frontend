@@ -39,4 +39,3 @@ export const LocalCard = {
     state: METADATA_STATE_DRAFT,
   },
 };
-

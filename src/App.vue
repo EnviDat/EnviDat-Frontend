@@ -19,9 +19,7 @@
       <NotificationCard
         :notification="notification"
         :height="165"
-        :showReportButton="
-          config.errorReportingEnabled && notification.type === 'error'
-        "
+        :showReportButton="config.errorReportingEnabled && notification.type === 'error'"
         :showCloseButton="true"
         @clickedClose="catchCloseClicked(notification.key)"
         @clickedReport="catchReportClicked(notification.key)"
@@ -97,12 +95,7 @@
         />
       </v-container>
 
-      <v-dialog
-        v-model="showReloadDialog"
-        persistent
-        :style="`z-index: ${NotificationZIndex};`"
-        max-width="450"
-      >
+      <v-dialog v-model="showReloadDialog" persistent :style="`z-index: ${NotificationZIndex};`" max-width="450">
         <ConfirmTextCard
           title="New Version Available!"
           :text="dialogVersionText()"
@@ -117,12 +110,7 @@
         />
       </v-dialog>
 
-      <v-dialog
-        v-model="showInfoDialog"
-        persistent
-        :style="`z-index: ${NotificationZIndex};`"
-        max-width="500"
-      >
+      <v-dialog v-model="showInfoDialog" persistent :style="`z-index: ${NotificationZIndex};`" max-width="500">
         <ConfirmTextCard
           :title="dialogTitle"
           :text="dialogMessage"
@@ -175,10 +163,7 @@ import {
   USER_SIGNIN_PAGENAME,
 } from '@/router/routeConsts';
 
-import {
-  METADATA_NAMESPACE,
-  BULK_LOAD_METADATAS_CONTENT,
-} from '@/store/metadataMutationsConsts';
+import { METADATA_NAMESPACE, BULK_LOAD_METADATAS_CONTENT } from '@/store/metadataMutationsConsts';
 
 import {
   SET_CONFIG,
@@ -213,25 +198,13 @@ import MaintenanceBanner from '@/modules/home/components/MaintenanceBanner.vue';
 
 import { ENVIDAT_SHOW_COOKIE_BANNER } from '@/factories/metadataConsts';
 
-const TheNavigation = defineAsyncComponent(
-  () => import('@/components/Navigation/TheNavigation.vue'),
-);
-const TheNavigationToolbar = defineAsyncComponent(
-  () => import('@/components/Navigation/TheNavigationToolbar.vue'),
-);
+const TheNavigation = defineAsyncComponent(() => import('@/components/Navigation/TheNavigation.vue'));
+const TheNavigationToolbar = defineAsyncComponent(() => import('@/components/Navigation/TheNavigationToolbar.vue'));
 
-const GenericFullScreenModal = defineAsyncComponent(
-  () => import('@/components/Layouts/GenericFullScreenModal.vue'),
-);
-const ConfirmTextCard = defineAsyncComponent(
-  () => import('@/components/Cards/ConfirmTextCard.vue'),
-);
-const TextBanner = defineAsyncComponent(
-  () => import('@/components/Layouts/TextBanner.vue'),
-);
-const NotificationCard = defineAsyncComponent(
-  () => import('@/components/Cards/NotificationCard.vue'),
-);
+const GenericFullScreenModal = defineAsyncComponent(() => import('@/components/Layouts/GenericFullScreenModal.vue'));
+const ConfirmTextCard = defineAsyncComponent(() => import('@/components/Cards/ConfirmTextCard.vue'));
+const TextBanner = defineAsyncComponent(() => import('@/components/Layouts/TextBanner.vue'));
+const NotificationCard = defineAsyncComponent(() => import('@/components/Cards/NotificationCard.vue'));
 
 let configInterval;
 
@@ -252,10 +225,7 @@ export default {
     eventBus.on(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
     eventBus.on(SHOW_DIALOG, this.openGenericDialog);
     eventBus.on(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
-    eventBus.on(
-      SHOW_REDIRECT_DASHBOARD_DIALOG,
-      this.showRedirectDashboardDialog,
-    );
+    eventBus.on(SHOW_REDIRECT_DASHBOARD_DIALOG, this.showRedirectDashboardDialog);
 
     const strShowCookieInfo = localStorage.getItem(ENVIDAT_SHOW_COOKIE_BANNER);
     this.showCookieInfo = strShowCookieInfo !== 'false';
@@ -264,10 +234,7 @@ export default {
     eventBus.off(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
     eventBus.off(SHOW_DIALOG, this.openGenericDialog);
     eventBus.off(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
-    eventBus.off(
-      SHOW_REDIRECT_DASHBOARD_DIALOG,
-      this.showRedirectDashboardDialog,
-    );
+    eventBus.off(SHOW_REDIRECT_DASHBOARD_DIALOG, this.showRedirectDashboardDialog);
 
     clearInterval(configInterval);
   },
@@ -279,16 +246,14 @@ export default {
   },
   methods: {
     scrollDown() {
-      const appContainer =
-        this.$refs.appContainer?.$el || this.$refs.appContainer;
+      const appContainer = this.$refs.appContainer?.$el || this.$refs.appContainer;
       if (appContainer) {
         // TBD: define where to scroll to
         appContainer.scrollTop += 600;
       }
     },
     updateScroll() {
-      const appContainer =
-        this.$refs.appContainer?.$el || this.$refs.appContainer;
+      const appContainer = this.$refs.appContainer?.$el || this.$refs.appContainer;
 
       if (appContainer) {
         this.storeScroll(appContainer.scrollTop);
@@ -368,21 +333,11 @@ export default {
       this.$router.push({ name: item.pageName });
     },
     catchSearchClicked(search) {
-      this.$router.options.additiveChangeRoute(
-        this.$route,
-        this.$router,
-        BROWSE_PATH,
-        search,
-      );
+      this.$router.options.additiveChangeRoute(this.$route, this.$router, BROWSE_PATH, search);
     },
     catchSearchCleared() {
       // the search parameter needs to be '' to clear it
-      this.$router.options.additiveChangeRoute(
-        this.$route,
-        this.$router,
-        BROWSE_PATH,
-        '',
-      );
+      this.$router.options.additiveChangeRoute(this.$route, this.$router, BROWSE_PATH, '');
     },
     catchModeClose() {
       this.$router.push({
@@ -526,10 +481,7 @@ export default {
     },
     loadAllMetadata() {
       if (!this.loadingMetadatasContent && this.metadatasContentSize <= 0) {
-        this.$store.dispatch(
-          `${METADATA_NAMESPACE}/${BULK_LOAD_METADATAS_CONTENT}`,
-          this.config,
-        );
+        this.$store.dispatch(`${METADATA_NAMESPACE}/${BULK_LOAD_METADATAS_CONTENT}`, this.config);
       }
     },
     dialogVersionText() {
@@ -537,9 +489,7 @@ export default {
     },
     setupNavItems() {
       if (this.signinDisabled) {
-        const signItem = this.navigationItems.filter(
-          (item) => item.path === USER_SIGNIN_PATH,
-        )[0];
+        const signItem = this.navigationItems.filter((item) => item.path === USER_SIGNIN_PATH)[0];
         if (signItem) {
           signItem.disabled = true;
         }
@@ -563,17 +513,14 @@ export default {
         action = ACTION_OLD_GET_USER_CONTEXT;
       }
 
-      await this.$store.dispatch(
-        `${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`,
-        {
-          action,
-          data: {
-            include_datasets: true,
-          },
-          commit: true,
-          mutation: GET_USER_CONTEXT,
+      await this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`, {
+        action,
+        data: {
+          include_datasets: true,
         },
-      );
+        commit: true,
+        mutation: GET_USER_CONTEXT,
+      });
 
       if (this.user) {
         this.fetchUserDatasets();
@@ -658,11 +605,7 @@ export default {
       return this.$route.name === METADATAEDIT_PAGENAME;
     },
     loading() {
-      return (
-        this.loadingMetadatasContent ||
-        this.searchingMetadatasContent ||
-        this.isFilteringContent
-      );
+      return this.loadingMetadatasContent || this.searchingMetadatasContent || this.isFilteringContent;
     },
     searchTerm() {
       return this.$route.query.search;
@@ -683,9 +626,7 @@ export default {
       return this.$vuetify.display.smAndDown;
     },
     searchCount() {
-      return this.filteredContent !== undefined
-        ? Object.keys(this.filteredContent).length
-        : 0;
+      return this.filteredContent !== undefined ? Object.keys(this.filteredContent).length : 0;
     },
     showReloadDialog() {
       return this.outdatedVersion && !this.reloadDialogCanceled;
@@ -701,9 +642,7 @@ export default {
       return menuItem;
     },
     mode() {
-      return this.$route.query.mode
-        ? this.$route.query.mode.toLowerCase()
-        : null;
+      return this.$route.query.mode ? this.$route.query.mode.toLowerCase() : null;
     },
     bannerStyle() {
       const isDesktop = window.innerWidth >= 768;
@@ -794,15 +733,13 @@ export default {
 .bg-dark {
   // background-color: #e0e0e0 !important;
   background:
-    linear-gradient(rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.3) 100%)
-      center top repeat,
+    linear-gradient(rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.3) 100%) center top repeat,
     url('@/assets/app_b_browsepage.webp') !important;
 }
 .bg-dark-dashboard {
   // background-color: #9c9c9c !important;
   background:
-    linear-gradient(rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.3) 100%)
-      center top repeat,
+    linear-gradient(rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.3) 100%) center top repeat,
     url('@/assets/app_b_dashboardpage.webp') !important;
 }
 

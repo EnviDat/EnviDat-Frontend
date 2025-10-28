@@ -19,11 +19,7 @@
               buttonText="Edit Resources"
               :buttonUrl="linkEditResourceCKAN"
             >
-              <BaseRectangleButton
-                buttonText="Deselect Resource"
-                color="warning"
-                @clicked="catchEditResourceClose"
-              />
+              <BaseRectangleButton buttonText="Deselect Resource" color="warning" @clicked="catchEditResourceClose" />
             </EditResourceRedirect>
           </v-col>
         </v-row>
@@ -76,7 +72,7 @@
  */
 
 import { mapGetters, mapState } from 'vuex';
-import {defineAsyncComponent} from 'vue';
+import { defineAsyncComponent } from 'vue';
 import {
   eventBus,
   CANCEL_EDITING_RESOURCE,
@@ -87,7 +83,8 @@ import {
   UPLOAD_STATE_UPLOAD_STARTED,
   UPLOAD_STATE_RESET,
   EDITMETADATA_CLEAR_PREVIEW,
-  UPLOAD_STATE_RESOURCE_CREATED, EDITMETADATA_DATA_RESOURCES,
+  UPLOAD_STATE_RESOURCE_CREATED,
+  EDITMETADATA_DATA_RESOURCES,
 } from '@/factories/eventBus';
 
 import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
@@ -118,15 +115,9 @@ import EditMetadataResources from '@/modules/user/components/EditMetadataResourc
 import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles.vue';
 import EditResourcePasteUrl from '@/modules/user/components/EditResourcePasteUrl.vue';
 
-const EditResource = defineAsyncComponent(() =>
-    import('@/modules/user/components/EditResource.vue'),
-);
-const EditResourceRedirect = defineAsyncComponent(() =>
-    import('@/modules/user/components/EditResourceRedirect.vue'),
-);
-const BaseRectangleButton = defineAsyncComponent(() =>
-    import('@/components/BaseElements/BaseRectangleButton.vue'),
-);
+const EditResource = defineAsyncComponent(() => import('@/modules/user/components/EditResource.vue'));
+const EditResourceRedirect = defineAsyncComponent(() => import('@/modules/user/components/EditResourceRedirect.vue'));
+const BaseRectangleButton = defineAsyncComponent(() => import('@/components/BaseElements/BaseRectangleButton.vue'));
 
 export default {
   name: 'EditDataAndResources',
@@ -143,7 +134,7 @@ export default {
       type: String,
       default: undefined,
     },
-/*
+    /*
     metadataId: {
       type: String,
       default: '',
@@ -220,15 +211,8 @@ export default {
   },
   computed: {
     ...mapState(['config']),
-    ...mapGetters(USER_SIGNIN_NAMESPACE, [
-      'user',
-      'userLoading',
-    ]),
-    ...mapState(USER_NAMESPACE, [
-      'envidatUsers',
-      'uploadError',
-      'metadataInEditing',
-    ]),
+    ...mapGetters(USER_SIGNIN_NAMESPACE, ['user', 'userLoading']),
+    ...mapState(USER_NAMESPACE, ['envidatUsers', 'uploadError', 'metadataInEditing']),
     statusInfos() {
       if (this.$store) {
         const stepData = this.metadataInEditing[EDITMETADATA_DATA_RESOURCES];
@@ -344,16 +328,15 @@ export default {
   methods: {
     loadEnvidatUsers() {
       if (this.$store && !this.envidatUsers && this.user) {
-        this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`,
-          {
-            action: ACTION_GET_USER_LIST,
-            body: {
-              id: this.user.id,
-              include_datasets: true,
-            },
-            commit: true,
-            mutation: GET_USER_LIST,
-          });
+        this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`, {
+          action: ACTION_GET_USER_LIST,
+          body: {
+            id: this.user.id,
+            include_datasets: true,
+          },
+          commit: true,
+          mutation: GET_USER_LIST,
+        });
       }
     },
     uploadResetState() {
@@ -396,7 +379,6 @@ export default {
         // reset uppy to be able to upload another file
         this.resetUppy();
       }, 500);
-
     },
     uploadUppyError(error) {
       // console.log('uploadUppyError', error);
@@ -419,7 +401,7 @@ export default {
       if (files.length > 0) {
         uppy.cancelAll();
       } else {
-        uppy.clear()
+        uppy.clear();
       }
     },
     async createResourceFromUrl(url) {
@@ -442,7 +424,7 @@ export default {
       });
     },
     unselectCurrentResource() {
-      if(this.selectedResource) {
+      if (this.selectedResource) {
         this.$store.commit(`${USER_NAMESPACE}/${METADATA_CANCEL_RESOURCE_EDITING}`, this.selectedResource?.id);
       }
     },

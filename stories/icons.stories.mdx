@@ -1,12 +1,13 @@
 {
-/**
- * @summary list of used icons
- * @author Dominik Haas-Artho
- *
- * This file is subject to the terms and conditions defined in
- * file 'LICENSE.txt', which is part of this source code package.
- */
-}
+/\*\*
+
+- @summary list of used icons
+- @author Dominik Haas-Artho
+-
+- This file is subject to the terms and conditions defined in
+- file 'LICENSE.txt', which is part of this source code package.
+  \*/
+  }
 
 import { Meta, IconGallery, IconItem } from '@storybook/addon-docs/blocks';
 import * as Icons from '@storybook/icons';
@@ -14,15 +15,15 @@ import * as Icons from '@storybook/icons';
 <Meta title="System/Icons" />
 
 <IconGallery>
-  {
-    Object.entries(Icons)
-    .filter(([name]) => { name !== "iconList"})
+  {Object.entries(Icons)
+    .filter(([name]) => {
+      name !== 'iconList';
+    })
     .map(([name, Icon]) => (
       <IconItem name={name}>
         <Icon>{name}</Icon>
       </IconItem>
-    ))
-  }
+    ))}
   <IconItem name="test">
     <Icons.Stacked />
   </IconItem>

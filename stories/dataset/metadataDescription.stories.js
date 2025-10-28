@@ -37,26 +37,26 @@ const descVM2 = createDescriptionViewModel(parsedContent2, false, (newModel) => 
   console.log('changed descVM2.description after timeout', newModel);
 });
 
-export const Empty = {}
+export const Empty = {};
 
 export const Loading = {
   args: {
     showPlaceholder: true,
   },
-}
+};
 
 export const Filled = {
   args: {
     ...toRefs(descVM1),
   },
-}
+};
 
 export const Filled2Updated = {
   args: {
     ...toRefs(descVM2),
   },
-}
+};
 
 setTimeout(() => {
   descVM2.description = 'updated description to test reactivity, if you see this it worked!';
-}, 2000)
+}, 2000);

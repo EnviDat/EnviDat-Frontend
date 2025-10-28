@@ -16,7 +16,7 @@
 
     <v-row v-if="img">
       <v-col>
-        <v-img :src="img" style="border-radius: 8px; " />
+        <v-img :src="img" style="border-radius: 8px" />
       </v-col>
     </v-row>
 
@@ -27,10 +27,7 @@
         }}
       </v-col>
       <v-col>
-        <v-img
-          :src="notFoundImg"
-          style="max-width: 800px; border-radius: 8px; "
-        />
+        <v-img :src="notFoundImg" style="max-width: 800px; border-radius: 8px" />
       </v-col>
     </v-row>
   </v-card>
@@ -61,8 +58,7 @@ export default {
     title: String,
     disclaimer: {
       type: String,
-      default:
-        'Please note that the screenshot below will serve as a preview for the future component.',
+      default: 'Please note that the screenshot below will serve as a preview for the future component.',
     },
     img: String,
   },

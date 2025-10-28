@@ -66,14 +66,7 @@ export class PublicationInfoViewModel extends AbstractEditViewModel {
 
   getModelDataForInit() {
     const full = (this as any).getModelData?.() || {};
-    const {
-      contactEmail,
-      contactFirstName,
-      contactLastName,
-      publisher,
-      publicationYear,
-      ...rest
-    } = full;
+    const { contactEmail, contactFirstName, contactLastName, publisher, publicationYear, ...rest } = full;
 
     return rest;
   }

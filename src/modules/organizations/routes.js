@@ -1,7 +1,4 @@
-import {
-  ORGANIZATIONS_PAGENAME,
-  ORGANIZATIONS_PATH,
-} from '@/router/routeConsts';
+import { ORGANIZATIONS_PAGENAME, ORGANIZATIONS_PATH } from '@/router/routeConsts';
 
 const OrganizationPage = () => import('@/modules/organizations/components/OrganizationPage.vue');
 

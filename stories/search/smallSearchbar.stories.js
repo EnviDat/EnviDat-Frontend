@@ -9,7 +9,11 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from '@/../stories/js/envidatViewports';
+import {
+  mobileLargeViewportParams,
+  mobileViewportParams,
+  tabletViewportParams,
+} from '@/../stories/js/envidatViewports';
 import SmallSearchBarView from '@/components/Filtering/SmallSearchBarView.vue';
 
 export default {
@@ -22,7 +26,7 @@ export const Basic = {
     labelText: 'Search for something',
     buttonText: 'SEARCH',
   },
-}
+};
 
 export const BasicSmallSearchBar = {
   args: {
@@ -52,7 +56,6 @@ export const SmallSearchBarButtonTablet = {
   args: SmallSearchBarButton.args,
   parameters: tabletViewportParams,
 };
-
 
 export const SmallSearchBarButtonCompact = {
   args: {
@@ -100,9 +103,6 @@ export const SearchBarInFilterViewTablet = {
   args: SearchBarInFilterView.args,
   parameters: tabletViewportParams,
 };
-
-
-
 
 /*
 export const SmallSearchViews = () => ({

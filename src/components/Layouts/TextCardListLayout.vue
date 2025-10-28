@@ -1,48 +1,34 @@
 <template>
-  <v-container class="pa-0 ma-0"
-                fluid
-                id="TextCardListLayout" >
+  <v-container class="pa-0 ma-0" fluid id="TextCardListLayout">
+    <v-row no-gutters>
+      <v-col v-if="loading" cols="12"> Loading the entries... </v-col>
 
-    <v-row no-gutters >
+      <v-col v-if="!loading" cols="12">
+        <!--        :style="`height: calc(100vh - ${blogBodyHeight }px);`"-->
 
-      <v-col v-if="loading"
-             cols="12" >
-        Loading the entries...
-      </v-col>
-
-      <v-col v-if="!loading"
-             cols="12"
-             >
-
-<!--        :style="`height: calc(100vh - ${blogBodyHeight }px);`"-->
-
-        <v-row v-if="listItems.length > 0"
-               no-gutters>
-
-          <v-col v-for="(entry, index) in listItems"
-                 :key="`listItems_${index}`"
-                 :id="`listItems_${index}`"
-                 cols="12"
-                 :sm="smallCols"
-                 :md="mediumCols"
-                 :lg="largeCols"
-                 class="pa-2" >
-
-            <slot name="entry"
-                  :entry="entry"
-                  :loadingImg="loadingImg"
-                  :titleCssClass="titleCssClass"
-                  :subtitleCssClass="subtitleCssClass"
+        <v-row v-if="listItems.length > 0" no-gutters>
+          <v-col
+            v-for="(entry, index) in listItems"
+            :key="`listItems_${index}`"
+            :id="`listItems_${index}`"
+            cols="12"
+            :sm="smallCols"
+            :md="mediumCols"
+            :lg="largeCols"
+            class="pa-2"
+          >
+            <slot
+              name="entry"
+              :entry="entry"
+              :loadingImg="loadingImg"
+              :titleCssClass="titleCssClass"
+              :subtitleCssClass="subtitleCssClass"
             >
-
             </slot>
-
           </v-col>
         </v-row>
-
       </v-col>
     </v-row>
-
   </v-container>
 </template>
 
@@ -56,7 +42,6 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-
 
 export default {
   name: 'TextCardListLayout',
@@ -94,17 +79,11 @@ export default {
       default: 'text-body-1',
     },
   },
-  computed: {
-  },
-  methods: {
-  },
-  components: {
-  },
-  data: () => ({
-  }),
+  computed: {},
+  methods: {},
+  components: {},
+  data: () => ({}),
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -15,7 +15,6 @@
 import { mdiInformation, mdiCheckCircle, mdiAlert, mdiAlertOctagram } from '@mdi/js';
 import { ADD_USER_NOTIFICATION } from '@/store/mainMutationsConsts';
 
-
 export function infoMessage(message = undefined, details = undefined) {
   return {
     message: message || 'short text for the user',

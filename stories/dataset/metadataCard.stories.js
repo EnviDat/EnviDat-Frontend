@@ -7,15 +7,12 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 
 import MetadataCard from '@/components/Cards/MetadataCard.vue';
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
 
-import {
-  enhanceMetadataEntry,
-
-} from '@/factories/metaDataFactory';
+import { enhanceMetadataEntry } from '@/factories/metaDataFactory';
 
 import { getModeData } from '@/factories/modeFactory';
 import { EDNA_MODE, SWISSFL_MODE } from '@/store/metadataMutationsConsts';
@@ -57,10 +54,11 @@ const methods = {
     for (let i = 0; i < metadata.resources.length; i++) {
       const res = metadata.resources[i];
 
-      if (res.restricted !== undefined
-        && (res.restricted.allowed_users !== undefined
-        || (res.restricted.level !== undefined
-            && res.restricted.level !== 'public'))) {
+      if (
+        res.restricted !== undefined &&
+        (res.restricted.allowed_users !== undefined ||
+          (res.restricted.level !== undefined && res.restricted.level !== 'public'))
+      ) {
         return true;
       }
     }
@@ -112,7 +110,7 @@ TitleOnly.args = {
   id: firstDataset.id,
   title: firstDataset.title,
   categoryColor: firstDataset.categoryColor,
-}
+};
 
 export const NormalCard = Template.bind({});
 NormalCard.args = {
@@ -120,7 +118,7 @@ NormalCard.args = {
   name: firstDataset.name,
   subtitle: firstDataset.notes,
   titleImg: firstDataset.titleImg,
-}
+};
 
 export const CardWithTags = Template.bind({});
 CardWithTags.args = {
@@ -131,13 +129,13 @@ CardWithTags.args = {
   subtitle: otherDataset.notes,
   titleImg: otherDataset.titleImg,
   tags: otherDataset.tags,
-}
+};
 
 export const CompactCard = Template.bind({});
 CompactCard.args = {
   ...NormalCard.args,
   compactLayout: true,
-}
+};
 
 export const MobileNormalCard = Template.bind({});
 MobileNormalCard.args = { ...NormalCard.args };
@@ -151,44 +149,42 @@ export const TabletNormalCard = Template.bind({});
 TabletNormalCard.args = { ...NormalCard.args };
 TabletNormalCard.parameters = tabletViewportParams;
 
-
 export const FlatCard = Template.bind({});
 FlatCard.args = {
   ...NormalCard.args,
   flatLayout: true,
-}
+};
 
 export const CardWithState = Template.bind({});
 CardWithState.args = {
   ...NormalCard.args,
   state: getMetadataVisibilityState(firstDataset),
   tags: firstDataset.tags,
-}
+};
 
 export const CardWithOrganization = Template.bind({});
 CardWithOrganization.args = {
   ...CardWithState.args,
   organization: firstDataset.organization?.name,
   compactLayout: true,
-}
-
+};
 
 export const CardForModeSWISSFL = Template.bind({});
 CardForModeSWISSFL.args = {
   ...CardWithTags.args,
   modeData: getModeData(SWISSFL_MODE),
-}
+};
 
 export const CardForModeEDNA = Template.bind({});
 CardForModeEDNA.args = {
   ...CardWithTags.args,
   modeData: getModeData(EDNA_MODE),
   compactLayout: false,
-}
+};
 
 export const MetadataCardCollectionView = () => ({
-    components: { MetadataCard },
-    template: `
+  components: { MetadataCard },
+  template: `
     <v-container fluid>
     <v-row>
 
@@ -279,18 +275,18 @@ export const MetadataCardCollectionView = () => ({
     </v-row>
     </v-container>
     `,
-    methods,
-    data: () => ({
-      enhancedDatasets,
-      pinIcon,
-      multiPinIcon,
-      polygonIcon,
-    }),
-  });
+  methods,
+  data: () => ({
+    enhancedDatasets,
+    pinIcon,
+    multiPinIcon,
+    polygonIcon,
+  }),
+});
 
 export const MetadataCardFlatCollectionView = () => ({
-    components: { MetadataCard },
-    template: `
+  components: { MetadataCard },
+  template: `
     <v-row >
 
       <v-col cols="12" class="pa-2"
@@ -314,15 +310,15 @@ export const MetadataCardFlatCollectionView = () => ({
       </v-col>
 
     </v-row>`,
-    methods,
-    data: () => ({
-      enhancedDatasets,
-    }),
-  });
+  methods,
+  data: () => ({
+    enhancedDatasets,
+  }),
+});
 
 export const PlaceholderLoadingCollectionView = () => ({
-    components: { MetadataCardPlaceholder },
-    template: `
+  components: { MetadataCardPlaceholder },
+  template: `
     <v-container fluid >
       <v-row>
 
@@ -355,6 +351,6 @@ export const PlaceholderLoadingCollectionView = () => ({
       </v-row>
     </v-container>
     `,
-    methods,
-    data: () => ({}),
-  });
+  methods,
+  data: () => ({}),
+});

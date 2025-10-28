@@ -26,9 +26,7 @@ import MetadataGenericSubStepper from '@/modules/user/components/MetadataGeneric
 import EditRelatedInfo from '@/modules/user/components/EditRelatedInfo.vue';
 import EditPublication from '@/modules/user/components/edit/EditPublication.vue';
 
-
-import {mainDetailSteps} from '@/factories/workflowData';
-
+import { mainDetailSteps } from '@/factories/workflowData';
 
 /**
  * detail steps for the "data and resources" major step only for the editing workflow
@@ -58,7 +56,6 @@ const editingDataDetailSteps = [
     genericProps: {},
   },
 ];
-
 
 /**
  * The major steps for the editing workflow

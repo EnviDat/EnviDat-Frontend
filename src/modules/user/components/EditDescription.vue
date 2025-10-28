@@ -1,31 +1,22 @@
 <template>
-  <v-card id="EditDescription"
-          class="pa-0"
-          :loading="loadingColor">
-
-    <v-container fluid
-                  class="pa-4">
-
+  <v-card id="EditDescription" class="pa-0" :loading="loadingColor">
+    <v-container fluid class="pa-4">
       <v-row>
-        <v-col cols="8"
-               class="text-h5">
+        <v-col cols="8" class="text-h5">
           {{ labels.cardTitle }}
         </v-col>
 
-        <v-col v-if="message" >
-          <BaseStatusLabelView status="check"
-                               statusColor="success"
-                               :statusText="message"
-                               :expandedText="messageDetails" />
+        <v-col v-if="message">
+          <BaseStatusLabelView
+            status="check"
+            statusColor="success"
+            :statusText="message"
+            :expandedText="messageDetails"
+          />
         </v-col>
-        <v-col v-if="error"  >
-
-          <BaseStatusLabelView status="error"
-                               statusColor="error"
-                               :statusText="error"
-                               :expandedText="errorDetails" />
+        <v-col v-if="error">
+          <BaseStatusLabelView status="error" statusColor="error" :statusText="error" :expandedText="errorDetails" />
         </v-col>
-
       </v-row>
 
       <v-row>
@@ -38,23 +29,21 @@
       </v-row>
 
       <v-row>
-        <v-col >
-
-          <GenericTextareaPreviewLayout v-bind="genericTextAreaObject"
-                                        :validationError="validationErrors[editingProperty]"
-                                        :readonly="isReadOnly(editingProperty)"
-                                        :hint="readOnlyHint(editingProperty)"
-                                        @inputedText="catchInputedText($event)"
-                                        @changedText="catchChangedText($event)">
+        <v-col>
+          <GenericTextareaPreviewLayout
+            v-bind="genericTextAreaObject"
+            :validationError="validationErrors[editingProperty]"
+            :readonly="isReadOnly(editingProperty)"
+            :hint="readOnlyHint(editingProperty)"
+            @inputedText="catchInputedText($event)"
+            @changedText="catchChangedText($event)"
+          >
             <MetadataDescription v-bind="descriptionObject" />
           </GenericTextareaPreviewLayout>
-
         </v-col>
       </v-row>
-
     </v-container>
   </v-card>
-
 </template>
 
 <script>
@@ -73,13 +62,11 @@ import { mdiText } from '@mdi/js';
 import {
   EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_MAIN_DESCRIPTION,
-  eventBus, EDITMETADATA_CLEAR_PREVIEW,
+  eventBus,
+  EDITMETADATA_CLEAR_PREVIEW,
 } from '@/factories/eventBus';
 
-import {
-  getValidationMetadataEditingObject,
-  isFieldValid,
-} from '@/factories/userEditingValidations';
+import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
 
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout.vue';
@@ -87,7 +74,6 @@ import MetadataDescription from '@/modules/metadata/components/Metadata/Metadata
 import { EDIT_METADATA_DESCRIPTION_TITLE } from '@/factories/metadataConsts';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
-
 
 export default {
   name: 'EditDescription',
@@ -164,8 +150,8 @@ export default {
     clearPreview() {
       this.previewText = null;
     },
-    validateProperty(property, value){
-      return isFieldValid(property, value, this.validations, this.validationErrors)
+    validateProperty(property, value) {
+      return isFieldValid(property, value, this.validations, this.validationErrors);
     },
     catchInputedText(value) {
       this.previewText = value;
@@ -177,7 +163,6 @@ export default {
       }
     },
     setDescriptionText(value) {
-
       const newDescription = {
         [this.editingProperty]: value,
       };
@@ -201,7 +186,8 @@ export default {
     labels: {
       cardTitle: EDIT_METADATA_DESCRIPTION_TITLE,
       labelTextarea: 'Research Data Description',
-      descriptionInstructions: 'Enter a description which helps other researchers to understand your data. Use <a href="https://www.markdownguide.org/cheat-sheet" target="_blank">markdown </a> to format the description and make it easier to read.',
+      descriptionInstructions:
+        'Enter a description which helps other researchers to understand your data. Use <a href="https://www.markdownguide.org/cheat-sheet" target="_blank">markdown </a> to format the description and make it easier to read.',
       subtitlePreview: 'Description Preview',
     },
     validationErrors: {
@@ -216,6 +202,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

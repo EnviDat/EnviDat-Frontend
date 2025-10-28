@@ -3,21 +3,17 @@
     <v-container class="fill-height pa-4" tag="article" fluid id="PageNotFound">
       <v-row>
         <v-col cols="12">
-          Oh here is nothing! Looks like you somehow entered a wrong url? If you
-          keep getting this error page, please report to the envidat team via
+          Oh here is nothing! Looks like you somehow entered a wrong url? If you keep getting this error page, please
+          report to the envidat team via
           <router-link :to="{ path: ABOUT_PATH }">about page</router-link>.
         </v-col>
 
         <v-col cols="12">
-          <router-link :to="{ path: LANDING_PATH }"
-            >Get me back to the home page!</router-link
-          >
+          <router-link :to="{ path: LANDING_PATH }">Get me back to the home page!</router-link>
         </v-col>
 
         <v-col cols="12">
-          <router-link :to="{ path: BROWSE_PATH }"
-            >Back to the list of datasets!</router-link
-          >
+          <router-link :to="{ path: BROWSE_PATH }">Back to the list of datasets!</router-link>
         </v-col>
       </v-row>
     </v-container>
@@ -37,7 +33,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import { ABOUT_PATH, BROWSE_PATH,LANDING_PATH } from '@/router/routeConsts';
+import { ABOUT_PATH, BROWSE_PATH, LANDING_PATH } from '@/router/routeConsts';
 
 export default {
   name: 'PageNotFound',

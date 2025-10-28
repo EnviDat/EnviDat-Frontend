@@ -3,10 +3,7 @@ import { defineStore } from 'pinia';
 import { MODE_STORE, modes } from '@/factories/modeData';
 
 import { enhanceMetadatas, localSearch } from '@/factories/metaDataFactory';
-import {
-  getKeywordsForFiltering,
-  tagsIncludedInSelectedTags,
-} from '@/factories/keywordsFactory';
+import { getKeywordsForFiltering, tagsIncludedInSelectedTags } from '@/factories/keywordsFactory';
 import { EDNA_MODE, FOREST_3D } from '@/store/metadataMutationsConsts';
 
 const initState = {
@@ -38,9 +35,7 @@ export const useModeStore = defineStore(MODE_STORE, {
     getModeMetadata(modeName) {
       if (!modeName) return null;
 
-      const index = this.modeMetadata.findIndex(
-        (modeInfo) => modeInfo.name === modeName,
-      );
+      const index = this.modeMetadata.findIndex((modeInfo) => modeInfo.name === modeName);
 
       if (index >= 0) {
         return this.modeMetadata[index];
@@ -52,15 +47,10 @@ export const useModeStore = defineStore(MODE_STORE, {
       // get filtered datasets based on the selected tags
       // then narrow down the list via local text search
       let results = [];
-      const index = this.modeMetadata.findIndex(
-        (modeInfo) => modeInfo.name === mode,
-      );
+      const index = this.modeMetadata.findIndex((modeInfo) => modeInfo.name === mode);
       const currentFilteredKeywords = this.modeFilters[index];
 
-      const filteredContent = this.getFilteredDatasets(
-        currentFilteredKeywords,
-        mode,
-      );
+      const filteredContent = this.getFilteredDatasets(currentFilteredKeywords, mode);
 
       if (searchTerm) {
         results = localSearch(searchTerm, filteredContent);
@@ -71,17 +61,12 @@ export const useModeStore = defineStore(MODE_STORE, {
     getModeKeywords(mode) {
       if (!mode) return null;
 
-      const index = this.modeMetadata.findIndex(
-        (modeInfo) => modeInfo.name === mode,
-      );
+      const index = this.modeMetadata.findIndex((modeInfo) => modeInfo.name === mode);
 
       const metaData = this.modeMetadata[index];
       const currentFilteredKeywords = this.modeFilters[index];
 
-      const filteredContent = this.getFilteredDatasets(
-        currentFilteredKeywords,
-        mode,
-      );
+      const filteredContent = this.getFilteredDatasets(currentFilteredKeywords, mode);
 
       const updatedTags = getKeywordsForFiltering(filteredContent, metaData);
 
@@ -99,9 +84,7 @@ export const useModeStore = defineStore(MODE_STORE, {
       const content = Object.values(datasetObject);
 
       let filteredContent = [];
-      const index = this.modeMetadata.findIndex(
-        (modeInfo) => modeInfo.name === modeName,
-      );
+      const index = this.modeMetadata.findIndex((modeInfo) => modeInfo.name === modeName);
 
       try {
         if (selectedTagNames.length > 0) {
@@ -128,9 +111,7 @@ export const useModeStore = defineStore(MODE_STORE, {
     getDatasets(modeName) {
       if (!modeName) return null;
 
-      const index = this.modeMetadata.findIndex(
-        (modeInfo) => modeInfo.name === modeName,
-      );
+      const index = this.modeMetadata.findIndex((modeInfo) => modeInfo.name === modeName);
 
       if (index >= 0) {
         return this.modeDatasets[index];
@@ -147,9 +128,7 @@ export const useModeStore = defineStore(MODE_STORE, {
       const modeMetadata = this.getModeMetadata(modeName);
 
       const data = await modeMetadata.loadDatasets(modeMetadata);
-      const index = this.modeMetadata.findIndex(
-        (modeInfo) => modeInfo.name === modeName,
-      );
+      const index = this.modeMetadata.findIndex((modeInfo) => modeInfo.name === modeName);
 
       if (index >= 0) {
         let enhancedDatasets = data;

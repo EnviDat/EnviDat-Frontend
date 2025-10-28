@@ -1,18 +1,14 @@
 <template>
-  <v-card id="UserCard"
-    :width="width"
-    :height="height"
-    :loading="loadingColor">
-
-    <div class="cardGrid fill-height"
-      :style="`grid-template-rows: ${headerHeight}px 70px auto`">
-
+  <v-card id="UserCard" :width="width" :height="height" :loading="loadingColor">
+    <div class="cardGrid fill-height" :style="`grid-template-rows: ${headerHeight}px 70px auto`">
       <div :style="`height: ${headerHeight}px; overflow: hidden;`">
-        <v-img :height="headerHeight"
+        <v-img
+          :height="headerHeight"
           :width="width"
-          style="border-top-left-radius: 4px; border-top-right-radius: 4px;"
-           cover
-          :src="userCardBanner" />
+          style="border-top-left-radius: 4px; border-top-right-radius: 4px"
+          cover
+          :src="userCardBanner"
+        />
 
         <!--        :src="`https://gravatar.com/avatar/${email}?s=${gravatarImageSize}&d=identicon&r=g`"
         -->
@@ -23,35 +19,25 @@
       </div>
 
       <div class="pa-4">
-        <v-container fluid
-          class="pa-0">
-          <v-row no-gutters
-            class="py-2"
-            justify="start">
+        <v-container fluid class="pa-0">
+          <v-row no-gutters class="py-2" justify="start">
             <v-col class="text-body-2">Datasets</v-col>
             <v-col class="text-caption">{{ datasetCount }}</v-col>
           </v-row>
 
-          <v-row no-gutters
-            class="py-2"
-            justify="start">
+          <v-row no-gutters class="py-2" justify="start">
             <v-col class="text-body-2">Email</v-col>
-            <v-col class="text-caption"><a :href="`mailto:${email}`">{{ email }}</a></v-col>
+            <v-col class="text-caption"
+              ><a :href="`mailto:${email}`">{{ email }}</a></v-col
+            >
           </v-row>
         </v-container>
-
       </div>
-
     </div>
 
-    <div style="position: absolute; right: 39.5%; border-radius: 50%;"
-      :style="`top: ${avatarTopPosition}px;`">
-      <UserAvatar :size="avatarHeight"
-        :nameInitials="nameInitials"
-        :emailHash="emailHash"
-        class="elevation-5" />
+    <div style="position: absolute; right: 39.5%; border-radius: 50%" :style="`top: ${avatarTopPosition}px;`">
+      <UserAvatar :size="avatarHeight" :nameInitials="nameInitials" :emailHash="emailHash" class="elevation-5" />
     </div>
-
   </v-card>
 </template>
 
@@ -67,10 +53,9 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 import UserAvatar from '@/components/Layouts/UserAvatar.vue';
 import { getImage } from '@/factories/imageFactory';
-
 
 export default {
   name: 'UserCard',

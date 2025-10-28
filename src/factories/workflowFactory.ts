@@ -9,7 +9,6 @@ import {
 
 import { emptyMetadataInEditing } from '@/factories/workflowData';
 
-
 export type WorkflowStep = {
   key: string;
   title: string;
@@ -23,7 +22,7 @@ export type WorkflowStep = {
   error: string | null;
   errorDetails: string | null;
   detailSteps: WorkflowStep[];
-}
+};
 
 /**
  * A mapping use to combine flat data structure elements with the hierarchy of the steps structure
@@ -39,22 +38,12 @@ export const stepKeyToDataKeyMap = {
       REMOVE_EDITING_AUTHOR,
     ],
   */
-  EDITMETADATA_RELATED_PUBLICATIONS: [
-    EDITMETADATA_RELATED_DATASETS,
-    EDITMETADATA_CUSTOMFIELDS,
-  ],
-  EDITMETADATA_PUBLICATION_INFO: [
-    EDITMETADATA_FUNDING_INFO,
-    EDITMETADATA_ORGANIZATION,
-  ],
-  EDITMETADATA_DATA_INFO: [
-    EDITMETADATA_DATA_LICENSE,
-  ],
+  EDITMETADATA_RELATED_PUBLICATIONS: [EDITMETADATA_RELATED_DATASETS, EDITMETADATA_CUSTOMFIELDS],
+  EDITMETADATA_PUBLICATION_INFO: [EDITMETADATA_FUNDING_INFO, EDITMETADATA_ORGANIZATION],
+  EDITMETADATA_DATA_INFO: [EDITMETADATA_DATA_LICENSE],
 };
 
-
 export function initializeSteps(steps: WorkflowStep[]) {
-
   for (let i = 0; i < steps.length; i++) {
     const step = steps[i];
 
@@ -101,16 +90,14 @@ export function getStepByName(stepKey: string, steps: WorkflowStep[]): WorkflowS
 }
 
 export function getStepFromRoute(route: RouteLocationNamedRaw, steps: WorkflowStep[]) {
-
   const stepTitle = route?.params?.step || null;
-  const currentStep = steps?.filter(step => step.title === stepTitle)[0];
+  const currentStep = steps?.filter((step) => step.title === stepTitle)[0];
 
   const detailSteps = currentStep?.detailSteps || null;
   const subStepTitle = route?.params?.substep || null;
 
   if (detailSteps && subStepTitle) {
-
-    return detailSteps.filter(subStep => subStep.title === subStepTitle)[0] || null;
+    return detailSteps.filter((subStep) => subStep.title === subStepTitle)[0] || null;
   }
 
   return currentStep || null;
@@ -130,7 +117,7 @@ export function getEmptyMetadataInEditingObject() {
  * @param stepKey
  * @returns {[]}
  */
-export function getDataKeysToStepKey(stepKey: string)  {
+export function getDataKeysToStepKey(stepKey: string) {
   const stepKeys = Object.keys(stepKeyToDataKeyMap);
 
   for (let i = 0; i < stepKeys.length; i++) {

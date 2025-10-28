@@ -2,13 +2,7 @@
   <div>
     <div class="position-relative" :class="className">
       {{ text }}
-      <v-chip
-        class="title-chip"
-        v-if="extraData"
-        variant="outlined"
-        color="secondary"
-        >Total: {{ extraData }}</v-chip
-      >
+      <v-chip class="title-chip" v-if="extraData" variant="outlined" color="secondary">Total: {{ extraData }}</v-chip>
     </div>
   </div>
 </template>

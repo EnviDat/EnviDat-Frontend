@@ -75,10 +75,7 @@ import { EDIT_METADATA_RELATEDPUBLICATIONS_TITLE } from '@/factories/metadataCon
 
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout.vue';
 import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications.vue';
-import {
-  getValidationMetadataEditingObject,
-  isFieldValid,
-} from '@/factories/userEditingValidations';
+import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 
@@ -148,9 +145,7 @@ export default {
       };
     },
     validations() {
-      return getValidationMetadataEditingObject(
-        EDITMETADATA_RELATED_PUBLICATIONS,
-      );
+      return getValidationMetadataEditingObject(EDITMETADATA_RELATED_PUBLICATIONS);
     },
     previewPublicationsText() {
       return this.previewText ? this.previewText : this.relatedPublicationsText;
@@ -161,12 +156,7 @@ export default {
       this.previewText = null;
     },
     validateProperty(property, value) {
-      return isFieldValid(
-        property,
-        value,
-        this.validations,
-        this.validationErrors,
-      );
+      return isFieldValid(property, value, this.validations, this.validationErrors);
     },
     catchInputedText(value) {
       this.previewText = value;
@@ -199,8 +189,7 @@ export default {
       cardInstructions:
         'Add DORA links to other publications, you can find them on <a href="https://www.dora.lib4ri.ch/wsl/" target="_blank">dora lib4ri</a> or directly enter DORA permanent IDs ex. wsl:29664). Click into the text arena for examples.',
       placeholder:
-        'Example entries: \n  * wsl:18753 \n' +
-        ' * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:18753 ',
+        'Example entries: \n  * wsl:18753 \n' + ' * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:18753 ',
       subtitlePreview: 'Related Publications Preview',
     },
     validationErrors: {

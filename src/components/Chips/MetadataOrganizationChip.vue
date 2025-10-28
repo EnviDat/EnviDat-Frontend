@@ -2,14 +2,14 @@
   <v-chip
     class="organizationChip text--black px-2"
     :variant="!showContent ? 'outlined' : undefined"
-    style="cursor: default;"
+    style="cursor: default"
     @mouseover="hover = true"
     @mouseleave="hover = false"
     @click="$emit('organizationClicked', organization)"
   >
-    <v-tooltip v-if="tooltip" location='bottom'>
+    <v-tooltip v-if="tooltip" location="bottom">
       <template v-slot:activator="{ props }">
-        <div v-bind="props" >
+        <div v-bind="props">
           <v-icon :icon="mdiHome" color="black" />
           {{ showContent ? organizationText : '' }}
         </div>
@@ -39,7 +39,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
- import { mdiHome } from '@mdi/js';
+import { mdiHome } from '@mdi/js';
 
 export default {
   name: 'MetadataOrganizationChip',

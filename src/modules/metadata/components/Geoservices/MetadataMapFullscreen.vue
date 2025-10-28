@@ -2,15 +2,12 @@
   <v-container
     id="MetadataMapFullscreen"
     v-if="ready"
-    style="position: relative; height: 89vh;"
+    style="position: relative; height: 89vh"
     fluid
     class="fill-height"
   >
     <v-row no-gutters class="fill-height">
-      <v-col
-        :cols="mapCompareActive ? '6' : '12'"
-        :class="mapCompareActive ? 'splitDelimiter' : ''"
-      >
+      <v-col :cols="mapCompareActive ? '6' : '12'" :class="mapCompareActive ? 'splitDelimiter' : ''">
         <MapRoot
           :layer-config="layerConfig"
           :mapDivId="mapId1"
@@ -41,11 +38,7 @@
 </template>
 
 <script>
-import {
-  eventBus,
-  MAP_COMPARE_END,
-  MAP_COMPARE_START,
-} from '@/factories/eventBus';
+import { eventBus, MAP_COMPARE_END, MAP_COMPARE_START } from '@/factories/eventBus';
 import MapRoot from '@/modules/metadata/components/Geoservices/MapRoot.vue';
 
 export default {

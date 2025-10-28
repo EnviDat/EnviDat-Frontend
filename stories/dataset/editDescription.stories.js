@@ -45,18 +45,16 @@ shorten users’ journey to the issue solution or whatever. Each Story should
 contribute something to the general goal of your product.
 `;
 
-
 export default {
   title: '3 Datasets / 2 Edit / Description',
   component: EditDescription,
 };
 
-
-export const Empty = {}
+export const Empty = {};
 
 export const Filled = {
   args: createDescriptionViewModel({ notes: description }),
-}
+};
 
 export const FilledMobile = {
   args: createDescriptionViewModel({ notes: description }, true),
@@ -64,27 +62,25 @@ export const FilledMobile = {
     ...mobileViewportParams,
     // viewport: { value: mobileViewportParams },
   },
-}
+};
 
 export const FilledLargeMobile = {
   args: createDescriptionViewModel({ notes: description }, true),
   globals: {
     ...mobileLargeViewportParams,
   },
-}
+};
 
 export const FilledTablet = {
   args: createDescriptionViewModel({ notes: description }, true),
   globals: {
     ...tabletViewportParams,
   },
-}
+};
 
 export const FilledDesktop = {
   args: createDescriptionViewModel({ notes: description }, true),
   globals: {
     ...desktopViewportParams,
   },
-}
-
-
+};

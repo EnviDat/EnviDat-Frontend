@@ -18,7 +18,7 @@ export default {
 
 const catchStepClick = (title) => {
   console.log(`clicked on step ${title}`);
-}
+};
 
 const Template = (args, { argTypes }) => ({
   components: { StepButton },
@@ -33,7 +33,7 @@ export const TextOnly = Template.bind({});
 TextOnly.args = {
   title: 'Data & Resources',
   number: 1,
-}
+};
 
 export const Active = Template.bind({});
 Active.args = {

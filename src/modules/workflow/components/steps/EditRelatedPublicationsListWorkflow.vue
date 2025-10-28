@@ -1,10 +1,5 @@
 <template>
-  <v-card
-    id="EditRelatedPublicationsList"
-    class="pa-0"
-    elevation="0"
-    :loading="loadingColor"
-  >
+  <v-card id="EditRelatedPublicationsList" class="pa-0" elevation="0" :loading="loadingColor">
     <v-container fluid class="pa-0">
       <v-row class="mb-5">
         <v-col>
@@ -149,9 +144,7 @@ export default {
     publicationsObject() {
       return {
         text:
-          this.previewText !== null && this.previewText !== undefined
-            ? this.previewText
-            : this.relatedPublicationsText,
+          this.previewText !== null && this.previewText !== undefined ? this.previewText : this.relatedPublicationsText,
         maxTextLength: 2000,
         showPlaceholder: this.loading,
       };
@@ -236,8 +229,7 @@ export default {
       cardInstructions:
         'Add DORA links to other publications, you can find them on <a href="https://www.dora.lib4ri.ch/wsl/" target="_blank">dora lib4ri</a> or directly enter DORA permanent IDs ex. wsl:29664). Click into the text arena for examples.',
       placeholder:
-        'Example entries: \n  * wsl:18753 \n' +
-        ' * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:18753 ',
+        'Example entries: \n  * wsl:18753 \n' + ' * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:18753 ',
       preview: 'Preview of the Related Publications',
     },
     newDatasetInfo: {},

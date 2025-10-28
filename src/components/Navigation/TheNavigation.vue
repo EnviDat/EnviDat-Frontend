@@ -4,13 +4,7 @@
       v-if="smallScreen && !show"
       color="secondary"
       @click="setShow(true)"
-      style="
-        bottom: 15px;
-        left: 15px;
-        border-radius: 50%;
-        height: 60px;
-        width: 60px;
-      "
+      style="bottom: 15px; left: 15px; border-radius: 50%; height: 60px; width: 60px"
       class="position-fixed"
     >
       <v-icon size="x-large" :icon="mdiMenu" />

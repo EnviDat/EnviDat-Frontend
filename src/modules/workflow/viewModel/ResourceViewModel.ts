@@ -8,15 +8,11 @@ import { getResourceName, mergeResourceSizeForFrontend } from '@/factories/resou
 import { formatDate } from '@/factories/dateFactory';
 import { isFieldValid } from '@/factories/userEditingValidations';
 
-
-const convertEmptyStringToNull = (value: string, originalValue: string) =>
-  originalValue === '' ? null : value;
+const convertEmptyStringToNull = (value: string, originalValue: string) => (originalValue === '' ? null : value);
 
 const convertToZero = (value: unknown) => (Number.isNaN(value) ? 0 : value);
 
-
 export class ResourceViewModel extends AbstractEditViewModel implements Resource {
-
   declare datasetId: string;
   declare description: string;
 
@@ -71,7 +67,7 @@ export class ResourceViewModel extends AbstractEditViewModel implements Resource
     size: string | null;
     sizeFormat: string | null;
     url: string | null;
-/*
+    /*
     cacheLastUpdated: string,
     cacheUrl: string,
     id: string,
@@ -116,48 +112,34 @@ export class ResourceViewModel extends AbstractEditViewModel implements Resource
           resourceType: null,
           state: null,
     */
-  }
+  };
 
-  validationRules =
-    yup.object().shape({
-      // isLink: yup.boolean(),
-      name: yup
-        .string()
-        .required('Resource name is required')
-        .min(5, 'Resource name must be at least 5 characters')
-        .notOneOf(
-          [yup.ref('url')],
-          'Title cannot be the same as the resource url',
-        ),
-      description: yup
-        .string()
-        .nullable()
-        .transform(convertEmptyStringToNull)
-        .min(20, 'Write at least a minimal description with 20 characters.'),
-      format: yup
-        .string()
-        .nullable()
-        .min(1, 'Format has to be at least 1 characters long.'),
-      size: yup
-        // .number('size must be a number')
-        .number()
-        .transform(convertToZero)
-        .test(
-          'empty-check',
-          'File size must be a number greater than 0',
-          size => size !== 0,
-        )
-        .moreThan(0, 'File size be more than 0'),
-      sizeFormat: yup.string().required('Pick a file size'),
-      url: yup.string().when('isLink', {
-        is: true,
-        then: yup
-          .string()
-          .url('Resource url must be valid')
-          .required('Resource url is required'),
-        otherwise: yup.string().notRequired(),
-      }),
-    });
+  validationRules = yup.object().shape({
+    // isLink: yup.boolean(),
+    name: yup
+      .string()
+      .required('Resource name is required')
+      .min(5, 'Resource name must be at least 5 characters')
+      .notOneOf([yup.ref('url')], 'Title cannot be the same as the resource url'),
+    description: yup
+      .string()
+      .nullable()
+      .transform(convertEmptyStringToNull)
+      .min(20, 'Write at least a minimal description with 20 characters.'),
+    format: yup.string().nullable().min(1, 'Format has to be at least 1 characters long.'),
+    size: yup
+      // .number('size must be a number')
+      .number()
+      .transform(convertToZero)
+      .test('empty-check', 'File size must be a number greater than 0', (size) => size !== 0)
+      .moreThan(0, 'File size be more than 0'),
+    sizeFormat: yup.string().required('Pick a file size'),
+    url: yup.string().when('isLink', {
+      is: true,
+      then: yup.string().url('Resource url must be valid').required('Resource url is required'),
+      otherwise: yup.string().notRequired(),
+    }),
+  });
 
   /**
    * @param datasetModel is optional, if not provided it can be used "isolated" just for other
@@ -166,7 +148,7 @@ export class ResourceViewModel extends AbstractEditViewModel implements Resource
   constructor(datasetModel?: DatasetModel | undefined) {
     // intentionally not providing the datasetModel, because resource have to be unpacked
     // from the list of resources, done in the ResourceListModel
-    super(datasetModel, ResourceViewModel.mappingRules())
+    super(datasetModel, ResourceViewModel.mappingRules());
   }
 
   static getFormattedResource(
@@ -176,11 +158,10 @@ export class ResourceViewModel extends AbstractEditViewModel implements Resource
     signedInUserName: string,
     signedInUserOrganizationIds: string[],
     numberOfDownload?: number,
-  ) : Resource {
-
+  ): Resource {
     const frontendResource = convertToFrontendJSONWithRules(ResourceViewModel.mappingRules(), rawResource) as Resource;
 
-/*
+    /*
     const isProtected = isResourceProtectedForUser(
       rawResource,
       organizationID,
@@ -224,36 +205,34 @@ export class ResourceViewModel extends AbstractEditViewModel implements Resource
       chartData: undefined,
       chartDataLoading: false,
     };
-
   }
 
-
-  static mappingRules () {
+  static mappingRules() {
     return [
-      ['datasetId','package_id'],
-      ['cacheLastUpdated','cache_last_updated'],
-      ['cacheUrl','cache_url'],
-      ['created','created'],
-      ['description','description'],
-      ['doi','doi'],
-      ['format','format'],
-      ['hash','hash'],
-      ['id','id'],
-      ['lastModified','last_modified'],
-      ['mimetype','mimetype'],
-      ['mimetypeInner','mimetype_inner'],
-      ['metadataModified','metadata_modified'],
-      ['multipartName','multipart_name'],
-      ['name','name'],
-      ['packageId','package_id'],
-      ['position','position'],
-      ['restricted','restricted'],
-      ['resourceSize','resource_size'],
-      ['resourceType','resource_type'],
-      ['size','size'],
-      ['state','state'],
-      ['url','url'],
-      ['urlType','url_type'],
+      ['datasetId', 'package_id'],
+      ['cacheLastUpdated', 'cache_last_updated'],
+      ['cacheUrl', 'cache_url'],
+      ['created', 'created'],
+      ['description', 'description'],
+      ['doi', 'doi'],
+      ['format', 'format'],
+      ['hash', 'hash'],
+      ['id', 'id'],
+      ['lastModified', 'last_modified'],
+      ['mimetype', 'mimetype'],
+      ['mimetypeInner', 'mimetype_inner'],
+      ['metadataModified', 'metadata_modified'],
+      ['multipartName', 'multipart_name'],
+      ['name', 'name'],
+      ['packageId', 'package_id'],
+      ['position', 'position'],
+      ['restricted', 'restricted'],
+      ['resourceSize', 'resource_size'],
+      ['resourceType', 'resource_type'],
+      ['size', 'size'],
+      ['state', 'state'],
+      ['url', 'url'],
+      ['urlType', 'url_type'],
     ];
   }
 
@@ -262,7 +241,6 @@ export class ResourceViewModel extends AbstractEditViewModel implements Resource
    * properties first no matter which get validated
    * */
   validate(newProps?: Partial<ResourceViewModel>): boolean {
-
     const source = newProps ?? this;
 
     // to take over all properties so no to lose props
@@ -273,12 +251,7 @@ export class ResourceViewModel extends AbstractEditViewModel implements Resource
     let allValid = true;
 
     for (const [field, value] of Object.entries(propsToValidate)) {
-      const ok = isFieldValid(
-        field,
-        value,
-        this.validationRules,
-        this.validationErrors,
-      );
+      const ok = isFieldValid(field, value, this.validationRules, this.validationErrors);
 
       if (!ok) allValid = false;
     }
@@ -286,4 +259,3 @@ export class ResourceViewModel extends AbstractEditViewModel implements Resource
     return allValid;
   }
 }
-

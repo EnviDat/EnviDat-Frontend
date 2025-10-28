@@ -7,14 +7,9 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
 
-import {
-  createAuthors,
-  extractAuthorsMap,
-  getFullAuthorsFromDataset,
-} from '@/factories/authorFactory';
+import { createAuthors, extractAuthorsMap, getFullAuthorsFromDataset } from '@/factories/authorFactory';
 
 import unFormatedMetadataCards from '@/../stories/js/metadata';
 
@@ -38,29 +33,27 @@ authorsObjs.forEach((author) => {
   authorsStrings.push(author.fullName);
 });
 
-const preSelectedAuthor = authorsStrings.filter(value => value.includes('Fischer'));
+const preSelectedAuthor = authorsStrings.filter((value) => value.includes('Fischer'));
 // const preSelectedAuthors2 = extractedAuthors.filter(value => value.fullName.includes('A'));
-const preSelectedAuthors3 = authorsStrings.filter(value => value.includes('B'));
-
+const preSelectedAuthors3 = authorsStrings.filter((value) => value.includes('B'));
 
 export default {
   title: '1 Base / Pickers / User Picker',
   component: BaseUserPicker,
 };
 
-
 export const AuthorPicking = {
   args: {
     users: authorsObjs,
   },
-}
+};
 
 export const WithPreselection = {
   args: {
     users: authorsObjs,
     preSelectedEmails: preSelectedAuthor,
   },
-}
+};
 
 export const WithMultiplePick = {
   args: {
@@ -70,7 +63,7 @@ export const WithMultiplePick = {
     showAsCard: true,
     instructions: 'Pick an EnviDat user to add as an author.',
   },
-}
+};
 
 export const MultiplePickPreselection = {
   args: {
@@ -78,7 +71,7 @@ export const MultiplePickPreselection = {
     users: authorsObjs,
     preSelectedEmails: preSelectedAuthors3,
   },
-}
+};
 
 export const MultiplePickReadonly = {
   args: {
@@ -86,4 +79,4 @@ export const MultiplePickReadonly = {
     readonly: true,
     hint: 'Testing readonly',
   },
-}
+};

@@ -29,12 +29,7 @@
               </template>
             </button>
           </div>
-          <label
-            v-if="label"
-            :for="'iconSwitchButton' + $.uid"
-            class="iconSwitchLabel"
-            :class="{ disabled }"
-          >
+          <label v-if="label" :for="'iconSwitchButton' + $.uid" class="iconSwitchLabel" :class="{ disabled }">
             {{ label }}
           </label>
         </div>
@@ -114,7 +109,10 @@ export default {
 $switch-length: 44px;
 $switch-bg-height: 14px;
 $button-size: 26px;
-$button-shadow: 0 2px 4px -1px rgba(0, 0, 0, .2), 0 4px 5px 0 rgba(0, 0, 0, .14), 0 1px 10px 0 rgba(0, 0, 0, .12);
+$button-shadow:
+  0 2px 4px -1px rgba(0, 0, 0, 0.2),
+  0 4px 5px 0 rgba(0, 0, 0, 0.14),
+  0 1px 10px 0 rgba(0, 0, 0, 0.12);
 $slide-duration: 0.2s;
 
 .baseIconSwitch {
@@ -158,7 +156,9 @@ $slide-duration: 0.2s;
       }
 
       &:hover {
-        box-shadow: $button-shadow, 0 0 0 4px rgba(33, 33, 33, 0.2);
+        box-shadow:
+          $button-shadow,
+          0 0 0 4px rgba(33, 33, 33, 0.2);
       }
 
       &.active {
@@ -168,12 +168,14 @@ $slide-duration: 0.2s;
 
         &:before {
           margin-left: -$activeDelta;
-          transition: margin-left $slide-duration ease-in-out, background-color $slide-duration;
+          transition:
+            margin-left $slide-duration ease-in-out,
+            background-color $slide-duration;
         }
       }
 
       &.disabled {
-        background-color: #DDD;
+        background-color: #ddd;
         cursor: not-allowed;
         box-shadow: 0 0 1px 1px rgba(33, 33, 33, 0.1);
 

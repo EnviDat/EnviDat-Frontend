@@ -7,7 +7,11 @@
  */
 
 import BaseDatePickerYear from '@/components/BaseElements/BaseDatePickerYear.vue';
-import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from '@/../stories/js/envidatViewports';
+import {
+  mobileLargeViewportParams,
+  mobileViewportParams,
+  tabletViewportParams,
+} from '@/../stories/js/envidatViewports';
 
 export default {
   title: '1 Base / Pickers / Date picker Year',
@@ -27,7 +31,7 @@ export const Clearable = {
   args: {
     ...Filled.args,
     isClearable: true,
- },
+  },
 };
 
 export const Readonly = {
@@ -38,7 +42,6 @@ export const Readonly = {
     readOnlyExplanation: 'THIS IS READONLY!!',
   },
 };
-
 
 export const MobileFilled = {
   args: Filled.args,
@@ -52,4 +55,3 @@ MobileLargeFilled.parameters = mobileLargeViewportParams;
 export const TabletFilled = {};
 TabletFilled.args = { ...Filled.args };
 TabletFilled.parameters = tabletViewportParams;
-

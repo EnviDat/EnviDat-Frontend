@@ -1,14 +1,7 @@
 <template>
-  <v-card
-    ripple
-    @mouseover="hover = true"
-    @mouseleave="hover = false"
-    class="fill-height elevation-5 rounded-xl"
-  >
+  <v-card ripple @mouseover="hover = true" @mouseleave="hover = false" class="fill-height elevation-5 rounded-xl">
     <v-container class="fill-height category-card">
-      <v-card
-        class="pa-3 fill-height elevation-0 rounded-xl d-flex flex-column bgcCard"
-      >
+      <v-card class="pa-3 fill-height elevation-0 rounded-xl d-flex flex-column bgcCard">
         <v-row v-if="categoryAbove">
           <v-col cols="auto">
             <BaseCategoryCard
@@ -37,9 +30,7 @@
       <v-row class="category-action">
         <v-col class="d-flex justify-space-between pa-6">
           <span class="text-body-1">{{ formattedDate }}</span>
-          <v-btn v-if="showButton" color="secondary" @click="cardClick">
-            View
-          </v-btn>
+          <v-btn v-if="showButton" color="secondary" @click="cardClick"> View </v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -90,9 +81,7 @@ const titleLength = ref(50);
 const getCategoryName = computed(() =>
   props.categoryName
     .split(' ')
-    .map((word) =>
-      word.length === 0 ? word : word.charAt(0).toUpperCase() + word.slice(1),
-    )
+    .map((word) => (word.length === 0 ? word : word.charAt(0).toUpperCase() + word.slice(1)))
     .join(' '),
 );
 
@@ -104,9 +93,7 @@ const truncatedTitle = computed(() => {
   return props.postTitle;
 });
 
-const formattedDate = computed(() =>
-  props.postDate ? formatDate(props.postDate, 'yyyy-MM-dd', true) : '',
-);
+const formattedDate = computed(() => (props.postDate ? formatDate(props.postDate, 'yyyy-MM-dd', true) : ''));
 
 const iconName = (data) => extractIcons(data);
 

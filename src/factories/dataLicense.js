@@ -15,7 +15,6 @@ export const CC_ZERO_LICENSE_ID = 'CC0-1.0';
 export const ODBL_LICENSE_ID = 'odc-odbl';
 export const OTHER_UNDEFINED_LICENSE_ID = 'other-undefined';
 
-
 export const dataLicenses = [
   {
     id: CC_BY_LICENSE_ID,
@@ -171,16 +170,13 @@ WSL reserves the right to use its research data itself or make it accessible to 
   {
     id: OTHER_UNDEFINED_LICENSE_ID,
     title: 'Other (Specified in the description)',
-    summary: 'This is an option provide a custom license. It needs to be provided in the description. \n However we do NOT recommend to do it, unless you have a very good reason for it.',
+    summary:
+      'This is an option provide a custom license. It needs to be provided in the description. \n However we do NOT recommend to do it, unless you have a very good reason for it.',
     link: '',
   },
 ];
 
-export const availableLicensesForEditing =  [
-  CC_BY_LICENSE_ID,
-  CC_BY_SA_LICENSE_ID,
-  CC_ZERO_LICENSE_ID,
-]
+export const availableLicensesForEditing = [CC_BY_LICENSE_ID, CC_BY_SA_LICENSE_ID, CC_ZERO_LICENSE_ID];
 
 export function getAvailableLicensesForEditing() {
   return dataLicenses.filter((l) => availableLicensesForEditing.includes(l.id));

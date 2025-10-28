@@ -15,10 +15,7 @@ import {
 
 import { DOI_RESERVE } from '@/modules/user/store/doiMutationsConsts';
 
-import {
-  EDITMETADATA_ORGANIZATION,
-  EDITMETADATA_PUBLICATION_INFO,
-} from '@/factories/eventBus';
+import { EDITMETADATA_ORGANIZATION, EDITMETADATA_PUBLICATION_INFO } from '@/factories/eventBus';
 
 import {
   getUserOrganizationRoleMap,
@@ -33,25 +30,18 @@ export function useWorkflowExternal() {
   const workflowStore = useDatasetWorkflowStore();
 
   const user = computed<any | null>(
-    () =>
-      (store.state as any)[USER_SIGNIN_NAMESPACE]?.user ??
-      (store.state as any)[USER_NAMESPACE]?.user ??
-      null,
+    () => (store.state as any)[USER_SIGNIN_NAMESPACE]?.user ?? (store.state as any)[USER_NAMESPACE]?.user ?? null,
   );
   const userId = computed<string | undefined>(() => user.value?.id);
 
-  const userDatasets = computed<any[]>(
-    () => ((store.state as any)[USER_NAMESPACE]?.userDatasets as any[]) ?? [],
-  );
+  const userDatasets = computed<any[]>(() => ((store.state as any)[USER_NAMESPACE]?.userDatasets as any[]) ?? []);
 
   const currentEditingContent = computed<any | null>(
     () => (store.state as any)[USER_NAMESPACE]?.currentEditingContent ?? null,
   );
 
   const doiWorkflowActive = computed<boolean>(() =>
-    Boolean(
-      (store.state as any)?.config?.userEditMetadataConfig?.doiWorkflowActive,
-    ),
+    Boolean((store.state as any)?.config?.userEditMetadataConfig?.doiWorkflowActive),
   );
 
   async function fetchUserDatasets() {
@@ -76,32 +66,21 @@ export function useWorkflowExternal() {
 
   async function initMetadataUsingId(id: string) {
     if (id !== currentEditingContent.value?.name) {
-      await store.dispatch(
-        `${USER_NAMESPACE}/${METADATA_EDITING_LOAD_DATASET}`,
-        {
-          metadataId: id,
-          forceBackendReload: true,
-        },
-      );
+      await store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_LOAD_DATASET}`, {
+        metadataId: id,
+        forceBackendReload: true,
+      });
     }
 
     const c = currentEditingContent.value;
-    if (
-      doiWorkflowActive.value &&
-      c &&
-      !c.doi &&
-      (c.publicationState === '' || c.publicationState == null)
-    ) {
+    if (doiWorkflowActive.value && c && !c.doi && (c.publicationState === '' || c.publicationState == null)) {
       await store.dispatch(`${USER_NAMESPACE}/${DOI_RESERVE}`, id);
     }
   }
 
   function updatePublicationStatus(datasetOrgaId?: string) {
     const userOrganizations = organizationsStore.userOrganizations ?? [];
-    const roleMap = getUserOrganizationRoleMap(
-      user.value?.id,
-      userOrganizations,
-    );
+    const roleMap = getUserOrganizationRoleMap(user.value?.id, userOrganizations);
     const datasetOrga = userOrganizations.find((o) => o.id === datasetOrgaId);
 
     let userRole = USER_ROLE_MEMBER;
@@ -115,9 +94,7 @@ export function useWorkflowExternal() {
       if (userRole === USER_ROLE_EDITOR) {
         const userIsOwner =
           userDatasets.value?.length > 0
-            ? userDatasets.value.some(
-                (d) => d.id === currentEditingContent.value?.id,
-              )
+            ? userDatasets.value.some((d) => d.id === currentEditingContent.value?.id)
             : false;
         if (!userIsOwner) {
           userRole = USER_ROLE_MEMBER;
@@ -125,9 +102,8 @@ export function useWorkflowExternal() {
       }
     }
 
-    const editPublicationInfo = store.getters[
-      `${USER_NAMESPACE}/getMetadataEditingObject`
-    ](EDITMETADATA_PUBLICATION_INFO);
+    const editPublicationInfo =
+      store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_PUBLICATION_INFO);
 
     store.commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`, {
       object: EDITMETADATA_PUBLICATION_INFO,

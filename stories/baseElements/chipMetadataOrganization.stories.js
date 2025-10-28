@@ -12,13 +12,13 @@
 import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip.vue';
 
 export default {
-    title: '1 Base / Chips / MetadataOrganizationChip',
-    decorators: [],
+  title: '1 Base / Chips / MetadataOrganizationChip',
+  decorators: [],
 };
 
 export const MetadataOrganizationChips = () => ({
-    components: { MetadataOrganizationChip },
-    template: `
+  components: { MetadataOrganizationChip },
+  template: `
     <v-row >
 
       <v-col>

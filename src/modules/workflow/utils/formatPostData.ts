@@ -6,8 +6,7 @@ export type BackendDate = {
 };
 
 // string normalizer used by pick()
-const norm = (v: unknown) =>
-  typeof v === 'string' ? v.trim() : (v as string | undefined);
+const norm = (v: unknown) => (typeof v === 'string' ? v.trim() : (v as string | undefined));
 
 // returns the first non-empty value
 const pick = (...vals: Array<unknown>) => {
@@ -94,15 +93,8 @@ function toGeometryCollectionString(spatial: any): string | undefined {
 }
 
 // removes empty top-level strings (except a whitelist) and normalizes spatial
-export function cleanPostData(
-  input: Record<string, any>,
-  opts: CleanOpts = {},
-): Record<string, any> {
-  const {
-    keepEmptyKeys = [],
-    dropEmptyJsonBraces = true,
-    wrapSpatial = true,
-  } = opts;
+export function cleanPostData(input: Record<string, any>, opts: CleanOpts = {}): Record<string, any> {
+  const { keepEmptyKeys = [], dropEmptyJsonBraces = true, wrapSpatial = true } = opts;
 
   const out: Record<string, any> = { ...input };
 
@@ -112,16 +104,13 @@ export function cleanPostData(
   }
 
   for (const [k, v] of Object.entries(out)) {
-    const isNullish =
-      v == null || (typeof v === 'string' && v.trim().toLowerCase() === 'null');
+    const isNullish = v == null || (typeof v === 'string' && v.trim().toLowerCase() === 'null');
 
     if (isNullish) {
       delete out[k];
     } else if (typeof v === 'string') {
       const trimmed = v.trim();
-      const shouldDrop =
-        !keepEmptyKeys.includes(k) &&
-        (trimmed === '' || (dropEmptyJsonBraces && trimmed === '{}'));
+      const shouldDrop = !keepEmptyKeys.includes(k) && (trimmed === '' || (dropEmptyJsonBraces && trimmed === '{}'));
       if (shouldDrop) {
         delete out[k];
       }
@@ -151,9 +140,7 @@ export function makeMaintainerFromUser(u: any): string {
 }
 
 // GET the tags string and convert into object array
-export function normalizeTagsForPatch(
-  input: Record<string, any>,
-): Record<string, any> {
+export function normalizeTagsForPatch(input: Record<string, any>): Record<string, any> {
   const out: any = { ...input };
   if (out.tags == null) return out;
 

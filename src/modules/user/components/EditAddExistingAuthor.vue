@@ -1,7 +1,6 @@
 <template>
   <v-card id="EditAddExistingAuthor" class="pa-0" :loading="loadingColor">
     <v-container fluid class="pa-4">
-
       <v-row>
         <v-col cols="6" class="text-h5">
           {{ labels.title }}
@@ -16,12 +15,7 @@
           />
         </v-col>
         <v-col v-if="error">
-          <BaseStatusLabelView
-            status="error"
-            statusColor="error"
-            :statusText="error"
-            :expandedText="errorDetails"
-          />
+          <BaseStatusLabelView status="error" statusColor="error" :statusText="error" :expandedText="errorDetails" />
         </v-col>
       </v-row>
 
@@ -40,11 +34,7 @@
             :isClearable="isClearable"
             :instructions="labels.userPickInstructions"
             :readonly="isUserPickerReadOnly"
-            :hint="
-              isUserPickerReadOnly
-                ? readOnlyHint('authors')
-                : labels.authorPickHint
-            "
+            :hint="isUserPickerReadOnly ? readOnlyHint('authors') : labels.authorPickHint"
             @blur="notifyChange"
             @removedUsers="catchRemovedUsers"
             @pickedUsers="catchPickedUsers"
@@ -76,14 +66,8 @@ import {
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
 } from '@/factories/eventBus';
-import {
-  getUserPickerObjects,
-  getFullAuthorsForUserPicker,
-} from '@/factories/authorFactory';
-import {
-  getValidationMetadataEditingObject,
-  isFieldValid,
-} from '@/factories/userEditingValidations';
+import { getUserPickerObjects, getFullAuthorsForUserPicker } from '@/factories/authorFactory';
+import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
 import { EDIT_METADATA_AUTHORS_TITLE } from '@/factories/metadataConsts';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
@@ -171,12 +155,7 @@ export default {
       this.previewAuthors = null;
     },
     validateProperty(property, value) {
-      return isFieldValid(
-        property,
-        value,
-        this.validations,
-        this.validationErrors,
-      );
+      return isFieldValid(property, value, this.validations, this.validationErrors);
     },
     catchRemovedUsers(pickedUsersEmails: string[]) {
       this.changePreviews(pickedUsersEmails);
@@ -185,11 +164,7 @@ export default {
       this.changePreviews(pickedUsersEmails);
     },
     changePreviews(pickedUsersEmails: string[]) {
-      this.previewAuthors = getFullAuthorsForUserPicker(
-        pickedUsersEmails,
-        this.authors,
-        this.existingEnviDatUsers,
-      );
+      this.previewAuthors = getFullAuthorsForUserPicker(pickedUsersEmails, this.authors, this.existingEnviDatUsers);
     },
     notifyChange() {
       if (!this.previewAuthors) {
@@ -218,12 +193,10 @@ export default {
   data: () => ({
     labels: {
       title: EDIT_METADATA_AUTHORS_TITLE,
-      instructions:
-        'Here are can add authors from other published datasets to your dataset.',
+      instructions: 'Here are can add authors from other published datasets to your dataset.',
       userPickInstructions:
         'Pick an author from the list to add to your dataset. To remove click on the close icon of an author.',
-      authorPickHint:
-        'Start typing the name in the text field to search for an author.',
+      authorPickHint: 'Start typing the name in the text field to search for an author.',
     },
     previewAuthors: null,
   }),

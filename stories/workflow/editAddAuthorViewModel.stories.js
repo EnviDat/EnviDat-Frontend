@@ -11,11 +11,7 @@
 
 import EditAddAuthor from '@/modules/user/components/EditAddAuthor.vue';
 
-import {
-  createAuthors,
-  extractAuthorsMap,
-  getFullAuthorsFromDataset,
-} from '@/factories/authorFactory.ts';
+import { createAuthors, extractAuthorsMap, getFullAuthorsFromDataset } from '@/factories/authorFactory.ts';
 
 import { AuthorsViewModel } from '@/factories/ViewModels/AuthorsViewModel.js';
 
@@ -23,14 +19,11 @@ import unFormatedMetadataCards from '../js/metadata.js';
 import { BackendDatasetService } from '@/modules/workflow/BackendDatasetService.ts';
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 
-
 const metadataCards = [];
 
-
-const serviceLayer = new BackendDatasetService(unFormatedMetadataCards[0])
+const serviceLayer = new BackendDatasetService(unFormatedMetadataCards[0]);
 const datasetVM = new DatasetModel(serviceLayer);
 const authorsViewModel = new AuthorsViewModel(datasetVM.dataset);
-
 
 unFormatedMetadataCards.forEach((el) => {
   el.author = createAuthors(el);
@@ -40,18 +33,14 @@ unFormatedMetadataCards.forEach((el) => {
 const authorsMap = extractAuthorsMap(metadataCards);
 const authorsObjs = getFullAuthorsFromDataset(authorsMap, metadataCards[1]);
 
-
 export default {
   title: '3 Datasets / 2 Edit / Add New Author ViewModel',
   component: EditAddAuthor,
 };
-
 
 export const FilledFromViewModel = {
   args: {
     ...authorsViewModel.authors[1],
     existingAuthors: authorsObjs.values(),
   },
-}
-
-
+};

@@ -1,100 +1,88 @@
 /* eslint-disable vue/no-unused-vars */
 <template>
-  <div id="NavigationStepper"
-       class="pa-0 stepperContentGrid"
-       :style="`background-color: ${backgroundColor}`" >
-
-    <div class="infoPanel ma-1 py-2 px-3 "
-         :class="`infoPanelGrid${$vuetify.display.mdAndUp ? '-md' : ''}`" >
-
+  <div id="NavigationStepper" class="pa-0 stepperContentGrid" :style="`background-color: ${backgroundColor}`">
+    <div class="infoPanel ma-1 py-2 px-3" :class="`infoPanelGrid${$vuetify.display.mdAndUp ? '-md' : ''}`">
       <div class="instructions">
-        <v-container fluid class="pa-0" >
+        <v-container fluid class="pa-0">
           <v-row no-gutters>
-            <v-col class="metadata_title text-h6 pa-0"
-                   :class="$vuetify.display.smAndDown ? 'compactTitle' : ''" >
+            <v-col class="metadata_title text-h6 pa-0" :class="$vuetify.display.smAndDown ? 'compactTitle' : ''">
               {{ datasetTitleText }}
             </v-col>
 
-            <v-col v-if="$vuetify.display.smAndDown
-                          && !isCreationWorkflow"
-                    class="flex-grow-0">
-              <StepperInteractionView :steps="steps"
-                                      :showPreviewButton="showPreviewButton"
-                                      :showProgress="showProgress"
-                                      :showSaveButton="showSaveButton"
-                                      :isCreationWorkflow="isCreationWorkflow"
-                                      :message="message"
-                                      :messageDetails="messageDetails"
-                                      :error="error"
-                                      :errorDetails="errorDetails"
-                                      @clickedClose="catchCloseClick"
-                                      @clickedPreview="catchPreviewClick"
-                                      @clickedSaveDataset="catchSaveDatasetClick"
+            <v-col v-if="$vuetify.display.smAndDown && !isCreationWorkflow" class="flex-grow-0">
+              <StepperInteractionView
+                :steps="steps"
+                :showPreviewButton="showPreviewButton"
+                :showProgress="showProgress"
+                :showSaveButton="showSaveButton"
+                :isCreationWorkflow="isCreationWorkflow"
+                :message="message"
+                :messageDetails="messageDetails"
+                :error="error"
+                :errorDetails="errorDetails"
+                @clickedClose="catchCloseClick"
+                @clickedPreview="catchPreviewClick"
+                @clickedSaveDataset="catchSaveDatasetClick"
               />
             </v-col>
           </v-row>
 
-          <v-row v-if="$vuetify.display.smAndDown
-                          && isCreationWorkflow">
+          <v-row v-if="$vuetify.display.smAndDown && isCreationWorkflow">
             <v-col>
-              <StepperInteractionView :steps="steps"
-                                      :showPreviewButton="showPreviewButton"
-                                      :showProgress="showProgress"
-                                      :showSaveButton="showSaveButton"
-                                      :isCreationWorkflow="isCreationWorkflow"
-                                      :message="message"
-                                      :messageDetails="messageDetails"
-                                      :error="error"
-                                      :errorDetails="errorDetails"
-                                      @clickedClose="catchCloseClick"
-                                      @clickedPreview="catchPreviewClick"
-                                      @clickedSaveDataset="catchSaveDatasetClick"
+              <StepperInteractionView
+                :steps="steps"
+                :showPreviewButton="showPreviewButton"
+                :showProgress="showProgress"
+                :showSaveButton="showSaveButton"
+                :isCreationWorkflow="isCreationWorkflow"
+                :message="message"
+                :messageDetails="messageDetails"
+                :error="error"
+                :errorDetails="errorDetails"
+                @clickedClose="catchCloseClick"
+                @clickedPreview="catchPreviewClick"
+                @clickedSaveDataset="catchSaveDatasetClick"
               />
             </v-col>
           </v-row>
 
-          <v-row class="pt-1"
-                 no-gutters>
+          <v-row class="pt-1" no-gutters>
             <v-col class="flex-grow-0 mr-2">
               <v-icon :icon="mdiInformationOutline" />
             </v-col>
             <v-col>
-              <ExpandableLayout cardClass="pa-0"
-                                :statusText="isCreationWorkflow ? creationShortInstructions : editingShortInstructions"
-                                swapStatusTextWithSlotText
-                                isFlat >
-
+              <ExpandableLayout
+                cardClass="pa-0"
+                :statusText="isCreationWorkflow ? creationShortInstructions : editingShortInstructions"
+                swapStatusTextWithSlotText
+                isFlat
+              >
                 {{ isCreationWorkflow ? creationInstructions : editingInstructions }}
-
               </ExpandableLayout>
             </v-col>
           </v-row>
         </v-container>
-
       </div>
 
-      <div v-if="$vuetify.display.mdAndUp"
-           class="interaction pl-md-2 py-2 py-sm-0">
-
-        <StepperInteractionView :steps="steps"
-                                :showPreviewButton="showPreviewButton"
-                                :showProgress="showProgress"
-                                :showSaveButton="showSaveButton"
-                                :isCreationWorkflow="isCreationWorkflow"
-                                :message="message"
-                                :messageDetails="messageDetails"
-                                :error="error"
-                                :errorDetails="errorDetails"
-                                @clickedClose="catchCloseClick"
-                                @clickedPreview="catchPreviewClick"
-                                @clickedSaveDataset="catchSaveDatasetClick"
+      <div v-if="$vuetify.display.mdAndUp" class="interaction pl-md-2 py-2 py-sm-0">
+        <StepperInteractionView
+          :steps="steps"
+          :showPreviewButton="showPreviewButton"
+          :showProgress="showProgress"
+          :showSaveButton="showSaveButton"
+          :isCreationWorkflow="isCreationWorkflow"
+          :message="message"
+          :messageDetails="messageDetails"
+          :error="error"
+          :errorDetails="errorDetails"
+          @clickedClose="catchCloseClick"
+          @clickedPreview="catchPreviewClick"
+          @clickedSaveDataset="catchSaveDatasetClick"
         />
       </div>
     </div>
 
-    <div class="stepper ma-2 py-0 px-4 headerContentGrid"
-          :style="`background-color: ${backgroundColor}`"
-    >
+    <div class="stepper ma-2 py-0 px-4 headerContentGrid" :style="`background-color: ${backgroundColor}`">
       <!-- prettier-ignore -->
       <StepperHeader :steps="steps"
                      activeColor="accent"
@@ -103,26 +91,13 @@
                      :currentStepIndex="currentStepIndex"
                      @stepClick="catchStepClick" />
 
-      <v-progress-linear v-show="saving"
-                         indeterminate
-                         color="accent"
-                         rounded
-                         height="2"
-      />
-
+      <v-progress-linear v-show="saving" indeterminate color="accent" rounded height="2" />
     </div>
 
-    <div
-      class="content fill-height pa-1"
-      :style="`background-color: ${backgroundColor}`"
-    >
+    <div class="content fill-height pa-1" :style="`background-color: ${backgroundColor}`">
       <v-card v-if="loading" class="fill-height pa-4">
         <v-row id="metadataListPlaceholder">
-          <v-col
-            v-for="(n, index) in 2"
-            :key="'placeHolder_' + index"
-            class="pa-2"
-          >
+          <v-col v-for="(n, index) in 2" :key="'placeHolder_' + index" class="pa-2">
             <MetadataCardPlaceholder :dark="false" />
           </v-col>
         </v-row>
@@ -144,9 +119,7 @@
                        :showSaveButton="showSaveButton"
         />
 
-        <div v-if="!currentStep">
-          Nothing selected, please select a step in the navigation!
-        </div>
+        <div v-if="!currentStep">Nothing selected, please select a step in the navigation!</div>
       </v-card>
     </div>
   </div>
@@ -169,7 +142,7 @@
 import { mdiInformationOutline } from '@mdi/js';
 import { mapGetters } from 'vuex';
 
-import BaseProgressView from '@/components/BaseElements/BaseProgressView.vue'
+import BaseProgressView from '@/components/BaseElements/BaseProgressView.vue';
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
 import StepperHeader from '@/components/Navigation/StepperHeader.vue';
 import ExpandableLayout from '@/components/Layouts/ExpandableLayout.vue';
@@ -286,25 +259,25 @@ export default {
     },
     creationProgressInfo() {
       if (this.completedPct >= 100) {
-        return 'Ready to save!'
+        return 'Ready to save!';
       }
 
       if (this.completedPct >= 50) {
-        return 'A few infos more!'
+        return 'A few infos more!';
       }
 
-      return 'Enter all info to save!'
+      return 'Enter all info to save!';
     },
     editingProgressInfo() {
       if (this.completedPct >= 100) {
-        return 'Excellent!'
+        return 'Excellent!';
       }
 
       if (this.completedPct >= 70) {
-        return 'Almost there!'
+        return 'Almost there!';
       }
 
-      return 'Provide more info!'
+      return 'Provide more info!';
     },
     allStepsAmount() {
       return countSteps(this.steps);
@@ -317,10 +290,7 @@ export default {
   },
   methods: {
     clearTitle() {
-      this.$store.commit(
-        `${METADATA_NAMESPACE}/${METADATA_UPDATE_EXISTING_TITLE}`,
-        null,
-      );
+      this.$store.commit(`${METADATA_NAMESPACE}/${METADATA_UPDATE_EXISTING_TITLE}`, null);
     },
     getCompletedAmount() {
       return this.steps.filter((s) => s.complete === true).length;
@@ -344,7 +314,6 @@ export default {
       }
     },
     catchStepClick(stepTitle) {
-
       if (!this.$router) {
         // storybook context
         this.setCurrentStep(stepTitle);
@@ -360,7 +329,7 @@ export default {
           query: this.$route.query,
         },
         () => {},
-        err => {
+        (err) => {
           // add empty onAbort to not trigger the NavigationDuplicated Error message
           // when it's a NavigationDuplicated Error
           if (err?.name?.toLowerCase() !== 'navigationduplicated') {
@@ -368,7 +337,6 @@ export default {
           }
         },
       );
-
     },
     nextStep() {
       let nextIndex = this.currentStepIndex + 1;
@@ -414,12 +382,14 @@ export default {
     currentStep: null,
     currentStepIndex: -1,
     creationTitle: 'Dataset Creation',
-    creationShortInstructions: 'This dataset only exists on your computer, fill out all the steps and save it with the disk icon on the top right. Click here to read more.',
+    creationShortInstructions:
+      'This dataset only exists on your computer, fill out all the steps and save it with the disk icon on the top right. Click here to read more.',
     creationInstructions: `While creating a new dataset all the information you enter is stored in your browser on this computer until you save it on the server.
     Fill in the information of all steps and click on the disk icon on the top right to save your dataset on server.
     You will be able to editing everything until you publish it. When adding information either hit the enter key or leave the field (click outside of the field) to save it.`,
     editingTitle: 'Dataset Editing',
-    editingShortInstructions: 'Changes are automatically saved, please fill out all the steps to provide the most value for your users. Click here to read more.',
+    editingShortInstructions:
+      'Changes are automatically saved, please fill out all the steps to provide the most value for your users. Click here to read more.',
     editingInstructions: `While editing an existing dataset most of the infomation will be auto-saved. Once you have changed information either hit the enter key or leave the field (click outside of the field) to save it.
     Add references to related publications and datasets to provide even more valueable information.`,
   }),
@@ -458,21 +428,20 @@ export default {
   grid-template-columns: auto;
   gap: 0;
   grid-template-areas:
-  'instructions'
-  'interaction';
+    'instructions'
+    'interaction';
 }
 
 .infoPanelGrid-md {
   display: grid;
   grid-template-columns: 5fr auto;
   gap: 30px;
-  grid-template-areas:
-  'instructions interaction';
+  grid-template-areas: 'instructions interaction';
 }
 
 .instructions {
-    display: flex;
-    justify-content: start;
+  display: flex;
+  justify-content: start;
 }
 
 .interaction {
