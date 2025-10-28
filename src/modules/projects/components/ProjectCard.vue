@@ -21,10 +21,10 @@
           <v-img
             class="imagezoom"
             style="border-radius: 2px 0 0 2px;"
-            :cover="headerImg ? headerImg.height <= headerImg.width : false"
+            :cover="headerImg ? headerImg.height <= headerImg.width : true"
             :height="headerCardHeight"
-            :src="headerImg ? headerImg.src : ''"
-            :lazy-src="defaultImg"
+            :src="headerImg ? headerImg.src : undefined"
+            :lazy-src="defaultImgResolved"
           />
         </v-col>
 
@@ -99,11 +99,15 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import { mdiFileFind } from '@mdi/js';
+import { useDisplay } from 'vuetify';
+
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import { stripMarkdown } from '@/factories/stringFactory';
+import { getImage } from '@/factories/imageFactory';
 
 // checkout skeleton
 // https://github.com/ToxicJojo/SkeletonPlaceholder
+
 
 export default {
   name: 'ProjectCard',
@@ -112,7 +116,6 @@ export default {
   },
   props: {
     id: String,
-    defaultImg: String,
     img: String,
     title: String,
     subtitle: String,
@@ -120,16 +123,19 @@ export default {
     subProjects: Array,
     dark: Boolean,
   },
+  async mounted() {
+    this.defaultImgResolved = await getImage('data_creator_small');
+  },
   computed: {
     headerImg() {
-      const img = new Image();
-      let imgSrc = this.defaultImg;
+      // load img from url and keep it to measure width & height
 
-      if (this.img) {
-        imgSrc = this.img;
+      if (!this.img) {
+        return undefined;
       }
 
-      img.src = imgSrc;
+      const img = new Image();
+      img.src = this.img;
       img.onload = () => {
         // forced to make the check with for the contain property again
         this.$forceUpdate();
@@ -182,6 +188,8 @@ export default {
     maxTitleLength: 100,
     hovered: false,
     headerCardHeight: 150,
+    defaultImgResolved: undefined,
+    display: useDisplay(),
   }),
 };
 </script>

@@ -52,7 +52,7 @@ build-box-app:
     # needs environment variables from the frontend in a box setup
     - modify-box-env
     # needs the artifact: node_modules to build the app
-    - install-node
+    #- install-node
   script:
     - echo "checked content for .env.production:"
     - cat .env.production

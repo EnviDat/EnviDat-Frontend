@@ -33,7 +33,9 @@ import {
   EDITMETADATA_ORGANIZATION,
   EDITMETADATA_PUBLICATION_INFO,
   EDITMETADATA_RELATED_DATASETS,
-  EDITMETADATA_RELATED_PUBLICATIONS, METADATA_MAIN_HEADER,
+  EDITMETADATA_RELATED_PUBLICATIONS,
+  EDITMETADATA_REVIEW_INFO,
+  METADATA_MAIN_HEADER,
   USER_OBJECT,
 } from '@/factories/eventBus';
 
@@ -47,34 +49,20 @@ import {
   DATE_PROPERTY_DATE_TYPE,
   DATE_PROPERTY_END_DATE,
   DATE_PROPERTY_START_DATE,
-  EDIT_METADATA_AUTHORS_LABEL,
-  EDIT_METADATA_DATALICENSE_LABEL,
-  EDIT_METADATA_DOI_LABEL,
-  EDIT_METADATA_ORGANIZATION_LABEL,
-  EDIT_METADATA_PUBLICATION_YEAR_LABEL,
-  EDIT_METADATA_PUBLISHER_LABEL,
-  EDIT_METADATA_TITLE_LABEL,
-  EDIT_METADATA_URL_LABEL,
-  METADATA_AUTHORS_PROPERTY,
   METADATA_CONTACT_EMAIL,
-  METADATA_CONTACT_FIRSTNAME,
-  METADATA_CONTACT_LASTNAME,
   METADATA_DATALICENSE_PROPERTY,
   METADATA_DEPRECATED_RESOURCES_PROPERTY,
-  METADATA_DOI_PROPERTY,
-  METADATA_ORGANIZATION_PROPERTY,
-  METADATA_PUBLICATION_YEAR_PROPERTY,
-  METADATA_PUBLISHER_PROPERTY,
   METADATA_TITLE_PROPERTY,
   METADATA_URL_PROPERTY,
 } from '@/factories/metadataConsts';
 
 import { createAuthor } from '@/factories/authorFactory';
-import { enhanceTags } from '@/factories/keywordsFactory';
+import { enhanceKeywords } from '@/factories/keywordsFactory';
 import categoryCards from '@/store/categoryCards';
 import { createLocation } from '@/factories/geoFactory';
 import { getMetadataVisibilityState } from '@/factories/publicationFactory';
 import { formatDate } from '@/factories/dateFactory';
+import { convertJSON, convertToBackendJSONWithRules, convertToFrontendJSONWithRules } from '@/factories/convertJSON';
 
 /**
  * Json conversion rules from frontend to backend and vise versa
@@ -101,8 +89,8 @@ const JSONFrontendBackendRules = {
     [METADATA_TITLE_PROPERTY,'title'],
     [METADATA_URL_PROPERTY,'name'],
     [METADATA_CONTACT_EMAIL,'maintainer.email'],
-    [METADATA_CONTACT_FIRSTNAME,'maintainer.given_name'],
-    [METADATA_CONTACT_LASTNAME,'maintainer.name'],
+    ['contactFirstName','maintainer.given_name'],
+    ['contactLastName','maintainer.name'],
     ['license','license_title'],
   ],
   [EDITMETADATA_MAIN_DESCRIPTION]: [
@@ -205,6 +193,9 @@ const JSONFrontendBackendRules = {
     ['version', 'version'],
     ['datasetId', 'id'],
   ],
+  [EDITMETADATA_REVIEW_INFO]: [
+    ['version', 'version'],
+  ],
   [EDITMETADATA_FUNDING_INFO]: [
     ['funders','funding'],
   ],
@@ -229,19 +220,38 @@ const JSONFrontendBackendRules = {
   ],
 };
 
-export function unpackDeprecatedResources(customFields) {
-  let unpackedResourceIds = [];
+function unpackDeprecatedResources(customFields) {
 
-  if (customFields?.length > 0) {
-    const customFieldEntry = customFields.filter((entry) => entry?.fieldName === METADATA_DEPRECATED_RESOURCES_PROPERTY)[0];
-    const stringResourceIds = customFieldEntry?.content || '[]';
-    unpackedResourceIds = JSON.parse(stringResourceIds);
+  let deprecatedResourceEntry = customFields?.filter((entry) => entry?.fieldName === METADATA_DEPRECATED_RESOURCES_PROPERTY)[0];
+  // first check the customFields entries and sanitze them (to at least always start with an empty array)
+
+  if (!deprecatedResourceEntry) {
+
+    deprecatedResourceEntry = {
+      fieldName: METADATA_DEPRECATED_RESOURCES_PROPERTY,
+      content: JSON.stringify([]),
+    }
+
+    customFields.push(deprecatedResourceEntry);
   }
 
-  return unpackedResourceIds;
+  return JSON.parse(deprecatedResourceEntry.content);
 }
 
-export function markResourceDeprecated(resourceId, deprecated, customFields)  {
+/**
+ *
+ * @param {string} resourceId
+ * @param {boolean} deprecated
+ * @param {{
+ *   fieldName: string;
+ *   content: string;
+ * }[]} customFields
+ * @returns {{
+ *   fieldName: string;
+ *   content: string;
+ * }[]}
+ */
+export function markResourceDeprecatedInCustomFields(resourceId, deprecated, customFields)  {
 
   let deprecatedResources = unpackDeprecatedResources(customFields);
 
@@ -251,15 +261,8 @@ export function markResourceDeprecated(resourceId, deprecated, customFields)  {
     deprecatedResources = deprecatedResources.filter(i => i !== resourceId);
   }
 
-  if (customFields.length <= 0) {
-    customFields.push({
-      fieldName: METADATA_DEPRECATED_RESOURCES_PROPERTY,
-      content: JSON.stringify(deprecatedResources),
-    });
-  } else {
-    const deprecatedResourcesEntry = customFields.filter((entry) => entry?.fieldName === METADATA_DEPRECATED_RESOURCES_PROPERTY)[0];
-    deprecatedResourcesEntry.content = JSON.stringify(deprecatedResources);
-  }
+  const deprecatedResourcesEntry = customFields.filter((entry) => entry?.fieldName === METADATA_DEPRECATED_RESOURCES_PROPERTY)[0];
+  deprecatedResourcesEntry.content = JSON.stringify(deprecatedResources);
 
   return customFields;
 }
@@ -270,238 +273,6 @@ export function deprecatedResourceChanged(resourceId, isDeprecated, customFields
   const isDeprecatedOnServer = deprecatedResources?.includes(resourceId);
   const isDeprecatedLocally = isDeprecated === true;
   return isDeprecatedLocally !== isDeprecatedOnServer;
-}
-
-
-export function convertJSONArray(array, recursive) {
-  const parsedArray = [];
-
-  for (let i = 0; i < array.length; i++) {
-    const entry = array[i];
-    let parsedValue = JSON.parse(entry);
-
-    if (recursive) {
-      if (parsedValue instanceof Array) {
-        convertJSONArray(parsedValue, recursive);
-      } else if (typeof parsedValue === 'object') {
-        // eslint-disable-next-line no-use-before-define
-        parsedValue = convertJSON(parsedValue, false, recursive);
-      }
-    }
-
-    parsedArray.push(parsedValue);
-  }
-
-  return parsedArray;
-}
-
-const jsonStartRegex = /^\s*(\{|\[)/;
-
-export function convertJSON(data, stringify, recursive = false) {
-  const properties = Object.keys(data);
-  const flatObj = {};
-
-  for (let i = 0; i < properties.length; i++) {
-    const prop = properties[i];
-    let value = data[prop];
-
-    if (stringify) {
-      if (value instanceof Array) {
-        value = JSON.stringify(value);
-
-      } else if (typeof value === 'object') {
-        if (recursive) {
-          value = convertJSON(value, stringify, recursive);
-        } else {
-          value = JSON.stringify(value);
-        }
-      }
-    } else {
-
-      // eslint-disable-next-line no-lonely-if
-      if (typeof value === 'string' && jsonStartRegex.test(value)) {
-        try {
-          const parsedValue = JSON.parse(value);
-          if (parsedValue && typeof parsedValue === 'object') {
-            value = parsedValue;
-          }
-        } catch (e) {
-
-          if (import.meta.env?.DEV) {
-            console.error(`Json parse error on property: ${prop} with value: ${value} had error: ${e}`);
-          }
-        }
-      }
-
-      if (recursive && value instanceof Array) {
-        value = convertJSONArray(value, recursive);
-      }
-
-      if (recursive && typeof value === 'object') {
-        value = convertJSON(value, stringify, recursive);
-      }
-
-    }
-
-    flatObj[prop] = value;
-  }
-
-  return flatObj;
-}
-
-
-
-/**
- * Code from https://stackoverflow.com/questions/54246477/how-to-convert-camelcase-to-snake-case-in-javascript
- * @param {String} inputString camelCaseString
- * @returns {String} snake_case_string
- */
-export function toSnakeCase(inputString) {
-  return inputString.split('').map((character) => {
-    if (character === character.toUpperCase() && character !== '_') {
-      return `_${character.toLowerCase()}`;
-    }
-
-    return character;
-  }).join('');
-}
-
-/**
- * Code from https://stackoverflow.com/a/61375162/2733509
- * @param {String} snakeCaseString
- * @returns {String} camelCaseString
- */
-// eslint-disable-next-line camelcase
-export function toCamelCase(snakeCaseString) {
-  return snakeCaseString
-      // .toLowerCase()
-      .replace(/([-_][a-z])/g, group => group
-          .toUpperCase()
-          //        .replace('-', '')
-          .replace('_', ''));
-}
-
-export function getObjectInOtherCase(fromCaseObject, caseConversionFunc) {
-  const properties = Object.keys(fromCaseObject);
-  const toCaseObject = {};
-
-  for (let i = 0; i < properties.length; i++) {
-    const fromCaseProp = properties[i];
-    const otherCaseProp = caseConversionFunc(fromCaseProp);
-
-    let value = fromCaseObject[fromCaseProp];
-
-    if (value) {
-      if (value instanceof Array) {
-        // eslint-disable-next-line no-use-before-define
-        value = getArrayInOtherCase(value, caseConversionFunc);
-      } else if (typeof value === 'object') {
-        value = getObjectInOtherCase(value, caseConversionFunc);
-      }
-    }
-
-    toCaseObject[otherCaseProp] = value;
-  }
-
-  return toCaseObject;
-}
-
-export function getArrayInOtherCase(fromCaseArray, caseConversionFunc) {
-  if (fromCaseArray.length <= 0 || typeof fromCaseArray[0] !== 'object') {
-    return fromCaseArray;
-  }
-
-  const otherCaseArray = [];
-  for (let i = 0; i < fromCaseArray.length; i++) {
-    let arrayValue = fromCaseArray[i];
-
-    if (arrayValue) {
-      if (arrayValue instanceof Array) {
-        arrayValue = getArrayInOtherCase(arrayValue, caseConversionFunc);
-      } else if (typeof arrayValue === 'object') {
-        // eslint-disable-next-line no-use-before-define
-        arrayValue = getObjectInOtherCase(arrayValue, caseConversionFunc);
-      }
-    }
-
-    otherCaseArray[i] = arrayValue;
-  }
-
-  return otherCaseArray;
-}
-
-function convertPut(entity, property, value) {
-  const path = property.split('.');
-  const key = path.pop();
-
-  const o = path.reduce((entry, prop) => {
-    // if (!entry.hasOwnProperty(prop)) {
-    if (!entry[prop]) {
-      entry[prop] = {};
-    }
-    return entry[prop];
-  }, entity);
-
-  o[key] = value;
-
-  return entity;
-}
-
-function convertGet(entity, property) {
-  return property.split('.').reduce((entry, key) => 
-    // Check if entry is an object and the key exists in the entry
-     (entry && typeof entry === 'object' && key in entry) ? entry[key] : undefined
-  , entity);
-}
-
-export function convertToBackendJSONWithRules(rules, data) {
-  if (!rules) {
-    return null;
-  }
-
-  let backendJson = {};
-
-  for (let i = 0; i < rules.length; i++) {
-    const rule = rules[i];
-
-    try {
-      const value = convertGet(data, rule[0]);
-      convertPut(backendJson, rule[1], value);
-    } catch (e) {
-      console.error(i);
-      console.error(rule);
-      console.error(e);
-    }
-  }
-  // rules.forEach(rule => convertPut(backendJson, rule[1], convertGet(data, rule[0])));
-
-  backendJson = getObjectInOtherCase(backendJson, toSnakeCase);
-  return backendJson;
-}
-
-export function convertToFrontendJSONWithRules(rules, data) {
-  if (!rules) {
-    return null;
-  }
-
-  let frontendJson = {};
-
-  for (let i = 0; i < rules.length; i++) {
-    const rule = rules[i];
-
-    try {
-      const value = convertGet(data, rule[1]);
-      convertPut(frontendJson, rule[0], value);
-    } catch (e) {
-      console.error(i);
-      console.error(rule);
-      console.error(e);
-    }
-  }
-  // rules.forEach(rule => convertPut(frontendJson, rule[0], convertGet(data, rule[1])));
-
-  frontendJson = getObjectInOtherCase(frontendJson, toCamelCase);
-  return frontendJson;
 }
 
 export function getBackendJSONForStep(stepKey, data) {
@@ -515,6 +286,7 @@ export function getFrontendJSONForStep(stepKey, data) {
 
   return convertToFrontendJSONWithRules(rules, data);
 }
+
 
 export function stringifyResourceForBackend(resource) {
   let resourceSize = resource.resource_size;
@@ -624,72 +396,6 @@ export function cleanResourceForFrontend(resource) {
   }
 }
 
-export const metadataPublishedReadOnlyFields = [
-  // EditMetadataHeader
-  METADATA_TITLE_PROPERTY,
-  METADATA_URL_PROPERTY,
-  // EditAuthorList
-  METADATA_AUTHORS_PROPERTY,
-  // EditPublicationInfo
-  METADATA_ORGANIZATION_PROPERTY,
-  METADATA_PUBLICATION_YEAR_PROPERTY,
-  METADATA_PUBLISHER_PROPERTY,
-  METADATA_DOI_PROPERTY,
-  METADATA_DATALICENSE_PROPERTY,
-];
-
-export const readablePublishedReadOnlyFields = {
-  [METADATA_TITLE_PROPERTY]: EDIT_METADATA_TITLE_LABEL,
-  [METADATA_URL_PROPERTY]: EDIT_METADATA_URL_LABEL,
-  [METADATA_ORGANIZATION_PROPERTY]: EDIT_METADATA_ORGANIZATION_LABEL,
-  [METADATA_AUTHORS_PROPERTY]: EDIT_METADATA_AUTHORS_LABEL,
-  [METADATA_DOI_PROPERTY]: EDIT_METADATA_DOI_LABEL,
-  [METADATA_PUBLISHER_PROPERTY]: EDIT_METADATA_PUBLISHER_LABEL,
-  [METADATA_PUBLICATION_YEAR_PROPERTY]: EDIT_METADATA_PUBLICATION_YEAR_LABEL,
-  [METADATA_DATALICENSE_PROPERTY]: EDIT_METADATA_DATALICENSE_LABEL,
-};
-
-const readOnlyMappingRules = [
-  {
-    triggerRule: ['published'],
-    explanation: 'This field is "readonly" because the dataset is already published.',
-    readOnlyFields: metadataPublishedReadOnlyFields,
-  },
-/*
-  {
-    triggerRule: ['draft'],
-    explanation: 'This is "readonly" because the dataset is still a draft.',
-    readOnlyFields: [
-      'resources',
-    ],
-  },
-*/
-/*
-  {
-    triggerRule: USER_ROLE_ADMIN,
-    readOnlyFields: [],
-  },
-*/
-];
-
-export function getReadOnlyFieldsObject(trigger) {
-  if (!trigger) {
-    return null;
-  }
-
-  const lowCaseTrigger = trigger?.toLowerCase() || '';
-
-  for (let i = 0; i < readOnlyMappingRules.length; i++) {
-    const mappingObj = readOnlyMappingRules[i];
-
-    if (mappingObj.triggerRule.includes(lowCaseTrigger)) {
-      return mappingObj;
-    }
-  }
-
-  return null;
-}
-
 function commitEditingData(commit, eventName, data) {
   if(!commit) {
     return;
@@ -762,12 +468,12 @@ function populateEditingMain(commit, backendJSON) {
 
   stepKey = EDITMETADATA_KEYWORDS;
   const keywordsData = getFrontendJSONForStep(stepKey, backendJSON);
-  const enhanceDatasets = enhanceTags(keywordsData, categoryCards);
+  const enhancedDatasets = enhanceKeywords(keywordsData, categoryCards);
 
   const enhancedKeywords = {
-    ...enhanceDatasets,
-    metadataCardTitle: headerData.metadataTitle,
-    metadataCardSubtitle: descriptionData.description,
+    ...enhancedDatasets,
+    metadataCardTitle: headerData.metadataTitle, // only used for showing a the preview MetadataCard
+    metadataCardSubtitle: descriptionData.description, // only used for showing a the preview MetadataCard
   }
 
   commitEditingData(commit, stepKey, enhancedKeywords);
@@ -1092,7 +798,7 @@ export const ckanDateTimeFormat = 'yyyy-MM-dd\'T\'HH:mm:ss.SSSSSS';
 
 /**
  *
- * @param {Date} date
+ * @param {Date|string} date
  * @returns {string|null}
  */
 export function formatDateTimeToCKANFormat(date) {
@@ -1121,39 +827,6 @@ export function parseDateStringToReadableFormat(dateString) {
   }
 
   return formatDate(parsedDate);
-}
-
-export function mergeResourceSizeForFrontend(resource) {
-  const mergedResourceSize = {};
-
-  const isLink = resource.urlType !== 'upload';
-  const resourceSize = resource.resourceSize || null;
-
-  if (resourceSize) {
-    let size;
-    let sizeFormat;
-
-    if (isLink) {
-      sizeFormat = resourceSize.sizeUnits?.toUpperCase() || '';
-
-      try {
-        size = Number.parseFloat(resourceSize.sizeValue);
-      } catch (e) {
-        console.error(`sizeValue parsing failed resource id: ${resource.id}`);
-      }
-
-      if (Number.isNaN(size)) {
-        size = undefined;
-      }
-    } else {
-      size = resource.size;
-    }
-
-    mergedResourceSize.size = size;
-    mergedResourceSize.sizeFormat = sizeFormat;
-  }
-  
-  return mergedResourceSize;
 }
 
 export function enhanceUserObject(user) {

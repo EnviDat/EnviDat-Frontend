@@ -1,15 +1,18 @@
 <template>
-  <v-card class="pa-0"
-          :class="$vuetify.display.mdAndUp ? 'signInGrid' : 'signInGridMobile'"
-          id="signInCard">
-
+  <v-card
+    class="pa-0"
+    :class="$vuetify.display.mdAndUp ? 'signInGrid' : 'signInGridMobile'"
+    id="signInCard"
+  >
     <v-img
       :src="signInPic"
       cover
       :max-height="$vuetify.display.mdAndUp ? '700' : '100'"
-      :style="$vuetify.display.mdAndUp
-        ? 'border-bottom-left-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 0;'
-        : 'border-top-right-radius: 4px; border-top-left-radius: 4px;'"
+      :style="
+        $vuetify.display.mdAndUp
+          ? 'border-bottom-left-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 0;'
+          : 'border-top-right-radius: 4px; border-top-left-radius: 4px;'
+      "
     />
 
     <v-container fluid class="pa-4">
@@ -19,35 +22,29 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="signedIn" >
-        <v-col
-          cols="12"
-          class="text-h6"
-        >
+      <v-row v-if="signedIn">
+        <v-col cols="12" class="text-h6">
           <v-alert type="success">
             {{ signedInText + signedInEmail }}
           </v-alert>
         </v-col>
       </v-row>
 
-      <v-row v-if="!signedIn" >
+      <v-row v-if="!signedIn">
         <v-col cols="12" class="text-h6">
           {{ emailSignInInstructions }}
         </v-col>
       </v-row>
 
-      <form v-if="!signedIn"
-            class="enviDatForm pl-2">
-        <v-row id="emailRow"
-               align="start">
-
+      <form v-if="!signedIn" class="enviDatForm pl-2">
+        <v-row id="emailRow" align="start">
           <v-col cols="12" md="9">
             <v-text-field
               v-model="email"
               :error-messages="backendErrors.email"
               label="Email"
               :prepend-icon="mdiEmail"
-              @input="isEmailValid()"
+              @update:model-value="isEmailValid()"
               @keyup.enter="catchRequestToken"
               tabindex="0"
             />
@@ -70,9 +67,9 @@
           </v-col>
         </v-row>
 
-        <v-row v-if="requestSuccess && email" >
+        <v-row v-if="requestSuccess && email">
           <v-col cols="12" class="pa-0">
-            <v-alert type="info" >
+            <v-alert type="info">
               {{ `${requestSentText} ${email}. ${requestSentText2}` }}
             </v-alert>
           </v-col>
@@ -85,11 +82,11 @@
           justify="space-between"
           class="pt-2"
         >
-          <v-col cols="12" md="3" class="flex-grow-0 text-h6 ">
+          <v-col cols="12" md="3" class="flex-grow-0 text-h6">
             {{ requestTokenText }}
           </v-col>
 
-          <v-col cols="12" md="6" >
+          <v-col cols="12" md="6">
             <v-text-field
               v-model="key"
               :error-messages="backendErrors.key"
@@ -99,7 +96,7 @@
               :prepend-icon="mdiKey"
               :clear-icon="mdiClose"
               persistent-clear
-              @input="isTokenValid()"
+              @update:model-value="isTokenValid()"
               @keyup.enter="catchEmailSignIn"
               tabindex="0"
             />
@@ -118,18 +115,17 @@
           </v-col>
         </v-row>
 
-        <v-row v-if="wslSigninEnabled"
+        <v-row
+          v-if="wslSigninEnabled"
           id="wslEmailRow"
           align="center"
           v-show="email || emailAddressIsWsl"
         >
-          <v-col cols="12" md="9"
-                 class="text-h8">
+          <v-col cols="12" md="9" class="text-h8">
             {{ azureSignInInstructions }}
           </v-col>
 
-          <v-col cols="12" md="3"
-                 id="tokenButton">
+          <v-col cols="12" md="3" id="tokenButton">
             <BaseRectangleButton
               color="secondary"
               :button-text="azureButtonText"
@@ -147,17 +143,15 @@
           id="errorTextRow"
           :style="`background-color: ${$vuetify.theme.themes.light.colors.errorHighlight};`"
         >
-          <v-col cols="12" class="pa-0" >
-            <v-alert type="error" >
+          <v-col cols="12" class="pa-0">
+            <v-alert type="error">
               {{ formErrorText }}
             </v-alert>
           </v-col>
         </v-row>
       </form>
 
-      <v-row v-if="signedIn"
-             id="signinButtonRow"
-              class="pl-2">
+      <v-row v-if="signedIn" id="signinButtonRow" class="pl-2">
         <v-col class="flex-grow-0">
           <BaseRectangleButton
             color="primary"
@@ -184,18 +178,16 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="disclaimerText"
-             class="pt-4">
+      <v-row v-if="disclaimerText" class="pt-4">
         <v-col>
           <v-card class="pa-4">
-
-            <v-row >
+            <v-row>
               <v-col cols="12" class="text-h6">
                 {{ disclaimerTitleText }}
               </v-col>
             </v-row>
 
-            <v-row >
+            <v-row>
               <v-col cols="12" class="text-subtitle-1">
                 <span v-html="disclaimerText" />
               </v-col>
@@ -213,7 +205,6 @@
       </v-row>
     </v-container>
   </v-card>
-
 </template>
 
 <script>
@@ -232,11 +223,17 @@
 
 import * as yup from 'yup';
 
-import { mdiAlertCircle, mdiClose, mdiEmail, mdiInformation, mdiKey } from '@mdi/js';
+import {
+  mdiAlertCircle,
+  mdiClose,
+  mdiEmail,
+  mdiInformation,
+  mdiKey,
+} from '@mdi/js';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import { isFieldValid } from '@/factories/userEditingValidations';
 import signInPic from '@/modules/user/assets/signin.jpg';
-import {getIcon} from '@/factories/imageFactory';
+import { getIconImage } from '@/factories/imageFactory';
 
 const keyLength = 32;
 
@@ -267,8 +264,10 @@ export default {
       return (!this.signedIn && !this.backendErrors.email) || false;
     },
     emailAddressIsWsl() {
-      return this.emailAddressIsValid
-        && ( this.email.endsWith('@wsl.ch') || this.email.endsWith('@slf.ch') );
+      return (
+        this.emailAddressIsValid &&
+        (this.email.endsWith('@wsl.ch') || this.email.endsWith('@slf.ch'))
+      );
     },
     keyAddressIsValid() {
       return !this.signedIn && !this.backendErrors.key;
@@ -283,7 +282,7 @@ export default {
       return this.requestSuccess ? 'Get another token' : 'Request token';
     },
     wslLogo() {
-      return getIcon('wslLogo');
+      return getIconImage('wslLogo');
     },
     yupValidations: () =>
       yup.object().shape({

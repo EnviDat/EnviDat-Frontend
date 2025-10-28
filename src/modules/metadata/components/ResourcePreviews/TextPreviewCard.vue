@@ -93,7 +93,13 @@ export default {
 
       if (this.url) {
         axios
-          .get(this.url)
+          .get(this.url, {
+            /*
+                        headers: {
+
+                        },
+            */
+          })
           .then(response => {
             this.loading = false;
             this.fileContent = response.data;

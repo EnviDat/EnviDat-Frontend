@@ -24,7 +24,7 @@ import {
   EDITMETADATA_ORGANIZATION,
   EDITMETADATA_PUBLICATION_INFO,
   EDITMETADATA_RELATED_DATASETS,
-  EDITMETADATA_RELATED_PUBLICATIONS,
+  EDITMETADATA_RELATED_PUBLICATIONS, EDITMETADATA_REVIEW_INFO,
 } from '@/factories/eventBus';
 
 import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader.vue';
@@ -91,6 +91,9 @@ export const emptyMetadataInEditing = {
     doi: '',
     publisher: '',
     publicationYear: '',
+  },
+  [EDITMETADATA_REVIEW_INFO]: {
+    version: '',
   },
   [EDITMETADATA_FUNDING_INFO]: {
     funders: [],

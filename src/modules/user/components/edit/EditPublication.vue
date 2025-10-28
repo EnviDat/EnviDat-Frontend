@@ -244,11 +244,11 @@ export default {
     submitEdittedMetadata() {
       eventBus.emit(METADATA_EDITING_FINISH_CLICK);
     },
-    catchPublicationStateChange(event) {
+    catchPublicationStateChange(doiAction) {
       eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_PUBLICATION_STATE,
         data: {
-          event,
+          doiAction,
           metadataId: this.metadataId,
         },
       });

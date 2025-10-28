@@ -68,6 +68,7 @@
 import { mdiClose, mdiInformationOutline } from '@mdi/js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import { getModeData } from '@/factories/modeFactory';
+import { getImage } from '@/factories/imageFactory.js';
 
 export default {
   name: 'ModeView',
@@ -79,12 +80,11 @@ export default {
     compact: Boolean,
     closeCallback: Function,
   },
-  data: () => ({
-    mdiClose,
-    mdiInformationOutline,
-    modeInfoPrefix: 'Special View',
-    tooltipText: 'You are in a specific view which shows ',
-  }),
+  async mounted() {
+    if (this.modeData?.logo) {
+      this.modeLogo = await getImage(this.modeData?.logo);
+    }
+  },
   computed: {
     size() {
       return this.compact ? 24 : 34;
@@ -101,9 +101,6 @@ export default {
     modeTitle() {
       return this.modeData ? this.modeData.title : null;
     },
-    modeLogo() {
-      return this.modeData ? this.modeData.logo : null;
-    },
     modeExternalUrl() {
       return this.modeData ? this.modeData.externalUrl : null;
     },
@@ -113,5 +110,12 @@ export default {
       return getModeData(this.mode);
     },
   },
+  data: () => ({
+    mdiClose,
+    mdiInformationOutline,
+    modeInfoPrefix: 'Special View',
+    tooltipText: 'You are in a specific view which shows ',
+    modeLogo: undefined,
+  }),
 };
 </script>

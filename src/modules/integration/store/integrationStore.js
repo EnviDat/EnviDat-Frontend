@@ -51,8 +51,8 @@ export const integration = {
 
       let url = `${staticRoot}/integration/integrationlist.json?nocache=${new Date().getTime()}`;
 
-      if (import.meta.env?.DEV && useTestdata) {
-        url = './testdata/integrationlist.json';
+      if (import.meta.env?.MODE === 'development' && useTestdata) {
+        url = '@/../stories/testdata/integrationlist.json';
       }
 
       axios.get(url)

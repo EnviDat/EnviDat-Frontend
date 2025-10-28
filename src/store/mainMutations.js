@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 /**
  * @summary main store mutations
  * @author Dominik Haas-Artho

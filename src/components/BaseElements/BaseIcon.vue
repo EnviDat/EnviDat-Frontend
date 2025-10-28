@@ -32,8 +32,7 @@
   </div>
 </template>
 
-<script>
-/**
+<script>/**
  * The @class BaseIcon wraps v-icon or <i /> to make icons visible
  * With the possibility of icon font and custom icons
  *
@@ -60,14 +59,12 @@ export default {
     badgeDot: { type: Boolean, default: false },
     badgeColor: { type: String, default: 'highlight' },
   },
-  data: () => ({
-  }),
   computed: {
     customIconStyle() {
       return {
         'background-color': this.color,
-        '-webkit-mask': `url("${this.customIcon}") center/contain`,
-        'mask': `url("${this.customIcon}") center/contain`,
+        '-webkit-mask': `url("${this.customIconResolved}") center/contain`,
+        'mask': `url("${this.customIconResolved}") center/contain`,
       }
     },
     classList() {
@@ -83,10 +80,25 @@ export default {
       }
     },
     customIcon() {
+      if (typeof this.icon === 'object') {
+        // Promise are objects
+        this.loadCustomIcon(this.icon);
+        return this.icon;
+      }
+
       if (this.icon?.includes('/')){
         return this.icon;
       }
+
       return null;
+    },
+  },
+  data: () => ({
+    customIconResolved: undefined,
+  }),
+  methods: {
+    async loadCustomIcon(iconPromise) {
+      this.customIconResolved = await iconPromise;
     },
   },
 };

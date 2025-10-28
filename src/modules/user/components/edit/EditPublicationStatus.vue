@@ -1,12 +1,12 @@
 <template>
-    <v-card
-      id="EditPublicationStatus"
-      class="pa-0"
-      max-width="100%"
-      :loading="loadingColor"
-    >
-      <v-container fluid class="pa-4">
-
+  <v-card
+    id="EditPublicationStatus"
+    class="pa-0"
+    max-width="100%"
+    :loading="loadingColor"
+    :flat
+  >
+    <v-container fluid class="pa-4">
       <v-row>
         <v-col cols="6" class="text-h5">
           {{ labels.cardTitle }}
@@ -34,8 +34,7 @@
         </v-col>
       </v-row>
 
-      <v-row class="mt-10"
-             no-gutters>
+      <v-row class="mt-10" no-gutters>
         <v-col
           v-for="(state, index) in pStatesAndArrows"
           :key="`${index}_pState`"
@@ -45,7 +44,7 @@
             <BaseShinyBadge
               v-if="
                 state === PUBLICATION_STATE_PUBLISHED &&
-                  activeStateIndex === index
+                activeStateIndex === index
               "
               :text="getStateText(state)"
             />
@@ -54,8 +53,8 @@
               v-if="
                 (!!getStateText(state) &&
                   state !== PUBLICATION_STATE_PUBLISHED) ||
-                  (state === PUBLICATION_STATE_PUBLISHED &&
-                    activeStateIndex !== index)
+                (state === PUBLICATION_STATE_PUBLISHED &&
+                  activeStateIndex !== index)
               "
               density="compact"
               :disabled="activeStateIndex > index"
@@ -65,28 +64,30 @@
               {{ getStateText(state) }}
             </v-chip>
 
-            <BaseIcon v-if="!getStateText(state)" :icon="mdiArrowRight" :color="'grey'" />
-
+            <BaseIcon
+              v-if="!getStateText(state)"
+              :icon="mdiArrowRight"
+              :color="'grey'"
+            />
           </v-row>
 
           <v-row
-            v-if="currentStateInfos.positionIndex === index"
+            v-if="currentStateInfos?.positionIndex === index"
             no-gutters
             class="py-2"
             justify="center"
           >
-            <BaseIcon :icon="mdiArrowUp" :color="'grey'"  class='mr-1' />
+            <BaseIcon :icon="mdiArrowUp" :color="'grey'" class="mr-1" />
           </v-row>
 
           <v-row
             v-if="
-              currentStateInfos.positionIndex === index &&
-                currentStateInfos.buttonText
+              currentStateInfos?.positionIndex === index &&
+              currentStateInfos?.buttonText
             "
             no-gutters
             justify="center"
           >
-
             <BaseRectangleButton
               id="interactiveButton"
               :buttonText="currentStateInfos.buttonText"
@@ -102,24 +103,25 @@
               tooltipPosition="bottom"
               :tooltipText="`Click to ${currentStateInfos.infoText}`"
               :elevation="5"
-              @clicked="publicationState === PUBLICATION_STATE_PUBLISHED
+              @clicked="
+                publicationState === PUBLICATION_STATE_PUBLISHED
                   ? undefined
-                  : $emit('clicked', currentStateInfos.buttonEvent)"
+                  : $emit('clicked', currentStateInfos.buttonEvent)
+              "
             />
-
           </v-row>
 
           <v-row
-            v-if="currentStateInfos.positionIndex === index"
+            v-if="currentStateInfos?.positionIndex === index"
             class="pt-2"
             no-gutters
             justify="center"
-            style="text-align: center;"
+            style="text-align: center"
           >
             {{ currentStateInfos.infoText }}
           </v-row>
 
-<!--
+          <!--
           <v-row v-if="currentStateInfos.positionIndex === index"
                  no-gutters
                  class="py-2"
@@ -128,19 +130,24 @@
           </v-row>
 -->
 
-
-          <v-row v-if="currentStateInfos.positionIndex === index && !isUserAllowedToEdit"
-                 class="pt-2 readOnlyHint"
-                 no-gutters
-                 justify="center">
+          <v-row
+            v-if="
+              currentStateInfos?.positionIndex === index && !isUserAllowedToEdit
+            "
+            class="pt-2 readOnlyHint"
+            no-gutters
+            justify="center"
+          >
             {{ readOnlyUserRoleInfo }}
           </v-row>
-
         </v-col>
       </v-row>
 
-      <v-alert type="warning" :text="labels.instructions2" class="text-body-1 mt-10">
-
+      <v-alert
+        type="warning"
+        :text="labels.instructions2"
+        class="text-body-1 mt-10"
+      >
         <v-row class="text-body-2 mt-5 px-2">
           <v-col
             v-for="(field, index) of metadataPublishedReadOnlyFields"
@@ -156,9 +163,7 @@
         <v-row class="text-body-1 pt-4">
           <v-col cols="12" v-html="labels.instructions3"> </v-col>
         </v-row>
-
       </v-alert>
-
     </v-container>
   </v-card>
 </template>
@@ -174,7 +179,14 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import { mapState } from 'vuex';
-import {mdiArrowUp, mdiArrowRight, mdiEarth, mdiFingerprint, mdiNewspaper, mdiOpenInNew} from '@mdi/js';
+import {
+  mdiArrowUp,
+  mdiArrowRight,
+  mdiEarth,
+  mdiFingerprint,
+  mdiNewspaper,
+  mdiOpenInNew,
+} from '@mdi/js';
 
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
@@ -183,15 +195,13 @@ import BaseShinyBadge from '@/components/BaseElements/BaseShinyBadge.vue';
 
 import { possiblePublicationStates } from '@/factories/metaDataFactory';
 import {
-  metadataPublishedReadOnlyFields,
-  readablePublishedReadOnlyFields,
-} from '@/factories/mappingFactory';
-import {
   DOI_PUBLISH,
   DOI_REQUEST,
   DOI_RESERVE,
 } from '@/modules/user/store/doiMutationsConsts';
 import {
+  metadataPublishedReadOnlyFields,
+  readablePublishedReadOnlyFields,
   USER_ROLE_ADMIN,
   USER_ROLE_EDITOR,
   USER_ROLE_MEMBER,
@@ -241,6 +251,10 @@ export default {
       type: String,
       default: null,
     },
+    flat: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     ...mapState(['config']),
@@ -258,7 +272,8 @@ export default {
       }
 
       for (let i = 0; i < this.possiblePublicationStates.length; i++) {
-        const pState = this.possiblePublicationStates[i] || PUBLICATION_STATE_DRAFT;
+        const pState =
+          this.possiblePublicationStates[i] || PUBLICATION_STATE_DRAFT;
         pStateWithDiv.push(pState);
         pStateWithDiv.push('mdiArrowRight');
       }
@@ -268,10 +283,14 @@ export default {
       return pStateWithDiv;
     },
     activeStateIndex() {
-      return this.pStatesAndArrows.findIndex(v => v === this.publicationState);
+      return this.pStatesAndArrows.findIndex(
+        (v) => v === this.publicationState,
+      );
     },
     currentStateInfos() {
-      return this.stateTextMap.get(this.publicationState || PUBLICATION_STATE_DRAFT);
+      return this.stateTextMap.get(
+        this.publicationState || PUBLICATION_STATE_DRAFT,
+      );
     },
     doiUrl() {
       return this.doi ? `https://www.doi.org/${this.doi}` : undefined;
@@ -359,7 +378,7 @@ export default {
         {
           chipText: 'Publication Pending',
           infoText:
-          'Please make sure you reviewed the dataset before publishing it!',
+            'Please make sure you reviewed the dataset before publishing it!',
           buttonIcon: mdiEarth,
           buttonText: 'Publish Dataset',
           buttonEvent: DOI_PUBLISH,
@@ -375,7 +394,7 @@ export default {
       instructions2:
         'Please be aware once the dataset is published the following metadata information can NOT be changed anymore.',
       instructions3:
-        'You can still upload newer versions of your research data, please use a <strong>clear name and desription</strong> to indicate the latest version of the data.',
+        'You can still upload newer versions of your research data, please use a <strong>clear name and desription</strong> to indicate the latest version of the data and <strong>mark the old version as deprecated</strong>.',
     },
     metadataPublishedReadOnlyFields,
     readablePublishedReadOnlyFields,

@@ -66,7 +66,7 @@
             @keyup="blurOnEnterKey"
             @focusin="focusIn($event)"
             @focusout="focusOut('email', $event)"
-            @input="changeProperty('email', $event.target.value)"
+            @update:model-value="changeProperty('email', $event.target.value)"
           />
         </v-col>
       </v-row>
@@ -78,8 +78,8 @@
       <v-row v-if="!isEditingAuthor" dense class="pt-2">
         <v-col>
           <BaseUserPicker
-            :users="fullNameUsers"
-            :preSelected="preselectAuthorNames"
+            :users="allUsersForUserPicker"
+            :preSelectedEmails="preselectAuthorEmails"
             :readonly="isUserPickerReadOnly"
             :hint="
               isUserPickerReadOnly
@@ -111,7 +111,7 @@
             @keyup="blurOnEnterKey"
             @focusin="focusIn($event)"
             @focusout="focusOut('firstName', $event)"
-            @input="changeProperty('firstName', $event.target.value)"
+            @update:model-value="changeProperty('firstName', $event.target.value)"
           />
         </v-col>
 
@@ -129,7 +129,7 @@
             @keyup="blurOnEnterKey"
             @focusin="focusIn($event)"
             @focusout="focusOut('lastName', $event)"
-            @input="changeProperty('lastName', $event.target.value)"
+            @update:model-value="changeProperty('lastName', $event.target.value)"
           />
         </v-col>
       </v-row>
@@ -149,7 +149,7 @@
             @keyup="blurOnEnterKey"
             @focusin="focusIn($event)"
             @focusout="focusOut('affiliation', $event)"
-            @input="changeProperty('affiliation', $event.target.value)"
+            @update:model-value="changeProperty('affiliation', $event.target.value)"
           />
         </v-col>
 
@@ -167,7 +167,7 @@
             @keyup="blurOnEnterKey"
             @focusin="focusIn($event)"
             @focusout="focusOut('identifier', $event)"
-            @input="changeProperty('identifier', $event.target.value)"
+            @update:model-value="changeProperty('identifier', $event.target.value)"
           />
         </v-col>
       </v-row>
@@ -189,7 +189,7 @@
   </v-card>
 </template>
 
-<script>
+<script lang="ts">
 /**
  * @summary Show a title, instructions and a button to create a new author
  * @author Dominik Haas-Artho
@@ -217,9 +217,8 @@ import { EDIT_METADATA_ADD_AUTHOR_TITLE } from '@/factories/metadataConsts';
 
 import {
   createAuthor,
-  getArrayOfFullNames,
+  getUserPickerObjects,
   getAuthorByEmail,
-  getAuthorByName,
   getAuthorName,
 } from '@/factories/authorFactory';
 import {
@@ -238,8 +237,9 @@ import {
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 
+
 export default {
-  name: 'EditAddAuthor',
+  // name: 'EditAddAuthor',
   props: {
     titleLabel: {
       type: String,
@@ -350,41 +350,16 @@ export default {
           : this.identifier;
       },
     },
-    preselectAuthorNames() {
+    preselectAuthorEmails() {
       const author = getAuthorByEmail(this.emailField, this.existingAuthors);
-
-      if (author) {
-        const fullName = getAuthorName(author);
-        return fullName ? [fullName] : [];
-      }
-
-      return undefined;
+      return author ? [author.email] : [];
     },
-    fullNameUsers() {
+    allUsersForUserPicker() {
       const localAuthors = [...this.existingAuthors];
-      return getArrayOfFullNames(localAuthors);
+      return getUserPickerObjects(localAuthors);
     },
     validations() {
       return getValidationMetadataEditingObject(EDITMETADATA_AUTHOR);
-    },
-    infoReadOnly() {
-      return (
-        (this.authorPickerTouched && this.authorIsPicked) ||
-        (!this.authorPickerTouched && this.authorPickerFoundAuthor)
-      );
-    },
-    authorPickerFoundAuthor() {
-      if (
-        this.preselectAuthorNames?.length <= 0 ||
-        this.fullNameUsers?.length <= 0
-      ) {
-        return false;
-      }
-
-      const matches = this.fullNameUsers.filter(
-        (fullName) => fullName === this.preselectAuthorNames[0],
-      );
-      return matches.length > 0;
     },
     anyUserElementsActive() {
       return (
@@ -451,13 +426,13 @@ export default {
         this.validationErrors,
       );
     },
-    catchPickerAuthorChange(pickedAuthorName, hasAuthor) {
+    catchPickerAuthorChange(pickedUserEmail: string, hasAuthor: boolean) {
       this.authorPickerTouched = true;
       this.authorIsPicked = hasAuthor;
 
       if (this.authorIsPicked) {
         const author =
-          getAuthorByName(pickedAuthorName, this.existingAuthors) || {};
+          getAuthorByEmail(pickedUserEmail, this.existingAuthors) || {};
         const authorObject = createAuthor(author);
 
         this.fillPreviews(

@@ -16,6 +16,8 @@ export const METADATA_PUBLICATIONS_TITLE = 'Related Publications';
 export const METADATA_DATASETS_TITLE = 'Related Datasets';
 export const METADATA_KEYWORDS_TITLE = 'Keywords';
 
+export const LOCAL_DATASET_KEY = 'local_dataset_editing';
+
 export const METADATA_AUTHORS_TITLE = 'Author Details';
 export const AUTHORS_PUBLISHED_DATACOUNT = 'Published datasets';
 export const AUTHORS_DATACREDIT_CONTRIBUTION =
@@ -82,8 +84,8 @@ export const DATE_PROPERTY_COLLECTED_TYPE_EXPLANATION =
 export const METADATA_TITLE_PROPERTY = 'metadataTitle';
 export const METADATA_URL_PROPERTY = 'metadataUrl';
 export const METADATA_CONTACT_EMAIL = 'contactEmail';
-export const METADATA_CONTACT_FIRSTNAME = 'contactGivenName';
-export const METADATA_CONTACT_LASTNAME = 'contactSurname';
+export const METADATA_CONTACT_FIRSTNAME = 'contactFirstName';
+export const METADATA_CONTACT_LASTNAME = 'contactLastName';
 export const METADATA_CONTACT_FULLNAME = 'contactName';
 
 export const METADATA_AUTHORS_PROPERTY = 'authors';
@@ -116,5 +118,9 @@ export const LOCATION_TYPE_GEOMCOLLECTION = 'GeometryCollection';
 export const LOCATION_TYPE_FEATCOLLECTION = 'FeatureCollection';
 export const LOCATION_TYPE_FEATURE = 'Feature';
 
-export const BLIND_REVIEW_ON = 'blind-review';
+export const BLIND_REVIEW_ON = 'double-blind';
 export const BLIND_REVIEW_OFF = '1.0';
+
+export const METADATA_NEW_RESOURCE_ID = 'localResourceId';
+
+export const RESOURCE_FORMAT_LINK = 'url';
