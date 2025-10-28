@@ -32,6 +32,8 @@ import {
   mdiTextBoxEditOutline,
   mdiPencil,
   mdiPencilOff,
+  mdiClose,
+  mdiEyeOutline,
 } from '@mdi/js';
 
 const map = {
@@ -70,6 +72,8 @@ const map = {
   draft: mdiTextBoxEditOutline,
   edit: mdiPencil,
   noedit: mdiPencilOff,
+  close: mdiClose,
+  eye: mdiEyeOutline,
 };
 
 export const extractIcons = (iconName: string) => {

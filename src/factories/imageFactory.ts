@@ -1,8 +1,8 @@
 /* eslint-disable no-use-before-define */
 import { mdiFile, mdiLayers, mdiMapMarker, mdiMapMarkerMultiple } from '@mdi/js';
 import {checkWebpSupport} from '@/factories/enhancementsFactory';
-import {checkIsFileAudio, checkIsFileVideo, getFileExtension} from './fileFactory';
-import {LOCATION_TYPE_MULTIPOINT, LOCATION_TYPE_POINT, LOCATION_TYPE_POLYGON} from './metadataConsts';
+import {checkIsFileAudio, checkIsFileVideo, getFileExtension} from '@/factories/fileFactory';
+import {LOCATION_TYPE_MULTIPOINT, LOCATION_TYPE_POINT, LOCATION_TYPE_POLYGON} from '@/factories/metadataConsts';
 
 
 /** Normalizes the image path so it can be used to retrieve the image, removes the 'src/asset' part of the path and also the extension */

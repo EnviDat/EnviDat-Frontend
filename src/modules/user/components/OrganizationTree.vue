@@ -7,9 +7,8 @@
       <v-text-field
         v-model="search"
         label="Search Organization"
-        dark
         flat
-        solo-inverted
+        variant="solo-inverted"
         hide-details
         clearable
         persistent-clear

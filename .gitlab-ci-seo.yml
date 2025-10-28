@@ -26,12 +26,14 @@ build-seo:
     - when: on_success
   needs:
     # needs the artifact: config and environment variables
-    - modify-env
+    - job: modify-env
+      artifacts: true
     # needs the artifact: node_modules to build the app
     #- install-node
   before_script:
     - npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
   script:
+    - cat .env.production
     - npm run build-vike
     # rename the dist/client output folder
     - mv dist/client dist/seo
@@ -63,7 +65,9 @@ schedule-seo-deployment:
     - modify-env
     - run-tests
     - verify-node-audit
-    - verify-node-owasp
+    - job: verify-node-owasp
+      optional: true
+      artifacts: false
     # needs the artifact: node_modules to build the app
     - build-seo
   variables:
@@ -101,6 +105,7 @@ schedule-seo-deployment:
     # use -q for quiet to not list all the files
     - ls -l
     - echo "going to rclone copy from ./ to switch:${BUCKET_NAME}"
-    - rclone copy ./ "switch:${BUCKET_NAME}" --verbose
+    - rclone copy ./sitemap.xml "switch:${BUCKET_NAME}" --verbose
+    - rclone sync ./seo/ "switch:${BUCKET_NAME}"/seo/ --verbose    
   retry:
     max: 2

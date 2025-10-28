@@ -143,7 +143,7 @@
               icon-color="black"
               color="accent"
               elevated
-              small
+              size="small"
               :tooltip-text="openButtonTooltip"
               @clicked="$emit('openButtonClicked')" />
         </v-col>

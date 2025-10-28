@@ -13,14 +13,13 @@
       :icon="mdiClose"
       icon-color="primary"
       outline-color="primary"
-      outlined
+      variant="outlined"
       tooltip-text="Cancel Resource Editing"
       tooltip-bottom
       @clicked="$emit('closeClicked')"
     />
 
     <div class="pa-3">
-      Create Resource From Link
       <v-row>
         <v-col cols="6" class="text-h5 d-flex align-center">
           <BaseIcon v-if="isDataPrivate" color="black" :icon="mdiLock" />
@@ -121,12 +120,12 @@
             <v-textarea
               v-if="isLongUrl"
               :label="isLink ? labels.url : labels.fileName"
-              outlined
+              variant="outlined"
               auto-grow
-              :readonly="isReadOnly('longUrl')"
-              :hint="readOnlyHint('longUrl')"
+              :readonly="readOnlyHint('url')"
+              :hint="readOnlyHint('url')"
               persistent-hint
-              dense
+              density="compact"
               :disabled="loading"
               v-model="urlField"
               :error-messages="validationErrors.url"
@@ -135,11 +134,11 @@
             <v-text-field
               v-if="!isLongUrl"
               :label="isLink ? labels.url : labels.fileName"
-              outlined
-              :readonly="isReadOnly('noLongUrl')"
-              :hint="readOnlyHint('noLongUrl')"
+              variant="outlined"
+              :readonly="urlReadOnly"
+              :hint="readOnlyHint('url')"
               persistent-hint
-              dense
+              density="compact"
               :disabled="loading"
               v-model="urlField"
               :error-messages="validationErrors.url"
@@ -279,13 +278,13 @@
           >
             <v-col cols="12" class="pt-2">
               <BaseUserPicker
-                :users="envidatUserNameStrings"
+                :users="envidatUsersPicker"
+                :preSelectedNames="preSelectedAllowedUsers"
                 :pickerLabel="labels.restrictedAllowedUsersInfo"
                 multiplePick
                 :prependIcon="mdiKey"
                 userTagsCloseable
                 :placeholder="labels.allowedUsersTypingInfo"
-                :preSelected="preSelectedAllowedUsers"
                 @removedUsers="changeAllowedUsers"
                 @pickedUsers="changeAllowedUsers"
               />
@@ -309,7 +308,18 @@
           </v-row>
         </div>
 
-        <v-row no-gutters class="pt-4" justify="end">
+        <v-row no-gutters class="pt-4"
+               :justify="isSystemAdmin ? 'space-between' : 'end'"
+        >
+          <v-col v-if="isSystemAdmin"
+            class="flex-grow-0">
+            <BaseRectangleButton
+              :loading="loading"
+              :buttonText="labels.deleteButtonText"
+              color="error"
+              @clicked="() => $emit('delete')"
+            />
+          </v-col>
           <v-col class="flex-grow-0">
             <BaseRectangleButton
               :disabled="!saveButtonEnabled"
@@ -345,15 +355,15 @@ import {
   mdiAccountGroup,
 } from '@mdi/js';
 
-import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus.js';
+import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
 
-import { formatDateTimeToCKANFormat } from '@/factories/mappingFactory.js';
-import { renderMarkdown } from '@/factories/stringFactory.js';
+import { formatDateTimeToCKANFormat } from '@/factories/mappingFactory';
+import { renderMarkdown } from '@/factories/stringFactory';
 import { getFileIcon, getIconImage } from '@/factories/imageFactory';
 
 import notFoundImg from '@/modules/user/assets/imageNotFound.jpg';
@@ -363,16 +373,21 @@ import {
   getUserAutocompleteList,
   ACCESS_LEVEL_SAMEORGANIZATION_VALUE,
   ACCESS_LEVEL_PUBLIC_VALUE,
-} from '@/factories/userEditingFactory.js';
+} from '@/factories/userEditingFactory';
 
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
-import { formatDate } from '@/factories/dateFactory.js';
+import { formatDate } from '@/factories/dateFactory';
 
 import {
   isReadOnlyField,
   getReadOnlyHint,
 } from '@/modules/workflow/utils/useReadonly';
+import { RESOURCE_FORMAT_LINK } from '@/factories/metadataConsts';
+import { getFileExtension } from '@/factories/fileFactory';
+import { RestrictedDTO } from '@/types/dataTransferObjectsTypes';
+import { getUserPickerObjects } from '@/factories/authorFactory';
+import { USER_ROLE_SYSTEM_ADMIN } from '@/factories/userEditingValidations';
 
 
 export default {
@@ -466,20 +481,22 @@ export default {
       type: Object,
       default: () => ({}),
     },
-
     userEditMetadataConfig: {
       type: Object,
       default: undefined,
     },
+    userRole: {
+      type: String,
+      default: null,
+    },
   },
-  emits: ['save', 'validate', 'closeClicked'],
+  emits: ['save', 'validate', 'closeClicked', 'previewImageClicked', 'delete'],
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   beforeUnmount() {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
-  mounted() {},
   computed: {
     loadingColor() {
       if (this.loading) {
@@ -602,7 +619,7 @@ export default {
 
         if (this.restricted) {
           if (typeof this.restricted === 'string') {
-            let restrictedObj = {};
+            let restrictedObj = {} as RestrictedDTO;
             try {
               restrictedObj = JSON.parse(this.restricted);
             } catch (e) {
@@ -649,16 +666,20 @@ export default {
 
       if (this.restricted) {
         if (typeof this.restricted === 'string') {
-          let restrictedObj = {};
+          let restrictedObj = {} as RestrictedDTO;
           try {
             restrictedObj = JSON.parse(this.restricted);
           } catch (e) {
             console.error(`Error while parsing allowedUsers info: ${e}`);
           }
 
-          users = restrictedObj.allowedUsers || restrictedObj.allowed_users;
+          users = restrictedObj.allowed_users
+            // @ts-ignore
+            || restrictedObj.allowedUsers;
         } else {
-          users = this.restricted.allowedUsers || this.restricted.allowed_users;
+          users = this.restricted.allowed_users
+            // @ts-ignore
+            || this.restricted.allowedUsers;
         }
       }
 
@@ -692,12 +713,17 @@ export default {
       }
       return ACCESS_LEVEL_PUBLIC_VALUE;
     },
-    envidatUserNameStrings() {
-      return getUserAutocompleteList(this.envidatUsers);
+    envidatUsersPicker() {
+      const users = getUserAutocompleteList(this.envidatUsers);
+      return getUserPickerObjects(users);
     },
     preSelectedAllowedUsers() {
-      // match with the user.name but make sure the fullname or display_name is shown
-      return getAllowedUserNames(this.allowedUsersField, this.envidatUsers);
+      if (this.allowedUsersField) {
+        // match with the user.name but make sure the fullName or display_name is shown
+        return getAllowedUserNames(this.allowedUsersField, this.envidatUsers);
+      }
+
+      return undefined;
     },
     openAccessDetails() {
       return renderMarkdown(this.labels.openAccessPreferedInstructions);
@@ -710,6 +736,21 @@ export default {
     },
     isImage() {
       return this.mimetype?.includes('image') || false;
+    },
+    urlAndFileExtensionMatch() {
+      const ext = getFileExtension(this.urlField);
+      return ext === this.formatField;
+    },
+    urlReadOnly() {
+      if(this.urlAndFileExtensionMatch) {
+        return true;
+      }
+
+      if (this.formatField !== RESOURCE_FORMAT_LINK) {
+        return true;
+      }
+
+      return this.isReadOnly('url')
     },
     isLink() {
       return this.urlType !== 'upload';
@@ -738,6 +779,9 @@ export default {
     },
     fileFormatIcon() {
       return getFileIcon(this.formatField);
+    },
+    isSystemAdmin() {
+      return this.userRole === USER_ROLE_SYSTEM_ADMIN;
     },
   },
   methods: {
@@ -774,7 +818,7 @@ export default {
         description: this.descriptionField,
         name: this.resourceNameField,
         format: this.formatField,
-        size: this.sizeField || 0,
+        size: this.formatField === RESOURCE_FORMAT_LINK ? 1 : this.sizeField || 1,
         sizeFormat: this.sizeFormatField,
       };
 
@@ -802,11 +846,11 @@ export default {
         format: this.formatField.toLowerCase(),
         // don't set the "size" directly because this is done
         // via the file upload
-        // size: this.size, // DEMO
-        // sizeFormat: this.sizeFormatField,  // DEMO
+        size: this.size,
+        sizeFormat: this.sizeFormatField,
         resourceSize: {
-          sizeValue: this.isLink ? this.sizeField?.toString() : '',
-          sizeUnits: this.isLink ? this.sizeFormatField?.toLowerCase() : '',
+          sizeValue: this.isLink ? this.sizeField?.toString() : '1',
+          sizeUnits: this.isLink ? this.sizeFormatField?.toLowerCase() : this.getFileSizeFormat(1),
         },
       };
 
@@ -815,7 +859,7 @@ export default {
     loadImagePreview(url) {
       this.imagePreviewError = null;
       this.loadingImagePreview = true;
-      const vm = this;
+      // const vm = this;
 
       this.$nextTick(() => {
         try {
@@ -824,8 +868,8 @@ export default {
             imageRefs instanceof Array ? imageRefs[0] : imageRefs;
           imageRef.$el.src = url;
         } catch (e) {
-          vm.imagePreviewError = e;
-          vm.loadingImagePreview = false;
+          this.imagePreviewError = e;
+          this.loadingImagePreview = false;
 
           console.error(`Loading image preview failed: ${e}`);
         }
@@ -838,7 +882,7 @@ export default {
       this.imagePreviewError = event;
       this.loadingImagePreview = false;
     },
-    changeAllowedUsers(pickedUserNames) {
+    changeAllowedUsers(pickedUserNames: string[]) {
       this.allowedUsersField = getAllowedUsersString(
         pickedUserNames,
         this.envidatUsers,
@@ -884,6 +928,7 @@ export default {
         'Include an apt name and description others will understand',
       subInstructions: 'For files larger then 5GB contact the EnviDat team.',
       createButtonText: 'Save Resource',
+      deleteButtonText: 'Delete Resource',
       description: 'Resource description',
       resourceName: 'Name of the resource',
       fileName: 'File',
@@ -944,3 +989,4 @@ export default {
   opacity: 0.5;
 }
 </style>
+

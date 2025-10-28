@@ -17,7 +17,7 @@ import { urlRewrite } from '@/factories/apiFactory';
 import {
   getBackendJSONForStep,
   getFrontendJSONForStep,
-  markResourceDeprecated,
+  markResourceDeprecatedInCustomFields,
   mapFrontendToBackend,
   populateEditingComponents,
   stringifyResourceForBackend,
@@ -161,7 +161,7 @@ export default {
         // change this ASAP (move to centralised mapping, or simply adjust backend)!
 
         if (deprecatedResourceChanged(resourceId, isDeprecated, customFieldsData.customFields)) {
-          customFieldsData.customFields = markResourceDeprecated(resourceId, isDeprecated, customFieldsData.customFields);
+          customFieldsData.customFields = markResourceDeprecatedInCustomFields(resourceId, isDeprecated, customFieldsData.customFields);
 
           await dispatch(METADATA_EDITING_PATCH_DATASET_OBJECT, {
             data: customFieldsData,

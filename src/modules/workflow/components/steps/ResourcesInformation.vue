@@ -69,11 +69,12 @@
         <v-row v-if="selectedResource">
           <v-col v-if="resourceEditingActive">
             <!-- prettier-ignore -->
-            <ResourceEditing v-bind="editResourceObject"
+            <ResourceEditing v-bind="resourceEditingProps"
                              @closeClicked="catchEditResourceClose"
                              @validate="validateResource"
                              @save="saveResource"
                              @previewImageClicked="showFullScreenImage"
+                             @delete="() => $emit('delete', selectedResource)"
             />
           </v-col>
         </v-row>
@@ -82,7 +83,7 @@
           <v-col cols="12">
             <ResourceUpload
               flat
-              v-bind="editDropResourceObject" />
+              v-bind="resourceUploadProps" />
             <!-- No need to listen to events from the component, events are emitted from uppy directly -->
           </v-col>
 
@@ -138,29 +139,27 @@ import {
   unSubscribeOnUppyEvent,
   createNewResourceForUrl,
   destroyUppyInstance,
-} from '@/factories/uploadFactory.js';
+} from '@/modules/workflow/utils/workflowUpload';
 
 import {
   ACTION_GET_USER_LIST,
   FETCH_USER_DATA,
   GET_USER_LIST,
-  METADATA_EDITING_SELECT_RESOURCE,
   USER_NAMESPACE,
   USER_SIGNIN_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts.js';
 
-import {
-  getSelectedElement,
-  updateEditingArray,
-} from '@/factories/userEditingFactory.js';
+import {  updateEditingArray } from '@/factories/userEditingFactory.js';
 
 import ResourcesListEditing from '@/modules/workflow/components/steps/ResourcesListEditing.vue';
 import ResourceUpload from '@/modules/workflow/components/steps/ResourceUpload.vue';
 import ResourcesPasteUrl from '@/modules/workflow/components/steps/ResourcesPasteUrl.vue';
-import { ResourceViewModel } from '@/modules/workflow/viewModel/ResourceViewModel.js';
+import { ResourceViewModel } from '@/modules/workflow/viewModel/ResourceViewModel';
 import type { Resource } from '@/types/modelTypes';
 import { mergeResourceSizeForFrontend } from '@/factories/resourceHelpers.ts';
 import ResourceEditing from '@/modules/workflow/components/steps/ResourceEditing.vue';
+import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow.ts';
+
 
 export default {
   name: 'ResourcesInformation',
@@ -211,10 +210,10 @@ export default {
       default: undefined,
     },
   },
-  emits: ['save'],
+  emits: ['save', 'reload', 'delete'],
   created() {
     // call once to create the uppy instance
-    getUppyInstance(this.datasetId, this.$store);
+    getUppyInstance(this.workflowStore);
 
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.unselectCurrentResource);
     eventBus.on(UPLOAD_STATE_RESET, this.resetUppy);
@@ -253,10 +252,10 @@ export default {
   computed: {
     ...mapState(['config']),
     ...mapGetters(USER_SIGNIN_NAMESPACE, ['user', 'userLoading']),
-    ...mapState(USER_NAMESPACE, ['envidatUsers', 'uploadError']),
+    ...mapState(USER_NAMESPACE, ['envidatUsers']),
     resourceUploadError() {
-      if (this.$store) {
-        return this.uploadError;
+      if (this.workflowStore) {
+        return this.workflowStore.uploadError;
       }
 
       return null;
@@ -278,8 +277,6 @@ export default {
       return this.userEditMetadataConfig?.resourceUploadActive || false;
     },
     resourceEditingActive() {
-      return true;
-      /*
       if (this.$store) {
         return (
           this.config?.userEditMetadataConfig?.resourceEditingActive || false
@@ -287,7 +284,6 @@ export default {
       }
 
       return this.userEditMetadataConfig?.resourceEditingActive || false;
-*/
     },
     metadataResourcesGenericProps() {
       return {
@@ -300,8 +296,8 @@ export default {
         },
       };
     },
-    editResourceObject() {
-      let userEditMetadataConfig;
+    resourceEditingProps() {
+      let userEditMetadataConfig: object;
 
       if (this.$store) {
         userEditMetadataConfig = this.config?.userEditMetadataConfig;
@@ -325,7 +321,7 @@ export default {
         envidatUsers: this.allEnviDatUsers,
       };
     },
-    editDropResourceObject() {
+    resourceUploadProps() {
       return {
         metadataId: this.datasetId,
         legacyUrl: this.linkAddNewResourcesCKAN,
@@ -337,7 +333,8 @@ export default {
       };
     },
     selectedResource() {
-      return getSelectedElement(this.resources);
+      return this.resourceViewModel;
+      // return getSelectedElement(this.resources);
     },
     linkAddNewResourcesCKAN() {
       //      return `${this.envidatDomain}/dataset/resources/${this.datasetId}`;
@@ -393,18 +390,20 @@ export default {
       this.uploadProgress = 0;
 
       // resource exists already, get it from uploadResource
-      const newRes = this.$store?.getters[`${USER_NAMESPACE}/uploadResource`];
+      const newResId = this.workflowStore.uploadingResourceId;
+
+      // trigger reload of datasets to get the new resource
+      this.$emit('reload');
 
       setTimeout(() => {
-        console.log(METADATA_EDITING_SELECT_RESOURCE, newRes);
-        this.$store.commit(
-          `${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`,
-          newRes?.id,
-        );
+        // console.log(METADATA_EDITING_SELECT_RESOURCE, newRes);
+
+        // select the uploaded resource for editing
+        this.selectResource(newResId);
 
         // reset uppy to be able to upload another file
         this.resetUppy();
-      }, 500);
+      }, 1000);
     },
     uploadUppyError(error) {
       // console.log('uploadUppyError', error);
@@ -421,8 +420,7 @@ export default {
       this.uploadState = undefined;
       this.uploadProgress = 0;
 
-      // @ts-ignore
-      const uppy = getUppyInstance();
+      const uppy = getUppyInstance(this.workflowStore);
 
       const files = uppy.getFiles();
       if (files.length > 0) {
@@ -461,12 +459,6 @@ export default {
       });
 */
     },
-    unselectCurrentResource() {
-      if (this.selectedResource) {
-        this.selectedResource.isSelected = false;
-        this.resetResourceViewModel();
-      }
-    },
     catchEditResourceClose() {
       this.unselectCurrentResource();
     },
@@ -484,12 +476,17 @@ export default {
       this.resourceViewModel.validate(resource);
     },
     saveResource(resource: Resource) {
+
       const validData = this.resourceViewModel.validate(resource);
 
       if (validData) {
         const updatedResources = updateEditingArray(
           this.resources,
-          resource,
+          // make sure keep the deprecated flag
+          {
+            ...this.resourceViewModel.backendJSON,
+            deprecated: resource.deprecated,
+          },
           'id',
         );
 
@@ -501,7 +498,8 @@ export default {
     save(data: { resources: Resource[] }) {
       this.$emit('save', data);
     },
-    catchResourceSelection(resourceId: string) {
+    selectResource(resourceId: string) {
+
       const resource = this.resources.filter(
         (res: Resource) => res.id === resourceId,
       )[0];
@@ -513,6 +511,7 @@ export default {
       // clear the internal state of the UI component in case there was an input
       // on the adding of a new author
       eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
+/*
       this.unselectCurrentResource();
 
       this.markResourceSelected(
@@ -520,17 +519,29 @@ export default {
         resource.id,
         !resource.isSelected,
       );
+*/
 
+      this.resourceViewModel = new ResourceViewModel();
       this.resourceViewModel.validate(resource);
+
+    },
+    unselectCurrentResource() {
+      if (this.selectedResource) {
+        // this.selectedResource.isSelected = false;
+        this.resetResourceViewModel();
+      }
+    },
+    catchResourceSelection(resourceId: string) {
+      this.selectResource(resourceId);
     },
     showFullScreenImage(url: string) {
       eventBus.emit(OPEN_TEXT_PREVIEW, url);
     },
     resetResourceViewModel() {
+      this.resourceViewModel = undefined;
+
       // clear the internal state of the UI component
       eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
-
-      this.resourceViewModel = new ResourceViewModel();
     },
   },
   data: () => ({
@@ -548,7 +559,9 @@ export default {
                     the button below.`,
     uploadProgress: 0,
     uploadState: undefined,
-    resourceViewModel: new ResourceViewModel(),
+    // resourceViewModel is only used for mapping
+    resourceViewModel: undefined,
+    workflowStore: useDatasetWorkflowStore(),
   }),
   components: {
     ResourcesListEditing,

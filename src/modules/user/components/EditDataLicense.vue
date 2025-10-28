@@ -39,7 +39,7 @@
           <v-select
             :items="activeLicenses"
             item-value="id"
-            item-text="title"
+            item-title="title"
             :label="labels.dataLicense"
             :readonly="isDataLicenseReadonly"
             hide-details="auto"
@@ -57,9 +57,7 @@
 
       <v-row class="pl-md-8">
         <v-col>
-          <v-expansion-panels
-            focusable
-          >
+          <v-expansion-panels >
             <v-expansion-panel
               :title='dataSummaryClickInfo'
             >

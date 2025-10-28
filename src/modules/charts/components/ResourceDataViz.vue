@@ -132,7 +132,7 @@ const loadData = (res: object) => {
 
   loadResourcesData(
     res.url,
-    (meta: MetaData, data: Object[]) => {
+    (meta: MetaData, data: object[]) => {
       chartLabels.value = meta.hasMetaRows ? meta.metaRows.fields : null;
 
       chartData.value = data;

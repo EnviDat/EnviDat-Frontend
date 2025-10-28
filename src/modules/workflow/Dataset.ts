@@ -1,4 +1,4 @@
-import { convertJSON } from '@/factories/mappingFactory';
+import { convertJSON } from '@/factories/convertJSON';
 import type { AuthorDTO, DatasetDTO, OrganizationDTO, KeywordDTO, ExtrasDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 
 export class Dataset implements DatasetDTO {
@@ -26,6 +26,7 @@ export class Dataset implements DatasetDTO {
   owner_org: string = '';
   private: boolean = false;
   publication: string = '';
+  publication_state: string = '';
   resource_type: string = '';
   resource_type_general: string = '';
   spatial: string = '';

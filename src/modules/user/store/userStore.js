@@ -16,7 +16,7 @@ import {
   EDITMETADATA_DATA_RESOURCES,
 } from '@/factories/eventBus';
 
-import { getEmptyMetadataInEditingObject } from '@/factories/workflowFactory';
+import { getEmptyMetadataInEditingObject } from '@/factories/workflowFactory.js';
 import { DOI_RESERVED_PROPERTY } from '@/modules/user/store/doiMutationsConsts';
 import { tagsIncludedInSelectedTags } from '@/factories/keywordsFactory';
 

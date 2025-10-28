@@ -33,7 +33,7 @@
             @change="onChange"
           >
             <template v-slot:selection="{ index, text }">
-              <v-chip v-if="index < 2" small label color="highlight">
+              <v-chip v-if="index < 2" size="small" label color="highlight">
                 {{ text }}
               </v-chip>
 

@@ -68,7 +68,7 @@ import {
 } from '@/modules/user/store/userMutationsConsts';
 import { USER_DASHBOARD_PATH } from '@/router/routeConsts';
 
-import SigninView from './SigninView.vue';
+import SigninView from '@/modules/user/components/SigninView.vue';
 
 export default {
   name: 'SigninPage',

@@ -20,7 +20,7 @@ import selectedMarker2x from '@/assets/map/selected-marker-icon-2x.png';
 import { mdiMapMarker, mdiMapMarkerMultiple } from '@mdi/js';
 import markerShadow from '@/assets/map/marker-shadow.png';
 
-import { EDNA_MODE } from '@/store/metadataMutationsConsts';
+import { EDNA_MODE, FOREST_3D } from '@/store/metadataMutationsConsts';
 import {
   LOCATION_TYPE_GEOMCOLLECTION,
   LOCATION_TYPE_MULTIPOINT,
@@ -39,19 +39,28 @@ export const polygonStyle = (selected, editing) => ({
   color: selected ? '#00897b' : '#ffd740',
   opacity: 0.55,
   fillOpacity: editing ? 0.25 : 0,
-})
+});
 
-
-export function getPointIcon(selected, multiMarker = false, modeData = undefined, dataset = undefined) {
-  // use the default options to ensure that all untouched defaults stay in place
-
-  if (modeData && modeData.name !== EDNA_MODE && modeData.icons) {
+export function getPointIcon(
+  selected,
+  multiMarker = false,
+  modeData = undefined,
+  dataset = undefined,
+) {
+  if (
+    modeData &&
+    modeData.name !== EDNA_MODE &&
+    modeData.name !== FOREST_3D &&
+    modeData.icons
+  ) {
     let iconUrl = Object.values(modeData.icons)[0];
-    let extraValue = dataset[modeData.extrasKey];
+    let extraValue = dataset?.[modeData.extrasKey];
 
     if (extraValue) {
       extraValue = extraValue.toLowerCase();
-      iconUrl = modeData.icons[extraValue];
+      if (modeData.icons[extraValue]) {
+        iconUrl = modeData.icons[extraValue];
+      }
     }
 
     const iconOptions = Icon.Default.prototype.options;
@@ -63,27 +72,30 @@ export function getPointIcon(selected, multiMarker = false, modeData = undefined
       iconShadowUrl: markerShadow,
       iconSize: [30, 30],
       className: 'swissFL_icon',
-    })
+    });
   }
 
-  const style = pointStyle(selected)
-  const iconOptions = {}
-  iconOptions.iconSize = [30, 30];
-  iconOptions.html = `
-        <svg
-          id="${dataset?.id}"
-          width="30"
-          height="30"
-          viewBox="0 0 30 30"
-          class="v-icon__svg"
-          role="img"
-          preserveAspectRatio="none"
-          isSelected="${selected}"
-          style="color: ${ style.color }"
-        >
-          <path d="${ multiMarker ? mdiMapMarkerMultiple : mdiMapMarker}" transform="scale(1.25, 1.25)"></path>
-        </svg>
-      `;
+  const style = pointStyle(selected);
+  const iconOptions = {
+    iconSize: [30, 30],
+    html: `
+      <svg
+        id="${dataset?.id}"
+        width="30"
+        height="30"
+        viewBox="0 0 30 30"
+        class="v-icon__svg"
+        role="img"
+        preserveAspectRatio="none"
+        isSelected="${selected}"
+        style="color: ${style.color}"
+      >
+        <path d="${
+          multiMarker ? mdiMapMarkerMultiple : mdiMapMarker
+        }" transform="scale(1.25, 1.25)"></path>
+      </svg>
+    `,
+  };
 
   return createDivIcon(iconOptions);
 }

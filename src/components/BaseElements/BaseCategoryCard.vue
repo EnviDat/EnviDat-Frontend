@@ -3,7 +3,6 @@
     id="BaseCategoryCard"
     ripple
     hover
-    raised
     :height="height"
     :disabled="disabled"
     @click="clicked"

@@ -1,5 +1,5 @@
 <template>
-  <v-card raised class="fill-height" id="FilterMapView">
+  <v-card elevation="8" class="fill-height" id="FilterMapView">
     <div v-if="errorLoadingLeaflet">Error loading leaflet</div>
 
     <v-container v-else class="fill-height pa-0" fluid>
