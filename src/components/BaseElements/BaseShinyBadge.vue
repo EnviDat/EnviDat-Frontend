@@ -1,8 +1,5 @@
 <template>
-  
-  <div class="shinyBadge"
-        :class="isSmall ? 'v-btn v-size--x-small px-2 pt-2 smallBadge' : ''">
-
+  <div class="shinyBadge" :class="isSmall ? 'v-btn v-size--x-small px-2 pt-2 smallBadge' : ''">
     {{ upperText }}
 
     <span v-if="showShine"></span>
@@ -44,8 +41,7 @@ export default {
 };
 </script>
 
-<style scoped >
-
+<style scoped>
 .shinyBadge {
   position: relative;
   display: inline-block;
@@ -76,8 +72,9 @@ export default {
   filter: blur(0.5px);
   animation: progress-circular-rotate 5s linear infinite;
 }
-.shinyBadge span:before, .shinyBadge span:after {
-  content: "";
+.shinyBadge span:before,
+.shinyBadge span:after {
+  content: '';
   position: absolute;
 }
 .shinyBadge span:before {
@@ -92,5 +89,4 @@ export default {
   top: 12px;
   background: linear-gradient(to left, transparent, rgba(255, 255, 255, 0.7), transparent);
 }
-
 </style>

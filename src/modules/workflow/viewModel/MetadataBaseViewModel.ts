@@ -34,10 +34,7 @@ export class MetadataBaseViewModel extends AbstractEditViewModel {
       .string()
       .required('Dataset description is required')
       .min(100, 'Description must be at least 100 characters'),
-    keywords: yup
-      .array()
-      .required('Keywords is required')
-      .min(5, 'Enter at least 5 keywords.'),
+    keywords: yup.array().required('Keywords is required').min(5, 'Enter at least 5 keywords.'),
   });
 
   constructor(datasetModel: DatasetModel) {

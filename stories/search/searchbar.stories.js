@@ -10,7 +10,11 @@
  */
 
 import SearchBarView from '@/modules/home/components/SearchBarView.vue';
-import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from '@/../stories/js/envidatViewports';
+import {
+  mobileLargeViewportParams,
+  mobileViewportParams,
+  tabletViewportParams,
+} from '@/../stories/js/envidatViewports';
 
 export default {
   title: '2 Search / SearchBar View',
@@ -55,7 +59,6 @@ export const EmptyLabels = {
     hasButton: true,
   },
 };
-
 
 export const DefaultMobile = {
   args: { ...Default.args },

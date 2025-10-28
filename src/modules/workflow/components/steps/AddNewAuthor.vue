@@ -211,13 +211,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import {
-  mdiAccount,
-  mdiClose,
-  mdiEmail,
-  mdiHandshake,
-  mdiWalletMembership,
-} from '@mdi/js';
+import { mdiAccount, mdiClose, mdiEmail, mdiHandshake, mdiWalletMembership } from '@mdi/js';
 
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
 // import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
@@ -226,20 +220,12 @@ import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.v
 
 import { EDIT_METADATA_ADD_AUTHOR_TITLE } from '@/factories/metadataConsts';
 
-import {
-  createAuthor,
-  getUserPickerObjects,
-  getAuthorByEmail,
-  getAuthorName,
-} from '@/factories/authorFactory';
+import { createAuthor, getUserPickerObjects, getAuthorByEmail, getAuthorName } from '@/factories/authorFactory';
 
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus.js';
 import { useDebounce } from '@/modules/workflow/workflowFunctions.js';
 
-import {
-  isReadOnlyField,
-  getReadOnlyHint,
-} from '@/modules/workflow/utils/useReadonly';
+import { isReadOnlyField, getReadOnlyHint } from '@/modules/workflow/utils/useReadonly';
 
 export default {
   // name: 'AddNewAuthor',
@@ -345,23 +331,17 @@ export default {
     },
     affiliationField: {
       get() {
-        return this.previews.affiliation !== null
-          ? this.previews.affiliation
-          : this.affiliation;
+        return this.previews.affiliation !== null ? this.previews.affiliation : this.affiliation;
       },
     },
     firstNameField: {
       get() {
-        return this.previews.firstName !== null
-          ? this.previews.firstName
-          : this.firstName;
+        return this.previews.firstName !== null ? this.previews.firstName : this.firstName;
       },
     },
     lastNameField: {
       get() {
-        return this.previews.lastName !== null
-          ? this.previews.lastName
-          : this.lastName;
+        return this.previews.lastName !== null ? this.previews.lastName : this.lastName;
       },
     },
     emailField: {
@@ -371,9 +351,7 @@ export default {
     },
     identifierField: {
       get() {
-        return this.previews.identifier !== null
-          ? this.previews.identifier
-          : this.identifier;
+        return this.previews.identifier !== null ? this.previews.identifier : this.identifier;
       },
     },
     preselectAuthorEmails() {
@@ -448,8 +426,7 @@ export default {
       this.authorIsPicked = hasAuthor;
 
       if (this.authorIsPicked) {
-        const author =
-          getAuthorByEmail(pickedUserEmail, this.existingAuthors) || {};
+        const author = getAuthorByEmail(pickedUserEmail, this.existingAuthors) || {};
         const authorObject = createAuthor(author);
 
         this.fillPreviews(
@@ -578,8 +555,7 @@ export default {
       authorOr: '<strong>Or</strong> pick an existing author',
       authorAutoComplete:
         'If an author is picked or found with the email address these fields are <strong>autocompleted</strong>!',
-      authorPickHint:
-        'Start typing the name in the text field to search for an author.',
+      authorPickHint: 'Start typing the name in the text field to search for an author.',
     },
     activeElements: {
       email: null,

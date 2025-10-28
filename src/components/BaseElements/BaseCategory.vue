@@ -8,12 +8,7 @@
       color: color ? darkenHex(color, 80) : '#000',
     }"
   >
-    <v-icon
-      v-if="icon"
-      :size="iconSize"
-      class="mr-1"
-      :color="color ? darkenHex(color, 50) : '#000'"
-    >
+    <v-icon v-if="icon" :size="iconSize" class="mr-1" :color="color ? darkenHex(color, 50) : '#000'">
       {{ icon }}
     </v-icon>
     <v-img v-if="img" :width="iconSize" :src="imageResolved" class="mr-1" />
@@ -82,9 +77,7 @@ function darkenHex(hex, percent) {
   const clampedG = Math.min(255, Math.max(0, newG));
   const clampedB = Math.min(255, Math.max(0, newB));
 
-  return `#${[clampedR, clampedG, clampedB]
-    .map((x) => x.toString(16).padStart(2, '0'))
-    .join('')}`;
+  return `#${[clampedR, clampedG, clampedB].map((x) => x.toString(16).padStart(2, '0')).join('')}`;
 }
 </script>
 

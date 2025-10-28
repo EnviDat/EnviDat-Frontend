@@ -38,19 +38,18 @@ function assignSubprojects(project, extra, projects) {
     const sub = splits[k].trim();
 
     if (sub) {
-      const matchedProject = projects.filter(p => p.title.includes(sub));
+      const matchedProject = projects.filter((p) => p.title.includes(sub));
       if (matchedProject.length >= 1) {
         project.subProjects.push(matchedProject[0]);
       }
     }
   }
-
 }
 
 export function enhanceSubprojectsFromExtras(projects) {
   if (!projects) return [];
 
-  const projectsWithExtras = projects.filter(p => typeof p.extras === 'object' && p.extras instanceof Array);
+  const projectsWithExtras = projects.filter((p) => typeof p.extras === 'object' && p.extras instanceof Array);
 
   for (let i = 0; i < projectsWithExtras.length; i++) {
     const project = projectsWithExtras[i];
@@ -72,7 +71,7 @@ export function enhanceSubprojectsFromExtras(projects) {
 export function enhanceProjectDatasets(projects, allDatasets) {
   if (!projects || !allDatasets) return [];
 
-  const projectsWithPackages = projects.filter(p => p && p.packages && p.packages.length > 0);
+  const projectsWithPackages = projects.filter((p) => p && p.packages && p.packages.length > 0);
 
   for (let i = 0; i < projectsWithPackages.length; i++) {
     const proj = projectsWithPackages[i];
@@ -88,7 +87,6 @@ export function enhanceProjectDatasets(projects, allDatasets) {
         dataset.tags = fullDataset.tags;
       }
     }
-
   }
 
   return projects;

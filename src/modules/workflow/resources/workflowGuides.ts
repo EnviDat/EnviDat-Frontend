@@ -52,8 +52,7 @@ export const workflowGuide = [
     element: '.navigationWorkflow__actions .help-icon',
     popover: {
       title: 'Guide Mode',
-      description:
-        'Click this icon at any time to restart the interactive help tour.',
+      description: 'Click this icon at any time to restart the interactive help tour.',
     },
   },
 
@@ -88,8 +87,7 @@ export const workflowGuide = [
     element: '.info-banner',
     popover: {
       title: 'Information Panel',
-      description:
-        'Look here for additional guidance and tips specific to the step you are working on.',
+      description: 'Look here for additional guidance and tips specific to the step you are working on.',
     },
   },
   // {
@@ -100,4 +98,4 @@ export const workflowGuide = [
   //       'Click this button to jump straight to the Save section.',
   //   },
   // },
-]
+];

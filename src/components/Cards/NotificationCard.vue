@@ -9,10 +9,7 @@
     <v-card-title>
       <v-row align="start">
         <v-col class="flex-grow-0">
-          <BaseIcon
-            :icon="notification.icon"
-            color="black"
-            />
+          <BaseIcon :icon="notification.icon" color="black" />
         </v-col>
 
         <v-col>
@@ -22,19 +19,13 @@
     </v-card-title>
 
     <v-card-text class="pb-0">
-      <div
-        :style="height ? 'overflow: hidden auto; ' : 'height: 100%;'"
-        class="text-body-1"
-      >
+      <div :style="height ? 'overflow: hidden auto; ' : 'height: 100%;'" class="text-body-1">
         {{ notification.details }}
       </div>
     </v-card-text>
 
     <v-card-text v-if="notification.stack" class="pb-0">
-      <div
-        :style="height ? 'overflow: hidden auto; ' : 'height: 100%;'"
-        class="text-caption"
-      >
+      <div :style="height ? 'overflow: hidden auto; ' : 'height: 100%;'" class="text-caption">
         {{ notification.stack }}
       </div>
     </v-card-text>
@@ -42,11 +33,7 @@
     <v-card-text v-show="showReportButton || showCloseButton">
       <v-row no-gutters align="end" justify="end">
         <v-col v-if="showReportButton" class="shrink">
-          <base-rectangle-button
-            buttonText="Report"
-            isSmall
-            @clicked="$emit('clickedReport', $event)"
-          />
+          <base-rectangle-button buttonText="Report" isSmall @clicked="$emit('clickedReport', $event)" />
         </v-col>
 
         <v-col v-if="showCloseButton" class="shrink">
@@ -80,7 +67,6 @@
 
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
-
 
 // checkout skeleton
 // https://github.com/ToxicJojo/SkeletonPlaceholder

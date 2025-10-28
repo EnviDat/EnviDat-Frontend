@@ -3,11 +3,7 @@ import { mdiPencil } from '@mdi/js';
 import AuthorCard from '@/modules/metadata/components/AuthorCard.vue';
 import DataCreditLayout from '@/components/Layouts/DataCreditLayout.vue';
 
-import {
-  createAuthors,
-  extractAuthorsMap,
-  getFullAuthorsFromDataset,
-} from '@/factories/authorFactory';
+import { createAuthors, extractAuthorsMap, getFullAuthorsFromDataset } from '@/factories/authorFactory';
 
 import authorCollection from '@/../stories/testdata/authorCollection.json';
 
@@ -15,29 +11,17 @@ import unFormatedMetadataCards from '@/../stories/js/metadata';
 
 const metadataCards = [];
 
-unFormatedMetadataCards.forEach(el => {
+unFormatedMetadataCards.forEach((el) => {
   el.author = createAuthors(el);
   metadataCards.push(el);
 });
 
 const authorsMap = extractAuthorsMap(metadataCards);
 
-const authorFromCollection = getFullAuthorsFromDataset(
-  authorsMap,
-  metadataCards[0],
-)[0];
-const authorFromCollection2 = getFullAuthorsFromDataset(
-  authorsMap,
-  metadataCards[1],
-)[1];
-const authorFromCollection3 = getFullAuthorsFromDataset(
-  authorsMap,
-  metadataCards[2],
-)[2];
-const authorFromCollection4 = getFullAuthorsFromDataset(
-  authorsMap,
-  metadataCards[2],
-)[0];
+const authorFromCollection = getFullAuthorsFromDataset(authorsMap, metadataCards[0])[0];
+const authorFromCollection2 = getFullAuthorsFromDataset(authorsMap, metadataCards[1])[1];
+const authorFromCollection3 = getFullAuthorsFromDataset(authorsMap, metadataCards[2])[2];
+const authorFromCollection4 = getFullAuthorsFromDataset(authorsMap, metadataCards[2])[0];
 
 // console.log(authorFromCollection.totalDataCredits);
 
@@ -51,7 +35,6 @@ const methods = {
 export default {
   title: '1 Base / Cards / Author Cards',
 };
-
 
 const authorLoadsOfDatacredit = {
   firstName: 'Felix',
@@ -72,7 +55,6 @@ const authorLoadsOfDatacredit = {
     supervision: 1,
   },
 };
-
 
 export const AuthorCardList = () => ({
   components: {

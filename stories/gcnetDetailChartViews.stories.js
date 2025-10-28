@@ -22,11 +22,9 @@ import DetailChartsList from '@/modules/metadata/components/GC-Net/GcNetDetailCh
 import stationParameters from '@/../stories/testdata/stationParameters.json';
 import stationsConfig from '@/../stories/testdata/stationsConfig.json';
 
-
 const stations = stationsConfig;
 const fileObjects = stationParameters.fileObjects;
 const graphStyling = stationParameters.graphStyling;
-
 
 export default {
   title: '1 Base / Charts / GC-Net Detail Charts',
@@ -78,71 +76,71 @@ export const DetailChartViews = () => ({
     
     </v-col>
     `,
-    computed: {
-      currentStation() {
-        return this.stations[0];
-      },
-      fileObject() {
-        return this.fileObjects[1];
-      },
+  computed: {
+    currentStation() {
+      return this.stations[0];
     },
-    methods: {
-      buildGraphs(fileObject) {
-        const graphs = [];
+    fileObject() {
+      return this.fileObjects[1];
+    },
+  },
+  methods: {
+    buildGraphs(fileObject) {
+      const graphs = [];
 
-        if (!fileObject?.parameters) {
-          return graphs;
-        }
-
-        for (let i = 0; i < fileObject.parameters.length; i++) {
-          const param = fileObject.parameters[i];
-          const paramStyle = this.graphStyling[param];
-
-          if (paramStyle) {
-            graphs.push(this.buildGraph(param, paramStyle, fileObject));
-          }
-        }
-
-        // this.graphs = graphs;
+      if (!fileObject?.parameters) {
         return graphs;
-      },
-      buildGraph(parameter, infoObj, fileObject) {
-        const splits = fileObject.numberFormat.split(' ');
-        const unit = splits.length > 0 ? splits[splits.length - 1] : '';
+      }
 
-        return {
-          lineColor: infoObj.color,
-          bulletRadius: this.seriesSettings.bulletsRadius,
-          title: infoObj.titleString,
-          valueField: parameter,
-          balloonText: `<b><span style='font-size:12px;'>${infoObj.titleString}: [[value]] ${unit}</span></b>`,
-          hideBulletsCount: 200,
-          bullet: 'round',
-          bulletBorderAlpha: this.seriesSettings.bulletsStrokeOpacity,
-          bulletAlpha: this.seriesSettings.bulletsfillOpacity,
-          bulletSize: this.seriesSettings.bulletsRadius,
-          bulletBorderThickness: this.seriesSettings.bulletsStrokeWidth,
-          lineThickness: this.seriesSettings.lineStrokeWidth,
-          connect: false,
-          gridAboveGraphs: true,
-          negativeLineColor: infoObj.negativeColor ? infoObj.negativeColor : infoObj.color,
-          negativeFillColors: infoObj.negativeColor ? infoObj.negativeColor : infoObj.color,
-          precision: infoObj.precision ? infoObj.precision : 0,
-        };
-      },
-      chartId(fileName) {
-        return `${this.stationId}_${fileName}`;
-      },
-      stationId() {
-        return `${this.currentStation.id}_${this.currentStation.alias ? this.currentStation.alias : this.currentStation.name}`;
-      },
+      for (let i = 0; i < fileObject.parameters.length; i++) {
+        const param = fileObject.parameters[i];
+        const paramStyle = this.graphStyling[param];
+
+        if (paramStyle) {
+          graphs.push(this.buildGraph(param, paramStyle, fileObject));
+        }
+      }
+
+      // this.graphs = graphs;
+      return graphs;
     },
-    data: () => ({
-      stations,
-      fileObjects,
-      graphStyling,
-      seriesSettings: defaultSeriesSettings,
-    }),
+    buildGraph(parameter, infoObj, fileObject) {
+      const splits = fileObject.numberFormat.split(' ');
+      const unit = splits.length > 0 ? splits[splits.length - 1] : '';
+
+      return {
+        lineColor: infoObj.color,
+        bulletRadius: this.seriesSettings.bulletsRadius,
+        title: infoObj.titleString,
+        valueField: parameter,
+        balloonText: `<b><span style='font-size:12px;'>${infoObj.titleString}: [[value]] ${unit}</span></b>`,
+        hideBulletsCount: 200,
+        bullet: 'round',
+        bulletBorderAlpha: this.seriesSettings.bulletsStrokeOpacity,
+        bulletAlpha: this.seriesSettings.bulletsfillOpacity,
+        bulletSize: this.seriesSettings.bulletsRadius,
+        bulletBorderThickness: this.seriesSettings.bulletsStrokeWidth,
+        lineThickness: this.seriesSettings.lineStrokeWidth,
+        connect: false,
+        gridAboveGraphs: true,
+        negativeLineColor: infoObj.negativeColor ? infoObj.negativeColor : infoObj.color,
+        negativeFillColors: infoObj.negativeColor ? infoObj.negativeColor : infoObj.color,
+        precision: infoObj.precision ? infoObj.precision : 0,
+      };
+    },
+    chartId(fileName) {
+      return `${this.stationId}_${fileName}`;
+    },
+    stationId() {
+      return `${this.currentStation.id}_${this.currentStation.alias ? this.currentStation.alias : this.currentStation.name}`;
+    },
+  },
+  data: () => ({
+    stations,
+    fileObjects,
+    graphStyling,
+    seriesSettings: defaultSeriesSettings,
+  }),
 });
 
 export const DetailChartsListViews = () => ({

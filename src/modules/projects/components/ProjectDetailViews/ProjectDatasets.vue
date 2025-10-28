@@ -85,8 +85,7 @@ export default {
   data: () => ({
     selectedPins: [],
     projectDatasetsTitle: 'Related Datasets',
-    projectDatasetsEmptyText:
-      'There are no datasets connected with this project.',
+    projectDatasetsEmptyText: 'There are no datasets connected with this project.',
     mapFilterHeight: 400,
   }),
 };

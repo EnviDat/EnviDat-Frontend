@@ -13,49 +13,28 @@ const fileRes = createResource(metadataCards[2].resources[1]);
 const loadingRes = createResource(metadataCards[1].resources[0]);
 const s3Url = createResource(metadataCards[0].resources[3]);
 const S3FolderUrl = createResource(metadataCards[0].resources[3]);
-S3FolderUrl.url = 'https://envicloud.wsl.ch/#/?bucket=https%3A%2F%2Fos.zhdk.cloud.switch.ch%2Fenvicloud%2F&prefix=doi%2F1000001.1%2F2023%2F';
+S3FolderUrl.url =
+  'https://envicloud.wsl.ch/#/?bucket=https%3A%2F%2Fos.zhdk.cloud.switch.ch%2Fenvicloud%2F&prefix=doi%2F1000001.1%2F2023%2F';
 
 loadingRes.loading = true;
 
 const dataset = metadataCards[2];
-const protectedResBlocked = createResource(
-  dataset.resources[0],
-  dataset.name,
-  dataset.organization.id,
-);
+const protectedResBlocked = createResource(dataset.resources[0], dataset.name, dataset.organization.id);
 
 const dSet = metadataCards[0];
-const protResWithUserName = createResource(
-  dSet.resources[1],
-  dSet.name,
+const protResWithUserName = createResource(dSet.resources[1], dSet.name, dSet.organization.id, 'zhichao_he', [
   dSet.organization.id,
-  'zhichao_he',
-  [dSet.organization.id],
-);
+]);
 
-const protResNotSameOga = createResource(
-  dSet.resources[1],
-  dSet.name,
-  'randomId',
-  '',
-  [dSet.organization.id],
-);
+const protResNotSameOga = createResource(dSet.resources[1], dSet.name, 'randomId', '', [dSet.organization.id]);
 
-const protResWithSameOga = createResource(
-  dSet.resources[1],
-  dSet.name,
+const protResWithSameOga = createResource(dSet.resources[1], dSet.name, dSet.organization.id, '', [
   dSet.organization.id,
-  '',
-  [dSet.organization.id],
-);
+]);
 
-const protResNotSameOgaButUser = createResource(
-  dSet.resources[1],
-  dSet.name,
-  'randomId',
-  'zhichao_he',
-  [dSet.organization.id],
-);
+const protResNotSameOgaButUser = createResource(dSet.resources[1], dSet.name, 'randomId', 'zhichao_he', [
+  dSet.organization.id,
+]);
 
 export default {
   title: '1 Base / Cards /  Resource Cards / 2 From Datasets',
@@ -88,7 +67,6 @@ export const WithGenericOpenButtonBottom = {
     genericOpenButtonBottom: true,
   },
 };
-
 
 export const FileLink = {
   args: { ...fileRes },

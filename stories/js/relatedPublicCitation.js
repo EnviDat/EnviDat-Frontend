@@ -2,8 +2,7 @@ export default {
   'wsl:29664': {
     object_url: 'https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664',
     citation: {
-      WSL:
-        'M\u00fcller S., Weber M., Buchecker M.  (2022). \u003Cspan style=\u0022font-style: normal;\u0022 \u003EWie soll die Energiestrategie 2050 lokal umgesetzt werden? Umfrage zur Energiewende und Mitwirkung bei der Umsetzung\u003C/span\u003E. WSL-Berichte: Vol. 117. Birmensdorf: Eidg. Forschungsanstalt f\u00fcr Wald, Schnee und Landschaft WSL. 71 p. ',
+      WSL: 'M\u00fcller S., Weber M., Buchecker M.  (2022). \u003Cspan style=\u0022font-style: normal;\u0022 \u003EWie soll die Energiestrategie 2050 lokal umgesetzt werden? Umfrage zur Energiewende und Mitwirkung bei der Umsetzung\u003C/span\u003E. WSL-Berichte: Vol. 117. Birmensdorf: Eidg. Forschungsanstalt f\u00fcr Wald, Schnee und Landschaft WSL. 71 p. ',
     },
     doi: '',
     abstract:
@@ -12,8 +11,7 @@ export default {
   'wsl:21835': {
     object_url: 'https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:21835',
     citation: {
-      WSL:
-        'Risch A.C., Zimmermann S., Ochoa-Hueso R., Sch\u00fctz M., Frey B., Firn J.L., \u2026 Moser B.  (2019). Soil net nitrogen mineralisation across global grasslands. Nat. Commun. \u003Cspan style=\u0022font-style: normal;\u0022 \u003E10\u003C/span\u003E(1), 4981 (10 pp.). \u003Ca href=\u0022https://doi.org/10.1038/s41467-019-12948-2\u0022 target=\u0022_blank\u0022\u003Ehttps://doi.org/10.1038/s41467-019-12948-2\u003C/a\u003E',
+      WSL: 'Risch A.C., Zimmermann S., Ochoa-Hueso R., Sch\u00fctz M., Frey B., Firn J.L., \u2026 Moser B.  (2019). Soil net nitrogen mineralisation across global grasslands. Nat. Commun. \u003Cspan style=\u0022font-style: normal;\u0022 \u003E10\u003C/span\u003E(1), 4981 (10 pp.). \u003Ca href=\u0022https://doi.org/10.1038/s41467-019-12948-2\u0022 target=\u0022_blank\u0022\u003Ehttps://doi.org/10.1038/s41467-019-12948-2\u003C/a\u003E',
     },
     doi: '10.1038/s41467-019-12948-2',
     abstract:
@@ -22,8 +20,7 @@ export default {
   'wsl:22390': {
     object_url: 'https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:22390',
     citation: {
-      WSL:
-        'Weber M., M\u00fcller S., Buchecker M.  (2020). Lokale Umsetzung der Energiewende\u00a0in der Schweiz. Befragung zur Einstellung in der Bev\u00f6lkerung und der Bereitschaft mitzuwirken. Nat.schutz Landsch.plan. \u003Cspan style=\u0022font-style: normal;\u0022 \u003E52\u003C/span\u003E(1), 16-23. ',
+      WSL: 'Weber M., M\u00fcller S., Buchecker M.  (2020). Lokale Umsetzung der Energiewende\u00a0in der Schweiz. Befragung zur Einstellung in der Bev\u00f6lkerung und der Bereitschaft mitzuwirken. Nat.schutz Landsch.plan. \u003Cspan style=\u0022font-style: normal;\u0022 \u003E52\u003C/span\u003E(1), 16-23. ',
     },
     doi: '',
     abstract:
@@ -32,8 +29,7 @@ export default {
   'wsl:32593': {
     object_url: 'https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:32593',
     citation: {
-      WSL:
-        'Ballikaya P., Song W., Bachmann O., Guillong M., Wang X., Cherubini P.  (2023). Chemical elements recorded by Q\u003Cem\u003Euercus mongolica\u003C/em\u003E Fisch. ex Ledeb. tree rings reveal trends of pollution history in Harbin, China. Forests \u003Cspan style=\u0022font-style: normal;\u0022 \u003E14\u003C/span\u003E(2), 187 (18 pp.). \u003Ca href=\u0022https://doi.org/10.3390/f14020187\u0022 target=\u0022_blank\u0022\u003Ehttps://doi.org/10.3390/f14020187\u003C/a\u003E',
+      WSL: 'Ballikaya P., Song W., Bachmann O., Guillong M., Wang X., Cherubini P.  (2023). Chemical elements recorded by Q\u003Cem\u003Euercus mongolica\u003C/em\u003E Fisch. ex Ledeb. tree rings reveal trends of pollution history in Harbin, China. Forests \u003Cspan style=\u0022font-style: normal;\u0022 \u003E14\u003C/span\u003E(2), 187 (18 pp.). \u003Ca href=\u0022https://doi.org/10.3390/f14020187\u0022 target=\u0022_blank\u0022\u003Ehttps://doi.org/10.3390/f14020187\u003C/a\u003E',
     },
     doi: '10.3390/f14020187',
     abstract:

@@ -10,7 +10,7 @@
  */
 
 import MetadataList from '@/components/MetadataList.vue';
-import {enhanceMetadatas} from '@/factories/metaDataFactory';
+import { enhanceMetadatas } from '@/factories/metaDataFactory';
 import baseTags from '@/modules/metadata/store/metadataTags';
 import { getEnabledTags, getPopularTags } from '@/factories/keywordsFactory';
 import {
@@ -20,14 +20,22 @@ import {
 } from '@/store/metadataMutationsConsts';
 import categoryCards from '@/store/categoryCards';
 
-import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from '@/../stories/js/envidatViewports';
+import {
+  mobileLargeViewportParams,
+  mobileViewportParams,
+  tabletViewportParams,
+} from '@/../stories/js/envidatViewports';
 import metadata from '@/../stories/js/metadata';
-
 
 // slice of the first item of the later added entries, because the virutal-scroller from the MetadataList
 // uses the ids of the datasets and if they are identical it won't be rendered
 const smallList = [...metadata, ...metadata.slice(1, metadata.length)];
-const longList = [...metadata, ...metadata.slice(1, metadata.length), ...metadata.slice(2, metadata.length), ...metadata.slice(3, metadata.length)];
+const longList = [
+  ...metadata,
+  ...metadata.slice(1, metadata.length),
+  ...metadata.slice(2, metadata.length),
+  ...metadata.slice(3, metadata.length),
+];
 
 enhanceMetadatas(smallList);
 enhanceMetadatas(longList);
@@ -41,13 +49,11 @@ export default {
   component: MetadataList,
 };
 
-
 export const EmptyMetadataList = {
   args: {
     categoryCards,
   },
-}
-
+};
 
 export const ListLoading = {
   args: {
@@ -55,7 +61,7 @@ export const ListLoading = {
     loading: true,
     showSearch: true,
   },
-}
+};
 
 export const ListLoadingWithMap = {
   args: {
@@ -64,7 +70,7 @@ export const ListLoadingWithMap = {
     showSearch: true,
     defaultListControls: [LISTCONTROL_MAP_ACTIVE],
   },
-}
+};
 
 export const MinimalList = {
   args: {
@@ -73,28 +79,24 @@ export const MinimalList = {
     showSearch: true,
     allTags,
   },
-}
+};
 
-const selectedTagNames = allTags.filter(tag => tag.name === 'CLIMATE').map(tag => tag.name);
+const selectedTagNames = allTags.filter((tag) => tag.name === 'CLIMATE').map((tag) => tag.name);
 export const MinimalSelectionList = {
   args: {
     ...MinimalList.args,
     selectedTagNames,
   },
-}
+};
 
 export const ListWithControls = {
   args: {
     ...MinimalList.args,
     useDynamicHeight: false,
     listContent: longList,
-    enabledControls: [
-      LISTCONTROL_LIST_ACTIVE,
-      LISTCONTROL_MAP_ACTIVE,
-      LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
-    ],
+    enabledControls: [LISTCONTROL_LIST_ACTIVE, LISTCONTROL_MAP_ACTIVE, LISTCONTROL_COMPACT_LAYOUT_ACTIVE],
   },
-}
+};
 
 export const ListWithMap = {
   args: {
@@ -103,7 +105,7 @@ export const ListWithMap = {
     useDynamicHeight: true,
     defaultListControls: [LISTCONTROL_MAP_ACTIVE],
   },
-}
+};
 
 export const BrowsePageList = {
   args: {
@@ -115,14 +117,14 @@ export const BrowsePageList = {
   parameters: {
     viewport: { defaultViewport: 'desktop' },
   },
-}
+};
 
 export const TopFilteringLayout = {
   args: {
     ...ListWithMap.args,
     topFilteringLayout: true,
   },
-}
+};
 
 export const ProjectsDatasetsList = {
   args: {
@@ -131,7 +133,7 @@ export const ProjectsDatasetsList = {
     showSearch: false,
     useDynamicHeight: false,
   },
-}
+};
 
 const templateForLoadingHugelist = {
   render: (args, { argTypes }) => ({
@@ -147,14 +149,13 @@ const templateForLoadingHugelist = {
     },
     async mounted() {
       setTimeout(async () => {
-        const packageList = await import ('../../public/testdata/packagelist.json');
+        const packageList = await import('../../public/testdata/packagelist.json');
         const contentMap = enhanceMetadatas(packageList.result);
         this.largeList = Object.values(contentMap);
         this.loadingList = false;
-      }, 1000)
+      }, 1000);
     },
-    methods: {
-    },
+    methods: {},
     data: () => ({
       loadingList: true,
       largeList: [],
@@ -166,55 +167,50 @@ export const HugeList = {
   ...templateForLoadingHugelist,
   args: {
     categoryCards,
-//    listContent: hugeList,
+    //    listContent: hugeList,
     useDynamicHeight: true,
     showSearch: true,
     allTags,
-    enabledControls: [
-      LISTCONTROL_LIST_ACTIVE,
-      LISTCONTROL_MAP_ACTIVE,
-      LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
-    ],
+    enabledControls: [LISTCONTROL_LIST_ACTIVE, LISTCONTROL_MAP_ACTIVE, LISTCONTROL_COMPACT_LAYOUT_ACTIVE],
   },
-}
+};
 
 export const PinnedIdsList = {
   args: {
     ...MinimalList.args,
     prePinnedIds: ['fb851074-a421-47bf-802f-f03493c57041'],
   },
-}
-
+};
 
 export const CompactList = {
   args: {
     ...ListWithControls.args,
     defaultListControls: [LISTCONTROL_COMPACT_LAYOUT_ACTIVE],
   },
-}
+};
 
 export const CompactListWithMap = {
   args: {
     ...ListWithMap.args,
     defaultListControls: [LISTCONTROL_MAP_ACTIVE, LISTCONTROL_COMPACT_LAYOUT_ACTIVE],
   },
-}
+};
 
 export const ListRowView = {
   args: {
     ...ListWithControls.args,
     defaultListControls: [LISTCONTROL_LIST_ACTIVE],
   },
-}
+};
 
 export const ListRowViewWithMap = {
   args: {
     ...ListWithControls.args,
     defaultListControls: [LISTCONTROL_MAP_ACTIVE, LISTCONTROL_LIST_ACTIVE],
   },
-}
+};
 
-export const MobileEmptyMetadataList= {
+export const MobileEmptyMetadataList = {
   args: {
     ...EmptyMetadataList.args,
     mapFilteringPossible: false,
@@ -222,7 +218,7 @@ export const MobileEmptyMetadataList= {
   parameters: mobileViewportParams,
 };
 
-export const MobileListLoading= {
+export const MobileListLoading = {
   args: {
     ...ListLoading.args,
     mapFilteringPossible: false,
@@ -230,7 +226,7 @@ export const MobileListLoading= {
   parameters: mobileViewportParams,
 };
 
-export const MobileListSmall= {
+export const MobileListSmall = {
   args: {
     ...BrowsePageList.args,
     mapFilteringPossible: false,
@@ -238,7 +234,7 @@ export const MobileListSmall= {
   parameters: mobileViewportParams,
 };
 
-export const MobileListLarge ={
+export const MobileListLarge = {
   args: {
     ...BrowsePageList.args,
     mapFilteringPossible: false,
@@ -246,7 +242,7 @@ export const MobileListLarge ={
   parameters: mobileLargeViewportParams,
 };
 
-export const TabletEmptyMetadataList ={
+export const TabletEmptyMetadataList = {
   args: {
     ...EmptyMetadataList.args,
     mapFilteringPossible: false,
@@ -254,7 +250,7 @@ export const TabletEmptyMetadataList ={
   parameters: tabletViewportParams,
 };
 
-export const TabletListLoading ={
+export const TabletListLoading = {
   args: {
     ...ListLoading.args,
     mapFilteringPossible: false,
@@ -262,7 +258,7 @@ export const TabletListLoading ={
   parameters: tabletViewportParams,
 };
 
-export const TabletList ={
+export const TabletList = {
   args: {
     ...BrowsePageList.args,
     mapFilteringPossible: false,

@@ -59,10 +59,7 @@
 
 import { mapGetters, mapState } from 'vuex';
 
-import {
-  BROWSE_PATH,
-  METADATADETAIL_PAGENAME,
-} from '@/router/routeConsts';
+import { BROWSE_PATH, METADATADETAIL_PAGENAME } from '@/router/routeConsts';
 
 import {
   CLEAR_SEARCH_METADATA,
@@ -80,11 +77,7 @@ import { SET_BROWSE_SCROLL_POSITION } from '@/store/mainMutationsConsts';
 
 import MetadataList from '@/components/MetadataList.vue';
 import { useModeStore } from '@/modules/browse/store/modeStore';
-import {
-  areArraysIdentical,
-  convertArrayToUrlString,
-  convertUrlStringToArray,
-} from '@/factories/stringFactory';
+import { areArraysIdentical, convertArrayToUrlString, convertUrlStringToArray } from '@/factories/stringFactory';
 import { isTagSelected } from '@/factories/metaDataFactory';
 import categoryCards from '@/store/categoryCards';
 
@@ -155,10 +148,7 @@ export default {
       this.modeContent = contentDictionary;
     },
     catchMetadataClicked(datasetname) {
-      this.$store.commit(
-        `${METADATA_NAMESPACE}/${SET_DETAIL_PAGE_BACK_URL}`,
-        this.$route,
-      );
+      this.$store.commit(`${METADATA_NAMESPACE}/${SET_DETAIL_PAGE_BACK_URL}`, this.$route);
 
       this.$router.push({
         name: METADATADETAIL_PAGENAME,
@@ -249,10 +239,7 @@ export default {
     },
     filterContent() {
       if (this.mode) {
-        this.filteredModeContent = this.modeStore.getFilteredDatasets(
-          this.selectedTagNames,
-          this.mode,
-        );
+        this.filteredModeContent = this.modeStore.getFilteredDatasets(this.selectedTagNames, this.mode);
         this.modeTags = this.modeStore.getModeKeywords(this.mode);
 
         return;
@@ -274,10 +261,7 @@ export default {
         }
       }
 
-      const isBackNavigation = this.$router.options.isSameRoute(
-        this.$route,
-        fromRoute,
-      );
+      const isBackNavigation = this.$router.options.isSameRoute(this.$route, fromRoute);
       const tagsChanged = this.routeKeyworsChanged();
 
       const pinsChanged = this.loadRoutePins();
@@ -287,16 +271,13 @@ export default {
 
       // True is searchParameter does not equal currentSearchTerm, else False
       const searchChanged =
-        searchParameter !== this.currentSearchTerm ||
-        this.isAuthorSearch !== this.oldIsAuthorSearch;
+        searchParameter !== this.currentSearchTerm || this.isAuthorSearch !== this.oldIsAuthorSearch;
 
       if (!searchChanged) {
         // use the search parameter from the url in any case
         // if it's a back navigation it has to be set that is will appear in the searchBar component
         triggerClearSearch =
-          this.currentSearchTerm !== '' &&
-          !searchParameter &&
-          this.filteredDatasetsSize !== this.allDatasetsSize;
+          this.currentSearchTerm !== '' && !searchParameter && this.filteredDatasetsSize !== this.allDatasetsSize;
       }
 
       if (isBackNavigation) {
@@ -309,10 +290,7 @@ export default {
       if (searchChanged) {
         if (searchParameter && searchParameter.length > 0) {
           if (this.mode) {
-            this.filteredModeContent = this.modeStore.searchModeDatasets(
-              searchParameter,
-              this.mode,
-            );
+            this.filteredModeContent = this.modeStore.searchModeDatasets(searchParameter, this.mode);
           } else {
             this.metadataSearch(searchParameter, this.metadataConfig);
           }
@@ -443,11 +421,7 @@ export default {
       currentSearchTerm: `${METADATA_NAMESPACE}/currentSearchTerm`,
     }),
     loading() {
-      return (
-        this.loadingMetadatasContent ||
-        this.isFilteringContent ||
-        this.searchingMetadatasContent
-      );
+      return this.loadingMetadatasContent || this.isFilteringContent || this.searchingMetadatasContent;
     },
     metadataConfig() {
       return this.config?.metadataConfig || {};
@@ -459,9 +433,7 @@ export default {
       let enableds = this.preenabledControls;
 
       if (this.$vuetify.display.smAndDown) {
-        enableds = enableds.filter(
-          (i) => i !== LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
-        );
+        enableds = enableds.filter((i) => i !== LISTCONTROL_COMPACT_LAYOUT_ACTIVE);
       }
 
       return enableds;
@@ -471,22 +443,16 @@ export default {
         return this.searchPlaceholderTextSmall;
       }
 
-      return this.isAuthorSearch
-        ? this.authorSearchPlaceholderText
-        : this.searchPlaceholderText;
+      return this.isAuthorSearch ? this.authorSearchPlaceholderText : this.searchPlaceholderText;
     },
     mapFilteringPossible() {
       return this.$vuetify.display.smAndUp;
     },
     searchCount() {
-      return this.filteredDatasets?.length > 0
-        ? Object.keys(this.filteredDatasets).length
-        : 0;
+      return this.filteredDatasets?.length > 0 ? Object.keys(this.filteredDatasets).length : 0;
     },
     mode() {
-      return this.$route.query.mode
-        ? this.$route.query.mode.toLowerCase()
-        : undefined;
+      return this.$route.query.mode ? this.$route.query.mode.toLowerCase() : undefined;
     },
     modeData() {
       return this.modeStore.getModeMetadata(this.mode);
@@ -509,9 +475,7 @@ export default {
       return this.metadatasContent;
     },
     allDatasetsSize() {
-      return this.allDatasets !== undefined
-        ? Object.keys(this.allDatasets).length
-        : 0;
+      return this.allDatasets !== undefined ? Object.keys(this.allDatasets).length : 0;
     },
     tagsFromDatasets() {
       if (this.mode) {
@@ -591,11 +555,7 @@ export default {
     smallMapHeight: 250,
     largeMapHeight: 325,
     mapFilterVisibleIds: [],
-    preenabledControls: [
-      LISTCONTROL_LIST_ACTIVE,
-      LISTCONTROL_MAP_ACTIVE,
-      LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
-    ],
+    preenabledControls: [LISTCONTROL_LIST_ACTIVE, LISTCONTROL_MAP_ACTIVE, LISTCONTROL_COMPACT_LAYOUT_ACTIVE],
     oldIsAuthorSearch: false,
   }),
 };

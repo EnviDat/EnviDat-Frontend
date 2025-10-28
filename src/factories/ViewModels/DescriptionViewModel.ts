@@ -3,7 +3,6 @@ import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 import { AbstractViewModel } from '@/factories/ViewModels/AbstractViewModel.ts';
 
 export class DescriptionViewModel extends AbstractViewModel {
-
   maxTextLength: number;
 
   declare description: string;
@@ -14,11 +13,8 @@ export class DescriptionViewModel extends AbstractViewModel {
     this.maxTextLength = smallScreen ? 900 : 1000;
   }
 
-
-  static mappingRules () {
-    return [
-      ['description','notes'],
-    ];
+  static mappingRules() {
+    return [['description', 'notes']];
   }
 }
 
@@ -27,11 +23,14 @@ export const createDescriptionViewModel = (datasetDTO, smallScreen, changeCallba
   const reactiveVM = reactive(descVM);
 
   if (changeCallback) {
-    watch(() => reactiveVM, (newModel) => {
+    watch(
+      () => reactiveVM,
+      (newModel) => {
         changeCallback(newModel);
-    }, { deep: true });
+      },
+      { deep: true },
+    );
   }
 
   return reactiveVM;
-}
-
+};

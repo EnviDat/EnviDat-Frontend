@@ -1,12 +1,16 @@
 <template>
   <div class="baseIconLabelView">
-    <v-tooltip location='bottom' :disabled="$vuetify.display.xs || !iconTooltip">
+    <v-tooltip location="bottom" :disabled="$vuetify.display.xs || !iconTooltip">
       <template v-slot:activator="{ props }">
-        <div v-bind="props" class="baseIconLabelViewWrapper" :class="{
-          dark,
-          'text-white': dark,
-          'text-black': !dark,
-        }">
+        <div
+          v-bind="props"
+          class="baseIconLabelViewWrapper"
+          :class="{
+            dark,
+            'text-white': dark,
+            'text-black': !dark,
+          }"
+        >
           <div class="baseIconLabelViewIcon">
             <BaseIcon :icon="icon" :dark="dark" :light="light" :color="iconColor" />
           </div>
@@ -77,13 +81,12 @@ $icon-size: 24px;
   align-items: center;
 }
 
-
 .baseIconLabelViewIcon {
   height: $icon-size;
   width: $icon-size;
   margin-right: 12px;
 
-/*
+  /*
 =======
 .BaseIconLabelViewIcon {
   &.dark {

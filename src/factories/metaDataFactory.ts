@@ -26,11 +26,7 @@ import {
 } from '@/factories/metadataConsts';
 
 import categoryCards, { cardImageBgs } from '@/store/categoryCards';
-import {
-  enhanceKeywords,
-  getCategoryColor,
-  guessTagCategory,
-} from '@/factories/keywordsFactory';
+import { enhanceKeywords, getCategoryColor, guessTagCategory } from '@/factories/keywordsFactory';
 import { createLocation } from '@/factories/geoFactory';
 import { getMetadataVisibilityState } from '@/factories/publicationFactory';
 import { formatDate } from '@/factories/dateFactory';
@@ -217,7 +213,6 @@ export function createPublishingInfo(dataset: DatasetDTO) {
   };
 }
 
-
 export function createDetails(dataset: DatasetDTO) {
   if (!dataset) {
     return null;
@@ -337,7 +332,7 @@ export function enhanceCategoryName(metadata) {
  *
  * @return {object} metadataEntry enhanced with a title image based on the entrys tags
  */
-export function enhanceMetadataEntry(metadataEntry: object) : object {
+export function enhanceMetadataEntry(metadataEntry: object): object {
   if (!metadataEntry || !cardImageBgs) {
     return null;
   }
@@ -373,22 +368,13 @@ export function enhanceMetadatasTitleImage(metadatas) {
   return metadatas;
 }
 
-export function sortObjectArray(
-  arrOfObjects: any[],
-  sortProperty: string,
-  sort = 'ASC',
-) {
+export function sortObjectArray(arrOfObjects: any[], sortProperty: string, sort = 'ASC') {
   if (sort === 'ASC') {
-    return arrOfObjects.sort((a, b) =>
-      a[sortProperty].toUpperCase() > b[sortProperty].toUpperCase() ? 1 : -1,
-    );
+    return arrOfObjects.sort((a, b) => (a[sortProperty].toUpperCase() > b[sortProperty].toUpperCase() ? 1 : -1));
   }
 
-  return arrOfObjects.sort((a, b) =>
-    b[sortProperty].toUpperCase() > a[sortProperty].toUpperCase() ? 1 : -1,
-  );
+  return arrOfObjects.sort((a, b) => (b[sortProperty].toUpperCase() > a[sortProperty].toUpperCase() ? 1 : -1));
 }
-
 
 /**
  * Different States of dataset publication (on DataCite for a DOI registration) not to confuse with the different
@@ -403,11 +389,7 @@ export const possiblePublicationStates = [
   PUBLICATION_STATE_PUBLISHED,
 ];
 
-export const possibleVisibilityStates = [
-  METADATA_STATE_DRAFT,
-  METADATA_STATE_INVISIBLE,
-  METADATA_STATE_VISIBLE,
-];
+export const possibleVisibilityStates = [METADATA_STATE_DRAFT, METADATA_STATE_INVISIBLE, METADATA_STATE_VISIBLE];
 
 /**
  *
@@ -417,9 +399,7 @@ export const possibleVisibilityStates = [
  */
 export function enhanceMetadatas(datasets, mode = undefined) {
   if (!(datasets instanceof Array)) {
-    throw new Error(
-      `enhanceMetadatas() expects an array of datasets got ${typeof datasets}`,
-    );
+    throw new Error(`enhanceMetadatas() expects an array of datasets got ${typeof datasets}`);
   }
 
   const enhancedContent = {};

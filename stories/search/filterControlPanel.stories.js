@@ -19,15 +19,16 @@ import {
   LISTCONTROL_LIST_ACTIVE,
   LISTCONTROL_MAP_ACTIVE,
 } from '@/store/metadataMutationsConsts';
-import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from '@/../stories/js/envidatViewports';
-
-
+import {
+  mobileLargeViewportParams,
+  mobileViewportParams,
+  tabletViewportParams,
+} from '@/../stories/js/envidatViewports';
 
 export default {
   title: '2 Search / filtering control panels',
   component: ControlPanel,
 };
-
 
 const Template2 = (args, { argTypes }) => ({
   components: { ControlPanel },
@@ -58,60 +59,55 @@ const Template2 = (args, { argTypes }) => ({
 `,
 });
 
-
 export const EmptySearchDisabled = Template2.bind({});
 
 export const EmptyWithPlaceholder = Template2.bind({});
 EmptyWithPlaceholder.args = {
   showSearch: true,
   searchBarPlaceholder: 'Enter your search term',
-}
+};
 
 export const PrefilledSearchEnabled = Template2.bind({});
 PrefilledSearchEnabled.args = {
   showSearch: true,
   searchTerm: 'In Memory of Koni Steffen',
-}
+};
 
 export const PrefilledAuthorSearch = Template2.bind({});
 PrefilledAuthorSearch.args = {
   showSearch: true,
   isAuthorSearch: true,
   searchTerm: 'In Memory of Koni Steffen',
-}
+};
 
 export const ToggleShallowReal = Template2.bind({});
 ToggleShallowReal.args = {
   ...PrefilledSearchEnabled.args,
   isShallow: true,
   mode: EDNA_MODE,
-}
+};
 
 export const PrefilledWithSearchCount = Template2.bind({});
 PrefilledWithSearchCount.args = {
   ...EmptyWithPlaceholder.args,
-  ... PrefilledSearchEnabled.args,
+  ...PrefilledSearchEnabled.args,
   searchCount: 123,
-}
+};
 
 export const PrefilledWithSearchLoading = Template2.bind({});
 PrefilledWithSearchLoading.args = {
   ...PrefilledWithSearchCount.args,
   loading: true,
-}
+};
 
 export const PrefilledAuthorSearchLoading = Template2.bind({});
 PrefilledAuthorSearchLoading.args = {
   ...PrefilledAuthorSearch.args,
   loading: true,
   searchCount: 123,
-}
+};
 
-const enabledControls = [
-  LISTCONTROL_LIST_ACTIVE,
-  LISTCONTROL_MAP_ACTIVE,
-  LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
-];
+const enabledControls = [LISTCONTROL_LIST_ACTIVE, LISTCONTROL_MAP_ACTIVE, LISTCONTROL_COMPACT_LAYOUT_ACTIVE];
 
 const controlsActive = [LISTCONTROL_COMPACT_LAYOUT_ACTIVE];
 
@@ -120,14 +116,14 @@ PrefilledSearchWithControls.args = {
   ...PrefilledWithSearchCount.args,
   controlsActive: [],
   enabledControls,
-}
+};
 
 export const PrefilledSearchWithActiveControls = Template2.bind({});
 PrefilledSearchWithActiveControls.args = {
   ...PrefilledSearchWithControls.args,
   enabledControls,
   controlsActive,
-}
+};
 
 export const MobilePrefilledSearchWithActiveControls = Template2.bind({});
 MobilePrefilledSearchWithActiveControls.args = { ...PrefilledSearchWithActiveControls.args };
@@ -140,4 +136,3 @@ MobileLargePrefilledSearchWithActiveControls.parameters = mobileLargeViewportPar
 export const TabletPrefilledSearchWithActiveControls = Template2.bind({});
 TabletPrefilledSearchWithActiveControls.args = { ...PrefilledSearchWithActiveControls.args };
 TabletPrefilledSearchWithActiveControls.parameters = tabletViewportParams;
-

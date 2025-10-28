@@ -11,16 +11,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-export const colors = [
-  '#71c5bd',
-  '#FFD740',
-  '#00897b',
-  '#35a89d',
-  '#8ae0de',
-  '#ffc107',
-  '#ff847b',
-  '#92e5ef',
-];
+export const colors = ['#71c5bd', '#FFD740', '#00897b', '#35a89d', '#8ae0de', '#ffc107', '#ff847b', '#92e5ef'];
 
 export const lightColorblind = {
   primary: '#00897b',
@@ -32,7 +23,7 @@ export const lightColorblind = {
   error: '#ff847b',
   errorHighlight: '#ffb060',
   info: '#92e5ef',
-}
+};
 
 export const gradients = {
   lightGreenBlue: {

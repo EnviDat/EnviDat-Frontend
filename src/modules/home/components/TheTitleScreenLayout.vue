@@ -13,16 +13,11 @@
         <v-img :src="smLogo" height="64" width="64" :alt="alternativeText" />
       </v-col>
 
-      <v-col
-        class="envidatTitle text-h1 pl-5 hidden-md-and-down"
-        style="font-size: 80px !important;"
-      >
+      <v-col class="envidatTitle text-h1 pl-5 hidden-md-and-down" style="font-size: 80px !important">
         {{ title }}
       </v-col>
 
-      <v-col
-        class="envidatTitle text-h2 pl-2 hidden-sm-and-down hidden-lg-and-up"
-      >
+      <v-col class="envidatTitle text-h2 pl-2 hidden-sm-and-down hidden-lg-and-up">
         {{ title }}
       </v-col>
 
@@ -94,7 +89,6 @@ export default {
 </script>
 
 <style scoped>
-
 .mt-md-pct {
   margin-top: 15%;
 }

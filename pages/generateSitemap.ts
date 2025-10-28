@@ -5,16 +5,13 @@ import { dirname, resolve } from 'path';
 
 const projDirName = dirname(fileURLToPath(import.meta.url));
 
-
 export async function generateSitemap(datasetUrls: string[]) {
   const sitemap = new SitemapStream({
     hostname: 'https://www.envidat.ch',
     level: ErrorLevel.WARN,
   });
 
-  const writeStream = createWriteStream(
-    resolve(projDirName, '../../sitemap.xml'),
-  );
+  const writeStream = createWriteStream(resolve(projDirName, '../../sitemap.xml'));
 
   sitemap.pipe(writeStream);
 
@@ -24,7 +21,7 @@ export async function generateSitemap(datasetUrls: string[]) {
     sitemap.write({ url: route, changefreq: 'daily', priority: 1.0 });
   }
 
-/*
+  /*
   sitemap.write({ url: '/about', changefreq: 'monthly' })
   sitemap.write({ url: '/contact', changefreq: 'monthly' })
 */

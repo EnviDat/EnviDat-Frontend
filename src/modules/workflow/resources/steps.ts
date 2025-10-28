@@ -11,7 +11,6 @@ import { WorkflowStep } from '@/types/workflow';
 import { USER_ROLE_SYSTEM_ADMIN } from '@/factories/userEditingValidations';
 import AdminInformation from '@/modules/workflow/components/steps/AdminInformation.vue';
 
-
 export const workflowSteps: WorkflowStep[] = [
   {
     id: 0,
@@ -155,7 +154,6 @@ export const workflowSteps: WorkflowStep[] = [
 ];
 
 export default workflowSteps;
-
 
 const adminStepTitle = 'Admin Information';
 

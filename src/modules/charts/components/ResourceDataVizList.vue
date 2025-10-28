@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, withDefaults, defineProps } from 'vue';
 import { useTheme } from 'vuetify';
 import ResourceDataViz from '@/modules/charts/components/ResourceDataViz.vue';
 
@@ -14,19 +14,18 @@ const props = withDefaults(
     resources: object[];
     maxHeight?: number;
   }>(),
-  {maxHeight: 700},
-)
-
+  { maxHeight: 700 },
+);
 
 const selectedId = ref(0);
 
 const selectResource = (resourceIndex: number) => {
   selectedId.value = resourceIndex;
-}
+};
 
 const hasResources = computed(() => props.resources?.length > 0);
 
-const allowedFormatText = () : string => {
+const allowedFormatText = (): string => {
   let text = 'Currently only ';
 
   for (let i = 0; i < DataVizSupportedExtensions.length; i++) {
@@ -39,81 +38,56 @@ const allowedFormatText = () : string => {
   text += ' resources are supported for visualization.';
 
   if (hasResources.value) {
-    text += ' Select a resource and pick the parameters to visualize for the x-axis and the y-axis.'
+    text += ' Select a resource and pick the parameters to visualize for the x-axis and the y-axis.';
   }
 
   return text;
-}
+};
 
 const scrollbarColorFront = computed(() => theme?.themes.value?.light?.colors?.highlight || 'auto');
-
-const scrollbarColorBack = computed(() => theme ? '#F0F0F0' : 'auto');
-
-
+const scrollbarColorBack = computed(() => (theme ? '#F0F0F0' : 'auto'));
 </script>
 
-
 <template>
-
   <v-card :max-height="props.maxHeight">
-    <v-card-title>
-      Resource Data Visualization
-    </v-card-title>
+    <v-card-title> Resource Data Visualization </v-card-title>
 
     <v-card-text>
       <v-container fluid class="pa-0">
-      <v-row>
-        <v-col cols="12">
-          {{ allowedFormatText() }}
-        </v-col>
+        <v-row>
+          <v-col cols="12">
+            {{ allowedFormatText() }}
+          </v-col>
 
-        <v-col v-if="hasResources"
-               cols="12"
-        >
-          <v-row no-gutters>
-            <v-col cols="3"
-                   md="3"
-                   xl="2"
-            >
-              <v-row no-gutters>
-                <v-list
-                  class="pa-0"
-                  :style="`max-height: ${props.maxHeight - 100}px; overflow: auto; scroll-behavior: smooth; scrollbar-width: thin;
-                  scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack};`"
-                >
-                  <v-list-item
-                    v-for="(resource, index) in props.resources"
-                    :key="resource.id"
-                    @click="selectResource(index)"
-                    :style="`background-color: ${selectedId === index ? theme.themes.value.light.colors.highlight : 'transparent'};`"
+          <v-col v-if="hasResources" cols="12">
+            <v-row>
+              <v-col cols="3" md="3" xl="2">
+                <v-row no-gutters>
+                  <v-list
+                    :style="`max-height: ${props.maxHeight - 100}px; overflow: auto; scroll-behavior: smooth; scrollbar-width: thin;
+                    scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack};`"
                   >
-                    {{ getResourceName(resource as ResourceDTO) }}
-                  </v-list-item>
-                </v-list>
+                    <v-list-item
+                      v-for="(resource, index) in props.resources"
+                      :key="resource.id"
+                      @click="selectResource(index)"
+                      :style="`background-color: ${selectedId === index ? theme.themes.value.light.colors.highlight : 'transparent'};`"
+                    >
+                      {{ getResourceName(resource as ResourceDTO) }}
+                    </v-list-item>
+                  </v-list>
+                </v-row>
+              </v-col>
 
-              </v-row>
-            </v-col>
-
-            <v-col cols="9"
-                   md="9"
-                   xl="10"
-                   class="pt-0"
-            >
-              <ResourceDataViz :resource="resources ? resources[selectedId] : undefined"
-                               :flat="true"
-              />
-            </v-col>
-          </v-row>
-
-        </v-col>
-      </v-row>
-
+              <v-col cols="9" md="9" xl="10" class="pt-0">
+                <ResourceDataViz :resource="resources ? resources[selectedId] : undefined" :flat="true" />
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
       </v-container>
     </v-card-text>
-
   </v-card>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -10,10 +10,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import {
-  EDITMETADATA_OBJECT_UPDATE,
-  eventBus,
-} from '@/factories/eventBus';
+import { EDITMETADATA_OBJECT_UPDATE, eventBus } from '@/factories/eventBus';
 
 import EditPublicationInfo from '@/modules/user/components/edit/EditPublicationInfo.vue';
 import {
@@ -70,16 +67,13 @@ export const Filled = {
     [METADATA_PUBLICATION_YEAR_PROPERTY]: '2020',
     [METADATA_PUBLISHER_PROPERTY]: 'EnviDat',
   },
-}
+};
 
 export const FilledAndReadOnly = {
   ...Template,
   args: {
     ...Filled.args,
-    readOnlyFields: [
-      METADATA_PUBLICATION_YEAR_PROPERTY,
-      METADATA_STATE_INVISIBLE,
-    ],
+    readOnlyFields: [METADATA_PUBLICATION_YEAR_PROPERTY, METADATA_STATE_INVISIBLE],
     readOnlyExplanation: 'Fields are readonly for testing!',
   },
 };

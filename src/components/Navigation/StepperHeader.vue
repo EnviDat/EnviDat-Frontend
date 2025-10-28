@@ -1,36 +1,32 @@
 <template>
   <div id="StepperHeader">
+    <div class="stepperHeaderRow">
+      <div
+        v-for="(step, index) in stepsWithGaps"
+        :key="`step-${index}`"
+        :style="`flex-grow: ${step ? 0 : 2}; `"
+        class="py-1 py-md-0"
+      >
+        <v-divider
+          v-if="!step && $vuetify.display.smAndUp"
+          class="mx-2 mx-md-5"
+          :opacity="0.3"
+          style="align-self: center"
+        />
 
-    <div class="stepperHeaderRow" >
-
-        <div v-for="(step, index) in stepsWithGaps"
-             :key="`step-${index}`"
-              :style="`flex-grow: ${step ? 0 : 2}; `"
-             class="py-1 py-md-0"
-        >
-
-            <v-divider v-if="!step && $vuetify.display.smAndUp"
-                       class="mx-2 mx-md-5"
-                       :opacity="0.3"
-                       style="align-self: center; "
-            />
-
-
-            <StepButton v-if="step"
-                        :id="`step-${index}`"
-                        :title="step.title"
-                        :active="isCurrentStep(step)"
-                        :complete="step.completed"
-                        :number="step.number"
-                        :error="step.error"
-                        :showNumberOnly="$vuetify.display.xs"
-                        @stepClick="catchStepClick(step.title)"
-            />
-
-        </div>
+        <StepButton
+          v-if="step"
+          :id="`step-${index}`"
+          :title="step.title"
+          :active="isCurrentStep(step)"
+          :complete="step.completed"
+          :number="step.number"
+          :error="step.error"
+          :showNumberOnly="$vuetify.display.xs"
+          @stepClick="catchStepClick(step.title)"
+        />
+      </div>
     </div>
-
-
   </div>
 </template>
 
@@ -44,7 +40,7 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 import StepButton from '@/components/Navigation/StepButton.vue';
 
 export default {
@@ -69,7 +65,7 @@ export default {
     stepsWithGaps() {
       const stepsAndGaps = [];
       const amount = this.steps.length;
-      const gaps = (this.steps.length - 1)
+      const gaps = this.steps.length - 1;
       let stepCount = 0;
 
       for (let i = 0; i < amount + gaps; i++) {
@@ -78,7 +74,7 @@ export default {
         if ((i + 1) % 2 !== 0) {
           step = {
             ...this.steps[stepCount],
-            number: (stepCount + 1),
+            number: stepCount + 1,
           };
           stepCount++;
         }
@@ -94,7 +90,6 @@ export default {
   },
   methods: {
     isCurrentStep(step) {
-
       const currentS = this.currentStep;
       if (currentS) {
         return currentS.title === step.title;
@@ -113,16 +108,15 @@ export default {
 </script>
 
 <style scoped>
+.stepperHeaderRow {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+}
 
-  .stepperHeaderRow {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .blackTextStepIcon > .v-stepper__step__step > .v-icon {
-    color: black !important;
-  }
+.blackTextStepIcon > .v-stepper__step__step > .v-icon {
+  color: black !important;
+}
 </style>

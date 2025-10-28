@@ -23,12 +23,10 @@
       class="fill-height mx-2"
       align="center"
       justify="center"
-      :style="
-        `position: relative; top: -${height}px;
-                    text-align: center;`
-      "
+      :style="`position: relative; top: -${height}px;
+                    text-align: center;`"
     >
-      <div style="background-color: white;" />
+      <div style="background-color: white" />
 
       <div
         class="envidatTitle"
@@ -40,10 +38,8 @@
         }"
       >
         <span
-          :style="
-            `background-color: ${textBackgroundColor};
-                        text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.7);`
-          "
+          :style="`background-color: ${textBackgroundColor};
+                        text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.7);`"
         >
           {{ title }}
         </span>
@@ -59,10 +55,8 @@
         }"
       >
         <span
-          :style="
-            `background-color: ${textBackgroundColor};
-                        text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.7);`
-          "
+          :style="`background-color: ${textBackgroundColor};
+                        text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.7);`"
         >
           {{ subTitle }}
         </span>

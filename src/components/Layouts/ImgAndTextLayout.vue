@@ -1,24 +1,18 @@
 <template>
-  <v-col cols="12" class="pa-0" style="position: relative;">
+  <v-col cols="12" class="pa-0" style="position: relative">
     <v-row class="text-container" align="center" justify="center">
-      <v-col
-        class="text-center text-md-h2 text-h4 headerTitle titleLayout"
-        cols="12"
-      >
+      <v-col class="text-center text-md-h2 text-h4 headerTitle titleLayout" cols="12">
         {{ title }}
       </v-col>
     </v-row>
 
     <!-- Using img instead of parallax, because parallax has problems loading src dynamically -->
-    <v-img :height="height"
-           :src="isExternalUrl ? img : imgResolved"
-           class="blurred"
-           cover
-    />
+    <v-img :height="height" :src="isExternalUrl ? img : imgResolved" class="blurred" cover />
   </v-col>
 </template>
 
-<script>/**
+<script>
+/**
  * ImgAndTextLayout.vue is a placeholder to show the placement any tag while the page is loading.
  *
  * @summary Title Layout

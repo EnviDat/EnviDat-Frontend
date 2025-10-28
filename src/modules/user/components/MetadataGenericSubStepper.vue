@@ -1,8 +1,6 @@
 <template>
-  <v-container id="MetadataGenericSubStepper"
-               fluid class="pa-0">
-    <v-row id="GenericStepperHeader"
-           no-gutters>
+  <v-container id="MetadataGenericSubStepper" fluid class="pa-0">
+    <v-row id="GenericStepperHeader" no-gutters>
       <v-col class="px-sm-10">
         <!-- prettier-ignore -->
         <StepperHeader  :steps="steps"
@@ -14,8 +12,7 @@
       </v-col>
     </v-row>
 
-    <v-row id="GenericContent"
-           class="fill-height">
+    <v-row id="GenericContent" class="fill-height">
       <v-col v-if="currentStep" cols="12">
         <component
           :is="currentStep.component"
@@ -26,9 +23,7 @@
         />
       </v-col>
 
-      <v-col v-if="!currentStep" cols="12">
-        Nothing selected, please select a step in the navigation!
-      </v-col>
+      <v-col v-if="!currentStep" cols="12"> Nothing selected, please select a step in the navigation! </v-col>
     </v-row>
 
     <v-row justify="end" align="end">
@@ -83,9 +78,7 @@ export default {
       }
 
       if (this.$store) {
-        return this.$store.getters[
-          `${USER_NAMESPACE}/getMetadataEditingObject`
-        ](step.key);
+        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](step.key);
       }
 
       return undefined;
@@ -105,7 +98,7 @@ export default {
           query: this.$route.query,
         },
         () => {},
-        err => {
+        (err) => {
           // add empty onAbort to not trigger the NavigationDuplicated Error message
           // when it's a NavigationDuplicated Error
           if (err?.name?.toLowerCase() !== 'navigationduplicated') {
@@ -121,7 +114,6 @@ export default {
         eventBus.emit(EDITMETADATA_NEXT_MAJOR_STEP, this.nextMajorStep);
         return;
       }
-
 
       const params = { ...this.$route.params };
       params.substep = this.steps[nextIndex].title;

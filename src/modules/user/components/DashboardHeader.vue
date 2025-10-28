@@ -8,8 +8,7 @@
 
         <v-col cols="2">
           <v-row no-gutters justify="end">
-            <UserAvatar :nameInitials="nameInitials"
-                        :emailHash="emailHash"/>
+            <UserAvatar :nameInitials="nameInitials" :emailHash="emailHash" />
           </v-row>
         </v-col>
       </v-row>

@@ -1,9 +1,5 @@
 import * as yup from 'yup';
-import {
-  convertJSON,
-  convertToBackendJSONWithRules,
-  convertToFrontendJSONWithRules,
-} from '@/factories/convertJSON';
+import { convertJSON, convertToBackendJSONWithRules, convertToFrontendJSONWithRules } from '@/factories/convertJSON';
 
 import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 import { DatasetModel } from '@/modules/workflow/DatasetModel';
@@ -18,10 +14,7 @@ export abstract class AbstractEditViewModel {
 
   declare validationRules: yup.AnyObjectSchema;
 
-  protected constructor(
-    datasetModel: DatasetModel,
-    mappingRules: string[][] = undefined,
-  ) {
+  protected constructor(datasetModel: DatasetModel, mappingRules: string[][] = undefined) {
     this.mappingRules = mappingRules;
     this.datasetModel = datasetModel;
 
@@ -62,47 +55,41 @@ export abstract class AbstractEditViewModel {
   }
 
   updateModel(dataset: DatasetDTO) {
-    const frontendJson = convertToFrontendJSONWithRules(
-      this.mappingRules,
-      dataset,
-    );
+    const frontendJson = convertToFrontendJSONWithRules(this.mappingRules, dataset);
     Object.assign(this, frontendJson);
   }
 
   get backendJSON() {
-    const backendFields = convertToBackendJSONWithRules(
-      this.mappingRules,
-      this,
-    );
+    const backendFields = convertToBackendJSONWithRules(this.mappingRules, this);
     return convertJSON(backendFields, true);
   }
 
   /**
    * Returns a shallow copy of the properties just from this class, nothing inherited
    */
-   protected getModelData<T>(): Omit<
-     T,
-     | 'privateMappingRules'
-     | 'datasetModel'
-     | 'validationRules'
-     | 'validationErrors'
-     | 'savedSuccessful'
-     | 'error'
-     | 'loading'
-   > {
-     // deconstruct this to remove the model view specific props
-     const {
-       privateMappingRules,
-       datasetModel,
-       validationRules,
-       validationErrors,
-       savedSuccessful,
-       error,
-       loading,
-       ...dataOnly
-     } = this;
+  protected getModelData<T>(): Omit<
+    T,
+    | 'privateMappingRules'
+    | 'datasetModel'
+    | 'validationRules'
+    | 'validationErrors'
+    | 'savedSuccessful'
+    | 'error'
+    | 'loading'
+  > {
+    // deconstruct this to remove the model view specific props
+    const {
+      privateMappingRules,
+      datasetModel,
+      validationRules,
+      validationErrors,
+      savedSuccessful,
+      error,
+      loading,
+      ...dataOnly
+    } = this;
 
-     return dataOnly as T;
+    return dataOnly as T;
   }
 
   get frontendProperties() {
@@ -145,12 +132,7 @@ export abstract class AbstractEditViewModel {
     // this.validationErrors = {};
 
     for (const [field, value] of Object.entries(propsToValidate)) {
-      const ok = isFieldValid(
-        field,
-        value,
-        this.validationRules,
-        this.validationErrors,
-      );
+      const ok = isFieldValid(field, value, this.validationRules, this.validationErrors);
 
       if (!ok) allValid = false;
     }

@@ -10,7 +10,8 @@
               color="highlight"
               outlined
               outlineColor="black"
-              @clicked="triggerZoomIn" />
+              @clicked="triggerZoomIn"
+            />
           </v-col>
 
           <v-col class="px-1 flex-grow-0">
@@ -20,7 +21,8 @@
               color="highlight"
               outlined
               outlineColor="black"
-              @clicked="triggerZoomOut" />
+              @clicked="triggerZoomOut"
+            />
           </v-col>
 
           <v-col class="px-2 flex-grow-0">
@@ -30,47 +32,34 @@
               color="highlight"
               outlined
               outlineColor="black"
-              @clicked="triggerZoomCenter" />
+              @clicked="triggerZoomCenter"
+            />
           </v-col>
         </v-row>
       </v-col>
 
       <v-col class="ml-auto">
         <v-row no-gutters>
-
           <v-col v-if="showMapSplitCloseButton" class="flex-grow-0">
-            <BaseIconButton
-              :icon="mdiSimpleIcons"
-              icon-color="red"
-              @clicked="triggerSplitEnd" />
+            <BaseIconButton :icon="mdiSimpleIcons" icon-color="red" @clicked="triggerSplitEnd" />
           </v-col>
         </v-row>
       </v-col>
     </v-row>
 
-
     <v-row v-if="layerConfig" class="d-flex flex-column" no-gutters>
       <v-col v-if="site" cols="1" class="py-2 flex-grow-0">
-        <BaseIconButton
-          :icon="mdiMapMarker"
-          icon-color="black"
-          disabled
-          @clicked="showSite = !showSite" />
+        <BaseIconButton :icon="mdiMapMarker" icon-color="black" disabled @clicked="showSite = !showSite" />
       </v-col>
     </v-row>
 
-    <v-row style="position: absolute; bottom: 50px;">
+    <v-row style="position: absolute; bottom: 50px">
       <v-col class="px-2 flex-grow-0">
-          <v-card
-          ripple
-          class="pa-0"
-          style="width: 48px; height: 48px;"
-          @click="toggleBaseMap">
+        <v-card ripple class="pa-0" style="width: 48px; height: 48px" @click="toggleBaseMap">
           <img width="40" height="40" :src="baseMapImage" class="ma-1" alt="toggle map tiles" />
         </v-card>
       </v-col>
     </v-row>
-
   </div>
 </template>
 
@@ -87,7 +76,6 @@ import {
   MAP_ZOOM_OUT,
 } from '@/factories/eventBus';
 import { getImage } from '@/factories/imageFactory';
-
 
 export default {
   name: 'MapOverlayUI',
@@ -140,17 +128,13 @@ export default {
       if (!this.layerConfig || !this.selectedLayerName) {
         return null;
       }
-      const layer = this.layerConfig.layers.find(
-        l => l.name === this.selectedLayerName,
-      );
+      const layer = this.layerConfig.layers.find((l) => l.name === this.selectedLayerName);
       layer.baseURL = this.layerConfig.baseURL;
       layer.bbox = this.layerConfig.bbox;
       return layer;
     },
     baseMapImage() {
-      return this.baseMapLayerName === 'topo'
-        ? this.baseMapSatelliteImg
-        : this.baseMapStreetsImg;
+      return this.baseMapLayerName === 'topo' ? this.baseMapSatelliteImg : this.baseMapStreetsImg;
     },
   },
   methods: {
@@ -160,10 +144,10 @@ export default {
         this.baseMapStreetsImg = getImage('baseMap-streets-icon');
       } else {
         // Fallback import .png
-        import('@/assets/map/baseMap-satellite-icon.png').then(imgImport => {
+        import('@/assets/map/baseMap-satellite-icon.png').then((imgImport) => {
           this.baseMapSatelliteImg = imgImport.default;
         });
-        import('@/assets/map/baseMap-streets-icon.png').then(imgImport => {
+        import('@/assets/map/baseMap-streets-icon.png').then((imgImport) => {
           this.baseMapStreetsImg = imgImport.default;
         });
       }

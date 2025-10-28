@@ -8,7 +8,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import { md2 } from 'vuetify/blueprints';
-import { aliases, mdi } from 'vuetify/iconsets/mdi-svg'
+import { aliases, mdi } from 'vuetify/iconsets/mdi-svg';
 import { lightColorblind } from './colorThemes';
 
 const colors = { ...lightColorblind };
@@ -76,4 +76,3 @@ export default {
     },
   },
 };
-

@@ -86,7 +86,7 @@ export const GcNetMicroChartWithImage = {
     parameter: stations[0].envidatConfig.graphParameter,
     image: stations[0].envidatConfig.previewImageUrl,
   },
-}
+};
 
 export const GcNetMicroChartWithout = {
   args: {
@@ -96,7 +96,7 @@ export const GcNetMicroChartWithout = {
     parameter: stations[1].envidatConfig.graphParameter,
     // image: stations[1].envidatConfig.previewImageUrl,
   },
-}
+};
 
 /*
 export const GcNetMicroChartViews = () => ({

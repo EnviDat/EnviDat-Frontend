@@ -2,76 +2,51 @@
   <v-container id="EditDataGeo" fluid class="pa-4">
     <!-- Title box -->
     <v-row class="mb-0">
-      <v-col
-        class="text-h5 font-weight-bold"
-        cols="12"
-        v-html="labels.cardTitle"
-      />
+      <v-col class="text-h5 font-weight-bold" cols="12" v-html="labels.cardTitle" />
     </v-row>
 
     <!-- Info Banner -->
     <v-row>
       <v-col class="mb-5 pt-0 pb-0">
-        <v-alert
-          type="info"
-          closable
-          :icon="false"
-          class="rounded-lg info-banner"
-        >
+        <v-alert type="info" closable :icon="false" class="rounded-lg info-banner">
           <v-alert-title class="mb-2">Information</v-alert-title>
 
           <p>
-            This section allows you to specify the geographic area relevant to
-            your dataset. Accurate geospatial data improves discoverability and
-            helps users understand the spatial context of your research.
+            This section allows you to specify the geographic area relevant to your dataset. Accurate geospatial data
+            improves discoverability and helps users understand the spatial context of your research.
           </p>
 
           <p><strong>Tips:</strong></p>
           <ol>
             <li>
-              - Use the map tools to draw or adjust geometries directly. You can
-              zoom, pan, and switch tile layers for better accuracy.
+              - Use the map tools to draw or adjust geometries directly. You can zoom, pan, and switch tile layers for
+              better accuracy.
             </li>
             <li>
-              - If your dataset covers a large or complex area, consider
-              uploading a valid <strong>GeoJSON</strong> file.
+              - If your dataset covers a large or complex area, consider uploading a valid
+              <strong>GeoJSON</strong> file.
             </li>
             <li>
-              - The default geometry includes Switzerland. Replace or modify it
-              to better reflect your dataset's scope.
+              - The default geometry includes Switzerland. Replace or modify it to better reflect your dataset's scope.
             </li>
             <li>
-              - Use the <strong>text editor</strong> for fine-tuned control over
-              coordinates, or switch to the tree/table view for easier
-              navigation.
+              - Use the <strong>text editor</strong> for fine-tuned control over coordinates, or switch to the
+              tree/table view for easier navigation.
             </li>
-            <li>
-              - Ensure the geometry is valid GeoJSON. Invalid JSON will prevent
-              you from proceeding.
-            </li>
+            <li>- Ensure the geometry is valid GeoJSON. Invalid JSON will prevent you from proceeding.</li>
           </ol>
 
           <p class="mt-2">
-            Also provide <strong>Time Information</strong> about when the data
-            was collected or created. These fields help contextualize your
-            dataset for future reuse.
+            Also provide <strong>Time Information</strong> about when the data was collected or created. These fields
+            help contextualize your dataset for future reuse.
           </p>
         </v-alert>
       </v-col>
     </v-row>
 
     <!-- Map + errors -->
-    <v-col
-      data-field="geometries"
-      cols="12"
-      class="editDataGeo customPadding mt-5"
-    >
-      <MetadataGeo
-        :elevation="0"
-        :showTitle="false"
-        :showError="false"
-        v-bind="metadataGeoProps"
-      />
+    <v-col data-field="geometries" cols="12" class="editDataGeo customPadding mt-5">
+      <MetadataGeo :elevation="0" :showTitle="false" :showError="false" v-bind="metadataGeoProps" />
       <v-col class="pl-0" v-if="validationErrors.geometries != null">
         <v-alert type="error">
           {{ validationErrors.geometries }}
@@ -122,12 +97,7 @@
           </v-col>
 
           <!-- hidden file input -->
-          <v-file-input
-            style="display: none"
-            ref="filePicker"
-            accept=".geojson,.json"
-            v-model="geoFile"
-          />
+          <v-file-input style="display: none" ref="filePicker" accept=".geojson,.json" v-model="geoFile" />
 
           <v-col cols="12">
             <v-row no-gutters align="center">
@@ -184,33 +154,19 @@
           dense
         >
           <v-col cols="11" class="flex-grow-0 mb-3">
-            <div class="text-body-1 font-weight-bold text-capitalize">
-              Time Information - {{ item.dateType }}
-            </div>
+            <div class="text-body-1 font-weight-bold text-capitalize">Time Information - {{ item.dateType }}</div>
             <div class="text-body-1 text-caption">
               {{ item.dateExplanation }}.
-              <b>{{
-                datesField[index].dateType === 'created'
-                  ? 'This field is mandatory'
-                  : ''
-              }}</b>
+              <b>{{ datesField[index].dateType === 'created' ? 'This field is mandatory' : '' }}</b>
             </div>
           </v-col>
           <v-col cols="12">
             <BaseStartEndDate
               data-field="dates"
-              :startDate="
-                item.dateType === 'created' ? item.date : item.dateStart
-              "
-              :endDate="
-                item.dateType === 'created' ? item.endDate : item.dateEnd
-              "
-              :startDateProperty="
-                item.dateType === 'created' ? 'date' : 'dateStart'
-              "
-              :endDateProperty="
-                item.dateType === 'created' ? 'endDate' : 'dateEnd'
-              "
+              :startDate="item.dateType === 'created' ? item.date : item.dateStart"
+              :endDate="item.dateType === 'created' ? item.endDate : item.dateEnd"
+              :startDateProperty="item.dateType === 'created' ? 'date' : 'dateStart'"
+              :endDateProperty="item.dateType === 'created' ? 'endDate' : 'dateEnd'"
               :error-messages="validationErrors.dates"
               :endDateLabel="`${item.dateType} end date`"
               :clearableEndDate="false"
@@ -255,15 +211,9 @@ import {
   EDITMETADATA_DATA_GEO_MAP_ERROR,
 } from '@/factories/eventBus';
 
-import {
-  getValidationMetadataEditingObject,
-  isFieldValid,
-} from '@/factories/userEditingValidations';
+import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
 
-import {
-  convertGeoJSONToGeoCollection,
-  defaultSwissLocation,
-} from '@/factories/geoFactory';
+import { convertGeoJSONToGeoCollection, defaultSwissLocation } from '@/factories/geoFactory';
 
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
 
@@ -303,8 +253,7 @@ export default {
       workflowStore: null,
 
       newGeoInfo: {
-        geometries:
-          convertGeoJSONToGeoCollection(defaultSwissLocation).geometries,
+        geometries: convertGeoJSONToGeoCollection(defaultSwissLocation).geometries,
       },
       geomsForMap: convertGeoJSONToGeoCollection(defaultSwissLocation),
       jsonEditor: undefined,
@@ -340,9 +289,7 @@ export default {
       return this.loading ? 'accent' : undefined;
     },
     scrollbarColorFront() {
-      return this.$vuetify
-        ? this.$vuetify.theme.themes.light.colors.highlight
-        : 'auto';
+      return this.$vuetify ? this.$vuetify.theme.themes.light.colors.highlight : 'auto';
     },
     scrollbarColorBack() {
       return this.$vuetify ? '#F0F0F0' : 'auto';
@@ -354,35 +301,20 @@ export default {
       return this.geometryError || this.validationErrors.geometries;
     },
     isDefaultLocation() {
-      return (
-        JSON.stringify(this.geomsForMap) ===
-        JSON.stringify(defaultSwissLocation)
-      );
+      return JSON.stringify(this.geomsForMap) === JSON.stringify(defaultSwissLocation);
     },
     geomsForMapString() {
       return this.geomsForMap ? JSON.stringify(this.geomsForMap) : '';
     },
     datesField() {
-      const dates = this.previewDates.length
-        ? this.previewDates
-        : [...this.dates];
+      const dates = this.previewDates.length ? this.previewDates : [...this.dates];
 
-      this.ensureDateEntry(
-        dates,
-        'created',
-        'Date range during the research data was finalized or formally created',
-      );
+      this.ensureDateEntry(dates, 'created', 'Date range during the research data was finalized or formally created');
 
-      this.ensureDateEntry(
-        dates,
-        'collected',
-        'Date range during the research data was gathered or collected.',
-      );
+      this.ensureDateEntry(dates, 'collected', 'Date range during the research data was gathered or collected.');
 
       const order = ['created', 'collected'];
-      dates.sort(
-        (a, b) => order.indexOf(a.dateType) - order.indexOf(b.dateType),
-      );
+      dates.sort((a, b) => order.indexOf(a.dateType) - order.indexOf(b.dateType));
       return dates;
     },
     metadataGeoProps() {
@@ -469,10 +401,7 @@ export default {
 
     // GET initial geometry
     resolveInitialGeo() {
-      if (
-        this.geometries &&
-        (Array.isArray(this.geometries) || this.geometries.type)
-      ) {
+      if (this.geometries && (Array.isArray(this.geometries) || this.geometries.type)) {
         return this.toCollection(this.geometries);
       }
 
@@ -510,9 +439,7 @@ export default {
     },
 
     initEditor(text) {
-      const json = text
-        ? JSON.parse(text)
-        : convertGeoJSONToGeoCollection(defaultSwissLocation);
+      const json = text ? JSON.parse(text) : convertGeoJSONToGeoCollection(defaultSwissLocation);
       this.jsonEditor = createJSONEditor({
         target: this.$refs.editorRef,
         props: { content: { json }, ...this.editorOptions },
@@ -524,9 +451,7 @@ export default {
 
       if (status.contentErrors?.parseError) {
         const pErr = status.contentErrors.parseError;
-        this.inputError = Array.isArray(pErr)
-          ? pErr.map((e) => e.message).join(' • ')
-          : pErr.message || String(pErr);
+        this.inputError = Array.isArray(pErr) ? pErr.map((e) => e.message).join(' • ') : pErr.message || String(pErr);
         return;
       }
 
@@ -564,10 +489,7 @@ export default {
 
       if (typeof text !== 'string') text = text ? JSON.stringify(text) : '';
       if (!text.trim()) {
-        this.applyCollection(
-          convertGeoJSONToGeoCollection(defaultSwissLocation),
-          { emit: false },
-        );
+        this.applyCollection(convertGeoJSONToGeoCollection(defaultSwissLocation), { emit: false });
         return;
       }
 
@@ -591,12 +513,7 @@ export default {
     },
 
     parseGeoCollection(coll) {
-      const valid = isFieldValid(
-        'geometries',
-        coll.geometries,
-        this.validations,
-        this.validationErrors,
-      );
+      const valid = isFieldValid('geometries', coll.geometries, this.validations, this.validationErrors);
       if (valid) {
         if (!coll.properties || !Object.keys(coll.properties).length) {
           coll.properties = { name: this.location.name };
@@ -608,8 +525,7 @@ export default {
     },
 
     triggerFilePicker() {
-      const el =
-        this.$refs.filePicker?.$el?.querySelector('input[type="file"]');
+      const el = this.$refs.filePicker?.$el?.querySelector('input[type="file"]');
       if (el) el.click();
     },
 

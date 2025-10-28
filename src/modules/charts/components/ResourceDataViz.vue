@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watch, defineProps } from 'vue';
 import LineChart from '@/components/Charts/LineChart.vue';
 
 import { loadResourcesData } from '@/modules/charts/middelware/chartServiceLayer.ts';
@@ -9,7 +9,7 @@ import { ResourceDTO } from '@/types/dataTransferObjectsTypes';
 
 const props = defineProps<{
   resource: object;
-  flat: boolean,
+  flat: boolean;
 }>();
 
 const loading = ref(true);
@@ -47,13 +47,14 @@ const defaultOptions = {
 
 const title = computed(() =>
   props.resource
-    ? `Data Visualization of "${ getResourceName(props.resource as ResourceDTO) }"`
+    ? `Data Visualization of "${getResourceName(props.resource as ResourceDTO)}"`
     : 'Data Visualization of "Unnamed" resource',
 );
 
-const instructions = 'Pick which parameters you would like to visualize. Time or timestamp would auto assigned to the x-axis.';
+const instructions =
+  'Pick which parameters you would like to visualize. Time or timestamp would auto assigned to the x-axis.';
 
-const getTimeParameter = (parameterList: string[]) : string | null => {
+const getTimeParameter = (parameterList: string[]): string | null => {
   for (let i = 0; i < parameterList.length; i++) {
     const param = parameterList[i];
     const compare = param.toLowerCase();
@@ -66,8 +67,7 @@ const getTimeParameter = (parameterList: string[]) : string | null => {
   return null;
 };
 
-const getNextParameter = (parameterList: string[], positionParameter: string) : string | null => {
-
+const getNextParameter = (parameterList: string[], positionParameter: string): string | null => {
   const index = parameterList.indexOf(positionParameter);
   if (index >= 0) {
     const next = index + 1;
@@ -82,13 +82,9 @@ const getNextParameter = (parameterList: string[], positionParameter: string) : 
   }
 
   return null;
-}
+};
 
-const loadDataForParameter = (
-  data: object[],
-  xParam: string,
-  yParam: string[],
-) => {
+const loadDataForParameter = (data: object[], xParam: string, yParam: string) => {
   warning.value = undefined;
   error.value = undefined;
 
@@ -96,7 +92,6 @@ const loadDataForParameter = (
   const labels = [];
 
   for (let i = 0; i < yParam.length; i++) {
-
     const paramY = yParam[i];
     labels.push(paramY);
 
@@ -125,7 +120,6 @@ const loadDataForParameter = (
 };
 
 const loadData = (res: object) => {
-
   error.value = undefined;
   warning.value = undefined;
   dataPerParameter.value = undefined;
@@ -146,18 +140,14 @@ const loadData = (res: object) => {
 
       const parameterList = Object.keys(data[0]);
       xParameter.value = getTimeParameter(parameterList);
-      const nextYParam = getNextParameter(parameterList, xParameter.value)
+      const nextYParam = getNextParameter(parameterList, xParameter.value);
       yParameter.value = [nextYParam];
 
       if (!xParameter.value) {
         warning.value =
           'Auto pick a "time" parameter for X-axis did not work. Please choose a parameter for the X-Axis';
       } else {
-        dataPerParameter.value = loadDataForParameter(
-          chartData.value,
-          xParameter.value,
-          yParameter.value,
-        );
+        dataPerParameter.value = loadDataForParameter(chartData.value, xParameter.value, yParameter.value);
       }
 
       loading.value = false;
@@ -173,15 +163,10 @@ const loadData = (res: object) => {
 const assignXParameter = (parameter: string) => {
   xParameter.value = parameter;
 
-  dataPerParameter.value = loadDataForParameter(
-    chartData.value,
-    xParameter.value,
-    yParameter.value,
-  );
+  dataPerParameter.value = loadDataForParameter(chartData.value, xParameter.value, yParameter.value);
 };
 
 const assignYParameter = (parameter: string | string[]) => {
-
   let newParm = parameter;
   if (typeof newParm === 'string') {
     newParm = [parameter];
@@ -189,27 +174,20 @@ const assignYParameter = (parameter: string | string[]) => {
 
   yParameter.value = newParm;
 
-  dataPerParameter.value = loadDataForParameter(
-    chartData.value,
-    xParameter.value,
-    yParameter.value,
-  );
+  dataPerParameter.value = loadDataForParameter(chartData.value, xParameter.value, yParameter.value);
 };
 
-watch(() => props.resource,
+watch(
+  () => props.resource,
   (newResource) => {
     loadData(newResource);
   },
   { immediate: true },
-)
-
+);
 </script>
 
 <template>
-  <v-card
-    :loading
-    :flat
-  >
+  <v-card :loading :flat>
     <v-card-title>
       {{ title }}
     </v-card-title>
@@ -217,20 +195,18 @@ watch(() => props.resource,
     <v-card-text>
       <v-row>
         <v-col>
-        {{ instructions }}
+          {{ instructions }}
         </v-col>
       </v-row>
 
       <v-row>
-        <v-col v-if="warning"
-               cols="12">
+        <v-col v-if="warning" cols="12">
           <v-alert type="warning">
             {{ warning }}
           </v-alert>
         </v-col>
 
-        <v-col v-if="error"
-               cols="12">
+        <v-col v-if="error" cols="12">
           <v-alert type="error">
             {{ error }}
           </v-alert>
@@ -258,18 +234,11 @@ watch(() => props.resource,
             hide-details
           />
         </v-col>
-
       </v-row>
-
     </v-card-text>
 
     <v-card-text class="pa-0">
-      <LineChart
-        v-if="dataPerParameter"
-        ref="chart"
-        :options="defaultOptions"
-        :data="dataPerParameter"
-      />
+      <LineChart v-if="dataPerParameter" ref="chart" :options="defaultOptions" :data="dataPerParameter" />
     </v-card-text>
   </v-card>
 </template>

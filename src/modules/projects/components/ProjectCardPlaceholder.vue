@@ -1,13 +1,13 @@
 <template>
-  <div style="cursor: pointer;">
+  <div style="cursor: pointer">
     <!-- Top of Card -->
-    <v-card :height="headerCardHeight" class="elevation-3" style="z-index: 1;">
-      <v-skeleton-loader type='heading' color='gray' />
+    <v-card :height="headerCardHeight" class="elevation-3" style="z-index: 1">
+      <v-skeleton-loader type="heading" color="gray" />
     </v-card>
 
     <!-- Bottom of Card -->
-    <v-card height="100%" style="z-index: 0;" class="elevation-2 mx-2">
-      <v-skeleton-loader type='paragraph' color='gray' />
+    <v-card height="100%" style="z-index: 0" class="elevation-2 mx-2">
+      <v-skeleton-loader type="paragraph" color="gray" />
     </v-card>
   </div>
 </template>

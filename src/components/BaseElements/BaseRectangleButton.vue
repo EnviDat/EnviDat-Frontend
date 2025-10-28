@@ -1,8 +1,5 @@
 <template>
-  <v-tooltip
-    v-bind="{ tooltipPosition: true }"
-    :disabled="$vuetify.display.smAndDown || !tooltipText"
-  >
+  <v-tooltip v-bind="{ tooltipPosition: true }" :disabled="$vuetify.display.smAndDown || !tooltipText">
     <template #activator="{ props }">
       <v-btn
         :style="{ background: bgcWhite ? '#fff' : '' }"

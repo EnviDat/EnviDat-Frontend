@@ -9,15 +9,12 @@
         <v-col v-if="filterExpanded || $vuetify.display.smAndUp" cols="12">
           <v-row>
             <v-col class="metadataInfoIcon flex-grow-0">
-              <BaseIcon :icon="mdiPaletteSwatch" color='black' />
+              <BaseIcon :icon="mdiPaletteSwatch" color="black" />
             </v-col>
 
             <v-col v-if="showPlaceholder" class="flex-grow-1 pl-0">
-              <v-row no-gutters >
-                <v-col v-for="n in 6"
-                       :key="n"
-                       class="flex-grow-0"
-                >
+              <v-row no-gutters>
+                <v-col v-for="n in 6" :key="n" class="flex-grow-0">
                   <TagChipPlaceholder class="envidatChip" />
                 </v-col>
               </v-row>
@@ -38,14 +35,10 @@
           </v-row>
         </v-col>
 
-        <v-col
-          v-if="filterExpanded || $vuetify.display.smAndUp"
-          class="pt-1"
-          cols="12"
-        >
+        <v-col v-if="filterExpanded || $vuetify.display.smAndUp" class="pt-1" cols="12">
           <v-row>
             <v-col class="metadataInfoIcon flex-grow-0">
-              <BaseIcon :icon="mdiTagMultiple" color='black' />
+              <BaseIcon :icon="mdiTagMultiple" color="black" />
             </v-col>
 
             <v-col v-if="selectedTags.length > 0" class="flex-grow-1 pl-0">
@@ -68,7 +61,7 @@
     <BaseIconButton
       v-if="$vuetify.display.xs"
       :count="selectedTags.length"
-      style="position: absolute; bottom: 0; right: 0;"
+      style="position: absolute; bottom: 0; right: 0"
       :icon="mdiChevronDown"
       outline-color="secondary"
       icon-color="secondary"
@@ -134,13 +127,13 @@ export default {
   }),
   computed: {
     unselectedTags() {
-      if (!this.allTagWithMax){
+      if (!this.allTagWithMax) {
         return [];
       }
 
       const topList = this.allTagWithMax;
       return topList.filter((element) => element.enabled && !isTagSelected(element.name, this.selectedTagNames));
-/*
+      /*
       const unselectedTags = [];
 
       this.allTags.forEach(element => {
@@ -157,9 +150,7 @@ export default {
       // tag JSON object
       const selecteds = [];
 
-      if (this.selectedTagNames !== undefined
-          && this.selectedTagNames.length > 0) {
-
+      if (this.selectedTagNames !== undefined && this.selectedTagNames.length > 0) {
         for (let i = 0; i < this.selectedTagNames.length; i++) {
           const element = this.selectedTagNames[i];
 

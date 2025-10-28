@@ -89,10 +89,7 @@ import { mdiAccount, mdiEmail } from '@mdi/js';
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
 import { createAuthor, getAuthorByEmail } from '@/factories/authorFactory';
 
-import {
-  isReadOnlyField,
-  getReadOnlyHint,
-} from '@/modules/workflow/utils/useReadonly';
+import { isReadOnlyField, getReadOnlyHint } from '@/modules/workflow/utils/useReadonly';
 
 const METADATA_CONTACT_EMAIL = 'contactEmail';
 const METADATA_CONTACT_FIRSTNAME = 'contactFirstName';

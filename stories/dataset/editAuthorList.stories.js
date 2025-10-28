@@ -42,7 +42,6 @@ import { BackendDatasetService } from '@/modules/workflow/BackendDatasetService.
 const serviceLayer = new BackendDatasetService(unFormatedMetadataCards[0]);
 const datasetVM = new DatasetModel(serviceLayer);
 
-
 const metadataCards = [];
 
 unFormatedMetadataCards.forEach((el) => {
@@ -63,8 +62,7 @@ authorsObjs.forEach((author) => {
   authorsStrings.push(author.fullName);
 });
 
-const preSelectedAuthors2 = extractedAuthors.filter(value => value.fullName.includes('B'));
-
+const preSelectedAuthors2 = extractedAuthors.filter((value) => value.fullName.includes('B'));
 
 export default {
   title: '3 Datasets / 2 Edit / Author Infos',
@@ -96,7 +94,7 @@ const Template = {
     },
     methods: {
       removeAuthor(email) {
-        const matches = this.localAuthors.filter(auth => auth.email === email);
+        const matches = this.localAuthors.filter((auth) => auth.email === email);
 
         console.log('remove Author');
         console.log(matches.length > 0);
@@ -133,7 +131,6 @@ const Template = {
             return;
           }
         }
-
       },
       saveAuthor(newAuthor) {
         this.updateAuthors(newAuthor);
@@ -147,12 +144,12 @@ const Template = {
           if (r.localId) {
             if (r.localId === newAuthor.localId) {
               auths[i] = newAuthor;
-  //            this.$set(auths, i, newAuthor);
+              //            this.$set(auths, i, newAuthor);
               return;
             }
           } else if (r.email === newAuthor.email) {
             auths[i] = newAuthor;
-  //          this.$set(auths, i, newAuthor);
+            //          this.$set(auths, i, newAuthor);
             return;
           }
         }
@@ -189,9 +186,7 @@ const Template = {
               lastName: updatedAuthor.lastName,
             });
 
-            if (email === updatedAuthor.email
-              || fullName === searchAuthorFullName){
-
+            if (email === updatedAuthor.email || fullName === searchAuthorFullName) {
               const mergedAuthor = mergeEditingAuthor(updatedAuthor, auth);
 
               // this.authors[i] = createAuthor(updatedAuthor);
@@ -202,7 +197,7 @@ const Template = {
               // this.$set(this.authors, i, author);
 
               changed = true;
-              console.log(`Updated author ${ email } ${ fullName }`);
+              console.log(`Updated author ${email} ${fullName}`);
               break;
             }
           }
@@ -225,7 +220,7 @@ const Template = {
         setTimeout(() => {
           this.storyLoading = false;
           eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
-        }, 1000)
+        }, 1000);
       },
     },
     data: () => ({
@@ -234,8 +229,7 @@ const Template = {
       localAuthors: undefined,
     }),
   }),
-}
-
+};
 
 export const EmptyAuthorList = {
   ...Template,
@@ -244,8 +238,7 @@ export const EmptyAuthorList = {
     existingAuthors: undefined,
     authorsMap: undefined,
   },
-}
-
+};
 
 export const EditExistingAuthors = {
   ...Template,
@@ -254,14 +247,14 @@ export const EditExistingAuthors = {
     existingAuthors: extractedAuthors,
     authorsMap,
   },
-}
+};
 
 export const LoadingAuthorList = {
   args: {
     ...EditExistingAuthors.args,
     loading: true,
   },
-}
+};
 
 const vm = datasetVM.getViewModel(AuthorListViewModel.name);
 
@@ -272,18 +265,15 @@ export const AuthorListViewModels = {
       vm.save(newData);
     },
   },
-}
+};
 
 export const EditExistingAuthorsReadOnly = {
   args: {
     ...EditExistingAuthors.args,
-    readOnlyFields: [
-      METADATA_AUTHORS_PROPERTY,
-      METADATA_AUTHOR_SEQUENCE_PROPERTY,
-    ],
+    readOnlyFields: [METADATA_AUTHORS_PROPERTY, METADATA_AUTHOR_SEQUENCE_PROPERTY],
     readOnlyExplanation: 'Fields are readonly for testing!',
   },
-}
+};
 
 export const EditLargeAuthorList = {
   ...Template,
@@ -293,4 +283,3 @@ export const EditLargeAuthorList = {
     authorsMap,
   },
 };
-

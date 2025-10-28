@@ -7,11 +7,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import {
-  DOI_PUBLISH,
-  DOI_REQUEST,
-  DOI_RESERVE,
-} from '@/modules/user/store/doiMutationsConsts';
+import { DOI_PUBLISH, DOI_REQUEST, DOI_RESERVE } from '@/modules/user/store/doiMutationsConsts';
 import { createErrorMessage } from '@/modules/user/store/mutationFactory';
 
 function baseDoiCommit(state) {
@@ -40,7 +36,7 @@ export default {
     baseDoiCommit(state);
     state[key] = null;
   },
-  [`${DOI_RESERVE}_SUCCESS`](state, { key, value}) {
+  [`${DOI_RESERVE}_SUCCESS`](state, { key, value }) {
     baseDoiSuccess(state);
     if (key) {
       state[key] = value;
@@ -67,4 +63,4 @@ export default {
   [`${DOI_PUBLISH}_ERROR`](state, reason) {
     baseDoiError(state, reason, 'DOI Publishing failed');
   },
-}
+};

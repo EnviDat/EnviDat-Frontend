@@ -1,30 +1,14 @@
 <template>
-  <v-card
-    :style="fixedHeight ? 'height: 304px;' : ''"
-    class="pa-0"
-    id="MetadataCitation"
-  >
+  <v-card :style="fixedHeight ? 'height: 304px;' : ''" class="pa-0" id="MetadataCitation">
     <v-card-title class="text-h6 metadata_title py-4">
       {{ METADATA_CITATION_TITLE }}
     </v-card-title>
 
-    <v-card-text
-      v-if="!showPlaceholder && citationText"
-      class="readableText"
-      v-html="markdownText"
-    >
-    </v-card-text>
-    <v-card-actions
-      v-if="!showPlaceholder && citationText && showCitation"
-      class="pa-4"
-    >
+    <v-card-text v-if="!showPlaceholder && citationText" class="readableText" v-html="markdownText"> </v-card-text>
+    <v-card-actions v-if="!showPlaceholder && citationText && showCitation" class="pa-4">
       <v-container class="pa-0" fluid>
         <v-row justify="end" no-gutters>
-          <v-col
-            v-for="link in citationLinks"
-            :key="link.text"
-            class="flex-grow-0 py-1 px-2"
-          >
+          <v-col v-for="link in citationLinks" :key="link.text" class="flex-grow-0 py-1 px-2">
             <base-rectangle-button
               margin-class="citationButton"
               color="secondary"

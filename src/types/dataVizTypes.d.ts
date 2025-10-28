@@ -25,7 +25,6 @@ export interface ConfiguratorProps extends ChartProps {
   parameters: string[] | undefined;
 }
 
-
 export interface MetaRows {
   fields: string[] | undefined;
   [key: string]: string[] | string | undefined;
@@ -34,7 +33,7 @@ export interface MetaRows {
 export interface MetaData {
   hasMetaRows: boolean;
   metaRows: MetaRows;
-  originalData: string | undefined
+  originalData: string | undefined;
   dataJSON: object[] | undefined;
 }
 

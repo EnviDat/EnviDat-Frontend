@@ -3,9 +3,7 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
 import { XMLParser } from 'fast-xml-parser';
-import {
-  _Object,
-} from '@aws-sdk/client-s3/dist-types/models/models_0';
+import { _Object } from '@aws-sdk/client-s3/dist-types/models/models_0';
 import { CommonPrefix } from '@aws-sdk/client-s3/dist-types/models';
 import { S3Node } from '@/types/s3Types';
 
@@ -16,13 +14,7 @@ export const useS3Store = defineStore('s3Store', {
   state: () => ({ originUrl: '' as string }),
   getters: {},
   actions: {
-    async fetchS3Content(
-      baseUrl: string,
-      url: string,
-      isChild: boolean,
-      nodeId: number,
-      rootNodes?: S3Node[],
-    ) {
+    async fetchS3Content(baseUrl: string, url: string, isChild: boolean, nodeId: number, rootNodes?: S3Node[]) {
       const response = await axios.get(url);
       const { ListBucketResult } = this.parseXmlToJson(response.data);
 
@@ -94,10 +86,8 @@ export const useS3Store = defineStore('s3Store', {
 
       return arr.flatMap((entry: any) => {
         if (typeof entry === 'string') return [{ Prefix: entry }];
-        if (Array.isArray(entry?.Prefix))
-          return entry.Prefix.map((p: string) => ({ Prefix: p }));
-        if (typeof entry?.Prefix === 'string')
-          return [{ Prefix: entry.Prefix }];
+        if (Array.isArray(entry?.Prefix)) return entry.Prefix.map((p: string) => ({ Prefix: p }));
+        if (typeof entry?.Prefix === 'string') return [{ Prefix: entry.Prefix }];
         return [];
       });
     },
@@ -115,24 +105,19 @@ export const useS3Store = defineStore('s3Store', {
 
       // Drop the "directory placeholder" object (Key === Prefix, usually Size 0)
       const containerPrefix = listObject?.Prefix ?? '';
-      const realContents = contents.filter(
-        (o: any) => o.Key !== containerPrefix,
-      );
+      const realContents = contents.filter((o: any) => o.Key !== containerPrefix);
 
       // Build folders
-      const childFolders: S3Node[] = commonPrefixes.map(
-        (prefix: any, index: number) =>
-          this.createFolderEntry(prefix, index, rootId),
+      const childFolders: S3Node[] = commonPrefixes.map((prefix: any, index: number) =>
+        this.createFolderEntry(prefix, index, rootId),
       );
 
       // Build files
-      const childFiles: S3Node[] = realContents.map(
-        (content: any, index: number) =>
-          this.createFileEntry(baseUrl, content, index, rootId),
+      const childFiles: S3Node[] = realContents.map((content: any, index: number) =>
+        this.createFileEntry(baseUrl, content, index, rootId),
       );
 
-      const children: S3Node[] =
-        childFolders.length > 0 ? childFolders : childFiles;
+      const children: S3Node[] = childFolders.length > 0 ? childFolders : childFiles;
 
       return [
         {
@@ -146,12 +131,7 @@ export const useS3Store = defineStore('s3Store', {
       ];
     },
 
-    mapChildData(
-      baseUrl: string,
-      listObject: any,
-      nodeId: number,
-      rootNodes: S3Node[],
-    ): S3Node[] | undefined {
+    mapChildData(baseUrl: string, listObject: any, nodeId: number, rootNodes: S3Node[]): S3Node[] | undefined {
       const contentsArr = this.normalizeContents(listObject);
       const containerPrefix = listObject?.Prefix ?? '';
 
@@ -168,15 +148,11 @@ export const useS3Store = defineStore('s3Store', {
       }
 
       // Drop the container placeholder (Key === Prefix) if present
-      const filesOnly = contentsArr.filter(
-        (o: any) => o.Key !== containerPrefix,
-      );
+      const filesOnly = contentsArr.filter((o: any) => o.Key !== containerPrefix);
 
       const children =
         filesOnly.length > 0
-          ? filesOnly.map((content: any) =>
-              this.createFileEntry(baseUrl, content),
-            )
+          ? filesOnly.map((content: any) => this.createFileEntry(baseUrl, content))
           : [
               this.createFileEntry(baseUrl, 'Go to S3', undefined, undefined, {
                 isLastItem: true,
@@ -211,11 +187,7 @@ export const useS3Store = defineStore('s3Store', {
 
         // Recursive function to check all levels of the tree
         if (node.children && node.children.length > 0) {
-          const found = this.findAndAddChildren(
-            node.children,
-            children,
-            nodeId,
-          );
+          const found = this.findAndAddChildren(node.children, children, nodeId);
 
           // Skip further checks if the node is found
           if (found) return true;
@@ -270,11 +242,7 @@ export const useS3Store = defineStore('s3Store', {
       const isFileRegex = /[^/]+\.[^/]+$/;
       return isFileRegex.test(path);
     },
-    createFolderEntry(
-      prefix: CommonPrefix,
-      index: number,
-      rootId: number,
-    ): S3Node {
+    createFolderEntry(prefix: CommonPrefix, index: number, rootId: number): S3Node {
       return {
         id: rootId + index + 1,
         // define if is child to triggher another function and manage deep level

@@ -10,8 +10,7 @@
  */
 
 import BlogPostCard from '@/modules/blog/components/BlogPostCard.vue';
-import {getImage} from '@/factories/imageFactory';
-
+import { getImage } from '@/factories/imageFactory';
 
 export default {
   title: '16 Blog Page / Blog Elements',

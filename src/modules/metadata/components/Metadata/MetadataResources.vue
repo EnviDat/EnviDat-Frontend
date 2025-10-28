@@ -6,15 +6,8 @@
           {{ METADATA_RESOURCES_TITLE }}
         </v-col>
 
-        <v-col
-          v-if="!showPlaceholder && resources && resources.length > 0"
-          class="flex-grow-0 resourcesIcons"
-        >
-          <base-icon-count-view
-            :count="resources.length"
-            tooltip-text="Amount of Resources"
-            :icon="mdiFile"
-          />
+        <v-col v-if="!showPlaceholder && resources && resources.length > 0" class="flex-grow-0 resourcesIcons">
+          <base-icon-count-view :count="resources.length" tooltip-text="Amount of Resources" :icon="mdiFile" />
         </v-col>
       </v-row>
     </v-card-title>
@@ -32,40 +25,24 @@
         </v-col>
 
         <v-col class="">
-          <v-row
-            no-gutters
-            justify="end"
-            v-for="(dateObj, index) in dates"
-            :key="index"
-          >
-            <v-col cols="12" sm="auto" class="pr-0 pr-sm-5">{{
-              dateObj[DATE_PROPERTY_DATE_TYPE]
-            }}</v-col>
+          <v-row no-gutters justify="end" v-for="(dateObj, index) in dates" :key="index">
+            <v-col cols="12" sm="auto" class="pr-0 pr-sm-5">{{ dateObj[DATE_PROPERTY_DATE_TYPE] }}</v-col>
 
             <!--
             <v-col class="flex-grow-0 px-2">Start:</v-col>
 -->
-            <v-col align-self="end" class="">{{
-              dateObj[DATE_PROPERTY_START_DATE]
-            }}</v-col>
+            <v-col align-self="end" class="">{{ dateObj[DATE_PROPERTY_START_DATE] }}</v-col>
 
             <!--
             <v-col class="flex-grow-0 px-2">End:</v-col>
 -->
-            <v-col align-self="end">{{
-              dateObj[DATE_PROPERTY_END_DATE]
-            }}</v-col>
+            <v-col align-self="end">{{ dateObj[DATE_PROPERTY_END_DATE] }}</v-col>
           </v-row>
         </v-col>
       </v-row>
     </v-card-text>
 
-    <v-container
-      v-if="showPlaceholder"
-      id="resourcePlaceholderList"
-      fluid
-      class="pa-2 pt-0"
-    >
+    <v-container v-if="showPlaceholder" id="resourcePlaceholderList" fluid class="pa-2 pt-0">
       <v-row no-gutters>
         <v-col v-for="n in 2" :key="n" cols="12" sm="6" class="pa-2">
           <ResourceCardPlaceholder />
@@ -74,19 +51,14 @@
     </v-container>
 
     <v-container
-      v-if="
-        !showPlaceholder && availableResources && availableResources.length > 0
-      "
+      v-if="!showPlaceholder && availableResources && availableResources.length > 0"
       id="resourceList"
       fluid
       :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
       class="heightAndScroll pa-2 pt-0"
     >
       <v-row v-if="injectedComponent && injectAtStart" no-gutters>
-        <component
-          :is="injectedComponent"
-          :stationConfig="injectedComponentConfig"
-        />
+        <component :is="injectedComponent" :stationConfig="injectedComponentConfig" />
       </v-row>
 
       <v-row no-gutters>
@@ -113,10 +85,7 @@
       </v-row>
     </v-container>
 
-    <v-card-text
-      v-if="!showPlaceholder && (!resources || resources.length <= 0)"
-      :style="`color: ${emptyTextColor}};`"
-    >
+    <v-card-text v-if="!showPlaceholder && (!resources || resources.length <= 0)" :style="`color: ${emptyTextColor}};`">
       {{ emptyText }}
     </v-card-text>
   </v-card>
@@ -225,11 +194,13 @@ export default {
   },
   computed: {
     listLayout() {
-      return this.compactList ? {
-        sm: 6,
-      } : {
-        xl: 6,
-      }
+      return this.compactList
+        ? {
+            sm: 6,
+          }
+        : {
+            xl: 6,
+          };
     },
     availableResources() {
       const res = this.resources;
@@ -246,9 +217,7 @@ export default {
       const licenseId = this.dataLicenseId;
 
       if (licenseId === WSL_DATA_LICENSE_ID) {
-        const wslDataLicense = dataLicenses.filter(
-          (l) => l.id === WSL_DATA_LICENSE_ID,
-        )[0];
+        const wslDataLicense = dataLicenses.filter((l) => l.id === WSL_DATA_LICENSE_ID)[0];
 
         return wslDataLicense.link;
       }
@@ -256,9 +225,7 @@ export default {
       return this.dataLicenseUrl;
     },
     scrollbarColorFront() {
-      return this.$vuetify
-        ? this.$vuetify.theme.themes.light.colors.highlight
-        : 'auto';
+      return this.$vuetify ? this.$vuetify.theme.themes.light.colors.highlight : 'auto';
     },
     scrollbarColorBack() {
       return this.$vuetify ? '#F0F0F0' : 'auto';

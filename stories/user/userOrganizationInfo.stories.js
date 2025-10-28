@@ -14,7 +14,6 @@
 
 /* eslint-disable import/no-extraneous-dependencies */
 
-
 import UserOrganizationInfo from '@/components/Cards/UserOrganizationInfo.vue';
 import { createAuthor, getNameInitials } from '@/factories/authorFactory';
 import {
@@ -32,12 +31,10 @@ const author1 = createAuthor(authors[0]);
 const author2 = createAuthor(authors[1]);
 const author3 = createAuthor(authors[2]);
 
-
 export default {
   title: '7 User / UserOrganizationInfo',
   component: UserOrganizationInfo,
 };
-
 
 export const Empty = {};
 
@@ -45,7 +42,7 @@ export const EmptyCollaborator = {
   args: {
     isCollaborator: true,
   },
-}
+};
 
 export const AuthorRoleMember = {
   args: {
@@ -59,7 +56,7 @@ export const AuthorRoleMember = {
       },
     ],
   },
-}
+};
 
 export const AuthorRoleAdmin = {
   args: {
@@ -73,7 +70,7 @@ export const AuthorRoleAdmin = {
       },
     ],
   },
-}
+};
 
 export const AuthorRolesMixed = {
   args: {
@@ -104,5 +101,4 @@ export const AuthorRolesMixed = {
       },
     ],
   },
-}
-
+};

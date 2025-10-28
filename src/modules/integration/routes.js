@@ -1,15 +1,12 @@
-import {
-  INTEGRATION_PAGENAME,
-  INTEGRATION_PATH,
-} from '@/router/routeConsts';
+import { INTEGRATION_PAGENAME, INTEGRATION_PATH } from '@/router/routeConsts';
 import store from '@/store/store';
 
 const IntegrationPage = () => import('@/modules/integration/components/IntegrationPage.vue');
 
-const beforeEnter = async (to, from, next)=> {
+const beforeEnter = async (to, from, next) => {
   await store.state.asyncLoadStoreModule('integration');
   next();
-}
+};
 
 export const integrationRoutes = [
   {

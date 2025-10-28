@@ -4,48 +4,27 @@ import { getDataWithMetaData } from '@/modules/charts/middelware/DataVizServiceL
 import { MetaData } from '@/types/dataVizTypes';
 import { INJECT_GENERIC_COMPONENT } from '@/factories/eventBus';
 
-const ResourceDataVizAsync = defineAsyncComponent(() =>
-  // @ts-ignore
-  import('@/modules/charts/components/ResourceDataViz.vue'),
-)
+const ResourceDataVizAsync = defineAsyncComponent(
+  () =>
+    // @ts-ignore
+    import('@/modules/charts/components/ResourceDataViz.vue'),
+);
 
 export const DataVizSupportedExtensions = ['csv'];
 
-export const chartPreviewLabels = [
-    '12am',
-    '3am',
-    '6am',
-    '9am',
-    '12pm',
-    '3pm',
-    '6pm',
-    '9pm',
-  ];
+export const chartPreviewLabels = ['12am', '3am', '6am', '9am', '12pm', '3pm', '6pm', '9pm'];
 
-export const chartPreviewData = [
-    200,
-    675,
-    410,
-    390,
-    310,
-    460,
-    250,
-    240,
-  ]
+export const chartPreviewData = [200, 675, 410, 390, 310, 460, 250, 240];
 
 export function convertCSVToJSON(csv, nullValue) {
   let lines = csv.split('\n');
 
   // TEST DEV BLOCK //
-  const displayDescription = lines.filter((line) =>
-    line.startsWith('# display_description = '),
-  );
+  const displayDescription = lines.filter((line) => line.startsWith('# display_description = '));
 
   let keys = [];
   if (displayDescription.length === 1) {
-    keys = displayDescription[0]
-      .replace('# display_description = ', '')
-      .split(',');
+    keys = displayDescription[0].replace('# display_description = ', '').split(',');
   }
   // TODO refine error handling
   else {
@@ -103,9 +82,7 @@ export async function loadResourcesData(
 export function markResourceForDataViz(resources: any[]) {
   for (let i = 0; i < resources.length; i++) {
     const resource = resources[i];
-    const canDataViz =
-      !resource.isProtected &&
-      DataVizSupportedExtensions.includes(getUrlExtension(resource.url));
+    const canDataViz = !resource.isProtected && DataVizSupportedExtensions.includes(getUrlExtension(resource.url));
 
     resource.canDataViz = canDataViz;
 
@@ -121,7 +98,6 @@ export function markResourceForDataViz(resources: any[]) {
   }
 }
 
-export function getResourcesForDataViz(resources: any[]) : any[] {
-  return resources.filter((res) => !res.isProtected &&
-    DataVizSupportedExtensions.includes(getUrlExtension(res.url)));
+export function getResourcesForDataViz(resources: any[]): any[] {
+  return resources.filter((res) => !res.isProtected && DataVizSupportedExtensions.includes(getUrlExtension(res.url)));
 }
