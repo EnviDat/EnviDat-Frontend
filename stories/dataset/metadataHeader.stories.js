@@ -1,7 +1,7 @@
 import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
 import { createHeader, enhanceMetadatasTitleImage } from '@/factories/metaDataFactory';
 import { createHeaderViewModel } from '@/factories/ViewModels/HeaderViewModel';
-import { convertJSON } from '@/factories/mappingFactory';
+import { convertJSON } from '@/factories/convertJSON';
 
 import metadata from '@/../stories/js/metadata';
 

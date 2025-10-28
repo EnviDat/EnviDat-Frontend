@@ -12,7 +12,7 @@
       :icon="mdiClose"
       icon-color="primary"
       outline-color="primary"
-      outlined
+      variant="outlined"
       tooltip-text="Cancel Resource Editing"
       tooltip-bottom
       @clicked="$emit('closeClicked')" />
@@ -121,11 +121,11 @@
             <v-textarea
               v-if="isLongUrl"
               :label="isLink ? labels.url : labels.fileName"
-              outlined
+              variant="outlined"
               auto-grow
               :readonly="urlReadOnly"
               :hint="readOnlyHint('url')"
-              dense
+              density="compact"
               hide-details
               :disabled="loading"
               v-model="urlField"
@@ -134,10 +134,10 @@
             <v-text-field
               v-if="!isLongUrl"
               :label="isLink ? labels.url : labels.fileName"
-              outlined
+              variant="outlined"
               :readonly="urlReadOnly"
               :hint="readOnlyHint('url')"
-              dense
+              density="compact"
               hide-details
               :disabled="loading"
               v-model="urlField"
@@ -263,13 +263,13 @@
           >
             <v-col cols="12" class="pt-2">
               <BaseUserPicker
-                :users="envidatUserNameStrings"
+                :users="envidatUsersPicker"
+                :preSelectedNames="preSelectedAllowedUsers"
                 :pickerLabel="labels.restrictedAllowedUsersInfo"
                 multiplePick
                 :prependIcon="mdiKey"
                 userTagsCloseable
                 :placeholder="labels.allowedUsersTypingInfo"
-                :preSelected="preSelectedAllowedUsers"
                 @removedUsers="changeAllowedUsers"
                 @pickedUsers="changeAllowedUsers"
               />
@@ -310,7 +310,7 @@
   </v-card>
 </template>
 
-<script>
+<script lang="ts">
 /**
  * @summary Show all textfields for a resource
  * @author Dominik Haas-Artho
@@ -363,10 +363,10 @@ import {
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 // import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import { formatDate } from '@/factories/dateFactory';
-import { getAuthorByEmail, getAuthorName } from '@/factories/authorFactory.js';
-import { getFileExtension } from '@/factories/fileFactory.js';
-import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods.js';
-import { RESOURCE_FORMAT_LINK } from '@/factories/metadataConsts.js';
+import { getUserPickerObjects } from '@/factories/authorFactory.js';
+import { getFileExtension } from '@/factories/fileFactory';
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+import { RESOURCE_FORMAT_LINK } from '@/factories/metadataConsts';
 
 
 export default {
@@ -715,8 +715,9 @@ export default {
       }
       return ACCESS_LEVEL_PUBLIC_VALUE;
     },
-    envidatUserNameStrings() {
-      return getUserAutocompleteList(this.envidatUsers);
+    envidatUsersPicker() {
+      const users = getUserAutocompleteList(this.envidatUsers);
+      return getUserPickerObjects(users);
     },
     preSelectedAllowedUsers() {
       // match with the user.name but make sure the fullname or display_name is shown
@@ -847,6 +848,8 @@ export default {
     loadImagePreview(url) {
       this.imagePreviewError = null;
       this.loadingImagePreview = true;
+
+      // @ts-ignore @typescript-eslint/no-this-alias
       const vm = this;
 
       this.$nextTick(() => {
@@ -870,12 +873,7 @@ export default {
       this.imagePreviewError = event;
       this.loadingImagePreview = false;
     },
-    changeAllowedUsers(pickedAuthorEmails) {
-      const pickedUserNames = pickedAuthorEmails.map((email) => {
-        const author = getAuthorByEmail(email, this.envidatUsers);
-        return getAuthorName(author)
-      });
-
+    changeAllowedUsers(pickedUserNames: string[]) {
       this.allowedUsersField = getAllowedUsersString(
         pickedUserNames,
         this.envidatUsers,

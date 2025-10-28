@@ -15,7 +15,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable object-property-newline */
 
-import Amcharts5 from '../src/modules/metadata/components/GC-Net/Amchart5Chart.vue';
+import Amcharts5 from '@/modules/metadata/components/GC-Net/Amchart5Chart.vue';
 
 export default {
   title: '12 Chart Views / AmChart5 Tests',

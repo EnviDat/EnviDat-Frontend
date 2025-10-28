@@ -47,7 +47,7 @@
             :error-messages="validationErrors.publisher"
             :prepend-icon="mdiEarth"
             @change="publisherField = $event"
-            @input="validateProperty('publisher', $event)"
+            @update:model-value="validateProperty('publisher', $event)"
             :model-value="publisherField"
           />
         </v-col>
@@ -84,7 +84,7 @@
             :error-messages="validationErrors.doi"
             :prepend-icon="mdiFingerprint"
             @change="doiField = $event"
-            @input="validateProperty('doi', $event)"
+            @update:model-value="validateProperty('doi', $event)"
             :model-value="doiField"
             :append-icon="mdiContentCopy"
             @click:append="catchClipboardCopy"

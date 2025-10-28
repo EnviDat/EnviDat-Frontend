@@ -255,6 +255,7 @@ export default {
       this.$emit('saveAuthor');
     },
     loadImagePreview(file) {
+      // @ts-ignore @typescript-eslint/no-this-alias
       const vm = this;
       if (file.type.includes('image')) {
         const reader = new FileReader();

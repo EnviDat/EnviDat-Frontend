@@ -15,7 +15,7 @@ import {
   GCNET_OPEN_DETAIL_CHARTS,
   INJECT_MAP_FULLSCREEN,
   OPEN_DATA_PREVIEW_IFRAME,
-  OPEN_TEXT_PREVIEW,
+  OPEN_TEXT_PREVIEW, OPEN_VIDEO_PREVIEW,
 } from '@/factories/eventBus';
 
 import { getFeatureCollectionFromGcNetStations } from '@/factories/chartFactory';
@@ -23,9 +23,9 @@ import { createLocation } from '@/factories/geoFactory';
 import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from '@/../stories/js/envidatViewports';
 import txtPreviewFile from '@/../stories/js/previewTextFile.txt';
 
-import stationsConfig from './testdata/stationsConfig.json';
+import stationsConfig from '@/../stories/testdata/stationsConfig.json';
 import gcnetDataset from '@/../stories/js/gcnetDataset';
-import stationParameters from './testdata/stationParameters.json'
+import stationParameters from '@/../stories/testdata/stationParameters.json'
 
 const gcNetLocation = createLocation(gcnetDataset);
 const fileObjects = stationParameters.fileObjects;
@@ -85,6 +85,11 @@ const loadDataPreview = () => {
 const loadImagePreview = () => {
   const url = 'https://www.envidat.ch/dataset/fea7c28b-0a5b-4f38-b3df-c1ce66c2cf43/resource/15eb26e6-46a4-43e6-8cdb-fd7072968eb3/download/leb.jpg';
   eventBus.emit(OPEN_TEXT_PREVIEW, url);
+}
+
+const loadVideoPreview = () => {
+  const url = 'https://www.envidat.ch/dataset/c19ad933-34e0-4184-ba30-eabec0bcdb51/resource/5ba64afa-d660-46e6-b54f-3eaf24bde680/download/20231109_teaser_entremont_de.mp4';
+  eventBus.emit(OPEN_VIDEO_PREVIEW, url);
 }
 
 const Template = (args, { argTypes }) => ({
@@ -181,3 +186,10 @@ ImagePreviewModal.args = {
   buttonClick: loadImagePreview,
   buttonText: 'load image preview',
 };
+
+export const ImageVideoModal = Template.bind({});
+ImageVideoModal.args = {
+  buttonClick: loadVideoPreview,
+  buttonText: 'load video preview',
+};
+

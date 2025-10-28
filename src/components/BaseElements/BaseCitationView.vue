@@ -7,12 +7,9 @@
                    class='pl-1 pb-2'
             >
             <v-menu
-                :open-on-hover='true'
-                :open-on-click='true'
-                :close-on-click="false"
-                :close-on-content-click="false"
+                :open-on-hover="true"
+                :open-on-click="true"
                 :disabled="!abstract"
-                offset-y
                 z-index="2"
             >
               <template v-slot:activator="{ props }">

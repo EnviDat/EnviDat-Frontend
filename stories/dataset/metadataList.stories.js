@@ -3,7 +3,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 16:34:51
- * Last modified  : 2019-10-31 08:14:47
+ * Last modified  : 2025-10-15 13:22:35
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -147,7 +147,7 @@ const templateForLoadingHugelist = {
     },
     async mounted() {
       setTimeout(async () => {
-        const packageList = await import ('../public/testdata/packagelist.json');
+        const packageList = await import ('../../public/testdata/packagelist.json');
         const contentMap = enhanceMetadatas(packageList.result);
         this.largeList = Object.values(contentMap);
         this.loadingList = false;

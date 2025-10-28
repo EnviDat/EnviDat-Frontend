@@ -40,7 +40,7 @@ import forestRadidationDataDataset from '@/../stories/js/forest-radiation-data';
 
 const forestFunding = createFunding(forestRadidationDataDataset.result);
 
-import envidat_packages from './testdata/packagelist.json';
+import envidat_packages from '@/../stories/testdata/packagelist.json';
 
 export default {
   title: '3 Datasets / 1 Views',

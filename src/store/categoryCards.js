@@ -26,13 +26,17 @@ import {
   SNOW,
 } from '@/store/categoriesConsts';
 
-import { EDNA_MODE, SWISSFL_MODE } from '@/store/metadataMutationsConsts';
+import {
+  EDNA_MODE,
+  SWISSFL_MODE,
+  FOREST_3D,
+} from '@/store/metadataMutationsConsts';
 import { getModeData } from '@/factories/modeFactory';
 import { getImageList } from '@/factories/imageFactory';
 
-
 const swissFLMode = getModeData(SWISSFL_MODE);
 const ednaMode = getModeData(EDNA_MODE);
+const forest3D = getModeData(FOREST_3D);
 
 export default [
   {
@@ -113,6 +117,17 @@ export default [
     imgPath: 'edna_logo_small',
     color: '#3966d0',
     darkColor: '#2f5dc7',
+    contain: true,
+    disabled: false,
+    isMode: true,
+  },
+  {
+    title: `${forest3D.title}`,
+    type: `mode_${FOREST_3D}`,
+    alias: [],
+    imgPath: 'forest3d_logo',
+    color: '#254117',
+    darkColor: '#182D09',
     contain: true,
     disabled: false,
     isMode: true,

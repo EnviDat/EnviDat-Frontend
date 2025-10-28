@@ -115,7 +115,7 @@ export const MenuToolbarAndBanners = () => ({
 
       <v-container
           fluid
-          style="position: relative"
+          style="position: relative; height: 100vh;"
       >
         <v-row style="height: 100vh;">
           <v-col>

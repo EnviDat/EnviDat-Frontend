@@ -5,7 +5,6 @@ import axios from 'axios';
 import { XMLParser } from 'fast-xml-parser';
 import {
   _Object,
-  ListObjectsV2Output,
 } from '@aws-sdk/client-s3/dist-types/models/models_0';
 import { CommonPrefix } from '@aws-sdk/client-s3/dist-types/models';
 import { S3Node } from '@/types/s3Types';
@@ -40,7 +39,7 @@ export const useS3Store = defineStore('s3Store', {
       try {
         return parser.parse(xmlData);
       } catch (error) {
-        throw new Error('Failed to parse XML data');
+        throw new Error(`Failed to parse XML data. ${error}`);
       }
     },
 

@@ -1,5 +1,5 @@
 <template>
-  <v-menu transition="slide-y-transition" bottom offset-y id="UserMenu">
+  <v-menu transition="slide-y-transition" location="bottom" id="UserMenu">
     <template v-slot:activator="{ props }">
       <div v-bind="props">
         <UserAvatar

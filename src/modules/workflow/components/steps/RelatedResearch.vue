@@ -83,10 +83,6 @@
           :validationErrors="validationErrors"
           v-bind="editRelatedDatasetsProps"
         />
-        <!-- <EditCustomFieldsWorkflow
-            @save="save"
-            v-bind="editCustomFieldsProps"
-          /> -->
       </v-col>
     </v-row>
   </v-container>
@@ -106,7 +102,6 @@
  */
 import { mapState } from 'vuex';
 
-// import EditCustomFieldsWorkflow from '@/modules/user/components/EditCustomFieldsWorkflow.vue';
 import EditRelatedDatasetsWorkflow from '@/modules/workflow/components/steps/EditRelatedDatasetsWorkflow.vue';
 import EditRelatedPublicationsListWorkflow from '@/modules/workflow/components/steps/EditRelatedPublicationsListWorkflow.vue';
 
@@ -120,10 +115,6 @@ export default {
     },
     relatedDatasetsText: {
       type: String,
-      default: undefined,
-    },
-    customFields: {
-      type: Array,
       default: undefined,
     },
     readOnlyFields: {
@@ -201,14 +192,6 @@ export default {
 
       return this.relatedDatasetsText;
     },
-    customFieldsWrap() {
-      if (this.isCreationWorkflow) {
-        const stepData = this.currentStep.genericProps;
-        return stepData.customFields;
-      }
-
-      return this.customFields;
-    },
     editRelatedPublicationsProps() {
 
       return {
@@ -234,19 +217,6 @@ export default {
         errorDetails: this.errorDetails,
       };
     },
-    editCustomFieldsProps() {
-
-      return {
-        customFields: this.customFieldsWrap,
-        readOnlyFields: this.readOnlyFields,
-        readOnlyExplanation: this.readOnlyExplanation,
-        loading: this.loading,
-        message: this.message,
-        messageDetails: this.messageDetails,
-        error: this.error,
-        errorDetails: this.errorDetails,
-      };
-    },
   },
   data: () => ({
     labels: {
@@ -258,7 +228,6 @@ export default {
   components: {
     EditRelatedPublicationsListWorkflow,
     EditRelatedDatasetsWorkflow,
-    // EditCustomFieldsWorkflow,
   },
 };
 </script>

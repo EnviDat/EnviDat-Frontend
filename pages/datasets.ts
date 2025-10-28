@@ -128,7 +128,7 @@ export async function getJSONLDMapForDatasets(datasets: DatasetDTO[]) {
   return jsonLdMap;
 }
 
-export async function enhanceJSONLd(datasets: DatasetDTO[]) {
+export async function enhanceJSONLd(datasets: DatasetDTO | { jsonLd: object }[]) {
   const map = await getJSONLDMapForDatasets(datasets);
 
   console.log(`Map size ${map.size} for enhancing `);

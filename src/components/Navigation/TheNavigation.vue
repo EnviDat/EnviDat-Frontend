@@ -17,8 +17,6 @@
     </v-btn>
 
     <v-navigation-drawer
-      app
-      clipped
       :mode="smallScreen ? 'temporary' : 'permanent'"
       :style="smallScreen ? 'top: 45px; max-height: calc(100% - 45px);' : ''"
       :rail="!show"
@@ -26,11 +24,11 @@
       expand-on-hover
       @change="setShow"
       @update:modelValue="onInput"
-      overlay-color="highlight"
+      scrim="highlight"
       :rail-width="60"
       width="220"
     >
-      <v-list dense>
+      <v-list density="compact">
         <v-list-item
           v-for="(item, index) in navItemsMenuExcluded"
           :key="index"

@@ -1,11 +1,12 @@
 import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 import { Resource } from '@/types/modelTypes';
-import { convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
+import { convertToFrontendJSONWithRules } from '@/factories/convertJSON';
 import { ResourceDTO } from '@/types/dataTransferObjectsTypes';
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 import { getResourceName, mergeResourceSizeForFrontend } from '@/factories/resourceHelpers';
 import { formatDate } from '@/factories/dateFactory';
+import { isFieldValid } from '@/factories/userEditingValidations';
 
 
 const convertEmptyStringToNull = (value: string, originalValue: string) =>
@@ -32,6 +33,7 @@ export class ResourceViewModel extends AbstractEditViewModel implements Resource
 
   declare multipartName: string;
   declare name: string;
+  declare packageId: string;
   declare position: number;
 
   declare resourceSize: string;
@@ -243,7 +245,7 @@ export class ResourceViewModel extends AbstractEditViewModel implements Resource
       ['metadataModified','metadata_modified'],
       ['multipartName','multipart_name'],
       ['name','name'],
-      // ['packageId','package_id'], // keep it for compatibility reasons?
+      ['packageId','package_id'],
       ['position','position'],
       ['restricted','restricted'],
       ['resourceSize','resource_size'],
@@ -255,8 +257,33 @@ export class ResourceViewModel extends AbstractEditViewModel implements Resource
     ];
   }
 
+  /**
+   * Overwrite the super.validate() because here we need to take over all
+   * properties first no matter which get validated
+   * */
   validate(newProps?: Partial<ResourceViewModel>): boolean {
-    return super.validate(newProps);
+
+    const source = newProps ?? this;
+
+    // to take over all properties so no to lose props
+    // which don't have any validation rules defined
+    Object.assign(this, source);
+
+    const propsToValidate = this.getPropsToValidate(source);
+    let allValid = true;
+
+    for (const [field, value] of Object.entries(propsToValidate)) {
+      const ok = isFieldValid(
+        field,
+        value,
+        this.validationRules,
+        this.validationErrors,
+      );
+
+      if (!ok) allValid = false;
+    }
+
+    return allValid;
   }
 }
 

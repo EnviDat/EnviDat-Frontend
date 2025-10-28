@@ -1,6 +1,11 @@
 <template>
-  <v-card id="EditCustomFields" class="pa-0" :loading="loadingColor">
-    <v-container fluid class="pa-4">
+  <v-card
+    id="EditCustomFields"
+    :class="showAsCard ? 'pa-4' : 'pa-0'"
+    :flat="!showAsCard"
+    :loading="loadingColor"
+  >
+    <v-container fluid class="pa-0">
       <v-row>
         <v-col cols="6" class="text-h5">
           {{ labels.cardTitle }}
@@ -145,6 +150,7 @@ export default {
       type: Array,
       default: () => [],
     },
+    showAsCard: Boolean,
     loading: {
       type: Boolean,
       default: false,

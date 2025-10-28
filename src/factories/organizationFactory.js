@@ -336,9 +336,7 @@ export const researchUnitDatasetChartOptions = {
       text: 'Dataset Publication per Research Unit History',
     },
     legend: {
-      position: (ctx) => {
-        return ctx.chart.width < 968 ? 'bottom' : 'right';
-      },
+      position: (ctx) => ctx?.chart?.width < 968 ? 'bottom' : 'right',
       reverse: 'true',
     },
     datalabels: {

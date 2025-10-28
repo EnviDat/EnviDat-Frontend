@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 // Utility file to collect all tracking functions from Matomo
 
 // matomo code to pass the matomo instance in not component.vue file

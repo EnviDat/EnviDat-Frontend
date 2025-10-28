@@ -40,6 +40,7 @@
         @controlsChanged="controlsChanged"
         @authorSearchClick="catchAuthorSearchClick"
         @shallowRealClick="catchShallowRealClick"
+        :loadingDetailSwitch="loadingDetailSwitch"
       />
     </template>
 
@@ -81,9 +82,8 @@
         id="datasetList"
         fluid
         class="pa-0"
-        :style="`${ useDynamicHeight ? `height: ${metadataListHeight}px` : 'max-height: 750px;' };`"
+        :style="`${useDynamicHeight ? `height: ${metadataListHeight}px` : 'max-height: 750px;'};`"
       >
-
         <v-row v-if="!loading && hasContent" no-gutters>
           <RecycleScroller
             class="scroller"
@@ -266,6 +266,10 @@ export default {
       default: false,
     },
     loading: {
+      type: Boolean,
+      default: false,
+    },
+    loadingDetailSwitch: {
       type: Boolean,
       default: false,
     },

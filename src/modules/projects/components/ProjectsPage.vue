@@ -60,8 +60,8 @@ import { useRouter, useRoute } from 'vue-router';
 // Import components
 import { useDisplay } from 'vuetify';
 import ImgAndTextLayout from '@/components/Layouts/ImgAndTextLayout.vue';
-import ProjectCard from './ProjectCard.vue';
-import ProjectCardPlaceholder from './ProjectCardPlaceholder.vue';
+import ProjectCard from '@/modules/projects/components/ProjectCard.vue';
+import ProjectCardPlaceholder from '@/modules/projects/components/ProjectCardPlaceholder.vue';
 
 // Import constants
 import {
