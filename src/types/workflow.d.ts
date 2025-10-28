@@ -20,6 +20,7 @@ export interface WorkflowStep {
     element: string;
     popover: { title: string; description: string };
   }>;
+  errors: object;
 }
 
 export interface ComputeResult {
