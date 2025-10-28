@@ -5,6 +5,7 @@ import {
   StepStatus,
   WorkflowMode,
 } from '@/modules/workflow/utils/workflowEnums';
+import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 
 export function computeStepsForMode(
   steps: WorkflowStep[],
@@ -60,6 +61,62 @@ export function computeStepsForMode(
   return { steps: next, freeJump: isBackendSource };
 }
 
+function updateStepStatusAndErrors(
+  existingStep: WorkflowStep,
+  viewModelKey: string,
+  datasetModel: DatasetModel,
+  hasDtData: (v: any) => boolean,
+  dataSource: 'local' | 'backend',
+): WorkflowStep {
+
+  const isBackend = dataSource === 'backend';
+  const vm = datasetModel.getViewModel(viewModelKey);
+
+  const newStep = existingStep ? existingStep : {
+    completed: false,
+    component: undefined,
+    description: '',
+    dirty: false,
+    guideLines: undefined,
+    hasError: false,
+    icon: '',
+    id: 0,
+    isEditable: false,
+    key: viewModelKey,
+    readOnly: false,
+    status: undefined,
+    title: '',
+    touched: false,
+    viewModelKey: '',
+    errors: null,
+  }
+
+  const dataForInit = vm.getModelDataForInit
+    ? vm.getModelDataForInit()
+    : vm.getModelData?.();
+  const hasAnything = hasDtData(dataForInit);
+
+  if (!vm || !hasAnything) {
+    newStep.completed = false;
+    newStep.hasError = false;
+    newStep.status = isBackend ? StepStatus.Active : StepStatus.Disabled;
+    newStep.errors = null;
+  }
+
+  if (vm) {
+    // Validate the VM data
+    vm.validate?.(dataForInit);
+    const hasErrors = Object.values(vm.validationErrors || {}).some(Boolean);
+
+    newStep.completed = !hasErrors;
+    newStep.hasError = hasErrors;
+    newStep.status = hasErrors ? StepStatus.Error : StepStatus.Completed
+    newStep.errors = hasErrors ? vm.validationErrors : null;
+  }
+
+  return newStep;
+}
+
 // SET the step based on the data available in the datasetModel
 // src/modules/workflow/utils/mode.ts
 export function enhanceStepsFromData(
@@ -69,78 +126,13 @@ export function enhanceStepsFromData(
   mode: WorkflowMode,
   dataSource: 'local' | 'backend',
 ) {
-  const isBackend = dataSource === 'backend';
+
   if (mode === WorkflowMode.Edit) {
     return { steps, startIdx: 0 };
   }
 
-  const next = steps.map((s, idx) => {
-    const vm = s.viewModelKey
-      ? datasetModel.getViewModel(s.viewModelKey)
-      : null;
+  const next = steps.map((step, idx) => updateStepStatusAndErrors(step, step.viewModelKey, datasetModel, hasDtData, dataSource));
 
-    // SET status after save backend
-    // IF we have the data from backedn all steps are active (FreeJump)
-    let status: StepStatus;
-    if (idx === 0) {
-      status = StepStatus.Active;
-    } else if (isBackend) {
-      status = StepStatus.Active;
-    } else {
-      status = StepStatus.Disabled;
-    }
-
-    // No VM
-    if (!vm) {
-      return {
-        ...s,
-        completed: false,
-        hasError: false,
-        status,
-        errors: null,
-      };
-    }
-
-    // Get the data from the VM, check if we have some exclusion getModelDataForInit
-    const dataForInit = vm.getModelDataForInit
-      ? vm.getModelDataForInit()
-      : vm.getModelData?.();
-    const hasAnything = hasDtData(dataForInit);
-
-    // VM - but incomplete
-    if (!hasAnything) {
-      return {
-        ...s,
-        completed: false,
-        hasError: false,
-        status,
-        errors: null,
-      };
-    }
-
-    // Validate the VM data
-    vm.validate?.(dataForInit);
-    const hasErrors = Object.values(vm.validationErrors || {}).some(Boolean);
-
-    if (hasErrors) {
-      return {
-        ...s,
-        completed: false,
-        hasError: true,
-        status: StepStatus.Error,
-        errors: vm.validationErrors,
-      };
-    }
-
-    return {
-      ...s,
-      completed: true,
-      hasError: false,
-      status: StepStatus.Completed,
-      errors: null,
-    };
-  });
-
-  const startIdx = next.findIndex((s) => !s.completed);
+  const startIdx = next.findIndex((step) => !step.completed);
   return { steps: next, startIdx: startIdx === -1 ? 0 : startIdx };
 }
