@@ -17,17 +17,13 @@ import { enhanceSubprojectsFromExtras } from '@/factories/projectsDataFactory';
 import ProjectBody from '@/modules/projects/components/ProjectDetailViews/ProjectBody.vue';
 import ProjectDatasets from '@/modules/projects/components/ProjectDetailViews/ProjectDatasets.vue';
 import ProjectHeader from '@/modules/projects/components/ProjectDetailViews/ProjectHeader.vue';
-import {
-  LISTCONTROL_LIST_ACTIVE,
-  LISTCONTROL_MAP_ACTIVE,
-} from '@/store/metadataMutationsConsts';
+import { LISTCONTROL_LIST_ACTIVE, LISTCONTROL_MAP_ACTIVE } from '@/store/metadataMutationsConsts';
 
 import projectJSON from '@/../stories/testdata/projects.json';
 import metadata from '@/../stories/js/metadata';
 
 const enhancedProjects = enhanceSubprojectsFromExtras(projectJSON.result);
 const projects = enhancedProjects;
-
 
 const header1 = projects[5];
 const header2 = projects[6];
@@ -38,20 +34,19 @@ const body2 = projects[6];
 const body3 = projects[8];
 
 const methods = {
-//  onCardClick: action('clicked on card'),
-//  onTagClick: action('clicked on tag'),
+  //  onCardClick: action('clicked on card'),
+  //  onTagClick: action('clicked on tag'),
 };
 
 export default {
   title: '15 Project Page / Project Views',
   decorators: [],
-  parameters: {
-  },
+  parameters: {},
 };
 
 export const ProjectHeaderViews = () => ({
-    components: { ProjectHeader },
-    template: `
+  components: { ProjectHeader },
+  template: `
     <v-row >
       <v-col cols="12" class="py-3">
         <project-header />
@@ -87,18 +82,18 @@ export const ProjectHeaderViews = () => ({
 
     </v-row>
     `,
-    methods,
-    data: () => ({
-      header1,
-      header2,
-      header3,
-      defaultImg: mission,
-    }),
-  });
+  methods,
+  data: () => ({
+    header1,
+    header2,
+    header3,
+    defaultImg: mission,
+  }),
+});
 
 export const ProjectBodyViews = () => ({
-    components: { ProjectBody },
-    template: `
+  components: { ProjectBody },
+  template: `
     <v-row >
       <v-col cols="6" class="py-3">
         <project-body />
@@ -134,17 +129,17 @@ export const ProjectBodyViews = () => ({
 
     </v-row>
     `,
-    methods,
-    data: () => ({
-      body1,
-      body2,
-      body3,
-    }),
-  });
+  methods,
+  data: () => ({
+    body1,
+    body2,
+    body3,
+  }),
+});
 
 export const ProjectDatasetViews = () => ({
-    components: { ProjectDatasets },
-    template: `
+  components: { ProjectDatasets },
+  template: `
     <v-row >
       <v-col cols="12" >
         <ProjectDatasets :hasMetadatas="false" />
@@ -163,13 +158,10 @@ export const ProjectDatasetViews = () => ({
 
     </v-row>
     `,
-    methods,
-    data: () => ({
-      metadata,
-      defaultControls: [LISTCONTROL_MAP_ACTIVE],
-      enabledControls: [
-        LISTCONTROL_LIST_ACTIVE,
-        LISTCONTROL_MAP_ACTIVE,
-      ],
-    }),
-  });
+  methods,
+  data: () => ({
+    metadata,
+    defaultControls: [LISTCONTROL_MAP_ACTIVE],
+    enabledControls: [LISTCONTROL_LIST_ACTIVE, LISTCONTROL_MAP_ACTIVE],
+  }),
+});

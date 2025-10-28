@@ -1,9 +1,6 @@
 import { it, describe, expect } from 'vitest';
 
-import {
-  enhanceSubprojectsFromExtras,
-  enhanceProjectDatasets,
-} from '@/factories/projectsDataFactory';
+import { enhanceSubprojectsFromExtras, enhanceProjectDatasets } from '@/factories/projectsDataFactory';
 import packagelist from '@/../stories/testdata/packagelist.json';
 import projectJSON from '@/../stories/testdata/projects.json';
 
@@ -13,18 +10,15 @@ packagelist.result.forEach((entry) => {
 });
 
 describe('projectsDataFactory - enhanceSubprojectsFromExtras', () => {
-
   it('empty', () => {
     const enhanced = enhanceSubprojectsFromExtras(undefined);
     expect(enhanced).toBeDefined();
     expect(enhanced.length).toEqual(0);
   });
-
 });
 
 describe('projectsDataFactory - enhanceProjectDatasets', () => {
   it('empty', () => {
-
     const enhanced = enhanceProjectDatasets(undefined, null);
 
     expect(enhanced).toBeDefined();
@@ -32,7 +26,6 @@ describe('projectsDataFactory - enhanceProjectDatasets', () => {
   });
 
   it('Enhanced Tags', () => {
-
     const enhanced = enhanceProjectDatasets(projectJSON.result, metadatasContent);
 
     for (let i = 0; i < enhanced.length; i++) {
@@ -52,9 +45,6 @@ describe('projectsDataFactory - enhanceProjectDatasets', () => {
           // expect(tag.count).toBeDefined();
         }
       }
-
     }
-
   });
-
 });

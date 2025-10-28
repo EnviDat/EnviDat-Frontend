@@ -25,19 +25,13 @@ export class RelatedResearchViewModel extends AbstractEditViewModel {
       .string()
       .nullable()
       .transform(convertEmptyStringToNull)
-      .min(
-        10,
-        'Write at least 10 characters to describe the related publications.',
-      ),
+      .min(10, 'Write at least 10 characters to describe the related publications.'),
 
     relatedDatasetsText: yup
       .string()
       .nullable()
       .transform(convertEmptyStringToNull)
-      .min(
-        10,
-        'Write at least 10 characters to describe the related datasets.',
-      ),
+      .min(10, 'Write at least 10 characters to describe the related datasets.'),
   });
 
   constructor(datasetModel: DatasetModel) {

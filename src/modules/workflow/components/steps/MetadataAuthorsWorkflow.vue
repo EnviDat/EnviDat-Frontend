@@ -32,19 +32,10 @@
       </v-container>
     </v-card-text>
 
-    <v-card-text
-      v-if="showAuthors && !showPlaceholder && hasAuthors"
-      class="pa-2 pt-0"
-    >
+    <v-card-text v-if="showAuthors && !showPlaceholder && hasAuthors" class="pa-2 pt-0">
       <v-container fluid class="pa-0 heightAndScroll" :style="containerStyle">
         <v-row no-gutters>
-          <v-col
-            v-for="author in authors"
-            :key="author.fullName"
-            cols="12"
-            v-bind="listLayout"
-            class="pa-2"
-          >
+          <v-col v-for="author in authors" :key="author.fullName" cols="12" v-bind="listLayout" class="pa-2">
             <slot name="editingAuthors" v-bind="author" />
 
             <AuthorCard
@@ -58,15 +49,10 @@
               :isSelected="author.isSelected"
               :loading="author.loading"
               :overrideAuthorInfosExpanded="!showFullscreenButton"
-              @openButtonClicked="
-                catchOpenClick(author.openEvent, author.openProperty)
-              "
+              @openButtonClicked="catchOpenClick(author.openEvent, author.openProperty)"
               @catchSearchAuthor="catchAuthorSearchClick(author.fullName)"
             >
-              <template
-                v-if="hasDataCredits(author.dataCredit)"
-                #dataCreditCurrentDataset
-              >
+              <template v-if="hasDataCredits(author.dataCredit)" #dataCreditCurrentDataset>
                 <ActiveDataCredits
                   class="px-0 py-1 readableText"
                   :dataCredit="author.dataCredit"
@@ -80,11 +66,7 @@
       </v-container>
     </v-card-text>
 
-    <v-card-text
-      v-if="!showPlaceholder && !hasAuthors"
-      :style="`color: ${emptyTextColor};`"
-      class="pa-4 pt-0"
-    >
+    <v-card-text v-if="!showPlaceholder && !hasAuthors" :style="`color: ${emptyTextColor};`" class="pa-4 pt-0">
       {{ emptyText }}
     </v-card-text>
   </v-card>
@@ -105,18 +87,11 @@
  */
 import { mdiArrowExpandAll } from '@mdi/js';
 import { defineAsyncComponent, markRaw } from 'vue';
-import {
-  AUTHORS_DATACREDIT_CONTRIBUTION_CURRENT,
-  METADATA_AUTHORS_TITLE,
-} from '@/factories/metadataConsts';
+import { AUTHORS_DATACREDIT_CONTRIBUTION_CURRENT, METADATA_AUTHORS_TITLE } from '@/factories/metadataConsts';
 
 import AuthorCard from '@/modules/metadata/components/AuthorCard.vue';
 import AuthorCardPlaceholder from '@/modules/metadata/components/AuthorCardPlaceholder.vue';
-import {
-  AUTHOR_SEARCH_CLICK,
-  eventBus,
-  INJECT_GENERIC_COMPONENT,
-} from '@/factories/eventBus';
+import { AUTHOR_SEARCH_CLICK, eventBus, INJECT_GENERIC_COMPONENT } from '@/factories/eventBus';
 import ActiveDataCredits from '@/modules/user/components/edit/ActiveDataCredits.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
@@ -200,9 +175,7 @@ export default {
       return this.authors?.length > 0;
     },
     scrollbarColorFront() {
-      return this.$vuetify
-        ? this.$vuetify.theme.themes.light.colors.highlight
-        : 'auto';
+      return this.$vuetify ? this.$vuetify.theme.themes.light.colors.highlight : 'auto';
     },
     scrollbarColorBack() {
       return this.$vuetify ? '#F0F0F0' : 'auto';

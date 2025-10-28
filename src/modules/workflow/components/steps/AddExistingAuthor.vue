@@ -25,9 +25,7 @@
           <v-row class="mb-5">
             <v-col>
               <div class="font-weight-bold">{{ labels.title }}</div>
-              <div class="text-caption">
-                {{ labels.instructions }}, {{ labels.userPickInstructions }}
-              </div>
+              <div class="text-caption">{{ labels.instructions }}, {{ labels.userPickInstructions }}</div>
             </v-col>
           </v-row>
           <BaseUserPicker
@@ -62,18 +60,12 @@
 
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
 
-import {
-  getUserPickerObjects,
-  getFullAuthorsForUserPicker,
-} from '@/factories/authorFactory';
+import { getUserPickerObjects, getFullAuthorsForUserPicker } from '@/factories/authorFactory';
 import { EDIT_METADATA_AUTHORS_TITLE } from '@/factories/metadataConsts';
 
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus.js';
 
-import {
-  isReadOnlyField,
-  getReadOnlyHint,
-} from '@/modules/workflow/utils/useReadonly';
+import { isReadOnlyField, getReadOnlyHint } from '@/modules/workflow/utils/useReadonly';
 import { Author } from '@/types/modelTypes';
 
 export default {
@@ -163,11 +155,7 @@ export default {
       this.changePreviews(pickedUsersEmails);
     },
     changePreviews(pickedUsersEmails: string[]) {
-      this.previewAuthors = getFullAuthorsForUserPicker(
-        pickedUsersEmails,
-        this.authors,
-        this.existingEnviDatUsers,
-      );
+      this.previewAuthors = getFullAuthorsForUserPicker(pickedUsersEmails, this.authors, this.existingEnviDatUsers);
     },
     notifyChange() {
       if (!this.previewAuthors) {
@@ -192,12 +180,10 @@ export default {
   data: () => ({
     labels: {
       title: EDIT_METADATA_AUTHORS_TITLE,
-      instructions:
-        'Here are can add authors from other published datasets to your dataset.',
+      instructions: 'Here are can add authors from other published datasets to your dataset.',
       userPickInstructions:
         'Pick an author from the list to add to your dataset. To remove click on the close icon of an author.',
-      authorPickHint:
-        'Start typing the name in the text field to search for an author.',
+      authorPickHint: 'Start typing the name in the text field to search for an author.',
     },
     previewAuthors: null,
   }),

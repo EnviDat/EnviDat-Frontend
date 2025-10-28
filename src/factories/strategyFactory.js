@@ -73,7 +73,6 @@ export const clickStrategies = [
 ];
 
 export function getPreviewStrategy(strategyKeys) {
-
   if (!strategyKeys) {
     return null;
   }
@@ -84,7 +83,7 @@ export function getPreviewStrategy(strategyKeys) {
 
   for (let i = 0; i < strategyKeys.length; i++) {
     const ext = strategyKeys[i];
-    const filteredStrat = clickStrategies.filter(strat => strat.strategyKeys.indexOf(ext) !== -1);
+    const filteredStrat = clickStrategies.filter((strat) => strat.strategyKeys.indexOf(ext) !== -1);
 
     if (filteredStrat.length > 0) {
       return filteredStrat[0];
@@ -115,7 +114,6 @@ export function getPreviewStrategyFromUrlExtension(url) {
 }
 
 export function enhanceElementsWithStrategyEvents(elementList, previewProperty = 'url', entriesAreResources = false) {
-
   if (!elementList) {
     return null;
   }
@@ -125,7 +123,6 @@ export function enhanceElementsWithStrategyEvents(elementList, previewProperty =
     const idValue = entry[previewProperty];
 
     if (idValue) {
-
       let strat = null;
       if (entriesAreResources && previewProperty === 'url') {
         // get the click strategy based on the url file extension
@@ -149,13 +146,13 @@ export function enhanceElementsWithStrategyEvents(elementList, previewProperty =
 export function enhanceResourcesWithMetadataExtras(metadataExtras, resources) {
   if (!metadataExtras || !resources) return null;
 
-  if (typeof metadataExtras === 'object'
-    && metadataExtras instanceof Array) {
-
+  if (typeof metadataExtras === 'object' && metadataExtras instanceof Array) {
     let deprecatedResources = [];
 
     if (metadataExtras?.length > 0) {
-      const customFieldEntry = metadataExtras.filter((entry) => entry?.key === METADATA_DEPRECATED_RESOURCES_PROPERTY)[0];
+      const customFieldEntry = metadataExtras.filter(
+        (entry) => entry?.key === METADATA_DEPRECATED_RESOURCES_PROPERTY,
+      )[0];
       deprecatedResources = JSON.parse(customFieldEntry?.value || '[]');
     }
 
@@ -172,7 +169,7 @@ export function enhanceResourcesWithMetadataExtras(metadataExtras, resources) {
     }
 
     // the deprecated resources have to be at the bottom of the list
-    resources.sort((a, b) => a.deprecated && !b.deprecated ? 1 : -1);
+    resources.sort((a, b) => (a.deprecated && !b.deprecated ? 1 : -1));
   }
 
   return resources;

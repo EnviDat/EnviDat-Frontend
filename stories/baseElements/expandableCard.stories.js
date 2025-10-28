@@ -67,8 +67,8 @@ export default {
 };
 
 export const ExpandableCardCollectionView = () => ({
-    components: { ExpandableCard },
-    template: `
+  components: { ExpandableCard },
+  template: `
     <v-row >
       <v-col>
         <v-row>
@@ -90,14 +90,14 @@ export const ExpandableCardCollectionView = () => ({
       </v-col>
     </v-row>
     `,
-    computed,
-    data: () => ({
-      teamSmall,
-      mission,
-      missionSmall,
-      handsSmall,
-      orga,
-      conceptSmall,
-      communitySmall,
-    }),
-  });
+  computed,
+  data: () => ({
+    teamSmall,
+    mission,
+    missionSmall,
+    handsSmall,
+    orga,
+    conceptSmall,
+    communitySmall,
+  }),
+});

@@ -10,17 +10,13 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import {
-  EDITMETADATA_OBJECT_UPDATE,
-  eventBus,
-} from '@/factories/eventBus';
+import { EDITMETADATA_OBJECT_UPDATE, eventBus } from '@/factories/eventBus';
 
 import EditImgPlaceholder from '@/modules/user/components/EditImgPlaceholder.vue';
 
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout.vue';
 import MetadataDescription from '@/modules/metadata/components/Metadata/MetadataDescription.vue';
 import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications.vue';
-
 
 export default {
   title: '3 Datasets / 2 Edit / GenericTextAreas',
@@ -29,8 +25,8 @@ export default {
 };
 
 export const GenericTextAreaPreviewPublications = () => ({
-    components: { GenericTextareaPreviewLayout, MetadataPublications },
-    template: `
+  components: { GenericTextareaPreviewLayout, MetadataPublications },
+  template: `
     <v-col>
 
       <v-row>
@@ -61,49 +57,49 @@ export const GenericTextAreaPreviewPublications = () => ({
       </v-row>
 
     </v-col> `,
-    mounted() {
-      this.genericPropsFilled.publications.text = this.genericPropsFilled.textareaContent;
+  mounted() {
+    this.genericPropsFilled.publications.text = this.genericPropsFilled.textareaContent;
+  },
+  methods: {
+    catchChangedText(value) {
+      this.genericProps = {
+        ...this.genericProps,
+        relatedPublicationsText: value,
+      };
     },
-    methods: {
-      catchChangedText(value) {
-        this.genericProps = {
-          ...this.genericProps,
-          relatedPublicationsText: value,
-        };
-      },
-      catchChangedFilledText(value) {
-        this.genericPropsFilled = {
-          ...this.genericPropsFilled,
-          relatedPublicationsText: value,
-        };
-      },
+    catchChangedFilledText(value) {
+      this.genericPropsFilled = {
+        ...this.genericPropsFilled,
+        relatedPublicationsText: value,
+      };
     },
-    computed: {
-      publicationsObject() {
-        return {
-          relatedPublicationsText: this.genericProps.textareaContent,
-        };
-      },
-      filledPublicationsObject() {
-        return {
-          relatedPublicationsText: this.genericPropsFilled.textareaContent,
-        };
-      },
+  },
+  computed: {
+    publicationsObject() {
+      return {
+        relatedPublicationsText: this.genericProps.textareaContent,
+      };
     },
-    data: () => ({
-      genericProps: {
-        id: '1',
-        columns: '',
-        labelTextarea: 'Related Publications',
-        textareaContent: '',
-        subtitlePreview: 'Preview',
-        isVerticalLayout: true,
-      },
-      genericPropsFilled: {
-        id: '2',
-        columns: '',
-        labelTextarea: 'Related Publications',
-        textareaContent: `# Why user stories?
+    filledPublicationsObject() {
+      return {
+        relatedPublicationsText: this.genericPropsFilled.textareaContent,
+      };
+    },
+  },
+  data: () => ({
+    genericProps: {
+      id: '1',
+      columns: '',
+      labelTextarea: 'Related Publications',
+      textareaContent: '',
+      subtitlePreview: 'Preview',
+      isVerticalLayout: true,
+    },
+    genericPropsFilled: {
+      id: '2',
+      columns: '',
+      labelTextarea: 'Related Publications',
+      textareaContent: `# Why user stories?
 &nbsp;
 User Stories can help you to constantly improve the value of
 your product, estimate development efforts in an appropriate way and prioritize
@@ -127,17 +123,17 @@ Define what functionality each user expects. How she’s going to interact with 
 It should either improve the UX, increase retention rates,
 shorten users’ journey to the issue solution or whatever. Each Story should
 contribute something to the general goal of your product. `,
-        subtitlePreview: 'Preview',
-        publications: {
-          text: '',
-        },
+      subtitlePreview: 'Preview',
+      publications: {
+        text: '',
       },
-    }),
-  });
+    },
+  }),
+});
 
 export const EditImagePlaceholderView = () => ({
-    components: { EditImgPlaceholder },
-    template: `
+  components: { EditImgPlaceholder },
+  template: `
     <v-col>
 
       <v-row>
@@ -154,19 +150,17 @@ export const EditImagePlaceholderView = () => ({
       </v-row>
 
     </v-col> `,
-    methods: {
-    },
-    computed: {
-    },
-    data: () => ({
-      componentTitle: 'Test of the Edit Image Placeholder',
-      disclaimer: 'Please note that the screenshot below will serve as a template for the future component.',
-    }),
-  });
+  methods: {},
+  computed: {},
+  data: () => ({
+    componentTitle: 'Test of the Edit Image Placeholder',
+    disclaimer: 'Please note that the screenshot below will serve as a template for the future component.',
+  }),
+});
 
 export const GenericTextareaPreviewMetadataDescriptionView = () => ({
-    components: { GenericTextareaPreviewLayout, MetadataDescription },
-    template: `
+  components: { GenericTextareaPreviewLayout, MetadataDescription },
+  template: `
     <v-col>
 
       <v-row>
@@ -194,44 +188,43 @@ export const GenericTextareaPreviewMetadataDescriptionView = () => ({
       </v-row>
 
     </v-col> `,
-    created() {
-      eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+  created() {
+    eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+  },
+  mounted() {
+    this.genericPropsFilled.text = this.genericPropsFilled.textareaContent;
+  },
+  beforeUnmount() {
+    eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+  },
+  methods: {
+    editComponentsChanged(updateObj) {
+      if (updateObj.data.id === this.genericProps.id) {
+        this.genericProps = updateObj.data;
+        this.genericProps.text = this.genericProps.textareaContent;
+      }
+      if (updateObj.data.id === this.genericPropsFilled.id) {
+        this.genericPropsFilled = updateObj.data;
+        this.genericPropsFilled.text = this.genericPropsFilled.textareaContent;
+      }
     },
-    mounted() {
-      this.genericPropsFilled.text = this.genericPropsFilled.textareaContent;
+  },
+  computed: {},
+  data: () => ({
+    genericProps: {
+      id: '1',
+      columns: '',
+      labelTextarea: 'Larry Label',
+      textareaContent: '',
+      subtitlePreview: 'Preview',
+      showPlaceholder: false,
+      text: '',
     },
-    beforeUnmount() {
-      eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
-    },
-    methods: {
-      editComponentsChanged(updateObj) {
-        if (updateObj.data.id === this.genericProps.id) {
-          this.genericProps = updateObj.data;
-          this.genericProps.text = this.genericProps.textareaContent;
-        }
-        if (updateObj.data.id === this.genericPropsFilled.id) {
-          this.genericPropsFilled = updateObj.data;
-          this.genericPropsFilled.text = this.genericPropsFilled.textareaContent;
-        }
-      },
-    },
-    computed: {
-    },
-    data: () => ({
-      genericProps: {
-        id: '1',
-        columns: '',
-        labelTextarea: 'Larry Label',
-        textareaContent: '',
-        subtitlePreview: 'Preview',
-        showPlaceholder: false,
-        text: '',
-      },
-      genericPropsFilled: {
-        id: '2',
-        columns: '',
-        labelTextarea: 'Larry Label',
-        textareaContent: `# Why user stories?
+    genericPropsFilled: {
+      id: '2',
+      columns: '',
+      labelTextarea: 'Larry Label',
+      textareaContent: `# Why user stories?
 &nbsp;
 User Stories can help you to constantly improve the value of
 your product, estimate development efforts in an appropriate way and prioritize
@@ -255,10 +248,9 @@ Define what functionality each user expects. How she’s going to interact with 
 It should either improve the UX, increase retention rates,
 shorten users’ journey to the issue solution or whatever. Each Story should
 contribute something to the general goal of your product. `,
-        subtitlePreview: 'Preview',
-        showPlaceholder: false,
-        text: '',
-      },
-    }),
-  });
-
+      subtitlePreview: 'Preview',
+      showPlaceholder: false,
+      text: '',
+    },
+  }),
+});

@@ -9,17 +9,12 @@
 
 /* eslint-disable import/no-extraneous-dependencies */
 
-import {
-  createAuthors,
-  extractAuthorsMap,
-  getFullAuthorsFromDataset,
-} from '@/factories/authorFactory';
+import { createAuthors, extractAuthorsMap, getFullAuthorsFromDataset } from '@/factories/authorFactory';
 
 import unFormatedMetadataCards from '@/../stories/js/metadata';
 import { BackendDatasetService } from '@/modules/workflow/BackendDatasetService.ts';
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 import EditAuthorList from '@/modules/user/components/edit/EditAuthorList.vue';
-
 
 const metadataCards = [];
 
@@ -28,10 +23,8 @@ unFormatedMetadataCards.forEach((el) => {
   metadataCards.push(el);
 });
 
-
-const serviceLayer = new BackendDatasetService(unFormatedMetadataCards[0])
+const serviceLayer = new BackendDatasetService(unFormatedMetadataCards[0]);
 const datasetVM = new DatasetModel(serviceLayer);
-
 
 const authorsMap = extractAuthorsMap(metadataCards);
 const authorsObjs = getFullAuthorsFromDataset(authorsMap, metadataCards[1]);
@@ -46,7 +39,6 @@ authorsObjs.forEach((author) => {
   authorsStrings.push(author.fullName);
 });
 
-
 export default {
   title: '6 Workflows / Combined / Author List Editing',
   component: EditAuthorList,
@@ -56,14 +48,14 @@ export const Empty = {
   args: {
     existingAuthors: extractedAuthors,
   },
-}
+};
 
 export const Loading = {
   args: {
     ...Empty.args,
     loading: true,
   },
-}
+};
 
 const authorListVM = datasetVM.getViewModel('AuthorListViewModel');
 const authorVMs = authorListVM.getAuthorViewModels(true);
@@ -80,7 +72,7 @@ export const Filled = {
       await authorVM.save(newData);
     },
   },
-}
+};
 
 export const FilledAndLoading = {
   args: {
@@ -91,4 +83,4 @@ export const FilledAndLoading = {
       await authorVM2.save(newData);
     },
   },
-}
+};

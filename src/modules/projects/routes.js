@@ -1,19 +1,14 @@
-import {
-  PROJECT_DETAIL_PAGENAME,
-  PROJECT_DETAIL_PATH,
-  PROJECTS_PAGENAME,
-  PROJECTS_PATH,
-} from '@/router/routeConsts';
+import { PROJECT_DETAIL_PAGENAME, PROJECT_DETAIL_PATH, PROJECTS_PAGENAME, PROJECTS_PATH } from '@/router/routeConsts';
 
 import store from '@/store/store';
 
 const ProjectsPage = () => import('@/modules/projects/components/ProjectsPage.vue');
 const ProjectDetailPage = () => import('@/modules/projects/components/ProjectDetailPage.vue');
 
-const beforeEnter = async (to, from, next)=> {
+const beforeEnter = async (to, from, next) => {
   await store.state.asyncLoadStoreModule('projects');
   next();
-}
+};
 
 export const projectsRoutes = [
   {

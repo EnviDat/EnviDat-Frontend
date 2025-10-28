@@ -10,11 +10,7 @@
 
     <v-row>
       <v-col>
-        <v-text-field
-          readonly
-          label="Organization"
-          :model-value="organization"
-        />
+        <v-text-field readonly label="Organization" :model-value="organization" />
       </v-col>
     </v-row>
 
@@ -42,11 +38,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import {
-  EDITMETADATA_OBJECT_UPDATE,
-  EDITMETADATA_ORGANIZATION,
-  eventBus,
-} from '@/factories/eventBus';
+import { EDITMETADATA_OBJECT_UPDATE, EDITMETADATA_ORGANIZATION, eventBus } from '@/factories/eventBus';
 import { EDIT_ORGANIZATION_TITLE } from '@/factories/metadataConsts';
 import OrganizationTree from '@/modules/user/components/OrganizationTree.vue';
 

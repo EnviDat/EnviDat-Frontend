@@ -4,9 +4,8 @@ import { createSSRApp, h } from 'vue';
 
 import PageLayout from './PageLayout.vue';
 
-
 export function createApp(pageContext: PageContext) {
-  const { Page, pageProps } = pageContext
+  const { Page, pageProps } = pageContext;
 
   const PageWithLayout = {
     render() {
@@ -15,14 +14,14 @@ export function createApp(pageContext: PageContext) {
         {},
         {
           default() {
-            return h(Page, pageProps || {})
+            return h(Page, pageProps || {});
           },
         },
-      )
+      );
     },
-  }
+  };
 
-  const app = createSSRApp(PageWithLayout)
+  const app = createSSRApp(PageWithLayout);
 
   return { app };
 }

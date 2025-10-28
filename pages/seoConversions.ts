@@ -1,7 +1,9 @@
 import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 
 function cropString(str: string, maxLength: number, ending: string | undefined) {
-  if (!str) { return '' }
+  if (!str) {
+    return '';
+  }
 
   if (str.length > maxLength) {
     const shortStr = str.substring(0, maxLength);
@@ -16,12 +18,11 @@ export const getSeoSanitizedDataset = (dataset: DatasetDTO): DatasetDTO => {
     return {
       title: '',
       notes: '',
-    }
+    };
   }
 
   return {
     title: cropString(dataset.title, 50, '...'),
     notes: cropString(dataset.notes, 155, '...'),
-  } as Partial<DatasetDTO>
-}
-
+  } as Partial<DatasetDTO>;
+};

@@ -1,14 +1,6 @@
 <template>
-  <v-container
-    :style="containerStyle"
-    class="pa-0 mb-10 mb-md-0 overflow-hidden"
-  >
-    <v-row
-      align="center"
-      justify="space-between"
-      class="grow flex-column"
-      no-gutters
-    >
+  <v-container :style="containerStyle" class="pa-0 mb-10 mb-md-0 overflow-hidden">
+    <v-row align="center" justify="space-between" class="grow flex-column" no-gutters>
       <v-col class="grow py-1">
         <v-text-field
           class="ma-0 main-search-bar"
@@ -24,10 +16,7 @@
         />
       </v-col>
 
-      <v-col
-        v-if="hasButtonComputed"
-        class="shrink py-0 d-flex align-center justify-center"
-      >
+      <v-col v-if="hasButtonComputed" class="shrink py-0 d-flex align-center justify-center">
         <base-rectangle-button
           v-for="(button, i) in buttonText"
           :key="i"
@@ -78,9 +67,7 @@ const containerStyle = computed(() => {
   return { maxWidth: '100%' };
 });
 
-const hasButtonComputed = computed(
-  () => props.hasButton && props.buttonText.length > 0,
-);
+const hasButtonComputed = computed(() => props.hasButton && props.buttonText.length > 0);
 
 const searchText = ref('');
 

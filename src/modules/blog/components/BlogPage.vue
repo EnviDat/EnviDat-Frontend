@@ -13,14 +13,7 @@
     </v-row>
 
     <v-row no-gutters id="blogSubHeader" class="py-2">
-      <v-col
-        cols="12"
-        offset-md="1"
-        md="10"
-        class="text-body-1"
-        v-html="pageIntroText"
-      >
-      </v-col>
+      <v-col cols="12" offset-md="1" md="10" class="text-body-1" v-html="pageIntroText"> </v-col>
     </v-row>
 
     <v-row no-gutters ref="blogBody" class="py-1 py-md-4">
@@ -28,37 +21,16 @@
         <BlogPost :post="post" :postContent="postContent" />
       </v-col>
 
-      <v-col
-        v-if="!showBlogPost && loadingList"
-        class="pt-3"
-        cols="12"
-        md="10"
-        offset-md="1"
-      >
+      <v-col v-if="!showBlogPost && loadingList" class="pt-3" cols="12" md="10" offset-md="1">
         Loading the blog entries...
       </v-col>
 
-      <v-col
-        v-if="!showBlogPost && !loadingList"
-        class="pt-3"
-        cols="12"
-        md="10"
-        offset-md="1"
-      >
+      <v-col v-if="!showBlogPost && !loadingList" class="pt-3" cols="12" md="10" offset-md="1">
         <v-row no-gutters>
-          <v-col
-            v-for="(post, index) in list"
-            :key="index"
-            cols="12"
-            sm="6"
-            md="4"
-            class="pa-2"
-          >
+          <v-col v-for="(post, index) in list" :key="index" cols="12" sm="6" md="4" class="pa-2">
             <BlogPostCard
               :postTitle="post.title"
-              :titleCssClass="
-                $vuetify.display.smAndDown ? 'text-h6 px-4' : undefined
-              "
+              :titleCssClass="$vuetify.display.smAndDown ? 'text-h6 px-4' : undefined"
               :postDate="post.date"
               :titleImg="post.titleImg"
               :loadingImg="fallbackCardImg"
@@ -98,7 +70,6 @@ import BlogHeader from '@/modules/blog/components/BlogHeader.vue';
 import BlogPost from '@/modules/blog/components/BlogPost.vue';
 import BlogPostCard from '@/modules/blog/components/BlogPostCard.vue';
 
-
 export default {
   name: BLOG_PAGENAME,
   created() {
@@ -127,13 +98,7 @@ export default {
   },
   computed: {
     ...mapState(['config']),
-    ...mapState(BLOG_NAMESPACE, [
-      'loadingList',
-      'loadingPost',
-      'list',
-      'post',
-      'postContent',
-    ]),
+    ...mapState(BLOG_NAMESPACE, ['loadingList', 'loadingPost', 'list', 'post', 'postContent']),
     showBlogPost() {
       return !this.loadingPost && this.post && this.postContent;
     },
@@ -187,8 +152,7 @@ export default {
       }
     },
     scrollToTop() {
-      const appContainer =
-        this.$root.$refs.appContainer?.$el || this.$root.$refs.appContainer;
+      const appContainer = this.$root.$refs.appContainer?.$el || this.$root.$refs.appContainer;
       if (appContainer) {
         appContainer.scrollTop = 0;
       }

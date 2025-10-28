@@ -1,16 +1,7 @@
 <template>
-  <article
-    class="landingPageGrid pa-0"
-    :class="{ gridXs: isXsOnly, gridSm: isSmOnly }"
-    id="LandingPage"
-  >
+  <article class="landingPageGrid pa-0" :class="{ gridXs: isXsOnly, gridSm: isSmOnly }" id="LandingPage">
     <!-- Welcome Slot -->
-    <v-container
-      fluid
-      v-if="$slots.welcome"
-      class="welcomeGrid"
-      :class="paddings"
-    >
+    <v-container fluid v-if="$slots.welcome" class="welcomeGrid" :class="paddings">
       <slot name="welcome"></slot>
       <v-container class="pt-8">
         <slot name="search"></slot>
@@ -23,11 +14,7 @@
           cardClass="pa-2"
           titleClass="titleCardClass"
         />
-        <v-container
-          :fluid="$vuetify.display.lgAndDown"
-          class="pt-2"
-          :class="{ 'pa-0': $vuetify.display.smAndDown }"
-        >
+        <v-container :fluid="$vuetify.display.lgAndDown" class="pt-2" :class="{ 'pa-0': $vuetify.display.smAndDown }">
           <slot name="news"></slot>
         </v-container>
       </section>
@@ -42,22 +29,13 @@
         cardClass="pa-2"
         titleClass="titleCardClass"
       />
-      <v-container
-        :fluid="$vuetify.display.lgAndDown"
-        class="pt-2"
-        :class="{ 'pa-0': $vuetify.display.smAndDown }"
-      >
+      <v-container :fluid="$vuetify.display.lgAndDown" class="pt-2" :class="{ 'pa-0': $vuetify.display.smAndDown }">
         <slot name="info"></slot>
       </v-container>
     </v-container>
 
     <!-- News Slot -->
-    <v-container
-      fluid
-      v-if="$slots.news"
-      class="newsGrid mt-4"
-      :class="paddings"
-    >
+    <v-container fluid v-if="$slots.news" class="newsGrid mt-4" :class="paddings">
       <section fluid>
         <BaseTitle
           style="text-align: center"
@@ -66,23 +44,14 @@
           cardClass="pa-2"
           titleClass="titleCardClass"
         />
-        <v-container
-          :fluid="$vuetify.display.lgAndDown"
-          class="pt-2"
-          :class="{ 'pa-0': $vuetify.display.smAndDown }"
-        >
+        <v-container :fluid="$vuetify.display.lgAndDown" class="pt-2" :class="{ 'pa-0': $vuetify.display.smAndDown }">
           <slot name="datasets"></slot>
         </v-container>
       </section>
     </v-container>
 
     <!-- Contact Slot -->
-    <v-container
-      fluid
-      v-if="$slots.contact"
-      class="contactGrid background-grey"
-      :class="paddings"
-    >
+    <v-container fluid v-if="$slots.contact" class="contactGrid background-grey" :class="paddings">
       <v-container fluid class="pt-2">
         <slot name="contact"></slot>
       </v-container>

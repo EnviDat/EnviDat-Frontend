@@ -1,11 +1,5 @@
 <template>
-  <v-card
-    id="EditPublicationInfo"
-    class="pa-0"
-    max-width="100%"
-    :loading="loadingColor"
-    :flat
-  >
+  <v-card id="EditPublicationInfo" class="pa-0" max-width="100%" :loading="loadingColor" :flat>
     <v-container fluid class="pa-4">
       <v-row>
         <v-col cols="6" class="text-h5">
@@ -21,12 +15,7 @@
           />
         </v-col>
         <v-col v-if="error">
-          <BaseStatusLabelView
-            status="error"
-            statusColor="error"
-            :statusText="error"
-            :expandedText="errorDetails"
-          />
+          <BaseStatusLabelView status="error" statusColor="error" :statusText="error" :expandedText="errorDetails" />
         </v-col>
       </v-row>
 
@@ -110,10 +99,7 @@
 
             <template v-slot:item="{ item }">
               <v-list-item>
-                <MetadataStateChip
-                  style="font-size: 12px"
-                  :state="item.value"
-                />
+                <MetadataStateChip style="font-size: 12px" :state="item.value" />
               </v-list-item>
             </template>
           </v-autocomplete>
@@ -144,16 +130,9 @@ import {
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
 
-import {
-  EDITMETADATA_OBJECT_UPDATE,
-  EDITMETADATA_PUBLICATION_INFO,
-  eventBus,
-} from '@/factories/eventBus';
+import { EDITMETADATA_OBJECT_UPDATE, EDITMETADATA_PUBLICATION_INFO, eventBus } from '@/factories/eventBus';
 
-import {
-  getValidationMetadataEditingObject,
-  isFieldValid,
-} from '@/factories/userEditingValidations';
+import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
 
 import {
   EDIT_METADATA_DOI_LABEL,
@@ -166,7 +145,6 @@ import {
 import { possibleVisibilityStates } from '@/factories/metaDataFactory';
 import BaseDatePickerYear from '@/components/BaseElements/BaseDatePickerYear.vue';
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
-
 
 export default {
   name: 'EditPublicationInfo',
@@ -243,9 +221,7 @@ export default {
     },
     doiField: {
       get() {
-        return this.publicationState === PUBLICATION_STATE_PUBLISHED
-          ? `https://www.doi.org/${this.doi}`
-          : this.doi;
+        return this.publicationState === PUBLICATION_STATE_PUBLISHED ? `https://www.doi.org/${this.doi}` : this.doi;
       },
       set(value) {
         const property = 'doi';
@@ -257,9 +233,7 @@ export default {
     },
     publisherField: {
       get() {
-        return this.previewPublisher !== null
-          ? this.previewPublisher
-          : this.publisher;
+        return this.previewPublisher !== null ? this.previewPublisher : this.publisher;
       },
       set(value) {
         this.previewPublisher = value;
@@ -272,9 +246,7 @@ export default {
     },
     publicationYearField: {
       get() {
-        return this.previewYear !== null
-          ? this.previewYear
-          : this.publicationYear;
+        return this.previewYear !== null ? this.previewYear : this.publicationYear;
       },
       set(value) {
         const property = 'publicationYear';
@@ -296,12 +268,7 @@ export default {
       return readOnlyHint(this.$props, dateProperty);
     },
     validateProperty(property, value) {
-      return isFieldValid(
-        property,
-        value,
-        this.validations,
-        this.validationErrors,
-      );
+      return isFieldValid(property, value, this.validations, this.validationErrors);
     },
     editEntry(array, index, property, value) {
       if (array.length <= index) {

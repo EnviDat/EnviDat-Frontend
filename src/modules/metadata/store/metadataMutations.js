@@ -43,10 +43,7 @@ import {
   METADATA_UPDATE_EXISTING_TITLE,
 } from '@/store/metadataMutationsConsts';
 
-import {
-  warningMessage,
-  getSpecificApiError,
-} from '@/factories/notificationFactory';
+import { warningMessage, getSpecificApiError } from '@/factories/notificationFactory';
 
 import { ADD_USER_NOTIFICATION } from '@/store/mainMutationsConsts';
 
@@ -56,7 +53,6 @@ import { extractAuthorsMap } from '@/factories/authorFactory';
 import { solrResultToCKANJSON } from '@/factories/apiFactory';
 import { enhanceMetadatas } from '@/factories/metaDataFactory';
 
-
 export default {
   [SEARCH_METADATA](state, searchTerm) {
     state.searchingMetadatasContent = true;
@@ -64,10 +60,7 @@ export default {
     state.searchedMetadatasContent = {};
     state.currentSearchTerm = searchTerm;
   },
-  [SEARCH_METADATA_SUCCESS](
-    state,
-    { payload, isLocalSearch = false, mode = undefined },
-  ) {
+  [SEARCH_METADATA_SUCCESS](state, { payload, isLocalSearch = false, mode = undefined }) {
     let convertedPayload = [];
     if (isLocalSearch) {
       convertedPayload = payload;
@@ -130,7 +123,6 @@ export default {
     state.metadatasContent = {};
   },
   [BULK_LOAD_METADATAS_CONTENT_SUCCESS](state, payload) {
-
     state.metadatasContent = enhanceMetadatas(payload);
     state.authorsMap = extractAuthorsMap(payload);
 
@@ -141,10 +133,7 @@ export default {
     state.loadingMetadatasContent = false;
     state.metadatasContentOK = false;
 
-    const errObj = getSpecificApiError(
-      'Metadata could not be loaded, please report if the error persists!',
-      reason,
-    );
+    const errObj = getSpecificApiError('Metadata could not be loaded, please report if the error persists!', reason);
 
     this.commit(ADD_USER_NOTIFICATION, errObj);
   },
@@ -183,7 +172,7 @@ export default {
   },
   [PIN_METADATA](state, payload) {
     if (state.pinnedIds.includes(payload)) {
-      state.pinnedIds = state.pinnedIds.filter(el => el !== payload);
+      state.pinnedIds = state.pinnedIds.filter((el) => el !== payload);
     } else {
       state.pinnedIds.push(payload);
     }
@@ -216,9 +205,7 @@ export default {
 
     if (!authorToUpdate) {
       const existingAuthors = Object.values(authorsMap);
-      const subSelection = existingAuthors.filter(
-        a => a.fullName === modifiedAuthor.fullName,
-      );
+      const subSelection = existingAuthors.filter((a) => a.fullName === modifiedAuthor.fullName);
 
       if (subSelection.length > 0) {
         key = modifiedAuthor.email;

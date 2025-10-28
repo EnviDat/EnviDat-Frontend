@@ -12,10 +12,7 @@
 
 import axios, { InternalAxiosRequestConfig } from 'axios';
 
-import {
-  handleGenericAPIError,
-  handleGenericError,
-} from './factories/notificationFactory';
+import { handleGenericAPIError, handleGenericError } from './factories/notificationFactory';
 
 export const initAxios = (app, store) => {
   const storeRef = store;
@@ -51,9 +48,7 @@ export const initAxios = (app, store) => {
     (config: InternalAxiosRequestConfig) => {
       // Do something before request is sent
 
-      const urlIsExcluded = excludedDomains.some((domain) =>
-        config.url.includes(domain),
-      );
+      const urlIsExcluded = excludedDomains.some((domain) => config.url.includes(domain));
 
       if (!urlIsExcluded) {
         config.withCredentials = true;

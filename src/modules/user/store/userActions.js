@@ -9,7 +9,7 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 
 import axios from 'axios';
 import { urlRewrite } from '@/factories/apiFactory';
@@ -35,7 +35,6 @@ if (!useTestdata) {
   API_ROOT = import.meta.env.VITE_API_ROOT;
 }
 
-
 export default {
   async [FETCH_USER_DATA]({ commit }, payload) {
     commit(payload.mutation);
@@ -43,7 +42,7 @@ export default {
     const body = payload.body || {};
 
     // unpack the action because it might be wrapped to provide a test url
-    const actionUrl = typeof (payload.action) === 'function' ? payload.action() : payload.action;
+    const actionUrl = typeof payload.action === 'function' ? payload.action() : payload.action;
 
     let url = extractBodyIntoUrl(actionUrl, body);
     url = urlRewrite(url, API_BASE, API_ROOT);
@@ -51,7 +50,8 @@ export default {
     // if the url is directly to a file it has to be a get call
     // const method = url.includes('.json') ? 'get' : 'post';
 
-    await axios.get(url)
+    await axios
+      .get(url)
       .then((response) => {
         if (payload.commit) {
           commit(`${payload.mutation}_SUCCESS`, response.data.result);
@@ -82,16 +82,16 @@ export default {
 
     url = urlRewrite(url, API_BASE, API_ROOT);
 
-    await axios.get(url)
+    await axios
+      .get(url)
       .then((response) => {
         if (useTestdata && typeof response.data === 'string') {
           response.data = JSON.parse(response.data);
         }
-        commit(USER_GET_COLLABORATOR_DATASETS_SUCCESS,
-          {
-            datasets: response.data.result.results,
-            collaboratorIds,
-          });
+        commit(USER_GET_COLLABORATOR_DATASETS_SUCCESS, {
+          datasets: response.data.result.results,
+          collaboratorIds,
+        });
       })
       .catch((error) => {
         commit(USER_GET_COLLABORATOR_DATASETS_ERROR, error);

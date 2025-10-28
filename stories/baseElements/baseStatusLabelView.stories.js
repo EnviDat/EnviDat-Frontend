@@ -14,7 +14,6 @@
 
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 
-
 export default {
   title: '1 Base / Labels / Status Label View',
   component: BaseStatusLabelView,

@@ -11,7 +11,11 @@
 
 import ModeView from '@/components/Layouts/ModeView.vue';
 import { EDNA_MODE, SWISSFL_MODE } from '@/store/metadataMutationsConsts';
-import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from '@/../stories/js/envidatViewports';
+import {
+  mobileLargeViewportParams,
+  mobileViewportParams,
+  tabletViewportParams,
+} from '@/../stories/js/envidatViewports';
 
 export default {
   title: '5 Navigation / Mode View',

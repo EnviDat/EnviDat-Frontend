@@ -1,45 +1,40 @@
 <template>
   <v-card id="VideoPreviewCard">
+    <v-card-text>
+      <v-row no-gutters>
+        <v-col>
+          <video
+            v-show="!loadingViedo && !videoError"
+            ref="videoRef"
+            :src="url"
+            @click="catchVideoClick"
+            @load="loadingViedo = false"
+            @error="catchLoadError"
+          ></video>
 
-    <v-card-text >
-      <v-row no-gutters >
-        <v-col >
-
-          <video v-show="!loadingViedo && !videoError"
-                 ref="videoRef"
-                 :src="url"
-                 @click="catchVideoClick"
-                 @load="loadingViedo = false"
-                 @error="catchLoadError"
-                >
-          </video>
-          
           <div class="videoErrorContainer">
+            <v-img
+              v-show="!loadingViedo && videoError"
+              id="curtain"
+              :src="notFoundImg"
+              style="max-height: 100%; max-width: 100%; opacity: 0.25"
+              alt="resource image could not be loaded!"
+            />
 
-            
-            <v-img v-show="!loadingViedo && videoError"
-                   id="curtain"
-                   :src="notFoundImg"
-                   style="max-height: 100%; max-width: 100%; opacity: 0.25;"
-                   alt="resource image could not be loaded!"/>
-
-            <div v-show="loadingViedo"
-                 id="curtain"
-                 class="skeleton skeleton-animation-shimmer"
-                 style="height: 100%; width: 100%; "
+            <div
+              v-show="loadingViedo"
+              id="curtain"
+              class="skeleton skeleton-animation-shimmer"
+              style="height: 100%; width: 100%"
             >
-              <div style="width: 100%; min-height: 100%; "
-                   class="bone bone-type-image"
-              ></div>
+              <div style="width: 100%; min-height: 100%" class="bone bone-type-image"></div>
             </div>
 
-            <div v-show="!loadingViedo && videoError"
-                 id="backdrop"
-                 class="pa-4 text-body-1">Video could not be loaded! {{ videoError }} </div>
+            <div v-show="!loadingViedo && videoError" id="backdrop" class="pa-4 text-body-1">
+              Video could not be loaded! {{ videoError }}
+            </div>
           </div>
-
         </v-col>
-
       </v-row>
     </v-card-text>
   </v-card>
@@ -66,8 +61,7 @@ export default {
     // this.loadVideo(this.url)
     console.log(this.supportsVideoType());
   },
-  computed: {
-  },
+  computed: {},
   methods: {
     supportsVideoType(type = 'mp4') {
       const video = this.$refs.videoRef;
@@ -91,7 +85,7 @@ export default {
       try {
         this.$nextTick(() => {
           const imageRefs = vm.$refs.videoRef;
-          const imageRef = (imageRefs instanceof Array) ? imageRefs[0] : imageRefs;
+          const imageRef = imageRefs instanceof Array ? imageRefs[0] : imageRefs;
 
           imageRef.src = url;
         });
@@ -125,15 +119,17 @@ export default {
   display: grid;
 }
 
-#backdrop, #curtain {
+#backdrop,
+#curtain {
   grid-area: 1/1;
 }
 
-#backdrop {  }
-#curtain {  }
+#backdrop {
+}
+#curtain {
+}
 
 .customIcon {
   opacity: 0.5;
 }
-
 </style>

@@ -1,51 +1,45 @@
 <template>
-  <v-card :flat="isFlat"
-          :class="cardClass">
-
-    <v-card-title v-if="title"
-                  class="metadata_title text-h6"
-                  :class="isFlat ? 'pa-0' : 'pa-4'">
+  <v-card :flat="isFlat" :class="cardClass">
+    <v-card-title v-if="title" class="metadata_title text-h6" :class="isFlat ? 'pa-0' : 'pa-4'">
       {{ title }}
     </v-card-title>
 
-    <v-card-title v-if="showPlaceholder && !title"
-                  class="pa-4 pt-0">
+    <v-card-title v-if="showPlaceholder && !title" class="pa-4 pt-0">
       <v-skeleton-loader type="header" />
     </v-card-title>
 
-    <v-card-text v-if="showPlaceholder"
-                 class="pa-4 pt-0">
+    <v-card-text v-if="showPlaceholder" class="pa-4 pt-0">
       <v-skeleton-loader type="paragraph" />
     </v-card-text>
 
-    <v-card-text v-if="statusText"
-                 class="readableText"
-                 :class="isFlat ? 'pa-0' : 'pa-5'"
-                 @click="readMore"
-                  style="cursor: pointer;" >
-      <v-row no-gutters
-             align="center">
+    <v-card-text
+      v-if="statusText"
+      class="readableText"
+      :class="isFlat ? 'pa-0' : 'pa-5'"
+      @click="readMore"
+      style="cursor: pointer"
+    >
+      <v-row no-gutters align="center">
         <v-col>
           {{ swapStatusTextWithSoltText && expanded ? $slots.default()[0].text : statusText }}
         </v-col>
 
         <v-col class="flex-grow-0">
           <base-icon-button
-                  :icon="mdiChevronDown"
-                  small
-                  icon-color="black"
-                  :color="highlighted ? 'highlight' : ''"
-                  :outlined="!highlighted"
-                  outlineColor="primary"
-                  :rotated="expanded"
-                  :tooltipText="expanded ? 'Close' : 'Expand'"
-                  @clicked="readMore"
+            :icon="mdiChevronDown"
+            small
+            icon-color="black"
+            :color="highlighted ? 'highlight' : ''"
+            :outlined="!highlighted"
+            outlineColor="primary"
+            :rotated="expanded"
+            :tooltipText="expanded ? 'Close' : 'Expand'"
+            @clicked="readMore"
           />
         </v-col>
       </v-row>
 
-      <v-row v-if="!swapStatusTextWithSoltText && $slots.default && expanded"
-              no-gutters>
+      <v-row v-if="!swapStatusTextWithSoltText && $slots.default && expanded" no-gutters>
         <v-col class="pt-2">
           <slot name="default"></slot>
         </v-col>

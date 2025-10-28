@@ -1,10 +1,5 @@
 <template>
-  <v-card
-    id="EditRelatedDatasets"
-    class="pa-0"
-    elevation="0"
-    :loading="loadingColor"
-  >
+  <v-card id="EditRelatedDatasets" class="pa-0" elevation="0" :loading="loadingColor">
     <v-container fluid class="pa-0">
       <v-row>
         <v-col>
@@ -25,12 +20,7 @@
           />
         </v-col>
         <v-col v-if="error">
-          <BaseStatusLabelView
-            status="error"
-            statusColor="error"
-            :statusText="error"
-            :expandedText="errorDetails"
-          />
+          <BaseStatusLabelView status="error" statusColor="error" :statusText="error" :expandedText="errorDetails" />
         </v-col>
       </v-row>
 
@@ -44,11 +34,10 @@
             @inputedText="catchInputedText($event)"
             @changedText="catchChangedText($event)"
           >
-             <MetadataRelatedDatasets v-bind="datasetObject" />
+            <MetadataRelatedDatasets v-bind="datasetObject" />
           </GenericTextareaPreviewLayout>
         </v-col>
       </v-row>
-
     </v-container>
   </v-card>
 </template>
@@ -66,10 +55,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import {
-  EDITMETADATA_CLEAR_PREVIEW,
-  eventBus,
-} from '@/factories/eventBus.js';
+import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus.js';
 
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 

@@ -15,17 +15,22 @@ import {
   GCNET_OPEN_DETAIL_CHARTS,
   INJECT_MAP_FULLSCREEN,
   OPEN_DATA_PREVIEW_IFRAME,
-  OPEN_TEXT_PREVIEW, OPEN_VIDEO_PREVIEW,
+  OPEN_TEXT_PREVIEW,
+  OPEN_VIDEO_PREVIEW,
 } from '@/factories/eventBus';
 
 import { getFeatureCollectionFromGcNetStations } from '@/factories/chartFactory';
 import { createLocation } from '@/factories/geoFactory';
-import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from '@/../stories/js/envidatViewports';
+import {
+  mobileLargeViewportParams,
+  mobileViewportParams,
+  tabletViewportParams,
+} from '@/../stories/js/envidatViewports';
 import txtPreviewFile from '@/../stories/js/previewTextFile.txt';
 
 import stationsConfig from '@/../stories/testdata/stationsConfig.json';
 import gcnetDataset from '@/../stories/js/gcnetDataset';
-import stationParameters from '@/../stories/testdata/stationParameters.json'
+import stationParameters from '@/../stories/testdata/stationParameters.json';
 
 const gcNetLocation = createLocation(gcnetDataset);
 const fileObjects = stationParameters.fileObjects;
@@ -37,7 +42,7 @@ locationOverride.geoJSON = featureCollection;
 
 const geoServiceConfig = {
   site: locationOverride,
-/*
+  /*
   error: this.geoServiceLayersError,
 */
   isGcnet: true,
@@ -48,14 +53,13 @@ export default {
   // component: TextCardListLayout,
 };
 
-
 const loadTextPreview = () => {
   eventBus.emit(OPEN_TEXT_PREVIEW, txtPreviewFile);
-}
+};
 
 const loadFullScreenMap = () => {
   eventBus.emit(INJECT_MAP_FULLSCREEN, geoServiceConfig);
-}
+};
 
 const getCurrentStation = (stationId) => {
   for (let i = 0; i < stationsConfig.length; i++) {
@@ -69,28 +73,30 @@ const getCurrentStation = (stationId) => {
 };
 
 const loadGcNetCharts = () => {
-
   eventBus.emit(GCNET_OPEN_DETAIL_CHARTS, {
     currentStation: getCurrentStation(0),
     fileObjects,
     graphStyling,
   });
-}
+};
 
 const loadDataPreview = () => {
-  const url = 'http://pointclouds.s3-website-zh.os.switch.ch/20220321_Ramerenwald_Benchmark/vis/Ramerenwald_Benchmark_FP05/Ramerenwald_Benchmark_FP05.html';
+  const url =
+    'http://pointclouds.s3-website-zh.os.switch.ch/20220321_Ramerenwald_Benchmark/vis/Ramerenwald_Benchmark_FP05/Ramerenwald_Benchmark_FP05.html';
   eventBus.emit(OPEN_DATA_PREVIEW_IFRAME, url);
-}
+};
 
 const loadImagePreview = () => {
-  const url = 'https://www.envidat.ch/dataset/fea7c28b-0a5b-4f38-b3df-c1ce66c2cf43/resource/15eb26e6-46a4-43e6-8cdb-fd7072968eb3/download/leb.jpg';
+  const url =
+    'https://www.envidat.ch/dataset/fea7c28b-0a5b-4f38-b3df-c1ce66c2cf43/resource/15eb26e6-46a4-43e6-8cdb-fd7072968eb3/download/leb.jpg';
   eventBus.emit(OPEN_TEXT_PREVIEW, url);
-}
+};
 
 const loadVideoPreview = () => {
-  const url = 'https://www.envidat.ch/dataset/c19ad933-34e0-4184-ba30-eabec0bcdb51/resource/5ba64afa-d660-46e6-b54f-3eaf24bde680/download/20231109_teaser_entremont_de.mp4';
+  const url =
+    'https://www.envidat.ch/dataset/c19ad933-34e0-4184-ba30-eabec0bcdb51/resource/5ba64afa-d660-46e6-b54f-3eaf24bde680/download/20231109_teaser_entremont_de.mp4';
   eventBus.emit(OPEN_VIDEO_PREVIEW, url);
-}
+};
 
 const Template = (args, { argTypes }) => ({
   components: { GenericFullScreenModal },
@@ -106,12 +112,11 @@ const Template = (args, { argTypes }) => ({
   </div>`,
 });
 
-
 export const TextPreviewModal = Template.bind({});
 TextPreviewModal.args = {
   buttonClick: loadTextPreview,
   buttonText: 'load txt preview',
-}
+};
 
 export const MobileTextPreviewModal = Template.bind({});
 MobileTextPreviewModal.args = { ...TextPreviewModal.args };
@@ -124,7 +129,6 @@ MobileLargeTextPreviewModal.parameters = mobileLargeViewportParams;
 export const TabletTextPreviewModal = Template.bind({});
 TabletTextPreviewModal.args = { ...TextPreviewModal.args };
 TabletTextPreviewModal.parameters = tabletViewportParams;
-
 
 export const MapFullscreenModal = Template.bind({});
 MapFullscreenModal.args = {
@@ -180,7 +184,6 @@ export const TabletDataPreviewModal = Template.bind({});
 TabletDataPreviewModal.args = { ...DataPreviewModal.args };
 TabletDataPreviewModal.parameters = tabletViewportParams;
 
-
 export const ImagePreviewModal = Template.bind({});
 ImagePreviewModal.args = {
   buttonClick: loadImagePreview,
@@ -192,4 +195,3 @@ ImageVideoModal.args = {
   buttonClick: loadVideoPreview,
   buttonText: 'load video preview',
 };
-

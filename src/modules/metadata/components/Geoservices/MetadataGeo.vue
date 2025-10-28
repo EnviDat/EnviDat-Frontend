@@ -6,8 +6,7 @@
           {{ METADATA_LOCATION_TITLE }}
         </v-col>
 
-        <v-col v-if="showFullscreenButton"
-               class="flex-grow-0 pl-2">
+        <v-col v-if="showFullscreenButton" class="flex-grow-0 pl-2">
           <BaseIconButton
             :icon="mdiArrowExpandAll"
             outlined
@@ -44,9 +43,7 @@
       <v-card-text
         class="text-caption readableText"
         align="center"
-        :style="
-          `line-height: 1rem; background-color: ${$vuetify.theme.themes.light.colors.error};`
-        "
+        :style="`line-height: 1rem; background-color: ${$vuetify.theme.themes.light.colors.error};`"
       >
         {{ editErrorMessage }}
       </v-card-text>

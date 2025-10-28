@@ -16,9 +16,8 @@
 import TextCardListLayout from '@/components/Layouts/TextCardListLayout.vue';
 import ImageTextCard from '@/components/Layouts/ImageTextCard.vue';
 
-import dataCreatorImg from '@/assets/cards/data_creator_small.jpg'
+import dataCreatorImg from '@/assets/cards/data_creator_small.jpg';
 import integrationlist from '@/../stories/testdata/integrationlist.json';
-
 
 export default {
   title: '1 Base / Layouts / Page layouts',
@@ -92,14 +91,13 @@ export const TextCardListLayoutViews = () => ({
 
   </v-row>
   `,
-  computed: {
-  },
+  computed: {},
   data: () => ({
     entries: integrationlist,
     loadingImg: dataCreatorImg,
   }),
   methods: {
-/*
+    /*
     createClickMethod(){
       console.log('clicked create button');
     },

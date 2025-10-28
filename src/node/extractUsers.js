@@ -14,7 +14,6 @@ const outputFileNameCSV = 'envidat_users.csv';
 const outputDataMaintainersCSV = 'envidat_datamaintainers.csv';
 
 function getUserObj(userName, email) {
-
   const nameSplits = userName.split(' ');
   let firstname = nameSplits[0];
   let lastname = nameSplits[1];
@@ -39,16 +38,20 @@ function getUserObj(userName, email) {
 }
 
 function isBetterEmail(email, oldEmail) {
-  return (email.includes('wsl') || email.includes('slf') || email.includes('epfl') || email.includes('eth'))
-    && (!oldEmail.includes('wsl') && !oldEmail.includes('slf') && !oldEmail.includes('epfl') && !oldEmail.includes('eth'));
+  return (
+    (email.includes('wsl') || email.includes('slf') || email.includes('epfl') || email.includes('eth')) &&
+    !oldEmail.includes('wsl') &&
+    !oldEmail.includes('slf') &&
+    !oldEmail.includes('epfl') &&
+    !oldEmail.includes('eth')
+  );
 }
 
 function getEnviDatUser(entry) {
   return {
     userName: entry.fullname,
     email: entry.email,
-  }
-
+  };
 }
 
 function getDataMaintainer(entry) {
@@ -59,11 +62,10 @@ function getDataMaintainer(entry) {
   return {
     userName,
     email,
-  }
+  };
 }
 
-function genericExtractUser(array, getUserFromData){
-
+function genericExtractUser(array, getUserFromData) {
   const userMap = {};
   let userCount = 0;
 
@@ -81,7 +83,6 @@ function genericExtractUser(array, getUserFromData){
     }
 
     if (existingUser) {
-
       const oldEmail = userMap[userName].email;
 
       const isBetter = isBetterEmail(email, oldEmail);
@@ -89,9 +90,8 @@ function genericExtractUser(array, getUserFromData){
       if (isBetter) {
         save = true;
       } else {
-        console.warn(`${userName} already added with email: ${userMap[userName].email} but also got ${email}`)
+        console.warn(`${userName} already added with email: ${userMap[userName].email} but also got ${email}`);
       }
-
     } else {
       save = true;
     }
@@ -100,7 +100,6 @@ function genericExtractUser(array, getUserFromData){
       userMap[userName] = getUserObj(userName, email);
       userCount++;
     }
-
   }
 
   console.log(`extracted ${userCount} users`);
@@ -109,22 +108,18 @@ function genericExtractUser(array, getUserFromData){
 }
 
 function writeUsersToFile(data, fileName) {
-
-
   fs.writeFileSync(fileName, data, (err) => {
-
     if (err) {
       return console.log(err);
     }
 
     return console.log(`Users extracted to ${outputPath}${fileName}. Wrote ${data.length} lines.`);
   });
-
 }
 
-function getCSVData (userMap) {
+function getCSVData(userMap) {
   let csvString = 'firstname, lastname, email \n';
-  const keys = Object.keys(userMap)
+  const keys = Object.keys(userMap);
 
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i];

@@ -26,26 +26,26 @@ export const Empty = {
   args: {
     userOrganizations: testOrganizations,
   },
-}
+};
 
 export const SingleOrganization = {
   args: {
     organizationId: testOrganizations[0].id,
     userOrganizations: [testOrganizations[0]],
   },
-}
+};
 
 export const SingleOrganizationOrgasNotLoaded = {
   args: {
     userOrganizations: [testOrganizations[0]],
   },
-}
+};
 export const MultipleOrganizations = {
   args: {
     organizationId: testOrganizations[0].id,
     userOrganizations: testOrganizations,
   },
-}
+};
 
 export const EditingSingleOrganizationReadOnly = {
   args: {
@@ -54,7 +54,7 @@ export const EditingSingleOrganizationReadOnly = {
     readOnlyFields: editingReadOnlyObj.readOnlyFields,
     readOnlyExplanation: editingReadOnlyObj.explanation,
   },
-}
+};
 
 export const EditingMultipleOrganizationsReadOnly = {
   args: {
@@ -63,4 +63,4 @@ export const EditingMultipleOrganizationsReadOnly = {
     readOnlyFields: editingReadOnlyObj.readOnlyFields,
     readOnlyExplanation: editingReadOnlyObj.explanation,
   },
-}
+};

@@ -1,16 +1,16 @@
 /* eslint-disable no-underscore-dangle,no-console */
 /**
-* user store mutations
-*
-* @summary user store mutations
-* @author Dominik Haas-Artho
-*
-* Created at     : 2020-07-14 16:51:52
+ * user store mutations
+ *
+ * @summary user store mutations
+ * @author Dominik Haas-Artho
+ *
+ * Created at     : 2020-07-14 16:51:52
  * Last modified  : 2025-10-13 08:16:20
-*
-* This file is subject to the terms and conditions defined in
-* file 'LICENSE.txt', which is part of this source code package.
-*/
+ *
+ * This file is subject to the terms and conditions defined in
+ * file 'LICENSE.txt', which is part of this source code package.
+ */
 
 import Uppy from '@uppy/core';
 import axios from 'axios';
@@ -27,15 +27,9 @@ import {
 } from '@/modules/user/store/userMutationsConsts';
 
 import { urlRewrite } from '@/factories/apiFactory';
-import {
-  eventBus,
-  UPLOAD_ERROR,
-  UPLOAD_STATE_RESET,
-  UPLOAD_STATE_RESOURCE_CREATED,
-} from '@/factories/eventBus';
+import { eventBus, UPLOAD_ERROR, UPLOAD_STATE_RESET, UPLOAD_STATE_RESOURCE_CREATED } from '@/factories/eventBus';
 
 import { RESOURCE_FORMAT_LINK } from '@/factories/metadataConsts.js';
-
 
 let API_BASE = '';
 let API_ROOT = '';
@@ -66,7 +60,6 @@ const defaultRestrictions = {
  * @returns {{cacheLastUpdated: null, cacheUrl: null, created: string, format: string, packageId, description: string, hast: string, url: string, urlType: null, mimetypeInner: null, size: null, restricted: {level: string, allowedUsers: string, sharedSecret: string}, name: string, resourceSize: {sizeUnits: string, sizeValue: string}, mimetype: null, id: string, lastModified: string, position: number, state: string, doi: string, resourceType: null}}
  */
 function createNewBaseResource(metadataId) {
-
   return {
     cacheLastUpdated: null,
     cacheUrl: null,
@@ -100,7 +93,6 @@ function createNewBaseResource(metadataId) {
 }
 
 function createNewResourceForFileUpload(metadataId, file) {
-
   const baseResourceProperties = createNewBaseResource(metadataId);
 
   const name = file.name || file;
@@ -116,11 +108,9 @@ function createNewResourceForFileUpload(metadataId, file) {
     urlType: 'upload',
     multipartName: file.name,
   };
-
 }
 
 export function createNewResourceForUrl(metadataId, url) {
-
   const cleanUrlForName = url.endsWith('/') ? url.substring(0, url.length - 1) : url;
   const splits = cleanUrlForName.split('/');
   const resourceName = splits.length > 0 ? splits[splits.length - 1] : url;
@@ -135,18 +125,17 @@ export function createNewResourceForUrl(metadataId, url) {
     sizeFormat: 'B',
     name: resourceName,
   };
-
 }
 
 export async function initiateMultipart(file) {
   // // console.log('initiateMultipart', file);
 
-/*
+  /*
   eventBus.emit(UPLOAD_STATE_RESET);
 */
 
   const datasetId = storeReference?.getters[`${USER_NAMESPACE}/uploadMetadataId`];
-  const newResource= createNewResourceForFileUpload(datasetId, file);
+  const newResource = createNewResourceForFileUpload(datasetId, file);
 
   await storeReference?.dispatch(`${USER_NAMESPACE}/${METADATA_CREATION_RESOURCE}`, {
     data: newResource,
@@ -155,7 +144,7 @@ export async function initiateMultipart(file) {
   const resourceId = storeReference?.getters[`${USER_NAMESPACE}/uploadResourceId`];
 
   if (resourceId) {
-    eventBus.emit(UPLOAD_STATE_RESOURCE_CREATED, { id: UPLOAD_STATE_RESOURCE_CREATED, resourceId});
+    eventBus.emit(UPLOAD_STATE_RESOURCE_CREATED, { id: UPLOAD_STATE_RESOURCE_CREATED, resourceId });
   } else {
     eventBus.emit(UPLOAD_ERROR, { error: 'Resource creation failed', metadataId: datasetId });
     return null;
@@ -189,8 +178,7 @@ export async function initiateMultipart(file) {
 }
 
 export async function getSinglePresignedUrl(file) {
-
-/*
+  /*
   eventBus.emit(UPLOAD_STATE_RESET);
 */
 
@@ -217,7 +205,7 @@ export async function getSinglePresignedUrl(file) {
     id: resourceId,
     partNumber: 0,
     filename: file.name,
-/*
+    /*
     // uploadId,
     // partNumber: partNumbers,
     upload: {
@@ -237,13 +225,11 @@ export async function getSinglePresignedUrl(file) {
       headers: {
         'Content-Type': file.type,
       },
-    }
-
+    };
   } catch (error) {
     console.error(`getSinglePresignedUrl failed: ${error}`);
     return error;
   }
-
 }
 
 export async function requestPresignedUrl(file, partData) {
@@ -269,8 +255,8 @@ export async function requestPresignedUrl(file, partData) {
     const presignedUrl = res.data.result;
 
     return {
-      'url': presignedUrl,
-      'headers': {},
+      url: presignedUrl,
+      headers: {},
     };
   } catch (error) {
     console.error(`requestPresignedUrl failed: ${error}`);
@@ -320,7 +306,7 @@ export async function completeMultipart(file, uploadData) {
 
   try {
     const res = await axios.post(url, payload);
-    const fileUrl = res.data?.result?.url || null
+    const fileUrl = res.data?.result?.url || null;
 
     storeReference?.commit(`${USER_NAMESPACE}/${METADATA_UPLOAD_FILE_SUCCESS}`);
 
@@ -362,7 +348,6 @@ export async function abortMultipart(file, uploadData) {
 }
 
 export async function listUploadedParts(file, { uploadId, key }) {
-
   const actionUrl = 'cloudstorage_multipart_list_parts';
   const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
@@ -383,8 +368,7 @@ export async function listUploadedParts(file, { uploadId, key }) {
   }
 }
 
-export async  function getPresignedUrlForDownload(resourceId) {
-
+export async function getPresignedUrlForDownload(resourceId) {
   const actionUrl = 'get_presigned_url_download';
   const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
   const payload = { id: resourceId };
@@ -396,15 +380,13 @@ export async  function getPresignedUrlForDownload(resourceId) {
 
     // console.log(`Presigned Url: ${preSignedUrl}`);
     return preSignedUrl;
-
   } catch (error) {
     // console.log(`Getting presigned url for download failed: ${error}`);
     return error;
   }
-
 }
 
-export function hasUppyInstance () {
+export function hasUppyInstance() {
   return uppyInstance !== null;
 }
 
@@ -440,10 +422,8 @@ export function unSubscribeOnUppyEvent(event, callback) {
   }
 }
 
-
 function createUppyInstance(height = 300, autoProceed = true, restrictions = defaultRestrictions) {
-
-  const uppy =  new Uppy();
+  const uppy = new Uppy();
   const debug = import.meta.env?.MODE === 'development';
 
   uppy.setOptions({
@@ -459,7 +439,7 @@ function createUppyInstance(height = 300, autoProceed = true, restrictions = def
   uppy.use(awsS3, {
     id: 'multipart-aws',
     limit: 4,
-/*
+    /*
     getUploadParameters(file) {
       return getSinglePresignedUrl(file);
     },
@@ -482,7 +462,6 @@ function createUppyInstance(height = 300, autoProceed = true, restrictions = def
 }
 
 export function getUppyInstance(datasetId, store, height = 300, autoProceed = true, restrictions = undefined) {
-
   if (store) {
     storeReference = store;
 
@@ -507,6 +486,4 @@ export function destroyUppyInstance() {
     uppyInstance.destroy();
     uppyInstance = null;
   }
-
 }
-

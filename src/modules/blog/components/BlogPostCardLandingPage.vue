@@ -1,14 +1,7 @@
 <template>
-  <v-card
-    ripple
-    @mouseover="hover = true"
-    @mouseleave="hover = false"
-    class="fill-height elevation-5 rounded-xl"
-  >
+  <v-card ripple @mouseover="hover = true" @mouseleave="hover = false" class="fill-height elevation-5 rounded-xl">
     <v-container class="fill-height category-card">
-      <v-card
-        class="pa-3 fill-height elevation-0 rounded-xl d-flex flex-column bgcCard"
-      >
+      <v-card class="pa-3 fill-height elevation-0 rounded-xl d-flex flex-column bgcCard">
         <v-row v-if="categoryAbove">
           <v-col cols="auto">
             <BaseCategoryCard
@@ -43,11 +36,9 @@
         </v-row>
         <v-row class="category-subtitle pt-3" no-gutters>
           <v-col class="pa-0">
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quisquam
-            eos saepe explicabo. Blanditiis cumque officia enim velit suscipit
-            tenetur distinctio eveniet, dolorum perferendis, nulla commodi amet,
-            magnam sunt nam repudiandae. sit amet consectetur adipisicing elit.
-            Quisquam eos saepe explicabo.
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quisquam eos saepe explicabo. Blanditiis cumque
+            officia enim velit suscipit tenetur distinctio eveniet, dolorum perferendis, nulla commodi amet, magnam sunt
+            nam repudiandae. sit amet consectetur adipisicing elit. Quisquam eos saepe explicabo.
           </v-col>
         </v-row>
       </v-card>
@@ -101,9 +92,7 @@ const titleLength = ref(50);
 const getCategoryName = computed(() =>
   props.categoryName
     .split(' ')
-    .map((word) =>
-      word.length === 0 ? word : word.charAt(0).toUpperCase() + word.slice(1),
-    )
+    .map((word) => (word.length === 0 ? word : word.charAt(0).toUpperCase() + word.slice(1)))
     .join(' '),
 );
 
@@ -124,9 +113,7 @@ const truncatedTitle = computed(() => {
 //   return cleanContent;
 // });
 
-const formattedDate = computed(() =>
-  props.postDate ? formatDate(props.postDate, 'yyyy-MM-dd', true) : '',
-);
+const formattedDate = computed(() => (props.postDate ? formatDate(props.postDate, 'yyyy-MM-dd', true) : ''));
 
 const iconName = (data) => extractIcons(data);
 

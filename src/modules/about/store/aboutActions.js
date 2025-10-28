@@ -41,11 +41,12 @@ export default {
       url = './testdata/guidelines.md';
     }
 
-    axios.get(url)
+    axios
+      .get(url)
       .then((response) => {
         commit(GET_GUIDELINES_SUCCESS, response.data);
       })
-      .catch(reason => {
+      .catch((reason) => {
         commit(GET_GUIDELINES_ERROR, reason);
       });
   },
@@ -60,10 +61,10 @@ export default {
 
     axios
       .get(url)
-      .then(response => {
+      .then((response) => {
         commit(GET_POLICIES_SUCCESS, response.data);
       })
-      .catch(reason => {
+      .catch((reason) => {
         commit(GET_POLICIES_ERROR, reason);
       });
   },
@@ -78,10 +79,10 @@ export default {
 
     axios
       .get(url)
-      .then(response => {
+      .then((response) => {
         commit(GET_DMP_SUCCESS, response.data);
       })
-      .catch(reason => {
+      .catch((reason) => {
         commit(GET_DMP_ERROR, reason);
       });
   },
@@ -96,10 +97,10 @@ export default {
 
     axios
       .get(url)
-      .then(response => {
+      .then((response) => {
         commit(GET_IMPRINT_SUCCESS, response.data);
       })
-      .catch(reason => {
+      .catch((reason) => {
         commit(GET_IMPRINT_ERROR, reason);
       });
   },

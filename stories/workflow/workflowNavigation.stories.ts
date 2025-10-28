@@ -6,7 +6,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-
 import { Meta, StoryObj } from '@storybook/vue3-vite';
 import { onMounted } from 'vue';
 import { USER_ROLE_SYSTEM_ADMIN } from '@/factories/userEditingValidations';
@@ -14,23 +13,21 @@ import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
 import TheWorkflowNavigation from '@/components/Navigation/TheWorkflowNavigation.vue';
 import { WorkflowMode } from '@/modules/workflow/utils/workflowEnums';
 
-
 export default {
   title: '6 Workflows / Combined / NavigationWorkflow',
   component: TheWorkflowNavigation,
 } satisfies Meta;
 
 export const Empty = {
-  args: {
-  },
-}
+  args: {},
+};
 
 export const Loading = {
   args: {
     ...Empty.args,
     loading: true,
   },
-}
+};
 
 export const SystemAdmin: StoryObj = {
   args: {
@@ -49,4 +46,4 @@ export const SystemAdmin: StoryObj = {
     },
     template: '<TheWorkflowNavigation v-bind="args" />',
   }),
-}
+};

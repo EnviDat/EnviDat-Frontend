@@ -49,7 +49,6 @@ import * as yup from 'yup';
 import { mdiCalendarRange, mdiSkipNext, mdiSkipPrevious } from '@mdi/js';
 import { ckanDateFormat } from '@/factories/mappingFactory';
 
-
 yup.addMethod(yup.date, 'parseDateString', function () {
   // Helper function for yup date string parsing
 
@@ -58,9 +57,7 @@ yup.addMethod(yup.date, 'parseDateString', function () {
       return null;
     }
 
-    return isDate(originalValue)
-      ? originalValue
-      : parse(originalValue, ckanDateFormat, new Date());
+    return isDate(originalValue) ? originalValue : parse(originalValue, ckanDateFormat, new Date());
   });
 });
 
@@ -107,8 +104,7 @@ export default {
   computed: {
     yearField: {
       get() {
-        const yearString =
-          this.previewYear !== null ? this.previewYear : this.year;
+        const yearString = this.previewYear !== null ? this.previewYear : this.year;
         if (yearString) {
           // vuetify component needs the year to be a number
           return Number.parseInt(yearString, 10);

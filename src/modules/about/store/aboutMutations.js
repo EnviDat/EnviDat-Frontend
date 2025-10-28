@@ -44,8 +44,7 @@ export default {
     state.guidelinesMarkdown = `${details}: ${reason}`;
 
     if (import.meta.env?.MODE === 'development') {
-      state.guidelinesMarkdown +=
-        ' \nThis is normal when developing locally on localhost:8080';
+      state.guidelinesMarkdown += ' \nThis is normal when developing locally on localhost:8080';
     }
 
     this.commit(ADD_USER_NOTIFICATION, errObj);
@@ -66,8 +65,7 @@ export default {
     state.policiesMarkdown = `${details}: ${reason}`;
 
     if (import.meta.env?.MODE === 'development') {
-      state.policiesMarkdown +=
-        ' \nThis is normal when developing locally on localhost:8080';
+      state.policiesMarkdown += ' \nThis is normal when developing locally on localhost:8080';
     }
 
     this.commit(ADD_USER_NOTIFICATION, errObj);
@@ -87,8 +85,7 @@ export default {
     state.dmpMarkdown = `${details}: ${reason}`;
 
     if (import.meta.env?.MODE === 'development') {
-      state.dmpMarkdown +=
-        ' \nThis is normal when developing locally on localhost:8080';
+      state.dmpMarkdown += ' \nThis is normal when developing locally on localhost:8080';
     }
 
     this.commit(ADD_USER_NOTIFICATION, errObj);
@@ -108,8 +105,7 @@ export default {
     state.imprintMarkdown = `${details}: ${reason}`;
 
     if (import.meta.env?.MODE === 'development') {
-      state.imprintMarkdown +=
-        ' \nThis is normal when developing locally on localhost:8080';
+      state.imprintMarkdown += ' \nThis is normal when developing locally on localhost:8080';
     }
 
     this.commit(ADD_USER_NOTIFICATION, errObj);

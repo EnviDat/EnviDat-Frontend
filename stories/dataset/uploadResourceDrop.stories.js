@@ -16,7 +16,8 @@
 import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles.vue';
 
 import {
-  UPLOAD_STATE_RESOURCE_CREATED, UPLOAD_STATE_UPLOAD_COMPLETED,
+  UPLOAD_STATE_RESOURCE_CREATED,
+  UPLOAD_STATE_UPLOAD_COMPLETED,
   UPLOAD_STATE_UPLOAD_PROGRESS,
   UPLOAD_STATE_UPLOAD_STARTED,
 } from '@/factories/eventBus';
@@ -38,7 +39,7 @@ export const UploadStarted = {
     state: UPLOAD_STATE_UPLOAD_STARTED,
     progress: 0,
   },
-}
+};
 
 export const ResourceCreated = {
   args: {
@@ -46,7 +47,7 @@ export const ResourceCreated = {
     state: UPLOAD_STATE_RESOURCE_CREATED,
     progress: 0,
   },
-}
+};
 
 export const Progress = {
   args: {
@@ -54,7 +55,7 @@ export const Progress = {
     state: UPLOAD_STATE_UPLOAD_PROGRESS,
     progress: 34,
   },
-}
+};
 
 export const Completed = {
   args: {
@@ -62,7 +63,7 @@ export const Completed = {
     state: UPLOAD_STATE_UPLOAD_COMPLETED,
     progress: 100,
   },
-}
+};
 
 export const Error = {
   args: {
@@ -70,4 +71,4 @@ export const Error = {
     error: 'Network Error',
     errorDetails: 'CORS something something',
   },
-}
+};
