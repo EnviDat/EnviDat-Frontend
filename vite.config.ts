@@ -17,6 +17,7 @@ const version = process.env.npm_package_version;
 const useHttps = process.env.VITE_USE_HTTPS === 'true';
 
 const isVike = process.argv.some((arg) => arg.includes('vike'));
+const isStorybookBuild = process.argv.some((arg) => arg.includes('storybook'));
 
 export default async ({ mode, config }): Promise<UserConfig> => {
   if (isVike) {
@@ -65,7 +66,7 @@ export default async ({ mode, config }): Promise<UserConfig> => {
   console.log(`With VITE_SEO_BASE: ${env.VITE_SEO_BASE}`);
   console.log(`starting ${mode} | version: ${version} | prod: ${isProd}`);
 
-  const buildSourceMaps = env.VITE_BUILD_SOURCEMAPS === 'true';
+  const buildSourceMaps = !isStorybookBuild && env.VITE_BUILD_SOURCEMAPS === 'true';
 
   return defineConfig({
     plugins: [
