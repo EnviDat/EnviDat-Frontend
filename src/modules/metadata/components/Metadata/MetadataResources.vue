@@ -74,7 +74,7 @@
             :downloadActive="resourcesConfig?.downloadActive"
             :showGenericOpenButton="!!res.clickEvent"
             :genericOpenButtonBottom="genericOpenButtonBottom"
-            cardColor="primary"
+            cardColor="secondary"
             @openButtonClicked="catchOpenClick(res.clickEvent, res.openProperty)"
           />
         </v-col>

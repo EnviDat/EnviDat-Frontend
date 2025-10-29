@@ -9,7 +9,7 @@
       <v-container class="pa-0" fluid>
         <v-row justify="end" no-gutters>
           <v-col v-for="link in citationLinks" :key="link.text" class="flex-grow-0 py-1 px-2">
-            <base-rectangle-button
+            <BaseRectangleButton
               margin-class="citationButton"
               color="secondary"
               :button-text="link.text"
@@ -22,7 +22,7 @@
           </v-col>
 
           <v-col class="flex-grow-0 py-1 px-2">
-            <base-rectangle-button
+            <BaseRectangleButton
               margin-class="citationButton"
               color="secondary"
               button-text="Copy"
