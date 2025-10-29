@@ -122,7 +122,7 @@ set-vars:
 
 install-node:
   stage: config
-  image: node:20.15.0-alpine3.20
+  image: node:lts
   environment: $CI_COMMIT_REF_NAME
   # overwrite the global caching to use push-pull policy
   cache:
@@ -255,6 +255,7 @@ run-tests:
   environment: $CI_COMMIT_REF_NAME
   extends: .normal-rules
   needs:
+    - install-node
     - modify-env
     - verify-node-audit
   before_script:
@@ -271,12 +272,13 @@ build-storybook:
   extends: .build-rules
   needs:
     # needs the artifact: config and environment variables
+    - install-node
     - modify-env
     - verify-node-audit
   before_script:
     - npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
   script:
-    - npm run build-storybook -- -o ./storybook --loglevel warn --disable-telemetry
+    - npm run build-storybook -- -o ./storybook --loglevel error --disable-telemetry
   artifacts:
     name: 'storybook build'
     # keep the storybook for 7 days to be able to trigger the chromatic-deployment
@@ -294,12 +296,13 @@ build-app:
   extends: .build-rules
   needs:
     # needs the artifact: config and environment variables
+    - install-node
     - modify-env
     - verify-node-audit
   before_script:
     - npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
   script:
-    - npm run build -- --logLevel warn
+    - npm run build -- --logLevel error
   artifacts:
     name: 'frontend build '
     expire_in: 1 day
