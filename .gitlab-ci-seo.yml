@@ -24,6 +24,7 @@ build-seo:
     - when: on_success
   needs:
     # needs the artifact: config and environment variables
+    - install-node
     - job: modify-env
       artifacts: true
     - verify-node-audit
