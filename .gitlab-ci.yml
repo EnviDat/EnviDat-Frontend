@@ -37,7 +37,6 @@ cache:
       - package-lock.json
   paths:
     - .npm/
-    - node_modules/
   policy: pull
 
 variables:
@@ -131,8 +130,8 @@ install-node:
         - package-lock.json
     paths:
     - .npm/
-    - node_modules/
-    # pull-push to be able to update the node_modules in the cache
+    # pull-push to be able to update the npm cache
+    # don't cache the node_modules because the npm ci command always deletes it
     policy: pull-push
     when: on_success
   before_script:
@@ -141,23 +140,6 @@ install-node:
   script:
     # always run the install
       - npm ci --no-audit --no-fund --loglevel=error --ignore-scripts
-    # - echo "the cache work if node_modules and it's .bin directory are available"
-    # - ls -a
-    # Only run npm ci if node_modules don't come from the cache
-    # - |
-    #   if [ -d "node_modules" ] && [ -d "node_modules/.bin" ]; then
-    #     if [ "$FORCE_NPM_INSTALL" = "true" ]; then
-    #       echo "FORCE_NPM_INSTALL $FORCE_NPM_INSTALL so going to run npm ci"
-    #       npm ci --prefer-offline --no-audit --ignore-scripts
-    #     else
-    #       echo "node_modules and it's .bin directory already exists. Skipping npm ci."
-    #     fi      
-    #   else
-    #     echo "node_modules or it's .bin directory not found. Running npm ci..."
-    #     npm ci --prefer-offline --no-audit --ignore-scripts
-    #   fi
-    # - echo "Check afterwards how the folders are"
-    # - ls -l node_modules
 # artifacts:
 #   name: 'node dependencies'
 #   # stores node_modules as an artifact to be used in the next jobs
@@ -259,9 +241,8 @@ run-tests:
     - install-node
     - modify-env
     - verify-node-audit
-  before_script:
-    - npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
   script:
+    - npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
     - npm run test
   retry:
     max: 2
@@ -276,10 +257,9 @@ build-storybook:
     - install-node
     - modify-env
     - verify-node-audit
-  before_script:
-    - npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
   script:
-    - npm run build-storybook -- -o ./storybook --loglevel error --disable-telemetry
+    - npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
+    - npm run build-storybook -- -o ./storybook --loglevel=error --disable-telemetry
   artifacts:
     name: 'storybook build'
     # keep the storybook for 7 days to be able to trigger the chromatic-deployment
@@ -300,9 +280,8 @@ build-app:
     - install-node
     - modify-env
     - verify-node-audit
-  before_script:
-    - npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
   script:
+    - npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
     - npm run build -- --logLevel error
   artifacts:
     name: 'frontend build '

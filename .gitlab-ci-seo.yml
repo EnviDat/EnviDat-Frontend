@@ -28,9 +28,8 @@ build-seo:
     - job: modify-env
       artifacts: true
     - verify-node-audit
-  before_script:
-    - npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
   script:
+    - npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
     - cat .env.production
     - npm run build-vike
     # rename the dist/client output folder
