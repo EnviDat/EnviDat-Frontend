@@ -31,10 +31,18 @@ workflow:
     # Block pipeline creation for all other cases (e.g. feature branches, tags, merge requests)
     - when: never
 
+cache:
+  key:
+    files:
+      - package-lock.json
+  paths:
+    - .npm/
+  policy: pull-push
+
 variables:
   ARTIFACT_COMPRESSION_LEVEL: 'fastest'
   CACHE_COMPRESSION_LEVEL: 'fastest'
-  NPM_CONFIG_CACHE: '.npm/'
+  NPM_CONFIG_CACHE: '/cache/npm'
   GIT_CLEAN_FLAGS: '-ffdx -e .npm/' # don't delete the .npm/ for each job
 
 .normal-rules:
