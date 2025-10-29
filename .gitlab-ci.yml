@@ -130,7 +130,8 @@ install-node:
       files:
         - package-lock.json
     paths:
-      - node_modules/
+    - .npm/
+    - node_modules/
     # pull-push to be able to update the node_modules in the cache
     policy: pull-push
     when: on_success
