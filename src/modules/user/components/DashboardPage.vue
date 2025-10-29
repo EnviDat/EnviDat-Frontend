@@ -197,7 +197,7 @@
   </v-container>
 </template>
 
-<script>
+<script lang="ts">
 /**
  * Dashboard Page
  *
@@ -640,7 +640,7 @@ export default {
         // this.catchEditingClick(this.lastEditedDataset);
       }
     },
-    catchEditingClick(selectedDatasetId) {
+    catchEditingClick(selectedDatasetId: string) {
       let name = METADATAEDIT_PAGENAME;
       const params = {
         metadataid: selectedDatasetId,
