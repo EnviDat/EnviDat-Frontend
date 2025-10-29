@@ -18,15 +18,15 @@
           :disabled="disabled"
           @click.stop="onClick"
         >
-          <base-icon
+          <BaseIcon
             :icon="icon"
             :large="large"
             :rotated="rotated"
             :color="computedIconColor"
-            :size="small ? 'small' : undefined"
+            :small="small"
             :count="count"
           >
-          </base-icon>
+          </BaseIcon>
         </v-btn>
       </template>
     </v-tooltip>
@@ -46,15 +46,8 @@
       :disabled="disabled"
       @click.stop="onClick"
     >
-      <base-icon
-        :icon="icon"
-        :large="large"
-        :rotated="rotated"
-        :color="computedIconColor"
-        :size="small ? 'small' : undefined"
-        :count="count"
-      >
-      </base-icon>
+      <BaseIcon :icon="icon" :rotated="rotated" :color="computedIconColor" :large="large" :small="small" :count="count">
+      </BaseIcon>
     </v-btn>
   </div>
 </template>
