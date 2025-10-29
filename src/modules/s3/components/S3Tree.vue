@@ -1,7 +1,7 @@
 <template>
   <!-- eslint-disable vue/no-v-model-argument -->
   <div>
-    <span v-if="error" class="d-flex pt-4 text-caption">
+    <span v-if="error" class="d-flex text-caption">
       <BaseStatusLabelView :status="error.type" :status-text="error.details" :status-color="error.color" />
     </span>
 
@@ -9,18 +9,19 @@
       v-if="!error"
       :items="limitedItems"
       item-value="id"
-      class="s3-treeview"
+      class="s3-treeview pa-0"
       density="compact"
       bg-color="transparent"
-      base-color="white"
+      base-color="black"
       open-on-click
     >
-      <template v-slot:prepend="{ item }">
-        <v-icon
+      <template #prepend="{ item }">
+        <BaseIconButton
           v-if="!item.maximumLengthItem"
-          :path="mdiArrowRight"
+          :icon="mdiArrowRight"
           style="cursor: pointer"
-          @click="canBeClicked(item) ? getData(item.title, item.isChild, item.id) : toggleOpenedItem()"
+          icon-color="black"
+          @clicked="canBeClicked(item) ? getData(item.title, item.isChild, item.id) : toggleOpenedItem()"
         />
       </template>
 
@@ -104,6 +105,7 @@ import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.v
 import { useS3Store } from '@/modules/s3/store/s3Store.ts';
 import { S3Node } from '@/types/s3Types';
 import { warningMessage } from '@/factories/notificationFactory';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
 const s3Store = useS3Store();
 
@@ -117,7 +119,7 @@ const loading = ref(false);
 
 const childrenObject = ref(0);
 const lastOpenedItemId = ref(0);
-const itemOpened = ref(false);
+// const itemOpened = ref(false);
 
 const baseUrl = ref('');
 const bucketUrl = ref('');
@@ -136,8 +138,8 @@ const emit = defineEmits(['loadingChanged', 'changeAutoHeight']);
 
 // set store event for change the style of the resourceCard height if the treeview is opened
 function toggleOpenedItem() {
-  itemOpened.value = !itemOpened.value;
-  emit('changeAutoHeight', itemOpened.value);
+  // itemOpened.value = !itemOpened.value;
+  emit('changeAutoHeight', true); // itemOpened.value);
   /*
   const value = itemOpened.value;
   s3Store.treeViewIsOpened = value;

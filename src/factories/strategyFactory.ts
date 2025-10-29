@@ -8,7 +8,7 @@ import {
   SELECT_EDITING_AUTHOR,
   SELECT_EDITING_DATASET,
   SELECT_EDITING_RESOURCE,
-} from './eventBus';
+} from '@/factories/eventBus';
 
 import { Resource } from '@/types/modelTypes';
 import { ExtrasDTO } from '@/types/dataTransferObjectsTypes';
@@ -19,6 +19,8 @@ const TextPreviewCard = () => import('@/modules/metadata/components/ResourcePrev
 const VideoPreviewCard = () => import('@/modules/metadata/components/ResourcePreviews/VideoPreviewCard.vue');
 
 const ResourceDataViz = () => import('@/modules/charts/components/ResourceDataViz.vue');
+
+const S3PreviewCard = () => import('@/modules/metadata/components/ResourcePreviews/S3PreviewCard.vue');
 
 export const localIdProperty = 'localId';
 
@@ -35,9 +37,11 @@ export type ClickStrategy = {
   tooltip: string;
 };
 
+export type AsyncComponentLoader = () => Promise<{ default: Component }>;
+
 export type PreviewComponentStrategy = {
   keys: string[];
-  component: Component;
+  component: AsyncComponentLoader;
 };
 
 const previewComponentStrategies: PreviewComponentStrategy[] = [
@@ -60,6 +64,10 @@ const previewComponentStrategies: PreviewComponentStrategy[] = [
   {
     keys: ['csv'],
     component: ResourceDataViz,
+  },
+  {
+    keys: ['envicloud'],
+    component: S3PreviewCard,
   },
 ];
 
@@ -123,17 +131,13 @@ export function getClickEventStrategy(key: string): ClickStrategy | undefined {
   return filteredStrat[0] || undefined;
 }
 
-export function getUrlExtension(url: string) {
-  const splits = url.split('.');
+export function getUrlExtension(url: string): string | undefined {
+  const splits = url?.split('.');
 
-  if (splits.length <= 0) {
-    return null;
-  }
-
-  return splits[splits.length - 1];
+  return splits?.length > 0 ? splits[splits.length - 1] : undefined;
 }
 
-export function getPreviewComponent(key: string): Component | undefined {
+export function getPreviewComponent(key: string): AsyncComponentLoader | undefined {
   if (!key) return undefined;
 
   const strat = previewComponentStrategies.filter((strategy: PreviewComponentStrategy) =>
@@ -142,9 +146,17 @@ export function getPreviewComponent(key: string): Component | undefined {
   return strat?.component;
 }
 
-export function getPreviewComponentFromUrl(url: string): Component | undefined {
+export function getPreviewComponentFromUrl(url: string): AsyncComponentLoader | undefined {
   const fileExtension = getUrlExtension(url);
-  return getPreviewComponent(fileExtension);
+  let previewComp = getPreviewComponent(fileExtension);
+
+  if (!previewComp && url?.includes('envicloud')) {
+    // manually check for envicould preview,
+    // because it doesn't work based on the url extension
+    previewComp = getPreviewComponent('envicloud');
+  }
+
+  return previewComp;
 }
 
 export function enhanceResourcesUrlPreviewEvents(resources: Resource[]) {

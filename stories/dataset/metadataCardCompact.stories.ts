@@ -11,7 +11,7 @@
 
 import MetadataCard from '@/components/Cards/MetadataCard.vue';
 
-import { enhanceMetadataEntry } from '@/factories/metaDataFactory';
+import { enhanceMetadataEntry } from '@/factories/metaDataFactory.ts';
 
 import { enhanceKeywords } from '@/factories/keywordsFactory';
 import categoryCards from '@/store/categoryCards';
@@ -42,8 +42,19 @@ const firstDataset = enhancedDatasets[0];
 enhanceElementsWithStrategyEvents([firstDataset], SELECT_EDITING_DATASET_PROPERTY);
 
 export default {
-  title: '1 Base / Cards /  Metadata Cards',
+  title: '1 Base / Cards /  Metadata Compact Cards',
   component: MetadataCard,
+};
+
+export const CompactCard = {
+  args: {
+    id: firstDataset.id,
+    title: firstDataset.title,
+    categoryColor: firstDataset.categoryColor,
+    name: firstDataset.name,
+    subtitle: firstDataset.notes,
+    compactLayout: true,
+  },
 };
 
 export const CompactCardWithEditButton = {

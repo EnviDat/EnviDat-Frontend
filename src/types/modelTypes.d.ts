@@ -114,6 +114,7 @@ export interface Resource {
   openProperty: string;
   openButtonIcon: string;
   openButtonTooltip: string;
+  hideFromResourceList?: boolean;
 }
 
 export interface DatasetService {
@@ -135,3 +136,15 @@ export type Tag = {
   enabled: boolean;
   color?: string;
 };
+
+export enum ResearchDataType {
+  Created = 'created',
+  Collected = 'collected',
+  Modelled = 'modelled',
+}
+
+export interface ResearchDataDates {
+  dateType: ResearchDataType;
+  dateStart: string;
+  dateEnd: string;
+}

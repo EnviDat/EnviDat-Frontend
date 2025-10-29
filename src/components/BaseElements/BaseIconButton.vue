@@ -86,6 +86,7 @@ import BaseIcon from './BaseIcon.vue';
 export default {
   name: 'BaseIconButton',
   components: { BaseIcon },
+  emits: ['clicked'],
   props: {
     color: { type: String, default: undefined },
     outlineColor: { type: String, default: undefined },

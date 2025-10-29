@@ -74,7 +74,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { defineAsyncComponent, markRaw } from 'vue';
+import { defineAsyncComponent, markRaw, provide } from 'vue';
 
 import axios from 'axios';
 import { mapGetters, mapState } from 'vuex';
@@ -144,7 +144,7 @@ const MetadataDescription = defineAsyncComponent(
   () => import('@/modules/metadata/components/Metadata/MetadataDescription.vue'),
 );
 
-const MetadataResources = defineAsyncComponent(() => import('./Metadata/MetadataResources.vue'));
+const MetadataResourceList = defineAsyncComponent(() => import('./Metadata/MetadataResourceList.vue'));
 
 const MetadataCitation = defineAsyncComponent(() => import('./Metadata/MetadataCitation.vue'));
 const MetadataPublications = defineAsyncComponent(() => import('./Metadata/MetadataPublications.vue'));
@@ -207,6 +207,12 @@ export default {
     eventBus.off(GCNET_PREPARE_DETAIL_CHARTS, this.prepareGCNetChartModal);
     eventBus.off(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
   },
+  provide: () => ({
+    [GCNET_INJECT_MICRO_CHARTS]: {
+      injectedComponent: this.injectedComponent,
+      injectedComponentConfig: this.injectedComponentConfig,
+    },
+  }),
   computed: {
     ...mapState(['config']),
     ...mapState(USER_NAMESPACE, ['userDatasets']),
@@ -222,6 +228,12 @@ export default {
       authorsMap: `${METADATA_NAMESPACE}/authorsMap`,
       appScrollPosition: 'appScrollPosition',
     }),
+    injectedComponent() {
+      return this.GcNetMicroChartList;
+    },
+    injectedComponentConfig() {
+      return this.stationsConfig;
+    },
     metadataContent() {
       if (this.mode) {
         return this.modeDataset !== undefined ? this.modeDataset : this.currentMetadataContent;
@@ -529,7 +541,7 @@ export default {
         }
       }
 
-      this.MetadataResources.props = {
+      this.MetadataResourceList.props = {
         ...this.resourceData,
         dataLicenseId: license.id,
         dataLicenseTitle: license.title,
@@ -592,15 +604,6 @@ export default {
         funding: this.funding,
       };
 
-      let resourceDataViz;
-
-      if (this.resourcesConfig.loadDataViz) {
-        resourceDataViz = ResourceDataVizListAsync;
-        resourceDataViz.props = {
-          resources: this.resourcesForDataViz,
-        };
-      }
-
       this.firstCol = [
         this.MetadataDescription,
         this.MetadataCitation,
@@ -609,14 +612,13 @@ export default {
         this.MetadataAuthors,
       ];
 
-      this.secondCol = [this.MetadataResources, resourceDataViz, this.MetadataGeo, this.MetadataRelatedDatasets];
+      this.secondCol = [this.MetadataResourceList, this.MetadataGeo, this.MetadataRelatedDatasets];
 
       if (this.$vuetify.display.smAndDown) {
         this.singleCol = [
           this.MetadataDescription,
           this.MetadataCitation,
-          this.MetadataResources,
-          resourceDataViz,
+          this.MetadataResourceList,
           this.MetadataGeo,
           this.MetadataAuthors,
           this.MetadataFunding,
@@ -636,13 +638,21 @@ export default {
       });
     },
     async injectMicroCharts() {
-      const GcNetMicroChartList = (await import('@/modules/metadata/components/GC-Net/GcNetMicroChartList.vue'))
-        .default;
+      this.GcNetMicroChartList = (await import('@/modules/metadata/components/GC-Net/GcNetMicroChartList.vue')).default;
 
+      /*
+      provide(GCNET_INJECT_MICRO_CHARTS, {
+        injectedComponent: GcNetMicroChartList,
+        injectedComponentConfig: this.stationsConfig,
+      });
+*/
+
+      /*
       eventBus.emit(GCNET_INJECT_MICRO_CHARTS, {
         component: GcNetMicroChartList,
         config: this.stationsConfig,
       });
+*/
     },
     /**
      * @description
@@ -890,10 +900,13 @@ export default {
     BaseIconButton,
   },
   data: () => ({
+    injectedComponent: undefined,
+    injectedComponentConfig: undefined,
+    injectComponentAtStart: undefined,
     organizationsStore: null,
     mdiClose,
     MetadataDescription: markRaw(MetadataDescription),
-    MetadataResources: markRaw(MetadataResources),
+    MetadataResourceList: markRaw(MetadataResourceList),
     MetadataCitation: markRaw(MetadataCitation),
     MetadataPublications: markRaw(MetadataPublications),
     MetadataPublicationList: markRaw(MetadataPublicationList),
@@ -929,6 +942,7 @@ export default {
     notFoundBackPath: 'browse',
     eventBus,
     stationsConfig: null,
+    GcNetMicroChartList: null,
     currentStation: null,
     firstCol: [],
     secondCol: [],
