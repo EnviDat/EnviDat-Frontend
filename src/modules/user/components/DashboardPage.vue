@@ -177,7 +177,7 @@
                 :role="metadata.role"
                 @clickedEvent="catchMetadataClicked"
                 @clickedTag="catchTagClicked"
-                :showGenericOpenButton="!!metadata.openEvent"
+                :showGenericOpenButton="!!metadata.clickEvent"
                 :openButtonTooltip="metadata.openButtonTooltip"
                 :openButtonIcon="metadata.openButtonIcon"
                 @openButtonClicked="catchEditingClick(metadata.openProperty)"

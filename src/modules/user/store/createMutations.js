@@ -48,7 +48,7 @@ export default {
     resource = cleanResourceForFrontend(resource);
 
     // make resource selectable
-    enhanceElementsWithStrategyEvents([resource], SELECT_EDITING_RESOURCE_PROPERTY, true);
+    enhanceElementsWithStrategyEvents([resource], SELECT_EDITING_RESOURCE_PROPERTY);
 
     resource.loading = false;
 

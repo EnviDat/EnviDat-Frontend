@@ -37,7 +37,7 @@
   </v-dialog>
 </template>
 
-<script>
+<script lang="ts">
 /**
  * GenericFullScreenModal.vue provides the layout
  * for any component to be shown in a fullscreen modal
@@ -64,10 +64,10 @@ import {
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import {
-  getPreviewStrategy,
-  getPreviewStrategyFromUrlExtension,
+  getPreviewComponent,
+  getPreviewComponentFromUrl,
   SHOW_DATA_PREVIEW_PROPERTY,
-} from '@/factories/strategyFactory';
+} from '@/factories/strategyFactory.ts';
 
 const GcNetDetailChartsList = defineAsyncComponent(
   () => import('@/modules/metadata/components/GC-Net/GcNetDetailChartsList.vue'),
@@ -132,10 +132,10 @@ export default {
       eventBus.emit(OPEN_FULLSCREEN_MODAL);
     },
     showGenericPreview(url) {
-      const previewStrat = getPreviewStrategyFromUrlExtension(url);
+      const previewComponent = getPreviewComponentFromUrl(url);
 
-      if (previewStrat) {
-        this.currentComponent = previewStrat.component;
+      if (previewComponent) {
+        this.currentComponent = previewComponent;
         this.genericProps = { url };
 
         const splits = url.split('/');
@@ -147,10 +147,10 @@ export default {
       }
     },
     showDataPreviewIframe(url) {
-      const previewStrat = getPreviewStrategy(SHOW_DATA_PREVIEW_PROPERTY);
+      const previewComponent = getPreviewComponent(SHOW_DATA_PREVIEW_PROPERTY);
 
-      if (previewStrat) {
-        this.currentComponent = previewStrat.component;
+      if (previewComponent) {
+        this.currentComponent = previewComponent;
         this.genericProps = { url };
 
         const splits = url.split('/');

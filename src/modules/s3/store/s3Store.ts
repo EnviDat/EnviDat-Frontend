@@ -1,10 +1,8 @@
 // src/modules/s3/store/s3Store.js
-/* eslint-disable no-irregular-whitespace */
 import { defineStore } from 'pinia';
 import axios from 'axios';
 import { XMLParser } from 'fast-xml-parser';
-import { _Object } from '@aws-sdk/client-s3/dist-types/models/models_0';
-import { CommonPrefix } from '@aws-sdk/client-s3/dist-types/models';
+import type { CommonPrefix, _Object } from '@aws-sdk/client-s3/dist-types/models';
 import { S3Node } from '@/types/s3Types';
 
 // const TEST_URL =

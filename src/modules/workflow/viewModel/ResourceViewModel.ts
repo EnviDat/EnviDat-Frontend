@@ -55,7 +55,7 @@ export class ResourceViewModel extends AbstractEditViewModel implements Resource
   declare chartDataLoading: boolean;
   declare chartLabels: string[];
 
-  declare openEvent: string;
+  declare clickEvent: string;
   declare openProperty: string;
   declare openButtonIcon: string;
   declare openButtonTooltip: string;

@@ -59,7 +59,7 @@
   </v-container>
 </template>
 
-<script>
+<script lang="ts">
 /**
  * The MetadataDetailPage shows all the important information of a metadata entry.
  * It consists of all the MetadataDetailViews.
@@ -119,10 +119,11 @@ import {
 } from '@/factories/eventBus';
 
 import {
-  enhanceElementsWithStrategyEvents,
   enhanceResourcesWithMetadataExtras,
+  enhanceResourcesUrlPreviewEvents,
+  enhanceElementsWithStrategyEvents,
   SHOW_DATA_PREVIEW_PROPERTY,
-} from '@/factories/strategyFactory';
+} from '@/factories/strategyFactory.ts';
 
 import { getEventsForPageAndName } from '@/modules/matomo/store/matomoStore';
 
@@ -137,6 +138,7 @@ import { createLocation } from '@/factories/geoFactory';
 import { createHeaderViewModel } from '@/factories/ViewModels/HeaderViewModel';
 import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionViewModel';
 import { getResourcesForDataViz } from '@/modules/charts/middelware/chartServiceLayer.ts';
+import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 
 const MetadataDescription = defineAsyncComponent(
   () => import('@/modules/metadata/components/Metadata/MetadataDescription.vue'),
@@ -509,10 +511,16 @@ export default {
       if (this.resourceData.resources) {
         this.configInfos = getConfigFiles(this.resourceData.resources);
 
+        enhanceResourcesUrlPreviewEvents(this.resourceData.resources);
+        enhanceResourcesWithMetadataExtras(this.metadataContent.extras, this.resourceData.resources);
+        enhanceElementsWithStrategyEvents(this.resourceData.resources, SHOW_DATA_PREVIEW_PROPERTY);
+
+        /*
         enhanceElementsWithStrategyEvents(this.resourceData.resources, undefined, true);
         enhanceResourcesWithMetadataExtras(this.metadataContent.extras, this.resourceData.resources);
 
         enhanceElementsWithStrategyEvents(this.resourceData.resources, SHOW_DATA_PREVIEW_PROPERTY);
+*/
 
         this.resourceData.dates = getFrontendDates(this.metadataContent.date);
 
@@ -714,7 +722,7 @@ export default {
     },
     catchEditClicked() {
       let name = METADATAEDIT_PAGENAME;
-      const params = {
+      const params: { id: string; metadataid: string } = {
         metadataid: this.metadataId,
       };
 
@@ -750,11 +758,13 @@ export default {
           const modeMetadata = this.modeStore.getModeMetadata(this.mode);
           modeMetadata.isShallow = !this.isRealdataset();
         }
+
         const modeDatasets = this.modeStore.getDatasets(this.mode);
-        let datasets = Object.values(modeDatasets);
+        let datasets = Object.values(modeDatasets) as DatasetDTO[];
         if (datasets.length <= 0) {
           datasets = await this.modeStore.loadModeDatasets(this.mode);
         }
+
         this.modeDataset = datasets.filter((entry) => entry.name === this.metadataId)[0];
       }
 
@@ -777,7 +787,7 @@ export default {
     },
     isRealdataset() {
       if (this.mode && this.mode === EDNA_MODE) {
-        const contents = Object.values(this.metadatasContent);
+        const contents = Object.values(this.metadatasContent) as DatasetDTO[];
 
         const localEntry = contents.filter((entry) => entry.name === this.metadataId);
         return localEntry.length === 1;

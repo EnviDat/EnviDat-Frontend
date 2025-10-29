@@ -110,7 +110,7 @@ export interface Resource {
   chartLabels: string[];
   chartData: any[];
   chartDataLoading: boolean;
-  openEvent: string;
+  clickEvent: string;
   openProperty: string;
   openButtonIcon: string;
   openButtonTooltip: string;

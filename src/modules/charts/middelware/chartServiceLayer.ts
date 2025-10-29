@@ -87,7 +87,7 @@ export function markResourceForDataViz(resources: any[]) {
     resource.canDataViz = canDataViz;
 
     if (canDataViz) {
-      resource.openEvent = INJECT_GENERIC_COMPONENT;
+      resource.clickEvent = INJECT_GENERIC_COMPONENT;
       resource.openProperty = {
         asyncComponent: ResourceDataVizAsync,
         props: {

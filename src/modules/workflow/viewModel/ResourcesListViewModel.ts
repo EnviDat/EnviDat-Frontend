@@ -116,7 +116,7 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
       this.signedInUserOrganizationIds,
     );
 
-    enhanceElementsWithStrategyEvents(cleanResources, SELECT_EDITING_RESOURCE_PROPERTY, true);
+    enhanceElementsWithStrategyEvents(cleanResources, SELECT_EDITING_RESOURCE_PROPERTY);
 
     enhanceResourcesWithMetadataExtras(dataset.extras, cleanResources);
 
