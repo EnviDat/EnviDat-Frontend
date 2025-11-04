@@ -245,9 +245,9 @@ onBeforeUnmount(() => eventBus.off(GCNET_INJECT_MICRO_CHARTS, injectComponent));
           </v-row>
         </v-col>
 
-        <v-col cols="9" md="8" xl="10" class="pt-0 pl-2">
+        <v-col cols="9" md="8" xl="10" class="pt-0 pl-4">
           <v-row class="full-height">
-            <v-col cols="12" sm="4" xl="3">
+            <v-col cols="12" sm="4" xl="4">
               <v-row>
                 <!--
                 <v-col cols="12">
@@ -265,7 +265,7 @@ onBeforeUnmount(() => eventBus.off(GCNET_INJECT_MICRO_CHARTS, injectComponent));
               </v-row>
             </v-col>
 
-            <v-col cols="12" sm="8" xl="9">
+            <v-col cols="12" sm="8" xl="8">
               <v-row>
                 <v-col cols="12" class="full-height">
                   <PreviewTabLayout

@@ -49,11 +49,11 @@ watch(
 
     <v-tabs-window v-model="activeTab">
       <v-tabs-window-item value="description">
-        <ResourceDescription card-color="transparent" :description="props.description" :deprecated="props.depracted" />
+        <ResourceDescription card-color="transparent" :description="props.description" :deprecated="props.deprecated" />
       </v-tabs-window-item>
       <v-tabs-window-item value="preview">
         <Suspense v-if="props.previewComponent && !props.isProtected">
-          <component :is="props.previewComponent" v-bind="props.resource" />
+          <component :is="props.previewComponent" v-bind="props.resource" :resource="props.resource" />
 
           <template #fallback>
             <div class="pa-4">Loading Preview...</div>
