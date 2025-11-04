@@ -5,7 +5,7 @@
     transition="dialog-bottom-transition"
     scrollable
     fullscreen
-    class="pa-2"
+    class="pa-2 envidat-font-overwrite"
     :style="`z-index: 2030; scrollbar-width: thin; scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack};`"
   >
     <v-card class="fill-height pa-0">
