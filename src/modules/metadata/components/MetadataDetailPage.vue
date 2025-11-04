@@ -43,7 +43,13 @@
       <v-col :class="firstColWidth" class="pt-0">
         <v-row v-for="(entry, index) in firstColumn" :key="`left_${index}_${keyHash}`" no-gutters>
           <v-col v-if="entry" class="mb-2 px-0">
-            <component :component="entry" :is="entry" v-bind="entry.props" :showPlaceholder="showPlaceholder" />
+            <Suspense>
+              <component :component="entry" :is="entry" v-bind="entry.props" :showPlaceholder="showPlaceholder" />
+
+              <template #fallback>
+                <v-card class="pa-4">Loading User Interface...</v-card>
+              </template>
+            </Suspense>
           </v-col>
         </v-row>
       </v-col>
@@ -51,7 +57,13 @@
       <v-col v-if="secondColumn" class="pt-0" :class="secondColWidth">
         <v-row v-for="(entry, index) in secondColumn" :key="`right_${index}_${keyHash}`" no-gutters>
           <v-col v-if="entry" class="mb-2 px-0">
-            <component :component="entry" :is="entry" v-bind="entry.props" :showPlaceholder="showPlaceholder" />
+            <Suspense>
+              <component :component="entry" :is="entry" v-bind="entry.props" :showPlaceholder="showPlaceholder" />
+
+              <template #fallback>
+                <v-card class="pa-4">Loading User Interface...</v-card>
+              </template>
+            </Suspense>
           </v-col>
         </v-row>
       </v-col>
@@ -207,12 +219,14 @@ export default {
     eventBus.off(GCNET_PREPARE_DETAIL_CHARTS, this.prepareGCNetChartModal);
     eventBus.off(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
   },
-  provide: () => ({
-    [GCNET_INJECT_MICRO_CHARTS]: {
-      injectedComponent: this.injectedComponent,
-      injectedComponentConfig: this.injectedComponentConfig,
-    },
-  }),
+  provide() {
+    return {
+      [GCNET_INJECT_MICRO_CHARTS]: {
+        injectedComponent: this.injectedComponent,
+        injectedComponentConfig: this.injectedComponentConfig,
+      },
+    };
+  },
   computed: {
     ...mapState(['config']),
     ...mapState(USER_NAMESPACE, ['userDatasets']),
@@ -329,7 +343,7 @@ export default {
       let bindings =
         this.secondColumn && this.secondColumn.length > 0
           ? {
-              'v-col-6': true,
+              'v-col-5': true,
               'pr-1': this.$vuetify.display.mdAndUp,
             }
           : {
@@ -344,7 +358,7 @@ export default {
       let bindings =
         this.secondColumn && this.secondColumn.length > 0
           ? {
-              'v-col-6': true,
+              'v-col-7': true,
               'pl-1': this.$vuetify.display.mdAndUp,
             }
           : {};
@@ -368,7 +382,10 @@ export default {
       }
 
       this.geoServiceConfig = {
-        site: geoJSON,
+        site: {
+          ...geoJSON,
+          skipCheck: true,
+        },
         layerConfig,
         error: this.geoServiceLayersError,
         ...(this.hasGcnetStationConfig && { isGcnet: true }),
@@ -900,9 +917,7 @@ export default {
     BaseIconButton,
   },
   data: () => ({
-    injectedComponent: undefined,
-    injectedComponentConfig: undefined,
-    injectComponentAtStart: undefined,
+    // injectComponentAtStart: undefined,
     organizationsStore: null,
     mdiClose,
     MetadataDescription: markRaw(MetadataDescription),

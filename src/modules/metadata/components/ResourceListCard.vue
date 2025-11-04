@@ -2,6 +2,7 @@
   <v-card
     :id="`resourceListCard_${id}`"
     flat
+    class="rounded-lg"
     :color="computedCardColor"
     :style="`height: ${useAutoHeight ? 'auto' : '100%'};`"
     :loading="loadingColor"
@@ -26,42 +27,9 @@
       </v-row>
     </v-card-title>
 
-    <v-card-text
-      class="pt-0 mt-2"
-      :class="{
-        'pb-5': !showFullDescription,
-        'pb-10': showFullDescription,
-        'pr-2': showFullDescription,
-        'pb-md-3': !showFullDescription,
-        'pb-md-10': showFullDescription,
-      }"
-    >
+    <v-card-text class="pt-0 mt-2 pb-5 pb-md-3">
       <v-container class="pa-0" fluid>
-        <v-row no-gutters>
-          <v-col
-            v-if="showFullDescription || (!showFullDescription && !maxDescriptionLengthReached)"
-            class="readableText heightAndScroll"
-            :class="{
-              'text-white': !dark,
-              'text-black': dark,
-            }"
-            :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
-          >
-            <div class="resourceCardText" v-html="markdownText" />
-          </v-col>
-
-          <v-col v-if="!showFullDescription && maxDescriptionLengthReached" class="readableText resourceCardText">
-            {{ markdownTextTruncated }}
-          </v-col>
-        </v-row>
-
-        <v-row v-if="!showFullDescription" no-gutters>
-          <v-col>
-            <v-divider :dark="dark" class="mt-4 mb-2" />
-          </v-col>
-        </v-row>
-
-        <v-row v-if="!showFullDescription" no-gutters class="resourceInfo">
+        <v-row no-gutters class="resourceInfo">
           <v-col v-if="isProtected" cols="12" class="py-1">
             <BaseIconLabelView
               text="This resource is private"
@@ -176,20 +144,6 @@
 
     <v-card-actions class="ma-0" style="position: absolute; bottom: 0; right: 0; width: 120px; z-index: 2">
       <v-row no-gutters justify="end">
-        <v-col v-if="maxDescriptionLengthReached" cols="6" class="pa-2">
-          <BaseIconButton
-            :icon="mdiChevronDown"
-            :icon-color="showFullDescription ? 'primary' : 'accent'"
-            :color="showFullDescription ? 'accent' : 'black'"
-            :outlined="true"
-            outline-color="accent"
-            elevated
-            :rotated="showFullDescription"
-            :tooltipText="showFullDescription ? 'Hide full description' : 'Show full description'"
-            @clicked="showFullDescription = !showFullDescription"
-          />
-        </v-col>
-
         <v-col v-if="!isProtected" cols="6" class="pa-2">
           <!-- New version with S3 Component -->
           <BaseIconButton
@@ -254,7 +208,6 @@ import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
 
 import SparkChart from '@/components/Charts/SparkChart.vue';
 
-import { renderMarkdown, stripMarkdown } from '@/factories/stringFactory';
 import { formatBytes, getResourceName } from '@/factories/resourceHelpers';
 import { EDIT_METADATA_DOI_LABEL, RESOURCE_FORMAT_LINK } from '@/factories/metadataConsts';
 import { getFileIcon } from '@/factories/imageFactory';
@@ -369,30 +322,6 @@ export default {
     scrollbarColorBack() {
       return this.$vuetify ? '#F0F0F0' : 'auto';
     },
-    markdownText() {
-      if (!this.description) {
-        return '';
-      }
-
-      return renderMarkdown(this.description.trim());
-    },
-    markdownTextTruncated() {
-      if (!this.description) {
-        return '';
-      }
-
-      if (this.maxDescriptionLengthReached) {
-        const strippedMarkdown = stripMarkdown(this.description.trim());
-
-        if (strippedMarkdown) {
-          return `${strippedMarkdown.substring(0, this.maxDescriptionLength)}...`;
-        }
-
-        return '';
-      }
-
-      return this.description.trim();
-    },
     formatedBytes() {
       if (!this.size) return '';
 
@@ -421,9 +350,6 @@ export default {
       }
 
       return isFile;
-    },
-    maxDescriptionLengthReached() {
-      return this.description && this.description.length > this.maxDescriptionLength;
     },
     protectedText() {
       if (this.restrictedUrl && this.restrictedUrl.length > 0) {
@@ -457,8 +383,6 @@ export default {
     mdiUpdate,
     mdiFileDocumentCheckOutline,
     mdiCancel,
-    maxDescriptionLength: 175,
-    showFullDescription: false,
     audioFormats: ['mp3', 'wav', 'wma', 'ogg'],
     EDIT_METADATA_DOI_LABEL,
     chartPreviewTooltip: 'Visualize the data',

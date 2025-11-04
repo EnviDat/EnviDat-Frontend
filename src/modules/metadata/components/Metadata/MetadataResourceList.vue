@@ -5,17 +5,18 @@
  * @summary lists the resources with previews
  * @author Dominik Haas-Artho
  *
- * Created at     : 2019-10-23 14:11:27
- * Last modified  : 2021-08-11 10:14:54
+ * Created at     : 2025-10-23 14:11:27
+ * Last modified  : 2025-11-04 10:14:54
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { defineAsyncComponent, onMounted, watch, computed, ref, withDefaults, defineProps } from 'vue';
+import { defineAsyncComponent, onMounted, computed, ref, withDefaults, defineProps } from 'vue';
 import { useTheme } from 'vuetify';
 
-import { mdiFile, mdiShieldSearch } from '@mdi/js';
+import { mdiFile, mdiShieldSearch, mdiArrowExpandAll } from '@mdi/js';
+
 import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
 
@@ -30,7 +31,15 @@ import { dataLicenses, WSL_DATA_LICENSE_ID } from '@/factories/dataLicense';
 import { ResearchDataDates, Resource } from '@/types/modelTypes';
 import { getPreviewComponentFromUrl } from '@/factories/strategyFactory.ts';
 import ResourceListCard from '@/modules/metadata/components/ResourceListCard.vue';
+import PreviewTabLayout from '@/modules/metadata/components/ResourcePreviews/PreviewTabLayout.vue';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import { eventBus, INJECT_GENERIC_COMPONENT } from '@/factories/eventBus';
 
+const MetadataResourceListAsync = defineAsyncComponent(
+  () =>
+    // eslint-disable-next-line import/no-self-import
+    import('@/modules/metadata/components/Metadata/MetadataResourceList.vue'),
+);
 const theme = useTheme();
 
 const props = withDefaults(
@@ -45,11 +54,13 @@ const props = withDefaults(
     dataLicenseTitle: string;
     dataLicenseUrl: string;
     loading: boolean;
-    genericOpenButtonBottom: boolean;
+    preSelectedResourceId: string;
+    showFullscreenButton: boolean;
   }>(),
   {
     maxHeight: 700,
-    genericOpenButtonBottom: true,
+    showFullscreenButton: true,
+    preSelectedResourceId: undefined,
   },
 );
 
@@ -69,13 +80,9 @@ const previewComponent = computed(() => {
   return dynamicLoader ? defineAsyncComponent(dynamicLoader) : undefined;
 });
 
-const listLayout = computed(() => (props.compactList ? { sm: 6 } : { xl: 6 }));
-
 const availableResources = computed(() =>
   props.resources ? props.resources.filter((r) => !r.hideFromResourceList) : [],
 );
-
-const setSmGrid = computed(() => (availableResources.value.length > 1 ? 6 : 12));
 
 const dataLicenseUrlField = computed(() => {
   const licenseId = props.dataLicenseId;
@@ -100,24 +107,49 @@ const selectedResource = computed(() => {
   return availableResources.value?.find((r) => r.id === selectedId.value);
 });
 
+const resourceName = (resource: Resource) => {
+  const name = resource?.name;
+  return name?.length > 55 ? `${name.substring(0, 55)}...` : name;
+};
+
+const triggerFullscreen = () => {
+  // define the new max length very long for the fullscreen component
+  // to avoid showing the fullscreen button again and show all the text at once
+  //  const maxTextLength = 50000;
+
+  eventBus.emit(INJECT_GENERIC_COMPONENT, {
+    asyncComponent: MetadataResourceListAsync,
+    // props,
+    props: {
+      ...props,
+      showFullscreenButton: false,
+      preSelectedResourceId: selectedId.value,
+    },
+  });
+};
+
+onMounted(() => {
+  if (props.preSelectedResourceId) {
+    selectResource(props.preSelectedResourceId);
+  } else {
+    selectResource(availableResources.value[0]?.id);
+  }
+});
+
 /*
+const hasDescription = computed(() => selectedResource.value?.description?.length > 0);
+const showPreview = computed(() => !selectedResource.value?.isProtected && previewComponent);
+
 const injectComponent = ({ component: Component, config: object, injectAtStart = true }) => {
   injectedComponent.value = component;
   injectedComponentConfig.value = config;
   injectComponentAtStart.value = injectAtStart;
 };
-*/
 
-onMounted(() => {
-  selectResource(availableResources.value[0]?.id);
-});
-/*
 const catchOpenClick = (event, eventProperty) => {
   eventBus.emit(event, eventProperty);
 };
-*/
 
-/*
 onBeforeMount(() => eventBus.on(GCNET_INJECT_MICRO_CHARTS, injectComponent));
 
 onBeforeUnmount(() => eventBus.off(GCNET_INJECT_MICRO_CHARTS, injectComponent));
@@ -125,7 +157,7 @@ onBeforeUnmount(() => eventBus.off(GCNET_INJECT_MICRO_CHARTS, injectComponent));
 </script>
 
 <template>
-  <v-card id="MetadataResources" :class="{ ['pt-2']: this.isOnTop }">
+  <v-card id="MetadataResourceList" :class="{ ['pt-2']: this.isOnTop }">
     <v-card-title class="py-4">
       <v-row justify="end" no-gutters>
         <v-col class="text-h6 metadata_title flex-grow-1">
@@ -134,6 +166,17 @@ onBeforeUnmount(() => eventBus.off(GCNET_INJECT_MICRO_CHARTS, injectComponent));
 
         <v-col v-if="!loading && resources && resources.length > 0" class="flex-grow-0 resourcesIcons">
           <BaseIconCountView :count="resources.length" tooltip-text="Amount of Resources" :icon="mdiFile" />
+        </v-col>
+
+        <v-col class="ml-2 flex-grow-0">
+          <BaseIconButton
+            v-if="showFullscreenButton"
+            :icon="mdiArrowExpandAll"
+            outlined
+            outline-color="secondary"
+            icon-color="black"
+            @clicked="triggerFullscreen"
+          />
         </v-col>
       </v-row>
     </v-card-title>
@@ -181,8 +224,8 @@ onBeforeUnmount(() => eventBus.off(GCNET_INJECT_MICRO_CHARTS, injectComponent));
       </v-row>
 -->
 
-      <v-row>
-        <v-col cols="3" md="3" xl="2">
+      <v-row no-gutters>
+        <v-col cols="3" md="4" xl="2">
           <v-row no-gutters>
             <v-list>
               <!--
@@ -193,69 +236,51 @@ onBeforeUnmount(() => eventBus.off(GCNET_INJECT_MICRO_CHARTS, injectComponent));
                 v-for="(resource, index) in availableResources"
                 :key="`${resource.id}_${index}`"
                 @click="selectResource(resource.id)"
+                class="rounded"
                 :style="`background-color: ${selectedId === resource.id ? theme.themes.value.light.colors.highlight : 'transparent'};`"
               >
-                {{ resource.name }}
+                {{ resourceName(resource) }}
               </v-list-item>
             </v-list>
           </v-row>
         </v-col>
 
-        <v-col cols="9" md="9" xl="10" class="pt-0">
-          <!--
-          <ResourceDataViz :resource="resources ? resources[selectedId] : undefined" :flat="true" />
+        <v-col cols="9" md="8" xl="10" class="pt-0 pl-2">
+          <v-row class="full-height">
+            <v-col cols="12" sm="4" xl="3">
+              <v-row>
+                <!--
+                <v-col cols="12">
+                  {{ selectedResource?.name }}
+                </v-col>
 -->
-          <v-row>
-            <v-col cols="12">
-              {{ selectedResource?.name }}
+                <v-col>
+                  <ResourceListCard
+                    v-bind="selectedResource"
+                    :downloadActive="resourcesConfig?.downloadActive"
+                    cardColor="secondary"
+                  >
+                  </ResourceListCard>
+                </v-col>
+              </v-row>
             </v-col>
 
-            <v-col cols="12" sm="6">
-              <ResourceListCard
-                v-bind="selectedResource"
-                :downloadActive="resourcesConfig?.downloadActive"
-                cardColor="secondary"
-              >
-              </ResourceListCard>
-            </v-col>
-
-            <v-col cols="12" sm="6">
-              <Suspense>
-                <component :is="previewComponent" v-bind="selectedResource" />
-
-                <template #fallback> Loading Preview... </template>
-              </Suspense>
+            <v-col cols="12" sm="8" xl="9">
+              <v-row>
+                <v-col cols="12" class="full-height">
+                  <PreviewTabLayout
+                    :description="selectedResource?.description"
+                    :deprecated="selectedResource?.deprecated"
+                    :isProtected="selectedResource?.isProtected"
+                    :resource="selectedResource"
+                    :previewComponent="previewComponent"
+                  />
+                </v-col>
+              </v-row>
             </v-col>
           </v-row>
         </v-col>
       </v-row>
-
-      <!--
-      <v-row no-gutters>
-        <v-col
-          v-for="res in availableResources"
-          :key="`${res.id}_${res.name}`"
-          cols="12"
-          v-bind="listLayout"
-          class="pa-2"
-        >
-          <ResourceCard
-            v-bind="res"
-            :downloadActive="resourcesConfig?.downloadActive"
-            :showGenericOpenButton="!!res.clickEvent"
-            :genericOpenButtonBottom="genericOpenButtonBottom"
-            cardColor="secondary"
-            @openButtonClicked="catchOpenClick(res.clickEvent, res.openProperty)"
-          />
-        </v-col>
-      </v-row>
--->
-
-      <!--
-      <v-row v-if="injectedComponent" no-gutters>
-        <component :is="injectedComponent" :config="injectedComponentConfig" />
-      </v-row>
--->
     </v-container>
 
     <v-card-text v-if="!loading && (!resources || resources.length <= 0)" :style="`color: ${emptyTextColor}};`">
@@ -266,8 +291,9 @@ onBeforeUnmount(() => eventBus.off(GCNET_INJECT_MICRO_CHARTS, injectComponent));
 
 <style scoped>
 .heightAndScroll {
-  max-height: 750px;
+  max-height: 350px;
   overflow-y: auto !important;
+  overflow-x: hidden;
   scrollbar-width: thin;
 }
 
