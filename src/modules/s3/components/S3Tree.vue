@@ -12,15 +12,17 @@
       class="s3-treeview pa-0"
       density="compact"
       bg-color="transparent"
-      base-color="black"
+      :base-color="dark ? 'white' : 'black'"
       open-on-click
+      hide-actions
     >
-      <template #prepend="{ item }">
+      <template #prepend="{ item, isOpen }">
         <BaseIconButton
-          v-if="!item.maximumLengthItem"
-          :icon="mdiArrowRight"
+          v-if="!item.maximumLengthItem && !item.isLastItem"
+          :icon="isOpen ? mdiChevronDown : mdiChevronRight"
           style="cursor: pointer"
-          icon-color="black"
+          :icon-color="dark ? 'white' : 'black'"
+          small
           @clicked="canBeClicked(item) ? getData(item.title, item.isChild, item.id) : toggleOpenedItem()"
         />
       </template>
@@ -29,6 +31,7 @@
         <v-row
           no-gutters
           dense
+          style="cursor: pointer"
           @click="canBeClicked(item) ? getData(item.title, item.isChild, item.id) : toggleOpenedItem()"
           align="center"
           justify="space-between"
@@ -58,7 +61,7 @@
               <v-progress-circular
                 v-if="item.id === lastOpenedItemId && loading && !item.isLoaded"
                 :size="18"
-                color="white"
+                :color="dark ? 'white' : 'black'"
                 class="ml-2"
                 indeterminate
               />
@@ -67,28 +70,44 @@
                 v-if="item.isChild && item.numberOfChildren && !item.maximumLengthItem"
                 class="ml-2"
                 size="x-small"
-                color="white"
+                :color="dark ? 'white' : 'black'"
                 variant="outlined"
               >
                 {{ item.numberOfChildren }}
               </v-chip>
 
-              <v-chip v-if="!item.isChild" class="ml-2" size="x-small" color="white" variant="outlined">
+              <v-chip
+                v-if="!item.isChild"
+                class="ml-2"
+                size="x-small"
+                :color="dark ? 'white' : 'black'"
+                variant="outlined"
+              >
                 {{ childrenObject }}
               </v-chip>
             </span>
           </v-col>
 
           <v-col v-if="item.isFile" class="flex-grow-0 py-0">
-            <BaseRectangleButton :isXsSmall="true" color="white" :url="item.link" buttonText="download" />
+            <BaseRectangleButton
+              :isXsSmall="true"
+              :color="dark ? 'white' : 'black'"
+              :url="item.link"
+              buttonText="download"
+            />
           </v-col>
 
           <v-col v-if="item.isLastItem" class="flex-grow-0 py-0">
-            <BaseRectangleButton :isXsSmall="true" color="white" :url="item.link" buttonText="View All" />
+            <BaseRectangleButton
+              :isXsSmall="true"
+              :color="dark ? 'white' : 'black'"
+              :url="item.link"
+              buttonText="View All"
+            />
           </v-col>
 
           <v-col v-if="item.maximumLengthItem" class="flex-grow-0 py-0">
-            <BaseRectangleButton :isXsSmall="true" color="white" :url="url" buttonText="View All" />
+            <BaseRectangleButton :isXsSmall="true" :color="dark ? 'white' : 'black'" :url="url" buttonText="View All" />
           </v-col>
         </v-row>
       </template>
@@ -98,7 +117,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
-import { mdiArrowRight } from '@mdi/js';
+import { mdiChevronRight, mdiChevronDown } from '@mdi/js';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 
@@ -114,12 +133,16 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  dark: {
+    type: Boolean,
+    default: false,
+  },
 });
 const loading = ref(false);
 
 const childrenObject = ref(0);
 const lastOpenedItemId = ref(0);
-// const itemOpened = ref(false);
+const itemOpened = ref(false);
 
 const baseUrl = ref('');
 const bucketUrl = ref('');
@@ -138,7 +161,7 @@ const emit = defineEmits(['loadingChanged', 'changeAutoHeight']);
 
 // set store event for change the style of the resourceCard height if the treeview is opened
 function toggleOpenedItem() {
-  // itemOpened.value = !itemOpened.value;
+  itemOpened.value = !itemOpened.value;
   emit('changeAutoHeight', true); // itemOpened.value);
   /*
   const value = itemOpened.value;
@@ -276,9 +299,11 @@ const limitedItems = computed(() => annotateLevel(limitAllNodes(s3Content.value)
 </script>
 
 <style>
+/*
 .s3-treeview .v-icon__svg {
   color: #fff;
 }
+*/
 .s3-treeview .v-list-item-action {
   display: none !important;
 }

@@ -227,7 +227,7 @@
     <v-card-text v-if="isEnvicloudUrl && !isProtected" class="pa-4 pt-0">
       <v-divider />
 
-      <S3Tree :url="url" @loadingChanged="catchLoadingChanged" @changeAutoHeight="catchChangeHeight" />
+      <S3Tree dark :url="url" @loadingChanged="catchLoadingChanged" @changeAutoHeight="catchChangeHeight" />
     </v-card-text>
   </v-card>
 </template>
