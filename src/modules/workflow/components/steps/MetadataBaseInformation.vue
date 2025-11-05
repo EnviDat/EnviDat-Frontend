@@ -13,8 +13,16 @@
     <!-- Info Banner -->
 
     <v-row>
-      <v-col class="mb-5 pt-0 pb-0">
-        <v-alert type="info" closable :icon="false" class="rounded-lg info-banner">
+      <v-col class="mb-5 pt-0 pb-0 justify-end d-flex">
+        <v-icon v-if="!showInfoBanner" @click="openInfoBanner" :icon="mdiInformationOutline" class="align-end"></v-icon>
+        <v-alert
+          v-if="showInfoBanner"
+          type="info"
+          closable
+          @click:close="closeInfoBanner()"
+          :icon="false"
+          class="rounded-lg info-banner"
+        >
           <v-alert-title class="mb-2">Information</v-alert-title>
           <p>
             This section defines the main identification metadata of your dataset. These fields are essential for
@@ -181,7 +189,13 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { mdiBookOpenVariantOutline, mdiText, mdiPaletteSwatch, mdiArrowDownDropCircleOutline } from '@mdi/js';
+import {
+  mdiBookOpenVariantOutline,
+  mdiText,
+  mdiPaletteSwatch,
+  mdiArrowDownDropCircleOutline,
+  mdiInformationOutline,
+} from '@mdi/js';
 
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout.vue';
 import TagChip from '@/components/Chips/TagChip.vue';
@@ -199,39 +213,16 @@ import { isReadOnlyField, getReadOnlyHint } from '@/modules/workflow/utils/useRe
 export default {
   name: 'MetadataBaseInformation',
   props: {
-    metadataTitle: {
-      type: String,
-      default: '',
-    },
-    metadataDescription: {
-      type: String,
-      default: '',
-    },
-    validationErrors: {
-      type: Object,
-      default: () => {},
-    },
-    existingKeywords: {
-      type: Array,
-      default: () => {},
-    },
-    keywords: {
-      type: Array,
-      default: null,
-    },
+    metadataTitle: { type: String, default: '' },
+    metadataDescription: { type: String, default: '' },
+    validationErrors: { type: Object, default: () => {} },
+    existingKeywords: { type: Array, default: () => {} },
+    keywords: { type: Array, default: null },
 
-    loading: {
-      type: Boolean,
-      default: false,
-    },
-    readOnlyFields: {
-      type: Array,
-      default: () => [],
-    },
-    readOnlyExplanation: {
-      type: String,
-      default: '',
-    },
+    loading: { type: Boolean, default: false },
+    readOnlyFields: { type: Array, default: () => [] },
+    readOnlyExplanation: { type: String, default: '' },
+    showInfoBanner: { type: Boolean, default: true },
   },
 
   computed: {
@@ -253,10 +244,7 @@ export default {
       return this.defaultUserEditMetadataConfig.keywordsListWordMax;
     },
     descriptionObject() {
-      return {
-        description: this.metadataDescriptionField,
-        maxTextLength: 5000,
-      };
+      return { description: this.metadataDescriptionField, maxTextLength: 5000 };
     },
 
     metadataTitleField() {
@@ -315,36 +303,34 @@ export default {
     },
   },
   methods: {
+    openInfoBanner() {
+      this.$emit('setInfoBanner', true);
+      window.localStorage.setItem('metadataBaseInfoBannerClosed', 'True');
+    },
+    closeInfoBanner() {
+      this.$emit('setInfoBanner', false);
+      window.localStorage.setItem('metadataBaseInfoBannerClosed', 'False');
+    },
     keywordsChanged() {
-      this.$emit('save', {
-        keywords: this.newDatasetInfo.keywords,
-      });
+      this.$emit('save', { keywords: this.newDatasetInfo.keywords });
     },
     setTitleInput(value) {
       this.newDatasetInfo.metadataTitle = value;
 
-      this.$emit('validate', {
-        metadataTitle: value,
-      });
+      this.$emit('validate', { metadataTitle: value });
     },
     notifyTitleChange(value) {
       this.newDatasetInfo.metadataTitle = value;
 
-      this.$emit('save', {
-        metadataTitle: value,
-      });
+      this.$emit('save', { metadataTitle: value });
     },
     onDescriptionInput(value) {
       this.newDatasetInfo.metadataDescription = value;
-      this.$emit('validate', {
-        metadataDescription: value,
-      });
+      this.$emit('validate', { metadataDescription: value });
     },
     onDescriptionChange(value) {
       this.newDatasetInfo.metadataDescription = value;
-      this.$emit('save', {
-        metadataDescription: value,
-      });
+      this.$emit('save', { metadataDescription: value });
     },
     blurOnEnterKey(keyboardEvent) {
       if (keyboardEvent.key === 'Enter') {
@@ -462,24 +448,26 @@ export default {
       return getReadOnlyHint(dateProperty);
     },
   },
+  mounted() {
+    const ls = localStorage.getItem('metadataBaseInfoBannerClosed') === 'True';
+    if (ls) {
+      this.$emit('setInfoBanner', true);
+    } else {
+      this.$emit('setInfoBanner', false);
+    }
+  },
   data: () => ({
     mdiPaletteSwatch,
     mdiArrowDownDropCircleOutline,
     mdiBookOpenVariantOutline,
+    mdiInformationOutline,
     search: '',
     keywordValidConcise: true,
     keywordValidMin3Characters: true,
     keywordCount: 0,
     rulesKeywords: [],
-    newDatasetInfo: {
-      metadataTitle: undefined,
-      keywords: undefined,
-      metadataDescription: undefined,
-    },
-    defaultUserEditMetadataConfig: {
-      keywordsListWordMax: 2,
-      keywordsCountMin: 5,
-    },
+    newDatasetInfo: { metadataTitle: undefined, keywords: undefined, metadataDescription: undefined },
+    defaultUserEditMetadataConfig: { keywordsListWordMax: 2, keywordsCountMin: 5 },
     labelsKeywords: {
       title: 'Keywords',
       placeholder: 'Pick keywords from the list or type in a new keyword',

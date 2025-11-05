@@ -25,8 +25,10 @@
               :is="resolvedComponent"
               :key="currentStepNum"
               v-bind="vm"
+              :showInfoBanner="workflowStore.currentInfoBannerStatus"
               :user-role="workflowStore.userRole ?? 'member'"
               @validate="validate"
+              @setInfoBanner="workflowStore.setInfoBanner"
               @save="save"
               @reload="reloadDataset"
               v-if="resolvedComponent && !workflowStore.loading"
@@ -81,14 +83,8 @@ const route = useRoute();
 const router = useRouter();
 
 const props = defineProps({
-  datasetId: {
-    type: String,
-    default: undefined,
-  },
-  dataset: {
-    type: Object,
-    default: undefined,
-  },
+  datasetId: { type: String, default: undefined },
+  dataset: { type: Object, default: undefined },
 });
 
 /* =========================

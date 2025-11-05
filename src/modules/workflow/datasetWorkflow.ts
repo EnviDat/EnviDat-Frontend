@@ -70,6 +70,7 @@ export interface DatasetWorkflowState {
   currentDatasetId?: string;
   dataSource: 'local' | 'backend';
   currentUser?: any;
+  currentInfoBannerStatus?: boolean;
 
   /*
   workflowGuide: ({ popover: { description: string; title: string }; element: string } | {
@@ -115,6 +116,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     uploadError: undefined,
     dataSource: 'local' as const,
     currentUser: undefined,
+    currentInfoBannerStatus: undefined,
   }),
   getters: {
     // GET the current step component
@@ -143,6 +145,9 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     },
   },
   actions: {
+    setInfoBanner(status: boolean | undefined) {
+      this.currentInfoBannerStatus = status;
+    },
     startLoading(key?: string) {
       if (key) {
         this.loaders[key] = (this.loaders[key] ?? 0) + 1;
@@ -455,10 +460,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
 
       const firstOrg = orgStore.userOrganizations?.[0];
 
-      const publicationObj = {
-        publisher: 'EnviDat',
-        publication_year: String(getYear(new Date())),
-      };
+      const publicationObj = { publisher: 'EnviDat', publication_year: String(getYear(new Date())) };
       const publication = JSON.stringify(publicationObj);
       const maintainer = this.currentUser
         ? makeMaintainerFromUser(this.currentUser)
