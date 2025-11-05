@@ -20,7 +20,7 @@ const props = defineProps<{
   description: string;
   deprecated: boolean;
   isProtected: boolean;
-  previewComponent: object;
+  previewComponent: object | undefined;
   resource: object;
 }>();
 
@@ -39,7 +39,7 @@ watch(
 </script>
 
 <template>
-  <v-sheet id="PreviewTabLayout">
+  <v-sheet id="PreviewTabLayout" :color="deprecated ? 'grey' : undefined">
     <v-tabs v-model="activeTab" color="black" slider-color="primary" density="compact">
       <v-tab value="description">Description</v-tab>
       <v-tab value="preview">Preview</v-tab>
@@ -47,7 +47,7 @@ watch(
 
     <v-divider></v-divider>
 
-    <v-tabs-window v-model="activeTab">
+    <v-tabs-window v-model="activeTab" class="heightAndScroll">
       <v-tabs-window-item value="description">
         <ResourceDescription card-color="transparent" :description="props.description" :deprecated="props.deprecated" />
       </v-tabs-window-item>
@@ -70,4 +70,11 @@ watch(
   </v-sheet>
 </template>
 
-<style scoped></style>
+<style scoped>
+.heightAndScroll {
+  max-height: 325px;
+  overflow-y: auto !important;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+}
+</style>

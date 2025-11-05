@@ -15,7 +15,7 @@
 import { defineAsyncComponent, onMounted, computed, ref, withDefaults, defineProps } from 'vue';
 import { useTheme } from 'vuetify';
 
-import { mdiFile, mdiShieldSearch, mdiArrowExpandAll } from '@mdi/js';
+import { mdiFile, mdiShieldSearch, mdiArrowExpandAll, mdiChevronRightCircle } from '@mdi/js';
 
 import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
@@ -48,7 +48,6 @@ const props = withDefaults(
     dates: ResearchDataDates[];
     resourcesConfig: object;
     maxHeight: number;
-    compactList: boolean;
     isOnTop: boolean;
     dataLicenseId: string;
     dataLicenseTitle: string;
@@ -105,6 +104,10 @@ const selectResource = (resourceId: string) => {
 
 const selectedResource = computed(() => {
   return availableResources.value?.find((r) => r.id === selectedId.value);
+});
+
+const selectedIdIndex = computed(() => {
+  return availableResources.value?.findIndex((r) => r.id === selectedId.value);
 });
 
 const resourceName = (resource: Resource) => {
@@ -164,9 +167,11 @@ onBeforeUnmount(() => eventBus.off(GCNET_INJECT_MICRO_CHARTS, injectComponent));
           {{ METADATA_RESOURCES_TITLE }}
         </v-col>
 
+        <!--
         <v-col v-if="!loading && resources && resources.length > 0" class="flex-grow-0 resourcesIcons">
           <BaseIconCountView :count="resources.length" tooltip-text="Amount of Resources" :icon="mdiFile" />
         </v-col>
+-->
 
         <v-col class="ml-2 flex-grow-0">
           <BaseIconButton
@@ -216,7 +221,7 @@ onBeforeUnmount(() => eventBus.off(GCNET_INJECT_MICRO_CHARTS, injectComponent));
       id="resourceList"
       fluid
       :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
-      class="heightAndScroll pa-2 pt-0"
+      class="pa-0"
     >
       <!--
       <v-row v-if="injectedComponent" no-gutters>
@@ -225,60 +230,45 @@ onBeforeUnmount(() => eventBus.off(GCNET_INJECT_MICRO_CHARTS, injectComponent));
 -->
 
       <v-row no-gutters>
-        <v-col cols="3" md="4" xl="2">
-          <v-row no-gutters>
-            <v-list>
-              <!--
-              :style="`max-height: ${props.maxHeight - 100}px; overflow: auto; scroll-behavior: smooth; scrollbar-width: thin;
-              scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack};`"
--->
-              <v-list-item
-                v-for="(resource, index) in availableResources"
-                :key="`${resource.id}_${index}`"
-                @click="selectResource(resource.id)"
-                class="rounded"
-                :style="`background-color: ${selectedId === resource.id ? theme.themes.value.light.colors.highlight : 'transparent'};`"
-              >
-                {{ resourceName(resource) }}
-              </v-list-item>
-            </v-list>
+        <v-col class="flex-grow-1">
+          <v-row no-gutters class="fill-height pa-4 pr-0">
+            <v-container fluid class="pa-0">
+              <v-card id="ResourceList" class="rounded">
+                <v-card-title>
+                  <v-row no-gutters>
+                    <v-col class="flex-grow-1">Resources</v-col>
+                    <v-col class="flex-grow-0 resourcesIcons">
+                      <BaseIconCountView :count="resources.length" tooltip-text="Amount of Resources" :icon="mdiFile" />
+                    </v-col>
+                  </v-row>
+                </v-card-title>
+
+                <v-card-text class="heightAndScroll pa-0">
+                  <v-list density="compact" :selected="selectedIdIndex" active-color="primary">
+                    <v-list-item
+                      v-for="(resource, index) in availableResources"
+                      :key="`${resource.id}_${index}`"
+                      @click="selectResource(resource.id)"
+                      :append-icon="selectedId === resource.id ? mdiChevronRightCircle : undefined"
+                      :active="selectedId === resource.id"
+                    >
+                      {{ resourceName(resource) }}
+                    </v-list-item>
+                  </v-list>
+                </v-card-text>
+              </v-card>
+            </v-container>
           </v-row>
         </v-col>
 
-        <v-col cols="9" md="8" xl="10" class="pt-0 pl-4">
-          <v-row class="full-height">
-            <v-col cols="12" sm="4" xl="4">
-              <v-row>
-                <!--
-                <v-col cols="12">
-                  {{ selectedResource?.name }}
-                </v-col>
--->
-                <v-col>
-                  <ResourceListCard
-                    v-bind="selectedResource"
-                    :downloadActive="resourcesConfig?.downloadActive"
-                    cardColor="secondary"
-                  >
-                  </ResourceListCard>
-                </v-col>
-              </v-row>
-            </v-col>
-
-            <v-col cols="12" sm="8" xl="8">
-              <v-row>
-                <v-col cols="12" class="full-height">
-                  <PreviewTabLayout
-                    :description="selectedResource?.description"
-                    :deprecated="selectedResource?.deprecated"
-                    :isProtected="selectedResource?.isProtected"
-                    :resource="selectedResource"
-                    :previewComponent="previewComponent"
-                  />
-                </v-col>
-              </v-row>
-            </v-col>
-          </v-row>
+        <v-col cols="8" xl="10" class="pa-4 full-height">
+          <ResourceListCard
+            v-bind="selectedResource"
+            :downloadActive="resourcesConfig?.downloadActive"
+            cardColor="secondary"
+            :previewComponent="previewComponent"
+          >
+          </ResourceListCard>
         </v-col>
       </v-row>
     </v-container>
@@ -291,7 +281,7 @@ onBeforeUnmount(() => eventBus.off(GCNET_INJECT_MICRO_CHARTS, injectComponent));
 
 <style scoped>
 .heightAndScroll {
-  max-height: 350px;
+  max-height: 500px;
   overflow-y: auto !important;
   overflow-x: hidden;
   scrollbar-width: thin;

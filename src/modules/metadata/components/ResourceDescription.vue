@@ -16,16 +16,15 @@
       </v-row>
     </v-card-text>
 
-    <v-card-actions class="ma-0" style="position: absolute; bottom: 0; right: 0; width: 120px; z-index: 2">
-      <v-row no-gutters justify="end">
-        <v-col v-if="maxDescriptionLengthReached" cols="6" class="pa-2">
+    <v-card-actions class="ma-0" style="position: absolute; bottom: 0; right: 0; width: 52px; z-index: 2">
+      <v-row no-gutters>
+        <v-col v-if="maxDescriptionLengthReached" class="pa-0">
           <BaseIconButton
             :icon="mdiChevronDown"
-            :icon-color="showFullDescription ? 'primary' : 'accent'"
-            :color="showFullDescription ? 'accent' : 'black'"
-            :outlined="true"
-            outline-color="accent"
-            elevated
+            :icon-color="showFullDescription ? 'secondary' : 'white'"
+            :color="showFullDescription ? 'transparent' : 'secondary'"
+            :outlined="!!showFullDescription"
+            outline-color="secondary"
             :rotated="showFullDescription"
             :tooltipText="showFullDescription ? 'Hide full description' : 'Show full description'"
             @clicked="showFullDescription = !showFullDescription"

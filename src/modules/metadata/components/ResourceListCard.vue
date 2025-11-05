@@ -1,23 +1,18 @@
 <template>
   <v-card
     :id="`resourceListCard_${id}`"
-    flat
-    class="rounded-lg"
-    :color="computedCardColor"
-    :style="`height: ${useAutoHeight ? 'auto' : '100%'};`"
+    class="rounded pa-0"
     :loading="loadingColor"
+    :color="deprecated ? 'grey' : undefined"
   >
     <v-card-title
-      class="text-h5 resourceHeadline pt-4"
+      class="text-h5 resourceHeadline pa-4"
       :class="{
         'text-white': !dark,
         'text-black': dark,
       }"
     >
       <v-row no-gutters justify="start">
-        <v-col v-if="isProtected" class="flex-grow-0 pr-2">
-          <BaseIcon color="grey-darken-3" :icon="mdiLock"></BaseIcon>
-        </v-col>
         <v-col v-if="deprecated" class="flex-grow-0 pr-2">
           <BaseIcon color="white" :icon="mdiCancel"></BaseIcon>
         </v-col>
@@ -30,119 +25,70 @@
     <v-card-text class="pt-0 mt-2 pb-5 pb-md-3">
       <v-container class="pa-0" fluid>
         <v-row no-gutters class="resourceInfo">
-          <v-col v-if="isProtected" cols="12" class="py-1">
-            <BaseIconLabelView
-              text="This resource is private"
-              :icon="mdiLock"
-              :light="dark"
-              :dark="!dark"
-              class="mb-1"
-            />
+          <v-col v-if="isProtected" class="py-1">
+            <v-tooltip text="This resource is private, request access with the link on the yellow button">
+              <template v-slot:activator="{ props }">
+                <v-chip v-bind="props" density="compact" :prepend-icon="mdiLock">Private Resource</v-chip>
+              </template>
+            </v-tooltip>
           </v-col>
 
-          <v-col v-if="canDataViz" cols="12" class="py-1">
-            <v-row no-gutters style="opacity: 1 !important" align="center">
-              <v-col class="flex-grow-1">
-                <SparkChart :data="chartPreviewData" />
-              </v-col>
-
-              <v-col class="flex-grow-0">
-                <BaseIconButton
-                  :icon="mdiChartBar"
-                  icon-color="black"
-                  color="accent"
-                  elevated
-                  :tooltip-text="chartPreviewTooltip"
-                  @clicked="$emit('openButtonClicked')"
-                />
-              </v-col>
-            </v-row>
+          <v-col v-if="doi" class="py-1">
+            <v-tooltip :text="EDIT_METADATA_DOI_LABEL">
+              <template v-slot:activator="{ props }">
+                <v-chip v-bind="props" density="compact" :prepend-icon="mdiFingerprint">{{ doi }}</v-chip>
+              </template>
+            </v-tooltip>
           </v-col>
 
-          <v-col v-if="doi" cols="12" class="py-1">
-            <BaseIconLabelView
-              :text="doi"
-              :icon="mdiFingerprint"
-              :icon-tooltip="EDIT_METADATA_DOI_LABEL"
-              :light="dark"
-              :dark="!dark"
-              class="mb-1"
-            />
+          <v-col v-if="format" class="py-1">
+            <v-tooltip :text="formatedBytes ? 'Resource type and size' : 'Resource type'">
+              <template v-slot:activator="{ props }">
+                <v-chip v-bind="props" density="compact" class="pl-1">
+                  <template #prepend>
+                    <BaseIcon :icon="extensionFileIcon" color="black" class="mr-1" />
+                  </template>
+
+                  <template #default>
+                    {{ formatedBytes ? `${format} - ${formatedBytes}` : format }}
+                  </template>
+                </v-chip>
+              </template>
+            </v-tooltip>
           </v-col>
 
-          <v-col v-if="format" cols="12" class="py-1">
-            <BaseIconLabelView
-              :text="formatedBytes ? `${format} - ${formatedBytes}` : format"
-              :icon="extensionIcon"
-              :icon-tooltip="formatedBytes ? 'Resource type and size' : 'Resource type'"
-              :light="dark"
-              :dark="!dark"
-            />
+          <v-col v-if="created" class="py-1">
+            <v-tooltip text="Date of resource creation">
+              <template v-slot:activator="{ props }">
+                <v-chip v-bind="props" density="compact" :prepend-icon="mdiTimerPlusOutline">{{
+                  readableCreated
+                }}</v-chip>
+              </template>
+            </v-tooltip>
           </v-col>
 
-          <v-col v-if="created" cols="12" class="py-1">
-            <BaseIconLabelView
-              :text="readableCreated"
-              :icon="mdiTimerPlusOutline"
-              icon-tooltip="Date of resource creation"
-              :light="dark"
-              :dark="!dark"
-              class="mb-1"
-            />
-          </v-col>
-
-          <v-col v-if="lastModified" cols="12" class="py-1">
-            <BaseIconLabelView
-              :text="readableLastModified"
-              :icon="mdiUpdate"
-              icon-tooltip="Date of last modification"
-              :light="dark"
-              :dark="!dark"
-              class="mb-1"
-            />
-
-            <!-- <base-icon-label-view
-              v-if="isDownloaded"
-            />
-          </v-col>
-
-          <v-col v-if="isDownloaded"
-                 cols="12"
-                 class="py-1"
-          >
-             <base-icon-label-view
-              :text="'Number of Downloads: ' + String(numberOfDownload)"
-              material-icon-name="download"
-              icon-tooltip="Number of downloads"
-              dark
-              class="mb-1"
-            /> -->
+          <v-col v-if="lastModified" class="py-1">
+            <v-tooltip text="Date of last modification">
+              <template v-slot:activator="{ props }">
+                <v-chip v-bind="props" density="compact" :prepend-icon="mdiUpdate">{{ readableLastModified }}</v-chip>
+              </template>
+            </v-tooltip>
           </v-col>
         </v-row>
       </v-container>
     </v-card-text>
 
-    <v-container
-      v-if="showGenericOpenButton && !isProtected"
-      class="pa-4"
-      style="position: absolute; right: 0; width: 68px; top: 0"
-    >
-      <v-row>
-        <v-col cols="12">
-          <BaseIconButton
-            :icon="openButtonIcon"
-            icon-color="black"
-            color="white"
-            elevated
-            :tooltip-text="openButtonTooltip"
-            :disabled="!downloadActive"
-            @clicked="$emit('openButtonClicked')"
-          />
-        </v-col>
-      </v-row>
-    </v-container>
+    <v-card-text>
+      <PreviewTabLayout
+        :description="description"
+        :deprecated="deprecated"
+        :isProtected="isProtected"
+        :resource="{ ...$props }"
+        :previewComponent="previewComponent"
+      />
+    </v-card-text>
 
-    <v-card-actions class="ma-0" style="position: absolute; bottom: 0; right: 0; width: 120px; z-index: 2">
+    <v-card-actions class="ma-0" style="position: absolute; top: 0; right: 0; width: 120px; z-index: 2">
       <v-row no-gutters justify="end">
         <v-col v-if="!isProtected" cols="6" class="pa-2">
           <!-- New version with S3 Component -->
@@ -162,8 +108,9 @@
           <div
             class="fabMenu fabPosition elevation-5 ma-4"
             :class="downloadActive ? 'fabMenuHover' : 'fabMenuDisabled'"
+            style="top: 0"
           >
-            <BaseIcon :icon="mdiShield" color="grey-darken-3" />
+            <BaseIcon :icon="mdiLock" color="grey-darken-3" />
             <div v-if="downloadActive" class="pt-2 lockedText text-black protectedLink">
               <p v-html="protectedText"></p>
             </div>
@@ -204,9 +151,6 @@ import {
 
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
-import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
-
-import SparkChart from '@/components/Charts/SparkChart.vue';
 
 import { formatBytes, getResourceName } from '@/factories/resourceHelpers';
 import { EDIT_METADATA_DOI_LABEL, RESOURCE_FORMAT_LINK } from '@/factories/metadataConsts';
@@ -216,13 +160,13 @@ import { trackDownload } from '@/utils/matomoTracking';
 
 import { formatDate } from '@/factories/dateFactory';
 import { chartPreviewData } from '@/modules/charts/middelware/chartServiceLayer';
+import PreviewTabLayout from '@/modules/metadata/components/ResourcePreviews/PreviewTabLayout.vue';
 
 export default {
-  name: 'ResourceCard',
+  name: 'ResourceListCard',
   components: {
-    SparkChart,
+    PreviewTabLayout,
     BaseIcon,
-    BaseIconLabelView,
     BaseIconButton,
   },
   props: {
@@ -247,7 +191,7 @@ export default {
     },
     dark: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     isProtected: Boolean,
     metadataContact: String,
@@ -279,14 +223,11 @@ export default {
       default: false,
     },
     loading: Boolean,
-    sparkChartLabels: {
-      type: Array,
-      required: false,
+    previewComponent: {
+      type: Object,
       default: undefined,
     },
-    canDataViz: Boolean,
   },
-  mounted() {},
   beforeUnmount() {
     // reset store before unmount the component
   },
@@ -353,13 +294,10 @@ export default {
     },
     protectedText() {
       if (this.restrictedUrl && this.restrictedUrl.length > 0) {
-        return `This resource is protected <a href="${this.restrictedUrl}" target="_blank" rel="noopener noreferrer" >login via the legacy UI to get access</a>.`;
+        return `This resource is private <a href="${this.restrictedUrl}" target="_blank" rel="noopener noreferrer" >login via the legacy UI to get access</a>.`;
       }
 
       return `Could not load the resource, please contact ${this.metadataContact} for getting access or envidat@wsl.ch for support.`;
-    },
-    extensionIcon() {
-      return getFileIcon(this.format);
     },
   },
   methods: {
@@ -370,6 +308,15 @@ export default {
       this.useAutoHeight = useAutoHeight;
     },
     trackDownload,
+  },
+  watch: {
+    format() {
+      if (this.format === RESOURCE_FORMAT_LINK) {
+        this.extensionFileIcon = mdiLink;
+      } else {
+        this.extensionFileIcon = getFileIcon(this.format);
+      }
+    },
   },
   data: () => ({
     mdiChartBar,
@@ -389,6 +336,7 @@ export default {
     chartPreviewData,
     isLoadingS3Tree: false,
     useAutoHeight: false,
+    extensionFileIcon: undefined,
   }),
 };
 </script>
