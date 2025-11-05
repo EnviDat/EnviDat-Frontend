@@ -67,7 +67,7 @@
   </v-card>
 </template>
 
-<script>
+<script lang="ts">
 /**
  * MetadataAuthors.vue shows all the resources of a metadata entry in a list.
  *

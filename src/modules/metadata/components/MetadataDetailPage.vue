@@ -528,6 +528,7 @@ export default {
       this.MetadataAuthors.props = {
         authors: this.authors,
         authorDetailsConfig: this.authorDetailsConfig,
+        compactList: true,
       };
     },
     loadResources() {
@@ -564,7 +565,6 @@ export default {
         dataLicenseTitle: license.title,
         dataLicenseUrl: license.url,
         resourcesConfig: this.resourcesConfig,
-        compactList: true,
       };
     },
     setMetadataContent() {
