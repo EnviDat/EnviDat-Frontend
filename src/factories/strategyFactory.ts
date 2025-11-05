@@ -146,11 +146,15 @@ export function getPreviewComponent(key: string): AsyncComponentLoader | undefin
   return strat?.component;
 }
 
+function inAnyPreviewKeys(extension: string) {
+  const allKeys = previewComponentStrategies.map((strat) => strat.key);
+  return allKeys.includes(extension);
+}
 export function getPreviewComponentFromUrl(url: string): AsyncComponentLoader | undefined {
   const fileExtension = getUrlExtension(url);
   let previewComp = getPreviewComponent(fileExtension);
 
-  if (!previewComp && url?.includes('envicloud')) {
+  if (!previewComp && url?.includes('envicloud') && !inAnyPreviewKeys(fileExtension)) {
     // manually check for envicould preview,
     // because it doesn't work based on the url extension
     previewComp = getPreviewComponent('envicloud');
