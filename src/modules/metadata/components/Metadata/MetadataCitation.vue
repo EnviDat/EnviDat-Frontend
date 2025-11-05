@@ -11,7 +11,7 @@
           <v-col v-for="link in citationLinks" :key="link.text" class="flex-grow-0 py-1 px-2">
             <BaseRectangleButton
               margin-class="citationButton"
-              color="secondary"
+              color="highlight"
               :button-text="link.text"
               :tooltipText="link.tooltipText"
               :icon="mdiClipboardText"
@@ -24,7 +24,7 @@
           <v-col class="flex-grow-0 py-1 px-2">
             <BaseRectangleButton
               margin-class="citationButton"
-              color="secondary"
+              color="highlight"
               button-text="Copy"
               tooltipText="Copy citation text to your clipboard"
               :icon="mdiContentCopy"
