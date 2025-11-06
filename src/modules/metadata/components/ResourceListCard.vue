@@ -1,7 +1,7 @@
 <template>
   <v-card
     :id="`resourceListCard_${id}`"
-    class="rounded pa-0"
+    class="rounded pa-0 fill-height"
     :loading="loadingColor"
     :color="deprecated ? 'grey' : undefined"
   >
@@ -78,15 +78,13 @@
       </v-container>
     </v-card-text>
 
-    <v-card-text>
-      <PreviewTabLayout
-        :description="description"
-        :deprecated="deprecated"
-        :isProtected="isProtected"
-        :resource="{ ...$props }"
-        :previewComponent="previewComponent"
-      />
-    </v-card-text>
+    <PreviewTabLayout
+      :description="description"
+      :deprecated="deprecated"
+      :isProtected="isProtected"
+      :resource="{ ...$props }"
+      :previewComponent="previewComponent"
+    />
 
     <v-card-actions class="ma-0" style="position: absolute; top: 0; right: 0; width: 120px; z-index: 2">
       <v-row no-gutters justify="end">
@@ -173,9 +171,6 @@ export default {
     id: String,
     doi: String,
     name: String,
-    /*
-    autoHeight: Boolean,
-*/
     description: String,
     url: String,
     restrictedUrl: String,
@@ -403,12 +398,6 @@ export default {
 
 .white_title {
   color: rgba(255, 255, 255, 0.9) !important;
-}
-
-.heightAndScroll {
-  max-height: 400px;
-  overflow-y: auto !important;
-  scrollbar-width: thin;
 }
 
 .lockedText {

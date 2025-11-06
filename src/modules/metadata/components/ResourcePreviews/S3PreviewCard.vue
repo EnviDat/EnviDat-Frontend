@@ -30,7 +30,7 @@ const loadingColor = computed(() => {
 </script>
 
 <template>
-  <v-card flat class="pa-4 full-height rounded-lg" :loading="loadingColor">
+  <v-card flat class="pa-4 fill-height rounded-lg" :loading="loadingColor">
     <S3Tree :url="props.url" @loadingChanged="(load) => (loading = load)" />
   </v-card>
 </template>

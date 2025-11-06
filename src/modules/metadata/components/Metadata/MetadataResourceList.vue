@@ -57,7 +57,6 @@ const props = withDefaults(
     showFullscreenButton: boolean;
   }>(),
   {
-    maxHeight: 700,
     showFullscreenButton: true,
     preSelectedResourceId: undefined,
   },
@@ -127,6 +126,7 @@ const triggerFullscreen = () => {
       ...props,
       showFullscreenButton: false,
       preSelectedResourceId: selectedId.value,
+      maxHeight: undefined,
     },
   });
 };
@@ -220,7 +220,7 @@ onBeforeUnmount(() => eventBus.off(GCNET_INJECT_MICRO_CHARTS, injectComponent));
       v-if="!loading && availableResources && availableResources.length > 0"
       id="resourceList"
       fluid
-      :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
+      :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}; align-content: start;`"
       class="pa-0"
     >
       <!--
@@ -231,7 +231,7 @@ onBeforeUnmount(() => eventBus.off(GCNET_INJECT_MICRO_CHARTS, injectComponent));
 
       <v-row no-gutters>
         <v-col class="flex-grow-1">
-          <v-row no-gutters class="fill-height pa-4 pr-0">
+          <v-row no-gutters class="pa-4 pr-0">
             <v-container fluid class="pa-0">
               <v-card id="ResourceList" class="rounded">
                 <v-card-title>
@@ -243,7 +243,10 @@ onBeforeUnmount(() => eventBus.off(GCNET_INJECT_MICRO_CHARTS, injectComponent));
                   </v-row>
                 </v-card-title>
 
-                <v-card-text class="heightAndScroll pa-0">
+                <v-card-text
+                  :style="`maxHeight: ${props.maxHeight ? `${props.maxHeight}px` : '100%'};`"
+                  class="scrolling pa-0"
+                >
                   <v-list density="compact" :selected="selectedIdIndex" active-color="primary">
                     <v-list-item
                       v-for="(resource, index) in availableResources"
@@ -261,14 +264,13 @@ onBeforeUnmount(() => eventBus.off(GCNET_INJECT_MICRO_CHARTS, injectComponent));
           </v-row>
         </v-col>
 
-        <v-col cols="8" xl="10" class="pa-4 full-height">
+        <v-col cols="8" xl="10" class="pa-4">
           <ResourceListCard
             v-bind="selectedResource"
             :downloadActive="resourcesConfig?.downloadActive"
             cardColor="secondary"
             :previewComponent="previewComponent"
-          >
-          </ResourceListCard>
+          />
         </v-col>
       </v-row>
     </v-container>
@@ -280,8 +282,7 @@ onBeforeUnmount(() => eventBus.off(GCNET_INJECT_MICRO_CHARTS, injectComponent));
 </template>
 
 <style scoped>
-.heightAndScroll {
-  max-height: 500px;
+.scrolling {
   overflow-y: auto !important;
   overflow-x: hidden;
   scrollbar-width: thin;

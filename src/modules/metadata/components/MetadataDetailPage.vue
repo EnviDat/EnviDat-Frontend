@@ -561,6 +561,7 @@ export default {
 
       this.MetadataResourceList.props = {
         ...this.resourceData,
+        maxHeight: 500,
         dataLicenseId: license.id,
         dataLicenseTitle: license.title,
         dataLicenseUrl: license.url,

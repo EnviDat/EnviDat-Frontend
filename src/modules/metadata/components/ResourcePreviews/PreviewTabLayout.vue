@@ -39,7 +39,7 @@ watch(
 </script>
 
 <template>
-  <v-sheet id="PreviewTabLayout" :color="deprecated ? 'grey' : undefined">
+  <v-sheet id="PreviewTabLayout" :color="deprecated ? 'grey' : undefined" class="fill-height">
     <v-tabs v-model="activeTab" color="black" slider-color="primary" density="compact">
       <v-tab value="description">Description</v-tab>
       <v-tab value="preview">Preview</v-tab>
@@ -47,7 +47,7 @@ watch(
 
     <v-divider></v-divider>
 
-    <v-tabs-window v-model="activeTab" class="heightAndScroll">
+    <v-tabs-window v-model="activeTab">
       <v-tabs-window-item value="description">
         <ResourceDescription card-color="transparent" :description="props.description" :deprecated="props.deprecated" />
       </v-tabs-window-item>
@@ -56,25 +56,18 @@ watch(
           <component :is="props.previewComponent" v-bind="props.resource" :resource="props.resource" />
 
           <template #fallback>
-            <div class="pa-4">Loading Preview...</div>
+            <div class="pa-4">Loading Preview ...</div>
           </template>
         </Suspense>
         <div v-if="!props.previewComponent && !props.isProtected">
-          <div class="pa-4">No Preview available for this kind of resource.</div>
+          <div class="resourceCardText pa-4">No Preview available for this kind of resource.</div>
         </div>
         <div v-if="props.previewComponent && props.isProtected">
-          <div class="pa-4">No Preview loaded because this resource is Protected.</div>
+          <div class="resourceCardText pa-4">No Preview loaded because this resource is Protected.</div>
         </div>
       </v-tabs-window-item>
     </v-tabs-window>
   </v-sheet>
 </template>
 
-<style scoped>
-.heightAndScroll {
-  max-height: 325px;
-  overflow-y: auto !important;
-  overflow-x: hidden;
-  scrollbar-width: thin;
-}
-</style>
+<style scoped></style>
