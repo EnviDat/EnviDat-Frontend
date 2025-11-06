@@ -38,6 +38,7 @@ export const workflowSteps: WorkflowStep[] = [
     //     popover: { title: 'Title', description: 'Description' },
     //   },
     // ],
+    errors: null,
   },
   {
     id: 1,
@@ -65,6 +66,7 @@ export const workflowSteps: WorkflowStep[] = [
     //     popover: { title: 'Title', description: 'Description' },
     //   },
     // ],
+    errors: null,
   },
   {
     id: 2,
@@ -82,6 +84,7 @@ export const workflowSteps: WorkflowStep[] = [
     viewModelKey: 'GeoInfoViewModel',
     icon: 'geoinfo',
     status: StepStatus.Disabled,
+    errors: null,
   },
   {
     id: 3,
@@ -99,6 +102,7 @@ export const workflowSteps: WorkflowStep[] = [
     viewModelKey: 'AdditionalInfoViewModel',
     icon: 'additionalinfo',
     status: StepStatus.Disabled,
+    errors: null,
   },
   {
     id: 4,
@@ -116,6 +120,7 @@ export const workflowSteps: WorkflowStep[] = [
     viewModelKey: 'ResourcesListViewModel',
     icon: 'uploadinfo',
     status: StepStatus.Disabled,
+    errors: null,
   },
   {
     id: 5,
@@ -133,6 +138,7 @@ export const workflowSteps: WorkflowStep[] = [
     viewModelKey: 'RelatedResearchViewModel',
     icon: 'relatedinfo',
     status: StepStatus.Disabled,
+    errors: null,
   },
   {
     id: 6,
@@ -150,6 +156,7 @@ export const workflowSteps: WorkflowStep[] = [
     viewModelKey: 'PublicationInfoViewModel',
     icon: 'publicationinfo',
     status: StepStatus.Disabled,
+    errors: null,
   },
 ];
 
@@ -179,6 +186,7 @@ export function enhanceAdminWorkflowStep(userRole: string, steps: WorkflowStep[]
         viewModelKey: 'AdminViewModel',
         icon: 'publicationinfo',
         status: StepStatus.Disabled,
+        errors: null,
       } satisfies WorkflowStep,
     ];
   }

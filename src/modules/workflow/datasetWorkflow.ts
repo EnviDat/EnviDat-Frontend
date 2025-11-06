@@ -458,13 +458,11 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     applyDatasetDefaults(dataset: DatasetDTO, id: string) {
       const orgStore = useOrganizationsStore();
 
-      const firstOrg = orgStore.userOrganizations?.[0];
+      // const firstOrg = orgStore.userOrganizations?.[0];
 
       const publicationObj = { publisher: 'EnviDat', publication_year: String(getYear(new Date())) };
       const publication = JSON.stringify(publicationObj);
-      const maintainer = this.currentUser
-        ? makeMaintainerFromUser(this.currentUser)
-        : ((dataset as any)?.maintainer ?? '');
+      const maintainer = this.currentUser ? makeMaintainerFromUser(this.currentUser) : (dataset?.maintainer ?? '');
 
       // '{"email":"enrico.peruselli@wsl.ch","given_name":"Enrico","name":"Peruselli"}',
       return {

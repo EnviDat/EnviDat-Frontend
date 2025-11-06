@@ -24,13 +24,12 @@ build-seo:
     - when: on_success
   needs:
     # needs the artifact: config and environment variables
+    - install-node
     - job: modify-env
       artifacts: true
-    # needs the artifact: node_modules to build the app
-    #- install-node
-  before_script:
-    - npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
+    - verify-node-audit
   script:
+    - npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
     - cat .env.production
     - npm run build-vike
     # rename the dist/client output folder

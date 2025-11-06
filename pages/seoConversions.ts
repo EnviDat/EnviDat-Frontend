@@ -13,7 +13,7 @@ function cropString(str: string, maxLength: number, ending: string | undefined) 
   return str;
 }
 
-export const getSeoSanitizedDataset = (dataset: DatasetDTO): DatasetDTO => {
+export const getSeoSanitizedDataset = (dataset: DatasetDTO): Partial<DatasetDTO> => {
   if (!dataset) {
     return {
       title: '',

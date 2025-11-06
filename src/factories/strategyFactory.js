@@ -1,4 +1,3 @@
-import { defineAsyncComponent } from 'vue';
 import { mdiFileEye, mdiPencil } from '@mdi/js';
 import { METADATA_DEPRECATED_RESOURCES_PROPERTY } from '@/factories/metadataConsts';
 import {

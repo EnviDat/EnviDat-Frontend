@@ -280,7 +280,7 @@ export function createAuthor(author: Author | AuthorDTO, lastModified: string = 
 
   // console.log(`creating author from ${fullName} dataCredit: ${dataCredit} datasetCount: ${author.datasetCount}`);
 
-  const isAuthorDead = firstName?.includes(AUTHOR_ASCII_DEAD) || lastName?.includes(AUTHOR_ASCII_DEAD);
+  const isAuthorDead = firstName.includes(AUTHOR_ASCII_DEAD) || lastName.includes(AUTHOR_ASCII_DEAD);
 
   return {
     firstName: firstName.trim(),
