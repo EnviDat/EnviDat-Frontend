@@ -80,17 +80,12 @@ export default async ({ mode, config }): Promise<UserConfig> => {
         // Remove warnings because Vite falesly tries to lint folders it should not
         exclude: ['/virtual:/**', 'node_modules/**', '/sb-preview/**'],
       }),
-      vuetify({
-        autoImport: true,
-      }),
+      vuetify({ autoImport: true }),
       webfontDownload([
         'https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;700&display=swap',
         'https://fonts.googleapis.com/css2?family=Baskervville&display=swap',
       ]),
-      visualizer({
-        filename: './dist/buildStats.html',
-        title: 'EnviDat Build Visualizer',
-      }),
+      visualizer({ filename: './dist/buildStats.html', title: 'EnviDat Build Visualizer' }),
       vueDevTools(),
     ],
     resolve: {
@@ -98,10 +93,7 @@ export default async ({ mode, config }): Promise<UserConfig> => {
         { find: '@', replacement: path.resolve(__dirname, 'src') },
         { find: '~', replacement: path.resolve(__dirname) },
         // { find: 'leaflet', replacement: 'leaflet/dist/leaflet.js' },
-        {
-          find: 'leaflet/dist/leaflet.css',
-          replacement: 'leaflet/dist/leaflet.css',
-        },
+        { find: 'leaflet/dist/leaflet.css', replacement: 'leaflet/dist/leaflet.css' },
         // { find: 'leaflet', replacement: 'leaflet/dist/leaflet-src.esm.js' },
         {
           find: 'leaflet.markercluster/dist/MarkerCluster.css',
@@ -111,24 +103,18 @@ export default async ({ mode, config }): Promise<UserConfig> => {
           find: 'leaflet.markercluster/dist/MarkerCluster.Default.css',
           replacement: 'leaflet.markercluster/dist/MarkerCluster.Default.css',
         },
-        {
-          find: 'leaflet.markercluster',
-          replacement: 'leaflet.markercluster/dist/leaflet.markercluster.js',
-        },
+        { find: 'leaflet.markercluster', replacement: 'leaflet.markercluster/dist/leaflet.markercluster.js' },
         { find: 'vue', replacement: 'vue/dist/vue.esm-bundler.js' },
       ],
     },
-    define: {
-      'process.env': loadEnv(mode, process.cwd()),
-      'import.meta.env.VITE_VERSION': JSON.stringify(version),
-    },
+    define: { 'process.env': loadEnv(mode, process.cwd()), 'import.meta.env.VITE_VERSION': JSON.stringify(version) },
     base: './',
     build: {
       assetsDir: './static',
       chunkSizeWarningLimit: 500,
       //         assetsInlineLimit: 4096 / 2, // Reduce the amount of image inlining so the chunks don't get huge
       cssCodeSplit: true,
-      minify: true,
+      minify: false,
       cssMinify: true,
       sourcemap: buildSourceMaps,
       emptyOutDir: true,
@@ -220,10 +206,7 @@ export default async ({ mode, config }): Promise<UserConfig> => {
       ? {
           host: '0.0.0.0',
           port: 8080,
-          hmr: {
-            host: 'dev.envidat04.wsl.ch',
-            port: 8080,
-          },
+          hmr: { host: 'dev.envidat04.wsl.ch', port: 8080 },
           allowedHosts: ['dev.envidat04.wsl.ch:8080'],
           https: useHttps
             ? {
