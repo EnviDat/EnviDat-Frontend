@@ -114,8 +114,7 @@ export default async ({ mode, config }): Promise<UserConfig> => {
       chunkSizeWarningLimit: 500,
       //         assetsInlineLimit: 4096 / 2, // Reduce the amount of image inlining so the chunks don't get huge
       cssCodeSplit: true,
-      minify: true,
-      // cssMinify: true,
+      minify: !buildSourceMaps,
       sourcemap: buildSourceMaps,
       emptyOutDir: true,
       rollupOptions: isProd
