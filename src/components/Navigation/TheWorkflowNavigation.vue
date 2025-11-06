@@ -318,6 +318,7 @@ const initDriver = () => {
 <style lang="scss">
 .navigationWorkflow {
   background-color: #fff;
+  position: relative;
   @media screen and (min-width: 1280px) {
     // 960 is md for vuetify
     background-color: #f8f8f8;
