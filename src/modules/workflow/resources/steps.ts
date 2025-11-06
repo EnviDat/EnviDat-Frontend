@@ -157,7 +157,7 @@ export default workflowSteps;
 
 const adminStepTitle = 'Admin Information';
 
-export function enhanceAdminWorkflowStep(userRole: string, steps: WorkflowStep[]) {
+export function enhanceAdminWorkflowStep(userRole: string, steps: WorkflowStep[]): WorkflowStep[] {
   if (userRole === USER_ROLE_SYSTEM_ADMIN) {
     const alreadyContainsAdminStep = steps.filter((step) => step.title === adminStepTitle).length > 0;
 
