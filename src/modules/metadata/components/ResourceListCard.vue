@@ -26,7 +26,10 @@
       <v-container class="pa-0" fluid>
         <v-row no-gutters class="resourceInfo">
           <v-col v-if="isProtected" class="py-1">
-            <v-tooltip text="This resource is private, request access with the link on the yellow button">
+            <v-tooltip
+              text="This resource is private, request access with the link on the yellow button"
+              location="bottom"
+            >
               <template v-slot:activator="{ props }">
                 <v-chip v-bind="props" density="compact" :prepend-icon="mdiLock">Private Resource</v-chip>
               </template>
@@ -34,7 +37,7 @@
           </v-col>
 
           <v-col v-if="doi" class="py-1">
-            <v-tooltip :text="EDIT_METADATA_DOI_LABEL">
+            <v-tooltip :text="EDIT_METADATA_DOI_LABEL" location="bottom">
               <template v-slot:activator="{ props }">
                 <v-chip v-bind="props" density="compact" :prepend-icon="mdiFingerprint">{{ doi }}</v-chip>
               </template>
@@ -42,7 +45,7 @@
           </v-col>
 
           <v-col v-if="format" class="py-1">
-            <v-tooltip :text="formatedBytes ? 'Resource type and size' : 'Resource type'">
+            <v-tooltip :text="formatedBytes ? 'Resource type and size' : 'Resource type'" location="bottom">
               <template v-slot:activator="{ props }">
                 <v-chip v-bind="props" density="compact" class="pl-1">
                   <template #prepend>
@@ -58,7 +61,7 @@
           </v-col>
 
           <v-col v-if="created" class="py-1">
-            <v-tooltip text="Date of resource creation">
+            <v-tooltip text="Date of resource creation" location="bottom">
               <template v-slot:activator="{ props }">
                 <v-chip v-bind="props" density="compact" :prepend-icon="mdiTimerPlusOutline">{{
                   readableCreated
@@ -68,7 +71,7 @@
           </v-col>
 
           <v-col v-if="lastModified" class="py-1">
-            <v-tooltip text="Date of last modification">
+            <v-tooltip text="Date of last modification" location="bottom">
               <template v-slot:activator="{ props }">
                 <v-chip v-bind="props" density="compact" :prepend-icon="mdiUpdate">{{ readableLastModified }}</v-chip>
               </template>
@@ -144,6 +147,7 @@ import {
   mdiTimerPlusOutline,
   mdiUpdate,
   mdiFileDocumentCheckOutline,
+  mdiFile,
   mdiChartBar,
 } from '@mdi/js';
 
@@ -235,7 +239,7 @@ export default {
       return undefined;
     },
     loadingResource() {
-      return this.loading || this.isLoadingS3Tree;
+      return this.loading;
     },
     isDownloaded() {
       return this.numberOfDownload > 0;
@@ -296,18 +300,14 @@ export default {
     },
   },
   methods: {
-    catchLoadingChanged(isLoading) {
-      this.isLoadingS3Tree = isLoading;
-    },
-    catchChangeHeight(useAutoHeight) {
-      this.useAutoHeight = useAutoHeight;
-    },
     trackDownload,
   },
   watch: {
     format() {
       if (this.format === RESOURCE_FORMAT_LINK) {
         this.extensionFileIcon = mdiLink;
+      } else if (this.format === 'nead') {
+        this.extensionFileIcon = this.mdiFile;
       } else {
         this.extensionFileIcon = getFileIcon(this.format);
       }
@@ -325,12 +325,11 @@ export default {
     mdiUpdate,
     mdiFileDocumentCheckOutline,
     mdiCancel,
+    mdiFile,
     audioFormats: ['mp3', 'wav', 'wma', 'ogg'],
     EDIT_METADATA_DOI_LABEL,
     chartPreviewTooltip: 'Visualize the data',
     chartPreviewData,
-    isLoadingS3Tree: false,
-    useAutoHeight: false,
     extensionFileIcon: undefined,
   }),
 };
@@ -378,12 +377,6 @@ export default {
     display: inherit;
     opacity: 1;
   }
-}
-</style>
-
-<style>
-.resourceCardText p a {
-  color: #ffd740 !important;
 }
 </style>
 
