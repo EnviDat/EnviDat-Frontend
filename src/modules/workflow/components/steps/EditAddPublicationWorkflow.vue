@@ -8,7 +8,7 @@
           :disabled="!!doiField"
           hide-details
           :prepend-icon="mdiIdentifier"
-          @update:model-value="(event) => pidChange(event.target.value)"
+          @update:model-value="(event) => pidChange(event)"
         />
       </v-col>
 

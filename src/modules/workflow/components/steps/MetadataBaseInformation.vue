@@ -82,7 +82,7 @@
           :placeholder="labels.placeholderTitle"
           :model-value="metadataTitleField"
           @keyup="blurOnEnterKey"
-          @update:model-value="setTitleInput($event.target.value)"
+          @update:model-value="setTitleInput($event)"
           @change="notifyTitleChange($event.target.value)"
         />
       </v-col>
