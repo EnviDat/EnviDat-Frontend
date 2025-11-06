@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 
+import { getYear } from 'date-fns';
 import { USER_ROLE_MEMBER, USER_ROLE_EDITOR, USER_ROLE_SYSTEM_ADMIN } from '@/factories/userEditingValidations';
 
 import { enhanceAdminWorkflowStep, workflowSteps } from '@/modules/workflow/resources/steps';
@@ -10,7 +11,6 @@ import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 import { DatasetService } from '@/types/modelTypes';
 import { BackendDatasetService } from '@/modules/workflow/BackendDatasetService.ts';
 import { workflowGuide } from '@/modules/workflow/resources/workflowGuides.ts';
-import { getYear } from 'date-fns';
 
 import { readOnlyFields } from '@/modules/workflow/resources/readOnlyList.ts';
 import { resolveBootstrap } from '@/modules/workflow/utils/workflowBootstrap.ts';
