@@ -328,7 +328,6 @@ const initDriver = () => {
     top: 25px;
   }
 
-  position: relative;
   &__list {
     display: flex;
     flex-direction: row;
