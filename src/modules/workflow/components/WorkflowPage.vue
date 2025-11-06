@@ -11,9 +11,11 @@
         <TheWorkflowNavigation
           v-else
           @navigateItem="catchNavigate"
+          :localStorageOnly="workflowStore.isDataSourceLocal"
           :isDatasetEditing="isDatasetEditing"
           :currentDataset="workflowStore?.datasetModel"
           @catchCloseClick="catchCloseClick"
+          @previewClick="catchPreviewClick"
         />
       </v-col>
 
@@ -60,7 +62,7 @@
 import { ref, watch, computed, onMounted, onBeforeUnmount, defineAsyncComponent } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { USER_DASHBOARD_PAGENAME } from '@/router/routeConsts';
+import { METADATADETAIL_PATH, USER_DASHBOARD_PAGENAME } from '@/router/routeConsts';
 import TheWorkflowNavigation from '@/components/Navigation/TheWorkflowNavigation.vue';
 
 import CardLoader from '@/modules/workflow/components/steps/CardLoader.vue';
@@ -316,6 +318,12 @@ const catchCloseClick = () => {
   router.push({ name: USER_DASHBOARD_PAGENAME });
 };
 
+const catchPreviewClick = () => {
+  const routeData = router.resolve({
+    path: `${METADATADETAIL_PATH}/${route?.params?.id}`,
+  });
+  window.open(routeData.href, '_blank');
+};
 const reloadDataset = () => {
   workflowStore.loadDataset(route?.params?.id as string);
 };

@@ -10,6 +10,7 @@
         <!-- Right: close icon -->
         <v-col cols="auto" class="d-flex justify-end">
           <BaseIconButton
+            :disabled="localStorageOnly"
             class="metadataEditCloseButton ma-1 ma-md-0 ml-md-2"
             :icon="iconName('eye')"
             icon-color="black"
@@ -17,7 +18,7 @@
             outlined
             tooltip-text="Show Preview"
             tooltip-bottom
-            @clicked="emit('catchCloseClick')"
+            @clicked="emit('previewClick')"
           />
           <BaseIconButton
             class="metadataEditCloseButton ma-1 ma-md-0 ml-md-2"
@@ -231,10 +232,11 @@ import { WorkflowMode } from '@/modules/workflow/utils/workflowEnums';
 const workflowStore = useDatasetWorkflowStore();
 const display = useDisplay();
 
-const emit = defineEmits(['navigateItem', 'catchCloseClick']);
+const emit = defineEmits(['navigateItem', 'catchCloseClick', 'previewClick']);
 
 // Props
 const props = defineProps({
+  localStorageOnly: Boolean,
   isDatasetEditing: Boolean,
   currentDataset: {
     type: Object,
