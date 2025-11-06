@@ -88,7 +88,7 @@ function updateStepStatusAndErrors(
         errors: null,
       };
 
-  const dataForInit = vm.getModelDataForInit ? vm.getModelDataForInit() : vm.getModelData?.();
+  const dataForInit = vm?.getModelDataForInit ? vm?.getModelDataForInit() : vm?.getModelData();
   const hasAnything = hasDtData(dataForInit);
 
   if (!hasAnything) {

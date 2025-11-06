@@ -72,7 +72,7 @@ import { getSeoSanitizedDataset } from './seoConversions.ts';
 
 const data = useData<DatasetDTO | { jsonLd: object }>();
 const jsonLd = data?.jsonLd;
-delete data.jsonLd;
+delete data?.jsonLd;
 
 const seoData = getSeoSanitizedDataset(data);
 const pageContext = usePageContext();

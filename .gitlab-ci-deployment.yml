@@ -9,21 +9,10 @@ deploy-chromatic:
     # needs the artifact: node_modules to build the app
     #- install-node
     - verify-node-audit
-    - job: verify-node-owasp
-      optional: true
-      artifacts: false
     # needs the artifact: storybook
     - build-storybook
-  before_script:
-    - |
-      if [ -d "node_modules" ] && [ -d "node_modules/.bin" ]; then
-        echo "node_modules directory already exists."
-        ls node_modules/.bin/storybook || echo "/.bin/storybook not found"
-      else
-        echo "node_modules directory not found. Install it!"
-        npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
-      fi
   script:
+    - npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
     # manually deploy the storybook build to chromatic for visual regression testing
     - npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes --storybook-build-dir ./storybook
   # for manual jobs add allow_failure so the whole pipeline won't show up as "blocked"
@@ -48,10 +37,6 @@ publish-build:
     - set-vars
     # make sure to wait for the tests to run correctly
     - run-tests
-    - verify-node-audit
-    - job: verify-node-owasp
-      optional: true
-      artifacts: false
     # needs the artifact: the build of the frontend app and storybook buildenv
     - combine-builds
   before_script:
@@ -89,9 +74,6 @@ deploy-to-s3-bucket:
     # needs the published build for the app and it's storybook
     - publish-build
     - verify-node-audit
-    - job: verify-node-owasp
-      optional: true
-      artifacts: false
   variables:
     GIT_STRATEGY: none
     RCLONE_CONFIG_SWITCH_TYPE: 's3'
@@ -142,9 +124,6 @@ manual-deploy-to-s3-bucket:
     # needs the environmental variables for the version number
     - set-vars
     - verify-node-audit
-    - job: verify-node-owasp
-      optional: true
-      artifacts: false
   variables:
     GIT_STRATEGY: none
     RCLONE_CONFIG_SWITCH_TYPE: 's3'

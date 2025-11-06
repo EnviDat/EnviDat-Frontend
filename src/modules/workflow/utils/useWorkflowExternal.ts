@@ -15,7 +15,7 @@ import {
 
 import { DOI_RESERVE } from '@/modules/user/store/doiMutationsConsts';
 
-import { EDITMETADATA_ORGANIZATION, EDITMETADATA_PUBLICATION_INFO } from '@/factories/eventBus';
+import { EDITMETADATA_PUBLICATION_INFO } from '@/factories/eventBus';
 
 import {
   getUserOrganizationRoleMap,

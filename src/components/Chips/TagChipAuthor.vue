@@ -14,8 +14,8 @@
     :closeable="closeable"
     @click:close="$emit('closeClicked', authorName)"
   >
-    <v-avatar start class="pr-1">
-      <v-icon size="24px" :icon="mdiAccountCircle" />
+    <v-avatar start class="px-2">
+      <v-icon :size="`${isSmall ? 20 : 24}px`" :icon="mdiAccountCircle" />
     </v-avatar>
 
     {{ authorName }}
