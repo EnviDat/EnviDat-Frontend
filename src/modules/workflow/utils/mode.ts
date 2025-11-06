@@ -91,14 +91,12 @@ function updateStepStatusAndErrors(
   const dataForInit = vm.getModelDataForInit ? vm.getModelDataForInit() : vm.getModelData?.();
   const hasAnything = hasDtData(dataForInit);
 
-  if (!vm || !hasAnything) {
+  if (!hasAnything) {
     newStep.completed = false;
     newStep.hasError = false;
     newStep.status = isBackend ? StepStatus.Active : StepStatus.Disabled;
     newStep.errors = null;
-  }
-
-  if (vm) {
+  } else if (vm) {
     // Validate the VM data
     vm.validate?.(dataForInit);
     const hasErrors = Object.values(vm.validationErrors || {}).some(Boolean);
