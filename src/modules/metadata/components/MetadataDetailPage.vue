@@ -47,7 +47,7 @@
               <component :component="entry" :is="entry" v-bind="entry.props" :showPlaceholder="showPlaceholder" />
 
               <template #fallback>
-                <v-card class="pa-4">Loading User Interface...</v-card>
+                <v-skeleton-loader class="mx-auto border" type="heading, paragraph, paragraph, actions" />
               </template>
             </Suspense>
           </v-col>
@@ -61,7 +61,7 @@
               <component :component="entry" :is="entry" v-bind="entry.props" :showPlaceholder="showPlaceholder" />
 
               <template #fallback>
-                <v-card class="pa-4">Loading User Interface...</v-card>
+                <v-skeleton-loader class="mx-auto border" type="heading, paragraph, paragraph, actions" />
               </template>
             </Suspense>
           </v-col>
@@ -593,7 +593,7 @@ export default {
 
       this.MetadataCitation.props = {
         ...this.citation,
-        showCitation: this.metadataContent.showShallowCitation,
+        showCitation: this.metadataContent?.showShallowCitation,
       };
 
       let publicationList;
