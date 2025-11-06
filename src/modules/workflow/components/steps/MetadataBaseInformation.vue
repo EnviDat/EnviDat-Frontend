@@ -13,38 +13,26 @@
     <!-- Info Banner -->
 
     <v-row>
-      <v-col class="mb-5 pt-0 pb-0 justify-end d-flex">
-        <v-icon v-if="!showInfoBanner" @click="openInfoBanner" :icon="mdiInformationOutline" class="align-end"></v-icon>
-        <v-alert
-          v-if="showInfoBanner"
-          type="info"
-          closable
-          @click:close="closeInfoBanner()"
-          :icon="false"
-          class="rounded-lg info-banner"
-        >
-          <v-alert-title class="mb-2">Information</v-alert-title>
-          <p>
-            This section defines the main identification metadata of your dataset. These fields are essential for
-            discovery and citation of your data.
-          </p>
+      <InfoBanner :show="showInfoBanner" :icon="mdiInformationOutline" @setInfoBanner="$emit('setInfoBanner', $event)">
+        <p>
+          This section defines the main identification metadata of your dataset. These fields are essential for
+          discovery and citation of your data.
+        </p>
 
-          <p><strong>Tips:</strong></p>
-          <ol>
-            <li>- Choose a clear and descriptive title.</li>
-            <li>- Use keywords that reflect the content, methods, and geography of your data.</li>
-            <li>
-              - In the description, provide enough context so other researchers can understand what your dataset
-              contains, how it was generated, and any limitations.
-            </li>
-          </ol>
+        <p><strong>Tips:</strong></p>
+        <ol>
+          <li>Choose a clear and descriptive title.</li>
+          <li>Use keywords that reflect the content, methods, and geography of your data.</li>
+          <li>
+            In the description, provide enough context so other researchers can understand what your dataset contains,
+            how it was generated, and any limitations.
+          </li>
+        </ol>
 
-          <p class="mt-2">
-            You can format the description using <strong>Markdown</strong>
-            (e.g., lists, links, bold text).
-          </p>
-        </v-alert>
-      </v-col>
+        <p class="mt-2">
+          You can format the description using <strong>Markdown</strong> (e.g., lists, links, bold text).
+        </p>
+      </InfoBanner>
     </v-row>
 
     <!-- Preview -->
@@ -210,6 +198,8 @@ import { enhanceTitleImg } from '@/factories/metaDataFactory.js';
 
 import { isReadOnlyField, getReadOnlyHint } from '@/modules/workflow/utils/useReadonly';
 
+import InfoBanner from '@/modules/workflow/components/steps/InformationBanner.vue';
+
 export default {
   name: 'MetadataBaseInformation',
   props: {
@@ -303,14 +293,6 @@ export default {
     },
   },
   methods: {
-    openInfoBanner() {
-      this.$emit('setInfoBanner', true);
-      window.localStorage.setItem('metadataBaseInfoBannerClosed', 'True');
-    },
-    closeInfoBanner() {
-      this.$emit('setInfoBanner', false);
-      window.localStorage.setItem('metadataBaseInfoBannerClosed', 'False');
-    },
     keywordsChanged() {
       this.$emit('save', { keywords: this.newDatasetInfo.keywords });
     },
@@ -448,14 +430,7 @@ export default {
       return getReadOnlyHint(dateProperty);
     },
   },
-  mounted() {
-    const ls = localStorage.getItem('metadataBaseInfoBannerClosed') === 'True';
-    if (ls) {
-      this.$emit('setInfoBanner', true);
-    } else {
-      this.$emit('setInfoBanner', false);
-    }
-  },
+
   data: () => ({
     mdiPaletteSwatch,
     mdiArrowDownDropCircleOutline,
@@ -497,6 +472,7 @@ export default {
     MetadataDescription,
     MetadataHeader,
     TagChip,
+    InfoBanner,
     // BaseStatusLabelView,
     GenericTextareaPreviewLayout,
   },

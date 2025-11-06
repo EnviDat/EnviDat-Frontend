@@ -9,42 +9,36 @@
 
     <!-- Info Banner -->
     <v-row>
-      <v-col class="mb-5 pt-0 pb-0">
-        <v-alert type="info" closable :icon="false" class="rounded-lg info-banner">
-          <v-alert-title class="mb-2">Information</v-alert-title>
+      <InfoBanner :show="showInfoBanner" :icon="mdiInformationOutline" @setInfoBanner="$emit('setInfoBanner', $event)">
+        <p>
+          This section allows you to provide access to the actual data or related resources of your dataset. These can
+          be files, links to repositories, or online services.
+        </p>
 
-          <p>
-            This section allows you to provide access to the actual data or related resources of your dataset. These can
-            be files, links to repositories, or online services.
-          </p>
+        <p><strong>Tips:</strong></p>
+        <ol>
+          <li>
+            - You can either <strong>upload files directly</strong> or <strong>provide links</strong> to external
+            resources (e.g., data hosted on other platforms).
+          </li>
+          <li>
+            - When adding a resource via a link, make sure to specify its
+            <strong>file format</strong> (e.g., CSV, GeoTIFF) and <strong>file size</strong> to help users assess it.
+          </li>
+          <li>- Use clear and descriptive <strong>titles</strong> for each resource to improve discoverability.</li>
+          <li>
+            - If your resources are DORA publications, please add them in the
+            <em>Related Publications</em> step instead.
+          </li>
+          <li>
+            - You can <strong>reorder resources</strong> using drag-and-drop to reflect importance or logical sequence.
+          </li>
+        </ol>
 
-          <p><strong>Tips:</strong></p>
-          <ol>
-            <li>
-              - You can either <strong>upload files directly</strong> or <strong>provide links</strong> to external
-              resources (e.g., data hosted on other platforms).
-            </li>
-            <li>
-              - When adding a resource via a link, make sure to specify its
-              <strong>file format</strong> (e.g., CSV, GeoTIFF) and <strong>file size</strong> to help users assess it.
-            </li>
-            <li>- Use clear and descriptive <strong>titles</strong> for each resource to improve discoverability.</li>
-            <li>
-              - If your resources are DORA publications, please add them in the
-              <em>Related Publications</em> step instead.
-            </li>
-            <li>
-              - You can <strong>reorder resources</strong> using drag-and-drop to reflect importance or logical
-              sequence.
-            </li>
-          </ol>
-
-          <p class="mt-2">
-            Adding meaningful and well-described resources greatly enhances the usability and visibility of your
-            dataset.
-          </p>
-        </v-alert>
-      </v-col>
+        <p class="mt-2">
+          Adding meaningful and well-described resources greatly enhances the usability and visibility of your dataset.
+        </p>
+      </InfoBanner>
     </v-row>
 
     <v-row>
@@ -124,6 +118,8 @@ import {
   USER_SIGNIN_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts.js';
 
+import { mdiInformationOutline } from '@mdi/js';
+
 import { updateEditingArray } from '@/factories/userEditingFactory.js';
 
 import ResourcesListEditing from '@/modules/workflow/components/steps/ResourcesListEditing.vue';
@@ -134,55 +130,23 @@ import type { Resource } from '@/types/modelTypes';
 import { mergeResourceSizeForFrontend } from '@/factories/resourceHelpers.ts';
 import ResourceEditing from '@/modules/workflow/components/steps/ResourceEditing.vue';
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow.ts';
+import InfoBanner from '@/modules/workflow/components/steps/InformationBanner.vue';
 
 export default {
   name: 'ResourcesInformation',
   props: {
-    resources: {
-      type: Array,
-      default: () => [],
-    },
-    dataLicenseTitle: {
-      type: String,
-      default: undefined,
-    },
-    dataLicenseUrl: {
-      type: String,
-      default: undefined,
-    },
-    datasetId: {
-      type: String,
-      default: '',
-    },
-    loading: {
-      type: Boolean,
-      default: false,
-    },
-    message: {
-      type: String,
-      default: '',
-    },
-    messageDetails: {
-      type: String,
-      default: null,
-    },
-    error: {
-      type: String,
-      default: '',
-    },
-    errorDetails: {
-      type: String,
-      default: null,
-    },
-    validationErrors: {
-      type: Object,
-      default: () => ({}),
-    },
-
-    userEditMetadataConfig: {
-      type: Object,
-      default: undefined,
-    },
+    resources: { type: Array, default: () => [] },
+    dataLicenseTitle: { type: String, default: undefined },
+    dataLicenseUrl: { type: String, default: undefined },
+    datasetId: { type: String, default: '' },
+    loading: { type: Boolean, default: false },
+    message: { type: String, default: '' },
+    messageDetails: { type: String, default: null },
+    error: { type: String, default: '' },
+    errorDetails: { type: String, default: null },
+    validationErrors: { type: Object, default: () => ({}) },
+    showInfoBanner: { type: Boolean, default: true },
+    userEditMetadataConfig: { type: Object, default: undefined },
   },
   emits: ['save', 'reload', 'delete'],
   created() {
@@ -261,9 +225,7 @@ export default {
         validationErrors: this.validationErrors,
         dataLicenseTitle: this.dataLicenseTitle,
         dataLicenseUrl: this.dataLicenseUrl,
-        resourcesConfig: {
-          downloadActive: false,
-        },
+        resourcesConfig: { downloadActive: false },
       };
     },
     resourceEditingProps() {
@@ -284,12 +246,7 @@ export default {
         // TODO Error tracking
       }
 
-      return {
-        ...this.resourceViewModel,
-        ...mergedSize,
-        userEditMetadataConfig,
-        envidatUsers: this.allEnviDatUsers,
-      };
+      return { ...this.resourceViewModel, ...mergedSize, userEditMetadataConfig, envidatUsers: this.allEnviDatUsers };
     },
     resourceUploadProps() {
       return {
@@ -319,10 +276,7 @@ export default {
       if (this.$store && !this.envidatUsers && this.user) {
         this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`, {
           action: ACTION_GET_USER_LIST,
-          body: {
-            id: this.user.id,
-            include_datasets: true,
-          },
+          body: { id: this.user.id, include_datasets: true },
           commit: true,
           mutation: GET_USER_LIST,
         });
@@ -416,9 +370,7 @@ export default {
       const resourceModelData = this.resourceViewModel.getModelData<Resource>();
       currentResources.push(resourceModelData);
 
-      this.$emit('save', {
-        resources: currentResources,
-      });
+      this.$emit('save', { resources: currentResources });
       /*
       // resource exists already, get it from uploadResource
       const newRes = this.$store?.getters[`${USER_NAMESPACE}/uploadResource`];
@@ -447,10 +399,7 @@ export default {
         const updatedResources = updateEditingArray(
           this.resources,
           // make sure keep the deprecated flag
-          {
-            ...this.resourceViewModel.backendJSON,
-            deprecated: resource.deprecated,
-          },
+          { ...this.resourceViewModel.backendJSON, deprecated: resource.deprecated },
           'id',
         );
 
@@ -505,6 +454,7 @@ export default {
     },
   },
   data: () => ({
+    mdiInformationOutline,
     EDIT_METADATA_RESOURCES_TITLE,
     localResCounter: 0,
     envidatDomain: import.meta.env.VITE_API_ROOT,
@@ -523,12 +473,7 @@ export default {
     resourceViewModel: undefined,
     workflowStore: useDatasetWorkflowStore(),
   }),
-  components: {
-    ResourcesListEditing,
-    ResourceUpload,
-    ResourcesPasteUrl,
-    ResourceEditing,
-  },
+  components: { ResourcesListEditing, ResourceUpload, ResourcesPasteUrl, ResourceEditing, InfoBanner },
 };
 </script>
 

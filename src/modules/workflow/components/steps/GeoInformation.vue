@@ -7,41 +7,37 @@
 
     <!-- Info Banner -->
     <v-row>
-      <v-col class="mb-5 pt-0 pb-0">
-        <v-alert type="info" closable :icon="false" class="rounded-lg info-banner">
-          <v-alert-title class="mb-2">Information</v-alert-title>
+      <InfoBanner :show="showInfoBanner" :icon="mdiInformationOutline" @setInfoBanner="$emit('setInfoBanner', $event)">
+        <p>
+          This section allows you to specify the geographic area relevant to your dataset. Accurate geospatial data
+          improves discoverability and helps users understand the spatial context of your research.
+        </p>
 
-          <p>
-            This section allows you to specify the geographic area relevant to your dataset. Accurate geospatial data
-            improves discoverability and helps users understand the spatial context of your research.
-          </p>
+        <p><strong>Tips:</strong></p>
+        <ol>
+          <li>
+            - Use the map tools to draw or adjust geometries directly. You can zoom, pan, and switch tile layers for
+            better accuracy.
+          </li>
+          <li>
+            - If your dataset covers a large or complex area, consider uploading a valid
+            <strong>GeoJSON</strong> file.
+          </li>
+          <li>
+            - The default geometry includes Switzerland. Replace or modify it to better reflect your dataset's scope.
+          </li>
+          <li>
+            - Use the <strong>text editor</strong> for fine-tuned control over coordinates, or switch to the tree/table
+            view for easier navigation.
+          </li>
+          <li>- Ensure the geometry is valid GeoJSON. Invalid JSON will prevent you from proceeding.</li>
+        </ol>
 
-          <p><strong>Tips:</strong></p>
-          <ol>
-            <li>
-              - Use the map tools to draw or adjust geometries directly. You can zoom, pan, and switch tile layers for
-              better accuracy.
-            </li>
-            <li>
-              - If your dataset covers a large or complex area, consider uploading a valid
-              <strong>GeoJSON</strong> file.
-            </li>
-            <li>
-              - The default geometry includes Switzerland. Replace or modify it to better reflect your dataset's scope.
-            </li>
-            <li>
-              - Use the <strong>text editor</strong> for fine-tuned control over coordinates, or switch to the
-              tree/table view for easier navigation.
-            </li>
-            <li>- Ensure the geometry is valid GeoJSON. Invalid JSON will prevent you from proceeding.</li>
-          </ol>
-
-          <p class="mt-2">
-            Also provide <strong>Time Information</strong> about when the data was collected or created. These fields
-            help contextualize your dataset for future reuse.
-          </p>
-        </v-alert>
-      </v-col>
+        <p class="mt-2">
+          Also provide <strong>Time Information</strong> about when the data was collected or created. These fields help
+          contextualize your dataset for future reuse.
+        </p>
+      </InfoBanner>
     </v-row>
 
     <!-- Map + errors -->
@@ -193,7 +189,7 @@
 </template>
 
 <script>
-import { mdiContentSave, mdiFileUpload } from '@mdi/js';
+import { mdiContentSave, mdiFileUpload, mdiInformationOutline } from '@mdi/js';
 import { check } from '@placemarkio/check-geojson';
 import { createJSONEditor, SelectionType } from 'vanilla-jsoneditor';
 import { useDropZone } from '@vueuse/core';
@@ -217,13 +213,11 @@ import { convertGeoJSONToGeoCollection, defaultSwissLocation } from '@/factories
 
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
 
+import InfoBanner from '@/modules/workflow/components/steps/InformationBanner.vue';
+
 export default {
   name: 'EditDataGeo',
-  components: {
-    MetadataGeo,
-    BaseRectangleButton,
-    BaseStartEndDate,
-  },
+  components: { MetadataGeo, BaseRectangleButton, BaseStartEndDate, InfoBanner },
   props: {
     mapDivId: { type: String, default: 'map-small' },
     dates: { type: Array, default: () => [] },
@@ -232,10 +226,7 @@ export default {
     mapEditable: { type: Boolean, default: true },
     showFullscreenButton: { type: Boolean, default: false },
     layerConfig: { type: Object, default: null },
-    location: {
-      type: Object,
-      default: () => ({ geoJSON: defaultSwissLocation }),
-    },
+    location: { type: Object, default: () => ({ geoJSON: defaultSwissLocation }) },
     validationErrors: { type: Object, default: () => ({}) },
     loading: Boolean,
     message: String,
@@ -244,17 +235,17 @@ export default {
     errorDetails: String,
     readOnlyFields: { type: Array, default: () => [] },
     readOnlyExplanation: { type: String, default: '' },
+    showInfoBanner: { type: Boolean, default: true },
   },
   data() {
     return {
+      mdiInformationOutline,
       mdiContentSave,
       mdiFileUpload,
       activePanel: null,
       workflowStore: null,
 
-      newGeoInfo: {
-        geometries: convertGeoJSONToGeoCollection(defaultSwissLocation).geometries,
-      },
+      newGeoInfo: { geometries: convertGeoJSONToGeoCollection(defaultSwissLocation).geometries },
       geomsForMap: convertGeoJSONToGeoCollection(defaultSwissLocation),
       jsonEditor: undefined,
       editorSelection: undefined,
