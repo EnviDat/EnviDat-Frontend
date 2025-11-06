@@ -143,6 +143,9 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
       if (!key) return state.loading;
       return (state.loaders[key] ?? 0) > 0;
     },
+    isDataSourceLocal() {
+      return this.dataSource === 'local';
+    },
   },
   actions: {
     setInfoBanner(status: boolean | undefined) {
