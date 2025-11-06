@@ -1,5 +1,5 @@
 <template>
-  <v-card id="TextPreviewCard">
+  <v-card id="TextPreviewCard" flat>
     <v-card-text v-if="fileContent && !enableMarkdown" style="white-space: break-spaces">
       {{ fileContent }}
     </v-card-text>
