@@ -16,6 +16,7 @@ import { ExtrasDTO } from '@/types/dataTransferObjectsTypes';
 const DataPreviewIframe = () => import('@/modules/metadata/components/ResourcePreviews/DataPreviewIframe.vue');
 const ImagePreviewCard = () => import('@/modules/metadata/components/ResourcePreviews/ImagePreviewCard.vue');
 const TextPreviewCard = () => import('@/modules/metadata/components/ResourcePreviews/TextPreviewCard.vue');
+const PdfPreviewCard = () => import('@/modules/metadata/components/ResourcePreviews/PdfPreviewCard.vue');
 const VideoPreviewCard = () => import('@/modules/metadata/components/ResourcePreviews/VideoPreviewCard.vue');
 
 const ResourceDataViz = () => import('@/modules/charts/components/ResourceDataViz.vue');
@@ -48,6 +49,10 @@ const previewComponentStrategies: PreviewComponentStrategy[] = [
   {
     keys: ['txt', 'md'],
     component: TextPreviewCard,
+  },
+  {
+    keys: ['pdf'],
+    component: PdfPreviewCard,
   },
   {
     keys: ['jpg', 'png', 'jpeg', 'gif', 'webp'],
@@ -147,8 +152,16 @@ export function getPreviewComponent(key: string): AsyncComponentLoader | undefin
 }
 
 function inAnyPreviewKeys(extension: string) {
-  const allKeys = previewComponentStrategies.map((strat) => strat.key);
-  return allKeys.includes(extension);
+  const flatkeys: string[] = [];
+
+  for (let i = 0; i < previewComponentStrategies.length; i++) {
+    const strat = previewComponentStrategies[i];
+    for (let j = 0; j < strat.keys.length; j++) {
+      flatkeys.push(strat.keys[j]);
+    }
+  }
+
+  return flatkeys.includes(extension);
 }
 export function getPreviewComponentFromUrl(url: string): AsyncComponentLoader | undefined {
   const fileExtension = getUrlExtension(url);
