@@ -229,6 +229,8 @@ import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import { WorkflowMode } from '@/modules/workflow/utils/workflowEnums';
 
+import { mapPublicationState } from '@/modules/workflow/utils/publicationState';
+
 const workflowStore = useDatasetWorkflowStore();
 const display = useDisplay();
 
@@ -254,9 +256,8 @@ const doi = computed(() => {
 const hasDoi = computed(() => !!(doi.value && doi.value.trim()));
 
 const publicationState = computed(() => {
-  if (!isBackend.value) return 'Draft';
   const state = workflowStore.backendStorageService?.dataset?.publication_state;
-  return (state ?? '').toString().trim() || 'Draft';
+  return mapPublicationState(state);
 });
 
 const doiLoading = computed(() => workflowStore.isLoading?.('doi') === true);
