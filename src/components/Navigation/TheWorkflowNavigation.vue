@@ -252,9 +252,12 @@ const doi = computed(() => {
 });
 
 const hasDoi = computed(() => !!(doi.value && doi.value.trim()));
-const publicationState = computed(() =>
-  isBackend.value ? (workflowStore.backendStorageService?.dataset?.publication_state ?? 'Draft') : 'Draft',
-);
+
+const publicationState = computed(() => {
+  if (!isBackend.value) return 'Draft';
+  const state = workflowStore.backendStorageService?.dataset?.publication_state;
+  return (state ?? '').toString().trim() || 'Draft';
+});
 
 const doiLoading = computed(() => workflowStore.isLoading?.('doi') === true);
 
