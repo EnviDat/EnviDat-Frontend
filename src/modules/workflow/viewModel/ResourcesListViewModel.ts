@@ -41,6 +41,11 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
     super(datasetModel, ResourcesListViewModel.mappingRules());
   }
 
+  // TODO Check with Dominik, this was added to fix an issue with validation at first load
+  override getModelDataForInit() {
+    return { resources: this.resources ?? [] };
+  }
+
   getFormattedResources(
     rawResources: ResourceDTO[],
     datasetName: string,
