@@ -162,7 +162,7 @@ export default {
       this.selectedTextIndex = index;
     },
     validate(payload) {
-      this.newDatasetInfo.relatedPublicationsText = payload;
+      // this.newDatasetInfo.relatedPublicationsText = payload;
       this.$emit('validate', this.newDatasetInfo);
     },
     catchSaveText(citationText) {

@@ -21,7 +21,7 @@
           :disabled="!!pidField"
           hide-details
           :prepend-icon="mdiFingerprint"
-          @update:modelValue="(event) => doiChange(event.target.value)"
+          @update:model-value="(event) => doiChange(event)"
         />
       </v-col>
 
