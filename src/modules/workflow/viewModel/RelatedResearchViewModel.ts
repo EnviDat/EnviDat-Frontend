@@ -21,11 +21,8 @@ export class RelatedResearchViewModel extends AbstractEditViewModel {
   };
 
   validationRules = yup.object().shape({
-    relatedPublicationsText: yup
-      .string()
-      .nullable()
-      .transform(convertEmptyStringToNull)
-      .min(10, 'Write at least 10 characters to describe the related publications.'),
+    relatedPublicationsText: yup.string().nullable().transform(convertEmptyStringToNull),
+    // .min(10, 'Write at least 10 characters to describe the related publications.'),
 
     relatedDatasetsText: yup
       .string()
