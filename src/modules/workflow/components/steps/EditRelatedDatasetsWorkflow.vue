@@ -31,8 +31,8 @@
             :validationError="validationErrors.relatedDatasetsText"
             :readonly="isReadOnly(editingProperty)"
             :hint="readOnlyHint(editingProperty)"
-            @inputedText="catchInputedText($event)"
-            @changedText="catchChangedText($event)"
+            @inputedText="(event) => catchInputedText(event)"
+            @changedText="(event) => catchChangedText(event.target.value)"
           >
             <MetadataRelatedDatasets v-bind="datasetObject" />
           </GenericTextareaPreviewLayout>

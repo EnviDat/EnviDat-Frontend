@@ -311,8 +311,8 @@ export default {
       this.$emit('validate', { metadataDescription: value });
     },
     onDescriptionChange(value) {
-      this.newDatasetInfo.metadataDescription = value;
-      this.$emit('save', { metadataDescription: value });
+      this.newDatasetInfo.metadataDescription = value.target.value;
+      this.$emit('save', { metadataDescription: value.target.value });
     },
     blurOnEnterKey(keyboardEvent) {
       if (keyboardEvent.key === 'Enter') {
