@@ -13,7 +13,6 @@
       </v-col>
 
       <v-col cols="12" xl="1" style="text-align: center" class="text-h6 px-md-4 flex-grow-0"> Or </v-col>
-
       <v-col cols="12" xl="4">
         <v-text-field
           v-model="doiField"
@@ -66,6 +65,7 @@
     <v-row>
       <v-col>
         <!-- @changedText="catchChangedText($event)" -->
+
         <GenericTextareaPreviewLayout
           v-if="showTextArea"
           :validationError="validationErrors.relatedPublicationsText"
@@ -73,6 +73,7 @@
           v-bind="genericTextAreaObject"
           @inputedText="catchInputedText($event)"
         >
+          <!-- :hint="'Write at least 10 characters to describe the related publications.'" -->
         </GenericTextareaPreviewLayout>
       </v-col>
     </v-row>
@@ -169,6 +170,7 @@ export default {
       type: Object,
       default: () => {},
     },
+
     hint: {
       type: String,
       default: '',
@@ -202,7 +204,7 @@ export default {
     genericTextAreaObject() {
       return {
         isVerticalLayout: true,
-        textareaContent: this.selectedPlainText,
+        textareaContent: this.plainText ?? this.selectedPlainText ?? '',
       };
     },
     pidField: {
@@ -251,6 +253,7 @@ export default {
       this.isEditMode = true;
       this.showTextArea = true;
       this.filledTextArea = citationText;
+      this.plainText = citationText;
 
       const textAreaController = this.$refs.textAreaController;
       if (textAreaController) {
@@ -272,19 +275,16 @@ export default {
       this.isEditMode = !this.isEditMode;
     },
     catchInputedText(value) {
-      const previewPlainText = {
+      this.plainText = value;
+      this.$emit('validate', value);
+      this.isInputTextValid = this.validationErrors.relatedPublicationsText === null && this.plainText.length >= 10;
+
+      this.previewCitation = {
         doi: null,
         doiUrl: null,
         citation: value,
         abstract: null,
       };
-
-      this.previewCitation = previewPlainText;
-
-      this.isInputTextValid = this.validationErrors.relatedPublicationsText === null;
-
-      this.plainText = value;
-      this.$emit('validate', this.plainText);
     },
     pidChange(pid) {
       if (!this.isResolving) {

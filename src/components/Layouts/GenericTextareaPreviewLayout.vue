@@ -46,7 +46,7 @@
           :error-messages="validationError"
           :model-value="textareaContent"
           @update:model-value="catchInputedText($event)"
-          @change="catchChangedText($event.target.value)"
+          @change="catchChangedText($event)"
         >
         </v-textarea>
       </v-col>

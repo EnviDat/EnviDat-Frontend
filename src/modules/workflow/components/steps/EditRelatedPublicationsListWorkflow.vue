@@ -150,10 +150,33 @@ export default {
       };
     },
     // previewPublicationsText() {
-    //   return this.previewText ? this.previewText : this.relatedPublicationsText;
+    //   return {
+    //     text: this.relatedPublicationsText,
+    //     maxTextLength: 2000,
+    //     showPlaceholder: this.loading,
+    //   };
     // },
   },
   methods: {
+    toLines(str = '') {
+      return String(str)
+        .split('\n')
+        .map((s) => s.trim())
+        .filter(Boolean);
+    },
+    mergeLines(existingStr = '', incomingStr = '') {
+      const existing = this.toLines(existingStr);
+      const incoming = this.toLines(incomingStr);
+      const seen = new Set(existing);
+      const merged = [...existing];
+      for (const line of incoming) {
+        if (!seen.has(line)) {
+          merged.push(line);
+          seen.add(line);
+        }
+      }
+      return merged.join('\n');
+    },
     catchUpdateText(newRelatedText) {
       this.catchChangedText(newRelatedText);
     },
@@ -162,11 +185,11 @@ export default {
       this.selectedTextIndex = index;
     },
     validate(payload) {
-      // this.newDatasetInfo.relatedPublicationsText = payload;
-      this.$emit('validate', this.newDatasetInfo);
+      this.$emit('validate', { field: 'relatedPublicationsText', value: payload });
     },
     catchSaveText(citationText) {
-      this.newDatasetInfo.relatedPublicationsText = citationText;
+      const merged = this.mergeLines(this.relatedPublicationsText, this.previewText ?? citationText ?? '');
+      this.newDatasetInfo.relatedPublicationsText = merged;
       this.$emit('save', this.newDatasetInfo);
       this.updatedCitation = citationText;
     },
@@ -176,27 +199,10 @@ export default {
       this.updatedCitation = undefined;
     },
     catchAddPublication({ pid, doi, plainText }) {
-      this.previewPid = pid;
-      this.previewDoi = doi;
-
-      let value = pid;
-      if (doi) {
-        value = doi;
-      } else if (plainText) {
-        value = plainText;
-      }
-
-      if (value) {
-        if (!this.relatedPublicationsText?.includes(value)) {
-          // old version
-          // const newText = `${this.relatedPublicationsText}\n ${value}`;
-          // new version
-          const base = this.previewText ?? this.relatedPublicationsText ?? '';
-          const newText = `${base}\n${value}`;
-
-          this.catchChangedText(newText);
-        }
-      }
+      const value = doi || pid || plainText;
+      if (!value) return;
+      const merged = this.mergeLines(this.relatedPublicationsText, value);
+      this.setRelatedPublicationsText(merged);
     },
     catchChangedText(value) {
       if (this.validationErrors.relatedPublicationsText === null) {
