@@ -14,7 +14,7 @@
             :error-messages="validationError"
             :model-value="textareaContent"
             @update:model-value="catchInputedText($event)"
-            @change="catchChangedText($event.target.value)"
+            @change="catchChangedText($event)"
           >
           </v-textarea>
         </v-col>
@@ -46,7 +46,7 @@
           :error-messages="validationError"
           :model-value="textareaContent"
           @update:model-value="catchInputedText($event)"
-          @change="catchChangedText($event.target.value)"
+          @change="catchChangedText($event)"
         >
         </v-textarea>
       </v-col>
@@ -131,11 +131,11 @@ export default {
     },
   },
   methods: {
-    catchInputedText(event) {
-      this.$emit('inputedText', event);
+    catchInputedText(value) {
+      this.$emit('inputedText', value);
     },
-    catchChangedText(event) {
-      this.$emit('changedText', event);
+    catchChangedText(value) {
+      this.$emit('changedText', value);
     },
   },
 };
