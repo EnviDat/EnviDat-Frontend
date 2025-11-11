@@ -126,24 +126,6 @@
           </v-col>
         </v-row>
 
-        <v-row>
-          <v-col>
-            <BaseIconSwitch
-              :active="isDataDeprecated"
-              :disabled="!editingRestrictingActive"
-              :icon="mdiCancel"
-              class="mt-2"
-              :tooltipText="labels.dataDeprecatedSwitchTooltip"
-              @clicked="isDataDeprecated = !isDataDeprecated"
-              :label="labels.dataDeprecatedSwitchLabel"
-            />
-          </v-col>
-
-          <v-col v-show="isDataDeprecated">
-            {{ labels.dataDeprecatedSwitchInfo }}
-          </v-col>
-        </v-row>
-
         <v-row id="format" no-gutters class="pt-5">
           <v-col cols="12" md="6" class="pr-md-4">
             <v-row no-gutters>
@@ -218,6 +200,27 @@
               :disabled="loading"
               :model-value="readableLastModified"
             />
+          </v-col>
+        </v-row>
+
+        <v-row class="mt-2">
+          <v-col cols="12" class="text-h6">{{ labels.dataDeprecatedTitle }}</v-col>
+          <v-col cols="4">
+            <BaseIconSwitch
+              :active="isDataDeprecated"
+              :disabled="!editingRestrictingActive"
+              :icon="mdiCancel"
+              class="mt-2"
+              :tooltipText="labels.dataDeprecatedSwitchTooltip"
+              @clicked="isDataDeprecated = !isDataDeprecated"
+              :label="labels.dataDeprecatedSwitchLabel"
+            />
+          </v-col>
+
+          <v-col>
+            <v-alert :type="isDataDeprecated ? 'warning' : 'info'">
+              {{ labels.dataDeprecatedSwitchInfo }}
+            </v-alert>
           </v-col>
         </v-row>
 
@@ -900,6 +903,7 @@ export default {
       dataDeprecatedSwitchTooltip: 'Deprecated resources are grayed out and at the bottom of the list',
       dataDeprecatedSwitchInfo:
         'Deprecated resources are grayed out and at the bottom of the list. Make sure you provide an updated replacement!',
+      dataDeprecatedTitle: 'Deprecated Resource',
     },
     saveButtonEnabled: false,
     fileSizeIcon: getIconImage('fileSize'),
