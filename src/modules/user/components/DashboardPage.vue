@@ -340,7 +340,7 @@ export default {
       return this.userEditMetadataConfig?.datasetCreationActive || false;
     },
     newWorkflowActive() {
-      return this.userEditMetadataConfig?.newWorkflowActive || false;
+      return this.config.userEditMetadataConfig?.newWorkflowActive || false;
     },
     loading() {
       return (

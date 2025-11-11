@@ -21,17 +21,32 @@
             - You can either <strong>upload files directly</strong> or <strong>provide links</strong> to external
             resources (e.g., data hosted on other platforms).
           </li>
+          <li>- Use clear and descriptive <strong>titles</strong> for each resource to improve discoverability.</li>
+          <li>
+            - filename/extension automatically get converted to lowercase. To preserve uppercase extensions (e.g., .R),
+            please upload a compressed (.zip) version of your file.
+          </li>
           <li>
             - When adding a resource via a link, make sure to specify its
             <strong>file format</strong> (e.g., CSV, GeoTIFF) and <strong>file size</strong> to help users assess it.
           </li>
-          <li>- Use clear and descriptive <strong>titles</strong> for each resource to improve discoverability.</li>
           <li>
             - If your resources are DORA publications, please add them in the
             <em>Related Publications</em> step instead.
           </li>
           <li>
             - You can <strong>reorder resources</strong> using drag-and-drop to reflect importance or logical sequence.
+          </li>
+          <li>
+            - <strong>Deleting of a resource</strong> is not possible once you published your dataset. You have to
+            upload a new version and mark the old as deprecated, but it has to still be visible due the DOI
+            restrictions.
+          </li>
+          <li>
+            - <strong>Updating a resource</strong> when the dataset is published its the same as with deleting a
+            resource. Mark it as deprecated and upload a new version. Make sure you adjust the description accordingly.
+            If the dataset is not published yet, do the same and send an email to
+            <a href="mailto:envidat@wsl.ch">envidat@wsl.ch</a> then we can remove the old one.
           </li>
         </ol>
 

@@ -32,6 +32,7 @@ import { makeMaintainerFromUser } from '@/modules/workflow/utils/formatPostData'
 import { LOCAL_DATASET_KEY } from '@/factories/metadataConsts';
 
 const MAX_LOCAL_CREATE_STEP_ID = 3;
+const LAST_EDITED_DATASET_KEY = 'workflow:lastEditedDataset';
 
 /*
 import datasets from '~/stories/js/metadata.js';
@@ -72,6 +73,9 @@ export interface DatasetWorkflowState {
   currentUser?: any;
   currentInfoBannerStatus?: boolean;
 
+  lastEditedDataset?: string;
+  lastEditedDatasetPath?: string;
+  lastEditedBackPath?: string;
   /*
   workflowGuide: ({ popover: { description: string; title: string }; element: string } | {
     popover: { description: string; title: string };
@@ -117,6 +121,10 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     dataSource: 'local' as const,
     currentUser: undefined,
     currentInfoBannerStatus: undefined,
+
+    lastEditedDataset: undefined,
+    lastEditedDatasetPath: undefined,
+    lastEditedBackPath: undefined,
   }),
   getters: {
     // GET the current step component
@@ -520,6 +528,12 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
 
       // 3) fallback: resta dov'eri (o clamp al limite)
       return Math.min(fromId, maxIdx);
+    },
+    // SET Last edited dataset ID and path
+    setLastEditedDataset(name?: string, path?: string, backPath?: string) {
+      this.lastEditedDataset = name ?? undefined;
+      this.lastEditedDatasetPath = path ?? undefined;
+      this.lastEditedBackPath = backPath ?? undefined;
     },
   },
 });
