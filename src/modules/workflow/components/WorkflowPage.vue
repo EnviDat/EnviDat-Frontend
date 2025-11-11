@@ -333,7 +333,12 @@ const catchConfirmSave = async () => {
 };
 
 const catchCloseClick = () => {
-  router.push({ name: USER_DASHBOARD_PAGENAME });
+  const back = workflowStore.lastEditedBackPath;
+  if (back) {
+    router.push(back);
+  } else {
+    router.push({ name: USER_DASHBOARD_PAGENAME });
+  }
 };
 
 const catchPreviewClick = () => {
@@ -423,6 +428,12 @@ onMounted(async () => {
     }
 
     await workflowStore.bootstrapWorkflow(id);
+
+    // SET last edited dataset in the store
+    const lastDsName =
+      workflowStore.datasetModel?.dataset?.name || workflowStore.datasetModel?.dataset?.id || (id as string);
+    const backPath = (route.query?.backPath as string) || undefined;
+    workflowStore.setLastEditedDataset(lastDsName, route.fullPath, backPath);
 
     // SET loader for organizations and datasets
     await workflowStore.withLoadingAll([loadUserOrganizations(), fetchUserDatasets()]);
