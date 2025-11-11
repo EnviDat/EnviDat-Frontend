@@ -38,7 +38,7 @@
       :signedInUser="user"
       :signInDisabled="signinDisabled"
       :userNavigationItems="userMenuItems"
-      :editingDatasetName="lastEditedDataset"
+      :editingDatasetName="editingDatasetNameSmart"
       @userMenuItemClick="catchUserItemClicked"
       @signinClick="catchSigninClicked"
       @homeClick="catchHomeClicked"
@@ -229,6 +229,8 @@ export default {
 
     const strShowCookieInfo = localStorage.getItem(ENVIDAT_SHOW_COOKIE_BANNER);
     this.showCookieInfo = strShowCookieInfo !== 'false';
+
+    this.tryInitWorkflowStore();
   },
   beforeUnmount() {
     eventBus.off(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
@@ -245,6 +247,15 @@ export default {
     this.updateActiveStateOnNavItems();
   },
   methods: {
+    async tryInitWorkflowStore() {
+      if (this.workflowStore) return;
+      const active = this.config?.userEditMetadataConfig?.newWorkflowActive;
+      if (!active) return;
+
+      console.log('Using new dataset editing workflow store');
+      const { useDatasetWorkflowStore } = await import('@/modules/workflow/datasetWorkflow');
+      this.workflowStore = useDatasetWorkflowStore();
+    },
     scrollDown() {
       const appContainer = this.$refs.appContainer?.$el || this.$refs.appContainer;
       if (appContainer) {
@@ -295,11 +306,13 @@ export default {
       return notis.filter((n) => n.show);
     },
     catchContinueClick() {
-      if (this.lastEditedDatasetPath) {
-        this.$router.push({
-          path: `${this.lastEditedDatasetPath}?backPath=${this.$route.fullPath}`,
-        });
-      }
+      const targetPath = this.lastEditedDatasetPathSmart;
+      if (!targetPath) return;
+
+      this.$router.push({
+        path: targetPath,
+        query: { backPath: this.$route.fullPath },
+      });
     },
     catchMenuClicked() {
       this.menuItem.active = !this.menuItem.active;
@@ -530,7 +543,10 @@ export default {
   computed: {
     ...mapState(['loadingConfig', 'config', 'webpIsSupported']),
     ...mapState(USER_SIGNIN_NAMESPACE, ['user']),
-    ...mapState(USER_NAMESPACE, ['lastEditedDataset', 'lastEditedDatasetPath']),
+    ...mapState(USER_NAMESPACE, {
+      oldLastEditedDataset: 'lastEditedDataset',
+      oldLastEditedDatasetPath: 'lastEditedDatasetPath',
+    }),
     ...mapGetters(METADATA_NAMESPACE, [
       'metadataIds',
       'metadatasContent',
@@ -549,6 +565,31 @@ export default {
       notifications: 'notifications',
       maxNotifications: 'maxNotifications',
     }),
+    newWorkflowActive() {
+      return this.config?.userEditMetadataConfig?.newWorkflowActive || false;
+    },
+
+    editingDatasetNameSmart(): string | undefined {
+      if (this.newWorkflowActive && this.workflowStore) {
+        return this.workflowStore.lastEditedDataset ?? undefined;
+      }
+      // OLD
+      return this.oldLastEditedDataset ?? undefined;
+    },
+
+    lastEditedDatasetPathSmart(): string | undefined {
+      if (this.newWorkflowActive && this.workflowStore) {
+        return this.workflowStore.lastEditedDatasetPath ?? undefined;
+      }
+      // OLD
+      return this.oldLastEditedDatasetPath ?? undefined;
+    },
+    lastEditedBackPathSmart() {
+      if (this.newWorkflowActive && this.workflowStore) {
+        return this.workflowStore.lastEditedBackPath ?? undefined;
+      }
+      return undefined;
+    },
     currentRoute() {
       return this.$route;
     },
@@ -675,6 +716,14 @@ export default {
         });
       }
     },
+
+    'config.userEditMetadataConfig.newWorkflowActive': {
+      immediate: true,
+      handler(val) {
+        if (val) this.tryInitWorkflowStore();
+      },
+    },
+
     notifications() {
       if (!this.notifications) return;
 
@@ -712,6 +761,7 @@ export default {
     userMenuItems: useUserMenuItems(),
     editMaintenanceMessage: `There is maintenance going on, please don't edit anything return to the <a href='./#${USER_DASHBOARD_PATH}' >dashboard page </a> or the <a href='/' >main page</a> for details!.`,
     isScrolled: false,
+    workflowStore: null,
   }),
 };
 </script>

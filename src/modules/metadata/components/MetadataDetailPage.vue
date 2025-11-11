@@ -7,6 +7,7 @@
              ref="header"
              style="z-index: 1; left: 0"
              >
+
         <!-- prettier-ignore -->
         <MetadataHeader v-bind="header"
                           :metadataId="metadataId"
@@ -247,7 +248,7 @@ export default {
       return this.metadataConfig?.resourcesConfig || {};
     },
     newWorkflowActive() {
-      return this.userEditMetadataConfig?.newWorkflowActive || false;
+      return this.config.userEditMetadataConfig?.newWorkflowActive || false;
     },
     showCloseButton() {
       if (this.$vuetify.display.mdAndUp) {
