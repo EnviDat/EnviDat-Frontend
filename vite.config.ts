@@ -109,6 +109,10 @@ export default async ({ mode, config }): Promise<UserConfig> => {
     },
     define: { 'process.env': loadEnv(mode, process.cwd()), 'import.meta.env.VITE_VERSION': JSON.stringify(version) },
     base: './',
+    esbuild: {
+      minifyIdentifiers: false,
+      keepNames: true,
+    },
     build: {
       assetsDir: './static',
       chunkSizeWarningLimit: 500,
@@ -119,7 +123,7 @@ export default async ({ mode, config }): Promise<UserConfig> => {
       // sourcemap: buildSourceMaps,
       cssCodeSplit: true,
       minify: true,
-      // cssMinify: true,
+      cssMinify: true,
       sourcemap: buildSourceMaps,
       emptyOutDir: true,
       rollupOptions: isProd
