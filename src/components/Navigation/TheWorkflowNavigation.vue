@@ -174,9 +174,9 @@
               />
             </div>
 
-            <p class="text-body-2 mb-2"><strong>Draft:</strong> Not saved and DOI not reserved yet</p>
+            <p class="text-body-2 mb-2"><strong>Draft:</strong> Not saved and DOI not reserved yet.</p>
             <p class="text-body-2 mb-2">
-              <strong>Reserved:</strong> A DOI has been provided, but it’s not published yet
+              <strong>Reserved:</strong> A DOI has been provided, but it’s not published yet.
             </p>
             <p class="text-body-2 mb-2">
               <strong>Pending:</strong> Publication in progress. The EnviDat team is reviewing your dataset.

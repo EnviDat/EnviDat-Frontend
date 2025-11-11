@@ -553,8 +553,7 @@ export default {
       placeholderAffiliation: 'Enter authors affiliation',
       authorInstructions: 'Enter an email address of the author.',
       authorOr: '<strong>Or</strong> pick an existing author',
-      authorAutoComplete:
-        'If an author is picked or found with the email address these fields are <strong>autocompleted</strong>!',
+      authorAutoComplete: 'If an author is found by email, these fields are <strong>filled automatically</strong>',
       authorPickHint: 'Start typing the name in the text field to search for an author.',
     },
     activeElements: {

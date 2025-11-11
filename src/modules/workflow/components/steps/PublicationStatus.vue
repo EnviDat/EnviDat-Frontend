@@ -339,7 +339,7 @@ export default {
       instructions2:
         'Please be aware once the dataset is published the following metadata information can NOT be changed anymore.',
       instructions3:
-        'You can still upload newer versions of your research data, please use a <strong>clear name and desription</strong> to indicate the latest version of the data.',
+        'You can still upload newer versions of your research data, please use a <strong>clear name and description</strong> to indicate the latest version of the data.',
     },
     metadataPublishedReadOnlyFields,
     readablePublishedReadOnlyFields,

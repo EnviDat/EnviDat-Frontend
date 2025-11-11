@@ -30,7 +30,9 @@
             - Use the <strong>text editor</strong> for fine-tuned control over coordinates, or switch to the tree/table
             view for easier navigation.
           </li>
-          <li>- Ensure the geometry is valid GeoJSON. Invalid JSON will prevent you from proceeding.</li>
+          <li>
+            - Ensure the geometry is <strong>valid GeoJSON. Invalid JSON</strong> will prevent you from proceeding.
+          </li>
         </ol>
 
         <p class="mt-2">
@@ -164,7 +166,7 @@
               :startDateProperty="item.dateType === 'created' ? 'date' : 'dateStart'"
               :endDateProperty="item.dateType === 'created' ? 'endDate' : 'dateEnd'"
               :error-messages="validationErrors.dates"
-              :endDateLabel="`${item.dateType} end date`"
+              :endDateLabel="`End date`"
               :clearableEndDate="false"
               :clearableStartDate="false"
               rowLayout
@@ -301,9 +303,13 @@ export default {
     datesField() {
       const dates = this.previewDates.length ? this.previewDates : [...this.dates];
 
-      this.ensureDateEntry(dates, 'created', 'Date range during the research data was finalized or formally created');
+      this.ensureDateEntry(
+        dates,
+        'created',
+        'Date range during which the research data was finalized or formally created',
+      );
 
-      this.ensureDateEntry(dates, 'collected', 'Date range during the research data was gathered or collected.');
+      this.ensureDateEntry(dates, 'collected', 'Date range during which the research data was gathered or collected.');
 
       const order = ['created', 'collected'];
       dates.sort((a, b) => order.indexOf(a.dateType) - order.indexOf(b.dateType));
