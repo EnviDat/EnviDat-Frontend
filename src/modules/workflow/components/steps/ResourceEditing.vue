@@ -7,7 +7,7 @@
       :icon="mdiClose"
       icon-color="primary"
       outline-color="primary"
-      variant="outlined"
+      outlined
       tooltip-text="Cancel Resource Editing"
       tooltip-bottom
       @clicked="$emit('closeClicked')"
