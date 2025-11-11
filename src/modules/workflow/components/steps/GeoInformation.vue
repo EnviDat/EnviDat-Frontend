@@ -249,6 +249,7 @@ export default {
       geomsForMap: convertGeoJSONToGeoCollection(defaultSwissLocation),
       jsonEditor: undefined,
       editorSelection: undefined,
+      lastSavedGeomsString: '',
       saveButtonEnabled: false,
       saveButtonInProgress: false,
       geoFile: undefined,
@@ -351,6 +352,8 @@ export default {
     this.initEditor(this.geomsForMapString);
     this.initializing = false;
 
+    this.lastSavedGeomsString = JSON.stringify(this.geomsForMap);
+
     useDropZone(this.$refs.dropZoneRef, {
       onDrop: (files) => {
         if (files?.length) this.triggerFileUpload(files[0]);
@@ -405,7 +408,12 @@ export default {
     applyCollection(coll, { emit = false } = {}) {
       this.geomsForMap = coll;
       this.newGeoInfo.geometries = coll.geometries;
+
       if (this.jsonEditor) this.jsonEditor.update({ json: this.geomsForMap });
+
+      const currentStr = JSON.stringify(this.geomsForMap);
+      this.saveButtonEnabled = currentStr !== this.lastSavedGeomsString;
+
       if (emit && !this.initializing) this.$emit('save', this.newGeoInfo);
     },
 
@@ -459,10 +467,21 @@ export default {
         accept = true;
       }
 
-      if (accept) {
-        const tex = updated.text || JSON.stringify(updated.json);
-        this.changeGeoViaText(tex);
+      if (!accept) return;
+
+      const nextJson = updated.json || (updated.text ? JSON.parse(updated.text) : null);
+      if (!nextJson) return;
+
+      try {
+        check(nextJson);
+        this.inputError = null;
+      } catch (e) {
+        this.inputError = e.message;
       }
+
+      const coll = convertGeoJSONToGeoCollection(nextJson);
+
+      this.applyCollection(coll, { emit: false });
     },
 
     changedGeoViaEditor(geoArray) {
@@ -543,6 +562,9 @@ export default {
       });
 
       this.$emit('save', this.newGeoInfo);
+
+      this.lastSavedGeomsString = JSON.stringify(this.geomsForMap);
+      this.saveButtonEnabled = false;
 
       setTimeout(() => {
         this.saveButtonInProgress = false;
