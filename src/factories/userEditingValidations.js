@@ -393,6 +393,10 @@ export function hasOrganizationRoles(organizationRoles) {
   );
 }
 
+/**
+ * @param {string} userId
+ * @param {{ users: any[]; }} organization
+ */
 export function isUserGroupAdmin(userId, organization) {
   if (organization?.users?.length > 0) {
     const matches = organization.users.filter((user) => user.id === userId && user.capacity === USER_ROLE_ADMIN);

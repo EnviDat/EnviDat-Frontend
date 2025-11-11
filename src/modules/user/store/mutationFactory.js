@@ -109,7 +109,10 @@ export function createErrorMessage(reason, message = defaultMessage) {
   };
 }
 
-export function enhanceMetadataFromCategories(store, metadatas) {
+/**
+ * @param {any} metadatas
+ */
+export function enhanceMetadataFromCategories(metadatas) {
   let datasets = metadatas;
   const isArrayInput = Array.isArray(datasets);
   if (!isArrayInput) {

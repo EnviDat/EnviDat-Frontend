@@ -119,7 +119,7 @@ export function getUserPickerObjects(
   return userObjects
     .map((user) => ({
       fullName: getAuthorName(user),
-      email: user.email,
+      email: user.email || user.emailHash,
     }))
     .sort((a, b) => a.fullName.localeCompare(b.fullName));
 }

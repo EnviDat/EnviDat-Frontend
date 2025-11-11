@@ -112,6 +112,9 @@ export const useOrganizationsStore = defineStore({
       return organizations;
     },
 
+    /**
+     * @param {string} userId
+     */
     async UserGetOrgIds(userId) {
       this.setLoadingStatus(true);
       this.currentUserId = userId;
@@ -127,6 +130,10 @@ export const useOrganizationsStore = defineStore({
       }
     },
 
+    /**
+     * @param {any} store
+     * @param {string | any[]} ids
+     */
     async UserGetOrg(store, ids) {
       this.setLoadingStatus(true);
       if (!ids || ids.length <= 0) {
@@ -141,29 +148,6 @@ export const useOrganizationsStore = defineStore({
         const responses = await Promise.all(requests);
         const datasets = responses.flatMap((response) => response.data.result.packages);
         this.userOrganizations = this.enhanceOrganizationsWithDatasets(store, datasets);
-      } catch (error) {
-        this.userOrganizationError = error;
-      } finally {
-        this.setLoadingStatus(false);
-      }
-    },
-
-    async UserGetOrgSearch(ids) {
-      this.setLoadingStatus(true);
-      if (!ids || ids.length <= 0) {
-        this.resetOrganization();
-        return;
-      }
-      try {
-        const url = ACTION_USER_GET_ORGANIZATIONS_SEARCH;
-        const idQuery = getSOLRStringForElements('owner_org', ids);
-        const datasets = await this.fetchOrganizations(url, {
-          q: idQuery,
-          include_private: true,
-          include_drafts: true,
-          rows: this.organizationsDatasetsLimit,
-        });
-        this.userOrganizations = this.enhanceOrganizationsWithDatasets(this, datasets);
       } catch (error) {
         this.userOrganizationError = error;
       } finally {
@@ -194,7 +178,7 @@ export const useOrganizationsStore = defineStore({
     enhanceOrganizationsWithDatasets(store, datasets) {
       const metadataContents = store.state.metadata?.metadatasContent || {};
       datasets = enhanceTagsOrganizationDatasetFromAllDatasets(datasets, metadataContents);
-      datasets = enhanceMetadataFromCategories(store, datasets);
+      datasets = enhanceMetadataFromCategories(datasets);
 
       return this.userOrganizationIds.map((orgaId) => {
         const orga = this.userOrganizations.find((o) => o.id === orgaId);
