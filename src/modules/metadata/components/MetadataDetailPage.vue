@@ -246,6 +246,9 @@ export default {
     resourcesConfig() {
       return this.metadataConfig?.resourcesConfig || {};
     },
+    newWorkflowActive() {
+      return this.userEditMetadataConfig?.newWorkflowActive || false;
+    },
     showCloseButton() {
       if (this.$vuetify.display.mdAndUp) {
         return false;
