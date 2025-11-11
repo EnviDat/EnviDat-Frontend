@@ -39,6 +39,7 @@ export class AdditionalInfoViewModel extends AbstractEditViewModel {
     organizationId: yup.string().nullable().required('Organization is required'),
     funders: yup
       .array()
+      .nullable()
       .required('Enter funding information')
       .min(1, 'Provide at least one funding entry')
       .of(
