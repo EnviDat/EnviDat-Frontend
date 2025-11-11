@@ -48,8 +48,8 @@ import {
   LOCATION_TYPE_POINT,
 } from '@/factories/metadataConsts';
 
-import MapLeaflet from './MapLeaflet.vue';
-import MapOverlayUI from './MapOverlayUI.vue';
+import MapLeaflet from '@/modules/metadata/components/Geoservices/MapLeaflet.vue';
+import MapOverlayUI from '@/modules/metadata/components/Geoservices/MapOverlayUI.vue';
 
 export default {
   name: 'MapRoot',

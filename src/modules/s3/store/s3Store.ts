@@ -1,5 +1,4 @@
 // src/modules/s3/store/s3Store.js
-/* eslint-disable no-irregular-whitespace */
 import { defineStore } from 'pinia';
 import axios from 'axios';
 import { XMLParser } from 'fast-xml-parser';

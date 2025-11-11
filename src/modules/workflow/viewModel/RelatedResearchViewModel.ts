@@ -1,4 +1,3 @@
-/* eslint-disable object-curly-newline */
 import * as yup from 'yup';
 
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
