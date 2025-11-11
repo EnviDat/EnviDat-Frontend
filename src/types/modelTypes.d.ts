@@ -1,9 +1,17 @@
 import { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 
+type Prettify<P> = {
+  [K in keyof P]: P[K];
+} & {};
+
+export type UserPickerObject = Prettify<Pick<Author, 'fullName'> & Pick<User, 'email'>>;
+
+/*
 export type UserPickerObject = {
   fullName: string;
   email: string;
 };
+*/
 
 export interface DataCreditObject {
   curation: number;

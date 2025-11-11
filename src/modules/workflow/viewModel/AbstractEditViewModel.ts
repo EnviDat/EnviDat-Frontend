@@ -67,29 +67,30 @@ export abstract class AbstractEditViewModel {
   /**
    * Returns a shallow copy of the properties just from this class, nothing inherited
    */
-  protected getModelData<T>(): Omit<
-    T,
-    | 'privateMappingRules'
-    | 'datasetModel'
-    | 'validationRules'
-    | 'validationErrors'
-    | 'savedSuccessful'
-    | 'error'
-    | 'loading'
-  > {
+  protected getModelData<T>() {
     // deconstruct this to remove the model view specific props
     const {
       privateMappingRules,
       datasetModel,
-      validationRules,
       validationErrors,
+      validationRules,
       savedSuccessful,
-      error,
       loading,
+      error,
+      mappingRules,
+      getModelDataForInit,
+      updateModel,
+      frontendProperties,
+      backendProperties,
+      backendJSON,
+      getModelData,
+      getPropsToValidate,
+      validate,
+      save,
       ...dataOnly
     } = this;
 
-    return dataOnly as T;
+    return dataOnly;
   }
 
   get frontendProperties() {

@@ -30,7 +30,7 @@ import {
 
 import { AUTHOR_ASCII_DEAD } from '@/store/mainMutationsConsts';
 import { Author, DataCreditObject, User, UserPickerObject } from '@/types/modelTypes';
-import { AuthorDTO } from '@/types/dataTransferObjectsTypes';
+import { AuthorDTO, DatasetDTO } from '@/types/dataTransferObjectsTypes';
 
 const authorDataCreditLevels = [
   { score: 160, lvl: 6 },
@@ -52,23 +52,31 @@ const defaultTotalDataCredit = (): DataCreditObject => {
   };
 };
 
-export function getAuthorGivenName(author: { given_name?: string; firstName?: string }) {
+// type Optional<T, K extends keyof T> = Pick<Partial<T>, K>;
+type Optional<T, K extends keyof T> = {
+  [P in K]?: T[P];
+};
+type MergedAuthorFirstNames = Optional<Author, 'firstName'> & Optional<AuthorDTO, 'given_name'>;
+type MergedAuthorLastNames = Optional<Author, 'lastName'> & Optional<AuthorDTO, 'name'>;
+
+type Prettify<P> = {
+  [K in keyof P]: P[K];
+} & {};
+
+export function getAuthorGivenName(author: Prettify<MergedAuthorFirstNames>) {
   const firstName = author?.given_name || author?.firstName || '';
   return firstName.trim() || null;
 }
 
-export function getAuthorLastName(author: { name?: string; lastName?: string }) {
+export function getAuthorLastName(author: Prettify<MergedAuthorLastNames>) {
   const lastName = author.name || author.lastName || '';
   return lastName.trim() || null;
 }
 
-export function getAuthorName(author: {
-  fullName?: string;
-  given_name?: string;
-  firstName?: string;
-  name?: string;
-  lastName?: string;
-}): string | undefined {
+type MergedAuthorNames = Optional<Author, 'fullName' | 'lastName' | 'firstName'> &
+  Optional<AuthorDTO, 'given_name' | 'name'>;
+
+export function getAuthorName(author: Prettify<MergedAuthorNames>): string | undefined {
   let fullName = author?.fullName;
 
   if (!fullName) {
@@ -83,13 +91,7 @@ export function getAuthorName(author: {
   return fullName || undefined;
 }
 
-export function getAuthorNameCitation(author: {
-  fullName?: string;
-  given_name?: string;
-  firstName?: string;
-  name?: string;
-  lastName?: string;
-}) {
+export function getAuthorNameCitation(author: Prettify<MergedAuthorNames>) {
   const firstName = author.given_name || author.firstName || '';
 
   const splits = firstName.trim().split(' ');
@@ -109,9 +111,7 @@ export function getAuthorNameCitation(author: {
  * @param userObjects | authorObjects {Array}
  * @returns {[{ fullName: string, email: string}]}
  */
-export function getUserPickerObjects(
-  userObjects: Author[] | User[] | { fullName: string; email: string }[],
-): UserPickerObject[] {
+export function getUserPickerObjects(userObjects: UserPickerObject[]): UserPickerObject[] {
   if (!userObjects || !(userObjects instanceof Array) || userObjects.length <= 0) {
     return [];
   }
@@ -124,7 +124,7 @@ export function getUserPickerObjects(
     .sort((a, b) => a.fullName.localeCompare(b.fullName));
 }
 
-export function getAuthorsString(dataset) {
+export function getAuthorsString(dataset: Pick<DatasetDTO, 'author'>) {
   if (!dataset) {
     return null;
   }

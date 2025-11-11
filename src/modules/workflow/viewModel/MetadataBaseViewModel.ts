@@ -7,12 +7,31 @@ import type { KeywordDTO } from '@/types/dataTransferObjectsTypes';
 import { enhanceKeywords } from '@/factories/keywordsFactory';
 import categoryCards from '@/store/categoryCards';
 
+type ValidationErrorsType = ReturnType<MetadataBaseViewModel['getModelData']>;
+
+type NullableErrorsProps<T> = {
+  [K in keyof T]: string | null;
+};
+
+type Prettify<P> = {
+  [K in keyof P]: P[K];
+} & {};
+
+type NullableValidationErrors = Prettify<NullableErrorsProps<ValidationErrorsType>>;
+
 export class MetadataBaseViewModel extends AbstractEditViewModel {
   metadataTitle: string = '';
   metadataDescription: string = '';
   keywords: KeywordDTO[] = [];
   existingKeywords!: ComputedRef<KeywordDTO[]>;
 
+  validationErrors: NullableValidationErrors = {
+    metadataTitle: null,
+    metadataDescription: null,
+    keywords: null,
+  };
+
+  /*
   validationErrors: {
     metadataTitle: string | null;
     metadataDescription: string | null;
@@ -22,6 +41,7 @@ export class MetadataBaseViewModel extends AbstractEditViewModel {
     metadataDescription: null,
     keywords: null,
   };
+*/
 
   validationRules = yup.object().shape({
     metadataTitle: yup
@@ -42,20 +62,27 @@ export class MetadataBaseViewModel extends AbstractEditViewModel {
     enhanceKeywords(this.keywords, categoryCards);
   }
 
+  /*
   public override getModelData(): {
     metadataTitle: string;
     metadataDescription: string;
     keywords: KeywordDTO[];
   } {
-    const data = super.getModelData<MetadataBaseViewModel>() as any;
+*/
+
+  public override getModelData() {
+    const data = super.getModelData<MetadataBaseViewModel>();
 
     const { existingKeywords, ...rest } = data;
 
+    return rest;
+    /*
     return rest as {
       metadataTitle: string;
       metadataDescription: string;
       keywords: KeywordDTO[];
     };
+*/
   }
 
   validate(newProps?: Partial<MetadataBaseViewModel>) {
