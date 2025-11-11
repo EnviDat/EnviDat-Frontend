@@ -77,50 +77,6 @@ export class CustomFieldsViewModel extends AbstractEditViewModel {
     return convertJSON(backendFields, false);
   }
 
-  /*
-  private unpackDeprecatedResources(customFields: CustomFieldEntry[]) {
-
-    let deprecatedResourceEntry = customFields?.filter((entry) => entry?.fieldName === METADATA_DEPRECATED_RESOURCES_PROPERTY)[0];
-    // first check the customFields entries and sanitze them (to at least always start with an empty array)
-
-    if (!deprecatedResourceEntry) {
-
-      deprecatedResourceEntry = {
-        fieldName: METADATA_DEPRECATED_RESOURCES_PROPERTY,
-        content: JSON.stringify([]),
-      }
-
-      customFields.push(deprecatedResourceEntry);
-    }
-
-    return JSON.parse(deprecatedResourceEntry.content);
-  }
-
-  private markResourceDeprecatedInCustomFields(resourceId: string, deprecated: boolean, customFields: CustomFieldEntry[])  {
-
-    let deprecatedResources = this.unpackDeprecatedResources(customFields);
-
-    if (deprecated) {
-      deprecatedResources.push(resourceId);
-    } else {
-      deprecatedResources = deprecatedResources.filter(i => i !== resourceId);
-    }
-
-    const deprecatedResourcesEntry = customFields.filter((entry) => entry?.fieldName === METADATA_DEPRECATED_RESOURCES_PROPERTY)[0];
-    deprecatedResourcesEntry.content = JSON.stringify(deprecatedResources);
-
-    return customFields;
-  }
-
-  private deprecatedResourceChanged(resourceId: string, deprecated: boolean, customFields: CustomFieldEntry[]){
-    const deprecatedResources = this.unpackDeprecatedResources(customFields);
-
-    const isDeprecatedOnServer = deprecatedResources?.includes(resourceId);
-    const isDeprecatedLocally = isDeprecated === true;
-    return isDeprecatedLocally !== isDeprecatedOnServer;
-  }
-*/
-
   get deprecatedResourcesEntry(): CustomFieldEntry {
     return this.customFields?.filter((entry) => entry?.fieldName === METADATA_DEPRECATED_RESOURCES_PROPERTY)[0];
   }

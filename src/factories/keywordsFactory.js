@@ -139,7 +139,6 @@ export function createTag(name, options = defaultTagOptions) {
     active = options.active === undefined && options.tag.active ? options.tag.active : active;
   }
 
-  // eslint-disable-next-line object-curly-newline
   return {
     name,
     enabled,

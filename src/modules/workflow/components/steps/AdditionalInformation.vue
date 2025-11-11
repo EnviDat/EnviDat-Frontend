@@ -215,17 +215,17 @@
 </template>
 
 <script>
-import Organization from '@/modules/workflow/components/steps/Organization.vue';
 import { mdiMinusCircleOutline, mdiArrowDownDropCircleOutline, mdiShieldSearch, mdiInformationOutline } from '@mdi/js';
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import Organization from '@/modules/workflow/components/steps/Organization.vue';
+import InfoBanner from '@/modules/workflow/components/steps/InformationBanner.vue';
 import { getAvailableLicensesForEditing, dataLicenses } from '@/factories/dataLicense';
 import { renderMarkdown } from '@/factories/stringFactory.js';
 
 import { isReadOnlyField, getReadOnlyHint } from '@/modules/workflow/utils/useReadonly';
 
 import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
-import InfoBanner from '@/modules/workflow/components/steps/InformationBanner.vue';
 
 export default {
   name: 'EditMetadataHeader',

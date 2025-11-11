@@ -31,9 +31,7 @@ import { METADATA_BODY_TITLE } from '@/factories/metadataConsts';
 import { eventBus, INJECT_GENERIC_COMPONENT } from '@/factories/eventBus';
 
 const MetadataDescriptionAsync = defineAsyncComponent(
-  () =>
-    // eslint-disable-next-line import/no-self-import
-    import('@/modules/metadata/components/Metadata/MetadataDescription.vue'),
+  () => import('@/modules/metadata/components/Metadata/MetadataDescription.vue'),
 );
 
 export default {
