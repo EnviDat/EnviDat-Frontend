@@ -23,8 +23,8 @@
           </li>
           <li>- Use clear and descriptive <strong>titles</strong> for each resource to improve discoverability.</li>
           <li>
-            - filename/extension automatically get converted to lowercase. To preserve uppercase extensions (e.g., .R),
-            please upload a compressed (.zip) version of your file.
+            - <strong>Filename/extension automatically get converted</strong> to lowercase. To preserve uppercase
+            extensions (e.g., .R), please upload a compressed (.zip) version of your file.
           </li>
           <li>
             - When adding a resource via a link, make sure to specify its

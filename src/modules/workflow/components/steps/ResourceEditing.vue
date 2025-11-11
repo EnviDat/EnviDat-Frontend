@@ -30,14 +30,18 @@
           />
         </v-col>
 
+        <v-col cols="12">
+          <v-alert type="info" class="text-caption">
+            {{ labels.instructions }}
+          </v-alert>
+        </v-col>
+
         <v-col v-if="error">
           <BaseStatusLabelView status="error" statusColor="error" :statusText="error" :expandedText="errorDetails" />
         </v-col>
       </v-row>
 
       <div class="pa-1">
-        <v-alert type="info">{{ labels.instructions }}</v-alert>
-
         <v-row id="resourceName" no-gutters class="pt-4">
           <v-col cols="12">
             <v-text-field
@@ -224,64 +228,64 @@
           </v-col>
         </v-row>
 
-        <div class="text-h6 mt-6">Data access</div>
+        <v-row class="mt-2">
+          <v-col cols="12" class="text-h6">Data access</v-col>
 
-        <div class="pa-1">
-          <v-expand-transition>
-            <v-alert v-if="isDataPrivate" type="warning">
-              <div v-html="openAccessDetails"></div>
-            </v-alert>
-          </v-expand-transition>
+          <v-col cols="4">
+            <BaseIconSwitch
+              :active="isDataPrivate"
+              :disabled="!editingRestrictingActive"
+              :icon="isDataPrivate ? mdiLock : mdiLockOpen"
+              class="mt-2"
+              :tooltipText="labels.dataAccessSwitchTooltip"
+              @clicked="isDataPrivate = !isDataPrivate"
+              :label="labels.dataAccessSwitchLabel"
+            />
+          </v-col>
 
-          <BaseIconSwitch
-            :active="isDataPrivate"
-            :disabled="!editingRestrictingActive"
-            :icon="isDataPrivate ? mdiLock : mdiLockOpen"
-            class="mt-2"
-            :tooltipText="labels.dataAccessSwitchTooltip"
-            @clicked="isDataPrivate = !isDataPrivate"
-            :label="labels.dataAccessSwitchLabel"
-          />
+          <v-col cols="8">
+            <v-expand-transition>
+              <v-alert v-if="isDataPrivate" type="warning">
+                <div v-html="openAccessDetails"></div>
+              </v-alert>
+            </v-expand-transition>
+          </v-col>
 
-          <BaseIconSwitch
-            v-if="isDataPrivate"
-            :active="hasAllowedUsers"
-            :disabled="!editingRestrictingActive"
-            :icon="mdiAccountGroup"
-            class="mt-2"
-            :tooltipText="labels.hasAllowedUsersSwitchTooltip"
-            @clicked="hasAllowedUsers = !hasAllowedUsers"
-            :label="labels.hasAllowedUsersSwitchLabel"
-          />
+          <v-col cols="12">
+            <BaseIconSwitch
+              v-if="isDataPrivate"
+              :active="hasAllowedUsers"
+              :disabled="!editingRestrictingActive"
+              :icon="mdiAccountGroup"
+              class="mt-2"
+              :tooltipText="labels.hasAllowedUsersSwitchTooltip"
+              @clicked="hasAllowedUsers = !hasAllowedUsers"
+              :label="labels.hasAllowedUsersSwitchLabel"
+            />
+          </v-col>
+        </v-row>
 
-          <v-row v-if="isDataPrivate && hasAllowedUsers" no-gutters class="px-2 pt-3">
-            <v-col cols="12" class="pt-2">
-              <BaseUserPicker
-                :users="envidatUsersPicker"
-                :preSelectedNames="preSelectedAllowedUsers"
-                :pickerLabel="labels.restrictedAllowedUsersInfo"
-                multiplePick
-                :prependIcon="mdiKey"
-                userTagsCloseable
-                :placeholder="labels.allowedUsersTypingInfo"
-                @removedUsers="changeAllowedUsers"
-                @pickedUsers="changeAllowedUsers"
-              />
-            </v-col>
-          </v-row>
+        <v-row v-if="isDataPrivate && hasAllowedUsers" no-gutters class="px-2 pt-3">
+          <v-col cols="12" class="pt-2">
+            <BaseUserPicker
+              :users="envidatUsersPicker"
+              :preSelectedNames="preSelectedAllowedUsers"
+              :pickerLabel="labels.restrictedAllowedUsersInfo"
+              multiplePick
+              :prependIcon="mdiKey"
+              userTagsCloseable
+              :placeholder="labels.allowedUsersTypingInfo"
+              @removedUsers="changeAllowedUsers"
+              @pickedUsers="changeAllowedUsers"
+            />
+          </v-col>
+        </v-row>
 
-          <v-row v-if="!editingRestrictingActive" class="py-2">
-            <v-col>
-              <v-alert type="warning">{{ labels.editingRestrictingUnavailableInfo }}</v-alert>
-            </v-col>
-          </v-row>
-
-          <v-row v-if="checkUppercaseValue" class="py-2">
-            <v-col>
-              <v-alert type="info">{{ labels.editingWarningUppercaseExtension }}</v-alert>
-            </v-col>
-          </v-row>
-        </div>
+        <v-row v-if="!editingRestrictingActive" class="py-2">
+          <v-col>
+            <v-alert type="warning">{{ labels.editingRestrictingUnavailableInfo }}</v-alert>
+          </v-col>
+        </v-row>
 
         <v-row no-gutters class="pt-4" :justify="isSystemAdmin ? 'space-between' : 'end'">
           <v-col v-if="isSystemAdmin" class="flex-grow-0">
@@ -570,10 +574,6 @@ export default {
 
         this.checkSaveButtonEnabled();
       },
-    },
-    checkUppercaseValue() {
-      // shows a warning message if the form receives an uppercase character in the file name
-      return /[A-Z]/.test(this.resourceNameField);
     },
     accessRestrictionLvl: {
       get() {

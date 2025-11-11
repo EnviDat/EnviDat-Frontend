@@ -249,7 +249,7 @@ export default {
 
     // recentDatasets = enhanceMetadataFromCategories(this, payload.results);
 
-    const currentEntry = enhanceMetadataFromCategories(this, payload);
+    const currentEntry = enhanceMetadataFromCategories(payload);
     state.currentEditingContent = currentEntry;
     //    state.currentEditingContent = Object.values(enhancedPayload)[0];
 

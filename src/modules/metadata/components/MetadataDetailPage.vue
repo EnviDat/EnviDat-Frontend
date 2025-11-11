@@ -209,7 +209,6 @@ export default {
   computed: {
     ...mapState(['config']),
     ...mapState(USER_NAMESPACE, ['userDatasets']),
-    // ...mapState(ORGANIZATIONS_NAMESPACE, ['userOrganizationIds']),
     ...mapGetters(USER_SIGNIN_NAMESPACE, ['user', 'userLoading']),
     ...mapGetters({
       metadatasContent: `${METADATA_NAMESPACE}/metadatasContent`,
@@ -221,6 +220,9 @@ export default {
       authorsMap: `${METADATA_NAMESPACE}/authorsMap`,
       appScrollPosition: 'appScrollPosition',
     }),
+    userOrganizationIds() {
+      return this.organizationsStore.userOrganizationIds;
+    },
     metadataContent() {
       if (this.mode) {
         return this.modeDataset !== undefined ? this.modeDataset : this.currentMetadataContent;
@@ -802,7 +804,7 @@ export default {
       //   userId,
       // );
       // always call the UserGetOrg action because it resolves the store & state also when userOrganizationIds is empty
-      await this.organizationsStore.UserGetOrg(this.userOrganizationIds);
+      await this.organizationsStore.UserGetOrg(this.$store, this.userOrganizationIds);
       // await this.$store.dispatch(
       //   `${ORGANIZATIONS_NAMESPACE}/${UserGetOrg}`,
       //   this.userOrganizationIds,
