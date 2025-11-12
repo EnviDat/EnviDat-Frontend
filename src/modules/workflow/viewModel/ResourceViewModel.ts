@@ -233,6 +233,7 @@ export class ResourceViewModel extends AbstractEditViewModel implements Resource
       created,
       lastModified,
       metadataModified,
+      // @ts-expect-error
       size: sizeNumberInFormat,
       sizeFormat,
       deprecated: false,

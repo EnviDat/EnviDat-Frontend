@@ -344,11 +344,11 @@ import { getFileIcon, getIconImage } from '@/factories/imageFactory';
 
 import notFoundImg from '@/modules/user/assets/imageNotFound.jpg';
 import {
-  getAllowedUsersString,
   getAllowedUserNames,
   getUserAutocompleteList,
   ACCESS_LEVEL_SAMEORGANIZATION_VALUE,
   ACCESS_LEVEL_PUBLIC_VALUE,
+  getAllowedUsersString,
 } from '@/factories/userEditingFactory';
 
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
@@ -359,10 +359,10 @@ import { isReadOnlyField, getReadOnlyHint } from '@/modules/workflow/utils/useRe
 import { RESOURCE_FORMAT_LINK } from '@/factories/metadataConsts';
 import { getFileExtension } from '@/factories/fileFactory';
 import { RestrictedDTO } from '@/types/dataTransferObjectsTypes';
-import { getUserPickerObjects } from '@/factories/authorFactory';
+import { getAuthorName, getUserPickerObjects } from '@/factories/authorFactory';
 import { USER_ROLE_SYSTEM_ADMIN } from '@/factories/userEditingValidations';
 import { sizeFormatList } from '@/factories/resourceHelpers.ts';
-import { Resource } from '@/types/modelTypes';
+import { Resource, User } from '@/types/modelTypes';
 
 export default {
   name: 'ResourceEditing',
@@ -796,8 +796,8 @@ export default {
       this.imagePreviewError = event;
       this.loadingImagePreview = false;
     },
-    changeAllowedUsers(pickedUserNames: string[]) {
-      this.allowedUsersField = getAllowedUsersString(pickedUserNames, this.envidatUsers);
+    changeAllowedUsers(pickUserEmailHash: string[]) {
+      this.allowedUsersField = getAllowedUsersString(pickUserEmailHash, this.envidatUsers);
     },
     validateField(property, value) {
       this.$emit('validate', { [property]: value });

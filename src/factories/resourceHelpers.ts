@@ -215,6 +215,7 @@ export function createResource(
     position: resource.position || 0,
     isProtected,
     isSelected: false,
+    // @ts-expect-error
     size: sizeNumberInFormat,
     sizeFormat,
     resourceSize,
