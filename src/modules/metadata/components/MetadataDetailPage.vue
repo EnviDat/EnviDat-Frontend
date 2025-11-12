@@ -750,7 +750,7 @@ export default {
     },
     catchEditClicked() {
       let name = METADATAEDIT_PAGENAME;
-      const params: { id: string; metadataid: string } = {
+      const params: { id?: string; metadataid: string } = {
         metadataid: this.metadataId,
       };
 
