@@ -256,7 +256,11 @@ const doi = computed(() => {
 const hasDoi = computed(() => !!(doi.value && doi.value.trim()));
 
 const publicationState = computed(() => {
-  const state = workflowStore.backendStorageService?.dataset?.publication_state;
+  let state = workflowStore.backendStorageService?.dataset?.publication_state;
+  if (workflowStore.dataSource !== 'backend') {
+    state = 'draft';
+  }
+  console.log('state ' + state);
   return mapPublicationState(state);
 });
 
