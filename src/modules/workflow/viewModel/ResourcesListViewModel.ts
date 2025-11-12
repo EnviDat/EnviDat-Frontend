@@ -33,8 +33,11 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
     resources: null,
   };
 
+  // validationRules = yup.object().shape({
+  //   resources: yup.array().required().min(1, 'Add at least one resource.').nullable(),
+  // });
   validationRules = yup.object().shape({
-    resources: yup.array().required().min(1, 'Add at least one resource.').nullable(),
+    resources: yup.array().nullable(),
   });
 
   constructor(datasetModel: DatasetModel) {
