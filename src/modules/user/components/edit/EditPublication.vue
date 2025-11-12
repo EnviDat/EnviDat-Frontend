@@ -134,6 +134,7 @@ export default {
       type: String,
       default: '',
     },
+    loading: { type: Boolean, default: false },
   },
   computed: {
     ...mapState(['config']),
@@ -169,6 +170,7 @@ export default {
         userRole: stepData.userRole,
         publisher: stepData.publisher,
         publicationYear: stepData.publicationYear,
+        loading: this.loading,
       };
     },
     fundingInfo() {

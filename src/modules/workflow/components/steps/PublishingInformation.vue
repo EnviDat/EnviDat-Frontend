@@ -58,7 +58,7 @@
       <v-col cols="12" xl="6" class="pa-0">
         <v-row>
           <v-col v-if="blindReviewEditingActive && publicationState !== PUBLICATION_STATE_PUBLISHED" cols="12">
-            <ReviewInfo v-bind="editReviewProps" />
+            <ReviewInfo v-bind="editReviewProps" @save="catchReviewChange" />
           </v-col>
         </v-row>
       </v-col>
@@ -159,7 +159,7 @@ export default {
 
     doiWorkflowActive: { type: Boolean, default: true },
     blindReviewEditingActive: { type: Boolean, default: true },
-    doiLoading: { type: Boolean, default: false },
+    loading: { type: Boolean, default: false },
     doiError: { type: [String, Object], default: undefined },
 
     readOnlyFields: { type: Array, default: () => [] },
@@ -204,6 +204,7 @@ export default {
         publicationYear: this.publicationYear,
         version: this.version,
         datasetId: this.datasetId,
+        loading: this.loading,
       };
     },
 
@@ -243,7 +244,10 @@ export default {
     },
 
     editReviewProps() {
-      return { ...this.publicationsInfo, isBlindReview: this.publicationsInfo.version === BLIND_REVIEW_ON, flat: true };
+      return {
+        ...this.publicationsInfo,
+        isBlindReview: this.publicationsInfo.version === BLIND_REVIEW_ON,
+      };
     },
 
     metadataId() {
@@ -263,37 +267,41 @@ export default {
       this.$emit('save', this.newDatasetInfo);
     },
 
+    catchReviewChange(reviewInfos) {
+      this.$emit('save', reviewInfos);
+    },
     isReadOnly(fieldKey) {
-      return isReadOnlyField(fieldKey, this.readOnlyFields);
+      return isReadOnlyField(fieldKey);
     },
     readOnlyHint(fieldKey) {
-      return getReadOnlyHint(fieldKey, this.readOnlyExplanation);
+      return getReadOnlyHint(fieldKey);
     },
 
     async catchPublicationStateChange(event) {
       const id = this.metadataId || this.datasetId;
-      this.doiErrorLocal = undefined;
-      this.doiMsgLocal = '';
+      // this.doiErrorLocal = undefined;
+      // this.doiMsgLocal = '';
 
       try {
         if (event === 'DOI_RESERVE') {
           await this.workflowStore.withLoading(() => this.workflowStore.backendStorageService.requestDoi(id), 'doi');
-          this.doiMsgLocal = 'DOI reserved successfully.';
+          // this.doiMsgLocal = 'DOI reserved successfully.';
         } else if (event === 'DOI_REQUEST') {
           await this.workflowStore.withLoading(
             () => this.workflowStore.backendStorageService.requestPublication(id),
             'doi',
           );
-          this.doiMsgLocal = 'Publication requested. An admin will review it.';
+          // this.doiMsgLocal = 'Publication requested. An admin will review it.';
         } else if (event === 'DOI_PUBLISH') {
           await this.workflowStore.withLoading(
             () => this.workflowStore.backendStorageService.publishDataset(id),
             'doi',
           );
-          this.doiMsgLocal = 'Dataset published.';
+          // this.doiMsgLocal = 'Dataset published.';
         }
       } catch (e) {
-        this.doiErrorLocal = e?.message ?? 'Unexpected error';
+        // this.doiErrorLocal = e?.message ?? 'Unexpected error';
+        console.error(e);
       }
     },
 
