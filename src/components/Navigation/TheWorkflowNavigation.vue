@@ -10,6 +10,7 @@
         <!-- Right: close icon -->
         <v-col cols="auto" class="d-flex justify-end">
           <BaseIconButton
+            :disabled="localStorageOnly"
             class="metadataEditCloseButton ma-1 ma-md-0 ml-md-2"
             :icon="iconName('eye')"
             icon-color="black"
@@ -17,7 +18,7 @@
             outlined
             tooltip-text="Show Preview"
             tooltip-bottom
-            @clicked="emit('catchCloseClick')"
+            @clicked="emit('previewClick')"
           />
           <BaseIconButton
             class="metadataEditCloseButton ma-1 ma-md-0 ml-md-2"
@@ -33,7 +34,7 @@
       </v-row>
     </v-card-title>
 
-    <v-expansion-panels class="mb-4 navigationWorkflow__note--mobile" elevation="0" v-if="display.smAndDown.value">
+    <!-- <v-expansion-panels class="mb-4 navigationWorkflow__note--mobile" elevation="0" v-if="display.smAndDown.value">
       <v-expansion-panel>
         <v-expansion-panel-title class="pa-0">
           <BaseIcon :icon="iconName('info')" color="black" class="mr-4" />Note
@@ -44,7 +45,7 @@
           magna aliqua…
         </v-expansion-panel-text>
       </v-expansion-panel>
-    </v-expansion-panels>
+    </v-expansion-panels> -->
 
     <v-card-text class="pa-0">
       <v-list class="pa-0 navigationWorkflow__list" density="comfortable" nav>
@@ -78,7 +79,7 @@
                 v-if="workflowStore.currentStep === step.id"
                 :class="{
                   'font-weight-bold': display.mdAndDown.value,
-                  'ml-2': workflowStore.currentStep === step.id,
+                  'ml-md-2': workflowStore.currentStep === step.id,
                 }"
               >
               </span>
@@ -144,7 +145,7 @@
           :icon="iconName('print')"
           class="doi-icon"
           :class="{ pulseIcon: !hasDoi && isBackend }"
-          :color="isBackend ? (hasDoi ? 'primary' : 'primary') : 'black'"
+          :color="isBackend ? (hasDoi ? 'primary' : 'secondary') : 'black'"
         />
         <span class="text-body-2 mt-2">{{ doi ?? 'Reserve DOI' }}</span>
       </div>
@@ -173,9 +174,9 @@
               />
             </div>
 
-            <p class="text-body-2 mb-2"><strong>Draft:</strong> Not saved and DOI not reserved yet</p>
+            <p class="text-body-2 mb-2"><strong>Draft:</strong> Not saved and DOI not reserved yet.</p>
             <p class="text-body-2 mb-2">
-              <strong>Reserved:</strong> A DOI has been provided, but it’s not published yet
+              <strong>Reserved:</strong> A DOI has been provided, but it’s not published yet.
             </p>
             <p class="text-body-2 mb-2">
               <strong>Pending:</strong> Publication in progress. The EnviDat team is reviewing your dataset.
@@ -226,15 +227,18 @@ import { extractIcons } from '@/factories/iconFactory';
 
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
-import { WorkflowMode } from '@/modules/workflow/utils/workflowEnums';
+import { WorkflowMode, StepStatus } from '@/modules/workflow/utils/workflowEnums';
+
+import { mapPublicationState } from '@/modules/workflow/utils/publicationState';
 
 const workflowStore = useDatasetWorkflowStore();
 const display = useDisplay();
 
-const emit = defineEmits(['navigateItem', 'catchCloseClick']);
+const emit = defineEmits(['navigateItem', 'catchCloseClick', 'previewClick']);
 
 // Props
 const props = defineProps({
+  localStorageOnly: Boolean,
   isDatasetEditing: Boolean,
   currentDataset: {
     type: Object,
@@ -250,9 +254,14 @@ const doi = computed(() => {
 });
 
 const hasDoi = computed(() => !!(doi.value && doi.value.trim()));
-const publicationState = computed(() =>
-  isBackend.value ? (workflowStore.backendStorageService?.dataset?.publication_state ?? 'Draft') : 'Draft',
-);
+
+const publicationState = computed(() => {
+  let state = workflowStore.backendStorageService?.dataset?.publication_state;
+  if (workflowStore.dataSource !== 'backend') {
+    state = 'draft';
+  }
+  return mapPublicationState(state);
+});
 
 const doiLoading = computed(() => workflowStore.isLoading?.('doi') === true);
 
@@ -325,7 +334,6 @@ const initDriver = () => {
     top: 25px;
   }
 
-  position: relative;
   &__list {
     display: flex;
     flex-direction: row;
@@ -410,7 +418,7 @@ const initDriver = () => {
       @media screen and (max-width: 1280px) {
         // 960 is md for vueitfy
         // gap: 8px;
-        background-color: #499df7;
+        background-color: #499df7 !important;
         .navigationWorkflow__append--number,
         .v-list-item-title,
         .v-icon__svg {

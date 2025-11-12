@@ -17,7 +17,7 @@
       </v-col>
     </v-row>
 
-    <v-row>
+    <v-row no-gutters>
       <v-col>
         <ExpandableLayout
           statusText="Click here, drag and drop the resources to change the sequence."

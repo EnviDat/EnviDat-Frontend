@@ -1,4 +1,3 @@
-/* eslint-disable object-curly-newline */
 /**
  * @summary story of Resource DataViz sandbox testing
  * @author Dominik Haas-Artho

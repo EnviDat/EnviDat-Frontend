@@ -13,30 +13,26 @@
     <!-- Info Banner -->
 
     <v-row>
-      <v-col class="mb-5 pt-0 pb-0">
-        <v-alert type="info" closable :icon="false" class="rounded-lg info-banner">
-          <v-alert-title class="mb-2">Information</v-alert-title>
-          <p>
-            This section defines the main identification metadata of your dataset. These fields are essential for
-            discovery and citation of your data.
-          </p>
+      <InfoBanner :show="showInfoBanner" :icon="mdiInformationOutline" @setInfoBanner="$emit('setInfoBanner', $event)">
+        <p>
+          This section defines the main identification metadata of your dataset. These fields are essential for
+          discovery and citation of your data.
+        </p>
 
-          <p><strong>Tips:</strong></p>
-          <ol>
-            <li>- Choose a clear and descriptive title.</li>
-            <li>- Use keywords that reflect the content, methods, and geography of your data.</li>
-            <li>
-              - In the description, provide enough context so other researchers can understand what your dataset
-              contains, how it was generated, and any limitations.
-            </li>
-          </ol>
+        <p><strong>Tips:</strong></p>
+        <ol>
+          <li>Choose a clear and descriptive title.</li>
+          <li>Use keywords that reflect the content, methods, and geography of your data.</li>
+          <li>
+            In the description, provide enough context so other researchers can understand what your dataset contains,
+            how it was generated, and any limitations.
+          </li>
+        </ol>
 
-          <p class="mt-2">
-            You can format the description using <strong>Markdown</strong>
-            (e.g., lists, links, bold text).
-          </p>
-        </v-alert>
-      </v-col>
+        <p class="mt-2">
+          You can format the description using <strong>Markdown</strong> (e.g., lists, links, bold text).
+        </p>
+      </InfoBanner>
     </v-row>
 
     <!-- Preview -->
@@ -86,7 +82,7 @@
           :placeholder="labels.placeholderTitle"
           :model-value="metadataTitleField"
           @keyup="blurOnEnterKey"
-          @update:model-value="setTitleInput($event.target.value)"
+          @update:model-value="setTitleInput($event)"
           @change="notifyTitleChange($event.target.value)"
         />
       </v-col>
@@ -181,7 +177,13 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { mdiBookOpenVariantOutline, mdiText, mdiPaletteSwatch, mdiArrowDownDropCircleOutline } from '@mdi/js';
+import {
+  mdiBookOpenVariantOutline,
+  mdiText,
+  mdiPaletteSwatch,
+  mdiArrowDownDropCircleOutline,
+  mdiInformationOutline,
+} from '@mdi/js';
 
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout.vue';
 import TagChip from '@/components/Chips/TagChip.vue';
@@ -196,42 +198,21 @@ import { enhanceTitleImg } from '@/factories/metaDataFactory.js';
 
 import { isReadOnlyField, getReadOnlyHint } from '@/modules/workflow/utils/useReadonly';
 
+import InfoBanner from '@/modules/workflow/components/steps/InformationBanner.vue';
+
 export default {
   name: 'MetadataBaseInformation',
   props: {
-    metadataTitle: {
-      type: String,
-      default: '',
-    },
-    metadataDescription: {
-      type: String,
-      default: '',
-    },
-    validationErrors: {
-      type: Object,
-      default: () => {},
-    },
-    existingKeywords: {
-      type: Array,
-      default: () => {},
-    },
-    keywords: {
-      type: Array,
-      default: null,
-    },
+    metadataTitle: { type: String, default: '' },
+    metadataDescription: { type: String, default: '' },
+    validationErrors: { type: Object, default: () => {} },
+    existingKeywords: { type: Array, default: () => {} },
+    keywords: { type: Array, default: null },
 
-    loading: {
-      type: Boolean,
-      default: false,
-    },
-    readOnlyFields: {
-      type: Array,
-      default: () => [],
-    },
-    readOnlyExplanation: {
-      type: String,
-      default: '',
-    },
+    loading: { type: Boolean, default: false },
+    readOnlyFields: { type: Array, default: () => [] },
+    readOnlyExplanation: { type: String, default: '' },
+    showInfoBanner: { type: Boolean, default: true },
   },
 
   computed: {
@@ -253,10 +234,7 @@ export default {
       return this.defaultUserEditMetadataConfig.keywordsListWordMax;
     },
     descriptionObject() {
-      return {
-        description: this.metadataDescriptionField,
-        maxTextLength: 5000,
-      };
+      return { description: this.metadataDescriptionField, maxTextLength: 5000 };
     },
 
     metadataTitleField() {
@@ -316,35 +294,25 @@ export default {
   },
   methods: {
     keywordsChanged() {
-      this.$emit('save', {
-        keywords: this.newDatasetInfo.keywords,
-      });
+      this.$emit('save', { keywords: this.newDatasetInfo.keywords });
     },
     setTitleInput(value) {
       this.newDatasetInfo.metadataTitle = value;
 
-      this.$emit('validate', {
-        metadataTitle: value,
-      });
+      this.$emit('validate', { metadataTitle: value });
     },
     notifyTitleChange(value) {
       this.newDatasetInfo.metadataTitle = value;
 
-      this.$emit('save', {
-        metadataTitle: value,
-      });
+      this.$emit('save', { metadataTitle: value });
     },
     onDescriptionInput(value) {
       this.newDatasetInfo.metadataDescription = value;
-      this.$emit('validate', {
-        metadataDescription: value,
-      });
+      this.$emit('validate', { metadataDescription: value });
     },
     onDescriptionChange(value) {
-      this.newDatasetInfo.metadataDescription = value;
-      this.$emit('save', {
-        metadataDescription: value,
-      });
+      this.newDatasetInfo.metadataDescription = value.target.value;
+      this.$emit('save', { metadataDescription: value.target.value });
     },
     blurOnEnterKey(keyboardEvent) {
       if (keyboardEvent.key === 'Enter') {
@@ -462,24 +430,19 @@ export default {
       return getReadOnlyHint(dateProperty);
     },
   },
+
   data: () => ({
     mdiPaletteSwatch,
     mdiArrowDownDropCircleOutline,
     mdiBookOpenVariantOutline,
+    mdiInformationOutline,
     search: '',
     keywordValidConcise: true,
     keywordValidMin3Characters: true,
     keywordCount: 0,
     rulesKeywords: [],
-    newDatasetInfo: {
-      metadataTitle: undefined,
-      keywords: undefined,
-      metadataDescription: undefined,
-    },
-    defaultUserEditMetadataConfig: {
-      keywordsListWordMax: 2,
-      keywordsCountMin: 5,
-    },
+    newDatasetInfo: { metadataTitle: undefined, keywords: undefined, metadataDescription: undefined },
+    defaultUserEditMetadataConfig: { keywordsListWordMax: 2, keywordsCountMin: 5 },
     labelsKeywords: {
       title: 'Keywords',
       placeholder: 'Pick keywords from the list or type in a new keyword',
@@ -509,6 +472,7 @@ export default {
     MetadataDescription,
     MetadataHeader,
     TagChip,
+    InfoBanner,
     // BaseStatusLabelView,
     GenericTextareaPreviewLayout,
   },

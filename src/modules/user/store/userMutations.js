@@ -66,7 +66,7 @@ export default {
   [USER_GET_DATASETS_SUCCESS](state, payload) {
     state.userDatasetsLoading = false;
 
-    const datasets = enhanceMetadataFromCategories(this, payload.datasets);
+    const datasets = enhanceMetadataFromCategories(payload.datasets);
 
     // TODO - check config for dataset editing enabled
     enhanceElementsWithStrategyEvents(datasets, SELECT_EDITING_DATASET_PROPERTY);
@@ -122,7 +122,7 @@ export default {
       dSet.role = getCollaboratorCapacity(dSet.id, collaboratorIds);
     }
 
-    const enhancedDatasets = enhanceMetadataFromCategories(this, datasets) || [];
+    const enhancedDatasets = enhanceMetadataFromCategories(datasets) || [];
 
     // TODO - check config for dataset editing enabled
     enhanceElementsWithStrategyEvents(enhancedDatasets, SELECT_EDITING_DATASET_PROPERTY);

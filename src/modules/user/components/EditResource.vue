@@ -7,7 +7,7 @@
       :icon="mdiClose"
       icon-color="primary"
       outline-color="primary"
-      variant="outlined"
+      outlined
       tooltip-text="Cancel Resource Editing"
       tooltip-bottom
       @clicked="$emit('closeClicked')"
@@ -824,8 +824,8 @@ export default {
       this.imagePreviewError = event;
       this.loadingImagePreview = false;
     },
-    changeAllowedUsers(pickedUserNames: string[]) {
-      this.allowedUsersField = getAllowedUsersString(pickedUserNames, this.envidatUsers);
+    changeAllowedUsers(pickUserEmailHash: string[]) {
+      this.allowedUsersField = getAllowedUsersString(pickUserEmailHash, this.envidatUsers);
     },
     validateField(property, value) {
       return isFieldValid(property, value, this.validations, this.validationErrors);

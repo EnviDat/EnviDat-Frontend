@@ -119,7 +119,7 @@ export function getUserPickerObjects(
   return userObjects
     .map((user) => ({
       fullName: getAuthorName(user),
-      email: user.email,
+      email: user.email || user.emailHash,
     }))
     .sort((a, b) => a.fullName.localeCompare(b.fullName));
 }
@@ -280,7 +280,7 @@ export function createAuthor(author: Author | AuthorDTO, lastModified: string = 
 
   // console.log(`creating author from ${fullName} dataCredit: ${dataCredit} datasetCount: ${author.datasetCount}`);
 
-  const isAuthorDead = firstName?.includes(AUTHOR_ASCII_DEAD) || lastName?.includes(AUTHOR_ASCII_DEAD);
+  const isAuthorDead = firstName.includes(AUTHOR_ASCII_DEAD) || lastName.includes(AUTHOR_ASCII_DEAD);
 
   return {
     firstName: firstName.trim(),

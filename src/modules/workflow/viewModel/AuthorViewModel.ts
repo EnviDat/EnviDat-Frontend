@@ -43,11 +43,11 @@ export class AuthorViewModel extends AbstractEditViewModel implements Author {
     firstName: yup
       .string()
       .required('Author first name is required')
-      .min(2, 'Author first name must be at least 2 characters'),
+      .min(1, 'Author first name must be at least 1 characters'),
     lastName: yup
       .string()
       .required('Author last name is required')
-      .min(3, 'Author last name must be at least 3 characters'),
+      .min(2, 'Author last name must be at least 2 characters'),
     email: yup.string().email('Author email must be a valid email address').required('Author email is required'),
     identifier: yup
       .string()

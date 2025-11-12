@@ -68,6 +68,7 @@
           cols="12"
           v-bind="listLayout"
           class="pa-2"
+          :order="res.position"
         >
           <ResourceCard
             v-bind="res"

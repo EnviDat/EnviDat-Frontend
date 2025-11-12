@@ -12,34 +12,30 @@
 
     <!-- Info Banner -->
     <v-row>
-      <v-col class="mb-5 pt-0 pb-0">
-        <v-alert type="info" closable :icon="false" class="rounded-lg info-banner">
-          <v-alert-title class="mb-2">Information</v-alert-title>
+      <InfoBanner :show="showInfoBanner" :icon="mdiInformationOutline" @setInfoBanner="$emit('setInfoBanner', $event)">
+        <p>
+          This section defines how your dataset will appear upon publication. It includes contact details and official
+          publication information such as the publisher, publication year, and DOI.
+        </p>
 
-          <p>
-            This section defines how your dataset will appear upon publication. It includes contact details and official
-            publication information such as the publisher, publication year, and DOI.
-          </p>
+        <p><strong>Tips:</strong></p>
+        <ol>
+          <li>
+            - <strong>DOI (Digital Object Identifier)</strong>: The DOI is generated automatically and becomes active
+            once the dataset is published. You can still copy and use it in advance (e.g., in a paper).
+          </li>
+          <li>- <strong>Publisher</strong>: EnviDat is set as the publisher by default and cannot be changed.</li>
+          <li>
+            - <strong>Contact Information</strong>: Add a valid contact person for future communication about the
+            dataset. If the person is an EnviDat user, pick them from the list to auto-fill their details.
+          </li>
+        </ol>
 
-          <p><strong>Tips:</strong></p>
-          <ol>
-            <li>
-              - <strong>DOI (Digital Object Identifier)</strong>: The DOI is generated automatically and becomes active
-              once the dataset is published. You can still copy and use it in advance (e.g., in a paper).
-            </li>
-            <li>- <strong>Publisher</strong>: EnviDat is set as the publisher by default and cannot be changed.</li>
-            <li>
-              - <strong>Contact Information</strong>: Add a valid contact person for future communication about the
-              dataset. If the person is an EnviDat user, pick them from the list to auto-fill their details.
-            </li>
-          </ol>
-
-          <p class="mt-2">
-            These details are part of the final published metadata and will be publicly visible. Make sure they are
-            accurate.
-          </p>
-        </v-alert>
-      </v-col>
+        <p class="mt-2">
+          These details are part of the final published metadata and will be publicly visible. Make sure they are
+          accurate.
+        </p>
+      </InfoBanner>
     </v-row>
 
     <v-row>
@@ -62,7 +58,7 @@
       <v-col cols="12" xl="6" class="pa-0">
         <v-row>
           <v-col v-if="blindReviewEditingActive && publicationState !== PUBLICATION_STATE_PUBLISHED" cols="12">
-            <ReviewInfo v-bind="editReviewProps" />
+            <ReviewInfo v-bind="editReviewProps" @save="catchReviewChange" />
           </v-col>
         </v-row>
       </v-col>
@@ -109,6 +105,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { mdiInformationOutline } from '@mdi/js';
 import ContactPerson from '@/modules/workflow/components/steps/ContactPerson.vue';
 import PublicationInfo from '@/modules/workflow/components/steps/PublicationInfo.vue';
 import PublicationStatus from '@/modules/workflow/components/steps/PublicationStatus.vue';
@@ -124,6 +121,8 @@ import { BLIND_REVIEW_ON, PUBLICATION_STATE_PUBLISHED } from '@/factories/metada
 
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
+import InfoBanner from '@/modules/workflow/components/steps/InformationBanner.vue';
+
 export default {
   name: 'PublishingInformation',
   setup() {
@@ -132,6 +131,7 @@ export default {
   },
 
   data: () => ({
+    mdiInformationOutline,
     envidatDomain: process.env.VITE_API_ROOT,
     newDatasetInfo: {},
     PUBLICATION_STATE_PUBLISHED,
@@ -159,12 +159,12 @@ export default {
 
     doiWorkflowActive: { type: Boolean, default: true },
     blindReviewEditingActive: { type: Boolean, default: true },
-    doiLoading: { type: Boolean, default: false },
+    loading: { type: Boolean, default: false },
     doiError: { type: [String, Object], default: undefined },
 
     readOnlyFields: { type: Array, default: () => [] },
     readOnlyExplanation: { type: String, default: '' },
-
+    showInfoBanner: { type: Boolean, default: true },
     userRole: { type: String, default: undefined },
   },
 
@@ -204,6 +204,7 @@ export default {
         publicationYear: this.publicationYear,
         version: this.version,
         datasetId: this.datasetId,
+        loading: this.loading,
       };
     },
 
@@ -246,7 +247,6 @@ export default {
       return {
         ...this.publicationsInfo,
         isBlindReview: this.publicationsInfo.version === BLIND_REVIEW_ON,
-        flat: true,
       };
     },
 
@@ -267,37 +267,41 @@ export default {
       this.$emit('save', this.newDatasetInfo);
     },
 
+    catchReviewChange(reviewInfos) {
+      this.$emit('save', reviewInfos);
+    },
     isReadOnly(fieldKey) {
-      return isReadOnlyField(fieldKey, this.readOnlyFields);
+      return isReadOnlyField(fieldKey);
     },
     readOnlyHint(fieldKey) {
-      return getReadOnlyHint(fieldKey, this.readOnlyExplanation);
+      return getReadOnlyHint(fieldKey);
     },
 
     async catchPublicationStateChange(event) {
       const id = this.metadataId || this.datasetId;
-      this.doiErrorLocal = undefined;
-      this.doiMsgLocal = '';
+      // this.doiErrorLocal = undefined;
+      // this.doiMsgLocal = '';
 
       try {
         if (event === 'DOI_RESERVE') {
           await this.workflowStore.withLoading(() => this.workflowStore.backendStorageService.requestDoi(id), 'doi');
-          this.doiMsgLocal = 'DOI reserved successfully.';
+          // this.doiMsgLocal = 'DOI reserved successfully.';
         } else if (event === 'DOI_REQUEST') {
           await this.workflowStore.withLoading(
             () => this.workflowStore.backendStorageService.requestPublication(id),
             'doi',
           );
-          this.doiMsgLocal = 'Publication requested. An admin will review it.';
+          // this.doiMsgLocal = 'Publication requested. An admin will review it.';
         } else if (event === 'DOI_PUBLISH') {
           await this.workflowStore.withLoading(
             () => this.workflowStore.backendStorageService.publishDataset(id),
             'doi',
           );
-          this.doiMsgLocal = 'Dataset published.';
+          // this.doiMsgLocal = 'Dataset published.';
         }
       } catch (e) {
-        this.doiErrorLocal = e?.message ?? 'Unexpected error';
+        // this.doiErrorLocal = e?.message ?? 'Unexpected error';
+        console.error(e);
       }
     },
 
@@ -306,14 +310,7 @@ export default {
     },
   },
 
-  components: {
-    ReviewInfo,
-    PublicationStatus,
-    PublicationInfo,
-
-    NotFoundCard,
-    ContactPerson,
-  },
+  components: { ReviewInfo, PublicationStatus, PublicationInfo, InfoBanner, NotFoundCard, ContactPerson },
 };
 </script>
 

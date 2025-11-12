@@ -11,9 +11,11 @@
         <TheWorkflowNavigation
           v-else
           @navigateItem="catchNavigate"
+          :localStorageOnly="workflowStore.isDataSourceLocal"
           :isDatasetEditing="isDatasetEditing"
           :currentDataset="workflowStore?.datasetModel"
           @catchCloseClick="catchCloseClick"
+          @previewClick="catchPreviewClick"
         />
       </v-col>
 
@@ -25,8 +27,10 @@
               :is="resolvedComponent"
               :key="currentStepNum"
               v-bind="vm"
+              :showInfoBanner="workflowStore.currentInfoBannerStatus"
               :user-role="workflowStore.userRole ?? 'member'"
               @validate="validate"
+              @setInfoBanner="workflowStore.setInfoBanner"
               @save="save"
               @reload="reloadDataset"
               v-if="resolvedComponent && !workflowStore.loading"
@@ -47,6 +51,7 @@
       @close="closeModal"
       @confirm="catchConfirmSave"
     />
+    <AppSnackbar />
   </div>
 </template>
 
@@ -58,10 +63,11 @@
 import { ref, watch, computed, onMounted, onBeforeUnmount, defineAsyncComponent } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { USER_DASHBOARD_PAGENAME } from '@/router/routeConsts';
+import { METADATADETAIL_PATH, USER_DASHBOARD_PAGENAME } from '@/router/routeConsts';
 import TheWorkflowNavigation from '@/components/Navigation/TheWorkflowNavigation.vue';
 
 import CardLoader from '@/modules/workflow/components/steps/CardLoader.vue';
+import AppSnackbar from '@/modules/workflow/components/steps/SnackBar.vue';
 
 import { useWorkflowExternal } from '@/modules/workflow/utils/useWorkflowExternal.ts';
 import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
@@ -71,6 +77,9 @@ import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow.ts';
 import WorkflowSaveDialog from '@/modules/workflow/components/steps/WorkflowSaveDialog.vue';
 import { StepStatus, WorkflowMode } from '@/modules/workflow/utils/workflowEnums';
 
+import { useNotifyStore } from '@/modules/workflow/utils/snackBar';
+
+const notify = useNotifyStore();
 const workflowStore = useDatasetWorkflowStore();
 const orgStore = useOrganizationsStore();
 
@@ -81,14 +90,8 @@ const route = useRoute();
 const router = useRouter();
 
 const props = defineProps({
-  datasetId: {
-    type: String,
-    default: undefined,
-  },
-  dataset: {
-    type: Object,
-    default: undefined,
-  },
+  datasetId: { type: String, default: undefined },
+  dataset: { type: Object, default: undefined },
 });
 
 /* =========================
@@ -188,7 +191,6 @@ const changeNavigationInStore = (stepParam: number | string) => {
 
 const navigateRouterToStep = async (step: number) => {
   const leaving = currentStep.value;
-
   if (workflowStore.mustValidateOnLeave(leaving)) {
     const ok = workflowStore.validateStepAction(leaving);
     if (!ok) {
@@ -267,6 +269,7 @@ const closeModal = () => {
   workflowStore.openSaveDialog = false;
   workflowStore.readyToSaveToBackend = false;
 };
+
 const catchConfirmSave = async () => {
   if (workflowStore.backendStorageService.loadingDataset) {
     return;
@@ -306,20 +309,43 @@ const catchConfirmSave = async () => {
         userDatasets: userDatasets.value,
       });
     });
+    notify.success('Dataset created successfully');
   } catch (e: any) {
     workflowStore.isStepSaveConfirmed = false;
     workflowStore.openSaveDialog = true;
     workflowStore.readyToSaveToBackend = false;
-    workflowStore.saveErrorMessage = e?.message ?? e?.response?.data?.error?.message ?? 'Error saving the dataset';
+
+    const slug = workflowStore?.datasetModel?.dataset?.name;
+    const is409 = e?.status === 409 || e?.response?.status === 409;
+
+    const msg =
+      is409 && slug
+        ? `${e?.message ?? 'Error saving the dataset'}. Please choose a different title/URL.`
+        : (e?.message ?? 'Error saving the dataset');
+
+    workflowStore.saveErrorMessage = msg;
+
+    notify.error(msg);
   } finally {
     workflowStore.readyToSaveToBackend = false;
   }
 };
 
 const catchCloseClick = () => {
-  router.push({ name: USER_DASHBOARD_PAGENAME });
+  const back = workflowStore.lastEditedBackPath;
+  if (back) {
+    router.push(back);
+  } else {
+    router.push({ name: USER_DASHBOARD_PAGENAME });
+  }
 };
 
+const catchPreviewClick = () => {
+  const routeData = router.resolve({
+    path: `${METADATADETAIL_PATH}/${route?.params?.id}`,
+  });
+  window.open(routeData.href, '_blank');
+};
 const reloadDataset = () => {
   workflowStore.loadDataset(route?.params?.id as string);
 };
@@ -401,6 +427,12 @@ onMounted(async () => {
     }
 
     await workflowStore.bootstrapWorkflow(id);
+
+    // SET last edited dataset in the store
+    const lastDsName =
+      workflowStore.datasetModel?.dataset?.name || workflowStore.datasetModel?.dataset?.id || (id as string);
+    const backPath = (route.query?.backPath as string) || undefined;
+    workflowStore.setLastEditedDataset(lastDsName, route.fullPath, backPath);
 
     // SET loader for organizations and datasets
     await workflowStore.withLoadingAll([loadUserOrganizations(), fetchUserDatasets()]);

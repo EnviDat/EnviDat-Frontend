@@ -7,6 +7,7 @@
              ref="header"
              style="z-index: 1; left: 0"
              >
+
         <!-- prettier-ignore -->
         <MetadataHeader v-bind="header"
                           :metadataId="metadataId"
@@ -230,7 +231,6 @@ export default {
   computed: {
     ...mapState(['config']),
     ...mapState(USER_NAMESPACE, ['userDatasets']),
-    // ...mapState(ORGANIZATIONS_NAMESPACE, ['userOrganizationIds']),
     ...mapGetters(USER_SIGNIN_NAMESPACE, ['user', 'userLoading']),
     ...mapGetters({
       metadatasContent: `${METADATA_NAMESPACE}/metadatasContent`,
@@ -247,6 +247,9 @@ export default {
     },
     injectedComponentConfig() {
       return this.stationsConfig;
+    },
+    userOrganizationIds() {
+      return this.organizationsStore.userOrganizationIds;
     },
     metadataContent() {
       if (this.mode) {
@@ -273,6 +276,9 @@ export default {
     },
     resourcesConfig() {
       return this.metadataConfig?.resourcesConfig || {};
+    },
+    newWorkflowActive() {
+      return this.config.userEditMetadataConfig?.newWorkflowActive || false;
     },
     showCloseButton() {
       if (this.$vuetify.display.mdAndUp) {
@@ -836,7 +842,7 @@ export default {
       //   userId,
       // );
       // always call the UserGetOrg action because it resolves the store & state also when userOrganizationIds is empty
-      await this.organizationsStore.UserGetOrg(this.userOrganizationIds);
+      await this.organizationsStore.UserGetOrg(this.$store, this.userOrganizationIds);
       // await this.$store.dispatch(
       //   `${ORGANIZATIONS_NAMESPACE}/${UserGetOrg}`,
       //   this.userOrganizationIds,

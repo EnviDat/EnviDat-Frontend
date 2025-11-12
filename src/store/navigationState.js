@@ -1,5 +1,3 @@
-/* eslint-disable object-curly-newline */
-
 import {
   mdiEarth,
   mdiBookOpenPageVariant,

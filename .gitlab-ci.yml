@@ -31,10 +31,18 @@ workflow:
     # Block pipeline creation for all other cases (e.g. feature branches, tags, merge requests)
     - when: never
 
+cache:
+  key:
+    files:
+      - package-lock.json
+  paths:
+    - .npm/
+  policy: pull
+
 variables:
   ARTIFACT_COMPRESSION_LEVEL: 'fastest'
   CACHE_COMPRESSION_LEVEL: 'fastest'
-  NPM_CONFIG_CACHE: '.npm/'
+  NPM_CONFIG_CACHE: '/cache/npm'
   GIT_CLEAN_FLAGS: '-ffdx -e .npm/' # don't delete the .npm/ for each job
 
 .normal-rules:
@@ -110,6 +118,37 @@ set-vars:
   artifacts:
     reports:
       dotenv: build.env
+
+install-node:
+  stage: config
+  image: node:lts
+  environment: $CI_COMMIT_REF_NAME
+  # overwrite the global caching to use push-pull policy
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+    - .npm/
+    # pull-push to be able to update the npm cache
+    # don't cache the node_modules because the npm ci command always deletes it
+    policy: pull-push
+    when: on_success
+  before_script:
+    # disabled the funding check
+    - npm config set fund false
+  script:
+    # always run the install
+      - npm ci --no-audit --no-fund --loglevel=error --ignore-scripts
+# artifacts:
+#   name: 'node dependencies'
+#   # stores node_modules as an artifact to be used in the next jobs
+#   # caching isn't always guaranteed to work
+#   paths:
+#     - node_modules/**/*  # Include all contents, including hidden files and directories
+#   expire_in: 1 day
+  retry:
+    max: 2
 
 modify-env:
   stage: config
@@ -199,11 +238,11 @@ run-tests:
   environment: $CI_COMMIT_REF_NAME
   extends: .normal-rules
   needs:
+    - install-node
     - modify-env
-    #- install-node
-  before_script:
-    - npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
+    - verify-node-audit
   script:
+    - npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
     - npm run test
   retry:
     max: 2
@@ -215,13 +254,12 @@ build-storybook:
   extends: .build-rules
   needs:
     # needs the artifact: config and environment variables
+    - install-node
     - modify-env
-    # needs the artifact: node_modules to build storybook
-    #- install-node
-  before_script:
-    - npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
+    - verify-node-audit
   script:
-    - npm run build-storybook -- -o ./storybook --loglevel warn --disable-telemetry
+    - npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
+    - npm run build-storybook -- -o ./storybook --loglevel=error --disable-telemetry
   artifacts:
     name: 'storybook build'
     # keep the storybook for 7 days to be able to trigger the chromatic-deployment
@@ -239,13 +277,12 @@ build-app:
   extends: .build-rules
   needs:
     # needs the artifact: config and environment variables
+    - install-node
     - modify-env
-    # needs the artifact: node_modules to build the app
-    #- install-node
-  before_script:
-    - npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
+    - verify-node-audit
   script:
-    - npm run build -- --logLevel warn
+    - npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
+    - npm run build -- --logLevel error
   artifacts:
     name: 'frontend build '
     expire_in: 1 day

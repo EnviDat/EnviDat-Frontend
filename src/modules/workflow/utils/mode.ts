@@ -4,6 +4,13 @@ import type { ComputeResult, WorkflowStep } from '@/types/workflow';
 import { StepStatus, WorkflowMode } from '@/modules/workflow/utils/workflowEnums';
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 
+// Those step are always disable if the source is from local, this is IMPORTANT if we have some error in the save the backend the step 4,5,6 should not be active
+const DISABLED_IN_CREATE_LOCAL_BY_ID = new Set([4, 5, 6]);
+
+function isForceDisabled(stepId: number, mode: WorkflowMode, dataSource: 'local' | 'backend') {
+  return mode === WorkflowMode.Create && dataSource !== 'backend' && DISABLED_IN_CREATE_LOCAL_BY_ID.has(stepId);
+}
+
 export function computeStepsForMode(
   steps: WorkflowStep[],
   isReadOnlyStepKeys: string[],
@@ -11,10 +18,10 @@ export function computeStepsForMode(
   dataSource: 'local' | 'backend',
 ): ComputeResult {
   const isBackendSource = dataSource === 'backend';
+
   if (mode === WorkflowMode.Edit) {
     const next = steps.map((s) => {
       // CHECK if the step is readOnly based on the list listOfReadOnlyFields - src/modules/workflow/resources/readOnlyFields.ts
-
       const readOnly = isReadOnlyStepKeys.includes(s.key);
       return {
         ...s,
@@ -26,30 +33,30 @@ export function computeStepsForMode(
         // IMPORTANT for step validation in edit mode:
         // if the step has not been modified, we can skip validation, otherwise, we must validate it.
         touched: false,
-      };
+        locked: false, // explicit for consistency
+      } as WorkflowStep & { locked?: boolean };
     });
 
     // SET allow navigation in edit mode
     return { steps: next, freeJump: true };
   }
-  // Those step are always disable if the source is from local, this is IMPORTANT if we have some error in the save the backend the step 4,5,6 should not be active
-  const DISABLED_IN_CREATE_LOCAL_BY_ID = new Set([4, 5, 6]);
 
   const next = steps.map((s, idx) => {
     const isFirst = idx === 0;
-    const forceDisabled = !isBackendSource && DISABLED_IN_CREATE_LOCAL_BY_ID.has(s.id);
+    const forceDisabled = isForceDisabled(s.id, mode, dataSource);
 
     const canBeActive = (isBackendSource || isFirst) && !forceDisabled;
 
     return {
       ...s,
+      locked: forceDisabled,
       isEditable: canBeActive,
       readOnly: false,
       status: canBeActive ? StepStatus.Active : StepStatus.Disabled,
       completed: false,
       hasError: false,
       touched: false,
-    };
+    } as WorkflowStep & { locked?: boolean };
   });
 
   // SET block navigation in create mode
@@ -67,38 +74,49 @@ function updateStepStatusAndErrors(
   const isBackend = dataSource === 'backend';
   const vm = datasetModel.getViewModel(viewModelKey);
 
-  const newStep = existingStep
-    ? existingStep
-    : {
-        completed: false,
-        component: undefined,
-        description: '',
-        dirty: false,
-        guideLines: undefined,
-        hasError: false,
-        icon: '',
-        id: 0,
-        isEditable: false,
-        key: viewModelKey,
-        readOnly: false,
-        status: undefined,
-        title: '',
-        touched: false,
-        viewModelKey: '',
-        errors: null,
-      };
+  // clone to avoid accidental external mutations
+  const newStep = (
+    existingStep
+      ? { ...existingStep }
+      : {
+          completed: false,
+          component: undefined,
+          description: '',
+          dirty: false,
+          guideLines: undefined,
+          hasError: false,
+          icon: '',
+          id: 0,
+          isEditable: false,
+          key: viewModelKey,
+          readOnly: false,
+          status: undefined,
+          title: '',
+          touched: false,
+          viewModelKey: '',
+          errors: null,
+          locked: false,
+        }
+  ) as WorkflowStep & { locked?: boolean };
 
-  const dataForInit = vm.getModelDataForInit ? vm.getModelDataForInit() : vm.getModelData?.();
+  // Preserve forced-disabled steps exactly as disabled (no validation/status flips)
+  if (newStep.locked) {
+    newStep.completed = false;
+    newStep.hasError = false;
+    newStep.errors = null;
+    newStep.status = StepStatus.Disabled;
+    return newStep;
+  }
+
+  const dataForInit = vm?.getModelDataForInit ? vm?.getModelDataForInit() : vm?.getModelData();
   const hasAnything = hasDtData(dataForInit);
 
-  if (!vm || !hasAnything) {
+  if (!hasAnything) {
     newStep.completed = false;
     newStep.hasError = false;
     newStep.status = isBackend ? StepStatus.Active : StepStatus.Disabled;
     newStep.errors = null;
-  }
-
-  if (vm) {
+  } else if (vm) {
     // Validate the VM data
     vm.validate?.(dataForInit);
     const hasErrors = Object.values(vm.validationErrors || {}).some(Boolean);
@@ -125,10 +143,13 @@ export function enhanceStepsFromData(
     return { steps, startIdx: 0 };
   }
 
-  const next = steps.map((step, idx) =>
+  const next = steps.map((step) =>
     updateStepStatusAndErrors(step, step.viewModelKey, datasetModel, hasDtData, dataSource),
   );
 
-  const startIdx = next.findIndex((step) => !step.completed);
-  return { steps: next, startIdx: startIdx === -1 ? 0 : startIdx };
+  const firstActiveIncomplete = next.findIndex((s) => s.status === StepStatus.Active && !s.completed);
+  const firstActive = next.findIndex((s) => s.status === StepStatus.Active);
+  const startIdx = firstActiveIncomplete !== -1 ? firstActiveIncomplete : firstActive !== -1 ? firstActive : 0;
+
+  return { steps: next, startIdx };
 }

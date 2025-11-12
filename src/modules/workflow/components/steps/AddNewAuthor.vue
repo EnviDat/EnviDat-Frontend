@@ -76,7 +76,7 @@
             @keyup="blurOnEnterKey"
             @focusin="focusIn($event)"
             @focusout="focusOut('email', $event)"
-            @update:model-value="changeProperty('email', $event.target.value)"
+            @update:model-value="changeProperty('email', $event)"
           />
         </v-col>
       </v-row>
@@ -118,7 +118,7 @@
             @keyup="blurOnEnterKey"
             @focusin="focusIn($event)"
             @focusout="focusOut('firstName', $event)"
-            @update:model-value="changeProperty('firstName', $event.target.value)"
+            @update:model-value="changeProperty('firstName', $event)"
           />
         </v-col>
 
@@ -137,7 +137,7 @@
             @keyup="blurOnEnterKey"
             @focusin="focusIn($event)"
             @focusout="focusOut('lastName', $event)"
-            @update:model-value="changeProperty('lastName', $event.target.value)"
+            @update:model-value="changeProperty('lastName', $event)"
           />
         </v-col>
       </v-row>
@@ -158,7 +158,7 @@
             @keyup="blurOnEnterKey"
             @focusin="focusIn($event)"
             @focusout="focusOut('affiliation', $event)"
-            @update:model-value="changeProperty('affiliation', $event.target.value)"
+            @update:model-value="changeProperty('affiliation', $event)"
           />
         </v-col>
 
@@ -177,7 +177,7 @@
             @keyup="blurOnEnterKey"
             @focusin="focusIn($event)"
             @focusout="focusOut('identifier', $event)"
-            @update:model-value="changeProperty('identifier', $event.target.value)"
+            @update:model-value="changeProperty('identifier', $event)"
           />
         </v-col>
       </v-row>
@@ -553,8 +553,7 @@ export default {
       placeholderAffiliation: 'Enter authors affiliation',
       authorInstructions: 'Enter an email address of the author.',
       authorOr: '<strong>Or</strong> pick an existing author',
-      authorAutoComplete:
-        'If an author is picked or found with the email address these fields are <strong>autocompleted</strong>!',
+      authorAutoComplete: 'If an author is found by email, these fields are <strong>filled automatically</strong>',
       authorPickHint: 'Start typing the name in the text field to search for an author.',
     },
     activeElements: {

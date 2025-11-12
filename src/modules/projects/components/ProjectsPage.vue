@@ -51,7 +51,11 @@ import ProjectCardPlaceholder from '@/modules/projects/components/ProjectCardPla
 
 // Import constants
 import { PROJECT_DETAIL_PAGENAME } from '@/router/routeConsts';
-import { GET_PROJECTS, PROJECTS_NAMESPACE, SET_PROJECTDETAIL_PAGE_BACK_URL } from '../store/projectsMutationsConsts';
+import {
+  GET_PROJECTS,
+  PROJECTS_NAMESPACE,
+  SET_PROJECTDETAIL_PAGE_BACK_URL,
+} from '@/modules/projects/store/projectsMutationsConsts';
 
 const display = useDisplay();
 const store = useStore();

@@ -223,18 +223,17 @@ export function getAllowedUserNames(allowedUsersString, envidatUsers) {
  * Returns a string of the allowed users names (only the name attribute of the user object)
  * separated by ","
  *
- * @param {string[]} userFullNameArray
- * @param envidatUsers
+ * @param {string[]} pickUserEmailHash
+ * @param {User[]} envidatUsers
  * @returns {string}
  */
-export function getAllowedUsersString(userFullNameArray, envidatUsers) {
-  if (!userFullNameArray || !envidatUsers) {
+export function getAllowedUsersString(pickUserEmailHash, envidatUsers) {
+  if (!pickUserEmailHash || !envidatUsers) {
     return '';
   }
 
-  const allowedUserObjs = envidatUsers.filter((user) => userFullNameArray.includes(user.fullName || user.displayName));
-
-  const allowedUsers = allowedUserObjs.map((user) => user.name);
+  const pickedUsers = envidatUsers.filter((user) => pickUserEmailHash.includes(user.email || user.emailHash));
+  const allowedUsers = pickedUsers.map((user) => user.name);
 
   return allowedUsers.join(',');
 }
