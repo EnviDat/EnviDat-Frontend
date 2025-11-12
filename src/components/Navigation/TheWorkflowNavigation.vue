@@ -54,7 +54,6 @@
           :key="index"
           :class="[
             'navigationWorkflow__item',
-            uiStatus(step),
             {
               readOnly: !step.isEditable && workflowStore.mode !== WorkflowMode.Create,
               unlocked: isUnlocked(step),
@@ -261,7 +260,6 @@ const publicationState = computed(() => {
   if (workflowStore.dataSource !== 'backend') {
     state = 'draft';
   }
-  console.log('state ' + state);
   return mapPublicationState(state);
 });
 
@@ -306,9 +304,6 @@ const tooltip = {
   openOnHover: false,
 };
 */
-
-// UI according to the step status
-const uiStatus = (step) => (workflowStore.currentStep === step.id ? StepStatus.Active : step.status);
 
 // Unlock the step
 const isUnlocked = (step) => {

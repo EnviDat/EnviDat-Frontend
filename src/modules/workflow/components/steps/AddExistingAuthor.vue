@@ -150,9 +150,11 @@ export default {
     },
     catchRemovedUsers(pickedUsersEmails: string[]) {
       this.changePreviews(pickedUsersEmails);
+      this.notifyChange();
     },
     catchPickedUsers(pickedUsersEmails: string[]) {
       this.changePreviews(pickedUsersEmails);
+      this.notifyChange();
     },
     changePreviews(pickedUsersEmails: string[]) {
       this.previewAuthors = getFullAuthorsForUserPicker(pickedUsersEmails, this.authors, this.existingEnviDatUsers);

@@ -372,8 +372,14 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     // SET setActiveStep differs for create vs edit:
     // CREATE linear wizard. Current step -> Active; others keep their status (Completed/Error) or become Disabled.
     // EDIT free jump. Only mark the selected step as Active, leave the rest unchanged.
+    // setActiveStep(id: number) {
+    //   if (this.mode === WorkflowMode.Create && this.dataSource !== 'backend') {
+    //     this.steps = setActiveStepForCreate(this.steps, id);
+    //   }
+    //   this.currentStep = id;
+    // },
     setActiveStep(id: number) {
-      if (this.mode === WorkflowMode.Create && this.dataSource !== 'backend') {
+      if (this.mode === WorkflowMode.Create) {
         this.steps = setActiveStepForCreate(this.steps, id);
       }
       this.currentStep = id;
