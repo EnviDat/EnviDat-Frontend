@@ -77,23 +77,28 @@ export interface User {
   state: string;
 }
 
+export type ResourceSize = {
+  sizeValue: string;
+  sizeUnits: string;
+};
+
 export interface Resource {
   // cacheLastUpdated: string | null;
   // cacheUrl: string | null;
   created: string;
-  datasetId: string;
   description: string;
   doi: string;
   format: string;
   // hash: string;
   id: string;
+  datasetId: string;
   lastModified: string;
   metadataModified: string | null;
   mimetype: string;
   mimetypeInner: string | null;
   name: string;
   position: number;
-  resourceSize: string;
+  resourceSize: ResourceSize;
   resourceType: string | null;
   restricted: string;
   restrictedUrl: string;

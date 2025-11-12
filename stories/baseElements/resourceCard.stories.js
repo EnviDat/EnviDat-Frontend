@@ -19,20 +19,18 @@ S3FolderUrl.url =
 loadingRes.loading = true;
 
 const dataset = metadataCards[2];
-const protectedResBlocked = createResource(dataset.resources[0], dataset.name, dataset.organization.id);
+const protectedResBlocked = createResource(dataset.resources[0], dataset, dataset.organization.id);
 
 const dSet = metadataCards[0];
-const protResWithUserName = createResource(dSet.resources[1], dSet.name, dSet.organization.id, 'zhichao_he', [
+const protResWithUserName = createResource(dSet.resources[1], dSet, dSet.organization.id, 'zhichao_he', [
   dSet.organization.id,
 ]);
 
-const protResNotSameOga = createResource(dSet.resources[1], dSet.name, 'randomId', '', [dSet.organization.id]);
+const protResNotSameOga = createResource(dSet.resources[1], dSet, 'randomId', '', [dSet.organization.id]);
 
-const protResWithSameOga = createResource(dSet.resources[1], dSet.name, dSet.organization.id, '', [
-  dSet.organization.id,
-]);
+const protResWithSameOga = createResource(dSet.resources[1], dSet, dSet.organization.id, '', [dSet.organization.id]);
 
-const protResNotSameOgaButUser = createResource(dSet.resources[1], dSet.name, 'randomId', 'zhichao_he', [
+const protResNotSameOgaButUser = createResource(dSet.resources[1], dSet, 'randomId', 'zhichao_he', [
   dSet.organization.id,
 ]);
 

@@ -161,14 +161,14 @@
                   :label="labels.size"
                   hide-details="auto"
                   :disabled="!isLink || loading"
-                  :model-value="isLink ? sizeField : sizeFieldText"
+                  :model-value="sizeField"
                   :error-messages="validationErrors.size"
                   @blur="sizeField = $event.target.value"
                 />
               </v-col>
               <v-col class="px-2">
                 <v-select
-                  :items="labels.sizeFormatList"
+                  :items="sizeFormatList"
                   v-model="sizeFormatField"
                   label="File size format"
                   hide-details="auto"
@@ -361,6 +361,8 @@ import { getFileExtension } from '@/factories/fileFactory';
 import { RestrictedDTO } from '@/types/dataTransferObjectsTypes';
 import { getUserPickerObjects } from '@/factories/authorFactory';
 import { USER_ROLE_SYSTEM_ADMIN } from '@/factories/userEditingValidations';
+import { sizeFormatList } from '@/factories/resourceHelpers.ts';
+import { Resource } from '@/types/modelTypes';
 
 export default {
   name: 'ResourceEditing',
@@ -410,7 +412,7 @@ export default {
       default: '',
     },
     size: {
-      type: Number,
+      type: String,
       default: undefined,
     },
     sizeFormat: {
@@ -527,7 +529,7 @@ export default {
       get() {
         return this.previews.size !== null ? this.previews.size : this.size;
       },
-      set(value) {
+      set(value: string) {
         this.previews.size = value;
 
         this.validateField('size', value);
@@ -535,22 +537,9 @@ export default {
         this.checkSaveButtonEnabled();
       },
     },
-    sizeFieldText: {
-      get() {
-        const size = this.sizeField;
-
-        const multiplier = this.getFileSizeFormatIndex(size);
-
-        return `${(size / 1024 ** multiplier).toFixed(2)}`;
-      },
-    },
     sizeFormatField: {
       get() {
-        if (this.isLink) {
-          return this.previews.sizeFormat !== null ? this.previews.sizeFormat : this.sizeFormat;
-        }
-
-        return this.previews.sizeFormat !== null ? this.previews.sizeFormat : this.getFileSizeFormat(this.size);
+        return this.previews.sizeFormat !== null ? this.previews.sizeFormat : this.sizeFormat;
       },
       set(value) {
         this.previews.sizeFormat = value;
@@ -739,10 +728,6 @@ export default {
     },
   },
   methods: {
-    getFileSizeFormat(size) {
-      return this.labels.sizeFormatList[this.getFileSizeFormatIndex(size)];
-    },
-
     isReadOnly(dateProperty) {
       return isReadOnlyField(dateProperty);
     },
@@ -750,21 +735,6 @@ export default {
       return getReadOnlyHint(dateProperty);
     },
 
-    getFileSizeFormatIndex(size) {
-      if (!size) {
-        return null;
-      }
-
-      let convertedSized = size / 1024;
-      let index = 0;
-
-      while (convertedSized > 1) {
-        convertedSized /= 1024;
-        index++;
-      }
-
-      return index;
-    },
     checkSaveButtonEnabled() {
       // not test the preview fields to ensure the content of both fields is valid
       // to show the save button
@@ -772,7 +742,7 @@ export default {
         description: this.descriptionField,
         name: this.resourceNameField,
         format: this.formatField,
-        size: this.formatField === RESOURCE_FORMAT_LINK ? 1 : this.sizeField || 1,
+        size: this.sizeField,
         sizeFormat: this.sizeFormatField,
       };
 
@@ -796,15 +766,9 @@ export default {
         },
         deprecated: this.isDataDeprecated,
         format: this.formatField.toLowerCase(),
-        // don't set the "size" directly because this is done
-        // via the file upload
-        size: this.size,
+        size: this.sizeField,
         sizeFormat: this.sizeFormatField,
-        resourceSize: {
-          sizeValue: this.isLink ? this.sizeField?.toString() : '1',
-          sizeUnits: this.isLink ? this.sizeFormatField?.toLowerCase() : this.getFileSizeFormat(1),
-        },
-      };
+      } satisfies Resource;
 
       this.$emit('save', newResourceProps);
     },
@@ -869,6 +833,7 @@ export default {
     isExtensionUppercase: false,
     loadingImagePreview: false,
     imagePreviewError: null,
+    sizeFormatList,
     labels: {
       title: 'Edit Selected Resource',
       instructions: 'Include an apt name and description others will understand',
@@ -882,7 +847,6 @@ export default {
       created: 'Created at',
       lastModified: 'Last modified time',
       size: 'File size',
-      sizeFormatList: ['B', 'KB', 'MB', 'GB', 'TB', 'PB'],
       format: 'File format',
       openAccessPreferedInstructions:
         'Resource is **NOT** Open Access!\nPlease make your data available to everyone unless it contains sensitive data.\nData is **always** accessible by people in the same organization.',

@@ -439,6 +439,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
       }
 
       // SET Completed Edit mode logic TODO ticket
+      // check diff with Edit mode come as ndefined why???
       if (this.mode === WorkflowMode.Edit) {
         const s = this.steps[stepId];
         if (!diff || diff.hasError === undefined) s.hasError = !ok;

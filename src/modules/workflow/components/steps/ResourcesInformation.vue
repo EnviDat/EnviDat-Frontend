@@ -252,16 +252,11 @@ export default {
         userEditMetadataConfig = this.userEditMetadataConfig;
       }
 
-      let mergedSize = {};
-      try {
-        mergedSize = mergeResourceSizeForFrontend(this.selectedResource);
-      } catch (e) {
-        console.error('mergeResourceSizeForFrontend failed:');
-        console.error(e);
-        // TODO Error tracking
-      }
-
-      return { ...this.resourceViewModel, ...mergedSize, userEditMetadataConfig, envidatUsers: this.allEnviDatUsers };
+      return {
+        ...this.resourceViewModel,
+        userEditMetadataConfig,
+        envidatUsers: this.allEnviDatUsers,
+      };
     },
     resourceUploadProps() {
       return {
@@ -413,8 +408,19 @@ export default {
       if (validData) {
         const updatedResources = updateEditingArray(
           this.resources,
+          resource,
+          /*
           // make sure keep the deprecated flag
-          { ...this.resourceViewModel.backendJSON, deprecated: resource.deprecated },
+          {
+            ...resource,
+            deprecated: resource.deprecated,
+            resourceSize: {
+              sizeValue: resource.size.toString(),
+              sizeUnit: resource.sizeFormat,
+            },
+          },
+*/
+          //           { ...this.resourceViewModel.backendJSON, deprecated: resource.deprecated },
           'id',
         );
 
