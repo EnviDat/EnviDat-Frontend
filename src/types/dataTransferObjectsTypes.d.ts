@@ -1,11 +1,6 @@
-export interface ResourceSizeDTO {
-  size_value: string;
-  size_units: string;
-}
-
 export interface RestrictedDTO {
-  shared_secret: string,
-  allowed_users: string,
+  shared_secret: string;
+  allowed_users: string;
   level: string;
 }
 
@@ -62,7 +57,7 @@ export interface OrganizationDTO {
   description: string;
   image_url: string;
   created: string;
-  is_organization: boolean
+  is_organization: boolean;
   approval_status: string;
   state: string;
 }
@@ -104,6 +99,7 @@ export interface DatasetDTO {
   owner_org: string;
   private: boolean;
   publication: string;
+  publication_state: string;
   resource_type: string;
   resource_type_general: string;
   /** spatial is the GeoJson either a GeometryCollection is single Geometries */
@@ -116,6 +112,6 @@ export interface DatasetDTO {
   type: string;
   url: string | null;
   version: string;
-  extras: ExtrasDTO[],
+  extras: ExtrasDTO[];
   resources: ResourceDTO[];
 }

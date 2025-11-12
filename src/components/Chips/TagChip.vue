@@ -7,24 +7,14 @@
     }"
     :style="{ height: $vuetify.display.xs ? '15px' : '' }"
     :color="highlighted ? 'primary' : color"
-    :small="isSmall"
+    :size="isSmall ? 'small' : undefined"
     @click.stop="clicked"
   >
-    <BaseIcon
-      v-if="isAccordion"
-      :icon="!isOpen ? mdiChevronDown : mdiChevronUp"
-      small
-    />
+    <BaseIcon v-if="isAccordion" :icon="!isOpen ? mdiChevronDown : mdiChevronUp" small />
 
     {{ name }}
 
-    <BaseIcon
-      v-if="closeable"
-      class="ml-1"
-      :color="highlighted ? 'white' : 'black'"
-      :icon="mdiClose"
-      small
-    />
+    <BaseIcon v-if="closeable" class="ml-1" :color="highlighted ? 'white' : 'black'" :icon="mdiClose" small />
   </v-chip>
 </template>
 

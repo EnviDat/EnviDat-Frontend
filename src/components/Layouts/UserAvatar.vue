@@ -1,12 +1,20 @@
 <template>
-  <v-avatar :color="backgroundColor"
-            :size="size"
-            style="box-shadow: 0 3px 3px -2px rgba(0,0,0,.2),0 3px 4px 0 rgba(0,0,0,.14),0 1px 8px 0 rgba(0,0,0,.12) !important" >
-
-    <v-img v-if="showGravatar"
-           id="gravatarIcon"
-           :src="`https://gravatar.com/avatar/${emailHash}?s=${size}&d=${ defaultGravatar ? defaultGravatar : 'intentional_Gravatar_Error' }&r=g`"
-           @error="imageError" />
+  <v-avatar
+    :color="backgroundColor"
+    :size="size"
+    style="
+      box-shadow:
+        0 3px 3px -2px rgba(0, 0, 0, 0.2),
+        0 3px 4px 0 rgba(0, 0, 0, 0.14),
+        0 1px 8px 0 rgba(0, 0, 0, 0.12) !important;
+    "
+  >
+    <v-img
+      v-if="showGravatar"
+      id="gravatarIcon"
+      :src="`https://gravatar.com/avatar/${emailHash}?s=${size}&d=${defaultGravatar ? defaultGravatar : 'intentional_Gravatar_Error'}&r=g`"
+      @error="imageError"
+    />
     <!--
     <v-img v-if="!showGravatar && showAvaaatarIcons"
            id="avaaatarIcons"
@@ -14,24 +22,19 @@
           @error="avataaarError" />
 -->
 
-    <div v-show="showInitials"
-          id="jazzIconContainer"
-          ref="jazzIcon"
-          :style="`opacity: 0.75; height: ${size}px;`">
-    </div>
+    <div v-show="showInitials" id="jazzIconContainer" ref="jazzIcon" :style="`opacity: 0.75; height: ${size}px;`"></div>
 
-    <span v-if="showInitials"
-          class="text-white"
-          style="position: absolute;"
-          :class="initialsTextClass"
-          >{{ nameInitials }}</span
-    >
+    <span v-if="showInitials" class="text-white" style="position: absolute" :class="initialsTextClass">{{
+      nameInitials
+    }}</span>
 
-    <base-icon v-if="showFallbackAccountIcon"
-               color="black"
-               :small="size <= 20"
-               :large="size > 40"
-               :icon='mdiAccountCircle' />
+    <base-icon
+      v-if="showFallbackAccountIcon"
+      color="black"
+      :small="size <= 20"
+      :large="size > 40"
+      :icon="mdiAccountCircle"
+    />
   </v-avatar>
 </template>
 
@@ -47,7 +50,7 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 import jazzicon from 'jazzicon-ts';
 import seedrandom from 'seedrandom';
 

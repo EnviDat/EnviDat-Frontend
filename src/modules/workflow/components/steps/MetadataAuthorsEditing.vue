@@ -12,14 +12,15 @@
       </v-row> -->
 
       <v-row>
-        <v-row v-show="validationErrors.authors">
-          <v-col>
-            <v-alert type="error">
-              {{ validationErrors.authors }}
-            </v-alert>
-          </v-col>
-        </v-row>
         <v-col class="mb-0 pa-0">
+          <!-- <v-row v-show="validationErrors.authors">
+            <v-col>
+              <v-alert type="error">
+                {{ validationErrors.authors }}
+              </v-alert>
+            </v-col>
+          </v-row> -->
+
           <v-row class="mb-2">
             <v-col>
               <div class="font-weight-bold">{{ title }}</div>
@@ -56,10 +57,7 @@
                 @catchSearchAuthor="catchAuthorSearchClick"
               >
                 <template #dataCreditCurrentDataset>
-                  <EditDataCredits
-                    v-bind="dataCreditProps(author)"
-                    @creditClick="catchCreditClick(author, $event)"
-                  />
+                  <EditDataCredits v-bind="dataCreditProps(author)" @creditClick="catchCreditClick(author, $event)" />
                 </template>
               </AuthorCard>
             </template>
@@ -102,10 +100,7 @@ import ExpandableLayout from '@/components/Layouts/ExpandableLayout.vue';
 import { getAuthorName } from '@/factories/authorFactory';
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus.js';
 
-import {
-  isReadOnlyField,
-  getReadOnlyHint,
-} from '@/modules/workflow/utils/useReadonly';
+import { isReadOnlyField, getReadOnlyHint } from '@/modules/workflow/utils/useReadonly';
 
 export default {
   name: 'EditMetadataAuthors',
@@ -164,8 +159,7 @@ export default {
       return {
         authors: this.authorsFields,
         authorDetailsConfig: this.authorDetailsConfig,
-        emptyText:
-          'No author has been added yet. Select authors in the dropdown or create a new author.',
+        emptyText: 'No author has been added yet. Select authors in the dropdown or create a new author.',
         emptyTextColor: 'grey',
         showFullscreenButton: false,
       };
@@ -187,9 +181,7 @@ export default {
 
       for (let i = 0; i < newList.length; i++) {
         const fullName = newList[i];
-        const author = this.authorsFields.filter(
-          (a) => getAuthorName(a) === fullName,
-        )[0];
+        const author = this.authorsFields.filter((a) => getAuthorName(a) === fullName)[0];
         if (author) {
           newAuthors.push(author);
         }
@@ -219,9 +211,7 @@ export default {
         editingProperties = {
           showGenericOpenButton: true,
           openButtonIcon: author?.isSelected ? mdiClose : mdiPencil,
-          openButtonTooltip: author?.isSelected
-            ? 'Cancel author editing'
-            : 'Edit Author',
+          openButtonTooltip: author?.isSelected ? 'Cancel author editing' : 'Edit Author',
         };
       }
 
@@ -237,9 +227,7 @@ export default {
         instruction: AUTHORS_EDIT_CURRENT_DATACREDIT,
         dataCredit: author.dataCredit,
         authorName: author.fullName,
-        readOnly:
-          this.loading ||
-          this.readOnlyFields?.includes(METADATA_DATACREDIT_PROPERTY),
+        readOnly: this.loading || this.readOnlyFields?.includes(METADATA_DATACREDIT_PROPERTY),
       };
     },
     clearPreviews() {
@@ -261,17 +249,13 @@ export default {
     },
     catchCreditClick(author, creditName) {
       let localAuthorsCopy = [...this.authors];
-      const authorToChange = localAuthorsCopy.filter(
-        (a) => a.email === author.email,
-      )[0];
+      const authorToChange = localAuthorsCopy.filter((a) => a.email === author.email)[0];
 
       const authorCopy = { ...authorToChange };
       const newAuthor = this.toggleDataCredit(authorCopy, creditName);
 
       // replaces the existing author with the new one
-      localAuthorsCopy = localAuthorsCopy.map((a) =>
-        a.email !== newAuthor.email ? a : newAuthor,
-      );
+      localAuthorsCopy = localAuthorsCopy.map((a) => (a.email !== newAuthor.email ? a : newAuthor));
 
       this.previewAuthors = localAuthorsCopy;
 

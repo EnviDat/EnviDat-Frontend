@@ -1,4 +1,3 @@
-
 export function useDebounce(callback: Function, delay = 300) {
   let timeout: number;
 
@@ -6,7 +5,7 @@ export function useDebounce(callback: Function, delay = 300) {
     clearTimeout(timeout);
 
     timeout = setTimeout(() => {
-      callback(...args)
+      callback(...args);
     }, delay);
-  }
+  };
 }

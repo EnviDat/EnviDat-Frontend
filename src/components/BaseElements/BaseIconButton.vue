@@ -1,36 +1,38 @@
 <template>
   <div class="baseIconButton">
-    <v-tooltip v-if="tooltipText"  :location="getLocation" :text="tooltipText">
+    <v-tooltip v-if="tooltipText" :location="getLocation" :text="tooltipText">
       <template v-slot:activator="{ props }">
         <v-btn
-            v-bind="props"
-            class="iconButton ma-0 pa-0"
-            :class="buttonClass"
-            :style="buttonStyle"
-            :elevation="elevated ? 5 : undefined"
-            icon
-            :variant="outlined ? 'outlined' : disabled ? 'text' : 'flat'"
-            density="comfortable"
-            :size="large ? 'large' : small ? 'small' : undefined"
-            :color="computedColor"
-            :href="url"
-            :target="url ? '_blank' : undefined"
-            :disabled="disabled"
-            @click.stop="onClick"
+          v-bind="props"
+          class="iconButton ma-0 pa-0"
+          :class="buttonClass"
+          :style="buttonStyle"
+          :elevation="elevated ? 5 : undefined"
+          icon
+          :variant="outlined ? 'outlined' : disabled ? 'text' : 'flat'"
+          density="comfortable"
+          :size="large ? 'large' : small ? 'small' : undefined"
+          :color="computedColor"
+          :href="url"
+          :target="url ? '_blank' : undefined"
+          :disabled="disabled"
+          @click.stop="onClick"
+        >
+          <base-icon
+            :icon="icon"
+            :large="large"
+            :rotated="rotated"
+            :color="computedIconColor"
+            :size="small ? 'small' : undefined"
+            :count="count"
           >
-            <base-icon
-              :icon="icon"
-              :large="large"
-              :rotated="rotated"
-              :color="computedIconColor"
-              :small="small"
-              :count="count">
-            </base-icon>
-          </v-btn>
+          </base-icon>
+        </v-btn>
       </template>
     </v-tooltip>
 
-    <v-btn v-else
+    <v-btn
+      v-else
       class="iconButton ma-0 pa-0"
       :class="buttonClass"
       :style="buttonStyle"
@@ -49,11 +51,11 @@
         :large="large"
         :rotated="rotated"
         :color="computedIconColor"
-        :small="small"
-        :count="count">
+        :size="small ? 'small' : undefined"
+        :count="count"
+      >
       </base-icon>
     </v-btn>
-
   </div>
 </template>
 
@@ -113,7 +115,7 @@ export default {
     computedColor() {
       // Vuetify only colors the outline when the "outlined" variant is chosen
       // Because this component can change the background color even when in "outlined mode" a switch is needed
-      if(this.outlined) {
+      if (this.outlined) {
         return this.outlineColor ?? this.iconColor ?? 'primary';
       }
 
@@ -124,7 +126,7 @@ export default {
       return this.color ?? 'transparent';
     },
     getLocation() {
-      return this.tooltipBottom ? 'bottom' : 'top'
+      return this.tooltipBottom ? 'bottom' : 'top';
     },
     computedIconColor() {
       if (this.disabled) {
@@ -138,7 +140,7 @@ export default {
         return undefined;
       }
 
-      const isNamedColor = !(this.color?.includes('#') || this.color?.includes('('))
+      const isNamedColor = !(this.color?.includes('#') || this.color?.includes('('));
       const bgColorStyle = isNamedColor ? `rgb(var(--v-theme-${this.color})) !important` : this.color;
       return {
         'background-color': this.color ? bgColorStyle : 'none !important',
@@ -148,29 +150,25 @@ export default {
       return {
         fancyButton: this.fancy,
         glowingButton: this.glowing,
-      }
+      };
     },
   },
   methods: {
-    onClick() { this.$emit('clicked'); },
+    onClick() {
+      this.$emit('clicked');
+    },
   },
 };
 </script>
 
 <style scoped lang="scss">
 .fancyButton {
-  background-color: #00BFAD;
-  background-image:
-    linear-gradient(to right bottom,
-      #E2F27C,
-      #00BFAD);
+  background-color: #00bfad;
+  background-image: linear-gradient(to right bottom, #e2f27c, #00bfad);
 }
 
 .fancyButton:hover {
-  background-image:
-    linear-gradient(to right bottom,
-      #E2F27C 20%,
-      #00BFAD);
+  background-image: linear-gradient(to right bottom, #e2f27c 20%, #00bfad);
 }
 
 .glowingButton {

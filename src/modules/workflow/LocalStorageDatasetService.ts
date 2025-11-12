@@ -1,11 +1,12 @@
 import { Dataset } from '@/modules/workflow/Dataset.ts';
-import { DatasetService, User } from '@/types/modelTypes';
+import { DatasetService } from '@/types/modelTypes';
 import { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 
-import {
-  readDatasetFromLocalStorage,
-  storeDatasetInLocalStorage,
-} from '@/factories/userCreationFactory';
+import { LOCAL_DATASET_KEY } from '@/factories/metadataConsts';
+
+import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
+
+import { readDatasetFromLocalStorage, storeDatasetInLocalStorage } from '@/factories/userCreationFactory';
 
 export class LocalStorageDatasetService implements DatasetService {
   declare dataset: DatasetDTO;
@@ -26,12 +27,17 @@ export class LocalStorageDatasetService implements DatasetService {
 */
   }
 
+  // private getNewLocalDatasetId() {
+  //   return `local_dataset__${++this.datasetCount}`;
+  // }
+
   private getNewLocalDatasetId() {
-    return `local_dataset_${this.user?.id || '' }_${++this.datasetCount}`;
+    return LOCAL_DATASET_KEY;
   }
 
+  // TODO make it public and import
   private getLocalId() {
-    return `local_dataset_${this.user?.id || '' }_${this.dataset?.id}`;
+    return LOCAL_DATASET_KEY;
   }
 
   static isLocalId(datasetId: string) {
@@ -48,10 +54,7 @@ export class LocalStorageDatasetService implements DatasetService {
     return this.dataset;
   }
   // DOMINIK we need to define patch optional and then extract the id directly from the dataset, or directly pass as an argument the id (This is what I understood from the code)
-  async patchDatasetChanges(
-    datasetOrId: string | DatasetDTO,
-    patch?: object,
-  ): Promise<DatasetDTO> {
+  async patchDatasetChanges(datasetOrId: string | DatasetDTO, patch?: object): Promise<DatasetDTO> {
     this.loadingDataset = true;
 
     let datasetId: string;
@@ -66,17 +69,12 @@ export class LocalStorageDatasetService implements DatasetService {
     }
 
     try {
-      const existingData = readDatasetFromLocalStorage(
-        datasetId || this.getLocalId(),
-      );
+      const existingData = readDatasetFromLocalStorage(datasetId || this.getLocalId());
 
-      const storedData = storeDatasetInLocalStorage(
-        datasetId || this.getLocalId(),
-        {
-          ...existingData,
-          ...data,
-        },
-      );
+      const storedData = storeDatasetInLocalStorage(datasetId || this.getLocalId(), {
+        ...existingData,
+        ...data,
+      });
 
       this.dataset = new Dataset(storedData);
 
@@ -90,9 +88,7 @@ export class LocalStorageDatasetService implements DatasetService {
   }
 
   async createResource(resourceData: ResourceDTO): Promise<ResourceDTO> {
-    const currentResources = this.dataset.resources
-      ? [...this.dataset.resources]
-      : [];
+    const currentResources = this.dataset.resources ? [...this.dataset.resources] : [];
     currentResources?.push(resourceData);
 
     await this.patchDatasetChanges(this.dataset.id, {
@@ -102,53 +98,86 @@ export class LocalStorageDatasetService implements DatasetService {
     return resourceData;
   }
 
-  private getDatasetWithDefaults(dataset: DatasetDTO): DatasetDTO {
-    // const name = dataset.name ? dataset.name : getMetadataUrlFromTitle(dataset.title);
+  async deleteResource(resourceId: string): Promise<boolean> {
+    const newResources = this.dataset.resources?.filter((res) => res.id !== resourceId) || [];
 
-    const orgaId = dataset.organization?.id || '';
+    try {
+      await this.patchDatasetChanges(this.dataset.id, {
+        resources: newResources,
+      });
+    } catch (e) {
+      return false;
+    }
 
-    return {
-      'owner_org': orgaId,
-      'resource_type_general': 'dataset',
-      ...dataset,
-      // name,
-      private: true, // necessary otherwise the dataset would be public directly
-    };
+    return true;
   }
 
-  /*
-  private getLocalDatasetWithDefaults(datasetId: string, user: User, prefilledOrganizationId) {
+  // private getDatasetWithDefaults(dataset: DatasetDTO): DatasetDTO {
+  //   // const name = dataset.name ? dataset.name : getMetadataUrlFromTitle(dataset.title);
+  //   const organizationsStore = useOrganizationsStore();
+  //   // Enhance default data
+  //   const orgaId = organizationsStore.userOrganizations?.[0]?.id || '';
+  //   const organization = organizationsStore.userOrganizations?.[0] || '';
+  //   const name = dataset.name ? getMetadataUrlFromTitle(dataset.title) : '';
 
-    const defaultDataset = {};
-    initCreationDataWithDefaults(defaultDataset, user, prefilledOrganizationId);
+  //   // const orgaId = dataset.organization?.id || '';
 
-    const stepKeys = Object.keys(defaultDataset);
-    let flatDefaultDataset = {
-      resources: [],
-    };
+  //   return {
+  //     owner_org: orgaId,
+  //     organization,
+  //     name,
+  //     resource_type_general: 'dataset',
+  //     ...dataset,
+  //     // name,
+  //     private: true, // necessary otherwise the dataset would be public directly
+  //   };
+  // }
 
-    stepKeys.forEach((key) => {
-      flatDefaultDataset = {
-        ...defaultDataset[key],
-        ...flatDefaultDataset,
-      };
-    });
+  // private getLocalDatasetWithDefaults(datasetId: string, user: User, prefilledOrganizationId) {
 
-    return new Dataset(undefined, {
-      ...flatDefaultDataset,
-      id: datasetId,
-      resourceTypeGeneral: 'dataset', // default for all datasets
-    });
-  }
-*/
+  //   const defaultDataset = {};
+  //   initCreationDataWithDefaults(defaultDataset, user, prefilledOrganizationId);
+
+  //   const stepKeys = Object.keys(defaultDataset);
+  //   let flatDefaultDataset = {
+  //     resources: [],
+  //   };
+
+  //   stepKeys.forEach((key) => {
+  //     flatDefaultDataset = {
+  //       ...defaultDataset[key],
+  //       ...flatDefaultDataset,
+  //     };
+  //   });
+
+  //   return new Dataset(undefined, {
+  //     ...flatDefaultDataset,
+  //     id: datasetId,
+  //     resourceTypeGeneral: 'dataset', // default for all datasets
+  //   });
+  // }
+
+  // TRY to implemente initCreationDataWithDefaults
 
   async createDataset(dataset: DatasetDTO): Promise<DatasetDTO> {
+    const datasetWorkflowStore = useDatasetWorkflowStore();
+    // IF already present, remove the existing local dataset
+    if (localStorage.getItem(LOCAL_DATASET_KEY)) {
+      localStorage.removeItem(LOCAL_DATASET_KEY);
+    }
+
     const datasetId = this.getNewLocalDatasetId();
+    // CREATE an empty entry in localStorage to mark the existence of this dataset
+
     localStorage.setItem(datasetId, '');
 
-    const datasetWithDefaults = this.getDatasetWithDefaults(dataset);
-    this.dataset = new Dataset(datasetWithDefaults);
+    const datasetWithDefault = datasetWorkflowStore.applyDatasetDefaults({
+      id: datasetId,
+      ...dataset,
+    });
 
-    return this.patchDatasetChanges(this.dataset.id, this.dataset);
+    this.dataset = new Dataset(datasetWithDefault);
+    // SET the datasetModel in the localStorage
+    return this.patchDatasetChanges(datasetId, this.dataset);
   }
 }

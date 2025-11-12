@@ -1,10 +1,6 @@
 <template>
   <v-card id="AddExistingAuthor" class="pa-0" flat :loading="loadingColor">
     <v-container fluid class="pa-4">
-      <template slot="progress">
-        <v-progress-linear color="primary" indeterminate />
-      </template>
-
       <v-row>
         <!-- <v-col v-if="message">
           <BaseStatusLabelView
@@ -29,14 +25,13 @@
           <v-row class="mb-5">
             <v-col>
               <div class="font-weight-bold">{{ labels.title }}</div>
-              <div class="text-caption">
-                {{ labels.instructions }}, {{ labels.userPickInstructions }}
-              </div>
+              <div class="text-caption">{{ labels.instructions }}, {{ labels.userPickInstructions }}</div>
             </v-col>
           </v-row>
           <BaseUserPicker
             :users="baseUserPickerObject"
-            :preSelected="preselectAuthorNames"
+            :preSelectedEmails="preselectAuthorEmails"
+            :error-messages="validationErrors?.authors"
             :multiplePick="true"
             :isClearable="isClearable"
             :readonly="isReadOnly('authors')"
@@ -51,7 +46,7 @@
   </v-card>
 </template>
 
-<script>
+<script lang="ts">
 /**
  * @summary Show a title, instructions and a button to create a new author
  * @author Dominik Haas-Artho
@@ -64,20 +59,14 @@
  */
 
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
-// import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 
-import {
-  getUserNameObjects,
-  getAuthorByName,
-} from '@/factories/authorFactory';
+import { getUserPickerObjects, getFullAuthorsForUserPicker } from '@/factories/authorFactory';
 import { EDIT_METADATA_AUTHORS_TITLE } from '@/factories/metadataConsts';
 
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus.js';
 
-import {
-  isReadOnlyField,
-  getReadOnlyHint,
-} from '@/modules/workflow/utils/useReadonly';
+import { isReadOnlyField, getReadOnlyHint } from '@/modules/workflow/utils/useReadonly';
+import { Author } from '@/types/modelTypes';
 
 export default {
   name: 'EditAddExistingAuthor',
@@ -87,6 +76,10 @@ export default {
       default: () => [],
     },
     authors: {
+      type: Array,
+      default: () => [],
+    },
+    validationErrors: {
       type: Array,
       default: () => [],
     },
@@ -139,12 +132,12 @@ export default {
       return undefined;
     },
     baseUserPickerObject() {
-      return getUserNameObjects(this.existingEnviDatUsers);
+      return getUserPickerObjects(this.existingEnviDatUsers);
     },
-    preselectAuthorNames() {
+    preselectAuthorEmails() {
       return this.previewAuthors
-        ? getUserNameObjects(this.previewAuthors)
-        : getUserNameObjects(this.authors);
+        ? this.previewAuthors.map((author: Author) => author.email)
+        : this.authors.map((author: Author) => author.email);
     },
   },
   methods: {
@@ -155,34 +148,16 @@ export default {
       // not saving the users changes, but reflecting their action and show the error
       this.previewAuthors = null;
     },
-    catchRemovedUsers(pickedUsers) {
-      this.changePreviews(pickedUsers);
+    catchRemovedUsers(pickedUsersEmails: string[]) {
+      this.changePreviews(pickedUsersEmails);
+      this.notifyChange();
     },
-    catchPickedUsers(pickedUsers) {
-      this.changePreviews(pickedUsers);
+    catchPickedUsers(pickedUsersEmails: string[]) {
+      this.changePreviews(pickedUsersEmails);
+      this.notifyChange();
     },
-    changePreviews(authorsNames) {
-      this.previewAuthors = this.getFullAuthors(authorsNames);
-    },
-    getFullAuthors(authorsNames) {
-      const fullAuthors = [];
-
-      authorsNames.forEach((name) => {
-        let author = getAuthorByName(name, this.authors);
-
-        // if the author is part of the dataset authors, pick it as it is
-        // including the existing dataCredits
-        if (!author) {
-          // if the author is newly picked, use the existing list as reference
-          author = getAuthorByName(name, this.existingEnviDatUsers);
-        }
-
-        if (author) {
-          fullAuthors.push(author);
-        }
-      });
-
-      return fullAuthors;
+    changePreviews(pickedUsersEmails: string[]) {
+      this.previewAuthors = getFullAuthorsForUserPicker(pickedUsersEmails, this.authors, this.existingEnviDatUsers);
     },
     notifyChange() {
       if (!this.previewAuthors) {
@@ -207,18 +182,15 @@ export default {
   data: () => ({
     labels: {
       title: EDIT_METADATA_AUTHORS_TITLE,
-      instructions:
-        'Here are can add authors from other published datasets to your dataset.',
+      instructions: 'Here you can add authors from other published datasets to your dataset.',
       userPickInstructions:
-        'Pick an author from the list to add to your dataset. To remove click on the close icon of an author.',
-      authorPickHint:
-        'Start typing the name in the text field to search for an author.',
+        'Pick an author from the list to add to your dataset. To remove, click on the close icon of an author.',
+      authorPickHint: 'Start typing the name in the text field to search for an author.',
     },
     previewAuthors: null,
   }),
   components: {
     BaseUserPicker,
-    // BaseStatusLabelView,
   },
 };
 </script>

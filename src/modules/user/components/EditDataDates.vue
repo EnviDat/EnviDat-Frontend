@@ -1,8 +1,5 @@
 <template>
-  <v-card id="EditDataDates"
-          class="pa-0"
-          :loading="loadingColor">
-
+  <v-card id="EditDataDates" class="pa-0" :loading="loadingColor">
     <v-container fluid class="pa-4">
       <v-row>
         <v-col cols="8" class="text-h5">
@@ -18,12 +15,7 @@
           />
         </v-col>
         <v-col v-if="error">
-          <BaseStatusLabelView
-            status="error"
-            statusColor="error"
-            :statusText="error"
-            :expandedText="errorDetails"
-          />
+          <BaseStatusLabelView status="error" statusColor="error" :statusText="error" :expandedText="errorDetails" />
         </v-col>
       </v-row>
 
@@ -71,7 +63,6 @@
             </v-col>
           </v-row>
         </v-col>
-
       </v-row>
     </v-container>
   </v-card>
@@ -164,13 +155,12 @@ export default {
     },
     datesField: {
       get() {
-        const dates =
-          this.previewDates?.length > 0 ? this.previewDates : [...this.dates];
+        const dates = this.previewDates?.length > 0 ? this.previewDates : [...this.dates];
 
         const createdType = DATE_PROPERTY_CREATED_TYPE;
         const createdExplanation = DATE_PROPERTY_CREATED_TYPE_EXPLANATION;
 
-        let createdDateObj = dates.find(dObj => dObj.dateType === createdType);
+        let createdDateObj = dates.find((dObj) => dObj.dateType === createdType);
 
         if (!createdDateObj) {
           createdDateObj = {
@@ -187,7 +177,7 @@ export default {
         const collectedType = DATE_PROPERTY_COLLECTED_TYPE;
         const collectedExplanation = DATE_PROPERTY_COLLECTED_TYPE_EXPLANATION;
 
-        let collectedDateObj = dates.find(dObj => dObj.dateType === collectedType);
+        let collectedDateObj = dates.find((dObj) => dObj.dateType === collectedType);
 
         if (!collectedDateObj) {
           collectedDateObj = {
@@ -269,10 +259,7 @@ export default {
 
       for (let i = 0; i < array.length; i++) {
         const entry = array[i];
-        if (
-          !!entry[DATE_PROPERTY_START_DATE] ||
-          !!entry[DATE_PROPERTY_END_DATE]
-        ) {
+        if (!!entry[DATE_PROPERTY_START_DATE] || !!entry[DATE_PROPERTY_END_DATE]) {
           cleanCopy.push(entry);
         }
       }
@@ -310,10 +297,8 @@ export default {
         'Select a date range for the collection and / or the creation of your research data.' +
         ' This helps researcher better to categorize your data. ' +
         ' (Dates are in <b>"DD-MM-YYYY"</b> format).',
-      instructionsCollection:
-        '"Collection Date" should be used for data collected from the field.',
-      instructionsCreation:
-        '"Creation Date" should be used for data created from models or other sources.',
+      instructionsCollection: '"Collection Date" should be used for data collected from the field.',
+      instructionsCreation: '"Creation Date" should be used for data created from models or other sources.',
       dateType: 'Date Type',
       creationDate: 'Creation Date',
       collectionDate: 'Collection Date',

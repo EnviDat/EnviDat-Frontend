@@ -1,12 +1,5 @@
 <template>
-  <v-skeleton-loader
-      id="ResourceCardPlaceholder"
-      min-height="180"
-      type="article"
-      color="primary">
-
-  </v-skeleton-loader>
-
+  <v-skeleton-loader id="ResourceCardPlaceholder" min-height="180" type="article" color="primary"> </v-skeleton-loader>
 </template>
 
 <script>

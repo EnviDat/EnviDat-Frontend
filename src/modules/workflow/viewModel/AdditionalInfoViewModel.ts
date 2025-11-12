@@ -6,10 +6,12 @@ import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 const toNull = (v: string, o: string) => (o === '' ? null : v);
 
 export class AdditionalInfoViewModel extends AbstractEditViewModel {
-
   declare dataLicenseId: string;
   declare dataLicenseTitle: string;
   declare dataLicenseUrl: string;
+  declare organizationId: string | undefined;
+  declare organizationName: string | undefined;
+  declare organization?: { id?: string; title?: string; name?: string };
 
   declare funders: {
     institution: string;
@@ -20,26 +22,31 @@ export class AdditionalInfoViewModel extends AbstractEditViewModel {
   validationErrors: {
     dataLicenseId: string | null;
     funders: string | null;
+    organizationId: string | null;
+    organizationName: string | null;
   } = {
     dataLicenseId: null,
+    organizationName: null,
     funders: null,
+    organizationId: null,
   };
 
   validationRules = yup.object().shape({
     dataLicenseId: yup.string().required('Data licence is required'),
+    organizationName: yup.string().nullable(),
+    dataLicenseTitle: yup.string().nullable(),
+    dataLicenseUrl: yup.string().nullable().url(),
+    organizationId: yup.string().nullable().required('Organization is required'),
     funders: yup
       .array()
+      .nullable()
       .required('Enter funding information')
       .min(1, 'Provide at least one funding entry')
       .of(
         yup.object().shape({
           institution: yup.string().required().min(3),
           grantNumber: yup.string(),
-          institutionUrl: yup
-            .string()
-            .nullable()
-            .transform(toNull)
-            .url('Provide a valid link / url.'),
+          institutionUrl: yup.string().nullable().transform(toNull).url('Provide a valid link / url.'),
         }),
       ),
   });
@@ -52,7 +59,7 @@ export class AdditionalInfoViewModel extends AbstractEditViewModel {
     return super.validate(newProps);
   }
 
-/*
+  /*
   getData() {
     return {
       dataLicenseId: this.dataLicenseId,
@@ -64,6 +71,10 @@ export class AdditionalInfoViewModel extends AbstractEditViewModel {
   static mappingRules() {
     return [
       ['dataLicenseId', 'license_id'],
+      ['organization', 'organization'],
+      ['organizationName', 'organization.name'],
+      ['organizationId', 'organization.id'],
+      ['organizationId', 'owner_org'],
       ['dataLicenseTitle', 'license_title'],
       ['dataLicenseUrl', 'license_url'],
       ['funders', 'funding'],

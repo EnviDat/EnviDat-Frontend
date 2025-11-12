@@ -4,7 +4,6 @@ import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEdit
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 
 export class GeoInfoViewModel extends AbstractEditViewModel {
-
   declare dates: any[];
   declare geometries: any[];
 
@@ -14,39 +13,49 @@ export class GeoInfoViewModel extends AbstractEditViewModel {
   } = {
     dates: null,
     geometries: null,
-  }
+  };
 
   validationRules = yup.object({
     dates: yup
       .array()
+      .ensure()
       .required('Created date is required')
       .min(1, 'At least a creation date is required')
-      .test(
-        'created-date-complete',
-        'Add start and end date for “created”',
-        (entries?: any[]) => {
-          if (!Array.isArray(entries)) return false;
+      .test('created-date-complete', 'Add start and end date for “created”', (entries?: any[]) => {
+        if (!Array.isArray(entries)) return false;
 
-          const created = entries.find((e) => e.dateType === 'created');
-          // deve esistere e avere entrambi i campi
-          return !!created && created.dateStart && created.dateEnd;
-        },
-      ),
-    geometries: yup
-      .array()
-      .required('Geometry is required')
-      .min(1, 'At least one geometry is required'),
+        const created = entries.find((e) => e.dateType === 'created');
+        if (!created) return false;
+
+        const start = created.date ?? created.dateStart;
+        const end = created.endDate ?? created.dateEnd;
+
+        return Boolean(start && end);
+      }),
+    geometries: yup.array().required('Geometry is required').min(1, 'At least one geometry is required'),
   });
 
   constructor(datasetVM: DatasetModel) {
     super(datasetVM, GeoInfoViewModel.mappingRules());
   }
 
+  public override getModelData(): {
+    dates: string;
+  } {
+    const data = super.getModelData<GeoInfoViewModel>() as any;
+
+    const { geometries, ...rest } = data;
+
+    return rest as {
+      dates: string;
+    };
+  }
+
   validate(newProps?: Partial<GeoInfoViewModel>): boolean {
     return super.validate(newProps);
   }
 
-/*
+  /*
   getData() {
     return {
       dates: this.dates,
@@ -58,7 +67,7 @@ export class GeoInfoViewModel extends AbstractEditViewModel {
   static mappingRules() {
     return [
       ['dates', 'date'],
-      ['geometries', 'geometries'],
+      ['geometries', 'spatial'],
     ];
   }
 }

@@ -1,10 +1,5 @@
 <template>
-  <v-container
-    id="MetadataDetailPage"
-    fluid
-    class="pa-0"
-    tag="article">
-
+  <v-container id="MetadataDetailPage" fluid class="pa-0" tag="article">
     <v-row no-gutters>
       <!-- prettier-ignore -->
       <v-col class="elevation-5 pa-0"
@@ -47,42 +42,20 @@
 
     <v-row :style="`position: relative; z-index: 0;`" no-gutters>
       <v-col :class="firstColWidth" class="pt-0">
-        <v-row
-          v-for="(entry, index) in firstColumn"
-          :key="`left_${index}_${keyHash}`"
-          no-gutters
-        >
-          <v-col v-if="entry"
-                 class="mb-2 px-0">
-            <component
-              :component="entry"
-              :is="entry"
-              v-bind="entry.props"
-              :showPlaceholder="showPlaceholder"
-            />
+        <v-row v-for="(entry, index) in firstColumn" :key="`left_${index}_${keyHash}`" no-gutters>
+          <v-col v-if="entry" class="mb-2 px-0">
+            <component :component="entry" :is="entry" v-bind="entry.props" :showPlaceholder="showPlaceholder" />
           </v-col>
         </v-row>
       </v-col>
 
       <v-col v-if="secondColumn" class="pt-0" :class="secondColWidth">
-        <v-row
-          v-for="(entry, index) in secondColumn"
-          :key="`right_${index}_${keyHash}`"
-          no-gutters
-        >
-          <v-col v-if="entry"
-                 class="mb-2 px-0">
-
-            <component
-              :component="entry"
-              :is="entry"
-              v-bind="entry.props"
-              :showPlaceholder="showPlaceholder"
-            />
+        <v-row v-for="(entry, index) in secondColumn" :key="`right_${index}_${keyHash}`" no-gutters>
+          <v-col v-if="entry" class="mb-2 px-0">
+            <component :component="entry" :is="entry" v-bind="entry.props" :showPlaceholder="showPlaceholder" />
           </v-col>
         </v-row>
       </v-col>
-
     </v-row>
   </v-container>
 </template>
@@ -112,11 +85,7 @@ import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
 import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
 
-import {
-  BROWSE_PATH,
-  METADATAEDIT_PAGENAME,
-  ORGANIZATIONS_PAGENAME,
-} from '@/router/routeConsts';
+import { BROWSE_PATH, METADATAEDIT_PAGENAME, ORGANIZATIONS_PAGENAME, WORKFLOW_PAGENAME } from '@/router/routeConsts';
 
 import {
   ACTION_USER_SHOW,
@@ -133,26 +102,14 @@ import {
   METADATA_NAMESPACE,
 } from '@/store/metadataMutationsConsts';
 
-import {
-  createFunding,
-  createLicense,
-  createPublications,
-  createRelatedDatasets,
-} from '@/factories/metaDataFactory';
+import { createFunding, createLicense, createPublications, createRelatedDatasets } from '@/factories/metaDataFactory';
 import { createResources } from '@/factories/resourceHelpers';
 
 import { createCitation } from '@/factories/citationFactory';
 
-import {
-  getFullAuthorsFromDataset,
-  replaceAuthorDeadAscii,
-} from '@/factories/authorFactory';
+import { getFullAuthorsFromDataset, replaceAuthorDeadAscii } from '@/factories/authorFactory';
 
-import {
-  getConfigFiles,
-  getConfigUrls,
-  getFeatureCollectionFromGcNetStations,
-} from '@/factories/chartFactory';
+import { getConfigFiles, getConfigUrls, getFeatureCollectionFromGcNetStations } from '@/factories/chartFactory';
 
 import {
   AUTHOR_SEARCH_CLICK,
@@ -170,7 +127,8 @@ import {
 
 import { getEventsForPageAndName } from '@/modules/matomo/store/matomoStore';
 
-import { convertJSON, getFrontendDates } from '@/factories/mappingFactory';
+import { convertJSON } from '@/factories/convertJSON';
+import { getFrontendDates } from '@/factories/mappingFactory';
 
 import { convertArrayToUrlString } from '@/factories/stringFactory';
 
@@ -181,44 +139,25 @@ import { createHeaderViewModel } from '@/factories/ViewModels/HeaderViewModel';
 import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionViewModel';
 import { getResourcesForDataViz } from '@/modules/charts/middelware/chartServiceLayer.ts';
 
-
 const MetadataDescription = defineAsyncComponent(
-  () =>
-    import('@/modules/metadata/components/Metadata/MetadataDescription.vue'),
+  () => import('@/modules/metadata/components/Metadata/MetadataDescription.vue'),
 );
 
-const MetadataResources = defineAsyncComponent(
-  () => import('./Metadata/MetadataResources.vue'),
-);
+const MetadataResources = defineAsyncComponent(() => import('./Metadata/MetadataResources.vue'));
 
-const MetadataCitation = defineAsyncComponent(
-  () => import('./Metadata/MetadataCitation.vue'),
-);
-const MetadataPublications = defineAsyncComponent(
-  () => import('./Metadata/MetadataPublications.vue'),
-);
-const MetadataPublicationList = defineAsyncComponent(
-  () => import('./Metadata/MetadataPublicationList.vue'),
-);
-const MetadataFunding = defineAsyncComponent(
-  () => import('./Metadata/MetadataFunding.vue'),
-);
-const MetadataAuthors = defineAsyncComponent(
-  () => import('./Metadata/MetadataAuthors.vue'),
-);
-const MetadataGeo = defineAsyncComponent(
-  () => import('@/modules/metadata/components/Geoservices/MetadataGeo.vue'),
-);
+const MetadataCitation = defineAsyncComponent(() => import('./Metadata/MetadataCitation.vue'));
+const MetadataPublications = defineAsyncComponent(() => import('./Metadata/MetadataPublications.vue'));
+const MetadataPublicationList = defineAsyncComponent(() => import('./Metadata/MetadataPublicationList.vue'));
+const MetadataFunding = defineAsyncComponent(() => import('./Metadata/MetadataFunding.vue'));
+const MetadataAuthors = defineAsyncComponent(() => import('./Metadata/MetadataAuthors.vue'));
+const MetadataGeo = defineAsyncComponent(() => import('@/modules/metadata/components/Geoservices/MetadataGeo.vue'));
 const MetadataRelatedDatasets = defineAsyncComponent(
-  () =>
-    import(
-      '@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue'
-    ),
+  () => import('@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue'),
 );
 
-const ResourceDataVizListAsync = defineAsyncComponent(() =>
-  import('@/modules/charts/components/ResourceDataVizList.vue'),
-)
+const ResourceDataVizListAsync = defineAsyncComponent(
+  () => import('@/modules/charts/components/ResourceDataVizList.vue'),
+);
 
 // Might want to check https://css-tricks.com/use-cases-fixed-backgrounds-css/
 // for animations between the different parts of the Metadata
@@ -248,7 +187,6 @@ export default {
    * @description reset the scrolling to the top.
    */
   async mounted() {
-
     // await this.setPageViews(this.$route.fullPath, 'Visit');
 
     window.scrollTo(0, 0);
@@ -271,7 +209,6 @@ export default {
   computed: {
     ...mapState(['config']),
     ...mapState(USER_NAMESPACE, ['userDatasets']),
-    // ...mapState(ORGANIZATIONS_NAMESPACE, ['userOrganizationIds']),
     ...mapGetters(USER_SIGNIN_NAMESPACE, ['user', 'userLoading']),
     ...mapGetters({
       metadatasContent: `${METADATA_NAMESPACE}/metadatasContent`,
@@ -283,11 +220,12 @@ export default {
       authorsMap: `${METADATA_NAMESPACE}/authorsMap`,
       appScrollPosition: 'appScrollPosition',
     }),
+    userOrganizationIds() {
+      return this.organizationsStore.userOrganizationIds;
+    },
     metadataContent() {
       if (this.mode) {
-        return this.modeDataset !== undefined
-          ? this.modeDataset
-          : this.currentMetadataContent;
+        return this.modeDataset !== undefined ? this.modeDataset : this.currentMetadataContent;
       }
 
       return this.currentMetadataContent;
@@ -310,6 +248,9 @@ export default {
     },
     resourcesConfig() {
       return this.metadataConfig?.resourcesConfig || {};
+    },
+    newWorkflowActive() {
+      return this.config.userEditMetadataConfig?.newWorkflowActive || false;
     },
     showCloseButton() {
       if (this.$vuetify.display.mdAndUp) {
@@ -345,9 +286,7 @@ export default {
       return fileList;
     },
     baseUrl() {
-      return import.meta.env?.MODE === 'production'
-        ? this.baseStationURL
-        : this.baseStationURLTestdata;
+      return import.meta.env?.MODE === 'production' ? this.baseStationURL : this.baseStationURLTestdata;
     },
     /**
      * @returns {String} the metadataId from the route
@@ -356,9 +295,7 @@ export default {
       return this.$route.params.metadataid;
     },
     mode() {
-      return this.$route.query.mode
-        ? this.$route.query.mode.toLowerCase()
-        : undefined;
+      return this.$route.query.mode ? this.$route.query.mode.toLowerCase() : undefined;
     },
     showPlaceholder() {
       return this.loadingCurrentMetadataContent || this.loadingMetadatasContent;
@@ -376,9 +313,7 @@ export default {
         return false;
       }
 
-      const matches = this.userDatasets.filter(
-        (dSet) => dSet.name === this.metadataId || dSet.id === this.metadataId,
-      );
+      const matches = this.userDatasets.filter((dSet) => dSet.name === this.metadataId || dSet.id === this.metadataId);
 
       return matches.length > 0;
     },
@@ -459,8 +394,7 @@ export default {
           this.stationsConfig = response.data;
 
           const stations = response.data;
-          const featureCollection =
-            getFeatureCollectionFromGcNetStations(stations);
+          const featureCollection = getFeatureCollectionFromGcNetStations(stations);
 
           // Override location with stations FeatureCollection, creating shallow copy
           const locationOverride = { ...this.location };
@@ -540,10 +474,7 @@ export default {
         );
 
         // this.descriptionData = createBody(currentContent, this.$vuetify.display.smAndDown);
-        this.descriptionData = createDescriptionViewModel(
-          parsedContent,
-          isSmallScreen,
-        );
+        this.descriptionData = createDescriptionViewModel(parsedContent, isSmallScreen);
 
         this.citation = createCitation(currentContent);
 
@@ -577,37 +508,23 @@ export default {
     loadResources() {
       const currentContent = this.metadataContent;
 
-      this.resourceData =
-        createResources(currentContent, this.user, this.userOrganizationIds) ||
-        {};
+      this.resourceData = createResources(currentContent, this.user, this.userOrganizationIds) || {};
 
       const license = createLicense(currentContent);
 
       if (this.resourceData.resources) {
         this.configInfos = getConfigFiles(this.resourceData.resources);
 
-        enhanceElementsWithStrategyEvents(
-          this.resourceData.resources,
-          undefined,
-          true,
-        );
-        enhanceResourcesWithMetadataExtras(
-          this.metadataContent.extras,
-          this.resourceData.resources,
-        );
+        enhanceElementsWithStrategyEvents(this.resourceData.resources, undefined, true);
+        enhanceResourcesWithMetadataExtras(this.metadataContent.extras, this.resourceData.resources);
 
-        enhanceElementsWithStrategyEvents(
-          this.resourceData.resources,
-          SHOW_DATA_PREVIEW_PROPERTY,
-        );
+        enhanceElementsWithStrategyEvents(this.resourceData.resources, SHOW_DATA_PREVIEW_PROPERTY);
 
         this.resourceData.dates = getFrontendDates(this.metadataContent.date);
-
 
         if (this.resourcesConfig.loadDataViz) {
           this.resourcesForDataViz = getResourcesForDataViz(this.resourceData.resources);
         }
-
       }
 
       this.MetadataResources.props = {
@@ -645,6 +562,7 @@ export default {
 
       this.MetadataCitation.props = {
         ...this.citation,
+        showCitation: this.metadataContent?.showShallowCitation,
       };
 
       let publicationList;
@@ -675,10 +593,10 @@ export default {
       let resourceDataViz;
 
       if (this.resourcesConfig.loadDataViz) {
-        resourceDataViz = ResourceDataVizListAsync
+        resourceDataViz = ResourceDataVizListAsync;
         resourceDataViz.props = {
           resources: this.resourcesForDataViz,
-        }
+        };
       }
 
       this.firstCol = [
@@ -689,12 +607,7 @@ export default {
         this.MetadataAuthors,
       ];
 
-      this.secondCol = [
-        this.MetadataResources,
-        resourceDataViz,
-        this.MetadataGeo,
-        this.MetadataRelatedDatasets,
-      ];
+      this.secondCol = [this.MetadataResources, resourceDataViz, this.MetadataGeo, this.MetadataRelatedDatasets];
 
       if (this.$vuetify.display.smAndDown) {
         this.singleCol = [
@@ -721,11 +634,8 @@ export default {
       });
     },
     async injectMicroCharts() {
-      const GcNetMicroChartList = (
-        await import(
-          '@/modules/metadata/components/GC-Net/GcNetMicroChartList.vue'
-        )
-      ).default;
+      const GcNetMicroChartList = (await import('@/modules/metadata/components/GC-Net/GcNetMicroChartList.vue'))
+        .default;
 
       eventBus.emit(GCNET_INJECT_MICRO_CHARTS, {
         component: GcNetMicroChartList,
@@ -738,10 +648,7 @@ export default {
      * @returns {any}
      */
     isCurrentIdOrName(idOrName) {
-      return (
-        this.metadataContent?.id === idOrName ||
-        this.metadataContent?.name === idOrName
-      );
+      return this.metadataContent?.id === idOrName || this.metadataContent?.name === idOrName;
     },
     /**
      * @description
@@ -785,6 +692,9 @@ export default {
 
       query.search = `${given} ${lastName}`;
       query.isAuthorSearch = true;
+      if (query.mode) {
+        query.mode = undefined;
+      }
 
       this.$router.push({
         path: BROWSE_PATH,
@@ -809,11 +719,20 @@ export default {
       });
     },
     catchEditClicked() {
+      let name = METADATAEDIT_PAGENAME;
+      const params = {
+        metadataid: this.metadataId,
+      };
+
+      if (this.newWorkflowActive) {
+        name = WORKFLOW_PAGENAME;
+        params.id = this.metadataId;
+        delete params.metadataid;
+      }
+
       this.$router.push({
-        name: METADATAEDIT_PAGENAME,
-        params: {
-          metadataid: this.metadataId,
-        },
+        name,
+        params,
         query: {
           backPath: this.$route.fullPath,
         },
@@ -842,22 +761,14 @@ export default {
         if (datasets.length <= 0) {
           datasets = await this.modeStore.loadModeDatasets(this.mode);
         }
-        this.modeDataset = datasets.filter(
-          (entry) => entry.name === this.metadataId,
-        )[0];
+        this.modeDataset = datasets.filter((entry) => entry.name === this.metadataId)[0];
       }
 
-      if (
-        !this.loadingMetadatasContent &&
-        !this.isCurrentIdOrName(this.metadataId)
-      ) {
+      if (!this.loadingMetadatasContent && !this.isCurrentIdOrName(this.metadataId)) {
         // in case of navigating into the page load the content directly via Id
-        await this.$store.dispatch(
-          `${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`,
-          {
-            metadataId: this.metadataId,
-          },
-        );
+        await this.$store.dispatch(`${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`, {
+          metadataId: this.metadataId,
+        });
       } else {
         // in case of entring the page directly via Url without having loaded the rest of the app.
         // this call is to initialize the components in the their loading state
@@ -874,9 +785,7 @@ export default {
       if (this.mode && this.mode === EDNA_MODE) {
         const contents = Object.values(this.metadatasContent);
 
-        const localEntry = contents.filter(
-          (entry) => entry.name === this.metadataId,
-        );
+        const localEntry = contents.filter((entry) => entry.name === this.metadataId);
         return localEntry.length === 1;
       }
       return false;
@@ -895,7 +804,7 @@ export default {
       //   userId,
       // );
       // always call the UserGetOrg action because it resolves the store & state also when userOrganizationIds is empty
-      await this.organizationsStore.UserGetOrg(this.userOrganizationIds);
+      await this.organizationsStore.UserGetOrg(this.$store, this.userOrganizationIds);
       // await this.$store.dispatch(
       //   `${ORGANIZATIONS_NAMESPACE}/${UserGetOrg}`,
       //   this.userOrganizationIds,
@@ -955,12 +864,9 @@ export default {
         !this.loadingCurrentMetadataContent &&
         !this.isCurrentIdOrName(this.metadataId)
       ) {
-        await this.$store.dispatch(
-          `${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`,
-          {
-            metadataId: this.metadataId,
-          },
-        );
+        await this.$store.dispatch(`${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`, {
+          metadataId: this.metadataId,
+        });
       }
     },
     userLoading() {
@@ -1032,6 +938,4 @@ export default {
 };
 </script>
 
-<style>
-
-</style>
+<style></style>

@@ -37,8 +37,7 @@
       </v-row>
     </v-card-text>
   </v-card>
--->
-</template>
+--></template>
 
 <script>
 /**
@@ -58,10 +57,7 @@ import { mapGetters } from 'vuex';
 import ExpandableTextLayout from '@/components/Layouts/ExpandableTextLayout.vue';
 import { METADATA_DATASETS_TITLE } from '@/factories/metadataConsts';
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
-import {
-  extractDatasetIdsFromText,
-  getCitationList,
-} from '@/factories/citationFactory';
+import { extractDatasetIdsFromText, getCitationList } from '@/factories/citationFactory';
 
 export default {
   name: 'MetadataRelatedDatasets',

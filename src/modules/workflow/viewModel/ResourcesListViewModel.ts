@@ -1,22 +1,24 @@
 import * as yup from 'yup';
 
-import { Resource, User } from '@/types/modelTypes';
+import { Resource, ResourceSize, User } from '@/types/modelTypes';
 import { type DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 import { ResourceViewModel } from '@/modules/workflow/viewModel/ResourceViewModel.ts';
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel';
 import { METADATA_NEW_RESOURCE_ID } from '@/factories/metadataConsts';
-import {
-  convertJSON,
-  convertToBackendJSONWithRules,
-} from '@/factories/mappingFactory';
+
+import { formatDateTimeToCKANFormat, stringifyResourceForBackend } from '@/factories/mappingFactory';
+
+import { convertJSON, convertToBackendJSONWithRules, convertToFrontendJSONWithRules } from '@/factories/convertJSON';
+
 import {
   enhanceElementsWithStrategyEvents,
   enhanceResourcesWithMetadataExtras,
   SELECT_EDITING_RESOURCE_PROPERTY,
 } from '@/factories/strategyFactory';
-import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 
+import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
+import { formatBytes, getFileSizeFormat, getFileSizeText, parseBytes } from '@/factories/resourceHelpers.ts';
 
 export class ResourcesListViewModel extends AbstractEditViewModel {
   declare resources: Resource[];
@@ -30,18 +32,25 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
     resources: string | null;
   } = {
     resources: null,
-  }
+  };
 
+  // validationRules = yup.object().shape({
+  //   resources: yup.array().required().min(1, 'Add at least one resource.').nullable(),
+  // });
   validationRules = yup.object().shape({
-    resources: yup.array().required().min(1, 'Add at least one resource.'),
+    resources: yup.array().nullable(),
   });
-
 
   constructor(datasetModel: DatasetModel) {
     super(datasetModel, ResourcesListViewModel.mappingRules());
   }
 
-  static getFormattedResources(
+  // TODO Check with Dominik, this was added to fix an issue with validation at first load
+  override getModelDataForInit() {
+    return { resources: this.resources ?? [] };
+  }
+
+  getFormattedResources(
     rawResources: ResourceDTO[],
     datasetName: string,
     organizationID: string,
@@ -49,31 +58,53 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
     signedInUserOrganizationIds: string[],
     numberOfDownload?: number,
   ): Resource[] {
-
     return rawResources?.map((rawResource: ResourceDTO) => {
-        const res = ResourceViewModel.getFormattedResource(
-          rawResource,
-          datasetName,
-          organizationID,
-          signedInUserName,
-          signedInUserOrganizationIds,
-          numberOfDownload,
-        );
+      const customFieldsVm = this.datasetModel.getViewModel('CustomFieldsViewModel');
 
-        return res;
-      },
-    );
+      const res = ResourceViewModel.getFormattedResource(
+        rawResource,
+        datasetName,
+        organizationID,
+        signedInUserName,
+        signedInUserOrganizationIds,
+        numberOfDownload,
+      );
+
+      res.deprecated = customFieldsVm?.isResourceDeprecated(res.id);
+
+      return res;
+    });
+  }
+
+  private convertDatesToBackendFormat(resource: Resource) {
+    resource.created = resource.created ? formatDateTimeToCKANFormat(resource.created) : '';
+    resource.lastModified = resource.lastModified ? formatDateTimeToCKANFormat(resource.lastModified) : '';
+    resource.metadataModified = resource.metadataModified ? formatDateTimeToCKANFormat(resource.metadataModified) : '';
   }
 
   get backendJSON() {
-    const rawResources = this.resources?.map((cleanResource) =>
-      convertToBackendJSONWithRules(
-        ResourceViewModel.mappingRules(),
-        cleanResource,
-      ),
-    );
+    const backendResources = this.resources?.map((frontendRes: Resource) => {
+      this.convertDatesToBackendFormat(frontendRes);
 
-    return convertJSON({ resources: rawResources }, false);
+      const formattedSize = `${frontendRes.size} ${frontendRes.sizeFormat}`;
+      const sizeInBytes = parseBytes(formattedSize);
+
+      const jsonBackendResource = convertToBackendJSONWithRules(ResourceViewModel.mappingRules(), {
+        ...frontendRes,
+        size: sizeInBytes,
+      }) as ResourceDTO;
+
+      // @ts-expect-error
+      jsonBackendResource.resource_size = convertToBackendJSONWithRules(ResourceViewModel.sizeMappingRules(), {
+        sizeValue: frontendRes.size,
+        sizeUnits: frontendRes.sizeFormat,
+      });
+
+      // here the resourceSize gets convert into a string
+      return stringifyResourceForBackend(jsonBackendResource);
+    });
+
+    return convertJSON({ resources: backendResources }, false);
   }
 
   /**
@@ -82,7 +113,6 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
    * @param dataset
    */
   updateModel(dataset: DatasetDTO | undefined) {
-
     if (!dataset) {
       // make sure to initialize for validations to work
       Object.assign(this, {
@@ -100,24 +130,17 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
         );
     */
 
-    const cleanResources = ResourcesListViewModel.getFormattedResources(
+    const cleanResources = this.getFormattedResources(
       dataset.resources,
       dataset.name,
       dataset.organization?.id,
-      this.signedInUser?.name,
+      this.signedInUser?.fullName,
       this.signedInUserOrganizationIds,
     );
 
-    enhanceElementsWithStrategyEvents(
-      cleanResources,
-      SELECT_EDITING_RESOURCE_PROPERTY,
-      true,
-    );
+    enhanceElementsWithStrategyEvents(cleanResources, SELECT_EDITING_RESOURCE_PROPERTY, true);
 
-    enhanceResourcesWithMetadataExtras(
-      dataset.extras,
-      cleanResources,
-    );
+    enhanceResourcesWithMetadataExtras(dataset.extras, cleanResources);
 
     Object.assign(this, {
       resources: cleanResources,
@@ -131,9 +154,7 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
 
   async save(newData: any): Promise<boolean> {
     if (newData?.resources) {
-      const newResource = newData.resources.filter(
-        (res: Resource) => res.id === METADATA_NEW_RESOURCE_ID,
-      )[0];
+      const newResource = newData.resources.filter((res: Resource) => res.id === METADATA_NEW_RESOURCE_ID)[0];
 
       if (newResource) {
         this.loading = true;

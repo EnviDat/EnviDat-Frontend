@@ -10,19 +10,20 @@ import webfontDownload from 'vite-plugin-webfont-dl';
 import vueDevTools from 'vite-plugin-vue-devtools';
 import { visualizer } from 'rollup-plugin-visualizer';
 
-import { getFilesWithPrefix } from './src/factories/enhancementsFactoryNode.js';
+import { getFilesWithPrefix } from './src/factories/enhancementsFactoryNode';
 
 const version = process.env.npm_package_version;
 
 const useHttps = process.env.VITE_USE_HTTPS === 'true';
 
 const isVike = process.argv.some((arg) => arg.includes('vike'));
+const isStorybookBuild = process.argv.some((arg) => arg.includes('storybook'));
 
 export default async ({ mode, config }): Promise<UserConfig> => {
   if (isVike) {
     console.log('Run with vite.config.vike!');
     const asyncImport = await import('./vite.config.vike.ts');
-    const vikeConfig = asyncImport.default({mode, config});
+    const vikeConfig = asyncImport.default({ mode, config });
     // console.log(vikeConfig);
     return vikeConfig;
   }
@@ -35,10 +36,7 @@ export default async ({ mode, config }): Promise<UserConfig> => {
   const fileName = `version_${version}.txt`;
   const existingFilePaths = path.resolve(__dirname, 'public/');
 
-  const existingVersionFiles = getFilesWithPrefix(
-    existingFilePaths,
-    'version_',
-  );
+  const existingVersionFiles = getFilesWithPrefix(existingFilePaths, 'version_');
 
   // delete any existing files with version_ as prefix to make sure only the latest version is created
   for (let i = 0; i < existingVersionFiles.length; i++) {
@@ -52,13 +50,9 @@ export default async ({ mode, config }): Promise<UserConfig> => {
 
   try {
     fs.writeFileSync(filePath, version);
-    console.log(
-      `Created version file ${fileName} for easy build version highlight in ${filePath}`,
-    );
+    console.log(`Created version file ${fileName} for easy build version highlight in ${filePath}`);
   } catch (err) {
-    console.log(
-      `Tried to created file ${fileName} in ${filePath}. Error: ${err}`,
-    );
+    console.log(`Tried to created file ${fileName} in ${filePath}. Error: ${err}`);
   }
 
   const env = loadEnv(mode, process.cwd());
@@ -68,30 +62,30 @@ export default async ({ mode, config }): Promise<UserConfig> => {
   console.log(`With VITE_API_BASE_URL: ${env.VITE_API_BASE_URL}`);
   console.log(`With VITE_API_DOI_BASE_URL: ${env.VITE_API_DOI_BASE_URL}`);
   console.log(`With VITE_BUILD_SOURCEMAPS: ${env.VITE_BUILD_SOURCEMAPS}`);
+  console.log(`With PUBLIC_ENV__VIKE_BASE_CANONICAL_URL: ${env.PUBLIC_ENV__VIKE_BASE_CANONICAL_URL}`);
+  console.log(`With VITE_SEO_BASE: ${env.VITE_SEO_BASE}`);
   console.log(`starting ${mode} | version: ${version} | prod: ${isProd}`);
 
-  const buildSourceMaps = env.VITE_BUILD_SOURCEMAPS === 'true';
+  const buildSourceMaps = !isStorybookBuild && env.VITE_BUILD_SOURCEMAPS === 'true';
 
   return defineConfig({
     plugins: [
       vue(),
       eslint({
-        include: ['src/**/*.ts', 'src/**/*.vue'], // Include TypeScript files
+        eslintPath: 'eslint',
+        failOnWarning: false,
+        failOnError: true,
+        include: ['src/**/*.js', 'src/**/*.ts', 'src/**/*.vue'],
         // https://github.com/storybookjs/builder-vite/issues/367#issuecomment-1938214165
         // Remove warnings because Vite falesly tries to lint folders it should not
-        // exclude: ['/virtual:/**', 'node_modules/**', '/sb-preview/**'],
+        exclude: ['/virtual:/**', 'node_modules/**', '/sb-preview/**'],
       }),
-      vuetify({
-        autoImport: true,
-      }),
+      vuetify({ autoImport: true }),
       webfontDownload([
         'https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;700&display=swap',
         'https://fonts.googleapis.com/css2?family=Baskervville&display=swap',
       ]),
-      visualizer({
-        filename: './dist/buildStats.html',
-        title: 'EnviDat Build Visualizer',
-      }),
+      visualizer({ filename: './dist/buildStats.html', title: 'EnviDat Build Visualizer' }),
       vueDevTools(),
     ],
     resolve: {
@@ -99,10 +93,7 @@ export default async ({ mode, config }): Promise<UserConfig> => {
         { find: '@', replacement: path.resolve(__dirname, 'src') },
         { find: '~', replacement: path.resolve(__dirname) },
         // { find: 'leaflet', replacement: 'leaflet/dist/leaflet.js' },
-        {
-          find: 'leaflet/dist/leaflet.css',
-          replacement: 'leaflet/dist/leaflet.css',
-        },
+        { find: 'leaflet/dist/leaflet.css', replacement: 'leaflet/dist/leaflet.css' },
         // { find: 'leaflet', replacement: 'leaflet/dist/leaflet-src.esm.js' },
         {
           find: 'leaflet.markercluster/dist/MarkerCluster.css',
@@ -112,24 +103,22 @@ export default async ({ mode, config }): Promise<UserConfig> => {
           find: 'leaflet.markercluster/dist/MarkerCluster.Default.css',
           replacement: 'leaflet.markercluster/dist/MarkerCluster.Default.css',
         },
-        {
-          find: 'leaflet.markercluster',
-          replacement: 'leaflet.markercluster/dist/leaflet.markercluster.js',
-        },
+        { find: 'leaflet.markercluster', replacement: 'leaflet.markercluster/dist/leaflet.markercluster.js' },
         { find: 'vue', replacement: 'vue/dist/vue.esm-bundler.js' },
       ],
     },
-    define: {
-      'process.env': loadEnv(mode, process.cwd()),
-      'import.meta.env.VITE_VERSION': JSON.stringify(version),
-    },
+    define: { 'process.env': loadEnv(mode, process.cwd()), 'import.meta.env.VITE_VERSION': JSON.stringify(version) },
     base: './',
+    esbuild: {
+      minifyIdentifiers: false,
+      keepNames: true,
+    },
     build: {
       assetsDir: './static',
       chunkSizeWarningLimit: 500,
-      //         assetsInlineLimit: 4096 / 2, // Reduce the amount of image inlining so the chunks don't get huge
       cssCodeSplit: true,
-      minify: !buildSourceMaps,
+      minify: true,
+      cssMinify: true,
       sourcemap: buildSourceMaps,
       emptyOutDir: true,
       rollupOptions: isProd
@@ -137,6 +126,14 @@ export default async ({ mode, config }): Promise<UserConfig> => {
             output: {
               manualChunks: (id) => {
                 if (id.includes('node_modules')) {
+                  if (id.includes('src/assets')) {
+                    return 'envidat_assets';
+                  }
+
+                  if (id.includes('imageFactory')) {
+                    return 'envidat_imageFactory';
+                  }
+
                   if (id.includes('vuetify')) {
                     return 'vendor_vuetify';
                   }
@@ -158,7 +155,11 @@ export default async ({ mode, config }): Promise<UserConfig> => {
                     return 'vendor_uppy';
                   }
 
-                  if (id.includes('chart') || id.includes('uplot')) {
+                  if (id.includes('uplot')) {
+                    return 'vendor_uplot';
+                  }
+
+                  if (id.includes('chart')) {
                     return 'vendor_charts';
                   }
 
@@ -166,13 +167,19 @@ export default async ({ mode, config }): Promise<UserConfig> => {
                     return 'vendor_validation';
                   }
 
-                  if (
-                    id.includes('axios') ||
-                    id.includes('date-fns') ||
-                    id.includes('mitt') ||
-                    id.includes('seedrandom') ||
-                    id.includes('tiny-js-md5')
-                  ) {
+                  if (id.includes('date-fns')) {
+                    return 'vendor_date';
+                  }
+
+                  if (id.includes('fast-xml-parser') || id.includes('papaparse')) {
+                    return 'vendor_parser';
+                  }
+
+                  if (id.includes('axios')) {
+                    return 'vendor_axios';
+                  }
+
+                  if (id.includes('mitt') || id.includes('seedrandom') || id.includes('tiny-js-md5')) {
                     return 'vendor_utils';
                   }
 
@@ -180,18 +187,15 @@ export default async ({ mode, config }): Promise<UserConfig> => {
                     return 'vendor_icons';
                   }
 
-                  if (
-                    id.includes('vanilla-jsoneditor') ||
-                    id.includes('codemirror')
-                  ) {
+                  if (id.includes('vanilla-jsoneditor') || id.includes('codemirror')) {
                     return 'vendor_jsoneditor';
                   }
 
-                  return 'vendors';
-                }
+                  if (id.includes('lodash')) {
+                    return 'vendor_lodash';
+                  }
 
-                if (id.includes('src/assets')) {
-                  return 'envidat_assets';
+                  return 'vendors';
                 }
 
                 // Let Rollup handle the rest
@@ -205,17 +209,12 @@ export default async ({ mode, config }): Promise<UserConfig> => {
       ? {
           host: '0.0.0.0',
           port: 8080,
-          hmr: {
-            host: 'dev.envidat04.wsl.ch',
-            port: 8080,
-          },
+          hmr: { host: 'dev.envidat04.wsl.ch', port: 8080 },
           allowedHosts: ['dev.envidat04.wsl.ch:8080'],
           https: useHttps
             ? {
                 key: fs.readFileSync(path.resolve(__dirname, 'certs/key.pem')),
-                cert: fs.readFileSync(
-                  path.resolve(__dirname, 'certs/cert.pem'),
-                ),
+                cert: fs.readFileSync(path.resolve(__dirname, 'certs/cert.pem')),
               }
             : false,
           proxy: {

@@ -36,7 +36,7 @@ export default {
     await dispatch(doiAction, metadataId);
   },
   async [DOI_RESERVE]({ dispatch, commit }, metadataId) {
-    commit(DOI_RESERVE, { key: DOI_RESERVED_PROPERTY })
+    commit(DOI_RESERVE, { key: DOI_RESERVED_PROPERTY });
 
     const actionUrl = ACTION_DOI_RESERVE();
     let url = extractBodyIntoUrl(actionUrl, { 'package-id': metadataId });
@@ -54,13 +54,12 @@ export default {
         key: DOI_RESERVED_PROPERTY,
         value: reservedDOI,
       });
-    } catch(error) {
+    } catch (error) {
       commit(`${DOI_RESERVE}_ERROR`, error);
     }
-
   },
   async [DOI_REQUEST]({ dispatch, commit }, metadataId) {
-    commit(DOI_REQUEST)
+    commit(DOI_REQUEST);
 
     const actionUrl = ACTION_DOI_REQUEST();
     let url = extractBodyIntoUrl(actionUrl, { 'package-id': metadataId });
@@ -73,13 +72,12 @@ export default {
       await reloadMetadataForEditing(dispatch, metadataId);
 
       commit(`${DOI_REQUEST}_SUCCESS`);
-    } catch(error) {
+    } catch (error) {
       commit(`${DOI_REQUEST}_ERROR`, error);
     }
-
   },
   async [DOI_PUBLISH]({ dispatch, commit }, metadataId) {
-    commit(DOI_PUBLISH)
+    commit(DOI_PUBLISH);
 
     const actionUrl = ACTION_DOI_PUBLISH();
     let url = extractBodyIntoUrl(actionUrl, { 'package-id': metadataId });
@@ -92,9 +90,8 @@ export default {
       await reloadMetadataForEditing(dispatch, metadataId);
 
       commit(`${DOI_PUBLISH}_SUCCESS`);
-    } catch(error) {
+    } catch (error) {
       commit(`${DOI_PUBLISH}_ERROR`, error);
     }
-
   },
-}
+};

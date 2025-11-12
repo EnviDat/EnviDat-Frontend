@@ -1,10 +1,9 @@
 <template>
-  <v-card id="NotFoundCard"
-          class="pa-0 notFoundGrid">
+  <v-card id="NotFoundCard" class="pa-0 notFoundGrid">
     <v-img
       :src="notFoundImage"
       max-height="300"
-      style="border-bottom-left-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 0;"
+      style="border-bottom-left-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 0"
       cover
     />
 
@@ -16,10 +15,7 @@
       </v-row>
 
       <v-row>
-        <v-col cols="12" class="text-md-h6 text-xs-body-1"
-                v-html="description" >
-
-        </v-col>
+        <v-col cols="12" class="text-md-h6 text-xs-body-1" v-html="description"> </v-col>
       </v-row>
 
       <v-row justify="space-between">
@@ -28,10 +24,7 @@
         </v-col>
 
         <v-col v-if="actionButtonText && actionButtonCallback" class="flex-grow-0">
-          <base-rectangle-button
-            :button-text="actionButtonText"
-            @clicked="actionButtonCallback"
-          />
+          <base-rectangle-button :button-text="actionButtonText" @clicked="actionButtonCallback" />
         </v-col>
       </v-row>
     </v-container>
@@ -64,8 +57,7 @@ export default {
     },
     description: {
       type: String,
-      default:
-        'Ups we have trouble showing you want you were looking for. Try reloading the page.',
+      default: 'Ups we have trouble showing you want you were looking for. Try reloading the page.',
     },
     actionDescription: String,
     actionButtonText: String,

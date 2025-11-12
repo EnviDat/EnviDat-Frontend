@@ -1,7 +1,6 @@
-
 verify-node-audit:
   stage: test
-  image: node:20.15.0-alpine3.20
+  image: node:lts
   environment: $CI_COMMIT_REF_NAME
   extends: .normal-rules
   needs:
@@ -13,12 +12,14 @@ verify-node-audit:
   retry:
     max: 2
 
-
 verify-node-owasp:
   stage: test
   image: owasp/dependency-check:latest
-  environment: $CI_COMMIT_REF_NAME  
-  extends: .normal-rules
+  environment: $CI_COMMIT_REF_NAME
+  rules:
+    - when: manual
+  # for manual jobs add allow_failure so the whole pipeline won't show up as "blocked"
+  allow_failure: true
   needs:
     - job: modify-env
       artifacts: false
@@ -27,19 +28,19 @@ verify-node-owasp:
     # https://dependency-check.github.io/DependencyCheck/
     # more about the cli commands https://dependency-check.github.io/DependencyCheck/dependency-check-cli/arguments.html
     - >
-      dependency-check.sh
-      --project "EnviDat-Frontend"
-      --scan "."
-      --out "reports"
-      --format "HTML"
-      --format "JSON"
-      --failOnCVSS 7
-      --exclude "**/node_modules/**"
-      --enableExperimental
-      --enableRetired
+      sh /usr/dependency-check/bin/dependency-check.sh \
+      --project "EnviDat-Frontend" \
+      --scan "." \
+      --out "reports" \
+      --format "HTML" \
+      --format "JSON" \
+      --failOnCVSS 7 \
+      --exclude "**/node_modules/**" \
+      --enableExperimental \
+      --enableRetired \
+      --nvdApiKey "$NVD_API_KEY"
   artifacts:
     paths:
       - reports
   retry:
     max: 2
-

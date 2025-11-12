@@ -1,4 +1,4 @@
-import * as directives from 'vuetify/directives'
+import * as directives from 'vuetify/directives';
 import 'vuetify/styles';
 import { createVuetify } from 'vuetify';
 import config from '@/plugins/vuetifyConfig.js';
@@ -28,16 +28,16 @@ export const parameters = {
   options: {
     storySort: {
       method: 'alphabetical',
-//      order: [],
-//      locales: '',
+      //      order: [],
+      //      locales: '',
     },
   },
 
   ...envidatViewportParameters,
 
   docs: {
-    codePanel: true
-  }
+    codePanel: true,
+  },
 };
 
 // read more: https://storybook.js.org/recipes/vuetify#register-vuetify-in-storybook
@@ -45,4 +45,3 @@ export const parameters = {
 export const decorators = [withVuetifyTheme];
 
 export const tags = [];
-

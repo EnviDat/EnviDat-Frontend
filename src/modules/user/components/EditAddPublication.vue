@@ -8,18 +8,11 @@
           :disabled="!!doiField"
           hide-details
           :prepend-icon="mdiIdentifier"
-          @input="(event) => pidChange(event.target.value)"
+          @update:model-value="(event) => pidChange(event)"
         />
       </v-col>
 
-      <v-col
-        cols="12"
-        xl="1"
-        style="text-align: center"
-        class="text-h6 px-md-4 flex-grow-0"
-      >
-        Or
-      </v-col>
+      <v-col cols="12" xl="1" style="text-align: center" class="text-h6 px-md-4 flex-grow-0"> Or </v-col>
 
       <v-col cols="12" xl="4">
         <v-text-field
@@ -28,7 +21,7 @@
           :disabled="!!pidField"
           hide-details
           :prepend-icon="mdiFingerprint"
-          @input="(event) => doiChange(event.target.value)"
+          @update:model-value="(event) => doiChange(event)"
         />
       </v-col>
 
@@ -66,12 +59,7 @@
       </v-col>
 
       <v-col v-if="showTextArea" class="flex-grow-0">
-        <BaseRectangleButton
-          button-text="Cancel"
-          color="gray"
-          is-xs-small
-          @clicked="closeEditMode(true)"
-        />
+        <BaseRectangleButton button-text="Cancel" color="gray" is-xs-small @clicked="closeEditMode(true)" />
       </v-col>
     </v-row>
 
@@ -119,17 +107,11 @@ import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseCitationView from '@/components/BaseElements/BaseCitationView.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout.vue';
-import {
-  getValidationMetadataEditingObject,
-  isFieldValid,
-} from '@/factories/userEditingValidations';
+import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
 
 import { EDITMETADATA_RELATED_PUBLICATIONS } from '@/factories/eventBus';
 
-import {
-  resolveDoiCitationObjectsViaDora,
-  resolvePidCitationObjectsViaDora,
-} from '@/factories/citationFactory';
+import { resolveDoiCitationObjectsViaDora, resolvePidCitationObjectsViaDora } from '@/factories/citationFactory';
 
 export default {
   name: 'EditAddPublication',
@@ -205,9 +187,7 @@ export default {
   computed: {
     ...mapState(['config']),
     validations() {
-      return getValidationMetadataEditingObject(
-        EDITMETADATA_RELATED_PUBLICATIONS,
-      );
+      return getValidationMetadataEditingObject(EDITMETADATA_RELATED_PUBLICATIONS);
     },
     publications() {
       return this.mixinMethods_getGenericProp('publications');
@@ -258,12 +238,7 @@ export default {
   },
   methods: {
     validateProperty(property, value) {
-      return isFieldValid(
-        property,
-        value,
-        this.validations,
-        this.validationErrors,
-      );
+      return isFieldValid(property, value, this.validations, this.validationErrors);
     },
     editExistingData() {
       this.$emit('saveText', this.previewCitation?.citation || this.citation);
@@ -314,10 +289,7 @@ export default {
 
       this.previewCitation = previewPlainText;
 
-      this.isInputTextValid = this.validateProperty(
-        this.editingProperty,
-        previewPlainText.citation,
-      );
+      this.isInputTextValid = this.validateProperty(this.editingProperty, previewPlainText.citation);
 
       this.plainText = value;
     },
@@ -338,15 +310,11 @@ export default {
       pidMap.set(pid, pid);
 
       try {
-        const citationMap = await resolvePidCitationObjectsViaDora(
-          pidMap,
-          this.resolveBaseUrl,
-        );
+        const citationMap = await resolvePidCitationObjectsViaDora(pidMap, this.resolveBaseUrl);
         this.previewCitation = citationMap.get(pid);
       } catch (e) {
         this.previewCitation = {
-          citation:
-            'Resolving the citation was not possible due to a network error.',
+          citation: 'Resolving the citation was not possible due to a network error.',
         };
       }
 
@@ -360,15 +328,11 @@ export default {
       doiMap.set(doi, doi);
 
       try {
-        const citationMap = await resolveDoiCitationObjectsViaDora(
-          doiMap,
-          this.resolveBaseDOIUrl,
-        );
+        const citationMap = await resolveDoiCitationObjectsViaDora(doiMap, this.resolveBaseDOIUrl);
         this.previewCitation = citationMap.get(doi);
       } catch (e) {
         this.previewCitation = {
-          citation:
-            'Resolving the citation was not possible due to a network error.',
+          citation: 'Resolving the citation was not possible due to a network error.',
         };
       }
 

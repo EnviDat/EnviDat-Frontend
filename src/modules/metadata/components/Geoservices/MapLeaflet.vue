@@ -1,9 +1,5 @@
 <template>
-  <div
-    :id="mapDivId"
-    ref="map"
-    :style="`min-height: ${mapHeight + 'px'}; height: 100%;`"
-  ></div>
+  <div :id="mapDivId" ref="map" :style="`min-height: ${mapHeight + 'px'}; height: 100%;`"></div>
 </template>
 
 <script>
@@ -25,11 +21,7 @@ import {
   EDITMETADATA_DATA_GEO_MAP_ERROR,
 } from '@/factories/eventBus';
 
-import {
-  defaultSwissLocation,
-  defaultWorldLocation,
-  geomanGeomsToGeoJSON,
-} from '@/factories/geoFactory';
+import { defaultSwissLocation, defaultWorldLocation, geomanGeomsToGeoJSON } from '@/factories/geoFactory';
 
 import {
   createImageryLayer,
@@ -39,8 +31,6 @@ import {
   pointStyle,
   polygonStyle,
 } from '@/factories/leafletFunctions';
-
-/* eslint-disable vue/no-unused-components */
 
 export default {
   name: 'MapLeaflet',
@@ -165,11 +155,7 @@ export default {
   },
   methods: {
     createLeafletLayers(geoJson) {
-      const { layers } = createLeafletLayerCollectionsGeoJSON(
-        geoJson,
-        this.isGcnet,
-        this,
-      );
+      const { layers } = createLeafletLayerCollectionsGeoJSON(geoJson, this.isGcnet, this);
 
       return layers;
     },
@@ -303,9 +289,7 @@ export default {
         this.map.removeLayer(this.basemapLayer);
       }
 
-      this.basemapLayer = this.isTopoActive
-        ? this.topoLayer
-        : this.imageryLayer;
+      this.basemapLayer = this.isTopoActive ? this.topoLayer : this.imageryLayer;
 
       this.map.addLayer(this.basemapLayer);
       // this.basemapLayer.bringToBack();
@@ -358,10 +342,7 @@ export default {
               this.map.addLayer(geoJSON(geojson));
               this.triggerGeometryEditEvent();
             } catch {
-              eventBus.emit(
-                EDITMETADATA_DATA_GEO_MAP_ERROR,
-                'Could not load file. Is it GeoJSON?',
-              );
+              eventBus.emit(EDITMETADATA_DATA_GEO_MAP_ERROR, 'Could not load file. Is it GeoJSON?');
             }
             // Attempt KML, requires a plugin (wait for user request)
             // try {

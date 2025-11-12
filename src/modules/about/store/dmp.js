@@ -13,11 +13,7 @@
 import axios from 'axios';
 
 import { getSpecificApiError } from '@/factories/notificationFactory';
-import {
-  GET_DMP,
-  GET_DMP_ERROR,
-  GET_DMP_SUCCESS,
-} from '@/modules/about/store/dmpMutationsConsts';
+import { GET_DMP, GET_DMP_ERROR, GET_DMP_SUCCESS } from '@/modules/about/store/dmpMutationsConsts';
 import { ADD_USER_NOTIFICATION } from '@/store/mainMutationsConsts';
 
 const staticRoot = import.meta.env.VITE_STATIC_ROOT;
@@ -33,10 +29,10 @@ const actions = {
 
     axios
       .get(url)
-      .then(response => {
+      .then((response) => {
         commit(GET_DMP_SUCCESS, response.data);
       })
-      .catch(reason => {
+      .catch((reason) => {
         commit(GET_DMP_ERROR, reason);
       });
   },
@@ -58,8 +54,7 @@ const mutations = {
     state.dmpMarkdown = `${details}: ${reason}`;
 
     if (import.meta.env?.MODE === 'development') {
-      state.dmpMarkdown +=
-        ' \nThis is normal when developing locally on localhost:8080';
+      state.dmpMarkdown += ' \nThis is normal when developing locally on localhost:8080';
     }
 
     this.commit(ADD_USER_NOTIFICATION, errObj);
@@ -75,8 +70,8 @@ export const dmp = {
   namespaced: true,
   state: dmpState,
   getters: {
-    dmpMarkdown: state => state.dmpMarkdown,
-    loading: state => state.loading,
+    dmpMarkdown: (state) => state.dmpMarkdown,
+    loading: (state) => state.loading,
   },
   mutations,
   actions,

@@ -42,7 +42,6 @@ a {
 </style>
 
 <script setup lang="ts">
-
 /*
 import { useDisplay } from 'vuetify';
 

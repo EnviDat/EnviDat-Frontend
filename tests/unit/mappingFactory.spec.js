@@ -1,13 +1,8 @@
 import { it, describe, expect } from 'vitest';
 
-import {
-  getBackendJSONForStep,
-  getFrontendJSONForStep,
-  convertJSON,
-  getObjectInOtherCase,
-  toCamelCase,
-  populateEditingComponents,
-} from '@/factories/mappingFactory';
+import { getBackendJSONForStep, getFrontendJSONForStep, populateEditingComponents } from '@/factories/mappingFactory';
+
+import { convertJSON, getObjectInOtherCase, toCamelCase } from '@/factories/convertJSON';
 
 import {
   EDITMETADATA_AUTHOR_LIST,
@@ -39,11 +34,9 @@ import {
 } from '@/factories/metadataConsts';
 
 describe('getFrontendJSON', () => {
-
   it(EDITMETADATA_MAIN_HEADER, () => {
-
     const snakeCaseJSON = convertJSON(mappingTestData, false);
-    const headerData = getFrontendJSONForStep(EDITMETADATA_MAIN_HEADER, snakeCaseJSON)
+    const headerData = getFrontendJSONForStep(EDITMETADATA_MAIN_HEADER, snakeCaseJSON);
 
     expect(headerData[METADATA_TITLE_PROPERTY]).not.toBeNull();
     expect(headerData[METADATA_CONTACT_EMAIL]).not.toBeNull();
@@ -58,22 +51,19 @@ describe('getFrontendJSON', () => {
     expect(headerData[METADATA_CONTACT_FIRSTNAME]).toBe(maintainer.given_name);
     expect(headerData[METADATA_CONTACT_LASTNAME]).toBe(maintainer.name);
     expect(headerData.license).toBe(mappingTestData.license_title);
-
   });
 
   it(EDITMETADATA_MAIN_DESCRIPTION, () => {
-
     const snakeCaseJSON = convertJSON(mappingTestData, false);
-    const descData = getFrontendJSONForStep(EDITMETADATA_MAIN_DESCRIPTION, snakeCaseJSON)
+    const descData = getFrontendJSONForStep(EDITMETADATA_MAIN_DESCRIPTION, snakeCaseJSON);
 
     expect(descData.description).not.toBeNull();
     expect(descData.description).toBe(snakeCaseJSON.notes);
   });
 
   it(EDITMETADATA_KEYWORDS, () => {
-
     const snakeCaseJSON = convertJSON(mappingTestData, false);
-    const keywordsData = getFrontendJSONForStep(EDITMETADATA_KEYWORDS, snakeCaseJSON)
+    const keywordsData = getFrontendJSONForStep(EDITMETADATA_KEYWORDS, snakeCaseJSON);
 
     expect(keywordsData.keywords).toBeInstanceOf(Array);
 
@@ -87,13 +77,11 @@ describe('getFrontendJSON', () => {
       expect(tag.state).toBe(backendTag.state);
       expect(tag.vocabulary_id).toBe(backendTag.vocabularyId);
     }
-
   });
 
   it(EDITMETADATA_AUTHOR_LIST, () => {
-
     const snakeCaseJSON = convertJSON(mappingTestData, false);
-    const authorsData = getFrontendJSONForStep(EDITMETADATA_AUTHOR_LIST, snakeCaseJSON)
+    const authorsData = getFrontendJSONForStep(EDITMETADATA_AUTHOR_LIST, snakeCaseJSON);
 
     expect(authorsData.authors).toBeInstanceOf(Array);
 
@@ -109,13 +97,11 @@ describe('getFrontendJSON', () => {
 
       expect(typeof author.dataCredit === 'string' || author.dataCredit instanceof Array).toBeTruthy();
     }
-
   });
 
   it(EDITMETADATA_DATA_RESOURCES, () => {
-
     const snakeCaseJSON = convertJSON(mappingTestData, false);
-    const resourceData = getFrontendJSONForStep(EDITMETADATA_DATA_RESOURCES, snakeCaseJSON)
+    const resourceData = getFrontendJSONForStep(EDITMETADATA_DATA_RESOURCES, snakeCaseJSON);
 
     const array = resourceData.resources;
     expect(array).toBeInstanceOf(Array);
@@ -133,13 +119,11 @@ describe('getFrontendJSON', () => {
       expect(res.url).toBe(backendRes.url);
       expect(res.format).toBe(backendRes.format);
     }
-
   });
 
   it(EDITMETADATA_DATA_INFO, () => {
-
     const snakeCaseJSON = convertJSON(mappingTestData, false);
-    const dataInfoData = getFrontendJSONForStep(EDITMETADATA_DATA_INFO, snakeCaseJSON)
+    const dataInfoData = getFrontendJSONForStep(EDITMETADATA_DATA_INFO, snakeCaseJSON);
 
     const array = dataInfoData.dates;
     expect(array).toBeInstanceOf(Array);
@@ -153,41 +137,33 @@ describe('getFrontendJSON', () => {
       expect(mappedEntry[DATE_PROPERTY_START_DATE]).toBe(backendDate.date);
       expect(mappedEntry[DATE_PROPERTY_END_DATE]).toBe(backendDate.end_date);
     }
-
   });
 
   it(EDITMETADATA_DATA_GEO, () => {
-
     const snakeCaseJSON = convertJSON(mappingTestData, false);
-    const geoData = getFrontendJSONForStep(EDITMETADATA_DATA_GEO, snakeCaseJSON)
+    const geoData = getFrontendJSONForStep(EDITMETADATA_DATA_GEO, snakeCaseJSON);
 
     expect(geoData.location.geoJSON.type).toBe(snakeCaseJSON.spatial.type);
     expect(geoData.location.geoJSON.coordinates).toStrictEqual(snakeCaseJSON.spatial.coordinates);
-
   });
 
   it(EDITMETADATA_RELATED_PUBLICATIONS, () => {
-
     const snakeCaseJSON = convertJSON(mappingTestData, false);
-    const relatedPubData = getFrontendJSONForStep(EDITMETADATA_RELATED_PUBLICATIONS, snakeCaseJSON)
+    const relatedPubData = getFrontendJSONForStep(EDITMETADATA_RELATED_PUBLICATIONS, snakeCaseJSON);
 
     expect(relatedPubData.relatedPublicationsText).toBe(snakeCaseJSON.related_publications);
-
   });
 
   it(EDITMETADATA_RELATED_DATASETS, () => {
-
     const snakeCaseJSON = convertJSON(mappingTestData, false);
-    const relatedDatasetsData = getFrontendJSONForStep(EDITMETADATA_RELATED_DATASETS, snakeCaseJSON)
+    const relatedDatasetsData = getFrontendJSONForStep(EDITMETADATA_RELATED_DATASETS, snakeCaseJSON);
 
     expect(relatedDatasetsData.relatedDatasetsText).toBe(snakeCaseJSON.related_datasets);
-
   });
 
   it(EDITMETADATA_CUSTOMFIELDS, () => {
-
     const snakeCaseJSON = convertJSON(mappingTestData, false);
-    const customFieldsData = getFrontendJSONForStep(EDITMETADATA_CUSTOMFIELDS, snakeCaseJSON)
+    const customFieldsData = getFrontendJSONForStep(EDITMETADATA_CUSTOMFIELDS, snakeCaseJSON);
 
     const array = customFieldsData.customFields;
     expect(array).toBeInstanceOf(Array);
@@ -199,22 +175,19 @@ describe('getFrontendJSON', () => {
       expect(fields.key).toBe(backendFields.key);
       expect(fields.value).toBe(backendFields.value);
     }
-
   });
-
-
 
   it(EDITMETADATA_ORGANIZATION, () => {
     const backendOrganization = mappingTestData.organization;
     const snakeCaseJSON = convertJSON(mappingTestData, false);
-    const organizationData = getFrontendJSONForStep(EDITMETADATA_ORGANIZATION, snakeCaseJSON)
+    const organizationData = getFrontendJSONForStep(EDITMETADATA_ORGANIZATION, snakeCaseJSON);
 
     const id = organizationData.organizationId;
 
-//    const frontendOrganization = organizationData.organization;
+    //    const frontendOrganization = organizationData.organization;
 
     expect(id).toBe(backendOrganization.id);
-/*
+    /*
     expect(frontendOrganization.name).toBe(backendOrganization.name);
     expect(frontendOrganization.title).toBe(backendOrganization.title);
     expect(frontendOrganization.type).toBe(backendOrganization.type);
@@ -229,9 +202,8 @@ describe('getFrontendJSON', () => {
   });
 
   it(EDITMETADATA_PUBLICATION_INFO, () => {
-
     const snakeCaseJSON = convertJSON(mappingTestData, false);
-    const publicationData = getFrontendJSONForStep(EDITMETADATA_PUBLICATION_INFO, snakeCaseJSON)
+    const publicationData = getFrontendJSONForStep(EDITMETADATA_PUBLICATION_INFO, snakeCaseJSON);
 
     expect(publicationData.publicationState).toBe(mappingTestData.publication_state);
     expect(publicationData.doi).toBe(mappingTestData.doi);
@@ -240,13 +212,11 @@ describe('getFrontendJSON', () => {
 
     expect(publicationData.publisher).toBe(publication.publisher);
     expect(publicationData.publicationYear).toBe(publication.publication_year);
-
   });
 
   it(EDITMETADATA_FUNDING_INFO, () => {
-
     const snakeCaseJSON = convertJSON(mappingTestData, false);
-    const fundingData = getFrontendJSONForStep(EDITMETADATA_FUNDING_INFO, snakeCaseJSON)
+    const fundingData = getFrontendJSONForStep(EDITMETADATA_FUNDING_INFO, snakeCaseJSON);
 
     const array = fundingData.funders;
     expect(array).toBeInstanceOf(Array);
@@ -259,15 +229,11 @@ describe('getFrontendJSON', () => {
       expect(funder.institutionUrl).toBe(backendFunder.institution_url);
       expect(funder.grantNumber).toBe(backendFunder.grant_number);
     }
-
   });
-
 });
 
 describe('getBackendJSON', () => {
-
   it(EDITMETADATA_MAIN_HEADER, () => {
-
     const inputMaintainer = JSON.parse(mappingTestData.maintainer);
 
     const frontEndJSON = {
@@ -276,9 +242,9 @@ describe('getBackendJSON', () => {
       [METADATA_CONTACT_FIRSTNAME]: inputMaintainer.given_name,
       [METADATA_CONTACT_LASTNAME]: inputMaintainer.name,
       license: mappingTestData.license_title,
-    }
+    };
 
-    const headerData = getBackendJSONForStep(EDITMETADATA_MAIN_HEADER, frontEndJSON)
+    const headerData = getBackendJSONForStep(EDITMETADATA_MAIN_HEADER, frontEndJSON);
 
     expect(headerData.title).not.toBeNull();
     expect(headerData.maintainer).not.toBeNull();
@@ -295,40 +261,36 @@ describe('getBackendJSON', () => {
     expect(flatJSON.title).toBe(frontEndJSON[METADATA_TITLE_PROPERTY]);
 
     expect(flatJSON.maintainer).not.toBeNull();
-    expect(typeof flatJSON.maintainer === 'string').toBeTruthy()
-    expect(flatJSON.maintainer.includes('given_name')).toBeTruthy()
-    expect(flatJSON.maintainer.includes('name')).toBeTruthy()
-    expect(flatJSON.maintainer.includes('email')).toBeTruthy()
-    expect(flatJSON.maintainer.includes(frontEndJSON[METADATA_CONTACT_EMAIL])).toBeTruthy()
-    expect(flatJSON.maintainer.includes(frontEndJSON[METADATA_CONTACT_FIRSTNAME])).toBeTruthy()
-    expect(flatJSON.maintainer.includes(frontEndJSON[METADATA_CONTACT_LASTNAME])).toBeTruthy()
+    expect(typeof flatJSON.maintainer === 'string').toBeTruthy();
+    expect(flatJSON.maintainer.includes('given_name')).toBeTruthy();
+    expect(flatJSON.maintainer.includes('name')).toBeTruthy();
+    expect(flatJSON.maintainer.includes('email')).toBeTruthy();
+    expect(flatJSON.maintainer.includes(frontEndJSON[METADATA_CONTACT_EMAIL])).toBeTruthy();
+    expect(flatJSON.maintainer.includes(frontEndJSON[METADATA_CONTACT_FIRSTNAME])).toBeTruthy();
+    expect(flatJSON.maintainer.includes(frontEndJSON[METADATA_CONTACT_LASTNAME])).toBeTruthy();
 
     expect(flatJSON.license_title).toBe(frontEndJSON.license);
-
   });
 
   it(EDITMETADATA_MAIN_DESCRIPTION, () => {
-
     const frontendJSON = {
       description: mappingTestData.notes,
-    }
+    };
 
-    const descData = getBackendJSONForStep(EDITMETADATA_MAIN_DESCRIPTION, frontendJSON)
+    const descData = getBackendJSONForStep(EDITMETADATA_MAIN_DESCRIPTION, frontendJSON);
 
     expect(descData.notes).not.toBeNull();
     expect(descData.notes).toBe(frontendJSON.description);
-
   });
 
   it(EDITMETADATA_KEYWORDS, () => {
-
     const frontendJSON = {
       keywords: mappingTestData.tags,
-    }
+    };
 
     const frontendKeywords = getObjectInOtherCase(frontendJSON, toCamelCase);
 
-    const backEndKeywords = getBackendJSONForStep(EDITMETADATA_KEYWORDS, frontendKeywords)
+    const backEndKeywords = getBackendJSONForStep(EDITMETADATA_KEYWORDS, frontendKeywords);
 
     expect(backEndKeywords.tags).toBeInstanceOf(Array);
 
@@ -342,16 +304,14 @@ describe('getBackendJSON', () => {
       expect(tag.state).toBe(frontendTag.state);
       expect(tag.vocabulary_id).toBe(frontendTag.vocabularyId);
     }
-
   });
 
   it(EDITMETADATA_AUTHOR_LIST, () => {
-
     const authorArray = JSON.parse(mappingTestData.author);
 
     const frontendAuthors = getObjectInOtherCase({ authors: authorArray }, toCamelCase);
 
-    const backEndAuthors = getBackendJSONForStep(EDITMETADATA_AUTHOR_LIST, frontendAuthors)
+    const backEndAuthors = getBackendJSONForStep(EDITMETADATA_AUTHOR_LIST, frontendAuthors);
 
     expect(backEndAuthors.author).toBeInstanceOf(Array);
 
@@ -367,18 +327,16 @@ describe('getBackendJSON', () => {
 
       expect(typeof author.data_credit === 'string' || author.data_credit instanceof Array).toBeTruthy();
     }
-
   });
 
   it(EDITMETADATA_DATA_RESOURCES, () => {
-
     const frontendJSON = {
       resources: mappingTestData.resources,
-    }
+    };
 
     const frontendResources = getObjectInOtherCase(frontendJSON, toCamelCase);
 
-    const resourceData = getBackendJSONForStep(EDITMETADATA_DATA_RESOURCES, frontendResources)
+    const resourceData = getBackendJSONForStep(EDITMETADATA_DATA_RESOURCES, frontendResources);
 
     const array = resourceData.resources;
     expect(array).toBeInstanceOf(Array);
@@ -396,11 +354,9 @@ describe('getBackendJSON', () => {
       expect(res.url).toBe(frontendRes.url);
       expect(res.format).toBe(frontendRes.format);
     }
-
   });
 
   it(EDITMETADATA_DATA_INFO, () => {
-
     const dates = JSON.parse(mappingTestData.date);
     const frontendJSON = { dates };
 
@@ -411,7 +367,7 @@ describe('getBackendJSON', () => {
         dateType: date.date_type,
         dateStart: date.date,
         dateEnd: date.end_date,
-      })
+      });
     }
 
     const frontendDataInfo = getObjectInOtherCase(frontendJSON, toCamelCase);
@@ -438,18 +394,16 @@ describe('getBackendJSON', () => {
       expect(mappedEntry.end_date).toBe(frontendDate.dateEnd);
     }
 
-
     const flatJSON = convertJSON(dataInfoData, true);
 
     expect(flatJSON.date).not.toBeNull();
-    expect(typeof flatJSON.date === 'string').toBeTruthy()
-    expect(flatJSON.date.includes('date')).toBeTruthy()
-    expect(flatJSON.date.includes('date_type')).toBeTruthy()
-    expect(flatJSON.date.includes('end_date')).toBeTruthy()
+    expect(typeof flatJSON.date === 'string').toBeTruthy();
+    expect(flatJSON.date.includes('date')).toBeTruthy();
+    expect(flatJSON.date.includes('date_type')).toBeTruthy();
+    expect(flatJSON.date.includes('end_date')).toBeTruthy();
   });
 
   it(EDITMETADATA_DATA_LICENSE, () => {
-
     const frontendJSON = {
       dataLicenseId: mappingTestData.license_id,
       dataLicenseTitle: mappingTestData.license_title,
@@ -462,21 +416,19 @@ describe('getBackendJSON', () => {
     expect(dataInfoData.license_id).toBe(frontendDataInfo.dataLicenseId);
     expect(dataInfoData.license_title).toBe(frontendDataInfo.dataLicenseTitle);
     expect(dataInfoData.license_url).toBe(frontendDataInfo.dataLicenseUrl);
-
   });
 
   it(EDITMETADATA_DATA_GEO, () => {
-
     const spatial = JSON.parse(mappingTestData.spatial);
 
     const frontendJSON = {
       location: {
         geoJSON: spatial,
       },
-    }
+    };
 
     const frontendGeoInfo = getObjectInOtherCase(frontendJSON, toCamelCase);
-    const geoData = getBackendJSONForStep(EDITMETADATA_DATA_GEO, frontendGeoInfo)
+    const geoData = getBackendJSONForStep(EDITMETADATA_DATA_GEO, frontendGeoInfo);
 
     expect(geoData.spatial.type).toBe(frontendJSON.location.geoJSON.type);
     expect(geoData.spatial.coordinates).toStrictEqual(frontendJSON.location.geoJSON.coordinates);
@@ -486,44 +438,38 @@ describe('getBackendJSON', () => {
     expect(flatJSON.spatial.includes('type')).toBeTruthy();
     expect(flatJSON.spatial.includes('coordinates')).toBeTruthy();
     expect(flatJSON.spatial.includes(frontendJSON.location.geoJSON.type)).toBeTruthy();
-
   });
 
   it(EDITMETADATA_RELATED_PUBLICATIONS, () => {
-
     const frontendJSON = {
       relatedPublicationsText: mappingTestData.related_publications,
-    }
+    };
 
-    const backendData = getBackendJSONForStep(EDITMETADATA_RELATED_PUBLICATIONS, frontendJSON)
+    const backendData = getBackendJSONForStep(EDITMETADATA_RELATED_PUBLICATIONS, frontendJSON);
 
     expect(backendData.related_publications).not.toBeNull();
     expect(backendData.related_publications).toBe(frontendJSON.relatedPublicationsText);
-
   });
 
   it(EDITMETADATA_RELATED_DATASETS, () => {
-
     const frontendJSON = {
       relatedDatasetsText: mappingTestData.related_datasets,
-    }
+    };
 
-    const backendData = getBackendJSONForStep(EDITMETADATA_RELATED_DATASETS, frontendJSON)
+    const backendData = getBackendJSONForStep(EDITMETADATA_RELATED_DATASETS, frontendJSON);
 
     expect(backendData.related_datasets).not.toBeNull();
     expect(backendData.related_datasets).toBe(frontendJSON.relatedDatasetsText);
-
   });
 
   it(EDITMETADATA_CUSTOMFIELDS, () => {
-
     const frontendJSON = {
       customFields: mappingTestData.extras,
-    }
+    };
 
     const frontendCustomFields = getObjectInOtherCase(frontendJSON, toCamelCase);
 
-    const extrasData = getBackendJSONForStep(EDITMETADATA_CUSTOMFIELDS, frontendCustomFields)
+    const extrasData = getBackendJSONForStep(EDITMETADATA_CUSTOMFIELDS, frontendCustomFields);
 
     const array = extrasData.extras;
     expect(array).toBeInstanceOf(Array);
@@ -535,22 +481,23 @@ describe('getBackendJSON', () => {
       expect(extra.key).toBe(frontendExtra.key);
       expect(extra.value).toBe(frontendExtra.value);
     }
-
   });
 
   it(EDITMETADATA_ORGANIZATION, () => {
+    const frontendOrganizationInfo = getObjectInOtherCase(
+      {
+        organizationId: mappingTestData.organization.id,
+      },
+      toCamelCase,
+    );
 
-    const frontendOrganizationInfo = getObjectInOtherCase({
-      organizationId: mappingTestData.organization.id,
-    }, toCamelCase);
+    const organizationData = getBackendJSONForStep(EDITMETADATA_ORGANIZATION, frontendOrganizationInfo);
 
-    const organizationData = getBackendJSONForStep(EDITMETADATA_ORGANIZATION, frontendOrganizationInfo)
-
-//    const backendOrganization = organizationData.organization;
-//    const frontendOrganization = frontendOrganizationInfo.organization;
+    //    const backendOrganization = organizationData.organization;
+    //    const frontendOrganization = frontendOrganizationInfo.organization;
 
     expect(organizationData.organization.id).toBe(mappingTestData.organization.id);
-/*
+    /*
     expect(frontendOrganization.name).toBe(backendOrganization.name);
     expect(frontendOrganization.title).toBe(backendOrganization.title);
     expect(frontendOrganization.type).toBe(backendOrganization.type);
@@ -565,7 +512,6 @@ describe('getBackendJSON', () => {
   });
 
   it(EDITMETADATA_PUBLICATION_INFO, () => {
-
     const publication = JSON.parse(mappingTestData.publication);
 
     const frontendJSON = {
@@ -573,11 +519,11 @@ describe('getBackendJSON', () => {
       doi: mappingTestData.doi,
       publisher: publication.publisher,
       publicationYear: publication.publication_year,
-    }
+    };
 
     const frontendPublicationInfo = getObjectInOtherCase(frontendJSON, toCamelCase);
 
-    const publicationData = getBackendJSONForStep(EDITMETADATA_PUBLICATION_INFO, frontendPublicationInfo)
+    const publicationData = getBackendJSONForStep(EDITMETADATA_PUBLICATION_INFO, frontendPublicationInfo);
 
     expect(publicationData.publication_state).toBe(frontendJSON.publicationState);
     expect(publicationData.doi).toBe(frontendJSON.doi);
@@ -589,20 +535,18 @@ describe('getBackendJSON', () => {
 
     expect(flatJSON.publication.includes('publisher')).toBeTruthy();
     expect(flatJSON.publication.includes('publication_year')).toBeTruthy();
-
   });
 
   it(EDITMETADATA_FUNDING_INFO, () => {
-
     const funding = JSON.parse(mappingTestData.funding);
 
     const frontendJSON = {
       funders: funding,
-    }
+    };
 
     const frontendFundingInfo = getObjectInOtherCase(frontendJSON, toCamelCase);
 
-    const fundingData = getBackendJSONForStep(EDITMETADATA_FUNDING_INFO, frontendFundingInfo)
+    const fundingData = getBackendJSONForStep(EDITMETADATA_FUNDING_INFO, frontendFundingInfo);
 
     const array = fundingData.funding;
     expect(array).toBeInstanceOf(Array);
@@ -621,13 +565,10 @@ describe('getBackendJSON', () => {
     expect(flatJSON.funding.includes('institution')).toBeTruthy();
     expect(flatJSON.funding.includes('institution_url')).toBeTruthy();
     expect(flatJSON.funding.includes('grant_number')).toBeTruthy();
-
   });
-
 });
 
 describe('populateEditingComponents', () => {
-
   const mockCommit = (mutationName, payload, options) => {
     // console.log(`Received mutation for ${payload.object} with data: ${JSON.stringify(payload.data)} and options: ${JSON.stringify(options)}`);
 
@@ -636,10 +577,9 @@ describe('populateEditingComponents', () => {
       const key = keys[i];
       expect(key.includes('_')).toBeFalsy();
     }
-  }
+  };
 
   it('with mock commit', () => {
     populateEditingComponents(mockCommit, mappingTestData);
   });
-
 });

@@ -1,10 +1,7 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
 
-import {
-  ACTION_METADATA_REVIEW,
-  METADATA_REVIEW_STORE,
-} from '@/store/metadataMutationsConsts';
+import { ACTION_METADATA_REVIEW, METADATA_REVIEW_STORE } from '@/store/metadataMutationsConsts';
 
 import { urlRewrite } from '@/factories/apiFactory';
 
@@ -23,13 +20,12 @@ const initState = {
   metadata: {},
   metadataError: null,
   metadataNotFound: null,
-}
+};
 
 export const useReviewStore = defineStore(METADATA_REVIEW_STORE, {
   state: () => ({ ...initState }),
   actions: {
     async loadReviewMetadata(datasetId) {
-
       this.loadingMetadata = true;
       const actionUrl = ACTION_METADATA_REVIEW();
       const url = urlRewrite(`${actionUrl}/${datasetId}`, API_BASE, API_ROOT);
@@ -52,4 +48,4 @@ export const useReviewStore = defineStore(METADATA_REVIEW_STORE, {
       this.state = initState;
     },
   },
-})
+});

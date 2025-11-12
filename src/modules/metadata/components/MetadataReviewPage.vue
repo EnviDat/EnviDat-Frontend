@@ -1,25 +1,17 @@
 <template>
-  <v-container
-    id="MetadataReviewPage"
-    fluid
-    class="pa-0"
-    tag="article">
-
-    <v-row v-if="datasetFound"
-           class="py-2" style="z-index: 0;"
-           no-gutters
-    >
+  <v-container id="MetadataReviewPage" fluid class="pa-0" tag="article">
+    <v-row v-if="datasetFound" class="py-2" style="z-index: 0" no-gutters>
       <v-col cols="12">
         <v-alert type="info">
-<!--
+          <!--
           <div v-html="labels.instructions"></div>
 -->
-          <div style="font-weight: bold;">Double Blind Review</div>
-          <div >{{ labels.instructions }}</div>
+          <div style="font-weight: bold">Double Blind Review</div>
+          <div>{{ labels.instructions }}</div>
         </v-alert>
       </v-col>
     </v-row>
-    
+
     <v-row no-gutters>
       <!-- prettier-ignore -->
       <v-col class="elevation-5 pa-0"
@@ -40,25 +32,15 @@
       </v-col>
     </v-row>
 
-    <v-row v-if="datasetNotFound"
-           class="pt-4" style="z-index: 0;"
-           no-gutters
-    >
+    <v-row v-if="datasetNotFound" class="pt-4" style="z-index: 0" no-gutters>
       <v-col cols="12">
-        <v-alert type="info" >{{ labels.notFoundInstructions }}</v-alert>
+        <v-alert type="info">{{ labels.notFoundInstructions }}</v-alert>
       </v-col>
     </v-row>
 
-    <v-row v-if="datasetFound"
-      :style="`position: relative; z-index: 0;`"
-      no-gutters
-    >
+    <v-row v-if="datasetFound" :style="`position: relative; z-index: 0;`" no-gutters>
       <v-col :class="firstColWidth" class="pt-0">
-        <v-row
-          v-for="(entry, index) in firstColumn"
-          :key="`left_${index}_${keyHash}`"
-          no-gutters
-        >
+        <v-row v-for="(entry, index) in firstColumn" :key="`left_${index}_${keyHash}`" no-gutters>
           <v-col class="mb-2 px-0">
             <component :component="entry" :is="entry" v-bind="entry.props" />
           </v-col>
@@ -66,11 +48,7 @@
       </v-col>
 
       <v-col v-if="secondColumn" class="pt-0" :class="secondColWidth">
-        <v-row
-          v-for="(entry, index) in secondColumn"
-          :key="`right_${index}_${keyHash}`"
-          no-gutters
-        >
+        <v-row v-for="(entry, index) in secondColumn" :key="`right_${index}_${keyHash}`" no-gutters>
           <v-col class="mb-2 px-0">
             <!-- prettier-ignore -->
             <component :is="entry"
@@ -101,21 +79,14 @@ import { BROWSE_PATH } from '@/router/routeConsts';
 
 import { USER_SIGNIN_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 
-import {
-  CLEAR_SEARCH_METADATA,
-  METADATA_NAMESPACE,
-} from '@/store/metadataMutationsConsts';
+import { CLEAR_SEARCH_METADATA, METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
 import { createLicense } from '@/factories/metaDataFactory';
 import { createResources } from '@/factories/resourceHelpers';
 
 import { getConfigFiles, getConfigUrls } from '@/factories/chartFactory';
 
-import {
-  EDITMETADATA_PUBLICATION_INFO,
-  METADATA_MAIN_HEADER,
-  eventBus,
-} from '@/factories/eventBus';
+import { EDITMETADATA_PUBLICATION_INFO, METADATA_MAIN_HEADER, eventBus } from '@/factories/eventBus';
 
 import {
   enhanceElementsWithStrategyEvents,
@@ -123,11 +94,9 @@ import {
   SHOW_DATA_PREVIEW_PROPERTY,
 } from '@/factories/strategyFactory';
 
-import {
-  convertJSON,
-  getFrontendDates,
-  getFrontendJSONForStep,
-} from '@/factories/mappingFactory';
+import { getFrontendDates, getFrontendJSONForStep } from '@/factories/mappingFactory';
+
+import { convertJSON } from '@/factories/convertJSON';
 
 import { useReviewStore } from '@/modules/metadata/store/reviewStore';
 import { convertArrayToUrlString } from '@/factories/stringFactory';
@@ -135,20 +104,12 @@ import { convertArrayToUrlString } from '@/factories/stringFactory';
 import { formatDate } from '@/factories/dateFactory';
 import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionViewModel';
 
-import MetadataHeader from './Metadata/MetadataHeader.vue';
+import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
 
-const MetadataDescription = defineAsyncComponent(
-  () => import('./Metadata/MetadataDescription.vue'),
-);
-const MetadataResources = defineAsyncComponent(
-  () => import('./Metadata/MetadataResources.vue'),
-);
-const MetadataCitation = defineAsyncComponent(
-  () => import('./Metadata/MetadataCitation.vue'),
-);
-const MetadataAuthors = defineAsyncComponent(
-  () => import('./Metadata/MetadataAuthors.vue'),
-);
+const MetadataDescription = defineAsyncComponent(() => import('./Metadata/MetadataDescription.vue'));
+const MetadataResources = defineAsyncComponent(() => import('./Metadata/MetadataResources.vue'));
+const MetadataCitation = defineAsyncComponent(() => import('./Metadata/MetadataCitation.vue'));
+const MetadataAuthors = defineAsyncComponent(() => import('./Metadata/MetadataAuthors.vue'));
 
 // Might want to check https://css-tricks.com/use-cases-fixed-backgrounds-css/
 // for animations between the different parts of the Metadata
@@ -224,12 +185,12 @@ export default {
       let bindings =
         this.secondColumn && this.secondColumn.length > 0
           ? {
-            'v-col-6': true,
-            'pr-1': this.$vuetify.display.mdAndUp,
-          }
+              'v-col-6': true,
+              'pr-1': this.$vuetify.display.mdAndUp,
+            }
           : {
-            'v-col-12': true,
-          };
+              'v-col-12': true,
+            };
 
       bindings = { ...bindings };
 
@@ -239,9 +200,9 @@ export default {
       let bindings =
         this.secondColumn && this.secondColumn.length > 0
           ? {
-            'v-col-6': true,
-            'pl-1': this.$vuetify.display.mdAndUp,
-          }
+              'v-col-6': true,
+              'pl-1': this.$vuetify.display.mdAndUp,
+            }
           : {};
 
       bindings = { ...bindings };
@@ -275,26 +236,17 @@ export default {
         // const subDataset = currentContent;
         const parsedContent = convertJSON(currentContent, false);
 
-        this.header = getFrontendJSONForStep(
-          METADATA_MAIN_HEADER,
-          parsedContent,
-        );
+        this.header = getFrontendJSONForStep(METADATA_MAIN_HEADER, parsedContent);
         // this.header.metadataState = getMetadataVisibilityState(this.header);
         // this.header.contactName = getAuthorName(this.header);
         this.header.created = formatDate(this.header.created);
         this.header.modified = formatDate(this.header.modified);
 
-        const publicationData = getFrontendJSONForStep(
-          EDITMETADATA_PUBLICATION_INFO,
-          parsedContent,
-        );
+        const publicationData = getFrontendJSONForStep(EDITMETADATA_PUBLICATION_INFO, parsedContent);
         this.header.publicationYear = publicationData.publicationYear;
 
         // this.body = createBody(currentContent, this.$vuetify.display.smAndDown);
-        this.body = createDescriptionViewModel(
-          parsedContent,
-          this.$vuetify.display.smAndDown,
-        );
+        this.body = createDescriptionViewModel(parsedContent, this.$vuetify.display.smAndDown);
 
         this.loadResources(currentContent);
       }
@@ -307,20 +259,10 @@ export default {
       if (this.resources.resources) {
         this.configInfos = getConfigFiles(this.resources.resources);
 
-        enhanceElementsWithStrategyEvents(
-          this.resources.resources,
-          undefined,
-          true,
-        );
-        enhanceResourcesWithMetadataExtras(
-          this.metadataContent.extras,
-          this.resources.resources,
-        );
+        enhanceElementsWithStrategyEvents(this.resources.resources, undefined, true);
+        enhanceResourcesWithMetadataExtras(this.metadataContent.extras, this.resources.resources);
 
-        enhanceElementsWithStrategyEvents(
-          this.resources.resources,
-          SHOW_DATA_PREVIEW_PROPERTY,
-        );
+        enhanceElementsWithStrategyEvents(this.resources.resources, SHOW_DATA_PREVIEW_PROPERTY);
 
         this.resources.dates = getFrontendDates(this.metadataContent.date);
       }
@@ -343,16 +285,11 @@ export default {
         showPlaceholder: this.showPlaceholder,
       };
 
-      this.firstCol = [
-        this.MetadataDescription,
-      ];
+      this.firstCol = [this.MetadataDescription];
 
       this.secondCol = [this.MetadataResources];
 
-      this.singleCol = [
-        this.MetadataDescription,
-        this.MetadataResources,
-      ];
+      this.singleCol = [this.MetadataDescription, this.MetadataResources];
     },
     /**
      * @description
@@ -446,13 +383,13 @@ export default {
     singleCol: [],
     keyHash: '',
     labels: {
-      instructions: 'This dataset is active for the double blind review, most of the metadata is redacted to keep it anonym until it is published!',
-      notFoundInstructions: 'This content will only load if Blind-review is activated. Blind-review needs to be activated from the edit page of the dataset.',
+      instructions:
+        'This dataset is active for the double blind review, most of the metadata is redacted to keep it anonym until it is published!',
+      notFoundInstructions:
+        'This content will only load if Blind-review is activated. Blind-review needs to be activated from the edit page of the dataset.',
     },
   }),
 };
 </script>
 
-<style>
-
-</style>
+<style></style>

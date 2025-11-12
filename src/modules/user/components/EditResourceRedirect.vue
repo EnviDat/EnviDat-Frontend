@@ -9,32 +9,20 @@
 
       <v-row no-gutters align="center" class="pt-6">
         <v-col cols="1">
-          <BaseIcon style="animation: progress-circular-rotate 3s linear infinite"
-                    :icon="mdiCog"
-                    color="secondary"
-          />
+          <BaseIcon style="animation: progress-circular-rotate 3s linear infinite" :icon="mdiCog" color="secondary" />
         </v-col>
 
-        <v-col class="text-h5" cols="11">
-          Under construction!
-        </v-col>
+        <v-col class="text-h5" cols="11"> Under construction! </v-col>
 
-        <v-col class="pt-2 text-body-1"
-                v-html="text">
-
-        </v-col>
+        <v-col class="pt-2 text-body-1" v-html="text"> </v-col>
       </v-row>
 
-      <v-row no-gutters class="pt-6" >
-
-        <v-col >
-          <BaseRectangleButton :buttonText="buttonText"
-                                color="secondary"
-                                :url="buttonUrl"
-          />
+      <v-row no-gutters class="pt-6">
+        <v-col>
+          <BaseRectangleButton :buttonText="buttonText" color="secondary" :url="buttonUrl" />
         </v-col>
 
-        <v-col >
+        <v-col>
           <slot name="default"></slot>
         </v-col>
       </v-row>
@@ -42,7 +30,8 @@
   </v-card>
 </template>
 
-<script>/**
+<script>
+/**
  * EditResourceRedirect.vue shows a explaination text and a button to redirect editing
  * in the ckan frontend
  *
@@ -52,7 +41,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import {mdiCog} from '@mdi/js';
+import { mdiCog } from '@mdi/js';
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 
@@ -80,14 +69,11 @@ export default {
       default: null,
     },
   },
-  computed: {
-  },
+  computed: {},
   data: () => ({
     mdiCog,
   }),
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

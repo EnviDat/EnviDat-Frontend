@@ -1,13 +1,11 @@
 import * as yup from 'yup';
-import {
-  convertJSON,
-  convertToBackendJSONWithRules,
-  convertToFrontendJSONWithRules,
-} from '@/factories/mappingFactory';
+import { convertJSON, convertToBackendJSONWithRules, convertToFrontendJSONWithRules } from '@/factories/convertJSON';
 
 import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
-import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
+import { DatasetModel } from '@/modules/workflow/DatasetModel';
 import { isFieldValid } from '@/factories/userEditingValidations';
+
+import { useNotifyStore } from '@/modules/workflow/utils/snackBar';
 
 export abstract class AbstractEditViewModel {
   protected privateMappingRules: string[][];
@@ -18,10 +16,7 @@ export abstract class AbstractEditViewModel {
 
   declare validationRules: yup.AnyObjectSchema;
 
-  protected constructor(
-    datasetModel: DatasetModel,
-    mappingRules: string[][] = undefined,
-  ) {
+  protected constructor(datasetModel: DatasetModel, mappingRules: string[][] = undefined) {
     this.mappingRules = mappingRules;
     this.datasetModel = datasetModel;
 
@@ -56,48 +51,47 @@ export abstract class AbstractEditViewModel {
     this.privateMappingRules = mappingRules;
   }
 
+  // HOOKS to exclude some validation at the first load, ex - MANTAINER in the last step
+  getModelDataForInit(): any {
+    return (this as any).getModelData?.();
+  }
+
   updateModel(dataset: DatasetDTO) {
-    const frontendJson = convertToFrontendJSONWithRules(
-      this.mappingRules,
-      dataset,
-    );
+    const frontendJson = convertToFrontendJSONWithRules(this.mappingRules, dataset);
     Object.assign(this, frontendJson);
   }
 
   get backendJSON() {
-    const backendFields = convertToBackendJSONWithRules(
-      this.mappingRules,
-      this,
-    );
+    const backendFields = convertToBackendJSONWithRules(this.mappingRules, this);
     return convertJSON(backendFields, true);
   }
 
   /**
    * Returns a shallow copy of the properties just from this class, nothing inherited
    */
-   protected getModelData<T>(): Omit<
-     T,
-     | 'privateMappingRules'
-     | 'datasetModel'
-     | 'validationRules'
-     | 'validationErrors'
-     | 'savedSuccessful'
-     | 'error'
-     | 'loading'
-   > {
-     // deconstruct this to remove the model view specific props
-     const {
-       privateMappingRules,
-       datasetModel,
-       validationRules,
-       validationErrors,
-       savedSuccessful,
-       error,
-       loading,
-       ...dataOnly
-     } = this;
+  protected getModelData<T>(): Omit<
+    T,
+    | 'privateMappingRules'
+    | 'datasetModel'
+    | 'validationRules'
+    | 'validationErrors'
+    | 'savedSuccessful'
+    | 'error'
+    | 'loading'
+  > {
+    // deconstruct this to remove the model view specific props
+    const {
+      privateMappingRules,
+      datasetModel,
+      validationRules,
+      validationErrors,
+      savedSuccessful,
+      error,
+      loading,
+      ...dataOnly
+    } = this;
 
-     return dataOnly as T;
+    return dataOnly as T;
   }
 
   get frontendProperties() {
@@ -108,7 +102,7 @@ export abstract class AbstractEditViewModel {
     return this.mappingRules.map((rule) => rule[1]);
   }
 
-  private getPropsToValidate(newProps) {
+  protected getPropsToValidate(newProps: any) {
     if (!newProps) {
       return {};
     }
@@ -124,28 +118,23 @@ export abstract class AbstractEditViewModel {
   }
 
   validate(newProps: any | undefined): boolean {
-    if (!newProps) {
-      newProps = this;
-    }
+    const source = newProps ?? this;
+
+    const propsToValidate = this.getPropsToValidate(source);
 
     // take over all the data to store it in this viewModel
     // even if it's wrong, to be up-2-date with the users input
     // and to keep the users changes even if their are invalid
-    Object.assign(this, newProps);
+    Object.assign(this, propsToValidate);
 
-    const propsToValidate = this.getPropsToValidate(newProps);
+    // const propsToValidate = this.getPropsToValidate(newProps);
     let allValid = true;
 
     // reset validationErrors ?
     // this.validationErrors = {};
 
     for (const [field, value] of Object.entries(propsToValidate)) {
-      const ok = isFieldValid(
-        field,
-        value,
-        this.validationRules,
-        this.validationErrors,
-      );
+      const ok = isFieldValid(field, value, this.validationRules, this.validationErrors);
 
       if (!ok) allValid = false;
     }
@@ -159,7 +148,6 @@ export abstract class AbstractEditViewModel {
       // properties to validate itself
       newData = this;
     }
-
     this.loading = true;
     this.error = undefined;
 
@@ -173,10 +161,14 @@ export abstract class AbstractEditViewModel {
       }
 
       this.savedSuccessful = true;
+
+      useNotifyStore().success('Saved');
       return true;
     } catch (e) {
       this.savedSuccessful = false;
       this.error = e;
+      const msg = e?.message ?? e?.response?.data?.error?.message ?? 'An error occurred while saving the dataset.';
+      useNotifyStore().error(msg);
       return false;
     } finally {
       this.loading = false;

@@ -1,41 +1,34 @@
 <template>
-  <v-badge id="BaseIconToggleButton"
-           :model-value="active"
-           class="dataCreditIcon"
-           bordered
-           :disabled="disabled"
-           :icon="mdiCheck"
-           style="width: 32px; height: 32px;"
-           :color="dark ? 'white' : 'black'" >
-
-    <v-tooltip location='bottom' >
+  <v-badge
+    id="BaseIconToggleButton"
+    :model-value="active"
+    class="dataCreditIcon"
+    bordered
+    :disabled="disabled"
+    :icon="mdiCheck"
+    style="width: 32px; height: 32px"
+    :color="dark ? 'white' : 'black'"
+  >
+    <v-tooltip location="bottom">
       <template v-slot:activator="{ props }">
-
         <v-btn
           v-bind="props"
           icon
-          :class="{noHover: elevation == 0}"
+          :class="{ noHover: elevation == 0 }"
           :disabled="disabled"
           color="transparent"
           :elevation="elevation"
           :variant="disabled ? 'text' : 'elevated'"
-          size='32'
+          size="32"
           @click.stop="onClick"
         >
-          <v-icon
-            :disabled="disabled"
-            :icon="icon"
-            :color="dark ? 'white' : 'black'" />
-
+          <v-icon :disabled="disabled" :icon="icon" :color="dark ? 'white' : 'black'" />
         </v-btn>
-
-      </template >
+      </template>
 
       <div v-html="tooltip" />
-
     </v-tooltip>
   </v-badge>
-
 </template>
 
 <script>
@@ -50,7 +43,6 @@
  */
 import { mdiCheck } from '@mdi/js';
 
-
 export default {
   name: 'BaseIconToggleButton',
   props: {
@@ -63,8 +55,7 @@ export default {
     disabled: { type: Boolean, default: false },
     elevation: { type: Number, default: 2 },
   },
-  computed: {
-  },
+  computed: {},
   methods: {
     onClick() {
       this.$emit('clicked', this.value);
@@ -78,18 +69,12 @@ export default {
 
 <style scoped lang="scss">
 .fancyButton {
-  background-color: #00BFAD;
-  background-image:
-    linear-gradient(to right bottom,
-      #E2F27C,
-      #00BFAD);
+  background-color: #00bfad;
+  background-image: linear-gradient(to right bottom, #e2f27c, #00bfad);
 }
 
 .fancyButton:hover {
-  background-image:
-    linear-gradient(to right bottom,
-      #E2F27C 20%,
-      #00BFAD);
+  background-image: linear-gradient(to right bottom, #e2f27c 20%, #00bfad);
 }
 
 .glowingButton {

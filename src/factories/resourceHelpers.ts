@@ -9,18 +9,14 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import {
-  ACCESS_LEVEL_PUBLIC_VALUE,
-  getAllowedUserNamesArray,
-} from '@/factories/userEditingFactory';
+import { ACCESS_LEVEL_PUBLIC_VALUE, getAllowedUserNamesArray } from '@/factories/userEditingFactory';
 
 import { METADATA_TITLE_PROPERTY } from '@/factories/metadataConsts';
 
 import { formatDate } from '@/factories/dateFactory';
 import { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
-import { Resource } from '@/types/modelTypes';
-
-
+import { Resource, ResourceSize } from '@/types/modelTypes';
+import { convertJSON } from '@/factories/convertJSON';
 
 /*
 export function getFileFormat(file) {
@@ -52,6 +48,33 @@ export function getFileFormat(file) {
   return fileFormat;
 }
 */
+export const sizeFormatList: string[] = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
+
+export function getFileSizeFormatIndex(size: number) {
+  if (!size) {
+    return null;
+  }
+
+  let convertedSized = size / 1024;
+  let index = 0;
+
+  while (convertedSized > 1) {
+    convertedSized /= 1024;
+    index++;
+  }
+
+  return index;
+}
+
+export function getFileSizeFormat(size: number) {
+  return sizeFormatList[getFileSizeFormatIndex(size)];
+}
+
+export function getFileSizeText(size: number): string {
+  const multiplier = getFileSizeFormatIndex(size);
+
+  return `${(size / 1024 ** multiplier).toFixed(2)}`;
+}
 
 /**
  * public case: "{"allowed_users": "", "level": "public", "shared_secret": ""}"
@@ -82,11 +105,8 @@ export function isResourceProtectedForUser(
     try {
       const restrictedObj = JSON.parse(restrictedInfo);
       isPublic = restrictedObj.level === ACCESS_LEVEL_PUBLIC_VALUE;
-      isProtected =
-        !!restrictedObj.level &&
-        restrictedObj.level !== ACCESS_LEVEL_PUBLIC_VALUE;
-      allowedUsers =
-        restrictedObj.allowed_users || restrictedObj.allowedUsers || '';
+      isProtected = !!restrictedObj.level && restrictedObj.level !== ACCESS_LEVEL_PUBLIC_VALUE;
+      allowedUsers = restrictedObj.allowed_users || restrictedObj.allowedUsers || '';
       // "{"allowed_users": "", "level": "public", "shared_secret": ""}"
     } catch (err) {
       isPublic = restrictedInfo.includes(ACCESS_LEVEL_PUBLIC_VALUE);
@@ -133,7 +153,7 @@ export function getResourceName(resource: ResourceDTO) {
 
 export function createResource(
   resource: ResourceDTO,
-  datasetName: string,
+  dataset: DatasetDTO,
   resourceOrganizationID: string,
   signedInUserName: string,
   signedInUserOrganizationIds: string,
@@ -157,21 +177,33 @@ export function createResource(
 
   const ckanDomain = process.env.VITE_API_ROOT;
 
+  const size = resource.size || 1;
+  const formattedSize = formatBytes(size);
+  const splits = formattedSize.split(' ');
+  const sizeNumberInFormat = splits[0];
+  const sizeFormat = splits[1];
+
+  const resourceSize = {
+    sizeUnits: sizeFormat,
+    sizeValue: sizeNumberInFormat,
+  };
+
+  // const resourceType = {};
+
   return {
     // "hash": "",
     description: resource.description,
     // "cache_last_updated": null,
-    metadataId: resource.package_id,
-    // "mimetype_inner": null,
     // url_type: "upload",
     id: resource.id,
-    size: resource.size ? resource.size : 0,
+    datasetId: resource.package_id,
     mimetype: resource.mimetype || '',
+    mimetypeInner: resource.mimetype_inner || '',
     doi: resource.doi,
     name: getResourceName(resource),
     url: resource.url,
     urlType: resource.url_type,
-    restrictedUrl: `${ckanDomain}/dataset/${datasetName}/restricted_request_access/${resource.id}`,
+    restrictedUrl: `${ckanDomain}/dataset/${dataset.name}/restricted_request_access/${resource.id}`,
     restricted: resource.restricted || '',
     format: fileFormat,
     numberOfDownload,
@@ -179,20 +211,23 @@ export function createResource(
     created,
     deprecated: !!resource.deprecated,
     lastModified: modified,
+    metadataModified: dataset.metadata_modified,
     position: resource.position || 0,
     isProtected,
+    isSelected: false,
+    // @ts-expect-error
+    size: sizeNumberInFormat,
+    sizeFormat,
+    resourceSize,
+    resourceType: 'Dataset',
     previewUrl: resource.previewUrl,
     chartLabels: undefined,
     chartData: undefined,
     chartDataLoading: false,
-  };
+  } satisfies Resource;
 }
 
-export function createResources(
-  dataset: DatasetDTO,
-  signedInUser: string,
-  signedInUserOrganizationIds: string,
-) {
+export function createResources(dataset: DatasetDTO, signedInUser: string, signedInUserOrganizationIds: string) {
   if (!dataset) {
     return null;
   }
@@ -214,12 +249,12 @@ export function createResources(
   }
 
   if (dataset.resources) {
-    dataset.resources.forEach(async (element) => {
+    dataset.resources.forEach(async (resourceDTO) => {
       // get the number of download from matomo API
       // const numberOfDownload = await getResourcesDownloads(element.name);
       const res = createResource(
-        element,
-        dataset.name,
+        resourceDTO,
+        dataset,
         organizationID,
         signedInUserName,
         signedInUserOrganizationIds,
@@ -243,32 +278,79 @@ export function createResources(
 }
 
 /**
- *
  * for details: https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
- * @param {number} a
- * @param {number} b
  */
 export function formatBytes(a: number, b = 2) {
   /* eslint-disable prefer-template */
   /* eslint-disable no-restricted-properties */
-  if (a === 0) return '0 Bytes';
+  if (a === 0) return '0 B';
 
   const c = 1024;
 
-  const e = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  const e = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
   const f = Math.floor(Math.log(a) / Math.log(c));
 
   return parseFloat((a / c ** f).toFixed(b)) + ' ' + e[f];
 }
 
+/**
+ * Convert a formatted size string back to a raw byte count.
+ *
+ * @param sizeStr  The size string – e.g. "1.23 MB", "512KB", "0 Bytes".
+ * @returns        The size expressed in bytes (as a number).
+ *
+ * Throws if the input cannot be parsed.
+ */
+export function parseBytes(sizeStr: string): number {
+  // Trim whitespace and make the unit case‑insensitive
+  const cleaned = sizeStr.trim().toUpperCase();
+
+  // Special‑case zero because log(0) would be undefined later
+  if (cleaned === '0 B') return 0;
+
+  // Split the numeric part from the unit.
+  // This regex captures:
+  //   1️⃣ the optional sign (+/-)
+  //   2️⃣ the numeric value (integer or decimal)
+  //   3️⃣ the unit (B, KB, MB … YB)
+  const match = cleaned.match(/^([+-]?\d*\.?\d+)\s*(B|KB|MB|GB|TB|PB|EB|ZB|YB)$/);
+  if (!match) {
+    throw new Error(`Unable to parse "${sizeStr}". Expected format like "1.23 MB".`);
+  }
+
+  const [, numStr, unit] = match;
+  const value = parseFloat(numStr);
+  if (Number.isNaN(value)) {
+    throw new Error(`Invalid numeric value in "${sizeStr}".`);
+  }
+
+  // Map each unit to its exponent (0 for Bytes, 1 for KB, …)
+  const units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  const exponent = units.indexOf(unit);
+  if (exponent === -1) {
+    throw new Error(`Unsupported unit "${unit}" in "${sizeStr}".`);
+  }
+
+  // 1 KB = 1024 bytes, so we raise 1024 to the exponent.
+  const bytes = value * Math.pow(1024, exponent);
+
+  // Return an integer byte count – rounding to the nearest whole byte.
+  return Math.round(bytes);
+}
+
 export function mergeResourceSizeForFrontend(resource: Resource) {
-  const mergedResourceSize = {};
+  const mergedResourceSize: {
+    size: number;
+    sizeFormat: string;
+  } = {
+    size: 0,
+    sizeFormat: '',
+  };
 
   const isLink = resource.urlType !== 'upload';
   let resourceSize = resource.resourceSize || null;
 
   if (resourceSize) {
-
     if (typeof resourceSize === 'string') {
       try {
         resourceSize = JSON.parse(resourceSize);
@@ -277,8 +359,8 @@ export function mergeResourceSizeForFrontend(resource: Resource) {
       }
     }
 
-    let size;
-    let sizeFormat;
+    let size = 0;
+    let sizeFormat = '';
 
     if (isLink) {
       sizeFormat = resourceSize.sizeUnits?.toUpperCase() || '';

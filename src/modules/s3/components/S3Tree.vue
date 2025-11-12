@@ -2,11 +2,7 @@
   <!-- eslint-disable vue/no-v-model-argument -->
   <div>
     <span v-if="error" class="d-flex pt-4 text-caption">
-      <BaseStatusLabelView
-        :status="error.type"
-        :status-text="error.details"
-        :status-color="error.color"
-      />
+      <BaseStatusLabelView :status="error.type" :status-text="error.details" :status-color="error.color" />
     </span>
 
     <v-treeview
@@ -24,11 +20,7 @@
           v-if="!item.maximumLengthItem"
           :path="mdiArrowRight"
           style="cursor: pointer"
-          @click="
-            canBeClicked(item)
-              ? getData(item.title, item.isChild, item.id)
-              : toggleOpenedItem()
-          "
+          @click="canBeClicked(item) ? getData(item.title, item.isChild, item.id) : toggleOpenedItem()"
         />
       </template>
 
@@ -36,11 +28,7 @@
         <v-row
           no-gutters
           dense
-          @click="
-            canBeClicked(item)
-              ? getData(item.title, item.isChild, item.id)
-              : toggleOpenedItem()
-          "
+          @click="canBeClicked(item) ? getData(item.title, item.isChild, item.id) : toggleOpenedItem()"
           align="center"
           justify="space-between"
         >
@@ -75,11 +63,7 @@
               />
 
               <v-chip
-                v-if="
-                  item.isChild &&
-                  item.numberOfChildren &&
-                  !item.maximumLengthItem
-                "
+                v-if="item.isChild && item.numberOfChildren && !item.maximumLengthItem"
                 class="ml-2"
                 size="x-small"
                 color="white"
@@ -88,43 +72,22 @@
                 {{ item.numberOfChildren }}
               </v-chip>
 
-              <v-chip
-                v-if="!item.isChild"
-                class="ml-2"
-                size="x-small"
-                color="white"
-                variant="outlined"
-              >
+              <v-chip v-if="!item.isChild" class="ml-2" size="x-small" color="white" variant="outlined">
                 {{ childrenObject }}
               </v-chip>
             </span>
           </v-col>
 
           <v-col v-if="item.isFile" class="flex-grow-0 py-0">
-            <BaseRectangleButton
-              :isXsSmall="true"
-              color="white"
-              :url="item.link"
-              buttonText="download"
-            />
+            <BaseRectangleButton :isXsSmall="true" color="white" :url="item.link" buttonText="download" />
           </v-col>
 
           <v-col v-if="item.isLastItem" class="flex-grow-0 py-0">
-            <BaseRectangleButton
-              :isXsSmall="true"
-              color="white"
-              :url="item.link"
-              buttonText="View All"
-            />
+            <BaseRectangleButton :isXsSmall="true" color="white" :url="item.link" buttonText="View All" />
           </v-col>
 
           <v-col v-if="item.maximumLengthItem" class="flex-grow-0 py-0">
-            <BaseRectangleButton
-              :isXsSmall="true"
-              color="white"
-              :url="url"
-              buttonText="View All"
-            />
+            <BaseRectangleButton :isXsSmall="true" color="white" :url="url" buttonText="View All" />
           </v-col>
         </v-row>
       </template>
@@ -166,7 +129,8 @@ const labels = {
   viewAll: 'View all data on the S3 File Browser website',
 };
 
-const errorDetailText = 'Sorry at the moment we cannot load the data. Please try again later or click on the download/link icon to download the file directly from the bucket.';
+const errorDetailText =
+  'Sorry at the moment we cannot load the data. Please try again later or click on the download/link icon to download the file directly from the bucket.';
 
 const emit = defineEmits(['loadingChanged', 'changeAutoHeight']);
 
@@ -194,9 +158,7 @@ async function getData(url: string, isChild?: boolean, nodeId?: number) {
 
   if (url && isChild) {
     // create dynamic URL
-    const currentPrefix = new URLSearchParams(baseUrl.value.split('?')[1]).get(
-      'prefix',
-    );
+    const currentPrefix = new URLSearchParams(baseUrl.value.split('?')[1]).get('prefix');
     const newPrefix = `${currentPrefix}${url}/`;
     dynamicUrl = `${baseUrl.value.split('?')[0]}?prefix=${newPrefix}&max-keys=100000&delimiter=/`;
   } else {
@@ -207,13 +169,7 @@ async function getData(url: string, isChild?: boolean, nodeId?: number) {
     loading.value = true;
 
     emit('loadingChanged', loading.value);
-    s3Content.value = await s3Store.fetchS3Content(
-      baseUrl.value,
-      dynamicUrl,
-      isChild,
-      nodeId,
-      s3Content.value,
-    );
+    s3Content.value = await s3Store.fetchS3Content(baseUrl.value, dynamicUrl, isChild, nodeId, s3Content.value);
 
     error.value = null;
   } catch (err) {
@@ -237,24 +193,16 @@ function extractS3Url(inputUrl: string) {
   const bucket = decodeURIComponent(rawBucket);
 
   // Remove leading slashes from prefix
-  let prefix = decodeURIComponent(hashParams.get('prefix') || '').replace(
-    /^\/+/,
-    '',
-  );
+  let prefix = decodeURIComponent(hashParams.get('prefix') || '').replace(/^\/+/, '');
 
   if (prefix && !prefix.endsWith('/')) {
     prefix += '/';
   }
 
-  let basePath =
-    bucket && bucket !== 'null'
-      ? bucket
-      : 'https://os.zhdk.cloud.switch.ch/envicloud';
+  let basePath = bucket && bucket !== 'null' ? bucket : 'https://os.zhdk.cloud.switch.ch/envicloud';
 
   // Use basePath if bucket is missing
-  bucketUrl.value = bucket
-    ? bucket.replace(/\/$/, '')
-    : basePath.replace(/\/$/, '');
+  bucketUrl.value = bucket ? bucket.replace(/\/$/, '') : basePath.replace(/\/$/, '');
 
   if (!basePath.endsWith('/')) basePath += '/';
 
@@ -320,12 +268,9 @@ const annotateLevel = (nodes: S3Node[] = [], start = 0): S3Node[] =>
     return newNode;
   });
 
-const canBeClicked = (item: S3Node) =>
-  item.isChild && item.level <= 1 && !item.isFile;
+const canBeClicked = (item: S3Node) => item.isChild && item.level <= 1 && !item.isFile;
 
-const limitedItems = computed(() =>
-  annotateLevel(limitAllNodes(s3Content.value)),
-);
+const limitedItems = computed(() => annotateLevel(limitAllNodes(s3Content.value)));
 </script>
 
 <style>
@@ -335,8 +280,7 @@ const limitedItems = computed(() =>
 .s3-treeview .v-list-item-action {
   display: none !important;
 }
-.s3-treeview
-  .v-list-item--density-compact:not(.v-list-item--nav).v-list-item--one-line {
+.s3-treeview .v-list-item--density-compact:not(.v-list-item--nav).v-list-item--one-line {
   padding: 0;
 }
 .s3-treeview .v-treeview-group.v-list-group .v-list-group__items .v-list-item {

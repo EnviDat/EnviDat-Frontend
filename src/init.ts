@@ -12,15 +12,11 @@
 
 import axios, { InternalAxiosRequestConfig } from 'axios';
 
-import {
-  handleGenericAPIError,
-  handleGenericError,
-} from './factories/notificationFactory';
+import { handleGenericAPIError, handleGenericError } from './factories/notificationFactory';
 
 export const initAxios = (app, store) => {
   const storeRef = store;
 
-  /* eslint-disable prefer-template */
   app.config.errorHandler = (err, vm, info) => {
     // `info` is a Vue-specific error info, e.g. which lifecycle hook
     // the error was found in. Only available in 2.2.0+
@@ -52,9 +48,7 @@ export const initAxios = (app, store) => {
     (config: InternalAxiosRequestConfig) => {
       // Do something before request is sent
 
-      const urlIsExcluded = excludedDomains.some((domain) =>
-        config.url.includes(domain),
-      );
+      const urlIsExcluded = excludedDomains.some((domain) => config.url.includes(domain));
 
       if (!urlIsExcluded) {
         config.withCredentials = true;

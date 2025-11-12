@@ -30,10 +30,9 @@ import ExpandableTextLayout from '@/components/Layouts/ExpandableTextLayout.vue'
 import { METADATA_BODY_TITLE } from '@/factories/metadataConsts';
 import { eventBus, INJECT_GENERIC_COMPONENT } from '@/factories/eventBus';
 
-const MetadataDescriptionAsync = defineAsyncComponent(() =>
-  // eslint-disable-next-line import/no-self-import
-  import('@/modules/metadata/components/Metadata/MetadataDescription.vue'),
-)
+const MetadataDescriptionAsync = defineAsyncComponent(
+  () => import('@/modules/metadata/components/Metadata/MetadataDescription.vue'),
+);
 
 export default {
   name: 'MetadataDescription',
@@ -62,8 +61,7 @@ export default {
       default: false,
     },
   },
-  computed: {
-  },
+  computed: {},
   methods: {
     triggerFullscreen() {
       // define the new max length very long for the fullscreen component

@@ -1,18 +1,18 @@
-import { defineAsyncComponent } from 'vue';
 import { mdiFileEye, mdiPencil } from '@mdi/js';
 import { METADATA_DEPRECATED_RESOURCES_PROPERTY } from '@/factories/metadataConsts';
 import {
   OPEN_DATA_PREVIEW_IFRAME,
   OPEN_TEXT_PREVIEW,
+  OPEN_VIDEO_PREVIEW,
   SELECT_EDITING_AUTHOR,
   SELECT_EDITING_DATASET,
   SELECT_EDITING_RESOURCE,
 } from './eventBus';
 
-const DataPreviewIframe = defineAsyncComponent(() => import('@/modules/metadata/components/ResourcePreviews/DataPreviewIframe.vue'));
-const ImagePreviewCard = defineAsyncComponent(() => import('@/modules/metadata/components/ResourcePreviews/ImagePreviewCard.vue'));
-const TextPreviewCard = defineAsyncComponent(() => import('@/modules/metadata/components/ResourcePreviews/TextPreviewCard.vue'));
-
+const DataPreviewIframe = () => import('@/modules/metadata/components/ResourcePreviews/DataPreviewIframe.vue');
+const ImagePreviewCard = () => import('@/modules/metadata/components/ResourcePreviews/ImagePreviewCard.vue');
+const TextPreviewCard = () => import('@/modules/metadata/components/ResourcePreviews/TextPreviewCard.vue');
+const VideoPreviewCard = () => import('@/modules/metadata/components/ResourcePreviews/VideoPreviewCard.vue');
 
 export const localIdProperty = 'localId';
 
@@ -36,6 +36,13 @@ export const clickStrategies = [
     openEvent: OPEN_TEXT_PREVIEW,
     icon: mdiFileEye,
     tooltip: 'Click for a preview of this image',
+  },
+  {
+    strategyKeys: ['mp4', 'avi', 'mpeg'],
+    component: VideoPreviewCard,
+    openEvent: OPEN_VIDEO_PREVIEW,
+    icon: 'preview',
+    tooltip: 'Click for a preview of this video',
   },
   {
     strategyKeys: [SELECT_EDITING_RESOURCE_PROPERTY],
@@ -65,7 +72,6 @@ export const clickStrategies = [
 ];
 
 export function getPreviewStrategy(strategyKeys) {
-
   if (!strategyKeys) {
     return null;
   }
@@ -76,7 +82,7 @@ export function getPreviewStrategy(strategyKeys) {
 
   for (let i = 0; i < strategyKeys.length; i++) {
     const ext = strategyKeys[i];
-    const filteredStrat = clickStrategies.filter(strat => strat.strategyKeys.indexOf(ext) !== -1);
+    const filteredStrat = clickStrategies.filter((strat) => strat.strategyKeys.indexOf(ext) !== -1);
 
     if (filteredStrat.length > 0) {
       return filteredStrat[0];
@@ -107,7 +113,6 @@ export function getPreviewStrategyFromUrlExtension(url) {
 }
 
 export function enhanceElementsWithStrategyEvents(elementList, previewProperty = 'url', entriesAreResources = false) {
-
   if (!elementList) {
     return null;
   }
@@ -117,7 +122,6 @@ export function enhanceElementsWithStrategyEvents(elementList, previewProperty =
     const idValue = entry[previewProperty];
 
     if (idValue) {
-
       let strat = null;
       if (entriesAreResources && previewProperty === 'url') {
         // get the click strategy based on the url file extension
@@ -141,13 +145,13 @@ export function enhanceElementsWithStrategyEvents(elementList, previewProperty =
 export function enhanceResourcesWithMetadataExtras(metadataExtras, resources) {
   if (!metadataExtras || !resources) return null;
 
-  if (typeof metadataExtras === 'object'
-    && metadataExtras instanceof Array) {
-
+  if (typeof metadataExtras === 'object' && metadataExtras instanceof Array) {
     let deprecatedResources = [];
 
     if (metadataExtras?.length > 0) {
-      const customFieldEntry = metadataExtras.filter((entry) => entry?.key === METADATA_DEPRECATED_RESOURCES_PROPERTY)[0];
+      const customFieldEntry = metadataExtras.filter(
+        (entry) => entry?.key === METADATA_DEPRECATED_RESOURCES_PROPERTY,
+      )[0];
       deprecatedResources = JSON.parse(customFieldEntry?.value || '[]');
     }
 
@@ -164,7 +168,7 @@ export function enhanceResourcesWithMetadataExtras(metadataExtras, resources) {
     }
 
     // the deprecated resources have to be at the bottom of the list
-    resources.sort((a, b) => a.deprecated && !b.deprecated ? 1 : -1);
+    resources.sort((a, b) => (a.deprecated && !b.deprecated ? 1 : -1));
   }
 
   return resources;

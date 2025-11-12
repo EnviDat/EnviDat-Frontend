@@ -1,9 +1,6 @@
 <template>
   <v-card id="TextPreviewCard">
-    <v-card-text
-      v-if="fileContent && !enableMarkdown"
-      style="white-space: break-spaces;"
-    >
+    <v-card-text v-if="fileContent && !enableMarkdown" style="white-space: break-spaces">
       {{ fileContent }}
     </v-card-text>
 
@@ -11,10 +8,7 @@
       <div v-html="markdownText"></div>
     </v-card-text>
 
-    <v-card-text
-      v-if="errorObject"
-      :style="`color: ${$vuetify.theme.themes.light.colors.error};`"
-    >
+    <v-card-text v-if="errorObject" :style="`color: ${$vuetify.theme.themes.light.colors.error};`">
       {{ errorObject.title }}
       <br />
       {{ errorObject.message }}
@@ -93,12 +87,18 @@ export default {
 
       if (this.url) {
         axios
-          .get(this.url)
-          .then(response => {
+          .get(this.url, {
+            /*
+                        headers: {
+
+                        },
+            */
+          })
+          .then((response) => {
             this.loading = false;
             this.fileContent = response.data;
           })
-          .catch(reason => {
+          .catch((reason) => {
             this.loading = false;
             this.fileError = reason;
           });

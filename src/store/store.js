@@ -69,9 +69,7 @@ const initialState = {
     const importFun = moduleImportMap[module];
 
     if (!importFun) {
-      throw new Error(
-        `Error lazyLoadStoreModule, not import defined for ${module}`,
-      );
+      throw new Error(`Error lazyLoadStoreModule, not import defined for ${module}`);
     }
 
     return importStoreModule(storeRef, module, importFun);
@@ -111,7 +109,6 @@ function createStore() {
   });
 }
 
-// eslint-disable-next-line import/no-mutable-exports
 let store;
 
 try {

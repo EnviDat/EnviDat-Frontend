@@ -12,55 +12,39 @@
 
     <!-- Info Banner -->
     <v-row>
-      <v-col class="mb-5 pt-0 pb-0">
-        <v-alert
-          type="info"
-          closable
-          :icon="false"
-          class="rounded-lg info-banner"
-        >
-          <v-alert-title class="mb-2">Information</v-alert-title>
+      <InfoBanner :show="showInfoBanner" :icon="mdiInformationOutline" @setInfoBanner="$emit('setInfoBanner', $event)">
+        <p>
+          This section includes licensing and funding details that are essential for transparency, reuse, and compliance
+          with data sharing policies.
+        </p>
 
-          <p>
-            This section includes licensing and funding details that are
-            essential for transparency, reuse, and compliance with data sharing
-            policies.
-          </p>
+        <p><strong>Tips:</strong></p>
+        <ol>
+          <li>
+            - Provide accurate <strong>funding information</strong> by naming the institution and including the grant
+            number and a link, if available.
+          </li>
+          <li>
+            - Selecting the correct <strong>data license</strong> is crucial. It defines how others can use, share, or
+            build upon your dataset.
+          </li>
+          <li>
+            - If you're unsure which license to choose,
+            <strong>Creative Commons Attribution (CC-BY 4.0)</strong> is a widely accepted standard for open data.
+          </li>
+          <li>
+            - Make sure you have the rights to apply the selected license, especially if your dataset includes content
+            from third parties.
+          </li>
+        </ol>
 
-          <p><strong>Tips:</strong></p>
-          <ol>
-            <li>
-              - Provide accurate <strong>funding information</strong> by naming
-              the institution and including the grant number and a link, if
-              available.
-            </li>
-            <li>
-              - Selecting the correct <strong>data license</strong> is crucial.
-              It defines how others can use, share, or build upon your dataset.
-            </li>
-            <li>
-              - If you're unsure which license to choose,
-              <strong>Creative Commons Attribution (CC-BY 4.0)</strong> is a
-              widely accepted standard for open data.
-            </li>
-            <li>
-              - Make sure you have the rights to apply the selected license,
-              especially if your dataset includes content from third parties.
-            </li>
-          </ol>
-
-          <p class="mt-2">
-            For more details about CC-BY 4.0, visit
-            <a
-              href="https://creativecommons.org/licenses/by/4.0/legalcode"
-              target="_blank"
-              rel="noopener"
-            >
-              the full legal code </a
-            >.
-          </p>
-        </v-alert>
-      </v-col>
+        <p class="mt-2">
+          For more details about CC-BY 4.0, visit
+          <a href="https://creativecommons.org/licenses/by/4.0/legalcode" target="_blank" rel="noopener">
+            the full legal code </a
+          >.
+        </p>
+      </InfoBanner>
     </v-row>
 
     <!-- <v-col v-if="message" cols="4" class="pl-16">
@@ -97,7 +81,6 @@
     >
       <v-col cols="12">
         <v-row>
-          {{ INSTITUTION }}
           <v-col cols="4" class="pr-2">
             <v-text-field
               :label="labels.institution"
@@ -106,9 +89,7 @@
               :hint="readOnlyHint('institution')"
               persistent-hint
               @keyup.enter="onKeyUp"
-              @change="
-                changeInstitution(index, 'institution', $event.target.value)
-              "
+              @change="changeInstitution(index, 'institution', $event.target.value)"
             />
           </v-col>
 
@@ -120,9 +101,7 @@
               :hint="readOnlyHint('grantNumber')"
               persistent-hint
               @keyup="onKeyUp"
-              @change="
-                changeInstitution(index, 'grantNumber', $event.target.value)
-              "
+              @change="changeInstitution(index, 'grantNumber', $event.target.value)"
             />
           </v-col>
 
@@ -134,9 +113,7 @@
               persistent-hint
               :hint="readOnlyHint('institutionUrl')"
               @keyup="onKeyUp"
-              @change="
-                changeInstitution(index, 'institutionUrl', $event.target.value)
-              "
+              @change="changeInstitution(index, 'institutionUrl', $event.target.value)"
             />
           </v-col>
 
@@ -160,15 +137,34 @@
       </v-col>
     </v-row>
 
+    <v-row class="mb-5">
+      <v-col>
+        <div class="font-weight-bold">{{ labelOrg.cardTitle }}</div>
+        <div class="text-caption">
+          {{ labelOrg.orgInformation }}
+        </div>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12">
+        <v-row>
+          <Organization :showTitle="false" v-bind="editOrganizationProps" @save="catchOrgChange" />
+        </v-row>
+      </v-col>
+    </v-row>
+
+    <v-col v-if="validationErrors.organizationId != null" cols="12">
+      <v-alert type="error">
+        {{ validationErrors.organizationId }}
+      </v-alert>
+    </v-col>
+
     <v-row>
       <v-col cols="12">
         <v-row class="mb-5">
           <v-col>
             <div class="font-weight-bold">{{ labelsLicense.cardTitle }}</div>
-            <div
-              class="text-caption"
-              v-html="labelsLicense.instructionsLicense"
-            ></div>
+            <div class="text-caption" v-html="labelsLicense.instructionsLicense"></div>
           </v-col>
         </v-row>
 
@@ -178,7 +174,7 @@
               data-field="dataLicenseId"
               v-model="selectedLicenseObj"
               :items="activeLicenses"
-              item-text="title"
+              item-title="title"
               return-object
               :label="labelsLicense.dataLicense"
               :readonly="isReadOnly('license')"
@@ -197,7 +193,7 @@
           </v-col>
 
           <v-col cols="12">
-            <v-expansion-panels focusable v-model="defaultOpenPanels">
+            <v-expansion-panels v-model="defaultOpenPanels">
               <v-expansion-panel :title="dataSummaryClickInfo">
                 <v-expansion-panel-text>
                   <div v-html="getDataLicenseSummary" />
@@ -209,12 +205,9 @@
 
         <v-col cols="12" class="text-body-2 mt-5">
           <div>{{ labelsLicense.dataLicenseUrl }}</div>
-          <a
-            v-if="currentDataLicense?.link"
-            :href="currentDataLicense.link"
-            target="_blank"
-            >{{ currentDataLicense.link }}</a
-          >
+          <a v-if="currentDataLicense?.link" :href="currentDataLicense.link" target="_blank">{{
+            currentDataLicense.link
+          }}</a>
         </v-col>
       </v-col>
     </v-row>
@@ -222,27 +215,24 @@
 </template>
 
 <script>
-import {
-  mdiMinusCircleOutline,
-  mdiArrowDownDropCircleOutline,
-  mdiShieldSearch,
-} from '@mdi/js';
+import { mdiMinusCircleOutline, mdiArrowDownDropCircleOutline, mdiShieldSearch, mdiInformationOutline } from '@mdi/js';
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
-import {
-  getAvailableLicensesForEditing,
-  dataLicenses,
-} from '@/factories/dataLicense';
+import Organization from '@/modules/workflow/components/steps/Organization.vue';
+import InfoBanner from '@/modules/workflow/components/steps/InformationBanner.vue';
+import { getAvailableLicensesForEditing, dataLicenses } from '@/factories/dataLicense';
 import { renderMarkdown } from '@/factories/stringFactory.js';
 
-import {
-  isReadOnlyField,
-  getReadOnlyHint,
-} from '@/modules/workflow/utils/useReadonly';
+import { isReadOnlyField, getReadOnlyHint } from '@/modules/workflow/utils/useReadonly';
 
+import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
 
 export default {
   name: 'EditMetadataHeader',
+  setup() {
+    const orgStore = useOrganizationsStore();
+    return { orgStore };
+  },
   props: {
     funders: Array,
     dataLicenseId: String,
@@ -254,6 +244,11 @@ export default {
     readOnlyFields: Array,
     readOnlyExplanation: String,
     validationErrors: { type: Object, default: () => ({}) },
+    organizationId: { type: String, default: undefined },
+    organizationName: { type: String, default: undefined },
+    /* Can be either a single organization object or an array; we normalize it. */
+    organization: { type: [Object, Array], default: () => [] },
+    showInfoBanner: { type: Boolean, default: true },
   },
 
   computed: {
@@ -264,33 +259,54 @@ export default {
       return this.selectedLicenseObj;
     },
     dataSummaryClickInfo() {
-      return this.currentDataLicense
-        ? `Show a summary of ${this.currentDataLicense.title}`
-        : 'Show a summary';
+      return this.currentDataLicense ? `Show a summary of ${this.currentDataLicense.title}` : 'Show a summary';
     },
     getDataLicenseSummary() {
       if (!this.currentDataLicense) {
         return 'Please select a data license above to view data license summary.';
       }
 
-      return (
-        renderMarkdown(this.currentDataLicense.summary) ||
-        'Data summary information unavailable'
-      );
+      return renderMarkdown(this.currentDataLicense.summary) || 'Data summary information unavailable';
     },
     previewFundersWithEmpty() {
       const last = this.previewFunders[this.previewFunders.length - 1] || {};
       const isEmpty = Object.values(last).every((v) => !v);
-      return isEmpty
-        ? this.previewFunders
-        : [...this.previewFunders, { ...this.emptyEntry }];
+      return isEmpty ? this.previewFunders : [...this.previewFunders, { ...this.emptyEntry }];
+    },
+    editOrganizationProps() {
+      return {
+        organizationId: this.organizationId,
+        organizationName: this.organizationName,
+        userOrganizations: this.userOrganizationsList,
+        readOnlyFields: this.isReadOnly('organizationId'),
+        readOnlyExplanation: this.readOnlyHint('organizationId'),
+        flat: true,
+      };
+    },
+
+    selectedOrganizationId() {
+      if (this.organizationId) return this.organizationId;
+      const list = this.userOrganizationsList;
+      return list.length === 1 ? list[0].id : undefined;
+    },
+
+    userOrganizationsList() {
+      const storeList = this.orgStore?.userOrganizations;
+      if (Array.isArray(storeList) && storeList.length > 0) {
+        return storeList;
+      }
+      return [];
     },
   },
 
   methods: {
     // isFieldReadOnly,
     // readOnlyHint,
-
+    catchOrgChange(updatedOrg) {
+      this.newDatasetInfo.organizationName = updatedOrg.name;
+      this.newDatasetInfo.organizationId = updatedOrg.id;
+      this.$emit('save', this.newDatasetInfo);
+    },
     isReadOnly(dateProperty) {
       return isReadOnlyField(dateProperty);
     },
@@ -314,9 +330,7 @@ export default {
       this.previewFunders[idx][prop] = val;
 
       const isLast = idx === this.previewFunders.length - 1;
-      const rowFilled = Object.values(this.previewFunders[idx]).some(
-        (v) => v && v.toString().trim() !== '',
-      );
+      const rowFilled = Object.values(this.previewFunders[idx]).some((v) => v && v.toString().trim() !== '');
 
       // add the row only the UI
       if (isLast && rowFilled) {
@@ -333,8 +347,12 @@ export default {
     },
 
     changeLicense() {
-      this.newDatasetInfo.dataLicenseId = this.selectedLicenseObj?.id;
+      // this.newDatasetInfo.dataLicenseId = this.selectedLicenseObj?.id;
 
+      const lic = this.selectedLicenseObj || null;
+      this.newDatasetInfo.dataLicenseId = lic?.id || '';
+      this.newDatasetInfo.dataLicenseTitle = lic?.title || '';
+      this.newDatasetInfo.dataLicenseUrl = lic?.link || '';
       this.$emit('save', this.newDatasetInfo);
       //   const payload = {
       //     funders: this.previewFunders,
@@ -347,20 +365,16 @@ export default {
   data() {
     return {
       mdiMinusCircleOutline,
+      mdiInformationOutline,
       mdiArrowDownDropCircleOutline,
       mdiShieldSearch,
-      emptyEntry: {
-        institution: '',
-        grantNumber: '',
-        institutionUrl: '',
-      },
+      emptyEntry: { institution: '', grantNumber: '', institutionUrl: '' },
 
       previewFunders: this.funders?.length
         ? JSON.parse(JSON.stringify(this.funders))
         : [{ institution: '', grantNumber: '', institutionUrl: '' }],
 
-      selectedLicenseObj:
-        dataLicenses.find((l) => l.id === this.dataLicenseId) || null,
+      selectedLicenseObj: dataLicenses.find((l) => l.id === this.dataLicenseId) || null,
 
       newDatasetInfo: {},
 
@@ -368,11 +382,14 @@ export default {
         title: 'Additional Information',
         instructions: 'License and funding information',
         cardTitle: 'Funding Information',
-        fundingInformation:
-          'Provide information about who funded the research efforts.',
+        fundingInformation: 'Provide information about who funded the research efforts.',
         institution: 'Institution',
         grantNumber: 'Grant Number',
         institutionUrl: 'Link',
+      },
+      labelOrg: {
+        cardTitle: 'Organization',
+        orgInformation: 'Select your organization. If you belong to only one, it will be selected by default.',
       },
       labelsLicense: {
         cardTitle: 'Data License',
@@ -386,6 +403,8 @@ export default {
 
   components: {
     BaseIconButton,
+    Organization,
+    InfoBanner,
     // BaseStatusLabelView,
   },
 };

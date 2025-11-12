@@ -20,11 +20,11 @@
     </v-card-title>
 
     <v-card-title v-if="showPlaceholder && !title" class="pa-4 pt-0">
-      <v-skeleton-loader type='paragraph' color='gray' />
+      <v-skeleton-loader type="paragraph" color="gray" />
     </v-card-title>
 
     <v-card-text v-if="showPlaceholder" class="pa-4 pt-0">
-      <v-skeleton-loader type='paragraph' color='gray' />
+      <v-skeleton-loader type="paragraph" color="gray" />
     </v-card-text>
 
     <v-card-text
@@ -32,7 +32,7 @@
       ref="text"
       :usedMaxTextLength="maxTextLength"
       class="pa-4 pt-0 heightAndScroll readableText"
-      :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}; ${ !showFullscreenButton && !maxTextLengthReached ? 'max-height: 100% !important;' : ''}`"
+      :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}; ${!showFullscreenButton && !maxTextLengthReached ? 'max-height: 100% !important;' : ''}`"
     >
       <div v-html="markdownText"></div>
     </v-card-text>
@@ -47,11 +47,7 @@
 
     <v-card-text v-if="statusText"> {{ statusText }} </v-card-text>
 
-    <v-card-actions
-      v-if="maxTextLengthReached"
-      class="ma-0 pa-4"
-      :style="`position: absolute; bottom: 0px; right: 0;`"
-    >
+    <v-card-actions v-if="maxTextLengthReached" class="ma-0 pa-4" :style="`position: absolute; bottom: 0px; right: 0;`">
       <BaseIconButton
         :icon="mdiChevronDown"
         :icon-color="showFullText ? 'secondary' : 'white'"
@@ -139,9 +135,7 @@ export default {
       return this.text?.length > this.maxTextLength;
     },
     scrollbarColorFront() {
-      return this.$vuetify
-        ? this.$vuetify.theme.themes.light.colors.highlight
-        : 'auto';
+      return this.$vuetify ? this.$vuetify.theme.themes.light.colors.highlight : 'auto';
     },
     scrollbarColorBack() {
       return this.$vuetify ? '#F0F0F0' : 'auto';

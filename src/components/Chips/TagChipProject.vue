@@ -9,13 +9,13 @@
     :style="{
       height: $vuetify.display.xs ? '15px' : '',
     }"
-    :small="isSmall"
+    :size="isSmall ? 'small' : undefined"
     close-icon="close"
     @click.stop="clicked"
-    :close="closeable"
+    :closeable="closeable"
     @click:close="$emit('clickedClose', name)"
   >
-    <v-icon class='mr-1' :icon="mdiShape" :size="iconSize"></v-icon>
+    <v-icon class="mr-1" :icon="mdiShape" :size="iconSize"></v-icon>
 
     <span :style="{ fontSize: fontSize }">
       {{ name }}
@@ -51,7 +51,7 @@ export default {
     },
   },
   computed: {},
-  data: ()=>({
+  data: () => ({
     mdiShape,
   }),
   methods: {

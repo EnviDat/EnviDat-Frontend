@@ -2,8 +2,21 @@
   <v-card id="EditMetadataResources" class="pa-4">
     <v-container fluid class="pa-0">
       <v-row>
-        <v-col class="text-h5">
+        <v-col cols="6" class="text-h5">
           {{ EDIT_METADATA_RESOURCES_TITLE }}
+        </v-col>
+
+        <v-col v-if="message">
+          <BaseStatusLabelView
+            status="check"
+            statusColor="success"
+            :statusText="message"
+            :expandedText="messageDetails"
+          />
+        </v-col>
+
+        <v-col v-if="error">
+          <BaseStatusLabelView status="error" statusColor="error" :statusText="error" :expandedText="errorDetails" />
         </v-col>
       </v-row>
 
@@ -54,14 +67,12 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import {
-  EDIT_METADATA_RESOURCES_TITLE,
-  METADATA_RESOURCES_SEQUENCE_PROPERTY,
-} from '@/factories/metadataConsts';
+import { EDIT_METADATA_RESOURCES_TITLE, METADATA_RESOURCES_SEQUENCE_PROPERTY } from '@/factories/metadataConsts';
 
 import MetadataResources from '@/modules/metadata/components/Metadata/MetadataResources.vue';
 import ExpandableLayout from '@/components/Layouts/ExpandableLayout.vue';
 import BaseDraggableList from '@/components/BaseElements/BaseDraggableList.vue';
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 
 import { getResourceName } from '@/factories/resourceHelpers';
 
@@ -78,6 +89,7 @@ export default {
     MetadataResources,
     ExpandableLayout,
     BaseDraggableList,
+    BaseStatusLabelView,
   },
   props: {
     resources: {
@@ -95,6 +107,26 @@ export default {
     compactList: {
       type: Boolean,
       default: false,
+    },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+    message: {
+      type: String,
+      default: '',
+    },
+    messageDetails: {
+      type: String,
+      default: null,
+    },
+    error: {
+      type: String,
+      default: '',
+    },
+    errorDetails: {
+      type: String,
+      default: null,
     },
     readOnlyFields: {
       type: Array,
@@ -129,8 +161,7 @@ export default {
         resources: this.resourcesField,
         dataLicenseTitle: this.dataLicenseTitle,
         dataLicenseUrl: this.dataLicenseUrl,
-        emptyText:
-          'No resources has been added yet. Upload a file or provide a link to a resource.',
+        emptyText: 'No resources has been added yet. Upload a file or provide a link to a resource.',
         emptyTextColor: 'grey',
         compactList: this.compactList,
         genericOpenButtonBottom: false,
@@ -144,9 +175,7 @@ export default {
       for (let i = 0; i < newList.length; i++) {
         const resName = newList[i];
 
-        const res = this.resourcesField.filter(
-          (r) => getResourceName(r) === resName,
-        )[0];
+        const res = this.resourcesField.filter((r) => getResourceName(r) === resName)[0];
 
         if (res) {
           res.position = i;

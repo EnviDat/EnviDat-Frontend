@@ -11,16 +11,9 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-/* eslint-disable prefer-template */
 import { createRouter, createWebHashHistory } from 'vue-router';
 
-import {
-  GCMD_PATH,
-  GCMD_PAGENAME,
-  REPORT_PATH,
-  REPORT_PAGENAME,
-  PAGENOTFOUND_PAGENAME,
-} from '@/router/routeConsts';
+import { GCMD_PATH, GCMD_PAGENAME, REPORT_PATH, REPORT_PAGENAME, PAGENOTFOUND_PAGENAME } from '@/router/routeConsts';
 
 import { homeRoutes } from '@/modules/home/routes';
 import { browseRoutes } from '@/modules/browse/routes';
@@ -130,8 +123,7 @@ const router = createRouter({
 
     if (a.path && b.path) {
       return (
-        a.path.replace(trailingSlashRE, '') ===
-          b.path.replace(trailingSlashRE, '') &&
+        a.path.replace(trailingSlashRE, '') === b.path.replace(trailingSlashRE, '') &&
         a.hash === b.hash &&
         this.isObjectEqual(a.query, b.query)
       );
@@ -192,10 +184,7 @@ const router = createRouter({
     }
 
     if (isAuthorSearch !== undefined) {
-      query.isAuthorSearch =
-        typeof isAuthorSearch !== 'string'
-          ? isAuthorSearch.toString()
-          : isAuthorSearch;
+      query.isAuthorSearch = typeof isAuthorSearch !== 'string' ? isAuthorSearch.toString() : isAuthorSearch;
     }
 
     routerObj.push({

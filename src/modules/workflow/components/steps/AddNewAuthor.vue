@@ -76,7 +76,7 @@
             @keyup="blurOnEnterKey"
             @focusin="focusIn($event)"
             @focusout="focusOut('email', $event)"
-            @input="changeProperty('email', $event.target.value)"
+            @update:model-value="changeProperty('email', $event)"
           />
         </v-col>
       </v-row>
@@ -88,8 +88,8 @@
       <v-row v-if="!isEditingAuthor" dense class="pt-2">
         <v-col>
           <BaseUserPicker
-            :users="fullNameUsers"
-            :preSelected="preselectAuthorNames"
+            :users="authorPickerObjects"
+            :preSelectedEmails="preselectAuthorEmails"
             :readonly="isReadOnly('authors')"
             :hint="readOnlyHint('authors')"
             @removedUsers="catchPickerAuthorChange($event, false)"
@@ -118,7 +118,7 @@
             @keyup="blurOnEnterKey"
             @focusin="focusIn($event)"
             @focusout="focusOut('firstName', $event)"
-            @input="changeProperty('firstName', $event.target.value)"
+            @update:model-value="changeProperty('firstName', $event)"
           />
         </v-col>
 
@@ -137,7 +137,7 @@
             @keyup="blurOnEnterKey"
             @focusin="focusIn($event)"
             @focusout="focusOut('lastName', $event)"
-            @input="changeProperty('lastName', $event.target.value)"
+            @update:model-value="changeProperty('lastName', $event)"
           />
         </v-col>
       </v-row>
@@ -158,7 +158,7 @@
             @keyup="blurOnEnterKey"
             @focusin="focusIn($event)"
             @focusout="focusOut('affiliation', $event)"
-            @input="changeProperty('affiliation', $event.target.value)"
+            @update:model-value="changeProperty('affiliation', $event)"
           />
         </v-col>
 
@@ -177,7 +177,7 @@
             @keyup="blurOnEnterKey"
             @focusin="focusIn($event)"
             @focusout="focusOut('identifier', $event)"
-            @input="changeProperty('identifier', $event.target.value)"
+            @update:model-value="changeProperty('identifier', $event)"
           />
         </v-col>
       </v-row>
@@ -211,13 +211,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import {
-  mdiAccount,
-  mdiClose,
-  mdiEmail,
-  mdiHandshake,
-  mdiWalletMembership,
-} from '@mdi/js';
+import { mdiAccount, mdiClose, mdiEmail, mdiHandshake, mdiWalletMembership } from '@mdi/js';
 
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
 // import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
@@ -226,24 +220,15 @@ import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.v
 
 import { EDIT_METADATA_ADD_AUTHOR_TITLE } from '@/factories/metadataConsts';
 
-import {
-  createAuthor,
-  getUserNameObjects,
-  getAuthorByEmail,
-  getAuthorByName,
-  getAuthorName,
-} from '@/factories/authorFactory';
+import { createAuthor, getUserPickerObjects, getAuthorByEmail, getAuthorName } from '@/factories/authorFactory';
 
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus.js';
 import { useDebounce } from '@/modules/workflow/workflowFunctions.js';
 
-import {
-  isReadOnlyField,
-  getReadOnlyHint,
-} from '@/modules/workflow/utils/useReadonly';
+import { isReadOnlyField, getReadOnlyHint } from '@/modules/workflow/utils/useReadonly';
 
 export default {
-  name: 'AddNewAuthor',
+  // name: 'AddNewAuthor',
   props: {
     titleLabel: {
       type: String,
@@ -346,23 +331,17 @@ export default {
     },
     affiliationField: {
       get() {
-        return this.previews.affiliation !== null
-          ? this.previews.affiliation
-          : this.affiliation;
+        return this.previews.affiliation !== null ? this.previews.affiliation : this.affiliation;
       },
     },
     firstNameField: {
       get() {
-        return this.previews.firstName !== null
-          ? this.previews.firstName
-          : this.firstName;
+        return this.previews.firstName !== null ? this.previews.firstName : this.firstName;
       },
     },
     lastNameField: {
       get() {
-        return this.previews.lastName !== null
-          ? this.previews.lastName
-          : this.lastName;
+        return this.previews.lastName !== null ? this.previews.lastName : this.lastName;
       },
     },
     emailField: {
@@ -372,24 +351,16 @@ export default {
     },
     identifierField: {
       get() {
-        return this.previews.identifier !== null
-          ? this.previews.identifier
-          : this.identifier;
+        return this.previews.identifier !== null ? this.previews.identifier : this.identifier;
       },
     },
-    preselectAuthorNames() {
+    preselectAuthorEmails() {
       const author = getAuthorByEmail(this.emailField, this.existingAuthors);
-
-      if (author) {
-        const fullName = getAuthorName(author);
-        return fullName ? [fullName] : [];
-      }
-
-      return undefined;
+      return author ? [author.email] : [];
     },
-    fullNameUsers() {
+    authorPickerObjects() {
       const localAuthors = [...this.existingAuthors];
-      return getUserNameObjects(localAuthors);
+      return getUserPickerObjects(localAuthors);
     },
     anyUserElementsActive() {
       return (
@@ -450,13 +421,12 @@ export default {
 
       this.focusOutDebouncing(property, value);
     },
-    catchPickerAuthorChange(pickedAuthorName, hasAuthor) {
+    catchPickerAuthorChange(pickedUserEmail: string, hasAuthor: boolean) {
       this.authorPickerTouched = true;
       this.authorIsPicked = hasAuthor;
 
       if (this.authorIsPicked) {
-        const author =
-          getAuthorByName(pickedAuthorName, this.existingAuthors) || {};
+        const author = getAuthorByEmail(pickedUserEmail, this.existingAuthors) || {};
         const authorObject = createAuthor(author);
 
         this.fillPreviews(
@@ -583,10 +553,8 @@ export default {
       placeholderAffiliation: 'Enter authors affiliation',
       authorInstructions: 'Enter an email address of the author.',
       authorOr: '<strong>Or</strong> pick an existing author',
-      authorAutoComplete:
-        'If an author is picked or found with the email address these fields are <strong>autocompleted</strong>!',
-      authorPickHint:
-        'Start typing the name in the text field to search for an author.',
+      authorAutoComplete: 'If an author is found by email, these fields are <strong>filled automatically</strong>',
+      authorPickHint: 'Start typing the name in the text field to search for an author.',
     },
     activeElements: {
       email: null,

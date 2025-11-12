@@ -1,29 +1,51 @@
 <template>
-  <v-card
-    class="pa-0 flex-column navigationWorkflow"
-    :elevation="display.lgAndUp.value ? 2 : 0"
-    rounded="xl"
-  >
+  <v-card class="pa-0 flex-column navigationWorkflow" :elevation="display.lgAndUp.value ? 2 : 0" rounded="xl">
     <v-card-title class="text-h6 font-weight-bold mb-4 pa-md-4 pa-0">
-      Create your Dataset
+      <v-row class="w-100" no-gutters align="center" justify="space-between">
+        <!-- Left: title + inline icon(s) -->
+        <v-col cols="auto" class="d-flex align-center">
+          <span class="text-h6 font-weight-bold mr-2">Create your Dataset</span>
+        </v-col>
+
+        <!-- Right: close icon -->
+        <v-col cols="auto" class="d-flex justify-end">
+          <BaseIconButton
+            :disabled="localStorageOnly"
+            class="metadataEditCloseButton ma-1 ma-md-0 ml-md-2"
+            :icon="iconName('eye')"
+            icon-color="black"
+            color="black"
+            outlined
+            tooltip-text="Show Preview"
+            tooltip-bottom
+            @clicked="emit('previewClick')"
+          />
+          <BaseIconButton
+            class="metadataEditCloseButton ma-1 ma-md-0 ml-md-2"
+            :icon="iconName('close')"
+            icon-color="black"
+            color="black"
+            outlined
+            tooltip-text="Close Workflow"
+            tooltip-bottom
+            @clicked="emit('catchCloseClick')"
+          />
+        </v-col>
+      </v-row>
     </v-card-title>
 
-    <v-expansion-panels
-      class="mb-4 navigationWorkflow__note--mobile"
-      elevation="0"
-      v-if="display.smAndDown.value"
-    >
+    <!-- <v-expansion-panels class="mb-4 navigationWorkflow__note--mobile" elevation="0" v-if="display.smAndDown.value">
       <v-expansion-panel>
         <v-expansion-panel-title class="pa-0">
           <BaseIcon :icon="iconName('info')" color="black" class="mr-4" />Note
         </v-expansion-panel-title>
 
         <v-expansion-panel-text class="pa-0">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua…
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+          magna aliqua…
         </v-expansion-panel-text>
       </v-expansion-panel>
-    </v-expansion-panels>
+    </v-expansion-panels> -->
 
     <v-card-text class="pa-0">
       <v-list class="pa-0 navigationWorkflow__list" density="comfortable" nav>
@@ -32,7 +54,10 @@
           :key="index"
           :class="[
             'navigationWorkflow__item',
-            { readOnly: !step.isEditable },
+            {
+              readOnly: !step.isEditable && workflowStore.mode !== WorkflowMode.Create,
+              unlocked: isUnlocked(step),
+            },
             // step.status can be active, completed, error
             step.status,
           ]"
@@ -40,11 +65,7 @@
           class="pl-4 pr-4 mb-md-4 mb-xl-6 navigationWorkflow__item"
         >
           <template #prepend>
-            <BaseIcon
-              :icon="iconName(step.icon)"
-              color="black"
-              class="mr-md-4"
-            />
+            <BaseIcon :icon="iconName(step.icon)" color="black" class="mr-md-4" />
           </template>
 
           <template #title v-if="display.lgAndUp.value">
@@ -58,16 +79,11 @@
                 v-if="workflowStore.currentStep === step.id"
                 :class="{
                   'font-weight-bold': display.mdAndDown.value,
-                  'ml-2': workflowStore.currentStep === step.id,
+                  'ml-md-2': workflowStore.currentStep === step.id,
                 }"
               >
-                {{ step.title }}
               </span>
-              <BaseIcon
-                :icon="!step.isEditable ? iconName('noedit') : iconName('edit')"
-                color="null"
-                class="ml-2"
-              />
+              <BaseIcon :icon="!step.isEditable ? iconName('noedit') : iconName('edit')" color="null" class="ml-2" />
             </div>
           </template>
 
@@ -81,17 +97,10 @@
               :class="[step.status, { readonly: step.readOnly }]"
               v-if="props.isDatasetEditing"
             >
-              <BaseIcon
-                :icon="!step.isEditable ? iconName('noedit') : iconName('edit')"
-                color="null"
-              />
+              <BaseIcon :icon="!step.isEditable ? iconName('noedit') : iconName('edit')" color="null" />
             </div>
 
-            <div
-              v-else
-              class="navigationWorkflow__append mr-1"
-              :class="[step.status]"
-            >
+            <div v-else class="navigationWorkflow__append mr-1" :class="[step.status]">
               <template v-if="step.completed">
                 <!-- If the step has already been completed, but we want to edit it -->
                 <span
@@ -101,12 +110,7 @@
                   {{ step.id + 1 }}
                 </span>
                 <!-- If the step has been completed-->
-                <BaseIcon
-                  v-else
-                  :icon="iconName('success')"
-                  class="navigationWorkflow__append--number"
-                  color="#fff"
-                />
+                <BaseIcon v-else :icon="iconName('success')" class="navigationWorkflow__append--number" color="#fff" />
               </template>
 
               <span v-else class="navigationWorkflow__append--number">
@@ -117,75 +121,43 @@
 
           <div
             class="navigationWorkflow__divider"
-            v-if="
-              display.lgAndUp.value &&
-              (step.id === 3 || step.id === workflowStore.steps.length - 1)
-            "
+            v-if="display.lgAndUp.value && (step.id === 3 || step.id === workflowStore.steps.length - 1)"
           ></div>
         </v-list-item>
       </v-list>
     </v-card-text>
-    <v-card-actions
-      class="d-flex mt-4 navigationWorkflow__actions justify-space-between pl-4 pr-4"
-    >
-      <div
-        @click="initDriver"
-        class="navigationWorkflow__actions--item d-flex flex-column"
-      >
-        <BaseIcon
-          :class="'pulseIcon help-icon'"
-          :large="true"
-          :icon="iconName('question')"
-          :color="'black'"
-        />
+    <v-card-actions class="d-flex mt-4 navigationWorkflow__actions justify-space-between pl-4 pr-4">
+      <div @click="initDriver" class="navigationWorkflow__actions--item d-flex flex-column">
+        <BaseIcon :class="'pulseIcon help-icon'" :large="true" :icon="iconName('question')" :color="'black'" />
         <span class="text-body-2 mt-2">Help mode</span>
       </div>
+      <!-- TODO get from the backend the status of the dataset and not use workflowStore.isStepSaveConfirmed -->
       <div
         @click="reserveDoi"
-        :class="{
-          disabled: !workflowStore.isStepSaveConfirmed,
-        }"
+        :class="{ disabled: !isBackend }"
         class="navigationWorkflow__actions--item d-flex flex-column"
       >
+        <v-progress-circular v-if="doiLoading" color="primary" indeterminate></v-progress-circular>
+
         <BaseIcon
+          v-else
           :large="true"
           :icon="iconName('print')"
           class="doi-icon"
-          :color="workflowStore.isStepSaveConfirmed ? 'primary' : 'black'"
-          :class="
-            workflowStore.isStepSaveConfirmed &&
-            workflowStore.doiPlaceholder === null
-              ? 'pulseIcon'
-              : ''
-          "
+          :class="{ pulseIcon: !hasDoi && isBackend }"
+          :color="isBackend ? (hasDoi ? 'primary' : 'secondary') : 'black'"
         />
-        <span class="text-body-2 mt-2">{{
-          workflowStore.doiPlaceholder || 'Reserve DOI'
-        }}</span>
+        <span class="text-body-2 mt-2">{{ doi ?? 'Reserve DOI' }}</span>
       </div>
       <div class="navigationWorkflow__actions--item d-flex flex-column">
-        <v-menu
-          v-model="showStatusMenu"
-          scrim="false"
-          :close-on-content-click="false"
-          location="bottom"
-        >
+        <v-menu v-model="showStatusMenu" scrim="false" :close-on-content-click="false" location="bottom">
           <!-- attivatore -->
           <template #activator="{ props }">
-            <div
-              class="navigationWorkflow__actions--item d-flex flex-column"
-              v-bind="props"
-            >
-              <BaseIcon
-                :large="true"
-                :icon="iconName('draft')"
-                class="status-icon"
-                :color="'black'"
-              />
+            <div class="navigationWorkflow__actions--item d-flex flex-column" v-bind="props">
+              <BaseIcon :large="true" :icon="iconName('draft')" class="status-icon" :color="'black'" />
+
               <span class="text-body-2 mt-2">
-                {{
-                  workflowStore.doiPlaceholder != null ? 'Reserved' : 'Draft'
-                }}
+                {{ publicationState }}
               </span>
             </div>
           </template>
@@ -193,9 +165,7 @@
           <!-- contenuto -->
           <v-card width="320" rounded="xl" class="pa-4">
             <div class="d-flex justify-space-between align-center mb-3">
-              <span class="text-subtitle-1 font-weight-bold"
-                >Publication status</span
-              >
+              <span class="text-subtitle-1 font-weight-bold">Publication status</span>
               <BaseIconButton
                 :icon="mdiClose"
                 color="transparent"
@@ -204,20 +174,14 @@
               />
             </div>
 
+            <p class="text-body-2 mb-2"><strong>Draft:</strong> Not saved and DOI not reserved yet.</p>
             <p class="text-body-2 mb-2">
-              <strong>Draft:</strong> Not saved and DOI not reserved yet
-            </p>
-            <p class="text-body-2 mb-2">
-              <strong>Reserved:</strong> A DOI has been provided, but it’s not
-              published yet
+              <strong>Reserved:</strong> A DOI has been provided, but it’s not published yet.
             </p>
             <p class="text-body-2 mb-2">
-              <strong>Pending:</strong> Publication in progress. The EnviDat
-              team is reviewing your dataset.
+              <strong>Pending:</strong> Publication in progress. The EnviDat team is reviewing your dataset.
             </p>
-            <p class="text-body-2">
-              <strong>Published:</strong> Your dataset is published.
-            </p>
+            <p class="text-body-2"><strong>Published:</strong> Your dataset is published.</p>
           </v-card>
         </v-menu>
       </div>
@@ -256,40 +220,79 @@ import { useDisplay } from 'vuetify';
 import { driver } from 'driver.js';
 import 'driver.js/dist/driver.css';
 import { mdiClose } from '@mdi/js';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import { extractIcons } from '@/factories/iconFactory';
 
-import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow.ts';
+import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import { WorkflowMode, StepStatus } from '@/modules/workflow/utils/workflowEnums';
 
+import { mapPublicationState } from '@/modules/workflow/utils/publicationState';
+
+const workflowStore = useDatasetWorkflowStore();
 const display = useDisplay();
 
-const emit = defineEmits(['navigateItem']);
+const emit = defineEmits(['navigateItem', 'catchCloseClick', 'previewClick']);
 
 // Props
 const props = defineProps({
+  localStorageOnly: Boolean,
   isDatasetEditing: Boolean,
+  currentDataset: {
+    type: Object,
+    default: undefined,
+  },
 });
+
+const isBackend = computed(() => workflowStore.dataSource === 'backend');
+const doi = computed(() => {
+  if (!isBackend.value) return undefined;
+  const d = workflowStore.backendStorageService?.dataset?.doi;
+  return typeof d === 'string' && d.trim() === '' ? undefined : d;
+});
+
+const hasDoi = computed(() => !!(doi.value && doi.value.trim()));
+
+const publicationState = computed(() => {
+  let state = workflowStore.backendStorageService?.dataset?.publication_state;
+  if (workflowStore.dataSource !== 'backend') {
+    state = 'draft';
+  }
+  return mapPublicationState(state);
+});
+
+const doiLoading = computed(() => workflowStore.isLoading?.('doi') === true);
 
 // tooltip activator
 const showStatusMenu = ref(false);
 
 // Extract Icon name from IconFactory
 const iconName = (name) => extractIcons(name);
+const DISABLED_IN_CREATE_LOCAL_BY_ID = new Set([4, 5, 6]);
 
-const workflowStore = useDatasetWorkflowStore();
+const isDisabledBySource = (step) =>
+  workflowStore.mode === WorkflowMode.Create &&
+  workflowStore.dataSource !== 'backend' &&
+  DISABLED_IN_CREATE_LOCAL_BY_ID.has(step.id);
 
 const navigateItem = (id, status) => {
   // workflowStore.navigateItemAction(id, status);
+  const step = workflowStore.steps[id];
+  if (isDisabledBySource(step)) return;
   emit('navigateItem', { id, status });
 };
 
 const reserveDoi = async () => {
-  // TODO metadataID connect with the real ID, see reference initMetadataUsingId - MetadataEditPage
-  // await store.dispatch('user/DOI_RESERVE', 'metadataID');
-  workflowStore.reserveDoi();
+  if (!isBackend.value || hasDoi.value || doiLoading.value) return;
+  const id = props.currentDataset.dataset.name;
+
+  try {
+    await workflowStore.withLoading(() => workflowStore.backendStorageService.requestDoi(id), 'doi');
+  } catch (e) {
+    console.error(e);
+  }
 };
 
 /*
@@ -301,6 +304,15 @@ const tooltip = {
   openOnHover: false,
 };
 */
+
+// Unlock the step
+const isUnlocked = (step) => {
+  if (workflowStore.mode !== WorkflowMode.Create) return false;
+  if (isDisabledBySource(step)) return false;
+  if (step.id <= 0) return false;
+  const prev = workflowStore.steps[step.id - 1];
+  return !!prev?.completed;
+};
 
 // init the driver step
 const initDriver = () => {
@@ -315,6 +327,7 @@ const initDriver = () => {
 <style lang="scss">
 .navigationWorkflow {
   background-color: #fff;
+  position: relative;
   @media screen and (min-width: 1280px) {
     // 960 is md for vuetify
     background-color: #f8f8f8;
@@ -322,7 +335,6 @@ const initDriver = () => {
     top: 25px;
   }
 
-  position: relative;
   &__list {
     display: flex;
     flex-direction: row;
@@ -396,11 +408,18 @@ const initDriver = () => {
         cursor: not-allowed;
       }
     }
+    &.unlocked {
+      opacity: 1;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
     &.active {
       @media screen and (max-width: 1280px) {
         // 960 is md for vueitfy
         // gap: 8px;
-        background-color: #499df7;
+        background-color: #499df7 !important;
         .navigationWorkflow__append--number,
         .v-list-item-title,
         .v-icon__svg {

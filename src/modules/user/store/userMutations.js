@@ -1,28 +1,21 @@
-/* eslint-disable no-underscore-dangle */
 /**
-* user store mutations
-*
-* @summary user store mutations
-* @author Dominik Haas-Artho
-*
-* Created at     : 2020-07-14 16:51:52
+ * user store mutations
+ *
+ * @summary user store mutations
+ * @author Dominik Haas-Artho
+ *
+ * Created at     : 2020-07-14 16:51:52
  * Last modified  : 2021-08-18 10:14:35
-*
-* This file is subject to the terms and conditions defined in
-* file 'LICENSE.txt', which is part of this source code package.
-*/
+ *
+ * This file is subject to the terms and conditions defined in
+ * file 'LICENSE.txt', which is part of this source code package.
+ */
 
 import { getCollaboratorCapacity } from '@/factories/userEditingValidations';
 
-import {
-  enhanceElementsWithStrategyEvents,
-  SELECT_EDITING_DATASET_PROPERTY,
-} from '@/factories/strategyFactory';
+import { enhanceElementsWithStrategyEvents, SELECT_EDITING_DATASET_PROPERTY } from '@/factories/strategyFactory';
 
-import {
-  enhanceMetadataFromCategories,
-  extractUserError,
-} from '@/modules/user/store/mutationFactory';
+import { enhanceMetadataFromCategories, extractUserError } from '@/modules/user/store/mutationFactory';
 
 import { enhanceUserObject } from '@/factories/mappingFactory';
 
@@ -41,13 +34,11 @@ import {
   GET_USER_LIST_ERROR,
 } from './userMutationsConsts';
 
-
 function resetErrorObject(state) {
   state.error = null;
   state.errorType = '';
   state.errorField = '';
 }
-
 
 export default {
   [GET_USER_LIST](state) {
@@ -75,7 +66,7 @@ export default {
   [USER_GET_DATASETS_SUCCESS](state, payload) {
     state.userDatasetsLoading = false;
 
-    const datasets = enhanceMetadataFromCategories(this, payload.datasets);
+    const datasets = enhanceMetadataFromCategories(payload.datasets);
 
     // TODO - check config for dataset editing enabled
     enhanceElementsWithStrategyEvents(datasets, SELECT_EDITING_DATASET_PROPERTY);
@@ -123,7 +114,7 @@ export default {
 
     resetErrorObject(state);
   },
-  [USER_GET_COLLABORATOR_DATASETS_SUCCESS](state, { datasets, collaboratorIds } ) {
+  [USER_GET_COLLABORATOR_DATASETS_SUCCESS](state, { datasets, collaboratorIds }) {
     state.collaboratorDatasetsLoading = false;
 
     for (let i = 0; i < datasets.length; i++) {
@@ -131,15 +122,12 @@ export default {
       dSet.role = getCollaboratorCapacity(dSet.id, collaboratorIds);
     }
 
-    const enhancedDatasets = enhanceMetadataFromCategories(this, datasets) || [];
+    const enhancedDatasets = enhanceMetadataFromCategories(datasets) || [];
 
     // TODO - check config for dataset editing enabled
     enhanceElementsWithStrategyEvents(enhancedDatasets, SELECT_EDITING_DATASET_PROPERTY);
 
-    const collaboratorDatasets = [
-      ...state.collaboratorDatasets,
-      ...enhancedDatasets,
-    ];
+    const collaboratorDatasets = [...state.collaboratorDatasets, ...enhancedDatasets];
 
     // use the $set to make sure updates are triggered
     state.collaboratorDatasets = collaboratorDatasets;

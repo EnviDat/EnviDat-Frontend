@@ -1,9 +1,11 @@
 <template>
-  <div class="baseIconSwitch" :style="`z-index:  ${zIndex};
+  <div
+    class="baseIconSwitch"
+    :style="`z-index:  ${zIndex};
                                       position: relative;
-                                      background-color: white;`">
-
-    <v-tooltip :disabled="!tooltipText" location='bottom'>
+                                      background-color: white;`"
+  >
+    <v-tooltip :disabled="!tooltipText" location="bottom">
       <template v-slot:activator="{ props }">
         <div class="d-flex" v-bind="props">
           <div class="iconSwitch">
@@ -12,15 +14,19 @@
               type="button"
               :disabled="disabled"
               class="iconSwitchButton"
-              :id="'iconSwitchButton' + $.uid" :class="classList"
+              :id="'iconSwitchButton' + $.uid"
+              :class="classList"
               role="switch"
               :aria-describedby="'iconSwitchLabel' + $.uid"
-              :aria-checked="active" @click="emitClick">
-
-              <BaseIcon
-                :icon="icon"
-                :color="iconColor"
-              />
+              :aria-checked="active"
+              @click="emitClick"
+            >
+              <template v-if="loading">
+                <v-progress-circular indeterminate size="20" :color="color" />
+              </template>
+              <template v-else>
+                <BaseIcon :icon="icon" :color="iconColor" />
+              </template>
             </button>
           </div>
           <label v-if="label" :for="'iconSwitchButton' + $.uid" class="iconSwitchLabel" :class="{ disabled }">
@@ -62,6 +68,7 @@ export default {
     disabled: { type: Boolean, default: false },
     tooltipText: { type: String, default: undefined },
     zIndex: { type: Number, default: undefined },
+    loading: { type: Boolean, default: false },
   },
   watch: {
     active: {
@@ -96,14 +103,16 @@ export default {
     },
   },
 };
-
 </script>
 
 <style scoped lang="scss">
 $switch-length: 44px;
 $switch-bg-height: 14px;
 $button-size: 26px;
-$button-shadow: 0 2px 4px -1px rgba(0, 0, 0, .2), 0 4px 5px 0 rgba(0, 0, 0, .14), 0 1px 10px 0 rgba(0, 0, 0, .12);
+$button-shadow:
+  0 2px 4px -1px rgba(0, 0, 0, 0.2),
+  0 4px 5px 0 rgba(0, 0, 0, 0.14),
+  0 1px 10px 0 rgba(0, 0, 0, 0.12);
 $slide-duration: 0.2s;
 
 .baseIconSwitch {
@@ -135,9 +144,11 @@ $slide-duration: 0.2s;
       width: $button-size;
       left: 0;
       box-shadow: $button-shadow;
-      background-color: #FFF;
+      background-color: #fff;
       transition: none;
       display: grid;
+      justify-content: center;
+      align-items: center;
 
       .baseIcon {
         justify-self: center;
@@ -145,7 +156,9 @@ $slide-duration: 0.2s;
       }
 
       &:hover {
-        box-shadow: $button-shadow, 0 0 0 4px rgba(33, 33, 33, 0.2);
+        box-shadow:
+          $button-shadow,
+          0 0 0 4px rgba(33, 33, 33, 0.2);
       }
 
       &.active {
@@ -155,12 +168,14 @@ $slide-duration: 0.2s;
 
         &:before {
           margin-left: -$activeDelta;
-          transition: margin-left $slide-duration ease-in-out, background-color $slide-duration;
+          transition:
+            margin-left $slide-duration ease-in-out,
+            background-color $slide-duration;
         }
       }
 
       &.disabled {
-        background-color: #DDD;
+        background-color: #ddd;
         cursor: not-allowed;
         box-shadow: 0 0 1px 1px rgba(33, 33, 33, 0.1);
 
@@ -182,7 +197,6 @@ $slide-duration: 0.2s;
         z-index: -1; // Behind the button
         box-shadow: inset 1px 1px 3px rgba(33, 33, 33, 0.2);
       }
-
     }
   }
 }

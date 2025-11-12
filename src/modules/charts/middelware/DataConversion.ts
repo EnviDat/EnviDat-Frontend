@@ -1,39 +1,41 @@
 import papa from 'papaparse';
-import {parseISO} from 'date-fns/parseISO';
-import type {MetaData, MetaRows} from '@/types/dataVizTypes';
+import { parseISO } from 'date-fns/parseISO';
+import type { MetaData, MetaRows } from '@/types/dataVizTypes';
 
 const normalDataConversion = (data: any, xAxis: string, yAxis: string, title: string) => ({
-    labels: data?.map((row: any) => row[xAxis]),
-    datasets: [
-      {
-        label: title,
-        data: data?.map((row: any) => ({
-            x: row[xAxis],
-            y: row[yAxis],
-          })),
-      },
-    ],
-  })
+  labels: data?.map((row: any) => row[xAxis]),
+  datasets: [
+    {
+      label: title,
+      data: data?.map((row: any) => ({
+        x: row[xAxis],
+        y: row[yAxis],
+      })),
+    },
+  ],
+});
 
 const largeDataConversion = (data: any, xAxis: string, yAxis: string, title: string) => ({
-    labels: [],
-    datasets: [
-      {
-        label: title,
-        data: data?.map((row: any) => ({
-            x: parseISO(row[xAxis]).getTime(),
-            // x: row[xAxis],
-            y: Number.parseFloat(row[yAxis]),
-          })),
-      },
-    ],
-  })
+  labels: [],
+  datasets: [
+    {
+      label: title,
+      data: data?.map((row: any) => ({
+        x: parseISO(row[xAxis]).getTime(),
+        // x: row[xAxis],
+        y: Number.parseFloat(row[yAxis]),
+      })),
+    },
+  ],
+});
 
-export function getDataSeries (data: object[] | undefined,
-                               xAxisParam: string | undefined,
-                               yAxisParam: string | undefined,
-                               title: string | undefined, largeDataset: boolean = false) {
-
+export function getDataSeries(
+  data: object[] | undefined,
+  xAxisParam: string | undefined,
+  yAxisParam: string | undefined,
+  title: string | undefined,
+  largeDataset: boolean = false,
+) {
   if (!data || data.length <= 0) {
     return { labels: undefined, datasets: [] };
   }
@@ -46,9 +48,10 @@ export function getDataSeries (data: object[] | undefined,
 
   const dataSeriesTitle = title || yAxis;
 
-  return largeDataset ? largeDataConversion(data, xAxis, yAxis, dataSeriesTitle) : normalDataConversion(data, xAxis, yAxis, dataSeriesTitle);
+  return largeDataset
+    ? largeDataConversion(data, xAxis, yAxis, dataSeriesTitle)
+    : normalDataConversion(data, xAxis, yAxis, dataSeriesTitle);
 }
-
 
 /**
  * Mapping from prefix to property
@@ -76,8 +79,7 @@ const FIELDS_METADATA_MAPPING = [
   ['# database_fields_data_types =', 'databaseFieldsDataTypes'],
 ];
 
-
-function getLineViaPrefix (metaRows: string[], prefix: string) : string | undefined {
+function getLineViaPrefix(metaRows: string[], prefix: string): string | undefined {
   const fieldIndex = metaRows.findIndex((line) => line.startsWith(prefix));
   let lineValue;
 
@@ -89,14 +91,13 @@ function getLineViaPrefix (metaRows: string[], prefix: string) : string | undefi
   return lineValue;
 }
 
-
-function unpackICSVMapping(metaRows: string[], mappingRules: string[][]) : MetaRows {
-  const unpackedLines : MetaRows = { fields: []};
+function unpackICSVMapping(metaRows: string[], mappingRules: string[][]): MetaRows {
+  const unpackedLines: MetaRows = { fields: [] };
 
   for (let i = 0; i < mappingRules.length; i++) {
     const rule = mappingRules[i];
     const prefix = rule[0];
-    const property : string = rule[1];
+    const property: string = rule[1];
 
     // @ts-ignore
     unpackedLines[property] = getLineViaPrefix(metaRows, prefix);
@@ -104,7 +105,6 @@ function unpackICSVMapping(metaRows: string[], mappingRules: string[][]) : MetaR
 
   return unpackedLines;
 }
-
 
 export function parseCSV(csv: string) {
   return papa.parse(csv, {
@@ -128,14 +128,14 @@ export function isObjectArray(object: unknown): object is object[] {
   return true;
 }
 
-function getMetaDataFromJSON(data: unknown) : MetaData {
+function getMetaDataFromJSON(data: unknown): MetaData {
   if (!isObjectArray(data)) {
     throw new Error('Expected data to be an array of objects');
   }
 
   const dataObjs = data;
 
-  let fields : string[] = [];
+  let fields: string[] = [];
   const firstEntry = dataObjs ? dataObjs[0] : null;
 
   if (firstEntry) {
@@ -155,7 +155,7 @@ function getMetaDataFromJSON(data: unknown) : MetaData {
   };
 }
 
-function getDelimiter(fileRow: string) : string {
+function getDelimiter(fileRow: string): string {
   let delimiter = ',';
   let firstCols = fileRow.split(delimiter);
 
@@ -176,7 +176,7 @@ function getDelimiter(fileRow: string) : string {
   return delimiter;
 }
 
-function csvHasHeaderRow(firstRow: string) : boolean {
+function csvHasHeaderRow(firstRow: string): boolean {
   const delimiter = getDelimiter(firstRow);
   const cols = firstRow.split(delimiter);
 
@@ -197,8 +197,7 @@ export function isString(something: unknown): something is string {
   return something !== undefined && typeof something === 'string';
 }
 
-function getMetaDataFromCSV(data: unknown) : MetaData {
-
+function getMetaDataFromCSV(data: unknown): MetaData {
   if (!isString(data)) {
     throw new Error(`Expected data to be string (data: ${data})`);
   }
@@ -220,7 +219,7 @@ function getMetaDataFromCSV(data: unknown) : MetaData {
 
     if (metaFields?.fields) {
       const fields: string = metaFields.fields instanceof Array ? metaFields.fields.join(delimiter) : metaFields.fields;
-      csvLines.splice(0, iCSVMetaRows.length, fields)
+      csvLines.splice(0, iCSVMetaRows.length, fields);
     }
   } else {
     // store the secondDataRow for detecting if there are headers
@@ -232,7 +231,7 @@ function getMetaDataFromCSV(data: unknown) : MetaData {
       const paramHeaderLine = cols.map((element, index) => `Col ${index}`);
       metaFields.fields = paramHeaderLine;
       hasMetaRows = true;
-      csvLines.splice(0, 1, paramHeaderLine.join(delimiter))
+      csvLines.splice(0, 1, paramHeaderLine.join(delimiter));
     } else {
       hasMetaRows = hasHeaderRow;
     }
@@ -254,11 +253,9 @@ function getMetaDataFromCSV(data: unknown) : MetaData {
   };
 }
 
-export function getMetaData (data: unknown, isJSON: boolean) : MetaData {
+export function getMetaData(data: unknown, isJSON: boolean): MetaData {
   if (isJSON) {
     return getMetaDataFromJSON(data);
-  } 
-    return getMetaDataFromCSV(data);
-  
+  }
+  return getMetaDataFromCSV(data);
 }
-

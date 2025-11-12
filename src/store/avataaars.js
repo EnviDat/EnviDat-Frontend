@@ -19,15 +19,7 @@ export const urlParameters = [
 
 export const avatarStyle = ['Circle', 'Tranparent'];
 
-export const skinColor = [
-  'Black',
-  'Tanned',
-  'Pale',
-  'Brown',
-  'Light',
-  'Yellow',
-  'DarkBrown',
-];
+export const skinColor = ['Black', 'Tanned', 'Pale', 'Brown', 'Light', 'Yellow', 'DarkBrown'];
 
 export const mouthType = [
   'Concerned',
@@ -127,16 +119,7 @@ export const facialHairType = [
   'MoustacheMagnum',
 ];
 
-export const facialHairColor = [
-  'Auburn',
-  'Black',
-  'Blonde',
-  'BlondeGolden',
-  'Brown',
-  'BrownDark',
-  'Platinum',
-  'Red',
-];
+export const facialHairColor = ['Auburn', 'Black', 'Blonde', 'BlondeGolden', 'Brown', 'BrownDark', 'Platinum', 'Red'];
 
 export const hairColor = [
   'Auburn',

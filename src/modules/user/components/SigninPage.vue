@@ -1,11 +1,5 @@
 <template>
-  <v-container
-    fluid
-    id="SigninPage"
-    key="SigninPage"
-    tag="article"
-    class="pa-0"
-  >
+  <v-container fluid id="SigninPage" key="SigninPage" tag="article" class="pa-0">
     <v-row no-gutters>
       <v-col>
         <signinView
@@ -68,7 +62,7 @@ import {
 } from '@/modules/user/store/userMutationsConsts';
 import { USER_DASHBOARD_PATH } from '@/router/routeConsts';
 
-import SigninView from './SigninView.vue';
+import SigninView from '@/modules/user/components/SigninView.vue';
 
 export default {
   name: 'SigninPage',
@@ -150,9 +144,7 @@ export default {
       if (isAzure) {
         action = ACTION_API_TOKEN_AZURE;
       } else {
-        action = this.useTokenSignin
-          ? ACTION_USER_SIGNIN_TOKEN
-          : ACTION_OLD_USER_SIGNIN;
+        action = this.useTokenSignin ? ACTION_USER_SIGNIN_TOKEN : ACTION_OLD_USER_SIGNIN;
       }
 
       let bodyParams;
@@ -162,29 +154,23 @@ export default {
         bodyParams = { email, token: keyOrToken };
       }
 
-      await this.$store.dispatch(
-        `${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`,
-        {
-          action,
-          body: bodyParams,
-          commit: true,
-          mutation: USER_SIGNIN,
-        },
-      );
+      await this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`, {
+        action,
+        body: bodyParams,
+        commit: true,
+        mutation: USER_SIGNIN,
+      });
 
       // the SIGNIN_USER_ACTION action (if useTokenSignin = true) makes an additional
       // call within the action with the token
 
       if (!this.useTokenSignin && !this.errorField && !this.errorFieldText) {
         // Get user context via the old login
-        await this.$store.dispatch(
-          `${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`,
-          {
-            action: ACTION_OLD_GET_USER_CONTEXT,
-            commit: true,
-            mutation: GET_USER_CONTEXT,
-          },
-        );
+        await this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`, {
+          action: ACTION_OLD_GET_USER_CONTEXT,
+          commit: true,
+          mutation: GET_USER_CONTEXT,
+        });
       }
 
       // Then redirect with context set
@@ -200,9 +186,7 @@ export default {
       }
     },
     catchRequestToken(email) {
-      const action = this.useTokenSignin
-        ? ACTION_RESET_TOKEN
-        : ACTION_OLD_REQUEST_TOKEN;
+      const action = this.useTokenSignin ? ACTION_RESET_TOKEN : ACTION_OLD_REQUEST_TOKEN;
 
       this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`, {
         action,
@@ -212,15 +196,10 @@ export default {
       });
     },
     catchSignOut() {
-      let action = this.useTokenSignin
-        ? ACTION_USER_SIGNOUT_REVOKE_TOKEN
-        : ACTION_OLD_USER_SIGNOUT;
+      let action = this.useTokenSignin ? ACTION_USER_SIGNOUT_REVOKE_TOKEN : ACTION_OLD_USER_SIGNOUT;
 
       // In case where useTokenSignIn===false, but Azure login is used
-      const ckanCookie = `; ${document.cookie}`
-        .split('; ckan-beaker=')
-        .pop()
-        .split(';')[0];
+      const ckanCookie = `; ${document.cookie}`.split('; ckan-beaker=').pop().split(';')[0];
       if (action === ACTION_OLD_USER_SIGNOUT && !ckanCookie) {
         action = ACTION_USER_SIGNOUT_REVOKE_TOKEN;
       }

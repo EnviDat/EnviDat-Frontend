@@ -1,21 +1,19 @@
 {
-/**
- * @summary list of used colors from vuetify theme
- * @author Dominik Haas-Artho
- *
- * This file is subject to the terms and conditions defined in
- * file 'LICENSE.txt', which is part of this source code package.
- */
-}
+/\*\*
+
+- @summary list of used colors from vuetify theme
+- @author Dominik Haas-Artho
+-
+- This file is subject to the terms and conditions defined in
+- file 'LICENSE.txt', which is part of this source code package.
+  \*/
+  }
 
 import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
-import { lightColorblind } from '../src/plugins/colorThemes';
+import { lightColorblind } from '@/plugins/colorThemes';
 
 <Meta title="System/Colors" />
 
 <ColorPalette>
-  <ColorItem title="EnviDat"
-             subtitle="light theme (color blind)"
-             colors={{ ...lightColorblind }}>
-  </ColorItem>
+  <ColorItem title="EnviDat" subtitle="light theme (color blind)" colors={{ ...lightColorblind }}></ColorItem>
 </ColorPalette>

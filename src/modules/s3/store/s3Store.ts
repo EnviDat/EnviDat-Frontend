@@ -1,12 +1,8 @@
 // src/modules/s3/store/s3Store.js
-/* eslint-disable no-irregular-whitespace */
 import { defineStore } from 'pinia';
 import axios from 'axios';
 import { XMLParser } from 'fast-xml-parser';
-import {
-  _Object,
-  ListObjectsV2Output,
-} from '@aws-sdk/client-s3/dist-types/models/models_0';
+import { _Object } from '@aws-sdk/client-s3/dist-types/models/models_0';
 import { CommonPrefix } from '@aws-sdk/client-s3/dist-types/models';
 import { S3Node } from '@/types/s3Types';
 
@@ -17,13 +13,7 @@ export const useS3Store = defineStore('s3Store', {
   state: () => ({ originUrl: '' as string }),
   getters: {},
   actions: {
-    async fetchS3Content(
-      baseUrl: string,
-      url: string,
-      isChild: boolean,
-      nodeId: number,
-      rootNodes?: S3Node[],
-    ) {
+    async fetchS3Content(baseUrl: string, url: string, isChild: boolean, nodeId: number, rootNodes?: S3Node[]) {
       const response = await axios.get(url);
       const { ListBucketResult } = this.parseXmlToJson(response.data);
 
@@ -40,82 +30,136 @@ export const useS3Store = defineStore('s3Store', {
       try {
         return parser.parse(xmlData);
       } catch (error) {
-        throw new Error('Failed to parse XML data');
+        throw new Error(`Failed to parse XML data. ${error}`);
       }
     },
 
-    mapData(baseUrl: string, listObject: ListObjectsV2Output): S3Node[] {
+    // toArray(v: any) {
+    //   if (v == null) return [];
+    //   if (Array.isArray(v)) return v;
+    //   return [v];
+    // },
+
+    // mapData(baseUrl: string, listObject: ListObjectsV2Output): S3Node[] {
+    //   const rootId = 1;
+    //   console.log(listObject.CommonPrefixes);
+
+    //   const childFolders = listObject.CommonPrefixes?.map<S3Node>(
+    //     (prefix, index) => this.createFolderEntry(prefix, index, rootId),
+    //   );
+
+    //   // listObject.Contents this can be a single Object not an array
+    //   // maybe due to the conversion from XML?
+    //   const contents = listObject.Contents;
+    //   let childEntires: S3Node[];
+
+    //   const hasContentList = contents && contents instanceof Array;
+
+    //   if (hasContentList) {
+    //     childEntires = contents.map<S3Node>((content, index) =>
+    //       this.createFileEntry(baseUrl, content, index, rootId),
+    //     );
+    //   }
+
+    //   return [
+    //     {
+    //       id: rootId,
+    //       isFile: this.isItemFile(listObject.Prefix),
+    //       title: this.parseString(listObject.Prefix),
+    //       isChild: false,
+    //       childrenLoaded: false,
+    //       children: childFolders || childEntires,
+    //     },
+    //   ];
+    // },
+
+    toArray(v: any) {
+      if (v == null) return [];
+      if (Array.isArray(v)) return v;
+      return [v];
+    },
+
+    normalizeCommonPrefixes(listObject: any) {
+      const raw = listObject?.CommonPrefixes ?? listObject?.CommonPrefix;
+      const arr = this.toArray(raw);
+
+      return arr.flatMap((entry: any) => {
+        if (typeof entry === 'string') return [{ Prefix: entry }];
+        if (Array.isArray(entry?.Prefix)) return entry.Prefix.map((p: string) => ({ Prefix: p }));
+        if (typeof entry?.Prefix === 'string') return [{ Prefix: entry.Prefix }];
+        return [];
+      });
+    },
+
+    normalizeContents(listObject: any) {
+      const arr = this.toArray(listObject?.Contents);
+      return arr.filter((o: any) => o && typeof o.Key === 'string');
+    },
+
+    mapData(baseUrl: string, listObject: any): S3Node[] {
       const rootId = 1;
 
-      const childFolders = listObject.CommonPrefixes?.map<S3Node>(
-        (prefix, index) => this.createFolderEntry(prefix, index, rootId),
+      const commonPrefixes = this.normalizeCommonPrefixes(listObject);
+      const contents = this.normalizeContents(listObject);
+
+      // Drop the "directory placeholder" object (Key === Prefix, usually Size 0)
+      const containerPrefix = listObject?.Prefix ?? '';
+      const realContents = contents.filter((o: any) => o.Key !== containerPrefix);
+
+      // Build folders
+      const childFolders: S3Node[] = commonPrefixes.map((prefix: any, index: number) =>
+        this.createFolderEntry(prefix, index, rootId),
       );
 
-      // listObject.Contents this can be a single Object not an array
-      // maybe due to the conversion from XML?
-      const contents = listObject.Contents;
-      let childEntires: S3Node[];
+      // Build files
+      const childFiles: S3Node[] = realContents.map((content: any, index: number) =>
+        this.createFileEntry(baseUrl, content, index, rootId),
+      );
 
-      const hasContentList = contents && contents instanceof Array;
-
-      if (hasContentList) {
-        childEntires = contents.map<S3Node>((content, index) =>
-          this.createFileEntry(baseUrl, content, index, rootId),
-        );
-      }
+      const children: S3Node[] = childFolders.length > 0 ? childFolders : childFiles;
 
       return [
         {
           id: rootId,
-          isFile: this.isItemFile(listObject.Prefix),
-          title: this.parseString(listObject.Prefix),
+          isFile: this.isItemFile(containerPrefix),
+          title: this.parseString(containerPrefix),
           isChild: false,
           childrenLoaded: false,
-          children: childFolders || childEntires,
+          children,
         },
       ];
     },
 
-    mapChildData(
-      baseUrl: string,
-      listObject: ListObjectsV2Output,
-      nodeId: number,
-      rootNodes: S3Node[],
-    ): S3Node[] | undefined {
-      // if the API returns nothing useful, still attach a "Go to S3" link so the UI doesn't break
-      // example metadata/swissrad10-hourly-light-availability-maps-at-10-m-resolution-over-switzerland?search=swissrad
-      if (!listObject || !listObject.Contents) {
+    mapChildData(baseUrl: string, listObject: any, nodeId: number, rootNodes: S3Node[]): S3Node[] | undefined {
+      const contentsArr = this.normalizeContents(listObject);
+      const containerPrefix = listObject?.Prefix ?? '';
+
+      // If nothing useful, show a "Go to S3" link
+      if (!listObject || contentsArr.length === 0) {
         const children = [
           this.createFileEntry(baseUrl, 'Go to S3', undefined, undefined, {
             isLastItem: true,
-            customLink: this.originUrl,
+            customLink: this.originUrl || this.getBrowserLink(baseUrl),
           }),
         ];
-        // Trigger function to add data in the right node
         this.findAndAddChildren(rootNodes, children, nodeId);
         return rootNodes;
       }
 
-      // Remove first element because is a repetition of the container
-      const contents = Array.isArray(listObject.Contents)
-        ? listObject.Contents.slice(1)
-        : listObject.Contents;
+      // Drop the container placeholder (Key === Prefix) if present
+      const filesOnly = contentsArr.filter((o: any) => o.Key !== containerPrefix);
 
-      // map the content
-      const children = Array.isArray(contents)
-        ? contents.map<S3Node>((content) =>
-            this.createFileEntry(baseUrl, content),
-          )
-        : [
-            this.createFileEntry(baseUrl, 'Go to S3', undefined, undefined, {
-              isLastItem: true,
-              customLink: this.getBrowserLink(baseUrl),
-            }),
-          ];
+      const children =
+        filesOnly.length > 0
+          ? filesOnly.map((content: any) => this.createFileEntry(baseUrl, content))
+          : [
+              this.createFileEntry(baseUrl, 'Go to S3', undefined, undefined, {
+                isLastItem: true,
+                customLink: this.getBrowserLink(baseUrl),
+              }),
+            ];
 
-      // Trigger function to add data in the right node
       this.findAndAddChildren(rootNodes, children, nodeId);
-
       return rootNodes;
     },
 
@@ -142,11 +186,7 @@ export const useS3Store = defineStore('s3Store', {
 
         // Recursive function to check all levels of the tree
         if (node.children && node.children.length > 0) {
-          const found = this.findAndAddChildren(
-            node.children,
-            children,
-            nodeId,
-          );
+          const found = this.findAndAddChildren(node.children, children, nodeId);
 
           // Skip further checks if the node is found
           if (found) return true;
@@ -201,11 +241,7 @@ export const useS3Store = defineStore('s3Store', {
       const isFileRegex = /[^/]+\.[^/]+$/;
       return isFileRegex.test(path);
     },
-    createFolderEntry(
-      prefix: CommonPrefix,
-      index: number,
-      rootId: number,
-    ): S3Node {
+    createFolderEntry(prefix: CommonPrefix, index: number, rootId: number): S3Node {
       return {
         id: rootId + index + 1,
         // define if is child to triggher another function and manage deep level

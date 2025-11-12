@@ -1,5 +1,5 @@
 <template>
-  <v-card >
+  <v-card>
     <v-card-media
       class="imagezoom"
       v-bind="{
@@ -10,9 +10,7 @@
       <v-container class="fill-height" fluid>
         <v-row class="fill-height">
           <v-col cols="12">
-            <span class="text-h3 dataproducer_title text-white">{{
-              titleText
-            }}</span>
+            <span class="text-h3 dataproducer_title text-white">{{ titleText }}</span>
           </v-col>
         </v-row>
       </v-container>
@@ -20,15 +18,15 @@
 
     <v-card-actions>
       <v-spacer />
-      <v-btn v-if="loggedIn" large color="primary" @click="enterclick">
+      <v-btn v-if="loggedIn" size="large" color="primary" @click="enterclick">
         {{ loggedinText }}
       </v-btn>
 
-      <v-btn v-if="!loggedIn" large color="primary" @click="singupclick">
+      <v-btn v-if="!loggedIn" size="large" color="primary" @click="singupclick">
         {{ signupText }}
       </v-btn>
 
-      <v-btn v-if="!loggedIn" large color="primary" @click="loginclick">
+      <v-btn v-if="!loggedIn" size="large" color="primary" @click="loginclick">
         {{ loginText }}
       </v-btn>
     </v-card-actions>
@@ -77,6 +75,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

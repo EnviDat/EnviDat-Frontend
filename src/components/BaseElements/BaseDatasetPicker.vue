@@ -1,9 +1,5 @@
 <template>
-  <v-card
-    id="BaseDatasetPicker"
-    :class="showAsCard ? 'pa-4' : 'pa-0'"
-    :flat="!showAsCard"
-  >
+  <v-card id="BaseDatasetPicker" :class="showAsCard ? 'pa-4' : 'pa-0'" :flat="!showAsCard">
     <v-row v-if="instructions" no-gutters>
       <v-col class="text-body-1 pa-0 pb-4">
         {{ instructions }}
@@ -28,7 +24,7 @@
           :menu-props="menuOptions"
           :clear-icon="mdiClose"
           v-bind="$props"
-          @change="catchPicks"
+          @update:model-value="catchPicks"
           @blur="$emit('blur', $event)"
         >
           <template v-slot:selection="{ item }">
@@ -59,7 +55,7 @@
 </template>
 
 <script>
-import {mdiInvoiceListOutline, mdiArrowDownDropCircleOutline, mdiClose} from '@mdi/js';
+import { mdiInvoiceListOutline, mdiArrowDownDropCircleOutline, mdiClose } from '@mdi/js';
 import TagChipProject from '@/components/Chips/TagChipProject.vue';
 
 export default {
@@ -83,10 +79,6 @@ export default {
       type: String,
       default: mdiInvoiceListOutline,
     },
-    userTagsCloseable: {
-      type: Boolean,
-      default: true,
-    },
     errorMessages: {
       type: String,
       default: '',
@@ -100,6 +92,7 @@ export default {
       default: '',
     },
   },
+  emits: ['pickedProject'],
   mounted() {
     this.updatePreselection();
   },
@@ -131,7 +124,7 @@ export default {
         if (this.multiplePick) {
           this.pickedDataset = [];
 
-          this.preSelected.forEach(projectName => {
+          this.preSelected.forEach((projectName) => {
             this.pickedDataset.push(projectName);
           });
         } else {
@@ -146,9 +139,7 @@ export default {
         return;
       }
       if (this.multiplePick) {
-        const remains = this.pickedDataset.filter(
-          value => value !== projectName,
-        );
+        const remains = this.pickedDataset.filter((value) => value !== projectName);
 
         if (remains?.length > 0) {
           this.pickedDataset = remains;
@@ -159,7 +150,7 @@ export default {
         this.pickedDataset = '';
       }
 
-      this.$emit('removedUsers', this.pickedDataset);
+      this.$emit('pickedProject', this.pickedDataset);
     },
     catchPickClicked(pickedItem) {
       if (this.multiplePick) {
@@ -170,10 +161,10 @@ export default {
         this.pickedDataset = pickedItem;
       }
 
-      this.$emit('pickedDataset', this.pickedDataset);
+      this.$emit('pickedProject', this.pickedDataset);
     },
     catchPicks(picks) {
-      this.$emit('pickedDataset', picks);
+      this.$emit('pickedProject', picks);
       this.search = '';
     },
   },

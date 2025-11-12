@@ -1,9 +1,5 @@
 <template>
-  <v-card
-    class="pa-0"
-    :class="$vuetify.display.mdAndUp ? 'signInGrid' : 'signInGridMobile'"
-    id="signInCard"
-  >
+  <v-card class="pa-0" :class="$vuetify.display.mdAndUp ? 'signInGrid' : 'signInGridMobile'" id="signInCard">
     <v-img
       :src="signInPic"
       cover
@@ -44,24 +40,14 @@
               :error-messages="backendErrors.email"
               label="Email"
               :prepend-icon="mdiEmail"
-              @input="isEmailValid()"
+              @update:model-value="isEmailValid()"
               @keyup.enter="catchRequestToken"
               tabindex="0"
             />
           </v-col>
 
-          <v-col
-            v-show="email || emailAddressIsValid"
-            cols="12"
-            md="3"
-            id="tokenButton"
-          >
-            <v-btn
-              color="primary"
-              :loading="tokenRequestLoading"
-              @click="catchRequestToken"
-              tabindex="0"
-            >
+          <v-col v-show="email || emailAddressIsValid" cols="12" md="3" id="tokenButton">
+            <v-btn color="primary" :loading="tokenRequestLoading" @click="catchRequestToken" tabindex="0">
               {{ tokenButtonText }}
             </v-btn>
           </v-col>
@@ -75,13 +61,7 @@
           </v-col>
         </v-row>
 
-        <v-row
-          v-show="email || emailAddressIsValid"
-          id="tokenRow"
-          align="start"
-          justify="space-between"
-          class="pt-2"
-        >
+        <v-row v-show="email || emailAddressIsValid" id="tokenRow" align="start" justify="space-between" class="pt-2">
           <v-col cols="12" md="3" class="flex-grow-0 text-h6">
             {{ requestTokenText }}
           </v-col>
@@ -96,7 +76,7 @@
               :prepend-icon="mdiKey"
               :clear-icon="mdiClose"
               persistent-clear
-              @input="isTokenValid()"
+              @update:model-value="isTokenValid()"
               @keyup.enter="catchEmailSignIn"
               tabindex="0"
             />
@@ -115,12 +95,7 @@
           </v-col>
         </v-row>
 
-        <v-row
-          v-if="wslSigninEnabled"
-          id="wslEmailRow"
-          align="center"
-          v-show="email || emailAddressIsWsl"
-        >
+        <v-row v-if="wslSigninEnabled" id="wslEmailRow" align="center" v-show="email || emailAddressIsWsl">
           <v-col cols="12" md="9" class="text-h8">
             {{ azureSignInInstructions }}
           </v-col>
@@ -153,11 +128,7 @@
 
       <v-row v-if="signedIn" id="signinButtonRow" class="pl-2">
         <v-col class="flex-grow-0">
-          <BaseRectangleButton
-            color="primary"
-            :button-text="dashboardButtonText"
-            @clicked="catchOpenDashboard"
-          />
+          <BaseRectangleButton color="primary" :button-text="dashboardButtonText" @clicked="catchOpenDashboard" />
         </v-col>
 
         <v-col class="flex-grow-0">
@@ -169,12 +140,7 @@
         </v-btn>
 -->
 
-          <BaseRectangleButton
-            color="secondary"
-            :button-text="signoutButtonText"
-            is-outlined
-            @clicked="catchSignOut"
-          />
+          <BaseRectangleButton color="secondary" :button-text="signoutButtonText" is-outlined @clicked="catchSignOut" />
         </v-col>
       </v-row>
 
@@ -223,13 +189,7 @@
 
 import * as yup from 'yup';
 
-import {
-  mdiAlertCircle,
-  mdiClose,
-  mdiEmail,
-  mdiInformation,
-  mdiKey,
-} from '@mdi/js';
+import { mdiAlertCircle, mdiClose, mdiEmail, mdiInformation, mdiKey } from '@mdi/js';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import { isFieldValid } from '@/factories/userEditingValidations';
 import signInPic from '@/modules/user/assets/signin.jpg';
@@ -264,10 +224,7 @@ export default {
       return (!this.signedIn && !this.backendErrors.email) || false;
     },
     emailAddressIsWsl() {
-      return (
-        this.emailAddressIsValid &&
-        (this.email.endsWith('@wsl.ch') || this.email.endsWith('@slf.ch'))
-      );
+      return this.emailAddressIsValid && (this.email.endsWith('@wsl.ch') || this.email.endsWith('@slf.ch'));
     },
     keyAddressIsValid() {
       return !this.signedIn && !this.backendErrors.key;
@@ -286,10 +243,7 @@ export default {
     },
     yupValidations: () =>
       yup.object().shape({
-        email: yup
-          .string()
-          .email('Email must be a valid email address')
-          .required('Email is required'),
+        email: yup.string().email('Email must be a valid email address').required('Email is required'),
         key: yup
           .string()
           .nullable()
@@ -303,23 +257,13 @@ export default {
       if (value) {
         this.email = value;
       }
-      return isFieldValid(
-        'email',
-        this.email,
-        this.yupValidations,
-        this.backendErrors,
-      );
+      return isFieldValid('email', this.email, this.yupValidations, this.backendErrors);
     },
     isTokenValid(value) {
       if (value) {
         this.key = value;
       }
-      return isFieldValid(
-        'key',
-        this.key,
-        this.yupValidations,
-        this.backendErrors,
-      );
+      return isFieldValid('key', this.key, this.yupValidations, this.backendErrors);
     },
     catchRequestToken() {
       if (this.isEmailValid(this.email)) {
@@ -376,8 +320,7 @@ export default {
     signedInText: 'You are signed in as ',
     emailSignInInstructions:
       'Sign into EnviDat with your email address and a one-time-password which will be sent by email.',
-    azureSignInInstructions:
-      'WSL staff may sign in using their email and password (LAP password) instead:',
+    azureSignInInstructions: 'WSL staff may sign in using their email and password (LAP password) instead:',
     azureButtonText: 'WSL Sign in',
     signInPic,
   }),

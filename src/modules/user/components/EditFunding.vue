@@ -1,11 +1,6 @@
 <template>
   <v-card id="EditFunding" class="pa-0" max-width="100%" :loading="loading">
-
     <v-container fluid class="pa-4">
-      <template slot="progress">
-        <v-progress-linear color="primary" indeterminate />
-      </template>
-
       <v-row>
         <v-col cols="6" class="text-h5">
           {{ labels.cardTitle }}
@@ -13,19 +8,14 @@
 
         <v-col v-if="message">
           <BaseStatusLabelView
-              status="check"
-              statusColor="success"
-              :statusText="message"
-              :expandedText="messageDetails"
+            status="check"
+            statusColor="success"
+            :statusText="message"
+            :expandedText="messageDetails"
           />
         </v-col>
         <v-col v-if="error">
-          <BaseStatusLabelView
-              status="error"
-              statusColor="error"
-              :statusText="error"
-              :expandedText="errorDetails"
-          />
+          <BaseStatusLabelView status="error" statusColor="error" :statusText="error" :expandedText="errorDetails" />
         </v-col>
       </v-row>
 
@@ -113,11 +103,7 @@ import { mdiMinusCircleOutline } from '@mdi/js';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
-import {
-  EDITMETADATA_OBJECT_UPDATE,
-  EDITMETADATA_FUNDING_INFO,
-  eventBus,
-} from '@/factories/eventBus';
+import { EDITMETADATA_OBJECT_UPDATE, EDITMETADATA_FUNDING_INFO, eventBus } from '@/factories/eventBus';
 import { isObjectEmpty } from '@/factories/userEditingFactory';
 import {
   getValidationMetadataEditingObject,
@@ -171,7 +157,6 @@ export default {
     this.previewFunders = JSON.parse(JSON.stringify(this.funders));
     this.prevValidPreviewFunders = JSON.parse(JSON.stringify(this.previewFunders));
 
-
     if (this.funders.length > 0) {
       for (let i = 0; i < this.funders.length; i++) {
         this.validate(i, INSTITUTION);
@@ -192,12 +177,8 @@ export default {
   computed: {
     previewFundersAndEmpty() {
       // Check if the last entry has an error and prevent the new entry to be shown
-      const lastEntry = this.validationErrors.funders[
-        this.validationErrors.funders.length - 1
-      ];
-      const entryIsValid = !Object.values(lastEntry ?? {}).find(
-        i => i !== '' && i !== null && i !== undefined,
-      );
+      const lastEntry = this.validationErrors.funders[this.validationErrors.funders.length - 1];
+      const entryIsValid = !Object.values(lastEntry ?? {}).find((i) => i !== '' && i !== null && i !== undefined);
       if (entryIsValid) {
         return [...this.previewFunders, this.emptyEntry];
       }
@@ -224,32 +205,18 @@ export default {
     /** Validates all entries or a specific property */
     validate(index = undefined, property = undefined) {
       // Keep the validation object in sync
-      const sizeDiff =
-        this.previewFunders.length - this.validationErrors.funders.length;
+      const sizeDiff = this.previewFunders.length - this.validationErrors.funders.length;
       for (let i = 0; i < sizeDiff; i += 1) {
         this.validationErrors.funders.push({ ...this.emptyEntry });
       }
       // Validate entire array (cases like min/max entries)
       if (index === undefined && !property) {
-        return isFieldValid(
-          'funders',
-          this.previewFunders,
-          this.validations,
-          this.validationErrors,
-          'fundersArray',
-        );
+        return isFieldValid('funders', this.previewFunders, this.validations, this.validationErrors, 'fundersArray');
       }
       if (index >= 0 && property) {
         // Validate a single entry and prop
         const errorArray = this.validationErrors.funders;
-        return isArrayContentValid(
-          this.previewFunders,
-          'funders',
-          index,
-          property,
-          this.validations,
-          errorArray,
-        );
+        return isArrayContentValid(this.previewFunders, 'funders', index, property, this.validations, errorArray);
       }
       throw new Error('Unable to validate EditFunding');
     },
@@ -319,8 +286,7 @@ export default {
     prevValidPreviewFunders: [],
     labels: {
       cardTitle: 'Funding Information',
-      fundingInformation:
-        'Provide information about who funded the research efforts.',
+      fundingInformation: 'Provide information about who funded the research efforts.',
       institution: 'Institution',
       grantNumber: 'Grant Number',
       institutionUrl: 'Link',

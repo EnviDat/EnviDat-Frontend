@@ -8,6 +8,8 @@ import RelatedResearch from '@/modules/workflow/components/steps/RelatedResearch
 import PublishingInformation from '@/modules/workflow/components/steps/PublishingInformation.vue';
 import { StepStatus } from '@/modules/workflow/utils/workflowEnums';
 import { WorkflowStep } from '@/types/workflow';
+import { USER_ROLE_SYSTEM_ADMIN } from '@/factories/userEditingValidations';
+import AdminInformation from '@/modules/workflow/components/steps/AdminInformation.vue';
 
 export const workflowSteps: WorkflowStep[] = [
   {
@@ -19,23 +21,10 @@ export const workflowSteps: WorkflowStep[] = [
     hasError: false,
     key: 'MetadataBaseInformation',
     component: markRaw(MetadataBaseInformation),
-    /*
-    loader: () =>
-      import('@/modules/workflow/components/steps/MetadataBaseInformation.vue'),
-*/
     viewModelKey: 'MetadataBaseViewModel',
     icon: 'baseinfo',
     status: StepStatus.Active,
-    // guideLines: [
-    //   {
-    //     element: '.navigationWorkflow',
-    //     popover: { title: 'Title', description: 'Description' },
-    //   },
-    //   {
-    //     element: '.navigationWorkflow__actions',
-    //     popover: { title: 'Title', description: 'Description' },
-    //   },
-    // ],
+    errors: null,
   },
   {
     id: 1,
@@ -46,23 +35,10 @@ export const workflowSteps: WorkflowStep[] = [
     hasError: false,
     key: 'AuthorsInformation',
     component: markRaw(AuthorsInformation),
-    /*
-    loader: () =>
-      import('@/modules/workflow/components/steps/AuthorsInformation.vue'),
-*/
     viewModelKey: 'AuthorListViewModel',
     icon: 'authorsinfo',
     status: StepStatus.Disabled,
-    // guideLines: [
-    //   {
-    //     element: '.navigationWorkflow__actions',
-    //     popover: { title: 'Title', description: 'Description' },
-    //   },
-    //   {
-    //     element: '.navigationWorkflow',
-    //     popover: { title: 'Title', description: 'Description' },
-    //   },
-    // ],
+    errors: null,
   },
   {
     id: 2,
@@ -73,13 +49,10 @@ export const workflowSteps: WorkflowStep[] = [
     hasError: false,
     key: 'GeoInformation',
     component: markRaw(GeoInformation),
-    /*
-    loader: () =>
-      import('@/modules/workflow/components/steps/GeoInformation.vue'),
-*/
     viewModelKey: 'GeoInfoViewModel',
     icon: 'geoinfo',
     status: StepStatus.Disabled,
+    errors: null,
   },
   {
     id: 3,
@@ -90,13 +63,10 @@ export const workflowSteps: WorkflowStep[] = [
     hasError: false,
     key: 'additionalinformation',
     component: markRaw(AdditionalInformation),
-    /*
-    loader: () =>
-      import('@/modules/workflow/components/steps/AdditionalInformation.vue'),
-*/
     viewModelKey: 'AdditionalInfoViewModel',
     icon: 'additionalinfo',
     status: StepStatus.Disabled,
+    errors: null,
   },
   {
     id: 4,
@@ -107,13 +77,10 @@ export const workflowSteps: WorkflowStep[] = [
     hasError: false,
     key: 'uploadinformation',
     component: markRaw(ResourcesInformation),
-    /*
-    loader: () =>
-      import('@/modules/workflow/components/steps/ResourcesInformation.vue'),
-*/
     viewModelKey: 'ResourcesListViewModel',
     icon: 'uploadinfo',
     status: StepStatus.Disabled,
+    errors: null,
   },
   {
     id: 5,
@@ -124,13 +91,10 @@ export const workflowSteps: WorkflowStep[] = [
     hasError: false,
     key: 'relatedresearch',
     component: markRaw(RelatedResearch),
-    /*
-    loader: () =>
-      import('@/modules/workflow/components/steps/RelatedResearch.vue'),
-*/
     viewModelKey: 'RelatedResearchViewModel',
     icon: 'relatedinfo',
     status: StepStatus.Disabled,
+    errors: null,
   },
   {
     id: 6,
@@ -141,14 +105,43 @@ export const workflowSteps: WorkflowStep[] = [
     hasError: false,
     key: 'publicationinformation',
     component: markRaw(PublishingInformation),
-    /*
-    loader: () =>
-      import('@/modules/workflow/components/steps/PublishingInformation.vue'),
-*/
     viewModelKey: 'PublicationInfoViewModel',
     icon: 'publicationinfo',
     status: StepStatus.Disabled,
+    errors: null,
   },
 ];
 
 export default workflowSteps;
+
+const adminStepTitle = 'Admin Information';
+
+export function enhanceAdminWorkflowStep(userRole: string, steps: WorkflowStep[]): WorkflowStep[] {
+  if (userRole === USER_ROLE_SYSTEM_ADMIN) {
+    const alreadyContainsAdminStep = steps.filter((step) => step.title === adminStepTitle).length > 0;
+
+    if (alreadyContainsAdminStep) {
+      return steps;
+    }
+
+    return [
+      ...steps,
+      {
+        id: steps.length + 1,
+        title: adminStepTitle,
+        description: 'Custom fields, Project Assignment',
+        isEditable: true,
+        completed: false,
+        hasError: false,
+        key: 'admininformation',
+        component: markRaw(AdminInformation),
+        viewModelKey: 'AdminViewModel',
+        icon: 'publicationinfo',
+        status: StepStatus.Disabled,
+        errors: null,
+      } satisfies WorkflowStep,
+    ];
+  }
+
+  return steps;
+}

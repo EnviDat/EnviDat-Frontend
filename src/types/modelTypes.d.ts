@@ -1,5 +1,9 @@
 import { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 
+export type UserPickerObject = {
+  fullName: string;
+  email: string;
+};
 
 export interface DataCreditObject {
   curation: number;
@@ -12,19 +16,29 @@ export interface DataCreditObject {
 
 export interface Author {
   lastModified: string;
+  /* firstName is enhanced by the frontend */
   firstName: string;
+  /* lastName is enhanced by the frontend */
   lastName: string;
+  /* fullName is enhanced by the frontend */
+  fullName: string;
   email: string;
   dataCredit: string[];
   identifierType: string;
   identifier: string;
   affiliation: string;
+  datasetCount: number;
   totalDataCredits: DataCreditObject;
   isSelected: boolean;
+  isAuthorDead: boolean;
 }
 
 export interface Keyword {
   name: string;
+  enabled: boolean;
+  color?: string;
+  count: number;
+  active?: boolean;
 }
 
 /*
@@ -44,35 +58,47 @@ export interface DatasetModel {
 
 export interface User {
   id: string;
+  /* firstName is enhanced by the frontend */
   firstName: string;
+  /* lastName is enhanced by the frontend */
   lastName: string;
   fullName: string;
+  /* dataset are only loaded if the api is given "include_datasets=true" */
+  datasets: DatasetDTO[] | undefined;
+  name: string;
   email: string;
   emailHash: string;
   created: string;
   modified: string;
+  imageUrl: string;
+  imageDisplayUrl: string;
   about: string;
-  sysAdmin: boolean;
+  sysadmin: boolean;
   state: string;
 }
+
+export type ResourceSize = {
+  sizeValue: string;
+  sizeUnits: string;
+};
 
 export interface Resource {
   // cacheLastUpdated: string | null;
   // cacheUrl: string | null;
   created: string;
-  datasetId: string;
   description: string;
   doi: string;
   format: string;
   // hash: string;
   id: string;
+  datasetId: string;
   lastModified: string;
   metadataModified: string | null;
   mimetype: string;
   mimetypeInner: string | null;
   name: string;
   position: number;
-  resourceSize: string;
+  resourceSize: ResourceSize;
   resourceType: string | null;
   restricted: string;
   restrictedUrl: string;
@@ -95,20 +121,22 @@ export interface Resource {
   openButtonTooltip: string;
 }
 
-
 export interface DatasetService {
-
   dataset: DatasetDTO;
 
-  loadDataset(id: string) : Promise<DatasetDTO>;
+  loadDataset(id: string): Promise<DatasetDTO>;
 
-  patchDatasetChanges(
-    datasetId: string,
-    data: object,
-  ) : Promise<any>;
+  patchDatasetChanges(datasetId: string, data: object): Promise<any>;
 
   createResource?(resourceData: ResourceDTO): Promise<ResourceDTO>;
 
-  createDataset() : Promise<DatasetDTO>;
+  deleteResource(resourceId: string): Promise<boolean>;
 
+  createDataset(): Promise<DatasetDTO>;
 }
+
+export type Tag = {
+  name: string;
+  enabled: boolean;
+  color?: string;
+};

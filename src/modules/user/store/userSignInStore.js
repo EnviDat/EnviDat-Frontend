@@ -31,8 +31,8 @@ export const userSignIn = {
   namespaced: true,
   state: userSignInState,
   getters: {
-    user: state => state.user,
-    userLoading: state => state.userLoading,
+    user: (state) => state.user,
+    userLoading: (state) => state.userLoading,
   },
   mutations,
   actions,

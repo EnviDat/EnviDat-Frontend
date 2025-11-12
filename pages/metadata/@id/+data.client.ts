@@ -1,7 +1,5 @@
-import type { PageContextClient } from 'vike/types'
+import type { PageContextClient } from 'vike/types';
 
-const data = async (pageContext: PageContextClient) => {
-  return pageContext.data
-}
+const data = async (pageContext: PageContextClient) => pageContext.data;
 
-export { data }
+export { data };

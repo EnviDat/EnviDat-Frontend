@@ -52,10 +52,11 @@ export const integration = {
       let url = `${staticRoot}/integration/integrationlist.json?nocache=${new Date().getTime()}`;
 
       if (import.meta.env?.MODE === 'development' && useTestdata) {
-        url = './testdata/integrationlist.json';
+        url = '@/../stories/testdata/integrationlist.json';
       }
 
-      axios.get(url)
+      axios
+        .get(url)
         .then((response) => {
           commit(GET_INTEGRATION_LIST_SUCCESS, response.data);
         })

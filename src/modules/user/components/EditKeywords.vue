@@ -15,12 +15,7 @@
           />
         </v-col>
         <v-col v-if="error">
-          <BaseStatusLabelView
-            status="error"
-            statusColor="error"
-            :statusText="error"
-            :expandedText="errorDetails"
-          />
+          <BaseStatusLabelView status="error" statusColor="error" :statusText="error" :expandedText="errorDetails" />
         </v-col>
       </v-row>
 
@@ -39,7 +34,7 @@
         <v-col>
           <v-autocomplete
             v-model="keywordsField"
-            item-text="name"
+            item-title="name"
             item-value="name"
             :items="existingKeywordItems"
             :menu-icon="mdiArrowDownDropCircleOutline"
@@ -57,27 +52,18 @@
               isKeywordValid(search);
             "
             @keyup="blurOnEnterKey"
-            @input="isEnoughKeywords()"
-            @change="notifyChange($event)"
+            @update:focused="isEnoughKeywords()"
+            @update:model-value="notifyChange($event)"
             @blur="saveChange()"
             @keydown="catchKeywordEntered($event)"
             :rules="rulesKeywords"
           >
             <template v-slot:selection="{ item }">
-              <TagChip
-                :name="item.value"
-                selectable
-                closeable
-                @clicked="removeKeyword(item.raw)"
-                :isSmall="false"
-              />
+              <TagChip :name="item.value" selectable closeable @clicked="removeKeyword(item.raw)" :isSmall="false" />
             </template>
 
             <template v-slot:item="{ item, props }">
-              <v-list-item
-                @click="catchKeywordClicked(item.value)"
-                v-bind="props"
-              />
+              <v-list-item @click="catchKeywordClicked(item.value)" v-bind="props" />
             </template>
 
             <template v-slot:no-data>
@@ -128,10 +114,7 @@ import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.v
 import categoryCards from '@/store/categoryCards';
 
 import { enhanceTitleImg } from '@/factories/metaDataFactory';
-import {
-  getValidationMetadataEditingObject,
-  isFieldValid,
-} from '@/factories/userEditingValidations';
+import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
 import { getTagColor } from '@/factories/keywordsFactory';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
@@ -204,10 +187,7 @@ export default {
         return this.defaultUserEditMetadataConfig;
       }
 
-      return (
-        this.config?.userEditMetadataConfig ||
-        this.defaultUserEditMetadataConfig
-      );
+      return this.config?.userEditMetadataConfig || this.defaultUserEditMetadataConfig;
     },
     keywordsCountMin() {
       return this.userEditMetadataConfig.keywordsCountMin;
@@ -217,9 +197,7 @@ export default {
     },
     keywordsField: {
       get() {
-        return this.previewKeywords.length > 0
-          ? this.previewKeywords
-          : this.keywords;
+        return this.previewKeywords.length > 0 ? this.previewKeywords : this.keywords;
       },
     },
     metadataPreviewEntry() {
@@ -244,8 +222,7 @@ export default {
       let hint = '';
 
       if (!this.keywordValidMin3Characters) {
-        hint +=
-          '<span class="font-italic">Keyword must be at least <strong>3 characters</strong>. </span> ';
+        hint += '<span class="font-italic">Keyword must be at least <strong>3 characters</strong>. </span> ';
       }
 
       if (this.search) {
@@ -288,12 +265,7 @@ export default {
       this.previewKeywords = [];
     },
     validateProperty(value) {
-      return isFieldValid(
-        'keywords',
-        value,
-        this.validations,
-        this.validationErrors,
-      );
+      return isFieldValid('keywords', value, this.validations, this.validationErrors);
     },
     catchKeywordEntered(event) {
       if (event.key === 'Enter') {
@@ -340,9 +312,7 @@ export default {
       }
 
       // Remove duplicates from valuesArray
-      valuesArray = [...new Set(valuesArray.map((a) => JSON.stringify(a)))].map(
-        (a) => JSON.parse(a),
-      );
+      valuesArray = [...new Set(valuesArray.map((a) => JSON.stringify(a)))].map((a) => JSON.parse(a));
 
       // Assign keywordCount to length of valuesArray
       this.keywordCount = valuesArray.length;
@@ -372,9 +342,7 @@ export default {
       const keywordCountEnough = this.keywordCount >= this.keywordsCountMin;
 
       if (!keywordCountEnough) {
-        this.rulesKeywords = [
-          `Please enter at least ${this.keywordsCountMin} keywords.`,
-        ];
+        this.rulesKeywords = [`Please enter at least ${this.keywordsCountMin} keywords.`];
       } else {
         this.rulesKeywords = [true];
       }
@@ -390,8 +358,7 @@ export default {
         // Sets keywordValidConcise to true if trimmed search is less than or equal to keywordsListWordMax words (split by space ' ')
         // Else sets keywordValidConcise to false
         const inputSplit = search.trim().split(' ');
-        this.keywordValidConcise =
-          inputSplit.length <= this.keywordsListWordMax;
+        this.keywordValidConcise = inputSplit.length <= this.keywordsListWordMax;
       }
 
       return this.keywordValidMin3Characters && this.keywordValidConcise;

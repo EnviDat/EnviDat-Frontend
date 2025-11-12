@@ -6,8 +6,7 @@
       :disabled="readonly"
       :close-on-content-click="true"
       transition="scale-transition"
-      :left="$vuetify?.display?.smAndDown"
-      :offset-y="$vuetify?.display?.mdAndUp"
+      :location="$vuetify?.display?.smAndDown ? 'left' : undefined"
       min-width="280px"
     >
       <template v-slot:activator="{ props }">
@@ -50,20 +49,15 @@ import * as yup from 'yup';
 import { mdiCalendarRange, mdiSkipNext, mdiSkipPrevious } from '@mdi/js';
 import { ckanDateFormat } from '@/factories/mappingFactory';
 
-
-// eslint-disable-next-line func-names
 yup.addMethod(yup.date, 'parseDateString', function () {
   // Helper function for yup date string parsing
-  // eslint-disable-next-line func-names
 
   return this.transform((value, originalValue) => {
     if (!originalValue) {
       return null;
     }
 
-    return isDate(originalValue)
-      ? originalValue
-      : parse(originalValue, ckanDateFormat, new Date());
+    return isDate(originalValue) ? originalValue : parse(originalValue, ckanDateFormat, new Date());
   });
 });
 
@@ -110,8 +104,7 @@ export default {
   computed: {
     yearField: {
       get() {
-        const yearString =
-          this.previewYear !== null ? this.previewYear : this.year;
+        const yearString = this.previewYear !== null ? this.previewYear : this.year;
         if (yearString) {
           // vuetify component needs the year to be a number
           return Number.parseInt(yearString, 10);

@@ -1,60 +1,57 @@
 <template>
-  <v-container id="DataCreditLayout"
-               class="px-0 py-1 readableText"
-               fluid
-               style="min-height: 67px;">
-
+  <v-container id="DataCreditLayout" class="px-0 py-1 readableText" fluid style="min-height: 67px">
     <v-row no-gutters>
-      <v-col cols="12"
-              :class="dark ? 'text-white' : 'text-black'" >
+      <v-col cols="12" :class="dark ? 'text-white' : 'text-black'">
         {{ badgesLabel }}
       </v-col>
     </v-row>
 
     <v-row no-gutters>
-      <v-col v-if="!hasDataCreditCounts"
-              cols="12"
-              class="pt-1"
-              :class="dark ? 'text-white' : 'text-black'"
-              style="opacity: 0.65">
+      <v-col
+        v-if="!hasDataCreditCounts"
+        cols="12"
+        class="pt-1"
+        :class="dark ? 'text-white' : 'text-black'"
+        style="opacity: 0.65"
+      >
         {{ noCreditslabel }}
       </v-col>
 
-      <v-col v-show="showZero || (!showZero && dataCreditCounts[index] > 0)"
-              v-for="(creditName, index) in dataCreditNames"
-              :key="index"
-              class="flex-grow-0 pt-3 pt-md-4 px-1" >
+      <v-col
+        v-show="showZero || (!showZero && dataCreditCounts[index] > 0)"
+        v-for="(creditName, index) in dataCreditNames"
+        :key="index"
+        class="flex-grow-0 pt-3 pt-md-4 px-1"
+      >
+        <v-hover v-slot="{ props }">
+          <v-badge
+            v-bind="props"
+            class="dataCreditIcon"
+            bordered
+            :color="badgeColor"
+            :content="dataCreditCounts[index]"
+          >
+            <!--
+          :overlap="!isHovering"
+-->
 
-      <v-hover v-slot="{ isHovering, props }" >
-        <v-badge v-bind="props"
-                 class="dataCreditIcon"
-                 bordered
-                 :overlap="!isHovering"
-                 :color="badgeColor"
-                 :content="dataCreditCounts[index]"
-        >
+            <v-tooltip location="bottom">
+              <template v-slot:activator="{ props }">
+                <BaseIcon v-bind="props" class="pa-1" :icon="iconLookup(creditName)" :color="iconColor" />
+              </template>
 
-          <v-tooltip location='bottom' >
-            <template v-slot:activator="{ props }">
-              <BaseIcon v-bind="props"
-                        class="pa-1"
-                        :icon="iconLookup(creditName)"
-                        :color="iconColor"
-              />
-            </template >
-
-            {{ `Author made ${dataCreditCounts[index]} ${creditName} contribution${ dataCreditCounts[index] > 1 ? 's': ''}` }}
-          </v-tooltip>
-        </v-badge>
-      </v-hover>
-
+              {{
+                `Author made ${dataCreditCounts[index]} ${creditName} contribution${dataCreditCounts[index] > 1 ? 's' : ''}`
+              }}
+            </v-tooltip>
+          </v-badge>
+        </v-hover>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
-
 import { getDataCreditIcon } from '@/factories/authorFactory';
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
@@ -119,25 +116,23 @@ export default {
 };
 </script>
 
-<style >
+<style>
+.dataCreditIcon {
+  opacity: 0.75;
+}
 
- .dataCreditIcon {
-   opacity: 0.75;
- }
+.dataCreditBadge > span {
+  bottom: -25px !important;
+  right: 0 !important;
+}
 
- .dataCreditBadge > span {
-    bottom: -25px !important;
-    right: 0 !important;
-  }
+.dataCreditBadge.text-black > span > span {
+  color: #000 !important;
+  caret-color: #000 !important;
+}
 
-  .dataCreditBadge.text-black > span > span {
-    color: #000 !important;
-    caret-color: #000 !important;
-  }
-
-  .dataCreditBadge.text-white > span > span {
-    color: #fff !important;
-    caret-color: #fff !important;
-  }
-
+.dataCreditBadge.text-white > span > span {
+  color: #fff !important;
+  caret-color: #fff !important;
+}
 </style>

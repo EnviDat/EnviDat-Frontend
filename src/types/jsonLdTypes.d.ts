@@ -1,43 +1,42 @@
-
-interface Person {
+export interface Person {
   '@type': 'Person';
   name: string;
   url?: string;
   sameAs?: string; // A URL pointing to a page with more information about the person
 }
 
-interface Organization {
+export interface Organization {
   '@type': 'Organization';
   name: string;
   url?: string;
   sameAs?: string; // A URL pointing to a page with more information about the organization
 }
 
-interface DatasetDistribution {
+export interface DatasetDistribution {
   '@type': 'DataDownload' | 'DatasetDistribution';
   url: string; // URL for the dataset
   format: string; // Format of the dataset (e.g., CSV, JSON)
 }
 
-interface CreativeWork {
+export interface CreativeWork {
   '@type': 'CreativeWork';
   name: string;
   url?: string;
 }
 
-interface Event {
+export interface Event {
   '@type': 'Event';
   name: string;
   startDate?: string;
   endDate?: string;
 }
 
-interface Claim {
+export interface Claim {
   '@type': 'Claim';
   claimReview: string;
 }
 
-interface Dataset {
+export interface Dataset {
   '@context': string; // "http://schema.org"
   '@type': string; // "Dataset"
   description?: string;

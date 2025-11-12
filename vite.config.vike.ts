@@ -4,11 +4,10 @@ import path from 'path';
 
 import { defineConfig, loadEnv } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import vike from 'vike/plugin'
+import vike from 'vike/plugin';
 // import vuetify from 'vite-plugin-vuetify';
 
 export default async ({ mode, config }) => {
-
   const env = loadEnv(mode, process.cwd());
 
   console.log(`Start ${mode} vike build with:`);
@@ -18,6 +17,8 @@ export default async ({ mode, config }) => {
   console.log(`With VITE_API_BASE_URL: ${env.VITE_API_BASE_URL}`);
   console.log(`With VITE_API_DOI_BASE_URL: ${env.VITE_API_DOI_BASE_URL}`);
   console.log(`With VITE_BUILD_SOURCEMAPS: ${env.VITE_BUILD_SOURCEMAPS}`);
+  console.log(`With PUBLIC_ENV__VIKE_BASE_CANONICAL_URL: ${env.PUBLIC_ENV__VIKE_BASE_CANONICAL_URL}`);
+  console.log(`With VITE_SEO_BASE: ${env.VITE_SEO_BASE}`);
 
   return defineConfig({
     plugins: [
@@ -64,4 +65,4 @@ export default async ({ mode, config }) => {
     },
     // ssr: { noExternal: ['vuetify'] },
   });
-}
+};

@@ -1,4 +1,4 @@
-import { convertJSON, convertToBackendJSONWithRules, convertToFrontendJSONWithRules } from '@/factories/mappingFactory';
+import { convertJSON, convertToBackendJSONWithRules, convertToFrontendJSONWithRules } from '@/factories/convertJSON';
 import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 
 /*
@@ -12,11 +12,9 @@ function enforceAbstractProps(instance, requiredProps) {
 */
 
 export abstract class AbstractViewModel {
-
   private privateMappingRules: string[][];
 
   constructor(dataset: DatasetDTO, mappingRules: string[][] = undefined) {
-
     this.mappingRules = mappingRules;
 
     if (new.target === AbstractViewModel) {
@@ -43,7 +41,7 @@ export abstract class AbstractViewModel {
     this.privateMappingRules = mappingRules;
   }
 
-  updateModel (dataset: DatasetDTO) {
+  updateModel(dataset: DatasetDTO) {
     const frontendJson = convertToFrontendJSONWithRules(this.mappingRules, dataset);
     Object.assign(this, frontendJson);
   }
@@ -60,6 +58,4 @@ export abstract class AbstractViewModel {
   get backendProperties() {
     return this.mappingRules.map((rule) => rule[1]);
   }
-
-
 }

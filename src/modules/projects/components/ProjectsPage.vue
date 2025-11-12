@@ -12,14 +12,7 @@
       <v-col class="mt-5" cols="12" lg="10" offset-lg="1">
         <v-container v-if="loading" class="pa-0" fluid>
           <v-row>
-            <v-col
-              v-for="(project, index) in 4"
-              :key="index"
-              cols="12"
-              sm="6"
-              md="4"
-              xl="3"
-            >
+            <v-col v-for="(project, index) in 4" :key="index" cols="12" sm="6" md="4" xl="3">
               <ProjectCardPlaceholder />
             </v-col>
           </v-row>
@@ -27,14 +20,7 @@
 
         <v-container v-else class="pa-0" fluid>
           <v-row>
-            <v-col
-              v-for="(project, index) in projectsCardsParents"
-              :key="index"
-              cols="12"
-              sm="6"
-              md="4"
-              xl="3"
-            >
+            <v-col v-for="(project, index) in projectsCardsParents" :key="index" cols="12" sm="6" md="4" xl="3">
               <ProjectCard
                 :id="project.name"
                 :title="project.title"
@@ -60,18 +46,16 @@ import { useRouter, useRoute } from 'vue-router';
 // Import components
 import { useDisplay } from 'vuetify';
 import ImgAndTextLayout from '@/components/Layouts/ImgAndTextLayout.vue';
-import ProjectCard from './ProjectCard.vue';
-import ProjectCardPlaceholder from './ProjectCardPlaceholder.vue';
+import ProjectCard from '@/modules/projects/components/ProjectCard.vue';
+import ProjectCardPlaceholder from '@/modules/projects/components/ProjectCardPlaceholder.vue';
 
 // Import constants
-import {
-  PROJECT_DETAIL_PAGENAME,
-} from '@/router/routeConsts';
+import { PROJECT_DETAIL_PAGENAME } from '@/router/routeConsts';
 import {
   GET_PROJECTS,
   PROJECTS_NAMESPACE,
   SET_PROJECTDETAIL_PAGE_BACK_URL,
-} from '../store/projectsMutationsConsts';
+} from '@/modules/projects/store/projectsMutationsConsts';
 
 const display = useDisplay();
 const store = useStore();
@@ -81,36 +65,25 @@ const route = useRoute();
 // Map state from Vuex
 const loadingConfig = computed(() => store.state.loadingConfig);
 const config = computed(() => store.state.config);
-const projects = computed(
-  () => store.getters[`${PROJECTS_NAMESPACE}/projects`],
-);
+const projects = computed(() => store.getters[`${PROJECTS_NAMESPACE}/projects`]);
 
 const loading = computed(() => store.getters[`${PROJECTS_NAMESPACE}/loading`]);
 
-const projectsCardsParents = computed(
-  () => store.getters[`${PROJECTS_NAMESPACE}/projectsCardsParents`],
-);
+const projectsCardsParents = computed(() => store.getters[`${PROJECTS_NAMESPACE}/projectsCardsParents`]);
 
 // Derived config for projects
 const projectsConfig = computed(() => config.value?.projectsConfig || {});
 
-const missionImg = computed(() => display.mdAndUp
-                                        ? 'mission'
-                                        : 'mission_small');
+const missionImg = computed(() => (display.mdAndUp ? 'mission' : 'mission_small'));
 
 const loadProjects = () => {
   store.dispatch(`${PROJECTS_NAMESPACE}/${GET_PROJECTS}`, projectsConfig.value);
 };
 
-
 // Local data
 
 onBeforeMount(() => {
-  if (
-    !loadingConfig.value &&
-    !loading.value &&
-    (!projects.value || projects.value.length <= 0)
-  ) {
+  if (!loadingConfig.value && !loading.value && (!projects.value || projects.value.length <= 0)) {
     loadProjects();
   }
 });
@@ -120,21 +93,13 @@ onMounted(() => {
 });
 
 watch(config, () => {
-  if (
-    !loadingConfig.value &&
-    !loading.value &&
-    (!projects.value || projects.value.length <= 0)
-  ) {
+  if (!loadingConfig.value && !loading.value && (!projects.value || projects.value.length <= 0)) {
     loadProjects();
   }
 });
 
-
 const onCardClick = (projectId: string) => {
-  store.commit(
-    `${PROJECTS_NAMESPACE}/${SET_PROJECTDETAIL_PAGE_BACK_URL}`,
-    route,
-  );
+  store.commit(`${PROJECTS_NAMESPACE}/${SET_PROJECTDETAIL_PAGE_BACK_URL}`, route);
   router.push({
     name: PROJECT_DETAIL_PAGENAME,
     params: { id: projectId },
@@ -142,14 +107,10 @@ const onCardClick = (projectId: string) => {
 };
 
 const onSubprojectClick = (subprojectId: string) => {
-  store.commit(
-    `${PROJECTS_NAMESPACE}/${SET_PROJECTDETAIL_PAGE_BACK_URL}`,
-    route,
-  );
+  store.commit(`${PROJECTS_NAMESPACE}/${SET_PROJECTDETAIL_PAGE_BACK_URL}`, route);
   router.push({
     name: PROJECT_DETAIL_PAGENAME,
     params: { id: subprojectId },
   });
 };
 </script>
-

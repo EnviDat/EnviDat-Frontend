@@ -1,7 +1,23 @@
 import { mergeConfig } from 'vite';
 
+const allStories = ['../stories/**/*.stories.@(js|jsx|ts|tsx)'];
+
+const storiesToLoad = [
+  '../stories/**/*.stories.@(js|jsx|ts|tsx)', // all stories
+  // '../stories/baseElements/**/*.stories.@(js|jsx|ts|tsx)', // base components
+  // '../stories/workflow/**/*.stories.@(js|jsx|ts|tsx)', // workflow components
+  // '../stories/dataset/**/*.stories.@(js|jsx|ts|tsx)', // create & edit dataset
+  // '../stories/search/**/*.stories.@(js|jsx|ts|tsx)', // search components
+  // '../stories/navigation/**/*.stories.@(js|jsx|ts|tsx)', // navigation components
+  // '../stories/user/**/*.stories.@(js|jsx|ts|tsx)', // navigation components
+  // '../stories/projects/**/*.stories.@(js|jsx|ts|tsx)', // project page components
+  // '../stories/blog/**/*.stories.@(js|jsx|ts|tsx)', // blog page components
+];
+
+const prod = import.meta.env?.MODE === 'production';
+
 export default {
-  stories: ['../stories/**/*.stories.@(js|jsx|ts|tsx)'],
+  stories: prod ? allStories : storiesToLoad,
   core: {
     disableTelemetry: true,
   },
@@ -10,12 +26,7 @@ export default {
       disableSourcemaps: false,
     },
   },
-  addons: [
-    '@chromatic-com/storybook',
-    '@storybook/addon-docs',
-    '@storybook/addon-vitest',
-    '@storybook/addon-a11y'
-  ],
+  addons: ['@chromatic-com/storybook', '@storybook/addon-docs', '@storybook/addon-vitest', '@storybook/addon-a11y'],
 
   framework: {
     name: '@storybook/vue3-vite',
@@ -31,15 +42,14 @@ export default {
 
   async viteFinal(config) {
     return mergeConfig(config, {
-      optimizeDeps: {
-      },
+      optimizeDeps: {},
       server: {
         proxy: {
           '/api': {
             target: 'https://statistics.wsl.ch',
             changeOrigin: true,
             secure: false,
-            rewrite: path => path.replace(/^\/api/, ''),
+            rewrite: (path) => path.replace(/^\/api/, ''),
           },
         },
       },

@@ -18,10 +18,8 @@ import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 import { mergeAuthorsDataCredit } from '@/factories/authorFactory';
 import { USER_ROLE_ADMIN } from '@/factories/userEditingValidations';
 
-
 export const ACCESS_LEVEL_PUBLIC_VALUE = 'public';
 export const ACCESS_LEVEL_SAMEORGANIZATION_VALUE = 'same_organization';
-
 
 /**
  *
@@ -64,7 +62,6 @@ export function updateEditingArray(elementList, newElement, propertyToCompare) {
   return localCopy;
 }
 
-
 /**
  *
  * @param store
@@ -74,13 +71,7 @@ export function updateEditingArray(elementList, newElement, propertyToCompare) {
  * @param selected
  * @returns {object|null}
  */
-export function setSelected(
-  store,
-  elementList,
-  id,
-  propertyToCompare,
-  selected,
-) {
+export function setSelected(store, elementList, id, propertyToCompare, selected) {
   if (!id) {
     return null;
   }
@@ -113,13 +104,7 @@ export function setSelected(
  * @param propertyToCompare
  * @returns {Object|null}
  */
-export function selectForEditing(
-  store,
-  elementList,
-  id,
-  previousId,
-  propertyToCompare,
-) {
+export function selectForEditing(store, elementList, id, previousId, propertyToCompare) {
   if (previousId !== '') {
     setSelected(store, elementList, previousId, propertyToCompare, false);
   }
@@ -132,7 +117,7 @@ export function getSelectedElement(elementList) {
     return null;
   }
 
-  const selected = elementList.filter(r => r.isSelected);
+  const selected = elementList.filter((r) => r.isSelected);
 
   if (selected.length > 0) {
     return selected[0];
@@ -143,7 +128,7 @@ export function getSelectedElement(elementList) {
 
 // Returns true if all values in obj are null or empty strings, else returns false
 export function isObjectEmpty(obj) {
-  return Object.values(obj).every(x => x === null || x === '');
+  return Object.values(obj).every((x) => x === null || x === '');
 }
 
 export function deleteEmptyObject(index, localObjects) {
@@ -169,28 +154,33 @@ export function deleteEmptyObject(index, localObjects) {
 export function isMaxLength(maximum, localObjects) {
   return localObjects.length >= maximum;
 }
-// const exludeRegEx = /(?:\d+\w+\S\-\w+)/gm
+// const excludeRegEX = /(?:\d+\w+\S\-\w+)/gm
 // eslint-disable-next-line no-useless-escape
-const exludeRegEx = /(\d+\w+\S\-\w+)|(\d+\S*\d+)/gm
+const excludeRegEX = /(\d+\w+\S\-\w+)|(\d+\S*\d+)/gm;
+
+/**
+ *
+ * @param {User []} userList
+ * @returns {User []}
+ */
 export function getUserAutocompleteList(userList) {
-
-  const cleanedList = userList.filter((user) => {
-
-    const match = user.name?.match(exludeRegEx);
+  return userList.filter((user) => {
+    const match = user.name?.match(excludeRegEX);
 
     if (match && match[0] && match[0].length === user.name?.length) {
       return false;
     }
 
-    return !(user.sysadmin || user.name.toLowerCase() === USER_ROLE_ADMIN || user.fullName?.toLowerCase() === USER_ROLE_ADMIN);
+    return !(
+      user.sysadmin ||
+      user.name.toLowerCase() === USER_ROLE_ADMIN ||
+      user.fullName?.toLowerCase() === USER_ROLE_ADMIN
+    );
   });
-
-
-  return cleanedList.map((user) => user.fullName || user.displayName);
 }
 
 /**
- * Spilts the allowed users string into an array
+ * Splits the allowed users string into an array
  * @param allowedUsersString
  * @returns {*[]}
  */
@@ -204,17 +194,17 @@ export function getAllowedUserNamesArray(allowedUsersString) {
   if (splits.length > 0) {
     usersString = splits;
   } else {
-    usersString = [allowedUsersString]
+    usersString = [allowedUsersString];
   }
 
   return usersString;
 }
 
 /**
- * Return an array of the full names of the allowed users
+ * Return an array of emails the allowed users
  *
- * @param allowedUsersString
- * @param envidatUsers
+ * @param {string} allowedUsersString
+ * @param {User[]} envidatUsers
  * @returns {*[]}
  */
 export function getAllowedUserNames(allowedUsersString, envidatUsers) {
@@ -231,26 +221,24 @@ export function getAllowedUserNames(allowedUsersString, envidatUsers) {
 
 /**
  * Returns a string of the allowed users names (only the name attribute of the user object)
- * separted by ","
+ * separated by ","
  *
- * @param {string[]} userFullNameArray
- * @param envidatUsers
+ * @param {string[]} pickUserEmailHash
+ * @param {User[]} envidatUsers
  * @returns {string}
  */
-export function getAllowedUsersString(userFullNameArray, envidatUsers) {
-  if (!userFullNameArray || !envidatUsers) {
+export function getAllowedUsersString(pickUserEmailHash, envidatUsers) {
+  if (!pickUserEmailHash || !envidatUsers) {
     return '';
   }
 
-  const allowedUserObjs = envidatUsers.filter((user) => userFullNameArray.includes(user.fullName || user.displayName));
-
-  const allowedUsers = allowedUserObjs.map((user) => user.name);
+  const pickedUsers = envidatUsers.filter((user) => pickUserEmailHash.includes(user.email || user.emailHash));
+  const allowedUsers = pickedUsers.map((user) => user.name);
 
   return allowedUsers.join(',');
 }
 
 export function componentChangedEvent(updateObj, vm) {
-
   const payload = {
     stepKey: updateObj.object,
     data: updateObj.data,

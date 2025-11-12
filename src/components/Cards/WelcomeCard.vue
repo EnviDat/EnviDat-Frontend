@@ -20,11 +20,11 @@
 
         <v-col>
           <base-rectangle-button
-              color="accent"
-              marginClass="text-black"
-              :button-text="editingButtonText"
-              :disabled="editingClickCallback === null"
-              @clicked="editingClickCallback ? editingClickCallback : ''"
+            color="accent"
+            marginClass="text-black"
+            :button-text="editingButtonText"
+            :disabled="editingClickCallback === null"
+            @clicked="editingClickCallback ? editingClickCallback : ''"
           />
         </v-col>
       </v-row>
@@ -36,12 +36,12 @@
 
         <v-col>
           <base-rectangle-button
-              color="accent"
-              marginClass="text-black"
-              :isOutlined="hasEditing"
-              :button-text="createButtonText"
-              :disabled="createClickCallback === null"
-              @clicked="createClickCallback ? createClickCallback : ''"
+            color="accent"
+            marginClass="text-black"
+            :isOutlined="hasEditing"
+            :button-text="createButtonText"
+            :disabled="createClickCallback === null"
+            @clicked="createClickCallback ? createClickCallback : ''"
           />
         </v-col>
       </v-row>
@@ -57,10 +57,10 @@
             isOutlined
             :button-text="unpublishedButtonText"
             :disabled="unpublishedClickCallback === null"
-            @clicked="unpublishedClickCallback ? unpublishedClickCallback : ''" />
+            @clicked="unpublishedClickCallback ? unpublishedClickCallback : ''"
+          />
         </v-col>
       </v-row>
-
     </v-container>
   </v-card>
 </template>
@@ -116,9 +116,7 @@ export default {
   },
   computed: {
     welcomeTitle() {
-      return this.userName
-        ? `${this.title} ${this.userName}!`
-        : `${this.title}!`;
+      return this.userName ? `${this.title} ${this.userName}!` : `${this.title}!`;
     },
     introText() {
       let intro = `You have ${this.publishedDatasetCount} datasets published.`;

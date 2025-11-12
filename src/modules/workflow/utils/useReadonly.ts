@@ -3,12 +3,10 @@ import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
 import { WorkflowMode } from '@/modules/workflow/utils/workflowEnums';
 
 const hints: Record<string, string> = {
-  authors:
-    'The Authors field can’t be edited because this dataset has already been published',
+  authors: 'The Authors field can’t be edited because this dataset has already been published',
 };
 
-const defaultHint =
-  'The field can’t be edited because this dataset has already been published.';
+const defaultHint = 'The field can’t be edited because this dataset has already been published.';
 
 export function isReadOnlyField(fieldKey: string): boolean {
   const store = useDatasetWorkflowStore();

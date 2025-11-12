@@ -1,12 +1,10 @@
 <template>
   <v-container id="EditRelatedInfo" fluid class="pa-0">
     <v-row>
-      <v-col v-if="useListResolving"
-             cols="4.5">
+      <v-col v-if="useListResolving" cols="4.5">
         <EditRelatedPublicationsList v-bind="editRelatedPublicationsProps" />
       </v-col>
-      <v-col v-else
-             cols="4.5">
+      <v-col v-else cols="4.5">
         <EditRelatedPublications v-bind="editRelatedPublicationsProps" />
       </v-col>
 
@@ -111,9 +109,8 @@ export default {
       }
 
       if (this.$store) {
-        return this.$store.getters[
-          `${USER_NAMESPACE}/getMetadataEditingObject`
-        ](EDITMETADATA_RELATED_PUBLICATIONS).relatedPublicationsText;
+        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_RELATED_PUBLICATIONS)
+          .relatedPublicationsText;
       }
 
       return this.relatedPublicationsText;
@@ -125,9 +122,8 @@ export default {
       }
 
       if (this.$store) {
-        return this.$store.getters[
-          `${USER_NAMESPACE}/getMetadataEditingObject`
-        ](EDITMETADATA_RELATED_DATASETS).relatedDatasetsText;
+        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_RELATED_DATASETS)
+          .relatedDatasetsText;
       }
 
       return this.relatedDatasetsText;
@@ -139,15 +135,16 @@ export default {
       }
 
       if (this.$store) {
-        return this.$store.getters[
-          `${USER_NAMESPACE}/getMetadataEditingObject`
-        ](EDITMETADATA_CUSTOMFIELDS).customFields;
+        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_CUSTOMFIELDS)
+          .customFields;
       }
 
       return this.customFields;
     },
     editRelatedPublicationsProps() {
-      const editingObject = this.$store ? this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_RELATED_PUBLICATIONS) : undefined;
+      const editingObject = this.$store
+        ? this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_RELATED_PUBLICATIONS)
+        : undefined;
 
       return {
         relatedPublicationsText: this.relatedPublicationsTextWrap,
@@ -161,7 +158,9 @@ export default {
       };
     },
     editRelatedDatasetsProps() {
-      const editingObject = this.$store ? this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_RELATED_DATASETS) : undefined;
+      const editingObject = this.$store
+        ? this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_RELATED_DATASETS)
+        : undefined;
 
       return {
         relatedDatasetsText: this.relatedDatasetsTextWrap,
@@ -175,7 +174,9 @@ export default {
       };
     },
     editCustomFieldsProps() {
-      const editingObject = this.$store ? this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_CUSTOMFIELDS) : undefined;
+      const editingObject = this.$store
+        ? this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_CUSTOMFIELDS)
+        : undefined;
 
       return {
         customFields: this.customFieldsWrap,
@@ -196,8 +197,7 @@ export default {
   },
   data: () => ({
     relatedDatasets,
-    disclaimer:
-      'Please note that the screenshot below will serve as a template for the future component.',
+    disclaimer: 'Please note that the screenshot below will serve as a template for the future component.',
   }),
   components: {
     EditRelatedPublicationsList,

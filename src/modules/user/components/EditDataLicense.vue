@@ -1,9 +1,6 @@
 <template>
-  <v-card id="EditDataLicense"
-          class="pa-0"
-          :loading="loadingColor">
+  <v-card id="EditDataLicense" class="pa-0" :loading="loadingColor">
     <v-container fluid class="pa-4">
-
       <v-row>
         <v-col cols="8" class="text-h5">
           {{ labels.cardTitle }}
@@ -18,19 +15,13 @@
           />
         </v-col>
         <v-col v-if="error">
-          <BaseStatusLabelView
-            status="error"
-            statusColor="error"
-            :statusText="error"
-            :expandedText="errorDetails"
-          />
+          <BaseStatusLabelView status="error" statusColor="error" :statusText="error" :expandedText="errorDetails" />
         </v-col>
       </v-row>
 
       <v-row>
         <v-col>
-          <div class="text-body-1" v-html="labels.instructionsLicense" >
-          </div>
+          <div class="text-body-1" v-html="labels.instructionsLicense"></div>
         </v-col>
       </v-row>
 
@@ -39,7 +30,7 @@
           <v-select
             :items="activeLicenses"
             item-value="id"
-            item-text="title"
+            item-title="title"
             :label="labels.dataLicense"
             :readonly="isDataLicenseReadonly"
             hide-details="auto"
@@ -51,22 +42,16 @@
             @update:model-value="changeLicense($event)"
             :error-messages="validationErrors.dataLicense"
           />
-
         </v-col>
       </v-row>
 
       <v-row class="pl-md-8">
         <v-col>
-          <v-expansion-panels
-            focusable
-          >
-            <v-expansion-panel
-              :title='dataSummaryClickInfo'
-            >
+          <v-expansion-panels>
+            <v-expansion-panel :title="dataSummaryClickInfo">
               <v-expansion-panel-text>
                 <div v-html="getDataLicenseSummary" />
               </v-expansion-panel-text>
-
             </v-expansion-panel>
           </v-expansion-panels>
         </v-col>
@@ -76,15 +61,13 @@
         <v-col class="text-body-2">
           <div>{{ labels.dataLicenseUrl }}</div>
 
-          <a v-if="dataLicenseLinkExists"
-             :href="getDataLicenseLink" target="_blank">
+          <a v-if="dataLicenseLinkExists" :href="getDataLicenseLink" target="_blank">
             {{ getDataLicenseLink }}
           </a>
 
-          <div v-if="!dataLicenseLinkExists" >
+          <div v-if="!dataLicenseLinkExists">
             {{ getDataLicenseLink }}
           </div>
-
         </v-col>
       </v-row>
     </v-container>
@@ -117,10 +100,7 @@ import {
 
 import { renderMarkdown } from '@/factories/stringFactory';
 
-import {
-  getValidationMetadataEditingObject,
-  isFieldValid,
-} from '@/factories/userEditingValidations';
+import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 
@@ -235,8 +215,7 @@ export default {
       const readonlyBecausePublished = this.readOnlyFields?.includes(METADATA_DATALICENSE_PROPERTY) || false;
 
       if (readonlyBecausePublished) {
-        if (this.dataLicenseId === WSL_DATA_LICENSE_ID
-          || this.dataLicenseId === OTHER_UNDEFINED_LICENSE_ID) {
+        if (this.dataLicenseId === WSL_DATA_LICENSE_ID || this.dataLicenseId === OTHER_UNDEFINED_LICENSE_ID) {
           // overwrite the readonly so license can still be changned from these to the other
           // available license
           return false;
@@ -262,7 +241,7 @@ export default {
 
       // make sure to pick from all licenses because older one still be to be shown, even though
       // they can't be picked anymore
-      const dataLicense = dataLicenses.filter(x => x.id === id)[0];
+      const dataLicense = dataLicenses.filter((x) => x.id === id)[0];
 
       return dataLicense || null;
     },
@@ -316,19 +295,18 @@ export default {
     },
     labels: {
       cardTitle: EDIT_METADATA_DATALICENSE_TITLE,
-      instructionsLicense: 'Select a data license which reflects the terms of usage of your research data. CC-BY-SA is the recommend license, read the blog post about <a href="https://envidat.ch/#/blog/EnviDat_WSLIntern_2022q4.md" target="_blank">Data license</a> for more information. ',
+      instructionsLicense:
+        'Select a data license which reflects the terms of usage of your research data. CC-BY-SA is the recommend license, read the blog post about <a href="https://envidat.ch/#/blog/EnviDat_WSLIntern_2022q4.md" target="_blank">Data license</a> for more information. ',
       dataLicense: 'Click here to select a data license',
       dataLicenseSummary: 'Show a summary',
-      dataLicenseUrl:
-        'Link for more detailed information about selected Data License:',
+      dataLicenseUrl: 'Link for more detailed information about selected Data License:',
     },
     previewDataLicenses: null,
   }),
 };
 </script>
 
-<style >
-
+<style>
 .licensePanel div.v-expansion-panel-content__wrap {
   padding: 0 !important;
 }

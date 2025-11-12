@@ -1,11 +1,11 @@
-import type {ChartConfiguration} from 'chart.js';
+import type { ChartConfiguration } from 'chart.js';
 
-import {convertToChartProps} from '@/modules/charts/middelware/ConfigConversion.ts';
-import {getMetaData} from '@/modules/charts/middelware/DataConversion.ts';
+import { convertToChartProps } from '@/modules/charts/middelware/ConfigConversion.ts';
+import { getMetaData } from '@/modules/charts/middelware/DataConversion.ts';
 
-import type {ChartAppMode, ChartProps, LoadingContent, MetaData} from '@/types/dataVizTypes';
+import type { ChartAppMode, ChartProps, LoadingContent, MetaData } from '@/types/dataVizTypes';
 
-export const loadContentFromUrl = async (url: string) : Promise<LoadingContent> => {
+export const loadContentFromUrl = async (url: string): Promise<LoadingContent> => {
   if (!url) {
     return {
       isJSON: false,
@@ -24,7 +24,7 @@ export const loadContentFromUrl = async (url: string) : Promise<LoadingContent> 
     throw new Error(`${response.status} ${response.statusText} with the url: ${response.url}`);
   }
 
-/*
+  /*
   const contentHeader = response.headers.get("content-type");
   let isJSON = contentHeader ? contentHeader.includes('json') : false;
 */
@@ -35,16 +35,18 @@ export const loadContentFromUrl = async (url: string) : Promise<LoadingContent> 
     return {
       isJSON: true,
       content: JSON.parse(responseBody),
-    }
-  } catch (error: unknown) { /* empty */ }
-
+    };
+  } catch (error: unknown) {
+    /* empty */
+  }
 
   return {
     isJSON: false,
     content: responseBody,
-  }
-}
+  };
+};
 
+// eslint-disable-next-line no-unused-vars
 export const getConfigAndEditorProps = async (configUrl: string, mode: ChartAppMode) => {
   let editorProps: ChartProps | undefined;
   let chartConfig: ChartConfiguration | undefined;
@@ -56,7 +58,7 @@ export const getConfigAndEditorProps = async (configUrl: string, mode: ChartAppM
     throw new Error(`Error while reading config file (url: ${configUrl}). Error: ${e}`);
   }
 
-//  if (configContent.isJSON && isChartConfiguration(configContent.content)) {
+  //  if (configContent.isJSON && isChartConfiguration(configContent.content)) {
   if (configContent.isJSON) {
     chartConfig = configContent.content;
     editorProps = convertToChartProps(configContent.content);
@@ -67,8 +69,8 @@ export const getConfigAndEditorProps = async (configUrl: string, mode: ChartAppM
   return {
     chartConfig,
     editorProps,
-  }
-}
+  };
+};
 
 export const getDataWithMetaData = async (dataUrl: string) => {
   let meta: MetaData | undefined;
@@ -92,9 +94,9 @@ export const getDataWithMetaData = async (dataUrl: string) => {
     meta,
     data,
   };
-}
+};
 
-export const getErrorMessage = (e: unknown) : string => {
+export const getErrorMessage = (e: unknown): string => {
   if (e instanceof Error) {
     return e.message;
   }
@@ -108,4 +110,4 @@ export const getErrorMessage = (e: unknown) : string => {
   }
 
   return `Unclear to deal with Error: ${e}`;
-}
+};

@@ -1,15 +1,11 @@
 <template>
-  <v-card
-      id="OrganizationTree"
-      flat
-      class="pa-0">
+  <v-card id="OrganizationTree" flat class="pa-0">
     <v-sheet class="pa-2 bg-secondary">
       <v-text-field
         v-model="search"
         label="Search Organization"
-        dark
         flat
-        solo-inverted
+        variant="solo-inverted"
         hide-details
         clearable
         persistent-clear
@@ -34,19 +30,12 @@
         collapse-icon=""
         :max-height="maxHeight"
         @click:active="catchActiveClick"
-        @click:open="item => catchItemClick(item)"
+        @click:open="(item) => catchItemClick(item)"
       >
-
         <template v-slot:prepend="{ item, isOpen, isActive }">
-          <v-icon
-            v-if="item?.children?.length > 0"
-            :icon="isOpen ? mdiFolderOpen : mdiFolder"
-          />
+          <v-icon v-if="item?.children?.length > 0" :icon="isOpen ? mdiFolderOpen : mdiFolder" />
 
-          <v-icon
-            v-if="item?.children?.length <= 0"
-            :icon="isActive ? mdiFolderOpenOutline : mdiFolderOutline"
-          />
+          <v-icon v-if="item?.children?.length <= 0" :icon="isActive ? mdiFolderOpenOutline : mdiFolderOutline" />
         </template>
 
         <template v-slot:item="{ item }">
@@ -56,7 +45,6 @@
         <template v-slot:append="{ item }">
           <slot name="append" :item="item" />
         </template>
-
       </v-treeview>
     </v-card-text>
   </v-card>
@@ -144,7 +132,6 @@ export default {
       return false;
     },
     catchItemClick({ id }) {
-
       let orgaName;
 
       const entry = getOrganitzionTreeItem(this.organizationsTree, id);
@@ -152,7 +139,7 @@ export default {
         orgaName = entry.name;
       }
 
-/*
+      /*
       const activeItem = this.getItemFromId(id);
       this.setActiveItem(this.items, activeItem.title);
 */
@@ -176,7 +163,7 @@ export default {
         activeItem = this.getItemFromId(activeId);
       }
 
-/*
+      /*
       this.setActiveItem(this.items, activeItem);
 */
 
@@ -185,7 +172,7 @@ export default {
     getItemFromId(activeId) {
       return this.getItemById(this.items, activeId);
 
-/*
+      /*
         itemId = this.getParentIdFromChild(activeId);
         const parentItem = this.getItemById(this.items, itemId);
 
@@ -195,7 +182,7 @@ export default {
 */
     },
     getItemById(items, itemId) {
-      const itemSelection = items.filter(i => i.id === itemId);
+      const itemSelection = items.filter((i) => i.id === itemId);
       return itemSelection[0];
     },
     getParentIdFromChild(childId) {
@@ -218,8 +205,7 @@ export default {
     mdiFolderOutline,
     mdiFolderOpenOutline,
   }),
-  components: {
-  },
+  components: {},
 };
 </script>
 

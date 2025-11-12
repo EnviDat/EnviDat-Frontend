@@ -32,15 +32,14 @@ const {
 } = defineProps<Props>();
 
 const emit = defineEmits<{
-  (e: 'changeContent', content: unknown): void
-}>()
-
+  (e: 'changeContent', content: unknown): void;
+}>();
 
 const theme = useTheme();
-const editorDomRef = useTemplateRef('editorRef')
+const editorDomRef = useTemplateRef('editorRef');
 const jsonEditor = ref();
-const editorSelection = ref()
-const editorValidationErrors = ref({})
+const editorSelection = ref();
+const editorValidationErrors = ref({});
 
 const jsonEditorOnChange = (updatedContent, previousContent, status) => {
   editorValidationErrors.value.input = undefined;
@@ -51,10 +50,7 @@ const jsonEditorOnChange = (updatedContent, previousContent, status) => {
   } = status;
 
   if (contentErrors) {
-    const {
-      parseError,
-      validationErrors,
-    } = contentErrors;
+    const { parseError, validationErrors } = contentErrors;
 
     if (parseError) {
       editorValidationErrors.value.input = parseError.toString();
@@ -73,7 +69,6 @@ const jsonEditorOnChange = (updatedContent, previousContent, status) => {
     if (editorSelection.value.type === allowedSelection) {
       acceptChange = true;
       editorSelection.value = undefined;
-
     } else {
       acceptChange = false;
       editorValidationErrors.value.input = `Only editing of json "${allowedSelection}" elements is allowed`;
@@ -88,13 +83,13 @@ const jsonEditorOnChange = (updatedContent, previousContent, status) => {
 
   if (acceptChange) {
     const contentAsString = updatedContent.text ? updatedContent.text : JSON.stringify(updatedContent.json);
-    emit('changeContent', contentAsString)
+    emit('changeContent', contentAsString);
 
     return true;
   }
 
   return false;
-}
+};
 
 // use default options and merge with options from the props
 const mergedEditorOptions = {
@@ -113,19 +108,15 @@ const mergedEditorOptions = {
   onError: (err) => {
     editorValidationErrors.value.input = err.message;
 
-    console.error(err)
+    console.error(err);
     // emit('editorError', err);
   },
   ...editorOptions,
 } as JSONEditorContext;
 
-const content = computed<Content>(() =>
-  textContent ? { text: textContent } : { json: jsonContent },
-);
-
+const content = computed<Content>(() => (textContent ? { text: textContent } : { json: jsonContent }));
 
 const initEditor = () => {
-
   const editorProps = {
     target: editorDomRef.value,
     props: {
@@ -143,13 +134,12 @@ const initEditor = () => {
   }
 };
 
-const scrollbarColorFront = computed(() => theme.themes.value ? theme.themes.value.light.colors.highlight : 'auto')
-const scrollbarColorBack = computed(() => theme.themes.value ? '#F0F0F0' : 'auto')
+const scrollbarColorFront = computed(() => (theme.themes.value ? theme.themes.value.light.colors.highlight : 'auto'));
+const scrollbarColorBack = computed(() => (theme.themes.value ? '#F0F0F0' : 'auto'));
 
 onMounted(() => {
   initEditor();
 });
-
 </script>
 
 <template>
@@ -160,7 +150,7 @@ onMounted(() => {
 
     <v-card-text
       class="editorScroll"
-      :style="`max-height: ${ maxHeight }px; scrollbar-color: ${ scrollbarColorFront } ${ scrollbarColorBack };`"
+      :style="`max-height: ${maxHeight}px; scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack};`"
     >
       <v-row>
         <v-col>
@@ -168,16 +158,11 @@ onMounted(() => {
         </v-col>
       </v-row>
 
-      <v-row >
+      <v-row>
         <v-col>
           <div class="columns">
             <div class="column">
-              <div
-                style="border-radius: 10px;"
-                class="jsoneditor-vue"
-                id="jsoneditor-vue"
-                ref="editorRef"
-              ></div>
+              <div style="border-radius: 10px" class="jsoneditor-vue" id="jsoneditor-vue" ref="editorRef"></div>
             </div>
           </div>
         </v-col>
@@ -190,7 +175,6 @@ onMounted(() => {
           </v-alert>
         </v-col>
       </v-row>
-
     </v-card-text>
   </v-card>
 </template>
@@ -203,9 +187,7 @@ onMounted(() => {
 </style>
 
 <style>
-
 .editorScroll .jse-menu {
   background-color: #35a89d !important;
 }
 </style>
-

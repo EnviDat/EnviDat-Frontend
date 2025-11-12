@@ -1,11 +1,5 @@
 <template>
-  <v-card
-    id="ResourceEditing"
-    :key="id"
-    :loading="loadingColor"
-    class="pa-0"
-    flat
-  >
+  <v-card id="ResourceEditing" :key="id" :loading="loadingColor" class="pa-0" flat>
     <BaseIconButton
       class="ma-2"
       :class="{ 'mx-1': $vuetify.display.smAndDown }"
@@ -20,7 +14,6 @@
     />
 
     <div class="pa-3">
-      Create Resource From Link
       <v-row>
         <v-col cols="6" class="text-h5 d-flex align-center">
           <BaseIcon v-if="isDataPrivate" color="black" :icon="mdiLock" />
@@ -37,19 +30,18 @@
           />
         </v-col>
 
+        <v-col cols="12">
+          <v-alert type="info" class="text-caption">
+            {{ labels.instructions }}
+          </v-alert>
+        </v-col>
+
         <v-col v-if="error">
-          <BaseStatusLabelView
-            status="error"
-            statusColor="error"
-            :statusText="error"
-            :expandedText="errorDetails"
-          />
+          <BaseStatusLabelView status="error" statusColor="error" :statusText="error" :expandedText="errorDetails" />
         </v-col>
       </v-row>
 
       <div class="pa-1">
-        <v-alert type="info">{{ labels.instructions }}</v-alert>
-
         <v-row id="resourceName" no-gutters class="pt-4">
           <v-col cols="12">
             <v-text-field
@@ -76,20 +68,13 @@
         </v-row>
 
         <v-row id="resourceUrl" no-gutters class="pt-2">
-          <v-col
-            v-if="showImagePreview"
-            cols="4"
-            class="pt-3 pb-4 pr-4 flex-grow-0 flex-shrink-1"
-          >
+          <v-col v-if="showImagePreview" cols="4" class="pt-3 pb-4 pr-4 flex-grow-0 flex-shrink-1">
             <div
               v-if="loadingImagePreview"
               class="skeleton skeleton-animation-shimmer"
               style="height: 100%; width: 100%"
             >
-              <div
-                style="width: 100%; min-height: 100%"
-                class="bone bone-type-image"
-              ></div>
+              <div style="width: 100%; min-height: 100%" class="bone bone-type-image"></div>
             </div>
 
             <v-img
@@ -111,9 +96,7 @@
                 alt="resource image could not be loaded!"
               />
 
-              <div id="backdrop" class="pa-4 text-body-1">
-                Image preview could not be loaded!
-              </div>
+              <div id="backdrop" class="pa-4 text-body-1">Image preview could not be loaded!</div>
             </div>
           </v-col>
 
@@ -121,12 +104,12 @@
             <v-textarea
               v-if="isLongUrl"
               :label="isLink ? labels.url : labels.fileName"
-              outlined
+              variant="outlined"
               auto-grow
-              :readonly="isReadOnly('longUrl')"
-              :hint="readOnlyHint('longUrl')"
+              :readonly="readOnlyHint('url')"
+              :hint="readOnlyHint('url')"
               persistent-hint
-              dense
+              density="compact"
               :disabled="loading"
               v-model="urlField"
               :error-messages="validationErrors.url"
@@ -135,33 +118,15 @@
             <v-text-field
               v-if="!isLongUrl"
               :label="isLink ? labels.url : labels.fileName"
-              outlined
-              :readonly="isReadOnly('noLongUrl')"
-              :hint="readOnlyHint('noLongUrl')"
+              variant="outlined"
+              :readonly="urlReadOnly"
+              :hint="readOnlyHint('url')"
               persistent-hint
-              dense
+              density="compact"
               :disabled="loading"
               v-model="urlField"
               :error-messages="validationErrors.url"
             />
-          </v-col>
-        </v-row>
-
-        <v-row>
-          <v-col>
-            <BaseIconSwitch
-              :active="isDataDeprecated"
-              :disabled="!editingRestrictingActive"
-              :icon="mdiCancel"
-              class="mt-2"
-              :tooltipText="labels.dataDeprecatedSwitchTooltip"
-              @clicked="isDataDeprecated = !isDataDeprecated"
-              :label="labels.dataDeprecatedSwitchLabel"
-            />
-          </v-col>
-
-          <v-col v-show="isDataDeprecated">
-            {{ labels.dataDeprecatedSwitchInfo }}
           </v-col>
         </v-row>
 
@@ -196,14 +161,14 @@
                   :label="labels.size"
                   hide-details="auto"
                   :disabled="!isLink || loading"
-                  :model-value="isLink ? sizeField : sizeFieldText"
+                  :model-value="sizeField"
                   :error-messages="validationErrors.size"
                   @blur="sizeField = $event.target.value"
                 />
               </v-col>
               <v-col class="px-2">
                 <v-select
-                  :items="labels.sizeFormatList"
+                  :items="sizeFormatList"
                   v-model="sizeFormatField"
                   label="File size format"
                   hide-details="auto"
@@ -242,74 +207,95 @@
           </v-col>
         </v-row>
 
-        <div class="text-h6 mt-6">Data access</div>
+        <v-row class="mt-2">
+          <v-col cols="12" class="text-h6">{{ labels.dataDeprecatedTitle }}</v-col>
+          <v-col cols="4">
+            <BaseIconSwitch
+              :active="isDataDeprecated"
+              :disabled="!editingRestrictingActive"
+              :icon="mdiCancel"
+              class="mt-2"
+              :tooltipText="labels.dataDeprecatedSwitchTooltip"
+              @clicked="isDataDeprecated = !isDataDeprecated"
+              :label="labels.dataDeprecatedSwitchLabel"
+            />
+          </v-col>
 
-        <div class="pa-1">
-          <v-expand-transition>
-            <v-alert v-if="isDataPrivate" type="warning">
-              <div v-html="openAccessDetails"></div>
+          <v-col>
+            <v-alert :type="isDataDeprecated ? 'warning' : 'info'">
+              {{ labels.dataDeprecatedSwitchInfo }}
             </v-alert>
-          </v-expand-transition>
+          </v-col>
+        </v-row>
 
-          <BaseIconSwitch
-            :active="isDataPrivate"
-            :disabled="!editingRestrictingActive"
-            :icon="isDataPrivate ? mdiLock : mdiLockOpen"
-            class="mt-2"
-            :tooltipText="labels.dataAccessSwitchTooltip"
-            @clicked="isDataPrivate = !isDataPrivate"
-            :label="labels.dataAccessSwitchLabel"
-          />
+        <v-row class="mt-2">
+          <v-col cols="12" class="text-h6">Data access</v-col>
 
-          <BaseIconSwitch
-            v-if="isDataPrivate"
-            :active="hasAllowedUsers"
-            :disabled="!editingRestrictingActive"
-            :icon="mdiAccountGroup"
-            class="mt-2"
-            :tooltipText="labels.hasAllowedUsersSwitchTooltip"
-            @clicked="hasAllowedUsers = !hasAllowedUsers"
-            :label="labels.hasAllowedUsersSwitchLabel"
-          />
+          <v-col cols="4">
+            <BaseIconSwitch
+              :active="isDataPrivate"
+              :disabled="!editingRestrictingActive"
+              :icon="isDataPrivate ? mdiLock : mdiLockOpen"
+              class="mt-2"
+              :tooltipText="labels.dataAccessSwitchTooltip"
+              @clicked="isDataPrivate = !isDataPrivate"
+              :label="labels.dataAccessSwitchLabel"
+            />
+          </v-col>
 
-          <v-row
-            v-if="isDataPrivate && hasAllowedUsers"
-            no-gutters
-            class="px-2 pt-3"
-          >
-            <v-col cols="12" class="pt-2">
-              <BaseUserPicker
-                :users="envidatUserNameStrings"
-                :pickerLabel="labels.restrictedAllowedUsersInfo"
-                multiplePick
-                :prependIcon="mdiKey"
-                userTagsCloseable
-                :placeholder="labels.allowedUsersTypingInfo"
-                :preSelected="preSelectedAllowedUsers"
-                @removedUsers="changeAllowedUsers"
-                @pickedUsers="changeAllowedUsers"
-              />
-            </v-col>
-          </v-row>
+          <v-col cols="8">
+            <v-expand-transition>
+              <v-alert v-if="isDataPrivate" type="warning">
+                <div v-html="openAccessDetails"></div>
+              </v-alert>
+            </v-expand-transition>
+          </v-col>
 
-          <v-row v-if="!editingRestrictingActive" class="py-2">
-            <v-col>
-              <v-alert type="warning">{{
-                labels.editingRestrictingUnavailableInfo
-              }}</v-alert>
-            </v-col>
-          </v-row>
+          <v-col cols="12">
+            <BaseIconSwitch
+              v-if="isDataPrivate"
+              :active="hasAllowedUsers"
+              :disabled="!editingRestrictingActive"
+              :icon="mdiAccountGroup"
+              class="mt-2"
+              :tooltipText="labels.hasAllowedUsersSwitchTooltip"
+              @clicked="hasAllowedUsers = !hasAllowedUsers"
+              :label="labels.hasAllowedUsersSwitchLabel"
+            />
+          </v-col>
+        </v-row>
 
-          <v-row v-if="checkUppercaseValue" class="py-2">
-            <v-col>
-              <v-alert type="info">{{
-                labels.editingWarningUppercaseExtension
-              }}</v-alert>
-            </v-col>
-          </v-row>
-        </div>
+        <v-row v-if="isDataPrivate && hasAllowedUsers" no-gutters class="px-2 pt-3">
+          <v-col cols="12" class="pt-2">
+            <BaseUserPicker
+              :users="envidatUsersPicker"
+              :preSelectedNames="preSelectedAllowedUsers"
+              :pickerLabel="labels.restrictedAllowedUsersInfo"
+              multiplePick
+              :prependIcon="mdiKey"
+              userTagsCloseable
+              :placeholder="labels.allowedUsersTypingInfo"
+              @removedUsers="changeAllowedUsers"
+              @pickedUsers="changeAllowedUsers"
+            />
+          </v-col>
+        </v-row>
 
-        <v-row no-gutters class="pt-4" justify="end">
+        <v-row v-if="!editingRestrictingActive" class="py-2">
+          <v-col>
+            <v-alert type="warning">{{ labels.editingRestrictingUnavailableInfo }}</v-alert>
+          </v-col>
+        </v-row>
+
+        <v-row no-gutters class="pt-4" :justify="isSystemAdmin ? 'space-between' : 'end'">
+          <v-col v-if="isSystemAdmin" class="flex-grow-0">
+            <BaseRectangleButton
+              :loading="loading"
+              :buttonText="labels.deleteButtonText"
+              color="error"
+              @clicked="() => $emit('delete')"
+            />
+          </v-col>
           <v-col class="flex-grow-0">
             <BaseRectangleButton
               :disabled="!saveButtonEnabled"
@@ -345,35 +331,38 @@ import {
   mdiAccountGroup,
 } from '@mdi/js';
 
-import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus.js';
+import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
 
-import { formatDateTimeToCKANFormat } from '@/factories/mappingFactory.js';
-import { renderMarkdown } from '@/factories/stringFactory.js';
+import { formatDateTimeToCKANFormat } from '@/factories/mappingFactory';
+import { renderMarkdown } from '@/factories/stringFactory';
 import { getFileIcon, getIconImage } from '@/factories/imageFactory';
 
 import notFoundImg from '@/modules/user/assets/imageNotFound.jpg';
 import {
-  getAllowedUsersString,
   getAllowedUserNames,
   getUserAutocompleteList,
   ACCESS_LEVEL_SAMEORGANIZATION_VALUE,
   ACCESS_LEVEL_PUBLIC_VALUE,
-} from '@/factories/userEditingFactory.js';
+  getAllowedUsersString,
+} from '@/factories/userEditingFactory';
 
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
-import { formatDate } from '@/factories/dateFactory.js';
+import { formatDate } from '@/factories/dateFactory';
 
-import {
-  isReadOnlyField,
-  getReadOnlyHint,
-} from '@/modules/workflow/utils/useReadonly';
-
+import { isReadOnlyField, getReadOnlyHint } from '@/modules/workflow/utils/useReadonly';
+import { RESOURCE_FORMAT_LINK } from '@/factories/metadataConsts';
+import { getFileExtension } from '@/factories/fileFactory';
+import { RestrictedDTO } from '@/types/dataTransferObjectsTypes';
+import { getAuthorName, getUserPickerObjects } from '@/factories/authorFactory';
+import { USER_ROLE_SYSTEM_ADMIN } from '@/factories/userEditingValidations';
+import { sizeFormatList } from '@/factories/resourceHelpers.ts';
+import { Resource, User } from '@/types/modelTypes';
 
 export default {
   name: 'ResourceEditing',
@@ -423,7 +412,7 @@ export default {
       default: '',
     },
     size: {
-      type: Number,
+      type: String,
       default: undefined,
     },
     sizeFormat: {
@@ -466,20 +455,22 @@ export default {
       type: Object,
       default: () => ({}),
     },
-
     userEditMetadataConfig: {
       type: Object,
       default: undefined,
     },
+    userRole: {
+      type: String,
+      default: null,
+    },
   },
-  emits: ['save', 'validate', 'closeClicked'],
+  emits: ['save', 'validate', 'closeClicked', 'previewImageClicked', 'delete'],
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   beforeUnmount() {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
-  mounted() {},
   computed: {
     loadingColor() {
       if (this.loading) {
@@ -493,9 +484,7 @@ export default {
     },
     descriptionField: {
       get() {
-        return this.previews.description !== null
-          ? this.previews.description
-          : this.description;
+        return this.previews.description !== null ? this.previews.description : this.description;
       },
       set(value) {
         this.previews.description = value;
@@ -540,7 +529,7 @@ export default {
       get() {
         return this.previews.size !== null ? this.previews.size : this.size;
       },
-      set(value) {
+      set(value: string) {
         this.previews.size = value;
 
         this.validateField('size', value);
@@ -548,26 +537,9 @@ export default {
         this.checkSaveButtonEnabled();
       },
     },
-    sizeFieldText: {
-      get() {
-        const size = this.sizeField;
-
-        const multiplier = this.getFileSizeFormatIndex(size);
-
-        return `${(size / 1024 ** multiplier).toFixed(2)}`;
-      },
-    },
     sizeFormatField: {
       get() {
-        if (this.isLink) {
-          return this.previews.sizeFormat !== null
-            ? this.previews.sizeFormat
-            : this.sizeFormat;
-        }
-
-        return this.previews.sizeFormat !== null
-          ? this.previews.sizeFormat
-          : this.getFileSizeFormat(this.size);
+        return this.previews.sizeFormat !== null ? this.previews.sizeFormat : this.sizeFormat;
       },
       set(value) {
         this.previews.sizeFormat = value;
@@ -592,17 +564,13 @@ export default {
         this.checkSaveButtonEnabled();
       },
     },
-    checkUppercaseValue() {
-      // shows a warning message if the form receives an uppercase character in the file name
-      return /[A-Z]/.test(this.resourceNameField);
-    },
     accessRestrictionLvl: {
       get() {
         let restrictionLvl;
 
         if (this.restricted) {
           if (typeof this.restricted === 'string') {
-            let restrictedObj = {};
+            let restrictedObj = {} as RestrictedDTO;
             try {
               restrictedObj = JSON.parse(this.restricted);
             } catch (e) {
@@ -620,24 +588,18 @@ export default {
     isDataPrivate: {
       get() {
         const level =
-          this.previews.restrictedLevel !== null
-            ? this.previews.restrictedLevel
-            : this.accessRestrictionLvl;
+          this.previews.restrictedLevel !== null ? this.previews.restrictedLevel : this.accessRestrictionLvl;
         return level !== ACCESS_LEVEL_PUBLIC_VALUE; // && !this.hasAllowedUsers;
       },
       set(value) {
-        this.previews.restrictedLevel = value
-          ? ACCESS_LEVEL_SAMEORGANIZATION_VALUE
-          : ACCESS_LEVEL_PUBLIC_VALUE;
+        this.previews.restrictedLevel = value ? ACCESS_LEVEL_SAMEORGANIZATION_VALUE : ACCESS_LEVEL_PUBLIC_VALUE;
 
         this.checkSaveButtonEnabled();
       },
     },
     isDataDeprecated: {
       get() {
-        return this.previews.deprecated !== null
-          ? this.previews.deprecated
-          : this.deprecated;
+        return this.previews.deprecated !== null ? this.previews.deprecated : this.deprecated;
       },
       set(value) {
         this.previews.deprecated = value;
@@ -649,16 +611,22 @@ export default {
 
       if (this.restricted) {
         if (typeof this.restricted === 'string') {
-          let restrictedObj = {};
+          let restrictedObj = {} as RestrictedDTO;
           try {
             restrictedObj = JSON.parse(this.restricted);
           } catch (e) {
             console.error(`Error while parsing allowedUsers info: ${e}`);
           }
 
-          users = restrictedObj.allowedUsers || restrictedObj.allowed_users;
+          users =
+            restrictedObj.allowed_users ||
+            // @ts-ignore
+            restrictedObj.allowedUsers;
         } else {
-          users = this.restricted.allowedUsers || this.restricted.allowed_users;
+          users =
+            this.restricted.allowed_users ||
+            // @ts-ignore
+            this.restricted.allowedUsers;
         }
       }
 
@@ -666,9 +634,7 @@ export default {
     },
     hasAllowedUsers: {
       get() {
-        return this.previews.hasAllowedUsers !== null
-          ? this.previews.hasAllowedUsers
-          : !!this.allowedUsers;
+        return this.previews.hasAllowedUsers !== null ? this.previews.hasAllowedUsers : !!this.allowedUsers;
       },
       set(value) {
         this.previews.hasAllowedUsers = value;
@@ -677,9 +643,7 @@ export default {
     },
     allowedUsersField: {
       get() {
-        return this.previews.allowedUsers !== null
-          ? this.previews.allowedUsers
-          : this.allowedUsers;
+        return this.previews.allowedUsers !== null ? this.previews.allowedUsers : this.allowedUsers;
       },
       set(value) {
         this.previews.allowedUsers = value;
@@ -692,12 +656,17 @@ export default {
       }
       return ACCESS_LEVEL_PUBLIC_VALUE;
     },
-    envidatUserNameStrings() {
-      return getUserAutocompleteList(this.envidatUsers);
+    envidatUsersPicker() {
+      const users = getUserAutocompleteList(this.envidatUsers);
+      return getUserPickerObjects(users);
     },
     preSelectedAllowedUsers() {
-      // match with the user.name but make sure the fullname or display_name is shown
-      return getAllowedUserNames(this.allowedUsersField, this.envidatUsers);
+      if (this.allowedUsersField) {
+        // match with the user.name but make sure the fullName or display_name is shown
+        return getAllowedUserNames(this.allowedUsersField, this.envidatUsers);
+      }
+
+      return undefined;
     },
     openAccessDetails() {
       return renderMarkdown(this.labels.openAccessPreferedInstructions);
@@ -710,6 +679,21 @@ export default {
     },
     isImage() {
       return this.mimetype?.includes('image') || false;
+    },
+    urlAndFileExtensionMatch() {
+      const ext = getFileExtension(this.urlField);
+      return ext === this.formatField;
+    },
+    urlReadOnly() {
+      if (this.urlAndFileExtensionMatch) {
+        return true;
+      }
+
+      if (this.formatField !== RESOURCE_FORMAT_LINK) {
+        return true;
+      }
+
+      return this.isReadOnly('url');
     },
     isLink() {
       return this.urlType !== 'upload';
@@ -739,12 +723,11 @@ export default {
     fileFormatIcon() {
       return getFileIcon(this.formatField);
     },
+    isSystemAdmin() {
+      return this.userRole === USER_ROLE_SYSTEM_ADMIN;
+    },
   },
   methods: {
-    getFileSizeFormat(size) {
-      return this.labels.sizeFormatList[this.getFileSizeFormatIndex(size)];
-    },
-
     isReadOnly(dateProperty) {
       return isReadOnlyField(dateProperty);
     },
@@ -752,21 +735,6 @@ export default {
       return getReadOnlyHint(dateProperty);
     },
 
-    getFileSizeFormatIndex(size) {
-      if (!size) {
-        return null;
-      }
-
-      let convertedSized = size / 1024;
-      let index = 0;
-
-      while (convertedSized > 1) {
-        convertedSized /= 1024;
-        index++;
-      }
-
-      return index;
-    },
     checkSaveButtonEnabled() {
       // not test the preview fields to ensure the content of both fields is valid
       // to show the save button
@@ -774,7 +742,7 @@ export default {
         description: this.descriptionField,
         name: this.resourceNameField,
         format: this.formatField,
-        size: this.sizeField || 0,
+        size: this.sizeField,
         sizeFormat: this.sizeFormatField,
       };
 
@@ -792,40 +760,30 @@ export default {
         name: this.resourceNameField,
         lastModified: ckanIsoFormat,
         restricted: {
-          allowedUsers: this.hasAllowedUsers
-            ? this.allowedUsersField || ''
-            : '',
+          allowedUsers: this.hasAllowedUsers ? this.allowedUsersField || '' : '',
           level: this.writeRestrictionLvl,
           sharedSecret: '',
         },
         deprecated: this.isDataDeprecated,
         format: this.formatField.toLowerCase(),
-        // don't set the "size" directly because this is done
-        // via the file upload
-        // size: this.size, // DEMO
-        // sizeFormat: this.sizeFormatField,  // DEMO
-        resourceSize: {
-          sizeValue: this.isLink ? this.sizeField?.toString() : '',
-          sizeUnits: this.isLink ? this.sizeFormatField?.toLowerCase() : '',
-        },
-      };
+        size: this.sizeField,
+        sizeFormat: this.sizeFormatField,
+      } satisfies Resource;
 
       this.$emit('save', newResourceProps);
     },
     loadImagePreview(url) {
       this.imagePreviewError = null;
       this.loadingImagePreview = true;
-      const vm = this;
 
       this.$nextTick(() => {
         try {
-          const imageRefs = vm.$refs.filePreview;
-          const imageRef =
-            imageRefs instanceof Array ? imageRefs[0] : imageRefs;
+          const imageRefs = this.$refs.filePreview;
+          const imageRef = imageRefs instanceof Array ? imageRefs[0] : imageRefs;
           imageRef.$el.src = url;
         } catch (e) {
-          vm.imagePreviewError = e;
-          vm.loadingImagePreview = false;
+          this.imagePreviewError = e;
+          this.loadingImagePreview = false;
 
           console.error(`Loading image preview failed: ${e}`);
         }
@@ -838,11 +796,8 @@ export default {
       this.imagePreviewError = event;
       this.loadingImagePreview = false;
     },
-    changeAllowedUsers(pickedUserNames) {
-      this.allowedUsersField = getAllowedUsersString(
-        pickedUserNames,
-        this.envidatUsers,
-      );
+    changeAllowedUsers(pickUserEmailHash: string[]) {
+      this.allowedUsersField = getAllowedUsersString(pickUserEmailHash, this.envidatUsers);
     },
     validateField(property, value) {
       this.$emit('validate', { [property]: value });
@@ -878,12 +833,13 @@ export default {
     isExtensionUppercase: false,
     loadingImagePreview: false,
     imagePreviewError: null,
+    sizeFormatList,
     labels: {
       title: 'Edit Selected Resource',
-      instructions:
-        'Include an apt name and description others will understand',
+      instructions: 'Include an apt name and description others will understand',
       subInstructions: 'For files larger then 5GB contact the EnviDat team.',
       createButtonText: 'Save Resource',
+      deleteButtonText: 'Delete Resource',
       description: 'Resource description',
       resourceName: 'Name of the resource',
       fileName: 'File',
@@ -891,7 +847,6 @@ export default {
       created: 'Created at',
       lastModified: 'Last modified time',
       size: 'File size',
-      sizeFormatList: ['B', 'KB', 'MB', 'GB', 'TB', 'PB'],
       format: 'File format',
       openAccessPreferedInstructions:
         'Resource is **NOT** Open Access!\nPlease make your data available to everyone unless it contains sensitive data.\nData is **always** accessible by people in the same organization.',
@@ -901,19 +856,17 @@ export default {
       hasAllowedUsersSwitchLabel: 'Grant specific users access',
       hasAllowedUsersSwitchTooltip:
         'Grant access to a specific list of users even if the resource is marked as private',
-      allowedUsersTypingInfo:
-        'Start typing the name in the text field to search for an EnviDat user.',
-      restrictedAllowedUsersInfo:
-        'Additional access is granted to the following users',
+      allowedUsersTypingInfo: 'Start typing the name in the text field to search for an EnviDat user.',
+      restrictedAllowedUsersInfo: 'Additional access is granted to the following users',
       editingRestrictingUnavailableInfo:
         'Editing the accessibility of resources is not available at the moment. Please contact the EnviDat team if you need to make changes.',
       editingWarningUppercaseExtension:
         'EnviDat automatically converts filename/extension to lowercase. To preserve uppercase extensions (e.g., .R), please upload a compressed (.zip) version of your file.',
       dataDeprecatedSwitchLabel: 'Data is deprecated',
-      dataDeprecatedSwitchTooltip:
-        'Deprecated resources are grayed out and at the bottom of the list',
+      dataDeprecatedSwitchTooltip: 'Deprecated resources are grayed out and at the bottom of the list',
       dataDeprecatedSwitchInfo:
         'Deprecated resources are grayed out and at the bottom of the list. Make sure you provide an updated replacement!',
+      dataDeprecatedTitle: 'Deprecated Resource',
     },
     saveButtonEnabled: false,
     fileSizeIcon: getIconImage('fileSize'),

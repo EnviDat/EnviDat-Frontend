@@ -13,40 +13,26 @@
     <!-- Info Banner -->
 
     <v-row>
-      <v-col class="mb-5 pt-0 pb-0">
-        <v-alert
-          type="info"
-          closable
-          :icon="false"
-          class="rounded-lg info-banner"
-        >
-          <v-alert-title class="mb-2">Information</v-alert-title>
-          <p>
-            This section defines the main identification metadata of your
-            dataset. These fields are essential for discovery and citation of
-            your data.
-          </p>
+      <InfoBanner :show="showInfoBanner" :icon="mdiInformationOutline" @setInfoBanner="$emit('setInfoBanner', $event)">
+        <p>
+          This section defines the main identification metadata of your dataset. These fields are essential for
+          discovery and citation of your data.
+        </p>
 
-          <p><strong>Tips:</strong></p>
-          <ol>
-            <li>- Choose a clear and descriptive title.</li>
-            <li>
-              - Use keywords that reflect the content, methods, and geography of
-              your data.
-            </li>
-            <li>
-              - In the description, provide enough context so other researchers
-              can understand what your dataset contains, how it was generated,
-              and any limitations.
-            </li>
-          </ol>
+        <p><strong>Tips:</strong></p>
+        <ol>
+          <li>Choose a clear and descriptive title.</li>
+          <li>Use keywords that reflect the content, methods, and geography of your data.</li>
+          <li>
+            In the description, provide enough context so other researchers can understand what your dataset contains,
+            how it was generated, and any limitations.
+          </li>
+        </ol>
 
-          <p class="mt-2">
-            You can format the description using <strong>Markdown</strong>
-            (e.g., lists, links, bold text).
-          </p>
-        </v-alert>
-      </v-col>
+        <p class="mt-2">
+          You can format the description using <strong>Markdown</strong> (e.g., lists, links, bold text).
+        </p>
+      </InfoBanner>
     </v-row>
 
     <!-- Preview -->
@@ -96,7 +82,7 @@
           :placeholder="labels.placeholderTitle"
           :model-value="metadataTitleField"
           @keyup="blurOnEnterKey"
-          @input="setTitleInput($event.target.value)"
+          @update:model-value="setTitleInput($event)"
           @change="notifyTitleChange($event.target.value)"
         />
       </v-col>
@@ -115,13 +101,12 @@
         <v-autocomplete
           data-field="keywords"
           v-model="keywordsField"
-          item-text="name"
+          item-title="name"
           item-value="name"
           :items="existingKeywordItems"
           :menu-icon="mdiArrowDownDropCircleOutline"
           :readonly="isReadOnly('keywords')"
           :hint="readOnlyHint('keywords')"
-          :persistent-hint="!!hint"
           :prepend-icon="mdiPaletteSwatch"
           :label="labelsKeywords.placeholder"
           :clear-on-select="true"
@@ -132,25 +117,16 @@
             search = $event;
             isKeywordValid(search);
           "
-          @input="isEnoughKeywords()"
+          @update:model-value="isEnoughKeywords()"
           @keydown="catchKeywordEntered($event)"
           :rules="rulesKeywords"
         >
           <template v-slot:selection="{ item }">
-            <TagChip
-              :name="item.value"
-              selectable
-              closeable
-              @clicked="removeKeyword(item.raw)"
-              :isSmall="false"
-            />
+            <TagChip :name="item.value" selectable closeable @clicked="removeKeyword(item.raw)" :isSmall="false" />
           </template>
 
           <template v-slot:item="{ item, props }">
-            <v-list-item
-              @click="catchKeywordClicked(item.value)"
-              v-bind="props"
-            />
+            <v-list-item @click="catchKeywordClicked(item.value)" v-bind="props" />
           </template>
 
           <template v-slot:no-data>
@@ -167,10 +143,7 @@
             <div class="font-weight-bold">
               {{ labelsDescription.title }}
             </div>
-            <div
-              v-html="labelsDescription.descriptionInstructions"
-              class="text-caption"
-            ></div>
+            <div v-html="labelsDescription.descriptionInstructions" class="text-caption"></div>
           </v-col>
         </v-row>
         <GenericTextareaPreviewLayout
@@ -209,6 +182,7 @@ import {
   mdiText,
   mdiPaletteSwatch,
   mdiArrowDownDropCircleOutline,
+  mdiInformationOutline,
 } from '@mdi/js';
 
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout.vue';
@@ -222,47 +196,23 @@ import { getTagColor } from '@/factories/keywordsFactory';
 import MetadataDescription from '@/modules/metadata/components/Metadata/MetadataDescription.vue';
 import { enhanceTitleImg } from '@/factories/metaDataFactory.js';
 
-import {
-  isReadOnlyField,
-  getReadOnlyHint,
-} from '@/modules/workflow/utils/useReadonly';
+import { isReadOnlyField, getReadOnlyHint } from '@/modules/workflow/utils/useReadonly';
+
+import InfoBanner from '@/modules/workflow/components/steps/InformationBanner.vue';
 
 export default {
   name: 'MetadataBaseInformation',
   props: {
-    metadataTitle: {
-      type: String,
-      default: '',
-    },
-    metadataDescription: {
-      type: String,
-      default: '',
-    },
-    validationErrors: {
-      type: Object,
-      default: () => {},
-    },
-    existingKeywords: {
-      type: Array,
-      default: () => {},
-    },
-    keywords: {
-      type: Array,
-      default: null,
-    },
+    metadataTitle: { type: String, default: '' },
+    metadataDescription: { type: String, default: '' },
+    validationErrors: { type: Object, default: () => {} },
+    existingKeywords: { type: Array, default: () => {} },
+    keywords: { type: Array, default: null },
 
-    loading: {
-      type: Boolean,
-      default: false,
-    },
-    readOnlyFields: {
-      type: Array,
-      default: () => [],
-    },
-    readOnlyExplanation: {
-      type: String,
-      default: '',
-    },
+    loading: { type: Boolean, default: false },
+    readOnlyFields: { type: Array, default: () => [] },
+    readOnlyExplanation: { type: String, default: '' },
+    showInfoBanner: { type: Boolean, default: true },
   },
 
   computed: {
@@ -284,16 +234,11 @@ export default {
       return this.defaultUserEditMetadataConfig.keywordsListWordMax;
     },
     descriptionObject() {
-      return {
-        description: this.metadataDescriptionField,
-        maxTextLength: 5000,
-      };
+      return { description: this.metadataDescriptionField, maxTextLength: 5000 };
     },
 
     metadataTitleField() {
-      return this.newDatasetInfo.metadataTitle !== undefined
-        ? this.newDatasetInfo.metadataTitle
-        : this.metadataTitle;
+      return this.newDatasetInfo.metadataTitle !== undefined ? this.newDatasetInfo.metadataTitle : this.metadataTitle;
     },
     metadataDescriptionField() {
       return this.newDatasetInfo?.metadataDescription
@@ -302,9 +247,7 @@ export default {
     },
     keywordsField: {
       get() {
-        return this.newDatasetInfo?.keywords?.length > 0
-          ? this.newDatasetInfo.keywords
-          : this.keywords;
+        return this.newDatasetInfo?.keywords?.length > 0 ? this.newDatasetInfo.keywords : this.keywords;
       },
       set(v) {
         this.newDatasetInfo.keywords = this.processValues(v);
@@ -321,8 +264,7 @@ export default {
       let hint = '';
 
       if (!this.keywordValidMin3Characters) {
-        hint +=
-          '<span class="font-italic">Keyword must be at least <strong>3 characters</strong>. </span> ';
+        hint += '<span class="font-italic">Keyword must be at least <strong>3 characters</strong>. </span> ';
       }
 
       if (this.search) {
@@ -352,35 +294,25 @@ export default {
   },
   methods: {
     keywordsChanged() {
-      this.$emit('save', {
-        keywords: this.newDatasetInfo.keywords,
-      });
+      this.$emit('save', { keywords: this.newDatasetInfo.keywords });
     },
     setTitleInput(value) {
       this.newDatasetInfo.metadataTitle = value;
 
-      this.$emit('validate', {
-        metadataTitle: value,
-      });
+      this.$emit('validate', { metadataTitle: value });
     },
     notifyTitleChange(value) {
       this.newDatasetInfo.metadataTitle = value;
 
-      this.$emit('save', {
-        metadataTitle: value,
-      });
+      this.$emit('save', { metadataTitle: value });
     },
     onDescriptionInput(value) {
       this.newDatasetInfo.metadataDescription = value;
-      this.$emit('validate', {
-        metadataDescription: value,
-      });
+      this.$emit('validate', { metadataDescription: value });
     },
     onDescriptionChange(value) {
-      this.newDatasetInfo.metadataDescription = value;
-      this.$emit('save', {
-        metadataDescription: value,
-      });
+      this.newDatasetInfo.metadataDescription = value.target.value;
+      this.$emit('save', { metadataDescription: value.target.value });
     },
     blurOnEnterKey(keyboardEvent) {
       if (keyboardEvent.key === 'Enter') {
@@ -407,9 +339,7 @@ export default {
 
       // Assign selectedKeywords to keywords concatenated with pickedKeywordObj
 
-      const selectedKeywords = (this.keywordsField || []).concat([
-        pickedKeywordObj,
-      ]);
+      const selectedKeywords = (this.keywordsField || []).concat([pickedKeywordObj]);
 
       this.newDatasetInfo.keywords = this.processValues(selectedKeywords);
       this.search = null;
@@ -437,9 +367,7 @@ export default {
       }
 
       // Remove duplicates from valuesArray
-      valuesArray = [...new Set(valuesArray.map((a) => JSON.stringify(a)))].map(
-        (a) => JSON.parse(a),
-      );
+      valuesArray = [...new Set(valuesArray.map((a) => JSON.stringify(a)))].map((a) => JSON.parse(a));
 
       // Assign keywordCount to length of valuesArray
       this.keywordCount = valuesArray.length;
@@ -452,7 +380,6 @@ export default {
     removeKeyword(item) {
       // Assign removeIndex to index of keywords object that match item
       const removeIndex = this.keywordsField.indexOf(item);
-      // console.log(removeIndex);
 
       // Assign localKeywords to copy of keywords
       const localKeywords = [...this.keywordsField];
@@ -462,6 +389,7 @@ export default {
 
       // Process and emit localKeywords to eventBus
       this.newDatasetInfo.keywords = this.processValues(localKeywords);
+      this.keywordsChanged();
     },
     // Assign keywordCountEnough to true if keywordCount is greater than or equal to keywordsCountMin
     // Else assigns keywordCountEnough to false
@@ -469,9 +397,7 @@ export default {
       const keywordCountEnough = this.keywordCount >= this.keywordsCountMin;
 
       if (!keywordCountEnough) {
-        this.rulesKeywords = [
-          `Please enter at least ${this.keywordsCountMin} keywords.`,
-        ];
+        this.rulesKeywords = [`Please enter at least ${this.keywordsCountMin} keywords.`];
       } else {
         this.rulesKeywords = [true];
       }
@@ -487,8 +413,7 @@ export default {
         // Sets keywordValidConcise to true if trimmed search is less than or equal to keywordsListWordMax words (split by space ' ')
         // Else sets keywordValidConcise to false
         const inputSplit = search.trim().split(' ');
-        this.keywordValidConcise =
-          inputSplit.length <= this.keywordsListWordMax;
+        this.keywordValidConcise = inputSplit.length <= this.keywordsListWordMax;
       }
 
       return this.keywordValidMin3Characters && this.keywordValidConcise;
@@ -505,24 +430,19 @@ export default {
       return getReadOnlyHint(dateProperty);
     },
   },
+
   data: () => ({
     mdiPaletteSwatch,
     mdiArrowDownDropCircleOutline,
     mdiBookOpenVariantOutline,
+    mdiInformationOutline,
     search: '',
     keywordValidConcise: true,
     keywordValidMin3Characters: true,
     keywordCount: 0,
     rulesKeywords: [],
-    newDatasetInfo: {
-      metadataTitle: undefined,
-      keywords: undefined,
-      metadataDescription: undefined,
-    },
-    defaultUserEditMetadataConfig: {
-      keywordsListWordMax: 2,
-      keywordsCountMin: 5,
-    },
+    newDatasetInfo: { metadataTitle: undefined, keywords: undefined, metadataDescription: undefined },
+    defaultUserEditMetadataConfig: { keywordsListWordMax: 2, keywordsCountMin: 5 },
     labelsKeywords: {
       title: 'Keywords',
       placeholder: 'Pick keywords from the list or type in a new keyword',
@@ -552,6 +472,7 @@ export default {
     MetadataDescription,
     MetadataHeader,
     TagChip,
+    InfoBanner,
     // BaseStatusLabelView,
     GenericTextareaPreviewLayout,
   },

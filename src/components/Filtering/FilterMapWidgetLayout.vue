@@ -1,31 +1,23 @@
 <template>
   <v-card class="elevation-0" id="FilterMapWidgetLayout">
     <v-card-title :class="mdScreen ? 'pa-4' : 'pb-2'">
-      <div class="mb-0 text-h6" style="word-break: keep-all;">
+      <div class="mb-0 text-h6" style="word-break: keep-all">
         {{ title }}
       </div>
     </v-card-title>
 
     <div
-      class="py-0 my-0 "
+      class="py-0 my-0"
       :class="mdScreen ? 'px-4' : 'px-4 mb-1'"
       :style="`background-color: ${$vuetify.theme.themes.light.colors.highlight};`"
     >
-      <v-row
-        v-if="topLayout"
-        id="topLayout"
-        class="fill-height my-0"
-        align="center"
-        no-gutters
-      >
+      <v-row v-if="topLayout" id="topLayout" class="fill-height my-0" align="center" no-gutters>
         <v-col class="grow" :class="mdScreen ? 'text-caption' : 'body-2'">
           {{ highlightedText }}
         </v-col>
 
         <v-col cols="2" md="3" lg="2" class="text-caption">
-          <div
-            :style="`color:${pinnedAmount > 0 ? 'black' : 'rgba(0,0,0,.47)'};`"
-          >
+          <div :style="`color:${pinnedAmount > 0 ? 'black' : 'rgba(0,0,0,.47)'};`">
             {{ filterText + pinnedAmount }}
           </div>
         </v-col>
@@ -35,21 +27,12 @@
         </v-col>
       </v-row>
 
-      <div
-        v-if="!topLayout"
-        id="sideLyout"
-        class="my-0"
-        :class="mdScreen ? 'text-caption' : 'body-2'"
-      >
+      <div v-if="!topLayout" id="sideLyout" class="my-0" :class="mdScreen ? 'text-caption' : 'body-2'">
         {{ highlightedText }}
       </div>
     </div>
 
-    <v-container
-      v-if="topLayout"
-      class="pt-2 pb-4 px-4"
-      id="FilterMapWidgetLayout_topLayout"
-    >
+    <v-container v-if="topLayout" class="pt-2 pb-4 px-4" id="FilterMapWidgetLayout_topLayout">
       <v-row no-gutters justify="space-around">
         <v-col class="flex-grow-0">
           <slot name="focus" />
@@ -79,15 +62,7 @@
     >
       <v-row no-gutters align="center">
         <v-col class="flex-grow-1 text-caption">
-          <div
-            :style="
-              `color:${
-                pinnedAmount > 0
-                  ? $vuetify.theme.themes.light.colors.primary
-                  : 'rgba(0,0,0,.47)'
-              };`
-            "
-          >
+          <div :style="`color:${pinnedAmount > 0 ? $vuetify.theme.themes.light.colors.primary : 'rgba(0,0,0,.47)'};`">
             {{ filterText + pinnedAmount }}
           </div>
         </v-col>

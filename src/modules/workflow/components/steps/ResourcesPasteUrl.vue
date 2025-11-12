@@ -21,7 +21,7 @@
           :clear-icon="mdiClose"
           :error-messages="validationErrors.url"
           @keyup="blurOnEnterKey"
-          @input="checkCreateButtonDisabled"
+          @update:model-value="checkCreateButtonDisabled"
         />
       </v-col>
     </v-row>
@@ -88,11 +88,7 @@ export default {
       });
       const objToValidate = { url: this.url };
 
-      this.createButtonDisabled = !isObjectValidCheckAllProps(
-        objToValidate,
-        urlSchema,
-        this.validationErrors,
-      );
+      this.createButtonDisabled = !isObjectValidCheckAllProps(objToValidate, urlSchema, this.validationErrors);
     },
     createButtonClick() {
       this.$emit('createUrlResources', this.url);

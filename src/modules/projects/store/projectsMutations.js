@@ -11,10 +11,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import { getSpecificApiError } from '@/factories/notificationFactory';
-import {
-  enhanceProjectDatasets,
-  enhanceSubprojectsFromExtras,
-} from '@/factories/projectsDataFactory';
+import { enhanceProjectDatasets, enhanceSubprojectsFromExtras } from '@/factories/projectsDataFactory';
 import { ADD_USER_NOTIFICATION } from '@/store/mainMutationsConsts';
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
@@ -31,13 +28,8 @@ export default {
   },
   [GET_PROJECTS_SUCCESS](state, payload) {
     const enhancedProjects = enhanceSubprojectsFromExtras(payload);
-    const metadatasContent = this.getters[
-      `${METADATA_NAMESPACE}/metadatasContent`
-    ];
-    const enhancedWithTags = enhanceProjectDatasets(
-      enhancedProjects,
-      metadatasContent,
-    );
+    const metadatasContent = this.getters[`${METADATA_NAMESPACE}/metadatasContent`];
+    const enhancedWithTags = enhanceProjectDatasets(enhancedProjects, metadatasContent);
 
     state.projects = enhancedWithTags;
     state.loading = false;

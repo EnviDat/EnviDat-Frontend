@@ -1,8 +1,5 @@
 <template>
-  <v-card color="secondary"
-          id="IntroductionCard"
-          class="pa-0 theme--dark">
-
+  <v-card color="secondary" id="IntroductionCard" class="pa-0 theme--dark">
     <v-container fluid class="pa-4">
       <v-row no-gutters>
         <v-col class="text-h5">
@@ -10,37 +7,24 @@
         </v-col>
       </v-row>
 
-      <v-row no-gutters
-              class="pt-2">
+      <v-row no-gutters class="pt-2">
         <v-col class="text-body-1 accentLink">
           <div v-html="introductionText"></div>
         </v-col>
       </v-row>
 
-      <v-row no-gutters
-              class="pt-2">
-        <v-col >
+      <v-row no-gutters class="pt-2">
+        <v-col>
+          <v-row v-if="currentLocalDataset" no-gutters>
+            <v-col cols="7" class="py-2"> Continue creating your dataset: </v-col>
 
-          <v-row v-if="currentLocalDataset"
-                 no-gutters>
-            <v-col cols="7"
-                    class="py-2">
-              Continue creating your dataset:
+            <v-col cols="5" class="py-2"> Clear your local dataset in creation: </v-col>
+
+            <v-col cols="7" class="pl-1 pr-4">
+              <MetadataCardLocal v-bind="currentLocalDataset" @clickedEvent="$emit('localCardClicked')" />
             </v-col>
 
-            <v-col cols="5"
-                   class="py-2">
-              Clear your local dataset in creation:
-            </v-col>
-
-            <v-col cols="7"
-                  class="pl-1 pr-4">
-              <MetadataCardLocal v-bind="currentLocalDataset"
-                                 @clickedEvent="$emit('localCardClicked')"
-              />
-            </v-col>
-
-            <v-col cols="5" style="display: inline-flex; justify-content: center;">
+            <v-col cols="5" style="display: inline-flex; justify-content: center">
               <BaseIconButton
                 :icon="mdiClose"
                 color="error"
@@ -49,11 +33,9 @@
                 @clicked="$emit('clearButtonClicked', $event)"
               />
             </v-col>
-
           </v-row>
 
-          <v-row v-if="!currentLocalDataset"
-                 no-gutters class="pt-3" style="align-items: center;">
+          <v-row v-if="!currentLocalDataset" no-gutters class="pt-3" style="align-items: center">
             <v-col cols="3" class="text-body-1">
               {{ createText }}
             </v-col>
@@ -69,17 +51,12 @@
             </v-col>
           </v-row>
 
-          <v-row v-if="editingText"
-            no-gutters
-            class="pt-3"
-            style="align-items: center;"
-          >
+          <v-row v-if="editingText" no-gutters class="pt-3" style="align-items: center">
             <v-col cols="7" class="text-body-1">
               {{ editingText }}
             </v-col>
 
-            <v-col cols="5"
-                    class="pl-4">
+            <v-col cols="5" class="pl-4">
               <BaseRectangleButton
                 color="accent"
                 marginClass="text-black"
@@ -112,7 +89,6 @@ import { mdiClose } from '@mdi/js';
 import MetadataCardLocal from '@/components/Cards/MetadataCardLocal.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
-
 
 export default {
   name: 'IntroductionCard',
@@ -153,9 +129,7 @@ export default {
   },
   computed: {
     welcomeTitle() {
-      return this.userName
-        ? `${this.title} ${this.userName} to your Dashboard!`
-        : `${this.title} to your Dashboard!`;
+      return this.userName ? `${this.title} ${this.userName} to your Dashboard!` : `${this.title} to your Dashboard!`;
     },
     introductionText() {
       let text = this.introText || this.introTextFallback;
@@ -164,21 +138,16 @@ export default {
       return text;
     },
     ckanDashboardText() {
-      return this.oldDashboardUrl
-        ? `<a href="${this.oldDashboardUrl}" target="_blank">legacy dashboard</a>`
-        : '';
+      return this.oldDashboardUrl ? `<a href="${this.oldDashboardUrl}" target="_blank">legacy dashboard</a>` : '';
     },
     editingText() {
-      return this.editingDatasetName
-        ? `Are you in the middle of editing "${this.editingDatasetName}" ?`
-        : '';
+      return this.editingDatasetName ? `Are you in the middle of editing "${this.editingDatasetName}" ?` : '';
     },
   },
   methods: {},
   data: () => ({
     mdiClose,
-    introTextFallback:
-      'Manage your datasets and create new ones. <br/>',
+    introTextFallback: 'Manage your datasets and create new ones. <br/>',
     createText: 'Create a dataset',
     createButtonText: 'New Dataset',
     editingButtonText: 'Continue editing',

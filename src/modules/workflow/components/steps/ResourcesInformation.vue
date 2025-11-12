@@ -1,13 +1,7 @@
 <template>
-  <v-container
-    fluid
-    class="pa-4"
-    id="ResourcesInformation">
-
+  <v-container fluid class="pa-4" id="ResourcesInformation">
     <v-row class="mb-0">
-      <v-col class="text-h5 font-weight-bold" cols="12">
-        Resources Information
-      </v-col>
+      <v-col class="text-h5 font-weight-bold" cols="12"> Resources Information </v-col>
       <!-- <v-col cols="12" class="text-body-1">
         Please provide the resources of the dataset.
       </v-col> -->
@@ -15,53 +9,51 @@
 
     <!-- Info Banner -->
     <v-row>
-      <v-col class="mb-5 pt-0 pb-0">
-        <v-alert
-          type="info"
-          closable
-          :icon="false"
-          class="rounded-lg info-banner"
-        >
-          <v-alert-title class="mb-2">Information</v-alert-title>
+      <InfoBanner :show="showInfoBanner" :icon="mdiInformationOutline" @setInfoBanner="$emit('setInfoBanner', $event)">
+        <p>
+          This section allows you to provide access to the actual data or related resources of your dataset. These can
+          be files, links to repositories, or online services.
+        </p>
 
-          <p>
-            This section allows you to provide access to the actual data or
-            related resources of your dataset. These can be files, links to
-            repositories, or online services.
-          </p>
+        <p><strong>Tips:</strong></p>
+        <ol>
+          <li>
+            - You can either <strong>upload files directly</strong> or <strong>provide links</strong> to external
+            resources (e.g., data hosted on other platforms).
+          </li>
+          <li>- Use clear and descriptive <strong>titles</strong> for each resource to improve discoverability.</li>
+          <li>
+            - <strong>Filename/extension automatically get converted</strong> to lowercase. To preserve uppercase
+            extensions (e.g., .R), please upload a compressed (.zip) version of your file.
+          </li>
+          <li>
+            - When adding a resource via a link, make sure to specify its
+            <strong>file format</strong> (e.g., CSV, GeoTIFF) and <strong>file size</strong> to help users assess it.
+          </li>
+          <li>
+            - If your resources are DORA publications, please add them in the
+            <em>Related Publications</em> step instead.
+          </li>
+          <li>
+            - You can <strong>reorder resources</strong> using drag-and-drop to reflect importance or logical sequence.
+          </li>
+          <li>
+            - <strong>Deleting of a resource</strong> is not possible once you published your dataset. You have to
+            upload a new version and mark the old as deprecated, but it has to still be visible due the DOI
+            restrictions.
+          </li>
+          <li>
+            - <strong>Updating a resource</strong> when the dataset is published its the same as with deleting a
+            resource. Mark it as deprecated and upload a new version. Make sure you adjust the description accordingly.
+            If the dataset is not published yet, do the same and send an email to
+            <a href="mailto:envidat@wsl.ch">envidat@wsl.ch</a> then we can remove the old one.
+          </li>
+        </ol>
 
-          <p><strong>Tips:</strong></p>
-          <ol>
-            <li>
-              - You can either <strong>upload files directly</strong> or
-              <strong>provide links</strong> to external resources (e.g., data
-              hosted on other platforms).
-            </li>
-            <li>
-              - When adding a resource via a link, make sure to specify its
-              <strong>file format</strong> (e.g., CSV, GeoTIFF) and
-              <strong>file size</strong> to help users assess it.
-            </li>
-            <li>
-              - Use clear and descriptive <strong>titles</strong> for each
-              resource to improve discoverability.
-            </li>
-            <li>
-              - If your resources are DORA publications, please add them in the
-              <em>Related Publications</em> step instead.
-            </li>
-            <li>
-              - You can <strong>reorder resources</strong> using drag-and-drop
-              to reflect importance or logical sequence.
-            </li>
-          </ol>
-
-          <p class="mt-2">
-            Adding meaningful and well-described resources greatly enhances the
-            usability and visibility of your dataset.
-          </p>
-        </v-alert>
-      </v-col>
+        <p class="mt-2">
+          Adding meaningful and well-described resources greatly enhances the usability and visibility of your dataset.
+        </p>
+      </InfoBanner>
     </v-row>
 
     <v-row>
@@ -69,37 +61,30 @@
         <v-row v-if="selectedResource">
           <v-col v-if="resourceEditingActive">
             <!-- prettier-ignore -->
-            <ResourceEditing v-bind="editResourceObject"
+            <ResourceEditing v-bind="resourceEditingProps"
                              @closeClicked="catchEditResourceClose"
                              @validate="validateResource"
                              @save="saveResource"
                              @previewImageClicked="showFullScreenImage"
+                             @delete="() => $emit('delete', selectedResource)"
             />
           </v-col>
         </v-row>
 
         <v-row v-if="!selectedResource">
           <v-col cols="12">
-            <ResourceUpload
-              flat
-              v-bind="editDropResourceObject" />
+            <ResourceUpload flat v-bind="resourceUploadProps" />
             <!-- No need to listen to events from the component, events are emitted from uppy directly -->
           </v-col>
 
           <v-col cols="12">
-            <ResourcesPasteUrl
-              flat
-              @createUrlResources="createResourceFromUrl"
-            />
+            <ResourcesPasteUrl flat @createUrlResources="createResourceFromUrl" />
           </v-col>
         </v-row>
       </v-col>
 
       <v-col cols="12" lg="6">
-        <ResourcesListEditing
-          v-bind="metadataResourcesGenericProps"
-          @save="save"
-        />
+        <ResourcesListEditing v-bind="metadataResourcesGenericProps" @save="save" />
       </v-col>
     </v-row>
   </v-container>
@@ -138,83 +123,50 @@ import {
   unSubscribeOnUppyEvent,
   createNewResourceForUrl,
   destroyUppyInstance,
-} from '@/factories/uploadFactory.js';
+} from '@/modules/workflow/utils/workflowUpload';
 
 import {
   ACTION_GET_USER_LIST,
   FETCH_USER_DATA,
   GET_USER_LIST,
-  METADATA_EDITING_SELECT_RESOURCE,
   USER_NAMESPACE,
   USER_SIGNIN_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts.js';
 
-import {
-  getSelectedElement,
-  updateEditingArray,
-} from '@/factories/userEditingFactory.js';
+import { mdiInformationOutline } from '@mdi/js';
+
+import { updateEditingArray } from '@/factories/userEditingFactory.js';
 
 import ResourcesListEditing from '@/modules/workflow/components/steps/ResourcesListEditing.vue';
 import ResourceUpload from '@/modules/workflow/components/steps/ResourceUpload.vue';
 import ResourcesPasteUrl from '@/modules/workflow/components/steps/ResourcesPasteUrl.vue';
-import { ResourceViewModel } from '@/modules/workflow/viewModel/ResourceViewModel.js';
+import { ResourceViewModel } from '@/modules/workflow/viewModel/ResourceViewModel';
 import type { Resource } from '@/types/modelTypes';
 import { mergeResourceSizeForFrontend } from '@/factories/resourceHelpers.ts';
 import ResourceEditing from '@/modules/workflow/components/steps/ResourceEditing.vue';
+import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow.ts';
+import InfoBanner from '@/modules/workflow/components/steps/InformationBanner.vue';
 
 export default {
   name: 'ResourcesInformation',
   props: {
-    resources: {
-      type: Array,
-      default: () => [],
-    },
-    dataLicenseTitle: {
-      type: String,
-      default: undefined,
-    },
-    dataLicenseUrl: {
-      type: String,
-      default: undefined,
-    },
-    datasetId: {
-      type: String,
-      default: '',
-    },
-    loading: {
-      type: Boolean,
-      default: false,
-    },
-    message: {
-      type: String,
-      default: '',
-    },
-    messageDetails: {
-      type: String,
-      default: null,
-    },
-    error: {
-      type: String,
-      default: '',
-    },
-    errorDetails: {
-      type: String,
-      default: null,
-    },
-    validationErrors: {
-      type: Object,
-      default: () => ({}),
-    },
-
-    userEditMetadataConfig: {
-      type: Object,
-      default: undefined,
-    },
+    resources: { type: Array, default: () => [] },
+    dataLicenseTitle: { type: String, default: undefined },
+    dataLicenseUrl: { type: String, default: undefined },
+    datasetId: { type: String, default: '' },
+    loading: { type: Boolean, default: false },
+    message: { type: String, default: '' },
+    messageDetails: { type: String, default: null },
+    error: { type: String, default: '' },
+    errorDetails: { type: String, default: null },
+    validationErrors: { type: Object, default: () => ({}) },
+    showInfoBanner: { type: Boolean, default: true },
+    userEditMetadataConfig: { type: Object, default: undefined },
   },
-  emits: ['save'],
+  emits: ['save', 'reload', 'delete'],
   created() {
     // call once to create the uppy instance
-    getUppyInstance(this.datasetId, this.$store);
+    getUppyInstance(this.workflowStore);
 
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.unselectCurrentResource);
     eventBus.on(UPLOAD_STATE_RESET, this.resetUppy);
@@ -253,10 +205,10 @@ export default {
   computed: {
     ...mapState(['config']),
     ...mapGetters(USER_SIGNIN_NAMESPACE, ['user', 'userLoading']),
-    ...mapState(USER_NAMESPACE, ['envidatUsers', 'uploadError']),
+    ...mapState(USER_NAMESPACE, ['envidatUsers']),
     resourceUploadError() {
-      if (this.$store) {
-        return this.uploadError;
+      if (this.workflowStore) {
+        return this.workflowStore.uploadError;
       }
 
       return null;
@@ -270,24 +222,17 @@ export default {
     },
     resourceUploadActive() {
       if (this.$store) {
-        return (
-          this.config?.userEditMetadataConfig?.resourceUploadActive || false
-        );
+        return this.config?.userEditMetadataConfig?.resourceUploadActive || false;
       }
 
       return this.userEditMetadataConfig?.resourceUploadActive || false;
     },
     resourceEditingActive() {
-      return true;
-      /*
       if (this.$store) {
-        return (
-          this.config?.userEditMetadataConfig?.resourceEditingActive || false
-        );
+        return this.config?.userEditMetadataConfig?.resourceEditingActive || false;
       }
 
       return this.userEditMetadataConfig?.resourceEditingActive || false;
-*/
     },
     metadataResourcesGenericProps() {
       return {
@@ -295,13 +240,11 @@ export default {
         validationErrors: this.validationErrors,
         dataLicenseTitle: this.dataLicenseTitle,
         dataLicenseUrl: this.dataLicenseUrl,
-        resourcesConfig: {
-          downloadActive: false,
-        },
+        resourcesConfig: { downloadActive: false },
       };
     },
-    editResourceObject() {
-      let userEditMetadataConfig;
+    resourceEditingProps() {
+      let userEditMetadataConfig: object;
 
       if (this.$store) {
         userEditMetadataConfig = this.config?.userEditMetadataConfig;
@@ -309,35 +252,25 @@ export default {
         userEditMetadataConfig = this.userEditMetadataConfig;
       }
 
-      let mergedSize = {};
-      try {
-        mergedSize = mergeResourceSizeForFrontend(this.selectedResource);
-      } catch (e) {
-        console.error('mergeResourceSizeForFrontend failed:');
-        console.error(e);
-        // TODO Error tracking
-      }
-
       return {
         ...this.resourceViewModel,
-        ...mergedSize,
         userEditMetadataConfig,
         envidatUsers: this.allEnviDatUsers,
       };
     },
-    editDropResourceObject() {
+    resourceUploadProps() {
       return {
         metadataId: this.datasetId,
         legacyUrl: this.linkAddNewResourcesCKAN,
         state: this.uploadState,
         progress: this.uploadProgress,
         error: this.resourceUploadError?.message || this.uppyError?.name,
-        errorDetails:
-          this.resourceUploadError?.details || this.uppyError?.message,
+        errorDetails: this.resourceUploadError?.details || this.uppyError?.message,
       };
     },
     selectedResource() {
-      return getSelectedElement(this.resources);
+      return this.resourceViewModel;
+      // return getSelectedElement(this.resources);
     },
     linkAddNewResourcesCKAN() {
       //      return `${this.envidatDomain}/dataset/resources/${this.datasetId}`;
@@ -353,10 +286,7 @@ export default {
       if (this.$store && !this.envidatUsers && this.user) {
         this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`, {
           action: ACTION_GET_USER_LIST,
-          body: {
-            id: this.user.id,
-            include_datasets: true,
-          },
+          body: { id: this.user.id, include_datasets: true },
           commit: true,
           mutation: GET_USER_LIST,
         });
@@ -393,18 +323,20 @@ export default {
       this.uploadProgress = 0;
 
       // resource exists already, get it from uploadResource
-      const newRes = this.$store?.getters[`${USER_NAMESPACE}/uploadResource`];
+      const newResId = this.workflowStore.uploadingResourceId;
+
+      // trigger reload of datasets to get the new resource
+      this.$emit('reload');
 
       setTimeout(() => {
-        console.log(METADATA_EDITING_SELECT_RESOURCE, newRes);
-        this.$store.commit(
-          `${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`,
-          newRes?.id,
-        );
+        // console.log(METADATA_EDITING_SELECT_RESOURCE, newRes);
+
+        // select the uploaded resource for editing
+        this.selectResource(newResId);
 
         // reset uppy to be able to upload another file
         this.resetUppy();
-      }, 500);
+      }, 1000);
     },
     uploadUppyError(error) {
       // console.log('uploadUppyError', error);
@@ -421,8 +353,7 @@ export default {
       this.uploadState = undefined;
       this.uploadProgress = 0;
 
-      // @ts-ignore
-      const uppy = getUppyInstance();
+      const uppy = getUppyInstance(this.workflowStore);
 
       const files = uppy.getFiles();
       if (files.length > 0) {
@@ -449,9 +380,7 @@ export default {
       const resourceModelData = this.resourceViewModel.getModelData<Resource>();
       currentResources.push(resourceModelData);
 
-      this.$emit('save', {
-        resources: currentResources,
-      });
+      this.$emit('save', { resources: currentResources });
       /*
       // resource exists already, get it from uploadResource
       const newRes = this.$store?.getters[`${USER_NAMESPACE}/uploadResource`];
@@ -461,20 +390,10 @@ export default {
       });
 */
     },
-    unselectCurrentResource() {
-      if (this.selectedResource) {
-        this.selectedResource.isSelected = false;
-        this.resetResourceViewModel();
-      }
-    },
     catchEditResourceClose() {
       this.unselectCurrentResource();
     },
-    markResourceSelected(
-      resources: Resource[],
-      id: string,
-      isSelected: boolean,
-    ) {
+    markResourceSelected(resources: Resource[], id: string, isSelected: boolean) {
       const resToMark = resources.filter((resource) => resource.id === id)[0];
       if (resToMark) {
         resToMark.isSelected = isSelected;
@@ -490,6 +409,18 @@ export default {
         const updatedResources = updateEditingArray(
           this.resources,
           resource,
+          /*
+          // make sure keep the deprecated flag
+          {
+            ...resource,
+            deprecated: resource.deprecated,
+            resourceSize: {
+              sizeValue: resource.size.toString(),
+              sizeUnit: resource.sizeFormat,
+            },
+          },
+*/
+          //           { ...this.resourceViewModel.backendJSON, deprecated: resource.deprecated },
           'id',
         );
 
@@ -501,10 +432,8 @@ export default {
     save(data: { resources: Resource[] }) {
       this.$emit('save', data);
     },
-    catchResourceSelection(resourceId: string) {
-      const resource = this.resources.filter(
-        (res: Resource) => res.id === resourceId,
-      )[0];
+    selectResource(resourceId: string) {
+      const resource = this.resources.filter((res: Resource) => res.id === resourceId)[0];
 
       if (!resource) {
         return;
@@ -513,6 +442,7 @@ export default {
       // clear the internal state of the UI component in case there was an input
       // on the adding of a new author
       eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
+      /*
       this.unselectCurrentResource();
 
       this.markResourceSelected(
@@ -520,20 +450,32 @@ export default {
         resource.id,
         !resource.isSelected,
       );
+*/
 
+      this.resourceViewModel = new ResourceViewModel();
       this.resourceViewModel.validate(resource);
+    },
+    unselectCurrentResource() {
+      if (this.selectedResource) {
+        // this.selectedResource.isSelected = false;
+        this.resetResourceViewModel();
+      }
+    },
+    catchResourceSelection(resourceId: string) {
+      this.selectResource(resourceId);
     },
     showFullScreenImage(url: string) {
       eventBus.emit(OPEN_TEXT_PREVIEW, url);
     },
     resetResourceViewModel() {
+      this.resourceViewModel = undefined;
+
       // clear the internal state of the UI component
       eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
-
-      this.resourceViewModel = new ResourceViewModel();
     },
   },
   data: () => ({
+    mdiInformationOutline,
     EDIT_METADATA_RESOURCES_TITLE,
     localResCounter: 0,
     envidatDomain: import.meta.env.VITE_API_ROOT,
@@ -548,14 +490,11 @@ export default {
                     the button below.`,
     uploadProgress: 0,
     uploadState: undefined,
-    resourceViewModel: new ResourceViewModel(),
+    // resourceViewModel is only used for mapping
+    resourceViewModel: undefined,
+    workflowStore: useDatasetWorkflowStore(),
   }),
-  components: {
-    ResourcesListEditing,
-    ResourceUpload,
-    ResourcesPasteUrl,
-    ResourceEditing,
-  },
+  components: { ResourcesListEditing, ResourceUpload, ResourcesPasteUrl, ResourceEditing, InfoBanner },
 };
 </script>
 

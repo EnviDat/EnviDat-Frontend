@@ -1,11 +1,4 @@
-import {
-  DIVERSITY,
-  FOREST,
-  HAZARD,
-  LAND,
-  CLIMATE,
-  SNOW,
-} from '@/store/categoriesConsts';
+import { DIVERSITY, FOREST, HAZARD, LAND, CLIMATE, SNOW } from '@/store/categoriesConsts';
 import mainCategoryTags from '@/modules/metadata/store/metadataTags';
 
 /**
@@ -35,7 +28,6 @@ export function guessTagCategory(tags) {
       case name.includes('AVALANCHE'):
         return SNOW;
       case name.includes('CLIMATE'):
-      case name.includes('SNOW'):
         return CLIMATE;
       case name.includes('LAND'):
         return LAND;
@@ -147,7 +139,6 @@ export function createTag(name, options = defaultTagOptions) {
     active = options.active === undefined && options.tag.active ? options.tag.active : active;
   }
 
-  // eslint-disable-next-line object-curly-newline
   return {
     name,
     enabled,
@@ -176,7 +167,7 @@ export function getEnabledTags(tags, datasets, sortBaseOnCount = false) {
       const el = datasets[j];
 
       if (el.tags && el.tags.length > 0) {
-        const index = el.tags.findIndex(obj => obj.name.includes(tag.name));
+        const index = el.tags.findIndex((obj) => obj.name.includes(tag.name));
 
         if (index >= 0) {
           found = true;
@@ -185,11 +176,13 @@ export function getEnabledTags(tags, datasets, sortBaseOnCount = false) {
       }
     }
 
-    enabledTags.push(createTag(tag.name, {
-      enabled: found,
-      color: tag.color,
-      count: tag.count,
-    }));
+    enabledTags.push(
+      createTag(tag.name, {
+        enabled: found,
+        color: tag.color,
+        count: tag.count,
+      }),
+    );
   }
 
   if (sortBaseOnCount) {
@@ -255,11 +248,14 @@ export function getCountedKeywordsFuzzy(datasets, keywordScope) {
           count += existingTag.count;
         }
 
-        tagMap.set(keyword.name, createTag(keyword.name, {
-          tag: existingTag,
-          count,
-          color: keyword.color,
-        }));
+        tagMap.set(
+          keyword.name,
+          createTag(keyword.name, {
+            tag: existingTag,
+            count,
+            color: keyword.color,
+          }),
+        );
       }
     }
   }
@@ -297,11 +293,14 @@ export function getCountedKeywords(datasets) {
           count += existingTag.count;
         }
 
-        tagMap.set(tag.name, createTag(tag.name, {
-          tag: existingTag,
-          count,
-          color: tag.color,
-        }));
+        tagMap.set(
+          tag.name,
+          createTag(tag.name, {
+            tag: existingTag,
+            count,
+            color: tag.color,
+          }),
+        );
       }
     }
   }
@@ -317,15 +316,15 @@ export function getPopularTags(datasets, excludeTag = '', minCount = 5, maxCount
   if (!datasets || datasets.length <= 0) return [];
 
   const tagCounted = getCountedKeywords(datasets);
-  const cleandAndCounted  = [];
+  const cleandAndCounted = [];
 
   for (let i = 0; i < tagCounted.length; i++) {
     const tag = tagCounted[i];
     // console.log(tag.name + ' ' + tag.count + ' minCount ' + minCount + ' count? ' + (tag.count >= minCount) + ' excludeTag ' + (excludeTag === '' || (excludeTag && tag.name.toLowerCase() !== excludeTag.toLowerCase())) + ' maxCount ' + (maxCount === 0 || (maxCount > 0 && tag.count < maxCount)) );
 
     if (tag.count >= minCount) {
-      const notExcluded = (excludeTag === '' || (excludeTag && tag.name.toLowerCase() !== excludeTag.toLowerCase()));
-      const notMaxCount = (maxCount === 0 || (maxCount > 0 && tag.count < maxCount));
+      const notExcluded = excludeTag === '' || (excludeTag && tag.name.toLowerCase() !== excludeTag.toLowerCase());
+      const notMaxCount = maxCount === 0 || (maxCount > 0 && tag.count < maxCount);
 
       if (notExcluded && notMaxCount) {
         cleandAndCounted.push(tag);
@@ -337,7 +336,6 @@ export function getPopularTags(datasets, excludeTag = '', minCount = 5, maxCount
 }
 
 export function enhanceTagsOrganizationDatasetFromAllDatasets(organizationDatasets, datasetMap) {
-
   for (let i = 0; i < organizationDatasets.length; i++) {
     const orgaDataset = organizationDatasets[i];
 
@@ -350,33 +348,31 @@ export function enhanceTagsOrganizationDatasetFromAllDatasets(organizationDatase
   return organizationDatasets;
 }
 
-
 function removeMultiWorkKeywords(keywords, maxWords = 2) {
   return keywords.filter((keyword) => keyword.name.split(' ').length <= maxWords);
 }
 
 export function getKeywordsForFiltering(datasets, modeMetadata = undefined, maxKeywords = 30) {
-
   const minTagAmount = modeMetadata ? modeMetadata.minTagAmount : Math.max(5, datasets.length * 0.025);
   const excludeTag = modeMetadata ? modeMetadata.mainTag.name : undefined;
 
   let popularTags = getPopularTags(datasets, excludeTag, minTagAmount, datasets.length);
   popularTags = removeMultiWorkKeywords(popularTags);
-  popularTags = popularTags.slice(0, maxKeywords - 5)
+  popularTags = popularTags.slice(0, maxKeywords - 5);
 
   let extraTags = modeMetadata ? modeMetadata.extraTags : mainCategoryTags;
-  const popularTagNames = popularTags.map((keyword) => keyword.name)
+  const popularTagNames = popularTags.map((keyword) => keyword.name);
   extraTags = extraTags.filter((keyword) => !popularTagNames.includes(keyword.name));
 
   let mergedWithPopulars = popularTags;
 
-  if (extraTags.length > 0 && maxKeywords < (extraTags.length + popularTags.length)) {
+  if (extraTags.length > 0 && maxKeywords < extraTags.length + popularTags.length) {
     extraTags = getCountedKeywordsFuzzy(datasets, extraTags);
     mergedWithPopulars = [...popularTags, ...extraTags];
   }
 
   return mergedWithPopulars;
-/*
+  /*
   // const mergedKeywords = mergedWithPopulars.filter((item, pos, self) => self.findIndex(v => v.name === item.name) === pos);
 
   // check which of the tags are actually part of the datasets list these are enabled = true

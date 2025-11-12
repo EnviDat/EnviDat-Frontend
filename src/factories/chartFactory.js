@@ -16,77 +16,90 @@ const defaultSeriesSettings = {
 };
 
 // eslint-disable-next-line no-unused-vars
-const createSerialChart = function createSerialChart(selector, unit, graphs, chartData, delay, doneCallback, errorCallback, recentData, localTimeConversion) {
-
+const createSerialChart = function createSerialChart(
+  selector,
+  unit,
+  graphs,
+  chartData,
+  delay,
+  doneCallback,
+  errorCallback,
+  recentData,
+  localTimeConversion,
+) {
   // when the dataDateFormat is not set the time is converted to local time
   const dataDateFormat = localTimeConversion ? '' : 'YYYY-MM-DDTHH:NN:SS.QQ';
   let chart = null;
 
   const chartConfig = {
-      type: 'serial',
-      dataDateFormat,
-      legend: {
-        equalWidths: true,
-        useGraphSettings: true,
-        align: 'center',
-        position: 'top',
-        valueAlign: 'left',
-      },
-      dataProvider: chartData,
-      synchronizeGrid: true,
-      valueAxes: [{
+    type: 'serial',
+    dataDateFormat,
+    legend: {
+      equalWidths: true,
+      useGraphSettings: true,
+      align: 'center',
+      position: 'top',
+      valueAlign: 'left',
+    },
+    dataProvider: chartData,
+    synchronizeGrid: true,
+    valueAxes: [
+      {
         unit,
-      }],
-      graphs,
-      chartScrollbar: {
-        oppositeAxis: false,
-        offset: 35,
-        scrollbarHeight: 30,
-        backgroundAlpha: 0,
-        // "selectedBackgroundAlpha": 0.1,
-        // "selectedBackgroundColor": "#888888",
-        // "graphFillAlpha": 0,
-        // "graphLineAlpha": 1,
-        // "selectedGraphFillAlpha": 0,
-        // "selectedGraphLineAlpha": 1,
-        autoGridCount: true,
-        color: '#AAAAAA',
       },
-      chartCursor: {
-        pan: false,
-        valueLineEnabled: true,
-        valueLineBalloonEnabled: true,
-        parseDates: true,
-        categoryBalloonDateFormat: 'MMM DD, YYYY JJ:NN',
-        // "dataDateFormat": "MMM DD, YYYY JJ:NN"
-      },
-      categoryField: 'timestamp_iso',
-      categoryAxis: {
-        parseDates: true,
-        // "minPeriod": recentData ? "hh" : "DD",
-        minPeriod: 'hh',
-        dashLength: 5,
-      },
-      export: {
-        enabled: false,
-      },
-      listeners: [
-        // {
-        //     "event": "dataUpdated",
-        //     "method": () => { console.log("dataUpdated"); }
-        // },
-        {
-          event: 'error',
-          method: (e) => { errorCallback(e); },
+    ],
+    graphs,
+    chartScrollbar: {
+      oppositeAxis: false,
+      offset: 35,
+      scrollbarHeight: 30,
+      backgroundAlpha: 0,
+      // "selectedBackgroundAlpha": 0.1,
+      // "selectedBackgroundColor": "#888888",
+      // "graphFillAlpha": 0,
+      // "graphLineAlpha": 1,
+      // "selectedGraphFillAlpha": 0,
+      // "selectedGraphLineAlpha": 1,
+      autoGridCount: true,
+      color: '#AAAAAA',
+    },
+    chartCursor: {
+      pan: false,
+      valueLineEnabled: true,
+      valueLineBalloonEnabled: true,
+      parseDates: true,
+      categoryBalloonDateFormat: 'MMM DD, YYYY JJ:NN',
+      // "dataDateFormat": "MMM DD, YYYY JJ:NN"
+    },
+    categoryField: 'timestamp_iso',
+    categoryAxis: {
+      parseDates: true,
+      // "minPeriod": recentData ? "hh" : "DD",
+      minPeriod: 'hh',
+      dashLength: 5,
+    },
+    export: {
+      enabled: false,
+    },
+    listeners: [
+      // {
+      //     "event": "dataUpdated",
+      //     "method": () => { console.log("dataUpdated"); }
+      // },
+      {
+        event: 'error',
+        method: (e) => {
+          errorCallback(e);
         },
-        // {
-        //   event: 'init',
-        //   method: () => {
-        //     doneCallback(chart.dataProvider.length);
-        //     // console.log("init finished");
-        //   },
-        // },
-      ],
+      },
+      // {
+      //   event: 'init',
+      //   method: () => {
+      //     doneCallback(chart.dataProvider.length);
+      //     // console.log("init finished");
+      //   },
+      // },
+    ],
   };
 
   // eslint-disable-next-line no-undef
@@ -104,7 +117,6 @@ const createSerialChart = function createSerialChart(selector, unit, graphs, cha
 // }
 
 function addStartEndDateUrl(url, daysBetween = 14, historicalEndDate = undefined) {
-
   const currentDate = new Date();
   let endDate = historicalEndDate;
 
@@ -128,7 +140,7 @@ function hasData(data, parameter) {
   }
 
   if (parameter) {
-    const dataValues = data.filter(el => el[parameter] !== null);
+    const dataValues = data.filter((el) => el[parameter] !== null);
 
     return dataValues.length > 0;
   }
@@ -156,15 +168,18 @@ function getConfigFiles(resources) {
     } else if (resUrl.includes('stationsconfig')) {
       configResources.gcnetStationsConfig = res;
     }
-
   }
 
   return configResources;
 }
 
 // eslint-disable-next-line no-unused-vars
-function getConfigUrls(configs, testStationsConfigUrl = './testdata/stationsConfig.json', testStationParametersUrl = './testdata/stationParameters.json', testGeoUrl = './testdata/geoservices_config.json') {
-
+function getConfigUrls(
+  configs,
+  testStationsConfigUrl = './testdata/stationsConfig.json',
+  testStationParametersUrl = './testdata/stationParameters.json',
+  testGeoUrl = './testdata/geoservices_config.json',
+) {
   if (!configs) {
     configs = {};
   }
@@ -180,9 +195,7 @@ function getConfigUrls(configs, testStationsConfigUrl = './testdata/stationsConf
     // overwrite the local development config url for testing in development
     // geoConfigUrl = testGeoUrl;
     geoConfigUrl = configs.geoServicesConfig?.url ? testGeoUrl : null;
-
   } else {
-
     if (configs.gcnetStationsConfig) {
       configs.gcnetStationsConfig.hideFromResourceList = true;
     }
@@ -203,15 +216,7 @@ function getConfigUrls(configs, testStationsConfigUrl = './testdata/stationsConf
   return configs;
 }
 
-
-export {
-  addStartEndDateUrl,
-  createSerialChart,
-  defaultSeriesSettings,
-  getConfigFiles,
-  getConfigUrls,
-  hasData,
-};
+export { addStartEndDateUrl, createSerialChart, defaultSeriesSettings, getConfigFiles, getConfigUrls, hasData };
 
 export function getFeatureCollectionFromGcNetStations(stations) {
   const featureCollection = {
