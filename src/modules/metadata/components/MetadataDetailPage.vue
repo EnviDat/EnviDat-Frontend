@@ -562,7 +562,7 @@ export default {
 
       this.MetadataCitation.props = {
         ...this.citation,
-        showCitation: this.metadataContent.showShallowCitation,
+        showCitation: this.metadataContent?.showShallowCitation,
       };
 
       let publicationList;
