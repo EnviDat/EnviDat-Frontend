@@ -22,7 +22,7 @@
           <ModeView :mode="mode" :compact="compact" :closeCallback="modeCloseCallback" />
         </v-col>
 
-        <v-col v-if="signedInUser" class="flex-grow-0" cols="4" sm="4" md="3" xl="2">
+        <v-col v-if="signedInUser" class="flex-grow-0" cols="6" sm="4" md="3" xl="2">
           <v-row align="center" justify="end">
             <v-col :style="`text-align: right; ${$vuetify.display.xs ? 'line-height: 1rem;' : ''}`">
               {{ signedInUser.fullName }}

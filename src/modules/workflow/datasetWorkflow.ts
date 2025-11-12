@@ -32,7 +32,6 @@ import { makeMaintainerFromUser } from '@/modules/workflow/utils/formatPostData'
 import { LOCAL_DATASET_KEY } from '@/factories/metadataConsts';
 
 const MAX_LOCAL_CREATE_STEP_ID = 3;
-const LAST_EDITED_DATASET_KEY = 'workflow:lastEditedDataset';
 
 /*
 import datasets from '~/stories/js/metadata.js';
@@ -372,8 +371,15 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     // SET setActiveStep differs for create vs edit:
     // CREATE linear wizard. Current step -> Active; others keep their status (Completed/Error) or become Disabled.
     // EDIT free jump. Only mark the selected step as Active, leave the rest unchanged.
+    // setActiveStep(id: number) {
+    //   if (this.mode === WorkflowMode.Create && this.dataSource !== 'backend') {
+    //     this.steps = setActiveStepForCreate(this.steps, id);
+    //   }
+    //   this.currentStep = id;
+    // },
+
     setActiveStep(id: number) {
-      if (this.mode === WorkflowMode.Create && this.dataSource !== 'backend') {
+      if (this.mode === WorkflowMode.Create) {
         this.steps = setActiveStepForCreate(this.steps, id);
       }
       this.currentStep = id;
@@ -430,6 +436,30 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
 
       if (diff) {
         Object.assign(this.steps[stepId], diff);
+      }
+
+      // SET Completed Edit mode logic TODO ticket
+      // check diff with Edit mode come as ndefined why???
+      if (this.mode === WorkflowMode.Edit) {
+        const s = this.steps[stepId];
+        if (!diff || diff.hasError === undefined) s.hasError = !ok;
+
+        if (!diff || diff.completed === undefined) {
+          s.completed = ok && !s.dirty;
+        }
+
+        const isActive = stepId === this.currentStep;
+        const nextStatus = s.hasError
+          ? StepStatus.Error
+          : s.completed
+            ? StepStatus.Completed
+            : isActive
+              ? StepStatus.Active
+              : (s.status ?? StepStatus.Disabled);
+
+        if (s.status !== nextStatus) {
+          this.steps[stepId] = { ...s, status: nextStatus };
+        }
       }
 
       // this.setCurrentStepAction();

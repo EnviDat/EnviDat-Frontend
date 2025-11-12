@@ -191,7 +191,6 @@ const changeNavigationInStore = (stepParam: number | string) => {
 
 const navigateRouterToStep = async (step: number) => {
   const leaving = currentStep.value;
-
   if (workflowStore.mustValidateOnLeave(leaving)) {
     const ok = workflowStore.validateStepAction(leaving);
     if (!ok) {

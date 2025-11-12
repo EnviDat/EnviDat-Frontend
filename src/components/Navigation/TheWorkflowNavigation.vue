@@ -34,7 +34,7 @@
       </v-row>
     </v-card-title>
 
-    <v-expansion-panels class="mb-4 navigationWorkflow__note--mobile" elevation="0" v-if="display.smAndDown.value">
+    <!-- <v-expansion-panels class="mb-4 navigationWorkflow__note--mobile" elevation="0" v-if="display.smAndDown.value">
       <v-expansion-panel>
         <v-expansion-panel-title class="pa-0">
           <BaseIcon :icon="iconName('info')" color="black" class="mr-4" />Note
@@ -45,7 +45,7 @@
           magna aliqua…
         </v-expansion-panel-text>
       </v-expansion-panel>
-    </v-expansion-panels>
+    </v-expansion-panels> -->
 
     <v-card-text class="pa-0">
       <v-list class="pa-0 navigationWorkflow__list" density="comfortable" nav>
@@ -79,7 +79,7 @@
                 v-if="workflowStore.currentStep === step.id"
                 :class="{
                   'font-weight-bold': display.mdAndDown.value,
-                  'ml-2': workflowStore.currentStep === step.id,
+                  'ml-md-2': workflowStore.currentStep === step.id,
                 }"
               >
               </span>
@@ -227,7 +227,7 @@ import { extractIcons } from '@/factories/iconFactory';
 
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
-import { WorkflowMode } from '@/modules/workflow/utils/workflowEnums';
+import { WorkflowMode, StepStatus } from '@/modules/workflow/utils/workflowEnums';
 
 import { mapPublicationState } from '@/modules/workflow/utils/publicationState';
 
@@ -260,7 +260,6 @@ const publicationState = computed(() => {
   if (workflowStore.dataSource !== 'backend') {
     state = 'draft';
   }
-  console.log('state ' + state);
   return mapPublicationState(state);
 });
 
@@ -419,7 +418,7 @@ const initDriver = () => {
       @media screen and (max-width: 1280px) {
         // 960 is md for vueitfy
         // gap: 8px;
-        background-color: #499df7;
+        background-color: #499df7 !important;
         .navigationWorkflow__append--number,
         .v-list-item-title,
         .v-icon__svg {

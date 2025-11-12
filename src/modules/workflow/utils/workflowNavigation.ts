@@ -8,7 +8,8 @@ export function setActiveStepForCreate(steps: WorkflowStep[], activeId: number):
     if (s.id === activeId) return { ...s, status: StepStatus.Active };
     if (s.completed) return { ...s, status: StepStatus.Completed };
     if (s.hasError) return { ...s, status: StepStatus.Error };
-    return { ...s, status: StepStatus.Disabled };
+    // return { ...s, status: StepStatus.Disabled };
+    return { ...s, status: s.status ?? StepStatus.Disabled };
   });
 }
 
