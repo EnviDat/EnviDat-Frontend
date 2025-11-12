@@ -811,11 +811,10 @@ export default {
     loadImagePreview(url) {
       this.imagePreviewError = null;
       this.loadingImagePreview = true;
-      // const vm = this;
 
       this.$nextTick(() => {
         try {
-          const imageRefs = vm.$refs.filePreview;
+          const imageRefs = this.$refs.filePreview;
           const imageRef = imageRefs instanceof Array ? imageRefs[0] : imageRefs;
           imageRef.$el.src = url;
         } catch (e) {
