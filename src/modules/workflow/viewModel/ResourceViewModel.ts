@@ -1,10 +1,16 @@
 import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
-import { Resource } from '@/types/modelTypes';
+import { Resource, ResourceSize } from '@/types/modelTypes';
 import { convertToFrontendJSONWithRules } from '@/factories/convertJSON';
 import { ResourceDTO } from '@/types/dataTransferObjectsTypes';
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
-import { getResourceName, mergeResourceSizeForFrontend } from '@/factories/resourceHelpers';
+import {
+  formatBytes,
+  getFileSizeFormat,
+  getFileSizeText,
+  getResourceName,
+  mergeResourceSizeForFrontend,
+} from '@/factories/resourceHelpers';
 import { formatDate } from '@/factories/dateFactory';
 import { isFieldValid } from '@/factories/userEditingValidations';
 
@@ -80,7 +86,6 @@ export class ResourceViewModel extends AbstractEditViewModel implements Resource
     mimetypeInner: string,
     metadataModified: string,
     multipartName: string,
-    position: string,
     restricted: string,
     resourceSize: string,
     resourceType: string,
@@ -179,14 +184,46 @@ export class ResourceViewModel extends AbstractEditViewModel implements Resource
 
     const backendDomain = process.env.VITE_API_ROOT;
 
-    let mergedSize = {};
-    try {
-      mergedSize = mergeResourceSizeForFrontend(frontendResource);
-    } catch (e) {
-      console.error('mergeResourceSizeForFrontend failed:');
-      console.error(e);
-      // TODO Error tracking
+    /*
+    const backendResourceSize = JSON.parse(rawResource.resource_size);
+    let resourceSize = (convertToFrontendJSONWithRules(
+      ResourceViewModel.sizeMappingRules(),
+      backendResourceSize,
+    ) as ResourceSize) || {
+      sizeValue: '',
+      sizeUnits: '',
+    };
+
+    if (!resourceSize.sizeValue) {
+      resourceSize = {
+        sizeUnits: getFileSizeFormat(frontendResource.size),
+        sizeValue: getFileSizeText(frontendResource.size),
+      };
     }
+*/
+
+    const formattedSize = formatBytes(rawResource.size);
+    const splits = formattedSize.split(' ');
+    const sizeNumberInFormat = splits[0];
+    const sizeFormat = splits[1];
+
+    frontendResource.resourceSize = {
+      sizeUnits: sizeFormat,
+      sizeValue: sizeNumberInFormat,
+    };
+
+    /*
+    // directly convert the size to the size and sizeFormat for the frontend
+    // frontend doesn't care about the resoureSize object, it only knows the two properties
+    // (size and sizeFormat)
+    const { size, sizeFormat } = mergeResourceSizeForFrontend({
+      ...frontendResource,
+      resourceSize: {
+        sizeUnits: getFileSizeFormat(frontendResource.size),
+        sizeValue: getFileSizeText(frontendResource.size),
+      },
+    });
+*/
 
     return {
       ...frontendResource,
@@ -196,7 +233,8 @@ export class ResourceViewModel extends AbstractEditViewModel implements Resource
       created,
       lastModified,
       metadataModified,
-      ...mergedSize,
+      size: sizeNumberInFormat,
+      sizeFormat,
       deprecated: false,
       numberOfDownload: numberOfDownload || 0,
       isProtected: false,
@@ -204,7 +242,7 @@ export class ResourceViewModel extends AbstractEditViewModel implements Resource
       chartLabels: undefined,
       chartData: undefined,
       chartDataLoading: false,
-    };
+    } satisfies Resource;
   }
 
   static mappingRules() {
@@ -233,6 +271,13 @@ export class ResourceViewModel extends AbstractEditViewModel implements Resource
       ['state', 'state'],
       ['url', 'url'],
       ['urlType', 'url_type'],
+    ];
+  }
+
+  static sizeMappingRules() {
+    return [
+      ['sizeValue', 'size_value'],
+      ['sizeUnits', 'size_units'],
     ];
   }
 

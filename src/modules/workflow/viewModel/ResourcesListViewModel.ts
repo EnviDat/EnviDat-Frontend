@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 
-import { Resource, User } from '@/types/modelTypes';
+import { Resource, ResourceSize, User } from '@/types/modelTypes';
 import { type DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 import { ResourceViewModel } from '@/modules/workflow/viewModel/ResourceViewModel.ts';
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
@@ -9,7 +9,7 @@ import { METADATA_NEW_RESOURCE_ID } from '@/factories/metadataConsts';
 
 import { formatDateTimeToCKANFormat, stringifyResourceForBackend } from '@/factories/mappingFactory';
 
-import { convertJSON, convertToBackendJSONWithRules } from '@/factories/convertJSON';
+import { convertJSON, convertToBackendJSONWithRules, convertToFrontendJSONWithRules } from '@/factories/convertJSON';
 
 import {
   enhanceElementsWithStrategyEvents,
@@ -18,6 +18,7 @@ import {
 } from '@/factories/strategyFactory';
 
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
+import { formatBytes, getFileSizeFormat, getFileSizeText, parseBytes } from '@/factories/resourceHelpers.ts';
 
 export class ResourcesListViewModel extends AbstractEditViewModel {
   declare resources: Resource[];
@@ -82,15 +83,28 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
   }
 
   get backendJSON() {
-    const rawResources = this.resources?.map((frontendRes: Resource) => {
+    const backendResources = this.resources?.map((frontendRes: Resource) => {
       this.convertDatesToBackendFormat(frontendRes);
 
-      const jsonBackendResource = convertToBackendJSONWithRules(ResourceViewModel.mappingRules(), frontendRes);
+      const formattedSize = `${frontendRes.size} ${frontendRes.sizeFormat}`;
+      const sizeInBytes = parseBytes(formattedSize);
 
+      const jsonBackendResource = convertToBackendJSONWithRules(ResourceViewModel.mappingRules(), {
+        ...frontendRes,
+        size: sizeInBytes,
+      }) as ResourceDTO;
+
+      // @ts-expect-error
+      jsonBackendResource.resource_size = convertToBackendJSONWithRules(ResourceViewModel.sizeMappingRules(), {
+        sizeValue: frontendRes.size,
+        sizeUnits: frontendRes.sizeFormat,
+      });
+
+      // here the resourceSize gets convert into a string
       return stringifyResourceForBackend(jsonBackendResource);
     });
 
-    return convertJSON({ resources: rawResources }, false);
+    return convertJSON({ resources: backendResources }, false);
   }
 
   /**

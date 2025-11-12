@@ -22,6 +22,11 @@ export function convertJSONArray(array, recursive) {
 
 const jsonStartRegex = /^\s*(\{|\[)/;
 
+/**
+ * @param {unknown} data
+ * @param {boolean} [stringify]
+ * @param {boolean} recursive
+ */
 export function convertJSON(data, stringify, recursive = false) {
   const properties = Object.keys(data);
   const flatObj = {};

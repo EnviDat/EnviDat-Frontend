@@ -298,6 +298,7 @@ export default {
     created: String,
     lastModified: String,
     size: Number,
+    sizeFormat: String,
     format: String,
     twoColumnLayout: Boolean,
     height: String,
@@ -417,6 +418,10 @@ export default {
 
       if (typeof this.size === 'number') {
         sizeNumber = Number.parseInt(this.size, 10);
+      }
+
+      if (this.sizeFormat) {
+        return `${sizeNumber} ${this.sizeFormat}`;
       }
 
       return formatBytes(sizeNumber);
