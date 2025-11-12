@@ -41,9 +41,10 @@
 
         <!-- BaseIconSwitch Component -->
         <BaseIconSwitch
-          :tooltipText="`${isBlindReviewActive ? 'Disable' : 'Enable'} blind review`"
+          :tooltipText="`${isActive ? 'Disable' : 'Enable'} blind review`"
           :icon="mdiAccountCircle()"
-          :active="isBlindReviewActive"
+          :active="isActive"
+          :loading="loading"
           :disabled="loading || !isBlindReviewValid"
           @clicked="catchBlindReviewClick()"
         />
@@ -86,27 +87,13 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import { mapState } from 'vuex';
-import {
-  mdiEarth,
-  mdiMessageDraw,
-  mdiLink,
-  mdiContentCopy,
-  mdiCalendarRange,
-  mdiArrowDownDropCircleOutline,
-  mdiAccountCircle,
-  mdiClose,
-} from '@mdi/js';
+import { mdiMessageDraw, mdiLink, mdiContentCopy } from '@mdi/js';
 
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 
-import {
-  EDITMETADATA_CLEAR_PREVIEW,
-  EDITMETADATA_OBJECT_UPDATE,
-  EDITMETADATA_PUBLICATION_INFO,
-  eventBus,
-} from '@/factories/eventBus';
+import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 
 import {
   EDIT_METADATA_DOI_LABEL,
@@ -164,16 +151,10 @@ export default {
     },
     isBlindReview: {
       type: Boolean,
-      default: undefined, // can be kept null
-    },
-    flat: {
-      type: Boolean,
-      default: false,
+      default: undefined,
     },
   },
-  mounted() {
-    this.isBlindActive = this.isBlindReview;
-  },
+  emit: ['save'],
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearBlindReviewState);
   },
@@ -189,10 +170,10 @@ export default {
       return undefined;
     },
     urlField() {
-      return this.isBlindReviewActive ? this.generateBlindReviewUrl() : '';
+      return this.isActive ? this.generateBlindReviewUrl() : '';
     },
-    isBlindReviewActive() {
-      return this.isBlindActive === null ? this.isBlindReview : this.isBlindActive;
+    isActive() {
+      return this.previewIsActive === null ? this.isBlindReview : this.previewIsActive;
     },
     isBlindReviewValid() {
       return this.doi && this.allowedPublicationStates.includes(this.publicationState);
@@ -201,18 +182,7 @@ export default {
       return this.isBlindReviewValid && this.urlField.length > 0;
     },
   },
-  watch: {
-    isBlindReview(newVal) {
-      this.isBlindActive = newVal;
-    },
-  },
   methods: {
-    mdiClose() {
-      return mdiClose;
-    },
-    mdiAccountCircle() {
-      return mdiAccountCircle;
-    },
     isReadOnly(dateProperty) {
       return isFieldReadOnly(this.$props, dateProperty);
     },
@@ -221,14 +191,14 @@ export default {
     },
     catchBlindReviewClick() {
       if (this.isBlindReviewValid) {
-        this.isBlindActive = !this.isBlindActive;
-        const value = this.isBlindActive ? BLIND_REVIEW_ON : BLIND_REVIEW_OFF;
+        this.previewIsActive = !this.isBlindReview;
+        const value = this.previewIsActive ? BLIND_REVIEW_ON : BLIND_REVIEW_OFF;
         this.changeBlindReviewStatus('version', value);
         this.generateBlindReviewUrl();
       }
     },
     generateBlindReviewUrl() {
-      if (this.datasetId && this.isBlindReview) {
+      if (this.datasetId && this.isActive) {
         this.blindUrl = `${this.envidatDomain}/#${METADATAREVIEW_PATH}/${this.datasetId}`;
       } else {
         this.blindUrl = '';
@@ -237,34 +207,25 @@ export default {
       return this.blindUrl;
     },
     changeBlindReviewStatus(property, value) {
-      const newBlindReviewInfo = {
-        ...this.$props,
+      this.$emit('save', {
         [property]: value,
-      };
-      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: EDITMETADATA_PUBLICATION_INFO,
-        data: newBlindReviewInfo,
       });
     },
     catchClipboardCopy() {
       navigator.clipboard.writeText(this.urlField);
     },
     clearBlindReviewState() {
-      this.isBlindActive = null;
+      this.previewIsActive = null;
     },
     previewClicked() {
-      const url = this.blindUrl;
-      window.open(url, '_blank');
+      window.open(this.blindUrl, '_blank');
     },
   },
   data: () => ({
     mdiLink,
-    mdiEarth,
     mdiMessageDraw,
     mdiContentCopy,
-    mdiCalendarRange,
-    mdiArrowDownDropCircleOutline,
-    previewPublisher: null,
+    previewIsActive: null,
     emptyEntry: {
       institution: '',
       grantNumber: '',
@@ -280,11 +241,8 @@ export default {
       purpose:
         'Only activate the blind-review if you need to provide anonymized access to your research data files to reviewers for a scientific journal before the dataset has been published. Once enabled, copy the link below and provide it to the reviewers (the DOI is not be activate until the dataset is published).',
     },
-    isBlindActive: null,
     allowedPublicationStates: [PUBLICATION_STATE_RESERVED, PUBLICATION_STATE_PENDING],
     envidatDomain: process.env.VITE_API_ROOT,
-    buttonColor: '#269697',
-    previewYear: null,
   }),
   components: {
     BaseStatusLabelView,
