@@ -378,6 +378,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     //   }
     //   this.currentStep = id;
     // },
+
     setActiveStep(id: number) {
       if (this.mode === WorkflowMode.Create) {
         this.steps = setActiveStepForCreate(this.steps, id);
@@ -436,6 +437,16 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
 
       if (diff) {
         Object.assign(this.steps[stepId], diff);
+      }
+
+      // SET Completed Edit mode logic TODO ticket
+      if (this.mode === WorkflowMode.Edit) {
+        const s = this.steps[stepId];
+        if (!diff || diff.hasError === undefined) s.hasError = !ok;
+
+        if (!diff || diff.completed === undefined) {
+          s.completed = ok && !s.dirty;
+        }
       }
 
       // this.setCurrentStepAction();
