@@ -32,7 +32,6 @@ import { makeMaintainerFromUser } from '@/modules/workflow/utils/formatPostData'
 import { LOCAL_DATASET_KEY } from '@/factories/metadataConsts';
 
 const MAX_LOCAL_CREATE_STEP_ID = 3;
-const LAST_EDITED_DATASET_KEY = 'workflow:lastEditedDataset';
 
 /*
 import datasets from '~/stories/js/metadata.js';
@@ -446,6 +445,19 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
 
         if (!diff || diff.completed === undefined) {
           s.completed = ok && !s.dirty;
+        }
+
+        const isActive = stepId === this.currentStep;
+        const nextStatus = s.hasError
+          ? StepStatus.Error
+          : s.completed
+            ? StepStatus.Completed
+            : isActive
+              ? StepStatus.Active
+              : (s.status ?? StepStatus.Disabled);
+
+        if (s.status !== nextStatus) {
+          this.steps[stepId] = { ...s, status: nextStatus };
         }
       }
 
