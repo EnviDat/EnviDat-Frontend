@@ -41,7 +41,7 @@
           <!-- BaseIconSwitch Component -->
           <BaseIconSwitch
             :tooltipText="`${isActive ? 'Disable' : 'Enable'} blind review`"
-            :icon="mdiAccountCircle()"
+            :icon="mdiAccountCircle"
             :active="isActive"
             :disabled="loading || !isBlindReviewValid"
             :loading="loading"
@@ -87,7 +87,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import { mapState } from 'vuex';
-import { mdiMessageDraw, mdiLink, mdiContentCopy } from '@mdi/js';
+import { mdiMessageDraw, mdiLink, mdiContentCopy, mdiAccountCircle } from '@mdi/js';
 
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue';
@@ -237,6 +237,7 @@ export default {
     mdiLink,
     mdiMessageDraw,
     mdiContentCopy,
+    mdiAccountCircle,
     previewPublisher: null,
     emptyEntry: {
       institution: '',
