@@ -19,6 +19,7 @@ import { CustomFieldsViewModel } from '@/modules/workflow/viewModel/CustomFields
 import { LOCAL_DATASET_KEY } from '@/factories/metadataConsts';
 
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
+import { ClassMap } from '@/modules/workflow/ClassMap.ts';
 
 export class DatasetModel {
   viewModelClasses = [
@@ -34,7 +35,8 @@ export class DatasetModel {
     ResourcesListViewModel,
   ];
 
-  private viewModelInstances: Map<string, any> = new Map();
+  //  private viewModelInstances: Map<string, any> = new Map();
+  private viewModelInstances = new ClassMap();
 
   declare datasetWorkflow: any;
 
@@ -52,7 +54,7 @@ export class DatasetModel {
   }
 
   private clearViewModels(): void {
-    this.viewModelInstances = new Map<string, any>();
+    this.viewModelInstances = new ClassMap();
   }
 
   private createViewModels() {
@@ -66,7 +68,8 @@ export class DatasetModel {
       }
 
       const reactiveVM = reactive(instance);
-      this.viewModelInstances.set(instance.constructor.name, reactiveVM);
+      // this.viewModelInstances.set(instance.constructor.name, reactiveVM);
+      this.viewModelInstances.set(VMClass, reactiveVM);
     }
   }
 
@@ -107,7 +110,7 @@ export class DatasetModel {
   }
 
   async saveDeprecatedResources(datasetId: string, resources: Resource[], datasetService: DatasetService) {
-    const customFieldsVM = this.getViewModel('CustomFieldsViewModel');
+    const customFieldsVM = this.getViewModel(CustomFieldsViewModel);
 
     customFieldsVM.storeDeprecatedResources(resources.filter((res) => res.deprecated));
 
@@ -141,14 +144,15 @@ export class DatasetModel {
     return this.viewModelInstances;
   }
 
-  getViewModel(modelName: string) {
-    return this.viewModelInstances.get(modelName);
+  getViewModel(viewModel: AbstractEditViewModel) {
+    return this.viewModelInstances.get(viewModel);
   }
 
   updateViewModels() {
     const datasetService = this.datasetWorkflow.getDatasetService();
 
-    this.viewModelInstances.forEach((model: AbstractEditViewModel) => model.updateModel(datasetService.dataset));
+    const viewModles = this.viewModelInstances.values();
+    viewModles.forEach((model: AbstractEditViewModel) => model.updateModel(datasetService.dataset));
   }
 
   get dataset(): DatasetDTO | undefined {

@@ -37,10 +37,8 @@ const siteMatomoId = process.env.VITE_MATOMO_SITEID;
 
 // matomo part to manage the refresh issue
 if (localStorage.getItem('matomoConsentGiven') === 'true') {
-  /* eslint-disable no-underscore-dangle */
   window._paq = window._paq || [];
   window._paq.push(['rememberConsentGiven']);
-  /* eslint-enable no-underscore-dangle */
 }
 
 app

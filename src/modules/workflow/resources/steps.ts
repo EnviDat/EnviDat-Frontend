@@ -6,10 +6,22 @@ import AdditionalInformation from '@/modules/workflow/components/steps/Additiona
 import ResourcesInformation from '@/modules/workflow/components/steps/ResourcesInformation.vue';
 import RelatedResearch from '@/modules/workflow/components/steps/RelatedResearch.vue';
 import PublishingInformation from '@/modules/workflow/components/steps/PublishingInformation.vue';
+import AdminInformation from '@/modules/workflow/components/steps/AdminInformation.vue';
+
+import { AdminViewModel } from '@/modules/workflow/viewModel/AdminViewModel.ts';
+import { AuthorListViewModel } from '@/modules/workflow/viewModel/AuthorListViewModel.ts';
+// import { EditDataInfoViewModel } from '@/modules/workflow/viewModel/EditDataInfoViewModel.ts';
+import { ResourcesListViewModel } from '@/modules/workflow/viewModel/ResourcesListViewModel.ts';
+import { MetadataBaseViewModel } from '@/modules/workflow/viewModel/MetadataBaseViewModel.ts';
+import { AdditionalInfoViewModel } from '@/modules/workflow/viewModel/AdditionalInfoViewModel.ts';
+import { GeoInfoViewModel } from '@/modules/workflow/viewModel/GeoInfoViewModel.ts';
+import { RelatedResearchViewModel } from '@/modules/workflow/viewModel/RelatedResearchViewModel.ts';
+import { PublicationInfoViewModel } from '@/modules/workflow/viewModel/PublicationInfoViewModel.ts';
+// import { CustomFieldsViewModel } from '@/modules/workflow/viewModel/CustomFieldsViewModel.ts';
+
 import { StepStatus } from '@/modules/workflow/utils/workflowEnums';
 import { WorkflowStep } from '@/types/workflow';
 import { USER_ROLE_SYSTEM_ADMIN } from '@/factories/userEditingValidations';
-import AdminInformation from '@/modules/workflow/components/steps/AdminInformation.vue';
 
 export const workflowSteps: WorkflowStep[] = [
   {
@@ -25,7 +37,7 @@ export const workflowSteps: WorkflowStep[] = [
     loader: () =>
       import('@/modules/workflow/components/steps/MetadataBaseInformation.vue'),
 */
-    viewModelKey: 'MetadataBaseViewModel',
+    viewModelKey: MetadataBaseViewModel,
     icon: 'baseinfo',
     status: StepStatus.Active,
     // guideLines: [
@@ -53,7 +65,7 @@ export const workflowSteps: WorkflowStep[] = [
     loader: () =>
       import('@/modules/workflow/components/steps/AuthorsInformation.vue'),
 */
-    viewModelKey: 'AuthorListViewModel',
+    viewModelKey: AuthorListViewModel,
     icon: 'authorsinfo',
     status: StepStatus.Disabled,
     // guideLines: [
@@ -81,7 +93,7 @@ export const workflowSteps: WorkflowStep[] = [
     loader: () =>
       import('@/modules/workflow/components/steps/GeoInformation.vue'),
 */
-    viewModelKey: 'GeoInfoViewModel',
+    viewModelKey: GeoInfoViewModel,
     icon: 'geoinfo',
     status: StepStatus.Disabled,
     errors: null,
@@ -99,7 +111,7 @@ export const workflowSteps: WorkflowStep[] = [
     loader: () =>
       import('@/modules/workflow/components/steps/AdditionalInformation.vue'),
 */
-    viewModelKey: 'AdditionalInfoViewModel',
+    viewModelKey: AdditionalInfoViewModel,
     icon: 'additionalinfo',
     status: StepStatus.Disabled,
     errors: null,
@@ -117,7 +129,7 @@ export const workflowSteps: WorkflowStep[] = [
     loader: () =>
       import('@/modules/workflow/components/steps/ResourcesInformation.vue'),
 */
-    viewModelKey: 'ResourcesListViewModel',
+    viewModelKey: ResourcesListViewModel,
     icon: 'uploadinfo',
     status: StepStatus.Disabled,
     errors: null,
@@ -135,7 +147,7 @@ export const workflowSteps: WorkflowStep[] = [
     loader: () =>
       import('@/modules/workflow/components/steps/RelatedResearch.vue'),
 */
-    viewModelKey: 'RelatedResearchViewModel',
+    viewModelKey: RelatedResearchViewModel,
     icon: 'relatedinfo',
     status: StepStatus.Disabled,
     errors: null,
@@ -153,7 +165,7 @@ export const workflowSteps: WorkflowStep[] = [
     loader: () =>
       import('@/modules/workflow/components/steps/PublishingInformation.vue'),
 */
-    viewModelKey: 'PublicationInfoViewModel',
+    viewModelKey: PublicationInfoViewModel,
     icon: 'publicationinfo',
     status: StepStatus.Disabled,
     errors: null,
@@ -183,7 +195,7 @@ export function enhanceAdminWorkflowStep(userRole: string, steps: WorkflowStep[]
         hasError: false,
         key: 'admininformation',
         component: markRaw(AdminInformation),
-        viewModelKey: 'AdminViewModel',
+        viewModelKey: AdminViewModel,
         icon: 'publicationinfo',
         status: StepStatus.Disabled,
         errors: null,

@@ -18,6 +18,7 @@ import {
 } from '@/factories/strategyFactory';
 
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
+import { CustomFieldsViewModel } from '@/modules/workflow/viewModel/CustomFieldsViewModel.ts';
 
 export class ResourcesListViewModel extends AbstractEditViewModel {
   declare resources: Resource[];
@@ -50,7 +51,7 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
     numberOfDownload?: number,
   ): Resource[] {
     return rawResources?.map((rawResource: ResourceDTO) => {
-      const customFieldsVm = this.datasetModel.getViewModel('CustomFieldsViewModel');
+      const customFieldsVm = this.datasetModel.getViewModel(CustomFieldsViewModel);
 
       const res = ResourceViewModel.getFormattedResource(
         rawResource,

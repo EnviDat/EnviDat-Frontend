@@ -1,6 +1,7 @@
 import { StepStatus } from '@/modules/workflow/utils/workflowEnums';
+import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 
-export interface WorkflowStep {
+export interface WorkflowStep<T extends abstract new (...args: any[]) => AbstractEditViewModel = any> {
   id: number;
   title: string;
   description: string;
@@ -10,7 +11,7 @@ export interface WorkflowStep {
   key: string;
   component: unknown;
   // loader?: () => Promise<unknown>;
-  viewModelKey: string;
+  viewModelKey: T;
   icon: string;
   status: StepStatus;
   readOnly?: boolean;
