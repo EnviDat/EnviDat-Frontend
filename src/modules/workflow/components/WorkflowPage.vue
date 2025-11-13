@@ -226,6 +226,10 @@ const catchNavigate = async ({ id, status }: { id: number; status: string }) => 
 
 const nextStep = async () => {
   // FIX Validation during navigation
+  if (currentStepNum.value === 6) {
+    router.push({ name: USER_DASHBOARD_PAGENAME });
+    return;
+  }
   workflowStore.markStepTouched(workflowStore.currentStep, true);
   const fromNavigationClick = false;
   const valid = await checkValidation(currentStep.value, fromNavigationClick);
