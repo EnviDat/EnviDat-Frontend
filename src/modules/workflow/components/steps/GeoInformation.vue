@@ -161,10 +161,10 @@
           <v-col cols="12">
             <BaseStartEndDate
               data-field="dates"
-              :startDate="item.dateType === 'created' ? item.date : item.dateStart"
-              :endDate="item.dateType === 'created' ? item.endDate : item.dateEnd"
-              :startDateProperty="item.dateType === 'created' ? 'date' : 'dateStart'"
-              :endDateProperty="item.dateType === 'created' ? 'endDate' : 'dateEnd'"
+              :startDate="item.date"
+              :endDate="item.endDate"
+              :startDateProperty="'date'"
+              :endDateProperty="'endDate'"
               :error-messages="validationErrors.dates"
               :endDateLabel="`End date`"
               :clearableEndDate="false"
