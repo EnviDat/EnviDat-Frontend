@@ -252,7 +252,6 @@ export default {
       const active = this.config?.userEditMetadataConfig?.newWorkflowActive;
       if (!active) return;
 
-      console.log('Using new dataset editing workflow store');
       const { useDatasetWorkflowStore } = await import('@/modules/workflow/datasetWorkflow');
       this.workflowStore = useDatasetWorkflowStore();
     },
