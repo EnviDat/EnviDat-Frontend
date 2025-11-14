@@ -2,9 +2,8 @@
   <v-card id="AddNewAuthor" class="pa-0" :loading="loadingColor" flat>
     <BaseIconButton
       v-if="isEditingAuthor"
-      class="editResourceCloseButton ma-2"
+      class="editResourceCloseButton ma-2 align-end d-flex justify-end"
       :class="{ 'mx-1': $vuetify.display.smAndDown }"
-      style="position: absolute; top: 0; right: 0; z-index: 2"
       :icon="mdiClose"
       icon-color="black"
       color="black"
@@ -172,9 +171,10 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="isEditingAuthor">
-        <v-col>
+      <v-row>
+        <v-col class="align-end d-flex justify-end">
           <BaseRectangleButton
+            v-if="isEditingAuthor"
             :icon="mdiClose"
             icon-color="white"
             color="error"
@@ -183,14 +183,17 @@
             tooltip-text="Remove this author from the dataset"
             @clicked="removeAuthorClick(email)"
           />
+          <v-btn class="ml-2" @click="saveNewAuthor(previews)">{{
+            isEditingAuthor ? 'Save Author' : 'Add Author'
+          }}</v-btn>
         </v-col>
       </v-row>
     </v-container>
-    <v-row>
+    <!-- <v-row>
       <v-col class="align-end d-flex justify-end">
-        <v-btn @click="saveAuthorInfo()">Add Author</v-btn>
+        <v-btn @click="saveNewAuthor(previews)">{{ isEditingAuthor ? 'Save Author' : 'Add Author' }}</v-btn>
       </v-col>
-    </v-row>
+    </v-row> -->
   </v-card>
 </template>
 
@@ -403,6 +406,9 @@ export default {
       this.markPropertyActive(event.relatedTarget, true);
       // this.delayedNotifyChange(property, event.target.value);
       this.notifyAuthorChange(property, event.target.value);
+    },
+    saveNewAuthor(property: string) {
+      this.notifyAuthorChange(property);
     },
     markPropertyActive(toElement, editing) {
       const toId = toElement?.id || null;

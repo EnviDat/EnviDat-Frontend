@@ -39,6 +39,7 @@
             <AddExistingAuthor
               v-bind="authorPickingGenericProps"
               :validationErrors="authorListingGenericProps.validationErrors"
+              @removeAuthor="catchRemoveAuthor"
               @save="saveAuthorsList"
             />
           </v-col>
