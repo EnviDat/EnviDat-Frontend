@@ -39,6 +39,7 @@
             <AddExistingAuthor
               v-bind="authorPickingGenericProps"
               :validationErrors="authorListingGenericProps.validationErrors"
+              @removeAuthor="catchRemoveAuthor"
               @save="saveAuthorsList"
             />
           </v-col>
@@ -290,12 +291,34 @@ export default {
         const removeIndex = currentAuthors.indexOf(matches[0]);
         currentAuthors.splice(removeIndex, 1);
 
-        this.saveAuthorsList({ authors: currentAuthors });
+        this.saveAuthorsList({ authors: currentAuthors, replace: true });
       }
     },
-    saveAuthorsList(data: { authors: Author[] }) {
-      this.$emit('save', data);
+
+    saveAuthorsList(data: { authors: Author[]; replace?: boolean }) {
+      const incoming = data.authors || [];
+
+      if (data.replace) {
+        this.$emit('save', { authors: incoming });
+        return;
+      }
+
+      const current = this.authors || [];
+      const merged: Author[] = [...current];
+
+      for (const author of incoming) {
+        const index = merged.findIndex((a) => a.email === author.email);
+
+        if (index === -1) {
+          merged.push(author);
+        } else {
+          merged[index] = author;
+        }
+      }
+
+      this.$emit('save', { authors: merged });
     },
+
     validateAuthor(data: { author: Author }) {
       this.authorViewModel.validate(data);
     },

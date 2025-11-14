@@ -2,9 +2,8 @@
   <v-card id="AddNewAuthor" class="pa-0" :loading="loadingColor" flat>
     <BaseIconButton
       v-if="isEditingAuthor"
-      class="editResourceCloseButton ma-2"
+      class="editResourceCloseButton ma-2 align-end d-flex justify-end"
       :class="{ 'mx-1': $vuetify.display.smAndDown }"
-      style="position: absolute; top: 0; right: 0; z-index: 2"
       :icon="mdiClose"
       icon-color="black"
       color="black"
@@ -74,14 +73,12 @@
             :placeholder="labels.placeholderEmail"
             :model-value="emailField"
             @keyup="blurOnEnterKey"
-            @focusin="focusIn($event)"
-            @focusout="focusOut('email', $event)"
             @update:model-value="changeProperty('email', $event)"
           />
         </v-col>
       </v-row>
 
-      <v-row v-if="!isEditingAuthor" no-gutters dense>
+      <!-- <v-row v-if="!isEditingAuthor" no-gutters dense>
         <div v-html="labels.authorOr" class="text-caption" />
       </v-row>
 
@@ -96,11 +93,11 @@
             @pickedUsers="catchPickerAuthorChange($event, true)"
           />
         </v-col>
-      </v-row>
-
+      </v-row> -->
+      <!--
       <v-row class="pa-0 pt-2 pb-2" dense>
         <div v-html="labels.authorAutoComplete" class="text-caption" />
-      </v-row>
+      </v-row> -->
 
       <v-row dense class="pt-2 pa-0">
         <v-col>
@@ -116,8 +113,6 @@
             :readonly="isReadOnly('authors')"
             :hint="readOnlyHint('authors')"
             @keyup="blurOnEnterKey"
-            @focusin="focusIn($event)"
-            @focusout="focusOut('firstName', $event)"
             @update:model-value="changeProperty('firstName', $event)"
           />
         </v-col>
@@ -135,8 +130,6 @@
             :readonly="isReadOnly('authors')"
             :hint="readOnlyHint('authors')"
             @keyup="blurOnEnterKey"
-            @focusin="focusIn($event)"
-            @focusout="focusOut('lastName', $event)"
             @update:model-value="changeProperty('lastName', $event)"
           />
         </v-col>
@@ -156,8 +149,6 @@
             :readonly="isReadOnly('authors')"
             :hint="readOnlyHint('authors')"
             @keyup="blurOnEnterKey"
-            @focusin="focusIn($event)"
-            @focusout="focusOut('affiliation', $event)"
             @update:model-value="changeProperty('affiliation', $event)"
           />
         </v-col>
@@ -175,16 +166,15 @@
             :readonly="isReadOnly('authors')"
             :hint="readOnlyHint('authors')"
             @keyup="blurOnEnterKey"
-            @focusin="focusIn($event)"
-            @focusout="focusOut('identifier', $event)"
             @update:model-value="changeProperty('identifier', $event)"
           />
         </v-col>
       </v-row>
 
-      <v-row v-if="isEditingAuthor">
-        <v-col>
+      <v-row>
+        <v-col class="align-end d-flex justify-end">
           <BaseRectangleButton
+            v-if="isEditingAuthor"
             :icon="mdiClose"
             icon-color="white"
             color="error"
@@ -193,9 +183,17 @@
             tooltip-text="Remove this author from the dataset"
             @clicked="removeAuthorClick(email)"
           />
+          <v-btn class="ml-2" @click="saveNewAuthor(previews)">{{
+            isEditingAuthor ? 'Save Author' : 'Add Author'
+          }}</v-btn>
         </v-col>
       </v-row>
     </v-container>
+    <!-- <v-row>
+      <v-col class="align-end d-flex justify-end">
+        <v-btn @click="saveNewAuthor(previews)">{{ isEditingAuthor ? 'Save Author' : 'Add Author' }}</v-btn>
+      </v-col>
+    </v-row> -->
   </v-card>
 </template>
 
@@ -213,7 +211,7 @@
 
 import { mdiAccount, mdiClose, mdiEmail, mdiHandshake, mdiWalletMembership } from '@mdi/js';
 
-import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
+// import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
 // import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
@@ -296,31 +294,31 @@ export default {
     },
   },
   emits: ['validate', 'save', 'removeAuthor', 'closeClicked'],
-  created() {
-    eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+  // created() {
+  //   eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
 
-    this.focusOutDebouncing = useDebounce((property: string, value: any) => {
-      // only check if the identifier is in focus
-      // because it's optional, so when it's in focus don't auto save
-      // otherwise the input would not been taken
-      // and if any other field is in focus, it's ok to autosave, because this
-      // will trigger the validation
-      if (this.activeElements.identifier) {
-        return;
-      }
+  //   this.focusOutDebouncing = useDebounce((property: string, value: any) => {
+  //     // only check if the identifier is in focus
+  //     // because it's optional, so when it's in focus don't auto save
+  //     // otherwise the input would not been taken
+  //     // and if any other field is in focus, it's ok to autosave, because this
+  //     // will trigger the validation
+  //     if (this.activeElements.identifier) {
+  //       return;
+  //     }
 
-      if (!this.anyPreviewsChanged) {
-        return;
-      }
+  //     if (!this.anyPreviewsChanged) {
+  //       return;
+  //     }
 
-      const authorObject = this.combineInputToAuthorObject(property, value);
+  //     const authorObject = this.combineInputToAuthorObject(property, value);
 
-      this.saveAuthorInfo(authorObject);
-    }, 3000);
-  },
-  beforeUnmount() {
-    eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
-  },
+  //     this.saveAuthorInfo(authorObject);
+  //   }, 3000);
+  // },
+  // beforeUnmount() {
+  //   eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+  // },
   computed: {
     loadingColor() {
       if (this.loading) {
@@ -409,6 +407,9 @@ export default {
       // this.delayedNotifyChange(property, event.target.value);
       this.notifyAuthorChange(property, event.target.value);
     },
+    saveNewAuthor(property: string) {
+      this.notifyAuthorChange(property);
+    },
     markPropertyActive(toElement, editing) {
       const toId = toElement?.id || null;
       if (toId) {
@@ -419,7 +420,7 @@ export default {
       this.previews[property] = value;
       this.$emit('validate', { [property]: value });
 
-      this.focusOutDebouncing(property, value);
+      // this.focusOutDebouncing(property, value);
     },
     catchPickerAuthorChange(pickedUserEmail: string, hasAuthor: boolean) {
       this.authorPickerTouched = true;
@@ -507,6 +508,7 @@ export default {
     },
     saveAuthorInfo(authorObject) {
       this.$emit('save', { author: authorObject });
+      this.clearPreviews();
     },
     fillPreviews(email, firstName, lastName, identifier, affiliation) {
       this.previews.email = email;
@@ -566,7 +568,7 @@ export default {
   }),
   components: {
     BaseRectangleButton,
-    BaseUserPicker,
+    // BaseUserPicker,
     // BaseStatusLabelView,
     BaseIconButton,
   },
