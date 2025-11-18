@@ -74,7 +74,8 @@ deploy-to-s3-bucket:
     # needs the environmental variables for the version number
     - set-vars
     # needs the published build for the app and it's storybook
-    - publish-build
+    - job: publish-build
+      optional: true
     - verify-node-audit
   variables:
     GIT_STRATEGY: none
