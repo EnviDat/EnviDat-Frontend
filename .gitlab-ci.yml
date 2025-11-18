@@ -56,6 +56,7 @@ variables:
   rules:
     # don't run when triggered from other pipeline (deployment-only-pipeline)
     - if: '$CI_PIPELINE_SOURCE == "pipeline"'
+      when: never
     # don't run when it's scheduled
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
       when: never
@@ -129,7 +130,7 @@ install-node:
       files:
         - package-lock.json
     paths:
-    - .npm/
+      - .npm/
     # pull-push to be able to update the npm cache
     # don't cache the node_modules because the npm ci command always deletes it
     policy: pull-push
@@ -139,14 +140,14 @@ install-node:
     - npm config set fund false
   script:
     # always run the install
-      - npm ci --no-audit --no-fund --loglevel=error --ignore-scripts
-# artifacts:
-#   name: 'node dependencies'
-#   # stores node_modules as an artifact to be used in the next jobs
-#   # caching isn't always guaranteed to work
-#   paths:
-#     - node_modules/**/*  # Include all contents, including hidden files and directories
-#   expire_in: 1 day
+    - npm ci --no-audit --no-fund --loglevel=error --ignore-scripts
+  # artifacts:
+  #   name: 'node dependencies'
+  #   # stores node_modules as an artifact to be used in the next jobs
+  #   # caching isn't always guaranteed to work
+  #   paths:
+  #     - node_modules/**/*  # Include all contents, including hidden files and directories
+  #   expire_in: 1 day
   retry:
     max: 2
 
