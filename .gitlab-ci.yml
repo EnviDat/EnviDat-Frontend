@@ -67,6 +67,8 @@ variables:
 # don't run for scheduled pipelines, to avoid making unnecessary changes in production
 .manual-deployment-rules:
   rules:
+    - if: '$CI_PIPELINE_SOURCE == "pipeline"'
+      when: never
     # don't run when it's scheduled
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
       when: never
