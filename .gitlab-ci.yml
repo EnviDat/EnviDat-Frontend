@@ -118,6 +118,8 @@ set-vars:
   artifacts:
     reports:
       dotenv: build.env
+  retry:
+    max: 2
 
 install-node:
   stage: config
