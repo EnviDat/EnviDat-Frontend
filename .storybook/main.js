@@ -26,7 +26,7 @@ export default {
       disableSourcemaps: false,
     },
   },
-  addons: ['@chromatic-com/storybook', '@storybook/addon-docs', '@storybook/addon-vitest', '@storybook/addon-a11y'],
+  addons: ['@chromatic-com/storybook', '@storybook/addon-docs', '@storybook/addon-a11y'],
 
   framework: {
     name: '@storybook/vue3-vite',
