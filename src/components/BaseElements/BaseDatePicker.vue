@@ -220,21 +220,18 @@ export default {
         this.changeDate(dateProperty, '');
         return;
       }
-
-      const normalized = raw.replace(/[\u2010-\u2015\u2212\uFE58\uFE63\uFF0D]/g, '-');
+      if (raw.length !== 10) {
+        return;
+      }
 
       try {
-        const dateValue = parseDateStringToCKANFormat(normalized);
-
+        const dateValue = parseDateStringToCKANFormat(raw);
         if (isFieldValid(dateProperty, dateValue, this.getValidation(dateProperty), this.validationErrors)) {
-          this.validationErrors[dateProperty] = '';
-          if (dateProperty === this.dateProperty) {
-            this.previewDate = dateValue;
-          }
+          this.previewDate = dateValue;
           this.changeDate(dateProperty, dateValue);
         }
-      } catch {
-        this.validationErrors[dateProperty] = `Invalid date format, use ${enviDatDateFormat.toUpperCase()}`;
+      } catch (e) {
+        console.log(e);
       }
     },
 

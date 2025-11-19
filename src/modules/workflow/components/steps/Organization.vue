@@ -50,17 +50,21 @@
           :hint="readOnlyHint('organizationId')"
           :label="EDIT_METADATA_ORGANIZATION_LABEL"
           :error-messages="validationErrors.organizationId"
-          @update:model-value="onSelectOrg"
+          @update:modelValue="onSelectOrg"
         >
-          <template v-slot:selection="{ item }">
-            <MetadataOrganizationChip v-if="item?.title" :organization="item.title" />
+          <!-- <template v-slot:selection="{ item }">
+            <MetadataOrganizationChip
+              v-if="item?.title"
+              @organizationClicked="setOrganization"
+              :organization="item.title"
+            />
           </template>
 
           <template v-slot:item="{ item }">
             <v-list-item v-if="item?.title" density="compact">
-              <MetadataOrganizationChip :organization="item.title" />
+              <MetadataOrganizationChip @organizationClicked="setOrganization" :organization="item.title" />
             </v-list-item>
-          </template>
+          </template> -->
         </v-select>
       </v-col>
     </v-row>
@@ -85,7 +89,7 @@
 
 import { mdiArrowDownDropCircleOutline, mdiHome } from '@mdi/js';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
-import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip.vue';
+// import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip.vue';
 
 import { EDITMETADATA_CLEAR_PREVIEW, EDITMETADATA_ORGANIZATION, eventBus } from '@/factories/eventBus';
 import {
@@ -209,7 +213,6 @@ export default {
     },
     setOrganization(value) {
       // Select organization based on picked item and pass via event bus
-
       this.previewOrganizationId = value.value;
 
       const newOrg = this.userOrganizations.filter((x) => x.id === value.value)[0];
@@ -241,7 +244,7 @@ export default {
   }),
   components: {
     BaseStatusLabelView,
-    MetadataOrganizationChip,
+    // MetadataOrganizationChip,
   },
 };
 </script>

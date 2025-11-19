@@ -1,6 +1,8 @@
 <template>
   <v-col class="ma-0 pt-0 pb-0 justify-end d-flex">
-    <v-chip v-if="!show" color="#92e5ef" :append-icon="icon" @click="openInfoBanner"> Open Info </v-chip>
+    <v-chip v-if="!show" class="info-banner" color="#92e5ef" :append-icon="icon" @click="openInfoBanner">
+      Open Info
+    </v-chip>
     <v-alert
       v-if="show"
       :type="type"

@@ -28,7 +28,7 @@
               <div class="text-caption">{{ labels.instructions }}, {{ labels.userPickInstructions }}</div>
             </v-col>
           </v-row>
-          <BaseUserPicker
+          <BaseUserPickerWorkflow
             :users="baseUserPickerObject"
             :preSelectedEmails="preselectAuthorEmails"
             :error-messages="validationErrors?.authors"
@@ -58,7 +58,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
+import BaseUserPickerWorkflow from '@/modules/workflow/components/steps/BaseUserPickerWorkflow.vue';
 
 import { getUserPickerObjects, getFullAuthorsForUserPicker } from '@/factories/authorFactory';
 import { EDIT_METADATA_AUTHORS_TITLE } from '@/factories/metadataConsts';
@@ -148,8 +148,9 @@ export default {
       // not saving the users changes, but reflecting their action and show the error
       this.previewAuthors = null;
     },
-    catchRemovedUsers(pickedUsersEmails: string[]) {
-      this.changePreviews(pickedUsersEmails);
+    catchRemovedUsers(pickedEmail) {
+      this.$emit('removeAuthor', pickedEmail);
+      // this.changePreviews(pickedUsersEmails);
       this.notifyChange();
     },
     catchPickedUsers(pickedUsersEmails: string[]) {
@@ -190,7 +191,7 @@ export default {
     previewAuthors: null,
   }),
   components: {
-    BaseUserPicker,
+    BaseUserPickerWorkflow,
   },
 };
 </script>
