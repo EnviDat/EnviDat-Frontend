@@ -91,9 +91,7 @@ import ActiveDataCredits from '@/modules/user/components/edit/ActiveDataCredits.
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
 const MetadataAuthorsAsync = defineAsyncComponent(
-  () =>
-    // eslint-disable-next-line import/no-self-import
-    import('@/modules/metadata/components/Metadata/MetadataAuthors.vue'),
+  () => import('@/modules/metadata/components/Metadata/MetadataAuthors.vue'),
 );
 
 export default {

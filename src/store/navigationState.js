@@ -1,5 +1,3 @@
-/* eslint-disable object-curly-newline */
-
 import {
   mdiEarth,
   mdiBookOpenPageVariant,
@@ -35,8 +33,8 @@ import {
   SERVICE_PAGENAME,
   ORGANIZATIONS_PATH,
   ORGANIZATIONS_PAGENAME,
-  METADATA_CREATION_PATH,
-  METADATA_CREATION_PAGENAME,
+  WORKFLOW_PATH,
+  WORKFLOW_PAGENAME,
 } from '@/router/routeConsts';
 
 import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
@@ -144,8 +142,8 @@ export function useUserMenuItems() {
       title: 'New Dataset',
       icon: mdiPlusBox,
       toolTip: 'Create a new dataset',
-      path: METADATA_CREATION_PATH,
-      pageName: METADATA_CREATION_PAGENAME,
+      path: WORKFLOW_PATH,
+      pageName: WORKFLOW_PAGENAME,
       show: orgStore.canCreateDatasets,
     },
     {

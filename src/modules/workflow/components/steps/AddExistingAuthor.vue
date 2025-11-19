@@ -28,7 +28,7 @@
               <div class="text-caption">{{ labels.instructions }}, {{ labels.userPickInstructions }}</div>
             </v-col>
           </v-row>
-          <BaseUserPicker
+          <BaseUserPickerWorkflow
             :users="baseUserPickerObject"
             :preSelectedEmails="preselectAuthorEmails"
             :error-messages="validationErrors?.authors"
@@ -58,7 +58,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
+import BaseUserPickerWorkflow from '@/modules/workflow/components/steps/BaseUserPickerWorkflow.vue';
 
 import { getUserPickerObjects, getFullAuthorsForUserPicker } from '@/factories/authorFactory';
 import { EDIT_METADATA_AUTHORS_TITLE } from '@/factories/metadataConsts';
@@ -148,11 +148,14 @@ export default {
       // not saving the users changes, but reflecting their action and show the error
       this.previewAuthors = null;
     },
-    catchRemovedUsers(pickedUsersEmails: string[]) {
-      this.changePreviews(pickedUsersEmails);
+    catchRemovedUsers(pickedEmail) {
+      this.$emit('removeAuthor', pickedEmail);
+      // this.changePreviews(pickedUsersEmails);
+      this.notifyChange();
     },
     catchPickedUsers(pickedUsersEmails: string[]) {
       this.changePreviews(pickedUsersEmails);
+      this.notifyChange();
     },
     changePreviews(pickedUsersEmails: string[]) {
       this.previewAuthors = getFullAuthorsForUserPicker(pickedUsersEmails, this.authors, this.existingEnviDatUsers);
@@ -180,15 +183,15 @@ export default {
   data: () => ({
     labels: {
       title: EDIT_METADATA_AUTHORS_TITLE,
-      instructions: 'Here are can add authors from other published datasets to your dataset.',
+      instructions: 'Here you can add authors from other published datasets to your dataset.',
       userPickInstructions:
-        'Pick an author from the list to add to your dataset. To remove click on the close icon of an author.',
+        'Pick an author from the list to add to your dataset. To remove, click on the close icon of an author.',
       authorPickHint: 'Start typing the name in the text field to search for an author.',
     },
     previewAuthors: null,
   }),
   components: {
-    BaseUserPicker,
+    BaseUserPickerWorkflow,
   },
 };
 </script>

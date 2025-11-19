@@ -128,7 +128,7 @@ describe('metaDataFactory - createResource', () => {
   it('with dataset', () => {
     const dataset = packagelist.result[4];
 
-    const res = createResource(dataset);
+    const res = createResource(dataset.resources[0], dataset);
 
     expect(res).toBeDefined();
     expect(res.id).toBeDefined();

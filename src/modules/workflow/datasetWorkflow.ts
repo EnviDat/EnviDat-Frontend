@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 
+import { getYear } from 'date-fns';
 import { USER_ROLE_MEMBER, USER_ROLE_EDITOR, USER_ROLE_SYSTEM_ADMIN } from '@/factories/userEditingValidations';
 
 import { enhanceAdminWorkflowStep, workflowSteps } from '@/modules/workflow/resources/steps';
@@ -10,7 +11,6 @@ import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 import { DatasetService } from '@/types/modelTypes';
 import { BackendDatasetService } from '@/modules/workflow/BackendDatasetService.ts';
 import { workflowGuide } from '@/modules/workflow/resources/workflowGuides.ts';
-import { getYear } from 'date-fns';
 
 import { readOnlyFields } from '@/modules/workflow/resources/readOnlyList.ts';
 import { resolveBootstrap } from '@/modules/workflow/utils/workflowBootstrap.ts';
@@ -70,7 +70,11 @@ export interface DatasetWorkflowState {
   currentDatasetId?: string;
   dataSource: 'local' | 'backend';
   currentUser?: any;
+  currentInfoBannerStatus?: boolean;
 
+  lastEditedDataset?: string;
+  lastEditedDatasetPath?: string;
+  lastEditedBackPath?: string;
   /*
   workflowGuide: ({ popover: { description: string; title: string }; element: string } | {
     popover: { description: string; title: string };
@@ -115,6 +119,11 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     uploadError: undefined,
     dataSource: 'local' as const,
     currentUser: undefined,
+    currentInfoBannerStatus: undefined,
+
+    lastEditedDataset: undefined,
+    lastEditedDatasetPath: undefined,
+    lastEditedBackPath: undefined,
   }),
   getters: {
     // GET the current step component
@@ -141,8 +150,14 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
       if (!key) return state.loading;
       return (state.loaders[key] ?? 0) > 0;
     },
+    isDataSourceLocal() {
+      return this.dataSource === 'local';
+    },
   },
   actions: {
+    setInfoBanner(status: boolean | undefined) {
+      this.currentInfoBannerStatus = status;
+    },
     startLoading(key?: string) {
       if (key) {
         this.loaders[key] = (this.loaders[key] ?? 0) + 1;
@@ -356,8 +371,15 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     // SET setActiveStep differs for create vs edit:
     // CREATE linear wizard. Current step -> Active; others keep their status (Completed/Error) or become Disabled.
     // EDIT free jump. Only mark the selected step as Active, leave the rest unchanged.
+    // setActiveStep(id: number) {
+    //   if (this.mode === WorkflowMode.Create && this.dataSource !== 'backend') {
+    //     this.steps = setActiveStepForCreate(this.steps, id);
+    //   }
+    //   this.currentStep = id;
+    // },
+
     setActiveStep(id: number) {
-      if (this.mode === WorkflowMode.Create && this.dataSource !== 'backend') {
+      if (this.mode === WorkflowMode.Create) {
         this.steps = setActiveStepForCreate(this.steps, id);
       }
       this.currentStep = id;
@@ -416,6 +438,30 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
         Object.assign(this.steps[stepId], diff);
       }
 
+      // SET Completed Edit mode logic TODO ticket
+      // check diff with Edit mode come as ndefined why???
+      if (this.mode === WorkflowMode.Edit) {
+        const s = this.steps[stepId];
+        if (!diff || diff.hasError === undefined) s.hasError = !ok;
+
+        if (!diff || diff.completed === undefined) {
+          s.completed = ok && !s.dirty;
+        }
+
+        const isActive = stepId === this.currentStep;
+        const nextStatus = s.hasError
+          ? StepStatus.Error
+          : s.completed
+            ? StepStatus.Completed
+            : isActive
+              ? StepStatus.Active
+              : (s.status ?? StepStatus.Disabled);
+
+        if (s.status !== nextStatus) {
+          this.steps[stepId] = { ...s, status: nextStatus };
+        }
+      }
+
       // this.setCurrentStepAction();
       return ok;
     },
@@ -455,10 +501,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
 
       // const firstOrg = orgStore.userOrganizations?.[0];
 
-      const publicationObj = {
-        publisher: 'EnviDat',
-        publication_year: String(getYear(new Date())),
-      };
+      const publicationObj = { publisher: 'EnviDat', publication_year: String(getYear(new Date())) };
       const publication = JSON.stringify(publicationObj);
       const maintainer = this.currentUser ? makeMaintainerFromUser(this.currentUser) : (dataset?.maintainer ?? '');
 
@@ -515,6 +558,12 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
 
       // 3) fallback: resta dov'eri (o clamp al limite)
       return Math.min(fromId, maxIdx);
+    },
+    // SET Last edited dataset ID and path
+    setLastEditedDataset(name?: string, path?: string, backPath?: string) {
+      this.lastEditedDataset = name ?? undefined;
+      this.lastEditedDatasetPath = path ?? undefined;
+      this.lastEditedBackPath = backPath ?? undefined;
     },
   },
 });

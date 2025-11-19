@@ -5,6 +5,8 @@ import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 import { DatasetModel } from '@/modules/workflow/DatasetModel';
 import { isFieldValid } from '@/factories/userEditingValidations';
 
+import { useNotifyStore } from '@/modules/workflow/utils/snackBar';
+
 export abstract class AbstractEditViewModel {
   protected privateMappingRules: string[][];
 
@@ -146,7 +148,6 @@ export abstract class AbstractEditViewModel {
       // properties to validate itself
       newData = this;
     }
-
     this.loading = true;
     this.error = undefined;
 
@@ -160,10 +161,14 @@ export abstract class AbstractEditViewModel {
       }
 
       this.savedSuccessful = true;
+
+      useNotifyStore().success('Saved');
       return true;
     } catch (e) {
       this.savedSuccessful = false;
       this.error = e;
+      const msg = e?.message ?? e?.response?.data?.error?.message ?? 'An error occurred while saving the dataset.';
+      useNotifyStore().error(msg);
       return false;
     } finally {
       this.loading = false;

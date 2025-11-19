@@ -7,7 +7,7 @@
       :icon="mdiClose"
       icon-color="primary"
       outline-color="primary"
-      variant="outlined"
+      outlined
       tooltip-text="Cancel Resource Editing"
       tooltip-bottom
       @clicked="$emit('closeClicked')"
@@ -30,14 +30,18 @@
           />
         </v-col>
 
+        <v-col cols="12">
+          <v-alert type="info" class="text-caption">
+            {{ labels.instructions }}
+          </v-alert>
+        </v-col>
+
         <v-col v-if="error">
           <BaseStatusLabelView status="error" statusColor="error" :statusText="error" :expandedText="errorDetails" />
         </v-col>
       </v-row>
 
       <div class="pa-1">
-        <v-alert type="info">{{ labels.instructions }}</v-alert>
-
         <v-row id="resourceName" no-gutters class="pt-4">
           <v-col cols="12">
             <v-text-field
@@ -126,24 +130,6 @@
           </v-col>
         </v-row>
 
-        <v-row>
-          <v-col>
-            <BaseIconSwitch
-              :active="isDataDeprecated"
-              :disabled="!editingRestrictingActive"
-              :icon="mdiCancel"
-              class="mt-2"
-              :tooltipText="labels.dataDeprecatedSwitchTooltip"
-              @clicked="isDataDeprecated = !isDataDeprecated"
-              :label="labels.dataDeprecatedSwitchLabel"
-            />
-          </v-col>
-
-          <v-col v-show="isDataDeprecated">
-            {{ labels.dataDeprecatedSwitchInfo }}
-          </v-col>
-        </v-row>
-
         <v-row id="format" no-gutters class="pt-5">
           <v-col cols="12" md="6" class="pr-md-4">
             <v-row no-gutters>
@@ -175,14 +161,14 @@
                   :label="labels.size"
                   hide-details="auto"
                   :disabled="!isLink || loading"
-                  :model-value="isLink ? sizeField : sizeFieldText"
+                  :model-value="sizeField"
                   :error-messages="validationErrors.size"
                   @blur="sizeField = $event.target.value"
                 />
               </v-col>
               <v-col class="px-2">
                 <v-select
-                  :items="labels.sizeFormatList"
+                  :items="sizeFormatList"
                   v-model="sizeFormatField"
                   label="File size format"
                   hide-details="auto"
@@ -221,8 +207,6 @@
           </v-col>
         </v-row>
 
-        <div class="text-h6 mt-6">Data access</div>
-
         <v-row class="mt-2">
           <v-col cols="12" class="text-h6">{{ labels.dataDeprecatedTitle }}</v-col>
           <v-col cols="4">
@@ -235,64 +219,72 @@
               :label="labels.dataDeprecatedSwitchLabel"
             />
           </v-col>
+
+          <v-col>
+            <v-alert :type="isDataDeprecated ? 'warning' : 'info'">
+              {{ labels.dataDeprecatedSwitchInfo }}
+            </v-alert>
+          </v-col>
         </v-row>
 
-        <div class="pa-1">
-          <v-expand-transition>
-            <v-alert v-if="isDataPrivate" type="warning">
-              <div v-html="openAccessDetails"></div>
-            </v-alert>
-          </v-expand-transition>
+        <v-row class="mt-2">
+          <v-col cols="12" class="text-h6">Data access</v-col>
 
-          <BaseIconSwitch
-            :active="isDataPrivate"
-            :disabled="!editingRestrictingActive"
-            :icon="isDataPrivate ? mdiLock : mdiLockOpen"
-            class="mt-2"
-            :tooltipText="labels.dataAccessSwitchTooltip"
-            @clicked="isDataPrivate = !isDataPrivate"
-            :label="labels.dataAccessSwitchLabel"
-          />
+          <v-col cols="4">
+            <BaseIconSwitch
+              :active="isDataPrivate"
+              :disabled="!editingRestrictingActive"
+              :icon="isDataPrivate ? mdiLock : mdiLockOpen"
+              class="mt-2"
+              :tooltipText="labels.dataAccessSwitchTooltip"
+              @clicked="isDataPrivate = !isDataPrivate"
+              :label="labels.dataAccessSwitchLabel"
+            />
+          </v-col>
 
-          <BaseIconSwitch
-            v-if="isDataPrivate"
-            :active="hasAllowedUsers"
-            :disabled="!editingRestrictingActive"
-            :icon="mdiAccountGroup"
-            class="mt-2"
-            :tooltipText="labels.hasAllowedUsersSwitchTooltip"
-            @clicked="hasAllowedUsers = !hasAllowedUsers"
-            :label="labels.hasAllowedUsersSwitchLabel"
-          />
+          <v-col cols="8">
+            <v-expand-transition>
+              <v-alert v-if="isDataPrivate" type="warning">
+                <div v-html="openAccessDetails"></div>
+              </v-alert>
+            </v-expand-transition>
+          </v-col>
 
-          <v-row v-if="isDataPrivate && hasAllowedUsers" no-gutters class="px-2 pt-3">
-            <v-col cols="12" class="pt-2">
-              <BaseUserPicker
-                :users="envidatUsersPicker"
-                :preSelectedNames="preSelectedAllowedUsers"
-                :pickerLabel="labels.restrictedAllowedUsersInfo"
-                multiplePick
-                :prependIcon="mdiKey"
-                userTagsCloseable
-                :placeholder="labels.allowedUsersTypingInfo"
-                @removedUsers="changeAllowedUsers"
-                @pickedUsers="changeAllowedUsers"
-              />
-            </v-col>
-          </v-row>
+          <v-col cols="12">
+            <BaseIconSwitch
+              v-if="isDataPrivate"
+              :active="hasAllowedUsers"
+              :disabled="!editingRestrictingActive"
+              :icon="mdiAccountGroup"
+              class="mt-2"
+              :tooltipText="labels.hasAllowedUsersSwitchTooltip"
+              @clicked="hasAllowedUsers = !hasAllowedUsers"
+              :label="labels.hasAllowedUsersSwitchLabel"
+            />
+          </v-col>
+        </v-row>
 
-          <v-row v-if="!editingRestrictingActive" class="py-2">
-            <v-col>
-              <v-alert type="warning">{{ labels.editingRestrictingUnavailableInfo }}</v-alert>
-            </v-col>
-          </v-row>
+        <v-row v-if="isDataPrivate && hasAllowedUsers" no-gutters class="px-2 pt-3">
+          <v-col cols="12" class="pt-2">
+            <BaseUserPicker
+              :users="envidatUsersPicker"
+              :preSelectedNames="preSelectedAllowedUsers"
+              :pickerLabel="labels.restrictedAllowedUsersInfo"
+              multiplePick
+              :prependIcon="mdiKey"
+              userTagsCloseable
+              :placeholder="labels.allowedUsersTypingInfo"
+              @removedUsers="changeAllowedUsers"
+              @pickedUsers="changeAllowedUsers"
+            />
+          </v-col>
+        </v-row>
 
-          <v-row v-if="checkUppercaseValue" class="py-2">
-            <v-col>
-              <v-alert type="info">{{ labels.editingWarningUppercaseExtension }}</v-alert>
-            </v-col>
-          </v-row>
-        </div>
+        <v-row v-if="!editingRestrictingActive" class="py-2">
+          <v-col>
+            <v-alert type="warning">{{ labels.editingRestrictingUnavailableInfo }}</v-alert>
+          </v-col>
+        </v-row>
 
         <v-row no-gutters class="pt-4" :justify="isSystemAdmin ? 'space-between' : 'end'">
           <v-col v-if="isSystemAdmin" class="flex-grow-0">
@@ -351,11 +343,11 @@ import { getFileIcon, getIconImage } from '@/factories/imageFactory';
 
 import notFoundImg from '@/modules/user/assets/imageNotFound.jpg';
 import {
-  getAllowedUsersString,
   getAllowedUserNames,
   getUserAutocompleteList,
   ACCESS_LEVEL_SAMEORGANIZATION_VALUE,
   ACCESS_LEVEL_PUBLIC_VALUE,
+  getAllowedUsersString,
 } from '@/factories/userEditingFactory';
 
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
@@ -368,9 +360,11 @@ import { getFileExtension } from '@/factories/fileFactory';
 import { RestrictedDTO } from '@/types/dataTransferObjectsTypes';
 import { getUserPickerObjects } from '@/factories/authorFactory';
 import { USER_ROLE_SYSTEM_ADMIN } from '@/factories/userEditingValidations';
+import { sizeFormatList } from '@/factories/resourceHelpers.ts';
+import { Resource } from '@/types/modelTypes';
 
 export default {
-  name: 'ResourceEditing',
+  //   name: 'ResourceEditing',
   props: {
     id: {
       type: String,
@@ -417,7 +411,7 @@ export default {
       default: '',
     },
     size: {
-      type: Number,
+      type: String,
       default: undefined,
     },
     sizeFormat: {
@@ -534,7 +528,7 @@ export default {
       get() {
         return this.previews.size !== null ? this.previews.size : this.size;
       },
-      set(value) {
+      set(value: string) {
         this.previews.size = value;
 
         this.validateField('size', value);
@@ -542,22 +536,9 @@ export default {
         this.checkSaveButtonEnabled();
       },
     },
-    sizeFieldText: {
-      get() {
-        const size = this.sizeField;
-
-        const multiplier = this.getFileSizeFormatIndex(size);
-
-        return `${(size / 1024 ** multiplier).toFixed(2)}`;
-      },
-    },
     sizeFormatField: {
       get() {
-        if (this.isLink) {
-          return this.previews.sizeFormat !== null ? this.previews.sizeFormat : this.sizeFormat;
-        }
-
-        return this.previews.sizeFormat !== null ? this.previews.sizeFormat : this.getFileSizeFormat(this.size);
+        return this.previews.sizeFormat !== null ? this.previews.sizeFormat : this.sizeFormat;
       },
       set(value) {
         this.previews.sizeFormat = value;
@@ -581,10 +562,6 @@ export default {
 
         this.checkSaveButtonEnabled();
       },
-    },
-    checkUppercaseValue() {
-      // shows a warning message if the form receives an uppercase character in the file name
-      return /[A-Z]/.test(this.resourceNameField);
     },
     accessRestrictionLvl: {
       get() {
@@ -750,10 +727,6 @@ export default {
     },
   },
   methods: {
-    getFileSizeFormat(size) {
-      return this.labels.sizeFormatList[this.getFileSizeFormatIndex(size)];
-    },
-
     isReadOnly(dateProperty) {
       return isReadOnlyField(dateProperty);
     },
@@ -761,21 +734,6 @@ export default {
       return getReadOnlyHint(dateProperty);
     },
 
-    getFileSizeFormatIndex(size) {
-      if (!size) {
-        return null;
-      }
-
-      let convertedSized = size / 1024;
-      let index = 0;
-
-      while (convertedSized > 1) {
-        convertedSized /= 1024;
-        index++;
-      }
-
-      return index;
-    },
     checkSaveButtonEnabled() {
       // not test the preview fields to ensure the content of both fields is valid
       // to show the save button
@@ -783,7 +741,7 @@ export default {
         description: this.descriptionField,
         name: this.resourceNameField,
         format: this.formatField,
-        size: this.formatField === RESOURCE_FORMAT_LINK ? 1 : this.sizeField || 1,
+        size: this.sizeField,
         sizeFormat: this.sizeFormatField,
       };
 
@@ -807,26 +765,19 @@ export default {
         },
         deprecated: this.isDataDeprecated,
         format: this.formatField.toLowerCase(),
-        // don't set the "size" directly because this is done
-        // via the file upload
-        size: this.size,
+        size: this.sizeField,
         sizeFormat: this.sizeFormatField,
-        resourceSize: {
-          sizeValue: this.isLink ? this.sizeField?.toString() : '1',
-          sizeUnits: this.isLink ? this.sizeFormatField?.toLowerCase() : this.getFileSizeFormat(1),
-        },
-      };
+      } satisfies Resource;
 
       this.$emit('save', newResourceProps);
     },
     loadImagePreview(url) {
       this.imagePreviewError = null;
       this.loadingImagePreview = true;
-      // const vm = this;
 
       this.$nextTick(() => {
         try {
-          const imageRefs = vm.$refs.filePreview;
+          const imageRefs = this.$refs.filePreview;
           const imageRef = imageRefs instanceof Array ? imageRefs[0] : imageRefs;
           imageRef.$el.src = url;
         } catch (e) {
@@ -844,8 +795,8 @@ export default {
       this.imagePreviewError = event;
       this.loadingImagePreview = false;
     },
-    changeAllowedUsers(pickedUserNames: string[]) {
-      this.allowedUsersField = getAllowedUsersString(pickedUserNames, this.envidatUsers);
+    changeAllowedUsers(pickUserEmailHash: string[]) {
+      this.allowedUsersField = getAllowedUsersString(pickUserEmailHash, this.envidatUsers);
     },
     validateField(property, value) {
       this.$emit('validate', { [property]: value });
@@ -881,6 +832,7 @@ export default {
     isExtensionUppercase: false,
     loadingImagePreview: false,
     imagePreviewError: null,
+    sizeFormatList,
     labels: {
       title: 'Edit Selected Resource',
       instructions: 'Include an apt name and description others will understand',
@@ -894,7 +846,6 @@ export default {
       created: 'Created at',
       lastModified: 'Last modified time',
       size: 'File size',
-      sizeFormatList: ['B', 'KB', 'MB', 'GB', 'TB', 'PB'],
       format: 'File format',
       openAccessPreferedInstructions:
         'Resource is **NOT** Open Access!\nPlease make your data available to everyone unless it contains sensitive data.\nData is **always** accessible by people in the same organization.',
@@ -914,6 +865,7 @@ export default {
       dataDeprecatedSwitchTooltip: 'Deprecated resources are grayed out and at the bottom of the list',
       dataDeprecatedSwitchInfo:
         'Deprecated resources are grayed out and at the bottom of the list. Make sure you provide an updated replacement!',
+      dataDeprecatedTitle: 'Deprecated Resource',
     },
     saveButtonEnabled: false,
     fileSizeIcon: getIconImage('fileSize'),

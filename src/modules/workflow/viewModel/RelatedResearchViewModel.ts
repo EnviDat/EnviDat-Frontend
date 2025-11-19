@@ -1,4 +1,3 @@
-/* eslint-disable object-curly-newline */
 import * as yup from 'yup';
 
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
@@ -21,11 +20,8 @@ export class RelatedResearchViewModel extends AbstractEditViewModel {
   };
 
   validationRules = yup.object().shape({
-    relatedPublicationsText: yup
-      .string()
-      .nullable()
-      .transform(convertEmptyStringToNull)
-      .min(10, 'Write at least 10 characters to describe the related publications.'),
+    relatedPublicationsText: yup.string().nullable().transform(convertEmptyStringToNull),
+    // .min(10, 'Write at least 10 characters to describe the related publications.'),
 
     relatedDatasetsText: yup
       .string()

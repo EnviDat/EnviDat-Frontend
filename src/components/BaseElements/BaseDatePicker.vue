@@ -24,7 +24,7 @@
           :clearable="isClearable && !readonly"
           persistent-clear
           :model-value="formatToEnviDatDate(dateField, dateProperty)"
-          @change="changedDateTextField(dateProperty, $event)"
+          @update:model-value="onTextInput(dateProperty, $event)"
           :error-messages="validationErrors[dateProperty]"
         />
       </template>
@@ -183,8 +183,16 @@ export default {
       return yup.object().shape(validation);
     },
     changeDatePicker(dateProperty, value) {
-      let dateString = value;
+      if (value == null) {
+        this.validationErrors[dateProperty] = '';
+        if (dateProperty === this.dateProperty) {
+          this.previewDate = '';
+        }
+        this.changeDate(dateProperty, '');
+        return;
+      }
 
+      let dateString = value;
       if (isDate(value)) {
         dateString = format(value, ckanDateFormat);
       }
@@ -194,19 +202,39 @@ export default {
       }
 
       if (isFieldValid(dateProperty, dateString, this.getValidation(dateProperty), this.validationErrors)) {
+        this.validationErrors[dateProperty] = '';
         this.changeDate(dateProperty, dateString);
       }
     },
-    changedDateTextField(dateProperty, dateString) {
+    onTextInput(dateProperty, value) {
+      this.changedDateTextField(dateProperty, value);
+    },
+    changedDateTextField(dateProperty, rawInput) {
+      const raw = (rawInput ?? '').trim();
+
+      if (!raw) {
+        this.validationErrors[dateProperty] = '';
+        if (dateProperty === this.dateProperty) {
+          this.previewDate = '';
+        }
+        this.changeDate(dateProperty, '');
+        return;
+      }
+      if (raw.length !== 10) {
+        return;
+      }
+
       try {
-        const dateValue = parseDateStringToCKANFormat(dateString);
+        const dateValue = parseDateStringToCKANFormat(raw);
         if (isFieldValid(dateProperty, dateValue, this.getValidation(dateProperty), this.validationErrors)) {
+          this.previewDate = dateValue;
           this.changeDate(dateProperty, dateValue);
         }
       } catch (e) {
-        this.validationErrors[dateProperty] = `Invalid date format, use ${enviDatDateFormat.toUpperCase()}`;
+        console.log(e);
       }
     },
+
     changeDate(dateProperty, newDate) {
       this.$emit('dateChange', dateProperty, newDate);
     },
@@ -219,24 +247,18 @@ export default {
       this.$emit('clearClick', dateProperty);
     },
     formatToEnviDatDate(dateString, dateProperty) {
-      if (!isMatch(dateString, ckanDateFormat)) {
-        return dateString;
+      if (typeof dateString !== 'string' || !isMatch(dateString, ckanDateFormat)) {
+        return dateString || '';
       }
-
       try {
         return parseDateStringToEnviDatFormat(dateString);
-      } catch (e) {
-        console.error(e);
+      } catch {
         this.validationErrors[dateProperty] = `Invalid date format, use ${enviDatDateFormat.toUpperCase()}`;
+        return '';
       }
-
-      return '';
     },
     formatToDatePickerDate(dateString) {
-      if (!dateString) {
-        return undefined;
-      }
-
+      if (!dateString) return undefined;
       return this.adapter.parseISO(dateString);
     },
   },

@@ -7,41 +7,39 @@
 
     <!-- Info Banner -->
     <v-row>
-      <v-col class="mb-5 pt-0 pb-0">
-        <v-alert type="info" closable :icon="false" class="rounded-lg info-banner">
-          <v-alert-title class="mb-2">Information</v-alert-title>
+      <InfoBanner :show="showInfoBanner" :icon="mdiInformationOutline" @setInfoBanner="$emit('setInfoBanner', $event)">
+        <p>
+          This section allows you to specify the geographic area relevant to your dataset. Accurate geospatial data
+          improves discoverability and helps users understand the spatial context of your research.
+        </p>
 
-          <p>
-            This section allows you to specify the geographic area relevant to your dataset. Accurate geospatial data
-            improves discoverability and helps users understand the spatial context of your research.
-          </p>
+        <p><strong>Tips:</strong></p>
+        <ol>
+          <li>
+            - Use the map tools to draw or adjust geometries directly. You can zoom, pan, and switch tile layers for
+            better accuracy.
+          </li>
+          <li>
+            - If your dataset covers a large or complex area, consider uploading a valid
+            <strong>GeoJSON</strong> file.
+          </li>
+          <li>
+            - The default geometry includes Switzerland. Replace or modify it to better reflect your dataset's scope.
+          </li>
+          <li>
+            - Use the <strong>text editor</strong> for fine-tuned control over coordinates, or switch to the tree/table
+            view for easier navigation.
+          </li>
+          <li>
+            - Ensure the geometry is <strong>valid GeoJSON. Invalid JSON</strong> will prevent you from proceeding.
+          </li>
+        </ol>
 
-          <p><strong>Tips:</strong></p>
-          <ol>
-            <li>
-              - Use the map tools to draw or adjust geometries directly. You can zoom, pan, and switch tile layers for
-              better accuracy.
-            </li>
-            <li>
-              - If your dataset covers a large or complex area, consider uploading a valid
-              <strong>GeoJSON</strong> file.
-            </li>
-            <li>
-              - The default geometry includes Switzerland. Replace or modify it to better reflect your dataset's scope.
-            </li>
-            <li>
-              - Use the <strong>text editor</strong> for fine-tuned control over coordinates, or switch to the
-              tree/table view for easier navigation.
-            </li>
-            <li>- Ensure the geometry is valid GeoJSON. Invalid JSON will prevent you from proceeding.</li>
-          </ol>
-
-          <p class="mt-2">
-            Also provide <strong>Time Information</strong> about when the data was collected or created. These fields
-            help contextualize your dataset for future reuse.
-          </p>
-        </v-alert>
-      </v-col>
+        <p class="mt-2">
+          Also provide <strong>Time Information</strong> about when the data was collected or created. These fields help
+          contextualize your dataset for future reuse.
+        </p>
+      </InfoBanner>
     </v-row>
 
     <!-- Map + errors -->
@@ -163,12 +161,12 @@
           <v-col cols="12">
             <BaseStartEndDate
               data-field="dates"
-              :startDate="item.dateType === 'created' ? item.date : item.dateStart"
-              :endDate="item.dateType === 'created' ? item.endDate : item.dateEnd"
-              :startDateProperty="item.dateType === 'created' ? 'date' : 'dateStart'"
-              :endDateProperty="item.dateType === 'created' ? 'endDate' : 'dateEnd'"
+              :startDate="item.date"
+              :endDate="item.endDate"
+              :startDateProperty="'date'"
+              :endDateProperty="'endDate'"
               :error-messages="validationErrors.dates"
-              :endDateLabel="`${item.dateType} end date`"
+              :endDateLabel="`End date`"
               :clearableEndDate="false"
               :clearableStartDate="false"
               rowLayout
@@ -193,7 +191,7 @@
 </template>
 
 <script>
-import { mdiContentSave, mdiFileUpload } from '@mdi/js';
+import { mdiContentSave, mdiFileUpload, mdiInformationOutline } from '@mdi/js';
 import { check } from '@placemarkio/check-geojson';
 import { createJSONEditor, SelectionType } from 'vanilla-jsoneditor';
 import { useDropZone } from '@vueuse/core';
@@ -217,13 +215,11 @@ import { convertGeoJSONToGeoCollection, defaultSwissLocation } from '@/factories
 
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
 
+import InfoBanner from '@/modules/workflow/components/steps/InformationBanner.vue';
+
 export default {
   name: 'EditDataGeo',
-  components: {
-    MetadataGeo,
-    BaseRectangleButton,
-    BaseStartEndDate,
-  },
+  components: { MetadataGeo, BaseRectangleButton, BaseStartEndDate, InfoBanner },
   props: {
     mapDivId: { type: String, default: 'map-small' },
     dates: { type: Array, default: () => [] },
@@ -232,10 +228,7 @@ export default {
     mapEditable: { type: Boolean, default: true },
     showFullscreenButton: { type: Boolean, default: false },
     layerConfig: { type: Object, default: null },
-    location: {
-      type: Object,
-      default: () => ({ geoJSON: defaultSwissLocation }),
-    },
+    location: { type: Object, default: () => ({ geoJSON: defaultSwissLocation }) },
     validationErrors: { type: Object, default: () => ({}) },
     loading: Boolean,
     message: String,
@@ -244,20 +237,21 @@ export default {
     errorDetails: String,
     readOnlyFields: { type: Array, default: () => [] },
     readOnlyExplanation: { type: String, default: '' },
+    showInfoBanner: { type: Boolean, default: true },
   },
   data() {
     return {
+      mdiInformationOutline,
       mdiContentSave,
       mdiFileUpload,
       activePanel: null,
       workflowStore: null,
 
-      newGeoInfo: {
-        geometries: convertGeoJSONToGeoCollection(defaultSwissLocation).geometries,
-      },
+      newGeoInfo: { geometries: convertGeoJSONToGeoCollection(defaultSwissLocation).geometries },
       geomsForMap: convertGeoJSONToGeoCollection(defaultSwissLocation),
       jsonEditor: undefined,
       editorSelection: undefined,
+      lastSavedGeomsString: '',
       saveButtonEnabled: false,
       saveButtonInProgress: false,
       geoFile: undefined,
@@ -309,9 +303,13 @@ export default {
     datesField() {
       const dates = this.previewDates.length ? this.previewDates : [...this.dates];
 
-      this.ensureDateEntry(dates, 'created', 'Date range during the research data was finalized or formally created');
+      this.ensureDateEntry(
+        dates,
+        'created',
+        'Date range during which the research data was finalized or formally created',
+      );
 
-      this.ensureDateEntry(dates, 'collected', 'Date range during the research data was gathered or collected.');
+      this.ensureDateEntry(dates, 'collected', 'Date range during which the research data was gathered or collected.');
 
       const order = ['created', 'collected'];
       dates.sort((a, b) => order.indexOf(a.dateType) - order.indexOf(b.dateType));
@@ -359,6 +357,8 @@ export default {
 
     this.initEditor(this.geomsForMapString);
     this.initializing = false;
+
+    this.lastSavedGeomsString = JSON.stringify(this.geomsForMap);
 
     useDropZone(this.$refs.dropZoneRef, {
       onDrop: (files) => {
@@ -414,7 +414,12 @@ export default {
     applyCollection(coll, { emit = false } = {}) {
       this.geomsForMap = coll;
       this.newGeoInfo.geometries = coll.geometries;
+
       if (this.jsonEditor) this.jsonEditor.update({ json: this.geomsForMap });
+
+      const currentStr = JSON.stringify(this.geomsForMap);
+      this.saveButtonEnabled = currentStr !== this.lastSavedGeomsString;
+
       if (emit && !this.initializing) this.$emit('save', this.newGeoInfo);
     },
 
@@ -468,10 +473,21 @@ export default {
         accept = true;
       }
 
-      if (accept) {
-        const tex = updated.text || JSON.stringify(updated.json);
-        this.changeGeoViaText(tex);
+      if (!accept) return;
+
+      const nextJson = updated.json || (updated.text ? JSON.parse(updated.text) : null);
+      if (!nextJson) return;
+
+      try {
+        check(nextJson);
+        this.inputError = null;
+      } catch (e) {
+        this.inputError = e.message;
       }
+
+      const coll = convertGeoJSONToGeoCollection(nextJson);
+
+      this.applyCollection(coll, { emit: false });
     },
 
     changedGeoViaEditor(geoArray) {
@@ -552,6 +568,9 @@ export default {
       });
 
       this.$emit('save', this.newGeoInfo);
+
+      this.lastSavedGeomsString = JSON.stringify(this.geomsForMap);
+      this.saveButtonEnabled = false;
 
       setTimeout(() => {
         this.saveButtonInProgress = false;

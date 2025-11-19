@@ -12,43 +12,39 @@
 
     <!-- Info Banner -->
     <v-row>
-      <v-col class="mb-5 pt-0 pb-0">
-        <v-alert type="info" closable :icon="false" class="rounded-lg info-banner">
-          <v-alert-title class="mb-2">Information</v-alert-title>
+      <InfoBanner :show="showInfoBanner" :icon="mdiInformationOutline" @setInfoBanner="$emit('setInfoBanner', $event)">
+        <p>
+          This section includes licensing and funding details that are essential for transparency, reuse, and compliance
+          with data sharing policies.
+        </p>
 
-          <p>
-            This section includes licensing and funding details that are essential for transparency, reuse, and
-            compliance with data sharing policies.
-          </p>
+        <p><strong>Tips:</strong></p>
+        <ol>
+          <li>
+            - Provide accurate <strong>funding information</strong> by naming the institution and including the grant
+            number and a link, if available.
+          </li>
+          <li>
+            - Selecting the correct <strong>data license</strong> is crucial. It defines how others can use, share, or
+            build upon your dataset.
+          </li>
+          <li>
+            - If you're unsure which license to choose,
+            <strong>Creative Commons Attribution (CC-BY 4.0)</strong> is a widely accepted standard for open data.
+          </li>
+          <li>
+            - Make sure you have the rights to apply the selected license, especially if your dataset includes content
+            from third parties.
+          </li>
+        </ol>
 
-          <p><strong>Tips:</strong></p>
-          <ol>
-            <li>
-              - Provide accurate <strong>funding information</strong> by naming the institution and including the grant
-              number and a link, if available.
-            </li>
-            <li>
-              - Selecting the correct <strong>data license</strong> is crucial. It defines how others can use, share, or
-              build upon your dataset.
-            </li>
-            <li>
-              - If you're unsure which license to choose,
-              <strong>Creative Commons Attribution (CC-BY 4.0)</strong> is a widely accepted standard for open data.
-            </li>
-            <li>
-              - Make sure you have the rights to apply the selected license, especially if your dataset includes content
-              from third parties.
-            </li>
-          </ol>
-
-          <p class="mt-2">
-            For more details about CC-BY 4.0, visit
-            <a href="https://creativecommons.org/licenses/by/4.0/legalcode" target="_blank" rel="noopener">
-              the full legal code </a
-            >.
-          </p>
-        </v-alert>
-      </v-col>
+        <p class="mt-2">
+          For more details about CC-BY 4.0, visit
+          <a href="https://creativecommons.org/licenses/by/4.0/legalcode" target="_blank" rel="noopener">
+            the full legal code </a
+          >.
+        </p>
+      </InfoBanner>
     </v-row>
 
     <!-- <v-col v-if="message" cols="4" class="pl-16">
@@ -219,10 +215,11 @@
 </template>
 
 <script>
-import Organization from '@/modules/workflow/components/steps/Organization.vue';
-import { mdiMinusCircleOutline, mdiArrowDownDropCircleOutline, mdiShieldSearch } from '@mdi/js';
+import { mdiMinusCircleOutline, mdiArrowDownDropCircleOutline, mdiShieldSearch, mdiInformationOutline } from '@mdi/js';
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import Organization from '@/modules/workflow/components/steps/Organization.vue';
+import InfoBanner from '@/modules/workflow/components/steps/InformationBanner.vue';
 import { getAvailableLicensesForEditing, dataLicenses } from '@/factories/dataLicense';
 import { renderMarkdown } from '@/factories/stringFactory.js';
 
@@ -251,6 +248,7 @@ export default {
     organizationName: { type: String, default: undefined },
     /* Can be either a single organization object or an array; we normalize it. */
     organization: { type: [Object, Array], default: () => [] },
+    showInfoBanner: { type: Boolean, default: true },
   },
 
   computed: {
@@ -367,13 +365,10 @@ export default {
   data() {
     return {
       mdiMinusCircleOutline,
+      mdiInformationOutline,
       mdiArrowDownDropCircleOutline,
       mdiShieldSearch,
-      emptyEntry: {
-        institution: '',
-        grantNumber: '',
-        institutionUrl: '',
-      },
+      emptyEntry: { institution: '', grantNumber: '', institutionUrl: '' },
 
       previewFunders: this.funders?.length
         ? JSON.parse(JSON.stringify(this.funders))
@@ -409,6 +404,7 @@ export default {
   components: {
     BaseIconButton,
     Organization,
+    InfoBanner,
     // BaseStatusLabelView,
   },
 };

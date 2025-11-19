@@ -32,8 +32,6 @@ import {
   polygonStyle,
 } from '@/factories/leafletFunctions';
 
-/* eslint-disable vue/no-unused-components */
-
 export default {
   name: 'MapLeaflet',
   components: {},

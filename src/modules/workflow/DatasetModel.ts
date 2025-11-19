@@ -22,7 +22,8 @@ import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 
 export class DatasetModel {
   viewModelClasses = [
-    CustomFieldsViewModel, // needs to before ResourcesListViewModel as this is used by the ResourcesListViewModel
+    // needs to before ResourcesListViewModel as this is used by the ResourcesListViewModel
+    CustomFieldsViewModel,
     AuthorListViewModel,
     AdminViewModel,
     EditDataInfoViewModel,

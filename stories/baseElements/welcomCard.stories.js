@@ -1,4 +1,3 @@
-/* eslint-disable object-curly-newline */
 /**
  * @summary story of SigninPage sandbox testing
  * @author Dominik Haas-Artho

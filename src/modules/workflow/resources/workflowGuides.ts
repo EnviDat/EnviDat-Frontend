@@ -16,7 +16,7 @@ export const workflowGuide = [
       title: 'Navigation Panel',
       description: `
           <div>
-            Here you can see all the steps required to publish a dataset. <b>Please note</b> that each step must be completed and validated before you can proceed to the next one.
+            Here you can see all the steps required to publish a dataset. Please note that <b>each step</b>  must be completed and validated before you can proceed to the next one.
           </div>
 
           <div style="margin:10px 0">
@@ -61,7 +61,7 @@ export const workflowGuide = [
     popover: {
       title: 'Reserve DOI',
       description:
-        '<b>After you complete the Additional Information step</b>, you can request a DOI for your dataset here.',
+        'You can request a DOI for your dataset here <b>after you complete the Additional Information step</b>',
     },
   },
 
@@ -70,7 +70,7 @@ export const workflowGuide = [
     popover: {
       title: 'Dataset Status',
       description:
-        'This badge shows whether the dataset is still a draft, has a reserved DOI, or is already published. You can <b>see more details by clicking the icon</b>.',
+        'This icon shows whether the dataset is still a draft, has a reserved DOI, or is already published. You can <b>see more details by clicking the icon</b>.',
     },
   },
 

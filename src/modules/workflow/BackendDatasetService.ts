@@ -241,9 +241,16 @@ export class BackendDatasetService implements DatasetService {
       const response = await axios.post(url, postData);
       return new Dataset(response.data.result);
     } catch (e: any) {
-      const message = e?.response?.data?.error?.message ?? e?.message ?? 'Unknown error';
+      const data = e?.response?.data;
+      const status = e?.response?.status;
+
+      const nameErr = data?.error?.name?.[0];
+      const message = data?.error?.message || nameErr || e?.message || 'Unknown error';
+
       const err = new Error(message) as any;
-      err.status = e?.response?.status;
+      err.status = status;
+
+      err.response = e?.response;
       throw err;
     } finally {
       this.loadingDataset = false;

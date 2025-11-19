@@ -13,8 +13,8 @@
             :prepend-icon="prependIcon"
             :error-messages="validationError"
             :model-value="textareaContent"
-            @update:model-value="catchInputedText($event.target.value)"
-            @change="catchChangedText($event.target.value)"
+            @update:model-value="(event) => catchInputedText(event)"
+            @change="(event) => catchChangedText(event)"
           >
           </v-textarea>
         </v-col>
@@ -45,8 +45,8 @@
           :prepend-icon="prependIcon"
           :error-messages="validationError"
           :model-value="textareaContent"
-          @update:model-value="catchInputedText($event.target.value)"
-          @change="catchChangedText($event.target.value)"
+          @update:model-value="(event) => catchInputedText(event)"
+          @change="(event) => catchChangedText(event)"
         >
         </v-textarea>
       </v-col>
@@ -131,11 +131,11 @@ export default {
     },
   },
   methods: {
-    catchInputedText(event) {
-      this.$emit('inputedText', event);
+    catchInputedText(value) {
+      this.$emit('inputedText', value);
     },
-    catchChangedText(event) {
-      this.$emit('changedText', event);
+    catchChangedText(value) {
+      this.$emit('changedText', value);
     },
   },
 };

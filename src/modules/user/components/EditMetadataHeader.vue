@@ -40,7 +40,7 @@
             :placeholder="labels.placeholderTitle"
             :model-value="metadataTitleField"
             @keyup="blurOnEnterKey"
-            @update:model-value="changePropertyForPreview(METADATA_TITLE_PROPERTY, $event.target.value)"
+            @update:model-value="changePropertyForPreview(METADATA_TITLE_PROPERTY, $event)"
             @change="notifyPropertyChange(METADATA_TITLE_PROPERTY, $event.target.value)"
           />
         </v-col>
@@ -77,7 +77,7 @@
                 @keyup="blurOnEnterKey"
                 @focusin="focusIn($event)"
                 @focusout="focusOut(METADATA_CONTACT_EMAIL, $event)"
-                @update:model-value="changePropertyForPreview(METADATA_CONTACT_EMAIL, $event.target.value)"
+                @update:model-value="changePropertyForPreview(METADATA_CONTACT_EMAIL, $event)"
               />
             </v-col>
 
@@ -113,7 +113,7 @@
                 @keyup="blurOnEnterKey"
                 @focusin="focusIn($event)"
                 @focusout="focusOut(METADATA_CONTACT_FIRSTNAME, $event)"
-                @update:model-value="changePropertyForPreview(METADATA_CONTACT_FIRSTNAME, $event.target.value)"
+                @update:model-value="changePropertyForPreview(METADATA_CONTACT_FIRSTNAME, $event)"
               />
             </v-col>
 
@@ -133,7 +133,7 @@
                 @keyup="blurOnEnterKey"
                 @focusin="focusIn($event)"
                 @focusout="focusOut(METADATA_CONTACT_LASTNAME, $event)"
-                @update:model-value="changePropertyForPreview(METADATA_CONTACT_LASTNAME, $event.target.value)"
+                @update:model-value="changePropertyForPreview(METADATA_CONTACT_LASTNAME, $event)"
               />
             </v-col>
           </v-row>
@@ -171,7 +171,7 @@
               :model-value="metadataUrlField"
               @keyup="blurOnEnterKey"
               @click.stop
-              @update:model-value="changePropertyForPreview(METADATA_URL_PROPERTY, $event.target.value)"
+              @update:model-value="changePropertyForPreview(METADATA_URL_PROPERTY, $event)"
               @change="notifyPropertyChange(METADATA_URL_PROPERTY, $event.target.value)"
             />
           </ExpandableLayout>

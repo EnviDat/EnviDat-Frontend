@@ -1,8 +1,3 @@
-export interface ResourceSizeDTO {
-  size_value: string;
-  size_units: string;
-}
-
 export interface RestrictedDTO {
   shared_secret: string;
   allowed_users: string;
