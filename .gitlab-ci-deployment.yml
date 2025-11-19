@@ -23,6 +23,8 @@ publish-build:
   environment: $CI_COMMIT_REF_NAME
   image: alpine:3.20
   rules:
+    - if: '$CI_PIPELINE_SOURCE == "pipeline"'
+      when: never
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
       when: never
     - if: '$CI_COMMIT_REF_NAME == "develop"'
@@ -72,7 +74,8 @@ deploy-to-s3-bucket:
     # needs the environmental variables for the version number
     - set-vars
     # needs the published build for the app and it's storybook
-    - publish-build
+    - job: publish-build
+      optional: true
     - verify-node-audit
   variables:
     GIT_STRATEGY: none

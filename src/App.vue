@@ -213,6 +213,7 @@ export default {
 
   beforeCreate() {
     // load the config initially
+
     this.$store.dispatch(SET_CONFIG);
 
     // define an interval to check again regularly to make sure
