@@ -223,6 +223,20 @@
 
         <div class="text-h6 mt-6">Data access</div>
 
+        <v-row class="mt-2">
+          <v-col cols="12" class="text-h6">{{ labels.dataDeprecatedTitle }}</v-col>
+          <v-col cols="4">
+            <BaseIconSwitch
+              :active="isDataDeprecated"
+              :icon="mdiCancel"
+              class="mt-2"
+              :tooltipText="labels.dataDeprecatedSwitchTooltip"
+              @clicked="isDataDeprecated = !isDataDeprecated"
+              :label="labels.dataDeprecatedSwitchLabel"
+            />
+          </v-col>
+        </v-row>
+
         <div class="pa-1">
           <v-expand-transition>
             <v-alert v-if="isDataPrivate" type="warning">
@@ -893,7 +907,7 @@ export default {
       allowedUsersTypingInfo: 'Start typing the name in the text field to search for an EnviDat user.',
       restrictedAllowedUsersInfo: 'Additional access is granted to the following users',
       editingRestrictingUnavailableInfo:
-        'Editing the accessibility of resources is not available at the moment. Please contact the EnviDat team if you need to make changes.',
+        'Editing the accessibility of resources is not directly available anymore. Please contact the EnviDat team if you need a resource to have restricted access.',
       editingWarningUppercaseExtension:
         'EnviDat automatically converts filename/extension to lowercase. To preserve uppercase extensions (e.g., .R), please upload a compressed (.zip) version of your file.',
       dataDeprecatedSwitchLabel: 'Data is deprecated',
