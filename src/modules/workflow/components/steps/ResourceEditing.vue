@@ -212,7 +212,6 @@
           <v-col cols="4">
             <BaseIconSwitch
               :active="isDataDeprecated"
-              :disabled="!editingRestrictingActive"
               :icon="mdiCancel"
               class="mt-2"
               :tooltipText="labels.dataDeprecatedSwitchTooltip"
@@ -359,13 +358,13 @@ import { isReadOnlyField, getReadOnlyHint } from '@/modules/workflow/utils/useRe
 import { RESOURCE_FORMAT_LINK } from '@/factories/metadataConsts';
 import { getFileExtension } from '@/factories/fileFactory';
 import { RestrictedDTO } from '@/types/dataTransferObjectsTypes';
-import { getAuthorName, getUserPickerObjects } from '@/factories/authorFactory';
+import { getUserPickerObjects } from '@/factories/authorFactory';
 import { USER_ROLE_SYSTEM_ADMIN } from '@/factories/userEditingValidations';
 import { sizeFormatList } from '@/factories/resourceHelpers.ts';
-import { Resource, User } from '@/types/modelTypes';
+import { Resource } from '@/types/modelTypes';
 
 export default {
-  name: 'ResourceEditing',
+  //   name: 'ResourceEditing',
   props: {
     id: {
       type: String,
@@ -859,7 +858,7 @@ export default {
       allowedUsersTypingInfo: 'Start typing the name in the text field to search for an EnviDat user.',
       restrictedAllowedUsersInfo: 'Additional access is granted to the following users',
       editingRestrictingUnavailableInfo:
-        'Editing the accessibility of resources is not available at the moment. Please contact the EnviDat team if you need to make changes.',
+        'Editing the accessibility of resources is not directly available anymore. Please contact the EnviDat team if you need a resource to have restricted access.',
       editingWarningUppercaseExtension:
         'EnviDat automatically converts filename/extension to lowercase. To preserve uppercase extensions (e.g., .R), please upload a compressed (.zip) version of your file.',
       dataDeprecatedSwitchLabel: 'Data is deprecated',
