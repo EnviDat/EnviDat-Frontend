@@ -45,7 +45,7 @@ export const ACTION_SEARCH_METADATA = () => {
     return './testdata/query.json';
   }
 
-  return 'query';
+  return '/api/3/action/package_search';
 };
 
 export const UPDATE_TAGS = 'UPDATE_TAGS';
