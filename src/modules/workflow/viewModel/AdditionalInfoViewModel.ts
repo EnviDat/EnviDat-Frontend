@@ -53,7 +53,7 @@ export class AdditionalInfoViewModel extends AbstractEditViewModel {
   });
 
   constructor(dataset: DatasetDTO | undefined, saveEventHook: ViewModelSaveEvent | undefined) {
-    super(datase, saveEventHook, AdditionalInfoViewModel.mappingRules());
+    super(dataset, saveEventHook, AdditionalInfoViewModel.mappingRules());
   }
 
   validate(newProps?: Partial<AdditionalInfoViewModel>) {

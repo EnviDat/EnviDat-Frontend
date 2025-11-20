@@ -73,7 +73,7 @@ export abstract class AbstractEditViewModel {
   protected getModelData<T>(): Omit<
     T,
     | 'privateMappingRules'
-    | 'patchViewModel'
+    | 'saveEventHook'
     | 'validationRules'
     | 'validationErrors'
     | 'savedSuccessful'
@@ -83,7 +83,7 @@ export abstract class AbstractEditViewModel {
     // deconstruct this to remove the model view specific props
     const {
       privateMappingRules,
-      patchViewModel,
+      saveEventHook,
       validationRules,
       validationErrors,
       savedSuccessful,
