@@ -147,7 +147,7 @@ export default {
       rows: 1000,
       fq: 'capacity:public +state:active',
     };
-    const params = new URLSearchParams(this.data).toString();
+    const params = new URLSearchParams(data).toString();
     const url = urlRewrite(`${ACTION_SEARCH_METADATA()}?${params}`, '/', API_ROOT);
 
     await axios
