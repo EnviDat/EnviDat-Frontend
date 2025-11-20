@@ -16,6 +16,7 @@ import {
 } from '@/factories/strategyFactory';
 import { parseBytes } from '@/factories/resourceHelpers.ts';
 import { ViewModelSaveEvent } from '@/types/workflow';
+import { IsDeprecatedResource } from '@/modules/workflow/viewModel/CustomFieldsViewModel.ts';
 
 export class ResourcesListViewModel extends AbstractEditViewModel {
   declare resources: Resource[];
@@ -24,6 +25,8 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
 
   declare signedInUser: User;
   declare signedInUserOrganizationIds: string[];
+
+  private isDeprecatedResource: IsDeprecatedResource;
 
   validationErrors: {
     resources: string | null;
@@ -35,8 +38,14 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
     resources: yup.array().nullable(),
   });
 
-  constructor(dataset: DatasetDTO | undefined, saveEventHook: ViewModelSaveEvent | undefined) {
+  constructor(
+    dataset: DatasetDTO | undefined,
+    saveEventHook: ViewModelSaveEvent | undefined,
+    isDeprecatedResource: IsDeprecatedResource,
+  ) {
     super(dataset, saveEventHook, ResourcesListViewModel.mappingRules());
+
+    this.isDeprecatedResource = isDeprecatedResource;
   }
 
   // TODO Check with Dominik, this was added to fix an issue with validation at first load
@@ -53,8 +62,6 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
     numberOfDownload?: number,
   ): Resource[] {
     return rawResources?.map((rawResource: ResourceDTO) => {
-      const customFieldsVm = this.datasetModel.getViewModel('CustomFieldsViewModel');
-
       const res = ResourceViewModel.getFormattedResource(
         rawResource,
         datasetName,
@@ -64,7 +71,7 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
         numberOfDownload,
       );
 
-      res.deprecated = customFieldsVm?.isResourceDeprecated(res.id);
+      res.deprecated = this.isDeprecatedResource(res.id);
 
       return res;
     });

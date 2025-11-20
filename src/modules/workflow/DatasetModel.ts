@@ -60,8 +60,20 @@ export class DatasetModel {
   private createViewModels() {
     this.clearViewModels();
 
+    let tmpCustomFieldsViewModel: CustomFieldsViewModel;
+
     for (const VMClass of this.viewModelClasses) {
-      const instance = new VMClass(this.dataset, this.patchViewModel);
+      let instance;
+
+      if (VMClass instanceof ResourcesListViewModel) {
+        instance = new VMClass(this.dataset, this.patchViewModel, tmpCustomFieldsViewModel?.isResourceDeprecated);
+      } else {
+        instance = new VMClass(this.dataset, this.patchViewModel);
+      }
+
+      if (instance instanceof CustomFieldsViewModel) {
+        tmpCustomFieldsViewModel = instance;
+      }
 
       if (instance instanceof MetadataBaseViewModel) {
         instance.existingKeywords = computed(() => store.getters['metadata/existingKeywords'] ?? []);
@@ -70,6 +82,8 @@ export class DatasetModel {
       const reactiveVM = reactive(instance);
       this.viewModelInstances.set(instance.constructor.name, reactiveVM);
     }
+
+    tmpCustomFieldsViewModel = null;
   }
 
   async loadDataset(datasetId: string): Promise<DatasetDTO> {

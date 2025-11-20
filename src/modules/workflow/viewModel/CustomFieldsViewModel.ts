@@ -11,6 +11,8 @@ export type CustomFieldEntry = {
   content: string;
 };
 
+export type IsDeprecatedResource = (resourceId: string) => boolean;
+
 export class CustomFieldsViewModel extends AbstractEditViewModel {
   declare customFields: CustomFieldEntry[];
 
@@ -99,7 +101,7 @@ export class CustomFieldsViewModel extends AbstractEditViewModel {
     }
   }
 
-  isResourceDeprecated(resourceId: string) {
+  isResourceDeprecated(resourceId: string): boolean {
     const deprecatedResourcesEntry = this.deprecatedResourcesEntry;
 
     if (!deprecatedResourcesEntry) {
