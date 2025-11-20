@@ -12,9 +12,8 @@
 import { createAuthors, extractAuthorsMap, getFullAuthorsFromDataset } from '@/factories/authorFactory';
 
 import unFormatedMetadataCards from '@/../stories/js/metadata';
-import { BackendDatasetService } from '@/modules/workflow/BackendDatasetService.ts';
-import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 import EditAuthorList from '@/modules/user/components/edit/EditAuthorList.vue';
+import { AuthorListViewModel } from '@/modules/workflow/viewModel/AuthorListViewModel.js';
 
 const metadataCards = [];
 
@@ -22,9 +21,6 @@ unFormatedMetadataCards.forEach((el) => {
   el.author = createAuthors(el);
   metadataCards.push(el);
 });
-
-const serviceLayer = new BackendDatasetService(unFormatedMetadataCards[0]);
-const datasetVM = new DatasetModel(serviceLayer);
 
 const authorsMap = extractAuthorsMap(metadataCards);
 const authorsObjs = getFullAuthorsFromDataset(authorsMap, metadataCards[1]);
@@ -57,10 +53,8 @@ export const Loading = {
   },
 };
 
-const authorListVM = datasetVM.getViewModel('AuthorListViewModel');
-const authorVMs = authorListVM.getAuthorViewModels(true);
-const authorVM = authorVMs[0];
-const authorVM2 = authorVMs[1];
+const authorVM = new AuthorListViewModel(unFormatedMetadataCards[0]);
+const authorVM2 = new AuthorListViewModel(unFormatedMetadataCards[1]);
 authorVM2.loading = true;
 
 export const Filled = {

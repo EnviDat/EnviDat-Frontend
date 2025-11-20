@@ -6,6 +6,9 @@ import { convertToFrontendJSONWithRules } from '@/factories/convertJSON';
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 import { AUTHOR_ASCII_DEAD } from '@/store/mainMutationsConsts';
 import { getAuthorName } from '@/factories/authorFactory';
+import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
+import { ViewModelSaveEvent } from '@/types/workflow';
+import { dataset } from '../../../../public/testdata/dataset_10-16904-1';
 
 const convertEmptyStringToNull = (value: string, originalValue: string) => (originalValue === '' ? null : value);
 
@@ -24,6 +27,7 @@ export class AuthorViewModel extends AbstractEditViewModel implements Author {
   declare lastModified: string;
 
   declare isSelected: boolean;
+  declare datasetCount: number;
 
   validationErrors: {
     firstName: string | null;
@@ -61,10 +65,8 @@ export class AuthorViewModel extends AbstractEditViewModel implements Author {
       .min(3, 'Affiliation must be at least 3 characters'),
   });
 
-  constructor(datasetModel?: DatasetModel | undefined) {
-    // intentionally not providing the datasetModel, because resource have to be unpacked
-    // from the list of resources, done in the ResourceListModel
-    super(datasetModel, AuthorViewModel.mappingRules());
+  constructor(dataset: DatasetDTO | undefined, saveEventHook: ViewModelSaveEvent | undefined) {
+    super(dataset, saveEventHook, AuthorViewModel.mappingRules());
   }
 
   get fullName() {

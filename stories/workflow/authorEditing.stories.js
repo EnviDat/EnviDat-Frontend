@@ -12,14 +12,10 @@
 import { createAuthors, extractAuthorsMap, getFullAuthorsFromDataset } from '@/factories/authorFactory.js';
 
 import unFormatedMetadataCards from '@/../stories/js/metadata.js';
-import { BackendDatasetService } from '@/modules/workflow/BackendDatasetService.ts';
-import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 import AuthorEditing from '@/modules/workflow/components/steps/AuthorEditing.vue';
+import { AuthorViewModel } from '@/modules/workflow/viewModel/AuthorViewModel.js';
 
 const metadataCards = [];
-
-const serviceLayer = new BackendDatasetService(unFormatedMetadataCards[0]);
-const datasetVM = new DatasetModel(serviceLayer);
 
 unFormatedMetadataCards.forEach((el) => {
   el.author = createAuthors(el);
@@ -39,8 +35,6 @@ authorsObjs.forEach((author) => {
   authorsStrings.push(author.fullName);
 });
 
-const preSelectedAuthors2 = extractedAuthors.filter((value) => value.fullName.includes('A'))[0];
-
 export default {
   title: '6 Workflows / Combined / Author Editing',
   component: AuthorEditing,
@@ -59,10 +53,8 @@ export const Loading = {
   },
 };
 
-const authorListVM = datasetVM.getViewModel('AuthorListViewModel');
-const authorVMs = authorListVM.getAuthorViewModels(true);
-const authorVM = authorVMs[0];
-const authorVM2 = authorVMs[1];
+const authorVM = new AuthorViewModel(unFormatedMetadataCards[0]);
+const authorVM2 = new AuthorViewModel(unFormatedMetadataCards[1]);
 authorVM2.loading = true;
 
 export const Filled = {

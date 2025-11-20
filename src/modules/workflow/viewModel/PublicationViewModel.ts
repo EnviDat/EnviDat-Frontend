@@ -1,6 +1,8 @@
 import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
+import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
+import { ViewModelSaveEvent } from '@/types/workflow';
 
 export class PublicationViewModel extends AbstractEditViewModel {
   declare publicationState: string;
@@ -33,8 +35,8 @@ export class PublicationViewModel extends AbstractEditViewModel {
     publicationYear: yup.string().required('Enter publication year'),
   });
 
-  constructor(datasetModel: DatasetModel) {
-    super(datasetModel, PublicationViewModel.mappingRules());
+  constructor(dataset: DatasetDTO | undefined, saveEventHook: ViewModelSaveEvent | undefined) {
+    super(dataset, saveEventHook, PublicationViewModel.mappingRules());
   }
 
   static mappingRules() {

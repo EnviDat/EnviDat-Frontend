@@ -19,6 +19,7 @@ import {
 
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 import { parseBytes } from '@/factories/resourceHelpers.ts';
+import { ViewModelSaveEvent } from '@/types/workflow';
 
 export class ResourcesListViewModel extends AbstractEditViewModel {
   declare resources: Resource[];
@@ -38,8 +39,8 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
     resources: yup.array().nullable(),
   });
 
-  constructor(datasetModel: DatasetModel) {
-    super(datasetModel, ResourcesListViewModel.mappingRules());
+  constructor(dataset: DatasetDTO | undefined, saveEventHook: ViewModelSaveEvent | undefined) {
+    super(dataset, saveEventHook, ResourcesListViewModel.mappingRules());
   }
 
   // TODO Check with Dominik, this was added to fix an issue with validation at first load
@@ -147,34 +148,6 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
 
   validate(newProps?: Partial<ResourcesListViewModel>): boolean {
     return super.validate(newProps);
-  }
-
-  async save(newData: any): Promise<boolean> {
-    if (newData?.resources) {
-      const newResource = newData.resources.filter((res: Resource) => res.id === METADATA_NEW_RESOURCE_ID)[0];
-
-      if (newResource) {
-        this.loading = true;
-
-        const model = new ResourceViewModel();
-        await model.save(newResource);
-
-        // the resourceModel is updated with the latest content of the backend
-        // (further details of the resource)
-        await this.datasetModel.createResourceOnExistingDataset(model);
-
-        eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
-
-        // when everything is updated, selected the latest resource for
-        // editing details (e.g. the user should change the name)
-        model.isSelected = true;
-
-        this.loading = false;
-        return true;
-      }
-    }
-
-    return super.save(newData);
   }
 
   getData() {

@@ -1,9 +1,10 @@
 import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
-import { KeywordDTO } from '@/types/dataTransferObjectsTypes';
+import { type DatasetDTO, KeywordDTO } from '@/types/dataTransferObjectsTypes';
 import { enhanceKeywords } from '@/factories/keywordsFactory';
 import categoryCards from '@/store/categoryCards';
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
+import { ViewModelSaveEvent } from '@/types/workflow';
 
 export class EditKeywordsViewModel extends AbstractEditViewModel {
   declare keywords: KeywordDTO[];
@@ -22,8 +23,12 @@ export class EditKeywordsViewModel extends AbstractEditViewModel {
     keywords: yup.array().min(5, 'Enter at least 5 keywords.'),
   });
 
-  constructor(datasetModel: DatasetModel, existingKeywords: KeywordDTO[]) {
-    super(datasetModel, EditKeywordsViewModel.mappingRules());
+  constructor(
+    dataset: DatasetDTO | undefined,
+    saveEventHook: ViewModelSaveEvent | undefined,
+    existingKeywords: KeywordDTO[],
+  ) {
+    super(dataset, saveEventHook, EditKeywordsViewModel.mappingRules());
 
     enhanceKeywords(this.keywords, categoryCards);
     this.existingKeywords = existingKeywords;

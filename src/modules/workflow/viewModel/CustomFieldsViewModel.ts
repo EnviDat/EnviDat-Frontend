@@ -5,6 +5,7 @@ import { METADATA_DEPRECATED_RESOURCES_PROPERTY } from '@/factories/metadataCons
 import { Resource } from '@/types/modelTypes';
 import { convertJSON, convertToBackendJSONWithRules, convertToFrontendJSONWithRules } from '@/factories/convertJSON';
 import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
+import { ViewModelSaveEvent } from '@/types/workflow';
 
 export type CustomFieldEntry = {
   fieldName: string;
@@ -37,8 +38,8 @@ export class CustomFieldsViewModel extends AbstractEditViewModel {
     ),
   });
 
-  constructor(datasetModel: DatasetModel) {
-    super(datasetModel, CustomFieldsViewModel.mappingRules());
+  constructor(dataset: DatasetDTO | undefined, saveEventHook: ViewModelSaveEvent | undefined) {
+    super(dataset, saveEventHook, CustomFieldsViewModel.mappingRules());
   }
 
   static mappingRules() {

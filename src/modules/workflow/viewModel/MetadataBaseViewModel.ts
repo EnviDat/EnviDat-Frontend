@@ -2,10 +2,10 @@ import * as yup from 'yup';
 import type { ComputedRef } from 'vue';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 
-import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
-import type { KeywordDTO } from '@/types/dataTransferObjectsTypes';
+import type { DatasetDTO, KeywordDTO } from '@/types/dataTransferObjectsTypes';
 import { enhanceKeywords } from '@/factories/keywordsFactory';
 import categoryCards from '@/store/categoryCards';
+import { ViewModelSaveEvent } from '@/types/workflow';
 
 export class MetadataBaseViewModel extends AbstractEditViewModel {
   metadataTitle: string = '';
@@ -37,8 +37,8 @@ export class MetadataBaseViewModel extends AbstractEditViewModel {
     keywords: yup.array().required('Keywords is required').min(5, 'Enter at least 5 keywords.'),
   });
 
-  constructor(datasetModel: DatasetModel) {
-    super(datasetModel, MetadataBaseViewModel.mappingRules());
+  constructor(dataset: DatasetDTO | undefined, saveEventHook: ViewModelSaveEvent | undefined) {
+    super(dataset, saveEventHook, MetadataBaseViewModel.mappingRules());
     enhanceKeywords(this.keywords, categoryCards);
   }
 

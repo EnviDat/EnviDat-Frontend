@@ -1,6 +1,8 @@
 import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
+import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
+import { ViewModelSaveEvent } from '@/types/workflow';
 
 const convertEmptyStringToNull = (value: string, originalValue: string) => (originalValue === '' ? null : value);
 
@@ -28,8 +30,8 @@ export class EditFundingViewModel extends AbstractEditViewModel {
       ),
   });
 
-  constructor(datasetModel: DatasetModel) {
-    super(datasetModel, EditFundingViewModel.mappingRules());
+  constructor(dataset: DatasetDTO | undefined, saveEventHook: ViewModelSaveEvent | undefined) {
+    super(dataset, saveEventHook, EditFundingViewModel.mappingRules());
   }
 
   static mappingRules() {

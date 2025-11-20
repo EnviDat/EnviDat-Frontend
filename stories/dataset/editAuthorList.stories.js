@@ -36,11 +36,6 @@ import { METADATA_AUTHOR_SEQUENCE_PROPERTY, METADATA_AUTHORS_PROPERTY } from '@/
 import unFormatedMetadataCards from '@/../stories/js/metadata';
 
 import { AuthorListViewModel } from '@/modules/workflow/viewModel/AuthorListViewModel.ts';
-import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
-import { BackendDatasetService } from '@/modules/workflow/BackendDatasetService.ts';
-
-const serviceLayer = new BackendDatasetService(unFormatedMetadataCards[0]);
-const datasetVM = new DatasetModel(serviceLayer);
 
 const metadataCards = [];
 
@@ -256,7 +251,7 @@ export const LoadingAuthorList = {
   },
 };
 
-const vm = datasetVM.getViewModel(AuthorListViewModel.name);
+const vm = new AuthorListViewModel(metadataCards[1], undefined);
 
 export const AuthorListViewModels = {
   args: {

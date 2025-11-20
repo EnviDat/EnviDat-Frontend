@@ -3,9 +3,9 @@ import * as yup from 'yup';
 import { Author } from '@/types/modelTypes';
 import { AuthorDTO, type DatasetDTO } from '@/types/dataTransferObjectsTypes';
 import { AuthorViewModel } from '@/modules/workflow/viewModel/AuthorViewModel.ts';
-import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 import { convertJSON, convertToBackendJSONWithRules } from '@/factories/convertJSON';
+import { ViewModelSaveEvent } from '@/types/workflow';
 
 export class AuthorListViewModel extends AbstractEditViewModel {
   declare authors: Author[];
@@ -22,8 +22,8 @@ export class AuthorListViewModel extends AbstractEditViewModel {
     authors: yup.array().min(1, 'Add at least one author.'),
   });
 
-  constructor(datasetModel: DatasetModel) {
-    super(datasetModel, AuthorListViewModel.mappingRules());
+  constructor(dataset: DatasetDTO | undefined, saveEventHook: ViewModelSaveEvent | undefined) {
+    super(dataset, saveEventHook, AuthorListViewModel.mappingRules());
   }
 
   static getFormattedAuthors(rawAuthors: AuthorDTO[], lastModified: string): Author[] {

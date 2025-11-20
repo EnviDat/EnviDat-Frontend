@@ -14,7 +14,7 @@ import TheWorkflowNavigation from '@/components/Navigation/TheWorkflowNavigation
 import { WorkflowMode } from '@/modules/workflow/utils/workflowEnums';
 
 export default {
-  title: '6 Workflows / Combined / NavigationWorkflow',
+  title: '6 Workflows / NavigationWorkflow',
   component: TheWorkflowNavigation,
 } satisfies Meta;
 

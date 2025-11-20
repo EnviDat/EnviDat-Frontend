@@ -14,10 +14,10 @@ const storiesToLoad = [
   // '../stories/blog/**/*.stories.@(js|jsx|ts|tsx)', // blog page components
 ];
 
-const prod = import.meta.env?.MODE === 'production';
+const prod = import.meta?.env?.MODE === 'production' || undefined;
 
 export default {
-  stories: prod ? allStories : storiesToLoad,
+  stories: prod === false ? storiesToLoad : allStories,
   core: {
     disableTelemetry: true,
   },

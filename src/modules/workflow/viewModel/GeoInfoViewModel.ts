@@ -2,6 +2,8 @@
 import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
+import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
+import { ViewModelSaveEvent } from '@/types/workflow';
 
 export class GeoInfoViewModel extends AbstractEditViewModel {
   declare dates: any[];
@@ -35,8 +37,8 @@ export class GeoInfoViewModel extends AbstractEditViewModel {
     geometries: yup.array().required('Geometry is required').min(1, 'At least one geometry is required'),
   });
 
-  constructor(datasetVM: DatasetModel) {
-    super(datasetVM, GeoInfoViewModel.mappingRules());
+  constructor(dataset: DatasetDTO | undefined, saveEventHook: ViewModelSaveEvent | undefined) {
+    super(dataset, saveEventHook, GeoInfoViewModel.mappingRules());
   }
 
   public override getModelData(): {

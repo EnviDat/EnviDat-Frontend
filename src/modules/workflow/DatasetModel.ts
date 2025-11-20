@@ -16,9 +16,10 @@ import { RelatedResearchViewModel } from '@/modules/workflow/viewModel/RelatedRe
 import { PublicationInfoViewModel } from '@/modules/workflow/viewModel/PublicationInfoViewModel.ts';
 import { CustomFieldsViewModel } from '@/modules/workflow/viewModel/CustomFieldsViewModel.ts';
 
-import { LOCAL_DATASET_KEY } from '@/factories/metadataConsts';
+import { LOCAL_DATASET_KEY, METADATA_NEW_RESOURCE_ID } from '@/factories/metadataConsts';
 
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
+import { ResourceViewModel } from '@/modules/workflow/viewModel/ResourceViewModel.ts';
 
 export class DatasetModel {
   viewModelClasses = [
@@ -60,7 +61,7 @@ export class DatasetModel {
     this.clearViewModels();
 
     for (const VMClass of this.viewModelClasses) {
-      const instance = new VMClass(this);
+      const instance = new VMClass(this.dataset, this.patchViewModel);
 
       if (instance instanceof MetadataBaseViewModel) {
         instance.existingKeywords = computed(() => store.getters['metadata/existingKeywords'] ?? []);
@@ -115,14 +116,45 @@ export class DatasetModel {
     await datasetService.patchDatasetChanges(datasetId, customFieldsVM.backendJSON);
   }
 
+  private async saveResources(
+    id: string,
+    resourceListVM: ResourcesListViewModel,
+    datasetService: DatasetService,
+  ): Promise<void> {
+    const newCreatedResource = resourceListVM.resources.filter(
+      (res: Resource) => res.id === METADATA_NEW_RESOURCE_ID,
+    )[0];
+
+    if (newCreatedResource) {
+      resourceListVM.loading = true;
+
+      // create a temp model just to use the mapping
+      const tempResourceModel = new ResourceViewModel(undefined, undefined);
+      await tempResourceModel.save(newCreatedResource);
+
+      // the resourceModel is updated with the latest content of the backend
+      // (further details of the resource)
+      await this.createResourceOnExistingDataset(tempResourceModel);
+
+      eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
+
+      resourceListVM.loading = false;
+      return;
+    }
+
+    await datasetService.patchDatasetChanges(id, resourceListVM.backendJSON);
+
+    return await this.saveDeprecatedResources(id, resourceListVM.resources, datasetService);
+  }
+
   async patchViewModel(newModel: AbstractEditViewModel) {
     const id: string = this.datasetWorkflow.currentDatasetId?.trim() || LOCAL_DATASET_KEY;
-
     const datasetService = this.datasetWorkflow.getDatasetService();
-    await datasetService.patchDatasetChanges(id, newModel.backendJSON);
 
     if (newModel instanceof ResourcesListViewModel) {
-      await this.saveDeprecatedResources(id, newModel.resources, datasetService);
+      await this.saveResources(id, newModel, datasetService);
+    } else {
+      await datasetService.patchDatasetChanges(id, newModel.backendJSON);
     }
 
     this.updateViewModels();

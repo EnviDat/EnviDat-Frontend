@@ -1,6 +1,8 @@
 import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
+import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
+import { ViewModelSaveEvent } from '@/types/workflow';
 
 export class EditOrganizationViewModel extends AbstractEditViewModel {
   declare organizationId: string;
@@ -23,8 +25,8 @@ export class EditOrganizationViewModel extends AbstractEditViewModel {
       ),
   });
 
-  constructor(datasetModel: DatasetModel) {
-    super(datasetModel, EditOrganizationViewModel.mappingRules());
+  constructor(dataset: DatasetDTO | undefined, saveEventHook: ViewModelSaveEvent | undefined) {
+    super(dataset, saveEventHook, EditOrganizationViewModel.mappingRules());
   }
 
   static mappingRules() {

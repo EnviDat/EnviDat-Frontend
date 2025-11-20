@@ -1,6 +1,8 @@
 import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
+import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
+import { ViewModelSaveEvent } from '@/types/workflow';
 
 export class AdminViewModel extends AbstractEditViewModel {
   declare customFields: string;
@@ -21,8 +23,8 @@ export class AdminViewModel extends AbstractEditViewModel {
     ),
   });
 
-  constructor(datasetModel: DatasetModel) {
-    super(datasetModel, AdminViewModel.mappingRules());
+  constructor(dataset: DatasetDTO | undefined, saveEventHook: ViewModelSaveEvent | undefined) {
+    super(dataset, saveEventHook, AdminViewModel.mappingRules());
   }
 
   static mappingRules() {

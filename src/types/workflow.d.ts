@@ -1,4 +1,5 @@
 import { StepStatus } from '@/modules/workflow/utils/workflowEnums';
+import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 
 export interface WorkflowStep {
   id: number;
@@ -27,3 +28,5 @@ export interface ComputeResult {
   steps: WorkflowStep[];
   freeJump: boolean;
 }
+
+export type ViewModelSaveEvent = (viewModel: AbstractEditViewModel) => Promise<void>;

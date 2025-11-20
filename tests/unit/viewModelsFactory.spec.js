@@ -2,21 +2,18 @@ import { it, describe, expect } from 'vitest';
 import { createHeaderViewModel } from '@/factories/ViewModels/HeaderViewModel';
 import { EDITMETADATA_MAIN_HEADER } from '@/factories/eventBus';
 import { convertJSON } from '@/factories/convertJSON';
-import { BackendDatasetService } from '@/modules/workflow/BackendDatasetService.ts';
-import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 
 import { METADATA_TITLE_PROPERTY } from '@/factories/metadataConsts';
 
 import metadatas from '@/../stories/js/metadata';
+import { EditHeaderViewModel } from '@/modules/workflow/viewModel/EditHeaderViewModel.js';
+import { EditKeywordsViewModel } from '@/modules/workflow/viewModel/EditKeywordsViewModel.js';
 
 describe('viewModel Factory ', () => {
   const datasetBackend = metadatas[metadatas.length - 1];
   const backendJSON = convertJSON(datasetBackend, false);
 
   const headerVM = createHeaderViewModel(backendJSON, false, 'black', 'url/to/an/img');
-
-  const serviceLayer = new BackendDatasetService(datasetBackend);
-  const datasetVM = new DatasetModel(serviceLayer);
 
   it('HeaderViewModel backendJSON', () => {
     expect(headerVM).toBeDefined();
@@ -53,8 +50,7 @@ describe('viewModel Factory ', () => {
   });
 
   it('EditHeaderViewModel reactivity', () => {
-    const instances = datasetVM.viewModels;
-    const vm = instances.get('EditHeaderViewModel');
+    const vm = new EditHeaderViewModel(datasetBackend, undefined);
 
     expect(vm).toBeDefined();
 
@@ -72,8 +68,7 @@ describe('viewModel Factory ', () => {
   });
 
   it('EditKeywordsViewModel reactivity', () => {
-    const instances = datasetVM.viewModels;
-    const vm = instances.get('EditKeywordsViewModel');
+    const vm = new EditKeywordsViewModel(datasetBackend, undefined);
 
     expect(vm).toBeDefined();
     expect(vm.keywords).toBeDefined();

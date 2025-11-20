@@ -16,14 +16,10 @@ import { createAuthors, extractAuthorsMap, getFullAuthorsFromDataset } from '@/f
 import { AuthorsViewModel } from '@/factories/ViewModels/AuthorsViewModel.js';
 
 import unFormatedMetadataCards from '../js/metadata.js';
-import { BackendDatasetService } from '@/modules/workflow/BackendDatasetService.ts';
-import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 
 const metadataCards = [];
 
-const serviceLayer = new BackendDatasetService(unFormatedMetadataCards[0]);
-const datasetVM = new DatasetModel(serviceLayer);
-const authorsViewModel = new AuthorsViewModel(datasetVM.dataset);
+const authorsViewModel = new AuthorsViewModel(unFormatedMetadataCards[0]);
 
 unFormatedMetadataCards.forEach((el) => {
   el.author = createAuthors(el);

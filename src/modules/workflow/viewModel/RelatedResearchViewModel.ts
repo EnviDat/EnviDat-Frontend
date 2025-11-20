@@ -2,6 +2,8 @@ import * as yup from 'yup';
 
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
+import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
+import { ViewModelSaveEvent } from '@/types/workflow';
 
 function convertEmptyStringToNull(v: unknown) {
   return typeof v === 'string' && v.trim() === '' ? null : v;
@@ -30,8 +32,8 @@ export class RelatedResearchViewModel extends AbstractEditViewModel {
       .min(10, 'Write at least 10 characters to describe the related datasets.'),
   });
 
-  constructor(datasetModel: DatasetModel) {
-    super(datasetModel, RelatedResearchViewModel.mappingRules());
+  constructor(dataset: DatasetDTO | undefined, saveEventHook: ViewModelSaveEvent | undefined) {
+    super(dataset, saveEventHook, RelatedResearchViewModel.mappingRules());
   }
 
   static mappingRules() {

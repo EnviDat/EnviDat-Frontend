@@ -1,6 +1,8 @@
 import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
+import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
+import { ViewModelSaveEvent } from '@/types/workflow';
 
 export class EditDescriptionViewModel extends AbstractEditViewModel {
   declare description: string;
@@ -18,8 +20,8 @@ export class EditDescriptionViewModel extends AbstractEditViewModel {
       .min(100, 'Write at least a description with 100 characters.'),
   });
 
-  constructor(datasetModel: DatasetModel) {
-    super(datasetModel, EditDescriptionViewModel.mappingRules());
+  constructor(dataset: DatasetDTO | undefined, saveEventHook: ViewModelSaveEvent | undefined) {
+    super(dataset, saveEventHook, EditDescriptionViewModel.mappingRules());
   }
 
   static mappingRules() {

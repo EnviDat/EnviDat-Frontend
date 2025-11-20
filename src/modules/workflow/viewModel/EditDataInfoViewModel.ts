@@ -3,6 +3,8 @@ import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEdit
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 
 import { DATE_PROPERTY_DATE_TYPE, DATE_PROPERTY_END_DATE, DATE_PROPERTY_START_DATE } from '@/factories/metadataConsts';
+import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
+import { ViewModelSaveEvent } from '@/types/workflow';
 
 export class EditDataInfoViewModel extends AbstractEditViewModel {
   declare dates: string;
@@ -26,8 +28,8 @@ export class EditDataInfoViewModel extends AbstractEditViewModel {
       ),
   });
 
-  constructor(datasetModel: DatasetModel) {
-    super(datasetModel, EditDataInfoViewModel.mappingRules());
+  constructor(dataset: DatasetDTO | undefined, saveEventHook: ViewModelSaveEvent | undefined) {
+    super(dataset, saveEventHook, EditDataInfoViewModel.mappingRules());
   }
 
   static mappingRules() {

@@ -12,21 +12,11 @@
 
 import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader.vue';
 
-/*
-import {
-  createAuthors,
-  getFullAuthorsFromDataset,
-  extractAuthorsMap,
-} from '@/factories/authorFactory';
-*/
-
 import categoryCards from '@/store/categoryCards';
 import { getPopularTags, getTagColor } from '@/factories/keywordsFactory';
 
-import { LocalStorageDatasetService } from '@/modules/workflow/LocalStorageDatasetService.ts';
-
 import metadataset from '@/../stories/js/metadata';
-import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
+import { MetadataBaseViewModel } from '../../src/modules/workflow/viewModel/MetadataBaseViewModel';
 
 const tagsFromDatasets = getPopularTags(metadataset, '', 1);
 
@@ -35,25 +25,8 @@ for (let i = 0; i < tagsFromDatasets.length; i++) {
   tag.color = getTagColor(categoryCards, tag.name);
 }
 
-/*
-const unFormatedMetadataCards = metadataset;
-const metadataCards = [];
-
-for (let i = 0; i < unFormatedMetadataCards.length; i++) {
-  const el = unFormatedMetadataCards[i];
-  el.author = createAuthors(el);
-  metadataCards.push(el);
-}
-
-const authorsMap = extractAuthorsMap(metadataCards);
-
-let existingAuthors = Object.values(authorsMap);
-existingAuthors = sortObjectArray(existingAuthors, 'lastName');
-*/
-
-const serviceLayer2 = new LocalStorageDatasetService();
-const datasetVM2 = new DatasetModel(serviceLayer2);
-const reactiveViewModelWithErrors = datasetVM2.getViewModel('MetadataBaseViewModel');
+const emptyVM = new MetadataBaseViewModel(undefined, undefined);
+const reactiveViewModelWithErrors = new MetadataBaseViewModel(metadataset[2], undefined);
 
 export default {
   title: '3 Datasets / 2 Edit / Metadata Header',
@@ -71,7 +44,6 @@ const watcherMethod = watch(() => emptyVM, async (newModel) => {
 );
 */
 
-/*
 export const EmptyWithViewModel = {
   args: {
     ...emptyVM,
@@ -81,17 +53,16 @@ export const EmptyWithViewModel = {
   },
 };
 
-const vm = datasetVM.getViewModel(EditHeaderViewModel.name);
+const FilledVm = new MetadataBaseViewModel(metadataset[1], undefined);
 
 export const FilledWithViewModel = {
-  args: { 
-    ...vm,
+  args: {
+    ...FilledVm,
     onSave: (newData: any) => {
-      vm.save(newData);
+      FilledVm.save(newData);
     },
   },
 };
-*/
 
 export const FilledWithViewModelErrors = {
   args: {

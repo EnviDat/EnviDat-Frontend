@@ -2,6 +2,8 @@
 import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
+import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
+import { ViewModelSaveEvent } from '@/types/workflow';
 
 const toNull = (v: string, o: string) => (o === '' ? null : v);
 
@@ -51,8 +53,8 @@ export class AdditionalInfoViewModel extends AbstractEditViewModel {
       ),
   });
 
-  constructor(datasetVM: DatasetModel) {
-    super(datasetVM, AdditionalInfoViewModel.mappingRules());
+  constructor(dataset: DatasetDTO | undefined, saveEventHook: ViewModelSaveEvent | undefined) {
+    super(datase, saveEventHook, AdditionalInfoViewModel.mappingRules());
   }
 
   validate(newProps?: Partial<AdditionalInfoViewModel>) {

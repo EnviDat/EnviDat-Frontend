@@ -102,6 +102,7 @@
  */
 
 import { mapGetters, mapState } from 'vuex';
+import { mdiInformationOutline } from '@mdi/js';
 
 import {
   eventBus,
@@ -133,8 +134,6 @@ import {
   USER_SIGNIN_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts.js';
 
-import { mdiInformationOutline } from '@mdi/js';
-
 import { updateEditingArray } from '@/factories/userEditingFactory.js';
 
 import ResourcesListEditing from '@/modules/workflow/components/steps/ResourcesListEditing.vue';
@@ -142,7 +141,7 @@ import ResourceUpload from '@/modules/workflow/components/steps/ResourceUpload.v
 import ResourcesPasteUrl from '@/modules/workflow/components/steps/ResourcesPasteUrl.vue';
 import { ResourceViewModel } from '@/modules/workflow/viewModel/ResourceViewModel';
 import type { Resource } from '@/types/modelTypes';
-import { mergeResourceSizeForFrontend } from '@/factories/resourceHelpers.ts';
+
 import ResourceEditing from '@/modules/workflow/components/steps/ResourceEditing.vue';
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow.ts';
 import InfoBanner from '@/modules/workflow/components/steps/InformationBanner.vue';

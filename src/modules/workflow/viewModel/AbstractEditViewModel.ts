@@ -6,27 +6,29 @@ import { DatasetModel } from '@/modules/workflow/DatasetModel';
 import { isFieldValid } from '@/factories/userEditingValidations';
 
 import { useNotifyStore } from '@/modules/workflow/utils/snackBar';
+import { ViewModelSaveEvent } from '@/types/workflow';
 
 export abstract class AbstractEditViewModel {
   protected privateMappingRules: string[][];
 
-  protected datasetModel: DatasetModel;
+  protected saveEventHook: ViewModelSaveEvent;
 
   abstract validationErrors: object;
 
   declare validationRules: yup.AnyObjectSchema;
 
-  protected constructor(datasetModel: DatasetModel, mappingRules: string[][] = undefined) {
+  protected constructor(
+    dataset: DatasetDTO | undefined,
+    saveEventHook: ViewModelSaveEvent | undefined,
+    mappingRules: string[][] = undefined,
+  ) {
     this.mappingRules = mappingRules;
-    this.datasetModel = datasetModel;
+    this.saveEventHook = saveEventHook;
 
     if (new.target === AbstractEditViewModel) {
       throw new Error('Cannot instantiate an abstract Class');
     }
 
-    // enforceAbstractProps(this, ['mappingRules']);
-
-    const dataset = this.datasetModel?.dataset;
     if (this.mappingRules) {
       // always do the mapping, even if there is no dataset, because it will
       // initialize the viewModels properties with undefined, which needs
@@ -72,7 +74,7 @@ export abstract class AbstractEditViewModel {
   protected getModelData<T>(): Omit<
     T,
     | 'privateMappingRules'
-    | 'datasetModel'
+    | 'patchViewModel'
     | 'validationRules'
     | 'validationErrors'
     | 'savedSuccessful'
@@ -82,7 +84,7 @@ export abstract class AbstractEditViewModel {
     // deconstruct this to remove the model view specific props
     const {
       privateMappingRules,
-      datasetModel,
+      patchViewModel,
       validationRules,
       validationErrors,
       savedSuccessful,
@@ -156,8 +158,8 @@ export abstract class AbstractEditViewModel {
         return false;
       }
 
-      if (this.datasetModel) {
-        await this.datasetModel.patchViewModel(this);
+      if (this.saveEventHook) {
+        await this.saveEventHook(this);
       }
 
       this.savedSuccessful = true;

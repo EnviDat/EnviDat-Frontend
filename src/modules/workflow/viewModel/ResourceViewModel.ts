@@ -2,7 +2,7 @@ import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 import { Resource, ResourceSize } from '@/types/modelTypes';
 import { convertToFrontendJSONWithRules } from '@/factories/convertJSON';
-import { ResourceDTO } from '@/types/dataTransferObjectsTypes';
+import { type DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 import {
   formatBytes,
@@ -13,6 +13,7 @@ import {
 } from '@/factories/resourceHelpers';
 import { formatDate } from '@/factories/dateFactory';
 import { isFieldValid } from '@/factories/userEditingValidations';
+import { ViewModelSaveEvent } from '@/types/workflow';
 
 const convertEmptyStringToNull = (value: string, originalValue: string) => (originalValue === '' ? null : value);
 
@@ -150,10 +151,8 @@ export class ResourceViewModel extends AbstractEditViewModel implements Resource
    * @param datasetModel is optional, if not provided it can be used "isolated" just for other
    * UI-components to validate and store infos
    */
-  constructor(datasetModel?: DatasetModel | undefined) {
-    // intentionally not providing the datasetModel, because resource have to be unpacked
-    // from the list of resources, done in the ResourceListModel
-    super(datasetModel, ResourceViewModel.mappingRules());
+  constructor(dataset: DatasetDTO | undefined, saveEventHook: ViewModelSaveEvent | undefined) {
+    super(dataset, saveEventHook, ResourceViewModel.mappingRules());
   }
 
   static getFormattedResource(

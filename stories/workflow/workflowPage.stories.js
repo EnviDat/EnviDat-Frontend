@@ -10,7 +10,7 @@ import WorkflowPage from '@/modules/workflow/components/WorkflowPage.vue';
 import datasets from '@/../stories/js/metadata';
 
 export default {
-  title: '6 Workflows / Combined / WorkflowPage',
+  title: '6 Workflows / WorkflowPage',
   component: WorkflowPage,
 };
 
