@@ -1,20 +1,51 @@
-const fs = require('fs');
+import { URL, fileURLToPath } from 'node:url';
+import fs from 'node:fs';
+// const fs = require('node:fs');
+// import path from 'node:path';
+// const __dirname = import.meta.dirname;
+// const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const inputPath = `${__dirname}/../../public/testdata/`;
-const userListPath = `${inputPath}user_list_17-08-2022.json`;
-const userList = require(userListPath).result;
+const __dirname = new URL('.', import.meta.url).pathname;
 
-const packageListPath = `${inputPath}all_packages.json`;
-const packageList = require(packageListPath).result;
+const inputPath = `${__dirname}/../../../public/testdata/`;
+
+// this user_list needs be pulled by signin as admin and calling
+// https://envidat.ch/api/action/user_list to get all users
+const userListPath = `${inputPath}user_list_06-11-2025.json`;
+
+const userPathUrl = fileURLToPath(new URL(userListPath, import.meta.url));
+console.log('userPathUrl', userPathUrl);
+
+const userListFile = fs.readFileSync(userPathUrl, 'utf8');
+const userList = JSON.parse(userListFile).result;
+
+const packageListPath = `${inputPath}packagelist.json`;
+const pathUrl = new URL(packageListPath, import.meta.url);
+
+const packageListFile = fs.readFileSync(pathUrl, 'utf8');
+const packageList = JSON.parse(packageListFile).result;
+// console.log(packageList.default);
+
+const outputPath = `${__dirname}/../../../public/testdata/`;
+const outputPathUrl = new URL(outputPath, import.meta.url);
 
 const outputFileName = 'user_emails.json';
-const outputPath = `${__dirname}/../../public/testdata/`;
-
 const outputFileNameCSV = 'envidat_users.csv';
 const outputDataMaintainersCSV = 'envidat_datamaintainers.csv';
 
+const outputFileFileName = fileURLToPath(outputPathUrl + outputFileName);
+console.log('outputFileFileName', outputFileFileName);
+
+const outputFileFileNameCSV = fileURLToPath(outputPathUrl + outputFileNameCSV);
+console.log('outputFileFileNameCSV', outputFileFileNameCSV);
+
+const outputFileDataMaintainersCSV = fileURLToPath(outputPathUrl + outputDataMaintainersCSV);
+console.log('outputFileDataMaintainersCSV', outputFileDataMaintainersCSV);
+
 function getUserObj(userName, email) {
-  const nameSplits = userName.split(' ');
+  if (!userName) return null;
+
+  const nameSplits = userName?.split(' ');
   let firstname = nameSplits[0];
   let lastname = nameSplits[1];
 
@@ -49,7 +80,7 @@ function isBetterEmail(email, oldEmail) {
 
 function getEnviDatUser(entry) {
   return {
-    userName: entry.fullname,
+    userName: entry.fullname || entry.name || entry.display_name,
     email: entry.email,
   };
 }
@@ -69,8 +100,13 @@ function genericExtractUser(array, getUserFromData) {
   const userMap = {};
   let userCount = 0;
 
+  if (array.length <= 0) {
+    console.log('array is empty?', array);
+  }
+
   for (let i = 0; i < array.length; i++) {
     const entry = array[i];
+
     const user = getUserFromData(entry);
 
     const userName = user.userName;
@@ -108,13 +144,15 @@ function genericExtractUser(array, getUserFromData) {
 }
 
 function writeUsersToFile(data, fileName) {
-  fs.writeFileSync(fileName, data, (err) => {
+  try {
+    fs.writeFileSync(fileName, data, { flag: 'w' });
+  } catch (err) {
     if (err) {
       return console.log(err);
     }
 
     return console.log(`Users extracted to ${outputPath}${fileName}. Wrote ${data.length} lines.`);
-  });
+  }
 }
 
 function getCSVData(userMap) {
@@ -138,7 +176,7 @@ const userMap = genericExtractUser(userList, getEnviDatUser);
 
 const csvString = getCSVData(userMap);
 
-writeUsersToFile(csvString, outputPath + outputFileNameCSV);
+writeUsersToFile(csvString, outputFileFileNameCSV);
 */
 
 /* Create a envidat user json file
@@ -154,4 +192,4 @@ const userMap = genericExtractUser(packageList, getDataMaintainer);
 
 const csvString = getCSVData(userMap);
 
-writeUsersToFile(csvString, outputPath + outputDataMaintainersCSV);
+writeUsersToFile(csvString, outputFileDataMaintainersCSV);

@@ -142,16 +142,19 @@ export default {
     }
 
     const solrQuery = isAuthorSearch ? getAuthorSolrQuery(originalTerm) : createSolrQuery(originalTerm);
-    const query = `${ACTION_SEARCH_METADATA()}?q=${solrQuery}`;
-    const queryAdditions = '&wt=json&rows=1000';
-    const publicOnlyQuery = `${query}${queryAdditions}&fq=capacity:public&fq=state:active`;
-    const url = urlRewrite(publicOnlyQuery, '/', API_ROOT);
+    const data = {
+      q: solrQuery,
+      rows: 1000,
+      fq: 'capacity:public +state:active',
+    };
+    const params = new URLSearchParams(data).toString();
+    const url = urlRewrite(`${ACTION_SEARCH_METADATA()}?${params}`, '/', API_ROOT);
 
     await axios
       .get(url)
       .then((response) => {
         commit(SEARCH_METADATA_SUCCESS, {
-          payload: response.data.response.docs,
+          payload: response.data.result.results,
           mode,
         });
       })
