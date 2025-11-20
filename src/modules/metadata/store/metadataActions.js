@@ -144,8 +144,7 @@ export default {
     const solrQuery = isAuthorSearch ? getAuthorSolrQuery(originalTerm) : createSolrQuery(originalTerm);
     const data = {
       q: solrQuery,
-      rows: 1000,
-      fq: 'capacity:public +state:active',
+      rows: 10000,
     };
     const params = new URLSearchParams(data).toString();
     const url = urlRewrite(`${ACTION_SEARCH_METADATA()}?${params}`, '/', API_ROOT);
