@@ -1,6 +1,5 @@
 import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
-import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 import { ViewModelSaveEvent } from '@/types/workflow';
 

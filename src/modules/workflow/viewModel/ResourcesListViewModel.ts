@@ -3,9 +3,7 @@ import * as yup from 'yup';
 import { Resource, User } from '@/types/modelTypes';
 import { type DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 import { ResourceViewModel } from '@/modules/workflow/viewModel/ResourceViewModel.ts';
-import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel';
-import { METADATA_NEW_RESOURCE_ID } from '@/factories/metadataConsts';
 
 import { formatDateTimeToCKANFormat, stringifyResourceForBackend } from '@/factories/mappingFactory';
 
@@ -16,8 +14,6 @@ import {
   enhanceResourcesWithMetadataExtras,
   SELECT_EDITING_RESOURCE_PROPERTY,
 } from '@/factories/strategyFactory';
-
-import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 import { parseBytes } from '@/factories/resourceHelpers.ts';
 import { ViewModelSaveEvent } from '@/types/workflow';
 

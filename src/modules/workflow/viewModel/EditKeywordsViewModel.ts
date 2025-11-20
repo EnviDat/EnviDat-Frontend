@@ -3,7 +3,6 @@ import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEdit
 import { type DatasetDTO, KeywordDTO } from '@/types/dataTransferObjectsTypes';
 import { enhanceKeywords } from '@/factories/keywordsFactory';
 import categoryCards from '@/store/categoryCards';
-import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 import { ViewModelSaveEvent } from '@/types/workflow';
 
 export class EditKeywordsViewModel extends AbstractEditViewModel {

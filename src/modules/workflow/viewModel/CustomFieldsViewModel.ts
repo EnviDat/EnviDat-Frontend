@@ -1,6 +1,5 @@
 import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
-import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 import { METADATA_DEPRECATED_RESOURCES_PROPERTY } from '@/factories/metadataConsts';
 import { Resource } from '@/types/modelTypes';
 import { convertJSON, convertToBackendJSONWithRules, convertToFrontendJSONWithRules } from '@/factories/convertJSON';

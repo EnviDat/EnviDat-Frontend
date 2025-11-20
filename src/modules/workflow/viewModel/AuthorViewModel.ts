@@ -3,12 +3,10 @@ import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 import { Author, DataCreditObject } from '@/types/modelTypes';
 import { convertToFrontendJSONWithRules } from '@/factories/convertJSON';
-import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 import { AUTHOR_ASCII_DEAD } from '@/store/mainMutationsConsts';
 import { getAuthorName } from '@/factories/authorFactory';
 import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 import { ViewModelSaveEvent } from '@/types/workflow';
-import { dataset } from '../../../../public/testdata/dataset_10-16904-1';
 
 const convertEmptyStringToNull = (value: string, originalValue: string) => (originalValue === '' ? null : value);
 

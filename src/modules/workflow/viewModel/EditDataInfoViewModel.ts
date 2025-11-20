@@ -1,6 +1,5 @@
 import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
-import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 
 import { DATE_PROPERTY_DATE_TYPE, DATE_PROPERTY_END_DATE, DATE_PROPERTY_START_DATE } from '@/factories/metadataConsts';
 import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
