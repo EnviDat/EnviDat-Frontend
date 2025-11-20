@@ -117,7 +117,7 @@ export class AuthorViewModel extends AbstractEditViewModel implements Author {
 }
 
 export const createAuthorViewModel = (author: Author, changeCallback = undefined) => {
-  const authorVM = new AuthorViewModel();
+  const authorVM = new AuthorViewModel(undefined, undefined);
 
   Object.assign(authorVM, author);
 

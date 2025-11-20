@@ -1,4 +1,5 @@
 import { reactive, watch } from 'vue';
+import type { Reactive } from 'vue';
 
 import { getAuthorName } from '@/factories/authorFactory';
 import { formatDate } from '@/factories/dateFactory';
@@ -92,7 +93,7 @@ export const createHeaderViewModel = (
   categoryColor: string,
   titleImg: string,
   changeCallback = undefined,
-) => {
+): Reactive<HeaderViewModel> => {
   const headerVM = new HeaderViewModel(dataset, smallScreen, categoryColor, titleImg);
   const reactiveVM = reactive(headerVM);
 
