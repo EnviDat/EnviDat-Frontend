@@ -100,6 +100,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import type { PropType } from 'vue';
 
 import { mapGetters, mapState } from 'vuex';
 import { mdiInformationOutline } from '@mdi/js';
@@ -122,7 +123,6 @@ import {
   getUppyInstance,
   subscribeOnUppyEvent,
   unSubscribeOnUppyEvent,
-  createNewResourceForUrl,
   destroyUppyInstance,
 } from '@/modules/workflow/utils/workflowUpload';
 
@@ -145,11 +145,12 @@ import type { Resource } from '@/types/modelTypes';
 import ResourceEditing from '@/modules/workflow/components/steps/ResourceEditing.vue';
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow.ts';
 import InfoBanner from '@/modules/workflow/components/steps/InformationBanner.vue';
+import { ResourcesListViewModel } from '@/modules/workflow/viewModel/ResourcesListViewModel.ts';
 
 export default {
   name: 'ResourcesInformation',
   props: {
-    resources: { type: Array, default: () => [] },
+    resources: { type: Array as PropType<ResourceViewModel[]>, default: () => [] },
     dataLicenseTitle: { type: String, default: undefined },
     dataLicenseUrl: { type: String, default: undefined },
     datasetId: { type: String, default: '' },
@@ -235,7 +236,7 @@ export default {
     },
     metadataResourcesGenericProps() {
       return {
-        resources: this.resources,
+        resources: this.resources.getModelData(),
         validationErrors: this.validationErrors,
         dataLicenseTitle: this.dataLicenseTitle,
         dataLicenseUrl: this.dataLicenseUrl,
@@ -365,9 +366,9 @@ export default {
       // console.log(`createResourceFromUrl ${url}`);
 
       const datasetId = this.datasetId;
-      const newResource = createNewResourceForUrl(datasetId, url);
+      const newResource = ResourcesListViewModel.createNewResourceForUrl(datasetId, url);
 
-      this.resourceViewModel = new ResourceViewModel();
+      this.resourceViewModel = new ResourceViewModel(undefined, undefined);
       const validData = this.resourceViewModel.validate(newResource);
 
       if (!validData) {
@@ -375,11 +376,15 @@ export default {
         return;
       }
 
+      this.resources.push(this.resourceViewModel);
+      this.$emit('save', { resources: this.resources });
+      /*
       const currentResources = [...this.resources];
       const resourceModelData = this.resourceViewModel.getModelData<Resource>();
       currentResources.push(resourceModelData);
-
       this.$emit('save', { resources: currentResources });
+*/
+
       /*
       // resource exists already, get it from uploadResource
       const newRes = this.$store?.getters[`${USER_NAMESPACE}/uploadResource`];

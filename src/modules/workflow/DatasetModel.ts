@@ -21,6 +21,18 @@ import { LOCAL_DATASET_KEY, METADATA_NEW_RESOURCE_ID } from '@/factories/metadat
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 import { ResourceViewModel } from '@/modules/workflow/viewModel/ResourceViewModel.ts';
 
+type SpecificViewModel =
+  | typeof CustomFieldsViewModel
+  | typeof AuthorListViewModel
+  | typeof AdminViewModel
+  | typeof EditDataInfoViewModel
+  | typeof MetadataBaseViewModel
+  | typeof AdditionalInfoViewModel
+  | typeof GeoInfoViewModel
+  | typeof RelatedResearchViewModel
+  | typeof PublicationInfoViewModel
+  | typeof ResourcesListViewModel;
+
 export class DatasetModel {
   viewModelClasses = [
     // needs to before ResourcesListViewModel as this is used by the ResourcesListViewModel
@@ -57,6 +69,10 @@ export class DatasetModel {
     this.viewModelInstances = new Map<string, any>();
   }
 
+  private isResourcesListVM(viewModel: SpecificViewModel): viewModel is typeof ResourcesListViewModel {
+    return viewModel === ResourcesListViewModel;
+  }
+
   private createViewModels() {
     this.clearViewModels();
 
@@ -65,7 +81,7 @@ export class DatasetModel {
     for (const VMClass of this.viewModelClasses) {
       let instance;
 
-      if (VMClass instanceof ResourcesListViewModel) {
+      if (this.isResourcesListVM(VMClass)) {
         instance = new VMClass(this.dataset, this.patchViewModel, tmpCustomFieldsViewModel?.isResourceDeprecated);
       } else {
         instance = new VMClass(this.dataset, this.patchViewModel);

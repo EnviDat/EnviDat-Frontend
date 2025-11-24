@@ -12,15 +12,13 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { Uppy, debugLogger } from '@uppy/core';
-import type { Meta, Body, UppyOptions, Restrictions, UppyFile } from '@uppy/core';
+import type { Body, Meta, Restrictions, UppyFile, UppyOptions } from '@uppy/core';
+import { debugLogger, Uppy } from '@uppy/core';
 import axios from 'axios';
 import awsS3, { type AwsS3MultipartOptions } from '@uppy/aws-s3';
 
 import { urlRewrite } from '@/factories/apiFactory';
 import { eventBus, UPLOAD_STATE_RESET, UPLOAD_STATE_RESOURCE_CREATED } from '@/factories/eventBus';
-
-import { RESOURCE_FORMAT_LINK } from '@/factories/metadataConsts';
 import { ResourceViewModel } from '@/modules/workflow/viewModel/ResourceViewModel.ts';
 
 let API_BASE = '';
@@ -57,6 +55,7 @@ function createNewBaseResource(datasetId: string) {
     doi: '',
     format: '',
     hast: '',
+    // don't set the id, because the backend will provide a new one
     id: '',
     lastModified: '',
     mimetype: null,
@@ -99,27 +98,10 @@ function createNewResourceForFileUpload(datasetId: string, file: UppyFile<Meta, 
   };
 }
 
-export function createNewResourceForUrl(datasetId: string, url: string) {
-  const cleanUrlForName = url.endsWith('/') ? url.substring(0, url.length - 1) : url;
-  const splits = cleanUrlForName.split('/');
-  const resourceName = splits.length > 0 ? splits[splits.length - 1] : url;
-
-  const baseResourceProperties = createNewBaseResource(datasetId);
-
-  return {
-    ...baseResourceProperties,
-    url,
-    format: RESOURCE_FORMAT_LINK,
-    size: 1,
-    sizeFormat: 'B',
-    name: resourceName,
-  };
-}
-
 async function createResourceInBackend(datasetId: string, file: UppyFile<Meta, Body>) {
   const newResource = createNewResourceForFileUpload(datasetId, file);
 
-  const resourceVm = new ResourceViewModel();
+  const resourceVm = new ResourceViewModel(undefined, undefined);
   Object.assign(resourceVm, newResource);
   const backendResource = await storeReference?.datasetModel.createResourceOnExistingDataset(resourceVm);
   const resourceId = backendResource.id;

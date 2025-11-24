@@ -1,12 +1,18 @@
 import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
-import { Resource } from '@/types/modelTypes';
-import { convertToFrontendJSONWithRules } from '@/factories/convertJSON';
-import { type DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
-import { formatBytes, getResourceName } from '@/factories/resourceHelpers';
+import { Resource, ResourceSize } from '@/types/modelTypes';
+import { convertToBackendJSONWithRules, convertToFrontendJSONWithRules } from '@/factories/convertJSON';
+import { ExtrasDTO, type ResourceDTO } from '@/types/dataTransferObjectsTypes';
+import { formatBytes, getResourceName, parseBytes } from '@/factories/resourceHelpers';
 import { formatDate } from '@/factories/dateFactory';
 import { isFieldValid } from '@/factories/userEditingValidations';
 import { ViewModelSaveEvent } from '@/types/workflow';
+import {
+  enhanceElementsWithStrategyEvents,
+  enhanceResourcesWithMetadataExtras,
+  SELECT_EDITING_RESOURCE_PROPERTY,
+} from '@/factories/strategyFactory';
+import { formatDateTimeToCKANFormat, stringifyResourceForBackend } from '@/factories/mappingFactory';
 
 const convertEmptyStringToNull = (value: string, originalValue: string) => (originalValue === '' ? null : value);
 
@@ -32,7 +38,7 @@ export class ResourceViewModel extends AbstractEditViewModel implements Resource
   declare packageId: string;
   declare position: number;
 
-  declare resourceSize: string;
+  declare resourceSize: ResourceSize;
   declare resourceType: string;
   declare restricted: string;
   declare restrictedUrl: string;
@@ -140,8 +146,10 @@ export class ResourceViewModel extends AbstractEditViewModel implements Resource
     }),
   });
 
-  constructor(dataset: DatasetDTO | undefined, saveEventHook: ViewModelSaveEvent | undefined) {
-    super(dataset, saveEventHook, ResourceViewModel.mappingRules());
+  constructor(resource: ResourceDTO | undefined, saveEventHook: ViewModelSaveEvent | undefined) {
+    // @ts-expect-error because the AbstractViewModel expects a DatasetDTO, but the ResourceViewModel only
+    // needs a resourceDTO due to the nesting into the ResourceListViewModel
+    super(resource, saveEventHook, ResourceViewModel.mappingRules());
   }
 
   static getFormattedResource(
@@ -195,11 +203,6 @@ export class ResourceViewModel extends AbstractEditViewModel implements Resource
     const sizeNumberInFormat = splits[0];
     const sizeFormat = splits[1];
 
-    frontendResource.resourceSize = {
-      sizeUnits: sizeFormat,
-      sizeValue: sizeNumberInFormat,
-    };
-
     /*
     // directly convert the size to the size and sizeFormat for the frontend
     // frontend doesn't care about the resoureSize object, it only knows the two properties
@@ -224,6 +227,10 @@ export class ResourceViewModel extends AbstractEditViewModel implements Resource
       // @ts-expect-error
       size: sizeNumberInFormat,
       sizeFormat,
+      resourceSize: {
+        sizeUnits: sizeFormat,
+        sizeValue: sizeNumberInFormat,
+      },
       deprecated: false,
       numberOfDownload: numberOfDownload || 0,
       isProtected: false,
@@ -232,6 +239,59 @@ export class ResourceViewModel extends AbstractEditViewModel implements Resource
       chartData: undefined,
       chartDataLoading: false,
     } satisfies Resource;
+  }
+
+  updateResourceModel(
+    rawResource: ResourceDTO,
+    datasetName: string,
+    extras: ExtrasDTO[],
+    organizationID: string,
+    signedInUserName: string,
+    signedInUserOrganizationIds: string[],
+    numberOfDownload?: number,
+  ) {
+    const resource = ResourceViewModel.getFormattedResource(
+      rawResource,
+      datasetName,
+      organizationID,
+      signedInUserName,
+      signedInUserOrganizationIds,
+      numberOfDownload,
+    );
+
+    enhanceElementsWithStrategyEvents([resource], SELECT_EDITING_RESOURCE_PROPERTY, true);
+
+    enhanceResourcesWithMetadataExtras(extras, [resource]);
+
+    Object.assign(this, resource);
+  }
+
+  get backendJSON() {
+    const formattedSize = `${this.size} ${this.sizeFormat}`;
+    const sizeInBytes = parseBytes(formattedSize);
+
+    const jsonBackendResource = convertToBackendJSONWithRules(ResourceViewModel.mappingRules(), {
+      ...this.getModelData<ResourceViewModel>(),
+      created: this.created ? formatDateTimeToCKANFormat(this.created) : '',
+      lastModified: this.lastModified ? formatDateTimeToCKANFormat(this.lastModified) : '',
+      metadataModified: this.metadataModified ? formatDateTimeToCKANFormat(this.metadataModified) : '',
+      size: sizeInBytes,
+    }) as ResourceDTO;
+
+    // @ts-expect-error
+    jsonBackendResource.resource_size = convertToBackendJSONWithRules(ResourceViewModel.sizeMappingRules(), {
+      sizeValue: this.size,
+      sizeUnits: this.sizeFormat,
+    });
+
+    // here the resourceSize gets convert into a string
+    return stringifyResourceForBackend(jsonBackendResource);
+
+    /*
+    const backendFields = convertToBackendJSONWithRules(this.mappingRules, this);
+
+    return convertJSON(backendFields, true);
+*/
   }
 
   static mappingRules() {

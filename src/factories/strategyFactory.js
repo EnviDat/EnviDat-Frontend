@@ -142,6 +142,10 @@ export function enhanceElementsWithStrategyEvents(elementList, previewProperty =
   return elementList;
 }
 
+/**
+ * @param {import('@/types/dataTransferObjectsTypes').ExtrasDTO[]} metadataExtras
+ * @param {import('@/types/modelTypes').Resource[]} resources
+ */
 export function enhanceResourcesWithMetadataExtras(metadataExtras, resources) {
   if (!metadataExtras || !resources) return null;
 
