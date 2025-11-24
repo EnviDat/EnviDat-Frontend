@@ -553,7 +553,7 @@ export default {
       'loadingMetadataIds',
       'loadingMetadatasContent',
       'loadingCurrentMetadataContent',
-      'searchingMetadatasContent',
+      'searchMetadataLoading',
       'currentMetadataContent',
       'filteredContent',
       'isFilteringContent',
@@ -645,7 +645,7 @@ export default {
       return this.$route.name === METADATAEDIT_PAGENAME;
     },
     loading() {
-      return this.loadingMetadatasContent || this.searchingMetadatasContent || this.isFilteringContent;
+      return this.loadingMetadatasContent || this.searchMetadataLoading || this.isFilteringContent;
     },
     searchTerm() {
       return this.$route.query.search;

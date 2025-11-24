@@ -106,7 +106,7 @@ export default {
       metadataIds: 'metadata/metadataIds',
       metadatasContent: 'metadata/metadatasContent',
       searchedMetadatasContent: 'metadata/searchedMetadatasContent',
-      searchingMetadatasContent: 'metadata/searchingMetadatasContent',
+      searchMetadataLoading: 'metadata/searchMetadataLoading',
       loadingMetadataIds: 'metadata/loadingMetadataIds',
       loadingMetadatasContent: 'metadata/loadingMetadatasContent',
     }),

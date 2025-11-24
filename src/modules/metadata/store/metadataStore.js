@@ -42,7 +42,7 @@ const initialState = {
    * the Search properties used when the users makes a full text search
    */
   searchedMetadatasContent: {},
-  searchingMetadatasContent: false,
+  searchMetadataLoading: false,
   searchingMetadatasContentOK: false,
   currentSearchTerm: '',
   /**
@@ -99,7 +99,7 @@ export const metadata = {
       state.metadatasContent !== undefined ? Object.keys(state.metadatasContent).length : 0,
     authorsMap: (state) => state.authorsMap,
     searchedMetadatasContent: (state) => state.searchedMetadatasContent,
-    searchingMetadatasContent: (state) => state.searchingMetadatasContent,
+    searchMetadataLoading: (state) => state.searchMetadataLoading,
     searchingMetadatasContentOK: (state) => state.searchingMetadatasContentOK,
     currentSearchTerm: (state) => state.currentSearchTerm,
     loadingCurrentMetadataContent: (state) => state.loadingCurrentMetadataContent,
