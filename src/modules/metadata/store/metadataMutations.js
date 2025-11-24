@@ -12,37 +12,39 @@
  */
 
 import {
-  LOAD_METADATA_CONTENT_BY_ID,
-  LOAD_METADATA_CONTENT_BY_ID_SUCCESS,
-  LOAD_METADATA_CONTENT_BY_ID_ERROR,
-  CLEAN_CURRENT_METADATA,
-  SEARCH_METADATA,
-  SEARCH_METADATA_SUCCESS,
-  SEARCH_METADATA_ERROR,
-  CLEAR_SEARCH_METADATA,
   BULK_LOAD_METADATAS_CONTENT,
-  BULK_LOAD_METADATAS_CONTENT_SUCCESS,
   BULK_LOAD_METADATAS_CONTENT_ERROR,
-  UPDATE_TAGS,
-  UPDATE_TAGS_SUCCESS,
-  UPDATE_TAGS_ERROR,
-  FILTER_METADATA,
-  FILTER_METADATA_SUCCESS,
-  FILTER_METADATA_ERROR,
-  PIN_METADATA,
+  BULK_LOAD_METADATAS_CONTENT_SUCCESS,
+  CLEAN_CURRENT_METADATA,
   CLEAR_PINNED_METADATA,
-  SET_DETAIL_PAGE_BACK_URL,
-  SET_ABOUT_PAGE_BACK_URL,
+  CLEAR_SEARCH_METADATA,
+  FILTER_METADATA,
+  FILTER_METADATA_ERROR,
+  FILTER_METADATA_SUCCESS,
+  LOAD_METADATA_CONTENT_BY_ID,
+  LOAD_METADATA_CONTENT_BY_ID_ERROR,
+  LOAD_METADATA_CONTENT_BY_ID_SUCCESS,
+  METADATA_NAMESPACE,
+  METADATA_UPDATE_AN_EXISTING_AUTHOR,
   METADATA_UPDATE_EXISTING_AUTHORS,
   METADATA_UPDATE_EXISTING_KEYWORDS,
-  METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS,
   METADATA_UPDATE_EXISTING_KEYWORDS_ERROR,
-  METADATA_UPDATE_AN_EXISTING_AUTHOR,
-  METADATA_NAMESPACE,
+  METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS,
   METADATA_UPDATE_EXISTING_TITLE,
+  PIN_METADATA,
+  SEARCH_METADATA,
+  SEARCH_METADATA_ERROR,
+  SEARCH_METADATA_FINISHED,
+  SEARCH_METADATA_MERGE,
+  SEARCH_METADATA_SUCCESS,
+  SET_ABOUT_PAGE_BACK_URL,
+  SET_DETAIL_PAGE_BACK_URL,
+  UPDATE_TAGS,
+  UPDATE_TAGS_ERROR,
+  UPDATE_TAGS_SUCCESS,
 } from '@/store/metadataMutationsConsts';
 
-import { warningMessage, getSpecificApiError } from '@/factories/notificationFactory';
+import { getSpecificApiError, warningMessage } from '@/factories/notificationFactory';
 
 import { ADD_USER_NOTIFICATION } from '@/store/mainMutationsConsts';
 
@@ -54,7 +56,7 @@ import { enhanceMetadatas } from '@/factories/metaDataFactory';
 
 export default {
   [SEARCH_METADATA](state, searchTerm) {
-    state.searchingMetadatasContent = true;
+    state.searchMetadataLoading = true;
     state.searchingMetadatasContentOK = false;
     state.searchedMetadatasContent = {};
     state.currentSearchTerm = searchTerm;
@@ -72,11 +74,38 @@ export default {
 
     state.searchedMetadatasContent = enhanceMetadatas(convertedPayload, mode);
 
+    /*
     state.searchingMetadatasContentOK = true;
-    state.searchingMetadatasContent = false;
+    state.searchMetadataLoading = false;
+*/
+  },
+  [SEARCH_METADATA_MERGE](state, { payload, isLocalSearch = false, mode = undefined }) {
+    let convertedPayload = [];
+
+    if (isLocalSearch) {
+      convertedPayload = payload;
+    } else {
+      for (let i = 0; i < payload.length; i++) {
+        const convertedEntry = solrResultToCKANJSON(payload[i]);
+        convertedPayload.push(convertedEntry);
+      }
+    }
+
+    const enhancedDatasets = enhanceMetadatas(convertedPayload, mode);
+
+    const keys = Object.keys(enhancedDatasets);
+    keys.forEach((key) => {
+      state.searchedMetadatasContent[key] = enhancedDatasets[key];
+    });
+
+    console.log(`updated store ${payload.length}`);
+  },
+  [SEARCH_METADATA_FINISHED](state) {
+    state.searchingMetadatasContentOK = true;
+    state.searchMetadataLoading = false;
   },
   [SEARCH_METADATA_ERROR](state, reason) {
-    state.searchingMetadatasContent = false;
+    state.searchMetadataLoading = false;
     state.searchingMetadatasContentOK = false;
 
     const errObj = getSpecificApiError(
@@ -87,7 +116,7 @@ export default {
     this.commit(ADD_USER_NOTIFICATION, errObj);
   },
   [CLEAR_SEARCH_METADATA](state) {
-    state.searchingMetadatasContent = false;
+    state.searchMetadataLoading = false;
     state.searchingMetadatasContentOK = false;
     state.searchedMetadatasContent = {};
     state.currentSearchTerm = '';
