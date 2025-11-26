@@ -727,6 +727,11 @@ export default {
         });
       }
     },
+    $route() {
+      if (this.notifyStore?.open) {
+        this.notifyStore.close();
+      }
+    },
 
     'config.userEditMetadataConfig.newWorkflowActive': {
       immediate: true,
