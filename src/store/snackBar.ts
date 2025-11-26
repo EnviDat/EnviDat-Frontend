@@ -7,29 +7,32 @@ export const useNotifyStore = defineStore('notify', {
     open: false,
     message: '' as string,
     color: 'info' as Level,
-    timeout: 1000 as number,
+    timeout: -1 as number,
+    loader: false as boolean,
   }),
   actions: {
-    show(msg: string, level: Level = 'info', timeout = 1000) {
+    show(msg: string, level: Level = 'info', timeout = -1, loader = false) {
       this.message = msg;
       this.color = level;
       this.timeout = timeout;
       this.open = true;
+      this.loader = loader;
     },
     success(msg: string, timeout = 1000) {
-      this.show(msg, 'success', timeout);
+      this.show(msg, 'success', timeout, false);
     },
     error(msg: string, timeout = 1000) {
-      this.show(msg, 'error', timeout);
+      this.show(msg, 'error', timeout, false);
     },
     info(msg: string, timeout = 1000) {
-      this.show(msg, 'info', timeout);
+      this.show(msg, 'info', timeout, false);
     },
     warning(msg: string, timeout = 1000) {
-      this.show(msg, 'warning', timeout);
+      this.show(msg, 'warning', timeout, false);
     },
     close() {
       this.open = false;
+      this.loader = false;
     },
   },
 });

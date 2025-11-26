@@ -1,5 +1,5 @@
 <template>
-  <v-card :style="`height: ${fixedHeight}px;`" class="controlPanel">
+  <v-card elevation="3" :style="`height: ${fixedHeight}px;`" class="controlPanel">
     <v-container class="px-1 px-sm-2 py-0 fill-height" fluid>
       <v-row align="center" justify="space-between" no-gutters>
         <v-col class="py-0" cols="8" :sm="hasEnabledControls ? 8 : 10" md="8" lg="8">

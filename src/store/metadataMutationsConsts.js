@@ -18,7 +18,7 @@ export const ACTION_BULK_LOAD_METADATAS_CONTENT = () => {
     return './testdata/packagelist.json';
   }
 
-  return 'current_package_list_with_resources?limit=1000&offset=0';
+  return 'current_package_list_with_resources?limit=10000&offset=0';
 };
 
 export const LOAD_METADATA_CONTENT_BY_ID = 'LOAD_METADATA_CONTENT_BY_ID';
@@ -37,6 +37,8 @@ export const CLEAN_CURRENT_METADATA = 'CLEAN_CURRENT_METADATA';
 
 export const SEARCH_METADATA = 'SEARCH_METADATA';
 export const SEARCH_METADATA_SUCCESS = 'SEARCH_METADATA_SUCCESS';
+export const SEARCH_METADATA_MERGE = 'SEARCH_METADATA_MERGE';
+export const SEARCH_METADATA_FINISHED = 'SEARCH_METADATA_FINISHED';
 export const SEARCH_METADATA_ERROR = 'SEARCH_METADATA_ERROR';
 export const CLEAR_SEARCH_METADATA = 'CLEAR_SEARCH_METADATA';
 
@@ -45,7 +47,7 @@ export const ACTION_SEARCH_METADATA = () => {
     return './testdata/query.json';
   }
 
-  return 'query';
+  return '/api/3/action/package_search';
 };
 
 export const UPDATE_TAGS = 'UPDATE_TAGS';

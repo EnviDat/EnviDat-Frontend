@@ -1,5 +1,5 @@
 <template>
-  <v-card elevation="8" class="fill-height" id="FilterMapView">
+  <v-card elevation="3" class="fill-height" id="FilterMapView">
     <div v-if="errorLoadingLeaflet">Error loading leaflet</div>
 
     <v-container v-else class="fill-height pa-0" fluid>
@@ -106,7 +106,7 @@ export default {
       metadataIds: 'metadata/metadataIds',
       metadatasContent: 'metadata/metadatasContent',
       searchedMetadatasContent: 'metadata/searchedMetadatasContent',
-      searchingMetadatasContent: 'metadata/searchingMetadatasContent',
+      searchMetadataLoading: 'metadata/searchMetadataLoading',
       loadingMetadataIds: 'metadata/loadingMetadataIds',
       loadingMetadatasContent: 'metadata/loadingMetadatasContent',
     }),
