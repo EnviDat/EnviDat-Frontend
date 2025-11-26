@@ -20,7 +20,7 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
   declare signedInUser: User;
   declare signedInUserOrganizationIds: string[];
 
-  private readonly isDeprecatedResource: IsDeprecatedResource;
+  private isDeprecatedResource: IsDeprecatedResource;
 
   validationErrors: {
     resources: string | null;
@@ -37,9 +37,16 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
     saveEventHook: ViewModelSaveEvent | undefined,
     isDeprecatedResource: IsDeprecatedResource,
   ) {
-    super(dataset, saveEventHook, ResourcesListViewModel.mappingRules());
+    // don't provide the mappingRules initially, because for the mapping
+    // needs the isDeprecatedResource method
+    super(dataset, saveEventHook, undefined);
 
     this.isDeprecatedResource = isDeprecatedResource;
+
+    this.mappingRules = ResourcesListViewModel.mappingRules();
+    if (this.mappingRules) {
+      this.updateModel(dataset);
+    }
   }
 
   // TODO Check with Dominik, this was added to fix an issue with validation at first load
@@ -211,19 +218,6 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
       datasetId: dataset.id,
     });
 */
-  }
-
-  protected getModelData<T>(): Omit<
-    T,
-    | 'privateMappingRules'
-    | 'saveEventHook'
-    | 'validationRules'
-    | 'validationErrors'
-    | 'savedSuccessful'
-    | 'error'
-    | 'loading'
-  > {
-    return this.resources.map((resVM) => resVM.getModelData());
   }
 
   validate(newProps?: Partial<ResourcesListViewModel>): boolean {

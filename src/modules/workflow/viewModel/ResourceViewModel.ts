@@ -198,6 +198,19 @@ export class ResourceViewModel extends AbstractEditViewModel implements Resource
     }
 */
 
+    if (!rawResource.size) {
+      const backendResourceSize = JSON.parse(rawResource.resource_size);
+      const resourceSize = (convertToFrontendJSONWithRules(
+        ResourceViewModel.sizeMappingRules(),
+        backendResourceSize,
+      ) as ResourceSize) || {
+        sizeValue: '',
+        sizeUnits: '',
+      };
+
+      rawResource.size = parseBytes(`${resourceSize.sizeValue} ${resourceSize.sizeUnits}`);
+    }
+
     const formattedSize = formatBytes(rawResource.size);
     const splits = formattedSize.split(' ');
     const sizeNumberInFormat = splits[0];
