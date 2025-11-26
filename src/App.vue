@@ -54,6 +54,8 @@
     />
 
     <v-main class="pt-13 pt-md-9 custom-v-main">
+      <!-- The Snackbar component is available throughout the application and can be triggered via SnackBar.ts -->
+      <SnackBar />
       <v-container
         class="mainPageContainer"
         :class="[isLandingPage ? 'pa-0' : 'pa-2']"
@@ -146,6 +148,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { mapStores } from 'pinia';
+import { useNotifyStore } from '@/store/snackBar';
 import { mapState, mapGetters } from 'vuex';
 import { defineAsyncComponent } from 'vue';
 
@@ -195,8 +199,10 @@ import {
 } from '@/factories/eventBus';
 
 import MaintenanceBanner from '@/modules/home/components/MaintenanceBanner.vue';
+import SnackBar from '@/components/BaseElements/SnackBar.vue';
 
 import { ENVIDAT_SHOW_COOKIE_BANNER } from '@/factories/metadataConsts';
+import { color } from '@amcharts/amcharts5';
 
 const TheNavigation = defineAsyncComponent(() => import('@/components/Navigation/TheNavigation.vue'));
 const TheNavigationToolbar = defineAsyncComponent(() => import('@/components/Navigation/TheNavigationToolbar.vue'));
@@ -542,6 +548,7 @@ export default {
   },
   computed: {
     ...mapState(['loadingConfig', 'config', 'webpIsSupported']),
+    ...mapStores(useNotifyStore),
     ...mapState(USER_SIGNIN_NAMESPACE, ['user']),
     ...mapState(USER_NAMESPACE, {
       oldLastEditedDataset: 'lastEditedDataset',
@@ -646,7 +653,10 @@ export default {
       return this.$route.name === METADATAEDIT_PAGENAME;
     },
     loading() {
-      return this.loadingMetadatasContent || this.searchMetadataLoading || this.isFilteringContent;
+      return this.loadingMetadatasContent || this.isFilteringContent;
+    },
+    searchLoading() {
+      return this.searchMetadataLoading;
     },
     searchTerm() {
       return this.$route.query.search;
@@ -706,6 +716,7 @@ export default {
     TextBanner,
     GenericFullScreenModal,
     MaintenanceBanner,
+    SnackBar,
   },
   watch: {
     config() {

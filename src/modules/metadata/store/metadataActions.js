@@ -48,6 +48,8 @@ import { getKeywordsForFiltering, getTagColor, tagsIncludedInSelectedTags } from
 
 import categoryCards from '@/store/categoryCards';
 
+import { useNotifyStore } from '@/store/snackBar';
+
 /* eslint-disable no-unused-vars  */
 let API_BASE = '';
 let API_ROOT = '';
@@ -126,9 +128,11 @@ function getAuthorSolrQuery(author) {
 
 export default {
   async [SEARCH_METADATA]({ commit }, { searchTerm, metadataConfig = {}, isAuthorSearch = false, mode = undefined }) {
+    const notify = useNotifyStore();
     const originalTerm = searchTerm.trim();
 
     commit(SEARCH_METADATA, searchTerm);
+    notify.show('We are improving your search results, and your list will be updated shortly', 'info', -1, true);
 
     const solrQuery = isAuthorSearch ? getAuthorSolrQuery(originalTerm) : createSolrQuery(originalTerm);
     const data = {
@@ -143,13 +147,12 @@ export default {
     axios
       .get(url)
       .then((response) => {
-        console.log(`remote ${response.data.result.results.length}`);
         commit(SEARCH_METADATA_SUCCESS, {
           payload: response.data.result.results,
           mode,
         });
-
         commit(SEARCH_METADATA_FINISHED);
+        notify.close();
 
         /*
         commit(SEARCH_METADATA_MERGE, {
@@ -161,6 +164,7 @@ export default {
       })
       .catch((reason) => {
         commit(SEARCH_METADATA_ERROR, reason);
+        notify.error('Error while searching datasets. Please try again.', 5000);
       });
 
     const asyncLocalSearch = async () => {
@@ -169,7 +173,6 @@ export default {
     };
 
     asyncLocalSearch().then((localSearchResult) => {
-      console.log(`local ${localSearchResult.length}`);
       commit(SEARCH_METADATA_SUCCESS, {
         payload: localSearchResult,
         mode,
