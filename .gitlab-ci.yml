@@ -176,7 +176,7 @@ modify-env:
       value = 'https://envidat04.wsl.ch'
 
       if branch == 'main' or branch == 'beta':
-          value = 'https://envidat.ch'
+          value = 'https://www.envidat.ch'
 
       dotenv.set_key(file, key, value, quote_mode='never')
 
@@ -184,7 +184,7 @@ modify-env:
       value = 'https://envidat04.wsl.ch'
 
       if branch == 'main' or branch == 'beta':
-          value = 'https://envidat.ch'
+          value = 'https://www.envidat.ch'
 
       dotenv.set_key(file, key, value, quote_mode='never')
 
