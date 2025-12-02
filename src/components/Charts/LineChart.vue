@@ -23,7 +23,7 @@ const { data, options } = defineProps({
     required: false,
   },
   height: {
-    type: Number,
+    type: Number | String,
     default: 500,
     required: false,
   },

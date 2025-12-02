@@ -16,7 +16,7 @@
         <v-col v-if="deprecated" class="flex-grow-0 pr-2">
           <BaseIcon color="white" :icon="mdiCancel"></BaseIcon>
         </v-col>
-        <v-col style="text-wrap: balance">
+        <v-col style="text-wrap: balance" cols="7" md="9">
           {{ resourceName }}
         </v-col>
       </v-row>
@@ -89,15 +89,15 @@
       :previewComponent="previewComponent"
     />
 
-    <v-card-actions class="ma-0" style="position: absolute; top: 0; right: 0; width: 120px; z-index: 2">
+    <v-card-actions class="ma-0" style="position: absolute; top: 0; right: 0; z-index: 2">
       <v-row no-gutters justify="end">
-        <v-col v-if="!isProtected" cols="6" class="pa-2">
-          <!-- New version with S3 Component -->
-          <BaseIconButton
+        <v-col v-if="!isProtected" class="pa-2">
+          <BaseRectangleButton
+            :button-text="isFile ? 'Download' : 'Open Link'"
             :icon="isFile ? mdiDownload : mdiLink"
-            icon-color="black"
+            icon-color="white"
             @clicked="trackDownload(url, resourceName)"
-            color="accent"
+            color="primary"
             elevated
             :tooltip-text="isFile ? 'Download resource' : 'Open link'"
             :url="url"
@@ -105,7 +105,7 @@
           />
         </v-col>
 
-        <v-col v-if="isProtected" cols="6">
+        <v-col v-if="isProtected">
           <div
             class="fabMenu fabPosition elevation-5 ma-4"
             :class="downloadActive ? 'fabMenuHover' : 'fabMenuDisabled'"
@@ -137,8 +137,11 @@
  */
 import {
   mdiCancel,
+  mdiChartBar,
   mdiChevronDown,
   mdiDownload,
+  mdiFile,
+  mdiFileDocumentCheckOutline,
   mdiFingerprint,
   mdiLink,
   mdiLock,
@@ -146,20 +149,15 @@ import {
   mdiShield,
   mdiTimerPlusOutline,
   mdiUpdate,
-  mdiFileDocumentCheckOutline,
-  mdiFile,
-  mdiChartBar,
 } from '@mdi/js';
 
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
-import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 
 import { formatBytes, getResourceName } from '@/factories/resourceHelpers';
 import { EDIT_METADATA_DOI_LABEL, RESOURCE_FORMAT_LINK } from '@/factories/metadataConsts';
 import { getFileIcon } from '@/factories/imageFactory';
-
 import { trackDownload } from '@/utils/matomoTracking';
-
 import { formatDate } from '@/factories/dateFactory';
 import { chartPreviewData } from '@/modules/charts/middelware/chartServiceLayer';
 import PreviewTabLayout from '@/modules/metadata/components/ResourcePreviews/PreviewTabLayout.vue';
@@ -167,9 +165,9 @@ import PreviewTabLayout from '@/modules/metadata/components/ResourcePreviews/Pre
 export default {
   name: 'ResourceListCard',
   components: {
+    BaseRectangleButton,
     PreviewTabLayout,
     BaseIcon,
-    BaseIconButton,
   },
   props: {
     id: String,

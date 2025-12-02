@@ -19,6 +19,7 @@ import { mdiArrowExpandAll, mdiChevronRightCircle, mdiFile, mdiShieldSearch } fr
 
 import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 import {
   DATE_PROPERTY_DATE_TYPE,
@@ -188,7 +189,7 @@ onBeforeUnmount(() => eventBus.off(GCNET_INJECT_MICRO_CHARTS, injectComponent));
 
     <v-card-text v-if="dataLicenseTitle">
       <v-row no-gutters align="center">
-        <v-col cols="6" class="pr-md-10">
+        <v-col cols="5" class="pr-md-10">
           <BaseIconLabelView
             icon-tooltip="Data License"
             :icon="mdiShieldSearch"
@@ -200,7 +201,7 @@ onBeforeUnmount(() => eventBus.off(GCNET_INJECT_MICRO_CHARTS, injectComponent));
 
         <v-col class="">
           <v-row no-gutters justify="end" v-for="(dateObj, index) in dates" :key="index">
-            <v-col cols="12" sm="auto" class="pr-0 pr-sm-5">{{ dateObj[DATE_PROPERTY_DATE_TYPE] }}</v-col>
+            <v-col cols="4" class="pr-0 pr-sm-5">{{ dateObj[DATE_PROPERTY_DATE_TYPE] }}</v-col>
 
             <!--
             <v-col class="flex-grow-0 px-2">Start:</v-col>
@@ -231,9 +232,9 @@ onBeforeUnmount(() => eventBus.off(GCNET_INJECT_MICRO_CHARTS, injectComponent));
 
       <v-row no-gutters>
         <v-col class="flex-grow-1">
-          <v-row no-gutters class="pa-4 pr-0">
-            <v-container fluid class="pa-0">
-              <v-card id="ResourceList" class="rounded">
+          <v-row no-gutters class="pa-4 pr-0 fill-height">
+            <v-container fluid class="pa-0 fill-height">
+              <v-card id="ResourceList" class="rounded fill-height w-100">
                 <v-card-title>
                   <v-row no-gutters>
                     <v-col class="flex-grow-1">Resources</v-col>
@@ -245,17 +246,20 @@ onBeforeUnmount(() => eventBus.off(GCNET_INJECT_MICRO_CHARTS, injectComponent));
 
                 <v-card-text
                   :style="`maxHeight: ${props.maxHeight ? `${props.maxHeight}px` : '100%'};`"
-                  class="scrolling pa-0"
+                  class="scrolling pa-0 fill-height"
                 >
                   <v-list density="compact" :selected="selectedIdIndex" active-color="primary">
                     <v-list-item
                       v-for="(resource, index) in availableResources"
                       :key="`${resource.id}_${index}`"
                       @click="selectResource(resource.id)"
-                      :append-icon="selectedId === resource.id ? mdiChevronRightCircle : undefined"
                       :active="selectedId === resource.id"
                     >
                       {{ resourceName(resource) }}
+
+                      <template #append>
+                        <BaseIcon v-if="selectedId === resource.id" :icon="mdiChevronRightCircle" color="secondary" />
+                      </template>
                     </v-list-item>
                   </v-list>
                 </v-card-text>
@@ -264,7 +268,7 @@ onBeforeUnmount(() => eventBus.off(GCNET_INJECT_MICRO_CHARTS, injectComponent));
           </v-row>
         </v-col>
 
-        <v-col cols="8" xl="10" class="pa-4">
+        <v-col cols="8" lg="9" class="pa-4">
           <ResourceListCard
             v-bind="selectedResource"
             :downloadActive="resourcesConfig?.downloadActive"
