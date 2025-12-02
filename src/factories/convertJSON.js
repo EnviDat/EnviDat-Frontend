@@ -9,7 +9,6 @@ export function convertJSONArray(array, recursive) {
       if (parsedValue instanceof Array) {
         convertJSONArray(parsedValue, recursive);
       } else if (typeof parsedValue === 'object') {
-        // eslint-disable-next-line no-use-before-define
         parsedValue = convertJSON(parsedValue, false, recursive);
       }
     }
@@ -98,7 +97,6 @@ export function toSnakeCase(inputString) {
  * @param {String} snakeCaseString
  * @returns {String} camelCaseString
  */
-// eslint-disable-next-line camelcase
 export function toCamelCase(snakeCaseString) {
   return (
     snakeCaseString

@@ -1,4 +1,3 @@
-/* eslint-disable no-useless-escape */
 /**
  * metadata store actions
  *
@@ -50,7 +49,6 @@ import categoryCards from '@/store/categoryCards';
 
 import { useNotifyStore } from '@/store/snackBar';
 
-/* eslint-disable no-unused-vars  */
 let API_BASE = '';
 let API_ROOT = '';
 
@@ -309,7 +307,6 @@ export default {
       commit(UPDATE_TAGS_ERROR, error);
     }
   },
-  // eslint-disable-next-line consistent-return
   [FILTER_METADATA]({ dispatch, commit }, { selectedTagNames = [] }) {
     commit(FILTER_METADATA);
 

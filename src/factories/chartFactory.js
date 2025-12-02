@@ -15,7 +15,6 @@ const defaultSeriesSettings = {
   numberFormat: '#.0',
 };
 
-// eslint-disable-next-line no-unused-vars
 const createSerialChart = function createSerialChart(
   selector,
   unit,

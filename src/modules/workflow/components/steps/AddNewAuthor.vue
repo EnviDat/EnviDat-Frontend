@@ -211,19 +211,14 @@
 
 import { mdiAccount, mdiClose, mdiEmail, mdiHandshake, mdiWalletMembership } from '@mdi/js';
 
-// import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
-// import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 
 import { EDIT_METADATA_ADD_AUTHOR_TITLE } from '@/factories/metadataConsts';
 
-import { createAuthor, getUserPickerObjects, getAuthorByEmail, getAuthorName } from '@/factories/authorFactory';
+import { createAuthor, getAuthorByEmail, getAuthorName, getUserPickerObjects } from '@/factories/authorFactory';
 
-import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus.js';
-import { useDebounce } from '@/modules/workflow/workflowFunctions.js';
-
-import { isReadOnlyField, getReadOnlyHint } from '@/modules/workflow/utils/useReadonly';
+import { getReadOnlyHint, isReadOnlyField } from '@/modules/workflow/utils/useReadonly';
 
 export default {
   // name: 'AddNewAuthor',
