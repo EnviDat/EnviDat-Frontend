@@ -11,8 +11,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-/* eslint-disable no-underscore-dangle */
-
 import { EDITMETADATA_AUTHOR_DATACREDIT, EDITMETADATA_AUTHOR_LIST } from '@/factories/eventBus';
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 import { mergeAuthorsDataCredit } from '@/factories/authorFactory';

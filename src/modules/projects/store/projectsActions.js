@@ -27,7 +27,6 @@ if (!useTestdata) {
   API_ROOT = import.meta.env?.VITE_API_ROOT;
 }
 export default {
-  // eslint-disable-next-line no-unused-vars
   async [GET_PROJECTS]({ dispatch, commit }, projectsConfig = {}) {
     commit(GET_PROJECTS);
 

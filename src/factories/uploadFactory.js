@@ -334,7 +334,7 @@ export async function abortMultipart(file, uploadData) {
   };
 
   try {
-    const response = await axios.post(url, payload);
+    await axios.post(url, payload);
     // console.log(`Multipart upload aborted. Resource ID ${resourceId} | S3 Upload ID ${uploadData.uploadId}`);
     // console.log(response);
 

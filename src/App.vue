@@ -149,10 +149,10 @@
  */
 
 import { mapStores } from 'pinia';
-import { useNotifyStore } from '@/store/snackBar';
 import { mapState, mapGetters } from 'vuex';
 import { defineAsyncComponent } from 'vue';
 
+import { useNotifyStore } from '@/store/snackBar';
 import { extractIcons } from '@/factories/iconFactory';
 
 import {
@@ -202,7 +202,6 @@ import MaintenanceBanner from '@/modules/home/components/MaintenanceBanner.vue';
 import SnackBar from '@/components/BaseElements/SnackBar.vue';
 
 import { ENVIDAT_SHOW_COOKIE_BANNER } from '@/factories/metadataConsts';
-import { color } from '@amcharts/amcharts5';
 
 const TheNavigation = defineAsyncComponent(() => import('@/components/Navigation/TheNavigation.vue'));
 const TheNavigationToolbar = defineAsyncComponent(() => import('@/components/Navigation/TheNavigationToolbar.vue'));

@@ -1,5 +1,5 @@
 import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
-import { isFechingDatasets, loadDataset } from '../datasets.ts';
+import { isFechingDatasets, loadDataset } from '../datasets';
 
 // @ts-ignore
 export async function onBeforePrerenderStart() {

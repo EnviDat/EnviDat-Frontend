@@ -13,7 +13,7 @@ import {
 import { ACTION_DOI_RESERVE, ACTION_DOI_REQUEST, ACTION_DOI_PUBLISH } from '@/modules/user/store/doiMutationsConsts';
 import { urlRewrite } from '@/factories/apiFactory';
 import { Dataset } from '@/modules/workflow/Dataset.ts';
-import { DatasetService } from '@/types/modelTypes';
+import { DatasetService, User } from '@/types/modelTypes';
 import { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 import { ACTION_LOAD_METADATA_CONTENT_BY_ID } from '@/store/metadataMutationsConsts';
 import { stringifyResourceForBackend } from '@/factories/mappingFactory';
@@ -218,7 +218,7 @@ export class BackendDatasetService implements DatasetService {
     return this.runDoiAction(ACTION_DOI_PUBLISH, metadataId);
   }
 
-  async createDataset(dataset?: DatasetDTO, user?: any): Promise<DatasetDTO> {
+  async createDataset(dataset?: DatasetDTO, user?: User): Promise<DatasetDTO> {
     const datasetWorkflowStore = useDatasetWorkflowStore();
     // GET default value for the dataset
     // id

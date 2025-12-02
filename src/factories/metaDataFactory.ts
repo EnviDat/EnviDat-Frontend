@@ -287,7 +287,6 @@ export function enhanceTitleImg(metadata) {
     return null;
   }
 
-  /* eslint-disable no-param-reassign */
   const category = guessTagCategory(metadata.tags);
 
   if (cardImageBgs) {

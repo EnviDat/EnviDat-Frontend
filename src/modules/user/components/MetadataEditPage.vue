@@ -32,7 +32,7 @@
   </v-container>
 </template>
 
-<script>
+<script lang="ts">
 /**
  * The MetadataEditPage shows a workflow to create and Edit
  * metadata and data & resources

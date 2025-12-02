@@ -397,7 +397,6 @@ export default {
     catchShallowRealClick() {
       this.showShallowData = !this.showShallowData;
     },
-    // eslint-disable-next-line no-unused-vars
     catchOrganizationClicked(organization) {
       // console.log(`clicked on ${organization}`);
     },

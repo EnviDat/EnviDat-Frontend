@@ -1,4 +1,3 @@
-/* eslint-disable no-useless-escape */
 /**
  * metadata store actions
  *
@@ -34,7 +33,6 @@ import {
   SEARCH_METADATA,
   SEARCH_METADATA_ERROR,
   SEARCH_METADATA_FINISHED,
-  SEARCH_METADATA_MERGE,
   SEARCH_METADATA_SUCCESS,
   UPDATE_TAGS,
   UPDATE_TAGS_ERROR,
@@ -50,7 +48,6 @@ import categoryCards from '@/store/categoryCards';
 
 import { useNotifyStore } from '@/store/snackBar';
 
-/* eslint-disable no-unused-vars  */
 let API_BASE = '';
 let API_ROOT = '';
 
@@ -309,7 +306,6 @@ export default {
       commit(UPDATE_TAGS_ERROR, error);
     }
   },
-  // eslint-disable-next-line consistent-return
   [FILTER_METADATA]({ dispatch, commit }, { selectedTagNames = [] }) {
     commit(FILTER_METADATA);
 
