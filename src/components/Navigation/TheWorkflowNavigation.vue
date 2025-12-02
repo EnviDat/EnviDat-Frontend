@@ -227,7 +227,7 @@ import { extractIcons } from '@/factories/iconFactory';
 
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
-import { WorkflowMode, StepStatus } from '@/modules/workflow/utils/workflowEnums';
+import { WorkflowMode } from '@/modules/workflow/utils/workflowEnums';
 
 import { mapPublicationState } from '@/modules/workflow/utils/publicationState';
 

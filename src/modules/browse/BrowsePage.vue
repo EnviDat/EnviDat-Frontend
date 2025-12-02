@@ -42,7 +42,7 @@
   </article>
 </template>
 
-<script>
+<script lang="ts">
 /**
  * The browse page of EnviDat. It consists of metadataList
  * but only all the logic for the interaction with the list.
@@ -395,7 +395,6 @@ export default {
     catchShallowRealClick() {
       this.showShallowData = !this.showShallowData;
     },
-    // eslint-disable-next-line no-unused-vars
     catchOrganizationClicked(organization) {
       // console.log(`clicked on ${organization}`);
     },
@@ -405,7 +404,7 @@ export default {
     ...mapGetters({
       metadatasContent: `${METADATA_NAMESPACE}/metadatasContent`,
       searchedMetadatasContent: `${METADATA_NAMESPACE}/searchedMetadatasContent`,
-      searchingMetadatasContent: `${METADATA_NAMESPACE}/searchingMetadatasContent`,
+      searchMetadataLoading: `${METADATA_NAMESPACE}/searchMetadataLoading`,
       searchingMetadatasContentOK: `${METADATA_NAMESPACE}/searchingMetadatasContentOK`,
       loadingMetadataIds: `${METADATA_NAMESPACE}/loadingMetadataIds`,
       loadingMetadatasContent: `${METADATA_NAMESPACE}/loadingMetadatasContent`,
@@ -421,7 +420,7 @@ export default {
       currentSearchTerm: `${METADATA_NAMESPACE}/currentSearchTerm`,
     }),
     loading() {
-      return this.loadingMetadatasContent || this.isFilteringContent || this.searchingMetadatasContent;
+      return this.loadingMetadatasContent || this.isFilteringContent;
     },
     metadataConfig() {
       return this.config?.metadataConfig || {};
@@ -529,9 +528,9 @@ export default {
       }
     },
     searchedMetadatasContent() {
-      if (!this.searchingMetadatasContent && this.searchingMetadatasContentOK) {
-        this.filterContent();
-      }
+      // always filter to make sure the local search results are shown immediately
+      // while the api call is still on going
+      this.filterContent();
     },
   },
   components: {

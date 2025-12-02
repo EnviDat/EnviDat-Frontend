@@ -1,16 +1,10 @@
 import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
-import { Resource, ResourceSize } from '@/types/modelTypes';
+import { Resource } from '@/types/modelTypes';
 import { convertToFrontendJSONWithRules } from '@/factories/convertJSON';
 import { ResourceDTO } from '@/types/dataTransferObjectsTypes';
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
-import {
-  formatBytes,
-  getFileSizeFormat,
-  getFileSizeText,
-  getResourceName,
-  mergeResourceSizeForFrontend,
-} from '@/factories/resourceHelpers';
+import { formatBytes, getResourceName } from '@/factories/resourceHelpers';
 import { formatDate } from '@/factories/dateFactory';
 import { isFieldValid } from '@/factories/userEditingValidations';
 

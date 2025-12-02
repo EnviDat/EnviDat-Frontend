@@ -287,7 +287,6 @@ export function enhanceTitleImg(metadata) {
     return null;
   }
 
-  /* eslint-disable no-param-reassign */
   const category = guessTagCategory(metadata.tags);
 
   if (cardImageBgs) {
@@ -424,7 +423,13 @@ export function enhanceMetadatas(datasets, mode = undefined) {
   return enhancedContent;
 }
 
-export function localSearch(searchTerm, datasets) {
+function localSearchMatch(searchTerm: string, dataset: DatasetDTO, isAuthorSearch: boolean) {
+  return isAuthorSearch
+    ? dataset.author?.toLowerCase().includes(searchTerm)
+    : dataset.title?.toLowerCase().includes(searchTerm) || dataset.notes?.toLowerCase().includes(searchTerm);
+}
+
+export function localSearch(searchTerm: string, datasets: DatasetDTO[], isAuthorSearch: boolean) {
   const foundDatasets = [];
 
   let term1 = searchTerm.toLowerCase();
@@ -439,17 +444,11 @@ export function localSearch(searchTerm, datasets) {
 
   for (let i = 0; i < datasets.length; i++) {
     const dataset = datasets[i];
-    const match1 =
-      dataset.title?.toLowerCase().includes(term1) ||
-      dataset.author?.toLowerCase().includes(term1) ||
-      dataset.notes?.toLowerCase().includes(term1);
+    const match1 = localSearchMatch(term1, dataset, isAuthorSearch);
 
     let match2 = true;
     if (check2Terms) {
-      match2 =
-        dataset.title?.toLowerCase().includes(term2) ||
-        dataset.author?.toLowerCase().includes(term2) ||
-        dataset.notes?.toLowerCase().includes(term2);
+      match2 = localSearchMatch(term2, dataset, isAuthorSearch);
     }
 
     if (match1 && match2) {

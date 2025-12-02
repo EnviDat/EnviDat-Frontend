@@ -371,20 +371,6 @@ export default {
       }
     },
 
-    /**
-     * @param {null|Map<string, string>} pidMap
-     */
-    async resolvePIDs(pidMap) {
-      // ...
-    },
-
-    /**
-     * @param {null|Map<string, string>} doiMap
-     */
-    async resolveDOIs(doiMap) {
-      // ...
-    },
-
     clearPreview() {
       this.doiPublications = null;
       this.pidPublications = null;

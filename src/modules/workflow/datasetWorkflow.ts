@@ -495,10 +495,9 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     setUploadError(error: Error) {
       this.uploadError = error;
     },
-    // Ehnance the default properties of the dataset
+    // Enhance the default properties of the dataset
     applyDatasetDefaults(dataset: DatasetDTO, id: string) {
-      const orgStore = useOrganizationsStore();
-
+      // const orgStore = useOrganizationsStore();
       // const firstOrg = orgStore.userOrganizations?.[0];
 
       const publicationObj = { publisher: 'EnviDat', publication_year: String(getYear(new Date())) };

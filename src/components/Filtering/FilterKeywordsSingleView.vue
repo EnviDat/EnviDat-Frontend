@@ -1,5 +1,5 @@
 <template>
-  <v-card elevation="8" id="FilterKeywordsView">
+  <v-card elevation="3" id="FilterKeywordsView">
     <v-container class="pa-2 fill-height" fluid>
       <v-row class="fill-height" :no-gutters="$vuetify.display.smAndUp">
         <v-col v-if="!filterExpanded" class="hidden-sm-and-up px-2" cols="12">

@@ -133,7 +133,7 @@ export interface DatasetService {
 
   deleteResource(resourceId: string): Promise<boolean>;
 
-  createDataset(): Promise<DatasetDTO>;
+  createDataset(dataset?: DatasetDTO, user?: User): Promise<DatasetDTO>;
 }
 
 export type Tag = {
