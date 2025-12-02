@@ -1,5 +1,5 @@
 <template>
-  <v-card id="UserOrganizationInfo" elevation="8" :width="width" :height="height">
+  <v-card id="UserOrganizationInfo" elevation="3" :width="width" :height="height">
     <div class="cardGrid fill-height">
       <div class="avatarGrid py-4 pl-4 pr-2">
         <div class="text-h6">

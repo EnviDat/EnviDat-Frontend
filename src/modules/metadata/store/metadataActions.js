@@ -15,30 +15,30 @@
 import axios from 'axios';
 
 import {
-  LOAD_METADATA_CONTENT_BY_ID,
-  // LOAD_METADATA_CONTENT_BY_ID_SUCCESS,
-  // LOAD_METADATA_CONTENT_BY_ID_ERROR,
-  SEARCH_METADATA,
-  SEARCH_METADATA_SUCCESS,
-  SEARCH_METADATA_ERROR,
-  BULK_LOAD_METADATAS_CONTENT,
-  BULK_LOAD_METADATAS_CONTENT_SUCCESS,
-  BULK_LOAD_METADATAS_CONTENT_ERROR,
-  UPDATE_TAGS,
-  UPDATE_TAGS_ERROR,
-  UPDATE_TAGS_SUCCESS,
-  FILTER_METADATA,
-  FILTER_METADATA_SUCCESS,
-  FILTER_METADATA_ERROR,
-  METADATA_NAMESPACE,
-  METADATA_UPDATE_EXISTING_AUTHORS,
-  METADATA_UPDATE_EXISTING_KEYWORDS,
-  METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS,
-  METADATA_UPDATE_EXISTING_KEYWORDS_ERROR,
   ACTION_BULK_LOAD_METADATAS_CONTENT,
   ACTION_LOAD_METADATA_CONTENT_BY_ID,
   ACTION_METADATA_UPDATE_EXISTING_KEYWORDS,
   ACTION_SEARCH_METADATA,
+  BULK_LOAD_METADATAS_CONTENT,
+  BULK_LOAD_METADATAS_CONTENT_ERROR,
+  BULK_LOAD_METADATAS_CONTENT_SUCCESS,
+  FILTER_METADATA,
+  FILTER_METADATA_ERROR,
+  FILTER_METADATA_SUCCESS,
+  LOAD_METADATA_CONTENT_BY_ID,
+  METADATA_NAMESPACE,
+  METADATA_UPDATE_EXISTING_AUTHORS,
+  METADATA_UPDATE_EXISTING_KEYWORDS,
+  METADATA_UPDATE_EXISTING_KEYWORDS_ERROR,
+  METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS,
+  SEARCH_METADATA,
+  SEARCH_METADATA_ERROR,
+  SEARCH_METADATA_FINISHED,
+  SEARCH_METADATA_MERGE,
+  SEARCH_METADATA_SUCCESS,
+  UPDATE_TAGS,
+  UPDATE_TAGS_ERROR,
+  UPDATE_TAGS_SUCCESS,
 } from '@/store/metadataMutationsConsts';
 
 import { urlRewrite } from '@/factories/apiFactory';
@@ -47,6 +47,8 @@ import { localSearch, sortObjectArray } from '@/factories/metaDataFactory';
 import { getKeywordsForFiltering, getTagColor, tagsIncludedInSelectedTags } from '@/factories/keywordsFactory';
 
 import categoryCards from '@/store/categoryCards';
+
+import { useNotifyStore } from '@/store/snackBar';
 
 /* eslint-disable no-unused-vars  */
 let API_BASE = '';
@@ -118,14 +120,71 @@ function getAuthorSolrQuery(author) {
   return `author:"*${authorTrimmed}*"OR"*${authorSpecialChars}*"~1000`;
 }
 
-// Returns array of objects in ascending order by 'name' key
-// Name values converted to upper case so that comparisons are case insensitive
+/**
+ * @param commit
+ * @param {string} searchTerm
+ * @param {import("../../../types/dataTransferObjectsTypes").DatasetDTO[]} datasets
+ */
 
 export default {
   async [SEARCH_METADATA]({ commit }, { searchTerm, metadataConfig = {}, isAuthorSearch = false, mode = undefined }) {
+    const notify = useNotifyStore();
     const originalTerm = searchTerm.trim();
 
     commit(SEARCH_METADATA, searchTerm);
+    notify.show('We are improving your search results, and your list will be updated shortly', 'info', -1, true);
+
+    const solrQuery = isAuthorSearch ? getAuthorSolrQuery(originalTerm) : createSolrQuery(originalTerm);
+    const data = {
+      q: solrQuery,
+      rows: 10000,
+    };
+
+    const params = new URLSearchParams(data).toString();
+    const url = urlRewrite(`${ACTION_SEARCH_METADATA()}?${params}`, '/', API_ROOT);
+
+    // start the backend call first without awaiting it to also parallel run the search locally
+    axios
+      .get(url)
+      .then((response) => {
+        commit(SEARCH_METADATA_SUCCESS, {
+          payload: response.data.result.results,
+          mode,
+        });
+        commit(SEARCH_METADATA_FINISHED);
+        notify.close();
+
+        /*
+        commit(SEARCH_METADATA_MERGE, {
+          payload: response.data.result.results,
+          isLocalSearch: false,
+          mode,
+        });
+*/
+      })
+      .catch((reason) => {
+        commit(SEARCH_METADATA_ERROR, reason);
+        notify.error('Error while searching datasets. Please try again.', 5000);
+      });
+
+    const asyncLocalSearch = async () => {
+      const datasets = this.getters[`${METADATA_NAMESPACE}/allMetadatas`];
+      return localSearch(searchTerm, datasets, isAuthorSearch);
+    };
+
+    asyncLocalSearch().then((localSearchResult) => {
+      commit(SEARCH_METADATA_SUCCESS, {
+        payload: localSearchResult,
+        mode,
+      });
+    });
+
+    /*
+    commit(SEARCH_METADATA_MERGE, {
+      payload: localSearchResult,
+      isLocalSearch: true,
+      mode,
+    });
 
     const loadLocalFile = metadataConfig.loadLocalFile;
 
@@ -141,23 +200,20 @@ export default {
       return;
     }
 
-    const solrQuery = isAuthorSearch ? getAuthorSolrQuery(originalTerm) : createSolrQuery(originalTerm);
-    const query = `${ACTION_SEARCH_METADATA()}?q=${solrQuery}`;
-    const queryAdditions = '&wt=json&rows=1000';
-    const publicOnlyQuery = `${query}${queryAdditions}&fq=capacity:public&fq=state:active`;
-    const url = urlRewrite(publicOnlyQuery, '/', API_ROOT);
 
     await axios
       .get(url)
       .then((response) => {
+        /*
         commit(SEARCH_METADATA_SUCCESS, {
-          payload: response.data.response.docs,
+          payload: response.data.result.results,
           mode,
         });
       })
       .catch((reason) => {
         commit(SEARCH_METADATA_ERROR, reason);
       });
+*/
   },
   async [LOAD_METADATA_CONTENT_BY_ID]({ commit }, { metadataId, commitMethod, forceBackendReload = false }) {
     // commitMethod can be given from the caller of the action to direct
@@ -257,14 +313,13 @@ export default {
   [FILTER_METADATA]({ dispatch, commit }, { selectedTagNames = [] }) {
     commit(FILTER_METADATA);
 
-    const isSearchResultContent = this.getters[`${METADATA_NAMESPACE}/searchingMetadatasContentOK`];
+    const isSearchResultContent = !!this.getters[`${METADATA_NAMESPACE}/currentSearchTerm`];
 
     try {
       let datasets = this.getters[`${METADATA_NAMESPACE}/allMetadatas`];
 
       if (isSearchResultContent) {
         const searchContent = this.getters[`${METADATA_NAMESPACE}/searchedMetadatasContent`];
-
         // always overwrite the values also when nothing was found, so the "search not fount" can show up
         datasets = Object.values(searchContent);
       }

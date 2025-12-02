@@ -101,6 +101,64 @@ export function solrResultToCKANJSON(solorJSON) {
 
     ckanStructure.resource_size = dataDict.resource_size;
     ckanStructure.resource_type = dataDict.resource_type;
+  } else {
+    // fallback if validated_data_dict is not available
+    ckanStructure.owner_org = solorJSON.owner_org;
+    ckanStructure.relationships_as_object = solorJSON.relationships_as_object;
+    ckanStructure.private = solorJSON.private;
+    ckanStructure.publication = solorJSON.publication;
+    // TODO decode publication?
+
+    // let author = null;
+    // try {
+    //   author = JSON.parse(dataDict.author);
+    // } catch (error) {
+    //   // console.log("error validated_data_dict " + error);
+    // }
+    // ckanStructure.author = author;
+
+    ckanStructure.author = solorJSON.author;
+
+    // TODO decode author?
+    ckanStructure.author_email = solorJSON.author_email;
+    ckanStructure.isopen = solorJSON.isopen;
+    ckanStructure.state = solorJSON.state;
+    ckanStructure.version = solorJSON.version;
+
+    ckanStructure.spatial = solorJSON.spatial;
+    // TODO decode spatial?
+    ckanStructure.spatial_info = solorJSON.spatial_info;
+    ckanStructure.type = solorJSON.type;
+
+    ckanStructure.num_resources = solorJSON.num_resources;
+    ckanStructure.resources = solorJSON.resources;
+    // TODO decode resources.restricted
+    ckanStructure.num_tags = solorJSON.num_tags;
+    ckanStructure.tags = solorJSON.tags;
+
+    ckanStructure.title = solorJSON.title;
+    ckanStructure.subtitle = solorJSON.subtitle;
+
+    ckanStructure.groups = solorJSON.groups;
+    ckanStructure.creator_user_id = solorJSON.creator_user_id;
+    ckanStructure.date = solorJSON.date;
+    // TODO decode date?
+
+    ckanStructure.resource_type_general = solorJSON.resource_type_general;
+    ckanStructure.relationships_as_subject = solorJSON.relationships_as_subject;
+
+    ckanStructure.doi = solorJSON.doi;
+    ckanStructure.language = solorJSON.language;
+    ckanStructure.url = solorJSON.url;
+
+    ckanStructure.notes = solorJSON.notes;
+    ckanStructure.license_title = solorJSON.license_title;
+    ckanStructure.license_url = solorJSON.license_url;
+    ckanStructure.organization = solorJSON.organization;
+    // TODO decode organization?
+
+    ckanStructure.resource_size = solorJSON.resource_size;
+    ckanStructure.resource_type = solorJSON.resource_type;
   }
 
   return ckanStructure;

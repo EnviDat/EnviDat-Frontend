@@ -67,7 +67,7 @@ import { METADATADETAIL_PATH, USER_DASHBOARD_PAGENAME } from '@/router/routeCons
 import TheWorkflowNavigation from '@/components/Navigation/TheWorkflowNavigation.vue';
 
 import CardLoader from '@/modules/workflow/components/steps/CardLoader.vue';
-import AppSnackbar from '@/modules/workflow/components/steps/SnackBar.vue';
+import AppSnackbar from '@/components/BaseElements/SnackBar.vue';
 
 import { useWorkflowExternal } from '@/modules/workflow/utils/useWorkflowExternal.ts';
 import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
@@ -77,7 +77,7 @@ import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow.ts';
 import WorkflowSaveDialog from '@/modules/workflow/components/steps/WorkflowSaveDialog.vue';
 import { StepStatus, WorkflowMode } from '@/modules/workflow/utils/workflowEnums';
 
-import { useNotifyStore } from '@/modules/workflow/utils/snackBar';
+import { useNotifyStore } from '@/store/snackBar';
 
 const notify = useNotifyStore();
 const workflowStore = useDatasetWorkflowStore();

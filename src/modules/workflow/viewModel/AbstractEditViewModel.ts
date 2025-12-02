@@ -5,7 +5,7 @@ import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 import { DatasetModel } from '@/modules/workflow/DatasetModel';
 import { isFieldValid } from '@/factories/userEditingValidations';
 
-import { useNotifyStore } from '@/modules/workflow/utils/snackBar';
+import { useNotifyStore } from '@/store/snackBar';
 
 export abstract class AbstractEditViewModel {
   protected privateMappingRules: string[][];
