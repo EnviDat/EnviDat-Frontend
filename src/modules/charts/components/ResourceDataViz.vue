@@ -238,7 +238,7 @@ watch(
     </v-card-text>
 
     <v-card-text class="pa-0">
-      <LineChart v-if="dataPerParameter" ref="chart" :options="defaultOptions" :data="dataPerParameter" />
+      <LineChart v-if="dataPerParameter" height="auto" ref="chart" :options="defaultOptions" :data="dataPerParameter" />
     </v-card-text>
   </v-card>
 </template>
