@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 
-import { Resource, ResourceSize, User } from '@/types/modelTypes';
+import { Resource, User } from '@/types/modelTypes';
 import { type DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 import { ResourceViewModel } from '@/modules/workflow/viewModel/ResourceViewModel.ts';
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
@@ -9,7 +9,7 @@ import { METADATA_NEW_RESOURCE_ID } from '@/factories/metadataConsts';
 
 import { formatDateTimeToCKANFormat, stringifyResourceForBackend } from '@/factories/mappingFactory';
 
-import { convertJSON, convertToBackendJSONWithRules, convertToFrontendJSONWithRules } from '@/factories/convertJSON';
+import { convertJSON, convertToBackendJSONWithRules } from '@/factories/convertJSON';
 
 import {
   enhanceElementsWithStrategyEvents,
@@ -18,7 +18,7 @@ import {
 } from '@/factories/strategyFactory';
 
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
-import { formatBytes, getFileSizeFormat, getFileSizeText, parseBytes } from '@/factories/resourceHelpers.ts';
+import { parseBytes } from '@/factories/resourceHelpers.ts';
 
 export class ResourcesListViewModel extends AbstractEditViewModel {
   declare resources: Resource[];
@@ -34,9 +34,6 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
     resources: null,
   };
 
-  // validationRules = yup.object().shape({
-  //   resources: yup.array().required().min(1, 'Add at least one resource.').nullable(),
-  // });
   validationRules = yup.object().shape({
     resources: yup.array().nullable(),
   });

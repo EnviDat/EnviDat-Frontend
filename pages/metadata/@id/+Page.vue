@@ -38,9 +38,9 @@
 
 <script setup lang="ts">
 import { useData } from 'vike-vue/useData';
+import { getSeoSanitizedDataset } from '../../seoConversions';
 import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 import { createCitation } from '@/factories/citationFactory';
-import { getSeoSanitizedDataset } from '../../seoConversions.ts';
 
 const data = useData<DatasetDTO>();
 const seoData = getSeoSanitizedDataset(data);
