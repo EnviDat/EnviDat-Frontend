@@ -1,5 +1,5 @@
 import { Dataset } from '@/modules/workflow/Dataset.ts';
-import { DatasetService } from '@/types/modelTypes';
+import { DatasetService, User } from '@/types/modelTypes';
 import { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
 
 import { LOCAL_DATASET_KEY } from '@/factories/metadataConsts';
@@ -159,7 +159,7 @@ export class LocalStorageDatasetService implements DatasetService {
 
   // TRY to implemente initCreationDataWithDefaults
 
-  async createDataset(dataset: DatasetDTO): Promise<DatasetDTO> {
+  async createDataset(dataset: DatasetDTO, user?: User): Promise<DatasetDTO> {
     const datasetWorkflowStore = useDatasetWorkflowStore();
     // IF already present, remove the existing local dataset
     if (localStorage.getItem(LOCAL_DATASET_KEY)) {
@@ -171,10 +171,7 @@ export class LocalStorageDatasetService implements DatasetService {
 
     localStorage.setItem(datasetId, '');
 
-    const datasetWithDefault = datasetWorkflowStore.applyDatasetDefaults({
-      id: datasetId,
-      ...dataset,
-    });
+    const datasetWithDefault = datasetWorkflowStore.applyDatasetDefaults(dataset, datasetId);
 
     this.dataset = new Dataset(datasetWithDefault);
     // SET the datasetModel in the localStorage

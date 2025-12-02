@@ -1,6 +1,6 @@
 import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
-import { enhanceJSONLd, isFechingDatasets, loadDataset } from '../../datasets.ts';
-import { generateSitemap } from '../../generateSitemap.ts';
+import { enhanceJSONLd, isFechingDatasets, loadDataset } from '../../datasets';
+import { generateSitemap } from '../../generateSitemap';
 
 // @ts-ignore
 export async function onBeforePrerenderStart() {

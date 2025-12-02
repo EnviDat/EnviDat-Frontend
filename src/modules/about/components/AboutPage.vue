@@ -261,7 +261,6 @@ export default {
         },
         {
           title: 'Team',
-          /* eslint-disable prefer-template */
           text: '<img src="' + this.orga + '" style="width: 100%; height: 100%;" />',
           img: 'team_small',
           defaultWidthClass: 'v-col-12 v-col-sm-12 v-col-md-8',

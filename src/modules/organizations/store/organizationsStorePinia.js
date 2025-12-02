@@ -22,7 +22,6 @@ const GET_ORGANIZATION_URL = useTestdata ? './testdata/organization_show.json' :
 const ACTION_USER_ORGANIZATION_IDS = useTestdata
   ? './testdata/organization_list_for_user.json'
   : 'organization_list_for_user';
-const ACTION_USER_GET_ORGANIZATIONS_SEARCH = useTestdata ? './testdata/organization_search.json' : 'package_search';
 
 export const useOrganizationsStore = defineStore({
   id: 'organizations',

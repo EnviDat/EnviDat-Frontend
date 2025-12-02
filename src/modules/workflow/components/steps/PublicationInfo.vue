@@ -120,12 +120,12 @@
  */
 import { mapState } from 'vuex';
 import {
+  mdiArrowDownDropCircleOutline,
+  mdiCalendarRange,
+  mdiContentCopy,
   mdiEarth,
   mdiEye,
   mdiFingerprint,
-  mdiContentCopy,
-  mdiCalendarRange,
-  mdiArrowDownDropCircleOutline,
 } from '@mdi/js';
 
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
@@ -138,17 +138,15 @@ import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/us
 import {
   EDIT_METADATA_DOI_LABEL,
   EDIT_METADATA_PUBLICATION_YEAR_LABEL,
-  PUBLICATION_STATE_PUBLISHED,
-  METADATA_STATE_INVISIBLE,
   METADATA_PUBLICATION_YEAR_PROPERTY,
+  METADATA_STATE_INVISIBLE,
+  PUBLICATION_STATE_PUBLISHED,
 } from '@/factories/metadataConsts';
 
 import { possibleVisibilityStates } from '@/factories/metaDataFactory';
 import BaseDatePickerYear from '@/components/BaseElements/BaseDatePickerYear.vue';
 
-import { readOnlyHint, isFieldReadOnly } from '@/factories/globalMethods';
-
-import { isReadOnlyField, getReadOnlyHint } from '@/modules/workflow/utils/useReadonly';
+import { getReadOnlyHint, isReadOnlyField } from '@/modules/workflow/utils/useReadonly';
 
 export default {
   name: 'EditPublicationInfo',
