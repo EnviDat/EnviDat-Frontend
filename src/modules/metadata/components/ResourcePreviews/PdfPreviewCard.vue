@@ -21,7 +21,7 @@
  */
 import { ref, onMounted } from 'vue';
 
-const props = defineProps({
+defineProps({
   url: String,
 });
 

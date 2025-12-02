@@ -87,7 +87,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { defineAsyncComponent, markRaw, provide } from 'vue';
+import { defineAsyncComponent, markRaw } from 'vue';
 
 import axios from 'axios';
 import { mapGetters, mapState } from 'vuex';
@@ -167,10 +167,6 @@ const MetadataAuthors = defineAsyncComponent(() => import('./Metadata/MetadataAu
 const MetadataGeo = defineAsyncComponent(() => import('@/modules/metadata/components/Geoservices/MetadataGeo.vue'));
 const MetadataRelatedDatasets = defineAsyncComponent(
   () => import('@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue'),
-);
-
-const ResourceDataVizListAsync = defineAsyncComponent(
-  () => import('@/modules/charts/components/ResourceDataVizList.vue'),
 );
 
 // Might want to check https://css-tricks.com/use-cases-fixed-backgrounds-css/

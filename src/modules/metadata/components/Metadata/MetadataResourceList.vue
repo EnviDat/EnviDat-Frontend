@@ -12,10 +12,10 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { defineAsyncComponent, onMounted, computed, ref, withDefaults, defineProps } from 'vue';
+import { computed, defineAsyncComponent, defineProps, onMounted, ref, withDefaults } from 'vue';
 import { useTheme } from 'vuetify';
 
-import { mdiFile, mdiShieldSearch, mdiArrowExpandAll, mdiChevronRightCircle } from '@mdi/js';
+import { mdiArrowExpandAll, mdiChevronRightCircle, mdiFile, mdiShieldSearch } from '@mdi/js';
 
 import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
@@ -31,7 +31,6 @@ import { dataLicenses, WSL_DATA_LICENSE_ID } from '@/factories/dataLicense';
 import { ResearchDataDates, Resource } from '@/types/modelTypes';
 import { getPreviewComponentFromUrl } from '@/factories/strategyFactory.ts';
 import ResourceListCard from '@/modules/metadata/components/ResourceListCard.vue';
-import PreviewTabLayout from '@/modules/metadata/components/ResourcePreviews/PreviewTabLayout.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import { eventBus, INJECT_GENERIC_COMPONENT } from '@/factories/eventBus';
 
@@ -57,6 +56,7 @@ const props = withDefaults(
     showFullscreenButton: boolean;
   }>(),
   {
+    isOnTop: false,
     showFullscreenButton: true,
     preSelectedResourceId: undefined,
   },
@@ -160,7 +160,7 @@ onBeforeUnmount(() => eventBus.off(GCNET_INJECT_MICRO_CHARTS, injectComponent));
 </script>
 
 <template>
-  <v-card id="MetadataResourceList" :class="{ ['pt-2']: this.isOnTop }">
+  <v-card id="MetadataResourceList" :class="{ ['pt-2']: isOnTop }">
     <v-card-title class="py-4">
       <v-row justify="end" no-gutters>
         <v-col class="text-h6 metadata_title flex-grow-1">
