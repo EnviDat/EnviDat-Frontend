@@ -3,8 +3,23 @@
     <v-card-title class="text-h6 font-weight-bold mb-4 pa-md-4 pa-0">
       <v-row class="w-100" no-gutters align="center" justify="space-between">
         <!-- Left: title + inline icon(s) -->
-        <v-col cols="auto" class="d-flex align-center">
-          <span class="text-h6 font-weight-bold mr-2">Create your Dataset</span>
+        <v-col cols="auto" class="d-flex align-left flex-column">
+          <p class="text-h6 font-weight-bold mr-2 mb-0">Create your Dataset</p>
+          <v-tooltip location="bottom">
+            <template #activator="{ props }">
+              <p v-bind="props" class="text-caption mb-0 info-save">
+                <v-icon :icon="iconName('info')"></v-icon>
+                {{ isBackend ? 'Saved on our server' : 'Saved in your browser' }}
+              </p>
+            </template>
+            <span>
+              {{
+                isBackend
+                  ? 'The dataset is saved in your dashboard. You can safely close this page and return later to edit it.'
+                  : 'The dataset is saved only in your browser. You can close this page and edit it later, but your browser may delete it after some time.'
+              }}
+            </span>
+          </v-tooltip>
         </v-col>
 
         <!-- Right: close icon -->
@@ -532,5 +547,10 @@ const initDriver = () => {
 }
 .pulseIcon {
   animation: pulseIcon 1.2s ease-in-out infinite;
+}
+.info-save {
+  &:hover {
+    cursor: pointer;
+  }
 }
 </style>
