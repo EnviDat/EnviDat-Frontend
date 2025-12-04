@@ -127,9 +127,9 @@ export default {
     BaseIconSwitch,
   },
   mounted() {
-    if (this.mode === EDNA_MODE) {
-      this.showOverlay();
-    }
+    // if (this.mode === EDNA_MODE) {
+    //   this.showOverlay();
+    // }
   },
   methods: {
     catchSearchClicked(search) {
@@ -177,7 +177,7 @@ export default {
     mdiLayers,
     mdiShareVariant,
     mdiAccountCircle,
-    elementVisible: true,
+    elementVisible: false,
     overlay: false,
     zIndex: 2,
   }),
