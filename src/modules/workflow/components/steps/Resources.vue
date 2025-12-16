@@ -69,14 +69,14 @@
             cols="12"
             v-bind="listLayout"
             class="pa-2"
+            :order="res.position"
           >
             <ResourceCard
               v-bind="res"
               :downloadActive="resourcesConfig?.downloadActive"
               :showGenericOpenButton="!!res.clickEvent"
               :genericOpenButtonBottom="true"
-              cardColor="primary"
-              :autoHeight="s3Store.treeViewIsOpened"
+              cardColor="secondary"
               @openButtonClicked="catchOpenClick(res.clickEvent, res.openProperty)"
             />
           </v-col>
