@@ -627,12 +627,12 @@ export default {
       this.firstCol = [
         this.MetadataDescription,
         this.MetadataCitation,
-        publicationList,
         this.MetadataFunding,
-        this.MetadataAuthors,
+        publicationList,
+        this.MetadataRelatedDatasets,
       ];
 
-      this.secondCol = [this.MetadataResourceList, this.MetadataGeo, this.MetadataRelatedDatasets];
+      this.secondCol = [this.MetadataResourceList, this.MetadataGeo, this.MetadataAuthors];
 
       if (this.$vuetify.display.smAndDown) {
         this.singleCol = [
