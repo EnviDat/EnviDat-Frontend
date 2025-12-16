@@ -90,13 +90,8 @@ import { mapState } from 'vuex';
 import { mdiMinusCircleOutline } from '@mdi/js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
-import { EDITMETADATA_CUSTOMFIELDS } from '@/factories/eventBus.js';
 import { deleteEmptyObject, isMaxLength, isObjectEmpty } from '@/factories/userEditingFactory.js';
-import {
-  getValidationMetadataEditingObject,
-  isArrayContentValid,
-  isFieldValid,
-} from '@/factories/userEditingValidations.js';
+import { isArrayContentValid, isFieldValid } from '@/factories/userEditingValidations.js';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods.js';
 
@@ -129,6 +124,7 @@ export default {
     },
     newDatasetInfo: {},
   }),
+  emits: ['save'],
   props: {
     customFields: {
       type: Array,
@@ -200,9 +196,6 @@ export default {
     maxCustomFieldsMessage() {
       return `Maximum number of custom fields: ${this.maxCustomFields}. Please contact the EnviDat support team if you need additional custom fields.`;
     },
-    validations() {
-      return getValidationMetadataEditingObject(EDITMETADATA_CUSTOMFIELDS);
-    },
   },
   methods: {
     addEmptyFieldObj(localFields) {
@@ -267,6 +260,8 @@ export default {
       // the last entry is always unused, removed it before saving
       this.removeUnusedEntry(localCopy);
 
+      this.$emit('save', localCopy);
+      /*
       const arrayIsValid = isFieldValid(
         'customFields',
         localCopy,
@@ -282,6 +277,7 @@ export default {
           errorArray.splice(index, 1);
         }
       }
+*/
     },
     removeUnusedEntry(localfunders) {
       const lastFunder = localfunders[localfunders.length - 1];
