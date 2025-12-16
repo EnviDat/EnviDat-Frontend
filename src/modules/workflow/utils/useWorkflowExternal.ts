@@ -10,12 +10,9 @@ import {
   FETCH_USER_DATA,
   USER_GET_DATASETS,
   METADATA_EDITING_LOAD_DATASET,
-  UPDATE_METADATA_EDITING,
 } from '@/modules/user/store/userMutationsConsts';
 
 import { DOI_RESERVE } from '@/modules/user/store/doiMutationsConsts';
-
-import { EDITMETADATA_PUBLICATION_INFO } from '@/factories/eventBus';
 
 import {
   getUserOrganizationRoleMap,
@@ -102,6 +99,7 @@ export function useWorkflowExternal() {
       }
     }
 
+    /*
     const editPublicationInfo =
       store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_PUBLICATION_INFO);
 
@@ -113,6 +111,7 @@ export function useWorkflowExternal() {
         loadingProps: true,
       },
     });
+*/
   }
 
   // TODO remove?

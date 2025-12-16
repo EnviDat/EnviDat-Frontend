@@ -1,5 +1,5 @@
 <template>
-  <v-container id="EditPublicationInfo" fluid class="pa-4">
+  <v-container id="PublicationInfo" fluid class="pa-4">
     <v-row>
       <v-col cols="12" class="mb-0">
         <v-row class="mb-5">
@@ -37,7 +37,6 @@
           persistent-hint
           :error-messages="validationErrors.publisher"
           :prepend-icon="mdiEarth"
-          @change="publisherField = $event"
           @update:model-value="validateProperty('publisher', $event)"
           :model-value="publisherField"
         />
@@ -74,7 +73,6 @@
           persistent-hint
           :error-messages="validationErrors.doi"
           :prepend-icon="mdiFingerprint"
-          @change="doiField = $event"
           @update:model-value="validateProperty('doi', $event)"
           :model-value="doiField"
           :append-icon="mdiContentCopy"
@@ -131,7 +129,7 @@ import {
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
 
-import { EDITMETADATA_OBJECT_UPDATE, EDITMETADATA_PUBLICATION_INFO, eventBus } from '@/factories/eventBus';
+import { EDITMETADATA_PUBLICATION_INFO } from '@/factories/eventBus';
 
 import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
 
@@ -149,8 +147,7 @@ import BaseDatePickerYear from '@/components/BaseElements/BaseDatePickerYear.vue
 import { getReadOnlyHint, isReadOnlyField } from '@/modules/workflow/utils/useReadonly';
 
 export default {
-  name: 'EditPublicationInfo',
-  created() {},
+  name: 'PublicationInfo',
   props: {
     publicationState: {
       type: String,
@@ -225,25 +222,10 @@ export default {
       get() {
         return this.publicationState === PUBLICATION_STATE_PUBLISHED ? `https://www.doi.org/${this.doi}` : this.doi;
       },
-      set(value) {
-        const property = 'doi';
-
-        if (this.validateProperty(property, value)) {
-          this.setPublicationInfo(property, value);
-        }
-      },
     },
     publisherField: {
       get() {
         return this.previewPublisher !== null ? this.previewPublisher : this.publisher;
-      },
-      set(value) {
-        this.previewPublisher = value;
-        const property = 'publisher';
-
-        if (this.validateProperty(property, value)) {
-          this.setPublicationInfo(property, value);
-        }
       },
     },
     publicationYearField: {
@@ -254,7 +236,7 @@ export default {
         const property = 'publicationYear';
 
         if (this.validateProperty(property, value)) {
-          this.setPublicationInfo(property, value);
+          this.$emit('save', { [property]: value });
         }
       },
     },
@@ -282,18 +264,6 @@ export default {
         ...currentEntry,
         [property]: value,
       };
-    },
-    setPublicationInfo(property, value) {
-      const newPublicationInfo = {
-        ...this.$props,
-        [property]: value,
-      };
-
-      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: this.stepKey,
-        data: newPublicationInfo,
-        property: property.toString(),
-      });
     },
     catchClipboardCopy() {
       navigator.clipboard.writeText(this.doiField);

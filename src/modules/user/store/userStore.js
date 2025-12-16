@@ -13,18 +13,15 @@
 
 import { EDITMETADATA_AUTHOR_LIST, EDITMETADATA_DATA_RESOURCES } from '@/factories/eventBus';
 
-import { getEmptyMetadataInEditingObject } from '@/factories/workflowFactory.js';
 import { DOI_RESERVED_PROPERTY } from '@/modules/user/store/doiMutationsConsts';
 import { tagsIncludedInSelectedTags } from '@/factories/keywordsFactory';
 
 import actions from './userActions';
 import editActions from './editActions';
-import createActions from './createActions';
 import doiActions from './doiActions';
 
 import mutations from './userMutations';
 import editMutations from './editMutations';
-import createMutations from './createMutations';
 import doiMutations from './doiMutations';
 
 const userState = {
@@ -46,7 +43,6 @@ const userState = {
   lastEditedDatasetPath: '',
   lastEditedBackPath: '',
   loadingEditingData: false,
-  metadataInEditing: getEmptyMetadataInEditingObject(),
   loadingCurrentEditingContent: false,
   currentEditingContent: null,
   currentEditingContentError: null,
@@ -96,13 +92,11 @@ export const user = {
   mutations: {
     ...mutations,
     ...editMutations,
-    ...createMutations,
     ...doiMutations,
   },
   actions: {
     ...actions,
     ...editActions,
-    ...createActions,
     ...doiActions,
   },
 };

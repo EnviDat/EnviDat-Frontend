@@ -75,12 +75,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import {
-  EDITMETADATA_CLEAR_PREVIEW,
-  EDITMETADATA_OBJECT_UPDATE,
-  EDITMETADATA_RELATED_PUBLICATIONS,
-  eventBus,
-} from '@/factories/eventBus.js';
+import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus.js';
 
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 
@@ -214,10 +209,6 @@ export default {
       this.previewText = value;
       this.newDatasetInfo.relatedPublicationsText = this.previewText;
       this.$emit('save', this.newDatasetInfo);
-      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: EDITMETADATA_RELATED_PUBLICATIONS,
-        data: { [this.editingProperty]: value },
-      });
     },
     clearPreview() {
       // this.previewText = null;

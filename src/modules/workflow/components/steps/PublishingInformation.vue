@@ -42,7 +42,7 @@
       <v-col cols="12" xl="6">
         <v-row>
           <v-col cols="12" class="pa-0">
-            <PublicationInfo v-bind="editPublicationsProps" />
+            <PublicationInfo v-bind="editPublicationsProps" @save="catchPublisherYearChange" />
           </v-col>
         </v-row>
       </v-col>
@@ -133,7 +133,6 @@ export default {
   data: () => ({
     mdiInformationOutline,
     envidatDomain: process.env.VITE_API_ROOT,
-    newDatasetInfo: {},
     PUBLICATION_STATE_PUBLISHED,
     labels: {
       title: 'Publishing information',
@@ -260,11 +259,11 @@ export default {
   },
 
   methods: {
+    catchPublisherYearChange(publisherInfo) {
+      this.$emit('save', publisherInfo);
+    },
     catchContactPersonChange(updatedContact) {
-      this.newDatasetInfo.contactEmail = updatedContact.contactEmail;
-      this.newDatasetInfo.contactFirstName = updatedContact.contactFirstName;
-      this.newDatasetInfo.contactLastName = updatedContact.contactLastName;
-      this.$emit('save', this.newDatasetInfo);
+      this.$emit('save', updatedContact);
     },
 
     catchReviewChange(reviewInfos) {

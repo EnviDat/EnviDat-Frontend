@@ -1,5 +1,5 @@
 <template>
-  <v-container id="EditDataGeo" fluid class="pa-4">
+  <v-container id="GeoInformation" fluid class="pa-4">
     <!-- Title box -->
     <v-row class="mb-0">
       <v-col class="text-h5 font-weight-bold" cols="12" v-html="labels.cardTitle" />
@@ -201,12 +201,10 @@ import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo.v
 import BaseStartEndDate from '@/components/BaseElements/BaseStartEndDate.vue';
 
 import {
-  EDITMETADATA_DATA_GEO,
-  EDITMETADATA_OBJECT_UPDATE,
+  EDITMETADATA_DATA_GEO_MAP_ERROR,
   EDITMETADATA_DATA_GEO_SPATIAL,
   eventBus,
   MAP_GEOMETRY_MODIFIED,
-  EDITMETADATA_DATA_GEO_MAP_ERROR,
 } from '@/factories/eventBus';
 
 import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
@@ -218,7 +216,7 @@ import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
 import InfoBanner from '@/modules/workflow/components/steps/InformationBanner.vue';
 
 export default {
-  name: 'EditDataGeo',
+  name: 'GeoInformation',
   components: { MetadataGeo, BaseRectangleButton, BaseStartEndDate, InfoBanner },
   props: {
     mapDivId: { type: String, default: 'map-small' },
@@ -561,11 +559,6 @@ export default {
     commitGeometriesToAPI() {
       this.saveButtonInProgress = true;
       this.saveButtonEnabled = false;
-
-      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: EDITMETADATA_DATA_GEO,
-        data: { location: { ...this.location, geoJSON: this.geomsForMap } },
-      });
 
       this.$emit('save', this.newGeoInfo);
 

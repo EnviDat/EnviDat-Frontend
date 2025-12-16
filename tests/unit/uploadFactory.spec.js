@@ -1,5 +1,5 @@
 import { it, describe, expect } from 'vitest';
-import { getUppyInstance, subscribeOnUppyEvent } from '@/factories/uploadFactory';
+import { getUppyInstance, subscribeOnUppyEvent } from '@/modules/workflow/utils/workflowUpload';
 
 const fs = require('fs');
 

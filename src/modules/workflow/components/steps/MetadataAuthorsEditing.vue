@@ -39,7 +39,7 @@
               :items="authorFullNames"
               :useAuthorTags="true"
               :draggableProperty="METADATA_AUTHOR_SEQUENCE_PROPERTY"
-              :readOnlyFields="isReadOnly('authors')"
+              :readOnlyFields="readOnlyFields"
               :readOnlyExplanation="readOnlyHint('authors')"
               @listChanged="reorderList"
             />

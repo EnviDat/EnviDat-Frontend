@@ -14,7 +14,7 @@ import { createAuthors, extractAuthorsMap, getFullAuthorsFromDataset } from '@/f
 import unFormatedMetadataCards from '@/../stories/js/metadata';
 import { BackendDatasetService } from '@/modules/workflow/BackendDatasetService.ts';
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
-import EditAuthorList from '@/modules/user/components/edit/EditAuthorList.vue';
+import AuthorsInformation from '@/modules/workflow/components/steps/AuthorsInformation.vue';
 
 const metadataCards = [];
 
@@ -41,7 +41,7 @@ authorsObjs.forEach((author) => {
 
 export default {
   title: '6 Workflows / Combined / Author List Editing',
-  component: EditAuthorList,
+  component: AuthorsInformation,
 };
 
 export const Empty = {

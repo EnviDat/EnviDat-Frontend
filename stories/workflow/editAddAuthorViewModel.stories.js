@@ -9,7 +9,7 @@
 
 /* eslint-disable import/no-extraneous-dependencies */
 
-import EditAddAuthor from '@/modules/user/components/EditAddAuthor.vue';
+import AddExistingAuthor from '@/modules/workflow/components/steps/AddExistingAuthor.vue';
 
 import { createAuthors, extractAuthorsMap, getFullAuthorsFromDataset } from '@/factories/authorFactory.ts';
 
@@ -35,7 +35,7 @@ const authorsObjs = getFullAuthorsFromDataset(authorsMap, metadataCards[1]);
 
 export default {
   title: '3 Datasets / 2 Edit / Add New Author ViewModel',
-  component: EditAddAuthor,
+  component: AddExistingAuthor,
 };
 
 export const FilledFromViewModel = {

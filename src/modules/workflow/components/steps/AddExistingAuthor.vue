@@ -69,7 +69,7 @@ import { isReadOnlyField, getReadOnlyHint } from '@/modules/workflow/utils/useRe
 import { Author } from '@/types/modelTypes';
 
 export default {
-  name: 'EditAddExistingAuthor',
+  name: 'AddExistingAuthor',
   props: {
     existingEnviDatUsers: {
       type: Array,

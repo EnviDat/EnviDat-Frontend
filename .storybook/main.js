@@ -6,7 +6,6 @@ const storiesToLoad = [
   '../stories/**/*.stories.@(js|jsx|ts|tsx)', // all stories
   // '../stories/baseElements/**/*.stories.@(js|jsx|ts|tsx)', // base components
   // '../stories/workflow/**/*.stories.@(js|jsx|ts|tsx)', // workflow components
-  // '../stories/dataset/**/*.stories.@(js|jsx|ts|tsx)', // create & edit dataset
   // '../stories/search/**/*.stories.@(js|jsx|ts|tsx)', // search components
   // '../stories/navigation/**/*.stories.@(js|jsx|ts|tsx)', // navigation components
   // '../stories/user/**/*.stories.@(js|jsx|ts|tsx)', // navigation components
