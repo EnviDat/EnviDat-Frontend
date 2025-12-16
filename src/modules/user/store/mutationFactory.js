@@ -13,17 +13,10 @@
 
 import { enhanceMetadatasTitleImage } from '@/factories/metaDataFactory';
 
-import {
-  EDITMETADATA_AUTHOR_LIST,
-  EDITMETADATA_DATA_RESOURCES,
-  EDITMETADATA_NETWORK_ERROR,
-  eventBus,
-} from '@/factories/eventBus';
-
-import { updateEditingArray } from '@/factories/userEditingFactory';
+import { EDITMETADATA_NETWORK_ERROR, eventBus } from '@/factories/eventBus';
 
 import { enhanceKeywords } from '@/factories/keywordsFactory';
-import { USER_NAMESPACE, VALIDATION_ERROR } from './userMutationsConsts';
+import { VALIDATION_ERROR } from './userMutationsConsts';
 
 export function extractUserError(store, reason, errorProperty = 'error') {
   let type = '';
@@ -124,16 +117,3 @@ export function enhanceMetadataFromCategories(metadatas) {
   return isArrayInput ? enhanced : enhanced[0];
 }
 
-export function updateResources(store, state, newRes) {
-  const resources = store.getters[`${USER_NAMESPACE}/resources`];
-
-  const updatedResources = updateEditingArray(resources, newRes, 'id');
-  state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].resources = updatedResources;
-}
-
-export function updateAuthors(store, state, newAuthor) {
-  const authors = state.metadataInEditing[EDITMETADATA_AUTHOR_LIST].authors;
-
-  const updatedAuthors = updateEditingArray(authors, newAuthor, 'email');
-  state.metadataInEditing[EDITMETADATA_AUTHOR_LIST].authors = updatedAuthors;
-}

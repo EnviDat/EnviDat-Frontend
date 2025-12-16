@@ -14,16 +14,9 @@ import { format, isValid, parse } from 'date-fns';
 
 import {
   EDITMETADATA_AUTHOR_LIST,
-  EDITMETADATA_CUSTOMFIELDS,
-  EDITMETADATA_CUSTOMFIELDS_ENTRY,
-  EDITMETADATA_DATA_GEO,
   EDITMETADATA_DATA_GEO_SPATIAL,
-  EDITMETADATA_DATA_INFO,
   EDITMETADATA_DATA_INFO_DATES,
-  EDITMETADATA_DATA_LICENSE,
   EDITMETADATA_DATA_RESOURCE,
-  EDITMETADATA_DATA_RESOURCE_SIZE,
-  EDITMETADATA_DATA_RESOURCES,
   EDITMETADATA_DATA_RESTRICTED,
   EDITMETADATA_FUNDING_INFO,
   EDITMETADATA_KEYWORDS,
@@ -31,9 +24,6 @@ import {
   EDITMETADATA_MAIN_HEADER,
   EDITMETADATA_ORGANIZATION,
   EDITMETADATA_PUBLICATION_INFO,
-  EDITMETADATA_RELATED_DATASETS,
-  EDITMETADATA_RELATED_PUBLICATIONS,
-  EDITMETADATA_REVIEW_INFO,
   METADATA_MAIN_HEADER,
   USER_OBJECT,
 } from '@/factories/eventBus';
@@ -45,7 +35,6 @@ import {
   DATE_PROPERTY_END_DATE,
   DATE_PROPERTY_START_DATE,
   METADATA_CONTACT_EMAIL,
-  METADATA_DATALICENSE_PROPERTY,
   METADATA_TITLE_PROPERTY,
   METADATA_URL_PROPERTY,
 } from '@/factories/metadataConsts';
@@ -82,7 +71,6 @@ const JSONFrontendBackendRules = {
     ['license', 'license_title'],
   ],
   [EDITMETADATA_MAIN_DESCRIPTION]: [['description', 'notes']],
-  [EDITMETADATA_KEYWORDS]: [['keywords', 'tags']],
   [EDITMETADATA_AUTHOR_LIST]: [['authors', 'author']],
   [EDITMETADATA_DATA_RESOURCE]: [
     ['metadataId', 'package_id'],
@@ -110,38 +98,19 @@ const JSONFrontendBackendRules = {
     ['url', 'url'],
     ['urlType', 'url_type'],
   ],
-  [EDITMETADATA_DATA_RESOURCE_SIZE]: [
-    ['sizeValue', 'size_value'],
-    ['sizeUnits', 'size_units'],
-  ],
   [EDITMETADATA_DATA_RESTRICTED]: [
     ['allowedUsers', 'allowed_users'],
     ['level', 'level'],
     ['sharedSecret', 'shared_secret'],
-  ],
-  [EDITMETADATA_DATA_RESOURCES]: [['resources', 'resources']],
-  [EDITMETADATA_DATA_INFO]: [['dates', 'date']],
-  [EDITMETADATA_DATA_LICENSE]: [
-    [METADATA_DATALICENSE_PROPERTY, 'license_id'],
-    ['dataLicenseTitle', 'license_title'],
-    ['dataLicenseUrl', 'license_url'],
   ],
   [EDITMETADATA_DATA_INFO_DATES]: [
     [DATE_PROPERTY_DATE_TYPE, 'date_type'],
     [DATE_PROPERTY_START_DATE, 'date'],
     [DATE_PROPERTY_END_DATE, 'end_date'],
   ],
-  [EDITMETADATA_DATA_GEO]: [['location.geoJSON', 'spatial']],
   [EDITMETADATA_DATA_GEO_SPATIAL]: [
     ['type', 'type'],
     ['coordinates', 'coordinates'],
-  ],
-  [EDITMETADATA_RELATED_PUBLICATIONS]: [['relatedPublicationsText', 'related_publications']],
-  [EDITMETADATA_RELATED_DATASETS]: [['relatedDatasetsText', 'related_datasets']],
-  [EDITMETADATA_CUSTOMFIELDS]: [['customFields', 'extras']],
-  [EDITMETADATA_CUSTOMFIELDS_ENTRY]: [
-    ['fieldName', 'key'],
-    ['content', 'value'],
   ],
   [EDITMETADATA_ORGANIZATION]: [['organizationId', 'organization.id']],
   [EDITMETADATA_PUBLICATION_INFO]: [
@@ -152,7 +121,6 @@ const JSONFrontendBackendRules = {
     ['version', 'version'],
     ['datasetId', 'id'],
   ],
-  [EDITMETADATA_REVIEW_INFO]: [['version', 'version']],
   [EDITMETADATA_FUNDING_INFO]: [['funders', 'funding']],
   [USER_OBJECT]: [
     ['id', 'id'],

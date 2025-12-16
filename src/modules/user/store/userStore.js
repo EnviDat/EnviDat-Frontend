@@ -11,8 +11,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { EDITMETADATA_AUTHOR_LIST, EDITMETADATA_DATA_RESOURCES } from '@/factories/eventBus';
-
 import { DOI_RESERVED_PROPERTY } from '@/modules/user/store/doiMutationsConsts';
 import { tagsIncludedInSelectedTags } from '@/factories/keywordsFactory';
 
@@ -66,9 +64,6 @@ export const user = {
   namespaced: true,
   state: userState,
   getters: {
-    resources: (state) => state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].resources,
-    authors: (state) => state.metadataInEditing[EDITMETADATA_AUTHOR_LIST].authors,
-    getMetadataEditingObject: (state) => (key) => state.metadataInEditing[key],
     filteredDatasets: (state, getters) => {
       const filteredContent = [];
       const content = getters.userDatasets;

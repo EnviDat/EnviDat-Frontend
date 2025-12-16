@@ -15,13 +15,8 @@ import * as yup from 'yup';
 
 import {
   EDIT_USER_PROFILE,
-  EDITMETADATA_AUTHOR,
   EDITMETADATA_AUTHOR_LIST,
-  EDITMETADATA_CUSTOMFIELDS,
-  EDITMETADATA_DATA_GEO,
   EDITMETADATA_DATA_GEO_SPATIAL,
-  EDITMETADATA_DATA_INFO,
-  EDITMETADATA_DATA_LICENSE,
   EDITMETADATA_DATA_RESOURCE,
   EDITMETADATA_FUNDING_INFO,
   EDITMETADATA_KEYWORDS,
@@ -140,55 +135,9 @@ const metadataInEditingValidations = {
         otherwise: yup.string().notRequired(),
       }),
     }),
-  [EDITMETADATA_DATA_INFO]: () =>
-    yup.object().shape({
-      // dates validation is done the in the BaseStartEndDate component
-      dates: yup
-        .array()
-        .required('Created date is required')
-        .min(1, 'At least a creation date is required')
-        .test(
-          'empty-check',
-          'Add start and end date',
-          (dateEntry) => dateEntry[DATE_PROPERTY_START_DATE] !== '' && dateEntry[DATE_PROPERTY_END_DATE] !== '',
-        ),
-    }),
-  [EDITMETADATA_DATA_LICENSE]: () =>
-    yup.object().shape({
-      dataLicenseId: yup.string().required('Data licence is required'),
-    }),
-  [EDITMETADATA_DATA_GEO]: () =>
-    yup.object().shape({
-      location: yup
-        .object()
-        .nullable()
-        .required(geoValidationMessage)
-        .shape({
-          geoJSON: yup
-            .object()
-            .required(geoValidationMessage)
-            .test('empty-check', geoValidationMessage, (geoObj) => Object.keys(geoObj)?.length > 0),
-        }),
-    }),
   [EDITMETADATA_DATA_GEO_SPATIAL]: () =>
     yup.object().shape({
       geometries: yup.array().required(geoValidationMessage).min(1, 'At least one geometry is required'),
-    }),
-  [EDITMETADATA_RELATED_PUBLICATIONS]: () =>
-    yup.object().shape({
-      relatedPublicationsText: yup
-        .string()
-        .nullable()
-        .transform(convertEmptyStringToNull)
-        .min(10, 'Write at least 10 characters to describe the related publications.'),
-    }),
-  [EDITMETADATA_RELATED_DATASETS]: () =>
-    yup.object().shape({
-      relatedDatasetsText: yup
-        .string()
-        .nullable()
-        .transform(convertEmptyStringToNull)
-        .min(10, 'Write at least 10 characters to describe the related datasets.'),
     }),
   [EDITMETADATA_ORGANIZATION]: () =>
     yup.object().shape({
@@ -201,15 +150,6 @@ const metadataInEditingValidations = {
           (organizationId) => organizationId !== '',
           // Add validation - one of items in list
         ),
-    }),
-  [EDITMETADATA_CUSTOMFIELDS]: () =>
-    yup.object().shape({
-      customFields: yup.array().of(
-        yup.object({
-          fieldName: yup.string().required().min(3),
-          content: yup.string(),
-        }),
-      ),
     }),
   [EDITMETADATA_PUBLICATION_INFO]: () =>
     yup.object().shape({
@@ -238,27 +178,6 @@ const metadataInEditingValidations = {
       firstName: yup.string().required('First name is required').min(2, 'First name must be at least 2 characters'),
       lastName: yup.string().required('Last name is required').min(3, 'Last name must be at least 3 characters'),
       email: yup.string().email('Please enter a valid email address').required('Email is required'),
-    }),
-  [EDITMETADATA_AUTHOR]: () =>
-    yup.object().shape({
-      firstName: yup
-        .string()
-        .required('Author first name is required')
-        .min(2, 'Author first name must be at least 2 characters'),
-      lastName: yup
-        .string()
-        .required('Author last name is required')
-        .min(3, 'Author last name must be at least 3 characters'),
-      email: yup.string().email('Author email must be a valid email address').required('Author email is required'),
-      identifier: yup
-        .string()
-        // e.g. 0000-0002-3862-8720
-        .notRequired()
-        .min(19, 'OrcId must be at least 19 characters, like 0000-0002-3862-8720'),
-      affiliation: yup
-        .string()
-        // .required('Author affiliation is required')
-        .min(3, 'Affiliation must be at least 3 characters'),
     }),
 };
 
