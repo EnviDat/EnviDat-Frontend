@@ -6,6 +6,7 @@ import { loadResourcesData } from '@/modules/charts/middelware/chartServiceLayer
 import { MetaData } from '@/types/dataVizTypes';
 import { getResourceName } from '@/factories/resourceHelpers';
 import { ResourceDTO } from '@/types/dataTransferObjectsTypes';
+import { Resource } from '@/types/modelTypes';
 
 const props = defineProps<{
   resource: object;
@@ -119,7 +120,9 @@ const loadDataForParameter = (data: object[], xParam: string, yParam: string) =>
   };
 };
 
-const loadData = (res: object) => {
+const maxChartData = 5000;
+
+const loadData = (res: Resource) => {
   error.value = undefined;
   warning.value = undefined;
   dataPerParameter.value = undefined;
@@ -134,6 +137,12 @@ const loadData = (res: object) => {
   loadResourcesData(
     res.url,
     (meta: MetaData, data: object[]) => {
+      if (data.length >= maxChartData) {
+        warning.value = `The file contains a lot of data (> ${maxChartData}), which is not yet supported.`;
+        loading.value = false;
+        return;
+      }
+
       chartLabels.value = meta.hasMetaRows ? meta.metaRows.fields : null;
 
       chartData.value = data;
