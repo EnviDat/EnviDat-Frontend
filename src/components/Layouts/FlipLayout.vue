@@ -1,7 +1,7 @@
 <template>
   <div :style="`height: ${height}px; width: ${width}px; position: relative; `">
     <div :style="`position: absolute; z-index: 2; top: 10px; left: ${width - 50}px; width: 40px;`">
-      <base-icon-button :icon="buttonIcon" icon-color="black" :color="buttonColor" elevated small @clicked="flipCard" />
+      <BaseIconButton :icon="buttonIcon" icon-color="black" :color="buttonColor" elevated @clicked="flipCard" />
     </div>
 
     <div class="flipAnimation" :class="animationFlip()">
@@ -57,10 +57,10 @@ export default {
     },
     buttonColor() {
       if (!this.autoButtonFlip) {
-        return 'accent';
+        return 'highlight';
       }
 
-      return this.flipped ? 'green' : 'accent';
+      return this.flipped ? 'green' : 'highlight';
     },
   },
   methods: {

@@ -13,7 +13,7 @@
 
 import { getCollaboratorCapacity } from '@/factories/userEditingValidations';
 
-import { enhanceElementsWithStrategyEvents, SELECT_EDITING_DATASET_PROPERTY } from '@/factories/strategyFactory';
+import { enhanceElementsWithStrategyEvents, SELECT_EDITING_DATASET_PROPERTY } from '@/factories/strategyFactory.ts';
 
 import { enhanceMetadataFromCategories, extractUserError } from '@/modules/user/store/mutationFactory';
 

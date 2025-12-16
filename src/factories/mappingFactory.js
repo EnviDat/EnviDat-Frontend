@@ -555,7 +555,7 @@ function populateEditingResources(commit, backendJSON, dataLicenseInfo, customFi
     resources[i].deprecated = deprecatedResources?.includes(resources[i].id);
   }
 
-  enhanceElementsWithStrategyEvents(resources, SELECT_EDITING_RESOURCE_PROPERTY, true);
+  enhanceElementsWithStrategyEvents(resources, SELECT_EDITING_RESOURCE_PROPERTY);
 
   commitEditingData(commit, stepKey, resourceData);
   dataObject.resourceData = resourceData;

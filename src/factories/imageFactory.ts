@@ -72,7 +72,8 @@ export const getImageList = (pathNeedsToInclude: string) => {
  * Gets a specific icon-image url from the assets directory
  * @param {string} iconName The icon name, for example ```'file'```
  */
-export const getIconImage = async (iconName: string): Promise<string> => iconImageUrlMap[iconName]();
+export const getIconImage = async (iconName: string): Promise<string> =>
+  iconImageUrlMap[iconName] ? iconImageUrlMap[iconName]() : mdiFile;
 
 /**
  * Loads the path to the icon image representing a file extension
@@ -98,7 +99,7 @@ export const getFileIcon = (fileExtension: string): string | Promise<string> => 
 
   try {
     return getIconImage(fileExt);
-  } catch (e: Error) {
+  } catch (e: unknown) {
     return mdiFile;
   }
 };

@@ -43,13 +43,13 @@
               :author="author"
               :hideDataCredit="true"
               :authorDetailsConfig="authorDetailsConfig"
-              :showGenericOpenButton="!!author.openEvent"
+              :showGenericOpenButton="!!author.clickEvent"
               :openButtonTooltip="author.openButtonTooltip"
               :openButtonIcon="author.openButtonIcon"
               :isSelected="author.isSelected"
               :loading="author.loading"
               :overrideAuthorInfosExpanded="!showFullscreenButton"
-              @openButtonClicked="catchOpenClick(author.openEvent, author.openProperty)"
+              @openButtonClicked="catchOpenClick(author.clickEvent, author.openProperty)"
               @catchSearchAuthor="catchAuthorSearchClick(author.fullName)"
             >
               <template v-if="hasDataCredits(author.dataCredit)" #dataCreditCurrentDataset>

@@ -63,11 +63,8 @@ import {
 import { isFieldValid } from '@/factories/userEditingValidations';
 import { isFieldReadOnly } from '@/factories/globalMethods';
 
-// eslint-disable-next-line func-names
 yup.addMethod(yup.date, 'parseDateString', function () {
   // Helper function for yup date string parsing
-  // eslint-disable-next-line func-names
-
   return this.transform((value, originalValue) => {
     if (!originalValue) {
       return null;

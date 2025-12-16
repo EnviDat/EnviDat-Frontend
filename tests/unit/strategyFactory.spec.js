@@ -1,37 +1,103 @@
 import { it, describe, expect } from 'vitest';
 
-import { getPreviewStrategy } from '@/factories/strategyFactory';
+import {
+  getClickEventStrategy,
+  getPreviewComponent,
+  SELECT_EDITING_AUTHOR_PROPERTY,
+  SELECT_EDITING_DATASET_PROPERTY,
+  SELECT_EDITING_RESOURCE_PROPERTY,
+  SHOW_DATA_PREVIEW_PROPERTY,
+} from '@/factories/strategyFactory.ts';
 
 // import dataset from '@/../public/testdata/testResoures';
 
-describe('PreviewStrategies - getPreviewStrategy()', () => {
-  it('empty', () => {
-    const strategy = getPreviewStrategy();
+const allPreviewComponentKeys = [
+  'txt',
+  'md',
+  'jpg',
+  'png',
+  'jpeg',
+  'gif',
+  'webp',
+  'mp4',
+  'avi',
+  'mpeg',
+  SHOW_DATA_PREVIEW_PROPERTY,
+  'csv',
+];
 
-    expect(strategy).toBeNull();
+const allClickStragetiesKeys = [
+  'txt',
+  'md',
+  'jpg',
+  'png',
+  'jpeg',
+  'gif',
+  'webp',
+  'mp4',
+  'avi',
+  'mpeg',
+  SHOW_DATA_PREVIEW_PROPERTY,
+  'csv',
+  SELECT_EDITING_RESOURCE_PROPERTY,
+  SELECT_EDITING_AUTHOR_PROPERTY,
+  SELECT_EDITING_DATASET_PROPERTY,
+];
+
+describe('PreviewStrategies - getClickEventStrategy()', () => {
+  it('empty', () => {
+    const strategy = getClickEventStrategy();
+
+    expect(strategy).toBeUndefined();
   });
 
   it('text file extension .txt', () => {
-    const strategy = getPreviewStrategy('txt');
+    const strategy = getClickEventStrategy('txt');
 
     expect(strategy).toBeDefined();
-    expect(strategy.strategyKeys).toBeDefined();
-    expect(strategy.component).toBeDefined();
-    expect(strategy.openEvent).toBeDefined();
+    expect(strategy.keys).toBeDefined();
+    expect(strategy.component).toBeUndefined();
+    expect(strategy.clickEvent).toBeDefined();
   });
 
   it('markdown file extension .md', () => {
-    const strategy = getPreviewStrategy('md');
+    const strategy = getClickEventStrategy('md');
 
     expect(strategy).toBeDefined();
-    expect(strategy.strategyKeys).toBeDefined();
-    expect(strategy.component).toBeDefined();
-    expect(strategy.openEvent).toBeDefined();
+    expect(strategy.keys).toBeDefined();
+    expect(strategy.component).toBeUndefined();
+    expect(strategy.clickEvent).toBeDefined();
   });
 
-  it('unkown file extension .xyz', () => {
-    const strategy = getPreviewStrategy(['xyz']);
+  it('unknown file extension .xyz', () => {
+    const strategy = getClickEventStrategy('xyz');
 
-    expect(strategy).toBeNull();
+    expect(strategy).toBeUndefined();
+  });
+
+  it('check if all click strategies exist', () => {
+    allClickStragetiesKeys.forEach((key) => {
+      const component = getClickEventStrategy(key);
+      expect(component).toBeDefined();
+    });
+  });
+});
+
+describe('PreviewStrategies - getPreviewComponent()', () => {
+  it('empty', () => {
+    const strategy = getPreviewComponent();
+    expect(strategy).toBeUndefined();
+  });
+
+  it('txt component', () => {
+    const component = getPreviewComponent('txt');
+    expect(component).toBeDefined();
+  });
+
+  it('check if all preview component strategies exist', () => {
+    allPreviewComponentKeys.forEach((key) => {
+      const component = getPreviewComponent(key);
+      expect(component).toBeDefined();
+    });
   });
 });

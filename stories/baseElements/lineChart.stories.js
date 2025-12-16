@@ -66,29 +66,26 @@ export const Basic = {
         {
           label: 'Dataset 1',
           data: [10, 20, 30],
-          backgroundColor: chartColors[0],
-          borderColor: chartColors[0],
+          // backgroundColor: chartColors[0],
+          // borderColor: chartColors[0],
         },
         {
           label: 'Dataset 2',
           data: [44, 23, 234],
-          backgroundColor: chartColors[1],
-          borderColor: chartColors[1],
+          // backgroundColor: chartColors[1],
+          // borderColor: chartColors[1],
         },
         {
           label: 'Dataset 3',
           data: [87, 20, 7],
-          backgroundColor: chartColors[2],
-          borderColor: chartColors[2],
+          // backgroundColor: chartColors[2],
+          // borderColor: chartColors[2],
         },
       ],
     },
     options: {
       responsive: true,
       plugins: {
-        legend: {
-          position: 'bottom',
-        },
         title: {
           display: true,
           text: 'Chart.js Line Chart',

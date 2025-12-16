@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, withDefaults, defineProps } from 'vue';
 import { useTheme } from 'vuetify';
 import ResourceDataViz from '@/modules/charts/components/ResourceDataViz.vue';
 
@@ -45,7 +45,6 @@ const allowedFormatText = (): string => {
 };
 
 const scrollbarColorFront = computed(() => theme?.themes.value?.light?.colors?.highlight || 'auto');
-
 const scrollbarColorBack = computed(() => (theme ? '#F0F0F0' : 'auto'));
 </script>
 
@@ -66,7 +65,7 @@ const scrollbarColorBack = computed(() => (theme ? '#F0F0F0' : 'auto'));
                 <v-row no-gutters>
                   <v-list
                     :style="`max-height: ${props.maxHeight - 100}px; overflow: auto; scroll-behavior: smooth; scrollbar-width: thin;
-                  scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack};`"
+                    scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack};`"
                   >
                     <v-list-item
                       v-for="(resource, index) in props.resources"
