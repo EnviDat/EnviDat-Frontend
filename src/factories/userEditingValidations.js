@@ -19,18 +19,13 @@ import {
   EDITMETADATA_DATA_GEO_SPATIAL,
   EDITMETADATA_DATA_RESOURCE,
   EDITMETADATA_FUNDING_INFO,
-  EDITMETADATA_KEYWORDS,
   EDITMETADATA_MAIN_DESCRIPTION,
   EDITMETADATA_MAIN_HEADER,
   EDITMETADATA_ORGANIZATION,
   EDITMETADATA_PUBLICATION_INFO,
-  EDITMETADATA_RELATED_DATASETS,
-  EDITMETADATA_RELATED_PUBLICATIONS,
 } from '@/factories/eventBus';
 
 import {
-  DATE_PROPERTY_END_DATE,
-  DATE_PROPERTY_START_DATE,
   EDIT_METADATA_AUTHORS_LABEL,
   EDIT_METADATA_DATALICENSE_LABEL,
   EDIT_METADATA_DOI_LABEL,
@@ -100,10 +95,6 @@ const metadataInEditingValidations = {
         .string()
         .required('Description is required')
         .min(100, 'Write at least a description with 100 characters.'),
-    }),
-  [EDITMETADATA_KEYWORDS]: () =>
-    yup.object().shape({
-      keywords: yup.array().min(5, 'Enter at least 5 keywords.'),
     }),
   [EDITMETADATA_AUTHOR_LIST]: () =>
     yup.object().shape({
