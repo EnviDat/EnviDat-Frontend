@@ -44,7 +44,13 @@
       <v-col :class="firstColWidth" class="pt-0">
         <v-row v-for="(entry, index) in firstColumn" :key="`left_${index}_${keyHash}`" no-gutters>
           <v-col v-if="entry" class="mb-2 px-0">
-            <component :component="entry" :is="entry" v-bind="entry.props" :showPlaceholder="showPlaceholder" />
+            <Suspense>
+              <component :component="entry" :is="entry" v-bind="entry.props" :showPlaceholder="showPlaceholder" />
+
+              <template #fallback>
+                <v-skeleton-loader class="mx-auto border" type="heading, paragraph, paragraph, actions" />
+              </template>
+            </Suspense>
           </v-col>
         </v-row>
       </v-col>
@@ -52,7 +58,13 @@
       <v-col v-if="secondColumn" class="pt-0" :class="secondColWidth">
         <v-row v-for="(entry, index) in secondColumn" :key="`right_${index}_${keyHash}`" no-gutters>
           <v-col v-if="entry" class="mb-2 px-0">
-            <component :component="entry" :is="entry" v-bind="entry.props" :showPlaceholder="showPlaceholder" />
+            <Suspense>
+              <component :component="entry" :is="entry" v-bind="entry.props" :showPlaceholder="showPlaceholder" />
+
+              <template #fallback>
+                <v-skeleton-loader class="mx-auto border" type="heading, paragraph, paragraph, actions" />
+              </template>
+            </Suspense>
           </v-col>
         </v-row>
       </v-col>
@@ -60,7 +72,7 @@
   </v-container>
 </template>
 
-<script>
+<script lang="ts">
 /**
  * The MetadataDetailPage shows all the important information of a metadata entry.
  * It consists of all the MetadataDetailViews.
@@ -120,10 +132,11 @@ import {
 } from '@/factories/eventBus';
 
 import {
-  enhanceElementsWithStrategyEvents,
   enhanceResourcesWithMetadataExtras,
+  enhanceResourcesUrlPreviewEvents,
+  enhanceElementsWithStrategyEvents,
   SHOW_DATA_PREVIEW_PROPERTY,
-} from '@/factories/strategyFactory';
+} from '@/factories/strategyFactory.ts';
 
 import { getEventsForPageAndName } from '@/modules/matomo/store/matomoStore';
 
@@ -138,12 +151,13 @@ import { createLocation } from '@/factories/geoFactory';
 import { createHeaderViewModel } from '@/factories/ViewModels/HeaderViewModel';
 import { createDescriptionViewModel } from '@/factories/ViewModels/DescriptionViewModel';
 import { getResourcesForDataViz } from '@/modules/charts/middelware/chartServiceLayer.ts';
+import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 
 const MetadataDescription = defineAsyncComponent(
   () => import('@/modules/metadata/components/Metadata/MetadataDescription.vue'),
 );
 
-const MetadataResources = defineAsyncComponent(() => import('./Metadata/MetadataResources.vue'));
+const MetadataResourceList = defineAsyncComponent(() => import('./Metadata/MetadataResourceList.vue'));
 
 const MetadataCitation = defineAsyncComponent(() => import('./Metadata/MetadataCitation.vue'));
 const MetadataPublications = defineAsyncComponent(() => import('./Metadata/MetadataPublications.vue'));
@@ -153,10 +167,6 @@ const MetadataAuthors = defineAsyncComponent(() => import('./Metadata/MetadataAu
 const MetadataGeo = defineAsyncComponent(() => import('@/modules/metadata/components/Geoservices/MetadataGeo.vue'));
 const MetadataRelatedDatasets = defineAsyncComponent(
   () => import('@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue'),
-);
-
-const ResourceDataVizListAsync = defineAsyncComponent(
-  () => import('@/modules/charts/components/ResourceDataVizList.vue'),
 );
 
 // Might want to check https://css-tricks.com/use-cases-fixed-backgrounds-css/
@@ -206,6 +216,14 @@ export default {
     eventBus.off(GCNET_PREPARE_DETAIL_CHARTS, this.prepareGCNetChartModal);
     eventBus.off(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
   },
+  provide() {
+    return {
+      [GCNET_INJECT_MICRO_CHARTS]: {
+        injectedComponent: this.injectedComponent,
+        injectedComponentConfig: this.injectedComponentConfig,
+      },
+    };
+  },
   computed: {
     ...mapState(['config']),
     ...mapState(USER_NAMESPACE, ['userDatasets']),
@@ -220,6 +238,12 @@ export default {
       authorsMap: `${METADATA_NAMESPACE}/authorsMap`,
       appScrollPosition: 'appScrollPosition',
     }),
+    injectedComponent() {
+      return this.GcNetMicroChartList;
+    },
+    injectedComponentConfig() {
+      return this.stationsConfig;
+    },
     userOrganizationIds() {
       return this.organizationsStore.userOrganizationIds;
     },
@@ -321,7 +345,7 @@ export default {
       let bindings =
         this.secondColumn && this.secondColumn.length > 0
           ? {
-              'v-col-6': true,
+              'v-col-5': true,
               'pr-1': this.$vuetify.display.mdAndUp,
             }
           : {
@@ -336,7 +360,7 @@ export default {
       let bindings =
         this.secondColumn && this.secondColumn.length > 0
           ? {
-              'v-col-6': true,
+              'v-col-7': true,
               'pl-1': this.$vuetify.display.mdAndUp,
             }
           : {};
@@ -360,7 +384,10 @@ export default {
       }
 
       this.geoServiceConfig = {
-        site: geoJSON,
+        site: {
+          ...geoJSON,
+          skipCheck: true,
+        },
         layerConfig,
         error: this.geoServiceLayersError,
         ...(this.hasGcnetStationConfig && { isGcnet: true }),
@@ -503,6 +530,7 @@ export default {
       this.MetadataAuthors.props = {
         authors: this.authors,
         authorDetailsConfig: this.authorDetailsConfig,
+        compactList: true,
       };
     },
     loadResources() {
@@ -515,10 +543,16 @@ export default {
       if (this.resourceData.resources) {
         this.configInfos = getConfigFiles(this.resourceData.resources);
 
+        enhanceResourcesUrlPreviewEvents(this.resourceData.resources);
+        enhanceResourcesWithMetadataExtras(this.metadataContent.extras, this.resourceData.resources);
+        enhanceElementsWithStrategyEvents(this.resourceData.resources, SHOW_DATA_PREVIEW_PROPERTY);
+
+        /*
         enhanceElementsWithStrategyEvents(this.resourceData.resources, undefined, true);
         enhanceResourcesWithMetadataExtras(this.metadataContent.extras, this.resourceData.resources);
 
         enhanceElementsWithStrategyEvents(this.resourceData.resources, SHOW_DATA_PREVIEW_PROPERTY);
+*/
 
         this.resourceData.dates = getFrontendDates(this.metadataContent.date);
 
@@ -527,13 +561,13 @@ export default {
         }
       }
 
-      this.MetadataResources.props = {
+      this.MetadataResourceList.props = {
         ...this.resourceData,
+        maxHeight: 500,
         dataLicenseId: license.id,
         dataLicenseTitle: license.title,
         dataLicenseUrl: license.url,
         resourcesConfig: this.resourcesConfig,
-        compactList: true,
       };
     },
     setMetadataContent() {
@@ -590,31 +624,21 @@ export default {
         funding: this.funding,
       };
 
-      let resourceDataViz;
-
-      if (this.resourcesConfig.loadDataViz) {
-        resourceDataViz = ResourceDataVizListAsync;
-        resourceDataViz.props = {
-          resources: this.resourcesForDataViz,
-        };
-      }
-
       this.firstCol = [
         this.MetadataDescription,
         this.MetadataCitation,
-        publicationList,
         this.MetadataFunding,
-        this.MetadataAuthors,
+        publicationList,
+        this.MetadataRelatedDatasets,
       ];
 
-      this.secondCol = [this.MetadataResources, resourceDataViz, this.MetadataGeo, this.MetadataRelatedDatasets];
+      this.secondCol = [this.MetadataResourceList, this.MetadataGeo, this.MetadataAuthors];
 
       if (this.$vuetify.display.smAndDown) {
         this.singleCol = [
           this.MetadataDescription,
           this.MetadataCitation,
-          this.MetadataResources,
-          resourceDataViz,
+          this.MetadataResourceList,
           this.MetadataGeo,
           this.MetadataAuthors,
           this.MetadataFunding,
@@ -634,13 +658,21 @@ export default {
       });
     },
     async injectMicroCharts() {
-      const GcNetMicroChartList = (await import('@/modules/metadata/components/GC-Net/GcNetMicroChartList.vue'))
-        .default;
+      this.GcNetMicroChartList = (await import('@/modules/metadata/components/GC-Net/GcNetMicroChartList.vue')).default;
 
+      /*
+      provide(GCNET_INJECT_MICRO_CHARTS, {
+        injectedComponent: GcNetMicroChartList,
+        injectedComponentConfig: this.stationsConfig,
+      });
+*/
+
+      /*
       eventBus.emit(GCNET_INJECT_MICRO_CHARTS, {
         component: GcNetMicroChartList,
         config: this.stationsConfig,
       });
+*/
     },
     /**
      * @description
@@ -720,7 +752,7 @@ export default {
     },
     catchEditClicked() {
       let name = METADATAEDIT_PAGENAME;
-      const params = {
+      const params: { id?: string; metadataid: string } = {
         metadataid: this.metadataId,
       };
 
@@ -756,11 +788,13 @@ export default {
           const modeMetadata = this.modeStore.getModeMetadata(this.mode);
           modeMetadata.isShallow = !this.isRealdataset();
         }
+
         const modeDatasets = this.modeStore.getDatasets(this.mode);
-        let datasets = Object.values(modeDatasets);
+        let datasets = Object.values(modeDatasets) as DatasetDTO[];
         if (datasets.length <= 0) {
           datasets = await this.modeStore.loadModeDatasets(this.mode);
         }
+
         this.modeDataset = datasets.filter((entry) => entry.name === this.metadataId)[0];
       }
 
@@ -783,7 +817,7 @@ export default {
     },
     isRealdataset() {
       if (this.mode && this.mode === EDNA_MODE) {
-        const contents = Object.values(this.metadatasContent);
+        const contents = Object.values(this.metadatasContent) as DatasetDTO[];
 
         const localEntry = contents.filter((entry) => entry.name === this.metadataId);
         return localEntry.length === 1;
@@ -886,10 +920,11 @@ export default {
     BaseIconButton,
   },
   data: () => ({
+    // injectComponentAtStart: undefined,
     organizationsStore: null,
     mdiClose,
     MetadataDescription: markRaw(MetadataDescription),
-    MetadataResources: markRaw(MetadataResources),
+    MetadataResourceList: markRaw(MetadataResourceList),
     MetadataCitation: markRaw(MetadataCitation),
     MetadataPublications: markRaw(MetadataPublications),
     MetadataPublicationList: markRaw(MetadataPublicationList),
@@ -925,6 +960,7 @@ export default {
     notFoundBackPath: 'browse',
     eventBus,
     stationsConfig: null,
+    GcNetMicroChartList: null,
     currentStation: null,
     firstCol: [],
     secondCol: [],

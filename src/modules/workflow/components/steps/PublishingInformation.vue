@@ -42,7 +42,7 @@
       <v-col cols="12" xl="6">
         <v-row>
           <v-col cols="12" class="pa-0">
-            <PublicationInfo v-bind="editPublicationsProps" />
+            <PublicationInfo @save="catchPublicationYearChange" v-bind="editPublicationsProps" />
           </v-col>
         </v-row>
       </v-col>
@@ -266,7 +266,10 @@ export default {
       this.newDatasetInfo.contactLastName = updatedContact.contactLastName;
       this.$emit('save', this.newDatasetInfo);
     },
-
+    catchPublicationYearChange(updatedYear) {
+      this.newDatasetInfo.publicationYear = updatedYear;
+      this.$emit('save', this.newDatasetInfo);
+    },
     catchReviewChange(reviewInfos) {
       this.$emit('save', reviewInfos);
     },

@@ -131,12 +131,6 @@ CardWithTags.args = {
   tags: otherDataset.tags,
 };
 
-export const CompactCard = Template.bind({});
-CompactCard.args = {
-  ...NormalCard.args,
-  compactLayout: true,
-};
-
 export const MobileNormalCard = Template.bind({});
 MobileNormalCard.args = { ...NormalCard.args };
 MobileNormalCard.parameters = mobileViewportParams;

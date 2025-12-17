@@ -4,7 +4,7 @@
       <!-- this loads the background image -->
     </div>
 
-    <base-icon-button
+    <BaseIconButton
       v-if="showCloseButton"
       id="MetadataHeaderCloseButton"
       class="ma-2"
@@ -14,12 +14,13 @@
       icon-color="primary"
       outline-color="primary"
       outlined
+      elevated
       tooltip-text="Close metadata view"
       tooltip-bottom
       @clicked="catchBackClicked"
     />
 
-    <base-icon-button
+    <BaseIconButton
       v-if="showEditButton"
       id="MetadataHeaderEditButton"
       class="ma-2"
@@ -28,6 +29,7 @@
       :icon="mdiPencil"
       icon-color="black"
       color="accent"
+      elevated
       tooltip-text="Edit metadata"
       tooltip-bottom
       @clicked="catchEditClicked"

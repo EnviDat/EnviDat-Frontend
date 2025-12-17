@@ -140,16 +140,15 @@
     <v-container
       v-if="showGenericOpenButton"
       class="ma-2 pa-0"
-      style="position: absolute; top: 0; right: 0; width: 30px"
+      style="position: absolute; top: 0; right: 0; width: 36px"
     >
       <v-row>
         <v-col cols="12">
-          <base-icon-button
+          <BaseIconButton
             :icon="openButtonIcon"
             icon-color="black"
-            color="accent"
+            color="highlight"
             elevated
-            size="small"
             :tooltip-text="openButtonTooltip"
             @clicked="$emit('openButtonClicked')"
           />

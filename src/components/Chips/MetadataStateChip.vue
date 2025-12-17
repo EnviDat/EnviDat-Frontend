@@ -62,7 +62,7 @@ export default {
       type: Object,
       default: () => ({
         [METADATA_STATE_DRAFT]: '#e0e0e0',
-        [METADATA_STATE_INVISIBLE]: 'warning',
+        [METADATA_STATE_INVISIBLE]: '#f3dd93',
         [METADATA_STATE_VISIBLE]: 'green',
       }),
     },

@@ -255,7 +255,10 @@ export default {
         });
       }
 
-      if (this.site) {
+      if (this.site && this.site.type && (this.site.geometries || this.site.coordinates)) {
+        // needs to be checked for the type of the geoJSON because of the
+        // validation disabling with the use of "validator: () => true," which causes an error
+        // when run in development
         this.siteLayers = this.createLeafletLayers(this.site);
         this.showSiteLayersOnMap(true);
 

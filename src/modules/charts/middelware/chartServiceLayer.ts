@@ -3,6 +3,7 @@ import { getUrlExtension } from '@/factories/strategyFactory';
 import { getDataWithMetaData } from '@/modules/charts/middelware/DataVizServiceLayer.ts';
 import { MetaData } from '@/types/dataVizTypes';
 import { INJECT_GENERIC_COMPONENT } from '@/factories/eventBus';
+import { Resource } from '@/types/modelTypes';
 
 const ResourceDataVizAsync = defineAsyncComponent(
   () =>
@@ -79,14 +80,15 @@ export async function loadResourcesData(
   }
 }
 
-export function markResourceForDataViz(resources: any[]) {
+export function markResourceForDataViz(resources: Resource[]) {
   for (let i = 0; i < resources.length; i++) {
     const resource = resources[i];
     const canDataViz = !resource.isProtected && DataVizSupportedExtensions.includes(getUrlExtension(resource.url));
 
     resource.canDataViz = canDataViz;
+
     if (canDataViz) {
-      resource.openEvent = INJECT_GENERIC_COMPONENT;
+      resource.clickEvent = INJECT_GENERIC_COMPONENT;
       resource.openProperty = {
         asyncComponent: ResourceDataVizAsync,
         props: {
@@ -97,6 +99,6 @@ export function markResourceForDataViz(resources: any[]) {
   }
 }
 
-export function getResourcesForDataViz(resources: any[]): any[] {
+export function getResourcesForDataViz(resources: Resource[]): Resource[] {
   return resources.filter((res) => !res.isProtected && DataVizSupportedExtensions.includes(getUrlExtension(res.url)));
 }

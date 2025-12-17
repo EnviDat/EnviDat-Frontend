@@ -18,10 +18,10 @@
       </v-row>
     </v-card-title>
 
-    <v-card-text v-if="showPlaceholder" class="pa-2 pt-0">
-      <v-container fluid class="pa-0">
+    <v-card-text v-if="showPlaceholder || !showAuthors" class="pa-2 pt-0">
+      <v-container fluid class="pa-0 heightAndScroll" :style="containerStyle">
         <v-row no-gutters>
-          <v-col v-for="n in 2" :key="n" cols="12" sm="6" class="pa-2">
+          <v-col v-for="n in 4" :key="n" cols="12" sm="6" class="pa-2">
             <author-card-placeholder />
           </v-col>
         </v-row>
@@ -38,13 +38,13 @@
               v-if="!hasEditingAuthorsSlot"
               :author="author"
               :authorDetailsConfig="authorDetailsConfig"
-              :showGenericOpenButton="!!author.openEvent"
+              :showGenericOpenButton="!!author.clickEvent"
               :openButtonTooltip="author.openButtonTooltip"
               :openButtonIcon="author.openButtonIcon"
               :isSelected="author.isSelected"
               :loading="author.loading"
               :overrideAuthorInfosExpanded="!showFullscreenButton"
-              @openButtonClicked="catchOpenClick(author.openEvent, author.openProperty)"
+              @openButtonClicked="catchOpenClick(author.clickEvent, author.openProperty)"
               @catchSearchAuthor="catchAuthorSearchClick(author.fullName)"
             >
               <template v-if="hasDataCredits(author.dataCredit)" #dataCreditCurrentDataset>
@@ -67,7 +67,7 @@
   </v-card>
 </template>
 
-<script>
+<script lang="ts">
 /**
  * MetadataAuthors.vue shows all the resources of a metadata entry in a list.
  *

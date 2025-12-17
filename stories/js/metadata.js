@@ -636,7 +636,6 @@ export default [
         package_id: 'fea7c28b-0a5b-4f38-b3df-c1ce66c2cf43',
         position: 0,
         resource_type: null,
-        restricted: '{ "allowed_users": "", "level": "same_organization", "shared_secret": ""}',
         size: 382534,
         state: 'active',
         url: 'https://www.envidat.ch/dataset/fea7c28b-0a5b-4f38-b3df-c1ce66c2cf43/resource/15eb26e6-46a4-43e6-8cdb-fd7072968eb3/download/leb.jpg',

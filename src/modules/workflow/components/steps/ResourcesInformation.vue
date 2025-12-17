@@ -104,25 +104,25 @@
 import { mapGetters, mapState } from 'vuex';
 
 import {
+  EDITMETADATA_CLEAR_PREVIEW,
   eventBus,
   OPEN_TEXT_PREVIEW,
+  SELECT_EDITING_RESOURCE,
+  UPLOAD_STATE_RESET,
+  UPLOAD_STATE_RESOURCE_CREATED,
   UPLOAD_STATE_UPLOAD_COMPLETED,
   UPLOAD_STATE_UPLOAD_PROGRESS,
   UPLOAD_STATE_UPLOAD_STARTED,
-  UPLOAD_STATE_RESET,
-  EDITMETADATA_CLEAR_PREVIEW,
-  UPLOAD_STATE_RESOURCE_CREATED,
-  SELECT_EDITING_RESOURCE,
 } from '@/factories/eventBus.js';
 
 import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts.js';
 
 import {
+  createNewResourceForUrl,
+  destroyUppyInstance,
   getUppyInstance,
   subscribeOnUppyEvent,
   unSubscribeOnUppyEvent,
-  createNewResourceForUrl,
-  destroyUppyInstance,
 } from '@/modules/workflow/utils/workflowUpload';
 
 import {
@@ -142,7 +142,6 @@ import ResourceUpload from '@/modules/workflow/components/steps/ResourceUpload.v
 import ResourcesPasteUrl from '@/modules/workflow/components/steps/ResourcesPasteUrl.vue';
 import { ResourceViewModel } from '@/modules/workflow/viewModel/ResourceViewModel';
 import type { Resource } from '@/types/modelTypes';
-import { mergeResourceSizeForFrontend } from '@/factories/resourceHelpers.ts';
 import ResourceEditing from '@/modules/workflow/components/steps/ResourceEditing.vue';
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow.ts';
 import InfoBanner from '@/modules/workflow/components/steps/InformationBanner.vue';
