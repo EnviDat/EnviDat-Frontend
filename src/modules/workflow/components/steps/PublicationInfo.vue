@@ -302,6 +302,7 @@ export default {
       const yearString = year.toString();
       this.previewYear = yearString;
       this.publicationYearField = yearString;
+      this.$emit('save', this.publicationYearField);
     },
   },
   data: () => ({
