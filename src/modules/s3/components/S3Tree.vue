@@ -11,6 +11,7 @@
       item-value="id"
       class="s3-treeview pa-0"
       density="compact"
+      v-model:opened="opened"
       bg-color="transparent"
       :base-color="dark ? 'white' : 'black'"
       open-on-click
@@ -18,12 +19,15 @@
     >
       <template #prepend="{ item, isOpen }">
         <BaseIconButton
-          v-if="!item.maximumLengthItem && !item.isLastItem"
+          v-if="shouldShowArrow(item)"
           :icon="isOpen ? mdiChevronDown : mdiChevronRight"
           style="cursor: pointer"
           :icon-color="dark ? 'white' : 'black'"
           small
-          @clicked="canBeClicked(item) ? getData(item.title, item.isChild, item.id) : toggleOpenedItem()"
+          @clicked="
+            toggleNode(item.id);
+            if (canBeClicked(item)) getData(item.title, item.isChild, item.id);
+          "
         />
       </template>
 
@@ -143,6 +147,7 @@ const loading = ref(false);
 const childrenObject = ref(0);
 const lastOpenedItemId = ref(0);
 const itemOpened = ref(false);
+const opened = ref<number[]>([]);
 
 const baseUrl = ref('');
 const bucketUrl = ref('');
@@ -168,6 +173,12 @@ function toggleOpenedItem() {
   s3Store.treeViewIsOpened = value;
 */
 }
+
+const toggleNode = (id: number) => {
+  const i = opened.value.indexOf(id);
+  if (i === -1) opened.value.push(id);
+  else opened.value.splice(i, 1);
+};
 
 /**
  *
@@ -296,6 +307,11 @@ const annotateLevel = (nodes: S3Node[] = [], start = 0): S3Node[] =>
 const canBeClicked = (item: S3Node) => item.isChild && item.level <= 1 && !item.isFile;
 
 const limitedItems = computed(() => annotateLevel(limitAllNodes(s3Content.value)));
+
+const hasChildren = (item: S3Node) => Array.isArray(item.children) && item.children.length > 0;
+
+const shouldShowArrow = (item: S3Node) =>
+  !item.maximumLengthItem && !item.isLastItem && !item.isFile && (hasChildren(item) || item.childrenLoaded === false);
 </script>
 
 <style>
