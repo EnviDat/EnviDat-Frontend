@@ -27,13 +27,13 @@ const props = defineProps<{
 const activeTab = ref('description');
 
 onMounted(() => {
-  activeTab.value = props.previewComponent && !props.isProtected ? 'preview' : 'description';
+  activeTab.value = props.previewComponent && !props.isProtected ? 'description' : 'preview';
 });
 
 watch(
   () => props.previewComponent,
   () => {
-    activeTab.value = props.previewComponent && !props.isProtected ? 'preview' : 'description';
+    activeTab.value = props.previewComponent && !props.isProtected ? 'description' : 'preview';
   },
 );
 </script>

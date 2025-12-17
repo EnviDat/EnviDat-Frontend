@@ -268,7 +268,7 @@ onBeforeUnmount(() => eventBus.off(GCNET_INJECT_MICRO_CHARTS, injectComponent));
           </v-row>
         </v-col>
 
-        <v-col cols="8" lg="9" class="pa-4">
+        <v-col cols="12" md="8" lg="9" class="pa-4">
           <ResourceListCard
             v-bind="selectedResource"
             :downloadActive="resourcesConfig?.downloadActive"

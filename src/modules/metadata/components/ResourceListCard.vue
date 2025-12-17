@@ -88,7 +88,6 @@
       :resource="{ ...$props }"
       :previewComponent="previewComponent"
     />
-
     <v-card-actions class="ma-0" style="position: absolute; top: 0; right: 0; z-index: 2">
       <v-row no-gutters justify="end">
         <v-col v-if="!isProtected" class="pa-2">
