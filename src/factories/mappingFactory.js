@@ -97,6 +97,7 @@ const JSONFrontendBackendRules = {
     ['url', 'url'],
     ['urlType', 'url_type'],
   ],
+  // We are still using
   [EDITMETADATA_DATA_RESTRICTED]: [
     ['allowedUsers', 'allowed_users'],
     ['level', 'level'],
@@ -121,6 +122,7 @@ const JSONFrontendBackendRules = {
     ['datasetId', 'id'],
   ],
   [EDITMETADATA_FUNDING_INFO]: [['funders', 'funding']],
+  // WE ARE STILL USING THE USER OBJ
   [USER_OBJECT]: [
     ['id', 'id'],
     ['name', 'name'],
