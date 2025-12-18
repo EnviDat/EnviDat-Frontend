@@ -11,9 +11,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { EDITMETADATA_AUTHOR_DATACREDIT, EDITMETADATA_AUTHOR_LIST } from '@/factories/eventBus';
-import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
-import { mergeAuthorsDataCredit } from '@/factories/authorFactory';
 import { USER_ROLE_ADMIN } from '@/factories/userEditingValidations';
 
 export const ACCESS_LEVEL_PUBLIC_VALUE = 'public';
@@ -234,23 +231,4 @@ export function getAllowedUsersString(pickUserEmailHash, envidatUsers) {
   const allowedUsers = pickedUsers.map((user) => user.name);
 
   return allowedUsers.join(',');
-}
-
-export function componentChangedEvent(updateObj, vm) {
-  const payload = {
-    stepKey: updateObj.object,
-    data: updateObj.data,
-    id: vm.$route.params.metadataid,
-  };
-
-  if (updateObj.object === EDITMETADATA_AUTHOR_DATACREDIT) {
-    const currentAuthors = vm.$store.getters[`${USER_NAMESPACE}/authors`];
-    const authorToMergeDataCredit = updateObj.data;
-
-    // overwrite the authors and stepKey so it will be saved as if it was a EDITMETADATA_AUTHOR_LIST change (to the list of authors)
-    payload.data = { authors: mergeAuthorsDataCredit(currentAuthors, authorToMergeDataCredit) };
-    payload.stepKey = EDITMETADATA_AUTHOR_LIST;
-  }
-
-  return payload;
 }
