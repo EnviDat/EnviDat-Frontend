@@ -43,10 +43,8 @@ export const REPORT_PATH = '/report';
 export const REPORT_PAGENAME = 'ReportPage';
 export const PAGENOTFOUND_PAGENAME = 'PageNotFound';
 
-export const METADATAEDIT_PATH = '/edit';
 export const METADATAEDIT_PAGENAME = 'MetadataEditPage';
 
-export const METADATA_CREATION_PATH = '/new';
 export const METADATA_CREATION_PAGENAME = 'MetadataCreationPage';
 
 export const USER_SIGNIN_PATH = '/signin';
