@@ -73,10 +73,10 @@
           <ResourceCard
             v-bind="res"
             :downloadActive="resourcesConfig?.downloadActive"
-            :showGenericOpenButton="!!res.openEvent"
+            :showGenericOpenButton="!!res.clickEvent"
             :genericOpenButtonBottom="genericOpenButtonBottom"
-            cardColor="primary"
-            @openButtonClicked="catchOpenClick(res.openEvent, res.openProperty)"
+            cardColor="secondary"
+            @openButtonClicked="catchOpenClick(res.clickEvent, res.openProperty)"
           />
         </v-col>
       </v-row>

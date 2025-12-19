@@ -47,7 +47,7 @@ for (let i = 0; i < unFormatedMetadata.length; i++) {
     }
   }
 
-  resources = enhanceElementsWithStrategyEvents(resources, SELECT_EDITING_RESOURCE_PROPERTY, true);
+  resources = enhanceElementsWithStrategyEvents(resources, SELECT_EDITING_RESOURCE_PROPERTY);
   allResources.push(resources);
 }
 

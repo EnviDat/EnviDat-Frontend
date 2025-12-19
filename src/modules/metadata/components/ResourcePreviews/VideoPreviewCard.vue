@@ -1,5 +1,5 @@
 <template>
-  <v-card id="VideoPreviewCard">
+  <v-card id="VideoPreviewCard" flat>
     <v-card-text>
       <v-row no-gutters>
         <v-col>

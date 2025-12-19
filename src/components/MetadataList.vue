@@ -115,10 +115,10 @@
                     @organizationClicked="$emit('organizationClicked', metadata.organization)"
                     @clickedEvent="metaDataClicked"
                     @clickedTag="catchTagClicked"
-                    :showGenericOpenButton="!!metadata.openEvent"
+                    :showGenericOpenButton="!!metadata.clickEvent"
                     :openButtonTooltip="metadata.openButtonTooltip"
                     :openButtonIcon="metadata.openButtonIcon"
-                    @openButtonClicked="catchOpenClick(metadata.openEvent, metadata.openProperty)"
+                    @openButtonClicked="catchOpenClick(metadata.clickEvent, metadata.openProperty)"
                   />
                 </v-col>
               </v-row>

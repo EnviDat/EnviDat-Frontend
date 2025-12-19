@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watch, defineProps } from 'vue';
 import LineChart from '@/components/Charts/LineChart.vue';
 
 import { loadResourcesData } from '@/modules/charts/middelware/chartServiceLayer.ts';
 import { MetaData } from '@/types/dataVizTypes';
 import { getResourceName } from '@/factories/resourceHelpers';
 import { ResourceDTO } from '@/types/dataTransferObjectsTypes';
+import { Resource } from '@/types/modelTypes';
 
 const props = defineProps<{
   resource: object;
@@ -18,8 +19,8 @@ const chartLabels = ref([]);
 const chartData = ref();
 const dataPerParameter = ref();
 
-const xParameter = ref();
-const yParameter = ref();
+const xParameter = ref<string>();
+const yParameter = ref<string[]>();
 
 const warning = ref();
 const error = ref();
@@ -37,6 +38,10 @@ const defaultOptions = {
     decimate: {
       enabled: true,
       algorithm: 'lltb',
+    },
+    colors: {
+      enabled: true,
+      forceOverride: true,
     },
   },
 };
@@ -84,36 +89,40 @@ const loadDataForParameter = (data: object[], xParam: string, yParam: string) =>
   warning.value = undefined;
   error.value = undefined;
 
-  const seriesData = [];
-
+  const datasets = [];
   const labels = [];
 
-  for (let i = 0; i < data.length; i++) {
-    const entry = data[i];
-    const entryPerParameter = entry[yParam];
+  for (let i = 0; i < yParam.length; i++) {
+    const paramY = yParam[i];
+    labels.push(paramY);
 
-    const xValue = entry[xParam];
-    if (xValue) {
-      labels.push(xValue);
+    const seriesData = [];
+
+    for (let j = 0; j < data.length; j++) {
+      const entry = data[j];
+
+      seriesData.push({
+        x: entry[xParam],
+        y: entry[paramY],
+      });
     }
-    seriesData.push(entryPerParameter);
-  }
 
-  //  labels: [firstParameter],
+    datasets.push({
+      label: paramY,
+      data: seriesData,
+      // backgroundColor: barColors[0],
+    });
+  }
 
   return {
     labels,
-    datasets: [
-      {
-        label: yParam,
-        data: seriesData,
-        // backgroundColor: barColors[0],
-      },
-    ],
+    datasets,
   };
 };
 
-const loadData = (res: object) => {
+const maxChartData = 5000;
+
+const loadData = (res: Resource) => {
   error.value = undefined;
   warning.value = undefined;
   dataPerParameter.value = undefined;
@@ -128,13 +137,20 @@ const loadData = (res: object) => {
   loadResourcesData(
     res.url,
     (meta: MetaData, data: object[]) => {
+      if (data.length >= maxChartData) {
+        warning.value = `The file contains a lot of data (> ${maxChartData}), which is not yet supported.`;
+        loading.value = false;
+        return;
+      }
+
       chartLabels.value = meta.hasMetaRows ? meta.metaRows.fields : null;
 
       chartData.value = data;
 
       const parameterList = Object.keys(data[0]);
       xParameter.value = getTimeParameter(parameterList);
-      yParameter.value = getNextParameter(parameterList, xParameter.value);
+      const nextYParam = getNextParameter(parameterList, xParameter.value);
+      yParameter.value = [nextYParam];
 
       if (!xParameter.value) {
         warning.value =
@@ -159,8 +175,13 @@ const assignXParameter = (parameter: string) => {
   dataPerParameter.value = loadDataForParameter(chartData.value, xParameter.value, yParameter.value);
 };
 
-const assignYParameter = (parameter: string) => {
-  yParameter.value = parameter;
+const assignYParameter = (parameter: string | string[]) => {
+  let newParm = parameter;
+  if (typeof newParm === 'string') {
+    newParm = [parameter];
+  }
+
+  yParameter.value = newParm;
 
   dataPerParameter.value = loadDataForParameter(chartData.value, xParameter.value, yParameter.value);
 };
@@ -217,6 +238,7 @@ watch(
             label="Y Parameter"
             :items="chartLabels"
             :model-value="yParameter"
+            multiple
             @update:model-value="assignYParameter"
             hide-details
           />
@@ -225,7 +247,7 @@ watch(
     </v-card-text>
 
     <v-card-text class="pa-0">
-      <LineChart v-if="dataPerParameter" ref="chart" :options="defaultOptions" :data="dataPerParameter" />
+      <LineChart v-if="dataPerParameter" height="auto" ref="chart" :options="defaultOptions" :data="dataPerParameter" />
     </v-card-text>
   </v-card>
 </template>

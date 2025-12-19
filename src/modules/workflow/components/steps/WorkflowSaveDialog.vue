@@ -12,9 +12,10 @@
       </v-card-text>
 
       <v-card-text v-else>
-        Saving your data now will <b>store your dataset in our system</b>, but it will not be published yet. Before
-        publication, you will need to complete the remaining steps. However, from this point,
-        <b>you can request a DOI for your dataset.</b>
+        When you save now, <b>your dataset will be stored in our backend and appear in your dashboard</b>. You can
+        safely close this window and come back later to continue editing it. At this stage the dataset is
+        <b>saved as a draft and is not yet published</b>. Before final publication, you need to complete the remaining
+        steps and then <b>request publication of your dataset</b>.
       </v-card-text>
 
       <v-card-text>

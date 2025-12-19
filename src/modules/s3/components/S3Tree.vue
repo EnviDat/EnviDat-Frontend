@@ -1,7 +1,7 @@
 <template>
   <!-- eslint-disable vue/no-v-model-argument -->
   <div>
-    <span v-if="error" class="d-flex pt-4 text-caption">
+    <span v-if="error" class="d-flex text-caption">
       <BaseStatusLabelView :status="error.type" :status-text="error.details" :status-color="error.color" />
     </span>
 
@@ -9,18 +9,25 @@
       v-if="!error"
       :items="limitedItems"
       item-value="id"
-      class="s3-treeview"
+      class="s3-treeview pa-0"
       density="compact"
+      v-model:opened="opened"
       bg-color="transparent"
-      base-color="white"
+      :base-color="dark ? 'white' : 'black'"
       open-on-click
+      hide-actions
     >
-      <template v-slot:prepend="{ item }">
-        <v-icon
-          v-if="!item.maximumLengthItem"
-          :path="mdiArrowRight"
+      <template #prepend="{ item, isOpen }">
+        <BaseIconButton
+          v-if="shouldShowArrow(item)"
+          :icon="isOpen ? mdiChevronDown : mdiChevronRight"
           style="cursor: pointer"
-          @click="canBeClicked(item) ? getData(item.title, item.isChild, item.id) : toggleOpenedItem()"
+          :icon-color="dark ? 'white' : 'black'"
+          small
+          @clicked="
+            toggleNode(item.id);
+            if (canBeClicked(item)) getData(item.title, item.isChild, item.id);
+          "
         />
       </template>
 
@@ -28,6 +35,7 @@
         <v-row
           no-gutters
           dense
+          style="cursor: pointer"
           @click="canBeClicked(item) ? getData(item.title, item.isChild, item.id) : toggleOpenedItem()"
           align="center"
           justify="space-between"
@@ -57,7 +65,7 @@
               <v-progress-circular
                 v-if="item.id === lastOpenedItemId && loading && !item.isLoaded"
                 :size="18"
-                color="white"
+                :color="dark ? 'white' : 'black'"
                 class="ml-2"
                 indeterminate
               />
@@ -66,28 +74,44 @@
                 v-if="item.isChild && item.numberOfChildren && !item.maximumLengthItem"
                 class="ml-2"
                 size="x-small"
-                color="white"
+                :color="dark ? 'white' : 'black'"
                 variant="outlined"
               >
                 {{ item.numberOfChildren }}
               </v-chip>
 
-              <v-chip v-if="!item.isChild" class="ml-2" size="x-small" color="white" variant="outlined">
+              <v-chip
+                v-if="!item.isChild"
+                class="ml-2"
+                size="x-small"
+                :color="dark ? 'white' : 'black'"
+                variant="outlined"
+              >
                 {{ childrenObject }}
               </v-chip>
             </span>
           </v-col>
 
           <v-col v-if="item.isFile" class="flex-grow-0 py-0">
-            <BaseRectangleButton :isXsSmall="true" color="white" :url="item.link" buttonText="download" />
+            <BaseRectangleButton
+              :isXsSmall="true"
+              :color="dark ? 'white' : 'black'"
+              :url="item.link"
+              buttonText="download"
+            />
           </v-col>
 
           <v-col v-if="item.isLastItem" class="flex-grow-0 py-0">
-            <BaseRectangleButton :isXsSmall="true" color="white" :url="item.link" buttonText="View All" />
+            <BaseRectangleButton
+              :isXsSmall="true"
+              :color="dark ? 'white' : 'black'"
+              :url="item.link"
+              buttonText="View All"
+            />
           </v-col>
 
           <v-col v-if="item.maximumLengthItem" class="flex-grow-0 py-0">
-            <BaseRectangleButton :isXsSmall="true" color="white" :url="url" buttonText="View All" />
+            <BaseRectangleButton :isXsSmall="true" :color="dark ? 'white' : 'black'" :url="url" buttonText="View All" />
           </v-col>
         </v-row>
       </template>
@@ -97,13 +121,14 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
-import { mdiArrowRight } from '@mdi/js';
+import { mdiChevronRight, mdiChevronDown } from '@mdi/js';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 
 import { useS3Store } from '@/modules/s3/store/s3Store.ts';
 import { S3Node } from '@/types/s3Types';
 import { warningMessage } from '@/factories/notificationFactory';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
 const s3Store = useS3Store();
 
@@ -112,12 +137,17 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  dark: {
+    type: Boolean,
+    default: false,
+  },
 });
 const loading = ref(false);
 
 const childrenObject = ref(0);
 const lastOpenedItemId = ref(0);
 const itemOpened = ref(false);
+const opened = ref<number[]>([]);
 
 const baseUrl = ref('');
 const bucketUrl = ref('');
@@ -137,12 +167,18 @@ const emit = defineEmits(['loadingChanged', 'changeAutoHeight']);
 // set store event for change the style of the resourceCard height if the treeview is opened
 function toggleOpenedItem() {
   itemOpened.value = !itemOpened.value;
-  emit('changeAutoHeight', itemOpened.value);
+  emit('changeAutoHeight', true); // itemOpened.value);
   /*
   const value = itemOpened.value;
   s3Store.treeViewIsOpened = value;
 */
 }
+
+const toggleNode = (id: number) => {
+  const i = opened.value.indexOf(id);
+  if (i === -1) opened.value.push(id);
+  else opened.value.splice(i, 1);
+};
 
 /**
  *
@@ -271,12 +307,19 @@ const annotateLevel = (nodes: S3Node[] = [], start = 0): S3Node[] =>
 const canBeClicked = (item: S3Node) => item.isChild && item.level <= 1 && !item.isFile;
 
 const limitedItems = computed(() => annotateLevel(limitAllNodes(s3Content.value)));
+
+const hasChildren = (item: S3Node) => Array.isArray(item.children) && item.children.length > 0;
+
+const shouldShowArrow = (item: S3Node) =>
+  !item.maximumLengthItem && !item.isLastItem && !item.isFile && (hasChildren(item) || item.childrenLoaded === false);
 </script>
 
 <style>
+/*
 .s3-treeview .v-icon__svg {
   color: #fff;
 }
+*/
 .s3-treeview .v-list-item-action {
   display: none !important;
 }

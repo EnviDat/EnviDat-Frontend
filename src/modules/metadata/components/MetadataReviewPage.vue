@@ -90,9 +90,10 @@ import { EDITMETADATA_PUBLICATION_INFO, METADATA_MAIN_HEADER, eventBus } from '@
 
 import {
   enhanceElementsWithStrategyEvents,
+  enhanceResourcesUrlPreviewEvents,
   enhanceResourcesWithMetadataExtras,
   SHOW_DATA_PREVIEW_PROPERTY,
-} from '@/factories/strategyFactory';
+} from '@/factories/strategyFactory.ts';
 
 import { getFrontendDates, getFrontendJSONForStep } from '@/factories/mappingFactory';
 
@@ -259,9 +260,8 @@ export default {
       if (this.resources.resources) {
         this.configInfos = getConfigFiles(this.resources.resources);
 
-        enhanceElementsWithStrategyEvents(this.resources.resources, undefined, true);
+        enhanceResourcesUrlPreviewEvents(this.resources.resources);
         enhanceResourcesWithMetadataExtras(this.metadataContent.extras, this.resources.resources);
-
         enhanceElementsWithStrategyEvents(this.resources.resources, SHOW_DATA_PREVIEW_PROPERTY);
 
         this.resources.dates = getFrontendDates(this.metadataContent.date);

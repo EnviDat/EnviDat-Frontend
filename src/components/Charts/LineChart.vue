@@ -11,9 +11,10 @@ import {
   CategoryScale,
   LinearScale,
   TimeScale,
+  Colors,
 } from 'chart.js';
 
-ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale, TimeScale);
+ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale, TimeScale, Colors);
 
 const { data, options } = defineProps({
   id: {

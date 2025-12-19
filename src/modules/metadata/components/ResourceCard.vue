@@ -79,7 +79,7 @@
               </v-col>
 
               <v-col class="flex-grow-0">
-                <base-icon-button
+                <BaseIconButton
                   :icon="mdiChartBar"
                   icon-color="black"
                   color="accent"
@@ -155,16 +155,16 @@
     </v-card-text>
 
     <v-container
-      v-if="showGenericOpenButton && !isProtected && !sparkChartData"
+      v-if="showGenericOpenButton && !isProtected"
       class="pa-4"
       :style="`position: absolute; right: 0; width: 68px; ${genericButtonYPos}`"
     >
       <v-row>
         <v-col cols="12">
-          <base-icon-button
+          <BaseIconButton
             :icon="openButtonIcon"
             icon-color="black"
-            color="accent"
+            color="white"
             elevated
             :tooltip-text="openButtonTooltip"
             :disabled="!downloadActive"
@@ -182,12 +182,13 @@
       <v-card-actions class="ma-0" style="position: absolute; bottom: 0; right: 0; width: 120px; z-index: 2">
         <v-row no-gutters justify="end">
           <v-col v-if="maxDescriptionLengthReached" cols="6" class="pa-2">
-            <base-icon-button
+            <BaseIconButton
               :icon="mdiChevronDown"
               :icon-color="showFullDescription ? 'primary' : 'accent'"
               :color="showFullDescription ? 'accent' : 'black'"
               :outlined="true"
               outline-color="accent"
+              elevated
               :rotated="showFullDescription"
               :tooltipText="showFullDescription ? 'Hide full description' : 'Show full description'"
               @clicked="showFullDescription = !showFullDescription"
@@ -196,7 +197,7 @@
 
           <v-col v-if="!isProtected" cols="6" class="pa-2">
             <!-- New version with S3 Component -->
-            <base-icon-button
+            <BaseIconButton
               :icon="isFile ? mdiDownload : mdiLink"
               icon-color="black"
               @clicked="trackDownload(url, resourceName)"
@@ -226,7 +227,7 @@
     <v-card-text v-if="isEnvicloudUrl && !isProtected" class="pa-4 pt-0">
       <v-divider />
 
-      <S3Tree :url="url" @loadingChanged="catchLoadingChanged" @changeAutoHeight="catchChangeHeight" />
+      <S3Tree dark :url="url" @loadingChanged="catchLoadingChanged" @changeAutoHeight="catchChangeHeight" />
     </v-card-text>
   </v-card>
 </template>
