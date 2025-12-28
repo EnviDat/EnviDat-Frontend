@@ -19,9 +19,9 @@ build-seo:
   environment: $CI_COMMIT_REF_NAME
   rules:
     # don't run when triggered from other pipeline (deployment-only-pipeline)
-    - if: '$CI_PIPELINE_SOURCE == "pipeline"'
-      when: never
-    - when: on_success
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: on_success
+    - when: never
   needs:
     # needs the artifact: config and environment variables
     - install-node
