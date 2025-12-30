@@ -27,6 +27,7 @@ import router from '@/router';
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
 
 import VueMatomo from 'vue-matomo';
+import { SET_CONFIG } from '@/store/mainMutationsConsts';
 
 const app = createApp(App);
 const pinia = createPinia();
@@ -41,25 +42,32 @@ if (localStorage.getItem('matomoConsentGiven') === 'true') {
   window._paq.push(['rememberConsentGiven']);
 }
 
-app
-  .use(store)
-  .use(vuetify)
-  .use(router)
-  .use(pinia)
-  .use(VueVirtualScroller)
-  .use(VueMatomo, {
-    // Configure your Matomo server and site by providing:
-    host: 'https://statistics.wsl.ch/',
-    siteId: siteMatomoId,
-    router,
-    enableLinkTracking: true,
-    requireConsent: true,
-    trackInitialView: true,
-    disableCookies: false,
-    enableHeartBeatTimer: true,
-    heartBeatTimerInterval: 15,
-    // set to false as soon as finish the test
-    debug: false,
-  })
+(async () => {
+  try {
+    await store.dispatch(SET_CONFIG);
+  } catch (error) {
+    console.error('Config load failed before mount:', error);
+  }
 
-  .mount('#app');
+  app
+    .use(store)
+    .use(vuetify)
+    .use(router)
+    .use(pinia)
+    .use(VueVirtualScroller)
+    .use(VueMatomo, {
+      // Configure your Matomo server and site by providing:
+      host: 'https://statistics.wsl.ch/',
+      siteId: siteMatomoId,
+      router,
+      enableLinkTracking: true,
+      requireConsent: true,
+      trackInitialView: true,
+      disableCookies: false,
+      enableHeartBeatTimer: true,
+      heartBeatTimerInterval: 15,
+      // set to false as soon as finish the test
+      debug: false,
+    })
+    .mount('#app');
+})();
