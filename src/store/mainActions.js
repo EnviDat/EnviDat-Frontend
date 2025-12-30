@@ -22,7 +22,7 @@ export default {
 
       const url = `${configURL}?nocache=${new Date().getTime()}`;
 
-      axios
+      return axios
         .get(url)
         .then((response) => {
           try {
@@ -46,5 +46,7 @@ export default {
           commit(SET_CONFIG_ERROR, reason);
         });
     }
+
+    return Promise.resolve();
   },
 };

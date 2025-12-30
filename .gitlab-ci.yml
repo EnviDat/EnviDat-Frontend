@@ -263,7 +263,7 @@ build-storybook:
     - modify-env
     - verify-node-audit
   variables:
-    VITE_BUILD_SOURCEMAPS: "false"
+    VITE_BUILD_SOURCEMAPS: 'false'
   script:
     - npm ci --prefer-offline --no-audit --no-fund --loglevel=error --ignore-scripts
     - npm run build-storybook -- -o ./storybook --loglevel=error --disable-telemetry
