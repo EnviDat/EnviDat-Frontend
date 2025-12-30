@@ -742,6 +742,7 @@ export default {
       if (this.user) {
         this.fetchUserDatasets();
         this.fetchCollaboratorDatasets();
+        this.fetchUserOrganizationId(true);
       }
     },
   },
