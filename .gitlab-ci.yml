@@ -113,11 +113,10 @@ set-vars:
     # set build variables for the package registry
     - echo "BUILD_NAME=${BUILD_VERSION}.${CI_COMMIT_REF_NAME}" >> build.env
     - echo "BUILD_ZIP_NAME=envidat-frontend-${BUILD_VERSION}.${CI_COMMIT_REF_NAME}.zip" >> build.env
-    - echo "Matomo token ${MATOMO_TOKEN}."
-    - echo "Matomo siteId ${MATOMO_SITEID}."
+    - echo "MATOMO_TOKEN set? $([ -n "$MATOMO_TOKEN" ] && echo yes || echo no)"
     - echo "content of build.env"
     - echo "information environment ${CI_COMMIT_REF_NAME}"
-    - cat build.env
+    # - cat build.env
   artifacts:
     reports:
       dotenv: build.env
@@ -229,7 +228,7 @@ modify-env:
 
       "
     - echo "created content for .env.production:"
-    - cat .env.production
+    # - cat .env.production
   artifacts:
     name: 'environment variables'
     paths:
