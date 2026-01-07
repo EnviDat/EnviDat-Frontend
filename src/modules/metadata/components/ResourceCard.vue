@@ -157,7 +157,7 @@
     <v-container
       v-if="showGenericOpenButton && !isProtected"
       class="pa-4"
-      :style="`position: absolute; right: 0; width: 68px; ${genericButtonYPos}`"
+      :style="`z-index: 999; position: absolute; right: 0; width: 68px; ${genericButtonYPos}`"
     >
       <v-row>
         <v-col cols="12">
