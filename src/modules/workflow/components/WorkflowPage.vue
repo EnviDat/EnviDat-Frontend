@@ -156,11 +156,13 @@ const dialogConfirmText = computed(() => {
 /* use external orchestration */
 const {
   fetchUserDatasets,
+  fetchCollaboratorDatasetIds,
   loadUserOrganizations,
   // initMetadataUsingId,
   // updateStepsOrganizations,
   user,
   userDatasets,
+  collaboratorDatasetIds,
 } = useWorkflowExternal();
 
 /* =========================
@@ -248,6 +250,7 @@ const isAdminForDataset = () => {
   if (user.value?.sysadmin === true) return true;
   const dsOrga = workflowStore.datasetModel?.dataset?.organization;
   if (!dsOrga) return false;
+
   const roleMap = getUserOrganizationRoleMap(user.value?.id, orgStore.userOrganizations ?? []);
   const orgMatch = orgStore.userOrganizations?.find((o) => o.id === dsOrga.id);
   const role = roleMap[dsOrga?.name] ?? orgMatch?.capacity;
@@ -260,11 +263,21 @@ const isDatasetOwnedByUser = () => {
   return userDatasets.value?.some((d) => d.id === ds.id || d.name === ds.id || d.id === ds.name || d.name === ds.name);
 };
 
+const isCollaboratorEditor = () => {
+  const ds = workflowStore.datasetModel?.dataset;
+  if (!ds) return false;
+  const match = collaboratorDatasetIds.value?.find(
+    (entry) => entry.id === ds.id || entry.id === ds.name || entry.id === route?.params?.id,
+  );
+  return match?.role === 'editor';
+};
+
 const ensureEditAccess = () => {
   if (!user.value) return true;
   if (workflowStore.mode !== WorkflowMode.Edit) return true;
   if (isAdminForDataset()) return true;
   if (isDatasetOwnedByUser()) return true;
+  if (isCollaboratorEditor()) return true;
   dialogMode.value = 'unauthorized';
   showDialog.value = true;
   return false;
@@ -566,7 +579,7 @@ onMounted(async () => {
     workflowStore.setLastEditedDataset(lastDsName, route.fullPath, backPath);
 
     // SET loader for organizations and datasets
-    await workflowStore.withLoadingAll([loadUserOrganizations(), fetchUserDatasets()]);
+    await workflowStore.withLoadingAll([loadUserOrganizations(), fetchUserDatasets(), fetchCollaboratorDatasetIds()]);
 
     workflowStore.setCurrentUser(user.value);
     workflowStore.computeUserRole({
