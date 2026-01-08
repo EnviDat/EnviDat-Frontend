@@ -43,6 +43,7 @@
       @signinClick="catchSigninClicked"
       @homeClick="catchHomeClicked"
       @continueClick="catchContinueClick"
+      @adminEditClick="adminEditClick"
     />
 
     <TheNavigation
@@ -165,6 +166,7 @@ import {
   USER_DASHBOARD_PATH,
   USER_DASHBOARD_PAGENAME,
   USER_SIGNIN_PAGENAME,
+  WORKFLOW_PAGENAME,
 } from '@/router/routeConsts';
 
 import { METADATA_NAMESPACE, BULK_LOAD_METADATAS_CONTENT } from '@/store/metadataMutationsConsts';
@@ -316,6 +318,18 @@ export default {
 
       this.$router.push({
         path: targetPath,
+        query: { backPath: this.$route.fullPath },
+      });
+    },
+    adminEditClick() {
+      if (!this.user?.sysadmin) return;
+
+      const id = this.$route.params?.metadataid;
+      if (!id) return;
+
+      this.$router.push({
+        name: WORKFLOW_PAGENAME,
+        params: { id },
         query: { backPath: this.$route.fullPath },
       });
     },
