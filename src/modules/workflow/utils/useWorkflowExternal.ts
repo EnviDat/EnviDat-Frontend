@@ -7,8 +7,10 @@ import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
 import {
   USER_NAMESPACE,
   USER_SIGNIN_NAMESPACE,
+  ACTION_COLLABORATOR_DATASET_IDS,
   FETCH_USER_DATA,
   USER_GET_DATASETS,
+  USER_GET_COLLABORATOR_DATASET_IDS,
   METADATA_EDITING_LOAD_DATASET,
   UPDATE_METADATA_EDITING,
 } from '@/modules/user/store/userMutationsConsts';
@@ -35,6 +37,9 @@ export function useWorkflowExternal() {
   const userId = computed<string | undefined>(() => user.value?.id);
 
   const userDatasets = computed<any[]>(() => ((store.state as any)[USER_NAMESPACE]?.userDatasets as any[]) ?? []);
+  const collaboratorDatasetIds = computed<any[]>(
+    () => ((store.state as any)[USER_NAMESPACE]?.collaboratorDatasetIds as any[]) ?? [],
+  );
 
   const currentEditingContent = computed<any | null>(
     () => (store.state as any)[USER_NAMESPACE]?.currentEditingContent ?? null,
@@ -54,6 +59,19 @@ export function useWorkflowExternal() {
       },
       commit: true,
       mutation: USER_GET_DATASETS,
+    });
+  }
+
+  async function fetchCollaboratorDatasetIds() {
+    if (!userId.value) return;
+    await store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`, {
+      action: ACTION_COLLABORATOR_DATASET_IDS,
+      body: {
+        id: userId.value,
+        include_datasets: true,
+      },
+      commit: true,
+      mutation: USER_GET_COLLABORATOR_DATASET_IDS,
     });
   }
 
@@ -146,5 +164,7 @@ export function useWorkflowExternal() {
     // updateStepsOrganizations,
     workflowStore,
     userDatasets,
+    collaboratorDatasetIds,
+    fetchCollaboratorDatasetIds,
   };
 }

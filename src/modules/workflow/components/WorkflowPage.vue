@@ -1,6 +1,6 @@
 <template>
   <div ref="appContainer" class="fill-height pa-2 pa-md-6">
-    <v-row class="fill-height">
+    <v-row class="fill-height" :class="{ 'workflow-blur': isBlocked }">
       <v-col cols="12" lg="4" xl="3" class="workflow-navigation__wrapper">
         <CardLoader
           v-if="workflowStore.loading"
@@ -51,6 +51,15 @@
       @close="closeModal"
       @confirm="catchConfirmSave"
     />
+    <WorkFlowDialog
+      v-model="showDialog"
+      :title="dialogTitle"
+      :message="dialogMessage"
+      :cancel-text="dialogCancelText"
+      :confirm-text="dialogConfirmText"
+      @close="handleDialogClose"
+      @confirm="handleDialogConfirm"
+    />
     <AppSnackbar />
   </div>
 </template>
@@ -61,9 +70,15 @@
  * ========================= */
 // import { storeToRefs } from 'pinia';
 import { ref, watch, computed, onMounted, onBeforeUnmount, defineAsyncComponent } from 'vue';
+import { useStore } from 'vuex';
 import { useRoute, useRouter } from 'vue-router';
 
-import { METADATADETAIL_PATH, USER_DASHBOARD_PAGENAME } from '@/router/routeConsts';
+import {
+  LANDING_PAGENAME,
+  METADATADETAIL_PATH,
+  USER_DASHBOARD_PAGENAME,
+  USER_SIGNIN_PAGENAME,
+} from '@/router/routeConsts';
 import TheWorkflowNavigation from '@/components/Navigation/TheWorkflowNavigation.vue';
 
 import CardLoader from '@/modules/workflow/components/steps/CardLoader.vue';
@@ -71,17 +86,25 @@ import AppSnackbar from '@/components/BaseElements/SnackBar.vue';
 
 import { useWorkflowExternal } from '@/modules/workflow/utils/useWorkflowExternal.ts';
 import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
+import { USER_SIGNIN_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 
 // import { extractIcons } from '@/factories/iconFactory.ts';
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow.ts';
+import WorkFlowDialog from '@/modules/workflow/components/steps/WorkFlowDialog.vue';
 import WorkflowSaveDialog from '@/modules/workflow/components/steps/WorkflowSaveDialog.vue';
 import { StepStatus, WorkflowMode } from '@/modules/workflow/utils/workflowEnums';
+import {
+  USER_ROLE_ADMIN,
+  USER_ROLE_SYSTEM_ADMIN,
+  getUserOrganizationRoleMap,
+} from '@/factories/userEditingValidations';
 
 import { useNotifyStore } from '@/store/snackBar';
 
 const notify = useNotifyStore();
 const workflowStore = useDatasetWorkflowStore();
 const orgStore = useOrganizationsStore();
+const store = useStore();
 
 /* =========================
  *  ROUTER & PROPS
@@ -103,15 +126,43 @@ const currentAsyncComponent = computed(() => workflowStore?.currentAsyncComponen
 const vm = computed(() => workflowStore.currentViewModel);
 // const iconScroll = computed(() => extractIcons('scroll'));
 const nextStepBlock = ref(null);
+const userLoading = computed(() => (store.state as any)[USER_SIGNIN_NAMESPACE]?.userLoading ?? false);
+const showDialog = ref(false);
+const dialogMode = ref<'signin' | 'unauthorized' | null>(null);
+const isBlocked = computed(() => showDialog.value);
+
+const dialogTitle = computed(() => {
+  if (dialogMode.value === 'unauthorized') return 'Not authorized';
+  return 'Please Sign In';
+});
+
+const dialogMessage = computed(() => {
+  if (dialogMode.value === 'unauthorized') {
+    return 'You are not authorized to edit this dataset. Please go to your dashboard and select one of your datasets from the list.';
+  }
+  return 'For dataset editing you need to be signed in.';
+});
+
+const dialogCancelText = computed(() => {
+  if (dialogMode.value === 'unauthorized') return 'null';
+  return 'Go to Home';
+});
+
+const dialogConfirmText = computed(() => {
+  if (dialogMode.value === 'unauthorized') return 'Go to Dashboard';
+  return 'Sign In';
+});
 
 /* use external orchestration */
 const {
   fetchUserDatasets,
+  fetchCollaboratorDatasetIds,
   loadUserOrganizations,
   // initMetadataUsingId,
   // updateStepsOrganizations,
   user,
   userDatasets,
+  collaboratorDatasetIds,
 } = useWorkflowExternal();
 
 /* =========================
@@ -149,6 +200,88 @@ const resolvedComponent = computed(() => {
   if ((c as any)?.then) return defineAsyncComponent(() => c as Promise<any>);
   return null;
 });
+
+const showDialogSignInNeeded = () => {
+  dialogMode.value = 'signin';
+  showDialog.value = true;
+};
+
+const canEnterWorkflow = () => {
+  if (user.value) return true;
+  if (!userLoading.value) showDialogSignInNeeded();
+  return false;
+};
+
+const goToSignIn = () => {
+  showDialog.value = false;
+  dialogMode.value = null;
+  router.push({ name: USER_SIGNIN_PAGENAME });
+};
+
+const goToHome = () => {
+  showDialog.value = false;
+  dialogMode.value = null;
+  router.push({ name: LANDING_PAGENAME });
+};
+
+const goToDashboard = () => {
+  showDialog.value = false;
+  dialogMode.value = null;
+  router.push({ name: USER_DASHBOARD_PAGENAME });
+};
+
+const handleDialogClose = () => {
+  if (dialogMode.value === 'unauthorized') {
+    goToDashboard();
+  } else {
+    goToHome();
+  }
+};
+
+const handleDialogConfirm = () => {
+  if (dialogMode.value === 'unauthorized') {
+    goToDashboard();
+  } else {
+    goToSignIn();
+  }
+};
+
+const isAdminForDataset = () => {
+  if (user.value?.sysadmin === true) return true;
+  const dsOrga = workflowStore.datasetModel?.dataset?.organization;
+  if (!dsOrga) return false;
+
+  const roleMap = getUserOrganizationRoleMap(user.value?.id, orgStore.userOrganizations ?? []);
+  const orgMatch = orgStore.userOrganizations?.find((o) => o.id === dsOrga.id);
+  const role = roleMap[dsOrga?.name] ?? orgMatch?.capacity;
+  return role === USER_ROLE_ADMIN || role === USER_ROLE_SYSTEM_ADMIN;
+};
+
+const isDatasetOwnedByUser = () => {
+  const ds = workflowStore.datasetModel?.dataset;
+  if (!ds) return false;
+  return userDatasets.value?.some((d) => d.id === ds.id || d.name === ds.id || d.id === ds.name || d.name === ds.name);
+};
+
+const isCollaboratorEditor = () => {
+  const ds = workflowStore.datasetModel?.dataset;
+  if (!ds) return false;
+  const match = collaboratorDatasetIds.value?.find(
+    (entry) => entry.id === ds.id || entry.id === ds.name || entry.id === route?.params?.id,
+  );
+  return match?.role === 'editor';
+};
+
+const ensureEditAccess = () => {
+  if (!user.value) return true;
+  if (workflowStore.mode !== WorkflowMode.Edit) return true;
+  if (isAdminForDataset()) return true;
+  if (isDatasetOwnedByUser()) return true;
+  if (isCollaboratorEditor()) return true;
+  dialogMode.value = 'unauthorized';
+  showDialog.value = true;
+  return false;
+};
 
 // const scrollDown = () => {
 //   nextTick(() => {
@@ -380,6 +513,12 @@ watch(user, (u) => {
   workflowStore.setCurrentUser(u);
 });
 
+watch(userLoading, (loading) => {
+  if (!loading && !user.value) {
+    showDialogSignInNeeded();
+  }
+});
+
 // Handle save modal opening
 watch(
   () => workflowStore.openSaveDialog,
@@ -419,6 +558,7 @@ const datasetExistsInLocalStorage = (datasetId?: string) => {
  *  ON MOUNTED
  * ========================= */
 onMounted(async () => {
+  if (!canEnterWorkflow()) return;
   await workflowStore.withLoading(async () => {
     let id = props.datasetId;
     // STORYBOOK
@@ -439,7 +579,7 @@ onMounted(async () => {
     workflowStore.setLastEditedDataset(lastDsName, route.fullPath, backPath);
 
     // SET loader for organizations and datasets
-    await workflowStore.withLoadingAll([loadUserOrganizations(), fetchUserDatasets()]);
+    await workflowStore.withLoadingAll([loadUserOrganizations(), fetchUserDatasets(), fetchCollaboratorDatasetIds()]);
 
     workflowStore.setCurrentUser(user.value);
     workflowStore.computeUserRole({
@@ -447,6 +587,8 @@ onMounted(async () => {
       userOrganizations: orgStore.userOrganizations,
       userDatasets: userDatasets.value,
     });
+
+    if (!ensureEditAccess()) return;
 
     workflowStore.currentDatasetId = id;
 
@@ -509,6 +651,12 @@ onBeforeMount(() => {
 <style lang="scss">
 .loading {
   opacity: 0.2;
+}
+
+.workflow-blur {
+  filter: blur(4px);
+  pointer-events: none;
+  user-select: none;
 }
 
 @keyframes bounce {
