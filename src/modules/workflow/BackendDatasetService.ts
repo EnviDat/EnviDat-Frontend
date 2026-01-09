@@ -15,7 +15,10 @@ import { urlRewrite } from '@/factories/apiFactory';
 import { Dataset } from '@/modules/workflow/Dataset.ts';
 import { DatasetService, User } from '@/types/modelTypes';
 import { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
-import { ACTION_LOAD_METADATA_CONTENT_BY_ID } from '@/store/metadataMutationsConsts';
+import {
+  ACTION_LOAD_METADATA_CONTENT_BY_ID,
+  ACTION_IMPORT_METADATA_CONTENT_BY_ID,
+} from '@/store/metadataMutationsConsts';
 import { stringifyResourceForBackend } from '@/factories/mappingFactory';
 import { convertJSON } from '@/factories/convertJSON';
 
@@ -59,6 +62,25 @@ export class BackendDatasetService implements DatasetService {
     try {
       const response = await axios.get(url);
       this.dataset = new Dataset(response.data.result);
+    } catch (e: unknown) {
+      console.error(e);
+      throw e;
+    }
+
+    this.loadingDataset = false;
+    return this.dataset;
+  }
+
+  async importDataset(id: string, orgId?: string): Promise<DatasetDTO> {
+    this.loadingDataset = true;
+    const resolvedOrgId = orgId;
+    const doi = id;
+    const actionUrl = ACTION_IMPORT_METADATA_CONTENT_BY_ID();
+    const url = urlRewrite(`${actionUrl}?doi=${doi}&owner_org=${resolvedOrgId}&add-placeholders=true`, '', API_ROOT);
+
+    try {
+      const response = await axios.get(url);
+      this.dataset = new Dataset(response.data);
     } catch (e: unknown) {
       console.error(e);
       throw e;

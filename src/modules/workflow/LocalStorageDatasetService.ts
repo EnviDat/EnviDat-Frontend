@@ -170,7 +170,7 @@ export class LocalStorageDatasetService implements DatasetService {
     // CREATE an empty entry in localStorage to mark the existence of this dataset
 
     localStorage.setItem(datasetId, '');
-
+    // ENRICO here I should add the zenodo data
     const datasetWithDefault = datasetWorkflowStore.applyDatasetDefaults(dataset, datasetId);
 
     this.dataset = new Dataset(datasetWithDefault);

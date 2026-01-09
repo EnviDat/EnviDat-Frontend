@@ -6,8 +6,10 @@ import { LOCAL_DATASET_KEY } from '@/factories/metadataConsts';
 /* eslint-disable no-unused-vars */
 export interface BootstrapDeps<DatasetDTO> {
   loadBackend: (id: string) => Promise<DatasetDTO | null>;
+  importBackend: (id: string, orgId?: string) => Promise<DatasetDTO | null>;
   loadLocal: (id: string) => Promise<DatasetDTO | null>;
   createLocal: (init: Partial<DatasetDTO>) => Promise<DatasetDTO>;
+  seedLocalFromImport: (dto: DatasetDTO) => Promise<DatasetDTO>;
 }
 /* eslint-enable no-unused-vars */
 
@@ -30,11 +32,24 @@ function isPublished(dto: any): boolean {
 export async function resolveBootstrap<DatasetDTO>(
   datasetId: string | undefined,
   deps: BootstrapDeps<DatasetDTO>,
+  options?: { importSource?: string; importId?: string; importOrgId?: string },
 ): Promise<{
   dto: DatasetDTO;
   mode: WorkflowMode;
   source: 'local' | 'backend';
 }> {
+  if (options?.importSource === 'fromDoi') {
+    const importId = options?.importId ?? datasetId;
+    const importOrgId = options?.importOrgId;
+    if (!importId) {
+      throw new Error('Missing importId for importSource=fromDoi');
+    }
+    const importedDto = await deps.importBackend(importId, importOrgId);
+    if (importedDto) {
+      const localDto = await deps.seedLocalFromImport(importedDto);
+      return { dto: localDto, mode: WorkflowMode.Create, source: 'local' };
+    }
+  }
   if (datasetId) {
     try {
       const backendDto = await deps.loadBackend(datasetId);

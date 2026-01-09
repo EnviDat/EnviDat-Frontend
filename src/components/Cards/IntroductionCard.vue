@@ -36,10 +36,11 @@
           </v-row>
 
           <v-row v-if="!currentLocalDataset" no-gutters class="pt-3" style="align-items: center">
-            <v-col cols="3" class="text-body-1">
+            <v-col cols="auto" class="text-body-1">
               {{ createText }}
             </v-col>
-
+          </v-row>
+          <v-row v-if="!currentLocalDataset" no-gutters class="pt-3" style="align-items: center">
             <v-col cols="auto">
               <BaseRectangleButton
                 color="accent"
@@ -47,6 +48,24 @@
                 :button-text="createButtonText"
                 :disabled="createClickCallback === null"
                 @clicked="createClickCallback ? createClickCallback() : ''"
+              />
+            </v-col>
+          </v-row>
+
+          <v-row no-gutters class="pt-3" style="align-items: center">
+            <v-col cols="auto" class="text-body-1"> {{ doiText }} </v-col>
+          </v-row>
+          <v-row no-gutters class="pt-3" style="align-items: start">
+            <v-col cols="6" class="mr-4 p-0">
+              <v-text-field bg-color="white" v-model="importDoiValue" variant="solo" label="Import DOI"></v-text-field>
+            </v-col>
+            <v-col cols="auto">
+              <BaseRectangleButton
+                color="accent"
+                marginClass="text-black"
+                :button-text="doiButtonText"
+                :disabled="importClickCallback === null || importDoiValue.length === 0"
+                @clicked="importClickCallback ? importClickCallback(importDoiValue) : ''"
               />
             </v-col>
           </v-row>
@@ -106,6 +125,10 @@ export default {
       type: Function,
       default: null,
     },
+    importClickCallback: {
+      type: Function,
+      default: null,
+    },
     editingClickCallback: {
       type: Function,
       default: null,
@@ -149,8 +172,11 @@ export default {
     mdiClose,
     introTextFallback: 'Manage your datasets and create new ones. <br/>',
     createText: 'Create a dataset',
+    doiText: 'Import from DOI',
     createButtonText: 'New Dataset',
+    doiButtonText: 'Import',
     editingButtonText: 'Continue editing',
+    importDoiValue: '',
   }),
   components: {
     BaseRectangleButton,

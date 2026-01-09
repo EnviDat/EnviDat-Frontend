@@ -569,8 +569,11 @@ onMounted(async () => {
     } else if (!id) {
       id = route?.params?.id as string;
     }
-
-    await workflowStore.bootstrapWorkflow(id);
+    // IMPORT LOGIC
+    const importSource = route?.query?.import === 'fromDoi' ? 'fromDoi' : undefined;
+    const importId = typeof route?.query?.doi === 'string' ? route.query.doi : undefined;
+    const importOrgId = typeof route?.query?.owner_org === 'string' ? route.query.owner_org : undefined;
+    await workflowStore.bootstrapWorkflow(id, { importSource, importId, importOrgId });
 
     // SET last edited dataset in the store
     const lastDsName =

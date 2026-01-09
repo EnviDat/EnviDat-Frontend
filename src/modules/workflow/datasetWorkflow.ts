@@ -284,13 +284,22 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     // This function is the page initializer and is called on mounted by bootstrapWorkflow.
     // PLEASE NOTE – We are currently in the development phase, and an exception is present to make Storybook work.
     // We need to fine-tune this logic.
-    async bootstrapWorkflow(datasetId?: string) {
+    async bootstrapWorkflow(
+      datasetId?: string,
+      options?: { importSource?: string; importId?: string; importOrgId?: string },
+    ) {
       return this.withLoading(async () => {
-        const { dto, mode, source } = await resolveBootstrap<DatasetDTO>(datasetId, {
-          loadBackend: (id) => this.backendStorageService.loadDataset(id),
-          loadLocal: (id) => this.localStorageService.loadDataset(id),
-          createLocal: (init) => this.localStorageService.createDataset(init as DatasetDTO),
-        });
+        const { dto, mode, source } = await resolveBootstrap<DatasetDTO>(
+          datasetId,
+          {
+            loadBackend: (id) => this.backendStorageService.loadDataset(id),
+            importBackend: (id, orgId) => this.backendStorageService.importDataset(id, orgId),
+            loadLocal: (id) => this.localStorageService.loadDataset(id),
+            createLocal: (init) => this.localStorageService.createDataset(init as DatasetDTO),
+            seedLocalFromImport: (dto) => this.localStorageService.createDataset(dto as DatasetDTO),
+          },
+          options,
+        );
         this.dataSource = source;
         await this.initializeDataset(dto, mode);
         return { id: dto.id, mode };
