@@ -1,6 +1,8 @@
 import * as yup from 'yup';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel.ts';
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
+import type { DatasetDTO } from '@/types/dataTransferObjectsTypes';
+import { getMetadataVisibilityState } from '@/factories/publicationFactory';
 
 export class PublicationInfoViewModel extends AbstractEditViewModel {
   declare contactEmail: string;
@@ -8,6 +10,7 @@ export class PublicationInfoViewModel extends AbstractEditViewModel {
   declare contactLastName: string;
 
   declare publicationState: string;
+  declare visibilityState: string;
   declare doi: string;
   declare publisher: string;
   declare publicationYear: string;
@@ -62,6 +65,11 @@ export class PublicationInfoViewModel extends AbstractEditViewModel {
 
   constructor(datasetModel: DatasetModel) {
     super(datasetModel, PublicationInfoViewModel.mappingRules());
+  }
+
+  updateModel(dataset: DatasetDTO | undefined) {
+    super.updateModel(dataset as DatasetDTO);
+    this.visibilityState = dataset ? getMetadataVisibilityState(dataset) : '';
   }
 
   getModelDataForInit() {
