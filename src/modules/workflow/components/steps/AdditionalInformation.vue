@@ -71,7 +71,6 @@
         </div>
       </v-col>
     </v-row>
-
     <v-row
       data-field="funders"
       v-for="(item, index) in previewFundersWithEmpty"
@@ -116,12 +115,11 @@
               @change="changeInstitution(index, 'institutionUrl', $event.target.value)"
             />
           </v-col>
-
           <v-col class="flex-grow-0 px-1">
             <BaseIconButton
               :icon="mdiMinusCircleOutline"
               icon-color="red"
-              :disabled="index === previewFunders.length - 1"
+              :disabled="isEmptyFunder(item)"
               @clicked="deleteFundersEntry(index)"
             />
           </v-col>
@@ -269,6 +267,9 @@ export default {
       return renderMarkdown(this.currentDataLicense.summary) || 'Data summary information unavailable';
     },
     previewFundersWithEmpty() {
+      if (this.previewFunders.length === 0) {
+        return [{ ...this.emptyEntry }];
+      }
       const last = this.previewFunders[this.previewFunders.length - 1] || {};
       const isEmpty = Object.values(last).every((v) => !v);
       return isEmpty ? this.previewFunders : [...this.previewFunders, { ...this.emptyEntry }];
@@ -316,7 +317,11 @@ export default {
 
     deleteFundersEntry(i) {
       this.previewFunders.splice(i, 1);
-      this.newDatasetInfo.funders = [...this.previewFunders];
+      const cleanedFunders = this.previewFunders.filter((f) =>
+        Object.values(f).some((v) => v && v.toString().trim() !== ''),
+      );
+      this.previewFunders = cleanedFunders;
+      this.newDatasetInfo.funders = cleanedFunders;
       this.$emit('save', this.newDatasetInfo);
     },
 
@@ -327,6 +332,9 @@ export default {
     },
 
     changeInstitution(idx, prop, val) {
+      while (!this.previewFunders[idx]) {
+        this.previewFunders.push({ ...this.emptyEntry });
+      }
       this.previewFunders[idx][prop] = val;
 
       const isLast = idx === this.previewFunders.length - 1;
@@ -344,6 +352,9 @@ export default {
 
       this.newDatasetInfo.funders = cleanedFunders;
       this.$emit('save', this.newDatasetInfo);
+    },
+    isEmptyFunder(funder) {
+      return Object.values(funder || {}).every((v) => !v || v.toString().trim() === '');
     },
 
     changeLicense() {
