@@ -55,6 +55,11 @@
           <v-row no-gutters class="pt-3" style="align-items: center">
             <v-col cols="auto" class="text-body-1"> {{ doiText }} </v-col>
           </v-row>
+          <v-row no-gutters class="pt-2" style="align-items: center">
+            <v-col cols="auto" class="text-body-2">
+              <div v-html="doiSubtitleText"></div>
+            </v-col>
+          </v-row>
           <v-row no-gutters class="pt-3" style="align-items: start">
             <v-col cols="6" class="mr-4 p-0">
               <v-text-field bg-color="white" v-model="importDoiValue" variant="solo" label="Import DOI"></v-text-field>
@@ -173,6 +178,8 @@ export default {
     introTextFallback: 'Manage your datasets and create new ones. <br/>',
     createText: 'Create a dataset',
     doiText: 'Import from DOI',
+    doiSubtitleText:
+      'You can use a valid DOI from Zenodo, DataCite, or Dryad to import your data. <strong>Please take a moment to review the data before you save it.</strong>',
     createButtonText: 'New Dataset',
     doiButtonText: 'Import',
     editingButtonText: 'Continue editing',

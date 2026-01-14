@@ -60,6 +60,11 @@ export interface DatasetWorkflowState {
 
   listOfReadOnlyFields: string[];
   openSaveDialog: boolean;
+  openWorkflowDialog: boolean;
+  workflowDialogTitle?: string;
+  workflowDialogMessage?: string;
+  workflowDialogConfirmText?: string;
+  workflowDialogCancelText?: string;
   localStorageService: LocalStorageDatasetService;
   userRole?: string;
   uploadingResourceId?: string;
@@ -103,6 +108,11 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     localStorageService: new LocalStorageDatasetService(),
     backendStorageService: new BackendDatasetService(),
     openSaveDialog: false,
+    openWorkflowDialog: false,
+    workflowDialogTitle: undefined,
+    workflowDialogMessage: undefined,
+    workflowDialogConfirmText: undefined,
+    workflowDialogCancelText: undefined,
     isStepSaveConfirmed: false,
     // list of readOnlyFields
     // if you need to find those items in the code just search for this isReadOnly('visibility')
