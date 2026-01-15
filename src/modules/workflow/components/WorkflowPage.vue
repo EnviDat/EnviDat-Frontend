@@ -598,9 +598,9 @@ onMounted(async () => {
   if (!canEnterWorkflow()) return;
   if (importModeActive.value) {
     dialogMode.value = 'import';
-    workflowStore.workflowDialogTitle = 'Import Mode';
+    workflowStore.workflowDialogTitle = 'Import from DOI Mode';
     workflowStore.workflowDialogMessage =
-      '<strong>Please take a moment to review your data</strong> before proceeding to step 4, and save your imported dataset to our backend. <strong>Once you save</strong>, you can continue to review the imported resources and other information. When you are ready, you will be able to reserve a DOI and request publication.';
+      '<strong>Please take a moment to review your data</strong> before proceeding to step 4, and save your imported dataset to our backend. <strong>Once you save</strong>, you can continue reviewing the imported resources and other information.<br><br>The main information you should have a look at is: <strong>tags</strong>, <strong>Description</strong> should be in English, <strong>details related to your account (email)</strong>, and <strong>additional information</strong>.<br><br> When you are ready, you will be able to request publication.';
     workflowStore.workflowDialogConfirmText = 'Got it';
     workflowStore.workflowDialogCancelText = 'null';
     showDialog.value = true;

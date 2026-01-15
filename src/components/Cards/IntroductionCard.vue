@@ -62,7 +62,7 @@
           </v-row>
           <v-row no-gutters class="pt-3" style="align-items: start">
             <v-col cols="6" class="mr-4 p-0">
-              <v-text-field bg-color="white" v-model="importDoiValue" variant="solo" label="Import DOI"></v-text-field>
+              <v-text-field bg-color="white" v-model="importDoiValue" variant="solo" label="Your DOI"></v-text-field>
             </v-col>
             <v-col cols="auto">
               <BaseRectangleButton

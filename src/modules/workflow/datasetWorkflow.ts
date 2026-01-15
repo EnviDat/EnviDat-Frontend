@@ -26,7 +26,7 @@ import type { WorkflowStep } from '@/types/workflow';
 import { StepStatus, WorkflowMode } from '@/modules/workflow/utils/workflowEnums';
 
 import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
-import { getMetadataUrlFromTitle } from '@/factories/mappingFactory';
+import { getMetadataUrlFromTitleSanitized } from '@/factories/mappingFactory';
 
 import { makeMaintainerFromUser } from '@/modules/workflow/utils/formatPostData';
 import { LOCAL_DATASET_KEY } from '@/factories/metadataConsts';
@@ -521,6 +521,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
 
       const publicationObj = { publisher: 'EnviDat', publication_year: String(getYear(new Date())) };
       const publication = JSON.stringify(publicationObj);
+      // If import change with the publisher from the API
       const maintainer = this.currentUser ? makeMaintainerFromUser(this.currentUser) : (dataset?.maintainer ?? '');
 
       // '{"email":"enrico.peruselli@wsl.ch","given_name":"Enrico","name":"Peruselli"}',
@@ -529,11 +530,13 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
         id: id || '',
         // owner_org: dataset.owner_org,
         // organization: dataset.organization ? organizations : undefined,
-        name: dataset.title ? getMetadataUrlFromTitle(dataset.title) : '',
+        name: dataset.title ? getMetadataUrlFromTitleSanitized(dataset.title) : '',
         private: true,
         resource_type_general: 'dataset',
         publication,
         maintainer,
+        // Create Import rule
+        publication_state: dataset.doi != '' ? 'reserved' : '',
       };
     },
     computeUserRole(args: {
