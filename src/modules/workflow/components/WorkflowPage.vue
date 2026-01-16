@@ -617,6 +617,7 @@ onMounted(async () => {
         id = route?.params?.id as string;
       }
       // IMPORT LOGIC
+      // TODO  IMPORT DOI Create Import rule
       const importSource = route?.query?.import === 'fromDoi' ? 'fromDoi' : undefined;
       const importId = typeof route?.query?.doi === 'string' ? route.query.doi : undefined;
       const importOrgId = typeof route?.query?.owner_org === 'string' ? route.query.owner_org : undefined;

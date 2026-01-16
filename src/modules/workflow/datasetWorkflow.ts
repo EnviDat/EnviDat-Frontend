@@ -518,10 +518,17 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     applyDatasetDefaults(dataset: DatasetDTO, id: string) {
       // const orgStore = useOrganizationsStore();
       // const firstOrg = orgStore.userOrganizations?.[0];
-
-      const publicationObj = { publisher: 'EnviDat', publication_year: String(getYear(new Date())) };
+      // TODO  IMPORT DOI Create Import rule
+      const isImport = dataset.doi != '';
+      let publicationObj = { publisher: 'EnviDat', publication_year: String(getYear(new Date())) };
+      if (isImport) {
+        publicationObj = {
+          publisher: dataset.publication?.publisher,
+          publication_year: dataset.publication?.publication_year,
+        };
+      }
       const publication = JSON.stringify(publicationObj);
-      // If import change with the publisher from the API
+
       const maintainer = this.currentUser ? makeMaintainerFromUser(this.currentUser) : (dataset?.maintainer ?? '');
 
       // '{"email":"enrico.peruselli@wsl.ch","given_name":"Enrico","name":"Peruselli"}',
@@ -535,8 +542,8 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
         resource_type_general: 'dataset',
         publication,
         maintainer,
-        // Create Import rule
-        publication_state: dataset.doi != '' ? 'reserved' : '',
+        // TODO  IMPORT DOI Create Import rule
+        publication_state: isImport ? 'reserved' : '',
       };
     },
     computeUserRole(args: {
