@@ -26,6 +26,7 @@
             <component
               :is="resolvedComponent"
               :key="currentStepNum"
+              :dataset="workflowStore?.localStorageService.dataset"
               v-bind="vm"
               :showInfoBanner="workflowStore.currentInfoBannerStatus"
               :user-role="workflowStore.userRole ?? 'member'"
@@ -600,7 +601,7 @@ onMounted(async () => {
     dialogMode.value = 'import';
     workflowStore.workflowDialogTitle = 'Import from DOI Mode';
     workflowStore.workflowDialogMessage =
-      '<strong>Please take a moment to review your data</strong> before proceeding to step 4, and save your imported dataset to our backend. <strong>Once you save</strong>, you can continue reviewing the imported resources and other information.<br><br>The main information you should have a look at is: <strong>tags</strong>, <strong>Description</strong> should be in English, <strong>details related to your account (email)</strong>, and <strong>additional information</strong>.<br><br> When you are ready, you will be able to request publication.';
+      '<strong>Please take a moment to review your data</strong> before proceeding to step 4, and save your imported dataset to our backend. <strong>Once you save</strong>, you can continue reviewing the imported resources and other information.<br><br>The main information you should have a look at is: <strong>keywords</strong>, <strong>Description</strong> should be in English, <strong>details related to the authors (email)</strong>, and <strong>additional information</strong>.<br><br> When you are ready, you will be able to request publication.';
     workflowStore.workflowDialogConfirmText = 'Got it';
     workflowStore.workflowDialogCancelText = 'null';
     showDialog.value = true;
