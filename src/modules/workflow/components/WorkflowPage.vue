@@ -608,6 +608,10 @@ onMounted(async () => {
   }
   try {
     await workflowStore.withLoading(async () => {
+      // SET the user Role
+      if (user.value?.sysadmin === true) {
+        workflowStore.setUserRole(USER_ROLE_SYSTEM_ADMIN);
+      }
       let id = props.datasetId;
       // STORYBOOK
       // PLEASE NOTE – We are currently in the development phase, and an exception is present to make Storybook work.
