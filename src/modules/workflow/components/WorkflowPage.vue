@@ -26,8 +26,8 @@
             <component
               :is="resolvedComponent"
               :key="currentStepNum"
-              :dataset="workflowStore?.localStorageService.dataset"
               v-bind="vm"
+              :dataset="workflowStore.datasetModel?.dataset"
               :showInfoBanner="workflowStore.currentInfoBannerStatus"
               :user-role="workflowStore.userRole ?? 'member'"
               @validate="validate"

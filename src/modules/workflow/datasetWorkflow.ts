@@ -518,8 +518,10 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     applyDatasetDefaults(dataset: DatasetDTO, id: string) {
       // const orgStore = useOrganizationsStore();
       // const firstOrg = orgStore.userOrganizations?.[0];
-      // TODO  IMPORT DOI Create Import rule
-      const isImport = dataset.doi != '';
+
+      const extras = Array.isArray(dataset?.extras) ? dataset.extras : [];
+      const extrasImport = extras.some((e) => e?.key === 'is_import' && String(e?.value) === 'true');
+      const isImport = Boolean(dataset?.is_import ?? extrasImport);
       let publicationObj = { publisher: 'EnviDat', publication_year: String(getYear(new Date())) };
       if (isImport) {
         publicationObj = {
@@ -542,7 +544,7 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
         resource_type_general: 'dataset',
         publication,
         maintainer,
-        // TODO  IMPORT DOI Create Import rule
+
         publication_state: isImport ? 'reserved' : '',
       };
     },

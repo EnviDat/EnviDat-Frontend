@@ -313,7 +313,8 @@ export default {
 
       const order = ['created', 'collected'];
       dates.sort((a, b) => order.indexOf(a.dateType) - order.indexOf(b.dateType));
-      return dates;
+      // Filter to remove the drity data from DOI import
+      return dates.filter((d) => d.dateExplanation != undefined);
     },
     metadataGeoProps() {
       return {

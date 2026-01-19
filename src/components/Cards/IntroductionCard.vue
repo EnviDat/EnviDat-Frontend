@@ -16,22 +16,28 @@
       <v-row no-gutters class="pt-2">
         <v-col>
           <v-row v-if="currentLocalDataset" no-gutters>
-            <v-col cols="7" class="py-2"> Continue creating your dataset: </v-col>
+            <v-col cols="12" md="6" class="py-2"> Continue creating your dataset: </v-col>
 
-            <v-col cols="5" class="py-2"> Clear your local dataset in creation: </v-col>
+            <v-col cols="12" md="6" class="py-2"> Clear your local dataset in creation: </v-col>
 
-            <v-col cols="7" class="pl-1 pr-4">
+            <v-col cols="12" md="6" class="pl-1 pr-4">
               <MetadataCardLocal v-bind="currentLocalDataset" @clickedEvent="$emit('localCardClicked')" />
             </v-col>
 
-            <v-col cols="5" style="display: inline-flex; justify-content: center">
-              <BaseIconButton
+            <v-col cols="12" md="6" style="display: inline-flex; justify-content: start">
+              <BaseRectangleButton
+                color="accent"
+                marginClass="text-black"
+                :button-text="'Delete your local dataset'"
+                @clicked="$emit('clearButtonClicked', $event)"
+              />
+              <!-- <BaseIconButton
                 :icon="mdiClose"
                 color="error"
                 icon-color="black"
                 tooltip-text="Delete your local dataset"
                 @clicked="$emit('clearButtonClicked', $event)"
-              />
+              /> -->
             </v-col>
           </v-row>
 
@@ -42,7 +48,7 @@
                   {{ createText }}
                 </v-col>
               </v-row>
-              <v-row no-gutters class="pt-2" style="align-items: center">
+              <v-row v-if="!currentLocalDataset" no-gutters class="pt-2" style="align-items: center">
                 <v-col cols="auto" class="text-body-2">
                   <div v-html="createSubtitleText"></div>
                 </v-col>
@@ -128,7 +134,7 @@
 import { mdiClose } from '@mdi/js';
 import MetadataCardLocal from '@/components/Cards/MetadataCardLocal.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
-import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+// import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
 export default {
   name: 'IntroductionCard',
@@ -206,7 +212,7 @@ export default {
   components: {
     BaseRectangleButton,
     MetadataCardLocal,
-    BaseIconButton,
+    // BaseIconButton,
   },
 };
 </script>
