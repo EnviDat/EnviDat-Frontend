@@ -136,7 +136,7 @@ export function enhanceAdminWorkflowStep(userRole: string, steps: WorkflowStep[]
         key: 'admininformation',
         component: markRaw(AdminInformation),
         viewModelKey: 'AdminViewModel',
-        icon: 'publicationinfo',
+        icon: 'adminstep',
         status: StepStatus.Disabled,
         errors: null,
       } satisfies WorkflowStep,
