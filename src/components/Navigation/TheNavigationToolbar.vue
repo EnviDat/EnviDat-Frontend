@@ -27,8 +27,21 @@
             <v-col :style="`text-align: right; ${$vuetify.display.xs ? 'line-height: 1rem;' : ''}`">
               {{ signedInUser.fullName }}
             </v-col>
+            <v-col v-if="isUserAdmin && isMetadataPage" class="flex-grow-0">
+              <BaseIconButton
+                class="editButtonNavigationToolbar"
+                :icon="mdiPencil"
+                icon-color="black"
+                color="accent"
+                small
+                elevated
+                :tooltip-text="'Edit Dataset'"
+                tooltip-bottom
+                @clicked="catchAdminEditClick"
+              />
+            </v-col>
 
-            <v-col v-if="editingDatasetName" class="flex-grow-0">
+            <v-col v-if="editingDatasetName && !isUserAdmin" class="flex-grow-0">
               <BaseIconButton
                 class="editButtonNavigationToolbar"
                 :icon="mdiPencil"
@@ -104,6 +117,7 @@ import ModeView from '@/components/Layouts/ModeView.vue';
 import EnviDatLogo from '@/assets/logo/EnviDat_logo_32.png';
 import UserMenu from '@/modules/user/components/UserMenu.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+
 import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
 
 export default {
@@ -136,6 +150,12 @@ export default {
     hasLoggedUser() {
       return this.signedInUser || {};
     },
+    isUserAdmin() {
+      return this.signedInUser.sysadmin;
+    },
+    isMetadataPage() {
+      return this.$route.name === 'MetadataDetailPage';
+    },
   },
   methods: {
     catchUserMenuItemClicked(item) {
@@ -151,6 +171,9 @@ export default {
     },
     catchContinueClick() {
       this.$emit('continueClick');
+    },
+    catchAdminEditClick() {
+      this.$emit('adminEditClick');
     },
     // Load organization IDs for the logged-in user. This is used to determine whether the "Create Dataset" item should be shown in the dropdown menu.
     async fetchUserOrganizationId(forceReload = false) {
