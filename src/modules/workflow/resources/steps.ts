@@ -127,7 +127,7 @@ export function enhanceAdminWorkflowStep(userRole: string, steps: WorkflowStep[]
     return [
       ...steps,
       {
-        id: steps.length + 1,
+        id: steps.length,
         title: adminStepTitle,
         description: 'Custom fields, Project Assignment',
         isEditable: true,
@@ -136,7 +136,7 @@ export function enhanceAdminWorkflowStep(userRole: string, steps: WorkflowStep[]
         key: 'admininformation',
         component: markRaw(AdminInformation),
         viewModelKey: 'AdminViewModel',
-        icon: 'publicationinfo',
+        icon: 'adminstep',
         status: StepStatus.Disabled,
         errors: null,
       } satisfies WorkflowStep,

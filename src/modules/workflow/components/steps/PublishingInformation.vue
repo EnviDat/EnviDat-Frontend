@@ -2,9 +2,7 @@
   <v-container id="MetadataCreationPublicationInfo" fluid class="pa-4">
     <!-- Title box -->
     <v-row class="mb-0">
-      <v-col class="text-h5 font-weight-bold" cols="12">
-        {{ labels.title }}
-      </v-col>
+      <v-col class="text-h5 font-weight-bold" cols="12"> {{ labels.title }} </v-col>
       <!-- <v-col cols="12" class="text-body-1">
         {{ labels.instructions }}
       </v-col> -->
@@ -149,6 +147,7 @@ export default {
     publicationYear: { type: String, default: undefined },
     version: { type: String, default: undefined },
     datasetId: { type: String, default: undefined },
+    dataset: { type: Object, default: () => ({}) },
 
     contactEmail: { type: String, default: '' },
     contactFirstName: { type: String, default: '' },
@@ -282,6 +281,8 @@ export default {
 
     async catchPublicationStateChange(event) {
       const id = this.metadataId || this.datasetId;
+      const extras = Array.isArray(this.dataset?.extras) ? this.dataset.extras : [];
+      const isImportDataset = extras.some((entry) => entry?.key === 'is_import' && String(entry?.value) === 'true');
       // this.doiErrorLocal = undefined;
       // this.doiMsgLocal = '';
 
@@ -297,7 +298,7 @@ export default {
           // this.doiMsgLocal = 'Publication requested. An admin will review it.';
         } else if (event === 'DOI_PUBLISH') {
           await this.workflowStore.withLoading(
-            () => this.workflowStore.backendStorageService.publishDataset(id),
+            () => this.workflowStore.backendStorageService.publishDataset(id, isImportDataset),
             'doi',
           );
           // this.doiMsgLocal = 'Dataset published.';

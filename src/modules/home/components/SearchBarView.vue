@@ -1,7 +1,7 @@
 <template>
   <v-container :style="containerStyle" class="pa-0 mb-10 mb-md-0 overflow-hidden">
     <v-row align="center" justify="space-between" class="grow flex-column" no-gutters>
-      <v-col class="grow py-1">
+      <v-col class="grow py-2">
         <v-text-field
           class="ma-0 main-search-bar"
           variant="outlined"

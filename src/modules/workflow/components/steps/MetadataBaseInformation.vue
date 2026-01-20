@@ -203,6 +203,10 @@ import InfoBanner from '@/modules/workflow/components/steps/InformationBanner.vu
 export default {
   name: 'MetadataBaseInformation',
   props: {
+    dataset: {
+      type: Object,
+      default: null,
+    },
     metadataTitle: { type: String, default: '' },
     metadataDescription: { type: String, default: '' },
     validationErrors: { type: Object, default: () => {} },
@@ -221,6 +225,7 @@ export default {
         metadataTitle: this.metadataTitleField || 'Your Research Dataset Title',
         tags: this.keywordsField,
         showCloseButton: false,
+        doi: this.dataset?.doi,
       };
 
       enhanceTitleImg(previewEntry);

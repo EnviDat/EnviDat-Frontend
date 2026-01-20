@@ -10,7 +10,7 @@
         {{ title }}
       </v-card-text>
       <v-card-text>
-        {{ message }}
+        <div v-html="message"></div>
       </v-card-text>
       <v-card-actions class="pa-7">
         <BaseRectangleButton

@@ -42,6 +42,7 @@ export const initAxios = (app, store) => {
     process.env.VITE_CONFIG_URL,
     'https://envicloud.wsl.ch/',
     'https://os.zhdk.cloud.switch.ch',
+    'https://os.unil.cloud.switch.ch',
   ];
 
   axios.interceptors.request.use(

@@ -69,7 +69,6 @@
         <v-text-field
           :label="labels.dataObjectIdentifier"
           readonly
-          hint="DOI can be changed in the Publication Status of the dataset"
           hide-details="auto"
           persistent-hint
           :error-messages="validationErrors.doi"
@@ -87,10 +86,9 @@
           :id="METADATA_STATE_INVISIBLE"
           :model-value="visibilityState"
           :items="possibleVisibilityStates"
-          :readonly="isReadOnly('visibility')"
+          :readonly="true"
           hide-details="auto"
           persistent-hint
-          :hint="readOnlyHint('visibility')"
           :prepend-icon="mdiEye"
           :menu-icon="mdiArrowDownDropCircleOutline"
           :label="labels.visibilityState"

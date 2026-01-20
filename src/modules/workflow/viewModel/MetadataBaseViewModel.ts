@@ -28,8 +28,8 @@ export class MetadataBaseViewModel extends AbstractEditViewModel {
       .string()
       .required('Dataset title is required')
       .min(5, 'Dataset title must be at least 5 characters')
-      .max(180, 'Dataset title has a maximum of 180 characters')
-      .matches(/^[\w\söüä-]+$/, 'Use only letters and numbers for the title'),
+      .max(180, 'Dataset title has a maximum of 180 characters'),
+    // .matches(/^[\w\söüä-]+$/, 'Use only letters and numbers for the title'),
     metadataDescription: yup
       .string()
       .required('Dataset description is required')

@@ -817,3 +817,23 @@ export function getMetadataUrlFromTitle(title) {
 
   return urlName;
 }
+
+export function getMetadataUrlFromTitleSanitized(title) {
+  let urlName = title?.toLowerCase() || '';
+  urlName = urlName.trim().replaceAll(' ', '-');
+
+  urlName = urlName.replaceAll('ä', 'ae');
+  urlName = urlName.replaceAll('ö', 'oe');
+  urlName = urlName.replaceAll('ü', 'ue');
+
+  // replace any non-alphanumeric character with "-"
+  urlName = urlName.replace(/[^a-z0-9-]/g, '-');
+  // collapse multiple dashes and trim
+  urlName = urlName.replace(/-+/g, '-').replace(/^-|-$/g, '');
+
+  if (urlName.length > 80) {
+    urlName = urlName.substring(0, 80);
+  }
+
+  return urlName;
+}

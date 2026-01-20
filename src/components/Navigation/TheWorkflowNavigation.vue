@@ -149,7 +149,7 @@
       <!-- TODO get from the backend the status of the dataset and not use workflowStore.isStepSaveConfirmed -->
       <div
         @click="reserveDoi"
-        :class="{ disabled: !isBackend }"
+        :class="{ disabled: !isBackend && !hasDoi }"
         class="navigationWorkflow__actions--item d-flex flex-column"
       >
         <v-progress-circular v-if="doiLoading" color="primary" indeterminate></v-progress-circular>
@@ -262,19 +262,19 @@ const props = defineProps({
 });
 
 const isBackend = computed(() => workflowStore.dataSource === 'backend');
+const dataset = computed(() =>
+  isBackend.value ? workflowStore.backendStorageService?.dataset : props.currentDataset?.dataset,
+);
 const doi = computed(() => {
-  if (!isBackend.value) return undefined;
-  const d = workflowStore.backendStorageService?.dataset?.doi;
+  const d = dataset.value?.doi;
   return typeof d === 'string' && d.trim() === '' ? undefined : d;
 });
 
 const hasDoi = computed(() => !!(doi.value && doi.value.trim()));
 
 const publicationState = computed(() => {
-  let state = workflowStore.backendStorageService?.dataset?.publication_state;
-  if (workflowStore.dataSource !== 'backend') {
-    state = 'draft';
-  }
+  let state = dataset.value?.publication_state;
+  if (!state && workflowStore.dataSource !== 'backend') state = 'draft';
   return mapPublicationState(state);
 });
 
