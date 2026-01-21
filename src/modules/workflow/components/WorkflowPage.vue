@@ -659,6 +659,17 @@ onMounted(async () => {
       notify.success('Dataset imported successfully');
     }
   } catch (e: any) {
+    const status = e?.status || e?.response?.status;
+    if (status === 409) {
+      dialogMode.value = 'unauthorized';
+      workflowStore.workflowDialogTitle = 'Publication action failed';
+      workflowStore.workflowDialogMessage = 'The DOI has already been registered in the EnviDat portal.';
+      workflowStore.workflowDialogConfirmText = 'Go to Dashboard';
+      workflowStore.workflowDialogCancelText = 'null';
+      showDialog.value = true;
+      return;
+    }
+
     const slug = workflowStore?.datasetModel?.dataset?.name;
     const is404 = e?.status === 404 || e?.response?.status === 404;
 
