@@ -277,6 +277,8 @@ const handleDialogConfirm = () => {
     goToDashboard();
   } else if (dialogMode.value === 'import') {
     closeDialog();
+  } else if (!dialogMode.value) {
+    closeDialog();
   } else {
     goToSignIn();
   }

@@ -279,6 +279,30 @@ export default {
       return getReadOnlyHint(fieldKey);
     },
 
+    openServerErrorDialog(error) {
+      const status = error?.status || error?.response?.status;
+      if (status === 409) {
+        this.workflowStore.workflowDialogTitle = 'Publication action failed';
+        this.workflowStore.workflowDialogMessage =
+          'DOI already exists. You cannot publish multiple datasets with the same DOI.';
+        this.workflowStore.workflowDialogConfirmText = 'Close';
+        this.workflowStore.workflowDialogCancelText = 'null';
+        this.workflowStore.openWorkflowDialog = true;
+        return;
+      }
+
+      const apiError = error?.response?.data?.error;
+      const message = apiError?.message || error?.message || 'Unexpected error';
+      const details = apiError?.details || apiError?.__type || error?.response?.statusText;
+      const fullMessage = details ? `${message}<br><br>${details}` : message;
+
+      this.workflowStore.workflowDialogTitle = 'Publication action failed';
+      this.workflowStore.workflowDialogMessage = fullMessage;
+      this.workflowStore.workflowDialogConfirmText = 'Close';
+      this.workflowStore.workflowDialogCancelText = 'null';
+      this.workflowStore.openWorkflowDialog = true;
+    },
+
     async catchPublicationStateChange(event) {
       const id = this.metadataId || this.datasetId;
       const extras = Array.isArray(this.dataset?.extras) ? this.dataset.extras : [];
@@ -288,15 +312,18 @@ export default {
 
       try {
         if (event === 'DOI_RESERVE') {
+          this.workflowStore.openSaveDialog = false;
           await this.workflowStore.withLoading(() => this.workflowStore.backendStorageService.requestDoi(id), 'doi');
           // this.doiMsgLocal = 'DOI reserved successfully.';
         } else if (event === 'DOI_REQUEST') {
+          this.workflowStore.openSaveDialog = false;
           await this.workflowStore.withLoading(
             () => this.workflowStore.backendStorageService.requestPublication(id),
             'doi',
           );
           // this.doiMsgLocal = 'Publication requested. An admin will review it.';
         } else if (event === 'DOI_PUBLISH') {
+          this.workflowStore.openSaveDialog = false;
           await this.workflowStore.withLoading(
             () => this.workflowStore.backendStorageService.publishDataset(id, isImportDataset),
             'doi',
@@ -305,6 +332,8 @@ export default {
         }
       } catch (e) {
         // this.doiErrorLocal = e?.message ?? 'Unexpected error';
+
+        this.openServerErrorDialog(e);
         console.error(e);
       }
     },
