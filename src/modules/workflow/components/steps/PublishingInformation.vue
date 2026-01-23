@@ -282,7 +282,7 @@ export default {
     openServerErrorDialog(error) {
       const status = error?.status || error?.response?.status;
       if (status === 409) {
-        this.workflowStore.workflowDialogTitle = 'Publication action failed';
+        this.workflowStore.workflowDialogTitle = 'Import action failed';
         this.workflowStore.workflowDialogMessage = 'The DOI has already been registered in the EnviDat portal.';
         this.workflowStore.workflowDialogConfirmText = 'Close';
         this.workflowStore.workflowDialogCancelText = 'null';
