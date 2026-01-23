@@ -603,7 +603,7 @@ onMounted(async () => {
     dialogMode.value = 'import';
     workflowStore.workflowDialogTitle = 'Import from DOI Mode';
     workflowStore.workflowDialogMessage =
-      '<strong>Please take a moment to review your data</strong> before proceeding to step 4, and save your imported dataset to our backend. <strong>Once you save</strong>, you can continue reviewing the imported resources and other information.<br><br>The main information you should have a look at is: <strong>keywords</strong>, <strong>Description</strong> should be in English, <strong>details related to the authors (email)</strong>, and <strong>additional information</strong>.<br><br> When you are ready, you will be able to request publication.';
+      '<strong>Please take a moment to review your data</strong> before proceeding to step 4, and save your imported dataset to our backend. <strong>Once you save</strong>, you can continue reviewing the imported resources and other information.<br><br>The main information you should have a look at is: <strong>keywords</strong>, <strong>description</strong> should be in English, <strong>details related to the authors (email)</strong>, and <strong>additional information</strong>.<br><br> When you are ready, you will be able to request publication.';
     workflowStore.workflowDialogConfirmText = 'Got it';
     workflowStore.workflowDialogCancelText = 'null';
     showDialog.value = true;
@@ -662,7 +662,7 @@ onMounted(async () => {
     const status = e?.status || e?.response?.status;
     if (status === 409) {
       dialogMode.value = 'unauthorized';
-      workflowStore.workflowDialogTitle = 'Publication action failed';
+      workflowStore.workflowDialogTitle = 'Import action failed';
       workflowStore.workflowDialogMessage = 'The DOI has already been registered in the EnviDat portal.';
       workflowStore.workflowDialogConfirmText = 'Go to Dashboard';
       workflowStore.workflowDialogCancelText = 'null';
