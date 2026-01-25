@@ -235,9 +235,22 @@ const showDialogSignInNeeded = () => {
   clearWorkflowDialogOverrides();
 };
 
-const canEnterWorkflow = () => {
+const waitForUserLoading = () =>
+  new Promise<void>((resolve) => {
+    if (user.value || !userLoading.value) return resolve();
+    const stop = watch([user, userLoading], ([u, loading]) => {
+      if (u || !loading) {
+        stop();
+        resolve();
+      }
+    });
+  });
+
+const canEnterWorkflow = async () => {
   if (user.value) return true;
-  if (!userLoading.value) showDialogSignInNeeded();
+  await waitForUserLoading();
+  if (user.value) return true;
+  showDialogSignInNeeded();
   return false;
 };
 
@@ -598,7 +611,7 @@ const datasetExistsInLocalStorage = (datasetId?: string) => {
  *  ON MOUNTED
  * ========================= */
 onMounted(async () => {
-  if (!canEnterWorkflow()) return;
+  if (!(await canEnterWorkflow())) return;
   if (importModeActive.value) {
     dialogMode.value = 'import';
     workflowStore.workflowDialogTitle = 'Import from DOI Mode';
