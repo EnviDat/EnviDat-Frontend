@@ -135,9 +135,10 @@ export default {
       return getUserPickerObjects(this.existingEnviDatUsers);
     },
     preselectAuthorEmails() {
-      return this.previewAuthors
+      const raw = this.previewAuthors
         ? this.previewAuthors.map((author: Author) => author.email)
         : this.authors.map((author: Author) => author.email);
+      return raw.filter((email) => typeof email === 'string' && email.trim() !== '');
     },
   },
   methods: {
