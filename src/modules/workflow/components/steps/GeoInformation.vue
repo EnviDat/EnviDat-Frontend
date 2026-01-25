@@ -302,19 +302,30 @@ export default {
     },
     datesField() {
       const dates = this.previewDates.length ? this.previewDates : [...this.dates];
+      const normalizedDates = dates.map((entry) => ({
+        ...entry,
+        date: this.normalizeYearOnlyDate(entry?.date),
+        endDate: this.normalizeYearOnlyDate(entry?.endDate),
+        dateStart: this.normalizeYearOnlyDate(entry?.dateStart),
+        dateEnd: this.normalizeYearOnlyDate(entry?.dateEnd),
+      }));
 
       this.ensureDateEntry(
-        dates,
+        normalizedDates,
         'created',
         'Date range during which the research data was finalized or formally created',
       );
 
-      this.ensureDateEntry(dates, 'collected', 'Date range during which the research data was gathered or collected.');
+      this.ensureDateEntry(
+        normalizedDates,
+        'collected',
+        'Date range during which the research data was gathered or collected.',
+      );
 
       const order = ['created', 'collected'];
-      dates.sort((a, b) => order.indexOf(a.dateType) - order.indexOf(b.dateType));
+      normalizedDates.sort((a, b) => order.indexOf(a.dateType) - order.indexOf(b.dateType));
       // Filter to remove the drity data from DOI import
-      return dates.filter((d) => d.dateExplanation != undefined);
+      return normalizedDates.filter((d) => d.dateExplanation != undefined);
     },
     metadataGeoProps() {
       return {
@@ -431,6 +442,14 @@ export default {
         arr.push(obj);
       }
       obj.dateExplanation = explanation;
+    },
+    normalizeYearOnlyDate(value) {
+      if (typeof value !== 'string') return value;
+      const trimmed = value.trim();
+      if (/^\d{4}$/.test(trimmed)) {
+        return `${trimmed}-01-01`;
+      }
+      return value;
     },
 
     dateChanged(index, prop, val) {
