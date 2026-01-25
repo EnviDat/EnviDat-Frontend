@@ -8,6 +8,7 @@
     </v-row>
 
     <!-- Info Banner -->
+
     <v-row>
       <InfoBanner :show="showInfoBanner" :icon="mdiInformationOutline" @setInfoBanner="$emit('setInfoBanner', $event)">
         <p>
