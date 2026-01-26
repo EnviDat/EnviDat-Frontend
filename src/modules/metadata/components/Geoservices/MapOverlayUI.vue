@@ -138,18 +138,15 @@ export default {
     },
   },
   methods: {
-    loadBaseMapImages() {
+    async loadBaseMapImages() {
       if (this.$store) {
-        this.baseMapSatelliteImg = getImage('baseMap-satellite-icon');
-        this.baseMapStreetsImg = getImage('baseMap-streets-icon');
+        this.baseMapSatelliteImg = await getImage('baseMap-satellite-icon');
+        this.baseMapStreetsImg = await getImage('baseMap-streets-icon');
       } else {
-        // Fallback import .png
-        import('@/assets/map/baseMap-satellite-icon.png').then((imgImport) => {
-          this.baseMapSatelliteImg = imgImport.default;
-        });
-        import('@/assets/map/baseMap-streets-icon.png').then((imgImport) => {
-          this.baseMapStreetsImg = imgImport.default;
-        });
+        const imgImport = await import('@/assets/map/baseMap-satellite-icon.png');
+        this.baseMapSatelliteImg = imgImport.default;
+        const imgImport2 = await import('@/assets/map/baseMap-streets-icon.png');
+        this.baseMapStreetsImg = imgImport2.default;
       }
     },
     changeOpacity(value) {

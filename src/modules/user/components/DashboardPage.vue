@@ -18,6 +18,7 @@
           :introText="userDashboardConfig.introText"
           :feedbackText="userDashboardConfig.feedbackText"
           :oldDashboardUrl="oldDashboardUrl"
+          :importWorkflowActive="importWorkflowActive"
           :createClickCallback="organizationsStore.canCreateDatasets ? createClickCallback : null"
           :importClickCallback="organizationsStore.canCreateDatasets ? importClickCallback : null"
           :editingClickCallback="editingClickCallback"
@@ -327,6 +328,9 @@ export default {
     ...mapGetters(METADATA_NAMESPACE, ['allTags', 'updatingTags', 'metadatasContent']),
     lastDataset() {
       return this.lastEditedDataset;
+    },
+    importWorkflowActive() {
+      return this.config?.userEditMetadataConfig?.importWorkflowActive;
     },
     userDashboardConfig() {
       return this.config?.userDashboardConfig || {};
