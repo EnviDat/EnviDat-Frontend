@@ -33,6 +33,10 @@ export const ACTION_LOAD_METADATA_CONTENT_BY_ID = () => {
   return 'package_show';
 };
 
+export const ACTION_IMPORT_METADATA_CONTENT_BY_ID = () => {
+  return '/converters-api/external-doi/convert';
+};
+
 export const CLEAN_CURRENT_METADATA = 'CLEAN_CURRENT_METADATA';
 
 export const SEARCH_METADATA = 'SEARCH_METADATA';

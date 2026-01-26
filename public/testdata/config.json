@@ -143,6 +143,7 @@
     "decemberParticles": true
   },
   "userEditMetadataConfig": {
+    "importWorkflowActive": false,
     "doiWorkflowActive": true,
     "publicationYearsList": 30,
     "publicationMaxFunders": 5,

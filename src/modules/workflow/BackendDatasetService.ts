@@ -15,7 +15,10 @@ import { urlRewrite } from '@/factories/apiFactory';
 import { Dataset } from '@/modules/workflow/Dataset.ts';
 import { DatasetService, User } from '@/types/modelTypes';
 import { DatasetDTO, ResourceDTO } from '@/types/dataTransferObjectsTypes';
-import { ACTION_LOAD_METADATA_CONTENT_BY_ID } from '@/store/metadataMutationsConsts';
+import {
+  ACTION_LOAD_METADATA_CONTENT_BY_ID,
+  ACTION_IMPORT_METADATA_CONTENT_BY_ID,
+} from '@/store/metadataMutationsConsts';
 import { stringifyResourceForBackend } from '@/factories/mappingFactory';
 import { convertJSON } from '@/factories/convertJSON';
 
@@ -59,6 +62,25 @@ export class BackendDatasetService implements DatasetService {
     try {
       const response = await axios.get(url);
       this.dataset = new Dataset(response.data.result);
+    } catch (e: unknown) {
+      console.error(e);
+      throw e;
+    }
+
+    this.loadingDataset = false;
+    return this.dataset;
+  }
+
+  async importDataset(id: string, orgId?: string): Promise<DatasetDTO> {
+    this.loadingDataset = true;
+    const resolvedOrgId = orgId;
+    const doi = id;
+    const actionUrl = ACTION_IMPORT_METADATA_CONTENT_BY_ID();
+    const url = urlRewrite(`${actionUrl}?doi=${doi}&owner_org=${resolvedOrgId}&add-placeholders=true`, '', API_ROOT);
+
+    try {
+      const response = await axios.get(url);
+      this.dataset = new Dataset(response.data);
     } catch (e: unknown) {
       console.error(e);
       throw e;
@@ -184,9 +206,14 @@ export class BackendDatasetService implements DatasetService {
     });
   }
 
-  private async runDoiAction(actionFactory: () => string, metadataId: string) {
+  private async runDoiAction(actionFactory: () => string, metadataId: string, isImportDataset = false) {
     const actionUrl = actionFactory();
-    let url = extractBodyIntoUrl(actionUrl, { 'package-id': metadataId });
+    const params: Record<string, unknown> = { 'package-id': metadataId };
+
+    if (isImportDataset) {
+      params['is-external-doi'] = true;
+    }
+    let url = extractBodyIntoUrl(actionUrl, params);
     url = urlRewrite(url, API_DOI_BASE, API_ROOT);
 
     try {
@@ -214,8 +241,8 @@ export class BackendDatasetService implements DatasetService {
     return this.runDoiAction(ACTION_DOI_REQUEST, metadataId);
   }
 
-  async publishDataset(metadataId: string) {
-    return this.runDoiAction(ACTION_DOI_PUBLISH, metadataId);
+  async publishDataset(metadataId: string, isImportDataset: boolean) {
+    return this.runDoiAction(ACTION_DOI_PUBLISH, metadataId, isImportDataset);
   }
 
   async createDataset(dataset?: DatasetDTO, user?: User): Promise<DatasetDTO> {
@@ -231,6 +258,14 @@ export class BackendDatasetService implements DatasetService {
     // maintainer TODO DOMINIK check if we need it
     const datasetWithDefault = datasetWorkflowStore.applyDatasetDefaults(dataset ?? ({} as DatasetDTO), '');
 
+    // IMPORT logic, add to the package_create the value is_import true
+    const isImport = Boolean((dataset as any)?.is_import ?? (dataset as any)?.isImportDataset);
+    if (isImport) {
+      const extras = Array.isArray(datasetWithDefault.extras) ? datasetWithDefault.extras : [];
+      extras.push({ key: 'is_import', value: 'true' });
+      datasetWithDefault.extras = extras;
+    }
+
     const actionUrl = ACTION_METADATA_CREATION_DATASET();
     const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
@@ -239,6 +274,7 @@ export class BackendDatasetService implements DatasetService {
     this.loadingDataset = true;
     try {
       const response = await axios.post(url, postData);
+      console.log(response);
       return new Dataset(response.data.result);
     } catch (e: any) {
       const data = e?.response?.data;

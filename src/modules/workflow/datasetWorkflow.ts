@@ -26,7 +26,7 @@ import type { WorkflowStep } from '@/types/workflow';
 import { StepStatus, WorkflowMode } from '@/modules/workflow/utils/workflowEnums';
 
 import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
-import { getMetadataUrlFromTitle } from '@/factories/mappingFactory';
+import { getMetadataUrlFromTitleSanitized } from '@/factories/mappingFactory';
 
 import { makeMaintainerFromUser } from '@/modules/workflow/utils/formatPostData';
 import { LOCAL_DATASET_KEY } from '@/factories/metadataConsts';
@@ -60,6 +60,11 @@ export interface DatasetWorkflowState {
 
   listOfReadOnlyFields: string[];
   openSaveDialog: boolean;
+  openWorkflowDialog: boolean;
+  workflowDialogTitle?: string;
+  workflowDialogMessage?: string;
+  workflowDialogConfirmText?: string;
+  workflowDialogCancelText?: string;
   localStorageService: LocalStorageDatasetService;
   userRole?: string;
   uploadingResourceId?: string;
@@ -103,6 +108,11 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     localStorageService: new LocalStorageDatasetService(),
     backendStorageService: new BackendDatasetService(),
     openSaveDialog: false,
+    openWorkflowDialog: false,
+    workflowDialogTitle: undefined,
+    workflowDialogMessage: undefined,
+    workflowDialogConfirmText: undefined,
+    workflowDialogCancelText: undefined,
     isStepSaveConfirmed: false,
     // list of readOnlyFields
     // if you need to find those items in the code just search for this isReadOnly('visibility')
@@ -284,13 +294,22 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     // This function is the page initializer and is called on mounted by bootstrapWorkflow.
     // PLEASE NOTE – We are currently in the development phase, and an exception is present to make Storybook work.
     // We need to fine-tune this logic.
-    async bootstrapWorkflow(datasetId?: string) {
+    async bootstrapWorkflow(
+      datasetId?: string,
+      options?: { importSource?: string; importId?: string; importOrgId?: string },
+    ) {
       return this.withLoading(async () => {
-        const { dto, mode, source } = await resolveBootstrap<DatasetDTO>(datasetId, {
-          loadBackend: (id) => this.backendStorageService.loadDataset(id),
-          loadLocal: (id) => this.localStorageService.loadDataset(id),
-          createLocal: (init) => this.localStorageService.createDataset(init as DatasetDTO),
-        });
+        const { dto, mode, source } = await resolveBootstrap<DatasetDTO>(
+          datasetId,
+          {
+            loadBackend: (id) => this.backendStorageService.loadDataset(id),
+            importBackend: (id, orgId) => this.backendStorageService.importDataset(id, orgId),
+            loadLocal: (id) => this.localStorageService.loadDataset(id),
+            createLocal: (init) => this.localStorageService.createDataset(init as DatasetDTO),
+            seedLocalFromImport: (dto) => this.localStorageService.createDataset(dto as DatasetDTO),
+          },
+          options,
+        );
         this.dataSource = source;
         await this.initializeDataset(dto, mode);
         return { id: dto.id, mode };
@@ -500,8 +519,18 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
       // const orgStore = useOrganizationsStore();
       // const firstOrg = orgStore.userOrganizations?.[0];
 
-      const publicationObj = { publisher: 'EnviDat', publication_year: String(getYear(new Date())) };
+      const extras = Array.isArray(dataset?.extras) ? dataset.extras : [];
+      const extrasImport = extras.some((e) => e?.key === 'is_import' && String(e?.value) === 'true');
+      const isImport = Boolean(dataset?.is_import ?? extrasImport);
+      let publicationObj = { publisher: 'EnviDat', publication_year: String(getYear(new Date())) };
+      if (isImport) {
+        publicationObj = {
+          publisher: dataset.publication?.publisher,
+          publication_year: dataset.publication?.publication_year,
+        };
+      }
       const publication = JSON.stringify(publicationObj);
+
       const maintainer = this.currentUser ? makeMaintainerFromUser(this.currentUser) : (dataset?.maintainer ?? '');
 
       // '{"email":"enrico.peruselli@wsl.ch","given_name":"Enrico","name":"Peruselli"}',
@@ -510,11 +539,13 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
         id: id || '',
         // owner_org: dataset.owner_org,
         // organization: dataset.organization ? organizations : undefined,
-        name: dataset.title ? getMetadataUrlFromTitle(dataset.title) : '',
+        name: dataset.title ? getMetadataUrlFromTitleSanitized(dataset.title) : '',
         private: true,
         resource_type_general: 'dataset',
         publication,
         maintainer,
+
+        publication_state: isImport ? 'reserved' : '',
       };
     },
     computeUserRole(args: {

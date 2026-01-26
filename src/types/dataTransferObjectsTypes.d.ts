@@ -78,6 +78,7 @@ export interface DatasetDTO {
   author: AuthorDTO[];
   author_email: string | null;
   creator_user_id: string;
+  is_import: boolean;
   date: string;
   doi: string;
   funding: string;

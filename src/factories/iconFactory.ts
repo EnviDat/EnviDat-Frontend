@@ -34,6 +34,7 @@ import {
   mdiPencilOff,
   mdiClose,
   mdiEyeOutline,
+  mdiShieldCrown,
 } from '@mdi/js';
 
 const map = {
@@ -58,6 +59,7 @@ const map = {
   uploadinfo: mdiFolderArrowUp,
   relatedinfo: mdiVectorLink,
   publicationinfo: mdiEarth,
+  adminstep: mdiShieldCrown,
   success: mdiCheck,
   alert: mdiAlertCircle,
   firststep: mdiNumeric1Circle,
