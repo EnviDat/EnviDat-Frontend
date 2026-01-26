@@ -66,7 +66,7 @@
               </v-row>
             </v-col>
 
-            <v-col cols="12" md="6" class="pl-md-4">
+            <v-col cols="12" md="6" class="pl-md-4" v-if="importWorkflowActive">
               <v-row no-gutters class="pt-3" style="align-items: center">
                 <v-col cols="auto" class="text-h6"> {{ doiText }} </v-col>
               </v-row>
@@ -175,6 +175,10 @@ export default {
     currentLocalDataset: {
       type: Object,
       default: undefined,
+    },
+    importWorkflowActive: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {
