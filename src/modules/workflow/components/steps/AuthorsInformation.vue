@@ -8,6 +8,7 @@
     </v-row>
 
     <!-- Info Banner -->
+
     <v-row>
       <InfoBanner :show="showInfoBanner" :icon="mdiInformationOutline" @setInfoBanner="$emit('setInfoBanner', $event)">
         <p>
@@ -241,6 +242,15 @@ export default {
     },
   },
   methods: {
+    authorKey(author: Author) {
+      const email = author?.email?.trim();
+      if (email) return `email:${email.toLowerCase()}`;
+      const identifier = author?.identifier?.trim();
+      if (identifier) return `id:${identifier}`;
+      const name = getAuthorName(author) || '';
+      const affiliation = author?.affiliation || '';
+      return `name:${name.toLowerCase()}|aff:${affiliation.toLowerCase()}`;
+    },
     isReadOnly(dateProperty) {
       return isReadOnlyField(dateProperty);
     },
@@ -326,9 +336,17 @@ export default {
       const validData = this.authorViewModel.validate(author);
 
       if (validData) {
-        const updatedAuthors = updateEditingArray(this.authors, author, 'email');
+        const currentAuthors = [...this.authors];
+        const targetKey = this.authorKey(this.selectedAuthor || author);
+        const index = currentAuthors.findIndex((a) => this.authorKey(a) === targetKey);
 
-        this.saveAuthorsList({ authors: updatedAuthors });
+        if (index === -1) {
+          currentAuthors.unshift(author);
+        } else {
+          currentAuthors[index] = { ...currentAuthors[index], ...author };
+        }
+
+        this.saveAuthorsList({ authors: currentAuthors, replace: true });
 
         this.resetAuthorViewModel();
       }

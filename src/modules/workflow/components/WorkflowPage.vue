@@ -27,6 +27,7 @@
               :is="resolvedComponent"
               :key="currentStepNum"
               v-bind="vm"
+              :dataset="workflowStore.datasetModel?.dataset"
               :showInfoBanner="workflowStore.currentInfoBannerStatus"
               :user-role="workflowStore.userRole ?? 'member'"
               @validate="validate"
@@ -127,30 +128,57 @@ const vm = computed(() => workflowStore.currentViewModel);
 // const iconScroll = computed(() => extractIcons('scroll'));
 const nextStepBlock = ref(null);
 const userLoading = computed(() => (store.state as any)[USER_SIGNIN_NAMESPACE]?.userLoading ?? false);
-const showDialog = ref(false);
-const dialogMode = ref<'signin' | 'unauthorized' | null>(null);
+const clearWorkflowDialogOverrides = () => {
+  workflowStore.workflowDialogTitle = undefined;
+  workflowStore.workflowDialogMessage = undefined;
+  workflowStore.workflowDialogConfirmText = undefined;
+  workflowStore.workflowDialogCancelText = undefined;
+};
+
+const importModeActive = computed(() => {
+  return route?.query?.doi != null && route?.query?.import === 'fromDoi';
+});
+
+const showDialog = computed({
+  get: () => workflowStore?.openWorkflowDialog ?? false,
+  set: (val: boolean) => {
+    if (workflowStore) workflowStore.openWorkflowDialog = val;
+    if (!val) clearWorkflowDialogOverrides();
+  },
+});
+const dialogMode = ref<'signin' | 'unauthorized' | 'import' | null>(null);
 const isBlocked = computed(() => showDialog.value);
 
 const dialogTitle = computed(() => {
+  if (workflowStore.workflowDialogTitle !== undefined) return workflowStore.workflowDialogTitle;
   if (dialogMode.value === 'unauthorized') return 'Not authorized';
-  return 'Please Sign In';
+  if (dialogMode.value === 'signin') return 'Please Sign In';
+  return '';
 });
 
 const dialogMessage = computed(() => {
+  if (workflowStore.workflowDialogMessage !== undefined) return workflowStore.workflowDialogMessage;
   if (dialogMode.value === 'unauthorized') {
     return 'You are not authorized to edit this dataset. Please go to your dashboard and select one of your datasets from the list.';
   }
-  return 'For dataset editing you need to be signed in.';
+  if (dialogMode.value === 'signin') {
+    return 'For dataset editing you need to be signed in.';
+  }
+  return '';
 });
 
 const dialogCancelText = computed(() => {
+  if (workflowStore.workflowDialogCancelText !== undefined) return workflowStore.workflowDialogCancelText;
   if (dialogMode.value === 'unauthorized') return 'null';
-  return 'Go to Home';
+  if (dialogMode.value === 'signin') return 'Go to Home';
+  return 'null';
 });
 
 const dialogConfirmText = computed(() => {
+  if (workflowStore.workflowDialogConfirmText !== undefined) return workflowStore.workflowDialogConfirmText;
   if (dialogMode.value === 'unauthorized') return 'Go to Dashboard';
-  return 'Sign In';
+  if (dialogMode.value === 'signin') return 'Sign In';
+  return '';
 });
 
 /* use external orchestration */
@@ -204,11 +232,25 @@ const resolvedComponent = computed(() => {
 const showDialogSignInNeeded = () => {
   dialogMode.value = 'signin';
   showDialog.value = true;
+  clearWorkflowDialogOverrides();
 };
 
-const canEnterWorkflow = () => {
+const waitForUserLoading = () =>
+  new Promise<void>((resolve) => {
+    if (user.value || !userLoading.value) return resolve();
+    const stop = watch([user, userLoading], ([u, loading]) => {
+      if (u || !loading) {
+        stop();
+        resolve();
+      }
+    });
+  });
+
+const canEnterWorkflow = async () => {
   if (user.value) return true;
-  if (!userLoading.value) showDialogSignInNeeded();
+  await waitForUserLoading();
+  if (user.value) return true;
+  showDialogSignInNeeded();
   return false;
 };
 
@@ -229,6 +271,10 @@ const goToDashboard = () => {
   dialogMode.value = null;
   router.push({ name: USER_DASHBOARD_PAGENAME });
 };
+const closeDialog = () => {
+  showDialog.value = false;
+  dialogMode.value = null;
+};
 
 const handleDialogClose = () => {
   if (dialogMode.value === 'unauthorized') {
@@ -236,14 +282,20 @@ const handleDialogClose = () => {
   } else {
     goToHome();
   }
+  clearWorkflowDialogOverrides();
 };
 
 const handleDialogConfirm = () => {
   if (dialogMode.value === 'unauthorized') {
     goToDashboard();
+  } else if (dialogMode.value === 'import') {
+    closeDialog();
+  } else if (!dialogMode.value) {
+    closeDialog();
   } else {
     goToSignIn();
   }
+  clearWorkflowDialogOverrides();
 };
 
 const isAdminForDataset = () => {
@@ -280,6 +332,7 @@ const ensureEditAccess = () => {
   if (isCollaboratorEditor()) return true;
   dialogMode.value = 'unauthorized';
   showDialog.value = true;
+  clearWorkflowDialogOverrides();
   return false;
 };
 
@@ -558,45 +611,95 @@ const datasetExistsInLocalStorage = (datasetId?: string) => {
  *  ON MOUNTED
  * ========================= */
 onMounted(async () => {
-  if (!canEnterWorkflow()) return;
-  await workflowStore.withLoading(async () => {
-    let id = props.datasetId;
-    // STORYBOOK
-    // PLEASE NOTE – We are currently in the development phase, and an exception is present to make Storybook work.
-    if (props.dataset) {
-      await workflowStore.initializeWorkflowfromDataset(props.dataset);
-      id = props.dataset.id;
-    } else if (!id) {
-      id = route?.params?.id as string;
-    }
+  if (!(await canEnterWorkflow())) return;
+  if (importModeActive.value) {
+    dialogMode.value = 'import';
+    workflowStore.workflowDialogTitle = 'Import from DOI Mode';
+    workflowStore.workflowDialogMessage =
+      '<strong>Please take a moment to review your data</strong> before proceeding to step 4, and save your imported dataset to our backend. <strong>Once you save</strong>, you can continue reviewing the imported resources and other information.<br><br>The main information you should have a look at is: <strong>keywords</strong>, <strong>description</strong> should be in English, <strong>details related to the authors (email)</strong>, and <strong>additional information</strong>.<br><br> When you are ready, you will be able to request publication.';
+    workflowStore.workflowDialogConfirmText = 'Got it';
+    workflowStore.workflowDialogCancelText = 'null';
+    showDialog.value = true;
+  }
+  try {
+    await workflowStore.withLoading(async () => {
+      // SET the user Role
+      if (user.value?.sysadmin === true) {
+        workflowStore.setUserRole(USER_ROLE_SYSTEM_ADMIN);
+      }
+      let id = props.datasetId;
+      // STORYBOOK
+      // PLEASE NOTE – We are currently in the development phase, and an exception is present to make Storybook work.
+      if (props.dataset) {
+        await workflowStore.initializeWorkflowfromDataset(props.dataset);
+        id = props.dataset.id;
+      } else if (!id) {
+        id = route?.params?.id as string;
+      }
+      // IMPORT LOGIC
+      // TODO  IMPORT DOI Create Import rule
+      const importSource = route?.query?.import === 'fromDoi' ? 'fromDoi' : undefined;
+      const importId = typeof route?.query?.doi === 'string' ? route.query.doi : undefined;
+      const importOrgId = typeof route?.query?.owner_org === 'string' ? route.query.owner_org : undefined;
+      await workflowStore.bootstrapWorkflow(id, { importSource, importId, importOrgId });
 
-    await workflowStore.bootstrapWorkflow(id);
+      // SET last edited dataset in the store
+      const lastDsName =
+        workflowStore.datasetModel?.dataset?.name || workflowStore.datasetModel?.dataset?.id || (id as string);
+      const backPath = (route.query?.backPath as string) || undefined;
+      workflowStore.setLastEditedDataset(lastDsName, route.fullPath, backPath);
 
-    // SET last edited dataset in the store
-    const lastDsName =
-      workflowStore.datasetModel?.dataset?.name || workflowStore.datasetModel?.dataset?.id || (id as string);
-    const backPath = (route.query?.backPath as string) || undefined;
-    workflowStore.setLastEditedDataset(lastDsName, route.fullPath, backPath);
+      // SET loader for organizations and datasets
+      await workflowStore.withLoadingAll([loadUserOrganizations(), fetchUserDatasets(), fetchCollaboratorDatasetIds()]);
 
-    // SET loader for organizations and datasets
-    await workflowStore.withLoadingAll([loadUserOrganizations(), fetchUserDatasets(), fetchCollaboratorDatasetIds()]);
+      workflowStore.setCurrentUser(user.value);
+      workflowStore.computeUserRole({
+        user: user.value,
+        userOrganizations: orgStore.userOrganizations,
+        userDatasets: userDatasets.value,
+      });
 
-    workflowStore.setCurrentUser(user.value);
-    workflowStore.computeUserRole({
-      user: user.value,
-      userOrganizations: orgStore.userOrganizations,
-      userDatasets: userDatasets.value,
+      if (!ensureEditAccess()) return;
+
+      workflowStore.currentDatasetId = id;
+
+      const stepParam = route?.query?.step;
+      if (stepParam !== undefined) {
+        workflowStore.setActiveStep(Number(stepParam));
+      }
     });
-
-    if (!ensureEditAccess()) return;
-
-    workflowStore.currentDatasetId = id;
-
-    const stepParam = route?.query?.step;
-    if (stepParam !== undefined) {
-      workflowStore.setActiveStep(Number(stepParam));
+    if (importModeActive.value) {
+      notify.success('Dataset imported successfully');
     }
-  });
+  } catch (e: any) {
+    const status = e?.status || e?.response?.status;
+    if (status === 409) {
+      dialogMode.value = 'unauthorized';
+      workflowStore.workflowDialogTitle = 'Import action failed';
+      workflowStore.workflowDialogMessage = 'The DOI has already been registered in the EnviDat portal.';
+      workflowStore.workflowDialogConfirmText = 'Go to Dashboard';
+      workflowStore.workflowDialogCancelText = 'null';
+      showDialog.value = true;
+      return;
+    }
+
+    const slug = workflowStore?.datasetModel?.dataset?.name;
+    const is404 = e?.status === 404 || e?.response?.status === 404;
+
+    const msg =
+      is404 && slug
+        ? `${e?.message ?? 'Error importing the dataset'}. The doi does not exist.`
+        : (e?.message ?? 'Error importing the dataset');
+
+    dialogMode.value = 'unauthorized';
+    workflowStore.workflowDialogTitle = 'Import failed';
+    workflowStore.workflowDialogMessage = msg;
+    workflowStore.workflowDialogConfirmText = 'Go to Dashboard';
+    workflowStore.workflowDialogCancelText = 'null';
+    showDialog.value = true;
+
+    notify.error(msg);
+  }
 });
 
 onBeforeUnmount(() => {
@@ -604,6 +707,8 @@ onBeforeUnmount(() => {
   workflowStore.openSaveDialog = false;
   workflowStore.readyToSaveToBackend = false;
   workflowStore.saveErrorMessage = undefined;
+  workflowStore.openWorkflowDialog = false;
+  clearWorkflowDialogOverrides();
 });
 
 /* =========================

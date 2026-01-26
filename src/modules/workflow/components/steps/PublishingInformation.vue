@@ -2,9 +2,7 @@
   <v-container id="MetadataCreationPublicationInfo" fluid class="pa-4">
     <!-- Title box -->
     <v-row class="mb-0">
-      <v-col class="text-h5 font-weight-bold" cols="12">
-        {{ labels.title }}
-      </v-col>
+      <v-col class="text-h5 font-weight-bold" cols="12"> {{ labels.title }} </v-col>
       <!-- <v-col cols="12" class="text-body-1">
         {{ labels.instructions }}
       </v-col> -->
@@ -149,6 +147,7 @@ export default {
     publicationYear: { type: String, default: undefined },
     version: { type: String, default: undefined },
     datasetId: { type: String, default: undefined },
+    dataset: { type: Object, default: () => ({}) },
 
     contactEmail: { type: String, default: '' },
     contactFirstName: { type: String, default: '' },
@@ -280,30 +279,60 @@ export default {
       return getReadOnlyHint(fieldKey);
     },
 
+    openServerErrorDialog(error) {
+      const status = error?.status || error?.response?.status;
+      if (status === 409) {
+        this.workflowStore.workflowDialogTitle = 'Import action failed';
+        this.workflowStore.workflowDialogMessage = 'The DOI has already been registered in the EnviDat portal.';
+        this.workflowStore.workflowDialogConfirmText = 'Close';
+        this.workflowStore.workflowDialogCancelText = 'null';
+        this.workflowStore.openWorkflowDialog = true;
+        return;
+      }
+
+      const apiError = error?.response?.data?.error;
+      const message = apiError?.message || error?.message || 'Unexpected error';
+      const details = apiError?.details || apiError?.__type || error?.response?.statusText;
+      const fullMessage = details ? `${message}<br><br>${details}` : message;
+
+      this.workflowStore.workflowDialogTitle = 'Publication action failed';
+      this.workflowStore.workflowDialogMessage = fullMessage;
+      this.workflowStore.workflowDialogConfirmText = 'Close';
+      this.workflowStore.workflowDialogCancelText = 'null';
+      this.workflowStore.openWorkflowDialog = true;
+    },
+
     async catchPublicationStateChange(event) {
       const id = this.metadataId || this.datasetId;
+      const extras = Array.isArray(this.dataset?.extras) ? this.dataset.extras : [];
+      const isImportDataset = extras.some((entry) => entry?.key === 'is_import' && String(entry?.value) === 'true');
       // this.doiErrorLocal = undefined;
       // this.doiMsgLocal = '';
 
       try {
         if (event === 'DOI_RESERVE') {
+          this.workflowStore.openSaveDialog = false;
           await this.workflowStore.withLoading(() => this.workflowStore.backendStorageService.requestDoi(id), 'doi');
           // this.doiMsgLocal = 'DOI reserved successfully.';
         } else if (event === 'DOI_REQUEST') {
+          this.workflowStore.openSaveDialog = false;
           await this.workflowStore.withLoading(
             () => this.workflowStore.backendStorageService.requestPublication(id),
             'doi',
           );
           // this.doiMsgLocal = 'Publication requested. An admin will review it.';
         } else if (event === 'DOI_PUBLISH') {
+          this.workflowStore.openSaveDialog = false;
           await this.workflowStore.withLoading(
-            () => this.workflowStore.backendStorageService.publishDataset(id),
+            () => this.workflowStore.backendStorageService.publishDataset(id, isImportDataset),
             'doi',
           );
           // this.doiMsgLocal = 'Dataset published.';
         }
       } catch (e) {
         // this.doiErrorLocal = e?.message ?? 'Unexpected error';
+
+        this.openServerErrorDialog(e);
         console.error(e);
       }
     },

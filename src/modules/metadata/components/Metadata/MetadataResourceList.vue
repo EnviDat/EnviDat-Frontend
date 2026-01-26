@@ -12,7 +12,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { computed, defineAsyncComponent, defineProps, onMounted, ref, withDefaults } from 'vue';
+import { computed, defineAsyncComponent, defineProps, onMounted, ref, withDefaults, watch } from 'vue';
 import { useTheme } from 'vuetify';
 
 import { mdiArrowExpandAll, mdiChevronRightCircle, mdiFile, mdiShieldSearch } from '@mdi/js';
@@ -139,6 +139,20 @@ onMounted(() => {
     selectResource(availableResources.value[0]?.id);
   }
 });
+
+watch(
+  () => [availableResources.value, props.preSelectedResourceId],
+  () => {
+    if (props.preSelectedResourceId) {
+      selectResource(props.preSelectedResourceId);
+      return;
+    }
+    if (!selectedId.value && availableResources.value?.length) {
+      selectResource(availableResources.value[0].id);
+    }
+  },
+  { immediate: true },
+);
 
 /*
 const hasDescription = computed(() => selectedResource.value?.description?.length > 0);

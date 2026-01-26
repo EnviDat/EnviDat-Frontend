@@ -18,7 +18,9 @@
           :introText="userDashboardConfig.introText"
           :feedbackText="userDashboardConfig.feedbackText"
           :oldDashboardUrl="oldDashboardUrl"
+          :importWorkflowActive="importWorkflowActive"
           :createClickCallback="organizationsStore.canCreateDatasets ? createClickCallback : null"
+          :importClickCallback="organizationsStore.canCreateDatasets ? importClickCallback : null"
           :editingClickCallback="editingClickCallback"
           :editingDatasetName="lastDataset"
           :currentLocalDataset="hasLocalDataset ? currentLocalDataset : undefined"
@@ -327,6 +329,9 @@ export default {
     lastDataset() {
       return this.lastEditedDataset;
     },
+    importWorkflowActive() {
+      return this.config?.userEditMetadataConfig?.importWorkflowActive;
+    },
     userDashboardConfig() {
       return this.config?.userDashboardConfig || {};
     },
@@ -596,9 +601,15 @@ export default {
       await this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_COLLABORATOR_DATASETS}`, this.collaboratorDatasetIds);
     },
     async fetchUserOrganizationId(forceReload = false) {
-      if (forceReload || (!forceReload && this.organizationsStore.userOrganizations?.length > 0)) {
+      if (forceReload || !this.organizationsStore.userOrganizations?.length) {
         await this.organizationsStore.UserGetOrgIds(this.user.id);
       }
+
+      const orgs = this.organizationsStore.userOrganizations || [];
+      const roleMap = getUserOrganizationRoleMap(this.user.id, orgs);
+      const eligible = orgs.find((o) => ['editor', 'admin', 'sysadmin'].includes(roleMap[o.name] ?? o.capacity));
+
+      return eligible?.id;
     },
 
     catchRefreshClick() {
@@ -621,6 +632,18 @@ export default {
         this.$router.push({
           name,
           query: '',
+        });
+      } else {
+        window.open(`${this.ckanDomain}${this.createCKANUrl}`, '_blank');
+      }
+    },
+    async importClickCallback(doiValue) {
+      if (this.datasetCreationActive) {
+        const name = this.newWorkflowActive ? WORKFLOW_PAGENAME : METADATA_CREATION_PAGENAME;
+        const orgId = await this.fetchUserOrganizationId(true);
+        this.$router.push({
+          name,
+          query: { doi: doiValue, owner_org: orgId, import: 'fromDoi' },
         });
       } else {
         window.open(`${this.ckanDomain}${this.createCKANUrl}`, '_blank');

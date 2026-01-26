@@ -148,16 +148,14 @@ export default {
   methods: {
     updatePreselection() {
       let filteredUsers: UserPickerObject[];
+      const emailSelections = (this.preSelectedEmails || []).filter((email) => typeof email === 'string' && email);
+      const nameSelections = (this.preSelectedNames || []).filter((name) => typeof name === 'string' && name);
 
-      if (this.preSelectedEmails?.length > 0) {
-        filteredUsers = this.users.filter((userObj: UserPickerObject) =>
-          this.preSelectedEmails.includes(userObj.email),
-        );
+      if (emailSelections.length > 0) {
+        filteredUsers = this.users.filter((userObj: UserPickerObject) => emailSelections.includes(userObj.email));
       }
-      if (this.preSelectedNames?.length > 0) {
-        filteredUsers = this.users.filter((userObj: UserPickerObject) =>
-          this.preSelectedNames.includes(userObj.fullName),
-        );
+      if (nameSelections.length > 0) {
+        filteredUsers = this.users.filter((userObj: UserPickerObject) => nameSelections.includes(userObj.fullName));
       }
 
       if (filteredUsers) {
