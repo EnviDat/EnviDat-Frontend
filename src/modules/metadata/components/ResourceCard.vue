@@ -549,7 +549,9 @@ export default {
   color: #ffd740 !important;
 }
 .resourceCardText img {
-  width: 100%;
+  width: 75%;
+  margin: 0 auto;
+  display: block;
   height: auto;
 }
 </style>
