@@ -15,7 +15,6 @@ export const useS3Store = defineStore('s3Store', {
     async fetchS3Content(baseUrl: string, url: string, isChild: boolean, nodeId: number, rootNodes?: S3Node[]) {
       const response = await axios.get(url);
       const { ListBucketResult } = this.parseXmlToJson(response.data);
-
       return isChild
         ? this.mapChildData(baseUrl, ListBucketResult, nodeId, rootNodes)
         : this.mapData(baseUrl, ListBucketResult);
