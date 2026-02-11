@@ -856,6 +856,12 @@ export default {
     removeUser(index: number) {
       const next = this.allowedUserEmails.filter((_, i) => i !== index);
       this.allowedUserEmails = next;
+      const restrictedPayload = JSON.stringify({
+        allowed_users: this.allowedUsersField || '',
+        level: this.writeRestrictionLvl,
+        shared_secret: '',
+      });
+      this.$emit('update', { id: this.id, restricted: restrictedPayload });
     },
     validateField(property, value) {
       this.$emit('validate', { [property]: value });
