@@ -70,7 +70,7 @@ export const EDNA_MODE_EXTRAS_KEY = 'edna_type';
 
 export const FOREST_3D = 'forest3d';
 export const FOREST_3D_EXTRAS_KEY = 'forest3d_type';
-export const FOREST_3D_URL = 'https://forest3d.os.zhdk.cloud.switch.ch/forest3d/data.json';
+export const FOREST_3D_URL = 'https://forest3dtwin.os.zhdk.cloud.switch.ch/forest3dtwin/data.json';
 
 export const PIN_METADATA = 'PIN_METADATA';
 export const CLEAR_PINNED_METADATA = 'CLEAR_PINNED_METADATA';
