@@ -9,6 +9,7 @@ import {
   ACTION_METADATA_CREATION_RESOURCE,
   ACTION_METADATA_DELETE_RESOURCE,
   ACTION_METADATA_EDITING_PATCH_DATASET,
+  ACTION_METADATA_EDITING_PATCH_RESOURCE,
 } from '@/modules/user/store/userMutationsConsts';
 import { ACTION_DOI_RESERVE, ACTION_DOI_REQUEST, ACTION_DOI_PUBLISH } from '@/modules/user/store/doiMutationsConsts';
 import { urlRewrite } from '@/factories/apiFactory';
@@ -100,6 +101,32 @@ export class BackendDatasetService implements DatasetService {
 
     const postData = this.createBackendPatchJson(data);
     postData.id = datasetId;
+
+    try {
+      const response = await axios.post(url, postData, {
+        headers: {
+          // Authorization: apiKey,
+        },
+      });
+
+      this.dataset = new Dataset(response.data.result);
+
+      return this.dataset;
+    } catch (e: unknown) {
+      console.error(e);
+      throw e;
+    }
+  }
+
+  async patchResourceChanges(data: object) {
+    if (useTestdata) {
+      return mockDataResponse.dataset.result;
+    }
+
+    const actionUrl = ACTION_METADATA_EDITING_PATCH_RESOURCE();
+    const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
+
+    const postData = this.createBackendPatchJson(data);
 
     try {
       const response = await axios.post(url, postData, {
