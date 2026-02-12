@@ -548,6 +548,10 @@ export default {
 .resourceCardText p a {
   color: #ffd740 !important;
 }
+.resourceCardText img {
+  width: 100%;
+  height: auto;
+}
 </style>
 
 <style scoped>

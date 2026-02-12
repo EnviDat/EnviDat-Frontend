@@ -11,6 +11,14 @@
     </div>
 
     <div>
+      <strong>Keywords:</strong>
+
+      <div v-for="(keyword, index) in data.tags" :key="`${index}_keyword`">
+        {{ keyword.name }}
+      </div>
+    </div>
+
+    <div>
       <h2>Description</h2>
       <p>{{ seoData.notes }}</p>
     </div>
