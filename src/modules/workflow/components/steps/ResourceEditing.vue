@@ -209,7 +209,7 @@
 
         <v-row class="mt-2">
           <v-col cols="12" class="text-h6">{{ labels.dataDeprecatedTitle }}</v-col>
-          <v-col cols="4">
+          <v-col cols="12">
             <BaseIconSwitch
               :active="isDataDeprecated"
               :icon="mdiCancel"
@@ -220,7 +220,7 @@
             />
           </v-col>
 
-          <v-col>
+          <v-col cols="12">
             <v-alert :type="isDataDeprecated ? 'warning' : 'info'">
               {{ labels.dataDeprecatedSwitchInfo }}
             </v-alert>
@@ -230,7 +230,7 @@
         <v-row class="mt-2">
           <v-col cols="12" class="text-h6">Data access</v-col>
 
-          <v-col cols="4">
+          <v-col cols="12">
             <BaseIconSwitch
               :active="isDataPrivate"
               :disabled="!editingRestrictingActive"
@@ -242,7 +242,7 @@
             />
           </v-col>
 
-          <v-col cols="8">
+          <v-col cols="12">
             <v-expand-transition>
               <v-alert v-if="isDataPrivate" type="warning">
                 <div v-html="openAccessDetails"></div>
@@ -264,7 +264,11 @@
           </v-col>
         </v-row>
 
-        <v-row v-if="isDataPrivate && hasAllowedUsers" no-gutters class="px-2 pt-3">
+        <v-row
+          v-if="isDataPrivate && hasAllowedUsers && !editingRestrictingActiveWithMessage"
+          no-gutters
+          class="px-2 pt-3"
+        >
           <v-col cols="12" class="pt-2">
             <div>
               <v-chip
@@ -295,6 +299,14 @@
           </v-col>
           <v-col cols="auto">
             <v-btn :disabled="!isAllowedUserEmailValid" @click="addAllowedUsers(allowedUserEmailInput)">Add</v-btn>
+          </v-col>
+        </v-row>
+
+        <v-row class="mb-5" v-if="isDataPrivate && hasAllowedUsers && editingRestrictingActiveWithMessage">
+          <v-col cols="12">
+            <v-alert type="warning">
+              <div v-html="restrictedAlertText"></div>
+            </v-alert>
           </v-col>
         </v-row>
 
@@ -499,6 +511,9 @@ export default {
     },
     editingRestrictingActive() {
       return this.userEditMetadataConfig?.editingRestrictingActive || false;
+    },
+    editingRestrictingActiveWithMessage() {
+      return this.userEditMetadataConfig?.editingRestrictingActiveWithMessage || false;
     },
     descriptionField: {
       get() {
@@ -705,6 +720,10 @@ export default {
     openAccessDetails() {
       return renderMarkdown(this.labels.openAccessPreferedInstructions);
     },
+    restrictedAlertText() {
+      return 'This resource is private. If you would like to add one or more specific users who will be able to download this resource, please email <b>envidat@wsl.ch</b> and we will take care of your request.';
+    },
+
     readableCreated() {
       return formatDate(this.created) || this.created;
     },
