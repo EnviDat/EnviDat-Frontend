@@ -138,6 +138,13 @@ export class DatasetModel {
     newModel.loading = false;
   }
 
+  async patchResource(payload: object) {
+    const datasetService = this.datasetWorkflow.getDatasetService();
+    await datasetService.patchResourceChanges(payload);
+
+    // this.updateViewModels();
+  }
+
   get viewModels() {
     return this.viewModelInstances;
   }

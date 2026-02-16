@@ -151,6 +151,7 @@
     "resourceEditingActive": true,
     "resourceUploadActive": true,
     "editingRestrictingActive": true,
+    "editingRestrictingActiveWithMessage": true,
     "customFieldsMax": 10,
     "keywordsListWordMax": 2,
     "keywordsCountMin": 5,

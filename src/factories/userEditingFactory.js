@@ -236,6 +236,70 @@ export function getAllowedUsersString(pickUserEmailHash, envidatUsers) {
   return allowedUsers.join(',');
 }
 
+export function getAllowedUsersStringFromEmail(pickUserEmail) {
+  if (!pickUserEmail) {
+    return '';
+  }
+
+  const selectedEmail = pickUserEmail;
+
+  console.log(selectedEmail);
+
+  return selectedEmail.join(',');
+}
+
+// CKAN expects allowed_users values to be user "names", not emails.
+// For email-based workflows we encode/decode with a reversible mapping.
+export function encodeEmailForCkan(email) {
+  if (!email) {
+    return '';
+  }
+
+  return email.trim().toLowerCase().replaceAll('.', '_').replaceAll('@', '-');
+}
+
+export function decodeEmailFromCkan(encoded) {
+  if (!encoded) {
+    return '';
+  }
+
+  const value = encoded.trim();
+  if (value.includes('@')) {
+    return value;
+  }
+
+  const parts = value.split('-');
+  const looksLikeEncodedEmail = parts.length === 2 && parts[1].includes('_');
+  if (!looksLikeEncodedEmail) {
+    return value;
+  }
+
+  return value.replaceAll('-', '@').replaceAll('_', '.');
+}
+
+export function decodeAllowedUsersStringToEmails(allowedUsersString) {
+  if (!allowedUsersString) {
+    return [];
+  }
+
+  return allowedUsersString
+    .split(',')
+    .map((entry) => entry.trim())
+    .filter((entry) => entry.length > 0)
+    .map((entry) => decodeEmailFromCkan(entry));
+}
+
+export function encodeAllowedUsersEmails(emails) {
+  if (!emails || emails.length <= 0) {
+    return '';
+  }
+
+  return emails
+    .map((email) => encodeEmailForCkan(email))
+    .filter((entry) => entry.length > 0)
+    .join(',');
+}
+
 export function componentChangedEvent(updateObj, vm) {
   const payload = {
     stepKey: updateObj.object,

@@ -174,4 +174,31 @@ export abstract class AbstractEditViewModel {
       this.loading = false;
     }
   }
+
+  async update(newData: any | undefined): Promise<boolean> {
+    if (!newData) {
+      // in case there are no props provided as parameters, use this viewModels
+      // properties to validate itself
+      newData = this;
+    }
+    this.loading = true;
+    this.error = undefined;
+
+    try {
+      await this.datasetModel.patchResource(newData);
+
+      this.savedSuccessful = true;
+
+      useNotifyStore().success('Saved');
+      return true;
+    } catch (e) {
+      this.savedSuccessful = false;
+      this.error = e;
+      const msg = e?.message ?? e?.response?.data?.error?.message ?? 'An error occurred while saving the dataset.';
+      useNotifyStore().error(msg);
+      return false;
+    } finally {
+      this.loading = false;
+    }
+  }
 }
