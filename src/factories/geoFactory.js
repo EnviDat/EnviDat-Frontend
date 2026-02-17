@@ -131,6 +131,8 @@ export function createLocation(dataset) {
     }
 
     if (location.geoJSON) {
+      // Ensure polygons are valid (closed linear rings) before using in turf/leaflet
+      location.geoJSON = closeGeoJSONRings(location.geoJSON);
       const geomCollection = createGeomCollection(
         location.geoJSON,
         // const geometry = creationGeometry(location.geoJSON,
@@ -149,6 +151,82 @@ export function createLocation(dataset) {
   }
 
   return location;
+}
+
+function closeGeoJSONRings(geoJSON) {
+  if (!geoJSON) {
+    return geoJSON;
+  }
+
+  if (geoJSON.type === LOCATION_TYPE_POLYGON) {
+    return {
+      ...geoJSON,
+      coordinates: closePolygonRings(geoJSON.coordinates),
+    };
+  }
+
+  if (geoJSON.type === LOCATION_TYPE_MULTIPOLYGON) {
+    return {
+      ...geoJSON,
+      coordinates: geoJSON.coordinates?.map((polygon) => closePolygonRings(polygon)),
+    };
+  }
+
+  if (geoJSON.type === LOCATION_TYPE_GEOMCOLLECTION) {
+    return {
+      ...geoJSON,
+      geometries: geoJSON.geometries?.map((geom) => closeGeoJSONRings(geom)),
+    };
+  }
+
+  if (geoJSON.type === LOCATION_TYPE_FEATCOLLECTION) {
+    return {
+      ...geoJSON,
+      features: geoJSON.features?.map((feature) => ({
+        ...feature,
+        geometry: closeGeoJSONRings(feature.geometry),
+      })),
+    };
+  }
+
+  if (geoJSON.type === 'Feature') {
+    return {
+      ...geoJSON,
+      geometry: closeGeoJSONRings(geoJSON.geometry),
+    };
+  }
+
+  return geoJSON;
+}
+
+function closePolygonRings(rings) {
+  if (!Array.isArray(rings)) {
+    return rings;
+  }
+
+  return rings.map((ring) => closeLinearRing(ring));
+}
+
+function closeLinearRing(ring) {
+  if (!Array.isArray(ring) || ring.length === 0) {
+    return ring;
+  }
+
+  const first = ring[0];
+  const last = ring[ring.length - 1];
+  const isClosed =
+    Array.isArray(first) &&
+    Array.isArray(last) &&
+    first.length >= 2 &&
+    last.length >= 2 &&
+    first[0] === last[0] &&
+    first[1] === last[1];
+
+  if (isClosed) {
+    return ring;
+  }
+
+  return [...ring, first];
 }
 
 export const defaultSwissLocation = {

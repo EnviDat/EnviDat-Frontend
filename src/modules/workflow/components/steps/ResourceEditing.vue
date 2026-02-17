@@ -209,7 +209,7 @@
 
         <v-row class="mt-2">
           <v-col cols="12" class="text-h6">{{ labels.dataDeprecatedTitle }}</v-col>
-          <v-col cols="4">
+          <v-col cols="12">
             <BaseIconSwitch
               :active="isDataDeprecated"
               :icon="mdiCancel"
@@ -220,7 +220,7 @@
             />
           </v-col>
 
-          <v-col>
+          <v-col cols="12">
             <v-alert :type="isDataDeprecated ? 'warning' : 'info'">
               {{ labels.dataDeprecatedSwitchInfo }}
             </v-alert>
@@ -230,7 +230,7 @@
         <v-row class="mt-2">
           <v-col cols="12" class="text-h6">Data access</v-col>
 
-          <v-col cols="4">
+          <v-col cols="12">
             <BaseIconSwitch
               :active="isDataPrivate"
               :disabled="!editingRestrictingActive"
@@ -242,7 +242,7 @@
             />
           </v-col>
 
-          <v-col cols="8">
+          <v-col cols="12">
             <v-expand-transition>
               <v-alert v-if="isDataPrivate" type="warning">
                 <div v-html="openAccessDetails"></div>
@@ -264,9 +264,25 @@
           </v-col>
         </v-row>
 
-        <v-row v-if="isDataPrivate && hasAllowedUsers" no-gutters class="px-2 pt-3">
+        <v-row
+          v-if="isDataPrivate && hasAllowedUsers && !editingRestrictingActiveWithMessage"
+          no-gutters
+          class="px-2 pt-3"
+        >
           <v-col cols="12" class="pt-2">
-            <BaseUserPicker
+            <div>
+              <v-chip
+                @click:close="removeUser(i)"
+                closable
+                class="mr-4 mb-4"
+                :key="i"
+                v-for="(user, i) in allowedUserEmails"
+              >
+                {{ user }}
+              </v-chip>
+            </div>
+
+            <!-- <BaseUserPicker
               :users="envidatUsersPicker"
               :preSelectedNames="preSelectedAllowedUsers"
               :pickerLabel="labels.restrictedAllowedUsersInfo"
@@ -276,7 +292,21 @@
               :placeholder="labels.allowedUsersTypingInfo"
               @removedUsers="changeAllowedUsers"
               @pickedUsers="changeAllowedUsers"
-            />
+            /> -->
+          </v-col>
+          <v-col cols="12">
+            <v-text-field :rules="emailRules" v-model="allowedUserEmailInput" label="Email"></v-text-field>
+          </v-col>
+          <v-col cols="auto">
+            <v-btn :disabled="!isAllowedUserEmailValid" @click="addAllowedUsers(allowedUserEmailInput)">Add</v-btn>
+          </v-col>
+        </v-row>
+
+        <v-row class="mb-5" v-if="isDataPrivate && hasAllowedUsers && editingRestrictingActiveWithMessage">
+          <v-col cols="12">
+            <v-alert type="warning">
+              <div v-html="restrictedAlertText"></div>
+            </v-alert>
           </v-col>
         </v-row>
 
@@ -335,7 +365,7 @@ import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
-import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
+// import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
 
 import { formatDateTimeToCKANFormat } from '@/factories/mappingFactory';
 import { renderMarkdown } from '@/factories/stringFactory';
@@ -347,7 +377,8 @@ import {
   getUserAutocompleteList,
   ACCESS_LEVEL_SAMEORGANIZATION_VALUE,
   ACCESS_LEVEL_PUBLIC_VALUE,
-  getAllowedUsersString,
+  decodeAllowedUsersStringToEmails,
+  encodeAllowedUsersEmails,
 } from '@/factories/userEditingFactory';
 
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
@@ -463,7 +494,7 @@ export default {
       default: null,
     },
   },
-  emits: ['save', 'validate', 'closeClicked', 'previewImageClicked', 'delete'],
+  emits: ['save', 'validate', 'closeClicked', 'previewImageClicked', 'delete', 'update'],
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
@@ -480,6 +511,9 @@ export default {
     },
     editingRestrictingActive() {
       return this.userEditMetadataConfig?.editingRestrictingActive || false;
+    },
+    editingRestrictingActiveWithMessage() {
+      return this.userEditMetadataConfig?.editingRestrictingActiveWithMessage || false;
     },
     descriptionField: {
       get() {
@@ -649,6 +683,22 @@ export default {
         this.checkSaveButtonEnabled();
       },
     },
+    allowedUserEmails: {
+      get() {
+        return decodeAllowedUsersStringToEmails(this.allowedUsersField);
+      },
+      set(emails: string[]) {
+        this.allowedUsersField = encodeAllowedUsersEmails(emails);
+      },
+    },
+    isAllowedUserEmailValid() {
+      const value = this.allowedUserEmailInput;
+      if (!value) {
+        return false;
+      }
+
+      return /.+@.+\..+/.test(value);
+    },
     writeRestrictionLvl() {
       if (this.isDataPrivate) {
         return ACCESS_LEVEL_SAMEORGANIZATION_VALUE;
@@ -670,6 +720,10 @@ export default {
     openAccessDetails() {
       return renderMarkdown(this.labels.openAccessPreferedInstructions);
     },
+    restrictedAlertText() {
+      return 'This resource is private. If you would like to add one or more specific users who will be able to download this resource, please email <b>envidat@wsl.ch</b> and we will take care of your request.';
+    },
+
     readableCreated() {
       return formatDate(this.created) || this.created;
     },
@@ -795,8 +849,38 @@ export default {
       this.imagePreviewError = event;
       this.loadingImagePreview = false;
     },
-    changeAllowedUsers(pickUserEmailHash: string[]) {
-      this.allowedUsersField = getAllowedUsersString(pickUserEmailHash, this.envidatUsers);
+    // INFO with API user_list deactivated for security reason
+    // changeAllowedUsers(pickUserEmailHash: string[]) {
+    //   this.allowedUsersField = getAllowedUsersString(pickUserEmailHash, this.envidatUsers);
+    //   console.log(typeof this.allowedUsersField);
+    // },
+
+    addAllowedUsers(email: string) {
+      if (!/.+@.+\..+/.test(email || '')) {
+        return;
+      }
+      const next = [...this.allowedUserEmails, email];
+      this.allowedUserEmails = next;
+      this.allowedUserEmailInput = null;
+      this.hasAllowedUsers = true;
+
+      const restrictedPayload = JSON.stringify({
+        allowed_users: this.allowedUsersField || '',
+        level: this.writeRestrictionLvl,
+        shared_secret: '',
+      });
+
+      this.$emit('update', { id: this.id, restricted: restrictedPayload });
+    },
+    removeUser(index: number) {
+      const next = this.allowedUserEmails.filter((_, i) => i !== index);
+      this.allowedUserEmails = next;
+      const restrictedPayload = JSON.stringify({
+        allowed_users: this.allowedUsersField || '',
+        level: this.writeRestrictionLvl,
+        shared_secret: '',
+      });
+      this.$emit('update', { id: this.id, restricted: restrictedPayload });
     },
     validateField(property, value) {
       this.$emit('validate', { [property]: value });
@@ -818,6 +902,8 @@ export default {
     mdiCalendarRange,
     mdiUpdate,
     mdiAccountGroup,
+    allowedUserEmailInput: null,
+    emailRules: [(v: string) => !v || /.+@.+\..+/.test(v) || 'Email is invalid'],
     previews: {
       name: null,
       description: null,
@@ -872,7 +958,7 @@ export default {
     notFoundImg,
   }),
   components: {
-    BaseUserPicker,
+    // BaseUserPicker,
     BaseRectangleButton,
     BaseIconButton,
     BaseIconSwitch,

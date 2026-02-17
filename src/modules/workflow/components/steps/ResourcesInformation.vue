@@ -65,6 +65,7 @@
                              @closeClicked="catchEditResourceClose"
                              @validate="validateResource"
                              @save="saveResource"
+                             @update="updateResource"
                              @previewImageClicked="showFullScreenImage"
                              @delete="() => $emit('delete', selectedResource)"
             />
@@ -162,7 +163,7 @@ export default {
     showInfoBanner: { type: Boolean, default: true },
     userEditMetadataConfig: { type: Object, default: undefined },
   },
-  emits: ['save', 'reload', 'delete'],
+  emits: ['save', 'reload', 'delete', 'update'],
   created() {
     // call once to create the uppy instance
     getUppyInstance(this.workflowStore);
@@ -430,6 +431,9 @@ export default {
     },
     save(data: { resources: Resource[] }) {
       this.$emit('save', data);
+    },
+    updateResource(data) {
+      this.$emit('update', data);
     },
     selectResource(resourceId: string) {
       const resource = this.resources.filter((res: Resource) => res.id === resourceId)[0];

@@ -33,6 +33,7 @@
               @validate="validate"
               @setInfoBanner="workflowStore.setInfoBanner"
               @save="save"
+              @update="update"
               @reload="reloadDataset"
               v-if="resolvedComponent && !workflowStore.loading"
             />
@@ -442,6 +443,25 @@ const save = async (freshData) => {
   // FIX Validation during navigation
   workflowStore.markStepTouched(workflowStore.currentStep, true);
   const ok = await vm.value.save(freshData);
+
+  const step = workflowStore.steps[workflowStore.currentStep];
+  if (workflowStore.mode === WorkflowMode.Edit && !step.readOnly) {
+    if (!ok) {
+      workflowStore.markStepDirty(workflowStore.currentStep, true);
+      scrollToFirstError(vm.value.validationErrors);
+    } else {
+      workflowStore.markStepDirty(workflowStore.currentStep, false);
+    }
+  }
+};
+
+/* =========================
+ *  UPDATE LOGIC
+ * ========================= */
+const update = async (freshData) => {
+  // FIX Validation during navigation
+  workflowStore.markStepTouched(workflowStore.currentStep, true);
+  const ok = await vm.value.update(freshData);
 
   const step = workflowStore.steps[workflowStore.currentStep];
   if (workflowStore.mode === WorkflowMode.Edit && !step.readOnly) {
