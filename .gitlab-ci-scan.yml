@@ -7,8 +7,9 @@ verify-node-audit:
     - job: modify-env
       artifacts: false
   script:
-    # keep this in separate job to clearer identify if there is a problem
-    - npm audit --audit-level=high
+    # keep this in separate job to clearer identify if there is a problem, ONLY PRODUCTION NOT DEV
+    - npm ci --prefer-offline --no-audit --no-fund --loglevel=error
+    - npm audit --audit-level=high --omit=dev
   retry:
     max: 2
 
