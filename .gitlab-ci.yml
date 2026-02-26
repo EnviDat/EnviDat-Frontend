@@ -175,7 +175,7 @@ modify-env:
       branch = os.getenv('CI_COMMIT_REF_NAME')
 
       key = 'VITE_DOMAIN'
-      value = 'https://envidat04.wsl.ch'
+      value = 'https://envidat03.wsl.ch'
 
       if branch == 'main' or branch == 'beta':
           value = 'https://www.envidat.ch'
@@ -183,7 +183,7 @@ modify-env:
       dotenv.set_key(file, key, value, quote_mode='never')
 
       key = 'VITE_API_ROOT'
-      value = 'https://envidat04.wsl.ch'
+      value = 'https://envidat03.wsl.ch'
 
       if branch == 'main' or branch == 'beta':
           value = 'https://www.envidat.ch'
@@ -219,7 +219,7 @@ modify-env:
       dotenv.set_key(file, key, value, quote_mode='never')
 
       key = 'VITE_SEO_BASE'
-      value = 'https://envidat04.wsl.ch/seo'
+      value = 'https://envidat03.wsl.ch/seo'
 
       if branch == 'main' or branch == 'beta':
           value = 'https://envidat.ch/seo'
@@ -349,4 +349,3 @@ combine-builds:
 #      - >
 #        regctl --verbosity debug image copy
 #        "${IMAGE_NAME}" "${INTERNAL_REG}/envidat-frontend:${CI_COMMIT_SHA}"
-

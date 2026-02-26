@@ -223,11 +223,11 @@ export default async ({ mode, config }): Promise<UserConfig> => {
               changeOrigin: true,
               rewrite: (proxyPath) => proxyPath.replace(/^\/api/, ''),
             },
-            // '/envidat04': {
-            //   target: 'https://envidat04.wsl.ch',
+            // '/envidat03': {
+            //   target: 'https://envidat03.wsl.ch',
             //   changeOrigin: true,
             //   secure: true,
-            //   rewrite: (proxyPath) => proxyPath.replace(/^\/envidat04/, ''),
+            //   rewrite: (proxyPath) => proxyPath.replace(/^\/envidat03/, ''),
             // },
           },
         }

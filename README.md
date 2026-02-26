@@ -51,7 +51,7 @@ VITE_STATIC_ROOT=https://frontend-static.s3-zh.os.switch.ch
 # api root is used to connect to the server backend
 # adjust for different testing environments
 # VITE_API_ROOT=http://localhost:8991
-VITE_API_ROOT=https://envidat04.wsl.ch
+VITE_API_ROOT=https://envidat03.wsl.ch
 
 # root & base & individual action to make get & post requests to backend
 VITE_API_BASE_URL=/api/action/

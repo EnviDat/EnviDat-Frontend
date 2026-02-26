@@ -86,6 +86,9 @@ typings/
 
 # Secrets
 **/*.secret
+.env
+.env.*
+!.env.example
 
 # envidat frontend
 dist/
