@@ -209,8 +209,8 @@ export default async ({ mode, config }): Promise<UserConfig> => {
       ? {
           host: '0.0.0.0',
           port: 8080,
-          hmr: { host: 'dev.envidat04.wsl.ch', port: 8080 },
-          allowedHosts: ['dev.envidat04.wsl.ch:8080'],
+          hmr: { host: 'dev.envidat03.wsl.ch', port: 8080 },
+          allowedHosts: ['dev.envidat03.wsl.ch:8080'],
           https: useHttps
             ? {
                 key: fs.readFileSync(path.resolve(__dirname, 'certs/key.pem')),
@@ -219,9 +219,15 @@ export default async ({ mode, config }): Promise<UserConfig> => {
             : false,
           proxy: {
             '/api': {
+              target: 'https://envidat03.wsl.ch',
+              changeOrigin: true,
+              secure: false,
+            },
+            '/stats-api': {
               target: 'https://statistics.wsl.ch',
               changeOrigin: true,
-              rewrite: (proxyPath) => proxyPath.replace(/^\/api/, ''),
+              secure: false,
+              rewrite: (proxyPath) => proxyPath.replace(/^\/stats-api/, ''),
             },
             // '/envidat03': {
             //   target: 'https://envidat03.wsl.ch',
