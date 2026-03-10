@@ -1,5 +1,5 @@
 export default {
-  help: 'https://envidat04.wsl.ch/api/3/action/help_show?name=package_show',
+  help: 'https://envidat03.wsl.ch/api/3/action/help_show?name=package_show',
   success: true,
   result: {
     author:
@@ -79,7 +79,7 @@ export default {
         restricted: '{"level": "public", "allowed_users": ""}',
         size: 124244,
         state: 'active',
-        url: 'https://envidat04.wsl.ch/dataset/908d28a2-f3b4-4397-8c38-a02db92caaf4/resource/d4eb8eda-a195-49ec-a478-0acf5e94337a/download/data_20180418.xlsx',
+        url: 'https://envidat03.wsl.ch/dataset/908d28a2-f3b4-4397-8c38-a02db92caaf4/resource/d4eb8eda-a195-49ec-a478-0acf5e94337a/download/data_20180418.xlsx',
         url_type: 'upload',
       },
       {
@@ -104,7 +104,7 @@ export default {
         restricted: '{"level": "public", "allowed_users": ""}',
         size: 133726,
         state: 'active',
-        url: 'https://envidat04.wsl.ch/dataset/908d28a2-f3b4-4397-8c38-a02db92caaf4/resource/63d731a5-6cab-4ddb-8768-8dbcb053141a/download/data_20180425.xlsx',
+        url: 'https://envidat03.wsl.ch/dataset/908d28a2-f3b4-4397-8c38-a02db92caaf4/resource/63d731a5-6cab-4ddb-8768-8dbcb053141a/download/data_20180425.xlsx',
         url_type: 'upload',
       },
       {
@@ -129,7 +129,7 @@ export default {
         restricted: '{"level": "public", "allowed_users": ""}',
         size: 54776,
         state: 'active',
-        url: 'https://envidat04.wsl.ch/dataset/908d28a2-f3b4-4397-8c38-a02db92caaf4/resource/cd65875d-c705-4f35-be6f-4f14d584b4c6/download/seasonal_data.xlsx',
+        url: 'https://envidat03.wsl.ch/dataset/908d28a2-f3b4-4397-8c38-a02db92caaf4/resource/cd65875d-c705-4f35-be6f-4f14d584b4c6/download/seasonal_data.xlsx',
         url_type: 'upload',
       },
       {
@@ -154,7 +154,7 @@ export default {
         restricted: '{"level": "public", "allowed_users": ""}',
         size: 499,
         state: 'active',
-        url: 'https://envidat04.wsl.ch/dataset/908d28a2-f3b4-4397-8c38-a02db92caaf4/resource/5d1c10c7-98db-4b39-a076-189cb48937c4/download/vf_sky.txt',
+        url: 'https://envidat03.wsl.ch/dataset/908d28a2-f3b4-4397-8c38-a02db92caaf4/resource/5d1c10c7-98db-4b39-a076-189cb48937c4/download/vf_sky.txt',
         url_type: 'upload',
       },
     ],

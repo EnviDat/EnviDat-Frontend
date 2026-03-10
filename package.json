@@ -8,7 +8,7 @@
   "scripts": {
     "serve": "vite",
     "serve-debug": "vite --debug",
-    "serve-local": "concurrently \"cross-env VITE_USE_HTTPS=true npm run serve\" \"open-cli https://dev.envidat04.wsl.ch:8080/#/\"",
+    "serve-local": "concurrently \"cross-env VITE_USE_HTTPS=true npm run serve\" \"open-cli https://dev.envidat03.wsl.ch:8080/#/\"",
     "build": "vite build",
     "serve-vike": "vike dev",
     "build-vike": "vike build",
