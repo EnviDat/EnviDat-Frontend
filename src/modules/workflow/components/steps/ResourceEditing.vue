@@ -185,7 +185,7 @@
             <v-text-field
               :label="labels.created"
               :prepend-icon="mdiCalendarRange"
-              :readonly="isReadOnly('createdRes')"
+              :readonly="true"
               :hint="readOnlyHint('createdRes')"
               persistent-hint
               :disabled="loading"
@@ -197,7 +197,7 @@
             <v-text-field
               :label="labels.lastModified"
               :prepend-icon="mdiUpdate"
-              :readonly="isReadOnly('lastUpdateRes')"
+              :readonly="true"
               :hint="readOnlyHint('lastUpdateRes')"
               persistent-hint
               hide-details

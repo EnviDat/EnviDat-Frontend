@@ -178,7 +178,6 @@ export default {
     },
     reorderList(newList) {
       const newAuthors = [];
-
       for (let i = 0; i < newList.length; i++) {
         const fullName = newList[i];
         const author = this.authorsFields.filter((a) => getAuthorName(a) === fullName)[0];
@@ -186,7 +185,6 @@ export default {
           newAuthors.push(author);
         }
       }
-
       this.previewAuthors = newAuthors;
       this.notifyChange();
     },
@@ -197,6 +195,7 @@ export default {
 
       this.$emit('save', {
         authors: this.previewAuthors,
+        replace: true,
       });
 
       // DO NOT clear the preview because than the user isn't able to remove the last author
