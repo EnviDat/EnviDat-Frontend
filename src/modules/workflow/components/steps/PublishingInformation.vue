@@ -61,6 +61,14 @@
         </v-row>
       </v-col>
 
+      <v-col cols="12" xl="12" class="pa-0">
+        <v-row>
+          <v-col cols="12">
+            <CustomFields :custom-fields="customFields" @save="catchCustomFieldsChange" />
+          </v-col>
+        </v-row>
+      </v-col>
+
       <v-col cols="12" class="pa-0">
         <v-row v-if="doiWorkflowActive">
           <v-col>
@@ -121,6 +129,8 @@ import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
 import InfoBanner from '@/modules/workflow/components/steps/InformationBanner.vue';
 
+import CustomFields from '@/modules/workflow/components/steps/CustomFields.vue';
+
 export default {
   name: 'PublishingInformation',
   setup() {
@@ -140,6 +150,10 @@ export default {
   }),
 
   props: {
+    customFields: {
+      type: Array,
+      default: () => [],
+    },
     publicationState: { type: String, default: undefined },
     visibilityState: { type: String, default: undefined },
     doi: { type: String, default: undefined },
@@ -272,6 +286,10 @@ export default {
     catchReviewChange(reviewInfos) {
       this.$emit('save', reviewInfos);
     },
+    catchCustomFieldsChange(updatedFields) {
+      this.newDatasetInfo.customFields = updatedFields;
+      this.$emit('save', this.newDatasetInfo);
+    },
     isReadOnly(fieldKey) {
       return isReadOnlyField(fieldKey);
     },
@@ -342,7 +360,7 @@ export default {
     },
   },
 
-  components: { ReviewInfo, PublicationStatus, PublicationInfo, InfoBanner, NotFoundCard, ContactPerson },
+  components: { ReviewInfo, PublicationStatus, PublicationInfo, InfoBanner, NotFoundCard, CustomFields },
 };
 </script>
 
