@@ -163,6 +163,7 @@ const MetadataCitation = defineAsyncComponent(() => import('./Metadata/MetadataC
 const MetadataPublications = defineAsyncComponent(() => import('./Metadata/MetadataPublications.vue'));
 const MetadataPublicationList = defineAsyncComponent(() => import('./Metadata/MetadataPublicationList.vue'));
 const MetadataFunding = defineAsyncComponent(() => import('./Metadata/MetadataFunding.vue'));
+const MetadataCustomFields = defineAsyncComponent(() => import('./Metadata/MetadataCustomFields.vue'));
 const MetadataAuthors = defineAsyncComponent(() => import('./Metadata/MetadataAuthors.vue'));
 const MetadataGeo = defineAsyncComponent(() => import('@/modules/metadata/components/Geoservices/MetadataGeo.vue'));
 const MetadataRelatedDatasets = defineAsyncComponent(
@@ -481,6 +482,7 @@ export default {
       this.publications = null;
       this.relatedDatasets = null;
       this.funding = null;
+      this.customFields = null;
       this.authors = null;
 
       this.configInfos = {
@@ -514,6 +516,7 @@ export default {
         this.relatedDatasets = createRelatedDatasets(currentContent);
 
         this.funding = createFunding(currentContent);
+        this.customFields = parsedContent?.extras || currentContent?.extras || [];
 
         const authorMapSize = Object.keys(this.authorsMap).length || 0;
 
@@ -624,12 +627,17 @@ export default {
         funding: this.funding,
       };
 
+      this.MetadataCustomFields.props = {
+        extras: this.customFields,
+      };
+
       this.firstCol = [
         this.MetadataDescription,
         this.MetadataCitation,
         this.MetadataFunding,
         publicationList,
         this.MetadataRelatedDatasets,
+        this.MetadataCustomFields,
       ];
 
       this.secondCol = [this.MetadataResourceList, this.MetadataGeo, this.MetadataAuthors];
@@ -642,6 +650,7 @@ export default {
           this.MetadataGeo,
           this.MetadataAuthors,
           this.MetadataFunding,
+          this.MetadataCustomFields,
           publicationList,
           this.MetadataRelatedDatasets,
         ];
@@ -930,6 +939,7 @@ export default {
     MetadataPublicationList: markRaw(MetadataPublicationList),
     MetadataRelatedDatasets: markRaw(MetadataRelatedDatasets),
     MetadataFunding: markRaw(MetadataFunding),
+    MetadataCustomFields: markRaw(MetadataCustomFields),
     MetadataAuthors: markRaw(MetadataAuthors),
     MetadataGeo: markRaw(MetadataGeo),
     pageViewEvents: null,
@@ -955,6 +965,7 @@ export default {
     publications: null,
     relatedDatasets: null,
     funding: null,
+    customFields: null,
     authors: null,
     amountOfResourcesToShowDetailsLeft: 4,
     notFoundBackPath: 'browse',

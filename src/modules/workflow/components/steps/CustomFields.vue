@@ -27,7 +27,7 @@
         </v-col>
       </v-row>
       <v-row
-        v-for="(item, index) in customFieldsProp"
+        v-for="(item, index) in filteredcustomFieldsProp"
         :key="`${item}_${index}`"
         no-gutters
         :class="index === 0 ? 'pt-4' : 'py-1'"
@@ -104,6 +104,7 @@ export default {
   name: 'EditCustomFields',
   data: () => ({
     mdiMinusCircleOutline,
+    filteredKeys: ['deprecatedResources'],
     maxCustomFieldsReached: false,
     labels: {
       cardTitle: 'Custom Fields',
@@ -166,6 +167,9 @@ export default {
   },
   computed: {
     ...mapState(['config']),
+    filteredcustomFieldsProp() {
+      return this.customFieldsProp.filter((field) => !this.filteredKeys.includes(field.key));
+    },
     loadingColor() {
       if (this.loading) {
         return 'accent';

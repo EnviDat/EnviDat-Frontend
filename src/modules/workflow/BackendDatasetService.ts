@@ -191,6 +191,18 @@ export class BackendDatasetService implements DatasetService {
       parseData = normalizeTagsForPatch(dataset);
     }
 
+    // Ensure extras is an array of dicts (package_patch expects list, not JSON string)
+    if (typeof parseData.extras === 'string') {
+      try {
+        const parsed = JSON.parse(parseData.extras);
+        if (Array.isArray(parsed)) {
+          parseData.extras = parsed;
+        }
+      } catch (e) {
+        // leave as-is if parsing fails
+      }
+    }
+
     // GET the spatial and convert into geometry collection string
     if ('spatial' in parseData) {
       const wrapped = cleanPostData({ spatial: parseData.spatial }, { wrapSpatial: true });
