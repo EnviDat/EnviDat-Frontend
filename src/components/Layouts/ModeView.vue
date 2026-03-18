@@ -36,6 +36,9 @@
         @clicked="closeCallback"
       />
     </v-col>
+    <v-col v-if="modeData.name === 'forest3d'" cols="auto" class="flex-grow-0 mx-1">
+      <a href="https://forest3dtwin.wsl.ch/en/" target="_blank" rel="noopener noreferrer"> Data Upload </a>
+    </v-col>
   </v-row>
 </template>
 
