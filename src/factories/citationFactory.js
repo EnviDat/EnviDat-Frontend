@@ -356,13 +356,13 @@ export async function resolveDoiCitationObjectsViaDora(doiMap, resolveBaseDOIUrl
   const citationObjMap = new Map();
 
   for (const entry of doiMap) {
-    const singleMap = new Map(entry);
+    const singleMap = new Map([entry]);
     const doraUrl = getDoraDoisUrl(singleMap, resolveBaseDOIUrl);
 
     const request = axios
       .get(doraUrl)
       .then((citationObj) => {
-        const doiCitationObjectMap = getCitationObjectMap(singleMap, citationObj);
+        const doiCitationObjectMap = getCitationObjectMap(singleMap, citationObj?.data);
 
         for (const [doi, citation] of doiCitationObjectMap) {
           citationObjMap.set(doi, citation);
