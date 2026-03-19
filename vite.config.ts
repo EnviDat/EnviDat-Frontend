@@ -223,6 +223,16 @@ export default async ({ mode, config }): Promise<UserConfig> => {
               changeOrigin: true,
               secure: false,
             },
+            '/dora/': {
+              target: 'https://www.envidat.ch',
+              changeOrigin: true,
+              secure: true,
+            },
+            '/doi:': {
+              target: 'https://www.envidat.ch',
+              changeOrigin: true,
+              secure: true,
+            },
             '/stats-api': {
               target: 'https://statistics.wsl.ch',
               changeOrigin: true,

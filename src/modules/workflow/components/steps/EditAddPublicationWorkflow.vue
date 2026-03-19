@@ -309,28 +309,40 @@ export default {
         this.previewCitation = {
           citation: 'Resolving the citation was not possible due to a network error.',
         };
+      } finally {
+        this.isResolving = false;
       }
-
-      this.isResolving = false;
     },
     async resolveDOIs(doi) {
       this.previewCitation = null;
       this.isResolving = true;
 
+      const cleanDoi = String(doi || '')
+        .trim()
+        .replace(/^https?:\/\/(dx\.)?doi\.org\//i, '')
+        .replace(/^doi:\s*/i, '')
+        .replace(/^doi\s+/i, '')
+        .replace(/^doi(?=10\.)/i, '');
+
+      if (!cleanDoi) {
+        this.isResolving = false;
+        return;
+      }
+
       const doiMap = new Map();
-      doiMap.set(doi, doi);
+      doiMap.set(cleanDoi, cleanDoi);
 
       try {
         const citationMap = await resolveDoiCitationObjectsViaDora(doiMap, this.resolveBaseDOIUrl);
-        this.previewCitation = citationMap.get(doi);
+        this.previewCitation =
+          citationMap.get(cleanDoi) || { citation: 'DOI not found in DORA or resolver returned empty result.' };
       } catch (e) {
-        this.previewCitation = {
-          citation: 'Resolving the citation was not possible due to a network error.',
-        };
+        this.previewCitation = { citation: 'Resolving the citation was not possible due to a network error.' };
+      } finally {
+        this.isResolving = false;
       }
-
-      this.isResolving = false;
     },
+
     addClick() {
       this.$emit('addClicked', {
         pid: this.pidField,
