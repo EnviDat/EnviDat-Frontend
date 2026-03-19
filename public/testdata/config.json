@@ -1,9 +1,9 @@
 {
-  "version": "0.8.1",
+  "version": "1.0.32",
   "welcomeInfo": {
     "titleText": "EnviDat",
-    "Slogan": "Environmental Research Data\n\rat your Fingertips",
-    "SubSlogan": "EnviDat provides research data from Switzerland and all over the world.<br/>The data is contributed by researchers from various research units of the Swiss Federal Institute for Forest, Snow and Landscape WSL.",
+    "Slogan": "Environmental Research Data at your Fingertips",
+    "SubSlogan": "EnviDat provides research data from Switzerland and all over the world. <br/>The data is being provided by researchers of the many research units of the Swiss Federal Institute for Forest, Snow and Landscape WSL.",
     "searchLabelText": "Looking for something specific? Enter research term, topic or author here!",
     "smallSearchLabelText": "Enter research term, topic or author",
     "searchText": "Looking for something specific?",
@@ -14,43 +14,51 @@
     "infoTitle": "How does EnviDat work?",
     "datasetsTitle": "Recently Published Research Datasets"
   },
+  "apiKeys": {
+    "bing": "AvW0Lr_xrTMGe1yid1nwyE71TJczbhIyaGKouaEMIYnYwAfwyhtEMeUKgUVvCfMD"
+  },
   "aboutInfo": [
     {
       "title": "Contact",
-      "text": "Contact the EnviDat team by <a href='mailto:envidat@wsl.ch'>envidat@wsl.ch</a> for support, questions or feedback."
+      "text": "Contact the EnviDat team by <a href='mailto:envidat@wsl.ch'>envidat@wsl.ch</a> for support, questions or feedback.",
+      "widthClass": "v-col-12 v-col-sm-6 v-col-md-4 v-col-xl-3"
     },
     {
       "title": "Concept",
-      "text": "EnviDat supports the user-friendly registration, documentation, storage, publication, search and retrieval of data sets from the environmental domain. We provide various services to our users and we follow a set of principles as summarized in our concept image below. Additional detailed information can be found in our <a href='https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:18703' target='_blank' rel='noopener noreferrer' onclick='event.stopPropagation();' >concept paper on DORA</a>."
+      "text": "EnviDat supports the user-friendly registration, documentation, storage, publication, search and retrieval of data sets from the environmental domain. We provide various services to our users and we follow a set of principles as summarized in our concept image below. Additional detailed information can be found in our <a href='https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:18703' target='_blank' rel='noopener noreferrer' onclick='event.stopPropagation();' >concept paper on DORA</a>.",
+      "widthClass": "v-col-12 v-col-sm-6 v-col-md-4 v-col-xl-3"
     },
     {
       "title": "Our Mission",
-      "text": "EnviDat is the environmental data portal and repository developed by the Swiss Federal Research Institute WSL. We have the capability to integrate, host and publish data sets. We make environmental monitoring and research data accessible. <p><a href='https://www.wsl.ch/en/about-wsl/programmes-and-initiatives/envidat.html' target='_blank' rel='noopener noreferrer' onclick='event.stopPropagation();' >More about EnviDat as Program of WSL</a></p>"
+      "text": "EnviDat is the environmental data portal and repository developed by the Swiss Federal Research Institute WSL. We have the capability to integrate, host and publish data sets. We make environmental monitoring and research data accessible. <p><a href='https://www.wsl.ch/en/services-produkte/envidat-data-portal/' target='_blank' rel='noopener noreferrer' onclick='event.stopPropagation();' >More about EnviDat as Program of WSL</a></p>",
+      "widthClass": "v-col-12 v-col-sm-6 v-col-md-4 v-col-xl-3"
     },
     {
       "title": "Team",
-      "text": "<img src='https://www.envidat.ch/EnviDat_organigram.png' style='width: 100%; height: 100%;' />",
-      "widthClass": "col-12 col-sm-6 col-md-8"
+      "text": "<img src='https://s3-zh.os.switch.ch/frontend-static/EnviDat_organigram_2023.png' style='width: 100%; height: 100%;' />",
+      "widthClass": "v-col-12 v-col-sm-6 v-col-md-8 v-col-xl-6"
     },
     {
       "title": "Community",
-      "text": "With EnviDat, WSL aims to disseminate its data sets as broadly as possible in order to foster international research cooperation in the field of environmental science and contribute to the ongoing cultural evolution in research towards openness, shared data and opportunities for collaboration. Consequently, we are registered in <a href=\"https://fairsharing.org/biodbcore-001178/\" target=\"_blank\" rel=\"noopener noreferrer\" onclick=\"event.stopPropagation();\" >FAIRsharing.org</a> and <a href=\"https://www.re3data.org/repository/r3d100012587\" target=\"_blank\" rel=\"noopener noreferrer\" onclick=\"event.stopPropagation();\" >re3data.org</a> and a contributor community to <a href=\"https://geoportal.org/community/envidat-community\" target=\"_blank\" onclick=\"event.stopPropagation();\" >ESA Geoportal </a>, <a href=\"https://gcmd.nasa.gov/search/Titles.do?AutoDisplayTitles=true&subset=envidat#titles\" target=\"_blank\" onclick=\"event.stopPropagation();\" >NASA GCMD, <a href=\"https://opendata.swiss/en/organization/envidat\" target=\"_blank\" onclick=\"event.stopPropagation();\" >OPENDATA Swiss</a></a> and <a href=\"https://b2find.eudat.eu/organization/envidat\" target=\"_blank\" onclick=\"event.stopPropagation();\" >EOSC-Hub via B2FIND</a>. "
+      "text": "With EnviDat, WSL aims to disseminate its data sets as broadly as possible in order to foster international research cooperation in the field of environmental science and contribute to the ongoing cultural evolution in research towards openness, shared data and opportunities for collaboration. Consequently, we are registered in <a href='https://fairsharing.org/biodbcore-001178/' target='_blank' onclick='event.stopPropagation();' >FAIRsharing.org</a> and <a href='https://www.re3data.org/repository/r3d100012587' target='_blank' onclick='event.stopPropagation();' >re3data.org</a> and a contributor community to <a href='http://geoportal.org/community/envidat-community' target='_blank' onclick='event.stopPropagation();' >ESA Geoportal </a>, <a href='https://search.earthdata.nasa.gov/portal/idn/search?fdc=WSL' target='_blank' onclick='event.stopPropagation();' >NASA GCMD</a> and <a href='http://b2find.eudat.eu/dataset?groups=envidat' target='_blank' onclick='event.stopPropagation();' >EOSC-Hub via B2FIND</a>. ",
+      "widthClass": "v-col-12 v-col-sm-6 v-col-md-4 v-col-xl-3"
     },
     {
       "title": "WSL",
-      "text": "The Swiss Federal Institute for Forest, Snow and Landscape Research is concerned with the use, development and protection of natural and urban spaces. The focus of our research is on solving problems to do with the responsible use of landscapes and forests and a prudent approach to natural hazards, especially those common in mountainous countries. WSL occupies a leading position internationally in these research areas. We also provide groundwork for sustainable environmental policies in Switzerland. <p><a href='https://www.wsl.ch' target='_blank' onclick='event.stopPropagation();' >For more information have a look at the Website of WSL</a></p>"
+      "text": "The Swiss Federal Institute for Forest, Snow and Landscape Research is concerned with the use, development and protection of natural and urban spaces. The focus of our research is on solving problems to do with the responsible use of landscapes and forests and a prudent approach to natural hazards, especially those common in mountainous countries. WSL occupies a leading position internationally in these research areas. We also provide groundwork for sustainable environmental policies in Switzerland. <p><a href='https://www.wsl.ch' target='_blank' onclick='event.stopPropagation();' >For more information have a look at the Website of WSL</a></p>",
+      "widthClass": "v-col-12 v-col-sm-6 v-col-md-4 v-col-xl-3"
     }
   ],
   "metadataConfig": {
-    "loadLocalFile": true,
-    "localFileUrl": "https://frontend-static.s3-zh.os.switch.ch/metadata/packagelist/packagelist.json",
+    "loadLocalFile": false,
+    "localFileUrl": "./testdata/packagelist.json",
     "publicationsConfig": {
       "resolveIds": true,
       "idPrefix": "*",
       "idDelimiter": ":",
-      "resolveBaseUrl": "https://www.envidat.ch/dora-detail/",
-      "resolveBaseDOIUrl": "https://www.envidat.ch/doi:",
-      "useListResolving": false
+      "resolveBaseUrl": "/dora/",
+      "resolveBaseDOIUrl": "/doi:",
+      "useListResolving": true
     },
     "authorDetailsConfig": {
       "showAuthorInfos": true,
@@ -59,20 +67,21 @@
       "showDataCreditScore": false
     },
     "resourcesConfig": {
-      "loadDataViz": true,
+      "loadDataViz": false,
       "downloadActive": true
-    }
+    },
+    "ednaExternalDatasets": "https://os.zhdk.cloud.switch.ch/envicloud/edna/fw_ch_modipl_2020/metadata/metadata_fw_ch_modipl_2020.csvhttps://os.zhdk.cloud.switch.ch/envicloud/edna/fw_ch_modipl_2020/metadata/metadata_fw_ch_modipl_2020.csv"
   },
   "projectsConfig": {
     "loadLocalFile": false,
-    "localFileUrl": "https://frontend-static.s3-zh.os.switch.ch/metadata/projects/projects.json"
+    "localFileUrl": "./testdata/projects.json"
   },
   "maintenanceConfig": {
     "signinDisabled": false,
     "signinRedirectActive": false,
     "messageActive": false,
     "title": "Maintenance Mode",
-    "message": "On Wednesday 29th March, between 9 and 12, EnviDat is undergoing the planned annual physical checkup. EnviDat can be accessed in read-only mode. Data download, upload and user data management functionalities will be disabled"
+    "message": "We are currently experiencing some IT issues and are actively working to resolve them as quickly as possible. Thank you for your understanding and patience during this time. EnviDat can be accessed in <strong>read-only mode</strong>. Data download, upload and <strong>user data management functionalities will be disabled</strong>."
   },
   "showContact": {
     "contactActive": true
@@ -81,10 +90,9 @@
     "newsActive": true,
     "entries": [
       {
-        "title": "Update: New Way of Editing",
-        "text": "The homepage has a new look and many other new features are part of this update. Have look at the navigation entries on the left side and <a href='./#/signin' >sign into</a> your account in the top right corner. The main feature is the <strong>new editing workflow</strong>, sign in and give it a try or read more in the <a href='./#/blog/new_editing_workflow.md' >blog post</a>.",
-        "image": "https://www.envidat.ch/blog/images/edit_workflow_header.jpg",
-        "date": "10.10.2024"
+        "title": "Improved DOI Creation",
+        "text": "New features arrived on EnviDat: Improved DOI Creation and Reordering of Authors! When editing a dataset <strong>go to the \"Publication Information\" step and have a look under \"Dataset Publication Status\"</strong>. And reordering of authors is available it's on the right side in the \"Authors\" step <a href='./#/blog/new_doi_workflow.md' >Read more here</a>.",
+        "image": "https://www.envidat.ch/blog/images/doiworkflow/keys_small.jpg"
       }
     ]
   },
@@ -97,7 +105,7 @@
         "icon": "heart",
         "points": [],
         "image": "",
-        "action": "/new",
+        "action": "/signin",
         "actionTitle": "Create Dataset"
       },
       {
@@ -110,7 +118,7 @@
       },
       {
         "title": "Connected to the world",
-        "subtitle": "EnviDat disseminates its datasets globally in order to promote international research cooperation in the field of environmental science. EnviDat datasets are listed in the <a href='https://search.earthdata.nasa.gov/search?fdc=WSL&ac=true'>NASA EarthData portal</a>, the data.europa.eu <a href='https://data.europa.eu/data/datasets?country=ch&publisher=EnviDat'>European Open Data portal</a>, <a href='https://b2find9.cloud.dkrz.de/organization/envidat'>European Open Science Cloud Hub</a>, <a href='https://commons.datacite.org/doi.org?query=client.uid:ethz.wsl'>DataCite</a>, or <a href='https://opendata.swiss/en/organization/envidat'>opendata.swiss</a> so that scientific data is found and cited.",
+        "subtitle": "EnviDat disseminates its datasets globally in order to promote international research cooperation in the field of environmental science. EnviDat datasets are listed in the NASA EarthData portal (https://search.earthdata.nasa.gov/search?fdc=WSL&ac=true), the data.europa.eu <a href='https://data.europa.eu/data/datasets?country=ch&publisher=EnviDat'>European Open Data portal</a>, <a href='https://b2find9.cloud.dkrz.de/organization/envidat'>European Open Science Cloud Hub</a>, <a href='https://commons.datacite.org/doi.org?query=client.uid:ethz.wsl'>DataCite</a>, or <a href='https://opendata.swiss/en/organization/envidat'>opendata.swiss</a> so that scientific data is found and cited.",
         "icon": "world",
         "points": [],
         "image": "",
@@ -122,6 +130,11 @@
   "ignoredNews": {
     "newsActive": false,
     "entries": [
+      {
+        "title": "Update: New Way of Editing",
+        "text": "The homepage has a new look and many other new features are part of this update. Have look at the navigation entries on the left side and <a href='./#/signin' >sign into</a> your account in the top right corner. The main feature is the <strong>new editing workflow</strong>, sign in and give it a try or read more in the <a href='./#/blog/new_editing_workflow.md' >blog post</a>.",
+        "image": "https://www.envidat.ch/blog/images/edit_workflow_header.jpg"
+      },
       {
         "title": "Maintenance 29. March!",
         "text": "On Wednesday 29th March, between 9 and 12, EnviDat is undergoing the planned annual physical checkup. EnviDat can be accessed in <strong>read-only mode</strong>. Data download, upload and <strong>user data management functionalities will be disabled</strong>.",
@@ -143,7 +156,7 @@
     "decemberParticles": true
   },
   "userEditMetadataConfig": {
-    "importWorkflowActive": false,
+    "importWorkflowActive": true,
     "doiWorkflowActive": true,
     "publicationYearsList": 30,
     "publicationMaxFunders": 5,
@@ -151,16 +164,19 @@
     "resourceEditingActive": true,
     "resourceUploadActive": true,
     "editingRestrictingActive": true,
-    "editingRestrictingActiveWithMessage": true,
+     "editingRestrictingActiveWithMessage": true,
     "customFieldsMax": 10,
     "keywordsListWordMax": 2,
     "keywordsCountMin": 5,
     "blindReviewEditingActive": true,
     "newWorkflowActive": true
   },
+  "modeConfig": {
+    "excludeMode": null
+  },
   "userDashboardConfig": {
     "dashboardRedirect": false,
-    "introText": "Dataset creation is simplified via the new website, just click the 'New Dataset' button! If you are missing a feature (like changing uploaded resources in a unpublished dataset) go to your ",
+    "introText": "Dataset creation is simplified via the new website, just click the 'New Dataset' button! If you are missing a feature (like changing uploaded resources in an unpublished dataset) go to your ",
     "feedbackText": ". If you have issues while using EnviDat or though of an improvement, please <a href='mailto:envidat@wsl.ch'>let us know</a>.",
     "userEditingEnabled": true,
     "useTokenSignin": true,
@@ -173,17 +189,5 @@
       "collaboratorText": "You are added as collaborator to datasets, you can edit these datasets. They are listed under 'Collaborator Datasets'."
     },
     "showOldDashboardUrl": true
-  },
-  "modeConfig": {
-    "excludeMode": null
-  },
-  "signinPageConfig": {
-    "wslSigninEnabled": false,
-    "disclaimerText": "Please note that by publishing data, you allow EnviDat to store, copy and transform any deposited digital objects for preservation purposes, as well as to provide long-term access to them. All EnviDat datasets will be published with a Digital Object Identifier (DOI) and consequently, every <b>data provider</b>:",
-    "disclaimerPoints": [
-      "has acquired the permission to publish the dataset (e.g. from the group or research unit leader) and that the dataset doesn't violate copyright, privacy, confidentiality, non-disclosure agreements or institutional research integrity policies.",
-      "after the publication, understands the responsibility not to modify the already uploaded data files, as well as any metadata field that influences the <b>citation</b> (Dataset Title, Authors, etc...); if errors will need to be corrected, please get in touch with the EnviDat team at envidat@wsl.ch for devising an appropriate solution.",
-      "will always use the DOI to reference the dataset in any publication and will regularly review and curate the published dataset, e.g. by improving the Description of the dataset or by adding associated papers to the list of Related Publications."
-    ]
   }
 }
