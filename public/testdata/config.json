@@ -56,8 +56,8 @@
       "resolveIds": true,
       "idPrefix": "*",
       "idDelimiter": ":",
-      "resolveBaseUrl": "/dora/",
-      "resolveBaseDOIUrl": "/doi:",
+      "resolveBaseUrl": "https://www.envidat.ch/dora/",
+      "resolveBaseDOIUrl": "https://www.envidat.ch/doi:",
       "useListResolving": true
     },
     "authorDetailsConfig": {

@@ -1,9 +1,16 @@
 <template>
   <v-card id="EditCustomFields" :class="showAsCard ? 'pa-4' : 'pa-0'" :flat="!showAsCard" :loading="loadingColor">
-    <v-container fluid class="pa-0">
+    <v-container fluid class="pa-4">
       <v-row>
-        <v-col cols="6" class="text-h5">
-          {{ labels.cardTitle }}
+        <v-col cols="12" xl="12" class="mb-0">
+          <v-row class="mb-5">
+            <v-col>
+              <div class="font-weight-bold">{{ labels.cardTitle }}</div>
+              <div class="text-caption">
+                {{ labels.cardInstructions }}
+              </div>
+            </v-col>
+          </v-row>
         </v-col>
 
         <v-col v-if="message">
@@ -19,15 +26,8 @@
           <BaseStatusLabelView status="error" statusColor="error" :statusText="error" :expandedText="errorDetails" />
         </v-col>
       </v-row>
-
-      <v-row>
-        <v-col cols="12">
-          <div class="text-body-1">{{ labels.cardInstructions }}</div>
-        </v-col>
-      </v-row>
-
       <v-row
-        v-for="(item, index) in customFieldsProp"
+        v-for="(item, index) in filteredcustomFieldsProp"
         :key="`${item}_${index}`"
         no-gutters
         :class="index === 0 ? 'pt-4' : 'py-1'"
@@ -35,22 +35,22 @@
         <v-col class="pr-2">
           <v-text-field
             :label="labels.labelFieldName"
-            :readonly="isReadOnly('fieldName')"
-            :hint="readOnlyHint('fieldName')"
-            :error-messages="validationErrors.customFieldsList[index].fieldName"
-            :model-value="item.fieldName"
-            @change="notifyChange(index, 'fieldName', $event.target.value)"
+            :readonly="isReadOnly('key')"
+            :hint="readOnlyHint('key')"
+            :error-messages="validationErrors.customFieldsList[index].key"
+            :model-value="item.key"
+            @change="notifyChange(index, 'key', $event.target.value)"
           />
         </v-col>
 
         <v-col class="pl-2">
           <v-text-field
             :label="labels.labelContent"
-            :readonly="isReadOnly('content')"
-            :hint="readOnlyHint('content')"
-            :error-messages="validationErrors.customFieldsList[index].content"
-            :model-value="item.content"
-            @change="notifyChange(index, 'content', $event.target.value)"
+            :readonly="isReadOnly('value')"
+            :hint="readOnlyHint('value')"
+            :error-messages="validationErrors.customFieldsList[index].value"
+            :model-value="item.value"
+            @change="notifyChange(index, 'value', $event.target.value)"
           />
         </v-col>
 
@@ -104,18 +104,19 @@ export default {
   name: 'EditCustomFields',
   data: () => ({
     mdiMinusCircleOutline,
+    filteredKeys: ['deprecatedResources'],
     maxCustomFieldsReached: false,
     labels: {
       cardTitle: 'Custom Fields',
-      cardInstructions: 'Advanced custom data fields. These are fields for special internal use cases.',
+      cardInstructions: 'Advanced custom data fields.',
       labelFieldName: 'Field Name',
       labelContent: 'Content',
     },
     validationErrors: {
       customFieldsList: [
         {
-          fieldName: '',
-          content: '',
+          key: '',
+          value: '',
         },
       ],
       customFieldArray: null,
@@ -124,8 +125,8 @@ export default {
       customFieldsMax: 10,
     },
     emptyEntry: {
-      fieldName: '',
-      content: '',
+      key: '',
+      value: '',
     },
     newDatasetInfo: {},
   }),
@@ -166,6 +167,9 @@ export default {
   },
   computed: {
     ...mapState(['config']),
+    filteredcustomFieldsProp() {
+      return this.customFieldsProp.filter((field) => !this.filteredKeys.includes(field.key));
+    },
     loadingColor() {
       if (this.loading) {
         return 'accent';
@@ -208,10 +212,10 @@ export default {
     addEmptyFieldObj(localFields) {
       const lastCustomFieldObj = localFields[localFields.length - 1];
 
-      const lastCustomFieldName = lastCustomFieldObj?.fieldName;
+      const lastCustomFieldKey = lastCustomFieldObj?.key;
 
       let addCustomField = true;
-      if (lastCustomFieldName === '') {
+      if (lastCustomFieldKey === '') {
         addCustomField = false;
       }
 
@@ -254,7 +258,7 @@ export default {
     },
     setCustomFields(value) {
       this.newDatasetInfo.customFields = value;
-      this.$emit('save', this.customFields);
+      this.$emit('save', value);
     },
     deleteEntry(index) {
       const localCopy = [...this.customFieldsProp];

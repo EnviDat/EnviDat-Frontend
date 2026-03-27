@@ -16,12 +16,16 @@ export class PublicationInfoViewModel extends AbstractEditViewModel {
   declare publicationYear: string;
   declare version: string;
   declare datasetId: string;
+  declare customFields: {
+    key?: string;
+    value?: string;
+  };
 
   validationErrors: {
     contactEmail: string | null;
     contactFirstName: string | null;
     contactLastName: string | null;
-
+    customFields: string | null;
     publicationState: string | null;
     doi: string | null;
     publisher: string | null;
@@ -32,7 +36,7 @@ export class PublicationInfoViewModel extends AbstractEditViewModel {
     contactEmail: null,
     contactFirstName: null,
     contactLastName: null,
-
+    customFields: null,
     publicationState: null,
     doi: null,
     publisher: null,
@@ -54,6 +58,7 @@ export class PublicationInfoViewModel extends AbstractEditViewModel {
       .string()
       .required('Contact email is required')
       .email('Contact email must be a valid email address'),
+    customFields: yup.array().nullable(),
 
     publicationState: yup.string(),
     doi: yup.string(),
@@ -90,6 +95,7 @@ export class PublicationInfoViewModel extends AbstractEditViewModel {
       ['publicationYear', 'publication.publication_year'],
       ['version', 'version'],
       ['datasetId', 'id'],
+      ['customFields', 'extras'],
     ];
   }
 
