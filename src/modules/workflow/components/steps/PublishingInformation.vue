@@ -64,7 +64,16 @@
       <v-col cols="12" xl="12" class="pa-0">
         <v-row>
           <v-col cols="12">
-            <CustomFields :custom-fields="customFields" @save="catchCustomFieldsChange" />
+            <!-- BaseIconSwitch Component -->
+            <v-col class="ml-sm-0 mr-3 flex-grow-0 d-flex align-center">
+              <span class="mr-3 text-no-wrap">Custom Fields </span>
+              <BaseIconSwitch
+                :icon="mdiInformation"
+                :active="this.openCustomField"
+                @clicked="this.openCustomField = !this.openCustomField"
+              />
+            </v-col>
+            <CustomFields v-if="this.openCustomField" :custom-fields="customFields" @save="catchCustomFieldsChange" />
           </v-col>
         </v-row>
       </v-col>
@@ -111,12 +120,14 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { mdiInformationOutline } from '@mdi/js';
+import { mdiInformationOutline, mdiInformation } from '@mdi/js';
 import ContactPerson from '@/modules/workflow/components/steps/ContactPerson.vue';
 import PublicationInfo from '@/modules/workflow/components/steps/PublicationInfo.vue';
 import PublicationStatus from '@/modules/workflow/components/steps/PublicationStatus.vue';
 import ReviewInfo from '@/modules/workflow/components/steps/ReviewInfo.vue';
 import NotFoundCard from '@/components/Cards/NotFoundCard.vue';
+import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue';
+
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
 
 import { getUserPickerObjects, getAuthorByEmail } from '@/factories/authorFactory';
@@ -140,6 +151,8 @@ export default {
 
   data: () => ({
     mdiInformationOutline,
+    mdiInformation,
+    openCustomField: false,
     envidatDomain: process.env.VITE_API_ROOT,
     newDatasetInfo: {},
     PUBLICATION_STATE_PUBLISHED,
@@ -360,7 +373,15 @@ export default {
     },
   },
 
-  components: { ReviewInfo, PublicationStatus, PublicationInfo, InfoBanner, NotFoundCard, CustomFields },
+  components: {
+    ReviewInfo,
+    PublicationStatus,
+    PublicationInfo,
+    InfoBanner,
+    NotFoundCard,
+    CustomFields,
+    BaseIconSwitch,
+  },
 };
 </script>
 

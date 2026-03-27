@@ -108,7 +108,7 @@ export default {
     maxCustomFieldsReached: false,
     labels: {
       cardTitle: 'Custom Fields',
-      cardInstructions: 'Advanced custom data fields. These are fields for special internal use cases.',
+      cardInstructions: 'Advanced custom data fields.',
       labelFieldName: 'Field Name',
       labelContent: 'Content',
     },
