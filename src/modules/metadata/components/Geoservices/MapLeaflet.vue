@@ -244,8 +244,13 @@ export default {
 */
 
       this.addSiteIfAvailable();
+      if (this.maxExtent) {
+        this.zoomToExtent(this.maxExtent);
+      }
     },
     addSiteIfAvailable() {
+      console.log('addSiteIfAvailable resetZoom=', this.resetZoom, 'mapDivId=', this.mapDivId);
+
       this.showSiteLayersOnMap(false);
 
       if (this.isMapEditable) {
@@ -276,10 +281,6 @@ export default {
           });
         }
       }
-
-      if (this.maxExtent) {
-        this.zoomToExtent(this.maxExtent);
-      }
     },
     zoomToExtent(bbox) {
       this.map.fitBounds([
@@ -302,7 +303,6 @@ export default {
 
       const layerArray = this.map.pm.getGeomanLayers();
       const newGeometries = geomanGeomsToGeoJSON(layerArray);
-
       eventBus.emit(MAP_GEOMETRY_MODIFIED, newGeometries);
     },
     setupEditing() {
