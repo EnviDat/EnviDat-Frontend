@@ -61,6 +61,23 @@
         </v-row>
       </v-col>
 
+      <v-col cols="12" xl="12" class="pa-0">
+        <v-row>
+          <v-col cols="12">
+            <!-- BaseIconSwitch Component -->
+            <v-col class="ml-sm-0 mr-3 flex-grow-0 d-flex align-center">
+              <span class="mr-3 text-no-wrap">Custom Fields </span>
+              <BaseIconSwitch
+                :icon="mdiInformation"
+                :active="this.openCustomField"
+                @clicked="this.openCustomField = !this.openCustomField"
+              />
+            </v-col>
+            <CustomFields v-if="this.openCustomField" :custom-fields="customFields" @save="catchCustomFieldsChange" />
+          </v-col>
+        </v-row>
+      </v-col>
+
       <v-col cols="12" class="pa-0">
         <v-row v-if="doiWorkflowActive">
           <v-col>
@@ -103,12 +120,14 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { mdiInformationOutline } from '@mdi/js';
+import { mdiInformationOutline, mdiInformation } from '@mdi/js';
 import ContactPerson from '@/modules/workflow/components/steps/ContactPerson.vue';
 import PublicationInfo from '@/modules/workflow/components/steps/PublicationInfo.vue';
 import PublicationStatus from '@/modules/workflow/components/steps/PublicationStatus.vue';
 import ReviewInfo from '@/modules/workflow/components/steps/ReviewInfo.vue';
 import NotFoundCard from '@/components/Cards/NotFoundCard.vue';
+import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue';
+
 import { useDatasetWorkflowStore } from '@/modules/workflow/datasetWorkflow';
 
 import { getUserPickerObjects, getAuthorByEmail } from '@/factories/authorFactory';
@@ -121,6 +140,8 @@ import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
 import InfoBanner from '@/modules/workflow/components/steps/InformationBanner.vue';
 
+import CustomFields from '@/modules/workflow/components/steps/CustomFields.vue';
+
 export default {
   name: 'PublishingInformation',
   setup() {
@@ -130,6 +151,8 @@ export default {
 
   data: () => ({
     mdiInformationOutline,
+    mdiInformation,
+    openCustomField: false,
     envidatDomain: process.env.VITE_API_ROOT,
     newDatasetInfo: {},
     PUBLICATION_STATE_PUBLISHED,
@@ -140,6 +163,10 @@ export default {
   }),
 
   props: {
+    customFields: {
+      type: Array,
+      default: () => [],
+    },
     publicationState: { type: String, default: undefined },
     visibilityState: { type: String, default: undefined },
     doi: { type: String, default: undefined },
@@ -272,6 +299,10 @@ export default {
     catchReviewChange(reviewInfos) {
       this.$emit('save', reviewInfos);
     },
+    catchCustomFieldsChange(updatedFields) {
+      this.newDatasetInfo.customFields = updatedFields;
+      this.$emit('save', this.newDatasetInfo);
+    },
     isReadOnly(fieldKey) {
       return isReadOnlyField(fieldKey);
     },
@@ -342,7 +373,15 @@ export default {
     },
   },
 
-  components: { ReviewInfo, PublicationStatus, PublicationInfo, InfoBanner, NotFoundCard, ContactPerson },
+  components: {
+    ReviewInfo,
+    PublicationStatus,
+    PublicationInfo,
+    InfoBanner,
+    NotFoundCard,
+    CustomFields,
+    BaseIconSwitch,
+  },
 };
 </script>
 
