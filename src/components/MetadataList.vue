@@ -30,13 +30,15 @@
         :isAuthorSearch="isAuthorSearch"
         :isShallow="isShallow"
         :mode="modeData?.name"
-        :fixedHeight="36"
+        :fixedHeight="45"
         :searchBarPlaceholder="searchBarPlaceholder"
         :loading="loading"
         :controlsActive="controlsActive"
         :enabledControls="enabledControls"
         @searchClick="catchSearchClicked"
         @searchCleared="catchSearchCleared"
+        @organizationClicked="catchOrganizationClicked"
+        @organizationCleared="catchOrganizationCleared"
         @controlsChanged="controlsChanged"
         @authorSearchClick="catchAuthorSearchClick"
         @shallowRealClick="catchShallowRealClick"
@@ -457,6 +459,9 @@ export default {
     },
     catchOrganizationClicked(organization) {
       this.$emit('clickedOrganization', organization);
+    },
+    catchOrganizationCleared() {
+      this.$emit('organizationCleared');
     },
     catchPointClicked(id) {
       // highlight entry dataset and bring to the top of the list

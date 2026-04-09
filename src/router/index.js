@@ -153,6 +153,8 @@ const router = createRouter({
    * @param {String} mode which defines the mode for the special view
    * @param {Array} pins array of ids for the pinned metadatas
    * @param {String} isAuthorSearch if true the search term will only be compared against authors
+   * @param {String} isOrgSearch if true the search term will be used for organization filtering
+   * @param {String} orgIds the organization id(s) used for filtering (comma-separated)
    */
   additiveChangeRoute(
     route,
@@ -163,6 +165,8 @@ const router = createRouter({
     mode = undefined,
     pins = undefined,
     isAuthorSearch = undefined,
+    isOrgSearch = undefined,
+    orgIds = undefined,
   ) {
     const query = {};
     Object.assign(query, route.query);
@@ -185,6 +189,12 @@ const router = createRouter({
 
     if (isAuthorSearch !== undefined) {
       query.isAuthorSearch = typeof isAuthorSearch !== 'string' ? isAuthorSearch.toString() : isAuthorSearch;
+    }
+    if (isOrgSearch !== undefined) {
+      query.isOrgSearch = typeof isOrgSearch !== 'string' ? isOrgSearch.toString() : isOrgSearch;
+    }
+    if (orgIds !== undefined) {
+      query.orgIds = orgIds;
     }
 
     routerObj.push({
