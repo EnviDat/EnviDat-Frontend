@@ -174,11 +174,7 @@ export default {
     catchOrganizationSelected(value) {
       const selected = value?.raw ?? value;
       const selectedId = value?.id ?? selected?.id;
-      const selectedName =
-        (selected?.name || value?.label || value?.id || '')
-          .toString()
-          .trim()
-          .toLowerCase();
+      const selectedName = (selected?.name || value?.label || value?.id || '').toString().trim().toLowerCase();
       const relatedIds = this.collectRelatedOrgIdsByGroup(selectedName, selectedId);
 
       this.$emit('organizationClicked', {
@@ -207,23 +203,50 @@ export default {
         this.elementVisible = false;
       }, 10000); // 10000 milliseconds = 5 seconds
     },
+
     collectRelatedOrgIdsByGroup(groupName, selectedId) {
       if (!groupName) return selectedId ? [selectedId] : [];
 
       const orgs = this.organizationsStore?.organizations || [];
-      const related = orgs
-        .filter((org) =>
-          (org?.groups || []).some((g) => {
-            const gName = (g?.name || g?.display_name || g?.title || '').toString().trim().toLowerCase();
-            return gName === groupName;
-          }),
-        )
-        .map((org) => org?.id)
-        .filter(Boolean);
+      const normalize = (val) => (val || '').toString().trim().toLowerCase();
 
-      const ids = new Set([selectedId, ...related].filter(Boolean));
+      const groupNames = new Set([normalize(groupName)].filter(Boolean));
+      const ids = new Set([selectedId].filter(Boolean));
+      const visited = new Set();
+
+      const visit = () => {
+        let added = false;
+
+        for (const org of orgs) {
+          const orgId = org?.id;
+          if (!orgId || visited.has(orgId)) continue;
+
+          const orgGroups = (org?.groups || [])
+            .map((g) => normalize(g?.name || g?.display_name || g?.title))
+            .filter(Boolean);
+
+          if (!orgGroups.some((g) => groupNames.has(g))) continue;
+
+          visited.add(orgId);
+          if (!ids.has(orgId)) {
+            ids.add(orgId);
+            added = true;
+          }
+
+          const orgName = normalize(org?.name || org?.display_name || org?.title);
+          if (orgName && !groupNames.has(orgName)) {
+            groupNames.add(orgName);
+            added = true;
+          }
+        }
+
+        if (added) visit();
+      };
+
+      visit();
       return Array.from(ids);
     },
+
   },
   computed: {
     ...mapStores(useOrganizationsStore),
