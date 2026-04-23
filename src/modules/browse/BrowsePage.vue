@@ -29,9 +29,10 @@
       :searchBarPlaceholder="searchBarPlaceholder"
       @searchClick="catchSearchClicked"
       @searchCleared="catchSearchCleared"
+      @organizationCleared="catchOrganizationCleared"
       @authorSearchClick="catchAuthorSearchClick"
       @shallowRealClick="catchShallowRealClick"
-      @organizationClicked="catchOrganizationClicked"
+      @clickedOrganization="catchOrganizationClicked"
       :showScrollTopButton="true"
       :updatingTags="updatingTags"
       :loading="loading"
@@ -89,6 +90,7 @@ export default {
   },
   async mounted() {
     this.oldIsAuthorSearch = this.isAuthorSearch;
+    this.oldIsOrgSearch = this.isOrgSearch;
 
     if (this.mode) {
       await this.loadModeDatasets();
@@ -268,10 +270,16 @@ export default {
 
       // Assign searchParameter so that it can be checked for full text searches
       const searchParameter = this.$route.query.search || '';
+      const orgIdsParam = this.$route.query.orgIds || '';
+      const effectiveSearchParam = this.isOrgSearch
+        ? this.buildOrgQueryFromParam(orgIdsParam || searchParameter)
+        : searchParameter;
 
       // True is searchParameter does not equal currentSearchTerm, else False
       const searchChanged =
-        searchParameter !== this.currentSearchTerm || this.isAuthorSearch !== this.oldIsAuthorSearch;
+        effectiveSearchParam !== this.currentSearchTerm ||
+        this.isAuthorSearch !== this.oldIsAuthorSearch ||
+        this.isOrgSearch !== this.oldIsOrgSearch;
 
       if (!searchChanged) {
         // use the search parameter from the url in any case
@@ -288,11 +296,11 @@ export default {
       }
 
       if (searchChanged) {
-        if (searchParameter && searchParameter.length > 0) {
+        if (effectiveSearchParam && effectiveSearchParam.length > 0) {
           if (this.mode) {
-            this.filteredModeContent = this.modeStore.searchModeDatasets(searchParameter, this.mode);
+            this.filteredModeContent = this.modeStore.searchModeDatasets(effectiveSearchParam, this.mode);
           } else {
-            this.metadataSearch(searchParameter, this.metadataConfig);
+            this.metadataSearch(effectiveSearchParam, this.metadataConfig, this.isOrgSearch);
           }
 
           this.resetScrollPos();
@@ -345,15 +353,29 @@ export default {
     clearSearchResults() {
       this.$store.commit(`${METADATA_NAMESPACE}/${CLEAR_SEARCH_METADATA}`);
     },
-    metadataSearch(searchTerm, metadataConfig) {
+    buildOrgQueryFromParam(orgIdsParam) {
+      if (!orgIdsParam) return '';
+      if (orgIdsParam.includes(':')) return orgIdsParam;
+      const ids = orgIdsParam
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
+      if (ids.length <= 1) {
+        return ids[0] ? `owner_org:${ids[0]}` : '';
+      }
+      return `owner_org:(${ids.join(' OR ')})`;
+    },
+    metadataSearch(searchTerm, metadataConfig, isOrgSearch = false) {
       this.$store.dispatch(`${METADATA_NAMESPACE}/${SEARCH_METADATA}`, {
         searchTerm,
         metadataConfig,
         isAuthorSearch: this.isAuthorSearch,
+        isOrgSearch,
         mode: this.mode,
       });
     },
     catchSearchClicked(search) {
+      this.oldIsOrgSearch = this.isOrgSearch;
       this.$router.options.additiveChangeRoute(
         this.$route,
         this.$router,
@@ -363,9 +385,12 @@ export default {
         this.mode,
         undefined,
         this.isAuthorSearch,
+        false,
+        undefined,
       );
     },
     catchSearchCleared() {
+      this.oldIsOrgSearch = this.isOrgSearch;
       this.$router.options.additiveChangeRoute(
         this.$route,
         this.$router,
@@ -375,10 +400,28 @@ export default {
         this.mode,
         undefined,
         this.isAuthorSearch,
+        false,
+        undefined,
+      );
+    },
+    catchOrganizationCleared() {
+      this.oldIsOrgSearch = this.isOrgSearch;
+      this.$router.options.additiveChangeRoute(
+        this.$route,
+        this.$router,
+        BROWSE_PATH,
+        '',
+        undefined,
+        this.mode,
+        undefined,
+        this.isAuthorSearch,
+        false,
+        undefined,
       );
     },
     catchAuthorSearchClick() {
       this.oldIsAuthorSearch = this.isAuthorSearch;
+      this.oldIsOrgSearch = this.isOrgSearch;
       const newIsAuthorSearchParameter = this.isAuthorSearch ? 'false' : 'true';
 
       this.$router.options.additiveChangeRoute(
@@ -390,13 +433,39 @@ export default {
         undefined,
         undefined,
         newIsAuthorSearchParameter,
+        false,
+        undefined,
       );
     },
     catchShallowRealClick() {
       this.showShallowData = !this.showShallowData;
     },
     catchOrganizationClicked(organization) {
-      // console.log(`clicked on ${organization}`);
+      const orgId = typeof organization === 'object' ? organization?.id : organization;
+      const orgLabel =
+        typeof organization === 'object'
+          ? organization?.label || organization?.display_name || organization?.title || organization?.name || orgId
+          : organization;
+      const relatedIds =
+        typeof organization === 'object' && Array.isArray(organization?.relatedIds)
+          ? organization.relatedIds
+          : orgId
+          ? [orgId]
+          : [];
+      const orgIdsParam = relatedIds.filter(Boolean).join(',');
+      this.oldIsOrgSearch = this.isOrgSearch;
+      this.$router.options.additiveChangeRoute(
+        this.$route,
+        this.$router,
+        BROWSE_PATH,
+        orgLabel,
+        undefined,
+        this.mode,
+        undefined,
+        this.isAuthorSearch,
+        true,
+        orgIdsParam,
+      );
     },
   },
   computed: {
@@ -427,6 +496,9 @@ export default {
     },
     isAuthorSearch() {
       return this.$route?.query?.isAuthorSearch === 'true' || false;
+    },
+    isOrgSearch() {
+      return this.$route?.query?.isOrgSearch === 'true' || false;
     },
     enabledControls() {
       let enableds = this.preenabledControls;
@@ -556,6 +628,7 @@ export default {
     mapFilterVisibleIds: [],
     preenabledControls: [LISTCONTROL_LIST_ACTIVE, LISTCONTROL_MAP_ACTIVE, LISTCONTROL_COMPACT_LAYOUT_ACTIVE],
     oldIsAuthorSearch: false,
+    oldIsOrgSearch: false,
   }),
 };
 </script>

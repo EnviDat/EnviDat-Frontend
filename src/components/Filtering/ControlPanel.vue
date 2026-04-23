@@ -13,12 +13,27 @@
             :isFlat="true"
             :fixedHeight="fixedHeight"
             :labelText="searchBarPlaceholder"
+            :showOrgSelect="advanceFilterActive && !orgLoading && organizationsStore.organizations.length > 0"
+            :orgItems="organizationsStore.organizations"
             :loading="loading"
             @clicked="catchSearchClicked"
             @searchCleared="catchSearchCleared"
+            @orgSelected="catchOrganizationSelected"
           />
         </v-col>
 
+        <v-col v-if="showSearch" class="py-0 px-sm-1 flex-grow-0" id="shareSearchResult">
+          <BaseIconButton
+            style="opacity: 0.8"
+            :icon="filterIcon"
+            iconColor="black"
+            tooltip-bottom
+            tooltip-text="Advance filter by Organizations"
+            :spin="orgLoading"
+            :disabled="orgLoading || organizationsStore.organizations.length === 0"
+            @clicked="catchFilterClick"
+          />
+        </v-col>
         <v-col v-if="showSearch && mode !== EDNA_MODE" class="ml-sm-4 flex-grow-0">
           <BaseIconSwitch
             :active="isAuthorSearch"
@@ -86,12 +101,15 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import { mdiLayers, mdiShareVariant, mdiAccountCircle } from '@mdi/js';
+import { mdiLayers, mdiShareVariant, mdiAccountCircle, mdiFilter, mdiFilterOff, mdiLoading } from '@mdi/js';
 
 import SmallSearchBarView from '@/components/Filtering/SmallSearchBarView.vue';
 import ListControlToggle from '@/components/Filtering/ListControlToggle.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue';
+import { mapStores } from 'pinia';
+import { useOrganizationsStore } from '@/modules/organizations/store/organizationsStorePinia';
+
 import { EDNA_MODE } from '@/store/metadataMutationsConsts';
 
 export default {
@@ -126,10 +144,16 @@ export default {
     BaseIconButton,
     BaseIconSwitch,
   },
-  mounted() {
-    // if (this.mode === EDNA_MODE) {
-    //   this.showOverlay();
-    // }
+  async mounted() {
+    this.orgLoading = true;
+    try {
+      this.organizationData = (await this.organizationsStore.loadAllOrganizations()) || [];
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Error fetching organizations:', error);
+    } finally {
+      this.orgLoading = false;
+    }
   },
   methods: {
     catchSearchClicked(search) {
@@ -147,10 +171,30 @@ export default {
     catchControlClick(number) {
       this.$emit('controlsChanged', number);
     },
+    catchOrganizationSelected(value) {
+      const selected = value?.raw ?? value;
+      const selectedId = value?.id ?? selected?.id;
+      const selectedName = (selected?.name || value?.label || value?.id || '').toString().trim().toLowerCase();
+      const relatedIds = this.collectRelatedOrgIdsByGroup(selectedName, selectedId);
+
+      this.$emit('organizationClicked', {
+        id: selectedId,
+        label: value?.label ?? selected?.display_name ?? selected?.title ?? selected?.name ?? selectedId,
+        raw: selected,
+        relatedIds,
+      });
+    },
     catchShareClick() {
       // const routeData = this.$router.resolve({ path: this.$route.fullPath });
 
       navigator.clipboard.writeText(window.location);
+    },
+    catchFilterClick() {
+      const next = !this.advanceFilterActive;
+      this.advanceFilterActive = next;
+      if (!next) {
+        this.$emit('organizationCleared');
+      }
     },
     showOverlay() {
       this.elementVisible = true;
@@ -159,10 +203,59 @@ export default {
         this.elementVisible = false;
       }, 10000); // 10000 milliseconds = 5 seconds
     },
+
+    collectRelatedOrgIdsByGroup(groupName, selectedId) {
+      if (!groupName) return selectedId ? [selectedId] : [];
+
+      const orgs = this.organizationsStore?.organizations || [];
+      const normalize = (val) => (val || '').toString().trim().toLowerCase();
+
+      const groupNames = new Set([normalize(groupName)].filter(Boolean));
+      const ids = new Set([selectedId].filter(Boolean));
+      const visited = new Set();
+
+      const visit = () => {
+        let added = false;
+
+        for (const org of orgs) {
+          const orgId = org?.id;
+          if (!orgId || visited.has(orgId)) continue;
+
+          const orgGroups = (org?.groups || [])
+            .map((g) => normalize(g?.name || g?.display_name || g?.title))
+            .filter(Boolean);
+
+          if (!orgGroups.some((g) => groupNames.has(g))) continue;
+
+          visited.add(orgId);
+          if (!ids.has(orgId)) {
+            ids.add(orgId);
+            added = true;
+          }
+
+          const orgName = normalize(org?.name || org?.display_name || org?.title);
+          if (orgName && !groupNames.has(orgName)) {
+            groupNames.add(orgName);
+            added = true;
+          }
+        }
+
+        if (added) visit();
+      };
+
+      visit();
+      return Array.from(ids);
+    },
+
   },
   computed: {
+    ...mapStores(useOrganizationsStore),
     hasEnabledControls() {
       return this.enabledControls?.length > 0;
+    },
+    filterIcon() {
+      if (this.orgLoading) return mdiLoading;
+      return this.advanceFilterActive ? mdiFilterOff : mdiFilter;
     },
     controlsHeight() {
       if (this.compactLayout || !this.fixedHeight) {
@@ -177,9 +270,14 @@ export default {
     mdiLayers,
     mdiShareVariant,
     mdiAccountCircle,
+    mdiFilter,
+    mdiFilterOff,
+    mdiLoading,
     elementVisible: false,
     overlay: false,
     zIndex: 2,
+    advanceFilterActive: false,
+    orgLoading: false,
   }),
 };
 </script>

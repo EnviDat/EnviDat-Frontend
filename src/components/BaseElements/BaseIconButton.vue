@@ -22,6 +22,7 @@
             :icon="icon"
             :large="large"
             :rotated="rotated"
+            :spin="spin"
             :color="computedIconColor"
             :small="small"
             :count="count"
@@ -46,7 +47,15 @@
       :disabled="disabled"
       @click.stop="onClick"
     >
-      <BaseIcon :icon="icon" :rotated="rotated" :color="computedIconColor" :large="large" :small="small" :count="count">
+      <BaseIcon
+        :icon="icon"
+        :rotated="rotated"
+        :spin="spin"
+        :color="computedIconColor"
+        :large="large"
+        :small="small"
+        :count="count"
+      >
       </BaseIcon>
     </v-btn>
   </div>
@@ -95,6 +104,7 @@ export default {
     icon: { type: String, default: undefined, required: true },
     iconColor: { type: String, default: undefined },
     rotated: { type: Boolean, default: false },
+    spin: { type: Boolean, default: false },
     url: { type: String, default: undefined },
     elevated: { type: Boolean, default: false },
     small: { type: Boolean, default: false },

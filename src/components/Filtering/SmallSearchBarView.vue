@@ -38,7 +38,11 @@
           <BaseIconButton :icon="mdiMagnify" color="transparent" @clicked="clicked" />
         </v-col>
 
-        <v-col v-if="showSearch" class="flex-grow-1 py-0 mr-sm-2" :class="hasButton ? 'ml-4 ' : 'ml-2 ml-xs-0'">
+        <v-col
+          v-if="showSearch && !showOrgSelect"
+          class="flex-grow-1 py-0 mr-sm-2"
+          :class="hasButton ? 'ml-4 ' : 'ml-2 ml-xs-0'"
+        >
           <v-tooltip location="bottom" :disabled="$vuetify.display.xs || !searchToolTipText">
             <template v-slot:activator="{ props }">
               <v-text-field
@@ -64,8 +68,22 @@
             <span>{{ searchToolTipText }}</span>
           </v-tooltip>
         </v-col>
+        <v-col v-if="showSearch && showOrgSelect" class="flex-grow-1 py-0 mr-sm-2">
+          <v-autocomplete
+            v-model="selectedOrg"
+            :items="orgItems"
+            :placeholder="orgLabel"
+            item-title="display_name"
+            item-value="id"
+            return-object
+            variant="underlined"
+            hide-details
+            persistent-placeholder
+            @update:modelValue="orgChanged"
+          />
+        </v-col>
 
-        <v-col v-if="showSearch && hasButton" class="flex-grow-0">
+        <v-col v-if="showSearch && hasButton && !showOrgSelect" class="flex-grow-0">
           <BaseRectangleButton
             :button-text="buttonText"
             :is-small="!compactLayout"
@@ -96,6 +114,7 @@ import { mdiClose, mdiMagnify } from '@mdi/js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import TagChip from '@/components/Chips/TagChip.vue';
+import { consoleError } from 'vuetify/lib/util/console.mjs';
 
 export default {
   components: {
@@ -118,6 +137,18 @@ export default {
     isFlat: Boolean,
     fixedHeight: Number,
     loading: Boolean,
+    showOrgSelect: {
+      type: Boolean,
+      default: false,
+    },
+    orgItems: {
+      type: Array,
+      default: () => [],
+    },
+    orgLabel: {
+      type: String,
+      default: 'Organizations',
+    },
   },
   beforeMount() {
     this.searchText = this.searchTerm;
@@ -129,6 +160,7 @@ export default {
     lastSearch: '',
     placeHolderText: 'Enter research term, topic or author',
     searchToolTipText: 'The full text search works for research terms, topics or authors',
+    selectedOrg: null,
   }),
   computed: {
     height() {
@@ -146,11 +178,28 @@ export default {
 
       return height;
     },
+    cleanedSelectedOrg() {
+      const value = this.selectedOrg;
+      if (!value) return null;
+      if (typeof value === 'string') return value.trim();
+      return value?.id ?? value?.value ?? value?.name ?? value?.label ?? value?.title ?? value?.toString?.();
+    },
+    selectedOrgLabel() {
+      const value = this.selectedOrg;
+      if (!value) return '';
+      if (typeof value === 'string') return value;
+      return value?.display_name ?? value?.title ?? value?.name ?? value?.label ?? '';
+    },
   },
   watch: {
     searchTerm(val) {
       // watcher to overtake the property value to the v-model value
       this.searchText = val;
+    },
+    showOrgSelect(val) {
+      if (!val) {
+        this.selectedOrg = null;
+      }
     },
   },
   methods: {
@@ -161,6 +210,14 @@ export default {
     clearClicked() {
       this.searchText = '';
       this.$emit('searchCleared');
+    },
+    orgChanged(value) {
+      this.selectedOrg = value;
+      this.$emit('orgSelected', {
+        id: this.cleanedSelectedOrg,
+        label: this.selectedOrgLabel,
+        raw: value,
+      });
     },
     focusChanged() {
       if (!this.searchText) {
