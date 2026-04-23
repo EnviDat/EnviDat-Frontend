@@ -51,6 +51,7 @@ export default {
     small: { type: Boolean, default: false },
     large: { type: Boolean, default: false },
     rotated: { type: Boolean, default: false },
+    spin: { type: Boolean, default: false },
     left: { type: Boolean, default: false },
     right: { type: Boolean, default: false },
     dark: { type: Boolean, default: false },
@@ -70,6 +71,7 @@ export default {
     classList() {
       return {
         rotated: this.rotated,
+        spin: this.spin,
         small: this.small,
         large: this.large,
         left: this.left,
@@ -142,6 +144,10 @@ export default {
     transform: rotate(-180deg);
   }
 
+  &.spin {
+    animation: baseIconSpin 1s linear infinite;
+  }
+
   &.left {
     margin-right: 12px;
   }
@@ -158,6 +164,15 @@ export default {
   &.light {
     // Make the icon black (to be used in the light theme)
     filter: brightness(0);
+  }
+}
+
+@keyframes baseIconSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
 </style>

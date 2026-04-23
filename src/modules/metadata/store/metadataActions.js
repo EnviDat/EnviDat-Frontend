@@ -47,6 +47,7 @@ import { getKeywordsForFiltering, getTagColor, tagsIncludedInSelectedTags } from
 import categoryCards from '@/store/categoryCards';
 
 import { useNotifyStore } from '@/store/snackBar';
+import { OrganizeImportsMode } from 'typescript';
 
 let API_BASE = '';
 let API_ROOT = '';
@@ -124,7 +125,10 @@ function getAuthorSolrQuery(author) {
  */
 
 export default {
-  async [SEARCH_METADATA]({ commit }, { searchTerm, metadataConfig = {}, isAuthorSearch = false, mode = undefined }) {
+  async [SEARCH_METADATA](
+    { commit },
+    { searchTerm, metadataConfig = {}, isAuthorSearch = false, mode = undefined, isOrgSearch = false },
+  ) {
     const notify = useNotifyStore();
     const originalTerm = searchTerm.trim();
 
@@ -132,12 +136,16 @@ export default {
     notify.show('We are improving your search results, and your list will be updated shortly', 'info', -1, true);
 
     const solrQuery = isAuthorSearch ? getAuthorSolrQuery(originalTerm) : createSolrQuery(originalTerm);
+    const orgQuery =
+      isOrgSearch && originalTerm ? (originalTerm.includes(':') ? originalTerm : `owner_org:${originalTerm}`) : undefined;
     const data = {
-      q: solrQuery,
+      q: isOrgSearch ? '*:*' : solrQuery,
+      fq: isOrgSearch ? orgQuery : undefined,
       rows: 10000,
     };
-
-    const params = new URLSearchParams(data).toString();
+    const params = new URLSearchParams(
+      Object.entries(data).filter(([, v]) => v !== undefined && v !== null && v !== ''),
+    ).toString();
     const url = urlRewrite(`${ACTION_SEARCH_METADATA()}?${params}`, '/', API_ROOT);
 
     // start the backend call first without awaiting it to also parallel run the search locally
