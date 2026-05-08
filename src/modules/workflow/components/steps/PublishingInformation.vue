@@ -35,7 +35,6 @@
         </p>
       </InfoBanner>
     </v-row>
-
     <v-row>
       <v-col cols="12" xl="6">
         <v-row>
@@ -44,7 +43,6 @@
           </v-col>
         </v-row>
       </v-col>
-
       <v-col cols="12" xl="6" class="pa-0">
         <v-row>
           <v-col cols="12">
@@ -374,6 +372,7 @@ export default {
   },
 
   components: {
+    ContactPerson,
     ReviewInfo,
     PublicationStatus,
     PublicationInfo,
