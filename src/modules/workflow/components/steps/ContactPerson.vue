@@ -12,7 +12,7 @@
     </v-row>
 
     <v-row>
-      <v-col cols="12" sm="6" class="pt-5">
+      <v-col cols="12" sm="12" class="pt-5" :class="readOnlyHint('contactEmail') ? 'pb-3' : 'pb-6'">
         <v-text-field
           ref="contactEmail"
           data-field="contactEmail"
@@ -30,7 +30,7 @@
         />
       </v-col>
 
-      <v-col cols="12" sm="6" class="pl-sm-4">
+      <!-- <v-col cols="12" sm="6" class="pl-sm-4">
         <BaseUserPicker
           ref="contactUserPicker"
           data-field="contactUserPicker"
@@ -41,7 +41,7 @@
           @removedUsers="catchPickerAuthorChange($event, false)"
           @pickedUsers="catchPickerAuthorChange($event, true)"
         />
-      </v-col>
+      </v-col> -->
     </v-row>
 
     <v-row>
@@ -86,7 +86,7 @@
 
 <script>
 import { mdiAccount, mdiEmail } from '@mdi/js';
-import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
+// import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
 import { createAuthor, getAuthorByEmail } from '@/factories/authorFactory';
 
 import { isReadOnlyField, getReadOnlyHint } from '@/modules/workflow/utils/useReadonly';
@@ -98,7 +98,7 @@ const METADATA_CONTACT_LASTNAME = 'contactLastName';
 export default {
   name: 'ContactPerson',
   emits: ['save'],
-  components: { BaseUserPicker },
+  // components: { BaseUserPicker },
   props: {
     contactEmail: String,
     contactFirstName: String,
