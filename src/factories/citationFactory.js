@@ -21,6 +21,10 @@ function sanitizePid(pid) {
     return null;
   }
 
+  if (/^doi(:|%3A)\d+/i.test(pid)) {
+    return null;
+  }
+
   return pid.replaceAll('%3A', ':');
 }
 
@@ -65,7 +69,9 @@ export function extractPIDsFromUrls(urls) {
 
       if (pid) {
         const cleanPID = sanitizePid(pid);
-        pidMap.set(url, cleanPID);
+        if (cleanPID) {
+          pidMap.set(url, cleanPID);
+        }
       }
     }
   }
@@ -102,7 +108,9 @@ export function extractPIDsFromText(text) {
 
   pidMatches.forEach((match) => {
     const cleanPID = sanitizePid(match);
-    pidMap.set(cleanPID, cleanPID);
+    if (cleanPID) {
+      pidMap.set(cleanPID, cleanPID);
+    }
   });
 
   return pidMap;
@@ -116,12 +124,11 @@ export function extractDOIsFromText(text) {
   }
 
   // reGex for get doi from text/url
-  const doiRegEx = /(?:https:\/\/doi\.org\/)?\b(10\.\d{4,9}\/[-._;()/:A-Z0-9]+)\b/gi;
+  const doiRegEx = /(?:https?:\/\/(?:www\.|dx\.)?doi\.org\/|doi:\s*|doi\s+|doi(?=10\.))?(10\.\d{4,9}\/[-._;()/:A-Z0-9]+)\b/gi;
 
-  const doiMatches = text.match(doiRegEx) || [];
-
-  doiMatches.forEach((match) => {
-    const doi = match.replace('https://doi.org/', '');
+  const doiMatches = text.matchAll(doiRegEx);
+  Array.from(doiMatches).forEach((match) => {
+    const doi = match[1];
     doiMap.set(doi, doi);
   });
 
