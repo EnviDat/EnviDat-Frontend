@@ -17,7 +17,6 @@
           :userName="user.fullName"
           :introText="userDashboardConfig.introText"
           :feedbackText="userDashboardConfig.feedbackText"
-          :oldDashboardUrl="oldDashboardUrl"
           :importWorkflowActive="importWorkflowActive"
           :createClickCallback="organizationsStore.canCreateDatasets ? createClickCallback : null"
           :importClickCallback="organizationsStore.canCreateDatasets ? importClickCallback : null"
