@@ -139,6 +139,7 @@ const clearWorkflowDialogOverrides = () => {
 const importModeActive = computed(() => {
   return route?.query?.doi != null && route?.query?.import === 'fromDoi';
 });
+const importFromRenkuActive = computed(() => route?.query?.importFromRenku === 'true');
 
 const showDialog = computed({
   get: () => workflowStore?.openWorkflowDialog ?? false,
@@ -236,6 +237,37 @@ const showDialogSignInNeeded = () => {
   clearWorkflowDialogOverrides();
 };
 
+const showWorkflowDialog = ({ mode, title, message, confirmText, cancelText }) => {
+  dialogMode.value = mode;
+  workflowStore.workflowDialogTitle = title;
+  workflowStore.workflowDialogMessage = message;
+  workflowStore.workflowDialogConfirmText = confirmText;
+  workflowStore.workflowDialogCancelText = cancelText;
+  showDialog.value = true;
+};
+
+const showImportDoiDialog = () => {
+  showWorkflowDialog({
+    mode: 'import',
+    title: 'Import from DOI Mode',
+    message:
+      '<strong>Please take a moment to review your data</strong> before proceeding to step 4, and save your imported dataset to our backend. <strong>Once you save</strong>, you can continue reviewing the imported resources and other information.<br><br>The main information you should have a look at is: <strong>keywords</strong>, <strong>description</strong> should be in English, <strong>details related to the authors (email)</strong>, and <strong>additional information</strong>.<br><br> When you are ready, you will be able to request publication.',
+    confirmText: 'Got it',
+    cancelText: 'null',
+  });
+};
+
+const showRenkuRightsDialog = () => {
+  showWorkflowDialog({
+    mode: 'unauthorized',
+    title: 'Access required',
+    message:
+      'To import from Renku, your EnviDat user needs editor rights in at least one organization. Please contact EnviDat <b>envidat@wsl.ch</b> to request editor rights, then try again.',
+    confirmText: 'Go to Dashboard',
+    cancelText: 'null',
+  });
+};
+
 const waitForUserLoading = () =>
   new Promise<void>((resolve) => {
     if (user.value || !userLoading.value) return resolve();
@@ -251,6 +283,15 @@ const canEnterWorkflow = async () => {
   if (user.value) return true;
   await waitForUserLoading();
   if (user.value) return true;
+
+  if (importFromRenkuActive.value) {
+    router.replace({
+      name: USER_SIGNIN_PAGENAME,
+      query: { redirect: route.fullPath },
+    });
+    return false;
+  }
+
   showDialogSignInNeeded();
   return false;
 };
@@ -325,6 +366,35 @@ const isCollaboratorEditor = () => {
   return match?.role === 'editor';
 };
 
+const canCreateDatasetInOrganization = () => {
+  return user.value?.sysadmin === true || orgStore.canCreateDatasets;
+};
+
+const ensureRenkuImportAccess = async () => {
+  if (!importFromRenkuActive.value) return true;
+
+  await loadUserOrganizations();
+
+  if (canCreateDatasetInOrganization()) return true;
+
+  showRenkuRightsDialog();
+  return false;
+};
+
+const getCleanWorkflowQueryAfterSave = () => {
+  const {
+    importFromRenku,
+    titleDataset,
+    doi,
+    owner_org,
+    import: importParam,
+    renkuId,
+    ...query
+  } = router.currentRoute.value.query;
+
+  return query;
+};
+
 const ensureEditAccess = () => {
   if (!user.value) return true;
   if (workflowStore.mode !== WorkflowMode.Edit) return true;
@@ -379,7 +449,7 @@ const changeNavigationInStore = (stepParam: number | string) => {
 const navigateRouterToStep = async (step: number) => {
   const leaving = currentStep.value;
   if (workflowStore.mustValidateOnLeave(leaving)) {
-    const ok = workflowStore.validateStepAction(leaving);
+    const ok = workflowStore.validateStepAction(leaving, false);
     if (!ok) {
       if (vm.value) scrollToFirstError(vm.value.validationErrors);
       return;
@@ -387,7 +457,7 @@ const navigateRouterToStep = async (step: number) => {
   }
 
   if (router) {
-    router.push({ path: router.currentRoute.value.path, query: { step } });
+    router.push({ path: router.currentRoute.value.path, query: { ...router.currentRoute.value.query, step } });
   } else {
     changeNavigationInStore(step);
   }
@@ -499,7 +569,7 @@ const catchConfirmSave = async () => {
       await router.push({
         name: router.currentRoute.value.name as string,
         params: { ...router.currentRoute.value.params, id: newId },
-        query: router.currentRoute.value.query,
+        query: getCleanWorkflowQueryAfterSave(),
       });
       // CLEANUP localStorage for the new backend dataset
       workflowStore.clearLocalStorage();
@@ -519,6 +589,7 @@ const catchConfirmSave = async () => {
         userDatasets: userDatasets.value,
       });
     });
+
     notify.success('Dataset created successfully');
   } catch (e: any) {
     workflowStore.isStepSaveConfirmed = false;
@@ -559,6 +630,7 @@ const catchPreviewClick = () => {
 const reloadDataset = () => {
   workflowStore.loadDataset(route?.params?.id as string);
 };
+
 /* =========================
  *  WATCHERS
  * ========================= */
@@ -632,14 +704,10 @@ const datasetExistsInLocalStorage = (datasetId?: string) => {
  * ========================= */
 onMounted(async () => {
   if (!(await canEnterWorkflow())) return;
+  if (!(await ensureRenkuImportAccess())) return;
+
   if (importModeActive.value) {
-    dialogMode.value = 'import';
-    workflowStore.workflowDialogTitle = 'Import from DOI Mode';
-    workflowStore.workflowDialogMessage =
-      '<strong>Please take a moment to review your data</strong> before proceeding to step 4, and save your imported dataset to our backend. <strong>Once you save</strong>, you can continue reviewing the imported resources and other information.<br><br>The main information you should have a look at is: <strong>keywords</strong>, <strong>description</strong> should be in English, <strong>details related to the authors (email)</strong>, and <strong>additional information</strong>.<br><br> When you are ready, you will be able to request publication.';
-    workflowStore.workflowDialogConfirmText = 'Got it';
-    workflowStore.workflowDialogCancelText = 'null';
-    showDialog.value = true;
+    showImportDoiDialog();
   }
   try {
     await workflowStore.withLoading(async () => {
@@ -659,9 +727,19 @@ onMounted(async () => {
       // IMPORT LOGIC
       // TODO  IMPORT DOI Create Import rule
       const importSource = route?.query?.import === 'fromDoi' ? 'fromDoi' : undefined;
+      const importFromRenku = importFromRenkuActive.value ? 'importFromRenku' : undefined;
       const importId = typeof route?.query?.doi === 'string' ? route.query.doi : undefined;
       const importOrgId = typeof route?.query?.owner_org === 'string' ? route.query.owner_org : undefined;
-      await workflowStore.bootstrapWorkflow(id, { importSource, importId, importOrgId });
+      const titleDataset = typeof route.query.titleDataset === 'string' ? route.query.titleDataset : undefined;
+      const renkuId = typeof route.query.renkuId === 'string' ? route.query.renkuId : undefined;
+      await workflowStore.bootstrapWorkflow(id, {
+        importSource,
+        importId,
+        importOrgId,
+        importFromRenku,
+        renkuId,
+        titleDataset,
+      });
 
       // SET last edited dataset in the store
       const lastDsName =

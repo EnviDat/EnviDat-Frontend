@@ -113,6 +113,11 @@ export default {
     prefilledKey() {
       return this.$route.query.key;
     },
+    redirectPath() {
+      const redirect = this.$route.query.redirect;
+
+      return typeof redirect === 'string' && redirect.startsWith('/') ? redirect : '';
+    },
     errorText() {
       if (this.errorFieldText) {
         if (this.errorType === VALIDATION_ERROR) {
@@ -174,9 +179,18 @@ export default {
       }
 
       // Then redirect with context set
+      if (this.errorField || this.errorFieldText) {
+        return;
+      }
+
       this.redirectToDashboardIfAllowed();
     },
     redirectToDashboardIfAllowed() {
+      if (this.redirectPath) {
+        this.$router.push(this.redirectPath);
+        return;
+      }
+
       if (this.dashboardRedirect) {
         eventBus.emit(SHOW_REDIRECT_DASHBOARD_DIALOG);
 

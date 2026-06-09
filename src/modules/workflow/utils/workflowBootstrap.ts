@@ -3,7 +3,6 @@
 import { WorkflowMode } from '@/modules/workflow/utils/workflowEnums';
 import { LOCAL_DATASET_KEY } from '@/factories/metadataConsts';
 
-/* eslint-disable no-unused-vars */
 export interface BootstrapDeps<DatasetDTO> {
   loadBackend: (id: string) => Promise<DatasetDTO | null>;
   importBackend: (id: string, orgId?: string) => Promise<DatasetDTO | null>;
@@ -11,7 +10,6 @@ export interface BootstrapDeps<DatasetDTO> {
   createLocal: (init: Partial<DatasetDTO>) => Promise<DatasetDTO>;
   seedLocalFromImport: (dto: DatasetDTO) => Promise<DatasetDTO>;
 }
-/* eslint-enable no-unused-vars */
 
 // CHECK if the dataset is present in localStorage
 function existsInLocalStorage(id?: string): boolean {
@@ -32,7 +30,14 @@ function isPublished(dto: any): boolean {
 export async function resolveBootstrap<DatasetDTO>(
   datasetId: string | undefined,
   deps: BootstrapDeps<DatasetDTO>,
-  options?: { importSource?: string; importId?: string; importOrgId?: string },
+  options?: {
+    importSource?: string;
+    importId?: string;
+    importOrgId?: string;
+    importFromRenku?: string;
+    titleDataset?: string;
+    renkuId?: string;
+  },
 ): Promise<{
   dto: DatasetDTO;
   mode: WorkflowMode;
@@ -49,6 +54,26 @@ export async function resolveBootstrap<DatasetDTO>(
       const localDto = await deps.seedLocalFromImport(importedDto);
       return { dto: localDto, mode: WorkflowMode.Create, source: 'local' };
     }
+  }
+  if (options?.importFromRenku === 'importFromRenku') {
+    const title = options?.titleDataset ?? '';
+    const renkuDatasetId = options?.renkuId ?? '';
+
+    const renkuDataset = {
+      title,
+      extras: renkuDatasetId
+        ? [
+            {
+              key: 'renku_id',
+              value: renkuDatasetId,
+            },
+          ]
+        : [],
+    };
+
+    const localDto = await deps.createLocal(renkuDataset as unknown as Partial<DatasetDTO>);
+
+    return { dto: localDto, mode: WorkflowMode.Create, source: 'local' };
   }
   if (datasetId) {
     try {

@@ -296,7 +296,14 @@ export const useDatasetWorkflowStore = defineStore('datasetWorkflow', {
     // We need to fine-tune this logic.
     async bootstrapWorkflow(
       datasetId?: string,
-      options?: { importSource?: string; importId?: string; importOrgId?: string },
+      options?: {
+        importSource?: string;
+        importId?: string;
+        importOrgId?: string;
+        importFromRenku?: string;
+        titleDataset?: string;
+        renkuId?: string;
+      },
     ) {
       return this.withLoading(async () => {
         const { dto, mode, source } = await resolveBootstrap<DatasetDTO>(
