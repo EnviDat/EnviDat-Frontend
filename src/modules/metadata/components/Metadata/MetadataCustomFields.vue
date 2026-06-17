@@ -39,7 +39,7 @@
 export default {
   name: 'MetadataCustomFields',
   data: () => ({
-    filteredKeys: ['deprecatedResources'],
+    filteredKeys: ['deprecatedResources', 'renku_id'],
   }),
   props: {
     extras: {
