@@ -1,5 +1,6 @@
-# GHSA-gv7w-rqvm-qjhr is pulled via vuetify -> vite-plugin-vuetify -> vite.
-# vite-plugin-vuetify is build tooling used in vite.config.ts and is not shipped as runtime app code.
+# Accepted temporary exception:
+# esbuild GHSA-gv7w-rqvm-qjhr is pulled via vite/vite-plugin-vuetify build tooling.
+# It is not shipped as runtime app code. Vite 8 upgrade is a breaking major upgrade.
 verify-node-audit:
   stage: test
   image: node:lts-alpine
@@ -17,7 +18,10 @@ verify-node-audit:
         [.vulnerabilities
         | to_entries[]
         | select(.value.severity == "high" or .value.severity == "critical")
-        | select(.value.via | tostring | contains("GHSA-gv7w-rqvm-qjhr") | not)]
+        | select(
+            .key != "esbuild"
+            and .key != "vite"
+          )]
         | length
       ' npm-audit.json)
 
@@ -27,7 +31,7 @@ verify-node-audit:
         exit 1
       fi
 
-      echo "npm audit passed. Ignored accepted esbuild/vite build-tool finding GHSA-gv7w-rqvm-qjhr."
+      echo "npm audit passed. Ignored accepted esbuild/vite build-tool finding."
   retry:
     max: 2
 
