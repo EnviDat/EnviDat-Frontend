@@ -1,15 +1,33 @@
+# GHSA-gv7w-rqvm-qjhr is pulled via vuetify -> vite-plugin-vuetify -> vite.
+# vite-plugin-vuetify is build tooling used in vite.config.ts and is not shipped as runtime app code.
 verify-node-audit:
   stage: test
-  image: node:lts
+  image: node:lts-alpine
   environment: $CI_COMMIT_REF_NAME
   extends: .normal-rules
   needs:
     - job: modify-env
       artifacts: false
   script:
-    # keep this in separate job to clearer identify if there is a problem, ONLY PRODUCTION NOT DEV
+    - apk add --no-cache jq
     - npm ci --prefer-offline --no-audit --no-fund --loglevel=error
-    - npm audit --audit-level=high --omit=dev
+    - npm audit --audit-level=high --omit=dev --json > npm-audit.json || true
+    - |
+      HIGH_OR_CRITICAL=$(jq '
+        [.vulnerabilities
+        | to_entries[]
+        | select(.value.severity == "high" or .value.severity == "critical")
+        | select(.value.via | tostring | contains("GHSA-gv7w-rqvm-qjhr") | not)]
+        | length
+      ' npm-audit.json)
+
+      if [ "$HIGH_OR_CRITICAL" -gt 0 ]; then
+        cat npm-audit.json
+        echo "npm audit failed: found $HIGH_OR_CRITICAL high/critical vulnerabilities."
+        exit 1
+      fi
+
+      echo "npm audit passed. Ignored accepted esbuild/vite build-tool finding GHSA-gv7w-rqvm-qjhr."
   retry:
     max: 2
 
