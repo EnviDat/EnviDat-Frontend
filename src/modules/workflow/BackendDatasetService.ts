@@ -313,7 +313,6 @@ export class BackendDatasetService implements DatasetService {
     this.loadingDataset = true;
     try {
       const response = await axios.post(url, postData);
-      console.log(response);
       return new Dataset(response.data.result);
     } catch (e: any) {
       const data = e?.response?.data;

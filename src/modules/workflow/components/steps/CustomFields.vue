@@ -104,7 +104,7 @@ export default {
   name: 'EditCustomFields',
   data: () => ({
     mdiMinusCircleOutline,
-    filteredKeys: ['deprecatedResources'],
+    filteredKeys: ['deprecatedResources', 'renku_id'],
     maxCustomFieldsReached: false,
     labels: {
       cardTitle: 'Custom Fields',
@@ -298,7 +298,7 @@ export default {
         localfunders.pop();
       }
     },
-    // eslint-disable-next-line no-unused-vars
+
     notifyChange(index, property, value) {
       const localCopy = [...this.customFieldsProp];
       const errorArray = this.validationErrors.customFieldsList;
