@@ -26,6 +26,7 @@
           <BaseStatusLabelView status="error" statusColor="error" :statusText="error" :expandedText="errorDetails" />
         </v-col>
       </v-row>
+
       <v-row
         v-for="(item, index) in filteredcustomFieldsProp"
         :key="`${item}_${index}`"
@@ -256,12 +257,17 @@ export default {
         [property]: value,
       };
     },
-    setCustomFields(value) {
-      this.newDatasetInfo.customFields = value;
-      this.$emit('save', value);
+    setCustomFields(visibleFields) {
+      const protectedFields = this.customFields.filter((field) => this.filteredKeys.includes(field.key));
+
+      const customFields = [...protectedFields, ...visibleFields];
+
+      this.newDatasetInfo.customFields = customFields;
+      this.$emit('save', customFields);
     },
     deleteEntry(index) {
-      const localCopy = [...this.customFieldsProp];
+      const localCopy = [...this.filteredcustomFieldsProp];
+
       const errorArray = this.validationErrors.customFieldsList;
 
       if (localCopy.length > 1) {
@@ -300,7 +306,8 @@ export default {
     },
 
     notifyChange(index, property, value) {
-      const localCopy = [...this.customFieldsProp];
+      const localCopy = [...this.filteredcustomFieldsProp];
+
       const errorArray = this.validationErrors.customFieldsList;
 
       this.editEntry(localCopy, index, property, value);
