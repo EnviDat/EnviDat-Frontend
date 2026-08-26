@@ -7,7 +7,7 @@ import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 import { AbstractEditViewModel } from '@/modules/workflow/viewModel/AbstractEditViewModel';
 import { METADATA_NEW_RESOURCE_ID } from '@/factories/metadataConsts';
 
-import { formatDateTimeToCKANFormat, stringifyResourceForBackend } from '@/factories/mappingFactory';
+import { stringifyResourceForBackend } from '@/factories/mappingFactory';
 
 import { convertJSON, convertToBackendJSONWithRules } from '@/factories/convertJSON';
 
@@ -73,16 +73,8 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
     });
   }
 
-  private convertDatesToBackendFormat(resource: Resource) {
-    resource.created = resource.created ? formatDateTimeToCKANFormat(resource.created) : '';
-    resource.lastModified = resource.lastModified ? formatDateTimeToCKANFormat(resource.lastModified) : '';
-    resource.metadataModified = resource.metadataModified ? formatDateTimeToCKANFormat(resource.metadataModified) : '';
-  }
-
   get backendJSON() {
     const backendResources = this.resources?.map((frontendRes: Resource) => {
-      this.convertDatesToBackendFormat(frontendRes);
-
       const formattedSize = `${frontendRes.size} ${frontendRes.sizeFormat}`;
       const sizeInBytes = parseBytes(formattedSize);
 
