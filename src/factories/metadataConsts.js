@@ -11,6 +11,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 export const METADATA_BODY_TITLE = 'Description';
+export const METADATA_RENKU_TITLE = 'Renku Project Information';
 export const METADATA_CITATION_TITLE = 'Citation';
 export const METADATA_PUBLICATIONS_TITLE = 'Related Publications';
 export const METADATA_DATASETS_TITLE = 'Related Datasets';
