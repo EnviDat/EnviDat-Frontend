@@ -63,7 +63,9 @@ export async function loadJSONLD(id: string, doi: string): Promise<Dataset> {
 
 */
 
-    const response = await axios.get(`https://os.zhdk.cloud.switch.ch/envidat-doi/${cleanDoi}/metadata.json`);
+    const response = await axios.get(
+      `https://${import.meta.env.VITE_ZHDK_CLOUD_HOST}/envidat-doi/${cleanDoi}/metadata.json`,
+    );
     // console.log(`DOI ${doi} jsonld found`);
     jsonLd = response.data;
 

@@ -105,3 +105,6 @@ public/testdata/*user*.json
 public/testdata/*password*.json
 tests/unit/regression
 reports
+
+# local working notes, not meant to be committed
+S3-MIGRATION-NOTES.md
