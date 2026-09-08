@@ -105,7 +105,7 @@ export default {
   name: 'EditCustomFields',
   data: () => ({
     mdiMinusCircleOutline,
-    filteredKeys: ['deprecatedResources', 'renku_id'],
+    filteredKeys: ['deprecatedResources', 'renku_id', 'renku_sync_status'],
     maxCustomFieldsReached: false,
     labels: {
       cardTitle: 'Custom Fields',

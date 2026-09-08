@@ -5,7 +5,6 @@ import { convertToFrontendJSONWithRules } from '@/factories/convertJSON';
 import { ResourceDTO } from '@/types/dataTransferObjectsTypes';
 import { DatasetModel } from '@/modules/workflow/DatasetModel.ts';
 import { formatBytes, getResourceName } from '@/factories/resourceHelpers';
-import { formatDate } from '@/factories/dateFactory';
 import { isFieldValid } from '@/factories/userEditingValidations';
 
 const convertEmptyStringToNull = (value: string, originalValue: string) => (originalValue === '' ? null : value);
@@ -172,10 +171,6 @@ export class ResourceViewModel extends AbstractEditViewModel implements Resource
     const fileFormat = rawResource.format ? rawResource.format : '';
     const format = fileFormat.replace('.', '').toLowerCase();
 
-    const created = formatDate(frontendResource.created);
-    const lastModified = formatDate(frontendResource.lastModified);
-    const metadataModified = formatDate(frontendResource.metadataModified);
-
     const backendDomain = process.env.VITE_API_ROOT;
 
     /*
@@ -224,9 +219,6 @@ export class ResourceViewModel extends AbstractEditViewModel implements Resource
       name: getResourceName(rawResource),
       restrictedUrl: `${backendDomain}/dataset/${datasetName}/restricted_request_access/${rawResource.id}`,
       format,
-      created,
-      lastModified,
-      metadataModified,
       // @ts-expect-error
       size: sizeNumberInFormat,
       sizeFormat,
