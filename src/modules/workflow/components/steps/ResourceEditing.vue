@@ -48,6 +48,7 @@
               :label="labels.resourceName"
               ref="resourceName"
               required
+              :readonly="importFromRenku"
               :disabled="loading"
               v-model="resourceNameField"
               :error-messages="validationErrors.name"
@@ -397,6 +398,10 @@ import { Resource } from '@/types/modelTypes';
 export default {
   //   name: 'ResourceEditing',
   props: {
+    importFromRenku: {
+      type: Boolean,
+      default: false,
+    },
     id: {
       type: String,
       default: '',
