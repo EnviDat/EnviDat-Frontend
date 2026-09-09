@@ -8,7 +8,7 @@
     </v-row>
 
     <!-- Info Banner -->
-    <v-row>
+    <v-row class="mb-2">
       <InfoBanner :show="showInfoBanner" :icon="mdiInformationOutline" @setInfoBanner="$emit('setInfoBanner', $event)">
         <p>
           This section allows you to provide access to the actual data or related resources of your dataset. These can
@@ -54,6 +54,22 @@
           Adding meaningful and well-described resources greatly enhances the usability and visibility of your dataset.
         </p>
       </InfoBanner>
+    </v-row>
+
+    <v-row v-if="renkuImport && !['done'].includes(renkuSyncStatus)" class="mt-2">
+      <v-col cols="12">
+        <v-alert type="warning" class="rounded-lg">
+          <template v-if="renkuNeedsAttention">
+            <v-alert-title>We’re taking care of your upload</v-alert-title>
+            Our team is reviewing your Renku upload. We’ll contact you as soon as possible.
+          </template>
+          <template v-else>
+            <v-alert-title>Your file is being uploaded</v-alert-title>
+            This process may take some time. Please come back later to check whether your file has been uploaded
+            successfully.
+          </template>
+        </v-alert>
+      </v-col>
     </v-row>
 
     <v-row>
@@ -104,6 +120,7 @@
 
 import { mapGetters, mapState } from 'vuex';
 
+import { mdiInformationOutline } from '@mdi/js';
 import {
   EDITMETADATA_CLEAR_PREVIEW,
   eventBus,
@@ -134,8 +151,6 @@ import {
   USER_SIGNIN_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts.js';
 
-import { mdiInformationOutline } from '@mdi/js';
-
 import { updateEditingArray } from '@/factories/userEditingFactory.js';
 
 import ResourcesListEditing from '@/modules/workflow/components/steps/ResourcesListEditing.vue';
@@ -154,6 +169,8 @@ export default {
     dataLicenseTitle: { type: String, default: undefined },
     dataLicenseUrl: { type: String, default: undefined },
     datasetId: { type: String, default: '' },
+    renkuSyncStatus: { type: String, default: '' },
+    isRenkuImport: { type: Boolean, default: false },
     loading: { type: Boolean, default: false },
     message: { type: String, default: '' },
     messageDetails: { type: String, default: null },
@@ -206,6 +223,15 @@ export default {
     ...mapState(['config']),
     ...mapGetters(USER_SIGNIN_NAMESPACE, ['user', 'userLoading']),
     ...mapState(USER_NAMESPACE, ['envidatUsers']),
+
+    renkuNeedsAttention() {
+      return ['admin_attention', 'admin_reviewed'].includes(this.renkuSyncStatus);
+    },
+
+    renkuImport() {
+      return this.isRenkuImport;
+    },
+
     resourceUploadError() {
       if (this.workflowStore) {
         return this.workflowStore.uploadError;

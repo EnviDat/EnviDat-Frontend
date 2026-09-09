@@ -24,6 +24,8 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
   declare resources: Resource[];
 
   declare datasetId: string;
+  declare renkuSyncStatus: string;
+  declare isRenkuImport: boolean;
 
   declare signedInUser: User;
   declare signedInUserOrganizationIds: string[];
@@ -115,6 +117,8 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
       Object.assign(this, {
         resources: [],
         datasetId: undefined,
+        renkuSyncStatus: '',
+        isRenkuImport: false,
       });
       return;
     }
@@ -142,6 +146,8 @@ export class ResourcesListViewModel extends AbstractEditViewModel {
     Object.assign(this, {
       resources: cleanResources,
       datasetId: dataset.id,
+      renkuSyncStatus: dataset.extras?.find((extra) => extra.key === 'renku_sync_status')?.value ?? '',
+      isRenkuImport: dataset.extras?.some((extra) => extra.key === 'renku_id') ?? false,
     });
   }
 
