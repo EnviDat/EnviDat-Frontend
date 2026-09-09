@@ -280,6 +280,7 @@ export default {
 
       return {
         ...this.resourceViewModel,
+        importFromRenku: this.renkuImport,
         userEditMetadataConfig,
         envidatUsers: this.allEnviDatUsers,
       };
