@@ -10,8 +10,8 @@
           <div class="resourceCardText" v-html="markdownText" />
         </v-col>
 
-        <v-col v-if="!showFullDescription && maxDescriptionLengthReached" class="resourceCardText">
-          {{ markdownTextTruncated }}
+        <v-col v-if="!showFullDescription && maxDescriptionLengthReached">
+          <div class="resourceCardText" v-html="markdownTextTruncated" />
         </v-col>
       </v-row>
     </v-card-text>
@@ -98,8 +98,7 @@ export default {
       }
 
       if (this.maxDescriptionLengthReached) {
-        const strippedMarkdown = stripMarkdown(this.description.trim());
-
+        const strippedMarkdown = renderMarkdown(this.description.trim());
         return strippedMarkdown ? `${strippedMarkdown.substring(0, this.maxDescriptionLength)}...` : '';
       }
 
