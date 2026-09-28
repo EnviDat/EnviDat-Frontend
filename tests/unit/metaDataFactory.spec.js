@@ -277,6 +277,12 @@ describe('metaDataFactory - formatDate', () => {
     expect(date).toBeDefined();
     expect(date).toBe('15. Aug 2017 15:25');
   });
+
+  it('falls back to the original value for an invalid date', () => {
+    const invalidDate = 'invalid-dateT15:25:45.175790';
+
+    expect(formatDate(invalidDate)).toBe(invalidDate);
+  });
 });
 
 const text = 'https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:14249\n';

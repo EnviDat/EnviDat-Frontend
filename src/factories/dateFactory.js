@@ -1,4 +1,4 @@
-import { format, parse } from 'date-fns';
+import { format, isValid, parse } from 'date-fns';
 
 /**
  * @param {string} date expecting a format like 2017-08-15T15:25:45.175790
@@ -13,7 +13,14 @@ export function formatDate(date, inputFormat = 'yyyy-MM-dd', formatNoTime = fals
     const split = date.split('T');
     if (split.length > 1) {
       const dateOnly = split[0];
-      const parsedDate = parse(dateOnly, inputFormat, new Date(date));
+      // Do not use the complete CKAN timestamp as the reference date. CKAN can
+      // return microseconds (for example, `.175790`), which Safari does not
+      // accept in the Date constructor even though Chromium does.
+      const parsedDate = parse(dateOnly, inputFormat, new Date());
+
+      if (!isValid(parsedDate)) {
+        return date;
+      }
 
       if (formatNoTime) {
         // Return only the date in dd.MM.yyyy format

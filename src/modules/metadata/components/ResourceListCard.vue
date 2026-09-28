@@ -177,7 +177,8 @@ export default {
     restrictedUrl: String,
     created: String,
     lastModified: String,
-    size: Number,
+    size: [Number, String],
+    sizeFormat: String,
     format: String,
     twoColumnLayout: Boolean,
     height: String,
@@ -262,13 +263,11 @@ export default {
     formatedBytes() {
       if (!this.size) return '';
 
-      let sizeNumber = this.size;
-
-      if (typeof this.size === 'number') {
-        sizeNumber = Number.parseInt(this.size, 10);
+      if (this.sizeFormat) {
+        return `${this.size} ${this.sizeFormat}`;
       }
 
-      return formatBytes(sizeNumber);
+      return formatBytes(Number(this.size));
     },
 
     isLink() {
