@@ -156,6 +156,7 @@ import { DatasetDTO } from '@/types/dataTransferObjectsTypes';
 const MetadataDescription = defineAsyncComponent(
   () => import('@/modules/metadata/components/Metadata/MetadataDescription.vue'),
 );
+const MetadataRenku = defineAsyncComponent(() => import('@/modules/metadata/components/Metadata/MetadataRenku.vue'));
 
 const MetadataResourceList = defineAsyncComponent(() => import('./Metadata/MetadataResourceList.vue'));
 
@@ -449,6 +450,55 @@ export default {
           this.stationParametersError = error;
         });
     },
+    async loadRenkuData(doi) {
+      const requestId = this.renkuRequestId + 1;
+      this.renkuRequestId = requestId;
+      this.renkuLoading = !!doi;
+      this.renkuData = {
+        data: [],
+        hasData: false,
+      };
+
+      if (!doi) {
+        return;
+      }
+
+      const apiRoot = (import.meta.env.VITE_API_ROOT || '').replace(/\/$/, '');
+      const encodedDoi = doi
+        .split('/')
+        .map((part) => encodeURIComponent(part))
+        .join('/');
+      const url = `${apiRoot}/api/renku/renku_check/${encodedDoi}`;
+
+      try {
+        const response = await axios.get(url);
+        const result = response.data?.result || response.data;
+
+        if (requestId !== this.renkuRequestId) {
+          return;
+        }
+
+        const data = Array.isArray(result?.data) ? result.data : [];
+        this.renkuData = {
+          data,
+          hasData: result?.hasData === true && data.length > 0,
+        };
+      } catch (error) {
+        if (requestId !== this.renkuRequestId) {
+          return;
+        }
+
+        this.renkuData = {
+          data: [],
+          hasData: false,
+        };
+        console.error(`Loading Renku projects failed: ${error}`);
+      } finally {
+        if (requestId === this.renkuRequestId) {
+          this.renkuLoading = false;
+        }
+      }
+    },
     getCurrentStation(stationId) {
       for (let i = 0; i < this.stationsConfig.length; i++) {
         const station = this.stationsConfig[i];
@@ -573,28 +623,37 @@ export default {
         resourcesConfig: this.resourcesConfig,
       };
     },
-    setMetadataContent() {
+    setMetadataContent(skipExternalLoads = false) {
       this.configInfos = getConfigUrls(this.configInfos);
 
-      if (this.configInfos?.stationsConfigUrl) {
-        this.loadStationsConfig(this.configInfos.stationsConfigUrl, () => {
-          this.injectMicroCharts();
-        });
-      }
+      if (!skipExternalLoads) {
+        if (this.configInfos?.stationsConfigUrl) {
+          this.loadStationsConfig(this.configInfos.stationsConfigUrl, () => {
+            this.injectMicroCharts();
+          });
+        }
 
-      if (this.configInfos?.stationParametersUrl) {
-        this.loadParameterJson(this.configInfos.stationParametersUrl);
-      }
+        if (this.configInfos?.stationParametersUrl) {
+          this.loadParameterJson(this.configInfos.stationParametersUrl);
+        }
 
-      if (this.configInfos?.geoConfigUrl) {
-        // the setting of the MetadataGeo genericProps is done via watch on the geoServiceLayers
-        this.loadGeoServiceLayers(this.configInfos.geoConfigUrl);
-      } else {
-        this.setGeoServiceLayers(this.location, null);
+        if (this.configInfos?.geoConfigUrl) {
+          // the setting of the MetadataGeo genericProps is done via watch on the geoServiceLayers
+          this.loadGeoServiceLayers(this.configInfos.geoConfigUrl);
+        } else {
+          this.setGeoServiceLayers(this.location, null);
+        }
       }
 
       this.MetadataDescription.props = {
         ...this.descriptionData,
+      };
+
+      this.MetadataRenku.props = {
+        description:
+          'This dataset is associated with one or more projects on Renku, an open-source platform for reproducible and collaborative data analysis. Use the links below to explore the related Renku projects.',
+        data: this.renkuData.data,
+        loading: this.renkuLoading,
       };
 
       this.MetadataCitation.props = {
@@ -631,8 +690,11 @@ export default {
         extras: this.customFields,
       };
 
+      const renkuComponent = this.renkuLoading || this.renkuData.hasData ? this.MetadataRenku : null;
+
       this.firstCol = [
         this.MetadataDescription,
+        renkuComponent,
         this.MetadataCitation,
         this.MetadataFunding,
         publicationList,
@@ -646,6 +708,7 @@ export default {
         this.singleCol = [
           this.MetadataDescription,
           this.MetadataCitation,
+          renkuComponent,
           this.MetadataResourceList,
           this.MetadataGeo,
           this.MetadataAuthors,
@@ -812,6 +875,14 @@ export default {
         await this.$store.dispatch(`${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`, {
           metadataId: this.metadataId,
         });
+      } else if (this.isCurrentIdOrName(this.metadataId)) {
+        // The metadata is already available (for example from the local store).
+        this.createMetadataContent();
+        this.$nextTick(() => {
+          this.setMetadataContent();
+        });
+        await this.loadRenkuData(this.metadataContent?.doi);
+        this.setMetadataContent(true);
       } else {
         // in case of entring the page directly via Url without having loaded the rest of the app.
         // this call is to initialize the components in the their loading state
@@ -889,12 +960,14 @@ export default {
      * @description watch the currentMetadataContent when it is the same as the url
      * the components will be filled with the metdata contents
      */
-    currentMetadataContent() {
+    async currentMetadataContent() {
       if (this.isCurrentIdOrName(this.metadataId)) {
         this.createMetadataContent();
         this.$nextTick(() => {
           this.setMetadataContent();
         });
+        await this.loadRenkuData(this.metadataContent?.doi);
+        this.setMetadataContent(true);
       }
     },
     /**
@@ -933,6 +1006,7 @@ export default {
     organizationsStore: null,
     mdiClose,
     MetadataDescription: markRaw(MetadataDescription),
+    MetadataRenku: markRaw(MetadataRenku),
     MetadataResourceList: markRaw(MetadataResourceList),
     MetadataCitation: markRaw(MetadataCitation),
     MetadataPublications: markRaw(MetadataPublications),
@@ -958,6 +1032,12 @@ export default {
     geoServiceLayersError: null,
     header: null,
     descriptionData: null,
+    renkuData: {
+      data: [],
+      hasData: false,
+    },
+    renkuLoading: false,
+    renkuRequestId: 0,
     citation: null,
     resourceData: null,
     resourcesForDataViz: [],

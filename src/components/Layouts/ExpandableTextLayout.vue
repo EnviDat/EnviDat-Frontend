@@ -3,7 +3,9 @@
     <v-card-title v-if="title" class="py-4">
       <v-row no-gutters>
         <v-col class="text-h6 metadata_title grow" align-self="start">
-          {{ title }}
+          <slot name="title">
+            {{ title }}
+          </slot>
         </v-col>
 
         <v-col class="flex-grow-0">
