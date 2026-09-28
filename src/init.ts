@@ -40,16 +40,40 @@ export const initAxios = (app, store) => {
   const excludedDomains = [
     process.env.VITE_STATIC_ROOT,
     process.env.VITE_CONFIG_URL,
+    process.env.VITE_ZHDK_CLOUD_HOST,
     'https://envicloud.wsl.ch/',
-    'https://os.zhdk.cloud.switch.ch',
     'https://os.unil.cloud.switch.ch',
-  ];
+  ].filter(Boolean);
+
+  // matches the full excluded value as a substring (legacy behaviour) or as a
+  // proper hostname/subdomain (fixes e.g. forest3dtwin.<host> not matching <host>)
+  const isUrlExcluded = (url: string) => {
+    let hostname = '';
+    try {
+      hostname = new URL(url).hostname;
+    } catch {
+      // relative/invalid URL, fall back to substring checks only
+    }
+
+    return excludedDomains.some((domain) => {
+      if (url.includes(domain)) return true;
+
+      let domainHost = domain;
+      try {
+        domainHost = new URL(domain).hostname;
+      } catch {
+        // domain is already a bare hostname (e.g. VITE_ZHDK_CLOUD_HOST)
+      }
+
+      return !!hostname && (hostname === domainHost || hostname.endsWith(`.${domainHost}`));
+    });
+  };
 
   axios.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
       // Do something before request is sent
 
-      const urlIsExcluded = excludedDomains.some((domain) => config.url.includes(domain));
+      const urlIsExcluded = isUrlExcluded(config.url);
 
       if (!urlIsExcluded) {
         config.withCredentials = true;

@@ -21,7 +21,7 @@ export async function loadDataset(): Promise<DatasetDTO[]> {
     console.log('loading datasets...');
     isFechingDatasets = true;
 
-    datasets = await fetchDatasets('https://s3-zh.os.switch.ch/frontend-static/metadata/packagelist/packagelist.json');
+    datasets = await fetchDatasets('https://zhc-c.s3.cloud.switch.ch/frontend-static/metadata/packagelist/packagelist.json');
     datasetMap = new Map<string, DatasetDTO>();
 
     for (let i = 0; i < datasets.length; i++) {
@@ -50,7 +50,7 @@ export async function loadJSONLD(id: string, doi: string): Promise<Dataset> {
     const cleanDoi = doi.replace('/', '_');
     /*
     const response = await fetch(
-      `https://os.zhdk.cloud.switch.ch/envidat-doi/${cleanDoi}/metadata.json`,
+      `https://zhc-c.s3.cloud.switch.ch/envidat-doi/${cleanDoi}/metadata.json`,
     );
 
     const responseType = response.headers.get('Content-Type');
@@ -63,7 +63,9 @@ export async function loadJSONLD(id: string, doi: string): Promise<Dataset> {
 
 */
 
-    const response = await axios.get(`https://os.zhdk.cloud.switch.ch/envidat-doi/${cleanDoi}/metadata.json`);
+    const response = await axios.get(
+      `https://${import.meta.env.VITE_ZHDK_CLOUD_HOST}/envidat-doi/${cleanDoi}/metadata.json`,
+    );
     // console.log(`DOI ${doi} jsonld found`);
     jsonLd = response.data;
 
