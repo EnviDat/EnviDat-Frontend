@@ -203,7 +203,7 @@ modify-env:
       dotenv.set_key(file, key, token, quote_mode='never')
 
       key = 'VITE_CONFIG_URL'
-      value = f'https://frontend-config.s3-zh.os.switch.ch/{branch}.json'
+      value = f'https://zhc-c.s3.cloud.switch.ch/frontend-config/{branch}.json'
       dotenv.set_key(file, key, value, quote_mode='never')
 
       key = 'VITE_BUILD_SOURCEMAPS'

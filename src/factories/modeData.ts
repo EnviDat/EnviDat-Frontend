@@ -60,7 +60,6 @@ const forest3dImages: ModeIcons = {
  * @returns {Promise<any>}
  */
 const loadModeDatasetsWithMainTag = async (modeMetadata: ModeData): Promise<any> => {
-  // eslint-disable-next-line import/no-cycle
   const store = await import('@/modules/metadata/store/metadataStore');
   const state = store.metadata.state;
   const isSearchResultContent = store[METADATA_NAMESPACE].getters.searchingMetadatasContentOK(state);
@@ -84,7 +83,7 @@ const loadModeDatasetsWithMainTag = async (modeMetadata: ModeData): Promise<any>
  * @returns {Promise<any>}
  */
 const ednaFallback = async (): Promise<any> => {
-  const url = `https://s3-zh.os.switch.ch/frontend-static/modes/eDNA_datasets.json?nocache=${new Date().getTime()}`;
+  const url = `https://zhc-c.s3.cloud.switch.ch/frontend-static/modes/eDNA_datasets.json?nocache=${new Date().getTime()}`;
   const response = await fetch(url);
   return await response.json();
 };

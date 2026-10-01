@@ -235,7 +235,7 @@ function extractS3Url(inputUrl: string) {
     prefix += '/';
   }
 
-  let basePath = bucket && bucket !== 'null' ? bucket : 'https://os.zhdk.cloud.switch.ch/envicloud';
+  let basePath = bucket && bucket !== 'null' ? bucket : `https://${import.meta.env.VITE_ZHDK_CLOUD_HOST}/envicloud`;
 
   // Use basePath if bucket is missing
   bucketUrl.value = bucket ? bucket.replace(/\/$/, '') : basePath.replace(/\/$/, '');
